@@ -128,21 +128,10 @@ _writeHeaderWithoutColumnLabels(TFwdIterator & stream,
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g> TFormat;
 
     write(stream, "# ");
-    if (!isEmpty(context.versionString))
-    {
-        write(stream, context.versionString);
-    }
-    else
-    {
-        write(stream, _programTagToString(TFormat()));
-        write(stream, " I/O Module of SeqAn-");
-        write(stream, SEQAN_VERSION_MAJOR);
-        write(stream, '.');
-        write(stream, SEQAN_VERSION_MINOR);
-        write(stream, '.');
-        write(stream, SEQAN_VERSION_PATCH);
-        write(stream, " (http://www.seqan.de)");
-    }
+    if (isEmpty(context.versionString))
+        context._setDefaultVersionString();
+    write(stream, context.versionString);
+
     write(stream, "\n# Query: ");
     write(stream, r.qId);
     write(stream, "\n# Database: ");

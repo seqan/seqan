@@ -51,34 +51,7 @@ namespace seqan
 struct BlastTabular_;
 typedef Tag<BlastTabular_> BlastTabular;
 
-// ----------------------------------------------------------------------------
-// Class MagicHeader
-// ----------------------------------------------------------------------------
 
-// TODO adapt magicheader?
-template <typename T>
-struct MagicHeader<BlastTabular, T> :
-    public MagicHeader<Nothing, T> {};
-
-// ----------------------------------------------------------------------------
-// Class FileExtensions
-// ----------------------------------------------------------------------------
-
-template <typename T>
-struct FileExtensions<BlastTabular, T>
-{
-    static constexpr char const * VALUE[5] =
-    {
-        ".blast",
-        ".m8",
-        ".bm8",
-        ".m9",
-        ".bm9"
-    };
-};
-
-template <typename T>
-constexpr char const * FileExtensions<BlastTabular, T>::VALUE[5];
 
 // ----------------------------------------------------------------------------
 // Type BlastFileIn
@@ -157,21 +130,6 @@ typedef FormattedFile<BlastTabular, Input> BlastTabularIn;
 
 typedef FormattedFile<BlastTabular, Output> BlastTabularOut;
 
-// ----------------------------------------------------------------------------
-// Type BlastTabularIOContext_
-// ----------------------------------------------------------------------------
-
-// struct BlastTabularInputContext_
-// {
-//     BlastDbSpecs<>      dbSpecs;
-//     BlastInputContext   context;
-// };
-//
-// struct BlastTabularOutputContext_
-// {
-//     BlastDbSpecs<>      dbSpecs;
-// };
-
 // ============================================================================
 // Typedefs
 // ============================================================================
@@ -180,65 +138,6 @@ typedef FormattedFile<BlastTabular, Output> BlastTabularOut;
 // Metafunctions
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Metafunction FormattedFileContext
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TDirection, typename TStorageSpec>
-struct FormattedFileContext<FormattedFile<BlastTabular, TDirection, TSpec>, TStorageSpec>
-{
-    typedef BlastIOContext Type;
-};
-
-
-// ----------------------------------------------------------------------------
-// Metafunction FileFormats
-// ----------------------------------------------------------------------------
-
-typedef
-    // TABULAR
-    TagList<BlastFormat<BlastFormatFile::TABULAR,
-                        BlastFormatProgram::BLASTN,
-                        BlastFormatGeneration::BLAST_PLUS>,
-    TagList<BlastFormat<BlastFormatFile::TABULAR,
-                        BlastFormatProgram::BLASTP,
-                        BlastFormatGeneration::BLAST_PLUS>,
-    TagList<BlastFormat<BlastFormatFile::TABULAR,
-                        BlastFormatProgram::BLASTX,
-                        BlastFormatGeneration::BLAST_PLUS>,
-    TagList<BlastFormat<BlastFormatFile::TABULAR,
-                        BlastFormatProgram::TBLASTN,
-                        BlastFormatGeneration::BLAST_PLUS>,
-    TagList<BlastFormat<BlastFormatFile::TABULAR,
-                        BlastFormatProgram::TBLASTX,
-                        BlastFormatGeneration::BLAST_PLUS>,
-    // TABULAR WITH HEADER
-    TagList<BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        BlastFormatProgram::BLASTN,
-                        BlastFormatGeneration::BLAST_PLUS>,
-    TagList<BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        BlastFormatProgram::BLASTP,
-                        BlastFormatGeneration::BLAST_PLUS>,
-    TagList<BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        BlastFormatProgram::BLASTX,
-                        BlastFormatGeneration::BLAST_PLUS>,
-    TagList<BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        BlastFormatProgram::TBLASTN,
-                        BlastFormatGeneration::BLAST_PLUS>,
-    TagList<BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        BlastFormatProgram::TBLASTX,
-                        BlastFormatGeneration::BLAST_PLUS>
-    > > > > > > > > > > BlastTabularFormats;
-
-
-// typedef TagSelector<BlastTabularFormats> BlastTabularFormat;
-
-
-template <typename TDirection, typename TSpec>
-struct FileFormat<FormattedFile<BlastTabular, TDirection, TSpec> >
-{
-    typedef TagSelector<BlastTabularFormats> Type;
-};
 
 // ============================================================================
 // Functions

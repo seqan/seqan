@@ -62,8 +62,9 @@
 
 #include "blast/blast_base.h"
 #include "blast/blast_record.h"
-#include "blast/blast_statistics.h"
 #include "blast/blast_tabular.h"
+#include "blast/blast_io_context.h"
+#include "blast/blast_statistics.h"
 #include "blast/blast_tabular_read.h"
 #include "blast/blast_tabular_write.h"
 #include "blast/blast_tabular_formatted_file.h"

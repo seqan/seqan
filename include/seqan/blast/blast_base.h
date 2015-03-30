@@ -153,26 +153,35 @@ namespace seqan {
 // };
 
 /*!
- * @enum BlastProgram
+ * @defgroup BlastProgram
+ * @enum BlastProgram#BlastProgram
  * @brief Enum with BLAST program spec
  * @signature enum class BlastProgram : uint8_t { ... };
  *
  * @headerfile seqan/blast.h
  *
- * @val BlastProgram BlastProgram::BLASTN
+ * @val BlastProgram BlastProgram#BlastProgram::BLASTN
  * @brief Nucleotide Query VS Nucleotide Subject
  *
- * @val BlastProgram BlastProgram::BLASTP
+ * @val BlastProgram BlastProgram#BlastProgram::BLASTP
  * @brief Protein Query VS Protein Subject
  *
- * @val BlastProgram BlastProgram::BLASTX
+ * @val BlastProgram BlastProgram#BlastProgram::BLASTX
  * @brief translated Nucleotide Query VS Protein Subject
  *
- * @val BlastProgram BlastProgram::TBLASTN
+ * @val BlastProgram BlastProgram#BlastProgram::TBLASTN
  * @brief Protein Query VS translated Nucleotide Subject
  *
- * @val BlastProgram BlastProgram::TBLASTX
+ * @val BlastProgram BlastProgram#BlastProgram::TBLASTX
  * @brief translated Nucleotide Query VS translated Nucleotide Subject
+ *
+ * @val BlastProgram BlastProgram#BlastProgram::UNKOWN
+ * @brief Unkown type. Used internally and to signify that the type could not be inferred from the file.
+ *
+ * @val BlastProgram BlastProgram#BlastProgram::INVALID
+ * @brief Used internally.
+ *
+ *
  *
  */
 enum class BlastProgram : uint8_t
@@ -198,7 +207,20 @@ typedef BlastProgramTag<BlastProgram::UNKNOWN> BlastProgramTagUnknown;
 typedef BlastProgramTag<BlastProgram::INVALID> BlastProgramTagInvalid;
 
 
-/*!
+template <BlastProgram p>
+constexpr BlastProgram
+getBlastProgram(BlastProgram const, BlastProgramTag<p> const &)
+{
+    return p;
+}
+
+inline BlastProgram
+getBlastProgram(BlastProgram const p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
+{
+    return p;
+}
+
+/*
  * @enum BlastFormatGeneration
  * @brief Enum with BLAST program generation
  * @signature enum class BlastFormatGeneration : uint8_t { ... };
@@ -215,13 +237,13 @@ typedef BlastProgramTag<BlastProgram::INVALID> BlastProgramTagInvalid;
  *
  */
 
-enum class BlastFormatGeneration : uint8_t
-{
-    BLAST_LEGACY,
-    BLAST_PLUS,
-    UNKOWN = 254,
-    INVALID =255
-};
+// enum class BlastFormatGeneration : uint8_t
+// {
+//     BLAST_LEGACY,
+//     BLAST_PLUS,
+//     UNKOWN = 254,
+//     INVALID =255
+// };
 
 /*
  * @class BlastFormat
@@ -389,6 +411,8 @@ enum class BlastFormatGeneration : uint8_t
 // qHasRevComp()
 // ----------------------------------------------------------------------------
 
+//TODO dox and tests
+
 constexpr bool
 qHasRevComp(BlastProgram const p)
 {
@@ -401,42 +425,22 @@ template <BlastProgram p>
 constexpr bool
 qHasRevComp(BlastProgramTag<p> const &)
 {
-    return ((p==BlastProgram::BLASTP) || (p==BlastProgram::TBLASTN))
-            ? false
-            : true;
+    return qHasRevComp(p);
 }
 
 template <BlastProgram p>
 constexpr bool
 qHasRevComp(BlastProgram const, BlastProgramTag<p> const &)
 {
-    return ((p==BlastProgram::BLASTP) || (p==BlastProgram::TBLASTN))
-            ? false
-            : true;
+    return qHasRevComp(p);
 }
 
-// not known at compile-time
-inline bool
+// this will be picked for run-time detection
+constexpr bool
 qHasRevComp(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
 {
-    return ((_p==BlastProgram::BLASTP) || (_p==BlastProgram::TBLASTN))
-            ? false
-            : true;
+    return qHasRevComp(_p);;
 }
-
-// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
-// constexpr bool
-// qHasRevComp(BlastFormat<f,p,g> const & /**/)
-// {
-//     return ((p==BlastProgram::BLASTP) || (p==BlastProgram::TBLASTN))
-//             ? false
-//             : true;
-// }
-//
-// template <typename TFormat>
-// using QHasRevComp = typename std::conditional<qHasRevComp(TFormat()),
-//                                               True,
-//                                               False>::type;
 
 // ----------------------------------------------------------------------------
 // qIsTranslated()
@@ -450,19 +454,26 @@ qIsTranslated(BlastProgram const p)
             : false;
 }
 
-// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
-// constexpr bool
-// qIsTranslated(BlastFormat<f,p,g> const & /**/)
-// {
-//     return ((p==BlastProgram::BLASTX) || (p==BlastProgram::TBLASTX))
-//             ? true
-//             : false;
-// }
-//
-// template <typename TFormat>
-// using QIsTranslated = typename std::conditional<qIsTranslated(TFormat()),
-//                                              True,
-//                                              False>::type;
+template <BlastProgram p>
+constexpr bool
+qIsTranslated(BlastProgramTag<p> const &)
+{
+    return qIsTranslated(p);
+}
+
+template <BlastProgram p>
+constexpr bool
+qIsTranslated(BlastProgram const, BlastProgramTag<p> const &)
+{
+    return qIsTranslated(p);
+}
+
+// this will be picked for run-time detection
+constexpr bool
+qIsTranslated(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
+{
+    return qIsTranslated(_p);;
+}
 
 // ----------------------------------------------------------------------------
 // qNumFrames()
@@ -479,6 +490,27 @@ qNumFrames(BlastProgram p)
                 : 1));
 }
 
+template <BlastProgram p>
+constexpr bool
+qNumFrames(BlastProgramTag<p> const &)
+{
+    return qNumFrames(p);
+}
+
+template <BlastProgram p>
+constexpr bool
+qNumFrames(BlastProgram const, BlastProgramTag<p> const &)
+{
+    return qNumFrames(p);
+}
+
+// this will be picked for run-time detection
+constexpr bool
+qNumFrames(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
+{
+    return qNumFrames(_p);;
+}
+
 // ----------------------------------------------------------------------------
 // sHasRevComp()
 // ----------------------------------------------------------------------------
@@ -493,20 +525,26 @@ sHasRevComp(BlastProgram const p)
             : false;
 }
 
-// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
-// constexpr bool
-// sHasRevComp(BlastFormat<f,p,g> const & /**/)
-// {
-//     return ((p==BlastProgram::TBLASTX) ||
-//             (p==BlastProgram::TBLASTN))
-//             ? true
-//             : false;
-// }
-//
-// template <typename TFormat>
-// using SHasRevComp = typename std::conditional<sHasRevComp(TFormat()),
-//                                               True,
-//                                               False>::type;
+template <BlastProgram p>
+constexpr bool
+sHasRevComp(BlastProgramTag<p> const &)
+{
+    return sHasRevComp(p);
+}
+
+template <BlastProgram p>
+constexpr bool
+sHasRevComp(BlastProgram const, BlastProgramTag<p> const &)
+{
+    return sHasRevComp(p);
+}
+
+// this will be picked for run-time detection
+constexpr bool
+sHasRevComp(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
+{
+    return sHasRevComp(_p);;
+}
 
 // ----------------------------------------------------------------------------
 // sIsTranslated()
@@ -521,20 +559,26 @@ sIsTranslated(BlastProgram const p)
             : false;
 }
 
-// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
-// constexpr bool
-// sIsTranslated(BlastFormat<f,p,g> const & /**/)
-// {
-//     return ((p==BlastProgram::TBLASTX) ||
-//             (p==BlastProgram::TBLASTN))
-//             ? true
-//             : false;
-// }
-//
-// template <typename TFormat>
-// using SIsTranslated = typename std::conditional<sHasRevComp(TFormat()),
-//                                              True,
-//                                              False>::type;
+template <BlastProgram p>
+constexpr bool
+sIsTranslated(BlastProgramTag<p> const &)
+{
+    return sIsTranslated(p);
+}
+
+template <BlastProgram p>
+constexpr bool
+sIsTranslated(BlastProgram const, BlastProgramTag<p> const &)
+{
+    return sIsTranslated(p);
+}
+
+// this will be picked for run-time detection
+constexpr bool
+sIsTranslated(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
+{
+    return sIsTranslated(_p);;
+}
 
 // ----------------------------------------------------------------------------
 // sNumFrames()
@@ -549,6 +593,27 @@ sNumFrames(BlastProgram p)
             : (sHasRevComp(p)
                 ? 2
                 : 1));
+}
+
+template <BlastProgram p>
+constexpr bool
+sNumFrames(BlastProgramTag<p> const &)
+{
+    return sNumFrames(p);
+}
+
+template <BlastProgram p>
+constexpr bool
+sNumFrames(BlastProgram const, BlastProgramTag<p> const &)
+{
+    return sNumFrames(p);
+}
+
+// this will be picked for run-time detection
+constexpr bool
+sNumFrames(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
+{
+    return sNumFrames(_p);;
 }
 
 // ----------------------------------------------------------------------------
@@ -653,6 +718,7 @@ sNumFrames(BlastProgram p)
 
 /*!
  * @defgroup BlastScoringScheme
+ * @headerfile seqan/blast.h
  * @brief functions for converting to and from Blast's scoring-scheme behaviour
  *
  * Blast (and many other tools) compute scores of a stretch of gaps as
