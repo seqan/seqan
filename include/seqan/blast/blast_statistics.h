@@ -91,7 +91,7 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
 /// GENERIC
-template <typename TScore, typename TSpec = void>
+template <typename TScore, typename TSpec>
 struct BlastScoringAdapter;
 
 // ============================================================================
@@ -560,8 +560,7 @@ getScoreScheme(BlastScoringAdapter<TScoringScheme> const & adapter)
 
 template <typename TMatrixSpec>
 inline double
-getLambda(BlastScoringAdapter<Score<int, ScoreMatrix<
-            AminoAcid, TMatrixSpec>>> const & adapter)
+getLambda(BlastScoringAdapter<Score<int, ScoreMatrix<AminoAcid, TMatrixSpec>>> const & adapter)
 {
     typedef BlastScoringAdapter<Score<int,
         ScoreMatrix< AminoAcid, TMatrixSpec>>> TAdapter;
@@ -590,8 +589,7 @@ getLambda(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 
 template <typename TMatrixSpec>
 inline double
-getKappa(BlastScoringAdapter<Score<int, ScoreMatrix<
-            AminoAcid, TMatrixSpec> > > const & adapter)
+getKappa(BlastScoringAdapter<Score<int, ScoreMatrix<AminoAcid, TMatrixSpec> > > const & adapter)
 {
     typedef BlastScoringAdapter<Score<int,
         ScoreMatrix< AminoAcid, TMatrixSpec>>> TAdapter;
@@ -620,8 +618,7 @@ getKappa(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 
 template <typename TMatrixSpec>
 inline double
-getH(BlastScoringAdapter<Score<int, ScoreMatrix<
-            AminoAcid, TMatrixSpec> > > const & adapter)
+getH(BlastScoringAdapter<Score<int, ScoreMatrix<AminoAcid, TMatrixSpec> > > const & adapter)
 {
     typedef BlastScoringAdapter<Score<int,
         ScoreMatrix< AminoAcid, TMatrixSpec>>> TAdapter;
@@ -650,8 +647,7 @@ getH(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 
 template <typename TMatrixSpec>
 inline double
-getAlpha(BlastScoringAdapter<Score<int, ScoreMatrix<
-            AminoAcid, TMatrixSpec> > > const & adapter)
+getAlpha(BlastScoringAdapter<Score<int, ScoreMatrix<AminoAcid, TMatrixSpec> > > const & adapter)
 {
     typedef BlastScoringAdapter<Score<int,
         ScoreMatrix< AminoAcid, TMatrixSpec>>> TAdapter;
@@ -680,8 +676,7 @@ getAlpha(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 
 template <typename TMatrixSpec>
 inline double
-getBeta(BlastScoringAdapter<Score<int, ScoreMatrix<
-            AminoAcid, TMatrixSpec> > > const & adapter)
+getBeta(BlastScoringAdapter<Score<int, ScoreMatrix<AminoAcid, TMatrixSpec> > > const & adapter)
 {
     typedef BlastScoringAdapter<Score<int,
         ScoreMatrix< AminoAcid, TMatrixSpec>>> TAdapter;
@@ -782,13 +777,14 @@ _lengthAdjustment(TSize     const & dbLength,
 }
 
 // ----------------------------------------------------------------------------
-// Function calcStatsAndScore
+// Function computeAlignmentStats
 // ----------------------------------------------------------------------------
 
-/*!
- * @fn BlastFormat#calcStatsAndScore
+//TODO replace by computeAlignmentStats in library
+/*
+ * @fn computeAlignmentStats
  * @headerfile seqan/blast.h>
- * @signature calcStatsAndScore(score, length, num_identities, num_positives, num_mismatches, num_gaps, num_gap_opens, row0, row1, scoreScheme)
+ * @signature computeAlignmentStats(score, length, num_identities, num_positives, num_mismatches, num_gaps, num_gap_opens, row0, row1, scoreScheme)
  * @brief calculate a basic score and some statistics from a given alignment and scoring scheme
  *
  * @param[out]  score           the raw score (unnormalized) [long]
@@ -803,93 +799,88 @@ _lengthAdjustment(TSize     const & dbLength,
  * @param[in]   scoreScheme     SeqAn scoring scheme
  *
  * When organising your data in @link BlastMatch @endlinkes, a more convenient
- * interface is available: @link BlastMatch#calcStatsAndScore @endlink
+ * interface is available: @link BlastMatch#computeAlignmentStats @endlink
  *
  * @headerfile seqan/blast.h
  */
 
-template <typename TScoreValue,
-          typename TPos,
-          typename TScore,
-          typename TRow>
-inline
-void calcStatsAndScore(TScoreValue       & sc,
-                       TPos              & ali_length,
-                       TPos              & identities,
-                       TPos              & positives,
-                       TPos              & mismatches,
-                       TPos              & gaps,
-                       TPos              & gap_openings,
-                       TRow        const & row0,
-                       TRow        const & row1,
-                       TScore      const & scoringScheme)
-{
-    SEQAN_ASSERT_EQ(length(row0),length(row1));
-
-    ali_length = length(row0);
-
-    for (uint i = 0; i < ali_length; ++i)
-    {
-        long int lsc = 0;
-        if ( (isGap(row0, i)) || (isGap(row1, i)) )
-        {
-            if ((i==0) ||
-                (isGap(row0, i-1) != isGap(row0, i)) ||
-                (isGap(row1, i-1) != isGap(row1, i)) )
-            {
-                lsc = scoreGapOpen(scoringScheme);
-                gap_openings++;
-            } else
-                lsc += scoreGapExtend(scoringScheme);
-            gaps++;
-        } else
-        {
-            lsc = score(scoringScheme, value(row0, i), value(row1, i));
-
-            if (lsc > 0)
-                positives++;
-
-            if (getValue(row0, i) == getValue(row1, i))
-                identities++;
-        }
-        sc += lsc;
-    }
-
-    mismatches = ali_length - gaps - identities;
-}
+// template <typename TScoreValue,
+//           typename TPos,
+//           typename TScore,
+//           typename TRow>
+// inline
+// void computeAlignmentStats(TScoreValue       & sc,
+//                        TPos              & ali_length,
+//                        TPos              & identities,
+//                        TPos              & positives,
+//                        TPos              & mismatches,
+//                        TPos              & gaps,
+//                        TPos              & gap_openings,
+//                        TRow        const & row0,
+//                        TRow        const & row1,
+//                        TScore      const & scoringScheme)
+// {
+//     SEQAN_ASSERT_EQ(length(row0),length(row1));
+//
+//     ali_length = length(row0);
+//
+//     for (uint i = 0; i < ali_length; ++i)
+//     {
+//         long int lsc = 0;
+//         if ( (isGap(row0, i)) || (isGap(row1, i)) )
+//         {
+//             if ((i==0) ||
+//                 (isGap(row0, i-1) != isGap(row0, i)) ||
+//                 (isGap(row1, i-1) != isGap(row1, i)) )
+//             {
+//                 lsc = scoreGapOpen(scoringScheme);
+//                 gap_openings++;
+//             } else
+//                 lsc += scoreGapExtend(scoringScheme);
+//             gaps++;
+//         } else
+//         {
+//             lsc = score(scoringScheme, value(row0, i), value(row1, i));
+//
+//             if (lsc > 0)
+//                 positives++;
+//
+//             if (getValue(row0, i) == getValue(row1, i))
+//                 identities++;
+//         }
+//         sc += lsc;
+//     }
+//
+//     mismatches = ali_length - gaps - identities;
+// }
 
 /*!
- * @fn BlastMatch#calcStatsAndScore
+ * @fn BlastMatch#computeAlignmentStats
  * @headerfile seqan/blast.h>
- * @brief calculate a basic score and some statistics for a @link BlastMatch @endlink
- * @signature calcStatsAndScore(blastMatch, scoreScheme);
+ * @brief ina @link BlastMatch @endlink compute the alignStats member from the align member
+ * @signature computeAlignmentStats(blastMatch, context);
  *
  * @param[in,out]   blastMatch  A @link BlastMatch @endlink that has a valid align member.
- * @param[in]   scoreScheme     SeqAn scoring scheme
+ * @param[in]       context     A @link BlastIOContext @endlink with parameters and buffers.
  *
- * The @link BlastMatch::align @endlink member is used as in-parameter to compute
- * most other members of , including the raw score, amount of gaps, mismatches et 
- * cetera.
- *
- * If you are not using @link BlastMatch @endlinkes, you can use this interface
- * instead: @link BlastFormat#calcStatsAndScore @endlink
+ * The @link BlastMatch::align @endlink member is used as in-parameter to compute the
+ * @link BlastMatch::alignStats @endlink member which is of type @link AlignmentStats @endlink. This includes the raw
+ * score, amount of gaps, mismatches et cetera. This is a prerequisite for print match to file or computing it's
+ * e-value.
  */
 
-template <typename TBlastMatch, typename TScore>
-inline
-void calcStatsAndScore(TBlastMatch      & match,
-                       TScore     const & scoringScheme)
+template <typename TBlastMatch,
+          typename TScore,
+          typename TConString,
+          BlastProgram p,
+          BlastTabularSpec h>
+inline void
+computeAlignmentStats(TBlastMatch & match,
+                      BlastIOContext<TScore, TConString, p, h> const & context)
 {
-    calcStatsAndScore(match.score,
-                      match.aliLength,
-                      match.identities,
-                      match.positives,
-                      match.mismatches,
-                      match.gaps,
-                      match.gapOpenings,
-                      row(match.align, 0),
-                      row(match.align, 1),
-                      scoringScheme);
+    computeAlignmentStats(match.alignStats,
+                          match.align,
+                          context.scoringAdapater.scoringScheme);
 }
 
 #define LOGTWO 0.693147180
@@ -920,42 +911,21 @@ calcEValue(double                      const   rawScore,
 
 template <typename TScore>
 inline void
-_calcBitScoreAndEValue(double                            & bitScore,
-                       double                            & eValue,
-                       long                        const & rawScore,
-                       unsigned long long          const & lengthDb,
-                       unsigned long               const & lengthQry,
+_calcBitScoreAndEValue(double & bitScore,
+                       double & eValue,
+                       int32_t rawScore,
+                       uint64_t const adjustedLengthDb,
+                       uint64_t const adjustedLengthQry,
                        BlastScoringAdapter<TScore> const & adapter)
 {
-    bitScore = calcBitScore(rawScore, adapter);
+    typedef BlastScoringAdapter<TScore> TAdapter;
 
-    const unsigned long long lengthAdj = _lengthAdjustment(lengthDb,
-                                                           lengthQry,
-                                                           adapter);
-
-    const double m = lengthDb - lengthAdj;
-    const double n = lengthQry - lengthAdj;
-
-    eValue = calcEValue(rawScore, m, n, adapter);
-}
-
-inline void
-calcBitScoreAndEValue(double                    & bitScore,
-                      double                    & eValue,
-                      long                const & sc,
-                      unsigned long long  const & lengthDb,
-                      unsigned long       const & lengthQry,
-                      BlastScoringAdapter<Score<int, Simple>> const & adapter)
-{
-    typedef BlastScoringAdapter<Score<int, Simple>> TAdapter;
-    long mysc = sc;
     // for some parameters the score has to "rounded down" to being even
-    if (TAdapter::karlinAltschulValues[adapter.index][10])
-        if ((mysc % 2) != 0)
-            mysc -= 1;
+    if ((TAdapter::nParams >= 11) && (TAdapter::karlinAltschulValues[adapter.index][10]))
+        --rawScore;
 
-    return _calcBitScoreAndEValue(bitScore, eValue, mysc, lengthDb, lengthQry,
-                                  adapter);
+    bitScore = calcBitScore(rawScore, adapter);
+    eValue = calcEValue(rawScore, adjustedLengthDb, adjustedLengthQry, adapter);
 }
 
 /*!
@@ -963,30 +933,38 @@ calcBitScoreAndEValue(double                    & bitScore,
  * @signature calcBitScoreAndEValue(blastMatch, blastDbSpecs, blastScoringAdapter)
  * @headerfile seqan/blast.h
  * @brief calculate the bits score and the E-Value in a @link BlastMatch @endlink
- * 
+ *
  * @param[in,out]   blastMatch  A @link BlastMatch @endlink that has a valid align member.
- * @param[in]   blastDbSpecs The @link BlastDbSpecs @endlink
- * @param[in]   blastScoringAdapter ScoringScheme and Karlin-Altschul statistical parameters
+ * @param[in,out]   context     A @link BlastIOContext @endlink with parameters and buffers.
  *
- * The will compute the bit-score and e-value for a @link BlastMatch @endlink .
- * Make sure that it's @link BlastMatch::score @endlink
- * is already computed (e.g. by @link BlastMatch#calcStatsAndScore @endlink) and
- * that @link BlastMatch::qLength @endlink is set (this has to be set manually
- * by you!).
- *
- * If you are not using @link BlastMatch @endlinkes, you can use this interface
- * instead: @link BlastFormat#calcBitScoreAndEValue @endlink
- * @see         BlastFormat
+ * The will compute the bit-score and e-value for a @link BlastMatch @endlink.
+ * Make sure that at least the @link AlignmentStats::alignmentScore @endlink member of
+ * blastMatch.@link BlastMatch::alignStats @endlink is set. You can do this, e.g. by calling
+ * @link BlastMatch#computeAlignmentStats @endlink on it. You must also make sure to set
+ * @link BlastMatch::qLength @endlink and @link BlastIOCOntext::dbTotalLength @endlink before calling this function.
  */
 
-template <typename TBlastMatch, typename TDbSpecs, typename TScore>
+template <typename TBlastMatch,
+          typename TScore,
+          typename TConString,
+          BlastProgram p,
+          BlastTabularSpec h>
 inline void
-calcBitScoreAndEValue(TBlastMatch                       & match,
-                      TDbSpecs                    const & dbSpecs,
-                      BlastScoringAdapter<TScore> const & adapter)
+calcBitScoreAndEValue(TBlastMatch & match,
+                      BlastIOContext<TScore, TConString, p, h> const & context)
 {
-    return _calcBitScoreAndEValue(match.bitScore, match.eValue, match.score,
-                                  dbSpecs.dbTotalLength, match.qLength, adapter);
+    // length adjustment not yet computed
+    if (context.cachedLengthAdjustments.find(match.qLength) == context.cachedLengthAdjustments.end())
+        context.cachedLengthAdjustments[match.qLength] = _lengthAdjustment(context.dbTotalLength,
+                                                                           context.qLength,
+                                                                           context.scoringAdapter);
+    uint64_t lengthAdj = context.cachedLengthAdjustments[match.qLength];
+    _calcBitScoreAndEValue(match.bitScore,
+                           match.eValue,
+                           match.alignStats.score,
+                           static_cast<uint64_t>(context.dbTotalLength - lengthAdj),
+                           static_cast<uint64_t>(context.qLength - lengthAdj),
+                           context.scoringAdapter);
 }
 
 /*!
@@ -1010,17 +988,21 @@ calcBitScoreAndEValue(TBlastMatch                       & match,
 
 template <typename TScore>
 inline void
-calcBitScoreAndEValue(double                            & bitScore,
-                      double                            & eValue,
-                      long                        const & sc,
-                      unsigned long long          const & lengthDb,
-                      unsigned long               const & lengthQry,
+calcBitScoreAndEValue(double & bitScore,
+                      double & eValue,
+                      int32_t const rawScore,
+                      uint64_t const lengthDb,
+                      uint64_t const lengthQry,
                       BlastScoringAdapter<TScore> const & adapter)
 {
-    return _calcBitScoreAndEValue(bitScore, eValue, sc, lengthDb, lengthQry,
-                                  adapter);
+    uint64_t const lengthAdj = _lengthAdjustment(lengthDb, lengthQry, adapter);
+    _calcBitScoreAndEValue(bitScore,
+                           eValue,
+                           rawScore,
+                           static_cast<uint64_t>(lengthDb - lengthAdj),
+                           static_cast<uint64_t>(lengthQry - lengthAdj),
+                           adapter);
 }
-
 
 }
 

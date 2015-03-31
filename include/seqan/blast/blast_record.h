@@ -88,7 +88,7 @@ namespace seqan
  * @var TPos BlastMatch::sLength;
  * @brief length of the subject sequence
  *
- * @var TPos BlastMatch::aliLength;
+ * @var TPos BlastMatch::alignLength;
  * @brief length of the alignment
  *
  * @var TPos BlastMatch::identities;
@@ -145,8 +145,6 @@ struct BlastMatch
     TQId            qId;
     TSId            sId;
 
-    long            score         = 0;
-
     TPos            qStart        = 0;
     TPos            qEnd          = 0;
     TPos            sStart        = 0;
@@ -154,20 +152,22 @@ struct BlastMatch
 
     TPos            qLength       = 0;
     TPos            sLength       = 0;
-
-    TPos            aliLength     = 0;
-    TPos            identities    = 0;
-    TPos            positives     = 0;
-    TPos            mismatches    = 0;
-    TPos            gaps          = 0;
-    TPos            gapOpenings   = 0;
-
-    double          eValue        = 0;
-    double          bitScore      = 0;
+    TPos            alignLength   = 0;
 
     int8_t          qFrameShift   = 1;
     int8_t          sFrameShift   = 1;
 
+//     int32_t         score         = 0;
+//     TPos            identities    = 0;
+//     TPos            positives     = 0;
+//     TPos            mismatches    = 0;
+//     TPos            gaps          = 0;
+//     TPos            gapOpenings   = 0;
+
+    double          eValue        = 0;
+    double          bitScore      = 0;
+
+    AlignmentStats  alignStats;
     TAlign          align;
 
     BlastMatch() :
@@ -196,13 +196,14 @@ struct BlastMatch
 //                         align,
                         qFrameShift,
                         sFrameShift,
-                        score,
-                        aliLength,
-                        identities,
-                        positives,
-                        mismatches,
-                        gaps,
-                        gapOpenings
+//                         score,
+                        alignLength,
+                        alignStats
+//                         identities,
+//                         positives,
+//                         mismatches,
+//                         gaps,
+//                         gapOpenings
 // scores have rounding errors
 //                         eValue,
 //                         bitScore
@@ -218,13 +219,14 @@ struct BlastMatch
                         bm2.qFrameShift,
                         bm2.sFrameShift,
 //                         bm2.align,
-                        bm2.score,
-                        bm2.aliLength,
-                        bm2.identities,
-                        bm2.positives,
-                        bm2.mismatches,
-                        bm2.gaps,
-                        bm2.gapOpenings
+//                         bm2.score,
+                        bm2.alignLength,
+                        bm2.alignStats
+//                         bm2.identities,
+//                         bm2.positives,
+//                         bm2.mismatches,
+//                         bm2.gaps,
+//                         bm2.gapOpenings
 // scores have rounding errors
 //                         bm2.eValue,
 //                         bm2.bitScore
@@ -245,24 +247,25 @@ struct BlastMatch
         clear(qId);
         clear(sId);
 
-        score         = 0;
+//         score         = 0;
         qStart        = 0;
         qEnd          = 0;
         sStart        = 0;
         sEnd          = 0;
         qLength       = 0;
         sLength       = 0;
-        aliLength     = 0;
-        identities    = 0;
-        positives     = 0;
-        mismatches    = 0;
-        gaps          = 0;
-        gapOpenings   = 0;
+        alignLength   = 0;
+//         identities    = 0;
+//         positives     = 0;
+//         mismatches    = 0;
+//         gaps          = 0;
+//         gapOpenings   = 0;
+
         eValue        = 0;
         bitScore      = 0;
         qFrameShift   = 1;
         sFrameShift   = 1;
-
+        clear(alignStats);
         clear(align.data_rows);
     }
 
@@ -271,7 +274,7 @@ struct BlastMatch
         qId           = "not init";
         sId           = "not init";
 
-        score         = std::numeric_limits<long>::max();
+//         score         = std::numeric_limits<long>::max();
 
         qStart        = std::numeric_limits<TPos>::max();
         qEnd          = std::numeric_limits<TPos>::max();
@@ -281,18 +284,30 @@ struct BlastMatch
         qLength       = std::numeric_limits<TPos>::max();
         sLength       = std::numeric_limits<TPos>::max();
 
-        aliLength     = std::numeric_limits<TPos>::max();
-        identities    = std::numeric_limits<TPos>::max();
-        positives     = std::numeric_limits<TPos>::max();
-        mismatches    = std::numeric_limits<TPos>::max();
-        gaps          = std::numeric_limits<TPos>::max();
-        gapOpenings   = std::numeric_limits<TPos>::max();
+        alignLength   = std::numeric_limits<TPos>::max();
+//         identities    = std::numeric_limits<TPos>::max();
+//         positives     = std::numeric_limits<TPos>::max();
+//         mismatches    = std::numeric_limits<TPos>::max();
+//         gaps          = std::numeric_limits<TPos>::max();
+//         gapOpenings   = std::numeric_limits<TPos>::max();
 
         eValue        = std::numeric_limits<double>::max();
         bitScore      = std::numeric_limits<double>::max();
 
         qFrameShift   = std::numeric_limits<int8_t>::max();
         sFrameShift   = std::numeric_limits<int8_t>::max();
+
+        alignStats.numGapOpens          = std::numeric_limits<unsigned>::max();
+        alignStats.numGapExtensions     = std::numeric_limits<unsigned>::max();
+        alignStats.numInsertions        = std::numeric_limits<unsigned>::max();
+        alignStats.numDeletions         = std::numeric_limits<unsigned>::max();
+        alignStats.numMatches           = std::numeric_limits<unsigned>::max();
+        alignStats.numMismatches        = std::numeric_limits<unsigned>::max();
+        alignStats.numPositiveScores    = std::numeric_limits<unsigned>::max();
+        alignStats.numNegativeScores    = std::numeric_limits<unsigned>::max();
+        alignStats.alignmentSimilarity  = std::numeric_limits<float>::max();
+        alignStats.alignmentIdentity    = std::numeric_limits<float>::max();
+        alignStats.alignmentScore       = std::numeric_limits<unsigned>::max();
     }
 };
 
@@ -382,7 +397,7 @@ clear(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord)
     clear(blastRecord.matches);
 }
 
-/*!
+/*
  * @class BlastDbSpecs
  * @headerfile <seqan/blast.h>
  * @signature struct BlastRecord<TDbName> { ... };
@@ -400,40 +415,40 @@ clear(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord)
  * @brief number of sequences in the database
  */
 
-template <typename TDbName = std::string>
-struct BlastDbSpecs
-{
-    TDbName         dbName;
-    uint64_t        dbTotalLength;
-    uint32_t        dbNumberOfSeqs;
-
-    BlastDbSpecs() :
-        dbName(), dbTotalLength(0), dbNumberOfSeqs(0)
-    {}
-
-    BlastDbSpecs(TDbName const & _dbName) :
-        dbName(_dbName), dbTotalLength(0), dbNumberOfSeqs(0)
-    {}
-
-    BlastDbSpecs(TDbName && _dbName) :
-        dbName(std::move(_dbName)), dbTotalLength(0), dbNumberOfSeqs(0)
-    {}
-
-    inline void clear()
-    {
-//         clear(dbName);
-        dbName.clear(); // TODO fix this
-        dbTotalLength = 0;
-        dbNumberOfSeqs = 0;
-    }
-};
-
-template <typename TDbName>
-inline void
-clear(BlastDbSpecs<TDbName> & dbSpecs)
-{
-    dbSpecs.clear();
-}
+// template <typename TDbName = std::string>
+// struct BlastDbSpecs
+// {
+//     TDbName         dbName;
+//     uint64_t        dbTotalLength;
+//     uint32_t        dbNumberOfSeqs;
+//
+//     BlastDbSpecs() :
+//         dbName(), dbTotalLength(0), dbNumberOfSeqs(0)
+//     {}
+//
+//     BlastDbSpecs(TDbName const & _dbName) :
+//         dbName(_dbName), dbTotalLength(0), dbNumberOfSeqs(0)
+//     {}
+//
+//     BlastDbSpecs(TDbName && _dbName) :
+//         dbName(std::move(_dbName)), dbTotalLength(0), dbNumberOfSeqs(0)
+//     {}
+//
+//     inline void clear()
+//     {
+// //         clear(dbName);
+//         dbName.clear(); // TODO fix this
+//         dbTotalLength = 0;
+//         dbNumberOfSeqs = 0;
+//     }
+// };
+//
+// template <typename TDbName>
+// inline void
+// clear(BlastDbSpecs<TDbName> & dbSpecs)
+// {
+//     dbSpecs.clear();
+// }
 
 }
 

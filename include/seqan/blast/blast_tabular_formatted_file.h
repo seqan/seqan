@@ -48,11 +48,6 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-struct BlastTabular_;
-typedef Tag<BlastTabular_> BlastTabular;
-
-
-
 // ----------------------------------------------------------------------------
 // Type BlastFileIn
 // ----------------------------------------------------------------------------
@@ -75,60 +70,7 @@ typedef Tag<BlastTabular_> BlastTabular;
 
 typedef FormattedFile<BlastTabular, Input> BlastTabularIn;
 
-// ----------------------------------------------------------------------------
-// Type BlastFileOut
-// ----------------------------------------------------------------------------
-
-/*!
- * @class BlastTabularFileOut
- * @signature typedef FormattedFile<BlastTabular, Output> BlastTabularOut;
- * @extends FormattedFileOut
- * @headerfile <seqan/blast.h>
- * @brief FormattedFileOut abstraction for a subset of BlastFormats
- *
- * @remarks
- *
- * This is a FormattedFile abstraction of the BlastIO module. It is the
- * interface most basic (and easy to use), but it is slightly slower than other
- * interfaces and supports less features. See @link BlastFormat @endlink
- * for possibilities to write Blast compatible files with more fine-grained
- * control.
- *
- * The subset of @link BlastFormat @endlinks supported are those that
- * have @link BlastFormatFile @endlink == ::TABULAR or
- * ::TABULAR_WITH_HEADER and @link BlastFormatGeneration @endlink ==
- * ::BLAST_PLUS.
- *
- * It only contains the @link FormattedFileOut#writeRecord @endlink
- * function (@link FormattedFileOut#writeHeader @endlink is a NOOP).
- * Before calling it, make sure that the database name inside the context
- * is set (see below).
- *
- * @example
- * @code{.cpp}
- * BlastTabularOut out("/tmp/example.blast");
- *
- * context(out).dbSpecs.dbName = "Legendary Nucleotide Database";
- *
- * BlastRecord<> r;
- * r.qId = "FIRSTREAD abcdefg";
- *
- * for (...)
- * {
- *     BlastMatch<> m;
- *
- *     // "fill" the match object
- *
- *     appendValue(r.matches, m);
- * }
- *
- * writeRecord(out, r);
- * @endcode
- *
- * @see BlastRecord
- */
-
-typedef FormattedFile<BlastTabular, Output> BlastTabularOut;
+/
 
 // ============================================================================
 // Typedefs
@@ -161,12 +103,6 @@ inline bool guessFormat(FormattedFile<BlastTabular, Input, TSpec> & file)
                               BlastFormatProgram::BLASTN,
                               BlastFormatGeneration::BLAST_PLUS>());
     // Always BLASTN, but doesn't matter for reading
-    return true;
-}
-
-template <typename TSpec>
-inline bool guessFormat(FormattedFile<BlastTabular, Output, TSpec> &)
-{
     return true;
 }
 

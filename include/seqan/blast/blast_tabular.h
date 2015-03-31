@@ -48,13 +48,49 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-// TODO dox
+/*!
+ * @tag BlastTabular
+ * @signature typedef Tag<BlastTabular_> BlastTabular;
+ * @headerfile <seqan/blast.h>
+ * @brief Support for Blast Tabular file formats (with and without headers)
+ *
+ * This tag is part of the support for reading and writing NCBI Blast compatible <b>tabular</b> files, both with and
+ * without headers. These are the formats that are available in legacy Blast (<tt>blastall</tt> executable) with the
+ * parameters <tt>-m 8</tt> and <tt>-m 9</tt> (with headers) and in BLAST+ (<tt>blastx</tt>, <tt>blastn</tt>...) with
+ * the parameters <tt>-outfmt 6</tt> and <tt>-outfmt 7</tt> respectively.
+ *
+ * See @link BlastTabularOut @endlink for the file-writing support and @link BlastTabularIn @endlink for the
+ * file-reading support. Please consult the documentation for @link BlastIOContext @endlink to understand the different
+ * options you have with these formats.
+ *
+ * For very basic BlastOutput support there is also @link BlastTabular#writeMatch @endlink which comes without support
+ * for header and correction for positions, but does not require elaborate data structures.
+ *
+ * SeqAn also supports writing the default blast output format, see @link BlastReport @endlink.
+ */
 struct BlastTabular_;
 typedef Tag<BlastTabular_> BlastTabular;
 
 
-//TODO dox
+/*!
+ * @defgroup BlastTabularSpec
+ * @headerfile <seqan/blast.h>
+ */
 
+/*!
+ * @enum BlastTabularSpec#BlastTabularSpec
+ * @signature enum class BlastTabularSpec : uint8_t { ... };
+ * @brief Spec for @link BlastIOContext @endlink
+ *
+ * @val BlastTabularSpec::NO_HEADER
+ * @brief Tabular format without header
+ *
+ * @val BlastTabularSpec::HEADER
+ * @brief Tabular format with header
+ *
+ * @val BlastTabularSpec::UNKNOWN
+ * @brief not defined or not known
+ */
 enum class BlastTabularSpec : uint8_t
 {
     NO_HEADER = 0,
@@ -62,13 +98,26 @@ enum class BlastTabularSpec : uint8_t
     UNKNOWN = 255,
 };
 
+/*!
+ * @typedef BlastTabularSpec#BlastTabularSpecTag
+ * @signature template <BlastTabularSpec h>
+ * using BlastTabularSpecTag = std::integral_constant<BlastTabularSpec, h>;
+ * @brief Templated typedef to get typed from @link BlastTabularSpec#BlastTabularSpec @endlink
+ */
 template <BlastTabularSpec h>
 using BlastTabularSpecTag = std::integral_constant<BlastTabularSpec, h>;
 
-typedef BlastTabularSpecTag<BlastTabularSpec::UNKNOWN>    BlastTabularSpecTagUnkown;
-typedef BlastTabularSpecTag<BlastTabularSpec::NO_HEADER>  BlastTabularSpecTagNoHeader;
+/*!
+  * @typedef BlastTabularSpec#BlastTabularSpecTagHeader
+ * @signature typedef BlastTabularSpecTag<BlastTabularSpec::HEADER> BlastTabularSpecTagHeader;
+ * @typedef BlastTabularSpec#BlastTabularSpecTagNoHeader
+ * @signature typedef BlastTabularSpecTag<BlastTabularSpec::NO_HEADER> BlastTabularSpecTagNoHeader;
+ * @typedef BlastTabularSpec#BlastTabularSpecTagUnkown
+ * @signature typedef BlastTabularSpecTag<BlastTabularSpec::UNKNOWN> BlastTabularSpecTagUnkown;
+ */
 typedef BlastTabularSpecTag<BlastTabularSpec::HEADER>     BlastTabularSpecTagHeader;
-
+typedef BlastTabularSpecTag<BlastTabularSpec::NO_HEADER>  BlastTabularSpecTagNoHeader;
+typedef BlastTabularSpecTag<BlastTabularSpec::UNKNOWN>    BlastTabularSpecTagUnkown;
 
 // ----------------------------------------------------------------------------
 // Class MagicHeader
@@ -103,10 +152,10 @@ constexpr char const * FileExtensions<BlastTabular, T>::VALUE[5];
 // Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TDirection, typename TStorageSpec>
-struct FormattedFileContext<FormattedFile<BlastTabular, TDirection, TSpec>, TStorageSpec>
+template <typename TContext, typename TDirection, typename TStorageSpec>
+struct FormattedFileContext<FormattedFile<BlastTabular, TDirection, TContext>, TStorageSpec>
 {
-    typedef BlastIOContext Type;
+    typedef TContext Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -130,7 +179,7 @@ struct FileFormat<FormattedFile<BlastTabular, TDirection, TSpec> >
  * @headerfile seqan/blast.h
  *
  * @signature template <typename TVoidSpec = void> struct BlastMatchField;
- * @tparam TVoidSpec    An extra spec to prevent global inclusion (you can safely ignore this)
+ * @tparam TVoidSpec An extra spec to prevent global inclusion of statics members (you can safely ignore this)
  *
  * This data structure conveniently gives access to all possible fields used in
  * BLAST-compatabile tabular output formats. @link BlastMatchField::Enum @endlink is needed to
@@ -199,8 +248,8 @@ struct FileFormat<FormattedFile<BlastTabular, TDirection, TSpec> >
  */
 
 
-template <typename TVoidSpec>
-struct BlastMatchField<TVoidSpec>
+template <typename TVoidSpec = void>
+struct BlastMatchField
 {
     /*!
      * @enum BlastMatchField::Enum
@@ -303,22 +352,7 @@ struct BlastMatchField<TVoidSpec>
     };
 
     // used for reacordReading
-    static std::vector<Enum const> _defaultsMinusFirst
-    {
-        {
-            Enum::S_SEQ_ID,
-            Enum::P_IDENT,
-            Enum::LENGTH,
-            Enum::MISMATCH,
-            Enum::GAP_OPEN,
-            Enum::Q_START,
-            Enum::Q_END,
-            Enum::S_START,
-            Enum::S_END,
-            Enum::E_VALUE,
-            Enum::BIT_SCORE
-        }
-    };
+    static std::vector<Enum> const _defaultsMinusFirst;
 
     /*!
      * @var static_constexpr_char_const_*_const BlastMatchField::optionLabels[]
@@ -373,7 +407,7 @@ struct BlastMatchField<TVoidSpec>
         "qcovhsp"
     };
 
-    static constexpr char const * const legacyColumnsLabels =
+    static constexpr char const * const legacyColumnLabels =
     {
         "Query id, Subject id, % identity, alignment length, mismatches, gap openings, q. start, q. end, s. start, s."
          " end, e-value, bit score"
@@ -564,38 +598,46 @@ template <typename TVoidSpec>
 constexpr std::array<typename BlastMatchField<TVoidSpec>::Enum const, 12> BlastMatchField<TVoidSpec>::defaults;
 
 template <typename TVoidSpec>
-constexpr std::vector<typename BlastMatchField<TVoidSpec>::Enum const> BlastMatchField<TVoidSpec>::_defaultsMinusFirst;
-
-
-
-
-
+std::vector<typename BlastMatchField<TVoidSpec>::Enum> const BlastMatchField<TVoidSpec>::_defaultsMinusFirst =
+{
+    BlastMatchField<TVoidSpec>::Enum::S_SEQ_ID,
+    BlastMatchField<TVoidSpec>::Enum::P_IDENT,
+    BlastMatchField<TVoidSpec>::Enum::LENGTH,
+    BlastMatchField<TVoidSpec>::Enum::MISMATCH,
+    BlastMatchField<TVoidSpec>::Enum::GAP_OPEN,
+    BlastMatchField<TVoidSpec>::Enum::Q_START,
+    BlastMatchField<TVoidSpec>::Enum::Q_END,
+    BlastMatchField<TVoidSpec>::Enum::S_START,
+    BlastMatchField<TVoidSpec>::Enum::S_END,
+    BlastMatchField<TVoidSpec>::Enum::E_VALUE,
+    BlastMatchField<TVoidSpec>::Enum::BIT_SCORE
+};
 
 
 // ============================================================================
 // Metafunctions and global const-expressions
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// _seperatorString
-// ----------------------------------------------------------------------------
-
-
-template <BlastFormatProgram p, BlastFormatGeneration g>
-constexpr
-const char *
-_seperatorString(BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p,g> const &)
-{
-    return ", ";
-}
-
-template <BlastFormatProgram p, BlastFormatGeneration g>
-constexpr
-const char *
-_seperatorString(BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
-{
-    return "\t";
-}
+// // ----------------------------------------------------------------------------
+// // _seperatorString
+// // ----------------------------------------------------------------------------
+//
+//
+// template <BlastFormatProgram p, BlastFormatGeneration g>
+// constexpr
+// const char *
+// _seperatorString(BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p,g> const &)
+// {
+//     return ", ";
+// }
+//
+// template <BlastFormatProgram p, BlastFormatGeneration g>
+// constexpr
+// const char *
+// _seperatorString(BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
+// {
+//     return "\t";
+// }
 
 }
 

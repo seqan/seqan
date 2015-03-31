@@ -196,6 +196,7 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_stats_and_score)
     typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
     typedef BlastMatch<CharString, CharString, uint32_t, TAlign> TBlastMatch;
 
+
     TBlastMatch m;
 
     String<AminoAcid> src0 = "ARNDAYVBRNDCQFGCYVBQARNDCQEGEG";
@@ -218,15 +219,15 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_stats_and_score)
 
     SEQAN_ASSERT_EQ(score, 94);
 
-    calcStatsAndScore(m, scheme);
+    computeAlignmentStats(m.alignStats, m.align, scheme);
 
-    SEQAN_ASSERT_EQ(m.score, score);
-    SEQAN_ASSERT_EQ(m.aliLength, 30u);
-    SEQAN_ASSERT_EQ(m.identities, 24u);
-    SEQAN_ASSERT_EQ(m.positives, 25u);
-    SEQAN_ASSERT_EQ(m.mismatches, 2u);
-    SEQAN_ASSERT_EQ(m.gaps, 4u);
-    SEQAN_ASSERT_EQ(m.gapOpenings, 3u);
+    SEQAN_ASSERT_EQ(m.alignStats.alignmentScore, score);
+//     SEQAN_ASSERT_EQ(m.alignLength, 30u);
+    SEQAN_ASSERT_EQ(m.alignStats.numMatches, 24u);
+    SEQAN_ASSERT_EQ(m.alignStats.numPositiveScores, 25u);
+    SEQAN_ASSERT_EQ(m.alignStats.numMismatches, 2u);
+    SEQAN_ASSERT_EQ(m.alignStats.numGapExtensions, 1u);
+    SEQAN_ASSERT_EQ(m.alignStats.numGapOpens, 3u);
 }
 
 SEQAN_DEFINE_TEST(test_blast_blastmatch_bit_score_e_value)
@@ -260,22 +261,22 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_bit_score_e_value)
 
     SEQAN_ASSERT_EQ(score, 48);
 
-    calcStatsAndScore(m, scheme);
+    computeAlignmentStats(m.alignStats, m.align, scheme);
 
-    SEQAN_ASSERT_EQ(m.score, score);
-    SEQAN_ASSERT_EQ(m.aliLength, 14u);
-    SEQAN_ASSERT_EQ(m.identities, 10u);
-    SEQAN_ASSERT_EQ(m.positives, 12u);
-    SEQAN_ASSERT_EQ(m.mismatches, 2u);
-    SEQAN_ASSERT_EQ(m.gaps, 2u);
-    SEQAN_ASSERT_EQ(m.gapOpenings, 1u);
+    SEQAN_ASSERT_EQ(m.alignStats.alignmentScore, score);
+//     SEQAN_ASSERT_EQ(m.alignLength, 14u);
+    SEQAN_ASSERT_EQ(m.alignStats.numMatches, 10u);
+    SEQAN_ASSERT_EQ(m.alignStats.numPositiveScores, 12u);
+    SEQAN_ASSERT_EQ(m.alignStats.numMismatches, 2u);
+    SEQAN_ASSERT_EQ(m.alignStats.numGapExtensions, 1u);
+    SEQAN_ASSERT_EQ(m.alignStats.numGapOpens, 1u);
 
     // same as previous test until here (just local)
 
     BlastScoringAdapter<TScheme> adapter(scheme);
     SEQAN_ASSERT(isValid(adapter));
 
-    calcBitScoreAndEValue(m.bitScore, m.eValue, m.score, length(src0),
+    calcBitScoreAndEValue(m.bitScore, m.eValue, m.alignStats.alignmentScore, length(src0),
                           length(src1), adapter);
 
     double epsilon = 1e-4;

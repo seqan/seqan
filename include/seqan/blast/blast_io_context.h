@@ -34,9 +34,16 @@
 // This file contains the BlastIOContext's code
 // ==========================================================================
 
+#ifndef SEQAN_BLAST_BLAST_IO_CONTEXT_H__
+#define SEQAN_BLAST_BLAST_IO_CONTEXT_H__
 
 namespace seqan
 {
+
+//forwards declar
+template <typename TScore, typename TSpec = void>
+struct BlastScoringAdapter;
+
 
 /*!
  * @class BlastIOContext
@@ -73,8 +80,8 @@ struct BlastIOContext
 {
     typedef TScore_ TScore;
     typedef TString_ TString;
-    constexpr BlastProgram p = _p;
-    constexpr BlastTabularSpec h = _h;
+    static constexpr BlastProgram p = _p;
+    static constexpr BlastTabularSpec h = _h;
 
     // the blastProgram as compile time parameter
     typedef BlastProgramTag<p> TBlastProgram; // compile-time parameter
@@ -173,7 +180,7 @@ struct BlastIOContext
      * of readRecord and readHeader where it returns the fields specified in
      * the header.
      */
-    std::vector<typename BlastMatchField<>::Enum> fields { { typename BlastMatchField<>::Enum::STD } };
+    std::vector<typename BlastMatchField<>::Enum> fields { { BlastMatchField<>::Enum::STD } };
 
     /*!
      * @var StringSet<TString> BlastIOContext::fieldsAsStrings;
@@ -207,11 +214,15 @@ struct BlastIOContext
      */
     StringSet<TString, Owner<ConcatDirect<>>> conformancyErrors;
 
+    // ------- CACHES and BUFFERS --------- //
+
+    // cache for length adjustments in blast statistics
+    std::unordered_map<uint64_t, uint64_t> cachedLengthAdjustments;
 
     // needed for readRecord of TABULAR
     TString lastId;
 
-    // buffers
+    // io-buffers
     TString buffer1;
     TString buffer2;
     StringSet<TString, Owner<ConcatDirect<>>> buffers1;
@@ -284,7 +295,7 @@ setBlastProgram(BlastIOContext<TScore, TString, BlastProgram::UNKNOWN, h> const 
 
 template <typename TScore,
           typename TString,
-          BlastTabularSpec p,
+          BlastProgram p,
           BlastTabularSpec h>
 constexpr BlastTabularSpec
 getBlastTabularSpec(BlastIOContext<TScore, TString, p, h> const &)
@@ -312,7 +323,7 @@ getBlastTabularSpec(BlastIOContext<TScore, TString, p, BlastTabularSpec::UNKNOWN
 
 template <typename TScore,
           typename TString,
-          BlastTabularSpec p,
+          BlastProgram p,
           BlastTabularSpec h>
 inline void
 setBlastTabularSpec(BlastIOContext<TScore, TString, p, h> &, BlastTabularSpec const)
@@ -322,12 +333,12 @@ setBlastTabularSpec(BlastIOContext<TScore, TString, p, h> &, BlastTabularSpec co
 
 template <typename TScore,
           typename TString,
-          BlastTabularSpec h>
+          BlastProgram p>
 inline void
-setBlastTabularSpec(BlastIOContext<TScore, TString, BlastTabularSpec::UNKNOWN, h> & context,
-                    BlastTabularSpec const p)
+setBlastTabularSpec(BlastIOContext<TScore, TString, p, BlastTabularSpec::UNKNOWN> & context,
+                    BlastTabularSpec const h)
 {
-    context.tabularSpec = p;
+    context.tabularSpec = h;
 }
 
 /*!
@@ -342,9 +353,9 @@ setBlastTabularSpec(BlastIOContext<TScore, TString, BlastTabularSpec::UNKNOWN, h
 
 template <typename TScore,
           typename TString,
-          ScoringScheme p,
+          BlastProgram p,
           BlastTabularSpec h>
-inline ScoringScheme
+inline TScore
 getScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
 {
     TScore newscore(context.scoringAdapter.scoringScheme);
@@ -368,7 +379,7 @@ getScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
 
 template <typename TScore,
           typename TString,
-          ScoringScheme p,
+          BlastProgram p,
           BlastTabularSpec h>
 inline void
 setScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore SEQAN_FORWARD_CARG scoringScheme)

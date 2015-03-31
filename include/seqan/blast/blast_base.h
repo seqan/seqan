@@ -479,7 +479,6 @@ qIsTranslated(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> cons
 // qNumFrames()
 // ----------------------------------------------------------------------------
 
-template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
 constexpr uint8_t
 qNumFrames(BlastProgram p)
 {
@@ -514,7 +513,6 @@ qNumFrames(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &
 // ----------------------------------------------------------------------------
 // sHasRevComp()
 // ----------------------------------------------------------------------------
-
 
 constexpr bool
 sHasRevComp(BlastProgram const p)
@@ -584,7 +582,6 @@ sIsTranslated(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> cons
 // sNumFrames()
 // ----------------------------------------------------------------------------
 
-// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
 constexpr uint8_t
 sNumFrames(BlastProgram p)
 {
@@ -768,7 +765,7 @@ blastScoringScheme2seqanScoringScheme(Score<TValue, TSpec> & scheme)
 
 template <BlastProgram p>
 constexpr const char *
-_programTagToString<p>()
+_programTagToString()
 {
     return "UNKOWN BLAST PROGRAM";
 }
@@ -833,6 +830,8 @@ _programTagToString(BlastProgram const _p)
             return std::string(_programTagToString<BlastProgram::TBLASTX>());
         case BlastProgram::INVALID:
             return std::string(_programTagToString<BlastProgram::INVALID>());
+        case BlastProgram::UNKNOWN:
+            break;
     }
     return std::string(_programTagToString<BlastProgram::UNKNOWN>());
 }
@@ -840,7 +839,7 @@ _programTagToString(BlastProgram const _p)
 // if known at compile-time, deduce at compile-time
 template <BlastProgram p>
 constexpr const char *
-_programTagToString(BlastProgram const, BlastProgramTag<BlastProgram::p> const &)
+_programTagToString(BlastProgram const, BlastProgramTag<p> const &)
 {
     return _programTagToString<p>();
 }
@@ -1007,11 +1006,11 @@ _untranslateQPositions(TPos & effectiveStart,
                       int8_t const frameShift,
                       TPos const & length,
                       BlastProgram const _p,
-                      BlastProgramTag<BlastProgram::p> const &)
+                      BlastProgramTag<p> const &)
 {
-     if (qIsTranslated(_p, BlastProgramTag<BlastProgram::p>()))
+     if (qIsTranslated(_p, BlastProgramTag<p>()))
          _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, True(), True());
-     else if (qHasRevComp(_p, BlastProgramTag<BlastProgram::p>()))
+     else if (qHasRevComp(_p, BlastProgramTag<p>()))
          _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, True(), False());
      else
         _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, False(), False());
@@ -1024,11 +1023,11 @@ _untranslateSPositions(TPos & effectiveStart,
                       int8_t const frameShift,
                       TPos const & length,
                       BlastProgram const _p,
-                      BlastProgramTag<BlastProgram::p> const &)
+                      BlastProgramTag<p> const &)
 {
-     if (sIsTranslated(_p, BlastProgramTag<BlastProgram::p>()))
+     if (sIsTranslated(_p, BlastProgramTag<p>()))
          _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, True(), True());
-     else if (sHasRevComp(_p, BlastProgramTag<BlastProgram::p>()))
+     else if (sHasRevComp(_p, BlastProgramTag<p>()))
          _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, True(), False());
      else
         _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, False(), False());
