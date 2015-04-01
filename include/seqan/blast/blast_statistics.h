@@ -880,7 +880,7 @@ computeAlignmentStats(TBlastMatch & match,
 {
     computeAlignmentStats(match.alignStats,
                           match.align,
-                          context.scoringAdapater.scoringScheme);
+                          context.scoringAdapter.scheme);
 }
 
 #define LOGTWO 0.693147180
@@ -951,19 +951,19 @@ template <typename TBlastMatch,
           BlastTabularSpec h>
 inline void
 calcBitScoreAndEValue(TBlastMatch & match,
-                      BlastIOContext<TScore, TConString, p, h> const & context)
+                      BlastIOContext<TScore, TConString, p, h> & context)
 {
+    uint64_t ql = match.qLength; // convert to 64bit, once
     // length adjustment not yet computed
-    if (context.cachedLengthAdjustments.find(match.qLength) == context.cachedLengthAdjustments.end())
-        context.cachedLengthAdjustments[match.qLength] = _lengthAdjustment(context.dbTotalLength,
-                                                                           context.qLength,
-                                                                           context.scoringAdapter);
-    uint64_t lengthAdj = context.cachedLengthAdjustments[match.qLength];
+    if (context.cachedLengthAdjustments.find(ql) == context.cachedLengthAdjustments.end())
+        context.cachedLengthAdjustments[ql] = _lengthAdjustment(context.dbTotalLength, ql, context.scoringAdapter);
+
+    uint64_t lengthAdj = context.cachedLengthAdjustments[ql];
     _calcBitScoreAndEValue(match.bitScore,
                            match.eValue,
-                           match.alignStats.score,
+                           match.alignStats.alignmentScore,
                            static_cast<uint64_t>(context.dbTotalLength - lengthAdj),
-                           static_cast<uint64_t>(context.qLength - lengthAdj),
+                           static_cast<uint64_t>(ql - lengthAdj),
                            context.scoringAdapter);
 }
 

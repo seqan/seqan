@@ -60,6 +60,7 @@
 #include <seqan/version.h>
 #include <seqan/align.h>
 #include <seqan/score.h>
+#include <seqan/version.h>
 
 #include "blast/blast_base.h"
 #include "blast/blast_record.h"

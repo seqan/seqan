@@ -125,11 +125,11 @@ struct BlastIOContext
         if (!legacyFormat)
             append(versionString, "+");
         append(versionString, " [I/O Module of SeqAn-");
-        append(versionString, SEQAN_VERSION_MAJOR);
+        append(versionString, std::to_string(SEQAN_VERSION_MAJOR));
         append(versionString, '.');
-        append(versionString, SEQAN_VERSION_MINOR);
+        append(versionString, std::to_string(SEQAN_VERSION_MINOR));
         append(versionString, '.');
-        append(versionString, SEQAN_VERSION_PATCH);
+        append(versionString, std::to_string(SEQAN_VERSION_PATCH));
         append(versionString, ", http://www.seqan.de]");
     }
 
@@ -139,7 +139,8 @@ struct BlastIOContext
      *
      * Setting this flag when writing to a @link BlastTabularOut @endlink (that has BlastTabularSpec::HEADER set) will
      * result in the legacy header being written. This is the slightly different header used by C-only versions of blast
-     * (<tt>blastall</tt>-binary). Note that many other features like custom fields are not supported in this format.
+     * (<tt>blastall</tt>-binary). In the legacy format the mismatches column also includes all gaps in addition to
+     * mismatches. Note that many other features like custom fields are not supported in this format.
      *
      * When reading @link BlastTabularOut @endlink this flag will automatically be set based on the header (if a
      * header exists).
@@ -271,7 +272,7 @@ template <typename TScore,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-setBlastProgram(BlastIOContext<TScore, TString, p, h> const &, BlastProgram const)
+setBlastProgram(BlastIOContext<TScore, TString, p, h> &, BlastProgram const)
 {
     SEQAN_FAIL("Tried to set blastProgram on context, but was already defined at compile time");
 }
@@ -280,7 +281,7 @@ template <typename TScore,
           typename TString,
           BlastTabularSpec h>
 inline void
-setBlastProgram(BlastIOContext<TScore, TString, BlastProgram::UNKNOWN, h> const & context, BlastProgram const p)
+setBlastProgram(BlastIOContext<TScore, TString, BlastProgram::UNKNOWN, h> & context, BlastProgram const p)
 {
     context.blastProgram = p;
 }
@@ -358,7 +359,7 @@ template <typename TScore,
 inline TScore
 getScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
 {
-    TScore newscore(context.scoringAdapter.scoringScheme);
+    TScore newscore(context.scoringAdapter.scheme);
     blastScoringScheme2seqanScoringScheme(newscore);
     return newscore;
 }
@@ -382,10 +383,10 @@ template <typename TScore,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-setScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore SEQAN_FORWARD_CARG scoringScheme)
+setScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore const & scoringScheme)
 {
-    context.scoringAdapter.scoringScheme = scoringScheme;
-    blastScoringScheme2seqanScoringScheme(context.scoringAdapter.scoringScheme);
+    context.scoringAdapter.scheme = scoringScheme;
+    blastScoringScheme2seqanScoringScheme(context.scoringAdapter.scheme);
     if (!_selectSet(context.scoringAdapter))
         SEQAN_FAIL("No Karlin-Altschul parameters where available for you scoring scheme, your scoring scheme and/or "
                    "your gap costs are not supported.");
