@@ -44,156 +44,30 @@
 
 using namespace seqan;
 
-
-// template <typename TFile, typename TDbSpecs, typename TRecords, typename TFormat>
-// inline void
-// _writeCustomColumnsImpl(TFile & file,
-//                        TRecords const & records,
-//                        TDbSpecs const & dbSpecs,
-//                        TFormat const & /**/)
-// {
-//     for (auto const & r : records)
-//     {
-//         writeRecordHeader(file,
-//                     r.qId,
-//                     dbSpecs.dbName,
-//                     r.matches.size(),
-//                     BlastTabular(),
-//                     "Query id",
-//                     "Subject id",
-//                     "alignment length",
-//                     "mismatches",
-//                     "gaps",
-//                     "e-value",
-//                     "bit score");
-//         for (auto const & m : r.matches)
-//         {
-//              writeMatch(file,
-//                         BlastTabular(),
-//                         m.qId,
-//                         m.sId,
-//                         m.aliLength,
-//                         m.mismatches,
-//                         m.gaps,
-//                         m.eValue,
-//                         m.bitScore);
-//         }
-//     }
-// }
-//
-// template <typename TFile, typename TDbSpecs, typename TRecords, BlastFormatProgram p, BlastFormatGeneration g>
-// inline void
-// _writeCustomColumns(TFile & file,
-//                    TRecords const & records,
-//                    TDbSpecs const & dbSpecs,
-//                    BlastFormat<BlastFormatFile::TABULAR, p, g> const & /**/)
-// {
-//     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-//     _writeCustomColumnsImpl(file, records, dbSpecs, BlastTabular());
-// }
-//
-// template <typename TFile, typename TDbSpecs, typename TRecords, BlastFormatProgram p, BlastFormatGeneration g>
-// inline void
-// _writeCustomColumns(TFile & file,
-//                    TRecords const & records,
-//                    TDbSpecs const & dbSpecs,
-//                    BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const & /**/)
-// {
-//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
-//     _writeCustomColumnsImpl(file, records, dbSpecs, BlastTabular());
-// }
-//
-// template <typename TFile, typename TDbSpecs, typename TRecords, typename TFormat>
-// inline void
-// _writeCustomColumns(TFile & /**/,
-//                    TRecords const & /**/,
-//                    TDbSpecs const & /**/,
-//                    TFormat const & /**/)
-// {
-//     SEQAN_ASSERT(false);
-// }
-//
-// template <typename TFile, typename TDbSpecs, typename TRecords, typename TFormat>
-// inline void
-// _writeCustomFieldsImpl(TFile & file,
-//                        TRecords const & records,
-//                        TDbSpecs const & dbSpecs,
-//                        TFormat const & /**/)
-// {
-//     typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum TField;
-//     String<TField> fields;
-//     append(fields, TField::STD);
-//     append(fields, TField::SCORE);
-//     append(fields, TField::FRAMES);
-//
-//     for (int q = 0; q < 2; ++q)
-//         writeRecord(file, records[q], dbSpecs, fields, BlastTabular());
-// }
-//
-// template <typename TFile, typename TDbSpecs, typename TRecords, BlastFormatProgram p>
-// inline void
-// _writeCustomFields(TFile & file,
-//                    TRecords const & records,
-//                    TDbSpecs const & dbSpecs,
-//                    BlastFormat<BlastFormatFile::TABULAR,
-//                                p,
-//                                BlastFormatGeneration::BLAST_PLUS> const & /**/)
-// {
-//     typedef BlastFormat<BlastFormatFile::TABULAR,
-//                         p,
-//                         BlastFormatGeneration::BLAST_PLUS> TFormat;
-//     _writeCustomFieldsImpl(file, records, dbSpecs, BlastTabular());
-// }
-//
-// template <typename TFile, typename TDbSpecs, typename TRecords, BlastFormatProgram p>
-// inline void
-// _writeCustomFields(TFile & file,
-//                    TRecords const & records,
-//                    TDbSpecs const & dbSpecs,
-//                    BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-//                                p,
-//                                BlastFormatGeneration::BLAST_PLUS> const & /**/)
-// {
-//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-//                         p,
-//                         BlastFormatGeneration::BLAST_PLUS> TFormat;
-//     _writeCustomFieldsImpl(file, records, dbSpecs, BlastTabular());
-// }
-//
-// template <typename TFile, typename TDbSpecs, typename TRecords, typename TFormat>
-// inline void
-// _writeCustomFields(TFile & /**/,
-//                    TRecords const & /**/,
-//                    TDbSpecs const & /**/,
-//                    TFormat const & /**/)
-// {
-//     SEQAN_ASSERT(false);
-// }
-
-// // template <typename TFile, typename TScore, typename TString, typename TRecords, BlastProgram p, BlastTabularSpec h>
-// // inline void
-// // test_blast_write_do(TFile & file,
-// //                     BlastIOContext<TScore, TString, p, h> & context,
-// //                     TRecords const & records,
-// //                     int const format,
-// //                     int const,
-// //                     BlastReport const & /**/)
-// // {
-// //     if (format < 3)
-// //     {
-// //         writeHeader(file, context, BlastReport());
-// //         for (auto const & r : records)
-// //             writeRecord(file, context, r, BlastReport());
-// //         writeFooter(file, context, BlastReport());
-// //     } else
-// //     {
-// //         BlastReportOut<BlastIOContext<TScore, TString, p, h>> out(context, file);
-// //         writeHeader(out);
-// //         for (auto const & r : records)
-// //             writeRecord(out, r);
-// //         writeFooter(out);
-// //     }
-// // }
+template <typename TFile, typename TScore, typename TString, typename TRecords, BlastProgram p, BlastTabularSpec h>
+inline void
+test_blast_write_do(TFile & file,
+                    BlastIOContext<TScore, TString, p, h> & context,
+                    TRecords const & records,
+                    int const format,
+                    int const,
+                    BlastReport const & /**/)
+{
+    if (format < 3)
+    {
+        writeHeader(file, context, BlastReport());
+        for (auto const & r : records)
+            writeRecord(file, context, r, BlastReport());
+        writeFooter(file, context, BlastReport());
+    } else
+    {
+        BlastReportOut<BlastIOContext<TScore, TString, p, h>> out(context, file, BlastReport());
+        writeHeader(out);
+        for (auto const & r : records)
+            writeRecord(out, r);
+        writeFooter(out);
+    }
+}
 
 template <typename TFile, typename TScore, typename TString, typename TRecords, BlastProgram p, BlastTabularSpec h>
 inline void
@@ -350,7 +224,7 @@ test_blast_write_record_match(TFile & file,
         }
     }
 
-    test_blast_write_do(file, context, records, format, customFields, BlastTabular());
+    test_blast_write_do(file, context, records, format, customFields, TFormat());
 }
 
 template <typename TScore, typename TString, BlastProgram p, BlastTabularSpec h>
@@ -698,163 +572,168 @@ SEQAN_DEFINE_TEST(test_blast_write_formatted_file_customfields_tabular_with_head
 
 // PAIRWISE FORMAT
 
-// SEQAN_DEFINE_TEST(test_blast_write_pairwise)
-// {
-//     typedef BlastFormat<BlastFormatFile::PAIRWISE,
-//                         BlastFormatProgram::BLASTP,
-//                         BlastFormatGeneration::BLAST_PLUS> TFormat;
-//     const char * tempFilename = SEQAN_TEMP_FILENAME();
-//     char filenameBuffer[1000];
-//     strcpy(filenameBuffer, tempFilename);
-//
-//     std::fstream fstream(filenameBuffer,
-//                          std::ios_base::in |
-//                          std::ios_base::out |
-//                          std::ios_base::binary |
-//                          std::ios_base::trunc);
-//     SEQAN_ASSERT(fstream.is_open());
-//
-//     test_blast_write_record_match(fstream, 0, 0, BlastTabular());
-//
-//     std::string contents;
-//     resize(contents, fstream.tellg());
-//     fstream.seekg(0, std::ios::beg);
-//     fstream.read(&contents[0], contents.size());
-//     fstream.close();
-//
-//     std::string compString = "BLASTP I/O Module of SeqAn-";
-//     compString.append(std::to_string(SEQAN_VERSION_MAJOR));
-//     compString.append(".");
-//     compString.append(std::to_string(SEQAN_VERSION_MINOR));
-//     compString.append(".");
-//     compString.append(std::to_string(SEQAN_VERSION_PATCH));
-//     compString.append(" (http://www.seqan.de)\n"
-//     "\n"
-//     "Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,\n"
-//     "Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),\n"
-//     "\"Gapped BLAST and PSI-BLAST: a new generation of protein database search\n"
-//     "programs\",  Nucleic Acids Res. 25:3389-3402.\n"
-//     "\n"
-//     "Reference for SeqAn: Döring, A., D. Weese, T. Rausch, K. Reinert (2008): SeqAn --\n"
-//     "An efficient, generic C++ library for sequence analysis. BMC Bioinformatics,\n"
-//     "9(1), 11. BioMed Central Ltd. doi:10.1186/1471-2105-9-11\n"
-//     "\n"
-//     "\n"
-//     "\n"
-//     "Database: The Foo Database\n"
-//     "           2 sequences; 400 total letters\n"
-//     "\n"
-//     "\n"
-//     "Query= Query_Numero_Uno\n"
-//     "\n"
-//     "Length=12\n"
-//     "\n"
-//     "\n"
-//     "                                                                   Score     E\n"
-//     "Sequences producing significant alignments:                       (Bits)  Value\n"
-//     "\n"
-//     "Subject_Numero_Uno                                                   23  0.0005\n"
-//     "Subject_Numero_Dos                                                   22  0.0009\n"
-//     "\n"
-//     "ALIGNMENTS\n"
-//     "> Subject_Numero_Uno\n"
-//     "Length=0\n"
-//     "\n"
-//     " Score =  23.1 bits (48), Expect =  0.0005\n"
-//     " Identities = 10/14 (71%), Positives = 12/14 (86%), Gaps = 2/14 (14%)\n"
-//     "\n"
-//     "Query  1   VAYAQTKPRRLCFP  14\n"
-//     "           VAYAQ  PR+LC+P\n"
-//     "Sbjct  79  VAYAQ--PRKLCYP  90\n"
-//     "\n"
-//     "> Subject_Numero_Dos\n"
-//     "Length=0\n"
-//     "\n"
-//     " Score =  22.3 bits (46), Expect =  0.0009\n"
-//     " Identities = 8/8 (100%), Positives = 8/8 (100%), Gaps = 0/8 (0%)\n"
-//     "\n"
-//     "Query  3    YAQPRKLC  10 \n"
-//     "            YAQPRKLC\n"
-//     "Sbjct  157  YAQPRKLC  164\n"
-//     "\n"
-//     "\n"
-//     "Query= Query_Numero_Dos\n"
-//     "\n"
-//     "Length=8\n"
-//     "\n"
-//     "\n"
-//     "                                                                   Score     E\n"
-//     "Sequences producing significant alignments:                       (Bits)  Value\n"
-//     "\n"
-//     "Subject_Numero_Uno                                                   16  0.03\n"
-//     "Subject_Numero_Dos                                                   18  0.007\n"
-//     "\n"
-//     "ALIGNMENTS\n"
-//     "> Subject_Numero_Uno\n"
-//     "Length=0\n"
-//     "\n"
-//     " Score =  16.9 bits (32), Expect =  0.03\n"
-//     " Identities = 7/8 (88%), Positives = 8/8 (100%), Gaps = 0/8 (0%)\n"
-//     "\n"
-//     "Query  1    AVITSWTQ  8  \n"
-//     "            AVITS+TQ\n"
-//     "Sbjct  184  AVITSFTQ  191\n"
-//     "\n"
-//     "> Subject_Numero_Dos\n"
-//     "Length=0\n"
-//     "\n"
-//     " Score =  18.9 bits (37), Expect =  0.007\n"
-//     " Identities = 8/8 (100%), Positives = 8/8 (100%), Gaps = 0/8 (0%)\n"
-//     "\n"
-//     "Query  1   AVITSFTQ  8 \n"
-//     "           AVITSFTQ\n"
-//     "Sbjct  10  AVITSFTQ  17\n"
-//     "\n"
-//     "\n"
-//     "Matrix:BLOSUM62\n"
-//     "Gap Penalties: Existence: -11, Extension: -1\n\n");
-//
-//     if (contents != compString)
+SEQAN_DEFINE_TEST(test_blast_write_pairwise)
+{
+    const char * tempFilename = SEQAN_TEMP_FILENAME();
+    char filenameBuffer[1000];
+    strcpy(filenameBuffer, tempFilename);
+
+    std::fstream fstream(filenameBuffer,
+                         std::ios_base::in |
+                         std::ios_base::out |
+                         std::ios_base::binary |
+                         std::ios_base::trunc);
+    SEQAN_ASSERT(fstream.is_open());
+
+    BlastIOContext<> context;
+    setBlastProgram(context, BlastProgram::BLASTP);
+
+    test_blast_write_record_match(fstream, 0, 0, context, BlastReport());
+
+    std::string contents;
+    resize(contents, fstream.tellg());
+    fstream.seekg(0, std::ios::beg);
+    fstream.read(&contents[0], contents.size());
+    fstream.close();
+
+    std::string compString;
+    if (!context.legacyFormat)
+        compString.append("BLASTP 2.2.26+ ");
+    else
+        compString.append("BLASTP 2.2.26 ");
+    compString.append("[I/O Module of SeqAn-");
+    compString.append(std::to_string(SEQAN_VERSION_MAJOR));
+    compString.append(".");
+    compString.append(std::to_string(SEQAN_VERSION_MINOR));
+    compString.append(".");
+    compString.append(std::to_string(SEQAN_VERSION_PATCH));
+    compString.append(", http://www.seqan.de]\n"
+    "\n"
+    "Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,\n"
+    "Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),\n"
+    "\"Gapped BLAST and PSI-BLAST: a new generation of protein database search\n"
+    "programs\",  Nucleic Acids Res. 25:3389-3402.\n"
+    "\n"
+    "Reference for SeqAn: Döring, A., D. Weese, T. Rausch, K. Reinert (2008): SeqAn --\n"
+    "An efficient, generic C++ library for sequence analysis. BMC Bioinformatics,\n"
+    "9(1), 11. BioMed Central Ltd. doi:10.1186/1471-2105-9-11\n"
+    "\n"
+    "\n"
+    "\n"
+    "Database: The Foo Database\n"
+    "           2 sequences; 400 total letters\n"
+    "\n"
+    "\n"
+    "Query= Query_Numero_Uno\n"
+    "\n"
+    "Length=12\n"
+    "\n"
+    "\n"
+    "                                                                   Score     E\n"
+    "Sequences producing significant alignments:                       (Bits)  Value\n"
+    "\n"
+    "Subject_Numero_Uno                                                   23  0.0005\n"
+    "Subject_Numero_Dos                                                   22  0.0009\n"
+    "\n"
+    "ALIGNMENTS\n"
+    "> Subject_Numero_Uno\n"
+    "Length=0\n"
+    "\n"
+    " Score =  23.1 bits (48), Expect =  0.0005\n"
+    " Identities = 10/14 (71%), Positives = 12/14 (86%), Gaps = 2/14 (14%)\n"
+    "\n"
+    "Query  1   VAYAQTKPRRLCFP  14\n"
+    "           VAYAQ  PR+LC+P\n"
+    "Sbjct  79  VAYAQ--PRKLCYP  90\n"
+    "\n"
+    "> Subject_Numero_Dos\n"
+    "Length=0\n"
+    "\n"
+    " Score =  22.3 bits (46), Expect =  0.0009\n"
+    " Identities = 8/8 (100%), Positives = 8/8 (100%), Gaps = 0/8 (0%)\n"
+    "\n"
+    "Query  3    YAQPRKLC  10 \n"
+    "            YAQPRKLC\n"
+    "Sbjct  157  YAQPRKLC  164\n"
+    "\n"
+    "\n"
+    "Query= Query_Numero_Dos\n"
+    "\n"
+    "Length=8\n"
+    "\n"
+    "\n"
+    "                                                                   Score     E\n"
+    "Sequences producing significant alignments:                       (Bits)  Value\n"
+    "\n"
+    "Subject_Numero_Uno                                                   16  0.03\n"
+    "Subject_Numero_Dos                                                   18  0.007\n"
+    "\n"
+    "ALIGNMENTS\n"
+    "> Subject_Numero_Uno\n"
+    "Length=0\n"
+    "\n"
+    " Score =  16.9 bits (32), Expect =  0.03\n"
+    " Identities = 7/8 (88%), Positives = 8/8 (100%), Gaps = 0/8 (0%)\n"
+    "\n"
+    "Query  1    AVITSWTQ  8  \n"
+    "            AVITS+TQ\n"
+    "Sbjct  184  AVITSFTQ  191\n"
+    "\n"
+    "> Subject_Numero_Dos\n"
+    "Length=0\n"
+    "\n"
+    " Score =  18.9 bits (37), Expect =  0.007\n"
+    " Identities = 8/8 (100%), Positives = 8/8 (100%), Gaps = 0/8 (0%)\n"
+    "\n"
+    "Query  1   AVITSFTQ  8 \n"
+    "           AVITSFTQ\n"
+    "Sbjct  10  AVITSFTQ  17\n"
+    "\n"
+    "\n"
+    "Matrix:BLOSUM62\n"
+    "Gap Penalties: Existence: -11, Extension: -1\n\n");
+
+    if (contents != compString)
+    {
+        for (uint32_t i = 0; i < length(contents); ++i)
+        {
+            if (contents[i] != compString[i])
+            {
+                std::cout << contents.substr(0,i) << "\n";
+                std::cout << "CONT: \"" << contents[i] << "\"\n";
+                std::cout << "COMP: \"" << compString[i] << "\"\n";
+                break;
+            }
+        }
+    }
+    SEQAN_ASSERT_EQ(contents, compString);
+
+//     std::cout << "<span style=\"font-size:80%\"><table>\n"
+//                  "<tr><th>index</th>"
+//                  "<th>Enum</th>"
+//                  "<th>optionLabels</th>"
+//                  "<th>columnLabels</th>"
+//                  "<th>descriptions</th>"
+//                  "<th>implemented</th></tr>\n";
+//     for (int i = 0; i < 45; ++i)
 //     {
-//         for (uint32_t i = 0; i < length(contents); ++i)
-//         {
-//             if (contents[i] != compString[i])
-//             {
-//                 std::cout << contents.substr(0,i) << "\n";
-//                 std::cout << "CONT: \"" << contents[i] << "\"\n";
-//                 std::cout << "COMP: \"" << compString[i] << "\"\n";
-//                 break;
-//             }
-//         }
+//         std::cout << "<tr><td>"
+//                   << i
+//                   << "</td><td>"
+//                   // enum have to inserted manually
+//                   << "</td><td>"
+//                   << BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::optionLabels[i]
+//                   << "</td><td>"
+//                   << BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::columnLabels[i]
+//                   << "</td><td>"
+//                   << BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::descriptions[i]
+//                   << "</td><td>"
+//                   << (BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::implemented[i]
+//                     ? "&#9745;"
+//                     : "&#9744;")
+//                   << "</td></tr>\n";
 //     }
-//     SEQAN_ASSERT_EQ(contents, compString);
-//
-// //     std::cout << "<span style=\"font-size:80%\"><table>\n"
-// //                  "<tr><th>index</th>"
-// //                  "<th>Enum</th>"
-// //                  "<th>optionLabels</th>"
-// //                  "<th>columnLabels</th>"
-// //                  "<th>descriptions</th>"
-// //                  "<th>implemented</th></tr>\n";
-// //     for (int i = 0; i < 45; ++i)
-// //     {
-// //         std::cout << "<tr><td>"
-// //                   << i
-// //                   << "</td><td>"
-// //                   // enum have to inserted manually
-// //                   << "</td><td>"
-// //                   << BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::optionLabels[i]
-// //                   << "</td><td>"
-// //                   << BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::columnLabels[i]
-// //                   << "</td><td>"
-// //                   << BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::descriptions[i]
-// //                   << "</td><td>"
-// //                   << (BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::implemented[i]
-// //                     ? "&#9745;"
-// //                     : "&#9744;")
-// //                   << "</td></tr>\n";
-// //     }
-// //     std::cout << "</table></span>\n";
-// }
+//     std::cout << "</table></span>\n";
+}
 
 #endif  // SEQAN_TESTS_TEST_BLAST_OUTPUT_H_

@@ -66,6 +66,9 @@ namespace seqan
  * For very basic BlastOutput support there is also @link BlastTabular#writeMatch @endlink which comes without support
  * for header and correction for positions, but does not require elaborate data structures.
  *
+ * The reference Blast implementation used for developing the SeqAn support is NCBI Blast+ 2.2.26 and
+ * NCBI Blast 2.2.26 for the legacy support.
+ *
  * SeqAn also supports writing the default blast output format, see @link BlastReport @endlink.
  */
 struct BlastTabular_;
@@ -167,7 +170,6 @@ struct FileFormat<FormattedFile<BlastTabular, TDirection, TSpec> >
 {
     typedef BlastTabular Type;
 };
-
 
 // ----------------------------------------------------------------------------
 // Class BlastMatchField

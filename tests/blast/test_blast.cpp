@@ -66,10 +66,6 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_write_match_customfields_tabular_with_header);
     SEQAN_CALL_TEST(test_blast_write_match_lowlevel_tabular);
 
-//     SEQAN_CALL_TEST(test_blast_write_match_customcolumns_tabular_legacy);
-//     SEQAN_CALL_TEST(test_blast_write_match_customcolumns_tabular_with_header);
-//     SEQAN_CALL_TEST(test_blast_write_match_customcolumns_tabular_with_header_legacy);
-
     // WRITING (tests writeMatch() and writeRecordHeader() interfaces)
     SEQAN_CALL_TEST(test_blast_write_header_tabular);
     SEQAN_CALL_TEST(test_blast_write_header_tabular_legacy);
@@ -77,10 +73,6 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_write_header_tabular_with_header_legacy);
     SEQAN_CALL_TEST(test_blast_write_header_customfields_tabular);
     SEQAN_CALL_TEST(test_blast_write_header_customfields_tabular_with_header);
-//     SEQAN_CALL_TEST(test_blast_write_header_customcolumns_tabular);
-//     SEQAN_CALL_TEST(test_blast_write_header_customcolumns_tabular_legacy);
-//     SEQAN_CALL_TEST(test_blast_write_header_customcolumns_tabular_with_header);
-//     SEQAN_CALL_TEST(test_blast_write_header_customcolumns_tabular_with_header_legacy);
 
     // WRITING (tests writeRecord() interfaces)
     SEQAN_CALL_TEST(test_blast_write_record_tabular);
@@ -98,7 +90,7 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
 
     // WRITING (tests writeTop(), writeRecord() and writeBottom() for
     //          PAIRWISE -- this is the only test for pairwise)
-//     SEQAN_CALL_TEST(test_blast_write_pairwise);
+    SEQAN_CALL_TEST(test_blast_write_pairwise);
 //
 //     // READING (onMatch, readMatch, skipMatch, skipUntilMatch)
 //     SEQAN_CALL_TEST(test_blast_read_match_tabular);

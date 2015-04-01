@@ -57,7 +57,7 @@ namespace seqan {
  * using BlastTabularOut = FormattedFile<BlastTabular, Output, TBlastIOContext>;
  * @extends FormattedFileOut
  * @headerfile <seqan/blast.h>
- * @brief FormattedFileOut abstraction for a subset of BlastFormats
+ * @brief FormattedFileOut abstraction for @link BlastTabular @endlink
  *
  * @remarks
  *
@@ -656,7 +656,7 @@ writeMatch(TFwdIterator & stream,
  * @param[in,out] stream       The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
  * @param[in,out] context      A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in]     blastRecord  The @link BlastRecord @endlink you wish to print.
- * @param[in]     blastTabular The @link BlastTabular @endlink tag.
+ * @param[in]    tag          The @link BlastTabular @endlink or @link BlastReport @endlink tag.
  *
  * See @link BlastIOContext @endlink for ways to influence the output. Note also that this will effect downstream
  * functions like @link BlastRecord#writeRecordHeader @endlink and @link BlastMatch#writeMatch @endlink!
@@ -748,7 +748,7 @@ writeHeader(TFwdIterator & ,
 }
 
 /*!
- * @fn BlastTabular#writeHeader
+ * @fn BlastTabularOut#writeHeader
  * @headerfile seqan/blast.h
  * @brief write the header (top-most section) of a BlastTabular file (this is a NOOP)
  * @signature void writeHeader(blastTabularOut);
@@ -762,7 +762,6 @@ writeHeader(BlastTabularOut<TContext> & formattedFile)
 {
     writeHeader(formattedFile.iter, context(formattedFile), BlastTabular());
 }
-
 
 // ----------------------------------------------------------------------------
 // Function writeFooter()
@@ -793,7 +792,7 @@ writeFooter(TFwdIterator & ,
 }
 
 /*!
- * @fn BlastTabular#writeFooter
+ * @fn BlastTabularOut#writeFooter
  * @headerfile seqan/blast.h
  * @brief write the footer of a BlastTabular file (currently NOOP)
  * @signature void writeFooter(blastTabularOut);
