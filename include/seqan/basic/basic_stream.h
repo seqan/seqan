@@ -1086,12 +1086,13 @@ write(TTarget &target, TFwdIterator &iter, TSize n)
 }
 
 // ----------------------------------------------------------------------------
-// Function write(TContainer)
+// Function write(TContainer) but not container of container
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
-                                 Not<IsContiguous<TContainer> > >, void)
+inline SEQAN_FUNC_ENABLE_IF(And< Not<IsContiguous<TContainer> >,
+                                 And< Is<ContainerConcept<TContainer> >,
+                                      Not<Is<ContainerConcept<typename Value<TContainer>::Type> > > > >, void)
 write(TTarget &target, TContainer &cont)
 {
     typename DirectionIterator<TContainer, Input>::Type iter = directionIterator(cont, Input());
@@ -1099,19 +1100,19 @@ write(TTarget &target, TContainer &cont)
 }
 
 template <typename TTarget, typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
-                                 IsContiguous<TContainer> >, void)
+inline SEQAN_FUNC_ENABLE_IF(And< IsContiguous<TContainer>,
+                                 And< Is<ContainerConcept<TContainer> >,
+                                      Not<Is<ContainerConcept<typename Value<TContainer>::Type> > > > >, void)
 write(TTarget &target, TContainer &cont)
 {
     typename Iterator<TContainer, Standard>::Type iter = begin(cont, Standard());
     write(target, iter, length(cont));
 }
 
-
-
 template <typename TTarget, typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
-                                 Not<IsContiguous<TContainer> > >, void)
+inline SEQAN_FUNC_ENABLE_IF(And< Not<IsContiguous<TContainer> >,
+                                 And< Is<ContainerConcept<TContainer> >,
+                                      Not<Is<ContainerConcept<typename Value<TContainer>::Type> > > > >, void)
 write(TTarget &target, TContainer const &cont)
 {
     typename DirectionIterator<TContainer const, Input>::Type iter = directionIterator(cont, Input());
@@ -1119,15 +1120,14 @@ write(TTarget &target, TContainer const &cont)
 }
 
 template <typename TTarget, typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
-                                 IsContiguous<TContainer> >, void)
+inline SEQAN_FUNC_ENABLE_IF(And< IsContiguous<TContainer>,
+                                 And< Is<ContainerConcept<TContainer> >,
+                                      Not<Is<ContainerConcept<typename Value<TContainer>::Type> > > > >, void)
 write(TTarget &target, TContainer const &cont)
 {
     typename Iterator<TContainer const, Standard>::Type iter = begin(cont, Standard());
     write(target, iter, length(cont));
 }
-
-
 
 template <typename TTarget, typename TValue>
 inline void
