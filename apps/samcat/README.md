@@ -6,8 +6,8 @@ Concatenate and convert SAM/BAM files quickly.
 (c) Copyright in 2015 by David Weese.
 
 Usage
-
 -----
+
 This tool reads one or many SAM/BAM files and outputs their concatenation as a SAM/BAM file. 
 The headers of more than one input file will be merged.
 All formats will be detected from file extensions or input streams.
