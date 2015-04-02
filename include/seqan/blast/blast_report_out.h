@@ -200,7 +200,7 @@ _blastReference()
     return "Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro "
     "A. Schaffer,\nJinghui Zhang, Zheng Zhang, Webb Miller, and David J. "
     "Lipman (1997),\n\"Gapped BLAST and PSI-BLAST: a new generation of protein "
-    "database search\nprograms\",  Nucleic Acids Res. 25:3389-3402.\n\n";
+    "database search\nprograms\",  Nucleic Acids Res. 25:3389-3402.\n";
 }
 
 constexpr const char *
@@ -209,7 +209,7 @@ _seqanReference()
     return "Reference for SeqAn: Döring, A., D. Weese, T. Rausch, K. Reinert (2008): "
     "SeqAn --\nAn efficient, generic C++ library for sequence analysis. BMC "
     "Bioinformatics,\n9(1), 11. BioMed Central Ltd."
-    " doi:10.1186/1471-2105-9-11\n\n";
+    " doi:10.1186/1471-2105-9-11\n";
 }
 
 template <typename T>
@@ -533,6 +533,7 @@ _writeAlignmentBlock(TStream & stream,
 
         aPos = end;
     }
+    write(stream, '\n');
 }
 
 // ----------------------------------------------------------------------------
@@ -670,12 +671,45 @@ _writeRecordHeader(TStream & stream,
     write(stream, record.qId);
     write(stream, "\n\nLength=");
     write(stream, record.qLength);
+    write(stream, "\n");
+}
 
-    write(stream,
-    "\n\n\n                                                                   "
-    "Score     E\n"
-    "Sequences producing significant alignments:                       "
-    "(Bits)  Value\n\n");
+template <typename TStream,
+          typename TScore,
+          typename TConString,
+          typename TQId,
+          typename TSId,
+          typename TPos,
+          typename TAlign,
+          BlastProgram p,
+          BlastTabularSpec h>
+inline void
+_writeRecordFooter(TStream & stream,
+                   BlastIOContext<TScore, TConString, p, h> & context,
+                   BlastRecord<TQId, TSId, TPos, TAlign> const & record,
+                   BlastReport const & /*tag*/)
+{
+    write(stream, "\n"
+                  "Lambda     K      H\n"
+                  "   ");
+    write(stream, FormattedNumber<double>("%-4.3f", getLambda(context.scoringAdapter)));
+    write(stream, "   ");
+    write(stream, FormattedNumber<double>("%-5.4f", getKappa(context.scoringAdapter)));
+    write(stream, "   ");
+    write(stream, FormattedNumber<double>("%-5.4f", getH(context.scoringAdapter)));
+    write(stream, "\n\n"
+                  "Gapped\n"
+                  "Lambda     K      H\n");
+    write(stream, "   ");
+    write(stream, FormattedNumber<double>("%-4.3f", getLambda(context.scoringAdapter)));
+    write(stream, "   ");
+    write(stream, FormattedNumber<double>("%-5.4f", getKappa(context.scoringAdapter)));
+    write(stream, "   ");
+    write(stream, FormattedNumber<double>("%-5.4f", getH(context.scoringAdapter)));
+    write(stream, "\n\n"
+                  "Effective search space used: ");
+    write(stream, record.qLength * context.dbTotalLength);
+    write(stream, "\n\n");
 }
 
 // DOX for this in blast_tabular_out
@@ -708,15 +742,25 @@ writeRecord(TStream & stream,
 
     _writeRecordHeader(stream, context, record, BlastReport());
 
-    // match one-liners
-    for (auto const & m : record.matches)
-        _writeMatchOneLiner(stream, context, m, BlastReport());
+    if (!empty(record.matches))
+    {
+            write(stream, "                                                                   Score     E\n"
+                          "Sequences producing significant alignments:                       (Bits)  Value\n\n");
+        // match one-liners
+        for (auto const & m : record.matches)
+            _writeMatchOneLiner(stream, context, m, BlastReport());
 
-    write(stream, "\nALIGNMENTS\n");
-    // full matches
-    for (auto const & m : record.matches)
-        _writeFullMatch(stream, context, m, BlastReport());
+        write(stream, "\nALIGNMENTS\n");
+        // full matches
+        for (auto const & m : record.matches)
+            _writeFullMatch(stream, context, m, BlastReport());
+    }
+    else
+    {
+        write(stream, "\n\n***** No hits found *****\n\n\n");
+    }
 
+    _writeRecordFooter(stream, context, record, BlastReport());
 }
 
 /*!
@@ -776,13 +820,14 @@ writeHeader(TStream & stream,
     if (empty(context.versionString))
         context._setDefaultVersionString();
     write(stream, context.versionString);
-    write(stream, "\n\n");
+    write(stream, "\n\n\n");
 
     // write references
     write(stream, _blastReference());
+    write(stream, "\n\n\n");
     write(stream, _seqanReference());
 
-    write(stream, "\n\nDatabase: ");
+    write(stream, "\n\n\nDatabase: ");
     write(stream, context.dbName);
     write(stream, "\n           ");
     char buffer[40] = "";
@@ -842,16 +887,23 @@ writeFooter(TStream & stream,
             BlastIOContext<TScore, TConString, p, h> & context,
             BlastReport const & /*tag*/)
 {
-    //TODO add database specs
-
     TScore scheme(getScoringScheme(context));
 
-    write(stream, "\nMatrix:");
+    write(stream, "\n  Database: ");
+    write(stream, context.dbName);
+    write(stream, "\n  Number of letters in database: ");
+    write(stream, context.dbTotalLength);
+    write(stream, "\n  Number of sequences in database:  ");
+    write(stream, context.dbNumberOfSeqs);
+    write(stream, "\n\n\n\n");
+
+    write(stream, "Matrix:");
     write(stream, _matrixName(scheme));
     write(stream, "\nGap Penalties: Existence: ");
-    write(stream, scoreGapOpen(scheme));
+    write(stream, -scoreGapOpen(scheme)); // convert scores to penalties
     write(stream, ", Extension: ");
-    write(stream, scoreGapExtend(scheme));
+    write(stream, -scoreGapExtend(scheme)); // convert scores to penalties
+    //TODO possibly add more parameter information
     write(stream, "\n\n");
 }
 

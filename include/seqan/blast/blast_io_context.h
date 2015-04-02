@@ -120,7 +120,7 @@ struct BlastIOContext
     void _setDefaultVersionString()
     {
         clear(versionString);
-        append(versionString, _programTagToString(p, TBlastProgram()));
+        append(versionString, _programTagToString(blastProgram, TBlastProgram()));
         append(versionString, " 2.2.26");
         if (!legacyFormat)
             append(versionString, "+");
@@ -360,7 +360,7 @@ inline TScore
 getScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
 {
     TScore newscore(context.scoringAdapter.scheme);
-    blastScoringScheme2seqanScoringScheme(newscore);
+    seqanScoringScheme2blastScoringScheme(newscore);
     return newscore;
 }
 

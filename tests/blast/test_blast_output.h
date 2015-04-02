@@ -202,18 +202,19 @@ test_blast_write_record_match(TFile & file,
             records[q].matches.emplace_back(qIds[q], sIds[s]);
             TBlastMatch & m = records[q].matches.back();
             resize(rows(m.align), 2);
-            assignSource(row(m.align, 0), subjects[s]);
-            assignSource(row(m.align, 1), queries[q]);
+            assignSource(row(m.align, 0), queries[q]);
+            assignSource(row(m.align, 1), subjects[s]);
 
             localAlignment(m.align, context.scoringAdapter.scheme);
 
-            m.sStart = beginPosition(row(m.align, 0));
-            m.sEnd   = endPosition(row(m.align, 0));
-            m.qStart = beginPosition(row(m.align, 1));
-            m.qEnd   = endPosition(row(m.align, 1));
+            m.qStart = beginPosition(row(m.align, 0));
+            m.qEnd   = endPosition(row(m.align, 0));
+            m.sStart = beginPosition(row(m.align, 1));
+            m.sEnd   = endPosition(row(m.align, 1));
 
             m.alignLength = length(row(m.align, 0));
             m.qLength = length(queries[q]);
+            m.sLength = length(subjects[s]);
 
             m.qFrameShift = 1;
             m.sFrameShift = 1;
@@ -223,6 +224,10 @@ test_blast_write_record_match(TFile & file,
             calcBitScoreAndEValue(m, context);
         }
     }
+
+    // sort by bit-score
+    for (auto & r : records)
+        r.matches.sort();
 
     test_blast_write_do(file, context, records, format, customFields, TFormat());
 }
@@ -337,17 +342,14 @@ void test_blast_write_tabular_impl(int const format, // 0 only matches; 1 matche
     }
 
     if (customFields == 0)
-        compString.append(
-        "Query_Numero_Tres\tSubject_Numero_Uno\t87.50\t8\t1\t0\t1\t8\t184\t191\t0.026\t16.9\n"
-        "Query_Numero_Tres\tSubject_Numero_Dos\t100.00\t8\t0\t0\t1\t8\t10\t17\t0.007\t18.9\n");
+        compString.append("Query_Numero_Tres\tSubject_Numero_Dos\t100.00\t8\t0\t0\t1\t8\t10\t17\t0.007\t18.9\n"
+                          "Query_Numero_Tres\tSubject_Numero_Uno\t87.50\t8\t1\t0\t1\t8\t184\t191\t0.026\t16.9\n");
     else if (customFields == 1)
-        compString.append(
-        "Query_Numero_Tres\tSubject_Numero_Uno\t87.50\t8\t1\t0\t1\t8\t184\t191\t0.026\t16.9\t32\t0/0\n"
-        "Query_Numero_Tres\tSubject_Numero_Dos\t100.00\t8\t0\t0\t1\t8\t10\t17\t0.007\t18.9\t37\t0/0\n");
+        compString.append("Query_Numero_Tres\tSubject_Numero_Dos\t100.00\t8\t0\t0\t1\t8\t10\t17\t0.007\t18.9\t37\t0/0\n"
+                          "Query_Numero_Tres\tSubject_Numero_Uno\t87.50\t8\t1\t0\t1\t8\t184\t191\t0.026\t16.9\t32\t0/0\n");
     else
-        compString.append(
-        "Query_Numero_Tres with args\tSubject_Numero_Uno\t8\t1\t0\t0.0255459\t16.9346\n"
-        "Query_Numero_Tres with args\tSubject_Numero_Dos\t8\t0\t0\t0.00672262\t18.8606\n");
+        compString.append("Query_Numero_Tres with args\tSubject_Numero_Dos\t8\t0\t0\t0.00672262\t18.8606\n"
+                          "Query_Numero_Tres with args\tSubject_Numero_Uno\t8\t1\t0\t0.0255459\t16.9346\n");
 
     if (contents != compString)
     {
@@ -608,12 +610,12 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
     compString.append(".");
     compString.append(std::to_string(SEQAN_VERSION_PATCH));
     compString.append(", http://www.seqan.de]\n"
-    "\n"
+    "\n\n"
     "Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,\n"
     "Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),\n"
     "\"Gapped BLAST and PSI-BLAST: a new generation of protein database search\n"
     "programs\",  Nucleic Acids Res. 25:3389-3402.\n"
-    "\n"
+    "\n\n\n"
     "Reference for SeqAn: Döring, A., D. Weese, T. Rausch, K. Reinert (2008): SeqAn --\n"
     "An efficient, generic C++ library for sequence analysis. BMC Bioinformatics,\n"
     "9(1), 11. BioMed Central Ltd. doi:10.1186/1471-2105-9-11\n"
@@ -624,11 +626,11 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
     "           2 sequences; 400 total letters\n"
     "\n"
     "\n"
-    "Query= Query_Numero_Uno\n"
+    "Query= Query_Numero_Uno with args\n"
     "\n"
     "Length=12\n"
-    "\n"
-    "\n"
+//     "\n"
+//     "\n"
     "                                                                   Score     E\n"
     "Sequences producing significant alignments:                       (Bits)  Value\n"
     "\n"
@@ -637,17 +639,18 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
     "\n"
     "ALIGNMENTS\n"
     "> Subject_Numero_Uno\n"
-    "Length=0\n"
+    "Length=200\n"
     "\n"
     " Score =  23.1 bits (48), Expect =  0.0005\n"
     " Identities = 10/14 (71%), Positives = 12/14 (86%), Gaps = 2/14 (14%)\n"
     "\n"
-    "Query  1   VAYAQTKPRRLCFP  14\n"
+    "Query  1   VAYAQ--PRKLCYP  12\n"
     "           VAYAQ  PR+LC+P\n"
-    "Sbjct  79  VAYAQ--PRKLCYP  90\n"
+    "Sbjct  79  VAYAQTKPRRLCFP  92\n"
+    "\n"
     "\n"
     "> Subject_Numero_Dos\n"
-    "Length=0\n"
+    "Length=200\n"
     "\n"
     " Score =  22.3 bits (46), Expect =  0.0009\n"
     " Identities = 8/8 (100%), Positives = 8/8 (100%), Gaps = 0/8 (0%)\n"
@@ -657,30 +660,48 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
     "Sbjct  157  YAQPRKLC  164\n"
     "\n"
     "\n"
-    "Query= Query_Numero_Dos\n"
+    "\n"
+    "Lambda     K      H\n"
+    "   0.267   0.0410   0.1400\n"
+    "\n"
+    "Gapped\n"
+    "Lambda     K      H\n"
+    "   0.267   0.0410   0.1400\n"
+    "\n"
+    "Effective search space used: 4800\n"
+    "\n"
+    "\n"
+    "Query= Query_Numero_Dos with args\n"
+    "\n"
+    "Length=10\n"
+    "\n"
+    "\n"
+    "***** No hits found *****\n"
+    "\n"
+    "\n"
+    "\n"
+    "Lambda     K      H\n"
+    "   0.267   0.0410   0.1400\n"
+    "\n"
+    "Gapped\n"
+    "Lambda     K      H\n"
+    "   0.267   0.0410   0.1400\n"
+    "\n"
+    "Effective search space used: 4000\n"
+    "\n"
+    "\n"
+    "Query= Query_Numero_Tres with args\n"
     "\n"
     "Length=8\n"
-    "\n"
-    "\n"
     "                                                                   Score     E\n"
     "Sequences producing significant alignments:                       (Bits)  Value\n"
     "\n"
-    "Subject_Numero_Uno                                                   16  0.03\n"
     "Subject_Numero_Dos                                                   18  0.007\n"
+    "Subject_Numero_Uno                                                   16  0.03\n"
     "\n"
     "ALIGNMENTS\n"
-    "> Subject_Numero_Uno\n"
-    "Length=0\n"
-    "\n"
-    " Score =  16.9 bits (32), Expect =  0.03\n"
-    " Identities = 7/8 (88%), Positives = 8/8 (100%), Gaps = 0/8 (0%)\n"
-    "\n"
-    "Query  1    AVITSWTQ  8  \n"
-    "            AVITS+TQ\n"
-    "Sbjct  184  AVITSFTQ  191\n"
-    "\n"
     "> Subject_Numero_Dos\n"
-    "Length=0\n"
+    "Length=200\n"
     "\n"
     " Score =  18.9 bits (37), Expect =  0.007\n"
     " Identities = 8/8 (100%), Positives = 8/8 (100%), Gaps = 0/8 (0%)\n"
@@ -690,8 +711,36 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
     "Sbjct  10  AVITSFTQ  17\n"
     "\n"
     "\n"
+    "> Subject_Numero_Uno\n"
+    "Length=200\n"
+    "\n"
+    " Score =  16.9 bits (32), Expect =  0.03\n"
+    " Identities = 7/8 (88%), Positives = 8/8 (100%), Gaps = 0/8 (0%)\n"
+    "\n"
+    "Query  1    AVITSFTQ  8  \n"
+    "            AVITS+TQ\n"
+    "Sbjct  184  AVITSWTQ  191\n"
+    "\n"
+    "\n"
+    "\n"
+    "Lambda     K      H\n"
+    "   0.267   0.0410   0.1400\n"
+    "\n"
+    "Gapped\n"
+    "Lambda     K      H\n"
+    "   0.267   0.0410   0.1400\n"
+    "\n"
+    "Effective search space used: 3200\n"
+    "\n"
+    "\n"
+    "  Database: The Foo Database\n"
+    "  Number of letters in database: 400\n"
+    "  Number of sequences in database:  2\n"
+    "\n"
+    "\n"
+    "\n"
     "Matrix:BLOSUM62\n"
-    "Gap Penalties: Existence: -11, Extension: -1\n\n");
+    "Gap Penalties: Existence: 11, Extension: 1\n\n");
 
     if (contents != compString)
     {
