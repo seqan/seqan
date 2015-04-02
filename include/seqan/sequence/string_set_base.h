@@ -1597,24 +1597,12 @@ concat(StringSet<TString, TSpec> const & constMe)
     return me.concat;
 }
 
-template <typename TStrings>
-struct ConcatReturnType_
-{
-    typedef typename Value<TStrings>::Type Type;
-};
-
-template <typename TString, typename TSpec>
-struct ConcatReturnType_<StringSet<TString, TSpec > >
-{
-    typedef TString Type;
-};
-
+// this function is deprecated and the return value is very ungeneric, e.g. doesn't work if strings are std::string
 template <typename TStrings, typename TDelim>
-inline typename ConcatReturnType_<typename RemoveConst<TStrings>::Type>::Type
+inline String<typename Value<typename Value<TStrings>::Type>::Type>
 concat(TStrings const & strings, TDelim const & delimiter, bool ignoreEmptyStrings = false)
 {
-    typedef typename ConcatReturnType_<typename RemoveConst<TStrings>::Type>::Type TString;
-    TString tmp;
+    String<typename Value<typename Value<TStrings>::Type>::Type> tmp;
 
     if (empty(strings))
         return tmp;
@@ -1632,7 +1620,7 @@ concat(TStrings const & strings, TDelim const & delimiter, bool ignoreEmptyStrin
     }
     else
     {
-        tmp = static_cast<TString>(front(strings));
+        tmp = front(strings);
         for (size_t i = 1; i < length(strings); ++i)
         {
             append(tmp, delimiter);
@@ -1790,54 +1778,29 @@ operator!=(StringSet<TLeftString, TLeftSpec> const & left,
 // Function write(StringSet)
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TSequence, typename TSpec>
-inline void
-write(TTarget &target, StringSet<TSequence, TSpec> &seqs)
+template <typename TTarget, typename TSequences, typename TDelim>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<ContainerConcept<TSequences> >,
+                                Is<ContainerConcept<typename Value<TSequences>::Type > > >, void)
+write(TTarget & target, TSequences const & seqs, TDelim const & delimiter)
 {
-    typedef typename Size<StringSet<TSequence, TSpec> >::Type TSize;
-    for (TSize i = 0; i < length(seqs); ++i)
+    typedef typename Size<TSequences const>::Type TSize;
+    if (SEQAN_UNLIKELY(empty(seqs)))
+        return;
+    for (TSize i = 0; i < length(seqs) - 1; ++i)
     {
         write(target, seqs[i]);
-        writeValue(target, '\n');
+        write(target, delimiter);
     }
+    write(target, back(seqs)); // no delimiter after last
 }
 
-template <typename TTarget, typename TSequence, typename TSpec>
-inline void
-write(TTarget &target, StringSet<TSequence, TSpec> const &seqs)
+template <typename TTarget, typename TSequences>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<ContainerConcept<TSequences> >,
+                                Is<ContainerConcept<typename Value<TSequences>::Type > > >, void)
+write(TTarget & target, TSequences const & seqs)
 {
-    typedef typename Size<StringSet<TSequence, TSpec> const>::Type TSize;
-    for (TSize i = 0; i < length(seqs); ++i)
-    {
-        write(target, seqs[i]);
-        writeValue(target, '\n');
-    }
+    write(target, seqs, '\n');
 }
-
-template <typename TTarget, typename TSequence, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TSequence> >, void)
-write(TTarget &target, String<TSequence, TSpec> &seqs)
-{
-    typedef typename Size<String<TSequence, TSpec> >::Type TSize;
-    for (TSize i = 0; i < length(seqs); ++i)
-    {
-        write(target, seqs[i]);
-        writeValue(target, '\n');
-    }
-}
-
-template <typename TTarget, typename TSequence, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TSequence> >, void)
-write(TTarget &target, String<TSequence, TSpec> const &seqs)
-{
-    typedef typename Size<String<TSequence, TSpec> const>::Type TSize;
-    for (TSize i = 0; i < length(seqs); ++i)
-    {
-        write(target, seqs[i]);
-        writeValue(target, '\n');
-    }
-}
-
 
 }  // namespace seqan
 
