@@ -26,7 +26,7 @@ If the output file name is ommitted the result is written to stdout in SAM forma
 If ```-``` is used as input file name, the input is read from stdin.
 
 ```
-cat input.sam | samcat -b - > ouptput.bam
+cat input.sam | samcat -b - > output.bam
 ```
 
 Additional Information
