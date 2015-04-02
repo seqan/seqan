@@ -91,7 +91,8 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     // WRITING (tests writeTop(), writeRecord() and writeBottom() for
     //          PAIRWISE -- this is the only test for pairwise)
     SEQAN_CALL_TEST(test_blast_write_pairwise);
-//
+    SEQAN_CALL_TEST(test_blast_write_pairwise_formatted_file);
+
 //     // READING (onMatch, readMatch, skipMatch, skipUntilMatch)
 //     SEQAN_CALL_TEST(test_blast_read_match_tabular);
 //     SEQAN_CALL_TEST(test_blast_read_match_tabular_legacy);

@@ -110,7 +110,7 @@ typedef Tag<BlastReport_> BlastReport;
  * @see BlastRecord
  */
 
-template <typename TBlastIOContext>
+template <typename TBlastIOContext = BlastIOContext<> >
 using BlastReportOut = FormattedFile<BlastReport, Output, TBlastIOContext>;
 
 

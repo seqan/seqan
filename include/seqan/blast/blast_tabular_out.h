@@ -145,7 +145,7 @@ _writeFieldLabels(TFwdIterator & stream,
 {
     if (!empty(context.fieldsAsStrings)) // give preference to string labels
     {
-         write(stream, concat(context.fieldsAsStrings, ", "));
+         write(stream, context.fieldsAsStrings, ", ");
     }
     else
     {

@@ -574,30 +574,9 @@ SEQAN_DEFINE_TEST(test_blast_write_formatted_file_customfields_tabular_with_head
 
 // PAIRWISE FORMAT
 
-SEQAN_DEFINE_TEST(test_blast_write_pairwise)
+template <typename TString, typename TContext>
+void test_blast_compare_report_outputs(TString const & output, TContext const & context)
 {
-    const char * tempFilename = SEQAN_TEMP_FILENAME();
-    char filenameBuffer[1000];
-    strcpy(filenameBuffer, tempFilename);
-
-    std::fstream fstream(filenameBuffer,
-                         std::ios_base::in |
-                         std::ios_base::out |
-                         std::ios_base::binary |
-                         std::ios_base::trunc);
-    SEQAN_ASSERT(fstream.is_open());
-
-    BlastIOContext<> context;
-    setBlastProgram(context, BlastProgram::BLASTP);
-
-    test_blast_write_record_match(fstream, 0, 0, context, BlastReport());
-
-    std::string contents;
-    resize(contents, fstream.tellg());
-    fstream.seekg(0, std::ios::beg);
-    fstream.read(&contents[0], contents.size());
-    fstream.close();
-
     std::string compString;
     if (!context.legacyFormat)
         compString.append("BLASTP 2.2.26+ ");
@@ -742,20 +721,20 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
     "Matrix:BLOSUM62\n"
     "Gap Penalties: Existence: 11, Extension: 1\n\n");
 
-    if (contents != compString)
+    if (output != compString)
     {
-        for (uint32_t i = 0; i < length(contents); ++i)
+        for (uint32_t i = 0; i < length(output); ++i)
         {
-            if (contents[i] != compString[i])
+            if (output[i] != compString[i])
             {
-                std::cout << contents.substr(0,i) << "\n";
-                std::cout << "CONT: \"" << contents[i] << "\"\n";
+                std::cout << output.substr(0,i) << "\n";
+                std::cout << "CONT: \"" << output[i] << "\"\n";
                 std::cout << "COMP: \"" << compString[i] << "\"\n";
                 break;
             }
         }
     }
-    SEQAN_ASSERT_EQ(contents, compString);
+    SEQAN_ASSERT_EQ(output, compString);
 
 //     std::cout << "<span style=\"font-size:80%\"><table>\n"
 //                  "<tr><th>index</th>"
@@ -783,6 +762,62 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
 //                   << "</td></tr>\n";
 //     }
 //     std::cout << "</table></span>\n";
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_pairwise)
+{
+    const char * tempFilename = SEQAN_TEMP_FILENAME();
+    char filenameBuffer[1000];
+    strcpy(filenameBuffer, tempFilename);
+
+    std::fstream fstream(filenameBuffer,
+                         std::ios_base::in |
+                         std::ios_base::out |
+                         std::ios_base::binary |
+                         std::ios_base::trunc);
+    SEQAN_ASSERT(fstream.is_open());
+
+    BlastIOContext<> context;
+    setBlastProgram(context, BlastProgram::BLASTP);
+
+
+    test_blast_write_record_match(fstream, 0, 0, context, BlastReport());
+
+    std::string contents;
+    resize(contents, fstream.tellg());
+    fstream.seekg(0, std::ios::beg);
+    fstream.read(&contents[0], contents.size());
+    fstream.close();
+
+    test_blast_compare_report_outputs(contents, context);
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_pairwise_formatted_file)
+{
+    const char * tempFilename = SEQAN_TEMP_FILENAME();
+    char filenameBuffer[1000];
+    strcpy(filenameBuffer, tempFilename);
+
+    std::fstream fstream(filenameBuffer,
+                         std::ios_base::in |
+                         std::ios_base::out |
+                         std::ios_base::binary |
+                         std::ios_base::trunc);
+    SEQAN_ASSERT(fstream.is_open());
+
+    BlastIOContext<> context;
+    setBlastProgram(context, BlastProgram::BLASTP);
+
+
+    test_blast_write_record_match(fstream, 0, 3, context, BlastReport());
+
+    std::string contents;
+    resize(contents, fstream.tellg());
+    fstream.seekg(0, std::ios::beg);
+    fstream.read(&contents[0], contents.size());
+    fstream.close();
+
+    test_blast_compare_report_outputs(contents, context);
 }
 
 #endif  // SEQAN_TESTS_TEST_BLAST_OUTPUT_H_

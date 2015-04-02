@@ -51,7 +51,7 @@ namespace seqan
 /*!
  * @tag BlastTabular
  * @signature typedef Tag<BlastTabular_> BlastTabular;
- * @headerfile <seqan/blast.h>
+ * @include <seqan/blast.h>
  * @brief Support for Blast Tabular file formats (with and without headers)
  *
  * This tag is part of the support for reading and writing NCBI Blast compatible <b>tabular</b> files, both with and
@@ -77,7 +77,7 @@ typedef Tag<BlastTabular_> BlastTabular;
 
 /*!
  * @defgroup BlastTabularSpec
- * @headerfile <seqan/blast.h>
+ * @include <seqan/blast.h>
  */
 
 /*!
@@ -178,7 +178,7 @@ struct FileFormat<FormattedFile<BlastTabular, TDirection, TSpec> >
 /*!
  * @class BlastMatchField BlastMatchField
  * @brief A "meta" datastructure that contains information about members of @link BlastMatch @endlinkes
- * @headerfile seqan/blast.h
+ * @include seqan/blast.h
  *
  * @signature template <typename TVoidSpec = void> struct BlastMatchField;
  * @tparam TVoidSpec An extra spec to prevent global inclusion of statics members (you can safely ignore this)
@@ -255,7 +255,7 @@ struct BlastMatchField
 {
     /*!
      * @enum BlastMatchField::Enum
-     * @headerfile seqan/blast.h
+     * @include seqan/blast.h
      * @signature enum class BlastMatchField<TVoidSpec>::Enum : uint8_t { ... };
      * @brief A strongly typed enum mapping all fields supported by NCBI Blast to an integer
      *
