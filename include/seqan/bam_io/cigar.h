@@ -545,7 +545,7 @@ alignAndGetCigarString(
     typedef typename TContig::TContigSeq                                            TContigSeq;
     typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >            TContigGaps;
     typedef typename ReverseComplementString<TReadSeq const>::Type                  TRefCompReadSeq;
-    typedef Gaps<TReadSeq const, AnchorGaps<typename TAlignedRead::TGapAnchors> >   TReadGaps;
+    typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> >   TReadGaps;
     typedef Gaps<TRefCompReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> >  TRCReadGaps;
 
     TContigGaps contigGaps(contig.seq, contig.gaps);
