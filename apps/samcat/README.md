@@ -32,7 +32,7 @@ cat input.sam | samcat -b - > output.bam
 Additional Information
 ----------------------
 
-As the BAM format is smaller in size and faster to parse the best performance will be reached with BAM files.
+As the BAM format is more compact than SAM and faster to parse the best performance will be reached with BAM files.
 
 Contact
 -------
