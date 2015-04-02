@@ -1,4 +1,4 @@
-SAM cat
+SAM Cat
 ========
 
 Concatenate and convert SAM/BAM files quickly.
