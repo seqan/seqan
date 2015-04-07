@@ -296,7 +296,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     options.version = getVersion(parser);
 
     // Get command line.
-    for (int i = 1; i < argc; i++)
+    for (int i = 0; i < argc; i++)
     {
         append(options.commandLine, argv[i]);
         appendValue(options.commandLine, ' ');
