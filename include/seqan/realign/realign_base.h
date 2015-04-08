@@ -592,7 +592,7 @@ public:
         for (TAlignedReadIter it2 = begin(alignedReadStore, Standard()); it2 != itEnd; ++it2)
         {
             typedef Gaps<TReadSeq, AnchorGaps<String<typename TFragmentStore::TReadGapAnchor> > > TReadGaps;
-            TReadGaps readGaps(store.readSeqStore[it2->readId], it2->gaps);
+            TReadGaps readGaps(static_cast<TReadSeq>(store.readSeqStore[it2->readId]), it2->gaps);
             // if (options.debug)
             //     std::cerr << "it2->beginPos == " << it2->beginPos << ", it2->endPos == " << it2->endPos << "\n";
             if ((unsigned)abs((int)(it2->endPos - it2->beginPos)) != length(readGaps))
