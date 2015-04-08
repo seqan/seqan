@@ -48,29 +48,7 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Type BlastFileIn
-// ----------------------------------------------------------------------------
 
-/*!
- * @class BlastTabularFileIn
- * @signature typedef FormattedFile<BlastTabular, Input> BlastTabularIn;
- * @extends FormattedFileIn
- * @headerfile <seqan/blast.h>
- * @brief FormattedFileIn abstraction for a subset of BlastFormats
- *
- * Only @link BlastFormatFile @endlink::TABULAR or
- * @link BlastFormatFile @endlink::TABULAR_WITH_HEADER and
- * @link BlastFormatGeneration @endlink == ::BLAST_PLUS
- * are supported with this interface. For more options, see
- * @link BlastFormat @endlink.
- *
- * @see BlastRecord
- */
-
-typedef FormattedFile<BlastTabular, Input> BlastTabularIn;
-
-/
 
 // ============================================================================
 // Typedefs
@@ -85,26 +63,6 @@ typedef FormattedFile<BlastTabular, Input> BlastTabularIn;
 // Functions
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Function guessFormat()
-// ----------------------------------------------------------------------------
-
-template <typename TSpec>
-inline bool guessFormat(FormattedFile<BlastTabular, Input, TSpec> & file)
-{
-    if (value(file.iter) == '#')
-        setFormat(file,
-                  BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                              BlastFormatProgram::BLASTN,
-                              BlastFormatGeneration::BLAST_PLUS>());
-    else
-        setFormat(file,
-                  BlastFormat<BlastFormatFile::TABULAR,
-                              BlastFormatProgram::BLASTN,
-                              BlastFormatGeneration::BLAST_PLUS>());
-    // Always BLASTN, but doesn't matter for reading
-    return true;
-}
 
 // ----------------------------------------------------------------------------
 // Function guessFormatFromFilename()

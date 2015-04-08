@@ -93,7 +93,7 @@ namespace seqan {
  * @see BlastRecord
  */
 
-template <typename TBlastIOContext>
+template <typename TBlastIOContext = BlastIOContext<>>
 using BlastTabularOut = FormattedFile<BlastTabular, Output, TBlastIOContext>;
 
 // ============================================================================
@@ -197,7 +197,7 @@ _writeRecordHeaderWithoutColumnLabels(TFwdIterator & stream,
 }
 
 /*!
- * @fn BlastRecord#writeRecordHeader
+ * @fn BlastTabular#writeRecordHeader
  * @headerfile seqan/blast.h
  * @brief write the header of a @link BlastRecord @endlink to file
  * @signature writeRecordHeader(stream, context, blastRecord, tag)
@@ -388,7 +388,7 @@ _writeField(TFwdIterator & s,
             write(s, match.alignStats.alignmentScore);
             break;
         case BlastMatchField<>::Enum::LENGTH:
-            write(s, match.alignLength);
+            write(s, match.alignStats.alignmentLength);
             break;
         case BlastMatchField<>::Enum::P_IDENT:
             write(s, FormattedNumber<float>("%.2f", match.alignStats.alignmentIdentity));
@@ -399,8 +399,7 @@ _writeField(TFwdIterator & s,
         case BlastMatchField<>::Enum::MISMATCH:
             if (context.legacyFormat) // legacy format includes gaps in mismatches
                 write(s, match.alignStats.numMismatches +
-                         match.alignStats.numGapOpens +
-                         match.alignStats.numGapExtensions);
+                         match.alignStats.numGaps);
             else
                 write(s, match.alignStats.numMismatches);
             break;
@@ -411,7 +410,7 @@ _writeField(TFwdIterator & s,
             write(s, match.alignStats.numGapOpens);
             break;
         case BlastMatchField<>::Enum::GAPS:
-            write(s, match.alignStats.numGapOpens + match.alignStats.numGapExtensions);
+            write(s, match.alignStats.numGaps);
             break;
         case BlastMatchField<>::Enum::P_POS:
             write(s, FormattedNumber<double>("%.2f", match.alignStats.alignmentSimilarity));
@@ -525,7 +524,7 @@ _writeFields(TFwdIterator & stream,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastMatch#writeMatch
+ * @fn BlastTabular#writeMatch
  * @headerfile seqan/blast.h
  * @brief write a @link BlastMatch @endlink to file
  * @signature writeMatch(stream, context, blastMatch, tag)
@@ -604,7 +603,7 @@ _writeFields(TFwdIterator & stream,
 }
 
 /*!
- * @fn BlastTabular#writeMatch
+ * @fn BlastTabular#writeMatch0
  * @headerfile seqan/blast.h
  * @brief write blast tabular output without a @link BlastMatch @endlink object
  * @signature writeMatch(stream, blastTabular, columns...)
@@ -648,7 +647,7 @@ writeMatch(TFwdIterator & stream,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastRecord#writeRecord
+ * @fn BlastTabular#writeRecord
  * @headerfile seqan/blast.h
  * @brief write a @link BlastRecord @endlink including it's @link BlastMatch @endlinkes and possible headers to a file.
  * @signature void writeRecord(stream, context, blastRecord, blastTabular);

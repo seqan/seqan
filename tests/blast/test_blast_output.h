@@ -98,9 +98,9 @@ test_blast_write_do(TFile & file,
                                    BlastTabular(),
                                    m.qId,
                                    m.sId,
-                                   m.alignLength,
+                                   m.alignStats.alignmentLength,
                                    m.alignStats.numMismatches,
-                                   m.alignStats.numGapOpens + m.alignStats.numGapExtensions,
+                                   m.alignStats.numGaps,
                                    m.eValue,
                                    m.bitScore);
                 }
@@ -212,7 +212,7 @@ test_blast_write_record_match(TFile & file,
             m.sStart = beginPosition(row(m.align, 1));
             m.sEnd   = endPosition(row(m.align, 1));
 
-            m.alignLength = length(row(m.align, 0));
+            m.alignStats.alignmentLength = length(row(m.align, 0));
             m.qLength = length(queries[q]);
             m.sLength = length(subjects[s]);
 

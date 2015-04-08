@@ -851,6 +851,25 @@ _programTagToString(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN
     return _programTagToString(_p);
 }
 
+
+template <typename TString>
+inline BlastProgram
+_programStringToTag(TString const & str)
+{
+    if (str == _programTagToString<BlastProgram::BLASTN>())
+        return BlastProgram::BLASTN;
+    else if (str == _programTagToString<BlastProgram::BLASTP>())
+        return BlastProgram::BLASTP;
+    else if (str == _programTagToString<BlastProgram::BLASTX>())
+        return BlastProgram::BLASTX;
+    else if (str == _programTagToString<BlastProgram::TBLASTN>())
+        return BlastProgram::TBLASTN;
+    else if (str == _programTagToString<BlastProgram::TBLASTX>())
+        return BlastProgram::TBLASTX;
+
+    return BlastProgram::UNKNOWN;
+}
+
 // ----------------------------------------------------------------------------
 // Function writeTop()
 // ----------------------------------------------------------------------------

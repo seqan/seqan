@@ -46,7 +46,7 @@
 
 #include "test_blast_statistics.h"
 #include "test_blast_output.h"
-// #include "test_blast_input.h"
+#include "test_blast_input.h"
 
 SEQAN_BEGIN_TESTSUITE(test_blast)
 {
@@ -88,41 +88,43 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_write_formatted_file_customfields_tabular);
     SEQAN_CALL_TEST(test_blast_write_formatted_file_customfields_tabular_with_header);
 
+    //TODO extra tests for the stuff in the context
+
     // WRITING (tests writeTop(), writeRecord() and writeBottom() for
     //          PAIRWISE -- this is the only test for pairwise)
     SEQAN_CALL_TEST(test_blast_write_pairwise);
     SEQAN_CALL_TEST(test_blast_write_pairwise_formatted_file);
 
-//     // READING (onMatch, readMatch, skipMatch, skipUntilMatch)
-//     SEQAN_CALL_TEST(test_blast_read_match_tabular);
-//     SEQAN_CALL_TEST(test_blast_read_match_tabular_legacy);
-//     SEQAN_CALL_TEST(test_blast_read_match_customfields_tabular);
-//     SEQAN_CALL_TEST(test_blast_read_match_customcolumns_tabular);
+    // READING (onMatch, readMatch, skipMatch, skipUntilMatch)
+    SEQAN_CALL_TEST(test_blast_read_match_tabular);
+    SEQAN_CALL_TEST(test_blast_read_match_tabular_legacy);
+    SEQAN_CALL_TEST(test_blast_read_match_customfields_tabular);
+    SEQAN_CALL_TEST(test_blast_read_match_customcolumns_tabular);
 //     SEQAN_CALL_TEST(test_blast_read_match_customcolumns_tabular_legacy);
-//
-//     SEQAN_CALL_TEST(test_blast_read_match_tabular_with_header);
-//     SEQAN_CALL_TEST(test_blast_read_match_tabular_with_header_legacy);
-//     SEQAN_CALL_TEST(test_blast_read_match_customfields_tabular_with_header);
+
+    SEQAN_CALL_TEST(test_blast_read_match_tabular_with_header);
+    SEQAN_CALL_TEST(test_blast_read_match_tabular_with_header_legacy);
+    SEQAN_CALL_TEST(test_blast_read_match_customfields_tabular_with_header);
 //     SEQAN_CALL_TEST(test_blast_read_match_customcolumns_tabular_with_header);
 //     SEQAN_CALL_TEST(test_blast_read_match_customcolumns_tabular_with_header_legacy);
-//
-//     // READING (readHeader, skipHeader)
-//     SEQAN_CALL_TEST(test_blast_read_header_tabular_with_header);
-//     SEQAN_CALL_TEST(test_blast_read_header_tabular_with_header_legacy);
-//     SEQAN_CALL_TEST(test_blast_read_header_customfields_tabular_with_header);
-//
-//     // READING (readRecord)
-//     SEQAN_CALL_TEST(test_blast_read_record_tabular);
-//     SEQAN_CALL_TEST(test_blast_read_record_tabular_legacy);
-//     SEQAN_CALL_TEST(test_blast_read_record_customfields_tabular);
-//
-//     SEQAN_CALL_TEST(test_blast_read_record_tabular_with_header);
-//     SEQAN_CALL_TEST(test_blast_read_record_tabular_with_header_legacy);
-//     SEQAN_CALL_TEST(test_blast_read_record_customfields_tabular_with_header);
-//
-//     // READING (formattedFile)
-//     SEQAN_CALL_TEST(test_blast_read_formatted_file_tabular);
-//     SEQAN_CALL_TEST(test_blast_read_formatted_file_tabular_with_header);
+
+    // READING (readHeader, skipHeader)
+    SEQAN_CALL_TEST(test_blast_read_header_tabular_with_header);
+    SEQAN_CALL_TEST(test_blast_read_header_tabular_with_header_legacy);
+    SEQAN_CALL_TEST(test_blast_read_header_customfields_tabular_with_header);
+
+    // READING (readRecord)
+    SEQAN_CALL_TEST(test_blast_read_record_tabular);
+    SEQAN_CALL_TEST(test_blast_read_record_tabular_legacy);
+    SEQAN_CALL_TEST(test_blast_read_record_customfields_tabular);
+
+    SEQAN_CALL_TEST(test_blast_read_record_tabular_with_header);
+    SEQAN_CALL_TEST(test_blast_read_record_tabular_with_header_legacy);
+    SEQAN_CALL_TEST(test_blast_read_record_customfields_tabular_with_header);
+
+    // READING (formattedFile)
+    SEQAN_CALL_TEST(test_blast_read_formatted_file_tabular);
+    SEQAN_CALL_TEST(test_blast_read_formatted_file_tabular_with_header);
 }
 SEQAN_END_TESTSUITE
 

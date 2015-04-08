@@ -152,7 +152,7 @@ struct BlastMatch
 
     TPos            qLength       = 0;
     TPos            sLength       = 0;
-    TPos            alignLength   = 0;
+//     TPos            alignLength   = 0;
 
     int8_t          qFrameShift   = 1;
     int8_t          sFrameShift   = 1;
@@ -197,7 +197,7 @@ struct BlastMatch
                         qFrameShift,
                         sFrameShift,
 //                         score,
-                        alignLength,
+//                         alignLength,
                         alignStats
 //                         identities,
 //                         positives,
@@ -220,7 +220,7 @@ struct BlastMatch
                         bm2.sFrameShift,
 //                         bm2.align,
 //                         bm2.score,
-                        bm2.alignLength,
+//                         bm2.alignLength,
                         bm2.alignStats
 //                         bm2.identities,
 //                         bm2.positives,
@@ -254,7 +254,7 @@ struct BlastMatch
         sEnd          = 0;
         qLength       = 0;
         sLength       = 0;
-        alignLength   = 0;
+//         alignLength   = 0;
 //         identities    = 0;
 //         positives     = 0;
 //         mismatches    = 0;
@@ -284,7 +284,7 @@ struct BlastMatch
         qLength       = std::numeric_limits<TPos>::max();
         sLength       = std::numeric_limits<TPos>::max();
 
-        alignLength   = std::numeric_limits<TPos>::max();
+//         alignLength   = std::numeric_limits<TPos>::max();
 //         identities    = std::numeric_limits<TPos>::max();
 //         positives     = std::numeric_limits<TPos>::max();
 //         mismatches    = std::numeric_limits<TPos>::max();
@@ -305,6 +305,7 @@ struct BlastMatch
         alignStats.numMismatches        = std::numeric_limits<unsigned>::max();
         alignStats.numPositiveScores    = std::numeric_limits<unsigned>::max();
         alignStats.numNegativeScores    = std::numeric_limits<unsigned>::max();
+        alignStats.alignmentLength      = std::numeric_limits<unsigned>::max();
         alignStats.alignmentSimilarity  = std::numeric_limits<float>::max();
         alignStats.alignmentIdentity    = std::numeric_limits<float>::max();
         alignStats.alignmentScore       = std::numeric_limits<unsigned>::max();

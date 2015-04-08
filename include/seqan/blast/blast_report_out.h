@@ -243,9 +243,9 @@ _statsBlock(char * buffer,
                    " Identities = %d/%d (%d%%), Gaps = %d/%d (%d%%)\n"
                    " Strand=", // no spaces here for whatever reason
             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-            m.alignStats.numMatches, m.alignLength, int(ROUND(m.alignStats.alignmentIdentity)),
-            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignLength,
-            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignLength)));
+            m.alignStats.numMatches, m.alignStats.alignmentLength, int(ROUND(m.alignStats.alignmentIdentity)),
+            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignStats.alignmentLength,
+            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignStats.alignmentLength)));
     if (m.qFrameShift == 1)
         strcat(buffer, "Plus/");
     else
@@ -270,12 +270,12 @@ _statsBlock(char * buffer,
                    " Positives = %d/%d (%d%%),"
                    " Gaps = %d/%d (%d%%)\n\n",
             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-            m.alignStats.numMatches, m.alignLength,
+            m.alignStats.numMatches, m.alignStats.alignmentLength,
             int(ROUND(m.alignStats.alignmentIdentity)),
-            m.alignStats.numPositiveScores, m.alignLength,
+            m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
             int(ROUND(m.alignStats.alignmentSimilarity)),
-            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignLength,
-            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignLength)));
+            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignStats.alignmentLength,
+            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignStats.alignmentLength)));
 }
 
 template <typename TMatch>
@@ -292,12 +292,12 @@ _statsBlock(char * buffer,
                    " Gaps = %d/%d (%d%%)\n"
                    " Frame = %+d\n\n",
             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-            m.alignStats.numMatches, m.alignLength,
+            m.alignStats.numMatches, m.alignStats.alignmentLength,
             int(ROUND(m.alignStats.alignmentIdentity)),
-            m.alignStats.numPositiveScores, m.alignLength,
+            m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
             int(ROUND(m.alignStats.alignmentSimilarity)),
-            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignLength,
-            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignLength)),
+            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignStats.alignmentLength,
+            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignStats.alignmentLength)),
             m.qFrameShift);
 }
 
@@ -315,12 +315,12 @@ _statsBlock(char * buffer,
                    " Gaps = %d/%d (%d%%)\n"
                    " Frame = %+d\n\n",
             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-            m.alignStats.numMatches, m.alignLength,
+            m.alignStats.numMatches, m.alignStats.alignmentLength,
             int(ROUND(m.alignStats.alignmentIdentity)),
-            m.alignStats.numPositiveScores, m.alignLength,
+            m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
             int(ROUND(m.alignStats.alignmentSimilarity)),
-            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignLength,
-            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignLength)),
+            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignStats.alignmentLength,
+            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignStats.alignmentLength)),
             m.sFrameShift);
 }
 
@@ -338,12 +338,12 @@ _statsBlock(char * buffer,
                    " Gaps = %d/%d (%d%%)\n"
                    " Frame = %+d/%+d\n\n",
             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-            m.alignStats.numMatches, m.alignLength,
+            m.alignStats.numMatches, m.alignStats.alignmentLength,
             int(ROUND(m.alignStats.alignmentIdentity)),
-            m.alignStats.numPositiveScores, m.alignLength,
+            m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
             int(ROUND(m.alignStats.alignmentSimilarity)),
-            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignLength,
-            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignLength)),
+            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignStats.alignmentLength,
+            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignStats.alignmentLength)),
             m.qFrameShift, m.sFrameShift);
     //TODO there is an N-column beside e-value here, whats that?
 }
@@ -489,18 +489,18 @@ _writeAlignmentBlock(TStream & stream,
     // max # digits in pos's
     unsigned char const numberWidth = _numberOfDigits(maxPos);
 
-//     std::cout << "m.alignLength: " << m.alignLength
+//     std::cout << "m.alignStats.alignmentLength: " << m.alignStats.alignmentLength
 //               << "\t length(row0): " << length(row0)
 //               << "\t length(row1): " << length(row1)
 //               << "\n";qStepOne
 
-    while (aPos < m.alignLength)
+    while (aPos < m.alignStats.alignmentLength)
     {
         // Query line
         sprintf(buffer, "Query  %-*d  ", numberWidth, qPos + effQStart);
         write(stream, buffer);
 
-        TPos const end = _min(aPos + windowSize, m.alignLength);
+        TPos const end = _min(aPos + windowSize, m.alignStats.alignmentLength);
         for (TPos i = aPos; i < end; ++i)
         {
             if (!isGap(row0, i))

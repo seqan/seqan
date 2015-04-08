@@ -67,7 +67,7 @@
 #include "blast/blast_tabular.h"
 #include "blast/blast_io_context.h"
 #include "blast/blast_statistics.h"
-// #include "blast/blast_tabular_in.h"
+#include "blast/blast_tabular_in.h"
 #include "blast/blast_tabular_out.h"
 #include "blast/blast_report_out.h"
 

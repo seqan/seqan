@@ -272,9 +272,11 @@ template <typename TScore,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-setBlastProgram(BlastIOContext<TScore, TString, p, h> &, BlastProgram const)
+setBlastProgram(BlastIOContext<TScore, TString, p, h> &, BlastProgram const _p)
 {
-    SEQAN_FAIL("Tried to set blastProgram on context, but was already defined at compile time");
+    if (p != _p)
+        SEQAN_FAIL("ERROR: Tried to set blastProgram on context, but was already defined at compile time (and set to a "
+        "different value!");
 }
 
 template <typename TScore,
@@ -306,7 +308,7 @@ getBlastTabularSpec(BlastIOContext<TScore, TString, p, h> const &)
 
 template <typename TScore,
           typename TString,
-          BlastTabularSpec p>
+          BlastProgram p>
 inline BlastTabularSpec
 getBlastTabularSpec(BlastIOContext<TScore, TString, p, BlastTabularSpec::UNKNOWN> const & context)
 {
