@@ -60,7 +60,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /*!
  * @class BlastScoringAdapter
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief An object that holds Statistical parameters in addition to the
  * scoring Scheme
  * @signature struct BlastScoringAdapter<TScore, TSpec> { ... };
@@ -433,7 +433,7 @@ double const BlastScoringAdapter<Score<int, Simple>, TSpec>::karlinAltschulValue
 
 /*!
  * @fn BlastScoringAdapter#isValid
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief check whether object holds correct Karlin-Altschul values for its scheme
  * @signature bool isValid(blastScoringAdapter);
  */
@@ -505,7 +505,7 @@ _selectSet(BlastScoringAdapter<Score<int, Simple>> & adapter)
 
 /*!
  * @fn BlastScoringAdapter#assignScoreScheme
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief assign a new SeqAn @link Score @endlink to the adapter
  * @signature bool assignScoreScheme(blastScoringAdapter, scoringScheme);
  *
@@ -531,7 +531,7 @@ assignScoreScheme(BlastScoringAdapter<TScoringScheme> & adapter,
 
 /*!
  * @fn BlastScoringAdapter#getScoreScheme
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief access the scoring scheme inside the adapter
  * @signature TScoringScheme getScoreScheme(blastScoringAdapter);
  *
@@ -553,7 +553,7 @@ getScoreScheme(BlastScoringAdapter<TScoringScheme> const & adapter)
 
 /*!
  * @fn BlastScoringAdapter#getLambda
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief get the &lambda; value of the Karlin-Altschul parameters.
  * @signature double getLambda(blastScoringAdapter);
  */
@@ -582,7 +582,7 @@ getLambda(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 
 /*!
  * @fn BlastScoringAdapter#getKappa
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief get the &Kappa; value of the Karlin-Altschul parameters.
  * @signature double getKappa(blastScoringAdapter);
  */
@@ -611,7 +611,7 @@ getKappa(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 
 /*!
  * @fn BlastScoringAdapter#getH
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief get the H value of the Karlin-Altschul parameters.
  * @signature double getH(blastScoringAdapter);
  */
@@ -640,7 +640,7 @@ getH(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 
 /*!
  * @fn BlastScoringAdapter#getAlpha
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief get the &alpha; value of the Karlin-Altschul parameters.
  * @signature double getAlpha(blastScoringAdapter);
  */
@@ -669,7 +669,7 @@ getAlpha(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 
 /*!
  * @fn BlastScoringAdapter#getBeta
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief get the &beta; value of the Karlin-Altschul parameters.
  * @signature double getBeta(blastScoringAdapter);
  */
@@ -783,7 +783,7 @@ _lengthAdjustment(TSize     const & dbLength,
 //TODO replace by computeAlignmentStats in library
 /*
  * @fn computeAlignmentStats
- * @headerfile seqan/blast.h>
+ * @headerfile <seqan/blast.h>>
  * @signature computeAlignmentStats(score, length, num_identities, num_positives, num_mismatches, num_gaps, num_gap_opens, row0, row1, scoreScheme)
  * @brief calculate a basic score and some statistics from a given alignment and scoring scheme
  *
@@ -801,7 +801,7 @@ _lengthAdjustment(TSize     const & dbLength,
  * When organising your data in @link BlastMatch @endlinkes, a more convenient
  * interface is available: @link BlastMatch#computeAlignmentStats @endlink
  *
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  */
 
 // template <typename TScoreValue,
@@ -856,7 +856,7 @@ _lengthAdjustment(TSize     const & dbLength,
 
 /*!
  * @fn BlastMatch#computeAlignmentStats
- * @headerfile seqan/blast.h>
+ * @headerfile <seqan/blast.h>
  * @brief ina @link BlastMatch @endlink compute the alignStats member from the align member
  * @signature computeAlignmentStats(blastMatch, context);
  *
@@ -865,7 +865,7 @@ _lengthAdjustment(TSize     const & dbLength,
  *
  * The @link BlastMatch::align @endlink member is used as in-parameter to compute the
  * @link BlastMatch::alignStats @endlink member which is of type @link AlignmentStats @endlink. This includes the raw
- * score, amount of gaps, mismatches et cetera. This is a prerequisite for print match to file or computing it's
+ * score, amount of gaps, mismatches et cetera. This is a prerequisite for printing a match to file or computing it's
  * e-value.
  */
 
@@ -884,6 +884,8 @@ computeAlignmentStats(TBlastMatch & match,
 }
 
 #define LOGTWO 0.693147180
+
+//TODO dox
 
 template <typename TScore>
 inline double
@@ -931,7 +933,7 @@ _calcBitScoreAndEValue(double & bitScore,
 /*!
  * @fn BlastMatch#calcBitScoreAndEValue
  * @signature calcBitScoreAndEValue(blastMatch, blastDbSpecs, blastScoringAdapter)
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief calculate the bits score and the E-Value in a @link BlastMatch @endlink
  *
  * @param[in,out]   blastMatch  A @link BlastMatch @endlink that has a valid align member.
@@ -941,7 +943,9 @@ _calcBitScoreAndEValue(double & bitScore,
  * Make sure that at least the @link AlignmentStats::alignmentScore @endlink member of
  * blastMatch.@link BlastMatch::alignStats @endlink is set. You can do this, e.g. by calling
  * @link BlastMatch#computeAlignmentStats @endlink on it. You must also make sure to set
- * @link BlastMatch::qLength @endlink and @link BlastIOCOntext::dbTotalLength @endlink before calling this function.
+ * @link BlastMatch::qLength @endlink and @link BlastIOContext::dbTotalLength @endlink before calling this function.
+ *
+ * TODO rename to computeBitScoreAndEValue
  */
 
 template <typename TBlastMatch,
@@ -968,22 +972,20 @@ calcBitScoreAndEValue(TBlastMatch & match,
 }
 
 /*!
- * @fn BlastFormat#calcBitScoreAndEValue
+ * @fn BlastScoringAdapter#calcBitScoreAndEValue
  * @signature calcBitScoreAndEValue(bitScore, eValue, score, lengthDb, lengthQry, blastScoringAdapter)
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief calculate the bits score and the E-Value from the raw score and parameters
  *
  * @param[out]  bitScore    the bit Score [double]
  * @param[out]  eValue      the E-Value [double]
- * @param[in]   rawScore       the raw score [long]
- * @param[in]   lengthDb    total length of the database, when searching against DB (otherwise length of subject sequence) [unsigned long long]
- * @param[in]   lengthQry   length of the query sequence [unsigned long]
+ * @param[in]   rawScore    the raw score [int32_t]
+ * @param[in]   lengthDb    total length of the database, when searching against DB (otherwise length of subject sequence) [uint64_t]
+ * @param[in]   lengthQry   length of the query sequence [uint64_t]
  * @param[in]   blastScoringAdapter ScoringScheme and Karlin-Altschul statistical parameters
  *
  * When organising your data in @link BlastMatch @endlinkes, a more convenient
  * interface is available: @link BlastMatch#calcBitScoreAndEValue @endlink
- *
- * @see         BlastFormat
  */
 
 template <typename TScore>

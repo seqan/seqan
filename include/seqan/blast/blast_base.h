@@ -52,7 +52,7 @@ namespace seqan {
  * @brief Enum with BLAST file format specs
  * @signature enum class BlastFormatFile : uint8_t { ... };
  *
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  *
  * The following table lists the available BlastFormatFile values. The
  * corresponding command line arguments of legacy BLAST (<tt>blastall</tt>
@@ -153,36 +153,32 @@ namespace seqan {
 // };
 
 /*!
- * @defgroup BlastProgram
- * @enum BlastProgram#BlastProgram
+ * @enum BlastProgram
  * @brief Enum with BLAST program spec
  * @signature enum class BlastProgram : uint8_t { ... };
  *
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  *
- * @val BlastProgram BlastProgram#BlastProgram::BLASTN
+ * @val BlastProgram BlastProgram::BLASTN
  * @brief Nucleotide Query VS Nucleotide Subject
  *
- * @val BlastProgram BlastProgram#BlastProgram::BLASTP
+ * @val BlastProgram BlastProgram::BLASTP
  * @brief Protein Query VS Protein Subject
  *
- * @val BlastProgram BlastProgram#BlastProgram::BLASTX
+ * @val BlastProgram BlastProgram::BLASTX
  * @brief translated Nucleotide Query VS Protein Subject
  *
- * @val BlastProgram BlastProgram#BlastProgram::TBLASTN
+ * @val BlastProgram BlastProgram::TBLASTN
  * @brief Protein Query VS translated Nucleotide Subject
  *
- * @val BlastProgram BlastProgram#BlastProgram::TBLASTX
+ * @val BlastProgram BlastProgram::TBLASTX
  * @brief translated Nucleotide Query VS translated Nucleotide Subject
  *
- * @val BlastProgram BlastProgram#BlastProgram::UNKOWN
+ * @val BlastProgram BlastProgram::UNKOWN
  * @brief Unkown type. Used internally and to signify that the type could not be inferred from the file.
  *
- * @val BlastProgram BlastProgram#BlastProgram::INVALID
+ * @val BlastProgram BlastProgram::INVALID
  * @brief Used internally.
- *
- *
- *
  */
 enum class BlastProgram : uint8_t
 {
@@ -192,9 +188,10 @@ enum class BlastProgram : uint8_t
     TBLASTN,        //              PROT VS TRANSLATED  NUCL
     TBLASTX,        // TRANSLATED   NUCL VS TRANSLATED  NUCL
     UNKNOWN=254,
-    INVALID=255
+    INVALID=255 //TODO remove invalid again
 };
 
+// TODO dox
 template <BlastProgram p>
 using BlastProgramTag = std::integral_constant<BlastProgram, p>;
 
@@ -225,7 +222,7 @@ getBlastProgram(BlastProgram const p, BlastProgramTag<BlastProgram::UNKNOWN> con
  * @brief Enum with BLAST program generation
  * @signature enum class BlastFormatGeneration : uint8_t { ... };
  *
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  *
  * @val BlastFormatGeneration BlastFormatGeneration::BLAST_LEGACY
  * @brief traditional Blast, written in C ("blastall" binary); all behaviour related
@@ -247,7 +244,7 @@ getBlastProgram(BlastProgram const p, BlastProgramTag<BlastProgram::UNKNOWN> con
 
 /*
  * @class BlastFormat
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief Blast Format specifier
  *
  * @signature template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
@@ -619,7 +616,7 @@ sNumFrames(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &
 
 /*
  * @mfn getBlastProgramTag
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief for given query and subject alphabets, return the @link BlastProgram @endlink
  * @signature  getBlastProgramTag(TQueryAlph const &, TSubjAlph const &)
  *
@@ -715,13 +712,12 @@ sNumFrames(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &
 
 /*!
  * @defgroup BlastScoringScheme
- * @headerfile seqan/blast.h
  * @brief functions for converting to and from Blast's scoring-scheme behaviour
  *
  * Blast (and many other tools) compute scores of a stretch of gaps as
  * <tt>s = gO + n * gE</tt>
  * where gO is the gapOpen score, gE is the gap extend score and n ist the
- * total number of gaps.
+ * total number of gap characters.
  *
  * SeqAn, however, computes them as as <tt>s = gO + (n-1) * gE</tt>. The
  * functions below convert between the behaviours by adjusting the
@@ -737,12 +733,13 @@ sNumFrames(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &
  * @signature void seqanScoringScheme2blastScoringScheme(scoringScheme);
  * @brief convert to Blast's behaviour
  * @param[in,out]      scoringScheme      The @link Score @endlink object to modify.
+ * @headerfile <seqan/blast.h>
  *
  * @fn BlastScoringScheme#blastScoringScheme2seqanScoringScheme
  * @signature void blastScoringScheme2seqanScoringScheme(scoringScheme);
  * @brief convert from Blast's behaviour
  * @param[in,out]      scoringScheme      The @link Score @endlink object to modify.
- *
+ * @headerfile <seqan/blast.h>
  */
 
 template <typename TValue, typename TSpec>
@@ -876,7 +873,7 @@ _programStringToTag(TString const & str)
 
 /*
  * @fn BlastFormat#writeTop
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief write the top-most section of a BLAST output file (NO-OP for tabular formats)
  * @signature writeTop(stream, context, tag)
  *
@@ -907,7 +904,7 @@ _programStringToTag(TString const & str)
 
 /*
  * @fn BlastRecord#writeRecord
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief write a @link BlastRecord @endlink including it's
  *  @link BlastMatch @endlinkes and possible headers to a file.
  * @signature writeRecord(stream, context, blastRecord, tag)
@@ -931,7 +928,7 @@ _programStringToTag(TString const & str)
 
 /*
  * @fn BlastFormat#writeBottom
- * @headerfile seqan/blast.h
+ * @headerfile <seqan/blast.h>
  * @brief write the top-most section of a BLAST output file (NO-OP for tabular formats)
  * @signature writeBottom(stream, blastDbSpecs, scoringAdapter, tag)
  *

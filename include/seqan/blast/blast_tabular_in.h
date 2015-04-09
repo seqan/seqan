@@ -194,11 +194,11 @@ onMatch(TFwdIterator & iter,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastRecord#readRecordHeader
- * @brief read a Header from a Blast output file
+ * @fn BlastTabular#readRecordHeader
+ * @brief read a the header of a record from a Blast tabular file
  * @headerfile seqan/blast.h
  *
- * @signature readRecordHeader(blastRecord, iter, context, blastTabular);
+ * @signature void readRecordHeader(blastRecord, iter, context, blastTabular);
  *
  * @param[out]    blastRecord  A @link BlastRecord @endlink whose
  * @param[in,out] iter         An input iterator over a stream or any fwd-iterator over a string.
@@ -227,6 +227,10 @@ onMatch(TFwdIterator & iter,
  * It also sets the blast program run-time parameter of the context depending on the information found in the header. If
  * the compile time parameter was set on the context and they are different this will result in a conformancyError.
  * Otherwise you can read the value with @link BlastIOContext#getBlastProgram @endlink.
+ *
+ * Please note that for or @link BlastIOContext::legacyFormat @endlink the @link BlastIOContext::fields @endlink member
+ * is always ignored, however @link BlastIOContext::fieldsAsStrings @endlink is still read from the header, in case
+ * you want to process it.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
@@ -488,9 +492,9 @@ readRecordHeader(BlastRecord<TQId, TSId, TPos, TAlign> &,
 
 /*!
  * @fn BlastTabular#skipHeader
- * @brief skip a header from a Blast tabular output file, optionally verifying it for format compliance.
+ * @brief skip a header from a Blast tabular output file.
  *
- * @signature int skipHeader(iter, context, blastTabular);
+ * @signature void skipHeader(iter, context, blastTabular);
  *
  * @param[in,out] iter         An input iterator over a stream or any fwd-iterator over a string
  * @param[in,out] context      A @link BlastIOContext @endlink with parameters and buffers.
@@ -530,7 +534,7 @@ skipHeader(TFwdIterator & iter,
  * @fn BlastTabular#skipUntilMatch
  * @brief skip arbitrary number of headers and/or comment lines until the beginning of a match is reached
  *
- * @signature skipUntilMatch(iter, blastTabular);
+ * @signature void skipUntilMatch(iter, blastTabular);
  *
  * @param[in,out] iter         An input iterator over a stream or any fwd-iterator over a string
  * @param[in]     blastTabular The @link BlastTabular @endlink tag.
@@ -772,11 +776,11 @@ _readMatchImpl(BlastMatch<TQId, TSId, TPos, TAlign> & match,
  * @fn BlastTabular#readMatch
  * @brief read a match from a file in BlastTabular format
  *
- * @signature readMatch(blastMatch, iter, blastTabular);
+ * @signature void readMatch(blastMatch, iter, blastTabular);
  *
- * @param[out]    blastMatch  A @link BlastMatch @endlink object to hold all relevant info
- * @param[in,out] iter        An input iterator over a stream or any fwd-iterator over a string
- * @param[in,out] context     A @link BlastIOContext @endlink with parameters and buffers.
+ * @param[out]    blastMatch   A @link BlastMatch @endlink object to hold all relevant info
+ * @param[in,out] iter         An input iterator over a stream or any fwd-iterator over a string
+ * @param[in,out] context      A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in]     blastTabular The @link BlastTabular @endlink tag.
  *
  *
@@ -786,11 +790,10 @@ _readMatchImpl(BlastMatch<TQId, TSId, TPos, TAlign> & match,
  * default and that they instead represent the given order and types.
  * You may specify less
  * fields than are actually present, in this case the additional fields will be
- * discarded. The parameter is not available when BlastTabularGeneration ==
- * BLAST_LEGACY.
+ * discarded. The parameter is ignored if @link BlastIOContext::legacyFormat @endlink is set.
  *
- * All members of the @link BlastMatch @endlink that are not set after the read
- * operation will be initialized to their respective max-values to signify this.
+ * To differentiate between members of a @link BlastMatch @endlink that were read from the file and those that have
+ * not been set, the latter are initialized to their respective max-values.
  *
  * Please note that the only transformations made to the data are the following:
  *
@@ -798,15 +801,14 @@ _readMatchImpl(BlastMatch<TQId, TSId, TPos, TAlign> & match,
  *  <li> computation of the number of positives (from the percentage) [if given]</li>
  *  <li> number of gaps computed from other values [default]</li>
  *
- * In contrast to @link BlastMatch#writeMatch @endlink no other transformations
+ * In contrast to @link BlastTabular#writeMatch @endlink no other transformations
  * are made, e.g. the positions are still one-indexed and
  * flipped for reverse strand matches. This is due to the required fields for
  * retransformation (sequence lengths, frames) not being available in the
  * default columns.
  *
- * Instead of using this signature you may also use @link BlastTabular#readMatch
- * @endlink which works without a @link BlastMatch @endlink parameter and
- * supports arbitrary columns.
+ * Instead of using this signature you may also use @link BlastTabular#readMatch0 @endlink which works without a
+ * @link BlastMatch @endlink parameter and supports arbitrary columns.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
@@ -837,7 +839,7 @@ readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
  * @fn BlastTabular#readMatch0
  * @brief read arbitrary columns from a file in BlastTabular
  *
- * @signature readMatch(iter, tag, args ...);
+ * @signature void readMatch(iter, tag, args ...);
  *
  * @param[in,out] iter          An input iterator over a stream or any fwd-iterator over a string
  * @param[in]     blastTabular The @link BlastTabular @endlink tag.
@@ -861,6 +863,8 @@ readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
  *
  * @headerfile seqan/blast.h
  */
+
+//TODO actually rename this to readMatch0
 
 // arbitrary columns
 template <typename TTarget>
@@ -933,10 +937,10 @@ readMatch(TFwdIterator & iter,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastMatch#skipMatch
+ * @fn BlastTabular#skipMatch
  * @brief skip a line that contains a match
  *
- * @signature skipMatch(iter, context, blastTabular);
+ * @signature void skipMatch(iter, context, blastTabular);
  *
  * @param[in,out] iter    An input iterator over a stream or any fwd-iterator over a string
  * @param[in,out] context A @link BlastIOContext @endlink with parameters and buffers.
@@ -944,7 +948,7 @@ readMatch(TFwdIterator & iter,
  *
  * This function always checks whether it is on a line that is not a comment and
  * it does verify the line read as looking like a match. If you do not want this
- * behaviour you can instead <texttt>skipLine(iter)</texttt> which is also
+ * behaviour you can instead <tt>skipLine(iter)</tt> which is also
  * faster.
  *
  * @throw IOError On low-level I/O errors.
@@ -1105,49 +1109,32 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
  * @fn BlastTabular#readRecord
  * @brief read a record from a file in BlastTabular
  *
- * @signature readRecord(blastRecord, iter, context, blastTabular);
+ * @signature void readRecord(blastRecord, iter, context, blastTabular);
  *
  * @param[out]    blastRecord  A @link BlastRecord @endlink to hold all relevant info.
  * @param[in,out] iter         An input iterator over a stream or any fwd-iterator over a string.
  * @param[in,out] context      A @link BlastIOContext @endlink with further parameters and buffers.
  * @param[in]     blastTabular The @link BlastTabular @endlink tag.
  *
- * TODO check
- * This function will read an entire record from a blast (tabular) file, i.e.
- * a @link BlastRecord @endlink object including 0-n @link BlastMatch @endlinkes.
+ * This function will read an entire record from a blast tabular file, i.e. it will read the record header
+ * (if it exists) and 0-n @link BlastMatch @endlinkes belonging to one query. For more details on this see
+ * @link BlastTabular#readRecordHeader @endlink and @link BlastTabular#readMatch @endlink.
  *
- * In the case of the TABULAR_WITH_HEADER format, this function also sets the
- * following members of the @link BlastIOContext @endlink
- * which may or may not intereset you:
- * <li> @link BlastDbSpecs::dbName @endlink member of
- * @link BlastIOContext::dbSpecs @endlink (name of the database)</li>
- * <li> @link BlastIOContext::headerConformsToStandards @endlink a bool
- * signafying whether the header contained no anomalies.</li>
- * <li> @link BlastIOContext::fields @endlink: descriptors for the columns</li>
- * <li> @link BlastIOContext::fieldsAsStrings @endlink: labels for the columns
- * as they appear in the file</li>
- * <li> @link BlastIOContext::otherLines @endlink: any unknown lines</li>
- *
- * In @link BlastIOContext::fields @endlink member is read from the header and
- * used as in-parameter for reading the matches, i.e. it reads the column
- * labels and after that expects the values in the columns to correspond
- * to this. If you do not want this behaviour, because you expect the header
+ * Please note that if a record header exists the @link BlastIOContext::fields @endlink member is read from
+ * it first and then used as in-parameter for reading the matches, i.e.
+ * @link BlastTabular#readRecordHeader @endlink reads the
+ * column labels and after that @link BlastTabular#readMatch @endlink expects the values in the columns to correspond
+ * to their labels. If you do not want this behaviour, because you expect the header
  * to be non-standard -- as is the case with many tools -- you can set
  * context.@link BlastIOContext::ignoreFieldsInHeader @endlink to true.
  * In this case the you can also set
  * context.@link BlastIOContext::fields @endlink manually and these columns
  * will be expected for the matches, independent of the header. The latter
- * behaviour is also default for the TABULAR format without headers.
+ * behaviour is also default when there are no headers.
  *
- * For @link BlastTabularGeneration @endlink::BLAST_LEGACY the fields member is
- * always ignored, however @link BlastIOContext::fieldsAsStrings @endlink is
- * still read from the header.
- *
- * Please note that for the TABULAR format (without headers) the boundary
+ * Please note also that if there are no headers the boundary
  * between records is inferred from the indentity of the first field, i.e.
- * custom columns must also have Q_SEQ_ID as first field. Also you must pass
- * an std::string buffer as in-out parameter to cache this field.
- * @link BlastMatch#readMatch @endlink.
+ * non-standard field configurations must also have Q_SEQ_ID as their first @link BlastMatchField @endlink.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.

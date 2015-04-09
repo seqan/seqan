@@ -51,23 +51,21 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 /*!
- * @tag BlastReport
+ * @class BlastReport
  * @signature typedef Tag<BlastReport_> BlastReport;
  * @headerfile <seqan/blast.h>
  * @brief Support for Blast default file format
  *
  * This tag represents support for Blast's default file format (<tt>blastall -m 0</tt> / <tt>blast* -outfmt 0</tt>).
- * Only support for reading is available, see @link BlastReportOut @endlink for more details.
+ * Only support for writing is available, see @link BlastReportOut @endlink for more details.
  *
  * The reference Blast implementation used for developing the SeqAn support is NCBI Blast+ 2.2.26. In contrast to the
- * tabular format their is no support for writing legacy files (without the +).
+ * tabular format there is no support for writing legacy files (without the +).
  *
- * SeqAn also supports writing the default blast output format, see @link BlastReport @endlink.
+ * SeqAn also supports reading and writing the tabular blast output format, see @link BlastTabular @endlink.
  */
 struct BlastReport_;
 typedef Tag<BlastReport_> BlastReport;
-
-
 
 /*!
  * @class BlastReportOut
@@ -80,9 +78,9 @@ typedef Tag<BlastReport_> BlastReport;
  * @remarks
  *
  * This is a @link FormattedFile @endlink specialization for writing @link BlastReport @endlink formats. For details
- * on how to influence the writing of files , see @link BlastIOContext @endlink.
- * Please note that you have to  the type of the context as a template parameter to BlastReportOut, see the example
- * below.
+ * on how to influence the writing of files, see @link BlastIOContext @endlink.
+ * Please note that you have to specify the type of the context as a template parameter to BlastReportOut, see the
+ * example below.
  *
  *
  * TODO update example
@@ -112,7 +110,6 @@ typedef Tag<BlastReport_> BlastReport;
 
 template <typename TBlastIOContext = BlastIOContext<> >
 using BlastReportOut = FormattedFile<BlastReport, Output, TBlastIOContext>;
-
 
 // ----------------------------------------------------------------------------
 // Class MagicHeader
@@ -712,7 +709,7 @@ _writeRecordFooter(TStream & stream,
     write(stream, "\n\n");
 }
 
-// DOX for this in blast_tabular_out
+// TODO dox
 template <typename TStream,
           typename TScore,
           typename TConString,
@@ -772,9 +769,8 @@ writeRecord(TStream & stream,
  * @param[in,out] blastReportOut A @link BlastReportOut @endlink formattedFile.
  * @param[in]     blastRecord     The @link BlastRecord @endlink you wish to print.
  *
- * Modifiy the formattedFile's @link BlastIOContext @endlink to set some properties of the output.
- * Note also that this will effect downstream functions like @link BlastRecord#writeRecordHeader @endlink and
- * @link BlastMatch#writeMatch @endlink!
+ * Modifiy the formattedFile's @link BlastIOContext @endlink to set some properties of the output, like the
+ * @link BlastIOContext::versionString @endlink or @link BlastIOContext::dbName @endlink.
  *
  * @throw IOError On low-level I/O errors.
  */
@@ -801,8 +797,8 @@ writeRecord(BlastReportOut<TContext> & formattedFile,
  * @brief write the header (top-most section) of a BlastReport file
  * @signature void writeHeader(stream, context, blastReport);
  *
- * @param[in,out] stream         The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in,out] context        A @link BlastIOContext @endlink with parameters and buffers.
+ * @param[in,out] stream        The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param[in,out] context       A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in]     blastReport   The @link BlastReport @endlink tag.
  */
 

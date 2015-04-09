@@ -61,7 +61,7 @@ struct BlastScoringAdapter;
  *
  * This needs to be passed to most read*(), skip*() and write*() functions as
  * a parameter. You should re-use this object (i.e. only create it once for
- * every file that you write). And you don't need to and should not clear()
+ * every file that you read/write). And you don't need to and should not clear()
  * this, except when restarting IO on a different file.
  *
  * You should never set the two value template parameters when reading a file and you don't have to set them when
@@ -69,7 +69,7 @@ struct BlastScoringAdapter;
  * faster. See @link BlastIOContext#getBlastProgram @endlink, @link BlastIOContext#setBlastProgram @endlink,
  * @link BlastIOContext#getBlastTabularSpec @endlink and @link BlastIOContext#setBlastTabularSpec @endlink.
  *
- * See @link BlastFormat @endlink for examples of usage.
+ * See @link BlastTabular @endlink and @link BlastReport @endlink for examples of usage.
  */
 
 template <typename TScore_ = Blosum62,
@@ -92,13 +92,6 @@ struct BlastIOContext
     typedef BlastTabularSpecTag<h> TBlastTabularSpec; // compile-time parameter
     // if the upper is set to UNKNOWN, than this run-time variable is consulted instead:
     BlastTabularSpec tabularSpec = BlastTabularSpec::HEADER;
-
-//     /*!
-//      * @var TScore BlastIOContext::scoringScheme;
-//      * @brief never access this directly, use @link BlastIOContext#getScoringScheme @endlink and
-//      * @link BlastIOContext#setScoringScheme @endlink instead!
-//      */
-//     TScore scoringScheme;
 
     /*!
      * @var BlastScoringAdapter<TScore> BlastIOContext::scoringAdapter;
@@ -176,9 +169,10 @@ struct BlastIOContext
      * @var std::vector<BlastMatchField::Enum> BlastIOContext::fields;
      * @brief the fields (types of columns) in @link BlastTabular @endlink-formats.
      *
-     * Is an in-parameter to writeRecord, writeMatch, writeHeader and readMatch. In
-     * the latter case it signifies the expected fields. Is an out-parameter
-     * of readRecord and readHeader where it returns the fields specified in
+     * Is an in-parameter to writeRecord, writeMatch, writeRecordHeader and readMatch. In
+     * the latter case it signifies the expected fields.
+     * Is an out-parameter
+     * of readRecord and readRecordHeader where it returns the fields specified in
      * the header.
      */
     std::vector<typename BlastMatchField<>::Enum> fields { { BlastMatchField<>::Enum::STD } };
@@ -187,18 +181,18 @@ struct BlastIOContext
      * @var StringSet<TString> BlastIOContext::fieldsAsStrings;
      * @brief the fields (types of columns) in @link BlastTabular @endlink-formats, but as uninterpreted strings.
      *
-     * This is [out-parameter to readHeader()]; useful when the header does not conform to standards and
-     * you want to extract the verbatim column labels.
+     * Useful when the header does not conform to standards and you want to extract the verbatim column labels or if
+     * you wish to print non-standard column labels (which you don't!).
      */
      StringSet<TString, Owner<ConcatDirect<>>> fieldsAsStrings;
 
     /*!
      * @var bool BlastIOContext::ignoreFieldsInHeader;
-     * @brief use fields as in-parameter for readRecord as well.
+     * @brief used fields as in-parameter for readRecord as well (only @link BlastTabularIn @endlink).
      *
-     * When doing @link BlastRecord#readRecord @endlink, the
+     * When doing @link BlastTabular#readRecord @endlink, the
      * @link BlastIOContext::fields @endlink member is used as in-parameter to
-     * readHeader() and as out-parameter to readMatch(); setting this bool
+     * readRecordHeader() and as out-parameter to readMatch(); setting this bool
      * deactivates the first behaviour. Use this when the header does not
      * conform to standards (and the fields can't be read), but you know that
      * the matches are in the given, e.g. default format.
@@ -207,10 +201,12 @@ struct BlastIOContext
 
     /*!
      * @var StringSet<TString> BlastIOContext::conformancyErrors;
-     * @brief after doing a @link BlastRecord#readRecord @endlink or
-     * @link BlastRecord#readHeader @endlink this will indicate whether the
-     * header or record contained non-fatal parse errors, usually the result
-     * of a file written by a sloppy blast implementation or a bug in SeqAn.
+     * @brief holds non fatal error messages when reading from @link BlastTabularIn @endlink.
+     *
+     * After doing a @link BlastTabular#readRecord @endlink or
+     * @link BlastTabular#readRecordHeader @endlink this will indicate whether the
+     * record header contained non-fatal parse errors, usually the result
+     * of a file written by a sloppy blast implementation or possibly a bug in SeqAn.
      * An empty StringSet indicates that all is good.
      */
     StringSet<TString, Owner<ConcatDirect<>>> conformancyErrors;
@@ -235,7 +231,9 @@ struct BlastIOContext
 * @fn BlastIOContext#getBlastProgram
 * @signature BlastProgram getBlastProgram(context);
 * @param[in] context  The @link BlastIOContext @endlink.
-* @brief return the @link BlastProgram @endlink set in the context. Note that this function is constexpr when the
+* @brief return the @link BlastProgram @endlink set in the context.
+*
+* Developer note: this function is constexpr when the
 * context's compile-time parameter p != BlastProgram::UNKNOWN. Otherwise it is plain inline.
 */
 
@@ -263,8 +261,11 @@ getBlastProgram(BlastIOContext<TScore, TString, BlastProgram::UNKNOWN, h> const 
 * @signature void setBlastProgram(context, blastProgram);
 * @param[in,out] context        The @link BlastIOContext @endlink.
 * @param[in]     blastProgram   The @link BlastProgram @endlink you wish to set.
-* @brief Note that this function will bail out, if the blastProgram was already set as a compile-time argument to the
-* context (i.e. it is not euqal to BlastProgram::UNKNOWN).
+* @brief set the program type at run-time
+*
+* Note that this function will bail out, if the blastProgram was already set as a compile-time argument to the
+* context (i.e. it is not euqal to BlastProgram::UNKNOWN) and the value you wish to set is not the same as the one set
+* at compile time.
 */
 
 template <typename TScore,
@@ -292,7 +293,9 @@ setBlastProgram(BlastIOContext<TScore, TString, BlastProgram::UNKNOWN, h> & cont
 * @fn BlastIOContext#getBlastTabularSpec
 * @signature BlastTabularSpec getBlastTabularSpec(context);
 * @param[in] context  The @link BlastIOContext @endlink.
-* @brief return the @link BlastTabularSpec @endlink set in the context. Note that this function is constexpr when the
+* @brief return the @link BlastTabularSpec @endlink set in the context.
+*
+* Developer note: this function is constexpr when the
 * context's compile-time parameter p != BlastTabularSpec::UNKNOWN. Otherwise it is plain inline.
 */
 
@@ -320,8 +323,11 @@ getBlastTabularSpec(BlastIOContext<TScore, TString, p, BlastTabularSpec::UNKNOWN
 * @signature void setBlastTabularSpec(context, tabularSpec);
 * @param[in,out] context        The @link BlastIOContext @endlink.
 * @param[in]     tabularSpec    The @link BlastTabularSpec @endlink you wish to set.
-* @brief Note that this function will bail out, if the tabularSpec was already set as a compile-time argument to the
-* context (i.e. it is not euqal to BlastTabularSpec::UNKNOWN).
+* @brief set the tabular spec at run-time
+*
+* Note that this function will bail out, if the tabularSpec was already set as a compile-time argument to the
+* context (i.e. it is not euqal to BlastTabularSpec::UNKNOWN) and the value you wish to set is not the same as the one set
+* at compile time.
 */
 
 template <typename TScore,
@@ -329,9 +335,11 @@ template <typename TScore,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-setBlastTabularSpec(BlastIOContext<TScore, TString, p, h> &, BlastTabularSpec const)
+setBlastTabularSpec(BlastIOContext<TScore, TString, p, h> &, BlastTabularSpec const _h)
 {
-    SEQAN_FAIL("Tried to set tabularSpec on context, but was already defined at compile time");
+    if (h != _h)
+        SEQAN_FAIL("ERROR: Tried to set tabularSpec on context, but was already defined at compile time (and set to a "
+        "different value!");
 }
 
 template <typename TScore,
@@ -349,7 +357,7 @@ setBlastTabularSpec(BlastIOContext<TScore, TString, p, BlastTabularSpec::UNKNOWN
 * @signature ScoringScheme getScoringScheme(context);
 * @param[in] context  The @link BlastIOContext @endlink.
 * @brief get the @link Score @endlink object from in the context.
-* @returns a copy of the scoringScheme from the context.
+* @return a copy of the scoringScheme from the context.
 * @link BlastScoringScheme#seqanScoringScheme2blastScoringScheme @endlink is called on the object before it is returned,
 * so the object you get will have blast-format gaps.
 */
@@ -390,8 +398,8 @@ setScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore const &
     context.scoringAdapter.scheme = scoringScheme;
     blastScoringScheme2seqanScoringScheme(context.scoringAdapter.scheme);
     if (!_selectSet(context.scoringAdapter))
-        SEQAN_FAIL("No Karlin-Altschul parameters where available for you scoring scheme, your scoring scheme and/or "
-                   "your gap costs are not supported.");
+        SEQAN_FAIL("ERROR: No Karlin-Altschul parameters where available for you scoring scheme --> your scoring scheme"
+                   " and/or your gap costs are not supported.");
 }
 
 }

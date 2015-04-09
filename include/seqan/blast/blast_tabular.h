@@ -48,10 +48,14 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+/*
+ * @defgroup BlastTabularFormats Blast Tabular
+ * @signature typedef Tag<BlastTabular_> BlastTabular;*/
+
 /*!
- * @tag BlastTabular
+ * @class BlastTabular
  * @signature typedef Tag<BlastTabular_> BlastTabular;
- * @include <seqan/blast.h>
+ * @headerfile <seqan/blast.h>
  * @brief Support for Blast Tabular file formats (with and without headers)
  *
  * This tag is part of the support for reading and writing NCBI Blast compatible <b>tabular</b> files, both with and
@@ -63,7 +67,7 @@ namespace seqan
  * file-reading support. Please consult the documentation for @link BlastIOContext @endlink to understand the different
  * options you have with these formats.
  *
- * For very basic BlastOutput support there is also @link BlastTabular#writeMatch @endlink which comes without support
+ * For very basic BlastOutput support there is also @link BlastTabular#writeMatch0 @endlink which comes without support
  * for header and correction for positions, but does not require elaborate data structures.
  *
  * The reference Blast implementation used for developing the SeqAn support is NCBI Blast+ 2.2.26 and
@@ -75,23 +79,24 @@ struct BlastTabular_;
 typedef Tag<BlastTabular_> BlastTabular;
 
 
-/*!
+/*
  * @defgroup BlastTabularSpec
- * @include <seqan/blast.h>
+ * @headerfile <seqan/blast.h>
  */
 
 /*!
- * @enum BlastTabularSpec#BlastTabularSpec
+ * @enum BlastTabularSpec
+ * @headerfile <seqan/blast.h>
  * @signature enum class BlastTabularSpec : uint8_t { ... };
  * @brief Spec for @link BlastIOContext @endlink
  *
- * @val BlastTabularSpec::NO_HEADER
+ * @val BlastTabularSpec BlastTabularSpec::NO_HEADER
  * @brief Tabular format without header
  *
- * @val BlastTabularSpec::HEADER
+ * @val BlastTabularSpec BlastTabularSpec::HEADER
  * @brief Tabular format with header
  *
- * @val BlastTabularSpec::UNKNOWN
+ * @val BlastTabularSpec BlastTabularSpec::UNKNOWN
  * @brief not defined or not known
  */
 enum class BlastTabularSpec : uint8_t
@@ -101,7 +106,7 @@ enum class BlastTabularSpec : uint8_t
     UNKNOWN = 255,
 };
 
-/*!
+/*
  * @typedef BlastTabularSpec#BlastTabularSpecTag
  * @signature template <BlastTabularSpec h>
  * using BlastTabularSpecTag = std::integral_constant<BlastTabularSpec, h>;
@@ -110,7 +115,7 @@ enum class BlastTabularSpec : uint8_t
 template <BlastTabularSpec h>
 using BlastTabularSpecTag = std::integral_constant<BlastTabularSpec, h>;
 
-/*!
+/*
   * @typedef BlastTabularSpec#BlastTabularSpecTagHeader
  * @signature typedef BlastTabularSpecTag<BlastTabularSpec::HEADER> BlastTabularSpecTagHeader;
  * @typedef BlastTabularSpec#BlastTabularSpecTagNoHeader
@@ -178,7 +183,7 @@ struct FileFormat<FormattedFile<BlastTabular, TDirection, TSpec> >
 /*!
  * @class BlastMatchField BlastMatchField
  * @brief A "meta" datastructure that contains information about members of @link BlastMatch @endlinkes
- * @include seqan/blast.h
+ * @headerfile seqan/blast.h
  *
  * @signature template <typename TVoidSpec = void> struct BlastMatchField;
  * @tparam TVoidSpec An extra spec to prevent global inclusion of statics members (you can safely ignore this)
@@ -255,7 +260,7 @@ struct BlastMatchField
 {
     /*!
      * @enum BlastMatchField::Enum
-     * @include seqan/blast.h
+     * @headerfile seqan/blast.h
      * @signature enum class BlastMatchField<TVoidSpec>::Enum : uint8_t { ... };
      * @brief A strongly typed enum mapping all fields supported by NCBI Blast to an integer
      *
@@ -409,6 +414,10 @@ struct BlastMatchField
         "qcovhsp"
     };
 
+    /*!
+     * @var static_constexpr_char_const_*_const BlastMatchField::legacyColumnLabels
+     * @brief A single CString representing the <b>column labels</b> of the @link BlastIOContext::legacyFormat @endlink.
+     */
     static constexpr char const * const legacyColumnLabels =
     {
         "Query id, Subject id, % identity, alignment length, mismatches, gap openings, q. start, q. end, s. start, s."
@@ -417,7 +426,8 @@ struct BlastMatchField
 
     /*!
      * @var static_constexpr_char_const_*_const BlastMatchField::columnLabels[]
-     * @brief An array of CStrings representing the <b>column label</b> of each field in tabular @link BlastFormatFile @endlink
+     * @brief An array of CStrings representing the <b>column label</b> of each possible field; for the
+     * @link BlastIOContext::legacyFormat @endlink, use @link BlastMatchField::legacyColumnLabels @endlink instead.
      */
     static constexpr char const * const columnLabels [] =
     {
@@ -619,27 +629,6 @@ std::vector<typename BlastMatchField<TVoidSpec>::Enum> const BlastMatchField<TVo
 // ============================================================================
 // Metafunctions and global const-expressions
 // ============================================================================
-
-// // ----------------------------------------------------------------------------
-// // _seperatorString
-// // ----------------------------------------------------------------------------
-//
-//
-// template <BlastFormatProgram p, BlastFormatGeneration g>
-// constexpr
-// const char *
-// _seperatorString(BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p,g> const &)
-// {
-//     return ", ";
-// }
-//
-// template <BlastFormatProgram p, BlastFormatGeneration g>
-// constexpr
-// const char *
-// _seperatorString(BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
-// {
-//     return "\t";
-// }
 
 }
 
