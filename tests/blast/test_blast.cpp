@@ -115,7 +115,7 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
 
     // READING (readRecord)
     SEQAN_CALL_TEST(test_blast_read_record_tabular);
-    SEQAN_CALL_TEST(test_blast_read_record_tabular_legacy);
+    // when there is no header, you can't tell the difference for legacy, so no extra test
     SEQAN_CALL_TEST(test_blast_read_record_customfields_tabular);
 
     SEQAN_CALL_TEST(test_blast_read_record_tabular_with_header);

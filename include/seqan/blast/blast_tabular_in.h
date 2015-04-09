@@ -281,8 +281,10 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
             readLine(key, iter);
             context.versionString = key;
 
-            std::regex versionRE("[0-9]+\\.[0-9]+\\.[0-9]+\\+", std::regex::awk);
-            context.legacyFormat = std::regex_search(seqan::begin(key), seqan::end(key), versionRE);
+//             std::regex versionRE("[0-9]+\\.[0-9]+\\.[0-9]+\\+", std::regex::awk);
+//             context.legacyFormat = std::regex_search(seqan::begin(key), seqan::end(key), versionRE);
+
+            context.legacyFormat = (key.find('+') == std::string::npos);
         }
         else if (key == "Query:")
         {
@@ -988,52 +990,37 @@ _readRecordHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
 {
     readRecordHeader(blastRecord, iter, context, BlastTabular());
 
-    // .matches already resized for us
-    for (auto & m : blastRecord.matches)
+    if (!context.legacyFormat) // this is detected from the header
     {
-        if (!onMatch(iter, BlastTabular()))
+        // .matches already resized for us
+        for (auto & m : blastRecord.matches)
         {
-            appendValue(context.conformancyErrors,
-                        "Less matches than promised by header");
-            break;
+            if (!onMatch(iter, BlastTabular()))
+            {
+                appendValue(context.conformancyErrors,
+                            "Less matches than promised by header");
+                break;
+            }
+
+            readMatch(m, iter, context, BlastTabular());
         }
 
-        readMatch(m, iter, context, BlastTabular());
-    }
+        if ((!atEnd(iter)) && onMatch(iter, BlastTabular()))
+            appendValue(context.conformancyErrors,
+                        "More matches than promised by header");
 
-    if ((!atEnd(iter)) && onMatch(iter, BlastTabular()))
-        appendValue(context.conformancyErrors,
-                    "More matches than promised by header");
-
-    while ((!atEnd(iter)) && onMatch(iter, BlastTabular()))
+        while ((!atEnd(iter)) && onMatch(iter, BlastTabular()))
+        {
+            blastRecord.matches.emplace_back();
+            readMatch(back(blastRecord.matches), iter, context, BlastTabular());
+        }
+    } else
     {
-        blastRecord.matches.emplace_back();
-        readMatch(back(blastRecord.matches), iter, context, BlastTabular());
-    }
-}
-
-template <typename TFwdIterator,
-          typename TQId,
-          typename TSId,
-          typename TAlign,
-          typename TPos,
-          typename TScore,
-          typename TString,
-          BlastProgram p,
-          BlastTabularSpec h>
-inline void
-_readRecordHeaderLegacy(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
-                        TFwdIterator & iter,
-                        BlastIOContext<TScore, TString, p, h> & context,
-                        BlastTabular const &)
-{
-
-    readRecordHeader(blastRecord, iter, context, BlastTabular());
-
-    while ((!atEnd(iter)) && onMatch(iter, BlastTabular()))
-    {
-        blastRecord.matches.emplace_back();
-        readMatch(back(blastRecord.matches), iter, context, BlastTabular());
+        while ((!atEnd(iter)) && onMatch(iter, BlastTabular()))
+        {
+            blastRecord.matches.emplace_back();
+            readMatch(back(blastRecord.matches), iter, context, BlastTabular());
+        }
     }
 }
 
@@ -1175,6 +1162,40 @@ template <typename TQId,
           typename TFwdIterator,
           typename TScore,
           typename TString,
+          BlastProgram p>
+inline void
+readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+          TFwdIterator & iter,
+          BlastIOContext<TScore, TString, p, BlastTabularSpec::NO_HEADER> & context,
+          BlastTabular const &)
+{
+    _readRecordNoHeader(blastRecord, iter, context, BlastTabular());
+}
+
+template <typename TQId,
+          typename TSId,
+          typename TAlign,
+          typename TPos,
+          typename TFwdIterator,
+          typename TScore,
+          typename TString,
+          BlastProgram p>
+inline void
+readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+          TFwdIterator & iter,
+          BlastIOContext<TScore, TString, p, BlastTabularSpec::HEADER> & context,
+          BlastTabular const &)
+{
+    _readRecordHeader(blastRecord, iter, context, BlastTabular());
+}
+
+template <typename TQId,
+          typename TSId,
+          typename TAlign,
+          typename TPos,
+          typename TFwdIterator,
+          typename TScore,
+          typename TString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
@@ -1183,12 +1204,16 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
           BlastIOContext<TScore, TString, p, h> & context,
           BlastTabular const &)
 {
-    if (getBlastTabularSpec(context) == BlastTabularSpec::NO_HEADER)
+    if (onMatch(iter, BlastTabular()))
+    {
+        setBlastTabularSpec(context, BlastTabularSpec::NO_HEADER);
         _readRecordNoHeader(blastRecord, iter, context, BlastTabular());
-    else if (context.legacyFormat)
-        _readRecordHeaderLegacy(blastRecord, iter, context, BlastTabular());
+    }
     else
+    {
+        setBlastTabularSpec(context, BlastTabularSpec::HEADER);
         _readRecordHeader(blastRecord, iter, context, BlastTabular());
+    }
 }
 
 //TODO dox

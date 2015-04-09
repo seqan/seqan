@@ -684,8 +684,6 @@ SEQAN_DEFINE_TEST(test_blast_read_header_customfields_tabular_with_header)
 
 SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
 {
-    typedef BlastMatchField<> TField;
-
     std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + LEGACY_HEADER_DEFAULTS;
 
     std::ifstream ifstream(toCString(inPath),
@@ -720,7 +718,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
                     12u);
     SEQAN_ASSERT_EQ(fieldStringsConcat,
-                    TField::columnLabels[0]);
+                    BlastMatchField<>::legacyColumnLabels);
     SEQAN_ASSERT_EQ(length(context.otherLines),
                     0u);
 
@@ -737,7 +735,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
                     12u);
     SEQAN_ASSERT_EQ(fieldStringsConcat,
-                    TField::columnLabels[0]);
+                    BlastMatchField<>::legacyColumnLabels);
     SEQAN_ASSERT_EQ(length(context.otherLines),
                     0u);
 
@@ -753,7 +751,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
                     12u);
     SEQAN_ASSERT_EQ(fieldStringsConcat,
-                    TField::columnLabels[0]);
+                    BlastMatchField<>::legacyColumnLabels);
     SEQAN_ASSERT_EQ(length(context.otherLines),
                     0u);
 
@@ -772,7 +770,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
                     12u);
     SEQAN_ASSERT_EQ(fieldStringsConcat,
-                    TField::columnLabels[0]);
+                    BlastMatchField<>::legacyColumnLabels);
     SEQAN_ASSERT_EQ(length(context.otherLines),
                     0u);
 
@@ -792,7 +790,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
                     12u);
     SEQAN_ASSERT_EQ(fieldStringsConcat,
-                    TField::columnLabels[0]);
+                    BlastMatchField<>::legacyColumnLabels);
     SEQAN_ASSERT_EQ(length(context.otherLines),
                     1u);
     SEQAN_ASSERT_EQ(length(context.conformancyErrors),
@@ -818,7 +816,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     ifstream.close();
 }
 
-void _test_blast_read_tabular_record_noheader(bool const defaults, bool const islegacy)
+void _test_blast_read_tabular_record_noheader(bool const defaults)
 {
     typedef BlastMatchField<> TField;
 
@@ -866,7 +864,8 @@ void _test_blast_read_tabular_record_noheader(bool const defaults, bool const is
 
     readRecord(r, it, context, BlastTabular());
 
-    SEQAN_ASSERT_EQ(context.legacyFormat, islegacy);
+    // when there is no header, you can't tell the difference for legacy, so no extra test
+    SEQAN_ASSERT_EQ(context.legacyFormat, false);
 
     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF");
     SEQAN_ASSERT_EQ(length(r.matches),  17u);
@@ -888,7 +887,8 @@ void _test_blast_read_tabular_record_noheader(bool const defaults, bool const is
 
     readRecord(r, it, context, BlastTabular());
 
-    SEQAN_ASSERT_EQ(context.legacyFormat, islegacy);
+    // when there is no header, you can't tell the difference for legacy, so no extra test
+    SEQAN_ASSERT_EQ(context.legacyFormat, false);
 
     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR");
     SEQAN_ASSERT_EQ(length(r.matches),  2u);
@@ -907,17 +907,12 @@ void _test_blast_read_tabular_record_noheader(bool const defaults, bool const is
 
 SEQAN_DEFINE_TEST(test_blast_read_record_tabular)
 {
-    _test_blast_read_tabular_record_noheader(true, false);
+    _test_blast_read_tabular_record_noheader(true);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_record_customfields_tabular)
 {
-    _test_blast_read_tabular_record_noheader(false, false);
-}
-
-SEQAN_DEFINE_TEST(test_blast_read_record_tabular_legacy)
-{
-    _test_blast_read_tabular_record_noheader(true, true);
+    _test_blast_read_tabular_record_noheader(false);
 }
 
 //     typedef BlastFormat<BlastFormatFile::TABULAR,

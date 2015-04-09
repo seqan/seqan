@@ -237,9 +237,7 @@ struct BlastMatch
 
     inline bool operator< (BlastMatch const & bm2) const
     {
-        if (bitScore >= bm2.bitScore)
-            return true;
-        return false;
+        return (bitScore >= bm2.bitScore);
     }
 
     inline void _clear()
@@ -297,6 +295,7 @@ struct BlastMatch
         qFrameShift   = std::numeric_limits<int8_t>::max();
         sFrameShift   = std::numeric_limits<int8_t>::max();
 
+        alignStats.numGaps              = std::numeric_limits<unsigned>::max();
         alignStats.numGapOpens          = std::numeric_limits<unsigned>::max();
         alignStats.numGapExtensions     = std::numeric_limits<unsigned>::max();
         alignStats.numInsertions        = std::numeric_limits<unsigned>::max();
@@ -309,6 +308,8 @@ struct BlastMatch
         alignStats.alignmentSimilarity  = std::numeric_limits<float>::max();
         alignStats.alignmentIdentity    = std::numeric_limits<float>::max();
         alignStats.alignmentScore       = std::numeric_limits<unsigned>::max();
+
+        clear(align.data_rows);
     }
 };
 
