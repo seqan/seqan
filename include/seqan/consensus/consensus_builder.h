@@ -290,7 +290,8 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
             typedef typename TAlignedRead::TGapAnchors TGapAnchors;
             typedef typename TFragmentStore::TReadSeq TReadSeq;
             SEQAN_ASSERT_NOT(empty(store.readSeqStore[*itS]));
-            Gaps<TReadSeq, AnchorGaps<TGapAnchors> > gaps(store.readSeqStore[*itS], store.alignedReadStore[*itS].gaps);
+            Gaps<TReadSeq, AnchorGaps<TGapAnchors> > gaps(static_cast<TReadSeq>(store.readSeqStore[*itS]),
+                                                          store.alignedReadStore[*itS].gaps);
             insertGaps(gaps, from - store.alignedReadStore[*itS].beginPos, fLen);
             store.alignedReadStore[*itS].endPos += fLen;
             if (DEBUG_INCONSISTENT_LEN)
@@ -316,7 +317,7 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
         for (TAlignedReadIter it2 = begin(store.alignedReadStore, Standard()); it2 != itEnd; ++it2)
         {
             typedef Gaps<TReadSeq, AnchorGaps<String<typename TFragmentStore::TReadGapAnchor> > > TReadGaps;
-            TReadGaps readGaps(store.readSeqStore[it2->readId], it2->gaps);
+            TReadGaps readGaps(static_cast<TReadSeq>(store.readSeqStore[it2->readId]), it2->gaps);
             SEQAN_ASSERT_EQ(length(readGaps) - length(store.readSeqStore[it2->readId]), gapCount[it2->readId]);
             if (DEBUG_INCONSISTENT_LEN)
                 std::cerr << "READ GAPS\t" << (it2 - begin(store.alignedReadStore, Standard())) << "\t>>>" << readGaps << "<<< (" << length(readGaps) << ")\n"
