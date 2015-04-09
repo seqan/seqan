@@ -813,7 +813,7 @@ void AnsonMyersRealigner_<TFragmentStore>::_beginContig(unsigned contigID)
 
         // We create Gaps for the read we are iterating over.
         // TODO(holtgrew): Is clipping stored in the read gaps? It appears so in Tobias' original code.
-        TReadGaps readGaps(store.readSeqStore[it->readId], it->gaps);
+        TReadGaps readGaps(static_cast<TReadSeq>(store.readSeqStore[it->readId]), it->gaps);
 
         // Get iterators to beginning of read gaps and the corresponding positions in the contig gaps and the profile
         // string.
