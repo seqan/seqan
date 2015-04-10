@@ -33,6 +33,8 @@
 #ifndef SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_BASE_H
 #define SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_BASE_H
 
+#define SEQAN_DEBUG
+
 namespace SEQAN_NAMESPACE_MAIN
 {
 
@@ -136,6 +138,10 @@ buildAlignmentGraph(String<TFragment, TSpec1>& matches,
     // Segment-match refinement
     matchRefinement(matches,strSet,outGraph);
 
+#ifdef SEQAN_DEBUG
+    double adaptScoresTime = sysTime();
+#endif
+
     // Clear edge-weights
     typedef typename Iterator<TOutGraph, EdgeIterator>::Type TEdgeIterator;
     TEdgeIterator itE(outGraph);
@@ -161,6 +167,10 @@ buildAlignmentGraph(String<TFragment, TSpec1>& matches,
             pos2 += vertexLen;
         }
     }
+
+#ifdef SEQAN_DEBUG
+    std::cout << std::setw(30) << std::left << "Adapt scores:" << std::setw(10) << std::right << sysTime() - adaptScoresTime << "  s" << std::endl;
+#endif
 }
 
 

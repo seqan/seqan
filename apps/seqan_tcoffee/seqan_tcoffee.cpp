@@ -24,6 +24,8 @@ Lesser General Public License for more details.
 
 using namespace seqan;
 
+#define SEQAN_DEBUG
+
 //////////////////////////////////////////////////////////////////////////////////
 
 inline void
@@ -426,6 +428,11 @@ _setUpArgumentParser(ArgumentParser & parser)
 
 int main(int argc, const char *argv [])
 {
+#ifdef SEQAN_DEBUG
+    double totalStartTime = sysTime();
+    std::cout << std::fixed << std::setprecision(5);
+#endif
+    
     // Command line parsing
     ArgumentParser parser("seqan_tcoffee");
     _setUpArgumentParser(parser);
@@ -456,6 +463,10 @@ int main(int argc, const char *argv [])
         _initScoreMatrix(parser, Rna5());
     else
         _initScoreMatrix(parser, AminoAcid());
+
+#ifdef SEQAN_DEBUG
+    std::cout << std::setw(30) << std::left << "Total time:" << std::setw(10) << std::right << sysTime() - totalStartTime << "  s" << std::endl;
+#endif
 
     return 0;
 }

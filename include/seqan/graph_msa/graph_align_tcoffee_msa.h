@@ -35,6 +35,8 @@
 #ifndef SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_MSA_H
 #define SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_MSA_H
 
+#define SEQAN_DEBUG
+
 namespace seqan
 {
 
@@ -288,6 +290,17 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
     TStringSet & seqSet = stringSet(gAlign);
     TSize nSeq = length(seqSet);
     TSize threshold = 30;
+#ifdef SEQAN_DEBUG
+    std::cout << std::setw(30) << std::left << "Number of sequences: " << std::setw(10) << std::right << nSeq << std::endl;
+    int seqTotalLen = 0;
+    for (typename Iterator<TStringSet>::Type it = begin(seqSet); it != end(seqSet); ++it)
+        seqTotalLen += length(*it);
+    std::cout << std::setw(30) << std::left << "Average sequence length: " << std::setw(10) << std::right << seqTotalLen / nSeq << std::endl;
+    std::cout << std::setw(30) << std::left << "Total sequences length: " << std::setw(10) << std::right << seqTotalLen << std::endl;
+    
+    double segmentGenerationTime = sysTime();
+#endif
+
 
     // Select all possible pairs for global and local alignments
     String<TSize> pList;
@@ -385,6 +398,11 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         }
     }
 
+#ifdef SEQAN_DEBUG
+    std::cout << std::setw(30) << std::left << "Segment-match generation:" << std::setw(10) << std::right << sysTime() - segmentGenerationTime << "  s" << std::endl;
+    std::cout << std::setw(30) << std::left << "Number of segment-matches:" << std::setw(10) << std::right << length(matches) << std::endl;
+#endif
+    
     // Use these segment matches for the initial alignment graph
     TGraph g(seqSet);
     if (!msaOpt.rescore)
@@ -393,6 +411,13 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         buildAlignmentGraph(matches, scores, g, msaOpt.sc, ReScore());
     clear(matches);
     clear(scores);
+    
+#ifdef SEQAN_DEBUG
+    std::cout << std::setw(30) << std::left << "Number of vertices:" << std::setw(10) << std::right << numVertices(g) << std::endl;
+    std::cout << std::setw(30) << std::left << "Number of edges:" << std::setw(10) << std::right << numEdges(g) << std::endl;
+
+    double guideTreeTime = sysTime();
+#endif
 
     // Guide tree
     Graph<Tree<TDistanceValue> > guideTree;
@@ -424,11 +449,23 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
     }
     clear(distanceMatrix);
 
+#ifdef SEQAN_DEBUG
+    std::cout << std::setw(30) << std::left << "Guide-tree:" << std::setw(10) << std::right << sysTime() - guideTreeTime << "  s" << std::endl;
+
+    double tripletStartTime = sysTime();
+#endif
+
     // Triplet extension
     if (nSeq < threshold)
         tripletLibraryExtension(g);
     else
         tripletLibraryExtension(g, guideTree, threshold / 2);
+
+#ifdef SEQAN_DEBUG
+    std::cout << std::setw(30) << std::left << "Triplet extension:" << std::setw(10) << std::right << sysTime() - tripletStartTime << "  s" << std::endl;
+
+    double progressiveAlignmentTime = sysTime();
+#endif
 
     // Progressive Alignment
     progressiveAlignment(g, guideTree, gAlign);
@@ -443,6 +480,10 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
     //    }
     //    std::cout << std::endl;
     //}
+
+#ifdef SEQAN_DEBUG
+    std::cout << std::setw(30) << std::left << "Progressive alignment:" << std::setw(10) << std::right << sysTime() - progressiveAlignmentTime << "  s" << std::endl;
+#endif
 }
 
 template <typename TStringSet, typename TCargo, typename TSpec, typename TScore>
