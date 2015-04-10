@@ -402,6 +402,8 @@ setScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore const &
                    " and/or your gap costs are not supported.");
 }
 
+//TODO setInternalScoringScheme hinzufügen
+
 }
 
 #endif

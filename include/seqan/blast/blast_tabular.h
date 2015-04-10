@@ -63,12 +63,13 @@ namespace seqan
  * parameters <tt>-m 8</tt> and <tt>-m 9</tt> (with headers) and in BLAST+ (<tt>blastx</tt>, <tt>blastn</tt>...) with
  * the parameters <tt>-outfmt 6</tt> and <tt>-outfmt 7</tt> respectively.
  *
- * See @link BlastTabularOut @endlink for the file-writing support and @link BlastTabularIn @endlink for the
- * file-reading support. Please consult the documentation for @link BlastIOContext @endlink to understand the different
- * options you have with these formats.
+ * See @link BlastTabularOut @endlink for high level file-writing support and @link BlastTabularIn @endlink for
+ * high level file-reading support. Please consult the documentation for @link BlastIOContext @endlink to understand
+ * the different options you have with these formats.
  *
- * For very basic BlastOutput support there is also @link BlastTabular#writeMatch0 @endlink which comes without support
- * for header and correction for positions, but does not require elaborate data structures.
+ * For very basic tabular IO there are also @link BlastTabular#writeMatch0 @endlink and
+ * @link BlastTabular#readMatch0 @endlink which require neither contexts nor matches or records, but that also
+ * don't do many of the transformations that you would want.
  *
  * The reference Blast implementation used for developing the SeqAn support is NCBI Blast+ 2.2.26 and
  * NCBI Blast 2.2.26 for the legacy support.
@@ -77,12 +78,6 @@ namespace seqan
  */
 struct BlastTabular_;
 typedef Tag<BlastTabular_> BlastTabular;
-
-
-/*
- * @defgroup BlastTabularSpec
- * @headerfile <seqan/blast.h>
- */
 
 /*!
  * @enum BlastTabularSpec
@@ -105,6 +100,12 @@ enum class BlastTabularSpec : uint8_t
     HEADER = 1,
     UNKNOWN = 255,
 };
+
+
+/*
+ * @defgroup BlastTabularSpec
+ * @headerfile <seqan/blast.h>
+ */
 
 /*
  * @typedef BlastTabularSpec#BlastTabularSpecTag
@@ -199,7 +200,7 @@ struct FileFormat<FormattedFile<BlastTabular, TDirection, TSpec> >
  * fields is not supported and the columnsLabels will always be printed as
  * @link BlastMatchField::legacyColumnLabels @endlink.
  *
- * <h3>Table overview</h3> *
+ * <h3>Table overview</h3>
  * @htmlonly
  * <span style="font-size:90%"><table>
  * <tr><th>#</th><th>Enum</th><th>optionLabels</th><th>columnLabels</th><th>descriptions</th><th>implemented</th></tr>

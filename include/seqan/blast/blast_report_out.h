@@ -69,41 +69,28 @@ typedef Tag<BlastReport_> BlastReport;
 
 /*!
  * @class BlastReportOut
- * @signature template <typename TBlastIOContext>
+ * @signature template <typename TBlastIOContext = BlastIOContext<>>
  * using BlastReportOut = FormattedFile<BlastReport, Output, TBlastIOContext>;
  * @extends FormattedFileOut
  * @headerfile <seqan/blast.h>
  * @brief FormattedFileOut abstraction for @link BlastReport @endlink
- *
- * @remarks
  *
  * This is a @link FormattedFile @endlink specialization for writing @link BlastReport @endlink formats. For details
  * on how to influence the writing of files, see @link BlastIOContext @endlink.
  * Please note that you have to specify the type of the context as a template parameter to BlastReportOut, see the
  * example below.
  *
+ * @section Example
  *
- * TODO update example
- * @example
- * @code{.cpp}
- * BlastReportOut out("/tmp/example.blast");
+ * The following short program creates the pairwise alignments between three query sequences and two database sequences,
+ * it computes the e-values, sorts the matches and prints all results that score above a threshold. <i>The same example
+ * is used for @link BlastTabularOut @endlink and @link BlastReportOut @endlink, you only need to change one line.</i>
  *
- * context(out).dbName = "Legendary Nucleotide Database";
+ * @include demos/blast/blast_out_example.cpp
  *
- * BlastRecord<> r;
- * r.qId = "FIRSTREAD abcdefg";
+ * The file generated in /tmp/output.blast looks like this:
  *
- * for (...)
- * {
- *     BlastMatch<> m;
- *
- *     // "fill" the match object
- *
- *     appendValue(r.matches, m);
- * }
- *
- * writeRecord(out, r);
- * @endcode
+ * @include demos/blast/blast_out_example.report
  *
  * @see BlastRecord
  */
@@ -203,7 +190,7 @@ _blastReference()
 constexpr const char *
 _seqanReference()
 {
-    return "Reference for SeqAn: Döring, A., D. Weese, T. Rausch, K. Reinert (2008): "
+    return "Reference for SeqAn: Doering, A., D. Weese, T. Rausch, K. Reinert (2008): "
     "SeqAn --\nAn efficient, generic C++ library for sequence analysis. BMC "
     "Bioinformatics,\n9(1), 11. BioMed Central Ltd."
     " doi:10.1186/1471-2105-9-11\n";
@@ -240,9 +227,9 @@ _statsBlock(char * buffer,
                    " Identities = %d/%d (%d%%), Gaps = %d/%d (%d%%)\n"
                    " Strand=", // no spaces here for whatever reason
             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-            m.alignStats.numMatches, m.alignStats.alignmentLength, int(ROUND(m.alignStats.alignmentIdentity)),
-            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignStats.alignmentLength,
-            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignStats.alignmentLength)));
+            m.alignStats.numMatches, m.alignStats.alignmentLength, int(std::lround(m.alignStats.alignmentIdentity)),
+            m.alignStats.numGaps, m.alignStats.alignmentLength,
+            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
     if (m.qFrameShift == 1)
         strcat(buffer, "Plus/");
     else
@@ -268,11 +255,11 @@ _statsBlock(char * buffer,
                    " Gaps = %d/%d (%d%%)\n\n",
             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
             m.alignStats.numMatches, m.alignStats.alignmentLength,
-            int(ROUND(m.alignStats.alignmentIdentity)),
+            int(std::lround(m.alignStats.alignmentIdentity)),
             m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
-            int(ROUND(m.alignStats.alignmentSimilarity)),
-            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignStats.alignmentLength,
-            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignStats.alignmentLength)));
+            int(std::lround(m.alignStats.alignmentSimilarity)),
+            m.alignStats.numGaps, m.alignStats.alignmentLength,
+            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
 }
 
 template <typename TMatch>
@@ -290,11 +277,11 @@ _statsBlock(char * buffer,
                    " Frame = %+d\n\n",
             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
             m.alignStats.numMatches, m.alignStats.alignmentLength,
-            int(ROUND(m.alignStats.alignmentIdentity)),
+            int(std::lround(m.alignStats.alignmentIdentity)),
             m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
-            int(ROUND(m.alignStats.alignmentSimilarity)),
-            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignStats.alignmentLength,
-            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignStats.alignmentLength)),
+            int(std::lround(m.alignStats.alignmentSimilarity)),
+            m.alignStats.numGaps, m.alignStats.alignmentLength,
+            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)),
             m.qFrameShift);
 }
 
@@ -313,11 +300,11 @@ _statsBlock(char * buffer,
                    " Frame = %+d\n\n",
             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
             m.alignStats.numMatches, m.alignStats.alignmentLength,
-            int(ROUND(m.alignStats.alignmentIdentity)),
+            int(std::lround(m.alignStats.alignmentIdentity)),
             m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
-            int(ROUND(m.alignStats.alignmentSimilarity)),
-            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignStats.alignmentLength,
-            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignStats.alignmentLength)),
+            int(std::lround(m.alignStats.alignmentSimilarity)),
+            m.alignStats.numGaps, m.alignStats.alignmentLength,
+            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)),
             m.sFrameShift);
 }
 
@@ -336,11 +323,11 @@ _statsBlock(char * buffer,
                    " Frame = %+d/%+d\n\n",
             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
             m.alignStats.numMatches, m.alignStats.alignmentLength,
-            int(ROUND(m.alignStats.alignmentIdentity)),
+            int(std::lround(m.alignStats.alignmentIdentity)),
             m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
-            int(ROUND(m.alignStats.alignmentSimilarity)),
-            m.alignStats.numGapOpens + m.alignStats.numGapExtensions, m.alignStats.alignmentLength,
-            int(ROUND(double(m.alignStats.numGapOpens + m.alignStats.numGapExtensions) * 100 / m.alignStats.alignmentLength)),
+            int(std::lround(m.alignStats.alignmentSimilarity)),
+            m.alignStats.numGaps, m.alignStats.alignmentLength,
+            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)),
             m.qFrameShift, m.sFrameShift);
     //TODO there is an N-column beside e-value here, whats that?
 }
@@ -709,7 +696,28 @@ _writeRecordFooter(TStream & stream,
     write(stream, "\n\n");
 }
 
-// TODO dox
+/*!
+ * @fn BlastReport#writeRecord
+ * @headerfile seqan/blast.h
+ * @brief write a @link BlastRecord @endlink including it's @link BlastMatch @endlinkes to a file.
+ * @signature void writeRecord(stream, context, blastRecord, blastReport);
+ *
+ * @param[in,out] stream       The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param[in,out] context      A @link BlastIOContext @endlink with parameters and buffers.
+ * @param[in]     blastRecord  The @link BlastRecord @endlink you wish to print.
+ * @param[in]     blastReport  The @link BlastReport @endlink tag.
+ *
+ * @section Remarks
+ *
+ * Modifiy the formattedFile's @link BlastIOContext @endlink to set some properties of the output, like the
+ * @link BlastIOContext::versionString @endlink or @link BlastIOContext::dbName @endlink.
+ *
+ * @throw IOError On low-level I/O errors.
+ *
+ * @see BlastRecord
+ * @see BlastIOContext
+ */
+
 template <typename TStream,
           typename TScore,
           typename TConString,
@@ -732,7 +740,7 @@ writeRecord(TStream & stream,
         for (auto const & m : record.matches)
         {
             CharString str2(m.qId);
-            SEQAN_ASSERT_EQ(str1, str2);
+            SEQAN_ASSERT(startsWith(str1, str2));
         }
     }
     #endif// DEBUG
@@ -769,10 +777,12 @@ writeRecord(TStream & stream,
  * @param[in,out] blastReportOut A @link BlastReportOut @endlink formattedFile.
  * @param[in]     blastRecord     The @link BlastRecord @endlink you wish to print.
  *
- * Modifiy the formattedFile's @link BlastIOContext @endlink to set some properties of the output, like the
- * @link BlastIOContext::versionString @endlink or @link BlastIOContext::dbName @endlink.
+ * This is a convenience interface for BlastReport#@link BlastReport#writeRecord @endlink, see that for more details.
  *
  * @throw IOError On low-level I/O errors.
+ *
+ * @see BlastRecord
+ * @see BlastIOContext
  */
 
 template <typename TContext,
@@ -800,6 +810,11 @@ writeRecord(BlastReportOut<TContext> & formattedFile,
  * @param[in,out] stream        The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
  * @param[in,out] context       A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in]     blastReport   The @link BlastReport @endlink tag.
+ *
+ * @throw IOError On low-level I/O errors.
+ *
+ * @see BlastRecord
+ * @see BlastIOContext
  */
 
 template <typename TStream,
@@ -849,6 +864,13 @@ writeHeader(TStream & stream,
  * @signature void writeHeader(blastReportOut);
  *
  * @param[in,out] blastReportOut A @link BlastReportOut @endlink formattedFile.
+ *
+ * This is a convenience interface for BlastReport#@link BlastReport#writeHeader @endlink, see that for more details.
+ *
+ * @throw IOError On low-level I/O errors.
+ *
+ * @see BlastRecord
+ * @see BlastIOContext
  */
 
 template <typename TContext>
@@ -871,6 +893,11 @@ writeHeader(BlastReportOut<TContext> & formattedFile)
  * @param[in,out] stream         The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
  * @param[in,out] context        A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in]     blastReport   The @link BlastReport @endlink tag.
+ *
+ * @throw IOError On low-level I/O errors.
+ *
+ * @see BlastRecord
+ * @see BlastIOContext
  */
 
 template <typename TStream,
@@ -910,6 +937,13 @@ writeFooter(TStream & stream,
  * @signature void writeFooter(blastReportOut);
  *
  * @param[in,out] blastReportOut A @link BlastReportOut @endlink formattedFile.
+ *
+ * This is a convenience interface for BlastReport#@link BlastReport#writeFooter @endlink, see that for more details.
+ *
+ * @throw IOError On low-level I/O errors.
+ *
+ * @see BlastRecord
+ * @see BlastIOContext
  */
 
 template <typename TContext>
@@ -918,8 +952,6 @@ writeFooter(BlastReportOut<TContext> & formattedFile)
 {
     writeFooter(formattedFile.iter, context(formattedFile), BlastReport());
 }
-
-//TODO check behaviour regarding empty records and truncating of IDs
 
 } // namespace seqan
 

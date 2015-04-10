@@ -393,8 +393,8 @@ _test_blast_read_tabular_match_columns(std::string const & path)
     double      field11;
     double      field12;
 
-    readMatch(it, BlastTabular(), field1, field2, field3, field4, field5, field6,
-              field7, field8, field9, field10, field11, field12);
+    readMatch0(it, BlastTabular(), field1, field2, field3, field4, field5, field6,
+               field7, field8, field9, field10, field11, field12);
 
     SEQAN_ASSERT_EQ(field1,          "SHAA004TF");
     SEQAN_ASSERT_EQ(field2,          "sp|P0A916|OMPW_SHIFL");
@@ -413,8 +413,8 @@ _test_blast_read_tabular_match_columns(std::string const & path)
     SEQAN_ASSERT_LEQ(std::abs(field12 - 108), 1e-3);
 
     // SEQAN_TRY reading less coluumns than are present
-    readMatch(it, BlastTabular(), field1, field2, field3, field4, field5, field6,
-              field7, field8, field9, field10);
+    readMatch0(it, BlastTabular(), field1, field2, field3, field4, field5, field6,
+               field7, field8, field9, field10);
 
     SEQAN_ASSERT_EQ(field1,          "SHAA004TF");
     SEQAN_ASSERT_EQ(field2,          "sp|P0A915|OMPW_ECOLI");
@@ -432,7 +432,7 @@ _test_blast_read_tabular_match_columns(std::string const & path)
 
     // read remaining matches
     while (onMatch(it, BlastTabular()))
-        readMatch(it, BlastTabular(), field1); // only one field
+        readMatch0(it, BlastTabular(), field1); // only one field
 
     // go to last record with matches
     skipUntilMatch(it, BlastTabular());
@@ -445,8 +445,8 @@ _test_blast_read_tabular_match_columns(std::string const & path)
     SEQAN_TRY
     {
         // no strings here to take the strings
-        readMatch(it, BlastTabular(), field3, field4, field5, field6, field7, field8, field9, field10, field11,
-                  field12);
+        readMatch0(it, BlastTabular(), field3, field4, field5, field6, field7, field8, field9, field10, field11,
+                   field12);
     } SEQAN_CATCH (BadLexicalCast const & e)
     {
         exceptComment = e.what();

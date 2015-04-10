@@ -94,15 +94,15 @@ test_blast_write_do(TFile & file,
                     if (custom <= 1)
                         writeMatch(file, context, m, BlastTabular());
                     else
-                        writeMatch(file,
-                                   BlastTabular(),
-                                   m.qId,
-                                   m.sId,
-                                   m.alignStats.alignmentLength,
-                                   m.alignStats.numMismatches,
-                                   m.alignStats.numGaps,
-                                   m.eValue,
-                                   m.bitScore);
+                        writeMatch0(file,
+                                    BlastTabular(),
+                                    m.qId,
+                                    m.sId,
+                                    m.alignStats.alignmentLength,
+                                    m.alignStats.numMismatches,
+                                    m.alignStats.numGaps,
+                                    m.eValue,
+                                    m.bitScore);
                 }
             }
             if (custom <= 1)
@@ -111,12 +111,7 @@ test_blast_write_do(TFile & file,
         case 2: // iteratre over records
             writeHeader(file, context, BlastTabular()); // noop for TABULARs
             for (auto const & r : records)
-            {
-                if (custom == 0)
-                    writeRecord(file, context, r, BlastTabular());
-                else if (custom == 1)
-                    writeRecord(file, context, r, BlastTabular());
-            }
+                writeRecord(file, context, r, BlastTabular());
             writeFooter(file, context, BlastTabular()); // noop for TABULARs
             break;
         case 3: // formatted file out
@@ -126,7 +121,6 @@ test_blast_write_do(TFile & file,
             for (auto const & r : records)
                 writeRecord(out, r);
             writeFooter(out); // noop for TABULARs
-
         } break;
     }
 }
@@ -141,8 +135,7 @@ test_blast_write_record_match(TFile & file,
 {
     typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
     typedef BlastMatch<CharString, CharString, uint32_t, TAlign> TBlastMatch;
-    typedef BlastRecord<CharString, CharString, uint32_t, TAlign>
-            TBlastRecord;
+    typedef BlastRecord<CharString, CharString, uint32_t, TAlign> TBlastRecord;
 
     StringSet<String<AminoAcid>, Owner<ConcatDirect<>>> queries;
     StringSet<CharString, Owner<ConcatDirect<>>> qIds;

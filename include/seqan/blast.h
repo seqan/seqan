@@ -37,6 +37,8 @@
 #ifndef SEQAN_BLAST_H
 #define SEQAN_BLAST_H
 
+#include <seqan/platform.h>
+
 #ifdef SEQAN_CXX11_STANDARD
 
 #include <cinttypes>
@@ -46,15 +48,6 @@
 #include <sstream>
 #include <type_traits>
 #include <unordered_map>
-
-// FREEBSD lacks some defines in its libc
-#ifdef __FreeBSD__
-#define _GLIBCXX_USE_C99 1
-#include <math.h>
-#define ROUND lround
-#else
-#define ROUND std::lround
-#endif
 
 #include <seqan/basic.h>
 #include <seqan/version.h>

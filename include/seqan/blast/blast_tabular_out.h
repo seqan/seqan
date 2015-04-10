@@ -59,36 +59,23 @@ namespace seqan {
  * @headerfile <seqan/blast.h>
  * @brief FormattedFileOut abstraction for @link BlastTabular @endlink
  *
- * @remarks
- *
  * This is a @link FormattedFile @endlink specialization for writing @link BlastTabular @endlink formats. For details
  * on how to influence the writing of files and how to differentiate between the tabular format without headers and the
  * one with headers, see @link BlastIOContext @endlink.
  * Please note that you have specify the type of the context as a template parameter to BlastTabularOut, see the example
  * below.
  *
+ * @section Example
  *
- * TODO update example
- * @example
- * @code{.cpp}
- * BlastTabularOut out("/tmp/example.blast");
+ * The following short program creates the pairwise alignments between three query sequences and two database sequences,
+ * it computes the e-values, sorts the matches and prints all results that score above a threshold. <i>The same example
+ * is used for @link BlastTabularOut @endlink and @link BlastReportOut @endlink, you only need to change one line.</i>
  *
- * context(out).dbName = "Legendary Nucleotide Database";
+ * @include demos/blast/blast_out_example.cpp
  *
- * BlastRecord<> r;
- * r.qId = "FIRSTREAD abcdefg";
+ * The file generated in /tmp/output.blast looks like this:
  *
- * for (...)
- * {
- *     BlastMatch<> m;
- *
- *     // "fill" the match object
- *
- *     appendValue(r.matches, m);
- * }
- *
- * writeRecord(out, r);
- * @endcode
+ * @include demos/blast/blast_out_example.tabular
  *
  * @see BlastRecord
  */
@@ -207,6 +194,8 @@ _writeRecordHeaderWithoutColumnLabels(TFwdIterator & stream,
  * @param[in]     blastRecord  The @link BlastRecord @endlink whose header you want to print.
  * @param[in]     blastTabular The @link BlastTabular @endlink tag.
  *
+ * @section Remarks
+ *
  * This function writes the header of a record unless the context's tabularSpec
  * (@link BlastIOContext#getBlastTabularSpec @endlink) is set to BlastTabularSpec::NO_HEADER (in which case this is
  * a NOOP).
@@ -220,9 +209,10 @@ _writeRecordHeaderWithoutColumnLabels(TFwdIterator & stream,
  * "standards"-compliant. Also only @link BlastIOContext::fields @endlink has an influence on
  * the values printed by @link BlastTabular#writeMatch @endlink.
  *
- * @see BlastTabular
+ * @throw IOError On low-level I/O errors.
+ *
  * @see BlastRecord
- * @see BlastTabular#writeRecord
+ * @see BlastIOContext
  */
 
 template <typename TFwdIterator,
@@ -472,8 +462,7 @@ inline void
 _writeFields(TFwdIterator & stream,
              BlastIOContext<TScore, TConString, p, h> & context,
              BlastMatch<TQId, TSId, TPos, TAlign> const & match,
-             BlastTabular const &,
-             bool const appendNewline = true)
+             BlastTabular const &)
 {
     if (SEQAN_LIKELY(!context.legacyFormat))
     {
@@ -515,8 +504,7 @@ _writeFields(TFwdIterator & stream,
             std::cerr << "Warning: custom fields set, but will be ignored, because legacyFormat is also set.\n";
     }
 
-    if (appendNewline)
-        write(stream, '\n');
+    write(stream, '\n');
 }
 
 // ----------------------------------------------------------------------------
@@ -534,6 +522,8 @@ _writeFields(TFwdIterator & stream,
  * @param[in]     blastMatch   The @link BlastMatch @endlink you wish to print.
  * @param[in]     blastTabular The @link BlastTabular @endlink tag.
  *
+ * @section Remarks
+ *
  * Please note that BLAST is 1-indexed and considers the last position
  * to be the back, not the end, i.e. last one included in a match/sequence/...,
  * not the one behind it (as SeqAn does); this functions corrects for both of
@@ -544,7 +534,7 @@ _writeFields(TFwdIterator & stream,
  * character in NCBI BLAST, this is also done by default here.
  *
  * By setting context.@link BlastIOContext::fields @endlink you can specify which columns you
- * wish to print; the same conversions mentioned above will me made. See
+ * wish to print (if you don't want defaults); the same conversions mentioned above will me made. See
  * @link BlastMatchField::Enum @endlink for a list of fields available. If the context's legacy-flag is set
  * (@link BlastIOContext::legacyFormat @endlink) the @link BlastIOContext::fields @endlink
  * variable is ignored.
@@ -555,9 +545,10 @@ _writeFields(TFwdIterator & stream,
  * Please see @link BlastTabular#writeMatch0 @endlink for an implementation that
  * does not require a @link BlastMatch @endlink object.
  *
+ * @throw IOError On low-level I/O errors.
+ *
  * @see BlastRecord
- * @see BlastTabular#writeRecord
- * @see BlastTabular#writeRecordHeader
+ * @see BlastIOContext
  */
 
 template <typename TQId,
@@ -605,30 +596,34 @@ _writeFields(TFwdIterator & stream,
  * @fn BlastTabular#writeMatch0
  * @headerfile seqan/blast.h
  * @brief write blast tabular output without a @link BlastMatch @endlink object
- * @signature void writeMatch(stream, blastTabular, columns...)
+ * @signature void writeMatch0(stream, blastTabular, columns...)
+ *
+ * @section Remarks
  *
  * This is a very leight-weight alternative to @link BlastTabular#writeMatch @endlink. It doesn't require
  * @link BlastMatch @endlinkes or the use of @link FormattedFile @endlink. It supports an arbitrary amount of and
  * arbitrary typed columns to be printed.
  *
  * Use this only if you do not require headers and you are prepared to do all transformations on the data yourself,
- * i.e. this function does none of the adjustments mentioned in the other signature!
+ * i.e. this function does none of the adjustments mentioned in @link BlastTabular#writeMatch @endlink.
  *
  * @param[in,out] stream       The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
  * @param[in]     blastTabular The @link BlastTabular @endlink tag.
  * @param[in]     columns...   Custom columns
  *
- * @see BlastTabular#writeMatch
+ * @throw IOError On low-level I/O errors.
+ *
+ * @see BlastRecord
+ * @see BlastIOContext
  */
 
-// TODO actually rename this to writeMatch0
 // Function for arbitrary number and typed fields
 template <typename TFwdIterator, typename TField, typename... TFields>
 inline void
-writeMatch(TFwdIterator & stream,
-           BlastTabular const & /*tag*/,
-           TField const & field1,
-           TFields const & ... fields)
+writeMatch0(TFwdIterator & stream,
+            BlastTabular const & /*tag*/,
+            TField const & field1,
+            TFields const & ... fields)
 {
     write(stream, field1);
 
@@ -655,12 +650,17 @@ writeMatch(TFwdIterator & stream,
  * @param[in,out] stream       The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
  * @param[in,out] context      A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in]     blastRecord  The @link BlastRecord @endlink you wish to print.
- * @param[in]    tag          The @link BlastTabular @endlink or @link BlastReport @endlink tag.
+ * @param[in]     blastTabular The @link BlastTabular @endlink tag.
+ *
+ * @section Remarks
  *
  * See @link BlastIOContext @endlink for ways to influence the output. Note also that this will effect downstream
  * functions like @link BlastTabular#writeRecordHeader @endlink and @link BlastTabular#writeMatch @endlink!
  *
  * @throw IOError On low-level I/O errors.
+ *
+ * @see BlastRecord
+ * @see BlastIOContext
  */
 
 template <typename TFwdIterator,
@@ -700,11 +700,12 @@ writeRecord(TFwdIterator & stream,
  * @param[in,out] blastTabularOut A @link BlastTabularOut @endlink formattedFile.
  * @param[in]     blastRecord     The @link BlastRecord @endlink you wish to print.
  *
- * Modifiy the formattedFile's @link BlastIOContext @endlink to set some properties of the output.
- * Note also that this will effect downstream functions like @link BlastTabular#writeRecordHeader @endlink and
- * @link BlastTabular#writeMatch @endlink!
+ * This is a convenience interface for BlastTabular#@link BlastTabular#writeRecord @endlink, see that for more details.
  *
  * @throw IOError On low-level I/O errors.
+ *
+ * @see BlastRecord
+ * @see BlastIOContext
  */
 
 template <typename TContext,
@@ -732,6 +733,11 @@ writeRecord(BlastTabularOut<TContext> & formattedFile,
  * @param[in,out] stream         The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
  * @param[in,out] context        A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in]     blastTabular   The @link BlastTabular @endlink tag.
+ *
+ * @throw IOError On low-level I/O errors.
+ *
+ * @see BlastRecord
+ * @see BlastIOContext
  */
 
 template <typename TFwdIterator,
@@ -753,6 +759,13 @@ writeHeader(TFwdIterator & ,
  * @signature void writeHeader(blastTabularOut);
  *
  * @param[in,out] blastTabularOut A @link BlastTabularOut @endlink formattedFile.
+ *
+ * This is a convenience interface for BlastTabular#@link BlastTabular#writeHeader @endlink, see that for more details.
+ *
+ * @throw IOError On low-level I/O errors.
+ *
+ * @see BlastRecord
+ * @see BlastIOContext
  */
 
 template <typename TContext>
@@ -775,6 +788,11 @@ writeHeader(BlastTabularOut<TContext> & formattedFile)
  * @param[in,out] stream         The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
  * @param[in,out] context        A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in]     blastTabular   The @link BlastTabular @endlink tag.
+ *
+ * @throw IOError On low-level I/O errors.
+ *
+ * @see BlastRecord
+ * @see BlastIOContext
  */
 
 template <typename TFwdIterator,
@@ -797,6 +815,13 @@ writeFooter(TFwdIterator & ,
  * @signature void writeFooter(blastTabularOut);
  *
  * @param[in,out] blastTabularOut A @link BlastTabularOut @endlink formattedFile.
+ *
+ * This is a convenience interface for BlastTabular#@link BlastTabular#writeFooter @endlink, see that for more details.
+ *
+ * @throw IOError On low-level I/O errors.
+ *
+ * @see BlastRecord
+ * @see BlastIOContext
  */
 
 template <typename TContext>
