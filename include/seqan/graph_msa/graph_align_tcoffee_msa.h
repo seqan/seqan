@@ -463,6 +463,8 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
 
 #ifdef SEQAN_DEBUG
     std::cout << std::setw(30) << std::left << "Triplet extension:" << std::setw(10) << std::right << sysTime() - tripletStartTime << "  s" << std::endl;
+    std::cout << std::setw(30) << std::left << "Number of edges after triplet:" << std::setw(10) << std::right << numEdges(g) << std::endl;
+
 
     double progressiveAlignmentTime = sysTime();
 #endif
