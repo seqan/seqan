@@ -499,14 +499,14 @@ inline std::string const getArgumentLabel(ArgParseArgument const & me)
 // Helper Function _intervalAssert()
 // ----------------------------------------------------------------------------
 
-// this methods ensures that the given arguments define a non emtpy value interval
+// this methods ensures that the given arguments define a valid interval
 // otherwise it will trigger a SEQAN_CHECK failure
 template <typename TIntervalBorder>
 inline void _intervalAssert(const std::string minValueAsString, const std::string maxValueAsString)
 {
     if (minValueAsString != "" && maxValueAsString != "")
-        SEQAN_CHECK(_cast<TIntervalBorder>(minValueAsString) < _cast<TIntervalBorder>(maxValueAsString),
-                    "The interval [%s:%s] is empty. Please specify a valid, non-empty interval.",
+        SEQAN_CHECK(_cast<TIntervalBorder>(minValueAsString) <= _cast<TIntervalBorder>(maxValueAsString),
+                    "The interval [%s:%s] is invalid. Please specify a valid interval.",
                     minValueAsString.c_str(),
                     maxValueAsString.c_str());
 }

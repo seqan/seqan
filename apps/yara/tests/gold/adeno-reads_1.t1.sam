@@ -1,5 +1,5 @@
 @HD	VN:1.4	SO:unsorted
-@PG	ID:Yara	PN:Yara	VN:0.9.3 [c4a5ded]	CL:gold/adeno-genome input/adeno-reads_1.fa -o gold/adeno-reads_1.t1.sam --threads 1
+@PG	ID:Yara	PN:Yara	VN:0.9.3 [1741c01]	CL:/Users/esiragusa/Code/seqan-builds/Release-Gcc/bin/yara_mapper gold/adeno-genome input/adeno-reads_1.fa -o gold/adeno-reads_1.t1.sam --threads 1
 @RG	ID:none	SM:none	PG:Yara
 @SQ	SN:gi|9632547|ref|NC_002077.1|	LN:4718
 adeno-reads100.fasta.000000000	16	gi|9632547|ref|NC_002077.1|	4411	40	100M	*	0	0	GTTACCTTACCCGTCCCCTGTAATTACGTGTTAATCAATAAACCGGTTGATTCGTTTCAGTTGAACTTTGGTCTCCTGTCCTTCTTATCTTATCGGTTAC	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	NM:i:0	X0:i:1	X1:i:0	XT:A:U	RG:Z:none

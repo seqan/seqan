@@ -333,6 +333,66 @@ namespace SEQAN_NAMESPACE_MAIN
         return qgrams + 1;
     }
 
+// ----------------------------------------------------------------------------
+// Function open()
+// ----------------------------------------------------------------------------
+
+template < typename TText, typename TShapeSpec>
+inline bool open(Index<TText, IndexQGram<TShapeSpec, OpenAddressing> > &index, const char *fileName, int openMode)
+{
+    String<char> name;
+    
+    name = fileName;    append(name, ".txt");
+    if (!open(getFibre(index, QGramText()), toCString(name), openMode)) return false;
+    
+    name = fileName;    append(name, ".sa");
+    if (!open(getFibre(index, QGramSA()), toCString(name), openMode)) return false;
+    
+    name = fileName;    append(name, ".dir");
+    if (!open(getFibre(index, QGramDir()), toCString(name), openMode)) return false;
+
+    name = fileName;    append(name, ".bkt");
+    if (!open(getFibre(index, QGramBucketMap()).qgramCode, toCString(name), openMode)) return false;
+
+    return true;
+}
+
+template <typename TText, typename TShapeSpec>
+inline bool open(Index<TText, IndexQGram<TShapeSpec, OpenAddressing> > &index, const char *fileName)
+{
+    return open(index, fileName, OPEN_RDONLY);
+}
+
+// ----------------------------------------------------------------------------
+// Function save()
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TShapeSpec>
+inline bool save(Index<TText, IndexQGram<TShapeSpec, OpenAddressing> > &index, const char *fileName, int openMode)
+{
+    String<char> name;
+    
+    name = fileName;    append(name, ".txt");
+    if (!save(getFibre(index, QGramText()), toCString(name), openMode)) return false;
+    
+    name = fileName;    append(name, ".sa");
+    if (!save(getFibre(index, QGramSA()), toCString(name), openMode)) return false;
+    
+    name = fileName;    append(name, ".dir");
+    if (!save(getFibre(index, QGramDir()), toCString(name), openMode)) return false;
+
+    name = fileName;    append(name, ".bkt");
+    if (!save(getFibre(index, QGramBucketMap()).qgramCode, toCString(name), openMode)) return false;
+
+    return true;
+}
+
+template <typename TText, typename TShapeSpec>
+inline bool save(Index<TText, IndexQGram<TShapeSpec, OpenAddressing> > &index, const char *fileName)
+{
+    return save(index, fileName, OPEN_WRONLY | OPEN_CREATE);
+}
+
 }
 
 #endif //#ifndef SEQAN_HEADER_...
