@@ -101,6 +101,7 @@ The generated file looks as follows:
     #define TESTS_MY_MODULE_TEST_MY_MODULE_H_
 
     #include <seqan/basic.h>
+    #include <seqan/stream.h>
     #include <seqan/sequence.h>
 
     // A test for strings.
