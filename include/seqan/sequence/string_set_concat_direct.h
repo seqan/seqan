@@ -399,10 +399,10 @@ template <typename TString, typename TString2, typename TSpec, typename TExpand>
 inline void appendValue(
     StringSet<TString, Owner<ConcatDirect<TSpec> > > & me,
     TString2 const & obj,
-    Tag<TExpand> tag)
+    Tag<TExpand>)
 {
-    appendValue(me.limits, lengthSum(me) + length(obj), tag);
-    append(me.concat, obj, tag);
+    appendValue(me.limits, lengthSum(me) + length(obj), Tag<TExpand>());
+    append(me.concat, obj, Tag<TExpand>());
 }
 
 // --------------------------------------------------------------------------
