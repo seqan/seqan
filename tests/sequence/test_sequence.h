@@ -877,7 +877,7 @@ void testSequenceAppend(TString & /*Tag*/)
         TString string1 = "ACGTACGTACGT";
         TString string2 = "";
         append(string1, string2);
-        SEQAN_ASSERT(string1 == "ACGTACGTACGT");
+        SEQAN_ASSERT_EQ(string1, "ACGTACGTACGT");
     }
 
     // Test the append function on one empty and one non empty string
@@ -885,7 +885,7 @@ void testSequenceAppend(TString & /*Tag*/)
         TString string1 = "";
         TString string2 = "TTGGATTAACC";
         append(string1, string2);
-        SEQAN_ASSERT(string1 == "TTGGATTAACC");
+        SEQAN_ASSERT_EQ(string1, "TTGGATTAACC");
     }
 
     // Test the append function on two non empty strings.
@@ -893,7 +893,7 @@ void testSequenceAppend(TString & /*Tag*/)
         TString string1 = "ACGTACGTACGT";
         TString string2 = "TTGGATTAACCC";
         append(string1, string2);
-        SEQAN_ASSERT(string1 == "ACGTACGTACGTTTGGATTAACCC");
+        SEQAN_ASSERT_EQ(string1, "ACGTACGTACGTTTGGATTAACCC");
     }
 }
 

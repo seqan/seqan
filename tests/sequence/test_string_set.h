@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Jochen Singer <jochen.singer@fu-berlin.de>
+// Auther: Hannes Hauswedell <hannes.hauswedell@fu-berlin.de>
 // ==========================================================================
 // This file contains functions to test the functionality of the sequence
 // module.
@@ -112,7 +113,7 @@ inline TStream & operator<<(TStream & stream, CountingChar const & countingChar)
 }
 
 template <typename TStream, typename TSpec>
-inline TStream & operator<<(TStream & stream, seqan::String<CountingChar, TSpec> const & string)
+inline TStream & operator<<(TStream & stream, String<CountingChar, TSpec> const & string)
 {
     for (unsigned i = 0; i < length(string); ++i)
         stream << string[i];
@@ -136,21 +137,21 @@ struct TestStringSetValue_<StringSet<TString, Owner<ConcatDirect<> > > >
 };
 
 // template <typename TAlphabetSpecPair>
-// class StringSetTest : public seqan::Test
+// class StringSetTest : public Test
 // {
 // public:
-//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 2>::Type TAlphabet;
-//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 1>::Type TStringSpec;
-//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 0>::Type TSetSpec;
-//     typedef seqan::StringSet<seqan::String<TAlphabet, TStringSpec>, TSetSpec> TStringSet;
+//     typedef typename TagListValue<TAlphabetSpecPair, 2>::Type TAlphabet;
+//     typedef typename TagListValue<TAlphabetSpecPair, 1>::Type TStringSpec;
+//     typedef typename TagListValue<TAlphabetSpecPair, 0>::Type TSetSpec;
+//     typedef StringSet<String<TAlphabet, TStringSpec>, TSetSpec> TStringSet;
 // };
 
 template <typename TAlphabetSpecPair_>
-class StringSetTest : public seqan::Test
+class StringSetTest : public Test
 {
 public:
-//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 1>::Type TAlphabet;
-//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 2>::Type TSpec;
+//     typedef typename TagListValue<TAlphabetSpecPair, 1>::Type TAlphabet;
+//     typedef typename TagListValue<TAlphabetSpecPair, 2>::Type TSpec;
     typedef TAlphabetSpecPair_ TStringSet;
 };
 
@@ -160,117 +161,117 @@ public:
 // )))
 
 typedef
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::MMap<> >, seqan::Owner<> >                ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::MMap<> >, seqan::Owner<> >                ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::MMap<> >, seqan::Owner<> >                ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::MMap<> >, seqan::Owner<> >                ,
-//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::MMap<> >, seqan::Owner<ConcatDirect<> > > ,
-//     seqan::TagList<seqan::StringSet<String<short,        seqan::MMap<> >, seqan::Owner<ConcatDirect<> > > ,
-//     seqan::TagList<seqan::StringSet<String<char,         seqan::MMap<> >, seqan::Owner<ConcatDirect<> > > ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::MMap<> >, seqan::Owner<ConcatDirect<> > > ,
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::MMap<> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::MMap<> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::MMap<> >, seqan::Dependent<Tight> >       ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::MMap<> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::MMap<> >, seqan::Dependent<Generous> >    ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::MMap<> >, seqan::Dependent<Generous> >    ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::MMap<> >, seqan::Dependent<Generous> >    ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::MMap<> >, seqan::Dependent<Generous> >    ,
+/*    TagList<StringSet<String<Dna,          MMap<> >, Owner<> >                ,
+    TagList<StringSet<String<short,        MMap<> >, Owner<> >                ,
+    TagList<StringSet<String<char,         MMap<> >, Owner<> >                ,
+//     TagList<StringSet<String<CountingChar, MMap<> >, Owner<> >                ,
+//     TagList<StringSet<String<Dna,   MMap<> >, Owner<ConcatDirect<> > > ,
+//     TagList<StringSet<String<short,        MMap<> >, Owner<ConcatDirect<> > > ,
+//     TagList<StringSet<String<char,         MMap<> >, Owner<ConcatDirect<> > > ,
+//     TagList<StringSet<String<CountingChar, MMap<> >, Owner<ConcatDirect<> > > ,
+    TagList<StringSet<String<Dna,          MMap<> >, Dependent<Tight> >       ,
+    TagList<StringSet<String<short,        MMap<> >, Dependent<Tight> >       ,
+    TagList<StringSet<String<char,         MMap<> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<CountingChar, MMap<> >, Dependent<Tight> >       ,
+    TagList<StringSet<String<Dna,          MMap<> >, Dependent<Generous> >    ,
+    TagList<StringSet<String<short,        MMap<> >, Dependent<Generous> >    ,
+    TagList<StringSet<String<char,         MMap<> >, Dependent<Generous> >    ,
+//     TagList<StringSet<String<CountingChar, MMap<> >, Dependent<Generous> >    ,
 
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::External<> >, seqan::Owner<> >                ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::External<> >, seqan::Owner<> >                ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::External<> >, seqan::Owner<> >                ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::External<> >, seqan::Owner<> >                ,
-//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::External<> >, seqan::Owner<ConcatDirect<> > > ,
-//     seqan::TagList<seqan::StringSet<String<short,        seqan::External<> >, seqan::Owner<ConcatDirect<> > > ,
-//     seqan::TagList<seqan::StringSet<String<char,         seqan::External<> >, seqan::Owner<ConcatDirect<> > > ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::External<> >, seqan::Owner<ConcatDirect<> > > ,
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::External<> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::External<> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::External<> >, seqan::Dependent<Tight> >       ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::External<> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::External<> >, seqan::Dependent<Generous> >    ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::External<> >, seqan::Dependent<Generous> >    ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::External<> >, seqan::Dependent<Generous> >    ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::External<> >, seqan::Dependent<Generous> >    ,
+    TagList<StringSet<String<Dna,          External<> >, Owner<> >                ,
+    TagList<StringSet<String<short,        External<> >, Owner<> >                ,
+    TagList<StringSet<String<char,         External<> >, Owner<> >                ,
+//     TagList<StringSet<String<CountingChar, External<> >, Owner<> >                ,
+//     TagList<StringSet<String<Dna,   External<> >, Owner<ConcatDirect<> > > ,
+//     TagList<StringSet<String<short,        External<> >, Owner<ConcatDirect<> > > ,
+//     TagList<StringSet<String<char,         External<> >, Owner<ConcatDirect<> > > ,
+//     TagList<StringSet<String<CountingChar, External<> >, Owner<ConcatDirect<> > > ,
+    TagList<StringSet<String<Dna,          External<> >, Dependent<Tight> >       ,
+    TagList<StringSet<String<short,        External<> >, Dependent<Tight> >       ,
+    TagList<StringSet<String<char,         External<> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<CountingChar, External<> >, Dependent<Tight> >       ,
+    TagList<StringSet<String<Dna,          External<> >, Dependent<Generous> >    ,
+    TagList<StringSet<String<short,        External<> >, Dependent<Generous> >    ,
+    TagList<StringSet<String<char,         External<> >, Dependent<Generous> >    ,
+//     TagList<StringSet<String<CountingChar, External<> >, Dependent<Generous> >    ,
+*/
+    TagList<StringSet<String<Dna,          Packed<> >, Owner<> >                ,
+    TagList<StringSet<String<short,        Packed<> >, Owner<> >                ,
+    TagList<StringSet<String<char,         Packed<> >, Owner<> >                ,
+    TagList<StringSet<String<Dna,          Packed<> >, Owner<ConcatDirect<> > > ,
+    TagList<StringSet<String<short,        Packed<> >, Owner<ConcatDirect<> > > ,
+    TagList<StringSet<String<char,         Packed<> >, Owner<ConcatDirect<> > > ,
+//     TagList<StringSet<String<Dna,          Packed<> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<short,        Packed<> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<char,         Packed<> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<Dna,          Packed<> >, Dependent<Generous> >    ,
+//     TagList<StringSet<String<short,        Packed<> >, Dependent<Generous> >    ,
+//     TagList<StringSet<String<char,         Packed<> >, Dependent<Generous> >    ,
 
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Packed<> >, seqan::Owner<> >                ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::Packed<> >, seqan::Owner<> >                ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::Packed<> >, seqan::Owner<> >                ,
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Packed<> >, seqan::Owner<ConcatDirect<> > > ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::Packed<> >, seqan::Owner<ConcatDirect<> > > ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::Packed<> >, seqan::Owner<ConcatDirect<> > > ,
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Packed<> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::Packed<> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::Packed<> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Packed<> >, seqan::Dependent<Generous> >    ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::Packed<> >, seqan::Dependent<Generous> >    ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::Packed<> >, seqan::Dependent<Generous> >    ,
+    TagList<StringSet<String<Dna,          Array<100> >, Owner<> >                ,
+    TagList<StringSet<String<short,        Array<100> >, Owner<> >                ,
+    TagList<StringSet<String<char,         Array<100> >, Owner<> >                ,
+//     TagList<StringSet<String<CountingChar, Array<100> >, Owner<> >                ,
+    TagList<StringSet<String<Dna,          Array<1000> >, Owner<ConcatDirect<> > > ,
+    TagList<StringSet<String<short,        Array<1000> >, Owner<ConcatDirect<> > > ,
+    TagList<StringSet<String<char,         Array<1000> >, Owner<ConcatDirect<> > > ,
+//     TagList<StringSet<String<CountingChar, Array<1000> >, Owner<ConcatDirect<> > > ,
+//     TagList<StringSet<String<Dna,          Array<100> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<short,        Array<100> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<char,         Array<100> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<CountingChar, Array<100> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<Dna,          Array<100> >, Dependent<Generous> >    ,
+//     TagList<StringSet<String<short,        Array<100> >, Dependent<Generous> >    ,
+//     TagList<StringSet<String<char,         Array<100> >, Dependent<Generous> >    ,
+//     TagList<StringSet<String<CountingChar, Array<100> >, Dependent<Generous> >    ,
 
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Array<100> >, seqan::Owner<> >                ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::Array<100> >, seqan::Owner<> >                ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::Array<100> >, seqan::Owner<> >                ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Array<100> >, seqan::Owner<> >                ,
-//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Array<100> >, seqan::Owner<ConcatDirect<> > > ,
-//     seqan::TagList<seqan::StringSet<String<short,        seqan::Array<100> >, seqan::Owner<ConcatDirect<> > > ,
-//     seqan::TagList<seqan::StringSet<String<char,         seqan::Array<100> >, seqan::Owner<ConcatDirect<> > > ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Array<100> >, seqan::Owner<ConcatDirect<> > > ,
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Array<100> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::Array<100> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::Array<100> >, seqan::Dependent<Tight> >       ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Array<100> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Array<100> >, seqan::Dependent<Generous> >    ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::Array<100> >, seqan::Dependent<Generous> >    ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::Array<100> >, seqan::Dependent<Generous> >    ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Array<100> >, seqan::Dependent<Generous> >    ,
-
-//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Block<> >, seqan::Owner<> >                ,
-//     seqan::TagList<seqan::StringSet<String<short,        seqan::Block<> >, seqan::Owner<> >                ,
-//     seqan::TagList<seqan::StringSet<String<char,         seqan::Block<> >, seqan::Owner<> >                ,
-// //     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Block<> >, seqan::Owner<> >                ,
-//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Block<> >, seqan::Owner<ConcatDirect<> > > ,
-//     seqan::TagList<seqan::StringSet<String<short,        seqan::Block<> >, seqan::Owner<ConcatDirect<> > > ,
-//     seqan::TagList<seqan::StringSet<String<char,         seqan::Block<> >, seqan::Owner<ConcatDirect<> > > ,
-// //     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Block<> >, seqan::Owner<ConcatDirect<> > > ,
-//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Block<> >, seqan::Dependent<Tight> >       ,
-//     seqan::TagList<seqan::StringSet<String<short,        seqan::Block<> >, seqan::Dependent<Tight> >       ,
-//     seqan::TagList<seqan::StringSet<String<char,         seqan::Block<> >, seqan::Dependent<Tight> >       ,
-// //     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Block<> >, seqan::Dependent<Tight> >       ,
-//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Block<> >, seqan::Dependent<Generous> >    ,
-//     seqan::TagList<seqan::StringSet<String<short,        seqan::Block<> >, seqan::Dependent<Generous> >    ,
-//     seqan::TagList<seqan::StringSet<String<char,         seqan::Block<> >, seqan::Dependent<Generous> >    ,
-// //     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Block<> >, seqan::Dependent<Generous> >    ,
+//     TagList<StringSet<String<Dna,          Block<> >, Owner<> >                ,
+//     TagList<StringSet<String<short,        Block<> >, Owner<> >                ,
+//     TagList<StringSet<String<char,         Block<> >, Owner<> >                ,
+// //     TagList<StringSet<String<CountingChar, Block<> >, Owner<> >                ,
+//     TagList<StringSet<String<Dna,          Block<> >, Owner<ConcatDirect<> > > ,
+//     TagList<StringSet<String<short,        Block<> >, Owner<ConcatDirect<> > > ,
+//     TagList<StringSet<String<char,         Block<> >, Owner<ConcatDirect<> > > ,
+// //     TagList<StringSet<String<CountingChar, Block<> >, Owner<ConcatDirect<> > > ,
+//     TagList<StringSet<String<Dna,          Block<> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<short,        Block<> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<char,         Block<> >, Dependent<Tight> >       ,
+// //     TagList<StringSet<String<CountingChar, Block<> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<Dna,          Block<> >, Dependent<Generous> >    ,
+//     TagList<StringSet<String<short,        Block<> >, Dependent<Generous> >    ,
+//     TagList<StringSet<String<char,         Block<> >, Dependent<Generous> >    ,
+// //     TagList<StringSet<String<CountingChar, Block<> >, Dependent<Generous> >    ,
 
 // TODO(Singer): 7 errors and about 400 warnings (deprecated ...)
-//             seqan::TagList<char, seqan::TagList<seqan::CStyle, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::CStyle, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::CStyle, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::CStyle, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
+//             TagList<char, TagList<CStyle, TagList<Owner<> > > >, TagList<
+//             TagList<char, TagList<CStyle, TagList<Owner<ConcatDirect<> > > > >, TagList<
+//             TagList<char, TagList<CStyle, TagList<Dependent<Tight> > > >, TagList<
+//             TagList<char, TagList<CStyle, TagList<Dependent<Generous> > > >, TagList<
 
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Alloc<> >, seqan::Owner<> >                ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::Alloc<> >, seqan::Owner<> >                ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::Alloc<> >, seqan::Owner<> >                ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Alloc<> >, seqan::Owner<> >                ,
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Alloc<> >, seqan::Owner<ConcatDirect<> > > ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::Alloc<> >, seqan::Owner<ConcatDirect<> > > ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::Alloc<> >, seqan::Owner<ConcatDirect<> > > ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Alloc<> >, seqan::Owner<ConcatDirect<> > > ,
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Alloc<> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::Alloc<> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::Alloc<> >, seqan::Dependent<Tight> >       ,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Alloc<> >, seqan::Dependent<Tight> >       ,
-    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Alloc<> >, seqan::Dependent<Generous> >    ,
-    seqan::TagList<seqan::StringSet<String<short,        seqan::Alloc<> >, seqan::Dependent<Generous> >    ,
-    seqan::TagList<seqan::StringSet<String<char,         seqan::Alloc<> >, seqan::Dependent<Generous> >    //,
-//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Alloc<> >, seqan::Dependent<Generous> >
+    TagList<StringSet<String<Dna,          Alloc<> >, Owner<> >                ,
+    TagList<StringSet<String<short,        Alloc<> >, Owner<> >                ,
+    TagList<StringSet<String<char,         Alloc<> >, Owner<> >                ,
+//     TagList<StringSet<String<CountingChar, Alloc<> >, Owner<> >                ,
+    TagList<StringSet<String<Dna,          Alloc<> >, Owner<ConcatDirect<> > > ,
+    TagList<StringSet<String<short,        Alloc<> >, Owner<ConcatDirect<> > > ,
+    TagList<StringSet<String<char,         Alloc<> >, Owner<ConcatDirect<> > > //,
+//     TagList<StringSet<String<CountingChar, Alloc<> >, Owner<ConcatDirect<> > > ,
+//     TagList<StringSet<String<Dna,          Alloc<> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<short,        Alloc<> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<char,         Alloc<> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<CountingChar, Alloc<> >, Dependent<Tight> >       ,
+//     TagList<StringSet<String<Dna,          Alloc<> >, Dependent<Generous> >    ,
+//     TagList<StringSet<String<short,        Alloc<> >, Dependent<Generous> >    ,
+//     TagList<StringSet<String<char,         Alloc<> >, Dependent<Generous> >    ,
+//     TagList<StringSet<String<CountingChar, Alloc<> >, Dependent<Generous> >
 
-    > > > > > > > > > //> > > > > > >
-    > > > > > > > > > //> > > > > > >
-    > > > > > > > > > > > >
-    > > > > > > > > > //> > > > > > >
-//     > > > > > > > > > > > > //> > > >
+//     > > > > > > > > > > > > > > > >
+//     > > > > > > > > > > > > > > > >
+    > > > > > > //> > > > > >
+    > > > > > > //> > > > > > > > > >
+//     > > > > > > > > > > > > > > > >
 //     > > > >
-    > > > > > > > > > > > > //> > > >
+    > > > > > > //> > > > > > > > > >
         StringSetTestTypes;
 
 template <typename T>
@@ -290,11 +291,37 @@ TStringSet createStringSet(TStringSet & stringSet)
 }
 
 // Test whether PrefixSegments are copy constructible.
+// template <typename TStringSet>
+// void testStringSetCopyConstructible(TStringSet & /*Tag*/)
+// {
+//     TStringSet stringSet1;
+//     resize(stringSet1, 3);
+//     stringSet1[0] = "AAAA";
+//     SEQAN_ASSERT_EQ(stringSet1[0], "AAAA");
+//     stringSet1[1] = "CC";
+//     SEQAN_ASSERT_EQ(stringSet1[1], "CC");
+//     stringSet1[2] = "GGG";
+//     SEQAN_ASSERT_EQ(stringSet1[2], "GGG");
+// 
+//     {
+//         TStringSet stringSet2(stringSet1);
+// 
+//         SEQAN_ASSERT_EQ(getValue(stringSet2, 0), "AAAA");
+//         SEQAN_ASSERT_EQ(getValue(stringSet2, 1), "CC");
+//         SEQAN_ASSERT_EQ(getValue(stringSet2, 2), "GGG");
+//     }
+//     {
+//         TStringSet const stringSet2(stringSet1);
+// 
+//         SEQAN_ASSERT_EQ(getValue(stringSet2, 0), "AAAA");
+//         SEQAN_ASSERT_EQ(getValue(stringSet2, 1), "CC");
+//         SEQAN_ASSERT_EQ(getValue(stringSet2, 2), "GGG");
+//     }
+// }
+
 template <typename TStringSet>
 void testStringSetCopyConstructible(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
     TString str1("AAAA");
@@ -303,32 +330,37 @@ void testStringSetCopyConstructible(TStringSet & /*Tag*/)
 
     TStringSet stringSet1;
     appendValue(stringSet1, str1);
+    SEQAN_ASSERT_EQ(CharString(stringSet1[0]), "AAAA");
     appendValue(stringSet1, str2);
+    SEQAN_ASSERT_EQ(CharString(stringSet1[1]), "CC");
     appendValue(stringSet1, str3);
+    SEQAN_ASSERT_EQ(CharString(stringSet1[2]), "GGG");
 
     {
         TStringSet stringSet2(stringSet1);
 
-        SEQAN_ASSERT_EQ(getValue(stringSet2, 0), "AAAA");
-        SEQAN_ASSERT_EQ(getValue(stringSet2, 1), "CC");
-        SEQAN_ASSERT_EQ(getValue(stringSet2, 2), "GGG");
+        SEQAN_ASSERT_EQ(CharString(getValue(stringSet2, 0)), "AAAA");
+        SEQAN_ASSERT_EQ(CharString(getValue(stringSet2, 1)), "CC");
+        SEQAN_ASSERT_EQ(CharString(getValue(stringSet2, 2)), "GGG");
     }
     {
         TStringSet const stringSet2(stringSet1);
 
-        SEQAN_ASSERT_EQ(getValue(stringSet2, 0), "AAAA");
-        SEQAN_ASSERT_EQ(getValue(stringSet2, 1), "CC");
-        SEQAN_ASSERT_EQ(getValue(stringSet2, 2), "GGG");
+        SEQAN_ASSERT_EQ(CharString(getValue(stringSet2, 0)), "AAAA");
+        SEQAN_ASSERT_EQ(CharString(getValue(stringSet2, 1)), "CC");
+        SEQAN_ASSERT_EQ(CharString(getValue(stringSet2, 2)), "GGG");
     }
 }
 
-// TODO(singer): AppendValue is not available for string sets of packed strings
-template <typename TValue, typename TStringSetSpec>
-void testStringSetCopyConstructible(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetCopyConstructible(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetCopyConstructible(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
+// TODO(h4nn3s): the following tests would fail, check if we could (and should) fix this
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetCopyConstructible(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetCopyConstructible(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetCopyConstructible(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetCopyConstructible(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
 
 // Test whether sequences are copy constructible.
 SEQAN_TYPED_TEST(StringSetTestCommon, CopyConstructible)
@@ -539,23 +571,23 @@ void testStringSetAppendValue(TStringSet & /*Tag*/)
     TString str("ACGT");
     appendValue(stringSet, str);
     SEQAN_ASSERT_EQ(length(stringSet), 1u);
-    SEQAN_ASSERT_EQ(stringSet[0], "ACGT");
+    SEQAN_ASSERT_EQ(CharString(stringSet[0]), "ACGT");
 
     // Test the appendValue function
     str = TString("CGTA");
     appendValue(stringSet, str);
     SEQAN_ASSERT_EQ(length(stringSet), 2u);
-    SEQAN_ASSERT_EQ(stringSet[0], "ACGT");
-    SEQAN_ASSERT_EQ(stringSet[1], "CGTA");
+    SEQAN_ASSERT_EQ(CharString(stringSet[0]), "ACGT");
+    SEQAN_ASSERT_EQ(CharString(stringSet[1]), "CGTA");
 }
 
 // TODO(singer): AppendValue is not available for string sets of packed strings
-template <typename TValue, typename TStringSetSpec>
-void testStringSetAppendValue(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetAppendValue(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetAppendValue(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetAppendValue(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetAppendValue(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetAppendValue(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringSetTestCommon, AppendValue)
 {
@@ -670,7 +702,7 @@ void testStringSetAssignValueById(TStringSet & /*Tag*/)
     TString string("ACGT");
     unsigned id = assignValueById(stringSet1, string);
     SEQAN_ASSERT_EQ(length(stringSet1), 1u);
-    SEQAN_ASSERT_EQ(stringSet1[0], string);
+    SEQAN_ASSERT_EQ(CharString(stringSet1[0]), string);
     SEQAN_ASSERT_EQ(id, 0u);
 
     // TODO (singer): this is not documented, such that it can be easily understood!
@@ -685,32 +717,32 @@ void testStringSetAssignValueById(TStringSet & /*Tag*/)
     id = assignValueById(stringSet1, stringSet2, 1u);
 
     SEQAN_ASSERT_EQ(length(stringSet1), 2u);
-    SEQAN_ASSERT_EQ(stringSet1[0], string);
-    SEQAN_ASSERT_EQ(stringSet1[1], str3);
+    SEQAN_ASSERT_EQ(CharString(stringSet1[0]), string);
+    SEQAN_ASSERT_EQ(CharString(stringSet1[1]), str3);
     SEQAN_ASSERT_EQ(id, 1u);
 }
 
 // TODO(singer): Seg fault
-template <typename TValue, typename TStringSetSpec>
-void testStringSetAssignValueById(StringSet<String<TValue, Block<> >, Owner<TStringSetSpec> > & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetAssignValueById(StringSet<String<TValue, Array<100> >, Owner<TStringSetSpec> > & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetAssignValueById(StringSet<String<TValue, Packed<> >, Owner<TStringSetSpec> > & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetAssignValueById(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue>
-void testStringSetAssignValueById(StringSet<String<TValue, External<> >, Owner<ConcatDirect<> > > & /*Tag*/) {}
-template <typename TValue>
-void testStringSetAssignValueById(StringSet<String<TValue, Alloc<> >, Owner<ConcatDirect<> > > & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetAssignValueById(StringSet<String<TValue, Block<> >, Owner<TStringSetSpec> > & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetAssignValueById(StringSet<String<TValue, Array<100> >, Owner<TStringSetSpec> > & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetAssignValueById(StringSet<String<TValue, Packed<> >, Owner<TStringSetSpec> > & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetAssignValueById(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue>
+// void testStringSetAssignValueById(StringSet<String<TValue, External<> >, Owner<ConcatDirect<> > > & /*Tag*/) {}
+// template <typename TValue>
+// void testStringSetAssignValueById(StringSet<String<TValue, Alloc<> >, Owner<ConcatDirect<> > > & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringSetTestCommon, AssignValueById)
 {
-    CountingChar::clear();
-
-    typename TestFixture::TStringSet strSet;
-    testStringSetAssignValueById(strSet);
-
+//     CountingChar::clear();
+//
+//     typename TestFixture::TStringSet strSet;
+//     testStringSetAssignValueById(strSet);
+//
 //     testConstructDeconstruct(strSet);
 }
 
@@ -754,9 +786,9 @@ void testStringSetBack(TStringSet const & /*Tag*/)
 
     // val is a reference in contrast to the const version of back()
     TString val = back(stringSet);
-    SEQAN_ASSERT_EQ(val, stringSet[1]);
+    SEQAN_ASSERT_EQ(val, TString(stringSet[1]));
     val = "TTTT";
-    SEQAN_ASSERT_EQ(stringSet[1], str2);
+    SEQAN_ASSERT_EQ(TString(stringSet[1]), str2);
 }
 
 // TODO(singer)
@@ -802,9 +834,9 @@ void testStringSetBegin(TStringSet & /*Tag*/)
     appendValue(nonConstStringSet, str);
     appendValue(nonConstStringSet, str2);
     TStringSet stringSet(nonConstStringSet);
-    SEQAN_ASSERT_EQ(*begin(stringSet), str);
-    SEQAN_ASSERT_EQ(*begin(stringSet, Standard()), str);
-    SEQAN_ASSERT_EQ(*begin(stringSet, Rooted()), str);
+    SEQAN_ASSERT_EQ(TString(*begin(stringSet)), str);
+    SEQAN_ASSERT_EQ(TString(*begin(stringSet, Standard())), str);
+    SEQAN_ASSERT_EQ(TString(*begin(stringSet, Rooted())), str);
 }
 // TODO(singer): No appendValue for string sets of packed strings
 template <typename TValue, typename TStringSetSpec>
@@ -1123,8 +1155,8 @@ void testStringSetErase(TStringSet & /*Tag*/)
     SEQAN_ASSERT_EQ(stringSet[1], str2);
     erase(stringSet, 1);
     SEQAN_ASSERT_EQ(length(stringSet), 2u);
-    SEQAN_ASSERT_EQ(stringSet[0], TString());
-    SEQAN_ASSERT_EQ(stringSet[1], TString());
+    SEQAN_ASSERT_EQ(stringSet[0], str);
+    SEQAN_ASSERT_EQ(stringSet[1], str3);
 }
 
 // TODO(singer): Seg. fault
@@ -1313,7 +1345,7 @@ void testStringSetGetValue(TStringSet & /*Tag*/)
     appendValue(nonConstStringSet, str2);
     appendValue(nonConstStringSet, str3);
     TStringSet stringSet(nonConstStringSet);
-    SEQAN_ASSERT_EQ(getValue(stringSet, 1), str2);
+    SEQAN_ASSERT_EQ(CharString(getValue(stringSet, 1)), CharString(str2));
 }
 
 // TODO(singer): No appendValue for string sets of packed strings
@@ -1384,140 +1416,140 @@ SEQAN_TYPED_TEST(StringSetTestCommon, GetValueById)
 //    testConstructDeconstruct(strSet);
 }
 
-// TODO (singer): define behaviour and adjust test.
-// Infix() compiles and does what it is supposed to do?!
-// However, it is not very intuitive. For details see comments below.
-// There is a need to improve the documentation of this!
-// Test of infix()
-template <typename TStringSet>
-void testStringSetInfix(TStringSet & /*Tag*/)
-{
-    using namespace seqan;
-
-    typedef typename TestStringSetValue_<TStringSet>::Type TString;
-    typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-
-    TString str("AAAA");
-    TString str2("CCC");
-    TString str3("GGGG");
-    TNonConstStringSet nonConstStringSet;
-    appendValue(nonConstStringSet, str);
-    appendValue(nonConstStringSet, str2);
-    appendValue(nonConstStringSet, str3);
-
-    // Only non-const test for this scenario possible.
-    TStringSet stringSet(nonConstStringSet);
-    TString string = infix(stringSet, 0, 1); // Returns the first character not string!
-    // std::cerr << string << std::endl; -> "A"
-
-    // Only non-const test for this scenario possible.
-    // TString str2("TT");
-    // nonConstStringSet[0] = str2;
-
-    // Since the infix (should) point to the fist element it should point to "T"
-    // std::cerr << string << std::endl; -> "A"
-    // Therefore there is a different behaviour to normal strings.
-}
-
-// TODO(singer): No appendValue for string sets of packed strings
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfix(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfix(StringSet<String<TValue, MMap<> >, TStringSetSpec> const & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfix(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfix(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfix(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfix(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
-
-// TODO(singer)
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfix(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue,typename TStringSetSpec>
-void testStringSetInfix(StringSet<String<TValue, External<> >, TStringSetSpec> const & /*Tag*/) {}
-
-SEQAN_TYPED_TEST(StringSetTestCommon, Infix)
-{
-    CountingChar::clear();
-
-    typename TestFixture::TStringSet strSet;
-    testStringSetInfix(strSet);
-
-    typename TestFixture::TStringSet const constStrSet;
-    testStringSetInfix(constStrSet);
-
-//    testConstructDeconstruct(strSet);
-}
-
-// TODO (singer): define behaviour and adjust test.
-// Infix() compiles and does what it is supposed to do?!
-// However, it is not very intuitive. For details see comments below.
-// There is a need to improve the documentation of this!
-// Test of infixWithLength()
-template <typename TStringSet>
-void testStringSetInfixWithLength(TStringSet & /*Tag*/)
-{
-using namespace seqan;
-
-    typedef typename TestStringSetValue_<TStringSet>::Type TString;
-    typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-
-    TString str("AAAA");
-    TString str2("CCC");
-    TString str3("GGGG");
-    TNonConstStringSet nonConstStringSet;
-    appendValue(nonConstStringSet, str);
-    appendValue(nonConstStringSet, str2);
-    appendValue(nonConstStringSet, str3);
-
-    // Only non-const test for this scenario possible.
-    TStringSet stringSet(nonConstStringSet);
-    TString string = infixWithLength(stringSet, 0, 1); // Returns the first character not string!
-    // std::cerr << string << std::endl; -> "A"
-
-    // Only non-const test for this scenario possible.
-    // TString str2("TT");
-    // nonConstStringSet[0] = str2;
-
-    // Since the infix (should) point to the fist element it should point to "T"
-    // std::cerr << string << std::endl; -> "A"
-    // Therefore there is a different behaviour to normal strings.
-}
-// TODO(singer): No appendValue for string sets of packed strings
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfixWithLength(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfixWithLength(StringSet<String<TValue, MMap<> >, TStringSetSpec> const & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfixWithLength(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfixWithLength(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfixWithLength(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfixWithLength(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
-
-// TODO(singer)
-template <typename TValue, typename TStringSetSpec>
-void testStringSetInfixWithLength(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue,typename TStringSetSpec>
-void testStringSetInfixWithLength(StringSet<String<TValue, External<> >, TStringSetSpec> const & /*Tag*/) {}
-
-SEQAN_TYPED_TEST(StringSetTestCommon, InfixWithLength)
-{
-    CountingChar::clear();
-
-    typename TestFixture::TStringSet strSet;
-    testStringSetInfixWithLength(strSet);
-
-    typename TestFixture::TStringSet const constStrSet;
-    testStringSetInfixWithLength(constStrSet);
-
-//    testConstructDeconstruct(strSet);
-}
+// // TODO (singer): define behaviour and adjust test.
+// // Infix() compiles and does what it is supposed to do?!
+// // However, it is not very intuitive. For details see comments below.
+// // There is a need to improve the documentation of this!
+// // Test of infix()
+// template <typename TStringSet>
+// void testStringSetInfix(TStringSet & /*Tag*/)
+// {
+//     using namespace seqan;
+// 
+//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
+//     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
+// 
+//     TString str("AAAA");
+//     TString str2("CCC");
+//     TString str3("GGGG");
+//     TNonConstStringSet nonConstStringSet;
+//     appendValue(nonConstStringSet, str);
+//     appendValue(nonConstStringSet, str2);
+//     appendValue(nonConstStringSet, str3);
+// 
+//     // Only non-const test for this scenario possible.
+//     TStringSet stringSet(nonConstStringSet);
+//     TString string = infix(stringSet, 0, 1); // Returns the first character not string!
+//     // std::cerr << string << std::endl; -> "A"
+// 
+//     // Only non-const test for this scenario possible.
+//     // TString str2("TT");
+//     // nonConstStringSet[0] = str2;
+// 
+//     // Since the infix (should) point to the fist element it should point to "T"
+//     // std::cerr << string << std::endl; -> "A"
+//     // Therefore there is a different behaviour to normal strings.
+// }
+// 
+// // TODO(singer): No appendValue for string sets of packed strings
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfix(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfix(StringSet<String<TValue, MMap<> >, TStringSetSpec> const & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfix(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfix(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfix(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfix(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
+// 
+// // TODO(singer)
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfix(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue,typename TStringSetSpec>
+// void testStringSetInfix(StringSet<String<TValue, External<> >, TStringSetSpec> const & /*Tag*/) {}
+// 
+// SEQAN_TYPED_TEST(StringSetTestCommon, Infix)
+// {
+//     CountingChar::clear();
+// 
+//     typename TestFixture::TStringSet strSet;
+//     testStringSetInfix(strSet);
+// 
+//     typename TestFixture::TStringSet const constStrSet;
+//     testStringSetInfix(constStrSet);
+// 
+// //    testConstructDeconstruct(strSet);
+// }
+// 
+// // TODO (singer): define behaviour and adjust test.
+// // Infix() compiles and does what it is supposed to do?!
+// // However, it is not very intuitive. For details see comments below.
+// // There is a need to improve the documentation of this!
+// // Test of infixWithLength()
+// template <typename TStringSet>
+// void testStringSetInfixWithLength(TStringSet & /*Tag*/)
+// {
+// using namespace seqan;
+// 
+//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
+//     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
+// 
+//     TString str("AAAA");
+//     TString str2("CCC");
+//     TString str3("GGGG");
+//     TNonConstStringSet nonConstStringSet;
+//     appendValue(nonConstStringSet, str);
+//     appendValue(nonConstStringSet, str2);
+//     appendValue(nonConstStringSet, str3);
+// 
+//     // Only non-const test for this scenario possible.
+//     TStringSet stringSet(nonConstStringSet);
+//     TString string = infixWithLength(stringSet, 0, 1); // Returns the first character not string!
+//     // std::cerr << string << std::endl; -> "A"
+// 
+//     // Only non-const test for this scenario possible.
+//     // TString str2("TT");
+//     // nonConstStringSet[0] = str2;
+// 
+//     // Since the infix (should) point to the fist element it should point to "T"
+//     // std::cerr << string << std::endl; -> "A"
+//     // Therefore there is a different behaviour to normal strings.
+// }
+// // TODO(singer): No appendValue for string sets of packed strings
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfixWithLength(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfixWithLength(StringSet<String<TValue, MMap<> >, TStringSetSpec> const & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfixWithLength(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfixWithLength(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfixWithLength(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfixWithLength(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
+// 
+// // TODO(singer)
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetInfixWithLength(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue,typename TStringSetSpec>
+// void testStringSetInfixWithLength(StringSet<String<TValue, External<> >, TStringSetSpec> const & /*Tag*/) {}
+// 
+// SEQAN_TYPED_TEST(StringSetTestCommon, InfixWithLength)
+// {
+//     CountingChar::clear();
+// 
+//     typename TestFixture::TStringSet strSet;
+//     testStringSetInfixWithLength(strSet);
+// 
+//     typename TestFixture::TStringSet const constStrSet;
+//     testStringSetInfixWithLength(constStrSet);
+// 
+// //    testConstructDeconstruct(strSet);
+// }
 
 // Test of insert().
 // TODO (singer): no insert function implemented.
@@ -1620,7 +1652,7 @@ void testStringSetIter(TStringSet & /*Tag*/)
         TIterator iterator = iter(stringSet, 0);
         TStandardIterator standardIterator = iter(stringSet, 0);
         TRootedIterator rootedIterator = iter(stringSet, 0);
-        SEQAN_ASSERT_EQ(getValue(iterator), "AAAA");
+        SEQAN_ASSERT_EQ(TString(getValue(iterator)), "AAAA");
         SEQAN_ASSERT(getValue(iterator) == getValue(stringSet, 0));
         SEQAN_ASSERT(getValue(standardIterator) == getValue(stringSet, 0));
         SEQAN_ASSERT(getValue(rootedIterator) == getValue(stringSet, 0));
@@ -1641,7 +1673,7 @@ void testStringSetIter(TStringSet & /*Tag*/)
         TIterator iterator = iter(stringSet, 3);
         TStandardIterator standardIterator = iter(stringSet, 3);
         TRootedIterator rootedIterator = iter(stringSet, 3);
-        SEQAN_ASSERT_EQ(getValue(iterator), "TTTT");
+        SEQAN_ASSERT_EQ(TString(getValue(iterator)), "TTTT");
         SEQAN_ASSERT(getValue(iterator) == getValue(stringSet, 3));
         SEQAN_ASSERT(getValue(standardIterator) == getValue(stringSet, 3));
         SEQAN_ASSERT(getValue(rootedIterator) == getValue(stringSet, 3));
@@ -1649,14 +1681,14 @@ void testStringSetIter(TStringSet & /*Tag*/)
 }
 
 // TODO(singer): No appendValue for string sets of packed strings
-template <typename TValue, typename TStringSetSpec>
-void testStringSetIter(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetIter(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetIter(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetIter(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetIter(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetIter(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetIter(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetIter(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
 
 
 SEQAN_TYPED_TEST(StringSetTestCommon, Iter)
@@ -1708,104 +1740,104 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Length)
 //    testConstructDeconstruct(strSet);
 }
 
-// Test of moveValue().
-template <typename TStringSet>
-void testStringSetMoveValue(TStringSet & /*Tag*/)
-{
-    using namespace seqan;
+// // Test of moveValue().
+// template <typename TStringSet>
+// void testStringSetMoveValue(TStringSet & /*Tag*/)
+// {
+//     using namespace seqan;
+// 
+//     TStringSet stringSet;
+// 
+//     resize(stringSet, 2u);
+//     moveValue(stringSet, 1, "ACGT");
+//     SEQAN_ASSERT_EQ(CharString(stringSet[1]), "ACGT");
+// }
+// 
+// // TODO(singer): No moveValue for string sets of packed strings
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetMoveValue(StringSet<String<TValue, Alloc<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetMoveValue(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetMoveValue(StringSet<String<TValue, Block<> >, Owner<TStringSetSpec> > & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetMoveValue(StringSet<String<TValue, Packed<> >, Owner<TStringSetSpec> > & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetMoveValue(StringSet<String<TValue, Array<100> >, Owner<TStringSetSpec> > & /*Tag*/) {}
+// 
+// // TODO(singer): Seg fault
+// template <typename TValue, typename TStringSpec, typename TStringSetSpec>
+// void testStringSetMoveValue(StringSet<String<TValue, TStringSpec>, Dependent<TStringSetSpec> > & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetMoveValue(StringSet<String<TValue, External<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetMoveValue(StringSet<String<TValue, External<> >, Owner<TStringSetSpec> > & /*Tag*/) {}
+// 
+// SEQAN_TYPED_TEST(StringSetTestCommon, MoveValue)
+// {
+//     // TODO(singer); Simply not working at all!
+// //     CountingChar::clear();
+// //
+// //     typename TestFixture::TStringSet strSet;
+// //     testStringSetMoveValue(strSet);
+// //
+// //     testConstructDeconstruct(strSet);
+// }
 
-    TStringSet stringSet;
-
-    resize(stringSet, 2u);
-    moveValue(stringSet, 1, "ACGT");
-    SEQAN_ASSERT_EQ(stringSet[1], "ACGT");
-}
-
-// TODO(singer): No moveValue for string sets of packed strings
-template <typename TValue, typename TStringSetSpec>
-void testStringSetMoveValue(StringSet<String<TValue, Alloc<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetMoveValue(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetMoveValue(StringSet<String<TValue, Block<> >, Owner<TStringSetSpec> > & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetMoveValue(StringSet<String<TValue, Packed<> >, Owner<TStringSetSpec> > & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetMoveValue(StringSet<String<TValue, Array<100> >, Owner<TStringSetSpec> > & /*Tag*/) {}
-
-// TODO(singer): Seg fault
-template <typename TValue, typename TStringSpec, typename TStringSetSpec>
-void testStringSetMoveValue(StringSet<String<TValue, TStringSpec>, Dependent<TStringSetSpec> > & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetMoveValue(StringSet<String<TValue, External<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetMoveValue(StringSet<String<TValue, External<> >, Owner<TStringSetSpec> > & /*Tag*/) {}
-
-SEQAN_TYPED_TEST(StringSetTestCommon, MoveValue)
-{
-    // TODO(singer); Simply not working at all!
+// // TODO (singer): see infix.
+// // Test of prefix().
+// template <typename TStringSet>
+// void testStringSetPrefix(TStringSet & /*Tag*/)
+// {
+//     using namespace seqan;
+//     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
+//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
+// 
+//     TString str("ACGTACGT");
+//     TString str2("GTACGT");
+//     TString str3("TACGT");
+//     TNonConstStringSet nonConstStringSet;
+//     appendValue(nonConstStringSet, str);
+//     appendValue(nonConstStringSet, str2);
+//     appendValue(nonConstStringSet, str3);
+//     TStringSet stringSet(nonConstStringSet);
+//     TString pref = prefix(stringSet, 3);
+//     TString str4("ACG");
+//     SEQAN_ASSERT_EQ(pref, str4);
+// }
+// 
+// // TODO(singer): No appendValue for string sets of packed strings
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetPrefix(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetPrefix(StringSet<String<TValue, MMap<> >, TStringSetSpec> const & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetPrefix(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetPrefix(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetPrefix(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetPrefix(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
+// 
+// // TODO(singer)
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetPrefix(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetPrefix(StringSet<String<TValue, External<> >, TStringSetSpec> const & /*Tag*/) {}
+// 
+// SEQAN_TYPED_TEST(StringSetTestCommon, Prefix)
+// {
 //     CountingChar::clear();
-//
+// 
 //     typename TestFixture::TStringSet strSet;
-//     testStringSetMoveValue(strSet);
-//
-//     testConstructDeconstruct(strSet);
-}
-
-// TODO (singer): see infix.
-// Test of prefix().
-template <typename TStringSet>
-void testStringSetPrefix(TStringSet & /*Tag*/)
-{
-    using namespace seqan;
-    typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-    typedef typename TestStringSetValue_<TStringSet>::Type TString;
-
-    TString str("ACGTACGT");
-    TString str2("GTACGT");
-    TString str3("TACGT");
-    TNonConstStringSet nonConstStringSet;
-    appendValue(nonConstStringSet, str);
-    appendValue(nonConstStringSet, str2);
-    appendValue(nonConstStringSet, str3);
-    TStringSet stringSet(nonConstStringSet);
-    TString pref = prefix(stringSet, 3);
-    TString str4("ACG");
-    SEQAN_ASSERT_EQ(pref, str4);
-}
-
-// TODO(singer): No appendValue for string sets of packed strings
-template <typename TValue, typename TStringSetSpec>
-void testStringSetPrefix(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetPrefix(StringSet<String<TValue, MMap<> >, TStringSetSpec> const & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetPrefix(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetPrefix(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetPrefix(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetPrefix(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
-
-// TODO(singer)
-template <typename TValue, typename TStringSetSpec>
-void testStringSetPrefix(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetPrefix(StringSet<String<TValue, External<> >, TStringSetSpec> const & /*Tag*/) {}
-
-SEQAN_TYPED_TEST(StringSetTestCommon, Prefix)
-{
-    CountingChar::clear();
-
-    typename TestFixture::TStringSet strSet;
-    testStringSetPrefix(strSet);
-
-    typename TestFixture::TStringSet const constStrSet;
-    testStringSetPrefix(constStrSet);
-
-//    testConstructDeconstruct(strSet);
-}
+//     testStringSetPrefix(strSet);
+// 
+//     typename TestFixture::TStringSet const constStrSet;
+//     testStringSetPrefix(constStrSet);
+// 
+// //    testConstructDeconstruct(strSet);
+// }
 
 // TODO (singer); replace is not defined for string sets.
 //// Test of replace().
@@ -1890,14 +1922,14 @@ void testStringSetResize(TStringSet & /*Tag*/)
 //    SEQAN_ASSERT_EQ(stringSet[9], string);
 }
 
-template <typename TValue, typename TStringSetSpec>
-void testStringSetResize(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetResize(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetResize(StringSet<String<TValue, External<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetResize(StringSet<String<TValue, Packed<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetResize(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetResize(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetResize(StringSet<String<TValue, External<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetResize(StringSet<String<TValue, Packed<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
 template <typename TValue, typename TStringSpec, typename TStringSetSpec>
 void testStringSetResize(StringSet<String<TValue, TStringSpec>, Dependent<TStringSetSpec> > & /*Tag*/) {}
 
@@ -1911,61 +1943,61 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Resize)
 //    testConstructDeconstruct(strSet);
 }
 
-// TODO (singer): see infix.
-// Test of suffix().
-template <typename TStringSet>
-void testStringSetSuffix(TStringSet & /*Tag*/)
-{
-    using namespace seqan;
-    typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-    typedef typename TestStringSetValue_<TStringSet>::Type TString;
-
-    TString str("ACGTACGT");
-    TString str2("GTACGT");
-    TString str3("TACGT");
-    TNonConstStringSet nonConstStringSet;
-    appendValue(nonConstStringSet, str);
-    appendValue(nonConstStringSet, str2);
-    appendValue(nonConstStringSet, str3);
-    TStringSet stringSet(nonConstStringSet);
-    TString pref = suffix(stringSet, 5);
-    TString str4("CGT");
-    SEQAN_ASSERT_EQ(pref, str4);
-}
-
-// TODO(singer): No appendValue for string sets of packed strings
-template <typename TValue, typename TStringSetSpec>
-void testStringSetSuffix(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetSuffix(StringSet<String<TValue, MMap<> >, TStringSetSpec> const & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetSuffix(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetSuffix(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetSuffix(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetSuffix(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
-
-
-// TODO(singer)
-template <typename TValue, typename TStringSetSpec>
-void testStringSetSuffix(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetSuffix(StringSet<String<TValue, External<> >, TStringSetSpec> const & /*Tag*/) {}
-
-SEQAN_TYPED_TEST(StringSetTestCommon, Suffix)
-{
-    CountingChar::clear();
-
-    typename TestFixture::TStringSet strSet;
-    testStringSetSuffix(strSet);
-
-    typename TestFixture::TStringSet const constStrSet;
-    testStringSetSuffix(constStrSet);
-
-//    testConstructDeconstruct(strSet);
-}
+// // TODO (singer): see infix.
+// // Test of suffix().
+// template <typename TStringSet>
+// void testStringSetSuffix(TStringSet & /*Tag*/)
+// {
+//     using namespace seqan;
+//     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
+//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
+// 
+//     TString str("ACGTACGT");
+//     TString str2("GTACGT");
+//     TString str3("TACGT");
+//     TNonConstStringSet nonConstStringSet;
+//     appendValue(nonConstStringSet, str);
+//     appendValue(nonConstStringSet, str2);
+//     appendValue(nonConstStringSet, str3);
+//     TStringSet stringSet(nonConstStringSet);
+//     TString pref = suffix(stringSet, 5);
+//     TString str4("CGT");
+//     SEQAN_ASSERT_EQ(pref, str4);
+// }
+// 
+// // TODO(singer): No appendValue for string sets of packed strings
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetSuffix(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetSuffix(StringSet<String<TValue, MMap<> >, TStringSetSpec> const & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetSuffix(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetSuffix(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetSuffix(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetSuffix(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
+// 
+// 
+// // TODO(singer)
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetSuffix(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetSuffix(StringSet<String<TValue, External<> >, TStringSetSpec> const & /*Tag*/) {}
+// 
+// SEQAN_TYPED_TEST(StringSetTestCommon, Suffix)
+// {
+//     CountingChar::clear();
+// 
+//     typename TestFixture::TStringSet strSet;
+//     testStringSetSuffix(strSet);
+// 
+//     typename TestFixture::TStringSet const constStrSet;
+//     testStringSetSuffix(constStrSet);
+// 
+// //    testConstructDeconstruct(strSet);
+// }
 
 
 // TODO (singer): swap is not working because a constructor string set (StringSet(StringSet, Move)) is missing.
@@ -2120,98 +2152,99 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Value)
 }
 
 
-// Test of valueById().
-template <typename TStringSet>
-void testStringSetValueById(TStringSet & /*Tag*/)
-{
-    using namespace seqan;
+// // Test of valueById().
+// template <typename TStringSet>
+// void testStringSetValueById(TStringSet & /*Tag*/)
+// {
+//     using namespace seqan;
+// 
+//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
+// 
+//     // In contrast to getValue(), value() does not return a copy but a reference.
+//     // We test this using the variable value_.
+//     TString str1("ACAC");
+//     TString str2("AAAA");
+//     TString str3("TTTT");
+//     TStringSet stringSet;
+//     appendValue(stringSet, str1);
+//     appendValue(stringSet, str2);
+//     appendValue(stringSet, str3);
+//     TString & value_ = valueById(stringSet, 0);
+//     SEQAN_ASSERT_EQ(value_, str1);
+// 
+//     value_ = "GGGG";
+//     TString str4("GGGG");
+//     SEQAN_ASSERT_EQ(value_, str4);
+//     SEQAN_ASSERT_EQ(stringSet[0], str4);
+// }
+// 
+// // Test of valueById().
+// template <typename TStringSet>
+// void testStringSetValueById(TStringSet const & /*Tag*/)
+// {
+//     using namespace seqan;
+// 
+//     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
+//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
+// 
+//     // In contrast to getValue(), value() does not return a copy but a reference.
+//     // We test this using the variable value_.
+// 
+//     TString str1("ACAC");
+//     TString str2("AAAA");
+//     TString str3("TTTT");
+//     TNonConstStringSet nonConstStringSet;
+//     appendValue(nonConstStringSet, str1);
+//     appendValue(nonConstStringSet, str2);
+//     appendValue(nonConstStringSet, str3);
+// 
+//     TStringSet stringSet(nonConstStringSet);
+//     TString value_ = valueById(stringSet, 0);
+//     SEQAN_ASSERT_EQ(value_, str1);
+// 
+//     value_ = "GGGG";
+//     TString str4("GGGG");
+//     SEQAN_ASSERT_EQ(value_, str4);
+//     SEQAN_ASSERT_EQ(stringSet[0], str4);
+// }
+// 
+// // TODO(singer): Seg. fault
+// template <typename TValue>
+// void testStringSetValueById(StringSet<String<TValue, MMap<> >, Owner<> > & /*Tag*/) {}
+// template <typename TValue>
+// void testStringSetValueById(StringSet<String<TValue, MMap<> >, Owner<> > const & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetValueById(StringSet<String<TValue, MMap<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetValueById(StringSet<String<TValue, MMap<> >, Dependent<TStringSetSpec> > const & /*Tag*/) {}
+// 
+// 
+// // TODO(singer)
+// template <typename TValue>
+// void testStringSetValueById(StringSet<String<TValue, External<> >, Owner<> > & /*Tag*/) {}
+// template <typename TValue>
+// void testStringSetValueById(StringSet<String<TValue, External<> >, Owner<> > const & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetValueById(StringSet<String<TValue, External<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
+// template <typename TValue, typename TStringSetSpec>
+// void testStringSetValueById(StringSet<String<TValue, External<> >, Dependent<TStringSetSpec> > const & /*Tag*/) {}
+// 
+// template <typename TValue, typename TStringSpec>
+// void testStringSetValueById(StringSet<String<TValue, TStringSpec>, Owner<ConcatDirect<> > > & /*Tag*/) {}
+// template <typename TValue, typename TStringSpec>
+// void testStringSetValueById(StringSet<String<TValue, TStringSpec>, Owner<ConcatDirect<> > > const & /*Tag*/) {}
+// 
+// SEQAN_TYPED_TEST(StringSetTestCommon, ValueById)
+// {
+//     CountingChar::clear();
+// 
+//     typename TestFixture::TStringSet strSet;
+//     testStringSetValueById(strSet);
+// 
+//     typename TestFixture::TStringSet const constStrSet;
+//     testStringSetValueById(constStrSet);
+// 
+// ////    testConstructDeconstruct(strSet);
+// }
 
-    typedef typename TestStringSetValue_<TStringSet>::Type TString;
-
-    // In contrast to getValue(), value() does not return a copy but a reference.
-    // We test this using the variable value_.
-    TString str1("ACAC");
-    TString str2("AAAA");
-    TString str3("TTTT");
-    TStringSet stringSet;
-    appendValue(stringSet, str1);
-    appendValue(stringSet, str2);
-    appendValue(stringSet, str3);
-    TString & value_ = valueById(stringSet, 0);
-    SEQAN_ASSERT_EQ(value_, str1);
-
-    value_ = "GGGG";
-    TString str4("GGGG");
-    SEQAN_ASSERT_EQ(value_, str4);
-    SEQAN_ASSERT_EQ(stringSet[0], str4);
-}
-
-// Test of valueById().
-template <typename TStringSet>
-void testStringSetValueById(TStringSet const & /*Tag*/)
-{
-    using namespace seqan;
-
-    typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-    typedef typename TestStringSetValue_<TStringSet>::Type TString;
-
-    // In contrast to getValue(), value() does not return a copy but a reference.
-    // We test this using the variable value_.
-
-    TString str1("ACAC");
-    TString str2("AAAA");
-    TString str3("TTTT");
-    TNonConstStringSet nonConstStringSet;
-    appendValue(nonConstStringSet, str1);
-    appendValue(nonConstStringSet, str2);
-    appendValue(nonConstStringSet, str3);
-
-    TStringSet stringSet(nonConstStringSet);
-    TString value_ = valueById(stringSet, 0);
-    SEQAN_ASSERT_EQ(value_, str1);
-
-    value_ = "GGGG";
-    TString str4("GGGG");
-    SEQAN_ASSERT_EQ(value_, str4);
-    SEQAN_ASSERT_EQ(stringSet[0], str4);
-}
-
-// TODO(singer): Seg. fault
-template <typename TValue>
-void testStringSetValueById(StringSet<String<TValue, MMap<> >, Owner<> > & /*Tag*/) {}
-template <typename TValue>
-void testStringSetValueById(StringSet<String<TValue, MMap<> >, Owner<> > const & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetValueById(StringSet<String<TValue, MMap<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetValueById(StringSet<String<TValue, MMap<> >, Dependent<TStringSetSpec> > const & /*Tag*/) {}
-
-
-// TODO(singer)
-template <typename TValue>
-void testStringSetValueById(StringSet<String<TValue, External<> >, Owner<> > & /*Tag*/) {}
-template <typename TValue>
-void testStringSetValueById(StringSet<String<TValue, External<> >, Owner<> > const & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetValueById(StringSet<String<TValue, External<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetValueById(StringSet<String<TValue, External<> >, Dependent<TStringSetSpec> > const & /*Tag*/) {}
-
-template <typename TValue, typename TStringSpec>
-void testStringSetValueById(StringSet<String<TValue, TStringSpec>, Owner<ConcatDirect<> > > & /*Tag*/) {}
-template <typename TValue, typename TStringSpec>
-void testStringSetValueById(StringSet<String<TValue, TStringSpec>, Owner<ConcatDirect<> > > const & /*Tag*/) {}
-
-SEQAN_TYPED_TEST(StringSetTestCommon, ValueById)
-{
-    CountingChar::clear();
-
-    typename TestFixture::TStringSet strSet;
-    testStringSetValueById(strSet);
-
-    typename TestFixture::TStringSet const constStrSet;
-    testStringSetValueById(constStrSet);
-
-////    testConstructDeconstruct(strSet);
-}
 #endif // TESTS_SEQUENCE_TEST_STRINGSET_H_
