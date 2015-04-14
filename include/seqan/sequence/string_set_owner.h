@@ -144,21 +144,6 @@ public:
 // Function append()
 // --------------------------------------------------------------------------
 
-// general solution
-template <typename TString, typename TStrings2, typename TExpand >
-inline void append(StringSet<TString, Owner<Default> > & me,
-                   TStrings2 const & obj,
-                   Tag<TExpand>)
-{
-    typedef typename Iterator<TStrings2 const>::Type TSourceIt;
-    // we rather invalidate limits here to allow to do modify appended strings:
-    me.limitsValid = false;
-    unsigned oldLength = length(me.strings);
-    resize(me.strings, oldLength + length(obj), Tag<TExpand>());
-    for (TSourceIt it = begin(obj), itEnd = end(obj); it != itEnd; ++it)
-        assignValue(me, oldLength++, *it);
-}
-
 // better solution if both stringsets are Owner<Default>
 template <typename TString, typename TString2, typename TExpand >
 inline void append(StringSet<TString, Owner<Default> > & me,
