@@ -244,6 +244,22 @@ reserve(String<TValue, Array<CAPACITY> > & me,
     return capacity(me);
 }
 
+// ----------------------------------------------------------------------------
+// Function -*allocateStorage()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, size_t CAPACITY, typename TSize>
+inline TValue *
+_allocateStorage(String<TValue, Array<CAPACITY> > & me, TSize /*capacity*/)
+{
+    return me.data_begin;
+}
+
+template <typename TValue, size_t CAPACITY, typename TSize>
+inline void
+_deallocateStorage(String<TValue, Array<CAPACITY> > & /*me*/, TValue * /*ptr*/, TSize /*capacity*/)
+{
+}
 
 // ----------------------------------------------------------------------------
 // Function _setLength()
