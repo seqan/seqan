@@ -40,11 +40,88 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include "test_sequence.h"
+#include <seqan/stream.h>
+
+// #include "test_sequence.h"
 
 // TODO(singer): The Value metafunction of a concat direct string set returns an infix.
 // This should be changed!
 // The following metafunction is just a workaround.
+
+using namespace seqan;
+
+// --------------------------------------------------------------------------
+// CountingChar is used to test sequences of non simple data types.
+// --------------------------------------------------------------------------
+//TODO(h4nn3s): currently not working for StringSets
+
+struct CountingChar
+{
+    char value;                     // value of the object
+    static unsigned numConstruct;   // number of constructor calls
+    static unsigned numDeconstruct; // number of destructor calls
+
+    CountingChar() : value()
+    {
+        numConstruct += 1;
+    }
+
+    CountingChar(char const & value) : value(value)
+    {
+        numConstruct += 1;
+    }
+
+    CountingChar(CountingChar const & other) : value(other.value)
+    {
+        numConstruct += 1;
+    }
+
+    ~CountingChar()
+    {
+        numDeconstruct += 1;
+    }
+
+    static void clear()
+    {
+        numConstruct = 0;
+        numDeconstruct = 0;
+    }
+
+    bool operator==(CountingChar const & other) const
+    {
+        return value == other.value;
+    }
+
+    bool operator>(CountingChar const & other) const
+    {
+        return value > other.value;
+    }
+
+    bool operator<(CountingChar const & other) const
+    {
+        return value < other.value;
+    }
+};
+
+template <typename TStream>
+inline TStream & operator<<(TStream & stream, CountingChar const & countingChar)
+{
+    stream << countingChar.value;
+
+    return stream;
+}
+
+template <typename TStream, typename TSpec>
+inline TStream & operator<<(TStream & stream, seqan::String<CountingChar, TSpec> const & string)
+{
+    for (unsigned i = 0; i < length(string); ++i)
+        stream << string[i];
+
+    return stream;
+}
+
+unsigned CountingChar::numConstruct = 0;
+unsigned CountingChar::numDeconstruct = 0;
 
 template <typename TStringSet>
 struct TestStringSetValue_
@@ -58,14 +135,23 @@ struct TestStringSetValue_<StringSet<TString, Owner<ConcatDirect<> > > >
     typedef TString Type;
 };
 
-template <typename TAlphabetSpecPair>
+// template <typename TAlphabetSpecPair>
+// class StringSetTest : public seqan::Test
+// {
+// public:
+//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 2>::Type TAlphabet;
+//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 1>::Type TStringSpec;
+//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 0>::Type TSetSpec;
+//     typedef seqan::StringSet<seqan::String<TAlphabet, TStringSpec>, TSetSpec> TStringSet;
+// };
+
+template <typename TAlphabetSpecPair_>
 class StringSetTest : public seqan::Test
 {
 public:
-    typedef typename seqan::TagListValue<TAlphabetSpecPair, 1>::Type TAlphabet;
-    typedef typename seqan::TagListValue<TAlphabetSpecPair, 2>::Type TStringSpec;
-    typedef typename seqan::TagListValue<TAlphabetSpecPair, 3>::Type TSetSpec;
-    typedef seqan::StringSet<seqan::String<TAlphabet, TStringSpec>, TSetSpec> TStringSet;
+//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 1>::Type TAlphabet;
+//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 2>::Type TSpec;
+    typedef TAlphabetSpecPair_ TStringSet;
 };
 
 // ((a (b (c)))
@@ -73,87 +159,87 @@ public:
 //   ((g (h (i)))
 // )))
 
-typedef seqan::TagList<
-//             seqan::TagList<seqan::Dna, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-//             seqan::TagList<short, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-//             seqan::TagList<CountingChar, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-//             seqan::TagList<seqan::Dna, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-//             seqan::TagList<short, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-//             seqan::TagList<CountingChar, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-//             seqan::TagList<seqan::Dna, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-//             seqan::TagList<short, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-//             seqan::TagList<CountingChar, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-//             seqan::TagList<seqan::Dna, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-//             seqan::TagList<short, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-//             seqan::TagList<CountingChar, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
+typedef
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::MMap<> >, seqan::Owner<> >                ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::MMap<> >, seqan::Owner<> >                ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::MMap<> >, seqan::Owner<> >                ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::MMap<> >, seqan::Owner<> >                ,
+//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::MMap<> >, seqan::Owner<ConcatDirect<> > > ,
+//     seqan::TagList<seqan::StringSet<String<short,        seqan::MMap<> >, seqan::Owner<ConcatDirect<> > > ,
+//     seqan::TagList<seqan::StringSet<String<char,         seqan::MMap<> >, seqan::Owner<ConcatDirect<> > > ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::MMap<> >, seqan::Owner<ConcatDirect<> > > ,
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::MMap<> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::MMap<> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::MMap<> >, seqan::Dependent<Tight> >       ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::MMap<> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::MMap<> >, seqan::Dependent<Generous> >    ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::MMap<> >, seqan::Dependent<Generous> >    ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::MMap<> >, seqan::Dependent<Generous> >    ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::MMap<> >, seqan::Dependent<Generous> >    ,
 
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::External<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::External<> >, seqan::Owner<> >                ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::External<> >, seqan::Owner<> >                ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::External<> >, seqan::Owner<> >                ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::External<> >, seqan::Owner<> >                ,
+//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::External<> >, seqan::Owner<ConcatDirect<> > > ,
+//     seqan::TagList<seqan::StringSet<String<short,        seqan::External<> >, seqan::Owner<ConcatDirect<> > > ,
+//     seqan::TagList<seqan::StringSet<String<char,         seqan::External<> >, seqan::Owner<ConcatDirect<> > > ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::External<> >, seqan::Owner<ConcatDirect<> > > ,
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::External<> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::External<> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::External<> >, seqan::Dependent<Tight> >       ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::External<> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::External<> >, seqan::Dependent<Generous> >    ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::External<> >, seqan::Dependent<Generous> >    ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::External<> >, seqan::Dependent<Generous> >    ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::External<> >, seqan::Dependent<Generous> >    ,
 
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Packed<> >, seqan::Owner<> >                ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::Packed<> >, seqan::Owner<> >                ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::Packed<> >, seqan::Owner<> >                ,
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Packed<> >, seqan::Owner<ConcatDirect<> > > ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::Packed<> >, seqan::Owner<ConcatDirect<> > > ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::Packed<> >, seqan::Owner<ConcatDirect<> > > ,
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Packed<> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::Packed<> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::Packed<> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Packed<> >, seqan::Dependent<Generous> >    ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::Packed<> >, seqan::Dependent<Generous> >    ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::Packed<> >, seqan::Dependent<Generous> >    ,
 
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Array<100> >, seqan::Owner<> >                ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::Array<100> >, seqan::Owner<> >                ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::Array<100> >, seqan::Owner<> >                ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Array<100> >, seqan::Owner<> >                ,
+//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Array<100> >, seqan::Owner<ConcatDirect<> > > ,
+//     seqan::TagList<seqan::StringSet<String<short,        seqan::Array<100> >, seqan::Owner<ConcatDirect<> > > ,
+//     seqan::TagList<seqan::StringSet<String<char,         seqan::Array<100> >, seqan::Owner<ConcatDirect<> > > ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Array<100> >, seqan::Owner<ConcatDirect<> > > ,
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Array<100> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::Array<100> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::Array<100> >, seqan::Dependent<Tight> >       ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Array<100> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Array<100> >, seqan::Dependent<Generous> >    ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::Array<100> >, seqan::Dependent<Generous> >    ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::Array<100> >, seqan::Dependent<Generous> >    ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Array<100> >, seqan::Dependent<Generous> >    ,
 
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
+//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Block<> >, seqan::Owner<> >                ,
+//     seqan::TagList<seqan::StringSet<String<short,        seqan::Block<> >, seqan::Owner<> >                ,
+//     seqan::TagList<seqan::StringSet<String<char,         seqan::Block<> >, seqan::Owner<> >                ,
+// //     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Block<> >, seqan::Owner<> >                ,
+//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Block<> >, seqan::Owner<ConcatDirect<> > > ,
+//     seqan::TagList<seqan::StringSet<String<short,        seqan::Block<> >, seqan::Owner<ConcatDirect<> > > ,
+//     seqan::TagList<seqan::StringSet<String<char,         seqan::Block<> >, seqan::Owner<ConcatDirect<> > > ,
+// //     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Block<> >, seqan::Owner<ConcatDirect<> > > ,
+//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Block<> >, seqan::Dependent<Tight> >       ,
+//     seqan::TagList<seqan::StringSet<String<short,        seqan::Block<> >, seqan::Dependent<Tight> >       ,
+//     seqan::TagList<seqan::StringSet<String<char,         seqan::Block<> >, seqan::Dependent<Tight> >       ,
+// //     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Block<> >, seqan::Dependent<Tight> >       ,
+//     seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Block<> >, seqan::Dependent<Generous> >    ,
+//     seqan::TagList<seqan::StringSet<String<short,        seqan::Block<> >, seqan::Dependent<Generous> >    ,
+//     seqan::TagList<seqan::StringSet<String<char,         seqan::Block<> >, seqan::Dependent<Generous> >    ,
+// //     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Block<> >, seqan::Dependent<Generous> >    ,
 
 // TODO(Singer): 7 errors and about 400 warnings (deprecated ...)
 //             seqan::TagList<char, seqan::TagList<seqan::CStyle, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
@@ -161,29 +247,30 @@ typedef seqan::TagList<
 //             seqan::TagList<char, seqan::TagList<seqan::CStyle, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
 //             seqan::TagList<char, seqan::TagList<seqan::CStyle, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
 
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Owner<> > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Owner<ConcatDirect<> > > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Dependent<Tight> > > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Dependent<Generous> > > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::Dependent<Generous> > > >//, seqan::TagList<
-//         > > > > > > > > > > > > > > > >
-        > > > > > > > > > > > > > > > >
-        > > > > > > > > > > > >
-        > > > > > > > > > > > > > > > >
-        > > > > > > > > > > > > > > > >
-//         > > > >
-        > > > > > > > > > > > > > > > >
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Alloc<> >, seqan::Owner<> >                ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::Alloc<> >, seqan::Owner<> >                ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::Alloc<> >, seqan::Owner<> >                ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Alloc<> >, seqan::Owner<> >                ,
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Alloc<> >, seqan::Owner<ConcatDirect<> > > ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::Alloc<> >, seqan::Owner<ConcatDirect<> > > ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::Alloc<> >, seqan::Owner<ConcatDirect<> > > ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Alloc<> >, seqan::Owner<ConcatDirect<> > > ,
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Alloc<> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::Alloc<> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::Alloc<> >, seqan::Dependent<Tight> >       ,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Alloc<> >, seqan::Dependent<Tight> >       ,
+    seqan::TagList<seqan::StringSet<String<seqan::Dna,   seqan::Alloc<> >, seqan::Dependent<Generous> >    ,
+    seqan::TagList<seqan::StringSet<String<short,        seqan::Alloc<> >, seqan::Dependent<Generous> >    ,
+    seqan::TagList<seqan::StringSet<String<char,         seqan::Alloc<> >, seqan::Dependent<Generous> >    //,
+//     seqan::TagList<seqan::StringSet<String<CountingChar, seqan::Alloc<> >, seqan::Dependent<Generous> >
+
+    > > > > > > > > > //> > > > > > >
+    > > > > > > > > > //> > > > > > >
+    > > > > > > > > > > > >
+    > > > > > > > > > //> > > > > > >
+//     > > > > > > > > > > > > //> > > >
+//     > > > >
+    > > > > > > > > > > > > //> > > >
         StringSetTestTypes;
 
 template <typename T>
@@ -251,7 +338,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, CopyConstructible)
     typename TestFixture::TStringSet strSet;
     testStringSetCopyConstructible(strSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
 
 // Test whether sequences are default constructible.
@@ -272,7 +359,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, DefaultConstructible)
     typename TestFixture::TStringSet strSet;
     testStringSetDefaultConstructible(strSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
 
 
@@ -398,8 +485,12 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Comparison)
 //     typename TestFixture::TStringSet const constStrSet;
 //     testStringSetLessGreaterEqual(constStrSet);
 //
-//     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
+
+// TODO dependent can't append
+template <typename TValue, typename TStringSpec, typename TSpec2>
+void testStringSetAppend(StringSet<String<TValue, TStringSpec >, Dependent<TSpec2> > & /*Tag*/) {}
 
 // Test of append().
 template <typename TStringSet>
@@ -425,12 +516,12 @@ void testStringSetAppend(TStringSet & /*Tag*/)
 // TODO(singer): append not implemented for string sets
 SEQAN_TYPED_TEST(StringSetTestCommon, Append)
 {
-//     CountingChar::clear();
-//
-//     typename TestFixture::TStringSet strSet;
-//     testStringSetAppend(strSet);
-//
-//     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+    CountingChar::clear();
+
+    typename TestFixture::TStringSet strSet;
+    testStringSetAppend(strSet);
+
+//     testConstructDeconstruct(strSet);
 }
 
 // Test of appendValue().
@@ -473,7 +564,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, AppendValue)
     typename TestFixture::TStringSet strSet;
     testStringSetAppendValue(strSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
 
 // Test of assign().
@@ -515,7 +606,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Assign)
     typename TestFixture::TStringSet strSet;
     testStringSetAssign(strSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
 
 // Test of assignValue().
@@ -562,7 +653,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, AssignValue)
     typename TestFixture::TStringSet strSet;
     testStringSetAssignValue(strSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
 
 // Test of assignValueById().
@@ -620,7 +711,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, AssignValueById)
     typename TestFixture::TStringSet strSet;
     testStringSetAssignValueById(strSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
 
 // Test of back() for non const strings.
@@ -692,7 +783,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Back)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetBack(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
 
 // Test of begin().
@@ -741,7 +832,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Begin)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetBegin(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
 
 // Test of beginPosition().
@@ -796,7 +887,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, BeginPosition)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetBeginPosition(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
 
 // Test of clear().
@@ -844,7 +935,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Clear)
     typename TestFixture::TStringSet strSet;
     testStringSetClear(strSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
 
 // Test of concat().
@@ -880,7 +971,7 @@ void testStringSetConcat(TStringSet & /*Tag*/)
         appendValue(nonConstStringSet, str4);
         TString string("AAAACCCCGGGGTTTT");
         TStringSet stringSet(nonConstStringSet);
-        TConcat concatString = concat(stringSet);
+        TString/*TConcat*/ concatString = concat(stringSet); // can't call [] on all Concatenators so we convert here
         for (unsigned i = 0; i < length(string); ++i)
             SEQAN_ASSERT_EQ(string[i], concatString[i]);
     }
@@ -903,7 +994,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Concat)
     typename TestFixture::TStringSet strSet;
     testStringSetConcat(strSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
 
 // Test of end().
@@ -955,7 +1046,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, End)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetEnd(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
 
 // Test of endPosition().
@@ -1008,7 +1099,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, EndPosition)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetEndPosition(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 // Test of erase().
@@ -1065,7 +1156,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Erase)
     typename TestFixture::TStringSet strSet;
     testStringSetErase(strSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 // Test of eraseBack().
@@ -1114,7 +1205,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, EraseBack)
     typename TestFixture::TStringSet strSet;
     testStringSetEraseBack(strSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 // TODO (singer): not in docu.
@@ -1200,7 +1291,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Front)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetFront(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 // Test of getValue().
@@ -1245,7 +1336,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, GetValue)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetGetValue(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 // TODO (singer): not defined for const string sets.
@@ -1290,7 +1381,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, GetValueById)
 //     typename TestFixture::TStringSet const constStrSet;
 //     testStringSetGetValueById(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 // TODO (singer): define behaviour and adjust test.
@@ -1358,7 +1449,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Infix)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetInfix(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 // TODO (singer): define behaviour and adjust test.
@@ -1425,7 +1516,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, InfixWithLength)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetInfixWithLength(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 // Test of insert().
@@ -1459,7 +1550,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, InfixWithLength)
 //     typename TestFixture::TStringSet const constStrSet;
 //     testStringSetInsert(constStrSet);
 //
-//     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 // }
 //
 // Test of insertValue().
@@ -1490,7 +1581,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, InfixWithLength)
 //     typename TestFixture::TStringSet const constStrSet;
 //     testStringSetInsertValue(constStrSet);
 //
-//     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 // }
 
 // Test of iter().
@@ -1578,7 +1669,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Iter)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetIter(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 // Test of length().
@@ -1614,7 +1705,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Length)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetLength(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 // Test of moveValue().
@@ -1658,7 +1749,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, MoveValue)
 //     typename TestFixture::TStringSet strSet;
 //     testStringSetMoveValue(strSet);
 //
-//     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 }
 
 // TODO (singer): see infix.
@@ -1713,7 +1804,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Prefix)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetPrefix(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 // TODO (singer); replace is not defined for string sets.
@@ -1766,7 +1857,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Prefix)
 //     typename TestFixture::TStringSet strSet;
 //     testStringSetReplace(strSet);
 //
-//     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 // }
 
 // Test of resize().
@@ -1817,7 +1908,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Resize)
     typename TestFixture::TStringSet strSet;
     testStringSetResize(strSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 // TODO (singer): see infix.
@@ -1873,7 +1964,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Suffix)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetSuffix(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 
@@ -1930,7 +2021,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Suffix)
 //     typename TestFixture::TStringSet const constStrSet;
 //     testStringSetSwap(constStrSet);
 //
-//     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//     testConstructDeconstruct(strSet);
 // }
 
 // Test of value().
@@ -2025,7 +2116,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Value)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetValue(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+//    testConstructDeconstruct(strSet);
 }
 
 
@@ -2121,6 +2212,6 @@ SEQAN_TYPED_TEST(StringSetTestCommon, ValueById)
     typename TestFixture::TStringSet const constStrSet;
     testStringSetValueById(constStrSet);
 
-    testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
+////    testConstructDeconstruct(strSet);
 }
 #endif // TESTS_SEQUENCE_TEST_STRINGSET_H_
