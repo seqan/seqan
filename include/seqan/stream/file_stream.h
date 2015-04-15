@@ -982,7 +982,8 @@ struct FileStreamBuffer :
         }
     }
 
-    TPosition _seek(TPosition pos, Input)
+    // on libc++ TFilePos is different from TPosition for some of our MMapConfig'ed files
+    TPosition _seek(typename TPageFrame::TFilePos pos, Input)
     {
         if (readPage != NULL)
         {
@@ -1012,7 +1013,7 @@ struct FileStreamBuffer :
         return pos;
     }
 
-    TPosition _seek(TPosition pos, Output)
+    TPosition _seek(typename TPageFrame::TFilePos pos, Output)
     {
         if (writePage != NULL)
         {
