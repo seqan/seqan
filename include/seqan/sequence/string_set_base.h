@@ -1788,7 +1788,7 @@ write(TTarget & target, TSequences const & seqs, TDelim const & delimiter)
 
     if (SEQAN_UNLIKELY(empty(seqs)))
         return;
-    for (TSourceIt it = begin(seqs), itBack = --end(seqs); it != itBack; ++it)
+    for (TSourceIt it = begin(seqs), itBack = (end(seqs) - 1); it != itBack; ++it)
     {
         write(target, *it);
         write(target, delimiter);
