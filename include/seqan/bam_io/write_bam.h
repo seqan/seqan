@@ -244,6 +244,7 @@ void write(TTarget & target,
     // Check for valid IO Context.
     SEQAN_ASSERT_LT_MSG(record.rID, static_cast<__int32>(length(contigNames(context))), "BAM IO Assertion: Unknown REF ID!");
     SEQAN_ASSERT_LT_MSG(record.rNextId, static_cast<__int32>(length(contigNames(context))), "BAM IO Assertion: Unknown NEXT REF ID!");
+    ignoreUnusedVariableWarning(context);
 
     // Update internal lengths
     __uint32 size = updateLengths(record);
