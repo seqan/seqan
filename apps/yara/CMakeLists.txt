@@ -25,9 +25,9 @@ endif (NOT (CXX11_FOUND AND CXX11_STL_FOUND))
 
 # Disable parallelism in MSVC as it supports only OpenMP 2.0.
 if (MSVC)
-  set (SEQAN_FIND_DEPENDENCIES ZLIB BZIP2)
+  set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)
 else ()
-  set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB BZIP2)
+  set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB BZip2)
 endif ()
 
 # Search SeqAn and select dependencies.
@@ -43,9 +43,9 @@ if (NOT SEQAN_HAS_ZLIB)
   message (STATUS "  Zlib not found: building yara without gzipped input and BAM output.")
 endif (NOT SEQAN_HAS_ZLIB)
 
-# Warn if Bzip2 was not found.
+# Warn if BZip2 was not found.
 if (NOT SEQAN_HAS_BZIP2)
-  message (STATUS "  Bzip2 not found: building yara without bzipped input.")
+  message (STATUS "  BZip2 not found: building yara without bzipped input.")
 endif (NOT SEQAN_HAS_BZIP2)
 
 # ----------------------------------------------------------------------------

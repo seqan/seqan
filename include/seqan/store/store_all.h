@@ -2065,7 +2065,7 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
 //                    }
                             if (rBegin < insPos)
                             {
-                                TReadGaps gaps(store.readSeqStore[j->readId], j->gaps);
+                                TReadGaps gaps(static_cast<TReadSeq>(store.readSeqStore[j->readId]), j->gaps);
                                 insertGap(gaps, insPos - rBegin);
                             } else
                             {

@@ -334,7 +334,7 @@ jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
  * @param[in]     index          The @link BamIndex @endlink to use for jumping.
  */
 
-template <typename TSpec, typename TNameStore, typename TNameStoreCache>
+template <typename TSpec>
 bool jumpToOrphans(FormattedFile<Bam, Input, TSpec> & bamFile,
                    bool & hasAlignments,
                    BamIndex<Bai> const & index)
@@ -377,7 +377,7 @@ bool jumpToOrphans(FormattedFile<Bam, Input, TSpec> & bamFile,
     // Jump back to the first alignment.
     if (offset != MaxValue<__uint64>::VALUE)
     {
-        if (!setPosition(bamFile, offset, SEEK_SET))
+        if (!setPosition(bamFile, offset))
             return false;  // Error while seeking.
     }
 

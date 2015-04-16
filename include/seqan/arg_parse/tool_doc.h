@@ -359,7 +359,7 @@ public:
     {
         std::ostream_iterator<char> out(stream);
         stream << '\n' << _toText("\\fB");
-        std::transform(begin(section._title), end(section._title), out, toupper);
+        std::transform(begin(section._title), end(section._title), out, static_cast < int(*)(int) > (toupper));
         stream << _toText("\\fP") << '\n';
     }
 
@@ -992,7 +992,7 @@ inline CharString const & getManTitle(ToolDoc & doc)
 }
 
 // --------------------------------------------------------------------------
-// Function addSection()                                              ToolDoc
+// Function addSection()ToolDoc
 // --------------------------------------------------------------------------
 
 /*!
@@ -1290,9 +1290,9 @@ void ManToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
 
     // Print .TH line.
     stream << ".TH ";
-    std::transform(begin(doc._name), end(doc._name), out, toupper);
+    std::transform(begin(doc._name), end(doc._name), out, static_cast < int(*)(int) > (toupper));
     stream << " " << doc._manSection << " \"" << doc._date << "\" \"";
-    std::transform(begin(doc._name), end(doc._name), out, tolower);
+    std::transform(begin(doc._name), end(doc._name), out, static_cast < int(*)(int) > (tolower));
     stream << " " << doc._version << "\" \"" << doc._manTitle << "\"\n";
 
     // Print NAME section.
@@ -1319,7 +1319,7 @@ void ManToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
         {
             ToolDocSection_ const * sec = static_cast<ToolDocSection_ const *>(entry);
             stream << ".SH ";
-            std::transform(begin(sec->_title), end(sec->_title), out, toupper);
+            std::transform(begin(sec->_title), end(sec->_title), out, static_cast < int(*)(int) > (toupper));
             stream << "\n";
             isFirstInSection = true;
         }

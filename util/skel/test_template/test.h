@@ -36,6 +36,7 @@
 #define %(HEADER_GUARD)s
 
 #include <seqan/basic.h>
+#include <seqan/stream.h>
 #include <seqan/sequence.h>
 
 // A test for strings.

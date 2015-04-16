@@ -50,8 +50,8 @@ struct ReadsContext
 {
     String<unsigned char>       seedErrors;
     String<unsigned char>       minErrors;
-    String<bool, Packed<> >     mapped;
-    String<bool, Packed<> >     paired;
+    String<bool>                mapped;
+    String<bool>                paired;
 };
 
 // ============================================================================

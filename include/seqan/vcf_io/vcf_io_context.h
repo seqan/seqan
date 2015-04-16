@@ -150,6 +150,13 @@ contigNames(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
     return _referenceCast<TNameStore &>(context._contigNames);
 }
 
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline TNameStore const &
+contigNames(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
+{
+    return _referenceCast<TNameStore &>(context._contigNames);
+}
+
 /*!
  * @fn VcfIOContext#contigNamesCache
  * @brief Return reference to contig names cache from @link VcfIOContext @endlink.
@@ -164,6 +171,13 @@ contigNames(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStoreCache &
 contigNamesCache(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
+{
+    return _referenceCast<TNameStoreCache &>(context._contigNamesCache);
+}
+
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline TNameStoreCache const &
+contigNamesCache(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
     return _referenceCast<TNameStoreCache &>(context._contigNamesCache);
 }
@@ -187,8 +201,22 @@ sampleNames(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 }
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline TNameStore const &
+sampleNames(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
+{
+    return _referenceCast<TNameStore &>(context._sampleNames);
+}
+
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStoreCache &
 sampleNamesCache(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
+{
+    return _referenceCast<TNameStoreCache &>(context._sampleNamesCache);
+}
+
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline TNameStoreCache const &
+sampleNamesCache(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
     return _referenceCast<TNameStoreCache &>(context._sampleNamesCache);
 }
