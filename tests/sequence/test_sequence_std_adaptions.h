@@ -839,7 +839,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_array)
 
     // Test const iterator.
     {
-        std::array<int, 3> const vec = {100, 101, 102};
+        std::array<int, 3> const vec = { {100, 101, 102} };
         //typedef Iterator<std::array<int> const>::Type TIterator;
 
         std::array<int, 2>  vecCopy;
@@ -852,7 +852,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_array)
 
     // Test non-const iterator.
     {
-        std::array<int, 3> vec = {100, 101, 102};
+        std::array<int, 3> vec = { {100, 101, 102} };
         //typedef Iterator<std::array<int> >::Type TIterator;
 
         std::array<int, 2> vecCopy;
@@ -870,7 +870,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_interface_std_array)
 {
     using namespace seqan;
 
-    std::array<int, 2> vec = {100, 101};
+    std::array<int, 2> vec = { {100, 101} };
 
     // value(str, i), getValue(str, i)
     SEQAN_ASSERT_EQ(value(vec, 0), 100);

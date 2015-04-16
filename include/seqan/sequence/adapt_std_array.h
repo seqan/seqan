@@ -654,7 +654,7 @@ reserve(std::array<TChar, N> & seq,
 template <typename TChar, std::size_t N, typename TSize>
 inline typename Size< std::array<TChar, N> >::Type
 reserve(std::array<TChar, N> & seq,
-        TSize new_capacity,
+        TSize,
         Limit const &)
 {
     // do nothing
@@ -664,7 +664,7 @@ reserve(std::array<TChar, N> & seq,
 template <typename TChar, std::size_t N, typename TSize, typename TExpand>
 inline typename Size< std::array<TChar, N> >::Type
 resize(std::array<TChar, N> & me,
-       TSize new_length,
+       TSize,
        Tag<TExpand>)
 {
     // do nothing
@@ -674,7 +674,7 @@ resize(std::array<TChar, N> & me,
 template <typename TChar, std::size_t N, typename TSize, typename TExpand>
 inline typename Size< std::array<TChar, N> >::Type
 fill(std::array<TChar, N> & me,
-    TSize new_length,
+    TSize,
     TChar const & val,
     Tag<TExpand>)
 {
