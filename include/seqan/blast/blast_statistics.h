@@ -780,80 +780,6 @@ _lengthAdjustment(TSize     const & dbLength,
 // Function computeAlignmentStats
 // ----------------------------------------------------------------------------
 
-//TODO replace by computeAlignmentStats in library
-/*
- * @fn computeAlignmentStats
- * @headerfile <seqan/blast.h>>
- * @signature computeAlignmentStats(score, length, num_identities, num_positives, num_mismatches, num_gaps, num_gap_opens, row0, row1, scoreScheme)
- * @brief calculate a basic score and some statistics from a given alignment and scoring scheme
- *
- * @param[out]  score           the raw score (unnormalized) [long]
- * @param[out]  length          length of the alignment [unsigned]
- * @param[out]  num_identities  number of identities [unsigned]
- * @param[out]  num_positives   number of positives [unsigned]
- * @param[out]  num_mismatches  number of mismatches [unsigned]
- * @param[out]  num_gaps        number of gap characters [unsigned]
- * @param[out]  num_gap_opens   number of continues gap segments [unsigned]
- * @param[in]   row0            first row of alignment [Gaps]
- * @param[in]   row1            second row of alignment [Gaps]
- * @param[in]   scoreScheme     SeqAn scoring scheme
- *
- * When organising your data in @link BlastMatch @endlinkes, a more convenient
- * interface is available: @link BlastMatch#computeAlignmentStats @endlink
- *
- * @headerfile <seqan/blast.h>
- */
-
-// template <typename TScoreValue,
-//           typename TPos,
-//           typename TScore,
-//           typename TRow>
-// inline
-// void computeAlignmentStats(TScoreValue       & sc,
-//                        TPos              & ali_length,
-//                        TPos              & identities,
-//                        TPos              & positives,
-//                        TPos              & mismatches,
-//                        TPos              & gaps,
-//                        TPos              & gap_openings,
-//                        TRow        const & row0,
-//                        TRow        const & row1,
-//                        TScore      const & scoringScheme)
-// {
-//     SEQAN_ASSERT_EQ(length(row0),length(row1));
-//
-//     ali_length = length(row0);
-//
-//     for (uint i = 0; i < ali_length; ++i)
-//     {
-//         long int lsc = 0;
-//         if ( (isGap(row0, i)) || (isGap(row1, i)) )
-//         {
-//             if ((i==0) ||
-//                 (isGap(row0, i-1) != isGap(row0, i)) ||
-//                 (isGap(row1, i-1) != isGap(row1, i)) )
-//             {
-//                 lsc = scoreGapOpen(scoringScheme);
-//                 gap_openings++;
-//             } else
-//                 lsc += scoreGapExtend(scoringScheme);
-//             gaps++;
-//         } else
-//         {
-//             lsc = score(scoringScheme, value(row0, i), value(row1, i));
-//
-//             if (lsc > 0)
-//                 positives++;
-//
-//             if (getValue(row0, i) == getValue(row1, i))
-//                 identities++;
-//         }
-//         sc += lsc;
-//     }
-//
-//     mismatches = ali_length - gaps - identities;
-// }
-
 /*!
  * @fn BlastMatch#computeAlignmentStats
  * @headerfile <seqan/blast.h>
@@ -922,7 +848,7 @@ _calcBitScoreAndEValue(double & bitScore,
 {
     typedef BlastScoringAdapter<TScore> TAdapter;
 
-    // for some parameters the score has to "rounded down" to being even
+    // for some parameters the score has to be "rounded down" to being even
     if ((TAdapter::nParams >= 11) && (TAdapter::karlinAltschulValues[adapter.index][10]))
         --rawScore;
 

@@ -64,38 +64,6 @@ clear(TArg & arg, TArgs & ... args)
     clear(args...);
 }
 
-//legacy doesnt have interface with fieldList so we need to wrap around the call
-// template <typename TMatch,
-//           typename TIt,
-//           typename TFields,
-//           BlastFormatFile f,
-//           BlastFormatProgram p>
-// inline void
-// _readMatchWrap(TMatch & match, TIt & it, BlastIOContext & context,
-//                TFields const &, bool,
-//                BlastFormat<f, p, BlastFormatGeneration::BLAST_LEGACY> const &)
-// {
-//     typedef BlastFormat<f, p, BlastFormatGeneration::BLAST_LEGACY> BlastTabular;
-//     readMatch(match, it, context, BlastTabular());
-// }
-//
-// template <typename TMatch,
-//           typename TIt,
-//           typename TFields,
-//           BlastFormatFile f,
-//           BlastFormatProgram p>
-// inline void
-// _readMatchWrap(TMatch & match, TIt & it, BlastIOContext & context,
-//                TFields const & fields, bool useFields,
-//                BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> const &)
-// {
-//     typedef BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> BlastTabular;
-//     if (useFields)
-//         readMatch(match, it, context, BlastTabular());
-//     else
-//         readMatch(match, it, context, fields, BlastTabular());
-// }
-
 void _test_blast_read_tabular_match(std::string const & path,
                                     bool const defaults,
                                     bool const withheader,

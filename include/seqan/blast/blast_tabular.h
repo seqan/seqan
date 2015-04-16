@@ -48,10 +48,6 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-/*
- * @defgroup BlastTabularFormats Blast Tabular
- * @signature typedef Tag<BlastTabular_> BlastTabular;*/
-
 /*!
  * @class BlastTabular
  * @signature typedef Tag<BlastTabular_> BlastTabular;
@@ -625,7 +621,6 @@ std::vector<typename BlastMatchField<TVoidSpec>::Enum> const BlastMatchField<TVo
     BlastMatchField<TVoidSpec>::Enum::E_VALUE,
     BlastMatchField<TVoidSpec>::Enum::BIT_SCORE
 };
-
 
 // ============================================================================
 // Metafunctions and global const-expressions

@@ -108,14 +108,14 @@ struct BlastMatch
     TPos            sLength       = 0;
     /*!
      * @var char BlastMatch::qFrameShift;
-     * @brief one out of { -3, -2, -1, +1, +2, +3 } where the absolute value -1 is
-     * shift of the translation frame and a negative sign indicates the reverse
+     * @brief one out of { -3, -2, -1, +1, +2, +3 } where the <tt>absolute value - 1</tt> is
+     * the shift of the translation frame and a negative sign indicates the reverse
      * complement strand [query sequence, only applies for BlastFormatProgram ==
      * BLASTX | TBLASTX]
      *
      * @var char BlastMatch::sFrameShift;
-     * @brief one out of { -3, -2, -1, +1, +2, +3 } where the absolute value -1 is
-     * shift of the translation frame and a negative sign indicates the reverse
+     * @brief one out of { -3, -2, -1, +1, +2, +3 } where the <tt>absolute value - 1</tt> is
+     * the shift of the translation frame and a negative sign indicates the reverse
      * complement strand [subject sequence, only applies for BlastFormatProgram ==
      * TBLASTN | TBLASTX]
      */
@@ -212,19 +212,12 @@ struct BlastMatch
         clear(qId);
         clear(sId);
 
-//         score         = 0;
         qStart        = 0;
         qEnd          = 0;
         sStart        = 0;
         sEnd          = 0;
         qLength       = 0;
         sLength       = 0;
-//         alignLength   = 0;
-//         identities    = 0;
-//         positives     = 0;
-//         mismatches    = 0;
-//         gaps          = 0;
-//         gapOpenings   = 0;
 
         eValue        = 0;
         bitScore      = 0;
@@ -239,8 +232,6 @@ struct BlastMatch
         qId           = "not init";
         sId           = "not init";
 
-//         score         = std::numeric_limits<long>::max();
-
         qStart        = std::numeric_limits<TPos>::max();
         qEnd          = std::numeric_limits<TPos>::max();
         sStart        = std::numeric_limits<TPos>::max();
@@ -248,13 +239,6 @@ struct BlastMatch
 
         qLength       = std::numeric_limits<TPos>::max();
         sLength       = std::numeric_limits<TPos>::max();
-
-//         alignLength   = std::numeric_limits<TPos>::max();
-//         identities    = std::numeric_limits<TPos>::max();
-//         positives     = std::numeric_limits<TPos>::max();
-//         mismatches    = std::numeric_limits<TPos>::max();
-//         gaps          = std::numeric_limits<TPos>::max();
-//         gapOpenings   = std::numeric_limits<TPos>::max();
 
         eValue        = std::numeric_limits<double>::max();
         bitScore      = std::numeric_limits<double>::max();

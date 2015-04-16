@@ -281,6 +281,7 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
             readLine(key, iter);
             context.versionString = key;
 
+// TODO(h4nn3s): regex test
 //             std::regex versionRE("[0-9]+\\.[0-9]+\\.[0-9]+\\+", std::regex::awk);
 //             context.legacyFormat = std::regex_search(seqan::begin(key), seqan::end(key), versionRE);
 
@@ -517,7 +518,7 @@ skipHeader(TFwdIterator & iter,
            BlastIOContext<TScore, TString, p, h> & context,
            BlastTabular const & /*tag*/)
 {
-    static thread_local BlastRecord<> r;
+    static thread_local BlastRecord<> r; //TODO possibly to context
     readRecordHeader(r, iter, context, BlastTabular());
 }
 
@@ -952,7 +953,7 @@ skipMatch(TFwdIterator & iter,
           BlastIOContext<TScore, TString, p, h> & context,
           BlastTabular const &)
 {
-    static thread_local BlastMatch<> m;
+    static thread_local BlastMatch<> m;//TODO possibly to context
     readMatch(m, iter, context, BlastTabular());
 }
 

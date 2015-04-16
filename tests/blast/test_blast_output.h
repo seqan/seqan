@@ -588,7 +588,7 @@ void test_blast_compare_report_outputs(TString const & output, TContext const & 
     "\"Gapped BLAST and PSI-BLAST: a new generation of protein database search\n"
     "programs\",  Nucleic Acids Res. 25:3389-3402.\n"
     "\n\n\n"
-    "Reference for SeqAn: Döring, A., D. Weese, T. Rausch, K. Reinert (2008): SeqAn --\n"
+    "Reference for SeqAn: Doering, A., D. Weese, T. Rausch, K. Reinert (2008): SeqAn --\n"
     "An efficient, generic C++ library for sequence analysis. BMC Bioinformatics,\n"
     "9(1), 11. BioMed Central Ltd. doi:10.1186/1471-2105-9-11\n"
     "\n"

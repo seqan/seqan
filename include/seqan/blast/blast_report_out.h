@@ -449,9 +449,9 @@ _writeAlignmentBlock(TStream & stream,
     char            buffer[40]  = "";
 
     TPos            aPos        = 0; // position in alignment
-    uint32_t        qPos        = 0; // position in query (without gaps)
-    uint32_t        sPos        = 0; // position in subject (without gaps)
-    // the latter two can become negative
+    TPos            qPos        = 0; // position in query (without gaps)
+    TPos            sPos        = 0; // position in subject (without gaps)
+    // the latter two might become negative in below calculation, but it is safe even for unsigned types
 
     TPos            effQStart   = m.qStart;
     TPos            effQEnd     = m.qEnd;
@@ -472,11 +472,6 @@ _writeAlignmentBlock(TStream & stream,
     TPos const   maxPos      = std::max({effQStart, effQEnd, effSStart, effSEnd});
     // max # digits in pos's
     unsigned char const numberWidth = _numberOfDigits(maxPos);
-
-//     std::cout << "m.alignStats.alignmentLength: " << m.alignStats.alignmentLength
-//               << "\t length(row0): " << length(row0)
-//               << "\t length(row1): " << length(row1)
-//               << "\n";qStepOne
 
     while (aPos < m.alignStats.alignmentLength)
     {
@@ -606,30 +601,6 @@ _writeMatchOneLiner(TStream & stream,
     sprintf(buffer, "%4li  %.1g\n", long(m.bitScore), m.eValue);
     write(stream, buffer);
 }
-
-// constexpr
-// const char * _uint_label(unsigned short)
-// {
-//     return "%uh";
-// }
-// 
-// constexpr
-// const char * _uint_label(unsigned int)
-// {
-//     return "%u";
-// }
-// 
-// constexpr
-// const char * _uint_label(unsigned long)
-// {
-//     return "%ul";
-// }
-// 
-// constexpr
-// const char * _uint_label(unsigned long long)
-// {
-//     return "%ull"; // requires C99
-// }
 
 // ----------------------------------------------------------------------------
 // Function writeRecord()
@@ -841,19 +812,9 @@ writeHeader(TStream & stream,
     write(stream, "\n\n\nDatabase: ");
     write(stream, context.dbName);
     write(stream, "\n           ");
-    char buffer[40] = "";
-//     sprintf(buffer,
-//             _uint_label(context.dbNumberOfSeqs),
-//             context.dbNumberOfSeqs); //TODO insert commata
-//     write(stream, buffer);
-    write(stream, context.dbNumberOfSeqs);
+    write(stream, context.dbNumberOfSeqs); //TODO insert commata
     write(stream, " sequences; ");
-        clear(buffer);
-//     sprintf(buffer,
-//             _uint_label(context.dbTotalLength),
-//             context.dbTotalLength); //TODO insert commata
-//     write(stream, buffer);
-    write(stream, context.dbTotalLength);
+    write(stream, context.dbTotalLength); //TODO insert commata
     write(stream, " total letters\n\n");
 }
 

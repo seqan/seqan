@@ -40,10 +40,9 @@
 namespace seqan
 {
 
-//forwards declar
+//forward declare
 template <typename TScore, typename TSpec = void>
 struct BlastScoringAdapter;
-
 
 /*!
  * @class BlastIOContext
@@ -224,6 +223,7 @@ struct BlastIOContext
     TString buffer2;
     StringSet<TString, Owner<ConcatDirect<>>> buffers1;
     StringSet<TString, Owner<ConcatDirect<>>> buffers2;
+    // TODO can I get rid of buffer2 and/or buffers2 if doing things more intelligently?
 };
 
 
