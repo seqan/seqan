@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2011, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -103,14 +103,8 @@ void setupArgumentParser(ArgumentParser & parser)
     setShortDescription(parser, "EDBT/ICDT 2013 Join");
     setCategory(parser, "Databases");
 
-#ifdef SEQAN_REVISION
-    setVersion(parser, "0.3 [" + std::string(SEQAN_REVISION) + "]");
-#else
-    setVersion(parser, "0.3");
-#endif
-#ifdef SEQAN_DATE
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIDATABASE FILE\\fP> <\\fIERRORS\\fP>");
 
@@ -135,7 +129,9 @@ void setupArgumentParser(ArgumentParser & parser)
     setRequired(parser, "input-type", true);
 
     // Add huge db option.
+#ifdef SEARCHJOIN_HUGEDB
     addOption(parser, ArgParseOption("g", "huge", "Required if the db contains more than 16M entries."));
+#endif
 
     // Add output file option.
     addOption(parser, ArgParseOption("o", "output-file", "Specify an output file.", ArgParseOption::STRING));
@@ -176,7 +172,9 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOptionValue(options.inputType, parser, "input-type");
 
     // Parse huge db option.
+#ifdef SEARCHJOIN_HUGEDB
     options.hugeDb = isSet(parser, "huge");
+#endif
 
     // Parse output file.
     getOptionValue(options.resultsFile, parser, "output-file");
@@ -309,6 +307,7 @@ int mainWithOptions(Options & options)
         }
         else
         {
+#ifdef SEARCHJOIN_HUGEDB
             if (options.hugeDb)
             {
                 if (options.maxErrors == 0)
@@ -323,6 +322,7 @@ int mainWithOptions(Options & options)
             }
             else
             {
+#endif // SEARCHJOIN_HUGEDB
                 if (options.maxErrors == 0)
                     return runJoiner(options, TDbDna(), TDbDnaSaSmall(), Exact());
                 else
@@ -332,7 +332,9 @@ int mainWithOptions(Options & options)
                     else
                         return runJoiner(options, TDbDna(), TDbDnaSaSmall(), Nothing());
                 }
+#ifdef SEARCHJOIN_HUGEDB
             }
+#endif // SEARCHJOIN_HUGEDB
         }
     }
     else if (isEqual(options.inputType, "geo"))
@@ -343,6 +345,7 @@ int mainWithOptions(Options & options)
         }
         else
         {
+#ifdef SEARCHJOIN_HUGEDB
             if (options.hugeDb)
             {
                 if (options.maxErrors == 0)
@@ -357,6 +360,7 @@ int mainWithOptions(Options & options)
             }
             else
             {
+#endif // SEARCHJOIN_HUGEDB
                 if (options.maxErrors == 0)
                     return runJoiner(options, TDbGeo(), TDbGeoSaSmall(), Exact());
                 else
@@ -366,7 +370,9 @@ int mainWithOptions(Options & options)
                     else
                         return runJoiner(options, TDbGeo(), TDbGeoSaSmall(), Nothing());
                 }
+#ifdef SEARCHJOIN_HUGEDB
             }
+#endif // SEARCHJOIN_HUGEDB
         }
     }
     else

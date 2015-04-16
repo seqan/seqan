@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -124,10 +124,10 @@ inline double omp_get_wtime()
 
 SEQAN_HOST_DEVICE inline unsigned getThreadId()
 {
-#ifdef __CUDA_ARCH__
+#if defined(__CUDA_ARCH__)
     return blockIdx.x * blockDim.x + threadIdx.x;
 
-#elif _OPENMP
+#elif defined(_OPENMP)
     return omp_get_thread_num();
 
 #else

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
 
 using namespace seqan;
 
-SEQAN_DEFINE_TEST(test_store_io_bam_read) 
+SEQAN_DEFINE_TEST(test_store_io_bam_read)
 {
   /*
     // Construct name to reference FASTA files.
@@ -113,7 +113,7 @@ SEQAN_DEFINE_TEST(test_store_io_bam_read)
     // */
 }
 
-SEQAN_DEFINE_TEST(test_store_io_bam_write) 
+SEQAN_DEFINE_TEST(test_store_io_bam_write)
 {
     // Construct name to reference FASTA files.
     char fastaBuffer[1023];

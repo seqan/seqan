@@ -1,7 +1,7 @@
 // ==========================================================================
 //                              test_consensus.h
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
 
     seqan::AlignedReadLayout layout;
     // layoutAlignment(layout, store);
-    // printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 160, 0, 1000);            
+    // printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 160, 0, 1000);
 
     // Call Realignment method.
     seqan::Score<int, seqan::WeightedConsensusScore<
@@ -65,7 +65,7 @@ SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
 
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, layout, store, 0, 0, 160, 0, 1000);            
+    printAlignment(ss, layout, store, 0, 0, 160, 0, 1000);
 
     // Check Result.
     char const * expected =

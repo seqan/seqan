@@ -1,7 +1,7 @@
 // ==========================================================================
 //                              four2three
 // ==========================================================================
-// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -65,8 +65,8 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     ArgumentParser parser("four2three");
     // Set short description, version, and date.
     setShortDescription(parser, "Four to three-letter alphabet reduction.");
-    setVersion(parser, "0.1");
-    setDate(parser, "May 2014");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
     setCategory(parser, "BS-Seq Analysis");
 
     // Define usage line and long description.

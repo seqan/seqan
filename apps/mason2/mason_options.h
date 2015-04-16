@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -908,15 +908,15 @@ char const * getFragmentSizeModelStr(Roche454SequencingOptions::ReadLengthModel 
 inline
 void setDateAndVersion(seqan::ArgumentParser & parser)
 {
-#ifdef SEQAN_REVISION
-    setVersion(parser, "2.0.0-beta1 [" + std::string(SEQAN_REVISION) + "]");
-#else
-    setVersion(parser, "2.0.0-beta1");
+#ifdef SEQAN_APP_VERSION
+    #ifdef SEQAN_REVISION
+        setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    #else
+        setVersion(parser, SEQAN_APP_VERSION);
+    #endif
 #endif
 #ifdef SEQAN_DATE
     setDate(parser, SEQAN_DATE);
-#else
-    setDate(parser, "February 2014");
 #endif
 }
 

@@ -21,35 +21,35 @@ Library Tests
 Creating Tests Skelletons
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Use the ``skel.py`` script to create a new test, in this case for the module *my\_module* in the sandbox *my\_sandbox*.
+Use the ``skel.py`` script to create a new test, in this case for the module *my\_module*.
 
 .. code-block:: console
 
-    $ ./util/bin/skel.py test my_module sandbox/my_sandbox
-    Creating test in ./sandbox/my_sandbox/tests/my_module
-      Target path is: ./sandbox/my_sandbox/tests/my_module
+    $ ./util/bin/skel.py test my_module .
+    Creating test in ./tests/my_module
+      Target path is: ./tests/my_module
 
-    mkdir(./sandbox/my_sandbox/tests/my_module)
+    mkdir(./tests/my_module)
 
     Configuring file.
       Source: ./util/skel/test_template/test.cpp
-      Target: ./sandbox/my_sandbox/tests/my_module/test_my_module.cpp
+      Target: ./tests/my_module/test_my_module.cpp
 
     Configuring file.
       Source: ./util/skel/test_template/test.h
-      Target: ./sandbox/my_sandbox/tests/my_module/test_my_module.h
+      Target: ./tests/my_module/test_my_module.h
 
     Configuring file.
       Source: ./util/skel/test_template/CMakeLists.txt
-      Target: ./sandbox/my_sandbox/tests/my_module/CMakeLists.txt
+      Target: ./tests/my_module/CMakeLists.txt
 
 The generated files are:
 
-| **my_sandbox/tests/my_module/test_my_module.cpp**
+| **tests/my_module/test_my_module.cpp**
 |   Contains the testsuite (the main program that calls the tests).
-| **my_sandbox/tests/my_module/test_my_module.h**
+| **tests/my_module/test_my_module.h**
 |   A header with tests.
-| **my_sandbox/tests/my_module/CMakeLists.txt**
+| **tests/my_module/CMakeLists.txt**
 |   The CMake file for building the test.
 
 |br|
@@ -97,10 +97,11 @@ The generated file looks as follows:
 
 .. code-block:: cpp
 
-    #ifndef SANDBOX_MY_SANDBOX_TESTS_MY_MODULE_TEST_MY_MODULE_H_
-    #define SANDBOX_MY_SANDBOX_TESTS_MY_MODULE_TEST_MY_MODULE_H_
+    #ifndef TESTS_MY_MODULE_TEST_MY_MODULE_H_
+    #define TESTS_MY_MODULE_TEST_MY_MODULE_H_
 
     #include <seqan/basic.h>
+    #include <seqan/stream.h>
     #include <seqan/sequence.h>
 
     // A test for strings.
@@ -124,7 +125,7 @@ The generated file looks as follows:
         SEQAN_ASSERT_LEQ(STRING2, STRING2);
     }
 
-    #endif  // SANDBOX_MY_SANDBOX_TESTS_MY_MODULE_TEST_MY_MODULE_H_
+    #endif  // TESTS_MY_MODULE_TEST_MY_MODULE_H_
 
 The macro :dox:`TestSystemMacros#SEQAN_DEFINE_TEST` expands to a function definition.
 The test functions cann be called using the :dox:`TestSystemMacros#SEQAN_CALL_TEST` macro in your test suite (see above).
@@ -135,13 +136,13 @@ CMakeLists.txt File
 ^^^^^^^^^^^^^^^^^^^
 
 The relevant lines from the file
-*my\_sandbox/tests/my\_module/CMakeLists.txt* are as follows:
+*tests/my\_module/CMakeLists.txt* are as follows:
 
 .. code-block:: cmake
 
     cmake_minimum_required (VERSION 2.8.2)
-    project (seqan_core_tests_align)
-    message (STATUS "Configuring my_sandbox/tests/my_module")
+    project (seqan_tests_align)
+    message (STATUS "Configuring tests/my_module")
 
     # Search SeqAn and select dependencies.
     set (SEQAN_FIND_DEPENDENCIES NONE)
@@ -185,7 +186,7 @@ Now, go to your build directory and re-run CMake so the Makefiles (or your IDE's
     ...
     $ make test_my_module
     ...
-    $ ./sandbox/holtgrew/tests/my_module/test_my_module
+    $ ./holtgrew/tests/my_module/test_my_module
     TEST SUITE test_my_module
     SEQAN_ENABLE_DEBUG == 1
     SEQAN_ENABLE_TESTING == 1

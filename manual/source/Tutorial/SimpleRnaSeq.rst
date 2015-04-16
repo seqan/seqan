@@ -94,7 +94,7 @@ An empty ``FragmentStore`` can simply be created with:
 
    FragmentStore<> store;
 
-Files can be read from disk with the function :dox:`File#read` that expects an open stream (e.g. a STL `ifstream <http://www.cplusplus.com/reference/iostream/ifstream>`_), a ``FragmentStore`` object, and a :dox:`SequenceStream::FileFormat File Format` tag.
+Files can be read from disk with the function :dox:`File#read` that expects an open stream (e.g. a STL `ifstream <http://www.cplusplus.com/reference/iostream/ifstream>`_), a ``FragmentStore`` object, and a :dox:`FileFormats File Format` tag.
 The contents of different files can be loaded with subsequent calls of ``read``.
 As we want the user to specify the files via command line, our application will parse them using the :dox:`ArgumentParser` and store them in an option object.
 
@@ -211,7 +211,7 @@ Assignment 2
 
            resize(intervals, length(store.contigStore));
 
-        Use :dox:`SequenceConcept#appendValue` to add a new ``TInverval`` object to the inner string, see :dox:`IntervalAndCargo::IntervalAndCargo IntervalAndCargo constructor` for the constructor.
+        Use :dox:`StringConcept#appendValue` to add a new ``TInverval`` object to the inner string, see :dox:`IntervalAndCargo::IntervalAndCargo IntervalAndCargo constructor` for the constructor.
 
    Solution
      .. container:: foldable
@@ -468,6 +468,6 @@ Next Steps
 ----------
 
 * See :cite:`Mortazavi2008` for further reading.
-* Read the :ref:`tutorial-basic-sam-bam-io` Tutorial and change your program to stream a SAM file instead of loading it as a whole.
+* Read the :ref:`tutorial-sam-bam-io` Tutorial and change your program to stream a SAM file instead of loading it as a whole.
 * Change the program such that it attaches the RPKM value as a key-value pair (see :dox:`AnnotationTreeIterator#assignValueByKey`) to the annotation of each gene and output a GFF file.
 * Continue with the :ref:`tutorial` rest of the tutorials]].

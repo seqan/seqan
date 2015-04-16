@@ -56,7 +56,7 @@ Specialization ``Owner<ConcatDirect>``
   The string set also stores lengths and starting positions of the strings.
   Inserting new strings into the set or removing strings from the set is more expensive than for the default :dox:`OwnerStringSet` specialization, since this involves moving all subsequent sequences in memory.
 
-Specialization ``Depedent<Tight>``
+Specialization ``Dependent<Tight>``
   This specialization stores sequence pointers consecutively in an array.
   Another array stores an id value for each sequence.
   That means that accessing given an id needs a search through the id array.
@@ -72,7 +72,7 @@ Specialization ``Dependent<Generous>``
 Building String Sets
 ~~~~~~~~~~~~~~~~~~~~
 
-Use the function :dox:`SequenceConcept#appendValue` to append strings to string sets.
+Use the function :dox:`StringConcept#appendValue` to append strings to string sets.
 
 .. code-block:: cpp
 

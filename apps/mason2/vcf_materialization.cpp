@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -168,7 +168,7 @@ void VcfMaterializer::init()
             throw MasonIOException("Could not open VCF stream.");
 
         // Read header.
-        readRecord(vcfHeader, vcfFileIn);
+        readHeader(vcfHeader, vcfFileIn);
 
         // Read first VCF record.
         if (!atEnd(vcfFileIn))

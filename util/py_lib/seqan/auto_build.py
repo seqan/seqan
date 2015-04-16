@@ -24,7 +24,7 @@ REPOSITORY_URL='https://github.com/seqan/seqan.git'
 DEFAULT_PACKAGE_DB='.'
 
 # Regular expression to use for tag names.
-TAG_RE=r'.*-v\d+\.\d+\.\d'
+TAG_RE=r'.*-v\d+\.\d+\.\d(-\w+)?'
 
 class MinisculeGitWrapper(object):
     """Minimal git wrapper."""
@@ -128,13 +128,17 @@ class BuildStep(object):
         self.base_path = path
         self.treeish = treeish
         self.name = name
-        self.version = version  # TODO(holtgrew): Unused, overwritten below.
-        self.major_version = int(version.split('.')[0])
-        self.minor_version = int(version.split('.')[1])
+        self.version = version.split('-', 1)[0]
+        print ( 'Version: %s Self.Version: %s' % (version, self.version), file=sys.stdout)
+        self.major_version = int(self.version.split('.')[0])
+        print ( 'Major_Version: %s' % self.major_version, file=sys.stdout)
+        self.minor_version = int(self.version.split('.')[1])
+        print ( 'Minor_Version: %s' % self.minor_version, file=sys.stdout)
         self.patch_version = 0
-        if len(version.split('.')) > 2:
-            self.patch_version = int(version.split('.')[2])
+        if len(self.version.split('.')) > 2:
+            self.patch_version = int(self.version.split('.')[2])
         self.version = '%d.%d.%d' % (self.major_version, self.minor_version, self.patch_version)
+        print ( 'Self_Version: %s' % self.version, file=sys.stdout)
         self.os = os
         self.word_size = word_size
         self.pkg_formats = pkg_formats
@@ -219,7 +223,7 @@ class BuildStep(object):
             print(err_data, file=sys.stderr)
             return 1
         # Execute Make.
-        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package', '--config', 'Release'] + self.make_args
+        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package', '--config', 'Release', '--'] + self.make_args
         print('Building with CMake: "%s"' % (' '.join(cmake_args),), file=sys.stderr)
         popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
         out_data, err_data = popen.communicate()
@@ -252,7 +256,7 @@ class BuildStep(object):
             print(err_data, file=sys.stderr)
             return 1
         # Build Docs
-        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'docs'] + self.make_args
+        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'docs', '--'] + self.make_args
         print('Building with CMake: "%s"' % (' '.join(cmake_args),), file=sys.stderr)
         popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
         out_data, err_data = popen.communicate()
@@ -261,7 +265,7 @@ class BuildStep(object):
             print(out_data, file=sys.stderr)
             print(err_data, file=sys.stderr)
         # Execute Make.
-        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package'] + self.make_args
+        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package', '--'] + self.make_args
         print('Building with CMake: "%s"' % (' '.join(cmake_args),), file=sys.stderr)
         popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
         out_data, err_data = popen.communicate()
@@ -353,6 +357,8 @@ class BuildStep(object):
         if os.path.exists(build_dir) and not self.options.keep_build_dir:
             print('Removing build directory %s' % (build_dir,), file=sys.stderr)
             shutil.rmtree(build_dir)
+        # insert app tags
+        subprocess.call(['../tag-apps.sh', checkout_dir])
         # Perform the build.  We have to separate between app and whole SeqAn releases.
         if self.name == 'seqan':
             self.buildSeqAnRelease(checkout_dir, build_dir)
@@ -372,14 +378,18 @@ def workTags(options):
     """Run the individual steps for tags."""
     # Get the revisions and tag names.
     git = MinisculeGitWrapper()
-    revs_tags = [(rev, tag) for (rev, tag) in git.lsRemote(options.repository_url)
-                 if re.match(TAG_RE, tag)]
+    #revs_tags = [(rev, tag) for (rev, tag) in git.lsRemote(options.repository_url)
+                 #if re.match(TAG_RE, tag)]
+    tags = [tag for (rev, tag) in git.lsRemote(options.repository_url)
+           if re.match(TAG_RE, tag)]
+    tags.extend(subprocess.check_output(['../tag-apps.sh', os.getcwd(), 'printonly']).split('\n'))
     # Enumerate all package names that we could enumerate.
-    print('revs_tags = %s' % revs_tags, file=sys.stderr)
+    print('tags = %s' % tags, file=sys.stderr)
     print('word_sizes = %s' % options.word_sizes, file=sys.stderr)
-    for rev, tag in revs_tags:
-        name, version = tag.rsplit('-', 1)
-        version = version[1:]
+    for tag in tags:
+        name, version = tag.rsplit('-v', 1)
+        #version = version[1:]
+        print ('Tag: %s Name: %s Version: %s' % (tag, name, version), file=sys.stdout)
         for word_size in options.word_sizes.split(','):
             # Create build step for this package name.
             pkg_formats = options.package_formats.split(',')

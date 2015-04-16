@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -253,12 +253,12 @@ assignValue(T const & me,
 // ---------------------------------------------------------------------------
 
 /*!
- * @fn BasicOutputIteratorConcept#moveValue
+ * @fn OutputIteratorConcept#moveValue
  * @headerfile <seqan/sequence.h>
  * @brief Move a value of a container to a given position.
- * 
+ *
  * @signature void moveValue(container, pos, value);
- * 
+ *
  * @param[in,out] container The container to manipulate.
  * @param[in]     pos       The position of the item in the container to manipulate.
  * @param[in,out] value     The value to move to <tt>container[pos]</tt>.

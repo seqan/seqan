@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -181,7 +181,7 @@ clear(Allocator<SinglePool<SIZE, TParentAllocator> > & me)
 
 template <size_t SIZE, typename TParentAllocator, typename TValue, typename TSize, typename TUsage>
 inline void
-allocate(Allocator<SinglePool<SIZE, TParentAllocator> > & me, 
+allocate(Allocator<SinglePool<SIZE, TParentAllocator> > & me,
          TValue * & data,
          TSize count,
          Tag<TUsage> const tag_)
@@ -224,9 +224,9 @@ allocate(Allocator<SinglePool<SIZE, TParentAllocator> > & me,
 // ----------------------------------------------------------------------------
 
 template <size_t SIZE, typename TParentAllocator, typename TValue, typename TSize, typename TUsage>
-inline void 
+inline void
 deallocate(Allocator<SinglePool<SIZE, TParentAllocator> > & me,
-           TValue * data, 
+           TValue * data,
            TSize count,
            Tag<TUsage> const tag_)
 {

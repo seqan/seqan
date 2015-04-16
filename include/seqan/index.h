@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -75,6 +75,8 @@
 
 #include <seqan/index/index_base.h>
 
+#include <seqan/index/find_index_binary.h>
+
 // ----------------------------------------------------------------------------
 // q-Gram index creator.
 // ----------------------------------------------------------------------------
@@ -84,9 +86,9 @@
 #include <seqan/index/shape_onegapped.h>
 #include <seqan/index/shape_predefined.h>
 #include <seqan/index/shape_threshold.h>
+#include <seqan/index/shape_minimizer.h>
 #include <seqan/index/index_qgram.h>
 #include <seqan/index/index_qgram_openaddressing.h>
-//#include <seqan/index/index_qgram_nested.h>
 
 // ----------------------------------------------------------------------------
 // Suffix array creators.

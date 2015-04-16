@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -89,7 +89,7 @@ typedef Tag<MeanStdDev_> MeanStdDev;
  * Note that you can construct this either with mu/sigma of the underlying normal distribution (default) or with the
  * mean and standard deviation of the log-normal distribution.
  *
- * 
+ *
  * @fn LogNormalPdf::Pdf
  * @brief Constructor for log-normal Pdf.
  *

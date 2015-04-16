@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -93,7 +93,7 @@ inline void _parseAppName(ArgumentParser & parser, std::string const & candidate
  * @signature void addLine(parser, line);
  *
  * @param[in,out] parser The ArgumentParser to add the line to.
- * @param[in]     line   The line of text to add, @link SequenceConcept @endlink of <tt>char</tt>.
+ * @param[in]     line   The line of text to add, @link StringConcept @endlink of <tt>char</tt>.
  */
 
 template <typename TString>
@@ -113,17 +113,17 @@ inline void addLine(ArgumentParser & me, TString const & line)
  * @signature void addSection(parser, title);
  *
  * @param[in,out] parser The ArgumentParser to add the line to.
- * @param[in]     title  The title to add, @link SequenceConcept @endlink of <tt>char</tt>.
+ * @param[in]     title  The title to add, @link StringConcept @endlink of <tt>char</tt>.
  *
  * @code{.cpp}
  * ArgumentParser parser;
- * 
+ *
  * [...] // init parser
- * 
+ *
  * addSection(parser, "In-/Output-Options");
  * addOption("i", ... );
  * addOption("o", ... );
- * 
+ *
  * addSection(parser, "Other Options");
  * addOption("x", ... );
  * @endcode

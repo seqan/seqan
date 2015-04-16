@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -259,7 +259,7 @@ _updateVertexScore(TVertexScore current,
     typedef typename Iterator<TVertexScore, Standard>::Type         TVertexScoreIterator;
     typedef typename Iterator<TVertexScore const, Standard>::Type   TVertexScoreConstIterator;
     typedef typename Value<TVertexScore>::Type                      TScore;
-    
+
     TVertexScoreIterator currentIt = begin(current, Standard());
     TVertexScoreIterator columnEnd = end(current, Standard());
     TVertexScoreConstIterator previousIt = begin(previous, Standard());
@@ -276,7 +276,7 @@ _updateVertexScore(TVertexScore current,
 
         // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i-1,j] + 1 } [Diagonal, Left]
         value(currentIt) = _min(value(previousIt) + score, value(previousIt + 1) + 1);
-        
+
         ++previousIt;
         ++patternIt;
     }
@@ -297,7 +297,7 @@ _updateVertexScore(TVertexScore current,
 
         // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i-1,j] + 1, C[i,j-1] + 1 } [Diagonal, Left, Upper]
         value(currentIt) = _min3(value(previousIt) + score, value(previousIt + 1) + 1, value(currentIt - 1) + 1);
-        
+
         ++previousIt;
     }
     else

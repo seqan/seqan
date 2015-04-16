@@ -225,7 +225,7 @@ int intervalizeAndDumpErrorCurves(TStream & stream,
 
     // Write out the header.
     GsiHeader header;
-    writeRecord(stream, header, Gsi());
+    writeHeader(stream, header, Gsi());
     writeRecord(stream, GSI_COLUMN_NAMES, Gsi());
 
     // Get a list of read ids, sorted by their read name.
@@ -978,8 +978,8 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
 
     seqan::ArgumentParser parser("rabema_build_gold_standard");
     setShortDescription(parser, "RABEMA Gold Standard Builder");
-    setVersion(parser, "1.2.0");
-    setDate(parser, "March 14, 2013");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
     setCategory(parser, "Benchmarking");
 
     addUsageLine(parser,
@@ -1179,7 +1179,7 @@ int main(int argc, char const ** argv)
     }
     try
     {
-        readRecord(bamHeader, inBam);
+        readHeader(bamHeader, inBam);
     }
     catch (seqan::ParseError const & ioErr)
     {

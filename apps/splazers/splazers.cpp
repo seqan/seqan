@@ -312,8 +312,8 @@ int main(int argc, const char *argv[])
             
     addDescription(parser, "(c) Copyright 2010 by Anne-Katrin Emde.");
     setCategory(parser, "Read Mapping");
-    setVersion(parser, "1.1");
-    setDate(parser, "Apr 2011" );
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -359,7 +359,7 @@ public:
     {
         std::ostream_iterator<char> out(stream);
         stream << '\n' << _toText("\\fB");
-        std::transform(begin(section._title), end(section._title), out, toupper);
+        std::transform(begin(section._title), end(section._title), out, static_cast < int(*)(int) > (toupper));
         stream << _toText("\\fP") << '\n';
     }
 
@@ -562,24 +562,24 @@ public:
  * @implements AssignableConcept
  * @headerfile <seqan/arg_parse.>
  * @brief Container for string documentation on a command line tool.
- * 
+ *
  * @signature class ToolDoc;
- * 
+ *
  * @section Remarks
- * 
+ *
  * This class is generally not used directly by the user but through @link ArgumentParser @endlink. It allows to store
  * and represent all information related to a command line tool that would normally go into a man page. It can be
  * printed to STL streams in different formats, currently plain text, HTML and man pages are supported.
- * 
+ *
  * You can also use basic formatting in text. This formatting is tailored to the usage on the command line. Use
  * <tt>\fB</tt> to start bold font, <tt>\fI</tt> to start italic font and <tt>\fP</tt> to use the previous font (of
  * course, use correct escaping of the backslash in C strings, so use <tt>"\\fB"</tt>, <tt>"\\fI"</tt>, and
  * <tt>"\\fP"</tt> in your code.
- * 
+ *
  * @section Examples
- * 
+ *
  * The following shows a brief example of how to use @link ToolDoc @endlink.
- * 
+ *
  * @code{.cpp}
  * ToolDoc doc;
  * setName(doc, "RazerS");
@@ -588,13 +588,13 @@ public:
  * setVersion(doc, "1.0");
  * setCategory(doc, "Read Mapping");
  * setManTitle(doc, "SeqAn Apps Reference Manual");
- *  
+ *
  * addSection(doc, "Synopsis");
  * addText(doc, "\\fBrazers\\fP [\\fIOPTIONS\\fP] \\fIREFERENCE\\fP \\fIREADS\\fP", false);
  * addText(doc,
  *         "\\fBrazers\\fP [\\fIOPTIONS\\fP] \\fIREFERENCE\\fP \\fILEFT_READS\\fP "
  *         "\\fIRIGHT_READS\\fP", false);
- *  
+ *
  * addSection(doc, "Description");
  * addText(doc,
  *         "RazerS is a read mapper with controllable, sensitivity.  This "
@@ -603,14 +603,14 @@ public:
  *         "performance.");
  * addText(doc,
  *         "What's special about RazerS is that you can control the sensitivity.");
- *  
+ *
  * addSection(doc, "Options");
  * addSubSection(doc, "Main Options");
  * addListItem(doc, "\\fB-id\\fP, \\fB--indels\\fP",
  *             "Enable mapping with indels enabled.");
  * addListItem(doc, "\\fB-i\\fP, \\fB--identity\\fP \\fIIDENTITY\\fP",
  *             "Set minimal identity of matches to find.");
- *  
+ *
  * print(std::cout, doc, "text");
  * @endcode
  *
@@ -622,7 +622,7 @@ public:
 /*!
  * @fn ToolDoc::ToolDoc
  * @brief Constructor
- * 
+ *
  * @signature ToolDoc::ToolDoc()
  */
 
@@ -712,9 +712,9 @@ public:
  * @fn ToolDoc#append
  * @headerfile <seqan/arg_parse.h>
  * @brief Append two @link ToolDoc @endlink objects.
- * 
+ *
  * @signature void append(a, b);
- * 
+ *
  * @param[in,out] a This object is updated
  * @param[in]     b This object is appended to <tt>b</tt>.
  */
@@ -992,7 +992,7 @@ inline CharString const & getManTitle(ToolDoc & doc)
 }
 
 // --------------------------------------------------------------------------
-// Function addSection()                                              ToolDoc
+// Function addSection()ToolDoc
 // --------------------------------------------------------------------------
 
 /*!
@@ -1290,9 +1290,9 @@ void ManToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
 
     // Print .TH line.
     stream << ".TH ";
-    std::transform(begin(doc._name), end(doc._name), out, toupper);
+    std::transform(begin(doc._name), end(doc._name), out, static_cast < int(*)(int) > (toupper));
     stream << " " << doc._manSection << " \"" << doc._date << "\" \"";
-    std::transform(begin(doc._name), end(doc._name), out, tolower);
+    std::transform(begin(doc._name), end(doc._name), out, static_cast < int(*)(int) > (tolower));
     stream << " " << doc._version << "\" \"" << doc._manTitle << "\"\n";
 
     // Print NAME section.
@@ -1319,7 +1319,7 @@ void ManToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
         {
             ToolDocSection_ const * sec = static_cast<ToolDocSection_ const *>(entry);
             stream << ".SH ";
-            std::transform(begin(sec->_title), end(sec->_title), out, toupper);
+            std::transform(begin(sec->_title), end(sec->_title), out, static_cast < int(*)(int) > (toupper));
             stream << "\n";
             isFirstInSection = true;
         }

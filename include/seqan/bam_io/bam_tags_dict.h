@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -202,12 +202,12 @@ struct GetBamTypeSizeHelper_
 {
     int     &resultSize;
     char    typeC;
-    
+
     GetBamTypeSizeHelper_(int &resultSize, char typeC) :
         resultSize(resultSize),
         typeC(typeC)
     {}
-    
+
     template <typename Type>
     bool operator() (Type) const
     {
@@ -329,7 +329,7 @@ inline void
 setHost(BamTagsDict & me, THost & host_)
 {
     SEQAN_CHECKPOINT;
-	setValue(_dataHost(me), host_);
+    setValue(_dataHost(me), host_);
     clear(me._positions);
 }
 
@@ -338,7 +338,7 @@ inline void
 setHost(BamTagsDict & me, THost const & host_)
 {
     SEQAN_CHECKPOINT;
-	setValue(_dataHost(me), host_);
+    setValue(_dataHost(me), host_);
     clear(me._positions);
 }
 
@@ -472,13 +472,13 @@ struct ExtractTagValueHelper_
     TResultType &result;
     TIter rawIter;
     char typeC;
-    
+
     ExtractTagValueHelper_(TResultType &result, char typeC, TIter rawIter) :
         result(result),
         rawIter(rawIter),
         typeC(typeC)
     {}
-    
+
     template <typename Type>
     bool operator() (Type) const
     {
@@ -510,7 +510,7 @@ extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
     TIter it = begin(inf, Standard()) + 2;
     char typeC = getValue(it++);
     ExtractTagValueHelper_<TResultValue, TIter> func(val, typeC, it);
-    
+
     return tagApply(func, BamTagTypes());
 }
 
@@ -646,13 +646,13 @@ struct ToBamTagValueHelper_
     TBamValueSequence &result;
     TValue val;
     char typeC;
-    
+
     ToBamTagValueHelper_(TBamValueSequence &result, char typeC, TValue val) :
         result(result),
         val(val),
         typeC(typeC)
     {}
-    
+
     template <typename Type>
     bool operator() (Type) const
     {
@@ -693,7 +693,7 @@ _toBamTagValue(TBamValueSequence & result, TValue const & val, char typeC)
 {
     if (typeC != 'Z')
         return false;
-    
+
     appendValue(result, typeC);
     append(result, val);
     appendValue(result, '\0');

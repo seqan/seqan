@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -52,14 +52,14 @@ SEQAN_DEFINE_TEST(test_basic_math_log2)
     // Note that the explicit namespace is required, otherwise MSVC finds log2 from <cmath>.
 
     SEQAN_ASSERT_EQ(seqan::log2(1), 0u);
-	SEQAN_ASSERT_EQ(seqan::log2(2), 1u);
-	SEQAN_ASSERT_EQ(seqan::log2(3), 1u);
-	SEQAN_ASSERT_EQ(seqan::log2(4), 2u);
-	SEQAN_ASSERT_EQ(seqan::log2(5), 2u);
-	SEQAN_ASSERT_EQ(seqan::log2(6), 2u);
-	SEQAN_ASSERT_EQ(seqan::log2(7), 2u);
-	SEQAN_ASSERT_EQ(seqan::log2(8), 3u);
-	SEQAN_ASSERT_EQ(seqan::log2(9), 3u);
+    SEQAN_ASSERT_EQ(seqan::log2(2), 1u);
+    SEQAN_ASSERT_EQ(seqan::log2(3), 1u);
+    SEQAN_ASSERT_EQ(seqan::log2(4), 2u);
+    SEQAN_ASSERT_EQ(seqan::log2(5), 2u);
+    SEQAN_ASSERT_EQ(seqan::log2(6), 2u);
+    SEQAN_ASSERT_EQ(seqan::log2(7), 2u);
+    SEQAN_ASSERT_EQ(seqan::log2(8), 3u);
+    SEQAN_ASSERT_EQ(seqan::log2(9), 3u);
 }
 
 SEQAN_DEFINE_TEST(test_basic_math_min)

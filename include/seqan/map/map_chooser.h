@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,18 +44,18 @@ namespace SEQAN_NAMESPACE_MAIN
 template <typename TValue, size_t SIZE>
 struct ChooseMap2_
 {
-	typedef Map<TValue, Skiplist< > > Type;
+    typedef Map<TValue, Skiplist< > > Type;
 };
 template <typename TValue>
 struct ChooseMap2_<TValue, 1>
 {
-	typedef Map<TValue, VectorSet< > > Type;
+    typedef Map<TValue, VectorSet< > > Type;
 };
 
 
 template <typename TValue>
 struct ChooseMap:
-	ChooseMap2_<TValue, sizeof(typename Key<TValue>::Type)>
+    ChooseMap2_<TValue, sizeof(typename Key<TValue>::Type)>
 {};
 
 

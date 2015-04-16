@@ -167,7 +167,7 @@ int _sgip(TOption & options)
 template <typename TParser>
 void _setupParser(TParser & parser)
 {
-    setVersion(parser, "1.2 (July. 13th 2012)");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     addDescription(parser, " SGIP - Solution of Graph Isomorphism Problem");
     addUsageLine(parser, "-o <orginal graph> [Option]");    
     addSection(parser, "Mandatory Options");

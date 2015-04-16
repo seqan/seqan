@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,10 +40,6 @@ namespace seqan
 {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -51,21 +47,16 @@ namespace seqan
 // Tag Ucsc
 // ----------------------------------------------------------------------------
 
-template <typename TSpec = void>
-struct Ucsc_;
-
 /*!
- * @defgroup UcscFileIO
- * @brief Tags for UCSC I/O.
- */
-
-/*!
- * @tag UcscFileIO#Ucsc
+ * @tag FileFormats#Ucsc
  * @headerfile <seqan/ucsc_io.h>
  * @brief UCSC Genome browser annotation file (aka knownGene format).
  *
  * @signature typedef Tag<Ucsc_<UcscKnownGene_> > const Ucsc;
  */
+
+template <typename TSpec = void>
+struct Ucsc_;
 
 struct UcscKnownGene_;
 typedef Tag<Ucsc_<UcscKnownGene_> > UcscKnownGene;
@@ -75,7 +66,7 @@ typedef Tag<Ucsc_<UcscKnownGene_> > UcscKnownGene;
 // ----------------------------------------------------------------------------
 
 /*!
- * @tag UcscFileIO#UcscIsoforms
+ * @tag FileFormats#UcscIsoforms
  * @headerfile <seqan/ucsc_io.h>
  * @brief UCSC Genome browser isoform file (aka knownIsoforms format).
  *
@@ -207,21 +198,6 @@ guessFormatFromStream(TStream &istream, Tag<Ucsc_<TFormatSpec> > const & format)
 // Function readRecod
 // ----------------------------------------------------------------------------
 
-/*!
- * @fn UcscFileIO#readRecord
- * @headerfile <seqan/ucsc_io.h>
- * @brief Low-level reading for @link UcscRecord @endlink.
- *
- * @signature void recordRecord(record, ucscIOContext, iter, tag);
- *
- * @param[out]    record       The @link UcscRecord @endlink to store results in.
- * @param[in,out] uscscContext The @link UcscIOContext @endlink to use during the rading.
- * @param[in,out] iter         The @link ForwadIteratorConcept forward iterator @endlink to read from.
- * @param[in]     tag          Fixed to @link Ucsc @endlink.
- *
- * @throw IOError    in the case of I/O errors
- * @throw ParseError in the case of problems with parsing
- */
 template <typename TForwardIter>
 void readRecord(UcscRecord & record,
                 UcscIOContext & /*ucscIOContext*/,
@@ -363,21 +339,6 @@ void readRecord(UcscRecord & record,
 // ----------------------------------------------------------------------------
 // Function writeRecord
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn UcscFileIO#writeRecord
- * @headerfile <seqan/ucsc_io.h>
- * @brief Low-level writing of @link UcscRecord @endlink.
- *
- * @signature void writeRecord(target, record, tag);
- *
- * @param[in,out] target @link OutputIteratorConcept Output iterator @endlink or @link ContainerConcept container
- *                       @endlink to write to.
- * @param[in]     record @link UcscRecord @endlink to write.
- * @param[in]     tag    Fixed to @link Ucsc @endlink.
- *
- * @throw IOError in case of I/O problems
- */
 
 template <typename TTarget>
 void writeRecord(TTarget & target,

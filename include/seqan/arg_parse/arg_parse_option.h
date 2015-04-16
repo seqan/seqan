@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -233,7 +233,7 @@ inline void hideOption(ArgParseOption & me, bool hide = true)
  * @signature bool isRequired(option);
  *
  * @param[in] option The ArgParseOption object to query.
- * 
+ *
  * @return bool <tt>true</tt> if the option is mandatory and <tt>false</tt> if it not.
  *
  * By default, options are not mandatory.
@@ -297,7 +297,7 @@ inline void setDefaultValue(ArgParseOption & me, const TValue & value)
  *
  * @param[in,out] option The ArgParseOption to appen the default value for.
  * @param[in]     v      The value to append, (any type that can be streamed into an <tt>std::stringstream</tt>).
- * 
+ *
  * @section Remarks
  *
  * This function does not check any length restrictions for this value.

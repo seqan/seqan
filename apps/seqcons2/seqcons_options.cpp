@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                 SeqCons
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -138,9 +138,9 @@ parseCommandLine(SeqConsOptions & options, int argc, char const ** argv)
     // Setup ArgumentParser.
     seqan::ArgumentParser parser("seqcons2");
     // Set short description, version, and date.
-    setShortDescription(parser, "Put a Short Description Here");
-    setVersion(parser, "2.0.0-alpna1");
-    setDate(parser, "July 2014");
+    setShortDescription(parser, "Compute consensus from sequences.");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
 
     // Define usage line and long description.
     addUsageLine(parser,

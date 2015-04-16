@@ -10,6 +10,8 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_samcat)
 message (STATUS "Configuring apps/samcat")
 
+set (SEQAN_APP_VERSION "0.2")
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
@@ -28,13 +30,16 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 # Add definitions set by find_package (SeqAn).
 add_definitions (${SEQAN_DEFINITIONS})
 
+# Add definitions set by the build system.
+add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
+add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
+add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
+
 # Update the list of file names below if you add source files to your application.
 add_executable (samcat samcat.cpp)
-add_executable (bamsort bamsort.cpp)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (samcat ${SEQAN_LIBRARIES})
-target_link_libraries (bamsort ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -45,14 +50,11 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # Set variables for installing, depending on the selected build type.
 if (NOT SEQAN_PREFIX_SHARE_DOC)
-  seqan_setup_install_vars (samcat bamsort)
+  seqan_setup_install_vars (samcat)
 endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install samcat in ${PREFIX}/bin directory
 install (TARGETS samcat
-         DESTINATION bin)
-
-install (TARGETS bamsort
          DESTINATION bin)
 
 # Install non-binary files for the package to "." for app builds and
@@ -90,11 +92,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:samcat")
   seqan_configure_cpack_app (samcat "samcat")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:samcat")
 
-if (SEQAN_BUILD_SYSTEM STREQUAL "APP:bamsort")
-  set (CPACK_PACKAGE_NAME "samcat")
-  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Sort BAM files")
-  set (CPACK_DEBIAN_PACKAGE_MAINTAINER "David Weese <david.weese@fu-berlin.de>")
-  set (CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
-
-  seqan_configure_cpack_app (samcat "bamsort")
-endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:bamsort")

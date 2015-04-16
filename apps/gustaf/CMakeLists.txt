@@ -10,6 +10,8 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_gustaf)
 message (STATUS "Configuring apps/gustaf")
 
+set (SEQAN_APP_VERSION "1.0.1")
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
@@ -28,10 +30,33 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 # Add definitions set by find_package (SeqAn).
 add_definitions (${SEQAN_DEFINITIONS})
 
-# Update the list of file names below if you add source files to your application.
-add_executable (gustaf gustaf.cpp)
+# Add definitions set by the build system.
+add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
+add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
+add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 
-add_executable (gustaf_mate_joining join_mates.cpp)
+# Update the list of file names below if you add source files to your application.
+add_executable (gustaf gustaf.cpp
+                create_stellarmatches_from_file.h
+                gustaf_matepairs.h
+                msplazer.h
+                msplazer_algorithms.h
+                msplazer_main.h
+                msplazer_out.h
+                msplazer_parse_options.h
+                stellar_routines.h
+)
+
+add_executable (gustaf_mate_joining join_mates.cpp
+                create_stellarmatches_from_file.h
+                gustaf_matepairs.h
+                msplazer.h
+                msplazer_algorithms.h
+                msplazer_main.h
+                msplazer_out.h
+                msplazer_parse_options.h
+                stellar_routines.h
+)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (gustaf ${SEQAN_LIBRARIES})

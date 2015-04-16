@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -303,14 +303,14 @@ template <typename TDPCell>
 inline typename Value<TDPCell>::Type &
 maxScore(DPScout_<TDPCell, BandedChainAlignmentScout> & scout)
 {
-	return _scoreOfCell(scout._maxScore);
+    return _scoreOfCell(scout._maxScore);
 }
 
 template <typename TDPCell>
 inline typename Value<TDPCell>::Type const &
 maxScore(DPScout_<TDPCell, BandedChainAlignmentScout> const & scout)
 {
-	return _scoreOfCell(scout._maxScore);
+    return _scoreOfCell(scout._maxScore);
 }
 
 // ----------------------------------------------------------------------------
@@ -321,7 +321,7 @@ template <typename TDPCell>
 inline typename DPScout_<TDPCell, BandedChainAlignmentScout>::TMaxHostPositionString const &
 maxHostPositions(DPScout_<TDPCell, BandedChainAlignmentScout> const & scout)
 {
-	return scout._maxHostPositions;
+    return scout._maxHostPositions;
 }
 
 template <typename TDPCell>
@@ -339,7 +339,7 @@ template <typename TDPCell>
 inline unsigned int
 maxHostPosition(DPScout_<TDPCell, BandedChainAlignmentScout> const & scout)
 {
-	return scout._maxHostPositions[0];
+    return scout._maxHostPositions[0];
 }
 
 // ----------------------------------------------------------------------------
@@ -350,7 +350,7 @@ template <typename TDPCell>
 inline unsigned int
 _nextMatrixBeginH(DPScout_<TDPCell, BandedChainAlignmentScout> const & scout)
 {
-	return scout._posH;
+    return scout._posH;
 }
 
 // ----------------------------------------------------------------------------
@@ -361,7 +361,7 @@ template <typename TDPCell>
 inline unsigned int
 _nextMatrixBeginV(DPScout_<TDPCell, BandedChainAlignmentScout> const & scout)
 {
-	return scout._posV;
+    return scout._posV;
 }
 
 }  // namespace seqan

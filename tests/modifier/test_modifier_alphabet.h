@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_size_metafunctions)
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
     typedef ModifiedAlphabet<Dna, ModExpand<'X'> > TDnaWithX;
-    
+
     // Add special gap symbol to Dna.
     SEQAN_ASSERT_EQ((int)BitsPerValue<TDnaWithGap>::VALUE, 3);
     SEQAN_ASSERT_EQ((int)ValueSize<TDnaWithGap>::VALUE, 5);
@@ -54,7 +54,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_size_metafunctions)
     // Add an arbitrary symbol to Dna.
     SEQAN_ASSERT_EQ((int)BitsPerValue<TDnaWithX>::VALUE, 3);
     SEQAN_ASSERT_EQ((int)ValueSize<TDnaWithX>::VALUE, 5);
-    
+
 }
 
 SEQAN_DEFINE_TEST(test_modifier_DnaQ)
@@ -86,12 +86,12 @@ SEQAN_DEFINE_TEST(test_modifier_DnaQ)
     SEQAN_ASSERT_EQ(Dna5('T'), convert<Dna5>(TDnaQWithX('T')));
     SEQAN_ASSERT_EQ('X', convert<char>(TDnaQWithX('X')));
 
-	SEQAN_ASSERT_EQ('A', convert<char>(TDna5QWithGap(0)));
-	SEQAN_ASSERT_EQ('C', convert<char>(TDna5QWithGap(1)));
-	SEQAN_ASSERT_EQ('G', convert<char>(TDna5QWithGap(2)));
-	SEQAN_ASSERT_EQ('T', convert<char>(TDna5QWithGap(3)));
-	SEQAN_ASSERT_EQ('N', convert<char>(TDna5QWithGap(4)));
-	SEQAN_ASSERT_EQ('-', convert<char>(TDna5QWithGap(5)));
+    SEQAN_ASSERT_EQ('A', convert<char>(TDna5QWithGap(0)));
+    SEQAN_ASSERT_EQ('C', convert<char>(TDna5QWithGap(1)));
+    SEQAN_ASSERT_EQ('G', convert<char>(TDna5QWithGap(2)));
+    SEQAN_ASSERT_EQ('T', convert<char>(TDna5QWithGap(3)));
+    SEQAN_ASSERT_EQ('N', convert<char>(TDna5QWithGap(4)));
+    SEQAN_ASSERT_EQ('-', convert<char>(TDna5QWithGap(5)));
 }
 
 SEQAN_DEFINE_TEST(test_modifier_alphabet_enumerate)
@@ -104,26 +104,26 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_enumerate)
     typedef ModifiedAlphabet<Dna, ModExpand<'X'> > TDnaWithX;
 
     // TDnaWithGap;
-	SEQAN_ASSERT_EQ('A', convert<char>(TDnaWithGap(0)));
-	SEQAN_ASSERT_EQ('C', convert<char>(TDnaWithGap(1)));
-	SEQAN_ASSERT_EQ('G', convert<char>(TDnaWithGap(2)));
-	SEQAN_ASSERT_EQ('T', convert<char>(TDnaWithGap(3)));
-	SEQAN_ASSERT_EQ('-', convert<char>(TDnaWithGap(4)));
+    SEQAN_ASSERT_EQ('A', convert<char>(TDnaWithGap(0)));
+    SEQAN_ASSERT_EQ('C', convert<char>(TDnaWithGap(1)));
+    SEQAN_ASSERT_EQ('G', convert<char>(TDnaWithGap(2)));
+    SEQAN_ASSERT_EQ('T', convert<char>(TDnaWithGap(3)));
+    SEQAN_ASSERT_EQ('-', convert<char>(TDnaWithGap(4)));
 
     // TDnaWithX;
-	SEQAN_ASSERT_EQ('A', convert<char>(TDnaWithX(0)));
-	SEQAN_ASSERT_EQ('C', convert<char>(TDnaWithX(1)));
-	SEQAN_ASSERT_EQ('G', convert<char>(TDnaWithX(2)));
-	SEQAN_ASSERT_EQ('T', convert<char>(TDnaWithX(3)));
-	SEQAN_ASSERT_EQ('X', convert<char>(TDnaWithX(4)));
+    SEQAN_ASSERT_EQ('A', convert<char>(TDnaWithX(0)));
+    SEQAN_ASSERT_EQ('C', convert<char>(TDnaWithX(1)));
+    SEQAN_ASSERT_EQ('G', convert<char>(TDnaWithX(2)));
+    SEQAN_ASSERT_EQ('T', convert<char>(TDnaWithX(3)));
+    SEQAN_ASSERT_EQ('X', convert<char>(TDnaWithX(4)));
 
     // TDna5WithGap;
-	SEQAN_ASSERT_EQ('A', convert<char>(TDna5WithGap(0)));
-	SEQAN_ASSERT_EQ('C', convert<char>(TDna5WithGap(1)));
-	SEQAN_ASSERT_EQ('G', convert<char>(TDna5WithGap(2)));
-	SEQAN_ASSERT_EQ('T', convert<char>(TDna5WithGap(3)));
-	SEQAN_ASSERT_EQ('N', convert<char>(TDna5WithGap(4)));
-	SEQAN_ASSERT_EQ('-', convert<char>(TDna5WithGap(5)));
+    SEQAN_ASSERT_EQ('A', convert<char>(TDna5WithGap(0)));
+    SEQAN_ASSERT_EQ('C', convert<char>(TDna5WithGap(1)));
+    SEQAN_ASSERT_EQ('G', convert<char>(TDna5WithGap(2)));
+    SEQAN_ASSERT_EQ('T', convert<char>(TDna5WithGap(3)));
+    SEQAN_ASSERT_EQ('N', convert<char>(TDna5WithGap(4)));
+    SEQAN_ASSERT_EQ('-', convert<char>(TDna5WithGap(5)));
 }
 
 SEQAN_DEFINE_TEST(test_modifier_alphabet_convert)
@@ -151,15 +151,15 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_convert)
     SEQAN_ASSERT_EQ(Dna('G'), convert<Dna>(TDnaWithX('G')));
     SEQAN_ASSERT_EQ(Dna('T'), convert<Dna>(TDnaWithX('T')));
     SEQAN_ASSERT_EQ(Dna('A'), convert<Dna>(TDnaWithX('X')));
-	
-	
-	typedef String<TDnaWithGap> TString;
 
-	TString str = "aCgT-AcGt";
-//	std::cout << str << std::endl;
 
-	SEQAN_ASSERT_EQ(str, "aCgT-AcGt");
-	SEQAN_ASSERT_EQ(str, "AcGt-aCgT");
+    typedef String<TDnaWithGap> TString;
+
+    TString str = "aCgT-AcGt";
+//    std::cout << str << std::endl;
+
+    SEQAN_ASSERT_EQ(str, "aCgT-AcGt");
+    SEQAN_ASSERT_EQ(str, "AcGt-aCgT");
 }
 
 SEQAN_DEFINE_TEST(test_modifier_alphabet_ord_value)

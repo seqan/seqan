@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -563,7 +563,7 @@ _writeGffGtf(
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig>
 inline void
-writeRecords(SmartFile<Gff, Output, TSpec> & gffFile,
+writeRecords(FormattedFile<Gff, Output, TSpec> & gffFile,
              FragmentStore<TFSSpec, TFSConfig> & store)
 {
     _writeGffGtf(gffFile, store, format(gffFile));

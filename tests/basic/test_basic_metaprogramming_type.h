@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_same_type)
 {
     using namespace seqan;
-    
+
     // Test for the values of the VALUE members.
     SEQAN_ASSERT_EQ((+IsSameType<bool, int>::VALUE),  +false);
     SEQAN_ASSERT_EQ((+IsSameType<bool, bool>::VALUE), +true);

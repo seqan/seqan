@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -107,7 +107,7 @@ void testAlignGapsIteratorRootedRandomAccessIteratorFunctions(TGapsSpec const & 
 
         SEQAN_ASSERT_EQ(&container(it), &gaps);
     }
-    
+
     // Test position().
     {
         TIter it = begin(gaps);
@@ -175,7 +175,7 @@ void testAlignGapsIteratorMovement(TGapsSpec const & /*spec*/)
         ++it;
         SEQAN_ASSERT_EQ(*it, 'A');
     }
-    
+
     // Test postfix increment.
     {
         TIter it = iter(gaps, 1, Standard());
@@ -243,7 +243,7 @@ void testAlignGapsIteratorMovement(TGapsSpec const & /*spec*/)
         it += 3;
         SEQAN_ASSERT_EQ(*it, 'A');
     }
-    
+
     // Test goFurther() forward.
     {
         TIter it = iter(gaps, 1, Standard());
@@ -251,7 +251,7 @@ void testAlignGapsIteratorMovement(TGapsSpec const & /*spec*/)
         goFurther(it, 3);
         SEQAN_ASSERT_EQ(*it, 'A');
     }
-    
+
     // Test operator-=.
     {
         TIter it = iter(gaps, 4, Standard());
@@ -500,11 +500,11 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
         insertGaps(gaps, 4, 2);
         insertGaps(gaps, 2, 2);
         insertGaps(gaps, 0, 2);
-        
+
         // 0123456789
         // --CG--AT--
         //  XXXXXXXX
-        
+
         setClippedEndPosition(gaps, 9);
         setClippedBeginPosition(gaps, 1);
 
@@ -514,22 +514,22 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
 
 
         TIter it = begin(gaps);
-        
+
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 1u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
         ++it;
-        
+
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 2u);
         ++it;
-        
+
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 1u);
         ++it;
-        
+
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 2u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
@@ -567,11 +567,11 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
         insertGaps(gaps, 4, 2);
         insertGaps(gaps, 2, 2);
         insertGaps(gaps, 0, 2);
-        
+
         // 0123456789
         // --CG--AT--
         //    XXXX
-        
+
         setClippedEndPosition(gaps, 7);
         setClippedBeginPosition(gaps, 3);
 
@@ -580,12 +580,12 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
         SEQAN_ASSERT_EQ(ss.str(), "G--A");
 
         TIter it = begin(gaps);
-        
+
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 1u);
         ++it;
-        
+
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 2u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
@@ -635,7 +635,7 @@ void testAlignGapsIteratorGapOperationsCenter(TGapsSpec const & /*spec*/)
         SEQAN_ASSERT(gaps[3] == 'C');
         // SEQAN_ASSERT(gaps[4] == '-');
         SEQAN_ASSERT(gaps[5] == 'G');
-        
+
         // Query gaps.
         SEQAN_ASSERT_NOT(isGap(gaps, 3));
         SEQAN_ASSERT(isGap(gaps, 4));
@@ -646,7 +646,7 @@ void testAlignGapsIteratorGapOperationsCenter(TGapsSpec const & /*spec*/)
     {
         TString seq("AAACGTTT");
         TGaps gaps(seq);
-        
+
         TIter it = iter(gaps, 4);
         insertGaps(it, 2);
 
@@ -658,7 +658,7 @@ void testAlignGapsIteratorGapOperationsCenter(TGapsSpec const & /*spec*/)
         // SEQAN_ASSERT(gaps[4] == '-');
         // SEQAN_ASSERT(gaps[5] == '-');
         SEQAN_ASSERT(gaps[6] == 'G');
-        
+
         // Query gaps.
         SEQAN_ASSERT_NOT(isGap(gaps, 3));
         SEQAN_ASSERT(isGap(gaps, 4));
@@ -670,7 +670,7 @@ void testAlignGapsIteratorGapOperationsCenter(TGapsSpec const & /*spec*/)
     {
         TString seq("AAACGTTT");
         TGaps gaps(seq);
-        
+
         TIter it = iter(gaps, 4);
         insertGaps(it, 3);
         ++it;
@@ -684,7 +684,7 @@ void testAlignGapsIteratorGapOperationsCenter(TGapsSpec const & /*spec*/)
         // SEQAN_ASSERT(gaps[4] == '-');
         // SEQAN_ASSERT(gaps[5] == '-');
         SEQAN_ASSERT(gaps[6] == 'G');
-        
+
         // Query gaps.
         SEQAN_ASSERT_NOT(isGap(gaps, 3));
         SEQAN_ASSERT(isGap(gaps, 4));
@@ -696,7 +696,7 @@ void testAlignGapsIteratorGapOperationsCenter(TGapsSpec const & /*spec*/)
     {
         TString seq("AAACGTTT");
         TGaps gaps(seq);
-        
+
         TIter it = iter(gaps, 4);
         insertGaps(it, 4);
         ++it;
@@ -710,7 +710,7 @@ void testAlignGapsIteratorGapOperationsCenter(TGapsSpec const & /*spec*/)
         // SEQAN_ASSERT(gaps[4] == '-');
         // SEQAN_ASSERT(gaps[5] == '-');
         SEQAN_ASSERT(gaps[6] == 'G');
-        
+
         // Query gaps.
         SEQAN_ASSERT_NOT(isGap(gaps, 3));
         SEQAN_ASSERT(isGap(gaps, 4));
@@ -722,7 +722,7 @@ void testAlignGapsIteratorGapOperationsCenter(TGapsSpec const & /*spec*/)
     {
         TString seq("AAACGTTT");
         TGaps gaps(seq);
-        
+
         TIter it = iter(gaps, 4);
         insertGaps(it, 4);
         clearGaps(gaps);
@@ -735,7 +735,7 @@ void testAlignGapsIteratorGapOperationsCenter(TGapsSpec const & /*spec*/)
         SEQAN_ASSERT(gaps[3] == 'C');
         SEQAN_ASSERT(gaps[4] == 'G');
         SEQAN_ASSERT(gaps[5] == 'T');
-        
+
         // Query gaps.
         SEQAN_ASSERT_NOT(isGap(gaps, 2));
         SEQAN_ASSERT_NOT(isGap(gaps, 3));
@@ -761,7 +761,7 @@ void testAlignGapsIteratorGapOperationsLeading(TGapsSpec const & /*spec*/)
     {
         TString seq("GTTTTTT");
         TGaps gaps(seq);
-        
+
         TIter it = begin(gaps);
         insertGap(it);
 
@@ -771,7 +771,7 @@ void testAlignGapsIteratorGapOperationsLeading(TGapsSpec const & /*spec*/)
         // Query sequence.
         // SEQAN_ASSERT(gaps[0] == '-');
         SEQAN_ASSERT(gaps[1] == 'G');
-        
+
         // Query gaps.
         SEQAN_ASSERT(isGap(gaps, 0));
         SEQAN_ASSERT_NOT(isGap(gaps, 1));
@@ -781,7 +781,7 @@ void testAlignGapsIteratorGapOperationsLeading(TGapsSpec const & /*spec*/)
     {
         TString seq("GTTTTTT");
         TGaps gaps(seq);
-        
+
         TIter it = begin(gaps);
         insertGaps(it, 2);
 
@@ -792,7 +792,7 @@ void testAlignGapsIteratorGapOperationsLeading(TGapsSpec const & /*spec*/)
         // SEQAN_ASSERT(gaps[0] == '-');
         // SEQAN_ASSERT(gaps[1] == '-');
         SEQAN_ASSERT(gaps[2] == 'G');
-        
+
         // Query gaps.
         SEQAN_ASSERT(isGap(gaps, 0));
         SEQAN_ASSERT(isGap(gaps, 1));
@@ -803,7 +803,7 @@ void testAlignGapsIteratorGapOperationsLeading(TGapsSpec const & /*spec*/)
     {
         TString seq("GTTTTTT");
         TGaps gaps(seq);
-        
+
         TIter it = begin(gaps);
         insertGaps(it, 3);
         ++it;
@@ -816,7 +816,7 @@ void testAlignGapsIteratorGapOperationsLeading(TGapsSpec const & /*spec*/)
         // SEQAN_ASSERT(gaps[0] == '-');
         // SEQAN_ASSERT(gaps[1] == '-');
         SEQAN_ASSERT(gaps[2] == 'G');
-        
+
         // Query gaps.
         SEQAN_ASSERT(isGap(gaps, 0));
         SEQAN_ASSERT(isGap(gaps, 1));
@@ -827,7 +827,7 @@ void testAlignGapsIteratorGapOperationsLeading(TGapsSpec const & /*spec*/)
     {
         TString seq("GTTTTTT");
         TGaps gaps(seq);
-        
+
         TIter it = begin(gaps);
         insertGaps(it, 4);
         it += 2;
@@ -840,7 +840,7 @@ void testAlignGapsIteratorGapOperationsLeading(TGapsSpec const & /*spec*/)
         // SEQAN_ASSERT(gaps[0] == '-');
         // SEQAN_ASSERT(gaps[1] == '-');
         SEQAN_ASSERT(gaps[2] == 'G');
-        
+
         // Query gaps.
         SEQAN_ASSERT(isGap(gaps, 0));
         SEQAN_ASSERT(isGap(gaps, 1));
@@ -851,7 +851,7 @@ void testAlignGapsIteratorGapOperationsLeading(TGapsSpec const & /*spec*/)
     {
         TString seq("GTTTTTT");
         TGaps gaps(seq);
-        
+
         TIter it = begin(gaps);
         insertGaps(it, 4);
         clearGaps(gaps);
@@ -864,7 +864,7 @@ void testAlignGapsIteratorGapOperationsLeading(TGapsSpec const & /*spec*/)
         SEQAN_ASSERT(gaps[1] == 'T');
         SEQAN_ASSERT(gaps[2] == 'T');
         SEQAN_ASSERT(gaps[3] == 'T');
-        
+
         // Query gaps.
         SEQAN_ASSERT_NOT(isGap(gaps, 3));
         SEQAN_ASSERT_NOT(isGap(gaps, 4));
@@ -890,7 +890,7 @@ void testAlignGapsIteratorGapOperationsTrailing(TGapsSpec const & /*spec*/)
     {
         TString seq("AAAAAAC");
         TGaps gaps(seq);
-        
+
         TIter it = end(gaps);
         insertGap(it);
 
@@ -900,7 +900,7 @@ void testAlignGapsIteratorGapOperationsTrailing(TGapsSpec const & /*spec*/)
         // Query sequence.
         SEQAN_ASSERT(gaps[6] == 'C');
         // SEQAN_ASSERT(gaps[7] == '-');
-        
+
         // Query gaps.
         SEQAN_ASSERT_NOT(isGap(gaps, 6));
         SEQAN_ASSERT(isGap(gaps, 7));
@@ -910,7 +910,7 @@ void testAlignGapsIteratorGapOperationsTrailing(TGapsSpec const & /*spec*/)
     {
         TString seq("AAAAAAC");
         TGaps gaps(seq);
-        
+
         TIter it = end(gaps);
         insertGaps(it, 2);
 
@@ -921,7 +921,7 @@ void testAlignGapsIteratorGapOperationsTrailing(TGapsSpec const & /*spec*/)
         SEQAN_ASSERT(gaps[6] == 'C');
         // SEQAN_ASSERT(gaps[7] == '-');
         // SEQAN_ASSERT(gaps[8] == '-');
-        
+
         // Query gaps.
         SEQAN_ASSERT_NOT(isGap(gaps, 6));
         SEQAN_ASSERT(isGap(gaps, 7));
@@ -932,7 +932,7 @@ void testAlignGapsIteratorGapOperationsTrailing(TGapsSpec const & /*spec*/)
     {
         TString seq("AAAAAAC");
         TGaps gaps(seq);
-        
+
         TIter it = end(gaps);
         insertGaps(it, 3);
         SEQAN_ASSERT_EQ(removeGap(it), 1u);
@@ -944,7 +944,7 @@ void testAlignGapsIteratorGapOperationsTrailing(TGapsSpec const & /*spec*/)
         SEQAN_ASSERT(gaps[6] == 'C');
         // SEQAN_ASSERT(gaps[7] == '-');
         // SEQAN_ASSERT(gaps[8] == '-');
-        
+
         // Query gaps.
         SEQAN_ASSERT_NOT(isGap(gaps, 6));
         SEQAN_ASSERT(isGap(gaps, 7));
@@ -955,7 +955,7 @@ void testAlignGapsIteratorGapOperationsTrailing(TGapsSpec const & /*spec*/)
     {
         TString seq("AAAAAAC");
         TGaps gaps(seq);
-        
+
         TIter it = end(gaps);
         insertGaps(it, 4);
         SEQAN_ASSERT_EQ(removeGaps(it, 2), 2u);
@@ -967,7 +967,7 @@ void testAlignGapsIteratorGapOperationsTrailing(TGapsSpec const & /*spec*/)
         SEQAN_ASSERT(gaps[6] == 'C');
         // SEQAN_ASSERT(gaps[7] == '-');
         // SEQAN_ASSERT(gaps[8] == '-');
-        
+
         // Query gaps.
         SEQAN_ASSERT_NOT(isGap(gaps, 6));
         SEQAN_ASSERT(isGap(gaps, 7));
@@ -978,7 +978,7 @@ void testAlignGapsIteratorGapOperationsTrailing(TGapsSpec const & /*spec*/)
     {
         TString seq("AAAAAAC");
         TGaps gaps(seq);
-        
+
         TIter it = end(gaps);
         insertGaps(it, 4);
         clearGaps(gaps);

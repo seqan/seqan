@@ -98,23 +98,23 @@ Hands On!
 ---------
 
 Programming can only be learned by programming, so let's get started.
-We create a new sandbox and a new app for the minimapper.
-If you already have a sandbox, then you can skip the first step
+We create a new demo for the minimapper.
 
 .. code-block:: console
-
-   $ ./util/bin/skel.py repository sandbox/my_sandbox
-   $ ./util/bin/skel.py app minimapper sandbox/my_sandbox
+	
+    ~ $ cd seqan-src/demos
+    demos $ mkdir minimapper
+    demos $ mkdir minimapper/minimapper.cpp
 
 Now, we copy over the code from the original location into our new app and build it.
 
 .. code-block:: console
 
-   $ cp demos/tutorial/read_mapping/minimapper.cpp sandbox/my_sandbox/apps/minimapper/minimapper.cpp
-   $ cd build/Debug
+   demos $ cp tutorial/read_mapping/minimapper.cpp minimapper/minimapper.cpp
+   $ cd ../../build/Debug
    $ cmake .
-   $ make minimapper
-   $ ./sandbox/my_sandbox/apps/minimapper/minimapper
+   $ make demo_minimapper_minimapper
+   $ ./bin/demo_minimapper_minimapper
    Invalid number of arguments.
    USAGE: minimapper GENOME.fasta READS.fasta OUT.sam
 

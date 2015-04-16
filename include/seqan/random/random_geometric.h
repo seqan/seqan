@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -103,7 +103,7 @@ pickRandomNumber(TRNG & rng, Pdf<GeometricFairCoin> const & /*pdf*/)
     const int RG_IB5 = 16;
     const int RG_IB18 = 131072;
     const int RG_MASK = RG_IB1 + RG_IB2 + RG_IB5;
-    
+
     typename Value<TRNG>::Type seed = pickRandomNumber(rng);
     typename Value<Pdf<GeometricFairCoin> >::Type value = 0;
 

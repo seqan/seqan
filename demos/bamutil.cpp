@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -207,8 +207,8 @@ template <typename TOptions>
 int performConversion(BamFileIn & in, BamFileOut & out, TOptions const & options)
 {
     BamHeader header;
-    readRecord(header, in);
-    writeRecord(out, header);
+    readHeader(header, in);
+    writeHeader(out, header);
 
     if (length(options.regions) == 0u)
     {

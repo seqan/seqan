@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 //         David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in Fasta or Fastq format.
+// Class for reading/writing files in Fasta or Fastq format.
 // ==========================================================================
 
 #ifndef SEQAN_SEQ_IO_SEQUENCE_FILE_H_
@@ -48,8 +48,25 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
-typedef SmartFile<Fastq, Input>     SeqFileIn;
-typedef SmartFile<Fastq, Output>    SeqFileOut;
+/*!
+ * @class SeqFileIn
+ * @signature typedef FormattedFile<Fastq, Input> SeqFileIn;
+ * @extends FormattedFileIn
+ * @headerfile <seqan/seq_io.h>
+ * @brief Class for reading RAW, FASTA, FASTQ, EMBL and GENBANK files containing unaligned sequences.
+ */
+
+typedef FormattedFile<Fastq, Input>     SeqFileIn;
+
+/*!
+ * @class SeqFileOut
+ * @signature typedef FormattedFile<Fastq, Output> SeqFileOut;
+ * @extends FormattedFileOut
+ * @headerfile <seqan/seq_io.h>
+ * @brief Class for writing RAW, FASTA, FASTQ, EMBL and GENBANK files containing unaligned sequences.
+ */
+
+typedef FormattedFile<Fastq, Output>    SeqFileOut;
 
 // --------------------------------------------------------------------------
 // Tag AutoSeqFormat
@@ -93,7 +110,20 @@ typedef SeqInFormat AutoSeqFormat;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction SeqFileBuffer_
+// ----------------------------------------------------------------------------
+
+template <typename TSeqStringSet, typename TSpec>
+struct SeqFileBuffer_
+{
+    typedef typename Value<TSeqStringSet>::Type     TSeqString;
+    typedef typename Value<TSeqString>::Type        TSeqAlphabet;
+
+    typedef String<TSeqAlphabet>                    Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction SeqFileContext_
 // ----------------------------------------------------------------------------
 
 template <typename TDirection>
@@ -112,9 +142,12 @@ struct SeqFileContext_<Output>
     SequenceOutputOptions   options;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction FormattedFileContext
+// ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TDirection, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Fastq, TDirection, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Fastq, TDirection, TSpec>, TStorageSpec>
 {
     typedef SeqFileContext_<TDirection> Type;
 };
@@ -124,13 +157,13 @@ struct SmartFileContext<SmartFile<Fastq, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
-struct FileFormat<SmartFile<Fastq, Input, TSpec> >
+struct FileFormat<FormattedFile<Fastq, Input, TSpec> >
 {
     typedef TagSelector<SeqInFormats> Type;
 };
 
 template <typename TSpec>
-struct FileFormat<SmartFile<Fastq, Output, TSpec> >
+struct FileFormat<FormattedFile<Fastq, Output, TSpec> >
 {
     typedef TagSelector<SeqOutFormats> Type;
 };
@@ -143,10 +176,25 @@ struct FileFormat<SmartFile<Fastq, Output, TSpec> >
 // Function readRecord(); Qualities in seq string
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn SeqFileIn#readRecord
+ * @brief Read one @link FormattedFileRecordConcept @endlink from a @link SeqFileIn @endlink object.
+ *
+ * @signature void readRecord(meta, seq, qual, fileIn);
+ *
+ * @param[out] meta         The @link StringConcept @endlink object where to read the meta information into.
+ * @param[out] seq          The @link StringConcept @endlink object where to read the sequence information into.
+ * @param[out] qual         The @link StringConcept @endlink object where to read the quality information into.
+ * @param[in,out] fileIn    The @link SeqFileIn @endlink object to read from.
+ *
+ * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
+ */
+
 template <typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >,
+inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >,
                                 Not<HasQualities<typename Value<TSeqString>::Type> > >, void)
-readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & file)
+readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec> & file)
 {
     readRecord(meta, seq, file.iter, file.format);
 }
@@ -156,9 +204,9 @@ readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & 
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >,
+inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >,
                                 HasQualities<typename Value<TSeqString>::Type> >, void)
-readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & file)
+readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec> & file)
 {
     readRecord(meta, seq, context(file).buffer[2], file.iter, file.format);
     assignQualities(seq, context(file).buffer[2]);
@@ -169,8 +217,8 @@ readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & 
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >, void)
-readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, SmartFile<Fastq, Input, TSpec> & file)
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Fastq, Input, TSpec> & file)
 {
     readRecord(meta, seq, qual, file.iter, file.format);
 }
@@ -179,8 +227,15 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, SmartFile<Fas
 // Function readRecords()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn SeqFileIn#readRecords
+ * @brief Read many @link FormattedFileRecordConcept @endlink from a @link SeqFileIn @endlink object.
+ * @signature void readRecords(metas, seqs, quals, fileIn, numRecord);
+ * @see SeqFileIn#readRecord
+ */
+
 template <typename TPtrA, typename TPtrB>
-inline void 
+inline void
 swapPtr(TPtrA &a, TPtrB &b)
 {
     union {
@@ -193,14 +248,15 @@ swapPtr(TPtrA &a, TPtrB &b)
     a = tmp2.a;
 }
 
-template <typename TIdStringSet, typename TSeqStringSet, typename TSpec, typename TFastqAlphabet>
+template <typename TIdStringSet, typename TSeqStringSet, typename TSpec, typename TSize>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
-                        SmartFile<Fastq, Input, TSpec> & file,
-                        __uint64 maxRecords = MaxValue<__uint64>::VALUE,
-                        TFastqAlphabet = Iupac())
+                        FormattedFile<Fastq, Input, TSpec> & file,
+                        TSize maxRecords)
 {
-    String<TFastqAlphabet> seqBuffer;
+    typedef typename SeqFileBuffer_<TSeqStringSet, TSpec>::Type TSeqBuffer;
+
+    TSeqBuffer seqBuffer;
 
     // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
     swapPtr(seqBuffer.data_begin, context(file).buffer[1].data_begin);
@@ -221,47 +277,31 @@ inline void readRecords(TIdStringSet & meta,
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecords(); Without alphabet conversion
+// Function readRecords(); Without max records
 // ----------------------------------------------------------------------------
 
 template <typename TIdStringSet, typename TSeqStringSet, typename TSpec>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
-                        SmartFile<Fastq, Input, TSpec> & file,
-                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
+                        FormattedFile<Fastq, Input, TSpec> & file)
 {
-    typedef typename Value<TSeqStringSet>::Type     TSeqString;
-    typedef typename Value<TSeqString>::Type        TSeqAlphabet;
-
-    readRecords(meta, seq, file, maxRecords, TSeqAlphabet());
-}
-
-// ----------------------------------------------------------------------------
-// Function readRecords(); Without max records
-// ----------------------------------------------------------------------------
-
-template <typename TIdStringSet, typename TSeqStringSet, typename TSpec, typename TFastqAlphabet>
-inline void readRecords(TIdStringSet & meta,
-                        TSeqStringSet & seq,
-                        SmartFile<Fastq, Input, TSpec> & file,
-                        TFastqAlphabet = Iupac())
-{
-    readRecords(meta, seq, file, MaxValue<__uint64>::VALUE, TFastqAlphabet());
+    readRecords(meta, seq, file, MaxValue<__uint64>::VALUE);
 }
 
 // ----------------------------------------------------------------------------
 // Function readRecords(); With separate qualities
 // ----------------------------------------------------------------------------
 
-template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet, typename TSpec, typename TFastqAlphabet>
+template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet, typename TSpec, typename TSize>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         TQualStringSet & qual,
-                        SmartFile<Fastq, Input, TSpec> & file,
-                        __uint64 maxRecords = MaxValue<__uint64>::VALUE,
-                        TFastqAlphabet = Iupac())
+                        FormattedFile<Fastq, Input, TSpec> & file,
+                        TSize maxRecords)
 {
-    String<TFastqAlphabet> seqBuffer;
+    typedef typename SeqFileBuffer_<TSeqStringSet, TSpec>::Type TSeqBuffer;
+
+    TSeqBuffer seqBuffer;
 
     // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
     std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
@@ -282,43 +322,40 @@ inline void readRecords(TIdStringSet & meta,
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecords(); With separate qualities; Without alphabet conversion
+// Function readRecords(); With separate qualities; Without max records
 // ----------------------------------------------------------------------------
 
 template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet, typename TSpec>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         TQualStringSet & qual,
-                        SmartFile<Fastq, Input, TSpec> & file,
-                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
+                        FormattedFile<Fastq, Input, TSpec> & file)
 {
-    typedef typename Value<TSeqStringSet>::Type     TSeqString;
-    typedef typename Value<TSeqString>::Type        TSeqAlphabet;
-
-    readRecords(meta, seq, qual, file, maxRecords, TSeqAlphabet());
-}
-
-// ----------------------------------------------------------------------------
-// Function readRecords(); With separate qualities; Without max records
-// ----------------------------------------------------------------------------
-
-template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet, typename TSpec, typename TFastqAlphabet>
-inline void readRecords(TIdStringSet & meta,
-                        TSeqStringSet & seq,
-                        TQualStringSet & qual,
-                        SmartFile<Fastq, Input, TSpec> & file,
-                        TFastqAlphabet = Iupac())
-{
-    readRecords(meta, seq, qual, file, MaxValue<__uint64>::VALUE, TFastqAlphabet());
+    readRecords(meta, seq, qual, file, MaxValue<__uint64>::VALUE);
 }
 
 // ----------------------------------------------------------------------------
 // Function writeRecord()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn SeqFileOut#writeRecord
+ * @brief Write one @link FormattedFileRecordConcept @endlink into a @link SeqFileOut @endlink object.
+ *
+ * @signature void writeRecord(fileOut, meta, seq, qual);
+ *
+ * @param[in,out] fileOut   The @link SeqFileOut @endlink object to write into.
+ * @param[in] meta          The @link StringConcept @endlink object where to read the meta information from.
+ * @param[in] seq           The @link StringConcept @endlink object where to read the sequence information from.
+ * @param[in] qual          The @link StringConcept @endlink object where to read the quality information from.
+ *
+ * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
+ */
+
 template <typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, Output, TSpec>::TStream> >, void)
-writeRecord(SmartFile<Fastq, Output, TSpec> & file,
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename FormattedFile<Fastq, Output, TSpec>::TStream> >, void)
+writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
             TIdString const & meta,
             TSeqString const & seq)
 {
@@ -330,8 +367,8 @@ writeRecord(SmartFile<Fastq, Output, TSpec> & file,
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, Output, TSpec>::TStream> >, void)
-writeRecord(SmartFile<Fastq, Output, TSpec> & file,
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename FormattedFile<Fastq, Output, TSpec>::TStream> >, void)
+writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
             TIdString const & meta,
             TSeqString const & seq,
             TQualString const & qual)
@@ -343,9 +380,16 @@ writeRecord(SmartFile<Fastq, Output, TSpec> & file,
 // Function writeRecords()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn SeqFileOut#writeRecords
+ * @brief Write many @link FormattedFileRecordConcept @endlink into a @link SeqFileOut @endlink object.
+ * @signature void writeRecords(fileOut, metas, seqs, quals);
+ * @see SeqFileOut#writeRecord
+ */
+
 template <typename TSpec, typename TIdStringSet, typename TSeqStringSet>
 inline void
-writeRecords(SmartFile<Fastq, Output, TSpec> & file,
+writeRecords(FormattedFile<Fastq, Output, TSpec> & file,
              TIdStringSet const & meta,
              TSeqStringSet const & seq)
 {
@@ -359,7 +403,7 @@ writeRecords(SmartFile<Fastq, Output, TSpec> & file,
 
 template <typename TSpec, typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet>
 inline void
-writeRecords(SmartFile<Fastq, Output, TSpec> & file,
+writeRecords(FormattedFile<Fastq, Output, TSpec> & file,
              TIdStringSet const & meta,
              TSeqStringSet const & seq,
              TQualStringSet const & qual)

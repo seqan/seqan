@@ -1,7 +1,7 @@
 // ==========================================================================
 //                              casbar
 // ==========================================================================
-// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -820,7 +820,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
 
         // Read header.
         seqan::BamHeader header;
-        readRecord(header, *bamFileIns[i]);
+        readHeader(header, *bamFileIns[i]);
     }
 #endif  // #if !defined(SEQAN_ENABLE_PARALLELISM)
     bool abort = false;
@@ -847,7 +847,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
             {
                 // Read header.
                 seqan::BamHeader header;
-                readRecord(header, *bamFileIns[i]);
+                readHeader(header, *bamFileIns[i]);
             }
         }
 #endif  // #if defined(SEQAN_ENABLE_PARALLELISM)
@@ -893,7 +893,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
             appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">"));
             appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">"));
             appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">"));
-            writeRecord(vcfFileOut, vcfHeader);
+            writeHeader(vcfFileOut, vcfHeader);
 
             seqan::BedFileOut bedFileOut(toCString(tempFileNameBed));
             //XXX addSequenceName(tempBedStream, fragmentStore1.contigNameStore[currContigId]);
@@ -927,7 +927,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
     appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">"));
     appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">"));
     appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">"));
-    writeRecord(vcfFileOut, vcfHeader);
+    writeHeader(vcfFileOut, vcfHeader);
 
     // Prepare BED output
     seqan::BedFileOut bedFileOut;
@@ -949,7 +949,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
         }
 
         seqan::VcfHeader vcfHeader;
-        readRecord(vcfHeader, vcfFileIn);
+        readHeader(vcfHeader, vcfFileIn);
 
         seqan::VcfRecord vcfRecord;
         while (!atEnd(vcfFileIn))
@@ -996,8 +996,8 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     ArgumentParser parser("casbar");
     // Set short description, version, and date.
     setShortDescription(parser, "SNP and methylation level calling");
-    setVersion(parser, "0.1");
-    setDate(parser, "May 2014");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
     setCategory(parser, "BS-Seq Analysis");
 
     // Define usage line and long description.

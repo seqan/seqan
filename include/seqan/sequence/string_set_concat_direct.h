@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -164,7 +164,7 @@ struct Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > >
 template <typename TString, typename TSpec>
 struct Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>
     : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const> {};
-    
+
 // --------------------------------------------------------------------------
 // Metafunction GetValue
 // --------------------------------------------------------------------------

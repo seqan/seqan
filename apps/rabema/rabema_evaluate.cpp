@@ -1039,8 +1039,8 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
 
     seqan::ArgumentParser parser("rabema_evaluate");
     setShortDescription(parser, "RABEMA Evaluation");
-    setVersion(parser, "1.2.0");
-    setDate(parser, "March 14, 2013");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
     setCategory(parser, "Benchmarking");
 
     addUsageLine(parser,
@@ -1350,7 +1350,7 @@ int main(int argc, char const ** argv)
     GsiHeader gsiHeader;
     try
     {
-        readRecord(gsiHeader, inGsiIter, Gsi());
+        readHeader(gsiHeader, inGsiIter, Gsi());
         std::cerr << " OK\n";
     }
     catch (seqan::ParseError const & ioErr)
@@ -1370,7 +1370,7 @@ int main(int argc, char const ** argv)
     try
     {
         std::cerr << "Alignments                " << options.inBamPath << " (header) ...";
-        readRecord(bamHeader, bamFileIn);
+        readHeader(bamHeader, bamFileIn);
         std::cerr << " OK\n";
     }
     catch (seqan::ParseError const & ioErr)

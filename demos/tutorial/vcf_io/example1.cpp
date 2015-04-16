@@ -13,8 +13,8 @@ int main()
 
     // Copy over header.
     VcfHeader header;
-    readRecord(header, vcfIn);
-    writeRecord(vcfOut, header);
+    readHeader(header, vcfIn);
+    writeHeader(vcfOut, header);
 
     // Copy the file record by record.
     VcfRecord record;

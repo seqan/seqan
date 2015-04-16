@@ -29,11 +29,13 @@ Often, they start out with a header that itself contains different header record
 For example, the Binary Sequence Alignment/Map (SAM/BAM) format starts with an header that lists all contigs of the reference sequence.
 The BAM header is followed by a list of BAM alignment records that contain query sequences aligned to some reference contig.
 
+.. _tutorial-input-output-overview-formatted-files:
+
 Formatted Files
 """""""""""""""
 
-SeqAn allows to read or write record-structured files through two types of classes: :dox:`SmartFile FileIn` and :dox:`SmartFile FileOut`.
-Classes of type :dox:`SmartFile FileIn` allow to read files, whereas classes of type :dox:`SmartFile FileOut` allow to write files.
+SeqAn allows to read or write record-structured files through two types of classes: :dox:`FormattedFileIn` and :dox:`FormattedFileOut`.
+Classes of type :dox:`FormattedFileIn` allow to read files, whereas classes of type :dox:`FormattedFileOut` allow to write files.
 Note how these types of classes **do not allow to read and write the same file at the same time**.
 
 These types of classes provide the following I/O operations on formatted files:
@@ -41,7 +43,6 @@ These types of classes provide the following I/O operations on formatted files:
 #. open a file given its filename or attach to an existing stream like `std::cin` or `std::cout`;
 #. guess the file format from the file content or filename extension;
 #. access compressed or uncompressed files transparently.
-
 
 .. warning::
 
@@ -59,7 +60,7 @@ These types of classes provide the following I/O operations on formatted files:
 Basic I/O
 ---------
 
-This tutorial shows the basic functionalities provided by any class of type :dox:`SmartFile FileIn` or :dox:`SmartFile FileOut`.
+This tutorial shows the basic functionalities provided by any class of type :dox:`FormattedFileIn` or :dox:`FormattedFileOut`.
 In particular, this tutorial adopts the classes :dox:`BamFileIn` and :dox:`BamFileOut` as concrete types.
 The class :dox:`BamFileIn` allows to read files in SAM or BAM format, whereas the class :dox:`BamFileOut` allows to write them.
 Nonetheless, **these functionalities are independent from the particular file format** and thus valid for all record-based file formats supported by SeqAn.
@@ -80,20 +81,20 @@ In this case, we include the BAM header file:
 Opening and Closing Files
 """""""""""""""""""""""""
 
-Classes of type :dox:`SmartFile FileIn` and :dox:`SmartFile FileOut` allow to :dox:`SmartFile#open` and :dox:`SmartFile#close` files.
+Classes of type :dox:`FormattedFileIn` and :dox:`FormattedFileOut` allow to :dox:`FormattedFile#open` and :dox:`FormattedFile#close` files.
 
 A file can be opened by passing the filename to the constructor:
 
 .. includefrags:: demos/tutorial/base_io/example1.cpp
    :fragment: ctor
 
-Alternatively, a file can be opened after construction by calling :dox:`SmartFile#open`:
+Alternatively, a file can be opened after construction by calling :dox:`FormattedFile#open`:
 
 .. includefrags:: demos/tutorial/base_io/example1.cpp
    :fragment: open
 
-Noe that any file is closed *automatically* whenever the :dox:`SmartFile FileIn` or :dox:`SmartFile FileOut` object goes out of scope.
-Eventually, a file can be closed *manually* by calling :dox:`SmartFile#close`.
+Noe that any file is closed *automatically* whenever the :dox:`FormattedFileIn` or :dox:`FormattedFileOut` object goes out of scope.
+Eventually, a file can be closed *manually* by calling :dox:`FormattedFile#close`.
 
 Accessing the Header
 """"""""""""""""""""
@@ -105,25 +106,16 @@ The content of this object can be ignored for now, it will be covered in the :re
 .. includefrags:: demos/tutorial/base_io/example1.cpp
    :fragment: header
 
-Function :dox:`BamFileIn#readRecord` reads the header from the input SAM file and :dox:`BamFileOut#writeRecord` writes it to the BAM output file.
+Function :dox:`FormattedFileIn#readHeader` reads the header from the input SAM file and :dox:`FormattedFileOut#writeHeader` writes it to the BAM output file.
 
 Accessing the Records
 """""""""""""""""""""
 
-There are three use cases for reading or writing record-based files:
-
-#. read or write the file **record by record**;
-#. read or write a **batch of records**, e.g. 100k records at a time;
-#. read or write **all records** from or to the file.
-
-These use cases are supported respectively by the functions :dox:`BamFileIn#readRecord` and :dox:`BamFileIn#readRecords`, or :dox:`BamFileIn#writeRecord` and :dox:`BamFileIn#writeRecords`.
-
-In this example, we are going to read and write the files record by record.
-Again, to access each record, we need an object representing the format-specific record.
+Again, to access records, we need an object representing format-specific information.
 In this case, we use an object of type :dox:`BamAlignmentRecord`.
-Each call to :dox:`BamFileIn#readRecord` reads one record from the SAM input file and moves the :dox:`BamFileIn` forward.
-Each call to :dox:`BamFileOut#writeRecord` writes the record just read to the BAM output files.
-We check the end of the input file by calling :dox:`BamFileIn#atEnd`.
+Each call to :dox:`FormattedFileIn#readRecord` reads one record from the SAM input file and moves the :dox:`BamFileIn` forward.
+Each call to :dox:`FormattedFileOut#writeRecord` writes the record just read to the BAM output files.
+We check the end of the input file by calling :dox:`FormattedFile#atEnd`.
 
 .. includefrags:: demos/tutorial/base_io/example1.cpp
    :fragment: records
@@ -144,11 +136,11 @@ Error handling in SeqAn is implemented by means of exceptions.
 I/O Errors
 """"""""""
 
-All :dox:`SmartFile#SmartFile FileIn` and :dox:`SmartFile#SmartFile FileOut` constructors and functions throw exceptions of type :dox:`IOError` to signal *low-level* file I/O errors.
+All :dox:`FormattedFile#FormattedFile FormattedFileIn` and :dox:`FormattedFile#FormattedFile FormattedFileOut` constructors and functions throw exceptions of type :dox:`IOError` to signal *low-level* file I/O errors.
 Therefore, it is sufficient to catch these exceptions to handle I/O errors properly.
 
 There is only one exception to this rule.
-Function :dox:`SmartFile#open` returns a ``bool`` to indicate whether the file was opened successfully or not.
+Function :dox:`FormattedFile#open` returns a ``bool`` to indicate whether the file was opened successfully or not.
 
 
 Assignment 1
@@ -171,7 +163,7 @@ Assignment 1
 Format Errors
 """""""""""""
 
-Classes of types :dox:`SmartFile FileIn` throw exceptions of type :dox:`ParseError` to signal *high-level* input file format errors.
+Classes of types :dox:`FormattedFileIn` throw exceptions of type :dox:`ParseError` to signal *high-level* input file format errors.
 
 
 Assignment 2
@@ -194,13 +186,13 @@ Assignment 2
 Streams
 -------
 
-The :dox:`SmartFile#SmartFile FileIn` and :dox:`SmartFile#SmartFile FileOut constructors` accept not only filenames, but also standard C++ streams, or any other class implementing the :dox:`StreamConcept Stream` concept.
-For instance, you can pass `std::cin` to any :dox:`SmartFile#SmartFile FileIn constructor` and `std::cout` to any :dox:`SmartFile#SmartFile FileOut constructor`.
+The :dox:`FormattedFile#FormattedFile FormattedFileIn` and :dox:`FormattedFile#FormattedFile FormattedFileOut` constructors accept not only filenames, but also standard C++ streams, or any other class implementing the :dox:`StreamConcept Stream` concept.
+For instance, you can pass `std::cin` to any :dox:`FormattedFile#FormattedFile FormattedFileIn constructor` and `std::cout` to any :dox:`FormattedFile#FormattedFile FormattedFileOut constructor`.
 
 .. note::
 
-    When writing to `std::cout`, classes of type :dox:`SmartFile FileOut` cannot guess the file format from the filename extension.
-    Therefore, the file format has to be specified explicitly by providing a tag, e.g. :dox:`Sam` or :dox:`Bam`.
+    When writing to `std::cout`, classes of type :dox:`FormattedFileOut` cannot guess the file format from the filename extension.
+    Therefore, the file format has to be specified explicitly by providing a tag, e.g. :dox:`FileFormats#Sam` or :dox:`FileFormats#Bam`.
 
 Assignment 3
 """"""""""""
@@ -222,7 +214,7 @@ Assignment 3
 Next Steps
 ----------
 
-If you want, you can now have a look at the API documentation of the :dox:`StreamConcept` concept as well as the documentation of the :dox:`SmartFile` class.
+If you want, you can now have a look at the API documentation of the :dox:`FormattedFile` class.
 
 You can now read the tutorials for **already supported file formats**:
 

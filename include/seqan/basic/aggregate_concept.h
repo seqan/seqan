@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -47,11 +47,11 @@ namespace seqan {
 
 /*!
  * @concept AggregateConcept
- * 
+ *
  * @brief Aggregate types contain a fixed number of fixed-size values (pairs, triples, tuples).
- * 
+ *
  * Stream output operators are not shown in the function list below, but required.
- * 
+ *
  * Comparison operators are not shown in the function list below, but required.
  */
 

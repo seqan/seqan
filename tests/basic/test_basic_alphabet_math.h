@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_math_min_value)
 SEQAN_DEFINE_TEST(test_basic_alphabet_math_max_value)
 {
     using namespace seqan;
-    
+
     SEQAN_ASSERT_EQ(maxValue<MyNumber_>().value, 1);
     SEQAN_ASSERT_EQ(maxValue(MyNumber_()).value,  1);
 }

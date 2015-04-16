@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 test_alignment_algorithms_global_banded.h
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -393,7 +393,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_affine_banded)
         assignSource(row(align, 1), strV);
 
         int score = globalAlignment(align, scoringScheme, alignConfig, -3, 2, Gotoh());
-    //		 std::cerr << align << "\n";
+    //         std::cerr << align << "\n";
 
         SEQAN_ASSERT_EQ(score, 2);
 

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -117,6 +117,9 @@ public:
     typedef typename Position<Gaps>::Type      TPosition_;
     typedef typename Value<Gaps>::Type         TValue_;
 
+    typedef typename RemoveReference<typename RemoveConst<TSource>::Type>::Type TSourceNoConstNoRef;
+    typedef TSourceNoConstNoRef const & TSourceConstRef;
+
     // -----------------------------------------------------------------------
     // Member Variables
     // -----------------------------------------------------------------------
@@ -154,7 +157,7 @@ public:
         data_cutBegin(0),
         data_cutEnd(0),
         data_viewCutBegin(0),
-        data_viewCutEnd(0)        
+        data_viewCutEnd(0)
     {
     }
 
@@ -167,66 +170,8 @@ public:
     {
     }
 
-    // Note: We need the variants with the first parameter "TSource const &" here because TSource can be a Segment which
-    // is often given as a temporary.
-
-    Gaps(TSource & source, TGapAnchors & anchors) :
-        data_source(source), 
-        data_gaps(anchors),
-        data_cutBegin(0),
-        data_cutEnd(0),
-        data_viewCutBegin(0),
-        data_viewCutEnd(0)        
-    {
-    }
-
-    Gaps(TSource & source, TGapAnchors const & anchors) :
-        data_source(source), 
-        data_gaps(anchors),
-        data_cutBegin(0),
-        data_cutEnd(0),
-        data_viewCutBegin(0),
-        data_viewCutEnd(0)
-    {
-    }
-
-    // TODO(holtgrew): These constructors are only here because of const-Holder issues.
-
-    template <typename TSource2>
-    Gaps(TSource2 & source, TGapAnchors & anchors) :
-        data_source(source), 
-        data_gaps(anchors), 
-        data_cutBegin(0),
-        data_cutEnd(0),
-        data_viewCutBegin(0),
-        data_viewCutEnd(0)
-    {
-    }
-
-    template <typename TSource2>
-    Gaps(TSource2 & source, TGapAnchors const & anchors) :
-        data_source(source), 
-        data_gaps(anchors),
-        data_cutBegin(0),
-        data_cutEnd(0),
-        data_viewCutBegin(0),
-        data_viewCutEnd(0)
-    {
-    }
-
-    template <typename TSource2>
-    Gaps(TSource2 const & source, TGapAnchors & anchors) :
-        data_source(source),
-        data_gaps(anchors), 
-        data_cutBegin(0),
-        data_cutEnd(0),
-        data_viewCutBegin(0),
-        data_viewCutEnd(0)
-    {
-    }
-
-    template <typename TSource2>
-    Gaps(TSource2 const & source, TGapAnchors const & anchors) :
+    // everybody has const & constructors
+    Gaps(TSourceNoConstNoRef const & source, TGapAnchors & anchors) :
         data_source(source),
         data_gaps(anchors),
         data_cutBegin(0),
@@ -234,6 +179,41 @@ public:
         data_viewCutBegin(0),
         data_viewCutEnd(0)
     {
+    }
+
+    Gaps(TSourceNoConstNoRef const & source, TGapAnchors const & anchors) :
+        data_source(source),
+        data_gaps(anchors),
+        data_cutBegin(0),
+        data_cutEnd(0),
+        data_viewCutBegin(0),
+        data_viewCutEnd(0)
+    {
+    }
+
+    // if source is not const & (but possibly const) there are also regular & constructors
+    Gaps(TSourceNoConstNoRef & source, TGapAnchors & anchors,
+         SEQAN_CTOR_DISABLE_IF(IsSameType<TSource, TSourceConstRef>)) :
+        data_source(source),
+        data_gaps(anchors),
+        data_cutBegin(0),
+        data_cutEnd(0),
+        data_viewCutBegin(0),
+        data_viewCutEnd(0)
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
+
+    Gaps(TSourceNoConstNoRef & source, TGapAnchors const & anchors,
+        SEQAN_CTOR_DISABLE_IF(IsSameType<TSource, TSourceConstRef>)) :
+        data_source(source),
+        data_gaps(anchors),
+        data_cutBegin(0),
+        data_cutEnd(0),
+        data_viewCutBegin(0),
+        data_viewCutEnd(0)
+    {
+        ignoreUnusedVariableWarning(dummy);
     }
 
     // -----------------------------------------------------------------------
@@ -744,11 +724,11 @@ assignSource(Gaps<TSequence, AnchorGaps<TGapAnchor> > & gaps, TSequence2 const &
  * typedef typename Value<TContigStore>::Type                           TContig;
  * typedef typename TFragmentStore::TContigSeq                          TContigSeq;
  * typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> > TContigGaps;
- * 
+ *
  * typedef typename TFragmentStore::TAlignedReadStore                   TAlignedReadStore;
  * typedef typename Value<TAlignedReadStore>::Type                      TAlignedRead;
  * typedef typename TAlignedRead::TPos                                  TAlignedReadPos;
- * 
+ *
  * unsigned contigId = alignedReadStore[idx].contigId;
  * TContigGaps contigGaps(contigStore[contigId].seq, contigStore[contigId].gaps);
  * TAlignedRead const & alignedRead = alignedReadStore[idx];
@@ -763,11 +743,11 @@ assignSource(Gaps<TSequence, AnchorGaps<TGapAnchor> > & gaps, TSequence2 const &
  * typedef typename TFragmentStore::TContigStore                        TContigStore;
  * typedef typename Value<TContigStore>::Type                           TContig;
  * typedef Gaps<Nothing, AnchorGaps<typename TContig::TGapAnchors> > TContigGaps;
- * 
+ *
  * typedef typename TFragmentStore::TAlignedReadStore                   TAlignedReadStore;
  * typedef typename Value<TAlignedReadStore>::Type                      TAlignedRead;
  * typedef typename TAlignedRead::TPos                                  TAlignedReadPos;
- * 
+ *
  * unsigned contigId = alignedReadStore[idx].contigId;
  * TContigGaps contigGaps(Nothing(), contigStore[contigId].gaps);
  * TAlignedRead const & alignedRead = alignedReadStore[idx];
@@ -840,7 +820,7 @@ positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
  * typedef typename Value<TContigStore>::Type                           TContig;
  * typedef typename TFragmentStore::TContigSeq                          TContigSeq;
  * typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> > TContigGaps;
- * 
+ *
  * TContigGaps contigGaps(contigStore[contigId].seq, contigStore[contigId].gaps);
  * TAlignedReadPos pos = positionGapToSeq(contigGaps, 33);
  * @endcode
@@ -851,7 +831,7 @@ positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
  * typedef typename TFragmentStore::TContigStore                        TContigStore;
  * typedef typename Value<TContigStore>::Type                           TContig;
  * typedef Gaps<Nothing, AnchorGaps<typename TContig::TGapAnchors> > TContigGaps;
- * 
+ *
  * TContigGaps contigGaps(Nothing(), contigStore[contigId].gaps);
  * TAlignedReadPos endPos = positionGapToSeq(contigGaps, 33);
  * @endcode

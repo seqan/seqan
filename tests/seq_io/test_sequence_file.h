@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -107,7 +107,8 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_recognize_file_format_text_fastq)
 // Test reading with different interfaces.
 // ---------------------------------------------------------------------------
 
-SEQAN_DEFINE_TEST(test_seq_io_sequence_file_read_record_text_fasta)
+template <typename TId, typename TSeq>
+void testSeqIOSequenceFileReadRecordTextFasta()
 {
     // Build path to file.
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
@@ -117,8 +118,8 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_read_record_text_fasta)
     SeqFileIn seqIO(toCString(filePath));
 
     // Check that the file type and format are set correctly.
-    seqan::CharString id;
-    seqan::Dna5String seq;
+    TId id;
+    TSeq seq;
 
     readRecord(id, seq, seqIO);
     SEQAN_ASSERT_EQ(id, "seq1");
@@ -133,6 +134,14 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_read_record_text_fasta)
     SEQAN_ASSERT_EQ(seq, "CCCCCCCC");
 
     SEQAN_ASSERT(atEnd(seqIO));
+}
+
+SEQAN_DEFINE_TEST(test_seq_io_sequence_file_read_record_text_fasta)
+{
+    testSeqIOSequenceFileReadRecordTextFasta<seqan::CharString, seqan::Dna5String>();
+    testSeqIOSequenceFileReadRecordTextFasta<std::string, std::string>();
+    testSeqIOSequenceFileReadRecordTextFasta<std::string, seqan::Dna5String>();
+    testSeqIOSequenceFileReadRecordTextFasta<seqan::CharString, std::string>();
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_read_all_text_fasta)

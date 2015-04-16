@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1002,7 +1002,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_nw)
     TStringSet strings;
     appendValue(strings, strH);
     appendValue(strings, strV);
-    
+
     TAlign refAlign(strings);
 
     TGaps refGapsH(strH);
@@ -1031,7 +1031,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_nw)
         res1 = globalAlignment(align, scoringScheme, -2, 2, NeedlemanWunsch());
         SEQAN_ASSERT_EQ(res1, refRes);
         SEQAN_ASSERT(align == refAlign);
-        
+
         TGaps gapsH(strH), gapsV(strV);
         res1 = globalAlignment(gapsH, gapsV, scoringScheme, -2, 2, NeedlemanWunsch());
         SEQAN_ASSERT_EQ(res1, refRes);
@@ -1058,7 +1058,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_nw)
         res1 = globalAlignment(align, scoringScheme, alignConfig, -2, 2);
         SEQAN_ASSERT_EQ(res1, refRes);
         SEQAN_ASSERT(align == refAlign);
-        
+
         TGaps gapsH(strH), gapsV(strV);
         res1 = globalAlignment(gapsH, gapsV, scoringScheme, alignConfig, -2, 2);
         SEQAN_ASSERT_EQ(res1, refRes);
@@ -1085,7 +1085,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_nw)
         res1 = globalAlignment(align, scoringScheme, -2, 2);
         SEQAN_ASSERT_EQ(res1, refRes);
         SEQAN_ASSERT(align == refAlign);
-        
+
         TGaps gapsH(strH), gapsV(strV);
         res1 = globalAlignment(gapsH, gapsV, scoringScheme, -2, 2);
         SEQAN_ASSERT_EQ(res1, refRes);
@@ -1126,7 +1126,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_gotoh)
     TStringSet strings;
     appendValue(strings, strH);
     appendValue(strings, strV);
-    
+
     TAlign refAlign(strings);
 
     TGaps refGapsH(strH);
@@ -1155,7 +1155,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_gotoh)
         res1 = globalAlignment(align, scoringScheme, -2, 2, Gotoh());
         SEQAN_ASSERT_EQ(res1, refRes);
         SEQAN_ASSERT(align == refAlign);
-        
+
         TGaps gapsH(strH), gapsV(strV);
         res1 = globalAlignment(gapsH, gapsV, scoringScheme, -2, 2, Gotoh());
         SEQAN_ASSERT_EQ(res1, refRes);
@@ -1182,7 +1182,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_gotoh)
         res1 = globalAlignment(align, scoringScheme, alignConfig, -2, 2);
         SEQAN_ASSERT_EQ(res1, refRes);
         SEQAN_ASSERT(align == refAlign);
-        
+
         TGaps gapsH(strH), gapsV(strV);
         res1 = globalAlignment(gapsH, gapsV, scoringScheme, alignConfig, -2, 2);
         SEQAN_ASSERT_EQ(res1, refRes);
@@ -1209,7 +1209,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_gotoh)
         res1 = globalAlignment(align, scoringScheme, -2, 2);
         SEQAN_ASSERT_EQ(res1, refRes);
         SEQAN_ASSERT(align == refAlign);
-        
+
         TGaps gapsH(strH), gapsV(strV);
         res1 = globalAlignment(gapsH, gapsV, scoringScheme, -2, 2);
         SEQAN_ASSERT_EQ(res1, refRes);

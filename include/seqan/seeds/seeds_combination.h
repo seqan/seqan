@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -311,7 +311,7 @@ _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
     // std::cout << "Merging chained seeds " << seed << " and " << other << std::endl;
     SEQAN_ASSERT_LEQ_MSG(beginPositionH(seed), beginPositionH(other), "Monotony in both dimensions required for merging.");
     SEQAN_ASSERT_LEQ_MSG(beginPositionV(seed), beginPositionV(other), "Monotony in both dimensions required for merging.");
-    
+
     _updateSeedsScoreMerge(seed, other);
 
     // Remove diagonals.

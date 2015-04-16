@@ -5079,14 +5079,8 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
     setShortDescription(parser, "Parallel and automatic read error correction");
     setCategory(parser, "Error Correction");
 
-    std::string version = PROGRAM_VERSION;
-#ifdef SEQAN_REVISION
-    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
-#ifdef SEQAN_DATE
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
-    setVersion(parser, version);
 
     // Define usage line and long description.
     addUsageLine(parser,

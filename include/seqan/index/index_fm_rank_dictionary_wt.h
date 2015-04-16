@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -70,18 +70,18 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
 /*!
  * @defgroup WaveletTreeFibres WaveletTree Fibres
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link WaveletTree @endlink.
- * 
+ *
  * These tags can be used to get @link Fibre Fibres @endlink of a @link WaveletTree @endlink.
  *
  * @see Fibre
  * @see Index#getFibre
- * 
+ *
  * @tag WaveletTreeFibres#FibreTreeStructure
  * @brief The wavelet tree structure of the wavelet tree.
- * 
+ *
  * @tag WaveletTreeFibres#FibreRanks
  * @brief A string set containing a rank support bit string for each node in the tree.
- * 
+ *
  */
 
 // ----------------------------------------------------------------------------
@@ -92,15 +92,15 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
  * @class WaveletTree
  * @extends RankDictionary
  * @headerfile <seqan/index.h>
- * 
+ *
  * @brief A WaveletTree is a hierarchical @link RankDictionary @endlink.
- * 
+ *
  * @signature template <typename TValue, typename TSpec, typename TConfig>
  *            class RankDictionary<TValue, WaveletTree<TSpec, TConfig> >;
- * 
+ *
  * @tparam TValue The alphabet type of the wavelet tree.
  * @tparam TSpec A tag for specialization purposes. Default: <tt>void</tt>
- * 
+ *
  * The nodes of a wavelet tree consist of a bit string as well as a character c.
  * In each level of the tree, characters smaller than c are represented as a 0
  * while character greater or equal to c are represented with a 1. The
@@ -115,7 +115,8 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
 template <typename TValue, typename TSpec, typename TConfig>
 struct Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreRanks>
 {
-    typedef String<RankDictionary<bool, Levels<TSpec, TConfig> > > Type;
+    // TODO(esiragusa): use String and investigate issues with open/save() and valgrind.
+    typedef StringSet<RankDictionary<bool, Levels<TSpec, TConfig> > > Type;
 };
 
 template <typename TValue, typename TSpec, typename TConfig>
@@ -245,7 +246,7 @@ inline TValue getValue(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & di
         TPos rank1 = getRank(dict.ranks[treePos], pos);
         if (getValue(dict.ranks[treePos], pos))
         {
-            character = getCharacter(iter); 
+            character = getCharacter(iter);
             pos = rank1 - 1;  // -1 because strings start at 0
             if (!goRightChild(iter))
                 break;
@@ -346,7 +347,7 @@ inline void _fillStructure(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > 
 
         while (true)
         {
-            // decide whether the character is smaller then the pivot element of the current node 
+            // decide whether the character is smaller then the pivot element of the current node
             if (ordGreater(getCharacter(it), value(textIt)))
             {
                 // TODO(esiragusa): use resize() & setValue() instead of appendValue().

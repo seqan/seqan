@@ -1,7 +1,7 @@
 // ==========================================================================
 //                    test_alignment_dp_matrix_navigator.h
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1320,7 +1320,7 @@ void testAlignmentDPScoreMatrixNavigatorContainer(TDPMatrixSpec const)
 
 
 // ----------------------------------------------------------------------------
-// Test constructor								  [DPScoreMatrix, FullDPMatrix]
+// Test constructor                                  [DPScoreMatrix, FullDPMatrix]
 // ----------------------------------------------------------------------------
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_constructor)
@@ -1329,7 +1329,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_construct
 }
 
 // ----------------------------------------------------------------------------
-// Test functions								  [DPScoreMatrix, FullDPMatrix]
+// Test functions                                  [DPScoreMatrix, FullDPMatrix]
 // ----------------------------------------------------------------------------
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_init_unbanded)
@@ -1383,7 +1383,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_container
 }
 
 // ----------------------------------------------------------------------------
-// Test constructor								[DPScoreMatrix, SparseDPMatrix]
+// Test constructor                                [DPScoreMatrix, SparseDPMatrix]
 // ----------------------------------------------------------------------------
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_constructor)
@@ -1392,7 +1392,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_constru
 }
 
 // ----------------------------------------------------------------------------
-// Test functions								[DPScoreMatrix, SparseDPMatrix]
+// Test functions                                [DPScoreMatrix, SparseDPMatrix]
 // ----------------------------------------------------------------------------
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_init_unbanded)
@@ -1446,7 +1446,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_contain
 }
 
 // ----------------------------------------------------------------------------
-// Test constructor								  [DPTraceMatrix, FullDPMatrix]
+// Test constructor                                  [DPTraceMatrix, FullDPMatrix]
 // ----------------------------------------------------------------------------
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_constructor)
@@ -1456,7 +1456,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_constructor)
 }
 
 // ----------------------------------------------------------------------------
-// Test functions								  [DPTraceMatrix, FullDPMatrix]
+// Test functions                                  [DPTraceMatrix, FullDPMatrix]
 // ----------------------------------------------------------------------------
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_unbanded)

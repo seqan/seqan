@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -152,6 +152,14 @@ SEQAN_CHECKPOINT
         assign(*this, source);
         return *this;
     }
+#if defined(SEQAN_CXX11_STANDARD) && (!defined(_MSC_VER) || _MSC_VER >= 1800)
+    template<typename T> explicit operator T () const
+    {
+        T temp_copy;
+        assign(temp_copy, *this);
+        return temp_copy;
+    }
+#endif
 //____________________________________________________________________________
 
 public:

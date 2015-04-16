@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
@@ -60,6 +60,7 @@ struct IndexSa {};
 /*!
  * @class IndexSa
  * @extends Index
+ * @implements StringTrieConcept
  * @headerfile <seqan/index.h>
  * @brief An index based on a suffix array.
  * @signature template <typename TText, typename TSpec>
@@ -99,6 +100,13 @@ public:
         text(_text)
     {}
 };
+
+template <typename TText, typename TSpec>
+SEQAN_CONCEPT_IMPL((Index<TText, IndexSa<TSpec> >), (StringTrieConcept));
+
+template <typename TText, typename TSpec>
+SEQAN_CONCEPT_IMPL((Index<TText, IndexSa<TSpec> > const), (StringTrieConcept));
+
 
 template <typename TSize, typename TAlphabet>
 struct VertexSA : public VertexEsa<TSize>
@@ -173,7 +181,7 @@ struct EdgeLabel<Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > >
 template < typename TText, typename TIndexSpec >
 struct DefaultFinder< Index<TText, IndexSa<TIndexSpec> > >
 {
-    typedef FinderMlr Type;	// standard suffix array finder is mlr-heuristic
+    typedef FinderMlr Type;    // standard suffix array finder is mlr-heuristic
 };
 
 
@@ -387,7 +395,7 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
     {
         value(it).range.i2 = saRange.i2;
     }
-    
+
     // Update child repLen, lastChar.
     value(it).repLen++;
     value(it).lastChar = cLeft;
@@ -578,7 +586,7 @@ inline typename VertexDescriptor<Index<TText, IndexSa<TIndexSpec> > >::Type
 nodeUp(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec> > > > const & it)
 {
     typedef Index<TText, IndexSa<TIndexSpec> > TIndex;
-    
+
     if (!empty(it.history))
     {
         typename VertexDescriptor<TIndex>::Type desc;
@@ -669,7 +677,7 @@ template <typename TObject, typename TSpec>
 inline bool save(Index<TObject, IndexSa<TSpec> > & index, const char * fileName, int openMode)
 {
     String<char> name;
-    
+
     name = fileName;    append(name, ".txt");
     if ((!save(getFibre(index, FibreText()), toCString(name), openMode)) &&
         (!save(getFibre(index, FibreText()), fileName, openMode))) return false;

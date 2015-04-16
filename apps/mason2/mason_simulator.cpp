@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1046,7 +1046,7 @@ public:
 
             // Write out header.
             seqan::BamFileOut & bamFileOut = *outBamStream;
-            writeRecord(bamFileOut, alignmentJoiner->header);
+            writeHeader(bamFileOut, alignmentJoiner->header);
 
             SamJoiner & joiner = *alignmentJoiner.get();  // Shortcut
             seqan::BamAlignmentRecord record;
@@ -1125,7 +1125,7 @@ public:
         }
         // Write out header to each output BAM file.
         for (unsigned i = 0; i < alignmentSplitter.files.size(); ++i)
-            writeRecord(*bamFileOuts[i], bamHeader);
+            writeHeader(*bamFileOuts[i], bamHeader);
     }
 
     // Configure contigPicker.

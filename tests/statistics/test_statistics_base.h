@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -41,13 +41,13 @@
 
 SEQAN_DEFINE_TEST(test_statistics_statistics)
 {
-	using namespace seqan;
+    using namespace seqan;
 
-	typedef Dna TAlphabet;
-	typedef String<TAlphabet> TSequence;
+    typedef Dna TAlphabet;
+    typedef String<TAlphabet> TSequence;
 
-	TSequence str2 = "CCCAAAGC";
-	TSequence str3 = "CCCAAAGTAAATT";
+    TSequence str2 = "CCCAAAGC";
+    TSequence str3 = "CCCAAAGTAAATT";
 
     TSequence str1a =
             "AGAAGCCTCAGATGAGGAGGGTTTTGCTGTGTGCTGCAAGTATCAGGGAGAAAGCATTTCTGCCCTCTCT"
@@ -89,7 +89,7 @@ SEQAN_DEFINE_TEST(test_statistics_statistics)
             "TACAGAAACTTTCTGTTCCAAATGTGTTGCTTTGTGTATTTTATAATACAGATACTACATTGTAAACATT"
             "TCCATTGTTTTATGATTTAGCCAGTGATTCCCCAAAGCAGCCTCTTAGTGTTTTAATATATTAATAACTG"
             "TTTTGTTAAAAATGATCATAGTGAATTTAAATCTTCACATGATCACCTATTTGAATAAGCAA";
-	TSequence str1b =
+    TSequence str1b =
             "TGAGGACCTCAGATGAGGAGGGTTTTGCTGTAAACAAGTATCAGGGAGAAAGCATTTCTGCCCTCTCTGC"
             "TGTGTGCTGCAAGTACTTCATCCCTGTAATGATATTGTTTGAATTTTCCATGAAAAATTGTCAGCATGAG"
             "AGTAAGAAAAGTGTACGATGGGAAAATATTGAACCAAACAGACAAAAATGGTAGAGTCACATGACCAGTT"
@@ -122,7 +122,7 @@ SEQAN_DEFINE_TEST(test_statistics_statistics)
             "TCTGTAGATATTTCAGTCCATATAAAATAATACATCTTTACTAAACTTATATAAGGGGAGAGAAGTTTAC"
             "AAGGTAGTCTGGGATTACTAACAAAATAAACAAGAGCCTTTCTAGATAAATGTGTCCATATGCCAGTGCG"
             "GTTTAGGTCTTATTCAAGACACAAGTCATTACTT";
-	TSequence str1c =
+    TSequence str1c =
             "CATGGTGTGAACTTCATCCCTGTAATGATATTGTTTGAATTTTCCATGAAAAATTGTCAGCATGAGAGTA"
             "AGAAAAGTGTACGATGGGAAAATATTGAACCAAACAGACAAAAATGGTAGAGTCACATGACCAGTTTACT"
             "CATTGGTAAAGTTAATGAGAGGGTGAGATTAAACAGAAATTGGTAAAGTTAATGAGAGGGTGAGATTAAA"
@@ -155,24 +155,24 @@ SEQAN_DEFINE_TEST(test_statistics_statistics)
             "AAGGACAATCAGACATAATGCAGAGTTAAGTAGTATTTGCTTAAAATTCA"
             ;
 
-	MarkovModel<TAlphabet> mm(3);
-	MarkovModel<TAlphabet> mmNew(1);
+    MarkovModel<TAlphabet> mm(3);
+    MarkovModel<TAlphabet> mmNew(1);
 
 
     std::string buffer = SEQAN_PATH_TO_ROOT();
     buffer +="/tests/statistics/zscore_human_mm.3";
-	FILE *fd = fopen(buffer.c_str(), "r");
-	read(fd, mm);
-	fclose(fd);
-	StringSet<TSequence> X;
-	appendValue(X, str1a);
+    FILE *fd = fopen(buffer.c_str(), "r");
+    read(fd, mm);
+    fclose(fd);
+    StringSet<TSequence> X;
+    appendValue(X, str1a);
     appendValue(X, str1b);
-	appendValue(X, str1c);
+    appendValue(X, str1c);
 
-	StringSet<TSequence> W;
-	appendValue(W,str2);
-	appendValue(W,str3);
-	buildMarkovModel(mmNew,X);
+    StringSet<TSequence> W;
+    appendValue(W,str2);
+    appendValue(W,str3);
+    buildMarkovModel(mmNew,X);
 
     double x=zscore(W, X, mm, AhoCorasick());
     double x2=zscore(W, X, mmNew, AhoCorasick());

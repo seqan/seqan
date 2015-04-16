@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -101,7 +101,7 @@ class Overlap_
 public:
     // Value for invalid entry below.
     static const unsigned INVALID = (unsigned)-1;
-    
+
     // Identifiers of the sequence.
     unsigned seq0;
     unsigned seq1;
@@ -118,7 +118,7 @@ public:
     Overlap_() : seq0(INVALID), seq1(INVALID), len0(INVALID), len1(INVALID), begin0(INVALID), begin1(INVALID),
                  errors(INVALID)
     {}
-    
+
     Overlap_(unsigned seq0, unsigned seq1, unsigned len0, unsigned len1, unsigned begin0, unsigned begin1,
              unsigned errors = INVALID) :
             seq0(seq0), seq1(seq1), len0(len0), len1(len1), begin0(begin0), begin1(begin1), errors(errors)

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -111,7 +111,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna)
     SEQAN_ASSERT_EQ(minValue(Dna()), Dna('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
-    
+
     SEQAN_ASSERT_EQ(ordValue(Dna('A')), 0);
     SEQAN_ASSERT_EQ(ordValue(Dna('C')), 1);
     SEQAN_ASSERT_EQ(ordValue(Dna('G')), 2);
@@ -142,7 +142,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5)
     SEQAN_ASSERT_EQ(minValue(Dna5()), Dna5('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
-    
+
     SEQAN_ASSERT_EQ(ordValue(Dna5('A')), 0);
     SEQAN_ASSERT_EQ(ordValue(Dna5('C')), 1);
     SEQAN_ASSERT_EQ(ordValue(Dna5('G')), 2);
@@ -154,7 +154,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5)
     SEQAN_ASSERT_EQ(valueSize<Dna5>(), 5u);
 
     // Alphabet With Unknown Value Concept Metafunctions / Type Queries
-    
+
     SEQAN_ASSERT_EQ(unknownValue<Dna5>(), Dna5('N'));
 }
 
@@ -178,7 +178,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna_q)
     SEQAN_ASSERT_EQ(minValue(DnaQ()), DnaQ('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
-    
+
     SEQAN_ASSERT_EQ(ordValue(DnaQ('A')), 0);
     SEQAN_ASSERT_EQ(ordValue(DnaQ('C')), 1);
     SEQAN_ASSERT_EQ(ordValue(DnaQ('G')), 2);
@@ -214,7 +214,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5_q)
     SEQAN_ASSERT_EQ(minValue(Dna5Q()), Dna5Q('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
-    
+
     SEQAN_ASSERT_EQ(ordValue(Dna5Q('A')), 0);
     SEQAN_ASSERT_EQ(ordValue(Dna5Q('C')), 1);
     SEQAN_ASSERT_EQ(ordValue(Dna5Q('G')), 2);
@@ -226,7 +226,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5_q)
     SEQAN_ASSERT_EQ(valueSize<Dna5Q>(), 5u);
 
     // Alphabet With Unknown Value Concept Metafunctions / Type Queries
-    
+
     SEQAN_ASSERT_EQ(unknownValue<Dna5Q>(), Dna5Q('N'));
 
     // Alphabet With Qualities Concept Metafunctions / Type Queries
@@ -255,7 +255,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_rna)
     SEQAN_ASSERT_EQ(minValue(Rna()), Rna('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
-    
+
     SEQAN_ASSERT_EQ(ordValue(Rna('A')), 0);
     SEQAN_ASSERT_EQ(ordValue(Rna('C')), 1);
     SEQAN_ASSERT_EQ(ordValue(Rna('G')), 2);
@@ -286,7 +286,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_rna5)
     SEQAN_ASSERT_EQ(minValue(Rna5()), Rna5('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
-    
+
     SEQAN_ASSERT_EQ(ordValue(Rna5('A')), 0);
     SEQAN_ASSERT_EQ(ordValue(Rna5('C')), 1);
     SEQAN_ASSERT_EQ(ordValue(Rna5('G')), 2);
@@ -298,7 +298,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_rna5)
     SEQAN_ASSERT_EQ(valueSize<Rna5>(), 5u);
 
     // Alphabet With Unknown Value Concept Metafunctions / Type Queries
-    
+
     SEQAN_ASSERT_EQ(unknownValue<Rna5>(), Rna5('N'));
 }
 
@@ -341,7 +341,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_iupac)
     SEQAN_ASSERT_EQ(valueSize<Iupac>(), 16u);
 
     // Alphabet With Unknown Value Concept Metafunctions / Type Queries
-    
+
     SEQAN_ASSERT_EQ(unknownValue<Iupac>(), Iupac('N'));
 }
 
@@ -365,7 +365,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_amino_acid)
     SEQAN_ASSERT_EQ(minValue(AminoAcid()), AminoAcid('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
-    
+
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('A')), 0);
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('B')), 1);
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('C')), 2);
@@ -392,13 +392,13 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_amino_acid)
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('Z')), 23);
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('X')), 24);
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('*')), 25);
-    
+
     SEQAN_ASSERT(+(SameType_<typename ValueSize<AminoAcid>::Type, __uint8>::VALUE));
     SEQAN_ASSERT_EQ(+ValueSize<AminoAcid>::VALUE, 26);
     SEQAN_ASSERT_EQ(valueSize<AminoAcid>(), 26u);
 
     // Alphabet With Unknown Value Concept Metafunctions / Type Queries
-    
+
     SEQAN_ASSERT_EQ(unknownValue<AminoAcid>(), AminoAcid('X'));
 }
 
@@ -448,23 +448,23 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_dna)
     // Test Relations, Same Type
     {
         Dna c = 'C', c2 = 'C', t = 'T';
-        
+
         SEQAN_ASSERT(c == c2);
         SEQAN_ASSERT_NOT(c == t);
-        
+
         SEQAN_ASSERT(c != t);
         SEQAN_ASSERT_NOT(c != c2);
-        
+
         SEQAN_ASSERT_NOT(c < c2);
         SEQAN_ASSERT(c < t);
-        
+
         SEQAN_ASSERT(c <= c2);
         SEQAN_ASSERT(c <= t);
         SEQAN_ASSERT_NOT(t <= c);
-        
+
         SEQAN_ASSERT_NOT(c > c2);
         SEQAN_ASSERT(t > c);
-        
+
         SEQAN_ASSERT(c >= c2);
         SEQAN_ASSERT(t >= c);
         SEQAN_ASSERT_NOT(c >= t);
@@ -500,23 +500,23 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_dna_q)
     // Test Relations, Same Type
     {
         DnaQ c = 'C', c2 = 'C', t = 'T';
-        
+
         SEQAN_ASSERT(c == c2);
         SEQAN_ASSERT_NOT(c == t);
-        
+
         SEQAN_ASSERT(c != t);
         SEQAN_ASSERT_NOT(c != c2);
-        
+
         SEQAN_ASSERT_NOT(c < c2);
         SEQAN_ASSERT(c < t);
-        
+
         SEQAN_ASSERT(c <= c2);
         SEQAN_ASSERT(c <= t);
         SEQAN_ASSERT_NOT(t <= c);
-        
+
         SEQAN_ASSERT_NOT(c > c2);
         SEQAN_ASSERT(t > c);
-        
+
         SEQAN_ASSERT(c >= c2);
         SEQAN_ASSERT(t >= c);
         SEQAN_ASSERT_NOT(c >= t);
@@ -552,23 +552,23 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_dna5)
     // Test Relations, Same Type
     {
         Dna5 c = 'C', c2 = 'C', t = 'T';
-        
+
         SEQAN_ASSERT(c == c2);
         SEQAN_ASSERT_NOT(c == t);
-        
+
         SEQAN_ASSERT(c != t);
         SEQAN_ASSERT_NOT(c != c2);
-        
+
         SEQAN_ASSERT_NOT(c < c2);
         SEQAN_ASSERT(c < t);
-        
+
         SEQAN_ASSERT(c <= c2);
         SEQAN_ASSERT(c <= t);
         SEQAN_ASSERT_NOT(t <= c);
-        
+
         SEQAN_ASSERT_NOT(c > c2);
         SEQAN_ASSERT(t > c);
-        
+
         SEQAN_ASSERT(c >= c2);
         SEQAN_ASSERT(t >= c);
         SEQAN_ASSERT_NOT(c >= t);
@@ -604,23 +604,23 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_dna5_q)
     // Test Relations, Same Type
     {
         Dna5Q c = 'C', c2 = 'C', t = 'T';
-        
+
         SEQAN_ASSERT(c == c2);
         SEQAN_ASSERT_NOT(c == t);
-        
+
         SEQAN_ASSERT(c != t);
         SEQAN_ASSERT_NOT(c != c2);
-        
+
         SEQAN_ASSERT_NOT(c < c2);
         SEQAN_ASSERT(c < t);
-        
+
         SEQAN_ASSERT(c <= c2);
         SEQAN_ASSERT(c <= t);
         SEQAN_ASSERT_NOT(t <= c);
-        
+
         SEQAN_ASSERT_NOT(c > c2);
         SEQAN_ASSERT(t > c);
-        
+
         SEQAN_ASSERT(c >= c2);
         SEQAN_ASSERT(t >= c);
         SEQAN_ASSERT_NOT(c >= t);
@@ -656,23 +656,23 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_rna)
     // Test Relations, Same Type
     {
         Rna c = 'C', c2 = 'C', u = 'u';
-        
+
         SEQAN_ASSERT(c == c2);
         SEQAN_ASSERT_NOT(c == u);
-        
+
         SEQAN_ASSERT(c != u);
         SEQAN_ASSERT_NOT(c != c2);
-        
+
         SEQAN_ASSERT_NOT(c < c2);
         SEQAN_ASSERT(c < u);
-        
+
         SEQAN_ASSERT(c <= c2);
         SEQAN_ASSERT(c <= u);
         SEQAN_ASSERT_NOT(u <= c);
-        
+
         SEQAN_ASSERT_NOT(c > c2);
         SEQAN_ASSERT(u > c);
-        
+
         SEQAN_ASSERT(c >= c2);
         SEQAN_ASSERT(u >= c);
         SEQAN_ASSERT_NOT(c >= u);
@@ -708,23 +708,23 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_rna5)
     // Test Relations, Same Type
     {
         Rna5 c = 'C', c2 = 'C', u = 'U';
-        
+
         SEQAN_ASSERT(c == c2);
         SEQAN_ASSERT_NOT(c == u);
-        
+
         SEQAN_ASSERT(c != u);
         SEQAN_ASSERT_NOT(c != c2);
-        
+
         SEQAN_ASSERT_NOT(c < c2);
         SEQAN_ASSERT(c < u);
-        
+
         SEQAN_ASSERT(c <= c2);
         SEQAN_ASSERT(c <= u);
         SEQAN_ASSERT_NOT(u <= c);
-        
+
         SEQAN_ASSERT_NOT(c > c2);
         SEQAN_ASSERT(u > c);
-        
+
         SEQAN_ASSERT(c >= c2);
         SEQAN_ASSERT(u >= c);
         SEQAN_ASSERT_NOT(c >= u);
@@ -760,23 +760,23 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_iupac)
     // Test Relations, Same Type
     {
         Iupac c = 'C', c2 = 'C', v = 'V';
-        
+
         SEQAN_ASSERT(c == c2);
         SEQAN_ASSERT_NOT(c == v);
-        
+
         SEQAN_ASSERT(c != v);
         SEQAN_ASSERT_NOT(c != c2);
-        
+
         SEQAN_ASSERT_NOT(c < c2);
         SEQAN_ASSERT(c < v);
-        
+
         SEQAN_ASSERT(c <= c2);
         SEQAN_ASSERT(c <= v);
         SEQAN_ASSERT_NOT(v <= c);
-        
+
         SEQAN_ASSERT_NOT(c > c2);
         SEQAN_ASSERT(v > c);
-        
+
         SEQAN_ASSERT(c >= c2);
         SEQAN_ASSERT(v >= c);
         SEQAN_ASSERT_NOT(c >= v);
@@ -817,23 +817,23 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_amino_acid)
     // Test Relations, Same Type
     {
         AminoAcid c = 'C', c2 = 'C', g = 'g';
-        
+
         SEQAN_ASSERT(c == c2);
         SEQAN_ASSERT_NOT(c == g);
-        
+
         SEQAN_ASSERT(c != g);
         SEQAN_ASSERT_NOT(c != c2);
-        
+
         SEQAN_ASSERT_NOT(c < c2);
         SEQAN_ASSERT(c < g);
-        
+
         SEQAN_ASSERT(c <= c2);
         SEQAN_ASSERT(c <= g);
         SEQAN_ASSERT_NOT(g <= c);
-        
+
         SEQAN_ASSERT_NOT(c > c2);
         SEQAN_ASSERT(g > c);
-        
+
         SEQAN_ASSERT(c >= c2);
         SEQAN_ASSERT(g >= c);
         SEQAN_ASSERT_NOT(c >= g);

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,8 +44,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /*!
  * @concept SegmentableConcept
+ * @extends ContainerConcept
  * @headerfile <seqan/sequence.h>
- * @brief A concept for sequences that can be used as the host of a @link Segment segment @endlink.
+ * @brief A concept for containers that can be used as the host of a @link Segment segment @endlink.
  *
  * @signature concept Segmentable;
  * @brief Returns prefix type in a infix fashion.
@@ -124,7 +125,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @tparam TSeq The segmentable sequence type to get suffix type for.
  * @return Type The suffix type.
- * 
+ *
  * The suffix type of a suffix is a suffix, the suffix of any other segment type is an infix.
  */
 
@@ -166,8 +167,8 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @snippet demos/sequence/segment.cpp basic operations
  *
- * You can get the type of the infix/prefix/suffix of a sequence using @link ContainerConcept#Infix @endlink,
- * @link ContainerConcept#Prefix @endlink, and @link ContainerConcept#Suffix @endlink.  These metafunctions will
+ * You can get the type of the infix/prefix/suffix of a sequence using @link SegmentableConcept#Infix @endlink,
+ * @link SegmentableConcept#Prefix @endlink, and @link SegmentableConcept#Suffix @endlink.  These metafunctions will
  * "flatten" the type such that using these metafunctions, the infix of an infix is an infix and not
  * an Infix Segment with an Infix Segment as its host.  Instead, it will again be an Infix Segment
  * of the host of the inner type.

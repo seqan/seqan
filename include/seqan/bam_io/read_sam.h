@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,10 +40,6 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -54,7 +50,7 @@ typedef Tag<Sam_> Sam;
 template <typename T>
 struct FileExtensions<Sam, T>
 {
-    static char const * VALUE[1];	// default is one extension
+    static char const * VALUE[1];    // default is one extension
 };
 
 template <typename T>
@@ -84,10 +80,6 @@ typedef Tag<SamHeader_> SamHeader;
 
 struct SamAlignment_;
 typedef Tag<SamAlignment_> SamAlignment;
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
 
 // ============================================================================
 // Functions
@@ -167,7 +159,7 @@ readRecord(BamHeaderRecord & record,
         SEQAN_THROW(ParseError("Unknown SAM header type!"));
 
     CharString &buffer = context.buffer;
-    
+
     if (record.type == BAM_HEADER_COMMENT)
     {
         skipOne(iter, IsTab());
@@ -208,7 +200,7 @@ readRecord(BamHeaderRecord & record,
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
-readRecord(BamHeader & header,
+readHeader(BamHeader & header,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            Sam const & tag)

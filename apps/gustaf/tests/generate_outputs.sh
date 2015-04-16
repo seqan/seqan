@@ -3,9 +3,9 @@
 # Output generation for variant_comp.
 
 # We use the current trunk version (r13805) for building the reference.
-GUSTAF="../../../../../build/debug/bin/gustaf"
-JOINMATES="../../../../../build/debug/bin/gustaf_mate_joining"
-STELLAR="../../../../../build/debug/bin/stellar"
+GUSTAF="../../../../build/debug/bin/gustaf"
+JOINMATES="../../../../build/debug/bin/gustaf_mate_joining"
+STELLAR="../../../../build/debug/bin/stellar"
 
 # ============================================================
 # Creating Stellar input files for paired-end mode using gustaf_mate_joining

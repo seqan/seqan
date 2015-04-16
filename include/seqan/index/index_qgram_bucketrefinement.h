@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -462,7 +462,7 @@ inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
         if (!_implantSa(it))
             return false;
     }
-    
+
     return goDown(it._bottomIterator);
 }
 

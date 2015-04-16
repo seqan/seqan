@@ -239,14 +239,8 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     setAppName(parser, "razers");
     setShortDescription(parser, "Fast Read Mapping with Sensitivity Control");
     setCategory(parser, "Read Mapping");
-#ifdef SEQAN_REVISION
-	setVersion(parser, "1.3 [" + std::string(SEQAN_REVISION) + "]");
-#else
-	setVersion(parser, "1.3");
-#endif
-#ifdef SEQAN_DATE
-	setDate(parser, SEQAN_DATE);
-#endif
+	setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());

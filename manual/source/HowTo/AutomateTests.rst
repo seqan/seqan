@@ -12,22 +12,30 @@ The dashboard lives at `the SeqAn CDash site <http://www.seqan.de/cdash/index.ph
 For Linux and Mac OS X
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Create ``~/Nightly`` where everything will take place and check out the trunk:
+Create ``~/Nightly`` where everything will take place and check out the GitHub repository:
 
 .. code-block:: console
 
     cd ~
     mkdir Nightly
     cd Nightly
-    svn co http://svn.seqan.de/seqan/trunk seqan-trunk
+    git clone https://github.com/seqan/seqan seqan-src
+
+.. hint::
+    
+    Use the following command to clone the branch:
+    
+    .. code-block:: console
+        
+        git clone -b develop https://github.com/seqan/seqan seqan-src 
 
 Now, get the build scripts:
 
 .. code-block:: console
 
-    cp seqan-trunk/misc/ctest/run_nightly.sh .
-    cp seqan-trunk/misc/ctest/Seqan_Nightly.cmake.example Seqan_Nightly.cmake
-    cp seqan-trunk/util/cmake/CTestConfig.cmake seqan-trunk/
+    cp seqan-src/misc/ctest/run_nightly.sh .
+    cp seqan-src/misc/ctest/Seqan_Nightly.cmake.example Seqan_Nightly.cmake
+    cp seqan-src/util/cmake/CTestConfig.cmake seqan-src/
 
 Adjust the build name and site name in ``Seqan_Nightly.cmake``.
 Now, test the setup by running:
@@ -60,15 +68,15 @@ Create ``Nightly`` in your home directory where everything will take place and c
     cd /D %HOME%
     mkdir Nightly
     cd Nightly
-    svn co http://svn.seqan.de/seqan/trunk seqan-trunk
+    git clone https://github.com/seqan/seqan seqan-src
 
 Now, get the build scripts:
 
 .. code-block:: console
 
-    copy seqan-trunk\misc\ctest\run_nightly.sh .
-    copy seqan-trunk\misc\ctest\Seqan_Nightly.cmake.example Seqan_Nightly.cmake
-    copy seqan-trunk\util\cmake\CTestConfig.cmake seqan-trunk\
+    copy seqan-src\misc\ctest\run_nightly.sh .
+    copy seqan-src\misc\ctest\Seqan_Nightly.cmake.example Seqan_Nightly.cmake
+    copy seqan-src\util\cmake\CTestConfig.cmake seqan-src\
 
 Adjust the build name and site name in ``Seqan_Nightly.cmake``.
 Now, test the setup by running:
@@ -91,20 +99,4 @@ Add ``run_nightly.bat`` to nightly Scheduled Tasks of Windows (analogously to th
    #.   In advanced properties, specify full command name. This is very important that you use double quotes in case you have space in your path.``
    #.   Select 'Ok, which will ask for password again.``
    #.   The new task should be created.``
-
-Sparse Checkouts
-~~~~~~~~~~~~~~~~
-
-This is only necessary/interesting if you are a developer with read permissions to more than *core*, *extras*, and your own sandbox.
-You can checkout only a subset of the directories in the repository using a Subversion feature called *sparse directories.*
-
-Also consult the `Subversion reference on sparse checkouts <http://svnbook.red-bean.com/en/1.5/svn.advanced.sparsedirs.html>`_.
-
-.. code-block:: console
-
-    #sh
-    svn co --depth immediates https://svn.seqan.de/seqan/trunk seqan-trunk-sparse
-    cd seqan-trunk-sparse
-    svn update --set-depth infinity build core docs extras misc util
-    svn update --set-depth files sandbox
 

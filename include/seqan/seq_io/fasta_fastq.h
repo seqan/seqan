@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,13 +39,6 @@
 #define SEQAN_SEQ_IO_FASTA_FASTQ_H_
 
 namespace seqan {
-
-/*!
- * @defgroup FastaFastqIO FASTA and FASTQ I/O
- * @brief
- */
-
-// TODO(holtgrew): Complete description of group.
 
 // ============================================================================
 // Tags
@@ -191,16 +184,17 @@ struct FastaIgnoreOrAssertFunctor_
 /*!
  * @class SequenceOutputOptions
  * @headerfile <seqan/seq_io.h>
+ * @signature struct SequenceOutputOptions
  * @brief Configuration for writing sequence (FASTA/FASTQ) files.
- * 
+ *
  * This struct is used for the configuration of writing out FASTA and FASTQ files.
- * 
+ *
  * @var int SequenceOutputOptions::lineLength;
  * @brief Length of the lines when writing out.
- * 
+ *
  * Set to <tt>-1</tt> for default behaviour (no line break for FASTQ, line length of 70 for FASTA) and <tt>0</tt> for
  * disabling line breaks.
- * 
+ *
  * @var bool SequenceOutputOptions::qualMeta;
  * @brief Whether or not to write the meta information into the <tt>"+"</tt> line before the qualities (interpreted for
  *        FASTQ only). Default is <tt>false</tt>.
@@ -422,29 +416,6 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
     readUntil(qual, iter, qualCountDown, qualIgnore);  // read Fastq qualities
     skipUntil(iter, TFastqBegin());     // forward to the next '@'
 }
-
-// ----------------------------------------------------------------------------
-// Function writeRecord()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn FastaFastqIO#write
- * @headerfile <seqan/seq_io.h>
- * @brief Write one FASTA or FASTQ record.
- * 
- * @signature int writeRecord(target, id, seq, tag[, options]);
- * @signature int writeRecord(target, id, seq, quals, tag[, options]);
- * 
- * @param[in,out] target  The target to write to.  Type: StreamConcept
- * @param[in]     id      ID/Meta information line to write out. Types: ContainerConcept
- * @param[in]     seq     Sequence to write out.  Type: ContainerConcept
- * @param[in]     quals   ASCII quality characters to write out.  Types: ContainerConcept
- * @param[in]     tag     The format selector. Types: nolink:<tt>Fasta</tt>, <tt>Fastq</tt>
- * @param[in]     options if not supplied, defaults are chosen.  Types: SequenceOutputOptions
- *
- * @return int 0 on success, non-0 value on errors.
- */
-
 
 // ----------------------------------------------------------------------------
 // Function writeRecord(Raw); Qualities inside seq

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -198,7 +198,7 @@ _allocatorBlockNumber(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > &,
 
 template <typename TParentAllocator, unsigned int BLOCKING_LIMIT, typename TValue, typename TSize, typename TUsage>
 inline void
-allocate(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me, 
+allocate(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me,
          TValue * & data,
          TSize count,
          Tag<TUsage> const & tag_)
@@ -241,9 +241,9 @@ allocate(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me,
 // ----------------------------------------------------------------------------
 
 template <typename TParentAllocator, unsigned int BLOCKING_LIMIT, typename TValue, typename TSize, typename TUsage>
-inline void 
+inline void
 deallocate(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me,
-           TValue * data, 
+           TValue * data,
            TSize count,
            Tag<TUsage> const tag_)
 {

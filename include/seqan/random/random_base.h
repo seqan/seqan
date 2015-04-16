@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -175,8 +175,8 @@ const typename Value<Rng<TSpec> >::Type MaxValue<Rng<TSpec> >::VALUE = MaxValue<
 template <typename TSpec>
 struct MaxValue<Rng<TSpec> const>
 {
-	typedef typename Value<Rng<TSpec> const>::Type TValue_;
-	static const TValue_ VALUE;
+    typedef typename Value<Rng<TSpec> const>::Type TValue_;
+    static const TValue_ VALUE;
 };
 
 template <typename TSpec>
@@ -185,8 +185,8 @@ const typename Value<Rng<TSpec> const>::Type MaxValue<Rng<TSpec> const>::VALUE =
 template <typename TSpec>
 struct MinValue<Rng<TSpec> >
 {
-	typedef typename Value<Rng<TSpec> >::Type TValue_;
-	static const TValue_ VALUE;
+    typedef typename Value<Rng<TSpec> >::Type TValue_;
+    static const TValue_ VALUE;
 };
 
 template <typename TSpec>
@@ -195,8 +195,8 @@ const typename Value<Rng<TSpec> >::Type MinValue<Rng<TSpec> >::VALUE = MinValue<
 template <typename TSpec>
 struct MinValue<Rng<TSpec> const>
 {
-	typedef typename Value<Rng<TSpec> const>::Type TValue_;
-	static const TValue_ VALUE;
+    typedef typename Value<Rng<TSpec> const>::Type TValue_;
+    static const TValue_ VALUE;
 };
 
 template <typename TSpec>

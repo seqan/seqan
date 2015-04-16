@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -73,15 +73,15 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @var TStd LibraryStoreElementstd;
  * @brief The library size standard deviation.
- */ 
+ */
 
 template <typename TMean = double, typename TStd = double, typename TSpec = void>
 struct LibraryStoreElement
 {
-	TMean		mean;		// mean library size in bps
-	TStd		std;	// library size variance
+    TMean        mean;        // mean library size in bps
+    TStd        std;    // library size variance
 
-	LibraryStoreElement() : mean(0), std(0) {}
+    LibraryStoreElement() : mean(0), std(0) {}
 
     inline bool operator==(LibraryStoreElement const & other) const
     {

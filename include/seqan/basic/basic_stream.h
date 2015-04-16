@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -62,6 +62,10 @@ template <typename TChar, typename TCharTraits, typename TAlloc>
 inline typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type
 length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
 
+// Needed for std::basic_string.
+template <typename TContainer, typename TValue>
+inline void appendValue(TContainer SEQAN_FORWARD_ARG me, TValue SEQAN_FORWARD_CARG val);
+
 /*!
  * @macro SEQAN_HAS_ZLIB
  * @headerfile <seqan/stream.h>
@@ -101,7 +105,7 @@ length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
 
 /*!
  * @mfn StreamConcept#Value
- * @brief Metafunction for retrieving atomic value type of a stream.
+ * @brief Metafunction for retrieving the value type of a stream.
  *
  * @signature Value<TStream>::Type;
  *
@@ -111,7 +115,7 @@ length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
 
 /*!
  * @mfn StreamConcept#Size
- * @brief Metafunction for retrieving atomic size type of a stream.
+ * @brief Metafunction for retrieving the type of a stream.
  *
  * @signature Size<TStream>::Type;
  *
@@ -121,7 +125,7 @@ length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
 
 /*!
  * @mfn StreamConcept#Position
- * @brief Metafunction for retrieving atomic position type of a stream.
+ * @brief Metafunction for retrieving the position type of a stream.
  *
  * @signature Position<TStream>::Type;
  *
@@ -155,7 +159,7 @@ length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
  *
  * @signature bool atEnd(stream);
  *
- * @param[in] stream The SmartFile to check.
+ * @param[in] stream The stream to check.
  * @return bool <tt>true</tt> if the file at EOF, <tt>false</tt> otherwise.
  */
 
@@ -398,7 +402,17 @@ struct EmptyFieldError : ParseError
  * @signature DirectionIterator<TStream>::Type;
  *
  * @tparam TStream The stream to query for its direction iterator.
- * @result Type    The resulting direction iterator.
+ * @return Type    The resulting direction iterator.
+ */
+
+/*!
+ * @mfn ContainerConcept#DirectionIterator
+ * @brief Return the direction iterator for the given direction.
+ *
+ * @signature DirectionIterator<TContainer>::Type;
+ *
+ * @tparam TContainer The container to query for its direction iterator.
+ * @return Type       The resulting direction iterator.
  */
 
 template <typename TObject, typename TDirection>
@@ -413,19 +427,16 @@ struct DirectionIterator :
 // --------------------------------------------------------------------------
 
 /*!
- * @class BasicStream
- * @implements StreamConcept
- * @brief Base class for reading from and writing to files.
+ * @mfn BasicStream
+ * @headerfile <seqan/basic.h>
+ * @brief Return the stream type to read or write values.
  *
- * @signature template <typename TValue, typename TDirection[, typename TTraits]>
- *            struct BasicStream;
+ * @signature BasicStream<TValue, TDirection[, TTraits]>::Type;
  *
- * @tparam TValue     The atomic value type of the stream.
+ * @tparam TValue     The value type of the stream.
  * @tparam TDirection The direction of the stream, one of the @link DirectionTags @endlink.
- * @tparam TTraits    The traits to use for the atomic values, defaults to <tt>std::char_traits&lt;TValue&gt;</tt>.
+ * @tparam TTraits    The traits to use for the values, defaults to <tt>std::char_traits&lt;TValue&gt;</tt>.
  *
- * In the current implementation, <tt>BasicStream</tt> inherits from <tt>std::basic_istream</tt>,
- * <tt>std::basic_ostream</tt>, or <tt>std::basic_iostream</tt>, depending on the selected <tt>TDirection</tt>.
  */
 
 template <typename TValue, typename TDirection, typename TTraits = std::char_traits<TValue> >
@@ -541,7 +552,6 @@ char const * MagicHeader<Nothing, T>::VALUE = NULL;
  * <tt>TTag</tt> is @link Nothing @endlink.  In this case, <tt>VALUE</tt> is <tt>{""}</tt>.
  */
 
-// TODO(weese:) rename FileExtensions to FileTypeExtensions or FileExtensions
 template <typename TFormat, typename T = void>
 struct FileExtensions;
 
@@ -673,12 +683,14 @@ struct IntegerFormatString_<TIsUnsigned, 8, T> :
 
 /*!
  * @fn ContainerConcept#writeValue
- * @brief Allow to append to a container just like writing to a @link StreamConcept stream @endlink.
+ * @brief Write a value at the end of a container.
  *
  * @signature void writeValue(container, val);
  *
  * @param[in,out] container to append to.
  * @param[in]     val       The value to append.
+ *
+ * @see ContainerConcept#appendValue
  */
 
 // resizable containers
@@ -695,7 +707,7 @@ writeValue(TSequence &cont, TValue val)
 
 /*!
  * @fn Range#writeValue
- * @brief Allow to write to a Range just like writing to a @link StreamConcept stream @endlink.
+ * @brief Write a value to a @link Range @endlink.
  *
  * @signature void writeValue(range, val);
  *
@@ -720,13 +732,13 @@ writeValue(Range<TIterator> &range, TValue val)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn Iter#writeValue
- * @brief Allows writing single values to iterators.
+ * @fn OutputIteratorConcept#writeValue
+ * @brief Write a single value to a container by dereferencing its iterator.
  *
  * @signature void writeValue(iter, val);
  *
- * @param[in,out] iter The iterator to write to.
- * @param[in]     val  The value to write the to the iterator.
+ * @param[in,out] iter The iterator to use for dereferenced writing.
+ * @param[in]     val  The value to write into the container.
  *
  * If the host of <tt>iter</tt> is a @link ContainerConcept @endlink then container is resized to make space for the
  * item.
@@ -772,24 +784,17 @@ writeValue(Iter<TNoSequence, TSpec> & iter, TValue val)
 // Function writeValue()                                              [pointer]
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Introduce @adaption dox type.
-
-/*!
- * @class PointerToBidirectionalDirectionIteratorAdaption Pointer adaption to bidirectional iterator.
- * @brief Allows to use plain pointers just like bidirectional iterators.
- */
-
-/*!
- * @fn PointerToBidirectionalDirectionIteratorAdaption#writeValue
- * @brief Allows to use pointers for reading and writing just as from bidirectional direction iterators.
- *
- * @signature void writeValue(pointer, val);
- *
- * @param[in,out] iter The pointer to write to, usually a <tt>char *</tt>.
- * @param[in]     val  The value to write the to the pointer's value.
- *
- * This function is equivalent to <tt>*iter++ = val</tt>.
- */
+///*!
+// * @fn ContainerConcept#writeValue
+// * @brief Write a value by dereferencing a pointer and incrementing its position by one.
+// *
+// * @signature void writeValue(pointer, val);
+// *
+// * @param[in,out] iter The pointer to dereference, usually a <tt>char *</tt>.
+// * @param[in]     val  The value to write to the dereferenced pointer.
+// *
+// * This function is equivalent to <tt>*iter++ = val</tt>.
+// */
 
 template <typename TTargetValue, typename TValue>
 inline void
@@ -999,13 +1004,9 @@ write(TOValue * optr, TIValue * &iptr, TSize n)
 // Function write(Iterator<Input>)
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Why is TSize required to be an integer and not simply size_t here?
-// TODO(holtgrew): A lot of overloads for this function are undocumented. What can be written to? ForwardIteratorConcept?
-// TODO(holtgrew): Everything below is undocumented.
-
 /*!
  * @fn ContainerConcept#write
- * @brief Allows writing to containers, just as writing with @link Iter#write @endlink.
+ * @brief Write to a container.
  *
  * @signature void write(container, iter, n);
  *
@@ -1048,12 +1049,13 @@ write(TTarget &target, TFwdIterator &iter, TSize n)
 }
 
 // ----------------------------------------------------------------------------
-// Function write(TContainer)
+// Function write(TContainer) but not container of container
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
-                                 Not<IsContiguous<TContainer> > >, void)
+inline SEQAN_FUNC_ENABLE_IF(And< Not<IsContiguous<TContainer> >,
+                                 And< Is<ContainerConcept<TContainer> >,
+                                      Not<Is<ContainerConcept<typename Value<TContainer>::Type> > > > >, void)
 write(TTarget &target, TContainer &cont)
 {
     typename DirectionIterator<TContainer, Input>::Type iter = directionIterator(cont, Input());
@@ -1061,19 +1063,19 @@ write(TTarget &target, TContainer &cont)
 }
 
 template <typename TTarget, typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
-                                 IsContiguous<TContainer> >, void)
+inline SEQAN_FUNC_ENABLE_IF(And< IsContiguous<TContainer>,
+                                 And< Is<ContainerConcept<TContainer> >,
+                                      Not<Is<ContainerConcept<typename Value<TContainer>::Type> > > > >, void)
 write(TTarget &target, TContainer &cont)
 {
     typename Iterator<TContainer, Standard>::Type iter = begin(cont, Standard());
     write(target, iter, length(cont));
 }
 
-
-
 template <typename TTarget, typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
-                                 Not<IsContiguous<TContainer> > >, void)
+inline SEQAN_FUNC_ENABLE_IF(And< Not<IsContiguous<TContainer> >,
+                                 And< Is<ContainerConcept<TContainer> >,
+                                      Not<Is<ContainerConcept<typename Value<TContainer>::Type> > > > >, void)
 write(TTarget &target, TContainer const &cont)
 {
     typename DirectionIterator<TContainer const, Input>::Type iter = directionIterator(cont, Input());
@@ -1081,15 +1083,14 @@ write(TTarget &target, TContainer const &cont)
 }
 
 template <typename TTarget, typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
-                                 IsContiguous<TContainer> >, void)
+inline SEQAN_FUNC_ENABLE_IF(And< IsContiguous<TContainer>,
+                                 And< Is<ContainerConcept<TContainer> >,
+                                      Not<Is<ContainerConcept<typename Value<TContainer>::Type> > > > >, void)
 write(TTarget &target, TContainer const &cont)
 {
     typename Iterator<TContainer const, Standard>::Type iter = begin(cont, Standard());
     write(target, iter, length(cont));
 }
-
-
 
 template <typename TTarget, typename TValue>
 inline void

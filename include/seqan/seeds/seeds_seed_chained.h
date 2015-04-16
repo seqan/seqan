@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -255,7 +255,7 @@ template <typename TConfig>
 inline typename Position<Seed<ChainedSeed, TConfig> >::Type
 beginPositionH(Seed<ChainedSeed, TConfig> const & seed)
 {
-	return front(seed._seedDiagonals).beginPositionH;
+    return front(seed._seedDiagonals).beginPositionH;
 }
 
 // ---------------------------------------------------------------------------
@@ -266,7 +266,7 @@ template <typename TConfig>
 inline typename Position<Seed<ChainedSeed, TConfig> >::Type
 endPositionH(Seed<ChainedSeed, TConfig> const & seed)
 {
-	return back(seed._seedDiagonals).beginPositionH + back(seed._seedDiagonals).length;
+    return back(seed._seedDiagonals).beginPositionH + back(seed._seedDiagonals).length;
 }
 
 // ---------------------------------------------------------------------------
@@ -277,7 +277,7 @@ template <typename TConfig>
 inline typename Position<Seed<ChainedSeed, TConfig> >::Type
 beginPositionV(Seed<ChainedSeed, TConfig> const & seed)
 {
-	return front(seed._seedDiagonals).beginPositionV;
+    return front(seed._seedDiagonals).beginPositionV;
 }
 
 // ---------------------------------------------------------------------------
@@ -288,7 +288,7 @@ template <typename TConfig>
 inline typename Position<Seed<ChainedSeed, TConfig> >::Type
 endPositionV(Seed<ChainedSeed, TConfig> const & seed)
 {
-	return back(seed._seedDiagonals).beginPositionV + back(seed._seedDiagonals).length;
+    return back(seed._seedDiagonals).beginPositionV + back(seed._seedDiagonals).length;
 }
 
 // ---------------------------------------------------------------------------

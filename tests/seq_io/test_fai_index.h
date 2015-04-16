@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -104,10 +104,10 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read_region)
     {
         seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
         append(filePath, "/tests/seq_io/adeno_genome.fa");
-        
+
         seqan::FaiIndex faiIndex;
         SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
-        
+
         seqan::Dna5String str;
         readRegion(str, faiIndex, 0, 100, 110);
         SEQAN_ASSERT_EQ(str, "GAGCGCGCAG");
@@ -116,10 +116,10 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read_region)
     {
         seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
         append(filePath, "/tests/seq_io/adeno_genome.fa");
-        
+
         seqan::FaiIndex faiIndex;
         SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
-        
+
         seqan::Dna5String str;
         readRegion(str, faiIndex, 0, 4708, 10000);
         SEQAN_ASSERT_EQ(str, "GAGTGGGCAA");
@@ -128,10 +128,10 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read_region)
     {
         seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
         append(filePath, "/tests/seq_io/adeno_genome.fa");
-        
+
         seqan::FaiIndex faiIndex;
         SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
-        
+
         seqan::GenomicRegion region("gi|9632547|ref|NC_002077.1|:101-110");
         seqan::Dna5String str;
         SEQAN_ASSERT_EQ(readRegion(str, faiIndex, region), true);

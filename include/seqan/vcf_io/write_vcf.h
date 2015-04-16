@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -38,44 +38,16 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
-// Tags, Classes, Enums
-// ============================================================================
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function write()                                                 [VcfHeader]
+// Function writeHeader()                                           [VcfHeader]
 // ----------------------------------------------------------------------------
-
-// TODO(holtgrew): Should become writeRecord?
-
-/*!
- * @fn VcfIO#write
- * @headerfile <seqan/vcf_io.h>
- * @brief Write a VcfHeader.
- *
- * @signature int write(target, header, context, Vcf());
- *
- * @param[in,out] target  The StreamConcept to write to.
- * @param[out]    header  The VcfHeader to write.
- * @param[in,out] context VcfIOContext to use.
- *
- * @return int A status code, 0 on success, a different value otherwise.
- */
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
-writeRecord(TTarget & target,
+writeHeader(TTarget & target,
             VcfHeader const & header,
             VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
             Vcf const & /*tag*/)
@@ -101,21 +73,6 @@ writeRecord(TTarget & target,
 // ----------------------------------------------------------------------------
 // Function writeRecord()                                           [VcfRecord]
 // ----------------------------------------------------------------------------
-
-
-/*!
- * @fn VcfIO#writeRecord
- * @headerfile <seqan/vcf_io.h>
- * @brief Write a VcfRecord.
- *
- * @signature int writeRecord(target, record, context, Vcf());
- *
- * @param[in,out] target  The StreamConcept to write to.
- * @param[out]    record  The VcfRecord to write.
- * @param[in,out] context VcfIOContext to use.
- *
- * @return int A status code, 0 on success, a different value otherwise.
- */
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void

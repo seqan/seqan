@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,7 @@ SEQAN_DEFINE_TEST(test_stream_write_record_fasta_default)
     CharString meta2 = "  meta2 ";
     Dna5String seq1 = "CGATN";
     Dna5String seq2 = "CCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTN";
-    
+
     writeRecord(outStream, meta1, seq1, Fasta());
     writeRecord(outStream, meta2, seq2, Fasta());
 
@@ -95,7 +95,7 @@ SEQAN_DEFINE_TEST(test_stream_write_record_fasta_nolinebreaks)
     CharString meta2 = "  meta2 ";
     Dna5String seq1 = "CGATN";
     Dna5String seq2 = "CCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTN";
-    
+
     writeRecord(outStream, meta1, seq1, Fasta(), SequenceOutputOptions(0));
     writeRecord(outStream, meta2, seq2, Fasta(), SequenceOutputOptions(0));
 
@@ -194,7 +194,7 @@ SEQAN_DEFINE_TEST(test_stream_write_record_fastq_linebreaks_qualmeta)
 //    StringSet<Dna5String> seqs;
 //    appendValue(seqs, "CGATN");
 //    appendValue(seqs, "CCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTN");
-//    
+//
 //    write2(outStream, metas, seqs, Fasta());
 //
 //    char const * EXPECTED =

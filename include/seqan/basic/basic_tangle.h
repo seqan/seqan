@@ -1,7 +1,7 @@
 // ==========================================================================
 //                               basic_tangle.h
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -76,7 +76,7 @@ struct Iterator<SimpleType<TValue, TSpec> const, Standard>
 // TODO(holtgrew): Is this part of some adaption?
 
 template <typename TKey, typename TObject, typename TSpec>
-struct Key<Pair<TKey, TObject, TSpec> > 
+struct Key<Pair<TKey, TObject, TSpec> >
 {
     typedef TKey Type;
 };
@@ -88,7 +88,7 @@ struct Key<Pair<TKey, TObject, TSpec> >
 // TODO(holtgrew): Is this part of some adaption?
 
 template <typename TKey, typename TCargo, typename TSpec>
-struct Cargo<Pair<TKey, TCargo, TSpec> > 
+struct Cargo<Pair<TKey, TCargo, TSpec> >
 {
     typedef TCargo Type;
 };
@@ -106,20 +106,20 @@ struct Cargo<Pair<TKey, TCargo, TSpec> >
  * @fn assignQualities
  * @headerfile <seqan/basic.h>
  * @brief Assign quality values between strings.
- * 
+ *
  * @signature void assignQualities(target, source);
- * 
+ *
  * @param[out] target Target string, can be a String of DnaQ or Dna5Q characters.
  * @param[in]  source Source string.  Can be a String of int or char.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The target is resized to the length of source.  This function calls assignQualityValue for all entries of
  * <tt>target</tt> and <tt>source</tt>, look at the documentation of assignQualityValue on how the values of
  * <tt>source</tt> are interpreted.
- * 
+ *
  * Note that qualities are expected to be in PHRED scale.
- * 
+ *
  * @see AlphabetWithQualitiesConcept#assignQualityValue
  */
 
@@ -130,7 +130,7 @@ _assignQualities(TDest &dst, TSource const &src, True)
     typedef typename Iterator<TDest>::Type TDestIter;
     typedef typename Iterator<TSource const>::Type TSourceIter;
 
-	if (length(dst) < length(src))
+    if (length(dst) < length(src))
         resize(dst, length(src));
 
     TDestIter itDst = begin(dst, Standard());

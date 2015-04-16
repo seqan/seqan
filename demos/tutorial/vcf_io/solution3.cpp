@@ -35,7 +35,7 @@ int main()
     appendValue(header, VcfHeaderRecord("ID", "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">"));
     appendValue(header, VcfHeaderRecord("ID", "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">"));
     appendValue(header, VcfHeaderRecord("ID", "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">"));
-    writeRecord(out, header);
+    writeHeader(out, header);
 
     // Fill and write out the record.
     VcfRecord record;

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -207,7 +207,7 @@ template <typename TScoreValue, typename TGapSpec>
 inline typename  Reference<DPCell_<TScoreValue, TGapSpec> const>::Type
 _horizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> const & dpCell)
 {
-	return dpCell._score;
+    return dpCell._score;
 }
 
 // ----------------------------------------------------------------------------

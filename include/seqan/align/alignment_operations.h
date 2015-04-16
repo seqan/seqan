@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ namespace seqan {
  * @include demos/align/integrate_align.cpp.stdout
  */
 
-template <typename TSource1, typename TSpec1, typename TSource2, typename TSpec2, typename TPos> 
+template <typename TSource1, typename TSpec1, typename TSource2, typename TSpec2, typename TPos>
 void integrateAlign(Align<TSource1, TSpec1> & align,
                     Align<TSource2, TSpec2> const & infixAlign,
                     String<TPos> const & viewPos)
@@ -120,14 +120,14 @@ void integrateAlign(Align<TSource1, TSpec1> & align,
 
 template <typename TSource, typename TSpec1, typename TSpec2>
 void integrateAlign(Align<TSource, TSpec1> & align,
-                    Align<typename Infix<TSource>::Type, TSpec2> const & infixAlign) 
+                    Align<typename Infix<TSource>::Type, TSpec2> const & infixAlign)
 {
     typedef typename Size<TSource>::Type TSize;
     typedef typename Position<typename Row<Align<TSource, TSpec1> >::Type>::Type TPos;
 
     String<TPos> viewPos;
     TPos pos;
-    for (TSize i = 0; i < length(rows(infixAlign)); ++i) 
+    for (TSize i = 0; i < length(rows(infixAlign)); ++i)
     {
         pos = beginPosition(source(row(infixAlign, i)))
             - beginPosition(source(row(align, i)))

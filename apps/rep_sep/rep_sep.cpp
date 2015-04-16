@@ -71,8 +71,8 @@ parseCommandLine(RepSepOptions & options, int argc, char const ** argv)
     ArgumentParser parser;
 
     addUsageLine(parser, "[OPTION]... --assembly <input file> --output-prefix <prefix>");
-    setVersion(parser, "0.1.1 20120717");
-    setDate(parser, "2012/07/17");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
     setShortDescription(parser, "Repeat Seperation Tool -- Copyright (c) 2009, Stephan Aiche");
 
     // needed input file

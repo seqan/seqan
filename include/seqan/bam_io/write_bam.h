@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -41,40 +41,12 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
-// Tags, Classes, Enums
-// ============================================================================
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
 // Function writeRecord()                                             BamHeader
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn SamBamIO#write2
- * @brief Write a record to a SAM/BAM file.
- *
- * @signature int writeRecord(stream, record, context, tag);
- *
- * @param[in,out] stream  The @link StreamConcept Stream @endlink to write to.
- * @param[out]    record  The @link BamAlignmentRecord @endlink object to write out.
- * @param[out]    header  The @link BamHeader @endlink object to write out.
- * @param[in,out] context The @link BamIOContext @endlink object to use.
- * @param[in]     tag     The format tag, one of <tt>Sam</tt> and <tt>Bam</tt>.
- *
- * @return int A status code, 0 on success, != 0 on failure.
- */
-
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 void write(TTarget & target,
@@ -88,7 +60,7 @@ void write(TTarget & target,
     // Create text of header.
     for (unsigned i = 0; i < length(header); ++i)
         write(context.buffer, header[i], context, Sam());
-    
+
     // Note that we do not write out a null-character to terminate the header.  This would be valid by the SAM standard
     // but the samtools do not expect this and write out the '\0' when converting from BAM to SAM.
     // appendValue(context.buffer, '\0');

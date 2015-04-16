@@ -46,7 +46,6 @@
 #include <seqan/roi_io.h>
 
 #include "png_canvas.h"
-#include "version.h"
 
 // ==========================================================================
 // Classes
@@ -285,8 +284,8 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     // Set short description, version, and date.
     setShortDescription(parser, "Create plot grids for ROI file.");
-    setVersion(parser, VERSION);
-    setDate(parser, DATE);
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
 
     // Define usage line and long description.
     addUsageLine(parser, "\\fB-if\\fP \\fIIN.roi\\fP \\fB-o\\fP \\fIOUT\\fP");
@@ -440,7 +439,7 @@ int main(int argc, char const ** argv)
 
     // Read header (actually, skip it).
     seqan::RoiHeader roiHeader;
-    readRecord(roiHeader, roiFileIn);
+    readHeader(roiHeader, roiFileIn);
 
     // -----------------------------------------------------------------------
     // Create plot grids.

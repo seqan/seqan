@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -169,30 +169,30 @@ class StringTestCommon : public StringTest<T>
 {};
 
 typedef
-    seqan::TagList<String<Dna5, External<> >, 
+    seqan::TagList<String<Dna5, External<> >,
     seqan::TagList<String<char, External<> >,
-    seqan::TagList<String< int, External<> >, 
-    seqan::TagList<String<CountingChar, External<> >, 
-    seqan::TagList<String<Dna5, MMap<> >, 
+    seqan::TagList<String< int, External<> >,
+    seqan::TagList<String<CountingChar, External<> >,
+    seqan::TagList<String<Dna5, MMap<> >,
     seqan::TagList<String<char, MMap<> >,
     seqan::TagList<String<int, MMap<> >,
-    seqan::TagList<String<CountingChar, MMap<> >, 
+    seqan::TagList<String<CountingChar, MMap<> >,
     seqan::TagList<String<Dna, Packed<> >,
     seqan::TagList<String<Dna5, Packed<> >,
     seqan::TagList<String<char, Packed<> >,
     seqan::TagList<String<char, Packed<> >,
     seqan::TagList<String<int, Packed<> >,
-    seqan::TagList<String<Dna5, Array<100> >, 
+    seqan::TagList<String<Dna5, Array<100> >,
     seqan::TagList<String<char, Array<100> >,
-    seqan::TagList<String<int, Array<100> >, 
+    seqan::TagList<String<int, Array<100> >,
     seqan::TagList<String<CountingChar,Array<100> >,
-    seqan::TagList<String<seqan::Dna5, Block<> >, 
+    seqan::TagList<String<seqan::Dna5, Block<> >,
     seqan::TagList<String<char, Block<> >,
-    seqan::TagList<String<int, Block<> >, 
+    seqan::TagList<String<int, Block<> >,
     seqan::TagList<String<CountingChar,Block<> >,
-    seqan::TagList<String<seqan::Dna5, Alloc<> >, 
+    seqan::TagList<String<seqan::Dna5, Alloc<> >,
     seqan::TagList<String<char, Alloc<> >,
-    seqan::TagList<String<int, Alloc<> >, 
+    seqan::TagList<String<int, Alloc<> >,
     seqan::TagList<String<CountingChar, Alloc<> >//,
     //seqan::TagList<String<char, CStyle>
     > > > > > > > > > > > > > > > > > > > > > > > > > //>
@@ -200,9 +200,9 @@ typedef
 
 SEQAN_TYPED_TEST_CASE(StringTestCommon, StringTestCommonTypes);
 
-// ========================================================================== 
+// ==========================================================================
 // The tests start here
-// ========================================================================== 
+// ==========================================================================
 
 // --------------------------------------------------------------------------
 // default constructible
@@ -826,7 +826,7 @@ SEQAN_TYPED_TEST(StringTestCommon, Reverse)
 
     typename TestFixture::TString str;
     testSequenceReverse(str);
-   
+
     testConstructDeconstruct(str);
 }
 
@@ -1005,7 +1005,7 @@ void testSequenceBegin(TString & /*Tag*/)
 // void testSequenceBegin(String<TValue, MMap<> > & /*Tag*/) {}
 // template <typename TValue>
 // void testSequenceBegin(String<TValue, MMap<> > const & /*Tag*/) {}
-// 
+//
 SEQAN_TYPED_TEST(StringTestCommon, Begin)
 {
     CountingChar::clear();
@@ -1140,7 +1140,7 @@ SEQAN_TYPED_TEST(StringTestCommon, End)
 
     typename TestFixture::TString str;
     testSequenceEnd(str);
-    
+
     typename TestFixture::TString const constStr;
     testSequenceEnd(constStr);
 
@@ -1348,9 +1348,9 @@ void testSequenceInsert(TString & /*Tag*/)
 }
 
 template <typename TValue>
-void testSequenceInsert(String<TValue, External<> > & /*Tag*/) {} 
+void testSequenceInsert(String<TValue, External<> > & /*Tag*/) {}
 template <typename TValue>
-void testSequenceInsert(String<TValue, Block<> > & /*Tag*/) {} 
+void testSequenceInsert(String<TValue, Block<> > & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringTestCommon, Insert)
 {
@@ -1381,9 +1381,9 @@ void testSequenceInsertValue(TString & /*Tag*/)
 }
 
 template <typename TValue>
-void testSequenceInsertValue(String<TValue, External<> > & /*Tag*/) {} 
+void testSequenceInsertValue(String<TValue, External<> > & /*Tag*/) {}
 template <typename TValue>
-void testSequenceInsertValue(String<TValue, Block<> > & /*Tag*/) {} 
+void testSequenceInsertValue(String<TValue, Block<> > & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringTestCommon, InsertValue)
 {
@@ -1473,10 +1473,10 @@ SEQAN_TYPED_TEST(StringTestCommon, Length)
 
     typename TestFixture::TString str;
     testSequenceLength(str);
- 
+
     typename TestFixture::TString constStr;
     testSequenceLength(constStr);
- 
+
     testConstructDeconstruct(str);
 }
 
@@ -1500,7 +1500,7 @@ SEQAN_TYPED_TEST(StringTestCommon, MoveValue)
 
     typename TestFixture::TString str;
     testSequenceMoveValue(str);
-   
+
     testConstructDeconstruct(str);
 }
 
@@ -1553,7 +1553,7 @@ SEQAN_TYPED_TEST(StringTestCommon, Replace)
 
     typename TestFixture::TString str;
     testSequenceReplace(str);
-   
+
     testConstructDeconstruct(str);
 }
 
@@ -1588,7 +1588,7 @@ SEQAN_TYPED_TEST(StringTestCommon, Reserve)
 
     typename TestFixture::TString str;
     testSequenceReserve(str);
-   
+
     testConstructDeconstruct(str, 0);
 }
 
@@ -1614,7 +1614,7 @@ void testSequenceResize(TString & /*Tag*/)
 
     resize(string, 0);
     SEQAN_ASSERT_EQ(length(string), 0u);
-    
+
     resize(string, 5, TValue());
     SEQAN_ASSERT_EQ(length(string), 5u);
 
@@ -1634,7 +1634,7 @@ SEQAN_TYPED_TEST(StringTestCommon, Resize)
 
     typename TestFixture::TString str;
     testSequenceResize(str);
-   
+
     testConstructDeconstruct(str);
 }
 
@@ -1689,7 +1689,7 @@ SEQAN_TYPED_TEST(StringTestCommon, Value)
 
     typename TestFixture::TString str;
     testSequenceValue(str);
-   
+
     typename TestFixture::TString const constStr;
     testSequenceValue(constStr);
 

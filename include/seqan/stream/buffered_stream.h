@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -63,9 +63,11 @@ class BufferedStreamBuf;
 // Class BufferedStream
 // ----------------------------------------------------------------------------
 
+// TODO(esiragusa): @extends BasicStream::Type
+
 /*!
  * @class BufferedStream
- * @extends BasicStream
+ * @implements StreamConcept
  * @headerfile <seqan/stream.h>
  * @brief Adds a buffer to another @link StreamConcept stream @endlink.
  *
@@ -73,7 +75,7 @@ class BufferedStreamBuf;
  *            class BufferedStream;
  *
  * @tparam TUnbufferedStream The type of the unbuffered @link StreamConcept stream @endlink to wrap.
- * @tparam TDirection        The stream direction, one of @link StreamDirectionTags @endlink.
+ * @tparam TDirection        The stream direction, one of @link DirectionTags @endlink.
  */
 
 template <typename TUnbufferedStream, typename TDirection>
@@ -149,7 +151,7 @@ class BufferedStreamBuf :
 {
 protected:
     typedef std::basic_streambuf<TValue, TTraits>                   TStreamBuf;
-	typedef typename TTraits::int_type                              TInt;
+    typedef typename TTraits::int_type                              TInt;
 
     static const size_t defaultBufferSize = 1024;   // size of the data buffer
     static const size_t defaultPutbackSize = 256;   // size of the buffer that should be used as putback area

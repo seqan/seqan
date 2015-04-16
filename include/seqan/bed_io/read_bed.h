@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -42,10 +42,6 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -71,7 +67,7 @@ struct MagicHeader<Bed, T> :
 template <typename T>
 struct FileExtensions<Bed, T>
 {
-    static char const * VALUE[1];	// default is one extension
+    static char const * VALUE[1];    // default is one extension
 };
 
 template <typename T>
@@ -88,25 +84,6 @@ char const * FileExtensions<Bed, T>::VALUE[1] =
 // Function readRecord()                                            [BedRecord]
 // ----------------------------------------------------------------------------
 
-/*!
- * @fn BedRecord#readRecord
- * @brief Read a BED record from a file.
- * 
- * @signature int readRecord(record, reader[, context], Bed());
- * 
- * @param[out]    record  BedRecord object to write to. Types: BedRecord
- * @param[in,out] context The optional @link BedIOContext @endlink to use.
- * @param[in,out] reader  The SinglePassRecordReader to use.
- * 
- * @return int Status code, 0 on success, other value on errors.
- * 
- * The type of the parameter <tt>record</tt> decides which fields are interpreted.  The remainder of the line (excluding
- * the line break) is written to <tt>record.data</tt>.
- * 
- * When <tt>context</tt> is given, the <tt>rID</tt> field is filled and the context's name store may be updated if a
- * previously unknown reference occurs.
- */
-
 // We have a helper function _readBedRecordNoData() that has various
 // overloads.  The one for Bed$N$ calls the one with Bed$N-1$.
 
@@ -114,7 +91,7 @@ char const * FileExtensions<Bed, T>::VALUE[1] =
 // NoData means the the member data (for the columns not read) is not
 // filled.
 template <typename TForwardIter>
-inline void 
+inline void
 _readBedRecordNoData(BedRecord<Bed3> & record,
                      TForwardIter & iter,
                      CharString & buffer)
@@ -149,7 +126,7 @@ _readBedRecordNoData(BedRecord<Bed3> & record,
 // Read first four fields without data.
 
 template <typename TForwardIter>
-inline void 
+inline void
 _readBedRecordNoData(BedRecord<Bed4> & record,
                      TForwardIter & iter,
                      CharString & buffer)

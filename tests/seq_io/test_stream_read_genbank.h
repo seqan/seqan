@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -316,11 +316,11 @@ template <typename TRecordReader>
 void testHelperReadGenBankSingle(TRecordReader & reader)
 {
     using namespace seqan;
-    
+
     CharString buffer, k, v;
 
     // First record.
-    
+
     // Read GENBANK headers, split ID header, skip rest.
     readRecord(k, v, reader, GenBankHeader());
     SEQAN_ASSERT_EQ(k, CharString("LOCUS"));
@@ -371,7 +371,7 @@ void testHelperReadGenBankRecord(TRecordReader & reader)
 SEQAN_DEFINE_TEST(test_stream_read_genbank_single_char_array_stream)
 {
     using namespace seqan;
-    
+
     typedef CharString TStream;
 
     char const * genbankString = testHelperReturnGenBankFile();
@@ -384,7 +384,7 @@ SEQAN_DEFINE_TEST(test_stream_read_genbank_single_char_array_stream)
 SEQAN_DEFINE_TEST(test_stream_read_genbank_record_char_array_stream)
 {
     using namespace seqan;
-    
+
     typedef CharString TStream;
 
     char const * genbankString = testHelperReturnGenBankFile();

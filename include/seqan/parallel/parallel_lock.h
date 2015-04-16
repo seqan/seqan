@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -83,7 +83,7 @@ waitFor(SpinDelay & me)
     if (me.duration <= me.LOOPS_BEFORE_YIELD)
     {
         for (unsigned i = me.duration; i != 0; --i)
-			yieldProcessor();
+            yieldProcessor();
         me.duration *= 2;
     }
     else
@@ -145,7 +145,7 @@ spinCas(TAtomic & x, TValue cmp, TValue y)
 class ReadWriteLock
 {
 public:
-	Atomic<unsigned>::Type readers;
+    Atomic<unsigned>::Type readers;
     Atomic<unsigned>::Type writers;
 
     ReadWriteLock() :
@@ -261,11 +261,11 @@ yieldProcessor()
 #if defined( __CUDACC__)
     // don't wait on the GPU
 #elif defined(PLATFORM_WINDOWS_VS)
-	YieldProcessor();
+    YieldProcessor();
 #elif defined(__SSE2__)
-	_mm_pause();
+    _mm_pause();
 #else
-	__asm__ __volatile__("rep; nop" : : );
+    __asm__ __volatile__("rep; nop" : : );
 #endif
 }
 

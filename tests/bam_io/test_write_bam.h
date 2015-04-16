@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -72,15 +72,15 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_header)
     // Call code under test.
     String<char> text;
     write(text, header, bamIOContext, Bam());
-    
+
     // Compare results.
     CharString bamFilename;
     append(bamFilename, SEQAN_PATH_TO_ROOT());
     append(bamFilename, "/tests/bam_io/header_uncompressed.bam");
-    
+
     String<char, MMap<> > EXPECTED;
     open(EXPECTED, toCString(bamFilename));
-    
+
     /*
     String<char> EXPECTED = "\x42\x41\x4d\x01\x25\x00\x00\x00\x40\x48\x44\x09\x56\x4e\x3a\x31\x2e\x30\x0a\x40\x53\x51\x09\x53\x4e\x3a\x52\x45\x46\x45\x52\x45\x4e\x43\x45\x09\x4c\x4e\x3a\x31\x30\x30\x30\x30\x0a\x01\x00\x00\x00\x0a\x00\x00\x00\x52\x45\x46\x45\x52\x45\x4e\x43\x45\x00\x10\x27\x00\x00";
     */

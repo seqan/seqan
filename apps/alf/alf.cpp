@@ -1,7 +1,7 @@
 // ==========================================================================
 //                  ALF - Alignment free sequence comparison
 // ==========================================================================
-// Copyright (c) 2006-2011, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -62,8 +62,8 @@ int main(int argc, const char * argv[])
 
     // Set short description, version, date.
     setShortDescription(parser, "Alignment free sequence comparison");
-    setVersion(parser, "1.1");
-    setDate(parser, "January 5, 2012");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
     setCategory(parser, "Sequence Comparison");
 
     // Usage line and description.

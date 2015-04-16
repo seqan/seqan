@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@ namespace seqan {
 // TODO(holtgrew): Document, make public.
 
 // compare two files, do not translate linebreaks
-inline bool 
+inline bool
 _compareBinaryFiles(const char * file1, const char * file2)
 {
 //IOREV see above
@@ -97,7 +97,7 @@ End:
 //one line break is either \r, \n, or \r\n.
 //a single line break is skipped.
 //the second line break is transformed into \n
-inline void 
+inline void
 _compareTextFilesReadChar(FILE * fl, char & c, int & num_lb, bool & is_eof)
 {
 //IOREV see above
@@ -130,7 +130,7 @@ _compareTextFilesReadChar(FILE * fl, char & c, int & num_lb, bool & is_eof)
 }
 
 // compare two files, translate linebreaks
-inline bool 
+inline bool
 _compareTextFiles(const char * file1, const char * file2)
 {
 //IOREV see above

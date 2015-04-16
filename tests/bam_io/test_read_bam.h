@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -67,7 +67,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_header)
     BamIOContext<StringSet<CharString> > bamIOContext(referenceNameStore, referenceNameStoreCache);
 
     BamHeader header;
-    readRecord(header, bamIOContext, iter, Bam());
+    readHeader(header, bamIOContext, iter, Bam());
 
     // -----------------------------------------------------------------------
     // Check Results.
@@ -108,7 +108,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_alignment)
     append(bamFilename, SEQAN_PATH_TO_ROOT());
     //append(bamFilename, "/tests/bam_io/small.bam");
     append(bamFilename, "/tests/bam_io/test_small.bam");
-    
+
     String<char, MMap<> > in;
     open(in, toCString(bamFilename));
     typename Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(in);
@@ -120,9 +120,9 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_alignment)
     StringSet<CharString> referenceNameStore;
     NameStoreCache<StringSet<CharString> > referenceNameStoreCache(referenceNameStore);
     BamIOContext<StringSet<CharString> > bamIOContext(referenceNameStore, referenceNameStoreCache);
-    
+
     BamHeader header;
-    readRecord(header, bamIOContext, iter, Bam());
+    readHeader(header, bamIOContext, iter, Bam());
 
     String<BamAlignmentRecord> alignments;
     while (!atEnd(iter))

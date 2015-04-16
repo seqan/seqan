@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Superclasses to extend a class by standard operators that make use of a 
+// Superclasses to extend a class by standard operators that make use of a
 // minimal set of basic operators.
 // Taken from the Math Library in Boost version 1.47.
 // ==========================================================================
@@ -49,10 +49,10 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-namespace detail 
+namespace detail
 {
 
-	template <typename T> class empty_base {};
+    template <typename T> class empty_base {};
 
 } // namespace detail
 
@@ -242,8 +242,8 @@ template <class T, class P, class B = detail::empty_base<T> >
 struct dereferenceable : B
 {
   P operator->() const
-  { 
-    return &*static_cast<const T&>(*this); 
+  {
+    return &*static_cast<const T&>(*this);
   }
 };
 
@@ -762,7 +762,7 @@ SEQAN_OPERATOR_TEMPLATE1(template_name##1)
    struct template_name : template_name##1<T, B> {};
 
 #endif // SEQAN_NO_TEMPLATE_PARTIAL_SPECIALIZATION
-    
+
 SEQAN_OPERATOR_TEMPLATE(less_than_comparable)
 SEQAN_OPERATOR_TEMPLATE(equality_comparable)
 SEQAN_OPERATOR_TEMPLATE(multipliable)
@@ -890,7 +890,7 @@ struct bidirectional_iterator_helper
     > > {};
 
 template <class T,
-          class V, 
+          class V,
           class D = std::ptrdiff_t,
           class P = V*,
           class R = V&>

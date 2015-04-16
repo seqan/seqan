@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_read_header)
     // -----------------------------------------------------------------------
 
     // Define input stream and file reader for SAM.
-    CharString input = 
+    CharString input =
             "@HD\tVN:1.3\tSO:coordinate\n"
             "@SQ\tSN:REFERENCE\tLN:10000\n"
             "READ0\t2\tREFERENCE\t1\t8\t5M1I4M\tREFERENCE\t31\t40\tAAAAAAAAAA\t!!!!!!!!!!\n"
@@ -65,9 +65,9 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_read_header)
     StringSet<CharString> referenceNameStore;
     NameStoreCache<StringSet<CharString> > referenceNameStoreCache(referenceNameStore);
     BamIOContext<StringSet<CharString> > bamIOContext(referenceNameStore, referenceNameStoreCache);
-    
+
     BamHeader header;
-    readRecord(header, bamIOContext, iter, Sam());
+    readHeader(header, bamIOContext, iter, Sam());
 
     // -----------------------------------------------------------------------
     // Check Results.
@@ -121,9 +121,9 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_read_alignment)
     StringSet<CharString> referenceNameStore;
     NameStoreCache<StringSet<CharString> > referenceNameStoreCache(referenceNameStore);
     BamIOContext<StringSet<CharString> > bamIOContext(referenceNameStore, referenceNameStoreCache);
-    
+
     BamHeader header;
-    readRecord(header, bamIOContext, iter, Sam());
+    readHeader(header, bamIOContext, iter, Sam());
 
     String<BamAlignmentRecord> alignments;
     while (!atEnd(iter))

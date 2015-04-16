@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -242,7 +242,7 @@ _adaptTraceSegmentsTo(String<Fragment<TSize, TFragmentSpec>, TStringSpec> & matc
 }
 
 // ----------------------------------------------------------------------------
-// Function _adaptTraceSegmentsTo()						     [VertexDescriptor]
+// Function _adaptTraceSegmentsTo()                             [VertexDescriptor]
 // ----------------------------------------------------------------------------
 
 //// TODO (rmaerker): Check if we really need this!

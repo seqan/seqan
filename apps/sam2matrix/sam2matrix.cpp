@@ -1,7 +1,7 @@
 // ==========================================================================
 //                              sam2matrix
 // ==========================================================================
-// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -79,8 +79,8 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
     seqan::ArgumentParser parser("sam2matrix");
     // Set short description, version, and date.
     setShortDescription(parser, "This program outputs for each read the ids of references it maps to.");
-    setVersion(parser, "0.1");
-    setDate(parser, "April 2014");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
     setCategory(parser, "Metagenomics");
 
     // Define usage line and long description.
@@ -174,7 +174,7 @@ bool _parseSamFiles(StringSet<String<unsigned> > & mappedReads,
         BamHeader header;
         BamAlignmentRecord record;
 
-        readRecord(header, bamIO);
+        readHeader(header, bamIO);
 
         for (unsigned j = 0; !atEnd(bamIO); ++j)
         {

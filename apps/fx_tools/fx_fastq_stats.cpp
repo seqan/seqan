@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                 FX Tools
 // ==========================================================================
-// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -239,8 +239,8 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     // Set short description, version, and date.
     setShortDescription(parser, "Compute FASTQ statistics.");
     setCategory(parser, "NGS Quality Control");
-    setVersion(parser, "0.1");
-    setDate(parser, "August 2012");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
 
     // Define usage line and long description.
     addUsageLine(parser, "\\fB-i\\fP \\fIINPUT.fq\\fP \\fB-o\\fP \\fIOUTPUT.fq.stats.tsv\\fP");

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                  parse_lm
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -212,7 +212,7 @@ readRecord(TLocalMatchStore & store,
     // ignore rest of the field, skip to next line
     skipLine(iter);
 
-	// Finally, append the local match.
+    // Finally, append the local match.
     if (subjectStrand == '-')
         std::swap(subjectBeginPos, subjectEndPos);
     appendLocalMatch(store, subjectName, subjectBeginPos, subjectEndPos, queryName, queryBeginPos, queryEndPos, buffer);

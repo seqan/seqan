@@ -12,7 +12,7 @@ void findMUMs(TIndex & esa, unsigned minLen)
     typename Iterator<TIndex, Mums>::Type it(esa, minLen);  // set minimum MUM length
     String<typename SAValue<TIndex>::Type> occs;            // temp. string storing the hit positions
 
-    std::cout << resetiosflags(std::ios::left);
+    std::cout << std::resetiosflags(std::ios::left);
     while (!atEnd(it))
     {
         occs = getOccurrences(it);                          // gives hit positions (seqNo,seqOfs)
@@ -29,7 +29,7 @@ void findMUMs(TIndex & esa, unsigned minLen)
 
         ++it;
     }
-    std::cout << setiosflags(std::ios::left) << "\n";
+    std::cout << std::setiosflags(std::ios::left) << "\n";
 }
 
 template <typename TSpec>

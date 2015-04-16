@@ -23,6 +23,15 @@ Prerequisites
 Overview
 --------
 
+.. warning::
+    
+    Before you can read/write BAM files (bgzf compressed SAM files) you need to make sure that your program is linked against the zlib library.
+    When you build your application within the SeqAn build infrastructure, the zlib library is automatically located by looking at the standard places for the library.
+    Also have a look at :ref:`tutorial-input-output-overview-formatted-files` to read more about support of compressed file I/O.
+    If the macro ``SEQAN_HAS_ZLIB`` is set to ``0`` then reading/writing BAM file format is disabled. 
+    It is set to ``1`` if the zlib could be found and reading/writing of compressed files is enabled automatically.
+    You can read :ref:`build-manual-integration-with-your-own-build-system`, :ref:`build-manual-using-the-find-seqan-cmake-module` and for windows users :ref:`how-to-install-contribs-on-windows` for further notes about using the zlib and libbz2 in your build infrastructure.
+
 This tutorial shows how to read and write SAM and BAM files using the :dox:`BamFileIn` and :dox:`BamFileOut` classes.
 It starts out with a quick reminder on the structure of SAM (and also BAM) files and continues with how to read and write SAM/BAM files and access the tags of a record.
 
@@ -144,7 +153,7 @@ The following program reads a file named ``example.sam`` and prints its contents
 .. includefrags:: demos/tutorial/bam_io/example1.cpp
 
 We instantiate a :dox:`BamFileIn` object for reading and a :dox:`BamFileOut` object for writing.
-First, we read the BAM header with :dox:`BamFileIn#readRecord` and we write it with :dox:`BamFileOut#writeRecord`.
+First, we read the BAM header with :dox:`FormattedFileIn#readRecord` and we write it with :dox:`FormattedFileOut#writeRecord`.
 Then, we read each record from the input file and write it to the output file.
 The alignment records are read into :dox:`BamAlignmentRecord` objects, which we will focus on below.
 

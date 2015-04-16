@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -181,11 +181,11 @@ public:
     // Array Subscript Operator
     // -----------------------------------------------------------------------
 
-	inline TValue_
-	operator[](TPosition_ clippedViewPos) const
-	{
+    inline TValue_
+    operator[](TPosition_ clippedViewPos) const
+    {
         return value(*this, clippedViewPos);
-	}
+    }
 };
 
 // ----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -70,7 +70,7 @@
 
 #include <seqan/file/file_interface.h>
 #include <seqan/file/file_base.h>
-#include <seqan/system.h>	// async file (default file type of File<>)
+#include <seqan/system.h>    // async file (default file type of File<>)
 
 // ===========================================================================
 // External Strings.

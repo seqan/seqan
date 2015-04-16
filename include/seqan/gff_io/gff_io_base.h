@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -38,10 +38,6 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -50,16 +46,11 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 /*!
- * @defgroup GffFileIO GFF and GTF File I/O
- * @brief I/O functionality for the GFF and GTF file formats.
+ * @tag FileFormats#Gff
+ * @brief Tag for selecting the GFF format.
  *
  * Both the GFF and the GTF file format are represented by @link GffRecord @endlink in SeqAn.
  * Tags and functions in this group can be used for I/O of both formats to and from @link GffRecord @endlink objects.
- */
-
-/*!
- * @tag GffFileIO#Gff
- * @brief Tag for selecting the GFF format.
  *
  * @signature typedef Tag<TagGff_> Gff;
  */
@@ -71,7 +62,7 @@ typedef Tag<TagGff_> Gff;
 // ----------------------------------------------------------------------------
 
 /*!
- * @tag GffFileIO#Gtf
+ * @tag FileFormats#Gtf
  * @brief Tag for selecting the GTF format.
  *
  * @signature typedef Tag<TagGtf_> Gtf;
@@ -98,7 +89,7 @@ struct MagicHeader<Gff, T> :
 template <typename T>
 struct FileExtensions<Gff, T>
 {
-    static char const * VALUE[2];	// default is one extension
+    static char const * VALUE[2];    // default is one extension
 };
 
 template <typename T>
@@ -111,7 +102,7 @@ char const * FileExtensions<Gff, T>::VALUE[2] =
 template <typename T>
 struct FileExtensions<Gtf, T>
 {
-    static char const * VALUE[1];	// default is one extension
+    static char const * VALUE[1];    // default is one extension
 };
 
 template <typename T>
@@ -126,8 +117,7 @@ char const * FileExtensions<Gtf, T>::VALUE[1] =
 
 /*!
  * @class GffRecord
- * @implements DefaultConstructibleConcept
- * @implements AssignableConcept
+ * @implements FormattedFileRecordConcept
  * @headerfile <seqan/gff_io.h>
  * @brief Represent a record from a GFF or GTF file.
  *
@@ -225,6 +215,7 @@ struct GffRecord
     // TODO(holtgrew): C++11 will have a nan() function, use this instead then.
     /*!
      * @fn GffRecord::INVALID_SCORE
+     * @signature static float INVALID_SCORE()
      * @brief Returns invalid score (NaN float value).
      *
      * The term <tt>x != x</tt> (for <tt>float x</tt> is only true if <tt>x</tt> is a NaN.
@@ -245,10 +236,6 @@ struct GffRecord
         strand('.'), phase('.')
     {}
 };
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
 
 // ============================================================================
 // Functions
@@ -344,9 +331,8 @@ inline void clear(GffRecord & record)
 // Function readRecord
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Add variant with tags?
-
-/*!
+// NOTE(esiragusa): dox disabled.
+/*
  * @fn GffFileIO#readRecord
  * @brief Read one GFF/GTF record from a SinglePassRecordReader.
  *
@@ -491,7 +477,8 @@ _writePossiblyInQuotes(TTarget& target, TString & source, TMustBeQuotedFunctor c
 // Function writeRecord()
 // ----------------------------------------------------------------------------
 
-/*!
+// NOTE(esiragusa): dox disabled.
+/*
  * @fn GffFileIO#writeRecord
  * @brief Writes a @link GffRecord @endlink to a stream as GFF or GTF.
  *
@@ -499,7 +486,7 @@ _writePossiblyInQuotes(TTarget& target, TString & source, TMustBeQuotedFunctor c
  *
  * @param[in,out] stream  The @link OutputIteratorConcept output iterator @endlink to write to.
  * @param[in]     record  The @link GffRecord @endlink to write out.
- * @param[in]     tag     A tag to select the file format, either @link GffFileIO#Gff @link or @link GffFileIO#Gtf
+ * @param[in]     tag     A tag to select the file format, either @link GffFileIO#Gff @endlink or @link GffFileIO#Gtf
  *                        @endlink.
  *
  * @throws IOError if something went wrong.
@@ -636,7 +623,7 @@ writeRecord(TTarget & target, GffRecord const & record, Tag<TFormat> const & tag
     if (record.score != record.score)
         writeValue(target, '.');
     else
-        writeValue(target, record.score);
+        appendNumber(target, record.score);
     writeValue(target, '\t');
 
     // write column 7: strand

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                        test_alignment_dp_formula.h
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -2074,7 +2074,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_diagonal_direction)
     SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
     SEQAN_ASSERT_EQ(prevVertical._score, 10);
-    
+
     traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileCompleteTrace());
 
@@ -2404,7 +2404,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_diagonal_direction)
 
     Score<int, Simple> scoringScheme(2, -2, -4, -6);
     int inf = DPCellDefaultInfinity<DPCell_<int, AffineGaps> >::VALUE;
-    
+
     {
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileSingleTrace());
@@ -2541,7 +2541,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_vertical_direction)
     typedef TraceBitMap_::TTraceValue TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
-    
+
     DPCell_<int, AffineGaps> activeCell;
     DPCell_<int, AffineGaps> prevDiagonal;
     prevDiagonal._score = 2;
@@ -2634,7 +2634,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_upper_band_direction)
 
     Score<int, Simple> scoringScheme(2, -2, -4, -6);
     int inf = DPCellDefaultInfinity<DPCell_<int, AffineGaps> >::VALUE;
-    
+
     {
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());

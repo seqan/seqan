@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -68,7 +68,7 @@ const bool TestTypeEq<T, T>::VALUE = true;
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_bool_type)
 {
     using namespace seqan;
-    
+
     // Test for the values of the VALUE members.
     SEQAN_ASSERT_EQ(+False::VALUE, 0);
     SEQAN_ASSERT_EQ(+True::VALUE, 1);

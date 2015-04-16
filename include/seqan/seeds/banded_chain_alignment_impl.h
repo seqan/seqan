@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -86,11 +86,11 @@ struct BandedChainTracking
 
 template <typename TSeedSet>
 inline bool
-_isLastSeed(typename Iterator<TSeedSet const>::Type iter,
+_isLastSeed(typename Iterator<TSeedSet const, Standard>::Type iter,
             TSeedSet const & seedSet)
 {
     typedef typename Iterator<TSeedSet const>::Type TSeedIterator;
-    TSeedIterator itEnd = end(seedSet);
+    TSeedIterator itEnd = end(seedSet, Standard());
     return iter == --itEnd;
 }
 
@@ -524,7 +524,7 @@ _computeCell(TDPScout & scout,
 }
 
 // ----------------------------------------------------------------------------
-// Function _computeCell()		  [BandedChainAlignment, FullColumn, FirstCell]
+// Function _computeCell()          [BandedChainAlignment, FullColumn, FirstCell]
 // ----------------------------------------------------------------------------
 
 // For DPInnerColumn.
@@ -588,8 +588,8 @@ _findFirstAnchor(TSeedSet const & seedSet, int bandExtension)
 
     SEQAN_ASSERT_GT_MSG(length(seedSet), 0u, "SeedSet is empty!");
 
-    TIterator it = begin(seedSet);
-    TIterator itEnd = end(seedSet);
+    TIterator it = begin(seedSet, Standard());
+    TIterator itEnd = end(seedSet, Standard());
     --itEnd;
 
     while (it != itEnd)
@@ -601,7 +601,7 @@ _findFirstAnchor(TSeedSet const & seedSet, int bandExtension)
             continue;
         else
         { // found seed which is not crossing the begin.
-            SEQAN_ASSERT(it != static_cast<TIterator>(begin(seedSet)));
+            SEQAN_ASSERT(it != static_cast<TIterator>(begin(seedSet, Standard())));
             return --it;
         }
     }
@@ -624,7 +624,7 @@ _findLastAnchor(typename Iterator<TSeedSet const, Standard>::Type & iterBegin,
 
     SEQAN_ASSERT_GT_MSG(length(seedSet), 0u, "SeedSet is empty!");
 
-    TIterator it = end(seedSet);
+    TIterator it = end(seedSet, Standard());
     --it;
 
     while (it != iterBegin)
@@ -925,7 +925,7 @@ _computeGapArea(TTraceSet & globalTraceSet,
     _adaptLocalTracesToGlobalGrid(localTraceSet, gridBegin);
     if (!empty(localTraceSet))
         _glueTracebacks(globalTraceSet, localTraceSet);
-    
+
     scoutState._horizontalNextGridOrigin += gridBegin.i1;
     scoutState._verticalNextGridOrigin += gridBegin.i2;
     return score;
@@ -1093,7 +1093,7 @@ _finishBandedChain(TTraceSet & globalTraceSet,
         _adaptLocalTracesToGlobalGrid(localTraceSet, gridBegin);
         if (!empty(localTraceSet))
             _glueTracebacks(globalTraceSet, localTraceSet);
-        return score;   
+        return score;
     }
 
     DPBandConfig<BandOn> band(-static_cast<TSignedPosition>((bandExtension << 1)) -static_cast<TSignedPosition>(verticalBandShift),
@@ -1193,7 +1193,7 @@ _computeAlignment(TTraceSet & globalTraceSet,
 
     typedef typename Position<TSequenceH>::Type TPosH;
     typedef typename Position<TSequenceV>::Type TPosV;
-    typedef typename Iterator<TSeedSet const>::Type TSeedSetIterator;
+    typedef typename Iterator<TSeedSet const, Standard>::Type TSeedSetIterator;
 
     typedef DPCell_<TScoreValue, TGapSpec> TDPCell;
     typedef DPScoutState_<BandedChainAlignmentScoutState<TDPCell> > TScoutState;
@@ -1215,7 +1215,7 @@ _computeAlignment(TTraceSet & globalTraceSet,
     // Find the last anchor that is not covered by the region between the previous anchor and the end of the matrix.
     TSeedSetIterator itEnd = _findLastAnchor(it, seedSet, seqH, seqV, bandExtension);
 
-    SEQAN_ASSERT(itEnd != static_cast<TSeedSetIterator>(end(seedSet)));
+    SEQAN_ASSERT(itEnd != static_cast<TSeedSetIterator>(end(seedSet, Standard())));
     // The scout state stores the current state of the dp scout and is used to store the
     // initialization values for the next intersecting grid.
     TScoutState scoutState;

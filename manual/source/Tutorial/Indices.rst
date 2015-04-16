@@ -66,7 +66,7 @@ In contrast, the next code snipped creates a FM index over a set of amino acid s
    appendValue(protein, "GKTVXL");
    appendValue(protein, "XLZ");
 
-   Index<StringSet<String<AminoAcid> >, FMIndex> fmIndex(protein);
+   Index<StringSet<String<AminoAcid> >, FMIndex<> > fmIndex(protein);
 
 Assignment 1
 """"""""""""
@@ -294,7 +294,7 @@ In this case, one can reduce the memory consumption of an :dox:`Index` by changi
 SA Fibre
 """"""""
 
-All :dox:`Index Indices` in SeqAn internally use the :dox:`FibreSA`, i.e. some sort of suffix array.
+All :dox:`Index Indices` in SeqAn internally use the :dox:`Fibre FibreSA`, i.e. some sort of suffix array.
 For :dox:`String Strings`, each suffix array entry consumes 64 bit of memory per default, where 32 bit would be sufficient if the text size is appropriate.
 In order to change the size type of the suffix array entry we simply have to overload the metafunction :dox:`SAValue`.
 
@@ -304,7 +304,7 @@ In order to change the size type of the suffix array entry we simply have to ove
    struct SAValue<String<Dna> >
    {
        typedef unsigned Type;
-   }
+   };
 
 If your text is a :dox:`StringSet`, then :dox:`SAValue` will return a :dox:`Pair` that can be overloaded in the same way.
 
@@ -314,7 +314,7 @@ If your text is a :dox:`StringSet`, then :dox:`SAValue` will return a :dox:`Pair
    struct SAValue<StringSet<String<Dna> > >
    {
        typedef Pair<unsigned, unsigned> Type;
-   }
+   };
 
 The first type of the pair is used as the type for the index of a string in the string set.
 So if you only have a few strings you could save even more memory like this.
@@ -325,13 +325,13 @@ So if you only have a few strings you could save even more memory like this.
     struct SAValue<StringSet<String<Dna> > >
     {
         typedef Pair<unsigned char, unsigned> Type;
-    }
+    };
 
 
 FMIndex Fibres
 """"""""""""""
 
-The size of a generalized :dox:`FMIndex` depends also on the total number of characters in a :dox:`StringSet` (see :dox:`lengthSum`).
+The size of a generalized :dox:`FMIndex` depends also on the total number of characters in a :dox:`StringSet` (see :dox:`StringSet#lengthSum`).
 This trait can be configured via the :dox:`FMIndexConfig` object.
 
 .. code-block:: cpp

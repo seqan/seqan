@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -112,7 +112,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_control_loop)
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_control_loop_reverse)
 {
     using namespace seqan;
-    
+
     int i[5] = { 1, 2, 3, 4, 5 };
     LoopReverse<LoopTestWorker_, 5>::run(i);
 

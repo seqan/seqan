@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -175,7 +175,7 @@ clear(Allocator<SimpleAlloc<TParentAllocator> > & me)
 
 template <typename TParentAllocator, typename TValue, typename TSize, typename TUsage>
 inline void
-allocate(Allocator<SimpleAlloc<TParentAllocator> > & me, 
+allocate(Allocator<SimpleAlloc<TParentAllocator> > & me,
          TValue * & data,
          TSize count,
          Tag<TUsage> const &)
@@ -211,9 +211,9 @@ allocate(Allocator<SimpleAlloc<TParentAllocator> > & me,
 // ----------------------------------------------------------------------------
 
 template <typename TParentAllocator, typename TValue, typename TSize, typename TUsage>
-inline void 
+inline void
 deallocate(Allocator<SimpleAlloc<TParentAllocator> > & me,
-           TValue * data, 
+           TValue * data,
            TSize,
            Tag<TUsage> const &)
 {

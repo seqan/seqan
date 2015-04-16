@@ -89,7 +89,7 @@ void getCwd(TString & string)
 #ifdef PLATFORM_WINDOWS
     _getcwd(cwd, 1000);
 #else
-    getcwd(cwd, 1000);
+    ignoreUnusedVariableWarning(getcwd(cwd, 1000));
 #endif
 
     assign(string, cwd);
@@ -338,12 +338,10 @@ void setDateAndVersion(ArgumentParser & parser)
 {
     setCategory(parser, "Read Mapping");
 
-#ifdef SEQAN_REVISION
-    setVersion(parser, "0.9.2 [" + std::string(SEQAN_REVISION) + "]");
-#else
-    setVersion(parser, "0.9.2");
+#if defined(SEQAN_APP_VERSION) && defined(SEQAN_REVISION)
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
 #endif
-#ifdef SEQAN_DATE
+#if defined(SEQAN_DATE)
     setDate(parser, SEQAN_DATE);
 #endif
 }
@@ -356,7 +354,7 @@ void setDescription(ArgumentParser & parser)
 {
     addDescription(parser, "Yara - Yet Another Read Aligner.");
     addDescription(parser, "See \\fIhttp://www.seqan.de/projects/yara\\fP for more information.");
-    addDescription(parser, "(c) Copyright 2011-2014 by Enrico Siragusa <enrico.siragusa@fu-berlin.de>.");
+    addDescription(parser, "(c) Copyright 2011-2014 by Enrico Siragusa.");
     addDescription(parser, "(c) Copyright 2013 by NVIDIA Corporation.");
 }
 

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ template <typename THostSpec, typename TStringJournalSpec, typename TBuffSpec>
 void testJournaledStringIteratorDifference(THostSpec const &, TStringJournalSpec const &, TBuffSpec const &)
 {
     typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournaledString;
-    
+
     CharString charStr = "test";
 
     // Case 1: Difference between begin and end.
@@ -112,7 +112,7 @@ void testJournaledStringIteratorSum(THostSpec const &, TStringJournalSpec const 
 {
     typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournaledString;
     typedef typename Iterator<TJournaledString, Standard>::Type TIterator;
-    
+
     CharString charStr = "test";
     TJournaledString journaledString;
 
@@ -152,7 +152,7 @@ void testJournaledStringIteratorRelations(THostSpec const &, TStringJournalSpec 
 {
     typedef String<char, Journaled<THostSpec, TStringJournalSpec, TBuffSpec> > TJournaledString;
     typedef typename Iterator<TJournaledString, Standard>::Type TIterator;
-    
+
     CharString charStr = "test";
     TJournaledString journaledString;
     setHost(journaledString, charStr);

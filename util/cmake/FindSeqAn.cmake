@@ -277,6 +277,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt pthread)
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
   set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
+  set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-D_GLIBCXX_USE_C99=1")
 endif ()
 
 # libexecinfo -- implicit

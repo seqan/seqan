@@ -7,9 +7,9 @@ int main()
     BamFileIn bamFileIn("example.bam");
 
     BamHeader header;
-    readRecord(header, bamFileIn);
+    readHeader(header, bamFileIn);
 
-    typedef SmartFileContext<BamFileIn, void>::Type TBamContext;
+    typedef FormattedFileContext<BamFileIn, void>::Type TBamContext;
 
     TBamContext const & bamContext = context(bamFileIn);
 

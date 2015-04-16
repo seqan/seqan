@@ -12,14 +12,14 @@ int main()
         return 1;
     }
     // Open output file, BamFileOut accepts also an ostream and a format tag.
-    BamFileOut bamFileOut(std::cout, Sam());
+    BamFileOut bamFileOut(context(bamFileIn), std::cout, Sam());
 
     try
     {
         // Copy header.
         BamHeader header;
-        readRecord(header, bamFileIn);
-        writeRecord(bamFileOut, header);
+        readHeader(header, bamFileIn);
+        writeHeader(bamFileOut, header);
 
         // Copy records.
         BamAlignmentRecord record;

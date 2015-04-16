@@ -10,6 +10,8 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_rabema)
 message (STATUS "Configuring apps/rabema")
 
+set (SEQAN_APP_VERSION "1.2.1")
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
@@ -32,6 +34,11 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 
 # Add definitions set by find_package (SeqAn).
 add_definitions (${SEQAN_DEFINITIONS})
+
+# Add definitions set by the build system.
+add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
+add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
+add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 
 # Preparation of SAM files, i.e. filling SEQ field of each record.
 add_executable (rabema_prepare_sam prepare_sam.cpp sorting.h)

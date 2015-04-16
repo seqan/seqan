@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_header)
     seqan::VcfIOContext<> vcfIOContext;
     seqan::VcfHeader vcfHeader;
 
-    readRecord(vcfHeader, vcfIOContext, iter, seqan::Vcf());
+    readHeader(vcfHeader, vcfIOContext, iter, seqan::Vcf());
 
     SEQAN_ASSERT_EQ(length(vcfHeader), 18u);
     SEQAN_ASSERT_EQ(vcfHeader[0].key, "fileformat");
@@ -177,7 +177,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_read_record)
     seqan::VcfFileIn vcfStream(toCString(vcfPath));
     seqan::VcfHeader header;
 
-    readRecord(header, vcfStream);
+    readHeader(header, vcfStream);
 
     SEQAN_ASSERT_EQ(length(header), 18u);
     SEQAN_ASSERT_EQ(header[0].key, "fileformat");
@@ -319,7 +319,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_header)
     std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + ".vcf";
     std::ofstream file(tmpPath.c_str());
     seqan::DirectionIterator<std::ofstream, seqan::Output>::Type iter = directionIterator(file, seqan::Output());
-    writeRecord(iter, vcfHeader, vcfIOContext, seqan::Vcf());
+    writeHeader(iter, vcfHeader, vcfIOContext, seqan::Vcf());
     file.close();
 
     std::string goldPath = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/vcf_io/vcf_header.vcf";
@@ -404,7 +404,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_write_record)
     header[17].value = "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">";
 
     // Write header
-    writeRecord(vcfStream, header);
+    writeHeader(vcfStream, header);
 
     // Write first record.
     {

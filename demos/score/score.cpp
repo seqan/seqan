@@ -14,14 +14,12 @@ int main()
 
     Align<DnaString> align(stringSet);                // Initialize the Align object using a StringSet.
 
-//![UsingScore]
     Score<int> scoreScheme(5, -6, -2, -11);           // Initialize Score object with affine gap costs.
     int score = globalAlignment(align, scoreScheme);  // Computes a global alignment usign the defined scoring scheme.
 
     std::cout << "Score = " << score << std::endl;
     std::cout << "Alignment:" << std::endl;
     std::cout << align << std::endl;
-//![UsingScore]
 
     return 0;
 }

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ struct BadLexicalCast : ParseError
      * @signature BadLexicalCast::BadLexicalCast(target, source);
      *
      * @param[in] target Target value, used as a tag only.
-     * @param[in] source Source value, a @link SequenceConcept sequence @endlink of <tt>char</tt>.
+     * @param[in] source Source value, a @link StringConcept sequence @endlink of <tt>char</tt>.
      */
     template <typename TTarget, typename TSource>
     BadLexicalCast(TTarget const & target, TSource const & source) :

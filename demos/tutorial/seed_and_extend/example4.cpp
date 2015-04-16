@@ -31,7 +31,6 @@ int main()
     assignSource(row(align, 1), infix(seqV, beginPositionV(seed),
                                       endPositionV(seed)));
 
-    // TODO(holtgrew): Use seed diagonals as bands.
     globalAlignment(align, scoringScheme);
     std::cerr << "Resulting alignment\n" << align << "\n";
 //![example]

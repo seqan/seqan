@@ -65,11 +65,9 @@ struct Getter
 // Metafunction MemberBits
 // ----------------------------------------------------------------------------
 
+// Forward declaration only.
 template <typename TObject, typename TSpec>
-struct MemberBits
-{
-    static const unsigned VALUE = BitsPerValue<typename Member<TObject, TSpec>::Type>::VALUE;
-};
+struct MemberBits;
 
 // ----------------------------------------------------------------------------
 // Metafunction MemberLimits
@@ -184,6 +182,12 @@ struct Member<Match<TSpec>, Errors>
 // ----------------------------------------------------------------------------
 
 namespace seqan {
+template <typename TObject, typename TSpec>
+struct MemberBits
+{
+    static const unsigned VALUE = BitsPerValue<typename Member<TObject, TSpec>::Type>::VALUE;
+};
+
 template <typename TSpec>
 struct MemberBits<Match<TSpec>, ReadId>
 {

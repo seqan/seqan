@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -61,10 +61,10 @@ struct Skiplist;
  * @class Map
  * @headerfile <seqan/map.h>
  * @brief Set/dictionary container.
- * 
+ *
  * @signature template <typename TValue, typename TSpec>
  *            class Map;
- * 
+ *
  * @tparam TSpec  The specializing type. Default: @link Skiplist @endlink
  * @tparam TValue Type of values that are stored in the map. Use a Pair<Key, Cargo> to implement a dictionary
  *                mapping from <tt>Key</tt> to <tt>Cargo</tt>.
@@ -85,51 +85,51 @@ class Map;
  */
 
 //////////////////////////////////////////////////////////////////////////////
-// In SeqAn sets and maps store elements as pairs of (key,cargo) 
+// In SeqAn sets and maps store elements as pairs of (key,cargo)
 // the elements of sets without objects are the keys.
 //////////////////////////////////////////////////////////////////////////////
 
 /*moved to basic_aggregates.h
 template <typename TKey, typename TObject, typename TSpec>
-struct Key< Pair<TKey, TObject, TSpec> > 
+struct Key< Pair<TKey, TObject, TSpec> >
 {
-	typedef TKey Type;
+    typedef TKey Type;
 };
 
 template <typename TKey, typename TCargo, typename TSpec>
-struct Cargo< Pair<TKey, TCargo, TSpec> > 
+struct Cargo< Pair<TKey, TCargo, TSpec> >
 {
-	typedef TCargo Type;
+    typedef TCargo Type;
 };
 */
 
 //////////////////////////////////////////////////////////////////////////////
-// Type for mapValue function that implements [] for map types 
+// Type for mapValue function that implements [] for map types
 
 template <typename TMap, typename TCargo>
 struct MapValueImpl_
 {
-	typedef TCargo & Type;
+    typedef TCargo & Type;
 };
 template <typename TMap>
 struct MapValueImpl_<TMap, Nothing>
 {
-	typedef bool Type;
+    typedef bool Type;
 };
 
 /*!
  * @mfn Map#MapValue
  * @brief Type of the map value type.
- * 
+ *
  * @signature MapValue<T>::Type
  * @tparam T A map type. Types: Map
- * 
+ *
  * @return Type the map value type.
  */
 
 template <typename TMap>
 struct MapValue :
-	MapValueImpl_< TMap, typename Cargo<TMap>::Type >
+    MapValueImpl_< TMap, typename Cargo<TMap>::Type >
 {
 };
 
@@ -138,52 +138,52 @@ struct MapValue :
 template <typename TCargo>
 struct ImplMapValue_
 {
-	template <typename TMap, typename TKey2>
-	static inline TCargo &
-	mapValue_(TMap & me,
-		TKey2 const & _key)
-	{
-		return cargo(me, _key);
-	}
+    template <typename TMap, typename TKey2>
+    static inline TCargo &
+    mapValue_(TMap & me,
+        TKey2 const & _key)
+    {
+        return cargo(me, _key);
+    }
 };
 
 template <>
 struct ImplMapValue_<Nothing>
 {
-	template <typename TMap, typename TKey2>
-	static inline bool
-	mapValue_(TMap & me,
-		TKey2 const & _key)
-	{
-		return hasKey(me, _key);
-	}
+    template <typename TMap, typename TKey2>
+    static inline bool
+    mapValue_(TMap & me,
+        TKey2 const & _key)
+    {
+        return hasKey(me, _key);
+    }
 };
 
 /*!
  * @fn Map#mapValue
  * @brief Subscript <tt>operator[]</tt> of maps.
- * 
+ *
  * @signature TMapValue mapValue(map, key);
- * 
+ *
  * @param[in,out] map A map. Types: Map
  * @param[in]     key A key.
- * 
+ *
  * @return TMapValue If <tt>map</tt> is a set: The same as Map#hasKey.  If <tt>map</tt> is a dictionary: The same as
  *                   Map#value.
- * 
+ *
  * @section Remarks
- * 
+ *
  * Usually, Map#value implements the subscript operator <tt>[ ]</tt>, but for maps, this operator is implemented in
  * <tt>mapValue</tt>. The semantic of this operator depends on the kind of map: If the map has a Cargo.cargo, than
  * <tt>mapValue(map, key)</tt> returns the cargo of the (first) value in the map of the given key. If the map has no
  * Cargo.cargo, than the function returns a <tt>true</tt>, if <tt>key</tt> is in <tt>map</tt>, or <tt>false</tt>
  * otherwise.
- * 
+ *
  * @section Remarks
  *
  * There is no way to create a set of Pair, since it is always interpreted as a key/value pair.  If you need a key type
  * that holds two members, define your own key type.
- * 
+ *
  * You may overload Key and Cargo for your own value type in order to define, what part of your value type is used as
  * key and what as cargo.
  */
@@ -191,38 +191,38 @@ struct ImplMapValue_<Nothing>
 template <typename TMap, typename TKey>
 inline typename MapValue<TMap>::Type
 mapValue(TMap & me,
-		 TKey const & _key)
+         TKey const & _key)
 {
-	typedef typename Cargo<TMap>::Type TCargo;
-	return ImplMapValue_<TCargo>::mapValue_(me, _key);
+    typedef typename Cargo<TMap>::Type TCargo;
+    return ImplMapValue_<TCargo>::mapValue_(me, _key);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TElement>
-inline TElement & 
-key(TElement & element) 
+inline TElement &
+key(TElement & element)
 {
-	return element;
+    return element;
 }
 template <typename TElement>
-inline TElement const & 
-key(TElement const & element) 
+inline TElement const &
+key(TElement const & element)
 {
-	return element;
+    return element;
 }
 
 template <typename TKey, typename TObject, typename TSpec>
-inline TKey & 
-key(Pair<TKey, TObject, TSpec> & element) 
+inline TKey &
+key(Pair<TKey, TObject, TSpec> & element)
 {
-	return element.i1;
+    return element.i1;
 }
 template <typename TKey, typename TObject, typename TSpec>
 inline TKey const &
-key(Pair<TKey, TObject, TSpec> const & element) 
+key(Pair<TKey, TObject, TSpec> const & element)
 {
-	return element.i1;
+    return element.i1;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -230,42 +230,42 @@ key(Pair<TKey, TObject, TSpec> const & element)
 template <typename TElement, typename TSource>
 inline void
 setKey(TElement & element,
-	   TSource const & source) 
+       TSource const & source)
 {
-	element = source;
+    element = source;
 }
 template <typename TKey, typename TObject, typename TSpec, typename TSource>
-inline void 
+inline void
 setKey(Pair<TKey, TObject, TSpec> & element,
-	   TSource const & source) 
+       TSource const & source)
 {
-	element.i1 = source;
+    element.i1 = source;
 }
 
 //////////////////////////////////////////////////////////////////////////////
 //no default cargo function
 
 template <typename TKey, typename TObject, typename TSpec>
-inline TObject & 
-cargo(Pair<TKey, TObject, TSpec> & element) 
+inline TObject &
+cargo(Pair<TKey, TObject, TSpec> & element)
 {
-	return element.i2;
+    return element.i2;
 }
 template <typename TKey, typename TObject, typename TSpec>
 inline TObject const &
-cargo(Pair<TKey, TObject, TSpec> const & element) 
+cargo(Pair<TKey, TObject, TSpec> const & element)
 {
-	return element.i2;
+    return element.i2;
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TKey, typename TObject, typename TSpec, typename TSource>
-inline void 
+inline void
 setCargo(Pair<TKey, TObject, TSpec> & element,
-	   TSource const & source) 
+       TSource const & source)
 {
-	element.i2 = source;
+    element.i2 = source;
 }
 
 //////////////////////////////////////////////////////////////////////////////

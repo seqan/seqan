@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,23 +40,14 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
 /*!
- * @defgroup SamBamIO SAM/BAM I/O
- * @brief Tags for identifying SAM/BAM format.
- */
-
-/*!
- * @tag SamBamIO#Bam
+ * @tag FileFormats#Bam
  * @brief Identify the BAM format.
  *
- * @tag SamBamIO#Sam
+ * @tag FileFormats#Sam
  * @brief Identify the SAM format.
  */
 
@@ -67,7 +58,7 @@ typedef Tag<Bam_> Bam;
 template <typename T>
 struct FileExtensions<Bam, T>
 {
-    static char const * VALUE[1];	// default is one extension
+    static char const * VALUE[1];    // default is one extension
 };
 
 template <typename T>
@@ -95,27 +86,12 @@ unsigned char const MagicHeader<Bam, T>::VALUE[4] = { 'B', 'A', 'M', '\1' };  //
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function readRecord()                                              BamHeader
+// Function readHeader()                                              BamHeader
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn SamBamIO#readRecord
- * @brief Read a record from a SAM/BAM file.
- *
- * @signature int readRecord(record, context, stream, tag);
- *
- * @param[out]    record  The @link BamAlignmentRecord @endlink object to read the information into.
- * @param[out]    header  The @link BamHeader @endlink object to read the header information into.
- * @param[in,out] context The @link BamIOContext @endlink object to use.
- * @param[in,out] stream  The @link StreamConcept Stream @endlink to read from.
- * @param[in]     tag     The format tag, one of <tt>Sam</tt> and <tt>Bam</tt>.
- *
- * @return int A status code, 0 on success, != 0 on failure.
- */
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
-readRecord(BamHeader & header,
+readHeader(BamHeader & header,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            Bam const & /*tag*/)
@@ -202,7 +178,7 @@ _readBamRecord(TBuffer & rawRecord, TForwardIter & iter, Bam)
 {
     __int32 recordLen = 0;
     readRawPod(recordLen, iter);
-    
+
     // fail, if we read "BAM\1" (did you miss to call readRecord(header, bamFile) first?)
     if (recordLen == 0x014D4142)
         SEQAN_THROW(ParseError("Unexpected BAM header encountered."));

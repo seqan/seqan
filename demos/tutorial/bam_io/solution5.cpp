@@ -32,8 +32,8 @@ int main(int argc, char const * argv[])
 
     // Read header.
     BamHeader header;
-    readRecord(header, inFile);
-    writeRecord(outFile, header);
+    readHeader(header, inFile);
+    writeHeader(outFile, header);
 
     // Copy over the alignment records.
     BamAlignmentRecord record;

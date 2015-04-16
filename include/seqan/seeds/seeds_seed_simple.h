@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -179,7 +179,7 @@ template <typename TConfig>
 inline typename Position<Seed<Simple, TConfig> >::Type
 beginPositionH(Seed<Simple, TConfig> const & seed)
 {
-	return seed._beginPositionH;
+    return seed._beginPositionH;
 }
 
 // ---------------------------------------------------------------------------
@@ -187,10 +187,10 @@ beginPositionH(Seed<Simple, TConfig> const & seed)
 // ---------------------------------------------------------------------------
 
 template <typename TConfig, typename TPosition>
-inline void 
+inline void
 setBeginPositionH(Seed<Simple, TConfig> & seed, TPosition pos)
 {
-	seed._beginPositionH = pos;
+    seed._beginPositionH = pos;
 }
 
 // ---------------------------------------------------------------------------
@@ -201,7 +201,7 @@ template <typename TConfig>
 inline typename Position<Seed<Simple, TConfig> >::Type
 endPositionH(Seed<Simple, TConfig> const & seed)
 {
-	return seed._endPositionH;
+    return seed._endPositionH;
 }
 
 // ---------------------------------------------------------------------------
@@ -209,10 +209,10 @@ endPositionH(Seed<Simple, TConfig> const & seed)
 // ---------------------------------------------------------------------------
 
 template <typename TConfig, typename TPosition>
-inline void 
+inline void
 setEndPositionH(Seed<Simple, TConfig> & seed, TPosition pos)
 {
-	seed._endPositionH = pos;
+    seed._endPositionH = pos;
 }
 
 // ---------------------------------------------------------------------------
@@ -223,7 +223,7 @@ template <typename TConfig>
 inline typename Position<Seed<Simple, TConfig> >::Type
 beginPositionV(Seed<Simple, TConfig> const & seed)
 {
-	return seed._beginPositionV;
+    return seed._beginPositionV;
 }
 
 // ---------------------------------------------------------------------------
@@ -231,10 +231,10 @@ beginPositionV(Seed<Simple, TConfig> const & seed)
 // ---------------------------------------------------------------------------
 
 template <typename TConfig, typename TPosition>
-inline void 
+inline void
 setBeginPositionV(Seed<Simple, TConfig> & seed, TPosition pos)
 {
-	seed._beginPositionV = pos;
+    seed._beginPositionV = pos;
 }
 
 // ---------------------------------------------------------------------------
@@ -245,7 +245,7 @@ template <typename TConfig>
 inline typename Position<Seed<Simple, TConfig> >::Type
 endPositionV(Seed<Simple, TConfig> const & seed)
 {
-	return seed._endPositionV;
+    return seed._endPositionV;
 }
 
 // ---------------------------------------------------------------------------
@@ -253,10 +253,10 @@ endPositionV(Seed<Simple, TConfig> const & seed)
 // ---------------------------------------------------------------------------
 
 template <typename TConfig, typename TPosition>
-inline void 
+inline void
 setEndPositionV(Seed<Simple, TConfig> & seed, TPosition pos)
 {
-	seed._endPositionV = pos;
+    seed._endPositionV = pos;
 }
 
 // ---------------------------------------------------------------------------

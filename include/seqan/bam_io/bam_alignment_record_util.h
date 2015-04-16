@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -54,12 +54,14 @@ namespace seqan {
  * @param[in] record The @link BamAlignmentRecord @endlink to query.
  * @param[in] file The @link BamFileIn @endlink or @link BamFileOut @endlink where the record belongs to.
  *
- * @return TNameString The name of the reference contig.
+ * @return TNameString The name of the reference contig. <tt>TNameString</tt> is the @link Value @endlink type of the NameStore.
+ *         The NameStore type can be determined using the @link Member @endlink metafunction
+ *         for the @link BamIOContext @endlink in conjunction with the @link BamIOContextMemberTag#NameStoreMember @endlink tag.
  */
 
 template <typename TDirection, typename TSpec>
-inline typename Value<typename SmartFileContext<SmartFile<Bam, TDirection, TSpec>, Dependent<> >::Type::TNameStore>::Type const &
-getContigName(BamAlignmentRecord const & record, SmartFile<Bam, TDirection, TSpec> const & file)
+inline typename Value<typename Member<typename FormattedFileContext<FormattedFile<Bam, TDirection, TSpec>, Dependent<> >::Type, NameStoreMember>::Type>::Type const &
+getContigName(BamAlignmentRecord const & record, FormattedFile<Bam, TDirection, TSpec> const & file)
 {
     return contigNames(context(file))[record.rID];
 }
@@ -77,12 +79,14 @@ getContigName(BamAlignmentRecord const & record, SmartFile<Bam, TDirection, TSpe
  * @param[in] record The @link BamAlignmentRecord @endlink to query.
  * @param[in] file The @link BamFileIn @endlink or @link BamFileOut @endlink where the record belongs to.
  *
- * @return TLength The length of the reference contig.
+ * @return TLength The length of the reference contig. <tt>TLength</tt> is the @link Value @endlink type of the LengthStore.
+ *         The LengthStore type can be determined using the @link Member @endlink metafunction
+ *         for the @link BamIOContext @endlink in conjunction with the @link BamIOContextMemberTag#LengthStoreMember @endlink tag.
  */
 
 template <typename TDirection, typename TSpec>
-inline typename Value<typename SmartFileContext<SmartFile<Bam, TDirection, TSpec>, Dependent<> >::Type::TLengthStore>::Type
-getContigLength(BamAlignmentRecord const & record, SmartFile<Bam, TDirection, TSpec> const & file)
+inline typename Value<typename Member<typename FormattedFileContext<FormattedFile<Bam, TDirection, TSpec>, Dependent<> >::Type, LengthStoreMember>::Type>::Type
+getContigLength(BamAlignmentRecord const & record, FormattedFile<Bam, TDirection, TSpec> const & file)
 {
     return contigLengths(context(file))[record.rID];
 }

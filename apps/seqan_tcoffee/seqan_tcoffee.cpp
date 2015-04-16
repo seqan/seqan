@@ -29,8 +29,7 @@ using namespace seqan;
 inline void
 _addVersion(ArgumentParser & parser)
 {
-    ::std::string rev = "$Revision: 4637 $";
-    setVersion(parser, "Version 1.11 (30. July 2009) Revision: " + rev.substr(11, 4) + "");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -319,7 +318,7 @@ void
 _setUpArgumentParser(ArgumentParser & parser)
 {
     _addVersion(parser);
-    setDate(parser, "September 2014");
+    setDate(parser, SEQAN_DATE);
     setAppName(parser,"seqan_tcoffee");
     setCategory(parser, "Sequence Alignment");
     

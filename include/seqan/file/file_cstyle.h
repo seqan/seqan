@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,8 +40,8 @@
 /* IOREV
  * _tested_
  * _nodoc_
- * 
- * 
+ *
+ *
  * Tested by tests/file
  * documentation non-existent
  * relation to cstream.h not clear
@@ -56,7 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /*    template <>
     struct Value< FILE* >
     {
-	    typedef unsigned char Type;
+        typedef unsigned char Type;
     };
 */
 /*  already defined in "seqan/cstream.h" ...
@@ -64,14 +64,14 @@ namespace SEQAN_NAMESPACE_MAIN
     template <>
     struct Position< FILE* >
     {
-	    typedef long Type;
+        typedef long Type;
     };
 */
 /*
     template <>
     struct Size< FILE* >
     {
-	    typedef size_t Type;
+        typedef size_t Type;
     };
 */
 /*
@@ -79,22 +79,22 @@ namespace SEQAN_NAMESPACE_MAIN
     template <>
     struct Position< FILE* >
     {
-	    typedef long Type;
+        typedef long Type;
     };
 */
     template <>
     struct Difference< FILE* >
     {
 //IOREV shouldnt this be ulong, as the file can be ulong bytes big?
-	    typedef long Type;
+        typedef long Type;
     };
 
 
-	inline const char * 
-	_getCStyleOpenMode(int openMode) 
-	{
+    inline const char *
+    _getCStyleOpenMode(int openMode)
+    {
 //IOREV double check whether this translates FileOpenMode correctly (doesnt look like it)
-		switch (openMode & OPEN_MASK) {
+        switch (openMode & OPEN_MASK) {
             case OPEN_WRONLY:
                 if (!(openMode & OPEN_APPEND))
                     if (openMode & OPEN_CREATE)
@@ -111,76 +111,76 @@ namespace SEQAN_NAMESPACE_MAIN
                         return "r+";
                 else
                     return "a+";
-			default:
-		        return "r";
-		}
+            default:
+                return "r";
+        }
     }
 
-    inline bool 
-	open(FILE* &me, const char *fileName, int openMode) 
-	{
+    inline bool
+    open(FILE* &me, const char *fileName, int openMode)
+    {
 //IOREV _duplicate_ of cstream.h's  "open"
-		SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
+        SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
         return (me = fopen(fileName, _getCStyleOpenMode(openMode))) != NULL;
     }
 
-    inline bool 
-	open(FILE* &me, const char *fileName) 
-	{
+    inline bool
+    open(FILE* &me, const char *fileName)
+    {
 //IOREV _duplicate_ of cstream.h's  "open"
-		return open(me, fileName, DefaultOpenMode<FILE*>::VALUE);
-	}
+        return open(me, fileName, DefaultOpenMode<FILE*>::VALUE);
+    }
 
-    inline bool 
-	openTemp(FILE* &me) 
-	{
+    inline bool
+    openTemp(FILE* &me)
+    {
 //IOREV
-		SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
+        SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
         return (me = tmpfile()) != NULL;
     }
 
-    inline bool 
-	close(FILE* me) 
-	{
+    inline bool
+    close(FILE* me)
+    {
 //IOREV _duplicate_ of cstream.h's  "close"
-		SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
+        SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
         return fclose(me) == 0;
     }
 
-    inline unsigned 
-	sectorSize(FILE* const &) 
-	{
+    inline unsigned
+    sectorSize(FILE* const &)
+    {
 //IOREV _duplicate_ _nodoc_ duplicate or identical spec. in file_base.h should'nt this be variable
         return 4096;
     }
 
     template < typename TPos >
-    inline Size<FILE*>::Type 
-	seek(FILE* me, TPos const fileOfs, int origin) 
-	{
+    inline Size<FILE*>::Type
+    seek(FILE* me, TPos const fileOfs, int origin)
+    {
 //IOREV _duplicate_ overlaps in function with multiple function in cstream.h
         fseek(me, fileOfs, origin);
-		return ftell(me);
+        return ftell(me);
     }
     template < typename TPos >
-    inline Size<FILE*>::Type 
-	seek(FILE* me, TPos const fileOfs) 
-	{
+    inline Size<FILE*>::Type
+    seek(FILE* me, TPos const fileOfs)
+    {
 //IOREV shouldnt it be SEEK_SET instead of SEEK_BEGIN?
-		return seek(me, fileOfs, SEEK_BEGIN);
+        return seek(me, fileOfs, SEEK_BEGIN);
     }
 
-    inline Size<FILE*>::Type 
-	tell(FILE* me) 
-	{
+    inline Size<FILE*>::Type
+    tell(FILE* me)
+    {
 //IOREV _duplicate_ overlaps in function with multiple functions in cstream.h
-		return ftell(me);
+        return ftell(me);
     }
 
     template < typename TValue, typename TSize >
-    inline bool 
-	read(FILE* me, TValue *memPtr, TSize const count) 
-	{
+    inline bool
+    read(FILE* me, TValue *memPtr, TSize const count)
+    {
 //IOREV _duplicate_ of cstream.h's  "read"
         SEQAN_PROADD(SEQAN_PROIO, (sizeof(TValue) * count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
         SEQAN_PROTIMESTART(tw);
@@ -190,9 +190,9 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TValue, typename TSize >
-    inline bool 
-	write(FILE* me, TValue const *memPtr, TSize const count) 
-	{
+    inline bool
+    write(FILE* me, TValue const *memPtr, TSize const count)
+    {
 //IOREV
         SEQAN_PROADD(SEQAN_PROIO, (sizeof(TValue) * count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
         SEQAN_PROTIMESTART(tw);
@@ -202,26 +202,26 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TValue, typename TSize, typename TPos >
-    inline bool 
-	readAt(FILE* me, TValue *memPtr, TSize const count, TPos const fileOfs) 
-	{
+    inline bool
+    readAt(FILE* me, TValue *memPtr, TSize const count, TPos const fileOfs)
+    {
 //IOREV
-		typedef typename Position<FILE*>::Type pos_t;
-		seek(me, (pos_t)fileOfs * (pos_t)sizeof(TValue));
+        typedef typename Position<FILE*>::Type pos_t;
+        seek(me, (pos_t)fileOfs * (pos_t)sizeof(TValue));
         SEQAN_PROADD(SEQAN_PROIO, (sizeof(TValue) * count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
         SEQAN_PROTIMESTART(tw);
         bool result = fread(memPtr, sizeof(TValue), count, me) == (size_t)count;
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
         return result;
     }
-    
+
     template < typename TValue, typename TSize, typename TPos >
-    inline bool 
-	writeAt(FILE* me, TValue const *memPtr, TSize const count, TPos const fileOfs) 
-	{
+    inline bool
+    writeAt(FILE* me, TValue const *memPtr, TSize const count, TPos const fileOfs)
+    {
 //IOREV
-		typedef typename Position<FILE*>::Type pos_t;
-		seek(me, (pos_t)fileOfs * (pos_t)sizeof(TValue));
+        typedef typename Position<FILE*>::Type pos_t;
+        seek(me, (pos_t)fileOfs * (pos_t)sizeof(TValue));
         SEQAN_PROADD(SEQAN_PROIO, (sizeof(TValue) * count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
         SEQAN_PROTIMESTART(tw);
         bool result = fwrite(memPtr, sizeof(TValue), count, me) == (size_t)count;
@@ -229,9 +229,9 @@ namespace SEQAN_NAMESPACE_MAIN
         return result;
     }
 
-    inline Size<FILE*>::Type 
-	size(FILE* me) 
-	{
+    inline Size<FILE*>::Type
+    size(FILE* me)
+    {
 //IOREV
         Size<FILE*>::Type old_pos = tell(me);
         Size<FILE*>::Type result = 0;
@@ -242,36 +242,36 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TSize >
-    inline void 
-	resize(FILE* me, TSize new_length) 
-	{
+    inline void
+    resize(FILE* me, TSize new_length)
+    {
 //IOREV I think this is not c-standard and only works on POSIX-compliant systems
         Size<FILE*>::Type old_pos = tell(me);
         seek(me, new_length, SEEK_BEGIN);
         seek(me, old_pos, SEEK_BEGIN);
     }
 
-	inline bool 
-	flush(FILE*) 
-	{
+    inline bool
+    flush(FILE*)
+    {
 //IOREV _notimplemented_
-		return true; 
-	}
+        return true;
+    }
 
     template < typename AsyncRequest >
-	inline void 
-	release(FILE*, AsyncRequest &) 
-	{
+    inline void
+    release(FILE*, AsyncRequest &)
+    {
 //IOREV _notimplemented_
-	}
+    }
 
     template < typename AsyncRequest >
-    inline bool 
-	cancel(FILE*, AsyncRequest &) 
-	{
+    inline bool
+    cancel(FILE*, AsyncRequest &)
+    {
 //IOREV _notimplemented_
-		return true; 
-	}
+        return true;
+    }
 
 }
 

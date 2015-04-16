@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_bool)
     // Alphabet Concept
     {
         bool b = false;
-        
+
         SEQAN_ASSERT_EQ(+(BitsPerValue<bool>::VALUE), 1);
         assign(b, true);
         SEQAN_ASSERT_EQ(b, true);
@@ -73,7 +73,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_bool)
     // Ordered Alphabet Concept
     {
         bool b = false, c = true;
-        
+
         SEQAN_ASSERT_EQ(minValue(bool()), false);
         SEQAN_ASSERT_EQ(minValue<bool>(), false);
         SEQAN_ASSERT_EQ(+(MinValue<bool>::VALUE), 0/*false*/);
@@ -108,7 +108,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_char)
     // Alphabet Concept
     {
         bool b = false;
-        
+
         SEQAN_ASSERT_EQ(+(BitsPerValue<char>::VALUE), 8u);
         assign(b, true);
         SEQAN_ASSERT_EQ(b, true);
@@ -162,7 +162,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_short)
     // Alphabet Concept
     {
         short b = 0;
-        
+
         SEQAN_ASSERT_EQ(+(BitsPerValue<short>::VALUE), 16u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
@@ -208,7 +208,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int)
     // Alphabet Concept
     {
         int b = 0;
-        
+
         SEQAN_ASSERT_EQ(+(BitsPerValue<int>::VALUE), 32u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
@@ -309,7 +309,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int8)
     // Alphabet Concept
     {
         __int8 b = 0;
-        
+
         SEQAN_ASSERT_EQ(+(BitsPerValue<__int8>::VALUE), 8u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
@@ -364,7 +364,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint8)
     // Alphabet Concept
     {
         __uint8 b = 0;
-        
+
         SEQAN_ASSERT_EQ(+(BitsPerValue<__uint8>::VALUE), 8u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
@@ -409,7 +409,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int16)
     // Alphabet Concept
     {
         __int16 b = 0;
-        
+
         SEQAN_ASSERT_EQ(+(BitsPerValue<__int16>::VALUE), 16u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
@@ -455,7 +455,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint16)
     // Alphabet Concept
     {
         __uint16 b = 0;
-        
+
         SEQAN_ASSERT_EQ(+(BitsPerValue<__uint16>::VALUE), 16u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
@@ -500,7 +500,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int32)
     // Alphabet Concept
     {
         __int32 b = 0;
-        
+
         SEQAN_ASSERT_EQ(+(BitsPerValue<__int32>::VALUE), 32u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
@@ -591,7 +591,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int64)
     // Alphabet Concept
     {
         __int64 b = 0;
-        
+
         SEQAN_ASSERT_EQ(+(BitsPerValue<__int64>::VALUE), 64u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
@@ -637,7 +637,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint64)
     // Alphabet Concept
     {
         __uint64 b = 0;
-        
+
         SEQAN_ASSERT_EQ(+(BitsPerValue<__uint64>::VALUE), 64u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1u);
@@ -683,7 +683,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_float)
     // Alphabet Concept
     {
         float b = 0;
-        
+
         SEQAN_ASSERT_EQ(+(BitsPerValue<float>::VALUE), 32u);
         assign(b, 1.0);
         SEQAN_ASSERT_EQ(b, 1);
@@ -715,7 +715,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_double)
     // Alphabet Concept
     {
         double b = 0;
-        
+
         SEQAN_ASSERT_EQ(+(BitsPerValue<double>::VALUE), 64u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);

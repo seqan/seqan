@@ -22,8 +22,8 @@ int main()
 
     // Copy header. The header is automatically written out before the first record.
     BamHeader header;
-    readRecord(header, bamFileIn);
-    writeRecord(bamFileOut, header);
+    readHeader(header, bamFileIn);
+    writeHeader(bamFileOut, header);
 
     // BamAlignmentRecord stores one record at a time.
     BamAlignmentRecord record;

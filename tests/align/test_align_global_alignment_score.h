@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -251,7 +251,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_score_myers)
     appendValue(strings, strV);
 
     int res = 0;
-    
+
     res = globalAlignmentScore(strH, strV, MyersBitVector());
     SEQAN_ASSERT_EQ(res, -8);
 
@@ -271,7 +271,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_score_myers_hirschberg)
     appendValue(strings, strV);
 
     int res = 0;
-    
+
     res = globalAlignmentScore(strH, strV, MyersHirschberg());
     SEQAN_ASSERT_EQ(res, -8);
 

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -204,7 +204,7 @@ _doTracebackGoDiagonal(TTarget & target,
     {
         _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, fragmentLength,
                        lastTraceValue);
-        
+
         lastTraceValue = TraceBitMap_::DIAGONAL;
         fragmentLength = 0;
     }
@@ -469,7 +469,7 @@ _retrieveInitialTraceDirection(TTraceValue & traceValue, TDPProfile const & /*dp
             traceValue &= (TraceBitMap_::HORIZONTAL | TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
             return TraceBitMap_::HORIZONTAL;
         }
-        return TraceBitMap_::DIAGONAL;  // We set the last value to the 
+        return TraceBitMap_::DIAGONAL;  // We set the last value to the
     }
 
     if (traceValue & TraceBitMap_::DIAGONAL)

@@ -61,20 +61,20 @@ void compareTreeIterators(TIndex &index, TIndexView & /*indexView */)
     TFactory factory(index, 1u, length(index));
     TTFactoryView factoryView = view(factory);
     TIterView it2 = getObject(factoryView, 0u);
-	TIter it1(index);
+    TIter it1(index);
 
-	while (!atEnd(it1) && !atEnd(it2))
-	{
-		SEQAN_ASSERT_EQ(representative(it1), representative(it2));
-		SEQAN_ASSERT_EQ(parentEdgeLabel(it1), parentEdgeLabel(it2));
-		SEQAN_ASSERT_EQ(countOccurrences(it1), countOccurrences(it2));
-		SEQAN_ASSERT_EQ(isRoot(it1), isRoot(it2));
-		SEQAN_ASSERT_EQ(isLeaf(it1), isLeaf(it2));
-		goNext(it1);
-		goNext(it2);
-	}
+    while (!atEnd(it1) && !atEnd(it2))
+    {
+        SEQAN_ASSERT_EQ(representative(it1), representative(it2));
+        SEQAN_ASSERT_EQ(parentEdgeLabel(it1), parentEdgeLabel(it2));
+        SEQAN_ASSERT_EQ(countOccurrences(it1), countOccurrences(it2));
+        SEQAN_ASSERT_EQ(isRoot(it1), isRoot(it2));
+        SEQAN_ASSERT_EQ(isLeaf(it1), isLeaf(it2));
+        goNext(it1);
+        goNext(it2);
+    }
 
-	SEQAN_ASSERT_EQ(atEnd(it1), atEnd(it1));
+    SEQAN_ASSERT_EQ(atEnd(it1), atEnd(it1));
 }
 
 // ----------------------------------------------------------------------------

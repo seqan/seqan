@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,7 @@ public:
         TBase(_index, MinimalCtor()),
         depth(MaxValue<TDepth>::VALUE)
     {}
-    
+
     Iter(TIndex &_index, TVertexDesc const &_vDesc) :
         TBase(_index, _vDesc),
         depth(MaxValue<TDepth>::VALUE)

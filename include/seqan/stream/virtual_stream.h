@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-template <typename TSmartFile>
+template <typename TFormattedFile>
 struct FileFormat;
 
 // ============================================================================
@@ -473,12 +473,15 @@ inline typename Prefix<TFilename const>::Type
 _getUncompressedBasename(TFilename const & fileName, BgzfFile const &)
 {
     typedef typename Value<TFilename>::Type                                     TValue;
-    typedef ModifiedString<TFilename const, ModView<FunctorLowcase<TValue> > >	TLowcase;
-    
+    typedef ModifiedString<TFilename const, ModView<FunctorLowcase<TValue> > >    TLowcase;
+
     TLowcase lowcaseFileName(fileName);
 
     if (endsWith(lowcaseFileName, ".bgzf"))
         return prefix(fileName, length(fileName) - 5);
+
+    if (endsWith(lowcaseFileName, ".gz"))
+        return prefix(fileName, length(fileName) - 3);
 
     return prefix(fileName, length(fileName));
 }
@@ -517,7 +520,8 @@ open(VirtualStream<TValue, TDirection, TTraits> &stream, TStream &fileStream, TC
     typedef typename TVirtualStream::TBufferedStream TBufferedStream;
 
     // peek the first character to initialize the underlying streambuf (for in_avail)
-    fileStream.rdbuf()->sgetc();
+    if (IsSameType<TDirection, Input>::VALUE)  // Only getc if input stream.
+        fileStream.rdbuf()->sgetc();
 
     if (IsSameType<TDirection, Input>::VALUE &&
         !IsSameType<TStream, TBufferedStream>::VALUE &&

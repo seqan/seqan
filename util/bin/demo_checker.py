@@ -41,8 +41,8 @@ def loadExpected(args):
 def runDemo(args):
     cmd = [args.binary_path]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    p.wait()
-    return t(p.stdout.read()).split('\n'), t(p.stderr.read()).split('\n'), p.returncode
+    stdoutbuff, stderrbuff = p.communicate()
+    return t(stdoutbuff).split('\n'), t(stderrbuff).split('\n'), p.returncode
 
 
 def main():

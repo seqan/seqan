@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -592,7 +592,7 @@ public:
         for (TAlignedReadIter it2 = begin(alignedReadStore, Standard()); it2 != itEnd; ++it2)
         {
             typedef Gaps<TReadSeq, AnchorGaps<String<typename TFragmentStore::TReadGapAnchor> > > TReadGaps;
-            TReadGaps readGaps(store.readSeqStore[it2->readId], it2->gaps);
+            TReadGaps readGaps(static_cast<TReadSeq>(store.readSeqStore[it2->readId]), it2->gaps);
             // if (options.debug)
             //     std::cerr << "it2->beginPos == " << it2->beginPos << ", it2->endPos == " << it2->endPos << "\n";
             if ((unsigned)abs((int)(it2->endPos - it2->beginPos)) != length(readGaps))
@@ -813,7 +813,7 @@ void AnsonMyersRealigner_<TFragmentStore>::_beginContig(unsigned contigID)
 
         // We create Gaps for the read we are iterating over.
         // TODO(holtgrew): Is clipping stored in the read gaps? It appears so in Tobias' original code.
-        TReadGaps readGaps(store.readSeqStore[it->readId], it->gaps);
+        TReadGaps readGaps(static_cast<TReadSeq>(store.readSeqStore[it->readId]), it->gaps);
 
         // Get iterators to beginning of read gaps and the corresponding positions in the contig gaps and the profile
         // string.
@@ -954,13 +954,13 @@ void AnsonMyersRealigner_<TFragmentStore>::_endContig(unsigned contigID)
  * @headerfile <seqan/align.h>
  * @brief Fix a band for alignment given sequences (for their lengths) and an @link AlignConfig @endlink.
  *
- * @signature void fixBand(lowerDiag, upperDiag, seqH, seqV, alignConfig);
+ * @signature void _fixBandSize(lowerDiag, upperDiag, seqH, seqV, alignConfig);
  *
  * @param[in,out] lowerDiag   The lower band position (<tt>int</tt>) to adjust.
  * @param[in,out] upperDiag   The upper band position (<tt>int</tt>) to adjust.
- * @param[in]     seqH        The @link SequenceConcept sequence @endlink to use in horizontal direction of alignment
+ * @param[in]     seqH        The @link ContainerConcept container @endlink to use in horizontal direction of alignment
  *                            matrix.
- * @param[in]     seqV        The @link SequenceConcept sequence @endlink to use in vertical direction of alignment
+ * @param[in]     seqV        The @link ContainerConcept container @endlink to use in vertical direction of alignment
  *                            matrix.
  * @param[in]     alignConfig The @link AlignConfig @endlink to use for the alignment configuration.
  */

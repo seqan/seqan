@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -74,8 +74,8 @@ struct GappedValueType
 template <typename TValue, typename TSpec>
 struct GappedValueType<SimpleType<TValue, TSpec> >
 {
-	typedef SimpleType<TValue, TSpec> THost_;
-	typedef ModifiedAlphabet<THost_, ModExpand<'-'> > Type;
+    typedef SimpleType<TValue, TSpec> THost_;
+    typedef ModifiedAlphabet<THost_, ModExpand<'-'> > Type;
 };
 
 // ============================================================================

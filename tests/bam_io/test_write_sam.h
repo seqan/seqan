@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -47,12 +47,12 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_header)
     typedef typename BamHeaderRecord::TTag    TTag;
 
     // Prepare input.
-    
+
     StringSet<CharString> contigNameStore;
     appendValue(contigNameStore, "REF");
     NameStoreCache<StringSet<CharString> > contigNameStoreCache(contigNameStore);
     BamIOContext<StringSet<CharString> > bamIOContext(contigNameStore, contigNameStoreCache);
-    
+
     BamHeader header;
     appendValue(contigLengths(bamIOContext), 10000);
 

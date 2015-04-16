@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -438,10 +438,10 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
 
     //TStringSet& str = stringSet(gAlign);
     //for(TSize i = 0; i<length(str);++i) {
-    //	for(TSize j=0;j<length(str[i]);++j) {
-    //		std::cout << ordValue(str[i][j]) << ',';
-    //	}
-    //	std::cout << std::endl;
+    //    for(TSize j=0;j<length(str[i]);++j) {
+    //        std::cout << ordValue(str[i][j]) << ',';
+    //    }
+    //    std::cout << std::endl;
     //}
 }
 

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_qualities_quality_value_size_metafunction)
 
     // Make sure the symbol exist.
     typedef QualityValueSize<int> TQualityValueSize SEQAN_UNUSED_TYPEDEF;
-    
+
     SEQAN_ASSERT_EQ(+(QualityValueSize<char>::VALUE), 256);  // TODO(holtgrew): Possibly remove default implementation.
     SEQAN_ASSERT_EQ(+(QualityValueSize<MyType_ const>::VALUE), 3);
 }

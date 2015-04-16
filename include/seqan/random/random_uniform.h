@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -93,9 +93,9 @@ template <>
 class Pdf<Uniform<bool> >
 {
 public:
-	Pdf() {}
+    Pdf() {}
 };
-	
+
 // ===========================================================================
 // Metafunctions
 // ===========================================================================
@@ -159,8 +159,8 @@ typename Value<Pdf<Uniform<bool> > >::Type
 pickRandomNumber(TRNG & rng, Pdf<Uniform<bool> > const &)
 {
     SEQAN_CHECKPOINT;
-	typename Value<TRNG>::Type x = pickRandomNumber(rng);
-	return x % 2;
+    typename Value<TRNG>::Type x = pickRandomNumber(rng);
+    return x % 2;
 }
 
 }  // namespace seqan

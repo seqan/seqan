@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -81,7 +81,7 @@
 #include <seqan/find/find_set_horspool.h>
 
 //#include <seqan/find/find_multi.h> //wegwerfen
-#include <seqan/find/find_wumanber.h> 
+#include <seqan/find/find_wumanber.h>
 #include <seqan/find/find_multiple_bfam.h>
 
 // ===========================================================================

@@ -58,7 +58,7 @@ template <typename TGraph, typename TVertexDescriptor, typename TScoreAlloc, typ
           typename TBreakpoint, typename TPos, typename TMatchAlloc, typename TID>
 // typename TBreakpointAlloc, typename TMatchAlloc> // Requires Value<SparsePropertyMap> specialisation in msplazer.h
 void
-write(std::ostream & out, // TFile & file,  // std::ostream & out,  // std::fstream f; f.open(..); if (!f.good()) ... ; write(f, ...);  // write(std::cerr/std::cout, ...
+write(std::ostream & out,
       // MSplazerChain<TGraph, TVertexDescriptor, TScoreAlloc, TBreakpointAlloc, // Requires Value<SparsePropertyMap> specialisation in msplazer.h
       MSplazerChain<TGraph, TVertexDescriptor, TScoreAlloc, SparsePropertyMap<TBreakpoint, TPos>,
                     TMatchAlloc> const & msplazerchain,
@@ -219,6 +219,63 @@ void _setGffRecordType(GffRecord & record, TBreakpoint & bp)
 }
 
 template <typename TBreakpoint>
+inline void _fillGffRecordDuplication(GffRecord & record, TBreakpoint & bp, unsigned id)
+{
+    typedef typename TBreakpoint::TId TId;
+    TId sId;
+    typedef typename TBreakpoint::TPos TPos;
+    _getShortId(sId, bp.startSeqId);
+    record.ref = sId;
+    record.source = "GUSTAF";
+    record.type = "duplication";
+    TPos begin, end, target = maxValue<unsigned>();
+    // Using set function for VCF duplication to set positions
+    _setVcfRecordDuplicationPos(bp, begin, end, target);
+    if (begin > end)
+        std::swap(begin, end);
+    record.beginPos = begin;
+    record.endPos = end;
+    /*
+    std::cerr << "#####################################################" << std::endl;
+    std::cerr << bp << std::endl;
+    std::cerr << "begin " << begin << " end " << end << " target " << std::cerr;
+    std::cerr << "record end " << record.endPos << std::endl;
+    std::cerr << "#####################################################" << std::endl;
+    */
+    record.strand = '+';
+    appendValue(record.tagNames, "ID");
+    appendValue(record.tagValues, toString(id));
+    if (target != maxValue<unsigned>())
+    {
+        appendValue(record.tagNames, "size");
+        appendValue(record.tagValues, toString((end - begin)));
+        appendValue(record.tagNames, "targetPos");
+        appendValue(record.tagValues, toString(target));
+    }
+    else
+    {
+        std::stringstream dpos;
+        dpos << (begin + 1) << "|" << end;
+        appendValue(record.tagNames, "size");
+        appendValue(record.tagValues, "imprecise");
+        appendValue(record.tagNames, "targetPos");
+        appendValue(record.tagValues, dpos.str());
+    }
+    appendValue(record.tagNames, "support");
+    appendValue(record.tagValues, toString(bp.support));
+    appendValue(record.tagNames, "supportIds");
+
+    std::stringstream s;
+    for (unsigned i = 0; i < length(bp.supportIds); ++i)
+    {
+        s << bp.supportIds[i];
+        s << ',';
+    }
+
+    appendValue(record.tagValues, s.str());
+}
+
+template <typename TBreakpoint>
 inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
 {
     typedef typename TBreakpoint::TId TId;
@@ -230,7 +287,7 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
     _setGffRecordType(record, bp);
 //    record.type = bp.svtype;
     record.beginPos = bp.startSeqPos;
-    if (bp.svtype == 2 || bp.svtype == 3 || bp.svtype == 7) // 2=deletion;3=inversion;7=translocation
+    if (bp.svtype == 2 || bp.svtype == 3) // 2=deletion;3=inversion;
         record.endPos = bp.endSeqPos;
     else
         record.endPos = bp.startSeqPos + 1;
@@ -252,6 +309,13 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
     {
         appendValue(record.tagNames, "size");
         appendValue(record.tagValues, toString(static_cast<TPos>(bp.endSeqPos - bp.startSeqPos)));
+    }
+    else if (bp.svtype == 7) // 7=translocation
+    {
+        appendValue(record.tagNames, "middlePos");
+        appendValue(record.tagValues, toString(bp.dupMiddlePos));
+        appendValue(record.tagNames, "endPos");
+        appendValue(record.tagValues, toString(bp.endSeqPos));
     }
     else
     {
@@ -305,14 +369,15 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
     for (unsigned i = 0; i < length(globalBreakpoints); ++i)
     {
         TBreakpoint & tempBP = globalBreakpoints[i];
-        // if (globalBreakpoints[i].svtype != 0 && globalBreakpoints[i].support >= msplazerOptions.support) // 0=invalid
         if (tempBP.svtype != 0 && tempBP.support >= msplazerOptions.support) // 0=invalid
         {
             if (tempBP.svtype == TBreakpoint::DISPDUPLICATION && tempBP.translSuppStartPos && tempBP.translSuppEndPos)
                 tempBP.svtype = TBreakpoint::TRANSLOCATION;
             // Fill record
-            _fillGffRecord(gff_record, tempBP, i);
-            // _fillGffRecord(gff_record, globalBreakpoints[i], i);
+            if (tempBP.svtype == TBreakpoint::DISPDUPLICATION)
+                _fillGffRecordDuplication(gff_record, tempBP, i);
+            else
+                _fillGffRecord(gff_record, tempBP, i);
             // Write record
             try
             {
@@ -499,6 +564,8 @@ inline void _fillVcfRecordDuplication(VcfRecord & record, TBreakpoint & bp, TSeq
     if (!_setVcfRecordDuplicationPos(bp, begin, end, target))
         ss << "IMPRECISE;";
 
+    if (begin > end)
+        std::swap(begin, end);
     record.rID = id;
     record.beginPos = begin - 1; // Position before event
     record.filter = "PASS";
@@ -985,12 +1052,15 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
     }
 
     if (!open(vcfOut, fn_vcf.c_str()))
+    {
         std::cerr << "Error while opening vcf breakpoint file!" << std::endl;
+        return false;
+    }
     seqan::VcfHeader vcfHeader;
     _fillVcfHeader(vcfHeader, vcfOut, databases, databaseIDs, msplazerOptions);
     try
     {
-        writeRecord(vcfOut, vcfHeader);
+        writeHeader(vcfOut, vcfHeader);
     }
     catch (seqan::IOError const & ioErr)
     {

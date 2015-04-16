@@ -57,12 +57,12 @@ namespace seqan {
  *
  * This metafunction is used to convert device containers into views of device containers.
  * Subsequently, the view of a device container can be safely passed to and used in device space.
- * On the host, a view of a @link String @endlink is equivalent to an @link ContainerConcept#Infix @endlink of the complete string.
+ * On the host, a view of a @link String @endlink is equivalent to an @link SegmentableConcept#Infix @endlink of the complete string.
  * @link RemoveView @endlink is the inverse of this metafunction.
  *
  * @see RemoveView
  * @see Device
- * @see ContainerConcept#Infix
+ * @see SegmentableConcept#Infix
  */
 
 template <typename TObject>
@@ -154,7 +154,7 @@ struct IfView
  * @fn TView view
  * @headerfile <seqan/basic.h>
  * @brief Returns the view of a given object.
- * 
+ *
  * @signature TView view(object);
  *
  * @param[in] object A generic object.
@@ -163,7 +163,7 @@ struct IfView
  * @see View
  * @see IsView
  */
- 
+
 template <typename TObject>
 inline typename View<TObject>::Type
 view(TObject & object)

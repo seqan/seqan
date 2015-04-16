@@ -172,28 +172,47 @@ void swap(SeqStore<TSpec, TConfig> & a, SeqStore<TSpec, TConfig> & b)
 // Function readRecords()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TConfig, typename TFileSpec, typename TAlphabetSpec>
+template <typename TSpec, typename TConfig, typename TFileSpec>
 inline void readRecords(SeqStore<TSpec, TConfig> & me,
-                        SmartFile<Fastq, Input, TFileSpec> & fileIn,
-                        TAlphabetSpec const & alphabet = Iupac())
+                        FormattedFile<Fastq, Input, TFileSpec> & fileIn)
 {
-    readRecords(me.names, me.seqs, fileIn, alphabet);
+    readRecords(me.names, me.seqs, fileIn);
+}
+
+template <typename TSpec, typename TConfig, typename TFileSpec, typename TSize>
+inline void readRecords(SeqStore<TSpec, TConfig> & me,
+                        FormattedFile<Fastq, Input, TFileSpec> & fileIn,
+                        TSize maxRecords)
+{
+    readRecords(me.names, me.seqs, fileIn, maxRecords);
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecords(); Without alphabet conversion
+// Function trimSeqNames()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TConfig, typename TFileSpec>
-inline void readRecords(SeqStore<TSpec, TConfig> & me,
-                        SmartFile<Fastq, Input, TFileSpec> & fileIn)
+template <typename TSpec, typename TConfig>
+inline void trimSeqNames(SeqStore<TSpec, TConfig> & me)
 {
-    typedef SeqStore<TSpec, TConfig>    TSeqStore;
-    typedef typename TSeqStore::TSeqs   TSeqs;
-    typedef typename Value<TSeqs>::Type TSeq;
-    typedef typename Value<TSeq>::Type  TSeqAlphabet;
+    typedef SeqStore<TSpec, TConfig>                    TSeqStore;
+    typedef typename TSeqStore::TSeqNames               TSeqNames;
+    typedef typename Value<TSeqNames>::Type const       TSeqName;
+    typedef typename Iterator<TSeqName, Rooted>::Type   TSeqNameIt;
+    typedef CharString                                  TSeqNameBuffer;
 
-    readRecords(me, fileIn, TSeqAlphabet());
+    TSeqNameBuffer name;
+    TSeqNames names;
+    reserve(names, length(me.names), Exact());
+
+    for (unsigned nameId = 0; nameId < length(me.names); ++nameId)
+    {
+        TSeqNameIt nameIt = begin(me.names[nameId], Rooted());
+        readUntil(name, nameIt, IsSpace());
+        appendValue(names, name);
+        clear(name);
+    }
+
+    assign(me.names, names);
 }
 
 // ----------------------------------------------------------------------------

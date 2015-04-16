@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ namespace seqan {
  *
  * The alias template is only available when SEQAN_CXX11_STANDARD is defined
  * and your compiler supports alias templates (Visual Studio >= 2006-2014, any fairly
- * recent Clang, GCC). Otherwise you have to use the underscored type and 
+ * recent Clang, GCC). Otherwise you have to use the underscored type and
  * the full definition, i.e.
  * <tt>SimpleType&lt;unsigned char, ReducedAminoAcid_&lt;TReductionSpec&gt; &gt;</tt>.
  *

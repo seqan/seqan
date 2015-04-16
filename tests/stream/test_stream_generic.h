@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -87,7 +87,7 @@ void testStreamEof(TStream & stream, bool checkTell = true)
     typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
 
     const char buffer[] = "This is a test.";
-    
+
     SEQAN_ASSERT_NOT(atEnd(iter));
     char c;
     for (int i = 0; i < 15; ++i)

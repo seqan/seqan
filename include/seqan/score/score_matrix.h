@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -68,7 +68,7 @@ struct ScoreMatrix;
  * ScoreSpecPam40, ScoreSpecPam120, ScoreSpecPam200, ScoreSpecPam250, ScoreSpecVtml200.
  *
  * This will internally call @link MatrixScore#setDefaultScoreMatrix setDefaultScoreMatrix@endlink.
- * 
+ *
  * In order to provide a more user-friendly access to the predefined scoring matrixes, typedefs exist:
  * @link Blosum30 @endlink, @link Blosum45 @endlink,  @link Blosum62 @endlink,
  * @link Blosum80 @endlink, @link Pam40 @endlink,     @link Pam120 @endlink,
@@ -177,8 +177,8 @@ setScore(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TVal1 val1, TV
  *
  * @section Remarks
  *
- * The tag must be one of the following: 
- * Default, ScoreSpecBlosum30, ScoreSpecBlosum45, ScoreSpecBlosum62, ScoreSpecBlosum80, 
+ * The tag must be one of the following:
+ * Default, ScoreSpecBlosum30, ScoreSpecBlosum45, ScoreSpecBlosum62, ScoreSpecBlosum80,
  * ScoreSpecPam40, ScoreSpecPam120, ScoreSpecPam200, ScoreSpecPam250, ScoreSpecVtml200.
  *
  * If Default is used for tag then the matrix will be filled with default-constructed TValue values.

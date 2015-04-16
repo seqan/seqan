@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -64,6 +64,12 @@ struct OrFunctor
     {
         return func1(val) || func2(val);
     }
+
+    template <typename TValue>
+    bool operator() (TValue const & val) const
+    {
+        return func1(val) || func2(val);
+    }
 };
 
 // ----------------------------------------------------------------------------
@@ -88,6 +94,12 @@ struct AndFunctor
     {
         return func1(val) && func2(val);
     }
+
+    template <typename TValue>
+    bool operator() (TValue const & val) const
+    {
+        return func1(val) && func2(val);
+    }
 };
 
 // ----------------------------------------------------------------------------
@@ -108,6 +120,13 @@ struct NotFunctor
 
     template <typename TValue>
     bool operator() (TValue const & val)
+    {
+        return !func(val);
+    }
+
+
+    template <typename TValue>
+    bool operator() (TValue const & val) const
     {
         return !func(val);
     }
@@ -141,7 +160,7 @@ struct CountDownFunctor
             --remaining;
         return false;
     }
-    
+
     operator bool()
     {
         return remaining == 0;

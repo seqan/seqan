@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //namespace SEQAN_NAMESPACE_PIPELINING
 //{
-    
+
     template <typename TValue, typename TResult = typename Value<TValue, 1>::Type>
     struct filterI1 : public std::unary_function<TValue, TResult>
     {
@@ -72,53 +72,53 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TFunctor >
     struct Filter;
 
-	template < typename TInput, typename TFunctor >
+    template < typename TInput, typename TFunctor >
     struct Value< Pipe< TInput, Filter<TFunctor> > >
     {
-		typedef typename TFunctor::result_type Type;
-	};
+        typedef typename TFunctor::result_type Type;
+    };
 
 /*!
  * @class Filter
  * @extends Pipe
  * @headerfile <seqan/pipe.h>
  * @brief Applies a specific function to the input stream.
- * 
+ *
  * @signature template <typename TInput, typename TFunctor>
  *            struct Pipe<TInput, Filter<TFunctor> >;
- * 
+ *
  * @tparam TFunctor A unary function (see STL's <tt>unary_function</tt>).  The argument type of <tt>TFunctor</tt>
  *                  must be <tt>VALUE&lt;TInput&gt;::Type</tt>.
  * @tparam TInput   The type of the pipeline module this module reads from.
- * 
+ *
  * The output type of this pipe is the result type of <tt>TFunctor</tt>.
  */
 
-	//////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
     // filter class
     template <typename TInput, typename TFunctor >
     struct Pipe< TInput, Filter<TFunctor> >
     {
-		TInput      &in;
+        TInput      &in;
         TFunctor    F;
 
 /*!
  * @fn Filter::Pipe
  * @brief Constructor
- * 
+ *
  * @signature Pipe::Pipe(in[, func]);
- * 
+ *
  * @param[in] in   Reference to an input pipe.
  * @param[in] func A <tt>TFunctor</tt> object.
  */
-        
+
         Pipe(TInput& _in):
             in(_in) {}
-        
+
         Pipe(TInput& _in, const TFunctor& F_) :
             in(_in),
             F(F_) {}
-        
+
         inline typename Value<Pipe>::Type const operator*() const
         {
             return F(*in);
@@ -129,9 +129,9 @@ namespace SEQAN_NAMESPACE_MAIN
             ++in;
             return *this;
         }
-                
+
     };
-    
+
 //}
 
 }

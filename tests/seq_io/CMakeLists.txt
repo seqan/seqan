@@ -34,12 +34,8 @@ add_executable (test_seq_io
                 test_fai_index.h
                 test_genomic_region.h
                 test_sequence_file.h
-                test_stream_guess_stream_format.h
-                test_stream_read_auto_format.h
                 test_stream_read_embl.h
                 test_stream_read_genbank.h
-                test_stream_record_reader_fasta.h
-                test_stream_record_reader_fastq.h
                 test_stream_write_fasta.h)
 
 # Add dependencies found by find_package (SeqAn).

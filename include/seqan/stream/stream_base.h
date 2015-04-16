@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -135,14 +135,16 @@ char const * FileExtensions<GZFile, T>::VALUE[2] =
 template <typename T>
 struct FileExtensions<BgzfFile, T>
 {
-    static char const * VALUE[2];
+    static char const * VALUE[4];
 };
 
 template <typename T>
-char const * FileExtensions<BgzfFile, T>::VALUE[2] =
+char const * FileExtensions<BgzfFile, T>::VALUE[4] =
 {
     ".bgzf",      // default output extension
-    ".bam"        // BAM files are bgzf compressed
+    ".bam",       // BAM files are bgzf compressed
+    ".vcf.gz",    // Compressed and indexed VCF files are actually bgzf compressed
+    ".tbi"        // Tabix index files are bgzf compressed
 
     // if you add extensions here, extend getBasename() below
 };

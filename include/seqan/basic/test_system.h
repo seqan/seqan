@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -158,7 +158,7 @@ public:
                 (*it)->instance->runTest();
                 (*it)->instance->tearDown();
             } catch(seqan::ClassTest::AssertionFailedException e) {
-                /* Swallow exception, go on with next test. */       
+                /* Swallow exception, go on with next test. */
                 (void) e;  /* Get rid of unused variable warning. */
             } catch (seqan::Exception const & e) {
                 std::cerr << "Unexpected exception of type "

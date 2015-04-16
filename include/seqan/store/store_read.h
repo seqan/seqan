@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -72,13 +72,13 @@ namespace SEQAN_NAMESPACE_MAIN
 template <typename TSpec = void>
 struct ReadStoreElement
 {
-	typedef typename Id<ReadStoreElement>::Type TId;
-	
-	static const TId INVALID_ID;
+    typedef typename Id<ReadStoreElement>::Type TId;
 
-	TId matePairId;				// refers to the mate-pair, INVALID_ID if not part of a mate-pair
+    static const TId INVALID_ID;
 
-	ReadStoreElement() : matePairId(INVALID_ID) {}
+    TId matePairId;                // refers to the mate-pair, INVALID_ID if not part of a mate-pair
+
+    ReadStoreElement() : matePairId(INVALID_ID) {}
 
     inline
     bool

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -290,7 +290,8 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
             typedef typename TAlignedRead::TGapAnchors TGapAnchors;
             typedef typename TFragmentStore::TReadSeq TReadSeq;
             SEQAN_ASSERT_NOT(empty(store.readSeqStore[*itS]));
-            Gaps<TReadSeq, AnchorGaps<TGapAnchors> > gaps(store.readSeqStore[*itS], store.alignedReadStore[*itS].gaps);
+            Gaps<TReadSeq, AnchorGaps<TGapAnchors> > gaps(static_cast<TReadSeq>(store.readSeqStore[*itS]),
+                                                          store.alignedReadStore[*itS].gaps);
             insertGaps(gaps, from - store.alignedReadStore[*itS].beginPos, fLen);
             store.alignedReadStore[*itS].endPos += fLen;
             if (DEBUG_INCONSISTENT_LEN)
@@ -304,7 +305,7 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
         for (TSetIt it = done.begin(); it != done.end(); ++it)
             activeReads[cl].erase(*it);
     }
- 
+
 // #if SEQAN_ENABLE_DEBUG
     {
         // Check for consistency.
@@ -316,12 +317,12 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
         for (TAlignedReadIter it2 = begin(store.alignedReadStore, Standard()); it2 != itEnd; ++it2)
         {
             typedef Gaps<TReadSeq, AnchorGaps<String<typename TFragmentStore::TReadGapAnchor> > > TReadGaps;
-            TReadGaps readGaps(store.readSeqStore[it2->readId], it2->gaps);
+            TReadGaps readGaps(static_cast<TReadSeq>(store.readSeqStore[it2->readId]), it2->gaps);
             SEQAN_ASSERT_EQ(length(readGaps) - length(store.readSeqStore[it2->readId]), gapCount[it2->readId]);
             if (DEBUG_INCONSISTENT_LEN)
                 std::cerr << "READ GAPS\t" << (it2 - begin(store.alignedReadStore, Standard())) << "\t>>>" << readGaps << "<<< (" << length(readGaps) << ")\n"
                           << "  beginPos == " << it2->beginPos << ", endPos == " << it2->endPos << ", gapCount == " << gapCount[it2->readId] << "\n";
-            if ((unsigned)abs(it2->endPos - it2->beginPos) != length(readGaps))
+            if ((unsigned)std::abs(it2->endPos - it2->beginPos) != length(readGaps))
             {
                 SEQAN_FAIL("Inconsistent begin/endPos");
             }
@@ -338,17 +339,17 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
                                    Graph<Undirected<double> > const & distances,
                                    bool logging)
 {
-	typedef std::map<unsigned, unsigned> TComponentLength;
+    typedef std::map<unsigned, unsigned> TComponentLength;
 
     // -----------------------------------------------------------------------
     // Compute connected components and get topological sorting of them.
     // -----------------------------------------------------------------------
-	  String<unsigned> component;
-	  String<unsigned> order;
-	  TComponentLength componentLength;
+      String<unsigned> component;
+      String<unsigned> order;
+      TComponentLength componentLength;
     if (empty(g))
         return true;  // Nothing to do for empty graphs.
-	  if (!convertAlignment(g, component, order, componentLength))
+      if (!convertAlignment(g, component, order, componentLength))
         return false;
     unsigned numComponents = length(order);
 

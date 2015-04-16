@@ -25,7 +25,7 @@
 #ifdef NO_ERRNO_H
     int errno;
 #else
-	#include <errno.h>
+    #include <errno.h>
 #endif
 
 #ifndef local
@@ -150,7 +150,10 @@ extern const char *z_errmsg[10]; /* indexed by 2-zlib_error */
 #  define F_OPEN(name, mode) fopen((name), (mode))
 #endif
 
-         /* functions */
+#ifndef OF
+#define OF(x) x
+#endif
+          /* functions */
 
 #ifdef HAVE_STRERROR
    extern char *strerror OF((int));
@@ -210,7 +213,7 @@ extern const char *z_errmsg[10]; /* indexed by 2-zlib_error */
 
 
 typedef uLong (ZEXPORT *check_func) OF((uLong check, const Bytef *buf,
-				       uInt len));
+                       uInt len));
 voidpf zcalloc OF((voidpf opaque, unsigned items, unsigned size));
 void   zcfree  OF((voidpf opaque, voidpf ptr));
 

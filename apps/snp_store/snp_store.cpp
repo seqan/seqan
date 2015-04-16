@@ -63,8 +63,8 @@ using namespace seqan;
 
 
 // load entire genome into memory
-template <typename TGenomeSet, typename TGenomeNames>
-bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList, ::std::map<CharString,unsigned> &gIdStringToIdNumMap, TGenomeNames & genomeNames)
+template <typename TGenomeSet, typename TGenomeSetSize, typename TGenomeNames>
+bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList, ::std::map<CharString, TGenomeSetSize> &gIdStringToIdNumMap, TGenomeNames & genomeNames)
 {
     unsigned gSeqNo = 0;
     unsigned filecount = 0;
@@ -612,7 +612,8 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
 
     typedef String<String<TContigPos > >            TPositions;
     typedef typename Iterator<String<TContigPos > >::Type TPosIterator;
-    typedef ::std::map<CharString,unsigned>         TGenomeMap;
+    typedef typename Size<TGenomeSet>::Type         TGenomeSetSize;
+    typedef ::std::map<CharString, TGenomeSetSize>  TGenomeMap;
     //typedef typename TGenomeMap::iterator           TMapIter;
     typedef String<unsigned>                TReadCounts;
     typedef String<Pair<int,int> >              TReadClips;
@@ -1094,14 +1095,8 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     // Set short description, version, and date.
     setShortDescription(parser, "SnpStore");
     setCategory(parser, "Variant Detection");
-    options.version = "1.1";
-#ifdef SEQAN_REVISION
-    options.version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
-#ifdef SEQAN_DATE
+	setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
-	setVersion(parser, options.version);
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIALIGNMENT FILE\\fP> [<\\fIALIGNMENT FILE\\fP> ...]");

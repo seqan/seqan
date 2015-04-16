@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -65,13 +65,13 @@ class PriorityType;
 template <typename TValue, typename TLess, typename TSpec>
 struct Value< PriorityType<TValue, TLess, TSpec> >
 {
-	typedef TValue Type;
+    typedef TValue Type;
 };
 
 template <typename TValue, typename TLess, typename TSpec>
 struct Size< PriorityType<TValue, TLess, TSpec> >
 {
-	typedef typename Size<TValue>::Type Type;
+    typedef typename Size<TValue>::Type Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////

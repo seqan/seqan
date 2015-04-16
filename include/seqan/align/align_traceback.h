@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -121,9 +121,9 @@ template <typename TSize>
 struct AlignTraceback
 {
     // Run lengths in the align matrix.
-	String<TSize> sizes;
+    String<TSize> sizes;
     // Trace values: 0 = diagonal, 1 = horizontal, 2 = vertical.
-	String<TraceBack> tvs;
+    String<TraceBack> tvs;
 };
 
 // ============================================================================
@@ -152,8 +152,8 @@ _alignTracePrint(AlignTraceback<TSize> & tb,
                  TPos const segLen,
                  TTraceValue const tv)
 {
-	appendValue(tb.sizes, segLen);
-	appendValue(tb.tvs, tv);
+    appendValue(tb.sizes, segLen);
+    appendValue(tb.tvs, tv);
 }
 
 }  // namespace seqan

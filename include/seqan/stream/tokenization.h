@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -255,7 +255,7 @@ template <typename TTarget, typename TFwdIterator, typename TStopFunctor, typena
 inline void
 _readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFunctor, TIgnoreFunctor &ignoreFunctor, TIChunk, TOChunk)
 {
-    typename Value<TFwdIterator>::Type val;
+    typename RemoveConst<typename Value<TFwdIterator>::Type>::Type val;
     for (; !atEnd(iter); ++iter)
     {
         if (SEQAN_UNLIKELY(stopFunctor(val = *iter)))
@@ -295,7 +295,7 @@ inline void _readUntil(TTarget &target,
                 advanceChunk(target, optr - ochunk.begin); // extend target string size
                 return;
             }
-            
+
             if (SEQAN_UNLIKELY(ignoreFunctor(*iptr)))
                 continue;
 
@@ -611,17 +611,17 @@ inline void
 strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence, TFunctor const &sep, bool allowEmptyStrings, TSize maxSplit)
 {
     typedef typename Iterator<TSequence const, Standard>::Type TIter;
-    
+
     TIter itBeg = begin(sequence, Standard());
     TIter itEnd = end(sequence, Standard());
     TIter itFrom = itBeg;
-    
+
     if (maxSplit == 0)
     {
         appendValue(result, sequence);
         return;
     }
-    
+
     for (TIter it = itBeg; it != itEnd; ++it)
         if (sep(getValue(it)))
         {
@@ -637,16 +637,16 @@ strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence, TFunctor
                     }
                     else
                         ++it;
-                    
+
                     if (it != itEnd)
                         appendValue(result, infix(sequence, it - itBeg, itEnd - itBeg));
-                    
+
                     return;
                 }
             }
             itFrom = it + 1;
         }
-    
+
     if (allowEmptyStrings || itFrom != itEnd)
         appendValue(result, infix(sequence, itFrom - itBeg, itEnd - itBeg));
 }

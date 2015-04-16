@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -82,18 +82,18 @@ namespace SEQAN_NAMESPACE_MAIN
 
         inline bool open(BOOL initital = false) {
             return hThread = CreateThread(
-                &ThreadDefaultAttributes,    // default security attributes 
-                0,                           // use default stack size  
-                &_start,                     // thread function 
-                this,                        // argument to thread function 
-                0,                           // use default creation flags 
-                &hThreadID);                 // returns the thread identifier 
+                &ThreadDefaultAttributes,    // default security attributes
+                0,                           // use default stack size
+                &_start,                     // thread function
+                this,                        // argument to thread function
+                0,                           // use default creation flags
+                &hThreadID);                 // returns the thread identifier
         }
 
         inline bool close() {
             if (CloseHandle(hThread)) return true;
-			hThread = NULL;
-			return false;
+            hThread = NULL;
+            return false;
         }
 
         inline bool cancel(DWORD exitCode = 0) {
@@ -117,10 +117,10 @@ namespace SEQAN_NAMESPACE_MAIN
 
         static DWORD WINAPI _start(LPVOID _this) {
             reinterpret_cast<Thread*>(_this)->worker();
-			return 0;	// return value should indicate success/failure
+            return 0;    // return value should indicate success/failure
         }
     };
-    
+
 #else
 
     template <typename Worker>
@@ -141,7 +141,7 @@ namespace SEQAN_NAMESPACE_MAIN
         Thread(TArg const & arg) : data(), hThread(), worker(arg)
         {}
 
-        ~Thread() 
+        ~Thread()
         {
             if (*this)
                 close();
@@ -185,40 +185,40 @@ namespace SEQAN_NAMESPACE_MAIN
 
         static void* _start(void* _this) {
             reinterpret_cast<Thread*>(_this)->worker();
-			return 0;
+            return 0;
         }
     };
-    
+
 #endif
 
 
-	//////////////////////////////////////////////////////////////////////////////
-	// global thread functions
+    //////////////////////////////////////////////////////////////////////////////
+    // global thread functions
 
-	template <typename TWorker>
-	inline bool open(Thread<TWorker> &m) {
-		return m.open();
-	}
+    template <typename TWorker>
+    inline bool open(Thread<TWorker> &m) {
+        return m.open();
+    }
 
-	template <typename TWorker>
-	inline bool run(Thread<TWorker> &m) {
-		return m.open();
-	}
+    template <typename TWorker>
+    inline bool run(Thread<TWorker> &m) {
+        return m.open();
+    }
 
-	template <typename TWorker>
-	inline bool close(Thread<TWorker> &m) {
-		return m.close();
-	}
+    template <typename TWorker>
+    inline bool close(Thread<TWorker> &m) {
+        return m.close();
+    }
 
-	template <typename TWorker>
-	inline bool kill(Thread<TWorker> &m) {
-		return m.close();
-	}
+    template <typename TWorker>
+    inline bool kill(Thread<TWorker> &m) {
+        return m.close();
+    }
 
-	template <typename TWorker>
-	inline bool waitFor(Thread<TWorker> &m) {
-		return m.wait();
-	}
+    template <typename TWorker>
+    inline bool waitFor(Thread<TWorker> &m) {
+        return m.wait();
+    }
 
 }
 

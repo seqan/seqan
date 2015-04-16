@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -233,7 +233,7 @@ chainSeedsGlobally(
                     intermediateSolutions.insert(sol);
                 }
             }
-            
+
             // Delete all intermediate solutions where end1 >= end1 of k and have a lower quality than k.
             TIntermediateSolutionsIterator itDel = intermediateSolutions.upper_bound(referenceSolution);
             TIntermediateSolutionsIterator itDelEnd = intermediateSolutions.end();

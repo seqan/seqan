@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                   samcat
 // ==========================================================================
-// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -99,13 +99,13 @@ void catBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions con
             continue;
         }
 
-        readRecord(header, *(readerPtr[i]));
+        readHeader(header, *(readerPtr[i]));
     }
 
     // Step 2: Remove duplicate header entries and write merged header
     if (length(inFiles) > 1)
         removeDuplicates(header);
-    writeRecord(writer, header);
+    writeHeader(writer, header);
 
     // Step 3: Read and output alignment records
     BamAlignmentRecord record;
@@ -125,7 +125,7 @@ void catBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions con
             // For Sam parallel batch processing is faster
             while (!atEnd(reader))
             {
-                unsigned size = readBatch(records, reader, 100000);
+                unsigned size = readRecords(records, reader, 100000);
                 writeRecords(writer, prefix(records, size));
                 numRecords += size;
             }
@@ -161,8 +161,8 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     ArgumentParser parser("samcat");
     // Set short description, version, and date.
     setCategory(parser, "Utilities");
-    setVersion(parser, "0.1");
-    setDate(parser, "May 2014");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIINFILE\\fP> [<\\fIINFILE\\fP> ...] [-o <\\fIOUTFILE\\fP>]");
@@ -197,7 +197,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addListItem(parser, "\\fBsamcat\\fP \\fBmapped1.sam\\fP \\fBmapped2.sam\\fP \\fB-o\\fP \\fBmerged.sam\\fP",
                 "Merge two SAM files.");
 #if SEQAN_HAS_ZLIB
-    addListItem(parser, "\\fBsamcat\\fP \\fBinput.sam\\fP \\fB-o\\fP \\fBouput.bam\\fP",
+    addListItem(parser, "\\fBsamcat\\fP \\fBinput.sam\\fP \\fB-o\\fP \\fBoutput.bam\\fP",
                 "Convert a SAM file into BAM format.");
 #endif
 

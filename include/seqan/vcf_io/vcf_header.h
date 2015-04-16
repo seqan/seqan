@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -38,10 +38,6 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -51,52 +47,15 @@ namespace seqan {
 
 /*!
  * @class VcfHeader
+ * @implements FormattedFileHeaderConcept
  * @headerfile <seqan/vcf_io.h>
  * @brief Store VCF Header information.
- * 
- * @signature class VcfHeader;
- * 
  *
- * @fn VcfHeader::VcfHeader
- * @brief Constructor.
- * 
- * @signature VcfHeader::VcfHeader();
- *
- * 
- * @var TRecords VcfHeader::headerRecords;
- * 
- * @brief The meta information records (@link AllocString @endlink of @link VcfHeaderRecord @endlink).
- * 
- * @var TNames VcfHeader::sequenceNames;
- * @brief Names of the sequences (@link StringSet @endlink of @link CharString @endlink).
- * 
- * @var TNames VcfHeader::sampleNames;
- * @brief Names of the samples (@link StringSet @endlink of @link CharString @endlink).
+ * @signature typedef String<VcfHeaderRecord> VcfHeader;
  */
 
 // Records for the meta information lines.
 typedef String<VcfHeaderRecord> VcfHeader;
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ============================================================================
-// Functions
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Function clear()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn VcfHeader#clear
- * @brief Clear a VcfHeader.
- * 
- * @signature void clear(header);
- *
- * @param[in,out] header VcfHeader to clear.
- */
 
 }  // namespace seqan
 

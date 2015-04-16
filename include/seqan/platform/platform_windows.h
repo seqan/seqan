@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -124,7 +124,7 @@ typedef unsigned __int8 __uint8;
 template <typename T>
 inline T round(T const & x)
 {
-	return static_cast<T>(floor(x + 0.5));
+    return static_cast<T>(floor(x + 0.5));
 }
 
 // Rename some underscore-functions in Windows.
