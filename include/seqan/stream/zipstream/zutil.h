@@ -150,7 +150,10 @@ extern const char *z_errmsg[10]; /* indexed by 2-zlib_error */
 #  define F_OPEN(name, mode) fopen((name), (mode))
 #endif
 
-         /* functions */
+#ifndef OF
+#define OF(x) x
+#endif
+          /* functions */
 
 #ifdef HAVE_STRERROR
    extern char *strerror OF((int));
