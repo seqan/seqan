@@ -78,13 +78,13 @@ struct IsContiguous< std::array<TChar, N> const>
 template <typename TChar, std::size_t N>
 struct Value< std::array<TChar, N> >
 {
-    typedef typename std::array<TChar, N>::value_type Type;
+    typedef typename std::array<TChar, N>::reference Type;
 };
 
 template <typename TChar, std::size_t N>
 struct Value< std::array<TChar, N> const>
 {
-    typedef typename std::array<TChar, N>::value_type Type;
+    typedef typename std::array<TChar, N>::const_reference Type;
 };
 
 template <typename TChar, std::size_t N>
@@ -96,7 +96,7 @@ struct GetValue< std::array<TChar, N> >
 template <typename TChar, std::size_t N>
 struct GetValue< std::array<TChar, N> const>
 {
-    typedef typename std::array<TChar, N>::value_type Type;
+    typedef typename std::array<TChar, N>::value_type const Type ;
 };
 
 template <typename TChar, std::size_t N>
