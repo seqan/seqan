@@ -176,6 +176,7 @@ typedef FibreBucketMap    QGramBucketMap;
 /*!
  * @class IndexQGram
  * @extends Index
+ * @implements StringTrieConcept
  * @headerfile <seqan/index.h>
  *
  * @brief An index based on an array of sorted q-grams.
@@ -307,6 +308,13 @@ public:
 #pragma warning( pop )
 #endif  // PLATFORM_WINDOWS_VS
 
+template <typename TText, typename TShapeSpec, typename TSpec>
+SEQAN_CONCEPT_IMPL((Index<TText, IndexQGram<TShapeSpec, TSpec> >), (StringTrieConcept));
+
+template <typename TText, typename TShapeSpec, typename TSpec>
+SEQAN_CONCEPT_IMPL((Index<TText, IndexQGram<TShapeSpec, TSpec> > const), (StringTrieConcept));
+
+
 template < typename TText, typename TShapeSpec, typename TSpec >
 struct Value< Index<TText, IndexQGram<TShapeSpec, TSpec> > > {
     typedef typename Value< typename Fibre< Index<TText, IndexQGram<TShapeSpec, TSpec> >, QGram_RawText >::Type >::Type Type;
@@ -316,7 +324,6 @@ template < typename TText, typename TShapeSpec, typename TSpec >
 struct Size< Index<TText, IndexQGram<TShapeSpec, TSpec> > > {
     typedef typename Size< typename Fibre< Index<TText, IndexQGram<TShapeSpec, TSpec> >, QGram_RawText >::Type >::Type Type;
 };
-
 
 //////////////////////////////////////////////////////////////////////////////
 // default fibre creators

@@ -59,6 +59,9 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+template <typename TWord>
+struct SimdVectorConcept;
+
 // ============================================================================
 // Classes, Structs, Enums, Tags
 // ============================================================================
@@ -529,9 +532,15 @@ inline bool testAllZeros(TWord const & val)
  */
 
 template <typename TWord>
-inline bool testAllOnes(TWord const & val)
+inline bool _testAllOnes(TWord const & val, False)
 {
     return val == ~static_cast<TWord>(0);
+}
+
+template <typename TWord>
+inline bool testAllOnes(TWord const & val)
+{
+    return _testAllOnes(val, typename Is<SimdVectorConcept<TWord> >::Type());
 }
 
 // ----------------------------------------------------------------------------
