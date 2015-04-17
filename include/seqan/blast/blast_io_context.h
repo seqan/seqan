@@ -68,7 +68,30 @@ struct BlastScoringAdapter;
  * faster. See @link BlastIOContext#getBlastProgram @endlink, @link BlastIOContext#setBlastProgram @endlink,
  * @link BlastIOContext#getBlastTabularSpec @endlink and @link BlastIOContext#setBlastTabularSpec @endlink.
  *
- * See @link BlastTabular @endlink and @link BlastReport @endlink for examples of usage.
+ * @section Example
+ *
+ * Here as an example of which members to set on a context, before using it for Output:
+ * @code{.cpp}
+ * typedef BlastIOContext<Blosum62> TContext;
+ * BlastReportOut<TContext> outfile("/tmp/output.blast");
+ *
+ * Blosum62 scheme;
+ * setScoreGapOpen(scheme, -11);
+ * setScoreGapExtend(scheme, -1);
+ *
+ * // upon assigning, this is converted to SeqAn's scoring behaviour
+ * setBlastScoringScheme(context(outfile), scheme);
+ *
+ * // protein vs protein search is BLASTP
+ * setBlastProgram(context(outfile), BlastProgram::BLASTP);
+ *
+ * // set the database properties in the context
+ * context(outfile).dbName = "The Foo Database";
+ * context(outfile).dbTotalLength = length(concat(subjects));
+ * context(outfile).dbNumberOfSeqs = length(subjects);
+ * @endcode
+ *
+ * See @link BlastTabularOut @endlink and @link BlastReportOut @endlink for more complete examples of usage.
  */
 
 template <typename TScore_ = Blosum62,
@@ -223,9 +246,9 @@ struct BlastIOContext
     TString buffer2;
     StringSet<TString, Owner<ConcatDirect<>>> buffers1;
     StringSet<TString, Owner<ConcatDirect<>>> buffers2;
-    // TODO can I get rid of buffer2 and/or buffers2 if doing things more intelligently?
+    BlastMatch<> bufMatch;
+    BlastRecord<> bufRecord;
 };
-
 
 /*!
 * @fn BlastIOContext#getBlastProgram
@@ -404,7 +427,7 @@ setScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore const &
 
 /*!
 * @fn BlastIOContext#getBlastScoringScheme
-* @signature ScoringScheme getScoringScheme(context);
+* @signature ScoringScheme getBlastScoringScheme(context);
 * @param[in] context  The @link BlastIOContext @endlink.
 * @brief get the @link Score @endlink object of the context, converting to Blast behaviour.
 * @return ScoringScheme a copy of the scoringScheme of the context, converted to Blast's gap notation, see
@@ -448,7 +471,7 @@ getBlastScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
  * for the scoring scheme are available) this function will call SEQAN_FAIL. If you don't want this behaviour and you
  * absolutely know what you are doing, you can operate directly on the
  * @link BlastIOContext::scoringAdapter @endlink-member.
-*/
+ */
 
 template <typename TScore,
           typename TString,

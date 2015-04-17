@@ -260,10 +260,10 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
     int hitsLinePresent = 0;
     int lastLine = 0;
 
-    clear(context.buffer1);
-    clear(context.buffer2);
-    auto & key = context.buffer1;
-    auto & buf = context.buffer2;
+//     clear(context.buffer1);
+//     clear(context.buffer2);
+    auto & buffer = context.buffer1;
+    auto & buffer2 = context.buffer2;
 
     while ((!atEnd(iter)) && (!onMatch(iter, BlastTabular())))// in Header
     {
@@ -272,40 +272,40 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
         //skip blanks following the '#'
         skipUntil(iter, IsGraph());
 
-        clear(key);
-        readUntil(key, iter, IsBlank());
+        clear(buffer);
+        readUntil(buffer, iter, IsBlank());
 
-        if (startsWith(key, "BLAST"))
+        if (startsWith(buffer, "BLAST") || startsWith(buffer, "TBLAST"))
         {
-            context.blastProgram = _programStringToTag(key);
-            readLine(key, iter);
-            context.versionString = key;
+            context.blastProgram = _programStringToTag(buffer);
+            readLine(buffer, iter);
+            context.versionString = buffer;
 
 // TODO(h4nn3s): regex test
 //             std::regex versionRE("[0-9]+\\.[0-9]+\\.[0-9]+\\+", std::regex::awk);
 //             context.legacyFormat = std::regex_search(seqan::begin(key), seqan::end(key), versionRE);
 
-            context.legacyFormat = (key.find('+') == std::string::npos);
+            context.legacyFormat = (buffer.find('+') == std::string::npos);
         }
-        else if (key == "Query:")
+        else if (buffer == "Query:")
         {
             skipUntil(iter, IsGraph());
             readLine(r.qId, iter);
             ++queryLinePresent;
         }
-        else if (key == "Database:")
+        else if (buffer == "Database:")
         {
             skipUntil(iter, IsGraph());
             readLine(context.dbName, iter);
             ++dbLinePresent;
         }
-        else if (key == "Fields:")
+        else if (buffer == "Fields:")
         {
             skipUntil(iter, IsGraph());
 
-            clear(buf);
-            readLine(buf, iter);
-            _strSplit(context.fieldsAsStrings, buf, std::regex(", "));
+            clear(buffer);
+            readLine(buffer, iter);
+            _strSplit(context.fieldsAsStrings, buffer, std::regex(", "));
 
             ++fieldsLinePresent;
             if (context.legacyFormat)
@@ -348,25 +348,23 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
         }
         else
         {
-            readLine(key, iter);
+            readLine(buffer, iter);
 
             if (!context.legacyFormat)
             {
                 // last line of BlastPlus Format
-                if (startsWith(key, "BLAST processed"))
+                if (startsWith(buffer, "BLAST processed"))
                 {
                     ++lastLine;
                 }
                 // is hits counter?
-                else if (endsWith(key, "hits found"))
+                else if (endsWith(buffer, "hits found"))
                 {
-                    clear(buf);
-                    for (unsigned i = 0; (i < length(key) && isdigit(key[i])); ++i)
-                        append(buf, key[i], Generous());
+                    clear(buffer2);
+                    for (unsigned i = 0; (i < length(buffer) && isdigit(buffer[i])); ++i)
+                        appendValue(buffer2, buffer[i], Generous());
 
-                    uint64_t hits = lexicalCast<uint64_t>(buf);
-//                     if (ret && strict)
-//                         throw std::ios_base::failure(BAD_FORMAT);
+                    uint64_t hits = lexicalCast<uint64_t>(buffer2);
 
                     if (hits)
                     {
@@ -384,12 +382,12 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                 }
                 else
                 {
-                    appendValue(context.otherLines, key, Generous());
+                    appendValue(context.otherLines, buffer, Generous());
                 }
             }
             else
             {
-                appendValue(context.otherLines, key, Generous());
+                appendValue(context.otherLines, buffer, Generous());
             }
         }
     }
@@ -518,8 +516,7 @@ skipHeader(TFwdIterator & iter,
            BlastIOContext<TScore, TString, p, h> & context,
            BlastTabular const & /*tag*/)
 {
-    static thread_local BlastRecord<> r; //TODO possibly to context
-    readRecordHeader(r, iter, context, BlastTabular());
+    readRecordHeader(context.bufRecord, iter, context, BlastTabular());
 }
 
 // ----------------------------------------------------------------------------
@@ -953,8 +950,7 @@ skipMatch(TFwdIterator & iter,
           BlastIOContext<TScore, TString, p, h> & context,
           BlastTabular const &)
 {
-    static thread_local BlastMatch<> m;//TODO possibly to context
-    readMatch(m, iter, context, BlastTabular());
+    readMatch(context.bufMatch, iter, context, BlastTabular());
 }
 
 // ----------------------------------------------------------------------------

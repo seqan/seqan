@@ -89,8 +89,8 @@ int main()
             m.sLength = length(subjects[s]);
 
             computeAlignmentStats(m, context(outfile));
-
-            calcBitScoreAndEValue(m, context(outfile));
+            computeBitScore(m, context(outfile));
+            computeEValue(m, context(outfile));
 
             if (m.eValue > 1) // or other cutoff
             {

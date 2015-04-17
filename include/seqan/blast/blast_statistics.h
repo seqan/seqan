@@ -69,7 +69,8 @@ namespace SEQAN_NAMESPACE_MAIN
  * other e-value statistics. If you only use high-level Blast IO, you do not
  * have to worry about this, except that you have to know that not every scoring
  * scheme supported by SeqAn and not every combination of gap scores is supported.
- * TODO finish
+ * [@link BlastIOContext#setBlastScoringScheme @endlink/@link BlastIOContext#setScoringScheme @endlink will fail if
+ * a non-supported scoringScheme is passed]
  *
  * @section Details
  *
@@ -700,42 +701,10 @@ getBeta(BlastScoringAdapter<Score<int, Simple>> const & adapter)
 }
 
 // ----------------------------------------------------------------------------
-// Function computeAlignmentStats
+// Function for converting scoringSchemes
 // ----------------------------------------------------------------------------
 
-/*!
- * @defgroup BlastScoringScheme
- * @brief functions for converting to and from Blast's scoring-scheme behaviour
- *
- * TODO make this private? If yes, move the documentation of the behaviour somewhere else?
- *
- * Blast (and many other tools) compute scores of a stretch of gaps as
- * <tt>s = gO + n * gE</tt>
- * where gO is the gapOpen score, gE is the gap extend score and n ist the
- * total number of gap characters.
- *
- * SeqAn, however, computes them as as <tt>s = gO + (n-1) * gE</tt>. The
- * functions below convert between the behaviours by adjusting the
- * gapOpen score.
- *
- * For more information, see <a href="https://trac.seqan.de/ticket/1091">https://trac.seqan.de/ticket/1091</a>.
- *
- * Please note that independent of this issue, SeqAn always works with
- * scores, never with penalties, i.e. a penalty is represented by a negative
- * score.
- *
- * @fn BlastScoringScheme#seqanScoringScheme2blastScoringScheme
- * @brief convert to Blast's behaviour
- * @signature void seqanScoringScheme2blastScoringScheme(scoringScheme);
- * @param[in,out]      scoringScheme      The @link Score @endlink object to modify.
- * @headerfile <seqan/blast.h>
- *
- * @fn BlastScoringScheme#blastScoringScheme2seqanScoringScheme
- * @brief convert from Blast's behaviour
- * @signature void blastScoringScheme2seqanScoringScheme(scoringScheme);
- * @param[in,out]      scoringScheme      The @link Score @endlink object to modify.
- * @headerfile <seqan/blast.h>
- */
+// see the documentation for setBlastScoringScheme() in blast_io_context.h
 
 template <typename TValue, typename TSpec>
 inline void
