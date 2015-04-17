@@ -354,38 +354,38 @@ setBlastTabularSpec(BlastIOContext<TScore, TString, p, BlastTabularSpec::UNKNOWN
 
 /*!
 * @fn BlastIOContext#getScoringScheme
-* @signature ScoringScheme getScoringScheme(context);
+* @signature ScoringScheme const & getScoringScheme(context);
 * @param[in] context  The @link BlastIOContext @endlink.
-* @brief get the @link Score @endlink object from in the context.
-* @return a copy of the scoringScheme from the context.
-* @link BlastScoringScheme#seqanScoringScheme2blastScoringScheme @endlink is called on the object before it is returned,
-* so the object you get will have blast-format gaps.
+* @brief get the @link Score @endlink object of the context.
+* @return ScoringScheme reference to the scheme used in the context.
 */
 
 template <typename TScore,
           typename TString,
           BlastProgram p,
           BlastTabularSpec h>
-inline TScore
+inline TScore const &
 getScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
 {
-    TScore newscore(context.scoringAdapter.scheme);
-    seqanScoringScheme2blastScoringScheme(newscore);
-    return newscore;
+    return context.scoringAdapter.scheme;
 }
 
 /*!
-* @fn BlastIOContext#setScoringScheme
-* @signature void setScoringScheme(context, scoringScheme);
-* @param[in,out] context        The @link BlastIOContext @endlink.
-* @param[in]     scoringScheme  The new @link Score @endlink object.
-* @brief set the @link Score @endlink object from in the context.
-*
-* After setting the scoring scheme @link BlastScoringScheme#blastScoringScheme2seqanScoringScheme @endlink is called
-* (this function expects blast-format gaps) and the context's @link BlastScoringAdapter @endlink is updated.
-* If updating the scoringAdpater fails this function
-* will call SEQAN_FAIL. If you don't want this behaviour and you absolutely know what you are doing, you can
-* operate directly on the @link BlastIOContext::scoringAdapter @endlink-member.
+ * @fn BlastIOContext#setScoringScheme
+ * @signature void setScoringScheme(context, scoringScheme);
+ * @param[in,out] context        The @link BlastIOContext @endlink.
+ * @param[in]     scoringScheme  The new @link Score @endlink object.
+ * @brief set the @link Score @endlink object of the context.
+ *
+ * @section Remarks
+ *
+ * It is important to note that gap-costs are computed differently in SeqAn and in BLAST, see
+ * @link BlastIOContext#setBlastScoringScheme @endlink for more details.
+ *
+ * After setting the scoringScheme, the scoringAdpater will be updated. If this fails (e.g. no statistical parameters
+ * for the scoring scheme are available) this function will call SEQAN_FAIL. If you don't want this behaviour and you
+ * absolutely know what you are doing, you can operate directly on the
+ * @link BlastIOContext::scoringAdapter @endlink-member.
 */
 
 template <typename TScore,
@@ -396,13 +396,70 @@ inline void
 setScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore const & scoringScheme)
 {
     context.scoringAdapter.scheme = scoringScheme;
-    blastScoringScheme2seqanScoringScheme(context.scoringAdapter.scheme);
+
     if (!_selectSet(context.scoringAdapter))
         SEQAN_FAIL("ERROR: No Karlin-Altschul parameters where available for you scoring scheme --> your scoring scheme"
                    " and/or your gap costs are not supported.");
 }
 
-//TODO setInternalScoringScheme hinzufügen
+/*!
+* @fn BlastIOContext#getBlastScoringScheme
+* @signature ScoringScheme getScoringScheme(context);
+* @param[in] context  The @link BlastIOContext @endlink.
+* @brief get the @link Score @endlink object of the context, converting to Blast behaviour.
+* @return ScoringScheme a copy of the scoringScheme of the context, converted to Blast's gap notation, see
+* @link BlastIOContext#setBlastScoringScheme @endlink
+*/
+
+template <typename TScore,
+          typename TString,
+          BlastProgram p,
+          BlastTabularSpec h>
+inline TScore
+getBlastScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
+{
+    TScore newscore(context.scoringAdapter.scheme);
+    seqanScoringScheme2blastScoringScheme(newscore);
+    return newscore;
+}
+
+/*!
+ * @fn BlastIOContext#setBlastScoringScheme
+ * @signature void setBlastScoringScheme(context, scoringScheme);
+ * @param[in,out] context        The @link BlastIOContext @endlink.
+ * @param[in]     scoringScheme  The new @link Score @endlink object.
+ * @brief set the @link Score @endlink object of the context, converting from Blast behaviour.
+ *
+ * @section Remarks
+ *
+ * It is important to note that gap-costs are computed differently in SeqAn and it BLAST.
+ * Blast (and many other tools) compute scores of a stretch of gaps as
+ * <tt>s = gO + n * gE</tt>
+ * where gO is the gapOpen score, gE is the gap extend score and n ist the
+ * total number of gap characters.
+ *
+ * SeqAn, however, computes them as as <tt>s = gO + (n-1) * gE</tt>.
+ *
+ * The context always holds a scoring scheme in SeqAn's format, but you can use this function to pass a scoring
+ * scheme in blast's notation and it will be converted automatically. If you are used to Blast's notation or provide
+ * a user interface where the user enters gap-scores, you will want to use this interface.
+ *
+ * After setting the scoringScheme, the scoringAdpater will be updated. If this fails (e.g. no statistical parameters
+ * for the scoring scheme are available) this function will call SEQAN_FAIL. If you don't want this behaviour and you
+ * absolutely know what you are doing, you can operate directly on the
+ * @link BlastIOContext::scoringAdapter @endlink-member.
+*/
+
+template <typename TScore,
+          typename TString,
+          BlastProgram p,
+          BlastTabularSpec h>
+inline void
+setBlastScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore scoringScheme)
+{
+    blastScoringScheme2seqanScoringScheme(scoringScheme);
+    setScoringScheme(context, scoringScheme);
+}
 
 }
 

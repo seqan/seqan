@@ -173,7 +173,7 @@ test_blast_write_record_match(TFile & file,
     setScoreGapOpen(scheme, -11);
     setScoreGapExtend(scheme, -1);
 
-    setScoringScheme(context, scheme);
+    setBlastScoringScheme(context, scheme);
 
     String<TBlastRecord> records;
     resize(records, 3);
@@ -213,8 +213,8 @@ test_blast_write_record_match(TFile & file,
             m.sFrameShift = 1;
 
             computeAlignmentStats(m, context);
-
-            calcBitScoreAndEValue(m, context);
+            computeBitScore(m, context);
+            computeEValue(m, context);
         }
     }
 
@@ -473,7 +473,7 @@ SEQAN_DEFINE_TEST(test_blast_write_header_customfields_tabular_with_header)
 
 SEQAN_DEFINE_TEST(test_blast_write_match_lowlevel_tabular)
 {
-    BlastIOContext<Blosum62, std::string, BlastProgram::INVALID, BlastTabularSpec::UNKNOWN> context;
+    BlastIOContext<Blosum62, std::string, BlastProgram::UNKNOWN, BlastTabularSpec::UNKNOWN> context;
     // the BlastIOContext will not be used downstream at all since this uses the low-level implementation
     // that is independent of context and other data structures
     test_blast_write_tabular_impl(0, 2, context);

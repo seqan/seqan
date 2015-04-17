@@ -53,7 +53,7 @@ namespace seqan
  * If you then also set a valid @link BlastMatch::align @endlink you can
  * let the other members be computed by
  * @link BlastMatch#computeAlignmentStats @endlink and
- * @link BlastMatch#calcBitScoreAndEValue @endlink.
+ * @link BlastMatch#computeBitScore @endlink, @link BlastMatch#computeEValue @endlink.
  *
  * @tparam TQId  Type of qId, defaults to std::string
  * @tparam TSId  Type of sId, defaults to std::string

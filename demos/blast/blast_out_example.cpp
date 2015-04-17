@@ -52,7 +52,7 @@ int main()
     setScoreGapExtend(scheme, -1);
 
     // upon assigning, this is also converted to SeqAn's scoring behaviour
-    setScoringScheme(context(outfile), scheme);
+    setBlastScoringScheme(context(outfile), scheme);
 
     // protein vs protein search is BLASTP
     setBlastProgram(context(outfile), BlastProgram::BLASTP);

@@ -368,7 +368,6 @@ _statsBlock(char * buffer,
             typedef BlastProgramTag<BlastProgram::TBLASTX> TNewTag;
             _statsBlock(buffer, m, p, TNewTag(), BlastReport());
         } break;
-        case BlastProgram::INVALID:
         case BlastProgram::UNKNOWN:
             SEQAN_FAIL("Invalid or unkown BlastProgram specified. Don't know how to print it.");
             break;
@@ -871,7 +870,7 @@ writeFooter(TStream & stream,
             BlastIOContext<TScore, TConString, p, h> & context,
             BlastReport const & /*tag*/)
 {
-    TScore scheme(getScoringScheme(context));
+    TScore scheme(getBlastScoringScheme(context));
 
     write(stream, "\n  Database: ");
     write(stream, context.dbName);

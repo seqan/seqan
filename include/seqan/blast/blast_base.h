@@ -47,12 +47,17 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Enum BlastProgram
+// ----------------------------------------------------------------------------
+
 /*!
  * @enum BlastProgram
  * @brief Enum with BLAST program spec
  * @signature enum class BlastProgram : uint8_t { ... };
  *
  * @headerfile <seqan/blast.h>
+ * @see BlastProgramTag
  *
  * @val BlastProgram BlastProgram::BLASTN
  * @brief Nucleotide Query VS Nucleotide Subject
@@ -69,11 +74,8 @@ namespace seqan {
  * @val BlastProgram BlastProgram::TBLASTX
  * @brief translated Nucleotide Query VS translated Nucleotide Subject
  *
- * @val BlastProgram BlastProgram::UNKOWN
+ * @val BlastProgram BlastProgram::UNKNOWN
  * @brief Unkown type. Used internally and to signify that the type could not be inferred from the file.
- *
- * @val BlastProgram BlastProgram::INVALID
- * @brief Used internally.
  */
 enum class BlastProgram : uint8_t
 {
@@ -82,11 +84,38 @@ enum class BlastProgram : uint8_t
     BLASTX,         // TRANSLATED   NUCL VS             PROT
     TBLASTN,        //              PROT VS TRANSLATED  NUCL
     TBLASTX,        // TRANSLATED   NUCL VS TRANSLATED  NUCL
-    UNKNOWN=254,
-    INVALID=255 //TODO remove invalid again
+    UNKNOWN=255
 };
 
-// TODO dox
+/*!
+ * @defgroup BlastProgramTag BlastProgram interface
+ * @brief Integral constants of @link BlastProgram @endlink
+ *
+ * @tag BlastProgramTag#BlastProgramTagBlastN
+ * @brief Tag for @link BlastProgram::BLASTN @endlink
+ * @headerfile <seqan/blast.h>
+ *
+ * @tag BlastProgramTag#BlastProgramTagBlastP
+ * @brief Tag for @link BlastProgram::BLASTP @endlink
+ * @headerfile <seqan/blast.h>
+ *
+ * @tag BlastProgramTag#BlastProgramTagBlastX
+ * @brief Tag for @link BlastProgram::BLASTX @endlink
+ * @headerfile <seqan/blast.h>
+ *
+ * @tag BlastProgramTag#BlastProgramTagTBlastN
+ * @brief Tag for @link BlastProgram::TBLASTN @endlink
+ * @headerfile <seqan/blast.h>
+ *
+ * @tag BlastProgramTag#BlastProgramTagTBlastX
+ * @brief Tag for @link BlastProgram::TBLASTX @endlink
+ * @headerfile <seqan/blast.h>
+ *
+ * @tag BlastProgramTag#BlastProgramTagUnknown
+ * @brief Tag for @link BlastProgram::UNKNOWN @endlink
+ * @headerfile <seqan/blast.h>
+ */
+
 template <BlastProgram p>
 using BlastProgramTag = std::integral_constant<BlastProgram, p>;
 
@@ -96,9 +125,22 @@ typedef BlastProgramTag<BlastProgram::BLASTX>  BlastProgramTagBlastX;
 typedef BlastProgramTag<BlastProgram::TBLASTN> BlastProgramTagTBlastN;
 typedef BlastProgramTag<BlastProgram::TBLASTX> BlastProgramTagTBlastX;
 typedef BlastProgramTag<BlastProgram::UNKNOWN> BlastProgramTagUnknown;
-typedef BlastProgramTag<BlastProgram::INVALID> BlastProgramTagInvalid;
 
+// ============================================================================
+// Functions
+// ============================================================================
 
+// ----------------------------------------------------------------------------
+// getBlastProgram()
+// ----------------------------------------------------------------------------
+
+/*
+ * Given both an enum value and a tag, return the tag's value unless it is UNKNOWN
+ * in which case the enum's value is returned. Can be used in implementations that
+ * want to cover compile-time constants and run-time settings both.
+ */
+
+// this is always evaluated at compile-time
 template <BlastProgram p>
 constexpr BlastProgram
 getBlastProgram(BlastProgram const, BlastProgramTag<p> const &)
@@ -106,7 +148,8 @@ getBlastProgram(BlastProgram const, BlastProgramTag<p> const &)
     return p;
 }
 
-inline BlastProgram
+// this will likely be evaluated at run-time
+constexpr BlastProgram
 getBlastProgram(BlastProgram const p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
 {
     return p;
@@ -116,7 +159,27 @@ getBlastProgram(BlastProgram const p, BlastProgramTag<BlastProgram::UNKNOWN> con
 // qHasRevComp()
 // ----------------------------------------------------------------------------
 
-//TODO dox and tests
+/*!
+ * @fn BlastProgramTag#qHasRevComp
+ * @brief Whether the reverse complement of the <b>query</b> sequence(s) is searched with the given BlastProgram
+ * @signature constexpr bool qHasRevComp(BlastProgram const p);
+ * template <BlastProgram p>
+ * constexpr bool qHasRevComp(BlastProgramTag<p> const &);
+ * template <BlastProgram p>
+ * constexpr bool qHasRevComp(BlastProgram const _p, BlastProgramTag<p> const &);
+ *
+ * @section Remarks
+ *
+ * This function can be used to check whether the defined BlastProgam implies the existence/creation/... of a
+ * reverse complement sequence of the query sequence.
+ *
+ * If both a tag and an enum are specified, the tag is given preference, unless it is set to
+ * @link BlastProgram::UNKNOWN @endlink.
+ *
+ * @return false for @link BlastProgram::BLASTP @endlink and @link BlastProgram::TBLASTN @endlink
+ * @return true otherwise
+ * @headerfile <seqan/blast.h>
+ */
 
 constexpr bool
 qHasRevComp(BlastProgram const p)
@@ -135,21 +198,36 @@ qHasRevComp(BlastProgramTag<p> const &)
 
 template <BlastProgram p>
 constexpr bool
-qHasRevComp(BlastProgram const, BlastProgramTag<p> const &)
+qHasRevComp(BlastProgram const _p, BlastProgramTag<p> const &)
 {
-    return qHasRevComp(p);
-}
-
-// this will be picked for run-time detection
-constexpr bool
-qHasRevComp(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
-{
-    return qHasRevComp(_p);;
+    return qHasRevComp(getBlastProgram(_p, BlastProgramTag<p>()));
 }
 
 // ----------------------------------------------------------------------------
 // qIsTranslated()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastProgramTag#qIsTranslated
+ * @brief Whether the <b>query</b> sequence is translated in the given BlastProgram
+ * @signature constexpr bool qIsTranslated(BlastProgram const p);
+ * template <BlastProgram p>
+ * constexpr bool qIsTranslated(BlastProgramTag<p> const &);
+ * template <BlastProgram p>
+ * constexpr bool qIsTranslated(BlastProgram const _p, BlastProgramTag<p> const &);
+ *
+ * @section Remarks
+ *
+ * This function can be used to check whether the defined BlastProgam implies the
+ * nucleotide to aminoacid translation of the query sequence.
+ *
+ * If both a tag and an enum are specified, the tag is given preference, unless it is set to
+ * @link BlastProgram::UNKNOWN @endlink.
+ *
+ * @return true for @link BlastProgram::BLASTX @endlink and @link BlastProgram::TBLASTX @endlink
+ * @return false otherwise
+ * @headerfile <seqan/blast.h>
+ */
 
 constexpr bool
 qIsTranslated(BlastProgram const p)
@@ -168,21 +246,34 @@ qIsTranslated(BlastProgramTag<p> const &)
 
 template <BlastProgram p>
 constexpr bool
-qIsTranslated(BlastProgram const, BlastProgramTag<p> const &)
+qIsTranslated(BlastProgram const _p, BlastProgramTag<p> const &)
 {
-    return qIsTranslated(p);
-}
-
-// this will be picked for run-time detection
-constexpr bool
-qIsTranslated(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
-{
-    return qIsTranslated(_p);;
+    return qIsTranslated(getBlastProgram(_p, BlastProgramTag<p>()));
 }
 
 // ----------------------------------------------------------------------------
 // qNumFrames()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastProgramTag#qNumFrames
+ * @brief The number of frames per <b>query</b> sequence implied by the given BlastProgram
+ * @signature constexpr uint8_t qNumFrames(BlastProgram const p);
+ * template <BlastProgram p>
+ * constexpr uint8_t qNumFrames(BlastProgramTag<p> const &);
+ * template <BlastProgram p>
+ * constexpr uint8_t qNumFrames(BlastProgram const _p, BlastProgramTag<p> const &);
+ *
+ * @section Remarks
+ *
+ * If both a tag and an enum are specified, the tag is given preference, unless it is set to
+ * @link BlastProgram::UNKNOWN @endlink.
+ *
+ * @return 6 for @link BlastProgram::BLASTX @endlink and @link BlastProgram::TBLASTX @endlink
+ * @return 2 for @link BlastProgram::BLASTN @endlink
+ * @return 1 for @link BlastProgram::BLASTP @endlink and @link BlastProgram::TBLASTN @endlink
+ * @headerfile <seqan/blast.h>
+ */
 
 constexpr uint8_t
 qNumFrames(BlastProgram p)
@@ -203,21 +294,36 @@ qNumFrames(BlastProgramTag<p> const &)
 
 template <BlastProgram p>
 constexpr bool
-qNumFrames(BlastProgram const, BlastProgramTag<p> const &)
+qNumFrames(BlastProgram const _p, BlastProgramTag<p> const &)
 {
-    return qNumFrames(p);
-}
-
-// this will be picked for run-time detection
-constexpr bool
-qNumFrames(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
-{
-    return qNumFrames(_p);;
+    return qNumFrames(getBlastProgram(_p, BlastProgramTag<p>()));
 }
 
 // ----------------------------------------------------------------------------
 // sHasRevComp()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastProgramTag#sHasRevComp
+ * @brief Whether the reverse complement of the <b>subject</b> sequence(s) is searched with the given BlastProgram
+ * @signature constexpr bool sHasRevComp(BlastProgram const p);
+ * template <BlastProgram p>
+ * constexpr bool sHasRevComp(BlastProgramTag<p> const &);
+ * template <BlastProgram p>
+ * constexpr bool sHasRevComp(BlastProgram const _p, BlastProgramTag<p> const &);
+ *
+ * @section Remarks
+ *
+ * This function can be used to check whether the defined BlastProgam implies the existence/creation/... of a
+ * reverse complement sequence of the subject sequence.
+ *
+ * If both a tag and an enum are specified, the tag is given preference, unless it is set to
+ * @link BlastProgram::UNKNOWN @endlink.
+ *
+ * @return true for @link BlastProgram::TBLASTX @endlink and @link BlastProgram::TBLASTN @endlink
+ * @return false otherwise
+ * @headerfile <seqan/blast.h>
+ */
 
 constexpr bool
 sHasRevComp(BlastProgram const p)
@@ -237,21 +343,36 @@ sHasRevComp(BlastProgramTag<p> const &)
 
 template <BlastProgram p>
 constexpr bool
-sHasRevComp(BlastProgram const, BlastProgramTag<p> const &)
+sHasRevComp(BlastProgram const _p, BlastProgramTag<p> const &)
 {
-    return sHasRevComp(p);
-}
-
-// this will be picked for run-time detection
-constexpr bool
-sHasRevComp(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
-{
-    return sHasRevComp(_p);;
+    return sHasRevComp(getBlastProgram(_p, BlastProgramTag<p>()));
 }
 
 // ----------------------------------------------------------------------------
 // sIsTranslated()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastProgramTag#sIsTranslated
+ * @brief Whether the <b>subject</b> sequence is translated in the given BlastProgram
+ * @signature constexpr bool sIsTranslated(BlastProgram const p);
+ * template <BlastProgram p>
+ * constexpr bool sIsTranslated(BlastProgramTag<p> const &);
+ * template <BlastProgram p>
+ * constexpr bool sIsTranslated(BlastProgram const _p, BlastProgramTag<p> const &);
+ *
+ * @section Remarks
+ *
+ * This function can be used to check whether the defined BlastProgam implies the
+ * nucleotide to aminoacid translation of the subject sequence.
+ *
+ * If both a tag and an enum are specified, the tag is given preference, unless it is set to
+ * @link BlastProgram::UNKNOWN @endlink.
+ *
+ * @return true for @link BlastProgram::TBLASTX @endlink and @link BlastProgram::TBLASTN @endlink
+ * @return false otherwise
+ * @headerfile <seqan/blast.h>
+ */
 
 constexpr bool
 sIsTranslated(BlastProgram const p)
@@ -271,21 +392,33 @@ sIsTranslated(BlastProgramTag<p> const &)
 
 template <BlastProgram p>
 constexpr bool
-sIsTranslated(BlastProgram const, BlastProgramTag<p> const &)
+sIsTranslated(BlastProgram const _p, BlastProgramTag<p> const &)
 {
-    return sIsTranslated(p);
-}
-
-// this will be picked for run-time detection
-constexpr bool
-sIsTranslated(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
-{
-    return sIsTranslated(_p);;
+    return sIsTranslated(getBlastProgram(_p, BlastProgramTag<p>()));
 }
 
 // ----------------------------------------------------------------------------
 // sNumFrames()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastProgramTag#sNumFrames
+ * @brief The number of frames per <b>query</b> sequence implied by the given BlastProgram
+ * @signature constexpr uint8_t sNumFrames(BlastProgram const p);
+ * template <BlastProgram p>
+ * constexpr uint8_t sNumFrames(BlastProgramTag<p> const &);
+ * template <BlastProgram p>
+ * constexpr uint8_t sNumFrames(BlastProgram const _p, BlastProgramTag<p> const &);
+ *
+ * @section Remarks
+ *
+ * If both a tag and an enum are specified, the tag is given preference, unless it is set to
+ * @link BlastProgram::UNKNOWN @endlink.
+ *
+ * @return 6 for @link BlastProgram::TBLASTX @endlink and @link BlastProgram::TBLASTN @endlink
+ * @return 1 otherwise
+ * @headerfile <seqan/blast.h>
+ */
 
 constexpr uint8_t
 sNumFrames(BlastProgram p)
@@ -306,66 +439,9 @@ sNumFrames(BlastProgramTag<p> const &)
 
 template <BlastProgram p>
 constexpr bool
-sNumFrames(BlastProgram const, BlastProgramTag<p> const &)
+sNumFrames(BlastProgram const _p, BlastProgramTag<p> const &)
 {
-    return sNumFrames(p);
-}
-
-// this will be picked for run-time detection
-constexpr bool
-sNumFrames(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
-{
-    return sNumFrames(_p);;
-}
-
-// ============================================================================
-// Functions
-// ============================================================================
-
-/*!
- * @defgroup BlastScoringScheme
- * @brief functions for converting to and from Blast's scoring-scheme behaviour
- *
- * Blast (and many other tools) compute scores of a stretch of gaps as
- * <tt>s = gO + n * gE</tt>
- * where gO is the gapOpen score, gE is the gap extend score and n ist the
- * total number of gap characters.
- *
- * SeqAn, however, computes them as as <tt>s = gO + (n-1) * gE</tt>. The
- * functions below convert between the behaviours by adjusting the
- * gapOpen score.
- *
- * For more information, see <a href="https://trac.seqan.de/ticket/1091">https://trac.seqan.de/ticket/1091</a>.
- *
- * Please note that independent of this issue, SeqAn always works with
- * scores, never with penalties, i.e. a penalty is represented by a negative
- * score.
- *
- * @fn BlastScoringScheme#seqanScoringScheme2blastScoringScheme
- * @signature void seqanScoringScheme2blastScoringScheme(scoringScheme);
- * @brief convert to Blast's behaviour
- * @param[in,out]      scoringScheme      The @link Score @endlink object to modify.
- * @headerfile <seqan/blast.h>
- *
- * @fn BlastScoringScheme#blastScoringScheme2seqanScoringScheme
- * @signature void blastScoringScheme2seqanScoringScheme(scoringScheme);
- * @brief convert from Blast's behaviour
- * @param[in,out]      scoringScheme      The @link Score @endlink object to modify.
- * @headerfile <seqan/blast.h>
- */
-
-template <typename TValue, typename TSpec>
-inline void
-seqanScoringScheme2blastScoringScheme(Score<TValue, TSpec> & scheme)
-{
-    setScoreGapOpen(scheme, scoreGapOpen(scheme) - scoreGapExtend(scheme));
-}
-
-template <typename TValue, typename TSpec>
-inline void
-blastScoringScheme2seqanScoringScheme(Score<TValue, TSpec> & scheme)
-{
-    setScoreGapOpen(scheme, scoreGapOpen(scheme) + scoreGapExtend(scheme));
+    return sNumFrames(getBlastProgram(_p, BlastProgramTag<p>()));
 }
 
 // ----------------------------------------------------------------------------
@@ -414,14 +490,7 @@ _programTagToString<BlastProgram::TBLASTX>()
     return "TBLASTX";
 }
 
-template <>
-constexpr const char *
-_programTagToString<BlastProgram::INVALID>()
-{
-    return "INVALID BLAST PROGRAM";
-}
-
-// run-time
+// if not compile time fixed, than we can operate with const char * and need std::string instead
 inline std::string const
 _programTagToString(BlastProgram const _p)
 {
@@ -437,8 +506,6 @@ _programTagToString(BlastProgram const _p)
             return std::string(_programTagToString<BlastProgram::TBLASTN>());
         case BlastProgram::TBLASTX:
             return std::string(_programTagToString<BlastProgram::TBLASTX>());
-        case BlastProgram::INVALID:
-            return std::string(_programTagToString<BlastProgram::INVALID>());
         case BlastProgram::UNKNOWN:
             break;
     }
@@ -460,6 +527,9 @@ _programTagToString(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN
     return _programTagToString(_p);
 }
 
+// ----------------------------------------------------------------------------
+// _programStringToTag()
+// ----------------------------------------------------------------------------
 
 template <typename TString>
 inline BlastProgram

@@ -264,7 +264,7 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_bit_score_e_value)
     computeAlignmentStats(m.alignStats, m.align, scheme);
 
     SEQAN_ASSERT_EQ(m.alignStats.alignmentScore, score);
-//     SEQAN_ASSERT_EQ(m.alignLength, 14u);
+    SEQAN_ASSERT_EQ(m.alignStats.alignmentLength, 14u);
     SEQAN_ASSERT_EQ(m.alignStats.numMatches, 10u);
     SEQAN_ASSERT_EQ(m.alignStats.numPositiveScores, 12u);
     SEQAN_ASSERT_EQ(m.alignStats.numMismatches, 2u);
@@ -276,12 +276,12 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_bit_score_e_value)
     BlastScoringAdapter<TScheme> adapter(scheme);
     SEQAN_ASSERT(isValid(adapter));
 
-    calcBitScoreAndEValue(m.bitScore, m.eValue, m.alignStats.alignmentScore, length(src0),
-                          length(src1), adapter);
-
+    m.bitScore = computeBitScore(m.alignStats.alignmentScore, adapter);
     double epsilon = 1e-4;
     SEQAN_ASSERT_LEQ(std::abs(m.bitScore - 23.0978), epsilon);
-    epsilon = 1e-8; // more important on evalue
+
+    m.eValue = computeEValue(m.alignStats.alignmentScore, length(src1), length(src0), adapter);
+    epsilon = 1e-8; // evalues are smaller
     SEQAN_ASSERT_LEQ(std::abs(m.eValue - 0.000267348), epsilon);
 }
 
