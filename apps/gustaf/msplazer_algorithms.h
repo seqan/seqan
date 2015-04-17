@@ -1239,13 +1239,68 @@ inline void _getBeSupport(String<TBreakpoint> & countedBE, TBreakpoint & bp, uns
     }
 }
 
+// Combines simple BPs (deletions, inversions) w/ or to complex SVs (translocations, duplications, combined inv-del)
+template <typename TBreakpoint>
+inline void _inferComplexBP(String<TBreakpoint> & globalBreakpoints, TBreakpoint & bp, unsigned const & bpPosRange, unsigned & similarBPId)
+{
+    String<unsigned> toBeErased;
+    bool keepBP = true;
+    bool newInv = false;
+    TBreakpoint newInvBP = bp;
+    // Compare new breakpoint to breakpoints in the set, add supportIDs if similar or create new, more complex
+    // breakpoint if supporting breakpoint
+    for (unsigned i = 0; i < length(globalBreakpoints); ++i)
+    {
+        TBreakpoint & tempBP = globalBreakpoints[i];
+        // Special case: one of the breakpoints is a deletion, the other a duplication or translocation, then the del
+        // can either be part of the duplication and should not be in the output list or it can distinguish the dup
+        // from a translocation in which case the svtype is updated from duplication to translocation
+        // Note: both deletions cannot be distinguished for which it is, so only if both have been witnessed we can
+        // update from duplication to translocation
+        // Note: if both are oberserved at the same time without a duplication/translocation, we infer the presence of
+        // a translocation and insert a new translocation breakpoint instead of both deletions
+
+        if (_translDelSupport(bp, tempBP, keepBP, bpPosRange))
+            appendValue(toBeErased, i);
+
+        // Special case: both breakpoints are nested inversions. Then, it is more likely that there is actually a
+        // combination of an inversion with 1 (or 2) adjacent deletion(s).
+        // If one includes the other, we keep the inner inversion and infer an deletion of the remaining region.
+        // If both overlap, then the overlapping region is the inversion, the remaining regions are inferred dels.
+        // In this case, we need to create a third bp
+        else if (_invDelClassification(bp, tempBP, newInvBP, bpPosRange))
+            newInv = true;
+
+    }
+    // Erase obsolete bps in descending order
+    for (unsigned i = 0; i < length(toBeErased); ++i)
+    {
+        unsigned index = length(toBeErased) - 1 - i;
+        erase(globalBreakpoints, toBeErased[index]);
+    }
+    // Append breakpoint if new
+    if (keepBP)
+    {
+        if (bp.similar == maxValue<unsigned>())
+        {
+            bp.similar = similarBPId;
+            ++similarBPId;
+        }
+        appendValue(globalBreakpoints, bp);
+    }
+    // Append new deletion breakpoint if appl./insert new deletion bc. there could be one already in the set?
+    if (newInv)
+        appendValue(globalBreakpoints, newInvBP);
+        // _insertBreakpoint(countedBP, newDelbp, bpPosRange, similarBPId++?);
+}
+
+// Insert Breakpoint into string of breakpoints if it is not already in the set. Returns true if breakpoint was new and
+// has been inserted or false if breakpoint was already in the set (and just has been counted).
+// For insertions, also the insertion length has to be the same
 template <typename TBreakpoint>
 inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp, unsigned const & bpPosRange, unsigned & similarBPId)
 {
-    String<unsigned> toBeErased;
     bool newBP = true;
-    bool newInv = false;
-    TBreakpoint newInvBP = bp;
     // Compare new breakpoint to breakpoints in the set, add supportIDs if similar or create new, more complex
     // breakpoint if supporting breakpoint
     for (unsigned i = 0; i < length(countedBP); ++i)
@@ -1274,31 +1329,7 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
             //bp.similar = tempBP.similar;
             // Mark breakpoint to be similar via an ID
         }
-        // Special case: one of the breakpoints is a deletion, the other a duplication or translocation, then the del
-        // can either be part of the duplication and should not be in the output list or it can distinguish the dup
-        // from a translocation in which case the svtype is updated from duplication to translocation
-        // Note: both deletions cannot be distinguished for which it is, so only if both have been witnessed we can
-        // update from duplication to translocation
-        // Note: if both are oberserved at the same time without a duplication/translocation, we infer the presence of
-        // a translocation and insert a new translocation breakpoint instead of both deletions
 
-        else if (_translDelSupport(bp, tempBP, newBP, bpPosRange))
-            appendValue(toBeErased, i);
-
-        // Special case: both breakpoints are nested inversions. Then, it is more likely that there is actually a
-        // combination of an inversion with 1 (or 2) adjacent deletion(s).
-        // If one includes the other, we keep the inner inversion and infer an deletion of the remaining region.
-        // If both overlap, then the overlapping region is the inversion, the remaining regions are inferred dels.
-        // In this case, we need to create a third bp
-        else if (_invDelClassification(bp, tempBP, newInvBP, bpPosRange))
-            newInv = true;
-
-    }
-    // Erase obsolete bps in descending order
-    for (unsigned i = 0; i < length(toBeErased); ++i)
-    {
-        unsigned index = length(toBeErased) - 1 - i;
-        erase(countedBP, toBeErased[index]);
     }
     // Append breakpoint if new
     if (newBP)
@@ -1310,103 +1341,9 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
         }
         appendValue(countedBP, bp);
     }
-    // Append new deletion breakpoint if appl./insert new deletion bc. there could be one already in the set?
-    if (newInv)
-        appendValue(countedBP, newInvBP);
-        // _insertBreakpoint(countedBP, newDelbp, bpPosRange, similarBPId++?);
-}
-// Insert Breakpoint into string of breakpoints if it is not already in the set. Returns true if breakpoint was new and
-// has been inserted or false if breakpoint was already in the set (and just has been counted).
-// For insertions, also the insertion length has to be the same
-template <typename TBreakpoint>
-bool _insertBreakpointOld(String<TBreakpoint> & countedBP, TBreakpoint & bp, unsigned const & bpPosRange)
-{
-    bool foundNewBP = true;
-    String<unsigned> toBeErased;
-    // Breakpoint bp is compared to each breakpoint in the list (tempBP)
-    for (unsigned i = 0; i < length(countedBP); ++i)
-    {
-        TBreakpoint & tempBP = countedBP[i];
-        // Breakpoint comparison
-        // Special case: old breakpoint is only breakend
-        if (tempBP.svtype == TBreakpoint::BREAKEND)
-        {
-            // If both are breakends and similar, add supportId to the old (temp) bp
-            if (bp.svtype == TBreakpoint::BREAKEND && _similarBreakends(bp, tempBP, bpPosRange))
-            {
-                appendSupportId(tempBP, bp.supportIds);
-                // TODO set tempBP.startendSeqPos to left most position and set cistartend
-                // if (bp.startSeqPos < tempBP.startSeqPos)
-                // {
-                //      tempBP.startSeqPos = bp.startSeqPos;
-                //      tempBP.endSeqPos = tempBP.startSeqPos;
-                //      // more adjustments?
-                // }
-                foundNewBP = false;
-                // No other support possible, most have been detected before and be must have been replaced
-                return false;
-            }
-            // If the old bp is only a breakend but the new is a proper breakpoint, check if the breakend is supporting
-            // the new breakpoint, if so, then replace the breakend and add its Ids as support to the new bp
-            else if (_breakendSupport(tempBP, bp, bpPosRange))
-            {
-                // Append support Ids of old bp (tempBP) to new bp
-                appendSupportId(bp, tempBP.supportIds);
-                // tempBP = bp;
-                foundNewBP = true;
-                appendValue(toBeErased, i);
-                // no return statement bc there can be more than one supporting BP, be is beeing erased in the end
-                // return false; // return true since its basically a new bp in the set?
-            }
-        }
-        // Special case: new breakpoint is only breakend
-        else if (bp.svtype == TBreakpoint::BREAKEND)
-        {
-            if (_breakendSupport(bp, tempBP, bpPosRange))
-            {
-                appendSupportId(tempBP, bp.supportIds);
-                foundNewBP = false;
-                // No other support should be possible, most have been detected before and be must have been replaced
-                return false;
-            }
-        }
-        else if (bp == tempBP)
-        {
-            appendSupportId(tempBP, bp.supportIds);
-            // Very special case, should be no other support likely
-            return false;
-        }
-        // Special case: one of the breakpoints is a deletion, the other a duplication or translocation, then the del
-        // can either be part of the duplication and should not be in the output list or it can distinguish the dup
-        // from a translocation in which case the svtype is updated from duplication to translocation
-        // Note: both deletions cannot be distinguished for which it is, so only if both have been witnessed we can
-        // update from duplication to translocation
-        // Note: if both are oberserved at the same time without a duplication/translocation, we infer the presence of
-        // a translocation and insert a new translocation breakpoint instead of both deletions
-
-        if (_translDelSupport(bp, tempBP, foundNewBP, bpPosRange))
-            appendValue(toBeErased, i);
-            // foundNewBP = true;
-            // return false;
-
-    }
-    // toBeErased should be sorted in ascending order since countedBP was examined sequentially
-    // Erase obsolete bps in descending order
-    for (unsigned i = 0; i < length(toBeErased); ++i)
-    {
-        unsigned index = length(toBeErased) - 1 - i;
-        erase(countedBP, toBeErased[index]);
-    }
-
-    // Append breakpoint if new
-    if (foundNewBP)
-    {
-        appendValue(countedBP, bp);
-        return true;
-    }
-    return false;
 }
 
+// Wrapper insert breakpoint function with separated breakends, calls insert breakpoint fct below
 template <typename TBreakpoint>
 void _insertBreakpoints(String<TBreakpoint> & countedBP,
                         String<TBreakpoint> & countedBE,
@@ -1437,6 +1374,7 @@ void _insertBreakpoints(String<TBreakpoint> & countedBP,
     }
 }
 
+// Insert breakpoint function w/o breakends
 template <typename TBreakpoint>
 void _insertBreakpoints(String<TBreakpoint> & countedBP, String<TBreakpoint> & newBP, MSplazerOptions const & options)
 {
@@ -1628,22 +1566,37 @@ void _findAllBestChains(String<TMSplazerChain> & queryChains,
         chainSizeCount[i] = 0;
     */
     String<TBreakpoint> globalBreakends;
+    String<TBreakpoint> tmpGlobalBreakpoints;
     unsigned brokenChainCount = 0;
     unsigned similarBPId = 0;
+    // 1st pass scanning:
+    // Extract 
     for (unsigned i = 0; i < length(queryChains); ++i)
     {
-        String<TBreakpoint> tmpGlobalBreakpoints;
+        String<TBreakpoint> localBreakpoints;
         // String<TBreakpoint> tmpStellarIndels;
-        if (_findBestChain(queryChains[i], queryMatches[i].matches, tmpGlobalBreakpoints, // msplazerOptions,
+        if (_findBestChain(queryChains[i], queryMatches[i].matches, localBreakpoints, // msplazerOptions,
                            brokenChainCount))
         {
-            _insertBreakpoints(globalBreakpoints, globalBreakends, tmpGlobalBreakpoints, msplazerOptions, similarBPId);
+            _insertBreakpoints(tmpGlobalBreakpoints, globalBreakends, localBreakpoints, msplazerOptions, similarBPId);
             // get small indels from matches
             // _getChainIndels(queryChains[i].bestChains, globalStellarIndels, queryIds[i], queries[i]);
             /*
             for(unsigned j = 0; j < length(queryChains[i].bestChains); ++j)
                 ++chainSizeCount[length(queryChains[i].bestChains[j])];
             */
+        }
+    }
+    // 2nd pass scanning:
+    // Only keep BPs w/ enough support and check if these can be combined to more complex ones
+    for (unsigned i = 0; i < length(tmpGlobalBreakpoints); ++i)
+    {
+        if (tmpGlobalBreakpoints[i].support >= msplazerOptions.support)
+        {
+            if (msplazerOptions.inferComplexBP)
+                _inferComplexBP(globalBreakpoints, tmpGlobalBreakpoints[i], msplazerOptions.breakpointPosRange, similarBPId);
+            else
+                appendValue(globalBreakpoints, tmpGlobalBreakpoints[i]);
         }
     }
     append(globalBreakpoints, globalBreakends);

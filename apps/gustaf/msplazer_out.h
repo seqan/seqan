@@ -369,7 +369,9 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
     for (unsigned i = 0; i < length(globalBreakpoints); ++i)
     {
         TBreakpoint & tempBP = globalBreakpoints[i];
-        if (tempBP.svtype != 0 && tempBP.support >= msplazerOptions.support) // 0=invalid
+        // Added support check in 2phase breakpoint extraction adaption
+        // if (tempBP.svtype != 0 && tempBP.support >= msplazerOptions.support) // 0=invalid
+        if (tempBP.svtype != 0) // 0=invalid
         {
             if (tempBP.svtype == TBreakpoint::DISPDUPLICATION && tempBP.translSuppStartPos && tempBP.translSuppEndPos)
                 tempBP.svtype = TBreakpoint::TRANSLOCATION;

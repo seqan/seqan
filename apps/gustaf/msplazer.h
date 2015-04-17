@@ -89,6 +89,7 @@ struct MSplazerOptions
     unsigned libError;              // Library size (mate pairs)
     bool pairedEndMode;             // Whether or not to run Gustaf in paired-end mode
     bool revCompl;                  // Whether or not to rev-compl the second input file
+    bool inferComplexBP;           // Whether or not to inferr complex breakpoints
     unsigned numThreads;            // Number of threads for parallelization
 
     MSplazerOptions() :
@@ -114,6 +115,7 @@ struct MSplazerOptions
         libError(0),
         pairedEndMode(false),
         revCompl(true),
+        inferComplexBP(true),
         numThreads(1)
         {}
 };
