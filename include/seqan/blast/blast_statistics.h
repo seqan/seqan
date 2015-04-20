@@ -320,7 +320,6 @@ double const BlastScoringAdapter<Pam250, TSpec>::karlinAltschulValues
 /// VTML200
 // not implemented in blast
 
-
 /// NUCLEOTIDES
 template <typename TSpec>
 struct BlastScoringAdapter<Score<int, Simple>, TSpec>

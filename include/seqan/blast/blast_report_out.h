@@ -204,173 +204,100 @@ _matrixName(T const & /**/)
 }
 
 constexpr const char *
+_matrixName(Blosum45 const & /**/)
+{
+    return "BLOSUM45";
+}
+
+constexpr const char *
 _matrixName(Blosum62 const & /**/)
 {
     return "BLOSUM62";
 }
 
-//TODO add more matrices
+constexpr const char *
+_matrixName(Blosum80 const & /**/)
+{
+    return "BLOSUM80";
+}
+
+constexpr const char *
+_matrixName(Pam250 const & /**/)
+{
+    return "PAM250";
+}
 
 // ----------------------------------------------------------------------------
-// Function _statsBlock
+// Function _writeStatsBlock
 // ----------------------------------------------------------------------------
 
-template <typename TMatch>
+template <typename TStream,
+          typename TScore,
+          typename TConString,
+          typename TMatch,
+          BlastProgram p,
+          BlastTabularSpec h>
 inline void
-_statsBlock(char * buffer,
-            TMatch const & m,
-            BlastProgram const,
-            BlastProgramTagBlastN const &,
-            BlastReport const &)
+_writeStatsBlock(TStream & stream,
+                 BlastIOContext<TScore, TConString, p, h> const & context,
+                 TMatch const & m,
+                 BlastReport const &)
 {
-    sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
-                   " Identities = %d/%d (%d%%), Gaps = %d/%d (%d%%)\n"
-                   " Strand=", // no spaces here for whatever reason
-            m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-            m.alignStats.numMatches, m.alignStats.alignmentLength, int(std::lround(m.alignStats.alignmentIdentity)),
-            m.alignStats.numGaps, m.alignStats.alignmentLength,
-            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
-    if (m.qFrameShift == 1)
-        strcat(buffer, "Plus/");
-    else
-        strcat(buffer, "Minus/");
-
-    if (m.sFrameShift == 1)
-        strcat(buffer, "Plus\n\n");
-    else
-        strcat(buffer, "Minus\n\n");
-}
-
-template <typename TMatch>
-inline void
-_statsBlock(char * buffer,
-            TMatch const & m,
-            BlastProgram const,
-            BlastProgramTagBlastP const &,
-            BlastReport const &)
-{
-    sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
-                   " Identities = %d/%d (%d%%),"
-                   " Positives = %d/%d (%d%%),"
-                   " Gaps = %d/%d (%d%%)\n\n",
-            m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-            m.alignStats.numMatches, m.alignStats.alignmentLength,
-            int(std::lround(m.alignStats.alignmentIdentity)),
-            m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
-            int(std::lround(m.alignStats.alignmentSimilarity)),
-            m.alignStats.numGaps, m.alignStats.alignmentLength,
-            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
-}
-
-template <typename TMatch>
-inline void
-_statsBlock(char * buffer,
-            TMatch const & m,
-            BlastProgram const,
-            BlastProgramTagBlastX const &,
-            BlastReport const &)
-{
-    sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
-                   " Identities = %d/%d (%d%%),"
-                   " Positives = %d/%d (%d%%),"
-                   " Gaps = %d/%d (%d%%)\n"
-                   " Frame = %+d\n\n",
-            m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-            m.alignStats.numMatches, m.alignStats.alignmentLength,
-            int(std::lround(m.alignStats.alignmentIdentity)),
-            m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
-            int(std::lround(m.alignStats.alignmentSimilarity)),
-            m.alignStats.numGaps, m.alignStats.alignmentLength,
-            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)),
-            m.qFrameShift);
-}
-
-template <typename TMatch>
-inline void
-_statsBlock(char * buffer,
-            TMatch const & m,
-            BlastProgram const,
-            BlastProgramTagTBlastN const &,
-            BlastReport const &)
-{
-    sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
-                   " Identities = %d/%d (%d%%),"
-                   " Positives = %d/%d (%d%%),"
-                   " Gaps = %d/%d (%d%%)\n"
-                   " Frame = %+d\n\n",
-            m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-            m.alignStats.numMatches, m.alignStats.alignmentLength,
-            int(std::lround(m.alignStats.alignmentIdentity)),
-            m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
-            int(std::lround(m.alignStats.alignmentSimilarity)),
-            m.alignStats.numGaps, m.alignStats.alignmentLength,
-            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)),
-            m.sFrameShift);
-}
-
-template <typename TMatch>
-inline void
-_statsBlock(char * buffer,
-            TMatch const & m,
-            BlastProgram const,
-            BlastProgramTagTBlastX const &,
-            BlastReport const &)
-{
-    sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
-                   " Identities = %d/%d (%d%%),"
-                   " Positives = %d/%d (%d%%),"
-                   " Gaps = %d/%d (%d%%)\n"
-                   " Frame = %+d/%+d\n\n",
-            m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-            m.alignStats.numMatches, m.alignStats.alignmentLength,
-            int(std::lround(m.alignStats.alignmentIdentity)),
-            m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
-            int(std::lround(m.alignStats.alignmentSimilarity)),
-            m.alignStats.numGaps, m.alignStats.alignmentLength,
-            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)),
-            m.qFrameShift, m.sFrameShift);
-    //TODO there is an N-column beside e-value here, whats that?
-}
-
-template <typename TMatch>
-inline void
-_statsBlock(char * buffer,
-            TMatch const & m,
-            BlastProgram const p,
-            BlastProgramTagUnknown const &,
-            BlastReport const &)
-{
-    // selection at run-time
-    switch(p)
+    char buffer[512] = "";
+    if (getBlastProgram(context) == BlastProgram::BLASTN)
     {
-        case BlastProgram::BLASTN:
+        sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
+                       " Identities = %d/%d (%d%%), Gaps = %d/%d (%d%%)\n"
+                       " Strand=", // no spaces here for whatever reason
+                m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
+                m.alignStats.numMatches, m.alignStats.alignmentLength, int(std::lround(m.alignStats.alignmentIdentity)),
+                m.alignStats.numGaps, m.alignStats.alignmentLength,
+                int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
+        write(stream, buffer);
+        if (m.qFrameShift == 1)
+            write(stream, "Plus/");
+        else
+            write(stream, "Minus/");
+
+        if (m.sFrameShift == 1)
+            write(stream, "Plus\n\n");
+        else
+            write(stream, "Minus\n\n");
+    }
+    else
+    {
+        sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
+                       " Identities = %d/%d (%d%%),"
+                       " Positives = %d/%d (%d%%),"
+                       " Gaps = %d/%d (%d%%)",
+                m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
+                m.alignStats.numMatches, m.alignStats.alignmentLength,
+                int(std::lround(m.alignStats.alignmentIdentity)),
+                m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
+                int(std::lround(m.alignStats.alignmentSimilarity)),
+                m.alignStats.numGaps, m.alignStats.alignmentLength,
+                int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
+
+        write(stream, buffer);
+
+        if (getBlastProgram(context) != BlastProgram::BLASTP)
+            write(stream, "\n Frame = ");
+
+        if (getBlastProgram(context) == BlastProgram::BLASTX)
         {
-            typedef BlastProgramTag<BlastProgram::BLASTN> TNewTag;
-            _statsBlock(buffer, m, p, TNewTag(), BlastReport());
-        } break;
-        case BlastProgram::BLASTP:
+            write(stream, FormattedNumber<int8_t>("%+d", m.qFrameShift));
+        }
+        else if (getBlastProgram(context) == BlastProgram::TBLASTN)
         {
-            typedef BlastProgramTag<BlastProgram::BLASTP> TNewTag;
-            _statsBlock(buffer, m, p, TNewTag(), BlastReport());
-        } break;
-        case BlastProgram::BLASTX:
+            write(stream, FormattedNumber<int8_t>("%+d", m.sFrameShift));
+        }
+        else if (getBlastProgram(context) == BlastProgram::TBLASTX)
         {
-            typedef BlastProgramTag<BlastProgram::BLASTX> TNewTag;
-            _statsBlock(buffer, m, p, TNewTag(), BlastReport());
-        } break;
-        case BlastProgram::TBLASTN:
-        {
-            typedef BlastProgramTag<BlastProgram::TBLASTN> TNewTag;
-            _statsBlock(buffer, m, p, TNewTag(), BlastReport());
-        } break;
-        case BlastProgram::TBLASTX:
-        {
-            typedef BlastProgramTag<BlastProgram::TBLASTX> TNewTag;
-            _statsBlock(buffer, m, p, TNewTag(), BlastReport());
-        } break;
-        case BlastProgram::UNKNOWN:
-            SEQAN_FAIL("Invalid or unkown BlastProgram specified. Don't know how to print it.");
-            break;
+            write(stream, FormattedNumber<int8_t>("%+d", m.qFrameShift));
+            write(stream, "/");
+            write(stream, FormattedNumber<int8_t>("%+d", m.sFrameShift));
+        }
+       write(stream, "\n\n");
     }
 }
 
@@ -387,41 +314,31 @@ template <typename TStream,
           BlastTabularSpec h>
 inline void
 _writeAlignmentBlockIntermediateChar(TStream & stream,
-                                     BlastIOContext<TScore, TConString, p, h> & context,
+                                     BlastIOContext<TScore, TConString, p, h> const & context,
                                      TChar1 const & char1,
                                      TChar2 const & char2,
                                      BlastReport const & /*tag*/)
 {
-    if ((char1 == '-') || (char2 == '-'))
-        write(stream, ' ');
-    else if (char1 == char2)
-        write(stream, char1);
-    else if (score(context.scoringAdapter.scheme, char1, char2) > 0)
-        write(stream, '+');
+    // TODO(h4nn3s): this function could be replaced by a matrix, which would be a lot faster
+    // but it would also require a matrix for every scoringScheme
+    if (getBlastProgram(context) == BlastProgram::BLASTN)
+    {
+        if (char1 == char2)
+            write(stream, '|');
+        else
+            write(stream, ' ');
+    }
     else
-        write(stream, ' ');
-}
-
-template <typename TStream,
-          typename TScore,
-          typename TConString,
-          typename TChar1,
-          typename TChar2,
-          BlastProgram p,
-          BlastTabularSpec h>
-inline void
-_writeAlignmentBlockIntermediateChar(TStream & stream,
-                                     BlastIOContext<TScore, TConString, p, h> &,
-                                     TChar1 & char1,
-                                     TChar2 & char2,
-                                     BlastReport const & /*tag*/)
-{
-    if (char1 == '-' || char2 == '-')
-        write(stream, ' ');
-    else if (char1 == char2)
-        write(stream, '|');
-    else
-        write(stream, ' ');
+    {
+        if (char1 == char2)
+            write(stream, char1);
+        else if ((char1 == '-') || (char2 == '-'))
+            write(stream, ' ');
+        else if (score(context.scoringAdapter.scheme, char1, char2) > 0)
+            write(stream, '+');
+        else
+            write(stream, ' ');
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -553,9 +470,7 @@ _writeFullMatch(TStream & stream,
     write(stream, m.sLength);
     write(stream, "\n\n");
 
-    char buffer[512] = "";
-    _statsBlock(buffer, m, context.blastProgram, BlastProgramTag<p>(), BlastReport());
-    write(stream, buffer);
+    _writeStatsBlock(stream, context, m, BlastReport());
 
     _writeAlignmentBlock(stream, context, m, BlastReport());
 }
@@ -719,8 +634,8 @@ writeRecord(TStream & stream,
 
     if (!empty(record.matches))
     {
-            write(stream, "                                                                   Score     E\n"
-                          "Sequences producing significant alignments:                       (Bits)  Value\n\n");
+        write(stream, "                                                                   Score     E\n"
+                      "Sequences producing significant alignments:                       (Bits)  Value\n\n");
         // match one-liners
         for (auto const & m : record.matches)
             _writeMatchOneLiner(stream, context, m, BlastReport());
@@ -870,6 +785,7 @@ writeFooter(TStream & stream,
             BlastIOContext<TScore, TConString, p, h> & context,
             BlastReport const & /*tag*/)
 {
+    // TODO what is printed here for BLASTN?
     TScore scheme(getBlastScoringScheme(context));
 
     write(stream, "\n  Database: ");

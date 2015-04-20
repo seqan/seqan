@@ -368,8 +368,7 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
 
                     if (hits)
                     {
-//                         resize(r.matches, hits);
-                        r.matches.resize(hits); // TODO fix this
+                        resize(r.matches, hits);
                     }
                     else  // hits = 0 means no fieldList, restore default
                     {

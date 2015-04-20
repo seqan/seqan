@@ -455,7 +455,7 @@ getBlastScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
  *
  * @section Remarks
  *
- * It is important to note that gap-costs are computed differently in SeqAn and it BLAST.
+ * It is important to note that gap-costs are computed differently in SeqAn and in BLAST.
  * Blast (and many other tools) compute scores of a stretch of gaps as
  * <tt>s = gO + n * gE</tt>
  * where gO is the gapOpen score, gE is the gap extend score and n ist the
