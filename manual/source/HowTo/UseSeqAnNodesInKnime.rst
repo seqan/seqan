@@ -29,7 +29,7 @@ In the opening dialog fill in the following Information:
 ``Name``
   ``KNIME Nightly Unstable``
 ``Location``
-  ``http://tech.knime.org/update/community-contributions/nightly/``
+  ``http://update.knime.org/community-contributions/trunk/``
 
 .. figure:: install-knime-3.png
 
