@@ -524,7 +524,7 @@ skipHeader(TFwdIterator & iter,
 
 /*!
  * @fn BlastTabular#skipUntilMatch
- * @brief skip arbitrary number of headers and/or comment lines until the beginning of a match is reached.
+ * @brief skip arbitrary number of record headers and/or comment lines until the beginning of a match is reached.
  *
  * @signature void skipUntilMatch(stream, blastTabular);
  *
@@ -537,6 +537,9 @@ skipHeader(TFwdIterator & iter,
  * and want to jump to the beginning of the next match. If you want to skip only
  * a single header (to count skipped headers or to verify its conformance
  * to standards), use BlastTabular#skipHeader instead.
+ *
+ * Since it is legal for files to end with a record header, this function does not throw if end-of-file is reached.
+ * You need to check that after calling.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
@@ -552,8 +555,8 @@ skipUntilMatch(TFwdIterator & iter,
 {
     while ((!atEnd(iter)) && value(iter) == '#') // skip comments
         skipLine(iter);
-    if (atEnd(iter))
-        SEQAN_THROW(ParseError("EOF reached without finding Match."));
+//     if (atEnd(iter))
+//         SEQAN_THROW(ParseError("EOF reached without finding Match."));
 }
 
 // ----------------------------------------------------------------------------

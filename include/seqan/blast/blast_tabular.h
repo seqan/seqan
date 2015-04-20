@@ -71,6 +71,74 @@ namespace seqan
  * NCBI Blast 2.2.26 for the legacy support.
  *
  * SeqAn also supports writing the default blast output format, see @link BlastReport @endlink.
+ *
+ * @section Example of high-level file reading
+ *
+ * The easiest way to read a Blast tabular file is by using the following calls:
+ * <li> BlastTabular#@link BlastTabular#readHeader @endlink </li>
+ * <li> BlastTabular#@link BlastTabular#readRecord @endlink up to n times</li>
+ * <li> BlastTabular#@link BlastTabular#readFooter @endlink </li>
+ *
+ * You can also use the FormattedFile interface which has the same functions, but only requires one parameter:
+ * <li> BlastTabularIn#@link BlastTabularIn#readHeader @endlink </li>
+ * <li> BlastTabularIn#@link BlastTabularIn#readRecord @endlink up to n times</li>
+ * <li> BlastTabularIn#@link BlastTabularIn#readFooter @endlink </li>
+ *
+ * See @link BlastTabularIn @endlink for a full code example.
+ *
+ * If you want a little more control, especially if you are not interested in reading all records, but only certain
+ * ones, you can replace readRecord with readRecordHeader and possibly multiple calls to readMatch:
+ * <li> BlastTabular#@link BlastTabular#readHeader @endlink </li>
+ * <li> BlastTabular#@link BlastTabular#readRecordHeader @endlink up to n times </li>
+ * <li> BlastTabular#@link BlastTabular#readMatch @endlink up to m times for each call to readRecordHeader </li>
+ * <li> BlastTabular#@link BlastTabular#readFooter @endlink </li>
+ *
+ * In this context, @link BlastTabular#onMatch @endlink and @link BlastTabular#skipMatch @endlink
+ * might also be helpful.
+ *
+ *
+ * @section Example of low-level file reading
+ *
+ * If you are not really interested in processing the records and just want to parse the tabular file for certain
+ * information to count or filter for something, you can use the low-level interface of
+ * @link BlastTabular#readMatch0 @endlink and @link BlastTabular#skipUntilMatch @endlink. It requires no extra
+ * data-structures, but it is otherwise very limited.
+ *
+ * The following program extracts the list of matching query-subject-pairs from a blast tabular file and prints it to
+ * std::out:
+ *
+ * @include demos/blast/blast_in_lowlevel.cpp
+ *
+ * The output looks like this:
+ *
+ * @include demos/blast/blast_in_lowlevel.out
+ *
+ * @section Example of high-level file writing
+ *
+ * High-level file writing is very similar to reading, it is recommended you use:
+ * <li> BlastTabular#@link BlastTabular#writeHeader @endlink </li>
+ * <li> BlastTabular#@link BlastTabular#writeRecord @endlink up to n times</li>
+ * <li> BlastTabular#@link BlastTabular#writeFooter @endlink </li>
+ *
+ * You can also use the FormattedFile interface which has the same functions, but only requires one parameter:
+ * <li> BlastTabularOut#@link BlastTabularOut#writeHeader @endlink </li>
+ * <li> BlastTabularOut#@link BlastTabularOut#writeRecord @endlink up to n times</li>
+ * <li> BlastTabularOut#@link BlastTabularOut#writeFooter @endlink </li>
+ *
+ * See @link BlastTabularOut @endlink for a full code example.
+ *
+ * If you want a little more control, especially if you are not interested in writing all records, but only certain
+ * ones, you can replace writeRecord with writeRecordHeader and possibly multiple calls to writeMatch:
+ * <li> BlastTabular#@link BlastTabular#writeHeader @endlink </li>
+ * <li> BlastTabular#@link BlastTabular#writeRecordHeader @endlink up to n times </li>
+ * <li> BlastTabular#@link BlastTabular#writeMatch @endlink up to m times for each call to writeRecordHeader </li>
+ * <li> BlastTabular#@link BlastTabular#writeFooter @endlink </li>
+ *
+ * @section Example of low-level file writing
+ *
+ * Low-level file writing is also similar to low-level file reading. See the tutorial TODO for a meaningful combination
+ * of both.
+ *
  */
 struct BlastTabular_;
 typedef Tag<BlastTabular_> BlastTabular;
@@ -97,28 +165,29 @@ enum class BlastTabularSpec : uint8_t
     UNKNOWN = 255,
 };
 
-
-/*
- * @defgroup BlastTabularSpec
- * @headerfile <seqan/blast.h>
- */
-
-/*
- * @typedef BlastTabularSpec#BlastTabularSpecTag
+/*!
+ * @defgroup BlastTabularSpecTagGroup BlastTabularSpec Integral Constants
+ * @brief Integral constants for @link BlastTabularSpec @endlink
+ * TODO(h4nn3s): does this need to be publicly visible?
+ *
+ * @tag BlastTabularSpecTagGroup#BlastTabularSpecTag
+ * @brief Templated typedef for @link BlastTabularSpec @endlink
  * @signature template <BlastTabularSpec h>
  * using BlastTabularSpecTag = std::integral_constant<BlastTabularSpec, h>;
- * @brief Templated typedef to get typed from @link BlastTabularSpec#BlastTabularSpec @endlink
+ *
  */
 template <BlastTabularSpec h>
 using BlastTabularSpecTag = std::integral_constant<BlastTabularSpec, h>;
 
-/*
-  * @typedef BlastTabularSpec#BlastTabularSpecTagHeader
- * @signature typedef BlastTabularSpecTag<BlastTabularSpec::HEADER> BlastTabularSpecTagHeader;
- * @typedef BlastTabularSpec#BlastTabularSpecTagNoHeader
- * @signature typedef BlastTabularSpecTag<BlastTabularSpec::NO_HEADER> BlastTabularSpecTagNoHeader;
- * @typedef BlastTabularSpec#BlastTabularSpecTagUnkown
- * @signature typedef BlastTabularSpecTag<BlastTabularSpec::UNKNOWN> BlastTabularSpecTagUnkown;
+/*!
+ * @tag BlastTabularSpecTagGroup#BlastTabularSpecTagHeader
+ * @brief Integral constant for @link BlastTabularSpec::HEADER @endlink
+ *
+ * @tag BlastTabularSpecTagGroup#BlastTabularSpecTagNoHeader
+ * @brief Integral constant for @link BlastTabularSpec::NO_HEADER @endlink
+ *
+ * @tag BlastTabularSpecTagGroup#BlastTabularSpecTagUnkown
+ * @brief Integral constant for @link BlastTabularSpec::UNKNOWN @endlink
  */
 typedef BlastTabularSpecTag<BlastTabularSpec::HEADER>     BlastTabularSpecTagHeader;
 typedef BlastTabularSpecTag<BlastTabularSpec::NO_HEADER>  BlastTabularSpecTagNoHeader;

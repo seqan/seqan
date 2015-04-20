@@ -209,6 +209,8 @@ _writeRecordHeaderWithoutColumnLabels(TFwdIterator & stream,
  * "standards"-compliant. Also only @link BlastIOContext::fields @endlink has an influence on
  * the values printed by @link BlastTabular#writeMatch @endlink.
  *
+ * TODO add info that dbName is printed, too.
+ *
  * @throw IOError On low-level I/O errors.
  *
  * @see BlastRecord
@@ -648,8 +650,9 @@ writeMatch0(TFwdIterator & stream,
  *
  * @section Remarks
  *
- * See @link BlastIOContext @endlink for ways to influence the output. Note also that this will effect downstream
- * functions like @link BlastTabular#writeRecordHeader @endlink and @link BlastTabular#writeMatch @endlink!
+ * This function calls @link BlastTabular#writeRecordHeader @endlink first and then
+ * @link BlastTabular#writeMatch @endlink for every match in the record. See @link BlastIOContext @endlink and the doc
+ * for the downstream functions on the possibilities for influencing the file format.
  *
  * @throw IOError On low-level I/O errors.
  *
