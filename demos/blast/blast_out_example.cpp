@@ -72,13 +72,13 @@ int main()
         for (int s = 0; s < length(subjects); ++s)
         {
             records[q].matches.emplace_back(qIds[q], sIds[s]);
-            TBlastMatch & m = records[q].matches.back();
+            TBlastMatch & m = back(records[q].matches);
 
             resize(rows(m.align), 2);
             assignSource(row(m.align, 0), queries[q]);
             assignSource(row(m.align, 1), subjects[s]);
 
-            localAlignment(m.align, context(outfile).scoringAdapter.scheme);
+            localAlignment(m.align, getScoringScheme(context(outfile)));
 
             m.qStart = beginPosition(row(m.align, 0));
             m.qEnd   = endPosition(row(m.align, 0));

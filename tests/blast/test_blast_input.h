@@ -255,17 +255,6 @@ void _test_blast_read_tabular_match(std::string const & path,
         SEQAN_ASSERT_EQ(exceptComment, "Not on beginning of Match (you should have skipped comments).");
     }
 
-    exceptComment = "";
-    SEQAN_TRY
-    {
-        skipUntilMatch(it, BlastTabular());
-    } SEQAN_CATCH (ParseError const & e)
-    {
-        exceptComment = e.what();
-    }
-
-    SEQAN_ASSERT_EQ(exceptComment, "EOF reached without finding Match.");
-
     ifstream.close();
 }
 
@@ -423,17 +412,6 @@ _test_blast_read_tabular_match_columns(std::string const & path)
     SEQAN_ASSERT(startsWith(exceptComment, "Unable to convert"));
     // skip rest of line
     skipLine(it);
-
-    exceptComment = "";
-    SEQAN_TRY
-    {
-        skipUntilMatch(it, BlastTabular());
-    } SEQAN_CATCH (ParseError const & e)
-    {
-        exceptComment = e.what();
-    }
-
-    SEQAN_ASSERT_EQ(exceptComment, "EOF reached without finding Match.");
 
     ifstream.close();
 }

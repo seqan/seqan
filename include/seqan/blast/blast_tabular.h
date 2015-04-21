@@ -197,7 +197,6 @@ typedef BlastTabularSpecTag<BlastTabularSpec::UNKNOWN>    BlastTabularSpecTagUnk
 // Class MagicHeader
 // ----------------------------------------------------------------------------
 
-// TODO adapt magicheader?
 template <typename T>
 struct MagicHeader<BlastTabular, T> :
     public MagicHeader<Nothing, T> {};

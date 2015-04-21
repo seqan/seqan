@@ -46,8 +46,9 @@ namespace seqan {
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
+
 // ----------------------------------------------------------------------------
-// Type BlastReportOut
+// Tag BlastReport
 // ----------------------------------------------------------------------------
 
 /*!
@@ -57,15 +58,34 @@ namespace seqan {
  * @brief Support for Blast default file format
  *
  * This tag represents support for Blast's default file format (<tt>blastall -m 0</tt> / <tt>blast* -outfmt 0</tt>).
- * Only support for writing is available, see @link BlastReportOut @endlink for more details.
+ * Only support for writing is available, see the example below.
  *
  * The reference Blast implementation used for developing the SeqAn support is NCBI Blast+ 2.2.26. In contrast to the
  * tabular format there is no support for writing legacy files (without the +).
  *
  * SeqAn also supports reading and writing the tabular blast output format, see @link BlastTabular @endlink.
+ *
+ * @section Example of high-level file writing
+ *
+ * You can use this tag's interface and specify the stream, and context:
+ * <li> BlastReport#@link BlastReport#writeHeader @endlink </li>
+ * <li> BlastReport#@link BlastReport#writeRecord @endlink up to n times</li>
+ * <li> BlastReport#@link BlastReport#writeFooter @endlink </li>
+ *
+ * Or you can use the FormattedFile interface which has the same functions, but only requires one parameter:
+ * <li> BlastReportOut#@link BlastReportOut#writeHeader @endlink </li>
+ * <li> BlastReportOut#@link BlastReportOut#writeRecord @endlink up to n times</li>
+ * <li> BlastReportOut#@link BlastReportOut#writeFooter @endlink </li>
+ *
+ * See @link BlastReportOut @endlink for a full code example.
  */
+
 struct BlastReport_;
 typedef Tag<BlastReport_> BlastReport;
+
+// ----------------------------------------------------------------------------
+// Tag BlastReportOut
+// ----------------------------------------------------------------------------
 
 /*!
  * @class BlastReportOut
@@ -102,7 +122,6 @@ using BlastReportOut = FormattedFile<BlastReport, Output, TBlastIOContext>;
 // Class MagicHeader
 // ----------------------------------------------------------------------------
 
-// TODO adapt magicheader?
 template <typename T>
 struct MagicHeader<BlastReport, T> :
     public MagicHeader<Nothing, T> {};
@@ -244,61 +263,72 @@ _writeStatsBlock(TStream & stream,
                  BlastReport const &)
 {
     char buffer[512] = "";
-    if (getBlastProgram(context) == BlastProgram::BLASTN)
-    {
-        sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
-                       " Identities = %d/%d (%d%%), Gaps = %d/%d (%d%%)\n"
-                       " Strand=", // no spaces here for whatever reason
-                m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-                m.alignStats.numMatches, m.alignStats.alignmentLength, int(std::lround(m.alignStats.alignmentIdentity)),
-                m.alignStats.numGaps, m.alignStats.alignmentLength,
-                int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
-        write(stream, buffer);
-        if (m.qFrameShift == 1)
-            write(stream, "Plus/");
-        else
-            write(stream, "Minus/");
 
-        if (m.sFrameShift == 1)
-            write(stream, "Plus\n\n");
-        else
-            write(stream, "Minus\n\n");
-    }
+    sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
+                    " Identities = %d/%d (%d%%), Gaps = %d/%d (%d%%)\n"
+                    " Strand=", // no spaces here for whatever reason
+            m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
+            m.alignStats.numMatches, m.alignStats.alignmentLength, int(std::lround(m.alignStats.alignmentIdentity)),
+            m.alignStats.numGaps, m.alignStats.alignmentLength,
+            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
+    write(stream, buffer);
+    if (m.qFrameShift == 1)
+        write(stream, "Plus/");
     else
+        write(stream, "Minus/");
+
+    if (m.sFrameShift == 1)
+        write(stream, "Plus\n\n");
+    else
+        write(stream, "Minus\n\n");
+}
+
+template <typename TStream,
+          typename TScoreSpec,
+          typename TConString,
+          typename TMatch,
+          BlastProgram p,
+          BlastTabularSpec h>
+inline void
+_writeStatsBlock(TStream & stream,
+                 BlastIOContext<Score<int, ScoreMatrix<AminoAcid, TScoreSpec> >, TConString, p, h> const & context,
+                 TMatch const & m,
+                 BlastReport const &)
+{
+    char buffer[512] = "";
+
+    sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
+                    " Identities = %d/%d (%d%%),"
+                    " Positives = %d/%d (%d%%),"
+                    " Gaps = %d/%d (%d%%)",
+            m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
+            m.alignStats.numMatches, m.alignStats.alignmentLength,
+            int(std::lround(m.alignStats.alignmentIdentity)),
+            m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
+            int(std::lround(m.alignStats.alignmentSimilarity)),
+            m.alignStats.numGaps, m.alignStats.alignmentLength,
+            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
+
+    write(stream, buffer);
+
+    if (getBlastProgram(context) != BlastProgram::BLASTP)
+        write(stream, "\n Frame = ");
+
+    if (getBlastProgram(context) == BlastProgram::BLASTX)
     {
-        sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
-                       " Identities = %d/%d (%d%%),"
-                       " Positives = %d/%d (%d%%),"
-                       " Gaps = %d/%d (%d%%)",
-                m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-                m.alignStats.numMatches, m.alignStats.alignmentLength,
-                int(std::lround(m.alignStats.alignmentIdentity)),
-                m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
-                int(std::lround(m.alignStats.alignmentSimilarity)),
-                m.alignStats.numGaps, m.alignStats.alignmentLength,
-                int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
-
-        write(stream, buffer);
-
-        if (getBlastProgram(context) != BlastProgram::BLASTP)
-            write(stream, "\n Frame = ");
-
-        if (getBlastProgram(context) == BlastProgram::BLASTX)
-        {
-            write(stream, FormattedNumber<int8_t>("%+d", m.qFrameShift));
-        }
-        else if (getBlastProgram(context) == BlastProgram::TBLASTN)
-        {
-            write(stream, FormattedNumber<int8_t>("%+d", m.sFrameShift));
-        }
-        else if (getBlastProgram(context) == BlastProgram::TBLASTX)
-        {
-            write(stream, FormattedNumber<int8_t>("%+d", m.qFrameShift));
-            write(stream, "/");
-            write(stream, FormattedNumber<int8_t>("%+d", m.sFrameShift));
-        }
-       write(stream, "\n\n");
+        write(stream, FormattedNumber<int8_t>("%+d", m.qFrameShift));
     }
+    else if (getBlastProgram(context) == BlastProgram::TBLASTN)
+    {
+        write(stream, FormattedNumber<int8_t>("%+d", m.sFrameShift));
+    }
+    else if (getBlastProgram(context) == BlastProgram::TBLASTX)
+    {
+        write(stream, FormattedNumber<int8_t>("%+d", m.qFrameShift));
+        write(stream, "/");
+        write(stream, FormattedNumber<int8_t>("%+d", m.sFrameShift));
+    }
+    write(stream, "\n\n");
 }
 
 // ----------------------------------------------------------------------------
@@ -314,31 +344,45 @@ template <typename TStream,
           BlastTabularSpec h>
 inline void
 _writeAlignmentBlockIntermediateChar(TStream & stream,
-                                     BlastIOContext<TScore, TConString, p, h> const & context,
+                                     BlastIOContext<TScore> const & context,
+                                     TChar1 const & char1,
+                                     TChar2 const & char2,
+                                     BlastReport const & /*tag*/)
+{
+    if (char1 == char2)
+        write(stream, '|');
+    else
+        write(stream, ' ');
+}
+
+template <typename TStream,
+          typename TScoreSpec,
+          typename TConString,
+          typename TChar1,
+          typename TChar2,
+          BlastProgram p,
+          BlastTabularSpec h>
+inline void
+_writeAlignmentBlockIntermediateChar(TStream & stream,
+                                     BlastIOContext<Score<int, ScoreMatrix<AminoAcid, TScoreSpec> >,
+                                                    TConString,
+                                                    p,
+                                                    h> const & context,
                                      TChar1 const & char1,
                                      TChar2 const & char2,
                                      BlastReport const & /*tag*/)
 {
     // TODO(h4nn3s): this function could be replaced by a matrix, which would be a lot faster
     // but it would also require a matrix for every scoringScheme
-    if (getBlastProgram(context) == BlastProgram::BLASTN)
-    {
-        if (char1 == char2)
-            write(stream, '|');
-        else
-            write(stream, ' ');
-    }
+
+    if (char1 == char2)
+        write(stream, char1);
+    else if ((char1 == '-') || (char2 == '-'))
+        write(stream, ' ');
+    else if (score(context.scoringAdapter.scheme, char1, char2) > 0)
+        write(stream, '+');
     else
-    {
-        if (char1 == char2)
-            write(stream, char1);
-        else if ((char1 == '-') || (char2 == '-'))
-            write(stream, ' ');
-        else if (score(context.scoringAdapter.scheme, char1, char2) > 0)
-            write(stream, '+');
-        else
-            write(stream, ' ');
-    }
+        write(stream, ' ');
 }
 
 // ----------------------------------------------------------------------------

@@ -224,7 +224,7 @@ onMatch(TFwdIterator & iter,
  * the compile time parameter was set on the context and they are different this will result in a conformancyError.
  * Otherwise you can read the value with @link BlastIOContext#getBlastProgram @endlink.
  *
- * Please note that for or @link BlastIOContext::legacyFormat @endlink the @link BlastIOContext::fields @endlink member
+ * Please note that for @link BlastIOContext::legacyFormat @endlink the @link BlastIOContext::fields @endlink member
  * is always ignored, however @link BlastIOContext::fieldsAsStrings @endlink is still read from the header, in case
  * you want to process it.
  *
@@ -249,7 +249,6 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                       BlastIOContext<TScore, TString, p, h> & context,
                       BlastTabular const &)
 {
-
     // this is a record instead of a header
     if (onMatch(iter, BlastTabular()))
         SEQAN_THROW(ParseError("Header expected, but no header found."));
@@ -260,8 +259,6 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
     int hitsLinePresent = 0;
     int lastLine = 0;
 
-//     clear(context.buffer1);
-//     clear(context.buffer2);
     auto & buffer = context.buffer1;
     auto & buffer2 = context.buffer2;
 

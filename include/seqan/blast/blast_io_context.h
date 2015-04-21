@@ -59,14 +59,19 @@ struct BlastScoringAdapter;
  * @tparam h        @link BlastTabularSpec @endlink as compile-time parameter.
  *
  * This needs to be passed to most read*(), skip*() and write*() functions as
- * a parameter. You should re-use this object (i.e. only create it once for
+ * a parameter. Before writing, some of the context's members should be set; after reading it will contain
+ * all information from the file that did not belong to a @link BlastRecord @endlink, e.g. the name of the database.
+ * It also contains buffers for internal use.
+ *
+ * You should re-use this object (i.e. only create it once for
  * every file that you read/write). And you don't need to and should not clear()
  * this, except when restarting IO on a different file.
  *
- * You should never set the two value template parameters when reading a file and you don't have to set them when
- * writing a file. However if you do set them file-writing will benefit from compile-time optimizations and be slightly
- * faster. See @link BlastIOContext#getBlastProgram @endlink, @link BlastIOContext#setBlastProgram @endlink,
- * @link BlastIOContext#getBlastTabularSpec @endlink and @link BlastIOContext#setBlastTabularSpec @endlink.
+ * To speed-up file writing slightly you can set the value template parameters <tt>p</tt> and/or <tt>h</tt> to something
+ * other than ::UNKNOWN at compile-time (e.g. if you know that you will be printing only BLASTX), but then you won't
+ * be able to modify these values with @link BlastIOContext#setBlastProgram @endlink and
+ * @link BlastIOContext#setBlastTabularSpec @endlink at run-time. For file reading this also possible, but usually the
+ * added flexibility of automatically detecting these values is prefferable.
  *
  * @section Example
  *
