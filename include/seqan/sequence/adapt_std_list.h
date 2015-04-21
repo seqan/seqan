@@ -281,6 +281,15 @@ reserve(std::list<T> & /*list*/, TTag const & /*tag*/)
     SEQAN_CHECKPOINT;
 }
 
+template <typename T,  typename TAlloc, typename TSize, typename TExpand>
+inline typename Size<std::list<T,  TAlloc> >::Type
+resize(std::list<T, TAlloc> & me, TSize new_length, Tag<TExpand>)
+{
+    SEQAN_CHECKPOINT;
+    me.resize(new_length);
+    return me.size();
+}
+
 template <typename T>
 inline typename Size<std::list<T> >::Type
 capacity(std::list<T> const & list)
