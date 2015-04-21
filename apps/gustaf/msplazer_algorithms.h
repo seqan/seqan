@@ -1090,6 +1090,8 @@ inline bool _invDelClassification(TBreakpoint & bp, TBreakpoint & tempBP, TBreak
         return false;
     if (bp.startSeqId != tempBP.startSeqId)
         return false;
+    if (tempBP.inferredBP)
+        return false;
 
     bool startPosSameRange = _posInSameRange(bp.startSeqPos, tempBP.startSeqPos, bpPosRange);
     bool endPosSameRange = _posInSameRange(bp.endSeqPos, tempBP.endSeqPos, bpPosRange);
@@ -1102,15 +1104,19 @@ inline bool _invDelClassification(TBreakpoint & bp, TBreakpoint & tempBP, TBreak
         bp.svtype = TBreakpoint::DELETION;
         bp.startSeqPos = tempBP.endSeqPos;
         bp.startSeqStrand = bp.endSeqStrand;
+        bp.inferredBP = true;
+        appendSupportId(bp, tempBP.supportIds);
         return false;
     }
     // inv(w,z)
     if (endPosSameRange && (bp.startSeqPos < tempBP.startSeqPos))
     {
-        // Change new bp from inv(v,z) to deletion del(w,z)
+        // Change new bp from inv(v,z) to deletion del(v,w)
         bp.svtype = TBreakpoint::DELETION;
         bp.endSeqPos = tempBP.startSeqPos;
         bp.endSeqStrand = bp.startSeqStrand;
+        bp.inferredBP = true;
+        appendSupportId(bp, tempBP.supportIds);
         return false;
     }
     // Case 2: new bp is inner inv inv(w,z)||inv(v,w), old (tempBP) is outer inv inv(v,z)
@@ -1121,6 +1127,8 @@ inline bool _invDelClassification(TBreakpoint & bp, TBreakpoint & tempBP, TBreak
         tempBP.svtype = TBreakpoint::DELETION;
         tempBP.startSeqPos = bp.endSeqPos;
         tempBP.startSeqStrand = tempBP.endSeqStrand;
+        tempBP.inferredBP = true;
+        appendSupportId(tempBP, bp.supportIds);
         return false;
     }
     // inv(w,z)
@@ -1130,6 +1138,8 @@ inline bool _invDelClassification(TBreakpoint & bp, TBreakpoint & tempBP, TBreak
         tempBP.svtype = TBreakpoint::DELETION;
         tempBP.endSeqPos = bp.startSeqPos;
         tempBP.endSeqStrand = tempBP.startSeqStrand;
+        tempBP.inferredBP = true;
+        appendSupportId(tempBP, bp.supportIds);
         return false;
     }
     // Case 3: new bp inv(v,w) and old bp inv(u,z) are overlapping, i.e. there are 2 adjacent dels
@@ -1143,12 +1153,20 @@ inline bool _invDelClassification(TBreakpoint & bp, TBreakpoint & tempBP, TBreak
         newInvBP.endSeqPos = bp.endSeqPos;
         newInvBP.startSeqStrand = tempBP.startSeqStrand;
         newInvBP.endSeqStrand = bp.endSeqStrand;
+        newInvBP.inferredBP = true;
         bp.svtype = TBreakpoint::DELETION;
         bp.endSeqPos = newInvBP.startSeqPos;
         bp.endSeqStrand = bp.startSeqStrand;
+        bp.inferredBP = true;
         tempBP.svtype = TBreakpoint::DELETION;
         tempBP.startSeqPos = newInvBP.endSeqPos;
         tempBP.startSeqStrand = tempBP.endSeqStrand;
+        tempBP.inferredBP = true;
+        appendSupportId(tempBP, bp.supportIds);
+        newInvBP.supportIds = tempBP.supportIds;
+        newInvBP.support = tempBP.support;
+        bp.supportIds = tempBP.supportIds;
+        bp.support = tempBP.support;
         return true;
     }
     // ii)
@@ -1159,12 +1177,20 @@ inline bool _invDelClassification(TBreakpoint & bp, TBreakpoint & tempBP, TBreak
         newInvBP.endSeqPos = tempBP.endSeqPos;
         newInvBP.startSeqStrand = bp.startSeqStrand;
         newInvBP.endSeqStrand = tempBP.endSeqStrand;
+        newInvBP.inferredBP = true;
         bp.svtype = TBreakpoint::DELETION;
         bp.startSeqPos = newInvBP.endSeqPos;
         bp.startSeqStrand = bp.endSeqStrand;
+        bp.inferredBP = true;
         tempBP.svtype = TBreakpoint::DELETION;
         tempBP.endSeqPos = newInvBP.startSeqPos;
         tempBP.endSeqStrand = tempBP.startSeqStrand;
+        tempBP.inferredBP = true;
+        appendSupportId(tempBP, bp.supportIds);
+        newInvBP.supportIds = tempBP.supportIds;
+        newInvBP.support = tempBP.support;
+        bp.supportIds = tempBP.supportIds;
+        bp.support = tempBP.support;
         return true;
     }
 

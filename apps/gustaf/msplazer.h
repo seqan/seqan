@@ -173,6 +173,7 @@ struct Breakpoint
     SVType svtype;
     TSequence insertionSeq;
     bool revStrandDel;
+    bool inferredBP;
     // If both of these flags are true, then we have seen two (pseudo)deletions supporting both start and end position
     // of a translocation.
     bool translSuppStartPos;
@@ -204,6 +205,7 @@ struct Breakpoint
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
+        inferredBP(false),
         translSuppStartPos(false),
         translSuppEndPos(false),
         breakend(false)
@@ -237,6 +239,7 @@ struct Breakpoint
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
+        inferredBP(false),
         translSuppStartPos(false),
         translSuppEndPos(false),
         breakend(false)
@@ -271,6 +274,7 @@ struct Breakpoint
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
+        inferredBP(false),
         translSuppStartPos(false),
         translSuppEndPos(false),
         breakend(false)
