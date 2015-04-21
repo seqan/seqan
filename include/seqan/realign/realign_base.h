@@ -1011,8 +1011,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
     {
         if (((windowBegin == 0u) && (windowBegin == windowEnd)) ||  // no window
             (windowBegin <= (unsigned)contigAlignedReads[0].beginPos &&
-             windowEnd >= (unsigned)contigAlignedReads[0].endPos))  // spans only
-                                                                                                           // alignment
+             windowEnd >= (unsigned)contigAlignedReads[0].endPos))  // spans only alignment
         {
             contigAlignedReads[0].beginPos = 0;
             contigAlignedReads[0].endPos = length(store.readSeqStore[contigAlignedReads[0].readId]);
@@ -1036,12 +1035,33 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
     // The currently extracted part from the sequence and the read as profile (ord values stored in read[i].count[0].
     TProfileString profilePart;
 
+    // XXX/TODO/XXX duplicate last read alignment and add it to the profile XXX/TODO/XXX
+    // Duplicate last read alignment and add it to the profile.
+    {
+        // duplicate last read alignment
+        appendValue(contigAlignedReads, back(contigAlignedReads));
+        back(contigAlignedReads).id = length(contigAlignedReads) - 1;
+        back(contigAlignedReads).pairMatchId += 1;
+
+        // add to profile
+        typedef Gaps<TReadSeq, AnchorGaps<String<typename TFragmentStore::TReadGapAnchor> > > TReadGaps;
+        TReadGaps readGaps(store.readSeqStore[back(contigAlignedReads).readId], back(contigAlignedReads).gaps);
+        typedef typename Iterator<TReadGaps, Standard>::Type TReadGapsIter;
+        TReadGapsIter it = begin(readGaps, Standard());
+        TReadGapsIter itEnd = end(readGaps, Standard());
+        for (unsigned pos = back(contigAlignedReads).beginPos; it != itEnd; ++it, ++pos)
+        {
+            unsigned idx = isGap(it) ? valueSize<TAlphabet>() : ordValue(*it);
+            contigProfile[pos].count[idx] += 1;
+        }
+    }
+
     // Remove each read from the profile, realign it to the profile, and update the profile.
     TAlignedReadIter itEnd = end(contigAlignedReads, Standard());
     for (TAlignedReadIter it = begin(contigAlignedReads, Standard()); it != itEnd; ++it)
     {
-        if (options.includeReference && it->readId + 1 == length(store.readSeqStore))
-            continue;  // do not subtract reference pseudo-read
+        if (options.includeReference && (it + 1) == itEnd)
+            continue;  // completely ignore second reference pseudo-read
         // Ignore reads that do not overlap with the window.
         if (windowBegin != windowEnd && !_overlap(windowBegin, windowEnd, it->beginPos, it->endPos))
             continue;
@@ -1362,6 +1382,24 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             }
         }
         SEQAN_ASSERT_LEQ(windowBegin, windowEnd);
+    }
+
+    // Remove duplicated last read alignment and subtract it from the profile.
+    {
+        // subtract from profile
+        typedef Gaps<TReadSeq, AnchorGaps<String<typename TFragmentStore::TReadGapAnchor> > > TReadGaps;
+        TReadGaps readGaps(store.readSeqStore[back(contigAlignedReads).readId], back(contigAlignedReads).gaps);
+        typedef typename Iterator<TReadGaps, Standard>::Type TReadGapsIter;
+        TReadGapsIter it = begin(readGaps, Standard());
+        TReadGapsIter itEnd = end(readGaps, Standard());
+        for (unsigned pos = back(contigAlignedReads).beginPos; it != itEnd; ++it, ++pos)
+        {
+            unsigned idx = isGap(it) ? valueSize<TAlphabet>() : ordValue(*it);
+            SEQAN_ASSERT_GT(contigProfile[pos].count[idx], 0u);
+            contigProfile[pos].count[idx] -= 1;
+        }
+        // remove duplicate
+        eraseBack(contigAlignedReads);
     }
 
     // Register round's times.
