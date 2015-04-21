@@ -30,32 +30,18 @@
 //
 // ==========================================================================
 // Author: Jochen Singer <jochen.singer@fu-berlin.de>
+// Author: Hannes Hauswedell <hannes.hauswedell@fu-berlin.de>
 // ==========================================================================
 // This file coordinates the calls of tests to ensure that the sequence
 // module fulfills the requirements.
 // ==========================================================================
+
 #include <seqan/basic.h>
-// #include <seqan/stream.h>
 
-// #include "test_sequence.h"
-// #include "test_segment_beta.h"
+// lots of stuff is still not checked and not working
 #include "test_string_set.h"
-
-
-// /*
-//  * Not tested: append(), appendValue(), capacity(), erase(), eraseBack(),
-//  * insert(), insertValue(), reserve().
-//  */
-//
-// swap() is not working
-/*
- * Not tested: capacity(), eraseBack(), replace(), insert(), insertValue(), replace().
- */
 
 int main(int argc, char const ** argv) {
     seqan::TestSystem::init(argc, argv);
     return seqan::TestSystem::runAll();
 }
-
-// }
-// SEQAN_END_TESTSUITE

@@ -1783,12 +1783,11 @@ inline SEQAN_FUNC_ENABLE_IF(And<Is<ContainerConcept<TSequences> >,
                                 Is<ContainerConcept<typename Value<TSequences>::Type > > >, void)
 write(TTarget & target, TSequences const & seqs, TDelim const & delimiter)
 {
-    typedef typename Size<TSequences const>::Type TSize;
     typedef typename Iterator<TSequences const>::Type TSourceIt;
 
     if (SEQAN_UNLIKELY(empty(seqs)))
         return;
-    for (TSourceIt it = begin(seqs), itBack = (end(seqs) - 1); it != itBack; ++it)
+    for (TSourceIt it = begin(seqs, Standard()), itBack = (end(seqs, Standard()) - 1); it != itBack; ++it)
     {
         write(target, *it);
         write(target, delimiter);
@@ -1817,9 +1816,9 @@ append(TSequences1 & me, TSequences2 const & obj, Tag<TExpand>)
 {
     typedef typename Iterator<TSequences2 const>::Type TSourceIt;
 
-    unsigned oldLength = length(me);
+    typename Size<typename Value<TSequences1>::Type>::Type oldLength = length(me);
     resize(me, oldLength + length(obj), Tag<TExpand>());
-    for (TSourceIt it = begin(obj), itEnd = end(obj); it != itEnd; ++it)
+    for (TSourceIt it = begin(obj, Standard()), itEnd = end(obj, Standard()); it != itEnd; ++it)
         assignValue(me, oldLength++, *it);
 }
 

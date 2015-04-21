@@ -43,12 +43,6 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
-// #include "test_sequence.h"
-
-// TODO(singer): The Value metafunction of a concat direct string set returns an infix.
-// This should be changed!
-// The following metafunction is just a workaround.
-
 using namespace seqan;
 
 // --------------------------------------------------------------------------
@@ -407,7 +401,7 @@ void testStringSetLessGreaterEqual(TStringSet & /*Tag*/)
 {
     using namespace seqan;
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-    typedef typename TestStringSetValue_<TStringSet>::Type TString;
+//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
     // nothing - nohing
     {
@@ -536,7 +530,7 @@ void testStringSetAppend(TStringSet & /*Tag*/)
 {
     using namespace seqan;
 
-    typedef typename TestStringSetValue_<TStringSet>::Type TString;
+//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
     TStringSet stringSet1;
     TStringSet stringSet2;
@@ -611,7 +605,7 @@ void testStringSetAssign(TStringSet & /*Tag*/)
 {
     using namespace seqan;
 
-    typedef typename TestStringSetValue_<TStringSet>::Type TString;
+//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
     {
         TStringSet stringSet1;
         TStringSet stringSet2;
@@ -1006,7 +1000,7 @@ void testStringSetConcat(TStringSet & /*Tag*/)
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-    typedef typename Concatenator<TStringSet>::Type TConcat;
+//     typedef typename Concatenator<TStringSet>::Type TConcat;
 
     // TODO (singer): test fails for not initialized string sets.
     // Error message: Assertion failed : static_cast<TStringPos>(pos) < static_cast<TStringPos>(length(me)) was: 0 >= 0 (Trying to access an element behind the last one!).
@@ -1746,7 +1740,7 @@ void testStringSetLength(TStringSet & /*Tag*/)
 {
     using namespace seqan;
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-    typedef typename TestStringSetValue_<TStringSet>::Type TString;
+//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
     // Test on an empty string.
     {

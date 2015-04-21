@@ -141,22 +141,6 @@ public:
     }
 };
 
-// --------------------------------------------------------------------------
-// Functional Adder_ (used in second signature of append())
-// --------------------------------------------------------------------------
-
-struct Adder_ : public std::unary_function<unsigned, unsigned>
-{
-    unsigned plus;
-    Adder_(unsigned _plus) : plus(_plus) {}
-
-    template <typename TValue>
-    unsigned operator() (TValue const & val) const
-    {
-        return val + plus;
-    }
-};
-
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -365,7 +349,7 @@ append(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me,
 {
     typedef typename Iterator<TStrings2 const>::Type TIt;
 
-    reserve(me.concat, lengthSum(me) + length(obj), Tag<TExpand>());
+    reserve(me.concat, lengthSum(me) + lengthSum(obj), Tag<TExpand>());
     reserve(me.limits, length(me.limits) + length(obj), Tag<TExpand>());
 
     for (TIt it = begin(obj), itEnd = end(obj); it != itEnd; ++it)
@@ -373,23 +357,28 @@ append(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me,
 }
 
 // even more efficient if both stringsets are concatdirect
-// template <typename TString1, typename TString2, typename TSpec1, typename TSpec2, typename TExpand>
-// inline void
-// append(StringSet<TString1, Owner<ConcatDirect<TSpec1> > > & me,
-//        StringSet<TString2, Owner<ConcatDirect<TSpec2> > > const & obj,
-//        Tag<TExpand>)
-// {
-//     if (SEQAN_UNLIKELY(empty(obj)))
-//         return;
-// 
-//     unsigned const oldLimLength = length(me.limits);
-//     Adder_ op(back(me.limits));
-// 
-//     append(me.concat, obj.concat, Tag<TExpand>());
-//     append(me.limits, suffix(obj.limits, 1), Tag<TExpand>());
-// 
-//     std::transform(begin(me.limits) + oldLimLength, end(me.limits), op);
-// }
+template <typename TString1, typename TString2, typename TSpec1, typename TSpec2, typename TExpand>
+inline void
+append(StringSet<TString1, Owner<ConcatDirect<TSpec1> > > & me,
+       StringSet<TString2, Owner<ConcatDirect<TSpec2> > > const & obj,
+       Tag<TExpand>)
+{
+    typedef typename Size<TString1>::Type TSize;
+    typedef StringSet<TString1, Owner<ConcatDirect<TSpec1> > > TMe;
+    typedef typename Iterator<typename StringSetLimits<TMe>::Type>::Type TIt;
+
+    if (SEQAN_UNLIKELY(empty(obj)))
+        return;
+
+    TSize const oldLimLength = length(me.limits);
+    TSize const oldLength = back(me.limits);
+
+    append(me.concat, obj.concat, Tag<TExpand>());
+    append(me.limits, suffix(obj.limits, 1), Tag<TExpand>());
+
+    for (TIt it = begin(me.limits, Standard()) + oldLimLength, itEnd = end(me.limits, Standard()); it != itEnd; ++it)
+        *it += oldLength;
+}
 
 // --------------------------------------------------------------------------
 // Function appendValue()
@@ -487,14 +476,14 @@ template <typename TString, typename TSpec, typename TSize, typename TExpand >
 inline typename Size<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
 resize(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TSize new_size, Tag<TExpand> tag)
 {
-    if (static_cast<typename Size<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type>(new_size) < length(me.limits))
+    typedef typename Size<typename StringSetLimits<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type>::Type TS;
+    if (static_cast<TS>(new_size) < length(me.limits))
     {
         resize(me.concat, me.limits[new_size]);
         return resize(me.limits, new_size + 1, tag) - 1;
     } else
         return resize(me.limits, new_size + 1, back(me.limits), tag) - 1;
 }
-
 
 // --------------------------------------------------------------------------
 // Function reserve()
