@@ -232,6 +232,8 @@ writeRecordHeader(TFwdIterator & stream,
                   BlastRecord<TQId, TSId, TPos, TAlign> const & r,
                   BlastTabular const & /*tag*/)
 {
+    ++context.numberOfRecords;
+
     if (getBlastTabularSpec(context) == BlastTabularSpec::NO_HEADER)
         return;
 
@@ -779,7 +781,7 @@ writeHeader(BlastTabularOut<TContext> & formattedFile)
 /*!
  * @fn BlastTabular#writeFooter
  * @headerfile seqan/blast.h
- * @brief write the footer of a BlastTabular file (currently NOOP)
+ * @brief write the footer of a BlastTabular file
  * @signature void writeFooter(stream, context, blastTabular);
  *
  * @param[in,out] stream         The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
@@ -798,17 +800,22 @@ template <typename TFwdIterator,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-writeFooter(TFwdIterator & ,
-            BlastIOContext<TScore, TConString, p, h> &,
+writeFooter(TFwdIterator & stream,
+            BlastIOContext<TScore, TConString, p, h> & context,
             BlastTabular const & /*tag*/)
 {
-    //TODO check if this is really NO-OP for this format
+    if ((!context.legacyFormat) && (getBlastTabularSpec(context) != BlastTabularSpec::NO_HEADER))
+    {
+        write(stream, "# BLAST processed ");
+        write(stream, context.numberOfRecords); // number of records equals number of queries
+        write(stream, " queries\n");
+    }
 }
 
 /*!
  * @fn BlastTabularOut#writeFooter
  * @headerfile seqan/blast.h
- * @brief write the footer of a BlastTabular file (currently NOOP)
+ * @brief write the footer of a BlastTabular file
  * @signature void writeFooter(blastTabularOut);
  *
  * @param[in,out] blastTabularOut A @link BlastTabularOut @endlink formattedFile.

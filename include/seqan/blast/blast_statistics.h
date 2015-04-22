@@ -812,7 +812,7 @@ _lengthAdjustment(TSize     const & dbLength,
  * @fn BlastMatch#computeAlignmentStats
  * @headerfile <seqan/blast.h>
  * @brief Compute the @link BlastMatch::alignStats @endlink member of a @link BlastMatch @endlink.
- * @signature computeAlignmentStats(blastMatch, context);
+ * @signature void computeAlignmentStats(blastMatch, context);
  *
  * @param[in,out]   blastMatch  A @link BlastMatch @endlink that has a valid align member.
  * @param[in]       context     A @link BlastIOContext @endlink with parameters and buffers.
@@ -841,11 +841,11 @@ computeAlignmentStats(TBlastMatch & match,
 
 /*!
  * @fn BlastScoringAdapter#computeBitScore
- * @brief calculate the bit-score for a given score and sequence lengths
- * @signature double computeBitScore(rawScore, queryLength, dbLength, scoringAdapter);
+ * @brief Compute the bit-score for a given raw score.
+ * @signature double computeBitScore(rawScore, blastScoringAdapter);
  *
- * @param[in]   rawScore       The raw score of the alignment.
- * @param[in]   scoringAdapter The @link BlastScoringAdapter @endlink.
+ * @param[in]   rawScore            The raw score of the alignment.
+ * @param[in]   blastScoringAdapter The @link BlastScoringAdapter @endlink.
  *
  * @return double The bit-score computed.
  * @headerfile <seqan/blast.h>
@@ -860,7 +860,7 @@ computeBitScore(double const rawScore, BlastScoringAdapter<TScore> const & adapt
 
 /*!
  * @fn BlastMatch#computeBitScore
- * @brief Compute the E-Value for a @link BlastMatch @endlink.
+ * @brief Compute the bit-score for a @link BlastMatch @endlink.
  * @signature double computeBitScore(blastMatch, context);
  *
  * @param[in,out]   blastMatch  A @link BlastMatch @endlink that has a valid align member.
@@ -893,14 +893,14 @@ computeBitScore(TBlastMatch & match,
 
 /*!
  * @fn BlastScoringAdapter#computeEValue
- * @brief calculate the e-value for a given score and sequence lengths
- * @signature double computeEValue(rawScore, queryLength, dbLength, scoringAdapter);
+ * @brief Compute the E-Value for a given raw score and sequence lengths.
+ * @signature double computeEValue(rawScore, queryLength, dbLength, blastScoringAdapter);
  *
- * @param[in]   rawScore       The raw score of the alignment.
- * @param[in]   queryLength    The length of the query sequence.
- * @param[in]   dbLength       The length of the database in case of many subject sequences, otherwise the length of the
- * subject sequence.
- * @param[in]   scoringAdapter The @link BlastScoringAdapter @endlink.
+ * @param[in]   rawScore            The raw score of the alignment.
+ * @param[in]   queryLength         The length of the query sequence.
+ * @param[in]   dbLength            The length of the database in case of many subject sequences, otherwise the
+ * length of the subject sequence.
+ * @param[in]   blastScoringAdapter The @link BlastScoringAdapter @endlink.
  *
  * @return double The e-value computed.
  * @headerfile <seqan/blast.h>

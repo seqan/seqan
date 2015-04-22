@@ -42,9 +42,14 @@ namespace seqan
 
 /*!
  * @class BlastMatch
+ * @implements AssignableConcept
+ * @implements CopyConstructibleConcept
+ * @implements DefaultConstructibleConcept
+ * @implements EqualityComparableConcept
+ * @implements LessThanComparableConcept
  * @headerfile <seqan/blast.h>
  * @signature struct BlastMatch<TQId, TSId, TPos, TAlign> { ... };
- * @brief An object to hold data members of a blast-match.
+ * @brief An data structure to hold a blast match, also known as high-scoring segment pair (HSP)
  *
  * You should set the following members manually: @link BlastMatch::qId @endlink, @link BlastMatch::sId @endlink,
  * @link BlastMatch::qLength @endlink, @link BlastMatch::sLength @endlink,
@@ -71,26 +76,26 @@ struct BlastMatch
 {
     /*!
      * @var TQId BlastMatch::qId;
-     * @brief verbose Id of the query
+     * @brief The verbose Id of the query.
      *
      * @var TSId BlastMatch::sId;
-     * @brief verbose Id of the subject
+     * @brief The verbose Id of the subject.
      */
     TQId            qId;
     TSId            sId;
 
     /*!
      * @var TPos BlastMatch::qStart;
-     * @brief start of the alignment on the query sequence
+     * @brief The start of the alignment on the query sequence.
      *
      * @var TPos BlastMatch::qEnd;
-     * @brief end of the alignment on the query sequence
+     * @brief The end of the alignment on the query sequence.
      *
      * @var TPos BlastMatch::sStart;
-     * @brief start of the alignment on the subject sequence
+     * @brief The start of the alignment on the subject sequence.
      *
      * @var TPos BlastMatch::sEnd;
-     * @brief end of the alignment on the subject sequence
+     * @brief The end of the alignment on the subject sequence.
      */
     TPos            qStart        = 0;
     TPos            qEnd          = 0;
@@ -99,22 +104,26 @@ struct BlastMatch
 
     /*!
      * @var TPos BlastMatch::qLength;
-     * @brief length of the query sequences
+     * @brief The length of the query sequences.
      *
      * @var TPos BlastMatch::sLength;
-     * @brief length of the subject sequence
+     * @brief The length of the subject sequence.
      */
     TPos            qLength       = 0;
     TPos            sLength       = 0;
     /*!
      * @var char BlastMatch::qFrameShift;
-     * @brief one out of { -3, -2, -1, +1, +2, +3 } where the <tt>absolute value - 1</tt> is
+     * @brief An indicator for query frame and query strand.
+     *
+     * one out of { -3, -2, -1, +1, +2, +3 } where the <tt>absolute value - 1</tt> is
      * the shift of the translation frame and a negative sign indicates the reverse
      * complement strand [query sequence, only applies for BlastFormatProgram ==
      * BLASTX | TBLASTX]
      *
      * @var char BlastMatch::sFrameShift;
-     * @brief one out of { -3, -2, -1, +1, +2, +3 } where the <tt>absolute value - 1</tt> is
+     * @brief An indicator for subject frame and subject strand.
+     *
+     * one out of { -3, -2, -1, +1, +2, +3 } where the <tt>absolute value - 1</tt> is
      * the shift of the translation frame and a negative sign indicates the reverse
      * complement strand [subject sequence, only applies for BlastFormatProgram ==
      * TBLASTN | TBLASTX]
@@ -124,10 +133,10 @@ struct BlastMatch
 
     /*!
      * @var double BlastMatch::eValue;
-     * @brief e-value of the alignment
+     * @brief The e-value of the alignment.
      *
      * @var double BlastMatch::bitScore;
-     * @brief bit-score of the alignment
+     * @brief The bit-score of the alignment.
      */
     double          eValue        = 0;
     double          bitScore      = 0;
@@ -140,11 +149,16 @@ struct BlastMatch
 
     /*!
      * @var TAlign BlastMatch::align;
-     * @brief @link Align @endlink object of the alignment
+     * @brief @link Align @endlink object of the alignment.
      */
     TAlign          align;
 
-    //TODO dox
+    /*!
+     * @fn BlastMatch::BlastMatch()
+     * @brief Constructor, can be called with arguments for qId and sId.
+     * @signature BlastMatch::BlastMatch()
+     * BlastMatch::BlastMatch(qId, sId)
+     */
     BlastMatch() :
         qId(TQId()), sId(TSId())
     {}
@@ -198,8 +212,11 @@ struct BlastMatch
 
     /*!
      * @fn BlastMatch::operator<
-     * @signature bool operator< (BlastMatch const & bm2) const
-     * @brief only the bit-score is compared; this facilitates fast sorting of matches in a @link BlastRecord @endlink
+     * @brief The comparison operator (for sorting by bit-score).
+     * @signature bool BlastMatch::operator< (BlastMatch const & bm2) const
+     *
+     * To facilitate fast sorting of matches in a @link BlastRecord @endlink, only the bit-score is compared. Also
+     * large bit-score are sorted to front (i.e. operator< on BlastMatch checks operator>= on the bitScores).
      */
 
     inline bool operator< (BlastMatch const & bm2) const
@@ -264,7 +281,6 @@ struct BlastMatch
     }
 };
 
-
 inline bool
 _memberIsSet(CharString const & in)
 {
@@ -290,6 +306,7 @@ clear(BlastMatch<TQId, TSId, TPos, TAlign> & match)
 
 /*!
  * @class BlastRecord
+ * @implements FormattedFileRecordConcept
  * @headerfile <seqan/blast.h>
  * @signature struct BlastRecord<TQId, TSId, TPos, TAlign> { ... };
  * @brief A record of blast-matches (belonging to one query).
@@ -299,19 +316,6 @@ clear(BlastMatch<TQId, TSId, TPos, TAlign> & match)
  * @tparam TPos  Position type of the sequences, defaults to <tt>uint32_t</tt>
  * @tparam TAlign Type of the @link Align @endlink member, defaults to
  * <tt>Align<CharString, ArrayGaps></tt>
- *
- * @typedef BlastRecord::TBlastMatch
- * @signature typedef BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
- * @brief type of the contained matches
- *
- * @var TQId BlastRecord::qId;
- * @brief verbose Id of the query
- *
- * @var TPos BlastRecord::qLength;
- * @brief length of the query sequence
- *
- * @var std::list<TBlastMatch> BlastRecord::matches;
- * @brief list of the contained matches
  */
 
 template <typename TQId = std::string,
@@ -320,12 +324,37 @@ template <typename TQId = std::string,
           typename TAlign = Align<std::string, ArrayGaps>>
 struct BlastRecord
 {
+    /*!
+     * @typedef BlastRecord::TBlastMatch
+     * @signature typedef BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
+     * @brief type of the contained matches
+     */
     typedef         BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
 
+    /*!
+     * @var TQId BlastRecord::qId;
+     * @brief verbose Id of the query
+     */
     TQId            qId;
+
+    /*!
+     * @var TPos BlastRecord::qLength;
+     * @brief length of the query sequence
+     */
     TPos            qLength;
+
+    /*!
+     * @var std::list<TBlastMatch> BlastRecord::matches;
+     * @brief list of the contained matches
+     */
     std::list<TBlastMatch>  matches;
 
+    /*!
+     * @fn BlastRecord::BlastRecord()
+     * @brief constructor, can be passed the qId
+     * @signature BlastRecord::BlastRecord()
+     * BlastRecord::BlastRecord(qid)
+     */
     BlastRecord() :
         qId(TQId()), qLength(0), matches()
     {}

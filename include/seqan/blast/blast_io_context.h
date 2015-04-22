@@ -240,6 +240,9 @@ struct BlastIOContext
 
     // ------- CACHES and BUFFERS --------- //
 
+    // counted internally for TabularFooter
+    uint64_t numberOfRecords = 0;
+
     // cache for length adjustments in blast statistics
     std::unordered_map<uint64_t, uint64_t> cachedLengthAdjustments;
 

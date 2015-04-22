@@ -56,6 +56,8 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_blastmatch_stats_and_score);
     SEQAN_CALL_TEST(test_blast_blastmatch_bit_score_e_value);
 
+    //TODO extra test for different programs
+
     // WRITING (tests writeMatch() interfaces)
     SEQAN_CALL_TEST(test_blast_write_match_tabular);
     SEQAN_CALL_TEST(test_blast_write_match_tabular_run_time_context_args); // same as first but properties set as vars

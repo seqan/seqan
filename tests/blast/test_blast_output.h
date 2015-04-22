@@ -82,7 +82,7 @@ test_blast_write_do(TFile & file,
     {
         case 0: // iterate over matches
         case 1: // iterate over headers and matches
-            if (custom <= 1)
+            if ((format == 1) && (custom <= 1))
                 writeHeader(file, context, BlastTabular()); // noop for TABULARs
             for (auto const & r : records)
             {
@@ -105,14 +105,14 @@ test_blast_write_do(TFile & file,
                                     m.bitScore);
                 }
             }
-            if (custom <= 1)
-                writeFooter(file, context, BlastTabular()); // noop for TABULARs
+            if ((format == 1) && (custom <= 1))
+                writeFooter(file, context, BlastTabular());
             break;
         case 2: // iteratre over records
             writeHeader(file, context, BlastTabular()); // noop for TABULARs
             for (auto const & r : records)
                 writeRecord(file, context, r, BlastTabular());
-            writeFooter(file, context, BlastTabular()); // noop for TABULARs
+            writeFooter(file, context, BlastTabular());
             break;
         case 3: // formatted file out
         {
@@ -343,6 +343,9 @@ void test_blast_write_tabular_impl(int const format, // 0 only matches; 1 matche
     else
         compString.append("Query_Numero_Tres with args\tSubject_Numero_Dos\t8\t0\t0\t0.00672262\t18.8606\n"
                           "Query_Numero_Tres with args\tSubject_Numero_Uno\t8\t1\t0\t0.0255459\t16.9346\n");
+
+    if ((getBlastTabularSpec(context) == BlastTabularSpec::HEADER) && (!context.legacyFormat) && (format >= 1))
+        compString.append("# BLAST processed 3 queries\n");
 
     if (contents != compString)
     {
