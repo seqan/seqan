@@ -230,16 +230,16 @@ struct BlastIOContext
      * @var StringSet<TString> BlastIOContext::conformancyErrors;
      * @brief holds non fatal error messages when reading from @link BlastTabularIn @endlink.
      *
-     * After doing a @link BlastTabular#readRecord @endlink or
-     * @link BlastTabular#readRecordHeader @endlink this will indicate whether the
+     * After doing a @link BlastTabular#readRecord @endlink this will indicate whether the
      * record header contained non-fatal parse errors, usually the result
      * of a file written by a sloppy blast implementation or possibly a bug in SeqAn.
      * An empty StringSet indicates that all is good.
      */
     StringSet<TString, Owner<ConcatDirect<>>> conformancyErrors;
 
-    // ------- CACHES and BUFFERS --------- //
+    // ------- CACHES, BUFFERS and INTERNALS --------- //
 
+    // TODO prefix the below with _ ?
     // counted internally for TabularFooter
     uint64_t numberOfRecords = 0;
 

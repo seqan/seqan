@@ -603,16 +603,16 @@ _test_blast_read_tabular_with_header(bool custom = false)
     SEQAN_ASSERT_EQ(context.conformancyErrors[0],
                     "No or multiple database lines present.");
 
-    // test skipHeader
+    // test skipRecordHeader
     ifstream.close();
     ifstream.open(toCString(inPath));
     SEQAN_ASSERT(ifstream.is_open());
 
     it = directionIterator(ifstream, Input());
 
-    skipHeader(it, context, BlastTabular());
-    skipHeader(it, context, BlastTabular());
-    skipHeader(it, context, BlastTabular());
+    skipRecordHeader(it, context, BlastTabular());
+    skipRecordHeader(it, context, BlastTabular());
+    skipRecordHeader(it, context, BlastTabular());
     SEQAN_ASSERT(onMatch(it, BlastTabular()));
 
     ifstream.close();
@@ -747,16 +747,16 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     SEQAN_ASSERT_EQ(context.conformancyErrors[0],
                     "No or multiple database lines present.");
 
-    // test skipHeader
+    // test skipRecordHeader
     ifstream.close();
     ifstream.open(toCString(inPath));
     SEQAN_ASSERT(ifstream.is_open());
 
     it = directionIterator(ifstream, Input());
 
-    skipHeader(it, context, BlastTabular());
-    skipHeader(it, context, BlastTabular());
-    skipHeader(it, context, BlastTabular());
+    skipRecordHeader(it, context, BlastTabular());
+    skipRecordHeader(it, context, BlastTabular());
+    skipRecordHeader(it, context, BlastTabular());
     SEQAN_ASSERT(onMatch(it, BlastTabular()));
 
     ifstream.close();

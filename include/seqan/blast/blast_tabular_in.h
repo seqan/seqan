@@ -163,7 +163,7 @@ _strSplit(StringSet<TString, TSpec> & result,
 
 /*!
  * @fn BlastTabular#onMatch
- * @brief returns whether the iterator is on beginning of match
+ * @brief Returns whether the iterator is on the beginning of a match line.
  *
  * @signature bool onMatch(stream, blastTabular)
  *
@@ -187,14 +187,15 @@ onMatch(TFwdIterator & iter,
 // Function readRecordHeader()
 // ----------------------------------------------------------------------------
 
-/*!
+//NOTE(h-2): dox disabled to clean-up interface
+/*
  * @fn BlastTabular#readRecordHeader
  * @brief read a the header of a record from a Blast tabular file
  * @headerfile seqan/blast.h
  *
  * @signature void readRecordHeader(blastRecord, stream, context, blastTabular);
  *
- * @param[out]    blastRecord  A @link BlastRecord @endlink whose
+ * @param[out]    blastRecord  A @link BlastRecord @endlink.
  * @param[in,out] stream       An input iterator over a stream or any fwd-iterator over a string.
  * @param[in,out] context      An @link BlastIOContext @endlink with buffers.
  * @param[in]     blastTabular The @link BlastTabular @endlink tag.
@@ -230,8 +231,6 @@ onMatch(TFwdIterator & iter,
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
- *
- * @see BlastTabular#onMatch
  */
 
 template <typename TQId,
@@ -257,10 +256,6 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
     int dbLinePresent = 0;
     int fieldsLinePresent = 0;
     int hitsLinePresent = 0;
-    int lastLine = 0;
-
-    auto & buffer = context.buffer1;
-    auto & buffer2 = context.buffer2;
 
     while ((!atEnd(iter)) && (!onMatch(iter, BlastTabular())))// in Header
     {
@@ -269,40 +264,63 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
         //skip blanks following the '#'
         skipUntil(iter, IsGraph());
 
-        clear(buffer);
-        readUntil(buffer, iter, IsBlank());
+        clear(context.buffer1);
+        readUntil(context.buffer1, iter, IsBlank()); // read first word
 
-        if (startsWith(buffer, "BLAST") || startsWith(buffer, "TBLAST"))
+        if (startsWith(context.buffer1, "BLAST") || startsWith(context.buffer1, "TBLAST"))
         {
-            context.blastProgram = _programStringToTag(buffer);
-            readLine(buffer, iter);
-            context.versionString = buffer;
+            context.buffer2 = context.buffer1;
+            readLine(context.buffer2, iter);
 
-// TODO(h4nn3s): regex test
-//             std::regex versionRE("[0-9]+\\.[0-9]+\\.[0-9]+\\+", std::regex::awk);
-//             context.legacyFormat = std::regex_search(seqan::begin(key), seqan::end(key), versionRE);
+            // last line of file
+            if (SEQAN_UNLIKELY(startsWith(context.buffer2, "BLAST processed ") && !context.legacyFormat))
+            {
+                clear(context.buffer1);
+                auto it = seqan::begin(context.buffer2);
+                it += 16; // skip "BLAST processed "
+                readUntil(context.buffer1, it,  IsBlank());
 
-            context.legacyFormat = (buffer.find('+') == std::string::npos);
+                uint64_t numRecords = lexicalCast<uint64_t>(context.buffer1);
+
+                if (context.numberOfRecords < numRecords)
+                    appendValue(context.conformancyErrors, "The file claims to contain more records than you read.");
+                else if (context.numberOfRecords > numRecords)
+                    appendValue(context.conformancyErrors, "The file claims to contain less records than you read.");
+
+                if (!atEnd(iter))
+                    appendValue(context.conformancyErrors, "Footer line read, but not at end of file.");
+            }
+            else // first line of record header
+            {
+                context.blastProgram = _programStringToTag(context.buffer1);
+                context.versionString = context.buffer2;
+
+    // TODO(h4nn3s): regex test
+    //             std::regex versionRE("[0-9]+\\.[0-9]+\\.[0-9]+\\+", std::regex::awk);
+    //             context.legacyFormat = std::regex_search(seqan::begin(key), seqan::end(key), versionRE);
+
+                context.legacyFormat = (context.buffer2.find('+') == std::string::npos);
+            }
         }
-        else if (buffer == "Query:")
+        else if (context.buffer1 == "Query:")
         {
             skipUntil(iter, IsGraph());
             readLine(r.qId, iter);
             ++queryLinePresent;
         }
-        else if (buffer == "Database:")
+        else if (context.buffer1 == "Database:")
         {
             skipUntil(iter, IsGraph());
             readLine(context.dbName, iter);
             ++dbLinePresent;
         }
-        else if (buffer == "Fields:")
+        else if (context.buffer1 == "Fields:")
         {
             skipUntil(iter, IsGraph());
 
-            clear(buffer);
-            readLine(buffer, iter);
-            _strSplit(context.fieldsAsStrings, buffer, std::regex(", "));
+            clear(context.buffer1);
+            readLine(context.buffer1, iter);
+            _strSplit(context.fieldsAsStrings, context.buffer1, std::regex(", "));
 
             ++fieldsLinePresent;
             if (context.legacyFormat)
@@ -345,23 +363,18 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
         }
         else
         {
-            readLine(buffer, iter);
+            readLine(context.buffer1, iter);
 
             if (!context.legacyFormat)
             {
-                // last line of BlastPlus Format
-                if (startsWith(buffer, "BLAST processed"))
-                {
-                    ++lastLine;
-                }
                 // is hits counter?
-                else if (endsWith(buffer, "hits found"))
+                if (endsWith(context.buffer1, "hits found"))
                 {
-                    clear(buffer2);
-                    for (unsigned i = 0; (i < length(buffer) && isdigit(buffer[i])); ++i)
-                        appendValue(buffer2, buffer[i], Generous());
+                    clear(context.buffer2);
+                    for (unsigned i = 0; (i < length(context.buffer1) && isdigit(context.buffer1[i])); ++i)
+                        appendValue(context.buffer2, context.buffer1[i], Generous());
 
-                    uint64_t hits = lexicalCast<uint64_t>(buffer2);
+                    uint64_t hits = lexicalCast<uint64_t>(context.buffer2);
 
                     if (hits)
                     {
@@ -378,17 +391,15 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                 }
                 else
                 {
-                    appendValue(context.otherLines, buffer, Generous());
+                    appendValue(context.otherLines, context.buffer1, Generous());
                 }
             }
             else
             {
-                appendValue(context.otherLines, buffer, Generous());
+                appendValue(context.otherLines, context.buffer1, Generous());
             }
         }
     }
-
-
 
     if (getBlastProgram(context) == BlastProgram::UNKNOWN)
         appendValue(context.conformancyErrors,
@@ -441,6 +452,8 @@ readRecordHeader(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                  BlastIOContext<TScore, TString, p, h> & context,
                  BlastTabular const &)
 {
+    ++context.numberOfRecords;
+
     if (getBlastTabularSpec(context) == BlastTabularSpec::NO_HEADER)
         return;
 
@@ -457,32 +470,16 @@ readRecordHeader(BlastRecord<TQId, TSId, TPos, TAlign> & r,
     _readRecordHeaderImpl(r, iter, context, BlastTabular());
 }
 
-template <typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
-          typename TFwdIterator,
-          typename TScore,
-          typename TString,
-          BlastProgram p>
-inline void
-readRecordHeader(BlastRecord<TQId, TSId, TPos, TAlign> &,
-                 TFwdIterator &,
-                 BlastIOContext<TScore, TString, p, BlastTabularSpec::NO_HEADER> &,
-                 BlastTabular const &)
-{
-    // NOOP for TABULAR without header
-}
-
 // ----------------------------------------------------------------------------
 // Function skipHeader()
 // ----------------------------------------------------------------------------
 
-/*!
- * @fn BlastTabular#skipHeader
+//NOTE(h-2): dox disabled to clean-up interface
+/*
+ * @fn BlastTabular#skipRecordHeader
  * @brief skip a header from a Blast tabular input file.
  *
- * @signature void skipHeader(stream, context, blastTabular);
+ * @signature void skipRecordHeader(stream, context, blastTabular);
  *
  * @param[in,out] stream       An input iterator over a stream or any fwd-iterator over a string
  * @param[in,out] context      A @link BlastIOContext @endlink with parameters and buffers.
@@ -508,9 +505,9 @@ template <typename TFwdIterator,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-skipHeader(TFwdIterator & iter,
-           BlastIOContext<TScore, TString, p, h> & context,
-           BlastTabular const & /*tag*/)
+skipRecordHeader(TFwdIterator & iter,
+                 BlastIOContext<TScore, TString, p, h> & context,
+                 BlastTabular const & /*tag*/)
 {
     readRecordHeader(context.bufRecord, iter, context, BlastTabular());
 }
@@ -521,28 +518,24 @@ skipHeader(TFwdIterator & iter,
 
 /*!
  * @fn BlastTabular#skipUntilMatch
- * @brief skip arbitrary number of record headers and/or comment lines until the beginning of a match is reached.
- *
+ * @brief Skip arbitrary number of record headers and/or comment lines until the beginning of a match is reached.
  * @signature void skipUntilMatch(stream, blastTabular);
+ * @headerfile seqan/blast.h
  *
  * @param[in,out] stream       An input iterator over a stream or any fwd-iterator over a string
  * @param[in]     blastTabular The @link BlastTabular @endlink tag.
  *
  * @section Remarks
  *
- * Call this function whenever you are on a comment character ('#') in the file
- * and want to jump to the beginning of the next match. If you want to skip only
- * a single header (to count skipped headers or to verify its conformance
- * to standards), use BlastTabular#skipHeader instead.
+ * This is also part of the low-level IO and not required if you use readRecord.
+ * Call this function whenever you are not @link BlastTabular#onMatch @endlink, but want to be, e.g. to
+ * @link BlastTabular#readMatch0 @endlink.
  *
  * Since it is legal for files to end with a record header, this function does not throw if end-of-file is reached.
  * You need to check that after calling.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
- *
- * @see BlastTabular#skipHeader
- * @headerfile seqan/blast.h
  */
 
 template <typename TFwdIterator>
@@ -676,7 +669,7 @@ _readField(BlastMatch<TQId, TSId, TPos, TAlign> & match,
     };
 }
 
-/*!
+/*
  * @fn BlastTabular#readMatch
  * @brief read a match from a file in BlastTabular format
  *
@@ -816,8 +809,7 @@ readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
 
 /*!
  * @fn BlastTabular#readMatch0
- * @brief read arbitrary columns from a file in BlastTabular
- *
+ * @brief Low-level BlastTabular file reading.
  * @signature void readMatch0(stream, tag, args ...);
  *
  * @param[in,out] stream        An input iterator over a stream or any fwd-iterator over a string
@@ -838,6 +830,8 @@ readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
  *
  * No transformations are made on the data, e.g. the positions are still
  * one-indexed and flipped for reverse strand matches.
+ *
+ * See @link BlastTabular @endlink for an example of low-level IO.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
@@ -914,11 +908,12 @@ readMatch0(TFwdIterator & iter,
 // Function skipMatch()
 // ----------------------------------------------------------------------------
 
-/*!
+//NOTE(h-2): dox disabled to clean-up interface
+/*
  * @fn BlastTabular#skipMatch
  * @brief skip a line that contains a match
- *
  * @signature void skipMatch(stream, context, blastTabular);
+ * @headerfile seqan/blast.h
  *
  * @param[in,out] stream  An input iterator over a stream or any fwd-iterator over a string
  * @param[in,out] context A @link BlastIOContext @endlink with parameters and buffers.
@@ -933,9 +928,6 @@ readMatch0(TFwdIterator & iter,
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
- *
- * @see BlastTabular#skipHeader
- * @headerfile seqan/blast.h
  */
 
 
@@ -1086,7 +1078,7 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
 
 /*!
  * @fn BlastTabular#readRecord
- * @brief read a record from a file in BlastTabular
+ * @brief Read a record from a file in BlastTabular format.
  * @headerfile seqan/blast.h
  * @signature void readRecord(blastRecord, stream, context, blastTabular);
  *
@@ -1098,24 +1090,66 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
  * @section Remarks
  *
  * This function will read an entire record from a blast tabular file, i.e. it will read the record header
- * (if it exists) and 0-n @link BlastMatch @endlinkes belonging to one query. For more details on this see
- * @link BlastTabular#readRecordHeader @endlink and @link BlastTabular#readMatch @endlink.
+ * (if it exists) and 0-n @link BlastMatch @endlinkes belonging to one query.
  *
- * Please note that if a record header exists the @link BlastIOContext::fields @endlink member is read from
- * it first and then used as in-parameter for reading the matches, i.e.
- * @link BlastTabular#readRecordHeader @endlink reads the
- * column labels and after that @link BlastTabular#readMatch @endlink expects the values in the columns to correspond
- * to their labels. If you do not want this behaviour, because you expect the header
- * to be non-standard -- as is the case with many tools -- you can set
- * context.@link BlastIOContext::ignoreFieldsInHeader @endlink to true.
- * In this case the you can also set
- * context.@link BlastIOContext::fields @endlink manually and these columns
- * will be expected for the matches, independent of the header. The latter
- * behaviour is also default when there are no headers.
- *
- * Please note also that if there are no headers the boundary
+ * Please note that if there are no headers in the file the boundary
  * between records is inferred from the indentity of the first field, i.e.
  * non-standard field configurations must also have Q_SEQ_ID as their first @link BlastMatchField @endlink.
+ *
+ * @subsection Record header
+ *
+ * The @link BlastRecord::qId @endlink member of the record is read from the header and  the
+ * @link BlastRecord::matches @endlink are resized to the expected number of matches succeeding the header.
+ *
+ * This function also sets many properties of the @link BlastIOContext @endlink, including these members:
+ * <li> @link BlastIOContext::versionString @endlink: version string of the header</li>
+ * <li> @link BlastIOContext::dbName @endlink: name of the database</li>
+ * <li> @link BlastIOContext::fields @endlink: descriptors for the columns.</li>
+ * <li> @link BlastIOContext::fieldsAsStrings @endlink: labels of the columns
+ * as they appear in the file.</li>
+ * <li> @link BlastIOContext::conformancyErrors @endlink: if this StringSet is not empty, then there are issues in the
+ * header.</li>
+ * <li> @link BlastIOContext::otherLines @endlink: any lines that cannot be interpreted; these always also imply
+ * conformancyErrors.</li>
+ * <li>@link BlastIOContext::legacyFormat @endlink: whether the record header (and likely the entire file) is in
+ * legacyFormat.</li>
+ *
+ * It also sets the blast program run-time parameter of the context depending on the information found in the header. If
+ * the compile time parameter was set on the context and they are different this will result in a conformancyError.
+ * Otherwise you can read the value with @link BlastIOContext#getBlastProgram @endlink.
+ *
+ * Please note that for @link BlastIOContext::legacyFormat @endlink the @link BlastIOContext::fields @endlink member
+ * is always ignored, however @link BlastIOContext::fieldsAsStrings @endlink is still read from the header, in case
+ * you want to process it.
+ *
+ * In case you do not wish the @link BlastIOContext::fields @endlink to be read from the header, you can set
+ * context.@link BlastIOContext::ignoreFieldsInHeader @endlink to true. This will be prevent it from being read and will
+ * allow you to specify it manually which might be relevant for reading the match lines.
+ *
+ * @subsection Matches
+ *
+ * A match line contains 1 - n columns or fields, 12 by default.
+ * The @link BlastIOContext::fields @endlink member of the context is considered when reading these fields. It is
+ * usually extracted from the header but can also be set by yourself if there is no header or if you want to overwrite
+ * the headers information (see above).
+ * You may specify less
+ * fields than are actually present, in this case the additional fields will be
+ * discarded. The parameter is ignored if @link BlastIOContext::legacyFormat @endlink is set.
+ *
+ * To differentiate between members of a @link BlastMatch @endlink that were read from the file and those that have
+ * not been set (e.g. both could be 0), the latter are initialized to their respective max-values.
+ *
+ * Please note that the only transformations made to the data are the following:
+ *
+ *  <li> computation of the number of identities (from the percentage) [default]</li>
+ *  <li> computation of the number of positives (from the percentage) [if given]</li>
+ *  <li> number of gaps computed from other values [default]</li>
+ *
+ * In contrast to @link BlastTabular#writeRecord @endlink no other transformations
+ * are made, e.g. the positions are still one-indexed and
+ * flipped for reverse strand matches. This is due to the required fields for
+ * retransformation (sequence lengths, frames) not being available in the
+ * default columns.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
@@ -1216,7 +1250,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
 /*!
  * @fn BlastTabular#readHeader
  * @headerfile seqan/blast.h
- * @brief read the header (top-most section) of a BlastTabular file (this is a NOOP)
+ * @brief Read the header (top-most section) of a BlastTabular file (this is a NOOP).
  * @signature void readHeader(stream, context, blastTabular);
  *
  * @param[in,out] stream         The file to read to (FILE, fstream, @link InputStreamConcept @endlink ...)
@@ -1242,7 +1276,7 @@ readHeader(BlastIOContext<TScore, TConString, p, h> &,
 /*!
  * @fn BlastTabularIn#readHeader
  * @headerfile seqan/blast.h
- * @brief read the header (top-most section) of a BlastTabular file (this is a NOOP)
+ * @brief Read the header (top-most section) of a BlastTabular file (this is a NOOP).
  * @signature void readHeader(blastTabularIn);
  *
  * @param[in,out] blastTabularIn A @link BlastTabularIn @endlink formattedFile.
@@ -1265,12 +1299,17 @@ readHeader(BlastTabularIn<TContext> & formattedFile)
 /*!
  * @fn BlastTabular#readFooter
  * @headerfile seqan/blast.h
- * @brief read the footer of a BlastTabular file (currently NOOP)
+ * @brief Read the footer of a BlastTabular file (this is a NOOP).
  * @signature void readFooter(stream, context, blastTabular);
  *
  * @param[in,out] stream         The file to read to (FILE, fstream, @link InputStreamConcept @endlink ...)
  * @param[in,out] context        A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in]     blastTabular   The @link BlastTabular @endlink tag.
+ *
+ * @section Remarks
+ *
+ * While there is a footer in the tabular format, it is not necessary to call this function (it will be read by the
+ * last call to readRecord).
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
@@ -1286,13 +1325,13 @@ readFooter(BlastIOContext<TScore, TConString, p, h> &,
            TFwdIterator &,
            BlastTabular const & /*tag*/)
 {
-    //TODO check if this is really NO-OP for this format
+    // NOTE(h-2): there is a footer, but it is processed by the last call to readRecord
 }
 
 /*!
  * @fn BlastTabularIn#readFooter
  * @headerfile seqan/blast.h
- * @brief read the footer of a BlastTabular file (currently NOOP)
+ * @brief Read the footer of a BlastTabular file (this is a NOOP).
  * @signature void readFooter(blastTabularIn);
  *
  * @param[in,out] blastTabularIn A @link BlastTabularIn @endlink formattedFile.

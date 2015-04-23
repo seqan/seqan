@@ -72,40 +72,34 @@ namespace seqan
  *
  * SeqAn also supports writing the default blast output format, see @link BlastReport @endlink.
  *
- * @section Example of high-level file reading
+ * @section High-level file reading
  *
- * The easiest way to read a Blast tabular file is by using the following calls:
- * <li> BlastTabular#@link BlastTabular#readHeader @endlink </li>
- * <li> BlastTabular#@link BlastTabular#readRecord @endlink up to n times</li>
- * <li> BlastTabular#@link BlastTabular#readFooter @endlink </li>
+ * If you are interested in iteratively reading all records from a blast tabular file, you just need to call
+ * readRecord:
  *
- * You can also use the FormattedFile interface which has the same functions, but only requires one parameter:
- * <li> BlastTabularIn#@link BlastTabularIn#readHeader @endlink </li>
- * <li> BlastTabularIn#@link BlastTabularIn#readRecord @endlink up to n times</li>
- * <li> BlastTabularIn#@link BlastTabularIn#readFooter @endlink </li>
+ * <ul>
+ * <li>while not @link StreamConcept#atEnd @endlink </li>
+ * <ul>
+ * <li> BlastTabular#@link BlastTabular#readRecord @endlink</li>
+ * </ul>
+ * </ul>
  *
- * See @link BlastTabularIn @endlink for a full code example.
+ * Alternatively to this spec's interface you may also call BlastTabular<b>In</b>#@link BlastTabularIn#readRecord @endlink
+ * which uses the @link FormattedFile @endlink's interface but is the same otherwise. See @link BlastTabularIn @endlink
+ * for a full code example.
  *
- * If you want a little more control, especially if you are not interested in reading all records, but only certain
- * ones, you can replace readRecord with readRecordHeader and possibly multiple calls to readMatch:
- * <li> BlastTabular#@link BlastTabular#readHeader @endlink </li>
- * <li> BlastTabular#@link BlastTabular#readRecordHeader @endlink up to n times </li>
- * <li> BlastTabular#@link BlastTabular#readMatch @endlink up to m times for each call to readRecordHeader </li>
- * <li> BlastTabular#@link BlastTabular#readFooter @endlink </li>
+ * While @link BlastTabular#readHeader @endlink and @link BlastTabular#readFooter @endlink are defined, they are no-ops
+ * and all information can be extracted by calling readRecord.
  *
- * In this context, @link BlastTabular#onMatch @endlink and @link BlastTabular#skipMatch @endlink
- * might also be helpful.
+ * @section Low-level file reading
  *
- *
- * @section Example of low-level file reading
- *
- * If you are not really interested in processing the records and just want to parse the tabular file for certain
- * information to count or filter for something, you can use the low-level interface of
+ * If you are not really interested in processing the records and just want to parse the matches for certain
+ * information, you can use the low-level interface of
  * @link BlastTabular#readMatch0 @endlink and @link BlastTabular#skipUntilMatch @endlink. It requires no extra
  * data-structures, but it is otherwise very limited.
  *
- * The following program extracts the list of matching query-subject-pairs from a blast tabular file and prints it to
- * std::out:
+ * The following example program extracts the list of matching query-subject-pairs from a blast tabular file and prints
+ * it to std::out:
  *
  * @include demos/blast/blast_in_lowlevel.cpp
  *
@@ -113,28 +107,28 @@ namespace seqan
  *
  * @include demos/blast/blast_in_lowlevel.out
  *
- * @section Example of high-level file writing
+ * @section High-level file writing
  *
- * High-level file writing is very similar to reading, it is recommended you use:
+ * High-level file writing consists of three different calls:
+ * <ul>
  * <li> BlastTabular#@link BlastTabular#writeHeader @endlink </li>
- * <li> BlastTabular#@link BlastTabular#writeRecord @endlink up to n times</li>
+ * <li> BlastTabular#@link BlastTabular#writeRecord @endlink repeated up to n times</li>
  * <li> BlastTabular#@link BlastTabular#writeFooter @endlink </li>
+ * </ul>
  *
  * You can also use the FormattedFile interface which has the same functions, but only requires one parameter:
+ * <ul>
  * <li> BlastTabularOut#@link BlastTabularOut#writeHeader @endlink </li>
- * <li> BlastTabularOut#@link BlastTabularOut#writeRecord @endlink up to n times</li>
+ * <li> BlastTabularOut#@link BlastTabularOut#writeRecord @endlink repeated up to n times</li>
  * <li> BlastTabularOut#@link BlastTabularOut#writeFooter @endlink </li>
+ * </ul>
  *
  * See @link BlastTabularOut @endlink for a full code example.
  *
- * If you want a little more control, especially if you are not interested in writing all records, but only certain
- * ones, you can replace writeRecord with writeRecordHeader and possibly multiple calls to writeMatch:
- * <li> BlastTabular#@link BlastTabular#writeHeader @endlink </li>
- * <li> BlastTabular#@link BlastTabular#writeRecordHeader @endlink up to n times </li>
- * <li> BlastTabular#@link BlastTabular#writeMatch @endlink up to m times for each call to writeRecordHeader </li>
- * <li> BlastTabular#@link BlastTabular#writeFooter @endlink </li>
+ * Strictly speaking the writeHeader call is not required for BlastTabular, but for consistency with other (blast)
+ * formats it is recommended. The example in @link BlastTabularOut @endlink illustrates that.
  *
- * @section Example of low-level file writing
+ * @section Low-level file writing
  *
  * Low-level file writing is also similar to low-level file reading. See the tutorial TODO for a meaningful combination
  * of both.

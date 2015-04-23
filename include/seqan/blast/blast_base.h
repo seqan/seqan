@@ -37,6 +37,10 @@
 #ifndef SEQAN_EXTRAS_BLAST_BLAST_BASE_H_
 #define SEQAN_EXTRAS_BLAST_BLAST_BASE_H_
 
+//TODO: move setBlastScoringScheme to adapter, maybe rename adapter
+
+
+
 namespace seqan {
 
 // ============================================================================
@@ -490,7 +494,7 @@ _programTagToString<BlastProgram::TBLASTX>()
     return "TBLASTX";
 }
 
-// if not compile time fixed, than we can operate with const char * and need std::string instead
+// if not compile time fixed, than we can't operate with const char * and need std::string instead
 inline std::string const
 _programTagToString(BlastProgram const _p)
 {
