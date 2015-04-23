@@ -1775,7 +1775,7 @@ operator!=(StringSet<TLeftString, TLeftSpec> const & left,
 }
 
 // ----------------------------------------------------------------------------
-// Function write(StringSet)
+// Function write() (works on any container of container)
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TSequences, typename TDelim>
@@ -1783,12 +1783,13 @@ inline SEQAN_FUNC_ENABLE_IF(And<Is<ContainerConcept<TSequences> >,
                                 Is<ContainerConcept<typename Value<TSequences>::Type > > >, void)
 write(TTarget & target, TSequences const & seqs, TDelim const & delimiter)
 {
-    typedef typename Size<TSequences const>::Type TSize;
+    typedef typename Iterator<TSequences const>::Type TSourceIt;
+
     if (SEQAN_UNLIKELY(empty(seqs)))
         return;
-    for (TSize i = 0; i < length(seqs) - 1; ++i)
+    for (TSourceIt it = begin(seqs, Standard()), itBack = (end(seqs, Standard()) - 1); it != itBack; ++it)
     {
-        write(target, seqs[i]);
+        write(target, *it);
         write(target, delimiter);
     }
     write(target, back(seqs)); // no delimiter after last
@@ -1800,6 +1801,25 @@ inline SEQAN_FUNC_ENABLE_IF(And<Is<ContainerConcept<TSequences> >,
 write(TTarget & target, TSequences const & seqs)
 {
     write(target, seqs, '\n');
+}
+
+// ----------------------------------------------------------------------------
+// Function append() (works on any container of container)
+// ----------------------------------------------------------------------------
+
+template <typename TSequences1, typename TSequences2, typename TExpand >
+inline SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSequences1> >,
+                                    Is<ContainerConcept<typename Value<TSequences1>::Type > > >,
+                                And<Is<ContainerConcept<TSequences2> >,
+                                    Is<ContainerConcept<typename Value<TSequences2>::Type > > > >, void)
+append(TSequences1 & me, TSequences2 const & obj, Tag<TExpand>)
+{
+    typedef typename Iterator<TSequences2 const>::Type TSourceIt;
+
+    typename Size<typename Value<TSequences1>::Type>::Type oldLength = length(me);
+    resize(me, oldLength + length(obj), Tag<TExpand>());
+    for (TSourceIt it = begin(obj, Standard()), itEnd = end(obj, Standard()); it != itEnd; ++it)
+        assignValue(me, oldLength++, *it);
 }
 
 }  // namespace seqan
