@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /tests/sequence/CMakeLists.txt
+# File: /extras/tests/align_extend/CMakeLists.txt
 #
-# CMakeLists.txt file for the sequence module tests.
+# CMakeLists.txt file for the align_extend module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_sequence)
-message (STATUS "Configuring tests/sequence")
+project (seqan_extras_tests_blast)
+message (STATUS "Configuring tests/blast")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -17,7 +17,12 @@ message (STATUS "Configuring tests/sequence")
 # Search SeqAn and select dependencies.
 set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
-find_package (CXX11)
+find_package (CXX11 REQUIRED)
+
+if (NOT CXX11_FOUND)
+    message (STATUS "  The blast module requires C++11-Support.")
+    return ()
+endif (NOT CXX11_FOUND)
 
 # ----------------------------------------------------------------------------
 # Build Setup
@@ -30,23 +35,10 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 add_definitions (${SEQAN_DEFINITIONS})
 
 # Update the list of file names below if you add source files to your test.
-add_executable (test_sequence
-               test_sequence.cpp
-               test_segment.h
-               test_sequence_std_adaptions.h
-               test_string.h
-               test_stringset.h
-               test_string_packed_extension.h)
-target_link_libraries (test_sequence ${SEQAN_LIBRARIES})
+add_executable (test_blast test_blast.cpp test_blast_statistics.h test_blast_output.h test_blast_input.h)
 
-add_executable (test_sequence_v2 test_sequence_v2.cpp
-               test_sequence.h
-               test_segment_beta.h)
-target_link_libraries (test_sequence_v2 ${SEQAN_LIBRARIES})
-
-add_executable (test_stringset_v2 test_stringset_v2.cpp
-               test_string_set.h)
-target_link_libraries (test_stringset_v2 ${SEQAN_LIBRARIES})
+# Add dependencies found by find_package (SeqAn).
+target_link_libraries (test_blast ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
@@ -55,5 +47,4 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
 # Register with CTest
 # ----------------------------------------------------------------------------
 
-add_test (NAME test_test_sequence COMMAND $<TARGET_FILE:test_sequence>)
-add_test (NAME test_test_sequence_v2 COMMAND $<TARGET_FILE:test_sequence_v2>)
+add_test (NAME test_blast COMMAND $<TARGET_FILE:test_blast>)
