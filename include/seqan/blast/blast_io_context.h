@@ -118,7 +118,7 @@ struct BlastIOContext
     // the BlastTabularSpec as compile time parameter
     typedef BlastTabularSpecTag<h> TBlastTabularSpec; // compile-time parameter
     // if the upper is set to UNKNOWN, than this run-time variable is consulted instead:
-    BlastTabularSpec tabularSpec = BlastTabularSpec::HEADER;
+    BlastTabularSpec tabularSpec = BlastTabularSpec::UNKNOWN;
 
     /*!
      * @var BlastScoringAdapter<TScore> BlastIOContext::scoringAdapter;
@@ -246,14 +246,11 @@ struct BlastIOContext
     // cache for length adjustments in blast statistics
     std::unordered_map<uint64_t, uint64_t> cachedLengthAdjustments;
 
-    // needed for readRecord of TABULAR
-    TString lastId;
-
     // io-buffers
-    TString buffer1;
-    TString buffer2;
-    StringSet<TString, Owner<ConcatDirect<>>> buffers1;
-    StringSet<TString, Owner<ConcatDirect<>>> buffers2;
+    TString _lineBuffer; // holds the current line
+    TString _stringBuffer;
+    StringSet<TString, Owner<ConcatDirect<>>> _setBuffer1;
+    StringSet<TString, Owner<ConcatDirect<>>> _setBuffer2;
     BlastMatch<> bufMatch;
     BlastRecord<> bufRecord;
 };

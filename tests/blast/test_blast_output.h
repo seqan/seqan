@@ -94,8 +94,8 @@ test_blast_write_do(TFile & file,
                     if (custom <= 1)
                         writeMatch(file, context, m, BlastTabular());
                     else
-                        writeMatch0(file,
-                                    BlastTabular(),
+                        writeMatch(file,
+                                    BlastTabularLL(),
                                     m.qId,
                                     m.sId,
                                     m.alignStats.alignmentLength,
@@ -120,7 +120,7 @@ test_blast_write_do(TFile & file,
             writeHeader(out); // noop for TABULARs
             for (auto const & r : records)
                 writeRecord(out, r);
-            writeFooter(out); // noop for TABULARs
+            writeFooter(out);
         } break;
     }
 }

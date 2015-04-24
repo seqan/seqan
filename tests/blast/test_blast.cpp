@@ -101,14 +101,14 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_read_match_tabular);
     SEQAN_CALL_TEST(test_blast_read_match_tabular_legacy);
     SEQAN_CALL_TEST(test_blast_read_match_customfields_tabular);
-    SEQAN_CALL_TEST(test_blast_read_match_customcolumns_tabular);
-//     SEQAN_CALL_TEST(test_blast_read_match_customcolumns_tabular_legacy);
+    SEQAN_CALL_TEST(test_blast_read_match_lowlevel_tabular);
+//     SEQAN_CALL_TEST(test_blast_read_match_lowlevel_tabular_legacy);
 
     SEQAN_CALL_TEST(test_blast_read_match_tabular_with_header);
     SEQAN_CALL_TEST(test_blast_read_match_tabular_with_header_legacy);
     SEQAN_CALL_TEST(test_blast_read_match_customfields_tabular_with_header);
-//     SEQAN_CALL_TEST(test_blast_read_match_customcolumns_tabular_with_header);
-//     SEQAN_CALL_TEST(test_blast_read_match_customcolumns_tabular_with_header_legacy);
+//     SEQAN_CALL_TEST(test_blast_read_match_lowlevel_tabular_with_header);
+//     SEQAN_CALL_TEST(test_blast_read_match_lowlevel_tabular_with_header_legacy);
 
     // READING (readHeader, skipHeader)
     SEQAN_CALL_TEST(test_blast_read_header_tabular_with_header);

@@ -105,10 +105,10 @@ void _test_blast_read_tabular_match(std::string const & path,
         context.fields = customFields;
     }
 
-    if (withheader)
-        setBlastTabularSpec(context, BlastTabularSpec::HEADER);
-    else
-        setBlastTabularSpec(context, BlastTabularSpec::NO_HEADER);
+    // read header of file
+    readHeader(context, it, BlastTabular());
+    // TODO fix the below
+//     SEQAN_ASSERT(getBlastTabularSpec(context) == (withheader ? BlastTabularSpec::HEADER : BlastTabularSpec::NO_HEADER));
 
     context.legacyFormat = islegacy;
 
@@ -117,12 +117,13 @@ void _test_blast_read_tabular_match(std::string const & path,
 //     FormattedFile<> it(ifstream);
 
     // skip headers and comment lines
-    skipUntilMatch(it, BlastTabular());
+    while (!onMatch(context, BlastTabular()))
+        goNextLine(context, it, BlastTabular());
 
     //---- FIRST MATCH ---- //
 
     // now we should be onMatch
-    SEQAN_ASSERT(onMatch(it, BlastTabular()));
+    SEQAN_ASSERT(onMatch(context, BlastTabular()));
 
     BlastMatch<> m;
     readMatch(m, it, context, BlastTabular());
@@ -166,12 +167,12 @@ void _test_blast_read_tabular_match(std::string const & path,
     //---- FIRST MATCH END ---- //
 
     // now we should be onMatch
-    SEQAN_ASSERT(onMatch(it, BlastTabular()));
+    SEQAN_ASSERT(onMatch(context, BlastTabular()));
 
     unsigned count = 0;
     if ((path == PLUS_HEADER_DEFAULTS) || (path == LEGACY_HEADER_DEFAULTS))
     {
-        while (onMatch(it, BlastTabular()))
+        while (onMatch(context, BlastTabular()))
         {
 //             if (defaults) // skipMatch with verification
 //                 skipMatch(it, context, BlastTabular());
@@ -185,13 +186,13 @@ void _test_blast_read_tabular_match(std::string const & path,
         SEQAN_ASSERT_EQ(count, 16u);
 
         // back on header
-        SEQAN_ASSERT(!onMatch(it, BlastTabular()));
+        SEQAN_ASSERT(!onMatch(context, BlastTabular()));
     }
     else
     {
         for (int i = 0; i < 16; ++i)
         {
-            SEQAN_ASSERT(onMatch(it, BlastTabular()));
+            SEQAN_ASSERT(onMatch(context, BlastTabular()));
 //             if (defaults) // skipMatch with verification
 //                 skipMatch(it, context, BlastTabular());
 //             else
@@ -199,7 +200,8 @@ void _test_blast_read_tabular_match(std::string const & path,
         }
     }
 
-    skipUntilMatch(it, BlastTabular());
+    while (!onMatch(context, BlastTabular()))
+        goNextLine(context, it, BlastTabular());
 
     // skipMatch without verification
     skipMatch(it, context, BlastTabular());
@@ -317,7 +319,7 @@ SEQAN_DEFINE_TEST(test_blast_read_match_customfields_tabular_with_header)
 }
 
 inline void
-_test_blast_read_tabular_match_columns(std::string const & path)
+_test_blast_read_tabular_match_lowlevel(std::string const & path)
 {
     std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + std::string(path);
 
@@ -329,13 +331,13 @@ _test_blast_read_tabular_match_columns(std::string const & path)
 //     BlastIOContext context;
 
     // first line is header
-    SEQAN_ASSERT(!onMatch(it, BlastTabular()));
+    SEQAN_ASSERT(!onMatch(it, BlastTabularLL()));
 
     // skip headers and comment lines
-    skipUntilMatch(it, BlastTabular());
+    skipUntilMatch(it, BlastTabularLL());
 
     // now we should be onMatch
-    SEQAN_ASSERT(onMatch(it, BlastTabular()));
+    SEQAN_ASSERT(onMatch(it, BlastTabularLL()));
 
     CharString  field1;
     std::string field2;
@@ -350,7 +352,7 @@ _test_blast_read_tabular_match_columns(std::string const & path)
     double      field11;
     double      field12;
 
-    readMatch0(it, BlastTabular(), field1, field2, field3, field4, field5, field6,
+    readMatch(it, BlastTabularLL(), field1, field2, field3, field4, field5, field6,
                field7, field8, field9, field10, field11, field12);
 
     SEQAN_ASSERT_EQ(field1,          "SHAA004TF");
@@ -370,7 +372,7 @@ _test_blast_read_tabular_match_columns(std::string const & path)
     SEQAN_ASSERT_LEQ(std::abs(field12 - 108), 1e-3);
 
     // SEQAN_TRY reading less coluumns than are present
-    readMatch0(it, BlastTabular(), field1, field2, field3, field4, field5, field6,
+    readMatch(it, BlastTabularLL(), field1, field2, field3, field4, field5, field6,
                field7, field8, field9, field10);
 
     SEQAN_ASSERT_EQ(field1,          "SHAA004TF");
@@ -388,11 +390,11 @@ _test_blast_read_tabular_match_columns(std::string const & path)
     SEQAN_ASSERT_EQ(field10,         107u);
 
     // read remaining matches
-    while (onMatch(it, BlastTabular()))
-        readMatch0(it, BlastTabular(), field1); // only one field
+    while (onMatch(it, BlastTabularLL()))
+        readMatch(it, BlastTabularLL(), field1); // only one field
 
     // go to last record with matches
-    skipUntilMatch(it, BlastTabular());
+    skipUntilMatch(it, BlastTabularLL());
 
     // goto second (last) match
     skipLine(it);
@@ -402,8 +404,8 @@ _test_blast_read_tabular_match_columns(std::string const & path)
     SEQAN_TRY
     {
         // no strings here to take the strings
-        readMatch0(it, BlastTabular(), field3, field4, field5, field6, field7, field8, field9, field10, field11,
-                   field12);
+        readMatch(it, BlastTabularLL(), field3, field4, field5, field6, field7, field8, field9, field10, field11,
+                  field12);
     } SEQAN_CATCH (BadLexicalCast const & e)
     {
         exceptComment = e.what();
@@ -416,13 +418,13 @@ _test_blast_read_tabular_match_columns(std::string const & path)
     ifstream.close();
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_match_customcolumns_tabular)
+SEQAN_DEFINE_TEST(test_blast_read_match_lowlevel_tabular)
 {
     // this testsBlastTabular#readMatch(),BlastTabular#skipMatch() and
     //BlastTabular#skipUntilMatch
-    _test_blast_read_tabular_match_columns(PLUS_HEADER_DEFAULTS);
+    _test_blast_read_tabular_match_lowlevel(PLUS_HEADER_DEFAULTS);
     // basic match reading should work between plus and legacy
-    _test_blast_read_tabular_match_columns(LEGACY_HEADER_DEFAULTS);
+    _test_blast_read_tabular_match_lowlevel(LEGACY_HEADER_DEFAULTS);
 }
 
 inline void
@@ -458,14 +460,18 @@ _test_blast_read_tabular_with_header(bool custom = false)
 
     auto it = directionIterator(ifstream, Input());
 
-    // first line is header
-    SEQAN_ASSERT(!onMatch(it, BlastTabular()));
-
     BlastRecord<> r;
     BlastIOContext<> context;
 
+    // read header of file
+    readHeader(context, it, BlastTabular());
+    SEQAN_ASSERT(getBlastTabularSpec(context) == BlastTabularSpec::HEADER);
+
+    // first line is record header
+    SEQAN_ASSERT(!onMatch(context, BlastTabular()));
+
     // back on header
-    SEQAN_ASSERT(!onMatch(it, BlastTabular()));
+    SEQAN_ASSERT(!onMatch(context, BlastTabular()));
 
     readRecordHeader(r, it, context, BlastTabular());
 
@@ -540,7 +546,7 @@ _test_blast_read_tabular_with_header(bool custom = false)
     SEQAN_ASSERT_EQ(length(context.conformancyErrors),
                     0u);
 
-    while (onMatch(it, BlastTabular()))
+    while (onMatch(context, BlastTabular()))
         skipMatch(it, context, BlastTabular());
 
     readRecordHeader(r, it, context, BlastTabular());
@@ -576,7 +582,7 @@ _test_blast_read_tabular_with_header(bool custom = false)
     SEQAN_ASSERT_EQ(length(context.conformancyErrors),
                     0u);
 
-    while (onMatch(it, BlastTabular()))
+    while (onMatch(context, BlastTabular()))
         skipMatch(it, context, BlastTabular());
 
     readRecordHeader(r, it, context, BlastTabular());
@@ -613,7 +619,12 @@ _test_blast_read_tabular_with_header(bool custom = false)
     skipRecordHeader(it, context, BlastTabular());
     skipRecordHeader(it, context, BlastTabular());
     skipRecordHeader(it, context, BlastTabular());
-    SEQAN_ASSERT(onMatch(it, BlastTabular()));
+    SEQAN_ASSERT(onMatch(context, BlastTabular()));
+
+    // bottom of file
+    readFooter(context, it, BlastTabular());
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    0u);
 
     ifstream.close();
 }
@@ -638,15 +649,16 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
 
     auto it = directionIterator(ifstream, Input());
 
-    // first line is header
-    SEQAN_ASSERT(!onMatch(it, BlastTabular()));
-
     BlastRecord<> r;
     CharString fieldStringsConcat;
     BlastIOContext<> context;
 
+    // read header of file
+    readHeader(context, it, BlastTabular());
+    SEQAN_ASSERT(getBlastTabularSpec(context) == BlastTabularSpec::HEADER);
+
     // back on header
-    SEQAN_ASSERT(!onMatch(it, BlastTabular()));
+    SEQAN_ASSERT(!onMatch(context, BlastTabular()));
 
     // all parameters, strict == false
     readRecordHeader(r, it, context, BlastTabular());
@@ -701,7 +713,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     SEQAN_ASSERT_EQ(length(context.otherLines),
                     0u);
 
-    while (onMatch(it, BlastTabular()))
+    while (onMatch(context, BlastTabular()))
         skipMatch(it, context, BlastTabular());
 
     readRecordHeader(r, it, context, BlastTabular());
@@ -720,7 +732,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     SEQAN_ASSERT_EQ(length(context.otherLines),
                     0u);
 
-    while (onMatch(it, BlastTabular()))
+    while (onMatch(context, BlastTabular()))
         skipMatch(it, context, BlastTabular());
 
     readRecordHeader(r, it, context, BlastTabular());
@@ -747,6 +759,11 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     SEQAN_ASSERT_EQ(context.conformancyErrors[0],
                     "No or multiple database lines present.");
 
+    // bottom of file
+    readFooter(context, it, BlastTabular());
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    0u);
+
     // test skipRecordHeader
     ifstream.close();
     ifstream.open(toCString(inPath));
@@ -757,7 +774,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     skipRecordHeader(it, context, BlastTabular());
     skipRecordHeader(it, context, BlastTabular());
     skipRecordHeader(it, context, BlastTabular());
-    SEQAN_ASSERT(onMatch(it, BlastTabular()));
+    SEQAN_ASSERT(onMatch(context, BlastTabular()));
 
     ifstream.close();
 }
@@ -805,8 +822,12 @@ void _test_blast_read_tabular_record_noheader(bool const defaults)
         };
     }
 
+    // read header of file
+    readHeader(context, it, BlastTabular());
+    SEQAN_ASSERT(getBlastTabularSpec(context) == BlastTabularSpec::NO_HEADER);
+
     // first line is onMatch
-    SEQAN_ASSERT(onMatch(it, BlastTabular()));
+    SEQAN_ASSERT(onMatch(context, BlastTabular()));
 
     readRecord(r, it, context, BlastTabular());
 
@@ -848,6 +869,10 @@ void _test_blast_read_tabular_record_noheader(bool const defaults)
             SEQAN_ASSERT_EQ(m.qFrameShift, -2);
     }
 
+    // bottom of file
+    readFooter(context, it, BlastTabular());
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    0u);
     ifstream.close();
 }
 
@@ -860,51 +885,6 @@ SEQAN_DEFINE_TEST(test_blast_read_record_customfields_tabular)
 {
     _test_blast_read_tabular_record_noheader(false);
 }
-
-//     typedef BlastFormat<BlastFormatFile::TABULAR,
-//                         BlastFormatProgram::BLASTX,
-//                         BlastFormatGeneration::BLAST_LEGACY> BlastTabular;
-//
-//     std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) +
-//                          std::string(NOHEADER_DEFAULTS);
-//
-//     std::ifstream ifstream(toCString(inPath),
-//                            std::ios_base::in | std::ios_base::binary);
-//     SEQAN_ASSERT(ifstream.is_open());
-//
-//     auto it = directionIterator(ifstream, Input());
-//
-//     BlastRecord<> r;
-//     BlastIOContext context;
-//
-//     // first line is match
-//     SEQAN_ASSERT(onMatch(it, BlastTabular()));
-//
-//     readRecord(r, it, context, BlastTabular());
-//     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF");
-//     SEQAN_ASSERT_EQ(length(r.matches),  17u);
-//
-//     for (auto const & m : r.matches)
-//     {
-//         SEQAN_ASSERT_EQ(m.qId,          "SHAA004TF"); // truncated at first space
-//         // check bitscore as an example field that is both in default and custom
-//         SEQAN_ASSERT_GEQ(m.bitScore,    40.8);
-//         SEQAN_ASSERT_LEQ(m.bitScore,    108.0);
-//     }
-//
-//     readRecord(r, it, context, BlastTabular());
-//     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR");
-//     SEQAN_ASSERT_EQ(length(r.matches),  2u);
-//
-//     for (auto const & m : r.matches)
-//     {
-//         SEQAN_ASSERT_EQ(m.qId,          "SHAA004TR"); // truncated at first space
-//         // check bitscore as an example field that is both in default and custom
-//         SEQAN_ASSERT_EQ(m.bitScore,    152.0);
-//     }
-//
-//     ifstream.close();
-// }
 
 void _test_blast_read_record_withheader(const char * path, bool const defaults, bool const islegacy)
 {
@@ -946,8 +926,13 @@ void _test_blast_read_record_withheader(const char * path, bool const defaults, 
             TField::Enum::BIT_SCORE
         }
     };
+
+    // read header of file
+    readHeader(context, it, BlastTabular());
+    SEQAN_ASSERT(getBlastTabularSpec(context) == BlastTabularSpec::HEADER);
+
     // first line is header
-    SEQAN_ASSERT(!onMatch(it, BlastTabular()));
+    SEQAN_ASSERT(!onMatch(context, BlastTabular()));
 
     // fieldsList as out-parameter, but no fields, because no matches
     readRecord(r, it, context, BlastTabular());
@@ -1061,6 +1046,11 @@ void _test_blast_read_record_withheader(const char * path, bool const defaults, 
     SEQAN_ASSERT_EQ(context.conformancyErrors[0],
                     "No or multiple database lines present.");
 
+    // bottom of file
+    readFooter(context, it, BlastTabular());
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    0u);
+
     ifstream.close();
 }
 
@@ -1079,63 +1069,6 @@ SEQAN_DEFINE_TEST(test_blast_read_record_tabular_with_header_legacy)
     _test_blast_read_record_withheader(LEGACY_HEADER_DEFAULTS, true, true);
 
 }
-//  {
-//     std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + LEGACY_HEADER_DEFAULTS;
-//
-//     std::ifstream ifstream(toCString(inPath),
-//                            std::ios_base::in | std::ios_base::binary);
-//     SEQAN_ASSERT(ifstream.is_open());
-//
-//     auto it = directionIterator(ifstream, Input());
-//
-//     BlastRecord<> r;
-//     std::string dbName;
-//     BlastIOContext context;
-//
-//     // first line is header
-//     SEQAN_ASSERT(!onMatch(it, BlastTabular()));
-//
-//     readRecord(r, dbName, it, context, BlastTabular());
-//     SEQAN_ASSERT_EQ(r.qId,              "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
-//     SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
-//     SEQAN_ASSERT_EQ(length(r.matches),  0u);
-//
-//     readRecord(r, dbName, it, context, BlastTabular());
-//     SEQAN_ASSERT_EQ(r.qId,              "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
-//     SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
-//     SEQAN_ASSERT_EQ(length(r.matches),  0u);
-//
-//     readRecord(r, dbName, it, context, BlastTabular());
-//     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
-//     SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
-//     SEQAN_ASSERT_EQ(length(r.matches),  17u);
-//
-//     for (auto const & m : r.matches)
-//     {
-//         SEQAN_ASSERT_EQ(m.qId,          "SHAA004TF"); // truncated at first space
-//         // check bitscore as an example field that is both in default and custom
-//         SEQAN_ASSERT_GEQ(m.bitScore,    40.8);
-//         SEQAN_ASSERT_LEQ(m.bitScore,    108.0);
-//     }
-//
-//     readRecord(r, dbName, it, context, BlastTabular());
-//     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
-//     SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
-//     SEQAN_ASSERT_EQ(length(r.matches),  2u);
-//
-//     for (auto const & m : r.matches)
-//     {
-//         SEQAN_ASSERT_EQ(m.qId,          "SHAA004TR"); // truncated at first space
-//         // check bitscore as an example field that is both in default and custom
-//         SEQAN_ASSERT_EQ(m.bitScore,    152.0);
-//     }
-//
-//     readRecord(r, dbName, it, context, BlastTabular());
-//     SEQAN_ASSERT_EQ(r.qId,              "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
-//     SEQAN_ASSERT_EQ(dbName,           ""); // couldn't be detected (typo)
-//     SEQAN_ASSERT_EQ(length(r.matches),  0u);
-// }
-
 
 SEQAN_DEFINE_TEST(test_blast_read_formatted_file_tabular)
 {
@@ -1147,6 +1080,10 @@ SEQAN_DEFINE_TEST(test_blast_read_formatted_file_tabular)
     guessFormat(fileIn);
     SEQAN_ASSERT(getBlastTabularSpec(context(fileIn)) == BlastTabularSpec::NO_HEADER);
     // legacy format or not and BlastProgram are detected upon reading records
+
+    // read header of file
+    readHeader(fileIn);
+    SEQAN_ASSERT(getBlastTabularSpec(context(fileIn)) == BlastTabularSpec::NO_HEADER);
 
     BlastRecord<> r;
 
@@ -1173,6 +1110,11 @@ SEQAN_DEFINE_TEST(test_blast_read_formatted_file_tabular)
         // check bitscore as an example field that is both in default and custom
         SEQAN_ASSERT_EQ(m.bitScore,    152.0);
     }
+
+    // bottom of file
+    readFooter(fileIn);
+    SEQAN_ASSERT_EQ(length(context(fileIn).conformancyErrors),
+                    0u);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_formatted_file_tabular_with_header)
@@ -1185,6 +1127,10 @@ SEQAN_DEFINE_TEST(test_blast_read_formatted_file_tabular_with_header)
     guessFormat(fileIn);
     SEQAN_ASSERT(getBlastTabularSpec(context(fileIn)) == BlastTabularSpec::HEADER);
     // legacy format or not and BlastProgram are detected upon reading records
+
+    // read header of file
+    readHeader(fileIn);
+    SEQAN_ASSERT(getBlastTabularSpec(context(fileIn)) == BlastTabularSpec::NO_HEADER);
 
     BlastRecord<> r;
 
@@ -1227,4 +1173,10 @@ SEQAN_DEFINE_TEST(test_blast_read_formatted_file_tabular_with_header)
     SEQAN_ASSERT_EQ(r.qId,              "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
     SEQAN_ASSERT_EQ(context(fileIn).dbName,""); // couldn't be detected (typo)
     SEQAN_ASSERT_EQ(length(r.matches),  0u);
+
+    // bottom of file
+    readFooter(fileIn);
+    SEQAN_ASSERT_EQ(length(context(fileIn).conformancyErrors),
+                    0u);
+
 }

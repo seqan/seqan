@@ -54,25 +54,30 @@ namespace seqan
  * @headerfile <seqan/blast.h>
  * @brief Support for Blast Tabular file formats (with and without headers)
  *
- * This tag is part of the support for reading and writing NCBI Blast compatible <b>tabular</b> files, both with and
- * without headers. These are the formats that are available in legacy Blast (<tt>blastall</tt> executable) with the
- * parameters <tt>-m 8</tt> and <tt>-m 9</tt> (with headers) and in BLAST+ (<tt>blastx</tt>, <tt>blastn</tt>...) with
+ * This tag is part of the
+ *
+ * There are three blast format related tags in SeqAn:
+ *
+ * <li> @link BlastReport @endlink with the FormattedFile output specialization @link BlastReportOut @endlink</li>
+ * <li> @link BlastTabular @endlink with the FormattedFile output and input specializations
+ * @link BlastTabularOut @endlink and @link BlastTabularIn @endlink</li>
+ * <li> @link BlastTabularLL @endlink which provides light-weight, but very basic tabular IO </li>
+ *
+ * This is the second tag, it offers <b>high-level</b> support for reading and writing NCBI Blast compatible
+ * <b>tabular</b> files, both with and without headers. These are the formats that are available in legacy Blast
+ * (<tt>blastall</tt> executable) with the parameters <tt>-m 8</tt> and <tt>-m 9</tt> (with headers)
+ * and in BLAST+ (<tt>blastx</tt>, <tt>blastn</tt>...) with
  * the parameters <tt>-outfmt 6</tt> and <tt>-outfmt 7</tt> respectively.
  *
- * See @link BlastTabularOut @endlink for high level file-writing support and @link BlastTabularIn @endlink for
- * high level file-reading support. Please consult the documentation for @link BlastIOContext @endlink to understand
- * the different options you have with these formats.
+ * Please consult the documentation for @link BlastIOContext @endlink to understand
+ * the different options you have with this format.
  *
- * For very basic tabular IO there are also @link BlastTabular#writeMatch0 @endlink and
- * @link BlastTabular#readMatch0 @endlink which require neither contexts nor matches or records, but that also
- * don't do many of the transformations that you would want.
+ * For very basic tabular IO there is the third tag, @link BlastTabularLL @endlink. *
  *
  * The reference Blast implementation used for developing the SeqAn support is NCBI Blast+ 2.2.26 and
  * NCBI Blast 2.2.26 for the legacy support.
  *
- * SeqAn also supports writing the default blast output format, see @link BlastReport @endlink.
- *
- * @section High-level file reading
+ * @section Input
  *
  * If you are interested in iteratively reading all records from a blast tabular file, you just need to call
  * readRecord:
@@ -91,23 +96,8 @@ namespace seqan
  * While @link BlastTabular#readHeader @endlink and @link BlastTabular#readFooter @endlink are defined, they are no-ops
  * and all information can be extracted by calling readRecord.
  *
- * @section Low-level file reading
- *
- * If you are not really interested in processing the records and just want to parse the matches for certain
- * information, you can use the low-level interface of
- * @link BlastTabular#readMatch0 @endlink and @link BlastTabular#skipUntilMatch @endlink. It requires no extra
- * data-structures, but it is otherwise very limited.
- *
- * The following example program extracts the list of matching query-subject-pairs from a blast tabular file and prints
- * it to std::out:
- *
- * @include demos/blast/blast_in_lowlevel.cpp
- *
- * The output looks like this:
- *
- * @include demos/blast/blast_in_lowlevel.out
- *
- * @section High-level file writing
+
+ * @section Output
  *
  * High-level file writing consists of three different calls:
  * <ul>
@@ -127,11 +117,6 @@ namespace seqan
  *
  * Strictly speaking the writeHeader call is not required for BlastTabular, but for consistency with other (blast)
  * formats it is recommended. The example in @link BlastTabularOut @endlink illustrates that.
- *
- * @section Low-level file writing
- *
- * Low-level file writing is also similar to low-level file reading. See the tutorial TODO for a meaningful combination
- * of both.
  *
  */
 struct BlastTabular_;

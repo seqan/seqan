@@ -102,21 +102,6 @@ inline bool guessFormat(FormattedFile<BlastTabular, Output, TSpec> &)
 }
 
 // ----------------------------------------------------------------------------
-// Function _firstOcc
-// ----------------------------------------------------------------------------
-
-template <typename TString>
-inline typename Size<TString>::Type
-_firstOcc(TString const & str, typename Value<TString>::Type const & val)
-{
-    typedef typename Size<TString>::Type S;
-    for (S s = 0; s < length(str); ++s)
-        if (value(str, s) == val)
-            return s;
-    return length(str);
-}
-
-// ----------------------------------------------------------------------------
 // Function _writeFieldLabels()
 // ----------------------------------------------------------------------------
 
@@ -571,68 +556,6 @@ writeMatch(TFwdIterator & stream,
            BlastTabular const & /*tag*/)
 {
     _writeFields(stream, context, match, BlastTabular());
-}
-
-// ----------------------------------------------------------------------------
-// Function _writeFields() or labels [no match object given]
-// ----------------------------------------------------------------------------
-
-template <typename TFwdIterator>
-inline void
-_writeFields(TFwdIterator & /**/,
-             BlastTabular const & /*tag*/)
-{
-}
-
-template <typename TFwdIterator, typename TField, typename... TFields>
-inline void
-_writeFields(TFwdIterator & stream,
-             BlastTabular const & /*tag*/,
-             TField const & field1,
-             TFields const & ... fields)
-{
-    write(stream, '\t');
-    write(stream, field1);
-    _writeFields(stream, BlastTabular(), fields... );
-}
-
-/*!
- * @fn BlastTabular#writeMatch0
- * @headerfile seqan/blast.h
- * @brief Low-level file-writing for blast tabular formats
- * @signature void writeMatch0(stream, blastTabular, columns...)
- *
- * @section Remarks
- *
- * This is a very leight-weight alternative to @link BlastTabular#writeRecord @endlink. It doesn't require
- * @link BlastMatch @endlinkes, @link BlastRecord @endlinks or the use of @link FormattedFile @endlink.
- * It supports an arbitrary amount of and arbitrary typed columns to be printed.
- *
- * Use this only if you do not require headers and you are prepared to do all transformations on the data yourself,
- * i.e. this function does none of the match adjustments mentioned in @link BlastTabular#writeRecord @endlink.
- *
- * @param[in,out] stream       The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in]     blastTabular The @link BlastTabular @endlink tag.
- * @param[in]     columns...   Custom columns
- *
- * @throw IOError On low-level I/O errors.
- *
- * @see BlastRecord
- * @see BlastIOContext
- */
-
-// Function for arbitrary number and typed fields
-template <typename TFwdIterator, typename TField, typename... TFields>
-inline void
-writeMatch0(TFwdIterator & stream,
-            BlastTabular const & /*tag*/,
-            TField const & field1,
-            TFields const & ... fields)
-{
-    write(stream, field1);
-
-    _writeFields(stream, BlastTabular(), fields...);
-    write(stream, '\n');
 }
 
 // ----------------------------------------------------------------------------

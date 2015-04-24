@@ -61,6 +61,7 @@
 #include "blast/blast_statistics.h"
 #include "blast/blast_tabular_in.h"
 #include "blast/blast_tabular_out.h"
+#include "blast/blast_tabular_lowlevel.h"
 #include "blast/blast_report_out.h"
 
 #else //SEQAN_C++11_STANDARD

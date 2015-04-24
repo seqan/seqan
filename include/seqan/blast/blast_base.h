@@ -646,6 +646,21 @@ _untranslateSPositions(TPos & effectiveStart,
         _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, False(), False());
 }
 
+// ----------------------------------------------------------------------------
+// Function _firstOcc
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+inline typename Size<TString>::Type
+_firstOcc(TString const & str, typename Value<TString>::Type const & val)
+{
+    typedef typename Size<TString>::Type S;
+    for (S s = 0; s < length(str); ++s)
+        if (value(str, s) == val)
+            return s;
+    return length(str);
+}
+
 } // namespace seqan
 
 #endif // header guard
