@@ -286,6 +286,8 @@ inline bool find(TFinder & finder, Pattern<TNeedle, SetHorspool> & me) {
             else clear(me.data_endPositions);
             me.data_lastState = current;
             finder -= me.data_needleLength;
+            _setFinderLength(finder, me.data_needleLength+1);
+            _setFinderEnd(finder, position(finder)+length(finder));            
             return true;
         }
         oldMatch = false;

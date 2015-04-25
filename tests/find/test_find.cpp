@@ -1274,9 +1274,7 @@ SEQAN_DEFINE_TEST(test_find_online_multi_MultipleShiftAnd) {
 
 
 SEQAN_DEFINE_TEST(test_find_online_multi_SetHorspool) {
-    // TODO(holtgrew): Original comment: Does not compile.
-    // TODO(holtgrew): Crashes, but was commented out in original code.
-    // Test_OnlineAlgMulti<SetHorspool>(false);
+    Test_OnlineAlgMulti<SetHorspool>(false);
 }
 
 

@@ -33,14 +33,14 @@ The module ``<seqan/seq_io.h>`` allows to create and read such ``.fai`` index fi
 
     FASTA/FASTQ Meta Data and Sequence Ids
 
-    FASTA and FASTQ files have one meta data record for each sequence.
+    FASTA and FASTQ files have one metadata record for each sequence.
     This usually contains the sequence name but sometimes a lot of additional information is stored.
-    There is no consensus for the meta data.
+    There is no consensus for the metadata.
 
-    It is common, however, to store the identifier (*id*) of the sequence at the beginning of the meta data field before the first space.
-    The id is unique to the whole file and often identifies the associate sequence uniquely in a data base (see section Sequence Identifiers on the `Wikipedia FASTA format <http://en.wikipedia.org/wiki/FASTA_format>`_ page).
+    However, it is common to store the sequence identifier (*id*) at the beginning of the metadata field before the first space.
+    The id is unique to the whole file and often identifies the associated sequence uniquely in a database (see section Sequence Identifiers on the `Wikipedia FASTA format <http://en.wikipedia.org/wiki/FASTA_format>`_ page).
 
-    While not documented anywhere explicitely, **only the characters up to the first space are used as the identifiers** by widely used tools such as `BWA <http://bio-bwa.sourceforge.net/>`_.
+    While not documented anywhere explicitely, **only the characters up to the first space are used as identifiers** by widely used tools such as `BWA <http://bio-bwa.sourceforge.net/>`_.
     Only the identifier is carried over into files generated from the input files (BWA uses the sequence id from the genome FASTA to identify the contig/chromosome and the read id as the read name in the SAM output).
 
 How Does It Work?

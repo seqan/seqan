@@ -1597,6 +1597,7 @@ concat(StringSet<TString, TSpec> const & constMe)
     return me.concat;
 }
 
+// this function is deprecated and the return value is very ungeneric, e.g. doesn't work if strings are std::string
 template <typename TStrings, typename TDelim>
 inline String<typename Value<typename Value<TStrings>::Type>::Type>
 concat(TStrings const & strings, TDelim const & delimiter, bool ignoreEmptyStrings = false)
@@ -1774,57 +1775,52 @@ operator!=(StringSet<TLeftString, TLeftSpec> const & left,
 }
 
 // ----------------------------------------------------------------------------
-// Function write(StringSet)
+// Function write() (works on any container of container)
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TSequence, typename TSpec>
-inline void
-write(TTarget &target, StringSet<TSequence, TSpec> &seqs)
+template <typename TTarget, typename TSequences, typename TDelim>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<ContainerConcept<TSequences> >,
+                                Is<ContainerConcept<typename Value<TSequences>::Type > > >, void)
+write(TTarget & target, TSequences const & seqs, TDelim const & delimiter)
 {
-    typedef typename Size<StringSet<TSequence, TSpec> >::Type TSize;
-    for (TSize i = 0; i < length(seqs); ++i)
+    typedef typename Iterator<TSequences const>::Type TSourceIt;
+
+    if (SEQAN_UNLIKELY(empty(seqs)))
+        return;
+    for (TSourceIt it = begin(seqs, Standard()), itBack = (end(seqs, Standard()) - 1); it != itBack; ++it)
     {
-        write(target, seqs[i]);
-        writeValue(target, '\n');
+        write(target, *it);
+        write(target, delimiter);
     }
+    write(target, back(seqs)); // no delimiter after last
 }
 
-template <typename TTarget, typename TSequence, typename TSpec>
-inline void
-write(TTarget &target, StringSet<TSequence, TSpec> const &seqs)
+template <typename TTarget, typename TSequences>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<ContainerConcept<TSequences> >,
+                                Is<ContainerConcept<typename Value<TSequences>::Type > > >, void)
+write(TTarget & target, TSequences const & seqs)
 {
-    typedef typename Size<StringSet<TSequence, TSpec> const>::Type TSize;
-    for (TSize i = 0; i < length(seqs); ++i)
-    {
-        write(target, seqs[i]);
-        writeValue(target, '\n');
-    }
+    write(target, seqs, '\n');
 }
 
-template <typename TTarget, typename TSequence, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TSequence> >, void)
-write(TTarget &target, String<TSequence, TSpec> &seqs)
-{
-    typedef typename Size<String<TSequence, TSpec> >::Type TSize;
-    for (TSize i = 0; i < length(seqs); ++i)
-    {
-        write(target, seqs[i]);
-        writeValue(target, '\n');
-    }
-}
+// ----------------------------------------------------------------------------
+// Function append() (works on any container of container)
+// ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TSequence, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TSequence> >, void)
-write(TTarget &target, String<TSequence, TSpec> const &seqs)
+template <typename TSequences1, typename TSequences2, typename TExpand >
+inline SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSequences1> >,
+                                    Is<ContainerConcept<typename Value<TSequences1>::Type > > >,
+                                And<Is<ContainerConcept<TSequences2> >,
+                                    Is<ContainerConcept<typename Value<TSequences2>::Type > > > >, void)
+append(TSequences1 & me, TSequences2 const & obj, Tag<TExpand>)
 {
-    typedef typename Size<String<TSequence, TSpec> const>::Type TSize;
-    for (TSize i = 0; i < length(seqs); ++i)
-    {
-        write(target, seqs[i]);
-        writeValue(target, '\n');
-    }
-}
+    typedef typename Iterator<TSequences2 const>::Type TSourceIt;
 
+    typename Size<typename Value<TSequences1>::Type>::Type oldLength = length(me);
+    resize(me, oldLength + length(obj), Tag<TExpand>());
+    for (TSourceIt it = begin(obj, Standard()), itEnd = end(obj, Standard()); it != itEnd; ++it)
+        assignValue(me, oldLength++, *it);
+}
 
 }  // namespace seqan
 

@@ -193,12 +193,14 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     // Setup performance options.
     addSection(parser, "Performance Options");
 
-#ifdef _OPENMP
     addOption(parser, ArgParseOption("t", "threads", "Specify the number of threads to use.", ArgParseOption::INTEGER));
     setMinValue(parser, "threads", "1");
+#ifdef _OPENMP
     setMaxValue(parser, "threads", "2048");
-    setDefaultValue(parser, "threads", options.threadsCount);
+#else
+    setMaxValue(parser, "threads", "1");
 #endif
+    setDefaultValue(parser, "threads", options.threadsCount);
 
     addOption(parser, ArgParseOption("rb", "reads-batch", "Specify the number of reads to process in one batch.",
                                      ArgParseOption::INTEGER));
@@ -283,10 +285,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOptionValue(options.libraryError, parser, "library-error");
     getOptionValue(options.libraryOrientation, parser, "library-orientation", options.libraryOrientationList);
 
-#ifdef _OPENMP
     getOptionValue(options.threadsCount, parser, "threads");
-#endif
-
     getOptionValue(options.readsCount, parser, "reads-batch");
 
     if (isSet(parser, "verbose")) options.verbose = 1;
@@ -296,7 +295,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     options.version = getVersion(parser);
 
     // Get command line.
-    for (int i = 1; i < argc; i++)
+    for (int i = 0; i < argc; i++)
     {
         append(options.commandLine, argv[i]);
         appendValue(options.commandLine, ' ');
