@@ -212,19 +212,18 @@ onMatch(BlastIOContext<TScore, TString, p, h> & context,
 // Function onRecord()
 // ----------------------------------------------------------------------------
 
-//TODO document publicly
 /*!
  * @fn BlastTabular#onRecord
- * @brief Returns whether the iterator is on the beginning of a match line.
- *
+ * @brief Returns whether the currently buffered line looks like the start of a record.
  * @signature bool onRecord(context, blastTabular)
+ * @headerfile seqan/blast.h
  *
- * @param[in] iter    An input iterator over a stream or any fwd-iterator over a string
- * @param[in] blastTabular     @link BlastTabular @endlink specialization
+ * @param[in] context      An input iterator over a stream or any fwd-iterator over a string
+ * @param[in] blastTabular The @link BlastTabular @endlink tag.
  *
  * @throw IOError On low-level I/O errors.
  *
- * @return    true or false
+ * @return bool true or false
  */
 
 template <typename TScore,
@@ -240,6 +239,27 @@ onRecord(BlastIOContext<TScore, TString, p, h> & context,
 
     //      RecordHeader                                  Footer
     return (startsWith(context._lineBuffer, "#") && (!startsWith(context._lineBuffer, "# BLAST processed ")));
+}
+
+/*!
+ * @fn BlastTabularIn#onRecord
+ * @brief Returns whether the currently buffered line looks like the start of a record.
+ * @signature bool onRecord(blastTabularIn);
+ * @headerfile seqan/blast.h
+ *
+ * @param[in,out] blastTabularIn A @link BlastTabularIn @endlink formattedFile.
+ *
+ * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
+ *
+ * @return bool true or false
+ */
+
+template <typename TContext>
+inline bool
+onRecord(BlastTabularIn<TContext> & formattedFile)
+{
+    return onRecord(formattedFile.iter, BlastTabular());
 }
 
 // ----------------------------------------------------------------------------
@@ -344,7 +364,6 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
 
         if (startsWith(context._lineBuffer, "BLAST") || startsWith(context._lineBuffer, "TBLAST"))
         {
-
             // last line of file
             if (SEQAN_UNLIKELY(startsWith(context._lineBuffer, "# BLAST processed ") && !context.legacyFormat))
             {
@@ -366,19 +385,19 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
         else if (startsWith(context._lineBuffer, "Query:"))
         {
             ++queryLinePresent;
-            assign(r.qId, suffix(context._lineBuffer, 6));
+            assign(r.qId, suffix(context._lineBuffer, 7));
 
         }
         else if (startsWith(context._lineBuffer, "Database:"))
         {
             ++dbLinePresent;
-            assign(context.dbName, suffix(context._lineBuffer, 9));
+            assign(context.dbName, suffix(context._lineBuffer, 10));
         }
         else if (startsWith(context._lineBuffer, "Fields:"))
         {
             ++fieldsLinePresent;
             _strSplit(context.fieldsAsStrings,
-                      static_cast<TString>(suffix(context._lineBuffer, 7)),
+                      static_cast<TString>(suffix(context._lineBuffer, 8)),
                       std::regex(", "));
 
             if (context.legacyFormat)
@@ -457,7 +476,9 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
 
         goNextLine(context, iter, BlastTabular());
 
-    } while (startsWith(context._lineBuffer, "#") && !startsWith(context._lineBuffer, "# Blast")); // next header
+    } while (startsWith(context._lineBuffer, "#") &&           // still on record header
+             !startsWith(context._lineBuffer, "# BLAST") &&    // start of next record header
+             !startsWith(context._lineBuffer, "# TBLAST"));
 
     if (getBlastProgram(context) == BlastProgram::UNKNOWN)
         appendValue(context.conformancyErrors,
@@ -946,27 +967,13 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
     TString curIdPlusTab = blastRecord.qId;
     appendValue(curIdPlusTab, '\t');
 
-    std::vector<typename BlastMatchField<>::Enum> fieldListMinusFirst;
-    if (context.fields[0] == BlastMatchField<>::Enum::STD)
+    if ((context.fields[0] != BlastMatchField<>::Enum::STD) &&
+        (context.fields[0] != BlastMatchField<>::Enum::Q_SEQ_ID))
     {
-        fieldListMinusFirst = BlastMatchField<>::_defaultsMinusFirst;
-        if (length(context.fields) > 1)
-            fieldListMinusFirst.insert(std::end(fieldListMinusFirst),
-                                       std::begin(context.fields) + 1,
-                                       std::end(context.fields));
-    }
-    else if (context.fields[0] == BlastMatchField<>::Enum::Q_SEQ_ID)
-    {
-        assign(fieldListMinusFirst, suffix(context.fields, 1));
-    } else
-    {
-        SEQAN_FAIL("readRecord interface on header-less format with custom "
+        SEQAN_FAIL("ERROR: readRecord interface on header-less format with custom "
                    "fields not supported, unless first custom field is "
-                   "Q_SEQ_ID. Use the readMatch interface instead.");
+                   "Q_SEQ_ID. Use the lowlevel readMatch interface instead.");
     }
-
-    // use fieldListMinusFirst
-    context.fields.swap(fieldListMinusFirst);
 
     while ((!atEnd(context, iter, BlastTabular())) && onMatch(context, BlastTabular()))
     {
@@ -977,9 +984,6 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
         if (!startsWith(context._lineBuffer, curIdPlusTab)) // next record reached
             break;
     }
-
-    // revert to original behaviour
-    context.fields.swap(fieldListMinusFirst);
 
     if (length(blastRecord.matches) == 0)
         SEQAN_THROW(ParseError("No Matches could be read."));
@@ -1113,7 +1117,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
           BlastIOContext<TScore, TString, p, h> & context,
           BlastTabular const &)
 {
-    if (getBlastTabularSpec(context) == BlastTabularSpec::HEADER)
+    if (getBlastTabularSpec(context) == BlastTabularSpec::NO_HEADER)
         _readRecordNoHeader(blastRecord, iter, context, BlastTabular());
     else
         _readRecordWithHeader(blastRecord, iter, context, BlastTabular());
@@ -1242,14 +1246,16 @@ readFooter(BlastIOContext<TScore, TConString, p, h> & context,
     clear(context.fieldsAsStrings);
     clear(context.fields);
 
-    if (getBlastTabularSpec(context) == BlastTabularSpec::HEADER)
+    if ((getBlastTabularSpec(context) == BlastTabularSpec::HEADER) && !context.legacyFormat)
     {
         if (SEQAN_UNLIKELY(!startsWith(context._lineBuffer, "# BLAST processed")))
+        {
+            std::cout << "\"" << context._lineBuffer << "\"" << std::endl;
             SEQAN_FAIL("ERROR: Tried to read footer, but was not on footer.");
-
+        }
         clear(context._stringBuffer);
         auto it = seqan::begin(context._lineBuffer);
-        it += 16; // skip "BLAST processed "
+        it += 18; // skip "BLAST processed "
         readUntil(context._stringBuffer, it,  IsBlank());
 
         uint64_t numRecords = lexicalCast<uint64_t>(context._stringBuffer);
@@ -1259,10 +1265,10 @@ readFooter(BlastIOContext<TScore, TConString, p, h> & context,
             appendValue(context.conformancyErrors, "The file claims to contain more records than you read.");
         else if (context.numberOfRecords > numRecords)
             appendValue(context.conformancyErrors, "The file claims to contain less records than you read.");
-
-        if (!atEnd(iter))
-            appendValue(context.conformancyErrors, "Footer line read, but not at end of file.");
     }
+
+    if (!atEnd(iter))
+        appendValue(context.conformancyErrors, "Expected to be at end of file.");
 
     goNextLine(context, iter, BlastTabular());
 }

@@ -402,9 +402,6 @@ struct BlastMatchField
         }
     };
 
-    // used for reacordReading
-    static std::vector<Enum> const _defaultsMinusFirst;
-
     /*!
      * @var static_constexpr_char_const_*_const BlastMatchField::optionLabels[]
      * @brief An array of CStrings representing the command line parameter name of each field
@@ -652,22 +649,6 @@ constexpr bool const BlastMatchField<TVoidSpec>::implemented[45];
 
 template <typename TVoidSpec>
 constexpr std::array<typename BlastMatchField<TVoidSpec>::Enum const, 12> BlastMatchField<TVoidSpec>::defaults;
-
-template <typename TVoidSpec>
-std::vector<typename BlastMatchField<TVoidSpec>::Enum> const BlastMatchField<TVoidSpec>::_defaultsMinusFirst =
-{
-    BlastMatchField<TVoidSpec>::Enum::S_SEQ_ID,
-    BlastMatchField<TVoidSpec>::Enum::P_IDENT,
-    BlastMatchField<TVoidSpec>::Enum::LENGTH,
-    BlastMatchField<TVoidSpec>::Enum::MISMATCH,
-    BlastMatchField<TVoidSpec>::Enum::GAP_OPEN,
-    BlastMatchField<TVoidSpec>::Enum::Q_START,
-    BlastMatchField<TVoidSpec>::Enum::Q_END,
-    BlastMatchField<TVoidSpec>::Enum::S_START,
-    BlastMatchField<TVoidSpec>::Enum::S_END,
-    BlastMatchField<TVoidSpec>::Enum::E_VALUE,
-    BlastMatchField<TVoidSpec>::Enum::BIT_SCORE
-};
 
 // ============================================================================
 // Metafunctions and global const-expressions
