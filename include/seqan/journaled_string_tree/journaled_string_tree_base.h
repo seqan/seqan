@@ -48,115 +48,22 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Tag EnhancedDeltaMap
+// Class DefaultJstConfig
 // ----------------------------------------------------------------------------
 
-// TODO(rmaerker): Docu!
-struct EnhancedDeltaMap_;
-typedef Tag<EnhancedDeltaMap_> EnhancedDeltaMap;
-
-// ----------------------------------------------------------------------------
-// Class JstConfig
-// ----------------------------------------------------------------------------
-
-template <typename TReference>
+template <typename TSequence>
 struct DefaultJstConfig
 {
-    typedef typename Value<TReference>::Type TSnpValue;  // Value type of the SNPs.
-    typedef String<TSnpValue>                TInsValue;  // Value type of insertions.
-    typedef typename Size<TReference>::Type  TDelValue;  // Value type of deletions.
-    typedef Pair<TDelValue, TInsValue>       TSVValue;   // Value type of structural variants (combination of deletion and insertion).
+    typedef typename Size<TSequence>::Type  TDeltaPos;  // Position type for delta entry.
+    typedef typename Value<TSequence>::Type TSnpValue;  // Value type of the SNPs.
+    typedef String<TSnpValue>               TInsValue;  // Value type of insertions.
+    typedef typename Size<TSequence>::Type  TDelValue;  // Value type of deletions.
+    typedef Pair<TDelValue, TInsValue>      TSVValue;   // Value type of structural variants (combination of deletion and insertion).
 };
 
-// ----------------------------------------------------------------------------
-// Class JournaledStringTree
-// ----------------------------------------------------------------------------
-
-template <typename TReference, typename TSpec = Default, typename TConfig = DefaultJstConfig<TReference> >cp 
-class JournaledStringTree;
-
-// TODO(rmaerker): Should be in a different commit. Likely to change.
-//// ----------------------------------------------------------------------------
-//// Tag ContextPositionLeft
-//// ----------------------------------------------------------------------------
-//
-//struct ContextPositionLeft_;
-//typedef Tag<ContextPositionLeft_> ContextPositionLeft;
-//
-//
-//// ----------------------------------------------------------------------------
-//// Tag ContextPositionRight
-//// ----------------------------------------------------------------------------
-//
-//struct ContextPositionRight_;
-//typedef Tag<ContextPositionRight_> ContextPositionRight;
-//
-//// TODO(rmaerker): Need later to distinguish between extension (local search) and global search.
-////// ----------------------------------------------------------------------------
-////// Tag TraversePrefix
-////// ----------------------------------------------------------------------------
-////
-////struct TraversePrefix_;
-////typedef Tag<TraversePrefix_> TraversePrefix;
-////
-////// ----------------------------------------------------------------------------
-////// Tag TraverseInfix
-////// ----------------------------------------------------------------------------
-////
-////struct TraverseInfix_;
-////typedef Tag<TraverseInfix_> TraverseInfix;
-//
-//// ----------------------------------------------------------------------------
-//// Struct JstTraverserConfig
-//// ----------------------------------------------------------------------------
-//
-//template <typename TContextPosition = ContextPositionLeft, typename TRequireFullContext = True>
-//struct JstTraverserConfig;
-//
 // ============================================================================
 // Metafunctions
 // ============================================================================
-
-//// ----------------------------------------------------------------------------
-//// Metafunction GetState
-//// ----------------------------------------------------------------------------
-//
-//template <typename T>
-//struct GetState
-//{
-//    typedef Nothing Type;
-//};
-//
-//// ----------------------------------------------------------------------------
-//// Metafunction GetJstTraverser
-//// ----------------------------------------------------------------------------
-//
-//template <typename T>
-//struct GetJstTraverser;
-//
-//// ----------------------------------------------------------------------------
-//// Metafunction ContextIteratorPosition
-//// ----------------------------------------------------------------------------
-//
-//template <typename T>
-//struct ContextIteratorPosition
-//{
-//    typedef ContextPositionLeft Type;
-//};
-//
-//// ----------------------------------------------------------------------------
-//// Metafunction RequireFullContext
-//// ----------------------------------------------------------------------------
-//
-//template <typename T>
-//struct RequireFullContext : True{};
-//
-//// ----------------------------------------------------------------------------
-//// Metafunction ConfigureJstTraversal
-//// ----------------------------------------------------------------------------
-//
-//template <typename TAlgo, typename TType, typename TDirection>
-//struct ConfigureJstTraversal;
 
 // ============================================================================
 // Functions

@@ -137,6 +137,10 @@ public:
 
     DeltaMap() : _coverageSize(0)
     {}
+
+    template <typename TSize>
+    DeltaMap(TSize coverageSize) : _coverageSize(coverageSize)
+    {}
 };
 
 // ============================================================================
@@ -418,22 +422,22 @@ find(DeltaMap<TRefPos, TAlphabet, TSpec> const & deltaMap, TPosition refPosition
  * @headerfile <seqan/journaled_string_tree.h>
  * @brief Inserts a new delta event.
  *
- * @signature TIterator insert(deltaMap, key, delta, cov)
+ * @signature void insert(deltaMap, key, delta, cov)
+ * @signature void insert(it, key, delta, cov)
  *
  * @param[in,out] deltaMap  The map to insert the new delta operation for.
+ * @param[in,out] it        Iterator pointing to the insert position. Note that the element is inserted before this position.
  * @param[in]     refPos    The reference position to which the delta operation maps to.
  * @param[in]     deltaVal  The value of the delta operation.
  * @param[in]     cov       The coverage of the delta operation.
  * @param[in]     tag       A specifier to select the correct delta type. One of @link DeltaTypeTags @endlink.
- *
- * @return TIterator An iterator of type @link DeltaMap#Iterator @endlink pointing to the inserted element.
  *
  * @remark The map is implemented as a vector and the insertion time is linear in worst case.
  */
 
 template <typename TValue, typename TAlphabet, typename TSpec, typename TDeltaPos, typename TDeltaValue,
           typename TCoverage, typename TTag>
-inline typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Standard>::Type
+inline void
 insert(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
        TDeltaPos deltaPos,
        TDeltaValue const & deltaValue,
@@ -447,25 +451,42 @@ insert(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
     typedef typename Value<TDeltaMap>::Type TEntry;
     typedef typename DeltaRecord<TEntry>::Type TDeltaRecord;
 
-    // First update the coverage size of all delta events if necessary.
-    if (getCoverageSize(deltaMap) < length(coverage))
-        setCoverageSize(deltaMap, length(coverage));
-
-    TStorePos storePos = addDeltaValue(deltaMap._deltaStore, deltaValue, deltaType);
+    SEQAN_ASSERT_EQ(length(coverage), length(getCoverageSize(deltaMap)));  // Check valid coverage.
 
     if (empty(deltaMap))
     {
-        appendValue(deltaMap._entries, TEntry(deltaPos, TDeltaRecord(selectDeltaType(deltaType), storePos), coverage));
-        resize(deltaCoverage(begin(deltaMap, Standard())), getCoverageSize(deltaMap), false, Exact());
-        return begin(deltaMap, Standard());
+        appendValue(deltaMap._entries,
+                    TEntry(deltaPos, TDeltaRecord(selectDeltaType(deltaType),
+                                                  addDeltaValue(deltaMap._deltaStore, deltaValue, deltaType)), coverage));
     }
-    // First we need to search for the insert position.
-    TMapIterator mapIt = find(deltaMap, deltaPos);
-    insertValue(deltaMap._entries, mapIt - begin(deltaMap, Standard()),
-                TEntry(deltaPos, TDeltaRecord(selectDeltaType(deltaType), storePos), coverage));
-    resize(deltaCoverage(mapIt), getCoverageSize(deltaMap), false, Exact());
-    return mapIt;
+
+    insertValue(deltaMap._entries, find(deltaMap, deltaPos) - begin(deltaMap, Standard()),
+                TEntry(deltaPos, TDeltaRecord(selectDeltaType(deltaType),
+                                              addDeltaValue(deltaMap._deltaStore, deltaValue, deltaType)), coverage));
 }
+
+template <typename TValue, typename TAlphabet, typename TSpec, typename TDeltaPos, typename TDeltaValue,
+          typename TCoverage, typename TTag>
+inline void
+insert(typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Standard>::Type mapIt,
+       TDeltaPos deltaPos,
+       TDeltaValue const & deltaValue,
+       TCoverage const & coverage,
+       TTag const & deltaType)
+{
+    SEQAN_ASSERT_EQ(length(getCoverageSize(*mapIt._mapPtr)), length(coverage));  // Check valid coverage.
+    SEQAN_ASSERT_EQ(mapIt, find(*mapIt._mapPtr, deltaPos));  // Check valid insert position.
+
+    insertValue(mapIt.mapPtr->_entries, mapIt - begin(mapIt._mapPtr->deltaMap, Standard()),
+                TEntry(deltaPos, TDeltaRecord(selectDeltaType(deltaType),
+                addDeltaValue(mapIt._mapPtr->_deltaStore, deltaValue, deltaType)), coverage));
+}
+
+// ----------------------------------------------------------------------------
+// Function erase()
+// ----------------------------------------------------------------------------
+
+// TODO(rmaerker): Implement erase
 
 // ----------------------------------------------------------------------------
 // Function begin()                                                  [Standard]
@@ -726,7 +747,6 @@ setCoverageSize(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap, TSize const & new
         resize(deltaCoverage(it), newSize, Exact());
 }
 
-// TODO(rmaerker): Implement erase
 }
 
 #endif // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_MAP_H_
