@@ -54,8 +54,6 @@ namespace seqan
  * @headerfile <seqan/blast.h>
  * @brief Support for Blast Tabular file formats (with and without headers)
  *
- * This tag is part of the
- *
  * There are three blast format related tags in SeqAn:
  *
  * <li> @link BlastReport @endlink with the FormattedFile output specialization @link BlastReportOut @endlink</li>
@@ -79,24 +77,28 @@ namespace seqan
  *
  * @section Input
  *
- * If you are interested in iteratively reading all records from a blast tabular file, you just need to call
- * readRecord:
- *
+ * High-level file reading consists of three different calls:
  * <ul>
- * <li>while not @link StreamConcept#atEnd @endlink </li>
- * <ul>
- * <li> BlastTabular#@link BlastTabular#readRecord @endlink</li>
- * </ul>
+ * <li> BlastTabular#@link BlastTabular#readHeader @endlink </li>
+ * <li> while BlastTabular#@link BlastTabular#onRecord @endlink </li>
+ * <ul><li> BlastTabular#@link BlastTabular#readRecord @endlink</li></ul>
+ * <li> BlastTabular#@link BlastTabular#readFooter @endlink </li>
  * </ul>
  *
- * Alternatively to this spec's interface you may also call BlastTabular<b>In</b>#@link BlastTabularIn#readRecord @endlink
- * which uses the @link FormattedFile @endlink's interface but is the same otherwise. See @link BlastTabularIn @endlink
- * for a full code example.
+ * You can also use the FormattedFile interface which has the same functions, but only requires one parameter:
+ * <ul>
+ * <li> BlastTabularIn#@link BlastTabular#readHeader @endlink </li>
+ * <li> while BlastTabularIn#@link BlastTabular#onRecord @endlink </li>
+ * <ul><li> BlastTabularIn#@link BlastTabular#readRecord @endlink</li></ul>
+ * <li> BlastTabularIn#@link BlastTabular#readFooter @endlink </li>
+ * </ul>
  *
- * While @link BlastTabular#readHeader @endlink and @link BlastTabular#readFooter @endlink are defined, they are no-ops
- * and all information can be extracted by calling readRecord.
+ * See @link BlastTabularOut @endlink for a full code example.
  *
-
+ * Although there is no file-global header in the file (only a record header per record -- if your format is
+ * @link BlastTabularSpec::HEADER @endlink), you need to always call @link BlastTabular#readHeader @endlink first after
+ * opening the file!
+ *
  * @section Output
  *
  * High-level file writing consists of three different calls:

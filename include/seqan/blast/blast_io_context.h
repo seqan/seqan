@@ -41,8 +41,8 @@ namespace seqan
 {
 
 //forward declare
-template <typename TScore, typename TSpec = void>
-struct BlastScoringAdapter;
+template <typename TScore>
+struct BlastScoringScheme;
 
 /*!
  * @class BlastIOContext
@@ -121,10 +121,10 @@ struct BlastIOContext
     BlastTabularSpec tabularSpec = BlastTabularSpec::UNKNOWN;
 
     /*!
-     * @var BlastScoringAdapter<TScore> BlastIOContext::scoringAdapter;
-     * @brief A @link BlastScoringAdapter @endlink, you should never have to access this directly.
+     * @var BlastScoringScheme<TScore> BlastIOContext::scoringScheme;
+     * @brief TODO update
      */
-    BlastScoringAdapter<TScore> scoringAdapter;
+    BlastScoringScheme<TScore> scoringScheme;
 
     /*!
      * @var TString BlastIOContext::versionString;
@@ -244,7 +244,7 @@ struct BlastIOContext
     uint64_t numberOfRecords = 0;
 
     // cache for length adjustments in blast statistics
-    std::unordered_map<uint64_t, uint64_t> cachedLengthAdjustments;
+    std::unordered_map<uint64_t, uint64_t> _cachedLengthAdjustments;
 
     // io-buffers
     TString _lineBuffer; // holds the current line
@@ -380,7 +380,7 @@ setBlastTabularSpec(BlastIOContext<TScore, TString, p, BlastTabularSpec::UNKNOWN
     context.tabularSpec = h;
 }
 
-/*!
+/*
 * @fn BlastIOContext#getScoringScheme
 * @signature ScoringScheme const & getScoringScheme(context);
 * @param[in] context  The @link BlastIOContext @endlink.
@@ -388,17 +388,17 @@ setBlastTabularSpec(BlastIOContext<TScore, TString, p, BlastTabularSpec::UNKNOWN
 * @return ScoringScheme reference to the scheme used in the context.
 */
 
-template <typename TScore,
-          typename TString,
-          BlastProgram p,
-          BlastTabularSpec h>
-inline TScore const &
-getScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
-{
-    return context.scoringAdapter.scheme;
-}
+// template <typename TScore,
+//           typename TString,
+//           BlastProgram p,
+//           BlastTabularSpec h>
+// inline TScore const &
+// getScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
+// {
+//     return context.scoringAdapter.scheme;
+// }
 
-/*!
+/*
  * @fn BlastIOContext#setScoringScheme
  * @signature void setScoringScheme(context, scoringScheme);
  * @param[in,out] context        The @link BlastIOContext @endlink.
@@ -416,21 +416,21 @@ getScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
  * @link BlastIOContext::scoringAdapter @endlink-member.
 */
 
-template <typename TScore,
-          typename TString,
-          BlastProgram p,
-          BlastTabularSpec h>
-inline void
-setScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore const & scoringScheme)
-{
-    context.scoringAdapter.scheme = scoringScheme;
+// template <typename TScore,
+//           typename TString,
+//           BlastProgram p,
+//           BlastTabularSpec h>
+// inline void
+// setScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore const & scoringScheme)
+// {
+//     context.scoringAdapter.scheme = scoringScheme;
+//
+//     if (!_selectSet(context.scoringAdapter))
+//         SEQAN_FAIL("ERROR: No Karlin-Altschul parameters where available for you scoring scheme --> your scoring scheme"
+//                    " and/or your gap costs are not supported.");
+// }
 
-    if (!_selectSet(context.scoringAdapter))
-        SEQAN_FAIL("ERROR: No Karlin-Altschul parameters where available for you scoring scheme --> your scoring scheme"
-                   " and/or your gap costs are not supported.");
-}
-
-/*!
+/*
 * @fn BlastIOContext#getBlastScoringScheme
 * @signature ScoringScheme getBlastScoringScheme(context);
 * @param[in] context  The @link BlastIOContext @endlink.
@@ -439,19 +439,19 @@ setScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore const &
 * @link BlastIOContext#setBlastScoringScheme @endlink
 */
 
-template <typename TScore,
-          typename TString,
-          BlastProgram p,
-          BlastTabularSpec h>
-inline TScore
-getBlastScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
-{
-    TScore newscore(context.scoringAdapter.scheme);
-    seqanScoringScheme2blastScoringScheme(newscore);
-    return newscore;
-}
+// template <typename TScore,
+//           typename TString,
+//           BlastProgram p,
+//           BlastTabularSpec h>
+// inline TScore
+// getBlastScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
+// {
+//     TScore newscore(context.scoringAdapter.scheme);
+//     seqanScoringScheme2blastScoringScheme(newscore);
+//     return newscore;
+// }
 
-/*!
+/*
  * @fn BlastIOContext#setBlastScoringScheme
  * @signature void setBlastScoringScheme(context, scoringScheme);
  * @param[in,out] context        The @link BlastIOContext @endlink.
@@ -478,16 +478,16 @@ getBlastScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
  * @link BlastIOContext::scoringAdapter @endlink-member.
  */
 
-template <typename TScore,
-          typename TString,
-          BlastProgram p,
-          BlastTabularSpec h>
-inline void
-setBlastScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore scoringScheme)
-{
-    blastScoringScheme2seqanScoringScheme(scoringScheme);
-    setScoringScheme(context, scoringScheme);
-}
+// template <typename TScore,
+//           typename TString,
+//           BlastProgram p,
+//           BlastTabularSpec h>
+// inline void
+// setBlastScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore scoringScheme)
+// {
+//     blastScoringScheme2seqanScoringScheme(scoringScheme);
+//     setScoringScheme(context, scoringScheme);
+// }
 
 }
 

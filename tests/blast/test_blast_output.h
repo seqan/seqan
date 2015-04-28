@@ -168,12 +168,9 @@ test_blast_write_record_match(TFile & file,
     appendValue(qIds, "Query_Numero_Dos with args");
     appendValue(qIds, "Query_Numero_Tres with args");
 
-
-    TScore scheme;
-    setScoreGapOpen(scheme, -11);
-    setScoreGapExtend(scheme, -1);
-
-    setBlastScoringScheme(context, scheme);
+    setScoreGapOpenBlast(context.scoringScheme, -11);
+    setScoreGapExtendBlast(context.scoringScheme, -1);
+    SEQAN_ASSERT(isValid(context.scoringScheme));
 
     String<TBlastRecord> records;
     resize(records, 3);
@@ -198,14 +195,13 @@ test_blast_write_record_match(TFile & file,
             assignSource(row(m.align, 0), queries[q]);
             assignSource(row(m.align, 1), subjects[s]);
 
-            localAlignment(m.align, context.scoringAdapter.scheme);
+            localAlignment(m.align, static_cast<Blosum62>(context.scoringScheme));
 
             m.qStart = beginPosition(row(m.align, 0));
             m.qEnd   = endPosition(row(m.align, 0));
             m.sStart = beginPosition(row(m.align, 1));
             m.sEnd   = endPosition(row(m.align, 1));
 
-            m.alignStats.alignmentLength = length(row(m.align, 0));
             m.qLength = length(queries[q]);
             m.sLength = length(subjects[s]);
 
@@ -775,7 +771,6 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
 
     BlastIOContext<> context;
     setBlastProgram(context, BlastProgram::BLASTP);
-
 
     test_blast_write_record_match(fstream, 0, 0, context, BlastReport());
 

@@ -52,7 +52,7 @@ namespace seqan
  * @class BlastTabularLL
  * @signature typedef Tag<BlastTabularLL_> BlastTabularLL;
  * @headerfile <seqan/blast.h>
- * @brief Low-Level support for Blast Tabular file formats (with and without headers)
+ * @brief Low-Level support for Blast Tabular file formats
  *
  * There are three blast format related tags in SeqAn:
  *
@@ -109,12 +109,12 @@ typedef Tag<BlastTabularLL_> BlastTabularLL;
  * @signature bool onMatch(stream, blastTabularLL)
  * @headerfile seqan/blast.h
  *
- * @param[in] iter              An input iterator over a stream or any fwd-iterator over a string
- * @param[in] blastTabularLL    @link BlastTabular @endlink specialization
+ * @param[in] iter              An input iterator over a stream or any fwd-iterator over a string.
+ * @param[in] blastTabularLL    The @link BlastTabularLL @endlink tag.
  *
  * @throw IOError On low-level I/O errors.
  *
- * @return    true or false
+ * @return bool true or false
  */
 
 template <typename TFwdIterator>
@@ -135,14 +135,14 @@ onMatch(TFwdIterator & iter,
  * @signature void skipUntilMatch(stream, blastTabular);
  * @headerfile seqan/blast.h
  *
- * @param[in,out] stream         An input iterator over a stream or any fwd-iterator over a string
- * @param[in]     blastTabularLL The @link BlastTabular @endlink tag.
+ * @param[in,out] stream         An input iterator over a stream or any fwd-iterator over a string.
+ * @param[in]     blastTabularLL The @link BlastTabularLL @endlink tag.
  *
  * @section Remarks
  *
  * This is also part of the low-level IO and not required if you use readRecord.
  * Call this function whenever you are not @link BlastTabularLL#onMatch @endlink, but want to be, e.g. to
- * @link BlastTabularLL#readMatch0 @endlink.
+ * @link BlastTabularLL#readMatch @endlink.
  *
  * Since it is legal for files to end with a record header, this function does not throw if end-of-file is reached.
  * You need to check that after calling.
@@ -160,15 +160,19 @@ skipUntilMatch(TFwdIterator & iter,
         skipLine(iter);
 }
 
+// ----------------------------------------------------------------------------
+// Function readMatch()
+// ----------------------------------------------------------------------------
+
 /*!
  * @fn BlastTabularLL#readMatch
  * @brief Low-level BlastTabular file reading.
  * @signature void readMatch(stream, tag, args ...);
  * @headerfile seqan/blast.h
  *
- * @param[in,out] stream         An input iterator over a stream or any fwd-iterator over a string
- * @param[in]     blastTabularLL The @link BlastTabular @endlink tag.
- * @param[out]    args           Arbitrary typed variables
+ * @param[in,out] stream         An input iterator over a stream or any fwd-iterator over a string.
+ * @param[in]     blastTabularLL The @link BlastTabularLL @endlink tag.
+ * @param[out]    args           Arbitrary typed variables able to hold the fields.
  *
  * @section Remarks
  *
@@ -257,8 +261,30 @@ readMatch(TFwdIterator & iter,
 }
 
 // ----------------------------------------------------------------------------
-// Function _writeFields() or labels [no match object given]
+// Function writeMatch()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastTabularLL#writeMatch
+ * @headerfile seqan/blast.h
+ * @brief Low-level file-writing for blast tabular formats
+ * @signature void writeMatch(stream, blastTabular, columns...)
+ *
+ * @section Remarks
+ *
+ * This is a very leight-weight alternative to @link BlastTabular#writeRecord @endlink. It doesn't require
+ * @link BlastMatch @endlinkes, @link BlastRecord @endlinks or the use of @link FormattedFile @endlink.
+ * It supports an arbitrary amount of and arbitrary typed columns to be printed.
+ *
+ * Use this only if you do not require headers and you are prepared to do all transformations on the data yourself,
+ * i.e. this function does none of the match adjustments mentioned in @link BlastTabular#writeRecord @endlink.
+ *
+ * @param[in,out] stream         The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...).
+ * @param[in]     blastTabularLL The @link BlastTabularLL @endlink tag.
+ * @param[in]     columns...     Any number of printable parameters.
+ *
+ * @throw IOError On low-level I/O errors.
+ */
 
 template <typename TFwdIterator>
 inline void
@@ -278,28 +304,6 @@ _writeFields(TFwdIterator & stream,
     write(stream, field1);
     _writeFields(stream, BlastTabularLL(), fields... );
 }
-
-/*!
- * @fn BlastTabularLL#writeMatch
- * @headerfile seqan/blast.h
- * @brief Low-level file-writing for blast tabular formats
- * @signature void writeMatch(stream, blastTabular, columns...)
- *
- * @section Remarks
- *
- * This is a very leight-weight alternative to @link BlastTabular#writeRecord @endlink. It doesn't require
- * @link BlastMatch @endlinkes, @link BlastRecord @endlinks or the use of @link FormattedFile @endlink.
- * It supports an arbitrary amount of and arbitrary typed columns to be printed.
- *
- * Use this only if you do not require headers and you are prepared to do all transformations on the data yourself,
- * i.e. this function does none of the match adjustments mentioned in @link BlastTabular#writeRecord @endlink.
- *
- * @param[in,out] stream         The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in]     blastTabularLL The @link BlastTabular @endlink tag.
- * @param[in]     columns...     Custom columns
- *
- * @throw IOError On low-level I/O errors.
- */
 
 // Function for arbitrary number and typed fields
 template <typename TFwdIterator, typename TField, typename... TFields>

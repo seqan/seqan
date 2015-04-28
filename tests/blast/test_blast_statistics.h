@@ -46,19 +46,20 @@ using namespace seqan;
 
 SEQAN_DEFINE_TEST(test_blast_scoring_scheme_conversion)
 {
-    Blosum62 scheme;
-    setScoreGapOpen(scheme, -11);
-    setScoreGapExtend(scheme, -1);
-
-    blastScoringScheme2seqanScoringScheme(scheme);
-
-    SEQAN_ASSERT_EQ(scoreGapOpen(scheme), -12);
-    SEQAN_ASSERT_EQ(scoreGapExtend(scheme), -1);
-
-    seqanScoringScheme2blastScoringScheme(scheme);
-
-    SEQAN_ASSERT_EQ(scoreGapOpen(scheme), -11);
-    SEQAN_ASSERT_EQ(scoreGapExtend(scheme), -1);
+    //TODO replace
+//     Blosum62 scheme;
+//     setScoreGapOpen(scheme, -11);
+//     setScoreGapExtend(scheme, -1);
+//
+//     blastScoringScheme2seqanScoringScheme(scheme);
+//
+//     SEQAN_ASSERT_EQ(scoreGapOpen(scheme), -12);
+//     SEQAN_ASSERT_EQ(scoreGapExtend(scheme), -1);
+//
+//     seqanScoringScheme2blastScoringScheme(scheme);
+//
+//     SEQAN_ASSERT_EQ(scoreGapOpen(scheme), -11);
+//     SEQAN_ASSERT_EQ(scoreGapExtend(scheme), -1);
 }
 
 SEQAN_DEFINE_TEST(test_blast_scoring_adapter)
@@ -66,128 +67,105 @@ SEQAN_DEFINE_TEST(test_blast_scoring_adapter)
     // Blosum62 and some general stuff
     {
         typedef Blosum62 TScheme;
-        TScheme scheme;
-        setScoreGapOpen(scheme, -11);
-        setScoreGapExtend(scheme, -1);
-        blastScoringScheme2seqanScoringScheme(scheme);
+        BlastScoringScheme<TScheme> scheme;
+        setScoreGapOpenBlast(scheme, -11);
+        setScoreGapExtendBlast(scheme, -1);
 
-        // TEST CONSTRUCTOR
-        BlastScoringAdapter<TScheme> adapter(scheme);
         // TEST isValid()
-        SEQAN_ASSERT(isValid(adapter));
+        SEQAN_ASSERT(isValid(scheme));
         // TEST get*
-        SEQAN_ASSERT_EQ(getLambda(adapter), 0.267);
-        SEQAN_ASSERT_EQ(getKappa(adapter),  0.041);
-        SEQAN_ASSERT_EQ(getH(adapter),      0.140);
-        SEQAN_ASSERT_EQ(getAlpha(adapter),  1.900);
-        SEQAN_ASSERT_EQ(getBeta(adapter), -30.000);
+        SEQAN_ASSERT_EQ(getLambda(scheme), 0.267);
+        SEQAN_ASSERT_EQ(getKappa(scheme),  0.041);
+        SEQAN_ASSERT_EQ(getH(scheme),      0.140);
+        SEQAN_ASSERT_EQ(getAlpha(scheme),  1.900);
+        SEQAN_ASSERT_EQ(getBeta(scheme), -30.000);
 
         setScoreGapOpen(scheme, -1);
-        setScoreGapExtend(scheme, -11); // invalid parameters
-        // TEST assignScoreScheme
-        bool res = assignScoreScheme(adapter, scheme);
-        SEQAN_ASSERT(!res);
-
-        // TEST getScoreScheme
-        Blosum62 const & schemeInt = getScoreScheme(adapter);
-        SEQAN_ASSERT_EQ(scoreGapOpen(schemeInt), -1);
-        SEQAN_ASSERT_EQ(scoreGapExtend(schemeInt), -11);
+        setScoreGapExtend(scheme, -11);
+        SEQAN_ASSERT(!isValid(scheme));// invalid parameters, because not the setScoreGap*Blast version
 
         // reset to valid
-        setScoreGapOpen(scheme, -11);
-        setScoreGapExtend(scheme, -1);
-        blastScoringScheme2seqanScoringScheme(scheme);
-        assignScoreScheme(adapter, scheme);
+        setScoreGapOpenBlast(scheme, -11);
+        setScoreGapExtendBlast(scheme, -1);
+
         // now check values again
-        SEQAN_ASSERT(isValid(adapter));
+        SEQAN_ASSERT(isValid(scheme));
         // TEST get*
-        SEQAN_ASSERT_EQ(getLambda(adapter), 0.267);
-        SEQAN_ASSERT_EQ(getKappa(adapter),  0.041);
-        SEQAN_ASSERT_EQ(getH(adapter),      0.140);
-        SEQAN_ASSERT_EQ(getAlpha(adapter),  1.900);
-        SEQAN_ASSERT_EQ(getBeta(adapter), -30.000);
+        SEQAN_ASSERT_EQ(getLambda(scheme), 0.267);
+        SEQAN_ASSERT_EQ(getKappa(scheme),  0.041);
+        SEQAN_ASSERT_EQ(getH(scheme),      0.140);
+        SEQAN_ASSERT_EQ(getAlpha(scheme),  1.900);
+        SEQAN_ASSERT_EQ(getBeta(scheme), -30.000);
     }
 
     // Blosum45
     {
         typedef Blosum45 TScheme;
-        TScheme scheme;
-        setScoreGapOpen(scheme, -11);
-        setScoreGapExtend(scheme, -3);
-        blastScoringScheme2seqanScoringScheme(scheme);
+        BlastScoringScheme<TScheme> scheme;
+        setScoreGapOpenBlast(scheme, -11);
+        setScoreGapExtendBlast(scheme, -3);
 
-        // TEST CONSTRUCTOR
-        BlastScoringAdapter<TScheme> adapter(scheme);
         // TEST isValid()
-        SEQAN_ASSERT(isValid(adapter));
+        SEQAN_ASSERT(isValid(scheme));
         // TEST get*
-        SEQAN_ASSERT_EQ(getLambda(adapter), 0.190);
-        SEQAN_ASSERT_EQ(getKappa(adapter),  0.031);
-        SEQAN_ASSERT_EQ(getH(adapter),      0.095);
-        SEQAN_ASSERT_EQ(getAlpha(adapter),  2.000);
-        SEQAN_ASSERT_EQ(getBeta(adapter), -38.000);
+        SEQAN_ASSERT_EQ(getLambda(scheme), 0.190);
+        SEQAN_ASSERT_EQ(getKappa(scheme),  0.031);
+        SEQAN_ASSERT_EQ(getH(scheme),      0.095);
+        SEQAN_ASSERT_EQ(getAlpha(scheme),  2.000);
+        SEQAN_ASSERT_EQ(getBeta(scheme), -38.000);
     }
 
     // Blosum80
     {
         typedef Blosum80 TScheme;
-        TScheme scheme;
-        setScoreGapOpen(scheme, -11);
-        setScoreGapExtend(scheme, -1);
-        blastScoringScheme2seqanScoringScheme(scheme);
+        BlastScoringScheme<TScheme> scheme;
+        setScoreGapOpenBlast(scheme, -11);
+        setScoreGapExtendBlast(scheme, -1);
 
-        // TEST CONSTRUCTOR
-        BlastScoringAdapter<TScheme> adapter(scheme);
         // TEST isValid()
-        SEQAN_ASSERT(isValid(adapter));
+        SEQAN_ASSERT(isValid(scheme));
         // TEST get*
-        SEQAN_ASSERT_EQ(getLambda(adapter), 0.314);
-        SEQAN_ASSERT_EQ(getKappa(adapter),  0.095);
-        SEQAN_ASSERT_EQ(getH(adapter),      0.350);
-        SEQAN_ASSERT_EQ(getAlpha(adapter),  0.900);
-        SEQAN_ASSERT_EQ(getBeta(adapter),  -9.000);
+        SEQAN_ASSERT_EQ(getLambda(scheme), 0.314);
+        SEQAN_ASSERT_EQ(getKappa(scheme),  0.095);
+        SEQAN_ASSERT_EQ(getH(scheme),      0.350);
+        SEQAN_ASSERT_EQ(getAlpha(scheme),  0.900);
+        SEQAN_ASSERT_EQ(getBeta(scheme),  -9.000);
     }
 
     // Pam250
     {
         typedef Pam250 TScheme;
-        TScheme scheme;
-        setScoreGapOpen(scheme, -11);
-        setScoreGapExtend(scheme, -3);
-        blastScoringScheme2seqanScoringScheme(scheme);
+        BlastScoringScheme<TScheme> scheme;
+        setScoreGapOpenBlast(scheme, -11);
+        setScoreGapExtendBlast(scheme, -3);
 
-        // TEST CONSTRUCTOR
-        BlastScoringAdapter<TScheme> adapter(scheme);
         // TEST isValid()
-        SEQAN_ASSERT(isValid(adapter));
+        SEQAN_ASSERT(isValid(scheme));
         // TEST get*
-        SEQAN_ASSERT_EQ(getLambda(adapter), 0.174);
-        SEQAN_ASSERT_EQ(getKappa(adapter),  0.020);
-        SEQAN_ASSERT_EQ(getH(adapter),      0.070);
-        SEQAN_ASSERT_EQ(getAlpha(adapter),  2.500);
-        SEQAN_ASSERT_EQ(getBeta(adapter), -48.000);
+        SEQAN_ASSERT_EQ(getLambda(scheme), 0.174);
+        SEQAN_ASSERT_EQ(getKappa(scheme),  0.020);
+        SEQAN_ASSERT_EQ(getH(scheme),      0.070);
+        SEQAN_ASSERT_EQ(getAlpha(scheme),  2.500);
+        SEQAN_ASSERT_EQ(getBeta(scheme), -48.000);
     }
 
     // SimpleScore
     {
         typedef Score<int, Simple> TScheme;
-        TScheme scheme;
+        BlastScoringScheme<TScheme> scheme;
         setScoreMatch(scheme, 2);
         setScoreMismatch(scheme, -3);
-        setScoreGapOpen(scheme, -4);
-        setScoreGapExtend(scheme, -2);
-        blastScoringScheme2seqanScoringScheme(scheme);
+        setScoreGapOpenBlast(scheme, -4);
+        setScoreGapExtendBlast(scheme, -2);
 
-        // TEST CONSTRUCTOR
-        BlastScoringAdapter<TScheme> adapter(scheme);
         // TEST isValid()
-        SEQAN_ASSERT(isValid(adapter));
+        SEQAN_ASSERT(isValid(scheme));
         // TEST get*
-        SEQAN_ASSERT_EQ(getLambda(adapter), 0.610);
-        SEQAN_ASSERT_EQ(getKappa(adapter),  0.350);
-        SEQAN_ASSERT_EQ(getH(adapter),      0.680);
-        SEQAN_ASSERT_EQ(getAlpha(adapter),  0.900);
-        SEQAN_ASSERT_EQ(getBeta(adapter),  -3.000);
+        SEQAN_ASSERT_EQ(getLambda(scheme), 0.610);
+        SEQAN_ASSERT_EQ(getKappa(scheme),  0.350);
+        SEQAN_ASSERT_EQ(getH(scheme),      0.680);
+        SEQAN_ASSERT_EQ(getAlpha(scheme),  0.900);
+        SEQAN_ASSERT_EQ(getBeta(scheme),  -3.000);
     }
 }
 
@@ -207,19 +185,19 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_stats_and_score)
     assignSource(row(m.align, 1), src1);
 
     typedef Blosum62 TScheme;
-    TScheme scheme;
-    setScoreGapOpen(scheme, -11);
-    setScoreGapExtend(scheme, -1);
-    blastScoringScheme2seqanScoringScheme(scheme);
+    BlastScoringScheme<TScheme> scheme;
+    setScoreGapOpenBlast(scheme, -11);
+    setScoreGapExtendBlast(scheme, -1);
+    SEQAN_ASSERT(isValid(scheme));
 
-    int score = globalAlignment(m.align, scheme);
+    int score = globalAlignment(m.align, static_cast<TScheme>(scheme));
 //     ARNDAYVBRNDCQFGCYVBQARNDCQEGEG
 //     ||| ||||||||   ||||||||  |||||
 //     ARN-AYVBRNDCCY-CYVBQARN--QEGEG
 
     SEQAN_ASSERT_EQ(score, 94);
 
-    computeAlignmentStats(m.alignStats, m.align, scheme);
+    computeAlignmentStats(m.alignStats, m.align, static_cast<TScheme>(scheme));
 
     SEQAN_ASSERT_EQ(m.alignStats.alignmentScore, score);
 //     SEQAN_ASSERT_EQ(m.alignLength, 30u);
@@ -249,19 +227,19 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_bit_score_e_value)
     assignSource(row(m.align, 0), src0);
     assignSource(row(m.align, 1), src1);
 
-    TScheme scheme;
-    setScoreGapOpen(scheme, -11);
-    setScoreGapExtend(scheme, -1);
-    blastScoringScheme2seqanScoringScheme(scheme);
+    BlastScoringScheme<TScheme> scheme;
+    setScoreGapOpenBlast(scheme, -11);
+    setScoreGapExtendBlast(scheme, -1);
+    SEQAN_ASSERT(isValid(scheme));
 
-    int score = localAlignment(m.align, scheme);
+    int score = localAlignment(m.align, static_cast<TScheme>(scheme));
 //         VAYAQTKPRRLCFP
 //         |||||  || || |
 //         VAYAQ--PRKLCYP
 
     SEQAN_ASSERT_EQ(score, 48);
 
-    computeAlignmentStats(m.alignStats, m.align, scheme);
+    computeAlignmentStats(m.alignStats, m.align, static_cast<TScheme>(scheme));
 
     SEQAN_ASSERT_EQ(m.alignStats.alignmentScore, score);
     SEQAN_ASSERT_EQ(m.alignStats.alignmentLength, 14u);
@@ -273,14 +251,11 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_bit_score_e_value)
 
     // same as previous test until here (just local)
 
-    BlastScoringAdapter<TScheme> adapter(scheme);
-    SEQAN_ASSERT(isValid(adapter));
-
-    m.bitScore = computeBitScore(m.alignStats.alignmentScore, adapter);
+    m.bitScore = computeBitScore(m.alignStats.alignmentScore, scheme);
     double epsilon = 1e-4;
     SEQAN_ASSERT_LEQ(std::abs(m.bitScore - 23.0978), epsilon);
 
-    m.eValue = computeEValue(m.alignStats.alignmentScore, length(src1), length(src0), adapter);
+    m.eValue = computeEValue(m.alignStats.alignmentScore, length(src1), length(src0), scheme);
     epsilon = 1e-8; // evalues are smaller
     SEQAN_ASSERT_LEQ(std::abs(m.eValue - 0.000267348), epsilon);
 }

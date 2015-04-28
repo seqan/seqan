@@ -1003,9 +1003,10 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
  * @section Remarks
  *
  * This function will read an entire record from a blast tabular file, i.e. it will read the record header
- * (if it exists) and 0-n @link BlastMatch @endlinkes belonging to one query.
+ * (if the format is @link BlastTabularSpec::HEADER @endlink) and 0-n @link BlastMatch @endlinkes belonging
+ * to one query.
  *
- * Please note that if there are no headers in the file the boundary
+ * Please note that if there are no record headers in the file the boundary
  * between records is inferred from the indentity of the first field, i.e.
  * non-standard field configurations must also have Q_SEQ_ID as their first @link BlastMatchField @endlink.
  *
@@ -1038,6 +1039,9 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
  * In case you do not wish the @link BlastIOContext::fields @endlink to be read from the header, you can set
  * context.@link BlastIOContext::ignoreFieldsInHeader @endlink to true. This will be prevent it from being read and will
  * allow you to specify it manually which might be relevant for reading the match lines.
+ *
+ * If the format is @link BlastTabularSpec::NO_HEADER @endlink none of the above happens and
+ * @link BlastRecord::qId @endlink is derived from the first match.
  *
  * @subsection Matches
  *
@@ -1127,10 +1131,11 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
  * @fn BlastTabularIn#readRecord
  * @brief read a record from a blast tabular formattedFile
  * @headerfile seqan/blast.h
- * @signature void readRecord(blastRecord, formattedFile);
+ * @signature void readRecord(blastTabularIn);
  *
- * @param[out]    blastRecord   A @link BlastRecord @endlink to hold all information related to one query sequence.
- * @param[in,out] formattedFile The @link BlastTabularOut @endlink file.
+ * @param[in,out] blastTabularIn A @link BlastTabularIn @endlink formattedFile.
+ *
+ * @section Remarks
  *
  * See @link BlastTabular#readRecord @endlink for details.
  *
@@ -1157,7 +1162,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
 /*!
  * @fn BlastTabular#readHeader
  * @headerfile seqan/blast.h
- * @brief Read the header (top-most section) of a BlastTabular file (this is a NOOP).
+ * @brief Read the header (top-most section) of a BlastTabular file.
  * @signature void readHeader(stream, context, blastTabular);
  *
  * @param[in,out] stream         The file to read to (FILE, fstream, @link InputStreamConcept @endlink ...)
@@ -1192,7 +1197,7 @@ readHeader(BlastIOContext<TScore, TConString, p, h> & context,
 /*!
  * @fn BlastTabularIn#readHeader
  * @headerfile seqan/blast.h
- * @brief Read the header (top-most section) of a BlastTabular file (this is a NOOP).
+ * @brief Read the header (top-most section) of a BlastTabular file.
  * @signature void readHeader(blastTabularIn);
  *
  * @param[in,out] blastTabularIn A @link BlastTabularIn @endlink formattedFile.
@@ -1215,7 +1220,7 @@ readHeader(BlastTabularIn<TContext> & formattedFile)
 /*!
  * @fn BlastTabular#readFooter
  * @headerfile seqan/blast.h
- * @brief Read the footer of a BlastTabular file (this is a NOOP).
+ * @brief Read the footer (bottom-most section) of a BlastTabular file.
  * @signature void readFooter(stream, context, blastTabular);
  *
  * @param[in,out] stream         The file to read to (FILE, fstream, @link InputStreamConcept @endlink ...)
@@ -1276,7 +1281,7 @@ readFooter(BlastIOContext<TScore, TConString, p, h> & context,
 /*!
  * @fn BlastTabularIn#readFooter
  * @headerfile seqan/blast.h
- * @brief Read the footer of a BlastTabular file (this is a NOOP).
+ * @brief Read the footer (bottom-most section) of a BlastTabular file.
  * @signature void readFooter(blastTabularIn);
  *
  * @param[in,out] blastTabularIn A @link BlastTabularIn @endlink formattedFile.
