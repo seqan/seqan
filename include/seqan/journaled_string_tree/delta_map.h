@@ -31,9 +31,8 @@
 // ==========================================================================
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-// Implements the variant map. This is a facade that contains the delta
-// store and the delta coverage store. It maps to each reference position
-// the corresponding delta and coverage.
+// Implements the delta map to efficiently store delta entries ordered by
+// their position within the base sequence in ascending order.
 // ==========================================================================
 
 #ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_MAP_H_
@@ -46,15 +45,6 @@ namespace seqan
 // Forwards
 // ============================================================================
 
-template <typename TMap>
-struct GetMapValueString_;
-
-template <typename TMap>
-struct GetDeltaStore_;
-
-template <typename TMap>
-struct GetDeltaCoverageStore_;
-
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -65,17 +55,6 @@ struct GetDeltaCoverageStore_;
 
 struct SpecDeltaMapIterator_;
 typedef Tag<SpecDeltaMapIterator_> DeltaMapIteratorSpec;
-
-// ----------------------------------------------------------------------------
-// Struct DeltaMapConfig
-// ----------------------------------------------------------------------------
-
-//template <typename TDelSize = __uint32, typename TAlphabet = Dna, typename TSpec = Default>
-//struct DeltaMapConfig
-//{
-//    typedef TDelSize  TDeletionValue;
-//    typedef TAlphabet TSnpValue;
-//};
 
 // ----------------------------------------------------------------------------
 // Tag DeltaMapEntriesMember
@@ -95,6 +74,8 @@ typedef Tag<DeltaMapStoreMember_> DeltaMapStoreMember;
 // Class DeltaMap
 // ----------------------------------------------------------------------------
 
+
+// TODO(rrahn): Add demo.
 /*!
  * @class DeltaMap
  *
@@ -102,26 +83,29 @@ typedef Tag<DeltaMapStoreMember_> DeltaMapStoreMember;
  *
  * @brief Stores delta information and maps them to a common coordinate system.
  *
- * @signature template <typename TValue, typename TAlphabet>
+ * @signature template <typename TConfig>
  *            class DeltaMap
- * @tparam TValue The value type of the keys.
- * @tparam TAlphabet The alphabet typed used to for SNPs and insertions.
+ * @tparam TConfig   A config type to set the types for the different delta values.
  *
- * This map stores biological delta events, i.e. replacements, insertions and deletions, for multiple sequences
- * based to a common reference sequence. A bitvector is used to denote the coverage of a delta.
- * Note, the keys must be comparable using the less-than operator.
+ * This map stores delta events, i.e. replacements, insertions and deletions, for multiple sequences
+ * based on a common reference sequence. A bitvector is used to store the coverage of a delta.
+ * The types of the correspondinf delta values must be set with the <tt>TConfig<\tt> object, which can be any
+ * object which defines the following types: 
+ * 
+ * <tt>TDeltaPos<\tt>: The value type used to store the position of the delta within the reference.
+ * <tt>TDeltaSnp<\tt>: The value type used to store SNPs.
+ * <tt>TDeltaDel<\tt>: The value type used to store deletions.
+ * <tt>TDeltaIns<\tt>: The value type used to store insertions.
+ * <tt>TDeltaSV<\tt>:  The value type used to store structural variants.
  *
- * The delta events are stored in a multi-container fashion. To access a delta event at any given iterator position
- * of the delta map the delta type must be known beforehand. The function @link DeltaMapIterator#deltaType @endlink can
- * be used to access the id of the corresponding delta event. Based on the type the correct position must be called
- * to get access to the stored value.
- *
- * Deletions are stored as the length of the deletion. Insertions are stored in an concatenated string set internally
- * and replacements are stored as a pair of a deletion length as first parameter and an insertion string as second.
- * Thus variable replacements, where the deletion length can differ from the length of the insertion.
+ * The delta values are stored in a multi-container. To access a delta value at any given iterator position
+ * of the delta map the delta type (see @link DeltaTypeTags @endlink) must be known.
+ * The function @link DeltaMapIterator#deltaType @endlink can be used to access the id of the corresponding delta event. 
+ * Given the delta type the function @link DeltaMapIterator#deltaValue @endlink can be used to access the corresponding 
+ * value.
  */
 
-template <typename TValue, typename TAlphabet, typename TSpec = Default>
+template <typename TConfig, typename TSpec = Default>
 class DeltaMap
 {
 public:
@@ -131,16 +115,8 @@ public:
     typedef typename DeltaCoverage<DeltaMap>::Type TCoverage_;
     typedef typename Size<TCoverage_>::Type TCoverageSize;
 
-    TCoverageSize  _coverageSize;
     TDeltaEntries  _entries;
     TDeltaStore    _deltaStore;
-
-    DeltaMap() : _coverageSize(0)
-    {}
-
-    template <typename TSize>
-    DeltaMap(TSize coverageSize) : _coverageSize(coverageSize)
-    {}
 };
 
 // ============================================================================
@@ -151,10 +127,10 @@ public:
 // Metafunction Member                                  [DeltaMapEntriesMember]
 // ----------------------------------------------------------------------------
 
-template <typename TRefPos, typename TAlphabet, typename TSpec>
-struct Member<DeltaMap<TRefPos, TAlphabet, TSpec>, DeltaMapEntriesMember>
+template <typename TConfig, typename TSpec>
+struct Member<DeltaMap<TConfig, TSpec>, DeltaMapEntriesMember>
 {
-    typedef typename Value<DeltaMap<TRefPos, TAlphabet, TSpec> >::Type TValue_;
+    typedef typename Value<DeltaMap<TConfig, TSpec> >::Type TValue_;
     typedef String<TValue_> Type;
 };
 
@@ -162,10 +138,14 @@ struct Member<DeltaMap<TRefPos, TAlphabet, TSpec>, DeltaMapEntriesMember>
 // Metafunction Member                                    [DeltaMapStoreMember]
 // ----------------------------------------------------------------------------
 
-template <typename TRefPos, typename TAlphabet, typename TSpec>
-struct Member<DeltaMap<TRefPos, TAlphabet, TSpec>, DeltaMapStoreMember>
+template <typename TConfig, typename TSpec>
+struct Member<DeltaMap<TConfig, TSpec>, DeltaMapStoreMember>
 {
-    typedef DeltaStore<unsigned, TAlphabet> Type;
+    typedef typename TConfig::TSnpValue TSnpValue_;
+    typedef typename TConfig::TInsValue TInsValue_;
+    typedef typename TConfig::TDelValue TDelValue_;
+    typedef typename TConfig::TSVValue TSVValue_;
+    typedef DeltaStore<TSnpValue_, TDelValue_, TInsValue_, TSVValue_> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -173,45 +153,28 @@ struct Member<DeltaMap<TRefPos, TAlphabet, TSpec>, DeltaMapStoreMember>
 // ----------------------------------------------------------------------------
 
 // Const version.
-template <typename TRefPos, typename TAlphabet, typename TSpec, typename TTag>
-struct Member<DeltaMap<TRefPos, TAlphabet, TSpec> const, TTag>
+template <typename TConfig, typename TSpec, typename TTag>
+struct Member<DeltaMap<TConfig, TSpec> const, TTag>
 {
-    typedef typename Member<DeltaMap<unsigned, TAlphabet, TSpec>, TTag>::Type const Type;
+    typedef typename Member<DeltaMap<TConfig, TSpec>, TTag>::Type const Type;
 };
 
 // ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
-// TODO(rmaerker): Enable config struct.
-template <typename TRefPos, typename TAlphabet, typename TSpec>
-struct Value<DeltaMap<TRefPos, TAlphabet, TSpec> >
+template <typename TConfig, typename TSpec>
+struct Value<DeltaMap<TConfig, TSpec> >
 {
-    typedef typename Member<DeltaMap<TRefPos, TAlphabet, TSpec>, DeltaMapStoreMember>::Type TDeltaStore_;
+    typedef typename Member<DeltaMap<TConfig, TSpec>, DeltaMapStoreMember>::Type TDeltaStore_;
     typedef typename Size<TDeltaStore_>::Type TSize_;
-    typedef DeltaMapEntry<TRefPos, TSize_> Type;
+    typedef DeltaMapEntry<typename TConfig::TDeltaPos, TSize_> Type;
 };
 
-template <typename TSize, typename TAlphabet, typename TSpec>
-struct Value<DeltaMap<TSize, TAlphabet, TSpec> const>
+template <typename TConfig, typename TSpec>
+struct Value<DeltaMap<TConfig, TSpec> const>
 {
-    typedef typename Value<DeltaMap<TSize, TAlphabet, TSpec> >::Type const Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction GetMapValueString_
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TAlphabet, typename TSpec>
-struct GetMapValueString_<DeltaMap<TValue, TAlphabet, TSpec> >
-{
-    typedef String<TValue> Type;
-};
-
-template <typename TValue, typename TAlphabet, typename TSpec>
-struct GetMapValueString_<DeltaMap<TValue, TAlphabet, TSpec> const>
-{
-    typedef String<TValue> const Type;
+    typedef typename Value<DeltaMap<TConfig, TSpec> >::Type const Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -228,16 +191,16 @@ struct GetMapValueString_<DeltaMap<TValue, TAlphabet, TSpec> const>
  * @return TSize The size type to use for <tt>TDeltaMap</tt>.
  */
 
-template <typename TRefPos, typename TAlphabet, typename TSpec>
-struct Size<DeltaMap<TRefPos, TAlphabet, TSpec> >
+template <typename TConfig, typename TSpec>
+struct Size<DeltaMap<TConfig, TSpec> >
 {
-    typedef typename Member<DeltaMap<TRefPos, TAlphabet, TSpec>, DeltaMapEntriesMember>::Type TEntries;
+    typedef typename Member<DeltaMap<TConfig, TSpec>, DeltaMapEntriesMember>::Type TEntries;
     typedef typename Size<TEntries>::Type Type;
 };
 
-template <typename TRefPos, typename TAlphabet, typename TSpec>
-struct Size<DeltaMap<TRefPos, TAlphabet, TSpec> const > :
-    Size<DeltaMap<TRefPos, TAlphabet, TSpec> >{};
+template <typename TConfig, typename TSpec>
+struct Size<DeltaMap<TConfig, TSpec> const > :
+    Size<DeltaMap<TConfig, TSpec> >{};
 
 // ----------------------------------------------------------------------------
 // Metafunction Iterator                                             [Standard]
@@ -253,17 +216,17 @@ struct Size<DeltaMap<TRefPos, TAlphabet, TSpec> const > :
  * @return TIterator The iterator type to use for <tt>TDeltaMap</tt>. @link DeltaMapIterator @endlink.
  */
 
-template <typename TRefPos, typename TAlphabet, typename TSpec>
-struct Iterator<DeltaMap<TRefPos, TAlphabet, TSpec>, Standard>
+template <typename TConfig, typename TSpec>
+struct Iterator<DeltaMap<TConfig, TSpec>, Standard>
 {
-    typedef DeltaMap<TRefPos, TAlphabet, TSpec> TDeltaMap_;
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap_;
     typedef Iter<TDeltaMap_, DeltaMapIteratorSpec> Type;
 };
 
-template <typename TRefPos, typename TAlphabet, typename TSpec>
-struct Iterator<DeltaMap<TRefPos, TAlphabet, TSpec> const, Standard>
+template <typename TConfig, typename TSpec>
+struct Iterator<DeltaMap<TConfig, TSpec> const, Standard>
 {
-    typedef DeltaMap<TRefPos, TAlphabet, TSpec> TDeltaMap_;
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap_;
     typedef Iter<TDeltaMap_ const, DeltaMapIteratorSpec> Type;
 };
 
@@ -271,33 +234,19 @@ struct Iterator<DeltaMap<TRefPos, TAlphabet, TSpec> const, Standard>
 // Metafunction Iterator                                               [Rooted]
 // ----------------------------------------------------------------------------
 
-template <typename TRefPos, typename TAlphabet, typename TSpec>
-struct Iterator<DeltaMap<TRefPos, TAlphabet, TSpec>, Rooted>
+template <typename TConfig, typename TSpec>
+struct Iterator<DeltaMap<TConfig, TSpec>, Rooted>
 {
-    typedef DeltaMap<TRefPos, TAlphabet, TSpec> TDeltaMap_;
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap_;
     typedef Iter<TDeltaMap_, DeltaMapIteratorSpec> Type;
 };
 
-template <typename TRefPos, typename TAlphabet, typename TSpec>
-struct Iterator<DeltaMap<TRefPos, TAlphabet, TSpec> const, Rooted>
+template <typename TConfig, typename TSpec>
+struct Iterator<DeltaMap<TConfig, TSpec> const, Rooted>
 {
-    typedef DeltaMap<TRefPos, TAlphabet, TSpec> TDeltaMap_;
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap_;
     typedef Iter<TDeltaMap_ const, DeltaMapIteratorSpec> Type;
 };
-
-// ----------------------------------------------------------------------------
-// Metafunction DefaultGetIteratorSpec
-// ----------------------------------------------------------------------------
-
-template <typename TRefPos, typename TAlphabet, typename TSpec>
-struct DefaultGetIteratorSpec<DeltaMap<TRefPos, TAlphabet, TSpec> >
-{
-    typedef DeltaMapIteratorSpec Type;
-};
-
-template <typename TRefPos, typename TAlphabet, typename TSpec>
-struct DefaultGetIteratorSpec<DeltaMap<TRefPos, TAlphabet, TSpec> const> :
-    DefaultGetIteratorSpec<DeltaMap<TRefPos, TAlphabet, TSpec> >{};
 
 // ----------------------------------------------------------------------------
 // Metafunction DeltaValue
@@ -306,28 +255,28 @@ struct DefaultGetIteratorSpec<DeltaMap<TRefPos, TAlphabet, TSpec> const> :
 /*!
  * @mfn DeltaMap#DeltaValue
  * @headerfile <seqan/journaled_string_tree.h>
- * @brief Returns value type of a specific delta.
+ * @brief Returns value type for a specific delta.
  *
- * @signature DeltaValue<TDeltaMap, ID>::Type
- * @tparam TDeltaMap The type to query the iterator type for.
- * @tparam ID        Id to specify the delta type. One of @link DeltaType @endlink.
+ * @signature DeltaValue<TDeltaMap, TType>::Type
+ * @tparam TDeltaMap The type of the delta map.
+ * @tparam TType     The type of the delta value. One of @link DeltaTypeTags @endlink.
  *
  * The delta map stores four different delta events: SNPs, insertions, deletions and variable replacements.
  * This metafunction returns the correct type for the specified event.
  */
 
-template <typename TRefPos, typename TAlphabet, typename TSpec, typename TDeltaType>
-struct DeltaValue<DeltaMap<TRefPos, TAlphabet, TSpec>, TDeltaType>
+template <typename TConfig, typename TSpec, typename TDeltaType>
+struct DeltaValue<DeltaMap<TConfig, TSpec>, TDeltaType>
 {
-    typedef DeltaMap<TRefPos, TAlphabet, TSpec> TDeltaMap_;
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap_;
     typedef typename Member<TDeltaMap_, DeltaMapStoreMember>::Type TDeltaStore_;
     typedef typename DeltaValue<TDeltaStore_, TDeltaType>::Type Type;
 };
 
-template <typename TRefPos, typename TAlphabet, typename TSpec, typename TDeltaType>
-struct DeltaValue<DeltaMap<TRefPos, TAlphabet, TSpec> const, TDeltaType>
+template <typename TConfig, typename TSpec, typename TDeltaType>
+struct DeltaValue<DeltaMap<TConfig, TSpec> const, TDeltaType>
 {
-    typedef DeltaMap<TRefPos, TAlphabet, TSpec> TDeltaMap_;
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap_;
     typedef typename Member<TDeltaMap_, DeltaMapStoreMember>::Type TDeltaStore_;
     typedef typename DeltaValue<TDeltaStore_ const, TDeltaType>::Type Type;
 };
@@ -339,25 +288,145 @@ struct DeltaValue<DeltaMap<TRefPos, TAlphabet, TSpec> const, TDeltaType>
 /*!
  * @mfn DeltaMap#DeltaCoverage
  * @headerfile <seqan/journaled_string_tree.h>
- * @brief Returns coverage type of a delta map.
+ * @brief Returns coverage type for a delta map.
  *
- * @signature DeltaCoverage<TDeltaMap, KEY>::Type
- * @tparam TDeltaMap The type to query the iterator type for.
+ * @signature DeltaCoverage<TDeltaMap>::Type
+ * @tparam TDeltaMap The type of the delta map.
  */
 
-template <typename TRefPos, typename TAlphabet, typename TSpec>
-struct DeltaCoverage<DeltaMap<TRefPos, TAlphabet, TSpec> >
+template <typename TConfig, typename TSpec>
+struct DeltaCoverage<DeltaMap<TConfig, TSpec> >
 {
-    typedef typename Value<DeltaMap<TRefPos, TAlphabet, TSpec> >::Type TEntry_;
+    typedef typename Value<DeltaMap<TConfig, TSpec> >::Type TEntry_;
     typedef typename DeltaCoverage<TEntry_>::Type Type;
 };
 
-template <typename TRefPos, typename TAlphabet, typename TSpec>
-struct DeltaCoverage<DeltaMap<TRefPos, TAlphabet, TSpec> const>
+template <typename TConfig, typename TSpec>
+struct DeltaCoverage<DeltaMap<TConfig, TSpec> const>
 {
-    typedef typename Value<DeltaMap<TRefPos, TAlphabet, TSpec> >::Type TEntry_;
+    typedef typename Value<DeltaMap<TConfig, TSpec> >::Type TEntry_;
     typedef typename DeltaCoverage<TEntry_ const>::Type Type;
 };
+
+
+// ============================================================================
+// Private Functions
+// ============================================================================
+
+namespace impl
+{
+
+// ----------------------------------------------------------------------------
+// Function impl::lbWrapper
+// ----------------------------------------------------------------------------
+
+template <typename TConfig, typename TSpec, typename TEntry, typename TFunctor>
+inline typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type
+lbWrapper(DeltaMap<TConfig, TSpec> const & deltaMap, TEntry const & entry, TFunctor const & f)
+{
+    return std::lower_bound(begin(deltaMap, Standard()), end(deltaMap, Standard()), entry, f);
+}
+
+template <typename TConfig, typename TSpec, typename TEntry, typename TFunctor>
+inline typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type
+lbWrapper(DeltaMap<TConfig, TSpec> & deltaMap, TEntry const & entry, TFunctor const & f)
+{
+    return std::lower_bound(begin(deltaMap, Standard()), end(deltaMap, Standard()), entry, f);
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::lowerBound
+// ----------------------------------------------------------------------------
+
+// Only searches for the position.
+template <typename TConfig, typename TSpec, typename TPosition>
+inline typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type
+lowerBound(DeltaMap<TConfig, TSpec> const & deltaMap, TPosition refPosition)
+{
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
+    typedef typename Value<TDeltaMap>::Type TEntry;
+
+    TEntry entry;
+    entry.deltaPosition = refPosition;
+    return lbWrapper(deltaMap, entry, DeltaMapEntryPosLessThanComparator_());
+}
+
+template <typename TConfig, typename TSpec, typename TPosition>
+inline typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type
+lowerBound(DeltaMap<TConfig, TSpec> & deltaMap, TPosition refPosition)
+{
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
+    typedef typename Value<TDeltaMap>::Type TEntry;
+
+    TEntry entry;
+    entry.deltaPosition = refPosition;
+    return lbWrapper(deltaMap, entry, DeltaMapEntryPosLessThanComparator_());
+}
+
+// Searches for the position and the delta type.
+template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaType>
+inline typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type
+lowerBound(DeltaMap<TConfig, TSpec> const & deltaMap, TPosition refPosition, TDeltaType /*deltaType*/)
+{
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
+    typedef typename Value<TDeltaMap>::Type TEntry;
+
+    TEntry entry;
+    entry.deltaPosition = refPosition;
+    entry.deltaRecord.i1 = selectDeltaType(TDeltaType());
+    return lbWrapper(deltaMap, entry, DeltaMapEntryPosAndTypeLessThanComparator_());
+}
+
+template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaType>
+inline typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type
+lowerBound(DeltaMap<TConfig, TSpec> & deltaMap, TPosition refPosition, TDeltaType /*deltaType*/)
+{
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
+    typedef typename Value<TDeltaMap>::Type TEntry;
+
+    TEntry entry;
+    entry.deltaPosition = refPosition;
+    entry.deltaRecord.i1 = selectDeltaType(TDeltaType());
+    return lbWrapper(deltaMap, entry, DeltaMapEntryPosAndTypeLessThanComparator_());
+}
+
+template <typename TDeltaMap, typename TDeltaPos, typename TTag>
+inline bool
+checkNoDuplicate(TDeltaMap const & map, TDeltaPos pos, TTag /*deltaType*/)
+{
+    typedef typename Value<TDeltaMap>::Type TEntry;
+    typedef typename DeltaPosition<TEntry>::Type TEntryPos;
+
+    auto it = lowerBound(map, pos, TTag());
+    if (it != end(map, Standard()))
+        if (getDeltaPosition(*it) == static_cast<TEntryPos>(pos))
+            return getDeltaRecord(*it).i1 != selectDeltaType(TTag());
+    return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::insert()
+// ----------------------------------------------------------------------------
+
+template <typename TDeltaMap, typename TDeltaPos, typename TDeltaValue, typename TCoverage, typename TTag>
+inline void
+insert(Iter<TDeltaMap, DeltaMapIteratorSpec> const & mapIt,
+       TDeltaPos deltaPos,
+       TDeltaValue const & deltaValue,
+       TCoverage const & coverage,
+       TTag const & deltaType)
+{
+    typedef typename Value<TDeltaMap>::Type TEntry;
+    typedef typename DeltaRecord<TEntry>::Type TDeltaRecord;
+
+    SEQAN_ASSERT(checkNoDuplicate(*mapIt._mapPtr, deltaPos, deltaType));     // Check valid insert position.
+
+    insertValue(mapIt._mapPtr->_entries, mapIt - begin(*mapIt._mapPtr, Standard()),
+                TEntry(deltaPos, TDeltaRecord(selectDeltaType(deltaType),
+                                              addDeltaValue(mapIt._mapPtr->_deltaStore, deltaValue, deltaType)), coverage));
+}
+
+}
 
 // ============================================================================
 // Functions
@@ -370,47 +439,42 @@ struct DeltaCoverage<DeltaMap<TRefPos, TAlphabet, TSpec> const>
 /*!
  * @fn DeltaMap#find
  * @headerfile <seqan/journaled_string_tree.h>
- * @brief Locates the given key within the map.
+ * @brief Finds the element specified by the given delta position and delta type.
  *
- * @signature TIterator find(deltaMap, key)
+ * @signature TIterator find(deltaMap, pos, type)
  *
- * @param[in] deltaMap The delta map to search for the key.
- * @param[in] key   The key to be searched.
+ * @param[in] deltaMap  The delta map that is searched for the element.
+ * @param[in] pos       The delta position to be searched for.
+ * @param[in] type      The type of the delta operation. Must be of type @link DeltaTypeTags @endlink.
  *
- * @return TIterator An @link DeltaMap#Iterator @endlink pointing to the first mapped entry that compares equal to the key.
+ * @return TIterator An @link DeltaMap#Iterator @endlink pointing to the corresponding element.
  *  If the key is not contained @link DeltaMap#end @endlink is returned.
  *
- * @note The runtime is logarithmic in the size of the map.
+ * @remark The runtime is logarithmic in the size of the map.
  */
 
-template <typename TRefPos, typename TAlphabet, typename TSpec, typename TPosition>
-inline typename Iterator<DeltaMap<TRefPos, TAlphabet, TSpec>, Standard>::Type
-find(DeltaMap<TRefPos, TAlphabet, TSpec> & deltaMap, TPosition refPosition)
+template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaType>
+inline typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type
+find(DeltaMap<TConfig, TSpec> const & deltaMap, TPosition refPosition, TDeltaType /*deltaType*/)
 {
-    typedef DeltaMap<TRefPos, TAlphabet, TSpec> TDeltaMap;
-    typedef typename Value<TDeltaMap>::Type TEntry;
-
-    SEQAN_ASSERT(!empty(deltaMap));
-
-    TEntry tmp;
-    tmp.deltaPosition = refPosition;
-    return std::lower_bound(begin(deltaMap, Standard()), end(deltaMap, Standard()), tmp,
-                            DeltaMapEntryCompareLessByDeltaPosition_());
+    auto it = impl::lowerBound(deltaMap, refPosition, TDeltaType());
+    if (getDeltaPosition(*it) == refPosition && getDeltaRecord(*it).i1 == selectDeltaType(TDeltaType()))
+        return it;
+    return end(deltaMap, Standard());
 }
 
-template <typename TRefPos, typename TAlphabet, typename TSpec, typename TPosition>
-inline typename Iterator<DeltaMap<TRefPos, TAlphabet, TSpec> const, Standard>::Type
-find(DeltaMap<TRefPos, TAlphabet, TSpec> const & deltaMap, TPosition refPosition)
+template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaType>
+inline typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type
+find(DeltaMap<TConfig, TSpec> & deltaMap, TPosition refPosition, TDeltaType /*deltaType*/)
 {
-    typedef DeltaMap<TRefPos, TAlphabet, TSpec> TDeltaMap;
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
     typedef typename Value<TDeltaMap>::Type TEntry;
-
-    SEQAN_ASSERT(!empty(deltaMap));
-
-    TEntry tmp;
-    tmp.deltaPosition = refPosition;
-    return std::lower_bound(begin(deltaMap, Standard()), end(deltaMap, Standard()), tmp,
-                            DeltaMapEntryCompareLessByDeltaPosition_());
+    typedef typename DeltaPosition<TEntry>::Type TDeltaPos;
+    auto it = impl::lowerBound(deltaMap, refPosition, TDeltaType());
+    if (getDeltaPosition(*it) == static_cast<TDeltaPos>(refPosition) &&
+        getDeltaRecord(*it).i1 == selectDeltaType(TDeltaType()))
+        return it;
+    return end(deltaMap, Standard());
 }
 
 // ----------------------------------------------------------------------------
@@ -420,73 +484,105 @@ find(DeltaMap<TRefPos, TAlphabet, TSpec> const & deltaMap, TPosition refPosition
 /*!
  * @fn DeltaMap#insert
  * @headerfile <seqan/journaled_string_tree.h>
- * @brief Inserts a new delta event.
+ * @brief Inserts a new delta entry.
  *
- * @signature void insert(deltaMap, key, delta, cov)
- * @signature void insert(it, key, delta, cov)
+ * @signature bool insert(deltaMap, pos, val, cov, type);
  *
- * @param[in,out] deltaMap  The map to insert the new delta operation for.
- * @param[in,out] it        Iterator pointing to the insert position. Note that the element is inserted before this position.
- * @param[in]     refPos    The reference position to which the delta operation maps to.
+ * @param[in,out] deltaMap  The map to insert the new delta operation. Of type @link DeltaMap @endlink.
+ * @param[in]     pos       The position of the inserted delta entry.
  * @param[in]     deltaVal  The value of the delta operation.
  * @param[in]     cov       The coverage of the delta operation.
- * @param[in]     tag       A specifier to select the correct delta type. One of @link DeltaTypeTags @endlink.
+ * @param[in]     type      A specifier to select the correct delta type. One of @link DeltaTypeTags @endlink.
+ *
+ * @return bool <tt>false<\tt> if an entry with the same <tt>pos<\tt> and <tt>type<\tt> already exists, <tt>true<\tt> otherwise.
  *
  * @remark The map is implemented as a vector and the insertion time is linear in worst case.
  */
 
-template <typename TValue, typename TAlphabet, typename TSpec, typename TDeltaPos, typename TDeltaValue,
+template <typename TConfig, typename TSpec, typename TDeltaPos, typename TDeltaValue,
           typename TCoverage, typename TTag>
-inline void
-insert(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
+inline bool
+insert(DeltaMap<TConfig, TSpec> & deltaMap,
        TDeltaPos deltaPos,
        TDeltaValue const & deltaValue,
        TCoverage const & coverage,
        TTag const & deltaType)
 {
-    typedef DeltaMap<TValue, TAlphabet, TSpec> TDeltaMap;
-    typedef typename Iterator<TDeltaMap, Standard>::Type TMapIterator;
-    typedef typename Member<TDeltaMap, DeltaMapStoreMember>::Type TDeltaStore;
-    typedef typename Position<TDeltaStore>::Type TStorePos;
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
     typedef typename Value<TDeltaMap>::Type TEntry;
     typedef typename DeltaRecord<TEntry>::Type TDeltaRecord;
+    typedef typename DeltaPosition<TEntry>::Type TEntryPos;
 
-    SEQAN_ASSERT_EQ(length(coverage), length(getCoverageSize(deltaMap)));  // Check valid coverage.
-
-    if (empty(deltaMap))
+    if (SEQAN_UNLIKELY(empty(deltaMap)))
     {
         appendValue(deltaMap._entries,
                     TEntry(deltaPos, TDeltaRecord(selectDeltaType(deltaType),
                                                   addDeltaValue(deltaMap._deltaStore, deltaValue, deltaType)), coverage));
+        return true;
     }
 
-    insertValue(deltaMap._entries, find(deltaMap, deltaPos) - begin(deltaMap, Standard()),
-                TEntry(deltaPos, TDeltaRecord(selectDeltaType(deltaType),
-                                              addDeltaValue(deltaMap._deltaStore, deltaValue, deltaType)), coverage));
-}
-
-template <typename TValue, typename TAlphabet, typename TSpec, typename TDeltaPos, typename TDeltaValue,
-          typename TCoverage, typename TTag>
-inline void
-insert(typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Standard>::Type mapIt,
-       TDeltaPos deltaPos,
-       TDeltaValue const & deltaValue,
-       TCoverage const & coverage,
-       TTag const & deltaType)
-{
-    SEQAN_ASSERT_EQ(length(getCoverageSize(*mapIt._mapPtr)), length(coverage));  // Check valid coverage.
-    SEQAN_ASSERT_EQ(mapIt, find(*mapIt._mapPtr, deltaPos));  // Check valid insert position.
-
-    insertValue(mapIt.mapPtr->_entries, mapIt - begin(mapIt._mapPtr->deltaMap, Standard()),
-                TEntry(deltaPos, TDeltaRecord(selectDeltaType(deltaType),
-                addDeltaValue(mapIt._mapPtr->_deltaStore, deltaValue, deltaType)), coverage));
+    auto it = impl::lowerBound(deltaMap, deltaPos, deltaType);
+    if (SEQAN_UNLIKELY(it != end(deltaMap, Standard()) &&
+                       getDeltaPosition(*it) == static_cast<TEntryPos>(deltaPos) &&
+                       getDeltaRecord(*it).i1 == selectDeltaType(deltaType)))
+        return false;
+    impl::insert(it, deltaPos, deltaValue, coverage, deltaType);
+    return true;
 }
 
 // ----------------------------------------------------------------------------
 // Function erase()
 // ----------------------------------------------------------------------------
 
-// TODO(rmaerker): Implement erase
+/*!
+ * @fn DeltaMap#erase
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Erases an existing delta entry.
+ *
+ * @signature bool erase(deltaMap, pos, type);
+ *
+ * @param[in,out] deltaMap  The map to erase the delta from. Of type @link DeltaMap @endlink.
+ * @param[in]     pos       The position of the targeted delta entry.
+ * @param[in]     type      The type of the targeted delta entry. One of @link DeltaTypeTags @endlink.
+ *
+ * @return bool <tt>false<\tt> if such an entry does not exist, <tt>true<\tt> otherwise.
+ *
+ * @remark The map is implemented as a vector and the insertion time is linear in worst case.
+ */
+
+template <typename TConfig, typename TSpec, typename TDeltaPos, typename TDeltaType>
+inline bool
+erase(DeltaMap<TConfig, TSpec> & deltaMap,
+      TDeltaPos deltaPos,
+      TDeltaType /*deltaType*/)
+{
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
+    typedef typename Member<TDeltaMap, DeltaMapEntriesMember>::Type TEntries;
+    typedef typename Member<TDeltaMap, DeltaMapStoreMember>::Type TStore;
+    typedef typename Value<TDeltaMap>::Type TEntry;
+    typedef typename Size<TStore>::Type TStoreSize;
+
+    if (SEQAN_UNLIKELY(empty(deltaMap)))  // Check for empty deltaMap.
+        return false;
+
+    auto it = find(deltaMap, deltaPos, TDeltaType());
+    if (SEQAN_UNLIKELY(it == end(deltaMap, Standard())))
+        return false;  // Element does not exists.
+
+    // 1. Erase the delta record from the corresponding delta store.
+    TStoreSize storePos = getDeltaRecord(value(it)).i2;
+    SEQAN_ASSERT_LT(storePos, length(getDeltaStore(deltaMap._deltaStore, TDeltaType())));
+    eraseDeltaValue(deltaMap._deltaStore, storePos, TDeltaType());
+    // 2. Erase corresponding entry.
+    erase(deltaMap._entries, it - begin(deltaMap, Standard()));
+    // 3. Update record position for all entries
+    forEach(deltaMap, [storePos](TEntry & entry)
+    {
+        if (getDeltaRecord(entry).i1 == selectDeltaType(TDeltaType()) && getDeltaRecord(entry).i2 > storePos)
+            --getDeltaRecord(entry).i2;  // Decrease record position by one.
+    });
+    return true;
+}
 
 // ----------------------------------------------------------------------------
 // Function begin()                                                  [Standard]
@@ -505,76 +601,76 @@ insert(typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Standard>::Type map
  * @return TIterator An iterator of type @link DeltaMap#Iterator @endlink pointing to the beginning of the map.
  */
 
-template <typename TValue, typename TAlphabet, typename TSpec>
-inline typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Standard>::Type
-begin(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap, Standard const & /*tag*/)
+template <typename TConfig, typename TSpec>
+inline typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type
+begin(DeltaMap<TConfig, TSpec> & deltaMap, Standard const & /*tag*/)
 {
-    return typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Standard>::Type(deltaMap, 0);
+    return typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type(deltaMap, 0);
 }
 
-template <typename TValue, typename TAlphabet, typename TSpec>
-inline typename Iterator<DeltaMap<TValue, TAlphabet, TSpec> const, Standard>::Type
-begin(DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap, Standard const &/*tag*/)
+template <typename TConfig, typename TSpec>
+inline typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type
+begin(DeltaMap<TConfig, TSpec> const & deltaMap, Standard const &/*tag*/)
 {
-    return typename Iterator<DeltaMap<TValue, TAlphabet, TSpec> const, Standard>::Type(deltaMap, 0);
+    return typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type(deltaMap, 0);
 }
 
 // ----------------------------------------------------------------------------
 // Function begin()                                                    [Rooted]
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TAlphabet, typename TSpec>
-inline typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Rooted>::Type
-begin(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap, Rooted const & /*tag*/)
+template <typename TConfig, typename TSpec>
+inline typename Iterator<DeltaMap<TConfig, TSpec>, Rooted>::Type
+begin(DeltaMap<TConfig, TSpec> & deltaMap, Rooted const & /*tag*/)
 {
-    return typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Rooted>::Type(deltaMap, 0);
+    return typename Iterator<DeltaMap<TConfig, TSpec>, Rooted>::Type(deltaMap, 0);
 }
 
-template <typename TValue, typename TAlphabet, typename TSpec>
-inline typename Iterator<DeltaMap<TValue, TAlphabet, TSpec> const, Rooted>::Type
-begin(DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap, Rooted const &/*tag*/)
+template <typename TConfig, typename TSpec>
+inline typename Iterator<DeltaMap<TConfig, TSpec> const, Rooted>::Type
+begin(DeltaMap<TConfig, TSpec> const & deltaMap, Rooted const &/*tag*/)
 {
-    return typename Iterator<DeltaMap<TValue, TAlphabet, TSpec> const, Rooted>::Type(deltaMap, 0);
+    return typename Iterator<DeltaMap<TConfig, TSpec> const, Rooted>::Type(deltaMap, 0);
 }
 
 // ----------------------------------------------------------------------------
 // Function iter()                                                   [Standard]
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TAlphabet, typename TSpec, typename TPos>
-inline typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Standard>::Type
-iter(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap,
+template <typename TConfig, typename TSpec, typename TPos>
+inline typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type
+iter(DeltaMap<TConfig, TSpec> & deltaMap,
      TPos const & pos,
      Standard const & /*tag*/)
 {
-    return typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Standard>::Type(deltaMap, pos);
+    return typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type(deltaMap, pos);
 }
 
-template <typename TValue, typename TAlphabet, typename TSpec, typename TPos>
-inline typename Iterator<DeltaMap<TValue, TAlphabet, TSpec> const, Standard>::Type
-iter(DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap,
+template <typename TConfig, typename TSpec, typename TPos>
+inline typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type
+iter(DeltaMap<TConfig, TSpec> const & deltaMap,
      TPos const & pos,
      Standard const &/*tag*/)
 {
-    return typename Iterator<DeltaMap<TValue, TAlphabet, TSpec> const, Standard>::Type(deltaMap, pos);
+    return typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type(deltaMap, pos);
 }
 
 // ----------------------------------------------------------------------------
 // Function iter()                                                     [Rooted]
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TAlphabet, typename TSpec, typename TPos>
-inline typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Rooted>::Type
-iter(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap, TPos pos, Rooted const & /*tag*/)
+template <typename TConfig, typename TSpec, typename TPos>
+inline typename Iterator<DeltaMap<TConfig, TSpec>, Rooted>::Type
+iter(DeltaMap<TConfig, TSpec> & deltaMap, TPos pos, Rooted const & /*tag*/)
 {
-    return typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Rooted>::Type(deltaMap, pos);
+    return typename Iterator<DeltaMap<TConfig, TSpec>, Rooted>::Type(deltaMap, pos);
 }
 
-template <typename TValue, typename TAlphabet, typename TSpec, typename TPos>
-inline typename Iterator<DeltaMap<TValue, TAlphabet, TSpec> const, Rooted>::Type
-iter(DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap, TPos pos, Rooted const & /*tag*/)
+template <typename TConfig, typename TSpec, typename TPos>
+inline typename Iterator<DeltaMap<TConfig, TSpec> const, Rooted>::Type
+iter(DeltaMap<TConfig, TSpec> const & deltaMap, TPos pos, Rooted const & /*tag*/)
 {
-    return typename Iterator<DeltaMap<TValue, TAlphabet, TSpec> const, Rooted>::Type(deltaMap, pos);
+    return typename Iterator<DeltaMap<TConfig, TSpec> const, Rooted>::Type(deltaMap, pos);
 }
 
 // ----------------------------------------------------------------------------
@@ -594,36 +690,36 @@ iter(DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap, TPos pos, Rooted const
  * @return TIterator An iterator of type @link DeltaMap#Iterator @endlink pointing to the end of the map.
  */
 
-template <typename TValue, typename TAlphabet, typename TSpec>
-inline typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Standard>::Type
-end(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap, Standard const &/*tag*/)
+template <typename TConfig, typename TSpec>
+inline typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type
+end(DeltaMap<TConfig, TSpec> & deltaMap, Standard const &/*tag*/)
 {
-    return typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Standard>::Type(deltaMap, length(deltaMap));
+    return typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type(deltaMap, size(deltaMap));
 }
 
-template <typename TValue, typename TAlphabet, typename TSpec>
-inline typename Iterator<DeltaMap<TValue, TAlphabet, TSpec> const, Standard>::Type
-end(DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap, Standard const &/*tag*/)
+template <typename TConfig, typename TSpec>
+inline typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type
+end(DeltaMap<TConfig, TSpec> const & deltaMap, Standard const &/*tag*/)
 {
-    return typename Iterator<DeltaMap<TValue, TAlphabet, TSpec> const, Standard>::Type(deltaMap, length(deltaMap));
+    return typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type(deltaMap, size(deltaMap));
 }
 
 // ----------------------------------------------------------------------------
 // Function end()                                                      [Rooted]
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TAlphabet, typename TSpec>
-inline typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Rooted>::Type
-end(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap, Rooted const &/*tag*/)
+template <typename TConfig, typename TSpec>
+inline typename Iterator<DeltaMap<TConfig, TSpec>, Rooted>::Type
+end(DeltaMap<TConfig, TSpec> & deltaMap, Rooted const &/*tag*/)
 {
-    return typename Iterator<DeltaMap<TValue, TAlphabet, TSpec>, Rooted>::Type(deltaMap, length(deltaMap));
+    return typename Iterator<DeltaMap<TConfig, TSpec>, Rooted>::Type(deltaMap, size(deltaMap));
 }
 
-template <typename TValue, typename TAlphabet, typename TSpec>
-inline typename Iterator<DeltaMap<TValue, TAlphabet, TSpec> const, Rooted>::Type
-end(DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap, Rooted const &/*tag*/)
+template <typename TConfig, typename TSpec>
+inline typename Iterator<DeltaMap<TConfig, TSpec> const, Rooted>::Type
+end(DeltaMap<TConfig, TSpec> const & deltaMap, Rooted const &/*tag*/)
 {
-    return typename Iterator<DeltaMap<TValue, TAlphabet, TSpec> const, Rooted>::Type(deltaMap, length(deltaMap));
+    return typename Iterator<DeltaMap<TConfig, TSpec> const, Rooted>::Type(deltaMap, size(deltaMap));
 }
 
 // ----------------------------------------------------------------------------
@@ -640,9 +736,9 @@ end(DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap, Rooted const &/*tag*/)
  * @param[in,out] deltaMap  The map to be cleared.
  */
 
-template <typename TValue, typename TAlphabet, typename TSpec>
+template <typename TConfig, typename TSpec>
 inline void
-clear(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap)
+clear(DeltaMap<TConfig, TSpec> & deltaMap)
 {
     deltaMap._coverageSize = 0;
     clear(deltaMap._entries);
@@ -665,86 +761,34 @@ clear(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap)
  * @return bool <tt>true</tt> if empty, otherwise <tt>false</tt>
  */
 
-template <typename TValue, typename TAlphabet, typename TSpec>
+template <typename TConfig, typename TSpec>
 inline bool
-empty(DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap)
+empty(DeltaMap<TConfig, TSpec> const & deltaMap)
 {
     return empty(deltaMap._entries);
 }
 
 // ----------------------------------------------------------------------------
-// Function length()
+// Function size()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn DeltaMap#length
+ * @fn DeltaMap#size
  * @headerfile <seqan/journaled_string_tree.h>
  * @brief Returns the number of mapped delta events.
  *
- * @signature TSize length(deltaMap)
+ * @signature TSize size(deltaMap)
  *
- * @param[in] deltaMap  The map to get the length for.
+ * @param[in] deltaMap  The map to get the size for.
  *
  * @return TSize The number of delta events stored in the map.
  */
 
-template <typename TValue, typename TAlphabet, typename TSpec>
-inline typename Size<DeltaMap<TValue, TAlphabet, TSpec> >::Type
-length(DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap)
+template <typename TConfig, typename TSpec>
+inline typename Size<DeltaMap<TConfig, TSpec> >::Type
+size(DeltaMap<TConfig, TSpec> const & deltaMap)
 {
     return length(deltaMap._entries);
-}
-
-// ----------------------------------------------------------------------------
-// Function getCoverageSize()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn DeltaMap#getCoverageSize
- * @headerfile <seqan/journaled_string_tree.h>
- * @brief Returns the number of sequences covered per delta event.
- *
- * @signature TSize getCoverageSize(deltaMap)
- *
- * @param[in] deltaMap  The map to get the coverage size for.
- *
- * @return TSize The number of sequences covering a delta event.
- */
-
-template <typename TValue, typename TAlphabet, typename TSpec>
-inline typename Size<typename DeltaCoverage<DeltaMap<TValue, TAlphabet, TSpec> >::Type>::Type
-getCoverageSize(DeltaMap<TValue, TAlphabet, TSpec> const & deltaMap)
-{
-    return deltaMap._coverageSize;
-}
-
-// ----------------------------------------------------------------------------
-// Function setCoverageSize()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn DeltaMap#setCoverageSize
- * @headerfile <seqan/journaled_string_tree.h>
- * @brief Sets the number of sequences covering a delta event.
- *
- * @signature  setCoverageSize(deltaMap, size)
- *
- * @param[in,out] deltaMap  The map to set the coverage size for.
- * @param[in]     size      The new coverage size.
- *
- * This function sets the coverage size globally to all delta events contained in the map.
- */
-
-template <typename TValue, typename TAlphabet, typename TSpec, typename TSize>
-inline void
-setCoverageSize(DeltaMap<TValue, TAlphabet, TSpec> & deltaMap, TSize const & newSize)
-{
-    typedef DeltaMap<TValue, TAlphabet, TSpec> TDeltaMap;
-    typedef typename Iterator<TDeltaMap, Standard>::Type TMapIterator;
-
-    deltaMap._coverageSize = newSize;
-    for (TMapIterator it = begin(deltaMap, Standard()); it != end(deltaMap, Standard()); ++it)
-        resize(deltaCoverage(it), newSize, Exact());
 }
 
 }

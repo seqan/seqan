@@ -101,13 +101,30 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-// Struct DeltaMapEntryCompareLessByDeltaPosition_
+// Class DeltaMapEntryPosAndTypeLessThanComparator_
 // ----------------------------------------------------------------------------
 
-struct DeltaMapEntryCompareLessByDeltaPosition_
+struct DeltaMapEntryPosAndTypeLessThanComparator_
 {
-    template <typename TRefPos, typename TStorePos>
-    inline bool operator()(DeltaMapEntry<TRefPos, TStorePos> const & lhs, DeltaMapEntry<TRefPos, TStorePos> const & rhs)
+
+    template <typename TEntry>
+    bool operator()(TEntry const & lhs, TEntry const & rhs)
+    {
+        if (lhs.deltaPosition == rhs.deltaPosition)
+            return lhs.deltaRecord.i1 < rhs.deltaRecord.i1;
+        return lhs.deltaPosition < rhs.deltaPosition;
+    }
+};
+
+// ----------------------------------------------------------------------------
+// Class DeltaMapEntryPosLessThanComparator_
+// ----------------------------------------------------------------------------
+
+struct DeltaMapEntryPosLessThanComparator_
+{
+
+    template <typename TEntry>
+    bool operator()(TEntry const & lhs, TEntry const & rhs)
     {
         return lhs.deltaPosition < rhs.deltaPosition;
     }

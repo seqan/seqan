@@ -146,7 +146,7 @@ typedef TagSelector<DeltaTypes> DeltaTypeSelector;
 // Class DeltaStore
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet>
+template <typename TSnp, typename TDel = uint32_t, typename TIns = String<TSnp>, typename TSV = Pair<TDel, TIns> >
 class DeltaStore
 {
 public:
@@ -188,42 +188,38 @@ struct BitsPerValue<DeltaType>
 // ----------------------------------------------------------------------------
 
 // DeltaTypeSnp.
-template <typename TSize, typename TAlphabet>
-struct Member<DeltaStore<TSize, TAlphabet>, DeltaTypeSnp>
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+struct Member<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSnp>
 {
-    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeSnp>::Type TSnpValue;
-    typedef String<TSnpValue> Type;
+    typedef String<TSnp> Type;
 };
 
 // DeltaTypeDel.
-template <typename TSize, typename TAlphabet>
-struct Member<DeltaStore<TSize, TAlphabet>, DeltaTypeDel>
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+struct Member<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeDel>
 {
-    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeDel>::Type TDelValue;
-    typedef String<TDelValue> Type;
+    typedef String<TDel> Type;
 };
 
 // DeltaTypeIns.
-template <typename TSize, typename TAlphabet>
-struct Member<DeltaStore<TSize, TAlphabet>, DeltaTypeIns>
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+struct Member<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeIns>
 {
-    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeIns>::Type TInsValue;
-    typedef String<TInsValue> Type;
+    typedef String<TIns> Type;
 };
 
 // DeltaTypeSV.
-template <typename TSize, typename TAlphabet>
-struct Member<DeltaStore<TSize, TAlphabet>, DeltaTypeSV>
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+struct Member<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSV>
 {
-    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeSV>::Type TSVValue;
-    typedef String<TSVValue> Type;
+    typedef String<TSV> Type;
 };
 
 // Generic const version.
-template <typename TSize, typename TAlphabet, typename TDeltaType>
-struct Member<DeltaStore<TSize, TAlphabet> const, TDeltaType>
+template <typename TSnp, typename TDel, typename TIns, typename TSV, typename TDeltaType>
+struct Member<DeltaStore<TSnp, TDel, TIns, TSV> const, TDeltaType>
 {
-    typedef DeltaStore<TSize, TAlphabet> TStore_;
+    typedef DeltaStore<TSnp, TDel, TIns, TSV> TStore_;
     typedef typename Member<TStore_, TDeltaType>::Type const Type;
 };
 
@@ -231,68 +227,64 @@ struct Member<DeltaStore<TSize, TAlphabet> const, TDeltaType>
 // Metafunction DeltaValue                                     [DELTA_TYPE_SNP]
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeSnp>
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSnp>
 {
-    typedef TAlphabet Type;
+    typedef TSnp Type;
 };
 
-template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaTypeSnp>
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeSnp>
 {
-    typedef TAlphabet const Type;
+    typedef TSnp const Type;
 };
 
 // ----------------------------------------------------------------------------
 // Metafunction DeltaValue                                     [DELTA_TYPE_DEL]
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeDel>
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeDel>
 {
-    typedef TSize Type;
+    typedef TDel Type;
 };
 
-template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaTypeDel>
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeDel>
 {
-    typedef TSize const Type;
+    typedef TDel const Type;
 };
 
 // ----------------------------------------------------------------------------
 // Metafunction DeltaValue                                     [DELTA_TYPE_INS]
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeIns>
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeIns>
 {
-    typedef String<TAlphabet> Type;
+    typedef TIns Type;
 };
 
-template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaTypeIns>
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeIns>
 {
-    typedef String<TAlphabet> const Type;
+    typedef TIns const Type;
 };
 
 // ----------------------------------------------------------------------------
 // Metafunction DeltaValue                                   [DELTA_TYPE_SV]
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeSV>
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSV>
 {
-    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeIns>::Type TIns_;
-    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeDel>::Type TDel_;
-    typedef Pair<TDel_, TIns_> Type;
+    typedef TSV Type;
 };
 
-template <typename TSize, typename TAlphabet>
-struct DeltaValue<DeltaStore<TSize, TAlphabet> const, DeltaTypeSV>
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeSV>
 {
-    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeIns>::Type TIns_;
-    typedef typename DeltaValue<DeltaStore<TSize, TAlphabet>, DeltaTypeDel>::Type TDel_;
-    typedef Pair<TDel_, TIns_> const Type;
+    typedef TSV const Type;
 };
 
 // ============================================================================
@@ -394,16 +386,16 @@ selectDeltaType(DeltaTypeSV /*tag*/)
 // Function getDeltaStore()                                     [DeltaTypeSnp]
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet>
-inline typename Member<DeltaStore<TSize, TAlphabet>, DeltaTypeSnp>::Type &
-getDeltaStore(DeltaStore<TSize, TAlphabet> & store, DeltaTypeSnp /*tag*/)
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+inline typename Member<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSnp>::Type &
+getDeltaStore(DeltaStore<TSnp, TDel, TIns, TSV> & store, DeltaTypeSnp /*tag*/)
 {
     return store._snpData;
 }
 
-template <typename TSize, typename TAlphabet>
-inline typename Member<DeltaStore<TSize, TAlphabet> const, DeltaTypeSnp>::Type &
-getDeltaStore(DeltaStore<TSize, TAlphabet> const & store, DeltaTypeSnp /*tag*/)
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+inline typename Member<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeSnp>::Type &
+getDeltaStore(DeltaStore<TSnp, TDel, TIns, TSV> const & store, DeltaTypeSnp /*tag*/)
 {
     return store._snpData;
 }
@@ -412,16 +404,16 @@ getDeltaStore(DeltaStore<TSize, TAlphabet> const & store, DeltaTypeSnp /*tag*/)
 // Function getDeltaStore()                                     [DeltaTypeDel]
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet>
-inline typename Member<DeltaStore<TSize, TAlphabet>, DeltaTypeDel>::Type &
-getDeltaStore(DeltaStore<TSize, TAlphabet> & store, DeltaTypeDel /*tag*/)
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+inline typename Member<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeDel>::Type &
+getDeltaStore(DeltaStore<TSnp, TDel, TIns, TSV> & store, DeltaTypeDel /*tag*/)
 {
     return store._delData;
 }
 
-template <typename TSize, typename TAlphabet>
-inline typename Member<DeltaStore<TSize, TAlphabet> const, DeltaTypeDel>::Type &
-getDeltaStore(DeltaStore<TSize, TAlphabet> const & store, DeltaTypeDel /*tag*/)
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+inline typename Member<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeDel>::Type &
+getDeltaStore(DeltaStore<TSnp, TDel, TIns, TSV> const & store, DeltaTypeDel /*tag*/)
 {
     return store._delData;
 }
@@ -430,16 +422,16 @@ getDeltaStore(DeltaStore<TSize, TAlphabet> const & store, DeltaTypeDel /*tag*/)
 // Function getDeltaStore()                                     [DeltaTypeIns]
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet>
-inline typename Member<DeltaStore<TSize, TAlphabet>, DeltaTypeIns>::Type &
-getDeltaStore(DeltaStore<TSize, TAlphabet> & store, DeltaTypeIns /*tag*/)
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+inline typename Member<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeIns>::Type &
+getDeltaStore(DeltaStore<TSnp, TDel, TIns, TSV> & store, DeltaTypeIns /*tag*/)
 {
     return store._insData;
 }
 
-template <typename TSize, typename TAlphabet>
-inline typename Member<DeltaStore<TSize, TAlphabet> const, DeltaTypeIns>::Type &
-getDeltaStore(DeltaStore<TSize, TAlphabet> const & store, DeltaTypeIns /*tag*/)
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+inline typename Member<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeIns>::Type &
+getDeltaStore(DeltaStore<TSnp, TDel, TIns, TSV> const & store, DeltaTypeIns /*tag*/)
 {
     return store._insData;
 }
@@ -448,16 +440,16 @@ getDeltaStore(DeltaStore<TSize, TAlphabet> const & store, DeltaTypeIns /*tag*/)
 // Function getDeltaStore()                                      [DeltaTypeSV]
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet>
-inline typename Member<DeltaStore<TSize, TAlphabet>, DeltaTypeSV>::Type &
-getDeltaStore(DeltaStore<TSize, TAlphabet> & store, DeltaTypeSV /*tag*/)
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+inline typename Member<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSV>::Type &
+getDeltaStore(DeltaStore<TSnp, TDel, TIns, TSV> & store, DeltaTypeSV /*tag*/)
 {
     return store._svData;
 }
 
-template <typename TSize, typename TAlphabet>
-inline typename Member<DeltaStore<TSize, TAlphabet> const, DeltaTypeSV>::Type &
-getDeltaStore(DeltaStore<TSize, TAlphabet> const & store, DeltaTypeSV /*tag*/)
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
+inline typename Member<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeSV>::Type &
+getDeltaStore(DeltaStore<TSnp, TDel, TIns, TSV> const & store, DeltaTypeSV /*tag*/)
 {
     return store._svData;
 }
@@ -466,10 +458,10 @@ getDeltaStore(DeltaStore<TSize, TAlphabet> const & store, DeltaTypeSV /*tag*/)
 // Function addDeltaValue()
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet, typename TTag>
-inline typename Size<DeltaStore<TSize, TAlphabet> >::Type
-addDeltaValue(DeltaStore<TSize, TAlphabet> & store,
-              typename DeltaValue<DeltaStore<TSize, TAlphabet>, TTag>::Type const & value,
+template <typename TSnp, typename TDel, typename TIns, typename TSV, typename TTag>
+inline typename Size<DeltaStore<TSnp, TDel, TIns, TSV> >::Type
+addDeltaValue(DeltaStore<TSnp, TDel, TIns, TSV> & store,
+              typename DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV>, TTag>::Type const & value,
               TTag /*deltaType*/)
 {
     appendValue(getDeltaStore(store, TTag()), value);
@@ -477,32 +469,28 @@ addDeltaValue(DeltaStore<TSize, TAlphabet> & store,
 }
 
 // ----------------------------------------------------------------------------
-// Function value()
+// Function eraseDeltaValue()
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet, typename TPosition>
-inline typename Reference<DeltaStore<TSize, TAlphabet> >::Type
-value(DeltaStore<TSize, TAlphabet> & deltaStore,
-      TPosition const & pos)
+template <typename TSnp, typename TDel, typename TIns, typename TSV, typename TPos, typename TTag>
+inline typename Size<DeltaStore<TSnp, TDel, TIns, TSV> >::Type
+eraseDeltaValue(DeltaStore<TSnp, TDel, TIns, TSV> & store,
+                TPos recordPos,
+                TTag /*deltaType*/)
 {
-    return value(deltaStore._varDataMap, pos);
-}
-
-template <typename TSize, typename TAlphabet, typename TPosition>
-inline typename Reference<DeltaStore<TSize, TAlphabet> const>::Type
-value(DeltaStore<TSize, TAlphabet> const & deltaStore,
-      TPosition const & pos)
-{
-    return value(deltaStore._varDataMap, pos);
+    typedef typename Size<DeltaStore<TSnp, TDel, TIns, TSV> >::Type TSize;
+    if (SEQAN_LIKELY(static_cast<TSize>(recordPos) < length(getDeltaStore(store, TTag()))))
+        erase(getDeltaStore(store, TTag()), recordPos);
+    return length(getDeltaStore(store, TTag()));
 }
 
 // ----------------------------------------------------------------------------
 // Function clear()
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet, typename TPosition>
+template <typename TSnp, typename TDel, typename TIns, typename TSV>
 inline void
-clear(DeltaStore<TSize, TAlphabet> & deltaStore)
+clear(DeltaStore<TSnp, TDel, TIns, TSV> & deltaStore)
 {
     clear(deltaStore._delData);
     clear(deltaStore._svData);
@@ -514,17 +502,23 @@ clear(DeltaStore<TSize, TAlphabet> & deltaStore)
 // Function deltaValue()
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TAlphabet, typename TPos, typename TTag>
-inline typename DeltaValue<DeltaStore<TSize, TAlphabet>, TTag>::Type &
-deltaValue(DeltaStore<TSize, TAlphabet> & store, TPos pos, TTag const & tag)
+template <typename TSnp, typename TDel, typename TIns, typename TSV, typename TPos, typename TTag>
+inline typename DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV>, TTag>::Type &
+deltaValue(DeltaStore<TSnp, TDel, TIns, TSV> & store, TPos pos, TTag const & tag)
 {
+    typedef typename Size<DeltaStore<TSnp, TDel, TIns, TSV> >::Type TSize SEQAN_TYPEDEF_FOR_DEBUG;
+    SEQAN_ASSERT_LT(static_cast<TSize>(pos), length(getDeltaStore(store, tag)));
+
     return value(getDeltaStore(store, tag), pos);
 }
 
-template <typename TSize, typename TAlphabet, typename TPos, typename TTag>
-inline typename DeltaValue<DeltaStore<TSize, TAlphabet> const, TTag>::Type &
-deltaValue(DeltaStore<TSize, TAlphabet> const & store, TPos pos, TTag const & tag)
+template <typename TSnp, typename TDel, typename TIns, typename TSV, typename TPos, typename TTag>
+inline typename DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV> const, TTag>::Type &
+deltaValue(DeltaStore<TSnp, TDel, TIns, TSV> const & store, TPos pos, TTag const & tag)
 {
+    typedef typename Size<DeltaStore<TSnp, TDel, TIns, TSV> const>::Type TSize SEQAN_TYPEDEF_FOR_DEBUG;
+    SEQAN_ASSERT_LT(static_cast<TSize>(pos), length(getDeltaStore(store, tag)));
+
     return value(getDeltaStore(store, tag), pos);
 }
 

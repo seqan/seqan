@@ -102,8 +102,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_host_mf)
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_constructor)
 {
-    typedef DeltaMap<unsigned, Dna> TDeltaMap;
-    typedef JournaledStringTree<TDeltaMap> TJst;
+    typedef JournaledStringTree<DnaString> TJst;
     typedef Size<TJst>::Type TSize;
 
     {  // Default Constructor
@@ -145,8 +144,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_constructor)
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_init)
 {
-    typedef DeltaMap<unsigned, Dna> TDeltaMap;
-    typedef JournaledStringTree<TDeltaMap> TJst;
+    typedef JournaledStringTree<DnaString> TJst;
     typedef Size<TJst>::Type TSize;
 
     JournaledStringTree<TDeltaMap> jst;
@@ -184,8 +182,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_init)
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_container)
 {
-    typedef DeltaMap<unsigned, Dna> TDeltaMap;
-    typedef JournaledStringTree<TDeltaMap> TJst;
+    typedef JournaledStringTree<DnaString> TJst;
 
     String<Dna> hostSeq = "ACGTGGATCTGTACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
 
@@ -204,8 +201,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_container)
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_string_set)
 {
-    typedef DeltaMap<unsigned, Dna> TDeltaMap;
-    typedef JournaledStringTree<TDeltaMap> TJst;
+    typedef JournaledStringTree<DnaString> TJst;
 
     String<Dna> hostSeq = "ACGTGGATCTGTACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
 
@@ -225,8 +221,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_string_set)
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_host)
 {
-    typedef DeltaMap<unsigned, Dna> TDeltaMap;
-    typedef JournaledStringTree<TDeltaMap> TJst;
+    typedef JournaledStringTree<DnaString> TJst;
 
     String<Dna> hostSeq = "ACGTGGATCTGTACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
 
@@ -252,8 +247,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_host)
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_set_block_size)
 {
-    typedef DeltaMap<unsigned, Dna> TDeltaMap;
-    typedef JournaledStringTree<TDeltaMap> TJst;
+    typedef JournaledStringTree<DnaString> TJst;
     typedef typename Size<TJst>::Type TSize;
 
     JournaledStringTree<TDeltaMap> jst;
@@ -265,8 +259,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_set_block_size)
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_block_size)
 {
-    typedef DeltaMap<unsigned, Dna> TDeltaMap;
-    typedef JournaledStringTree<TDeltaMap> TJst;
+    typedef JournaledStringTree<DnaString> TJst;
     typedef typename Size<TJst>::Type TSize;
 
     JournaledStringTree<TDeltaMap> jst;
@@ -278,8 +271,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_block_size)
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_full_journal_required)
 {
-    typedef DeltaMap<unsigned, Dna> TDeltaMap;
-    typedef JournaledStringTree<TDeltaMap> TJst;
+    typedef JournaledStringTree<DnaString> TJst;
 
     String<Dna> hostSeq = "ACGTGGATCTGTACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
 
@@ -429,8 +421,7 @@ void _testJournaledStringTreeJournalNextBlock(TJst & jst)
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_journal_next_block)
 {
-    typedef DeltaMap<unsigned, Dna> TDeltaMap;
-    typedef JournaledStringTree<TDeltaMap> TJst;
+    typedef JournaledStringTree<DnaString> TJst;
 
     String<Dna> hostSeq = "ACGTGGATCTGTACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
     TDeltaMap deltaMap;
@@ -482,8 +473,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_journal_next_block)
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_reinit)
 {
-    typedef DeltaMap<unsigned, Dna> TDeltaMap;
-    typedef JournaledStringTree<TDeltaMap> TJst;
+    typedef JournaledStringTree<DnaString> TJst;
     typedef Size<TJst>::Type TSize;
     typedef GetStringSet<TJst>::Type TJournalSet;
 
@@ -514,8 +504,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_reinit)
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_local_to_global_pos)
 {
-    typedef DeltaMap<unsigned, Dna> TDeltaMap;
-    typedef JournaledStringTree<TDeltaMap> TJst;
+    typedef JournaledStringTree<DnaString> TJst;
 
     TJst jst;
     String<Dna> hostSeq = "ACGTGGATCTGTACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
@@ -622,243 +611,5 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_local_to_global_pos)
     SEQAN_ASSERT_EQ(jst._activeBlockVPOffset[3], 4);
     SEQAN_ASSERT_EQ(localToGlobalPos(20, 3, jst), 21u);
 }
-
-// TODO(rmaerker): Added later by another commit.
-//SEQAN_DEFINE_TEST(test_journaled_string_tree_save_open)
-//{
-//    typedef DeltaMap<unsigned, Dna> TDeltaMap;
-//    typedef JournaledStringTree<TDeltaMap> TJst;
-//
-//    String<Dna> hostSeq = "ACGTGGATCTGTACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
-//    TDeltaMap deltaMap;
-//    _testDetlaMapfill(deltaMap);
-//    setCoverageSize(deltaMap, 4);
-//    getDeltaCoverage(deltaMap._entries[0])[0] = true;
-//    getDeltaCoverage(deltaMap._entries[0])[1] = true;
-//    getDeltaCoverage(deltaMap._entries[0])[2] = false;
-//    getDeltaCoverage(deltaMap._entries[0])[3] = true;
-//
-//    getDeltaCoverage(deltaMap._entries[1])[0] = false;
-//    getDeltaCoverage(deltaMap._entries[1])[1] = false;
-//    getDeltaCoverage(deltaMap._entries[1])[2] = true;
-//    getDeltaCoverage(deltaMap._entries[1])[3] = false;
-//
-//    getDeltaCoverage(deltaMap._entries[2])[0] = true;
-//    getDeltaCoverage(deltaMap._entries[2])[1] = false;
-//    getDeltaCoverage(deltaMap._entries[2])[2] = false;
-//    getDeltaCoverage(deltaMap._entries[2])[3] = true;
-//
-//    getDeltaCoverage(deltaMap._entries[3])[0] = false;
-//    getDeltaCoverage(deltaMap._entries[3])[1] = true;
-//    getDeltaCoverage(deltaMap._entries[3])[2] = true;
-//    getDeltaCoverage(deltaMap._entries[3])[3] = true;
-//
-//    getDeltaCoverage(deltaMap._entries[4])[0] = true;
-//    getDeltaCoverage(deltaMap._entries[4])[1] = false;
-//    getDeltaCoverage(deltaMap._entries[4])[2] = false;
-//    getDeltaCoverage(deltaMap._entries[4])[3] = false;
-//
-//    getDeltaCoverage(deltaMap._entries[5])[0] = false;
-//    getDeltaCoverage(deltaMap._entries[5])[1] = false;
-//    getDeltaCoverage(deltaMap._entries[5])[2] = true;
-//    getDeltaCoverage(deltaMap._entries[5])[3] = false;
-//
-//    getDeltaCoverage(deltaMap._entries[6])[0] = false;
-//    getDeltaCoverage(deltaMap._entries[6])[1] = true;
-//    getDeltaCoverage(deltaMap._entries[6])[2] = false;
-//    getDeltaCoverage(deltaMap._entries[6])[3] = true;
-//
-//    getDeltaCoverage(deltaMap._entries[7])[0] = false;
-//    getDeltaCoverage(deltaMap._entries[7])[1] = true;
-//    getDeltaCoverage(deltaMap._entries[7])[2] = false;
-//    getDeltaCoverage(deltaMap._entries[7])[3] = true;
-//
-//    TJst jst(hostSeq, deltaMap);
-//
-//    CharString testDir = SEQAN_PARENT_PATH(__FILE__);
-//
-//    CharString wrongPath = "wrongPath";
-//    append(wrongPath, testDir);
-//    append(wrongPath, "unknown.gdf");
-//
-//    CharString goldRefFile = testDir;
-//    append(goldRefFile, "gold_ref.fa");
-//
-//    CharString tmpTestDir = SEQAN_PARENT_PATH(SEQAN_TEMP_FILENAME());
-//    CharString tmpGdfFile = tmpTestDir;
-//    append(tmpGdfFile, "testGdf.gdf");
-//
-//    CharString tmpRefFile = tmpTestDir;
-//    append(tmpRefFile, "testRef.fa");
-//
-//    GdfHeader header;
-//    header.referenceMode = GdfIOMode::SAVE_REFERENCE_MODE_ENABLED;
-//#ifdef SEQAN_EXCEPTIONS  // Only test if exceptions are enabled.
-//
-//    SEQAN_TRY  // Try save with invalid name store.
-//    {
-//        save(jst, header, tmpGdfFile);
-//    }
-//    SEQAN_CATCH(GdfIOException e)
-//    {
-//        SEQAN_ASSERT(isEqual(e.what(), "Gdf_IO_Exception: (Too few sequence names - Needed 4 but 0 were provided!)"));
-//    }
-//
-//    appendValue(header.nameStore, "Seq1");
-//    appendValue(header.nameStore, "Seq2");
-//    appendValue(header.nameStore, "Seq3");
-//    appendValue(header.nameStore, "Seq4");
-//
-//    header.referenceFilename = "unknown";
-//    SEQAN_TRY  // Try save with unknown reference file.
-//    {
-//        save(jst, header, tmpGdfFile);
-//    }
-//    SEQAN_CATCH(GdfIOException e)
-//    {
-//        std::stringstream errMessage;
-//        errMessage << "Gdf_IO_Exception: (Cannot open file: unknown!)";
-//        SEQAN_ASSERT_EQ(e.what(), errMessage.str());
-//    }
-//
-//    SEQAN_TRY  // Try save with wrong path.
-//    {
-//        save(jst, header, wrongPath);
-//    }
-//    SEQAN_CATCH(GdfIOException e)
-//    {
-//        std::stringstream errMessage;
-//        errMessage << "Gdf_IO_Exception: (Cannot open file: "<< wrongPath << "!)";
-//        SEQAN_ASSERT_EQ(e.what(), errMessage.str());
-//    }
-//
-//    header.referenceId = "reference";
-//    header.referenceFilename = tmpRefFile;
-//    SEQAN_TRY  // Try save with everything set correctly.
-//    {
-//        save(jst, header, tmpGdfFile);
-//    }
-//    SEQAN_CATCH(Exception e)
-//    {
-//        SEQAN_FAIL("Error while save!");
-//    }
-//#else  // SEQAN_EXCEPTIONS
-//    save(jst, header, tmpGdfFile);
-//#endif  // SEQAN_EXCEPTIONS
-//
-//    // Compare the reference sequences.
-//    SEQAN_ASSERT(_compareTextFiles(toCString(tmpRefFile), toCString(goldRefFile)));
-//
-//    CharString refId;
-//    CharString refFilename;
-//    String<CharString> seqIds;
-//
-//#ifdef SEQAN_EXCEPTIONS
-//
-//    {  // Try load from wrong file.
-//        SEQAN_TRY
-//        {
-//            JournaledStringTree<TDeltaMap> jstLoaded;
-//            GdfHeader headerLoaded;
-//            open(jstLoaded, headerLoaded, wrongPath);
-//        }
-//        SEQAN_CATCH(GdfIOException e)
-//        {
-//            std::stringstream errMessage;
-//            errMessage << "Gdf_IO_Exception: (Unknown file <" << wrongPath << ">!)";
-//            SEQAN_ASSERT_EQ(e.what(), errMessage.str());
-//        }
-//    }
-//    {  // Try load from file with unknown reference file.
-//        SEQAN_TRY
-//        {
-//            JournaledStringTree<TDeltaMap> jstLoaded;
-//            GdfHeader headerLoaded;
-//            CharString unknownRefExample = testDir;
-//            append(unknownRefExample, "unknownRefExample.gdf");
-//            open(jstLoaded, headerLoaded, unknownRefExample);
-//        }
-//        SEQAN_CATCH(GdfIOException e)
-//        {
-//            SEQAN_ASSERT(isEqual(e.what(), "Gdf_IO_Exception: (Unknown file </wrong/path/to/reference.fa>!)"));
-//        }
-//    }
-//    {  // Try load from file with wrong crc or refId.
-//        SEQAN_TRY
-//        {
-//            CharString wrongRefFile = testDir;
-//            append(wrongRefFile, "wrong_ref.fa");
-//
-//            CharString wrongCrcExample = tmpTestDir;
-//            append(wrongCrcExample, "wrongCrcExample.gdf");
-//
-//
-//            GdfHeader testHeader;
-//            testHeader.referenceId = "reference";
-//            testHeader.referenceFilename = wrongRefFile;
-//            testHeader.nameStore = header.nameStore;
-//            testHeader.referenceMode = GdfIOMode::SAVE_REFERENCE_MODE_DISABLED;
-//
-//            SEQAN_TRY
-//            {
-//                save(jst, testHeader, wrongCrcExample);
-//            }
-//            SEQAN_CATCH(Exception e)
-//            {
-//                SEQAN_ASSERT_FAIL("Error during save!");
-//            }
-//
-//            JournaledStringTree<TDeltaMap> jstLoaded;
-//            GdfHeader headerLoaded;
-//            open(jstLoaded, headerLoaded, wrongCrcExample);
-//        }
-//        SEQAN_CATCH(GdfIOException e)
-//        {
-//#ifdef __SSE4_2__
-//            SEQAN_ASSERT(isEqual(e.what(), "Gdf_IO_Exception: (The id of the reference is \'another ref\' but should be \'reference\' and the crc is \'0\' but should be \'0\'!)"));
-//#else  // __SSE4_2__
-//            SEQAN_ASSERT(isEqual(e.what(), "Gdf_IO_Exception: (The id of the reference is \'another ref\' but should be \'reference\' and the crc is \'0\' but should be \'0\'!)"));
-//#endif // __SSE4_2__
-//        }
-//    }
-//
-//    JournaledStringTree<TDeltaMap> jstLoaded;
-//    {  // Try load correct file.
-//        SEQAN_TRY
-//        {
-//            GdfHeader headerLoaded;
-//            open(jstLoaded, headerLoaded, tmpGdfFile);
-//        }
-//        SEQAN_CATCH(Exception e)
-//        {
-//            std::cerr << e.what() << std::endl;
-//            SEQAN_FAIL("Error while open!");
-//        }
-//    }
-//#else
-//    GdfHeader headerLoaded;
-//    open(jstLoaded, headerLoaded, tmpGdfFile);
-//#endif
-//
-//    _testJournaledStringTreeJournalNextBlock(jstLoaded);
-//}
-
-// TODO(rmaerker): Added later by another commit.
-//// ----------------------------------------------------------------------------
-//// Test Traversal Concept.
-//// ----------------------------------------------------------------------------
-//
-//SEQAN_DEFINE_TEST(test_journaled_string_tree_jst_traversal_concept)
-//{
-//    using namespace seqan;
-//
-//    typedef DeltaMap<unsigned, Dna> TDeltaMap;
-//    typedef JournaledStringTree<TDeltaMap> TJst;
-//
-//    typedef DummyCaller_<TJst> TDummy;
-//
-//    bool res =  Is<JstTraversalConcept<TDummy> >::VALUE;
-//    SEQAN_ASSERT_EQ(res, true);
-//}
 
 #endif // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_
