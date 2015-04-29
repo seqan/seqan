@@ -740,7 +740,6 @@ template <typename TConfig, typename TSpec>
 inline void
 clear(DeltaMap<TConfig, TSpec> & deltaMap)
 {
-    deltaMap._coverageSize = 0;
     clear(deltaMap._entries);
     clear(deltaMap._deltaStore);
 }

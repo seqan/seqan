@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,33 +35,11 @@
 #include <seqan/basic.h>
 #include <seqan/file.h>
 
-#include "test_delta_map.h"
 #include "test_journaled_string_tree.h"
 
 SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
 {
-    // Tests for delta map.
-
-    SEQAN_CALL_TEST(test_delta_map_insert);
-    SEQAN_CALL_TEST(test_delta_map_find);
-    SEQAN_CALL_TEST(test_delta_map_erase);
-    SEQAN_CALL_TEST(test_delta_map_length);
-    SEQAN_CALL_TEST(test_delta_map_empty);
-    SEQAN_CALL_TEST(test_delta_map_coverage_size);
-    SEQAN_CALL_TEST(test_delta_map_set_coverage_size);
-    SEQAN_CALL_TEST(test_delta_map_iterator);
-    SEQAN_CALL_TEST(test_delta_map_iterator_copy_constructor);
-    SEQAN_CALL_TEST(test_delta_map_iterator_assign);
-    SEQAN_CALL_TEST(test_delta_map_iterator_value);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_type);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_position);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_value);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_coverage);
-
     // Tests for journaled string tree
-    //SEQAN_CALL_TEST(test_journaled_string_tree_container_mf);
-    //SEQAN_CALL_TEST(test_journaled_string_tree_get_string_tree_mf);
-    //SEQAN_CALL_TEST(test_journaled_string_tree_host_mf);
     SEQAN_CALL_TEST(test_journaled_string_tree_constructor);
     SEQAN_CALL_TEST(test_journaled_string_tree_depth);
     SEQAN_CALL_TEST(test_journaled_string_tree_add_node);
@@ -69,19 +47,5 @@ SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
     SEQAN_CALL_TEST(test_journaled_string_tree_clear);
     SEQAN_CALL_TEST(test_journaled_string_tree_base_seq);
     SEQAN_CALL_TEST(test_journaled_string_tree_set_base_seq);
-
-    //SEQAN_CALL_TEST(test_journaled_string_tree_init);
-    //SEQAN_CALL_TEST(test_journaled_string_tree_reinit);
-    //SEQAN_CALL_TEST(test_journaled_string_tree_container);
-    //SEQAN_CALL_TEST(test_journaled_string_tree_string_set);
-    //SEQAN_CALL_TEST(test_journaled_string_tree_full_journal_required);
-    //SEQAN_CALL_TEST(test_journaled_string_tree_set_block_size);
-    //SEQAN_CALL_TEST(test_journaled_string_tree_block_size);
-    //SEQAN_CALL_TEST(test_journaled_string_tree_journal_next_block);
-    //SEQAN_CALL_TEST(test_journaled_string_tree_host);
-    //SEQAN_CALL_TEST(test_journaled_string_tree_local_to_global_pos);
-
-//    SEQAN_CALL_TEST(test_journaled_string_tree_save_open);
-//    SEQAN_CALL_TEST(test_journaled_string_tree_jst_traversal_concept);
 }
 SEQAN_END_TESTSUITE

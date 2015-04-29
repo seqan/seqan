@@ -47,8 +47,6 @@
 #include <seqan/sequence_journaled.h>
 #include <seqan/journaled_set.h>
 #include <seqan/parallel.h>
-// TODO(rmaerker): Added in a different commit.
-//#include <seqan/misc/misc_checksum.h>
 
 // ===========================================================================
 // Basics.
@@ -60,32 +58,10 @@
 #include <seqan/journaled_string_tree/delta_map_iterator.h>
 
 // ===========================================================================
-// GDF I/O.
-// ===========================================================================
-
-// TODO(rmaerker): Added in a different commit.
-//#include <seqan/journaled_string_tree/gdf_io_base.h>
-//#include <seqan/journaled_string_tree/gdf_io_header.h>
-//#include <seqan/journaled_string_tree/gdf_io_read.h>
-//#include <seqan/journaled_string_tree/gdf_io_write.h>
-
-// ===========================================================================
 // Journaled String Tree.
 // ===========================================================================
 
 #include <seqan/journaled_string_tree/journaled_string_tree_base.h>
-// TODO(rmaerker): Added in a different commit.
-//#include <seqan/journaled_string_tree/journaled_string_tree_util.h>
-#include <seqan/journaled_string_tree/journaled_string_tree_adapter.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_impl.h>
-
-// ===========================================================================
-// Journaled String Tree Traversal.
-// ===========================================================================
-
-// TODO(rmaerker): Added in a different commit.
-//#include <seqan/journaled_string_tree/journaled_string_tree_traversal_concept.h>
-//#include <seqan/journaled_string_tree/journaled_string_tree_traversal_branch_stack.h>
-//#include <seqan/journaled_string_tree/journaled_string_tree_traversal.h>
 
 #endif // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_H_

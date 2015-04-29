@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -51,6 +51,25 @@ namespace seqan {
 // Class DefaultJstConfig
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class DefaultJstConfig
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief The default Journaled-String-Tree configuration object.
+ *
+ * @signature template <typename TSequence>
+ *            class DefaultJstConfig<TDeltaStore>
+ *
+ * @tparam TSequence Type of the underlying base sequence.
+ *
+ * Defines the follwoing types used to configure the @link DeltaMap @endlink:
+ * @code{.cpp}
+ * typedef typename Size<TSequence>::Type  TDeltaPos;
+ * typedef typename Value<TSequence>::Type TSnpValue;
+ * typedef String<TSnpValue>               TInsValue;
+ * typedef typename Size<TSequence>::Type  TDelValue;
+ * typedef Pair<TDelValue, TInsValue>      TSVValue;
+ * @endcode
+ */
 template <typename TSequence>
 struct DefaultJstConfig
 {
@@ -60,6 +79,13 @@ struct DefaultJstConfig
     typedef typename Size<TSequence>::Type  TDelValue;  // Value type of deletions.
     typedef Pair<TDelValue, TInsValue>      TSVValue;   // Value type of structural variants (combination of deletion and insertion).
 };
+
+// ----------------------------------------------------------------------------
+// Class JournaledStringTree
+// ----------------------------------------------------------------------------
+
+template <typename TSequence, typename TConfig = DefaultJstConfig<TSequence>, typename TSpec = Default>
+class JournaledStringTree;
 
 // ============================================================================
 // Metafunctions
