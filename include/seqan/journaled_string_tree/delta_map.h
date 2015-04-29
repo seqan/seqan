@@ -557,7 +557,6 @@ erase(DeltaMap<TConfig, TSpec> & deltaMap,
       TDeltaType /*deltaType*/)
 {
     typedef DeltaMap<TConfig, TSpec> TDeltaMap;
-    typedef typename Member<TDeltaMap, DeltaMapEntriesMember>::Type TEntries;
     typedef typename Member<TDeltaMap, DeltaMapStoreMember>::Type TStore;
     typedef typename Value<TDeltaMap>::Type TEntry;
     typedef typename Size<TStore>::Type TStoreSize;

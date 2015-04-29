@@ -94,9 +94,6 @@ SEQAN_DEFINE_TEST(test_delta_map_insert)
 {
 
     typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
-    typedef typename DeltaValue<TDeltaMap, DeltaTypeSV>::Type TSV;
-    typedef typename Value<TDeltaMap>::Type TEntry;
-    typedef typename DeltaRecord<TEntry>::Type TDeltaRecord;
     typedef typename DeltaCoverage<TDeltaMap>::Type TCoverage;
     typedef typename Member<TDeltaMap, DeltaMapEntriesMember>::Type TEntries;
     typedef typename Member<TDeltaMap, DeltaMapStoreMember>::Type TDeltaStore;
