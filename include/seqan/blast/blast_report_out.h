@@ -258,7 +258,7 @@ template <typename TStream,
           BlastTabularSpec h>
 inline void
 _writeStatsBlock(TStream & stream,
-                 BlastIOContext<TScore, TConString, p, h> const & context,
+                 BlastIOContext<TScore, TConString, p, h> const &,
                  TMatch const & m,
                  BlastReport const &)
 {
@@ -344,7 +344,7 @@ template <typename TStream,
           BlastTabularSpec h>
 inline void
 _writeAlignmentBlockIntermediateChar(TStream & stream,
-                                     BlastIOContext<TScore> const & context,
+                                     BlastIOContext<TScore> const &,
                                      TChar1 const & char1,
                                      TChar2 const & char2,
                                      BlastReport const & /*tag*/)
@@ -379,7 +379,7 @@ _writeAlignmentBlockIntermediateChar(TStream & stream,
         write(stream, char1);
     else if ((char1 == '-') || (char2 == '-'))
         write(stream, ' ');
-    else if (score(context.scoringAdapter.scheme, char1, char2) > 0)
+    else if (score(seqanScheme(context.scoringScheme), char1, char2) > 0)
         write(stream, '+');
     else
         write(stream, ' ');
@@ -605,20 +605,20 @@ _writeRecordFooter(TStream & stream,
     write(stream, "\n"
                   "Lambda     K      H\n"
                   "   ");
-    write(stream, FormattedNumber<double>("%-4.3f", getLambda(context.scoringAdapter)));
+    write(stream, FormattedNumber<double>("%-4.3f", getLambda(context.scoringScheme)));
     write(stream, "   ");
-    write(stream, FormattedNumber<double>("%-5.4f", getKappa(context.scoringAdapter)));
+    write(stream, FormattedNumber<double>("%-5.4f", getKappa(context.scoringScheme)));
     write(stream, "   ");
-    write(stream, FormattedNumber<double>("%-5.4f", getH(context.scoringAdapter)));
+    write(stream, FormattedNumber<double>("%-5.4f", getH(context.scoringScheme)));
     write(stream, "\n\n"
                   "Gapped\n"
                   "Lambda     K      H\n");
     write(stream, "   ");
-    write(stream, FormattedNumber<double>("%-4.3f", getLambda(context.scoringAdapter)));
+    write(stream, FormattedNumber<double>("%-4.3f", getLambda(context.scoringScheme)));
     write(stream, "   ");
-    write(stream, FormattedNumber<double>("%-5.4f", getKappa(context.scoringAdapter)));
+    write(stream, FormattedNumber<double>("%-5.4f", getKappa(context.scoringScheme)));
     write(stream, "   ");
-    write(stream, FormattedNumber<double>("%-5.4f", getH(context.scoringAdapter)));
+    write(stream, FormattedNumber<double>("%-5.4f", getH(context.scoringScheme)));
     write(stream, "\n\n"
                   "Effective search space used: ");
     write(stream, record.qLength * context.dbTotalLength);
@@ -830,8 +830,6 @@ writeFooter(TStream & stream,
             BlastReport const & /*tag*/)
 {
     // TODO what is printed here for BLASTN?
-    TScore scheme(getBlastScoringScheme(context));
-
     write(stream, "\n  Database: ");
     write(stream, context.dbName);
     write(stream, "\n  Number of letters in database: ");
@@ -841,11 +839,11 @@ writeFooter(TStream & stream,
     write(stream, "\n\n\n\n");
 
     write(stream, "Matrix:");
-    write(stream, _matrixName(scheme));
+    write(stream, _matrixName(seqanScheme(context.scoringScheme)));
     write(stream, "\nGap Penalties: Existence: ");
-    write(stream, -scoreGapOpen(scheme)); // convert scores to penalties
+    write(stream, -scoreGapOpenBlast(context.scoringScheme)); // convert scores to penalties
     write(stream, ", Extension: ");
-    write(stream, -scoreGapExtend(scheme)); // convert scores to penalties
+    write(stream, -scoreGapExtend(context.scoringScheme)); // convert scores to penalties
     //TODO possibly add more parameter information
     write(stream, "\n\n");
 }

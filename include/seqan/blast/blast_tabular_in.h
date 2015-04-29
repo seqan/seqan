@@ -165,6 +165,7 @@ inline bool guessFormat(FormattedFile<BlastTabular, Input, TSpec> & file)
 // Function strSplit()
 // ----------------------------------------------------------------------------
 
+//TODO(h-2): this will be removed in favor of a better solution
 template <typename TString,
           typename TSpec,
           typename TSequence>
@@ -173,8 +174,9 @@ _strSplit(StringSet<TString, TSpec> & result,
          TSequence const & sequence,
          std::regex const & regex)
 {
-    static thread_local std::string tmp;
-    tmp = std::regex_replace(sequence, regex, "\x7F");
+    static THREADLOCAL std::string tmp;
+    tmp = std::regex_replace(static_cast<std::string>(sequence), regex, std::string("\x7F"));
+    std::cout << toCString(tmp) << std::endl;
     strSplit(result, tmp, EqualsChar<'\x7F'>(), true);
 }
 
@@ -396,6 +398,16 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
         else if (startsWith(context._lineBuffer, "Fields:"))
         {
             ++fieldsLinePresent;
+//             clear(context._stringBuffer);
+//             std::regex_replace(seqan::begin(context._stringBuffer),
+//                                seqan::begin(context._lineBuffer) + 8,
+//                                seqan::end(context._lineBuffer),
+//                                std::regex(", "),
+//                                "\x7F");
+//             std::cout << toCString(context._stringBuffer) << std::endl;
+//             strSplit(context.fieldsAsStrings, context._stringBuffer, EqualsChar<'\x7F'>(), true);
+//             write(std::cout, context.fieldsAsStrings);
+            // TODO replace with the above to avoid copying
             _strSplit(context.fieldsAsStrings,
                       static_cast<TString>(suffix(context._lineBuffer, 8)),
                       std::regex(", "));
@@ -457,7 +469,15 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                     else  // hits = 0 means no fieldList, restore default
                     {
                         appendValue(context.fields, BlastMatchField<>::Enum::STD);
-                        _strSplit(context.fieldsAsStrings, BlastMatchField<>::columnLabels[0], std::regex(", "));
+                        _strSplit(context.fieldsAsStrings,
+                                  BlastMatchField<>::columnLabels[0],
+                                  std::regex(", "));
+                        // TODO replace with the below to avoid copying
+
+//                         context._stringBuffer = std::regex_replace(BlastMatchField<>::columnLabels[0],
+//                                                                    std::regex(", "),
+//                                                                    "\x7F");
+//                         strSplit(context.fieldsAsStrings, context._stringBuffer, EqualsChar<'\x7F'>(), true);
                     }
 
                     ++hitsLinePresent;

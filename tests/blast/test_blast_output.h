@@ -169,7 +169,7 @@ test_blast_write_record_match(TFile & file,
     appendValue(qIds, "Query_Numero_Tres with args");
 
     setScoreGapOpenBlast(context.scoringScheme, -11);
-    setScoreGapExtendBlast(context.scoringScheme, -1);
+    setScoreGapExtend(context.scoringScheme, -1);
     SEQAN_ASSERT(isValid(context.scoringScheme));
 
     String<TBlastRecord> records;
@@ -195,7 +195,7 @@ test_blast_write_record_match(TFile & file,
             assignSource(row(m.align, 0), queries[q]);
             assignSource(row(m.align, 1), subjects[s]);
 
-            localAlignment(m.align, static_cast<Blosum62>(context.scoringScheme));
+            localAlignment(m.align, seqanScheme(context.scoringScheme));
 
             m.qStart = beginPosition(row(m.align, 0));
             m.qEnd   = endPosition(row(m.align, 0));

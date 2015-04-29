@@ -892,27 +892,23 @@ void _test_blast_read_record_withheader(const char * path, bool const defaults, 
 
     std::vector<typename TField::Enum> fieldsDefault =
     {
-        {
-            TField::Enum::STD
-        }
+        TField::Enum::STD
     };
     std::vector<typename TField::Enum> fieldsCustom =
     {
-        {
-            TField::Enum::Q_SEQ_ID,
-            TField::Enum::S_SEQ_ID,
-            TField::Enum::LENGTH,
-            TField::Enum::N_IDENT,
-            TField::Enum::MISMATCH,
-            TField::Enum::POSITIVE,
-            TField::Enum::GAPS,
-            TField::Enum::Q_START,
-            TField::Enum::Q_END,
-            TField::Enum::S_START,
-            TField::Enum::S_END,
-            TField::Enum::FRAMES,
-            TField::Enum::BIT_SCORE
-        }
+        TField::Enum::Q_SEQ_ID,
+        TField::Enum::S_SEQ_ID,
+        TField::Enum::LENGTH,
+        TField::Enum::N_IDENT,
+        TField::Enum::MISMATCH,
+        TField::Enum::POSITIVE,
+        TField::Enum::GAPS,
+        TField::Enum::Q_START,
+        TField::Enum::Q_END,
+        TField::Enum::S_START,
+        TField::Enum::S_END,
+        TField::Enum::FRAMES,
+        TField::Enum::BIT_SCORE
     };
 
     // read header of file

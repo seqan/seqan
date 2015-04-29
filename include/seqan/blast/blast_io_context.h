@@ -80,12 +80,9 @@ struct BlastScoringScheme;
  * typedef BlastIOContext<Blosum62> TContext;
  * BlastReportOut<TContext> outfile("/tmp/output.blast");
  *
- * Blosum62 scheme;
- * setScoreGapOpen(scheme, -11);
- * setScoreGapExtend(scheme, -1);
- *
- * // upon assigning, this is converted to SeqAn's scoring behaviour
- * setBlastScoringScheme(context(outfile), scheme);
+ * // set gap parameters in blast notation
+ * setScoreGapOpenBlast(context(outfile).scoringScheme, -11);
+ * setScoreGapExtend(context(outfile).scoringScheme, -1);
  *
  * // protein vs protein search is BLASTP
  * setBlastProgram(context(outfile), BlastProgram::BLASTP);
@@ -119,16 +116,17 @@ struct BlastIOContext
     typedef BlastTabularSpecTag<h> TBlastTabularSpec; // compile-time parameter
     // if the upper is set to UNKNOWN, than this run-time variable is consulted instead:
     BlastTabularSpec tabularSpec = BlastTabularSpec::UNKNOWN;
+    // test_blast_misc.h also illustrates how this works
 
     /*!
      * @var BlastScoringScheme<TScore> BlastIOContext::scoringScheme;
-     * @brief TODO update
+     * @brief The @link BlastScoringScheme @endlink.
      */
     BlastScoringScheme<TScore> scoringScheme;
 
     /*!
      * @var TString BlastIOContext::versionString;
-     * @brief the blast version string
+     * @brief The blast version string.
      *
      * Used when writing @link BlastReportOut @endlink and @link BlastTabularOut @endlink if the context's tabularSpec
      * is set to BlastTabularSpec::HEADER. Defaults to a version string based on the emulated
@@ -155,7 +153,7 @@ struct BlastIOContext
 
     /*!
      * @var bool BlastIOContext::legacyFormat;
-     * @brief whether to use the legacy format (only @link BlastTabular @endlink).
+     * @brief Whether to use the legacy format (only @link BlastTabular @endlink).
      *
      * Setting this flag when writing to a @link BlastTabularOut @endlink (that has BlastTabularSpec::HEADER set) will
      * result in the legacy header being written. This is the slightly different header used by C-only versions of blast
@@ -169,32 +167,32 @@ struct BlastIOContext
 
     /*!
      * @var TDbName BlastIOContext::dbName;
-     * @brief Name of the dabase or path to the file
+     * @brief Name of the dabase or path to the file.
      */
     TString         dbName;
 
     /*!
      * @var uint64_t BlastIOContext::dbTotalLength;
-     * @brief summed up sequence length of the database
+     * @brief Summed up sequence length of the database.
      */
     uint64_t        dbTotalLength = 0u;
 
     /*!
      * @var uint64_t BlastIOContext::dbNumberOfSeqs;
-     * @brief number of sequences in the database
+     * @brief Number of sequences in the database.
      */
     uint64_t        dbNumberOfSeqs = 0u;
 
     /*!
      * @var StringSet<TString> BlastIOContext::otherLines;
-     * @brief a StringSet that will contain all comment or header lines that
+     * @brief A StringSet that will contain all comment or header lines that
      * could not be interpreted in another way (only @link BlastTabularIn @endlink).
      */
     StringSet<TString, Owner<ConcatDirect<>>> otherLines;
 
     /*!
      * @var std::vector<BlastMatchField::Enum> BlastIOContext::fields;
-     * @brief the fields (types of columns) in @link BlastTabular @endlink-formats.
+     * @brief The fields (types of columns) in @link BlastTabular @endlink-formats.
      *
      * Is an in-parameter to writeRecord, writeMatch, writeRecordHeader and readMatch. In
      * the latter case it signifies the expected fields.
@@ -202,11 +200,11 @@ struct BlastIOContext
      * of readRecord and readRecordHeader where it returns the fields specified in
      * the header.
      */
-    std::vector<typename BlastMatchField<>::Enum> fields { { BlastMatchField<>::Enum::STD } };
+    std::vector<typename BlastMatchField<>::Enum> fields = { BlastMatchField<>::Enum::STD };
 
     /*!
      * @var StringSet<TString> BlastIOContext::fieldsAsStrings;
-     * @brief the fields (types of columns) in @link BlastTabular @endlink-formats, but as uninterpreted strings.
+     * @brief The fields (types of columns) in @link BlastTabular @endlink-formats, but as uninterpreted strings.
      *
      * Useful when the header does not conform to standards and you want to extract the verbatim column labels or if
      * you wish to print non-standard column labels (which you don't!).
@@ -215,7 +213,7 @@ struct BlastIOContext
 
     /*!
      * @var bool BlastIOContext::ignoreFieldsInHeader;
-     * @brief used fields as in-parameter for readRecord as well (only @link BlastTabularIn @endlink).
+     * @brief Use fields as in-parameter for readRecord as well (only @link BlastTabularIn @endlink).
      *
      * When doing @link BlastTabular#readRecord @endlink, the
      * @link BlastIOContext::fields @endlink member is used as in-parameter to
@@ -228,7 +226,7 @@ struct BlastIOContext
 
     /*!
      * @var StringSet<TString> BlastIOContext::conformancyErrors;
-     * @brief holds non fatal error messages when reading from @link BlastTabularIn @endlink.
+     * @brief Holds non fatal error messages when reading from @link BlastTabularIn @endlink.
      *
      * After doing a @link BlastTabular#readRecord @endlink this will indicate whether the
      * record header contained non-fatal parse errors, usually the result
@@ -379,115 +377,6 @@ setBlastTabularSpec(BlastIOContext<TScore, TString, p, BlastTabularSpec::UNKNOWN
 {
     context.tabularSpec = h;
 }
-
-/*
-* @fn BlastIOContext#getScoringScheme
-* @signature ScoringScheme const & getScoringScheme(context);
-* @param[in] context  The @link BlastIOContext @endlink.
-* @brief get the @link Score @endlink object of the context.
-* @return ScoringScheme reference to the scheme used in the context.
-*/
-
-// template <typename TScore,
-//           typename TString,
-//           BlastProgram p,
-//           BlastTabularSpec h>
-// inline TScore const &
-// getScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
-// {
-//     return context.scoringAdapter.scheme;
-// }
-
-/*
- * @fn BlastIOContext#setScoringScheme
- * @signature void setScoringScheme(context, scoringScheme);
- * @param[in,out] context        The @link BlastIOContext @endlink.
- * @param[in]     scoringScheme  The new @link Score @endlink object.
- * @brief set the @link Score @endlink object of the context.
- *
- * @section Remarks
- *
- * It is important to note that gap-costs are computed differently in SeqAn and in BLAST, see
- * @link BlastIOContext#setBlastScoringScheme @endlink for more details.
- *
- * After setting the scoringScheme, the scoringAdpater will be updated. If this fails (e.g. no statistical parameters
- * for the scoring scheme are available) this function will call SEQAN_FAIL. If you don't want this behaviour and you
- * absolutely know what you are doing, you can operate directly on the
- * @link BlastIOContext::scoringAdapter @endlink-member.
-*/
-
-// template <typename TScore,
-//           typename TString,
-//           BlastProgram p,
-//           BlastTabularSpec h>
-// inline void
-// setScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore const & scoringScheme)
-// {
-//     context.scoringAdapter.scheme = scoringScheme;
-//
-//     if (!_selectSet(context.scoringAdapter))
-//         SEQAN_FAIL("ERROR: No Karlin-Altschul parameters where available for you scoring scheme --> your scoring scheme"
-//                    " and/or your gap costs are not supported.");
-// }
-
-/*
-* @fn BlastIOContext#getBlastScoringScheme
-* @signature ScoringScheme getBlastScoringScheme(context);
-* @param[in] context  The @link BlastIOContext @endlink.
-* @brief get the @link Score @endlink object of the context, converting to Blast behaviour.
-* @return ScoringScheme a copy of the scoringScheme of the context, converted to Blast's gap notation, see
-* @link BlastIOContext#setBlastScoringScheme @endlink
-*/
-
-// template <typename TScore,
-//           typename TString,
-//           BlastProgram p,
-//           BlastTabularSpec h>
-// inline TScore
-// getBlastScoringScheme(BlastIOContext<TScore, TString, p, h> const & context)
-// {
-//     TScore newscore(context.scoringAdapter.scheme);
-//     seqanScoringScheme2blastScoringScheme(newscore);
-//     return newscore;
-// }
-
-/*
- * @fn BlastIOContext#setBlastScoringScheme
- * @signature void setBlastScoringScheme(context, scoringScheme);
- * @param[in,out] context        The @link BlastIOContext @endlink.
- * @param[in]     scoringScheme  The new @link Score @endlink object.
- * @brief set the @link Score @endlink object of the context, converting from Blast behaviour.
- *
- * @section Remarks
- *
- * It is important to note that gap-costs are computed differently in SeqAn and in BLAST.
- * Blast (and many other tools) compute scores of a stretch of gaps as
- * <tt>s = gO + n * gE</tt>
- * where gO is the gapOpen score, gE is the gap extend score and n ist the
- * total number of gap characters.
- *
- * SeqAn, however, computes them as as <tt>s = gO + (n-1) * gE</tt>.
- *
- * The context always holds a scoring scheme in SeqAn's format, but you can use this function to pass a scoring
- * scheme in blast's notation and it will be converted automatically. If you are used to Blast's notation or provide
- * a user interface where the user enters gap-scores, you will want to use this interface.
- *
- * After setting the scoringScheme, the scoringAdpater will be updated. If this fails (e.g. no statistical parameters
- * for the scoring scheme are available) this function will call SEQAN_FAIL. If you don't want this behaviour and you
- * absolutely know what you are doing, you can operate directly on the
- * @link BlastIOContext::scoringAdapter @endlink-member.
- */
-
-// template <typename TScore,
-//           typename TString,
-//           BlastProgram p,
-//           BlastTabularSpec h>
-// inline void
-// setBlastScoringScheme(BlastIOContext<TScore, TString, p, h> & context, TScore scoringScheme)
-// {
-//     blastScoringScheme2seqanScoringScheme(scoringScheme);
-//     setScoringScheme(context, scoringScheme);
-// }
 
 }
 

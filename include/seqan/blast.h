@@ -41,6 +41,13 @@
 
 #ifdef SEQAN_CXX11_STANDARD
 
+// causes linker error on clang, TODO solve intelligently
+#if (defined(__GNUG__) && !defined(__clang__))
+#define THREADLOCAL thread_local
+#else
+#define THREADLOCAL
+#endif
+
 #include <cinttypes>
 #include <cmath>
 #include <cstdio>

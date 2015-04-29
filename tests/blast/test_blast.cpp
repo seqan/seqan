@@ -34,25 +34,25 @@
 // Tests for align_extend
 // ==========================================================================
 
-// work around obscure FreeBSD issue
-#ifndef _GLIBCXX_USE_C99
-#define _GLIBCXX_USE_C99 1
-#define _GLIBCXX_USE_C99_UNDEF 1
-#endif
 #include <string>
 
 #include <seqan/basic.h>
 #include <seqan/file.h>
 
+#include "test_blast_misc.h"
 #include "test_blast_statistics.h"
 #include "test_blast_output.h"
 #include "test_blast_input.h"
 
 SEQAN_BEGIN_TESTSUITE(test_blast)
 {
+    // MISC
+    SEQAN_CALL_TEST(test_blast_program);
+    SEQAN_CALL_TEST(test_blast_context_targs);
+
     // STATISTICS
     SEQAN_CALL_TEST(test_blast_scoring_scheme_conversion);
-    SEQAN_CALL_TEST(test_blast_scoring_adapter);
+    SEQAN_CALL_TEST(test_blast_scoring_scheme);
     SEQAN_CALL_TEST(test_blast_blastmatch_stats_and_score);
     SEQAN_CALL_TEST(test_blast_blastmatch_bit_score_e_value);
 
@@ -101,14 +101,11 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_read_match_tabular);
     SEQAN_CALL_TEST(test_blast_read_match_tabular_legacy);
     SEQAN_CALL_TEST(test_blast_read_match_customfields_tabular);
-    SEQAN_CALL_TEST(test_blast_read_match_lowlevel_tabular);
-//     SEQAN_CALL_TEST(test_blast_read_match_lowlevel_tabular_legacy);
+    SEQAN_CALL_TEST(test_blast_read_match_lowlevel_tabular); // only test for low-level format
 
     SEQAN_CALL_TEST(test_blast_read_match_tabular_with_header);
     SEQAN_CALL_TEST(test_blast_read_match_tabular_with_header_legacy);
     SEQAN_CALL_TEST(test_blast_read_match_customfields_tabular_with_header);
-//     SEQAN_CALL_TEST(test_blast_read_match_lowlevel_tabular_with_header);
-//     SEQAN_CALL_TEST(test_blast_read_match_lowlevel_tabular_with_header_legacy);
 
     // READING (readHeader, skipHeader)
     SEQAN_CALL_TEST(test_blast_read_header_tabular_with_header);
@@ -129,8 +126,3 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_read_formatted_file_tabular_with_header);
 }
 SEQAN_END_TESTSUITE
-
-#ifdef _GLIBCXX_USE_C99_UNDEF
-#undef _GLIBCXX_USE_C99_UNDEF
-#undef _GLIBCXX_USE_C99
-#endif

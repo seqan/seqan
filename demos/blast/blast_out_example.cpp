@@ -47,12 +47,9 @@ int main()
 //     BlastTabularOut<TContext> outfile("/tmp/output.blast");
     BlastReportOut<TContext> outfile("/tmp/output.blast");
 
-    Blosum62 scheme;
-    setScoreGapOpen(scheme, -11);
-    setScoreGapExtend(scheme, -1);
-
-    // upon assigning, this is also converted to SeqAn's scoring behaviour
-    setBlastScoringScheme(context(outfile), scheme);
+    // set gap parameters in blast notation
+    setScoreGapOpenBlast(context(outfile).scoringScheme, -11);
+    setScoreGapExtend(context(outfile).scoringScheme, -1);
 
     // protein vs protein search is BLASTP
     setBlastProgram(context(outfile), BlastProgram::BLASTP);
@@ -78,7 +75,7 @@ int main()
             assignSource(row(m.align, 0), queries[q]);
             assignSource(row(m.align, 1), subjects[s]);
 
-            localAlignment(m.align, getScoringScheme(context(outfile)));
+            localAlignment(m.align, seqanScheme(context(outfile).scoringScheme));
 
             m.qStart = beginPosition(row(m.align, 0));
             m.qEnd   = endPosition(row(m.align, 0));

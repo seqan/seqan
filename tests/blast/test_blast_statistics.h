@@ -46,30 +46,47 @@ using namespace seqan;
 
 SEQAN_DEFINE_TEST(test_blast_scoring_scheme_conversion)
 {
-    //TODO replace
-//     Blosum62 scheme;
-//     setScoreGapOpen(scheme, -11);
-//     setScoreGapExtend(scheme, -1);
-//
-//     blastScoringScheme2seqanScoringScheme(scheme);
-//
-//     SEQAN_ASSERT_EQ(scoreGapOpen(scheme), -12);
-//     SEQAN_ASSERT_EQ(scoreGapExtend(scheme), -1);
-//
-//     seqanScoringScheme2blastScoringScheme(scheme);
-//
-//     SEQAN_ASSERT_EQ(scoreGapOpen(scheme), -11);
-//     SEQAN_ASSERT_EQ(scoreGapExtend(scheme), -1);
+    typedef Blosum62 TScheme;
+    BlastScoringScheme<TScheme> scheme;
+    setScoreGapExtend(scheme, -1);
+    setScoreGapOpenBlast(scheme, -11);
+    SEQAN_ASSERT(isValid(scheme));
+
+    SEQAN_ASSERT_EQ(scoreGapExtend(scheme), -1);
+    SEQAN_ASSERT_EQ(scoreGapOpenBlast(scheme), -11);
+    SEQAN_ASSERT_EQ(scoreGapOpen(scheme), -12);
+
+    SEQAN_ASSERT_EQ(scoreGapExtend(seqanScheme(scheme)), -1);
+    SEQAN_ASSERT_EQ(scoreGapOpen(seqanScheme(scheme)), -12);
+
+    setScoreGapExtend(scheme, -3);
+    SEQAN_ASSERT(!isValid(scheme)); // no karlin altschul values exist for this combination
+    SEQAN_ASSERT_EQ(scoreGapExtend(scheme), -3);
+    SEQAN_ASSERT_EQ(scoreGapOpenBlast(scheme), -11);
+    SEQAN_ASSERT_EQ(scoreGapOpen(scheme), -14); // open changed as well!
+
+    SEQAN_ASSERT_EQ(scoreGapExtend(seqanScheme(scheme)), -3);
+    SEQAN_ASSERT_EQ(scoreGapOpen(seqanScheme(scheme)), -14);
+
+    setScoreGapExtend(scheme, -2);
+    setScoreGapOpen(scheme, -9); // setScorGapOpen in seqan convention
+    SEQAN_ASSERT(isValid(scheme)); // valid again
+    SEQAN_ASSERT_EQ(scoreGapExtend(scheme), -2);
+    SEQAN_ASSERT_EQ(scoreGapOpenBlast(scheme), -7);
+    SEQAN_ASSERT_EQ(scoreGapOpen(scheme), -9); // open changed as well!
+
+    SEQAN_ASSERT_EQ(scoreGapExtend(seqanScheme(scheme)), -2);
+    SEQAN_ASSERT_EQ(scoreGapOpen(seqanScheme(scheme)), -9);
 }
 
-SEQAN_DEFINE_TEST(test_blast_scoring_adapter)
+SEQAN_DEFINE_TEST(test_blast_scoring_scheme)
 {
     // Blosum62 and some general stuff
     {
         typedef Blosum62 TScheme;
         BlastScoringScheme<TScheme> scheme;
         setScoreGapOpenBlast(scheme, -11);
-        setScoreGapExtendBlast(scheme, -1);
+        setScoreGapExtend(scheme, -1);
 
         // TEST isValid()
         SEQAN_ASSERT(isValid(scheme));
@@ -86,7 +103,7 @@ SEQAN_DEFINE_TEST(test_blast_scoring_adapter)
 
         // reset to valid
         setScoreGapOpenBlast(scheme, -11);
-        setScoreGapExtendBlast(scheme, -1);
+        setScoreGapExtend(scheme, -1);
 
         // now check values again
         SEQAN_ASSERT(isValid(scheme));
@@ -103,7 +120,7 @@ SEQAN_DEFINE_TEST(test_blast_scoring_adapter)
         typedef Blosum45 TScheme;
         BlastScoringScheme<TScheme> scheme;
         setScoreGapOpenBlast(scheme, -11);
-        setScoreGapExtendBlast(scheme, -3);
+        setScoreGapExtend(scheme, -3);
 
         // TEST isValid()
         SEQAN_ASSERT(isValid(scheme));
@@ -120,7 +137,7 @@ SEQAN_DEFINE_TEST(test_blast_scoring_adapter)
         typedef Blosum80 TScheme;
         BlastScoringScheme<TScheme> scheme;
         setScoreGapOpenBlast(scheme, -11);
-        setScoreGapExtendBlast(scheme, -1);
+        setScoreGapExtend(scheme, -1);
 
         // TEST isValid()
         SEQAN_ASSERT(isValid(scheme));
@@ -137,7 +154,7 @@ SEQAN_DEFINE_TEST(test_blast_scoring_adapter)
         typedef Pam250 TScheme;
         BlastScoringScheme<TScheme> scheme;
         setScoreGapOpenBlast(scheme, -11);
-        setScoreGapExtendBlast(scheme, -3);
+        setScoreGapExtend(scheme, -3);
 
         // TEST isValid()
         SEQAN_ASSERT(isValid(scheme));
@@ -156,7 +173,7 @@ SEQAN_DEFINE_TEST(test_blast_scoring_adapter)
         setScoreMatch(scheme, 2);
         setScoreMismatch(scheme, -3);
         setScoreGapOpenBlast(scheme, -4);
-        setScoreGapExtendBlast(scheme, -2);
+        setScoreGapExtend(scheme, -2);
 
         // TEST isValid()
         SEQAN_ASSERT(isValid(scheme));
@@ -187,17 +204,17 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_stats_and_score)
     typedef Blosum62 TScheme;
     BlastScoringScheme<TScheme> scheme;
     setScoreGapOpenBlast(scheme, -11);
-    setScoreGapExtendBlast(scheme, -1);
+    setScoreGapExtend(scheme, -1);
     SEQAN_ASSERT(isValid(scheme));
 
-    int score = globalAlignment(m.align, static_cast<TScheme>(scheme));
+    int score = globalAlignment(m.align, seqanScheme(scheme));
 //     ARNDAYVBRNDCQFGCYVBQARNDCQEGEG
 //     ||| ||||||||   ||||||||  |||||
 //     ARN-AYVBRNDCCY-CYVBQARN--QEGEG
 
     SEQAN_ASSERT_EQ(score, 94);
 
-    computeAlignmentStats(m.alignStats, m.align, static_cast<TScheme>(scheme));
+    computeAlignmentStats(m.alignStats, m.align, seqanScheme(scheme));
 
     SEQAN_ASSERT_EQ(m.alignStats.alignmentScore, score);
 //     SEQAN_ASSERT_EQ(m.alignLength, 30u);
@@ -229,17 +246,17 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_bit_score_e_value)
 
     BlastScoringScheme<TScheme> scheme;
     setScoreGapOpenBlast(scheme, -11);
-    setScoreGapExtendBlast(scheme, -1);
+    setScoreGapExtend(scheme, -1);
     SEQAN_ASSERT(isValid(scheme));
 
-    int score = localAlignment(m.align, static_cast<TScheme>(scheme));
+    int score = localAlignment(m.align, seqanScheme(scheme));
 //         VAYAQTKPRRLCFP
 //         |||||  || || |
 //         VAYAQ--PRKLCYP
 
     SEQAN_ASSERT_EQ(score, 48);
 
-    computeAlignmentStats(m.alignStats, m.align, static_cast<TScheme>(scheme));
+    computeAlignmentStats(m.alignStats, m.align, seqanScheme(scheme));
 
     SEQAN_ASSERT_EQ(m.alignStats.alignmentScore, score);
     SEQAN_ASSERT_EQ(m.alignStats.alignmentLength, 14u);

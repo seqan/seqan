@@ -37,10 +37,6 @@
 #ifndef SEQAN_EXTRAS_BLAST_BLAST_BASE_H_
 #define SEQAN_EXTRAS_BLAST_BLAST_BASE_H_
 
-//TODO: move setBlastScoringScheme to adapter, maybe rename adapter
-
-
-
 namespace seqan {
 
 // ============================================================================
@@ -517,6 +513,13 @@ _programTagToString(BlastProgram const _p)
 }
 
 // if known at compile-time, deduce at compile-time
+template <BlastProgram p>
+constexpr const char *
+_programTagToString(BlastProgramTag<p> const &)
+{
+    return _programTagToString<p>();
+}
+
 template <BlastProgram p>
 constexpr const char *
 _programTagToString(BlastProgram const, BlastProgramTag<p> const &)
