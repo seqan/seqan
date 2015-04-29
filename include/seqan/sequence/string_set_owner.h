@@ -141,6 +141,21 @@ public:
 // ============================================================================
 
 // --------------------------------------------------------------------------
+// Function append()
+// --------------------------------------------------------------------------
+
+// better solution if both stringsets are Owner<Default>
+template <typename TString, typename TString2, typename TExpand >
+inline void append(StringSet<TString, Owner<Default> > & me,
+                   StringSet<TString2, Owner<Default> > const & obj,
+                   Tag<TExpand>)
+{
+    // we rather invalidate limits here to allow to do modify appended strings:
+    me.limitsValid = false;
+    append(me.strings, obj.strings, Tag<TExpand>());
+}
+
+// --------------------------------------------------------------------------
 // Function appendValue()
 // --------------------------------------------------------------------------
 
