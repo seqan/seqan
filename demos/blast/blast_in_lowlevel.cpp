@@ -27,7 +27,7 @@ int main()
         resize(hsps, length(hsps)+1);
 
         // read only the first two fields into our variables
-        readMatch0(fit, BlastTabular(), back(hsps).first, back(hsps).second);
+        readMatch(fit, BlastTabular(), back(hsps).first, back(hsps).second);
     }
 
     std::sort(std::begin(hsps), std::end(hsps));

@@ -819,6 +819,24 @@ writeHeader(BlastReportOut<TContext> & formattedFile)
  * @see BlastIOContext
  */
 
+template <typename TStream>
+inline void
+writeMatrixName(TStream & stream, SimpleScore const & scheme)
+{
+    write(stream, " blastn matrix:");
+    write(stream, scoreMatch(scheme));
+    write(stream, ' ');
+    write(stream, scoreMismatch(scheme));
+}
+
+template <typename TStream, typename TScheme>
+inline void
+writeMatrixName(TStream & stream, TScheme const &)
+{
+    // see top of file
+    write(stream, _matrixName(TScheme()));
+}
+
 template <typename TStream,
           typename TScore,
           typename TConString,
@@ -829,7 +847,6 @@ writeFooter(TStream & stream,
             BlastIOContext<TScore, TConString, p, h> & context,
             BlastReport const & /*tag*/)
 {
-    // TODO what is printed here for BLASTN?
     write(stream, "\n  Database: ");
     write(stream, context.dbName);
     write(stream, "\n  Number of letters in database: ");
@@ -838,8 +855,8 @@ writeFooter(TStream & stream,
     write(stream, context.dbNumberOfSeqs);
     write(stream, "\n\n\n\n");
 
-    write(stream, "Matrix:");
-    write(stream, _matrixName(seqanScheme(context.scoringScheme)));
+    write(stream, "Matrix: ");
+    writeMatrixName(stream, seqanScheme(context.scoringScheme));
     write(stream, "\nGap Penalties: Existence: ");
     write(stream, -scoreGapOpenBlast(context.scoringScheme)); // convert scores to penalties
     write(stream, ", Extension: ");

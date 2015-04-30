@@ -40,13 +40,9 @@
 #include <seqan/platform.h>
 
 #ifdef SEQAN_CXX11_STANDARD
-
-// causes linker error on clang, TODO solve intelligently
-#if (defined(__GNUG__) && !defined(__clang__))
-#define THREADLOCAL thread_local
-#else
-#define THREADLOCAL
-#endif
+// minimum gcc version 4.9
+// minimum clang version 3.4
+// minimum msvc version 2013
 
 #include <cinttypes>
 #include <cmath>
@@ -55,6 +51,7 @@
 #include <sstream>
 #include <type_traits>
 #include <unordered_map>
+#include <regex>
 
 #include <seqan/basic.h>
 #include <seqan/version.h>

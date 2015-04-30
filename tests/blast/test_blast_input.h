@@ -585,7 +585,7 @@ _test_blast_read_tabular_with_header(bool custom = false)
                     2u);
 
     SEQAN_ASSERT_EQ(context.otherLines[0],
-                    "Datacase: /tmp/uniprot_sprot.fasta");
+                    " Datacase: /tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(context.conformancyErrors[0],
                     "No or multiple database lines present.");
 
@@ -740,7 +740,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
                     2u);
 
     SEQAN_ASSERT_EQ(context.otherLines[0],
-                    "Datacase: /tmp/uniprot_sprot.fasta");
+                    " Datacase: /tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(context.conformancyErrors[0],
                     "No or multiple database lines present.");
 
@@ -1026,7 +1026,7 @@ void _test_blast_read_record_withheader(const char * path, bool const defaults, 
                     2u);
 
     SEQAN_ASSERT_EQ(context.otherLines[0],
-                    "Datacase: /tmp/uniprot_sprot.fasta");
+                    " Datacase: /tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(context.conformancyErrors[0],
                     "No or multiple database lines present.");
 

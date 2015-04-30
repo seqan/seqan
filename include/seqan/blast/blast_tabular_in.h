@@ -37,8 +37,6 @@
 #ifndef SEQAN_BLAST_BLAST_TABULAR_READ_H_
 #define SEQAN_BLAST_BLAST_TABULAR_READ_H_
 
-#include <regex>
-
 /* IMPLEMENTATION NOTES
 
 BLAST TABULAR example:
@@ -159,25 +157,6 @@ inline bool guessFormat(FormattedFile<BlastTabular, Input, TSpec> & file)
     else
         setBlastTabularSpec(context(file), BlastTabularSpec::NO_HEADER);
     return true;
-}
-
-// ----------------------------------------------------------------------------
-// Function strSplit()
-// ----------------------------------------------------------------------------
-
-//TODO(h-2): this will be removed in favor of a better solution
-template <typename TString,
-          typename TSpec,
-          typename TSequence>
-inline void
-_strSplit(StringSet<TString, TSpec> & result,
-         TSequence const & sequence,
-         std::regex const & regex)
-{
-    static THREADLOCAL std::string tmp;
-    tmp = std::regex_replace(static_cast<std::string>(sequence), regex, std::string("\x7F"));
-    std::cout << toCString(tmp) << std::endl;
-    strSplit(result, tmp, EqualsChar<'\x7F'>(), true);
 }
 
 // ----------------------------------------------------------------------------
@@ -359,66 +338,61 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
     int fieldsLinePresent = 0;
     int hitsLinePresent = 0;
 
-    // TODO replace the startsWith and suffix() with std::regex
     do
     {
-        assign(context._lineBuffer, suffix(context._lineBuffer, 2)); // strip "# "
-
-        if (startsWith(context._lineBuffer, "BLAST") || startsWith(context._lineBuffer, "TBLAST"))
+        if (std::regex_search(seqan::begin(context._lineBuffer),
+                              seqan::end(context._lineBuffer),
+                              std::regex("^# T?BLAST")))
         {
             // last line of file
             if (SEQAN_UNLIKELY(startsWith(context._lineBuffer, "# BLAST processed ") && !context.legacyFormat))
             {
-                //TODO we landed in the footer by mistake
+                SEQAN_FAIL("ERROR: You called readRecord() when you should have called readFooter()."
+                           "Always check onRecord() before calling readRecord().");
             }
             else // first line of record header
             {
-                std::swap(context.versionString, context._lineBuffer);
+                assign(context.versionString, suffix(context._lineBuffer, 2));
                 context.blastProgram = _programStringToTag(prefix(context.versionString,
                                                                   _firstOcc(context.versionString, ' ')));
 
-    // TODO(h4nn3s): regex test
-    //             std::regex versionRE("[0-9]+\\.[0-9]+\\.[0-9]+\\+", std::regex::awk);
-    //             context.legacyFormat = std::regex_search(seqan::begin(key), seqan::end(key), versionRE);
-
-                context.legacyFormat = (context.versionString.find('+') == std::string::npos);
+                context.legacyFormat = !std::regex_search(seqan::begin(context.versionString),
+                                                          seqan::end(context.versionString),
+                                                          std::regex("\\d\\.\\d\\.\\d{1,2}\\+"));
             }
         }
-        else if (startsWith(context._lineBuffer, "Query:"))
+        else if (startsWith(context._lineBuffer, "# Query:"))
         {
             ++queryLinePresent;
-            assign(r.qId, suffix(context._lineBuffer, 7));
+            assign(r.qId, suffix(context._lineBuffer, 9));
 
         }
-        else if (startsWith(context._lineBuffer, "Database:"))
+        else if (startsWith(context._lineBuffer, "# Database:"))
         {
             ++dbLinePresent;
-            assign(context.dbName, suffix(context._lineBuffer, 10));
+            assign(context.dbName, suffix(context._lineBuffer, 12));
         }
-        else if (startsWith(context._lineBuffer, "Fields:"))
+        else if (startsWith(context._lineBuffer, "# Fields:"))
         {
             ++fieldsLinePresent;
-//             clear(context._stringBuffer);
-//             std::regex_replace(seqan::begin(context._stringBuffer),
-//                                seqan::begin(context._lineBuffer) + 8,
-//                                seqan::end(context._lineBuffer),
-//                                std::regex(", "),
-//                                "\x7F");
-//             std::cout << toCString(context._stringBuffer) << std::endl;
-//             strSplit(context.fieldsAsStrings, context._stringBuffer, EqualsChar<'\x7F'>(), true);
-//             write(std::cout, context.fieldsAsStrings);
-            // TODO replace with the above to avoid copying
-            _strSplit(context.fieldsAsStrings,
-                      static_cast<TString>(suffix(context._lineBuffer, 8)),
-                      std::regex(", "));
+            clear(context._stringBuffer);
+            // make sure target is big enough
+            resize(context._stringBuffer, length(context._lineBuffer) - 10);
+            // use escape character as placeholder for replacement since strSplit only handles single characters
+            std::regex_replace(seqan::begin(context._stringBuffer),
+                               seqan::begin(context._lineBuffer) + 10, // skip "# Fields:"
+                               seqan::end(context._lineBuffer),
+                               std::regex(", "),
+                               "\x7F");
+            // shrink back down to actual size (replacing two letters with one makes string shorter!)
+            resize(context._stringBuffer, length(context._stringBuffer.c_str()));
+            strSplit(context.fieldsAsStrings, context._stringBuffer, EqualsChar<'\x7F'>(), true);
 
             if (context.legacyFormat)
             {
                 // assume defaults for LEGACY
                 if (!context.ignoreFieldsInHeader)
                     appendValue(context.fields, BlastMatchField<>::Enum::STD);
-
-//                 break; // header is finished
             }
             else if (!context.ignoreFieldsInHeader)
             {
@@ -457,7 +431,7 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                 if (endsWith(context._lineBuffer, "hits found"))
                 {
                     clear(context._stringBuffer);
-                    for (unsigned i = 0; (i < length(context._lineBuffer) && isdigit(context._lineBuffer[i])); ++i)
+                    for (unsigned i = 2; (i < length(context._lineBuffer) && isdigit(context._lineBuffer[i])); ++i)
                         appendValue(context._stringBuffer, context._lineBuffer[i], Generous());
 
                     uint64_t hits = lexicalCast<uint64_t>(context._stringBuffer);
@@ -469,15 +443,11 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                     else  // hits = 0 means no fieldList, restore default
                     {
                         appendValue(context.fields, BlastMatchField<>::Enum::STD);
-                        _strSplit(context.fieldsAsStrings,
-                                  BlastMatchField<>::columnLabels[0],
-                                  std::regex(", "));
-                        // TODO replace with the below to avoid copying
 
-//                         context._stringBuffer = std::regex_replace(BlastMatchField<>::columnLabels[0],
-//                                                                    std::regex(", "),
-//                                                                    "\x7F");
-//                         strSplit(context.fieldsAsStrings, context._stringBuffer, EqualsChar<'\x7F'>(), true);
+                        context._stringBuffer = std::regex_replace(BlastMatchField<>::columnLabels[0],
+                                                                   std::regex(", "),
+                                                                   "\x7F");
+                        strSplit(context.fieldsAsStrings, context._stringBuffer, EqualsChar<'\x7F'>(), true);
                     }
 
                     ++hitsLinePresent;
@@ -485,20 +455,21 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                 }
                 else
                 {
-                    appendValue(context.otherLines, context._lineBuffer, Generous());
+                    appendValue(context.otherLines, suffix(context._lineBuffer, 1), Generous());
                 }
             }
             else
             {
-                appendValue(context.otherLines, context._lineBuffer, Generous());
+                appendValue(context.otherLines, suffix(context._lineBuffer, 1), Generous());
             }
         }
 
         goNextLine(context, iter, BlastTabular());
 
-    } while (startsWith(context._lineBuffer, "#") &&           // still on record header
-             !startsWith(context._lineBuffer, "# BLAST") &&    // start of next record header
-             !startsWith(context._lineBuffer, "# TBLAST"));
+    } while (startsWith(context._lineBuffer, "#") &&                  // still on record header
+             !std::regex_search(seqan::begin(context._lineBuffer),    // start of next record header
+                                seqan::end(context._lineBuffer),
+                                std::regex("^# T?BLAST")));
 
     if (getBlastProgram(context) == BlastProgram::UNKNOWN)
         appendValue(context.conformancyErrors,

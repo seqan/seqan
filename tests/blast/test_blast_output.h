@@ -710,7 +710,7 @@ void test_blast_compare_report_outputs(TString const & output, TContext const & 
     "\n"
     "\n"
     "\n"
-    "Matrix:BLOSUM62\n"
+    "Matrix: BLOSUM62\n"
     "Gap Penalties: Existence: 11, Extension: 1\n\n");
 
     if (output != compString)

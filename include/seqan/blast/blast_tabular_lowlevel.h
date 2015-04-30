@@ -216,7 +216,7 @@ inline void
 _readMatchImplBlastTab(TFwdIterator & iter,
                        TArg & arg)
 {
-    static THREADLOCAL std::string buffer;
+    static std::string buffer;
     clear(buffer);
 
     readUntil(buffer, iter, OrFunctor<IsTab,IsNewline>());
@@ -234,7 +234,7 @@ _readMatchImplBlastTab(TFwdIterator & iter,
                        TArg & arg,
                        TArgs & ... args)
 {
-    static THREADLOCAL std::string buffer;
+    static std::string buffer;
     clear(buffer);
 
     readUntil(buffer, iter, IsTab());
