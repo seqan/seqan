@@ -57,25 +57,31 @@ namespace seqan {
  * @headerfile <seqan/blast.h>
  * @brief Support for Blast default file format
  *
- * This tag represents support for Blast's default file format (<tt>blastall -m 0</tt> / <tt>blast* -outfmt 0</tt>).
+ * There are three blast format related tags in SeqAn:
+ *
+ * <li> @link BlastReport @endlink with the FormattedFile output specialization @link BlastReportOut @endlink</li>
+ * <li> @link BlastTabular @endlink with the FormattedFile output and input specializations
+ * @link BlastTabularOut @endlink and @link BlastTabularIn @endlink</li>
+ * <li> @link BlastTabularLL @endlink which provides light-weight, but very basic tabular IO </li>
+ *
+ * This is the first tag, it represents support for Blast's default file format (<tt>blastall -m 0</tt> / <tt>blast*
+ * -outfmt 0</tt>).
  * Only support for writing is available, see the example below.
  *
  * The reference Blast implementation used for developing the SeqAn support is NCBI Blast+ 2.2.26. In contrast to the
  * tabular format there is no support for writing legacy files (without the +).
  *
- * SeqAn also supports reading and writing the tabular blast output format, see @link BlastTabular @endlink.
- *
  * @section Example of high-level file writing
  *
  * You can use this tag's interface and specify the stream, and context:
- * <li> BlastReport#@link BlastReport#writeHeader @endlink </li>
+ * <li> BlastReport#@link BlastReport#writeHeader @endlink once</li>
  * <li> BlastReport#@link BlastReport#writeRecord @endlink up to n times</li>
- * <li> BlastReport#@link BlastReport#writeFooter @endlink </li>
+ * <li> BlastReport#@link BlastReport#writeFooter @endlink at end</li>
  *
  * Or you can use the FormattedFile interface which has the same functions, but only requires one parameter:
- * <li> BlastReportOut#@link BlastReportOut#writeHeader @endlink </li>
+ * <li> BlastReportOut#@link BlastReportOut#writeHeader @endlink once</li>
  * <li> BlastReportOut#@link BlastReportOut#writeRecord @endlink up to n times</li>
- * <li> BlastReportOut#@link BlastReportOut#writeFooter @endlink </li>
+ * <li> BlastReportOut#@link BlastReportOut#writeFooter @endlink at end</li>
  *
  * See @link BlastReportOut @endlink for a full code example.
  */
