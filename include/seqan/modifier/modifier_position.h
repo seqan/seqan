@@ -357,6 +357,51 @@ length(ModifiedString<THost, ModPos<TPositions> > const & me)
 //    return infix(reinterpret_cast<ModifiedString<THost, ModPos<TPositions> > const &>(me), pos_begin, pos_end);
 //}
 
+// ----------------------------------------------------------------------------
+// Functor PosLess_
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TPos = typename Position<THost>::Type, typename TPredicate = std::less<TPos> >
+struct PosLess_ : public std::binary_function<TPos, TPos, bool>
+{
+    THost const & _host;
+    TPredicate pred;
+
+    PosLess_(THost const & _host) :
+        _host(_host)
+    {}
+
+    PosLess_(THost const & _host, TPredicate const & pred) :
+        _host(_host),
+        pred(pred)
+    {}
+
+    bool operator()(TPos a, TPos b)
+    {   
+        return pred(getValue(_host, a), getValue(_host, b));
+    }   
+};
+
+// ----------------------------------------------------------------------------
+// Function sort()
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TPositions, typename TBinaryPredicate, typename TParallelTag>
+inline void sort(ModifiedString<THost, ModPos<TPositions> > & me, TBinaryPredicate p, Tag<TParallelTag> const & tag)
+{
+    typedef typename Position<ModifiedString<THost, ModPos<TPositions> > >::Type TPos;
+
+    sort(cargo(me), PosLess_<THost, TPos, TBinaryPredicate>(host(me), p), tag);
+}
+
+template <typename THost, typename TPositions, typename TParallelTag>
+inline void sort(ModifiedString<THost, ModPos<TPositions> > & me, Tag<TParallelTag> const & tag)
+{
+    typedef typename Position<ModifiedString<THost, ModPos<TPositions> > >::Type TPos;
+
+    sort(cargo(me), PosLess_<THost, TPos>(host(me)), tag);
+}
+
 }  // namespace seqan
 
 #endif  // SEQAN_MODIFIER_MODIFIER_POSITION_H_
