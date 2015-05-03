@@ -111,7 +111,6 @@ SEQAN_BEGIN_TESTSUITE(test_basic)
     SEQAN_CALL_TEST(seqan_basic_type_metafunction_source);
     SEQAN_CALL_TEST(seqan_basic_type_metafunction_parameter);
     SEQAN_CALL_TEST(seqan_basic_type_to_parameter);
-    SEQAN_CALL_TEST(seqan_basic_type_metafunction_const_parameter);
     SEQAN_CALL_TEST(seqan_basic_type_metafunction_length);
     SEQAN_CALL_TEST(seqan_basic_type_metafunction_is_integral);
 
