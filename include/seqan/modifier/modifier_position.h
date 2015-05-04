@@ -280,6 +280,26 @@ length(ModifiedString<THost, ModPos<TPositions> > const & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function empty()
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TPositions>
+inline bool empty(ModifiedString<THost, ModPos<TPositions> > const & me)
+{
+    return empty(cargo(me));
+}
+
+// ----------------------------------------------------------------------------
+// Function clear()
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TPositions>
+inline void clear(ModifiedString<THost, ModPos<TPositions> > & me)
+{
+    clear(cargo(me));
+}
+
+// ----------------------------------------------------------------------------
 // Function resize()
 // ----------------------------------------------------------------------------
 // this function doesn't do anything as we are not allowed to change the host (only its elements)
@@ -356,6 +376,33 @@ length(ModifiedString<THost, ModPos<TPositions> > const & me)
 //{
 //    return infix(reinterpret_cast<ModifiedString<THost, ModPos<TPositions> > const &>(me), pos_begin, pos_end);
 //}
+
+// ----------------------------------------------------------------------------
+// Function position()
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TPositions, typename TPos>
+inline typename Position<ModifiedString<THost, ModPos<TPositions> > const>::Type
+position(ModifiedString<THost, ModPos<TPositions> > const & me, TPos i)
+{
+    return getValue(cargo(me), i);
+}
+
+// ----------------------------------------------------------------------------
+// Function setPosition()
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TPositions, typename TPos>
+inline void setPosition(ModifiedString<THost, ModPos<TPositions> > & me, TPos i, TPos j)
+{
+    assignValue(cargo(me), i, j);
+}
+
+template <typename THost, typename TPositions, typename TPos>
+inline void setPosition(ModifiedString<THost, ModPos<TPositions> > const & me, TPos i, TPos j)
+{
+    assignValue(cargo(me), i, j);
+}
 
 // ----------------------------------------------------------------------------
 // Functor PosLess_
