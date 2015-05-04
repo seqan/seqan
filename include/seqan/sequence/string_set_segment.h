@@ -268,6 +268,24 @@ _refreshStringSetLimits(StringSet<THost, Segment<TSpec> > & me)
     _refreshStringSetLimits(me, Serial());
 }
 
+// --------------------------------------------------------------------------
+// Function stringSetPositions()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline typename StringSetPositions<THost>::Type &
+stringSetPositions(StringSet<THost, Segment<TSpec> > & me)
+{
+    return me.positions;
+}
+
+template <typename THost, typename TSpec>
+inline typename StringSetPositions<THost const>::Type &
+stringSetPositions(StringSet<THost, Segment<TSpec> > const & me)
+{
+    return me.positions;
+}
+
 // ----------------------------------------------------------------------------
 // Function host()
 // ----------------------------------------------------------------------------
@@ -327,7 +345,7 @@ void assign(StringSet<THost, Segment<TSpec> > & me,
             StringSet<TString2, Segment<TSpec2> > const & other)
 {
     setHost(me, host(other));
-    assign(me.positions, other.positions);
+    assign(stringSetPositions(me), stringSetPositions(other));
     assign(stringSetLimits(me), stringSetLimits(other));
     assign(me.limitsValid, other.limitsValid);
     assign(concat(me), concat(other));
