@@ -70,7 +70,7 @@ template <typename THost, typename TPositions>
 struct Value<ModifiedString<THost, ModPos<TPositions> > > : Value<THost> {};
 
 template <typename THost, typename TPositions>
-struct Value<ModifiedString<THost, ModPos<TPositions> > const> : Value<THost const> {};
+struct Value<ModifiedString<THost, ModPos<TPositions> > const> : Value<THost> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction GetValue
@@ -80,7 +80,7 @@ template <typename THost, typename TPositions>
 struct GetValue<ModifiedString<THost, ModPos<TPositions> > > : GetValue<THost> {};
 
 template <typename THost, typename TPositions>
-struct GetValue<ModifiedString<THost, ModPos<TPositions> > const> : GetValue<THost const> {};
+struct GetValue<ModifiedString<THost, ModPos<TPositions> > const> : GetValue<THost> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Reference
@@ -90,7 +90,7 @@ template <typename THost, typename TPositions>
 struct Reference<ModifiedString<THost, ModPos<TPositions> > > : Reference<THost> {};
 
 template <typename THost, typename TPositions>
-struct Reference<ModifiedString<THost, ModPos<TPositions> > const> : Reference<THost const> {};
+struct Reference<ModifiedString<THost, ModPos<TPositions> > const> : Reference<THost> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Difference
