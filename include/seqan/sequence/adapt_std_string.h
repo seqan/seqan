@@ -52,11 +52,11 @@ namespace seqan {
 // Concept StringConcept
 // ----------------------------------------------------------------------------
 
-template <typename TChar, typename TCharTraits, typename TAlloc>
-SEQAN_CONCEPT_IMPL((std::basic_string<TChar, TCharTraits, TAlloc>), (StringConcept));           // resizable container
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-SEQAN_CONCEPT_IMPL((std::basic_string<TChar, TCharTraits, TAlloc> const), (ContainerConcept));  // read-only container
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// SEQAN_CONCEPT_IMPL((std::basic_string<TChar, TCharTraits, TAlloc>), (StringConcept));           // resizable container
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// SEQAN_CONCEPT_IMPL((std::basic_string<TChar, TCharTraits, TAlloc> const), (ContainerConcept));  // read-only container
 
 // ===========================================================================
 // Metafunctions
@@ -78,13 +78,13 @@ struct StdContainerIterator< std::basic_string<TChar, TCharTraits, TAlloc> const
 
 // std::string can be assumed to be contigous, see
 // http://stackoverflow.com/questions/1986966/does-s0-point-to-contiguous-characters-in-a-stdstring
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct IsContiguous< std::basic_string<TChar, TCharTraits, TAlloc> > :
-    True {};
-
-template <typename  TChar, typename TCharTraits, typename TAlloc>
-struct IsContiguous< std::basic_string<TChar, TCharTraits, TAlloc> const>
-        : IsContiguous< std::basic_string<TChar, TCharTraits, TAlloc> > {};
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct IsContiguous< std::basic_string<TChar, TCharTraits, TAlloc> > :
+//     True {};
+//
+// template <typename  TChar, typename TCharTraits, typename TAlloc>
+// struct IsContiguous< std::basic_string<TChar, TCharTraits, TAlloc> const>
+//         : IsContiguous< std::basic_string<TChar, TCharTraits, TAlloc> > {};
 
 template <typename TChar, typename TCharTraits, typename TAlloc>
 struct Value< std::basic_string<TChar, TCharTraits, TAlloc> >

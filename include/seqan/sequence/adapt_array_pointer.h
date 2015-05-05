@@ -101,29 +101,30 @@ struct DefaultOverflowExplicit< TValue const [SIZE] >
     typedef Insist Type;
 };
 
-template <typename TValue>
-struct IsContiguous;
-
-template <typename TValue>
-struct IsContiguous< TValue * >
-{
-    typedef True Type;
-    enum { VALUE = true };
-};
-
-template <typename TValue, size_t SIZE>
-struct IsContiguous< TValue [SIZE] >
-{
-    typedef True Type;
-    enum { VALUE = true };
-};
-
-template <typename TValue, size_t SIZE>
-struct IsContiguous< TValue const [SIZE] >
-{
-    typedef True Type;
-    enum { VALUE = true };
-};
+//TODO(h-2): fix later
+// template <typename TValue>
+// struct IsContiguous;
+//
+// template <typename TValue>
+// struct IsContiguous< TValue * >
+// {
+//     typedef True Type;
+//     enum { VALUE = true };
+// };
+//
+// template <typename TValue, size_t SIZE>
+// struct IsContiguous< TValue [SIZE] >
+// {
+//     typedef True Type;
+//     enum { VALUE = true };
+// };
+//
+// template <typename TValue, size_t SIZE>
+// struct IsContiguous< TValue const [SIZE] >
+// {
+//     typedef True Type;
+//     enum { VALUE = true };
+// };
 
 template <typename TValue>
 struct IsSequence< TValue * >

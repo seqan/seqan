@@ -63,8 +63,14 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <deque>
 #include <algorithm>
 #include <numeric>
+
+#ifdef SEQAN_CXX11_STANDARD
+#include <forward_list>
+#include <array>
+#endif
 
 // ----------------------------------------------------------------------------
 // Thrust prerequisites.
@@ -121,6 +127,7 @@
 // Adaptions.
 // ===========================================================================
 
+#include <seqan/sequence/adapt_stl_container.h>
 #include <seqan/sequence/adapt_std_list.h>
 #include <seqan/sequence/adapt_std_string.h>
 #include <seqan/sequence/adapt_std_vector.h>

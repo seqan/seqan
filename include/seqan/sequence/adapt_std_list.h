@@ -49,25 +49,25 @@ namespace seqan {
 // Metafunctions
 // ===========================================================================
 
-template <typename TValue, typename TAlloc>
-struct IsContiguous< std::list<TValue, TAlloc> >
-{
-    enum { VALUE = false };
-};
+// template <typename TValue, typename TAlloc>
+// struct IsContiguous< std::list<TValue, TAlloc> >
+// {
+//     enum { VALUE = false };
+// };
+//
+// template <typename  TValue, typename TAlloc>
+// struct IsContiguous< std::list<TValue, TAlloc> const>
+//         : IsContiguous< std::list<TValue, TAlloc> > {};
 
-template <typename  TValue, typename TAlloc>
-struct IsContiguous< std::list<TValue, TAlloc> const>
-        : IsContiguous< std::list<TValue, TAlloc> > {};
-
-template <typename TValue, typename TAlloc>
-struct Value< std::list<TValue, TAlloc> >
-{
-    typedef typename std::list<TValue, TAlloc>::value_type Type;
-};
-
-template <typename TValue, typename TAlloc>
-struct Value< std::list<TValue, TAlloc> const>
-        : Value< std::list<TValue, TAlloc> > {};
+// template <typename TValue, typename TAlloc>
+// struct Value< std::list<TValue, TAlloc> >
+// {
+//     typedef typename std::list<TValue, TAlloc>::value_type Type;
+// };
+//
+// template <typename TValue, typename TAlloc>
+// struct Value< std::list<TValue, TAlloc> const>
+//         : Value< std::list<TValue, TAlloc> > {};
 
 // TODO(holtgrew): GetValue is a reference?! I thought the reverse was true in respect to Value<>.
 template <typename TValue, typename TAlloc>

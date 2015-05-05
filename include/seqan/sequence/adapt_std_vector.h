@@ -53,25 +53,25 @@ namespace seqan {
 // Concept StringConcept
 // ----------------------------------------------------------------------------
 
-template <typename TChar, typename TAlloc>
-SEQAN_CONCEPT_IMPL((std::vector<TChar, TAlloc>), (StringConcept));          // resizable container
-
-template <typename TChar, typename TAlloc>
-SEQAN_CONCEPT_IMPL((std::vector<TChar, TAlloc> const), (ContainerConcept)); // read-only container
+// template <typename TChar, typename TAlloc>
+// SEQAN_CONCEPT_IMPL((std::vector<TChar, TAlloc>), (StringConcept));          // resizable container
+//
+// template <typename TChar, typename TAlloc>
+// SEQAN_CONCEPT_IMPL((std::vector<TChar, TAlloc> const), (ContainerConcept)); // read-only container
 
 // ===========================================================================
 // Metafunctions
 // ===========================================================================
 
-template <typename TChar, typename TAlloc>
-struct IsContiguous< std::vector<TChar, TAlloc> >
-{
-    enum { VALUE = true };
-};
-
-template <typename  TChar, typename TAlloc>
-struct IsContiguous< std::vector<TChar, TAlloc> const>
-        : IsContiguous< std::vector<TChar, TAlloc> > {};
+// template <typename TChar, typename TAlloc>
+// struct IsContiguous< std::vector<TChar, TAlloc> >
+// {
+//     enum { VALUE = true };
+// };
+//
+// template <typename  TChar, typename TAlloc>
+// struct IsContiguous< std::vector<TChar, TAlloc> const>
+//         : IsContiguous< std::vector<TChar, TAlloc> > {};
 
 template <typename TChar, typename TAlloc>
 struct Value< std::vector<TChar, TAlloc> >
