@@ -42,11 +42,40 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
+#include <string>
+
+using namespace seqan;
+
+//TODO this will need to go into the adaptation
+
+template <typename T>
+inline void
+assign(std::list<T> const & list, char const * str)
+{
+    clear(list);
+    for (unsigned i = 0; i < std::strlen(str); ++i)
+        appendValue(list, static_cast<T>(str[i]));
+}
+
+// std::basic_string<Dna5> & std::basic_string<Dna5>::operator=( const CharT* s )
+// {
+//     clear(list);
+//     for (unsigned i = 0; i < std::strlen(str); ++i)
+//         appendValue(list, static_cast<T>(str[i]));
+// }
+
+template <typename T>
+inline typename Size<std::basic_string<T> >::Type
+insertValue(std::basic_string<T> & str, unsigned i, T const val)
+{
+    str.insert(i, val);
+}
+
 // --------------------------------------------------------------------------
 // CountingChar is used to test sequences of non simple data types.
 // --------------------------------------------------------------------------
 
-using namespace seqan;
+
 
 struct CountingChar
 {
@@ -80,6 +109,10 @@ struct CountingChar
         numDeconstruct = 0;
     }
 
+    operator char & ()
+    {
+        return value;
+    }
     bool operator==(CountingChar const & other) const
     {
         return value == other.value;
@@ -116,8 +149,8 @@ inline TStream & operator<<(TStream & stream, seqan::String<CountingChar, TSpec>
 unsigned CountingChar::numConstruct = 0;
 unsigned CountingChar::numDeconstruct = 0;
 
-template <typename TValue, typename TSpec>
-void testConstructDeconstruct(String<TValue, TSpec> const &, unsigned)
+template <typename TString>
+void testConstructDeconstruct(TString const &, unsigned)
 {}
 template <typename TSpec>
 void testConstructDeconstruct(String<CountingChar, TSpec> const &, unsigned minConstructions)
@@ -136,8 +169,8 @@ template <size_t COUNT>
 void testConstructDeconstruct(String<CountingChar, Block<COUNT> > const &, unsigned)
 {}
 
-template <typename TValue, typename TSpec>
-void testConstructDeconstruct(String<TValue, TSpec> const &str)
+template <typename TString>
+void testConstructDeconstruct(TString const &str)
 {
     testConstructDeconstruct(str, 1u);
 }
@@ -193,9 +226,21 @@ typedef
     seqan::TagList<String<seqan::Dna5, Alloc<> >,
     seqan::TagList<String<char, Alloc<> >,
     seqan::TagList<String<int, Alloc<> >,
-    seqan::TagList<String<CountingChar, Alloc<> >//,
-    //seqan::TagList<String<char, CStyle>
-    > > > > > > > > > > > > > > > > > > > > > > > > > //>
+    seqan::TagList<String<CountingChar, Alloc<> >
+//     seqan::TagList<std::basic_string<seqan::Dna5>,
+//     seqan::TagList<std::basic_string<char>//,
+//     seqan::TagList<std::basic_string<int>
+//     seqan::TagList<std::basic_string<CountingChar>
+//     seqan::TagList<std::vector<seqan::Dna5>,
+//     seqan::TagList<std::vector<char>,
+//     seqan::TagList<std::vector<int>,
+//     seqan::TagList<std::vector<CountingChar>
+//     seqan::TagList<std::list<seqan::Dna5>,
+//     seqan::TagList<std::list<char>,
+//     seqan::TagList<std::list<int>,
+//     seqan::TagList<std::list<CountingChar>,
+    > > > > > > > > > > > > > > > > > > > > > > > > >
+//     > >// > //> //> > > > //> > > >
     StringTestCommonTypes;
 
 SEQAN_TYPED_TEST_CASE(StringTestCommon, StringTestCommonTypes);
@@ -215,7 +260,7 @@ void testSequenceDefaultConstructible(TString & /*Tag*/)
     CountingChar::clear();
 
     TString string;
-    SEQAN_ASSERT(begin(string) == end(string));
+    SEQAN_ASSERT(seqan::begin(string) == seqan::end(string));
 }
 
 SEQAN_TYPED_TEST(StringTestCommon, DefaultConstructible)
@@ -239,9 +284,8 @@ SEQAN_TYPED_TEST(StringTestCommon, DefaultConstructible)
 template <typename TString>
 void testSequenceCopyConstructible(TString & /*Tag*/)
 {
-    using namespace seqan;
-
-    TString string1 = "ACGCTAGCAT";
+    TString string1;
+    assign(string1, "ACGCTAGCAT");
     TString string2(string1);
     SEQAN_ASSERT_EQ(string1, string2);
 }
@@ -272,40 +316,47 @@ SEQAN_TYPED_TEST(StringTestCommon, CopyConstructible)
 template <typename TString>
 void testSequenceLess(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     // Nothing is smaller than something.
     {
         TString string1;
-        TString string2 = "A";
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT(string1 < string2);
     }
 
     // Equal is not smaller
     {
-        TString string1 = "A";
-        TString string2 = "A";
+        TString string1;
+        assign(string1, "A");
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT_NOT(string1 < string2);
     }
 
     // Sequences with lex. smaller characters and equal length are smaller.
     {
-        TString string1 = "A";
-        TString string2 = "C";
+        TString string1;
+        assign(string1, "A");
+        TString string2;
+        assign(string2, "C");
         SEQAN_ASSERT(string1 < string2);
     }
 
     // Sequences with lex. smaller characters but larger length are smaller.
     {
-        TString string1 = "AA";
-        TString string2 = "C";
+        TString string1;
+        assign(string1, "AA");
+        TString string2;
+        assign(string2, "C");
         SEQAN_ASSERT(string1 < string2);
     }
 
     // Sequences with equal characters but smaller length are smaller.
     {
-        TString string1 = "AA";
-        TString string2 = "AAA";
+        TString string1;
+        assign(string1, "AA");
+        TString string2;
+        assign(string2, "AAA");
         SEQAN_ASSERT(string1 < string2);
     }
 }
@@ -327,8 +378,6 @@ SEQAN_TYPED_TEST(StringTestCommon, LessOperator)
 template <typename TString>
 void testSequenceLessEqual(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     // Nothing is equal to nothing.
     {
         TString string1;
@@ -339,42 +388,53 @@ void testSequenceLessEqual(TString & /*Tag*/)
     // Nothing is smaller than something.
     {
         TString string1;
-        TString string2 = "A";
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT(string1 <= string2);
     }
 
     // Sequences of equal characters and length are equal.
     {
-        TString string1 = "A";
-        TString string2 = "A";
+        TString string1;
+        assign(string1, "A");
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT(string1 <= string2);
     }
 
     // Sequences with lex. smaller characters and equal length are smaller.
     {
-        TString string1 = "A";
-        TString string2 = "C";
+        TString string1;
+        assign(string1, "A");
+        TString string2;
+        assign(string2, "C");
         SEQAN_ASSERT(string1 <= string2);
     }
 
     // Sequences with lex. smaller characters but larger length are smaller.
     {
-        TString string1 = "AA";
-        TString string2 = "C";
+        TString string1;
+        assign(string1, "AA");
+        TString string2;
+        assign(string2, "C");
         SEQAN_ASSERT(string1 <= string2);
     }
 
     // Sequences with equal characters but smaller length are smaller.
     {
-        TString string1 = "AA";
-        TString string2 = "AAA";
+        TString string1;
+        assign(string1, "AA");
+        TString string2;
+        assign(string2, "AAA");
         SEQAN_ASSERT(string1 <= string2);
     }
 
     // Sequences with equal characters but smaller length are smaller.
     {
-        TString string1 = "AAA";
-        TString string2 = "AA";
+        TString string1;
+        assign(string1, "AAA");
+        TString string2;
+        assign(string2, "AA");
         SEQAN_ASSERT_NOT(string1 <= string2);
     }
 }
@@ -396,40 +456,47 @@ SEQAN_TYPED_TEST(StringTestCommon, LessEqualOperator)
 template <typename TString>
 void testSequenceGreater(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     // Something is greater than nothing.
     {
-        TString string1 = "A";
+        TString string1;
+        assign(string1, "A");
         TString string2;
         SEQAN_ASSERT(string1 > string2);
     }
 
     // Equal is not greater
     {
-        TString string1 = "A";
-        TString string2 = "A";
+        TString string1;
+        assign(string1, "A");
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT_NOT(string1 > string2);
     }
 
     // Sequences with lex. greater characters and equal length are greater.
     {
-        TString string1 = "C";
-        TString string2 = "A";
+        TString string1;
+        assign(string1, "C");
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT(string1 > string2);
     }
 
     // Sequences with equal characters but larger length are larger.
     {
-        TString string1 = "AA";
-        TString string2 = "A";
+        TString string1;
+        assign(string1, "AA");
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT(string1 > string2);
     }
 
     // Sequences with lex. greater characters are greater.
     {
-        TString string1 = "C";
-        TString string2 = "AA";
+        TString string1;
+        assign(string1, "C");
+        TString string2;
+        assign(string2, "AA");
         SEQAN_ASSERT(string1 > string2);
     }
 }
@@ -451,8 +518,6 @@ SEQAN_TYPED_TEST(StringTestCommon, GreaterOperator)
 template <typename TString>
 void testSequenceGreaterEqual(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     // Nothing is equal to nothing.
     {
         TString string1;
@@ -462,36 +527,45 @@ void testSequenceGreaterEqual(TString & /*Tag*/)
 
     // Something is greater than nothing.
     {
-        TString string1 = "A";
+        TString string1;
+        assign(string1, "A");
         TString string2;
         SEQAN_ASSERT(string1 >= string2);
     }
 
     // Sequences of equal characters and length are equal.
     {
-        TString string1 = "A";
-        TString string2 = "A";
+        TString string1;
+        assign(string1, "A");
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT(string1 >= string2);
     }
 
     // Sequences with lex. greater characters and equal length are greater.
     {
-        TString string1 = "C";
-        TString string2 = "A";
+        TString string1;
+        assign(string1, "C");
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT(string1 >= string2);
     }
 
     // Sequences with equal characters but larger length are greater.
     {
-        TString string1 = "AA";
-        TString string2 = "A";
+        TString string1;
+        assign(string1, "AA");
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT(string1 >= string2);
     }
 
     // Sequences with lex. greater characters are greater.
     {
-        TString string1 = "C";
-        TString string2 = "AA";
+        TString string1;
+        assign(string1, "C");
+        TString string2;
+        assign(string2, "AA");
         SEQAN_ASSERT(string1 > string2);
     }
 }
@@ -513,55 +587,65 @@ SEQAN_TYPED_TEST(StringTestCommon, GreaterEqualOperator)
 template <typename TString>
 void testSequenceEqual(TString & /*Tag*/)
 {
-    using namespace seqan;
-
-    // Nothing is equal to nothing.
+//     // Nothing is equal to nothing.
     {
         TString string1;
         TString string2;
-        SEQAN_ASSERT(string1 == string2);
+        SEQAN_ASSERT_EQ(string1, string2);
     }
 
     // Something is greater than nothing.
     {
-        TString string1 = "A";
+        TString string1;
+        assign(string1, "A");
         TString string2;
         SEQAN_ASSERT_NOT(string1 == string2);
     }
     {
         TString string1;
-        TString string2 = "A";
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT_NOT(string1 == string2);
     }
 
     // Sequences of equal characters and length are equal.
     {
-        TString string1 = "A";
-        TString string2 = "A";
-        SEQAN_ASSERT(string1 == string2);
+        TString string1;
+        assign(string1, "A");
+        TString string2;
+        assign(string2, "A");
+        SEQAN_ASSERT_EQ(string1, string2);
     }
 
     // Sequences of equal characters but different length are not equal.
     {
-        TString string1 = "A";
-        TString string2 = "AA";
+        TString string1;
+        assign(string1, "A");
+        TString string2;
+        assign(string2, "AA");
         SEQAN_ASSERT_NOT(string1 == string2);
     }
     {
-        TString string1 = "AA";
-        TString string2 = "A";
+        TString string1;
+        assign(string1, "AA");
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT_NOT(string1 == string2);
     }
 
     // Sequences of different characters are not equal.
     {
-        TString string1 = "A";
-        TString string2 = "C";
+        TString string1;
+        assign(string1, "A");
+        TString string2;
+        assign(string2, "C");
         SEQAN_ASSERT_NOT(string1 == string2);
     }
     {
-        TString string1 = "C";
-        TString string2 = "A";
+        TString string1;
+        assign(string1, "C");
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT_NOT(string1 == string2);
     }
 }
@@ -583,8 +667,6 @@ SEQAN_TYPED_TEST(StringTestCommon, EqualOperator)
 template <typename TString>
 void testSequenceUnequal(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     // Nothing is equal to nothing.
     {
         TString string1;
@@ -594,45 +676,57 @@ void testSequenceUnequal(TString & /*Tag*/)
 
     // Something is greater than nothing.
     {
-        TString string1 = "A";
+        TString string1;
+        assign(string1, "A");
         TString string2;
-        SEQAN_ASSERT(string1 != string2);
+        SEQAN_ASSERT_NEQ(string1, string2);
     }
     {
         TString string1;
-        TString string2 = "A";
-        SEQAN_ASSERT(string1 != string2);
+        TString string2;
+        assign(string2, "A");
+        SEQAN_ASSERT_NEQ(string1, string2);
     }
 
     // Sequences of equal characters and length are equal.
     {
-        TString string1 = "A";
-        TString string2 = "A";
+        TString string1;
+        assign(string1, "A");
+        TString string2;
+        assign(string2, "A");
         SEQAN_ASSERT_NOT(string1 != string2);
     }
 
     // Sequences of equal characters but different length are not equal.
     {
-        TString string1 = "A";
-        TString string2 = "AA";
-        SEQAN_ASSERT(string1 != string2);
+        TString string1;
+        assign(string1, "A");
+        TString string2;
+        assign(string2, "AA");
+        SEQAN_ASSERT_NEQ(string1, string2);
     }
     {
-        TString string1 = "AA";
-        TString string2 = "A";
-        SEQAN_ASSERT(string1 != string2);
+        TString string1;
+        assign(string1, "AA");
+        TString string2;
+        assign(string2, "A");
+        SEQAN_ASSERT_NEQ(string1, string2);
     }
 
     // Sequences of different characters are not equal.
     {
-        TString string1 = "A";
-        TString string2 = "C";
-        SEQAN_ASSERT(string1 != string2);
+        TString string1;
+        assign(string1, "A");
+        TString string2;
+        assign(string2, "C");
+        SEQAN_ASSERT_NEQ(string1, string2);
     }
     {
-        TString string1 = "C";
-        TString string2 = "A";
-        SEQAN_ASSERT(string1 != string2);
+        TString string1;
+        assign(string1, "C");
+        TString string2;
+        assign(string2, "A");
+        SEQAN_ASSERT_NEQ(string1, string2);
     }
 }
 
@@ -657,22 +751,22 @@ SEQAN_TYPED_TEST(StringTestCommon, UnequalOperator)
 template <typename TString>
 void testSequenceAssign(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     {
         // Test on an empty string.
-        TString string1 = "";
+        TString string1;
+        assign(string1, "");
         TString string2;
         assign(string2, string1);
-        SEQAN_ASSERT(string1 == string2);
+        SEQAN_ASSERT_EQ(string1, string2);
     }
     {
         // Test the basic concept on a non empty string.
-        TString string1 = "ACGTACGTACGT";
+        TString string1;
+        assign(string1, "ACGTACGTACGT");
 
         TString string2;
         assign(string2, string1);
-        SEQAN_ASSERT(string1 == string2);
+        SEQAN_ASSERT_EQ(string1, string2);
     }
 }
 
@@ -694,25 +788,25 @@ SEQAN_TYPED_TEST(StringTestCommon, Assign)
 template <typename TString>
 void testSequenceOperatorAssign(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     {
         // Test on an empty string.
-        TString string1 = "";
+        TString string1;
+        assign(string1, "");
 
         TString string2;  // Separate definition and assignment on purpose.
-        string2 = string1;
-        SEQAN_ASSERT(string1 == string2);
+        assign(string2, string1);
+        SEQAN_ASSERT_EQ(string1, string2);
     }
     {
         // Test the basic concept on a non empty string.
-        TString string1 = "ACGTACGTACGT";
+        TString string1;
+        assign(string1, "ACGTACGTACGT");
 
         TString string2;  // Separate definition and assignment on purpose.
-        string2 = string1;
-        SEQAN_ASSERT(string1 == string2);
+        assign(string2, string1);
+        SEQAN_ASSERT_EQ(string1, string2);
         string2[0] = 'C';
-        SEQAN_ASSERT(string1 != string2);
+        SEQAN_ASSERT_NEQ(string1, string2);
     }
 }
 
@@ -732,8 +826,10 @@ void testSequenceSwap(TString & /*Tag*/)
 {
     using namespace seqan;
     {
-        TString string1 = "";
-        TString string2 = "";
+        TString string1;
+        assign(string1, "");
+        TString string2;
+        assign(string2, "");
         TString string3 = string1;
         TString string4 = string2;
 
@@ -742,8 +838,10 @@ void testSequenceSwap(TString & /*Tag*/)
         SEQAN_ASSERT_EQ(string2, string3);
     }
     {
-        TString string1 = "ACGT";
-        TString string2 = "";
+        TString string1;
+        assign(string1, "ACGT");
+        TString string2;
+        assign(string2, "");
         TString string3 = string1;
         TString string4 = string2;
 
@@ -752,8 +850,10 @@ void testSequenceSwap(TString & /*Tag*/)
         SEQAN_ASSERT_EQ(string2, string3);
     }
     {
-        TString string1 = "";
-        TString string2 = "ACGT";
+        TString string1;
+        assign(string1, "");
+        TString string2;
+        assign(string2, "ACGT");
         TString string3 = string1;
         TString string4 = string2;
 
@@ -762,8 +862,10 @@ void testSequenceSwap(TString & /*Tag*/)
         SEQAN_ASSERT_EQ(string2, string3);
     }
     {
-        TString string1 = "ACAC";
-        TString string2 = "GTGT";
+        TString string1;
+        assign(string1, "ACAC");
+        TString string2;
+        assign(string2, "GTGT");
         TString string3 = string1;
         TString string4 = string2;
 
@@ -798,22 +900,28 @@ void testSequenceReverse(TString & /*Tag*/)
 {
     using namespace seqan;
     {
-        TString string1 = "";
-        TString string2 = "";
+        TString string1;
+        assign(string1, "");
+        TString string2;
+        assign(string2, "");
 
         reverse(string1);
         SEQAN_ASSERT_EQ(string1, string2);
     }
     {
-        TString string1 = "ACGT";
-        TString string2 = "TGCA";
+        TString string1;
+        assign(string1, "ACGT");
+        TString string2;
+        assign(string2, "TGCA");
 
         reverse(string1);
         SEQAN_ASSERT_EQ(string1, string2);
     }
     {
-        TString string1 = "ACAGT";
-        TString string2 = "TGACA";
+        TString string1;
+        assign(string1, "ACAGT");
+        TString string2;
+        assign(string2, "TGACA");
 
         reverse(string1);
         SEQAN_ASSERT_EQ(string1, string2);
@@ -835,11 +943,10 @@ SEQAN_TYPED_TEST(StringTestCommon, Reverse)
 template <typename TString>
 void testSequenceAssignValue(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename Value<TString>::Type TValue;
 
-    TString string = "AA";
+    TString string;
+    assign(string, "AA");
 
     assignValue(string, 1, TValue('G'));
     SEQAN_ASSERT_EQ(string[1], TValue('G'));
@@ -862,36 +969,42 @@ SEQAN_TYPED_TEST(StringTestCommon, AssignValue)
 template <typename TString>
 void testSequenceAppend(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     // Test the append function on empty strings
     {
-        TString string1 = "";
-        TString string2 = "";
+        TString string1;
+        assign(string1, "");
+        TString string2;
+        assign(string2, "");
         append(string1, string2);
-        SEQAN_ASSERT(string1 == "");
+        SEQAN_ASSERT_EQ(string1, "");
     }
 
     // Test the append function on one empty and one non empty string
     {
-        TString string1 = "ACGTACGTACGT";
-        TString string2 = "";
+        TString string1;
+        assign(string1, "ACGTACGTACGT");
+        TString string2;
+        assign(string2, "");
         append(string1, string2);
         SEQAN_ASSERT_EQ(string1, "ACGTACGTACGT");
     }
 
     // Test the append function on one empty and one non empty string
     {
-        TString string1 = "";
-        TString string2 = "TTGGATTAACC";
+        TString string1;
+        assign(string1, "");
+        TString string2;
+        assign(string2, "TTGGATTAACC");
         append(string1, string2);
         SEQAN_ASSERT_EQ(string1, "TTGGATTAACC");
     }
 
     // Test the append function on two non empty strings.
     {
-        TString string1 = "ACGTACGTACGT";
-        TString string2 = "TTGGATTAACCC";
+        TString string1;
+        assign(string1, "ACGTACGTACGT");
+        TString string2;
+        assign(string2, "TTGGATTAACCC");
         append(string1, string2);
         SEQAN_ASSERT_EQ(string1, "ACGTACGTACGTTTGGATTAACCC");
     }
@@ -911,20 +1024,21 @@ SEQAN_TYPED_TEST(StringTestCommon, Append)
 template <typename TString>
 void testSequenceAppendValue(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename Value<TString>::Type TValue;
 
-    TString string = "";
+    TString string;
+    assign(string, "");
 
     // Test the appendValue function
-    TString string2 = "A";
+    TString string2;
+    assign(string2, "A");
     TValue value = 'A';
     appendValue(string, value);
     SEQAN_ASSERT(string == string2);
 
     // Test the appendValue function
-    TString string3 = "AA";
+    TString string3;
+    assign(string3, "AA");
     appendValue(string, 'A');
     SEQAN_ASSERT(string == string3);
 }
@@ -949,10 +1063,9 @@ SEQAN_TYPED_TEST(StringTestCommon, AppendValue)
 template <typename TString>
 void testSequenceBack(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename Reference<TString>::Type TReference;
-    TString string = "ACGT";
+    TString string;
+    assign(string, "ACGT");
 
     // val is a reference in contrast to the const version of back().
     TReference val = back(string);
@@ -964,10 +1077,9 @@ void testSequenceBack(TString & /*Tag*/)
 template <typename TString>
 void testSequenceBack(TString const & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename Reference<TString const>::Type TReference;
-    TString const string = "ACGT";
+    TString const string;
+    assign(string, "ACGT");
 
     // val is not a reference in contrast to the non const version of back().
     TReference val = back(string);
@@ -987,18 +1099,17 @@ SEQAN_TYPED_TEST(StringTestCommon, Back)
     testConstructDeconstruct(str);
 }
 
-// Test of begin().
+// Test of seqan::begin().
 template <typename TString>
 void testSequenceBegin(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename Value<TString>::Type TValue;
 
-    TString string = "ACGT";
-    SEQAN_ASSERT_EQ(*begin(string), TValue('A'));
-    SEQAN_ASSERT_EQ(*begin(string, Standard()), TValue('A'));
-//     SEQAN_ASSERT_EQ(*begin(string, Rooted()), TValue('A'));
+    TString string;
+    assign(string, "ACGT");
+    SEQAN_ASSERT_EQ(*seqan::begin(string), TValue('A'));
+    SEQAN_ASSERT_EQ(*seqan::begin(string, Standard()), TValue('A'));
+//     SEQAN_ASSERT_EQ(*seqan::begin(string, Rooted()), TValue('A'));
 }
 
 // template <typename TValue>
@@ -1023,14 +1134,14 @@ SEQAN_TYPED_TEST(StringTestCommon, Begin)
 template <typename TString>
 void testSequenceBeginPosition(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     // Test on an empty string.
-    TString string1 = "";
+    TString string1;
+        assign(string1, "");
     SEQAN_ASSERT_EQ(beginPosition(string1), 0u);
 
     // Test on a non empty string.
-    TString string2 = "ACGT";
+    TString string2;
+        assign(string2, "ACGT");
     SEQAN_ASSERT_EQ(beginPosition(string2), 0u);
 }
 
@@ -1051,14 +1162,14 @@ SEQAN_TYPED_TEST(StringTestCommon, BeginPosition)
 template <typename TString>
 void testSequenceCapacity(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     // Test on an empty string.
-    TString string1 = "";
+    TString string1;
+    assign(string1, "");
     SEQAN_ASSERT_GEQ(capacity(string1), length(string1));
 
     // Test on a non empty string.
-    TString string2 = "ACGTACGTACGT";
+    TString string2;
+    assign(string2, "ACGTACGTACGT");
     SEQAN_ASSERT_GEQ(capacity(string2), length(string2));
 }
 
@@ -1079,18 +1190,18 @@ SEQAN_TYPED_TEST(StringTestCommon, Capacity)
 template <typename TString>
 void testSequenceClear(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     {
         // Test on an empty string.
-        TString string = "";
+        TString string;
+        assign(string, "");
         clear(string);
-        SEQAN_ASSERT(begin(string) == end(string));
+        SEQAN_ASSERT(seqan::begin(string) == seqan::end(string));
         SEQAN_ASSERT_EQ(length(string), 0u);
     }
     {
         // Test on a non empty string.
-        TString string = "ACGTACGTACGT";
+        TString string;
+        assign(string, "ACGTACGTACGT");
         clear(string);
         SEQAN_ASSERT_EQ(string, TString());
     }
@@ -1106,24 +1217,23 @@ SEQAN_TYPED_TEST(StringTestCommon, Clear)
     testConstructDeconstruct(str);
 }
 
-// Test of end().
+// Test of seqan::end().
 template <typename TString>
 void testSequenceEnd(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename Value<TString>::Type TValue;
 
-    TString string = "ACGT";
-    typename Iterator<TString>::Type iter = end(string);
+    TString string;
+    assign(string, "ACGT");
+    typename Iterator<TString>::Type iter = seqan::end(string);
     --iter;
     SEQAN_ASSERT_EQ(*iter, TValue('T'));
 
-    typename Iterator<TString, Standard>::Type standardIter = end(string, Standard());
+    typename Iterator<TString, Standard>::Type standardIter = seqan::end(string, Standard());
     --standardIter;
     SEQAN_ASSERT_EQ(*standardIter, TValue('T'));
 
-//     typename Iterator<TString, Rooted>::Type rootedIter = end(string, Rooted());
+//     typename Iterator<TString, Rooted>::Type rootedIter = seqan::end(string, Rooted());
 //     --rootedIter;
 //     SEQAN_ASSERT_EQ(*rootedIter, TValue('T'));
 }
@@ -1151,14 +1261,14 @@ SEQAN_TYPED_TEST(StringTestCommon, End)
 template <typename TString>
 void testSequenceEndPosition(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     // Test on an empty string.
-    TString string1 = "";
+    TString string1;
+    assign(string1, "");
     SEQAN_ASSERT_EQ(endPosition(string1), length(string1));
 
     // Test on a non empty string.
-    TString string2 = "ACGT";
+    TString string2;
+        assign(string2, "ACGT");
     SEQAN_ASSERT_EQ(endPosition(string2), length(string2));
 }
 
@@ -1179,10 +1289,9 @@ SEQAN_TYPED_TEST(StringTestCommon, EndPosition)
 template <typename TString>
 void testSequenceErase(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     // Test on a non empty string.
-    TString string = "ACGTACGTACGT";
+    TString string;
+    assign(string, "ACGTACGTACGT");
     erase(string, 1);
     SEQAN_ASSERT_EQ(string, "AGTACGTACGT");
 
@@ -1211,11 +1320,10 @@ SEQAN_TYPED_TEST(StringTestCommon, Erase)
 template <typename TString>
 void testSequenceEraseBack(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     {
         // Test on an empty string.
-//        TString string = "";
+        TString string;
+        assign(string, "");
 
         // TODO (singer): eraseBack() on an empty string is not possible.
         // Error message: "String must have more than 0 characters in eraseBack()!".
@@ -1225,12 +1333,15 @@ void testSequenceEraseBack(TString & /*Tag*/)
     }
     {
         // Test on a non empty string.
-        TString string = "ACGTACGTACGT";
-        TString string2 = "ACGTACGTACG";
+        TString string;
+        assign(string, "ACGTACGTACGT");
+        TString string2;
+        assign(string2, "ACGTACGTACG");
         eraseBack(string);
         SEQAN_ASSERT_EQ(string, string2);
 
-        TString string3 = "A";
+        TString string3;
+        assign(string3, "A");
         TString string4;
         eraseBack(string3);
         SEQAN_ASSERT_EQ(string3, string4);
@@ -1251,10 +1362,9 @@ SEQAN_TYPED_TEST(StringTestCommon, EraseBack)
 template <typename TString>
 void testSequenceFront(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename Reference<TString>::Type TReference;
-    TString string = "ACGT";
+    TString string;
+    assign(string, "ACGT");
 
     // val is a reference in contrast to the const version of front()
     TReference val = front(string);
@@ -1266,10 +1376,9 @@ void testSequenceFront(TString & /*Tag*/)
 template <typename TString>
 void testSequenceFront(TString const & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename Reference<TString const>::Type TReference;
-    TString const string = "ACGT";   // TODO(weese:) reenable non-const string here (need to fix Proxy vs. SimpleType comparison first)
+    TString const string;
+    assign(string, "ACGT");   // TODO(weese:) reenable non-const string here (need to fix Proxy vs. SimpleType comparison first)
 
     // val is not a reference in contrast to the non const version of front()
     TReference val = front(string);
@@ -1293,13 +1402,12 @@ SEQAN_TYPED_TEST(StringTestCommon, Front)
 template <typename TString>
 void testSequenceGetValue(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename Value<TString>::Type TValue;
 
      // In contrast to value(), getValue() does not return a reference but a copy.
      // We test this using the variable value_.
-    TString string = "ACGT";
+    TString string;
+    assign(string, "ACGT");
     TValue dummy_ = 'T';
     TValue & value_ = dummy_;
     SEQAN_ASSERT_EQ(value_, TValue('T'));
@@ -1328,20 +1436,22 @@ SEQAN_TYPED_TEST(StringTestCommon, GetValue)
 template <typename TString>
 void testSequenceInsert(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     //typedef typename Value<TString>::Type TValue;
     {
         // Test of inserting an empty string.
-        TString string1 = "";
-        TString string2 = "";
+        TString string1;
+        assign(string1, "");
+        TString string2;
+        assign(string2, "");
         insert(string1, 0, string2);
         SEQAN_ASSERT_EQ(string1, "");
     }
     {
         // Test of inserting an string.
-        TString string1 = "A";
-        TString string2 = "ACGT";
+        TString string1;
+        assign(string1, "A");
+        TString string2;
+        assign(string2, "ACGT");
         insert(string1, 0, string2);
         SEQAN_ASSERT_EQ(string1, "ACGTA");
     }
@@ -1366,12 +1476,11 @@ SEQAN_TYPED_TEST(StringTestCommon, Insert)
 template <typename TString>
 void testSequenceInsertValue(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     //typedef typename Value<TString>::Type TValue;
 
     // Test of inserting into an empty string.
-    TString string = "";
+    TString string;
+    assign(string, "");
     insertValue(string, 0, 'A');
     SEQAN_ASSERT_EQ(string, "A");
 
@@ -1399,8 +1508,6 @@ SEQAN_TYPED_TEST(StringTestCommon, InsertValue)
 template <typename TString>
 void testSequenceIter(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename Iterator<TString>::Type TIterator;
     typedef typename Iterator<TString, Standard>::Type TStandardIterator;
     typedef typename Iterator<TString, Rooted>::Type TRootedIterator;
@@ -1411,14 +1518,15 @@ void testSequenceIter(TString & /*Tag*/)
         TIterator iterator = iter(string, 0);
         TStandardIterator standardIterator = iter(string, 0);
         TRootedIterator rootedIterator = iter(string, 0);
-        SEQAN_ASSERT(iterator == begin(string));
-        SEQAN_ASSERT(standardIterator == begin(string));
-        SEQAN_ASSERT(rootedIterator == begin(string));
+        SEQAN_ASSERT(iterator == seqan::begin(string));
+        SEQAN_ASSERT(standardIterator == seqan::begin(string));
+        SEQAN_ASSERT(rootedIterator == seqan::begin(string));
     }
 
     // Test on a non empty string.
     {
-        TString string = "A";
+        TString string;
+        assign(string, "A");
         TIterator iterator = iter(string, 0);
         TStandardIterator standardIterator = iter(string, 0);
         TRootedIterator rootedIterator = iter(string, 0);
@@ -1429,7 +1537,8 @@ void testSequenceIter(TString & /*Tag*/)
 
     // Test on a non empty string.
     {
-        TString string = "ACGT";
+        TString string;
+        assign(string, "ACGT");
         TIterator iterator = iter(string, 3);
         TStandardIterator standardIterator = iter(string, 3);
         TRootedIterator rootedIterator = iter(string, 3);
@@ -1456,14 +1565,13 @@ SEQAN_TYPED_TEST(StringTestCommon, Iter)
 template <typename TString>
 void testSequenceLength(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     // Test on an empty string.
     TString string1;
     SEQAN_ASSERT_EQ(length(string1), 0u);
 
     // Test on a non empty string.
-    TString string2 = "CGTACGTATC";
+    TString string2;
+    assign(string2, "CGTACGTATC");
     SEQAN_ASSERT_EQ(length(string2), 10u);
 }
 
@@ -1485,9 +1593,8 @@ template <typename TString>
 void testSequenceMoveValue(TString & /*Tag*/)
 {
     typedef typename Value<TString>::Type TValue;
-    using namespace seqan;
-
-    TString string = "";
+    TString string;
+        assign(string, "");
 
     resize(string, 2);
     moveValue(string, 1, 'G');
@@ -1508,11 +1615,11 @@ SEQAN_TYPED_TEST(StringTestCommon, MoveValue)
 template <typename TString>
 void testSequenceReplace(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     {
-        TString string1 = "";
-        TString string2 = "";
+        TString string1;
+        assign(string1, "");
+        TString string2;
+        assign(string2, "");
 
         // TODO (singer): This is problematic according to the documentation.
         // 0 can be a position or an iterator causing compiler errors.
@@ -1520,22 +1627,28 @@ void testSequenceReplace(TString & /*Tag*/)
         SEQAN_ASSERT_EQ(string1, "");
     }
     {
-        TString string1 = "ACACACAC";
-        TString string2 = "";
+        TString string1;
+        assign(string1, "ACACACAC");
+        TString string2;
+        assign(string2, "");
 
         replace(string1, 4, 4, string2);
         SEQAN_ASSERT_EQ(string1, "ACACACAC");
     }
     {
-        TString string1 = "";
-        TString string2 = "GTGTGTGT";
+        TString string1;
+        assign(string1, "");
+        TString string2;
+        assign(string2, "GTGTGTGT");
 
         replace(string1, 0, 0, string2);
         SEQAN_ASSERT_EQ(string1, "GTGTGTGT");
     }
     {
-        TString string1 = "ACACACAC";
-        TString string2 = "GTGTGTGT";
+        TString string1;
+        assign(string1, "ACACACAC");
+        TString string2;
+        assign(string2, "GTGTGTGT");
 
         replace(string1, 4, 4, string2);
         SEQAN_ASSERT_EQ(string1, "ACACGTGTGTGTACAC");
@@ -1561,9 +1674,8 @@ SEQAN_TYPED_TEST(StringTestCommon, Replace)
 template <typename TString>
 void testSequenceReserve(TString & /*Tag*/)
 {
-    using namespace seqan;
-
-    TString string = "";
+    TString string;
+        assign(string, "");
 
     reserve(string, 0u);
     SEQAN_ASSERT_EQ(capacity(string), 0u);
@@ -1596,11 +1708,9 @@ SEQAN_TYPED_TEST(StringTestCommon, Reserve)
 template <typename TString>
 void testSequenceResize(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename Value<TString>::Type TValue;
 
-    TString string = "";
+    TString string;// = "");
 
     resize(string, 0);
     SEQAN_ASSERT_EQ(length(string), 0u);
@@ -1620,7 +1730,8 @@ void testSequenceResize(TString & /*Tag*/)
 
     resize(string, 10, TValue('C'));
 //    SEQAN_ASSERT_EQ(string[0], TValue());
-    SEQAN_ASSERT_EQ(string[5], TValue('C'));
+//     SEQAN_ASSERT_EQ(string[5], TValue('C'));
+    SEQAN_ASSERT_EQ(*(seqan::begin(string) + 5), TValue('C'));
 }
 
 template <typename TValue>
@@ -1646,11 +1757,10 @@ void testSequenceValue(TString & /*Tag*/)
 {
     typedef typename Value<TString>::Type TValue;
     typedef typename Reference<TString>::Type TReference;
-    using namespace seqan;
-
     // In contrast to getValue(), value() does not return a copy but a reference.
     // We test this using the variable value_.
-    TString string = "ACAC";
+    TString string;// = "ACAC");
+    assign(string, "ACAC");
     TReference ref = value(string, 0);
     SEQAN_ASSERT_EQ(ref, TValue('A'));
 
@@ -1663,13 +1773,11 @@ void testSequenceValue(TString & /*Tag*/)
 template <typename TString>
 void testSequenceValue(TString const & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename Reference<TString const>::Type TReference;
 
     // In contrast to getValue(), value() does not return a copy but a reference.
     // We test this using the variable value_.
-    TString const string = "ACAC";
+    TString const string("ACAC");
     TReference value_ = value(string, 0);
     SEQAN_ASSERT_EQ(value_, 'A');
 }
@@ -1682,6 +1790,13 @@ template <typename TValue>
 void testSequenceValue(String<TValue, MMap<> > & /*Tag*/) {}
 template <typename TValue>
 void testSequenceValue(String<TValue, MMap<> > const & /*Tag*/) {}
+
+template <typename TValue>
+void testSequenceValue(std::list<TValue> const & /*Tag*/) {}
+template <typename TValue>
+void testSequenceValue(std::vector<TValue> const & /*Tag*/) {}
+template <typename TValue>
+void testSequenceValue(std::basic_string<TValue> const & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringTestCommon, Value)
 {
