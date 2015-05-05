@@ -369,6 +369,22 @@ SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept)(PropertyMapCon
     }
 };
 
+
+// ----------------------------------------------------------------------------
+// Concept StlContainerConcept
+// ----------------------------------------------------------------------------
+
+//TODO add dox
+
+template <typename TContainer>
+struct StlContainerConcept :
+    ContainerConcept<TContainer>
+{
+    SEQAN_CONCEPT_USAGE(StlContainerConcept)
+    {
+    }
+};
+
 // --------------------------------------------------------------------------
 // Metafunction IsContiguous
 // --------------------------------------------------------------------------
@@ -393,26 +409,10 @@ SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept)(PropertyMapCon
  * first element of the content array.
  */
 
-template <typename T>
+template <typename T, class Enable = void>
 struct IsContiguous
-{
-    typedef False Type;
-    enum { VALUE = false };
-};
-
-template <typename T>
-struct IsContiguous<T const>
-    : public IsContiguous<T> {};
-
-
-//void testStringConcepts()
-//{
-//    SEQAN_CONCEPT_ASSERT((StringConcept<String<char, Alloc<> > >));
-//    SEQAN_CONCEPT_ASSERT((StringConcept<String<Pair<int, double>, Alloc<> > >));
-////    SEQAN_CONCEPT_ASSERT((StringConcept<String<bool, Packed<> > >));  // doesn't compile yet
-////    SEQAN_CONCEPT_ASSERT((StringConcept<String<Dna5, Packed<> > >));
-//    SEQAN_CONCEPT_ASSERT((StringConcept<String<int, Array<50> > >));
-//}
+    : public False
+{};
 
 /*!
  * @concept ForwardContainerConcept

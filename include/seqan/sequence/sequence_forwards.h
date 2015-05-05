@@ -91,7 +91,7 @@ template <typename TString, typename TSpec, typename TTag> inline typename Itera
 template <typename T> struct AllowsFastRandomAccess;
 template <typename T> struct DefaultOverflowExplicit;
 template <typename T> struct DefaultOverflowImplicit;
-template <typename T> struct IsContiguous;
+// template <typename T, class Enable = void> struct IsContiguous;
 template <typename T> struct IsSequence;
 struct TagExact_;
 struct TagGenerous_;
@@ -284,7 +284,7 @@ template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos> 
 
 template <typename TValue> struct DefaultOverflowExplicit;
 template <typename TValue> struct DefaultOverflowImplicit;
-template <typename TValue> struct IsContiguous;
+// template <typename TValue, class Enable = void> struct IsContiguous;
 template <typename TValue, typename TExpand> inline size_t _clearSpace(TValue * me, size_t size, Tag<TExpand>);
 template <typename TValue, typename TExpand> inline size_t _clearSpace(TValue * me, size_t size, size_t limit, Tag<TExpand>);
 template <typename TValue, typename TPosition, typename TExpand> inline size_t _clearSpace(TValue * me, size_t size, TPosition pos_begin, TPosition pos_end, Tag<TExpand>);
