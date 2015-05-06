@@ -86,41 +86,41 @@ struct StdContainerIterator< std::basic_string<TChar, TCharTraits, TAlloc> const
 // struct IsContiguous< std::basic_string<TChar, TCharTraits, TAlloc> const>
 //         : IsContiguous< std::basic_string<TChar, TCharTraits, TAlloc> > {};
 
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Value< std::basic_string<TChar, TCharTraits, TAlloc> >
-{
-    typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::value_type Type;
-};
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Value< std::basic_string<TChar, TCharTraits, TAlloc> const>
-        : Value< std::basic_string<TChar, TCharTraits, TAlloc> > {};
-
-// TODO(holtgrew): GetValue is a reference?! I thought the reverse was true in respect to Value<>.
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct GetValue< std::basic_string<TChar, TCharTraits, TAlloc> >
-{
-    typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::reference Type;
-};
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct GetValue< std::basic_string<TChar, TCharTraits, TAlloc> const>
-{
-    typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::const_reference Type;
-};
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Reference< std::basic_string<TChar, TCharTraits, TAlloc> >
-{
-    typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::reference Type;
-};
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Reference< std::basic_string<TChar, TCharTraits, TAlloc> const>
-{
-    typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::const_reference Type;
-};
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct Value< std::basic_string<TChar, TCharTraits, TAlloc> >
+// {
+//     typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::value_type Type;
+// };
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct Value< std::basic_string<TChar, TCharTraits, TAlloc> const>
+//         : Value< std::basic_string<TChar, TCharTraits, TAlloc> > {};
+//
+// // TODO(holtgrew): GetValue is a reference?! I thought the reverse was true in respect to Value<>.
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct GetValue< std::basic_string<TChar, TCharTraits, TAlloc> >
+// {
+//     typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::reference Type;
+// };
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct GetValue< std::basic_string<TChar, TCharTraits, TAlloc> const>
+// {
+//     typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::const_reference Type;
+// };
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct Reference< std::basic_string<TChar, TCharTraits, TAlloc> >
+// {
+//     typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::reference Type;
+// };
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct Reference< std::basic_string<TChar, TCharTraits, TAlloc> const>
+// {
+//     typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::const_reference Type;
+// };
 
 template <typename TChar, typename TCharTraits, typename TAlloc>
 struct Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard >
@@ -227,7 +227,7 @@ end(std::basic_string<TChar, TCharTraits, TAlloc> const & me,
 }
 
 template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos>
-inline typename GetValue< std::basic_string<TChar, TCharTraits, TAlloc> >::Type
+inline typename Reference< std::basic_string<TChar, TCharTraits, TAlloc> >::Type
 value(std::basic_string<TChar, TCharTraits, TAlloc> & me,
       TPos pos)
 {
@@ -235,7 +235,7 @@ value(std::basic_string<TChar, TCharTraits, TAlloc> & me,
     return me[pos];
 }
 template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos>
-inline typename GetValue< std::basic_string<TChar, TCharTraits, TAlloc> const>::Type
+inline typename Reference< std::basic_string<TChar, TCharTraits, TAlloc> const>::Type
 value(std::basic_string<TChar, TCharTraits, TAlloc> const & me,
       TPos pos)
 {

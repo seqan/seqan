@@ -275,8 +275,8 @@ template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize>
 template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type reserve( std::basic_string<TChar, TCharTraits, TAlloc> & seq, TSize new_capacity, Limit const &);
 template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type resize( std::basic_string<TChar, TCharTraits, TAlloc> & me, TSize new_length, Tag<TExpand>);
 template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type resize( std::basic_string<TChar, TCharTraits, TAlloc> & me, TSize new_length, TChar const & val, Tag<TExpand>);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos> inline typename GetValue< std::basic_string<TChar, TCharTraits, TAlloc> >::Type value(std::basic_string<TChar, TCharTraits, TAlloc> & me, TPos pos);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos> inline typename GetValue< std::basic_string<TChar, TCharTraits, TAlloc> const>::Type value(std::basic_string<TChar, TCharTraits, TAlloc> const & me, TPos pos);
+template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos> inline typename Reference< std::basic_string<TChar, TCharTraits, TAlloc> >::Type value(std::basic_string<TChar, TCharTraits, TAlloc> & me, TPos pos);
+template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos> inline typename Reference< std::basic_string<TChar, TCharTraits, TAlloc> const>::Type value(std::basic_string<TChar, TCharTraits, TAlloc> const & me, TPos pos);
 
 // --------------------------------------------------------------------------
 // Forwards For arrays and pointers.

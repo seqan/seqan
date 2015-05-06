@@ -68,7 +68,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_vector)
     // Test GetValue<>::VALUE
     {
         typedef GetValue<TVector>::Type TGetValue;
-        bool b = IsSameType<TGetValue, TElement &>::VALUE;
+        bool b = IsSameType<TGetValue, TElement const &>::VALUE;
         SEQAN_ASSERT(b);
         typedef GetValue<TConstVector>::Type TConstGetValue;
         b = IsSameType<TConstGetValue, TElement const &>::VALUE;
@@ -298,13 +298,13 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_string)
     // Test GetValue<>::VALUE
     {
         typedef GetValue<TString>::Type TGetValue;
-        bool b = IsSameType<TGetValue, TElement &>::VALUE;
+        bool b = IsSameType<TGetValue, TElement const &>::VALUE;
         SEQAN_ASSERT(b);
         typedef GetValue<TConstString>::Type TConstGetValue;
         b = IsSameType<TConstGetValue, TElement const &>::VALUE;
         SEQAN_ASSERT(b);
     }
-    // Test GetReference<>::VALUE
+    // Test Reference<>::VALUE
     {
         typedef Reference<TString>::Type TReference;
         bool b = IsSameType<TReference, TElement &>::VALUE;
@@ -484,13 +484,13 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_list)
     // Test GetValue<>::VALUE
     {
         typedef GetValue<TList>::Type TGetValue;
-        bool b = IsSameType<TGetValue, TElement &>::VALUE;
+        bool b = IsSameType<TGetValue, TElement const &>::VALUE;
         SEQAN_ASSERT(b);
         typedef GetValue<TConstList>::Type TConstGetValue;
         b = IsSameType<TConstGetValue, TElement const &>::VALUE;
         SEQAN_ASSERT(b);
     }
-    // Test GetReference<>::VALUE
+    // Test Reference<>::VALUE
     {
         typedef Reference<TList>::Type TReference;
         bool b = IsSameType<TReference, TElement &>::VALUE;

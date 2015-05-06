@@ -73,40 +73,40 @@ namespace seqan {
 // struct IsContiguous< std::vector<TChar, TAlloc> const>
 //         : IsContiguous< std::vector<TChar, TAlloc> > {};
 
-template <typename TChar, typename TAlloc>
-struct Value< std::vector<TChar, TAlloc> >
-{
-    typedef typename std::vector<TChar, TAlloc>::value_type Type;
-};
-
-template <typename TChar, typename TAlloc>
-struct Value< std::vector<TChar, TAlloc> const>
-        : Value< std::vector<TChar, TAlloc> > {};
-
-// TODO(holtgrew): GetValue is a reference?! I thought the reverse was true in respect to Value<>.
-template <typename TChar, typename TAlloc>
-struct GetValue< std::vector<TChar, TAlloc> >
-{
-    typedef typename std::vector<TChar, TAlloc>::reference Type;
-};
-
-template <typename TChar, typename TAlloc>
-struct GetValue< std::vector<TChar,  TAlloc> const>
-{
-    typedef typename std::vector<TChar, TAlloc>::const_reference Type;
-};
-
-template <typename TChar, typename TAlloc>
-struct Reference< std::vector<TChar, TAlloc> >
-{
-    typedef typename std::vector<TChar, TAlloc>::reference Type;
-};
-
-template <typename TChar,  typename TAlloc>
-struct Reference< std::vector<TChar, TAlloc> const>
-{
-    typedef typename std::vector<TChar,  TAlloc>::const_reference Type;
-};
+// template <typename TChar, typename TAlloc>
+// struct Value< std::vector<TChar, TAlloc> >
+// {
+//     typedef typename std::vector<TChar, TAlloc>::value_type Type;
+// };
+//
+// template <typename TChar, typename TAlloc>
+// struct Value< std::vector<TChar, TAlloc> const>
+//         : Value< std::vector<TChar, TAlloc> > {};
+//
+// // TODO(holtgrew): GetValue is a reference?! I thought the reverse was true in respect to Value<>.
+// template <typename TChar, typename TAlloc>
+// struct GetValue< std::vector<TChar, TAlloc> >
+// {
+//     typedef typename std::vector<TChar, TAlloc>::reference Type;
+// };
+//
+// template <typename TChar, typename TAlloc>
+// struct GetValue< std::vector<TChar,  TAlloc> const>
+// {
+//     typedef typename std::vector<TChar, TAlloc>::const_reference Type;
+// };
+//
+// template <typename TChar, typename TAlloc>
+// struct Reference< std::vector<TChar, TAlloc> >
+// {
+//     typedef typename std::vector<TChar, TAlloc>::reference Type;
+// };
+//
+// template <typename TChar,  typename TAlloc>
+// struct Reference< std::vector<TChar, TAlloc> const>
+// {
+//     typedef typename std::vector<TChar,  TAlloc>::const_reference Type;
+// };
 
 template <typename TChar, typename TAlloc>
 struct Iterator< std::vector<TChar, TAlloc>, Rooted>

@@ -70,29 +70,29 @@ namespace seqan {
 //         : Value< std::list<TValue, TAlloc> > {};
 
 // TODO(holtgrew): GetValue is a reference?! I thought the reverse was true in respect to Value<>.
-template <typename TValue, typename TAlloc>
-struct GetValue< std::list<TValue, TAlloc> >
-{
-    typedef typename std::list<TValue, TAlloc>::reference Type;
-};
-
-template <typename TValue, typename TAlloc>
-struct GetValue< std::list<TValue, TAlloc> const>
-{
-    typedef typename std::list<TValue, TAlloc>::const_reference Type;
-};
-
-template <typename TValue, typename TAlloc>
-struct Reference< std::list<TValue, TAlloc> >
-{
-    typedef typename std::list<TValue, TAlloc>::reference Type;
-};
-
-template <typename TValue,  typename TAlloc>
-struct Reference< std::list<TValue, TAlloc> const>
-{
-    typedef typename std::list<TValue,  TAlloc>::const_reference Type;
-};
+// template <typename TValue, typename TAlloc>
+// struct GetValue< std::list<TValue, TAlloc> >
+// {
+//     typedef typename std::list<TValue, TAlloc>::reference Type;
+// };
+//
+// template <typename TValue, typename TAlloc>
+// struct GetValue< std::list<TValue, TAlloc> const>
+// {
+//     typedef typename std::list<TValue, TAlloc>::const_reference Type;
+// };
+//
+// template <typename TValue, typename TAlloc>
+// struct Reference< std::list<TValue, TAlloc> >
+// {
+//     typedef typename std::list<TValue, TAlloc>::reference Type;
+// };
+//
+// template <typename TValue,  typename TAlloc>
+// struct Reference< std::list<TValue, TAlloc> const>
+// {
+//     typedef typename std::list<TValue,  TAlloc>::const_reference Type;
+// };
 
 template <typename TValue, typename TAlloc>
 struct Iterator< std::list<TValue, TAlloc>, Rooted>
