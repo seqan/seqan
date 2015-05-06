@@ -108,73 +108,73 @@ namespace seqan {
 //     typedef typename std::vector<TChar,  TAlloc>::const_reference Type;
 // };
 
-template <typename TChar, typename TAlloc>
-struct Iterator< std::vector<TChar, TAlloc>, Rooted>
-{
-    typedef std::vector<TChar, TAlloc> TVector_;
-    typedef Iter<TVector_, StdIteratorAdaptor> TIterator_;
-    typedef Iter<TVector_, AdaptorIterator<TIterator_> > Type;
-};
+// template <typename TChar, typename TAlloc>
+// struct Iterator< std::vector<TChar, TAlloc>, Rooted>
+// {
+//     typedef std::vector<TChar, TAlloc> TVector_;
+//     typedef Iter<TVector_, StdIteratorAdaptor> TIterator_;
+//     typedef Iter<TVector_, AdaptorIterator<TIterator_> > Type;
+// };
+//
+// template <typename TChar, typename TAlloc>
+// struct Iterator< std::vector<TChar, TAlloc> const, Rooted>
+// {
+//     typedef std::vector<TChar, TAlloc> const TVector_;
+//     typedef Iter<TVector_, StdIteratorAdaptor> TIterator_;
+//     typedef Iter<TVector_, AdaptorIterator<TIterator_> > Type;
+// };
 
-template <typename TChar, typename TAlloc>
-struct Iterator< std::vector<TChar, TAlloc> const, Rooted>
-{
-    typedef std::vector<TChar, TAlloc> const TVector_;
-    typedef Iter<TVector_, StdIteratorAdaptor> TIterator_;
-    typedef Iter<TVector_, AdaptorIterator<TIterator_> > Type;
-};
+// template <typename TChar,  typename TAlloc>
+// struct Iterator< std::vector<TChar, TAlloc>, Standard >
+// {
+//     typedef Iter< std::vector<TChar,  TAlloc>, StdIteratorAdaptor > Type;
+// };
+//
+// template <typename TChar,  typename TAlloc>
+// struct Iterator< std::vector<TChar,  TAlloc> const, Standard>
+// {
+//     typedef Iter< std::vector<TChar, TAlloc> const, StdIteratorAdaptor > Type;
+// };
 
-template <typename TChar,  typename TAlloc>
-struct Iterator< std::vector<TChar, TAlloc>, Standard >
-{
-    typedef Iter< std::vector<TChar,  TAlloc>, StdIteratorAdaptor > Type;
-};
+// template <typename TChar,  typename TAlloc>
+// struct Position< std::vector<TChar, TAlloc> >
+// {
+//     typedef typename std::vector<TChar,  TAlloc>::size_type Type;
+// };
+//
+// template <typename TChar,  typename TAlloc>
+// struct Position< std::vector<TChar,  TAlloc> const>
+//         : Position< std::vector<TChar,  TAlloc> > {};
+//
+// template <typename TChar,  typename TAlloc>
+// struct Size< std::vector<TChar, TAlloc> >
+// {
+//     typedef typename std::vector<TChar, TAlloc>::size_type Type;
+// };
+//
+// template <typename TChar, typename TAlloc>
+// struct Size< std::vector<TChar, TAlloc> const>
+//         : Size< std::vector<TChar, TAlloc> > {};
 
-template <typename TChar,  typename TAlloc>
-struct Iterator< std::vector<TChar,  TAlloc> const, Standard>
-{
-    typedef Iter< std::vector<TChar, TAlloc> const, StdIteratorAdaptor > Type;
-};
+// template <typename TChar, typename TAlloc>
+// struct DefaultOverflowImplicit< std::vector<TChar, TAlloc> >
+// {
+//     typedef Generous Type;
+// };
 
-template <typename TChar,  typename TAlloc>
-struct Position< std::vector<TChar, TAlloc> >
-{
-    typedef typename std::vector<TChar,  TAlloc>::size_type Type;
-};
-
-template <typename TChar,  typename TAlloc>
-struct Position< std::vector<TChar,  TAlloc> const>
-        : Position< std::vector<TChar,  TAlloc> > {};
-
-template <typename TChar,  typename TAlloc>
-struct Size< std::vector<TChar, TAlloc> >
-{
-    typedef typename std::vector<TChar, TAlloc>::size_type Type;
-};
-
-template <typename TChar, typename TAlloc>
-struct Size< std::vector<TChar, TAlloc> const>
-        : Size< std::vector<TChar, TAlloc> > {};
-
-template <typename TChar, typename TAlloc>
-struct DefaultOverflowImplicit< std::vector<TChar, TAlloc> >
-{
-    typedef Generous Type;
-};
-
-template <typename TChar, typename TAlloc>
-struct StdContainerIterator< std::vector<TChar, TAlloc> >
-{
-    typedef std::vector<TChar, TAlloc> TContainer_;
-    typedef typename TContainer_::iterator Type;
-};
-
-template <typename TChar, typename TAlloc>
-struct StdContainerIterator< std::vector<TChar, TAlloc> const>
-{
-    typedef std::vector<TChar, TAlloc> TContainer_;
-    typedef typename TContainer_::const_iterator Type;
-};
+// template <typename TChar, typename TAlloc>
+// struct StdContainerIterator< std::vector<TChar, TAlloc> >
+// {
+//     typedef std::vector<TChar, TAlloc> TContainer_;
+//     typedef typename TContainer_::iterator Type;
+// };
+//
+// template <typename TChar, typename TAlloc>
+// struct StdContainerIterator< std::vector<TChar, TAlloc> const>
+// {
+//     typedef std::vector<TChar, TAlloc> TContainer_;
+//     typedef typename TContainer_::const_iterator Type;
+// };
 
 template <typename TChar, typename TAlloc>
 struct IsSequence<std::vector<TChar, TAlloc> > : True {};

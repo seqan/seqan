@@ -62,19 +62,19 @@ namespace seqan {
 // Metafunctions
 // ===========================================================================
 
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct StdContainerIterator< std::basic_string<TChar, TCharTraits, TAlloc> >
-{
-    typedef std::basic_string<TChar, TCharTraits, TAlloc> TContainer;
-    typedef typename TContainer::iterator Type;
-};
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct StdContainerIterator< std::basic_string<TChar, TCharTraits, TAlloc> const>
-{
-    typedef std::basic_string<TChar, TCharTraits, TAlloc> TContainer;
-    typedef typename TContainer::const_iterator Type;
-};
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct StdContainerIterator< std::basic_string<TChar, TCharTraits, TAlloc> >
+// {
+//     typedef std::basic_string<TChar, TCharTraits, TAlloc> TContainer;
+//     typedef typename TContainer::iterator Type;
+// };
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct StdContainerIterator< std::basic_string<TChar, TCharTraits, TAlloc> const>
+// {
+//     typedef std::basic_string<TChar, TCharTraits, TAlloc> TContainer;
+//     typedef typename TContainer::const_iterator Type;
+// };
 
 // std::string can be assumed to be contigous, see
 // http://stackoverflow.com/questions/1986966/does-s0-point-to-contiguous-characters-in-a-stdstring
@@ -122,46 +122,46 @@ struct StdContainerIterator< std::basic_string<TChar, TCharTraits, TAlloc> const
 //     typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::const_reference Type;
 // };
 
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard >
-{
-    typedef TChar * Type;
-};
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard >
+// {
+//     typedef TChar * Type;
+// };
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>
+// {
+//     typedef TChar const * Type;
+// };
 
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>
-{
-    typedef TChar const * Type;
-};
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct Position< std::basic_string<TChar, TCharTraits, TAlloc> >
+// {
+//     typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type Type;
+// };
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct Position< std::basic_string<TChar, TCharTraits, TAlloc> const>
+//         : Position< std::basic_string<TChar, TCharTraits, TAlloc> > {};
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct Size< std::basic_string<TChar, TCharTraits, TAlloc> >
+// {
+//     typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type Type;
+// };
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct Size< std::basic_string<TChar, TCharTraits, TAlloc> const>
+//         : Size< std::basic_string<TChar, TCharTraits, TAlloc> > {};
 
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Position< std::basic_string<TChar, TCharTraits, TAlloc> >
-{
-    typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type Type;
-};
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct DefaultOverflowImplicit< std::basic_string<TChar, TCharTraits, TAlloc> >
+// {
+//     typedef Generous Type;
+// };
 
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Position< std::basic_string<TChar, TCharTraits, TAlloc> const>
-        : Position< std::basic_string<TChar, TCharTraits, TAlloc> > {};
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Size< std::basic_string<TChar, TCharTraits, TAlloc> >
-{
-    typedef typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type Type;
-};
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Size< std::basic_string<TChar, TCharTraits, TAlloc> const>
-        : Size< std::basic_string<TChar, TCharTraits, TAlloc> > {};
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct DefaultOverflowImplicit< std::basic_string<TChar, TCharTraits, TAlloc> >
-{
-    typedef Generous Type;
-};
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct IsSequence<std::basic_string<TChar, TCharTraits, TAlloc> > : True {};
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct IsSequence<std::basic_string<TChar, TCharTraits, TAlloc> > : True {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Chunk

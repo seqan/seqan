@@ -94,67 +94,67 @@ namespace seqan {
 //     typedef typename std::list<TValue,  TAlloc>::const_reference Type;
 // };
 
-template <typename TValue, typename TAlloc>
-struct Iterator< std::list<TValue, TAlloc>, Rooted>
-{
-    typedef std::list<TValue, TAlloc> TString_;
-    typedef Iter<TString_, StdIteratorAdaptor> TIterator_;
-    typedef Iter<TString_, AdaptorIterator<TIterator_> > Type;
-};
+// template <typename TValue, typename TAlloc>
+// struct Iterator< std::list<TValue, TAlloc>, Rooted>
+// {
+//     typedef std::list<TValue, TAlloc> TString_;
+//     typedef Iter<TString_, StdIteratorAdaptor> TIterator_;
+//     typedef Iter<TString_, AdaptorIterator<TIterator_> > Type;
+// };
+//
+// template <typename TValue, typename TAlloc>
+// struct Iterator< std::list<TValue, TAlloc> const, Rooted>
+// {
+//     typedef std::list<TValue, TAlloc> const TString_;
+//     typedef Iter<TString_, StdIteratorAdaptor> TIterator_;
+//     typedef Iter<TString_, AdaptorIterator<TIterator_> > Type;
+// };
 
-template <typename TValue, typename TAlloc>
-struct Iterator< std::list<TValue, TAlloc> const, Rooted>
-{
-    typedef std::list<TValue, TAlloc> const TString_;
-    typedef Iter<TString_, StdIteratorAdaptor> TIterator_;
-    typedef Iter<TString_, AdaptorIterator<TIterator_> > Type;
-};
+// template <typename TValue, typename TAlloc>
+// struct Iterator< std::list<TValue, TAlloc>, Standard>
+// {
+//     typedef Iter< std::list<TValue, TAlloc>, StdIteratorAdaptor> Type;
+// };
+//
+// template <typename TValue, typename TAlloc>
+// struct Iterator< std::list<TValue, TAlloc> const, Standard>
+// {
+//     typedef Iter< std::list<TValue, TAlloc> const, StdIteratorAdaptor> Type;
+// };
 
-template <typename TValue, typename TAlloc>
-struct Iterator< std::list<TValue, TAlloc>, Standard>
-{
-    typedef Iter< std::list<TValue, TAlloc>, StdIteratorAdaptor> Type;
-};
+// template <typename TValue, typename TAlloc>
+// struct Position< std::list<TValue, TAlloc> >
+// {
+//     typedef typename std::list<TValue, TAlloc>::size_type Type;
+// };
+//
+// template <typename TValue, typename TAlloc>
+// struct Position< std::list<TValue, TAlloc> const>
+//         : Position< std::list<TValue, TAlloc> > {};
+//
+// template <typename TValue, typename TAlloc>
+// struct Size< std::list<TValue, TAlloc> >
+// {
+//     typedef typename std::list<TValue, TAlloc>::size_type Type;
+// };
+//
+// template <typename TValue, typename TAlloc>
+// struct Size< std::list<TValue, TAlloc> const>
+//         : Size< std::list<TValue, TAlloc> > {};
 
-template <typename TValue, typename TAlloc>
-struct Iterator< std::list<TValue, TAlloc> const, Standard>
-{
-    typedef Iter< std::list<TValue, TAlloc> const, StdIteratorAdaptor> Type;
-};
-
-template <typename TValue, typename TAlloc>
-struct Position< std::list<TValue, TAlloc> >
-{
-    typedef typename std::list<TValue, TAlloc>::size_type Type;
-};
-
-template <typename TValue, typename TAlloc>
-struct Position< std::list<TValue, TAlloc> const>
-        : Position< std::list<TValue, TAlloc> > {};
-
-template <typename TValue, typename TAlloc>
-struct Size< std::list<TValue, TAlloc> >
-{
-    typedef typename std::list<TValue, TAlloc>::size_type Type;
-};
-
-template <typename TValue, typename TAlloc>
-struct Size< std::list<TValue, TAlloc> const>
-        : Size< std::list<TValue, TAlloc> > {};
-
-template <typename TValue, typename TAlloc>
-struct StdContainerIterator< std::list<TValue, TAlloc> >
-{
-    typedef std::list<TValue, TAlloc> TContainer_;
-    typedef typename TContainer_::iterator Type;
-};
-
-template <typename TValue, typename TAlloc>
-struct StdContainerIterator< std::list<TValue, TAlloc> const>
-{
-    typedef std::list<TValue, TAlloc> TContainer_;
-    typedef typename TContainer_::const_iterator Type;
-};
+// template <typename TValue, typename TAlloc>
+// struct StdContainerIterator< std::list<TValue, TAlloc> >
+// {
+//     typedef std::list<TValue, TAlloc> TContainer_;
+//     typedef typename TContainer_::iterator Type;
+// };
+//
+// template <typename TValue, typename TAlloc>
+// struct StdContainerIterator< std::list<TValue, TAlloc> const>
+// {
+//     typedef std::list<TValue, TAlloc> TContainer_;
+//     typedef typename TContainer_::const_iterator Type;
+// };
 
 // ===========================================================================
 // Functions

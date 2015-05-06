@@ -91,7 +91,7 @@ SEQAN_CONCEPT_IMPL((std::array<TChar, N> const), (StlContainerConcept));
 // ===========================================================================
 
 // ----------------------------------------------------------------------------
-// Mfn IsContiguous
+// Mfn IsContiguous (default is False)
 // ----------------------------------------------------------------------------
 
 template <typename TChar, typename TAlloc>
@@ -130,11 +130,8 @@ struct IsContiguous<std::array<TChar, N> const> :
 // Mfn Value
 // ----------------------------------------------------------------------------
 
-// template<typename T> struct argument_type__;
-// template<typename T, typename U> struct argument_type__<T(U)> { typedef U type; };
-// #define STRIPP__(t) argument_type__<void(t)>::type
-
 #define COMMA ,
+
 #define SUPERMACRO__(MTFN, CONT, CONST, TMPL, MEMB) \
 template <TMPL> \
 struct MTFN<CONT CONST> \
@@ -182,22 +179,6 @@ SUPERMACRO__(Reference, std::array<TChar COMMA N>,              const, typename 
 #endif
 SUPERMACRO__(Reference, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, const, typename TChar COMMA typename TTraits COMMA typename TAlloc, const_reference)
 
-// template <typename TContainer>
-// struct Reference<TContainer, typename EnableIf<And<Is<StlContainerConcept<TContainer> >,
-//                                                    Not<IsSameType<TContainer, TContainer const> > > >::Type>
-// // struct Reference<TContainer, typename EnableIf<Is<StlContainerConcept<TContainer> > >::Type>
-// {
-//     typedef typename TContainer::reference Type;
-// };
-//
-// template <typename TContainer>
-// struct Reference<TContainer const, typename EnableIf<And<Is<StlContainerConcept<TContainer> >,
-//                                                          IsSameType<TContainer, TContainer const> > >::Type>
-// // struct Reference<TContainer const, typename EnableIf<Is<StlContainerConcept<TContainer> > >::Type>
-// {
-//     typedef typename TContainer::const_reference Type;
-// };
-
 // ----------------------------------------------------------------------------
 // Mfn GetValue
 // ----------------------------------------------------------------------------
@@ -220,10 +201,163 @@ SUPERMACRO__(GetValue, std::array<TChar COMMA N>,              const, typename T
 #endif
 SUPERMACRO__(GetValue, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, const, typename TChar COMMA typename TTraits COMMA typename TAlloc, const_reference)
 
+// ----------------------------------------------------------------------------
+// Mfn Size
+// ----------------------------------------------------------------------------
+
+SUPERMACRO__(Size, std::vector<TChar COMMA TAlloc>,             , typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Size, std::deque<TChar COMMA TAlloc>,              , typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Size, std::list<TChar COMMA TAlloc>,               , typename TChar COMMA typename TAlloc, size_type)
+#ifdef SEQAN_CXX11_STANDARD
+SUPERMACRO__(Size, std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Size, std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N,   size_type)
+#endif
+SUPERMACRO__(Size, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc, size_type)
+
+SUPERMACRO__(Size, std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Size, std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Size, std::list<TChar COMMA TAlloc>,          const, typename TChar COMMA typename TAlloc, size_type)
+#ifdef SEQAN_CXX11_STANDARD
+SUPERMACRO__(Size, std::forward_list<TChar COMMA TAlloc>,  const, typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Size, std::array<TChar COMMA N>,              const, typename TChar COMMA std::size_t N,   size_type)
+#endif
+SUPERMACRO__(Size, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, const, typename TChar COMMA typename TTraits COMMA typename TAlloc, size_type)
+
+// ----------------------------------------------------------------------------
+// Mfn Position
+// ----------------------------------------------------------------------------
+
+SUPERMACRO__(Position, std::vector<TChar COMMA TAlloc>,             , typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Position, std::deque<TChar COMMA TAlloc>,              , typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Position, std::list<TChar COMMA TAlloc>,               , typename TChar COMMA typename TAlloc, size_type)
+#ifdef SEQAN_CXX11_STANDARD
+SUPERMACRO__(Position, std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Position, std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N,   size_type)
+#endif
+SUPERMACRO__(Position, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc, size_type)
+
+SUPERMACRO__(Position, std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Position, std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Position, std::list<TChar COMMA TAlloc>,          const, typename TChar COMMA typename TAlloc, size_type)
+#ifdef SEQAN_CXX11_STANDARD
+SUPERMACRO__(Position, std::forward_list<TChar COMMA TAlloc>,  const, typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Position, std::array<TChar COMMA N>,              const, typename TChar COMMA std::size_t N,   size_type)
+#endif
+SUPERMACRO__(Position, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, const, typename TChar COMMA typename TTraits COMMA typename TAlloc, size_type)
+
+// ----------------------------------------------------------------------------
+// Mfn StdContainerIterator
+// ----------------------------------------------------------------------------
+
+SUPERMACRO__(StdContainerIterator, std::vector<TChar COMMA TAlloc>,             , typename TChar COMMA typename TAlloc, iterator)
+SUPERMACRO__(StdContainerIterator, std::deque<TChar COMMA TAlloc>,              , typename TChar COMMA typename TAlloc, iterator)
+SUPERMACRO__(StdContainerIterator, std::list<TChar COMMA TAlloc>,               , typename TChar COMMA typename TAlloc, iterator)
+#ifdef SEQAN_CXX11_STANDARD
+SUPERMACRO__(StdContainerIterator, std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc, iterator)
+SUPERMACRO__(StdContainerIterator, std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N,   iterator)
+#endif
+SUPERMACRO__(StdContainerIterator, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc, iterator)
+
+SUPERMACRO__(StdContainerIterator, std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc, const_iterator)
+SUPERMACRO__(StdContainerIterator, std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc, const_iterator)
+SUPERMACRO__(StdContainerIterator, std::list<TChar COMMA TAlloc>,          const, typename TChar COMMA typename TAlloc, const_iterator)
+#ifdef SEQAN_CXX11_STANDARD
+SUPERMACRO__(StdContainerIterator, std::forward_list<TChar COMMA TAlloc>,  const, typename TChar COMMA typename TAlloc, const_iterator)
+SUPERMACRO__(StdContainerIterator, std::array<TChar COMMA N>,              const, typename TChar COMMA std::size_t N,   const_iterator)
+#endif
+SUPERMACRO__(StdContainerIterator, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, const, typename TChar COMMA typename TTraits COMMA typename TAlloc, const_iterator)
+
+// ----------------------------------------------------------------------------
+// Mfn Iterator (Standard)
+// ----------------------------------------------------------------------------
+
+#define ITMACRO__(CONT, CONST, TMPL) \
+template <TMPL> \
+struct Iterator<CONT CONST, Standard> \
+{ \
+    typedef Iter<CONT CONST, StdIteratorAdaptor> Type;\
+};
+
+ITMACRO__(std::vector<TChar COMMA TAlloc>,             , typename TChar COMMA typename TAlloc)
+ITMACRO__(std::deque<TChar COMMA TAlloc>,              , typename TChar COMMA typename TAlloc)
+ITMACRO__(std::list<TChar COMMA TAlloc>,               , typename TChar COMMA typename TAlloc)
+#ifdef SEQAN_CXX11_STANDARD
+ITMACRO__(std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc)
+ITMACRO__(std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N)
+#endif
+// ITMACRO__(std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc)
+
+ITMACRO__(std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc)
+ITMACRO__(std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc)
+ITMACRO__(std::list<TChar COMMA TAlloc>,          const, typename TChar COMMA typename TAlloc)
+#ifdef SEQAN_CXX11_STANDARD
+ITMACRO__(std::forward_list<TChar COMMA TAlloc>,  const, typename TChar COMMA typename TAlloc)
+ITMACRO__(std::array<TChar COMMA N>,              const, typename TChar COMMA std::size_t N)
+#endif
+// ITMACRO__(std::basic_string<TChar COMMA TTraits COMMA TAlloc>, const, typename TChar COMMA typename TTraits COMMA typename TAlloc)
+
+// TODO(h-2): remove this crap overload and resolve to stl's RandomAcccesIterator like for std::vector
+template <typename TChar, typename TCharTraits, typename TAlloc>
+struct Iterator<std::basic_string<TChar, TCharTraits, TAlloc>, Standard >
+{
+    typedef TChar * Type;
+};
+
+template <typename TChar, typename TCharTraits, typename TAlloc>
+struct Iterator<std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>
+{
+    typedef TChar const * Type;
+};
+
+// ----------------------------------------------------------------------------
+// Mfn Iterator (Rooted)
+// ----------------------------------------------------------------------------
+
+#define ITRMACRO__(CONT, CONST, TMPL) \
+template <TMPL> \
+struct Iterator<CONT CONST, Rooted> \
+{ \
+    typedef Iter<CONT CONST, AdaptorIterator<Iter<CONT CONST, StdIteratorAdaptor> > > Type;\
+};
+
+ITRMACRO__(std::vector<TChar COMMA TAlloc>,             , typename TChar COMMA typename TAlloc)
+ITRMACRO__(std::deque<TChar COMMA TAlloc>,              , typename TChar COMMA typename TAlloc)
+ITRMACRO__(std::list<TChar COMMA TAlloc>,               , typename TChar COMMA typename TAlloc)
+#ifdef SEQAN_CXX11_STANDARD
+ITRMACRO__(std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc)
+ITRMACRO__(std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N)
+#endif
+
+ITRMACRO__(std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc)
+ITRMACRO__(std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc)
+ITRMACRO__(std::list<TChar COMMA TAlloc>,          const, typename TChar COMMA typename TAlloc)
+#ifdef SEQAN_CXX11_STANDARD
+ITRMACRO__(std::forward_list<TChar COMMA TAlloc>,  const, typename TChar COMMA typename TAlloc)
+ITRMACRO__(std::array<TChar COMMA N>,              const, typename TChar COMMA std::size_t N)
+#endif
+
+//NOTE(h-2): adding these breaks stuff; apperently Rooted is default for begin(), why?
+// ITRMACRO__(std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc)
+// ITRMACRO__(std::basic_string<TChar COMMA TTraits COMMA TAlloc>, const, typename TChar COMMA typename TTraits COMMA typename TAlloc)
+
+// ----------------------------------------------------------------------------
+// Mfn IsSequence
+// ----------------------------------------------------------------------------
+
+//NOTE(h-2): shouldnt we be using Is<StringConcept> or IsContiguous<> or ...?
+
+// template <typename TChar, typename TAlloc>
+// struct IsSequence<std::vector<TChar, TAlloc> > : True {};
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct IsSequence<std::basic_string<TChar, TCharTraits, TAlloc> > : True {};
+
 
 }
 
 #undef SUPERMACRO__
+#undef ITMACRO__
+#undef ITRMACRO__
 #undef COMMA
 
 #endif
