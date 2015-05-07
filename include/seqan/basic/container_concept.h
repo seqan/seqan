@@ -380,8 +380,14 @@ template <typename TContainer>
 struct StlContainerConcept :
     ContainerConcept<TContainer>
 {
+//     typedef typename Value<TContainer>::Type                TValue;
+//
+//     TValue val;
     SEQAN_CONCEPT_USAGE(StlContainerConcept)
     {
+//         val.size();
+//         val.max_size();
+//         val.swap(val);
     }
 };
 

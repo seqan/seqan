@@ -83,7 +83,6 @@ SEQAN_CONCEPT_IMPL((std::array<TChar, N>), (StlContainerConcept));
 
 template <typename TChar, std::size_t N>
 SEQAN_CONCEPT_IMPL((std::array<TChar, N> const), (StlContainerConcept));
-
 #endif
 
 // ===========================================================================
@@ -285,7 +284,7 @@ ITMACRO__(std::list<TChar COMMA TAlloc>,               , typename TChar COMMA ty
 ITMACRO__(std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc)
 ITMACRO__(std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N)
 #endif
-// ITMACRO__(std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc)
+ITMACRO__(std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc)
 
 ITMACRO__(std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc)
 ITMACRO__(std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc)
@@ -294,20 +293,20 @@ ITMACRO__(std::list<TChar COMMA TAlloc>,          const, typename TChar COMMA ty
 ITMACRO__(std::forward_list<TChar COMMA TAlloc>,  const, typename TChar COMMA typename TAlloc)
 ITMACRO__(std::array<TChar COMMA N>,              const, typename TChar COMMA std::size_t N)
 #endif
-// ITMACRO__(std::basic_string<TChar COMMA TTraits COMMA TAlloc>, const, typename TChar COMMA typename TTraits COMMA typename TAlloc)
+ITMACRO__(std::basic_string<TChar COMMA TTraits COMMA TAlloc>, const, typename TChar COMMA typename TTraits COMMA typename TAlloc)
 
 // TODO(h-2): remove this crap overload and resolve to stl's RandomAcccesIterator like for std::vector
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Iterator<std::basic_string<TChar, TCharTraits, TAlloc>, Standard >
-{
-    typedef TChar * Type;
-};
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-struct Iterator<std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>
-{
-    typedef TChar const * Type;
-};
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct Iterator<std::basic_string<TChar, TCharTraits, TAlloc>, Standard >
+// {
+//     typedef TChar * Type;
+// };
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// struct Iterator<std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>
+// {
+//     typedef TChar const * Type;
+// };
 
 // ----------------------------------------------------------------------------
 // Mfn Iterator (Rooted)
@@ -351,6 +350,116 @@ ITRMACRO__(std::array<TChar COMMA N>,              const, typename TChar COMMA s
 //
 // template <typename TChar, typename TCharTraits, typename TAlloc>
 // struct IsSequence<std::basic_string<TChar, TCharTraits, TAlloc> > : True {};
+
+// ----------------------------------------------------------------------------
+// Mfn Chunk
+// ----------------------------------------------------------------------------
+
+// #define ITRMACRO__(CONT, CONST, TMPL) \
+// template <TMPL> \
+// struct Chunk<Iter<CONT CONST, AdaptorIterator<TChar*, TSpec> > > \
+// { \
+//     typedef Iter<CONT CONST, AdaptorIterator<Iter<CONT CONST, StdIteratorAdaptor> > > Type;\
+// };
+
+
+// ===========================================================================
+// Functions
+// ===========================================================================
+
+// ----------------------------------------------------------------------------
+// Function getObjectId
+// ----------------------------------------------------------------------------
+
+template <typename TContainer>
+inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, void const *)
+getObjectId(TContainer const & me)
+{
+    if (me.empty())
+        return NULL;
+    else
+        return (& *(me.end() - 1)) + 1;
+}
+
+// struct Dummum {};
+//
+// static_assert(Not<Is<StlContainerConcept<Dummum> > >::VALUE, "AHHHH");
+
+// ----------------------------------------------------------------------------
+// Function begin (standard)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename EnableIf<Is<StlContainerConcept<TContainer> >, int>::Type = 0>
+inline typename Iterator<TContainer, Standard>::Type
+begin(TContainer & me, Standard const &)
+{
+//     static_assert(std::is_same<typename Iterator<TContainer, Standard>::Type, Iter<TContainer, StdIteratorAdaptor> >::value, "AHH");
+    return typename Iterator<TContainer, Standard>::Type(me.begin());
+}
+
+template <typename TContainer, typename EnableIf<Is<StlContainerConcept<TContainer> >, int>::Type = 0>
+inline typename Iterator<TContainer const, Standard>::Type
+begin(TContainer const & me, Standard const &)
+{
+//     static_assert(std::is_same<typename Iterator<TContainer const, Standard>::Type, Iter<TContainer const, StdIteratorAdaptor> >::value, "AHH");
+    return typename Iterator<TContainer const, Standard>::Type(me.begin());
+}
+
+// ----------------------------------------------------------------------------
+// Function begin (rooted)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer,typename EnableIf<Is<StlContainerConcept<TContainer> >, int>::Type = 0>
+inline typename Iterator<TContainer, Rooted>::Type
+begin(TContainer & me, Rooted const &)
+{
+//     static_assert(std::is_same<typename Iterator<TContainer, Rooted>::Type, Iter<TContainer, StdIteratorAdaptor> >::value, "AHH");
+    return typename Iterator<TContainer, Rooted>::Type(begin(me, Standard()));
+}
+
+template <typename TContainer,typename EnableIf<Is<StlContainerConcept<TContainer> >, int>::Type = 0>
+inline typename Iterator<TContainer const, Rooted>::Type
+begin(TContainer const & me, Rooted const &)
+{
+//     static_assert(std::is_same<typename Iterator<TContainer const, Rooted>::Type, Iter<TContainer const, StdIteratorAdaptor> >::value, "AHH");
+    return typename Iterator<TContainer const, Rooted>::Type(begin(me, Standard()));
+}
+
+// ----------------------------------------------------------------------------
+// Function end (standard)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename EnableIf<Is<StlContainerConcept<TContainer> >, int>::Type = 0>
+inline typename Iterator<TContainer, Standard>::Type
+end(TContainer & me, Standard const &)
+{
+    return typename Iterator<TContainer, Standard>::Type(me.end());
+}
+
+template <typename TContainer, typename EnableIf<Is<StlContainerConcept<TContainer> >, int>::Type = 0>
+inline typename Iterator<TContainer const, Standard>::Type
+end(TContainer const & me, Standard const &)
+{
+    return typename Iterator<TContainer const, Standard>::Type(me.end());
+}
+
+// ----------------------------------------------------------------------------
+// Function end (rooted)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename EnableIf<Is<StlContainerConcept<TContainer> >, int>::Type = 0>
+inline typename Iterator<TContainer, Rooted>::Type
+end(TContainer & me, Rooted const &)
+{
+    return typename Iterator<TContainer, Rooted>::Type(end(me, Standard()));
+}
+
+template <typename TContainer, typename EnableIf<Is<StlContainerConcept<TContainer> >, int>::Type = 0>
+inline typename Iterator<TContainer const, Rooted>::Type
+end(TContainer const & me, Rooted const &)
+{
+    return typename Iterator<TContainer const, Rooted>::Type(end(me, Standard()));
+}
 
 
 }

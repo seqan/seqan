@@ -167,64 +167,64 @@ namespace seqan {
 // Metafunction Chunk
 // ----------------------------------------------------------------------------
 
-// Chunk interface for std::basic strings.
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TSpec>
-struct Chunk<Iter<std::basic_string<TChar, TCharTraits, TAlloc>, AdaptorIterator<TChar*, TSpec> > >
-{
-    typedef typename Chunk<std::basic_string<TChar, TCharTraits, TAlloc> >::Type Type;
-};
-
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TSpec>
-struct Chunk<Iter<std::basic_string<TChar, TCharTraits, TAlloc> const, AdaptorIterator<TChar*, TSpec> > > :
-    Chunk<Iter<std::basic_string<TChar, TCharTraits, TAlloc>, AdaptorIterator<TChar*, TSpec> > > {};
+// // Chunk interface for std::basic strings.
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TSpec>
+// struct Chunk<Iter<std::basic_string<TChar, TCharTraits, TAlloc>, AdaptorIterator<TChar*, TSpec> > >
+// {
+//     typedef typename Chunk<std::basic_string<TChar, TCharTraits, TAlloc> >::Type Type;
+// };
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TSpec>
+// struct Chunk<Iter<std::basic_string<TChar, TCharTraits, TAlloc> const, AdaptorIterator<TChar*, TSpec> > > :
+//     Chunk<Iter<std::basic_string<TChar, TCharTraits, TAlloc>, AdaptorIterator<TChar*, TSpec> > > {};
 
 // ===========================================================================
 // Functions
 // ===========================================================================
 
-template <typename TChar, typename TCharTraits, typename TAlloc>
-inline void const *
-getObjectId(std::basic_string<TChar, TCharTraits, TAlloc> const & me)
-{
-    SEQAN_CHECKPOINT;
-    if (me.empty())
-        return NULL;
-    else
-        return (& *(me.end() - 1)) + 1;
-}
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// inline void const *
+// getObjectId(std::basic_string<TChar, TCharTraits, TAlloc> const & me)
+// {
+//     SEQAN_CHECKPOINT;
+//     if (me.empty())
+//         return NULL;
+//     else
+//         return (& *(me.end() - 1)) + 1;
+// }
 
 // Based on http://stackoverflow.com/questions/1986966/does-s0-point-to-contiguous-characters-in-a-stdstring
 // we can rely on contiguous memory
 
-template <typename TChar, typename TCharTraits, typename TAlloc>
-inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard>::Type
-begin(std::basic_string<TChar, TCharTraits, TAlloc> & me,
-      Standard)
-{
-    return &me[0];
-}
-template <typename TChar, typename TCharTraits, typename TAlloc>
-inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>::Type
-begin(std::basic_string<TChar, TCharTraits, TAlloc> const & me,
-      Standard)
-{
-    return me.data();
-}
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard>::Type
+// begin(std::basic_string<TChar, TCharTraits, TAlloc> & me,
+//       Standard)
+// {
+//     return &me[0];
+// }
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>::Type
+// begin(std::basic_string<TChar, TCharTraits, TAlloc> const & me,
+//       Standard)
+// {
+//     return me.data();
+// }
 
-template <typename TChar, typename TCharTraits, typename TAlloc>
-inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard>::Type
-end(std::basic_string<TChar, TCharTraits, TAlloc> & me,
-    Standard)
-{
-    return &me[me.size()];
-}
-template <typename TChar, typename TCharTraits, typename TAlloc>
-inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>::Type
-end(std::basic_string<TChar, TCharTraits, TAlloc> const & me,
-    Standard)
-{
-    return me.data() + me.size();
-}
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard>::Type
+// end(std::basic_string<TChar, TCharTraits, TAlloc> & me,
+//     Standard)
+// {
+//     return &me[me.size()];
+// }
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>::Type
+// end(std::basic_string<TChar, TCharTraits, TAlloc> const & me,
+//     Standard)
+// {
+//     return me.data() + me.size();
+// }
 
 template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos>
 inline typename Reference< std::basic_string<TChar, TCharTraits, TAlloc> >::Type

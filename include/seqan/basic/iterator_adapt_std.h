@@ -244,20 +244,20 @@ struct Reference<Iter<TContainer const, StdIteratorAdaptor> const> :
 
 // TODO(holtgrew): This is a candidate for not beging publically documented
 
-template <typename TStdContainer>
-struct StdContainerIterator;
-
-template <typename TStdContainer>
-struct StdContainerIterator
-{
-     typedef typename TStdContainer::iterator Type;
-};
-
-template <typename TStdContainer>
-struct StdContainerIterator<TStdContainer const>
-{
-     typedef typename TStdContainer::const_iterator Type;
-};
+// template <typename TStdContainer>
+// struct StdContainerIterator;
+//
+// template <typename TStdContainer>
+// struct StdContainerIterator
+// {
+//      typedef typename TStdContainer::iterator Type;
+// };
+//
+// template <typename TStdContainer>
+// struct StdContainerIterator<TStdContainer const>
+// {
+//      typedef typename TStdContainer::const_iterator Type;
+// };
 
 // ============================================================================
 // Functions

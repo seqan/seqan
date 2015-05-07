@@ -160,45 +160,45 @@ namespace seqan {
 // Functions
 // ===========================================================================
 
-template<typename TValue>
-inline
-typename Iterator<std::list<TValue>, Standard>::Type
-begin(std::list<TValue> & list,
-      Standard const &)
-{
-    SEQAN_CHECKPOINT;
-    return list.begin();
-}
-
-template <typename TValue>
-inline
-typename Iterator<std::list<TValue> const, Standard>::Type
-begin(std::list<TValue> const & list,
-      Standard const &)
-{
-    SEQAN_CHECKPOINT;
-    return list.begin();
-}
-
-template<typename TValue>
-inline
-typename Iterator<std::list<TValue>, Standard>::Type
-end(std::list<TValue> & list,
-      Standard const &)
-{
-    SEQAN_CHECKPOINT;
-    return list.end();
-}
-
-template <typename TValue>
-inline
-typename Iterator<std::list<TValue> const, Standard>::Type
-end(std::list<TValue> const & list,
-      Standard const &)
-{
-    SEQAN_CHECKPOINT;
-    return list.end();
-}
+// template<typename TValue>
+// inline
+// typename Iterator<std::list<TValue>, Standard>::Type
+// begin(std::list<TValue> & list,
+//       Standard const &)
+// {
+//     SEQAN_CHECKPOINT;
+//     return list.begin();
+// }
+//
+// template <typename TValue>
+// inline
+// typename Iterator<std::list<TValue> const, Standard>::Type
+// begin(std::list<TValue> const & list,
+//       Standard const &)
+// {
+//     SEQAN_CHECKPOINT;
+//     return list.begin();
+// }
+//
+// template<typename TValue>
+// inline
+// typename Iterator<std::list<TValue>, Standard>::Type
+// end(std::list<TValue> & list,
+//       Standard const &)
+// {
+//     SEQAN_CHECKPOINT;
+//     return list.end();
+// }
+//
+// template <typename TValue>
+// inline
+// typename Iterator<std::list<TValue> const, Standard>::Type
+// end(std::list<TValue> const & list,
+//       Standard const &)
+// {
+//     SEQAN_CHECKPOINT;
+//     return list.end();
+// }
 
 template <typename TValue>
 inline typename Reference<std::list<TValue> >::Type

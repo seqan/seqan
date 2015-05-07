@@ -176,57 +176,57 @@ namespace seqan {
 //     typedef typename TContainer_::const_iterator Type;
 // };
 
-template <typename TChar, typename TAlloc>
-struct IsSequence<std::vector<TChar, TAlloc> > : True {};
+// template <typename TChar, typename TAlloc>
+// struct IsSequence<std::vector<TChar, TAlloc> > : True {};
 
 // ===========================================================================
 // Functions
 // ===========================================================================
 
-template <typename TChar,  typename TAlloc>
-inline void const *
-getObjectId(std::vector<TChar, TAlloc> const & me)
-{
-    SEQAN_CHECKPOINT;
-    if (me.empty())
-        return NULL;
-    else
-        return (& *(me.end() - 1)) + 1;
-}
+// template <typename TChar,  typename TAlloc>
+// inline void const *
+// getObjectId(std::vector<TChar, TAlloc> const & me)
+// {
+//     SEQAN_CHECKPOINT;
+//     if (me.empty())
+//         return NULL;
+//     else
+//         return (& *(me.end() - 1)) + 1;
+// }
 
-template <typename TChar,  typename TAlloc>
-inline typename Iterator< std::vector<TChar,  TAlloc>, Standard>::Type
-begin(std::vector<TChar,  TAlloc> & me,
-      Standard)
-{
-    SEQAN_CHECKPOINT;
-    return typename Iterator< std::vector<TChar,  TAlloc>, Standard>::Type(me.begin());
-}
-template <typename TChar,  typename TAlloc>
-inline typename Iterator< std::vector<TChar,  TAlloc> const, Standard>::Type
-begin(std::vector<TChar, TAlloc> const & me,
-      Standard)
-{
-    SEQAN_CHECKPOINT;
-    return typename Iterator< std::vector<TChar,  TAlloc> const, Standard>::Type(me.begin());
-}
+// template <typename TChar,  typename TAlloc>
+// inline typename Iterator< std::vector<TChar,  TAlloc>, Standard>::Type
+// begin(std::vector<TChar,  TAlloc> & me,
+//       Standard)
+// {
+//     SEQAN_CHECKPOINT;
+//     return typename Iterator< std::vector<TChar,  TAlloc>, Standard>::Type(me.begin());
+// }
+// template <typename TChar,  typename TAlloc>
+// inline typename Iterator< std::vector<TChar,  TAlloc> const, Standard>::Type
+// begin(std::vector<TChar, TAlloc> const & me,
+//       Standard)
+// {
+//     SEQAN_CHECKPOINT;
+//     return typename Iterator< std::vector<TChar,  TAlloc> const, Standard>::Type(me.begin());
+// }
 
-template <typename TChar, typename TAlloc>
-inline typename Iterator< std::vector<TChar, TAlloc>, Standard>::Type
-end(std::vector<TChar,  TAlloc> & me,
-    Standard)
-{
-    SEQAN_CHECKPOINT;
-    return typename Iterator< std::vector<TChar, TAlloc>, Standard>::Type(me.end());
-}
-template <typename TChar,  typename TAlloc>
-inline typename Iterator< std::vector<TChar,  TAlloc> const, Standard>::Type
-end(std::vector<TChar,  TAlloc> const & me,
-    Standard)
-{
-    SEQAN_CHECKPOINT;
-    return typename Iterator< std::vector<TChar,  TAlloc> const, Standard>::Type(me.end());
-}
+// template <typename TChar, typename TAlloc>
+// inline typename Iterator< std::vector<TChar, TAlloc>, Standard>::Type
+// end(std::vector<TChar,  TAlloc> & me,
+//     Standard)
+// {
+//     SEQAN_CHECKPOINT;
+//     return typename Iterator< std::vector<TChar, TAlloc>, Standard>::Type(me.end());
+// }
+// template <typename TChar,  typename TAlloc>
+// inline typename Iterator< std::vector<TChar,  TAlloc> const, Standard>::Type
+// end(std::vector<TChar,  TAlloc> const & me,
+//     Standard)
+// {
+//     SEQAN_CHECKPOINT;
+//     return typename Iterator< std::vector<TChar,  TAlloc> const, Standard>::Type(me.end());
+// }
 
 template <typename TChar,  typename TAlloc, typename TPos>
 inline typename GetValue< std::vector<TChar, TAlloc> >::Type
