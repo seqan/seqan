@@ -306,16 +306,19 @@ findJournalEntry(JournalEntries<TCargo, SortedArray> & journalEntries,
     return *findInJournalEntries(journalEntries, pos);
 }
 
+// ----------------------------------------------------------------------------
+// Function _doRecordInsertion()
+// ----------------------------------------------------------------------------
 
-template <typename TCargo>
+template <typename TCargo, typename TIterator>
 inline
-void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
-                     typename Position<TCargo>::Type virtualPosition,
-                     typename Position<TCargo>::Type physicalBeginPos,
-                     typename Size<TCargo>::Type len)
+void _doRecordInsertion(JournalEntries<TCargo, SortedArray> & tree,
+                        TIterator iter,
+                        typename Position<TCargo>::Type virtualPosition,
+                        typename Position<TCargo>::Type physicalBeginPos,
+                        typename Size<TCargo>::Type len)
 {
     typedef typename Position<TCargo>::Type TPos;
-    typedef typename Iterator<String<TCargo>, Standard>::Type TIterator;
 
     //std::cerr << __FILE__ << ":" << __LINE__ << " -- INSERT(" << virtualPosition << ", " << physicalBeginPos << ", " << len << ")" << std::endl;
     //std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
@@ -331,7 +334,7 @@ void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
     }
 
     // Find position in sorted array of nodes to insert in.
-    TIterator iter = findInJournalEntries(tree, virtualPosition);
+    iter = findInJournalEntries(tree, virtualPosition);
     // TODO(holtgrew): Maybe move and update entries right of pos at the same time?
 
     // Create new journal entries.
@@ -386,15 +389,51 @@ void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
     SEQAN_ASSERT(_checkSortedArrayTree(tree));
 }
 
+// ----------------------------------------------------------------------------
+// Function recordInsertion()
+// ----------------------------------------------------------------------------
+
 template <typename TCargo>
 inline
-void recordErase(JournalEntries<TCargo, SortedArray> & tree,
-                 typename Position<TCargo>::Type pos,
-                 typename Position<TCargo>::Type posEnd)
+void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
+                     typename Position<TCargo>::Type virtualPosition,
+                     typename Position<TCargo>::Type physicalBeginPos,
+                     typename Size<TCargo>::Type len)
+{
+    typedef typename Position<TCargo>::Type TPos SEQAN_TYPEDEF_FOR_DEBUG;
+    typedef typename Iterator<String<TCargo>, Standard>::Type TIterator;
+
+    //std::cerr << __FILE__ << ":" << __LINE__ << " -- INSERT(" << virtualPosition << ", " << physicalBeginPos << ", " << len << ")" << std::endl;
+    //std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
+
+    // Handle special case that the entry list is empty.
+    if (empty(tree._journalNodes))
+    {
+        SEQAN_ASSERT_EQ(virtualPosition, static_cast<TPos>(0));
+        if (len == 0)
+            return;
+        appendValue(tree._journalNodes, TCargo(SOURCE_PATCH, physicalBeginPos, virtualPosition, 0, len));
+        return;
+    }
+
+    // Find position in sorted array of nodes to insert in.
+    TIterator iter = findInJournalEntries(tree, virtualPosition);
+    _doRecordInsertion(tree, iter, virtualPosition, physicalBeginPos, len);
+}
+
+// ----------------------------------------------------------------------------
+// Function _doRecordErase()
+// ----------------------------------------------------------------------------
+
+template <typename TCargo, typename TIter>
+inline
+void _doRecordErase(JournalEntries<TCargo, SortedArray> & tree,
+                    TIter it,
+                    typename Position<TCargo>::Type pos,
+                    typename Position<TCargo>::Type posEnd)
 {
     typedef typename Size<TCargo>::Type TSize;
     typedef typename Position<TCargo>::Type TPos;
-    typedef typename Iterator<String<TCargo>, Standard>::Type TIter;
 //    std::cerr << __FILE__ << ":" << __LINE__ << " -- ERASE(" << pos << ", " << posEnd << ")" << std::endl;
 //    std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
 
@@ -413,7 +452,7 @@ void recordErase(JournalEntries<TCargo, SortedArray> & tree,
     }
 
     // Find node.
-    TIter it = findInJournalEntries(tree, pos);
+    it = findInJournalEntries(tree, pos);
 
     // We will shift the virtual positions of all entries right of and
     // including beginShiftPos by delta positions to the left.
@@ -534,6 +573,43 @@ void recordErase(JournalEntries<TCargo, SortedArray> & tree,
     SEQAN_ASSERT(_checkSortedArrayTree(tree));
 }
 
+// ----------------------------------------------------------------------------
+// Function recordErase()
+// ----------------------------------------------------------------------------
+
+template <typename TCargo>
+inline
+void recordErase(JournalEntries<TCargo, SortedArray> & tree,
+                 typename Position<TCargo>::Type pos,
+                 typename Position<TCargo>::Type posEnd)
+{
+    typedef typename Position<TCargo>::Type TPos;
+    typedef typename Iterator<String<TCargo>, Standard>::Type TIter;
+    //  std::cerr << __FILE__ << ":" << __LINE__ << " -- ERASE(" << pos << ", " << posEnd << ")" << std::endl;
+    //    std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
+
+    // Handle special case of removing all of the singleton existing entry.
+    if (length(tree._journalNodes) == 1 && pos == 0 && (TPos)front(tree._journalNodes).length == posEnd)
+    {
+        clear(tree._journalNodes);
+        return;
+    }
+    // Handle case of an empty journal.
+    if (empty(tree._journalNodes))
+    {
+        SEQAN_ASSERT_EQ(pos, static_cast<TPos>(0));
+        SEQAN_ASSERT_EQ(posEnd, static_cast<TPos>(0));
+        return;
+    }
+
+    // Find node.
+    TIter it = findInJournalEntries(tree, pos);
+    _doRecordErase(tree, it, pos, posEnd);
+}
+
+// ----------------------------------------------------------------------------
+// Function virtualToHostPosition()
+// ----------------------------------------------------------------------------
 
 template <typename TNode, typename TJournalSpec, typename TPos>
 inline
