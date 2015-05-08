@@ -833,6 +833,23 @@ _setDistanceValue(String<TFragment, TSpec>&,
 
 //////////////////////////////////////////////////////////////////////////////
 
+template<typename TScoreValues, typename TScoreValue, typename TSize>
+inline void
+_recordScores(TScoreValues & scores,
+              TScoreValue const & myScore,
+              TSize const & from,
+              TSize const & to)
+{
+    resize(scores, to);
+    typedef typename Iterator<TScoreValues, Standard>::Type TScoreIter;
+    TScoreIter itScore = begin(scores, Standard());
+    TScoreIter itScoreEnd = end(scores, Standard());
+    itScore += from;
+    for (; itScore != itScoreEnd; ++itScore) *itScore = myScore;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues, typename TDistance, typename TAlignConfig>
 inline void
 appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
@@ -868,16 +885,10 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 
         // Alignment
         TSize from = length(matches);
-        TScoreValue myScore = globalAlignment(matches, pairSet, score_type, ac, Gotoh() );
+        TScoreValue myScore = globalAlignment(matches, pairSet, score_type, ac, Gotoh());
         TSize to = length(matches);
 
-        // Record the scores
-        resize(scores, to);
-        typedef typename Iterator<TScoreValues, Standard>::Type TScoreIter;
-        TScoreIter itScore = begin(scores, Standard());
-        TScoreIter itScoreEnd = end(scores, Standard());
-        itScore+=from;
-        for(;itScore != itScoreEnd; ++itScore) *itScore = myScore;
+        _recordScores(scores, myScore, from, to);
 
         // Get the alignment statistics
         _setDistanceValue(matches, pairSet, dist, (TSize) *(itPair-1), (TSize) *itPair, (TSize) nseq, (TSize)from);
