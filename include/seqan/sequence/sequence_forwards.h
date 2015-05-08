@@ -113,34 +113,34 @@ template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T, Standard>::T
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T const, Standard>::Type _endDefault(T const & me, Standard);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T, Rooted>::Type _endDefault(T & me, Rooted);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T const, Rooted>::Type _endDefault(T const & me, Rooted);
-template <typename TTarget, typename TSource> inline void append(TTarget & target, TSource & source);
-template <typename TTarget, typename TSource> inline void append(TTarget const & target, TSource & source);
-template <typename TTarget, typename TSource> inline void append(TTarget & target, TSource const & source);
-template <typename TTarget, typename TSource> inline void append(TTarget const & target, TSource const & source);
-template <typename TTarget, typename TSource> inline void append(TTarget & target, TSource & source, typename Size<TTarget>::Type limit);
-template <typename TTarget, typename TSource> inline void append(TTarget const & target, TSource & source, typename Size<TTarget>::Type limit);
-template <typename TTarget, typename TSource> inline void append(TTarget & target, TSource const & source, typename Size<TTarget>::Type limit);
-template <typename TTarget, typename TSource> inline void append(TTarget const & target, TSource const & source, typename Size<TTarget>::Type limit);
-template <typename T, typename TValue> inline void appendValue(T SEQAN_FORWARD_ARG me, TValue SEQAN_FORWARD_CARG _value);
-#ifndef SEQAN_CXX11_STANDARD
-template <typename T, typename TValue> inline void appendValue(T const & me, TValue const & _value);
-#endif
-template <typename TTarget, typename TSource> inline void assign(TTarget & target, TSource & source, typename Size<TTarget>::Type limit);
-template <typename TTarget, typename TSource> inline void assign(TTarget const & target, TSource & source, typename Size<TTarget>::Type limit);
-template <typename TTarget, typename TSource> inline void assign(TTarget & target, TSource const & source, typename Size<TTarget>::Type limit);
-template <typename TTarget, typename TSource> inline void assign(TTarget const & target, TSource const & source, typename Size<TTarget>::Type limit);
-template <typename T, typename TValue, typename TPos> inline void assignValue(T & me, TPos pos, TValue const & _value);
-template <typename T> SEQAN_HOST_DEVICE inline typename Reference<T const>::Type back(T const & me);
-template <typename T> SEQAN_HOST_DEVICE inline typename Reference<T>::Type back(T & me);
+// template <typename TTarget, typename TSource> inline void append(TTarget & target, TSource & source);
+// template <typename TTarget, typename TSource> inline void append(TTarget const & target, TSource & source);
+// template <typename TTarget, typename TSource> inline void append(TTarget & target, TSource const & source);
+// template <typename TTarget, typename TSource> inline void append(TTarget const & target, TSource const & source);
+// template <typename TTarget, typename TSource> inline void append(TTarget & target, TSource & source, typename Size<TTarget>::Type limit);
+// template <typename TTarget, typename TSource> inline void append(TTarget const & target, TSource & source, typename Size<TTarget>::Type limit);
+// template <typename TTarget, typename TSource> inline void append(TTarget & target, TSource const & source, typename Size<TTarget>::Type limit);
+// template <typename TTarget, typename TSource> inline void append(TTarget const & target, TSource const & source, typename Size<TTarget>::Type limit);
+// template <typename T, typename TValue> inline void appendValue(T SEQAN_FORWARD_ARG me, TValue SEQAN_FORWARD_CARG _value);
+// #ifndef SEQAN_CXX11_STANDARD
+// template <typename T, typename TValue> inline void appendValue(T const & me, TValue const & _value);
+// #endif
+// template <typename TTarget, typename TSource> inline void assign(TTarget & target, TSource & source, typename Size<TTarget>::Type limit);
+// template <typename TTarget, typename TSource> inline void assign(TTarget const & target, TSource & source, typename Size<TTarget>::Type limit);
+// template <typename TTarget, typename TSource> inline void assign(TTarget & target, TSource const & source, typename Size<TTarget>::Type limit);
+// template <typename TTarget, typename TSource> inline void assign(TTarget const & target, TSource const & source, typename Size<TTarget>::Type limit);
+// template <typename T, typename TValue, typename TPos> inline void assignValue(T & me, TPos pos, TValue const & _value);
+// template <typename T> SEQAN_HOST_DEVICE inline typename Reference<T const>::Type back(T const & me);
+// template <typename T> SEQAN_HOST_DEVICE inline typename Reference<T>::Type back(T & me);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type begin(T & me);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type begin(T const & me);
 template <typename T, typename TSpec> SEQAN_HOST_DEVICE inline typename Iterator<T, Tag<TSpec> const>::Type begin(T & me, Tag<TSpec> const tag_);
 template <typename T, typename TSpec> SEQAN_HOST_DEVICE inline typename Iterator<T const, Tag<TSpec> const>::Type begin(T const & me, Tag<TSpec> const tag_);
 template <typename T> inline typename Position<T>::Type beginPosition(T &);
 template <typename T> inline typename Position<T>::Type beginPosition(T const &);
-template <typename T> SEQAN_HOST_DEVICE inline typename Size<T const>::Type capacity(T const & me);
+template <typename T, typename DisableIf<Is<StlContainerConcept<T> >, int>::Type> SEQAN_HOST_DEVICE inline typename Size<T const>::Type capacity(T const & me);
 template <typename T, typename TSize> inline TSize computeGenerousCapacity(T const & , TSize capacity);
-template <typename T> SEQAN_HOST_DEVICE inline bool empty(T const & me);
+// template <typename T> SEQAN_HOST_DEVICE inline bool empty(T const & me);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type end(T & me);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type end(T const & me);
 template <typename T, typename TSpec> SEQAN_HOST_DEVICE inline typename Iterator<T, Tag<TSpec> const>::Type end(T & me, Tag<TSpec> const tag_);
@@ -154,7 +154,10 @@ template <typename T, typename TPosition> inline void erase(T const & me, TPosit
 template <typename T> inline void eraseBack(T & me);
 template <typename T> inline typename Reference<T>::Type front(T & me);
 template <typename T> inline typename Reference<T const>::Type front(T const & me);
-template <typename T> inline void const * getObjectId(T const & me);
+template <typename TContainer> inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, void const *)
+getObjectId(TContainer const & me);
+template <typename TContainer> inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TContainer> >, void const *)
+getObjectId(TContainer const & me);
 template <typename T, typename TPos> inline typename GetValue<T>::Type getValue(T & me, TPos pos);
 template <typename T, typename TPos> inline typename GetValue<T const>::Type getValue(T const & me, TPos pos);
 template <typename T, typename TPosition, typename TSeq, typename TExpand> inline void insert(T & me, TPosition pos, TSeq const & insertSeq, Tag<TExpand>);
@@ -167,21 +170,21 @@ template <typename T, typename TPos> inline typename Iterator<T, typename Defaul
 template <typename T, typename TPos> inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type iter(T const & me, TPos pos);
 template <typename T, typename TPos, typename TTag> inline typename Iterator<T, Tag<TTag> const>::Type iter(T & me, TPos pos, Tag<TTag> const tag_);
 template <typename T, typename TPos, typename TTag> inline typename Iterator<T const, Tag<TTag> const>::Type iter(T const & me, TPos pos, Tag<TTag> const tag_);
-template <typename T> inline typename Size<T>::Type length(T const & );
+template <typename T, typename DisableIf<Is<StlContainerConcept<T> >, int>::Type> inline typename Size<T>::Type length(T const & );
 template <typename T, typename TValue, typename TPos> inline void moveValue(T & me, TPos pos, TValue const & _value);
 template <typename T, typename TValue, typename TPos> inline void moveValue(T const & me, TPos pos, TValue const & _value);
-template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource & source);
-template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget const & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource & source);
-template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource const & source);
-template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget const & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource const & source);
-template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource & source, typename Size<TTarget>::Type limit);
-template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget const & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource & source, typename Size<TTarget>::Type limit);
-template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource const & source, typename Size<TTarget>::Type limit);
-template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget const & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource const & source, typename Size<TTarget>::Type limit);
-template <typename T, typename TSize, typename TExpand> inline typename Size<T>::Type reserve(T & me, TSize const & new_capacity, Tag<TExpand> tag);
-template <typename T, typename TSize> inline typename Size<T>::Type reserve(T & me, TSize const & new_capacity);
-template <typename T, typename TSize> inline typename Size<T>::Type resize(T & me, TSize new_length);
-template <typename T, typename TSize, typename TValue> inline typename Size<T>::Type resize(T & me, TSize new_length, TValue const & val);
+// template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource & source);
+// template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget const & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource & source);
+// template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource const & source);
+// template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget const & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource const & source);
+// template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource & source, typename Size<TTarget>::Type limit);
+// template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget const & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource & source, typename Size<TTarget>::Type limit);
+// template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource const & source, typename Size<TTarget>::Type limit);
+// template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget const & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource const & source, typename Size<TTarget>::Type limit);
+// template <typename T, typename TSize, typename TExpand> inline typename Size<T>::Type reserve(T & me, TSize const & new_capacity, Tag<TExpand> tag);
+// template <typename T, typename TSize> inline typename Size<T>::Type reserve(T & me, TSize const & new_capacity);
+// template <typename T, typename TSize> inline typename Size<T>::Type resize(T & me, TSize new_length);
+// template <typename T, typename TSize, typename TValue> inline typename Size<T>::Type resize(T & me, TSize new_length, TValue const & val);
 template <typename T, typename TSize, typename TBeginPosition, typename TEndPosition> inline TSize resizeSpace(T & me, TSize size, TBeginPosition pos_begin, TEndPosition pos_end);
 template <typename T, typename TSize, typename TBeginPosition, typename TEndPosition, typename TLimit> inline TSize resizeSpace(T & me, TSize size, TBeginPosition pos_begin, TEndPosition pos_end, TLimit limit);
 template <typename T1, typename T2> inline bool shareResources(T1 const & obj1, T2 const & obj2);
@@ -193,51 +196,51 @@ template <typename T, typename TPos> SEQAN_HOST_DEVICE inline typename Reference
 // Forwards For std::vector
 // --------------------------------------------------------------------------
 
-template <typename TChar, typename TAlloc, typename TSource> inline void append(std::vector<TChar, TAlloc> & target, TSource const & source, Generous);
-template <typename TChar, typename TAlloc, typename TSource> inline void append(std::vector<TChar, TAlloc> & target, TSource const & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Generous);
-template <typename TChar, typename TAlloc, typename TSource> inline void append(std::vector<TChar, TAlloc> & target, TSource const & source, Limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void append(std::vector<TChar, TAlloc> & target, TSource const & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Limit);
-template <typename TChar, typename TAlloc, typename TValue, typename TTag> inline void appendValue(std::vector<TChar, TAlloc> & me, TValue const & _value, TTag);
-template <typename TChar, typename TAlloc, typename TValue> inline void appendValue(std::vector<TChar, TAlloc> & me, TValue const & _value, Limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource & source);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource const & source);
-template <typename TChar, typename TAlloc, typename TSource, typename TSize> inline void assign(std::vector<TChar, TAlloc> & target, TSource & source, TSize limit);
-template <typename TChar, typename TAlloc, typename TSource, typename TSize> inline void assign(std::vector<TChar, TAlloc> & target, TSource const & source, TSize limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource & source, Generous);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource const & source, Generous);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Generous);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource const & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Generous);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource & source, Limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource const & source, Limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource const & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign_std_vector_Generous_impl(std::vector<TChar, TAlloc> & target, TSource & source, typename Size< std::vector<TChar, TAlloc> >::Type limit);
-template <typename TChar, typename TAlloc> inline typename Iterator< std::vector<TChar, TAlloc>, Standard>::Type begin(std::vector<TChar, TAlloc> & me, Standard);
-template <typename TChar, typename TAlloc> inline typename Iterator< std::vector<TChar, TAlloc> const, Standard>::Type begin(std::vector<TChar, TAlloc> const & me, Standard);
-template <typename TChar, typename TAlloc> inline typename Size< std::vector<TChar, TAlloc> >::Type capacity(std::vector<TChar, TAlloc> const & me);
-template <typename TChar, typename TAlloc> inline void clear(std::vector<TChar, TAlloc> & me);
-template <typename TChar, typename TAlloc> inline bool empty(std::vector<TChar, TAlloc> const & me);
-template <typename TChar, typename TAlloc> inline typename Iterator< std::vector<TChar, TAlloc>, Standard>::Type end(std::vector<TChar, TAlloc> & me, Standard);
-template <typename TChar, typename TAlloc> inline typename Iterator< std::vector<TChar, TAlloc> const, Standard>::Type end(std::vector<TChar, TAlloc> const & me, Standard);
-template <typename TChar, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::vector<TChar, TAlloc> >::Type fill( std::vector<TChar, TAlloc> & me, TSize new_length, TChar const & val, Tag<TExpand>);
-template <typename TChar, typename TAlloc> inline void const * getObjectId(std::vector<TChar, TAlloc> const & me);
-template <typename TChar, typename TAlloc> inline typename Size< std::vector<TChar, TAlloc> >::Type length(std::vector<TChar, TAlloc> const & me);
-template <typename TChar, typename TAlloc, typename TSource> inline void replace(std::vector<TChar, TAlloc> & target, typename Position< std::vector<TChar, TAlloc> >::Type pos_begin, typename Position< std::vector<TChar, TAlloc> >::Type pos_end, TSource const & source, Generous);
-template <typename TChar, typename TAlloc, typename TSource> inline void replace(std::vector<TChar, TAlloc> & target, typename Position< std::vector<TChar, TAlloc> >::Type pos_begin, typename Position< std::vector<TChar, TAlloc> >::Type pos_end, TSource const & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Generous);
-template <typename TChar, typename TAlloc, typename TSource> inline void replace(std::vector<TChar, TAlloc> & target, typename Position< std::vector<TChar, TAlloc> >::Type pos_begin, typename Position< std::vector<TChar, TAlloc> >::Type pos_end, TSource const & source, Limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void replace(std::vector<TChar, TAlloc> & target, typename Position< std::vector<TChar, TAlloc> >::Type pos_begin, typename Position< std::vector<TChar, TAlloc> >::Type pos_end, TSource const & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Limit);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource, typename TExpand> inline void replace(std::vector<TChar, TAlloc> & target, typename Iterator< std::vector<TChar, TAlloc>, Rooted>::Type pos_begin, typename Iterator< std::vector<TChar, TAlloc>, Rooted>::Type pos_end, TSource & source, Tag<TExpand> tag);
-template <typename TChar, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::vector<TChar, TAlloc> >::Type reserve( std::vector<TChar, TAlloc> & seq, TSize new_capacity, Tag<TExpand> tag);
-template <typename TChar, typename TAlloc, typename TSize> inline typename Size< std::vector<TChar, TAlloc> >::Type reserve( std::vector<TChar, TAlloc> & seq, TSize new_capacity, Insist const &);
-template <typename TChar, typename TAlloc, typename TSize> inline typename Size< std::vector<TChar, TAlloc> >::Type reserve( std::vector<TChar, TAlloc> & seq, TSize new_capacity, Limit const &);
-template <typename TChar, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::vector<TChar, TAlloc> >::Type resize( std::vector<TChar, TAlloc> & me, TSize new_length, Tag<TExpand>);
-template <typename TChar, typename TAlloc, typename TPos> inline typename GetValue< std::vector<TChar, TAlloc> >::Type value(std::vector<TChar, TAlloc> & me, TPos pos);
-template <typename TChar, typename TAlloc, typename TPos> inline typename GetValue< std::vector<TChar, TAlloc> const>::Type value(std::vector<TChar, TAlloc> const & me, TPos pos);
+// template <typename TChar, typename TAlloc, typename TSource> inline void append(std::vector<TChar, TAlloc> & target, TSource const & source, Generous);
+// template <typename TChar, typename TAlloc, typename TSource> inline void append(std::vector<TChar, TAlloc> & target, TSource const & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Generous);
+// template <typename TChar, typename TAlloc, typename TSource> inline void append(std::vector<TChar, TAlloc> & target, TSource const & source, Limit);
+// template <typename TChar, typename TAlloc, typename TSource> inline void append(std::vector<TChar, TAlloc> & target, TSource const & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Limit);
+// template <typename TChar, typename TAlloc, typename TValue, typename TTag> inline void appendValue(std::vector<TChar, TAlloc> & me, TValue const & _value, TTag);
+// template <typename TChar, typename TAlloc, typename TValue> inline void appendValue(std::vector<TChar, TAlloc> & me, TValue const & _value, Limit);
+// template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource & source);
+// template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource const & source);
+// template <typename TChar, typename TAlloc, typename TSource, typename TSize> inline void assign(std::vector<TChar, TAlloc> & target, TSource & source, TSize limit);
+// template <typename TChar, typename TAlloc, typename TSource, typename TSize> inline void assign(std::vector<TChar, TAlloc> & target, TSource const & source, TSize limit);
+// template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource & source, Generous);
+// template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource const & source, Generous);
+// template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Generous);
+// template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource const & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Generous);
+// template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource & source, Limit);
+// template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource const & source, Limit);
+// template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Limit);
+// template <typename TChar, typename TAlloc, typename TSource> inline void assign(std::vector<TChar, TAlloc> & target, TSource const & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Limit);
+// template <typename TChar, typename TAlloc, typename TSource> inline void assign_std_vector_Generous_impl(std::vector<TChar, TAlloc> & target, TSource & source, typename Size< std::vector<TChar, TAlloc> >::Type limit);
+// template <typename TChar, typename TAlloc> inline typename Iterator< std::vector<TChar, TAlloc>, Standard>::Type begin(std::vector<TChar, TAlloc> & me, Standard);
+// template <typename TChar, typename TAlloc> inline typename Iterator< std::vector<TChar, TAlloc> const, Standard>::Type begin(std::vector<TChar, TAlloc> const & me, Standard);
+// template <typename TChar, typename TAlloc> inline typename Size< std::vector<TChar, TAlloc> >::Type capacity(std::vector<TChar, TAlloc> const & me);
+// template <typename TChar, typename TAlloc> inline void clear(std::vector<TChar, TAlloc> & me);
+// template <typename TChar, typename TAlloc> inline bool empty(std::vector<TChar, TAlloc> const & me);
+// template <typename TChar, typename TAlloc> inline typename Iterator< std::vector<TChar, TAlloc>, Standard>::Type end(std::vector<TChar, TAlloc> & me, Standard);
+// template <typename TChar, typename TAlloc> inline typename Iterator< std::vector<TChar, TAlloc> const, Standard>::Type end(std::vector<TChar, TAlloc> const & me, Standard);
+// template <typename TChar, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::vector<TChar, TAlloc> >::Type fill( std::vector<TChar, TAlloc> & me, TSize new_length, TChar const & val, Tag<TExpand>);
+// // template <typename TChar, typename TAlloc> inline void const * getObjectId(std::vector<TChar, TAlloc> const & me);
+// template <typename TChar, typename TAlloc> inline typename Size< std::vector<TChar, TAlloc> >::Type length(std::vector<TChar, TAlloc> const & me);
+// template <typename TChar, typename TAlloc, typename TSource> inline void replace(std::vector<TChar, TAlloc> & target, typename Position< std::vector<TChar, TAlloc> >::Type pos_begin, typename Position< std::vector<TChar, TAlloc> >::Type pos_end, TSource const & source, Generous);
+// template <typename TChar, typename TAlloc, typename TSource> inline void replace(std::vector<TChar, TAlloc> & target, typename Position< std::vector<TChar, TAlloc> >::Type pos_begin, typename Position< std::vector<TChar, TAlloc> >::Type pos_end, TSource const & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Generous);
+// template <typename TChar, typename TAlloc, typename TSource> inline void replace(std::vector<TChar, TAlloc> & target, typename Position< std::vector<TChar, TAlloc> >::Type pos_begin, typename Position< std::vector<TChar, TAlloc> >::Type pos_end, TSource const & source, Limit);
+// template <typename TChar, typename TAlloc, typename TSource> inline void replace(std::vector<TChar, TAlloc> & target, typename Position< std::vector<TChar, TAlloc> >::Type pos_begin, typename Position< std::vector<TChar, TAlloc> >::Type pos_end, TSource const & source, typename Size< std::vector<TChar, TAlloc> >::Type limit, Limit);
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource, typename TExpand> inline void replace(std::vector<TChar, TAlloc> & target, typename Iterator< std::vector<TChar, TAlloc>, Rooted>::Type pos_begin, typename Iterator< std::vector<TChar, TAlloc>, Rooted>::Type pos_end, TSource & source, Tag<TExpand> tag);
+// template <typename TChar, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::vector<TChar, TAlloc> >::Type reserve( std::vector<TChar, TAlloc> & seq, TSize new_capacity, Tag<TExpand> tag);
+// template <typename TChar, typename TAlloc, typename TSize> inline typename Size< std::vector<TChar, TAlloc> >::Type reserve( std::vector<TChar, TAlloc> & seq, TSize new_capacity, Insist const &);
+// template <typename TChar, typename TAlloc, typename TSize> inline typename Size< std::vector<TChar, TAlloc> >::Type reserve( std::vector<TChar, TAlloc> & seq, TSize new_capacity, Limit const &);
+// template <typename TChar, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::vector<TChar, TAlloc> >::Type resize( std::vector<TChar, TAlloc> & me, TSize new_length, Tag<TExpand>);
+// template <typename TChar, typename TAlloc, typename TPos> inline typename GetValue< std::vector<TChar, TAlloc> >::Type value(std::vector<TChar, TAlloc> & me, TPos pos);
+// template <typename TChar, typename TAlloc, typename TPos> inline typename GetValue< std::vector<TChar, TAlloc> const>::Type value(std::vector<TChar, TAlloc> const & me, TPos pos);
 
 // --------------------------------------------------------------------------
 // Forwards For std::string
 // --------------------------------------------------------------------------
-
+/*
 template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void append(std::basic_string<TChar, TCharTraits, TAlloc> & target, TSource const & source, Generous);
 template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void append(std::basic_string<TChar, TCharTraits, TAlloc> & target, TSource const & source, typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type limit, Generous);
 template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void append(std::basic_string<TChar, TCharTraits, TAlloc> & target, TSource const & source, Limit);
@@ -256,27 +259,27 @@ template <typename TChar, typename TCharTraits, typename TAlloc, typename TSourc
 template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void assign(std::basic_string<TChar, TCharTraits, TAlloc> & target, TSource const & source, Limit);
 template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void assign(std::basic_string<TChar, TCharTraits, TAlloc> & target, TSource & source, typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type limit, Limit);
 template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void assign(std::basic_string<TChar, TCharTraits, TAlloc> & target, TSource const & source, typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type limit, Limit);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void assign_std_string_Generous_impl(std::basic_string<TChar, TCharTraits, TAlloc> & target, TSource & source, typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type limit);
-template <typename TChar, typename TCharTraits, typename TAlloc> inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard>::Type begin(std::basic_string<TChar, TCharTraits, TAlloc> & me, Standard);
-template <typename TChar, typename TCharTraits, typename TAlloc> inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>::Type begin(std::basic_string<TChar, TCharTraits, TAlloc> const & me, Standard);
-template <typename TChar, typename TCharTraits, typename TAlloc> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type capacity(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
-template <typename TChar, typename TCharTraits, typename TAlloc> inline void clear(std::basic_string<TChar, TCharTraits, TAlloc> & me);
-template <typename TChar, typename TCharTraits, typename TAlloc> inline bool empty(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
-template <typename TChar, typename TCharTraits, typename TAlloc> inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard>::Type end(std::basic_string<TChar, TCharTraits, TAlloc> & me, Standard);
-template <typename TChar, typename TCharTraits, typename TAlloc> inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>::Type end(std::basic_string<TChar, TCharTraits, TAlloc> const & me, Standard);
-template <typename TChar, typename TCharTraits, typename TAlloc> inline void const * getObjectId(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
-template <typename TChar, typename TCharTraits, typename TAlloc> inline typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void replace(std::basic_string<TChar, TCharTraits, TAlloc> & target, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_begin, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_end, TSource const & source, Generous);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void replace(std::basic_string<TChar, TCharTraits, TAlloc> & target, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_begin, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_end, TSource const & source, typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type limit, Generous);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void replace(std::basic_string<TChar, TCharTraits, TAlloc> & target, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_begin, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_end, TSource const & source, Limit);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void replace(std::basic_string<TChar, TCharTraits, TAlloc> & target, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_begin, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_end, TSource const & source, typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type limit, Limit);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type reserve( std::basic_string<TChar, TCharTraits, TAlloc> & seq, TSize new_capacity, Tag<TExpand> tag);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type reserve( std::basic_string<TChar, TCharTraits, TAlloc> & seq, TSize new_capacity, Insist const &);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type reserve( std::basic_string<TChar, TCharTraits, TAlloc> & seq, TSize new_capacity, Limit const &);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type resize( std::basic_string<TChar, TCharTraits, TAlloc> & me, TSize new_length, Tag<TExpand>);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type resize( std::basic_string<TChar, TCharTraits, TAlloc> & me, TSize new_length, TChar const & val, Tag<TExpand>);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos> inline typename Reference< std::basic_string<TChar, TCharTraits, TAlloc> >::Type value(std::basic_string<TChar, TCharTraits, TAlloc> & me, TPos pos);
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos> inline typename Reference< std::basic_string<TChar, TCharTraits, TAlloc> const>::Type value(std::basic_string<TChar, TCharTraits, TAlloc> const & me, TPos pos);
+template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void assign_std_string_Generous_impl(std::basic_string<TChar, TCharTraits, TAlloc> & target, TSource & source, typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type limit);*/
+// template <typename TChar, typename TCharTraits, typename TAlloc> inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard>::Type begin(std::basic_string<TChar, TCharTraits, TAlloc> & me, Standard);
+// template <typename TChar, typename TCharTraits, typename TAlloc> inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>::Type begin(std::basic_string<TChar, TCharTraits, TAlloc> const & me, Standard);
+// template <typename TChar, typename TCharTraits, typename TAlloc> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type capacity(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
+// template <typename TChar, typename TCharTraits, typename TAlloc> inline void clear(std::basic_string<TChar, TCharTraits, TAlloc> & me);
+// template <typename TChar, typename TCharTraits, typename TAlloc> inline bool empty(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
+// template <typename TChar, typename TCharTraits, typename TAlloc> inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc>, Standard>::Type end(std::basic_string<TChar, TCharTraits, TAlloc> & me, Standard);
+// template <typename TChar, typename TCharTraits, typename TAlloc> inline typename Iterator< std::basic_string<TChar, TCharTraits, TAlloc> const, Standard>::Type end(std::basic_string<TChar, TCharTraits, TAlloc> const & me, Standard);
+// template <typename TChar, typename TCharTraits, typename TAlloc> inline void const * getObjectId(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
+// template <typename TChar, typename TCharTraits, typename TAlloc> inline typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void replace(std::basic_string<TChar, TCharTraits, TAlloc> & target, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_begin, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_end, TSource const & source, Generous);
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void replace(std::basic_string<TChar, TCharTraits, TAlloc> & target, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_begin, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_end, TSource const & source, typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type limit, Generous);
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void replace(std::basic_string<TChar, TCharTraits, TAlloc> & target, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_begin, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_end, TSource const & source, Limit);
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TSource> inline void replace(std::basic_string<TChar, TCharTraits, TAlloc> & target, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_begin, typename Position< std::basic_string<TChar, TCharTraits, TAlloc> >::Type pos_end, TSource const & source, typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type limit, Limit);
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type reserve( std::basic_string<TChar, TCharTraits, TAlloc> & seq, TSize new_capacity, Tag<TExpand> tag);
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type reserve( std::basic_string<TChar, TCharTraits, TAlloc> & seq, TSize new_capacity, Insist const &);
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type reserve( std::basic_string<TChar, TCharTraits, TAlloc> & seq, TSize new_capacity, Limit const &);
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type resize( std::basic_string<TChar, TCharTraits, TAlloc> & me, TSize new_length, Tag<TExpand>);
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TSize, typename TExpand> inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type resize( std::basic_string<TChar, TCharTraits, TAlloc> & me, TSize new_length, TChar const & val, Tag<TExpand>);
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos> inline typename Reference< std::basic_string<TChar, TCharTraits, TAlloc> >::Type value(std::basic_string<TChar, TCharTraits, TAlloc> & me, TPos pos);
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos> inline typename Reference< std::basic_string<TChar, TCharTraits, TAlloc> const>::Type value(std::basic_string<TChar, TCharTraits, TAlloc> const & me, TPos pos);
 
 // --------------------------------------------------------------------------
 // Forwards For arrays and pointers.

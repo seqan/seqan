@@ -232,21 +232,21 @@ back(std::list<TValue> const & list)
     return list.back();
 }
 
-template <typename TValue>
-inline typename Size<std::list<TValue> >::Type
-length(std::list<TValue> & list)
-{
-    SEQAN_CHECKPOINT;
-    return list.size();
-}
-
-template <typename TValue>
-inline typename Size<std::list<TValue> const>::Type
-length(std::list<TValue> const & list)
-{
-    SEQAN_CHECKPOINT;
-    return list.size();
-}
+// template <typename TValue>
+// inline typename Size<std::list<TValue> >::Type
+// length(std::list<TValue> & list)
+// {
+//     SEQAN_CHECKPOINT;
+//     return list.size();
+// }
+//
+// template <typename TValue>
+// inline typename Size<std::list<TValue> const>::Type
+// length(std::list<TValue> const & list)
+// {
+//     SEQAN_CHECKPOINT;
+//     return list.size();
+// }
 
 template <typename T, typename T2>
 inline void
@@ -290,13 +290,13 @@ resize(std::list<T, TAlloc> & me, TSize new_length, Tag<TExpand>)
     return me.size();
 }
 
-template <typename T>
-inline typename Size<std::list<T> >::Type
-capacity(std::list<T> const & list)
-{
-    SEQAN_CHECKPOINT;
-    return length(list);
-}
+// template <typename T>
+// inline typename Size<std::list<T> >::Type
+// capacity(std::list<T> const & list)
+// {
+//     SEQAN_CHECKPOINT;
+//     return length(list);
+// }
 
 }  // namespace seqan
 

@@ -280,7 +280,7 @@ struct AllowsFastRandomAccess<T const>
  */
 
 template <typename T>
-inline void const *
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<T> >, void const *)
 getObjectId(T const & me)
 {
     SEQAN_CHECKPOINT;
@@ -761,7 +761,7 @@ moveValue(T const & me,
 // --------------------------------------------------------------------------
 
 //* ???Anti Default Sequences
-template <typename T>
+template <typename T, typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
 inline typename Size<T>::Type
 length(T const & /*me*/)
 {
@@ -803,7 +803,8 @@ capacity(T const & me)
 // Function empty()
 // --------------------------------------------------------------------------
 
-template <typename T>
+template <typename T,
+          typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
 SEQAN_HOST_DEVICE inline bool
 empty(T const & me)
 {
@@ -893,7 +894,8 @@ _storageUpdated(T const & me)
 // Function assign()
 // --------------------------------------------------------------------------
 
-template<typename TTarget, typename TSource>
+template<typename TTarget, typename TSource,
+         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
 inline void
 assign(TTarget & target,
        TSource & source,
@@ -903,7 +905,8 @@ assign(TTarget & target,
     assign(target, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TSource>
+template<typename TTarget, typename TSource,
+         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
 inline void
 assign(TTarget const & target,
        TSource & source,
@@ -913,7 +916,8 @@ assign(TTarget const & target,
     assign(target, source, limit, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TSource>
+template<typename TTarget, typename TSource,
+         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
 inline void
 assign(TTarget & target,
        TSource const & source,
@@ -923,7 +927,8 @@ assign(TTarget & target,
     assign(target, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TSource>
+template<typename TTarget, typename TSource,
+         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
 inline void
 assign(TTarget const & target,
        TSource const & source,
@@ -948,7 +953,8 @@ assign(TTarget const & target,
  * @param[in]     source This @link ContainerConcept container @endlink will be appended to <tt>source</tt>.
  */
 
-template<typename TTarget, typename TSource>
+template<typename TTarget, typename TSource,
+         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
 inline void
 append(TTarget & target,
        TSource & source)
@@ -957,7 +963,8 @@ append(TTarget & target,
     append(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TSource>
+template<typename TTarget, typename TSource,
+         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
 inline void
 append(TTarget const & target,
        TSource & source)
@@ -966,7 +973,8 @@ append(TTarget const & target,
     append(target, source, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TSource>
+template<typename TTarget, typename TSource,
+         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
 inline void
 append(TTarget & target,
        TSource const & source)
@@ -975,7 +983,8 @@ append(TTarget & target,
     append(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TSource>
+template<typename TTarget, typename TSource,
+         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
 inline void
 append(TTarget const & target,
        TSource const & source)
@@ -984,7 +993,8 @@ append(TTarget const & target,
     append(target, source, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TSource>
+template<typename TTarget, typename TSource,
+         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
 inline void
 append(TTarget & target,
        TSource & source,
@@ -994,7 +1004,8 @@ append(TTarget & target,
     append(target, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TSource>
+template<typename TTarget, typename TSource,
+         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
 inline void
 append(TTarget const & target,
        TSource & source,
@@ -1004,7 +1015,8 @@ append(TTarget const & target,
     append(target, source, limit, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TSource>
+template<typename TTarget, typename TSource,
+         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
 inline void
 append(TTarget & target,
        TSource const & source,
@@ -1014,7 +1026,8 @@ append(TTarget & target,
     append(target, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TSource>
+template<typename TTarget, typename TSource,
+         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
 inline void
 append(TTarget const & target,
        TSource const & source,
@@ -1041,7 +1054,8 @@ append(TTarget const & target,
  *                       <tt>target</tt>.
  */
 
-template <typename T, typename TValue>
+template <typename T, typename TValue,
+          typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
 inline void
 appendValue(T SEQAN_FORWARD_ARG me,
             TValue SEQAN_FORWARD_CARG _value)
@@ -1050,8 +1064,9 @@ appendValue(T SEQAN_FORWARD_ARG me,
 }
 
 #ifndef SEQAN_CXX11_STANDARD
-
-template <typename T, typename TValue>
+//NOTE(h-2): what is this good for? why can we append to const objects?
+template <typename T, typename TValue,
+          typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
 inline void
 appendValue(T const & me,
             TValue const & _value)
@@ -1317,7 +1332,7 @@ _capacityReturned(T &,
  * This operation may invalidate iterators of <tt>object</tt>.
  */
 
-template <typename T, typename TSize, typename TExpand>
+template <typename T, typename TSize, typename TExpand, typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
 inline typename Size<T>::Type
 reserve(T & me,
         TSize const & new_capacity,
@@ -1340,7 +1355,9 @@ reserve(T & me,
 // Function resize()
 // --------------------------------------------------------------------------
 
-template <typename T, typename TSize>
+template <typename T,
+          typename TSize,
+          typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
 inline typename Size<T>::Type
 resize(T & me,
        TSize new_length)
@@ -1349,7 +1366,10 @@ resize(T & me,
     return resize(me, new_length, typename DefaultOverflowExplicit<T>::Type());
 }
 
-template <typename T, typename TSize, typename TValue>
+template <typename T,
+          typename TSize,
+          typename TValue,
+          typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
 inline typename Size<T>::Type
 resize(T & me,
        TSize new_length,

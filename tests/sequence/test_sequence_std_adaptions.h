@@ -327,11 +327,11 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_string)
     // Test Iterator<, Standard>::VALUE
     {
         typedef Iterator<TString, Standard>::Type TIterator;
-        typedef Value<TString>::Type * TExpected;
+        typedef Iter<TString, StdIteratorAdaptor> TExpected;
         bool b = IsSameType<TIterator, TExpected>::VALUE;
         SEQAN_ASSERT(b);
         typedef Iterator<TConstString, Standard>::Type TConstIterator;
-        typedef Value<TConstString>::Type const * TExpectedConst;
+        typedef Iter<TString const, StdIteratorAdaptor> TExpectedConst;
         b = IsSameType<TConstIterator, TExpectedConst>::VALUE;
         SEQAN_ASSERT(b);
     }

@@ -228,86 +228,86 @@ namespace seqan {
 //     return typename Iterator< std::vector<TChar,  TAlloc> const, Standard>::Type(me.end());
 // }
 
-template <typename TChar,  typename TAlloc, typename TPos>
-inline typename GetValue< std::vector<TChar, TAlloc> >::Type
-value(std::vector<TChar,  TAlloc> & me,
-      TPos pos)
-{
-    SEQAN_CHECKPOINT;
-    return me[pos];
-}
-template <typename TChar,  typename TAlloc, typename TPos>
-inline typename GetValue< std::vector<TChar,  TAlloc> const>::Type
-value(std::vector<TChar, TAlloc> const & me,
-      TPos pos)
-{
-    SEQAN_CHECKPOINT;
-    return me[pos];
-}
+// template <typename TChar,  typename TAlloc, typename TPos>
+// inline typename GetValue< std::vector<TChar, TAlloc> >::Type
+// value(std::vector<TChar,  TAlloc> & me,
+//       TPos pos)
+// {
+//     SEQAN_CHECKPOINT;
+//     return me[pos];
+// }
+// template <typename TChar,  typename TAlloc, typename TPos>
+// inline typename GetValue< std::vector<TChar,  TAlloc> const>::Type
+// value(std::vector<TChar, TAlloc> const & me,
+//       TPos pos)
+// {
+//     SEQAN_CHECKPOINT;
+//     return me[pos];
+// }
 
-template <typename TChar, typename TAlloc>
-inline typename Size< std::vector<TChar, TAlloc> >::Type
-length(std::vector<TChar, TAlloc> const & me)
-{
-    SEQAN_CHECKPOINT;
-    return me.size();
-}
+// template <typename TChar, typename TAlloc>
+// inline typename Size< std::vector<TChar, TAlloc> >::Type
+// length(std::vector<TChar, TAlloc> const & me)
+// {
+//     SEQAN_CHECKPOINT;
+//     return me.size();
+// }
+//
+// template <typename TChar, typename TAlloc>
+// inline typename Size< std::vector<TChar, TAlloc> >::Type
+// capacity(std::vector<TChar, TAlloc> const & me)
+// {
+//     SEQAN_CHECKPOINT;
+//     return me.capacity();
+// }
 
-template <typename TChar, typename TAlloc>
-inline typename Size< std::vector<TChar, TAlloc> >::Type
-capacity(std::vector<TChar, TAlloc> const & me)
-{
-    SEQAN_CHECKPOINT;
-    return me.capacity();
-}
-
-template <typename TChar, typename TAlloc>
-inline bool
-empty(std::vector<TChar, TAlloc> const & me)
-{
-    SEQAN_CHECKPOINT;
-    return me.empty();
-}
-
-template <typename TChar,  typename TAlloc>
-inline void
-clear(std::vector<TChar, TAlloc> & me)
-{
-    SEQAN_CHECKPOINT;
-    me.clear();
-}
-
-template <typename TChar>
-inline typename Reference<std::vector<TChar> >::Type
-front(std::vector<TChar> & list)
-{
-    SEQAN_CHECKPOINT;
-    return list.front();
-}
-
-template <typename TChar>
-inline typename Reference<std::vector<TChar> const>::Type
-front(std::vector<TChar> const & list)
-{
-    SEQAN_CHECKPOINT;
-    return list.front();
-}
-
-template <typename TChar>
-inline typename Reference<std::vector<TChar> >::Type
-back(std::vector<TChar> & list)
-{
-    SEQAN_CHECKPOINT;
-    return list.back();
-}
-
-template <typename TChar>
-inline typename Reference<std::vector<TChar> const>::Type
-back(std::vector<TChar> const & list)
-{
-    SEQAN_CHECKPOINT;
-    return list.back();
-}
+// template <typename TChar, typename TAlloc>
+// inline bool
+// empty(std::vector<TChar, TAlloc> const & me)
+// {
+//     SEQAN_CHECKPOINT;
+//     return me.empty();
+// }
+//
+// template <typename TChar,  typename TAlloc>
+// inline void
+// clear(std::vector<TChar, TAlloc> & me)
+// {
+//     SEQAN_CHECKPOINT;
+//     me.clear();
+// }
+//
+// template <typename TChar>
+// inline typename Reference<std::vector<TChar> >::Type
+// front(std::vector<TChar> & list)
+// {
+//     SEQAN_CHECKPOINT;
+//     return list.front();
+// }
+//
+// template <typename TChar>
+// inline typename Reference<std::vector<TChar> const>::Type
+// front(std::vector<TChar> const & list)
+// {
+//     SEQAN_CHECKPOINT;
+//     return list.front();
+// }
+//
+// template <typename TChar>
+// inline typename Reference<std::vector<TChar> >::Type
+// back(std::vector<TChar> & list)
+// {
+//     SEQAN_CHECKPOINT;
+//     return list.back();
+// }
+//
+// template <typename TChar>
+// inline typename Reference<std::vector<TChar> const>::Type
+// back(std::vector<TChar> const & list)
+// {
+//     SEQAN_CHECKPOINT;
+//     return list.back();
+// }
 
 //////////////////////////////////////////////////////////////////////////////
 //assign to std::vector
@@ -671,53 +671,53 @@ replace(std::vector<TChar, TAlloc> & target,
 */
 
 
-template <typename TChar,  typename TAlloc, typename TSize, typename TExpand>
-inline typename Size< std::vector<TChar, TAlloc> >::Type
-reserve(
-    std::vector<TChar, TAlloc> & seq,
-    TSize new_capacity,
-    Tag<TExpand> tag)
-{
-    SEQAN_CHECKPOINT;
-    seq.reserve(new_capacity);
-    return _capacityReturned(seq, new_capacity, tag);
-}
-
-template <typename TChar, typename TAlloc, typename TSize>
-inline typename Size< std::vector<TChar, TAlloc> >::Type
-reserve(
-    std::vector<TChar, TAlloc> & seq,
-    TSize new_capacity,
-    Insist const &)
-{
-    SEQAN_CHECKPOINT;
-    // do nothing
-    return _capacityReturned(seq, new_capacity, Insist());
-}
-
-template <typename TChar,  typename TAlloc, typename TSize>
-inline typename Size< std::vector<TChar, TAlloc> >::Type
-reserve(
-    std::vector<TChar,  TAlloc> & seq,
-    TSize new_capacity,
-    Limit const &)
-{
-    SEQAN_CHECKPOINT;
-    // do nothing
-    return _capacityReturned(seq, new_capacity, Limit());
-}
-
-template <typename TChar,  typename TAlloc, typename TSize, typename TExpand>
-inline typename Size< std::vector<TChar,  TAlloc> >::Type
-resize(
-    std::vector<TChar, TAlloc> & me,
-    TSize new_length,
-    Tag<TExpand>)
-{
-    SEQAN_CHECKPOINT;
-    me.resize(new_length);
-    return me.size();
-}
+// template <typename TChar,  typename TAlloc, typename TSize, typename TExpand>
+// inline typename Size< std::vector<TChar, TAlloc> >::Type
+// reserve(
+//     std::vector<TChar, TAlloc> & seq,
+//     TSize new_capacity,
+//     Tag<TExpand> tag)
+// {
+//     SEQAN_CHECKPOINT;
+//     seq.reserve(new_capacity);
+//     return _capacityReturned(seq, new_capacity, tag);
+// }
+//
+// template <typename TChar, typename TAlloc, typename TSize>
+// inline typename Size< std::vector<TChar, TAlloc> >::Type
+// reserve(
+//     std::vector<TChar, TAlloc> & seq,
+//     TSize new_capacity,
+//     Insist const &)
+// {
+//     SEQAN_CHECKPOINT;
+//     // do nothing
+//     return _capacityReturned(seq, new_capacity, Insist());
+// }
+//
+// template <typename TChar,  typename TAlloc, typename TSize>
+// inline typename Size< std::vector<TChar, TAlloc> >::Type
+// reserve(
+//     std::vector<TChar,  TAlloc> & seq,
+//     TSize new_capacity,
+//     Limit const &)
+// {
+//     SEQAN_CHECKPOINT;
+//     // do nothing
+//     return _capacityReturned(seq, new_capacity, Limit());
+// }
+//
+// template <typename TChar,  typename TAlloc, typename TSize, typename TExpand>
+// inline typename Size< std::vector<TChar,  TAlloc> >::Type
+// resize(
+//     std::vector<TChar, TAlloc> & me,
+//     TSize new_length,
+//     Tag<TExpand>)
+// {
+//     SEQAN_CHECKPOINT;
+//     me.resize(new_length);
+//     return me.size();
+// }
 
 template <typename TChar, typename TAlloc, typename TSize, typename TExpand>
 inline typename Size< std::vector<TChar,  TAlloc> >::Type

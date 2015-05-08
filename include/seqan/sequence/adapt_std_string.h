@@ -226,38 +226,38 @@ namespace seqan {
 //     return me.data() + me.size();
 // }
 
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos>
-inline typename Reference< std::basic_string<TChar, TCharTraits, TAlloc> >::Type
-value(std::basic_string<TChar, TCharTraits, TAlloc> & me,
-      TPos pos)
-{
-    SEQAN_CHECKPOINT;
-    return me[pos];
-}
-template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos>
-inline typename Reference< std::basic_string<TChar, TCharTraits, TAlloc> const>::Type
-value(std::basic_string<TChar, TCharTraits, TAlloc> const & me,
-      TPos pos)
-{
-    SEQAN_CHECKPOINT;
-    return me[pos];
-}
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos>
+// inline typename Reference< std::basic_string<TChar, TCharTraits, TAlloc> >::Type
+// value(std::basic_string<TChar, TCharTraits, TAlloc> & me,
+//       TPos pos)
+// {
+//     SEQAN_CHECKPOINT;
+//     return me[pos];
+// }
+// template <typename TChar, typename TCharTraits, typename TAlloc, typename TPos>
+// inline typename Reference< std::basic_string<TChar, TCharTraits, TAlloc> const>::Type
+// value(std::basic_string<TChar, TCharTraits, TAlloc> const & me,
+//       TPos pos)
+// {
+//     SEQAN_CHECKPOINT;
+//     return me[pos];
+// }
 
-template <typename TChar, typename TCharTraits, typename TAlloc>
-inline typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type
-length(std::basic_string<TChar, TCharTraits, TAlloc> const & me)
-{
-    SEQAN_CHECKPOINT;
-    return me.length();
-}
-
-template <typename TChar, typename TCharTraits, typename TAlloc>
-inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type
-capacity(std::basic_string<TChar, TCharTraits, TAlloc> const & me)
-{
-    SEQAN_CHECKPOINT;
-    return me.capacity();
-}
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// inline typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type
+// length(std::basic_string<TChar, TCharTraits, TAlloc> const & me)
+// {
+//     SEQAN_CHECKPOINT;
+//     return me.length();
+// }
+//
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type
+// capacity(std::basic_string<TChar, TCharTraits, TAlloc> const & me)
+// {
+//     SEQAN_CHECKPOINT;
+//     return me.capacity();
+// }
 
 template <typename TChar, typename TCharTraits, typename TAlloc>
 inline bool
