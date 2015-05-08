@@ -142,6 +142,9 @@ struct FibreCounts_;        // counts each q-gram
 struct FibreCountsDir_;    // directory for counts buckets
 struct FibreBucketMap_;    // stores a q-gram hash value for each directory entry (-1 if empty)
 
+struct FibreHashSA_;
+struct FibreCountsSA_;
+
 typedef Tag<FibreDir_> const        FibreDir;
 typedef Tag<FibreSADir_> const        FibreSADir;
 typedef Tag<Fibre_Shape_> const        FibreShape;
@@ -149,18 +152,24 @@ typedef Tag<FibreCounts_> const    FibreCounts;
 typedef Tag<FibreCountsDir_> const    FibreCountsDir;
 typedef Tag<FibreBucketMap_> const    FibreBucketMap;
 
+typedef Tag<FibreHashSA_> const        FibreHashSA; 
+typedef Tag<FibreCountsSA_> const       FibreCountsSA;
+
 //////////////////////////////////////////////////////////////////////////////
 
-typedef FibreText        QGramText;
-typedef FibreRawText    QGram_RawText;
-typedef FibreSA         QGramSA;
-typedef FibreRawSA        QGramRawSA;
-typedef FibreDir        QGramDir;
-typedef FibreSADir        QGramSADir;
-typedef FibreShape        QGramShape;
-typedef FibreCounts     QGramCounts;
-typedef FibreCountsDir    QGramCountsDir;
-typedef FibreBucketMap    QGramBucketMap;
+typedef FibreText           QGramText;
+typedef FibreRawText        QGram_RawText;
+typedef FibreSA             QGramSA;
+typedef FibreRawSA          QGramRawSA;
+typedef FibreDir            QGramDir;
+typedef FibreSADir          QGramSADir;
+typedef FibreShape          QGramShape;
+typedef FibreCounts         QGramCounts;
+typedef FibreCountsDir      QGramCountsDir;
+typedef FibreBucketMap      QGramBucketMap;
+
+typedef FibreHashSA         QGramHashSA;          
+typedef FibreCountsSA       QGramCountsSA;
 
 //////////////////////////////////////////////////////////////////////////////
 // q-gram index
@@ -176,7 +185,6 @@ typedef FibreBucketMap    QGramBucketMap;
 /*!
  * @class IndexQGram
  * @extends Index
- * @implements StringTrieConcept
  * @headerfile <seqan/index.h>
  *
  * @brief An index based on an array of sorted q-grams.
@@ -225,6 +233,14 @@ struct Fibre< Index<TText, IndexQGram<TShapeSpec, TSpec> >, FibreBucketMap>
     typedef Nothing Type;
 };
 
+template < typename TText, typename TShapeSpec, typename TSpec > 
+struct Fibre< Index<TText, IndexQGram<TShapeSpec, TSpec> >, FibreHashSA>
+{
+    typedef typename Fibre< Index<TText, IndexQGram<TShapeSpec, TSpec> >, FibreShape>::Type TShape; 
+    typedef typename Value<TShape>::Type THashValue;
+    typedef String<THashValue> Type;
+};
+    
 #ifdef PLATFORM_WINDOWS_VS
 #pragma warning( push )
 // Disable warning C4521 locally (multiple copy constructors).
@@ -236,26 +252,35 @@ struct Fibre< Index<TText, IndexQGram<TShapeSpec, TSpec> >, FibreBucketMap>
 template < typename TText_, typename TShapeSpec, typename TSpec >
 class Index<TText_, IndexQGram<TShapeSpec, TSpec> > {
 public:
-    typedef typename Member<Index, QGramText>::Type         TTextMember;
-    typedef typename Fibre<Index, QGramText>::Type            TText;
-    typedef typename Fibre<Index, QGramSA>::Type            TSA;
-    typedef typename Fibre<Index, QGramDir>::Type            TDir;
-    typedef typename Fibre<Index, QGramCounts>::Type        TCounts;
-    typedef typename Fibre<Index, QGramCountsDir>::Type     TCountsDir;
-    typedef typename Fibre<Index, QGramShape>::Type         TShape;
-    typedef typename Fibre<Index, QGramBucketMap>::Type     TBucketMap;
-    typedef typename Cargo<Index>::Type                        TCargo;
-    typedef typename Size<Index>::Type                        TSize;
+    typedef typename Member<Index, QGramText>::Type             TTextMember;
+    typedef typename Fibre<Index, QGramText>::Type              TText;
+    typedef typename Fibre<Index, QGramSA>::Type                TSA;
+    typedef typename Fibre<Index, QGramDir>::Type               TDir;
+    typedef typename Fibre<Index, QGramCounts>::Type            TCounts;
+    typedef typename Fibre<Index, QGramCountsDir>::Type         TCountsDir;
+    typedef typename Fibre<Index, QGramShape>::Type             TShape;
+    typedef typename Fibre<Index, QGramBucketMap>::Type         TBucketMap;
 
-    TTextMember     text;        // underlying text
-    TSA                sa;            // suffix array sorted by the first q chars
-    TDir            dir;        // bucket directory
-    TCounts            counts;        // counts each q-gram per sequence
-    TCountsDir        countsDir;    // directory for count buckets
-    TShape            shape;        // underlying shape
-    TCargo            cargo;        // user-defined cargo
-    TBucketMap        bucketMap;    // bucketMap table (used by open-addressing index)
-    TSize            stepSize;    // store every <stepSize>'th q-gram in the index
+    typedef typename Fibre<Index, QGramHashSA>::Type            THashSA; 
+    typedef typename Fibre<Index, QGramCountsSA>::Type          TCountsSA;
+
+    typedef typename Cargo<Index>::Type                         TCargo;
+    typedef typename Size<Index>::Type                          TSize;
+
+    TTextMember         text;        // underlying text
+    TSA                 sa;            // suffix array sorted by the first q chars
+    TDir                dir;        // bucket directory
+    TCounts             counts;        // counts each q-gram per sequence
+    TCountsDir          countsDir;    // directory for count buckets
+    TShape              shape;        // underlying shape
+    TCargo              cargo;        // user-defined cargo
+    TBucketMap          bucketMap;    // bucketMap table (used by open-addressing index)
+
+    THashSA             hashSA;
+    TCountsSA           countsSA; 
+    TText               textSA;    
+
+    TSize               stepSize;    // store every <stepSize>'th q-gram in the index
 
     Index():
     stepSize(1) {}
@@ -308,13 +333,6 @@ public:
 #pragma warning( pop )
 #endif  // PLATFORM_WINDOWS_VS
 
-template <typename TText, typename TShapeSpec, typename TSpec>
-SEQAN_CONCEPT_IMPL((Index<TText, IndexQGram<TShapeSpec, TSpec> >), (StringTrieConcept));
-
-template <typename TText, typename TShapeSpec, typename TSpec>
-SEQAN_CONCEPT_IMPL((Index<TText, IndexQGram<TShapeSpec, TSpec> > const), (StringTrieConcept));
-
-
 template < typename TText, typename TShapeSpec, typename TSpec >
 struct Value< Index<TText, IndexQGram<TShapeSpec, TSpec> > > {
     typedef typename Value< typename Fibre< Index<TText, IndexQGram<TShapeSpec, TSpec> >, QGram_RawText >::Type >::Type Type;
@@ -324,6 +342,7 @@ template < typename TText, typename TShapeSpec, typename TSpec >
 struct Size< Index<TText, IndexQGram<TShapeSpec, TSpec> > > {
     typedef typename Size< typename Fibre< Index<TText, IndexQGram<TShapeSpec, TSpec> >, QGram_RawText >::Type >::Type Type;
 };
+
 
 //////////////////////////////////////////////////////////////////////////////
 // default fibre creators
@@ -399,12 +418,36 @@ inline typename Fibre<Index<TText, TSpec>, FibreShape>::Type &
 getFibre(Index<TText, TSpec> &index, FibreShape) {
     return index.shape;
 }
+
 template <typename TText, typename TSpec>
 inline typename Fibre<Index<TText, TSpec> const, FibreShape>::Type &
 getFibre(Index<TText, TSpec> const &index, FibreShape) {
     return index.shape;
 }
 
+template <typename TText, typename TSpec>
+SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreHashSA>::Type &
+getFibre(Index<TText, TSpec> &index, FibreHashSA){
+    return index.hashSA;
+}    
+    
+template <typename TText, typename TSpec>
+SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreHashSA>::Type &
+getFibre(Index<TText, TSpec> const &index, FibreHashSA){
+    return index.hashSA;
+}    
+
+template <typename TText, typename TSpec>
+SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreCountsSA>::Type &
+getFibre(Index<TText, TSpec> &index, FibreCountsSA){
+    return index.countsSA;
+}    
+    
+template <typename TText, typename TSpec>
+SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreCountsSA>::Type &
+getFibre(Index<TText, TSpec> const &index, FibreCountsSA){
+    return index.countsSA;
+}
 //////////////////////////////////////////////////////////////////////////////
 /*!
  * @fn IndexQGram#indexSA
@@ -458,6 +501,33 @@ indexDir(Index<TText, TSpec> const &index) {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+template <typename TText, typename TSpec>
+SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreHashSA>::Type & indexHashSA(Index<TText, TSpec> &index) 
+{ 
+    return getFibre(index, FibreHashSA());
+}
+
+template <typename TText, typename TSpec>
+SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreSA>::Type & indexHashSA(Index<TText, TSpec> const &index) 
+{ 
+    return getFibre(index, FibreHashSA());
+}
+
+//////////////////////////////////////////////////////////////////////////////
+template <typename TText, typename TSpec>
+SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreHashSA>::Type & indexCountsSA(Index<TText, TSpec> &index) 
+{ 
+    return getFibre(index, FibreCountsSA());
+}
+
+template <typename TText, typename TSpec>
+SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreSA>::Type & indexCountsSA(Index<TText, TSpec> const &index) 
+{ 
+    return getFibre(index, FibreCountsSA());
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 /*!
  * @fn IndexQGram#dirAt
  * @headerfile <seqan/index.h>
@@ -1363,15 +1433,111 @@ _qgramRefineSuffixArray(TSA & sa, TText const & text, Shape<TValue, MinimizerSha
     _refineQGramIndex(sa, dir, text, 0, length(shape));
 }
 
+template <typename TSA, typename THASHSA, typename TText, typename TShape>
+inline void
+_qgramFillHashSA(TSA & /* sa */, THASHSA & /*hashSA*/, TText const & /* text */, TShape const & /* shape */)
+{
+}
+
+template <typename TSA, typename THASHSA, typename TText, typename TValue, unsigned TSPAN, unsigned TWEIGHT, typename TSpec>
+inline void
+_qgramFillHashSA(TSA & sa, THASHSA &hashSA, TText const & text, Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec> > const & /*shape*/) 
+{
+    typedef typename Size<TSA>::Type TSize;
+    Shape<TValue, UngappedShape<TSPAN> > tmpShape;
+    for (TSize k = 0; k < length(sa); k++)
+    {
+        hashSA[k] = hash(tmpShape, begin(text) + sa[k]);
+    } 
+}
+
+template <typename TSA, typename THASHSA, typename TString, typename TSpec, typename TValue, unsigned TSPAN, unsigned TWEIGHT, typename TSpec2>
+inline void
+_qgramFillHashSA(TSA & sa, THASHSA &hashSA, StringSet<TString, TSpec> const & stringSet , Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec2> > const & /*shape*/) 
+{
+    typedef typename Size<TSA>::Type TSize;
+    //typedef typename RemoveConst<typename CTSize>::Type TSize;
+    Shape<TValue, UngappedShape<TSPAN> > tmpShape;
+    TSize k;
+    for (k = 0; k < length(sa); k++)
+    {
+        unsigned seqNo = getValueI1(sa[k]);
+        unsigned pos =  getValueI2(sa[k]);
+        hashSA[k] = hash(tmpShape, begin(stringSet[seqNo]) + pos);
+    } 
+}
+
+template <typename THASHSA, typename TCOUNTSSA, typename TShape>
+inline void
+_qgramFillCountsSA(THASHSA & /*hashSA*/, TCOUNTSSA /*countsSA*/, TShape const & /*shape*/)
+{
+}
+
+template <typename THASHSA, typename TCOUNTSSA, typename TValue, unsigned TSPAN, unsigned TWEIGHT, typename TSpec>
+inline void
+_qgramFillCountsSA(THASHSA &hashSA, TCOUNTSSA &countsSA, Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec> > const & Shape) 
+{
+    typedef typename Value<typename Value<THASHSA>::Type>::Type THashValue;
+    typename Size<THASHSA>::Type _begin = 0;
+
+    unsigned _count = 0;
+    THashValue _hValue = hashSA[0];
+    
+    for (unsigned k = 0; k < length(hashSA); k++)
+    {
+        if (hashSA[k] == _hValue)
+            _count++;
+        else 
+        {
+            for (unsigned j = 0; j < _count; j++)
+                countsSA[_begin + j] = _count;
+            _begin = k;
+            _count = 1; 
+            _hValue = hashSA[k];
+        }
+    }
+    for (unsigned j = 0; j < _count; j++)
+        countsSA[_begin + j] = _count;
+}
+
+/*
+template <typename TSA, typename TDir, typename TText, typename TValue, unsigned TSPAN, unsigned TWEIGHT, typename TSpec> 
+_qgramFillTextSA(TSA & sa, TDir dir, TText &text, TText &textSA, Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec> > const & shape)
+{
+    typedef typename Value<TSA>::Type TSize;
+    for (TSize k = 0; k < length(dir); k++)
+    {
+        TSize preSA = sa[dir[k]];
+        TSize range = 1;
+        TSize begin = dir[k];
+        for (TSize j = 1; j < dir[k + 1] - dir[k]; j++)
+        {
+            if(sa[j] == preSA + 1)
+                range++;
+            else
+            {
+                append(textSA, infix(begin, beign + range));    
+                begin = sa[j];
+                range = 1;
+            } 
+            preSA = sa[j];
+        } 
+        append(textSA, infix(begin, begin + range));
+    }
+}
+*/
 template < typename TIndex >
 void createQGramIndex(TIndex &index)
 {
     SEQAN_CHECKPOINT
-    typename Fibre<TIndex, QGramText>::Type const &text      = indexText(index);
-    typename Fibre<TIndex, QGramSA>::Type         &sa        = indexSA(index);
-    typename Fibre<TIndex, QGramDir>::Type        &dir       = indexDir(index);
-    typename Fibre<TIndex, QGramShape>::Type      &shape     = indexShape(index);
-    typename Fibre<TIndex, QGramBucketMap>::Type  &bucketMap = index.bucketMap;
+    typename Fibre<TIndex, QGramText>::Type const   &text       = indexText(index);
+    typename Fibre<TIndex, QGramSA>::Type           &sa         = indexSA(index);
+    typename Fibre<TIndex, QGramDir>::Type          &dir        = indexDir(index);
+    typename Fibre<TIndex, QGramShape>::Type        &shape      = indexShape(index);
+    typename Fibre<TIndex, QGramBucketMap>::Type    &bucketMap  = index.bucketMap;
+
+    typename Fibre<TIndex, QGramHashSA>::Type       &hashSA     = indexHashSA(index);
+    typename Fibre<TIndex, QGramCountsSA>::Type     &countsSA   = indexCountsSA(index); 
 
     // 1. clear counters
     _qgramClearDir(dir, bucketMap);
@@ -1399,8 +1565,19 @@ void createQGramIndex(TIndex &index)
         _qgramFillSuffixArray(sa, text, shape, dir, bucketMap, getStepSize(index), False());
     }
 
+
     // 5. refine suffix array
     _qgramRefineSuffixArray(sa, text, shape, dir);
+
+    //6. fill hash suffix array
+    _qgramFillHashSA(sa, hashSA, text, shape); 
+    
+   /* //7. fill hash counts sa array
+    _qgramFillCountsSA(hashSA, countsSA, shape);
+
+    //8. fill TextSA array
+    _qgramFillTextSA(sa, text, shape,dir);
+    */
 }
 
 // DEPRECATED
@@ -2295,6 +2472,8 @@ inline bool indexCreate(
 {
     resize(indexSA(index), _qgramQGramCount(index), Exact());
     resize(indexDir(index), _fullDirLength(index), Exact());
+    resize(indexHashSA(index), _qgramQGramCount(index), Exact());
+    resize(indexCountsSA(index), _qgramQGramCount(index), Exact());
     createQGramIndex(index);
     resize(indexSA(index), back(indexDir(index)), Exact());     // shrink if some buckets were disabled
     return true;
@@ -2686,6 +2865,16 @@ getOccurrences(
     return infix(indexSA(index), indexDir(index)[bucket], indexDir(index)[bucket + 1]);
 }
 
+/*template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
+unsigned getOccurrences(
+               Index< TText, IndexQGram<TShapeSpec, TSpec> > const &index,
+               Shape< TValue, TShapeSpec2 > const &shape)
+{
+    typedef typename Size<typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreDir>::Type>::Type TDirSize;
+    return  getBucket(indexBucketMap(index), value(shape));
+        
+}*/
+
 template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
 inline typename Infix< typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreSA>::Type const >::Type
 getOccurrences(
@@ -2698,43 +2887,47 @@ getOccurrences(
 
 // ----------------------------------------------------------------------------
 // Function getOccurrences(); MinimizerShape
-// ----------------------------------------------------------------------------
 
-template <typename TText, unsigned TSPAN, unsigned TWEIGHT, typename TShapeSpec, typename TSpec, typename TValue, typename TPattern>
-inline typename Infix<typename Fibre<Index<TText, IndexQGram<MinimizerShape<TSPAN, TWEIGHT, TShapeSpec>, TSpec> >, FibreSA>::Type const>::Type
-getOccurrences(Index<TText, IndexQGram<MinimizerShape<TSPAN, TWEIGHT, TShapeSpec>, TSpec> > const &index,
-               Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TShapeSpec> > const &shape,
-               TPattern const & pattern)
+//linear search
+template <typename TText, unsigned TSPAN, unsigned TWEIGHT, typename TShapeSpec, typename TSpec, typename TValue>
+inline typename Infix<typename Fibre<Index<TText, IndexQGram<MinimizerShape<TSPAN, TWEIGHT, TShapeSpec>, TSpec> >, FibreSA>::Type const>::Type getOccurrences(Index<TText, IndexQGram<MinimizerShape<TSPAN, TWEIGHT, TShapeSpec>, TSpec> > &index,
+               Shape<TValue, MinimizerShape<TSPAN, TWEIGHT> > &shape)
 {
-    typedef Index<TText, IndexQGram<MinimizerShape<TSPAN, TWEIGHT>, TSpec> > const  TIndex;
-    typedef typename Fibre<TIndex, FibreDir>::Type                                  TDir;
-    typedef typename Fibre<TIndex, FibreSA>::Type                                   TSA;
-    typedef typename Size<TDir>::Type                                               TDirSize;
-    typedef typename Size<TSA>::Type                                                TSASize;
-    typedef typename Iterator<TSA const, Standard>::Type                            TSAIterator;
-    typedef SearchTreeIterator<TSA const, SortedList>                               TSearchTreeIterator;
+    typedef Index<TText, IndexQGram<MinimizerShape<TSPAN, TWEIGHT>, TSpec> >        TIndex;
+    //typedef typename Fibre<TIndex, FibreDir>::Type                                  TDir;
+    typedef typename Fibre<TIndex, FibreHashSA>::Type                               THashSA;
+    //typedef typename Size<TDir>::Type                                               TDirSize;
+    typedef typename Iterator<THashSA>::Type                                        THashSAIterator; 
+   
+    THashSAIterator hsBegin = begin(indexHashSA(index));
+    unsigned s_begin  = dirAt(shape.hValue, index);
+    unsigned s_end = dirAt(shape.hValue + 1, index);
+    unsigned s_r = s_end - s_begin;        
+    THashSAIterator s_hsBegin = hsBegin + s_begin;
 
-    TDirSize bucket = getBucket(indexBucketMap(index), value(shape));
-
-    TSAIterator saBegin = begin(indexSA(index), Standard()) + dirAt(bucket, index);
-    TSASize saLen = dirAt(bucket + 1, index) - dirAt(bucket, index);
-    TSearchTreeIterator node(saBegin, saLen);
-    Pair<TSAIterator> range = _equalRangeSA(indexText(index), node, pattern);
-
-    return infix(indexSA(index), range.i1, range.i2);
+    unsigned m = 0;
+    for (; m < s_r; m++)
+    {
+        if(*(s_hsBegin + m) == shape.u_hValue)
+        {
+            break;
+        }
+    }
+    //m += s_begin;
+    unsigned n = m;
+    for (; n < s_r; n++)
+    {
+        if(*(s_hsBegin + n) != shape.u_hValue)
+        {
+            break;
+        }
+    
+    } 
+    return infix(indexSA(index), s_begin + m, s_begin + n); 
+    //return infix(indexSA(index), m, m + indexCountsSA(index)[m]); 
 }
 
-template <typename TText, unsigned TSPAN, unsigned TWEIGHT, typename TShapeSpec, typename TSpec, typename TValue, typename TPattern>
-inline typename Infix<typename Fibre<Index<TText, IndexQGram<MinimizerShape<TSPAN, TWEIGHT, TShapeSpec>, TSpec> >, FibreSA>::Type const>::Type
-getOccurrences(Index<TText, IndexQGram<MinimizerShape<TSPAN, TWEIGHT, TShapeSpec>, TSpec> > &index,
-               Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TShapeSpec> > const &shape,
-               TPattern const & pattern)
-{
-    typedef Index<TText, IndexQGram<MinimizerShape<TSPAN, TWEIGHT, TShapeSpec>, TSpec> >    TIndex;
 
-    indexRequire(index, QGramSADir());
-    return getOccurrences(const_cast<TIndex const &>(index), shape, pattern);
-}
 
 //////////////////////////////////////////////////////////////////////////////
 /*!
@@ -2900,3 +3093,4 @@ inline bool save(
 }
 
 #endif //#ifndef SEQAN_HEADER_...
+
