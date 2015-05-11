@@ -279,8 +279,9 @@ struct AllowsFastRandomAccess<T const>
  * compile time.
  */
 
-template <typename T>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<T> >, void const *)
+template <typename T,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
+inline void const *
 getObjectId(T const & me)
 {
     SEQAN_CHECKPOINT;
@@ -568,7 +569,9 @@ endPosition(T const & me)
 // --------------------------------------------------------------------------
 
 //* ???Anti Default Sequences
-template <typename T, typename TPos>
+template <typename T,
+          typename TPos,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 SEQAN_HOST_DEVICE inline typename Reference<T>::Type
 value(T & me,
       TPos /*pos*/)
@@ -577,7 +580,9 @@ value(T & me,
     return me;
 }
 
-template <typename T, typename TPos>
+template <typename T,
+          typename TPos,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 SEQAN_HOST_DEVICE inline typename Reference<T const>::Type
 value(T const & me,
       TPos /*pos*/)
@@ -591,16 +596,20 @@ value(T const & me,
 // Function getValue()
 // --------------------------------------------------------------------------
 
-template <typename T, typename TPos>
+template <typename T,
+          typename TPos,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline typename GetValue<T>::Type
 getValue(T & me,
          TPos pos)
 {
     SEQAN_CHECKPOINT;
-    return (typename GetValue<T>::Type) value(me, pos);
+    return /*(typename GetValue<T>::Type)*/ value(me, pos);
 }
 
-template <typename T, typename TPos>
+template <typename T,
+          typename TPos,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline typename GetValue<T const>::Type
 getValue(T const & me,
          TPos pos)
@@ -613,14 +622,16 @@ getValue(T const & me,
 // Function front()
 // --------------------------------------------------------------------------
 
-template <typename T>
+template <typename T,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline typename Reference<T>::Type
 front(T & me)
 {
     SEQAN_CHECKPOINT;
     return value(me, 0);
 }
-template <typename T>
+template <typename T,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline typename Reference<T const>::Type
 front(T const & me)
 {
@@ -632,7 +643,8 @@ front(T const & me)
 // Function back()
 // --------------------------------------------------------------------------
 
-template <typename T>
+template <typename T,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 SEQAN_HOST_DEVICE inline typename Reference<T const>::Type
 back(T const & me)
 {
@@ -640,7 +652,8 @@ back(T const & me)
     return value(me, length(me) - 1);
 }
 
-template <typename T>
+template <typename T,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 SEQAN_HOST_DEVICE inline typename Reference<T>::Type
 back(T & me)
 {
@@ -648,14 +661,17 @@ back(T & me)
     return value(me, length(me) - 1);
 }
 
-template <typename T>
+//NOTE(h-2): why do we have this?
+template <typename T,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 SEQAN_HOST_DEVICE inline typename Reference<T const>::Type
 backPrev(T const & me)
 {
     return value(me, length(me) - 2);
 }
 
-template <typename T>
+template <typename T,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 SEQAN_HOST_DEVICE inline typename Reference<T>::Type
 backPrev(T & me)
 {
@@ -761,7 +777,7 @@ moveValue(T const & me,
 // --------------------------------------------------------------------------
 
 //* ???Anti Default Sequences
-template <typename T, typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
+template <typename T, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
 inline typename Size<T>::Type
 length(T const & /*me*/)
 {
@@ -804,7 +820,7 @@ capacity(T const & me)
 // --------------------------------------------------------------------------
 
 template <typename T,
-          typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 SEQAN_HOST_DEVICE inline bool
 empty(T const & me)
 {
@@ -1055,7 +1071,7 @@ append(TTarget const & target,
  */
 
 template <typename T, typename TValue,
-          typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline void
 appendValue(T SEQAN_FORWARD_ARG me,
             TValue SEQAN_FORWARD_CARG _value)
@@ -1066,7 +1082,7 @@ appendValue(T SEQAN_FORWARD_ARG me,
 #ifndef SEQAN_CXX11_STANDARD
 //NOTE(h-2): what is this good for? why can we append to const objects?
 template <typename T, typename TValue,
-          typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline void
 appendValue(T const & me,
             TValue const & _value)
@@ -1332,7 +1348,7 @@ _capacityReturned(T &,
  * This operation may invalidate iterators of <tt>object</tt>.
  */
 
-template <typename T, typename TSize, typename TExpand, typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
+template <typename T, typename TSize, typename TExpand>//, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline typename Size<T>::Type
 reserve(T & me,
         TSize const & new_capacity,
@@ -1357,7 +1373,7 @@ reserve(T & me,
 
 template <typename T,
           typename TSize,
-          typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline typename Size<T>::Type
 resize(T & me,
        TSize new_length)
@@ -1369,7 +1385,7 @@ resize(T & me,
 template <typename T,
           typename TSize,
           typename TValue,
-          typename DisableIf<Is<StlContainerConcept<T> >, int>::Type = 0>
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline typename Size<T>::Type
 resize(T & me,
        TSize new_length,

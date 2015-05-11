@@ -58,9 +58,9 @@ inline void writeValue(Iter<TContainer, StreamIterator<Output> > &iter, TValue v
 template <typename TValue, typename TTraits>
 inline bool atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
 
-template <typename TChar, typename TCharTraits, typename TAlloc>
-inline typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type
-length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
+// template <typename TChar, typename TCharTraits, typename TAlloc>
+// inline typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type
+// length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
 
 // Needed for std::basic_string.
 template <typename T, typename TValue, typename DisableIf<Is<StlContainerConcept<T> >, int>::Type>

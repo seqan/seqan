@@ -147,19 +147,21 @@ template <typename T, typename TSpec> SEQAN_HOST_DEVICE inline typename Iterator
 template <typename T, typename TSpec> SEQAN_HOST_DEVICE inline typename Iterator<T const, Tag<TSpec> const>::Type end(T const & me, Tag<TSpec> const tag_);
 template <typename T> inline typename Position<T>::Type endPosition(T & me);
 template <typename T> inline typename Position<T>::Type endPosition(T const & me);
-template <typename T, typename TBeginPosition, typename TEndPosition> inline void erase(T & me, TBeginPosition pos, TEndPosition pos_end);
+// template <typename T, typename TBeginPosition, typename TEndPosition> inline void erase(T & me, TBeginPosition pos, TEndPosition pos_end);
 template <typename T, typename TPosition> inline void erase(T & me, TPosition pos);
-template <typename T, typename TBeginPosition, typename TEndPosition> inline void erase(T const & me, TBeginPosition pos, TEndPosition pos_end);
+// template <typename T, typename TBeginPosition, typename TEndPosition> inline void erase(T const & me, TBeginPosition pos, TEndPosition pos_end);
 template <typename T, typename TPosition> inline void erase(T const & me, TPosition pos);
-template <typename T> inline void eraseBack(T & me);
-template <typename T> inline typename Reference<T>::Type front(T & me);
-template <typename T> inline typename Reference<T const>::Type front(T const & me);
-template <typename TContainer> inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, void const *)
-getObjectId(TContainer const & me);
-template <typename TContainer> inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TContainer> >, void const *)
-getObjectId(TContainer const & me);
-template <typename T, typename TPos> inline typename GetValue<T>::Type getValue(T & me, TPos pos);
-template <typename T, typename TPos> inline typename GetValue<T const>::Type getValue(T const & me, TPos pos);
+// template <typename T> inline void eraseBack(T & me);
+// template <typename T> inline typename Reference<T>::Type front(T & me);
+// template <typename T> inline typename Reference<T const>::Type front(T const & me);
+template <typename T, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
+inline void const * getObjectId(T const & me);
+template <typename TContainer, typename EnableIf<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, int>::Type = 0>
+inline void const * getObjectId(TContainer SEQAN_FORWARD_CARG me);
+// template <typename TContainer> inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TContainer> >, void const *)
+// getObjectId(TContainer const & me);
+// template <typename T, typename TPos> inline typename GetValue<T>::Type getValue(T & me, TPos pos);
+// template <typename T, typename TPos> inline typename GetValue<T const>::Type getValue(T const & me, TPos pos);
 template <typename T, typename TPosition, typename TSeq, typename TExpand> inline void insert(T & me, TPosition pos, TSeq const & insertSeq, Tag<TExpand>);
 template <typename T, typename TPosition, typename TSeq, typename TExpand> inline void insert(T const & me, TPosition pos, TSeq const & insertSeq, Tag<TExpand>);
 template <typename T, typename TPosition, typename TSeq> inline void insert(T & me, TPosition pos, TSeq const & insertSeq);
@@ -170,9 +172,12 @@ template <typename T, typename TPos> inline typename Iterator<T, typename Defaul
 template <typename T, typename TPos> inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type iter(T const & me, TPos pos);
 template <typename T, typename TPos, typename TTag> inline typename Iterator<T, Tag<TTag> const>::Type iter(T & me, TPos pos, Tag<TTag> const tag_);
 template <typename T, typename TPos, typename TTag> inline typename Iterator<T const, Tag<TTag> const>::Type iter(T const & me, TPos pos, Tag<TTag> const tag_);
-template <typename T, typename DisableIf<Is<StlContainerConcept<T> >, int>::Type> inline typename Size<T>::Type length(T const & );
+template <typename T, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> inline typename Size<T>::Type
+length(T const &);
 template <typename T, typename TValue, typename TPos> inline void moveValue(T & me, TPos pos, TValue const & _value);
 template <typename T, typename TValue, typename TPos> inline void moveValue(T const & me, TPos pos, TValue const & _value);
+template <typename TContainer, typename EnableIf<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, int>::Type = 0> inline typename Size<typename RemoveReference<TContainer>::Type>::Type length(TContainer const & me);
+
 // template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource & source);
 // template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget const & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource & source);
 // template <typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource> inline void replace(TTarget & target, TPositionBegin pos_begin, TPositionEnd pos_end, TSource const & source);
@@ -189,8 +194,8 @@ template <typename T, typename TSize, typename TBeginPosition, typename TEndPosi
 template <typename T, typename TSize, typename TBeginPosition, typename TEndPosition, typename TLimit> inline TSize resizeSpace(T & me, TSize size, TBeginPosition pos_begin, TEndPosition pos_end, TLimit limit);
 template <typename T1, typename T2> inline bool shareResources(T1 const & obj1, T2 const & obj2);
 template <typename T> inline void shrinkToFit(T & me);
-template <typename T, typename TPos> SEQAN_HOST_DEVICE inline typename Reference<T>::Type value(T & me, TPos );
-template <typename T, typename TPos> SEQAN_HOST_DEVICE inline typename Reference<T const>::Type value(T const & me, TPos );
+template <typename T, typename TPos, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type> SEQAN_HOST_DEVICE inline typename Reference<T>::Type value(T & me, TPos);
+template <typename T, typename TPos, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T const>::Type> >, int>::Type> SEQAN_HOST_DEVICE inline typename Reference<T const>::Type value(T const & me, TPos);
 
 // --------------------------------------------------------------------------
 // Forwards For std::vector
