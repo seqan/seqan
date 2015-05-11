@@ -231,27 +231,29 @@ void evaluateAlignment(MsaOptions<TAlphabet, TScore> const & msaOpt)
 // Function globalMsaAlignment()
 // --------------------------------------------------------------------------
 
-template <typename TStrSpec, typename TSpec, typename TList, typename TScore, typename TSegmentMatches, typename TScores>
+template <typename TStrSpec, typename TSpec, typename TList, typename TScore, typename TSegmentMatches, typename TScores, typename TAlignmentType>
 void _appendSegmentMatches(StringSet<String<AminoAcid, TStrSpec>, Dependent<TSpec> > const & str,
                              TList const & pList,
                              TScore const &,
                              TSegmentMatches & matches,
-                             TScores & scores)
+                             TScores & scores,
+                             TAlignmentType & alignType)
 {
     Blosum62 local_score(-1, -8);
-    appendSegmentMatches(str, pList, local_score, matches, scores, LocalPairwiseLibrary());
+    appendSegmentMatches(str, pList, local_score, matches, scores, LocalPairwiseLibrary(), alignType);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, typename TStrSpec, typename TSpec, typename TList, typename TScore, typename TSegmentMatches, typename TScores>
+template <typename TValue, typename TStrSpec, typename TSpec, typename TList, typename TScore, typename TSegmentMatches, typename TScores, typename TAlignmentType>
 void _appendSegmentMatches(StringSet<String<TValue, TStrSpec>, Dependent<TSpec> > const & str,
                              TList const & pList,
                              TScore const & score_type,
                              TSegmentMatches & matches,
-                             TScores & scores)
+                             TScores & scores,
+                             TAlignmentType & alignType)
 {
-    appendSegmentMatches(str, pList, score_type, matches, scores, LocalPairwiseLibrary());
+    appendSegmentMatches(str, pList, score_type, matches, scores, LocalPairwiseLibrary(), alignType);
 }
 
 /*!
@@ -289,8 +291,8 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
     // Some alignment constants
     TStringSet & seqSet = stringSet(gAlign);
     TSize nSeq = length(seqSet);
-    TSize nSeqDeep = 50;  // threshold for what is a deep alignment
-    TSize threshold = (nSeq < nSeqDeep) ? 30 : 10;  // experimentally proved relation
+    bool isDeepAlignment = (nSeq >= 50);  // threshold for what is a deep alignment
+    TSize threshold = (isDeepAlignment) ? 30 : 10;  // experimentally proved relation
 #ifdef SEQAN_DEBUG
     std::cout << std::setw(30) << std::left << "Number of sequences: " << std::setw(10) << std::right << nSeq << std::endl;
     int seqTotalLen = 0;
@@ -342,8 +344,12 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         {
             if (*begIt == 0)
                 appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, distanceMatrix, GlobalPairwiseLibrary());
-            else if (*begIt == 1)
-                _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores);
+            else if (*begIt == 1) {
+                if (isDeepAlignment)
+                    _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, DeepAlignment());
+                else
+                    _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, OrdinaryAlignment());
+            }
             else if (*begIt == 2)
             {
                 Nothing noth;

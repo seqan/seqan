@@ -77,12 +77,29 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Segment matches from pairwise longest common subsequence comparison.
  *
  * @signature typedef Tag<LcsLibrary_> const LcsLibrary;
+ *
+ *
+ *
+ * @defgroup MultipleSequenceAlignmentTags Multiple Sequence Alignment Tags
+ * @brief Tags specifying types of multiple alignment.
+ *
+ * @tag MultipleSequenceAlignmentTags#OrdinaryAlignment
+ * @headerfile <seqan/graph_msa.h>
+ * @brief Ordinary alignment with quite small number of sequences.
+ *
+ * @signature typedef Tag<OrdinaryAlignment_> OrdinaryAlignment;
+ *
+ *
+ * @tag MultipleSequenceAlignmentTags#DeepAlignment
+ * @headerfile <seqan/graph_msa.h>
+ * @brief Deep alignment with large number of sequences.
+ *
+ * @signature typedef Tag<DeepAlignment_> DeepAlignment;
  */
 
 
 struct GlobalPairwiseLibrary_;
 typedef Tag<GlobalPairwiseLibrary_> const GlobalPairwiseLibrary;
-
 
 struct LocalPairwiseLibrary_;
 typedef Tag<LocalPairwiseLibrary_> const LocalPairwiseLibrary;
@@ -90,9 +107,16 @@ typedef Tag<LocalPairwiseLibrary_> const LocalPairwiseLibrary;
 struct KmerLibrary_;
 typedef Tag<KmerLibrary_> const KmerLibrary;
 
-
 struct LcsLibrary_;
 typedef Tag<LcsLibrary_> const LcsLibrary;
+
+
+struct OrdinaryAlignment_;
+typedef Tag<OrdinaryAlignment_> OrdinaryAlignment;
+
+struct DeepAlignment_;
+typedef Tag<DeepAlignment_> DeepAlignment;
+
 
 // ---------------------------------------------------------------------------
 // BEGIN OF TO BE REMOVED LEGACY CODE
@@ -707,12 +731,26 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TScores& scores,
                      LocalPairwiseLibrary)
 {
+    appendSegmentMatches(str, pList, score_type, matches, scores, LocalPairwiseLibrary(), OrdinaryAlignment());
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues>
+inline void
+appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
+                     String<TSize2, TSpec2> const& pList,
+                     TScore const& score_type,
+                     TSegmentMatches& matches,
+                     TScoreValues& scores,
+                     LocalPairwiseLibrary,
+                     OrdinaryAlignment)
+{
     typedef StringSet<TString, Dependent<TSpec> > TStringSet;
     typedef String<TSize2, TSpec2> TPairList;
-    //typedef typename Size<TStringSet>::Type TSize;
     typedef typename Id<TStringSet>::Type TId;
     typedef typename Iterator<TPairList const, Standard>::Type TPairIter;
-
+    
     // Pairwise alignments
     TPairIter itPair = begin(pList, Standard());
     TPairIter itPairEnd = end(pList, Standard());
@@ -723,10 +761,49 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
         TId id2 = positionToId(str, *itPair);
         assignValueById(pairSet, const_cast<TStringSet&>(str), id1);
         assignValueById(pairSet, const_cast<TStringSet&>(str), id2);
-
+        
         _multiLocalAlignment(pairSet, matches, scores, score_type, 4, SmithWatermanClump());
     }
 }
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues>
+inline void
+appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
+                     String<TSize2, TSpec2> const& pList,
+                     TScore const& score_type,
+                     TSegmentMatches& matches,
+                     TScoreValues& scores,
+                     LocalPairwiseLibrary,
+                     DeepAlignment)
+{
+    typedef StringSet<TString, Dependent<TSpec> > TStringSet;
+    typedef String<TSize2, TSpec2> TPairList;
+    typedef typename Id<TStringSet>::Type TId;
+    typedef typename Iterator<TPairList const, Standard>::Type TPairIter;
+    typedef typename Value<TScoreValues>::Type TScoreValue;
+    typedef typename Size<TStringSet>::Type TSize;
+
+    // Pairwise alignments
+    TPairIter itPair = begin(pList, Standard());
+    TPairIter itPairEnd = end(pList, Standard());
+    for (; itPair != itPairEnd; ++itPair) {
+        // Make a pairwise string-set
+        TStringSet pairSet;
+        TId id1 = positionToId(str, *itPair); ++itPair;
+        TId id2 = positionToId(str, *itPair);
+        assignValueById(pairSet, const_cast<TStringSet&>(str), id1);
+        assignValueById(pairSet, const_cast<TStringSet&>(str), id2);
+
+        TSize from = length(matches);
+        TScoreValue myScore = localAlignment(matches, pairSet, score_type);
+        TSize to = length(matches);
+        _recordScores(scores, myScore, from, to);
+    }
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 
