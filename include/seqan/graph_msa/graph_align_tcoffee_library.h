@@ -938,7 +938,6 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TAlignConfig const& ac,
                      GlobalPairwiseLibrary)
 {
-    SEQAN_CHECKPOINT
     typedef StringSet<TString, Dependent<TSpec> > TStringSet;
     typedef typename Id<TStringSet>::Type TId;
     typedef typename Size<TStringSet>::Type TSize;
@@ -975,6 +974,62 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 
 //////////////////////////////////////////////////////////////////////////////
 
+template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues, typename TDistance, typename TAlignConfig, typename TSize3>
+inline void
+appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
+                     String<TSize2, TSpec2> const& pList,
+                     TScore const& score_type,
+                     TSegmentMatches& matches,
+                     TScoreValues& scores,
+                     TDistance& dist,
+                     TAlignConfig const& ac,
+                     TSize3 const & bandWidth,
+                     GlobalPairwiseLibrary,
+                     Banded) 
+{
+    typedef StringSet<TString, Dependent<TSpec> > TStringSet;
+    typedef typename Id<TStringSet>::Type TId;
+    typedef typename Size<TStringSet>::Type TSize;
+    typedef typename Value<TScoreValues>::Type TScoreValue;
+    typedef typename Iterator<String<TSize2, TSpec2> const, Standard>::Type TPairIter;
+
+    // Initialization
+    TSize nseq = length(str);
+    _resizeWithRespectToDistance(dist, nseq);
+
+    // Pairwise alignments
+    TPairIter itPair = begin(pList, Standard());
+    TPairIter itPairEnd = end(pList, Standard());
+    for (; itPair != itPairEnd; ++itPair) {
+        // Make a pairwise string-set
+        TStringSet pairSet;
+        TId id1 = positionToId(str, *itPair); ++itPair;
+        TId id2 = positionToId(str, *itPair);
+        assignValueById(pairSet, const_cast<TStringSet&>(str), id1);
+        assignValueById(pairSet, const_cast<TStringSet&>(str), id2);
+                
+        // Banded alignment restriction: bottom right corner must be covered
+        TSize lenH = length(pairSet[0]);
+        TSize lenV = length(pairSet[1]);
+        size_t halfWidth = bandWidth / 2;
+        int lowerD = std::min(-halfWidth, -halfWidth + lenH - lenV);
+        int upperD = std::max(halfWidth, halfWidth + lenH - lenV);
+        
+        // Alignment
+        TSize from = length(matches);
+        TScoreValue myScore = globalAlignment(matches, pairSet, score_type, ac, lowerD, upperD, Gotoh());
+        TSize to = length(matches);
+
+        _recordScores(scores, myScore, from, to);
+
+        // Get the alignment statistics
+        _setDistanceValue(matches, pairSet, dist, (TSize)*(itPair - 1), (TSize)*itPair, (TSize)nseq, (TSize)from);
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+
 template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues, typename TDistance>
 inline void
 appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
@@ -985,8 +1040,25 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TDistance& dist,
                      GlobalPairwiseLibrary)
 {
-    SEQAN_CHECKPOINT
     appendSegmentMatches(str, pList, score_type, matches, scores, dist, AlignConfig<>(), GlobalPairwiseLibrary() );
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues, typename TDistance, typename TSize3>
+inline void
+appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
+                     String<TSize2, TSpec2> const& pList,
+                     TScore const& score_type,
+                     TSegmentMatches& matches,
+                     TScoreValues& scores,
+                     TDistance& dist,
+                     TSize3 const & bandWidth,
+                     GlobalPairwiseLibrary,
+                     Banded) 
+{
+    appendSegmentMatches(str, pList, score_type, matches, scores, dist, AlignConfig<>(), bandWidth, GlobalPairwiseLibrary(), Banded());
 }
 
 }// namespace SEQAN_NAMESPACE_MAIN
