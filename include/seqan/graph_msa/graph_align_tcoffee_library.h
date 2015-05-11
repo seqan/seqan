@@ -807,6 +807,53 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 
 //////////////////////////////////////////////////////////////////////////////
 
+template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues, typename TSize3>
+inline void
+appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
+                     String<TSize2, TSpec2> const& pList,
+                     TScore const& score_type,
+                     TSegmentMatches& matches,
+                     TScoreValues& scores,
+                     TSize3 const & bandWidth,
+                     LocalPairwiseLibrary,
+                     DeepAlignment,
+                     Banded)
+{
+    typedef StringSet<TString, Dependent<TSpec> > TStringSet;
+    typedef String<TSize2, TSpec2> TPairList;
+    typedef typename Id<TStringSet>::Type TId;
+    typedef typename Iterator<TPairList const, Standard>::Type TPairIter;
+    typedef typename Value<TScoreValues>::Type TScoreValue;
+    typedef typename Size<TStringSet>::Type TSize;
+
+    // Pairwise alignments
+    TPairIter itPair = begin(pList, Standard());
+    TPairIter itPairEnd = end(pList, Standard());
+    for (; itPair != itPairEnd; ++itPair) {
+        // Make a pairwise string-set
+        TStringSet pairSet;
+        TId id1 = positionToId(str, *itPair); ++itPair;
+        TId id2 = positionToId(str, *itPair);
+        assignValueById(pairSet, const_cast<TStringSet&>(str), id1);
+        assignValueById(pairSet, const_cast<TStringSet&>(str), id2);
+
+        // Banded alignment restriction: bottom right corner must be covered
+        TSize lenH = length(pairSet[0]);
+        TSize lenV = length(pairSet[1]);
+        size_t halfWidth = bandWidth / 2;
+        int lowerD = std::min(-halfWidth, -halfWidth + lenH - lenV);
+        int upperD = std::max(halfWidth, halfWidth + lenH - lenV);
+
+        TSize from = length(matches);
+        TScoreValue myScore = localAlignment(matches, pairSet, score_type, lowerD, upperD);
+        TSize to = length(matches);
+        _recordScores(scores, myScore, from, to);
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+
 template<typename TValue, typename TSpec, typename TSize>
 inline void
 _resizeWithRespectToDistance(String<TValue, TSpec>& dist,

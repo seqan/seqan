@@ -245,6 +245,21 @@ void _appendSegmentMatches(StringSet<String<AminoAcid, TStrSpec>, Dependent<TSpe
 
 //////////////////////////////////////////////////////////////////////////////
 
+template <typename TStrSpec, typename TSpec, typename TList, typename TScore, typename TSegmentMatches, typename TScores, typename TSize, typename TAlignmentType>
+void _appendSegmentMatches(StringSet<String<AminoAcid, TStrSpec>, Dependent<TSpec> > const & str,
+                           TList const & pList,
+                           TScore const &,
+                           TSegmentMatches & matches,
+                           TScores & scores,
+                           TSize const & bandWidth,
+                           TAlignmentType & alignType) 
+{
+    Blosum62 local_score(-1, -8);
+    appendSegmentMatches(str, pList, local_score, matches, scores, bandWidth, LocalPairwiseLibrary(), alignType, Banded());
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 template <typename TValue, typename TStrSpec, typename TSpec, typename TList, typename TScore, typename TSegmentMatches, typename TScores, typename TAlignmentType>
 void _appendSegmentMatches(StringSet<String<TValue, TStrSpec>, Dependent<TSpec> > const & str,
                              TList const & pList,
@@ -254,6 +269,20 @@ void _appendSegmentMatches(StringSet<String<TValue, TStrSpec>, Dependent<TSpec> 
                              TAlignmentType & alignType)
 {
     appendSegmentMatches(str, pList, score_type, matches, scores, LocalPairwiseLibrary(), alignType);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+template <typename TValue, typename TStrSpec, typename TSpec, typename TList, typename TScore, typename TSegmentMatches, typename TScores, typename TSize, typename TAlignmentType>
+void _appendSegmentMatches(StringSet<String<TValue, TStrSpec>, Dependent<TSpec> > const & str,
+                           TList const & pList,
+                           TScore const & score_type,
+                           TSegmentMatches & matches,
+                           TScores & scores,
+                           TSize const & bandWidth,
+                           TAlignmentType & alignType) 
+{
+    appendSegmentMatches(str, pList, score_type, matches, scores, bandWidth, LocalPairwiseLibrary(), alignType, Banded());
 }
 
 /*!
