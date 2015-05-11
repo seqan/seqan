@@ -112,10 +112,10 @@ typedef Tag<LcsLibrary_> const LcsLibrary;
 
 
 struct OrdinaryAlignment_;
-typedef Tag<OrdinaryAlignment_> OrdinaryAlignment;
+typedef Tag<OrdinaryAlignment_> const OrdinaryAlignment;
 
 struct DeepAlignment_;
-typedef Tag<DeepAlignment_> DeepAlignment;
+typedef Tag<DeepAlignment_> const DeepAlignment;
 
 
 // ---------------------------------------------------------------------------

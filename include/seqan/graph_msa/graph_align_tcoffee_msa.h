@@ -237,7 +237,7 @@ void _appendSegmentMatches(StringSet<String<AminoAcid, TStrSpec>, Dependent<TSpe
                              TScore const &,
                              TSegmentMatches & matches,
                              TScores & scores,
-                             TAlignmentType & alignType)
+                             TAlignmentType const & alignType)
 {
     Blosum62 local_score(-1, -8);
     appendSegmentMatches(str, pList, local_score, matches, scores, LocalPairwiseLibrary(), alignType);
@@ -252,7 +252,7 @@ void _appendSegmentMatches(StringSet<String<AminoAcid, TStrSpec>, Dependent<TSpe
                            TSegmentMatches & matches,
                            TScores & scores,
                            TSize const & bandWidth,
-                           TAlignmentType & alignType) 
+                           TAlignmentType const & alignType)
 {
     Blosum62 local_score(-1, -8);
     appendSegmentMatches(str, pList, local_score, matches, scores, bandWidth, LocalPairwiseLibrary(), alignType, Banded());
@@ -266,7 +266,7 @@ void _appendSegmentMatches(StringSet<String<TValue, TStrSpec>, Dependent<TSpec> 
                              TScore const & score_type,
                              TSegmentMatches & matches,
                              TScores & scores,
-                             TAlignmentType & alignType)
+                             TAlignmentType const & alignType)
 {
     appendSegmentMatches(str, pList, score_type, matches, scores, LocalPairwiseLibrary(), alignType);
 }
@@ -280,7 +280,7 @@ void _appendSegmentMatches(StringSet<String<TValue, TStrSpec>, Dependent<TSpec> 
                            TSegmentMatches & matches,
                            TScores & scores,
                            TSize const & bandWidth,
-                           TAlignmentType & alignType) 
+                           TAlignmentType const & alignType)
 {
     appendSegmentMatches(str, pList, score_type, matches, scores, bandWidth, LocalPairwiseLibrary(), alignType, Banded());
 }
