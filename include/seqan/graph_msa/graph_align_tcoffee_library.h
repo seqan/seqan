@@ -807,7 +807,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues, typename TSize3>
+template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues, typename TSize3, typename TAlignmentType>
 inline void
 appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      String<TSize2, TSpec2> const& pList,
@@ -816,7 +816,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TScoreValues& scores,
                      TSize3 const & bandWidth,
                      LocalPairwiseLibrary,
-                     DeepAlignment,
+                     TAlignmentType,
                      Banded)
 {
     typedef StringSet<TString, Dependent<TSpec> > TStringSet;
