@@ -394,7 +394,7 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         {
             if (*begIt == 0)
             {
-                if (msaOpt.pairwiseAlignmentMethod == 1 || msaOpt.isDefaultPairwiseAlignment && !isDeepAlignment)  
+                if (msaOpt.pairwiseAlignmentMethod == 1 || (msaOpt.isDefaultPairwiseAlignment && !isDeepAlignment))  
                 {
                     appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, distanceMatrix, GlobalPairwiseLibrary());
                 }
@@ -404,7 +404,7 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
                 }   
             }
             else if (*begIt == 1) {
-                if (msaOpt.pairwiseAlignmentMethod == 1 || msaOpt.isDefaultPairwiseAlignment && !isDeepAlignment)  
+                if (msaOpt.pairwiseAlignmentMethod == 1 || (msaOpt.isDefaultPairwiseAlignment && !isDeepAlignment))  
                 {
                     if (isDeepAlignment)
                         _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, DeepAlignment());
