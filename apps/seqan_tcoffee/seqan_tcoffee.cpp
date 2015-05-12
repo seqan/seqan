@@ -24,7 +24,7 @@ Lesser General Public License for more details.
 
 using namespace seqan;
 
-#define SEQAN_DEBUG
+//#define SEQAN_DEBUG
 
 //////////////////////////////////////////////////////////////////////////////////
 

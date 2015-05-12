@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_MSA_H
 #define SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_MSA_H
 
-#define SEQAN_DEBUG
+//#define SEQAN_DEBUG
 
 namespace seqan
 {
