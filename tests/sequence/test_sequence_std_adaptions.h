@@ -251,14 +251,14 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_memory_std_vector)
     }
     // test replace with limits
     {
-        std::vector<int> vec_target(6,100);
+        std::vector<int> vec_target(8,100);
         std::vector<int> vec_source(6,10);
         typename Position< std::vector<int> >::Type pos_begin = 4;
         typename Position< std::vector<int> >::Type pos_end = 8;
 
 
         // replace with insertion
-        typename Size< std::vector<int> >::Type limit = 9;
+        typename Size< std::vector<int> >::Type limit = 5;
 
         replace(vec_target,pos_begin,pos_end,vec_source,limit);
 

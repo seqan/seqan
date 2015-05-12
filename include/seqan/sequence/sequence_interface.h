@@ -285,7 +285,7 @@ inline void const *
 getObjectId(T const & me)
 {
     SEQAN_CHECKPOINT;
-    return end(me, Standard());
+    return &*end(me, Standard());
 }
 
 // --------------------------------------------------------------------------
@@ -380,12 +380,14 @@ begin(T const & me)
 
 //folgende forward Deklaration wurde wegen Phaenomene bei VC++ 2003 hinzugenommen
 //implemented in string_pointer.h
-template <typename TValue>
-SEQAN_HOST_DEVICE inline typename Iterator<TValue const *, Standard>::Type
-begin(TValue const * me,
-      Standard);
+// template <typename TValue,
+//           typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
+// SEQAN_HOST_DEVICE inline typename Iterator<TValue const *, Standard>::Type
+// begin(TValue const * me,
+//       Standard);
 
-template <typename T, typename TSpec>
+template <typename T, typename TSpec,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
 SEQAN_HOST_DEVICE inline typename Iterator<T, Tag<TSpec> const>::Type
 begin(T & me,
       Tag<TSpec> const tag_)
@@ -393,7 +395,8 @@ begin(T & me,
     SEQAN_CHECKPOINT;
     return _beginDefault(me, tag_);
 }
-template <typename T, typename TSpec>
+template <typename T, typename TSpec,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
 SEQAN_HOST_DEVICE inline typename Iterator<T const, Tag<TSpec> const>::Type
 begin(T const & me,
       Tag<TSpec> const tag_)
@@ -571,7 +574,7 @@ endPosition(T const & me)
 //* ???Anti Default Sequences
 template <typename T,
           typename TPos,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
 SEQAN_HOST_DEVICE inline typename Reference<T>::Type
 value(T & me,
       TPos /*pos*/)
@@ -582,7 +585,7 @@ value(T & me,
 
 template <typename T,
           typename TPos,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
 SEQAN_HOST_DEVICE inline typename Reference<T const>::Type
 value(T const & me,
       TPos /*pos*/)
@@ -911,7 +914,7 @@ _storageUpdated(T const & me)
 // --------------------------------------------------------------------------
 
 template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
+         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type>
 inline void
 assign(TTarget & target,
        TSource & source,
@@ -922,7 +925,7 @@ assign(TTarget & target,
 }
 
 template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
+         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type>
 inline void
 assign(TTarget const & target,
        TSource & source,
@@ -933,7 +936,7 @@ assign(TTarget const & target,
 }
 
 template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
+         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type>
 inline void
 assign(TTarget & target,
        TSource const & source,
@@ -944,7 +947,7 @@ assign(TTarget & target,
 }
 
 template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
+         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type>
 inline void
 assign(TTarget const & target,
        TSource const & source,
@@ -1109,7 +1112,8 @@ appendValue(T const & me,
  * @param[in]     tag The resize tag, defaults to what <tt>OverflowStrategyImplicit</tt> returns.
  */
 
-template <typename T, typename TPosition, typename TSeq, typename TExpand>
+template <typename T, typename TPosition, typename TSeq, typename TExpand,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline void
 insert(T & me,
        TPosition pos,
@@ -1120,7 +1124,8 @@ insert(T & me,
     replace(me, pos, pos, insertSeq, Tag<TExpand>());
 }
 
-template <typename T, typename TPosition, typename TSeq, typename TExpand>
+template <typename T, typename TPosition, typename TSeq, typename TExpand,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline void
 insert(T const & me,
        TPosition pos,
@@ -1131,7 +1136,8 @@ insert(T const & me,
     replace(me, pos, pos, insertSeq, Tag<TExpand>());
 }
 
-template <typename T, typename TPosition, typename TSeq>
+template <typename T, typename TPosition, typename TSeq,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline void
 insert(T & me,
        TPosition pos,
@@ -1141,7 +1147,8 @@ insert(T & me,
     replace(me, pos, pos, insertSeq, typename DefaultOverflowImplicit<T>::Type());
 }
 
-template <typename T, typename TPosition, typename TSeq>
+template <typename T, typename TPosition, typename TSeq,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline void
 insert(T const & me,
        TPosition pos,
@@ -1168,7 +1175,8 @@ insert(T const & me,
  * @param[in]     tag  The resize tag, defaults to what <tt>OverflowStrategyImplicit</tt> returns.
  */
 
-template <typename T, typename TPosition, typename TValue>
+template <typename T, typename TPosition, typename TValue,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline void
 insertValue(T & me,
             TPosition pos,
@@ -1178,7 +1186,8 @@ insertValue(T & me,
     insertValue(me, pos, _value, typename DefaultOverflowImplicit<T>::Type());
 }
 
-template <typename T, typename TPosition, typename TValue>
+template <typename T, typename TPosition, typename TValue,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline void
 insertValue(T const & me,
             TPosition pos,
@@ -1208,7 +1217,8 @@ insertValue(T const & me,
  *                          returns.
  */
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
 inline void
 replace(TTarget & target,
         TPositionBegin pos_begin,
@@ -1218,7 +1228,8 @@ replace(TTarget & target,
     replace(target, pos_begin, pos_end, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
 inline void
 replace(TTarget const & target,
         TPositionBegin pos_begin,
@@ -1228,7 +1239,8 @@ replace(TTarget const & target,
     replace(target, pos_begin, pos_end, source, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
 inline void
 replace(TTarget & target,
         TPositionBegin pos_begin,
@@ -1238,7 +1250,8 @@ replace(TTarget & target,
     replace(target, pos_begin, pos_end, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
 inline void
 replace(TTarget const & target,
         TPositionBegin pos_begin,
@@ -1248,7 +1261,8 @@ replace(TTarget const & target,
     replace(target, pos_begin, pos_end, source, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
 inline void
 replace(TTarget & target,
         TPositionBegin pos_begin,
@@ -1259,7 +1273,8 @@ replace(TTarget & target,
     replace(target, pos_begin, pos_end, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
 inline void
 replace(TTarget const & target,
         TPositionBegin pos_begin,
@@ -1270,7 +1285,8 @@ replace(TTarget const & target,
     replace(target, pos_begin, pos_end, source, limit, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
 inline void
 replace(TTarget & target,
         TPositionBegin pos_begin,
@@ -1281,7 +1297,8 @@ replace(TTarget & target,
     replace(target, pos_begin, pos_end, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
 inline void
 replace(TTarget const & target,
         TPositionBegin pos_begin,
@@ -1348,7 +1365,7 @@ _capacityReturned(T &,
  * This operation may invalidate iterators of <tt>object</tt>.
  */
 
-template <typename T, typename TSize, typename TExpand>//, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
+template <typename T, typename TSize, typename TExpand>
 inline typename Size<T>::Type
 reserve(T & me,
         TSize const & new_capacity,
@@ -1448,7 +1465,8 @@ resizeSpace(T & me,
 // Function erase()
 // --------------------------------------------------------------------------
 
-template<typename T, typename TBeginPosition, typename TEndPosition>
+template<typename T, typename TBeginPosition, typename TEndPosition,
+         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline void
 erase(T & me,
       TBeginPosition pos,
@@ -1458,7 +1476,8 @@ erase(T & me,
     resizeSpace(me, 0, pos, pos_end);
 }
 
-template<typename T, typename TPosition>
+template<typename T, typename TPosition,
+         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline void
 erase(T & me,
       TPosition pos)
@@ -1469,7 +1488,8 @@ erase(T & me,
 
 // For segments, we also have to define the version for const-containers.
 
-template<typename T, typename TBeginPosition, typename TEndPosition>
+template<typename T, typename TBeginPosition, typename TEndPosition,
+         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline void
 erase(T const & me,
       TBeginPosition pos,
@@ -1479,7 +1499,8 @@ erase(T const & me,
     resizeSpace(me, 0, pos, pos_end);
 }
 
-template<typename T, typename TPosition>
+template<typename T, typename TPosition,
+         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline void
 erase(T const & me,
       TPosition pos)
@@ -1492,7 +1513,8 @@ erase(T const & me,
 // Function eraseBack()
 // --------------------------------------------------------------------------
 
-template <typename T>
+template <typename T,
+          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
 inline void eraseBack(T & me)
 {
     SEQAN_CHECKPOINT;

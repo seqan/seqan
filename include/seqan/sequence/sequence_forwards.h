@@ -125,17 +125,17 @@ template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T const, Rooted
 // #ifndef SEQAN_CXX11_STANDARD
 // template <typename T, typename TValue> inline void appendValue(T const & me, TValue const & _value);
 // #endif
-// template <typename TTarget, typename TSource> inline void assign(TTarget & target, TSource & source, typename Size<TTarget>::Type limit);
-// template <typename TTarget, typename TSource> inline void assign(TTarget const & target, TSource & source, typename Size<TTarget>::Type limit);
-// template <typename TTarget, typename TSource> inline void assign(TTarget & target, TSource const & source, typename Size<TTarget>::Type limit);
-// template <typename TTarget, typename TSource> inline void assign(TTarget const & target, TSource const & source, typename Size<TTarget>::Type limit);
-// template <typename T, typename TValue, typename TPos> inline void assignValue(T & me, TPos pos, TValue const & _value);
+template <typename TTarget, typename TSource, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0> inline void assign(TTarget & target, TSource & source, typename Size<TTarget>::Type limit);
+template <typename TTarget, typename TSource, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0> inline void assign(TTarget const & target, TSource & source, typename Size<TTarget>::Type limit);
+template <typename TTarget, typename TSource, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0> inline void assign(TTarget & target, TSource const & source, typename Size<TTarget>::Type limit);
+template <typename TTarget, typename TSource, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0> inline void assign(TTarget const & target, TSource const & source, typename Size<TTarget>::Type limit);
+// template <typename T, typename TValue, typename TPos, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0> inline void assignValue(T & me, TPos pos, TValue const & _value);
 // template <typename T> SEQAN_HOST_DEVICE inline typename Reference<T const>::Type back(T const & me);
 // template <typename T> SEQAN_HOST_DEVICE inline typename Reference<T>::Type back(T & me);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type begin(T & me);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type begin(T const & me);
-template <typename T, typename TSpec> SEQAN_HOST_DEVICE inline typename Iterator<T, Tag<TSpec> const>::Type begin(T & me, Tag<TSpec> const tag_);
-template <typename T, typename TSpec> SEQAN_HOST_DEVICE inline typename Iterator<T const, Tag<TSpec> const>::Type begin(T const & me, Tag<TSpec> const tag_);
+template <typename T, typename TSpec, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> SEQAN_HOST_DEVICE inline typename Iterator<T, Tag<TSpec> const>::Type begin(T & me, Tag<TSpec> const tag_);
+template <typename T, typename TSpec, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> SEQAN_HOST_DEVICE inline typename Iterator<T const, Tag<TSpec> const>::Type begin(T const & me, Tag<TSpec> const tag_);
 template <typename T> inline typename Position<T>::Type beginPosition(T &);
 template <typename T> inline typename Position<T>::Type beginPosition(T const &);
 template <typename T, typename DisableIf<Is<StlContainerConcept<T> >, int>::Type> SEQAN_HOST_DEVICE inline typename Size<T const>::Type capacity(T const & me);
@@ -148,9 +148,9 @@ template <typename T, typename TSpec> SEQAN_HOST_DEVICE inline typename Iterator
 template <typename T> inline typename Position<T>::Type endPosition(T & me);
 template <typename T> inline typename Position<T>::Type endPosition(T const & me);
 // template <typename T, typename TBeginPosition, typename TEndPosition> inline void erase(T & me, TBeginPosition pos, TEndPosition pos_end);
-template <typename T, typename TPosition> inline void erase(T & me, TPosition pos);
+// template <typename T, typename TPosition> inline void erase(T & me, TPosition pos);
 // template <typename T, typename TBeginPosition, typename TEndPosition> inline void erase(T const & me, TBeginPosition pos, TEndPosition pos_end);
-template <typename T, typename TPosition> inline void erase(T const & me, TPosition pos);
+// template <typename T, typename TPosition> inline void erase(T const & me, TPosition pos);
 // template <typename T> inline void eraseBack(T & me);
 // template <typename T> inline typename Reference<T>::Type front(T & me);
 // template <typename T> inline typename Reference<T const>::Type front(T const & me);
@@ -162,12 +162,18 @@ inline void const * getObjectId(TContainer SEQAN_FORWARD_CARG me);
 // getObjectId(TContainer const & me);
 // template <typename T, typename TPos> inline typename GetValue<T>::Type getValue(T & me, TPos pos);
 // template <typename T, typename TPos> inline typename GetValue<T const>::Type getValue(T const & me, TPos pos);
-template <typename T, typename TPosition, typename TSeq, typename TExpand> inline void insert(T & me, TPosition pos, TSeq const & insertSeq, Tag<TExpand>);
-template <typename T, typename TPosition, typename TSeq, typename TExpand> inline void insert(T const & me, TPosition pos, TSeq const & insertSeq, Tag<TExpand>);
-template <typename T, typename TPosition, typename TSeq> inline void insert(T & me, TPosition pos, TSeq const & insertSeq);
-template <typename T, typename TPosition, typename TSeq> inline void insert(T const & me, TPosition pos, TSeq const & insertSeq);
-template <typename T, typename TPosition, typename TValue> inline void insertValue(T & me, TPosition pos, TValue const & _value);
-template <typename T, typename TPosition, typename TValue> inline void insertValue(T const & me, TPosition pos, TValue const & _value);
+// template <typename T, typename TPosition, typename TSeq, typename TExpand,
+//           typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>> inline void insert(T & me, TPosition pos, TSeq const & insertSeq, Tag<TExpand>);
+// template <typename T, typename TPosition, typename TSeq, typename TExpand,
+//           typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>> inline void insert(T const & me, TPosition pos, TSeq const & insertSeq, Tag<TExpand>);
+// template <typename T, typename TPosition, typename TSeq,
+//           typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>> inline void insert(T & me, TPosition pos, TSeq const & insertSeq);
+// template <typename T, typename TPosition, typename TSeq,
+//           typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>> inline void insert(T const & me, TPosition pos, TSeq const & insertSeq);
+// template <typename T, typename TPosition, typename TValue,
+//           typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>> inline void insertValue(T & me, TPosition pos, TValue const & _value);
+// template <typename T, typename TPosition, typename TValue,
+//           typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>> inline void insertValue(T const & me, TPosition pos, TValue const & _value);
 template <typename T, typename TPos> inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type iter(T & me, TPos pos);
 template <typename T, typename TPos> inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type iter(T const & me, TPos pos);
 template <typename T, typename TPos, typename TTag> inline typename Iterator<T, Tag<TTag> const>::Type iter(T & me, TPos pos, Tag<TTag> const tag_);
@@ -194,8 +200,37 @@ template <typename T, typename TSize, typename TBeginPosition, typename TEndPosi
 template <typename T, typename TSize, typename TBeginPosition, typename TEndPosition, typename TLimit> inline TSize resizeSpace(T & me, TSize size, TBeginPosition pos_begin, TEndPosition pos_end, TLimit limit);
 template <typename T1, typename T2> inline bool shareResources(T1 const & obj1, T2 const & obj2);
 template <typename T> inline void shrinkToFit(T & me);
-template <typename T, typename TPos, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type> SEQAN_HOST_DEVICE inline typename Reference<T>::Type value(T & me, TPos);
-template <typename T, typename TPos, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T const>::Type> >, int>::Type> SEQAN_HOST_DEVICE inline typename Reference<T const>::Type value(T const & me, TPos);
+template <typename T, typename TPos, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> SEQAN_HOST_DEVICE inline typename Reference<T>::Type value(T & me, TPos);
+template <typename T, typename TPos, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> SEQAN_HOST_DEVICE inline typename Reference<T const>::Type value(T const & me, TPos);
+
+
+template <typename TContainer,
+          typename TPos,
+          typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
+                                IsContiguous<typename RemoveReference<TContainer>::Type> >, int>::Type = 0>
+inline typename Reference<typename RemoveReference<TContainer>::Type>::Type
+value(TContainer & me, TPos const pos);
+
+template <typename TContainer,
+          typename TPos,
+          typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
+                                IsContiguous<typename RemoveReference<TContainer>::Type> >, int>::Type = 0>
+inline typename Reference<TContainer const>::Type
+value(TContainer const & me, TPos const pos);
+
+template <typename TContainer,
+          typename TPos,
+          typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
+                                Not<IsContiguous<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
+inline typename Reference<typename RemoveReference<TContainer>::Type>::Type
+value(TContainer & me, TPos const pos);
+
+template <typename TContainer,
+          typename TPos,
+          typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
+                                Not<IsContiguous<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
+inline typename Reference<TContainer const>::Type
+value(TContainer const & me, TPos const pos);
 
 // --------------------------------------------------------------------------
 // Forwards For std::vector
@@ -335,12 +370,12 @@ inline size_t length(char const * me);
 template <typename TTargetValue, typename TSource> inline void move(TTargetValue * & target, TSource & source);
 template <typename TTargetValue, typename TSource> inline void move(TTargetValue * & target, TSource const & source);
 template <typename TValue, typename TPos> inline void moveValue(TValue * me, TPos pos, TValue const & _value);
-template <typename TTargetValue, typename TSource, typename TExpand> inline void replace(TTargetValue * target, size_t pos_begin, size_t pos_end, TSource const & source, Tag<TExpand>);
-template <typename TTargetValue, typename TSource, typename TExpand> inline void replace(TTargetValue * target, size_t pos_begin, size_t pos_end, TSource const & source, size_t limit, Tag<TExpand>);
-template <typename TTargetValue, typename TSourceValue, typename TExpand> inline void replace(TTargetValue * target, size_t pos_begin, size_t pos_end, TSourceValue const * source, Tag<TExpand>);
-template <typename TTargetValue, typename TSourceValue, typename TExpand> inline void replace(TTargetValue * target, size_t pos_begin, size_t pos_end, TSourceValue const * source, size_t limit, Tag<TExpand>);
-template <typename TValue, typename TSize, typename TExpand> inline size_t resize( TValue * me, TSize new_length, Tag<TExpand>);
-template <typename TValue, typename TSize, typename TExpand> inline size_t resize( TValue * me, TSize new_length, TValue const & val, Tag<TExpand>);
+// template <typename TTargetValue, typename TSource, typename TExpand, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> inline void replace(TTargetValue * target, size_t pos_begin, size_t pos_end, TSource const & source, Tag<TExpand>);
+// template <typename TTargetValue, typename TSource, typename TExpand, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> inline void replace(TTargetValue * target, size_t pos_begin, size_t pos_end, TSource const & source, size_t limit, Tag<TExpand>);
+// template <typename TTargetValue, typename TSourceValue, typename TExpand, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> inline void replace(TTargetValue * target, size_t pos_begin, size_t pos_end, TSourceValue const * source, Tag<TExpand>);
+// template <typename TTargetValue, typename TSourceValue, typename TExpand, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> inline void replace(TTargetValue * target, size_t pos_begin, size_t pos_end, TSourceValue const * source, size_t limit, Tag<TExpand>);
+// template <typename TValue, typename TSize, typename TExpand, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> inline size_t resize( TValue * me, TSize new_length, Tag<TExpand>);
+// template <typename TValue, typename TSize, typename TExpand, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> inline size_t resize( TValue * me, TSize new_length, TValue const & val, Tag<TExpand>);
 template <typename TValue, typename TPos> inline TValue & value(TValue * me, TPos pos);
 template <typename TValue, typename TPos> inline TValue const & value(TValue const * me, TPos pos);
 

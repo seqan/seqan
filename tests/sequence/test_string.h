@@ -1121,6 +1121,7 @@ void Test_Assignments_Combinatoric(TTarget & target, TSource source, Tag<TExpand
 
     len = length(target);
     append(target, source, limit, tag);
+
     if (len < length(target))
     {
         SEQAN_ASSERT_EQ(infix(source, 0, length(target) - len), infix(target, len, length(target)) );
