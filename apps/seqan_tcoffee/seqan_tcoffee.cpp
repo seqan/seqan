@@ -164,7 +164,31 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
             appendValue(msaOpt.method, 3);
         }
     }
-    
+
+    msaOpt.isDefaultPairwiseAlignment = !isSet(parser, "pairwise-alignment");
+    if (!msaOpt.isDefaultPairwiseAlignment)
+    {
+        getOptionValue(tmpVal, parser, "pairwise-alignment");
+        if (tmpVal == "unbanded")
+        {
+            msaOpt.pairwiseAlignmentMethod = 1;
+        }
+        else if (tmpVal == "banded")  
+        {
+            msaOpt.pairwiseAlignmentMethod = 2;
+        }
+    }
+    if (isSet(parser, "band-width")) {
+        if (msaOpt.pairwiseAlignmentMethod == 1)  
+        {
+            std::cerr << "Ambiguous pairwise alignment method. Band width cannot be specified for an unbanded method" << std::endl;
+            std::exit(0);
+        }
+        msaOpt.isDefaultPairwiseAlignment = false;
+        msaOpt.pairwiseAlignmentMethod = 2;
+    }
+    getOptionValue(msaOpt.bandWidth, parser, "band-width");
+
     for (unsigned int optNo = 0; optNo < getOptionValueCount(parser, "libraries"); ++optNo)
     {
         getOptionValue(tmpVal, parser, "libraries", optNo);
@@ -364,6 +388,21 @@ _setUpArgumentParser(ArgumentParser & parser)
                              ArgParseArgument::INPUT_FILE, "", true));
     
     setValidValues(parser, "l", "blast mums aln lib");  // allow blast, mummer aln and tcoffee lib files
+
+    addOption(parser,
+              ArgParseOption("pa", "pairwise-alignment", "Pairwise alignment method. "
+                             "Default: \\fIunbanded\\fP for ordinary alignments (< 50 sequences), "
+                             "\\fIbanded\\fP for deep alignments (>= 50 sequences)",
+                             ArgParseArgument::STRING));
+    setValidValues(parser, "pa", "unbanded banded");
+
+    addOption(parser,
+              ArgParseOption("bw", "band-width", "Band width. "
+                             "This option automatically select \\fIbanded\\fP pairwise alignment "
+                             "(see \\fBpa\\fP for details)",
+                             ArgParseArgument::INTEGER));
+    setDefaultValue(parser, "bw", 60);
+    setMinValue(parser, "bw", "2");
 
     // code before KNIME adaption
     /*   addOption(parser,

@@ -99,6 +99,27 @@ public:
      */
     String<unsigned> method;
 
+    /*!
+    * @var unsigned MsaOptions::isDefaultPairwiseAlignment;
+    * @brief Whether or not to use default strategy for choosing pairwise alignment methods.
+    */
+    bool isDefaultPairwiseAlignment;
+    
+    /*!
+    * @var unsigned MsaOptions::pairwiseAlignmentMethod;
+    * @brief Methods for computing pairwise alignment.
+    *
+    * 0 unspecified, 1 unbanded, 2 banded
+    * Default: 0
+    */
+    unsigned pairwiseAlignmentMethod;
+    
+    /*!
+    * @var unsigned MsaOptions::bandWidth;
+    * @brief Band width for banded alignment. Min value: <tt>2</tt>.
+    */
+    unsigned bandWidth;
+
     // TODO(holtgrew): Document me!
     // Various input and output file names
     String<std::string> alnfiles;       // External alignment files
@@ -115,7 +136,7 @@ public:
      * @brief Default constructor.
      * @signature MsaOptions::MsaOptions();
      */
-    MsaOptions() : rescore(true), outputFormat(0), build(0)
+    MsaOptions() : rescore(true), outputFormat(0), build(0), pairwiseAlignmentMethod(0)
     {}
 };
 
@@ -372,12 +393,31 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         for (; begIt != begItEnd; goNext(begIt))
         {
             if (*begIt == 0)
-                appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, distanceMatrix, GlobalPairwiseLibrary());
-            else if (*begIt == 1) {
-                if (isDeepAlignment)
-                    _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, DeepAlignment());
+            {
+                if (msaOpt.pairwiseAlignmentMethod == 1 || msaOpt.isDefaultPairwiseAlignment && !isDeepAlignment)  
+                {
+                    appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, distanceMatrix, GlobalPairwiseLibrary());
+                }
                 else
-                    _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, OrdinaryAlignment());
+                {
+                    appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, distanceMatrix, msaOpt.bandWidth, GlobalPairwiseLibrary(), Banded());
+                }   
+            }
+            else if (*begIt == 1) {
+                if (msaOpt.pairwiseAlignmentMethod == 1 || msaOpt.isDefaultPairwiseAlignment && !isDeepAlignment)  
+                {
+                    if (isDeepAlignment)
+                        _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, DeepAlignment());
+                    else
+                        _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, OrdinaryAlignment());
+                }
+                else
+                {
+                    if (isDeepAlignment)
+                        _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, msaOpt.bandWidth, DeepAlignment());
+                    else
+                        _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, msaOpt.bandWidth, OrdinaryAlignment());
+                }
             }
             else if (*begIt == 2)
             {
