@@ -415,9 +415,18 @@ struct StlContainerConcept :
  * first element of the content array.
  */
 
-template <typename T, class Enable = void>
+template <typename T>
 struct IsContiguous
     : public False
+{};
+
+// ----------------------------------------------------------------------------
+// Mfn HasSubscriptOperator (different for e.g. std::deque)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer>
+struct HasSubscriptOperator :
+    public IsContiguous<TContainer>
 {};
 
 /*!
