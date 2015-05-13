@@ -48,10 +48,6 @@
 // Prerequisites.
 // ===========================================================================
 
-#include <seqan/basic.h>
-#include <seqan/misc/bit_twiddling_functors.h>
-#include <seqan/misc/bit_twiddling.h>
-
 // ----------------------------------------------------------------------------
 // STL prerequisites.
 // ----------------------------------------------------------------------------
@@ -71,6 +67,14 @@
 #include <forward_list>
 #include <array>
 #endif
+
+// ----------------------------------------------------------------------------
+// Basic
+// ----------------------------------------------------------------------------
+
+#include <seqan/basic.h>
+#include <seqan/misc/bit_twiddling_functors.h>
+#include <seqan/misc/bit_twiddling.h>
 
 // ----------------------------------------------------------------------------
 // Thrust prerequisites.

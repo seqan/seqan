@@ -678,8 +678,8 @@ getObjectId(String<TValue, Packed<THostspec> > const & me)
 template <typename TValue, typename THostspec, typename TPos>
 inline typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type
 iter(String<TValue, Packed<THostspec> > & me,
-     TPos pos,
-     Standard)
+     TPos const pos,
+     Standard const &)
 {
     typedef typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type TIterator;
     return TIterator(me, pos);
@@ -688,8 +688,8 @@ iter(String<TValue, Packed<THostspec> > & me,
 template <typename TValue, typename THostspec, typename TPos>
 inline typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type
 iter(String<TValue, Packed<THostspec> > const & me,
-     TPos pos,
-     Standard)
+     TPos const pos,
+     Standard const &)
 {
     typedef typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type TIterator;
     return TIterator(me, pos);
@@ -702,7 +702,7 @@ iter(String<TValue, Packed<THostspec> > const & me,
 template <typename TValue, typename THostspec>
 inline typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type
 begin(String<TValue, Packed<THostspec> > & me,
-      Standard)
+     Standard const &)
 {
     typedef typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type TIterator;
     return TIterator(me);
@@ -711,7 +711,7 @@ begin(String<TValue, Packed<THostspec> > & me,
 template <typename TValue, typename THostspec>
 inline typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type
 begin(String<TValue, Packed<THostspec> > const & me,
-      Standard)
+     Standard const &)
 {
     typedef typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type TIterator;
     return TIterator(me);
@@ -724,7 +724,7 @@ begin(String<TValue, Packed<THostspec> > const & me,
 template <typename TValue, typename THostspec>
 inline typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type
 end(String<TValue, Packed<THostspec> > & me,
-    Standard)
+     Standard const &)
 {
     return iter(me, length(me), Standard());
 }
@@ -732,7 +732,7 @@ end(String<TValue, Packed<THostspec> > & me,
 template <typename TValue, typename THostspec>
 inline typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type
 end(String<TValue, Packed<THostspec> > const & me,
-    Standard)
+     Standard const &)
 {
     return iter(me, length(me), Standard());
 }
@@ -744,7 +744,7 @@ end(String<TValue, Packed<THostspec> > const & me,
 template <typename TValue, typename THostspec, typename TPos>
 inline typename Reference<String<TValue, Packed<THostspec> > >::Type
 value(String<TValue, Packed<THostspec> > & me,
-      TPos const & pos)
+      TPos const pos)
 {
     return *iter(me, pos, Standard());
 }
@@ -752,7 +752,7 @@ value(String<TValue, Packed<THostspec> > & me,
 template <typename TValue, typename THostspec, typename TPos>
 inline typename Reference<String<TValue, Packed<THostspec> > const>::Type
 value(String<TValue, Packed<THostspec> > const & me,
-      TPos const & pos)
+      TPos const pos)
 {
     typedef String<TValue, Packed<THostspec> > TPackedString;
     typedef PackedTraits_<TPackedString> TTraits;

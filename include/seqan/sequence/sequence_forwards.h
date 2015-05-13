@@ -174,12 +174,44 @@ inline void const * getObjectId(TContainer SEQAN_FORWARD_CARG me);
 //           typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>> inline void insertValue(T & me, TPosition pos, TValue const & _value);
 // template <typename T, typename TPosition, typename TValue,
 //           typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>> inline void insertValue(T const & me, TPosition pos, TValue const & _value);
-template <typename T, typename TPos> inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type iter(T & me, TPos pos);
-template <typename T, typename TPos> inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type iter(T const & me, TPos pos);
-template <typename T, typename TPos, typename TTag> inline typename Iterator<T, Tag<TTag> const>::Type iter(T & me, TPos pos, Tag<TTag> const tag_);
-template <typename T, typename TPos, typename TTag> inline typename Iterator<T const, Tag<TTag> const>::Type iter(T const & me, TPos pos, Tag<TTag> const tag_);
+// template <typename TChar, typename TAlloc, typename TPos>
+// inline typename Iterator<std::list<TChar, TAlloc>, Rooted>::Type                iter(std::list<TChar, TAlloc> & me, TPos const pos, Rooted const &);
+//
+// template <typename TChar, typename TAlloc, typename TPos>
+// inline typename Iterator<std::list<TChar, TAlloc> const, Rooted>::Type          iter(std::list<TChar, TAlloc> const & me, TPos const pos, Rooted const &);
+//
+// #ifdef SEQAN_CXX11_STANDARD
+// template <typename TChar, typename TAlloc, typename TPos>
+// inline typename Iterator<std::forward_list<TChar, TAlloc>, Rooted>::Type        iter(std::forward_list<TChar, TAlloc> & me, TPos const pos, Rooted const &);
+//
+// template <typename TChar, typename TAlloc, typename TPos>
+// inline typename Iterator<std::forward_list<TChar, TAlloc> const, Rooted>::Type  iter(std::forward_list<TChar, TAlloc> const & me, TPos const pos, Rooted const &);
+// #endif
+//
+
+// template <typename TContainer, typename TPos>
+// inline typename TContainer::iterator iter(TContainer & me, TPos const pos, StlIter_ const &);
+//
+// template <typename TContainer, typename TPos>
+// inline typename TContainer::iterator iter(TContainer const & me, TPos const pos, StlIter_ const &);
+
+template <typename T, typename TPos>
+inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type     iter(T & me, TPos const pos);
+
+template <typename T, typename TPos>
+inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type iter(T const & me, TPos const pos);
+
+template <typename T, typename TPos, typename TTag>
+inline typename Iterator<T, Tag<TTag> const>::Type                                   iter(T & me, TPos const pos, Tag<TTag> const &);
+
+template <typename T, typename TPos, typename TTag>
+inline typename Iterator<T const, Tag<TTag> const>::Type                             iter(T const & me, TPos const pos, Tag<TTag> const &);
+
 template <typename T, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> inline typename Size<T>::Type
 length(T const &);
+#ifdef SEQAN_CXX11_STANDARD
+template <typename TChar, typename TAlloc> inline typename Size<std::forward_list<TChar, TAlloc> >::Type length(std::forward_list<TChar, TAlloc> const & me);
+#endif
 template <typename T, typename TValue, typename TPos> inline void moveValue(T & me, TPos pos, TValue const & _value);
 template <typename T, typename TValue, typename TPos> inline void moveValue(T const & me, TPos pos, TValue const & _value);
 template <typename TContainer, typename EnableIf<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, int>::Type = 0> inline typename Size<typename RemoveReference<TContainer>::Type>::Type length(TContainer const & me);
@@ -203,32 +235,31 @@ template <typename T> inline void shrinkToFit(T & me);
 template <typename T, typename TPos, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> SEQAN_HOST_DEVICE inline typename Reference<T>::Type value(T & me, TPos);
 template <typename T, typename TPos, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0> SEQAN_HOST_DEVICE inline typename Reference<T const>::Type value(T const & me, TPos);
 
-
 template <typename TContainer,
           typename TPos,
           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-                                IsContiguous<typename RemoveReference<TContainer>::Type> >, int>::Type = 0>
+                                HasSubscriptOperator<typename RemoveReference<TContainer>::Type> >, int>::Type = 0>
 inline typename Reference<typename RemoveReference<TContainer>::Type>::Type
 value(TContainer & me, TPos const pos);
 
 template <typename TContainer,
           typename TPos,
           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-                                IsContiguous<typename RemoveReference<TContainer>::Type> >, int>::Type = 0>
+                                HasSubscriptOperator<typename RemoveReference<TContainer>::Type> >, int>::Type = 0>
 inline typename Reference<TContainer const>::Type
 value(TContainer const & me, TPos const pos);
 
 template <typename TContainer,
           typename TPos,
           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-                                Not<IsContiguous<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
+                                Not<HasSubscriptOperator<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
 inline typename Reference<typename RemoveReference<TContainer>::Type>::Type
 value(TContainer & me, TPos const pos);
 
 template <typename TContainer,
           typename TPos,
           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-                                Not<IsContiguous<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
+                                Not<HasSubscriptOperator<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
 inline typename Reference<TContainer const>::Type
 value(TContainer const & me, TPos const pos);
 

@@ -43,6 +43,9 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
+// struct StlIter__ {};
+// typedef Tag<StlIter__> const StlIter_;
+
 // ===========================================================================
 // Concepts
 // ===========================================================================
@@ -124,6 +127,20 @@ struct IsContiguous<std::array<TChar, N> const> :
     public True
 {};
 #endif
+
+// ----------------------------------------------------------------------------
+// Mfn HasSubscriptOperator (different for e.g. std::deque)
+// ----------------------------------------------------------------------------
+
+template <typename TChar, typename TAlloc>
+struct HasSubscriptOperator<std::deque<TChar, TAlloc> > :
+    public True
+{};
+
+template <typename TChar, typename TAlloc>
+struct HasSubscriptOperator<std::deque<TChar, TAlloc> const> :
+    public True
+{};
 
 // ----------------------------------------------------------------------------
 // Mfn Value
@@ -332,41 +349,24 @@ ITRMACRO__(std::array<TChar COMMA N>,              const, typename TChar COMMA s
 
 //NOTE(h-2): shouldnt we be using Is<StringConcept> or IsContiguous<> or ...?
 
-// template <typename TChar, typename TAlloc>
-// struct IsSequence<std::vector<TChar, TAlloc> > : True {};
-//
-// template <typename TChar, typename TCharTraits, typename TAlloc>
-// struct IsSequence<std::basic_string<TChar, TCharTraits, TAlloc> > : True {};
+template <typename TChar, typename TAlloc>
+struct IsSequence<std::vector<TChar, TAlloc> > : True {};
 
-// ----------------------------------------------------------------------------
-// Mfn Chunk
-// ----------------------------------------------------------------------------
+template <typename TChar, typename TAlloc>
+struct IsSequence<std::deque<TChar, TAlloc> > : True {};
 
-// #define ITRMACRO__(CONT, CONST, TMPL) \
-// template <TMPL> \
-// struct Chunk<Iter<CONT CONST, AdaptorIterator<TChar*, TSpec> > > \
-// { \
-//     typedef Iter<CONT CONST, AdaptorIterator<Iter<CONT CONST, StdIteratorAdaptor> > > Type;\
-// };
+template <typename TChar, typename TAlloc>
+struct IsSequence<std::list<TChar, TAlloc> > : True {};
 
-// ----------------------------------------------------------------------------
-// Mfn HasCapacity_ (private)
-// ----------------------------------------------------------------------------
+#ifdef SEQAN_CXX11_STANDARD
+template <typename TChar, typename TAlloc>
+struct IsSequence<std::forward_list<TChar, TAlloc> > : True {};
 
-// template <typename TContainer>
-// struct HasCapacity_ : public False {};
-//
-// template <typename TChar, typename TAlloc>
-// struct HasCapacity_<std::vector<TChar, TAlloc> > : public True {};
-//
-// template <typename TChar, typename TAlloc>
-// struct HasCapacity_<std::vector<TChar, TAlloc> const> : public True {};
-//
-// template <typename TChar, typename TTraits, typename TAlloc>
-// struct HasCapacity_<std::basic_string<TChar, TTraits, TAlloc> > : public True {};
-//
-// template <typename TChar, typename TTraits, typename TAlloc>
-// struct HasCapacity_<std::basic_string<TChar, TTraits, TAlloc> const> : public True {};
+//NOTE(h-2): array isn't by SeqAn definition, right?
+#endif
+
+template <typename TChar, typename TCharTraits, typename TAlloc>
+struct IsSequence<std::basic_string<TChar, TCharTraits, TAlloc> > : True {};
 
 // ----------------------------------------------------------------------------
 // Mfn FixedSize_ (private)
@@ -409,7 +409,6 @@ template <typename TContainer,
 inline typename Iterator<TContainer, Standard>::Type
 begin(TContainer & me, Standard const &)
 {
-//     return typename Iterator<TContainer, Standard>::Type(me.begin());
     return me.begin();
 }
 
@@ -417,7 +416,6 @@ template <typename TContainer, typename EnableIf<Is<StlContainerConcept<typename
 inline typename Iterator<TContainer const, Standard>::Type
 begin(TContainer const & me, Standard const &)
 {
-//     return typename Iterator<TContainer const, Standard>::Type(me.begin());
     return me.begin();
 }
 
@@ -429,8 +427,6 @@ template <typename TContainer,typename EnableIf<Is<StlContainerConcept<typename 
 inline typename Iterator<TContainer, Rooted>::Type
 begin(TContainer & me, Rooted const &)
 {
-//     static_assert(std::is_same<typename Iterator<TContainer, Rooted>::Type, Iter<TContainer, StdIteratorAdaptor> >::value, "AHH");
-//     return typename Iterator<TContainer, Rooted>::Type(begin(me, Standard()));
     return _beginDefault(me, Rooted());
 }
 
@@ -438,8 +434,6 @@ template <typename TContainer,typename EnableIf<Is<StlContainerConcept<typename 
 inline typename Iterator<TContainer const, Rooted>::Type
 begin(TContainer const & me, Rooted const &)
 {
-//     static_assert(std::is_same<typename Iterator<TContainer const, Rooted>::Type, Iter<TContainer const, StdIteratorAdaptor> >::value, "AHH");
-//     return typename Iterator<TContainer const, Rooted>::Type(begin(me, Standard()));
     return _beginDefault(me, Rooted());
 }
 
@@ -451,7 +445,6 @@ template <typename TContainer, typename EnableIf<Is<StlContainerConcept<typename
 inline typename Iterator<TContainer, Standard>::Type
 end(TContainer & me, Standard const &)
 {
-//     return typename Iterator<TContainer, Standard>::Type(me.end());
     return me.end();
 }
 
@@ -459,7 +452,6 @@ template <typename TContainer, typename EnableIf<Is<StlContainerConcept<typename
 inline typename Iterator<TContainer const, Standard>::Type
 end(TContainer const & me, Standard const &)
 {
-//     return typename Iterator<TContainer const, Standard>::Type(me.end());
     return me.end();
 }
 
@@ -471,8 +463,6 @@ template <typename TContainer,typename EnableIf<Is<StlContainerConcept<typename 
 inline typename Iterator<TContainer, Rooted>::Type
 end(TContainer & me, Rooted const &)
 {
-//     static_assert(std::is_same<typename Iterator<TContainer, Rooted>::Type, Iter<TContainer, StdIteratorAdaptor> >::value, "AHH");
-//     return typename Iterator<TContainer, Rooted>::Type(begin(me, Standard()));
     return _endDefault(me, Rooted());
 }
 
@@ -480,10 +470,58 @@ template <typename TContainer,typename EnableIf<Is<StlContainerConcept<typename 
 inline typename Iterator<TContainer const, Rooted>::Type
 end(TContainer const & me, Rooted const &)
 {
-//     static_assert(std::is_same<typename Iterator<TContainer const, Rooted>::Type, Iter<TContainer const, StdIteratorAdaptor> >::value, "AHH");
-//     return typename Iterator<TContainer const, Rooted>::Type(begin(me, Standard()));
     return _endDefault(me, Rooted());
 }
+
+// ----------------------------------------------------------------------------
+// Function _iterStl (like seqan's iter() but for stl-iterators)
+// ----------------------------------------------------------------------------
+
+#ifdef SEQAN_CXX11_STANDARD
+template <typename TContainer,
+          typename TPos>
+inline typename TContainer::iterator
+_iterStl(TContainer & me,
+     TPos const pos)
+{
+    SEQAN_ASSERT_LEQ_MSG(pos, static_cast<TPos>(length(me)), "Trying to get an iterator behind a container through _iterStl().");
+    return std::next(me.begin(), pos);
+}
+
+template <typename TContainer,
+          typename TPos>
+inline typename TContainer::const_iterator
+_iterStl(TContainer const & me,
+     TPos const pos)
+{
+    SEQAN_ASSERT_LEQ_MSG(pos, static_cast<TPos>(length(me)), "Trying to get an iterator behind a container through _iterStl().");
+    return std::next(me.begin(), pos);
+}
+#else
+template <typename TContainer,
+          typename TPos>
+inline typename TContainer::iterator
+_iterStl(TContainer & me,
+     TPos const pos)
+{
+    SEQAN_ASSERT_LEQ_MSG(pos, static_cast<TPos>(length(me)), "Trying to get an iterator behind a container through _iterStl().");
+    typename TContainer::iterator it = me.begin();
+    std::advance(it, pos);
+    return it;
+}
+
+template <typename TContainer,
+          typename TPos>
+inline typename TContainer::const_iterator
+_iterStl(TContainer const & me,
+     TPos const pos)
+{
+    SEQAN_ASSERT_LEQ_MSG(pos, static_cast<TPos>(length(me)), "Trying to get an iterator behind a container through _iterStl().");
+    typename TContainer::const_iterator it = me.begin();
+    std::advance(it, pos);
+    return it;
+}
+#endif
 
 // ----------------------------------------------------------------------------
 // Function iter (Standard) (only overloaded for non-contiguous)
@@ -495,9 +533,7 @@ iter(std::list<TChar, TAlloc> & me,
      TPos const pos,
      Standard const &)
 {
-    SEQAN_ASSERT_LEQ_MSG(pos, static_cast<TPos>(length(me)), "Trying to get an iterator behind a container through iter().");
-    //TODO un-cxx11
-    return std::next(me.begin(), pos);
+    return _iterStl(me, pos);
 }
 
 template <typename TChar, typename TAlloc, typename TPos>
@@ -506,8 +542,7 @@ iter(std::list<TChar, TAlloc> const & me,
      TPos const pos,
      Standard const &)
 {
-    SEQAN_ASSERT_LEQ_MSG(pos, static_cast<TPos>(length(me)), "Trying to get an iterator behind a container through iter().");
-    return std::next(me.begin(), pos);
+    return _iterStl(me, pos);
 }
 
 #ifdef SEQAN_CXX11_STANDARD
@@ -517,8 +552,7 @@ iter(std::forward_list<TChar, TAlloc> & me,
      TPos const pos,
      Standard const &)
 {
-    SEQAN_ASSERT_LEQ_MSG(pos, static_cast<TPos>(length(me)), "Trying to get an iterator behind a container through iter().");
-    return std::next(me.begin(), pos);
+    return _iterStl(me, pos);
 }
 
 template <typename TChar, typename TAlloc, typename TPos>
@@ -527,8 +561,7 @@ iter(std::forward_list<TChar, TAlloc> const & me,
      TPos const pos,
      Standard const &)
 {
-    SEQAN_ASSERT_LEQ_MSG(pos, static_cast<TPos>(length(me)), "Trying to get an iterator behind a container through iter().");
-    return std::next(me.begin(), pos);
+    return _iterStl(me, pos);
 }
 #endif
 
@@ -558,7 +591,7 @@ iter(std::list<TChar, TAlloc> const & me,
 
 #ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, typename TAlloc, typename TPos>
-inline typename Iterator<std::forward_list<TChar, TAlloc>, Rooted const>::Type
+inline typename Iterator<std::forward_list<TChar, TAlloc>, Rooted>::Type
 iter(std::forward_list<TChar, TAlloc> & me,
      TPos const pos,
      Rooted const &)
@@ -592,6 +625,17 @@ length(TContainer const & me)
 }
 
 #ifdef SEQAN_CXX11_STANDARD
+template <typename TChar, typename TAlloc>
+inline typename Size<std::forward_list<TChar, TAlloc> >::Type
+length(std::forward_list<TChar, TAlloc> const & me)
+{
+    typename Size<std::forward_list<TChar, TAlloc> >::Type l = 0;
+
+    for (auto it = me.begin(), itEnd = me.end(); it != itEnd; ++it, ++l);
+
+    return l;
+}
+
 template <typename TChar, std::size_t N>
 constexpr std::size_t
 length(std::array<TChar, N> const & me)
@@ -807,7 +851,7 @@ clear(TContainer SEQAN_FORWARD_ARG me)
 template <typename TContainer,
           typename TPos,
           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-                                IsContiguous<typename RemoveReference<TContainer>::Type> >, int>::Type>
+                                HasSubscriptOperator<typename RemoveReference<TContainer>::Type> >, int>::Type>
 inline typename Reference<typename RemoveReference<TContainer>::Type>::Type
 value(TContainer & me, TPos const pos)
 {
@@ -817,57 +861,60 @@ value(TContainer & me, TPos const pos)
 template <typename TContainer,
           typename TPos,
           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-                                IsContiguous<typename RemoveReference<TContainer>::Type> >, int>::Type>
+                                HasSubscriptOperator<typename RemoveReference<TContainer>::Type> >, int>::Type>
 inline typename Reference<TContainer const>::Type
 value(TContainer const & me, TPos const pos)
 {
     return me[pos];
 }
 
-// #ifdef SEQAN_CXX11_STANDARD
-// template <typename TContainer,
-//           typename TPos,
-//           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-//                                 IsContiguous<typename RemoveReference<TContainer>::Type> >, int>::Type = 0>
-// inline typename Value<typename RemoveReference<TContainer>::Type>::Type
-// value(TContainer && me, TPos const pos)
-// {
-//     return me[pos];
-// }
-// #endif
+#ifdef SEQAN_CXX11_STANDARD
+// RemoveReference explicitly not set on TContainer in SFINAE-clause, because this function shall not
+// pick up on TContainer & &&, i.e. the && shall act as strict R-Value reference, not universal
+// [same below for some overloads]
+template <typename TContainer,
+          typename TPos,
+          typename EnableIf<And<Is<StlContainerConcept<TContainer> >,
+                                HasSubscriptOperator<typename RemoveReference<TContainer>::Type> >, int>::Type = 0>
+inline typename Value<typename RemoveReference<TContainer>::Type>::Type
+value(TContainer && me, TPos const pos)
+{
+    return me[pos];
+}
+#endif
 
 // linear complexity for list and fwd list
 template <typename TContainer,
           typename TPos,
           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-                                Not<IsContiguous<typename RemoveReference<TContainer>::Type> > >, int>::Type>
+                                Not<HasSubscriptOperator<typename RemoveReference<TContainer>::Type> > >, int>::Type>
 inline typename Reference<typename RemoveReference<TContainer>::Type>::Type
 value(TContainer & me, TPos const pos)
 {
-    return *(std::next(me.begin(), pos));
+    return *(_iterStl(me, pos));
 }
 
 template <typename TContainer,
           typename TPos,
           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-                                Not<IsContiguous<typename RemoveReference<TContainer>::Type> > >, int>::Type>
+                                Not<HasSubscriptOperator<typename RemoveReference<TContainer>::Type> > >, int>::Type>
 inline typename Reference<TContainer const>::Type
 value(TContainer const & me, TPos const pos)
 {
-    return *(std::next(me.begin(), pos));
+    return *(_iterStl(me, pos));
 }
 
-// #ifdef SEQAN_CXX11_STANDARD
-// template <typename TContainer,
-//           typename TPos,
-//           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-//                                 Not<IsContiguous<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
-// inline typename Value<typename RemoveReference<TContainer>::Type>::Type
-// value(TContainer && me, TPos const pos)
-// {
-//     return *(begin(me) + pos);
-// }
-// #endif
+#ifdef SEQAN_CXX11_STANDARD
+template <typename TContainer,
+          typename TPos,
+          typename EnableIf<And<Is<StlContainerConcept<TContainer> >,
+                                Not<HasSubscriptOperator<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
+inline typename Value<typename RemoveReference<TContainer>::Type>::Type
+value(TContainer && me, TPos const pos)
+{
+    return *(_iterStl(me, pos));
+}
+#endif
 
 // --------------------------------------------------------------------------
 // Function getValue
@@ -876,41 +923,41 @@ value(TContainer const & me, TPos const pos)
 template <typename TContainer,
           typename TPos,
           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-                                IsContiguous<typename RemoveReference<TContainer>::Type> >, int>::Type = 0>
+                                HasSubscriptOperator<typename RemoveReference<TContainer>::Type> >, int>::Type = 0>
 inline typename Reference<TContainer const>::Type
 getValue(TContainer const & me, TPos const pos)
 {
     return me[pos];
 }
 
-// #ifdef SEQAN_CXX11_STANDARD
-// template <typename TContainer,
-//           typename TPos,
-//           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-//                                 IsContiguous<typename RemoveReference<TContainer>::Type> >, int>::Type = 0>
-// inline typename Value<typename RemoveReference<TContainer>::Type>::Type
-// getValue(TContainer && me, TPos const pos)
-// {
-//     return me[pos];
-// }
-// #endif
+#ifdef SEQAN_CXX11_STANDARD
+template <typename TContainer,
+          typename TPos,
+          typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
+                                HasSubscriptOperator<typename RemoveReference<TContainer>::Type> >, int>::Type = 0>
+inline typename Value<typename RemoveReference<TContainer>::Type>::Type
+getValue(TContainer && me, TPos const pos)
+{
+    return me[pos];
+}
+#endif
 
 // linear complexity for list and fwd list
 template <typename TContainer,
           typename TPos,
           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-                                Not<IsContiguous<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
+                                Not<HasSubscriptOperator<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
 inline typename Reference<TContainer const>::Type
 getValue(TContainer const & me, TPos const pos)
 {
-    return *(std::next(me.begin(), pos));
+    return *(_iterStl(me, pos));
 }
 
 // #ifdef SEQAN_CXX11_STANDARD
 // template <typename TContainer,
 //           typename TPos,
 //           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-//                                 Not<IsContiguous<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
+//                                 Not<HasSubscriptOperator<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
 // inline typename Value<typename RemoveReference<TContainer>::Type>::Type
 // getValue(TContainer && me, TPos const pos)
 // {
@@ -1081,8 +1128,9 @@ insert(TContainer SEQAN_FORWARD_ARG me,
        typename Size<typename RemoveReference<TContainer>::Type>::Type const pos,
        TSource const & source)
 {
-    // TODO need to un-cxx11ify this
-    me.insert(std::next(me.begin(), pos), begin(source, Standard()), end(source, Standard()));
+    me.insert(_iterStl(SEQAN_FORWARD(TContainer, me), pos),
+              begin(source, Standard()),
+              end(source, Standard()));
 }
 
 template <typename TContainer,
@@ -1107,8 +1155,7 @@ insert(TContainer SEQAN_FORWARD_ARG me,
        TSource const & source,
        typename Size<TSource>::Type const limit)
 {
-    // TODO need to un-cxx11ify this
-    me.insert(std::next(me.begin(), pos),
+    me.insert(_iterStl(SEQAN_FORWARD(TContainer, me), pos),
               begin(source, Standard()),
               iter(source, std::min(length(source), limit), Standard()));
 }
@@ -1135,7 +1182,7 @@ insert(std::forward_list<TChar, TAlloc> & me,
        typename Size<std::forward_list<TChar, TAlloc> >::Type const pos,
        TSource const & source)
 {
-    me.insert_after(std::next(me.before_begin(), pos), begin(source), end(source));
+    me.insert_after(std::next(me.before_begin(), pos), begin(source, Standard()), end(source, Standard()));
 }
 
 template <typename TChar, typename TAlloc, typename TSource>
@@ -1155,8 +1202,8 @@ insert(std::forward_list<TChar, TAlloc> & me,
        typename Size<std::forward_list<TChar, TAlloc> >::Type const limit)
 {
     me.insert_after(std::next(me.before_begin(), pos),
-                    begin(source),
-                    begin(source) + std::min(length(source), limit));
+                    begin(source, Standard()),
+                    iter(source, std::min(length(source), limit), Standard()));
 }
 
 template <typename TChar, typename TAlloc, typename TSource>
@@ -1288,8 +1335,7 @@ insertValue(TContainer SEQAN_FORWARD_ARG me,
             typename Size<typename RemoveReference<TContainer>::Type>::Type const pos,
             TSource const & source)
 {
-    //TODO
-    me.insert(std::next(me.begin(), pos), source);
+    me.insert(_iterStl(SEQAN_FORWARD(TContainer, me), pos), source);
 }
 
 template <typename TContainer,
@@ -1305,7 +1351,6 @@ insertValue(TContainer SEQAN_FORWARD_ARG me,
     insertValue(SEQAN_FORWARD(TContainer, me), pos, source);
 }
 
-
 #ifdef SEQAN_CXX11_STANDARD
 // move semantics with double universal references, yay!
 template <typename TContainer,
@@ -1316,7 +1361,7 @@ insertValue(TContainer && me,
             typename Size<typename RemoveReference<TContainer>::Type>::Type const pos,
             TSource && source)
 {
-    me.insert(std::next(me.begin(), pos), std::forward<TSource>(source));
+    me.insert(_iterStl(SEQAN_FORWARD(TContainer, me), pos), std::forward<TSource>(source));
 }
 
 template <typename TContainer,
@@ -1571,16 +1616,6 @@ erase(TContainer SEQAN_FORWARD_ARG me,
     me.erase(std::next(me.begin(), pos), std::next(me.begin(), posEnd));
 }
 
-template <typename TContainer,
-          typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-                                Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
-inline void
-erase(TContainer SEQAN_FORWARD_ARG me,
-      typename Size<typename RemoveReference<TContainer>::Type>::Type const pos)
-{
-    erase(me, pos, pos + 1);
-}
-
 #ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, typename TAlloc>
 inline void
@@ -1588,7 +1623,7 @@ erase(std::forward_list<TChar, TAlloc> & me,
       typename Size<std::forward_list<TChar, TAlloc> >::Type const pos,
       typename Size<std::forward_list<TChar, TAlloc> >::Type const posEnd)
 {
-    me.erase_after(std::next(me.before_begin(), pos), std::next(me.before_begin(), posEnd));
+    me.erase_after(std::next(me.before_begin(), pos), std::next(me.begin(), posEnd));
 }
 
 template <typename TChar, typename TAlloc>
@@ -1600,6 +1635,16 @@ erase(std::forward_list<TChar, TAlloc> && me,
     erase(me, pos, posEnd);
 }
 #endif
+
+template <typename TContainer,
+          typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
+                                Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
+inline void
+erase(TContainer SEQAN_FORWARD_ARG me,
+      typename Size<typename RemoveReference<TContainer>::Type>::Type const pos)
+{
+    erase(SEQAN_FORWARD(TContainer, me), pos, pos + 1);
+}
 
 // ----------------------------------------------------------------------------
 // Function eraseFront
@@ -1662,16 +1707,23 @@ template <typename TChar, typename TAlloc>
 inline void
 eraseBack(std::forward_list<TChar, TAlloc> & me)
 {
-    if (length(me) > 0)
-        me.erase_after(iter(me, length(me) - 1), Standard());
+    if (!empty(me))
+    {
+        auto && it = me.before_begin(), itN = std::next(me.begin()), itEnd = me.end();
+        while (itN != itEnd)
+        {
+            ++it;
+            ++itN;
+        }
+        me.erase_after(it);
+    }
 }
 
 template <typename TChar, typename TAlloc>
 inline void
 eraseBack(std::forward_list<TChar, TAlloc> && me)
 {
-    if (length(me) > 0)
-        me.erase_after(iter(me, length(me) - 1), Standard());
+    eraseBack(me);
 }
 #endif
 
@@ -1693,12 +1745,11 @@ eraseBack(std::basic_string<TChar, TTraits, TAlloc> && me)
 }
 #endif
 
-
 // ----------------------------------------------------------------------------
 // Function replace
 // ----------------------------------------------------------------------------
 
-//TODO(h-2): could be done a little more efficient
+//TODO(h-2): could be done a little more efficient?
 template <typename TContainer,
           typename TSource,
           typename EnableIf<And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, int>::Type = 0>
