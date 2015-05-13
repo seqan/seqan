@@ -133,6 +133,29 @@ struct Difference<Iter<TDeltaMap, DeltaMapIteratorSpec> const > :
 // Functions
 // ============================================================================
 
+namespace impl
+{
+
+template <typename TIterator>
+inline typename DeltaPosition<typename Value<TIterator>::Type>::Type
+getDelSize(TIterator const & /*it*/, TagSelector<> const & /*deltaTypeSelector*/)
+{
+    return 0;
+}
+
+template <typename TIterator, typename TTagList>
+inline typename DeltaPosition<typename Value<TIterator>::Type>::Type
+getDelSize(TIterator const & it, TagSelector<TTagList> const & deltaType)
+{
+    typedef typename TTagList::Type TDeltaType;
+
+    if (isEqual(deltaType, TDeltaType()))
+        return delSize(container(it)._deltaStore, getDeltaRecord(*it).i2, TDeltaType());
+    return getDelSize(it, static_cast<typename TagSelector<TTagList>::Base const &>(deltaTypes));
+}
+
+}
+
 // ----------------------------------------------------------------------------
 // Function value()
 // ----------------------------------------------------------------------------
@@ -227,6 +250,19 @@ inline typename DeltaPosition<typename Value<Iter<TDeltaMap, DeltaMapIteratorSpe
 deltaPosition(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
 {
     return getDeltaPosition(value(iter));
+}
+
+// ----------------------------------------------------------------------------
+// Function deltaEndPosition()
+// ----------------------------------------------------------------------------
+
+template <typename TDeltaMap>
+inline typename DeltaPosition<typename Value<Iter<TDeltaMap, DeltaMapIteratorSpec> >::Type>::Type
+deltaEndPosition(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
+{
+    DeltaTypeSelector selector;
+    assign(selector, selectDeltaType(deltaType(iter)));
+    return getDeltaPosition(value(iter)) + impl::getDelSize(value(iter), selector);
 }
 
 // ----------------------------------------------------------------------------

@@ -522,6 +522,84 @@ deltaValue(DeltaStore<TSnp, TDel, TIns, TSV> const & store, TPos pos, TTag const
     return value(getDeltaStore(store, tag), pos);
 }
 
+// ----------------------------------------------------------------------------
+// Function sizeDel()
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+inline unsigned
+sizeDel(TValue const & /*val*/, DeltaTypeSnp const & /*tag*/)
+{
+    return 1;
+}
+
+template <typename TValue>
+inline unsigned
+sizeDel(TValue const & /*val*/, DeltaTypeIns const & /*tag*/)
+{
+    return 0;
+}
+
+template <typename TDel>
+inline TDel
+sizeDel(TDel const & val, DeltaTypeDel const & /*tag*/)
+{
+    return val;
+}
+
+template <typename TSV>
+inline typename Value<TSV, 1>::Type
+sizeDel(TSV const & val, DeltaTypeSV const & /*tag*/)
+{
+    return val.i1;
+}
+
+template <typename TStore, typename TPos, typename TTag>
+inline typename Size<TStore>::Type
+sizeDel(TStore const & store, TPos pos, TTag const & /*tag*/)
+{
+    return sizeDel(getDeltaStore(store)[pos], TTag());
+}
+
+// ----------------------------------------------------------------------------
+// Function sizeIns()
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+inline unsigned
+sizeIns(TValue const & /*val*/, DeltaTypeSnp const & /*tag*/)
+{
+    return 1;
+}
+
+template <typename TValue>
+inline unsigned
+sizeIns(TValue const & val, DeltaTypeIns const & /*tag*/)
+{
+    return length(val);
+}
+
+template <typename TDel>
+inline unsigned
+sizeIns(TDel & val, DeltaTypeDel const & /*tag*/)
+{
+    return 0;
+}
+
+template <typename TSV>
+inline unsigned
+sizeIns(TSV & val, DeltaTypeSV const & /*tag*/)
+{
+    return val.i2;
+}
+
+template <typename TStore, typename TPos, typename TTag>
+inline typename Size<TStore>::Type
+sizeIns(TStore & store, TPos pos, TTag const & /*tag*/)
+{
+    return sizeIns(getDeltaStore(store)[pos], TTag());
+}
+
 }
 
 #endif // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_STORE_H_
