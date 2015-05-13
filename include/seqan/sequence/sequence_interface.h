@@ -279,9 +279,8 @@ struct AllowsFastRandomAccess<T const>
  * compile time.
  */
 
-template <typename T,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
-inline void const *
+template <typename T>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void const *)
 getObjectId(T const & me)
 {
     SEQAN_CHECKPOINT;
@@ -386,18 +385,16 @@ begin(T const & me)
 // begin(TValue const * me,
 //       Standard);
 
-template <typename T, typename TSpec,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
-SEQAN_HOST_DEVICE inline typename Iterator<T, Tag<TSpec> const>::Type
+template <typename T, typename TSpec>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Iterator<T, Tag<TSpec> const>::Type)
 begin(T & me,
       Tag<TSpec> const tag_)
 {
     SEQAN_CHECKPOINT;
     return _beginDefault(me, tag_);
 }
-template <typename T, typename TSpec,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
-SEQAN_HOST_DEVICE inline typename Iterator<T const, Tag<TSpec> const>::Type
+template <typename T, typename TSpec>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Iterator<T const, Tag<TSpec> const>::Type)
 begin(T const & me,
       Tag<TSpec> const tag_)
 {
@@ -573,9 +570,8 @@ endPosition(T const & me)
 
 //* ???Anti Default Sequences
 template <typename T,
-          typename TPos,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
-SEQAN_HOST_DEVICE inline typename Reference<T>::Type
+          typename TPos>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Reference<T>::Type)
 value(T & me,
       TPos /*pos*/)
 {
@@ -584,9 +580,8 @@ value(T & me,
 }
 
 template <typename T,
-          typename TPos,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
-SEQAN_HOST_DEVICE inline typename Reference<T const>::Type
+          typename TPos>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Reference<T const>::Type)
 value(T const & me,
       TPos /*pos*/)
 {
@@ -600,9 +595,8 @@ value(T const & me,
 // --------------------------------------------------------------------------
 
 template <typename T,
-          typename TPos,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline typename GetValue<T>::Type
+          typename TPos>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename GetValue<T>::Type)
 getValue(T & me,
          TPos pos)
 {
@@ -611,9 +605,8 @@ getValue(T & me,
 }
 
 template <typename T,
-          typename TPos,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline typename GetValue<T const>::Type
+          typename TPos>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename GetValue<T const>::Type)
 getValue(T const & me,
          TPos pos)
 {
@@ -625,17 +618,15 @@ getValue(T const & me,
 // Function front()
 // --------------------------------------------------------------------------
 
-template <typename T,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline typename Reference<T>::Type
+template <typename T>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Reference<T>::Type)
 front(T & me)
 {
     SEQAN_CHECKPOINT;
     return value(me, 0);
 }
-template <typename T,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline typename Reference<T const>::Type
+template <typename T>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Reference<T const>::Type)
 front(T const & me)
 {
     SEQAN_CHECKPOINT;
@@ -646,18 +637,16 @@ front(T const & me)
 // Function back()
 // --------------------------------------------------------------------------
 
-template <typename T,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-SEQAN_HOST_DEVICE inline typename Reference<T const>::Type
+template <typename T>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Reference<T const>::Type)
 back(T const & me)
 {
     SEQAN_CHECKPOINT;
     return value(me, length(me) - 1);
 }
 
-template <typename T,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-SEQAN_HOST_DEVICE inline typename Reference<T>::Type
+template <typename T>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Reference<T>::Type)
 back(T & me)
 {
     SEQAN_CHECKPOINT;
@@ -665,17 +654,15 @@ back(T & me)
 }
 
 //NOTE(h-2): why do we have this?
-template <typename T,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-SEQAN_HOST_DEVICE inline typename Reference<T const>::Type
+template <typename T>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Reference<T const>::Type)
 backPrev(T const & me)
 {
     return value(me, length(me) - 2);
 }
 
-template <typename T,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-SEQAN_HOST_DEVICE inline typename Reference<T>::Type
+template <typename T>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Reference<T>::Type)
 backPrev(T & me)
 {
     return value(me, length(me) - 2);
@@ -780,8 +767,8 @@ moveValue(T const & me,
 // --------------------------------------------------------------------------
 
 //* ???Anti Default Sequences
-template <typename T, typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
-inline typename Size<T>::Type
+template <typename T>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Size<T>::Type)
 length(T const & /*me*/)
 {
     SEQAN_CHECKPOINT;
@@ -822,9 +809,8 @@ capacity(T const & me)
 // Function empty()
 // --------------------------------------------------------------------------
 
-template <typename T,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-SEQAN_HOST_DEVICE inline bool
+template <typename T>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, bool)
 empty(T const & me)
 {
     SEQAN_CHECKPOINT;
@@ -913,9 +899,8 @@ _storageUpdated(T const & me)
 // Function assign()
 // --------------------------------------------------------------------------
 
-template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type>
-inline void
+template<typename TTarget, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
 assign(TTarget & target,
        TSource & source,
        typename Size<TTarget>::Type limit)
@@ -924,9 +909,8 @@ assign(TTarget & target,
     assign(target, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type>
-inline void
+template<typename TTarget, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
 assign(TTarget const & target,
        TSource & source,
        typename Size<TTarget>::Type limit)
@@ -935,9 +919,8 @@ assign(TTarget const & target,
     assign(target, source, limit, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type>
-inline void
+template<typename TTarget, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
 assign(TTarget & target,
        TSource const & source,
        typename Size<TTarget>::Type limit)
@@ -946,9 +929,8 @@ assign(TTarget & target,
     assign(target, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type>
-inline void
+template<typename TTarget, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
 assign(TTarget const & target,
        TSource const & source,
        typename Size<TTarget>::Type limit)
@@ -972,9 +954,8 @@ assign(TTarget const & target,
  * @param[in]     source This @link ContainerConcept container @endlink will be appended to <tt>source</tt>.
  */
 
-template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
 append(TTarget & target,
        TSource & source)
 {
@@ -982,9 +963,8 @@ append(TTarget & target,
     append(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
 append(TTarget const & target,
        TSource & source)
 {
@@ -992,9 +972,8 @@ append(TTarget const & target,
     append(target, source, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
 append(TTarget & target,
        TSource const & source)
 {
@@ -1002,9 +981,8 @@ append(TTarget & target,
     append(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
 append(TTarget const & target,
        TSource const & source)
 {
@@ -1012,9 +990,8 @@ append(TTarget const & target,
     append(target, source, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
 append(TTarget & target,
        TSource & source,
        typename Size<TTarget>::Type limit)
@@ -1023,9 +1000,8 @@ append(TTarget & target,
     append(target, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
 append(TTarget const & target,
        TSource & source,
        typename Size<TTarget>::Type limit)
@@ -1034,9 +1010,8 @@ append(TTarget const & target,
     append(target, source, limit, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
 append(TTarget & target,
        TSource const & source,
        typename Size<TTarget>::Type limit)
@@ -1045,9 +1020,8 @@ append(TTarget & target,
     append(target, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TSource,
-         typename DisableIf<Is<StlContainerConcept<TTarget> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
 append(TTarget const & target,
        TSource const & source,
        typename Size<TTarget>::Type limit)
@@ -1073,9 +1047,8 @@ append(TTarget const & target,
  *                       <tt>target</tt>.
  */
 
-template <typename T, typename TValue,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline void
+template <typename T, typename TValue>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
 appendValue(T SEQAN_FORWARD_ARG me,
             TValue SEQAN_FORWARD_CARG _value)
 {
@@ -1084,9 +1057,8 @@ appendValue(T SEQAN_FORWARD_ARG me,
 
 #ifndef SEQAN_CXX11_STANDARD
 //NOTE(h-2): what is this good for? why can we append to const objects?
-template <typename T, typename TValue,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline void
+template <typename T, typename TValue>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
 appendValue(T const & me,
             TValue const & _value)
 {
@@ -1112,9 +1084,8 @@ appendValue(T const & me,
  * @param[in]     tag The resize tag, defaults to what <tt>OverflowStrategyImplicit</tt> returns.
  */
 
-template <typename T, typename TPosition, typename TSeq, typename TExpand,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline void
+template <typename T, typename TPosition, typename TSeq, typename TExpand>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
 insert(T & me,
        TPosition pos,
        TSeq const & insertSeq,
@@ -1124,9 +1095,8 @@ insert(T & me,
     replace(me, pos, pos, insertSeq, Tag<TExpand>());
 }
 
-template <typename T, typename TPosition, typename TSeq, typename TExpand,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline void
+template <typename T, typename TPosition, typename TSeq, typename TExpand>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
 insert(T const & me,
        TPosition pos,
        TSeq const & insertSeq,
@@ -1136,9 +1106,8 @@ insert(T const & me,
     replace(me, pos, pos, insertSeq, Tag<TExpand>());
 }
 
-template <typename T, typename TPosition, typename TSeq,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline void
+template <typename T, typename TPosition, typename TSeq>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
 insert(T & me,
        TPosition pos,
        TSeq const & insertSeq)
@@ -1147,9 +1116,8 @@ insert(T & me,
     replace(me, pos, pos, insertSeq, typename DefaultOverflowImplicit<T>::Type());
 }
 
-template <typename T, typename TPosition, typename TSeq,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline void
+template <typename T, typename TPosition, typename TSeq>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
 insert(T const & me,
        TPosition pos,
        TSeq const & insertSeq)
@@ -1175,9 +1143,8 @@ insert(T const & me,
  * @param[in]     tag  The resize tag, defaults to what <tt>OverflowStrategyImplicit</tt> returns.
  */
 
-template <typename T, typename TPosition, typename TValue,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline void
+template <typename T, typename TPosition, typename TValue>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
 insertValue(T & me,
             TPosition pos,
             TValue const & _value)
@@ -1186,9 +1153,8 @@ insertValue(T & me,
     insertValue(me, pos, _value, typename DefaultOverflowImplicit<T>::Type());
 }
 
-template <typename T, typename TPosition, typename TValue,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline void
+template <typename T, typename TPosition, typename TValue>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
 insertValue(T const & me,
             TPosition pos,
             TValue const & _value)
@@ -1217,9 +1183,8 @@ insertValue(T const & me,
  *                          returns.
  */
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
 replace(TTarget & target,
         TPositionBegin pos_begin,
         TPositionEnd pos_end,
@@ -1228,9 +1193,8 @@ replace(TTarget & target,
     replace(target, pos_begin, pos_end, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
 replace(TTarget const & target,
         TPositionBegin pos_begin,
         TPositionEnd pos_end,
@@ -1239,9 +1203,8 @@ replace(TTarget const & target,
     replace(target, pos_begin, pos_end, source, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
 replace(TTarget & target,
         TPositionBegin pos_begin,
         TPositionEnd pos_end,
@@ -1250,9 +1213,8 @@ replace(TTarget & target,
     replace(target, pos_begin, pos_end, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
 replace(TTarget const & target,
         TPositionBegin pos_begin,
         TPositionEnd pos_end,
@@ -1261,9 +1223,8 @@ replace(TTarget const & target,
     replace(target, pos_begin, pos_end, source, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
 replace(TTarget & target,
         TPositionBegin pos_begin,
         TPositionEnd pos_end,
@@ -1273,9 +1234,8 @@ replace(TTarget & target,
     replace(target, pos_begin, pos_end, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
 replace(TTarget const & target,
         TPositionBegin pos_begin,
         TPositionEnd pos_end,
@@ -1285,9 +1245,8 @@ replace(TTarget const & target,
     replace(target, pos_begin, pos_end, source, limit, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
 replace(TTarget & target,
         TPositionBegin pos_begin,
         TPositionEnd pos_end,
@@ -1297,9 +1256,8 @@ replace(TTarget & target,
     replace(target, pos_begin, pos_end, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, int>::Type = 0>
-inline void
+template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
 replace(TTarget const & target,
         TPositionBegin pos_begin,
         TPositionEnd pos_end,
@@ -1389,9 +1347,8 @@ reserve(T & me,
 // --------------------------------------------------------------------------
 
 template <typename T,
-          typename TSize,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline typename Size<T>::Type
+          typename TSize>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Size<T>::Type)
 resize(T & me,
        TSize new_length)
 {
@@ -1401,9 +1358,8 @@ resize(T & me,
 
 template <typename T,
           typename TSize,
-          typename TValue,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline typename Size<T>::Type
+          typename TValue>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Size<T>::Type)
 resize(T & me,
        TSize new_length,
        TValue const & val)
@@ -1465,9 +1421,8 @@ resizeSpace(T & me,
 // Function erase()
 // --------------------------------------------------------------------------
 
-template<typename T, typename TBeginPosition, typename TEndPosition,
-         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline void
+template<typename T, typename TBeginPosition, typename TEndPosition>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
 erase(T & me,
       TBeginPosition pos,
       TEndPosition pos_end)
@@ -1476,9 +1431,8 @@ erase(T & me,
     resizeSpace(me, 0, pos, pos_end);
 }
 
-template<typename T, typename TPosition,
-         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline void
+template<typename T, typename TPosition>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
 erase(T & me,
       TPosition pos)
 {
@@ -1488,9 +1442,8 @@ erase(T & me,
 
 // For segments, we also have to define the version for const-containers.
 
-template<typename T, typename TBeginPosition, typename TEndPosition,
-         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline void
+template<typename T, typename TBeginPosition, typename TEndPosition>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
 erase(T const & me,
       TBeginPosition pos,
       TEndPosition pos_end)
@@ -1499,9 +1452,8 @@ erase(T const & me,
     resizeSpace(me, 0, pos, pos_end);
 }
 
-template<typename T, typename TPosition,
-         typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline void
+template<typename T, typename TPosition>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
 erase(T const & me,
       TPosition pos)
 {
@@ -1513,9 +1465,9 @@ erase(T const & me,
 // Function eraseBack()
 // --------------------------------------------------------------------------
 
-template <typename T,
-          typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type = 0>
-inline void eraseBack(T & me)
+template <typename T>
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
+eraseBack(T & me)
 {
     SEQAN_CHECKPOINT;
     SEQAN_ASSERT_GT_MSG(length(me), 0u, "String must have more than 0 characters in eraseBack()!");
