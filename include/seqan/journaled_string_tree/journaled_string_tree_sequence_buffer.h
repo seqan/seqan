@@ -96,12 +96,16 @@ public:
     typedef typename Value<JournaledSet>::Type                                  TJournaledSeq;
     typedef typename Iterator<TJournaledSeq, Standard>::Type                    TJournaledSeqIt;
 
+    typedef typename Container<TJournaledStringTree>::Type                      TDeltaMap;
+    typedef typename Iterator<TDeltaMap, Standard>::Type                        TDeltaIterator;
+
     typedef typename Position<TJournaledSet>::Type                              TJSetPos;
     typedef String<TJSetPos>                                                    TStringPositions;
 
     TJournaledSeq           source;
-    Range<TJournaledSeqIt>  sourceWindow;   // Range to be traversed over the Journaled-String-Tree.
-    Range<TJournaledSeqIt>  chunk;          // The chunk currently buffered.
+    Range<TJournaledSeqIt>  sourceRange;    // Range to be traversed over the Journaled-String-Tree.
+    Range<TJournaledSeqIt>  bufferedChunk;  // The chunk currently buffered.
+    Range<TDeltaIterator>   deltaRange;
     TJournaledSet           journaledSet;   // The actual sequences over the current chunk.
     TStringPositions        startPositions; // The begin positions of the strings within the chunk.
     TStringPositions        endPositions;   // The end positions of the strings within the chunk.
@@ -134,7 +138,7 @@ struct Member<JstSequenceBuffer<TJournaledStringTree, TDirection>, JstSeqBufferJ
 
 namespace impl
 {
-
+    
 // TODO(rrahn): Implement streamTo()
 
 }  // namespace impl

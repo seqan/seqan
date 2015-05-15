@@ -85,24 +85,27 @@ public:
     TTraverser& traverser;          // Registered traverser.
     TExtenal&   extFunctor;         // Registered extension functor, called for every new position.
 
+    TDeltaIter  bpFirstInWindow;
     TCoverage   backUpCoverge;
-    TDeque      stack;              // State deque.
-    TAuxTable   auxDeltaPoints;     // Current state over tracked deletions and SVs.
+    TStack      branchStack;        // Stack over the branches. Note, its size can be at most depth of the string tree.
+    TAuxTable   mergePoints;        // Registered merge points.
 
     // Custom c'tor.
     JstTraversalOperator(TTraverser & obj, TExternal & alg) :
         traverser(obj),
         externalFunctor(alg)
-    {  // Create initial base entry.
+    {
+        bpFirstInWindow = buffer(traverser).deltaRange.begin;
+        // Create initial base entry.
         TEntry tmp;
-        tmp.bpNext        = buffer(traverser).deltaRange.begin;
+        tmp.bpNext        = bpFirstInWindow;
         tmp.bp            = tmp.bpNext;
         tmp.cur           = buffer(traverser).sourceRange.begin;  // need to get buffered range.
         tmp.end           = buffer(traverser).sourceRange.end;
         tmp.bpNextVirtual = deltaPosition(tmp.bpNext);
-        arrayFill(begin(tmp.coverage), end(tmp.coverage), true);
-        push(stack, SEQAN_MOVE(tmp));
-        traverser.entryPtr = &top(stack);
+        arrayFill(begin(tmp.supportCoverage), end(tmp.supportCoverage), true);
+        push(branchStack, SEQAN_MOVE(tmp));
+        traverser.entryPtr = &top(branchStack);
     }
 };
 
@@ -125,7 +128,7 @@ template <typename TTraverser, typename TExternal>
 inline typename Reference<Member<JstTraversalOperator<TTraverser, TExternal>, JstTraversalStackMember>::Type>::Type
 current(JstTraversalOperator<TTraverser, TExternal> & op)
 {
-    return top(op.stack);
+    return top(op.branchStack);
 }
 
 // ----------------------------------------------------------------------------
@@ -135,7 +138,7 @@ current(JstTraversalOperator<TTraverser, TExternal> & op)
 template <typename TTraverser, typename TExternal>
 inline bool impl::isBase(JstTraversalOperator<TTraverser, TExternal> const & op)
 {
-    return length(op.stack) == 1;
+    return length(op.branchStack) == 1;
 }
 
 // ----------------------------------------------------------------------------
@@ -148,15 +151,15 @@ recordMergePoint(JstTraversalOperator<TTraverser, TExternal> & op,
                  TDeltaIter const & branchPoint)
 {
     typedef JstTraversalOperator<TTraverser, TExternal>     TOperator;
-    typedef typename TOperator::TAuxTable                   TAuxTable;
-    typedef typename Iterator<TAuxTable, Standard>::Type    TIter;
+    typedef typename TOperator::TAuxTable                   TMergePoints;
+    typedef typename Iterator<TMergePoints, Standard>::Type TIter;
 
-    if (SEQAN_UNLIKELY(empty(op.auxDeltaPoints)))
-        op.auxDeltaPoints.push_back(branchPoint);
+    if (SEQAN_UNLIKELY(empty(op.mergePoints)))
+        op.mergePoints.push_back(branchPoint);
 
-    TIter it = std::lower_bound(begin(op.auxDeltaPoints, Standard()), end(op.auxDeltaPoints, Standard()),
+    TIter it = std::lower_bound(begin(op.mergePoints, Standard()), end(op.mergePoints, Standard()),
                                 branchPoint, DeltaMapIterLessByEndPosition());
-    op.auxDeltaPoints.insert(it, branchPoint);
+    op.mergePoints.insert(it, branchPoint);
 }
 
 // ----------------------------------------------------------------------------
@@ -422,9 +425,9 @@ selectProxy(TEntry & target,
 
 template <typename TEntry, typename TTraverser, typename TExternal, typename TBool>
 inline void
-impl::updateBranch(TEntry & target,
-                   JstTraversalOperator<TTraverser, TExternal> & op,
-                   TBool const & /*flag*/)
+updateBranch(TEntry & target,
+             JstTraversalOperator<TTraverser, TExternal> & op,
+             TBool const & /*flag*/)
 {
     if (SEQAN_LIKELEY(deltaType(child.bp) == DELTA_TYPE_SNP))  // Expect mostly SNPs.
     {
@@ -473,50 +476,82 @@ typename TTraverser, typename TExternal>
 inline typename Position<TTraverser>::Type
 mappedSourcePosition(JstTraversalOperator<TTraverser, TExternal> const & op)
 {
+    if (impl::isBase(op))  // In base case we can simply take the position of the windowBegin iterator within the source sequence.
+        return position(windowBegin(op.traverser));
 
+    if (SEQAN_UNLIKELY(position(impl::current(op).begBp) < position(windowBegin(op.traverser)))  // In case the windowBegin iterator points within the delta (can happen for insertions or SVs).
+        return deltaPosition(impl::current());
 
+    SEQAN_ASSERT_GEQ(deltaPosition(impl::current(op).bp), position(impl::current(op).begBp) - position(windowBegin(op.traverser)));  // The diff between window begin and iterator to delta begin must be less than the current branch point position.
+    return deltaPosition(impl::current(op).begBp) - position(impl::current(op).begBp) - position(windowBegin(op.traverser));
 }
 
 // ----------------------------------------------------------------------------
-// Function impl::syncCoverageWithMergePoints()
+// Function impl::updateExcludedCoverage()
 // ----------------------------------------------------------------------------
 
-template <typename TTraverser, typename TExternal, typename TBool>
+template <typename TTraverser, typename TExternal, typename TIsBase>
 inline void
-syncCoverageWithMergePoints(JstTraversalOperator<TTraverser, TExternal> & op, TBool const & /*flag*/)
+updateExcludedCoverage(JstTraversalOperator<TTraverser, TExternal> & op, TIsBase const & /*flag*/)
 {
+    typedef JstTraversalOperator<TTraverser, TExternal>     TOperator;
     typedef typename Container<TTraverser>::Type            TDeltaMap;
-    typedef typename Value<TDeltaMap>::Type                 TEntry;
+    typedef typename Value<TDeltaMap>::Type                 TDeltaEntry;
     typedef typename Iterator<TDeltaMap, Standard>::Type    TMapIterator;
-    typedef typename Position<TTraverser>::Type TPos;
-    // Implement logic.
-    // We wan't to find the
-    if (empty(op.auxDeltaPoints))
-        return;  // Nothing to do.
+    typedef typename Position<TTraverser>::Type             TPos;
+    typedef typename TOperator::TEntry                      TBranchPointEntry;
 
-    TPos pos;
-    if (impl::isBase(op))
-        pos = position(windowBegin(op.traverser));
+    // Get mapped source position for current entry.
+    TPos mappedSrcPos = impl::mappedSourcePosition(op);
+
+    // Depending on the flag we update the base node or some internal branch node.
+    if (IsSameType<TIsBase, True>::VALUE)
+    {
+        while (op.bpFirstInWindow != impl::current(op).bpNext && deltaPosition(op.bpFirstInWindow++) < mappedSrcPos)
+        {}
+
+        impl::current(op).excludeCoverage = impl::current(op).supportCoverage;
+        for (TMapIterator it = op.bpFirstInWindow; it != impl::current(op).bpNext; ++it)
+            transform(impl::current(op).excludeCoverage, impl::current(op).excludeCoverage, deltaCoverage(it),
+                      FunctorBitwiseOr());
+
+    }
     else
     {
-        TPos pos = position(windowBegin(op.traverser));
-        if (pos >= position(impl::current(op).begBp))
-            // In this case the coverage is at least the coverage of the branch point.
+        // First find the first node that represents
+        TDeltaEntry tmp;
+        tmp.deltaPosition = mappedSrcPos;
+        TMapIterator it = std::lower_bound(op.bpFirstInWindow, impl::current(op).bp, tmp,
+                                           DeltaMapEntryPosLessThanComparator_());
+        // itMap is first branch point whose position compares not less than the mappedSrc Pos.
+        impl::current(op).excludeCoverage = impl::current(op).supportCoverage;
+        for (; it != impl::current(op).bp; ++it)
+            transform(impl::current(op).excludeCoverage, impl::current(op).excludeCoverage, deltaCoverage(it),
+                      FunctorBitwiseOr());
+
     }
 
+    // Now update the exclude coverage with the merge points.
+    if (empty(op.mergePoints))
+        return;  // Nothing to do.
 
-    // Otherwise check all stored merge points that overlap with the current window and update the coverage.
-    // If flag is true, remove all previous ones.
+    // Find first MP that affects the current search window.
+    TMapIterator itMp = std::lower_bound(begin(op.mergePoints), end(op.mergePoints), mappedSrcPos,
+                                         [](TMapIterator const & it, TPos pos)
+                                         {
+                                             return deltaEndPosition(it) < pos;
+                                         });
+    // Remove leading merge points if in base node.
+    if (IsSameType<TIsBase, True>::VALUE)
+        erase(begin(op.mergePoints), itMp);  // This does not invalidate itMap as long as merge ponits is a deque.
 
-    TEntry entry;
-    entry.deltaPosition = impl::mappedSourcePosition(op);
-    TMapIterator it = std::lower_bound(buffer(op.traverser).deltaRange.begin, buffer(op.traverser).deltaRange.end,
-                                       entry, f);
-    // A) find first branchNode within window.
-    // B) find first mergePoint that overlaps.
-    // C) create a coverage that contains all recorded ones
-    // D) Update current coverage with this one.
-    // E) If flag true -> remove all previous ones.
+    if (itMp == end(op.mergePoints))
+        return;  // Nothing to do.
+
+    // Parse the merge points and update the coverage.
+    for (; itMp != end(op.mergePoints); ++itMp)
+        transform(impl::current(op).excludeCoverage, impl::current(op).excludeCoverage, deltaCoverage(itMp),
+                  FunctorBitwiseOr());
 }
     
 }  // namespace impl
@@ -528,7 +563,7 @@ syncCoverageWithMergePoints(JstTraversalOperator<TTraverser, TExternal> & op, TB
 // ----------------------------------------------------------------------------
 // Function advance()
 // ----------------------------------------------------------------------------
-
+// TODO(rrahn): Documentation
 template <typename TTraverser, typename TExternal>
 inline void
 advance(JstTraversalOperator<TTraverser, TExternal> & op, Forward const & /*dir*/)
@@ -540,20 +575,23 @@ advance(JstTraversalOperator<TTraverser, TExternal> & op, Forward const & /*dir*
 
     TEntry & entry = impl::current(op);
 
-    op.backUpCoverge = entry.coverage;
-    if (impl::isBase(op))
-        impl::syncCoverageWithMergePoints(op, True());
-    else
-        impl::syncCoverageWithMergePoints(op, False());
+    // Active coverage is stored as in the traverser.
+    transform(op.traverser.activeCoverage, entry.supportCoverage, entry.excludeCoverage,
+              NestedFunctor<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
+
     entry.currentIt += apply(op.extension, op.traverser);  // Move window by returned step size from the external algorithm.
-    // sync2 if we left previous delta nodes.
-    swap(entry.coverage, op.backUpCoverge);
+
+    if (impl::isBase(op))
+        impl::updateExcludedCoverage(op, True());
+    else
+        impl::updateExcludedCoverage(op, False());
 }
 
 // ----------------------------------------------------------------------------
 // Function expand()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Documentation
 template <typename TTraverser, typename TExternal>
 inline void
 expand(JstTraversalOperator<TTraverser, TExternal> & op)
@@ -575,13 +613,14 @@ expand(JstTraversalOperator<TTraverser, TExternal> & op)
         TEntry child;
         child.bpNext = parent.bpNext;
         // The new branch results from the current cov & cov'branchPoint.
-        transform(child.coverage, parent.coverage, getDeltaCoverage(parent.bpNext), FunctorBitwiseAnd());
-        // Update parent coverage to represent all but the sequences that support the current branch point.
-        transform(parent.coverage, parent.coverage, getDeltaCoverage(parent.bpNext),
-                  FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
+        transform(child.supportCoverage, parent.supportCoverage, getDeltaCoverage(parent.bpNext), FunctorBitwiseAnd());
+        child.excludeCoverage = parent.excludeCoverage;  // TODO(rrahn): Check if this causes a problem, if multiple branch points occur at the same position.
 
         if (impl::isBase(op))  // Spawn off an intial branch from the source.
         {
+            // Update parent coverage to represent all but the sequences that support the current branch point.
+            transform(parent.excludeCoverage, parent.excludeCoverage, getDeltaCoverage(parent.bpNext),
+                      FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());  // We probably do not update the coverage here.
             child.bp = child.bpNext;  // Set the initial branchPoint for this branch.
             SEQAN_ASSERT_GEQ(position(parent.cur), deltaPosition(parent.bpNext));
             parent.begBp = parent.cur - (position(parent.cur) - deltaPosition(parent.bpNext));
@@ -590,6 +629,9 @@ expand(JstTraversalOperator<TTraverser, TExternal> & op)
         }
         else  // Spawn off another branch within the current subtree.
         {
+            // Update parent coverage to represent all but the sequences that support the current branch point.
+            transform(parent.supportCoverage, parent.supportCoverage, getDeltaCoverage(parent.bpNext),
+                      FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
             child.bp = parent.bp;
 
             unsigned proxyId = bitScanForward(child.coverage);
@@ -611,7 +653,7 @@ expand(JstTraversalOperator<TTraverser, TExternal> & op)
         }
         impl::updateProxy(child, op, False());
         child.state = parent.state;  // Transfer the current state to the child branch.
-        push(op.stack, SEQAN_MOVE(child));
+        push(op.branchStack, SEQAN_MOVE(child));
     } while (deltaPosition(parent.bpNext++) == deltaPosition(parent.bpNext))
         // Now they are different and we know that the parent does not include a variant.
         parent.bpNextVirtual += deltaPosition(parent.bpNext) - deltaPosition(parent.bpNext - 1);

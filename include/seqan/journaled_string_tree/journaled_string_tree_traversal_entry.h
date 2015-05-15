@@ -74,7 +74,9 @@ public:
 
     // ____________ Coverage ___________________________
 
-    TCoverage coverage;             // The current coverage.
+    TCoverage supportCoverage;   // Coverage supported for the current branch.
+    TCoverage excludeCoverage;   // Coverage excluded based on previous deltas.
+
 };
 
 // ----------------------------------------------------------------------------

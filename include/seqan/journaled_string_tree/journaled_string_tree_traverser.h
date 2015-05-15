@@ -118,14 +118,16 @@ public:
     typedef typename Member<TJstBuffer, JstSeqBufferJournaledSetMember>::Type   TJournaledSet;
     typedef typename Value<TJournaledSet>::Type                                 TJournaledSeq;
     typedef typename Size<TDeltaMap>::Type                                      TSize;
+    typedef typename DeltaCoverage<TDeltaMap>::Type                             TCoverage;
     typedef BaseJstTraversalEntry<TDeltaMap, TJournaledSeq>                     TBaseEntry;
 
 
     bool                inBranch;
-    TBaseEntry *        entryPtr;                   // Pointer to the traverser stack.
     TSize               windowSize;                 // Size of the window.
     TJstBuffer          bufferOwner;                // Owns the sequence buffer.
     TJstBuffer *        bufferPtr;                  // Points to used sequence buffer.
+
+    TCoverage           activeCoverage;             // The active coverage set by the operator.
 
     Traverser() : inBranch(false), entryPtr(nullptr), contextSize(1), bufferOwner(), bufferPtr(&bufferOwner)
     {}
@@ -161,6 +163,17 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Metafunction Position
+// ----------------------------------------------------------------------------
+
+template <typename TObject, typename TConfig, typename TSpec>
+struct Position<Traverser<TObject, TConfig, TSpec> >
+{
+    typedef typename Position<TObject>::Type    TPosition_;
+    typedef String<TPosition>                   Type;
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction Container
 // ----------------------------------------------------------------------------
 
@@ -168,12 +181,6 @@ template <typename TObject, typename TConfig, typename TSpec>
 struct Container<Traverser<TObject, TConfig, TSpec> >
 {
     typedef TObject Type;
-};
-
-template <typename TObject, typename TConfig, typename TSpec>
-struct Container<Traverser<TObject, TConfig, TSpec> const >
-{
-    typedef TObject const Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -277,6 +284,7 @@ getContext(Traverser<TObject, TConfig, TSpec> const & traverser)
 // Function setContainer()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Doc!
 // JstTraverser option to set the container for the buffer as well.
 template <typename TObject, typename TConfig>
 inline void
@@ -291,6 +299,7 @@ setContainer(Traverser<TObject, TConfig, JstTraverser> & traverser,
 // Function container()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Doc!
 // RD_ONLY to avoid replacing the container without noticing the internal structures.
 template <typename TObject, typename TConfig>
 inline typename Container<Traverser<TObject, TConfig, JstTraverser> const>::Type &
@@ -303,6 +312,7 @@ container(Traverser<TObject, TConfig, JstTraverser> const & traverser)
 // Function setBuffer()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Doc!
 template <typename TObject, typename TConfig>
 inline typename Buffer<Traverser<TObject, TConfig, JstTraverser> >::Type &
 setBuffer(Traverser<TObject, TConfig, JstTraverser> & traverser,
@@ -316,6 +326,7 @@ setBuffer(Traverser<TObject, TConfig, JstTraverser> & traverser,
 // Function buffer()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Doc!
 // TODO(rrahn): Document behaviour and possible problem, if multiple traversers depend on the same buffer, e.g. invalid state.
 template <typename TObject, typename TConfig>
 inline typename Buffer<Traverser<TObject, TConfig, JstTraverser> >::Type &
@@ -335,6 +346,7 @@ buffer(Traverser<TObject, TConfig, JstTraverser> const & traverser)
 // Function setBeginPosition()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Doc!
 template <typename TObject, typename TConfig, typename TPos>
 inline void
 setBeginPosition(Traverser<TObject, TConfig, JstTraverser> & traverser,
@@ -348,6 +360,7 @@ setBeginPosition(Traverser<TObject, TConfig, JstTraverser> & traverser,
 // Function setEndPosition()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Doc!
 //  to avoid unnotified replacement of the jst buffer.
 template <typename TObject, typename TConfig, typename TPos>
 inline void
@@ -362,6 +375,7 @@ setEndPosition(Traverser<TObject, TConfig, JstTraverser> & traverser,
 // Function windowSize()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Doc!
 template <typename TObject, typename TConfig, typename TSpec>
 inline typename Size<typename Container<Traverser<TObject, TConfig, TSpec> >::Type>::Type
 windowSize(Traverser<TObject, TConfig, TSpec> const & traverser)
@@ -373,6 +387,7 @@ windowSize(Traverser<TObject, TConfig, TSpec> const & traverser)
 // Function setWindowSize()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Doc!
 template <typename TObject, typename TConfig, typename TSpec, typename TSize>
 inline void
 setWindowSize(Traverser<TObject, TConfig, TSpec> const & traverser, TSize newSize)
@@ -384,6 +399,7 @@ setWindowSize(Traverser<TObject, TConfig, TSpec> const & traverser, TSize newSiz
 // Function window()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Doc!
 template <typename TObject, typename TConfig, typename TSpec>
 inline typename Window<Traverser<TObject, TConfig, TSpec> >::Type
 window(Traverser<TObject, TConfig, TSpec> & traverser)
@@ -402,6 +418,7 @@ window(Traverser<TObject, TConfig, TSpec> const & traverser)
 // Function windowBegin()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Doc!
 template <typename TObject, typename TConfig, typename TSpec>
 inline typename Iterator<typename Window<Traverser<TObject, TConfig, TSpec> >::Type>::Type
 windowBegin(Traverser<TObject, TConfig, TSpec> & traverser)
@@ -420,6 +437,7 @@ windowBegin(Traverser<TObject, TConfig, TSpec> const & traverser)
 // Function windowEnd()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Doc!
 template <typename TObject, typename TConfig, typename TSpec>
 inline typename Iterator<typename Window<Traverser<TObject, TConfig, TSpec> >::Type>::Type
 windowEnd(Traverser<TObject, TConfig, TSpec> & traverser)
@@ -435,9 +453,39 @@ windowEnd(Traverser<TObject, TConfig, TSpec> const & traverser)
 }
 
 // ----------------------------------------------------------------------------
+// Function position
+// ----------------------------------------------------------------------------
+
+// TODO(rrahn): Doc!
+template <typename TObject, typename TConfig, typename TSpec>
+inline typename Position<Traverser<TObject, TConfig, TSpec> const>::Type
+position(TTraverser<TObject, TConfig, TSpec> const & traverser)
+{
+    typedef TTraverser<TObject, TConfig, TSpec> const   	TTraverser;
+    typedef typename Position<TTraverser>::Type             TPosition;
+    typedef typename Container<TTraverser>::Type            TDeltaMap;
+    typedef typename DeltaCoverage<TDeltaMap>::Type         TCoverage;
+    typedef typename Iterator<TCoverage, Standard>::Type    TCovIterator;
+
+    TPosition posVec;
+    reserve(posVec, length(traverser.activeCoverage), Exact());  // Reserve enough memory.
+
+    TCovIteator covBeg = begin(traverser.activeCoverage, Standard())
+    forEach(covBeg, end(traverser.activeCoverage, Standard()),
+            [&posVec, =covBeg](TCovIterator const & it)
+            {
+                if (*it)
+                    appendValue(posVec, it - covBeg);  // Fill values.
+            });
+    return posVec;  // Return as rvalue reference.
+}
+
+// ----------------------------------------------------------------------------
 // Function traverse()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Doc!
+// TODO(rrahn): Demo!
 template <typename TContainer, typename TConfig, typename TExternal, typename TDirection>
 inline void
 traverse(Traverser<TContainer, TConfig, JstTraverser> & traverser,
