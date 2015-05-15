@@ -197,7 +197,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addListItem(parser, "\\fBsamcat\\fP \\fBmapped1.sam\\fP \\fBmapped2.sam\\fP \\fB-o\\fP \\fBmerged.sam\\fP",
                 "Merge two SAM files.");
 #if SEQAN_HAS_ZLIB
-    addListItem(parser, "\\fBsamcat\\fP \\fBinput.sam\\fP \\fB-o\\fP \\fBouput.bam\\fP",
+    addListItem(parser, "\\fBsamcat\\fP \\fBinput.sam\\fP \\fB-o\\fP \\fBoutput.bam\\fP",
                 "Convert a SAM file into BAM format.");
 #endif
 
