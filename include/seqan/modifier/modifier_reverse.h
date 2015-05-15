@@ -572,22 +572,15 @@ reverse(StringSet<TSequence, TSpec> & stringSet, Tag<TParallelTag>)
         reverse(stringSet[seqNo], Serial());
 }
 
-template <typename TValue>
-inline void
-reverse(std::list<TValue> & list)
-{
-    list.reverse();
-}
-
 template < typename TText >
-inline void
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TText> >)
 reverse(TText & text)
 {
     reverse(text, Parallel());
 }
 
 // const variants for segments/modifiers
-
+//NOTE(h-2): why do we remove constnes??
 template < typename TText >
 inline void
 reverse(TText const & text)
@@ -601,7 +594,6 @@ reverse(TText const & text, Tag<TParallelTag> parallelTag)
 {
     reverse(const_cast<TText &>(text), parallelTag);
 }
-
 
 // --------------------------------------------------------------------------
 // Function reverseString()

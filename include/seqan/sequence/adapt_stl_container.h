@@ -43,9 +43,6 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
-// struct StlIter__ {};
-// typedef Tag<StlIter__> const StlIter_;
-
 // ===========================================================================
 // Concepts
 // ===========================================================================
@@ -91,21 +88,21 @@ SEQAN_CONCEPT_IMPL((std::array<TChar, N> const), (StlContainerConcept));
 /* NOTE(h-2) on ConceptChecking and universal references
  *
  * When type deduction takes place before && then && can act as both && or &
- * [see https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers]
+ * [https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers]
  *
  * This has the effect that in
  *      foobar(T &&)
  * T actually can be "int &". Consequently the above becomes "int & &&" which
  * collapses to "int &". The important thing is that in
  *      template<typename EnableIf<Is<SuperConcept<T> >
- * this will result in the ConceptCheck always failing (because the Concept is not
- * defined for reference types).
+ * this will result in the ConceptCheck always failing (because the Concept is
+ * not defined for reference types).
  *
- * So in the following you will see a RemoveReference< > around the type whenever
- * the function take a && argument or SEQAN_FORWARD_ARG argument AND it shall act
- * as univeral reference. In some cases it shall not (because there is a different
- * overload for the l-value reference arg) and it is intentionally omitted, e.g.
- * value().
+ * So in the following you will see a RemoveReference< > around the type
+ * whenever the function takes a && argument or SEQAN_FORWARD_ARG argument AND
+ * it shall act as univeral reference (e.g. length()). But in some cases it
+ * shall not (because there is a different overload for the l-value-reference
+ * arg) and it is  intentionally omitted, e.g. value().
  */
 
 // ===========================================================================
@@ -994,15 +991,15 @@ front(TContainer const & me)
     return me.front();
 }
 
-// #ifdef SEQAN_CXX11_STANDARD
-// template <typename TContainer,
-//           typename EnableIf<Is<StlContainerConcept<TContainer> >, int>::Type = 0>
-// inline typename Value<TContainer>::Type
-// front(TContainer && me)
-// {
-//     return me.front();
-// }
-// #endif
+#ifdef SEQAN_CXX11_STANDARD
+template <typename TContainer,
+          typename EnableIf<Is<StlContainerConcept<TContainer> >, int>::Type = 0>
+inline typename Value<TContainer>::Type
+front(TContainer && me)
+{
+    return me.front();
+}
+#endif
 
 // pre-c++11 stdstring doesnt have front and back
 #ifndef SEQAN_CXX11_STANDARD
@@ -1115,8 +1112,8 @@ assign(TContainer && me,
     assign(me, source);
 }
 
-// double universal reference doesn't work here, because it would be ambiguous with
-// the fundamental_assign implementation on gcc
+// double universal reference doesn't work above, because it would be ambiguous
+// with the fundamental_assign implementation on gcc
 
 #endif
 template <typename TContainer,
@@ -1818,12 +1815,30 @@ replace(TContainer SEQAN_FORWARD_ARG me,
 }
 
 // ----------------------------------------------------------------------------
+// Function reverse
+// ----------------------------------------------------------------------------
+
+template <typename TContainer>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<TContainer> >, HasSubscriptOperator<TContainer> >)
+reverse(TContainer SEQAN_FORWARD_ARG me)
+{
+    std::reverse(me.begin(), me.end());
+}
+
+template <typename TContainer>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<TContainer> >, Not<HasSubscriptOperator<TContainer> > >)
+reverse(TContainer SEQAN_FORWARD_ARG me)
+{
+    me.reverse();
+}
+
+// ----------------------------------------------------------------------------
 // Function toCString
 // ----------------------------------------------------------------------------
 
 template <typename TChar, typename TTraits, typename TAlloc>
 inline const TChar*
-toCString(std::basic_string<TChar, TTraits, TAlloc> & me)
+toCString(std::basic_string<TChar, TTraits, TAlloc> const & me)
 {
     return me.c_str();
 }

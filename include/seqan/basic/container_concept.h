@@ -374,21 +374,12 @@ SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept)(PropertyMapCon
 // Concept StlContainerConcept
 // ----------------------------------------------------------------------------
 
-//TODO add dox
-
 template <typename TContainer>
 struct StlContainerConcept :
     ContainerConcept<TContainer>
 {
-//     typedef typename Value<TContainer>::Type                TValue;
-//
-//     TValue val;
     SEQAN_CONCEPT_USAGE(StlContainerConcept)
-    {
-//         val.size();
-//         val.max_size();
-//         val.swap(val);
-    }
+    {}
 };
 
 // --------------------------------------------------------------------------

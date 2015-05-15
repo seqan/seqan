@@ -46,36 +46,9 @@
 
 using namespace seqan;
 
-//TODO this will need to go into the adaptation
-
-// template <typename T>
-// inline void
-// assign(std::list<T> const & list, char const * str)
-// {
-//     clear(list);
-//     for (unsigned i = 0; i < std::strlen(str); ++i)
-//         appendValue(list, static_cast<T>(str[i]));
-// }
-
-// std::basic_string<Dna5> & std::basic_string<Dna5>::operator=( const CharT* s )
-// {
-//     clear(list);
-//     for (unsigned i = 0; i < std::strlen(str); ++i)
-//         appendValue(list, static_cast<T>(str[i]));
-// }
-
-// template <typename T>
-// inline typename Size<std::basic_string<T> >::Type
-// insertValue(std::basic_string<T> & str, unsigned i, T const val)
-// {
-//     str.insert(i, val);
-// }
-
 // --------------------------------------------------------------------------
 // CountingChar is used to test sequences of non simple data types.
 // --------------------------------------------------------------------------
-
-
 
 struct CountingChar
 {
@@ -185,18 +158,8 @@ template <typename TAlphabetSpecPair_>
 class StringTest : public seqan::Test
 {
 public:
-//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 1>::Type TAlphabet;
-//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 2>::Type TSpec;
     typedef TAlphabetSpecPair_ TString;
 };
-// template <typename TAlphabetSpecPair>
-// class StringTest : public seqan::Test
-// {
-// public:
-//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 1>::Type TAlphabet;
-//     typedef typename seqan::TagListValue<TAlphabetSpecPair, 2>::Type TSpec;
-//     typedef seqan::String<TAlphabet, TSpec> TString;
-// };
 
 // --------------------------------------------------------------------------
 // Types which are tested for very common functionality

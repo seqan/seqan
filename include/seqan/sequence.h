@@ -132,9 +132,6 @@
 // ===========================================================================
 
 #include <seqan/sequence/adapt_stl_container.h>
-// #include <seqan/sequence/adapt_std_list.h>
-// #include <seqan/sequence/adapt_std_string.h>
-// #include <seqan/sequence/adapt_std_vector.h>
 #include <seqan/sequence/adapt_array_pointer.h>
 #ifdef PLATFORM_CUDA
 #include <seqan/sequence/adapt_thrust_vector.h>
