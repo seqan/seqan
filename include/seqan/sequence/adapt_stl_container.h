@@ -283,23 +283,7 @@ SUPERMACRO__(Position, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, cons
 // Mfn StdContainerIterator
 // ----------------------------------------------------------------------------
 
-SUPERMACRO__(StdContainerIterator, std::vector<TChar COMMA TAlloc>,        EMPTY, typename TChar COMMA typename TAlloc, iterator)
-SUPERMACRO__(StdContainerIterator, std::deque<TChar COMMA TAlloc>,         EMPTY, typename TChar COMMA typename TAlloc, iterator)
-SUPERMACRO__(StdContainerIterator, std::list<TChar COMMA TAlloc>,          EMPTY, typename TChar COMMA typename TAlloc, iterator)
-#ifdef SEQAN_CXX11_STANDARD
-SUPERMACRO__(StdContainerIterator, std::forward_list<TChar COMMA TAlloc>,  EMPTY, typename TChar COMMA typename TAlloc, iterator)
-SUPERMACRO__(StdContainerIterator, std::array<TChar COMMA N>,              EMPTY, typename TChar COMMA std::size_t N,   iterator)
-#endif
-SUPERMACRO__(StdContainerIterator, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, EMPTY, typename TChar COMMA typename TTraits COMMA typename TAlloc, iterator)
-
-SUPERMACRO__(StdContainerIterator, std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc, const_iterator)
-SUPERMACRO__(StdContainerIterator, std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc, const_iterator)
-SUPERMACRO__(StdContainerIterator, std::list<TChar COMMA TAlloc>,          const, typename TChar COMMA typename TAlloc, const_iterator)
-#ifdef SEQAN_CXX11_STANDARD
-SUPERMACRO__(StdContainerIterator, std::forward_list<TChar COMMA TAlloc>,  const, typename TChar COMMA typename TAlloc, const_iterator)
-SUPERMACRO__(StdContainerIterator, std::array<TChar COMMA N>,              const, typename TChar COMMA std::size_t N,   const_iterator)
-#endif
-SUPERMACRO__(StdContainerIterator, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, const, typename TChar COMMA typename TTraits COMMA typename TAlloc, const_iterator)
+// moved to basic/iterator_adapt_std.h again
 
 // ----------------------------------------------------------------------------
 // Mfn Iterator (Standard)

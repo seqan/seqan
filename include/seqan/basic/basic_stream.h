@@ -58,6 +58,18 @@ inline void writeValue(Iter<TContainer, StreamIterator<Output> > &iter, TValue v
 template <typename TValue, typename TTraits>
 inline bool atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
 
+template <typename TContainer>
+inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, typename Size<TContainer>::Type)
+length(TContainer const & me);
+
+template <typename TContainer>
+struct FixedSize_;
+
+template <typename TContainer, typename TSource>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
+                                Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
+appendValue(TContainer SEQAN_FORWARD_ARG me, TSource const & source);
+
 /*!
  * @macro SEQAN_HAS_ZLIB
  * @headerfile <seqan/stream.h>

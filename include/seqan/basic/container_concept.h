@@ -374,9 +374,12 @@ SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept)(PropertyMapCon
 // Concept StlContainerConcept
 // ----------------------------------------------------------------------------
 
-template <typename TContainer>
-struct StlContainerConcept :
-    ContainerConcept<TContainer>
+// template <typename TContainer>
+// struct StlContainerConcept :
+//     ContainerConcept<TContainer>
+    
+
+SEQAN_CONCEPT_REFINE(StlContainerConcept, (TContainer), (ContainerConcept))
 {
     SEQAN_CONCEPT_USAGE(StlContainerConcept)
     {}

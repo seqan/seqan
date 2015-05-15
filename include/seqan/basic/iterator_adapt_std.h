@@ -238,6 +238,25 @@ template <typename TContainer>
 struct Reference<Iter<TContainer const, StdIteratorAdaptor> const> :
         Reference<Iter<TContainer const, StdIteratorAdaptor> > {};
 
+// ----------------------------------------------------------------------------
+// Metafunction StdContainerIterator
+// ----------------------------------------------------------------------------
+
+template <typename TStdContainer>
+struct StdContainerIterator;
+
+template <typename TStdContainer>
+struct StdContainerIterator
+{
+     typedef typename TStdContainer::iterator Type;
+};
+
+template <typename TStdContainer>
+struct StdContainerIterator<TStdContainer const>
+{
+     typedef typename TStdContainer::const_iterator Type;
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
