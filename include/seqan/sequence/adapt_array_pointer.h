@@ -123,8 +123,9 @@ struct IsSequence< TValue const [SIZE] > : public True {};
 // Concept Sequence
 // ----------------------------------------------------------------------------
 
-template <typename TValue>
-SEQAN_CONCEPT_IMPL((TValue *), (ContainerConcept));
+// NOTE(h-2): why is this broken?
+// template <typename TValue>
+// SEQAN_CONCEPT_IMPL((TValue *), (ContainerConcept));
 
 template <typename TValue>
 SEQAN_CONCEPT_IMPL((TValue * const), (ContainerConcept));
