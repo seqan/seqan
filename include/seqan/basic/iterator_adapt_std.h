@@ -242,22 +242,20 @@ struct Reference<Iter<TContainer const, StdIteratorAdaptor> const> :
 // Metafunction StdContainerIterator
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): This is a candidate for not beging publically documented
+template <typename TStdContainer>
+struct StdContainerIterator;
 
-// template <typename TStdContainer>
-// struct StdContainerIterator;
-//
-// template <typename TStdContainer>
-// struct StdContainerIterator
-// {
-//      typedef typename TStdContainer::iterator Type;
-// };
-//
-// template <typename TStdContainer>
-// struct StdContainerIterator<TStdContainer const>
-// {
-//      typedef typename TStdContainer::const_iterator Type;
-// };
+template <typename TStdContainer>
+struct StdContainerIterator
+{
+     typedef typename TStdContainer::iterator Type;
+};
+
+template <typename TStdContainer>
+struct StdContainerIterator<TStdContainer const>
+{
+     typedef typename TStdContainer::const_iterator Type;
+};
 
 // ============================================================================
 // Functions
@@ -461,44 +459,6 @@ goPrevious(Iter<TContainer, StdIteratorAdaptor> & me)
 // Function operator+()
 // ----------------------------------------------------------------------------
 
-// template <typename TContainer, typename TIntegral>
-// inline Iter<TContainer, StdIteratorAdaptor>
-// operator+(Iter<TContainer, StdIteratorAdaptor> const & left,
-//           TIntegral right)
-// {
-//     SEQAN_CHECKPOINT;
-//     return Iter<TContainer, StdIteratorAdaptor>(hostIterator(left) + right);
-// }
-//
-// // for <anonymous enum> types
-// template <typename TContainer>
-// inline Iter<TContainer, StdIteratorAdaptor>
-// operator+(Iter<TContainer, StdIteratorAdaptor> const & left,
-//           int right)
-// {
-//     SEQAN_CHECKPOINT;
-//     return Iter<TContainer, StdIteratorAdaptor>(hostIterator(left) + right);
-// }
-//
-// template <typename TContainer, typename TIntegral>
-// inline Iter<TContainer, StdIteratorAdaptor>
-// operator+(TIntegral left,
-//           Iter<TContainer, StdIteratorAdaptor> const & right)
-// {
-//     SEQAN_CHECKPOINT;
-//     return Iter<TContainer, StdIteratorAdaptor>(hostIterator(right) + left);
-// }
-//
-// // for <anonymous enum> types
-// template <typename TContainer>
-// inline Iter<TContainer, StdIteratorAdaptor>
-// operator+(int left,
-//           Iter<TContainer, StdIteratorAdaptor> const & right)
-// {
-//     SEQAN_CHECKPOINT;
-//     return Iter<TContainer, StdIteratorAdaptor>(hostIterator(right) + left);
-// }
-
 template <typename TContainer, typename TIntegral>
 inline Iter<TContainer, StdIteratorAdaptor>
 operator+(Iter<TContainer, StdIteratorAdaptor> left,
@@ -569,34 +529,6 @@ operator+=(Iter<TContainer, StdIteratorAdaptor> & left,
 // ----------------------------------------------------------------------------
 // Function operator-()
 // ----------------------------------------------------------------------------
-
-// template <typename TContainer, typename TIntegral>
-// inline Iter<TContainer, StdIteratorAdaptor>
-// operator-(Iter<TContainer, StdIteratorAdaptor> const & left,
-//           TIntegral right)
-// {
-//     SEQAN_CHECKPOINT;
-//     return Iter<TContainer, StdIteratorAdaptor>(hostIterator(left) - right);
-// }
-//
-// // for <anonymous enum> types
-// template <typename TContainer>
-// inline Iter<TContainer, StdIteratorAdaptor>
-// operator-(Iter<TContainer, StdIteratorAdaptor> const & left,
-//           int right)
-// {
-// SEQAN_CHECKPOINT
-//     return Iter<TContainer, StdIteratorAdaptor>(hostIterator(left) - right);
-// }
-//
-// template <typename TContainer>
-// inline typename Difference<Iter<TContainer, StdIteratorAdaptor> >::Type
-// operator-(Iter<TContainer, StdIteratorAdaptor> const & left,
-//           Iter<TContainer, StdIteratorAdaptor> const & right)
-// {
-//     SEQAN_CHECKPOINT;
-//     return hostIterator(left) - hostIterator(right);
-// }
 
 template <typename TContainer, typename TIntegral>
 inline Iter<TContainer, StdIteratorAdaptor>

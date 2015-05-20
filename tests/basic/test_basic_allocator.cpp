@@ -25,7 +25,7 @@
 // SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 // LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-// OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+    // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 // DAMAGE.
 //
 // ==========================================================================
@@ -34,8 +34,7 @@
 // Tests for the sub module basic_fundamental.
 // ==========================================================================
 
-#include <seqan/basic/basic_debug.h>
-#include <seqan/basic/basic_allocator.h>
+#include <seqan/basic.h>
 
 #include "test_basic_allocator.h"
 

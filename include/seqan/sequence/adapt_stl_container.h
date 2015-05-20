@@ -43,9 +43,6 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
-// struct StlIter__ {};
-// typedef Tag<StlIter__> const StlIter_;
-
 // ===========================================================================
 // Concepts
 // ===========================================================================
@@ -91,21 +88,21 @@ SEQAN_CONCEPT_IMPL((std::array<TChar, N> const), (StlContainerConcept));
 /* NOTE(h-2) on ConceptChecking and universal references
  *
  * When type deduction takes place before && then && can act as both && or &
- * [see https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers]
+ * [https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers]
  *
  * This has the effect that in
  *      foobar(T &&)
  * T actually can be "int &". Consequently the above becomes "int & &&" which
  * collapses to "int &". The important thing is that in
  *      template<typename EnableIf<Is<SuperConcept<T> >
- * this will result in the ConceptCheck always failing (because the Concept is not
- * defined for reference types).
+ * this will result in the ConceptCheck always failing (because the Concept is
+ * not defined for reference types).
  *
- * So in the following you will see a RemoveReference< > around the type whenever
- * the function take a && argument or SEQAN_FORWARD_ARG argument AND it shall act
- * as univeral reference. In some cases it shall not (because there is a different
- * overload for the l-value reference arg) and it is intentionally omitted, e.g.
- * value().
+ * So in the following you will see a RemoveReference< > around the type
+ * whenever the function takes a && argument or SEQAN_FORWARD_ARG argument AND
+ * it shall act as univeral reference (e.g. length()). But in some cases it
+ * shall not (because there is a different overload for the l-value-reference
+ * arg) and it is  intentionally omitted, e.g. value().
  */
 
 // ===========================================================================
@@ -167,6 +164,7 @@ struct HasSubscriptOperator<std::deque<TChar, TAlloc> const> :
 // ----------------------------------------------------------------------------
 
 #define COMMA ,
+#define EMPTY
 
 #define SUPERMACRO__(MTFN, CONT, CONST, TMPL, MEMB) \
 template <TMPL> \
@@ -175,14 +173,14 @@ struct MTFN<CONT CONST> \
     typedef typename CONT::MEMB Type; \
 };
 
-SUPERMACRO__(Value, std::vector<TChar COMMA TAlloc>,             , typename TChar COMMA typename TAlloc, value_type)
-SUPERMACRO__(Value, std::deque<TChar COMMA TAlloc>,              , typename TChar COMMA typename TAlloc, value_type)
-SUPERMACRO__(Value, std::list<TChar COMMA TAlloc>,               , typename TChar COMMA typename TAlloc, value_type)
+SUPERMACRO__(Value, std::vector<TChar COMMA TAlloc>,        EMPTY, typename TChar COMMA typename TAlloc, value_type)
+SUPERMACRO__(Value, std::deque<TChar COMMA TAlloc>,         EMPTY, typename TChar COMMA typename TAlloc, value_type)
+SUPERMACRO__(Value, std::list<TChar COMMA TAlloc>,          EMPTY, typename TChar COMMA typename TAlloc, value_type)
 #ifdef SEQAN_CXX11_STANDARD
-SUPERMACRO__(Value, std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc, value_type)
-SUPERMACRO__(Value, std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N,   value_type)
+SUPERMACRO__(Value, std::forward_list<TChar COMMA TAlloc>,  EMPTY, typename TChar COMMA typename TAlloc, value_type)
+SUPERMACRO__(Value, std::array<TChar COMMA N>,              EMPTY, typename TChar COMMA std::size_t N,   value_type)
 #endif
-SUPERMACRO__(Value, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc, value_type)
+SUPERMACRO__(Value, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, EMPTY, typename TChar COMMA typename TTraits COMMA typename TAlloc, value_type)
 
 SUPERMACRO__(Value, std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc, value_type)
 SUPERMACRO__(Value, std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc, value_type)
@@ -197,14 +195,14 @@ SUPERMACRO__(Value, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, const, 
 // Mfn Reference
 // ----------------------------------------------------------------------------
 
-SUPERMACRO__(Reference, std::vector<TChar COMMA TAlloc>,             , typename TChar COMMA typename TAlloc, reference)
-SUPERMACRO__(Reference, std::deque<TChar COMMA TAlloc>,              , typename TChar COMMA typename TAlloc, reference)
-SUPERMACRO__(Reference, std::list<TChar COMMA TAlloc>,               , typename TChar COMMA typename TAlloc, reference)
+SUPERMACRO__(Reference, std::vector<TChar COMMA TAlloc>,        EMPTY, typename TChar COMMA typename TAlloc, reference)
+SUPERMACRO__(Reference, std::deque<TChar COMMA TAlloc>,         EMPTY, typename TChar COMMA typename TAlloc, reference)
+SUPERMACRO__(Reference, std::list<TChar COMMA TAlloc>,          EMPTY, typename TChar COMMA typename TAlloc, reference)
 #ifdef SEQAN_CXX11_STANDARD
-SUPERMACRO__(Reference, std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc, reference)
-SUPERMACRO__(Reference, std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N,   reference)
+SUPERMACRO__(Reference, std::forward_list<TChar COMMA TAlloc>,  EMPTY, typename TChar COMMA typename TAlloc, reference)
+SUPERMACRO__(Reference, std::array<TChar COMMA N>,              EMPTY, typename TChar COMMA std::size_t N,   reference)
 #endif
-SUPERMACRO__(Reference, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc, reference)
+SUPERMACRO__(Reference, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, EMPTY, typename TChar COMMA typename TTraits COMMA typename TAlloc, reference)
 
 SUPERMACRO__(Reference, std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc, const_reference)
 SUPERMACRO__(Reference, std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc, const_reference)
@@ -219,14 +217,14 @@ SUPERMACRO__(Reference, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, con
 // Mfn GetValue
 // ----------------------------------------------------------------------------
 
-SUPERMACRO__(GetValue, std::vector<TChar COMMA TAlloc>,             , typename TChar COMMA typename TAlloc, const_reference)
-SUPERMACRO__(GetValue, std::deque<TChar COMMA TAlloc>,              , typename TChar COMMA typename TAlloc, const_reference)
-SUPERMACRO__(GetValue, std::list<TChar COMMA TAlloc>,               , typename TChar COMMA typename TAlloc, const_reference)
+SUPERMACRO__(GetValue, std::vector<TChar COMMA TAlloc>,        EMPTY, typename TChar COMMA typename TAlloc, const_reference)
+SUPERMACRO__(GetValue, std::deque<TChar COMMA TAlloc>,         EMPTY, typename TChar COMMA typename TAlloc, const_reference)
+SUPERMACRO__(GetValue, std::list<TChar COMMA TAlloc>,          EMPTY, typename TChar COMMA typename TAlloc, const_reference)
 #ifdef SEQAN_CXX11_STANDARD
-SUPERMACRO__(GetValue, std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc, const_reference)
-SUPERMACRO__(GetValue, std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N,   const_reference)
+SUPERMACRO__(GetValue, std::forward_list<TChar COMMA TAlloc>,  EMPTY, typename TChar COMMA typename TAlloc, const_reference)
+SUPERMACRO__(GetValue, std::array<TChar COMMA N>,              EMPTY, typename TChar COMMA std::size_t N,   const_reference)
 #endif
-SUPERMACRO__(GetValue, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc, const_reference)
+SUPERMACRO__(GetValue, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, EMPTY, typename TChar COMMA typename TTraits COMMA typename TAlloc, const_reference)
 
 SUPERMACRO__(GetValue, std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc, const_reference)
 SUPERMACRO__(GetValue, std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc, const_reference)
@@ -241,14 +239,14 @@ SUPERMACRO__(GetValue, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, cons
 // Mfn Size
 // ----------------------------------------------------------------------------
 
-SUPERMACRO__(Size, std::vector<TChar COMMA TAlloc>,             , typename TChar COMMA typename TAlloc, size_type)
-SUPERMACRO__(Size, std::deque<TChar COMMA TAlloc>,              , typename TChar COMMA typename TAlloc, size_type)
-SUPERMACRO__(Size, std::list<TChar COMMA TAlloc>,               , typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Size, std::vector<TChar COMMA TAlloc>,        EMPTY, typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Size, std::deque<TChar COMMA TAlloc>,         EMPTY, typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Size, std::list<TChar COMMA TAlloc>,          EMPTY, typename TChar COMMA typename TAlloc, size_type)
 #ifdef SEQAN_CXX11_STANDARD
-SUPERMACRO__(Size, std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc, size_type)
-SUPERMACRO__(Size, std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N,   size_type)
+SUPERMACRO__(Size, std::forward_list<TChar COMMA TAlloc>,  EMPTY, typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Size, std::array<TChar COMMA N>,              EMPTY, typename TChar COMMA std::size_t N,   size_type)
 #endif
-SUPERMACRO__(Size, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc, size_type)
+SUPERMACRO__(Size, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, EMPTY, typename TChar COMMA typename TTraits COMMA typename TAlloc, size_type)
 
 SUPERMACRO__(Size, std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc, size_type)
 SUPERMACRO__(Size, std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc, size_type)
@@ -263,14 +261,14 @@ SUPERMACRO__(Size, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, const, t
 // Mfn Position
 // ----------------------------------------------------------------------------
 
-SUPERMACRO__(Position, std::vector<TChar COMMA TAlloc>,             , typename TChar COMMA typename TAlloc, size_type)
-SUPERMACRO__(Position, std::deque<TChar COMMA TAlloc>,              , typename TChar COMMA typename TAlloc, size_type)
-SUPERMACRO__(Position, std::list<TChar COMMA TAlloc>,               , typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Position, std::vector<TChar COMMA TAlloc>,        EMPTY, typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Position, std::deque<TChar COMMA TAlloc>,         EMPTY, typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Position, std::list<TChar COMMA TAlloc>,          EMPTY, typename TChar COMMA typename TAlloc, size_type)
 #ifdef SEQAN_CXX11_STANDARD
-SUPERMACRO__(Position, std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc, size_type)
-SUPERMACRO__(Position, std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N,   size_type)
+SUPERMACRO__(Position, std::forward_list<TChar COMMA TAlloc>,  EMPTY, typename TChar COMMA typename TAlloc, size_type)
+SUPERMACRO__(Position, std::array<TChar COMMA N>,              EMPTY, typename TChar COMMA std::size_t N,   size_type)
 #endif
-SUPERMACRO__(Position, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc, size_type)
+SUPERMACRO__(Position, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, EMPTY, typename TChar COMMA typename TTraits COMMA typename TAlloc, size_type)
 
 SUPERMACRO__(Position, std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc, size_type)
 SUPERMACRO__(Position, std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc, size_type)
@@ -285,23 +283,7 @@ SUPERMACRO__(Position, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, cons
 // Mfn StdContainerIterator
 // ----------------------------------------------------------------------------
 
-SUPERMACRO__(StdContainerIterator, std::vector<TChar COMMA TAlloc>,             , typename TChar COMMA typename TAlloc, iterator)
-SUPERMACRO__(StdContainerIterator, std::deque<TChar COMMA TAlloc>,              , typename TChar COMMA typename TAlloc, iterator)
-SUPERMACRO__(StdContainerIterator, std::list<TChar COMMA TAlloc>,               , typename TChar COMMA typename TAlloc, iterator)
-#ifdef SEQAN_CXX11_STANDARD
-SUPERMACRO__(StdContainerIterator, std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc, iterator)
-SUPERMACRO__(StdContainerIterator, std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N,   iterator)
-#endif
-SUPERMACRO__(StdContainerIterator, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc, iterator)
-
-SUPERMACRO__(StdContainerIterator, std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc, const_iterator)
-SUPERMACRO__(StdContainerIterator, std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc, const_iterator)
-SUPERMACRO__(StdContainerIterator, std::list<TChar COMMA TAlloc>,          const, typename TChar COMMA typename TAlloc, const_iterator)
-#ifdef SEQAN_CXX11_STANDARD
-SUPERMACRO__(StdContainerIterator, std::forward_list<TChar COMMA TAlloc>,  const, typename TChar COMMA typename TAlloc, const_iterator)
-SUPERMACRO__(StdContainerIterator, std::array<TChar COMMA N>,              const, typename TChar COMMA std::size_t N,   const_iterator)
-#endif
-SUPERMACRO__(StdContainerIterator, std::basic_string<TChar COMMA TTraits COMMA TAlloc>, const, typename TChar COMMA typename TTraits COMMA typename TAlloc, const_iterator)
+// moved to basic/iterator_adapt_std.h again
 
 // ----------------------------------------------------------------------------
 // Mfn Iterator (Standard)
@@ -314,14 +296,14 @@ struct Iterator<CONT CONST, Standard> \
     typedef Iter<CONT CONST, StdIteratorAdaptor> Type;\
 };
 
-ITMACRO__(std::vector<TChar COMMA TAlloc>,             , typename TChar COMMA typename TAlloc)
-ITMACRO__(std::deque<TChar COMMA TAlloc>,              , typename TChar COMMA typename TAlloc)
-ITMACRO__(std::list<TChar COMMA TAlloc>,               , typename TChar COMMA typename TAlloc)
+ITMACRO__(std::vector<TChar COMMA TAlloc>,        EMPTY, typename TChar COMMA typename TAlloc)
+ITMACRO__(std::deque<TChar COMMA TAlloc>,         EMPTY, typename TChar COMMA typename TAlloc)
+ITMACRO__(std::list<TChar COMMA TAlloc>,          EMPTY, typename TChar COMMA typename TAlloc)
 #ifdef SEQAN_CXX11_STANDARD
-ITMACRO__(std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc)
-ITMACRO__(std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N)
+ITMACRO__(std::forward_list<TChar COMMA TAlloc>,  EMPTY, typename TChar COMMA typename TAlloc)
+ITMACRO__(std::array<TChar COMMA N>,              EMPTY, typename TChar COMMA std::size_t N)
 #endif
-ITMACRO__(std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc)
+ITMACRO__(std::basic_string<TChar COMMA TTraits COMMA TAlloc>, EMPTY, typename TChar COMMA typename TTraits COMMA typename TAlloc)
 
 ITMACRO__(std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc)
 ITMACRO__(std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc)
@@ -343,14 +325,14 @@ struct Iterator<CONT CONST, Rooted> \
     typedef Iter<CONT CONST, AdaptorIterator<Iter<CONT CONST, StdIteratorAdaptor> > > Type;\
 };
 
-ITRMACRO__(std::vector<TChar COMMA TAlloc>,             , typename TChar COMMA typename TAlloc)
-ITRMACRO__(std::deque<TChar COMMA TAlloc>,              , typename TChar COMMA typename TAlloc)
-ITRMACRO__(std::list<TChar COMMA TAlloc>,               , typename TChar COMMA typename TAlloc)
+ITRMACRO__(std::vector<TChar COMMA TAlloc>,        EMPTY, typename TChar COMMA typename TAlloc)
+ITRMACRO__(std::deque<TChar COMMA TAlloc>,         EMPTY, typename TChar COMMA typename TAlloc)
+ITRMACRO__(std::list<TChar COMMA TAlloc>,          EMPTY, typename TChar COMMA typename TAlloc)
 #ifdef SEQAN_CXX11_STANDARD
-ITRMACRO__(std::forward_list<TChar COMMA TAlloc>,       , typename TChar COMMA typename TAlloc)
-ITRMACRO__(std::array<TChar COMMA N>,                   , typename TChar COMMA std::size_t N)
+ITRMACRO__(std::forward_list<TChar COMMA TAlloc>,  EMPTY, typename TChar COMMA typename TAlloc)
+ITRMACRO__(std::array<TChar COMMA N>,              EMPTY, typename TChar COMMA std::size_t N)
 #endif
-ITRMACRO__(std::basic_string<TChar COMMA TTraits COMMA TAlloc>, , typename TChar COMMA typename TTraits COMMA typename TAlloc)
+ITRMACRO__(std::basic_string<TChar COMMA TTraits COMMA TAlloc>, EMPTY, typename TChar COMMA typename TTraits COMMA typename TAlloc)
 
 ITRMACRO__(std::vector<TChar COMMA TAlloc>,        const, typename TChar COMMA typename TAlloc)
 ITRMACRO__(std::deque<TChar COMMA TAlloc>,         const, typename TChar COMMA typename TAlloc)
@@ -406,7 +388,6 @@ struct FixedSize_<std::array<TChar, N> > : public True {};
 // Function getObjectId
 // ----------------------------------------------------------------------------
 
-// default value for SFINAE type in sequence_forwards.h
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, void const *)
 getObjectId(TContainer SEQAN_FORWARD_CARG me)
@@ -639,7 +620,6 @@ iter(std::forward_list<TChar, TAlloc> const & me,
 // Function length
 // ----------------------------------------------------------------------------
 
-// default value for SFINAE type in sequence_forwards.h
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, typename Size<TContainer>::Type)
 length(TContainer const & me)
@@ -868,7 +848,6 @@ clear(TContainer SEQAN_FORWARD_ARG me)
 // Function value
 // ----------------------------------------------------------------------------
 
-// default value for SFINAE type in sequence_forwards.h
 template <typename TContainer,
           typename TPos>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<TContainer> >,
@@ -888,9 +867,6 @@ value(TContainer const & me, TPos const pos)
 }
 
 #ifdef SEQAN_CXX11_STANDARD
-// RemoveReference explicitly not set on TContainer in SFINAE-clause, because this function shall not
-// pick up on TContainer & &&, i.e. the && shall act as strict R-Value reference, not universal
-// [same below for some overloads]
 template <typename TContainer,
           typename TPos>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<TContainer> >,
@@ -994,15 +970,15 @@ front(TContainer const & me)
     return me.front();
 }
 
-// #ifdef SEQAN_CXX11_STANDARD
-// template <typename TContainer,
-//           typename EnableIf<Is<StlContainerConcept<TContainer> >, int>::Type = 0>
-// inline typename Value<TContainer>::Type
-// front(TContainer && me)
-// {
-//     return me.front();
-// }
-// #endif
+#ifdef SEQAN_CXX11_STANDARD
+template <typename TContainer,
+          typename EnableIf<Is<StlContainerConcept<TContainer> >, int>::Type = 0>
+inline typename Value<TContainer>::Type
+front(TContainer && me)
+{
+    return me.front();
+}
+#endif
 
 // pre-c++11 stdstring doesnt have front and back
 #ifndef SEQAN_CXX11_STANDARD
@@ -1115,8 +1091,8 @@ assign(TContainer && me,
     assign(me, source);
 }
 
-// double universal reference doesn't work here, because it would be ambiguous with
-// the fundamental_assign implementation on gcc
+// double universal reference doesn't work above, because it would be ambiguous
+// with the fundamental_assign implementation on gcc
 
 #endif
 template <typename TContainer,
@@ -1818,12 +1794,30 @@ replace(TContainer SEQAN_FORWARD_ARG me,
 }
 
 // ----------------------------------------------------------------------------
+// Function reverse
+// ----------------------------------------------------------------------------
+
+template <typename TContainer>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<TContainer> >, HasSubscriptOperator<TContainer> >)
+reverse(TContainer SEQAN_FORWARD_ARG me)
+{
+    std::reverse(me.begin(), me.end());
+}
+
+template <typename TContainer>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<TContainer> >, Not<HasSubscriptOperator<TContainer> > >)
+reverse(TContainer SEQAN_FORWARD_ARG me)
+{
+    me.reverse();
+}
+
+// ----------------------------------------------------------------------------
 // Function toCString
 // ----------------------------------------------------------------------------
 
 template <typename TChar, typename TTraits, typename TAlloc>
 inline const TChar*
-toCString(std::basic_string<TChar, TTraits, TAlloc> & me)
+toCString(std::basic_string<TChar, TTraits, TAlloc> const & me)
 {
     return me.c_str();
 }
@@ -1885,5 +1879,6 @@ assign(std::basic_string<char, TTraits, TAlloc> && me,
 #undef ITMACRO__
 #undef ITRMACRO__
 #undef COMMA
+#undef EMPTY
 
 #endif

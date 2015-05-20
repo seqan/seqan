@@ -101,65 +101,40 @@ struct DefaultOverflowExplicit< TValue const [SIZE] >
     typedef Insist Type;
 };
 
-//TODO(h-2): fix later
-// template <typename TValue>
-// struct IsContiguous;
-//
-// template <typename TValue>
-// struct IsContiguous< TValue * >
-// {
-//     typedef True Type;
-//     enum { VALUE = true };
-// };
-//
-// template <typename TValue, size_t SIZE>
-// struct IsContiguous< TValue [SIZE] >
-// {
-//     typedef True Type;
-//     enum { VALUE = true };
-// };
-//
-// template <typename TValue, size_t SIZE>
-// struct IsContiguous< TValue const [SIZE] >
-// {
-//     typedef True Type;
-//     enum { VALUE = true };
-// };
+template <typename TValue>
+struct IsContiguous< TValue * > : public True {};
+
+template <typename TValue, size_t SIZE>
+struct IsContiguous< TValue [SIZE] > : public True {};
+
+template <typename TValue, size_t SIZE>
+struct IsContiguous< TValue const [SIZE] > : public True {};
 
 template <typename TValue>
-struct IsSequence< TValue * >
-{
-    typedef True Type;
-    enum { VALUE = true };
-};
+struct IsSequence< TValue * > : public True {};
+
 template <typename TValue, size_t SIZE>
-struct IsSequence< TValue [SIZE] >
-{
-    typedef True Type;
-    enum { VALUE = true };
-};
+struct IsSequence< TValue [SIZE] > : public True {};
+
 template <typename TValue, size_t SIZE>
-struct IsSequence< TValue const [SIZE] >
-{
-    typedef True Type;
-    enum { VALUE = true };
-};
+struct IsSequence< TValue const [SIZE] > : public True {};
 
 // ----------------------------------------------------------------------------
 // Concept Sequence
 // ----------------------------------------------------------------------------
 
+// NOTE(h-2): why is this broken?
 // template <typename TValue>
 // SEQAN_CONCEPT_IMPL((TValue *), (ContainerConcept));
-//
-// template <typename TValue>
-// SEQAN_CONCEPT_IMPL((TValue * const), (ContainerConcept));
-//
-// template <typename TValue, size_t SIZE>
-// SEQAN_CONCEPT_IMPL((TValue [SIZE]), (ContainerConcept));
-//
-// template <typename TValue, size_t SIZE>
-// SEQAN_CONCEPT_IMPL((TValue const [SIZE]), (ContainerConcept));
+
+template <typename TValue>
+SEQAN_CONCEPT_IMPL((TValue * const), (ContainerConcept));
+
+template <typename TValue, size_t SIZE>
+SEQAN_CONCEPT_IMPL((TValue [SIZE]), (ContainerConcept));
+
+template <typename TValue, size_t SIZE>
+SEQAN_CONCEPT_IMPL((TValue const [SIZE]), (ContainerConcept));
 
 // ----------------------------------------------------------------------------
 // Metafunction Iterator

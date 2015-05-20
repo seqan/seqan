@@ -58,13 +58,17 @@ inline void writeValue(Iter<TContainer, StreamIterator<Output> > &iter, TValue v
 template <typename TValue, typename TTraits>
 inline bool atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
 
-// template <typename TChar, typename TCharTraits, typename TAlloc>
-// inline typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type
-// length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
+template <typename TContainer>
+inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, typename Size<TContainer>::Type)
+length(TContainer const & me);
 
-// Needed for std::basic_string.
-template <typename T, typename TValue, typename DisableIf<Is<StlContainerConcept<T> >, int>::Type>
-inline void appendValue(T SEQAN_FORWARD_ARG me, TValue SEQAN_FORWARD_CARG _value);
+template <typename TContainer>
+struct FixedSize_;
+
+template <typename TContainer, typename TSource>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
+                                Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
+appendValue(TContainer SEQAN_FORWARD_ARG me, TSource const & source);
 
 /*!
  * @macro SEQAN_HAS_ZLIB
