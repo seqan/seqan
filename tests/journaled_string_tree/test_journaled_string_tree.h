@@ -46,67 +46,91 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_constructor)
 {
     typedef JournaledStringTree<DnaString> TJst;
     typedef Size<TJst>::Type TSize;
+    typedef Container<TJst>::Type TDeltaMap;
+    typedef DeltaCoverage<TDeltaMap>::Type TCoverage;
 
-    {  // 1st Constructor
-        TJst jst(100);
+    DnaString hostSeq = "ACGTGGATCTGTACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
+    DnaString const hostSeqConst = hostSeq;
+    {  // 1st Constructor.
 
-        SEQAN_ASSERT_EQ(jst._depth, static_cast<TSize>(100u));
-        SEQAN_ASSERT(empty(jst._deltaMap));
-        SEQAN_ASSERT(empty(jst._baseSeq));
+        TJst jst1(hostSeq, 10, 100);
+
+        SEQAN_ASSERT_EQ(jst1._dimension, static_cast<TSize>(100));
+        SEQAN_ASSERT_EQ(jst1._historySize, static_cast<TSize>(10));
+        SEQAN_ASSERT(!empty(jst1._deltaMapHolder));
+        SEQAN_ASSERT(!dependent(jst1._deltaMapHolder));
+        SEQAN_ASSERT(!empty(jst1._source));
+        SEQAN_ASSERT_EQ(host(jst1._source), hostSeq);
+
+        TJst jst2(hostSeqConst, 10, 100);
+        SEQAN_ASSERT_EQ(host(jst2._source), hostSeqConst);
     }
 
     {  // 2nd Constructor
-        DnaString hostSeq = "ACGTGGATCTGTACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
+        TDeltaMap map;
+        TCoverage cov;
+        resize(cov, 10, Exact());
+        insert(map, 2, 'C', cov, DeltaTypeSnp());
 
-        TJst jst(101, hostSeq);
-        SEQAN_ASSERT_EQ(jst._depth, static_cast<TSize>(101));
-        SEQAN_ASSERT(empty(jst._deltaMap));
-        SEQAN_ASSERT_EQ(jst._baseSeq, hostSeq);
+        TJst jst(hostSeq, 11, map);
+        SEQAN_ASSERT_EQ(jst._dimension, static_cast<TSize>(10));
+        SEQAN_ASSERT_EQ(jst._historySize, static_cast<TSize>(11));
+        SEQAN_ASSERT(!empty(jst._deltaMapHolder));
+        SEQAN_ASSERT(dependent(jst._deltaMapHolder));
+        SEQAN_ASSERT_EQ(host(jst._source), hostSeq);
     }
 }
 
-SEQAN_DEFINE_TEST(test_journaled_string_tree_depth)
+SEQAN_DEFINE_TEST(test_journaled_string_tree_dimension)
 {
     typedef Size<JournaledStringTree<Dna5String> >::Type TSize;
-
-    JournaledStringTree<Dna5String> jst(10);
-    SEQAN_ASSERT_EQ(depth(jst), static_cast<TSize>(10));
+    Dna5String seq = "ANGATAGAC";
+    JournaledStringTree<Dna5String> jst(seq, 10, 100);
+    SEQAN_ASSERT_EQ(dimension(jst), static_cast<TSize>(100));
 }
 
-SEQAN_DEFINE_TEST(test_journaled_string_tree_base_seq)
+SEQAN_DEFINE_TEST(test_journaled_string_tree_source)
 {
-    JournaledStringTree<Dna5String> jst(10);
-    SEQAN_ASSERT_EQ(length(baseSeq(jst)), 0u);
+    typedef JournaledStringTree<Dna5String> TJst;
+    typedef Size<TJst>::Type                TSize;
 
-    JournaledStringTree<Dna5String> jst2(10, "CGTATAGGANNAGAT");
-    SEQAN_ASSERT_EQ(baseSeq(jst2), "CGTATAGGANNAGAT");
+    Dna5String seq = "ANGATAGAC";
+    TJst jst(seq, 10, 100);
+    SEQAN_ASSERT_EQ(host(source(jst)), seq);
+
+    TJst const jst2(jst);
+    SEQAN_ASSERT_EQ(host(source(jst2)), seq);
 }
 
-SEQAN_DEFINE_TEST(test_journaled_string_tree_add_node)
+SEQAN_DEFINE_TEST(test_journaled_string_tree_insert_node)
 {
-    JournaledStringTree<Dna5String> jst(10, "CGTATAGGANNAGAT");
+    Dna5String seq = "CGTATAGGANNAGAT";
+    JournaledStringTree<Dna5String> jst(seq, 10, 100);
     String<unsigned> ids;
     appendValue(ids, 0);
     appendValue(ids, 3);
     appendValue(ids, 9);
+    appendValue(ids, 99);
 
-    SEQAN_ASSERT(addNode(jst, 5, 'C', ids, DeltaTypeSnp()));
-    SEQAN_ASSERT(addNode(jst, 2, 3, ids, DeltaTypeDel()));
-    SEQAN_ASSERT(addNode(jst, 5, "CGTA", ids, DeltaTypeIns()));
-    SEQAN_ASSERT_NOT(addNode(jst, 5, "CGTA", ids, DeltaTypeIns()));
+    SEQAN_ASSERT(insertNode(jst, 5, 'C', ids, DeltaTypeSnp()));
+    SEQAN_ASSERT(insertNode(jst, 2, 3, ids, DeltaTypeDel()));
+    SEQAN_ASSERT(insertNode(jst, 5, "CGTA", ids, DeltaTypeIns()));
+    SEQAN_ASSERT_NOT(insertNode(jst, 5, "CGTA", ids, DeltaTypeIns()));
 }
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_erase_node)
 {
-    JournaledStringTree<Dna5String> jst(10, "CGTATAGGANNAGAT");
+    Dna5String seq = "CGTATAGGANNAGAT";
+    JournaledStringTree<Dna5String> jst(seq, 10, 100);
     String<unsigned> ids;
     appendValue(ids, 0);
     appendValue(ids, 3);
     appendValue(ids, 9);
+    appendValue(ids, 99);
 
-    SEQAN_ASSERT(addNode(jst, 5, 'C', ids, DeltaTypeSnp()));
-    SEQAN_ASSERT(addNode(jst, 2, 3, ids, DeltaTypeDel()));
-    SEQAN_ASSERT(addNode(jst, 5, "CGTA", ids, DeltaTypeIns()));
+    SEQAN_ASSERT(insertNode(jst, 5, 'C', ids, DeltaTypeSnp()));
+    SEQAN_ASSERT(insertNode(jst, 2, 3, ids, DeltaTypeDel()));
+    SEQAN_ASSERT(insertNode(jst, 5, "CGTA", ids, DeltaTypeIns()));
 
     SEQAN_ASSERT(eraseNode(jst, 5, DeltaTypeIns()));
     SEQAN_ASSERT(eraseNode(jst, 5, DeltaTypeSnp()));
@@ -117,38 +141,79 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_erase_node)
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_clear)
 {
-    JournaledStringTree<Dna5String> jst(10, "CGTATAGGANNAGAT");
+    Dna5String seq = "CGTATAGGANNAGAT";
+    JournaledStringTree<Dna5String> jst(seq, 10, 100);
     String<unsigned> ids;
     appendValue(ids, 0);
     appendValue(ids, 3);
-    appendValue(ids, 9);
+    appendValue(ids, 99);
 
-    SEQAN_ASSERT(addNode(jst, 5, 'C', ids, DeltaTypeSnp()));
-    SEQAN_ASSERT(addNode(jst, 2, 3, ids, DeltaTypeDel()));
-    SEQAN_ASSERT(addNode(jst, 5, "CGTA", ids, DeltaTypeIns()));
+    SEQAN_ASSERT(insertNode(jst, 5, 'C', ids, DeltaTypeSnp()));
+    SEQAN_ASSERT(insertNode(jst, 2, 3, ids, DeltaTypeDel()));
+    SEQAN_ASSERT(insertNode(jst, 5, "CGTA", ids, DeltaTypeIns()));
 
     clear(jst);
-    SEQAN_ASSERT(jst._depth == 0);
-    SEQAN_ASSERT(empty(jst._baseSeq));
-    SEQAN_ASSERT(empty(jst._deltaMap));
+    SEQAN_ASSERT(jst._dimension == 0);
+    SEQAN_ASSERT(jst._historySize == 0);
+    SEQAN_ASSERT(empty(jst._source));
+    SEQAN_ASSERT(empty(jst._deltaMapHolder));
 }
 
-SEQAN_DEFINE_TEST(test_journaled_string_tree_set_base_seq)
+SEQAN_DEFINE_TEST(test_journaled_string_tree_container)
 {
-    JournaledStringTree<Dna5String> jst(10, "CGTATAGGANNAGAT");
+    Dna5String seq = "CGTATAGGANNAGAT";
+    JournaledStringTree<Dna5String> jst(seq, 10, 100);
+
+    SEQAN_ASSERT(empty(container(jst)));
+
     String<unsigned> ids;
     appendValue(ids, 0);
     appendValue(ids, 3);
-    appendValue(ids, 9);
+    appendValue(ids, 99);
 
-    SEQAN_ASSERT(addNode(jst, 5, 'C', ids, DeltaTypeSnp()));
-    SEQAN_ASSERT(addNode(jst, 2, 3, ids, DeltaTypeDel()));
-    SEQAN_ASSERT(addNode(jst, 5, "CGTA", ids, DeltaTypeIns()));
+    SEQAN_ASSERT(insertNode(jst, 5, 'C', ids, DeltaTypeSnp()));
+    SEQAN_ASSERT(insertNode(jst, 2, 3, ids, DeltaTypeDel()));
+    SEQAN_ASSERT(insertNode(jst, 5, "CGTA", ids, DeltaTypeIns()));
 
-    setBaseSeq(jst, "GTTATAGAGGNAGTAGAAAAANN");
-    SEQAN_ASSERT(jst._depth == 10u);
-    SEQAN_ASSERT_EQ(jst._baseSeq, "GTTATAGAGGNAGTAGAAAAANN");
-    SEQAN_ASSERT(empty(jst._deltaMap));
+    SEQAN_ASSERT(!empty(container(jst)));
+}
+
+
+SEQAN_DEFINE_TEST(test_journaled_string_tree_history_size)
+{
+    typedef Size<JournaledStringTree<Dna5String> >::Type TSize;
+    Dna5String seq = "CGTATAGGANNAGAT";
+    JournaledStringTree<Dna5String> jst(seq, 10, 100);
+
+    SEQAN_ASSERT_EQ(historySize(jst), static_cast<TSize>(10));
+}
+
+SEQAN_DEFINE_TEST(test_journaled_string_tree_set_history_size)
+{
+    typedef Size<JournaledStringTree<Dna5String> >::Type TSize;
+    Dna5String seq = "CGTATAGGANNAGAT";
+    JournaledStringTree<Dna5String> jst(seq, 10, 100);
+
+    SEQAN_ASSERT_EQ(historySize(jst), static_cast<TSize>(10));
+    setHistorySize(jst, 15);
+    SEQAN_ASSERT_EQ(historySize(jst), static_cast<TSize>(15));
+}
+
+struct TestJstPosConfig_
+{
+    typedef __uint16 TDeltaPos;
+    typedef Dna      TSnpValue;
+    typedef __uint16 TDelValue;
+    typedef String<Dna> TInsValue;
+    typedef Pair<TDelValue, TInsValue> TSVValue;
+};
+
+SEQAN_DEFINE_TEST(test_journaled_string_tree_max_size)
+{
+    Dna5String seq = "CGTATAGGANNAGAT";
+    JournaledStringTree<Dna5String, TestJstPosConfig_> jst(seq, 10, 100);
+
+    SEQAN_ASSERT_EQ(maxSize(jst), MaxValue<__uint16>::VALUE);
 }
 
 #endif // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_
