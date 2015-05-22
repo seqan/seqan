@@ -259,15 +259,6 @@ struct Source<JournaledStringTree<TSeq, TConfig, TSpec> const>
 //};
 
 // ============================================================================
-// Private Functions
-// ============================================================================
-
-namespace impl
-{
-
-}
-
-// ============================================================================
 // Public Functions
 // ============================================================================
 
@@ -276,9 +267,9 @@ namespace impl
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn JournaledStringTree#baseSeq
+ * @fn JournaledStringTree#source
  * @headerfile <seqan/journaled_string_tree.h>
- * @brief Returns a reference to the base sequence used for the journaled string tree.
+ * @brief Returns a reference to the underlying source sequence of the journaled string tree.
  *
  * @signature TSource source(jst);
  *
@@ -310,19 +301,18 @@ source(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn JournaledStringTree#baseSeq
+ * @fn JournaledStringTree#container
  * @headerfile <seqan/journaled_string_tree.h>
- * @brief Returns a reference to the base sequence used for the journaled string tree.
+ * @brief Returns a reference to the underlying container holding the delta information of the journaled string tree.
  *
- * @signature TSource source(jst);
+ * @signature TContainer container(jst);
  *
  * @param[in] jst    The Journal String Tree.
  *
- * @return TSource A reference to the source sequence of type @link JournaledStringTree#Source @endlink.
+ * @return TContainer A reference to the container of type @link JournaledStringTree#Container @endlink.
  *
- * Note that the returned value is a @link JournaledString @endlink, which is a hosted type and might depend
- * on another resource. So changes applied to the host of this string might invalidate other clients that depend
- * on the same resource.
+ * Note that other objects might depent on the returned container. Any iterator, pointer or reference that refer to this
+ * container may get invalidated.
  */
 
 template <typename TSequence, typename TConfig, typename TSpec>
@@ -480,7 +470,7 @@ clear(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn JournaledStringTree#addNode
+ * @fn JournaledStringTree#insertNode
  * @headerfile <seqan/journaled_string_tree.h>
  * @brief Adds a new delta node to the Journaled-String-Tree.
  *
@@ -502,6 +492,7 @@ clear(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
  * @note Inserting a new delta might invalidate other clients that depend on the same container.
  *
  * @remark The insertion time is linear in the number of nodes.
+ * @see JournaledStringTree#eraseNode
  */
 
 template <typename TSequence, typename TConfig, typename TSpec, typename TPos, typename TValue, typename TIds,
@@ -556,6 +547,7 @@ insertNode(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
  * @note Inserting a new delta might invalidate other clients that depend on the same container.
  *
  * @remark The deletion time is linear in the number of nodes.
+ * @see JournaledStringTree#insertNode
  */
 
 template <typename TSequence, typename TConfig, typename TSpec, typename TPos, typename TDeltaType>
