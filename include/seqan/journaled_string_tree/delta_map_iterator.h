@@ -151,7 +151,7 @@ getDelSize(TIterator const & it, TagSelector<TTagList> const & deltaType)
 
     if (isEqual(deltaType, TDeltaType()))
         return delSize(container(it)._deltaStore, getDeltaRecord(*it).i2, TDeltaType());
-    return getDelSize(it, static_cast<typename TagSelector<TTagList>::Base const &>(deltaTypes));
+    return getDelSize(it, static_cast<typename TagSelector<TTagList>::Base const &>(deltaType));
 }
 
 }

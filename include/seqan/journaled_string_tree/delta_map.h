@@ -112,8 +112,6 @@ public:
 
     typedef typename Member<DeltaMap, DeltaMapEntriesMember>::Type TDeltaEntries;
     typedef typename Member<DeltaMap, DeltaMapStoreMember>::Type TDeltaStore;
-    typedef typename DeltaCoverage<DeltaMap>::Type TCoverage_;
-    typedef typename Size<TCoverage_>::Type TCoverageSize;
 
     TDeltaEntries  _entries;
     TDeltaStore    _deltaStore;

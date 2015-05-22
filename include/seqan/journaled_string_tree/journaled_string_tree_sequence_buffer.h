@@ -78,23 +78,21 @@ template <unsigned BLOCK_SIZE = 10000>
 struct DynamicBuffer;
 
 // ----------------------------------------------------------------------------
-// Class JstSequenceBuffer
+// Class JstBuffer
 // ----------------------------------------------------------------------------
 
-template <typename TJournaledStringTree, typename TDirection = TraverseForward, typename TSpec = StaticBuffer>
-class JstSequenceBuffer
-{
-
-};
-
-template <typename TJournaledStringTree>
-class JstSequenceBuffer<TJournaledStringTree, TraverseForward>
+template <typename TJournaledStringTree, typename TDirection>
+class JstBuffer
 {
 public:
 
-    typedef typename Member<JstSequenceBuffer, JstSeqBufferJournaledSet>::Type  TJournaledSet;
+    // __ Types ___________________________________________________________________
+
+    typedef typename RemoveConst<TJournaledStringTree>::Type                    THost;
+    typedef typename Member<JstBuffer, JstSeqBufferJournaledSet>::Type          TJournaledSet;
     typedef typename Value<JournaledSet>::Type                                  TJournaledSeq;
     typedef typename Iterator<TJournaledSeq, Standard>::Type                    TJournaledSeqIt;
+    typedef typename Size<TJournaledSeq>::Type                                  TSize;
 
     typedef typename Container<TJournaledStringTree>::Type                      TDeltaMap;
     typedef typename Iterator<TDeltaMap, Standard>::Type                        TDeltaIterator;
@@ -102,15 +100,25 @@ public:
     typedef typename Position<TJournaledSet>::Type                              TJSetPos;
     typedef String<TJSetPos>                                                    TStringPositions;
 
-    TJournaledSeq           source;
+    // __ Members _________________________________________________________________
+
+    THost const *           hostPtr;        // Pointer to the underlying host.
+    TSize                   chunkSize;
+
+
     Range<TJournaledSeqIt>  sourceRange;    // Range to be traversed over the Journaled-String-Tree.
     Range<TJournaledSeqIt>  bufferedChunk;  // The chunk currently buffered.
-    Range<TDeltaIterator>   deltaRange;
-    TJournaledSet           journaledSet;   // The actual sequences over the current chunk.
-    TStringPositions        startPositions; // The begin positions of the strings within the chunk.
-    TStringPositions        endPositions;   // The end positions of the strings within the chunk.
+    Range<TDeltaIterator>   deltaRange;     // The range of the delta map currentyl buffered.
 
-    JstSequenceBuffer()
+    TStringPositions        startPositions; // The begin positions of the strings within the chunk.
+    // TStringPositions        endPositions;   // The end positions of the strings within the chunk.
+
+    TJournaledSeq           sourceJournaled;  // The original source sequence represented as JournaledString.
+    TJournaledSet           journaledSet;   // The actual sequences over the current chunk.
+
+    // __ Constructor _____________________________________________________________
+
+    JstBuffer() : hostPtr(nullptr)
     {}
 
 };
@@ -124,12 +132,19 @@ public:
 // ----------------------------------------------------------------------------
 
 template <typename TJournaledStringTree, typename TDirection>
-struct Member<JstSequenceBuffer<TJournaledStringTree, TDirection>, JstSeqBufferJournaledSet>
+struct Member<JstBuffer<TJournaledStringTree, TDirection>, JstSeqBufferJournaledSet>
 {
-    typedef typename Member<TJournaledStringTree, JstBaseSequenceMember>::Type  TBaseSeq_;
-    typedef typename Value<TBaseSeq_>::Type                                     TBaseSeqVal_;
-    typedef String<TBaseSeqVal_, Journaled<Alloc<>, SortedArray,Alloc<> > >     TJournaledString_;
-    typedef StringSet<TJournaledString_, Owner<Journaled> >                     Type;
+    typedef typename Source<TJournaledStringTree>::Type                         Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction Host
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TDir>
+struct Host<JstBuffer<TJst, TDir> >
+{
+    typedef TJst Type;
 };
 
 // ============================================================================
@@ -141,18 +156,65 @@ namespace impl
     
 // TODO(rrahn): Implement streamTo()
 
+// ----------------------------------------------------------------------------
+// Function impl::setNewHost()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TDir>
+inline void
+setNewHost(JstBuffer<TJst, TDir> & buffer,
+           TJst const & newHost)
+{
+    buffer.hostPtr = &newHost;
+    clear(buffer.startPositions);
+    resize(buffer.startPositions, depth(newHost), 0, Exact());
+    clear(buffer.journaledSet);
+    resize(buffer.journaledSet);
+    setHost(buffer.journaledSet, baseSequence(newHost));
+    setHost(buffer.sourceJournaled, host(buffer.journaledSet));
+    assignRange(buffer.sourceRange, begin(buffer.sourceJournaled, Standard()), end(buffer.sequenceJournaled, Standard()));
+    buffer.bufferedChunk = buffer.sourceRange;
+    assignRange(buffer.deltaRange, begin(container(newHost), Standard()), end(container(newHost), Standard()));
+    buffer.chunkSize = -1;
+}
+
 }  // namespace impl
 
 // ============================================================================
 // Public Functions
 // ============================================================================
 
-// TODO(rrahn): Implement sync
-// TODO(rrahn): Implement setBeginPosition()
-// TODO(rrahn): Implement setEndPosition()
-
-// TODO(rrahn): window();
 // TODO(rrahn): sourceRange();
+// TODO(rrahn): Implement setSourceBegin() -> Stream to correct buffer position.
+// TODO(rrahn): Implement setSourceEnd()  -> Stream to correct buffer position.
+// TODO(rrahn): Implement setSourceRange()    -> stream to correct buffer position.
+
+// TODO(rrahn): chunk() -> Returns buffered journaled Set -> Read-Only.
+// TODO(rrahn): setChunkSize();
+// TODO(rrahn): chunkSize();
+// TODO(rrahn): advanceChunk();
+
+// TODO(rrahn): setHost();
+
+template <typename TJst, typename TDir>
+inline void
+setHost(JstBuffer<TJst, TDir> & buffer,
+        TJst const & host)
+{
+    clear(buffer);
+    impl::setNewHost(host);
+}
+
+
+template <typename TJst, typename TDir>
+inline typename Host<JstBuffer<TJst, TDir> const>::Type &
+host(JstBuffer<TJst, TDir> const & buffer)
+{
+    return *buffer.hostPtr;
+}
+
+// TODO(rrahn): clear();
+
 
 }  // namespace seqan
 

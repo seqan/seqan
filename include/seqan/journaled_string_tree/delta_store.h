@@ -581,7 +581,7 @@ sizeIns(TValue const & val, DeltaTypeIns const & /*tag*/)
 
 template <typename TDel>
 inline unsigned
-sizeIns(TDel & val, DeltaTypeDel const & /*tag*/)
+sizeIns(TDel & /*val*/, DeltaTypeDel const & /*tag*/)
 {
     return 0;
 }
