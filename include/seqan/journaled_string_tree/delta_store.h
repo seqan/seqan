@@ -51,36 +51,6 @@ struct DeltaValue;
 // Tags, Classes, Enums
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Struct DeltaType
-// ----------------------------------------------------------------------------
-
-/*!
- * @enum DeltaType
- * @headerfile <seqan/journaled_string_tree.h>
- * @brief Keys for specifying the delta type to be accessed.
- *
- * @val DeltaType DELTA_TYPE_SNP
- * @brief Id to denote SNP events.
- *
- * @val DeltaType DELTA_TYPE_DEL
- * @brief Id to denote deletion events.
- *
- * @val DeltaType DELTA_TYPE_INS
- * @brief Id to denote insertion events.
- *
- * @val DeltaType DElTA_TYPE_INDEL
- * @brief Id to denote replacement events.
- */
-
-enum DeltaType
-{
-    DELTA_TYPE_SNP = 0,
-    DELTA_TYPE_DEL = 1,
-    DELTA_TYPE_INS = 2,
-    DELTA_TYPE_SV = 3
-};
-
 /*!
  * @defgroup DeltaTypeTags Delta Type Tags
  * @brief Tags used for the different delta types.
@@ -133,14 +103,44 @@ typedef Tag<DeltaTypeSV_> DeltaTypeSV;
 typedef TagList<DeltaTypeSnp,
         TagList<DeltaTypeDel,
         TagList<DeltaTypeIns,
-        TagList<DeltaTypeSV> > > > DeltaTypes;
-
+        TagList<DeltaTypeSV> > > > DeltaTypeTagList;
 
 // ----------------------------------------------------------------------------
 // Class DeltaTypeSelector
 // ----------------------------------------------------------------------------
 
-typedef TagSelector<DeltaTypes> DeltaTypeSelector;
+typedef TagSelector<DeltaTypeTagList> DeltaTypeSelector;
+
+
+// ----------------------------------------------------------------------------
+// Enum DeltaType
+// ----------------------------------------------------------------------------
+
+/*!
+ * @enum DeltaType
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Keys for specifying the delta type to be accessed.
+ *
+ * @val DeltaType DELTA_TYPE_SNP
+ * @brief Id to denote SNP events.
+ *
+ * @val DeltaType DELTA_TYPE_DEL
+ * @brief Id to denote deletion events.
+ *
+ * @val DeltaType DELTA_TYPE_INS
+ * @brief Id to denote insertion events.
+ *
+ * @val DeltaType DElTA_TYPE_INDEL
+ * @brief Id to denote replacement events.
+ */
+
+enum DeltaType
+{
+    DELTA_TYPE_SNP = Find<DeltaTypeSelector, DeltaTypeSnp>::VALUE,
+    DELTA_TYPE_DEL = Find<DeltaTypeSelector, DeltaTypeDel>::VALUE,
+    DELTA_TYPE_INS = Find<DeltaTypeSelector, DeltaTypeIns>::VALUE,
+    DELTA_TYPE_SV = Find<DeltaTypeSelector, DeltaTypeSV>::VALUE
+};
 
 // ----------------------------------------------------------------------------
 // Class DeltaStore
@@ -292,94 +292,35 @@ struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeSV>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function isDeltaType()                                        [DeltaTypeSnp]
-// ----------------------------------------------------------------------------
-
-inline bool
-isDeltaType(DeltaType dType, DeltaTypeSnp const & /*tag*/)
-{
-    return dType == DELTA_TYPE_SNP;
-}
-
-// ----------------------------------------------------------------------------
-// Function isDeltaType()                                        [DeltaTypeDel]
-// ----------------------------------------------------------------------------
-
-inline bool
-isDeltaType(DeltaType dType, DeltaTypeIns const & /*tag*/)
-{
-    return dType == DELTA_TYPE_INS;
-}
-
-// ----------------------------------------------------------------------------
-// Function isDeltaType()                                        [DeltaTypeIns]
-// ----------------------------------------------------------------------------
-
-inline bool
-isDeltaType(DeltaType dType, DeltaTypeDel const & /*tag*/)
-{
-    return dType == DELTA_TYPE_DEL;
-}
-
-// ----------------------------------------------------------------------------
-// Function isDeltaType()                                         [DeltaTypeSV]
-// ----------------------------------------------------------------------------
-
-inline bool
-isDeltaType(DeltaType dType, DeltaTypeSV const & /*tag*/)
-{
-    return dType == DELTA_TYPE_SV;
-}
-
-// ----------------------------------------------------------------------------
 // Function isDeltaType()
 // ----------------------------------------------------------------------------
 
 template <typename TTag>
 inline bool
-isDeltaType(DeltaType /*type*/, TTag const & /*tag*/)
+isDeltaType(DeltaType type, TTag const & /*tag*/)
 {
-    return false; // Unknown tag.
+    return type == static_cast<DeltaType>(Find<DeltaTypeSelector, TTag>::VALUE);
 }
 
 // ----------------------------------------------------------------------------
 // Function selectDeltaType()                                    [DeltaTypeSnp]
 // ----------------------------------------------------------------------------
 
-inline DeltaType
-selectDeltaType(DeltaTypeSnp /*tag*/)
+template <typename TTag>
+constexpr inline DeltaType
+selectDeltaType(TTag const & /*tag*/)
 {
-    return DELTA_TYPE_SNP;
+    return static_cast<DeltaType>(Find<DeltaTypeSelector, TTag>::VALUE);
 }
 
 // ----------------------------------------------------------------------------
-// Function selectDeltaType()                                    [DeltaTypeDel]
+// Function setDeltaType()
 // ----------------------------------------------------------------------------
 
-inline DeltaType
-selectDeltaType(DeltaTypeDel /*tag*/)
+inline void
+setDeltaType(DeltaTypeSelector & selector, DeltaType const deltaType)
 {
-    return DELTA_TYPE_DEL;
-}
-
-// ----------------------------------------------------------------------------
-// Function selectDeltaType()                                    [DeltaTypeIns]
-// ----------------------------------------------------------------------------
-
-inline DeltaType
-selectDeltaType(DeltaTypeIns /*tag*/)
-{
-    return DELTA_TYPE_INS;
-}
-
-// ----------------------------------------------------------------------------
-// Function selectDeltaType()                                     [DeltaTypeSV]
-// ----------------------------------------------------------------------------
-
-inline DeltaType
-selectDeltaType(DeltaTypeSV /*tag*/)
-{
-    return DELTA_TYPE_SV;
+    value(selector) = deltaType;
 }
 
 // ----------------------------------------------------------------------------
