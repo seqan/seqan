@@ -50,6 +50,9 @@ SEQAN_BEGIN_TESTSUITE(test_delta_map)
     SEQAN_CALL_TEST(test_delta_map_delta_store_erase_delta_value);
     SEQAN_CALL_TEST(test_delta_map_delta_store_delta_value);
     SEQAN_CALL_TEST(test_delta_map_delta_store_clear);
+    SEQAN_CALL_TEST(test_delta_map_delta_store_deletion_size);
+    SEQAN_CALL_TEST(test_delta_map_delta_store_insertion_size);
+    SEQAN_CALL_TEST(test_delta_map_delta_store_net_size);
 
     // Tests for delta map.
     SEQAN_CALL_TEST(test_delta_map_insert);

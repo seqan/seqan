@@ -180,4 +180,40 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_clear)
     }
 }
 
+SEQAN_DEFINE_TEST(test_delta_map_delta_store_deletion_size)
+{
+    typedef Pair<unsigned, DnaString> TPair;
+
+    DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
+
+    SEQAN_ASSERT_EQ(deletionSize(store, 2, DeltaTypeSnp()), 1u);
+    SEQAN_ASSERT_EQ(deletionSize(store, 1, DeltaTypeIns()), 0u);
+    SEQAN_ASSERT_EQ(deletionSize(store, 0, DeltaTypeDel()), 3u);
+    SEQAN_ASSERT_EQ(deletionSize(store, 1, DeltaTypeSV()), 4u);
+}
+
+SEQAN_DEFINE_TEST(test_delta_map_delta_store_insertion_size)
+{
+    typedef Pair<unsigned, DnaString> TPair;
+
+    DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
+
+    SEQAN_ASSERT_EQ(insertionSize(store, 2, DeltaTypeSnp()), 1u);
+    SEQAN_ASSERT_EQ(insertionSize(store, 1, DeltaTypeIns()), 2u);
+    SEQAN_ASSERT_EQ(insertionSize(store, 0, DeltaTypeDel()), 0u);
+    SEQAN_ASSERT_EQ(insertionSize(store, 1, DeltaTypeSV()), 2u);
+}
+
+SEQAN_DEFINE_TEST(test_delta_map_delta_store_net_size)
+{
+    typedef Pair<unsigned, DnaString> TPair;
+
+    DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
+
+    SEQAN_ASSERT_EQ(netSize(store, 2, DeltaTypeSnp()), 0);
+    SEQAN_ASSERT_EQ(netSize(store, 1, DeltaTypeIns()), 2);
+    SEQAN_ASSERT_EQ(netSize(store, 0, DeltaTypeDel()), -3);
+    SEQAN_ASSERT_EQ(netSize(store, 1, DeltaTypeSV()), -2);
+}
+
 #endif // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_DELTA_STORE_H_
