@@ -157,42 +157,6 @@ getDelSize(TIterator const & it, TagSelector<TTagList> const & deltaType)
 }
 
 // ----------------------------------------------------------------------------
-// Function value()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaMap>
-inline typename Reference<Iter<TDeltaMap, DeltaMapIteratorSpec> >::Type
-value(Iter<TDeltaMap, DeltaMapIteratorSpec> & iter)
-{
-    return value(iter._mapIter);
-}
-
-template <typename TDeltaMap>
-inline typename Reference<Iter<TDeltaMap, DeltaMapIteratorSpec> const>::Type
-value(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
-{
-    return value(iter._mapIter);
-}
-
-// ----------------------------------------------------------------------------
-// Function getValue()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaMap>
-inline typename GetValue<Iter<TDeltaMap, DeltaMapIteratorSpec> >::Type
-getValue(Iter<TDeltaMap, DeltaMapIteratorSpec> & iter)
-{
-    return getValue(iter._mapIter);
-}
-
-template <typename TDeltaMap>
-inline typename GetValue<Iter<TDeltaMap, DeltaMapIteratorSpec> const>::Type
-getValue(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
-{
-    return getValue(iter._mapIter);
-}
-
-// ----------------------------------------------------------------------------
 // Function container()
 // ----------------------------------------------------------------------------
 
@@ -208,61 +172,6 @@ inline typename Container<Iter<TDeltaMap, DeltaMapIteratorSpec> const>::Type &
 container(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
 {
     return *iter._mapPtr;
-}
-
-// ----------------------------------------------------------------------------
-// Function deltaType()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn DeltaMapIterator#deltaType
- *
- * @headerfile <seqan/journaled_string_tree.h>
- *
- * @brief Returns the id of the delta event the current iterator points to.
- *
- * @signature TId deltaType(it)
- * @param[in]   it  The iterator to query the delta event key for.
- *
- * @return TId The id for the current delta event of type <tt>DeltaType</tt>.
- */
-
-template <typename TDeltaMap>
-inline DeltaType
-deltaType(Iter<TDeltaMap, DeltaMapIteratorSpec> const& iter)
-{
-    return static_cast<DeltaType>(getDeltaRecord(getValue(iter)).i1);
-}
-
-// ----------------------------------------------------------------------------
-// Function deltaPosition()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaMap>
-inline typename DeltaPosition<typename Value<Iter<TDeltaMap, DeltaMapIteratorSpec> >::Type>::Type &
-deltaPosition(Iter<TDeltaMap, DeltaMapIteratorSpec> & iter)
-{
-    return getDeltaPosition(value(iter));
-}
-
-template <typename TDeltaMap>
-inline typename DeltaPosition<typename Value<Iter<TDeltaMap, DeltaMapIteratorSpec> const>::Type>::Type &
-deltaPosition(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
-{
-    return getDeltaPosition(value(iter));
-}
-
-// ----------------------------------------------------------------------------
-// Function deltaEndPosition()
-// ----------------------------------------------------------------------------
-
-template <typename TDeltaMap>
-inline typename DeltaPosition<typename Value<Iter<TDeltaMap, DeltaMapIteratorSpec> >::Type>::Type
-deltaEndPosition(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
-{
-    DeltaTypeSelector selector;
-    assign(selector, selectDeltaType(deltaType(iter)));
-    return getDeltaPosition(value(iter)) + impl::getDelSize(value(iter), selector);
 }
 
 // ----------------------------------------------------------------------------
@@ -298,37 +207,6 @@ deltaValue(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter, TTag const & tag)
 }
 
 // ----------------------------------------------------------------------------
-// Function deltaCoverage()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn DeltaMapIterator#deltaCoverage
- *
- * @headerfile <seqan/journaled_string_tree.h>
- *
- * @brief Returns the coverage associated with the current iterator position.
- *
- * @signature TCov deltaCoverage(it)
- * @param[in]   it  The iterator to query the coverage for.
- *
- * @return TCov A reference to the coverage at the current iterator position of type @link DeltaMap#DeltaCoverage @endlink.
- */
-
-template <typename TDeltaMap>
-inline typename DeltaCoverage<typename Container<Iter<TDeltaMap, DeltaMapIteratorSpec> >::Type>::Type &
-deltaCoverage(Iter<TDeltaMap, DeltaMapIteratorSpec> & iter)
-{
-    return getDeltaCoverage(value(iter));
-}
-
-template <typename TDeltaMap>
-inline typename DeltaCoverage<typename Container<Iter<TDeltaMap, DeltaMapIteratorSpec> const>::Type>::Type &
-deltaCoverage(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
-{
-    return getDeltaCoverage(value(iter));
-}
-
-// ----------------------------------------------------------------------------
 // Function operator*()
 // ----------------------------------------------------------------------------
 
@@ -336,14 +214,14 @@ template <typename TDeltaMap>
 inline typename Reference<Iter<TDeltaMap, DeltaMapIteratorSpec> >::Type
 operator*(Iter<TDeltaMap, DeltaMapIteratorSpec> & iter)
 {
-    return value(iter);
+    return *iter._mapIter;
 }
 
 template <typename TDeltaMap>
 inline typename Reference<Iter<TDeltaMap, DeltaMapIteratorSpec> const>::Type
 operator*(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
 {
-    return value(iter);
+    return *iter._mapIter;
 }
 
 // ----------------------------------------------------------------------------

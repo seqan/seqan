@@ -64,10 +64,11 @@ SEQAN_BEGIN_TESTSUITE(test_delta_map)
     SEQAN_CALL_TEST(test_delta_map_iterator_copy_constructor);
     SEQAN_CALL_TEST(test_delta_map_iterator_assign);
     SEQAN_CALL_TEST(test_delta_map_iterator_value);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_type);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_position);
     SEQAN_CALL_TEST(test_delta_map_iterator_delta_value);
-    SEQAN_CALL_TEST(test_delta_map_iterator_delta_coverage);
 
+    // Tests for delta map entry.
+    SEQAN_CALL_TEST(test_delta_map_entry_delta_coverage);
+    SEQAN_CALL_TEST(test_delta_map_entry_delta_type);
+    SEQAN_CALL_TEST(test_delta_map_entry_delta_position);
 }
 SEQAN_END_TESTSUITE

@@ -261,7 +261,7 @@ _testDeltaMapIterator(TMap & deltaMap)
     typedef typename Iterator<TMap, Standard>::Type TIterator;
 
     TIterator it = begin(deltaMap, Standard());
-    SEQAN_ASSERT_EQ(deltaPosition(it), 0u);
+    SEQAN_ASSERT_EQ(getDeltaPosition(*it), 0u);
 
     unsigned counter = 0;
     for (; it != end(deltaMap, Standard()); ++it, ++counter)
@@ -315,56 +315,6 @@ SEQAN_DEFINE_TEST(test_delta_map_iterator_value)
     SEQAN_ASSERT_EQ(value(it2), deltaMap._entries[2]);
 }
 
-SEQAN_DEFINE_TEST(test_delta_map_iterator_delta_type)
-{
-    typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
-    typedef Iterator<TDeltaMap, Standard>::Type TIterator;
-    typedef Iterator<TDeltaMap const, Standard>::Type TConstIterator;
-
-    TDeltaMap deltaMap;
-    createMock(deltaMap._entries, deltaMap._deltaStore);
-
-    TIterator it = begin(deltaMap, Standard());
-    SEQAN_ASSERT_EQ(deltaType(it),   DELTA_TYPE_SNP);
-    SEQAN_ASSERT_EQ(deltaType(++it), DELTA_TYPE_DEL);
-    SEQAN_ASSERT_EQ(deltaType(++it), DELTA_TYPE_SV);
-    SEQAN_ASSERT_EQ(deltaType(++it), DELTA_TYPE_SNP);
-    SEQAN_ASSERT_EQ(deltaType(++it), DELTA_TYPE_INS);
-
-    const TDeltaMap deltaMap2 = deltaMap;
-    TConstIterator it2 = begin(deltaMap2, Standard());
-    SEQAN_ASSERT_EQ(deltaType(it2++), DELTA_TYPE_SNP);
-    SEQAN_ASSERT_EQ(deltaType(it2++), DELTA_TYPE_DEL);
-    SEQAN_ASSERT_EQ(deltaType(it2++), DELTA_TYPE_SV);
-    SEQAN_ASSERT_EQ(deltaType(it2++), DELTA_TYPE_SNP);
-    SEQAN_ASSERT_EQ(deltaType(it2++), DELTA_TYPE_INS);
-}
-
-SEQAN_DEFINE_TEST(test_delta_map_iterator_delta_position)
-{
-    typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
-    typedef Iterator<TDeltaMap, Standard>::Type TIterator;
-    typedef Iterator<TDeltaMap const, Standard>::Type TConstIterator;
-
-    TDeltaMap deltaMap;
-    createMock(deltaMap._entries, deltaMap._deltaStore);
-
-    TIterator it = begin(deltaMap, Standard());
-    SEQAN_ASSERT_EQ(deltaPosition(it), 0u);
-    SEQAN_ASSERT_EQ(deltaPosition(++it), 1u);
-    SEQAN_ASSERT_EQ(deltaPosition(++it), 1u);
-    SEQAN_ASSERT_EQ(deltaPosition(++it), 2u);
-    SEQAN_ASSERT_EQ(deltaPosition(++it), 4u);
-
-    const TDeltaMap deltaMap2 = deltaMap;
-    TConstIterator it2 = begin(deltaMap2, Standard());
-    SEQAN_ASSERT_EQ(deltaPosition(it2++), 0u);
-    SEQAN_ASSERT_EQ(deltaPosition(it2++), 1u);
-    SEQAN_ASSERT_EQ(deltaPosition(it2++), 1u);
-    SEQAN_ASSERT_EQ(deltaPosition(it2++), 2u);
-    SEQAN_ASSERT_EQ(deltaPosition(it2++), 4u);
-}
-
 SEQAN_DEFINE_TEST(test_delta_map_iterator_delta_value)
 {
     typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
@@ -394,7 +344,58 @@ SEQAN_DEFINE_TEST(test_delta_map_iterator_delta_value)
     SEQAN_ASSERT_EQ(deltaValue(it2, DeltaTypeIns()), TIns("ACGT"));
 }
 
-SEQAN_DEFINE_TEST(test_delta_map_iterator_delta_coverage)
+SEQAN_DEFINE_TEST(test_delta_map_entry_delta_type)
+{
+    typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
+    typedef Iterator<TDeltaMap, Standard>::Type TIterator;
+    typedef Iterator<TDeltaMap const, Standard>::Type TConstIterator;
+
+    TDeltaMap deltaMap;
+    createMock(deltaMap._entries, deltaMap._deltaStore);
+
+    TIterator it = begin(deltaMap, Standard());
+    SEQAN_ASSERT_EQ(getDeltaType(*it),   DELTA_TYPE_SNP);
+    SEQAN_ASSERT_EQ(getDeltaType(*++it), DELTA_TYPE_DEL);
+    SEQAN_ASSERT_EQ(getDeltaType(*++it), DELTA_TYPE_SV);
+    SEQAN_ASSERT_EQ(getDeltaType(*++it), DELTA_TYPE_SNP);
+    SEQAN_ASSERT_EQ(getDeltaType(*++it), DELTA_TYPE_INS);
+
+    const TDeltaMap deltaMap2 = deltaMap;
+    TConstIterator it2 = begin(deltaMap2, Standard());
+    SEQAN_ASSERT_EQ(getDeltaType(*it2++), DELTA_TYPE_SNP);
+    SEQAN_ASSERT_EQ(getDeltaType(*it2++), DELTA_TYPE_DEL);
+    SEQAN_ASSERT_EQ(getDeltaType(*it2++), DELTA_TYPE_SV);
+    SEQAN_ASSERT_EQ(getDeltaType(*it2++), DELTA_TYPE_SNP);
+    SEQAN_ASSERT_EQ(getDeltaType(*it2++), DELTA_TYPE_INS);
+}
+
+SEQAN_DEFINE_TEST(test_delta_map_entry_delta_position)
+{
+    typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
+    typedef Iterator<TDeltaMap, Standard>::Type TIterator;
+    typedef Iterator<TDeltaMap const, Standard>::Type TConstIterator;
+
+    TDeltaMap deltaMap;
+    createMock(deltaMap._entries, deltaMap._deltaStore);
+
+    TIterator it = begin(deltaMap, Standard());
+    SEQAN_ASSERT_EQ(getDeltaPosition(*it), 0u);
+    SEQAN_ASSERT_EQ(getDeltaPosition(*++it), 1u);
+    SEQAN_ASSERT_EQ(getDeltaPosition(*++it), 1u);
+    SEQAN_ASSERT_EQ(getDeltaPosition(*++it), 2u);
+    SEQAN_ASSERT_EQ(getDeltaPosition(*++it), 4u);
+
+    const TDeltaMap deltaMap2 = deltaMap;
+    TConstIterator it2 = begin(deltaMap2, Standard());
+    SEQAN_ASSERT_EQ(getDeltaPosition(*it2++), 0u);
+    SEQAN_ASSERT_EQ(getDeltaPosition(*it2++), 1u);
+    SEQAN_ASSERT_EQ(getDeltaPosition(*it2++), 1u);
+    SEQAN_ASSERT_EQ(getDeltaPosition(*it2++), 2u);
+    SEQAN_ASSERT_EQ(getDeltaPosition(*it2++), 4u);
+}
+
+
+SEQAN_DEFINE_TEST(test_delta_map_entry_delta_coverage)
 {
     typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
     typedef Iterator<TDeltaMap, Standard>::Type TIterator;
@@ -418,19 +419,19 @@ SEQAN_DEFINE_TEST(test_delta_map_iterator_delta_coverage)
         cov3[i] = (!(i % 2)) ? true : false;
 
     TIterator it = begin(deltaMap, Standard());
-    SEQAN_ASSERT_EQ(deltaCoverage(it++), cov1);
-    SEQAN_ASSERT_EQ(deltaCoverage(it++), cov2);
-    SEQAN_ASSERT_EQ(deltaCoverage(it++), cov1);
-    SEQAN_ASSERT_EQ(deltaCoverage(it++), cov2);
-    SEQAN_ASSERT_EQ(deltaCoverage(it++), cov3);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*it++), cov1);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*it++), cov2);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*it++), cov1);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*it++), cov2);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*it++), cov3);
 
     const TDeltaMap deltaMap2 = deltaMap;
     TConstIterator it2 = begin(deltaMap2, Standard());
-    SEQAN_ASSERT_EQ(deltaCoverage(it2++), cov1);
-    SEQAN_ASSERT_EQ(deltaCoverage(it2++), cov2);
-    SEQAN_ASSERT_EQ(deltaCoverage(it2++), cov1);
-    SEQAN_ASSERT_EQ(deltaCoverage(it2++), cov2);
-    SEQAN_ASSERT_EQ(deltaCoverage(it2++), cov3);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*it2++), cov1);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*it2++), cov2);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*it2++), cov1);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*it2++), cov2);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*it2++), cov3);
 }
 
 

@@ -274,6 +274,75 @@ getDeltaRecord(DeltaMapEntry<TRefPos, TStorePos> const & deltaEntry)
     return deltaEntry.deltaRecord;
 }
 
+/*
+ * @fn getStorePosition
+ *
+ * @headerfile <seqan/journaled_string_tree.h>
+ *
+ * @brief Returns the id of the delta event the current iterator points to.
+ *
+ * @signature TId deltaType(it)
+ * @param[in]   it  The iterator to query the delta event key for.
+ *
+ * @return TId The id for the current delta event of type <tt>DeltaType</tt>.
+ */
+
+template <typename TRefPos, typename TStorePos>
+inline TStorePos
+getStorePosition(DeltaMapEntry<TRefPos, TStorePos> const & deltaEntry)
+{
+    return getDeltaRecord(deltaEntry).i2;
+}
+
+/*
+ * @fn getDeltaType
+ *
+ * @headerfile <seqan/journaled_string_tree.h>
+ *
+ * @brief Returns the id of the delta event the current iterator points to.
+ *
+ * @signature TId deltaType(it)
+ * @param[in]   it  The iterator to query the delta event key for.
+ *
+ * @return TId The id for the current delta event of type <tt>DeltaType</tt>.
+ */
+
+template <typename TRefPos, typename TStorePos>
+inline DeltaType
+getDeltaType(DeltaMapEntry<TRefPos, TStorePos> const & deltaEntry)
+{
+    return static_cast<DeltaType>(getDeltaRecord(deltaEntry).i1);
+}
+
+// ----------------------------------------------------------------------------
+// Function applyOnDelta()
+// ----------------------------------------------------------------------------
+
+template <typename TFunctor,
+typename TRefPos, typename TStorePos>
+inline bool
+applyOnDelta(TFunctor & /*func*/,
+             DeltaMapEntry<TRefPos, TStorePos> const & /*entry*/,
+             TagSelector<void> const & /*selector*/)
+{
+    return false;
+}
+
+template <typename TFunctor,
+          typename TRefPos, typename TStorePos>
+inline bool
+applyOnDelta(TFunctor & func,
+             DeltaMapEntry<TRefPos, TStorePos> const & entry,
+             DeltaTypeSelector const & selector)
+{
+    if (isDeltaType(getDeltaType(entry), typename DeltaTypeSelector::Type()))
+    {
+        func(entry, typename DeltaTypeSelector::Type());
+        return true;
+    }
+    return applyOnDelta(func, entry, static_cast<typename DeltaTypeSelector::Base>(selector));
+}
+
 // ----------------------------------------------------------------------------
 // Function operator==()
 // ----------------------------------------------------------------------------
@@ -292,8 +361,7 @@ inline bool operator==(DeltaMapEntry<TRefPos, TStorePos> const & lhs, DeltaMapEn
 template <typename TRefPos, typename TStorePos>
 inline bool operator!=(DeltaMapEntry<TRefPos, TStorePos> const & lhs, DeltaMapEntry<TRefPos, TStorePos> const & rhs)
 {
-    return (lhs.deltaPosition != rhs.deltaPosition) && (lhs.deltaRecord != rhs.deltaRecord) &&
-           (lhs.deltaCoverage != rhs.deltaCoverage);
+    return !(lhs == rhs);
 }
 
 // ----------------------------------------------------------------------------
