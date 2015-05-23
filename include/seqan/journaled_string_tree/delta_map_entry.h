@@ -111,7 +111,7 @@ struct DeltaMapEntryPosAndTypeLessThanComparator_
     bool operator()(TEntry const & lhs, TEntry const & rhs)
     {
         if (lhs.deltaPosition == rhs.deltaPosition)
-            return lhs.deltaRecord.i1 < rhs.deltaRecord.i1;
+            return lhs.deltaRecord.i1 > rhs.deltaRecord.i1;  // Switch the comaprison in descending order to match ordering of DeltaTypeSelector.
         return lhs.deltaPosition < rhs.deltaPosition;
     }
 };
