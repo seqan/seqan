@@ -463,6 +463,97 @@ deltaValue(DeltaStore<TSnp, TDel, TIns, TSV> const & store, TPos pos, TTag const
     return value(getDeltaStore(store, tag), pos);
 }
 
+// ----------------------------------------------------------------------------
+// Function deletionSize()
+// ----------------------------------------------------------------------------
+
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+deletionSize(typename DeltaValue<TDeltaStore, DeltaTypeSnp>::Type const & /*snp*/)
+{
+    return 1;
+}
+
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+deletionSize(typename DeltaValue<TDeltaStore, DeltaTypeIns>::Type const & /*ins*/)
+{
+    return 0;
+}
+
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+deletionSize(typename DeltaValue<TDeltaStore, DeltaTypeDel>::Type const & del)
+{
+    return del;
+}
+
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+deletionSize(typename DeltaValue<TDeltaStore, DeltaTypeSV>::Type const & sv)
+{
+    return sv.i1;
+}
+
+template <typename TStore, typename TPos, typename TTag>
+inline typename Size<TStore>::Type
+deletionSize(TStore const & store, TPos const pos, TTag const & /*tag*/)
+{
+    return deletionSize<TStore>(getDeltaStore(store, TTag())[pos]);
+}
+
+// ----------------------------------------------------------------------------
+// Function insertionSize()
+// ----------------------------------------------------------------------------
+
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+insertionSize(typename DeltaValue<TDeltaStore, DeltaTypeSnp>::Type const & /*snp*/)
+{
+    return 1;
+}
+
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+insertionSize(typename DeltaValue<TDeltaStore, DeltaTypeIns>::Type const & ins)
+{
+    return length(ins);
+}
+
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+insertionSize(typename DeltaValue<TDeltaStore, DeltaTypeDel>::Type const & /*del*/)
+{
+    return 0;
+}
+
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+insertionSize(typename DeltaValue<TDeltaStore, DeltaTypeSV>::Type const & sv)
+{
+    return length(sv.i2);
+}
+
+template <typename TStore, typename TPos, typename TTag>
+inline typename Size<TStore>::Type
+insertionSize(TStore const & store, TPos const pos, TTag const & /*tag*/)
+{
+    return insertionSize<TStore>(getDeltaStore(store, TTag())[pos]);
+}
+
+// ----------------------------------------------------------------------------
+// Function netSize()
+// ----------------------------------------------------------------------------
+
+template <typename TStore, typename TPos, typename TTag>
+inline typename MakeSigned<typename Size<TStore>::Type>::Type
+netSize(TStore const & store, TPos const pos, TTag const & /*tag*/)
+{
+    typedef typename MakeSigned<typename Size<TStore>::Type>::Type TSignedSize;
+    return static_cast<TSignedSize>(insertionSize(store, pos, TTag())) -
+           static_cast<TSignedSize>(deletionSize(store, pos, TTag()));
+}
+
 }
 
 #endif // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_STORE_H_
