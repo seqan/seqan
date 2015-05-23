@@ -73,8 +73,8 @@ typedef Tag<JstBufferMember_> JstBufferMember;
  * @link DeltaMap @endlink is used to store these information efficiently.
  */
 
-template <typename TSequence, typename TConfig>
-class JournaledStringTree<TSequence, TConfig, Default>
+template <typename TSequence, typename TConfig = DefaultJstConfig<TSequence>, typename TBufferSpec  = StaticBuffer>
+class JournaledStringTree
 {
 public:
 
@@ -82,13 +82,13 @@ public:
     typedef typename Container<TJst>::Type                      TDeltaMap;
     typedef typename Source<TJst>::Type                         TSource;
     typedef typename Size<TJst>::Type                           TSize;
-//    typedef typename Member<TJst, JstBufferMember>::Type        TBuffer;
+    typedef typename Member<TJst, JstBufferMember>::Type        TBuffer;
 
     TSize               _historySize;       // The history size which is used to prune the branches after the historySize is reached.
     TSize               _dimension;         // Number of sequences represented by the JST.
     TSource             _source;            // A journaled String representin the baseSequence.
     Holder<TDeltaMap>   _deltaMapHolder;    // The wrapped container.
-//    TBuffer         _jsBuffer;          // The buffer representing the current sequence context to iterate through.
+    TBuffer             _jsBuffer;          // The buffer representing the current sequence context to iterate through.
 
     /*!
      * @fn JournaledStringTree::JournaledStringTree
@@ -112,6 +112,7 @@ public:
     {
         setHost(_source, source);
         create(_deltaMapHolder);  // Makes delta map holder owner.
+        clipTreeRange(*this, begin(_source, Standard()), end(_source, Standard()));
     }
 
     template <typename TSeq, typename TSize>
@@ -123,7 +124,9 @@ public:
         setHost(_source, source);
         setValue(_deltaMapHolder, deltaMap);  // Makes delta map dependent.
         // Receive the dimension from the coverage assuming same coverage size for all mapped delta operations.
-        _dimension = length(deltaCoverage(begin(container(*this))));
+        _dimension = length(getDeltaCoverage(*begin(container(*this))));
+        setDeltaMap(_jsBuffer, container(*this));
+        clipTreeRange(*this, begin(_source, Standard()), end(_source, Standard()));
     }
 };
 
@@ -252,11 +255,11 @@ struct Source<JournaledStringTree<TSeq, TConfig, TSpec> const>
 // Metafunction Member<TJst, JstBufferMember>
 // ----------------------------------------------------------------------------
 
-//template <typename TJst>
-//struct Member<TJst, JstBufferMember>
-//{
-//    typedef JstBuffer<TJst, Forw> Type;
-//};
+template <typename TJst>
+struct Member<TJst, JstBufferMember>
+{
+    typedef JstBuffer<TJst> Type;
+};
 
 // ============================================================================
 // Public Functions
@@ -462,7 +465,7 @@ clear(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
     jst._historySize = 0;
     reset(jst._source);
     clear(jst._deltaMapHolder);
-//    clear(jst._buffer);
+    clear(jst._jsBuffer);
 }
 
 // ----------------------------------------------------------------------------
@@ -516,11 +519,11 @@ insertNode(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
     TCoverage coverage;
     resize(coverage, dimension(jst), false, Exact());
 
-    forEach(ids, [&jst, &coverage](TID seqId)
-                    {
-                      SEQAN_ASSERT_LT(seqId, dimension(jst));  // Check that id is valid.
-                      coverage[seqId] = true;
-                    }, Serial());
+    forEach(ids,[&jst, &coverage](TID seqId)
+    {
+        SEQAN_ASSERT_LT(seqId, dimension(jst));  // Check that id is valid.
+        coverage[seqId] = true;
+    });
 
     return insert(container(jst), srcPos, deltaVal, coverage, TDeltaType());
 }
@@ -557,6 +560,36 @@ eraseNode(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
           TDeltaType /*deltaType*/)
 {
     return erase(container(jst), srcPos, TDeltaType());
+}
+
+// ----------------------------------------------------------------------------
+// Function clipTreeRange()
+// ----------------------------------------------------------------------------
+
+template <typename TSequence, typename TConfig, typename TSpec, typename TSrcIt>
+inline SEQAN_FUNC_ENABLE_IF(Is<RootedIteratorConcept<TSrcIt> >, void)
+clipTreeRange(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
+              TSrcIt const & clipBeginIt,
+              TSrcIt const & clipEndIt)
+{
+    typedef JournaledStringTree<TSequence, TConfig, TSpec>  TJst;
+    typedef typename Container<TJst>::Type                  TDeltaMap;
+    typedef typename Iterator<TDeltaMap, Standard>::Type    TIterator;
+
+    SEQAN_ASSERT_LT(position(clipBeginIt), position(clipEndIt));
+
+
+    setSourceRange(jst._jsBuffer, clipBeginIt, clipEndIt);
+    sync(jst._jsBuffer);
+}
+
+template <typename TSequence, typename TConfig, typename TSpec, typename TPos>
+inline SEQAN_FUNC_DISABLE_IF(Is<RootedIteratorConcept<TPos> >, void)
+clipTreeRange(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
+              TPos const beginPos,
+              TPos const endPos)
+{
+    clipTreeRange(jst, iter(source(jst), beginPos, Rooted()), iter(source(jst), endPos, Rooted()));
 }
 
 }

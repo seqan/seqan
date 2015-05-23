@@ -80,13 +80,6 @@ struct DefaultJstConfig
     typedef Pair<TDelValue, TInsValue>      TSVValue;   // Value type of structural variants (combination of deletion and insertion).
 };
 
-// ----------------------------------------------------------------------------
-// Class JournaledStringTree
-// ----------------------------------------------------------------------------
-
-template <typename TSequence, typename TConfig = DefaultJstConfig<TSequence>, typename TSpec = Default>
-class JournaledStringTree;
-
 // ============================================================================
 // Metafunctions
 // ============================================================================

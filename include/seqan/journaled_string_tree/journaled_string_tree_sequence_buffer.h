@@ -48,77 +48,77 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Tag Direction Tags
-// ----------------------------------------------------------------------------
-
-struct TraverseForward_;
-typedef Tag<TraverseForward_> TraverseForward;
-
-struct TraverseBackward_;
-typedef Tag<TraverseBackward_> TraverseBackward;
-
-struct TraverseBidirectional_;
-typedef Tag<TraverseBidirectional_> TraverseBidirectional;
-
-// ----------------------------------------------------------------------------
 // Tag Member Tags
 // ----------------------------------------------------------------------------
 
-struct JstSeqBufferJournaledSet_;
-typedef Tag<JstSeqBufferJournaledSet_> JstSeqBufferJournaledSet;
+struct JstBufferSetMember_;
+typedef Tag<JstBufferSetMember_> JstBufferSetMember;
 
 // ----------------------------------------------------------------------------
-// Tag Buffering Tags
+// Tag Traversal Tags
+// ----------------------------------------------------------------------------
+
+struct ForwardTraversal_;
+typedef Tag<ForwardTraversal_> ForwardTraversal;
+
+//struct BackwardTraversal_;
+//typedef Tag<BackwardTraversal_> BackwardTraversal;
+
+
+// ----------------------------------------------------------------------------
+// Tag Buffer Tags
 // ----------------------------------------------------------------------------
 
 struct StaticBuffer_;
 typedef Tag<StaticBuffer_> StaticBuffer;
 
-template <unsigned BLOCK_SIZE = 10000>
+template <unsigned BUFFER_SIZE = 10000u>
 struct DynamicBuffer;
+
 
 // ----------------------------------------------------------------------------
 // Class JstBuffer
 // ----------------------------------------------------------------------------
 
-template <typename TJournaledStringTree, typename TDirection>
+template <typename TJournaledStringTree, typename TDirection = ForwardTraversal, typename TBufferSpec = StaticBuffer>
 class JstBuffer
 {
 public:
 
     // __ Types ___________________________________________________________________
 
-    typedef typename RemoveConst<TJournaledStringTree>::Type                    THost;
-    typedef typename Member<JstBuffer, JstSeqBufferJournaledSet>::Type          TJournaledSet;
-    typedef typename Value<JournaledSet>::Type                                  TJournaledSeq;
-    typedef typename Iterator<TJournaledSeq, Standard>::Type                    TJournaledSeqIt;
-    typedef typename Size<TJournaledSeq>::Type                                  TSize;
+    typedef typename Member<JstBuffer, JstBufferSetMember>::Type    TJournaledSet;
+    typedef typename Value<JournaledSet>::Type                      TJournaledSeq;
+    typedef typename Iterator<TJournaledSeq, Standard>::Type        TJournaledSeqIt;
+    typedef typename Size<TJournaledSeq>::Type                      TSize;
 
-    typedef typename Container<TJournaledStringTree>::Type                      TDeltaMap;
-    typedef typename Iterator<TDeltaMap, Standard>::Type                        TDeltaIterator;
+    typedef typename Container<typename RemoveConst<TJournaledStringTree>::Type >::Type  TDeltaMap;
+    typedef typename Iterator<TDeltaMap const, Standard>::Type      TDeltaIterator;
 
-    typedef typename Position<TJournaledSet>::Type                              TJSetPos;
-    typedef String<TJSetPos>                                                    TStringPositions;
+    typedef typename Position<TJournaledSet>::Type                  TJSetPos;
+    typedef String<TJSetPos>                                        TStringPositions;
 
     // __ Members _________________________________________________________________
 
-    THost const *           hostPtr;        // Pointer to the underlying host.
-    TSize                   chunkSize;
+    TDeltaMap const *       _deltaMapPtr;
+    TSize                   _chunkSize;      // Size of the chunk.
+    bool                    _isSynchronized;
 
+    Range<TDeltaIterator>   deltaRange;     // The range over the deltas that need to be buffered.
+    Range<TJournaledSeqIt>  sourceRange;    // Range represented by the Journaled-String-Tree.
 
-    Range<TJournaledSeqIt>  sourceRange;    // Range to be traversed over the Journaled-String-Tree.
-    Range<TJournaledSeqIt>  bufferedChunk;  // The chunk currently buffered.
-    Range<TDeltaIterator>   deltaRange;     // The range of the delta map currentyl buffered.
+    TJournaledSeqIt         _chunkBegin;
+    TJournaledSeqIt         _chunkEnd;
 
-    TStringPositions        startPositions; // The begin positions of the strings within the chunk.
-    // TStringPositions        endPositions;   // The end positions of the strings within the chunk.
-
-    TJournaledSeq           sourceJournaled;  // The original source sequence represented as JournaledString.
-    TJournaledSet           journaledSet;   // The actual sequences over the current chunk.
+    TStringPositions        _startPositions; // The begin positions of the strings within the chunk.
+    TJournaledSet           _journaledSet;   // The actual sequences over the current chunk.
 
     // __ Constructor _____________________________________________________________
 
-    JstBuffer() : hostPtr(nullptr)
+    JstBuffer() : _deltaMapPtr(nullptr)
+    {}
+
+    JstBuffer(TDeltaMap const & deltaMap) : _deltaMapPtr(&deltaMap)
     {}
 
 };
@@ -132,19 +132,9 @@ public:
 // ----------------------------------------------------------------------------
 
 template <typename TJournaledStringTree, typename TDirection>
-struct Member<JstBuffer<TJournaledStringTree, TDirection>, JstSeqBufferJournaledSet>
+struct Member<JstBuffer<TJournaledStringTree, TDirection>, JstBufferSetMember>
 {
     typedef typename Source<TJournaledStringTree>::Type                         Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction Host
-// ----------------------------------------------------------------------------
-
-template <typename TJst, typename TDir>
-struct Host<JstBuffer<TJst, TDir> >
-{
-    typedef TJst Type;
 };
 
 // ============================================================================
@@ -154,28 +144,82 @@ struct Host<JstBuffer<TJst, TDir> >
 namespace impl
 {
     
-// TODO(rrahn): Implement streamTo()
-
 // ----------------------------------------------------------------------------
-// Function impl::setNewHost()
+// Function impl::getChunkSize()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TDir>
-inline void
-setNewHost(JstBuffer<TJst, TDir> & buffer,
-           TJst const & newHost)
+template <typename TJst, typename TDir, typename TSpec>
+inline constexpr typename Size<JstBuffer<TJst, TDir, TSpec> >::Type
+getChunkSize(JstBuffer<TJst, TDir, TSpec> const & /*buffer*/)
 {
-    buffer.hostPtr = &newHost;
-    clear(buffer.startPositions);
-    resize(buffer.startPositions, depth(newHost), 0, Exact());
-    clear(buffer.journaledSet);
-    resize(buffer.journaledSet);
-    setHost(buffer.journaledSet, baseSequence(newHost));
-    setHost(buffer.sourceJournaled, host(buffer.journaledSet));
-    assignRange(buffer.sourceRange, begin(buffer.sourceJournaled, Standard()), end(buffer.sequenceJournaled, Standard()));
-    buffer.bufferedChunk = buffer.sourceRange;
-    assignRange(buffer.deltaRange, begin(container(newHost), Standard()), end(container(newHost), Standard()));
-    buffer.chunkSize = -1;
+    return MaxValue<typename Size<JstBuffer<TJst, TDir, TSpec> >::Type>::VALUE;
+}
+
+template <typename TJst, typename TDir, unsigned BUFFER_SIZE>
+inline constexpr typename Size<JstBuffer<TJst, TDir, DynamicBuffer<BUFFER_SIZE> > >::Type
+getChunkSize(JstBuffer<TJst, TDir, DynamicBuffer<BUFFER_SIZE> > const & /*buffer*/)
+{
+    return BUFFER_SIZE;
+}
+
+template <typename TSignedSize, typename TDeltaStore>
+struct NetSizeExtractor
+{
+    TDeltaStore &   _store;
+    TSignedSize     val;
+
+    NetSizeExtractor(TDeltaStore & store) : _store(store), val(0)
+    {}
+
+    template <typename TEntry, typename TTag>
+    inline void operator()(TEntry const & entry, TTag const &)
+    {
+        val = netSize(_store, getStorePos(entry), TTag());
+    }
+};
+
+// ----------------------------------------------------------------------------
+// Function impl::synchronize()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TDir, typename TSpec>
+inline void
+synchronize(JstBuffer<TJst, TDir, TSpec> & buffer)
+{
+    typedef typename Size<JstBuffer<TJst, TDir, TSpec> >::Type          TSize;
+    typedef typename Container<TJst>::Type                              TDeltaMap;
+    typedef typename Member<TDeltaMap, DeltaMapStoreMember>::Type       TDeltaStore;
+    typedef typename MakeSigned<typename Size<TDeltaStore>::Type>::Type TSignedSize;
+
+    SEQAN_ASSERT(buffer.sourceRange.begin < buffer.sourceRange.end);
+
+    buffer._chunkSize = std::min(impl::getChunkSize(buffer), static_cast<TSize>(buffer.sourceRange.end - buffer.sourceRange.begin));
+    // Now we need to stream to the position.
+
+    auto deltaIt = begin(*buffer._deltaMapPtr, Standard());
+    resize(buffer._startPositions, length(getDeltaCoverage(*deltaIt)), position(buffer.sourceRange.begin), Exact());
+
+    if (position(buffer.sourceRange.begin) == 0)  // Special case: We also set the begin position to 0 even if there is an insertion at the 0th position.
+        return;
+
+    impl::NetSizeExtractor<TSignedSize, TDeltaStore const> f(buffer._deltaMapPtr->_deltaStore);
+    for (; deltaIt != buffer.deltaRange.begin; ++deltaIt)
+    {
+        DeltaTypeSelector selector;
+        applyOnDelta(f, *deltaIt, selector);
+        auto covBegin = begin(getDeltaCoverage(*deltaIt), Standard());
+        for (auto covIt = covBegin; covIt != end(getDeltaCoverage(*deltaIt), Standard()); ++covIt)
+        {
+            if (*covIt)
+            {
+                if (SEQAN_UNLIKELY(std::abs(f.val) > buffer._startPositions[covIt - covBegin]))
+                    buffer._startPositions[covIt - covBegin] = 0;
+                else
+                    buffer._startPositions[covIt - covBegin] += f.val;
+            }
+        }
+    }
+    buffer._isSynchronized = true;
 }
 
 }  // namespace impl
@@ -192,28 +236,64 @@ setNewHost(JstBuffer<TJst, TDir> & buffer,
 // TODO(rrahn): chunk() -> Returns buffered journaled Set -> Read-Only.
 // TODO(rrahn): setChunkSize();
 // TODO(rrahn): chunkSize();
+
 // TODO(rrahn): advanceChunk();
 
-// TODO(rrahn): setHost();
+// ----------------------------------------------------------------------------
+// Function setSourceRange()
+// ----------------------------------------------------------------------------
 
-template <typename TJst, typename TDir>
+template <typename TJst, typename TDir, typename TSpec>
 inline void
-setHost(JstBuffer<TJst, TDir> & buffer,
-        TJst const & host)
+setDeltaMap(JstBuffer<TJst, TDir, TSpec> & buffer,
+            typename Container<TJst>::Type const & container)
 {
     clear(buffer);
-    impl::setNewHost(host);
+    buffer._deltaMapPtr = &container;
+    if (empty(container))
+        return;
+    buffer.deltaRange.begin = begin(*buffer._deltaMapPtr, Standard());
+    buffer.deltaRange.end   = end(*buffer._deltaMapPtr, Standard());
 }
 
+// ----------------------------------------------------------------------------
+// Function setSourceRange()
+// ----------------------------------------------------------------------------
 
-template <typename TJst, typename TDir>
-inline typename Host<JstBuffer<TJst, TDir> const>::Type &
-host(JstBuffer<TJst, TDir> const & buffer)
+template <typename TJst, typename TDir, typename TSpec,
+          typename TIter>
+inline void
+setSourceRange(JstBuffer<TJst, TDir, TSpec> & buffer, TIter const & srcBegin, TIter const & srcEnd)
 {
-    return *buffer.hostPtr;
+    SEQAN_ASSERT(buffer._deltaMapPtr != nullptr);
+    SEQAN_ASSERT(!empty(*buffer._deltaMapPtr));
+
+    buffer._isSynchronized = false;
+
+    buffer.deltaRange.begin = impl::lowerBound(*buffer._deltaMapPtr, position(srcBegin));
+    buffer.deltaRange.end   = impl::lowerBound(*buffer._deltaMapPtr, position(srcEnd));
 }
 
-// TODO(rrahn): clear();
+// ----------------------------------------------------------------------------
+// Function setSourceRange()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TDir, typename TSpec>
+inline void
+sync(JstBuffer<TJst, TDir, TSpec> & buffer)
+{
+    if (buffer._isSynchronized)
+        return;
+    impl::synchronize(buffer);
+}
+
+template <typename TJst, typename TDir, typename TSpec>
+inline void
+clear(JstBuffer<TJst, TDir, TSpec> & buffer)
+{
+    buffer._deltaMapPtr = nullptr;
+    buffer._isSynchronized = false;
+}
 
 
 }  // namespace seqan
