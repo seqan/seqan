@@ -133,29 +133,6 @@ struct Difference<Iter<TDeltaMap, DeltaMapIteratorSpec> const > :
 // Functions
 // ============================================================================
 
-namespace impl
-{
-
-template <typename TIterator>
-inline typename DeltaPosition<typename Value<TIterator>::Type>::Type
-getDelSize(TIterator const & /*it*/, TagSelector<> const & /*deltaTypeSelector*/)
-{
-    return 0;
-}
-
-template <typename TIterator, typename TTagList>
-inline typename DeltaPosition<typename Value<TIterator>::Type>::Type
-getDelSize(TIterator const & it, TagSelector<TTagList> const & deltaType)
-{
-    typedef typename TTagList::Type TDeltaType;
-
-    if (isEqual(deltaType, TDeltaType()))
-        return delSize(container(it)._deltaStore, getDeltaRecord(*it).i2, TDeltaType());
-    return getDelSize(it, static_cast<typename TagSelector<TTagList>::Base const &>(deltaType));
-}
-
-}
-
 // ----------------------------------------------------------------------------
 // Function container()
 // ----------------------------------------------------------------------------
