@@ -464,81 +464,94 @@ deltaValue(DeltaStore<TSnp, TDel, TIns, TSV> const & store, TPos pos, TTag const
 }
 
 // ----------------------------------------------------------------------------
-// Function sizeDel()
+// Function deletionSize()
 // ----------------------------------------------------------------------------
 
-template <typename TValue>
-inline unsigned
-sizeDel(TValue const & /*val*/, DeltaTypeSnp const & /*tag*/)
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+deletionSize(typename DeltaValue<TDeltaStore, DeltaTypeSnp>::Type const & /*snp*/)
 {
     return 1;
 }
 
-template <typename TValue>
-inline unsigned
-sizeDel(TValue const & /*val*/, DeltaTypeIns const & /*tag*/)
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+deletionSize(typename DeltaValue<TDeltaStore, DeltaTypeIns>::Type const & /*ins*/)
 {
     return 0;
 }
 
-template <typename TDel>
-inline TDel
-sizeDel(TDel const & val, DeltaTypeDel const & /*tag*/)
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+deletionSize(typename DeltaValue<TDeltaStore, DeltaTypeDel>::Type const & del)
 {
-    return val;
+    return del;
 }
 
-template <typename TSV>
-inline typename Value<TSV, 1>::Type
-sizeDel(TSV const & val, DeltaTypeSV const & /*tag*/)
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+deletionSize(typename DeltaValue<TDeltaStore, DeltaTypeSV>::Type const & sv)
 {
-    return val.i1;
+    return sv.i1;
 }
 
 template <typename TStore, typename TPos, typename TTag>
 inline typename Size<TStore>::Type
-sizeDel(TStore const & store, TPos pos, TTag const & /*tag*/)
+deletionSize(TStore const & store, TPos const pos, TTag const & /*tag*/)
 {
-    return sizeDel(getDeltaStore(store)[pos], TTag());
+    return deletionSize<TStore>(getDeltaStore(store, TTag())[pos]);
 }
 
 // ----------------------------------------------------------------------------
-// Function sizeIns()
+// Function insertionSize()
 // ----------------------------------------------------------------------------
 
-template <typename TValue>
-inline unsigned
-sizeIns(TValue const & /*val*/, DeltaTypeSnp const & /*tag*/)
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+insertionSize(typename DeltaValue<TDeltaStore, DeltaTypeSnp>::Type const & /*snp*/)
 {
     return 1;
 }
 
-template <typename TValue>
-inline unsigned
-sizeIns(TValue const & val, DeltaTypeIns const & /*tag*/)
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+insertionSize(typename DeltaValue<TDeltaStore, DeltaTypeIns>::Type const & ins)
 {
-    return length(val);
+    return length(ins);
 }
 
-template <typename TDel>
-inline unsigned
-sizeIns(TDel & /*val*/, DeltaTypeDel const & /*tag*/)
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+insertionSize(typename DeltaValue<TDeltaStore, DeltaTypeDel>::Type const & /*del*/)
 {
     return 0;
 }
 
-template <typename TSV>
-inline unsigned
-sizeIns(TSV & val, DeltaTypeSV const & /*tag*/)
+template <typename TDeltaStore>
+inline typename Size<TDeltaStore>::Type
+insertionSize(typename DeltaValue<TDeltaStore, DeltaTypeSV>::Type const & sv)
 {
-    return val.i2;
+    return length(sv.i2);
 }
 
 template <typename TStore, typename TPos, typename TTag>
 inline typename Size<TStore>::Type
-sizeIns(TStore & store, TPos pos, TTag const & /*tag*/)
+insertionSize(TStore const & store, TPos const pos, TTag const & /*tag*/)
 {
-    return sizeIns(getDeltaStore(store)[pos], TTag());
+    return insertionSize<TStore>(getDeltaStore(store, TTag())[pos]);
+}
+
+// ----------------------------------------------------------------------------
+// Function netSize()
+// ----------------------------------------------------------------------------
+
+template <typename TStore, typename TPos, typename TTag>
+inline typename MakeSigned<typename Size<TStore>::Type>::Type
+netSize(TStore const & store, TPos const pos, TTag const & /*tag*/)
+{
+    typedef typename MakeSigned<typename Size<TStore>::Type>::Type TSignedSize;
+    return static_cast<TSignedSize>(insertionSize(store, pos, TTag())) -
+           static_cast<TSignedSize>(deletionSize(store, pos, TTag()));
 }
 
 }
