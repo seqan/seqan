@@ -366,6 +366,8 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_mod_pos)
         seqan::sort(modified);
         SEQAN_ASSERT_EQ(original, "CGAT");
         SEQAN_ASSERT_EQ(modified, "ACGT");
+
+        SEQAN_ASSERT_EQ(infix(modified, 1, 3), "CG");
     }
 }
 
