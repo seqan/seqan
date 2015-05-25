@@ -59,7 +59,13 @@ struct ModPos {};
 template <typename THost, typename TPositions>
 struct Cargo<ModifiedString<THost, ModPos<TPositions> > >
 {
-    typedef TPositions    Type;
+    typedef typename Pointer_<TPositions>::Type  Type;
+};
+
+template <typename THost, typename TPositions>
+struct Cargo<ModifiedString<THost, ModPos<TPositions> > const>
+{
+    typedef typename Pointer_<TPositions>::Type const Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -173,15 +179,17 @@ struct Iterator<ModifiedString<THost, ModPos<TPositions> > const, Rooted>
 // Metafunction Infix
 // ----------------------------------------------------------------------------
 
-//template <typename THost, typename TPositions>
-//struct Infix<ModifiedString<THost, ModPos<TPositions> > >
-//{
-//    typedef ModifiedString<THost, ModPos<TPositions> >    Type;
-//};
-//
-//template <typename THost, typename TPositions>
-//struct Infix<ModifiedString<THost, ModPos<TPositions> > const> :
-//    Infix<ModifiedString<THost, ModPos<TPositions> > > {};
+template <typename THost, typename TPositions>
+struct Infix<ModifiedString<THost, ModPos<TPositions> > >
+{
+    typedef ModifiedString<THost, ModPos<typename Infix<TPositions>::Type> >    Type;
+};
+
+template <typename THost, typename TPositions>
+struct Infix<ModifiedString<THost, ModPos<TPositions> > const>
+{
+    typedef ModifiedString<THost, ModPos<typename Infix<TPositions>::Type> > const   Type;
+};
 
 // --------------------------------------------------------------------------
 // Metafunction AllowsFastRandomAccess
@@ -195,6 +203,35 @@ struct AllowsFastRandomAccess<ModifiedString<THost, ModPos<TPositions> > > :
 // ============================================================================
 // Functions
 // ============================================================================
+
+// --------------------------------------------------------------------------
+// Function cargo()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TPositions>
+inline typename Parameter_<TPositions>::Type
+cargo(ModifiedString<THost, ModPos<TPositions> > & me)
+{
+    return _toParameter<TPositions>(me._cargo);
+}
+
+template <typename THost, typename TPositions>
+inline typename Parameter_<TPositions>::Type
+cargo(ModifiedString<THost, ModPos<TPositions> > const & me)
+{
+    return _toParameter<TPositions>(me._cargo);
+}
+
+// --------------------------------------------------------------------------
+// Function setCargo()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TPositions>
+inline void
+setCargo(ModifiedString<THost, ModPos<TPositions> > & me, typename Parameter_<TPositions>::Type _cargo)
+{
+    me._cargo = _toPointer(_cargo);
+}
 
 // ----------------------------------------------------------------------------
 // Function begin()
@@ -363,19 +400,25 @@ inline void clear(ModifiedString<THost, ModPos<TPositions> > & me)
 // Function infix()
 // ----------------------------------------------------------------------------
 
-//template <typename THost, typename TPositions, typename TPosBegin, typename TPosEnd>
-//inline typename Infix<ModifiedString<THost, ModPos<TPositions> > const>::Type
-//infix(ModifiedString<THost, ModPos<TPositions> > const & me, TPosBegin pos_begin, TPosEnd pos_end)
-//{
-//    return typename Infix<ModifiedString<THost, ModPos<TPositions> > >::Type(me._begin + pos_begin, me._begin + pos_end);
-//}
-//
-//template <typename THost, typename TPositions, typename TPosBegin, typename TPosEnd>
-//inline typename Infix<ModifiedString<THost, ModPos<TPositions> > >::Type
-//infix(ModifiedString<THost, ModPos<TPositions> > & me, TPosBegin pos_begin, TPosEnd pos_end)
-//{
-//    return infix(reinterpret_cast<ModifiedString<THost, ModPos<TPositions> > const &>(me), pos_begin, pos_end);
-//}
+template <typename THost, typename TPositions, typename TPosBegin, typename TPosEnd>
+inline typename Infix<ModifiedString<THost, ModPos<TPositions> > const>::Type
+infix(ModifiedString<THost, ModPos<TPositions> > const & me, TPosBegin pos_begin, TPosEnd pos_end)
+{
+    typename Infix<ModifiedString<THost, ModPos<TPositions> > const>::Type other;
+    setHost(other, host(me));
+    setCargo(other, infix(cargo(me), pos_begin, pos_end));
+    return other;
+}
+
+template <typename THost, typename TPositions, typename TPosBegin, typename TPosEnd>
+inline typename Infix<ModifiedString<THost, ModPos<TPositions> > >::Type
+infix(ModifiedString<THost, ModPos<TPositions> > & me, TPosBegin pos_begin, TPosEnd pos_end)
+{
+    typename Infix<ModifiedString<THost, ModPos<TPositions> > >::Type other;
+    setHost(other, host(me));
+    setCargo(other, infix(cargo(me), pos_begin, pos_end));
+    return other;
+}
 
 // ----------------------------------------------------------------------------
 // Function position()
