@@ -1027,7 +1027,7 @@ struct AssignString_
 // functions of helper struct.
 
 template<typename TTargetValue, typename TTargetSpec, typename TSource, typename TExpand>
-inline void
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TSource> >, void)
 assign(String<TTargetValue, TTargetSpec> & target,
        TSource const & source,
        Tag<TExpand>)
@@ -1035,13 +1035,34 @@ assign(String<TTargetValue, TTargetSpec> & target,
     AssignString_<Tag<TExpand> >::assign_(target, source);
 }
 template<typename TTargetValue, typename TTargetSpec, typename TSource, typename TSize, typename TExpand>
-inline void
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TSource> >, void)
 assign(String<TTargetValue, TTargetSpec> & target,
        TSource const & source,
        TSize limit,
        Tag<TExpand>)
 {
     AssignString_<Tag<TExpand> >::assign_(target, source, limit);
+}
+
+// use stl's copy for stl sources
+template<typename TTargetValue, typename TTargetSpec, typename TSource, typename TExpand>
+inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TSource> >, void)
+assign(String<TTargetValue, TTargetSpec> & target,
+       TSource const & source,
+       Tag<TExpand>)
+{
+    std::copy(source.begin(), source.end(), begin(target, Standard()));
+}
+template<typename TTargetValue, typename TTargetSpec, typename TSource, typename TSize, typename TExpand>
+inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TSource> >, void)
+assign(String<TTargetValue, TTargetSpec> & target,
+       TSource const & source,
+       TSize limit,
+       Tag<TExpand>)
+{
+    std::copy(begin(source, Standard()),
+              iter(source, std::min(length(source), limit), Standard()),
+              begin(target, Standard()));
 }
 
 //// TODO(holtgrew): Still required with dropped VC++ 2003 support?
@@ -1258,7 +1279,7 @@ struct AppendString_
 };
 
 template<typename TTargetValue, typename TTargetSpec, typename TSource, typename TExpand>
-inline void
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TSource> >, void)
 append(String<TTargetValue, TTargetSpec> & target,
        TSource const & source,
        Tag<TExpand>)
@@ -1267,7 +1288,7 @@ append(String<TTargetValue, TTargetSpec> & target,
 }
 
 template<typename TTargetValue, typename TTargetSpec, typename TSource, typename TExpand>
-inline void
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TSource> >, void)
 append(String<TTargetValue, TTargetSpec> & target,
        TSource const & source,
        typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
@@ -1276,27 +1297,52 @@ append(String<TTargetValue, TTargetSpec> & target,
     AppendString_<Tag<TExpand> >::append_(target, source, limit);
 }
 
+// use stl's copy for stl sources
+template<typename TTargetValue, typename TTargetSpec, typename TSource, typename TExpand>
+inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TSource> >, void)
+append(String<TTargetValue, TTargetSpec> & target,
+       TSource const & source,
+       Tag<TExpand>)
+{
+    typename Size<String<TTargetValue, TTargetSpec> >::Type l = length(target);
+    resize(target, l + length(source), Tag<TExpand>());
+    std::copy(source.begin(), source.end(), iter(target, l, Standard()));
+}
+template<typename TTargetValue, typename TTargetSpec, typename TSource, typename TSize, typename TExpand>
+inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TSource> >, void)
+append(String<TTargetValue, TTargetSpec> & target,
+       TSource const & source,
+       TSize limit,
+       Tag<TExpand>)
+{
+    TSize l = length(target);
+    resize(target, l + std::min(length(source), limit), Tag<TExpand>());
+    std::copy(begin(source, Standard()),
+              iter(source, std::min(length(source), limit), Standard()),
+              iter(target, l, Standard()));
+}
+
 // TODO(holtgrew): Still required with dropped VC++ 2003 support?
 //this variant is a workaround for the "const array"-bug of VC++
 
-template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
-inline void
-append(String<TTargetValue, TTargetSpec> & target,
-       TSourceValue * source,
-       Tag<TExpand>)
-{
-    AppendString_<Tag<TExpand> >::append_(target, source);
-}
-
-template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
-inline void
-append(String<TTargetValue, TTargetSpec> & target,
-       TSourceValue * source,
-       typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
-       Tag<TExpand>)
-{
-    AppendString_<Tag<TExpand> >::append_(target, source, limit);
-}
+// template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
+// inline void
+// append(String<TTargetValue, TTargetSpec> & target,
+//        TSourceValue * source,
+//        Tag<TExpand>)
+// {
+//     AppendString_<Tag<TExpand> >::append_(target, source);
+// }
+//
+// template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
+// inline void
+// append(String<TTargetValue, TTargetSpec> & target,
+//        TSourceValue * source,
+//        typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
+//        Tag<TExpand>)
+// {
+//     AppendString_<Tag<TExpand> >::append_(target, source, limit);
+// }
 
 // ----------------------------------------------------------------------------
 // Function appendValue()

@@ -106,31 +106,18 @@ template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T, Standard>::T
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T const, Standard>::Type _beginDefault(T const & me, Standard);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T, Rooted>::Type _beginDefault(T & me, Rooted);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T const, Rooted>::Type _beginDefault(T const & me, Rooted);
-template <typename T, typename TSize, typename TExpand> inline typename Size<T>::Type _capacityReturned(T & me, TSize, Tag<TExpand>);
-template <typename T, typename TSize> inline typename Size<T>::Type _capacityReturned(T &, TSize new_capacity, Insist const & );
 template <typename T, typename TSize> inline TSize _computeSizeForCapacity(T const & , TSize capacity);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T, Standard>::Type _endDefault(T & me, Standard);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T const, Standard>::Type _endDefault(T const & me, Standard);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T, Rooted>::Type _endDefault(T & me, Rooted);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T const, Rooted>::Type _endDefault(T const & me, Rooted);
-template<typename TTarget, typename TSource> inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void) assign(TTarget & target, TSource & source, typename Size<TTarget>::Type limit);
-template<typename TTarget, typename TSource> inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void) assign(TTarget const & target, TSource & source, typename Size<TTarget>::Type limit);
-template<typename TTarget, typename TSource> inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void) assign(TTarget & target, TSource const & source, typename Size<TTarget>::Type limit);
-template<typename TTarget, typename TSource> inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-assign(TTarget const & target, TSource const & source, typename Size<TTarget>::Type limit);
-// #ifdef SEQAN_CXX11_STANDARD
-// template <typename TContainer> inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, void) assign(TContainer & me, TContainer && source);
-// template <typename TContainer> inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, void) assign(TContainer && me, TContainer const & source);
-// #endif
-// template <typename TContainer, typename TSource> inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, void) assign(TContainer SEQAN_FORWARD_ARG me,TSource const & source);
-// template <typename TContainer, typename TSource> inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, void) assign(TContainer SEQAN_FORWARD_ARG me, TSource const & source, typename Size<TSource>::Type limit);
+template<typename TTarget, typename TSource> inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void) assign(TTarget SEQAN_FORWARD_ARG target, TSource SEQAN_FORWARD_CARG source, typename Size<TTarget>::Type const limit);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type begin(T & me);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type begin(T const & me);
 template <typename T, typename TSpec> inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Iterator<T, Tag<TSpec> const>::Type) begin(T & me, Tag<TSpec> const tag_);
 template <typename T, typename TSpec> inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Iterator<T const, Tag<TSpec> const>::Type) begin(T const & me, Tag<TSpec> const tag_);
 template <typename T> inline typename Position<T>::Type beginPosition(T &);
 template <typename T> inline typename Position<T>::Type beginPosition(T const &);
-// template <typename T, typename DisableIf<Is<StlContainerConcept<T> >, int>::Type> SEQAN_HOST_DEVICE inline typename Size<T const>::Type capacity(T const & me);
 template <typename T, typename TSize> inline TSize computeGenerousCapacity(T const & , TSize capacity);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type end(T & me);
 template <typename T> SEQAN_HOST_DEVICE inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type end(T const & me);

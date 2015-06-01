@@ -924,42 +924,15 @@ _storageUpdated(T const & me)
 
 template<typename TTarget, typename TSource>
 inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-assign(TTarget & target,
-       TSource & source,
+assign(TTarget SEQAN_FORWARD_ARG target,
+       TSource SEQAN_FORWARD_CARG source,
        typename Size<TTarget>::Type limit)
 {
     SEQAN_CHECKPOINT;
-    assign(target, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
-}
-
-template<typename TTarget, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-assign(TTarget const & target,
-       TSource & source,
-       typename Size<TTarget>::Type limit)
-{
-    SEQAN_CHECKPOINT;
-    assign(target, source, limit, typename DefaultOverflowImplicit<TTarget const>::Type());
-}
-
-template<typename TTarget, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-assign(TTarget & target,
-       TSource const & source,
-       typename Size<TTarget>::Type limit)
-{
-    SEQAN_CHECKPOINT;
-    assign(target, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
-}
-
-template<typename TTarget, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-assign(TTarget const & target,
-       TSource const & source,
-       typename Size<TTarget>::Type limit)
-{
-    SEQAN_CHECKPOINT;
-    assign(target, source, limit, typename DefaultOverflowImplicit<TTarget const>::Type());
+    assign(SEQAN_FORWARD(TTarget, target),
+           SEQAN_FORWARD(TSource, source),
+           limit,
+           typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
 // --------------------------------------------------------------------------
@@ -978,26 +951,8 @@ assign(TTarget const & target,
  */
 
 template<typename TTarget, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
-append(TTarget & target,
-       TSource & source)
-{
-    SEQAN_CHECKPOINT;
-    append(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
-}
-
-template<typename TTarget, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
-append(TTarget const & target,
-       TSource & source)
-{
-    SEQAN_CHECKPOINT;
-    append(target, source, typename DefaultOverflowImplicit<TTarget const>::Type());
-}
-
-template<typename TTarget, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
-append(TTarget & target,
+inline void
+append(TTarget SEQAN_FORWARD_ARG target,
        TSource const & source)
 {
     SEQAN_CHECKPOINT;
@@ -1005,52 +960,13 @@ append(TTarget & target,
 }
 
 template<typename TTarget, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
-append(TTarget const & target,
-       TSource const & source)
-{
-    SEQAN_CHECKPOINT;
-    append(target, source, typename DefaultOverflowImplicit<TTarget const>::Type());
-}
-
-template<typename TTarget, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
-append(TTarget & target,
-       TSource & source,
-       typename Size<TTarget>::Type limit)
+inline void
+append(TTarget SEQAN_FORWARD_ARG target,
+       TSource const & source,
+       typename Size<TTarget>::Type const limit)
 {
     SEQAN_CHECKPOINT;
     append(target, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
-}
-
-template<typename TTarget, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
-append(TTarget const & target,
-       TSource & source,
-       typename Size<TTarget>::Type limit)
-{
-    SEQAN_CHECKPOINT;
-    append(target, source, limit, typename DefaultOverflowImplicit<TTarget const>::Type());
-}
-
-template<typename TTarget, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
-append(TTarget & target,
-       TSource const & source,
-       typename Size<TTarget>::Type limit)
-{
-    SEQAN_CHECKPOINT;
-    append(target, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
-}
-
-template<typename TTarget, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >, void)
-append(TTarget const & target,
-       TSource const & source,
-       typename Size<TTarget>::Type limit)
-{
-    SEQAN_CHECKPOINT;
-    append(target, source, limit, typename DefaultOverflowImplicit<TTarget const>::Type());
 }
 
 // --------------------------------------------------------------------------
@@ -1071,24 +987,12 @@ append(TTarget const & target,
  */
 
 template <typename T, typename TValue>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
+inline void
 appendValue(T SEQAN_FORWARD_ARG me,
             TValue SEQAN_FORWARD_CARG _value)
 {
     appendValue(SEQAN_FORWARD(T, me), SEQAN_FORWARD(TValue, _value), typename DefaultOverflowImplicit<T>::Type());
 }
-
-#ifndef SEQAN_CXX11_STANDARD
-//NOTE(h-2): what is this good for? why can we append to const objects?
-template <typename T, typename TValue>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
-appendValue(T const & me,
-            TValue const & _value)
-{
-    appendValue(me, _value, typename DefaultOverflowImplicit<T const>::Type());
-}
-
-#endif  // #ifndef SEQAN_CXX11_STANDARD
 
 // --------------------------------------------------------------------------
 // Function insert()
@@ -1109,44 +1013,34 @@ appendValue(T const & me,
 
 template <typename T, typename TPosition, typename TSeq, typename TExpand>
 inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
-insert(T & me,
-       TPosition pos,
+insert(T SEQAN_FORWARD_ARG me,
+       TPosition const pos,
        TSeq const & insertSeq,
-       Tag<TExpand>)
+       Tag<TExpand> const &)
 {
     SEQAN_CHECKPOINT;
-    replace(me, pos, pos, insertSeq, Tag<TExpand>());
-}
-
-template <typename T, typename TPosition, typename TSeq, typename TExpand>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
-insert(T const & me,
-       TPosition pos,
-       TSeq const & insertSeq,
-       Tag<TExpand>)
-{
-    SEQAN_CHECKPOINT;
-    replace(me, pos, pos, insertSeq, Tag<TExpand>());
+    replace(SEQAN_FORWARD(T, me), pos, pos, insertSeq, Tag<TExpand>());
 }
 
 template <typename T, typename TPosition, typename TSeq>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
-insert(T & me,
-       TPosition pos,
+inline void
+insert(T SEQAN_FORWARD_ARG me,
+       TPosition const pos,
        TSeq const & insertSeq)
 {
     SEQAN_CHECKPOINT;
-    replace(me, pos, pos, insertSeq, typename DefaultOverflowImplicit<T>::Type());
+    insert(SEQAN_FORWARD(T, me), pos, insertSeq, typename DefaultOverflowImplicit<T>::Type());
 }
 
-template <typename T, typename TPosition, typename TSeq>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
-insert(T const & me,
-       TPosition pos,
-       TSeq const & insertSeq)
+template <typename T,
+          typename TSource>
+inline void
+insert(T SEQAN_FORWARD_ARG me,
+       typename Size<typename RemoveReference<T>::Type>::Type const pos,
+       TSource const & source,
+       typename Size<TSource>::Type const limit)
 {
-    SEQAN_CHECKPOINT;
-    replace(me, pos, pos, insertSeq, typename DefaultOverflowImplicit<T const>::Type());
+    insert(me, pos, source, limit, typename DefaultOverflowImplicit<T const>::Type());
 }
 
 // --------------------------------------------------------------------------
@@ -1167,23 +1061,13 @@ insert(T const & me,
  */
 
 template <typename T, typename TPosition, typename TValue>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
-insertValue(T & me,
-            TPosition pos,
-            TValue const & _value)
+inline void
+insertValue(T SEQAN_FORWARD_ARG me,
+            TPosition const pos,
+            TValue SEQAN_FORWARD_CARG _value)
 {
     SEQAN_CHECKPOINT;
-    insertValue(me, pos, _value, typename DefaultOverflowImplicit<T>::Type());
-}
-
-template <typename T, typename TPosition, typename TValue>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
-insertValue(T const & me,
-            TPosition pos,
-            TValue const & _value)
-{
-    SEQAN_CHECKPOINT;
-    insertValue(me, pos, _value, typename DefaultOverflowImplicit<T const>::Type());
+    insertValue(SEQAN_FORWARD(T, me), pos, SEQAN_FORWARD(TValue, _value), typename DefaultOverflowImplicit<T>::Type());
 }
 
 // --------------------------------------------------------------------------
@@ -1207,87 +1091,33 @@ insertValue(T const & me,
  */
 
 template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-replace(TTarget & target,
-        TPositionBegin pos_begin,
-        TPositionEnd pos_end,
-        TSource & source)
+inline void
+replace(TTarget SEQAN_FORWARD_ARG target,
+        TPositionBegin const pos_begin,
+        TPositionEnd const pos_end,
+        TSource SEQAN_FORWARD_CARG source)
 {
-    replace(target, pos_begin, pos_end, source, typename DefaultOverflowImplicit<TTarget>::Type());
+    replace(SEQAN_FORWARD(TTarget, target),
+            pos_begin,
+            pos_end,
+            SEQAN_FORWARD(TSource, source),
+            typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
 template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-replace(TTarget const & target,
-        TPositionBegin pos_begin,
-        TPositionEnd pos_end,
-        TSource & source)
+inline void
+replace(TTarget SEQAN_FORWARD_ARG target,
+        TPositionBegin const pos_begin,
+        TPositionEnd const pos_end,
+        TSource SEQAN_FORWARD_CARG source,
+        typename Size<TTarget>::Type const limit)
 {
-    replace(target, pos_begin, pos_end, source, typename DefaultOverflowImplicit<TTarget const>::Type());
-}
-
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-replace(TTarget & target,
-        TPositionBegin pos_begin,
-        TPositionEnd pos_end,
-        TSource const & source)
-{
-    replace(target, pos_begin, pos_end, source, typename DefaultOverflowImplicit<TTarget>::Type());
-}
-
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-replace(TTarget const & target,
-        TPositionBegin pos_begin,
-        TPositionEnd pos_end,
-        TSource const & source)
-{
-    replace(target, pos_begin, pos_end, source, typename DefaultOverflowImplicit<TTarget const>::Type());
-}
-
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-replace(TTarget & target,
-        TPositionBegin pos_begin,
-        TPositionEnd pos_end,
-        TSource & source,
-        typename Size<TTarget>::Type limit)
-{
-    replace(target, pos_begin, pos_end, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
-}
-
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-replace(TTarget const & target,
-        TPositionBegin pos_begin,
-        TPositionEnd pos_end,
-        TSource & source,
-        typename Size<TTarget>::Type limit)
-{
-    replace(target, pos_begin, pos_end, source, limit, typename DefaultOverflowImplicit<TTarget const>::Type());
-}
-
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-replace(TTarget & target,
-        TPositionBegin pos_begin,
-        TPositionEnd pos_end,
-        TSource const & source,
-        typename Size<TTarget>::Type limit)
-{
-    replace(target, pos_begin, pos_end, source, limit, typename DefaultOverflowImplicit<TTarget>::Type());
-}
-
-template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-replace(TTarget const & target,
-        TPositionBegin pos_begin,
-        TPositionEnd pos_end,
-        TSource const & source,
-        typename Size<TTarget>::Type limit)
-{
-    replace(target, pos_begin, pos_end, source, limit, typename DefaultOverflowImplicit<TTarget const>::Type());
+    replace(SEQAN_FORWARD(TTarget, target),
+            pos_begin,
+            pos_end,
+            SEQAN_FORWARD(TSource, source),
+            limit,
+            typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
 // --------------------------------------------------------------------------
@@ -1298,17 +1128,17 @@ replace(TTarget const & target,
 
 template <typename T, typename TSize, typename TExpand>
 inline typename Size<T>::Type
-_capacityReturned(T & me,
-                  TSize,
-                  Tag<TExpand>)
+_capacityReturned(T const & me,
+                  TSize const,
+                  Tag<TExpand> const &)
 {
     return capacity(me);
 }
 
 template <typename T, typename TSize>
 inline typename Size<T>::Type
-_capacityReturned(T &,
-                  TSize new_capacity,
+_capacityReturned(T const &,
+                  TSize const new_capacity,
                   Insist const & )
 {
     return new_capacity;
@@ -1346,23 +1176,26 @@ _capacityReturned(T &,
  * This operation may invalidate iterators of <tt>object</tt>.
  */
 
-template <typename T, typename TSize, typename TExpand>
+template <typename T,
+          typename TSize,
+          typename TExpand>
 inline typename Size<T>::Type
-reserve(T & me,
-        TSize const & new_capacity,
-        Tag<TExpand> tag)
+reserve(T SEQAN_FORWARD_ARG me,
+        TSize const new_capacity,
+        Tag<TExpand> const &)
 {
     SEQAN_CHECKPOINT;
-    return _capacityReturned(me, new_capacity, tag);
+    return _capacityReturned(SEQAN_FORWARD(T, me), new_capacity, Tag<TExpand>());
 }
 
-template <typename T, typename TSize>
+template <typename T,
+          typename TSize>
 inline typename Size<T>::Type
-reserve(T & me,
-        TSize const & new_capacity)
+reserve(T SEQAN_FORWARD_ARG me,
+        TSize const new_capacity)
 {
     SEQAN_CHECKPOINT;
-    return reserve(me, new_capacity, typename DefaultOverflowExplicit<T>::Type());
+    return reserve(SEQAN_FORWARD(T, me), new_capacity, typename DefaultOverflowExplicit<T>::Type());
 }
 
 // --------------------------------------------------------------------------
@@ -1371,24 +1204,24 @@ reserve(T & me,
 
 template <typename T,
           typename TSize>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Size<T>::Type)
-resize(T & me,
-       TSize new_length)
+inline typename Size<T>::Type
+resize(T SEQAN_FORWARD_ARG me,
+       TSize const new_length)
 {
     SEQAN_CHECKPOINT;
-    return resize(me, new_length, typename DefaultOverflowExplicit<T>::Type());
+    return resize(SEQAN_FORWARD(T, me), new_length, typename DefaultOverflowExplicit<T>::Type());
 }
 
 template <typename T,
           typename TSize,
           typename TValue>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, typename Size<T>::Type)
-resize(T & me,
-       TSize new_length,
+inline typename Size<T>::Type
+resize(T SEQAN_FORWARD_ARG me,
+       TSize const new_length,
        TValue const & val)
 {
     SEQAN_CHECKPOINT;
-    return resize(me, new_length, val, typename DefaultOverflowExplicit<T>::Type());
+    return resize(SEQAN_FORWARD(T, me), new_length, val, typename DefaultOverflowExplicit<T>::Type());
 }
 
 // --------------------------------------------------------------------------

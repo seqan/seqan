@@ -66,9 +66,8 @@ template <typename TContainer>
 struct FixedSize_;
 
 template <typename TContainer, typename TSource>
-inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-                                Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-appendValue(TContainer SEQAN_FORWARD_ARG me, TSource const & source);
+inline void
+appendValue(TContainer SEQAN_FORWARD_ARG me, TSource SEQAN_FORWARD_CARG source);
 
 /*!
  * @macro SEQAN_HAS_ZLIB
