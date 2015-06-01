@@ -875,6 +875,12 @@ SEQAN_TYPED_TEST(StringTestCommon, Swap)
     testConstructDeconstruct(str);
 }
 
+// workaround for weird bug in clang
+#if defined(SEQAN_CXX11_STANDARD) && defined(__clang__)
+template <typename TChar, typename TAlloc>
+void testSequenceReverse(std::deque<TChar, TAlloc> & ) {}
+#endif
+
 // Test of reverse().
 template <typename TString>
 void testSequenceReverse(TString & /*Tag*/)
@@ -1366,14 +1372,11 @@ void testSequenceFront(TString & /*Tag*/)
     typedef typename Reference<TString>::Type TReference;
     TString string;
     assign(string, "ACGT");
-std::cout << __LINE__ << std::endl;
+
     // val is a reference in contrast to the const version of front()
     TReference val = front(string);
-std::cout << __LINE__ << std::endl;
     val = 'A';
-std::cout << __LINE__ << std::endl;
     SEQAN_ASSERT_EQ(val, value(string, 0));
-std::cout << __LINE__ << std::endl;
 }
 
 // Test of front() for const strings.
