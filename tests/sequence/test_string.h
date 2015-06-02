@@ -647,6 +647,7 @@ SEQAN_DEFINE_TEST(String_Pointer)
     SEQAN_ASSERT_EQ(reserve(str1, 100, Limit()), capacity(str1));
 
     resize(str1, 20, 'A');
+
     SEQAN_ASSERT(isEqual(str1, "AAAAAAAAAAAAAAAAAAAA"));
 
     resize(str1, 10);

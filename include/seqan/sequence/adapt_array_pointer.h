@@ -658,7 +658,9 @@ resize(
     Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
-    return _Resize_String<Tag<TExpand> >::resize_(me, new_length);
+    if (static_cast<TSize>(std::strlen(me)) > new_length)
+        me[new_length] = 0;
+    return std::strlen(me);
 }
 
 template <typename TValue, typename TSize, typename TExpand>
@@ -670,7 +672,11 @@ resize(
     Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
-    return _Resize_String<Tag<TExpand> >::resize_(me, new_length, val);
+    TSize old_length = std::strlen(me);
+    if (old_length < new_length)
+        std::memset(me + old_length, int(val), new_length - old_length);
+    me[new_length] = 0;
+    return std::strlen(me);
 }
 
 //////////////////////////////////////////////////////////////////////////////

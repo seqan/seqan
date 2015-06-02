@@ -1368,17 +1368,6 @@ toCString(std::basic_string<TChar, TTraits, TAlloc> const & me)
     return me.c_str();
 }
 
-template <typename TStream, typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
-                                Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, TStream &)
-operator<<(TStream & stream, TContainer const & string)
-{
-    for (unsigned i = 0; i < length(string); ++i)
-        stream << string[i] << ' ';
-
-    return stream;
-}
-
 // ----------------------------------------------------------------------------
 // Function assign (from CString)
 // ----------------------------------------------------------------------------

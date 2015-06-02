@@ -205,6 +205,8 @@ inline size_t length(char const * me);
 template <typename TTargetValue, typename TSource> inline void move(TTargetValue * & target, TSource & source);
 template <typename TTargetValue, typename TSource> inline void move(TTargetValue * & target, TSource const & source);
 template <typename TValue, typename TPos> inline void moveValue(TValue * me, TPos pos, TValue const & _value);
+template <typename TValue, typename TSize, typename TExpand> inline size_t resize( TValue * me, TSize new_length, Tag<TExpand>);
+template <typename TValue, typename TSize, typename TExpand> inline size_t resize( TValue * me, TSize new_length, TValue const & val, Tag<TExpand>);
 template <typename TValue, typename TPos> inline TValue & value(TValue * me, TPos pos);
 template <typename TValue, typename TPos> inline TValue const & value(TValue const * me, TPos pos);
 
