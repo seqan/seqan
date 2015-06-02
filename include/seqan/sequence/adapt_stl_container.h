@@ -122,6 +122,11 @@ struct Value<CONT> \
     typedef typename CONT::value_type Type; \
 };\
 template <TMPL> \
+struct Value<CONT const> \
+{ \
+    typedef typename CONT::value_type Type; \
+};\
+template <TMPL> \
 struct Reference<CONT> \
 { \
     typedef typename CONT::reference Type; \
@@ -147,7 +152,17 @@ struct Position<CONT> \
     typedef typename CONT::size_type Type; \
 };\
 template <TMPL> \
+struct Position<CONT const> \
+{ \
+    typedef typename CONT::size_type Type; \
+};\
+template <TMPL> \
 struct Size<CONT> \
+{ \
+    typedef typename CONT::size_type Type; \
+};\
+template <TMPL> \
+struct Size<CONT const> \
 { \
     typedef typename CONT::size_type Type; \
 };\
@@ -827,30 +842,11 @@ back(std::forward_list<TChar, TAlloc> && me)
 
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, void)
-assign(TContainer & me,
-       TContainer const & source)
+assign(TContainer SEQAN_FORWARD_ARG me,
+       TContainer source)
 {
-    me = source;
+    std::swap(me, source);
 }
-#ifdef SEQAN_CXX11_STANDARD
-template <typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, void)
-assign(TContainer & me,
-       TContainer && source)
-{
-    me = std::move(source);
-}
-
-template <typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, void)
-assign(TContainer && me,
-       TContainer const & source)
-{
-    assign(me, source);
-}
-// double universal reference doesn't work above, because it would be ambiguous
-// with the fundamental_assign implementation on gcc
-#endif
 
 template <typename TContainer,
           typename TSource>
