@@ -62,9 +62,6 @@ template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, typename Size<TContainer>::Type)
 length(TContainer const & me);
 
-template <typename TContainer>
-struct FixedSize_;
-
 template <typename TContainer, typename TSource>
 inline void
 appendValue(TContainer SEQAN_FORWARD_ARG me, TSource SEQAN_FORWARD_CARG source);
