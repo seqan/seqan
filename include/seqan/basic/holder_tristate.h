@@ -46,6 +46,10 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+template <typename TContainer>
+inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, void)
+assign(TContainer SEQAN_FORWARD_ARG me, TContainer source);
+
 #if SEQAN_ENABLE_POINTER_HOLDER
 template <typename T> struct IsSimple;
 

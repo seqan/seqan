@@ -130,8 +130,14 @@ struct Value<ModifiedIterator<THost, TSpec> const> : Value<ModifiedIterator<THos
 // Metafunction GetValue
 // --------------------------------------------------------------------------
 
+//NOTE(h-2): ModifiedStringIterators always return by value since some
+// modified strings result in values being created anyway (e.g. ModViews)
+// and depending on scope these might be lost.
+// For example iterators over infixes of ModViews would otherwise reference
+// part of the stack that were freed.
+
 template <typename THost, typename TSpec>
-struct GetValue< ModifiedIterator<THost, TSpec> > : GetValue<THost>
+struct GetValue< ModifiedIterator<THost, TSpec> > : Value<THost>
 {};
 
 template <typename THost, typename TSpec>
@@ -142,8 +148,10 @@ struct GetValue<ModifiedIterator<THost, TSpec> const> : GetValue<ModifiedIterato
 // Metafunction Reference
 // --------------------------------------------------------------------------
 
+//NOTE(h-2): see above
+
 template <typename THost, typename TSpec>
-struct Reference<ModifiedIterator<THost, TSpec> > : Reference<THost>
+struct Reference<ModifiedIterator<THost, TSpec> > : Value<THost>
 {};
 
 template <typename THost, typename TSpec>
