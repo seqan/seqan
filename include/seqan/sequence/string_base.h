@@ -1279,24 +1279,24 @@ append(String<TTargetValue, TTargetSpec> & target,
 // TODO(holtgrew): Still required with dropped VC++ 2003 support?
 //this variant is a workaround for the "const array"-bug of VC++
 
-template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
-inline void
-append(String<TTargetValue, TTargetSpec> & target,
-       TSourceValue * source,
-       Tag<TExpand>)
-{
-    AppendString_<Tag<TExpand> >::append_(target, source);
-}
-
-template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
-inline void
-append(String<TTargetValue, TTargetSpec> & target,
-       TSourceValue * source,
-       typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
-       Tag<TExpand>)
-{
-    AppendString_<Tag<TExpand> >::append_(target, source, limit);
-}
+// template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
+// inline void
+// append(String<TTargetValue, TTargetSpec> & target,
+//        TSourceValue * source,
+//        Tag<TExpand>)
+// {
+//     AppendString_<Tag<TExpand> >::append_(target, source);
+// }
+//
+// template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
+// inline void
+// append(String<TTargetValue, TTargetSpec> & target,
+//        TSourceValue * source,
+//        typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
+//        Tag<TExpand>)
+// {
+//     AppendString_<Tag<TExpand> >::append_(target, source, limit);
+// }
 
 // ----------------------------------------------------------------------------
 // Function appendValue()
