@@ -1095,12 +1095,12 @@ inline void
 replace(TTarget SEQAN_FORWARD_ARG target,
         TPositionBegin const pos_begin,
         TPositionEnd const pos_end,
-        TSource SEQAN_FORWARD_CARG source)
+        TSource const & source)
 {
     replace(SEQAN_FORWARD(TTarget, target),
             pos_begin,
             pos_end,
-            SEQAN_FORWARD(TSource, source),
+            source,
             typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
@@ -1109,13 +1109,13 @@ inline void
 replace(TTarget SEQAN_FORWARD_ARG target,
         TPositionBegin const pos_begin,
         TPositionEnd const pos_end,
-        TSource SEQAN_FORWARD_CARG source,
+        TSource const & source,
         typename Size<TTarget>::Type const limit)
 {
     replace(SEQAN_FORWARD(TTarget, target),
             pos_begin,
             pos_end,
-            SEQAN_FORWARD(TSource, source),
+            source,
             limit,
             typename DefaultOverflowImplicit<TTarget>::Type());
 }
