@@ -541,7 +541,9 @@ length(std::forward_list<TChar, TAlloc> const & me)
 
     return l;
 }
+#endif
 
+#ifdef SEQAN_CXX11_CONSTEXPR
 template <typename TChar, std::size_t N>
 constexpr std::size_t
 length(std::array<TChar, N> const & me)
@@ -568,7 +570,7 @@ capacity(std::basic_string<TChar, TTraits, TAlloc> const & me)
     return me.capacity();
 }
 
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_CONSTEXPR
 template <typename TChar, std::size_t N>
 constexpr std::size_t
 capacity(std::array<TChar, N> const & me)
@@ -590,7 +592,7 @@ empty(TContainer const & me)
     return me.empty();
 }
 
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_CONSTEXPR
 template <typename TChar, std::size_t N>
 constexpr bool
 empty(std::array<TChar, N> const & me)
