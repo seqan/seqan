@@ -295,7 +295,7 @@ _writeField(TFwdIterator & s,
             TPos effectiveQStart    = match.qStart;
             TPos effectiveQEnd      = match.qEnd;
             _untranslateQPositions(effectiveQStart, effectiveQEnd, match.qFrameShift, match.qLength,
-                                   context.blastProgramSelector);
+                                   context.blastProgram);
             write(s, effectiveQStart);
         } break;
         case BlastMatchField<>::Enum::Q_END:
@@ -303,7 +303,7 @@ _writeField(TFwdIterator & s,
             TPos effectiveQStart    = match.qStart;
             TPos effectiveQEnd      = match.qEnd;
             _untranslateQPositions(effectiveQStart, effectiveQEnd, match.qFrameShift, match.qLength,
-                                   context.blastProgramSelector);
+                                   context.blastProgram);
             write(s, effectiveQEnd);
         } break;
         case BlastMatchField<>::Enum::S_START:
@@ -311,7 +311,7 @@ _writeField(TFwdIterator & s,
             TPos effectiveSStart    = match.sStart;
             TPos effectiveSEnd      = match.sEnd;
             _untranslateSPositions(effectiveSStart, effectiveSEnd, match.sFrameShift, match.sLength,
-                                   context.blastProgramSelector);
+                                   context.blastProgram);
             write(s, effectiveSStart);
         } break;
         case BlastMatchField<>::Enum::S_END:
@@ -319,7 +319,7 @@ _writeField(TFwdIterator & s,
             TPos effectiveSStart    = match.sStart;
             TPos effectiveSEnd      = match.sEnd;
             _untranslateSPositions(effectiveSStart, effectiveSEnd, match.sFrameShift, match.sLength,
-                                   context.blastProgramSelector);
+                                   context.blastProgram);
             write(s, effectiveSEnd);
         } break;
 //         case ENUM::Q_SEQ: write(s,  * ); break;

@@ -348,7 +348,7 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
             else // first line of record header
             {
                 assign(context.versionString, suffix(context._lineBuffer, 2));
-                context.blastProgramSelector = _programStringToTag(prefix(context.versionString,
+                context.blastProgram = _programStringToTag(prefix(context.versionString,
                                                                   _firstOcc(context.versionString, ' ')));
 
                 context.legacyFormat = !std::regex_search(seqan::begin(context.versionString),
@@ -466,16 +466,16 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                                 seqan::end(context._lineBuffer),
                                 std::regex("^# T?BLAST")));
 
-    if (context.blastProgramSelector == BlastProgram::UNKNOWN)
+    if (context.blastProgram == BlastProgram::UNKNOWN)
         appendValue(context.conformancyErrors,
                     "Type of BlastProgram could not be determined from header, you are advised to look "
                     "at context.versionString and context.otherLines.");
-    else if ((p != BlastProgram::UNKNOWN) && (context.blastProgramSelector != p))
+    else if ((p != BlastProgram::UNKNOWN) && (context.blastProgram != p))
         appendValue(context.conformancyErrors,
                     std::string("You fixed the BlastProgramType to ") +
                     std::string(_programTagToString(p)) +
                     std::string (" at compile-time, but the type ") +
-                    std::string(_programTagToString(context.blastProgramSelector)) +
+                    std::string(_programTagToString(context.blastProgram)) +
                     std::string(" was detected in the file!"));
     //TODO adapt the above
 

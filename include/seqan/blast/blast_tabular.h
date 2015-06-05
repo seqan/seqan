@@ -183,36 +183,6 @@ struct BlastTabularSpecSelector<BlastTabularSpec::UNKNOWN>
     }
 };
 
-
-
-/*
- * @defgroup BlastTabularSpecTagGroup BlastTabularSpec Integral Constants
- * @brief Integral constants for @link BlastTabularSpec @endlink
- * TODO(h4nn3s): does this need to be publicly visible?
- *
- * @tag BlastTabularSpecTagGroup#BlastTabularSpecTag
- * @brief Templated typedef for @link BlastTabularSpec @endlink
- * @signature template <BlastTabularSpec h>
- * using BlastTabularSpecTag = std::integral_constant<BlastTabularSpec, h>;
- *
- */
-// template <BlastTabularSpec h>
-// using BlastTabularSpecTag = std::integral_constant<BlastTabularSpec, h>;
-
-/*
- * @tag BlastTabularSpecTagGroup#BlastTabularSpecTagHeader
- * @brief Integral constant for @link BlastTabularSpec::HEADER @endlink
- *
- * @tag BlastTabularSpecTagGroup#BlastTabularSpecTagNoHeader
- * @brief Integral constant for @link BlastTabularSpec::NO_HEADER @endlink
- *
- * @tag BlastTabularSpecTagGroup#BlastTabularSpecTagUnkown
- * @brief Integral constant for @link BlastTabularSpec::UNKNOWN @endlink
- */
-// typedef BlastTabularSpecTag<BlastTabularSpec::HEADER>     BlastTabularSpecTagHeader;
-// typedef BlastTabularSpecTag<BlastTabularSpec::NO_HEADER>  BlastTabularSpecTagNoHeader;
-// typedef BlastTabularSpecTag<BlastTabularSpec::UNKNOWN>    BlastTabularSpecTagUnkown;
-
 // ----------------------------------------------------------------------------
 // Class MagicHeader
 // ----------------------------------------------------------------------------

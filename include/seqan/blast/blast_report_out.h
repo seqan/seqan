@@ -315,18 +315,18 @@ _writeStatsBlock(TStream & stream,
 
     write(stream, buffer);
 
-    if (context.blastProgramSelector != BlastProgram::BLASTP)
+    if (context.blastProgram != BlastProgram::BLASTP)
         write(stream, "\n Frame = ");
 
-    if (context.blastProgramSelector == BlastProgram::BLASTX)
+    if (context.blastProgram == BlastProgram::BLASTX)
     {
         write(stream, FormattedNumber<int8_t>("%+d", m.qFrameShift));
     }
-    else if (context.blastProgramSelector == BlastProgram::TBLASTN)
+    else if (context.blastProgram == BlastProgram::TBLASTN)
     {
         write(stream, FormattedNumber<int8_t>("%+d", m.sFrameShift));
     }
-    else if (context.blastProgramSelector == BlastProgram::TBLASTX)
+    else if (context.blastProgram == BlastProgram::TBLASTX)
     {
         write(stream, FormattedNumber<int8_t>("%+d", m.qFrameShift));
         write(stream, "/");
@@ -418,13 +418,13 @@ _writeAlignmentBlock(TStream & stream,
     TPos            effSStart   = m.sStart;
     TPos            effSEnd     = m.sEnd;
 
-    _untranslateQPositions(effQStart, effQEnd, m.qFrameShift, m.qLength, context.blastProgramSelector);
-    _untranslateSPositions(effSStart, effSEnd, m.sFrameShift, m.sLength, context.blastProgramSelector);
+    _untranslateQPositions(effQStart, effQEnd, m.qFrameShift, m.qLength, context.blastProgram);
+    _untranslateSPositions(effSStart, effSEnd, m.sFrameShift, m.sLength, context.blastProgram);
 
     int8_t const  qStepOne = (m.qFrameShift < 0) ?  -1 : 1;
     int8_t const  sStepOne = (m.sFrameShift < 0) ?  -1 : 1;
-    int8_t const     qStep = qIsTranslated(context.blastProgramSelector) ? qStepOne * 3 : qStepOne;
-    int8_t const     sStep = sIsTranslated(context.blastProgramSelector) ? sStepOne * 3 : sStepOne;
+    int8_t const     qStep = qIsTranslated(context.blastProgram) ? qStepOne * 3 : qStepOne;
+    int8_t const     sStep = sIsTranslated(context.blastProgram) ? sStepOne * 3 : sStepOne;
 
     auto const & row0        = row(m.align, 0);
     auto const & row1        = row(m.align, 1);

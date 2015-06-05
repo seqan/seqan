@@ -364,7 +364,7 @@ void test_blast_write_tabular_impl(int const format, // 0 only matches; 1 matche
 SEQAN_DEFINE_TEST(test_blast_write_match_tabular_run_time_context_args)
 {
     BlastIOContext<> context;
-    context.blastProgramSelector = BlastProgram::BLASTP;
+    context.blastProgram = BlastProgram::BLASTP;
     context.tabularSpec = BlastTabularSpec::NO_HEADER;
 
     test_blast_write_tabular_impl(0, 0, context);
@@ -770,7 +770,7 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
     SEQAN_ASSERT(fstream.is_open());
 
     BlastIOContext<> context;
-    context.blastProgramSelector = BlastProgram::BLASTP;
+    context.blastProgram = BlastProgram::BLASTP;
 
     test_blast_write_record_match(fstream, 0, 0, context, BlastReport());
 
@@ -797,7 +797,7 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise_formatted_file)
     SEQAN_ASSERT(fstream.is_open());
 
     BlastIOContext<> context;
-    context.blastProgramSelector = BlastProgram::BLASTP;
+    context.blastProgram = BlastProgram::BLASTP;
 
     test_blast_write_record_match(fstream, 0, 3, context, BlastReport());
 

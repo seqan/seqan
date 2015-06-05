@@ -92,7 +92,7 @@ struct BlastIOContextStringType
  * setScoreGapExtend(context(outfile).scoringScheme, -1);
  *
  * // protein vs protein search is BLASTP
- * setBlastProgram(context(outfile), BlastProgram::BLASTP);
+ * context(outfile).blastProgram BlastProgram::BLASTP);
  *
  * // set the database properties in the context
  * context(outfile).dbName = "The Foo Database";
@@ -110,20 +110,12 @@ struct BlastIOContext
 {
     typedef TScore_ TScore;
     typedef typename BlastIOContextStringType<BlastIOContext>::Type TString;
-//     static constexpr BlastTabularSpec h = _h;
 
     //TODO dox
-    BlastProgramSelector<p> blastProgramSelector;
-
+    BlastProgramSelector<p> blastProgram;
 
     //TODO dox
     BlastTabularSpecSelector<h> tabularSpec;
-//     // the BlastTabularSpec as compile time parameter
-//     typedef BlastTabularSpecTag<h> TBlastTabularSpec; // compile-time parameter
-//     // if the upper is set to UNKNOWN, than this run-time variable is consulted instead:
-//     BlastTabularSpec tabularSpec = BlastTabularSpec::UNKNOWN;
-
-    // test_blast_misc.h also illustrates how this works
 
     /*!
      * @var BlastScoringScheme<TScore> BlastIOContext::scoringScheme;
@@ -145,7 +137,7 @@ struct BlastIOContext
     void _setDefaultVersionString()
     {
         clear(versionString);
-        append(versionString, _programTagToString(blastProgramSelector));
+        append(versionString, _programTagToString(blastProgram));
         append(versionString, " 2.2.26");
         if (!legacyFormat)
             append(versionString, "+");
@@ -216,7 +208,7 @@ struct BlastIOContext
      * Useful when the header does not conform to standards and you want to extract the verbatim column labels or if
      * you wish to print non-standard column labels (which you don't!).
      */
-     StringSet<TString, Owner<ConcatDirect<>>> fieldsAsStrings;
+    StringSet<TString, Owner<ConcatDirect<>>> fieldsAsStrings;
 
     /*!
      * @var bool BlastIOContext::ignoreFieldsInHeader;
@@ -259,65 +251,6 @@ struct BlastIOContext
     BlastMatch<> bufMatch;
     BlastRecord<> bufRecord;
 };
-
-/*
-* @fn BlastIOContext#getBlastTabularSpec
-* @signature BlastTabularSpec getBlastTabularSpec(context);
-* @param[in] context  The @link BlastIOContext @endlink.
-* @brief return the @link BlastTabularSpec @endlink set in the context.
-*
-* Developer note: this function is constexpr when the
-* context's compile-time parameter p != BlastTabularSpec::UNKNOWN. Otherwise it is plain inline.
-*/
-
-// template <typename TScore,
-//           BlastProgram p,
-//           BlastTabularSpec h>
-// constexpr BlastTabularSpec
-// getBlastTabularSpec(BlastIOContext<TScore, p, h> const &)
-// {
-//     return h;
-// }
-//
-// template <typename TScore,
-//           BlastProgram p>
-// inline BlastTabularSpec
-// getBlastTabularSpec(BlastIOContext<TScore, p, BlastTabularSpec::UNKNOWN> const & context)
-// {
-//     return context.tabularSpec;
-// }
-
-/*
-* @fn BlastIOContext#setBlastTabularSpec
-* @signature void setBlastTabularSpec(context, tabularSpec);
-* @param[in,out] context        The @link BlastIOContext @endlink.
-* @param[in]     tabularSpec    The @link BlastTabularSpec @endlink you wish to set.
-* @brief set the tabular spec at run-time
-*
-* Note that this function will bail out, if the tabularSpec was already set as a compile-time argument to the
-* context (i.e. it is not euqal to BlastTabularSpec::UNKNOWN) and the value you wish to set is not the same as the one set
-* at compile time.
-*/
-
-// template <typename TScore,
-//           BlastProgram p,
-//           BlastTabularSpec h>
-// inline void
-// setBlastTabularSpec(BlastIOContext<TScore, p, h> &, BlastTabularSpec const _h)
-// {
-//     if (h != _h)
-//         SEQAN_FAIL("ERROR: Tried to set tabularSpec on context, but was already defined at compile time (and set to a "
-//         "different value!");
-// }
-//
-// template <typename TScore,
-//           BlastProgram p>
-// inline void
-// setBlastTabularSpec(BlastIOContext<TScore, p, BlastTabularSpec::UNKNOWN> & context,
-//                     BlastTabularSpec const h)
-// {
-//     context.tabularSpec = h;
-// }
 
 }
 
