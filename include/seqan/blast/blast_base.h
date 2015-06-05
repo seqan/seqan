@@ -54,7 +54,7 @@ namespace seqan {
 /*!
  * @enum BlastProgram
  * @brief Enum with BLAST program spec
- * @signature enum class BlastProgram : uint8_t { ... };
+ * @signature enum class BlastProgram : __uint8 { ... };
  *
  * @headerfile <seqan/blast.h>
  * @see BlastProgramTag
@@ -77,83 +77,57 @@ namespace seqan {
  * @val BlastProgram BlastProgram::UNKNOWN
  * @brief Unkown type. Used internally and to signify that the type could not be inferred from the file.
  */
-enum class BlastProgram : uint8_t
+enum class BlastProgram : __uint8
 {
     BLASTN,         //              NUCL VS             NUCL
     BLASTP,         //              PROT VS             PROT
     BLASTX,         // TRANSLATED   NUCL VS             PROT
     TBLASTN,        //              PROT VS TRANSLATED  NUCL
     TBLASTX,        // TRANSLATED   NUCL VS TRANSLATED  NUCL
+    DYNAMIC=254,
     UNKNOWN=255
 };
 
-/*!
- * @defgroup BlastProgramTag BlastProgram interface
- * @brief Integral constants of @link BlastProgram @endlink
- *
- * @tag BlastProgramTag#BlastProgramTagBlastN
- * @brief Tag for @link BlastProgram::BLASTN @endlink
- * @headerfile <seqan/blast.h>
- *
- * @tag BlastProgramTag#BlastProgramTagBlastP
- * @brief Tag for @link BlastProgram::BLASTP @endlink
- * @headerfile <seqan/blast.h>
- *
- * @tag BlastProgramTag#BlastProgramTagBlastX
- * @brief Tag for @link BlastProgram::BLASTX @endlink
- * @headerfile <seqan/blast.h>
- *
- * @tag BlastProgramTag#BlastProgramTagTBlastN
- * @brief Tag for @link BlastProgram::TBLASTN @endlink
- * @headerfile <seqan/blast.h>
- *
- * @tag BlastProgramTag#BlastProgramTagTBlastX
- * @brief Tag for @link BlastProgram::TBLASTX @endlink
- * @headerfile <seqan/blast.h>
- *
- * @tag BlastProgramTag#BlastProgramTagUnknown
- * @brief Tag for @link BlastProgram::UNKNOWN @endlink
- * @headerfile <seqan/blast.h>
- */
+//TODO dox
+//TODO replace ::UNKNOWN with dynamic everywhere
 
-template <BlastProgram p>
-using BlastProgramTag = std::integral_constant<BlastProgram, p>;
+template <BlastProgram _p>
+struct BlastProgramSelector
+{
+    constexpr operator BlastProgram() const
+    {
+        return _p;
+    }
 
-typedef BlastProgramTag<BlastProgram::BLASTN>  BlastProgramTagBlastN;
-typedef BlastProgramTag<BlastProgram::BLASTP>  BlastProgramTagBlastP;
-typedef BlastProgramTag<BlastProgram::BLASTX>  BlastProgramTagBlastX;
-typedef BlastProgramTag<BlastProgram::TBLASTN> BlastProgramTagTBlastN;
-typedef BlastProgramTag<BlastProgram::TBLASTX> BlastProgramTagTBlastX;
-typedef BlastProgramTag<BlastProgram::UNKNOWN> BlastProgramTagUnknown;
+    BlastProgramSelector operator=(BlastProgram const p)
+    {
+        if (p != _p)
+            SEQAN_FAIL("ERROR: Tried to set blastProgram on context, but was already defined at compile time (and set to a "
+                       "different value!");
+        return *this;
+    }
+};
+
+template <>
+struct BlastProgramSelector<BlastProgram::UNKNOWN>
+{
+    BlastProgram _runtimeValue = BlastProgram::UNKNOWN;
+
+    operator BlastProgram() const
+    {
+        return _runtimeValue;
+    }
+
+    BlastProgramSelector operator=(BlastProgram const p)
+    {
+        _runtimeValue = p;
+        return *this;
+    }
+};
 
 // ============================================================================
 // Functions
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// getBlastProgram()
-// ----------------------------------------------------------------------------
-
-/*
- * Given both an enum value and a tag, return the tag's value unless it is UNKNOWN
- * in which case the enum's value is returned. Can be used in implementations that
- * want to cover compile-time constants and run-time settings both.
- */
-
-// this is always evaluated at compile-time
-template <BlastProgram p>
-constexpr BlastProgram
-getBlastProgram(BlastProgram const, BlastProgramTag<p> const &)
-{
-    return p;
-}
-
-// this will likely be evaluated at run-time
-constexpr BlastProgram
-getBlastProgram(BlastProgram const p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
-{
-    return p;
-}
 
 // ----------------------------------------------------------------------------
 // qHasRevComp()
@@ -184,23 +158,7 @@ getBlastProgram(BlastProgram const p, BlastProgramTag<BlastProgram::UNKNOWN> con
 constexpr bool
 qHasRevComp(BlastProgram const p)
 {
-    return ((p==BlastProgram::BLASTP) || (p==BlastProgram::TBLASTN))
-            ? false
-            : true;
-}
-
-template <BlastProgram p>
-constexpr bool
-qHasRevComp(BlastProgramTag<p> const &)
-{
-    return qHasRevComp(p);
-}
-
-template <BlastProgram p>
-constexpr bool
-qHasRevComp(BlastProgram const _p, BlastProgramTag<p> const &)
-{
-    return qHasRevComp(getBlastProgram(_p, BlastProgramTag<p>()));
+    return (!(p==BlastProgram::BLASTP) || (p==BlastProgram::TBLASTN));
 }
 
 // ----------------------------------------------------------------------------
@@ -232,23 +190,7 @@ qHasRevComp(BlastProgram const _p, BlastProgramTag<p> const &)
 constexpr bool
 qIsTranslated(BlastProgram const p)
 {
-    return ((p==BlastProgram::BLASTX) || (p==BlastProgram::TBLASTX))
-            ? true
-            : false;
-}
-
-template <BlastProgram p>
-constexpr bool
-qIsTranslated(BlastProgramTag<p> const &)
-{
-    return qIsTranslated(p);
-}
-
-template <BlastProgram p>
-constexpr bool
-qIsTranslated(BlastProgram const _p, BlastProgramTag<p> const &)
-{
-    return qIsTranslated(getBlastProgram(_p, BlastProgramTag<p>()));
+    return ((p==BlastProgram::BLASTX) || (p==BlastProgram::TBLASTX));
 }
 
 // ----------------------------------------------------------------------------
@@ -258,11 +200,11 @@ qIsTranslated(BlastProgram const _p, BlastProgramTag<p> const &)
 /*!
  * @fn BlastProgramTag#qNumFrames
  * @brief The number of frames per <b>query</b> sequence implied by the given BlastProgram
- * @signature constexpr uint8_t qNumFrames(BlastProgram const p);
+ * @signature constexpr __uint8 qNumFrames(BlastProgram const p);
  * template <BlastProgram p>
- * constexpr uint8_t qNumFrames(BlastProgramTag<p> const &);
+ * constexpr __uint8 qNumFrames(BlastProgramTag<p> const &);
  * template <BlastProgram p>
- * constexpr uint8_t qNumFrames(BlastProgram const _p, BlastProgramTag<p> const &);
+ * constexpr __uint8 qNumFrames(BlastProgram const _p, BlastProgramTag<p> const &);
  *
  * @section Remarks
  *
@@ -275,7 +217,7 @@ qIsTranslated(BlastProgram const _p, BlastProgramTag<p> const &)
  * @headerfile <seqan/blast.h>
  */
 
-constexpr uint8_t
+constexpr __uint8
 qNumFrames(BlastProgram p)
 {
     return (qIsTranslated(p)
@@ -283,20 +225,6 @@ qNumFrames(BlastProgram p)
             : (qHasRevComp(p)
                 ? 2
                 : 1));
-}
-
-template <BlastProgram p>
-constexpr bool
-qNumFrames(BlastProgramTag<p> const &)
-{
-    return qNumFrames(p);
-}
-
-template <BlastProgram p>
-constexpr bool
-qNumFrames(BlastProgram const _p, BlastProgramTag<p> const &)
-{
-    return qNumFrames(getBlastProgram(_p, BlastProgramTag<p>()));
 }
 
 // ----------------------------------------------------------------------------
@@ -328,24 +256,7 @@ qNumFrames(BlastProgram const _p, BlastProgramTag<p> const &)
 constexpr bool
 sHasRevComp(BlastProgram const p)
 {
-    return ((p==BlastProgram::TBLASTX) ||
-            (p==BlastProgram::TBLASTN))
-            ? true
-            : false;
-}
-
-template <BlastProgram p>
-constexpr bool
-sHasRevComp(BlastProgramTag<p> const &)
-{
-    return sHasRevComp(p);
-}
-
-template <BlastProgram p>
-constexpr bool
-sHasRevComp(BlastProgram const _p, BlastProgramTag<p> const &)
-{
-    return sHasRevComp(getBlastProgram(_p, BlastProgramTag<p>()));
+    return ((p==BlastProgram::TBLASTX) || (p==BlastProgram::TBLASTN));
 }
 
 // ----------------------------------------------------------------------------
@@ -377,24 +288,7 @@ sHasRevComp(BlastProgram const _p, BlastProgramTag<p> const &)
 constexpr bool
 sIsTranslated(BlastProgram const p)
 {
-    return ((p==BlastProgram::TBLASTX) ||
-            (p==BlastProgram::TBLASTN))
-            ? true
-            : false;
-}
-
-template <BlastProgram p>
-constexpr bool
-sIsTranslated(BlastProgramTag<p> const &)
-{
-    return sIsTranslated(p);
-}
-
-template <BlastProgram p>
-constexpr bool
-sIsTranslated(BlastProgram const _p, BlastProgramTag<p> const &)
-{
-    return sIsTranslated(getBlastProgram(_p, BlastProgramTag<p>()));
+    return ((p==BlastProgram::TBLASTX) || (p==BlastProgram::TBLASTN));
 }
 
 // ----------------------------------------------------------------------------
@@ -404,11 +298,11 @@ sIsTranslated(BlastProgram const _p, BlastProgramTag<p> const &)
 /*!
  * @fn BlastProgramTag#sNumFrames
  * @brief The number of frames per <b>query</b> sequence implied by the given BlastProgram
- * @signature constexpr uint8_t sNumFrames(BlastProgram const p);
+ * @signature constexpr __uint8 sNumFrames(BlastProgram const p);
  * template <BlastProgram p>
- * constexpr uint8_t sNumFrames(BlastProgramTag<p> const &);
+ * constexpr __uint8 sNumFrames(BlastProgramTag<p> const &);
  * template <BlastProgram p>
- * constexpr uint8_t sNumFrames(BlastProgram const _p, BlastProgramTag<p> const &);
+ * constexpr __uint8 sNumFrames(BlastProgram const _p, BlastProgramTag<p> const &);
  *
  * @section Remarks
  *
@@ -420,7 +314,7 @@ sIsTranslated(BlastProgram const _p, BlastProgramTag<p> const &)
  * @headerfile <seqan/blast.h>
  */
 
-constexpr uint8_t
+constexpr __uint8
 sNumFrames(BlastProgram p)
 {
     return (sIsTranslated(p)
@@ -430,108 +324,31 @@ sNumFrames(BlastProgram p)
                 : 1));
 }
 
-template <BlastProgram p>
-constexpr bool
-sNumFrames(BlastProgramTag<p> const &)
-{
-    return sNumFrames(p);
-}
-
-template <BlastProgram p>
-constexpr bool
-sNumFrames(BlastProgram const _p, BlastProgramTag<p> const &)
-{
-    return sNumFrames(getBlastProgram(_p, BlastProgramTag<p>()));
-}
-
 // ----------------------------------------------------------------------------
 // _programTagToString()
 // ----------------------------------------------------------------------------
 
-template <BlastProgram p>
-constexpr const char *
-_programTagToString()
+template <typename TVoidSpec = void>
+struct BlastProgramStrings_
 {
-    return "UNKOWN BLAST PROGRAM";
-}
+    static constexpr char const * const VALUE [] =
+    {
+        "BLASTN",
+        "BLASTP",
+        "BLASTX",
+        "TBLASTN",
+        "TBLASTX",
+        "UNKOWN BLAST PROGRAM"
+    };
+};
 
-template <>
+template <typename TVoidSpec>
+constexpr char const * const BlastProgramStrings_<TVoidSpec>::VALUE[6];
+
 constexpr const char *
-_programTagToString<BlastProgram::BLASTN>()
-{
-    return "BLASTN";
-}
-
-template <>
-constexpr const char *
-_programTagToString<BlastProgram::BLASTP>()
-{
-    return "BLASTP";
-}
-
-template <>
-constexpr const char *
-_programTagToString<BlastProgram::BLASTX>()
-{
-    return "BLASTX";
-}
-
-template <>
-constexpr const char *
-_programTagToString<BlastProgram::TBLASTN>()
-{
-    return "TBLASTN";
-}
-
-template <>
-constexpr const char *
-_programTagToString<BlastProgram::TBLASTX>()
-{
-    return "TBLASTX";
-}
-
-// if not compile time fixed, than we can't operate with const char * and need std::string instead
-inline std::string const
 _programTagToString(BlastProgram const _p)
 {
-    switch(_p)
-    {
-        case BlastProgram::BLASTN:
-            return std::string(_programTagToString<BlastProgram::BLASTN>());
-        case BlastProgram::BLASTP:
-            return std::string(_programTagToString<BlastProgram::BLASTP>());
-        case BlastProgram::BLASTX:
-            return std::string(_programTagToString<BlastProgram::BLASTX>());
-        case BlastProgram::TBLASTN:
-            return std::string(_programTagToString<BlastProgram::TBLASTN>());
-        case BlastProgram::TBLASTX:
-            return std::string(_programTagToString<BlastProgram::TBLASTX>());
-        case BlastProgram::UNKNOWN:
-            break;
-    }
-    return std::string(_programTagToString<BlastProgram::UNKNOWN>());
-}
-
-// if known at compile-time, deduce at compile-time
-template <BlastProgram p>
-constexpr const char *
-_programTagToString(BlastProgramTag<p> const &)
-{
-    return _programTagToString<p>();
-}
-
-template <BlastProgram p>
-constexpr const char *
-_programTagToString(BlastProgram const, BlastProgramTag<p> const &)
-{
-    return _programTagToString<p>();
-}
-
-// if SPEC == unkown, deduce from run-time parameter
-inline std::string const
-_programTagToString(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
-{
-    return _programTagToString(_p);
+    return (__uint8(_p) < 5) ? BlastProgramStrings_<>::VALUE[__uint8(_p)] : BlastProgramStrings_<>::VALUE[5];
 }
 
 // ----------------------------------------------------------------------------
@@ -542,16 +359,9 @@ template <typename TString>
 inline BlastProgram
 _programStringToTag(TString const & str)
 {
-    if (str == _programTagToString<BlastProgram::BLASTN>())
-        return BlastProgram::BLASTN;
-    else if (str == _programTagToString<BlastProgram::BLASTP>())
-        return BlastProgram::BLASTP;
-    else if (str == _programTagToString<BlastProgram::BLASTX>())
-        return BlastProgram::BLASTX;
-    else if (str == _programTagToString<BlastProgram::TBLASTN>())
-        return BlastProgram::TBLASTN;
-    else if (str == _programTagToString<BlastProgram::TBLASTX>())
-        return BlastProgram::TBLASTX;
+    for (__uint8 i = 0; i < 5; ++i)
+        if (str == BlastProgramStrings_<>::VALUE[i])
+            return BlastProgram(i);
 
     return BlastProgram::UNKNOWN;
 }
@@ -621,12 +431,11 @@ _untranslateQPositions(TPos & effectiveStart,
                       TPos & effectiveEnd,
                       int8_t const frameShift,
                       TPos const & length,
-                      BlastProgram const _p,
-                      BlastProgramTag<p> const &)
+                      BlastProgramSelector<p> const & selector)
 {
-     if (qIsTranslated(_p, BlastProgramTag<p>()))
+     if (qIsTranslated(selector))
          _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, True(), True());
-     else if (qHasRevComp(_p, BlastProgramTag<p>()))
+     else if (qHasRevComp(selector))
          _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, True(), False());
      else
         _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, False(), False());
@@ -638,12 +447,11 @@ _untranslateSPositions(TPos & effectiveStart,
                       TPos & effectiveEnd,
                       int8_t const frameShift,
                       TPos const & length,
-                      BlastProgram const _p,
-                      BlastProgramTag<p> const &)
+                      BlastProgramSelector<p> const & selector)
 {
-     if (sIsTranslated(_p, BlastProgramTag<p>()))
+     if (sIsTranslated(selector))
          _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, True(), True());
-     else if (sHasRevComp(_p, BlastProgramTag<p>()))
+     else if (sHasRevComp(selector))
          _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, True(), False());
      else
         _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, False(), False());

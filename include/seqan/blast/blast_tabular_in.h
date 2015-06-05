@@ -126,12 +126,11 @@ using BlastTabularIn = FormattedFile<BlastTabular, Input, TBlastIOContext>;
 
 //TODO document?
 template <typename TScore,
-          typename TString,
           typename TFwdIterator,
           BlastProgram p,
           BlastTabularSpec h>
 inline bool
-atEnd(BlastIOContext<TScore, TString, p, h> const & context,
+atEnd(BlastIOContext<TScore, p, h> const & context,
       TFwdIterator const & iter,
       BlastTabular const &)
 {
@@ -153,9 +152,9 @@ template <typename TSpec>
 inline bool guessFormat(FormattedFile<BlastTabular, Input, TSpec> & file)
 {
     if (value(file.iter) == '#')
-        setBlastTabularSpec(context(file), BlastTabularSpec::HEADER);
+        context(file).tabularSpec = BlastTabularSpec::HEADER;
     else
-        setBlastTabularSpec(context(file), BlastTabularSpec::NO_HEADER);
+        context(file).tabularSpec = BlastTabularSpec::NO_HEADER;
     return true;
 }
 
@@ -179,11 +178,10 @@ inline bool guessFormat(FormattedFile<BlastTabular, Input, TSpec> & file)
  */
 
 template <typename TScore,
-          typename TString,
           BlastProgram p,
           BlastTabularSpec h>
 inline bool
-onMatch(BlastIOContext<TScore, TString, p, h> & context,
+onMatch(BlastIOContext<TScore, p, h> & context,
         BlastTabular const &)
 {
     return (!startsWith(context._lineBuffer, "#") && !empty(context._lineBuffer));
@@ -208,14 +206,13 @@ onMatch(BlastIOContext<TScore, TString, p, h> & context,
  */
 
 template <typename TScore,
-          typename TString,
           BlastProgram p,
           BlastTabularSpec h>
 inline bool
-onRecord(BlastIOContext<TScore, TString, p, h> & context,
+onRecord(BlastIOContext<TScore, p, h> & context,
          BlastTabular const &)
 {
-    if (getBlastTabularSpec(context) == BlastTabularSpec::NO_HEADER)
+    if (context.tabularSpec == BlastTabularSpec::NO_HEADER)
         return onMatch(context, BlastTabular());
 
     //      RecordHeader                                  Footer
@@ -248,12 +245,11 @@ onRecord(BlastTabularIn<TContext> & formattedFile)
 // ----------------------------------------------------------------------------
 
 template <typename TScore,
-          typename TString,
           typename TFwdIterator,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-goNextLine(BlastIOContext<TScore, TString, p, h> & context,
+goNextLine(BlastIOContext<TScore, p, h> & context,
            TFwdIterator & iter,
            BlastTabular const &)
 {
@@ -318,20 +314,19 @@ template <typename TQId,
           typename TAlign,
           typename TFwdIterator,
           typename TScore,
-          typename TString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                       TFwdIterator & iter,
-                      BlastIOContext<TScore, TString, p, h> & context,
+                      BlastIOContext<TScore, p, h> & context,
                       BlastTabular const &)
 {
     // this is a match instead of a header
     if (onMatch(context, BlastTabular()))
         SEQAN_THROW(ParseError("Header expected, but no header found."));
     else
-        setBlastTabularSpec(context, BlastTabularSpec::HEADER);
+        context.tabularSpec = BlastTabularSpec::HEADER;
 
     int queryLinePresent = 0;
     int dbLinePresent = 0;
@@ -353,7 +348,7 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
             else // first line of record header
             {
                 assign(context.versionString, suffix(context._lineBuffer, 2));
-                context.blastProgram = _programStringToTag(prefix(context.versionString,
+                context.blastProgramSelector = _programStringToTag(prefix(context.versionString,
                                                                   _firstOcc(context.versionString, ' ')));
 
                 context.legacyFormat = !std::regex_search(seqan::begin(context.versionString),
@@ -471,17 +466,18 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                                 seqan::end(context._lineBuffer),
                                 std::regex("^# T?BLAST")));
 
-    if (getBlastProgram(context) == BlastProgram::UNKNOWN)
+    if (context.blastProgramSelector == BlastProgram::UNKNOWN)
         appendValue(context.conformancyErrors,
                     "Type of BlastProgram could not be determined from header, you are advised to look "
                     "at context.versionString and context.otherLines.");
-    else if ((p != BlastProgram::UNKNOWN) && (context.blastProgram != p))
+    else if ((p != BlastProgram::UNKNOWN) && (context.blastProgramSelector != p))
         appendValue(context.conformancyErrors,
                     std::string("You fixed the BlastProgramType to ") +
                     std::string(_programTagToString(p)) +
                     std::string (" at compile-time, but the type ") +
-                    std::string(_programTagToString(getBlastProgram(context))) +
+                    std::string(_programTagToString(context.blastProgramSelector)) +
                     std::string(" was detected in the file!"));
+    //TODO adapt the above
 
     if (queryLinePresent != 1)
         appendValue(context.conformancyErrors, "No or multiple query lines present.");
@@ -512,18 +508,17 @@ template <typename TQId,
           typename TAlign,
           typename TFwdIterator,
           typename TScore,
-          typename TString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 readRecordHeader(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                  TFwdIterator & iter,
-                 BlastIOContext<TScore, TString, p, h> & context,
+                 BlastIOContext<TScore, p, h> & context,
                  BlastTabular const &)
 {
     ++context.numberOfRecords;
 
-    if (getBlastTabularSpec(context) == BlastTabularSpec::NO_HEADER)
+    if (context.tabularSpec == BlastTabularSpec::NO_HEADER)
         return;
 
     clear(r);
@@ -570,12 +565,11 @@ readRecordHeader(BlastRecord<TQId, TSId, TPos, TAlign> & r,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 skipRecordHeader(TFwdIterator & iter,
-                 BlastIOContext<TScore, TString, p, h> & context,
+                 BlastIOContext<TScore, p, h> & context,
                  BlastTabular const & /*tag*/)
 {
     readRecordHeader(context.bufRecord, iter, context, BlastTabular());
@@ -590,12 +584,11 @@ template <typename TQId,
           typename TPos,
           typename TAlign,
           typename TScore,
-          typename TString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _readField(BlastMatch<TQId, TSId, TPos, TAlign> & match,
-           BlastIOContext<TScore, TString, p, h> & context,
+           BlastIOContext<TScore, p, h> & context,
            typename BlastMatchField<>::Enum const fieldId)
 {
     switch (fieldId)
@@ -752,13 +745,12 @@ template <typename TQId,
           typename TPos,
           typename TAlign,
           typename TScore,
-          typename TString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
           TFwdIterator & iter,
-          BlastIOContext<TScore, TString, p, h> & context,
+          BlastIOContext<TScore, p, h> & context,
           BlastTabular const &)
 {
     if (context.legacyFormat)
@@ -866,12 +858,11 @@ readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 skipMatch(TFwdIterator & iter,
-          BlastIOContext<TScore, TString, p, h> & context,
+          BlastIOContext<TScore, p, h> & context,
           BlastTabular const &)
 {
     readMatch(context.bufMatch, iter, context, BlastTabular());
@@ -887,13 +878,12 @@ template <typename TFwdIterator,
           typename TAlign,
           typename TPos,
           typename TScore,
-          typename TString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _readRecordWithHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
                       TFwdIterator & iter,
-                      BlastIOContext<TScore, TString, p, h> & context,
+                      BlastIOContext<TScore, p, h> & context,
                       BlastTabular const &)
 {
     readRecordHeader(blastRecord, iter, context, BlastTabular());
@@ -939,23 +929,22 @@ template <typename TQId,
           typename TPos,
           typename TFwdIterator,
           typename TScore,
-          typename TString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
                     TFwdIterator & iter,
-                    BlastIOContext<TScore, TString, p, h> & context,
+                    BlastIOContext<TScore, p, h> & context,
                     BlastTabular const &)
 {
     ++context.numberOfRecords;
 
     clear(blastRecord);
 
-    auto it = seqan::begin(context._lineBuffer); // move into line below when seqan supports && properly
+    auto it = begin(context._lineBuffer, Standard()); // move into line below when seqan supports && properly
     readUntil(blastRecord.qId, it, IsTab());
 
-    TString curIdPlusTab = blastRecord.qId;
+    auto curIdPlusTab = blastRecord.qId;
     appendValue(curIdPlusTab, '\t');
 
     if ((context.fields[0] != BlastMatchField<>::Enum::STD) &&
@@ -1069,12 +1058,11 @@ template <typename TQId,
           typename TPos,
           typename TFwdIterator,
           typename TScore,
-          typename TString,
           BlastProgram p>
 inline void
 readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
           TFwdIterator & iter,
-          BlastIOContext<TScore, TString, p, BlastTabularSpec::NO_HEADER> & context,
+          BlastIOContext<TScore, p, BlastTabularSpec::NO_HEADER> & context,
           BlastTabular const &)
 {
     _readRecordNoHeader(blastRecord, iter, context, BlastTabular());
@@ -1086,12 +1074,11 @@ template <typename TQId,
           typename TPos,
           typename TFwdIterator,
           typename TScore,
-          typename TString,
           BlastProgram p>
 inline void
 readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
           TFwdIterator & iter,
-          BlastIOContext<TScore, TString, p, BlastTabularSpec::HEADER> & context,
+          BlastIOContext<TScore, p, BlastTabularSpec::HEADER> & context,
           BlastTabular const &)
 {
     _readRecordWithHeader(blastRecord, iter, context, BlastTabular());
@@ -1103,16 +1090,15 @@ template <typename TQId,
           typename TPos,
           typename TFwdIterator,
           typename TScore,
-          typename TString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
           TFwdIterator & iter,
-          BlastIOContext<TScore, TString, p, h> & context,
+          BlastIOContext<TScore, p, h> & context,
           BlastTabular const &)
 {
-    if (getBlastTabularSpec(context) == BlastTabularSpec::NO_HEADER)
+    if (context.tabularSpec == BlastTabularSpec::NO_HEADER)
         _readRecordNoHeader(blastRecord, iter, context, BlastTabular());
     else
         _readRecordWithHeader(blastRecord, iter, context, BlastTabular());
@@ -1166,22 +1152,21 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TConString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-readHeader(BlastIOContext<TScore, TConString, p, h> & context,
+readHeader(BlastIOContext<TScore, p, h> & context,
            TFwdIterator & iter,
            BlastTabular const & /*tag*/)
 {
     readLine(context._lineBuffer, iter); // fill the line-buffer the first time
 
-    if (getBlastTabularSpec(context) == BlastTabularSpec::UNKNOWN)
+    if (context.tabularSpec == BlastTabularSpec::UNKNOWN)
     {
         if (onMatch(context, BlastTabular()))
-            setBlastTabularSpec(context, BlastTabularSpec::NO_HEADER);
+            context.tabularSpec = BlastTabularSpec::NO_HEADER;
         else
-            setBlastTabularSpec(context, BlastTabularSpec::HEADER);
+            context.tabularSpec = BlastTabularSpec::HEADER;
     }
 }
 
@@ -1229,11 +1214,10 @@ readHeader(BlastTabularIn<TContext> & formattedFile)
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TConString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-readFooter(BlastIOContext<TScore, TConString, p, h> & context,
+readFooter(BlastIOContext<TScore, p, h> & context,
            TFwdIterator & iter,
            BlastTabular const & /*tag*/)
 {
@@ -1242,7 +1226,7 @@ readFooter(BlastIOContext<TScore, TConString, p, h> & context,
     clear(context.fieldsAsStrings);
     clear(context.fields);
 
-    if ((getBlastTabularSpec(context) == BlastTabularSpec::HEADER) && !context.legacyFormat)
+    if ((context.tabularSpec == BlastTabularSpec::HEADER) && !context.legacyFormat)
     {
         if (SEQAN_UNLIKELY(!startsWith(context._lineBuffer, "# BLAST processed")))
         {

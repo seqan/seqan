@@ -258,13 +258,12 @@ _matrixName(Pam250 const & /**/)
 
 template <typename TStream,
           typename TScore,
-          typename TConString,
           typename TMatch,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeStatsBlock(TStream & stream,
-                 BlastIOContext<TScore, TConString, p, h> const &,
+                 BlastIOContext<TScore, p, h> const &,
                  TMatch const & m,
                  BlastReport const &)
 {
@@ -291,13 +290,12 @@ _writeStatsBlock(TStream & stream,
 
 template <typename TStream,
           typename TScoreSpec,
-          typename TConString,
           typename TMatch,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeStatsBlock(TStream & stream,
-                 BlastIOContext<Score<int, ScoreMatrix<AminoAcid, TScoreSpec> >, TConString, p, h> const & context,
+                 BlastIOContext<Score<int, ScoreMatrix<AminoAcid, TScoreSpec> >, p, h> const & context,
                  TMatch const & m,
                  BlastReport const &)
 {
@@ -317,18 +315,18 @@ _writeStatsBlock(TStream & stream,
 
     write(stream, buffer);
 
-    if (getBlastProgram(context) != BlastProgram::BLASTP)
+    if (context.blastProgramSelector != BlastProgram::BLASTP)
         write(stream, "\n Frame = ");
 
-    if (getBlastProgram(context) == BlastProgram::BLASTX)
+    if (context.blastProgramSelector == BlastProgram::BLASTX)
     {
         write(stream, FormattedNumber<int8_t>("%+d", m.qFrameShift));
     }
-    else if (getBlastProgram(context) == BlastProgram::TBLASTN)
+    else if (context.blastProgramSelector == BlastProgram::TBLASTN)
     {
         write(stream, FormattedNumber<int8_t>("%+d", m.sFrameShift));
     }
-    else if (getBlastProgram(context) == BlastProgram::TBLASTX)
+    else if (context.blastProgramSelector == BlastProgram::TBLASTX)
     {
         write(stream, FormattedNumber<int8_t>("%+d", m.qFrameShift));
         write(stream, "/");
@@ -343,7 +341,6 @@ _writeStatsBlock(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TConString,
           typename TChar1,
           typename TChar2,
           BlastProgram p,
@@ -363,7 +360,6 @@ _writeAlignmentBlockIntermediateChar(TStream & stream,
 
 template <typename TStream,
           typename TScoreSpec,
-          typename TConString,
           typename TChar1,
           typename TChar2,
           BlastProgram p,
@@ -371,7 +367,6 @@ template <typename TStream,
 inline void
 _writeAlignmentBlockIntermediateChar(TStream & stream,
                                      BlastIOContext<Score<int, ScoreMatrix<AminoAcid, TScoreSpec> >,
-                                                    TConString,
                                                     p,
                                                     h> const & context,
                                      TChar1 const & char1,
@@ -397,7 +392,6 @@ _writeAlignmentBlockIntermediateChar(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
@@ -406,7 +400,7 @@ template <typename TStream,
           BlastTabularSpec h>
 inline void
 _writeAlignmentBlock(TStream & stream,
-                     BlastIOContext<TScore, TConString, p, h> & context,
+                     BlastIOContext<TScore, p, h> & context,
                      BlastMatch<TQId, TSId, TPos, TAlign> const & m,
                      BlastReport const & /*tag*/)
 {
@@ -424,13 +418,13 @@ _writeAlignmentBlock(TStream & stream,
     TPos            effSStart   = m.sStart;
     TPos            effSEnd     = m.sEnd;
 
-    _untranslateQPositions(effQStart, effQEnd, m.qFrameShift, m.qLength, context.blastProgram, BlastProgramTag<p>());
-    _untranslateSPositions(effSStart, effSEnd, m.sFrameShift, m.sLength, context.blastProgram, BlastProgramTag<p>());
+    _untranslateQPositions(effQStart, effQEnd, m.qFrameShift, m.qLength, context.blastProgramSelector);
+    _untranslateSPositions(effSStart, effSEnd, m.sFrameShift, m.sLength, context.blastProgramSelector);
 
     int8_t const  qStepOne = (m.qFrameShift < 0) ?  -1 : 1;
     int8_t const  sStepOne = (m.sFrameShift < 0) ?  -1 : 1;
-    int8_t const     qStep = qIsTranslated(context.blastProgram, BlastProgramTag<p>()) ? qStepOne * 3 : qStepOne;
-    int8_t const     sStep = sIsTranslated(context.blastProgram, BlastProgramTag<p>()) ? sStepOne * 3 : sStepOne;
+    int8_t const     qStep = qIsTranslated(context.blastProgramSelector) ? qStepOne * 3 : qStepOne;
+    int8_t const     sStep = sIsTranslated(context.blastProgramSelector) ? sStepOne * 3 : sStepOne;
 
     auto const & row0        = row(m.align, 0);
     auto const & row1        = row(m.align, 1);
@@ -487,7 +481,6 @@ _writeAlignmentBlock(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
@@ -496,7 +489,7 @@ template <typename TStream,
           BlastTabularSpec h>
 inline void
 _writeFullMatch(TStream & stream,
-                BlastIOContext<TScore, TConString, p, h> & context,
+                BlastIOContext<TScore, p, h> & context,
                 BlastMatch<TQId, TSId, TPos, TAlign> const & m,
                 BlastReport const & /*tag*/)
 {
@@ -531,7 +524,6 @@ _writeFullMatch(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
@@ -540,7 +532,7 @@ template <typename TStream,
           BlastTabularSpec h>
 inline void
 _writeMatchOneLiner(TStream & stream,
-                    BlastIOContext<TScore, TConString, p, h> &,
+                    BlastIOContext<TScore, p, h> &,
                     BlastMatch<TQId, TSId, TPos, TAlign> const & m,
                     BlastReport const & /*tag*/)
 {
@@ -572,7 +564,6 @@ _writeMatchOneLiner(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
@@ -581,7 +572,7 @@ template <typename TStream,
           BlastTabularSpec h>
 inline void
 _writeRecordHeader(TStream & stream,
-                   BlastIOContext<TScore, TConString, p, h> &,
+                   BlastIOContext<TScore, p, h> &,
                    BlastRecord<TQId, TSId, TPos, TAlign> const & record,
                    BlastReport const & /*tag*/)
 {
@@ -595,7 +586,6 @@ _writeRecordHeader(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
@@ -604,7 +594,7 @@ template <typename TStream,
           BlastTabularSpec h>
 inline void
 _writeRecordFooter(TStream & stream,
-                   BlastIOContext<TScore, TConString, p, h> & context,
+                   BlastIOContext<TScore, p, h> & context,
                    BlastRecord<TQId, TSId, TPos, TAlign> const & record,
                    BlastReport const & /*tag*/)
 {
@@ -655,7 +645,6 @@ _writeRecordFooter(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
@@ -664,7 +653,7 @@ template <typename TStream,
           BlastTabularSpec h>
 inline void
 writeRecord(TStream & stream,
-            BlastIOContext<TScore, TConString, p, h> & context,
+            BlastIOContext<TScore, p, h> & context,
             BlastRecord<TQId, TSId, TPos, TAlign> const & record,
             BlastReport const & /*tag*/)
 {
@@ -754,12 +743,11 @@ writeRecord(BlastReportOut<TContext> & formattedFile,
 
 template <typename TStream,
           typename TScore,
-          typename TConString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 writeHeader(TStream & stream,
-            BlastIOContext<TScore, TConString, p, h> & context,
+            BlastIOContext<TScore, p, h> & context,
             BlastReport const & /*tag*/)
 {
 
@@ -845,12 +833,11 @@ writeMatrixName(TStream & stream, TScheme const &)
 
 template <typename TStream,
           typename TScore,
-          typename TConString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 writeFooter(TStream & stream,
-            BlastIOContext<TScore, TConString, p, h> & context,
+            BlastIOContext<TScore, p, h> & context,
             BlastReport const & /*tag*/)
 {
     write(stream, "\n  Database: ");

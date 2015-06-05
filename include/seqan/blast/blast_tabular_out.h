@@ -107,12 +107,11 @@ inline bool guessFormat(FormattedFile<BlastTabular, Output, TSpec> &)
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TConString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeFieldLabels(TFwdIterator & stream,
-                  BlastIOContext<TScore, TConString, p, h> & context,
+                  BlastIOContext<TScore, p, h> & context,
                   BlastTabular const &)
 {
     if (!empty(context.fieldsAsStrings)) // give preference to string labels
@@ -143,7 +142,6 @@ _writeFieldLabels(TFwdIterator & stream,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
@@ -152,7 +150,7 @@ template <typename TFwdIterator,
           BlastTabularSpec h>
 inline void
 _writeRecordHeaderWithoutColumnLabels(TFwdIterator & stream,
-                                      BlastIOContext<TScore, TConString, p, h> & context,
+                                      BlastIOContext<TScore, p, h> & context,
                                       BlastRecord<TQId, TSId, TPos, TAlign> const & r,
                                       BlastTabular const & /*tag*/)
 {
@@ -203,7 +201,6 @@ _writeRecordHeaderWithoutColumnLabels(TFwdIterator & stream,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
@@ -212,13 +209,13 @@ template <typename TFwdIterator,
           BlastTabularSpec h>
 inline void
 writeRecordHeader(TFwdIterator & stream,
-                  BlastIOContext<TScore, TConString, p, h> & context,
+                  BlastIOContext<TScore, p, h> & context,
                   BlastRecord<TQId, TSId, TPos, TAlign> const & r,
                   BlastTabular const & /*tag*/)
 {
     ++context.numberOfRecords;
 
-    if (getBlastTabularSpec(context) == BlastTabularSpec::NO_HEADER)
+    if (context.tabularSpec == BlastTabularSpec::NO_HEADER)
         return;
 
     _writeRecordHeaderWithoutColumnLabels(stream, context, r, BlastTabular());
@@ -254,7 +251,6 @@ writeRecordHeader(TFwdIterator & stream,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
@@ -263,7 +259,7 @@ template <typename TFwdIterator,
           BlastTabularSpec h>
 inline void
 _writeField(TFwdIterator & s,
-            BlastIOContext<TScore, TConString, p, h> & context,
+            BlastIOContext<TScore, p, h> & context,
             BlastMatch<TQId, TSId, TPos, TAlign> const & match,
             typename BlastMatchField<>::Enum const fieldId,
             BlastTabular const &)
@@ -299,7 +295,7 @@ _writeField(TFwdIterator & s,
             TPos effectiveQStart    = match.qStart;
             TPos effectiveQEnd      = match.qEnd;
             _untranslateQPositions(effectiveQStart, effectiveQEnd, match.qFrameShift, match.qLength,
-                                   context.blastProgram, BlastProgramTag<p>());
+                                   context.blastProgramSelector);
             write(s, effectiveQStart);
         } break;
         case BlastMatchField<>::Enum::Q_END:
@@ -307,7 +303,7 @@ _writeField(TFwdIterator & s,
             TPos effectiveQStart    = match.qStart;
             TPos effectiveQEnd      = match.qEnd;
             _untranslateQPositions(effectiveQStart, effectiveQEnd, match.qFrameShift, match.qLength,
-                                   context.blastProgram, BlastProgramTag<p>());
+                                   context.blastProgramSelector);
             write(s, effectiveQEnd);
         } break;
         case BlastMatchField<>::Enum::S_START:
@@ -315,7 +311,7 @@ _writeField(TFwdIterator & s,
             TPos effectiveSStart    = match.sStart;
             TPos effectiveSEnd      = match.sEnd;
             _untranslateSPositions(effectiveSStart, effectiveSEnd, match.sFrameShift, match.sLength,
-                                   context.blastProgram, BlastProgramTag<p>());
+                                   context.blastProgramSelector);
             write(s, effectiveSStart);
         } break;
         case BlastMatchField<>::Enum::S_END:
@@ -323,7 +319,7 @@ _writeField(TFwdIterator & s,
             TPos effectiveSStart    = match.sStart;
             TPos effectiveSEnd      = match.sEnd;
             _untranslateSPositions(effectiveSStart, effectiveSEnd, match.sFrameShift, match.sLength,
-                                   context.blastProgram, BlastProgramTag<p>());
+                                   context.blastProgramSelector);
             write(s, effectiveSEnd);
         } break;
 //         case ENUM::Q_SEQ: write(s,  * ); break;
@@ -439,7 +435,6 @@ _writeField(TFwdIterator & s,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
@@ -448,7 +443,7 @@ template <typename TFwdIterator,
           BlastTabularSpec h>
 inline void
 _writeFields(TFwdIterator & stream,
-             BlastIOContext<TScore, TConString, p, h> & context,
+             BlastIOContext<TScore, p, h> & context,
              BlastMatch<TQId, TSId, TPos, TAlign> const & match,
              BlastTabular const &)
 {
@@ -544,14 +539,13 @@ template <typename TQId,
           typename TSId,
           typename TFwdIterator,
           typename TScore,
-          typename TConString,
           typename TPos,
           typename TAlign,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 writeMatch(TFwdIterator & stream,
-           BlastIOContext<TScore, TConString, p, h> & context,
+           BlastIOContext<TScore, p, h> & context,
            BlastMatch<TQId, TSId, TPos, TAlign> const & match,
            BlastTabular const & /*tag*/)
 {
@@ -624,7 +618,6 @@ writeMatch(TFwdIterator & stream,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
@@ -633,7 +626,7 @@ template <typename TFwdIterator,
           BlastTabularSpec h>
 inline void
 writeRecord(TFwdIterator & stream,
-            BlastIOContext<TScore, TConString, p, h> & context,
+            BlastIOContext<TScore, p, h> & context,
             BlastRecord<TQId, TSId, TPos, TAlign> const & r,
             BlastTabular const & /*tag*/)
 {
@@ -701,12 +694,11 @@ writeRecord(BlastTabularOut<TContext> & formattedFile,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TConString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 writeHeader(TFwdIterator & ,
-            BlastIOContext<TScore, TConString, p, h> &,
+            BlastIOContext<TScore, p, h> &,
             BlastTabular const & /*tag*/)
 {
 }
@@ -756,15 +748,14 @@ writeHeader(BlastTabularOut<TContext> & formattedFile)
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TConString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 writeFooter(TFwdIterator & stream,
-            BlastIOContext<TScore, TConString, p, h> & context,
+            BlastIOContext<TScore, p, h> & context,
             BlastTabular const & /*tag*/)
 {
-    if ((!context.legacyFormat) && (getBlastTabularSpec(context) != BlastTabularSpec::NO_HEADER))
+    if ((!context.legacyFormat) && (context.tabularSpec != BlastTabularSpec::NO_HEADER))
     {
         write(stream, "# BLAST processed ");
         write(stream, context.numberOfRecords); // number of records equals number of queries

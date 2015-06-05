@@ -47,23 +47,6 @@
 
 using namespace seqan;
 
-// template <typename TNum,
-//           typename std::enable_if<Is<NumberConcept<TNum>>::VALUE, int>::type = 0>
-// inline void
-// clear(TNum & num)
-// {
-//     num = 0;
-// }
-//
-// template <typename TArg,
-//           typename... TArgs>
-// inline void
-// clear(TArg & arg, TArgs & ... args)
-// {
-//     clear(arg);
-//     clear(args...);
-// }
-
 void _test_blast_read_tabular_match(std::string const & path,
                                     bool const defaults,
                                     bool const withheader,
@@ -108,7 +91,7 @@ void _test_blast_read_tabular_match(std::string const & path,
     // read header of file
     readHeader(context, it, BlastTabular());
     // TODO fix the below
-    SEQAN_ASSERT(getBlastTabularSpec(context) == (withheader ? BlastTabularSpec::HEADER : BlastTabularSpec::NO_HEADER));
+    SEQAN_ASSERT(context.tabularSpec == (withheader ? BlastTabularSpec::HEADER : BlastTabularSpec::NO_HEADER));
 
     context.legacyFormat = islegacy;
 
@@ -447,7 +430,7 @@ _test_blast_read_tabular_with_header(bool custom = false)
 
     // read header of file
     readHeader(context, it, BlastTabular());
-    SEQAN_ASSERT(getBlastTabularSpec(context) == BlastTabularSpec::HEADER);
+    SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::HEADER);
 
     // first line is record header
     SEQAN_ASSERT(!onMatch(context, BlastTabular()));
@@ -640,7 +623,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
 
     // read header of file
     readHeader(context, it, BlastTabular());
-    SEQAN_ASSERT(getBlastTabularSpec(context) == BlastTabularSpec::HEADER);
+    SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::HEADER);
 
     // back on header
     SEQAN_ASSERT(!onMatch(context, BlastTabular()));
@@ -812,7 +795,7 @@ void _test_blast_read_tabular_record_noheader(bool const defaults)
 
     // read header of file
     readHeader(context, it, BlastTabular());
-    SEQAN_ASSERT(getBlastTabularSpec(context) == BlastTabularSpec::NO_HEADER);
+    SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::NO_HEADER);
 
     // first line is onMatch
     SEQAN_ASSERT(onMatch(context, BlastTabular()));
@@ -913,7 +896,7 @@ void _test_blast_read_record_withheader(const char * path, bool const defaults, 
 
     // read header of file
     readHeader(context, it, BlastTabular());
-    SEQAN_ASSERT(getBlastTabularSpec(context) == BlastTabularSpec::HEADER);
+    SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::HEADER);
 
     // first line is header
     SEQAN_ASSERT(!onMatch(context, BlastTabular()));
@@ -1062,12 +1045,12 @@ SEQAN_DEFINE_TEST(test_blast_read_formatted_file_tabular)
     BlastTabularIn<> fileIn(toCString(inPath));
 
     guessFormat(fileIn);
-    SEQAN_ASSERT(getBlastTabularSpec(context(fileIn)) == BlastTabularSpec::NO_HEADER);
+    SEQAN_ASSERT(context(fileIn).tabularSpec == BlastTabularSpec::NO_HEADER);
     // legacy format or not and BlastProgram are detected upon reading records
 
     // read header of file
     readHeader(fileIn);
-    SEQAN_ASSERT(getBlastTabularSpec(context(fileIn)) == BlastTabularSpec::NO_HEADER);
+    SEQAN_ASSERT(context(fileIn).tabularSpec == BlastTabularSpec::NO_HEADER);
 
     BlastRecord<> r;
 
@@ -1109,12 +1092,12 @@ SEQAN_DEFINE_TEST(test_blast_read_formatted_file_tabular_with_header)
     BlastTabularIn<> fileIn(toCString(inPath));
 
     guessFormat(fileIn);
-    SEQAN_ASSERT(getBlastTabularSpec(context(fileIn)) == BlastTabularSpec::HEADER);
+    SEQAN_ASSERT(context(fileIn).tabularSpec == BlastTabularSpec::HEADER);
     // legacy format or not and BlastProgram are detected upon reading records
 
     // read header of file
     readHeader(fileIn);
-    SEQAN_ASSERT(getBlastTabularSpec(context(fileIn)) == BlastTabularSpec::HEADER);
+    SEQAN_ASSERT(context(fileIn).tabularSpec == BlastTabularSpec::HEADER);
 
     BlastRecord<> r;
 

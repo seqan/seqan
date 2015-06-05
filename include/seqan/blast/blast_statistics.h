@@ -917,12 +917,11 @@ _lengthAdjustment(TSize     const & dbLength,
 
 template <typename TBlastMatch,
           typename TScore,
-          typename TConString,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 computeAlignmentStats(TBlastMatch & match,
-                      BlastIOContext<TScore, TConString, p, h> const & context)
+                      BlastIOContext<TScore, p, h> const & context)
 {
     computeAlignmentStats(match.alignStats, match.align, seqanScheme(context.scoringScheme));
 }
@@ -972,12 +971,11 @@ computeBitScore(double const rawScore, BlastScoringScheme<TScore> const & scheme
 
 template <typename TBlastMatch,
           typename TScore,
-          typename TConString,
           BlastProgram p,
           BlastTabularSpec h>
 inline double
 computeBitScore(TBlastMatch & match,
-                BlastIOContext<TScore, TConString, p, h> const & context)
+                BlastIOContext<TScore, p, h> const & context)
 {
     match.bitScore = computeBitScore(match.alignStats.alignmentScore, context.scoringScheme);
     return match.bitScore;
@@ -1051,12 +1049,11 @@ computeEValue(__uint64 rawScore,
 
 template <typename TBlastMatch,
           typename TScore,
-          typename TConString,
           BlastProgram p,
           BlastTabularSpec h>
 inline double
 computeEValue(TBlastMatch & match,
-              BlastIOContext<TScore, TConString, p, h> & context)
+              BlastIOContext<TScore, p, h> & context)
 {
     __uint64 ql = match.qLength; // convert to 64bit, once
     // length adjustment not yet computed

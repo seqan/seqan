@@ -29,7 +29,7 @@ int main()
             std::cout << "E-Value of best HSP: " << front(record.matches).eValue << "\n";
 
         // if there is anything unexpected, tell the user about it
-        if (length(context(in).conformancyErrors) > 0)
+        if (!empty(context(in).conformancyErrors))
         {
             std::cout << "There were non critical errors when reading the record:\n";
             write(std::cout, context(in).conformancyErrors);

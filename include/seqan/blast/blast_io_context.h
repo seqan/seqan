@@ -44,6 +44,13 @@ namespace seqan
 template <typename TScore>
 struct BlastScoringScheme;
 
+template <typename TContext>
+struct BlastIOContextStringType
+{
+    typedef std::string Type;
+};
+
+
 /*!
  * @class BlastIOContext
  * @headerfile <seqan/blast.h>
@@ -97,25 +104,25 @@ struct BlastScoringScheme;
  */
 
 template <typename TScore_ = Blosum62,
-          typename TString_ = std::string,
-          BlastProgram _p = BlastProgram::UNKNOWN,
-          BlastTabularSpec _h = BlastTabularSpec::UNKNOWN>
+          BlastProgram p = BlastProgram::UNKNOWN,
+          BlastTabularSpec h = BlastTabularSpec::UNKNOWN>
 struct BlastIOContext
 {
     typedef TScore_ TScore;
-    typedef TString_ TString;
-    static constexpr BlastProgram p = _p;
-    static constexpr BlastTabularSpec h = _h;
+    typedef typename BlastIOContextStringType<BlastIOContext>::Type TString;
+//     static constexpr BlastTabularSpec h = _h;
 
-    // the blastProgram as compile time parameter
-    typedef BlastProgramTag<p> TBlastProgram; // compile-time parameter
-    // if the upper is set to UNKNOWN, than this run-time variable is consulted instead:
-    BlastProgram blastProgram = BlastProgram::UNKNOWN;
+    //TODO dox
+    BlastProgramSelector<p> blastProgramSelector;
 
-    // the BlastTabularSpec as compile time parameter
-    typedef BlastTabularSpecTag<h> TBlastTabularSpec; // compile-time parameter
-    // if the upper is set to UNKNOWN, than this run-time variable is consulted instead:
-    BlastTabularSpec tabularSpec = BlastTabularSpec::UNKNOWN;
+
+    //TODO dox
+    BlastTabularSpecSelector<h> tabularSpec;
+//     // the BlastTabularSpec as compile time parameter
+//     typedef BlastTabularSpecTag<h> TBlastTabularSpec; // compile-time parameter
+//     // if the upper is set to UNKNOWN, than this run-time variable is consulted instead:
+//     BlastTabularSpec tabularSpec = BlastTabularSpec::UNKNOWN;
+
     // test_blast_misc.h also illustrates how this works
 
     /*!
@@ -138,7 +145,7 @@ struct BlastIOContext
     void _setDefaultVersionString()
     {
         clear(versionString);
-        append(versionString, _programTagToString(blastProgram, TBlastProgram()));
+        append(versionString, _programTagToString(blastProgramSelector));
         append(versionString, " 2.2.26");
         if (!legacyFormat)
             append(versionString, "+");
@@ -253,69 +260,7 @@ struct BlastIOContext
     BlastRecord<> bufRecord;
 };
 
-/*!
-* @fn BlastIOContext#getBlastProgram
-* @signature BlastProgram getBlastProgram(context);
-* @param[in] context  The @link BlastIOContext @endlink.
-* @brief return the @link BlastProgram @endlink set in the context.
-*
-* Developer note: this function is constexpr when the
-* context's compile-time parameter p != BlastProgram::UNKNOWN. Otherwise it is plain inline.
-*/
-
-template <typename TScore,
-          typename TString,
-          BlastProgram p,
-          BlastTabularSpec h>
-constexpr BlastProgram
-getBlastProgram(BlastIOContext<TScore, TString, p, h> const &)
-{
-    return p;
-}
-
-template <typename TScore,
-          typename TString,
-          BlastTabularSpec h>
-inline BlastProgram
-getBlastProgram(BlastIOContext<TScore, TString, BlastProgram::UNKNOWN, h> const & context)
-{
-    return context.blastProgram;
-}
-
-/*!
-* @fn BlastIOContext#setBlastProgram
-* @signature void setBlastProgram(context, blastProgram);
-* @param[in,out] context        The @link BlastIOContext @endlink.
-* @param[in]     blastProgram   The @link BlastProgram @endlink you wish to set.
-* @brief set the program type at run-time
-*
-* Note that this function will bail out, if the blastProgram was already set as a compile-time argument to the
-* context (i.e. it is not euqal to BlastProgram::UNKNOWN) and the value you wish to set is not the same as the one set
-* at compile time.
-*/
-
-template <typename TScore,
-          typename TString,
-          BlastProgram p,
-          BlastTabularSpec h>
-inline void
-setBlastProgram(BlastIOContext<TScore, TString, p, h> &, BlastProgram const _p)
-{
-    if (p != _p)
-        SEQAN_FAIL("ERROR: Tried to set blastProgram on context, but was already defined at compile time (and set to a "
-        "different value!");
-}
-
-template <typename TScore,
-          typename TString,
-          BlastTabularSpec h>
-inline void
-setBlastProgram(BlastIOContext<TScore, TString, BlastProgram::UNKNOWN, h> & context, BlastProgram const p)
-{
-    context.blastProgram = p;
-}
-
-/*!
+/*
 * @fn BlastIOContext#getBlastTabularSpec
 * @signature BlastTabularSpec getBlastTabularSpec(context);
 * @param[in] context  The @link BlastIOContext @endlink.
@@ -325,26 +270,24 @@ setBlastProgram(BlastIOContext<TScore, TString, BlastProgram::UNKNOWN, h> & cont
 * context's compile-time parameter p != BlastTabularSpec::UNKNOWN. Otherwise it is plain inline.
 */
 
-template <typename TScore,
-          typename TString,
-          BlastProgram p,
-          BlastTabularSpec h>
-constexpr BlastTabularSpec
-getBlastTabularSpec(BlastIOContext<TScore, TString, p, h> const &)
-{
-    return h;
-}
+// template <typename TScore,
+//           BlastProgram p,
+//           BlastTabularSpec h>
+// constexpr BlastTabularSpec
+// getBlastTabularSpec(BlastIOContext<TScore, p, h> const &)
+// {
+//     return h;
+// }
+//
+// template <typename TScore,
+//           BlastProgram p>
+// inline BlastTabularSpec
+// getBlastTabularSpec(BlastIOContext<TScore, p, BlastTabularSpec::UNKNOWN> const & context)
+// {
+//     return context.tabularSpec;
+// }
 
-template <typename TScore,
-          typename TString,
-          BlastProgram p>
-inline BlastTabularSpec
-getBlastTabularSpec(BlastIOContext<TScore, TString, p, BlastTabularSpec::UNKNOWN> const & context)
-{
-    return context.tabularSpec;
-}
-
-/*!
+/*
 * @fn BlastIOContext#setBlastTabularSpec
 * @signature void setBlastTabularSpec(context, tabularSpec);
 * @param[in,out] context        The @link BlastIOContext @endlink.
@@ -356,27 +299,25 @@ getBlastTabularSpec(BlastIOContext<TScore, TString, p, BlastTabularSpec::UNKNOWN
 * at compile time.
 */
 
-template <typename TScore,
-          typename TString,
-          BlastProgram p,
-          BlastTabularSpec h>
-inline void
-setBlastTabularSpec(BlastIOContext<TScore, TString, p, h> &, BlastTabularSpec const _h)
-{
-    if (h != _h)
-        SEQAN_FAIL("ERROR: Tried to set tabularSpec on context, but was already defined at compile time (and set to a "
-        "different value!");
-}
-
-template <typename TScore,
-          typename TString,
-          BlastProgram p>
-inline void
-setBlastTabularSpec(BlastIOContext<TScore, TString, p, BlastTabularSpec::UNKNOWN> & context,
-                    BlastTabularSpec const h)
-{
-    context.tabularSpec = h;
-}
+// template <typename TScore,
+//           BlastProgram p,
+//           BlastTabularSpec h>
+// inline void
+// setBlastTabularSpec(BlastIOContext<TScore, p, h> &, BlastTabularSpec const _h)
+// {
+//     if (h != _h)
+//         SEQAN_FAIL("ERROR: Tried to set tabularSpec on context, but was already defined at compile time (and set to a "
+//         "different value!");
+// }
+//
+// template <typename TScore,
+//           BlastProgram p>
+// inline void
+// setBlastTabularSpec(BlastIOContext<TScore, p, BlastTabularSpec::UNKNOWN> & context,
+//                     BlastTabularSpec const h)
+// {
+//     context.tabularSpec = h;
+// }
 
 }
 

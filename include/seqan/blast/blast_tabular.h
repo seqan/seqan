@@ -146,7 +146,46 @@ enum class BlastTabularSpec : uint8_t
     UNKNOWN = 255,
 };
 
-/*!
+//TODO dox
+//TODO replace ::UNKNOWN with dynamic everywhere
+
+template <BlastTabularSpec _h>
+struct BlastTabularSpecSelector
+{
+    constexpr operator BlastTabularSpec() const
+    {
+        return _h;
+    }
+
+    BlastTabularSpecSelector operator=(BlastTabularSpec const h)
+    {
+        if (h != _h)
+            SEQAN_FAIL("ERROR: Tried to set blastProgram on context, but was already defined at compile time (and set "
+                       "to a different value!");
+        return *this;
+    }
+};
+
+template <>
+struct BlastTabularSpecSelector<BlastTabularSpec::UNKNOWN>
+{
+    BlastTabularSpec _runtimeValue = BlastTabularSpec::UNKNOWN;
+
+    operator BlastTabularSpec() const
+    {
+        return _runtimeValue;
+    }
+
+    BlastTabularSpecSelector operator=(BlastTabularSpec const h)
+    {
+        _runtimeValue = h;
+        return *this;
+    }
+};
+
+
+
+/*
  * @defgroup BlastTabularSpecTagGroup BlastTabularSpec Integral Constants
  * @brief Integral constants for @link BlastTabularSpec @endlink
  * TODO(h4nn3s): does this need to be publicly visible?
@@ -157,10 +196,10 @@ enum class BlastTabularSpec : uint8_t
  * using BlastTabularSpecTag = std::integral_constant<BlastTabularSpec, h>;
  *
  */
-template <BlastTabularSpec h>
-using BlastTabularSpecTag = std::integral_constant<BlastTabularSpec, h>;
+// template <BlastTabularSpec h>
+// using BlastTabularSpecTag = std::integral_constant<BlastTabularSpec, h>;
 
-/*!
+/*
  * @tag BlastTabularSpecTagGroup#BlastTabularSpecTagHeader
  * @brief Integral constant for @link BlastTabularSpec::HEADER @endlink
  *
@@ -170,9 +209,9 @@ using BlastTabularSpecTag = std::integral_constant<BlastTabularSpec, h>;
  * @tag BlastTabularSpecTagGroup#BlastTabularSpecTagUnkown
  * @brief Integral constant for @link BlastTabularSpec::UNKNOWN @endlink
  */
-typedef BlastTabularSpecTag<BlastTabularSpec::HEADER>     BlastTabularSpecTagHeader;
-typedef BlastTabularSpecTag<BlastTabularSpec::NO_HEADER>  BlastTabularSpecTagNoHeader;
-typedef BlastTabularSpecTag<BlastTabularSpec::UNKNOWN>    BlastTabularSpecTagUnkown;
+// typedef BlastTabularSpecTag<BlastTabularSpec::HEADER>     BlastTabularSpecTagHeader;
+// typedef BlastTabularSpecTag<BlastTabularSpec::NO_HEADER>  BlastTabularSpecTagNoHeader;
+// typedef BlastTabularSpecTag<BlastTabularSpec::UNKNOWN>    BlastTabularSpecTagUnkown;
 
 // ----------------------------------------------------------------------------
 // Class MagicHeader
