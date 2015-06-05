@@ -345,6 +345,7 @@ public:
         TBuffer         buffer;
         off_type        fileOfs;
         int             size;
+        unsigned        compressedSize;
 
         CriticalSection cs;
         Condition       readyEvent;
@@ -419,6 +420,7 @@ public:
                     // remember start offset (for tellg later)
                     job.fileOfs = streamBuf->serializer.fileOfs;
                     job.size = -1;
+                    job.compressedSize = 0;
 
                     // only load if not at EOF
                     if (job.fileOfs != -1)
@@ -462,7 +464,8 @@ public:
                             return;
                         }
 
-                        streamBuf->serializer.fileOfs += BGZF_BLOCK_HEADER_LENGTH + tailLen;
+                        job.compressedSize = BGZF_BLOCK_HEADER_LENGTH + tailLen;
+                        streamBuf->serializer.fileOfs += job.compressedSize;
                         job.ready = false;
 
                     eofSkip:
@@ -634,7 +637,10 @@ public:
                           this->gptr() + ofs,       // read position
                           this->egptr());           // end of buffer
 
-                    return pos_type((job.fileOfs << 16) + ((this->gptr() - &job.buffer[MAX_PUTBACK])));
+                    if (this->gptr() != this->egptr())
+                        return pos_type((job.fileOfs << 16) + ((this->gptr() - &job.buffer[MAX_PUTBACK])));
+                    else
+                        return pos_type((job.fileOfs + job.compressedSize) << 16);
                 }
 
             }
