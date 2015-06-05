@@ -47,22 +47,22 @@
 
 using namespace seqan;
 
-template <typename TNum,
-          typename std::enable_if<Is<NumberConcept<TNum>>::VALUE, int>::type = 0>
-inline void
-clear(TNum & num)
-{
-    num = 0;
-}
-
-template <typename TArg,
-          typename... TArgs>
-inline void
-clear(TArg & arg, TArgs & ... args)
-{
-    clear(arg);
-    clear(args...);
-}
+// template <typename TNum,
+//           typename std::enable_if<Is<NumberConcept<TNum>>::VALUE, int>::type = 0>
+// inline void
+// clear(TNum & num)
+// {
+//     num = 0;
+// }
+//
+// template <typename TArg,
+//           typename... TArgs>
+// inline void
+// clear(TArg & arg, TArgs & ... args)
+// {
+//     clear(arg);
+//     clear(args...);
+// }
 
 void _test_blast_read_tabular_match(std::string const & path,
                                     bool const defaults,

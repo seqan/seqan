@@ -62,7 +62,7 @@ namespace seqan
  *
  * @tparam TQId  Type of qId, defaults to std::string
  * @tparam TSId  Type of sId, defaults to std::string
- * @tparam TPos  Position type of the sequences, defaults to <tt>uint32_t</tt>
+ * @tparam TPos  Position type of the sequences, defaults to <tt>__uint32</tt>
  * @tparam TAlign Type of the @link Align @endlink member, defaults to
  * <tt>Align<CharString, ArrayGaps></tt>
  *
@@ -70,7 +70,7 @@ namespace seqan
 
 template <typename TQId = std::string,
           typename TSId = std::string,
-          typename TPos = uint32_t,
+          typename TPos = __uint32,
           typename TAlign = Align<std::string, ArrayGaps>>
 struct BlastMatch
 {
@@ -313,14 +313,14 @@ clear(BlastMatch<TQId, TSId, TPos, TAlign> & match)
 
  * @tparam TQId  Type of qId, defaults to std::string
  * @tparam TSId  Type of sId, defaults to std::string
- * @tparam TPos  Position type of the sequences, defaults to <tt>uint32_t</tt>
+ * @tparam TPos  Position type of the sequences, defaults to <tt>__uint32</tt>
  * @tparam TAlign Type of the @link Align @endlink member, defaults to
  * <tt>Align<CharString, ArrayGaps></tt>
  */
 
 template <typename TQId = std::string,
           typename TSId = std::string,
-          typename TPos = uint32_t,
+          typename TPos = __uint32,
           typename TAlign = Align<std::string, ArrayGaps>>
 struct BlastRecord
 {

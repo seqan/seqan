@@ -108,7 +108,7 @@ namespace seqan
  * Please note that you have specify the type of the context as a template parameter to BlastTabularIn, see the example
  * below.
  *
- * TODO example
+ * TODO example is outdated
  *
  * @see BlastRecord
  */
@@ -434,7 +434,7 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                     for (unsigned i = 2; (i < length(context._lineBuffer) && isdigit(context._lineBuffer[i])); ++i)
                         appendValue(context._stringBuffer, context._lineBuffer[i], Generous());
 
-                    uint64_t hits = lexicalCast<uint64_t>(context._stringBuffer);
+                    __uint64 hits = lexicalCast<__uint64>(context._stringBuffer);
 
                     if (hits)
                     {
@@ -1254,7 +1254,7 @@ readFooter(BlastIOContext<TScore, TConString, p, h> & context,
         it += 18; // skip "BLAST processed "
         readUntil(context._stringBuffer, it,  IsBlank());
 
-        uint64_t numRecords = lexicalCast<uint64_t>(context._stringBuffer);
+        __uint64 numRecords = lexicalCast<__uint64>(context._stringBuffer);
 
         clear(context.conformancyErrors);
         if (context.numberOfRecords < numRecords)

@@ -172,16 +172,16 @@ struct BlastIOContext
     TString         dbName;
 
     /*!
-     * @var uint64_t BlastIOContext::dbTotalLength;
+     * @var __uint64 BlastIOContext::dbTotalLength;
      * @brief Summed up sequence length of the database.
      */
-    uint64_t        dbTotalLength = 0u;
+    __uint64        dbTotalLength = 0u;
 
     /*!
-     * @var uint64_t BlastIOContext::dbNumberOfSeqs;
+     * @var __uint64 BlastIOContext::dbNumberOfSeqs;
      * @brief Number of sequences in the database.
      */
-    uint64_t        dbNumberOfSeqs = 0u;
+    __uint64        dbNumberOfSeqs = 0u;
 
     /*!
      * @var StringSet<TString> BlastIOContext::otherLines;
@@ -239,10 +239,10 @@ struct BlastIOContext
 
     // TODO prefix the below with _ ?
     // counted internally for TabularFooter
-    uint64_t numberOfRecords = 0;
+    __uint64 numberOfRecords = 0;
 
     // cache for length adjustments in blast statistics
-    std::unordered_map<uint64_t, uint64_t> _cachedLengthAdjustments;
+    std::unordered_map<__uint64, __uint64> _cachedLengthAdjustments;
 
     // io-buffers
     TString _lineBuffer; // holds the current line
