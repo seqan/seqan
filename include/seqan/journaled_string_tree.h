@@ -56,13 +56,18 @@
 #include <seqan/journaled_string_tree/delta_map_entry.h>
 #include <seqan/journaled_string_tree/delta_map.h>
 #include <seqan/journaled_string_tree/delta_map_iterator.h>
+#include <seqan/journaled_string_tree/delta_map_wrapper.h>
 
 // ===========================================================================
 // Journaled String Tree.
 // ===========================================================================
 
+#include <seqan/journaled_string_tree/observable.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_base.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_sequence_buffer.h>
+#include <seqan/journaled_string_tree/journaled_string_tree_traversal_node.h>
+#include <seqan/journaled_string_tree/journaled_string_tree_traversor.h>
+#include <seqan/journaled_string_tree/journaled_string_tree_traversor_observable.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_impl.h>
 
 // ===========================================================================

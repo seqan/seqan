@@ -48,6 +48,51 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Tag Traversal Tags
+// ----------------------------------------------------------------------------
+
+struct ForwardTraversal_;
+typedef Tag<ForwardTraversal_> ForwardTraversal;
+
+struct BidirectionalTraversal_;
+typedef Tag<BidirectionalTraversal_> BidirectionalTraversal;
+
+// ----------------------------------------------------------------------------
+// Tag JSTree
+// ----------------------------------------------------------------------------
+
+template <typename TSpec = ForwardTraversal>
+struct JSTree;
+
+// ----------------------------------------------------------------------------
+// Tag JstBufferMember
+// ----------------------------------------------------------------------------
+
+struct JstBufferMember_;
+typedef Tag<JstBufferMember_> JstBufferMember;
+
+// ----------------------------------------------------------------------------
+// Tag JstDeltaMapWrapperMember
+// ----------------------------------------------------------------------------
+
+struct JstDeltaMapWrapperMember_;
+typedef Tag<JstDeltaMapWrapperMember_> JstDeltaMapWrapperMember;
+
+// ----------------------------------------------------------------------------
+// Tag PushEvent
+// ----------------------------------------------------------------------------
+
+struct PushEvent_;
+typedef Tag<PushEvent_> PushEvent;
+
+// ----------------------------------------------------------------------------
+// Tag PopEvent
+// ----------------------------------------------------------------------------
+
+struct PopEvent_;
+typedef Tag<PopEvent_> PopEvent;
+
+// ----------------------------------------------------------------------------
 // Class DefaultJstConfig
 // ----------------------------------------------------------------------------
 
@@ -80,9 +125,15 @@ struct DefaultJstConfig
     typedef Pair<TDelValue, TInsValue>      TSVValue;   // Value type of structural variants (combination of deletion and insertion).
 };
 
+template <typename TContainer, typename TSpec>
+class TraversorImpl;
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+template <typename TContainer, typename TSpec>
+struct Traversor;
 
 // ============================================================================
 // Functions
