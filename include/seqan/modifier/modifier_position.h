@@ -477,7 +477,7 @@ struct PosLess_ : public std::binary_function<TPos, TPos, bool>
 // ----------------------------------------------------------------------------
 
 template <typename THost, typename TPositions, typename TBinaryPredicate, typename TParallelTag>
-inline void sort(ModifiedString<THost, ModPos<TPositions> > & me, TBinaryPredicate p, Tag<TParallelTag> const & tag)
+inline void sort(ModifiedString<THost, ModPos<TPositions> > SEQAN_FORWARD_ARG me, TBinaryPredicate p, Tag<TParallelTag> const & tag)
 {
     typedef typename Position<ModifiedString<THost, ModPos<TPositions> > >::Type TPos;
 
@@ -485,7 +485,23 @@ inline void sort(ModifiedString<THost, ModPos<TPositions> > & me, TBinaryPredica
 }
 
 template <typename THost, typename TPositions, typename TParallelTag>
-inline void sort(ModifiedString<THost, ModPos<TPositions> > & me, Tag<TParallelTag> const & tag)
+inline void sort(ModifiedString<THost, ModPos<TPositions> > SEQAN_FORWARD_ARG me, Tag<TParallelTag> const & tag)
+{
+    typedef typename Position<ModifiedString<THost, ModPos<TPositions> > >::Type TPos;
+
+    sort(cargo(me), PosLess_<THost, TPos>(host(me)), tag);
+}
+
+template <typename THost, typename TPositions, typename TBinaryPredicate, typename TParallelTag>
+inline void sort(ModifiedString<THost, ModPos<TPositions> > const & me, TBinaryPredicate p, Tag<TParallelTag> const & tag)
+{
+    typedef typename Position<ModifiedString<THost, ModPos<TPositions> > >::Type TPos;
+
+    sort(cargo(me), PosLess_<THost, TPos, TBinaryPredicate>(host(me), p), tag);
+}
+
+template <typename THost, typename TPositions, typename TParallelTag>
+inline void sort(ModifiedString<THost, ModPos<TPositions> > const & me, Tag<TParallelTag> const & tag)
 {
     typedef typename Position<ModifiedString<THost, ModPos<TPositions> > >::Type TPos;
 
