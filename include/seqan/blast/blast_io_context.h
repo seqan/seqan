@@ -44,6 +44,7 @@ namespace seqan
 template <typename TScore>
 struct BlastScoringScheme;
 
+//TODO document or make private
 template <typename TContext>
 struct BlastIOContextStringType
 {
@@ -54,19 +55,18 @@ struct BlastIOContextStringType
 /*!
  * @class BlastIOContext
  * @headerfile <seqan/blast.h>
- * @signature template <typename TScore_ = Blosum62, typename TString = std::string,
- *           BlastProgram p = BlastProgram::UNKNOWN, BlastTabularSpec h = BlastTabularSpec::UNKNOWN>
+ * @signature template <typename TScore_ = Blosum62,
+ * BlastProgram p = BlastProgram::UNKNOWN, BlastTabularSpec h = BlastTabularSpec::UNKNOWN>
  * struct BlastIOContext { ... };
  *
  * @brief An object that holds file global information and buffers for BlastIO
  *
  * @tparam TScore   Type of the @link Score @endlink object used.
- * @tparam TString  Type of the @link StringConcept @endlink used for members and buffers.
  * @tparam p        @link BlastProgram @endlink as compile-time parameter.
  * @tparam h        @link BlastTabularSpec @endlink as compile-time parameter.
  *
- * This needs to be passed to most read*(), skip*() and write*() functions as
- * a parameter. Before writing, some of the context's members should be set; after reading it will contain
+ * This is a part of the Blast formatted files. Before writing, some of the context's members should be set; after
+ * reading it will contain
  * all information from the file that did not belong to a @link BlastRecord @endlink, e.g. the name of the database.
  * It also contains buffers for internal use.
  *
@@ -75,9 +75,8 @@ struct BlastIOContextStringType
  * this, except when restarting IO on a different file.
  *
  * To speed-up file writing slightly you can set the value template parameters <tt>p</tt> and/or <tt>h</tt> to something
- * other than ::UNKNOWN at compile-time (e.g. if you know that you will be printing only BLASTX), but then you won't
- * be able to modify these values with @link BlastIOContext#setBlastProgram @endlink and
- * @link BlastIOContext#setBlastTabularSpec @endlink at run-time. For file reading this also possible, but usually the
+ * other than ::DYNAMIC at compile-time (e.g. if you know that you will be printing only BLASTX), but then you won't
+ * be able to modify these values at run-time. For file reading this is also possible, but usually the
  * added flexibility of automatically detecting these values is prefferable.
  *
  * @section Example
@@ -92,7 +91,7 @@ struct BlastIOContextStringType
  * setScoreGapExtend(context(outfile).scoringScheme, -1);
  *
  * // protein vs protein search is BLASTP
- * context(outfile).blastProgram BlastProgram::BLASTP);
+ * context(outfile).blastProgram = BlastProgram::BLASTP;
  *
  * // set the database properties in the context
  * context(outfile).dbName = "The Foo Database";
@@ -104,17 +103,29 @@ struct BlastIOContextStringType
  */
 
 template <typename TScore_ = Blosum62,
-          BlastProgram p = BlastProgram::UNKNOWN,
-          BlastTabularSpec h = BlastTabularSpec::UNKNOWN>
+          BlastProgram p = BlastProgram::DYNAMIC,
+          BlastTabularSpec h = BlastTabularSpec::DYNAMIC>
 struct BlastIOContext
 {
     typedef TScore_ TScore;
     typedef typename BlastIOContextStringType<BlastIOContext>::Type TString;
 
-    //TODO dox
+    /*!
+     * @var BlastProgramSelector BlastIOContext::blastProgram;
+     * @brief The @link BlastProgram @endlink.
+     *
+     * Behaves exactly like an enum of type @link BlastProgram @endlink, unless the second template parameter was
+     * specified to make this a compile-time constant. See @link BlastProgramSelector @endlink for more information.
+     */
     BlastProgramSelector<p> blastProgram;
 
-    //TODO dox
+    /*!
+     * @var BlastTabularSpecSelector BlastIOContext::tabularSpec;
+     * @brief The @link BlastTabularSpec @endlink.
+     *
+     * Behaves exactly like an enum of type @link BlastTabularSpec @endlink, unless the third template parameter was
+     * specified to make this a compile-time constant. See @link BlastTabularSpecSelector @endlink for more information.
+     */
     BlastTabularSpecSelector<h> tabularSpec;
 
     /*!
@@ -165,7 +176,7 @@ struct BlastIOContext
     bool legacyFormat = false;
 
     /*!
-     * @var TDbName BlastIOContext::dbName;
+     * @var TString BlastIOContext::dbName;
      * @brief Name of the dabase or path to the file.
      */
     TString         dbName;

@@ -57,7 +57,7 @@ namespace seqan {
  * @signature enum class BlastProgram : __uint8 { ... };
  *
  * @headerfile <seqan/blast.h>
- * @see BlastProgramTag
+ * @see BlastProgramSelector
  *
  * @val BlastProgram BlastProgram::BLASTN
  * @brief Nucleotide Query VS Nucleotide Subject
@@ -75,7 +75,11 @@ namespace seqan {
  * @brief translated Nucleotide Query VS translated Nucleotide Subject
  *
  * @val BlastProgram BlastProgram::UNKNOWN
- * @brief Unkown type. Used internally and to signify that the type could not be inferred from the file.
+ * @brief Unkown type. Used to signify that the type could not be inferred from the file.
+ *
+ * @val BlastProgram BlastProgram::DYNAMIC
+ * @brief This can only be used when defining a @link BlastProgramSelector @endlink
+ *
  */
 enum class BlastProgram : __uint8
 {
@@ -84,13 +88,47 @@ enum class BlastProgram : __uint8
     BLASTX,         // TRANSLATED   NUCL VS             PROT
     TBLASTN,        //              PROT VS TRANSLATED  NUCL
     TBLASTX,        // TRANSLATED   NUCL VS TRANSLATED  NUCL
-    DYNAMIC=254,
-    UNKNOWN=255
+    UNKNOWN=254,
+    DYNAMIC=255
 };
 
-//TODO dox
-//TODO replace ::UNKNOWN with dynamic everywhere
-
+/*!
+ * @class BlastProgramSelector
+ * @brief A datatype that can act as either a @link BlastProgram @endlink or as an constexpr integral constant
+ * thereof.
+ *
+ * @signature template <BlastProgram p> struct BlastProgramSelector { ... };
+ * @headerfile <seqan/blast.h>
+ *
+ * This is a proxy datatype that enables compile-time optimizations through constexpressions iff the value
+ * is known at compile time. You will rarely need to instantiate objects of this type yourself, but they
+ * are used in the @link BlastIOContext @endlink.
+ *
+ * The interface functions work on regular enum values of @link BlastProgram @endlink, as well, but are
+ * gathered here for convenience.
+ *
+ * Please note that the default value for <tt>BlastProgramSelector<BlastProgram::DYNAMIC></tt> is
+ * <tt>BlastProgram::UNKNOWN</tt>, not <tt>BlastProgram::DYNAMIC</tt>.
+ *
+ * @subsection Example
+ *
+ * mutable variable:
+ * @code{.cpp}
+ * BlastProgramSelector<BlastProgram::DYNAMIC> myProgram = BlastProgram::BLASTN;
+ * // same as:
+ * // BlastProgram myProgram = BlastProgram::BLASTN;
+ *
+ * SEQAN_ASSERT(myProgram == BlastProgram::BLASTN); // assertion is checked at run-time
+ * myProgram = BlastProgram::BLASTP; // works without problems
+ * @endcode
+ *
+ * compile time integral constant:
+ * @code{.cpp}
+ * BlastProgramSelector<BlastProgram::BLASTN> myProgram;
+ * static_assert(myProgram == BlastProgram::BLASTN, ""); // assertion is checked at compile time
+ * myProgram = BlastProgram::BLASTP; // would fail, because value is fixed (and different)
+ * @endcode
+ */
 template <BlastProgram _p>
 struct BlastProgramSelector
 {
@@ -103,13 +141,13 @@ struct BlastProgramSelector
     {
         if (p != _p)
             SEQAN_FAIL("ERROR: Tried to set blastProgram on context, but was already defined at compile time (and set to a "
-                       "different value!");
+                       "different value)!");
         return *this;
     }
 };
 
 template <>
-struct BlastProgramSelector<BlastProgram::UNKNOWN>
+struct BlastProgramSelector<BlastProgram::DYNAMIC>
 {
     BlastProgram _runtimeValue = BlastProgram::UNKNOWN;
 
@@ -134,21 +172,9 @@ struct BlastProgramSelector<BlastProgram::UNKNOWN>
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastProgramTag#qHasRevComp
+ * @fn BlastProgramSelector#qHasRevComp
  * @brief Whether the reverse complement of the <b>query</b> sequence(s) is searched with the given BlastProgram
  * @signature constexpr bool qHasRevComp(BlastProgram const p);
- * template <BlastProgram p>
- * constexpr bool qHasRevComp(BlastProgramTag<p> const &);
- * template <BlastProgram p>
- * constexpr bool qHasRevComp(BlastProgram const _p, BlastProgramTag<p> const &);
- *
- * @section Remarks
- *
- * This function can be used to check whether the defined BlastProgam implies the existence/creation/... of a
- * reverse complement sequence of the query sequence.
- *
- * If both a tag and an enum are specified, the tag is given preference, unless it is set to
- * @link BlastProgram::UNKNOWN @endlink.
  *
  * @return false for @link BlastProgram::BLASTP @endlink and @link BlastProgram::TBLASTN @endlink
  * @return true otherwise
@@ -166,21 +192,9 @@ qHasRevComp(BlastProgram const p)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastProgramTag#qIsTranslated
+ * @fn BlastProgramSelector#qIsTranslated
  * @brief Whether the <b>query</b> sequence is translated in the given BlastProgram
  * @signature constexpr bool qIsTranslated(BlastProgram const p);
- * template <BlastProgram p>
- * constexpr bool qIsTranslated(BlastProgramTag<p> const &);
- * template <BlastProgram p>
- * constexpr bool qIsTranslated(BlastProgram const _p, BlastProgramTag<p> const &);
- *
- * @section Remarks
- *
- * This function can be used to check whether the defined BlastProgam implies the
- * nucleotide to aminoacid translation of the query sequence.
- *
- * If both a tag and an enum are specified, the tag is given preference, unless it is set to
- * @link BlastProgram::UNKNOWN @endlink.
  *
  * @return true for @link BlastProgram::BLASTX @endlink and @link BlastProgram::TBLASTX @endlink
  * @return false otherwise
@@ -198,18 +212,9 @@ qIsTranslated(BlastProgram const p)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastProgramTag#qNumFrames
+ * @fn BlastProgramSelector#qNumFrames
  * @brief The number of frames per <b>query</b> sequence implied by the given BlastProgram
  * @signature constexpr __uint8 qNumFrames(BlastProgram const p);
- * template <BlastProgram p>
- * constexpr __uint8 qNumFrames(BlastProgramTag<p> const &);
- * template <BlastProgram p>
- * constexpr __uint8 qNumFrames(BlastProgram const _p, BlastProgramTag<p> const &);
- *
- * @section Remarks
- *
- * If both a tag and an enum are specified, the tag is given preference, unless it is set to
- * @link BlastProgram::UNKNOWN @endlink.
  *
  * @return 6 for @link BlastProgram::BLASTX @endlink and @link BlastProgram::TBLASTX @endlink
  * @return 2 for @link BlastProgram::BLASTN @endlink
@@ -220,11 +225,7 @@ qIsTranslated(BlastProgram const p)
 constexpr __uint8
 qNumFrames(BlastProgram p)
 {
-    return (qIsTranslated(p)
-            ? 6
-            : (qHasRevComp(p)
-                ? 2
-                : 1));
+    return (qIsTranslated(p) ? 6 : (qHasRevComp(p) ? 2 : 1));
 }
 
 // ----------------------------------------------------------------------------
@@ -232,21 +233,9 @@ qNumFrames(BlastProgram p)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastProgramTag#sHasRevComp
+ * @fn BlastProgramSelector#sHasRevComp
  * @brief Whether the reverse complement of the <b>subject</b> sequence(s) is searched with the given BlastProgram
  * @signature constexpr bool sHasRevComp(BlastProgram const p);
- * template <BlastProgram p>
- * constexpr bool sHasRevComp(BlastProgramTag<p> const &);
- * template <BlastProgram p>
- * constexpr bool sHasRevComp(BlastProgram const _p, BlastProgramTag<p> const &);
- *
- * @section Remarks
- *
- * This function can be used to check whether the defined BlastProgam implies the existence/creation/... of a
- * reverse complement sequence of the subject sequence.
- *
- * If both a tag and an enum are specified, the tag is given preference, unless it is set to
- * @link BlastProgram::UNKNOWN @endlink.
  *
  * @return true for @link BlastProgram::TBLASTX @endlink and @link BlastProgram::TBLASTN @endlink
  * @return false otherwise
@@ -264,21 +253,9 @@ sHasRevComp(BlastProgram const p)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastProgramTag#sIsTranslated
+ * @fn BlastProgramSelector#sIsTranslated
  * @brief Whether the <b>subject</b> sequence is translated in the given BlastProgram
  * @signature constexpr bool sIsTranslated(BlastProgram const p);
- * template <BlastProgram p>
- * constexpr bool sIsTranslated(BlastProgramTag<p> const &);
- * template <BlastProgram p>
- * constexpr bool sIsTranslated(BlastProgram const _p, BlastProgramTag<p> const &);
- *
- * @section Remarks
- *
- * This function can be used to check whether the defined BlastProgam implies the
- * nucleotide to aminoacid translation of the subject sequence.
- *
- * If both a tag and an enum are specified, the tag is given preference, unless it is set to
- * @link BlastProgram::UNKNOWN @endlink.
  *
  * @return true for @link BlastProgram::TBLASTX @endlink and @link BlastProgram::TBLASTN @endlink
  * @return false otherwise
@@ -296,18 +273,9 @@ sIsTranslated(BlastProgram const p)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastProgramTag#sNumFrames
+ * @fn BlastProgramSelector#sNumFrames
  * @brief The number of frames per <b>query</b> sequence implied by the given BlastProgram
  * @signature constexpr __uint8 sNumFrames(BlastProgram const p);
- * template <BlastProgram p>
- * constexpr __uint8 sNumFrames(BlastProgramTag<p> const &);
- * template <BlastProgram p>
- * constexpr __uint8 sNumFrames(BlastProgram const _p, BlastProgramTag<p> const &);
- *
- * @section Remarks
- *
- * If both a tag and an enum are specified, the tag is given preference, unless it is set to
- * @link BlastProgram::UNKNOWN @endlink.
  *
  * @return 6 for @link BlastProgram::TBLASTX @endlink and @link BlastProgram::TBLASTN @endlink
  * @return 1 otherwise
@@ -317,11 +285,7 @@ sIsTranslated(BlastProgram const p)
 constexpr __uint8
 sNumFrames(BlastProgram p)
 {
-    return (sIsTranslated(p)
-            ? 6
-            : (sHasRevComp(p)
-                ? 2
-                : 1));
+    return (sIsTranslated(p) ? 6 : (sHasRevComp(p) ? 2 : 1));
 }
 
 // ----------------------------------------------------------------------------
@@ -455,21 +419,6 @@ _untranslateSPositions(TPos & effectiveStart,
          _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, True(), False());
      else
         _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, False(), False());
-}
-
-// ----------------------------------------------------------------------------
-// Function _firstOcc
-// ----------------------------------------------------------------------------
-
-template <typename TString>
-inline typename Size<TString>::Type
-_firstOcc(TString const & str, typename Value<TString>::Type const & val)
-{
-    typedef typename Size<TString>::Type S;
-    for (S s = 0; s < length(str); ++s)
-        if (value(str, s) == val)
-            return s;
-    return length(str);
 }
 
 } // namespace seqan

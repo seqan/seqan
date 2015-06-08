@@ -335,8 +335,8 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
 
     do
     {
-        if (std::regex_search(seqan::begin(context._lineBuffer),
-                              seqan::end(context._lineBuffer),
+        if (std::regex_search(begin(context._lineBuffer, Standard()),
+                              end(context._lineBuffer, Standard()),
                               std::regex("^# T?BLAST")))
         {
             // last line of file
@@ -349,10 +349,12 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
             {
                 assign(context.versionString, suffix(context._lineBuffer, 2));
                 context.blastProgram = _programStringToTag(prefix(context.versionString,
-                                                                  _firstOcc(context.versionString, ' ')));
+                                                                  std::find(begin(context.versionString, Standard()),
+                                                                            end(context.versionString, Standard()),
+                                                                            ' ')));
 
-                context.legacyFormat = !std::regex_search(seqan::begin(context.versionString),
-                                                          seqan::end(context.versionString),
+                context.legacyFormat = !std::regex_search(begin(context.versionString, Standard()),
+                                                          end(context.versionString, Standard()),
                                                           std::regex("\\d\\.\\d\\.\\d{1,2}\\+"));
             }
         }
@@ -374,9 +376,9 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
             // make sure target is big enough
             resize(context._stringBuffer, length(context._lineBuffer) - 10);
             // use escape character as placeholder for replacement since strSplit only handles single characters
-            std::regex_replace(seqan::begin(context._stringBuffer),
-                               seqan::begin(context._lineBuffer) + 10, // skip "# Fields:"
-                               seqan::end(context._lineBuffer),
+            std::regex_replace(begin(context._stringBuffer, Standard()),
+                               begin(context._lineBuffer, Standard()) + 10, // skip "# Fields:"
+                               end(context._lineBuffer, Standard()),
                                std::regex(", "),
                                "\x7F");
             // shrink back down to actual size (replacing two letters with one makes string shorter!)
@@ -461,23 +463,15 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
 
         goNextLine(context, iter, BlastTabular());
 
-    } while (startsWith(context._lineBuffer, "#") &&                  // still on record header
-             !std::regex_search(seqan::begin(context._lineBuffer),    // start of next record header
-                                seqan::end(context._lineBuffer),
+    } while (startsWith(context._lineBuffer, "#") &&                   // still on record header
+             !std::regex_search(begin(context._lineBuffer, Standard()),// start of next record header
+                                end(context._lineBuffer, Standard()),
                                 std::regex("^# T?BLAST")));
 
     if (context.blastProgram == BlastProgram::UNKNOWN)
         appendValue(context.conformancyErrors,
                     "Type of BlastProgram could not be determined from header, you are advised to look "
                     "at context.versionString and context.otherLines.");
-    else if ((p != BlastProgram::UNKNOWN) && (context.blastProgram != p))
-        appendValue(context.conformancyErrors,
-                    std::string("You fixed the BlastProgramType to ") +
-                    std::string(_programTagToString(p)) +
-                    std::string (" at compile-time, but the type ") +
-                    std::string(_programTagToString(context.blastProgram)) +
-                    std::string(" was detected in the file!"));
-    //TODO adapt the above
 
     if (queryLinePresent != 1)
         appendValue(context.conformancyErrors, "No or multiple query lines present.");
@@ -499,7 +493,6 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
 
     if (length(context.otherLines) != 0)
         appendValue(context.conformancyErrors, "Unexpected lines present, see context.otherLines.");
-
 }
 
 template <typename TQId,
@@ -992,7 +985,7 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
  *
  * @subsection Record header
  *
- * The @link BlastRecord::qId @endlink member of the record is read from the header and  the
+ * The @link BlastRecord::qId @endlink member of the record is read from the header and the
  * @link BlastRecord::matches @endlink are resized to the expected number of matches succeeding the header.
  *
  * This function also sets many properties of the @link BlastIOContext @endlink, including these members:
@@ -1009,8 +1002,7 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
  * legacyFormat.</li>
  *
  * It also sets the blast program run-time parameter of the context depending on the information found in the header. If
- * the compile time parameter was set on the context and they are different this will result in a conformancyError.
- * Otherwise you can read the value with @link BlastIOContext#getBlastProgram @endlink.
+ * the compile time parameter was set on the context and they are different this will result in a critical error.
  *
  * Please note that for @link BlastIOContext::legacyFormat @endlink the @link BlastIOContext::fields @endlink member
  * is always ignored, however @link BlastIOContext::fieldsAsStrings @endlink is still read from the header, in case

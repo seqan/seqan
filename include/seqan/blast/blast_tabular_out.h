@@ -270,7 +270,9 @@ _writeField(TFwdIterator & s,
              // STD is handled from the calling function
             break;
         case BlastMatchField<>::Enum::Q_SEQ_ID:
-            write(s, prefix(match.qId, _firstOcc(match.qId, ' ')));
+            write(s, prefix(match.qId, std::find(begin(match.qId, Standard()),
+                                                 end(match.qId, Standard()),
+                                                 ' ')));
             break;
 //         case ENUM::Q_GI: write(s,  * ); break;
 //         case ENUM::Q_ACC: write(s,  * ); break;
@@ -279,7 +281,9 @@ _writeField(TFwdIterator & s,
             write(s, match.qLength);
             break;
         case BlastMatchField<>::Enum::S_SEQ_ID:
-            write(s, prefix(match.sId, _firstOcc(match.sId, ' ')));
+            write(s, prefix(match.sId, std::find(begin(match.sId, Standard()),
+                                                 end(match.sId, Standard()),
+                                                 ' ')));
             break;
 //         case ENUM::S_ALL_SEQ_ID: write(s,  * ); break;
 //         case ENUM::S_GI: write(s,  * ); break;
@@ -570,7 +574,7 @@ writeMatch(TFwdIterator & stream,
  * @section Remarks
  *
  * This function first writes the header of the record and then writes match lines for every match in it. If the
- * context's tabularSpec (@link BlastIOContext#getBlastTabularSpec @endlink) is set to BlastTabularSpec::NO_HEADER, no
+ * context's @link BlastIOContext::tabularSpec @endlink is set to BlastTabularSpec::NO_HEADER, no
  * header will be written and this function immediately prints the match lines.
  *
  * @subsection Record header
@@ -596,7 +600,7 @@ writeMatch(TFwdIterator & stream,
  * to be the back, not the end, i.e. last one included in a match/sequence/...,
  * not the one behind it (as SeqAn does); this functions corrects for both of
  * these bahaviours, so you don't have to. Additionally, based on the context's
- * @link BlastProgram @endlink, positions are transformed back to DNA space, if
+ * @link BlastIOContext::blastProgram @endlink, positions are transformed back to DNA space, if
  * translation has taken place.
  * Please note also that query and subject IDs are truncated at the first space
  * character in NCBI BLAST, this is also done by default here.

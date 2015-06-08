@@ -138,16 +138,50 @@ typedef Tag<BlastTabular_> BlastTabular;
  *
  * @val BlastTabularSpec BlastTabularSpec::UNKNOWN
  * @brief not defined or not known
+ *
+ * @val BlastTabularSpec BlastTabularSpec::DYNAMIC
+ * @brief This can only be used when defining a @link BlastTabularSpecSelector @endlink
+ *
  */
 enum class BlastTabularSpec : uint8_t
 {
     NO_HEADER = 0,
     HEADER = 1,
-    UNKNOWN = 255,
+    UNKNOWN = 254,
+    DYNAMIC = 255
 };
 
-//TODO dox
-//TODO replace ::UNKNOWN with dynamic everywhere
+/*!
+ * @class BlastTabularSpecSelector
+ * @brief A datatype that can act as either a @link BlastTabularSpec @endlink or as an constexpr integral constant
+ * thereof.
+ *
+ * @signature template <BlastTabularSpec h> struct BlastTabularSpecSelector { ... };
+ * @headerfile <seqan/blast.h>
+ *
+ * This is a proxy datatype that enables compile-time optimizations through constexpressions iff the value
+ * is known at compile time. You will rarely need to instantiate objects of this type yourself, but they
+ * are used in the @link BlastIOContext @endlink.
+ *
+ * @subsection Example
+ *
+ * mutable variable:
+ * @code{.cpp}
+ * BlastTabularSpecSelector<BlastTabularSpec::DYNAMIC> myProgram = BlastTabularSpec::HEADER;
+ * // same as
+ * // BlastTabularSpec myProgram = BlastTabularSpec::HEADER;
+ *
+ * SEQAN_ASSERT(myProgram == BlastTabularSpec::HEADER); // assertion is checked at run-time
+ * myProgram = BlastTabularSpec::NO_HEADER; // works without problems
+ * @endcode
+ *
+ * compile time integral constant:
+ * @code{.cpp}
+ * BlastTabularSpecSelector<BlastTabularSpec::HEADER> myProgram;
+ * static_assert(myProgram == BlastTabularSpec::HEADER, ""); // assertion is checked at compile time
+ * myProgram = BlastTabularSpec::NO_HEADER; // would fail, because value is fixed
+ * @endcode
+ */
 
 template <BlastTabularSpec _h>
 struct BlastTabularSpecSelector
@@ -160,14 +194,14 @@ struct BlastTabularSpecSelector
     BlastTabularSpecSelector operator=(BlastTabularSpec const h)
     {
         if (h != _h)
-            SEQAN_FAIL("ERROR: Tried to set blastProgram on context, but was already defined at compile time (and set "
-                       "to a different value!");
+            SEQAN_FAIL("ERROR: Tried to set tabularSpec on context, but was already defined at compile time (and set "
+                       "to a different value)!");
         return *this;
     }
 };
 
 template <>
-struct BlastTabularSpecSelector<BlastTabularSpec::UNKNOWN>
+struct BlastTabularSpecSelector<BlastTabularSpec::DYNAMIC>
 {
     BlastTabularSpec _runtimeValue = BlastTabularSpec::UNKNOWN;
 
