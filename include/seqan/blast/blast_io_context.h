@@ -51,7 +51,6 @@ struct BlastIOContextStringType
     typedef std::string Type;
 };
 
-
 /*!
  * @class BlastIOContext
  * @headerfile <seqan/blast.h>
@@ -84,7 +83,7 @@ struct BlastIOContextStringType
  * Here as an example of which members to set on a context, before using it for Output:
  * @code{.cpp}
  * typedef BlastIOContext<Blosum62> TContext;
- * BlastReportOut<TContext> outfile("/tmp/output.blast");
+ * BlastReportFileOut<TContext> outfile("/tmp/output.blast");
  *
  * // set gap parameters in blast notation
  * setScoreGapOpenBlast(context(outfile).scoringScheme, -11);
@@ -99,7 +98,7 @@ struct BlastIOContextStringType
  * context(outfile).dbNumberOfSeqs = length(subjects);
  * @endcode
  *
- * See @link BlastTabularOut @endlink and @link BlastReportOut @endlink for more complete examples of usage.
+ * See @link BlastTabularFileOut @endlink and @link BlastReportFileOut @endlink for more complete examples of usage.
  */
 
 template <typename TScore_ = Blosum62,
@@ -138,10 +137,10 @@ struct BlastIOContext
      * @var TString BlastIOContext::versionString;
      * @brief The blast version string.
      *
-     * Used when writing @link BlastReportOut @endlink and @link BlastTabularOut @endlink if the context's tabularSpec
+     * Used when writing @link BlastReportFileOut @endlink and @link BlastTabularFileOut @endlink if the context's tabularSpec
      * is set to BlastTabularSpec::HEADER. Defaults to a version string based on the emulated
      * blast version and the current SeqAn version.
-     * When reading from @link BlastTabularOut @endlink the corresponding line is extracted from the header
+     * When reading from @link BlastTabularFileOut @endlink the corresponding line is extracted from the header
      * (if present).
      */
     TString versionString;
@@ -165,12 +164,12 @@ struct BlastIOContext
      * @var bool BlastIOContext::legacyFormat;
      * @brief Whether to use the legacy format (only @link BlastTabular @endlink).
      *
-     * Setting this flag when writing to a @link BlastTabularOut @endlink (that has BlastTabularSpec::HEADER set) will
+     * Setting this flag when writing to a @link BlastTabularFileOut @endlink (that has BlastTabularSpec::HEADER set) will
      * result in the legacy header being written. This is the slightly different header used by C-only versions of blast
      * (<tt>blastall</tt>-binary). In the legacy format the mismatches column also includes all gaps in addition to
      * mismatches. Note that many other features like custom fields are not supported in this format.
      *
-     * When reading @link BlastTabularOut @endlink this flag will automatically be set based on the header (if a
+     * When reading @link BlastTabularFileOut @endlink this flag will automatically be set based on the header (if a
      * header exists).
      */
     bool legacyFormat = false;
@@ -196,7 +195,7 @@ struct BlastIOContext
     /*!
      * @var StringSet<TString> BlastIOContext::otherLines;
      * @brief A StringSet that will contain all comment or header lines that
-     * could not be interpreted in another way (only @link BlastTabularIn @endlink).
+     * could not be interpreted in another way (only @link BlastTabularFileIn @endlink).
      */
     StringSet<TString, Owner<ConcatDirect<>>> otherLines;
 
@@ -223,9 +222,9 @@ struct BlastIOContext
 
     /*!
      * @var bool BlastIOContext::ignoreFieldsInHeader;
-     * @brief Use fields as in-parameter for readRecord as well (only @link BlastTabularIn @endlink).
+     * @brief Use fields as in-parameter for readRecord as well (only @link BlastTabularFileIn @endlink).
      *
-     * When doing @link BlastTabular#readRecord @endlink, the
+     * When doing @link BlastTabularFileIn#readRecord @endlink, the
      * @link BlastIOContext::fields @endlink member is used as in-parameter to
      * readRecordHeader() and as out-parameter to readMatch(); setting this bool
      * deactivates the first behaviour. Use this when the header does not
@@ -236,9 +235,9 @@ struct BlastIOContext
 
     /*!
      * @var StringSet<TString> BlastIOContext::conformancyErrors;
-     * @brief Holds non fatal error messages when reading from @link BlastTabularIn @endlink.
+     * @brief Holds non fatal error messages when reading from @link BlastTabularFileIn @endlink.
      *
-     * After doing a @link BlastTabular#readRecord @endlink this will indicate whether the
+     * After doing a @link BlastTabularFileIn#readRecord @endlink this will indicate whether the
      * record header contained non-fatal parse errors, usually the result
      * of a file written by a sloppy blast implementation or possibly a bug in SeqAn.
      * An empty StringSet indicates that all is good.

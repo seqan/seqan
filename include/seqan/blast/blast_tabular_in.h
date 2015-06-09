@@ -95,9 +95,9 @@ namespace seqan
 // ----------------------------------------------------------------------------
 
 /*!
- * @class BlastTabularIn
+ * @class BlastTabularFileIn
  * @signature template <typename TBlastIOContext>
- * using BlastTabularIn = FormattedFile<BlastTabular, Input, TBlastIOContext>;
+ * using BlastTabularFileIn = FormattedFile<BlastTabular, Input, TBlastIOContext>;
  * @extends FormattedFileIn
  * @headerfile <seqan/blast.h>
  * @brief FormattedFileIn abstraction for @link BlastTabular @endlink
@@ -105,7 +105,7 @@ namespace seqan
  * This is a @link FormattedFile @endlink specialization for reading @link BlastTabular @endlink formats. For details
  * on how to influence the reading of files and how to differentiate between the tabular format without headers and the
  * one with headers, see @link BlastIOContext @endlink. TODO change
- * Please note that you have specify the type of the context as a template parameter to BlastTabularIn, see the example
+ * Please note that you have specify the type of the context as a template parameter to BlastTabularFileIn, see the example
  * below.
  *
  * TODO example is outdated
@@ -114,7 +114,7 @@ namespace seqan
  */
 
 template <typename TBlastIOContext = BlastIOContext<>>
-using BlastTabularIn = FormattedFile<BlastTabular, Input, TBlastIOContext>;
+using BlastTabularFileIn = FormattedFile<BlastTabular, Input, TBlastIOContext>;
 
 // ============================================================================
 // Metafunctions
@@ -124,7 +124,10 @@ using BlastTabularIn = FormattedFile<BlastTabular, Input, TBlastIOContext>;
 // Functions
 // ============================================================================
 
-//TODO document?
+// ----------------------------------------------------------------------------
+// Function atEnd()
+// ----------------------------------------------------------------------------
+
 template <typename TScore,
           typename TFwdIterator,
           BlastProgram p,
@@ -139,7 +142,7 @@ atEnd(BlastIOContext<TScore, p, h> const & context,
 
 template <typename TContext>
 inline bool
-atEnd(BlastTabularIn<TContext> & formattedFile)
+atEnd(BlastTabularFileIn<TContext> & formattedFile)
 {
     return atEnd(context(formattedFile), formattedFile.iter, BlastTabular());
 }
@@ -159,15 +162,15 @@ inline bool guessFormat(FormattedFile<BlastTabular, Input, TSpec> & file)
 }
 
 // ----------------------------------------------------------------------------
-// Function onMatch()
+// Function _onMatch()
 // ----------------------------------------------------------------------------
 
 //NOTE(h-2): dox disabled to clean-up interface
 /*
- * @fn BlastTabular#onMatch
+ * @fn BlastTabular#_onMatch
  * @brief Returns whether the iterator is on the beginning of a match line.
  *
- * @signature bool onMatch(stream, blastTabular)
+ * @signature bool _onMatch(stream, blastTabular)
  *
  * @param[in] iter    An input iterator over a stream or any fwd-iterator over a string
  * @param[in] blastTabular     @link BlastTabular @endlink specialization
@@ -181,7 +184,7 @@ template <typename TScore,
           BlastProgram p,
           BlastTabularSpec h>
 inline bool
-onMatch(BlastIOContext<TScore, p, h> & context,
+_onMatch(BlastIOContext<TScore, p, h> & context,
         BlastTabular const &)
 {
     return (!startsWith(context._lineBuffer, "#") && !empty(context._lineBuffer));
@@ -192,15 +195,15 @@ onMatch(BlastIOContext<TScore, p, h> & context,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastTabular#onRecord
+ * @fn BlastTabularFileIn#onRecord
  * @brief Returns whether the currently buffered line looks like the start of a record.
- * @signature bool onRecord(context, blastTabular)
+ * @signature bool onRecord(blastTabularIn);
  * @headerfile seqan/blast.h
  *
- * @param[in] context      An input iterator over a stream or any fwd-iterator over a string
- * @param[in] blastTabular The @link BlastTabular @endlink tag.
+ * @param[in,out] blastTabularIn A @link BlastTabularFileIn @endlink formattedFile.
  *
  * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
  *
  * @return bool true or false
  */
@@ -213,35 +216,21 @@ onRecord(BlastIOContext<TScore, p, h> & context,
          BlastTabular const &)
 {
     if (context.tabularSpec == BlastTabularSpec::NO_HEADER)
-        return onMatch(context, BlastTabular());
+        return _onMatch(context, BlastTabular());
 
     //      RecordHeader                                  Footer
     return (startsWith(context._lineBuffer, "#") && (!startsWith(context._lineBuffer, "# BLAST processed ")));
 }
 
-/*!
- * @fn BlastTabularIn#onRecord
- * @brief Returns whether the currently buffered line looks like the start of a record.
- * @signature bool onRecord(blastTabularIn);
- * @headerfile seqan/blast.h
- *
- * @param[in,out] blastTabularIn A @link BlastTabularIn @endlink formattedFile.
- *
- * @throw IOError On low-level I/O errors.
- * @throw ParseError On high-level file format errors.
- *
- * @return bool true or false
- */
-
 template <typename TContext>
 inline bool
-onRecord(BlastTabularIn<TContext> & formattedFile)
+onRecord(BlastTabularFileIn<TContext> & formattedFile)
 {
-    return onRecord(formattedFile.iter, BlastTabular());
+    return onRecord(context(formattedFile), BlastTabular());
 }
 
 // ----------------------------------------------------------------------------
-// Function goNextLine()
+// Function _goNextLine()
 // ----------------------------------------------------------------------------
 
 template <typename TScore,
@@ -249,7 +238,7 @@ template <typename TScore,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-goNextLine(BlastIOContext<TScore, p, h> & context,
+_goNextLine(BlastIOContext<TScore, p, h> & context,
            TFwdIterator & iter,
            BlastTabular const &)
 {
@@ -259,16 +248,16 @@ goNextLine(BlastIOContext<TScore, p, h> & context,
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecordHeader()
+// Function _readRecordHeader()
 // ----------------------------------------------------------------------------
 
 //NOTE(h-2): dox disabled to clean-up interface
 /*
- * @fn BlastTabular#readRecordHeader
+ * @fn BlastTabular#_readRecordHeader
  * @brief read a the header of a record from a Blast tabular file
  * @headerfile seqan/blast.h
  *
- * @signature void readRecordHeader(blastRecord, stream, context, blastTabular);
+ * @signature void _readRecordHeader(blastRecord, stream, context, blastTabular);
  *
  * @param[out]    blastRecord  A @link BlastRecord @endlink.
  * @param[in,out] stream       An input iterator over a stream or any fwd-iterator over a string.
@@ -277,11 +266,11 @@ goNextLine(BlastIOContext<TScore, p, h> & context,
  *
  * @section Remarks
  *
- * Call this function on every line beginning that is not "onMatch". Will
+ * Call this function on every line beginning that is not "_onMatch". Will
  * set the @link BlastRecord::qId @endlink member of the record and resize the @link BlastRecord::matches @endlink
  * member to the expected number of matches succeeding the header. [In case the format is detected as being legacy
  * (see below), the matches member will not be resized and you need to append matches instead of assigning them if
- * using @link BlastTabular#readMatch @endlink ].
+ * using @link BlastTabular#_readMatch @endlink ].
  *
  * This function also sets many properties of the @link BlastIOContext @endlink, including these members:
  * <li> @link BlastIOContext::versionString @endlink: version string of the header</li>
@@ -323,7 +312,7 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                       BlastTabular const &)
 {
     // this is a match instead of a header
-    if (onMatch(context, BlastTabular()))
+    if (_onMatch(context, BlastTabular()))
         SEQAN_THROW(ParseError("Header expected, but no header found."));
     else
         context.tabularSpec = BlastTabularSpec::HEADER;
@@ -461,7 +450,7 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
             }
         }
 
-        goNextLine(context, iter, BlastTabular());
+        _goNextLine(context, iter, BlastTabular());
 
     } while (startsWith(context._lineBuffer, "#") &&                   // still on record header
              !std::regex_search(begin(context._lineBuffer, Standard()),// start of next record header
@@ -491,7 +480,7 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
             appendValue(context.conformancyErrors, "No or multiple fields lines present.");
     }
 
-    if (length(context.otherLines) != 0)
+    if (!empty(context.otherLines))
         appendValue(context.conformancyErrors, "Unexpected lines present, see context.otherLines.");
 }
 
@@ -504,7 +493,7 @@ template <typename TQId,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-readRecordHeader(BlastRecord<TQId, TSId, TPos, TAlign> & r,
+_readRecordHeader(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                  TFwdIterator & iter,
                  BlastIOContext<TScore, p, h> & context,
                  BlastTabular const &)
@@ -528,48 +517,7 @@ readRecordHeader(BlastRecord<TQId, TSId, TPos, TAlign> & r,
 }
 
 // ----------------------------------------------------------------------------
-// Function skipHeader()
-// ----------------------------------------------------------------------------
-
-//NOTE(h-2): dox disabled to clean-up interface
-/*
- * @fn BlastTabular#skipRecordHeader
- * @brief skip a header from a Blast tabular input file.
- *
- * @signature void skipRecordHeader(stream, context, blastTabular);
- *
- * @param[in,out] stream       An input iterator over a stream or any fwd-iterator over a string
- * @param[in,out] context      A @link BlastIOContext @endlink with parameters and buffers.
- * @param[in]     blastTabular The @link BlastTabular @endlink tag.
- *
- * @section Remarks
- *
- * Call this function whenever you want to skip exactly one header (and possibly examine the members of the
- * context). If you want
- * to go directly to the beginning of the next match (possibly skipping multiple
- * headers that have no succeeding matches) use @link BlastTabular#skipUntilMatch @endlink instead.
- *
- * @throw IOError On low-level I/O errors.
- * @throw ParseError On high-level file format errors.
- *
- * @see BlastTabular#skipUntilMatch
- * @headerfile seqan/blast.h
- */
-
-template <typename TFwdIterator,
-          typename TScore,
-          BlastProgram p,
-          BlastTabularSpec h>
-inline void
-skipRecordHeader(TFwdIterator & iter,
-                 BlastIOContext<TScore, p, h> & context,
-                 BlastTabular const & /*tag*/)
-{
-    readRecordHeader(context.bufRecord, iter, context, BlastTabular());
-}
-
-// ----------------------------------------------------------------------------
-// Function readMatch()
+// Function _readMatch()
 // ----------------------------------------------------------------------------
 
 template <typename TQId,
@@ -687,11 +635,12 @@ _readField(BlastMatch<TQId, TSId, TPos, TAlign> & match,
     };
 }
 
+//NOTE(h-2): dox deactivated and made private to clean up interface
 /*
- * @fn BlastTabular#readMatch
+ * @fn BlastTabular#_readMatch
  * @brief read a match from a file in BlastTabular format
  *
- * @signature void readMatch(blastMatch, stream, blastTabular);
+ * @signature void _readMatch(blastMatch, stream, blastTabular);
  *
  * @param[out]    blastMatch   A @link BlastMatch @endlink object to hold all relevant info
  * @param[in,out] stream       An input iterator over a stream or any fwd-iterator over a string
@@ -723,8 +672,6 @@ _readField(BlastMatch<TQId, TSId, TPos, TAlign> & match,
  * retransformation (sequence lengths, frames) not being available in the
  * default columns.
  *
- * Instead of using this signature you may also use @link BlastTabular#readMatch0 @endlink which works without a
- * @link BlastMatch @endlink parameter and supports arbitrary columns.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
@@ -741,26 +688,24 @@ template <typename TQId,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
+_readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
           TFwdIterator & iter,
           BlastIOContext<TScore, p, h> & context,
           BlastTabular const &)
 {
     if (context.legacyFormat)
     {
-        if (SEQAN_ENABLE_DEBUG)
-        {
-            if ((length(context.fields) != 1) || (context.fields[0] != BlastMatchField<>::Enum::STD))
-                std::cerr << "Warning: custom fields set, but will be reset, because legacyFormat is also set.\n";
-        }
-
+        #if defined(SEQAN_ENABLE_DEBUG)
+        if ((length(context.fields) != 1) || (context.fields[0] != BlastMatchField<>::Enum::STD))
+            std::cerr << "Warning: custom fields set, but will be reset, because legacyFormat is also set.\n";
+        #endif
         // set defaults
         clear(context.fields);
         appendValue(context.fields,  BlastMatchField<>::Enum::STD);
     }
 
     // header should have been read or skipped
-    if (SEQAN_UNLIKELY(!onMatch(context, BlastTabular())))
+    if (SEQAN_UNLIKELY(!_onMatch(context, BlastTabular())))
         SEQAN_THROW(ParseError("Not on beginning of Match (you should have skipped comments)."));
 
     match._maxInitialize(); // mark all members as "not set"
@@ -771,7 +716,7 @@ readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
     strSplit(fields, context._lineBuffer, IsTab());
 
     // line in buffer was processed so new line is read from iter into buffer
-    goNextLine(context, iter, BlastTabular());
+    _goNextLine(context, iter, BlastTabular());
 
     unsigned n = 0u;
     for (BlastMatchField<>::Enum const f : context.fields)
@@ -824,44 +769,6 @@ readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
 }
 
 // ----------------------------------------------------------------------------
-// Function skipMatch()
-// ----------------------------------------------------------------------------
-
-//NOTE(h-2): dox disabled to clean-up interface
-/*
- * @fn BlastTabular#skipMatch
- * @brief skip a line that contains a match
- * @signature void skipMatch(stream, context, blastTabular);
- * @headerfile seqan/blast.h
- *
- * @param[in,out] stream  An input iterator over a stream or any fwd-iterator over a string
- * @param[in,out] context A @link BlastIOContext @endlink with parameters and buffers.
- * @param[in]     blastTabular The @link BlastTabular @endlink tag.
- *
- * @section Remarks
- *
- * This function always checks whether it is on a line that is not a comment and
- * it does verify the line read as looking like a match. If you do not want this
- * behaviour you can instead <tt>skipLine(iter)</tt> which is also
- * faster.
- *
- * @throw IOError On low-level I/O errors.
- * @throw ParseError On high-level file format errors.
- */
-
-template <typename TFwdIterator,
-          typename TScore,
-          BlastProgram p,
-          BlastTabularSpec h>
-inline void
-skipMatch(TFwdIterator & iter,
-          BlastIOContext<TScore, p, h> & context,
-          BlastTabular const &)
-{
-    readMatch(context.bufMatch, iter, context, BlastTabular());
-}
-
-// ----------------------------------------------------------------------------
 // Function readRecord()
 // ----------------------------------------------------------------------------
 
@@ -879,38 +786,38 @@ _readRecordWithHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
                       BlastIOContext<TScore, p, h> & context,
                       BlastTabular const &)
 {
-    readRecordHeader(blastRecord, iter, context, BlastTabular());
+    _readRecordHeader(blastRecord, iter, context, BlastTabular());
 
     if (!context.legacyFormat) // this is detected from the header
     {
         // .matches already resized for us
         for (auto & m : blastRecord.matches)
         {
-            if (!onMatch(context, BlastTabular()))
+            if (!_onMatch(context, BlastTabular()))
             {
                 appendValue(context.conformancyErrors,
                             "Less matches than promised by header");
                 break;
             }
 
-            readMatch(m, iter, context, BlastTabular());
+            _readMatch(m, iter, context, BlastTabular());
         }
 
-        if ((!atEnd(context, iter, BlastTabular())) && onMatch(context, BlastTabular()))
+        if ((!atEnd(context, iter, BlastTabular())) && _onMatch(context, BlastTabular()))
             appendValue(context.conformancyErrors,
                         "More matches than promised by header");
 
-        while ((!atEnd(context, iter, BlastTabular())) && onMatch(context, BlastTabular()))
+        while ((!atEnd(context, iter, BlastTabular())) && _onMatch(context, BlastTabular()))
         {
             blastRecord.matches.emplace_back();
-            readMatch(back(blastRecord.matches), iter, context, BlastTabular());
+            _readMatch(back(blastRecord.matches), iter, context, BlastTabular());
         }
     } else
     {
-        while ((!atEnd(context, iter, BlastTabular())) && onMatch(context, BlastTabular()))
+        while ((!atEnd(context, iter, BlastTabular())) && _onMatch(context, BlastTabular()))
         {
             blastRecord.matches.emplace_back();
-            readMatch(back(blastRecord.matches), iter, context, BlastTabular());
+            _readMatch(back(blastRecord.matches), iter, context, BlastTabular());
         }
     }
 }
@@ -948,11 +855,11 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
                    "Q_SEQ_ID. Use the lowlevel readMatch interface instead.");
     }
 
-    while ((!atEnd(context, iter, BlastTabular())) && onMatch(context, BlastTabular()))
+    while ((!atEnd(context, iter, BlastTabular())) && _onMatch(context, BlastTabular()))
     {
         blastRecord.matches.emplace_back();
         // read remainder of line
-        readMatch(back(blastRecord.matches), iter, context, BlastTabular());
+        _readMatch(back(blastRecord.matches), iter, context, BlastTabular());
 
         if (!startsWith(context._lineBuffer, curIdPlusTab)) // next record reached
             break;
@@ -963,15 +870,13 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
 }
 
 /*!
- * @fn BlastTabular#readRecord
+ * @fn BlastTabularFileIn#readRecord
  * @brief Read a record from a file in BlastTabular format.
  * @headerfile seqan/blast.h
- * @signature void readRecord(blastRecord, stream, context, blastTabular);
+ * @signature void readRecord(blastRecord, blastTabularIn);
  *
  * @param[out]    blastRecord  A @link BlastRecord @endlink to hold all information related to one query sequence.
- * @param[in,out] stream       An input iterator over a stream or any fwd-iterator over a string.
- * @param[in,out] context      A @link BlastIOContext @endlink with further parameters and buffers.
- * @param[in]     blastTabular The @link BlastTabular @endlink tag.
+ * @param[in,out] blastTabularIn A @link BlastTabularFileIn @endlink formattedFile.
  *
  * @section Remarks
  *
@@ -988,7 +893,7 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
  * The @link BlastRecord::qId @endlink member of the record is read from the header and the
  * @link BlastRecord::matches @endlink are resized to the expected number of matches succeeding the header.
  *
- * This function also sets many properties of the @link BlastIOContext @endlink, including these members:
+ * This function also sets many properties of blastTabularIn's @link BlastIOContext @endlink, including these members:
  * <li> @link BlastIOContext::versionString @endlink: version string of the header</li>
  * <li> @link BlastIOContext::dbName @endlink: name of the database</li>
  * <li> @link BlastIOContext::fields @endlink: descriptors for the columns.</li>
@@ -1034,7 +939,7 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
  *  <li> computation of the number of positives (from the percentage) [if given]</li>
  *  <li> number of gaps computed from other values [default]</li>
  *
- * In contrast to @link BlastTabular#writeRecord @endlink no other transformations
+ * In contrast to @link BlastTabularFileOut#writeRecord @endlink no other transformations
  * are made, e.g. the positions are still one-indexed and
  * flipped for reverse strand matches. This is due to the required fields for
  * retransformation (sequence lengths, frames) not being available in the
@@ -1043,38 +948,6 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
  */
-
-template <typename TQId,
-          typename TSId,
-          typename TAlign,
-          typename TPos,
-          typename TFwdIterator,
-          typename TScore,
-          BlastProgram p>
-inline void
-readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
-          TFwdIterator & iter,
-          BlastIOContext<TScore, p, BlastTabularSpec::NO_HEADER> & context,
-          BlastTabular const &)
-{
-    _readRecordNoHeader(blastRecord, iter, context, BlastTabular());
-}
-
-template <typename TQId,
-          typename TSId,
-          typename TAlign,
-          typename TPos,
-          typename TFwdIterator,
-          typename TScore,
-          BlastProgram p>
-inline void
-readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
-          TFwdIterator & iter,
-          BlastIOContext<TScore, p, BlastTabularSpec::HEADER> & context,
-          BlastTabular const &)
-{
-    _readRecordWithHeader(blastRecord, iter, context, BlastTabular());
-}
 
 template <typename TQId,
           typename TSId,
@@ -1096,22 +969,6 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
         _readRecordWithHeader(blastRecord, iter, context, BlastTabular());
 }
 
-/*!
- * @fn BlastTabularIn#readRecord
- * @brief read a record from a blast tabular formattedFile
- * @headerfile seqan/blast.h
- * @signature void readRecord(blastTabularIn);
- *
- * @param[in,out] blastTabularIn A @link BlastTabularIn @endlink formattedFile.
- *
- * @section Remarks
- *
- * See @link BlastTabular#readRecord @endlink for details.
- *
- * @throw IOError On low-level I/O errors.
- * @throw ParseError On high-level file format errors.
- */
-
 template <typename TQId,
           typename TSId,
           typename TAlign,
@@ -1119,7 +976,7 @@ template <typename TQId,
           typename TContext>
 inline void
 readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
-           BlastTabularIn<TContext> & formattedFile)
+           BlastTabularFileIn<TContext> & formattedFile)
 {
     readRecord(blastRecord, formattedFile.iter, context(formattedFile), BlastTabular());
 }
@@ -1129,14 +986,12 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastTabular#readHeader
+ * @fn BlastTabularFileIn#readHeader
  * @headerfile seqan/blast.h
  * @brief Read the header (top-most section) of a BlastTabular file.
- * @signature void readHeader(stream, context, blastTabular);
+ * @signature void readHeader(blastTabularIn);
  *
- * @param[in,out] stream         The file to read to (FILE, fstream, @link InputStreamConcept @endlink ...)
- * @param[in,out] context        A @link BlastIOContext @endlink with parameters and buffers.
- * @param[in]     blastTabular   The @link BlastTabular @endlink tag.
+ * @param[in,out] blastTabularIn A @link BlastTabularFileIn @endlink formattedFile.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
@@ -1155,28 +1010,16 @@ readHeader(BlastIOContext<TScore, p, h> & context,
 
     if (context.tabularSpec == BlastTabularSpec::UNKNOWN)
     {
-        if (onMatch(context, BlastTabular()))
+        if (_onMatch(context, BlastTabular()))
             context.tabularSpec = BlastTabularSpec::NO_HEADER;
         else
             context.tabularSpec = BlastTabularSpec::HEADER;
     }
 }
 
-/*!
- * @fn BlastTabularIn#readHeader
- * @headerfile seqan/blast.h
- * @brief Read the header (top-most section) of a BlastTabular file.
- * @signature void readHeader(blastTabularIn);
- *
- * @param[in,out] blastTabularIn A @link BlastTabularIn @endlink formattedFile.
- *
- * @throw IOError On low-level I/O errors.
- * @throw ParseError On high-level file format errors.
- */
-
 template <typename TContext>
 inline void
-readHeader(BlastTabularIn<TContext> & formattedFile)
+readHeader(BlastTabularFileIn<TContext> & formattedFile)
 {
     readHeader(context(formattedFile), formattedFile.iter, BlastTabular());
 }
@@ -1186,19 +1029,12 @@ readHeader(BlastTabularIn<TContext> & formattedFile)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastTabular#readFooter
+ * @fn BlastTabularFileIn#readFooter
  * @headerfile seqan/blast.h
  * @brief Read the footer (bottom-most section) of a BlastTabular file.
- * @signature void readFooter(stream, context, blastTabular);
+ * @signature void readFooter(blastTabularIn);
  *
- * @param[in,out] stream         The file to read to (FILE, fstream, @link InputStreamConcept @endlink ...)
- * @param[in,out] context        A @link BlastIOContext @endlink with parameters and buffers.
- * @param[in]     blastTabular   The @link BlastTabular @endlink tag.
- *
- * @section Remarks
- *
- * While there is a footer in the tabular format, it is not necessary to call this function (it will be read by the
- * last call to readRecord).
+ * @param[in,out] blastTabularIn A @link BlastTabularFileIn @endlink formattedFile.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
@@ -1242,29 +1078,15 @@ readFooter(BlastIOContext<TScore, p, h> & context,
     if (!atEnd(iter))
         appendValue(context.conformancyErrors, "Expected to be at end of file.");
 
-    goNextLine(context, iter, BlastTabular());
+    _goNextLine(context, iter, BlastTabular());
 }
-
-/*!
- * @fn BlastTabularIn#readFooter
- * @headerfile seqan/blast.h
- * @brief Read the footer (bottom-most section) of a BlastTabular file.
- * @signature void readFooter(blastTabularIn);
- *
- * @param[in,out] blastTabularIn A @link BlastTabularIn @endlink formattedFile.
- *
- * @throw IOError On low-level I/O errors.
- * @throw ParseError On high-level file format errors.
- */
 
 template <typename TContext>
 inline void
-readFooter(BlastTabularIn<TContext> & formattedFile)
+readFooter(BlastTabularFileIn<TContext> & formattedFile)
 {
     readFooter(context(formattedFile), formattedFile.iter, BlastTabular());
 }
-
-
 
 } // namespace seqan
 

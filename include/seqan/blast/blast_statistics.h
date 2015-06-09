@@ -399,7 +399,6 @@ double const KarlinAltschulValues<Score<int, Simple>, TSpec>::VALUE
  * @tparam TScoringScheme A SeqAn Score type
  */
 
-
 /* NOTE(h-2): Maybe this should specialize Score<> instead of being a wrapper.
  * This would however involve adding a new template parameter to score and
  * changing lots of code. Also it would become confusing as the shortcuts
@@ -504,7 +503,7 @@ scoreGapOpenBlast(BlastScoringScheme<TScore> const & scheme)
 /*!
  * @fn BlastScoringScheme#scoreGapExtend
  * @headerfile <seqan/blast.h>
- * @brief The Gap Open score.
+ * @brief The Gap Extend score.
  * @signature TValue scoreGapExtend(blastScoringScheme);
  */
 

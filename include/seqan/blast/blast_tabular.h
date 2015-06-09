@@ -56,9 +56,9 @@ namespace seqan
  *
  * There are three blast format related tags in SeqAn:
  *
- * <li> @link BlastReport @endlink with the FormattedFile output specialization @link BlastReportOut @endlink</li>
+ * <li> @link BlastReport @endlink with the FormattedFile output specialization @link BlastReportFileOut @endlink</li>
  * <li> @link BlastTabular @endlink with the FormattedFile output and input specializations
- * @link BlastTabularOut @endlink and @link BlastTabularIn @endlink</li>
+ * @link BlastTabularFileOut @endlink and @link BlastTabularFileIn @endlink</li>
  * <li> @link BlastTabularLL @endlink which provides light-weight, but very basic tabular IO </li>
  *
  * This is the second tag, it offers <b>high-level</b> support for reading and writing NCBI Blast compatible
@@ -70,56 +70,41 @@ namespace seqan
  * Please consult the documentation for @link BlastIOContext @endlink to understand
  * the different options you have with this format.
  *
- * For very basic tabular IO there is the third tag, @link BlastTabularLL @endlink. *
+ * For very basic tabular IO there is the third tag, @link BlastTabularLL @endlink.
  *
  * The reference Blast implementation used for developing the SeqAn support is NCBI Blast+ 2.2.26 and
  * NCBI Blast 2.2.26 for the legacy support.
  *
  * @section Input
  *
- * High-level file reading consists of three different calls:
+ * High-level file reading looks like this:
+ *
  * <ul>
- * <li> BlastTabular#@link BlastTabular#readHeader @endlink </li>
- * <li> while BlastTabular#@link BlastTabular#onRecord @endlink </li>
- * <ul><li> BlastTabular#@link BlastTabular#readRecord @endlink</li></ul>
- * <li> BlastTabular#@link BlastTabular#readFooter @endlink </li>
+ * <li> @link BlastTabularFileIn#readHeader @endlink </li>
+ * <li> while @link BlastTabularFileIn#onRecord @endlink </li>
+ * <ul><li> @link BlastTabularFileIn#readRecord @endlink</li></ul>
+ * <li> @link BlastTabularFileIn#readFooter @endlink </li>
  * </ul>
  *
- * You can also use the FormattedFile interface which has the same functions, but only requires one parameter:
- * <ul>
- * <li> BlastTabularIn#@link BlastTabular#readHeader @endlink </li>
- * <li> while BlastTabularIn#@link BlastTabular#onRecord @endlink </li>
- * <ul><li> BlastTabularIn#@link BlastTabular#readRecord @endlink</li></ul>
- * <li> BlastTabularIn#@link BlastTabular#readFooter @endlink </li>
- * </ul>
- *
- * See @link BlastTabularOut @endlink for a full code example.
+ * See @link BlastTabularFileOut @endlink for a full code example.
  *
  * Although there is no file-global header in the file (only a record header per record -- if your format is
- * @link BlastTabularSpec::HEADER @endlink), you need to always call @link BlastTabular#readHeader @endlink first after
+ * @link BlastTabularSpec::HEADER @endlink), you need to always call @link BlastTabularFileIn#readHeader @endlink first after
  * opening the file!
  *
  * @section Output
  *
- * High-level file writing consists of three different calls:
+ * High-level file writing looks like this:
  * <ul>
- * <li> BlastTabular#@link BlastTabular#writeHeader @endlink </li>
- * <li> BlastTabular#@link BlastTabular#writeRecord @endlink repeated up to n times</li>
- * <li> BlastTabular#@link BlastTabular#writeFooter @endlink </li>
+ * <li> @link BlastTabularFileOut#writeHeader @endlink </li>
+ * <li> @link BlastTabularFileOut#writeRecord @endlink repeated up to n times</li>
+ * <li> @link BlastTabularFileOut#writeFooter @endlink </li>
  * </ul>
  *
- * You can also use the FormattedFile interface which has the same functions, but only requires one parameter:
- * <ul>
- * <li> BlastTabularOut#@link BlastTabularOut#writeHeader @endlink </li>
- * <li> BlastTabularOut#@link BlastTabularOut#writeRecord @endlink repeated up to n times</li>
- * <li> BlastTabularOut#@link BlastTabularOut#writeFooter @endlink </li>
- * </ul>
- *
- * See @link BlastTabularOut @endlink for a full code example.
+ * See @link BlastTabularFileOut @endlink for a full code example.
  *
  * Strictly speaking the writeHeader call is not required for BlastTabular, but for consistency with other (blast)
- * formats it is recommended. The example in @link BlastTabularOut @endlink illustrates that.
- *
+ * formats it is recommended. The example in @link BlastTabularFileOut @endlink illustrates that.
  */
 struct BlastTabular_;
 typedef Tag<BlastTabular_> BlastTabular;
@@ -232,9 +217,8 @@ struct MagicHeader<BlastTabular, T> :
 template <typename T>
 struct FileExtensions<BlastTabular, T>
 {
-    static constexpr char const * VALUE[5] =
+    static constexpr char const * VALUE[4] =
     {
-        ".blast",
         ".m8",
         ".bm8",
         ".m9",
@@ -243,7 +227,7 @@ struct FileExtensions<BlastTabular, T>
 };
 
 template <typename T>
-constexpr char const * FileExtensions<BlastTabular, T>::VALUE[5];
+constexpr char const * FileExtensions<BlastTabular, T>::VALUE[4];
 
 // ----------------------------------------------------------------------------
 // Metafunction FormattedFileContext

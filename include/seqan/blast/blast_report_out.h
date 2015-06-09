@@ -59,9 +59,9 @@ namespace seqan {
  *
  * There are three blast format related tags in SeqAn:
  *
- * <li> @link BlastReport @endlink with the FormattedFile output specialization @link BlastReportOut @endlink</li>
+ * <li> @link BlastReport @endlink with the FormattedFile output specialization @link BlastReportFileOut @endlink</li>
  * <li> @link BlastTabular @endlink with the FormattedFile output and input specializations
- * @link BlastTabularOut @endlink and @link BlastTabularIn @endlink</li>
+ * @link BlastTabularFileOut @endlink and @link BlastTabularFileIn @endlink</li>
  * <li> @link BlastTabularLL @endlink which provides light-weight, but very basic tabular IO </li>
  *
  * This is the first tag, it represents support for Blast's default file format (<tt>blastall -m 0</tt> / <tt>blast*
@@ -71,46 +71,39 @@ namespace seqan {
  * The reference Blast implementation used for developing the SeqAn support is NCBI Blast+ 2.2.26. In contrast to the
  * tabular format there is no support for writing legacy files (without the +).
  *
- * @section Example of high-level file writing
+ * Please use the FormattedFile specialization of this tag with the following functions:
+ * <li> BlastReportFileOut#@link BlastReportFileOut#writeHeader @endlink once</li>
+ * <li> BlastReportFileOut#@link BlastReportFileOut#writeRecord @endlink up to n times</li>
+ * <li> BlastReportFileOut#@link BlastReportFileOut#writeFooter @endlink at end</li>
  *
- * You can use this tag's interface and specify the stream, and context:
- * <li> BlastReport#@link BlastReport#writeHeader @endlink once</li>
- * <li> BlastReport#@link BlastReport#writeRecord @endlink up to n times</li>
- * <li> BlastReport#@link BlastReport#writeFooter @endlink at end</li>
- *
- * Or you can use the FormattedFile interface which has the same functions, but only requires one parameter:
- * <li> BlastReportOut#@link BlastReportOut#writeHeader @endlink once</li>
- * <li> BlastReportOut#@link BlastReportOut#writeRecord @endlink up to n times</li>
- * <li> BlastReportOut#@link BlastReportOut#writeFooter @endlink at end</li>
- *
- * See @link BlastReportOut @endlink for a full code example.
+ * See @link BlastReportFileOut @endlink for a full code example.
  */
 
 struct BlastReport_;
 typedef Tag<BlastReport_> BlastReport;
 
 // ----------------------------------------------------------------------------
-// Tag BlastReportOut
+// Tag BlastReportFileOut
 // ----------------------------------------------------------------------------
 
 /*!
- * @class BlastReportOut
+ * @class BlastReportFileOut
  * @signature template <typename TBlastIOContext = BlastIOContext<>>
- * using BlastReportOut = FormattedFile<BlastReport, Output, TBlastIOContext>;
+ * using BlastReportFileOut = FormattedFile<BlastReport, Output, TBlastIOContext>;
  * @extends FormattedFileOut
  * @headerfile <seqan/blast.h>
  * @brief FormattedFileOut abstraction for @link BlastReport @endlink
  *
  * This is a @link FormattedFile @endlink specialization for writing @link BlastReport @endlink formats. For details
  * on how to influence the writing of files, see @link BlastIOContext @endlink.
- * Please note that you have to specify the type of the context as a template parameter to BlastReportOut, see the
+ * Please note that you have to specify the type of the context as a template parameter to BlastReportFileOut, see the
  * example below.
  *
  * @section Example
  *
  * The following short program creates the pairwise alignments between three query sequences and two database sequences,
  * it computes the e-values, sorts the matches and prints all results that score above a threshold. <i>The same example
- * is used for @link BlastTabularOut @endlink and @link BlastReportOut @endlink, you only need to change one line.</i>
+ * is used for @link BlastTabularFileOut @endlink and @link BlastReportFileOut @endlink, you only need to change one line.</i>
  *
  * @include demos/blast/blast_out_example.cpp
  *
@@ -122,7 +115,7 @@ typedef Tag<BlastReport_> BlastReport;
  */
 
 template <typename TBlastIOContext = BlastIOContext<> >
-using BlastReportOut = FormattedFile<BlastReport, Output, TBlastIOContext>;
+using BlastReportFileOut = FormattedFile<BlastReport, Output, TBlastIOContext>;
 
 // ----------------------------------------------------------------------------
 // Class MagicHeader
@@ -139,16 +132,15 @@ struct MagicHeader<BlastReport, T> :
 template <typename T>
 struct FileExtensions<BlastReport, T>
 {
-    static constexpr char const * VALUE[5] =
+    static constexpr char const * VALUE[2] =
     {
-        ".blast",
         ".m0",
         ".bm0"
     };
 };
 
 template <typename T>
-constexpr char const * FileExtensions<BlastReport, T>::VALUE[5];
+constexpr char const * FileExtensions<BlastReport, T>::VALUE[2];
 
 // ----------------------------------------------------------------------------
 // Metafunction FormattedFileContext
@@ -267,16 +259,36 @@ _writeStatsBlock(TStream & stream,
                  TMatch const & m,
                  BlastReport const &)
 {
-    char buffer[512] = "";
+//     char buffer[512] = "";
+//
+//     sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
+//                     " Identities = %d/%d (%d%%), Gaps = %d/%d (%d%%)\n"
+//                     " Strand=", // no spaces here for whatever reason
+//             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
+//             m.alignStats.numMatches, m.alignStats.alignmentLength, int(std::lround(m.alignStats.alignmentIdentity)),
+//             m.alignStats.numGaps, m.alignStats.alignmentLength,
+//             int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
+//     write(stream, buffer);
+    write(stream, " Score =  ");
+    write(stream, FormattedNumber<double>("%.1f", m.bitScore));
+    write(stream, " bits (");
+    write(stream, unsigned(m.alignStats.alignmentScore));
+    write(stream, "), Expect =  ");
+    write(stream, FormattedNumber<double>("%.1g", m.eValue));
+    write(stream, "\n Identities = ");
+    write(stream, m.alignStats.numMatches);
+    write(stream, '/');
+    write(stream, m.alignStats.alignmentLength);
+    write(stream, " (");
+    write(stream, int(std::lround(m.alignStats.alignmentIdentity)));
+    write(stream, "%), Gaps = ");
+    write(stream, m.alignStats.numGaps);
+    write(stream, '/');
+    write(stream, m.alignStats.alignmentLength);
+    write(stream, " (");
+    write(stream, int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
+    write(stream, "%)\n Strand=");
 
-    sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
-                    " Identities = %d/%d (%d%%), Gaps = %d/%d (%d%%)\n"
-                    " Strand=", // no spaces here for whatever reason
-            m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-            m.alignStats.numMatches, m.alignStats.alignmentLength, int(std::lround(m.alignStats.alignmentIdentity)),
-            m.alignStats.numGaps, m.alignStats.alignmentLength,
-            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
-    write(stream, buffer);
     if (m.qFrameShift == 1)
         write(stream, "Plus/");
     else
@@ -299,21 +311,44 @@ _writeStatsBlock(TStream & stream,
                  TMatch const & m,
                  BlastReport const &)
 {
-    char buffer[512] = "";
-
-    sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
-                    " Identities = %d/%d (%d%%),"
-                    " Positives = %d/%d (%d%%),"
-                    " Gaps = %d/%d (%d%%)",
-            m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-            m.alignStats.numMatches, m.alignStats.alignmentLength,
-            int(std::lround(m.alignStats.alignmentIdentity)),
-            m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
-            int(std::lround(m.alignStats.alignmentSimilarity)),
-            m.alignStats.numGaps, m.alignStats.alignmentLength,
-            int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
-
-    write(stream, buffer);
+//     char buffer[512] = "";
+//
+//     sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
+//                     " Identities = %d/%d (%d%%),"
+//                     " Positives = %d/%d (%d%%),"
+//                     " Gaps = %d/%d (%d%%)",
+//             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
+//             m.alignStats.numMatches, m.alignStats.alignmentLength,
+//             int(std::lround(m.alignStats.alignmentIdentity)),
+//             m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
+//             int(std::lround(m.alignStats.alignmentSimilarity)),
+//             m.alignStats.numGaps, m.alignStats.alignmentLength,
+//             int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
+    write(stream, " Score =  ");
+    write(stream, FormattedNumber<double>("%.1f", m.bitScore));
+    write(stream, " bits (");
+    write(stream, unsigned(m.alignStats.alignmentScore));
+    write(stream, "), Expect =  ");
+    write(stream, FormattedNumber<double>("%.1g", m.eValue));
+    write(stream, "\n Identities = ");
+    write(stream, m.alignStats.numMatches);
+    write(stream, '/');
+    write(stream, m.alignStats.alignmentLength);
+    write(stream, " (");
+    write(stream, int(std::lround(m.alignStats.alignmentIdentity)));
+    write(stream, "%), Positives = ");
+    write(stream, m.alignStats.numPositiveScores);
+    write(stream, '/');
+    write(stream, m.alignStats.alignmentLength);
+    write(stream, " (");
+    write(stream, int(std::lround(m.alignStats.alignmentSimilarity)));
+    write(stream, "%), Gaps = ");
+    write(stream, m.alignStats.numGaps);
+    write(stream, '/');
+    write(stream, m.alignStats.alignmentLength);
+    write(stream, " (");
+    write(stream, int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
+    write(stream, "%)");
 
     if (context.blastProgram != BlastProgram::BLASTP)
         write(stream, "\n Frame = ");
@@ -543,7 +578,7 @@ _writeMatchOneLiner(TStream & stream,
     else if (length(m.sId) < 66) // needs to be padded with ' '
     {
         write(stream, m.sId);
-        for (unsigned char i = 0; i < 66 -length(m.sId); ++i)
+        for (unsigned char i = 0; i < 66 - length(m.sId); ++i)
             write(stream, ' ');
     }
     else // needs to be truncated
@@ -553,9 +588,10 @@ _writeMatchOneLiner(TStream & stream,
     }
     write(stream, ' ');
 
-    char buffer[20] = "";
-    sprintf(buffer, "%4li  %.1g\n", long(m.bitScore), m.eValue);
-    write(stream, buffer);
+    write(stream, FormattedNumber<long>("%4li", m.bitScore));
+    write(stream, "  ");
+    write(stream, FormattedNumber<double>("%.1g", m.eValue));
+    write(stream, '\n');
 }
 
 // ----------------------------------------------------------------------------
@@ -622,15 +658,13 @@ _writeRecordFooter(TStream & stream,
 }
 
 /*!
- * @fn BlastReport#writeRecord
+ * @fn BlastReportFileOut#writeRecord
  * @headerfile seqan/blast.h
- * @brief write a @link BlastRecord @endlink including it's @link BlastMatch @endlinkes to a file.
- * @signature void writeRecord(stream, context, blastRecord, blastReport);
+ * @brief write a @link BlastRecord @endlink including it's @link BlastMatch @endlinkes and possible headers to a file.
+ * @signature void writeRecord(blastReportOut, blastRecord);
  *
- * @param[in,out] stream       The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in,out] context      A @link BlastIOContext @endlink with parameters and buffers.
- * @param[in]     blastRecord  The @link BlastRecord @endlink you wish to print.
- * @param[in]     blastReport  The @link BlastReport @endlink tag.
+ * @param[in,out] blastReportOut A @link BlastReportFileOut @endlink formattedFile.
+ * @param[in]     blastRecord     The @link BlastRecord @endlink you wish to print.
  *
  * @section Remarks
  *
@@ -692,30 +726,13 @@ writeRecord(TStream & stream,
     _writeRecordFooter(stream, context, record, BlastReport());
 }
 
-/*!
- * @fn BlastReportOut#writeRecord
- * @headerfile seqan/blast.h
- * @brief write a @link BlastRecord @endlink including it's @link BlastMatch @endlinkes and possible headers to a file.
- * @signature void writeRecord(blastReportOut, blastRecord);
- *
- * @param[in,out] blastReportOut A @link BlastReportOut @endlink formattedFile.
- * @param[in]     blastRecord     The @link BlastRecord @endlink you wish to print.
- *
- * This is a convenience interface for BlastReport#@link BlastReport#writeRecord @endlink, see that for more details.
- *
- * @throw IOError On low-level I/O errors.
- *
- * @see BlastRecord
- * @see BlastIOContext
- */
-
 template <typename TContext,
           typename TQId,
           typename TSId,
           typename TPos,
           typename TAlign>
 inline void
-writeRecord(BlastReportOut<TContext> & formattedFile,
+writeRecord(BlastReportFileOut<TContext> & formattedFile,
             BlastRecord<TQId, TSId, TPos, TAlign> const & r)
 {
     writeRecord(formattedFile.iter, context(formattedFile), r, BlastReport());
@@ -726,14 +743,12 @@ writeRecord(BlastReportOut<TContext> & formattedFile,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastReport#writeHeader
+ * @fn BlastReportFileOut#writeHeader
  * @headerfile seqan/blast.h
- * @brief write the header (top-most section) of a BlastReport file
- * @signature void writeHeader(stream, context, blastReport);
+ * @brief Write the header (top-most section) of a BlastReport file.
+ * @signature void writeHeader(blastReportOut);
  *
- * @param[in,out] stream        The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in,out] context       A @link BlastIOContext @endlink with parameters and buffers.
- * @param[in]     blastReport   The @link BlastReport @endlink tag.
+ * @param[in,out] blastReportOut A @link BlastReportFileOut @endlink formattedFile.
  *
  * @throw IOError On low-level I/O errors.
  *
@@ -770,25 +785,9 @@ writeHeader(TStream & stream,
     write(stream, " total letters\n\n");
 }
 
-/*!
- * @fn BlastReportOut#writeHeader
- * @headerfile seqan/blast.h
- * @brief write the header (top-most section) of a BlastReport file
- * @signature void writeHeader(blastReportOut);
- *
- * @param[in,out] blastReportOut A @link BlastReportOut @endlink formattedFile.
- *
- * This is a convenience interface for BlastReport#@link BlastReport#writeHeader @endlink, see that for more details.
- *
- * @throw IOError On low-level I/O errors.
- *
- * @see BlastRecord
- * @see BlastIOContext
- */
-
 template <typename TContext>
 inline void
-writeHeader(BlastReportOut<TContext> & formattedFile)
+writeHeader(BlastReportFileOut<TContext> & formattedFile)
 {
     writeHeader(formattedFile.iter, context(formattedFile), BlastReport());
 }
@@ -798,14 +797,12 @@ writeHeader(BlastReportOut<TContext> & formattedFile)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BlastReport#writeFooter
+ * @fn BlastReportFileOut#writeFooter
  * @headerfile seqan/blast.h
- * @brief write the footer of a BlastReport file
- * @signature void writeFooter(stream, context, blastReport);
+ * @brief Write the footer of a BlastReport.
+ * @signature void writeFooter(blastReportOut);
  *
- * @param[in,out] stream         The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in,out] context        A @link BlastIOContext @endlink with parameters and buffers.
- * @param[in]     blastReport   The @link BlastReport @endlink tag.
+ * @param[in,out] blastReportOut A @link BlastReportFileOut @endlink formattedFile.
  *
  * @throw IOError On low-level I/O errors.
  *
@@ -858,25 +855,9 @@ writeFooter(TStream & stream,
     write(stream, "\n\n");
 }
 
-/*!
- * @fn BlastReportOut#writeFooter
- * @headerfile seqan/blast.h
- * @brief write the footer of a BlastReport
- * @signature void writeFooter(blastReportOut);
- *
- * @param[in,out] blastReportOut A @link BlastReportOut @endlink formattedFile.
- *
- * This is a convenience interface for BlastReport#@link BlastReport#writeFooter @endlink, see that for more details.
- *
- * @throw IOError On low-level I/O errors.
- *
- * @see BlastRecord
- * @see BlastIOContext
- */
-
 template <typename TContext>
 inline void
-writeFooter(BlastReportOut<TContext> & formattedFile)
+writeFooter(BlastReportFileOut<TContext> & formattedFile)
 {
     writeFooter(formattedFile.iter, context(formattedFile), BlastReport());
 }

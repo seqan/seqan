@@ -56,9 +56,9 @@ namespace seqan
  *
  * There are three blast format related tags in SeqAn:
  *
- * <li> @link BlastReport @endlink with the FormattedFile output specialization @link BlastReportOut @endlink</li>
+ * <li> @link BlastReport @endlink with the FormattedFile output specialization @link BlastReportFileOut @endlink</li>
  * <li> @link BlastTabular @endlink with the FormattedFile output and input specializations
- * @link BlastTabularOut @endlink and @link BlastTabularIn @endlink</li>
+ * @link BlastTabularFileOut @endlink and @link BlastTabularFileIn @endlink</li>
  * <li> @link BlastTabularLL @endlink which provides light-weight, but very basic tabular IO </li>
  *
  * This is the third tag, it offers <b>low-level</b> support for reading and writing NCBI Blast compatible
@@ -132,7 +132,7 @@ onMatch(TFwdIterator & iter,
 /*!
  * @fn BlastTabularLL#skipUntilMatch
  * @brief Skip arbitrary number of record headers and/or comment lines until the beginning of a match is reached.
- * @signature void skipUntilMatch(stream, blastTabular);
+ * @signature void skipUntilMatch(stream, blastTabularLL);
  * @headerfile seqan/blast.h
  *
  * @param[in,out] stream         An input iterator over a stream or any fwd-iterator over a string.
@@ -167,7 +167,7 @@ skipUntilMatch(TFwdIterator & iter,
 /*!
  * @fn BlastTabularLL#readMatch
  * @brief Low-level BlastTabular file reading.
- * @signature void readMatch(stream, tag, args ...);
+ * @signature void readMatch(stream, blastTabularLL, args ...);
  * @headerfile seqan/blast.h
  *
  * @param[in,out] stream         An input iterator over a stream or any fwd-iterator over a string.
@@ -268,16 +268,16 @@ readMatch(TFwdIterator & iter,
  * @fn BlastTabularLL#writeMatch
  * @headerfile seqan/blast.h
  * @brief Low-level file-writing for blast tabular formats
- * @signature void writeMatch(stream, blastTabular, columns...)
+ * @signature void writeMatch(stream, blastTabularLL, columns...)
  *
  * @section Remarks
  *
- * This is a very leight-weight alternative to @link BlastTabular#writeRecord @endlink. It doesn't require
+ * This is a very leight-weight alternative to @link BlastTabularFileOut#writeRecord @endlink. It doesn't require
  * @link BlastMatch @endlinkes, @link BlastRecord @endlinks or the use of @link FormattedFile @endlink.
  * It supports an arbitrary amount of and arbitrary typed columns to be printed.
  *
  * Use this only if you do not require headers and you are prepared to do all transformations on the data yourself,
- * i.e. this function does none of the match adjustments mentioned in @link BlastTabular#writeRecord @endlink.
+ * i.e. this function does none of the match adjustments mentioned in @link BlastTabularFileOut#writeRecord @endlink.
  *
  * @param[in,out] stream         The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...).
  * @param[in]     blastTabularLL The @link BlastTabularLL @endlink tag.

@@ -12,7 +12,7 @@ int main()
 
     std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + "/tests/blast/plus_header_defaults.blast";
 
-    BlastTabularIn<TContext> in(toCString(inPath));
+    BlastTabularFileIn<TContext> in(toCString(inPath));
 
     TBlastRecord record;
 

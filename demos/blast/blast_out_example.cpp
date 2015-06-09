@@ -44,15 +44,15 @@ int main()
     String<TBlastRecord> records;
     resize(records, length(queries)); // always one record for every query!
 
-//     BlastTabularOut<TContext> outfile("/tmp/output.blast");
-    BlastReportOut<TContext> outfile("/tmp/output.blast");
+//     BlastTabularFileOut<TContext> outfile("/tmp/output.blast");
+    BlastReportFileOut<TContext> outfile("/tmp/output.blast");
 
     // set gap parameters in blast notation
     setScoreGapOpenBlast(context(outfile).scoringScheme, -11);
     setScoreGapExtend(context(outfile).scoringScheme, -1);
 
     // protein vs protein search is BLASTP
-    setBlastProgram(context(outfile), BlastProgram::BLASTP);
+    context(outfile).blastProgram = BlastProgram::BLASTP;
 
     // set the database properties in the context
     context(outfile).dbName = "The Foo Database";

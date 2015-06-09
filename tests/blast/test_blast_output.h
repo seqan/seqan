@@ -61,7 +61,7 @@ test_blast_write_do(TFile & file,
         writeFooter(file, context, BlastReport());
     } else
     {
-        BlastReportOut<BlastIOContext<TScore, p, h>> out(context, file, BlastReport());
+        BlastReportFileOut<BlastIOContext<TScore, p, h>> out(context, file, BlastReport());
         writeHeader(out);
         for (auto const & r : records)
             writeRecord(out, r);
@@ -87,12 +87,12 @@ test_blast_write_do(TFile & file,
             for (auto const & r : records)
             {
                 if ((format == 1) && (custom <= 1))
-                    writeRecordHeader(file, context, r, BlastTabular());
+                    _writeRecordHeader(file, context, r, BlastTabular());
 
                 for (auto const & m : r.matches)
                 {
                     if (custom <= 1)
-                        writeMatch(file, context, m, BlastTabular());
+                        _writeMatch(file, context, m, BlastTabular());
                     else
                         writeMatch(file,
                                     BlastTabularLL(),
@@ -116,7 +116,7 @@ test_blast_write_do(TFile & file,
             break;
         case 3: // formatted file out
         {
-            BlastTabularOut<BlastIOContext<TScore, p, h>> out(context, file, BlastTabular());
+            BlastTabularFileOut<BlastIOContext<TScore, p, h>> out(context, file, BlastTabular());
             writeHeader(out); // noop for TABULARs
             for (auto const & r : records)
                 writeRecord(out, r);
