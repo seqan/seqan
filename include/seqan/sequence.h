@@ -48,10 +48,6 @@
 // Prerequisites.
 // ===========================================================================
 
-#include <seqan/basic.h>
-#include <seqan/misc/bit_twiddling_functors.h>
-#include <seqan/misc/bit_twiddling.h>
-
 // ----------------------------------------------------------------------------
 // STL prerequisites.
 // ----------------------------------------------------------------------------
@@ -63,8 +59,23 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <deque>
 #include <algorithm>
 #include <numeric>
+
+#include <seqan/platform.h>
+#ifdef SEQAN_CXX11_STANDARD
+#include <forward_list>
+#include <array>
+#endif
+
+// ----------------------------------------------------------------------------
+// Basic
+// ----------------------------------------------------------------------------
+
+#include <seqan/basic.h>
+#include <seqan/misc/bit_twiddling_functors.h>
+#include <seqan/misc/bit_twiddling.h>
 
 // ----------------------------------------------------------------------------
 // Thrust prerequisites.
@@ -121,9 +132,7 @@
 // Adaptions.
 // ===========================================================================
 
-#include <seqan/sequence/adapt_std_list.h>
-#include <seqan/sequence/adapt_std_string.h>
-#include <seqan/sequence/adapt_std_vector.h>
+#include <seqan/sequence/adapt_stl_container.h>
 #include <seqan/sequence/adapt_array_pointer.h>
 #ifdef PLATFORM_CUDA
 #include <seqan/sequence/adapt_thrust_vector.h>

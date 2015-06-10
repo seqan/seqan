@@ -338,7 +338,7 @@ int intervalizeAndDumpErrorCurves(TStream & stream,
                 int gsiDistance = options.oracleMode ? readAlignmentDistances[readId] : distance;
                 if (options.oracleMode && options.maxErrorSet && gsiDistance > options.maxError)
                     continue;  // Skip if cut off in Rabema oracle mode.
-                GsiRecord gsiRecord(prefix(readNameStore[readId], length(readNameStore[readId]) - 2), flags,
+                GsiRecord gsiRecord(CharString(prefix(readNameStore[readId], length(readNameStore[readId]) - 2)), flags,
                                     gsiDistance, contigNameStore[it2->contigId],
                                     it2->isForward, it2->first, it2->last);
                 writeRecord(stream, gsiRecord, Gsi());

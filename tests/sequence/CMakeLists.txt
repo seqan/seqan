@@ -18,7 +18,6 @@ message (STATUS "Configuring tests/sequence")
 set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 find_package (CXX11)
-
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------

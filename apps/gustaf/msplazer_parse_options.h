@@ -88,6 +88,8 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
     getOptionValue(msplazerOptions.breakendThresh, parser, "bth");
     getOptionValue(msplazerOptions.tandemThresh, parser, "tth");
     getOptionValue(msplazerOptions.breakpointPosRange, parser, "pth");
+    if (isSet(parser, "cbp"))    
+        msplazerOptions.inferComplexBP = false;
     getOptionValue(msplazerOptions.support, parser, "st");
     getOptionValue(msplazerOptions.mateSupport, parser, "mst");
     getOptionValue(msplazerOptions.libSize, parser, "ll");
@@ -207,6 +209,7 @@ void _setupArgumentParser(ArgumentParser & parser)
     addOption(parser, ArgParseOption(
                   "pth", "breakpoint-pos-range", "Allowed difference in breakpoint position", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "pth", "5");
+    addOption(parser, ArgParseOption("cbp", "complex-breakpoints", "Disable inferring complex SVs"));
     addOption(parser, ArgParseOption("st", "support", "Number of supporting reads", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "st", "2");
     addOption(parser, ArgParseOption("mst", "mate-support", "Number of supporting concordant mates", ArgParseArgument::INTEGER, "INT"));

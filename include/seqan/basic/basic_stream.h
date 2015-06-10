@@ -58,13 +58,13 @@ inline void writeValue(Iter<TContainer, StreamIterator<Output> > &iter, TValue v
 template <typename TValue, typename TTraits>
 inline bool atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
 
-template <typename TChar, typename TCharTraits, typename TAlloc>
-inline typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type
-length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
+template <typename TContainer>
+inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, typename Size<TContainer>::Type)
+length(TContainer const & me);
 
-// Needed for std::basic_string.
-template <typename TContainer, typename TValue>
-inline void appendValue(TContainer SEQAN_FORWARD_ARG me, TValue SEQAN_FORWARD_CARG val);
+template <typename TContainer, typename TSource>
+inline void
+appendValue(TContainer SEQAN_FORWARD_ARG me, TSource SEQAN_FORWARD_CARG source);
 
 /*!
  * @macro SEQAN_HAS_ZLIB

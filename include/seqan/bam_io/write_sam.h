@@ -128,6 +128,10 @@ inline void write(TTarget & target,
                   BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context,
                   Sam const & /*tag*/)
 {
+    // Check for valid IO Context.
+    SEQAN_ASSERT_LT_MSG(record.rID, static_cast<__int32>(length(contigNames(context))), "SAM IO Assertion: Unknown REF ID!");
+    SEQAN_ASSERT_LT_MSG(record.rNextId, static_cast<__int32>(length(contigNames(context))), "SAM IO Assertion: Unknown NEXT REF ID!");
+
     write(target, record.qName);
     writeValue(target, '\t');
 
