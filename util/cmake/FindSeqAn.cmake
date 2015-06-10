@@ -294,9 +294,13 @@ endif (_SEQAN_HAVE_EXECINFO)
 
 # libstdc++ -- implicit, Mac only (clang seems not to do this automatically)
 
-if (APPLE)
-  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} stdc++)
-endif (APPLE)
+# if (APPLE)
+#   set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} stdc++)
+# endif (APPLE)
+
+if (COMPILER_IS_CLANG)
+    set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-stdlib=libc++")
+endif()
 
 # ZLIB
 
