@@ -604,6 +604,7 @@ macro (seqan_build_demos_develop PREFIX)
     # Find SeqAn with all dependencies.
     set (SEQAN_FIND_DEPENDENCIES ALL)
     find_package (SeqAn REQUIRED)
+    find_package (CXX11)
 
     # Setup include directories and definitions for SeqAn; flags follow below.
     include_directories (${SEQAN_INCLUDE_DIRS})
