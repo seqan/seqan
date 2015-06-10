@@ -173,6 +173,11 @@ typedef uint8_t __uint8;   // nolint
 #  endif
 #endif
 
+// full C++11 support in GCC >= 4.9 and Clang >= 3.4
+#if (__GNUC__ * 100 + __GNUC_MINOR__ > 409) || (__clang_major__ * 100 + __clang_minor__ > 304)
+#define SEQAN_CXX11_COMPLETE
+#endif
+
 #define SEQAN_LIKELY(expr)    __builtin_expect(!!(expr), 1)
 #define SEQAN_UNLIKELY(expr)  __builtin_expect(!!(expr), 0)
 

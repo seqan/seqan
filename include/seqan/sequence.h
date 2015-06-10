@@ -137,9 +137,6 @@
 #ifdef PLATFORM_CUDA
 #include <seqan/sequence/adapt_thrust_vector.h>
 #endif
-#ifdef SEQAN_CXX11_STANDARD
-#include <seqan/sequence/adapt_std_array.h>
-#endif
 
 // ===========================================================================
 // StringSets.

@@ -113,7 +113,12 @@ typedef unsigned __int8 __uint8;
 
 // C++11 is supported by Visual C++ >=v10
 #if _MSC_VER >= 1600
-#  define SEQAN_CXX11_STANDARD
+#define SEQAN_CXX11_STANDARD
+#endif
+
+// full C++11 support in Visual C++ >= 2015
+#if _MSC_VER >= 1900
+#define SEQAN_CXX11_COMPLETE
 #endif
 
 // ==========================================================================
