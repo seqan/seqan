@@ -1,4 +1,5 @@
 #include <iostream>
+#ifdef SEQAN_CXX11_COMPLETE
 #include <seqan/blast.h>
 
 using namespace seqan;
@@ -105,3 +106,9 @@ int main()
 
     return 0;
 }
+#else
+int main()
+{
+    return 0;
+}
+#endif

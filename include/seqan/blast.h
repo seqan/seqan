@@ -40,9 +40,6 @@
 #include <seqan/platform.h>
 
 #ifdef SEQAN_CXX11_COMPLETE
-// minimum gcc version 4.9
-// minimum clang version 3.4
-// minimum msvc version 2013
 
 #include <cinttypes>
 #include <cmath>

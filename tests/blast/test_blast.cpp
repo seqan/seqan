@@ -34,12 +34,14 @@
 // Tests for align_extend
 // ==========================================================================
 
-#include <string>
-
 #include <seqan/basic.h>
-#include <seqan/file.h>
 
 #if defined(SEQAN_CXX11_COMPLETE)
+
+#include <seqan/file.h>
+#include <seqan/sequence.h>
+#include <seqan/blast.h>
+
 #include "test_blast_misc.h"
 #include "test_blast_statistics.h"
 #include "test_blast_output.h"

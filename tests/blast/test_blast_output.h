@@ -37,11 +37,6 @@
 #ifndef SEQAN_TESTS_TEST_BLAST_OUTPUT_H_
 #define SEQAN_TESTS_TEST_BLAST_OUTPUT_H_
 
-#include <seqan/basic.h>
-#include <seqan/sequence.h>
-
-#include <seqan/blast.h>
-
 using namespace seqan;
 
 template <typename TFile, typename TScore, typename TRecords, BlastProgram p, BlastTabularSpec h>

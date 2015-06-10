@@ -34,8 +34,6 @@
 // Tests for the blast module
 // ==========================================================================
 
-#include <fstream>
-
 // Files that are being read by this implementation
 #define PLUS_HEADER_DEFAULTS   "/tests/blast/plus_header_defaults.m9"
 #define LEGACY_HEADER_DEFAULTS "/tests/blast/legacy_header_defaults.m9"

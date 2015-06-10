@@ -37,11 +37,6 @@
 #ifndef SEQAN_TESTS_TEST_BLAST_STATISTICS_H_
 #define SEQAN_TESTS_TEST_BLAST_STATISTICS_H_
 
-#include <seqan/basic.h>
-#include <seqan/sequence.h>
-
-#include <seqan/blast.h>
-
 using namespace seqan;
 
 SEQAN_DEFINE_TEST(test_blast_scoring_scheme_conversion)

@@ -1,4 +1,5 @@
 #include <iostream>
+#ifdef SEQAN_CXX11_COMPLETE
 #include <seqan/blast.h>
 
 using namespace seqan;
@@ -16,9 +17,9 @@ int main()
     while (!atEnd(fit))
     {
         // skip any headers
-        if (!onMatch(fit, BlastTabular()))
+        if (!onMatch(fit, BlastTabularLL()))
         {
-            skipUntilMatch(fit, BlastTabular());
+            skipUntilMatch(fit, BlastTabularLL());
             if (atEnd(fit))
                 break;
         }
@@ -27,7 +28,7 @@ int main()
         resize(hsps, length(hsps)+1);
 
         // read only the first two fields into our variables
-        readMatch(fit, BlastTabular(), back(hsps).first, back(hsps).second);
+        readMatch(fit, BlastTabularLL(), back(hsps).first, back(hsps).second);
     }
 
     std::sort(std::begin(hsps), std::end(hsps));
@@ -38,3 +39,9 @@ int main()
 
     return 0;
 }
+#else
+int main()
+{
+    return 0;
+}
+#endif
