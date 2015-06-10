@@ -37,8 +37,6 @@
 #ifndef SEQAN_BLAST_BLAST_TABULAR_H_
 #define SEQAN_BLAST_BLAST_TABULAR_H_
 
-#include <cinttypes>
-
 namespace seqan
 {
 
@@ -50,46 +48,231 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class BlastTabular
+ * @signature typedef Tag<BlastTabular_> BlastTabular;
+ * @headerfile <seqan/blast.h>
+ * @brief Support for Blast Tabular file formats (with and without headers)
+ *
+ * There are three blast format related tags in SeqAn:
+ *
+ * <li> @link BlastReport @endlink with the FormattedFile output specialization @link BlastReportFileOut @endlink</li>
+ * <li> @link BlastTabular @endlink with the FormattedFile output and input specializations
+ * @link BlastTabularFileOut @endlink and @link BlastTabularFileIn @endlink</li>
+ * <li> @link BlastTabularLL @endlink which provides light-weight, but very basic tabular IO </li>
+ *
+ * This is the second tag, it offers <b>high-level</b> support for reading and writing NCBI Blast compatible
+ * <b>tabular</b> files, both with and without headers. These are the formats that are available in legacy Blast
+ * (<tt>blastall</tt> executable) with the parameters <tt>-m 8</tt> and <tt>-m 9</tt> (with headers)
+ * and in BLAST+ (<tt>blastx</tt>, <tt>blastn</tt>...) with
+ * the parameters <tt>-outfmt 6</tt> and <tt>-outfmt 7</tt> respectively.
+ *
+ * Please consult the documentation for @link BlastIOContext @endlink to understand
+ * the different options you have with this format.
+ *
+ * For very basic tabular IO there is the third tag, @link BlastTabularLL @endlink.
+ *
+ * The reference Blast implementation used for developing the SeqAn support is NCBI Blast+ 2.2.26 and
+ * NCBI Blast 2.2.26 for the legacy support.
+ *
+ * @section Input
+ *
+ * High-level file reading looks like this:
+ *
+ * <ul>
+ * <li> @link BlastTabularFileIn#readHeader @endlink </li>
+ * <li> while @link BlastTabularFileIn#onRecord @endlink </li>
+ * <ul><li> @link BlastTabularFileIn#readRecord @endlink</li></ul>
+ * <li> @link BlastTabularFileIn#readFooter @endlink </li>
+ * </ul>
+ *
+ * See @link BlastTabularFileOut @endlink for a full code example.
+ *
+ * Although there is no file-global header in the file (only a record header per record -- if your format is
+ * @link BlastTabularSpec::HEADER @endlink), you need to always call @link BlastTabularFileIn#readHeader @endlink first after
+ * opening the file!
+ *
+ * @section Output
+ *
+ * High-level file writing looks like this:
+ * <ul>
+ * <li> @link BlastTabularFileOut#writeHeader @endlink </li>
+ * <li> @link BlastTabularFileOut#writeRecord @endlink repeated up to n times</li>
+ * <li> @link BlastTabularFileOut#writeFooter @endlink </li>
+ * </ul>
+ *
+ * See @link BlastTabularFileOut @endlink for a full code example.
+ *
+ * Strictly speaking the writeHeader call is not required for BlastTabular, but for consistency with other (blast)
+ * formats it is recommended. The example in @link BlastTabularFileOut @endlink illustrates that.
+ */
+struct BlastTabular_;
+typedef Tag<BlastTabular_> BlastTabular;
+
+/*!
+ * @enum BlastTabularSpec
+ * @headerfile <seqan/blast.h>
+ * @signature enum class BlastTabularSpec : uint8_t { ... };
+ * @brief Spec for @link BlastIOContext @endlink
+ *
+ * @val BlastTabularSpec BlastTabularSpec::NO_HEADER
+ * @brief Tabular format without header
+ *
+ * @val BlastTabularSpec BlastTabularSpec::HEADER
+ * @brief Tabular format with header
+ *
+ * @val BlastTabularSpec BlastTabularSpec::UNKNOWN
+ * @brief not defined or not known
+ *
+ * @val BlastTabularSpec BlastTabularSpec::DYNAMIC
+ * @brief This can only be used when defining a @link BlastTabularSpecSelector @endlink
+ *
+ */
+enum class BlastTabularSpec : uint8_t
+{
+    NO_HEADER = 0,
+    HEADER = 1,
+    UNKNOWN = 254,
+    DYNAMIC = 255
+};
+
+/*!
+ * @class BlastTabularSpecSelector
+ * @brief A datatype that can act as either a @link BlastTabularSpec @endlink or as an constexpr integral constant
+ * thereof.
+ *
+ * @signature template <BlastTabularSpec h> struct BlastTabularSpecSelector { ... };
+ * @headerfile <seqan/blast.h>
+ *
+ * This is a proxy datatype that enables compile-time optimizations through constexpressions iff the value
+ * is known at compile time. You will rarely need to instantiate objects of this type yourself, but they
+ * are used in the @link BlastIOContext @endlink.
+ *
+ * @subsection Example
+ *
+ * mutable variable:
+ * @code{.cpp}
+ * BlastTabularSpecSelector<BlastTabularSpec::DYNAMIC> myProgram = BlastTabularSpec::HEADER;
+ * // same as
+ * // BlastTabularSpec myProgram = BlastTabularSpec::HEADER;
+ *
+ * SEQAN_ASSERT(myProgram == BlastTabularSpec::HEADER); // assertion is checked at run-time
+ * myProgram = BlastTabularSpec::NO_HEADER; // works without problems
+ * @endcode
+ *
+ * compile time integral constant:
+ * @code{.cpp}
+ * BlastTabularSpecSelector<BlastTabularSpec::HEADER> myProgram;
+ * static_assert(myProgram == BlastTabularSpec::HEADER, ""); // assertion is checked at compile time
+ * myProgram = BlastTabularSpec::NO_HEADER; // would fail, because value is fixed
+ * @endcode
+ */
+
+template <BlastTabularSpec _h>
+struct BlastTabularSpecSelector
+{
+    constexpr operator BlastTabularSpec() const
+    {
+        return _h;
+    }
+
+    BlastTabularSpecSelector operator=(BlastTabularSpec const h)
+    {
+        if (h != _h)
+            SEQAN_FAIL("ERROR: Tried to set tabularSpec on context, but was already defined at compile time (and set "
+                       "to a different value)!");
+        return *this;
+    }
+};
+
+template <>
+struct BlastTabularSpecSelector<BlastTabularSpec::DYNAMIC>
+{
+    BlastTabularSpec _runtimeValue = BlastTabularSpec::UNKNOWN;
+
+    operator BlastTabularSpec() const
+    {
+        return _runtimeValue;
+    }
+
+    BlastTabularSpecSelector operator=(BlastTabularSpec const h)
+    {
+        _runtimeValue = h;
+        return *this;
+    }
+};
+
 // ----------------------------------------------------------------------------
-// BlastMatchField
+// Class MagicHeader
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct MagicHeader<BlastTabular, T> :
+    public MagicHeader<Nothing, T> {};
+
+// ----------------------------------------------------------------------------
+// Class FileExtensions
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct FileExtensions<BlastTabular, T>
+{
+    static constexpr char const * VALUE[4] =
+    {
+        ".m8",
+        ".bm8",
+        ".m9",
+        ".bm9"
+    };
+};
+
+template <typename T>
+constexpr char const * FileExtensions<BlastTabular, T>::VALUE[4];
+
+// ----------------------------------------------------------------------------
+// Metafunction FormattedFileContext
+// ----------------------------------------------------------------------------
+
+template <typename TContext, typename TDirection, typename TStorageSpec>
+struct FormattedFileContext<FormattedFile<BlastTabular, TDirection, TContext>, TStorageSpec>
+{
+    typedef TContext Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction FileFormats
+// ----------------------------------------------------------------------------
+
+template <typename TDirection, typename TSpec>
+struct FileFormat<FormattedFile<BlastTabular, TDirection, TSpec> >
+{
+    typedef BlastTabular Type;
+};
+
+// ----------------------------------------------------------------------------
+// Class BlastMatchField
 // ----------------------------------------------------------------------------
 
 /*!
  * @class BlastMatchField BlastMatchField
- * @brief A "meta" datastructure that contains information about members of @link BlastMatch @endlink
+ * @brief A "meta" datastructure that contains information about members of @link BlastMatch @endlinkes
  * @headerfile seqan/blast.h
  *
- * @signature template <BlastFormatGeneration g = BlastFormatGeneration::BLAST_PLUS, typename TVoidSpec = void>
- * struct BlastMatchField;
- * @tparam g            The @link BlastFormatGeneration @endlink you are using.
- * @tparam TVoidSpec    An extra spec to prevent global inclusion (you can safely ignore this)
+ * @signature template <typename TVoidSpec = void> struct BlastMatchField;
+ * @tparam TVoidSpec An extra spec to prevent global inclusion of statics members (you can safely ignore this)
  *
  * This data structure conveniently gives access to all possible fields used in
  * BLAST-compatabile tabular output formats. @link BlastMatchField::Enum @endlink is needed to
- * specify a custom field composition for @link BlastRecord#writeHeader @endlink,
- * @link BlastRecord#writeRecord @endlink and @link BlastMatch#writeMatch @endlink.
+ * specify a custom field composition for a @link BlastIOContext @endlink.
+ *
  * The member variables offer the correct labels for the tabular formats' I/O and strings
  * to interact with the user on the command line.
  *
- * <h3>Legacy Format</h3>
+ * Please note that for the legacyFormat (@link BlastIOContext::legacyFormat @endlink) specifying or reading custom
+ * fields is not supported and the columnsLabels will always be printed as
+ * @link BlastMatchField::legacyColumnLabels @endlink.
  *
- * For g == BlastFormatGeneration::@link BlastFormatGeneration::BLAST_LEGACY @endlink
- * only the default columns are supported and the functions mentioned above do
- * not offer an interface with the <tt>fieldList</tt> parameter. This equivalent
- * to the following values for the member variables:
- * @htmlonly
- * <span style="font-size:90%"><table>
- * <tr><th>#</th><th>Enum</th><th>optionLabels</th><th>columnLabels</th><th>descriptions</th><th>implemented</th></tr>
- * <tr><td>0</td><td>STD</td><td>std</td><td>Query id, Subject id, % identity, alignment length, mismatches, gap openings, q. start, q. end, s. start, s. end, e-value, bit score</td><td>Default 12 columns (Query Seq-id, Subject Seq-id, Percentage of identical matches, Alignment length, Number of mismatches, Number of gap openings, Start of alignment in query, End of alignment in query, Start of alignment in subject, End of alignment in subject, Expect value, Bit score)</td><td>&#9745;</td></tr>
- * </table></span>
- * @endhtmlonly
- *
- * <h3>Current Format</h3>
- *
- * Value Overview for g == BlastFormatGeneration::@link BlastFormatGeneration::BLAST_PLUS @endlink
- *
- * More fields will likely be implemented in the future.
- *
+ * <h3>Table overview</h3>
  * @htmlonly
  * <span style="font-size:90%"><table>
  * <tr><th>#</th><th>Enum</th><th>optionLabels</th><th>columnLabels</th><th>descriptions</th><th>implemented</th></tr>
@@ -141,124 +324,21 @@ namespace seqan
  * </table></span>
  * @endhtmlonly
  *
- * @var static_constexpr_char_const_*_const BlastMatchField::columnLabels[]
- * @brief An array of CStrings representing the <b>column label</b> of each field in tabular @link BlastFormatFile @endlink
- *
- * @var static_constexpr_char_const_*_const BlastMatchField::optionLabels[]
- * @brief An array of CStrings representing the command line parameter name of each field
- *
- * @var static_constexpr_char_const_*_const BlastMatchField::descriptions[]
- * @brief An array of CStrings representing the human-readable descriptions of each field
- *
- * @var static_constexpr_bool_const BlastMatchField::implemented[]
- * @brief An array of bools revealing whether the Blast I/O module supports printing this field
- *
- * @var static_constexpr_std::array<Enum_const,12> BlastMatchField::defaults
- * @brief An std::array of @link BlastMatchField::Enum @endlink indicating the fields that are default
- *
- * @code{.cpp}
- * static constexpr std::array<Enum const, 12> defaults
- * {
- *     {
- *         Enum::Q_SEQ_ID,
- *         Enum::S_SEQ_ID,
- *         Enum::P_IDENT,
- *         Enum::LENGTH,
- *         Enum::MISMATCH,
- *         Enum::GAP_OPEN,
- *         Enum::Q_START,
- *         Enum::Q_END,
- *         Enum::S_START,
- *         Enum::S_END,
- *         Enum::E_VALUE,
- *         Enum::BIT_SCORE
- *     }
- * };
- * @endcode
+ * More fields will likely be implemented in the future.
  */
 
-/*!
- * @enum BlastMatchField::Enum
- * @headerfile seqan/blast.h
- * @signature enum class BlastMatchField<g, TVoidSpec>::Enum : uint8_t { ... };
- * @brief A strongly typed enum mapping all fields supported by NCBI Blast to an interact
- *
- * The available values are visible in detailed description of @link BlastMatchField @endlink.
- */
 
-template <BlastFormatGeneration g = BlastFormatGeneration::BLAST_PLUS,
-          typename TVoidSpec = void>
-struct BlastMatchField;
-
-// Only canonical 12 columns supported for legacy blast
-template <typename TVoidSpec>
-struct BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>
+template <typename TVoidSpec = void>
+struct BlastMatchField
 {
-    enum class Enum : uint8_t
-    {
-        STD
-    };
-
-    // this is what Enum::STD stands for
-    static constexpr std::array<Enum const, 1> defaults
-    {
-        {
-            Enum::STD
-        }
-    };
-
-    static constexpr char const * const columnLabels [] =
-    {
-        "Query id, Subject id, % identity, alignment length,"
-         " mismatches, gap openings, q. start, q. end, s. start, s."
-         " end, e-value, bit score"
-    };
-
-    static constexpr char const * const optionLabels [] =
-    {
-        "std"
-    };
-
-    static constexpr char const * const descriptions [] =
-    {
-        "Default 12 columns (Query Seq-id, Subject Seq-id, Percentage of "
-         "identical matches, Alignment length, Number of mismatches, Number of "
-         "gap openings, Start of alignment in query, End of alignment in query,"
-         " Start of alignment in subject, End of alignment in subject, Expect "
-         "value, Bit score)"
-    };
-
-    static constexpr bool const implemented [] =
-    {
-        true
-    };
-};
-
-// declarations
-template <typename TVoidSpec>
-constexpr char const * const
-BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>::optionLabels[1];
-
-template <typename TVoidSpec>
-constexpr char const * const
-BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>::columnLabels[1];
-
-template <typename TVoidSpec>
-constexpr char const * const
-BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>::descriptions[1];
-
-template <typename TVoidSpec>
-constexpr bool const
-BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>::implemented[1];
-
-template <typename TVoidSpec>
-constexpr std::array<typename BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>::Enum const, 1>
-BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>::defaults;
-
-
-template <typename TVoidSpec>
-struct BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>
-{
+    /*!
+     * @enum BlastMatchField::Enum
+     * @headerfile seqan/blast.h
+     * @signature enum class BlastMatchField<TVoidSpec>::Enum : uint8_t { ... };
+     * @brief A strongly typed enum mapping all fields supported by NCBI Blast to an integer
+     *
+     * The available values are visible in detailed description of @link BlastMatchField @endlink.
+     */
     enum class Enum : uint8_t
     {
         STD,
@@ -308,6 +388,30 @@ struct BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>
         Q_COV_HSP
     };
 
+    /*!
+     * @var static_constexpr_std::array<Enum_const,12> BlastMatchField::defaults
+     * @brief An std::array of @link BlastMatchField::Enum @endlink indicating the fields that are default
+     *
+     * @code{.cpp}
+     * static constexpr std::array<Enum const, 12> defaults
+     * {
+     *     {
+     *         Enum::Q_SEQ_ID,
+     *         Enum::S_SEQ_ID,
+     *         Enum::P_IDENT,
+     *         Enum::LENGTH,
+     *         Enum::MISMATCH,
+     *         Enum::GAP_OPEN,
+     *         Enum::Q_START,
+     *         Enum::Q_END,
+     *         Enum::S_START,
+     *         Enum::S_END,
+     *         Enum::E_VALUE,
+     *         Enum::BIT_SCORE
+     *     }
+     * };
+     * @endcode
+     */
     // this is what Enum::STD stands for
     static constexpr std::array<Enum const, 12> defaults
     {
@@ -327,6 +431,10 @@ struct BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>
         }
     };
 
+    /*!
+     * @var static_constexpr_char_const_*_const BlastMatchField::optionLabels[]
+     * @brief An array of CStrings representing the command line parameter name of each field
+     */
     static constexpr char const * const optionLabels [] =
     {
         "std",
@@ -376,11 +484,25 @@ struct BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>
         "qcovhsp"
     };
 
+    /*!
+     * @var static_constexpr_char_const_*_const BlastMatchField::legacyColumnLabels
+     * @brief A single CString representing the <b>column labels</b> of the @link BlastIOContext::legacyFormat @endlink.
+     */
+    static constexpr char const * const legacyColumnLabels =
+    {
+        "Query id, Subject id, % identity, alignment length, mismatches, gap openings, q. start, q. end, s. start, s."
+         " end, e-value, bit score"
+    };
+
+    /*!
+     * @var static_constexpr_char_const_*_const BlastMatchField::columnLabels[]
+     * @brief An array of CStrings representing the <b>column label</b> of each possible field; for the
+     * @link BlastIOContext::legacyFormat @endlink, use @link BlastMatchField::legacyColumnLabels @endlink instead.
+     */
     static constexpr char const * const columnLabels [] =
     {
-        "query id, subject id, % identity, alignment "
-         "length, mismatches, gap opens, q. start, q. end, s. "
-         "start, s. end, evalue, bit score",
+        "query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. "
+        "end, evalue, bit score",
         "query id",
         "query gi",
         "query acc.",
@@ -427,6 +549,10 @@ struct BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>
         "% hsp coverage"
     };
 
+    /*!
+     * @var static_constexpr_char_const_*_const BlastMatchField::descriptions[]
+     * @brief An array of CStrings representing the human-readable descriptions of each field
+     */
     static constexpr char const * const descriptions [] =
     {
         "Default 12 columns (Query Seq-id, Subject Seq-id, Percentage of "
@@ -480,6 +606,10 @@ struct BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>
         "Query Coverage Per HSP"
     };
 
+    /*!
+     * @var static_constexpr_bool_const BlastMatchField::implemented[]
+     * @brief An array of bools revealing whether the Blast I/O module supports printing this field
+     */
     //TODO(c++14): change to std::bitset that is initialized with binary literal
     static constexpr bool const implemented [] =
     {
@@ -532,81 +662,26 @@ struct BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>
 };
 
 template <typename TVoidSpec>
-constexpr char const * const
-BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::optionLabels[45];
+constexpr char const * const BlastMatchField<TVoidSpec>::optionLabels[45];
 
 template <typename TVoidSpec>
-constexpr char const * const
-BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::columnLabels[45];
+constexpr char const * const BlastMatchField<TVoidSpec>::legacyColumnLabels;
 
 template <typename TVoidSpec>
-constexpr char const * const
-BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::descriptions[45];
+constexpr char const * const BlastMatchField<TVoidSpec>::columnLabels[45];
 
 template <typename TVoidSpec>
-constexpr bool const
-BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::implemented[45];
+constexpr char const * const BlastMatchField<TVoidSpec>::descriptions[45];
 
 template <typename TVoidSpec>
-constexpr std::array<typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::Enum const, 12>
-BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::defaults;
+constexpr bool const BlastMatchField<TVoidSpec>::implemented[45];
 
-
-// TODO document
-// struct FieldsDefault : public Default;
-//
-// template <typename TFieldList =
-//  std::vector<typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum>>
-// struct FieldsCustom
-// {
-//     TFieldList const & fieldList;
-//
-//     FieldsDetect(TFieldList const & _fieldList) :
-//         fieldList(_fieldList)
-//     {}
-//
-// };
-//
-// template <typename TFieldList =
-//  std::vector<typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum>>
-// struct FieldsDetect
-// {
-//     TFieldList & fieldList;
-//
-//     FieldsDetect() :
-//         fieldList()
-//     {}
-//
-//     FieldsDetect(TFieldList & _fieldList) :
-//         fieldList(_fieldList)
-//     {}
-//
-// };
+template <typename TVoidSpec>
+constexpr std::array<typename BlastMatchField<TVoidSpec>::Enum const, 12> BlastMatchField<TVoidSpec>::defaults;
 
 // ============================================================================
 // Metafunctions and global const-expressions
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// _seperatorString
-// ----------------------------------------------------------------------------
-
-
-template <BlastFormatProgram p, BlastFormatGeneration g>
-constexpr
-const char *
-_seperatorString(BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p,g> const &)
-{
-    return ", ";
-}
-
-template <BlastFormatProgram p, BlastFormatGeneration g>
-constexpr
-const char *
-_seperatorString(BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
-{
-    return "\t";
-}
 
 }
 

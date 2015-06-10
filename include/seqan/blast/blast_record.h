@@ -42,134 +42,123 @@ namespace seqan
 
 /*!
  * @class BlastMatch
+ * @implements AssignableConcept
+ * @implements CopyConstructibleConcept
+ * @implements DefaultConstructibleConcept
+ * @implements EqualityComparableConcept
+ * @implements LessThanComparableConcept
  * @headerfile <seqan/blast.h>
  * @signature struct BlastMatch<TQId, TSId, TPos, TAlign> { ... };
- * @brief An object to hold data members of a blast-match.
+ * @brief An data structure to hold a blast match, also known as high-scoring segment pair (HSP)
  *
  * You should set the following members manually: @link BlastMatch::qId @endlink, @link BlastMatch::sId @endlink,
  * @link BlastMatch::qLength @endlink, @link BlastMatch::sLength @endlink,
- * @link BlastMatch::qFrameShift @endlink and @link BlastMatch::sFrameShift @endlink .
+ * @link BlastMatch::qFrameShift @endlink and @link BlastMatch::sFrameShift @endlink.
  *
  * If you then also set a valid @link BlastMatch::align @endlink you can
  * let the other members be computed by
- * @link BlastMatch#calcStatsAndScore @endlink and
- * @link BlastMatch#calcBitScoreAndEValue @endlink.
+ * @link BlastMatch#computeAlignmentStats @endlink and
+ * @link BlastMatch#computeBitScore @endlink, @link BlastMatch#computeEValue @endlink.
  *
  * @tparam TQId  Type of qId, defaults to std::string
  * @tparam TSId  Type of sId, defaults to std::string
- * @tparam TPos  Position type of the sequences, defaults to <tt>uint32_t</tt>
+ * @tparam TPos  Position type of the sequences, defaults to <tt>__uint32</tt>
  * @tparam TAlign Type of the @link Align @endlink member, defaults to
  * <tt>Align<CharString, ArrayGaps></tt>
- *
- * @var TQId BlastMatch::qId;
- * @brief verbose Id of the query
- *
- * @var TSId BlastMatch::sId;
- * @brief verbose Id of the subject
- *
- * @var long BlastMatch::score;
- * @brief score of the alignment
- *
- * @var TPos BlastMatch::qStart;
- * @brief start of the query sequence
- *
- * @var TPos BlastMatch::qEnd;
- * @brief end of the query sequence
- *
- * @var TPos BlastMatch::sStart;
- * @brief start of the subject sequence
- *
- * @var TPos BlastMatch::sEnd;
- * @brief start of the subject sequence
- *
- * @var TPos BlastMatch::qLength;
- * @brief length of the query sequences
- *
- * @var TPos BlastMatch::sLength;
- * @brief length of the subject sequence
- *
- * @var TPos BlastMatch::aliLength;
- * @brief length of the alignment
- *
- * @var TPos BlastMatch::identities;
- * @brief no of identical positions in alignment
- *
- * @var TPos BlastMatch::positives;
- * @brief no of positive scoring positions in alignment
- *
- * @var TPos BlastMatch::mismatches;
- * @brief no of non-identical positions in alignment
- *
- * @var TPos BlastMatch::gaps;
- * @brief no of gap-characters in alignment
- *
- * @var TPos BlastMatch::gapOpenings;
- * @brief number of contiguous gap stretches in alignment
- *
- * @var double BlastMatch::eValue;
- * @brief e-value of the alignment
- *
- * @var double BlastMatch::bitScore;
- * @brief bit-score of the alignment
- *
- * @var char BlastMatch::qFrameShift;
- * @brief one out of { -3, -2, -1, +1, +2, +3 } where the absolute value -1 is
- * shift of the translation frame and a negative sign indicates the reverse
- * complement strand [query sequence, only applies for BlastFormatProgram ==
- * BLASTX | TBLASTX]
- *
- * @var char BlastMatch::sFrameShift;
- * @brief one out of { -3, -2, -1, +1, +2, +3 } where the absolute value -1 is
- * shift of the translation frame and a negative sign indicates the reverse
- * complement strand [subject sequence, only applies for BlastFormatProgram ==
- * TBLASTN | TBLASTX]
- *
- * @var TAlign BlastMatch::align;
- * @brief @link Align @endlink object of the alignment
- *
- * @fn BlastMatch::operator<
- * @signature bool operator< (BlastMatch const & bm2) const
- * @brief only qId and bit-score are compared, so that matches are sorted
- * by query sequence and then per bit-score
- *
- * TODO sees
  *
  */
 
 template <typename TQId = std::string,
           typename TSId = std::string,
-          typename TPos = uint32_t,
+          typename TPos = __uint32,
           typename TAlign = Align<std::string, ArrayGaps>>
 struct BlastMatch
 {
+    /*!
+     * @var TQId BlastMatch::qId;
+     * @brief The verbose Id of the query.
+     *
+     * @var TSId BlastMatch::sId;
+     * @brief The verbose Id of the subject.
+     */
     TQId            qId;
     TSId            sId;
 
-    long            score         = 0;
-
+    /*!
+     * @var TPos BlastMatch::qStart;
+     * @brief The start of the alignment on the query sequence.
+     *
+     * @var TPos BlastMatch::qEnd;
+     * @brief The end of the alignment on the query sequence.
+     *
+     * @var TPos BlastMatch::sStart;
+     * @brief The start of the alignment on the subject sequence.
+     *
+     * @var TPos BlastMatch::sEnd;
+     * @brief The end of the alignment on the subject sequence.
+     */
     TPos            qStart        = 0;
     TPos            qEnd          = 0;
     TPos            sStart        = 0;
     TPos            sEnd          = 0;
 
+    /*!
+     * @var TPos BlastMatch::qLength;
+     * @brief The length of the query sequences.
+     *
+     * @var TPos BlastMatch::sLength;
+     * @brief The length of the subject sequence.
+     */
     TPos            qLength       = 0;
     TPos            sLength       = 0;
-
-    TPos            aliLength     = 0;
-    TPos            identities    = 0;
-    TPos            positives     = 0;
-    TPos            mismatches    = 0;
-    TPos            gaps          = 0;
-    TPos            gapOpenings   = 0;
-
-    double          eValue        = 0;
-    double          bitScore      = 0;
-
+    /*!
+     * @var char BlastMatch::qFrameShift;
+     * @brief An indicator for query frame and query strand.
+     *
+     * one out of { -3, -2, -1, +1, +2, +3 } where the <tt>absolute value - 1</tt> is
+     * the shift of the translation frame and a negative sign indicates the reverse
+     * complement strand [query sequence, only applies for BlastFormatProgram ==
+     * BLASTX | TBLASTX]
+     *
+     * @var char BlastMatch::sFrameShift;
+     * @brief An indicator for subject frame and subject strand.
+     *
+     * one out of { -3, -2, -1, +1, +2, +3 } where the <tt>absolute value - 1</tt> is
+     * the shift of the translation frame and a negative sign indicates the reverse
+     * complement strand [subject sequence, only applies for BlastFormatProgram ==
+     * TBLASTN | TBLASTX]
+     */
     int8_t          qFrameShift   = 1;
     int8_t          sFrameShift   = 1;
 
+    /*!
+     * @var double BlastMatch::eValue;
+     * @brief The e-value of the alignment.
+     *
+     * @var double BlastMatch::bitScore;
+     * @brief The bit-score of the alignment.
+     */
+    double          eValue        = 0;
+    double          bitScore      = 0;
+
+    /*!
+     * @var AlignmentStats BlastMatch::alignStats
+     * @brief An @link AlignmentStats @endlink object holding further stats of the alignment.
+     */
+    AlignmentStats  alignStats;
+
+    /*!
+     * @var TAlign BlastMatch::align;
+     * @brief @link Align @endlink object of the alignment.
+     */
     TAlign          align;
 
+    /*!
+     * @fn BlastMatch::BlastMatch()
+     * @brief Constructor, can be called with arguments for qId and sId.
+     * @signature BlastMatch::BlastMatch()
+     * BlastMatch::BlastMatch(qId, sId)
+     */
     BlastMatch() :
         qId(TQId()), sId(TSId())
     {}
@@ -196,13 +185,7 @@ struct BlastMatch
 //                         align,
                         qFrameShift,
                         sFrameShift,
-                        score,
-                        aliLength,
-                        identities,
-                        positives,
-                        mismatches,
-                        gaps,
-                        gapOpenings
+                        alignStats
 // scores have rounding errors
 //                         eValue,
 //                         bitScore
@@ -218,61 +201,53 @@ struct BlastMatch
                         bm2.qFrameShift,
                         bm2.sFrameShift,
 //                         bm2.align,
-                        bm2.score,
-                        bm2.aliLength,
-                        bm2.identities,
-                        bm2.positives,
-                        bm2.mismatches,
-                        bm2.gaps,
-                        bm2.gapOpenings
+                        bm2.alignStats
 // scores have rounding errors
 //                         bm2.eValue,
 //                         bm2.bitScore
                        );
     }
 
+    // copy, move and assign implicitly
+
+    /*!
+     * @fn BlastMatch::operator<
+     * @brief The comparison operator (for sorting by bit-score).
+     * @signature bool BlastMatch::operator< (BlastMatch const & bm2) const
+     *
+     * To facilitate fast sorting of matches in a @link BlastRecord @endlink, only the bit-score is compared. Also
+     * large bit-score are sorted to front (i.e. operator< on BlastMatch checks operator>= on the bitScores).
+     */
+
     inline bool operator< (BlastMatch const & bm2) const
     {
-        if (bitScore >= bm2.bitScore)
-            return true;
-        //TODO check this; comparison should be with numeric id, not strings
-//         if (qId <= bm2.qId)
-//             return true;
-        return false;
+        return (bitScore >= bm2.bitScore);
     }
 
-    inline void clear()
+    inline void _clear()
     {
         clear(qId);
         clear(sId);
 
-        score         = 0;
         qStart        = 0;
         qEnd          = 0;
         sStart        = 0;
         sEnd          = 0;
         qLength       = 0;
         sLength       = 0;
-        aliLength     = 0;
-        identities    = 0;
-        positives     = 0;
-        mismatches    = 0;
-        gaps          = 0;
-        gapOpenings   = 0;
+
         eValue        = 0;
         bitScore      = 0;
         qFrameShift   = 1;
         sFrameShift   = 1;
-
-        clear(align);;
+        clear(alignStats);
+        clear(align.data_rows);
     }
 
     inline void _maxInitialize()
     {
         qId           = "not init";
         sId           = "not init";
-
-        score         = std::numeric_limits<long>::max();
 
         qStart        = std::numeric_limits<TPos>::max();
         qEnd          = std::numeric_limits<TPos>::max();
@@ -282,21 +257,29 @@ struct BlastMatch
         qLength       = std::numeric_limits<TPos>::max();
         sLength       = std::numeric_limits<TPos>::max();
 
-        aliLength     = std::numeric_limits<TPos>::max();
-        identities    = std::numeric_limits<TPos>::max();
-        positives     = std::numeric_limits<TPos>::max();
-        mismatches    = std::numeric_limits<TPos>::max();
-        gaps          = std::numeric_limits<TPos>::max();
-        gapOpenings   = std::numeric_limits<TPos>::max();
-
         eValue        = std::numeric_limits<double>::max();
         bitScore      = std::numeric_limits<double>::max();
 
         qFrameShift   = std::numeric_limits<int8_t>::max();
         sFrameShift   = std::numeric_limits<int8_t>::max();
+
+        alignStats.numGaps              = std::numeric_limits<unsigned>::max();
+        alignStats.numGapOpens          = std::numeric_limits<unsigned>::max();
+        alignStats.numGapExtensions     = std::numeric_limits<unsigned>::max();
+        alignStats.numInsertions        = std::numeric_limits<unsigned>::max();
+        alignStats.numDeletions         = std::numeric_limits<unsigned>::max();
+        alignStats.numMatches           = std::numeric_limits<unsigned>::max();
+        alignStats.numMismatches        = std::numeric_limits<unsigned>::max();
+        alignStats.numPositiveScores    = std::numeric_limits<unsigned>::max();
+        alignStats.numNegativeScores    = std::numeric_limits<unsigned>::max();
+        alignStats.alignmentLength      = std::numeric_limits<unsigned>::max();
+        alignStats.alignmentSimilarity  = std::numeric_limits<float>::max();
+        alignStats.alignmentIdentity    = std::numeric_limits<float>::max();
+        alignStats.alignmentScore       = std::numeric_limits<unsigned>::max();
+
+        clear(align.data_rows);
     }
 };
-
 
 inline bool
 _memberIsSet(CharString const & in)
@@ -311,54 +294,67 @@ _memberIsSet(TNumber const & in)
     return (in != std::numeric_limits<TNumber>::max());
 }
 
-template <typename TQId = CharString,
-          typename TSId = CharString,
-          typename TPos = uint32_t,
-          typename TAlign = Align<CharString, ArrayGaps>>
+template <typename TQId,
+          typename TSId,
+          typename TPos,
+          typename TAlign>
 inline void
 clear(BlastMatch<TQId, TSId, TPos, TAlign> & match)
 {
-    match.clear();
+    match._clear();
 }
 
 /*!
  * @class BlastRecord
+ * @implements FormattedFileRecordConcept
  * @headerfile <seqan/blast.h>
  * @signature struct BlastRecord<TQId, TSId, TPos, TAlign> { ... };
  * @brief A record of blast-matches (belonging to one query).
 
- * @tparam TQId  Type of qId, defaults to @link std::string @endlink
- * @tparam TSId  Type of sId, defaults to @link std::string @endlink
- * @tparam TPos  Position type of the sequences, defaults to <tt>uint32_t</tt>
+ * @tparam TQId  Type of qId, defaults to std::string
+ * @tparam TSId  Type of sId, defaults to std::string
+ * @tparam TPos  Position type of the sequences, defaults to <tt>__uint32</tt>
  * @tparam TAlign Type of the @link Align @endlink member, defaults to
  * <tt>Align<CharString, ArrayGaps></tt>
- *
- * @typedef BlastRecord::TBlastMatch
- * @signature typedef BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
- * @brief type of the contained matches
- *
- * @var TQId BlastRecord::qId;
- * @brief verbose Id of the query
- *
- * @var TPos BlastRecord::qLength;
- * @brief length of the query sequence
- *
- * @var std::list<TBlastMatch> BlastRecord::matches;
- * @brief list of the contained matches
  */
 
 template <typename TQId = std::string,
           typename TSId = std::string,
-          typename TPos = uint32_t,
+          typename TPos = __uint32,
           typename TAlign = Align<std::string, ArrayGaps>>
 struct BlastRecord
 {
+    /*!
+     * @typedef BlastRecord::TBlastMatch
+     * @signature typedef BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
+     * @brief type of the contained matches
+     */
     typedef         BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
 
+    /*!
+     * @var TQId BlastRecord::qId;
+     * @brief verbose Id of the query
+     */
     TQId            qId;
+
+    /*!
+     * @var TPos BlastRecord::qLength;
+     * @brief length of the query sequence
+     */
     TPos            qLength;
+
+    /*!
+     * @var std::list<TBlastMatch> BlastRecord::matches;
+     * @brief list of the contained matches
+     */
     std::list<TBlastMatch>  matches;
 
+    /*!
+     * @fn BlastRecord::BlastRecord()
+     * @brief constructor, can be passed the qId
+     * @signature BlastRecord::BlastRecord()
+     * BlastRecord::BlastRecord(qid)
+     */
     BlastRecord() :
         qId(TQId()), qLength(0), matches()
     {}
@@ -371,10 +367,7 @@ struct BlastRecord
         qId(std::move(_qId)), qLength(0), matches()
     {}
 
-//     inline void clear()
-//     {
-//
-//     }
+    // copy, move and assign implicitly
 };
 
 template <typename TQId, typename TSId, typename TPos, typename TAlign>
@@ -384,58 +377,6 @@ clear(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord)
     clear(blastRecord.qId);
     blastRecord.qLength = 0;
     clear(blastRecord.matches);
-}
-
-/*!
- * @class BlastDbSpecs
- * @headerfile <seqan/blast.h>
- * @signature struct BlastRecord<TDbName> { ... };
- * @brief A record of blast-matches (belonging to one query).
- *
- * @tparam TDbName  Type of dbName, defaults to @link CharString @endlink
- *
- * @var TDbName BlastDbSpecs::dbName;
- * @brief verbose name of the database
- *
- * @var uint64_t BlastDbSpecs::dbTotalLength;
- * @brief summed sequence length of the database
- *
- * @var uint32_t BlastDbSpecs::dbNumberOfSeqs;
- * @brief number of sequences in the database
- */
-
-template <typename TDbName = CharString>
-struct BlastDbSpecs
-{
-    TDbName         dbName;
-    uint64_t        dbTotalLength;
-    uint32_t        dbNumberOfSeqs;
-
-    BlastDbSpecs() :
-        dbName(), dbTotalLength(0), dbNumberOfSeqs(0)
-    {}
-
-    BlastDbSpecs(TDbName const & _dbName) :
-        dbName(_dbName), dbTotalLength(0), dbNumberOfSeqs(0)
-    {}
-
-    BlastDbSpecs(TDbName && _dbName) :
-        dbName(std::move(_dbName)), dbTotalLength(0), dbNumberOfSeqs(0)
-    {}
-
-    inline void clear()
-    {
-        clear(dbName);
-        dbTotalLength = 0;
-        dbNumberOfSeqs = 0;
-    }
-};
-
-template <typename TDbName>
-inline void
-clear(BlastDbSpecs<TDbName> & dbSpecs)
-{
-    dbSpecs.clear();
 }
 
 }

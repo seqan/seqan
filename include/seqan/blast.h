@@ -37,7 +37,12 @@
 #ifndef SEQAN_BLAST_H
 #define SEQAN_BLAST_H
 
+#include <seqan/platform.h>
+
 #ifdef SEQAN_CXX11_STANDARD
+// minimum gcc version 4.9
+// minimum clang version 3.4
+// minimum msvc version 2013
 
 #include <cinttypes>
 #include <cmath>
@@ -45,15 +50,8 @@
 #include <cstdlib>
 #include <sstream>
 #include <type_traits>
-
-// FREEBSD lacks some defines in its libc
-#ifdef __FreeBSD__
-#define _GLIBCXX_USE_C99 1
-#include <math.h>
-#define ROUND lround
-#else
-#define ROUND std::lround
-#endif
+#include <unordered_map>
+#include <regex>
 
 #include <seqan/basic.h>
 #include <seqan/version.h>
@@ -61,12 +59,14 @@
 #include <seqan/score.h>
 
 #include "blast/blast_base.h"
+#include "blast/blast_tabular_lowlevel.h"
 #include "blast/blast_record.h"
-#include "blast/blast_statistics.h"
 #include "blast/blast_tabular.h"
-#include "blast/blast_tabular_read.h"
-#include "blast/blast_tabular_write.h"
-#include "blast/blast_report_write.h"
+#include "blast/blast_io_context.h"
+#include "blast/blast_statistics.h"
+#include "blast/blast_tabular_in.h"
+#include "blast/blast_tabular_out.h"
+#include "blast/blast_report_out.h"
 
 #else //SEQAN_C++11_STANDARD
 

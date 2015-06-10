@@ -100,7 +100,7 @@ namespace seqan {
  * @signature False::Type;
  * @signature bool False::VALUE = false;
  */
-#ifndef SEQAN_CXX11_STANDARD
+
 struct True
 {
     typedef True Type;
@@ -117,21 +117,7 @@ struct True
         return true;
     }
 };
-#else
-struct True : public std::true_type
-{
-    typedef True Type;
-    static constexpr bool const VALUE = true;
 
-    template <typename TValue>
-    bool operator() (TValue const &) const
-    {
-        return true;
-    }
-};
-#endif
-
-#ifndef SEQAN_CXX11_STANDARD
 struct False
 {
     typedef False Type;
@@ -148,19 +134,6 @@ struct False
         return false;
     }
 };
-#else
-struct False : public std::false_type
-{
-    typedef False Type;
-    static constexpr bool const VALUE = false;
-
-    template <typename TValue>
-    bool operator() (TValue const &) const
-    {
-        return false;
-    }
-};
-#endif
 
 // ============================================================================
 // Metafunctions

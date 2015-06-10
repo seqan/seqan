@@ -34,72 +34,107 @@
 // Tests for align_extend
 // ==========================================================================
 
-// work around obscure FreeBSD issue
-#ifndef _GLIBCXX_USE_C99
-#define _GLIBCXX_USE_C99 1
-#define _GLIBCXX_USE_C99_UNDEF 1
-#endif
 #include <string>
 
 #include <seqan/basic.h>
 #include <seqan/file.h>
 
+#include "test_blast_misc.h"
 #include "test_blast_statistics.h"
 #include "test_blast_output.h"
 #include "test_blast_input.h"
 
 SEQAN_BEGIN_TESTSUITE(test_blast)
 {
+    // MISC
+    SEQAN_CALL_TEST(test_blast_program);
+    SEQAN_CALL_TEST(test_blast_context_targs);
+
     // STATISTICS
     SEQAN_CALL_TEST(test_blast_scoring_scheme_conversion);
-    SEQAN_CALL_TEST(test_blast_scoring_adapter);
+    SEQAN_CALL_TEST(test_blast_scoring_scheme);
     SEQAN_CALL_TEST(test_blast_blastmatch_stats_and_score);
     SEQAN_CALL_TEST(test_blast_blastmatch_bit_score_e_value);
 
-    // WRITING
-    SEQAN_CALL_TEST(test_blast_write_tabular);
-    SEQAN_CALL_TEST(test_blast_write_tabular_legacy);
-    SEQAN_CALL_TEST(test_blast_write_tabular_customfields);
-    SEQAN_CALL_TEST(test_blast_write_tabular_customcolumns);
-    SEQAN_CALL_TEST(test_blast_write_tabular_customcolumns_legacy);
+    //TODO extra test for different programs
 
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header);
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_legacy);
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_customfields);
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_customcolumns);
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_customcolumns_legacy);
+    // WRITING (tests writeMatch() interfaces)
+    SEQAN_CALL_TEST(test_blast_write_match_tabular);
+    SEQAN_CALL_TEST(test_blast_write_match_tabular_run_time_context_args); // same as first but properties set as vars
+    SEQAN_CALL_TEST(test_blast_write_match_tabular_legacy);
+    SEQAN_CALL_TEST(test_blast_write_match_tabular_with_header);
+    SEQAN_CALL_TEST(test_blast_write_match_tabular_with_header_legacy);
+    SEQAN_CALL_TEST(test_blast_write_match_customfields_tabular);
+    SEQAN_CALL_TEST(test_blast_write_match_customfields_tabular_with_header);
+    SEQAN_CALL_TEST(test_blast_write_match_lowlevel_tabular);
 
-    // WRITING (the only test related to pairwise format
+    // WRITING (tests writeMatch() and writeRecordHeader() interfaces)
+    SEQAN_CALL_TEST(test_blast_write_header_tabular);
+    SEQAN_CALL_TEST(test_blast_write_header_tabular_legacy);
+    SEQAN_CALL_TEST(test_blast_write_header_tabular_with_header);
+    SEQAN_CALL_TEST(test_blast_write_header_tabular_with_header_legacy);
+    SEQAN_CALL_TEST(test_blast_write_header_customfields_tabular);
+    SEQAN_CALL_TEST(test_blast_write_header_customfields_tabular_with_header);
+
+    // WRITING (tests writeRecord() interfaces)
+    SEQAN_CALL_TEST(test_blast_write_record_tabular);
+    SEQAN_CALL_TEST(test_blast_write_record_tabular_legacy);
+    SEQAN_CALL_TEST(test_blast_write_record_tabular_with_header);
+    SEQAN_CALL_TEST(test_blast_write_record_tabular_with_header_legacy);
+    SEQAN_CALL_TEST(test_blast_write_record_customfields_tabular);
+    SEQAN_CALL_TEST(test_blast_write_record_customfields_tabular_with_header);
+
+    // WRITING (tests formattedFile's writeRecord() interface)
+    SEQAN_CALL_TEST(test_blast_write_formatted_file_tabular);
+    SEQAN_CALL_TEST(test_blast_write_formatted_file_tabular_with_header);
+    SEQAN_CALL_TEST(test_blast_write_formatted_file_customfields_tabular);
+    SEQAN_CALL_TEST(test_blast_write_formatted_file_customfields_tabular_with_header);
+
+    //TODO extra tests for the stuff in the context
+
+    // WRITING (tests writeTop(), writeRecord() and writeBottom() for
+    //          PAIRWISE -- this is the only test for pairwise)
     SEQAN_CALL_TEST(test_blast_write_pairwise);
+    SEQAN_CALL_TEST(test_blast_write_pairwise_formatted_file);
 
     // READING (onMatch, readMatch, skipMatch, skipUntilMatch)
-    SEQAN_CALL_TEST(test_blast_read_tabular_match);
-    SEQAN_CALL_TEST(test_blast_read_tabular_match_legacy);
-    SEQAN_CALL_TEST(test_blast_read_tabular_match_customfields);
-    SEQAN_CALL_TEST(test_blast_read_tabular_match_customcolumns);
-    SEQAN_CALL_TEST(test_blast_read_tabular_match_customcolumns_legacy);
+//     SEQAN_CALL_TEST(test_blast_read_match_tabular);
+//     SEQAN_CALL_TEST(test_blast_read_match_tabular_legacy);
+//     SEQAN_CALL_TEST(test_blast_read_match_customfields_tabular);
+    SEQAN_CALL_TEST(test_blast_read_match_lowlevel_tabular); // only test for low-level format
 
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_match);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_match_legacy);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_match_customfields);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_match_customcolumns);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_match_customcolumns_legacy);
-
-    // READING (readHeader, skipHeader)
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_header);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_header_legacy);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_header_customfields);
+//     SEQAN_CALL_TEST(test_blast_read_match_tabular_with_header);
+//     SEQAN_CALL_TEST(test_blast_read_match_tabular_with_header_legacy);
+//     SEQAN_CALL_TEST(test_blast_read_match_customfields_tabular_with_header);
+//
+//     // READING (readHeader, skipHeader)
+//     SEQAN_CALL_TEST(test_blast_read_header_tabular_with_header);
+//     SEQAN_CALL_TEST(test_blast_read_header_tabular_with_header_legacy);
+//     SEQAN_CALL_TEST(test_blast_read_header_customfields_tabular_with_header);
 
     // READING (readRecord)
-    //TODO readRecord on tabular without header
-
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_record);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_record_legacy);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_record_customfields);
+//     SEQAN_CALL_TEST(test_blast_read_record_tabular);
+//     // when there is no header, you can't tell the difference for legacy, so no extra test
+//     SEQAN_CALL_TEST(test_blast_read_record_customfields_tabular);
+//
+//     SEQAN_CALL_TEST(test_blast_read_record_tabular_with_header);
+//     SEQAN_CALL_TEST(test_blast_read_record_tabular_with_header_legacy);
+//     SEQAN_CALL_TEST(test_blast_read_record_customfields_tabular_with_header);
+//
+//     // READING (formattedFile)
+//     SEQAN_CALL_TEST(test_blast_read_formatted_file_tabular);
+//     SEQAN_CALL_TEST(test_blast_read_formatted_file_tabular_with_header);
+    SEQAN_CALL_TEST(test_blast_read_tabular_without_header);
+    SEQAN_CALL_TEST(test_blast_read_tabular_without_header_customfields);
+    SEQAN_CALL_TEST(test_blast_read_tabular_without_header_legacy);
+    SEQAN_CALL_TEST(test_blast_read_tabular_without_header_constexpr);
+    SEQAN_CALL_TEST(test_blast_read_tabular_without_header_customfields_constexpr);
+    SEQAN_CALL_TEST(test_blast_read_tabular_without_header_legacy_constexpr);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_header);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_customfields);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_legacy);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_constexpr);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_customfields_constexpr);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_legacy_constexpr);
 }
 SEQAN_END_TESTSUITE
-
-#ifdef _GLIBCXX_USE_C99_UNDEF
-#undef _GLIBCXX_USE_C99_UNDEF
-#undef _GLIBCXX_USE_C99
-#endif
