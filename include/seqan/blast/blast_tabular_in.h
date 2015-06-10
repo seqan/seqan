@@ -340,7 +340,8 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                 context.blastProgram = _programStringToTag(prefix(context.versionString,
                                                                   std::find(begin(context.versionString, Standard()),
                                                                             end(context.versionString, Standard()),
-                                                                            ' ')));
+                                                                            ' ')
+                                                                  - begin(context.versionString, Standard())));
 
                 context.legacyFormat = !std::regex_search(begin(context.versionString, Standard()),
                                                           end(context.versionString, Standard()),
@@ -841,7 +842,7 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
 
     clear(blastRecord);
 
-    auto it = begin(context._lineBuffer, Standard()); // move into line below when seqan supports && properly
+    auto it = begin(context._lineBuffer, Rooted()); // move into line below when seqan supports && properly
     readUntil(blastRecord.qId, it, IsTab());
 
     auto curIdPlusTab = blastRecord.qId;

@@ -39,7 +39,7 @@
 
 #include <seqan/platform.h>
 
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_COMPLETE
 // minimum gcc version 4.9
 // minimum clang version 3.4
 // minimum msvc version 2013
@@ -54,6 +54,7 @@
 #include <regex>
 
 #include <seqan/basic.h>
+#include <seqan/sequence.h>
 #include <seqan/version.h>
 #include <seqan/align.h>
 #include <seqan/score.h>
@@ -68,11 +69,11 @@
 #include "blast/blast_tabular_out.h"
 #include "blast/blast_report_out.h"
 
-#else //SEQAN_C++11_STANDARD
+#else //SEQAN_CXX11_COMPLETE
 
 #error The blast module requires C++11 support. \
 If your compiler supports C++11, please define SEQAN_CXX11_STANDARD
 
-#endif //SEQAN_C++11_STANDARD
+#endif //SEQAN_CXX11_COMPLETE
 
 #endif

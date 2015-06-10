@@ -71,7 +71,7 @@ namespace seqan
 template <typename TQId = std::string,
           typename TSId = std::string,
           typename TPos = __uint32,
-          typename TAlign = Align<std::string, ArrayGaps>>
+          typename TAlign = Align<CharString, ArrayGaps>>
 struct BlastMatch
 {
     /*!
@@ -321,7 +321,7 @@ clear(BlastMatch<TQId, TSId, TPos, TAlign> & match)
 template <typename TQId = std::string,
           typename TSId = std::string,
           typename TPos = __uint32,
-          typename TAlign = Align<std::string, ArrayGaps>>
+          typename TAlign = Align<CharString, ArrayGaps>>
 struct BlastRecord
 {
     /*!
