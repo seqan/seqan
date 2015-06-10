@@ -765,19 +765,19 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_array)
     // Test Value<>::VALUE
     {
         typedef Value<TArray>::Type TValue;
-        bool b = IsSameType<TValue, TElement &>::VALUE;
+        bool b = IsSameType<TValue, TElement>::VALUE;
         SEQAN_ASSERT(b);
         typedef Value<TConstArray>::Type TConstValue;
-        b = IsSameType<TConstValue, TElement const &>::VALUE;
+        b = IsSameType<TConstValue, TElement>::VALUE;
         SEQAN_ASSERT(b);
     }
     // Test GetValue<>::VALUE
     {
         typedef GetValue<TArray>::Type TGetValue;
-        bool b = IsSameType<TGetValue, TElement>::VALUE;
+        bool b = IsSameType<TGetValue, TElement const &>::VALUE;
         SEQAN_ASSERT(b);
         typedef GetValue<TConstArray>::Type TConstGetValue;
-        b = IsSameType<TConstGetValue, TElement const>::VALUE;
+        b = IsSameType<TConstGetValue, TElement const &>::VALUE;
         SEQAN_ASSERT(b);
     }
     // Test GetReference<>::VALUE

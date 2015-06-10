@@ -39,6 +39,7 @@
 #include <seqan/basic.h>
 #include <seqan/file.h>
 
+#if defined(SEQAN_CXX11_COMPLETE)
 #include "test_blast_misc.h"
 #include "test_blast_statistics.h"
 #include "test_blast_output.h"
@@ -97,33 +98,10 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_write_pairwise);
     SEQAN_CALL_TEST(test_blast_write_pairwise_formatted_file);
 
-    // READING (onMatch, readMatch, skipMatch, skipUntilMatch)
-//     SEQAN_CALL_TEST(test_blast_read_match_tabular);
-//     SEQAN_CALL_TEST(test_blast_read_match_tabular_legacy);
-//     SEQAN_CALL_TEST(test_blast_read_match_customfields_tabular);
+    // READING (lowlevel tag)
     SEQAN_CALL_TEST(test_blast_read_match_lowlevel_tabular); // only test for low-level format
 
-//     SEQAN_CALL_TEST(test_blast_read_match_tabular_with_header);
-//     SEQAN_CALL_TEST(test_blast_read_match_tabular_with_header_legacy);
-//     SEQAN_CALL_TEST(test_blast_read_match_customfields_tabular_with_header);
-//
-//     // READING (readHeader, skipHeader)
-//     SEQAN_CALL_TEST(test_blast_read_header_tabular_with_header);
-//     SEQAN_CALL_TEST(test_blast_read_header_tabular_with_header_legacy);
-//     SEQAN_CALL_TEST(test_blast_read_header_customfields_tabular_with_header);
-
-    // READING (readRecord)
-//     SEQAN_CALL_TEST(test_blast_read_record_tabular);
-//     // when there is no header, you can't tell the difference for legacy, so no extra test
-//     SEQAN_CALL_TEST(test_blast_read_record_customfields_tabular);
-//
-//     SEQAN_CALL_TEST(test_blast_read_record_tabular_with_header);
-//     SEQAN_CALL_TEST(test_blast_read_record_tabular_with_header_legacy);
-//     SEQAN_CALL_TEST(test_blast_read_record_customfields_tabular_with_header);
-//
-//     // READING (formattedFile)
-//     SEQAN_CALL_TEST(test_blast_read_formatted_file_tabular);
-//     SEQAN_CALL_TEST(test_blast_read_formatted_file_tabular_with_header);
+    // READING
     SEQAN_CALL_TEST(test_blast_read_tabular_without_header);
     SEQAN_CALL_TEST(test_blast_read_tabular_without_header_customfields);
     SEQAN_CALL_TEST(test_blast_read_tabular_without_header_legacy);
@@ -138,3 +116,13 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_read_tabular_with_header_legacy_constexpr);
 }
 SEQAN_END_TESTSUITE
+
+#else
+SEQAN_BEGIN_TESTSUITE(test_blast)
+{
+    std::cerr << "BLAST module tests not run, because your compiler is too old. "
+                 "You need *full* C++11 support, i.e. GCC>=4.9, Clang>=3.4, MSVC>=2015."
+              << std::endl;
+}
+SEQAN_END_TESTSUITE
+#endif
