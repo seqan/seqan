@@ -1,5 +1,5 @@
 #include <iostream>
-#ifdef(SEQAN_CXX11_COMPLETE)
+#ifdef SEQAN_CXX11_COMPLETE
 #include <seqan/blast.h>
 
 using namespace seqan;
