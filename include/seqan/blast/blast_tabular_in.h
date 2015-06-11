@@ -866,7 +866,7 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
             break;
     }
 
-    if (length(blastRecord.matches) == 0)
+    if (empty(blastRecord.matches))
         SEQAN_THROW(ParseError("No Matches could be read."));
 }
 

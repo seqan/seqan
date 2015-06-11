@@ -144,7 +144,7 @@ _test_blast_read_tabular_match_lowlevel(std::string const & path)
     ifstream.close();
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_match_lowlevel_tabular)
+SEQAN_DEFINE_TEST(test_blast_read_lowlevel)
 {
     // this testsBlastTabular#readMatch(),BlastTabular#skipMatch() and
     //BlastTabular#skipUntilMatch

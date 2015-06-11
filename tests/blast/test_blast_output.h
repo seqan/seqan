@@ -41,92 +41,61 @@ using namespace seqan;
 
 template <typename TFile, typename TScore, typename TRecords, BlastProgram p, BlastTabularSpec h>
 inline void
-test_blast_write_do(TFile & file,
-                    BlastIOContext<TScore, p, h> & context,
-                    TRecords const & records,
-                    int const format,
-                    int const,
-                    BlastReport const & /**/)
+_testBlastOutputWriteFile(TFile & file,
+                          BlastIOContext<TScore, p, h> & context,
+                          TRecords const & records,
+                          BlastReport const & /**/)
 {
-    if (format < 3)
-    {
-        writeHeader(file, context, BlastReport());
-        for (auto const & r : records)
-            writeRecord(file, context, r, BlastReport());
-        writeFooter(file, context, BlastReport());
-    } else
-    {
-        BlastReportFileOut<BlastIOContext<TScore, p, h>> out(context, file, BlastReport());
-        writeHeader(out);
-        for (auto const & r : records)
-            writeRecord(out, r);
-        writeFooter(out);
-    }
+    BlastReportFileOut<BlastIOContext<TScore, p, h>> out(context, file, BlastReport());
+    writeHeader(out);
+    for (auto const & r : records)
+        writeRecord(out, r);
+    writeFooter(out);
 }
 
 template <typename TFile, typename TScore, typename TRecords, BlastProgram p, BlastTabularSpec h>
 inline void
-test_blast_write_do(TFile & file,
-                    BlastIOContext<TScore, p, h> & context,
-                    TRecords const & records,
-                    int const format,
-                    int const custom,
-                    BlastTabular const & /**/)
+_testBlastOutputWriteFile(TFile & file,
+                          BlastIOContext<TScore, p, h> & context,
+                          TRecords const & records,
+                          BlastTabular const & /**/)
 {
-    switch (format)
-    {
-        case 0: // iterate over matches
-        case 1: // iterate over headers and matches
-            if ((format == 1) && (custom <= 1))
-                writeHeader(file, context, BlastTabular()); // noop for TABULARs
-            for (auto const & r : records)
-            {
-                if ((format == 1) && (custom <= 1))
-                    _writeRecordHeader(file, context, r, BlastTabular());
+    BlastTabularFileOut<BlastIOContext<TScore, p, h>> out(context, file, BlastTabular());
+    writeHeader(out); // noop for TABULARs
+    for (auto const & r : records)
+        writeRecord(out, r);
+    writeFooter(out);
+}
 
-                for (auto const & m : r.matches)
-                {
-                    if (custom <= 1)
-                        _writeMatch(file, context, m, BlastTabular());
-                    else
-                        writeMatch(file,
-                                    BlastTabularLL(),
-                                    m.qId,
-                                    m.sId,
-                                    m.alignStats.alignmentLength,
-                                    m.alignStats.numMismatches,
-                                    m.alignStats.numGaps,
-                                    m.eValue,
-                                    m.bitScore);
-                }
-            }
-            if ((format == 1) && (custom <= 1))
-                writeFooter(file, context, BlastTabular());
-            break;
-        case 2: // iteratre over records
-            writeHeader(file, context, BlastTabular()); // noop for TABULARs
-            for (auto const & r : records)
-                writeRecord(file, context, r, BlastTabular());
-            writeFooter(file, context, BlastTabular());
-            break;
-        case 3: // formatted file out
+template <typename TFile, typename TScore, typename TRecords, BlastProgram p, BlastTabularSpec h>
+inline void
+_testBlastOutputWriteFile(TFile & file,
+                          BlastIOContext<TScore, p, h> &,
+                          TRecords const & records,
+                          BlastTabularLL const & /**/)
+{
+    for (auto const & r : records)
+    {
+        for (auto const & m : r.matches)
         {
-            BlastTabularFileOut<BlastIOContext<TScore, p, h>> out(context, file, BlastTabular());
-            writeHeader(out); // noop for TABULARs
-            for (auto const & r : records)
-                writeRecord(out, r);
-            writeFooter(out);
-        } break;
+                writeMatch(file,
+                           BlastTabularLL(),
+                           m.qId,
+                           m.sId,
+                           m.alignStats.alignmentLength,
+                           m.alignStats.numMismatches,
+                           m.alignStats.numGaps,
+                           m.eValue,
+                           m.bitScore);
+        }
     }
 }
 
 template <typename TFile, typename TScore, typename TFormat, BlastProgram p, BlastTabularSpec h>
 inline void
-test_blast_write_record_match(TFile & file,
-                              int const format,
-                              int const customFields,
-                              BlastIOContext<TScore, p, h> & context,
-                              TFormat const &)
+_testBlastOutputGenerateContent(TFile & file,
+                                BlastIOContext<TScore, p, h> & context,
+                                TFormat const &)
 {
     typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
     typedef BlastMatch<CharString, CharString, uint32_t, TAlign> TBlastMatch;
@@ -213,32 +182,12 @@ test_blast_write_record_match(TFile & file,
     for (auto & r : records)
         r.matches.sort();
 
-    test_blast_write_do(file, context, records, format, customFields, TFormat());
+    _testBlastOutputWriteFile(file, context, records, TFormat());
 }
 
-template <typename TScore, BlastProgram p, BlastTabularSpec h>
-void test_blast_write_tabular_impl(int const format, // 0 only matches; 1 matches+headers; 2 records; 3 formattedFile
-                                   int const customFields, // 0 defaults; 1 customfields; 2 lowlevel impl
-                                   BlastIOContext<TScore, p, h> & context)
+template <typename TString, typename TContext>
+void _testBlastOutputCheckFileWritten(TString const & contents, TContext const & context, BlastTabular const &)
 {
-    const char * tempFilename = SEQAN_TEMP_FILENAME();
-    char filenameBuffer[1000];
-    strcpy(filenameBuffer, tempFilename);
-
-    std::fstream fstream(filenameBuffer, std::ios_base::in | std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
-    SEQAN_ASSERT(fstream.is_open());
-
-    test_blast_write_record_match(fstream, format, customFields, context, BlastTabular());
-
-    std::string contents;
-    resize(contents, fstream.tellg());
-    fstream.seekg(0, std::ios::beg);
-    fstream.read(&contents[0], contents.size());
-    fstream.close();
-
-    // Generate the output string for comparison (since this includes the SeqAn version we don't want it completely
-    // hardcoded (and also to save lots of redundant code for the immense combinations of options)
-
     std::string versionLine;
     if (!context.legacyFormat)
         versionLine.append("# BLASTP 2.2.26+ ");
@@ -259,25 +208,15 @@ void test_blast_write_tabular_impl(int const format, // 0 only matches; 1 matche
     }
     else
     {
-        switch(customFields)
-        {
-            case 0:
-                fieldsLine.append(BlastMatchField<>::columnLabels[0]);
-                break;
-            case 1:
-                fieldsLine.append(BlastMatchField<>::columnLabels[0]);
-                fieldsLine.append(", score, query/sbjct frames");
-                break;
-            case 2:
-                fieldsLine.append("Query id, Subject id, alignment length, mismatches, gaps, e-value, bit score");
-                break;
-        }
+        fieldsLine.append(BlastMatchField<>::columnLabels[0]);
+        if ((length(context.fields) != 1) ||
+            ((length(context.fields) == 1) && (context.fields[0] != BlastMatchField<>::Enum::STD)))
+            fieldsLine.append(", score, query/sbjct frames");
     }
     fieldsLine.append("\n");
 
-
     std::string compString;
-    if ((context.tabularSpec == BlastTabularSpec::HEADER) && (format > 0))
+    if (context.tabularSpec == BlastTabularSpec::HEADER)
     {
         compString = versionLine;
         compString.append("# Query: Query_Numero_Uno with args\n"
@@ -289,23 +228,20 @@ void test_blast_write_tabular_impl(int const format, // 0 only matches; 1 matche
     // legacy format counts gap characters to mismatches as well
     unsigned mismatches = context.legacyFormat ? 4 : 2;
 
-    if (customFields == 0)
+    if ((length(context.fields) == 1) && (context.fields[0] == BlastMatchField<>::Enum::STD))
     {
         compString.append("Query_Numero_Uno\tSubject_Numero_Uno\t71.43\t14\t");
         compString.append(std::to_string(mismatches));
         compString.append(                                                    "\t1\t1\t12\t79\t92\t5e-04\t23.1\n"
                           "Query_Numero_Uno\tSubject_Numero_Dos\t100.00\t8\t0\t0\t3\t10\t157\t164\t0.001\t22.3\n");
     }
-    else if (customFields == 1)
+    else
         compString.append(
         "Query_Numero_Uno\tSubject_Numero_Uno\t71.43\t14\t2\t1\t1\t12\t79\t92\t5e-04\t23.1\t48\t0/0\n"
         "Query_Numero_Uno\tSubject_Numero_Dos\t100.00\t8\t0\t0\t3\t10\t157\t164\t0.001\t22.3\t46\t0/0\n");
-    else
-        compString.append(
-        "Query_Numero_Uno with args\tSubject_Numero_Uno\t14\t2\t2\t0.000534696\t23.0978\n"
-        "Query_Numero_Uno with args\tSubject_Numero_Dos\t8\t0\t0\t0.000912053\t22.3274\n");
 
-    if ((context.tabularSpec == BlastTabularSpec::HEADER) && (format > 0))
+
+    if (context.tabularSpec == BlastTabularSpec::HEADER)
     {
         // header for empty record
         compString.append(versionLine);
@@ -325,17 +261,14 @@ void test_blast_write_tabular_impl(int const format, // 0 only matches; 1 matche
             compString.append("# 2 hits found\n");
     }
 
-    if (customFields == 0)
+    if ((length(context.fields) == 1) && (context.fields[0] == BlastMatchField<>::Enum::STD))
         compString.append("Query_Numero_Tres\tSubject_Numero_Dos\t100.00\t8\t0\t0\t1\t8\t10\t17\t0.007\t18.9\n"
                           "Query_Numero_Tres\tSubject_Numero_Uno\t87.50\t8\t1\t0\t1\t8\t184\t191\t0.026\t16.9\n");
-    else if (customFields == 1)
+    else
         compString.append("Query_Numero_Tres\tSubject_Numero_Dos\t100.00\t8\t0\t0\t1\t8\t10\t17\t0.007\t18.9\t37\t0/0\n"
                           "Query_Numero_Tres\tSubject_Numero_Uno\t87.50\t8\t1\t0\t1\t8\t184\t191\t0.026\t16.9\t32\t0/0\n");
-    else
-        compString.append("Query_Numero_Tres with args\tSubject_Numero_Dos\t8\t0\t0\t0.00672262\t18.8606\n"
-                          "Query_Numero_Tres with args\tSubject_Numero_Uno\t8\t1\t0\t0.0255459\t16.9346\n");
 
-    if ((context.tabularSpec == BlastTabularSpec::HEADER) && (!context.legacyFormat) && (format >= 1))
+    if ((context.tabularSpec == BlastTabularSpec::HEADER) && (!context.legacyFormat))
         compString.append("# BLAST processed 3 queries\n");
 
     if (contents != compString)
@@ -354,215 +287,34 @@ void test_blast_write_tabular_impl(int const format, // 0 only matches; 1 matche
     SEQAN_ASSERT_EQ(contents, compString);
 }
 
-// TEST MATCH, WITHOUT HEADER, DEFAULTS FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_match_tabular_run_time_context_args)
+template <typename TString, typename TContext>
+void _testBlastOutputCheckFileWritten(TString const & contents, TContext const &, BlastTabularLL const &)
 {
-    BlastIOContext<> context;
-    context.blastProgram = BlastProgram::BLASTP;
-    context.tabularSpec = BlastTabularSpec::NO_HEADER;
-
-    test_blast_write_tabular_impl(0, 0, context);
-}
-
-SEQAN_DEFINE_TEST(test_blast_write_match_tabular)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
-    test_blast_write_tabular_impl(0, 0, context);
-}
-
-SEQAN_DEFINE_TEST(test_blast_write_match_tabular_legacy)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
-    context.legacyFormat = true;
-    test_blast_write_tabular_impl(0, 0, context);
-}
-
-// TEST MATCH, WITH HEADER, DEFAULTS FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_match_tabular_with_header)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
-    test_blast_write_tabular_impl(0, 0, context);
-}
-
-SEQAN_DEFINE_TEST(test_blast_write_match_tabular_with_header_legacy)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
-    context.legacyFormat = true;
-    test_blast_write_tabular_impl(0, 0, context);
-}
-
-// TEST HEADER, WITHOUT HEADER, DEFAULTS FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_header_tabular)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
-    test_blast_write_tabular_impl(1, 0, context);
-}
-
-SEQAN_DEFINE_TEST(test_blast_write_header_tabular_legacy)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
-    context.legacyFormat = true;
-    test_blast_write_tabular_impl(1, 0, context);
-}
-
-// TEST HEADER, WITH HEADER, DEFAULTS FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_header_tabular_with_header)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
-    test_blast_write_tabular_impl(1, 0, context);
-}
-
-SEQAN_DEFINE_TEST(test_blast_write_header_tabular_with_header_legacy)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
-    context.legacyFormat = true;
-    test_blast_write_tabular_impl(1, 0, context);
-}
-
-// TEST MATCH, WITHOUT HEADER, CUSTOM FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_match_customfields_tabular)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
-    append(context.fields, BlastMatchField<>::Enum::SCORE);
-    append(context.fields, BlastMatchField<>::Enum::FRAMES);
-    test_blast_write_tabular_impl(0, 1, context);
-}
-
-// TEST MATCH, WITH HEADER, CUSTOM FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_match_customfields_tabular_with_header)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
-    append(context.fields, BlastMatchField<>::Enum::SCORE);
-    append(context.fields, BlastMatchField<>::Enum::FRAMES);
-    test_blast_write_tabular_impl(0, 1, context);
-}
-
-// TEST HEADER, WITHOUT HEADER, CUSTOM FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_header_customfields_tabular)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
-    append(context.fields, BlastMatchField<>::Enum::SCORE);
-    append(context.fields, BlastMatchField<>::Enum::FRAMES);
-    test_blast_write_tabular_impl(1, 1, context);
-}
-
-// TEST HEADER, WITH HEADER, CUSTOM FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_header_customfields_tabular_with_header)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
-    append(context.fields, BlastMatchField<>::Enum::SCORE);
-    append(context.fields, BlastMatchField<>::Enum::FRAMES);
-    test_blast_write_tabular_impl(1, 1, context);
-}
-
-// TEST MATCH, WITHOUT HEADER, CUSTOM COLUMNS THROUGH VARIADIC TEMPLATES IMPLEMENTATION
-
-SEQAN_DEFINE_TEST(test_blast_write_match_lowlevel_tabular)
-{
-    BlastIOContext<Blosum62, BlastProgram::UNKNOWN, BlastTabularSpec::UNKNOWN> context;
-    // the BlastIOContext will not be used downstream at all since this uses the low-level implementation
-    // that is independent of context and other data structures
-    test_blast_write_tabular_impl(0, 2, context);
-}
-
-// TEST RECORD, WITHOUT HEADER, DEFAULTS FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_record_tabular)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
-    test_blast_write_tabular_impl(2, 0, context);
-}
-
-SEQAN_DEFINE_TEST(test_blast_write_record_tabular_legacy)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
-    context.legacyFormat = true;
-    test_blast_write_tabular_impl(2, 0, context);
-}
-
-// TEST RECORD, WITH HEADER, DEFAULTS FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_record_tabular_with_header)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
-    test_blast_write_tabular_impl(2, 0, context);
-}
-
-SEQAN_DEFINE_TEST(test_blast_write_record_tabular_with_header_legacy)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
-    context.legacyFormat = true;
-    test_blast_write_tabular_impl(2, 0, context);
-}
-
-// TEST RECORD, WITHOUT HEADER, CUSTOM FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_record_customfields_tabular)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
-    append(context.fields, BlastMatchField<>::Enum::SCORE);
-    append(context.fields, BlastMatchField<>::Enum::FRAMES);
-    test_blast_write_tabular_impl(2, 1, context);
-}
-
-// TEST RECORD, WITH HEADER, CUSTOM FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_record_customfields_tabular_with_header)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
-    append(context.fields, BlastMatchField<>::Enum::SCORE);
-    append(context.fields, BlastMatchField<>::Enum::FRAMES);
-    test_blast_write_tabular_impl(2, 1, context);
-}
-
-// TEST FORMATTEDFILE, WITHOUT HEADER
-
-SEQAN_DEFINE_TEST(test_blast_write_formatted_file_tabular)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
-    test_blast_write_tabular_impl(3, 0, context);
-}
-
-// TEST FORMATTEDFILE, WITH HEADER
-
-SEQAN_DEFINE_TEST(test_blast_write_formatted_file_tabular_with_header)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
-    test_blast_write_tabular_impl(3, 0, context);
-}
-
-// TEST FORMATTEDFILE, WITHOUT HEADER, CUSTOM FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_formatted_file_customfields_tabular)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
-    append(context.fields, BlastMatchField<>::Enum::SCORE);
-    append(context.fields, BlastMatchField<>::Enum::FRAMES);
-    test_blast_write_tabular_impl(3, 1, context);
-}
-
-// TEST FORMATTEDFILE, WITH HEADER, CUSTOM FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_formatted_file_customfields_tabular_with_header)
-{
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
-    append(context.fields, BlastMatchField<>::Enum::SCORE);
-    append(context.fields, BlastMatchField<>::Enum::FRAMES);
-    test_blast_write_tabular_impl(3, 1, context);
+    std::string compString;
+    compString.append(
+        "Query_Numero_Uno with args\tSubject_Numero_Uno\t14\t2\t2\t0.000534696\t23.0978\n"
+        "Query_Numero_Uno with args\tSubject_Numero_Dos\t8\t0\t0\t0.000912053\t22.3274\n"
+        "Query_Numero_Tres with args\tSubject_Numero_Dos\t8\t0\t0\t0.00672262\t18.8606\n"
+        "Query_Numero_Tres with args\tSubject_Numero_Uno\t8\t1\t0\t0.0255459\t16.9346\n");
+    if (contents != compString)
+    {
+        for (uint32_t i = 0; i < length(contents); ++i)
+        {
+            if (contents[i] != compString[i])
+            {
+                std::cout << contents.substr(0,i) << "\n";
+                std::cout << "CONT: \"" << contents[i] << "\"\n";
+                std::cout << "COMP: \"" << compString[i] << "\"\n";
+                break;
+            }
+        }
+    }
+    SEQAN_ASSERT_EQ(contents, compString);
 }
 
 // PAIRWISE FORMAT
-
 template <typename TString, typename TContext>
-void test_blast_compare_report_outputs(TString const & output, TContext const & context)
+void _testBlastOutputCheckFileWritten(TString const & output, TContext const & context, BlastReport const &)
 {
     std::string compString;
     if (!context.legacyFormat)
@@ -751,23 +503,18 @@ void test_blast_compare_report_outputs(TString const & output, TContext const & 
 //     std::cout << "</table></span>\n";
 }
 
-SEQAN_DEFINE_TEST(test_blast_write_pairwise)
+template <typename TScore, typename TFormat, BlastProgram p, BlastTabularSpec h>
+void _testBlastOutput(BlastIOContext<TScore, p, h> & context, TFormat const & /**/)
 {
     const char * tempFilename = SEQAN_TEMP_FILENAME();
     char filenameBuffer[1000];
     strcpy(filenameBuffer, tempFilename);
 
     std::fstream fstream(filenameBuffer,
-                         std::ios_base::in |
-                         std::ios_base::out |
-                         std::ios_base::binary |
-                         std::ios_base::trunc);
+                         std::ios_base::in | std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
     SEQAN_ASSERT(fstream.is_open());
 
-    BlastIOContext<> context;
-    context.blastProgram = BlastProgram::BLASTP;
-
-    test_blast_write_record_match(fstream, 0, 0, context, BlastReport());
+    _testBlastOutputGenerateContent(fstream, context, TFormat());
 
     std::string contents;
     resize(contents, fstream.tellg());
@@ -775,34 +522,145 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
     fstream.read(&contents[0], contents.size());
     fstream.close();
 
-    test_blast_compare_report_outputs(contents, context);
+    // Generate the output string for comparison (since this includes the SeqAn version we don't want it completely
+    // hardcoded (and also to save lots of redundant code for the immense combinations of options)
+    _testBlastOutputCheckFileWritten(contents, context, TFormat());
 }
 
-SEQAN_DEFINE_TEST(test_blast_write_pairwise_formatted_file)
+
+// lowlevel
+SEQAN_DEFINE_TEST(test_blast_write_lowlevel)
 {
-    const char * tempFilename = SEQAN_TEMP_FILENAME();
-    char filenameBuffer[1000];
-    strcpy(filenameBuffer, tempFilename);
+    BlastIOContext<> context;
+    _testBlastOutput(context, BlastTabularLL());
+}
 
-    std::fstream fstream(filenameBuffer,
-                         std::ios_base::in |
-                         std::ios_base::out |
-                         std::ios_base::binary |
-                         std::ios_base::trunc);
-    SEQAN_ASSERT(fstream.is_open());
+// tabular
+SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header)
+{
+    BlastIOContext<> context;
+    context.blastProgram = BlastProgram::BLASTP;
+    context.tabularSpec = BlastTabularSpec::NO_HEADER;
 
+    _testBlastOutput(context, BlastTabular());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header_customfields)
+{
+    BlastIOContext<> context;
+    context.blastProgram = BlastProgram::BLASTP;
+    context.tabularSpec = BlastTabularSpec::NO_HEADER;
+
+    appendValue(context.fields, BlastMatchField<>::Enum::SCORE);
+    appendValue(context.fields, BlastMatchField<>::Enum::FRAMES);
+
+    _testBlastOutput(context, BlastTabular());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header_legacy)
+{
+    BlastIOContext<> context;
+    context.blastProgram = BlastProgram::BLASTP;
+    context.tabularSpec = BlastTabularSpec::NO_HEADER;
+    context.legacyFormat = true;
+
+    _testBlastOutput(context, BlastTabular());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header_constexpr)
+{
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
+
+    _testBlastOutput(context, BlastTabular());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header_customfields_constexpr)
+{
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
+    appendValue(context.fields, BlastMatchField<>::Enum::SCORE);
+    appendValue(context.fields, BlastMatchField<>::Enum::FRAMES);
+
+    _testBlastOutput(context, BlastTabular());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header_legacy_constexpr)
+{
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
+    context.legacyFormat = true;
+
+    _testBlastOutput(context, BlastTabular());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header)
+{
+    BlastIOContext<> context;
+    context.blastProgram = BlastProgram::BLASTP;
+    context.tabularSpec = BlastTabularSpec::HEADER;
+
+    _testBlastOutput(context, BlastTabular());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_customfields)
+{
+    BlastIOContext<> context;
+    context.blastProgram = BlastProgram::BLASTP;
+    context.tabularSpec = BlastTabularSpec::HEADER;
+
+    appendValue(context.fields, BlastMatchField<>::Enum::SCORE);
+    appendValue(context.fields, BlastMatchField<>::Enum::FRAMES);
+
+    _testBlastOutput(context, BlastTabular());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_legacy)
+{
+    BlastIOContext<> context;
+    context.blastProgram = BlastProgram::BLASTP;
+    context.tabularSpec = BlastTabularSpec::HEADER;
+    context.legacyFormat = true;
+
+    _testBlastOutput(context, BlastTabular());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_constexpr)
+{
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
+
+    _testBlastOutput(context, BlastTabular());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_customfields_constexpr)
+{
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
+    appendValue(context.fields, BlastMatchField<>::Enum::SCORE);
+    appendValue(context.fields, BlastMatchField<>::Enum::FRAMES);
+
+    _testBlastOutput(context, BlastTabular());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_legacy_constexpr)
+{
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
+    context.legacyFormat = true;
+
+    _testBlastOutput(context, BlastTabular());
+}
+
+
+// report
+SEQAN_DEFINE_TEST(test_blast_write_report)
+{
     BlastIOContext<> context;
     context.blastProgram = BlastProgram::BLASTP;
 
-    test_blast_write_record_match(fstream, 0, 3, context, BlastReport());
+    _testBlastOutput(context, BlastReport());
+}
 
-    std::string contents;
-    resize(contents, fstream.tellg());
-    fstream.seekg(0, std::ios::beg);
-    fstream.read(&contents[0], contents.size());
-    fstream.close();
+SEQAN_DEFINE_TEST(test_blast_write_report_constexpr)
+{
+    BlastIOContext<Blosum62, BlastProgram::BLASTP> context;
 
-    test_blast_compare_report_outputs(contents, context);
+    _testBlastOutput(context, BlastReport());
 }
 
 #endif  // SEQAN_TESTS_TEST_BLAST_OUTPUT_H_

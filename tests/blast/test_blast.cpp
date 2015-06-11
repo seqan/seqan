@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Hannes Hauswedell <hannes.hauswedell@fu-berlin.de>
 // ==========================================================================
-// Tests for align_extend
+// Tests for the blast module
 // ==========================================================================
 
 #include <seqan/basic.h>
@@ -61,49 +61,28 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
 
     //TODO extra test for different programs
 
-    // WRITING (tests writeMatch() interfaces)
-    SEQAN_CALL_TEST(test_blast_write_match_tabular);
-    SEQAN_CALL_TEST(test_blast_write_match_tabular_run_time_context_args); // same as first but properties set as vars
-    SEQAN_CALL_TEST(test_blast_write_match_tabular_legacy);
-    SEQAN_CALL_TEST(test_blast_write_match_tabular_with_header);
-    SEQAN_CALL_TEST(test_blast_write_match_tabular_with_header_legacy);
-    SEQAN_CALL_TEST(test_blast_write_match_customfields_tabular);
-    SEQAN_CALL_TEST(test_blast_write_match_customfields_tabular_with_header);
-    SEQAN_CALL_TEST(test_blast_write_match_lowlevel_tabular);
-
-    // WRITING (tests writeMatch() and writeRecordHeader() interfaces)
-    SEQAN_CALL_TEST(test_blast_write_header_tabular);
-    SEQAN_CALL_TEST(test_blast_write_header_tabular_legacy);
-    SEQAN_CALL_TEST(test_blast_write_header_tabular_with_header);
-    SEQAN_CALL_TEST(test_blast_write_header_tabular_with_header_legacy);
-    SEQAN_CALL_TEST(test_blast_write_header_customfields_tabular);
-    SEQAN_CALL_TEST(test_blast_write_header_customfields_tabular_with_header);
-
-    // WRITING (tests writeRecord() interfaces)
-    SEQAN_CALL_TEST(test_blast_write_record_tabular);
-    SEQAN_CALL_TEST(test_blast_write_record_tabular_legacy);
-    SEQAN_CALL_TEST(test_blast_write_record_tabular_with_header);
-    SEQAN_CALL_TEST(test_blast_write_record_tabular_with_header_legacy);
-    SEQAN_CALL_TEST(test_blast_write_record_customfields_tabular);
-    SEQAN_CALL_TEST(test_blast_write_record_customfields_tabular_with_header);
-
-    // WRITING (tests formattedFile's writeRecord() interface)
-    SEQAN_CALL_TEST(test_blast_write_formatted_file_tabular);
-    SEQAN_CALL_TEST(test_blast_write_formatted_file_tabular_with_header);
-    SEQAN_CALL_TEST(test_blast_write_formatted_file_customfields_tabular);
-    SEQAN_CALL_TEST(test_blast_write_formatted_file_customfields_tabular_with_header);
-
-    //TODO extra tests for the stuff in the context
-
-    // WRITING (tests writeTop(), writeRecord() and writeBottom() for
-    //          PAIRWISE -- this is the only test for pairwise)
-    SEQAN_CALL_TEST(test_blast_write_pairwise);
-    SEQAN_CALL_TEST(test_blast_write_pairwise_formatted_file);
+    // WRITING (lowlevel tag)
+    SEQAN_CALL_TEST(test_blast_write_lowlevel);
+    // WRITING (tabular tag)
+    SEQAN_CALL_TEST(test_blast_write_tabular_without_header);
+    SEQAN_CALL_TEST(test_blast_write_tabular_without_header_customfields);
+    SEQAN_CALL_TEST(test_blast_write_tabular_without_header_legacy);
+    SEQAN_CALL_TEST(test_blast_write_tabular_without_header_constexpr);
+    SEQAN_CALL_TEST(test_blast_write_tabular_without_header_customfields_constexpr);
+    SEQAN_CALL_TEST(test_blast_write_tabular_without_header_legacy_constexpr);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_header);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_customfields);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_legacy);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_constexpr);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_customfields_constexpr);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_legacy_constexpr);
+    // WRITING (report tag)
+    SEQAN_CALL_TEST(test_blast_write_report);
+    SEQAN_CALL_TEST(test_blast_write_report_constexpr);
 
     // READING (lowlevel tag)
-    SEQAN_CALL_TEST(test_blast_read_match_lowlevel_tabular); // only test for low-level format
-
-    // READING
+    SEQAN_CALL_TEST(test_blast_read_lowlevel);
+    // READING (tabular tag)
     SEQAN_CALL_TEST(test_blast_read_tabular_without_header);
     SEQAN_CALL_TEST(test_blast_read_tabular_without_header_customfields);
     SEQAN_CALL_TEST(test_blast_read_tabular_without_header_legacy);

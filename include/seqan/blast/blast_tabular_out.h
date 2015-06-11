@@ -396,25 +396,25 @@ _writeField(TFwdIterator & s,
             break;
         case BlastMatchField<>::Enum::FRAMES:
             // for formats that don't have frames, blast says 0 instead of +1
-            if (qNumFrames(p) > 1)
+            if (qNumFrames(context.blastProgram) > 1)
                 write(s, FormattedNumber<int8_t>("%i", match.qFrameShift));
             else
                 write(s, FormattedNumber<int8_t>("%i", 0));
             write(s, '/');
-            if (sNumFrames(p) > 1)
-                write(s, FormattedNumber<int8_t>("%i", match.qFrameShift));
+            if (sNumFrames(context.blastProgram) > 1)
+                write(s, FormattedNumber<int8_t>("%i", match.sFrameShift));
             else
                 write(s, FormattedNumber<int8_t>("%i", 0));
             break;
         case BlastMatchField<>::Enum::Q_FRAME:
-            if (qNumFrames(p) > 1)
+            if (qNumFrames(context.blastProgram) > 1)
                 write(s, FormattedNumber<int8_t>("%i", match.qFrameShift));
             else
                 write(s, FormattedNumber<int8_t>("%i", 0));
             break;
         case BlastMatchField<>::Enum::S_FRAME:
-            if (sNumFrames(p) > 1)
-                write(s, FormattedNumber<int8_t>("%i", match.qFrameShift));
+            if (sNumFrames(context.blastProgram) > 1)
+                write(s, FormattedNumber<int8_t>("%i", match.sFrameShift));
             else
                 write(s, FormattedNumber<int8_t>("%i", 0));
             break;
