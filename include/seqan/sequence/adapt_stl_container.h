@@ -843,16 +843,17 @@ back(std::forward_list<TChar, TAlloc> && me)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, void)
+inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, void)
 assign(TContainer SEQAN_FORWARD_ARG me,
-       TContainer source)
+       typename RemoveReference<TContainer>::Type source)
 {
     std::swap(me, source);
 }
 
 template <typename TContainer,
           typename TSource>
-inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, void)
+inline SEQAN_FUNC_ENABLE_IF(And<Not<IsSameType<typename RemoveReference<TContainer>::Type, TSource> >,
+                                Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> > >, void)
 assign(TContainer SEQAN_FORWARD_ARG me,
        TSource const & source)
 {
