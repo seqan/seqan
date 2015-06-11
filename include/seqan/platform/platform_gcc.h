@@ -173,9 +173,15 @@ typedef uint8_t __uint8;   // nolint
 #  endif
 #endif
 
-// full C++11 support in GCC >= 4.9 and Clang >= 3.4
-#if defined(SEQAN_CXX11_STANDARD) && ((__GNUC__ * 100 + __GNUC_MINOR__ >= 409) || (__clang_major__ * 100 + __clang_minor__ >= 304))
-#define SEQAN_CXX11_COMPLETE
+// full C++11 support in GCC >= 4.9 and Clang >= 3.4 (unless linked against old glibcxx)
+#if defined(SEQAN_CXX11_STANDARD)
+#   if !defined(__clang__) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 409)
+#       define SEQAN_CXX11_COMPLETE
+#   elif defined(__clang__) && (__clang_major__ * 100 + __clang_minor__ >= 304)
+#       if __has_include(<regex>) && !__has_include(<bits/regex_grep_matcher.h>)
+#           define SEQAN_CXX11_COMPLETE
+#       endif
+#   endif
 #endif
 
 #define SEQAN_LIKELY(expr)    __builtin_expect(!!(expr), 1)
