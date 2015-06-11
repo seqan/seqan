@@ -33,12 +33,10 @@
 // ==========================================================================
 // bitScore and e-Value calculation
 // ==========================================================================
-
-    /////////////////////////////////////////////////////////////////////////
-    //                        BLAST NUMBER VOODOO                          //
-    /////////////////////////////////////////////////////////////////////////
-
-/** Karlin-Altschul parameter values taken from blast_stat.c */
+// contains empiric values from blast_stat.c as well as small portions of
+// code from blast_stat.c written by Tom Madden and released into the public
+// domain by the NCBI.
+// ==========================================================================
 
 #ifndef __BLAST_STATISTICS_H__
 #define __BLAST_STATISTICS_H__
@@ -97,11 +95,11 @@ struct KarlinAltschulValues;
 template <typename TSpec>
 struct KarlinAltschulValues<Blosum45, TSpec>
 {
-    typedef uint8_t size_t;
+    typedef uint8_t TSize;
 
     /* statics */
-    static constexpr size_t nParams = 8;
-    static constexpr size_t nParamSets = 16;
+    static constexpr TSize nParams = 8;
+    static constexpr TSize nParamSets = 16;
     static double const VALUE[nParamSets][nParams];
 };
 
@@ -135,11 +133,11 @@ double const KarlinAltschulValues<Blosum45, TSpec>::VALUE
 template <typename TSpec>
 struct KarlinAltschulValues<Blosum62, TSpec>
 {
-    typedef uint8_t size_t;
+    typedef uint8_t TSize;
 
     /* statics */
-    static constexpr size_t nParams = 8;
-    static constexpr size_t nParamSets = 12;
+    static constexpr TSize nParams = 8;
+    static constexpr TSize nParamSets = 12;
     static double const VALUE[nParamSets][nParams];
 };
 
@@ -166,11 +164,11 @@ double const KarlinAltschulValues<Blosum62, TSpec>::VALUE
 template <typename TSpec>
 struct KarlinAltschulValues<Blosum80, TSpec>
 {
-    typedef uint8_t size_t;
+    typedef uint8_t TSize;
 
     /* statics */
-    static constexpr size_t nParams = 8;
-    static constexpr size_t nParamSets = 10;
+    static constexpr TSize nParams = 8;
+    static constexpr TSize nParamSets = 10;
     static double const VALUE[nParamSets][nParams];
 };
 
@@ -214,11 +212,11 @@ double const KarlinAltschulValues<Blosum80, TSpec>::VALUE
 template <typename TSpec>
 struct KarlinAltschulValues<Pam250, TSpec>
 {
-    typedef uint8_t size_t;
+    typedef uint8_t TSize;
 
     /* statics */
-    static constexpr size_t nParams = 8;
-    static constexpr size_t nParamSets = 16;
+    static constexpr TSize nParams = 8;
+    static constexpr TSize nParamSets = 16;
     static double const VALUE[nParamSets][nParams];
 };
 
@@ -253,11 +251,11 @@ double const KarlinAltschulValues<Pam250, TSpec>::VALUE
 template <typename TSpec>
 struct KarlinAltschulValues<Score<int, Simple>, TSpec>
 {
-    typedef uint8_t size_t;
+    typedef uint8_t TSize;
 
     /* statics */
-    static constexpr size_t nParams = 11;
-    static constexpr size_t nParamSets = 60;
+    static constexpr TSize nParams = 11;
+    static constexpr TSize nParamSets = 60;
     /*  0 = matchScore
         1 = mismatch cost
         2 = Gap opening cost,
@@ -408,7 +406,7 @@ template <typename TScore>
 struct BlastScoringScheme
 {
     typedef typename Value<TScore>::Type TValue;
-    typedef typename KarlinAltschulValues<TScore, void>::size_t TNumValues;
+    typedef typename KarlinAltschulValues<TScore, void>::TSize TNumValues;
 
     /* related to ScoringScheme conversion */
     TValue _gapOpenBlast = 0;
@@ -543,7 +541,7 @@ _selectSet(BlastScoringScheme<TScore> & scheme)
 {
     typedef KarlinAltschulValues<TScore> TKAValues;
 
-    for (typename TKAValues::size_t i = 0; i < TKAValues::nParamSets; ++i)
+    for (typename TKAValues::TSize i = 0; i < TKAValues::nParamSets; ++i)
     {
         if ((TKAValues::VALUE[i][0] == -scoreGapOpenBlast(scheme)) &&
             (TKAValues::VALUE[i][1] == -scoreGapExtend(scheme)))
@@ -553,7 +551,7 @@ _selectSet(BlastScoringScheme<TScore> & scheme)
         }
     }
     // no suitable adapter
-    scheme.parameterIndex = std::numeric_limits<typename TKAValues::size_t>::max();
+    scheme.parameterIndex = std::numeric_limits<typename TKAValues::TSize>::max();
     return false;
 }
 
@@ -562,7 +560,7 @@ _selectSet(BlastScoringScheme<Score<int, Simple>> & scheme)
 {
     typedef KarlinAltschulValues<Score<int, Simple>> TKAValues;
 
-    for (typename TKAValues::size_t i = 0; i < TKAValues::nParamSets; ++i)
+    for (typename TKAValues::TSize i = 0; i < TKAValues::nParamSets; ++i)
     {
         if ((TKAValues::VALUE[i][0] ==  scoreMatch(scheme))  &&
             (TKAValues::VALUE[i][1] == -scoreMismatch(scheme)) &&
@@ -574,7 +572,7 @@ _selectSet(BlastScoringScheme<Score<int, Simple>> & scheme)
         }
     }
     // no suitable adapter
-    scheme.parameterIndex = std::numeric_limits<typename TKAValues::size_t>::max();
+    scheme.parameterIndex = std::numeric_limits<typename TKAValues::TSize>::max();
     return false;
 }
 
@@ -844,18 +842,18 @@ _lengthAdjustment(TSize     const & dbLength,
 
     { // scope of mb, and c, the coefficients in the quadratic formula (the variable mb is -b, a=1 ommited)
         double mb = m + n;
-        double c  = n * m - _max(m, n) / K;
+        double c  = n * m - std::max(m, n) / K;
 
         if(c < 0) {
             return 0;
         } else {
-            val_max = 2 * c / (mb + sqrt(mb * mb - 4 * c));
+            val_max = 2 * c / (mb + std::sqrt(mb * mb - 4 * c));
         }
     } // end scope of mb and c
 
     for(TSize i = 1; i <= maxIterations; i++) {
         totalLen = (m - val) * (n - val);
-        double val_new  = alphaByLambda * (logK + log(totalLen)) + beta;  // proposed next value of val
+        double val_new  = alphaByLambda * (logK + std::log(totalLen)) + beta;  // proposed next value of val
         if(val_new >= val) { // val is no bigger than the true fixed point
             val_min = val;
             if(val_new - val_min <= 1.0) {
@@ -884,7 +882,7 @@ _lengthAdjustment(TSize     const & dbLength,
         val = std::ceil(val_min);
         if( val <= val_max ) {
           totalLen = (m - val) * (n - val);
-          if(alphaByLambda * (logK + log(totalLen)) + beta >= val) {
+          if(alphaByLambda * (logK + std::log(totalLen)) + beta >= val) {
             // ceil(val_min) == floor(val_fixed)
             return (TSize) val;
           }

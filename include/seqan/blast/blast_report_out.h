@@ -259,16 +259,6 @@ _writeStatsBlock(TStream & stream,
                  TMatch const & m,
                  BlastReport const &)
 {
-//     char buffer[512] = "";
-//
-//     sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
-//                     " Identities = %d/%d (%d%%), Gaps = %d/%d (%d%%)\n"
-//                     " Strand=", // no spaces here for whatever reason
-//             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-//             m.alignStats.numMatches, m.alignStats.alignmentLength, int(std::lround(m.alignStats.alignmentIdentity)),
-//             m.alignStats.numGaps, m.alignStats.alignmentLength,
-//             int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
-//     write(stream, buffer);
     write(stream, " Score =  ");
     write(stream, FormattedNumber<double>("%.1f", m.bitScore));
     write(stream, " bits (");
@@ -311,19 +301,6 @@ _writeStatsBlock(TStream & stream,
                  TMatch const & m,
                  BlastReport const &)
 {
-//     char buffer[512] = "";
-//
-//     sprintf(buffer," Score =  %.1f bits (%d), Expect =  %.1g\n"
-//                     " Identities = %d/%d (%d%%),"
-//                     " Positives = %d/%d (%d%%),"
-//                     " Gaps = %d/%d (%d%%)",
-//             m.bitScore, unsigned(m.alignStats.alignmentScore), m.eValue,
-//             m.alignStats.numMatches, m.alignStats.alignmentLength,
-//             int(std::lround(m.alignStats.alignmentIdentity)),
-//             m.alignStats.numPositiveScores, m.alignStats.alignmentLength,
-//             int(std::lround(m.alignStats.alignmentSimilarity)),
-//             m.alignStats.numGaps, m.alignStats.alignmentLength,
-//             int(std::lround(double(m.alignStats.numGaps) * 100 / m.alignStats.alignmentLength)));
     write(stream, " Score =  ");
     write(stream, FormattedNumber<double>("%.1f", m.bitScore));
     write(stream, " bits (");
