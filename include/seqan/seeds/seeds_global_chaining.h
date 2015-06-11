@@ -177,7 +177,7 @@ chainSeedsGlobally(
             // *first* one that compares greater than the reference
             // one.  Searching for the this one and decrementing the
             // result iterator gives the desired result.
-            TIntermediateSolution referenceSolution(beginPositionV(seedK), 0, maxValue<unsigned>());
+            TIntermediateSolution referenceSolution(beginPositionV(seedK), maxValue<TSize>(), maxValue<unsigned>());
             // std::cout << "    intermediateSolutions.upper_bound(" << beginPositionV(seedK) << ")" << std::endl;
             TIntermediateSolutionsIterator itJ = intermediateSolutions.upper_bound(referenceSolution);
             if (itJ == intermediateSolutions.begin()) {
