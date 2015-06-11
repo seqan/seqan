@@ -84,7 +84,7 @@ namespace seqan
  *
  * The output looks like this:
  *
- * @include demos/blast/blast_in_lowlevel.out
+ * @include demos/blast/blast_in_lowlevel.cpp.stdout_
  *
  * @section Ouput example
  *
