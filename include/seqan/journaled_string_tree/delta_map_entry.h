@@ -318,29 +318,28 @@ getDeltaType(DeltaMapEntry<TRefPos, TStorePos> const & deltaEntry)
 // Function applyOnDelta()
 // ----------------------------------------------------------------------------
 
-template <typename TFunctor,
-typename TRefPos, typename TStorePos>
+template <typename TFunctor>
 inline bool
 applyOnDelta(TFunctor & /*func*/,
-             DeltaMapEntry<TRefPos, TStorePos> const & /*entry*/,
+             DeltaType const & /*type*/,
              TagSelector<void> const & /*selector*/)
 {
     return false;
 }
 
-template <typename TFunctor,
-          typename TRefPos, typename TStorePos>
+template <typename TFunctor, typename TTag, typename TSubList>
 inline bool
 applyOnDelta(TFunctor & func,
-             DeltaMapEntry<TRefPos, TStorePos> const & entry,
-             DeltaTypeSelector const & selector)
+             DeltaType const & deltaType,
+             TagSelector<TagList<TTag, TSubList> > const & selector)
 {
-    if (isDeltaType(getDeltaType(entry), typename DeltaTypeSelector::Type()))
+    typedef TagSelector<TagList<TTag, TSubList> >   TTagSelector;
+    if (isDeltaType(deltaType, TTag()))
     {
-        func(entry, typename DeltaTypeSelector::Type());
+        func(TTag());
         return true;
     }
-    return applyOnDelta(func, entry, static_cast<typename DeltaTypeSelector::Base>(selector));
+    return applyOnDelta(func, deltaType, static_cast<typename TTagSelector::Base>(selector));
 }
 
 // ----------------------------------------------------------------------------

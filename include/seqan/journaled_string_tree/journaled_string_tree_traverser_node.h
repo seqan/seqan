@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSAL_NODE_H_
-#define INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSAL_NODE_H_
+#ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_NODE_H_
+#define INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_NODE_H_
 
 namespace seqan
 {
@@ -51,15 +51,18 @@ template <typename TJst>
 class JstTraversalNode
 {
 public:
-    typedef typename Source<TJst>::Type                             TSequence;
-    typedef typename Iterator<TSequence, Standard>::Type            TSeqIterator;
-    typedef typename Position<TSequence>::Type                      TPosition;
-    typedef typename Member<TJst, JstDeltaMapWrapperMember>::Type   TDeltaMapWrapper;
-    typedef typename Iterator<TDeltaMapWrapper, Standard>::Type     TDeltaIterator;
-    typedef typename Host<TJst>::Type                               TDeltaMap;
-    typedef typename DeltaCoverage<TDeltaMap>::Type                 TCoverage;
+    typedef typename Source<TJst>::Type                                 TSequence;
+    typedef typename Iterator<TSequence, Standard>::Type                TSeqIterator;
+    typedef typename Position<TSequence>::Type                          TPosition;
+    typedef typename Member<TJst, JstBufferMember>::Type                TJstBuffer;
+    typedef typename Member<TJstBuffer, JstBufferExtensionMap>::Type    TExtMap;
+    typedef typename Iterator<TExtMap, Standard>::Type                  TDeltaIterator;
+    typedef typename Host<TJst>::Type                                   TDeltaMap;
+    typedef typename DeltaCoverage<TDeltaMap>::Type                     TCoverage;
+    typedef typename Size<TJst>::Type                                   TSize;
 
     TPosition           mappedSrcEndPos;
+    TSize               remainingSize;
     TDeltaIterator      curDelta;  // current delta iterator.
     TDeltaIterator      nextDelta;
     TSeqIterator        begEdgeIt;    // Current iterator of this edge.
@@ -77,6 +80,24 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
+
+template <typename TJstLhs, typename TJstRhs>
+inline void
+swap(JstTraversalNode<TJstLhs> & lhs,
+     JstTraversalNode<TJstRhs> & rhs)
+{
+    std::swap(lhs.mappedSrcEndPos, rhs.mappedSrcEndPos);
+    std::swap(lhs.remainingSize, rhs.remainingSize);
+    std::swap(lhs.curDelta, rhs.curDelta);
+    std::swap(lhs.nextDelta, rhs.nextDelta);
+    std::swap(lhs.begEdgeIt, rhs.begEdgeIt);
+    std::swap(lhs.curEdgeIt, rhs.curEdgeIt);
+    std::swap(lhs.endEdgeIt, rhs.endEdgeIt);
+    swap(lhs.coverage, rhs.coverage);
+    std::swap(lhs.isBase, rhs.isBase);
+    std::swap(lhs.fromBase, rhs.fromBase);
 }
 
-#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSAL_NODE_H_
+}
+
+#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_NODE_H_

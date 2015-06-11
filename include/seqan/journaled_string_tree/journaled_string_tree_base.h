@@ -125,15 +125,12 @@ struct DefaultJstConfig
     typedef Pair<TDelValue, TInsValue>      TSVValue;   // Value type of structural variants (combination of deletion and insertion).
 };
 
-template <typename TContainer, typename TSpec>
-class TraversorImpl;
-
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
-template <typename TContainer, typename TSpec>
-struct Traversor;
+template <typename TContainer, typename TObserver = void>
+struct Traverser;
 
 // ============================================================================
 // Functions

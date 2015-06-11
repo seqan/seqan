@@ -441,6 +441,15 @@ operator>=(Iter<TDeltaMap, DeltaMapIteratorSpec> const & a,
     return a._mapIter >= b._mapIter;
 }
 
+//template <typename TDeltaMapLhs, typename TDeltaMapRhs>
+//inline void
+//swap(Iter<TDeltaMapLhs, DeltaMapIteratorSpec> & lhs,
+//     Iter<TDeltaMapRhs, DeltaMapIteratorSpec> & rhs)
+//{
+//    swap(lhs._mapPtr, rhs._mapPtr);
+//    swap(lhs._mapIter, rhs._mapIter);
+//}
+
 }  // namespace seqan
 
 #endif  // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_MAP_ITERATOR_H_

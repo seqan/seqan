@@ -40,13 +40,23 @@
 #include <seqan/basic.h>
 #include <seqan/journaled_string_tree.h>
 
+#include "test_config_reader.h"
+
 using namespace seqan;
+
+struct TestDataConfig
+{
+    
+    String<unsigned>            deltaPositions;
+    String<DeltaType>           deltaTypes;
+    String<String<unsigned> >   ids;
+};
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_constructor)
 {
     typedef JournaledStringTree<DnaString> TJst;
     typedef Size<TJst>::Type TSize;
-    typedef Container<TJst>::Type TDeltaMap;
+    typedef Host<TJst>::Type TDeltaMap;
     typedef DeltaCoverage<TDeltaMap>::Type TCoverage;
 
     DnaString hostSeq = "ACGTGGATCTGTACTGACGGACGGACTTGACGGGAGTACGAGCATCGACT";
@@ -57,8 +67,8 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_constructor)
 
         SEQAN_ASSERT_EQ(jst1._dimension, static_cast<TSize>(100));
         SEQAN_ASSERT_EQ(jst1._historySize, static_cast<TSize>(10));
-        SEQAN_ASSERT(!empty(jst1._deltaMapHolder));
-        SEQAN_ASSERT(!dependent(jst1._deltaMapHolder));
+        SEQAN_ASSERT(!empty(jst1._mapHolder));
+        SEQAN_ASSERT(!dependent(jst1._mapHolder));
         SEQAN_ASSERT(!empty(jst1._source));
         SEQAN_ASSERT_EQ(host(jst1._source), hostSeq);
 
@@ -75,8 +85,8 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_constructor)
         TJst jst(hostSeq, 11, map);
         SEQAN_ASSERT_EQ(jst._dimension, static_cast<TSize>(10));
         SEQAN_ASSERT_EQ(jst._historySize, static_cast<TSize>(11));
-        SEQAN_ASSERT(!empty(jst._deltaMapHolder));
-        SEQAN_ASSERT(dependent(jst._deltaMapHolder));
+        SEQAN_ASSERT(!empty(jst._mapHolder));
+        SEQAN_ASSERT(dependent(jst._mapHolder));
         SEQAN_ASSERT_EQ(host(jst._source), hostSeq);
     }
 }
@@ -115,7 +125,6 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_insert_node)
     SEQAN_ASSERT(insertNode(jst, 5, 'C', ids, DeltaTypeSnp()));
     SEQAN_ASSERT(insertNode(jst, 2, 3, ids, DeltaTypeDel()));
     SEQAN_ASSERT(insertNode(jst, 5, "CGTA", ids, DeltaTypeIns()));
-    SEQAN_ASSERT_NOT(insertNode(jst, 5, "CGTA", ids, DeltaTypeIns()));
 }
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_erase_node)
@@ -156,7 +165,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_clear)
     SEQAN_ASSERT(jst._dimension == 0);
     SEQAN_ASSERT(jst._historySize == 0);
     SEQAN_ASSERT(empty(jst._source));
-    SEQAN_ASSERT(empty(jst._deltaMapHolder));
+    SEQAN_ASSERT(empty(jst._mapHolder));
 }
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_container)
@@ -164,7 +173,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_container)
     Dna5String seq = "CGTATAGGANNAGAT";
     JournaledStringTree<Dna5String> jst(seq, 10, 100);
 
-    SEQAN_ASSERT(empty(container(jst)));
+    SEQAN_ASSERT(empty(host(jst)));
 
     String<unsigned> ids;
     appendValue(ids, 0);
@@ -175,7 +184,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_container)
     SEQAN_ASSERT(insertNode(jst, 2, 3, ids, DeltaTypeDel()));
     SEQAN_ASSERT(insertNode(jst, 5, "CGTA", ids, DeltaTypeIns()));
 
-    SEQAN_ASSERT(!empty(container(jst)));
+    SEQAN_ASSERT(!empty(host(jst)));
 }
 
 
@@ -214,6 +223,116 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_max_size)
     JournaledStringTree<Dna5String, TestJstPosConfig_> jst(seq, 10, 100);
 
     SEQAN_ASSERT_EQ(maxSize(jst), MaxValue<__uint16>::VALUE);
+}
+
+
+template <typename TString, typename TRef, typename TDeltaMap>
+inline void
+_createJournaledStrings(StringSet<TString> & set,
+                        TRef const & source,
+                        TDeltaMap const & map,
+                        unsigned const dim)
+{
+
+    for (unsigned seqId = 0; seqId < dim; ++seqId)
+    {
+        TString seq = source;
+        auto it = end(map, Standard());
+        auto itBegin = begin(map, Standard());
+
+        while (it != itBegin)
+        {
+            --it;
+            if (!getDeltaCoverage(*it)[seqId])
+                continue;
+            switch (getDeltaType(*it))
+            {
+                case DELTA_TYPE_SNP:
+                {
+                    erase(seq, getDeltaPosition(*it));
+                    insertValue(seq, getDeltaPosition(*it), deltaValue(it, DeltaTypeSnp()));
+                    break;
+                }
+                case DELTA_TYPE_DEL:
+                {
+                    erase(seq, getDeltaPosition(*it), getDeltaPosition(*it)+ deltaValue(it, DeltaTypeDel()));
+                    break;
+                }
+                case DELTA_TYPE_INS:
+                {
+                    insert(seq, getDeltaPosition(*it), deltaValue(it, DeltaTypeIns()));
+                    break;
+                }
+                case DELTA_TYPE_SV:
+                {
+                    erase(seq, getDeltaPosition(*it), getDeltaPosition(*it) + deltaValue(it, DeltaTypeSV()).i1);
+                    insert(seq, getDeltaPosition(*it), deltaValue(it, DeltaTypeSV()).i2);
+                    break;
+                }
+            }
+        }
+        appendValue(set, seq);
+    }
+}
+
+template <typename TJst, typename TInFile>
+inline void
+_createJst(TJst & jst, TInFile & configIn)
+{
+    while (!atEnd(configIn))
+    {
+        TestConfigRecord_<Dna, unsigned> record;
+        readRecord(record, configIn);
+
+        switch (record.deltaType)
+        {
+            case DELTA_TYPE_SNP:
+            {
+                SEQAN_ASSERT(insertNode(jst, record.pos, record.snp, record.coverage, DeltaTypeSnp()));
+                break;
+            }
+            case DELTA_TYPE_DEL:
+            {
+                SEQAN_ASSERT(insertNode(jst, record.pos, record.del, record.coverage, DeltaTypeDel()));
+                break;
+            }
+            case DELTA_TYPE_INS:
+            {
+                SEQAN_ASSERT(insertNode(jst, record.pos, record.ins, record.coverage, DeltaTypeIns()));
+                break;
+            }
+            case DELTA_TYPE_SV:
+            {
+                SEQAN_ASSERT(insertNode(jst, record.pos, record.stv, record.coverage, DeltaTypeSV()));
+                break;
+            }
+        }
+    }
+}
+
+// Define a typed test for the creation of different scenarios.
+SEQAN_DEFINE_TEST(test_journaled_string_tree_create)
+{
+    typedef StringSet<DnaString>    TSet;
+
+    CharString path = SEQAN_PATH_TO_ROOT();
+    append(path, "/tests/journaled_string_tree/testConfig.txt");
+
+    TestConfigFileIn_ configIn(toCString(path));
+
+    TestConfigHeader_<DnaString> header;
+    readHeader(header, configIn);
+    DnaString seq = header.ref;
+
+    JournaledStringTree<DnaString, TestJstPosConfig_> jst(seq, 10, length(context(configIn)));
+    _createJst(jst, configIn);
+
+    StringSet<DnaString> set;
+    _createJournaledStrings(set, seq, host(jst), length(context(configIn)));
+
+    SEQAN_ASSERT(create(jst));
+    for (unsigned i = 0; i < length(set); ++i)
+        SEQAN_ASSERT(jst._buffer._journaledSet[i] == set[i]);
 }
 
 #endif // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_

@@ -31,493 +31,235 @@
 // ==========================================================================
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-// Basic defintions and forwards used globally for this module.
-// ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TRAVERSER_H_
-#define EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TRAVERSER_H_
+#ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_H_
+#define INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_H_
 
-namespace seqan {
+namespace seqan
+{
 
 // ============================================================================
 // Forwards
 // ============================================================================
 
-// TODO(rrahn): Move to jst_traverser_base.h
-// ----------------------------------------------------------------------------
-// Metafunction Buffer
-// ----------------------------------------------------------------------------
-
-template <typename TObject, typename TConfig, typename TSpec>
-struct Buffer<Traverser<TObject, TConfig, TSpec> >;
-
-template <typename TObject, typename TConfig, typename TSpec>
-struct Buffer<Traverser<TObject, TConfig, TSpec> const>
-{
-    typedef typename Buffer<Traverser<TObject, TConfig, TSpec>::Type const Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction Traits
-// ----------------------------------------------------------------------------
-
-// TODO(rrahn): Move to basic meta-function.
-// TODO(rrahn): Add Documentation
-
-template <typename TObject>
-struct Traits;
-
-// Default const implementation.
-template <typename TObject>
-struct Traits<TObject const> : Traits<TObject>
-{};
-
-// TODO(rrahn): Introduce concepts: BidirectionalTraversableConcept = ForwardTraversableConcept & BackwardTraversableConcept
-
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Tag JstTraverser
-// ----------------------------------------------------------------------------
-
-struct JstTraverser_;
-typedef Tag<JstTraverser_> JstTraverser;
-
-// ----------------------------------------------------------------------------
-// Config DefaultJstTraverserConfig
-// ----------------------------------------------------------------------------
-
-template <typename TObject>
-struct DefaultJstTraverserConfig
-{
-    typedef TraverseForward TDirection;
-    typedef StaticJstBuffer TBuffer;
-};
-
-// ----------------------------------------------------------------------------
-// Class JstTraverser
-// ----------------------------------------------------------------------------
-
-/*!
- * @class JstTraverser
- * @headerfile <seqan/journaled_string_tree.h>
- */
-
-template <typename TObject, typename TConfig, typename TSpec>
-class Traverser;
-
-template <typename TObject, typename TConfig = DefaultJstTraverserConfig<TObject> >
-class Traverser<TObject, TConfig, JstTraverser>
+template <typename TJst, typename TSpec, typename TObserver>
+class TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> : public Observable<TObserver>
 {
 public:
-
-    typedef typename Container<Traverser>::Type                                 TDeltaMap;
-    typedef typename Buffer<Traverser>::Type                                    TJstBuffer;
-    typedef typename Member<TJstBuffer, JstSeqBufferJournaledSetMember>::Type   TJournaledSet;
-    typedef typename Value<TJournaledSet>::Type                                 TJournaledSeq;
-    typedef typename Size<TDeltaMap>::Type                                      TSize;
-    typedef typename DeltaCoverage<TDeltaMap>::Type                             TCoverage;
-    typedef BaseJstTraversalEntry<TDeltaMap, TJournaledSeq>                     TBaseEntry;
+    typedef Observable<TObserver>                                       TSuper;
+    typedef typename Member<TraverserImpl, TraverserStackMember>::Type  TStack;
+    typedef typename Value<TStack>::Type                                TNode;
+    typedef typename Size<TraverserImpl>::Type                          TSize;
+    typedef std::shared_ptr<TStack>                                     TStackPtr;
 
 
-    bool                inBranch;
-    TSize               windowSize;                 // Size of the window.
-    TJstBuffer          bufferOwner;                // Owns the sequence buffer.
-    TJstBuffer *        bufferPtr;                  // Points to used sequence buffer.
+    // __ Member Variables ____________________________________________________
 
-    TCoverage           activeCoverage;             // The active coverage set by the operator.
+    TJst *       _contPtr;
+    TSize        _historySize;
+    TSize        _contextSize;
+    TNode        _tmp;      // Better use local vairable.
+    TStackPtr    _stackPtr;
 
-    Traverser() : inBranch(false), entryPtr(nullptr), contextSize(1), bufferOwner(), bufferPtr(&bufferOwner)
+    // __ Constructors ________________________________________________________
+
+    TraverserImpl() :
+        TSuper(),
+        _contPtr(nullptr),
+        _historySize(0),
+        _contextSize(1),
+        _tmp(),
+        _stackPtr(impl::createStack<TStack>())
     {}
 
-    Traverser(TContainer & jst) :
-        inBranch(false),
-        entryPtr(nullptr),
-        contextSize(1),
-        bufferOwner(jst),
-        bufferPtr(&bufferOwner)
-    {}
+    TraverserImpl(TJst & jst) :
+        TSuper(),
+        _contPtr(nullptr),
+        _historySize(historySize(jst)),
+        _contextSize(1),
+        _tmp(),
+        _stackPtr(impl::createStack<TStack>())
+    {
+        impl::init(*this, jst);
+    }
 
-    template <typename TPos>
-    Traverser(TContainer & jst, TPos baseBegin, TPos baseEnd) :
-        inBranch(false),
-        entryPtr(nullptr),
-        contextSize(1),
-        bufferOwner(jst, baseBegin, baseEnd),
-        bufferPtr(&bufferOwner)
-    {}
+    template <typename TObserver_>
+    TraverserImpl(TJst & jst, TObserver_ & observer, SEQAN_CTOR_DISABLE_IF(IsSameType<TObserver_, void>)) :
+        TSuper(),
+        _contPtr(nullptr),
+        _historySize(historySize(jst)),
+        _contextSize(1),
+        _stackPtr(impl::createStack<TStack>())
+    {
+        addObserver(*this, observer);
+        impl::init(*this, jst);
+        ignoreUnusedVariableWarning(dummy);
+    }
 
-    Traverser(TJstBuffer & buffer) :
-        inBranch(false),
-        entryPtr(nullptr),
-        contextSize(1),
-        bufferPtr(&buffer)
-    {}
+    // Copy Constructor!
+    template <typename TOtherJst>
+    TraverserImpl(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec>, TObserver> const & other,
+                  SEQAN_CTOR_ENABLE_IF(IsConstructible<TJst, TOtherJst>)) :
+        _contPtr(other._contPtr),
+        _historySize(other._historySize),
+        _contextSize(other._contextSize),
+        _tmp(other._tmp),
+        _stackPtr(other._stackPtr)
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
 
+    // __ Member Functions ____________________________________________________
+
+    template <typename TOtherJst>
+    inline SEQAN_FUNC_ENABLE_IF(IsConstructible<TJst, TOtherJst>, TraverserImpl &)
+    operator=(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec>, TObserver> const & other)
+    {
+        if (*this != &other)
+        {
+            _contPtr = other._contPtr;
+            _historySize =other._historySize;
+            _contextSize = other._contextSize;
+            _tmp = other._tmp;
+            _stackPtr = other._stackPtr;
+        }
+        return *this;
+    }
 };
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Metafunction Position
-// ----------------------------------------------------------------------------
-
-template <typename TObject, typename TConfig, typename TSpec>
-struct Position<Traverser<TObject, TConfig, TSpec> >
+template <typename TJst, typename TSpec, typename TObserver>
+struct Container<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
 {
-    typedef typename Position<TObject>::Type    TPosition_;
-    typedef String<TPosition>                   Type;
+    typedef TJst Type;
 };
 
-// ----------------------------------------------------------------------------
-// Metafunction Container
-// ----------------------------------------------------------------------------
-
-template <typename TObject, typename TConfig, typename TSpec>
-struct Container<Traverser<TObject, TConfig, TSpec> >
+template <typename TJst, typename TSpec, typename TObserver>
+struct Size<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
 {
-    typedef TObject Type;
+    typedef typename Size<TJst>::Type    Type;
 };
 
-// ----------------------------------------------------------------------------
-// Metafunction TraverserContext
-// ----------------------------------------------------------------------------
-
-template <typename TObject, typename TConfig>
-struct Window<Traverser<TObject, TConfig, JstTraverser> >
+template <typename TJst, typename TSpec, typename TObserver>
+struct StringContext<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
 {
-    typedef typename Buffer<Traverser<TObject, TConfig, JstTraverser> >::Type   TBuffer_;
-    typedef typename Member<JstSequenceBuffer, JstSeqBufferJournaledSet>::Type  TJournaledSet_;
-    typedef typename Value<TJournaledSet>::Type                                 TJournaledString_;
-    typedef typename Iterator<TJournaledString_, Standard>::Type                TJournaledStrIterator_;
-    typedef          Range<TJournaledStrIterator_>                              Type;
+    typedef TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>     TThis_;
+    typedef typename Container<TThis_>::Type                            TContainer_;
+    typedef typename Source<TContainer_>::Type                          TSource_;
+    typedef typename Iterator<TSource_, Standard>::Type                 TSourceIt_;
+
+    typedef Range<TSourceIt_>                                           Type;
 };
 
-template <typename TObject, typename TConfig>
-struct Window<Traverser<TObject, TConfig, JstTraverser> const >
+template <typename TJst, typename TSpec, typename TObserver>
+struct Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>, TraverserStackMember>
 {
-    typedef typename TraverserContext<Traverser<TObject, TConfig, JstTraverser> >::Type const Type;
+    typedef JstTraversalNode<TJst>              TTraversalNode;
+    typedef String<TTraversalNode, Block<> >    Type;
 };
-
-// ----------------------------------------------------------------------------
-// Metafunction Buffer
-// ----------------------------------------------------------------------------
-
-template <typename TObject, typename TConfig>
-struct Buffer<Traverser<TObject, TConfig, JstTraverser> >
-{
-    typedef typename TConfig::TDirection    TDirection_;
-    typedef typename TConfig::TBuffer       TBuffer_;
-    typedef JstSequenceBuffer<TObject, TDirection_, TBuffer_> Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction  Traits
-// ----------------------------------------------------------------------------
-
-template <typename TObject, typename TConfig, typename TSpec>
-struct Traits<Traverser<TObject, TConfig, TSpec> >
-{
-    typedef TConfig Type;
-};
-
-// ============================================================================
-// Private Functions
-// ============================================================================
-
-namespace impl
-{
-
-// ----------------------------------------------------------------------------
-// Function impl::minContextSpan()
-// ----------------------------------------------------------------------------
-
-template <typename TObject, typename TConfig, typename TSpec>
-inline typename Size<typename Container<Traverser<TObject, TConfig, TSpec> >::Type>::Type
-minContextSpan(Traverser<TObject, TConfig, TSpec> const & container)
-{
-    typedef Traverser<TObject, TConfig, TSpec>                          TTraverser;
-    typedef typename Size<typename Container<TTraverser>::Type>::Type   TSize;
-
-    // TODO(rrahn): Need to ensure that while dynamic buffering the second block always guarantees the following condition to be not true!
-    if (SEQAN_UNLIKELY(traverser.statePtr->currIt - begin(container(traverser.statePtr->currIt), Standard()) <
-                       contextSize(traverser)))
-        return traverser.statePtr->currIt - begin(container(traverser.statePtr->currIt), Standard())
-    return contextSize(traverser)
-}
-
-// ----------------------------------------------------------------------------
-// Function impl::getContext()
-// ----------------------------------------------------------------------------
-
-template <typename TObject, typename TConfig, typename TSpec>
-inline typename TraverserContext<Traverser<TObject, TConfig, TSpec> >::Type
-getContext(Traverser<TObject, TConfig, TSpec> & traverser)
-{
-    typedef typename TraverserContext<Traverser<TObject, TConfig, TSpec> >::Type TContext;
-
-    // TODO(rrahn): Add for bidirectional and backward traversal.
-    return TContext(traverser.statePtr->currIt - minContextSpan(traverser), traverser.statePtr->currIt);
-}
-
-template <typename TObject, typename TConfig, typename TSpec>
-inline typename TraverserContext<Traverser<TObject, TConfig, TSpec> const>::Type
-getContext(Traverser<TObject, TConfig, TSpec> const & traverser)
-{
-    typedef typename TraverserContext<Traverser<TObject, TConfig, TSpec> >::Type TContext;
-
-    // TODO(rrahn): Add for bidirectional and backward traversal.
-    return TContext(traverser.statePtr->currIt - minContextSpan(traverser), traverser.statePtr->currIt);
-}
-
-}  // namespace impl
 
 // ============================================================================
 // Public Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function setContainer()
+// Function stringContext()
 // ----------------------------------------------------------------------------
 
-// TODO(rrahn): Doc!
-// JstTraverser option to set the container for the buffer as well.
-template <typename TObject, typename TConfig>
+template <typename TJst, typename TSpec, typename TObserver>
+inline typename StringContext<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >::Type
+stringContext(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & traversor)
+{
+    return impl::getStringContext(traversor);
+}
+
+// ----------------------------------------------------------------------------
+// Function container
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline typename Container<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >::Type &
+container(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
+{
+    return *me._contPtr;
+}
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline typename Container<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const>::Type &
+container(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
+{
+    return *me._contPtr;
+}
+
+// ----------------------------------------------------------------------------
+// Function atBegin()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline bool
+atBegin(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
+{
+    SEQAN_ASSERT(resource(me._rm) == nullptr);
+    return back(*resource(me._rm)).mappedSrcEndPos == -1;
+}
+
+
+
+template <typename TJst, typename TSpec, typename TObserver,
+          typename TSize>
 inline void
-setContainer(Traverser<TObject, TConfig, JstTraverser> & traverser,
-             typename Container<Traverser<TObject, TConfig, JstTraverser> >::Type & container)
+goNext(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
+       TSize stepSize)
 {
-    // TODO(rrahn): Clear the traverser's states.
-    setContainer(jstBuffer(traverser), container);
-}
+    SEQAN_ASSERT(me._stackPtr != nullptr);
 
-// ----------------------------------------------------------------------------
-// Function container()
-// ----------------------------------------------------------------------------
+    auto& node = back(*me._stackPtr);
+    stepSize = impl::moveWindow(me, node, stepSize);
 
-// TODO(rrahn): Doc!
-// RD_ONLY to avoid replacing the container without noticing the internal structures.
-template <typename TObject, typename TConfig>
-inline typename Container<Traverser<TObject, TConfig, JstTraverser> const>::Type &
-container(Traverser<TObject, TConfig, JstTraverser> const & traverser)
-{
-    return container(jstBuffer(traverser));
-}
+    // Case A) stepSize == 0 && node.remainingSize > 0;  // vaild context
+    // Case B) stepSize == 0 && node.remainingSize = 0;  // valid context
+    // Case C) stepSize > 0 && node.remaingingSize = 0;  // invalid context -> we have to pop an element from the tree.
+    // Case D) stepSize > 0 && node.remainingSize > 0;   // invalid case: ASSERT
 
-// ----------------------------------------------------------------------------
-// Function setBuffer()
-// ----------------------------------------------------------------------------
+    SEQAN_ASSERT(stepSize > static_cast<TSize>(0) && node.remainingSize >static_cast<TSize>(0));
 
-// TODO(rrahn): Doc!
-template <typename TObject, typename TConfig>
-inline typename Buffer<Traverser<TObject, TConfig, JstTraverser> >::Type &
-setBuffer(Traverser<TObject, TConfig, JstTraverser> & traverser,
-          typename Buffer<Traverser<TObject, TConfig, JstTraverser> >::Type & buffer)
-{
-    // TODO(rrahn): Clear the traverser's states.
-    return traverser.bufferPtr = &buffer;
-}
-
-// ----------------------------------------------------------------------------
-// Function buffer()
-// ----------------------------------------------------------------------------
-
-// TODO(rrahn): Doc!
-// TODO(rrahn): Document behaviour and possible problem, if multiple traversers depend on the same buffer, e.g. invalid state.
-template <typename TObject, typename TConfig>
-inline typename Buffer<Traverser<TObject, TConfig, JstTraverser> >::Type &
-buffer(Traverser<TObject, TConfig, JstTraverser> & traverser)
-{
-    return *traverser.bufferPtr;
-}
-
-template <typename TObject, typename TConfig>
-inline typename Buffer<Traverser<TObject, TConfig, JstTraverser> const>::Type &
-buffer(Traverser<TObject, TConfig, JstTraverser> const & traverser)
-{
-    return *traverser.bufferPtr;
-}
-
-// ----------------------------------------------------------------------------
-// Function setBeginPosition()
-// ----------------------------------------------------------------------------
-
-// TODO(rrahn): Doc!
-template <typename TObject, typename TConfig, typename TPos>
-inline void
-setBeginPosition(Traverser<TObject, TConfig, JstTraverser> & traverser,
-                 TPos beginPos)
-{
-    // TODO(rrahn): Clear the traverser's states, if forward or bidirectional and beginPos right of previous one.
-    setBeginPosition(buffer(traverser), beginPos);
-}
-
-// ----------------------------------------------------------------------------
-// Function setEndPosition()
-// ----------------------------------------------------------------------------
-
-// TODO(rrahn): Doc!
-//  to avoid unnotified replacement of the jst buffer.
-template <typename TObject, typename TConfig, typename TPos>
-inline void
-setEndPosition(Traverser<TObject, TConfig, JstTraverser> & traverser,
-               TPos endPos)
-{
-    // TODO(rrahn): Clear the traverser's states -> if bidirectional or backward and endPosition left of previous one.
-    setEndPosition(buffer(traverser), endPos);
-}
-
-// ----------------------------------------------------------------------------
-// Function windowSize()
-// ----------------------------------------------------------------------------
-
-// TODO(rrahn): Doc!
-template <typename TObject, typename TConfig, typename TSpec>
-inline typename Size<typename Container<Traverser<TObject, TConfig, TSpec> >::Type>::Type
-windowSize(Traverser<TObject, TConfig, TSpec> const & traverser)
-{
-    return traverser.windowSize;
-}
-
-// ----------------------------------------------------------------------------
-// Function setWindowSize()
-// ----------------------------------------------------------------------------
-
-// TODO(rrahn): Doc!
-template <typename TObject, typename TConfig, typename TSpec, typename TSize>
-inline void
-setWindowSize(Traverser<TObject, TConfig, TSpec> const & traverser, TSize newSize)
-{
-    traverser.windowSize = newSize;
-}
-
-// ----------------------------------------------------------------------------
-// Function window()
-// ----------------------------------------------------------------------------
-
-// TODO(rrahn): Doc!
-template <typename TObject, typename TConfig, typename TSpec>
-inline typename Window<Traverser<TObject, TConfig, TSpec> >::Type
-window(Traverser<TObject, TConfig, TSpec> & traverser)
-{
-    return impl::getContext(traverser);
-}
-
-template <typename TObject, typename TConfig, typename TSpec>
-inline typename Window<Traverser<TObject, TConfig, TSpec> const>::Type
-window(Traverser<TObject, TConfig, TSpec> const & traverser)
-{
-    return impl::getContext(traverser);
-}
-
-// ----------------------------------------------------------------------------
-// Function windowBegin()
-// ----------------------------------------------------------------------------
-
-// TODO(rrahn): Doc!
-template <typename TObject, typename TConfig, typename TSpec>
-inline typename Iterator<typename Window<Traverser<TObject, TConfig, TSpec> >::Type>::Type
-windowBegin(Traverser<TObject, TConfig, TSpec> & traverser)
-{
-    return impl::getContext(traverser).begin;
-}
-
-template <typename TObject, typename TConfig, typename TSpec>
-inline typename Iterator<typename Window<Traverser<TObject, TConfig, TSpec> const>::Type>::Type
-windowBegin(Traverser<TObject, TConfig, TSpec> const & traverser)
-{
-    return impl::getContext(traverser).begin;
-}
-
-// ----------------------------------------------------------------------------
-// Function windowEnd()
-// ----------------------------------------------------------------------------
-
-// TODO(rrahn): Doc!
-template <typename TObject, typename TConfig, typename TSpec>
-inline typename Iterator<typename Window<Traverser<TObject, TConfig, TSpec> >::Type>::Type
-windowEnd(Traverser<TObject, TConfig, TSpec> & traverser)
-{
-    return impl::getContext(traverser).end;
-}
-
-template <typename TObject, typename TConfig, typename TSpec>
-inline typename Iterator<typename Window<Traverser<TObject, TConfig, TSpec> const>::Type>::Type
-windowEnd(Traverser<TObject, TConfig, TSpec> const & traverser)
-{
-    return impl::getContext(traverser).end;
-}
-
-// ----------------------------------------------------------------------------
-// Function position
-// ----------------------------------------------------------------------------
-
-// TODO(rrahn): Doc!
-template <typename TObject, typename TConfig, typename TSpec>
-inline typename Position<Traverser<TObject, TConfig, TSpec> const>::Type
-position(TTraverser<TObject, TConfig, TSpec> const & traverser)
-{
-    typedef TTraverser<TObject, TConfig, TSpec> const   	TTraverser;
-    typedef typename Position<TTraverser>::Type             TPosition;
-    typedef typename Container<TTraverser>::Type            TDeltaMap;
-    typedef typename DeltaCoverage<TDeltaMap>::Type         TCoverage;
-    typedef typename Iterator<TCoverage, Standard>::Type    TCovIterator;
-
-    TPosition posVec;
-    reserve(posVec, length(traverser.activeCoverage), Exact());  // Reserve enough memory.
-
-    TCovIteator covBeg = begin(traverser.activeCoverage, Standard())
-    forEach(covBeg, end(traverser.activeCoverage, Standard()),
-            [&posVec, =covBeg](TCovIterator const & it)
-            {
-                if (*it)
-                    appendValue(posVec, it - covBeg);  // Fill values.
-            });
-    return posVec;  // Return as rvalue reference.
-}
-
-// ----------------------------------------------------------------------------
-// Function traverse()
-// ----------------------------------------------------------------------------
-
-// TODO(rrahn): Doc!
-// TODO(rrahn): Demo!
-template <typename TContainer, typename TConfig, typename TExternal, typename TDirection>
-inline void
-traverse(Traverser<TContainer, TConfig, JstTraverser> & traverser,
-         TExternal & external,
-         TDirection const & /*dir*/)
-{
-    typedef Traverser<TContainer, TConfig, JstTraverser>    TTraverser;
-    typedef JstTraversalOperator<TTraverser, TExternal>     TOperator;
-
-    TOperator op(traverser, extension);  // Initialize the operator.
-
-    SEQAN_ASSERT(traverser.entryPtr != nullptr);
-    // Continue as long as there is work on the stack.
-    while (!empty(op.stack))
+    if (stepSize > 0 && node.remainingSize == 0)
     {
-        // Loop over the current branch.
-        while(impl::current(op).cur != impl::current(op).end)
-        {
-            if (impl::isBase(op))
-                if (SEQAN_UNLIKELY(impl::current(op).cur >= chunk(buffer(traverser)).end))
-                    advanceChunk(buffer(traverser));  // Buffer new chunk.
-
-            // Check for branch position.
-            if (position(impl::current(op).cur) >= position(impl::current(op).bpNextVirtual))
-                expand(op);
-
-            advance(op, TDirection());
-        }
-        pop(op.stack);
+        impl::popNode(me);
     }
+}
+
+// ----------------------------------------------------------------------------
+// Function goNext()
+// ----------------------------------------------------------------------------
+
+// Standard version just iterating over the delta nodes.
+template <typename TJst, typename TSpec, typename TObserver>
+inline void
+goNext(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it)
+{
+    goNext(it, 1);
+}
+
+// ----------------------------------------------------------------------------
+// Function atEnd()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline bool
+atEnd(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
+{
+    SEQAN_ASSERT(me._stackPtr == nullptr);
+    return length(*me._stackPtr) == 1 && back(*me._stackPtr).endEdgeIt == sourceEnd(container(me)._buffer);
 }
 
 }  // namespace seqan
 
-#endif  // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_BASE_H_
+#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_H_

@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSOR_H_
-#define INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSOR_H_
+#ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_UTIL_H_
+#define INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_UTIL_H_
 
 namespace seqan
 {
@@ -46,90 +46,22 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+struct TraverserStackMember_;
+typedef Tag<TraverserStackMember_> TraverserStackMember;
+
 template <typename TSpec = void>
 struct JstTraversalSpec
 {};
 
-template <typename TJst, typename TSpec>
-class TraversorImpl<TJst, JstTraversalSpec<TSpec> >
-{
-public:
-    typedef JstTraversalNode<TJst>              TTraversalNode;
-    typedef String<TTraversalNode, Block<> >    TTraversalStack;
-    typedef typename Size<TraversorImpl>::Type  TSize;
-
-    // __ Member Variables ____________________________________________________
-
-    TJst *          _contPtr;
-    TSize           _contextSize;
-    TTraversalNode  _tmp;
-    TTraversalStack _stack;           // Parent stack used for iterative traversal.
-
-    // __ Constructors ________________________________________________________
-
-    TraversorImpl() : _contPtr(nullptr), _contextSize(1)
-    {}
-
-    TraversorImpl(TJst & jst) : _contPtr(nullptr), _contextSize(1), _stack()
-    {
-        _init(*this, jst);
-    }
-
-    // Copy Constructor!
-    template <typename TOtherJst>
-    TraversorImpl(TraversorImpl<TOtherJst, JstTraversalSpec<TSpec> > const & other,
-         SEQAN_CTOR_ENABLE_IF(IsConstructible<TJst, TOtherJst>)) :
-            _contPtr(other._contPtr),
-            _contextSize(other._contextSize),
-            _tmp(other._tmp),
-            _stack(other._stack)
-    {
-        ignoreUnusedVariableWarning(dummy);
-    }
-
-    // __ Member Functions ____________________________________________________
-
-    template <typename TOtherJst>
-    inline SEQAN_FUNC_ENABLE_IF(IsConstructible<TJst, TOtherJst>, TraversorImpl &)
-    operator=(TraversorImpl<TOtherJst, JstTraversalSpec<TSpec> > const & other)
-    {
-        _contPtr = other._contPtr;
-        _contextSize = other._contextSize;
-        _tmp = other._tmp;
-        _stack = other._stack;
-    }
-};
+template <typename TContainer, typename TSpec, typename TObserver = void>
+class TraverserImpl;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
-template <typename TJst, typename TSpec>
-struct Container<TraversorImpl<TJst, JstTraversalSpec<TSpec> > >
-{
-    typedef TJst Type;
-};
-
-template <typename TJst, typename TSpec>
-struct Size<TraversorImpl<TJst, JstTraversalSpec<TSpec> > >
-{
-    typedef typename Size<TJst>::Type    Type;
-};
-
-
 template <typename TObject>
 struct StringContext;
-
-template <typename TJst, typename TSpec>
-struct StringContext<TraversorImpl<TJst, JstTraversalSpec<TSpec> > >
-{
-    typedef TraversorImpl<TJst, JstTraversalSpec<TSpec> >   TThis_;
-    typedef typename Container<TThis_>::Type                TContainer_;
-    typedef typename Source<TContainer_>::Type              TSource_;
-    typedef typename Iterator<TSource_, Standard>::Type     TSourceIt_;
-
-    typedef Range<TSourceIt_>                               Type;
-};
 
 // ============================================================================
 // Private Functions
@@ -142,21 +74,23 @@ namespace impl
 // Function init()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec>
+template <typename TJst, typename TSpec, typename TObserver>
 inline void
-init(Iter<TJst, JstTraversalSpec<TSpec> > & me,
+init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
      TJst & jst)
 {
-    typedef typename Iter<TJst, JstTraversalSpec<TSpec> >::TTraversalNode TNode;
+    typedef typename TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>::TNode TNode;
 
     me._contPtr = &jst;
     TNode node;
-    node.seqBegin = sourceBegin(jst);
-    node.seqEnd = node.seqBegin;
-    node.mappedSrcPos = -1;
+    node.begEdgeIt = begin(source(jst), Standard());
+    node.endEdgeIt = node.begEdgeIt;
+    node.curEdgeIt = node.begEdgeIt;
+    node.mappedSrcEndPos = 0;
     resize(node.coverage, dimension(jst), true, Exact());
     node.curDelta = jst._buffer._deltaRangeBegin - 1;  // Point before beginning.
-    appendValue(me._history, SEQAN_MOVE(node));  // Push onto stack.
+    node.remainingSize = me._historySize;
+    appendValue(*me._stackPtr, SEQAN_MOVE(node));  // Push onto stack.
 }
 
 // ----------------------------------------------------------------------------
@@ -203,23 +137,23 @@ mapBranchPointToVirtual(TIterator & resultIt,
     if (it->segmentSource == SOURCE_PATCH)  // The iterator has to be at the beginning.
     {
         TVarIterator itVar = begin(variantStore, Standard());  // TODO(rrahn): Optimize!
-        SEQAN_ASSERT_LEQ(deltaPosition(itVar), static_cast<TDeltaMapPos const>(hostPos));
+        SEQAN_ASSERT_LEQ(getDeltaPosition(*itVar), static_cast<TDeltaMapPos const>(hostPos));
 
         TDeltaMapPos virtualOffset = 0;
         // Now we move to the right until we find the node that we are looking for and reconstruct the offset of the virtual positions.
-        while(deltaPosition(itVar) != static_cast<TDeltaMapPos const>(hostPos) && !atEnd(itVar, variantStore))
+        while(getDeltaPosition(*itVar) != static_cast<TDeltaMapPos const>(hostPos) && !atEnd(itVar, variantStore))
         {
-            if (deltaCoverage(itVar)[proxyId] != true)  // irrelevant variant.
+            if (getDeltaCoverage(*itVar)[proxyId] != true)  // irrelevant variant.
             {
                 ++itVar;
                 continue;
             }
 
-            if (deltaType(itVar) == DELTA_TYPE_INS)
+            if (getDeltaType(*itVar) == DELTA_TYPE_INS)
                 virtualOffset += length(deltaValue(itVar, DeltaTypeIns()));
-            else if (deltaType(itVar) == DELTA_TYPE_SNP)
+            else if (getDeltaType(*itVar) == DELTA_TYPE_SNP)
                 ++virtualOffset;
-            else if (deltaType(itVar) == DELTA_TYPE_SV)
+            else if (getDeltaType(*itVar) == DELTA_TYPE_SV)
                 virtualOffset += length(deltaValue(itVar, DeltaTypeSV()).i2);
             ++itVar;
         }
@@ -253,23 +187,23 @@ mapBranchPointToVirtual(TIterator & resultIt,
     TVarIterator itVar = std::upper_bound(begin(variantStore, Standard()), end(variantStore, Standard()), child,
                                           DeltaMapEntryPosLessThanComparator_());
 
-    SEQAN_ASSERT_LEQ(deltaPosition(itVar), static_cast<TDeltaMapPos const>(hostPos));
+    SEQAN_ASSERT_LEQ(getDeltaPosition(*itVar), static_cast<TDeltaMapPos const>(hostPos));
 
     TDeltaMapPos virtualOffset = 0;
     // Now we move to the right until we find the node that we are looking for and reconstruct the offset of the virtual positions.
-    while (deltaPosition(itVar) != static_cast<TDeltaMapPos const>(hostPos) && !atEnd(itVar, variantStore))
+    while (getDeltaPosition(*itVar) != static_cast<TDeltaMapPos const>(hostPos) && !atEnd(itVar, variantStore))
     {
-        if (deltaCoverage(itVar)[proxyId] != true)  // irrelevant variant.
+        if (getDeltaCoverage(*itVar)[proxyId] != true)  // irrelevant variant.
         {
             ++itVar;
             continue;
         }
-        
-        if (deltaType(itVar) == DELTA_TYPE_INS)
+
+        if (getDeltaType(*itVar) == DELTA_TYPE_INS)
             virtualOffset += length(deltaValue(itVar, DeltaTypeIns()));
-        else if (deltaType(itVar) == DELTA_TYPE_SNP)
+        else if (getDeltaType(*itVar) == DELTA_TYPE_SNP)
             ++virtualOffset;
-        else if (deltaType(itVar) == DELTA_TYPE_SV)
+        else if (getDeltaType(*itVar) == DELTA_TYPE_SV)
             virtualOffset += length(deltaValue(itVar, DeltaTypeSV()).i2);
         ++itVar;
     }
@@ -281,38 +215,38 @@ mapBranchPointToVirtual(TIterator & resultIt,
 // Function impl::inBranch()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec>
+template <typename TJst, typename TSpec, typename TObserver>
 inline bool
-inBranch(Iter<TJst, JstTraversalSpec<TSpec> > const & me)
+inBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
 {
-    return length(me._history) > 1;
+    return length(*resource(me._rm)) > 1;
 }
 
 // ----------------------------------------------------------------------------
 // Function impl::isMergePoint()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec>
+template <typename TJst, typename TSpec, typename TObserver>
 inline bool
-isMergePoint(Iter<TJst, JstTraversalSpec<TSpec> > const & me)
+isMergePoint(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
 {
-    return !impl::inBranch(me) && back(me._history).mappedSrcEndPos != deltaPosition(back(me._history).curDelta);
+    return !impl::inBranch(me) && back(*resource(me._rm)).mappedSrcEndPos != deltaPosition(back(*resource(me._rm)).curDelta);
 }
 
 // ----------------------------------------------------------------------------
 // Function impl::nextChild()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec,
+template <typename TJst, typename TSpec, typename TObserver,
           typename TTraversalNode>
 inline bool
-nextChild(Iter<TJst, JstTraversalSpec<TSpec> > & it,
-         TTraversalNode & parent,
-         TTraversalNode & child)
+nextChild(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
+          TTraversalNode & parent,
+          TTraversalNode & child)
 {
     // We set the coverage of the left child to be the one of the parent & coverage(curDelta);
-    transform(child.coverage, parent.coverage, getDeltaCoverage(*parent.nextDelta), FunctorBitwiseAnd());
-    transform(parent.coverage, parent.coverage, getDeltaCoverage(*parent.nextDelta),
+    transform(child.coverage, parent.coverage, getDeltaCoverage(*impl::hostIter(parent.nextDelta)), FunctorBitwiseAnd());
+    transform(parent.coverage, parent.coverage, getDeltaCoverage(*impl::hostIter(parent.nextDelta)),
               FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
 
     // Set the current delta of the child to the next delta of the parent.
@@ -331,7 +265,8 @@ nextChild(Iter<TJst, JstTraversalSpec<TSpec> > & it,
         if (proxyId < dimension(container(it)) && !parent.fromBase)
         {
             auto endToBegDist = parent.endEdgeIt - parent.begEdgeIt;
-            impl::mapBranchPointToVirtual(parent.endEdgeIt, host(container(it)), proxyId, getDeltaPosition(*parent.nextDelta));
+            impl::mapBranchPointToVirtual(parent.endEdgeIt, host(container(it)), proxyId,
+                                          getDeltaPosition(*impl::hostIter(parent.nextDelta)));
             parent.begEdgeIt = parent.endEdgeIt - endToBegDist;
             parent.curEdgeIt = parent.endEdgeIt;
             // We have the sequence iterators updated and the coverage.
@@ -343,13 +278,15 @@ nextChild(Iter<TJst, JstTraversalSpec<TSpec> > & it,
         // map child node to new journal sequence.
         // remap child node to new journal sequence.
         auto endToBegDist = child.endEdgeIt - child.begEdgeIt;
-        impl::mapBranchPointToVirtual(child.endEdgeIt, host(container(it)), proxyId, getDeltaPosition(*child.curDelta));
+        impl::mapBranchPointToVirtual(child.endEdgeIt, host(container(it)), proxyId,
+                                      getDeltaPosition(*impl::hostIter(child.curDelta)));
         child.begEdgeIt = child.endEdgeIt - endToBegDist;
         child.curEdgeIt = child.endEdgeIt;
     }
 
     // Move to next valid delta position, note that we skip all end points and all deltas that occur at the same position.
-    while (getDeltaPosition(*(++child.nextDelta)) == getDeltaPosition(*child.curDelta) || child.nextDelta.isEndPoint())
+    while (getDeltaPosition(*(impl::hostIter(++child.nextDelta))) == getDeltaPosition(*impl::hostIter(child.curDelta))
+           || impl::isEndPoint(child.nextDelta))
     {}
 
     // C) Update remaining length if we come directly from the base sequence.
@@ -357,48 +294,57 @@ nextChild(Iter<TJst, JstTraversalSpec<TSpec> > & it,
     {
         // We should keep the mappedSrcEndPos of the base node already in sync.
         child.mappedSrcEndPos += historySize(container(it));
-        switch (getDeltaType(*child.curDelta))
+        switch (getDeltaType(*impl::hostIter(child.curDelta)))
         {
             case DELTA_TYPE_DEL:
             {
-                child.mappedSrcEndPos += deletionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeDel());
+                child.mappedSrcEndPos += deletionSize(host(container(it))._deltaStore,
+                                                      getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeDel());
                 --child.remainingSize;
                 break;
             }
             case DELTA_TYPE_INS:
             {
-                child.remainingSize += insertionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeIns());
+                child.remainingSize += insertionSize(host(container(it))._deltaStore,
+                                                     getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeIns());
                 break;
             }
             case DELTA_TYPE_SV:
             {
-                child.mappedSrcEndPos += deletionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeSV());
-                child.remainingSize += insertionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeSV()) - 1;
+                child.mappedSrcEndPos += deletionSize(host(container(it))._deltaStore,
+                                                      getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeSV());
+                child.remainingSize += insertionSize(host(container(it))._deltaStore,
+                                                     getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeSV()) - 1;
                 break;
             }
+            default: break;
         }
     }
     else
     {
         // Now we are down somewhere in an internal subtree.
-        switch (getDeltaType(*child.curDelta))
+        switch (getDeltaType(*impl::hostIter(child.curDelta)))
         {
             case DELTA_TYPE_DEL:
             {
-                child.mappedSrcEndPos += deletionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeDel());
+                child.mappedSrcEndPos += deletionSize(host(container(it))._deltaStore,
+                                                      getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeDel());
                 break;
             }
             case DELTA_TYPE_SV:
             {
-                child.mappedSrcEndPos += deletionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeSV());
+                child.mappedSrcEndPos += deletionSize(host(container(it))._deltaStore,
+                                                      getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeSV());
                 break;
             }
+            default: break;
         }
     }
 
     child.begEdgeIt = child.endEdgeIt;
     child.curEdgeIt = child.begEdgeIt;
-    child.endEdgeIt = getDeltaPosition(*child.nextDelta) - getDeltaPosition(*child.curDelta);
+    child.endEdgeIt = child.begEdgeIt + (getDeltaPosition(*impl::hostIter(child.nextDelta)) -
+                                         getDeltaPosition(*impl::hostIter(child.curDelta)));
     child.isBase = false;
     child.fromBase = false;
     return true;
@@ -416,19 +362,20 @@ advanceBaseParent(TTraversalNode & base)
     SEQAN_ASSERT(base.curDelta == base.nextDelta);
 
     // TODO(rrahn): Check if we need this?
-    arrayFill(begin(base.cover, Standard()), end(base.coverage, Standard()), true);  // Make sure the coverage is set to 1.
-    while (base.curDelta.getDeltaPosition() == base.nextDelta.getDeltaPosition())
+    arrayFill(begin(base.coverage, Standard()), end(base.coverage, Standard()), true);  // Make sure the coverage is set to 1.
+    while (getDeltaPosition(*impl::hostIter(base.curDelta)) == getDeltaPosition(*impl::hostIter(base.nextDelta)))
     {
-        if (SEQAN_UNLIKELY(getDeltaType(*base.curDelta) == DELTA_TYPE_DEL || getDeltaType(*base.curDelta) == DELTA_TYPE_SV))
-            transform(base.coverage, base.coverage, getDeltaCoverage(*base.curDelta),
-                      FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseAnd>());
+        if (SEQAN_UNLIKELY(getDeltaType(*impl::hostIter(base.curDelta)) == DELTA_TYPE_DEL ||
+                           getDeltaType(*impl::hostIter(base.curDelta)) == DELTA_TYPE_SV))
+            transform(base.coverage, base.coverage, getDeltaCoverage(*impl::hostIter(base.curDelta)),
+                      FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
         ++base.nextDelta;
     }
     // base.nextDelta might point to an merge point.
-    base.begEdgeIt += base.curDelta.getDeltaPosition() - position(base.begEdgeIt);
+    base.begEdgeIt += getDeltaPosition(*impl::hostIter(base.curDelta)) - position(base.begEdgeIt);
     base.curEdgeIt = base.begEdgeIt + 1;
-    base.endEdgeIt += base.nextDelta.getDeltaPosition() - base.mappedSrcEndPos;
-    base.mappedSrcEndPos = base.nextDelta.getDeltaPosition();
+    base.endEdgeIt += getDeltaPosition(*impl::hostIter(base.nextDelta)) - base.mappedSrcEndPos;
+    base.mappedSrcEndPos = getDeltaPosition(*impl::hostIter(base.nextDelta));
 }
 
 // ----------------------------------------------------------------------------
@@ -441,7 +388,7 @@ updateParent(TTraversalNode & parent)
 {
     SEQAN_ASSERT_NOT(parent.isBase);
 
-    if (setAllZeros(parent.coverage))
+    if (testAllZeros(parent.coverage))
         return false;
     // Update:
     parent.begEdgeIt = parent.endEdgeIt;
@@ -449,10 +396,10 @@ updateParent(TTraversalNode & parent)
 
     // Make sure that for a right subtree we don't consider merge points, because we cannot be within a branch
     // coming from a delta while at the same time there is a deletion to be covered.
-    while(isMergePoint(++parent.nextDelta))  // Move the nextDelta iterator to the next branch point.
+    while(impl::isEndPoint(++parent.nextDelta))  // Move the nextDelta iterator to the next branch point.
     {}
-    parent.mappedSrcEndPos = getDeltaPosition(parent.nextDelta);
-    parent.endEdgeIt += parent.mappedSrcEndPos - getDeltaPosition(*parent.curNode);
+    parent.mappedSrcEndPos = getDeltaPosition(*impl::hostIter(parent.nextDelta));
+    parent.endEdgeIt += parent.mappedSrcEndPos - getDeltaPosition(*impl::hostIter(parent.curDelta));
     return true;
 }
 
@@ -466,12 +413,12 @@ inline TSize
 moveWindow(TNode & node, TSize stepSize)
 {
     SEQAN_ASSERT_GEQ(stepSize, 0);
-
+    
     if (node.isBase)
     {
         return stepSize - _min(node.endEdgeIt - node.curEdgeIt, stepSize);
     }
-
+    
     TSize remainingEdgeSize = node.endEdgeIt - node.curEdgeIt;
     if (stepSize < remainingEdgeSize)
     {
@@ -485,7 +432,7 @@ moveWindow(TNode & node, TSize stepSize)
         node.remainingSize -= stepSize;
         return 0;
     }
-
+    
     if (stepSize > node.remainingSize)
     {
         node.remainingSize = 0;
@@ -497,92 +444,66 @@ moveWindow(TNode & node, TSize stepSize)
     return stepSize - remainingEdgeSize;
 }
 
-template <typename TJst, typename TSpec,
+template <typename TJst, typename TSpec, typename TObserver,
           typename TTraversalNode>
 inline void
-pushNode(Iter<TJst, JstTraversalSpec<TSpec> > & traversor,
+pushNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & traversor,
          TTraversalNode SEQAN_FORWARD_CARG child)
 {
-    appendValue(traversor._stack, SEQAN_FORWARD(TTraversalNode, child));
+    appendValue(*traversor._stackPtr, SEQAN_FORWARD(TTraversalNode, child));
+    notify(traversor, PushEvent());
 }
 
-template <typename TJst, typename TSpec>
+template <typename TJst, typename TSpec, typename TObserver>
 inline void
-popNode(Iter<TJst, JstTraversalSpec<TSpec> > & traversor)
+popNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & traversor)
 {
-    eraseBack(traversor._stack);
+    eraseBack(*traversor._stackPtr);
+    notify(traversor, PopEvent());
+}
+
+template <typename TStack>
+inline TStack*
+createStack()
+{
+    return new TStack;
+}
+
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>, TraverserStackMember>::Type &
+stack(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me)
+{
+    return *me._stackPtr;
+}
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const, TraverserStackMember>::Type &
+stack(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
+{
+    return *me._stackPtr;
 }
 
 // ----------------------------------------------------------------------------
 // Function impl::getStringContext()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec>
-inline typename StringContext<TraversorImpl<TJst, JstTraversalSpec<TSpec> > >::Type
-getStringContext(TraversorImpl<TJst, JstTraversalSpec<TSpec> > const & traversor)
+template <typename TJst, typename TSpec, typename TObserver>
+inline typename StringContext<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >::Type
+getStringContext(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & traverser)
 {
     // TODO(rrahn): Write me!
 }
 
-}  // namespace impl
-
-template <typename TJst, typename TSpec>
-inline void
-_init(Iter<TJst, JstTraversalSpec<TSpec> > & me,
-      TJst & jst)
-{
-    impl::init(me, jst);
-}
-
-// ============================================================================
-// Public Functions
-// ============================================================================
-
 // ----------------------------------------------------------------------------
-// Function stringContext()
+// Function impl::moveWindow()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec>
-inline typename StringContext<TraversorImpl<TJst, JstTraversalSpec<TSpec> > >::Type
-stringContext(TraversorImpl<TJst, JstTraversalSpec<TSpec> > const & traversor)
-{
-    return impl::getStringContext(traversor);
-}
-
-// ----------------------------------------------------------------------------
-// Function container
-// ----------------------------------------------------------------------------
-
-template <typename TJst, typename TSpec>
-inline typename Container<TraversorImpl<TJst, JstTraversalSpec<TSpec> > >::Type &
-container(TraversorImpl<TJst, JstTraversalSpec<TSpec> > & me)
-{
-    return *me._contPtr;
-}
-
-template <typename TJst, typename TSpec>
-inline typename Container<TraversorImpl<TJst, JstTraversalSpec<TSpec> > const>::Type &
-container(TraversorImpl<TJst, JstTraversalSpec<TSpec> > const & me)
-{
-    return *me._contPtr;
-}
-
-// ----------------------------------------------------------------------------
-// Function atBegin()
-// ----------------------------------------------------------------------------
-
-template <typename TJst, typename TSpec>
-inline bool
-atBegin(Iter<TJst, JstTraversalSpec<TSpec> > & me)
-{
-    return back(me._stack).mappedSrcEndPos == -1;
-}
-
-template <typename TJst, typename TSpec,
+template <typename TJst, typename TSpec, typename TObserver,
           typename TTraversalNode,
           typename TSize>
 inline TSize
-moveWindow(Iter<TJst, JstTraversalSpec<TSpec> > & it,
+moveWindow(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
            TTraversalNode & parent,
            TSize stepSize)
 {
@@ -595,7 +516,7 @@ moveWindow(Iter<TJst, JstTraversalSpec<TSpec> > & it,
             if (parent.isBase)
                 it._tmp = parent;  // Store copy of the original base node.
 
-            while (getDeltaPosition(*parent.nextDelta) == getDeltaPosition(*parent.curDelta))
+            while (getDeltaPosition(*(*parent.nextDelta).hostIter) == getDeltaPosition(*(*parent.curDelta).hostIter))
             {
                 auto child = parent;
                 if (impl::nextChild(it, parent, child) && moveWindow(it, child, stepSize) == 0 &&
@@ -607,17 +528,17 @@ moveWindow(Iter<TJst, JstTraversalSpec<TSpec> > & it,
             if (parent.isBase)
             {
                 // We need to move the base parent to the next segment redarding the branch information.
-                impl::advanceBaseParent(it, it._tmp);
+                impl::advanceBaseParent(it._tmp);
                 swap(parent, it._tmp);  // Set advanced base parent back to stack at the correct position.
                 it._tmp.isBase = false;
                 it._tmp.fromBase = true;
-                impl::updateParent(it, it._tmp);
+                impl::updateParent(it._tmp);
                 if (moveWindow(it, it._tmp, stepSize) == 0 && it._tmp.remainingSize >= 0)
                     impl::pushNode(it, it._tmp);
             }
             else
             {
-                if (impl::updateParent(it, parent))
+                if (impl::updateParent(parent))
                     return moveWindow(it, parent, stepSize);
             }
         }
@@ -625,52 +546,9 @@ moveWindow(Iter<TJst, JstTraversalSpec<TSpec> > & it,
     return stepSize;
 }
 
-template <typename TJst, typename TSpec, typename TSize>
-inline void
-goNext(Iter<TJst, JstTraversalSpec<TSpec> > & it,
-       TSize stepSize)
-{
-    auto& node = back(it._stack);
-    stepSize = moveWindow(it, node, stepSize);
 
-    // Case A) stepSize == 0 && node.remainingSize > 0;  // vaild context
-    // Case B) stepSize == 0 && node.remainingSize = 0;  // valid context
-    // Case C) stepSize > 0 && node.remaingingSize = 0;  // invalid context -> we have to pop an element from the tree.
-    // Case D) stepSize > 0 && node.remainingSize > 0;   // invalid case: ASSERT
+}  // namespace impl
 
-    SEQAN_ASSERT(stepSize > static_cast<TSize>(0) && node.remainingSize >static_cast<TSize>(0));
+}  // namespace seqan.
 
-    if (stepSize > 0 && node.remainingSize == 0)
-    {
-        impl::popNode(it);
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function goNext()
-// ----------------------------------------------------------------------------
-
-// Standard version just iterating over the delta nodes.
-template <typename TJst, typename TSpec>
-inline void
-goNext(Iter<TJst, JstTraversalSpec<TSpec> > & it)
-{
-    goNext(it, 1);
-}
-
-// ----------------------------------------------------------------------------
-// Function atEnd()
-// ----------------------------------------------------------------------------
-
-template <typename TJst, typename TSpec>
-inline bool
-atEnd(Iter<TJst, JstTraversalSpec<TSpec> > & me)
-{
-    return length(me._stack) == 1 && back(me._stack).srcEnd == sourceEnd(container(me));
-}
-
-
-
-}  // namespace seqan
-
-#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSOR_H_
+#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_UTIL_H_

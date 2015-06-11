@@ -46,6 +46,9 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+struct OnHit_;
+typedef Tag<OnHit_> OnHit;
+
 template <typename TState, typename TStack = String<TState, Block<> > >
 struct StackEventObserver  // implements ObserverConcept
 {
@@ -81,26 +84,37 @@ inline void update(StackEventObserver<TState, TStack> & observer,
 }
 
 // ----------------------------------------------------------------------------
-// Function traverse
+// Function find
 // ----------------------------------------------------------------------------
 
-// Special function for string tree iterator.
-template <typename TTraversor, typename TState>
-inline void  // Only if TTraversor implements the ObservableConcept, StringContextTraversorConcept
-traverse(TTraversor & traversor,
-         TState & state)
+template <typename TContainer, typename TSpec, typename TObserver, typename TState>
+inline void
+find(TraverserImpl<TContainer, JstTraverserSpec<TSpec>, TObserver> & input,
+     TState & state)
 {
-    typedef StackStateObserver<TTState>                           TObserver;
-    typedef typename MakeObservable<TTraversor, TObserver>::Type  TObservable;  // Subclassing the original TTraversor
+    typedef StackStateObserver<TState>                                              TInternalObserver;
+    typedef TraverserImpl<TContainer, JstTraverserSpec<TSpec>, TInternalObserver>   TInternalTraverser;
 
-    TObserver observer(state);
+    TInternalObserver observer(state);
 
-    TObservable observable(traversor);
-    addObserver(observable, observer);
+    TInternalTraverser traverser(input);  // Original traverser.
+    addObserver(traverser, observer);
 
-    while (!atEnd(adaptor))
-        goNext(observable, back(observer.stack)(stringContext(observable)));
+    while (!atEnd(traverser))
+    {
+        Pair<TSize, bool> result = back(observer.stack)(stringContext(traverser));
+        if (result.i2)
+            notify(input, OnHit());
+        goNext(traverser, result.i1);
+    }
 }
+
+// my algorithm:
+// Jst ...
+// trav = traverser(jst, observer);
+// trav = traverser(jst, void);
+// Stack<TAlgo> stack;
+// trav = find(trav, stack);
 
 }
 

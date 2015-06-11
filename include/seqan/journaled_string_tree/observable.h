@@ -51,23 +51,11 @@ class Observable
 {
 public:
     TList   observerList;
-
-    ~Observable()
-    {
-        for (TObserver* observerPtr : observerList)
-            notifyKilled(*observerPtr);
-    }
 };
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
-
-template <typename TContainer, typename TObserver>
-struct MakeObservable
-{
-    typedef Nothing Type;
-};
 
 // ============================================================================
 // Functions
@@ -77,8 +65,14 @@ struct MakeObservable
 // Function addObserver()
 // ----------------------------------------------------------------------------
 
-template <typename TObserver>
-inline void addObserver(Observable<TObserver> & subject, TObserver & observer)
+template <typename TList, typename TObserver>
+inline void addObserver(Observable<void, TList> & /*subject*/, TObserver & /*observer*/)
+{
+    // no-op;
+}
+
+template <typename TObserver, typename TList>
+inline void addObserver(Observable<TObserver, TList> & subject, TObserver & observer)
 {
     appendValue(subject.observerList, &observer);
 }
@@ -87,8 +81,14 @@ inline void addObserver(Observable<TObserver> & subject, TObserver & observer)
 // Function deleteObserver()
 // ----------------------------------------------------------------------------
 
-template <typename TObserver>
-inline void deleteObserver(Observable<TObserver> & subject, TObserver & observer)
+template <typename TList, typename TObserver>
+inline void deleteObserver(Observable<void, TList> & /*subject*/, TObserver & /*observer*/)
+{
+    // no-op;
+}
+
+template <typename TObserver, typename TList>
+inline void deleteObserver(Observable<TObserver, TList> & subject, TObserver & observer)
 {
     std::remove(begin(subject.observerList), end(subject.observerList), &observer);
 }
@@ -97,12 +97,19 @@ inline void deleteObserver(Observable<TObserver> & subject, TObserver & observer
 // Function notify()
 // ----------------------------------------------------------------------------
 
-template <typename TObserver, typename TEventTag>
-inline void notify(Observable<TObserver> & subject, TEventTag const & /*event tag*/)
+template <typename TList, typename TEventTag>
+inline void notify(Observable<void, TList> & /*subject*/, TEventTag const & /*event tag*/)
+{
+    // no-op;
+}
+
+template <typename TObserver, typename TList, typename TEventTag>
+inline void notify(Observable<TObserver, TList> & subject, TEventTag const & /*event tag*/)
 {
     for (TObserver* obPtr : subject.observerList)
         update(*obPtr, TEventTag());
 }
+
 }
 
 #endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_OBSERVABLE_H_

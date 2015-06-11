@@ -417,7 +417,7 @@ insert(Iter<TDeltaMap, DeltaMapIteratorSpec> const & mapIt,
     typedef typename Value<TDeltaMap>::Type TEntry;
     typedef typename DeltaRecord<TEntry>::Type TDeltaRecord;
 
-    SEQAN_ASSERT(checkNoDuplicate(*mapIt._mapPtr, deltaPos, deltaType));     // Check valid insert position.
+//    SEQAN_ASSERT(checkNoDuplicate(*mapIt._mapPtr, deltaPos, deltaType));     // Check valid insert position.
 
     insertValue(mapIt._mapPtr->_entries, mapIt - begin(*mapIt._mapPtr, Standard()),
                 TEntry(deltaPos, TDeltaRecord(selectDeltaType(deltaType),
@@ -520,10 +520,10 @@ insert(DeltaMap<TConfig, TSpec> & deltaMap,
     }
 
     auto it = impl::lowerBound(deltaMap, deltaPos, deltaType);
-    if (SEQAN_UNLIKELY(it != end(deltaMap, Standard()) &&
-                       getDeltaPosition(*it) == static_cast<TEntryPos>(deltaPos) &&
-                       getDeltaRecord(*it).i1 == selectDeltaType(deltaType)))
-        return false;
+//    if (SEQAN_UNLIKELY(it != end(deltaMap, Standard()) &&
+//                       getDeltaPosition(*it) == static_cast<TEntryPos>(deltaPos) &&
+//                       getDeltaRecord(*it).i1 == selectDeltaType(deltaType)))
+//        return false;
     impl::insert(it, deltaPos, deltaValue, coverage, deltaType);
     return true;
 }
