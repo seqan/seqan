@@ -114,8 +114,6 @@ bool endsWith(CharString const & str, CharString const & x)
 
 bool performEstimation(LibraryInfo & libInfo, BamFileIn & bamFileIn)
 {
-    typedef StringSet<String<char> >   TNameStore;
-
     // Vector of all insert sizes.
     typedef std::vector<unsigned int> TVecISize;
     TVecISize vecISize;
