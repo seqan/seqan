@@ -7,7 +7,6 @@ int main()
 {
     typedef Graph<Directed<> > TGraph;
     typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
-    typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef Size<TGraph>::Type TSize;
 
     // Create grap with 14 directed edges (1,0), (0,4), ...

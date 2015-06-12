@@ -140,8 +140,8 @@ int readFileMMapDocument(char const * filename, Options const & /*options*/, TSp
 {
     typedef StringSet<CharString, TSpec> TSequenceIds;
     typedef StringSet<TSequence, TSpec> TSequences;
-    typedef typename Iterator<TSequenceIds>::Type TSequenceIdsIter;
-    typedef typename Iterator<TSequences>::Type TSequencesIter;
+//     typedef typename Iterator<TSequenceIds>::Type TSequenceIdsIter;
+//     typedef typename Iterator<TSequences>::Type TSequencesIter;
     TSequenceIds sequenceIds;
     TSequences sequences;
 
