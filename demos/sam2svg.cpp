@@ -142,7 +142,7 @@ int main(int argc, char const ** argv)
     readRecords(store, samFile);
 
     // Choose contigs
-    std::vector<int> contigs;
+    std::vector<unsigned> contigs;
     if (options.contigID == -1)
         for (unsigned i = 0; i < length(store.contigStore); ++i)
             contigs.push_back(i);

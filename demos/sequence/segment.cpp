@@ -75,7 +75,7 @@ int main()
 //![basic operations]
 
 //![metafunction examples]
-    typedef Infix<TInfix>::Type  TInfix2;  // == TInfix
+/*  typedef Infix<TInfix>::Type  TInfix2;  // == TInfix
     typedef Prefix<TInfix>::Type TInfix3;  // == TInfix
     typedef Suffix<TInfix>::Type TInfix4;  // == TInfix
 
@@ -85,7 +85,7 @@ int main()
 
     typedef Infix<TSuffix>::Type  TInfix7;   // == TInfix
     typedef Prefix<TSuffix>::Type TInfix8;   // == TPrefix
-    typedef Suffix<TSuffix>::Type TSuffix2;  // == TSuffix
+    typedef Suffix<TSuffix>::Type TSuffix2;  // == TSuffix */
 //![metafunction examples]
 
 //![explicit segment]

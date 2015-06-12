@@ -239,7 +239,7 @@ _writeRecordHeader(TFwdIterator & stream,
         write(stream, BlastMatchField<>::legacyColumnLabels);
         write(stream, '\n');
 
-        #if defined(SEQAN_ENABLE_DEBUG)
+        #if SEQAN_ENABLE_DEBUG
         if ((length(context.fields) != 1) || (context.fields[0] != BlastMatchField<>::Enum::STD))
             std::cerr << "Warning: custom fields set, but will be ignored, because legacyFormat is also set.\n";
         #endif
@@ -487,9 +487,10 @@ _writeFields(TFwdIterator & stream,
             _writeField(stream, context, match, *it, BlastTabular());
         }
 
-        if (SEQAN_ENABLE_DEBUG &&
-            ((length(context.fields) != 1) || (context.fields[0] != BlastMatchField<>::Enum::STD)))
+        #if SEQAN_ENABLE_DEBUG
+        if ((length(context.fields) != 1) || (context.fields[0] != BlastMatchField<>::Enum::STD))
             std::cerr << "Warning: custom fields set, but will be ignored, because legacyFormat is also set.\n";
+        #endif
     }
 
     write(stream, '\n');

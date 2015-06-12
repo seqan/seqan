@@ -696,7 +696,7 @@ _readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
 {
     if (context.legacyFormat)
     {
-        #if defined(SEQAN_ENABLE_DEBUG)
+        #if SEQAN_ENABLE_DEBUG
         if ((length(context.fields) != 1) || (context.fields[0] != BlastMatchField<>::Enum::STD))
             std::cerr << "Warning: custom fields set, but will be reset, because legacyFormat is also set.\n";
         #endif

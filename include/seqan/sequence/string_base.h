@@ -425,7 +425,9 @@ SEQAN_HOST_DEVICE inline typename Reference< String<TValue, TSpec> >::Type
 value(String<TValue, TSpec> & me,
       TPos const & pos)
 {
+#if SEQAN_ENABLE_DEBUG
     typedef typename Position< String<TValue, TSpec> >::Type TStringPos SEQAN_TYPEDEF_FOR_DEBUG;
+#endif
     SEQAN_ASSERT_LT_MSG(static_cast<TStringPos>(pos), static_cast<TStringPos>(length(me)), "Trying to access an element behind the last one!");
     return *(begin(me, Standard()) + pos);
 }
@@ -435,7 +437,9 @@ SEQAN_HOST_DEVICE inline typename Reference< String<TValue, TSpec> const >::Type
 value(String<TValue, TSpec> const & me,
       TPos const & pos)
 {
+#if SEQAN_ENABLE_DEBUG
     typedef typename Position< String<TValue, TSpec> const >::Type TStringPos SEQAN_TYPEDEF_FOR_DEBUG;
+#endif
     SEQAN_ASSERT_LT_MSG(static_cast<TStringPos>(pos), static_cast<TStringPos>(length(me)), "Trying to access an element behind the last one!");
     return *(begin(me, Standard()) + pos);
 }
