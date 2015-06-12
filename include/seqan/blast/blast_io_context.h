@@ -138,7 +138,7 @@ struct BlastIOContext
      * @brief The blast version string.
      *
      * Used when writing @link BlastReportFileOut @endlink and @link BlastTabularFileOut @endlink if the context's tabularSpec
-     * is set to BlastTabularSpec::HEADER. Defaults to a version string based on the emulated
+     * is set to BlastTabularSpec::COMMENTS. Defaults to a version string based on the emulated
      * blast version and the current SeqAn version.
      * When reading from @link BlastTabularFileOut @endlink the corresponding line is extracted from the header
      * (if present).
@@ -164,7 +164,7 @@ struct BlastIOContext
      * @var bool BlastIOContext::legacyFormat;
      * @brief Whether to use the legacy format (only @link BlastTabular @endlink).
      *
-     * Setting this flag when writing to a @link BlastTabularFileOut @endlink (that has BlastTabularSpec::HEADER set) will
+     * Setting this flag when writing to a @link BlastTabularFileOut @endlink (that has BlastTabularSpec::COMMENTS set) will
      * result in the legacy header being written. This is the slightly different header used by C-only versions of blast
      * (<tt>blastall</tt>-binary). In the legacy format the mismatches column also includes all gaps in addition to
      * mismatches. Note that many other features like custom fields are not supported in this format.
@@ -221,7 +221,7 @@ struct BlastIOContext
     StringSet<TString, Owner<ConcatDirect<>>> fieldsAsStrings;
 
     /*!
-     * @var bool BlastIOContext::ignoreFieldsInHeader;
+     * @var bool BlastIOContext::ignoreFieldsInComments;
      * @brief Use fields as in-parameter for readRecord as well (only @link BlastTabularFileIn @endlink).
      *
      * When doing @link BlastTabularFileIn#readRecord @endlink, the
@@ -231,7 +231,7 @@ struct BlastIOContext
      * conform to standards (and the fields can't be read), but you know that
      * the matches are in the given, e.g. default format.
      */
-    bool ignoreFieldsInHeader = false;
+    bool ignoreFieldsInComments = false;
 
     /*!
      * @var StringSet<TString> BlastIOContext::conformancyErrors;

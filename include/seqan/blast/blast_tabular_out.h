@@ -137,7 +137,7 @@ _writeFieldLabels(TFwdIterator & stream,
 }
 
 // ----------------------------------------------------------------------------
-// Function _writeRecordHeader()
+// Function _writeCommentLines()
 // ----------------------------------------------------------------------------
 
 template <typename TFwdIterator,
@@ -149,7 +149,7 @@ template <typename TFwdIterator,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_writeRecordHeaderWithoutColumnLabels(TFwdIterator & stream,
+_writeCommentLinesWithoutColumnLabels(TFwdIterator & stream,
                                       BlastIOContext<TScore, p, h> & context,
                                       BlastRecord<TQId, TSId, TPos, TAlign> const & r,
                                       BlastTabular const & /*tag*/)
@@ -168,10 +168,10 @@ _writeRecordHeaderWithoutColumnLabels(TFwdIterator & stream,
 
 //NOTE(h-2): dox disabled to clean-up interface
 /*
- * @fn BlastTabular#_writeRecordHeader
+ * @fn BlastTabular#_writeCommentLines
  * @headerfile seqan/blast.h
  * @brief write the header of a @link BlastRecord @endlink to file
- * @signature void _writeRecordHeader(stream, context, blastRecord, blastTabular)
+ * @signature void _writeCommentLines(stream, context, blastRecord, blastTabular)
  *
  * @param[in,out] stream       The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
  * @param[in,out] context      A @link BlastIOContext @endlink with parameters and buffers.
@@ -181,7 +181,7 @@ _writeRecordHeaderWithoutColumnLabels(TFwdIterator & stream,
  * @section Remarks
  *
  * This function writes the header of a record unless the context's tabularSpec
- * (@link BlastIOContext#getBlastTabularSpec @endlink) is set to BlastTabularSpec::NO_HEADER (in which case this is
+ * (@link BlastIOContext#getBlastTabularSpec @endlink) is set to BlastTabularSpec::NO_COMMENTS (in which case this is
  * a NOOP).
  *
  * If context.@link BlastIOContext::versionString @endlink is set, this will be written,
@@ -208,17 +208,17 @@ template <typename TFwdIterator,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_writeRecordHeader(TFwdIterator & stream,
+_writeCommentLines(TFwdIterator & stream,
                   BlastIOContext<TScore, p, h> & context,
                   BlastRecord<TQId, TSId, TPos, TAlign> const & r,
                   BlastTabular const & /*tag*/)
 {
     ++context.numberOfRecords;
 
-    if (context.tabularSpec == BlastTabularSpec::NO_HEADER)
+    if (context.tabularSpec == BlastTabularSpec::NO_COMMENTS)
         return;
 
-    _writeRecordHeaderWithoutColumnLabels(stream, context, r, BlastTabular());
+    _writeCommentLinesWithoutColumnLabels(stream, context, r, BlastTabular());
 
     if (SEQAN_LIKELY(!context.legacyFormat))
     {
@@ -565,7 +565,7 @@ _writeMatch(TFwdIterator & stream,
 /*!
  * @fn BlastTabularFileOut#writeRecord
  * @headerfile seqan/blast.h
- * @brief Write a @link BlastRecord @endlink including it's @link BlastMatch @endlinkes and possible headers to a file.
+ * @brief Write a @link BlastRecord @endlink including it's @link BlastMatch @endlinkes and possible comment lines to a file.
  * @signature void writeRecord(blastTabularOut, blastRecord);
  *
  * @param[in,out] blastTabularOut A @link BlastTabularFileOut @endlink formattedFile.
@@ -573,13 +573,13 @@ _writeMatch(TFwdIterator & stream,
  *
  * @section Remarks
  *
- * This function first writes the header of the record and then writes match lines for every match in it. If the
- * context's @link BlastIOContext::tabularSpec @endlink is set to BlastTabularSpec::NO_HEADER, no
- * record header will be written and this function immediately prints the match lines.
+ * This function first writes the comment lines of the record and then writes match lines for every match in it. If the
+ * context's @link BlastIOContext::tabularSpec @endlink is set to BlastTabularSpec::NO_COMMENTS, no
+ * comment lines will be written and this function immediately prints the match lines.
  *
- * @subsection Record header
+ * @subsection Comment lines
  *
- * The contents of the header is largely defined by the members of the context.
+ * The contents of the comment lines is largely defined by the members of the context.
  *
  * If the context's @link BlastIOContext::versionString @endlink is set, this will be written,
  * otherwise a stanadard version string is generated.
@@ -637,7 +637,7 @@ writeRecord(TFwdIterator & stream,
     //TODO if debug, do lots of sanity checks on record
 
     //NOOP for TABULAR
-    _writeRecordHeader(stream, context, r, BlastTabular());
+    _writeCommentLines(stream, context, r, BlastTabular());
     for (auto it = r.matches.begin(); it != r.matches.end(); ++it)
     {
         //SOME SANITY CHECKS
@@ -722,7 +722,7 @@ writeFooter(TFwdIterator & stream,
             BlastIOContext<TScore, p, h> & context,
             BlastTabular const & /*tag*/)
 {
-    if ((!context.legacyFormat) && (context.tabularSpec != BlastTabularSpec::NO_HEADER))
+    if ((!context.legacyFormat) && (context.tabularSpec != BlastTabularSpec::NO_COMMENTS))
     {
         write(stream, "# BLAST processed ");
         write(stream, context.numberOfRecords); // number of records equals number of queries

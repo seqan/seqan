@@ -97,29 +97,29 @@ SEQAN_DEFINE_TEST(test_blast_context_targs)
 
         // we can set them to something else
         context.blastProgram = BlastProgram::BLASTX;
-        context.tabularSpec = BlastTabularSpec::HEADER;
+        context.tabularSpec = BlastTabularSpec::COMMENTS;
 
         SEQAN_ASSERT(context.blastProgram == BlastProgram::BLASTX);
-        SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::HEADER);
+        SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::COMMENTS);
     }
 
     {
-        BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::HEADER> context;
+        BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::COMMENTS> context;
 
         SEQAN_ASSERT(context.blastProgram == BlastProgram::BLASTX);
-        SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::HEADER);
+        SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::COMMENTS);
 
         // now they work at compile time, too
         static_assert(context.blastProgram == BlastProgram::BLASTX,    "static assertion failed!");
-        static_assert(context.tabularSpec == BlastTabularSpec::HEADER, "static assertion failed!");
+        static_assert(context.tabularSpec == BlastTabularSpec::COMMENTS, "static assertion failed!");
 
         // setting the same programs at run-time is ok
         context.blastProgram = BlastProgram::BLASTX;
-        context.tabularSpec = BlastTabularSpec::HEADER;
+        context.tabularSpec = BlastTabularSpec::COMMENTS;
 
         // but setting to something else would fail
 //         context.blastProgram = BlastProgram::BLASTP;
-//         context.tabularSpec = BlastTabularSpec::NO_HEADER;
+//         context.tabularSpec = BlastTabularSpec::NO_COMMENTS;
     }
 
 }

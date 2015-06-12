@@ -44,21 +44,21 @@ BLAST TABULAR example:
 The format of a blast tabular output file is less simple than it looks, here's
 the general form
 
-HEADER
+COMMENTLINES
  MATCH
  MATCH
  MATCH
  MATCH
-HEADER
+COMMENTLINES
  MATCH
-HEADER
-HEADER
+COMMENTLINES
+COMMENTLINES
 ...
 
-=> Header for each sequence, 0-n Matchs for each sequence
-=> Each record is one-line, each Header is multiline
+=> COMMENTLINES for each sequence, 0-n Matchs for each sequence
+=> Each record is one-line, each COMMENTLINES is multiline
 
-A Header usually consists of:
+COMMENTLINES usually consists of:
 
 # Program Tag [e.g BLASTX 2.2.27+ ]
 # Query Id [ID of the query *sequence*]
@@ -73,9 +73,9 @@ The "number of hits"-line is always printed by NCBI Blast+, and never by NCBI Bl
 
 Possibly other lines can be written as comments.
 
-Because 0 matches are allowed, multiple Headers can succeed each other, the
+Because 0 matches are allowed, multiple COMMENTLINES can succeed each other, the
 criterium for seperation employed by this implementation is that an NCBI Blast
-headers always ends after the "Fields" line and NCBI Blast+ records end after
+COMMENTLINES always ends after the "Fields" line and NCBI Blast+ COMMENTLINES end after
 the "number of hits"-line.
 */
 
@@ -103,8 +103,8 @@ namespace seqan
  * @brief FormattedFileIn abstraction for @link BlastTabular @endlink
  *
  * This is a @link FormattedFile @endlink specialization for reading @link BlastTabular @endlink formats. For details
- * on how to influence the reading of files and how to differentiate between the tabular format without headers and the
- * one with headers, see @link BlastIOContext @endlink. TODO change
+ * on how to influence the reading of files and how to differentiate between the tabular format without comment lines
+ * and the one with comment lines, see @link BlastIOContext @endlink. TODO change
  * Please note that you have specify the type of the context as a template parameter to BlastTabularFileIn, see the example
  * below.
  *
@@ -155,9 +155,9 @@ template <typename TSpec>
 inline bool guessFormat(FormattedFile<BlastTabular, Input, TSpec> & file)
 {
     if (value(file.iter) == '#')
-        context(file).tabularSpec = BlastTabularSpec::HEADER;
+        context(file).tabularSpec = BlastTabularSpec::COMMENTS;
     else
-        context(file).tabularSpec = BlastTabularSpec::NO_HEADER;
+        context(file).tabularSpec = BlastTabularSpec::NO_COMMENTS;
     return true;
 }
 
@@ -215,10 +215,10 @@ inline bool
 onRecord(BlastIOContext<TScore, p, h> & context,
          BlastTabular const &)
 {
-    if (context.tabularSpec == BlastTabularSpec::NO_HEADER)
+    if (context.tabularSpec == BlastTabularSpec::NO_COMMENTS)
         return _onMatch(context, BlastTabular());
 
-    //      RecordHeader                                  Footer
+    //      comment lines                                  Footer
     return (startsWith(context._lineBuffer, "#") && (!startsWith(context._lineBuffer, "# BLAST processed ")));
 }
 
@@ -248,16 +248,16 @@ _goNextLine(BlastIOContext<TScore, p, h> & context,
 }
 
 // ----------------------------------------------------------------------------
-// Function _readRecordHeader()
+// Function _readCommentLines()
 // ----------------------------------------------------------------------------
 
 //NOTE(h-2): dox disabled to clean-up interface
 /*
- * @fn BlastTabular#_readRecordHeader
+ * @fn BlastTabular#_readCommentLines
  * @brief read a the header of a record from a Blast tabular file
  * @headerfile seqan/blast.h
  *
- * @signature void _readRecordHeader(blastRecord, stream, context, blastTabular);
+ * @signature void _readCommentLines(blastRecord, stream, context, blastTabular);
  *
  * @param[out]    blastRecord  A @link BlastRecord @endlink.
  * @param[in,out] stream       An input iterator over a stream or any fwd-iterator over a string.
@@ -306,16 +306,16 @@ template <typename TQId,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
+_readCommentLinesImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                       TFwdIterator & iter,
                       BlastIOContext<TScore, p, h> & context,
                       BlastTabular const &)
 {
-    // this is a match instead of a header
+    // this is a match instead of comment lines
     if (_onMatch(context, BlastTabular()))
-        SEQAN_THROW(ParseError("Header expected, but no header found."));
+        SEQAN_THROW(ParseError("Commen lines expected, but not found."));
     else
-        context.tabularSpec = BlastTabularSpec::HEADER;
+        context.tabularSpec = BlastTabularSpec::COMMENTS;
 
     int queryLinePresent = 0;
     int dbLinePresent = 0;
@@ -334,7 +334,7 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                 SEQAN_FAIL("ERROR: You called readRecord() when you should have called readFooter()."
                            "Always check onRecord() before calling readRecord().");
             }
-            else // first line of record header
+            else // first line of the comments
             {
                 assign(context.versionString, suffix(context._lineBuffer, 2));
                 context.blastProgram = _programStringToTag(prefix(context.versionString,
@@ -378,10 +378,10 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
             if (context.legacyFormat)
             {
                 // assume defaults for LEGACY
-                if (!context.ignoreFieldsInHeader)
+                if (!context.ignoreFieldsInComments)
                     appendValue(context.fields, BlastMatchField<>::Enum::STD);
             }
-            else if (!context.ignoreFieldsInHeader)
+            else if (!context.ignoreFieldsInComments)
             {
                 bool defaults = true;
                 resize(context.fields, length(context.fieldsAsStrings));
@@ -438,7 +438,7 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                     }
 
                     ++hitsLinePresent;
-//                     break; // header is finished
+//                     break; // comments are finished
                 }
                 else
                 {
@@ -453,14 +453,14 @@ _readRecordHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
 
         _goNextLine(context, iter, BlastTabular());
 
-    } while (startsWith(context._lineBuffer, "#") &&                   // still on record header
-             !std::regex_search(begin(context._lineBuffer, Standard()),// start of next record header
+    } while (startsWith(context._lineBuffer, "#") &&                   // still on comments
+             !std::regex_search(begin(context._lineBuffer, Standard()),// start of next record
                                 end(context._lineBuffer, Standard()),
                                 std::regex("^# T?BLAST")));
 
     if (context.blastProgram == BlastProgram::UNKNOWN)
         appendValue(context.conformancyErrors,
-                    "Type of BlastProgram could not be determined from header, you are advised to look "
+                    "Type of BlastProgram could not be determined from comments, you are advised to look "
                     "at context.versionString and context.otherLines.");
 
     if (queryLinePresent != 1)
@@ -494,14 +494,14 @@ template <typename TQId,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readRecordHeader(BlastRecord<TQId, TSId, TPos, TAlign> & r,
+_readCommentLines(BlastRecord<TQId, TSId, TPos, TAlign> & r,
                  TFwdIterator & iter,
                  BlastIOContext<TScore, p, h> & context,
                  BlastTabular const &)
 {
     ++context.numberOfRecords;
 
-    if (context.tabularSpec == BlastTabularSpec::NO_HEADER)
+    if (context.tabularSpec == BlastTabularSpec::NO_COMMENTS)
         return;
 
     clear(r);
@@ -511,10 +511,10 @@ _readRecordHeader(BlastRecord<TQId, TSId, TPos, TAlign> & r,
     clear(context.conformancyErrors);
     clear(context.fieldsAsStrings);
 
-    if (!context.ignoreFieldsInHeader)
+    if (!context.ignoreFieldsInComments)
         clear(context.fields);
 
-    _readRecordHeaderImpl(r, iter, context, BlastTabular());
+    _readCommentLinesImpl(r, iter, context, BlastTabular());
 }
 
 // ----------------------------------------------------------------------------
@@ -705,7 +705,7 @@ _readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
         appendValue(context.fields,  BlastMatchField<>::Enum::STD);
     }
 
-    // header should have been read or skipped
+    // comments should have been read or skipped
     if (SEQAN_UNLIKELY(!_onMatch(context, BlastTabular())))
         SEQAN_THROW(ParseError("Not on beginning of Match (you should have skipped comments)."));
 
@@ -782,14 +782,14 @@ template <typename TFwdIterator,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readRecordWithHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+_readRecordWithCommentLines(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
                       TFwdIterator & iter,
                       BlastIOContext<TScore, p, h> & context,
                       BlastTabular const &)
 {
-    _readRecordHeader(blastRecord, iter, context, BlastTabular());
+    _readCommentLines(blastRecord, iter, context, BlastTabular());
 
-    if (!context.legacyFormat) // this is detected from the header
+    if (!context.legacyFormat) // this is detected from the comments
     {
         // .matches already resized for us
         for (auto & m : blastRecord.matches)
@@ -797,7 +797,7 @@ _readRecordWithHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
             if (!_onMatch(context, BlastTabular()))
             {
                 appendValue(context.conformancyErrors,
-                            "Less matches than promised by header");
+                            "Less matches than promised by the comments");
                 break;
             }
 
@@ -806,7 +806,7 @@ _readRecordWithHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
 
         if ((!atEnd(context, iter, BlastTabular())) && _onMatch(context, BlastTabular()))
             appendValue(context.conformancyErrors,
-                        "More matches than promised by header");
+                        "More matches than promised by the comments");
 
         while ((!atEnd(context, iter, BlastTabular())) && _onMatch(context, BlastTabular()))
         {
@@ -823,7 +823,7 @@ _readRecordWithHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
     }
 }
 
-// TABULAR WITHOUT HEADER
+// TABULAR WITHOUT COMMENT LINES
 template <typename TQId,
           typename TSId,
           typename TAlign,
@@ -833,7 +833,7 @@ template <typename TQId,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+_readRecordWithoutCommentLines(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
                     TFwdIterator & iter,
                     BlastIOContext<TScore, p, h> & context,
                     BlastTabular const &)
@@ -851,7 +851,7 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
     if ((context.fields[0] != BlastMatchField<>::Enum::STD) &&
         (context.fields[0] != BlastMatchField<>::Enum::Q_SEQ_ID))
     {
-        SEQAN_FAIL("ERROR: readRecord interface on header-less format with custom "
+        SEQAN_FAIL("ERROR: readRecord interface on comment-less format with custom "
                    "fields not supported, unless first custom field is "
                    "Q_SEQ_ID. Use the lowlevel readMatch interface instead.");
     }
@@ -881,52 +881,52 @@ _readRecordNoHeader(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
  *
  * @section Remarks
  *
- * This function will read an entire record from a blast tabular file, i.e. it will read the record header
- * (if the format is @link BlastTabularSpec::HEADER @endlink) and 0-n @link BlastMatch @endlinkes belonging
+ * This function will read an entire record from a blast tabular file, i.e. it will read the comment lines
+ * (if the format is @link BlastTabularSpec::COMMENTS @endlink) and 0-n @link BlastMatch @endlinkes belonging
  * to one query.
  *
- * Please note that if there are no record headers in the file the boundary
+ * Please note that if there are no comment lines in the file the boundary
  * between records is inferred from the indentity of the first field, i.e.
  * non-standard field configurations must also have Q_SEQ_ID as their first @link BlastMatchField @endlink.
  *
- * @subsection Record header
+ * @subsection Comment lines
  *
- * The @link BlastRecord::qId @endlink member of the record is read from the header and the
- * @link BlastRecord::matches @endlink are resized to the expected number of matches succeeding the header.
+ * The @link BlastRecord::qId @endlink member of the record is read from the comment lines and the
+ * @link BlastRecord::matches @endlink are resized to the expected number of matches succeeding the comments.
  *
  * This function also sets many properties of blastTabularIn's @link BlastIOContext @endlink, including these members:
- * <li> @link BlastIOContext::versionString @endlink: version string of the header</li>
- * <li> @link BlastIOContext::dbName @endlink: name of the database</li>
+ * <li> @link BlastIOContext::versionString @endlink: version string of the program.</li>
+ * <li> @link BlastIOContext::dbName @endlink: name of the database.</li>
  * <li> @link BlastIOContext::fields @endlink: descriptors for the columns.</li>
  * <li> @link BlastIOContext::fieldsAsStrings @endlink: labels of the columns
  * as they appear in the file.</li>
  * <li> @link BlastIOContext::conformancyErrors @endlink: if this StringSet is not empty, then there are issues in the
- * header.</li>
+ * comments.</li>
  * <li> @link BlastIOContext::otherLines @endlink: any lines that cannot be interpreted; these always also imply
  * conformancyErrors.</li>
- * <li>@link BlastIOContext::legacyFormat @endlink: whether the record header (and likely the entire file) is in
+ * <li>@link BlastIOContext::legacyFormat @endlink: whether the record (and likely the entire file) is in
  * legacyFormat.</li>
  *
- * It also sets the blast program run-time parameter of the context depending on the information found in the header. If
+ * It also sets the blast program run-time parameter of the context depending on the information found in the comments. If
  * the compile time parameter was set on the context and they are different this will result in a critical error.
  *
  * Please note that for @link BlastIOContext::legacyFormat @endlink the @link BlastIOContext::fields @endlink member
- * is always ignored, however @link BlastIOContext::fieldsAsStrings @endlink is still read from the header, in case
+ * is always ignored, however @link BlastIOContext::fieldsAsStrings @endlink is still read from the comments, in case
  * you want to process it.
  *
- * In case you do not wish the @link BlastIOContext::fields @endlink to be read from the header, you can set
- * context.@link BlastIOContext::ignoreFieldsInHeader @endlink to true. This will be prevent it from being read and will
+ * In case you do not wish the @link BlastIOContext::fields @endlink to be read from the comments, you can set
+ * context.@link BlastIOContext::ignoreFieldsInComments @endlink to true. This will be prevent it from being read and will
  * allow you to specify it manually which might be relevant for reading the match lines.
  *
- * If the format is @link BlastTabularSpec::NO_HEADER @endlink none of the above happens and
+ * If the format is @link BlastTabularSpec::NO_COMMENTS @endlink none of the above happens and
  * @link BlastRecord::qId @endlink is derived from the first match.
  *
  * @subsection Matches
  *
  * A match line contains 1 - n columns or fields, 12 by default.
  * The @link BlastIOContext::fields @endlink member of the context is considered when reading these fields. It is
- * usually extracted from the header but can also be set by yourself if there is no header or if you want to overwrite
- * the headers information (see above).
+ * usually extracted from the header but can also be set by yourself if there are no comments or if you want to overwrite
+ * the comments' information (see above).
  * You may specify less
  * fields than are actually present, in this case the additional fields will be
  * discarded. The parameter is ignored if @link BlastIOContext::legacyFormat @endlink is set.
@@ -964,10 +964,10 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
           BlastIOContext<TScore, p, h> & context,
           BlastTabular const &)
 {
-    if (context.tabularSpec == BlastTabularSpec::NO_HEADER)
-        _readRecordNoHeader(blastRecord, iter, context, BlastTabular());
+    if (context.tabularSpec == BlastTabularSpec::NO_COMMENTS)
+        _readRecordWithoutCommentLines(blastRecord, iter, context, BlastTabular());
     else
-        _readRecordWithHeader(blastRecord, iter, context, BlastTabular());
+        _readRecordWithCommentLines(blastRecord, iter, context, BlastTabular());
 }
 
 template <typename TQId,
@@ -1012,9 +1012,9 @@ readHeader(BlastIOContext<TScore, p, h> & context,
     if (context.tabularSpec == BlastTabularSpec::UNKNOWN)
     {
         if (_onMatch(context, BlastTabular()))
-            context.tabularSpec = BlastTabularSpec::NO_HEADER;
+            context.tabularSpec = BlastTabularSpec::NO_COMMENTS;
         else
-            context.tabularSpec = BlastTabularSpec::HEADER;
+            context.tabularSpec = BlastTabularSpec::COMMENTS;
     }
 }
 
@@ -1055,7 +1055,7 @@ readFooter(BlastIOContext<TScore, p, h> & context,
     clear(context.fieldsAsStrings);
     clear(context.fields);
 
-    if ((context.tabularSpec == BlastTabularSpec::HEADER) && !context.legacyFormat)
+    if ((context.tabularSpec == BlastTabularSpec::COMMENTS) && !context.legacyFormat)
     {
         if (SEQAN_UNLIKELY(!startsWith(context._lineBuffer, "# BLAST processed")))
         {

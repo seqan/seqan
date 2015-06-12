@@ -89,7 +89,7 @@ namespace seqan
  * See @link BlastTabularFileOut @endlink for a full code example.
  *
  * Although there is no file-global header in the file (only a record header per record -- if your format is
- * @link BlastTabularSpec::HEADER @endlink), you need to always call @link BlastTabularFileIn#readHeader @endlink first after
+ * @link BlastTabularSpec::COMMENTS @endlink), you need to always call @link BlastTabularFileIn#readHeader @endlink first after
  * opening the file!
  *
  * @section Output
@@ -115,11 +115,11 @@ typedef Tag<BlastTabular_> BlastTabular;
  * @signature enum class BlastTabularSpec : uint8_t { ... };
  * @brief Spec for @link BlastIOContext @endlink
  *
- * @val BlastTabularSpec BlastTabularSpec::NO_HEADER
- * @brief Tabular format without header
+ * @val BlastTabularSpec BlastTabularSpec::NO_COMMENTS
+ * @brief Tabular format without comment lines
  *
- * @val BlastTabularSpec BlastTabularSpec::HEADER
- * @brief Tabular format with header
+ * @val BlastTabularSpec BlastTabularSpec::COMMENTS
+ * @brief Tabular format with comment lines
  *
  * @val BlastTabularSpec BlastTabularSpec::UNKNOWN
  * @brief not defined or not known
@@ -130,8 +130,8 @@ typedef Tag<BlastTabular_> BlastTabular;
  */
 enum class BlastTabularSpec : uint8_t
 {
-    NO_HEADER = 0,
-    HEADER = 1,
+    NO_COMMENTS = 0,
+    COMMENTS = 1,
     UNKNOWN = 254,
     DYNAMIC = 255
 };
@@ -152,19 +152,19 @@ enum class BlastTabularSpec : uint8_t
  *
  * mutable variable:
  * @code{.cpp}
- * BlastTabularSpecSelector<BlastTabularSpec::DYNAMIC> myProgram = BlastTabularSpec::HEADER;
+ * BlastTabularSpecSelector<BlastTabularSpec::DYNAMIC> myProgram = BlastTabularSpec::COMMENTS;
  * // same as
- * // BlastTabularSpec myProgram = BlastTabularSpec::HEADER;
+ * // BlastTabularSpec myProgram = BlastTabularSpec::COMMENTS;
  *
- * SEQAN_ASSERT(myProgram == BlastTabularSpec::HEADER); // assertion is checked at run-time
- * myProgram = BlastTabularSpec::NO_HEADER; // works without problems
+ * SEQAN_ASSERT(myProgram == BlastTabularSpec::COMMENTS); // assertion is checked at run-time
+ * myProgram = BlastTabularSpec::NO_COMMENTS; // works without problems
  * @endcode
  *
  * compile time integral constant:
  * @code{.cpp}
- * BlastTabularSpecSelector<BlastTabularSpec::HEADER> myProgram;
- * static_assert(myProgram == BlastTabularSpec::HEADER, ""); // assertion is checked at compile time
- * myProgram = BlastTabularSpec::NO_HEADER; // would fail, because value is fixed
+ * BlastTabularSpecSelector<BlastTabularSpec::COMMENTS> myProgram;
+ * static_assert(myProgram == BlastTabularSpec::COMMENTS, ""); // assertion is checked at compile time
+ * myProgram = BlastTabularSpec::NO_COMMENTS; // would fail, because value is fixed
  * @endcode
  */
 

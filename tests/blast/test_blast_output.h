@@ -216,7 +216,7 @@ void _testBlastOutputCheckFileWritten(TString const & contents, TContext const &
     fieldsLine.append("\n");
 
     std::string compString;
-    if (context.tabularSpec == BlastTabularSpec::HEADER)
+    if (context.tabularSpec == BlastTabularSpec::COMMENTS)
     {
         compString = versionLine;
         compString.append("# Query: Query_Numero_Uno with args\n"
@@ -241,7 +241,7 @@ void _testBlastOutputCheckFileWritten(TString const & contents, TContext const &
         "Query_Numero_Uno\tSubject_Numero_Dos\t100.00\t8\t0\t0\t3\t10\t157\t164\t0.001\t22.3\t46\t0/0\n");
 
 
-    if (context.tabularSpec == BlastTabularSpec::HEADER)
+    if (context.tabularSpec == BlastTabularSpec::COMMENTS)
     {
         // header for empty record
         compString.append(versionLine);
@@ -268,7 +268,7 @@ void _testBlastOutputCheckFileWritten(TString const & contents, TContext const &
         compString.append("Query_Numero_Tres\tSubject_Numero_Dos\t100.00\t8\t0\t0\t1\t8\t10\t17\t0.007\t18.9\t37\t0/0\n"
                           "Query_Numero_Tres\tSubject_Numero_Uno\t87.50\t8\t1\t0\t1\t8\t184\t191\t0.026\t16.9\t32\t0/0\n");
 
-    if ((context.tabularSpec == BlastTabularSpec::HEADER) && (!context.legacyFormat))
+    if ((context.tabularSpec == BlastTabularSpec::COMMENTS) && (!context.legacyFormat))
         compString.append("# BLAST processed 3 queries\n");
 
     if (contents != compString)
@@ -540,7 +540,7 @@ SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header)
 {
     BlastIOContext<> context;
     context.blastProgram = BlastProgram::BLASTP;
-    context.tabularSpec = BlastTabularSpec::NO_HEADER;
+    context.tabularSpec = BlastTabularSpec::NO_COMMENTS;
 
     _testBlastOutput(context, BlastTabular());
 }
@@ -549,7 +549,7 @@ SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header_customfields)
 {
     BlastIOContext<> context;
     context.blastProgram = BlastProgram::BLASTP;
-    context.tabularSpec = BlastTabularSpec::NO_HEADER;
+    context.tabularSpec = BlastTabularSpec::NO_COMMENTS;
 
     appendValue(context.fields, BlastMatchField<>::Enum::SCORE);
     appendValue(context.fields, BlastMatchField<>::Enum::FRAMES);
@@ -561,7 +561,7 @@ SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header_legacy)
 {
     BlastIOContext<> context;
     context.blastProgram = BlastProgram::BLASTP;
-    context.tabularSpec = BlastTabularSpec::NO_HEADER;
+    context.tabularSpec = BlastTabularSpec::NO_COMMENTS;
     context.legacyFormat = true;
 
     _testBlastOutput(context, BlastTabular());
@@ -569,14 +569,14 @@ SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header_legacy)
 
 SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header_constexpr)
 {
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
 
     _testBlastOutput(context, BlastTabular());
 }
 
 SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header_customfields_constexpr)
 {
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
     appendValue(context.fields, BlastMatchField<>::Enum::SCORE);
     appendValue(context.fields, BlastMatchField<>::Enum::FRAMES);
 
@@ -585,7 +585,7 @@ SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header_customfields_constexpr
 
 SEQAN_DEFINE_TEST(test_blast_write_tabular_without_header_legacy_constexpr)
 {
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
     context.legacyFormat = true;
 
     _testBlastOutput(context, BlastTabular());
@@ -595,7 +595,7 @@ SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header)
 {
     BlastIOContext<> context;
     context.blastProgram = BlastProgram::BLASTP;
-    context.tabularSpec = BlastTabularSpec::HEADER;
+    context.tabularSpec = BlastTabularSpec::COMMENTS;
 
     _testBlastOutput(context, BlastTabular());
 }
@@ -604,7 +604,7 @@ SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_customfields)
 {
     BlastIOContext<> context;
     context.blastProgram = BlastProgram::BLASTP;
-    context.tabularSpec = BlastTabularSpec::HEADER;
+    context.tabularSpec = BlastTabularSpec::COMMENTS;
 
     appendValue(context.fields, BlastMatchField<>::Enum::SCORE);
     appendValue(context.fields, BlastMatchField<>::Enum::FRAMES);
@@ -616,7 +616,7 @@ SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_legacy)
 {
     BlastIOContext<> context;
     context.blastProgram = BlastProgram::BLASTP;
-    context.tabularSpec = BlastTabularSpec::HEADER;
+    context.tabularSpec = BlastTabularSpec::COMMENTS;
     context.legacyFormat = true;
 
     _testBlastOutput(context, BlastTabular());
@@ -624,14 +624,14 @@ SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_legacy)
 
 SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_constexpr)
 {
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::COMMENTS> context;
 
     _testBlastOutput(context, BlastTabular());
 }
 
 SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_customfields_constexpr)
 {
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::COMMENTS> context;
     appendValue(context.fields, BlastMatchField<>::Enum::SCORE);
     appendValue(context.fields, BlastMatchField<>::Enum::FRAMES);
 
@@ -640,7 +640,7 @@ SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_customfields_constexpr)
 
 SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_legacy_constexpr)
 {
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::HEADER> context;
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::COMMENTS> context;
     context.legacyFormat = true;
 
     _testBlastOutput(context, BlastTabular());

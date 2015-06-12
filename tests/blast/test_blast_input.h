@@ -196,7 +196,7 @@ void _testReadTabularWithoutHeader(TContext &,
 
     // read header of file
     readHeader(fileIn);
-    SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::NO_HEADER);
+    SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::NO_COMMENTS);
 
     // fieldsList as in-parameter
     if (defaults)
@@ -344,19 +344,19 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_without_header_legacy)
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_header_constexpr)
 {
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
     _testReadTabularWithoutHeader(context, NOHEADER_DEFAULTS, true, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_header_customfields_constexpr)
 {
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
     _testReadTabularWithoutHeader(context, NOHEADER_CUSTOM, false, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_header_legacy_constexpr)
 {
-    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_HEADER> context;
+    BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
     _testReadTabularWithoutHeader(context, NOHEADER_DEFAULTS, true, true);
 }
 
@@ -408,7 +408,7 @@ void _testReadTabularWithHeader(TContext &,
 
     // read header of file
     readHeader(fileIn);
-    SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::HEADER);
+    SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::COMMENTS);
 
     readRecord(r, fileIn);
 
@@ -522,7 +522,7 @@ void _testReadTabularWithHeader(TContext &,
     else
         context.fields = fieldsCustom;
 
-    context.ignoreFieldsInHeader = true;
+    context.ignoreFieldsInComments = true;
 
     readRecord(r, fileIn);
 
@@ -575,7 +575,7 @@ void _testReadTabularWithHeader(TContext &,
         SEQAN_ASSERT_EQ(m.bitScore,                     152.0);
     }
 
-    context.ignoreFieldsInHeader = false;
+    context.ignoreFieldsInComments = false;
 
     readRecord(r, fileIn);
 
@@ -618,18 +618,18 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_legacy)
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_constexpr)
 {
-    BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::HEADER> context;
+    BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::COMMENTS> context;
     _testReadTabularWithHeader(context, PLUS_HEADER_DEFAULTS, true, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_customfields_constexpr)
 {
-    BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::HEADER> context;
+    BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::COMMENTS> context;
     _testReadTabularWithHeader(context, PLUS_HEADER_CUSTOM, false, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_legacy_constexpr)
 {
-    BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::HEADER> context;
+    BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::COMMENTS> context;
     _testReadTabularWithHeader(context, LEGACY_HEADER_DEFAULTS, true, true);
 }
