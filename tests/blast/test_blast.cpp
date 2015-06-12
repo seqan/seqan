@@ -64,18 +64,18 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     // WRITING (lowlevel tag)
     SEQAN_CALL_TEST(test_blast_write_lowlevel);
     // WRITING (tabular tag)
-    SEQAN_CALL_TEST(test_blast_write_tabular_without_header);
-    SEQAN_CALL_TEST(test_blast_write_tabular_without_header_customfields);
-    SEQAN_CALL_TEST(test_blast_write_tabular_without_header_legacy);
-    SEQAN_CALL_TEST(test_blast_write_tabular_without_header_constexpr);
-    SEQAN_CALL_TEST(test_blast_write_tabular_without_header_customfields_constexpr);
-    SEQAN_CALL_TEST(test_blast_write_tabular_without_header_legacy_constexpr);
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header);
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_customfields);
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_legacy);
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_constexpr);
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_customfields_constexpr);
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_legacy_constexpr);
+    SEQAN_CALL_TEST(test_blast_write_tabular_without_comments);
+    SEQAN_CALL_TEST(test_blast_write_tabular_without_comments_customfields);
+    SEQAN_CALL_TEST(test_blast_write_tabular_without_comments_legacy);
+    SEQAN_CALL_TEST(test_blast_write_tabular_without_comments_constexpr);
+    SEQAN_CALL_TEST(test_blast_write_tabular_without_comments_customfields_constexpr);
+    SEQAN_CALL_TEST(test_blast_write_tabular_without_comments_legacy_constexpr);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_comments);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_comments_customfields);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_comments_legacy);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_comments_constexpr);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_comments_customfields_constexpr);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_comments_legacy_constexpr);
     // WRITING (report tag)
     SEQAN_CALL_TEST(test_blast_write_report);
     SEQAN_CALL_TEST(test_blast_write_report_constexpr);
@@ -83,18 +83,18 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     // READING (lowlevel tag)
     SEQAN_CALL_TEST(test_blast_read_lowlevel);
     // READING (tabular tag)
-    SEQAN_CALL_TEST(test_blast_read_tabular_without_header);
-    SEQAN_CALL_TEST(test_blast_read_tabular_without_header_customfields);
-    SEQAN_CALL_TEST(test_blast_read_tabular_without_header_legacy);
-    SEQAN_CALL_TEST(test_blast_read_tabular_without_header_constexpr);
-    SEQAN_CALL_TEST(test_blast_read_tabular_without_header_customfields_constexpr);
-    SEQAN_CALL_TEST(test_blast_read_tabular_without_header_legacy_constexpr);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_customfields);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_legacy);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_constexpr);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_customfields_constexpr);
-    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_legacy_constexpr);
+    SEQAN_CALL_TEST(test_blast_read_tabular_without_comments);
+    SEQAN_CALL_TEST(test_blast_read_tabular_without_comments_customfields);
+    SEQAN_CALL_TEST(test_blast_read_tabular_without_comments_legacy);
+    SEQAN_CALL_TEST(test_blast_read_tabular_without_comments_constexpr);
+    SEQAN_CALL_TEST(test_blast_read_tabular_without_comments_customfields_constexpr);
+    SEQAN_CALL_TEST(test_blast_read_tabular_without_comments_legacy_constexpr);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_comments);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_comments_customfields);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_comments_legacy);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_comments_constexpr);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_comments_customfields_constexpr);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_comments_legacy_constexpr);
 }
 SEQAN_END_TESTSUITE
 

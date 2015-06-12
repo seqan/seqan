@@ -35,13 +35,13 @@
 // ==========================================================================
 
 // Files that are being read by this implementation
-#define PLUS_HEADER_DEFAULTS   "/tests/blast/plus_header_defaults.m9"
-#define LEGACY_HEADER_DEFAULTS "/tests/blast/legacy_header_defaults.m9"
-#define PLUS_HEADER_CUSTOM     "/tests/blast/plus_header_custom.m9"
+#define PLUS_HEADER_DEFAULTS   "/tests/blast/plus_comments_defaults.m9"
+#define LEGACY_HEADER_DEFAULTS "/tests/blast/legacy_comments_defaults.m9"
+#define PLUS_HEADER_CUSTOM     "/tests/blast/plus_comments_custom.m9"
 // same for HEADER and NOHEADERS:
-#define NOHEADER_DEFAULTS      "/tests/blast/noheader_defaults.m8"
+#define NOHEADER_DEFAULTS      "/tests/blast/nocomments_defaults.m8"
 // same for HEADER and NOHEADERS:
-#define NOHEADER_CUSTOM        "/tests/blast/noheader_custom.m8"
+#define NOHEADER_CUSTOM        "/tests/blast/nocomments_custom.m8"
 
 using namespace seqan;
 
@@ -56,10 +56,10 @@ _test_blast_read_tabular_match_lowlevel(std::string const & path)
 
     auto it = directionIterator(ifstream, Input());
 
-    // first line is header
+    // first line is comments
     SEQAN_ASSERT(!onMatch(it, BlastTabularLL()));
 
-    // skip headers and comment lines
+    // skip commentss and comment lines
     skipUntilMatch(it, BlastTabularLL());
 
     // now we should be onMatch
@@ -194,7 +194,7 @@ void _testReadTabularWithoutHeader(TContext &,
 
     /* Begin of TESTS */
 
-    // read header of file
+    // read comments of file
     readHeader(fileIn);
     SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::NO_COMMENTS);
 
@@ -324,37 +324,37 @@ void _testReadTabularWithoutHeader(TContext &,
     SEQAN_ASSERT_EQ(length(context.conformancyErrors),  0u);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_without_header)
+SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments)
 {
     BlastIOContext<> context;
     _testReadTabularWithoutHeader(context, NOHEADER_DEFAULTS, true, false);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_without_header_customfields)
+SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_customfields)
 {
     BlastIOContext<> context;
     _testReadTabularWithoutHeader(context, NOHEADER_CUSTOM, false, false);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_without_header_legacy)
+SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_legacy)
 {
     BlastIOContext<> context;
     _testReadTabularWithoutHeader(context, NOHEADER_DEFAULTS, true, true);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_without_header_constexpr)
+SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
     _testReadTabularWithoutHeader(context, NOHEADER_DEFAULTS, true, false);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_without_header_customfields_constexpr)
+SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_customfields_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
     _testReadTabularWithoutHeader(context, NOHEADER_CUSTOM, false, false);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_without_header_legacy_constexpr)
+SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_legacy_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
     _testReadTabularWithoutHeader(context, NOHEADER_DEFAULTS, true, true);
@@ -406,7 +406,7 @@ void _testReadTabularWithHeader(TContext &,
 
     /* Begin of TESTS */
 
-    // read header of file
+    // read comments of file
     readHeader(fileIn);
     SEQAN_ASSERT(context.tabularSpec == BlastTabularSpec::COMMENTS);
 
@@ -598,37 +598,37 @@ void _testReadTabularWithHeader(TContext &,
 
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header)
+SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments)
 {
     BlastIOContext<> context;
     _testReadTabularWithHeader(context, PLUS_HEADER_DEFAULTS, true, false);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_customfields)
+SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_customfields)
 {
     BlastIOContext<> context;
     _testReadTabularWithHeader(context, PLUS_HEADER_CUSTOM, false, false);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_legacy)
+SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_legacy)
 {
     BlastIOContext<> context;
     _testReadTabularWithHeader(context, LEGACY_HEADER_DEFAULTS, true, true);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_constexpr)
+SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::COMMENTS> context;
     _testReadTabularWithHeader(context, PLUS_HEADER_DEFAULTS, true, false);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_customfields_constexpr)
+SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_customfields_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::COMMENTS> context;
     _testReadTabularWithHeader(context, PLUS_HEADER_CUSTOM, false, false);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_legacy_constexpr)
+SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_legacy_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::COMMENTS> context;
     _testReadTabularWithHeader(context, LEGACY_HEADER_DEFAULTS, true, true);
