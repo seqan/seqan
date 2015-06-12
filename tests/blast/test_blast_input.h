@@ -126,7 +126,7 @@ _test_blast_read_tabular_match_lowlevel(std::string const & path)
     skipLine(it);
 
     // check if exceptions are properly thrown
-    CharString exceptComment;
+    bool exceptThrown = false;
     SEQAN_TRY
     {
         // no strings here to take the strings
@@ -134,10 +134,10 @@ _test_blast_read_tabular_match_lowlevel(std::string const & path)
                   field12);
     } SEQAN_CATCH (BadLexicalCast const & e)
     {
-        exceptComment = e.what();
+        exceptThrown = true;
     }
 
-    SEQAN_ASSERT(startsWith(exceptComment, "Unable to convert"));
+    SEQAN_ASSERT(exceptThrown);
     // skip rest of line
     skipLine(it);
 

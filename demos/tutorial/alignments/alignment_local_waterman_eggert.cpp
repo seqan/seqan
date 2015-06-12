@@ -6,7 +6,6 @@ using namespace seqan;
 
 int main()
 {
-    typedef String<Dna> TSequence;                 // sequence type
 //![main]
 
 //![init]

@@ -17,7 +17,6 @@ int main(int argc, char * argv[])
 {
     // type definitions
     typedef String<Dna5> TString;
-    typedef StringSet<TString> TStringSet;
     typedef Index<StringSet<TString>, FMIndex<> > TIndex;
     typedef Iterator<TIndex, TopDown<ParentLinks<> > >::Type TIter;
 

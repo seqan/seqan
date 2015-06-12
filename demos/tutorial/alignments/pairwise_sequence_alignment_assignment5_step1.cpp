@@ -8,7 +8,6 @@ int main()
 {
     typedef String<char> TSequence;
     typedef Gaps<TSequence, ArrayGaps> TGaps;
-    typedef Iterator<TGaps>::Type TGapsIterator;
     typedef Iterator<String<int> >::Type TIterator;
 
     TSequence text =    "MISSISSIPPIANDMISSOURI";
