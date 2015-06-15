@@ -1,4 +1,5 @@
 #include <iostream>
+#include <seqan/basic.h>
 #ifdef SEQAN_CXX11_COMPLETE
 #include <seqan/blast.h>
 
@@ -45,8 +46,8 @@ int main()
     String<TBlastRecord> records;
     resize(records, length(queries)); // always one record for every query!
 
-//     BlastTabularFileOut<TContext> outfile("/tmp/output.blast");
-    BlastReportFileOut<TContext> outfile("/tmp/output.blast");
+//     BlastTabularFileOut<TContext> outfile("/tmp/output.m9");
+    BlastReportFileOut<TContext> outfile("/tmp/output.m0");
 
     // set gap parameters in blast notation
     setScoreGapOpenBlast(context(outfile).scoringScheme, -11);
@@ -62,12 +63,12 @@ int main()
 
     writeHeader(outfile); // write file header
 
-    for (int q = 0; q < length(queries); ++q)
+    for (unsigned q = 0; q < length(queries); ++q)
     {
         records[q].qId = qIds[q];
         records[q].qLength = length(queries[q]);
 
-        for (int s = 0; s < length(subjects); ++s)
+        for (unsigned s = 0; s < length(subjects); ++s)
         {
             records[q].matches.emplace_back(qIds[q], sIds[s]);
             TBlastMatch & m = back(records[q].matches);
@@ -109,6 +110,7 @@ int main()
 #else
 int main()
 {
+    std::cerr << "Demo not run, because you don't have full C++11 support.\n";
     return 0;
 }
 #endif

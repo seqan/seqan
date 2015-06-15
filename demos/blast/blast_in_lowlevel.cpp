@@ -1,4 +1,5 @@
 #include <iostream>
+#include <seqan/basic.h>
 #ifdef SEQAN_CXX11_COMPLETE
 #include <seqan/blast.h>
 
@@ -6,7 +7,7 @@ using namespace seqan;
 
 int main()
 {
-    std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + "/tests/blast/plus_header_defaults.blast";
+    std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + "/tests/blast/plus_comments_defaults.m9";
 
     std::ifstream fin(toCString(inPath), std::ios_base::in | std::ios_base::binary);
     auto fit = directionIterator(fin, Input());
@@ -42,6 +43,7 @@ int main()
 #else
 int main()
 {
+    std::cerr << "Demo not run, because you don't have full C++11 support.\n";
     return 0;
 }
 #endif
