@@ -1,0 +1,406 @@
+BLASTX 2.2.26+
+
+
+Reference: Stephen F. Altschul, Thomas L. Madden, Alejandro A.
+Schaffer, Jinghui Zhang, Zheng Zhang, Webb Miller, and David J.
+Lipman (1997), "Gapped BLAST and PSI-BLAST: a new generation of
+protein database search programs", Nucleic Acids Res. 25:3389-3402.
+
+
+
+Database: /home/mi/h4nn3s/takifugu/ma_arbeit/svn/bench/sequence/db/uniprot_spr
+ot.fasta
+           538,259 sequences; 191,113,170 total letters
+
+
+
+Query= SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965
+
+Length=938
+
+
+***** No hits found *****
+
+
+
+Lambda     K      H
+   0.318    0.134    0.401 
+
+Gapped
+Lambda     K      H
+   0.267   0.0410    0.140 
+
+Effective search space used: 24986689065
+
+
+Query= SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935
+
+Length=918
+
+
+***** No hits found *****
+
+
+
+Lambda     K      H
+   0.318    0.134    0.401 
+
+Gapped
+Lambda     K      H
+   0.267   0.0410    0.140 
+
+Effective search space used: 24217867863
+
+
+Query= SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828
+
+Length=803
+                                                                      Score     E
+Sequences producing significant alignments:                          (Bits)  Value
+
+  sp|P0A916|OMPW_SHIFL Outer membrane protein W OS=Shigella flexn...   108    1e-26
+  sp|P0A915|OMPW_ECOLI Outer membrane protein W OS=Escherichia co...   108    1e-26
+  sp|P17266|OMPW_VIBCH Outer membrane protein W OS=Vibrio cholera...   106    5e-26
+  sp|Q8ZP50|OMPW_SALTY Outer membrane protein W OS=Salmonella typ...   101    3e-24
+  sp|Q8Z7E2|OMPW_SALTI Outer membrane protein W OS=Salmonella typ...   101    3e-24
+  sp|P19766|INSB_SHISO Insertion element IS1 protein insB OS=Shig...  43.1    4e-04
+  sp|P19765|INSB_SHIFL Insertion element IS1 protein insB OS=Shig...  43.1    4e-04
+  sp|P03831|INBD_SHIDY Insertion element iso-IS1d protein insB OS...  43.1    4e-04
+  sp|P59843|INSB_HAEDU Insertion element IS1 protein insB OS=Haem...  43.1    6e-04
+  sp|P0CF31|INSB_ECOLX Insertion element IS1 protein insB OS=Esch...  43.1    6e-04
+  sp|P0CF30|INSB8_ECOLI Insertion element IS1 8 protein insB OS=E...  43.1    6e-04
+  sp|P0CF29|INSB6_ECOLI Insertion element IS1 6 protein insB OS=E...  43.1    6e-04
+  sp|P0CF28|INSB5_ECOLI Insertion element IS1 5 protein insB OS=E...  43.1    6e-04
+  sp|P57998|INSB4_ECOLI Insertion element IS1 4 protein insB OS=E...  43.1    6e-04
+  sp|P0CF25|INSB1_ECOLI Insertion element IS1 1 protein insB OS=E...  43.1    6e-04
+  sp|P0CF27|INSB3_ECOLI Insertion element IS1 3 protein insB OS=E...  40.8    0.004
+  sp|P0CF26|INSB2_ECOLI Insertion element IS1 2 protein insB OS=E...  40.8    0.004
+
+
+> sp|P0A916|OMPW_SHIFL Outer membrane protein W OS=Shigella flexneri 
+GN=ompW PE=3 SV=1
+Length=212
+
+ Score =  108 bits (269),  Expect = 1e-26
+ Identities = 58/115 (50%), Positives = 72/115 (63%), Gaps = 8/115 (7%)
+ Frame = +2
+
+Query  389  MNKTTVSTLIAATLLAAGFSASVSAHQAGDIIVRAGAVVVAPNESSDDVVIPGVGNLGEF  568
+            M K TV+ L   TLL    S S  AH+AG+  +RAG+  V P E +   +    G+LG F
+Sbjct  1    MKKLTVAALAVTTLL----SGSAFAHEAGEFFMRAGSATVRPTEGAGGTL----GSLGGF  52
+
+Query  569  KVSNDTQLGLNFGYMLTDNIGIELLAATPFSHDVSLAGVGKIAETKHLPPTLVAR  733
+             V+N+TQLGL F YM TDNIG+ELLAATPF H +     G IA   HLPPTL+A+
+Sbjct  53   SVTNNTQLGLTFTYMATDNIGVELLAATPFRHKIGTRATGDIATVHHLPPTLMAQ  107
+
+
+> sp|P0A915|OMPW_ECOLI Outer membrane protein W OS=Escherichia 
+coli (strain K12) GN=ompW PE=1 SV=1
+Length=212
+
+ Score =  108 bits (269),  Expect = 1e-26
+ Identities = 58/115 (50%), Positives = 72/115 (63%), Gaps = 8/115 (7%)
+ Frame = +2
+
+Query  389  MNKTTVSTLIAATLLAAGFSASVSAHQAGDIIVRAGAVVVAPNESSDDVVIPGVGNLGEF  568
+            M K TV+ L   TLL    S S  AH+AG+  +RAG+  V P E +   +    G+LG F
+Sbjct  1    MKKLTVAALAVTTLL----SGSAFAHEAGEFFMRAGSATVRPTEGAGGTL----GSLGGF  52
+
+Query  569  KVSNDTQLGLNFGYMLTDNIGIELLAATPFSHDVSLAGVGKIAETKHLPPTLVAR  733
+             V+N+TQLGL F YM TDNIG+ELLAATPF H +     G IA   HLPPTL+A+
+Sbjct  53   SVTNNTQLGLTFTYMATDNIGVELLAATPFRHKIGTRATGDIATVHHLPPTLMAQ  107
+
+
+> sp|P17266|OMPW_VIBCH Outer membrane protein W OS=Vibrio cholerae 
+serotype O1 (strain ATCC 39315 / El Tor Inaba N16961) GN=ompW 
+PE=3 SV=2
+Length=217
+
+ Score =  106 bits (265),  Expect = 5e-26
+ Identities = 59/113 (52%), Positives = 72/113 (64%), Gaps = 9/113 (8%)
+ Frame = +2
+
+Query  410  TLIAATLLAAGFSASVSAHQAGDIIVRAGAVVVAPNESSDDVVIPGVGNLGEFKVSNDTQ  589
+            T+    +LAA  SA V AHQ GD IVRAG   V PN+SSD V+        E  V+++TQ
+Sbjct  4    TICGLAVLAALSSAPVFAHQEGDFIVRAGIASVVPNDSSDKVL----NTQSELAVNSNTQ  59
+
+Query  590  LGLNFGYMLTDNIGIELLAATPFSHDVSLAG-----VGKIAETKHLPPTLVAR  733
+            LGL  GYM TDNI  E+LAATPFSH +S +G     +G I ETKHLPPT + +
+Sbjct  60   LGLTLGYMFTDNISFEVLAATPFSHKISTSGGELGSLGDIGETKHLPPTFMVQ  112
+
+
+> sp|Q8ZP50|OMPW_SALTY Outer membrane protein W OS=Salmonella typhimurium 
+(strain LT2 / SGSC1412 / ATCC 700720) GN=ompW PE=3 
+SV=1
+Length=212
+
+ Score =  101 bits (252),  Expect = 3e-24
+ Identities = 58/115 (50%), Positives = 69/115 (60%), Gaps = 8/115 (7%)
+ Frame = +2
+
+Query  389  MNKTTVSTLIAATLLAAGFSASVSAHQAGDIIVRAGAVVVAPNESSDDVVIPGVGNLGEF  568
+            M K TV+ L   TLL    S S  AH+AG+  +RAG   V P E +   +    G+L  F
+Sbjct  1    MKKFTVAALALTTLL----SGSAFAHEAGEFFMRAGPATVRPTEGAGGTL----GHLNGF  52
+
+Query  569  KVSNDTQLGLNFGYMLTDNIGIELLAATPFSHDVSLAGVGKIAETKHLPPTLVAR  733
+             VSN+TQLGL F YM TDNIG+ELLAATPF H V     G IA    LPPTL+A+
+Sbjct  53   DVSNNTQLGLTFTYMATDNIGVELLAATPFRHKVGTGATGDIATVHLLPPTLMAQ  107
+
+
+> sp|Q8Z7E2|OMPW_SALTI Outer membrane protein W OS=Salmonella typhi 
+GN=ompW PE=3 SV=1
+Length=212
+
+ Score =  101 bits (252),  Expect = 3e-24
+ Identities = 58/115 (50%), Positives = 69/115 (60%), Gaps = 8/115 (7%)
+ Frame = +2
+
+Query  389  MNKTTVSTLIAATLLAAGFSASVSAHQAGDIIVRAGAVVVAPNESSDDVVIPGVGNLGEF  568
+            M K TV+ L   TLL    S S  AH+AG+  +RAG   V P E +   +    G+L  F
+Sbjct  1    MKKFTVAALALTTLL----SGSAFAHEAGEFFMRAGPATVRPTEGAGGTL----GHLNGF  52
+
+Query  569  KVSNDTQLGLNFGYMLTDNIGIELLAATPFSHDVSLAGVGKIAETKHLPPTLVAR  733
+             VSN+TQLGL F YM TDNIG+ELLAATPF H V     G IA    LPPTL+A+
+Sbjct  53   DVSNNTQLGLTFTYMATDNIGVELLAATPFRHKVGTGATGDIATVHLLPPTLMAQ  107
+
+
+> sp|P19766|INSB_SHISO Insertion element IS1 protein insB OS=Shigella 
+sonnei GN=insB PE=3 SV=1
+Length=131
+
+ Score = 43.1 bits (100),  Expect = 4e-04
+ Identities = 18/18 (100%), Positives = 18/18 (100%), Gaps = 0/18 (0%)
+ Frame = -1
+
+Query  803  VELHDKVIGHYLNIKHYQ  750
+            VELHDKVIGHYLNIKHYQ
+Sbjct  114  VELHDKVIGHYLNIKHYQ  131
+
+
+> sp|P19765|INSB_SHIFL Insertion element IS1 protein insB OS=Shigella 
+flexneri GN=insB1 PE=3 SV=2
+Length=131
+
+ Score = 43.1 bits (100),  Expect = 4e-04
+ Identities = 18/18 (100%), Positives = 18/18 (100%), Gaps = 0/18 (0%)
+ Frame = -1
+
+Query  803  VELHDKVIGHYLNIKHYQ  750
+            VELHDKVIGHYLNIKHYQ
+Sbjct  114  VELHDKVIGHYLNIKHYQ  131
+
+
+> sp|P03831|INBD_SHIDY Insertion element iso-IS1d protein insB 
+OS=Shigella dysenteriae GN=insB PE=3 SV=2
+Length=131
+
+ Score = 43.1 bits (100),  Expect = 4e-04
+ Identities = 18/18 (100%), Positives = 18/18 (100%), Gaps = 0/18 (0%)
+ Frame = -1
+
+Query  803  VELHDKVIGHYLNIKHYQ  750
+            VELHDKVIGHYLNIKHYQ
+Sbjct  114  VELHDKVIGHYLNIKHYQ  131
+
+
+> sp|P59843|INSB_HAEDU Insertion element IS1 protein insB OS=Haemophilus 
+ducreyi (strain 35000HP / ATCC 700724) GN=insB PE=3 
+SV=1
+Length=167
+
+ Score = 43.1 bits (100),  Expect = 6e-04
+ Identities = 18/18 (100%), Positives = 18/18 (100%), Gaps = 0/18 (0%)
+ Frame = -1
+
+Query  803  VELHDKVIGHYLNIKHYQ  750
+            VELHDKVIGHYLNIKHYQ
+Sbjct  150  VELHDKVIGHYLNIKHYQ  167
+
+
+> sp|P0CF31|INSB_ECOLX Insertion element IS1 protein insB OS=Escherichia 
+coli GN=insB PE=3 SV=1
+Length=167
+
+ Score = 43.1 bits (100),  Expect = 6e-04
+ Identities = 18/18 (100%), Positives = 18/18 (100%), Gaps = 0/18 (0%)
+ Frame = -1
+
+Query  803  VELHDKVIGHYLNIKHYQ  750
+            VELHDKVIGHYLNIKHYQ
+Sbjct  150  VELHDKVIGHYLNIKHYQ  167
+
+
+> sp|P0CF30|INSB8_ECOLI Insertion element IS1 8 protein insB OS=Escherichia 
+coli (strain K12) GN=JW2285 PE=3 SV=1
+Length=167
+
+ Score = 43.1 bits (100),  Expect = 6e-04
+ Identities = 18/18 (100%), Positives = 18/18 (100%), Gaps = 0/18 (0%)
+ Frame = -1
+
+Query  803  VELHDKVIGHYLNIKHYQ  750
+            VELHDKVIGHYLNIKHYQ
+Sbjct  150  VELHDKVIGHYLNIKHYQ  167
+
+
+> sp|P0CF29|INSB6_ECOLI Insertion element IS1 6 protein insB OS=Escherichia 
+coli (strain K12) GN=insB6 PE=3 SV=1
+Length=167
+
+ Score = 43.1 bits (100),  Expect = 6e-04
+ Identities = 18/18 (100%), Positives = 18/18 (100%), Gaps = 0/18 (0%)
+ Frame = -1
+
+Query  803  VELHDKVIGHYLNIKHYQ  750
+            VELHDKVIGHYLNIKHYQ
+Sbjct  150  VELHDKVIGHYLNIKHYQ  167
+
+
+> sp|P0CF28|INSB5_ECOLI Insertion element IS1 5 protein insB OS=Escherichia 
+coli (strain K12) GN=insB5 PE=3 SV=1
+Length=167
+
+ Score = 43.1 bits (100),  Expect = 6e-04
+ Identities = 18/18 (100%), Positives = 18/18 (100%), Gaps = 0/18 (0%)
+ Frame = -1
+
+Query  803  VELHDKVIGHYLNIKHYQ  750
+            VELHDKVIGHYLNIKHYQ
+Sbjct  150  VELHDKVIGHYLNIKHYQ  167
+
+
+> sp|P57998|INSB4_ECOLI Insertion element IS1 4 protein insB OS=Escherichia 
+coli (strain K12) GN=insB4 PE=3 SV=1
+Length=167
+
+ Score = 43.1 bits (100),  Expect = 6e-04
+ Identities = 18/18 (100%), Positives = 18/18 (100%), Gaps = 0/18 (0%)
+ Frame = -1
+
+Query  803  VELHDKVIGHYLNIKHYQ  750
+            VELHDKVIGHYLNIKHYQ
+Sbjct  150  VELHDKVIGHYLNIKHYQ  167
+
+
+> sp|P0CF25|INSB1_ECOLI Insertion element IS1 1 protein insB OS=Escherichia 
+coli (strain K12) GN=insB1 PE=3 SV=1
+Length=167
+
+ Score = 43.1 bits (100),  Expect = 6e-04
+ Identities = 18/18 (100%), Positives = 18/18 (100%), Gaps = 0/18 (0%)
+ Frame = -1
+
+Query  803  VELHDKVIGHYLNIKHYQ  750
+            VELHDKVIGHYLNIKHYQ
+Sbjct  150  VELHDKVIGHYLNIKHYQ  167
+
+
+> sp|P0CF27|INSB3_ECOLI Insertion element IS1 3 protein insB OS=Escherichia 
+coli (strain K12) GN=insB3 PE=3 SV=1
+Length=167
+
+ Score = 40.8 bits (94),  Expect = 0.004
+ Identities = 17/18 (94%), Positives = 17/18 (94%), Gaps = 0/18 (0%)
+ Frame = -1
+
+Query  803  VELHDKVIGHYLNIKHYQ  750
+            VE HDKVIGHYLNIKHYQ
+Sbjct  150  VEQHDKVIGHYLNIKHYQ  167
+
+
+> sp|P0CF26|INSB2_ECOLI Insertion element IS1 2 protein insB OS=Escherichia 
+coli (strain K12) GN=insB2 PE=3 SV=1
+Length=167
+
+ Score = 40.8 bits (94),  Expect = 0.004
+ Identities = 17/18 (94%), Positives = 17/18 (94%), Gaps = 0/18 (0%)
+ Frame = -1
+
+Query  803  VELHDKVIGHYLNIKHYQ  750
+            VE HDKVIGHYLNIKHYQ
+Sbjct  150  VEQHDKVIGHYLNIKHYQ  167
+
+
+
+Lambda     K      H
+   0.318    0.134    0.401 
+
+Gapped
+Lambda     K      H
+   0.267   0.0410    0.140 
+
+Effective search space used: 19640434520
+
+
+Query= SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853
+
+Length=833
+                                                                      Score     E
+Sequences producing significant alignments:                          (Bits)  Value
+
+  sp|Q0HTA5|META_SHESR Homoserine O-succinyltransferase OS=Shewan...   152    3e-42
+  sp|Q0HGZ8|META_SHESM Homoserine O-succinyltransferase OS=Shewan...   152    3e-42
+
+
+> sp|Q0HTA5|META_SHESR Homoserine O-succinyltransferase OS=Shewanella 
+sp. (strain MR-7) GN=metA PE=3 SV=1
+Length=313
+
+ Score =  152 bits (385),  Expect = 3e-42
+ Identities = 77/77 (100%), Positives = 77/77 (100%), Gaps = 0/77 (0%)
+ Frame = -2
+
+Query  232  MPVKIPDHLPAAGILESENIFVMSETRAANQDIRPMKVLILNLMPNKIETETQLLRLLGN  53
+            MPVKIPDHLPAAGILESENIFVMSETRAANQDIRPMKVLILNLMPNKIETETQLLRLLGN
+Sbjct  1    MPVKIPDHLPAAGILESENIFVMSETRAANQDIRPMKVLILNLMPNKIETETQLLRLLGN  60
+
+Query  52   TPLQVDVDLLRIHDKES  2
+            TPLQVDVDLLRIHDKES
+Sbjct  61   TPLQVDVDLLRIHDKES  77
+
+
+> sp|Q0HGZ8|META_SHESM Homoserine O-succinyltransferase OS=Shewanella 
+sp. (strain MR-4) GN=metA PE=3 SV=1
+Length=313
+
+ Score =  152 bits (385),  Expect = 3e-42
+ Identities = 77/77 (100%), Positives = 77/77 (100%), Gaps = 0/77 (0%)
+ Frame = -2
+
+Query  232  MPVKIPDHLPAAGILESENIFVMSETRAANQDIRPMKVLILNLMPNKIETETQLLRLLGN  53
+            MPVKIPDHLPAAGILESENIFVMSETRAANQDIRPMKVLILNLMPNKIETETQLLRLLGN
+Sbjct  1    MPVKIPDHLPAAGILESENIFVMSETRAANQDIRPMKVLILNLMPNKIETETQLLRLLGN  60
+
+Query  52   TPLQVDVDLLRIHDKES  2
+            TPLQVDVDLLRIHDKES
+Sbjct  61   TPLQVDVDLLRIHDKES  77
+
+
+
+Lambda     K      H
+   0.318    0.134    0.401 
+
+Gapped
+Lambda     K      H
+   0.267   0.0410    0.140 
+
+Effective search space used: 20716695286
+
+
+Query= SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960
+
+Length=938
+
+
+***** No hits found *****
+
+
+
+Lambda     K      H
+   0.318    0.134    0.401 
+
+Gapped
+Lambda     K      H
+   0.267   0.0410    0.140 
+
+Effective search space used: 24986689065
