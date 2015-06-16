@@ -1087,6 +1087,7 @@ _finishBandedChain(TTraceSet & globalTraceSet,
                           upperDiagonal(band)+ 1, 1 - lowerDiagonal(band));
             // TODO(rmaerker): Should we not set the nextGridOrigin to 0 as it is the case for the last rectangle? We want to compute the last full path.
             // Compute the last anchor which crosses the end of the global grid.
+        clear(localTraceSet);
         TScoreValue score = _computeAlignment(localTraceSet, dpScoutState, infixH, infixV, scoreSchemeAnchor, band,
                                   DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainFinalDPMatrix>, TGaps, TracebackOn<TTracebackConfig> >());
 
