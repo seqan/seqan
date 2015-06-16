@@ -86,7 +86,7 @@ The files written by `blastall` are considered the
 | tabular w comments (legacy) |      ✓         |       ✓        |  Blast-2.2.26      |
 +-----------------------------+----------------+----------------+--------------------+
 
-.. tip::
+.. caution::
 
     Please note that *Blast-2.2.26+* is **not the same** as *Blast-2.2.26*! One is version 2.2.26 of the C++
     application suite (BLAST+) and the other is version 2.2.26 of the legacy application suite. There still are software
@@ -129,9 +129,7 @@ The twelve default columns are:
     11. Expect value (length normalized bit score)
     12. Bit score (statistical significance indicator)
 
-.. tip::
-
-   Alignment positions in Blast.
+.. note:: Alignment positions in Blast
 
    #. **Interval notation:** Blast uses 1-based closed intervals for positions, i.e. a match from the 100th position to
       the 200th position of a sequence will be shown as ``100  200`` in the file. SeqAn internally uses 0-based
@@ -145,13 +143,13 @@ The twelve default columns are:
 
 A **tabular** file could look like this (matches per query are sorted by e-value):
 
-.. literalinclude:: ../../../tests/blast/nocomments_defaults.m8
+.. literalinclude:: ../../../tests/blast/defaultfields.m8
 
 The **tabular with comment lines** format additionally prefixes every block belonging to one query sequence with
 comment lines that include the program version, the database name and column labels. The above example would look
 like this:
 
-.. literalinclude:: ../../../tests/blast/plus_comments_defaults.m9
+.. literalinclude:: ../../../tests/blast/defaultfields.m9
     :lines: 5-37
 
 As you can see, comment lines are also printed for query sequences which don't have any matches.
@@ -160,7 +158,7 @@ difference of these formats in BLAST+ vs the legacy application are that the *mi
 include the number of gap characters, but it does not in BLAST+. The comments also look slightly different
 in the **tabular with comment lines (legacy)** format:
 
-.. literalinclude:: ../../../tests/blast/legacy_comments_defaults.m9
+.. literalinclude:: ../../../tests/blast/defaultfields_legacy.m9
     :lines: 5-35
 
 
@@ -197,8 +195,114 @@ To work with the first two formats you need to understand at least the following
 The context contains file-global data like the name of the database and can also be used to read/write certain file
 format properties, e.g. "with comment lines" or "legacyFormat".
 
-File reading
-------------
+.. caution::
+    Due to the structure of blast tabular files lots of information is repeated in every block of comment lines, e.g.
+    the database name. Because it is expected that these stay the same they are saved in the context and not the record.
+    You may still, however, check everytime you ``readRecord()`` if you want to make sure.
 
-The only
+File reading example
+--------------------
 
+Only tabular formats are covered in this example, because no input support is available for the pairwise format.
+
+Copy the contents of the **tabular with comment lines** example above into a file and give it to the following
+program as the only parameter. Please use ``.m9`` as file type extension.
+
+.. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+    :language: c++
+    :lines: 1-18, 74-84
+
+Assignment 1
+""""""""""""
+
+.. container:: assignment
+
+  Objective
+    Complete the above example by reading the file according to :dox:`BlastTabularFileIn`.
+    For every record print the query ID, the number of contained matches and bit-score of the best match.
+
+  Solution
+    .. container:: foldable
+
+      .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+        :language: c++
+        :lines: 1-34, 57-60, 74-84
+
+Assignment 2
+""""""""""""
+
+.. container:: assignment
+
+  Objective
+    Study the documentation of :dox:`BlastIOContext`. How can you adapt the previous program to check if there were any
+    problems reading a record? If you have come up with a solution, try to read the file at
+    ``tests/blast/defaultfields.m9``. What does the program print and why?
+
+  Solution
+    .. container:: foldable
+
+      .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+        :language: c++
+        :lines: 1-34, 41-60, 74-84
+
+
+      The program will print conformancyErrors for the last record, because there is a typo in the file ( ``Datacase``
+      instead of ``Database`` ).
+
+Assignment 3
+""""""""""""
+
+.. container:: assignment
+
+  Objective
+    Now that you have a basic understanding of :dox:`BlastIOContext`, also print the following information after
+    reading the records:
+
+      * file format (with comment lines or without, BLAST+ or legacy?)
+      * blast program and version
+      * name of database
+
+    Verify that the results are as expected on the files ``tests/blast/defaultfields.m8``,
+    ``tests/blast/defaultfields.m9`` and ``tests/blast/defaultfields_legacy.m9``.
+
+  Solution
+    .. container:: foldable
+
+      .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+        :language: c++
+        :lines: 1-34, 41-84
+
+
+Assignment 4
+""""""""""""
+
+As previously mentioned, twelve columns are printed by default.
+This can be changed in BLAST+, also by means of the ``--outfmt`` parameter.
+A standards compliant **file with comment lines** and custom column composition can be read
+without further configuration in SeqAn.
+
+.. tip::
+    Don't believe it? Look at ``tests/blast/customfields.m9``, as as you can see the bit score is in the 13th column
+    (instead of the twelfth). If you run your program on this file, it should still print the corrent bit-scores!
+
+.. container:: assignment
+
+  Objective
+    Read :dox:`BlastIOContext` again focussing on :dox:`BlastIOContext::fields` and also read :dox:`BlastMatchField`.
+    Now adapt the previous program to print for every record the ``optionLabel`` s of the used fields.
+
+    Verify that the results are as expected on the files ``tests/blast/defaultfields.m9`` and
+    ``tests/blast/customfields.m9``.
+
+  Solution
+    .. container:: foldable
+
+      .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+        :language: c++
+
+      If this was too easy, you can also try the same for tabular files without comment lines!
+
+File writing example
+--------------------
+
+TODO

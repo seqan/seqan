@@ -10,7 +10,7 @@ int main()
     typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
     typedef BlastMatch<TAlign> TBlastMatch;
     typedef BlastRecord<TBlastMatch> TBlastRecord;
-    typedef BlastIOContext<Blosum62> TContext;
+    typedef BlastIOContext<> TContext;
 
     std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + "/tests/blast/plus_comments_defaults.m9";
 

@@ -78,6 +78,11 @@ struct BlastIOContextStringType
  * be able to modify these values at run-time. For file reading this is also possible, but usually the
  * added flexibility of automatically detecting these values is prefferable.
  *
+ * If not explicitly stated otherwise, the member variables are <i>out-parameters</i> of <tt>readHeader()</tt>,
+ * <tt>readRecord()</tt> and <tt>readFooter()</tt>, i.e. they are set by these functions; and they are
+ * <i>in-parameters</i> to  <tt>writeHeader()</tt>, <tt>writeRecord()</tt> and <tt>writeFooter()</tt>, i.e. they
+ * influence these functions output.
+ *
  * @section Example
  *
  * Here as an example of which members to set on a context, before using it for Output:
@@ -203,11 +208,15 @@ struct BlastIOContext
      * @var std::vector<BlastMatchField::Enum> BlastIOContext::fields;
      * @brief The fields (types of columns) in @link BlastTabular @endlink-formats.
      *
-     * Is an in-parameter to writeRecord, writeMatch, writeRecordHeader and readMatch. In
-     * the latter case it signifies the expected fields.
-     * Is an out-parameter
-     * of readRecord and readRecordHeader where it returns the fields specified in
-     * the header.
+     * This is an <i>out-parameter</i> for:
+     * <li> @link BlastTabularFileIn#readRecord @endlink iff tabularSpec == COMMENTS (otherwise it can't be deduced)</li>
+     *
+     * This is an <i>in-parameter</i> for:
+     * <li> @link BlastTabularFileIn#readRecord @endlink if tabularSpec != COMMENTS (specified fields will be expected)</li>
+     * <li> @link BlastTabularFileOut#writeRecord @endlink (specified fields will written)
+     *
+     * Setting @link BlastIOContext::ignoreFieldsInComments @endlink will make this variable be an <i>in-parameter</i> for
+     * the first case, as well. This variable is ignored in the legacy formats and for non-tabular formats.
      */
     std::vector<typename BlastMatchField<>::Enum> fields = { BlastMatchField<>::Enum::STD };
 
@@ -216,7 +225,7 @@ struct BlastIOContext
      * @brief The fields (types of columns) in @link BlastTabular @endlink-formats, but as uninterpreted strings.
      *
      * Useful when the header does not conform to standards and you want to extract the verbatim column labels or if
-     * you wish to print non-standard column labels (which you don't!).
+     * you wish to print non-standard column labels (which you shouldn't!).
      */
     StringSet<TString, Owner<ConcatDirect<>>> fieldsAsStrings;
 
@@ -224,10 +233,7 @@ struct BlastIOContext
      * @var bool BlastIOContext::ignoreFieldsInComments;
      * @brief Use fields as in-parameter for readRecord as well (only @link BlastTabularFileIn @endlink).
      *
-     * When doing @link BlastTabularFileIn#readRecord @endlink, the
-     * @link BlastIOContext::fields @endlink member is used as in-parameter to
-     * readRecordHeader() and as out-parameter to readMatch(); setting this bool
-     * deactivates the first behaviour. Use this when the header does not
+     * See @link BlastTabularFileIn#readRecord @endlink. Use this when the header does not
      * conform to standards (and the fields can't be read), but you know that
      * the matches are in the given, e.g. default format.
      */

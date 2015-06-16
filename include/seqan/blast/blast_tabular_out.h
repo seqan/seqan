@@ -62,7 +62,7 @@ namespace seqan {
  * This is a @link FormattedFile @endlink specialization for writing @link BlastTabular @endlink formats. For details
  * on how to influence the writing of files and how to differentiate between the tabular format without headers and the
  * one with headers, see @link BlastIOContext @endlink.
- * Please note that you have specify the type of the context as a template parameter to BlastTabularFileOut, see the example
+ * Please note that you have to specify the type of the context as a template parameter to BlastTabularFileOut, see the example
  * below.
  *
  * @section Example
