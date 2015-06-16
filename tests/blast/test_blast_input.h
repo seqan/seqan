@@ -35,13 +35,11 @@
 // ==========================================================================
 
 // Files that are being read by this implementation
-#define PLUS_HEADER_DEFAULTS   "/tests/blast/plus_comments_defaults.m9"
-#define LEGACY_HEADER_DEFAULTS "/tests/blast/legacy_comments_defaults.m9"
-#define PLUS_HEADER_CUSTOM     "/tests/blast/plus_comments_custom.m9"
-// same for HEADER and NOHEADERS:
-#define NOHEADER_DEFAULTS      "/tests/blast/nocomments_defaults.m8"
-// same for HEADER and NOHEADERS:
-#define NOHEADER_CUSTOM        "/tests/blast/nocomments_custom.m8"
+#define PLUS_COMMENTS_DEFAULTS   "/tests/blast/defaultfields.m9"
+#define LEGACY_COMMENTS_DEFAULTS "/tests/blast/defaultfields_legacy.m9"
+#define NOCOMMENTS_DEFAULTS      "/tests/blast/defaultfields.m8"
+#define PLUS_COMMENTS_CUSTOM     "/tests/blast/customfields.m9"
+#define NOCOMMENTS_CUSTOM        "/tests/blast/customfields.m8"
 
 using namespace seqan;
 
@@ -85,7 +83,7 @@ _test_blast_read_tabular_match_lowlevel(std::string const & path)
     SEQAN_ASSERT_EQ(field2,          "sp|P0A916|OMPW_SHIFL");
     SEQAN_ASSERT_EQ(field3,          50.43);
     SEQAN_ASSERT_EQ(field4,          115.0);
-    if (path == LEGACY_HEADER_DEFAULTS)
+    if (path == LEGACY_COMMENTS_DEFAULTS)
         SEQAN_ASSERT_EQ(field5,      57u);
     else // legacy blast includes gaps in mismatches
         SEQAN_ASSERT_EQ(field5,      49u);
@@ -105,7 +103,7 @@ _test_blast_read_tabular_match_lowlevel(std::string const & path)
     SEQAN_ASSERT_EQ(field2,          "sp|P0A915|OMPW_ECOLI");
     SEQAN_ASSERT_EQ(field3,          50.43);
     SEQAN_ASSERT_EQ(field4,          115.0);
-    if (path == LEGACY_HEADER_DEFAULTS) // legacy blast includes gaps in mismatches
+    if (path == LEGACY_COMMENTS_DEFAULTS) // legacy blast includes gaps in mismatches
         SEQAN_ASSERT_EQ(field5,      57u);
     else
         SEQAN_ASSERT_EQ(field5,      49u);
@@ -148,9 +146,9 @@ SEQAN_DEFINE_TEST(test_blast_read_lowlevel)
 {
     // this testsBlastTabular#readMatch(),BlastTabular#skipMatch() and
     //BlastTabular#skipUntilMatch
-    _test_blast_read_tabular_match_lowlevel(PLUS_HEADER_DEFAULTS);
+    _test_blast_read_tabular_match_lowlevel(PLUS_COMMENTS_DEFAULTS);
     // basic match reading should work between plus and legacy
-    _test_blast_read_tabular_match_lowlevel(LEGACY_HEADER_DEFAULTS);
+    _test_blast_read_tabular_match_lowlevel(LEGACY_COMMENTS_DEFAULTS);
 }
 
 template <typename TContext>
@@ -218,7 +216,7 @@ void _testReadTabularWithoutHeader(TContext &,
         SEQAN_ASSERT_EQ(m.sId,                          "sp|P0A916|OMPW_SHIFL");
         SEQAN_ASSERT_EQ(m.alignStats.numMatches,        58u /*(115u * 50.43) / 100*/);
         SEQAN_ASSERT_EQ(m.alignStats.alignmentLength,   115u);
-        if (path == LEGACY_HEADER_DEFAULTS) // legacy blast includes gaps in mismatches
+        if (path == LEGACY_COMMENTS_DEFAULTS) // legacy blast includes gaps in mismatches
             SEQAN_ASSERT_EQ(m.alignStats.numMismatches, 57u);
         else
             SEQAN_ASSERT_EQ(m.alignStats.numMismatches, 49u);
@@ -242,7 +240,7 @@ void _testReadTabularWithoutHeader(TContext &,
         // for BLAST_PLUS
         if (!context.legacyFormat)
         {
-            if  (path == LEGACY_HEADER_DEFAULTS) // legacy output with plus reader
+            if  (path == LEGACY_COMMENTS_DEFAULTS) // legacy output with plus reader
                 SEQAN_ASSERT_EQ(m.alignStats.numGaps,   0u /*(115u - 58 - 49)*/);
             else // plus output and plus reader
                 SEQAN_ASSERT_EQ(m.alignStats.numGaps,   8u /*(115u - 58 - 49)*/);
@@ -327,37 +325,37 @@ void _testReadTabularWithoutHeader(TContext &,
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments)
 {
     BlastIOContext<> context;
-    _testReadTabularWithoutHeader(context, NOHEADER_DEFAULTS, true, false);
+    _testReadTabularWithoutHeader(context, NOCOMMENTS_DEFAULTS, true, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_customfields)
 {
     BlastIOContext<> context;
-    _testReadTabularWithoutHeader(context, NOHEADER_CUSTOM, false, false);
+    _testReadTabularWithoutHeader(context, NOCOMMENTS_CUSTOM, false, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_legacy)
 {
     BlastIOContext<> context;
-    _testReadTabularWithoutHeader(context, NOHEADER_DEFAULTS, true, true);
+    _testReadTabularWithoutHeader(context, NOCOMMENTS_DEFAULTS, true, true);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
-    _testReadTabularWithoutHeader(context, NOHEADER_DEFAULTS, true, false);
+    _testReadTabularWithoutHeader(context, NOCOMMENTS_DEFAULTS, true, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_customfields_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
-    _testReadTabularWithoutHeader(context, NOHEADER_CUSTOM, false, false);
+    _testReadTabularWithoutHeader(context, NOCOMMENTS_CUSTOM, false, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_legacy_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
-    _testReadTabularWithoutHeader(context, NOHEADER_DEFAULTS, true, true);
+    _testReadTabularWithoutHeader(context, NOCOMMENTS_DEFAULTS, true, true);
 }
 
 template <typename TContext>
@@ -462,7 +460,7 @@ void _testReadTabularWithHeader(TContext &,
         SEQAN_ASSERT_EQ(m.sId,                          "sp|P0A916|OMPW_SHIFL");
         SEQAN_ASSERT_EQ(m.alignStats.numMatches,        58u /*(115u * 50.43) / 100*/);
         SEQAN_ASSERT_EQ(m.alignStats.alignmentLength,   115u);
-        if (path == LEGACY_HEADER_DEFAULTS) // legacy blast includes gaps in mismatches
+        if (path == LEGACY_COMMENTS_DEFAULTS) // legacy blast includes gaps in mismatches
             SEQAN_ASSERT_EQ(m.alignStats.numMismatches, 57u);
         else
             SEQAN_ASSERT_EQ(m.alignStats.numMismatches, 49u);
@@ -486,7 +484,7 @@ void _testReadTabularWithHeader(TContext &,
         // for BLAST_PLUS
         if (!context.legacyFormat)
         {
-            if  (path == LEGACY_HEADER_DEFAULTS) // legacy output with plus reader
+            if  (path == LEGACY_COMMENTS_DEFAULTS) // legacy output with plus reader
                 SEQAN_ASSERT_EQ(m.alignStats.numGaps,   0u /*(115u - 58 - 49)*/);
             else // plus output and plus reader
                 SEQAN_ASSERT_EQ(m.alignStats.numGaps,   8u /*(115u - 58 - 49)*/);
@@ -601,35 +599,35 @@ void _testReadTabularWithHeader(TContext &,
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments)
 {
     BlastIOContext<> context;
-    _testReadTabularWithHeader(context, PLUS_HEADER_DEFAULTS, true, false);
+    _testReadTabularWithHeader(context, PLUS_COMMENTS_DEFAULTS, true, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_customfields)
 {
     BlastIOContext<> context;
-    _testReadTabularWithHeader(context, PLUS_HEADER_CUSTOM, false, false);
+    _testReadTabularWithHeader(context, PLUS_COMMENTS_CUSTOM, false, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_legacy)
 {
     BlastIOContext<> context;
-    _testReadTabularWithHeader(context, LEGACY_HEADER_DEFAULTS, true, true);
+    _testReadTabularWithHeader(context, LEGACY_COMMENTS_DEFAULTS, true, true);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::COMMENTS> context;
-    _testReadTabularWithHeader(context, PLUS_HEADER_DEFAULTS, true, false);
+    _testReadTabularWithHeader(context, PLUS_COMMENTS_DEFAULTS, true, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_customfields_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::COMMENTS> context;
-    _testReadTabularWithHeader(context, PLUS_HEADER_CUSTOM, false, false);
+    _testReadTabularWithHeader(context, PLUS_COMMENTS_CUSTOM, false, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_legacy_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::COMMENTS> context;
-    _testReadTabularWithHeader(context, LEGACY_HEADER_DEFAULTS, true, true);
+    _testReadTabularWithHeader(context, LEGACY_COMMENTS_DEFAULTS, true, true);
 }
