@@ -125,6 +125,12 @@ inline void _glueTracebacks(TTraceSet & globalTraces, TTraceSet & localTraces)
 
     bool isGlued = false;
 
+    if (empty(globalTraces))
+    {
+        globalTraces = localTraces;
+        return;
+    }
+
     TSize lengthGlobalTraces = length(globalTraces);
     TSize oldNumOfGlobalTraces = lengthGlobalTraces;
     String<unsigned> elementsToErase;
