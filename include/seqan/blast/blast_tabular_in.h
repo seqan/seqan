@@ -297,16 +297,13 @@ _goNextLine(BlastIOContext<TScore, p, h> & context,
  * @throw ParseError On high-level file format errors.
  */
 
-template <typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
+template <typename TMatch,
           typename TFwdIterator,
           typename TScore,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readCommentLinesImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
+_readCommentLinesImpl(BlastRecord<TMatch> & r,
                       TFwdIterator & iter,
                       BlastIOContext<TScore, p, h> & context,
                       BlastTabular const &)
@@ -485,19 +482,16 @@ _readCommentLinesImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
         appendValue(context.conformancyErrors, "Unexpected lines present, see context.otherLines.");
 }
 
-template <typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
+template <typename TMatch,
           typename TFwdIterator,
           typename TScore,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readCommentLines(BlastRecord<TQId, TSId, TPos, TAlign> & r,
-                 TFwdIterator & iter,
-                 BlastIOContext<TScore, p, h> & context,
-                 BlastTabular const &)
+_readCommentLines(BlastRecord<TMatch> & r,
+                  TFwdIterator & iter,
+                  BlastIOContext<TScore, p, h> & context,
+                  BlastTabular const &)
 {
     ++context.numberOfRecords;
 
@@ -521,15 +515,15 @@ _readCommentLines(BlastRecord<TQId, TSId, TPos, TAlign> & r,
 // Function _readMatch()
 // ----------------------------------------------------------------------------
 
-template <typename TQId,
-          typename TSId,
+template <typename TAlign,
           typename TPos,
-          typename TAlign,
+          typename TQId,
+          typename TSId,
           typename TScore,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readField(BlastMatch<TQId, TSId, TPos, TAlign> & match,
+_readField(BlastMatch<TAlign, TPos, TQId, TSId> & match,
            BlastIOContext<TScore, p, h> & context,
            typename BlastMatchField<>::Enum const fieldId)
 {
@@ -680,19 +674,19 @@ _readField(BlastMatch<TQId, TSId, TPos, TAlign> & match,
  * @headerfile seqan/blast.h
  */
 
-template <typename TQId,
+template <typename TAlign,
+          typename TPos,
+          typename TQId,
           typename TSId,
           typename TFwdIterator,
-          typename TPos,
-          typename TAlign,
           typename TScore,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
-          TFwdIterator & iter,
-          BlastIOContext<TScore, p, h> & context,
-          BlastTabular const &)
+_readMatch(BlastMatch<TAlign, TPos, TQId, TSId> & match,
+           TFwdIterator & iter,
+           BlastIOContext<TScore, p, h> & context,
+           BlastTabular const &)
 {
     if (context.legacyFormat)
     {
@@ -774,18 +768,15 @@ _readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
 // ----------------------------------------------------------------------------
 
 template <typename TFwdIterator,
-          typename TQId,
-          typename TSId,
-          typename TAlign,
-          typename TPos,
+          typename TMatch,
           typename TScore,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readRecordWithCommentLines(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
-                      TFwdIterator & iter,
-                      BlastIOContext<TScore, p, h> & context,
-                      BlastTabular const &)
+_readRecordWithCommentLines(BlastRecord<TMatch> & blastRecord,
+                            TFwdIterator & iter,
+                            BlastIOContext<TScore, p, h> & context,
+                            BlastTabular const &)
 {
     _readCommentLines(blastRecord, iter, context, BlastTabular());
 
@@ -824,19 +815,16 @@ _readRecordWithCommentLines(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
 }
 
 // TABULAR WITHOUT COMMENT LINES
-template <typename TQId,
-          typename TSId,
-          typename TAlign,
-          typename TPos,
+template <typename TMatch,
           typename TFwdIterator,
           typename TScore,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readRecordWithoutCommentLines(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
-                    TFwdIterator & iter,
-                    BlastIOContext<TScore, p, h> & context,
-                    BlastTabular const &)
+_readRecordWithoutCommentLines(BlastRecord<TMatch> & blastRecord,
+                               TFwdIterator & iter,
+                               BlastIOContext<TScore, p, h> & context,
+                               BlastTabular const &)
 {
     ++context.numberOfRecords;
 
@@ -950,19 +938,16 @@ _readRecordWithoutCommentLines(BlastRecord<TQId, TSId, TPos, TAlign> & blastReco
  * @throw ParseError On high-level file format errors.
  */
 
-template <typename TQId,
-          typename TSId,
-          typename TAlign,
-          typename TPos,
+template <typename TMatch,
           typename TFwdIterator,
           typename TScore,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
-          TFwdIterator & iter,
-          BlastIOContext<TScore, p, h> & context,
-          BlastTabular const &)
+readRecord(BlastRecord<TMatch> & blastRecord,
+           TFwdIterator & iter,
+           BlastIOContext<TScore, p, h> & context,
+           BlastTabular const &)
 {
     if (context.tabularSpec == BlastTabularSpec::NO_COMMENTS)
         _readRecordWithoutCommentLines(blastRecord, iter, context, BlastTabular());
@@ -970,13 +955,10 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
         _readRecordWithCommentLines(blastRecord, iter, context, BlastTabular());
 }
 
-template <typename TQId,
-          typename TSId,
-          typename TAlign,
-          typename TPos,
+template <typename TMatch,
           typename TContext>
 inline void
-readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+readRecord(BlastRecord<TMatch> & blastRecord,
            BlastTabularFileIn<TContext> & formattedFile)
 {
     readRecord(blastRecord, formattedFile.iter, context(formattedFile), BlastTabular());

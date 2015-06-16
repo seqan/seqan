@@ -190,7 +190,7 @@ The third tag can be used for simple file manipulation, e.g. filtering or column
 this tutorial (see the dox for a simple example).
 
 To work with the first two formats you need to understand at least the following data structures:
-  * :dox:`BlastRecord`: the record covers all :dox:`BlastMatch`es belonging to one query sequence.
+  * :dox:`BlastRecord`: the record covers all :dox:`BlastMatch` es belonging to one query sequence.
   * :dox:`FormattedFile`: one of :dox:`BlastReportFileOut`, :dox:`BlastTabularFileOut` and :dox:`BlastTabularFileIn`.
   * :dox:`BlastIOContext`: the context of the FormatteFile.
 

@@ -142,16 +142,13 @@ _writeFieldLabels(TFwdIterator & stream,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
+          typename TMatch,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeCommentLinesWithoutColumnLabels(TFwdIterator & stream,
                                       BlastIOContext<TScore, p, h> & context,
-                                      BlastRecord<TQId, TSId, TPos, TAlign> const & r,
+                                      BlastRecord<TMatch> const & r,
                                       BlastTabular const & /*tag*/)
 {
     write(stream, "# ");
@@ -201,16 +198,13 @@ _writeCommentLinesWithoutColumnLabels(TFwdIterator & stream,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
+          typename TMatch,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeCommentLines(TFwdIterator & stream,
                   BlastIOContext<TScore, p, h> & context,
-                  BlastRecord<TQId, TSId, TPos, TAlign> const & r,
+                  BlastRecord<TMatch> const & r,
                   BlastTabular const & /*tag*/)
 {
     ++context.numberOfRecords;
@@ -261,7 +255,7 @@ template <typename TFwdIterator,
 inline void
 _writeField(TFwdIterator & s,
             BlastIOContext<TScore, p, h> & context,
-            BlastMatch<TQId, TSId, TPos, TAlign> const & match,
+            BlastMatch<TAlign, TPos, TQId, TSId> const & match,
             typename BlastMatchField<>::Enum const fieldId,
             BlastTabular const &)
 {
@@ -271,9 +265,9 @@ _writeField(TFwdIterator & s,
              // STD is handled from the calling function
             break;
         case BlastMatchField<>::Enum::Q_SEQ_ID:
-            write(s, prefix(match.qId, std::find(begin(match.qId, Standard()),
-                                                 end(match.qId, Standard()),
-                                                 ' ')));
+            write(s, prefix(match.qId,
+                            std::find(begin(match.qId, Standard()), end(match.qId, Standard()), ' ')
+                            - begin(match.qId, Standard()))); // truncate at first ' '
             break;
 //         case ENUM::Q_GI: write(s,  * ); break;
 //         case ENUM::Q_ACC: write(s,  * ); break;
@@ -282,9 +276,9 @@ _writeField(TFwdIterator & s,
             write(s, match.qLength);
             break;
         case BlastMatchField<>::Enum::S_SEQ_ID:
-            write(s, prefix(match.sId, std::find(begin(match.sId, Standard()),
-                                                 end(match.sId, Standard()),
-                                                 ' ')));
+            write(s, prefix(match.sId,
+                            std::find(begin(match.sId, Standard()), end(match.sId, Standard()), ' ')
+                            - begin(match.sId, Standard()))); // truncate at first ' '
             break;
 //         case ENUM::S_ALL_SEQ_ID: write(s,  * ); break;
 //         case ENUM::S_GI: write(s,  * ); break;
@@ -449,7 +443,7 @@ template <typename TFwdIterator,
 inline void
 _writeFields(TFwdIterator & stream,
              BlastIOContext<TScore, p, h> & context,
-             BlastMatch<TQId, TSId, TPos, TAlign> const & match,
+             BlastMatch<TAlign, TPos, TQId, TSId> const & match,
              BlastTabular const &)
 {
     if (SEQAN_LIKELY(!context.legacyFormat))
@@ -552,7 +546,7 @@ template <typename TQId,
 inline void
 _writeMatch(TFwdIterator & stream,
            BlastIOContext<TScore, p, h> & context,
-           BlastMatch<TQId, TSId, TPos, TAlign> const & match,
+           BlastMatch<TAlign, TPos, TQId, TSId> const & match,
            BlastTabular const & /*tag*/)
 {
     _writeFields(stream, context, match, BlastTabular());
@@ -622,16 +616,13 @@ _writeMatch(TFwdIterator & stream,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
+          typename TMatch,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 writeRecord(TFwdIterator & stream,
             BlastIOContext<TScore, p, h> & context,
-            BlastRecord<TQId, TSId, TPos, TAlign> const & r,
+            BlastRecord<TMatch> const & r,
             BlastTabular const & /*tag*/)
 {
     //TODO if debug, do lots of sanity checks on record
@@ -648,13 +639,10 @@ writeRecord(TFwdIterator & stream,
 }
 
 template <typename TContext,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign>
+          typename TMatch>
 inline void
 writeRecord(BlastTabularFileOut<TContext> & formattedFile,
-            BlastRecord<TQId, TSId, TPos, TAlign> const & r)
+            BlastRecord<TMatch> const & r)
 {
     writeRecord(formattedFile.iter, context(formattedFile), r, BlastTabular());
 }

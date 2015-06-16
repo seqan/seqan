@@ -97,14 +97,19 @@ _testBlastOutputGenerateContent(TFile & file,
                                 BlastIOContext<TScore, p, h> & context,
                                 TFormat const &)
 {
-    typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
-    typedef BlastMatch<CharString, CharString, uint32_t, TAlign> TBlastMatch;
-    typedef BlastRecord<CharString, CharString, uint32_t, TAlign> TBlastRecord;
+    typedef StringSet<String<AminoAcid>, Owner<ConcatDirect<>>> TQueries;
+    typedef StringSet<CharString, Owner<ConcatDirect<>>> TQIds;
+    typedef StringSet<String<AminoAcid>> TSubjects;
+    typedef StringSet<CharString> TSIds;
 
-    StringSet<String<AminoAcid>, Owner<ConcatDirect<>>> queries;
-    StringSet<CharString, Owner<ConcatDirect<>>> qIds;
-    StringSet<String<AminoAcid>> subjects;
-    StringSet<CharString> sIds;
+    typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
+    typedef BlastMatch<TAlign, __uint32, typename Value<TQIds>::Type, typename Value<TSIds>::Type> TBlastMatch;
+    typedef BlastRecord<TBlastMatch> TBlastRecord;
+
+    TQueries queries;
+    TQIds qIds;
+    TSubjects subjects;
+    TSIds sIds;
 
     resize(subjects, 2);
     resize(sIds, 2);

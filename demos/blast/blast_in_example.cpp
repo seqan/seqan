@@ -8,7 +8,8 @@ using namespace seqan;
 int main()
 {
     typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
-    typedef BlastRecord<std::string, std::string, uint32_t, TAlign> TBlastRecord;
+    typedef BlastMatch<TAlign> TBlastMatch;
+    typedef BlastRecord<TBlastMatch> TBlastRecord;
     typedef BlastIOContext<Blosum62> TContext;
 
     std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + "/tests/blast/plus_comments_defaults.m9";

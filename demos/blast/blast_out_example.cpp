@@ -8,8 +8,8 @@ using namespace seqan;
 int main()
 {
     typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
-    typedef BlastMatch<CharString, CharString, uint32_t, TAlign> TBlastMatch;
-    typedef BlastRecord<CharString, CharString, uint32_t, TAlign> TBlastRecord;
+    typedef BlastMatch<TAlign> TBlastMatch;
+    typedef BlastRecord<TBlastMatch> TBlastRecord;
     typedef BlastIOContext<Blosum62> TContext;
 
     StringSet<String<AminoAcid>, Owner<ConcatDirect<>>> queries;

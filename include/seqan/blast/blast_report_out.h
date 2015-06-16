@@ -413,7 +413,7 @@ template <typename TStream,
 inline void
 _writeAlignmentBlock(TStream & stream,
                      BlastIOContext<TScore, p, h> & context,
-                     BlastMatch<TQId, TSId, TPos, TAlign> const & m,
+                     BlastMatch<TAlign, TPos, TQId, TSId> const & m,
                      BlastReport const & /*tag*/)
 {
     TPos const   windowSize  = 60;
@@ -502,7 +502,7 @@ template <typename TStream,
 inline void
 _writeFullMatch(TStream & stream,
                 BlastIOContext<TScore, p, h> & context,
-                BlastMatch<TQId, TSId, TPos, TAlign> const & m,
+                BlastMatch<TAlign, TPos, TQId, TSId> const & m,
                 BlastReport const & /*tag*/)
 {
     write(stream, "> ");
@@ -545,7 +545,7 @@ template <typename TStream,
 inline void
 _writeMatchOneLiner(TStream & stream,
                     BlastIOContext<TScore, p, h> &,
-                    BlastMatch<TQId, TSId, TPos, TAlign> const & m,
+                    BlastMatch<TAlign, TPos, TQId, TSId> const & m,
                     BlastReport const & /*tag*/)
 {
     if (length(m.sId) == 66) // it fits
@@ -577,16 +577,13 @@ _writeMatchOneLiner(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
+          typename TMatch,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeRecordHeader(TStream & stream,
                    BlastIOContext<TScore, p, h> &,
-                   BlastRecord<TQId, TSId, TPos, TAlign> const & record,
+                   BlastRecord<TMatch> const & record,
                    BlastReport const & /*tag*/)
 {
     // write query header
@@ -599,16 +596,13 @@ _writeRecordHeader(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
+          typename TMatch,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeRecordFooter(TStream & stream,
                    BlastIOContext<TScore, p, h> & context,
-                   BlastRecord<TQId, TSId, TPos, TAlign> const & record,
+                   BlastRecord<TMatch> const & record,
                    BlastReport const & /*tag*/)
 {
     write(stream, "\n"
@@ -656,16 +650,13 @@ _writeRecordFooter(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
+          typename TMatch,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 writeRecord(TStream & stream,
             BlastIOContext<TScore, p, h> & context,
-            BlastRecord<TQId, TSId, TPos, TAlign> const & record,
+            BlastRecord<TMatch> const & record,
             BlastReport const & /*tag*/)
 {
 
@@ -704,13 +695,10 @@ writeRecord(TStream & stream,
 }
 
 template <typename TContext,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign>
+          typename TMatch>
 inline void
 writeRecord(BlastReportFileOut<TContext> & formattedFile,
-            BlastRecord<TQId, TSId, TPos, TAlign> const & r)
+            BlastRecord<TMatch> const & r)
 {
     writeRecord(formattedFile.iter, context(formattedFile), r, BlastReport());
 }

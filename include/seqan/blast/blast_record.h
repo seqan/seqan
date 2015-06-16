@@ -48,7 +48,7 @@ namespace seqan
  * @implements EqualityComparableConcept
  * @implements LessThanComparableConcept
  * @headerfile <seqan/blast.h>
- * @signature struct BlastMatch<TQId, TSId, TPos, TAlign> { ... };
+ * @signature struct BlastMatch<TAlign, TPos, TQId, TSId> { ... };
  * @brief An data structure to hold a blast match, also known as high-scoring segment pair (HSP)
  *
  * You should set the following members manually: @link BlastMatch::qId @endlink, @link BlastMatch::sId @endlink,
@@ -60,20 +60,25 @@ namespace seqan
  * @link BlastMatch#computeAlignmentStats @endlink and
  * @link BlastMatch#computeBitScore @endlink, @link BlastMatch#computeEValue @endlink.
  *
- * @tparam TQId  Type of qId, defaults to std::string
- * @tparam TSId  Type of sId, defaults to std::string
- * @tparam TPos  Position type of the sequences, defaults to <tt>__uint32</tt>
  * @tparam TAlign Type of the @link Align @endlink member, defaults to
  * <tt>Align<CharString, ArrayGaps></tt>
- *
+ * @tparam TPos  Position type of the sequences, defaults to <tt>__uint32</tt>
+ * @tparam TQId  Type of qId, defaults to std::string
+ * @tparam TSId  Type of sId, defaults to std::string
  */
 
-template <typename TQId = std::string,
-          typename TSId = std::string,
-          typename TPos = __uint32,
-          typename TAlign = Align<CharString, ArrayGaps>>
+template <typename TAlign_ = Align<CharString, ArrayGaps>,
+          typename TPos_ = __uint32,
+          typename TQId_ = std::string,
+          typename TSId_ = std::string>
 struct BlastMatch
 {
+    // TODO dox
+    typedef TAlign_ TAlign;
+    typedef TPos_ TPos;
+    typedef TQId_ TQId;
+    typedef TSId_ TSId;
+
     /*!
      * @var TQId BlastMatch::qId;
      * @brief The verbose Id of the query.
@@ -299,7 +304,7 @@ template <typename TQId,
           typename TPos,
           typename TAlign>
 inline void
-clear(BlastMatch<TQId, TSId, TPos, TAlign> & match)
+clear(BlastMatch<TAlign, TPos, TQId, TSId> & match)
 {
     match._clear();
 }
@@ -308,28 +313,23 @@ clear(BlastMatch<TQId, TSId, TPos, TAlign> & match)
  * @class BlastRecord
  * @implements FormattedFileRecordConcept
  * @headerfile <seqan/blast.h>
- * @signature struct BlastRecord<TQId, TSId, TPos, TAlign> { ... };
+ * @signature struct BlastRecord<TMatch> { ... };
  * @brief A record of blast-matches (belonging to one query).
-
- * @tparam TQId  Type of qId, defaults to std::string
- * @tparam TSId  Type of sId, defaults to std::string
- * @tparam TPos  Position type of the sequences, defaults to <tt>__uint32</tt>
- * @tparam TAlign Type of the @link Align @endlink member, defaults to
- * <tt>Align<CharString, ArrayGaps></tt>
+ *
+ * @tparam TMatch Specialization of @link BlastMatch @endlink
  */
 
-template <typename TQId = std::string,
-          typename TSId = std::string,
-          typename TPos = __uint32,
-          typename TAlign = Align<CharString, ArrayGaps>>
+template <typename TBlastMatch_ = BlastMatch<>>
 struct BlastRecord
 {
     /*!
      * @typedef BlastRecord::TBlastMatch
-     * @signature typedef BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
+     * @signature typedef TBlastMatch_ TBlastMatch;
      * @brief type of the contained matches
      */
-    typedef         BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
+    typedef         TBlastMatch_ TBlastMatch;
+    typedef typename TBlastMatch::TQId TQId;
+    typedef typename TBlastMatch::TPos TPos;
 
     /*!
      * @var TQId BlastRecord::qId;
@@ -370,9 +370,9 @@ struct BlastRecord
     // copy, move and assign implicitly
 };
 
-template <typename TQId, typename TSId, typename TPos, typename TAlign>
+template <typename TMatch>
 inline void
-clear(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord)
+clear(BlastRecord<TMatch> & blastRecord)
 {
     clear(blastRecord.qId);
     blastRecord.qLength = 0;

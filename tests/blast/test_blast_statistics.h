@@ -184,8 +184,7 @@ SEQAN_DEFINE_TEST(test_blast_scoring_scheme)
 SEQAN_DEFINE_TEST(test_blast_blastmatch_stats_and_score)
 {
     typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
-    typedef BlastMatch<CharString, CharString, uint32_t, TAlign> TBlastMatch;
-
+    typedef BlastMatch<TAlign> TBlastMatch;
 
     TBlastMatch m;
 
@@ -212,7 +211,7 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_stats_and_score)
     computeAlignmentStats(m.alignStats, m.align, seqanScheme(scheme));
 
     SEQAN_ASSERT_EQ(m.alignStats.alignmentScore, score);
-//     SEQAN_ASSERT_EQ(m.alignLength, 30u);
+    SEQAN_ASSERT_EQ(m.alignStats.alignmentLength, 30u);
     SEQAN_ASSERT_EQ(m.alignStats.numMatches, 24u);
     SEQAN_ASSERT_EQ(m.alignStats.numPositiveScores, 25u);
     SEQAN_ASSERT_EQ(m.alignStats.numMismatches, 2u);
@@ -223,7 +222,7 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_stats_and_score)
 SEQAN_DEFINE_TEST(test_blast_blastmatch_bit_score_e_value)
 {
     typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
-    typedef BlastMatch<CharString, CharString, uint32_t, TAlign> TBlastMatch;
+    typedef BlastMatch<TAlign> TBlastMatch;
     typedef Blosum62 TScheme;
 
     TBlastMatch m;
