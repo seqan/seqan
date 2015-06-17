@@ -48,11 +48,15 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class BlastTabular
+// ----------------------------------------------------------------------------
+
 /*!
  * @class BlastTabular
  * @signature typedef Tag<BlastTabular_> BlastTabular;
  * @headerfile <seqan/blast.h>
- * @brief Support for Blast Tabular file formats (with and without headers)
+ * @brief Support for Blast Tabular file formats (with and without comment lines)
  *
  * There are three blast format related tags in SeqAn:
  *
@@ -62,8 +66,8 @@ namespace seqan
  * <li> @link BlastTabularLL @endlink which provides light-weight, but very basic tabular IO </li>
  *
  * This is the second tag, it offers <b>high-level</b> support for reading and writing NCBI Blast compatible
- * <b>tabular</b> files, both with and without headers. These are the formats that are available in legacy Blast
- * (<tt>blastall</tt> executable) with the parameters <tt>-m 8</tt> and <tt>-m 9</tt> (with headers)
+ * <b>tabular</b> files, both with and without comment lines. These are the formats that are available in legacy Blast
+ * (<tt>blastall</tt> executable) with the parameters <tt>-m 8</tt> and <tt>-m 9</tt> (with comment lines)
  * and in BLAST+ (<tt>blastx</tt>, <tt>blastn</tt>...) with
  * the parameters <tt>-outfmt 6</tt> and <tt>-outfmt 7</tt> respectively.
  *
@@ -75,39 +79,15 @@ namespace seqan
  * The reference Blast implementation used for developing the SeqAn support is NCBI Blast+ 2.2.26 and
  * NCBI Blast 2.2.26 for the legacy support.
  *
- * @section Input
- *
- * High-level file reading looks like this:
- *
- * <ul>
- * <li> @link BlastTabularFileIn#readHeader @endlink </li>
- * <li> while @link BlastTabularFileIn#onRecord @endlink </li>
- * <ul><li> @link BlastTabularFileIn#readRecord @endlink</li></ul>
- * <li> @link BlastTabularFileIn#readFooter @endlink </li>
- * </ul>
- *
- * See @link BlastTabularFileOut @endlink for a full code example.
- *
- * Although there is no file-global header in the file (only a record header per record -- if your format is
- * @link BlastTabularSpec::COMMENTS @endlink), you need to always call @link BlastTabularFileIn#readHeader @endlink first after
- * opening the file!
- *
- * @section Output
- *
- * High-level file writing looks like this:
- * <ul>
- * <li> @link BlastTabularFileOut#writeHeader @endlink </li>
- * <li> @link BlastTabularFileOut#writeRecord @endlink repeated up to n times</li>
- * <li> @link BlastTabularFileOut#writeFooter @endlink </li>
- * </ul>
- *
- * See @link BlastTabularFileOut @endlink for a full code example.
- *
- * Strictly speaking the writeHeader call is not required for BlastTabular, but for consistency with other (blast)
- * formats it is recommended. The example in @link BlastTabularFileOut @endlink illustrates that.
+ * See @link BlastTabularFileIn @endlink for more information on file reading and @link BlastTabularFileOut @endlink
+ * for more information on file writing.
  */
 struct BlastTabular_;
 typedef Tag<BlastTabular_> BlastTabular;
+
+// ----------------------------------------------------------------------------
+// Class BlastTabularSpec
+// ----------------------------------------------------------------------------
 
 /*!
  * @enum BlastTabularSpec
@@ -135,6 +115,10 @@ enum class BlastTabularSpec : uint8_t
     UNKNOWN = 254,
     DYNAMIC = 255
 };
+
+// ----------------------------------------------------------------------------
+// Class BlastTabularSpecSelector
+// ----------------------------------------------------------------------------
 
 /*!
  * @class BlastTabularSpecSelector
@@ -230,26 +214,6 @@ template <typename T>
 constexpr char const * FileExtensions<BlastTabular, T>::VALUE[4];
 
 // ----------------------------------------------------------------------------
-// Metafunction FormattedFileContext
-// ----------------------------------------------------------------------------
-
-template <typename TContext, typename TDirection, typename TStorageSpec>
-struct FormattedFileContext<FormattedFile<BlastTabular, TDirection, TContext>, TStorageSpec>
-{
-    typedef TContext Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction FileFormats
-// ----------------------------------------------------------------------------
-
-template <typename TDirection, typename TSpec>
-struct FileFormat<FormattedFile<BlastTabular, TDirection, TSpec> >
-{
-    typedef BlastTabular Type;
-};
-
-// ----------------------------------------------------------------------------
 // Class BlastMatchField
 // ----------------------------------------------------------------------------
 
@@ -326,7 +290,6 @@ struct FileFormat<FormattedFile<BlastTabular, TDirection, TSpec> >
  *
  * More fields will likely be implemented in the future.
  */
-
 
 template <typename TVoidSpec = void>
 struct BlastMatchField
@@ -682,6 +645,26 @@ constexpr std::array<typename BlastMatchField<TVoidSpec>::Enum const, 12> BlastM
 // ============================================================================
 // Metafunctions and global const-expressions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction FormattedFileContext
+// ----------------------------------------------------------------------------
+
+template <typename TContext, typename TDirection, typename TStorageSpec>
+struct FormattedFileContext<FormattedFile<BlastTabular, TDirection, TContext>, TStorageSpec>
+{
+    typedef TContext Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction FileFormats
+// ----------------------------------------------------------------------------
+
+template <typename TDirection, typename TSpec>
+struct FileFormat<FormattedFile<BlastTabular, TDirection, TSpec> >
+{
+    typedef BlastTabular Type;
+};
 
 }
 

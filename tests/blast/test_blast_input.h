@@ -152,7 +152,7 @@ SEQAN_DEFINE_TEST(test_blast_read_lowlevel)
 }
 
 template <typename TContext>
-void _testReadTabularWithoutHeader(TContext &,
+void _testReadTabularWithoutComments(TContext &,
                                    std::string path,
                                    bool const defaults,
                                    bool const islegacy)
@@ -325,41 +325,41 @@ void _testReadTabularWithoutHeader(TContext &,
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments)
 {
     BlastIOContext<> context;
-    _testReadTabularWithoutHeader(context, NOCOMMENTS_DEFAULTS, true, false);
+    _testReadTabularWithoutComments(context, NOCOMMENTS_DEFAULTS, true, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_customfields)
 {
     BlastIOContext<> context;
-    _testReadTabularWithoutHeader(context, NOCOMMENTS_CUSTOM, false, false);
+    _testReadTabularWithoutComments(context, NOCOMMENTS_CUSTOM, false, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_legacy)
 {
     BlastIOContext<> context;
-    _testReadTabularWithoutHeader(context, NOCOMMENTS_DEFAULTS, true, true);
+    _testReadTabularWithoutComments(context, NOCOMMENTS_DEFAULTS, true, true);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
-    _testReadTabularWithoutHeader(context, NOCOMMENTS_DEFAULTS, true, false);
+    _testReadTabularWithoutComments(context, NOCOMMENTS_DEFAULTS, true, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_customfields_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
-    _testReadTabularWithoutHeader(context, NOCOMMENTS_CUSTOM, false, false);
+    _testReadTabularWithoutComments(context, NOCOMMENTS_CUSTOM, false, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_without_comments_legacy_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTP, BlastTabularSpec::NO_COMMENTS> context;
-    _testReadTabularWithoutHeader(context, NOCOMMENTS_DEFAULTS, true, true);
+    _testReadTabularWithoutComments(context, NOCOMMENTS_DEFAULTS, true, true);
 }
 
 template <typename TContext>
-void _testReadTabularWithHeader(TContext &,
+void _testReadTabularWithComments(TContext &,
                                 std::string path,
                                 bool const defaults,
                                 bool const islegacy)
@@ -599,35 +599,35 @@ void _testReadTabularWithHeader(TContext &,
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments)
 {
     BlastIOContext<> context;
-    _testReadTabularWithHeader(context, PLUS_COMMENTS_DEFAULTS, true, false);
+    _testReadTabularWithComments(context, PLUS_COMMENTS_DEFAULTS, true, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_customfields)
 {
     BlastIOContext<> context;
-    _testReadTabularWithHeader(context, PLUS_COMMENTS_CUSTOM, false, false);
+    _testReadTabularWithComments(context, PLUS_COMMENTS_CUSTOM, false, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_legacy)
 {
     BlastIOContext<> context;
-    _testReadTabularWithHeader(context, LEGACY_COMMENTS_DEFAULTS, true, true);
+    _testReadTabularWithComments(context, LEGACY_COMMENTS_DEFAULTS, true, true);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::COMMENTS> context;
-    _testReadTabularWithHeader(context, PLUS_COMMENTS_DEFAULTS, true, false);
+    _testReadTabularWithComments(context, PLUS_COMMENTS_DEFAULTS, true, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_customfields_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::COMMENTS> context;
-    _testReadTabularWithHeader(context, PLUS_COMMENTS_CUSTOM, false, false);
+    _testReadTabularWithComments(context, PLUS_COMMENTS_CUSTOM, false, false);
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_tabular_with_comments_legacy_constexpr)
 {
     BlastIOContext<Blosum62, BlastProgram::BLASTX, BlastTabularSpec::COMMENTS> context;
-    _testReadTabularWithHeader(context, LEGACY_COMMENTS_DEFAULTS, true, true);
+    _testReadTabularWithComments(context, LEGACY_COMMENTS_DEFAULTS, true, true);
 }

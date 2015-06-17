@@ -71,12 +71,7 @@ namespace seqan {
  * The reference Blast implementation used for developing the SeqAn support is NCBI Blast+ 2.2.26. In contrast to the
  * tabular format there is no support for writing legacy files (without the +).
  *
- * Please use the FormattedFile specialization of this tag with the following functions:
- * <li> BlastReportFileOut#@link BlastReportFileOut#writeHeader @endlink once</li>
- * <li> BlastReportFileOut#@link BlastReportFileOut#writeRecord @endlink up to n times</li>
- * <li> BlastReportFileOut#@link BlastReportFileOut#writeFooter @endlink at end</li>
- *
- * See @link BlastReportFileOut @endlink for a full code example.
+ * See @link BlastReportFileOut @endlink for more details.
  */
 
 struct BlastReport_;
@@ -96,20 +91,29 @@ typedef Tag<BlastReport_> BlastReport;
  *
  * This is a @link FormattedFile @endlink specialization for writing @link BlastReport @endlink formats. For details
  * on how to influence the writing of files, see @link BlastIOContext @endlink.
- * Please note that you have to specify the type of the context as a template parameter to BlastReportFileOut, see the
- * example below.
+ * Please note that you have to specify the type of the context as a template parameter to BlastReportFileOut.
  *
- * @section Example
+ * @section Overview
  *
- * The following short program creates the pairwise alignments between three query sequences and two database sequences,
- * it computes the e-values, sorts the matches and prints all results that score above a threshold. <i>The same example
- * is used for @link BlastTabularFileOut @endlink and @link BlastReportFileOut @endlink, you only need to change one line.</i>
+ * <ul>
+ * <li> open @link BlastReportFileOut @endlink,</li>
+ * <li> configure the @link BlastIOContext @endlink </li>
+ * <li> @link BlastReportFileOut#writeHeader @endlink </li>
+ * <li> @link BlastReportFileOut#writeRecord @endlink repeated up to n times</li>
+ * <li> @link BlastReportFileOut#writeFooter @endlink </li>
+ * </ul>
  *
- * @include demos/blast/blast_out_example.cpp
+ * The following members of the context have to be defined before writing:
+ * <ul>
+ * <li> @link BlastIOContext::blastProgram @endlink (unless fixed at compile-time)</li>
+ * <li> @link BlastIOContext::scoringScheme @endlink</li>
+ * <li> @link BlastIOContext::dbName @endlink</li>
+ * <li> @link BlastIOContext::dbTotalLength @endlink</li>
+ * <li> @link BlastIOContext::dbNumberOfSeqs @endlink</li>
+ * </ul>
  *
- * The file generated in /tmp/output.blast looks like this:
- *
- * @include demos/blast/blast_out_example.report
+ * For a detailed example have a look at the
+ * <a href="http://seqan.readthedocs.org/en/develop/Tutorial/BlastIO.html">Blast IO tutorial</a>.
  *
  * @see BlastRecord
  */
@@ -581,7 +585,7 @@ template <typename TStream,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_writeRecordHeader(TStream & stream,
+_writeRecordTop(TStream & stream,
                    BlastIOContext<TScore, p, h> &,
                    BlastRecord<TMatch> const & record,
                    BlastReport const & /*tag*/)
@@ -631,7 +635,7 @@ _writeRecordFooter(TStream & stream,
 /*!
  * @fn BlastReportFileOut#writeRecord
  * @headerfile seqan/blast.h
- * @brief write a @link BlastRecord @endlink including it's @link BlastMatch @endlinkes and possible headers to a file.
+ * @brief write a @link BlastRecord @endlink including it's @link BlastMatch @endlinkes and possibly comment lines to a file.
  * @signature void writeRecord(blastReportOut, blastRecord);
  *
  * @param[in,out] blastReportOut A @link BlastReportFileOut @endlink formattedFile.
@@ -671,7 +675,7 @@ writeRecord(TStream & stream,
     }
     #endif// DEBUG
 
-    _writeRecordHeader(stream, context, record, BlastReport());
+    _writeRecordTop(stream, context, record, BlastReport());
 
     if (!empty(record.matches))
     {

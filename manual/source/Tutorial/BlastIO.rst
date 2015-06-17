@@ -15,7 +15,7 @@ Difficulty
   Average
 
 Duration
-  999min
+  1h30min - 2h30min
 
 Prerequisite Tutorials
   :ref:`tutorial-sequences`, :ref:`tutorial-input-output-overview`, :ref:`tutorial-alignment-representation`, :ref:`tutorial-pairwise-sequence-alignment`
@@ -134,11 +134,13 @@ The twelve default columns are:
    #. **Interval notation:** Blast uses 1-based closed intervals for positions, i.e. a match from the 100th position to
       the 200th position of a sequence will be shown as ``100  200`` in the file. SeqAn internally uses 0-based
       half open intervals, i.e. it starts counting at positition 0 and stores the first position behind the sequence
-      as "end", e.g. position ``99`` and ``200`` for our example. More on how this is converted, later.
+      as "end", e.g. position ``99`` and ``200`` for our example.
    #. **Reverse strands:** For matches found on the reverse complement strand the positions are counted backwards from
       the end of the sequence, e.g. a match from the 100th position to the 200th position on a reverse complement strand
       of a sequence of length 500 will be shown as ``400 300`` in the file.
    #. **Translation frames:** Positions given in the file are always on the original untranslated sequence!
+
+   The ``writeRecord()`` function automatically does all of these conversions!
 
 
 A **tabular** file could look like this (matches per query are sorted by e-value):

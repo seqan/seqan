@@ -104,11 +104,21 @@ namespace seqan
  *
  * This is a @link FormattedFile @endlink specialization for reading @link BlastTabular @endlink formats. For details
  * on how to influence the reading of files and how to differentiate between the tabular format without comment lines
- * and the one with comment lines, see @link BlastIOContext @endlink. TODO change
- * Please note that you have specify the type of the context as a template parameter to BlastTabularFileIn, see the example
- * below.
+ * and the one with comment lines, see @link BlastIOContext @endlink.
+ * Please note that you have specify the type of the context as a template parameter to BlastTabularFileIn.
  *
- * TODO example is outdated
+ * @section Overview
+ *
+ * <ul>
+ * <li> open @link BlastTabularFileIn @endlink</li>
+ * <li> @link BlastTabularFileIn#readHeader @endlink </li>
+ * <li> while @link BlastTabularFileIn#onRecord @endlink </li>
+ * <ul><li> @link BlastTabularFileIn#readRecord @endlink</li></ul>
+ * <li> @link BlastTabularFileIn#readFooter @endlink </li>
+ * </ul>
+ *
+ * For a detailed example have a look at the
+ * <a href="http://seqan.readthedocs.org/en/develop/Tutorial/BlastIO.html">Blast IO tutorial</a>.
  *
  * @see BlastRecord
  */
@@ -164,21 +174,6 @@ inline bool guessFormat(FormattedFile<BlastTabular, Input, TSpec> & file)
 // ----------------------------------------------------------------------------
 // Function _onMatch()
 // ----------------------------------------------------------------------------
-
-//NOTE(h-2): dox disabled to clean-up interface
-/*
- * @fn BlastTabular#_onMatch
- * @brief Returns whether the iterator is on the beginning of a match line.
- *
- * @signature bool _onMatch(stream, blastTabular)
- *
- * @param[in] iter    An input iterator over a stream or any fwd-iterator over a string
- * @param[in] blastTabular     @link BlastTabular @endlink specialization
- *
- * @throw IOError On low-level I/O errors.
- *
- * @return    true or false
- */
 
 template <typename TScore,
           BlastProgram p,
@@ -250,52 +245,6 @@ _goNextLine(BlastIOContext<TScore, p, h> & context,
 // ----------------------------------------------------------------------------
 // Function _readCommentLines()
 // ----------------------------------------------------------------------------
-
-//NOTE(h-2): dox disabled to clean-up interface
-/*
- * @fn BlastTabular#_readCommentLines
- * @brief read a the header of a record from a Blast tabular file
- * @headerfile seqan/blast.h
- *
- * @signature void _readCommentLines(blastRecord, stream, context, blastTabular);
- *
- * @param[out]    blastRecord  A @link BlastRecord @endlink.
- * @param[in,out] stream       An input iterator over a stream or any fwd-iterator over a string.
- * @param[in,out] context      An @link BlastIOContext @endlink with buffers.
- * @param[in]     blastTabular The @link BlastTabular @endlink tag.
- *
- * @section Remarks
- *
- * Call this function on every line beginning that is not "_onMatch". Will
- * set the @link BlastRecord::qId @endlink member of the record and resize the @link BlastRecord::matches @endlink
- * member to the expected number of matches succeeding the header. [In case the format is detected as being legacy
- * (see below), the matches member will not be resized and you need to append matches instead of assigning them if
- * using @link BlastTabular#_readMatch @endlink ].
- *
- * This function also sets many properties of the @link BlastIOContext @endlink, including these members:
- * <li> @link BlastIOContext::versionString @endlink: version string of the header</li>
- * <li> @link BlastIOContext::dbName @endlink: name of the database</li>
- * <li> @link BlastIOContext::fields @endlink: descriptors for the columns.</li>
- * <li> @link BlastIOContext::fieldsAsStrings @endlink: labels of the columns
- * as they appear in the file.</li>
- * <li> @link BlastIOContext::conformancyErrors @endlink: if this StringSet is not empty, then there are issues in the
- * header.</li>
- * <li> @link BlastIOContext::otherLines @endlink: any lines that cannot be interpreted; these always also imply
- * conformancyErrors.</li>
- * <li>@link BlastIOContext::legacyFormat @endlink: whether the record header (and likely the entire file) is in
- * legacyFormat.</li>
- *
- * It also sets the blast program run-time parameter of the context depending on the information found in the header. If
- * the compile time parameter was set on the context and they are different this will result in a conformancyError.
- * Otherwise you can read the value with @link BlastIOContext#getBlastProgram @endlink.
- *
- * Please note that for @link BlastIOContext::legacyFormat @endlink the @link BlastIOContext::fields @endlink member
- * is always ignored, however @link BlastIOContext::fieldsAsStrings @endlink is still read from the header, in case
- * you want to process it.
- *
- * @throw IOError On low-level I/O errors.
- * @throw ParseError On high-level file format errors.
- */
 
 template <typename TMatch,
           typename TFwdIterator,
@@ -493,7 +442,7 @@ _readCommentLines(BlastRecord<TMatch> & r,
                   BlastIOContext<TScore, p, h> & context,
                   BlastTabular const &)
 {
-    ++context.numberOfRecords;
+    ++context._numberOfRecords;
 
     if (context.tabularSpec == BlastTabularSpec::NO_COMMENTS)
         return;
@@ -512,7 +461,7 @@ _readCommentLines(BlastRecord<TMatch> & r,
 }
 
 // ----------------------------------------------------------------------------
-// Function _readMatch()
+// Function _readField()
 // ----------------------------------------------------------------------------
 
 template <typename TAlign,
@@ -630,49 +579,9 @@ _readField(BlastMatch<TAlign, TPos, TQId, TSId> & match,
     };
 }
 
-//NOTE(h-2): dox deactivated and made private to clean up interface
-/*
- * @fn BlastTabular#_readMatch
- * @brief read a match from a file in BlastTabular format
- *
- * @signature void _readMatch(blastMatch, stream, blastTabular);
- *
- * @param[out]    blastMatch   A @link BlastMatch @endlink object to hold all relevant info
- * @param[in,out] stream       An input iterator over a stream or any fwd-iterator over a string
- * @param[in,out] context      A @link BlastIOContext @endlink with parameters and buffers.
- * @param[in]     blastTabular The @link BlastTabular @endlink tag.
- *
- * @section Remarks
- *
- * The @link BlastIOContext::fields @endlink member of the context
- * can be specified if you expect a custom column composition. Specifying this
- * parameter implies that you know the columns are not
- * default and that they instead represent the given order and types.
- * You may specify less
- * fields than are actually present, in this case the additional fields will be
- * discarded. The parameter is ignored if @link BlastIOContext::legacyFormat @endlink is set.
- *
- * To differentiate between members of a @link BlastMatch @endlink that were read from the file and those that have
- * not been set, the latter are initialized to their respective max-values.
- *
- * Please note that the only transformations made to the data are the following:
- *
- *  <li> computation of the number of identities (from the percentage) [default]</li>
- *  <li> computation of the number of positives (from the percentage) [if given]</li>
- *  <li> number of gaps computed from other values [default]</li>
- *
- * In contrast to @link BlastTabular#writeMatch @endlink no other transformations
- * are made, e.g. the positions are still one-indexed and
- * flipped for reverse strand matches. This is due to the required fields for
- * retransformation (sequence lengths, frames) not being available in the
- * default columns.
- *
- *
- * @throw IOError On low-level I/O errors.
- * @throw ParseError On high-level file format errors.
- *
- * @headerfile seqan/blast.h
- */
+// ----------------------------------------------------------------------------
+// Function _readMatch()
+// ----------------------------------------------------------------------------
 
 template <typename TAlign,
           typename TPos,
@@ -814,7 +723,6 @@ _readRecordWithCommentLines(BlastRecord<TMatch> & blastRecord,
     }
 }
 
-// TABULAR WITHOUT COMMENT LINES
 template <typename TMatch,
           typename TFwdIterator,
           typename TScore,
@@ -826,7 +734,7 @@ _readRecordWithoutCommentLines(BlastRecord<TMatch> & blastRecord,
                                BlastIOContext<TScore, p, h> & context,
                                BlastTabular const &)
 {
-    ++context.numberOfRecords;
+    ++context._numberOfRecords;
 
     clear(blastRecord);
 
@@ -913,8 +821,8 @@ _readRecordWithoutCommentLines(BlastRecord<TMatch> & blastRecord,
  *
  * A match line contains 1 - n columns or fields, 12 by default.
  * The @link BlastIOContext::fields @endlink member of the context is considered when reading these fields. It is
- * usually extracted from the header but can also be set by yourself if there are no comments or if you want to overwrite
- * the comments' information (see above).
+ * usually extracted from the comment lines but can also be set by yourself if there are no comments or if you want
+ * to overwrite the comments' information (see above).
  * You may specify less
  * fields than are actually present, in this case the additional fields will be
  * discarded. The parameter is ignored if @link BlastIOContext::legacyFormat @endlink is set.
@@ -1052,9 +960,9 @@ readFooter(BlastIOContext<TScore, p, h> & context,
         __uint64 numRecords = lexicalCast<__uint64>(context._stringBuffer);
 
         clear(context.conformancyErrors);
-        if (context.numberOfRecords < numRecords)
+        if (context._numberOfRecords < numRecords)
             appendValue(context.conformancyErrors, "The file claims to contain more records than you read.");
-        else if (context.numberOfRecords > numRecords)
+        else if (context._numberOfRecords > numRecords)
             appendValue(context.conformancyErrors, "The file claims to contain less records than you read.");
     }
 

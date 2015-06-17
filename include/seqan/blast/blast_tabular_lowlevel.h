@@ -48,6 +48,10 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class BlastTabularLL
+// ----------------------------------------------------------------------------
+
 /*!
  * @class BlastTabularLL
  * @signature typedef Tag<BlastTabularLL_> BlastTabularLL;
@@ -62,9 +66,9 @@ namespace seqan
  * <li> @link BlastTabularLL @endlink which provides light-weight, but very basic tabular IO </li>
  *
  * This is the third tag, it offers <b>low-level</b> support for reading and writing NCBI Blast compatible
- * <b>tabular</b> files, <b>without headers</b> -- although files with headers can be read if the headers
- * are skipped. These are the formats that are available in legacy Blast
- * (<tt>blastall</tt> executable) with the parameters <tt>-m 8</tt> and <tt>-m 9</tt> (with headers)
+ * <b>tabular</b> files, <b>without comment lines</b> -- although files with comment lines can be read if the comment
+ * lines are skipped. These are the formats that are available in legacy Blast
+ * (<tt>blastall</tt> executable) with the parameters <tt>-m 8</tt> and <tt>-m 9</tt> (with comment lines)
  * and in BLAST+ (<tt>blastx</tt>, <tt>blastn</tt>...) with
  * the parameters <tt>-outfmt 6</tt> and <tt>-outfmt 7</tt> respectively.
  *
@@ -86,10 +90,6 @@ namespace seqan
  *
  * @include demos/blast/blast_in_lowlevel.cpp.stdout_
  *
- * @section Ouput example
- *
- * Low-level file writing is also similar to low-level file reading. See the tutorial TODO for a meaningful combination
- * of both.
  */
 
 struct BlastTabularLL_;
@@ -131,7 +131,7 @@ onMatch(TFwdIterator & iter,
 
 /*!
  * @fn BlastTabularLL#skipUntilMatch
- * @brief Skip arbitrary number of record headers and/or comment lines until the beginning of a match is reached.
+ * @brief Skip arbitrary number of comment lines until the beginning of a match is reached.
  * @signature void skipUntilMatch(stream, blastTabularLL);
  * @headerfile seqan/blast.h
  *
@@ -144,7 +144,7 @@ onMatch(TFwdIterator & iter,
  * Call this function whenever you are not @link BlastTabularLL#onMatch @endlink, but want to be, e.g. to
  * @link BlastTabularLL#readMatch @endlink.
  *
- * Since it is legal for files to end with a record header, this function does not throw if end-of-file is reached.
+ * Since it is legal for files to end with comment lines, this function does not throw if end-of-file is reached.
  * You need to check that after calling.
  *
  * @throw IOError On low-level I/O errors.
@@ -253,7 +253,7 @@ readMatch(TFwdIterator & iter,
            BlastTabularLL const &,
            TArgs & ... args)
 {
-    // header should have been read or skipped
+    // comment lines should have been read or skipped
     if (SEQAN_UNLIKELY(!onMatch(iter, BlastTabularLL())))
         SEQAN_THROW(ParseError("ERROR: Not on beginning of Match (you should have skipped comments)."));
 
@@ -276,8 +276,9 @@ readMatch(TFwdIterator & iter,
  * @link BlastMatch @endlinkes, @link BlastRecord @endlinks or the use of @link FormattedFile @endlink.
  * It supports an arbitrary amount of and arbitrary typed columns to be printed.
  *
- * Use this only if you do not require headers and you are prepared to do all transformations on the data yourself,
- * i.e. this function does none of the match adjustments mentioned in @link BlastTabularFileOut#writeRecord @endlink.
+ * Use this only if you do not require comment lines and you are prepared to do all transformations on the data
+ * yourself, i.e. this function does none of the match adjustments mentioned in
+ * @link BlastTabularFileOut#writeRecord @endlink.
  *
  * @param[in,out] stream         The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...).
  * @param[in]     blastTabularLL The @link BlastTabularLL @endlink tag.

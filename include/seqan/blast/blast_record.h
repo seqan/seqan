@@ -73,7 +73,6 @@ template <typename TAlign_ = Align<CharString, ArrayGaps>,
           typename TSId_ = std::string>
 struct BlastMatch
 {
-    // TODO dox
     typedef TAlign_ TAlign;
     typedef TPos_ TPos;
     typedef TQId_ TQId;
@@ -123,7 +122,7 @@ struct BlastMatch
      * one out of { -3, -2, -1, +1, +2, +3 } where the <tt>absolute value - 1</tt> is
      * the shift of the translation frame and a negative sign indicates the reverse
      * complement strand [query sequence, only applies for BlastFormatProgram ==
-     * BLASTX | TBLASTX]
+     * BLASTX | TBLASTX]; -1 implies reverse complement for BLASTN.
      *
      * @var char BlastMatch::sFrameShift;
      * @brief An indicator for subject frame and subject strand.
@@ -131,10 +130,10 @@ struct BlastMatch
      * one out of { -3, -2, -1, +1, +2, +3 } where the <tt>absolute value - 1</tt> is
      * the shift of the translation frame and a negative sign indicates the reverse
      * complement strand [subject sequence, only applies for BlastFormatProgram ==
-     * TBLASTN | TBLASTX]
+     * TBLASTN | TBLASTX].
      */
-    int8_t          qFrameShift   = 1;
-    int8_t          sFrameShift   = 1;
+    __int8          qFrameShift   = 1;
+    __int8          sFrameShift   = 1;
 
     /*!
      * @var double BlastMatch::eValue;
@@ -327,9 +326,9 @@ struct BlastRecord
      * @signature typedef TBlastMatch_ TBlastMatch;
      * @brief type of the contained matches
      */
-    typedef         TBlastMatch_ TBlastMatch;
-    typedef typename TBlastMatch::TQId TQId;
-    typedef typename TBlastMatch::TPos TPos;
+    typedef TBlastMatch_                TBlastMatch;
+    typedef typename TBlastMatch::TQId  TQId;
+    typedef typename TBlastMatch::TPos  TPos;
 
     /*!
      * @var TQId BlastRecord::qId;

@@ -17,7 +17,7 @@ int main()
 
     while (!atEnd(fit))
     {
-        // skip any headers
+        // skip any comment lines
         if (!onMatch(fit, BlastTabularLL()))
         {
             skipUntilMatch(fit, BlastTabularLL());

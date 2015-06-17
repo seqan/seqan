@@ -40,16 +40,34 @@
 namespace seqan
 {
 
-//forward declare
+// ============================================================================
+// Forwards
+// ============================================================================
+
 template <typename TScore>
 struct BlastScoringScheme;
 
-//TODO document or make private
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Mfn BlastIOContextStringType_
+// ----------------------------------------------------------------------------
+
 template <typename TContext>
-struct BlastIOContextStringType
+struct BlastIOContextStringType_
 {
     typedef std::string Type;
 };
+
+// ============================================================================
+// Tags, Classes, Enums
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Class BlastIOContext
+// ----------------------------------------------------------------------------
 
 /*!
  * @class BlastIOContext
@@ -81,27 +99,7 @@ struct BlastIOContextStringType
  * If not explicitly stated otherwise, the member variables are <i>out-parameters</i> of <tt>readHeader()</tt>,
  * <tt>readRecord()</tt> and <tt>readFooter()</tt>, i.e. they are set by these functions; and they are
  * <i>in-parameters</i> to  <tt>writeHeader()</tt>, <tt>writeRecord()</tt> and <tt>writeFooter()</tt>, i.e. they
- * influence these functions output.
- *
- * @section Example
- *
- * Here as an example of which members to set on a context, before using it for Output:
- * @code{.cpp}
- * typedef BlastIOContext<Blosum62> TContext;
- * BlastReportFileOut<TContext> outfile("/tmp/output.blast");
- *
- * // set gap parameters in blast notation
- * setScoreGapOpenBlast(context(outfile).scoringScheme, -11);
- * setScoreGapExtend(context(outfile).scoringScheme, -1);
- *
- * // protein vs protein search is BLASTP
- * context(outfile).blastProgram = BlastProgram::BLASTP;
- *
- * // set the database properties in the context
- * context(outfile).dbName = "The Foo Database";
- * context(outfile).dbTotalLength = length(concat(subjects));
- * context(outfile).dbNumberOfSeqs = length(subjects);
- * @endcode
+ * influence these functions' output.
  *
  * See @link BlastTabularFileOut @endlink and @link BlastReportFileOut @endlink for more complete examples of usage.
  */
@@ -112,11 +110,13 @@ template <typename TScore_ = Blosum62,
 struct BlastIOContext
 {
     typedef TScore_ TScore;
-    typedef typename BlastIOContextStringType<BlastIOContext>::Type TString;
+    typedef typename BlastIOContextStringType_<BlastIOContext>::Type TString;
 
     /*!
      * @var BlastProgramSelector BlastIOContext::blastProgram;
      * @brief The @link BlastProgram @endlink.
+     *
+     * @section Remarks
      *
      * Behaves exactly like an enum of type @link BlastProgram @endlink, unless the second template parameter was
      * specified to make this a compile-time constant. See @link BlastProgramSelector @endlink for more information.
@@ -126,6 +126,8 @@ struct BlastIOContext
     /*!
      * @var BlastTabularSpecSelector BlastIOContext::tabularSpec;
      * @brief The @link BlastTabularSpec @endlink.
+     *
+     * @section Remarks
      *
      * Behaves exactly like an enum of type @link BlastTabularSpec @endlink, unless the third template parameter was
      * specified to make this a compile-time constant. See @link BlastTabularSpecSelector @endlink for more information.
@@ -142,10 +144,12 @@ struct BlastIOContext
      * @var TString BlastIOContext::versionString;
      * @brief The blast version string.
      *
+     * @section Remarks
+     *
      * Used when writing @link BlastReportFileOut @endlink and @link BlastTabularFileOut @endlink if the context's tabularSpec
      * is set to BlastTabularSpec::COMMENTS. Defaults to a version string based on the emulated
      * blast version and the current SeqAn version.
-     * When reading from @link BlastTabularFileOut @endlink the corresponding line is extracted from the header
+     * When reading from @link BlastTabularFileOut @endlink the corresponding line is extracted from the comment lines
      * (if present).
      */
     TString versionString;
@@ -169,13 +173,15 @@ struct BlastIOContext
      * @var bool BlastIOContext::legacyFormat;
      * @brief Whether to use the legacy format (only @link BlastTabular @endlink).
      *
-     * Setting this flag when writing to a @link BlastTabularFileOut @endlink (that has BlastTabularSpec::COMMENTS set) will
-     * result in the legacy header being written. This is the slightly different header used by C-only versions of blast
-     * (<tt>blastall</tt>-binary). In the legacy format the mismatches column also includes all gaps in addition to
-     * mismatches. Note that many other features like custom fields are not supported in this format.
+     * @section Remarks
      *
-     * When reading @link BlastTabularFileOut @endlink this flag will automatically be set based on the header (if a
-     * header exists).
+     * Setting this flag when writing to a @link BlastTabularFileOut @endlink (that has BlastTabularSpec::COMMENTS set)
+     * will result in the legacy version of the comments being written. In the legacy format the mismatches column
+     * also includes all gaps in addition to mismatches.
+     * Note that many other features like custom fields are not supported in this format.
+     *
+     * When reading @link BlastTabularFileOut @endlink this flag will automatically be set based on the comments (if a
+     * they exist).
      */
     bool legacyFormat = false;
 
@@ -199,7 +205,7 @@ struct BlastIOContext
 
     /*!
      * @var StringSet<TString> BlastIOContext::otherLines;
-     * @brief A StringSet that will contain all comment or header lines that
+     * @brief A StringSet that will contain all comment lines that
      * could not be interpreted in another way (only @link BlastTabularFileIn @endlink).
      */
     StringSet<TString, Owner<ConcatDirect<>>> otherLines;
@@ -207,6 +213,8 @@ struct BlastIOContext
     /*!
      * @var std::vector<BlastMatchField::Enum> BlastIOContext::fields;
      * @brief The fields (types of columns) in @link BlastTabular @endlink-formats.
+     *
+     * @section Remarks
      *
      * This is an <i>out-parameter</i> for:
      * <li> @link BlastTabularFileIn#readRecord @endlink iff tabularSpec == COMMENTS (otherwise it can't be deduced)</li>
@@ -224,8 +232,10 @@ struct BlastIOContext
      * @var StringSet<TString> BlastIOContext::fieldsAsStrings;
      * @brief The fields (types of columns) in @link BlastTabular @endlink-formats, but as uninterpreted strings.
      *
-     * Useful when the header does not conform to standards and you want to extract the verbatim column labels or if
-     * you wish to print non-standard column labels (which you shouldn't!).
+     * @section Remarks
+     *
+     * Useful when the comment lines do not conform to standards and you want to extract the verbatim column labels or
+     * if you wish to print non-standard column labels (which you shouldn't!).
      */
     StringSet<TString, Owner<ConcatDirect<>>> fieldsAsStrings;
 
@@ -233,7 +243,9 @@ struct BlastIOContext
      * @var bool BlastIOContext::ignoreFieldsInComments;
      * @brief Use fields as in-parameter for readRecord as well (only @link BlastTabularFileIn @endlink).
      *
-     * See @link BlastTabularFileIn#readRecord @endlink. Use this when the header does not
+     * @section Remarks
+     *
+     * See @link BlastTabularFileIn#readRecord @endlink. Use this when the comment lines do not
      * conform to standards (and the fields can't be read), but you know that
      * the matches are in the given, e.g. default format.
      */
@@ -243,8 +255,10 @@ struct BlastIOContext
      * @var StringSet<TString> BlastIOContext::conformancyErrors;
      * @brief Holds non fatal error messages when reading from @link BlastTabularFileIn @endlink.
      *
+     * @section Remarks
+     *
      * After doing a @link BlastTabularFileIn#readRecord @endlink this will indicate whether the
-     * record header contained non-fatal parse errors, usually the result
+     * comment lines contained non-fatal parse errors, usually the result
      * of a file written by a sloppy blast implementation or possibly a bug in SeqAn.
      * An empty StringSet indicates that all is good.
      */
@@ -252,9 +266,8 @@ struct BlastIOContext
 
     // ------- CACHES, BUFFERS and INTERNALS --------- //
 
-    // TODO prefix the below with _ ?
     // counted internally for TabularFooter
-    __uint64 numberOfRecords = 0;
+    __uint64 _numberOfRecords = 0;
 
     // cache for length adjustments in blast statistics
     std::unordered_map<__uint64, __uint64> _cachedLengthAdjustments;

@@ -59,8 +59,6 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_blastmatch_stats_and_score);
     SEQAN_CALL_TEST(test_blast_blastmatch_bit_score_e_value);
 
-    //TODO extra test for different programs
-
     // WRITING (lowlevel tag)
     SEQAN_CALL_TEST(test_blast_write_lowlevel);
     // WRITING (tabular tag)
