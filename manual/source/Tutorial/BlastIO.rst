@@ -173,7 +173,7 @@ This is what the last record from above would look like (the other queries are o
 .. literalinclude:: ../../../demos/tutorial/blast/plus_sub.m0
 
 
-Blast Formats in SeqAn
+Blast formats in SeqAn
 ----------------------
 
 There are three blast format related tags in SeqAn:
@@ -219,14 +219,29 @@ Assignment 1
 
   Objective
     Complete the above example by reading the file according to :dox:`BlastTabularFileIn`.
-    For every record print the query ID, the number of contained matches and bit-score of the best match.
+    For every record print the query ID, the number of contained matches and the bit-score of the best match.
 
   Solution
-    .. container:: foldable
+      Top
+        .. container:: foldable
 
-      .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
-        :language: c++
-        :lines: 1-34, 57-60, 74-84
+            .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+                :language: c++
+                :lines: 1-18
+
+      New code
+        .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+                :language: c++
+                :lines: 19-34, 57-60
+
+      Bottom
+          .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+                :language: c++
+                :lines: 74-84
 
 Assignment 2
 """"""""""""
@@ -239,15 +254,29 @@ Assignment 2
     ``tests/blast/defaultfields.m9``. What does the program print and why?
 
   Solution
-    .. container:: foldable
+      Top
+        .. container:: foldable
 
-      .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
-        :language: c++
-        :lines: 1-34, 41-60, 74-84
+            .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+                :language: c++
+                :lines: 1-34
 
+      New code
+        .. container:: foldable
 
-      The program will print conformancyErrors for the last record, because there is a typo in the file ( ``Datacase``
-      instead of ``Database`` ).
+            .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+                :language: c++
+                :lines: 41-60
+
+            The program will print conformancyErrors for the last record, because there is a typo in the file
+            ( ``Datacase`` instead of ``Database`` ).
+
+      Bottom
+          .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+                :language: c++
+                :lines: 74-84
 
 Assignment 3
 """"""""""""
@@ -266,12 +295,26 @@ Assignment 3
     ``tests/blast/defaultfields.m9`` and ``tests/blast/defaultfields_legacy.m9``.
 
   Solution
-    .. container:: foldable
+      Top
+        .. container:: foldable
 
-      .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
-        :language: c++
-        :lines: 1-34, 41-84
+            .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+                :language: c++
+                :lines: 1-34, 41-60
 
+      New code
+        .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+                :language: c++
+                :lines: 61-73
+
+      Bottom
+          .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+                :language: c++
+                :lines: 74-84
 
 Assignment 4
 """"""""""""
@@ -289,20 +332,221 @@ without further configuration in SeqAn.
 
   Objective
     Read :dox:`BlastIOContext` again focussing on :dox:`BlastIOContext::fields` and also read :dox:`BlastMatchField`.
-    Now adapt the previous program to print for every record the ``optionLabel`` s of the used fields.
+    Now adapt the previous program to print for every record the ``optionLabel`` of each field used.
 
     Verify that the results are as expected on the files ``tests/blast/defaultfields.m9`` and
     ``tests/blast/customfields.m9``.
 
   Solution
-    .. container:: foldable
+      Top
+        .. container:: foldable
 
-      .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
-        :language: c++
+            .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+                :language: c++
+                :lines: 1-34
+
+      New code
+        .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+                :language: c++
+                :lines: 35-40
+
+      Bottom
+          .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/read_assignment.cpp
+                :language: c++
+                :lines: 41-84
 
       If this was too easy, you can also try the same for tabular files without comment lines!
 
 File writing example
 --------------------
 
-TODO
+The following program stub creates three query sequences and two subject sequences in amino acid alphabet.
+We will later generate records with matches and print these to disk.
+
+.. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
+    :language: c++
+    :lines: 1-49, 109-119
+
+Assignment 5
+""""""""""""
+
+.. container:: assignment
+
+  Objective
+    Before we can begin to align, certain properties of the :dox:`BlastIOContext` have to be set.
+    Which ones? Add a block with the necessary initialization to the above code, use blast defaults where possible.
+    Although not strictly required at this point: include a call to ``writeHeader()``.
+
+    .. caution::
+        Alignment score computation works slightly different in Blast and in SeqAn, please have a look at
+        :dox:`BlastScoringScheme`. For the task at hand it should suffice to simply use the corresponding
+        ``set*()`` functions on :dox:`BlastIOContext::scoringScheme`.
+
+  Solution
+      Top
+        .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
+                :language: c++
+                :lines: 1-49
+
+      New code
+        .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
+                :language: c++
+                :lines: 50-64
+
+      Bottom
+          .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
+                :language: c++
+                :lines: 109-119
+
+Assignment 6
+""""""""""""
+
+.. container:: assignment
+
+  Objective
+        Next create a record for every query sequence, and in each record a match for every query-subject pair.
+        Compute the local alignment for each of those matches. Use the align member of the match object.
+
+  Solution
+      Top
+        .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
+                :language: c++
+                :lines: 1-64
+
+      New Code
+       .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
+                :language: c++
+                :lines: 65-82, 101-102, 106
+
+      Bottom
+       .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
+                :language: c++
+                :lines: 109-119
+
+Assignment 7
+""""""""""""
+
+.. container:: assignment
+
+  Objective
+        Now that you have the align member computed for every match, also save the begin and end positions, as well
+        as the lengths. Blast Output needs to now about the number of gaps, mismatches... of every match, how can
+        they be computed?
+
+  Solution
+      Top
+        .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
+                :language: c++
+                :lines: 1-82
+
+      New Code
+       .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
+                :language: c++
+                :lines: 83-92
+
+      Bottom
+       .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
+                :language: c++
+                :lines: 101-102, 106, 109-119
+
+Assignment 7
+""""""""""""
+
+.. container:: assignment
+
+  Objective
+        Finally add e-value statistics and print the results to a file:
+         * compute the bit score and e-value for every match
+         * discard matches with an e-value greater than 1
+         * for every record, sort the matches by bit-score
+         * write each record
+         * write the footer before exiting the program
+
+  Solution
+      Top
+       .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
+                :language: c++
+                :lines: 1-92
+
+      New Code
+       .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
+                :language: c++
+                :lines: 93-108
+
+      Bottom
+       .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
+                :language: c++
+                :lines: 109-119
+
+      Your output file should look like this:
+        .. container:: foldable
+
+            .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.m9
+
+Assignment 8
+""""""""""""
+
+.. container:: assignment
+
+  Objective
+    Up until now you have only printed the **tabular with comment lines** format. What do you have to do to print
+    without comment lines? In legacy format? What about the pairwise format?
+
+  Solution
+    Tabular without comment lines
+      .. container:: foldable
+
+        Add ``context(outfile).tabularSpec = BlastTabularSpec::NO_COMMENTS`` at l.53.
+        Remember to use ``.m8`` as file extension!
+
+        The result should look like this:
+
+        .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.m8
+
+    Tabular without comment lines (legacy)
+      .. container:: foldable
+
+        To print in legacy tabular format (with or without comment lines), add ``context(outfile).legacyFormat = true`` at l.53.
+
+        The result should look like this(legacy and NO_COMMENTS):
+
+        .. literalinclude:: ../../../demos/tutorial/blast/write_assignment_legacy.m8
+
+    Pairwise format
+      .. container:: foldable
+
+        To print in the pairwise format replace l.52 with ``BlastReportFileOut<TContext> outfile(argv[1]);``.
+
+        Remember to use ``.m0`` as file extension!
+
+        The result should look like this:
+
+        .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.m0
