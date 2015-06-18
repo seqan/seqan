@@ -543,7 +543,7 @@ length(std::forward_list<TChar, TAlloc> const & me)
 }
 #endif
 
-#ifdef SEQAN_CXX11_CONSTEXPR
+#ifdef SEQAN_CXX11_COMPLETE
 template <typename TChar, std::size_t N>
 constexpr std::size_t
 length(std::array<TChar, N> const & me)
@@ -570,7 +570,7 @@ capacity(std::basic_string<TChar, TTraits, TAlloc> const & me)
     return me.capacity();
 }
 
-#ifdef SEQAN_CXX11_CONSTEXPR
+#ifdef SEQAN_CXX11_COMPLETE
 template <typename TChar, std::size_t N>
 constexpr std::size_t
 capacity(std::array<TChar, N> const & me)
@@ -592,7 +592,7 @@ empty(TContainer const & me)
     return me.empty();
 }
 
-#ifdef SEQAN_CXX11_CONSTEXPR
+#ifdef SEQAN_CXX11_COMPLETE
 template <typename TChar, std::size_t N>
 constexpr bool
 empty(std::array<TChar, N> const & me)
@@ -843,16 +843,17 @@ back(std::forward_list<TChar, TAlloc> && me)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, void)
+inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, void)
 assign(TContainer SEQAN_FORWARD_ARG me,
-       TContainer source)
+       typename RemoveReference<TContainer>::Type source)
 {
     std::swap(me, source);
 }
 
 template <typename TContainer,
           typename TSource>
-inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, void)
+inline SEQAN_FUNC_ENABLE_IF(And<Not<IsSameType<typename RemoveReference<TContainer>::Type, TSource> >,
+                                Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> > >, void)
 assign(TContainer SEQAN_FORWARD_ARG me,
        TSource const & source)
 {

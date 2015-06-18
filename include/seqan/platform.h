@@ -83,11 +83,6 @@
 #define SEQAN_CXX11_STL
 #endif
 
-// Are constexpr available?
-#if defined(SEQAN_CXX11_STANDARD) && (!defined(_MSC_VER) || _MSC_VER >= 1900) && !defined(PLATFORM_WINDOWS_MINGW)
-#define SEQAN_CXX11_CONSTEXPR
-#endif
-
 // C++ restrict keyword, see e.g. platform_gcc.h
 #ifndef SEQAN_RESTRICT
 #define SEQAN_RESTRICT

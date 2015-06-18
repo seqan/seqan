@@ -301,11 +301,12 @@ struct Is< NumberConcept< FormattedNumber<TValue> > > :
 
 /*!
  * @class ParseError
+ * @extends RuntimeError
  * @headerfile <seqan/basic.h>
  *
  * @brief Exception class for parser errors.
  *
- * @signature struct ParserError : RuntimeError;
+ * @signature struct ParseError : RuntimeError;
  */
 
 struct ParseError : RuntimeError
@@ -333,6 +334,7 @@ struct ParseError : RuntimeError
 
 /*!
  * @class UnexpectedEnd
+ * @extends ParseError
  * @headerfile <seqan/basic.h>
  *
  * @brief Exception class for "unexpected end of input" errors.
@@ -362,6 +364,7 @@ struct UnexpectedEnd : ParseError
 
 /*!
  * @class EmptyFieldError
+ * @extends ParseError
  * @headerfile <seqan/basic.h>
  *
  * @brief Exception class for "empty field" errors.

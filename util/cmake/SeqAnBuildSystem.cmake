@@ -598,7 +598,11 @@ macro (seqan_build_demos_develop PREFIX)
     # Find SeqAn with all dependencies.
     set (SEQAN_FIND_DEPENDENCIES ALL)
     find_package (SeqAn REQUIRED)
-
+    find_package (CXX11)
+    find_package (OpenMP)
+    if (OPENMP_FOUND AND CMAKE_COMPILER_IS_GNUCXX)
+        set(SEQAN_LIBRARIES ${SEQAN_LIBRARIES} -lgomp)
+    endif()
     # Setup include directories and definitions for SeqAn; flags follow below.
     include_directories (${SEQAN_INCLUDE_DIRS})
     add_definitions (${SEQAN_DEFINITIONS})
@@ -612,7 +616,9 @@ macro (seqan_build_demos_develop PREFIX)
     seqan_setup_cuda_vars(ARCH sm_20 DEBUG_DEVICE DISABLE_WARNINGS)
 
     # Add SeqAn flags to CXX and NVCC flags.
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    #NOTE(h-2): it is not clear, why the flags have to be added to the defs, but they are not included otherwise
+    add_definitions(${CMAKE_CXX_FLAGS})
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})

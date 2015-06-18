@@ -48,6 +48,7 @@ Tutorial
    Tutorial/VcfIO
    Tutorial/BedIO
    Tutorial/GffGtfIO
+   Tutorial/BlastIO
 
    Tutorial/Modifiers
 

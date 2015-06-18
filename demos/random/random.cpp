@@ -15,6 +15,7 @@ int main()
 
     typedef Value<Rng<MersenneTwister> >::Type TMTValue;
     TMTValue value = pickRandomNumber(rng);
+    (void)value;
 
     Pdf<Uniform<double> > uniformDouble(0, 1);
     std::cout << "pickRandomNumber(rng, uniformDouble) == " << pickRandomNumber(rng, uniformDouble) << std::endl;
