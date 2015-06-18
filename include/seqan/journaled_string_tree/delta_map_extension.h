@@ -365,6 +365,22 @@ end(DeltaMapExtension_<TDeltaMap> const & ext, Standard const & /*standard*/)
     return tmp;
 }
 
+// ----------------------------------------------------------------------------
+// Function operator<<()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TDeltaMap>
+inline TStream &
+operator<<(TStream & stream, ExtendedDeltaEntry_<TDeltaMap> const & entry)
+{
+    if (entry.info == ExtensionInfo::IS_BEGIN)
+        stream << "INF: Begin ";
+    else
+        stream << "INF: End ";
+    stream << "POS: " << entry.deltaPos << " NODE-ID: " << position(entry.hostIter);
+    return stream;
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_MAP_EXTENSION_H_

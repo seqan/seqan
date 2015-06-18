@@ -32,6 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
+#define DEBUG_JST_TRAVERSAL
+
 #include <seqan/basic.h>
 #include <seqan/file.h>
 

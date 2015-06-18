@@ -211,7 +211,6 @@ atBegin(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
 }
 
 
-
 template <typename TJst, typename TSpec, typename TObserver,
           typename TSize>
 inline void
@@ -221,6 +220,11 @@ goNext(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
     SEQAN_ASSERT(me._stackPtr != nullptr);
 
     auto& node = back(*me._stackPtr);
+
+#if defined (DEBUG_JST_TRAVERSAL)
+    std::cout << "goNext: Node ID = " << length(*me._stackPtr) << std::endl;
+    std::cout << node << std::endl;
+#endif  // DEBUG_JST_TRAVERSAL
     stepSize = impl::moveWindow(me, node, stepSize);
 
     // Case A) stepSize == 0 && node.remainingSize > 0;  // vaild context
@@ -256,7 +260,7 @@ template <typename TJst, typename TSpec, typename TObserver>
 inline bool
 atEnd(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
 {
-    SEQAN_ASSERT(me._stackPtr == nullptr);
+    SEQAN_ASSERT(me._stackPtr != nullptr);
     return length(*me._stackPtr) == 1 && back(*me._stackPtr).endEdgeIt == sourceEnd(container(me)._buffer);
 }
 

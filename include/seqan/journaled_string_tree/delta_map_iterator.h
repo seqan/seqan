@@ -441,6 +441,17 @@ operator>=(Iter<TDeltaMap, DeltaMapIteratorSpec> const & a,
     return a._mapIter >= b._mapIter;
 }
 
+// ----------------------------------------------------------------------------
+// Function position()
+// ----------------------------------------------------------------------------
+
+template <typename TDeltaMap>
+inline typename Position<Iter<TDeltaMap, DeltaMapIteratorSpec> >::Type
+position(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
+{
+    return iter - begin(*iter._mapPtr, Standard());
+}
+
 //template <typename TDeltaMapLhs, typename TDeltaMapRhs>
 //inline void
 //swap(Iter<TDeltaMapLhs, DeltaMapIteratorSpec> & lhs,

@@ -71,29 +71,6 @@ namespace impl
 {
 
 // ----------------------------------------------------------------------------
-// Function init()
-// ----------------------------------------------------------------------------
-
-template <typename TJst, typename TSpec, typename TObserver>
-inline void
-init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
-     TJst & jst)
-{
-    typedef typename TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>::TNode TNode;
-
-    me._contPtr = &jst;
-    TNode node;
-    node.begEdgeIt = begin(source(jst), Standard());
-    node.endEdgeIt = node.begEdgeIt;
-    node.curEdgeIt = node.begEdgeIt;
-    node.mappedSrcEndPos = 0;
-    resize(node.coverage, dimension(jst), true, Exact());
-    node.curDelta = jst._buffer._deltaRangeBegin - 1;  // Point before beginning.
-    node.remainingSize = me._historySize;
-    appendValue(*me._stackPtr, SEQAN_MOVE(node));  // Push onto stack.
-}
-
-// ----------------------------------------------------------------------------
 // Function impl::mapSourceToVirtual()
 // ----------------------------------------------------------------------------
 
@@ -361,6 +338,9 @@ advanceBaseParent(TTraversalNode & base)
 {
     SEQAN_ASSERT(base.curDelta == base.nextDelta);
 
+#if defined(DEBUG_JST_TRAVERSAL)
+    std::cout << "       BASE: " << base << std::endl;
+#endif // defined(DEBUG_JST_TRAVERSAL)
     // TODO(rrahn): Check if we need this?
     arrayFill(begin(base.coverage, Standard()), end(base.coverage, Standard()), true);  // Make sure the coverage is set to 1.
     while (getDeltaPosition(*impl::hostIter(base.curDelta)) == getDeltaPosition(*impl::hostIter(base.nextDelta)))
@@ -422,7 +402,7 @@ moveWindow(TNode & node, TSize stepSize)
     TSize remainingEdgeSize = node.endEdgeIt - node.curEdgeIt;
     if (stepSize < remainingEdgeSize)
     {
-        if (stepSize > node.remainingSize)
+        if (stepSize > static_cast<TSize>(node.remainingSize))
         {
             node.remainingSize = 0;
             node.curEdgeIt += node.remainingSize;
@@ -433,7 +413,7 @@ moveWindow(TNode & node, TSize stepSize)
         return 0;
     }
     
-    if (stepSize > node.remainingSize)
+    if (stepSize > static_cast<TSize>(node.remainingSize))
     {
         node.remainingSize = 0;
         node.curEdgeIt += node.remainingSize;
@@ -495,6 +475,62 @@ getStringContext(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & traverser
     // TODO(rrahn): Write me!
 }
 
+
+template <typename TJst, typename TSpec, typename TObserver,
+          typename TTraversalNode,
+          typename TSize>
+inline TSize
+moveWindow(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> &, TTraversalNode &, TSize);
+
+// ----------------------------------------------------------------------------
+// Function impl::expandSubtree()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver,
+          typename TTraversalNode,
+          typename TSize>
+inline void
+expandSubtree(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
+              TTraversalNode & parent,
+              TSize stepSize)
+{
+    parent.curDelta = parent.nextDelta;
+    if (parent.isBase)
+        it._tmp = parent;  // Store copy of the original base node.
+
+    while (getDeltaPosition(*(*parent.nextDelta).hostIter) == getDeltaPosition(*(*parent.curDelta).hostIter))
+    {
+        auto child = parent;
+        if (impl::nextChild(it, parent, child) && impl::moveWindow(it, child, stepSize) == 0 &&
+            child.remainingSize >= 0)
+        {
+#if defined(DEBUG_JST_TRAVERSAL)
+            std::cout << "     PUSH: " << child << std::endl;
+#endif //defined(DEBUG_JST_TRAVERSAL)
+            impl::pushNode(it, SEQAN_MOVE(child));
+        }
+
+        ++parent.nextDelta;  // Move to the next position.
+    }
+
+    if (parent.isBase)
+    {
+        // We need to move the base parent to the next segment redarding the branch information.
+        impl::advanceBaseParent(it._tmp);
+        swap(parent, it._tmp);  // Set advanced base parent back to stack at the correct position.
+        it._tmp.isBase = false;
+        it._tmp.fromBase = true;
+        impl::updateParent(it._tmp);
+        if (impl::moveWindow(it, it._tmp, stepSize) == 0 && it._tmp.remainingSize >= 0)
+            impl::pushNode(it, it._tmp);
+    }
+    else
+    {
+        if (impl::updateParent(parent))
+            return impl::moveWindow(it, parent, stepSize);
+    }
+}
+
 // ----------------------------------------------------------------------------
 // Function impl::moveWindow()
 // ----------------------------------------------------------------------------
@@ -507,44 +543,56 @@ moveWindow(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
            TTraversalNode & parent,
            TSize stepSize)
 {
+#if defined(DEBUG_JST_TRAVERSAL)
+    std::cout << "MOVE: " << parent << std::endl;
+    std::cout << "STEP: " << stepSize << std::endl;
+#endif //defined(DEBUG_JST_TRAVERSAL)
     stepSize = impl::moveWindow(parent, stepSize);
     if (stepSize > 0)
     {
         if (parent.remainingSize > 0)
         {
-            parent.curDelta = parent.nextDelta;
-            if (parent.isBase)
-                it._tmp = parent;  // Store copy of the original base node.
-
-            while (getDeltaPosition(*(*parent.nextDelta).hostIter) == getDeltaPosition(*(*parent.curDelta).hostIter))
-            {
-                auto child = parent;
-                if (impl::nextChild(it, parent, child) && moveWindow(it, child, stepSize) == 0 &&
-                    child.remainingSize >= 0)
-                    impl::pushNode(it, SEQAN_MOVE(child));
-                ++parent.nextDelta;  // Move to the next position.
-            }
-
-            if (parent.isBase)
-            {
-                // We need to move the base parent to the next segment redarding the branch information.
-                impl::advanceBaseParent(it._tmp);
-                swap(parent, it._tmp);  // Set advanced base parent back to stack at the correct position.
-                it._tmp.isBase = false;
-                it._tmp.fromBase = true;
-                impl::updateParent(it._tmp);
-                if (moveWindow(it, it._tmp, stepSize) == 0 && it._tmp.remainingSize >= 0)
-                    impl::pushNode(it, it._tmp);
-            }
-            else
-            {
-                if (impl::updateParent(parent))
-                    return moveWindow(it, parent, stepSize);
-            }
+            impl::expandSubtree(it, parent, stepSize);
         }
     }
     return stepSize;
 }
+
+// ----------------------------------------------------------------------------
+// Function init()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline void
+init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
+     TJst & jst)
+{
+    typedef typename TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>::TNode TNode;
+
+    me._contPtr = &jst;
+    TNode node;
+    resize(node.coverage, dimension(jst), true, Exact());
+
+    node.curDelta = jst._buffer._deltaRangeBegin - 1;
+    node.nextDelta = jst._buffer._deltaRangeBegin;
+
+    node.begEdgeIt = begin(source(jst), Standard());  // This points to some value already -> what could this position be?
+    node.curEdgeIt = node.begEdgeIt;
+    node.endEdgeIt = node.begEdgeIt + (getDeltaPosition(*(*node.nextDelta).hostIter) - position(node.begEdgeIt));
+    node.mappedSrcEndPos = position(node.endEdgeIt);
+    node.remainingSize = me._historySize;
+    node.isBase = true;
+    node.fromBase = true;
+    appendValue(*me._stackPtr, SEQAN_MOVE(node));  // Push onto stack.
+
+    // After we realized this.
+    TNode & base = back(*me._stackPtr);
+    if ((*base.nextDelta).deltaPos == position(base.begEdgeIt))
+    {
+        expandSubtree(me, base, 0);
+    }
+}
+
 
 
 }  // namespace impl

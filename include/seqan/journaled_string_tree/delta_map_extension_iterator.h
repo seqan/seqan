@@ -183,6 +183,16 @@ operator*(Iter<TContainer, DeltaMapExtensionIterSpec> & iter)
 {
     typedef typename Value<TContainer>::Type TEntry;
 
+    if (SEQAN_UNLIKELY(iter._extTableIter == end(iter._contPtr->_extTable, Standard())))
+    {
+        iter._tmp = TEntry(iter._hostMapIter, getDeltaPosition(*iter._hostMapIter), ExtensionInfo::IS_BEGIN);
+        return iter._tmp;
+    }
+    else if (SEQAN_UNLIKELY(iter._hostMapIter == end(host(*iter._contPtr), Standard())))
+    {
+        return *iter._extTableIter;
+    }
+
     if (getDeltaPosition(*iter._hostMapIter) < iter._extTableIter->deltaPos)
     {
         iter._tmp = TEntry(iter._hostMapIter, getDeltaPosition(*iter._hostMapIter), ExtensionInfo::IS_BEGIN);

@@ -63,12 +63,12 @@ public:
 
     TPosition           mappedSrcEndPos;
     TSize               remainingSize;
-    TDeltaIterator      curDelta;  // current delta iterator.
+    TDeltaIterator      curDelta;       // current delta iterator.
     TDeltaIterator      nextDelta;
-    TSeqIterator        begEdgeIt;    // Current iterator of this edge.
-    TSeqIterator        curEdgeIt;    // Current iterator of this edge.
-    TSeqIterator        endEdgeIt;    // End of this edge.
-    TCoverage           coverage;  // Coverage of this node.
+    TSeqIterator        begEdgeIt;      // Current iterator of this edge.
+    TSeqIterator        curEdgeIt;      // Current iterator of this edge.
+    TSeqIterator        endEdgeIt;      // End of this edge.
+    TCoverage           coverage;       // Coverage of this node.
     bool                isBase;
     bool                fromBase;
 };
@@ -96,6 +96,42 @@ swap(JstTraversalNode<TJstLhs> & lhs,
     swap(lhs.coverage, rhs.coverage);
     std::swap(lhs.isBase, rhs.isBase);
     std::swap(lhs.fromBase, rhs.fromBase);
+}
+
+template <typename TCoverage>
+inline String<char>
+_print(TCoverage const & cov)
+{
+    String<char> tmp;
+    for (bool elem : cov)
+        if (elem)
+            appendValue(tmp, '1');
+        else
+            appendValue(tmp, '0');
+    return tmp;
+}
+
+template <typename TStream, typename TJst>
+inline TStream&
+operator<<(TStream & stream, JstTraversalNode<TJst> const & node)
+{
+    stream << "<SRC: " << node.mappedSrcEndPos;
+    stream << " REM: " << node.remainingSize;
+    stream << " CUR: (" << *node.curDelta << ")";
+    stream << " NXT: (" << *node.nextDelta << ")";
+    stream << " SEQ: " << infix(host(container(node.begEdgeIt)), position(node.begEdgeIt), position(node.endEdgeIt));
+    stream << " PTR: " << position(node.curEdgeIt) - position(node.begEdgeIt);
+    stream << " COV: " << _print(node.coverage);
+    if (node.isBase)
+        stream << " ISB: true";
+    else
+        stream << " ISB: false";
+    if (node.fromBase)
+        stream << " FSB: true";
+    else
+        stream << " FSB: false";
+    stream << ">";
+    return stream;
 }
 
 }
