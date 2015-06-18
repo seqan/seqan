@@ -525,18 +525,18 @@ unknownValueImpl(Iupac *)
  * @brief IUPAC code for amino acids.
  * @signature typedef SingleType<unsigned char, AminoAcid_> AminoAcid;
  *
- * The ValueSize of <tt>AminoAcid</tt> is 26.
+ * The ValueSize of <tt>AminoAcid</tt> is 27.
  *
  * The amino acid symbols are as follows, i.e. they are sorted alphabetically
  * up until the last two symbols:
  *
- * 'A' = 0, 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z', 'X'. '*'
+ * 'A' = 0, 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z', 'X'. '*'
  *
  * Of these 'B' is a wildcard for (Aspartic Acid, Asparagine),
  * 'J' for (Leucine, Isoleucine), 'Z' for (Glutamic Acid, Glutamine) and
  * 'X' for "any amino acid".
  *
- * 'U' refers to the rare Selenocysteine and '*' to the terminator tRNA.
+ * 'O' refers to the rare Pyrrolysine, 'U' refers to the rare Selenocysteine and '*' to the terminator tRNA.
  *
  * Objects of type <tt>AminoAcid</tt> can be converted to <tt>char</tt> and vice versa.  Unknown values are converted to
  * <tt>'X'</tt>.
@@ -552,7 +552,7 @@ typedef SimpleType<unsigned char, AminoAcid_> AminoAcid;
 template <> struct ValueSize<AminoAcid>
 {
     typedef __uint8 Type;
-    static const Type VALUE = 26;
+    static const Type VALUE = 27;
 };
 
 template <> struct BitsPerValue<AminoAcid>

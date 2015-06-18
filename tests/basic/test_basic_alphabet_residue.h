@@ -355,7 +355,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_amino_acid)
     SEQAN_ASSERT_EQ(+(BitsPerValue<AminoAcid>::VALUE), 5);
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
-
+    SEQAN_ASSERT_EQ(MaxValue<AminoAcid>::VALUE, 26u);
     SEQAN_ASSERT_EQ(MaxValue<AminoAcid>::VALUE, AminoAcid('*'));
     SEQAN_ASSERT_EQ(maxValue<AminoAcid>(), AminoAcid('*'));
     SEQAN_ASSERT_EQ(maxValue(AminoAcid()), AminoAcid('*'));
@@ -380,22 +380,23 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_amino_acid)
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('L')), 11);
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('M')), 12);
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('N')), 13);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('P')), 14);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('Q')), 15);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('R')), 16);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('S')), 17);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('T')), 18);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('U')), 19);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('V')), 20);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('W')), 21);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('Y')), 22);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('Z')), 23);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('X')), 24);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('*')), 25);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('O')), 14);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('P')), 15);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('Q')), 16);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('R')), 17);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('S')), 18);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('T')), 19);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('U')), 20);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('V')), 21);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('W')), 22);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('Y')), 23);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('Z')), 24);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('X')), 25);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('*')), 26);
 
     SEQAN_ASSERT(+(SameType_<typename ValueSize<AminoAcid>::Type, __uint8>::VALUE));
-    SEQAN_ASSERT_EQ(+ValueSize<AminoAcid>::VALUE, 26);
-    SEQAN_ASSERT_EQ(valueSize<AminoAcid>(), 26u);
+    SEQAN_ASSERT_EQ(+ValueSize<AminoAcid>::VALUE, 27);
+    SEQAN_ASSERT_EQ(valueSize<AminoAcid>(), 27u);
 
     // Alphabet With Unknown Value Concept Metafunctions / Type Queries
 

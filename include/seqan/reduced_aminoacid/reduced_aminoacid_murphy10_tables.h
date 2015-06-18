@@ -66,7 +66,7 @@ struct TranslateTableCharToRedAA_<Murphy10, TSpec>
 template <typename TSpec>
 struct TranslateTableAAToRedAA_<Murphy10, TSpec>
 {
-    static const char VALUE[26];
+    static const char VALUE[27];
 };
 
 template <typename TSpec>
@@ -80,7 +80,7 @@ struct TranslateTableByteToRedAA_<Murphy10, TSpec>
 template <typename TVoidSpec>
 char const TranslateTableRedAAToChar_<Murphy10, TVoidSpec>::VALUE[10] =
 {
-    'A', // A U X
+    'A', // A O U X
     'B', // B D E N Q Z
     'C', // C
     'F', // F W Y *
@@ -116,10 +116,10 @@ char const TranslateTableCharToRedAA_<Murphy10, TVoidSpec>::VALUE[256] =
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAAToRedAA_<Murphy10, TVoidSpec>::VALUE[26] =
+char const TranslateTableAAToRedAA_<Murphy10, TVoidSpec>::VALUE[27] =
 {
      0,  1,  2,  1,  1,  3,  4,  5,  6,  6,  7,  6,  6,
-     1,  8,  1,  7,  9,  9,  0,  6,  3,  3,  1,  0,  3
+     1,  0,  8,  1,  7,  9,  9,  0,  6,  3,  3,  1,  0,  3
 };
 
 template <typename TVoidSpec>
