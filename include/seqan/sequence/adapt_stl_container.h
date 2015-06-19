@@ -1278,7 +1278,7 @@ eraseBack(std::forward_list<TChar, TAlloc> & me)
 {
     if (!empty(me))
     {
-        auto && it = me.before_begin(), itN = std::next(me.begin()), itEnd = me.end();
+        auto it = me.before_begin(), itN = std::next(me.begin()), itEnd = me.end();
         while (itN != itEnd)
         {
             ++it;
