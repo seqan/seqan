@@ -408,7 +408,7 @@ Assignment 5
 
             .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
                 :language: c++
-                :lines: 109-119
+                :lines: 106-116
 
 Assignment 6
 """"""""""""
@@ -432,14 +432,14 @@ Assignment 6
 
             .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
                 :language: c++
-                :lines: 65-82, 101-102, 106
+                :lines: 65-82, 98-99, 103
 
       Bottom
        .. container:: foldable
 
             .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
                 :language: c++
-                :lines: 109-119
+                :lines: 106-116
 
 Assignment 7
 """"""""""""
@@ -471,7 +471,7 @@ Assignment 7
 
             .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
                 :language: c++
-                :lines: 101-102, 106, 109-119
+                :lines: 98-99, 103, 106-116
 
 Assignment 7
 """"""""""""
@@ -499,14 +499,14 @@ Assignment 7
 
             .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
                 :language: c++
-                :lines: 93-108
+                :lines: 93-105
 
       Bottom
        .. container:: foldable
 
             .. literalinclude:: ../../../demos/tutorial/blast/write_assignment.cpp
                 :language: c++
-                :lines: 109-119
+                :lines: 106-116
 
       Your output file should look like this:
         .. container:: foldable
