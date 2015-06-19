@@ -94,10 +94,7 @@ int main(int argc, char ** argv)
             computeEValue(m, context(outfile));
 
             if (m.eValue > 1)
-            {
-                records[q].matches.pop_back();
-                continue;
-            }
+                eraseBack(records[q].matches);
         }
 
         r.matches.sort(); // sort by bitscore
