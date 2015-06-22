@@ -399,4 +399,21 @@ SEQAN_DEFINE_TEST(test_modifier_convert_in_place)
     }
 }
 
+// Test the modified string class with alphabet conversion.
+SEQAN_DEFINE_TEST(test_modifier_view_string_assignment)
+{
+    using namespace seqan;
+
+    typedef FunctorConvert<char, Dna5> TFunctor;
+
+    CharString originalStr = "acgtnACGTN";
+    Dna5String EXPECTED_RESULT = "ACGTNACGTN";
+
+    ModifiedString<CharString, ModView<TFunctor> > modifiedStr;
+    assign(modifiedStr, originalStr);
+
+    CharString modifiedStrCopy = modifiedStr;
+    SEQAN_ASSERT_EQ(modifiedStrCopy, EXPECTED_RESULT);
+}
+
 #endif  // SEQAN_TESTS_MODIFIER_TEST_MODIFIER_VIEW_H_
