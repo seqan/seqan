@@ -475,6 +475,24 @@ convert(TSequence const & sequence, TFunctor const &F)
 #endif
 }
 
+// --------------------------------------------------------------------------
+// Function assign()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TFunctor>
+void assign(ModifiedString<THost const, ModView<TFunctor> > & target,
+            THost const & host)
+{
+    target._host = &host;
+}
+
+template <typename THost, typename TFunctor>
+void assign(ModifiedString<THost, ModView<TFunctor> > & target,
+            THost & host)
+{
+    target._host = &host;
+}
+
 }  // namespace seqan
 
 #endif  // SEQAN_MODIFIER_MODIFIER_VIEW_H_

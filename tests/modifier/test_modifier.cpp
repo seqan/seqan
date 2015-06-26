@@ -117,5 +117,7 @@ SEQAN_BEGIN_TESTSUITE(test_modifier)
     SEQAN_CALL_TEST(test_modifier_modified_string_reverse_segment);
 
     SEQAN_CALL_TEST(test_modifier_minimal);
+
+    SEQAN_CALL_TEST(test_modifier_view_string_assignment);
 }
 SEQAN_END_TESTSUITE
