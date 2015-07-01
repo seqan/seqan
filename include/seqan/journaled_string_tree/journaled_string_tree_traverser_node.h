@@ -100,7 +100,7 @@ swap(JstTraversalNode<TJstLhs> & lhs,
 
 template <typename TCoverage>
 inline String<char>
-_print(TCoverage const & cov)
+_printCoverage(TCoverage const & cov)
 {
     String<char> tmp;
     for (bool elem : cov)
@@ -119,9 +119,9 @@ operator<<(TStream & stream, JstTraversalNode<TJst> const & node)
     stream << " REM: " << node.remainingSize;
     stream << " CUR: (" << *node.curDelta << ")";
     stream << " NXT: (" << *node.nextDelta << ")";
-    stream << " SEQ: " << infix(host(container(node.begEdgeIt)), position(node.begEdgeIt), position(node.endEdgeIt));
+    stream << " SEQ: " << infix(container(node.begEdgeIt), position(node.begEdgeIt), position(node.endEdgeIt));
     stream << " PTR: " << position(node.curEdgeIt) - position(node.begEdgeIt);
-    stream << " COV: " << _print(node.coverage);
+    stream << " COV: " << _printCoverage(node.coverage);
     if (node.isBase)
         stream << " ISB: true";
     else

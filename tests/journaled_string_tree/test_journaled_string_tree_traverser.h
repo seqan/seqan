@@ -37,6 +37,8 @@
 #ifndef TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_TRAVERSER_H_
 #define TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_TRAVERSER_H_
 
+#include <sstream>
+
 #include <seqan/basic.h>
 #include <seqan/journaled_string_tree.h>
 
@@ -126,10 +128,47 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_traversal)
 
     SEQAN_ASSERT(create(jst));
 
+    StringSet<DnaString> testSeqs;
+    resize(testSeqs, dimension(jst));
+
+    std::stringstream strStream;
+
     auto sub = traverser(jst);
 
+    unsigned lastId = length(*sub._stackPtr);
+    String<bool, Packed<> > lastCov;
     while (!atEnd(sub))
+    {
+        //stepSize = presentContext(alg);
+//        if (lastId != length(*sub._stackPtr))
+//        {
+//            std::cout << "Node ID: " << lastId << " Label: " << strStream.str() << " Coverage: " << _printCoverage(lastCov) << std::endl;
+//            strStream.str("");
+//        }
+
+        unsigned count = 0;
+        for (auto it = begin(back(*sub._stackPtr).coverage); it != end(back(*sub._stackPtr).coverage); ++it, ++count)
+            if (*it)
+                appendValue(testSeqs[count], *(back(*sub._stackPtr).curEdgeIt));
+
+        std::cout << "Current Sequences: " << std::endl;
+        count = 0;
+        for (auto seq : testSeqs)
+        {
+            std::cout << "seq ";
+            std::cout.fill('0');
+            std::cout.width(2);
+            std::cout << count << ": ";
+            std::cout << seq << '\n';
+            ++count;
+        }
+
+//        lastId = length(*sub._stackPtr);
+//        strStream << *(back(*sub._stackPtr).curEdgeIt);
+//        lastCov = back(*sub._stackPtr).coverage;
         goNext(sub);
+
+    }
 }
 
 

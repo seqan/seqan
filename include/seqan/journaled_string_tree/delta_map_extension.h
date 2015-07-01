@@ -211,7 +211,7 @@ recordDeletion(DeltaMapExtension_<TDeltaMap> & extMap, TMapIter const & mapIt, T
 
     TEntry tmp;
     tmp.hostIter = mapIt;
-    tmp.deltaPos = getDeltaPosition(*mapIt) + deletionSize(host(extMap)._deltaStore, getStorePosition(*mapIt), TTag());
+    tmp.deltaPos = getDeltaPosition(*mapIt) + deletionSize(host(extMap)._deltaStore, getStorePosition(*mapIt), TTag()) - 1;
     tmp.info = ExtensionInfo::IS_END;
     appendValue(extMap._extTable, SEQAN_MOVE(tmp));
 }

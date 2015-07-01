@@ -142,6 +142,12 @@ struct Container<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
 };
 
 template <typename TJst, typename TSpec, typename TObserver>
+struct Container<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const>
+    : Container<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
+{};
+
+
+template <typename TJst, typename TSpec, typename TObserver>
 struct Size<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
 {
     typedef typename Size<TJst>::Type    Type;
@@ -193,7 +199,7 @@ container(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
 
 template <typename TJst, typename TSpec, typename TObserver>
 inline typename Container<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const>::Type &
-container(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
+container(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
 {
     return *me._contPtr;
 }
@@ -206,7 +212,7 @@ template <typename TJst, typename TSpec, typename TObserver>
 inline bool
 atBegin(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
 {
-    SEQAN_ASSERT(resource(me._rm) == nullptr);
+    SEQAN_ASSERT(resource(me._rm) != nullptr);
     return back(*resource(me._rm)).mappedSrcEndPos == -1;
 }
 
@@ -219,24 +225,46 @@ goNext(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
 {
     SEQAN_ASSERT(me._stackPtr != nullptr);
 
-    auto& node = back(*me._stackPtr);
-
+    auto nodePtr = &back(*me._stackPtr);
 #if defined (DEBUG_JST_TRAVERSAL)
-    std::cout << "goNext: Node ID = " << length(*me._stackPtr) << std::endl;
-    std::cout << node << std::endl;
+    std::cout << "\n\nGO NEXT" << std::endl;
+    std::cout << "Node: (" << length(*me._stackPtr) << ") " << *nodePtr << std::endl;
 #endif  // DEBUG_JST_TRAVERSAL
-    stepSize = impl::moveWindow(me, node, stepSize);
+    stepSize = impl::moveWindow(me, nodePtr, stepSize);
 
     // Case A) stepSize == 0 && node.remainingSize > 0;  // vaild context
     // Case B) stepSize == 0 && node.remainingSize = 0;  // valid context
     // Case C) stepSize > 0 && node.remaingingSize = 0;  // invalid context -> we have to pop an element from the tree.
     // Case D) stepSize > 0 && node.remainingSize > 0;   // invalid case: ASSERT
 
-    SEQAN_ASSERT(stepSize > static_cast<TSize>(0) && node.remainingSize >static_cast<TSize>(0));
+//    SEQAN_ASSERT_NOT(stepSize > static_cast<TSize>(0) && nodePtr->remainingSize >static_cast<TSize>(0));
 
-    if (stepSize > 0 && node.remainingSize == 0)
+    if (stepSize > 0 && nodePtr->remainingSize == 0)
     {
-        impl::popNode(me);
+        if (!back(*me._stackPtr).fromBase)
+        {
+            impl::popNode(me);
+            SEQAN_ASSERT(length(*me._stackPtr) > 1u);
+        }
+        else
+        {
+            eraseBack(*me._stackPtr);  // Remove the old base representing fromBase
+
+            SEQAN_ASSERT(length(*me._stackPtr) == 1u);
+            impl::moveWindow(me, &back(*me._stackPtr), stepSize + back(*me._stackPtr).remainingSize);  // Move the base to the next position coming from fromBase node.
+        }
+    }
+    else if (atEnd(nodePtr->nextDelta))
+    {
+        if (!back(*me._stackPtr).fromBase)
+        {
+            impl::popNode(me);
+            SEQAN_ASSERT(length(*me._stackPtr) > 1u);
+        }
+        else
+        {
+            eraseBack(*me._stackPtr);  // Remove the old base representing fromBase
+        }
     }
 }
 

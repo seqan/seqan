@@ -105,7 +105,8 @@ public:
 template <typename TContainer>
 struct Position<Iter<TContainer, DeltaMapExtensionIterSpec> >
 {
-    typedef typename Iter<TContainer, DeltaMapExtensionIterSpec>::TPosition Type;
+    typedef typename Iter<TContainer, DeltaMapExtensionIterSpec>::THostIter THostIter_;
+    typedef typename Position<THostIter_>::Type                             Type;
 };
 
 // ============================================================================
