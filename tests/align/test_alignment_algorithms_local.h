@@ -68,6 +68,35 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_local_linear)
         SEQAN_ASSERT_EQ(ssV.str(), "CTT-AGCT");
     }
 
+    { // Simd Version
+        Dna5String strH("GGGGCTTAAGCTTGGGG");
+        Dna5String strV("AAAACTTAGCTCTAAAA");
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        SimpleScore scoringScheme(2, -1, -2);
+        String<int> scores = localAlignment(alignments, scoringScheme);
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 12);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "CTTAAGCT");
+            SEQAN_ASSERT_EQ(ssV.str(), "CTT-AGCT");
+        }
+    }
+
     {
         Dna5String strH("GGGGGGGGG");
         Dna5String strV("CCCCCCCCC");
@@ -88,6 +117,35 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_local_linear)
 
         SEQAN_ASSERT_EQ(ssH.str(), "");
         SEQAN_ASSERT_EQ(ssV.str(), "");
+    }
+
+    { // Simd version
+        Dna5String strH("GGGGGGGGG");
+        Dna5String strV("CCCCCCCCC");
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        SimpleScore scoringScheme(2, -1, -2);
+        String<int> scores = localAlignment(alignments, scoringScheme);
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 0);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "");
+            SEQAN_ASSERT_EQ(ssV.str(), "");
+        }
     }
 }
 
@@ -271,6 +329,35 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_local_affine)
 
         SEQAN_ASSERT_EQ(ssH.str(), "CTT---AACTT");
         SEQAN_ASSERT_EQ(ssV.str(), "CTTGAGAGCTT");
+    }
+
+    { // Simd version
+        Dna5String strH("CACACTTAACTTCACAA");
+        Dna5String strV("GGGGCTTGAGAGCTTGGGG");
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+        
+        SimpleScore scoringScheme(2, -1, -1, -3);
+        String<int> scores = localAlignment(alignments, scoringScheme);
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(scores[i], 8);
+            SEQAN_ASSERT_EQ(ssH.str(), "CTT---AACTT");
+            SEQAN_ASSERT_EQ(ssV.str(), "CTTGAGAGCTT");
+        }
     }
 }
 

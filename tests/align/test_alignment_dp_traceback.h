@@ -84,13 +84,13 @@ SEQAN_DEFINE_TEST(test_align2_traceback_affine)
     DnaString str1 = "ACG";
 
     DPScout_<int, Default> dpScout;
-    dpScout._maxHostPosition = 15;
+    dpScout._maxHostPosition[0] = 15;
     _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
     SEQAN_ASSERT_EQ(length(target), 1u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(0, 0, 3, +TraceBitMap_::DIAGONAL));
 
     clear(target);
-    dpScout._maxHostPosition = 14;
+    dpScout._maxHostPosition[0] = 14;
     _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
     SEQAN_ASSERT_EQ(length(target), 3u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(3, 2, 1, +TraceBitMap_::VERTICAL));
@@ -98,7 +98,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_affine)
     SEQAN_ASSERT_EQ(target[2], TTraceSegment(0, 0, 2, +TraceBitMap_::VERTICAL));
 
     clear(target);
-    dpScout._maxHostPosition = 13;
+    dpScout._maxHostPosition[0] = 13;
     _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
     SEQAN_ASSERT_EQ(length(target), 4u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(3, 1, 2, +TraceBitMap_::VERTICAL));
@@ -107,14 +107,14 @@ SEQAN_DEFINE_TEST(test_align2_traceback_affine)
     SEQAN_ASSERT_EQ(target[3], TTraceSegment(0, 0, 1, +TraceBitMap_::HORIZONTAL));
 
     clear(target);
-    dpScout._maxHostPosition = 12;
+    dpScout._maxHostPosition[0] = 12;
     _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
     SEQAN_ASSERT_EQ(length(target), 2u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(3, 0, 3, +TraceBitMap_::VERTICAL));
     SEQAN_ASSERT_EQ(target[1], TTraceSegment(0, 0, 3, +TraceBitMap_::HORIZONTAL));
 
     clear(target);
-    dpScout._maxHostPosition = 11;
+    dpScout._maxHostPosition[0] = 11;
     _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
     SEQAN_ASSERT_EQ(length(target), 4u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(2, 3, 1, +TraceBitMap_::HORIZONTAL));
@@ -123,7 +123,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_affine)
     SEQAN_ASSERT_EQ(target[3], TTraceSegment(0, 0, 1, +TraceBitMap_::HORIZONTAL));
 
     clear(target);
-    dpScout._maxHostPosition = 7;
+    dpScout._maxHostPosition[0] = 7;
     _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
     SEQAN_ASSERT_EQ(length(target), 3u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(1, 3, 2, +TraceBitMap_::HORIZONTAL));
@@ -131,7 +131,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_affine)
     SEQAN_ASSERT_EQ(target[2], TTraceSegment(0, 0, 1, +TraceBitMap_::DIAGONAL));
 
     clear(target);
-    dpScout._maxHostPosition = 3;
+    dpScout._maxHostPosition[0] = 3;
     _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
     SEQAN_ASSERT_EQ(length(target), 2u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(0, 3, 3, +TraceBitMap_::HORIZONTAL));
@@ -184,7 +184,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_unbanded_alignment)
     DnaString str1 = "ACG";
 
     DPScout_<int, Default> dpScout;
-    dpScout._maxHostPosition = 15;
+    dpScout._maxHostPosition[0] = 15;
     _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
 
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(2, 2, 1, +TraceBitMap_::DIAGONAL));
@@ -240,7 +240,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_normal_banded_alignment)
     DnaString str1 = "ACGT";
 
     DPScout_<int, Default> dpScout;
-    dpScout._maxHostPosition = 13;
+    dpScout._maxHostPosition[0] = 13;
     _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOn>(-1, 1), TDPProfile());
 
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(3, 3, 1, +TraceBitMap_::DIAGONAL));
@@ -332,7 +332,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_wide_banded_alignment)
     DnaString str1 = "ACGTAC";
 
     DPScout_<int, Default> dpScout;
-    dpScout._maxHostPosition = 46;
+    dpScout._maxHostPosition[0] = 46;
     _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOn>(-4, 4), TDPProfile());
 
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(6, 3, 3, +TraceBitMap_::VERTICAL));
@@ -375,7 +375,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_small_banded_alignment)
     DnaString str1 = "ACG";
 
     DPScout_<int, Default> dpScout;
-    dpScout._maxHostPosition = 3;
+    dpScout._maxHostPosition[0] = 3;
     _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOn>(0, 0), TDPProfile());
 
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(0, 0, 3, +TraceBitMap_::DIAGONAL));
@@ -423,7 +423,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_linear_gaps)
     DnaString str1 = "CCC";
 
     DPScout_<int, Default> dpScout;
-    dpScout._maxHostPosition = 11;
+    dpScout._maxHostPosition[0] = 11;
     _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
 
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(0, 1, 2, +TraceBitMap_::DIAGONAL));
@@ -472,7 +472,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_linear_gaps)
     DnaString str1 = "CCC";
 
     DPScout_<int, Default> dpScout;
-    dpScout._maxHostPosition = 11;
+    dpScout._maxHostPosition[0] = 11;
     _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
 
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(2, 2, 1, +TraceBitMap_::VERTICAL));
@@ -523,7 +523,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_affine_gaps)
         DnaString str1 = "CCC";
 
         DPScout_<int, Default> dpScout;
-        dpScout._maxHostPosition = 11;
+        dpScout._maxHostPosition[0] = 11;
         _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
 
         // TODO(rmaerker): This is disabled by default for the affine gap costs.
@@ -570,7 +570,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_affine_gaps)
         DnaString str1 = "ACA";
 
         DPScout_<int, Default> dpScout;
-        dpScout._maxHostPosition = 19;
+        dpScout._maxHostPosition[0] = 19;
         _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
 
         // TODO(rmaerker): This is disabled by default for the affine gap costs.
@@ -624,7 +624,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_affine_gaps)
         DnaString str1 = "CCC";
 
         DPScout_<int, Default> dpScout;
-        dpScout._maxHostPosition = 11;
+        dpScout._maxHostPosition[0] = 11;
         _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
 
         SEQAN_ASSERT_EQ(target[0], TTraceSegment(2, 2, 1, +TraceBitMap_::VERTICAL));
@@ -670,7 +670,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_affine_gaps)
         DnaString str1 = "ACA";
 
         DPScout_<int, Default> dpScout;
-        dpScout._maxHostPosition = 19;
+        dpScout._maxHostPosition[0] = 19;
         _computeTraceback(target, navigator, dpScout, str0, str1, DPBandConfig<BandOff>(), TDPProfile());
 
         // TODO(rmaerker): This is disabled by default for the affine gap costs.

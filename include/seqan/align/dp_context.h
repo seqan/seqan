@@ -103,7 +103,7 @@ struct GetDPScoreMatrix<DPContext<TScoreValue, TGapCosts> const >
 template <typename TScoreValue, typename TGapCosts>
 struct GetDPTraceMatrix<DPContext<TScoreValue, TGapCosts> >
 {
-    typedef typename TraceBitMap_::TTraceValue TTraceValue_;
+    typedef typename std::conditional<Is<SimdVectorConcept<TScoreValue> >::VALUE, TScoreValue, TraceBitMap_::TTraceValue>::type TTraceValue_;
     typedef DPMatrix_<TTraceValue_, FullDPMatrix> TDPScoreMatrix_;
 
     typedef typename Host<TDPScoreMatrix_>::Type Type;
@@ -112,7 +112,7 @@ struct GetDPTraceMatrix<DPContext<TScoreValue, TGapCosts> >
 template <typename TScoreValue, typename TGapCosts>
 struct GetDPTraceMatrix<DPContext<TScoreValue, TGapCosts> const >
 {
-    typedef typename TraceBitMap_::TTraceValue TTraceValue_;
+    typedef typename std::conditional<Is<SimdVectorConcept<TScoreValue> >::VALUE, TScoreValue, TraceBitMap_::TTraceValue>::type TTraceValue_;
     typedef DPMatrix_<TTraceValue_, FullDPMatrix> TDPScoreMatrix_;
 
     typedef typename Host<TDPScoreMatrix_>::Type const Type;

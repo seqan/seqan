@@ -75,6 +75,36 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_linear_banded)
         SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
     }
 
+    // Simple alignment without any leading or trailing gaps - Simd version
+    {
+        Dna5String strH = "ATGT";
+        Dna5String strV = "ATAGAT";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -3, 2, NeedlemanWunsch());
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 6);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "AT-G-T");
+            SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
+        }
+    }
+
     // Alignment with both leading and trailing gaps in one row.
     {
         Dna5String strH = "AAAAAGGGGTTTT";
@@ -100,6 +130,36 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_linear_banded)
         SEQAN_ASSERT_EQ(ssV.str(), "-----GGGG---G");
     }
 
+    // Alignment with both leading and trailing gaps in one row - Simd Version
+    {
+        Dna5String strH = "AAAAAGGGGTTTT";
+        Dna5String strV = "GGGGG";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -2, 8, NeedlemanWunsch());
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], -1);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "AAAAAGGGGTTTT");
+            SEQAN_ASSERT_EQ(ssV.str(), "-----GGGG---G");
+        }
+    }
+
     // Alignment with both leading and trailing gaps in different rows.
     {
         Dna5String strH = "AAAAAATTTTTTTT";
@@ -123,6 +183,36 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_linear_banded)
 
         SEQAN_ASSERT_EQ(ssH.str(), "AAAAAATTTTTT------TT");
         SEQAN_ASSERT_EQ(ssV.str(), "----TTTTTTTTGGGGGGGG");
+    }
+
+    // Alignment with both leading and trailing gaps in different rows - Simd version
+    {
+        Dna5String strH = "AAAAAATTTTTTTT";
+        Dna5String strV = "TTTTTTTTGGGGGGGG";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -4, 4, NeedlemanWunsch());
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], -2);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "AAAAAATTTTTT------TT");
+            SEQAN_ASSERT_EQ(ssV.str(), "----TTTTTTTTGGGGGGGG");
+        }
     }
 }
 
@@ -405,6 +495,35 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_affine_banded)
         SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
     }
 
+    // Simple alignment without any leading or trailing gaps - Simd version
+    {
+        Dna5String strH = "ATGT";
+        Dna5String strV = "ATAGAT";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -3, 2, Gotoh());
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 2);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "AT-G-T");
+            SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
+        }
+    }
+
     // Alignment with both leading and trailing gaps in one row.
     {
         Dna5String strH = "AAAAAGGGGTTTT";
@@ -426,6 +545,35 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_affine_banded)
 
         SEQAN_ASSERT_EQ(ssH.str(), "AAAAAGGGGTTTT");
         SEQAN_ASSERT_EQ(ssV.str(), "----GGGGG----");
+    }
+
+    // Alignment with both leading and trailing gaps in one row - Simd version
+    {
+        Dna5String strH = "AAAAAGGGGTTTT";
+        Dna5String strV = "GGGGG";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -2, 8, Gotoh());
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], -5);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "AAAAAGGGGTTTT");
+            SEQAN_ASSERT_EQ(ssV.str(), "----GGGGG----");
+        }
     }
 
     // Alignment with both leading and trailing gaps in different rows.
@@ -450,6 +598,35 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_affine_banded)
         SEQAN_ASSERT_EQ(ssH.str(), "AAAAAATTTTTTTT------");
         SEQAN_ASSERT_EQ(ssV.str(), "----TTTTTTTTGGGGGGGG");
     }
+
+    // Alignment with both leading and trailing gaps in different rows - Simd version
+    {
+        Dna5String strH = "AAAAAATTTTTTTT";
+        Dna5String strV = "TTTTTTTTGGGGGGGG";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -4, 4, Gotoh());
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], -6);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "AAAAAATTTTTTTT------");
+            SEQAN_ASSERT_EQ(ssV.str(), "----TTTTTTTTGGGGGGGG");
+        }
+    }
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_global_affine_banded)
@@ -461,22 +638,22 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_global_affine_banded)
 
     // Simple alignment without any leading or trailing gaps.
     {
-    DnaString strH = "ATGT";
-    Dna5String strV = "ATAGAT";
+        DnaString strH = "ATGT";
+        Dna5String strV = "ATAGAT";
 
-    Gaps<DnaString> gapsH(strH);
-    Gaps<Dna5String> gapsV(strV);
+        Gaps<DnaString> gapsH(strH);
+        Gaps<Dna5String> gapsV(strV);
 
-    int score = globalAlignment(gapsH, gapsV, scoringScheme, alignConfig, -3, 2, Gotoh());
+        int score = globalAlignment(gapsH, gapsV, scoringScheme, alignConfig, -3, 2, Gotoh());
 
-    SEQAN_ASSERT_EQ(score, 2);
+        SEQAN_ASSERT_EQ(score, 2);
 
-    std::stringstream ssH, ssV;
-    ssH << gapsH;
-    ssV << gapsV;
+        std::stringstream ssH, ssV;
+        ssH << gapsH;
+        ssV << gapsV;
 
-    SEQAN_ASSERT_EQ(ssH.str(), "AT-G-T");
-    SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
+        SEQAN_ASSERT_EQ(ssH.str(), "AT-G-T");
+        SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
     }
 
     // Alignment with both leading and trailing gaps in one row.
@@ -713,6 +890,36 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_linear_banded)
         // std::cerr << align << "\n";
     }
 
+    // Simple alignment without any leading or trailing gaps - Simd version
+    {
+        Dna5String strH = "ATGT";
+        Dna5String strV = "ATAGAT";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -2, 2, NeedlemanWunsch());
+        
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 6);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "AT-G-T");
+            SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
+        }
+    }
+
     // Alignment with both leading and trailing gaps in one row.
     {
         Dna5String strH = "AAAAAGGGGTTTT";
@@ -736,6 +943,36 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_linear_banded)
 
         SEQAN_ASSERT_EQ(ssH.str(), "AAAAAGGGGTTTT");
         SEQAN_ASSERT_EQ(ssV.str(), "--GGGGG------");
+    }
+
+    // Alignment with both leading and trailing gaps in one row - Simd version
+    {
+        Dna5String strH = "AAAAAGGGGTTTT";
+        Dna5String strV = "GGGGG";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -2, 2, NeedlemanWunsch());
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 1);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "AAAAAGGGGTTTT");
+            SEQAN_ASSERT_EQ(ssV.str(), "--GGGGG------");
+        }
     }
 
     // Alignment with both leading and trailing gaps in different rows.
@@ -763,6 +1000,36 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_linear_banded)
         SEQAN_ASSERT_EQ(ssV.str(), "--TTTTTTTTGGGGGGGG");
     }
 
+    // Alignment with both leading and trailing gaps in different rows - Simd version
+    {
+        Dna5String strH = "AAAAAATTTTTTTT";
+        Dna5String strV = "TTTTTTTTGGGGGGGG";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -2, 2, NeedlemanWunsch());
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 0);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "AAAAAATTTTTTTT----");
+            SEQAN_ASSERT_EQ(ssV.str(), "--TTTTTTTTGGGGGGGG");
+        }
+    }
+
     // Alignment that starts at first position where the band crosses the bottom of the matrix.
     {
         Dna5String strH = "AACGCATTTTT";
@@ -786,6 +1053,37 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_linear_banded)
 
         SEQAN_ASSERT_EQ(ssH.str(), "--AACGCATTTTT");
         SEQAN_ASSERT_EQ(ssV.str(), "TTTACGCA-----");
+    }
+
+    // Alignment that starts at first position where the band crosses the bottom of the matrix - Simd version
+    {
+        Dna5String strH = "AACGCATTTTT";
+        Dna5String strV = "TTTACGCA";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -2, 4, NeedlemanWunsch());
+        // std::cerr << align << "\n";
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 9);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "--AACGCATTTTT");
+            SEQAN_ASSERT_EQ(ssV.str(), "TTTACGCA-----");
+        }
     }
 
     // Alignment that starts at first position where the band crosses the bottom of the matrix.
@@ -813,6 +1111,37 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_linear_banded)
         SEQAN_ASSERT_EQ(ssV.str(), "TTTACGCA");
     }
 
+    // Alignment that starts at first position where the band crosses the bottom of the matrix - Simd version
+    {
+        Dna5String strH = "AACGCA";
+        Dna5String strV = "TTTACGCA";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -2, 4, NeedlemanWunsch());
+        // std::cerr << align << "\n";
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 9);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "--AACGCA");
+            SEQAN_ASSERT_EQ(ssV.str(), "TTTACGCA");
+        }
+    }
+
     // Alignment that starts at first position where the band crosses the bottom of the matrix.
     {
         Dna5String strH = "ACGAGTGTTTGCC";
@@ -838,6 +1167,37 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_linear_banded)
         SEQAN_ASSERT_EQ(ssV.str(), "TTTTTACGA---------");
     }
 
+    // Alignment that starts at first position where the band crosses the bottom of the matrix - Simd version
+    {
+        Dna5String strH = "ACGAGTGTTTGCC";
+        Dna5String strV = "TTTTTACGA";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -5, 7, NeedlemanWunsch());
+        // std::cerr << align << "\n";
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 8);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "-----ACGAGTGTTTGCC");
+            SEQAN_ASSERT_EQ(ssV.str(), "TTTTTACGA---------");
+        }
+    }
+
     // Alignment that starts at first position where the band crosses the bottom of the matrix.
     {
         Dna5String strH = "ACGA";
@@ -861,6 +1221,37 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_linear_banded)
 
         SEQAN_ASSERT_EQ(ssH.str(), "-----ACGA");
         SEQAN_ASSERT_EQ(ssV.str(), "TTTTTACGA");
+    }
+
+    // Alignment that starts at first position where the band crosses the bottom of the matrix - Simd version
+    {
+        Dna5String strH = "ACGA";
+        Dna5String strV = "TTTTTACGA";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -5, 4, NeedlemanWunsch());
+        // std::cerr << align << "\n";
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 8);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "-----ACGA");
+            SEQAN_ASSERT_EQ(ssV.str(), "TTTTTACGA");
+        }
     }
 }
 
@@ -1138,6 +1529,36 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_affine_banded)
         SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
     }
 
+    // Simple alignment without any leading or trailing gaps - Simd version
+    {
+        Dna5String strH = "ATGT";
+        Dna5String strV = "ATAGAT";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1, -3);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -2, 2, Gotoh());
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 2);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "ATGT--");
+            SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
+        }
+    }
+
     // Alignment with both leading and trailing gaps in one row.
     {
         Dna5String strH = "AAAAAGGGGTTTT";
@@ -1162,6 +1583,36 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_affine_banded)
         SEQAN_ASSERT_EQ(ssV.str(), "--AAAGTT-----");
     }
 
+    // Alignment with both leading and trailing gaps in one row - Simd version
+    {
+        Dna5String strH = "AAAAAGGGGTTTT";
+        Dna5String strV = "AAAGTT";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1, -3);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -2, 2, Gotoh());
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 6);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "AAAAAGGGGTTTT");
+            SEQAN_ASSERT_EQ(ssV.str(), "--AAAGTT-----");
+        }
+    }
+
     // Alignment with both leading and trailing gaps in different rows.
     {
         Dna5String strH = "AAAAAATTTTTGGG";
@@ -1184,6 +1635,36 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_affine_banded)
 
         SEQAN_ASSERT_EQ(ssH.str(), "AAAAAATTTTTGGG----");
         SEQAN_ASSERT_EQ(ssV.str(), "--TTTTTTTTGGGGGGGG");
+    }
+
+    // Alignment with both leading and trailing gaps in different rows - Simd version
+    {
+        Dna5String strH = "AAAAAATTTTTGGG";
+        Dna5String strV = "TTTTTTTTGGGGGGGG";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1, -3);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -2, 2, Gotoh());
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 9);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "AAAAAATTTTTGGG----");
+            SEQAN_ASSERT_EQ(ssV.str(), "--TTTTTTTTGGGGGGGG");
+        }
     }
 }
 
@@ -1461,6 +1942,36 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_semi_global_linear_banded)
         SEQAN_ASSERT_EQ(ssH.str(), "AAAAAATTTTTTTT----G");
         SEQAN_ASSERT_EQ(ssV.str(), "--AATTTTTTTTTTGGGGG");
     }
+
+    // More or less simple alignment - Simd version
+    {
+        Dna5String strH = "AAAAAATTTTTTTTG";
+        Dna5String strV = "AATTTTTTTTTTGGGGG";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -2, 2, NeedlemanWunsch());
+        
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 14);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "AAAAAATTTTTTTT----G");
+            SEQAN_ASSERT_EQ(ssV.str(), "--AATTTTTTTTTTGGGGG");
+        }
+    }
 }
 
 
@@ -1597,6 +2108,36 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_semi_global_affine_banded)
 
         SEQAN_ASSERT_EQ(ssH.str(), "AAAAAATTTTTTTTG----");
         SEQAN_ASSERT_EQ(ssV.str(), "--AATTTTTTTTTTGGGGG");
+    }
+
+    // More or less simple alignment - Simd version
+    {
+        Dna5String strH = "AAAAAATTTTTTTTG";
+        Dna5String strV = "AATTTTTTTTTTGGGGG";
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        Score<int, Simple> scoringScheme(2, -1, -1, -4);
+        String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, -2, 2, Gotoh());
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 8);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "AAAAAATTTTTTTTG----");
+            SEQAN_ASSERT_EQ(ssV.str(), "--AATTTTTTTTTTGGGGG");
+        }
     }
 }
 

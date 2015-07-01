@@ -112,7 +112,7 @@ typedef LocalAlignment_<SuboptimalAlignment> DPLocalEnumerate;
 // Class TraceBitMap_
 // ----------------------------------------------------------------------------
 
-// Used to globally ditinguish different traceback directions and the underlying
+// Used to globally distinguish different traceback directions and the underlying
 // type to store the values.
 struct TraceBitMap_
 {
@@ -127,7 +127,25 @@ struct TraceBitMap_
     static const TTraceValue MAX_FROM_VERTICAL_MATRIX = 64u;    //1000000
     static const TTraceValue NO_VERTICAL_TRACEBACK = ~(VERTICAL | VERTICAL_OPEN);
     static const TTraceValue NO_HORIZONTAL_TRACEBACK = ~(HORIZONTAL | HORIZONTAL_OPEN);
-};
+} ;
+
+//sadly, simd types can't be static const struct members like above
+namespace TraceSimd {
+    const TSimdAlign ONE = createVector<TSimdAlign>(1);
+    const TSimdAlign ZERO = createVector<TSimdAlign>(0);
+    const TSimdAlign NONE = createVector<TSimdAlign>(TraceBitMap_::NONE);
+    const TSimdAlign DIAGONAL = createVector<TSimdAlign>(TraceBitMap_::DIAGONAL);
+    const TSimdAlign HORIZONTAL = createVector<TSimdAlign>(TraceBitMap_::HORIZONTAL);
+    const TSimdAlign VERTICAL = createVector<TSimdAlign>(TraceBitMap_::VERTICAL);
+    const TSimdAlign HORIZONTAL_OPEN = createVector<TSimdAlign>(TraceBitMap_::HORIZONTAL_OPEN);
+    const TSimdAlign VERTICAL_OPEN = createVector<TSimdAlign>(TraceBitMap_::VERTICAL_OPEN);
+    const TSimdAlign MAX_FROM_HORIZONTAL_MATRIX = createVector<TSimdAlign>(TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+    const TSimdAlign MAX_FROM_VERTICAL_MATRIX = createVector<TSimdAlign>(TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+    const TSimdAlign NO_VERTICAL_TRACEBACK = createVector<TSimdAlign>(TraceBitMap_::NO_VERTICAL_TRACEBACK);
+    const TSimdAlign NO_HORIZONTAL_TRACEBACK = createVector<TSimdAlign>(TraceBitMap_::NO_HORIZONTAL_TRACEBACK);
+    const TSimdAlign MASK_VERTICAL_GAP = createVector<TSimdAlign>(1);
+    const TSimdAlign MASK_HORIZONTAL_GAP = createVector<TSimdAlign>(2);
+}
 
 // ----------------------------------------------------------------------------
 // Tag GapsLeft

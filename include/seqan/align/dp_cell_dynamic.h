@@ -72,10 +72,10 @@ class DPCell_<TScoreValue, DynamicGaps>
 {
 public:
     TScoreValue _score;
-    char _flagMask;
+    TScoreValue _flagMask; //char _flagMask;
 
     // The default c'tor.
-    DPCell_() : _score(DPCellDefaultInfinity<DPCell_>::VALUE), _flagMask(0)
+    DPCell_() : _score(DPCellDefaultInfinity<DPCell_>::VALUE), _flagMask()
     {}
 
     // The copy c'tor.
@@ -83,7 +83,7 @@ public:
     {}
 
     // Implicit c'tor.
-    DPCell_(TScoreValue const & score) : _score(score), _flagMask(0)
+    DPCell_(TScoreValue const & score) : _score(score), _flagMask()
     {}
 
     // The assignment operator.
@@ -105,6 +105,10 @@ public:
         return *this;
     }
 };
+
+SEQAN_CONCEPT(DynamicGapCosts, (T)) {};
+template <typename TScoreValue>
+SEQAN_CONCEPT_IMPL((DPCell_<TScoreValue, DynamicGaps>), (DynamicGapCosts));
 
 // ============================================================================
 // Metafunctions
@@ -164,8 +168,9 @@ inline void _setBit(DPCell_<TScoreValue, DynamicGaps> & cell,
 }
 
 template <typename TScoreValue, typename TSpec>
-inline bool isGapExtension(DPCell_<TScoreValue, DynamicGaps> const & cell,
-                           TSpec const & /*spec*/)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,bool)
+isGapExtension(DPCell_<TScoreValue, DynamicGaps> const & cell,
+               TSpec const & /*spec*/)
 {
     if (IsSameType<TSpec, DynamicGapExtensionHorizontal>::VALUE)
         return cell._flagMask & MASK_HORIZONTAL_GAP;
@@ -173,13 +178,29 @@ inline bool isGapExtension(DPCell_<TScoreValue, DynamicGaps> const & cell,
         return cell._flagMask & MASK_VERTICAL_GAP;
 }
 
+template <typename TScoreValue, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
+isGapExtension(DPCell_<TScoreValue, DynamicGaps> const & cell,
+               TSpec const & /*spec*/)
+{
+    return blend(cell._flagMask & TraceSimd::MASK_VERTICAL_GAP,
+                 cell._flagMask & TraceSimd::MASK_HORIZONTAL_GAP,
+                 createVector<TScoreValue>(IsSameType<TSpec, DynamicGapExtensionHorizontal>::VALUE));
+}
+
 template <typename TScoreValue, typename TFlagV, typename TFlagH>
-inline void
-setGapExtension(DPCell_<TScoreValue, DynamicGaps> & cell,
-                TFlagV const & /*vert*/,
-                TFlagH const & /*hori*/)
+inline void setGapExtension(DPCell_<TScoreValue, DynamicGaps> & cell,
+                            TFlagV const & /*vert*/, TFlagH const & /*hori*/)
 {
     cell._flagMask = SetGapExtension<DPCell_<TScoreValue, DynamicGaps>, TFlagV, TFlagH>::VALUE;
+}
+
+template <typename TScoreValue, typename TFlagV, typename TFlagH>
+inline void setGapExtension(DPCell_<TScoreValue, DynamicGaps> & cell,
+                            TFlagV const & /*vert*/, TFlagH const & /*hori*/,
+                            TScoreValue const & cmp)
+{
+    cell._flagMask = blend(cell._flagMask, createVector<TScoreValue>(SetGapExtension<DPCell_<TScoreValue, DynamicGaps>, TFlagV, TFlagH>::VALUE), cmp);
 }
 
 // ----------------------------------------------------------------------------

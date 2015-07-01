@@ -369,6 +369,112 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
         return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, alignConfig, LinearGaps());
 }
 
+template <typename TScoreValue, typename TDPScoutStateSpec, typename TTraceSegment, typename TSpec,
+          typename TSequenceH, typename TSequenceV, typename TScoreValue2, typename TScoreSpec, typename TDPType,
+          typename TBand, typename TFreeEndGaps, typename TTraceConfig>
+typename Value<Score<TScoreValue2, TScoreSpec> >::Type
+_setUpAndRunAlignment(DPContext<TScoreValue, AffineGaps> & dpContext,
+                      StringSet<String<TTraceSegment, TSpec> > & traceSegments,
+                      DPScoutState_<TDPScoutStateSpec> & dpScoutState,
+                      TSequenceH const & seqH,
+                      TSequenceV const & seqV,
+                      Score<TScoreValue2, TScoreSpec> const & scoringScheme,
+                      AlignConfig2<TDPType, TBand, TFreeEndGaps, TTraceConfig> const & alignConfig)
+{
+    SEQAN_ASSERT_GEQ(length(seqH), 1u);
+    SEQAN_ASSERT_GEQ(length(seqV), 1u);
+
+    typedef typename SetupAlignmentProfile_<TDPType, TFreeEndGaps, AffineGaps, TTraceConfig>::Type TDPProfile;
+    return _computeAlignment(dpContext, traceSegments, dpScoutState, seqH, seqV, scoringScheme, alignConfig._band,
+                             TDPProfile());
+}
+
+template <typename TScoreValue, typename TDPScoutStateSpec, typename TTraceSegment, typename TSpec,
+          typename TSequenceH, typename TSequenceV, typename TScoreValue2, typename TScoreSpec, typename TDPType,
+          typename TBand, typename TFreeEndGaps, typename TTraceConfig>
+typename Value<Score<TScoreValue2, TScoreSpec> >::Type
+_setUpAndRunAlignment(DPContext<TScoreValue, LinearGaps> & dpContext,
+                      StringSet<String<TTraceSegment, TSpec> > & traceSegments,
+                      DPScoutState_<TDPScoutStateSpec> & dpScoutState,
+                      TSequenceH const & seqH,
+                      TSequenceV const & seqV,
+                      Score<TScoreValue2, TScoreSpec> const & scoringScheme,
+                      AlignConfig2<TDPType, TBand, TFreeEndGaps, TTraceConfig> const & alignConfig)
+{
+    SEQAN_ASSERT_GEQ(length(seqH), 1u);
+    SEQAN_ASSERT_GEQ(length(seqV), 1u);
+    
+    typedef typename SetupAlignmentProfile_<TDPType, TFreeEndGaps, LinearGaps, TTraceConfig>::Type TDPProfile;
+    return _computeAlignment(dpContext, traceSegments, dpScoutState, seqH, seqV, scoringScheme, alignConfig._band,
+                             TDPProfile());
+}
+
+template <typename TScoreValue, typename TDPScoutStateSpec, typename TTraceSegment, typename TSpec,
+          typename TSequenceH, typename TSequenceV, typename TScoreValue2, typename TScoreSpec, typename TDPType,
+          typename TBand, typename TFreeEndGaps, typename TTraceConfig>
+typename Value<Score<TScoreValue2, TScoreSpec> >::Type
+_setUpAndRunAlignment(DPContext<TScoreValue, DynamicGaps> & dpContext,
+                      StringSet<String<TTraceSegment, TSpec> > & traceSegments,
+                      DPScoutState_<TDPScoutStateSpec> & dpScoutState,
+                      TSequenceH const & seqH,
+                      TSequenceV const & seqV,
+                      Score<TScoreValue2, TScoreSpec> const & scoringScheme,
+                      AlignConfig2<TDPType, TBand, TFreeEndGaps, TTraceConfig> const & alignConfig)
+{
+    SEQAN_ASSERT_GEQ(length(seqH), 1u);
+    SEQAN_ASSERT_GEQ(length(seqV), 1u);
+
+    typedef typename SetupAlignmentProfile_<TDPType, TFreeEndGaps, DynamicGaps, TTraceConfig>::Type TDPProfile;
+    return _computeAlignment(dpContext, traceSegments, dpScoutState, seqH, seqV, scoringScheme, alignConfig._band,
+                             TDPProfile());
+}
+
+template <typename TTraceSegment, typename TSpec, typename TDPScoutStateSpec,
+          typename TSequenceH, typename TSequenceV, typename TScoreValue2, typename TScoreSpec, typename TDPType,
+          typename TBand, typename TFreeEndGaps, typename TTraceConfig, typename TGapModel>
+typename Value<Score<TScoreValue2, TScoreSpec> >::Type
+_setUpAndRunAlignment(StringSet<String<TTraceSegment, TSpec> > & traceSegments,
+                      DPScoutState_<TDPScoutStateSpec> & dpScoutState,
+                      TSequenceH const & seqH,
+                      TSequenceV const & seqV,
+                      Score<TScoreValue2, TScoreSpec> const & scoringScheme,
+                      AlignConfig2<TDPType, TBand, TFreeEndGaps, TTraceConfig> const & alignConfig,
+                      TGapModel const & /**/)
+{
+    if (IsSameType<TGapModel, LinearGaps>::VALUE)
+    {
+        DPContext<TScoreValue2, LinearGaps> dpContext;
+        return _setUpAndRunAlignment(dpContext, traceSegments, dpScoutState, seqH, seqV, scoringScheme, alignConfig);
+    }
+    else if (IsSameType<TGapModel, AffineGaps>::VALUE)
+    {
+        DPContext<TScoreValue2, AffineGaps> dpContext;
+        return _setUpAndRunAlignment(dpContext, traceSegments, dpScoutState, seqH, seqV, scoringScheme, alignConfig);
+    }
+    else
+    {
+        DPContext<TScoreValue2, DynamicGaps> dpContext;
+        return _setUpAndRunAlignment(dpContext, traceSegments, dpScoutState, seqH, seqV, scoringScheme, alignConfig);
+    }
+}
+
+template <typename TTraceSegment, typename TSpec, typename TDPScoutStateSpec,
+          typename TSequenceH, typename TSequenceV, typename TScoreValue2, typename TScoreSpec, typename TDPType,
+          typename TBand, typename TFreeEndGaps, typename TTraceConfig>
+typename Value<Score<TScoreValue2, TScoreSpec> >::Type
+_setUpAndRunAlignment(StringSet<String<TTraceSegment, TSpec> > & traceSegments,
+                      DPScoutState_<TDPScoutStateSpec> & dpScoutState,
+                      TSequenceH const & seqH,
+                      TSequenceV const & seqV,
+                      Score<TScoreValue2, TScoreSpec> const & scoringScheme,
+                      AlignConfig2<TDPType, TBand, TFreeEndGaps, TTraceConfig> const & alignConfig)
+{
+    if (_usesAffineGaps(scoringScheme, seqH, seqV))
+        return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, alignConfig, AffineGaps());
+    else
+        return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, alignConfig, LinearGaps());
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_SETUP_H_

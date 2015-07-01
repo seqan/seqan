@@ -130,9 +130,43 @@ public:
 };
 
 
+template <typename TSequenceValue, typename TSpec>
+class Score<TSimdAlign, ScoreMatrix<TSequenceValue, TSpec> > {
+public:
+    // Static computation of the required array size.
+    enum {
+        VALUE_SIZE = ValueSize<TSequenceValue>::VALUE,
+        TAB_SIZE = VALUE_SIZE * VALUE_SIZE
+    };
+
+    // The data table.
+    int data_tab[TAB_SIZE];
+
+    // The gap extension score.
+    TSimdAlign data_gap_extend;
+
+    // The gap open score.
+    TSimdAlign data_gap_open;
+
+    int16_t pos[LENGTH<TSimdAlign>::VALUE] __attribute__((aligned(SEQAN_SIZEOF_MAX_VECTOR)));
+
+    Score(TSimdAlign _gap_extend, TSimdAlign _gap_open)
+        : data_gap_extend(_gap_extend), data_gap_open(_gap_open) {
+        SEQAN_CHECKPOINT;
+        setDefaultScoreMatrix(*this, TSpec());
+    }
+};
+
+SEQAN_CONCEPT(ScoreMatrixConcept, (T)) {};
+template <typename TValue, typename TSequenceValue, typename TSpec>                                                                             
+SEQAN_CONCEPT_IMPL((Score<TValue, ScoreMatrix<TSequenceValue, TSpec> >),       (ScoreMatrixConcept));                              
+template <typename TValue, typename TSequenceValue, typename TSpec>                                                                                  
+SEQAN_CONCEPT_IMPL((Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const), (ScoreMatrixConcept));
+
+
 // TODO(holtgrew): Does it make sense to document each Score specialization?  Should dddoc show a list of all specializations of a class?
 template <typename TValue, typename TSequenceValue, typename TSpec, typename TVal1, typename TVal2>
-inline TValue
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TValue> > >, TValue)
 score(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc, TVal1 val1, TVal2 val2) {
     SEQAN_CHECKPOINT;
     typedef Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > TScore;
@@ -140,6 +174,24 @@ score(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc, TVal1 val1,
     unsigned int i = (TSequenceValue) val1;  // conversion TVal1 => TSequenceValue => integral
     unsigned int j = (TSequenceValue) val2;  // conversion TVal2 => TSequenceValue => integral
     return sc.data_tab[i * TScore::VALUE_SIZE + j];
+}
+
+template <typename TValue, typename TSequenceValue, typename TSpec, typename TVal1, typename TVal2>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, TValue)
+score(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc, TVal1 val1, TVal2 val2)
+{
+    storeu(&sc.pos[0], val1 + val2);
+    TValue results;
+#if defined(__AVX2__)
+    fillVector(results, sc.data_tab[sc.pos[0]],sc.data_tab[sc.pos[1]],sc.data_tab[sc.pos[2]],sc.data_tab[sc.pos[3]],
+                        sc.data_tab[sc.pos[4]],sc.data_tab[sc.pos[5]],sc.data_tab[sc.pos[6]],sc.data_tab[sc.pos[7]],
+                        sc.data_tab[sc.pos[8]],sc.data_tab[sc.pos[9]],sc.data_tab[sc.pos[10]],sc.data_tab[sc.pos[11]],
+                        sc.data_tab[sc.pos[12]],sc.data_tab[sc.pos[13]],sc.data_tab[sc.pos[14]],sc.data_tab[sc.pos[15]]);
+#elif defined(__SSE3__)
+    fillVector(results, sc.data_tab[sc.pos[0]],sc.data_tab[sc.pos[1]],sc.data_tab[sc.pos[2]],sc.data_tab[sc.pos[3]],
+                        sc.data_tab[sc.pos[4]],sc.data_tab[sc.pos[5]],sc.data_tab[sc.pos[6]],sc.data_tab[sc.pos[7]]);
+#endif
+    return results;
 }
 
 
@@ -185,11 +237,20 @@ setScore(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TVal1 val1, TV
  */
 
 template <typename TValue, typename TSequenceValue, typename TSpec, typename TTag>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TValue> > >, void)
 setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TTag) {
     SEQAN_CHECKPOINT;
     typedef Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > TScore;
     TValue const * tab = ScoringMatrixData_<TValue, TSequenceValue, TTag>::getData();
+    arrayCopy(tab, tab + TScore::TAB_SIZE, sc.data_tab);
+}
+
+template <typename TValue, typename TSequenceValue, typename TSpec, typename TTag>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, void)
+setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TTag) {
+    SEQAN_CHECKPOINT;
+    typedef Score<int, ScoreMatrix<TSequenceValue, TSpec> > TScore;
+    int const * tab = ScoringMatrixData_<int, TSequenceValue, TTag>::getData();
     arrayCopy(tab, tab + TScore::TAB_SIZE, sc.data_tab);
 }
 

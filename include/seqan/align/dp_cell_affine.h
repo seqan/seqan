@@ -98,6 +98,10 @@ public:
     }
 };
 
+SEQAN_CONCEPT(AffineGapCosts, (T)) {};
+template <typename TScoreValue>
+SEQAN_CONCEPT_IMPL((DPCell_<TScoreValue, AffineGaps>), (AffineGapCosts));
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -144,10 +148,17 @@ _verticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> const & dpCell)
 
 // Returns the score of the matrix for vertical-gaps of the given cell.
 template <typename TScoreValue>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,void)
 _setVerticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newVerticalScore)
 {
     dpCell._verticalScore = newVerticalScore;
+}
+
+template <typename TScoreValue>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,void)
+_setVerticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newVerticalScore, TScoreValue const & mask)
+{
+    dpCell._verticalScore = blend(dpCell._verticalScore, newVerticalScore, mask);
 }
 
 // ----------------------------------------------------------------------------
@@ -175,10 +186,17 @@ _horizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> const & dpCell)
 
 // Returns the score of the matrix for vertical-gaps of the given cell.
 template <typename TScoreValue>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,void)
 _setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newHorizontalScore)
 {
     dpCell._horizontalScore = newHorizontalScore;
+}
+
+template <typename TScoreValue>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,void)
+_setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newHorizontalScore, TScoreValue const & mask)
+{
+    dpCell._horizontalScore = blend(dpCell._horizontalScore, newHorizontalScore, mask);
 }
 
 }  // namespace seqan

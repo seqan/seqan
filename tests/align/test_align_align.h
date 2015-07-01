@@ -302,11 +302,7 @@ void testGotohAlign()
     SEQAN_ASSERT(score == -2);
     SEQAN_ASSERT((row(ali,0) == "at--gt") || (row(ali,0) == "atg--t" ));
     SEQAN_ASSERT(row(ali,1) == "atagat" );
-
-
-
 }
-
 
 template <typename TAlign>
 void testAlignBasics2()

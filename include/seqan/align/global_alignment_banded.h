@@ -542,6 +542,306 @@ TScoreValue globalAlignmentScore(StringSet<TString, TSpec> const & strings,
     return globalAlignmentScore(strings[0], strings[1], scoringScheme, alignConfig, lowerDiag, upperDiag);
 }
 
+// ----------------------------------------------------------------------------
+// Function globalAlignmentScore()         [banded, SIMD version, 2x StringSet]
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TSpec,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec,
+          typename TAlgoTag>
+String<TScoreValue> globalAlignmentScore(StringSet<TString, TSpec> const & stringsH,
+                                         StringSet<TString, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                                         int lowerDiag,
+                                         int upperDiag,
+                                         TAlgoTag const & /*algoTag*/)
+{
+    SEQAN_ASSERT_EQ(length(stringsH), length(stringsV));
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOff> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
+
+    DPScoutState_<Default> dpScoutState;
+    String<TraceSegment_<unsigned, unsigned> > traceSegments;
+
+    //create a SIMD scoring scheme
+    Score<TSimdAlign, TScoreSpec> scoringSchemeSimd = _setSimdScoringScheme(scoringScheme, TSimdAlign());
+
+    size_t const numAlignments = length(stringsH);
+    size_t const lenH = length(stringsH[0]);
+    size_t const lenV = length(stringsV[0]);
+    size_t const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+
+    String<TScoreValue> results;
+    resize(results, numAlignments);
+    __attribute__ ((aligned (SEQAN_SIZEOF_MAX_VECTOR))) String<TSimdAlign> stringSimdH, stringSimdV;
+    resize(stringSimdH, lenH); resize(stringSimdV, lenV);
+
+    //iterate over alignments with a batch size of sizeBatch
+    for(size_t pos = 0; pos < numAlignments/sizeBatch; ++pos)
+    {
+        _createSimdRepresentation(stringSimdH, stringsH, pos*sizeBatch, lenH);
+        _createSimdRepresentation(stringSimdV, stringsV, pos*sizeBatch, lenV);
+        TSimdAlign resultsBatch = _setUpAndRunAlignment(traceSegments, dpScoutState, stringSimdH, stringSimdV,
+                                                      scoringSchemeSimd, TAlignConfig2(lowerDiag, upperDiag), TGapModel());
+        for(size_t x = pos*sizeBatch; x < (pos+1)*sizeBatch; ++x)
+            results[x] = resultsBatch[x-pos*sizeBatch];
+    }
+
+    //call the normal non-simd function for remaining alignments
+    for(size_t pos = (numAlignments/sizeBatch)*sizeBatch; pos < numAlignments; ++pos)
+        results[pos] = _setUpAndRunAlignment(traceSegments, dpScoutState, stringsH[pos], stringsV[pos],
+                                             scoringScheme, TAlignConfig2(lowerDiag, upperDiag), TGapModel());
+    return results;
+}
+
+// Interface without AlignConfig<>.
+template <typename TString, typename TSpec,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
+String<TScoreValue> globalAlignmentScore(StringSet<TString, TSpec> const & stringsH,
+                                         StringSet<TString, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         int lowerDiag,
+                                         int upperDiag,
+                                         TAlgoTag const & algoTag)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, lowerDiag, upperDiag, algoTag);
+}
+
+// Interface without algorithm tag.
+template <typename TString, typename TSpec,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
+String<TScoreValue> globalAlignmentScore(StringSet<TString, TSpec> const & stringsH,
+                                         StringSet<TString, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
+                                         int lowerDiag,
+                                         int upperDiag)
+{
+    if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
+        return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, lowerDiag, upperDiag, NeedlemanWunsch());
+    else
+        return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, lowerDiag, upperDiag, Gotoh());
+}
+
+// Interface without AlignConfig<> and algorithm tag.
+template <typename TString, typename TSpec,
+          typename TScoreValue, typename TScoreSpec>
+String<TScoreValue> globalAlignmentScore(StringSet<TString, TSpec> const & stringsH,
+                                         StringSet<TString, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         int lowerDiag,
+                                         int upperDiag)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, lowerDiag, upperDiag);
+}
+
+// ----------------------------------------------------------------------------
+// Function globalAlignmentScore()   [banded, SIMD version, String vs StringSet]
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TSpec,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec,
+          typename TAlgoTag>
+String<TScoreValue> globalAlignmentScore(TString const & stringH,
+                                         StringSet<TString, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                                         int lowerDiag,
+                                         int upperDiag,
+                                         TAlgoTag const & /*algoTag*/)
+{
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOff> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
+
+    DPScoutState_<Default> dpScoutState;
+    String<TraceSegment_<unsigned, unsigned> > traceSegments;
+
+    //create a SIMD scoring scheme
+    Score<TSimdAlign, TScoreSpec> scoringSchemeSimd = _setSimdScoringScheme(scoringScheme, TSimdAlign());
+
+    size_t const numAlignments = length(stringsV);
+    size_t const lenH = length(stringH);
+    size_t const lenV = length(stringsV[0]);
+    size_t const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+
+    String<TScoreValue> results;
+    resize(results, numAlignments);
+    __attribute__ ((aligned (SEQAN_SIZEOF_MAX_VECTOR))) String<TSimdAlign> stringSimdH, stringSimdV;
+    resize(stringSimdH, lenH); resize(stringSimdV, lenV);
+    _createSimdRepresentation(stringSimdH, stringH, lenH);
+
+    //iterate over alignments with a batch size of sizeBatch
+    for(size_t pos = 0; pos < numAlignments/sizeBatch; ++pos)
+    {
+        _createSimdRepresentation(stringSimdV, stringsV, pos*sizeBatch, lenV);
+        TSimdAlign resultsBatch = _setUpAndRunAlignment(traceSegments, dpScoutState, stringSimdH, stringSimdV,
+                                                      scoringSchemeSimd, TAlignConfig2(lowerDiag, upperDiag), TGapModel());
+        for(size_t x = pos*sizeBatch; x < (pos+1)*sizeBatch; ++x)
+            results[x] = resultsBatch[x-pos*sizeBatch];
+    }
+
+    //call the normal non-simd function for remaining alignments
+    for(size_t pos = (numAlignments/sizeBatch)*sizeBatch; pos < numAlignments; ++pos)
+        results[pos] = _setUpAndRunAlignment(traceSegments, dpScoutState, stringH, stringsV[pos],
+                                             scoringScheme, TAlignConfig2(lowerDiag, upperDiag), TGapModel());
+    return results;
+}
+
+// Interface without AlignConfig<>.
+template <typename TString, typename TSpec,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
+String<TScoreValue> globalAlignmentScore(TString const & stringH,
+                                         StringSet<TString, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         int lowerDiag,
+                                         int upperDiag,
+                                         TAlgoTag const & algoTag)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignmentScore(stringH, stringsV, scoringScheme, alignConfig, lowerDiag, upperDiag, algoTag);
+}
+
+// Interface without algorithm tag.
+template <typename TString, typename TSpec,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
+String<TScoreValue> globalAlignmentScore(TString const & stringH,
+                                         StringSet<TString, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
+                                         int lowerDiag,
+                                         int upperDiag)
+{
+    if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
+        return globalAlignmentScore(stringH, stringsV, scoringScheme, alignConfig, lowerDiag, upperDiag, NeedlemanWunsch());
+    else
+        return globalAlignmentScore(stringH, stringsV, scoringScheme, alignConfig, lowerDiag, upperDiag, Gotoh());
+}
+
+// Interface without AlignConfig<> and algorithm tag.
+template <typename TString, typename TSpec,
+          typename TScoreValue, typename TScoreSpec>
+String<TScoreValue> globalAlignmentScore(TString const & stringH,
+                                         StringSet<TString, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         int lowerDiag,
+                                         int upperDiag)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignmentScore(stringH, stringsV, scoringScheme, alignConfig, lowerDiag, upperDiag);
+}
+
+// ----------------------------------------------------------------------------
+// Function globalAlignment()          [banded, SIMD version, StringSet<Align>]
+// ----------------------------------------------------------------------------
+
+template <typename TSequence, typename TAlignSpec, typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec, typename TAlgoTag>
+String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & align,
+                                    Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                    AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
+                                    int lowerDiag, int upperDiag,
+                                    TAlgoTag const & algoTag)
+{
+    typedef Align<TSequence, TAlignSpec> TAlign;
+    typedef typename Size<TAlign>::Type TSize;
+    typedef typename Position<TAlign>::Type TPosition;
+    typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOn>, TFreeEndGaps> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
+
+    //create a SIMD scoring scheme
+    Score<TSimdAlign, TScoreSpec> scoringSchemeSimd = _setSimdScoringScheme(scoringScheme, TSimdAlign());
+
+    size_t const numAlignments = length(align);
+    size_t const lenH = length(source(row(align[0], 0)));
+    size_t const lenV = length(source(row(align[0], 1)));
+    size_t const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+
+    String<TScoreValue> results;
+    resize(results, numAlignments);
+    __attribute__ ((aligned (SEQAN_SIZEOF_MAX_VECTOR))) String<TSimdAlign> stringSimdH, stringSimdV;
+    resize(stringSimdH, lenH); resize(stringSimdV, lenV);
+
+    //iterate over alignments with a batch size of sizeBatch
+    for(size_t pos = 0; pos < numAlignments/sizeBatch; ++pos)
+    {
+        StringSet<String<TTraceSegment> > trace;
+        resize(trace, sizeBatch);
+        DPScoutState_<Default> dpScoutState;
+        _createSimdRepresentation(stringSimdH, align, pos*sizeBatch, lenH, 0);
+        _createSimdRepresentation(stringSimdV, align, pos*sizeBatch, lenV, 1);
+        TSimdAlign resultsBatch = _setUpAndRunAlignment(trace, dpScoutState, stringSimdH, stringSimdV,
+                                                      scoringSchemeSimd, TAlignConfig2(lowerDiag, upperDiag), TGapModel());
+        for(size_t x = pos*sizeBatch; x < (pos+1)*sizeBatch; ++x)
+        {
+            results[x] = resultsBatch[x-pos*sizeBatch];
+            _adaptTraceSegmentsTo(row(align[x], 0), row(align[x], 1), trace[x-pos*sizeBatch]);
+        }
+    }
+
+    //call the normal non-simd function for remaining alignments
+    for(size_t pos = (numAlignments/sizeBatch)*sizeBatch; pos < numAlignments; ++pos)
+        results[pos] = globalAlignment(align[pos], scoringScheme, alignConfig,
+                                       lowerDiag, upperDiag, algoTag);
+
+    return results;
+}
+
+// Interface without AlignConfig<>.
+template <typename TSequence, typename TAlignSpec,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
+String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & align,
+                                    Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                    int lowerDiag, int upperDiag,
+                                    TAlgoTag const & algoTag)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignment(align, scoringScheme, alignConfig, lowerDiag, upperDiag, algoTag);
+}
+
+// Interface without algorithm tag.
+template <typename TSequence, typename TAlignSpec,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
+String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & align,
+                                    Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                    AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
+                                    int lowerDiag, int upperDiag)
+{
+    if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
+        return globalAlignment(align, scoringScheme, alignConfig, lowerDiag, upperDiag, NeedlemanWunsch());
+    else
+        return globalAlignment(align, scoringScheme, alignConfig, lowerDiag, upperDiag, Gotoh());
+}
+
+// Interface without AlignConfig<> and algorithm tag.
+template <typename TSequence, typename TAlignSpec,
+          typename TScoreValue, typename TScoreSpec>
+String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & align,
+                                    Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                    int lowerDiag, int upperDiag)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignment(align, scoringScheme, alignConfig, lowerDiag, upperDiag);
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_BANDED_H_

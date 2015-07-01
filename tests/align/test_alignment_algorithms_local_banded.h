@@ -65,6 +65,35 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_local_linear_banded)
         SEQAN_ASSERT_EQ(ssH.str(), "CTTAAGCT");
         SEQAN_ASSERT_EQ(ssV.str(), "CTT-AGCT");
     }
+
+    { // Simd version
+        Dna5String strH("GGGGCTTAAGCTTGGGG");
+        Dna5String strV("AAAACTTAGCTCTAAAA");
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        SimpleScore scoringScheme(2, -1, -2, -2);
+        String<int> scores = localAlignment(alignments, scoringScheme, -2, 2);
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 12);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "CTTAAGCT");
+            SEQAN_ASSERT_EQ(ssV.str(), "CTT-AGCT");
+        }
+    }
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_local_linear_banded)
@@ -182,6 +211,35 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_local_affine_banded)
 
         SEQAN_ASSERT_EQ(ssH.str(), "CTTAAGCT");
         SEQAN_ASSERT_EQ(ssV.str(), "CTT-AGCT");
+    }
+
+    { // Simd version
+        Dna5String strH("GGGGCTTAAGCTTGGGG");
+        Dna5String strV("AAAACTTAGCTCTAAAA");
+
+        StringSet<Align<Dna5String> > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<Dna5String> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), strH);
+            assignSource(row(align, 1), strV);
+            appendValue(alignments, align);
+        }
+
+        SimpleScore scoringScheme(2, -1, -2, -4);
+        String<int> scores = localAlignment(alignments, scoringScheme, -2, 2);
+
+        SEQAN_ASSERT_EQ(length(scores), 34);
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], 10);
+            std::stringstream ssH, ssV;
+            ssH << row(alignments[i], 0);
+            ssV << row(alignments[i], 1);
+            SEQAN_ASSERT_EQ(ssH.str(), "CTTAAGCT");
+            SEQAN_ASSERT_EQ(ssV.str(), "CTT-AGCT");
+        }
     }
 }
 

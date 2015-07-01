@@ -289,18 +289,6 @@ setScoreGap(Score<TValue, TSpec> & me, TValue const & value) {
     me.data_gap_extend = value;
 }
 
-
-// TODO(rmaerker): Remove this here!
-//template <typename TValue, typename TSpec, typename TVal1, typename TVal2>
-//inline TValue
-//score(Score<TValue, TSpec> const & me, TVal1 left, TVal2 right) {
-//    SEQAN_CHECKPOINT;
-//    if (left == right)
-//        return scoreMatch(me);
-//    else
-//        return scoreMismatch(me);
-//}
-
 }  // namespace SEQAN_NAMESPACE_MAIN
 
 #endif  // SEQAN_SSCORE_SIMPLE_H_
