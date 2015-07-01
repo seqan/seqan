@@ -254,7 +254,7 @@ goNext(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
             impl::moveWindow(me, &back(*me._stackPtr), stepSize + back(*me._stackPtr).remainingSize);  // Move the base to the next position coming from fromBase node.
         }
     }
-    else if (atEnd(nodePtr->nextDelta))
+    else if (atEnd(nodePtr->curDelta))
     {
         if (!back(*me._stackPtr).fromBase)
         {
@@ -264,6 +264,7 @@ goNext(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
         else
         {
             eraseBack(*me._stackPtr);  // Remove the old base representing fromBase
+            impl::moveWindow(me, &back(*me._stackPtr), stepSize + back(*me._stackPtr).remainingSize);  // Move the base to the next position coming from fromBase node.
         }
     }
 }

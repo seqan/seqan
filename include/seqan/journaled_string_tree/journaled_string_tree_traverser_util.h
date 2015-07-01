@@ -620,9 +620,16 @@ expandNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
     std::cout << "    Expand (" << &parent << ") " << std::endl;
 #endif //defined(DEBUG_JST_TRAVERSAL)
     parentPtr->curDelta = parentPtr->nextDelta;
+    if (SEQAN_UNLIKELY(atEnd(parentPtr->curDelta)))
+    {
+        // Reached end of sequence.
+        arrayFill(begin(parentPtr->coverage), end(parentPtr->coverage), false);
+        return stepSize;
+    }
+
     if (parentPtr->isBase)
     {
-        if ((*parentPtr->curDelta).deltaPos == 20)
+        if ((*parentPtr->curDelta).deltaPos == 90)
         {
             std::cout << "###############\n"
                       << "Last Range: " << (*(parentPtr->curDelta - 1)).deltaPos << " to " << (*parentPtr->nextDelta).deltaPos << std::endl;
@@ -643,7 +650,8 @@ expandNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
             if (impl::branchOut(it, *parentPtr, child) && impl::moveWindow(it, &child, stepSize) == 0 &&
                 child.remainingSize >= 0)
             {
-                impl::pushNode(it, SEQAN_MOVE(child));
+                if (SEQAN_LIKELY(!atEnd(child.curDelta)))  // Skip the node in case we reached the end already.
+                    impl::pushNode(it, SEQAN_MOVE(child));
             }
         }
         ++parentPtr->nextDelta;  // Move to the next branch point.
@@ -670,7 +678,7 @@ moveWindow(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
     std::cout << "MOVE by (" << stepSize << ") -> " << parentPtr << std::endl;
 #endif //defined(DEBUG_JST_TRAVERSAL)
     stepSize = impl::shiftWindowBy(*parentPtr, stepSize);
-    if (parentPtr->curEdgeIt == parentPtr->endEdgeIt && !atEnd(parentPtr->nextDelta))  // Reached branching point => expand node.
+    if (parentPtr->curEdgeIt == parentPtr->endEdgeIt)  // Reached branching point => expand node.
         stepSize = impl::expandNode(it, parentPtr, stepSize);
 
 #if defined(DEBUG_JST_TRAVERSAL)
