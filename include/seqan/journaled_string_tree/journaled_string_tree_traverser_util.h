@@ -511,7 +511,7 @@ shiftWindowBy(TNode & node, TSize stepSize)
 {
     SEQAN_ASSERT_GEQ(stepSize, 0);
 
-    if (stepSize < node.remainingSize)
+    if (stepSize < node.remainingSize || node.isBase)
     {
         auto minSteps = _min(stepSize, node.endEdgeIt - node.curEdgeIt);
         node.curEdgeIt += minSteps;
@@ -622,8 +622,11 @@ expandNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
     parentPtr->curDelta = parentPtr->nextDelta;
     if (parentPtr->isBase)
     {
-        std::cout << "###############\n"
-                  << "Last Range: " << (*(parentPtr->curDelta - 1)).deltaPos << " to " << (*parentPtr->nextDelta).deltaPos << std::endl;
+        if ((*parentPtr->curDelta).deltaPos == 20)
+        {
+            std::cout << "###############\n"
+                      << "Last Range: " << (*(parentPtr->curDelta - 1)).deltaPos << " to " << (*parentPtr->nextDelta).deltaPos << std::endl;
+        }
         SEQAN_ASSERT(length(*it._stackPtr) == 1u);
         appendValue(*it._stackPtr, *parentPtr);  // Copy the base node and mark it from base. This represents all contexts without the delta at the current position.
         impl::advanceBase(it, *parentPtr);
