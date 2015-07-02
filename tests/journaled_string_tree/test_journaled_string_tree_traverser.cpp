@@ -44,10 +44,13 @@ SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree_traverser)
     // Tests for journaled string tree
     SEQAN_CALL_TEST(test_journaled_string_tree_traverser_constructor);
     SEQAN_CALL_TEST(test_journaled_string_tree_traverser_traverser);
+    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_init);
+    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_context_size);
     SEQAN_CALL_TEST(test_journaled_string_tree_traverser_at_end);
-    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_string_context);
     SEQAN_CALL_TEST(test_journaled_string_tree_traverser_go_next);
+    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_context_iterator);
+
     SEQAN_CALL_TEST(test_journaled_string_tree_traverser_container);
-    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_traversal);
+    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_basic_traversal);
 }
 SEQAN_END_TESTSUITE

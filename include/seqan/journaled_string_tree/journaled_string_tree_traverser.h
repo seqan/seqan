@@ -59,55 +59,50 @@ public:
 
     // __ Member Variables ____________________________________________________
 
-    TJst *       _contPtr;
+    TJst *       _contPtr;  // Should be always const.
     TSize        _branchSize;
     TSize        _contextSize;
-    TNode        _tmp;      // Better use local vairable.
     TStackPtr    _stackPtr;
 
     // __ Constructors ________________________________________________________
 
+    // Default c'tor.
     TraverserImpl() :
         TSuper(),
         _contPtr(nullptr),
         _branchSize(0),
-        _contextSize(1),
-        _tmp(),
+        _contextSize(0),
         _stackPtr(impl::createStack<TStack>())
     {}
 
+    // C'tor with just the jst.
     TraverserImpl(TJst & jst) :
         TSuper(),
         _contPtr(nullptr),
-        _branchSize(historySize(jst)),
-        _contextSize(1),
-        _tmp(),
         _stackPtr(impl::createStack<TStack>())
     {
-        impl::init(*this, jst);
+        init(*this, jst, 1);
     }
 
+    // C'tor with the jst and the observer.
     template <typename TObserver_>
     TraverserImpl(TJst & jst, TObserver_ & observer, SEQAN_CTOR_DISABLE_IF(IsSameType<TObserver_, void>)) :
         TSuper(),
         _contPtr(nullptr),
-        _branchSize(historySize(jst)),
-        _contextSize(1),
         _stackPtr(impl::createStack<TStack>())
     {
         addObserver(*this, observer);
-        impl::init(*this, jst);
+        init(*this, jst, 1);
         ignoreUnusedVariableWarning(dummy);
     }
 
-    // Copy Constructor!
+    // Copy c'tor.
     template <typename TOtherJst>
     TraverserImpl(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec>, TObserver> const & other,
                   SEQAN_CTOR_ENABLE_IF(IsConstructible<TJst, TOtherJst>)) :
         _contPtr(other._contPtr),
         _branchSize(other._historySize),
         _contextSize(other._contextSize),
-        _tmp(other._tmp),
         _stackPtr(other._stackPtr)
     {
         ignoreUnusedVariableWarning(dummy);
@@ -124,7 +119,6 @@ public:
             _contPtr = other._contPtr;
             _branchSize =other._historySize;
             _contextSize = other._contextSize;
-            _tmp = other._tmp;
             _stackPtr = other._stackPtr;
         }
         return *this;
@@ -134,6 +128,10 @@ public:
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction Container
+// ----------------------------------------------------------------------------
 
 template <typename TJst, typename TSpec, typename TObserver>
 struct Container<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
@@ -146,6 +144,9 @@ struct Container<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const>
     : Container<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
 {};
 
+// ----------------------------------------------------------------------------
+// Metafunction Size
+// ----------------------------------------------------------------------------
 
 template <typename TJst, typename TSpec, typename TObserver>
 struct Size<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
@@ -153,16 +154,31 @@ struct Size<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
     typedef typename Size<TJst>::Type    Type;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction ContextIterator
+// ----------------------------------------------------------------------------
+
 template <typename TJst, typename TSpec, typename TObserver>
-struct StringContext<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
+struct ContextIterator<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
 {
     typedef TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>     TThis_;
     typedef typename Container<TThis_>::Type                            TContainer_;
     typedef typename Source<TContainer_>::Type                          TSource_;
-    typedef typename Iterator<TSource_, Standard>::Type                 TSourceIt_;
 
-    typedef Range<TSourceIt_>                                           Type;
+    typedef typename Iterator<TSource_, Standard>::Type                 Type;
 };
+
+template <typename TJst, typename TSpec, typename TObserver>
+struct ContextIterator<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const>
+{
+    typedef TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> TTraverser_;
+
+    typedef typename ContextIterator<TTraverser_>::Type  const      Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction Member<TraverserStackMember>
+// ----------------------------------------------------------------------------
 
 template <typename TJst, typename TSpec, typename TObserver>
 struct Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>, TraverserStackMember>
@@ -176,18 +192,30 @@ struct Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>, Traverser
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function stringContext()
+// Function contextIterator();
 // ----------------------------------------------------------------------------
 
+// Returns current sequence iterator.
 template <typename TJst, typename TSpec, typename TObserver>
-inline typename StringContext<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >::Type
-stringContext(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & traversor)
+inline typename ContextIterator<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >::Type
+contextIterator(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
 {
-    return impl::getStringContext(traversor);
+    return impl::getContextIterator(me);
 }
 
 // ----------------------------------------------------------------------------
-// Function container
+// Function contextSize();
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline typename Size<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >::Type
+contextSize(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
+{
+    return me._contextSize;
+}
+
+// ----------------------------------------------------------------------------
+// Function container();
 // ----------------------------------------------------------------------------
 
 template <typename TJst, typename TSpec, typename TObserver>
@@ -205,40 +233,8 @@ container(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function setContextSize();
+// Function goNext();
 // ----------------------------------------------------------------------------
-
-template <typename TJst, typename TSpec, typename TObserver,
-          typename TSize>
-inline void setContextSize(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
-                           TSize size)
-{
-    me._contextSize = size;
-}
-
-// ----------------------------------------------------------------------------
-// Function contextSize();
-// ----------------------------------------------------------------------------
-
-template <typename TJst, typename TSpec, typename TObserver>
-inline typename Size<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >::Type
-contextSize(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
-{
-    me._contextSize = size;
-}
-
-// ----------------------------------------------------------------------------
-// Function atBegin()
-// ----------------------------------------------------------------------------
-
-template <typename TJst, typename TSpec, typename TObserver>
-inline bool
-atBegin(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
-{
-    SEQAN_ASSERT(resource(me._rm) != nullptr);
-    return back(*resource(me._rm)).mappedSrcEndPos == -1;
-}
-
 
 template <typename TJst, typename TSpec, typename TObserver,
           typename TSize>
@@ -255,14 +251,7 @@ goNext(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
 #endif  // DEBUG_JST_TRAVERSAL
     stepSize = impl::moveWindow(me, nodePtr, stepSize);
 
-    // Case A) stepSize == 0 && node.remainingSize > 0;  // vaild context
-    // Case B) stepSize == 0 && node.remainingSize = 0;  // valid context
-    // Case C) stepSize > 0 && node.remaingingSize = 0;  // invalid context -> we have to pop an element from the tree.
-    // Case D) stepSize > 0 && node.remainingSize > 0;   // invalid case: ASSERT
-
-//    SEQAN_ASSERT_NOT(stepSize > static_cast<TSize>(0) && nodePtr->remainingSize >static_cast<TSize>(0));
-
-    if (stepSize > 0 && nodePtr->remainingSize == 0)
+    if ((stepSize > 0 && nodePtr->remainingSize == 0) || atEnd(nodePtr->curDelta))
     {
         if (!back(*me._stackPtr).fromBase)
         {
@@ -292,11 +281,7 @@ goNext(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
     }
 }
 
-// ----------------------------------------------------------------------------
-// Function goNext()
-// ----------------------------------------------------------------------------
-
-// Standard version just iterating over the delta nodes.
+// Special overload to move by one.
 template <typename TJst, typename TSpec, typename TObserver>
 inline void
 goNext(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it)
@@ -305,7 +290,7 @@ goNext(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it)
 }
 
 // ----------------------------------------------------------------------------
-// Function atEnd()
+// Function atEnd();
 // ----------------------------------------------------------------------------
 
 template <typename TJst, typename TSpec, typename TObserver>
@@ -314,6 +299,20 @@ atEnd(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
 {
     SEQAN_ASSERT(me._stackPtr != nullptr);
     return length(*me._stackPtr) == 1 && back(*me._stackPtr).endEdgeIt == sourceEnd(container(me)._buffer);
+}
+
+// ----------------------------------------------------------------------------
+// Function init();
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver,
+          typename TSize>
+inline void
+init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
+     TJst & jst,
+     TSize const contextSize)
+{
+    impl::init(me, jst, contextSize);
 }
 
 }  // namespace seqan

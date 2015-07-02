@@ -71,6 +71,98 @@ namespace impl
 {
 
 // ----------------------------------------------------------------------------
+// Function impl::createStack();
+// ----------------------------------------------------------------------------
+
+template <typename TStack>
+inline TStack*
+createStack()
+{
+    return new TStack;
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::stack();
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>, TraverserStackMember>::Type &
+stack(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
+{
+    return *me._stackPtr;
+}
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const, TraverserStackMember>::Type &
+stack(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
+{
+    return *me._stackPtr;
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::pushNode();
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver,
+          typename TTraversalNode>
+inline void
+pushNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
+         TTraversalNode SEQAN_FORWARD_CARG node)
+{
+#if defined(DEBUG_JST_TRAVERSAL)
+    //    std::cout << "-----> Journal " << container(node.endEdgeIt) << std::endl;
+    std::cout << "        PUSH: (" << node << ")" << std::endl;
+#endif //defined(DEBUG_JST_TRAVERSAL)
+    appendValue(impl::stack(me), SEQAN_FORWARD(TTraversalNode, node));
+    notify(me, PushEvent());
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::popNode();
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline void
+popNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
+{
+
+#if defined(DEBUG_JST_TRAVERSAL)
+    std::cout << "        POP: (" << impl::activeNode(me) << ")" << std::endl;
+#endif //defined(DEBUG_JST_TRAVERSAL)
+    eraseBack(impl::stack(me));
+    notify(me, PopEvent());
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::activeNode()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline JstTraversalNode<TJst> const &
+activeNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
+{
+    return back(impl::stack(me));
+}
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline JstTraversalNode<TJst> &
+activeNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
+{
+    return back(impl::stack(me));
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::getContextIterator()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline typename ContextIterator<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const>::Type
+getContextIterator(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
+{
+    return impl::activeNode(me).curEdgeIt;
+}
+
+// ----------------------------------------------------------------------------
 // Function impl::mapSourceToVirtual()
 // ----------------------------------------------------------------------------
 
@@ -203,28 +295,6 @@ getPos(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me,
 }
 
 // ----------------------------------------------------------------------------
-// Function impl::inBranch()
-// ----------------------------------------------------------------------------
-
-template <typename TJst, typename TSpec, typename TObserver>
-inline bool
-inBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
-{
-    return length(*resource(me._rm)) > 1;
-}
-
-// ----------------------------------------------------------------------------
-// Function impl::isMergePoint()
-// ----------------------------------------------------------------------------
-
-template <typename TJst, typename TSpec, typename TObserver>
-inline bool
-isMergePoint(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
-{
-    return !impl::inBranch(me) && back(*resource(me._rm)).mappedSrcEndPos != deltaPosition(back(*resource(me._rm)).curDelta);
-}
-
-// ----------------------------------------------------------------------------
 // Function impl::toNextDeltaBehindDeletion();
 // ----------------------------------------------------------------------------
 
@@ -253,14 +323,16 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
              TTraversalNode & parent,
              TTraversalNode & child)
 {
+    typedef typename TTraversalNode::TDeltaIterator TDeltaIt   SEQAN_TYPEDEF_FOR_DEBUG;
+    typedef typename Position<TDeltaIt>::Type       TPos       SEQAN_TYPEDEF_FOR_DEBUG;
     // We set the coverage of the left child to be the one of the parent & coverage(curDelta);
     transform(child.coverage, parent.coverage, getDeltaCoverage(*impl::hostIter(parent.nextDelta)), FunctorBitwiseAnd());
     transform(parent.coverage, parent.coverage, getDeltaCoverage(*impl::hostIter(parent.nextDelta)),
               FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
 
 //#if defined(DEBUG_JST_TRAVERSAL)
-    std::cout << "Coverage Child: " << _printCoverage(child.coverage) << std::endl;
-    std::cout << "Coverage Paren: " << _printCoverage(parent.coverage) << std::endl;
+//    std::cout << "Coverage Child: " << _printCoverage(child.coverage) << std::endl;
+//    std::cout << "Coverage Paren: " << _printCoverage(parent.coverage) << std::endl;
 //#endif // defined(DEBUG_JST_TRAVERSAL)
     // Set the current delta of the child to the next delta of the parent.
     child.curDelta = parent.nextDelta;
@@ -271,7 +343,6 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
         return false;  // We can skip this child, since it has an empty coverage.
 
     // B) Remap the sequence iterators according to the new positions.
-    bool inBegOfDelta = (parent.endEdgeIt - parent.begEdgeIt) <= 1;
     if (&container(it)._buffer._journaledSet[proxyId] == &container(parent.endEdgeIt))
     {
         // remap parent node to new journal sequence.
@@ -381,7 +452,7 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
         }
     }
 
-    SEQAN_ASSERT(delSize <= impl::getPos(it, child.nextDelta) - impl::getPos(it, child.curDelta));
+    SEQAN_ASSERT(static_cast<TPos>(delSize) <= impl::getPos(it, child.nextDelta) - impl::getPos(it, child.curDelta));
 
     child.begEdgeIt = child.endEdgeIt;
     child.curEdgeIt = child.begEdgeIt;
@@ -504,82 +575,30 @@ template <typename TNode, typename TSize>
 inline TSize
 shiftWindowBy(TNode & node, TSize stepSize)
 {
-    SEQAN_ASSERT_GEQ(stepSize, 0);
+    typedef typename TNode::TSeqIterator TSeqIter;
+    typedef typename Difference<TSeqIter>::Type TDiff;
+
+    SEQAN_ASSERT_GEQ(stepSize, static_cast<TSize>(0));
 
     if (stepSize < static_cast<TSize>(node.remainingSize) || node.isBase)
     {
-        auto minSteps = _min(stepSize, node.endEdgeIt - node.curEdgeIt);
+        auto minSteps = _min(static_cast<TDiff>(stepSize), node.endEdgeIt - node.curEdgeIt);
         node.curEdgeIt += minSteps;
         if (!node.isBase)
             node.remainingSize -= minSteps;
         return stepSize - minSteps;
     }
 
-    auto minSteps = _min(node.remainingSize, node.endEdgeIt - node.curEdgeIt);
+    auto minSteps = _min(static_cast<TDiff>(node.remainingSize), node.endEdgeIt - node.curEdgeIt);
     node.curEdgeIt += minSteps;
     if (!node.isBase)
         node.remainingSize -= minSteps;
     return stepSize - minSteps;
 }
 
-template <typename TJst, typename TSpec, typename TObserver,
-          typename TTraversalNode>
-inline void
-pushNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & traverser,
-         TTraversalNode SEQAN_FORWARD_CARG node)
-{
-#if defined(DEBUG_JST_TRAVERSAL)
-//    std::cout << "-----> Journal " << container(node.endEdgeIt) << std::endl;
-    std::cout << "        PUSH: (" << node << ")" << std::endl;
-#endif //defined(DEBUG_JST_TRAVERSAL)
-    appendValue(*traverser._stackPtr, SEQAN_FORWARD(TTraversalNode, node));
-    notify(traverser, PushEvent());
-}
-
-template <typename TJst, typename TSpec, typename TObserver>
-inline void
-popNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & traverser)
-{
-
-#if defined(DEBUG_JST_TRAVERSAL)
-    std::cout << "        POP: (" << back(*traverser._stackPtr) << ")" << std::endl;
-#endif //defined(DEBUG_JST_TRAVERSAL)
-    eraseBack(*traverser._stackPtr);
-    notify(traverser, PopEvent());
-}
-
-template <typename TStack>
-inline TStack*
-createStack()
-{
-    return new TStack;
-}
-
-
-template <typename TJst, typename TSpec, typename TObserver>
-inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>, TraverserStackMember>::Type &
-stack(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me)
-{
-    return *me._stackPtr;
-}
-
-template <typename TJst, typename TSpec, typename TObserver>
-inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const, TraverserStackMember>::Type &
-stack(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
-{
-    return *me._stackPtr;
-}
-
 // ----------------------------------------------------------------------------
-// Function impl::getStringContext()
+// Function impl::moveWindow();
 // ----------------------------------------------------------------------------
-
-template <typename TJst, typename TSpec, typename TObserver>
-inline typename StringContext<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >::Type
-getStringContext(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & traverser)
-{
-    // TODO(rrahn): Write me!
-}
 
 // Forward declaration for recursive call.
 template <typename TJst, typename TSpec, typename TObserver,
@@ -672,16 +691,24 @@ moveWindow(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
 // Function init()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver>
+template <typename TJst, typename TSpec, typename TObserver,
+          typename TSize>
 inline void
 init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
-     TJst & jst)
+     TJst & jst,
+     TSize const contextSize)
 {
     typedef typename TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>::TNode TNode;
 
-    SEQAN_ASSERT(me._branchSize > 0);
-
     me._contPtr = &jst;
+    me._contextSize = contextSize;
+    me._branchSize = historySize(jst);
+
+    SEQAN_ASSERT(me._branchSize > 0);
+    SEQAN_ASSERT(me._stackPtr != nullptr);
+
+    clear(impl::stack(me));
+
     TNode node;
     resize(node.coverage, dimension(jst), true, Exact());
 
@@ -698,23 +725,10 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
     appendValue(*me._stackPtr, SEQAN_MOVE(node));  // Push onto stack.
 
     // After we realized this.
-    TNode* basePtr = &back(*me._stackPtr);
-
-    // Record deletions at beginning.
-//    auto tmpDelta = basePtr->nextDelta;
-//    while ((*tmpDelta).deltaPos == position(basePtr->begEdgeIt))
-//    {
-//        impl::updateOnDeletion(*basePtr, impl::hostIter(tmpDelta));
-//        ++tmpDelta;
-//    }
+    TNode* basePtr = &impl::activeNode(me);
 
     SEQAN_ASSERT_GEQ(me._contextSize, 1u);
     impl::moveWindow(me, basePtr, me._contextSize - 1);   // We move the traverser to the beginning of the
-    // Initialize the traverser if there are events at the beginning of the tree.
-//    if ((*(base->nextDelta)).deltaPos == position(base->begEdgeIt))
-//    {
-//        impl::expandNode(me, base, 0);
-//    }
 }
 
 

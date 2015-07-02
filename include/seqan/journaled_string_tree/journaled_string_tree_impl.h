@@ -560,6 +560,7 @@ insertNode(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
     typedef typename DeltaCoverage<TDeltaMap>::Type         TCoverage;
     typedef typename Value<TIds>::Type                      TID;
     typedef typename MakeUnsigned<TPos>::Type               TMaxPos SEQAN_TYPEDEF_FOR_DEBUG;
+    typedef typename Size<TJst>::Type                       TSize   SEQAN_TYPEDEF_FOR_DEBUG;
 
     SEQAN_ASSERT_LT(static_cast<TMaxPos>(srcPos), maxSize(jst));
 
@@ -569,7 +570,7 @@ insertNode(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
 
     forEach(ids,[&jst, &coverage](TID seqId)
     {
-        SEQAN_ASSERT_LT(seqId, dimension(jst));  // Check that id is valid.
+        SEQAN_ASSERT_LT(static_cast<TSize>(seqId), dimension(jst));  // Check that id is valid.
         coverage[seqId] = true;
     });
     markModified(jst._buffer);
@@ -708,40 +709,52 @@ create(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
 //    return position(sourceEnd(jst._buffer));
 //}
 
-// ----------------------------------------------------------------------------
-// Function traverser()
-// ----------------------------------------------------------------------------
+// TODO(rrahn): Why do we need a traverser function? We can simply create one. We could create an Iterator, which
+// wrapps an traverser with context size 1.
 
-template <typename TSequence, typename TConfig, typename TSpec, typename TObserver>
-inline typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec>, TObserver>::Type
-traverser(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
-          TObserver & observer)
-{
-    return typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec>, TObserver>::Type(jst, observer);
-}
-
-template <typename TSequence, typename TConfig, typename TSpec, typename TObserver>
-inline typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec> const, TObserver>::Type
-traverser(JournaledStringTree<TSequence, TConfig, TSpec> const & jst,
-          TObserver & observer)
-{
-    return typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec> const, TObserver>::Type(jst, observer);
-}
-
-template <typename TSequence, typename TConfig, typename TSpec>
-inline typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec>, void>::Type
-traverser(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
-{
-    return typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec>, void>::Type(jst);
-}
-
-template <typename TSequence, typename TConfig, typename TSpec>
-inline typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec> const>::Type
-traverser(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
-{
-    return typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec> const>::Type(jst);
-}
-
+//// ----------------------------------------------------------------------------
+//// Function traverser()
+//// ----------------------------------------------------------------------------
+//
+//template <typename TSequence, typename TConfig, typename TSpec,
+//          typename TSize,
+//          typename TObserver>
+//inline typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec>, TObserver>::Type
+//traverser(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
+//          TSize const contextSize,
+//          TObserver & observer)
+//{
+//    SEQAN_ASSERT_GEQ(contextSize, static_cast<TSize>(1));
+//    return typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec>, TObserver>::Type(jst, contextSize, observer);
+//}
+//
+//template <typename TSequence, typename TConfig, typename TSpec,
+//          typename TSize,
+//          typename TObserver>
+//inline typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec> const, TObserver>::Type
+//traverser(JournaledStringTree<TSequence, TConfig, TSpec> const & jst,
+//          TSize const contextSize,
+//          TObserver & observer)
+//{
+//    SEQAN_ASSERT_GEQ(contextSize, static_cast<TSize>(1));
+//    return typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec> const, TObserver>::Type(jst, contextSize, observer);
+//}
+//
+//template <typename TSequence, typename TConfig, typename TSpec,
+//          typename TSize>
+//inline typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec>, void>::Type
+//traverser(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
+//          TSize const contextSize)
+//{
+//    return typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec>, void>::Type(jst);
+//}
+//
+//template <typename TSequence, typename TConfig, typename TSpec>
+//inline typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec> const>::Type
+//traverser(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
+//{
+//    return typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec> const>::Type(jst);
+//}
 
 }
 

@@ -76,7 +76,8 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_constructor)
     {  // Default ctor.
         TTraverser traverser;
         SEQAN_ASSERT(traverser._contPtr == nullptr);
-        SEQAN_ASSERT(traverser._contextSize == 1);
+        SEQAN_ASSERT(traverser._branchSize == 0);
+        SEQAN_ASSERT(traverser._contextSize == 0);
         SEQAN_ASSERT(traverser._stackPtr.get() != nullptr);
         SEQAN_ASSERT(empty(*traverser._stackPtr) == true);
     }
@@ -86,9 +87,14 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_constructor)
 
         TTraverser traverser(jst);
         SEQAN_ASSERT(traverser._contPtr == &jst);
+        SEQAN_ASSERT(traverser._branchSize == historySize(jst));
         SEQAN_ASSERT(traverser._contextSize == 1);
         SEQAN_ASSERT(traverser._stackPtr.get() != nullptr);
         SEQAN_ASSERT(length(*traverser._stackPtr) == 1u);
+    }
+
+    {  // Copy C'tor
+
     }
 }
 
@@ -97,11 +103,11 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_traverser)
     typedef JournaledStringTree<DnaString> TJst;
     typedef TraverserImpl<TJst, JstTraversalSpec<> > TTraverser;
 
+    // Test Traverser Metafunction!
     TJst jst = _createSimpleJst<TJst>();
 
-
     { // Without observable
-        typename Traverser<TJst>::Type subject = traverser(jst);
+        typename Traverser<TJst>::Type subject(jst);
         SEQAN_ASSERT(subject._contPtr == &jst);
         SEQAN_ASSERT(subject._contextSize == 1);
         SEQAN_ASSERT(length(*subject._stackPtr) == 1);
@@ -109,10 +115,128 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_traverser)
     { // With observable
         // TODO(rrahn): Write me!
     }
+}
+
+SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_init)
+{
+    typedef JournaledStringTree<DnaString> TJst;
+    typedef TraverserImpl<TJst, JstTraversalSpec<> > TTraverser;
+
+    TJst jst = _createSimpleJst<TJst>();
+
+    {
+        TTraverser test;
+        init(test, jst, 1);
+
+        SEQAN_ASSERT(test._contPtr == &jst);
+        SEQAN_ASSERT(test._branchSize == historySize(jst));
+        SEQAN_ASSERT(test._contextSize == 1u);
+        SEQAN_ASSERT(length(*test._stackPtr) == 1);
+        SEQAN_ASSERT(*back(*test._stackPtr).curEdgeIt == 'A');
+    }
+
+    {
+        TTraverser test;
+        init(test, jst, 5);
+
+        SEQAN_ASSERT(test._contPtr == &jst);
+        SEQAN_ASSERT(test._branchSize == historySize(jst));
+        SEQAN_ASSERT(test._contextSize == 5u);
+        SEQAN_ASSERT(length(*test._stackPtr) == 3);
+        SEQAN_ASSERT(*(back(*test._stackPtr).curEdgeIt) == 'G');
+    }
+
+    {
+        TTraverser test;
+        init(test, jst, 10);
+
+        SEQAN_ASSERT(test._contPtr == &jst);
+        SEQAN_ASSERT(test._branchSize == historySize(jst));
+        SEQAN_ASSERT(test._contextSize == 10u);
+        SEQAN_ASSERT_EQ(length(*test._stackPtr), 4);
+        SEQAN_ASSERT(*(back(*test._stackPtr).curEdgeIt) == 'C');
+    }
 
 }
 
-SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_traversal)
+SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_container)
+{
+    typedef JournaledStringTree<DnaString> TJst;
+    typedef TraverserImpl<TJst, JstTraversalSpec<> > TTraverser;
+
+    TJst jst = _createSimpleJst<TJst>();
+
+    TTraverser test(jst);
+    SEQAN_ASSERT_EQ(&container(test), &jst);
+
+    TTraverser const testC = test;
+    SEQAN_ASSERT_EQ(&container(test), &jst);
+}
+
+SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_context_iterator)
+{
+    typedef JournaledStringTree<DnaString> TJst;
+    typedef TraverserImpl<TJst, JstTraversalSpec<> > TTraverser;
+
+    TJst jst = _createSimpleJst<TJst>();
+    TTraverser test(jst);
+
+    SEQAN_ASSERT(contextIterator(test) == begin(source(jst), Standard()));
+}
+
+SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_go_next)
+{
+    typedef JournaledStringTree<DnaString> TJst;
+    typedef TraverserImpl<TJst, JstTraversalSpec<> > TTraverser;
+
+    TJst jst = _createSimpleJst<TJst>();
+    TTraverser test(jst);
+
+    SEQAN_ASSERT(*contextIterator(test) == 'A');
+    goNext(test);
+    SEQAN_ASSERT(*contextIterator(test) == 'C');
+    goNext(test, 6);
+    SEQAN_ASSERT(*contextIterator(test) == 'T');
+    goNext(test, 2);
+    SEQAN_ASSERT(*contextIterator(test) == 'C');
+    goNext(test, 7);
+    SEQAN_ASSERT(*contextIterator(test) == 'A');
+    goNext(test, 10);
+    SEQAN_ASSERT(*contextIterator(test) == 'G');
+}
+
+SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_at_end)
+{
+    typedef JournaledStringTree<DnaString> TJst;
+    typedef TraverserImpl<TJst, JstTraversalSpec<> > TTraverser;
+
+    TJst jst = _createSimpleJst<TJst>();
+    TTraverser test(jst);
+
+    SEQAN_ASSERT_EQ(atEnd(test), false);
+    for (unsigned i = 0; i < 70; ++i)
+    {
+        goNext(test);
+    }
+    SEQAN_ASSERT_EQ(atEnd(test), true);
+}
+
+SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_context_size)
+{
+    typedef JournaledStringTree<DnaString> TJst;
+    typedef TraverserImpl<TJst, JstTraversalSpec<> > TTraverser;
+
+    TJst jst = _createSimpleJst<TJst>();
+
+    TTraverser test(jst);
+
+    SEQAN_ASSERT_EQ(contextSize(test), 1u);
+
+    init(test, jst, 5);
+    SEQAN_ASSERT_EQ(contextSize(test), 5u);
+}
+
+SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_basic_traversal)
 {
     CharString path = SEQAN_PATH_TO_ROOT();
     append(path, "/tests/journaled_string_tree/testConfig.txt");
@@ -133,65 +257,46 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_traversal)
 
     std::stringstream strStream;
 
-    auto sub = traverser(jst);
 
-//    unsigned lastId = length(*sub._stackPtr);
-//    String<bool, Packed<> > lastCov;
+    typename Traverser<JournaledStringTree<DnaString, TestJstPosConfig_> >::Type sub(jst);
+
+    //    unsigned lastId = length(*sub._stackPtr);
+    //    String<bool, Packed<> > lastCov;
     while (!atEnd(sub))
     {
         //stepSize = presentContext(alg);
-//        if (lastId != length(*sub._stackPtr))
-//        {
-//            std::cout << "Node ID: " << lastId << " Label: " << strStream.str() << " Coverage: " << _printCoverage(lastCov) << std::endl;
-//            strStream.str("");
-//        }
+        //        if (lastId != length(*sub._stackPtr))
+        //        {
+        //            std::cout << "Node ID: " << lastId << " Label: " << strStream.str() << " Coverage: " << _printCoverage(lastCov) << std::endl;
+        //            strStream.str("");
+        //        }
 
         unsigned count = 0;
         for (auto it = begin(back(*sub._stackPtr).coverage); it != end(back(*sub._stackPtr).coverage); ++it, ++count)
             if (*it)
                 appendValue(testSeqs[count], *(back(*sub._stackPtr).curEdgeIt));
 
-//        std::cout << "Current Sequences: " << std::endl;
-//        count = 0;
-//        for (auto seq : testSeqs)
-//        {
-//            std::cout << "seq ";
-//            std::cout.fill('0');
-//            std::cout.width(2);
-//            std::cout << count << ": ";
-//            std::cout << seq << '\n';
-//            ++count;
-//        }
+        //        std::cout << "Current Sequences: " << std::endl;
+        //        count = 0;
+        //        for (auto seq : testSeqs)
+        //        {
+        //            std::cout << "seq ";
+        //            std::cout.fill('0');
+        //            std::cout.width(2);
+        //            std::cout << count << ": ";
+        //            std::cout << seq << '\n';
+        //            ++count;
+        //        }
 
-//        lastId = length(*sub._stackPtr);
-//        strStream << *(back(*sub._stackPtr).curEdgeIt);
-//        lastCov = back(*sub._stackPtr).coverage;
+        //        lastId = length(*sub._stackPtr);
+        //        strStream << *(back(*sub._stackPtr).curEdgeIt);
+        //        lastCov = back(*sub._stackPtr).coverage;
         goNext(sub);
-
+        
     }
-
+    
     for (unsigned i = 0; i < length(jst._buffer._journaledSet); ++i)
         SEQAN_ASSERT(testSeqs[i] == jst._buffer._journaledSet[i]);
 }
 
-
-SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_at_end)
-{
-    SEQAN_ASSERT_FAIL("Write me!");
-}
-
-SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_string_context)
-{
-    SEQAN_ASSERT_FAIL("Write me!");
-}
-
-SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_go_next)
-{
-    SEQAN_ASSERT_FAIL("Write me!");
-}
-
-SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_container)
-{
-    SEQAN_ASSERT_FAIL("Write me!");
-}
 #endif // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_TRAVERSER_H_
