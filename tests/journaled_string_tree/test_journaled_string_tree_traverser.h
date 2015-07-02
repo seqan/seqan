@@ -135,8 +135,8 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_traversal)
 
     auto sub = traverser(jst);
 
-    unsigned lastId = length(*sub._stackPtr);
-    String<bool, Packed<> > lastCov;
+//    unsigned lastId = length(*sub._stackPtr);
+//    String<bool, Packed<> > lastCov;
     while (!atEnd(sub))
     {
         //stepSize = presentContext(alg);
@@ -151,17 +151,17 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_traversal)
             if (*it)
                 appendValue(testSeqs[count], *(back(*sub._stackPtr).curEdgeIt));
 
-        std::cout << "Current Sequences: " << std::endl;
-        count = 0;
-        for (auto seq : testSeqs)
-        {
-            std::cout << "seq ";
-            std::cout.fill('0');
-            std::cout.width(2);
-            std::cout << count << ": ";
-            std::cout << seq << '\n';
-            ++count;
-        }
+//        std::cout << "Current Sequences: " << std::endl;
+//        count = 0;
+//        for (auto seq : testSeqs)
+//        {
+//            std::cout << "seq ";
+//            std::cout.fill('0');
+//            std::cout.width(2);
+//            std::cout << count << ": ";
+//            std::cout << seq << '\n';
+//            ++count;
+//        }
 
 //        lastId = length(*sub._stackPtr);
 //        strStream << *(back(*sub._stackPtr).curEdgeIt);
@@ -169,6 +169,9 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_traversal)
         goNext(sub);
 
     }
+
+    for (unsigned i = 0; i < length(jst._buffer._journaledSet); ++i)
+        SEQAN_ASSERT(testSeqs[i] == jst._buffer._journaledSet[i]);
 }
 
 

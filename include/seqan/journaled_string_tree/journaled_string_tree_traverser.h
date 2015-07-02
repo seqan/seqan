@@ -60,7 +60,7 @@ public:
     // __ Member Variables ____________________________________________________
 
     TJst *       _contPtr;
-    TSize        _historySize;
+    TSize        _branchSize;
     TSize        _contextSize;
     TNode        _tmp;      // Better use local vairable.
     TStackPtr    _stackPtr;
@@ -70,7 +70,7 @@ public:
     TraverserImpl() :
         TSuper(),
         _contPtr(nullptr),
-        _historySize(0),
+        _branchSize(0),
         _contextSize(1),
         _tmp(),
         _stackPtr(impl::createStack<TStack>())
@@ -79,7 +79,7 @@ public:
     TraverserImpl(TJst & jst) :
         TSuper(),
         _contPtr(nullptr),
-        _historySize(historySize(jst)),
+        _branchSize(historySize(jst)),
         _contextSize(1),
         _tmp(),
         _stackPtr(impl::createStack<TStack>())
@@ -91,7 +91,7 @@ public:
     TraverserImpl(TJst & jst, TObserver_ & observer, SEQAN_CTOR_DISABLE_IF(IsSameType<TObserver_, void>)) :
         TSuper(),
         _contPtr(nullptr),
-        _historySize(historySize(jst)),
+        _branchSize(historySize(jst)),
         _contextSize(1),
         _stackPtr(impl::createStack<TStack>())
     {
@@ -105,7 +105,7 @@ public:
     TraverserImpl(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec>, TObserver> const & other,
                   SEQAN_CTOR_ENABLE_IF(IsConstructible<TJst, TOtherJst>)) :
         _contPtr(other._contPtr),
-        _historySize(other._historySize),
+        _branchSize(other._historySize),
         _contextSize(other._contextSize),
         _tmp(other._tmp),
         _stackPtr(other._stackPtr)
@@ -122,7 +122,7 @@ public:
         if (*this != &other)
         {
             _contPtr = other._contPtr;
-            _historySize =other._historySize;
+            _branchSize =other._historySize;
             _contextSize = other._contextSize;
             _tmp = other._tmp;
             _stackPtr = other._stackPtr;
@@ -202,6 +202,29 @@ inline typename Container<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver
 container(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
 {
     return *me._contPtr;
+}
+
+// ----------------------------------------------------------------------------
+// Function setContextSize();
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver,
+          typename TSize>
+inline void setContextSize(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
+                           TSize size)
+{
+    me._contextSize = size;
+}
+
+// ----------------------------------------------------------------------------
+// Function contextSize();
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline typename Size<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >::Type
+contextSize(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
+{
+    me._contextSize = size;
 }
 
 // ----------------------------------------------------------------------------
