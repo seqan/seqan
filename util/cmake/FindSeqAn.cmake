@@ -291,17 +291,13 @@ if (_SEQAN_HAVE_EXECINFO)
   endif (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 endif (_SEQAN_HAVE_EXECINFO)
 
-
-# libstdc++ -- implicit, Mac only (clang seems not to do this automatically)
-
-if (APPLE)
-  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} stdc++)
-endif (APPLE)
-
-# always use libc++ with clang
-# if (COMPILER_IS_CLANG)
-#     set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-stdlib=libc++")
-# endif()
+# always use libc++ with clang for compatibility reasons
+if (COMPILER_IS_CLANG)
+    set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-stdlib=libc++")
+    if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+        set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} c++ )
+    endif()
+endif()
 
 # ZLIB
 
