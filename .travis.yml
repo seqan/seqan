@@ -7,7 +7,7 @@ cache:
   directories:
   - _build
 before_script:
-  - sudo apt-get install -qq cmake python python-nose zlib1g-dev libbz2-dev libboost-dev python-jinja2 python-pip libc++1
+  - sudo apt-get install -qq cmake python python-nose zlib1g-dev libbz2-dev libboost-dev python-jinja2 python-pip
   - sudo pip install -r manual/requirements.txt
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
     sudo apt-get update -qq;
@@ -17,5 +17,12 @@ before_script:
       export CXX=g++-4.8 CC=gcc-4.8;
       gcc-4.8 --version;
     fi
+  - if [ "$CXX" == "clang++" ]; then svn co --quiet http://llvm.org/svn/llvm-project/libcxx/trunk libcxx; fi
+  - if [ "$CXX" == "clang++" ]; then cd libcxx/lib && bash buildit; fi
+  - if [ "$CXX" == "clang++" ]; then sudo cp ./libc++.so.1.0 /usr/lib/; fi
+  - if [ "$CXX" == "clang++" ]; then sudo mkdir /usr/include/c++/v1; fi
+  - if [ "$CXX" == "clang++" ]; then cd .. && sudo cp -r include/* /usr/include/c++/v1/; fi
+  - if [ "$CXX" == "clang++" ]; then cd /usr/lib && sudo ln -sf libc++.so.1.0 libc++.so; fi
+  - if [ "$CXX" == "clang++" ]; then sudo ln -sf libc++.so.1.0 libc++.so.1 && cd $cwd; fi
 script:
   ./util/travis/linux-cibuild.sh
