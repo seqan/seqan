@@ -36,7 +36,6 @@ before_script:
         sudo ln -s /usr/lib/libc++abi.so.1.0 /usr/lib/libc++abi.so.1;
         sudo ln -s /usr/lib/libc++abi.so.1 /usr/lib/libc++abi.so;
         popd;
-        export CXXFLAGS
     fi
 script:
   ./util/travis/linux-cibuild.sh
