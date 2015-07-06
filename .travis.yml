@@ -28,6 +28,13 @@ before_script:
         cd /usr/lib && sudo ln -sf libc++.so.1.0 libc++.so;
         sudo ln -sf libc++.so.1.0 libc++.so.1;
         popd;
+        pushd .;
+        svn co http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi;
+        cd libcxxabi/lib && bash buildit;
+        sudo cp libc++abi.so.1.0 /usr/lib;
+        sudo ln -s /usr/lib/libc++abi.so.1.0 /usr/lib/libc++abi.so.1;
+        sudo ln -s /usr/lib/libc++abi.so.1 /usr/lib/libc++abi.so;
+        popd;
     fi
 script:
   ./util/travis/linux-cibuild.sh
