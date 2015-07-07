@@ -116,7 +116,7 @@ typedef LocalAlignment_<SuboptimalAlignment> DPLocalEnumerate;
 // type to store the values.
 struct TraceBitMap_
 {
-    typedef uint8_t TTraceValue;
+    typedef __uint8 TTraceValue;
     static const TTraceValue NONE = 0u;                         //0000000
     static const TTraceValue DIAGONAL = 1u;                     //0000001
     static const TTraceValue HORIZONTAL = 2u;                   //0000010
@@ -127,8 +127,90 @@ struct TraceBitMap_
     static const TTraceValue MAX_FROM_VERTICAL_MATRIX = 64u;    //1000000
     static const TTraceValue NO_VERTICAL_TRACEBACK = ~(VERTICAL | VERTICAL_OPEN);
     static const TTraceValue NO_HORIZONTAL_TRACEBACK = ~(HORIZONTAL | HORIZONTAL_OPEN);
-} ;
+};
 
+// Use macro expansion to define all possible SIMD initialization types.
+
+template <typename TVector, __uint8 FILL_VALUE, unsigned SIZE>
+struct InitSimdTrace_;
+
+#define SEQAN_SIMD_INIT_FILL_VALUE_2_ FILL_VALUE, FILL_VALUE
+#define SEQAN_SIMD_INIT_FILL_VALUE_4_ SEQAN_SIMD_INIT_FILL_VALUE_2_, SEQAN_SIMD_INIT_FILL_VALUE_2_
+#define SEQAN_SIMD_INIT_FILL_VALUE_8_ SEQAN_SIMD_INIT_FILL_VALUE_4_, SEQAN_SIMD_INIT_FILL_VALUE_4_
+#define SEQAN_SIMD_INIT_FILL_VALUE_16_ SEQAN_SIMD_INIT_FILL_VALUE_8_, SEQAN_SIMD_INIT_FILL_VALUE_8_
+#define SEQAN_SIMD_INIT_FILL_VALUE_32_ SEQAN_SIMD_INIT_FILL_VALUE_16_, SEQAN_SIMD_INIT_FILL_VALUE_16_
+
+#define SEQAN_SIMD_TRACE_SETUP_2_(SIZE, ...)                                                        \
+template <typename TVector, __uint8 FILL_VALUE>                                                     \
+struct InitSimdTrace_<TVector, FILL_VALUE, SIZE>                                                    \
+{                                                                                                   \
+    static const TVector VALUE;                                                                     \
+};                                                                                                  \
+                                                                                                    \
+template <typename TVector, __uint8 FILL_VALUE>                                                     \
+const TVector InitSimdTrace_<TVector, FILL_VALUE, SIZE>::VALUE = TVector{__VA_ARGS__};
+
+#define SEQAN_SIMD_TRACE_SETUP_1_(SIZE, MACRO) SEQAN_SIMD_TRACE_SETUP_2_(SIZE, MACRO)
+#define SEQAN_SIMD_TRACE_SETUP_(SIZE) SEQAN_SIMD_TRACE_INIT_SETUP_1_(SIZE, SEQAN_SIMD_INIT_FILL_VALUE_ ## SIZE ## _)
+
+SEQAN_SIMD_TRACE_SETUP_(2)
+SEQAN_SIMD_TRACE_SETUP_(4)
+SEQAN_SIMD_TRACE_SETUP_(8)
+SEQAN_SIMD_TRACE_SETUP_(16)
+SEQAN_SIMD_TRACE_SETUP_(32)
+
+// SIMD Vector version.
+template <typename TVector>
+struct TraceValue
+{
+    typedef TVector TValue;
+    static const TValue NONE;
+    static const TValue DIAGONAL;
+    static const TValue HORIZONTAL;
+    static const TValue VERTICAL;
+    static const TValue HORIZONTAL_OPEN;
+    static const TValue VERTICAL_OPEN;
+    static const TValue MAX_FROM_HORIZONTAL_MATRIX;
+    static const TValue MAX_FROM_VERTICAL_MATRIX;
+    static const TValue NO_HORIZONTAL_TRACEBACK;
+    static const TValue NO_VERTICAL_TRACEBACK;
+};
+
+// Macro expansion to define out-of-class initialization of static members.
+
+#define SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(TRACE_VALUE)                             \
+    template <typename TVector>                                                      \
+    const TVector TraceValue<TVector>::TRACE_VALUE = InitSimdTrace_<TVector, TraceBitMap_::TRACE_VALUE, LENGTH<TVector>::VALUE>::VALUE;
+
+SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(NONE)
+SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(DIAGONAL)
+SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(HORIZONTAL)
+SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(VERTICAL)
+SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(HORIZONTAL_OPEN)
+SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(VERTICAL_OPEN)
+SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(MAX_FROM_HORIZONTAL_MATRIX)
+SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(MAX_FROM_VERTICAL_MATRIX)
+SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(NO_HORIZONTAL_TRACEBACK)
+SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(NO_VERTICAL_TRACEBACK)
+
+// Scalar version.
+template <>
+struct TraceValue<__uint8>
+{
+    typedef __uint8 TValue;
+    static const TValue NONE                       = TraceBitMap_::NONE;
+    static const TValue DIAGONAL                   = TraceBitMap_::DIAGONAL;
+    static const TValue HORIZONTAL                 = TraceBitMap_::HORIZONTAL;
+    static const TValue VERTICAL                   = TraceBitMap_::VERTICAL;
+    static const TValue HORIZONTAL_OPEN            = TraceBitMap_::HORIZONTAL_OPEN;
+    static const TValue VERTICAL_OPEN              = TraceBitMap_::VERTICAL_OPEN;
+    static const TValue MAX_FROM_HORIZONTAL_MATRIX = TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+    static const TValue MAX_FROM_VERTICAL_MATRIX   = TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    static const TValue NO_HORIZONTAL_TRACEBACK    = TraceBitMap_::NO_HORIZONTAL_TRACEBACK;
+    static const TValue NO_VERTICAL_TRACEBACK      = TraceBitMap_::NO_VERTICAL_TRACEBACK;
+};
+
+// TODO(rrahn): To be replace with above code.
 //sadly, simd types can't be static const struct members like above
 namespace TraceSimd {
     const TSimdAlign ONE = createVector<TSimdAlign>(1);
@@ -313,6 +395,18 @@ struct IsGlobalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> >:
 template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
 struct IsGlobalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> const>:
     IsGlobalAlignment_<TAlgoSpec>{};
+
+// ----------------------------------------------------------------------------
+// Metafunction SelectTraceValueType_
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+struct SelectTraceValueType_
+{
+    typedef typename If<Is<SimdVectorConcept<TValue> >,
+                        TValue,
+                        typename TraceBitMap_::TTraceValue>::Type Type;
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction TraceTail_
