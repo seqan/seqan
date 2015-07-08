@@ -58,26 +58,26 @@ struct JstBufferExtensionMap_;
 typedef Tag<JstBufferExtensionMap_> JstBufferExtensionMap;
 
 // ----------------------------------------------------------------------------
-// Class JstBuffer
+// Class JstBuffer_
 // ----------------------------------------------------------------------------
 
 template <typename TJournaledStringTree, typename TDirection = ForwardTraversal>
-class JstBuffer
+class JstBuffer_
 {
 public:
 
     // __ Types ___________________________________________________________________
 
-    typedef typename Member<JstBuffer, JstBufferSetMember>::Type    TJournaledSet;
-    typedef typename Source<TJournaledStringTree>::Type             TSource;
-    typedef typename Iterator<TSource const, Rooted>::Type          TSourceIterator;
+    typedef typename Member<JstBuffer_, JstBufferSetMember>::Type           TJournaledSet;
+    typedef typename Member<TJournaledStringTree, JstSourceMember>::Type    TSource;
+    typedef typename Iterator<TSource const, Rooted>::Type                  TSourceIterator;
 
-    typedef typename Host<TJournaledStringTree>::Type               TDeltaMap;
-    typedef typename Member<JstBuffer, JstBufferExtensionMap>::Type TMapExtension;
-    typedef typename Iterator<TMapExtension, Standard>::Type        TDeltaIterator;
+    typedef typename Host<TJournaledStringTree>::Type                       TDeltaMap;
+    typedef typename Member<JstBuffer_, JstBufferExtensionMap>::Type        TMapExtension;
+    typedef typename Iterator<TMapExtension, Standard>::Type                TDeltaIterator;
 
-    typedef typename Size<TSource>::Type                            TSourceSize;
-    typedef String<TSourceSize>                                     TStringPositions;
+    typedef typename Size<TSource>::Type                                    TSourceSize;
+    typedef String<TSourceSize>                                             TStringPositions;
 
     // __ Members _________________________________________________________________
 
@@ -96,13 +96,13 @@ public:
 
     // __ Constructor _____________________________________________________________
 
-    JstBuffer()
+    JstBuffer_()
     {}
 
-    JstBuffer(TDeltaMap const & map) : _mapExtension(map)
+    JstBuffer_(TDeltaMap const & map) : _mapExtension(map)
     {}
 
-    JstBuffer(TDeltaMap const & map, TSourceIterator const & srcBeg, TSourceIterator const & srcEnd) :
+    JstBuffer_(TDeltaMap const & map, TSourceIterator const & srcBeg, TSourceIterator const & srcEnd) :
         _mapExtension(map),
         _sourceBegin(srcBeg),
         _sourceEnd(srcEnd)
@@ -121,7 +121,7 @@ public:
 // ----------------------------------------------------------------------------
 
 template <typename TJournaledStringTree, typename TSpec>
-struct Size<JstBuffer<TJournaledStringTree, TSpec> >
+struct Size<JstBuffer_<TJournaledStringTree, TSpec> >
 {
     typedef typename Source<TJournaledStringTree>::Type TSource_;
     typedef typename Size<TSource_>::Type               Type;
@@ -132,9 +132,9 @@ struct Size<JstBuffer<TJournaledStringTree, TSpec> >
 // ----------------------------------------------------------------------------
 
 template <typename TJournaledStringTree, typename TSpec>
-struct Member<JstBuffer<TJournaledStringTree, TSpec>, JstBufferSetMember>
+struct Member<JstBuffer_<TJournaledStringTree, TSpec>, JstBufferSetMember>
 {
-    typedef typename Source<TJournaledStringTree>::Type TSource_;
+    typedef typename Member<TJournaledStringTree, JstSourceMember>::Type TSource_;
     typedef StringSet<TSource_, Owner<JournaledSet> >   Type;
 };
 
@@ -143,7 +143,7 @@ struct Member<JstBuffer<TJournaledStringTree, TSpec>, JstBufferSetMember>
 // ----------------------------------------------------------------------------
 
 template <typename TJst, typename TSpec>
-struct Member<JstBuffer<TJst, TSpec>, JstBufferExtensionMap>
+struct Member<JstBuffer_<TJst, TSpec>, JstBufferExtensionMap>
 {
     typedef typename Host<TJst>::Type       TDeltaMap_;
     typedef DeltaMapExtension_<TDeltaMap_>  Type;
@@ -290,13 +290,13 @@ struct JournaledStringCreateFunctor
 
 template <typename TJst, typename TSpec>
 inline void
-create(JstBuffer<TJst, TSpec> & buffer)
+create(JstBuffer_<TJst, TSpec> & buffer)
 {
-    typedef typename Member<JstBuffer<TJst, TSpec>, JstBufferSetMember>::Type    TJSet;
-    typedef typename Value<TJSet>::Type                                          TJString;
-    typedef typename Iterator<TJSet, Standard>::Type                             TJSetIter;
-    typedef typename Member<JstBuffer<TJst, TSpec>, JstBufferExtensionMap>::Type TExtMap;
-    typedef typename Iterator<TExtMap, Standard>::Type                           TExtMapIter;
+    typedef typename Member<JstBuffer_<TJst, TSpec>, JstBufferSetMember>::Type      TJSet;
+    typedef typename Value<TJSet>::Type                                             TJString;
+    typedef typename Iterator<TJSet, Standard>::Type                                TJSetIter;
+    typedef typename Member<JstBuffer_<TJst, TSpec>, JstBufferExtensionMap>::Type   TExtMap;
+    typedef typename Iterator<TExtMap, Standard>::Type                              TExtMapIter;
 
     SEQAN_ASSERT(!empty(buffer._startPositions));
 
@@ -363,10 +363,10 @@ struct NetSizeExtractor
 
 template <typename TJst, typename TSpec>
 inline bool
-synchronize(JstBuffer<TJst, TSpec> & buffer)
+synchronize(JstBuffer_<TJst, TSpec> & buffer)
 {
-    typedef typename Size<JstBuffer<TJst, TSpec> >::Type                            TSize;
-    typedef typename Member<JstBuffer<TJst, TSpec>, JstBufferExtensionMap>::Type    TMap;
+    typedef typename Size<JstBuffer_<TJst, TSpec> >::Type                           TSize;
+    typedef typename Member<JstBuffer_<TJst, TSpec>, JstBufferExtensionMap>::Type   TMap;
     typedef typename Iterator<TMap, Standard>::Type                                 TMapIter;
     typedef typename MakeSigned<TSize>::Type                                        TSignedSize;
 
@@ -442,8 +442,8 @@ synchronize(JstBuffer<TJst, TSpec> & buffer)
 // ----------------------------------------------------------------------------
 
 template <typename TJst, typename TSpec>
-inline typename JstBuffer<TJst, TSpec>::TSourceIterator
-sourceBegin(JstBuffer<TJst, TSpec> & buffer)
+inline typename JstBuffer_<TJst, TSpec>::TSourceIterator
+sourceBegin(JstBuffer_<TJst, TSpec> & buffer)
 {
     return buffer._sourceBegin;
 }
@@ -454,7 +454,7 @@ sourceBegin(JstBuffer<TJst, TSpec> & buffer)
 
 template <typename TJst, typename TSpec, typename TSourceIter>
 inline void
-setSourceBegin(JstBuffer<TJst, TSpec> & buffer,
+setSourceBegin(JstBuffer_<TJst, TSpec> & buffer,
                TSourceIter const & begin)
 {
     buffer._isSynchronized = false;
@@ -466,8 +466,8 @@ setSourceBegin(JstBuffer<TJst, TSpec> & buffer,
 // ----------------------------------------------------------------------------
 
 template <typename TJst, typename TSpec>
-inline typename JstBuffer<TJst, TSpec>::TSourceIterator
-sourceEnd(JstBuffer<TJst, TSpec> & buffer)
+inline typename JstBuffer_<TJst, TSpec>::TSourceIterator
+sourceEnd(JstBuffer_<TJst, TSpec> & buffer)
 {
     return buffer._sourceEnd;
 }
@@ -478,7 +478,7 @@ sourceEnd(JstBuffer<TJst, TSpec> & buffer)
 
 template <typename TJst, typename TSpec, typename TSourceIter>
 inline void
-setSourceEnd(JstBuffer<TJst, TSpec> & buffer,
+setSourceEnd(JstBuffer_<TJst, TSpec> & buffer,
              TSourceIter const & end)
 {
     buffer._isSynchronized = false;
@@ -491,7 +491,7 @@ setSourceEnd(JstBuffer<TJst, TSpec> & buffer,
 
 template <typename TJst, typename TSpec>
 inline void
-setDeltaMap(JstBuffer<TJst, TSpec> & buffer,
+setDeltaMap(JstBuffer_<TJst, TSpec> & buffer,
             typename Host<TJst>::Type const & map)
 {
     markModified(buffer);
@@ -504,7 +504,7 @@ setDeltaMap(JstBuffer<TJst, TSpec> & buffer,
 
 template <typename TJst, typename TSpec>
 inline bool
-sync(JstBuffer<TJst, TSpec> & buffer)
+sync(JstBuffer_<TJst, TSpec> & buffer)
 {
     if (isSynchronized(buffer))
         return true;
@@ -517,7 +517,7 @@ sync(JstBuffer<TJst, TSpec> & buffer)
 
 template <typename TJst, typename TSpec>
 inline bool
-create(JstBuffer<TJst, TSpec> & buffer)
+create(JstBuffer_<TJst, TSpec> & buffer)
 {
     if (!isSynchronized(buffer))
         if (!sync(buffer))
@@ -532,7 +532,7 @@ create(JstBuffer<TJst, TSpec> & buffer)
 
 template <typename TJst, typename TSpec>
 inline bool
-isSynchronized(JstBuffer<TJst, TSpec> const & buffer)
+isSynchronized(JstBuffer_<TJst, TSpec> const & buffer)
 {
     return buffer._isSynchronized;
 }
@@ -543,16 +543,20 @@ isSynchronized(JstBuffer<TJst, TSpec> const & buffer)
 
 template <typename TJst, typename TSpec>
 inline void
-clear(JstBuffer<TJst, TSpec> & buffer)
+clear(JstBuffer_<TJst, TSpec> & buffer)
 {
     buffer._isSynchronized = false;
     clear(buffer._mapExtension);
     clear(buffer._startPositions);
 }
 
+// ----------------------------------------------------------------------------
+// Function markModified()
+// ----------------------------------------------------------------------------
+
 template <typename TJst, typename TSpec>
 inline void
-markModified(JstBuffer<TJst, TSpec> & buffer)
+markModified(JstBuffer_<TJst, TSpec> & buffer)
 {
     buffer._isSynchronized = false;
 }

@@ -50,7 +50,7 @@ using namespace seqan;
 template <typename TJst>
 inline TJst _createSimpleJst()
 {
-    typename Host<typename Source<TJst>::Type>::Type seq = "AGATCGAGCGAGCTAGCGACTCAG";
+    typename Host<typename Member<TJst, JstSourceMember>::Type>::Type seq = "AGATCGAGCGAGCTAGCGACTCAG";
     TJst jst(seq, 10, 100);
     String<unsigned> ids;
     appendValue(ids, 0);
@@ -76,7 +76,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_constructor)
     {  // Default ctor.
         TTraverser traverser;
         SEQAN_ASSERT(traverser._contPtr == nullptr);
-        SEQAN_ASSERT(traverser._branchSize == 0);
+        SEQAN_ASSERT(traverser._branchLength == 0);
         SEQAN_ASSERT(traverser._contextSize == 0);
         SEQAN_ASSERT(traverser._stackPtr.get() != nullptr);
         SEQAN_ASSERT(empty(*traverser._stackPtr) == true);
@@ -87,7 +87,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_constructor)
 
         TTraverser traverser(jst);
         SEQAN_ASSERT(traverser._contPtr == &jst);
-        SEQAN_ASSERT(traverser._branchSize == historySize(jst));
+        SEQAN_ASSERT(traverser._branchLength == branchLength(jst));
         SEQAN_ASSERT(traverser._contextSize == 1);
         SEQAN_ASSERT(traverser._stackPtr.get() != nullptr);
         SEQAN_ASSERT(length(*traverser._stackPtr) == 1u);
@@ -129,9 +129,9 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_init)
         init(test, jst, 1);
 
         SEQAN_ASSERT(test._contPtr == &jst);
-        SEQAN_ASSERT(test._branchSize == historySize(jst));
+        SEQAN_ASSERT(test._branchLength == branchLength(jst));
         SEQAN_ASSERT(test._contextSize == 1u);
-        SEQAN_ASSERT(length(*test._stackPtr) == 1);
+        SEQAN_ASSERT(length(*test._stackPtr) == 1u);
         SEQAN_ASSERT(*back(*test._stackPtr).curEdgeIt == 'A');
     }
 
@@ -140,9 +140,9 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_init)
         init(test, jst, 5);
 
         SEQAN_ASSERT(test._contPtr == &jst);
-        SEQAN_ASSERT(test._branchSize == historySize(jst));
+        SEQAN_ASSERT(test._branchLength == branchLength(jst));
         SEQAN_ASSERT(test._contextSize == 5u);
-        SEQAN_ASSERT(length(*test._stackPtr) == 3);
+        SEQAN_ASSERT(length(*test._stackPtr) == 3u);
         SEQAN_ASSERT(*(back(*test._stackPtr).curEdgeIt) == 'G');
     }
 
@@ -151,9 +151,9 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_init)
         init(test, jst, 10);
 
         SEQAN_ASSERT(test._contPtr == &jst);
-        SEQAN_ASSERT(test._branchSize == historySize(jst));
+        SEQAN_ASSERT(test._branchLength == branchLength(jst));
         SEQAN_ASSERT(test._contextSize == 10u);
-        SEQAN_ASSERT_EQ(length(*test._stackPtr), 4);
+        SEQAN_ASSERT_EQ(length(*test._stackPtr), 4u);
         SEQAN_ASSERT(*(back(*test._stackPtr).curEdgeIt) == 'C');
     }
 
@@ -181,7 +181,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_context_iterator)
     TJst jst = _createSimpleJst<TJst>();
     TTraverser test(jst);
 
-    SEQAN_ASSERT(contextIterator(test) == begin(source(jst), Standard()));
+    SEQAN_ASSERT(contextIterator(test) == begin(impl::source(jst), Standard()));
 }
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_go_next)

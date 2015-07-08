@@ -72,6 +72,13 @@ struct JstBufferMember_;
 typedef Tag<JstBufferMember_> JstBufferMember;
 
 // ----------------------------------------------------------------------------
+// Tag JstSourceMember
+// ----------------------------------------------------------------------------
+
+struct JstSourceMember_;
+typedef Tag<JstSourceMember_> JstSourceMember;
+
+// ----------------------------------------------------------------------------
 // Tag JstDeltaMapWrapperMember
 // ----------------------------------------------------------------------------
 

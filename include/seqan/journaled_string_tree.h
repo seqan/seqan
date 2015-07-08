@@ -49,7 +49,7 @@
 #include <seqan/parallel.h>
 
 // ===========================================================================
-// Basics.
+// Delta Map.
 // ===========================================================================
 
 #include <seqan/journaled_string_tree/delta_store.h>
@@ -58,24 +58,23 @@
 #include <seqan/journaled_string_tree/delta_map_iterator.h>
 #include <seqan/journaled_string_tree/delta_map_extension.h>
 #include <seqan/journaled_string_tree/delta_map_extension_iterator.h>
+
+// ===========================================================================
+// Journaled String Tree.
+// ===========================================================================
+
 #include <seqan/journaled_string_tree/journaled_string_tree_base.h>
+#include <seqan/journaled_string_tree/journaled_string_tree_sequence_buffer.h>
+#include <seqan/journaled_string_tree/journaled_string_tree_impl.h>
 
 // ===========================================================================
 // Journaled String Tree Traverser.
 // ===========================================================================
 
 #include <seqan/journaled_string_tree/observable.h>
-#include <seqan/journaled_string_tree/journaled_string_tree_sequence_buffer.h>
 
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser_node.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser_util.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser.h>
-
-// ===========================================================================
-// Journaled String Tree.
-// ===========================================================================
-
-
-#include <seqan/journaled_string_tree/journaled_string_tree_impl.h>
 
 #endif // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_H_

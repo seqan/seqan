@@ -290,7 +290,7 @@ getPos(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me,
        THostIter const & it)
 {
     if (SEQAN_UNLIKELY(atEnd(it)))
-        return length(source(container(me)));
+        return length(impl::source(container(me)));
     return (*it).deltaPos;
 }
 
@@ -357,7 +357,7 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
         }
         else  // We move to the base sequence.
         {
-            parent.endEdgeIt = iter(container(it)._source, getDeltaPosition(*impl::hostIter(parent.nextDelta)));
+            parent.endEdgeIt = iter(impl::source(container(it)), getDeltaPosition(*impl::hostIter(parent.nextDelta)));
         }
     }
     else
@@ -382,13 +382,11 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
     if (parent.isBase)
     {
         // We should keep the mappedSrcEndPos of the base node already in sync.
-        child.mappedSrcEndPos += historySize(container(it));
+        child.mappedSrcEndPos += branchLength(container(it));
         switch (getDeltaType(*impl::hostIter(child.curDelta)))
         {
             case DELTA_TYPE_DEL:
             {
-//                if (inBegOfDelta)
-//                    return false;
                 delSize = deletionSize(host(container(it))._deltaStore,
                                        getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeDel());
                 child.mappedSrcEndPos += delSize;
@@ -702,9 +700,9 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
 
     me._contPtr = &jst;
     me._contextSize = contextSize;
-    me._branchSize = historySize(jst);
+    me._branchLength = branchLength(jst);
 
-    SEQAN_ASSERT(me._branchSize > 0);
+    SEQAN_ASSERT(me._branchLength > 0);
     SEQAN_ASSERT(me._stackPtr != nullptr);
 
     clear(impl::stack(me));
@@ -715,11 +713,11 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
     node.curDelta = jst._buffer._deltaRangeBegin - 1;
     node.nextDelta = jst._buffer._deltaRangeBegin;
 
-    node.begEdgeIt = begin(source(jst), Standard());  // This points to some value already -> what could this position be?
+    node.begEdgeIt = begin(impl::source(jst), Standard());  // This points to some value already -> what could this position be?
     node.curEdgeIt = node.begEdgeIt;
     node.endEdgeIt = node.begEdgeIt + (getDeltaPosition(*(*node.nextDelta).hostIter) - position(node.begEdgeIt));
     node.mappedSrcEndPos = position(node.endEdgeIt);
-    node.remainingSize = me._branchSize - 1;
+    node.remainingSize = me._branchLength - 1;
     node.isBase = true;
     node.fromBase = false;
     appendValue(*me._stackPtr, SEQAN_MOVE(node));  // Push onto stack.
@@ -730,7 +728,6 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
     SEQAN_ASSERT_GEQ(me._contextSize, 1u);
     impl::moveWindow(me, basePtr, me._contextSize - 1);   // We move the traverser to the beginning of the
 }
-
 
 }  // namespace impl
 

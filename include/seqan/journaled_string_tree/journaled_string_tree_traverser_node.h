@@ -51,7 +51,7 @@ template <typename TJst>
 class JstTraversalNode
 {
 public:
-    typedef typename Source<TJst>::Type                                 TSequence;
+    typedef typename Member<TJst, JstSourceMember>::Type                TSequence;
     typedef typename Iterator<TSequence, Standard>::Type                TSeqIterator;
     typedef typename Position<TSequence>::Type                          TPosition;
     typedef typename Member<TJst, JstBufferMember>::Type                TJstBuffer;

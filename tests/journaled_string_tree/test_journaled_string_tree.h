@@ -66,7 +66,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_constructor)
         TJst jst1(hostSeq, 10, 100);
 
         SEQAN_ASSERT_EQ(jst1._dimension, static_cast<TSize>(100));
-        SEQAN_ASSERT_EQ(jst1._historySize, static_cast<TSize>(10));
+        SEQAN_ASSERT_EQ(jst1._branchLength, static_cast<TSize>(10));
         SEQAN_ASSERT(!empty(jst1._mapHolder));
         SEQAN_ASSERT(!dependent(jst1._mapHolder));
         SEQAN_ASSERT(!empty(jst1._source));
@@ -84,7 +84,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_constructor)
 
         TJst jst(hostSeq, 11, map);
         SEQAN_ASSERT_EQ(jst._dimension, static_cast<TSize>(10));
-        SEQAN_ASSERT_EQ(jst._historySize, static_cast<TSize>(11));
+        SEQAN_ASSERT_EQ(jst._branchLength, static_cast<TSize>(11));
         SEQAN_ASSERT(!empty(jst._mapHolder));
         SEQAN_ASSERT(dependent(jst._mapHolder));
         SEQAN_ASSERT_EQ(host(jst._source), hostSeq);
@@ -97,19 +97,6 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_dimension)
     Dna5String seq = "ANGATAGAC";
     JournaledStringTree<Dna5String> jst(seq, 10, 100);
     SEQAN_ASSERT_EQ(dimension(jst), static_cast<TSize>(100));
-}
-
-SEQAN_DEFINE_TEST(test_journaled_string_tree_source)
-{
-    typedef JournaledStringTree<Dna5String> TJst;
-    typedef Size<TJst>::Type                TSize;
-
-    Dna5String seq = "ANGATAGAC";
-    TJst jst(seq, 10, 100);
-    SEQAN_ASSERT_EQ(host(source(jst)), seq);
-
-    TJst const jst2(jst);
-    SEQAN_ASSERT_EQ(host(source(jst2)), seq);
 }
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_insert_node)
@@ -163,7 +150,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_clear)
 
     clear(jst);
     SEQAN_ASSERT(jst._dimension == 0);
-    SEQAN_ASSERT(jst._historySize == 0);
+    SEQAN_ASSERT(jst._branchLength == 0);
     SEQAN_ASSERT(empty(jst._source));
     SEQAN_ASSERT(empty(jst._mapHolder));
 }
@@ -188,24 +175,24 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_container)
 }
 
 
-SEQAN_DEFINE_TEST(test_journaled_string_tree_history_size)
+SEQAN_DEFINE_TEST(test_journaled_string_tree_branch_length)
 {
     typedef Size<JournaledStringTree<Dna5String> >::Type TSize;
     Dna5String seq = "CGTATAGGANNAGAT";
     JournaledStringTree<Dna5String> jst(seq, 10, 100);
 
-    SEQAN_ASSERT_EQ(historySize(jst), static_cast<TSize>(10));
+    SEQAN_ASSERT_EQ(branchLength(jst), static_cast<TSize>(10));
 }
 
-SEQAN_DEFINE_TEST(test_journaled_string_tree_set_history_size)
+SEQAN_DEFINE_TEST(test_journaled_string_tree_set_branch_length)
 {
     typedef Size<JournaledStringTree<Dna5String> >::Type TSize;
     Dna5String seq = "CGTATAGGANNAGAT";
     JournaledStringTree<Dna5String> jst(seq, 10, 100);
 
-    SEQAN_ASSERT_EQ(historySize(jst), static_cast<TSize>(10));
-    setHistorySize(jst, 15);
-    SEQAN_ASSERT_EQ(historySize(jst), static_cast<TSize>(15));
+    SEQAN_ASSERT_EQ(branchLength(jst), static_cast<TSize>(10));
+    setBranchLength(jst, 15);
+    SEQAN_ASSERT_EQ(branchLength(jst), static_cast<TSize>(15));
 }
 
 struct TestJstPosConfig_

@@ -60,7 +60,7 @@ public:
     // __ Member Variables ____________________________________________________
 
     TJst *       _contPtr;  // Should be always const.
-    TSize        _branchSize;
+    TSize        _branchLength;
     TSize        _contextSize;
     TStackPtr    _stackPtr;
 
@@ -70,7 +70,7 @@ public:
     TraverserImpl() :
         TSuper(),
         _contPtr(nullptr),
-        _branchSize(0),
+        _branchLength(0),
         _contextSize(0),
         _stackPtr(impl::createStack<TStack>())
     {}
@@ -101,7 +101,7 @@ public:
     TraverserImpl(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec>, TObserver> const & other,
                   SEQAN_CTOR_ENABLE_IF(IsConstructible<TJst, TOtherJst>)) :
         _contPtr(other._contPtr),
-        _branchSize(other._historySize),
+        _branchLength(other._historySize),
         _contextSize(other._contextSize),
         _stackPtr(other._stackPtr)
     {
@@ -117,7 +117,7 @@ public:
         if (*this != &other)
         {
             _contPtr = other._contPtr;
-            _branchSize =other._historySize;
+            _branchLength =other._historySize;
             _contextSize = other._contextSize;
             _stackPtr = other._stackPtr;
         }
@@ -155,6 +155,28 @@ struct Size<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
 };
 
 // ----------------------------------------------------------------------------
+// Metafunction TraverserImpl
+// ----------------------------------------------------------------------------
+
+template <typename TSeq, typename TConfig, typename TSpec,
+          typename TObserver>
+struct Traverser<JournaledStringTree<TSeq, TConfig, TSpec>,
+                 TObserver>
+{
+    typedef JournaledStringTree<TSeq, TConfig, TSpec> TJst_;
+    typedef TraverserImpl<TJst_, JstTraversalSpec<void>, TObserver> Type;
+};
+
+template <typename TSeq, typename TConfig, typename TSpec,
+          typename TObserver>
+struct Traverser<JournaledStringTree<TSeq, TConfig, TSpec> const,
+                 TObserver>
+{
+    typedef JournaledStringTree<TSeq, TConfig, TSpec> const TJst_;
+    typedef TraverserImpl<TJst_, JstTraversalSpec<void>, TObserver> Type;
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction ContextIterator
 // ----------------------------------------------------------------------------
 
@@ -163,7 +185,7 @@ struct ContextIterator<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> >
 {
     typedef TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>     TThis_;
     typedef typename Container<TThis_>::Type                            TContainer_;
-    typedef typename Source<TContainer_>::Type                          TSource_;
+    typedef typename Member<TContainer_, JstSourceMember>::Type         TSource_;
 
     typedef typename Iterator<TSource_, Standard>::Type                 Type;
 };

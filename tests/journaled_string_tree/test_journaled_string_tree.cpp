@@ -45,10 +45,9 @@ SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
     SEQAN_CALL_TEST(test_journaled_string_tree_insert_node);
     SEQAN_CALL_TEST(test_journaled_string_tree_erase_node);
     SEQAN_CALL_TEST(test_journaled_string_tree_clear);
-    SEQAN_CALL_TEST(test_journaled_string_tree_source);
     SEQAN_CALL_TEST(test_journaled_string_tree_container);
-    SEQAN_CALL_TEST(test_journaled_string_tree_set_history_size);
-    SEQAN_CALL_TEST(test_journaled_string_tree_history_size);
+    SEQAN_CALL_TEST(test_journaled_string_tree_set_branch_length);
+    SEQAN_CALL_TEST(test_journaled_string_tree_branch_length);
     SEQAN_CALL_TEST(test_journaled_string_tree_max_size);
     SEQAN_CALL_TEST(test_journaled_string_tree_create);
 }
