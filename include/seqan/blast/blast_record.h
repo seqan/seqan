@@ -188,8 +188,8 @@ struct BlastMatch
 // align too big to compare
 //                         align,
                         qFrameShift,
-                        sFrameShift,
-                        alignStats
+                        sFrameShift
+//                         alignStats
 // scores have rounding errors
 //                         eValue,
 //                         bitScore
@@ -203,9 +203,9 @@ struct BlastMatch
                         bm2.qLength,
                         bm2.sLength,
                         bm2.qFrameShift,
-                        bm2.sFrameShift,
+                        bm2.sFrameShift
 //                         bm2.align,
-                        bm2.alignStats
+//                         bm2.alignStats
 // scores have rounding errors
 //                         bm2.eValue,
 //                         bm2.bitScore
