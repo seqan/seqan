@@ -1058,6 +1058,7 @@ computeEValue(TBlastMatch & match,
         context._cachedLengthAdjustments[ql] = _lengthAdjustment(context.dbTotalLength, ql, context.scoringScheme);
 
     __uint64 adj = context._cachedLengthAdjustments[ql];
+
     match.eValue = _computeEValue(match.alignStats.alignmentScore,
                                   ql - adj,
                                   context.dbTotalLength - adj,

@@ -363,7 +363,7 @@ template <typename TStream,
           BlastTabularSpec h>
 inline void
 _writeAlignmentBlockIntermediateChar(TStream & stream,
-                                     BlastIOContext<TScore> const &,
+                                     BlastIOContext<TScore, p, h> const &,
                                      TChar1 const & char1,
                                      TChar2 const & char2,
                                      BlastReport const & /*tag*/)
@@ -455,7 +455,7 @@ _writeAlignmentBlock(TStream & stream,
         sprintf(buffer, "Query  %-*d  ", numberWidth, qPos + effQStart);
         write(stream, buffer);
 
-        TPos const end = _min(aPos + windowSize, m.alignStats.alignmentLength);
+        TPos const end = std::min(static_cast<TPos>(aPos + windowSize), m.alignStats.alignmentLength);
         for (TPos i = aPos; i < end; ++i)
         {
             if (!isGap(row0, i))
