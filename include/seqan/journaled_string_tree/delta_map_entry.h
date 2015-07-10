@@ -57,6 +57,13 @@ struct DeltaRecord;
 // Tags, Classes, Enums
 // ============================================================================
 
+enum class DeltaEndType : __uint8
+{
+    IS_LEFT,
+    IS_RIGHT,
+    IS_BOTH
+};
+
 // ----------------------------------------------------------------------------
 // Tag DeltaMapEntryCoverage
 // ----------------------------------------------------------------------------
@@ -87,6 +94,7 @@ public:
     TDeltaPos    deltaPosition;
     TDeltaRecord deltaRecord;
     TCoverage    deltaCoverage;
+    DeltaEndType deltaTypeEnd;
 
     // Default C'tor.
     DeltaMapEntry()
@@ -94,9 +102,17 @@ public:
 
     // Custom C'tor.
     DeltaMapEntry(TDeltaPos _deltaPos, TDeltaRecord _deltaRecord, TCoverage const & _coverage) :
+    deltaPosition(_deltaPos),
+    deltaRecord(_deltaRecord),
+    deltaCoverage(_coverage),
+    deltaTypeEnd(DeltaEndType::IS_BOTH)
+    {}
+
+    DeltaMapEntry(TDeltaPos _deltaPos, TDeltaRecord _deltaRecord, TCoverage const & _coverage, DeltaEndType endType) :
         deltaPosition(_deltaPos),
         deltaRecord(_deltaRecord),
-        deltaCoverage(_coverage)
+        deltaCoverage(_coverage),
+        deltaTypeEnd(endType)
     {}
 };
 
@@ -315,6 +331,28 @@ getDeltaType(DeltaMapEntry<TRefPos, TStorePos> const & deltaEntry)
 }
 
 // ----------------------------------------------------------------------------
+// Function isLeftEnd();
+// ----------------------------------------------------------------------------
+
+template <typename TRefPos, typename TStorePos>
+inline bool
+isLeftEnd(DeltaMapEntry<TRefPos, TStorePos> const & deltaEntry)
+{
+    return (deltaEntry.deltaEndType == DeltaEndType::IS_LEFT || deltaEntry.deltaEndType == DeltaEndType::IS_BOTH);
+}
+
+// ----------------------------------------------------------------------------
+// Function isRightEnd();
+// ----------------------------------------------------------------------------
+
+template <typename TRefPos, typename TStorePos>
+inline bool
+isRightEnd(DeltaMapEntry<TRefPos, TStorePos> const & deltaEntry)
+{
+    return (deltaEntry.deltaEndType == DeltaEndType::IS_RIGHT || deltaEntry.deltaEndType == DeltaEndType::IS_BOTH);
+}
+
+// ----------------------------------------------------------------------------
 // Function applyOnDelta()
 // ----------------------------------------------------------------------------
 
@@ -364,6 +402,23 @@ inline bool operator!=(DeltaMapEntry<TRefPos, TStorePos> const & lhs, DeltaMapEn
 }
 
 // ----------------------------------------------------------------------------
+// Function _printCoverage()
+// ----------------------------------------------------------------------------
+
+template <typename TCoverage>
+inline String<char>
+_printCoverage(TCoverage const & cov)
+{
+    String<char> tmp;
+    for (bool elem : cov)
+        if (elem)
+            appendValue(tmp, '1');
+        else
+            appendValue(tmp, '0');
+    return tmp;
+}
+
+// ----------------------------------------------------------------------------
 // Function operator<<()
 // ----------------------------------------------------------------------------
 
@@ -379,7 +434,17 @@ inline TStream & operator<<(TStream & stream, DeltaMapEntry<TRefPos, TStorePos> 
         case DELTA_TYPE_SV: stream << "SV ("; break;
         default: stream << "NA ("; break;
     }
-    stream << entry.deltaRecord.i2 << "), " << entry.deltaCoverage << ">\n";
+    stream << entry.deltaRecord.i2 << "), " << _printCoverage(entry.deltaCoverage) << ", ";
+    switch (entry.deltaTypeEnd)
+    {
+        case DeltaEndType::IS_LEFT: stream << "IS_LEFT";
+            break;
+        case DeltaEndType::IS_RIGHT: stream << "IS_RIGHT";
+            break;
+        case DeltaEndType::IS_BOTH: stream << "IS_BOTH";
+            break;
+    }
+    stream << ">";
     return stream;
 }
 

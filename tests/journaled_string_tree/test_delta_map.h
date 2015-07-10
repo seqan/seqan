@@ -52,105 +52,81 @@ struct TestDeltaMapConfig
     typedef Pair<unsigned, DnaString> TSVValue;
 };
 
-template <typename TEntries, typename TStore>
-inline void createMock(TEntries & entries, TStore & store)
+template <typename TCoverage, typename TSize>
+inline void
+_getCoverage(TCoverage & cov, TSize size, TSize remainder)
 {
+    resize(cov, size);
+    for (unsigned i = 0; i < length(cov); ++i)
+        cov[i] = (!(i % remainder)) ? true : false;
+}
+
+template <typename TConfig, typename TSpec>
+inline void createMock(DeltaMap<TConfig, TSpec> & map)
+{
+    typedef DeltaMap<TConfig, TSpec> TDeltMap;
+    typedef typename Member<TDeltMap, DeltaMapEntriesMember>::Type TEntries;
+    typedef typename Member<TDeltMap, DeltaMapStoreMember>::Type TStore;
     typedef typename DeltaValue<TStore, DeltaTypeSV>::Type TSV;
     typedef typename Value<TEntries>::Type TEntry;
-    typedef typename DeltaRecord<TEntry>::Type TDeltaRecord;
     typedef typename DeltaCoverage<TEntry>::Type TCoverage;
 
     TCoverage cov1;
-    resize(cov1, 10);
-    for (unsigned i = 0; i < length(cov1); ++i)
-        cov1[i] = (!(i % 3)) ? true : false;
+    _getCoverage(cov1, 10, 3);
+    TCoverage cov2;
+    _getCoverage(cov2, 10, 5);
+    TCoverage cov3;
+    _getCoverage(cov3, 10, 2);
 
-    TCoverage cov2 = cov1;
-    for (unsigned i = 0; i < length(cov2); ++i)
-        cov2[i] = (!(i % 5)) ? true : false;
-
-    TCoverage cov3 = cov1;
-    for (unsigned i = 0; i < length(cov3); ++i)
-        cov3[i] = (!(i % 2)) ? true : false;
-
-    appendValue(entries, TEntry(0, TDeltaRecord(DELTA_TYPE_SNP, 1), cov1));
-    appendValue(entries, TEntry(1, TDeltaRecord(DELTA_TYPE_DEL, 2), cov2));
-    appendValue(entries, TEntry(1, TDeltaRecord(DELTA_TYPE_SV, 0), cov1));
-    appendValue(entries, TEntry(2, TDeltaRecord(DELTA_TYPE_SNP, 0), cov2));
-    appendValue(entries, TEntry(4, TDeltaRecord(DELTA_TYPE_INS, 0), cov3));
-    appendValue(entries, TEntry(5, TDeltaRecord(DELTA_TYPE_DEL, 0), cov3));
-    appendValue(entries, TEntry(20, TDeltaRecord(DELTA_TYPE_DEL, 1), cov2));
-
-    appendValue(store._snpData, 'C');
-    appendValue(store._snpData, 'A');
-    appendValue(store._insData, "ACGT");
-    appendValue(store._delData, 1);
-    appendValue(store._delData, 2);
-    appendValue(store._delData, 3);
-    appendValue(store._svData, TSV(2, "TGAT"));
+    SEQAN_ASSERT(insert(map, 5, 1, cov3, DeltaTypeDel()));
+    SEQAN_ASSERT(insert(map, 1, TSV(2, "TGAT"), cov1, DeltaTypeSV()));
+    SEQAN_ASSERT(insert(map, 4, "ACGT", cov3, DeltaTypeIns()));
+    SEQAN_ASSERT(insert(map, 2, 'C', cov2, DeltaTypeSnp()));
+    SEQAN_ASSERT(insert(map, 20, 2, cov2, DeltaTypeDel()));
+    SEQAN_ASSERT(insert(map, 0, 'A', cov1, DeltaTypeSnp()));
+    SEQAN_ASSERT(insert(map, 1, 3, cov2, DeltaTypeDel()));
 }
 
 SEQAN_DEFINE_TEST(test_delta_map_insert)
 {
-
     typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
     typedef typename DeltaCoverage<TDeltaMap>::Type TCoverage;
     typedef typename Member<TDeltaMap, DeltaMapEntriesMember>::Type TEntries;
-    typedef typename Member<TDeltaMap, DeltaMapStoreMember>::Type TDeltaStore;
-
-    TEntries testEntries;
-    TDeltaStore store;
-    createMock(testEntries, store);
-
-    TCoverage cov1;
-    resize(cov1, 10);
-    for (unsigned i = 0; i < length(cov1); ++i)
-        cov1[i] = (!(i % 3)) ? true : false;
-
-    TCoverage cov2 = cov1;
-    for (unsigned i = 0; i < length(cov2); ++i)
-        cov2[i] = (!(i % 5)) ? true : false;
-
-    TCoverage cov3 = cov1;
-    for (unsigned i = 0; i < length(cov3); ++i)
-        cov3[i] = (!(i % 2)) ? true : false;
+    typedef typename Value<TEntries>::Type TEntry;
+    typedef DeltaRecord<TEntry>::Type TRecord;
 
     TDeltaMap deltaMap;
-    SEQAN_ASSERT(insert(deltaMap,  2, store._snpData[0], cov2, DeltaTypeSnp()));
-    SEQAN_ASSERT(insert(deltaMap,  5, store._delData[0], cov3, DeltaTypeDel()));
-    SEQAN_ASSERT(insert(deltaMap,  1,  store._svData[0], cov1, DeltaTypeSV()));
-    SEQAN_ASSERT(insert(deltaMap,  0, store._snpData[1], cov1, DeltaTypeSnp()));
-    SEQAN_ASSERT(insert(deltaMap,  4, store._insData[0], cov3, DeltaTypeIns()));
-    SEQAN_ASSERT(insert(deltaMap, 20, store._delData[1], cov2, DeltaTypeDel()));
-    SEQAN_ASSERT(insert(deltaMap,  1, store._delData[2], cov2, DeltaTypeDel()));
-    SEQAN_ASSERT_NOT(insert(deltaMap,  1, store._delData[2], cov2, DeltaTypeDel()));
+    createMock(deltaMap);
 
-    for (unsigned i = 0; i < length(testEntries); ++i)
-    {
-        SEQAN_ASSERT_EQ(deltaMap._entries[i], testEntries[i]);
-        unsigned recordPos = getDeltaRecord(deltaMap._entries[i]).i2;
-        switch (static_cast<DeltaType>(getDeltaRecord(deltaMap._entries[i]).i1))
-        {
-            case DELTA_TYPE_SNP: SEQAN_ASSERT_EQ(deltaValue(deltaMap._deltaStore, recordPos, DeltaTypeSnp()),
-                                                 deltaValue(store, recordPos, DeltaTypeSnp()));
-                break;
-            case DELTA_TYPE_INS: SEQAN_ASSERT_EQ(deltaValue(deltaMap._deltaStore, recordPos, DeltaTypeIns()),
-                                                 deltaValue(store, recordPos, DeltaTypeIns()));
-                break;
-            case DELTA_TYPE_DEL: SEQAN_ASSERT_EQ(deltaValue(deltaMap._deltaStore, recordPos, DeltaTypeDel()),
-                                                 deltaValue(store, recordPos, DeltaTypeDel()));
-                break;
-            case DELTA_TYPE_SV: SEQAN_ASSERT_EQ(deltaValue(deltaMap._deltaStore, recordPos, DeltaTypeSV()),
-                                                deltaValue(store, recordPos, DeltaTypeSV()));
-                break;
-        }
-    }
+    TCoverage cov1;
+    _getCoverage(cov1, 10, 3);
+    TCoverage cov2;
+    _getCoverage(cov2, 10, 5);
+    TCoverage cov3;
+    _getCoverage(cov3, 10, 2);
+
+    SEQAN_ASSERT_NOT(insert(deltaMap,  2, deltaMap._deltaStore._snpData[0], cov2, DeltaTypeSnp()));
+    SEQAN_ASSERT_NOT(insert(deltaMap,  1,  deltaMap._deltaStore._svData[0], cov1, DeltaTypeSV()));
+    SEQAN_ASSERT_NOT(insert(deltaMap,  1, deltaMap._deltaStore._delData[2], cov2, DeltaTypeDel()));
+
+    SEQAN_ASSERT_EQ(deltaMap._entries[0], TEntry(0, TRecord(DELTA_TYPE_SNP, 1), cov1, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(deltaMap._entries[1], TEntry(1, TRecord(DELTA_TYPE_DEL, 2), cov2, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[2], TEntry(1, TRecord(DELTA_TYPE_SV, 0), cov1, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[3], TEntry(2, TRecord(DELTA_TYPE_SNP, 0), cov2, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(deltaMap._entries[4], TEntry(2, TRecord(DELTA_TYPE_SV, 0), cov1, DeltaEndType::IS_RIGHT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[5], TEntry(3, TRecord(DELTA_TYPE_DEL, 2), cov2, DeltaEndType::IS_RIGHT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[6], TEntry(4, TRecord(DELTA_TYPE_INS, 0), cov3, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(deltaMap._entries[7], TEntry(5, TRecord(DELTA_TYPE_DEL, 0), cov3, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(deltaMap._entries[8], TEntry(20, TRecord(DELTA_TYPE_DEL, 1), cov2, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[9], TEntry(21, TRecord(DELTA_TYPE_DEL, 1), cov2, DeltaEndType::IS_RIGHT));
 }
 
 SEQAN_DEFINE_TEST(test_delta_map_erase)
 {
-    DeltaMap<TestDeltaMapConfig> deltaMap;
-    createMock(deltaMap._entries, deltaMap._deltaStore);
+    typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
+
+    TDeltaMap deltaMap;
+    createMock(deltaMap);
 
     SEQAN_ASSERT(erase(deltaMap,  2, DeltaTypeSnp()));
     SEQAN_ASSERT(erase(deltaMap,  5, DeltaTypeDel()));
@@ -170,11 +146,11 @@ SEQAN_DEFINE_TEST(test_delta_map_erase)
 SEQAN_DEFINE_TEST(test_delta_map_find)
 {
     DeltaMap<TestDeltaMapConfig> deltaMap;
-    createMock(deltaMap._entries, deltaMap._deltaStore);
+    createMock(deltaMap);
 
     SEQAN_ASSERT_EQ(value(find(deltaMap,  2, DeltaTypeSnp())), deltaMap._entries[3]);
     SEQAN_ASSERT_EQ(value(find(deltaMap,  1, DeltaTypeSV())), deltaMap._entries[2]);
-    SEQAN_ASSERT_EQ(value(find(deltaMap,  20, DeltaTypeDel())), deltaMap._entries[6]);
+    SEQAN_ASSERT_EQ(value(find(deltaMap,  20, DeltaTypeDel())), deltaMap._entries[8]);
     SEQAN_ASSERT(find(deltaMap,  1, DeltaTypeIns()) == end(deltaMap, Standard()));
     SEQAN_ASSERT(find(deltaMap,  6, DeltaTypeSnp()) == end(deltaMap, Standard()));
 }
@@ -185,8 +161,8 @@ SEQAN_DEFINE_TEST(test_delta_map_size)
 
     TDeltaMap deltaMap;
     SEQAN_ASSERT_EQ(size(deltaMap), 0u);
-    createMock(deltaMap._entries, deltaMap._deltaStore);
-    SEQAN_ASSERT_EQ(size(deltaMap), 7u);
+    createMock(deltaMap);
+    SEQAN_ASSERT_EQ(size(deltaMap), 10u);
 }
 
 SEQAN_DEFINE_TEST(test_delta_map_empty)
@@ -195,7 +171,7 @@ SEQAN_DEFINE_TEST(test_delta_map_empty)
 
     TDeltaMap deltaMap;
     SEQAN_ASSERT_EQ(empty(deltaMap), true);
-    createMock(deltaMap._entries, deltaMap._deltaStore);
+    createMock(deltaMap);
     SEQAN_ASSERT_EQ(empty(deltaMap), false);
 }
 
@@ -206,7 +182,7 @@ SEQAN_DEFINE_TEST(test_delta_map_iterator_copy_constructor)
     typedef Iterator<TDeltaMap const, Standard>::Type TConstIterator;
 
     TDeltaMap deltaMap;
-    createMock(deltaMap._entries, deltaMap._deltaStore);
+    createMock(deltaMap);
 
     TIterator itMap = begin(deltaMap, Standard());
 
@@ -231,7 +207,7 @@ SEQAN_DEFINE_TEST(test_delta_map_iterator_assign)
     typedef Iterator<TDeltaMap const, Standard>::Type TConstIterator;
 
     TDeltaMap deltaMap;
-    createMock(deltaMap._entries, deltaMap._deltaStore);
+    createMock(deltaMap);
 
     TIterator itMap = begin(deltaMap, Standard());
 
@@ -287,7 +263,7 @@ SEQAN_DEFINE_TEST(test_delta_map_iterator)
     typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
 
     TDeltaMap deltaMap;
-    createMock(deltaMap._entries, deltaMap._deltaStore);
+    createMock(deltaMap);
     const TDeltaMap deltaMap2 = deltaMap;
 
     _testDeltaMapIterator(deltaMap);
@@ -301,18 +277,18 @@ SEQAN_DEFINE_TEST(test_delta_map_iterator_value)
     typedef Iterator<TDeltaMap const, Standard>::Type TConstIterator;
 
     TDeltaMap deltaMap;
-    createMock(deltaMap._entries, deltaMap._deltaStore);
+    createMock(deltaMap);
 
     TIterator it = begin(deltaMap, Standard());
-    SEQAN_ASSERT_EQ(value(it), deltaMap._entries[0]);
-    SEQAN_ASSERT_EQ(value(++it), deltaMap._entries[1]);
-    SEQAN_ASSERT_EQ(value(++it), deltaMap._entries[2]);
+    SEQAN_ASSERT_EQ(*(it), deltaMap._entries[0]);
+    SEQAN_ASSERT_EQ(*(++it), deltaMap._entries[1]);
+    SEQAN_ASSERT_EQ(*(++it), deltaMap._entries[2]);
 
     const TDeltaMap deltaMap2 = deltaMap;
     TConstIterator it2 = begin(deltaMap2, Standard());
-    SEQAN_ASSERT_EQ(value(it2++), deltaMap._entries[0]);
-    SEQAN_ASSERT_EQ(value(it2++), deltaMap._entries[1]);
-    SEQAN_ASSERT_EQ(value(it2), deltaMap._entries[2]);
+    SEQAN_ASSERT_EQ(*(it2++), deltaMap._entries[0]);
+    SEQAN_ASSERT_EQ(*(it2++), deltaMap._entries[1]);
+    SEQAN_ASSERT_EQ(*(it2), deltaMap._entries[2]);
 }
 
 SEQAN_DEFINE_TEST(test_delta_map_iterator_delta_value)
@@ -326,13 +302,13 @@ SEQAN_DEFINE_TEST(test_delta_map_iterator_delta_value)
     typedef DeltaValue<TDeltaMap, DeltaTypeSV>::Type TSV;
 
     TDeltaMap deltaMap;
-    createMock(deltaMap._entries, deltaMap._deltaStore);
+    createMock(deltaMap);
 
     TIterator it = begin(deltaMap, Standard());
     SEQAN_ASSERT_EQ(deltaValue(it++, DeltaTypeSnp()), TSnp('A'));
     SEQAN_ASSERT_EQ(deltaValue(it++, DeltaTypeDel()), TDel(3));
     SEQAN_ASSERT_EQ(deltaValue(it++, DeltaTypeSV()), TSV(2, "TGAT"));
-    ++it;
+    it+=3;
     SEQAN_ASSERT_EQ(deltaValue(it, DeltaTypeIns()), TIns("ACGT"));
 
     const TDeltaMap deltaMap2 = deltaMap;
@@ -340,7 +316,7 @@ SEQAN_DEFINE_TEST(test_delta_map_iterator_delta_value)
     SEQAN_ASSERT_EQ(deltaValue(it2++, DeltaTypeSnp()), TSnp('A'));
     SEQAN_ASSERT_EQ(deltaValue(it2++, DeltaTypeDel()), TDel(3));
     SEQAN_ASSERT_EQ(deltaValue(it2++, DeltaTypeSV()), TSV(2, "TGAT"));
-    ++it2;
+    it2+=3;
     SEQAN_ASSERT_EQ(deltaValue(it2, DeltaTypeIns()), TIns("ACGT"));
 }
 
@@ -351,14 +327,15 @@ SEQAN_DEFINE_TEST(test_delta_map_entry_delta_type)
     typedef Iterator<TDeltaMap const, Standard>::Type TConstIterator;
 
     TDeltaMap deltaMap;
-    createMock(deltaMap._entries, deltaMap._deltaStore);
+    createMock(deltaMap);
 
     TIterator it = begin(deltaMap, Standard());
     SEQAN_ASSERT_EQ(getDeltaType(*it),   DELTA_TYPE_SNP);
     SEQAN_ASSERT_EQ(getDeltaType(*++it), DELTA_TYPE_DEL);
     SEQAN_ASSERT_EQ(getDeltaType(*++it), DELTA_TYPE_SV);
     SEQAN_ASSERT_EQ(getDeltaType(*++it), DELTA_TYPE_SNP);
-    SEQAN_ASSERT_EQ(getDeltaType(*++it), DELTA_TYPE_INS);
+    SEQAN_ASSERT_EQ(getDeltaType(*++it), DELTA_TYPE_SV);
+    SEQAN_ASSERT_EQ(getDeltaType(*(it+2)), DELTA_TYPE_INS);
 
     const TDeltaMap deltaMap2 = deltaMap;
     TConstIterator it2 = begin(deltaMap2, Standard());
@@ -366,7 +343,7 @@ SEQAN_DEFINE_TEST(test_delta_map_entry_delta_type)
     SEQAN_ASSERT_EQ(getDeltaType(*it2++), DELTA_TYPE_DEL);
     SEQAN_ASSERT_EQ(getDeltaType(*it2++), DELTA_TYPE_SV);
     SEQAN_ASSERT_EQ(getDeltaType(*it2++), DELTA_TYPE_SNP);
-    SEQAN_ASSERT_EQ(getDeltaType(*it2++), DELTA_TYPE_INS);
+    SEQAN_ASSERT_EQ(getDeltaType(*it2++), DELTA_TYPE_SV);
 }
 
 SEQAN_DEFINE_TEST(test_delta_map_entry_delta_position)
@@ -376,13 +353,15 @@ SEQAN_DEFINE_TEST(test_delta_map_entry_delta_position)
     typedef Iterator<TDeltaMap const, Standard>::Type TConstIterator;
 
     TDeltaMap deltaMap;
-    createMock(deltaMap._entries, deltaMap._deltaStore);
+    createMock(deltaMap);
 
     TIterator it = begin(deltaMap, Standard());
     SEQAN_ASSERT_EQ(getDeltaPosition(*it), 0u);
     SEQAN_ASSERT_EQ(getDeltaPosition(*++it), 1u);
     SEQAN_ASSERT_EQ(getDeltaPosition(*++it), 1u);
     SEQAN_ASSERT_EQ(getDeltaPosition(*++it), 2u);
+    SEQAN_ASSERT_EQ(getDeltaPosition(*++it), 2u);
+    SEQAN_ASSERT_EQ(getDeltaPosition(*++it), 3u);
     SEQAN_ASSERT_EQ(getDeltaPosition(*++it), 4u);
 
     const TDeltaMap deltaMap2 = deltaMap;
@@ -391,6 +370,8 @@ SEQAN_DEFINE_TEST(test_delta_map_entry_delta_position)
     SEQAN_ASSERT_EQ(getDeltaPosition(*it2++), 1u);
     SEQAN_ASSERT_EQ(getDeltaPosition(*it2++), 1u);
     SEQAN_ASSERT_EQ(getDeltaPosition(*it2++), 2u);
+    SEQAN_ASSERT_EQ(getDeltaPosition(*it2++), 2u);
+    SEQAN_ASSERT_EQ(getDeltaPosition(*it2++), 3u);
     SEQAN_ASSERT_EQ(getDeltaPosition(*it2++), 4u);
 }
 
@@ -403,27 +384,22 @@ SEQAN_DEFINE_TEST(test_delta_map_entry_delta_coverage)
     typedef DeltaCoverage<TDeltaMap>::Type TCoverage;
 
     TDeltaMap deltaMap;
-    createMock(deltaMap._entries, deltaMap._deltaStore);
+    createMock(deltaMap);
 
     TCoverage cov1;
-    resize(cov1, 10);
-    for (unsigned i = 0; i < length(cov1); ++i)
-        cov1[i] = (!(i % 3)) ? true : false;
-
-    TCoverage cov2 = cov1;
-    for (unsigned i = 0; i < length(cov2); ++i)
-        cov2[i] = (!(i % 5)) ? true : false;
-
-    TCoverage cov3 = cov1;
-    for (unsigned i = 0; i < length(cov3); ++i)
-        cov3[i] = (!(i % 2)) ? true : false;
+    _getCoverage(cov1, 10, 3);
+    TCoverage cov2;
+    _getCoverage(cov2, 10, 5);
+    TCoverage cov3;
+    _getCoverage(cov3, 10, 2);
 
     TIterator it = begin(deltaMap, Standard());
     SEQAN_ASSERT_EQ(getDeltaCoverage(*it++), cov1);
     SEQAN_ASSERT_EQ(getDeltaCoverage(*it++), cov2);
     SEQAN_ASSERT_EQ(getDeltaCoverage(*it++), cov1);
     SEQAN_ASSERT_EQ(getDeltaCoverage(*it++), cov2);
-    SEQAN_ASSERT_EQ(getDeltaCoverage(*it++), cov3);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*it++), cov1);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*(it+2)), cov3);
 
     const TDeltaMap deltaMap2 = deltaMap;
     TConstIterator it2 = begin(deltaMap2, Standard());
@@ -431,7 +407,8 @@ SEQAN_DEFINE_TEST(test_delta_map_entry_delta_coverage)
     SEQAN_ASSERT_EQ(getDeltaCoverage(*it2++), cov2);
     SEQAN_ASSERT_EQ(getDeltaCoverage(*it2++), cov1);
     SEQAN_ASSERT_EQ(getDeltaCoverage(*it2++), cov2);
-    SEQAN_ASSERT_EQ(getDeltaCoverage(*it2++), cov3);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*it2++), cov1);
+    SEQAN_ASSERT_EQ(getDeltaCoverage(*(it2+2)), cov3);
 }
 
 

@@ -182,8 +182,6 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_clear)
 
 SEQAN_DEFINE_TEST(test_delta_map_delta_store_deletion_size)
 {
-    typedef Pair<unsigned, DnaString> TPair;
-
     DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
 
     SEQAN_ASSERT_EQ(deletionSize(store, 2, DeltaTypeSnp()), 1u);
@@ -194,8 +192,6 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_deletion_size)
 
 SEQAN_DEFINE_TEST(test_delta_map_delta_store_insertion_size)
 {
-    typedef Pair<unsigned, DnaString> TPair;
-
     DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
 
     SEQAN_ASSERT_EQ(insertionSize(store, 2, DeltaTypeSnp()), 1u);
@@ -206,8 +202,6 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_insertion_size)
 
 SEQAN_DEFINE_TEST(test_delta_map_delta_store_net_size)
 {
-    typedef Pair<unsigned, DnaString> TPair;
-
     DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
 
     SEQAN_ASSERT_EQ(netSize(store, 2, DeltaTypeSnp()), 0);

@@ -388,6 +388,10 @@ lowerBound(DeltaMap<TConfig, TSpec> & deltaMap, TPosition refPosition, TDeltaTyp
     return lbWrapper(deltaMap, entry, DeltaMapEntryPosAndTypeLessThanComparator_());
 }
 
+// ----------------------------------------------------------------------------
+// Function impl::checkNoDuplicate()
+// ----------------------------------------------------------------------------
+
 template <typename TDeltaMap, typename TDeltaPos, typename TTag>
 inline bool
 checkNoDuplicate(TDeltaMap const & map, TDeltaPos pos, TTag /*deltaType*/)
@@ -417,11 +421,67 @@ insert(Iter<TDeltaMap, DeltaMapIteratorSpec> const & mapIt,
     typedef typename Value<TDeltaMap>::Type TEntry;
     typedef typename DeltaRecord<TEntry>::Type TDeltaRecord;
 
-//    SEQAN_ASSERT(checkNoDuplicate(*mapIt._mapPtr, deltaPos, deltaType));     // Check valid insert position.
-
     insertValue(mapIt._mapPtr->_entries, mapIt - begin(*mapIt._mapPtr, Standard()),
                 TEntry(deltaPos, TDeltaRecord(selectDeltaType(deltaType),
-                                              addDeltaValue(mapIt._mapPtr->_deltaStore, deltaValue, deltaType)), coverage));
+                                              addDeltaValue(mapIt._mapPtr->_deltaStore, deltaValue, deltaType)),
+                                              coverage,
+                                              DeltaEndType::IS_BOTH));
+}
+
+template <typename TDeltaMap, typename TDeltaPos, typename TDeltaValue, typename TCoverage>
+inline void
+insert(Iter<TDeltaMap, DeltaMapIteratorSpec> mapIt,
+       TDeltaPos deltaPos,
+       TDeltaValue const & deltaValue,
+       TCoverage const & coverage,
+       DeltaTypeDel const & /*deltaType*/)
+{
+    typedef typename Value<TDeltaMap>::Type TEntry;
+    typedef typename DeltaRecord<TEntry>::Type TDeltaRecord;
+
+    DeltaEndType endType = DeltaEndType::IS_BOTH;
+    if (deltaValue > 1)
+        endType = DeltaEndType::IS_LEFT;
+
+    auto storePos = addDeltaValue(mapIt._mapPtr->_deltaStore, deltaValue, DeltaTypeDel());
+    insertValue(mapIt._mapPtr->_entries, mapIt - begin(*mapIt._mapPtr, Standard()),
+                TEntry(deltaPos, TDeltaRecord(DELTA_TYPE_DEL, storePos), coverage, endType));
+
+    if (endType == DeltaEndType::IS_LEFT)
+    {
+        deltaPos += deltaValue - 1;
+        mapIt = impl::lowerBound(*mapIt._mapPtr, deltaPos, DeltaTypeDel());
+        insertValue(mapIt._mapPtr->_entries, mapIt - begin(*mapIt._mapPtr, Standard()),
+                    TEntry(deltaPos, TDeltaRecord(DELTA_TYPE_DEL, storePos), coverage, DeltaEndType::IS_RIGHT));
+    }
+}
+
+template <typename TDeltaMap, typename TDeltaPos, typename TDeltaValue, typename TCoverage>
+inline void
+insert(Iter<TDeltaMap, DeltaMapIteratorSpec> mapIt,
+       TDeltaPos deltaPos,
+       TDeltaValue const & deltaValue,
+       TCoverage const & coverage,
+       DeltaTypeSV const & /*deltaType*/)
+{
+    typedef typename Value<TDeltaMap>::Type TEntry;
+    typedef typename DeltaRecord<TEntry>::Type TDeltaRecord;
+
+    DeltaEndType endType = DeltaEndType::IS_BOTH;
+    if (deltaValue.i1 > 1)
+        endType = DeltaEndType::IS_LEFT;
+
+    auto storePos = addDeltaValue(mapIt._mapPtr->_deltaStore, deltaValue, DeltaTypeSV());
+    insertValue(mapIt._mapPtr->_entries, mapIt - begin(*mapIt._mapPtr, Standard()),
+                TEntry(deltaPos, TDeltaRecord(DELTA_TYPE_SV, storePos), coverage, endType));
+
+    if (endType == DeltaEndType::IS_LEFT)
+    {
+        deltaPos += deltaValue.i1 - 1;
+        mapIt = impl::lowerBound(*mapIt._mapPtr, deltaPos, DeltaTypeSV());
+        insertValue(mapIt._mapPtr->_entries, mapIt - begin(*mapIt._mapPtr, Standard()),
+                    TEntry(deltaPos, TDeltaRecord(DELTA_TYPE_SV, storePos), coverage, DeltaEndType::IS_RIGHT));
+    }
 }
 
 }
@@ -498,33 +558,29 @@ find(DeltaMap<TConfig, TSpec> & deltaMap, TPosition refPosition, TDeltaType /*de
  */
 
 template <typename TConfig, typename TSpec, typename TDeltaPos, typename TDeltaValue,
-          typename TCoverage, typename TTag>
+          typename TCoverage, typename TDeltaType>
 inline bool
 insert(DeltaMap<TConfig, TSpec> & deltaMap,
        TDeltaPos deltaPos,
-       TDeltaValue const & deltaValue,
+       TDeltaValue const & value,
        TCoverage const & coverage,
-       TTag const & deltaType)
+       TDeltaType const & /*deltaType*/)
 {
     typedef DeltaMap<TConfig, TSpec> TDeltaMap;
     typedef typename Value<TDeltaMap>::Type TEntry;
-    typedef typename DeltaRecord<TEntry>::Type TDeltaRecord;
     typedef typename DeltaPosition<TEntry>::Type TEntryPos;
 
     if (SEQAN_UNLIKELY(empty(deltaMap)))
-    {
-        appendValue(deltaMap._entries,
-                    TEntry(deltaPos, TDeltaRecord(selectDeltaType(deltaType),
-                                                  addDeltaValue(deltaMap._deltaStore, deltaValue, deltaType)), coverage));
-        return true;
-    }
+        reserve(deltaMap._entries, 1);
 
-    auto it = impl::lowerBound(deltaMap, deltaPos, deltaType);
-//    if (SEQAN_UNLIKELY(it != end(deltaMap, Standard()) &&
-//                       getDeltaPosition(*it) == static_cast<TEntryPos>(deltaPos) &&
-//                       getDeltaRecord(*it).i1 == selectDeltaType(deltaType)))
-//        return false;
-    impl::insert(it, deltaPos, deltaValue, coverage, deltaType);
+    auto it = impl::lowerBound(deltaMap, deltaPos, TDeltaType());
+    if (SEQAN_UNLIKELY(it != end(deltaMap, Standard()) &&
+                       getDeltaPosition(*it) == static_cast<TEntryPos>(deltaPos) &&
+                       getDeltaRecord(*it).i1 == selectDeltaType(TDeltaType()) &&
+                       deltaValue(it, TDeltaType()) == value))
+        return false;
+
+    impl::insert(it, deltaPos, value, coverage, TDeltaType());
     return true;
 }
 
@@ -566,11 +622,21 @@ erase(DeltaMap<TConfig, TSpec> & deltaMap,
     if (SEQAN_UNLIKELY(it == end(deltaMap, Standard())))
         return false;  // Element does not exists.
 
+    // Find potential right end of this delta.
+    auto itR = it;
+    if (!IsSameType<TDeltaType, DeltaTypeIns>::VALUE)
+        itR = find(deltaMap,
+                          deltaPos + deletionSize(deltaMap._deltaStore, getDeltaRecord(*it).i2, TDeltaType()) - 1,
+                          TDeltaType());
+    SEQAN_ASSERT_LEQ(it - begin(deltaMap, Standard()), itR - begin(deltaMap, Standard()));
+
     // 1. Erase the delta record from the corresponding delta store.
     TStoreSize storePos = getDeltaRecord(value(it)).i2;
     SEQAN_ASSERT_LT(storePos, length(getDeltaStore(deltaMap._deltaStore, TDeltaType())));
     eraseDeltaValue(deltaMap._deltaStore, storePos, TDeltaType());
     // 2. Erase corresponding entry.
+    if (it != itR)  // Erase right end of delta operation.
+        erase(deltaMap._entries, itR - begin(deltaMap, Standard()));
     erase(deltaMap._entries, it - begin(deltaMap, Standard()));
     // 3. Update record position for all entries
     forEach(deltaMap, [storePos](TEntry & entry)
@@ -578,6 +644,7 @@ erase(DeltaMap<TConfig, TSpec> & deltaMap,
         if (getDeltaRecord(entry).i1 == selectDeltaType(TDeltaType()) && getDeltaRecord(entry).i2 > storePos)
             --getDeltaRecord(entry).i2;  // Decrease record position by one.
     });
+
     return true;
 }
 

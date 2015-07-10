@@ -98,19 +98,6 @@ swap(JstTraversalNode<TJstLhs> & lhs,
     std::swap(lhs.fromBase, rhs.fromBase);
 }
 
-template <typename TCoverage>
-inline String<char>
-_printCoverage(TCoverage const & cov)
-{
-    String<char> tmp;
-    for (bool elem : cov)
-        if (elem)
-            appendValue(tmp, '1');
-        else
-            appendValue(tmp, '0');
-    return tmp;
-}
-
 template <typename TStream, typename TJst>
 inline TStream&
 operator<<(TStream & stream, JstTraversalNode<TJst> const & node)
