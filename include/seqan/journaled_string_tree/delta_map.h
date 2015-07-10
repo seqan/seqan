@@ -569,6 +569,7 @@ insert(DeltaMap<TConfig, TSpec> & deltaMap,
     typedef DeltaMap<TConfig, TSpec> TDeltaMap;
     typedef typename Value<TDeltaMap>::Type TEntry;
     typedef typename DeltaPosition<TEntry>::Type TEntryPos;
+    typedef typename DeltaValue<TDeltaMap, TDeltaType>::Type TDeltaValueType;
 
     if (SEQAN_UNLIKELY(empty(deltaMap)))
         reserve(deltaMap._entries, 1);
@@ -577,7 +578,7 @@ insert(DeltaMap<TConfig, TSpec> & deltaMap,
     if (SEQAN_UNLIKELY(it != end(deltaMap, Standard()) &&
                        getDeltaPosition(*it) == static_cast<TEntryPos>(deltaPos) &&
                        getDeltaRecord(*it).i1 == selectDeltaType(TDeltaType()) &&
-                       deltaValue(it, TDeltaType()) == value))
+                       deltaValue(it, TDeltaType()) == static_cast<TDeltaValueType>(value)))
         return false;
 
     impl::insert(it, deltaPos, value, coverage, TDeltaType());

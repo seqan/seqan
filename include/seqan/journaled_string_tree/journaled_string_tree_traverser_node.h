@@ -55,9 +55,8 @@ public:
     typedef typename Iterator<TSequence, Standard>::Type                TSeqIterator;
     typedef typename Position<TSequence>::Type                          TPosition;
     typedef typename Member<TJst, JstBufferMember>::Type                TJstBuffer;
-    typedef typename Member<TJstBuffer, JstBufferExtensionMap>::Type    TExtMap;
-    typedef typename Iterator<TExtMap, Standard>::Type                  TDeltaIterator;
-    typedef typename Host<TJst>::Type                                   TDeltaMap;
+    typedef typename Member<TJstBuffer, JstBufferDeltaMapMember>::Type  TDeltaMap;
+    typedef typename Iterator<TDeltaMap, Standard>::Type                TDeltaIterator;
     typedef typename DeltaCoverage<TDeltaMap>::Type                     TCoverage;
     typedef typename Size<TJst>::Type                                   TSize;
 

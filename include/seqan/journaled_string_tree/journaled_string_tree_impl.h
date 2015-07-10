@@ -124,7 +124,7 @@ public:
     }
 
     template <typename TSeq, typename TSize>
-    JournaledStringTree(TSeq const &source, TSize branchLength, TDeltaMap & deltaMap) :
+    JournaledStringTree(TSeq const & source, TSize branchLength, TDeltaMap & deltaMap) :
         _branchLength(branchLength),
         _buffer()
     {

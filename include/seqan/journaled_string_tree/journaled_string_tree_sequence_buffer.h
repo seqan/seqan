@@ -54,8 +54,8 @@ namespace seqan {
 struct JstBufferSetMember_;
 typedef Tag<JstBufferSetMember_> JstBufferSetMember;
 
-struct JstBufferExtensionMap_;
-typedef Tag<JstBufferExtensionMap_> JstBufferExtensionMap;
+struct JstBufferDeltaMapMember_;
+typedef Tag<JstBufferDeltaMapMember_> JstBufferDeltaMapMember;
 
 // ----------------------------------------------------------------------------
 // Class JstBuffer_
@@ -72,9 +72,8 @@ public:
     typedef typename Member<TJournaledStringTree, JstSourceMember>::Type    TSource;
     typedef typename Iterator<TSource const, Rooted>::Type                  TSourceIterator;
 
-    typedef typename Host<TJournaledStringTree>::Type                       TDeltaMap;
-    typedef typename Member<JstBuffer_, JstBufferExtensionMap>::Type        TMapExtension;
-    typedef typename Iterator<TMapExtension, Standard>::Type                TDeltaIterator;
+    typedef typename Member<JstBuffer_, JstBufferDeltaMapMember>::Type      TDeltaMap;
+    typedef typename Iterator<TDeltaMap, Standard>::Type                    TDeltaIterator;
 
     typedef typename Size<TSource>::Type                                    TSourceSize;
     typedef String<TSourceSize>                                             TStringPositions;
@@ -83,7 +82,7 @@ public:
 
     bool                    _isSynchronized;
 
-    TMapExtension           _mapExtension;
+    TDeltaMap*              _deltaMapPtr;
 
     TSourceIterator         _sourceBegin;       // Iterator to the clipped begin position of the source.
     TSourceIterator         _sourceEnd;         // Iterator to the clipped end position of the source.
@@ -99,11 +98,11 @@ public:
     JstBuffer_()
     {}
 
-    JstBuffer_(TDeltaMap const & map) : _mapExtension(map)
+    JstBuffer_(TDeltaMap & map) : _deltaMapPtr(&map)
     {}
 
-    JstBuffer_(TDeltaMap const & map, TSourceIterator const & srcBeg, TSourceIterator const & srcEnd) :
-        _mapExtension(map),
+    JstBuffer_(TDeltaMap & map, TSourceIterator const & srcBeg, TSourceIterator const & srcEnd) :
+        _deltaMapPtr(&map),
         _sourceBegin(srcBeg),
         _sourceEnd(srcEnd)
     {
@@ -139,14 +138,19 @@ struct Member<JstBuffer_<TJournaledStringTree, TSpec>, JstBufferSetMember>
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction Member                                  [JstBufferExtensionMap]
+// Metafunction Member                                [JstBufferDeltaMapMember]
 // ----------------------------------------------------------------------------
 
 template <typename TJst, typename TSpec>
-struct Member<JstBuffer_<TJst, TSpec>, JstBufferExtensionMap>
+struct Member<JstBuffer_<TJst, TSpec>, JstBufferDeltaMapMember>
 {
-    typedef typename Host<TJst>::Type       TDeltaMap_;
-    typedef DeltaMapExtension_<TDeltaMap_>  Type;
+    typedef typename Host<TJst>::Type  Type;
+};
+
+template <typename TJst, typename TSpec>
+struct Member<JstBuffer_<TJst, TSpec> const, JstBufferDeltaMapMember>
+{
+    typedef typename Host<TJst>::Type  Type;
 };
 
 // ============================================================================
@@ -283,8 +287,8 @@ struct JournaledStringCreateFunctor
     inline void
     operator()(TTag const & /*deltaType*/)
     {
-        if ((*mapIt).info == ExtensionInfo::IS_BEGIN)
-            impl::journalDelta(*setIt, getDeltaPosition(*(*mapIt).hostIter), deltaValue((*mapIt).hostIter, TTag()), TTag());
+        if ((*mapIt).deltaTypeEnd != DeltaEndType::IS_RIGHT)
+            impl::journalDelta(*setIt, getDeltaPosition(*mapIt), deltaValue(mapIt, TTag()), TTag());
     }
 };
 
@@ -295,8 +299,8 @@ create(JstBuffer_<TJst, TSpec> & buffer)
     typedef typename Member<JstBuffer_<TJst, TSpec>, JstBufferSetMember>::Type      TJSet;
     typedef typename Value<TJSet>::Type                                             TJString;
     typedef typename Iterator<TJSet, Standard>::Type                                TJSetIter;
-    typedef typename Member<JstBuffer_<TJst, TSpec>, JstBufferExtensionMap>::Type   TExtMap;
-    typedef typename Iterator<TExtMap, Standard>::Type                              TExtMapIter;
+    typedef typename Member<JstBuffer_<TJst, TSpec>, JstBufferDeltaMapMember>::Type TDeltaMap;
+    typedef typename Iterator<TDeltaMap, Standard>::Type                            TDeltaMapIter;
 
     SEQAN_ASSERT(!empty(buffer._startPositions));
 
@@ -317,21 +321,21 @@ create(JstBuffer_<TJst, TSpec> & buffer)
     SEQAN_OMP_PRAGMA(parallel for)
     for (auto jobId = 0; jobId < static_cast<int>(length(jSetSplitter)); ++jobId)
     {
-        impl::JournaledStringCreateFunctor<TExtMapIter, TJSetIter> f;
+        impl::JournaledStringCreateFunctor<TDeltaMapIter, TJSetIter> f;
         f.mapIt = buffer._deltaRangeBegin;
         for (; f.mapIt != buffer._deltaRangeEnd; ++f.mapIt)
         {
             f.setIt = jSetSplitter[jobId];
-            if (SEQAN_UNLIKELY((*f.mapIt).info == ExtensionInfo::IS_END))
+            if (SEQAN_UNLIKELY((*f.mapIt).deltaTypeEnd == DeltaEndType::IS_RIGHT))
                 continue;
 
-            auto covIt = begin(getDeltaCoverage(*(*f.mapIt).hostIter), Standard()) +
+            auto covIt = begin(getDeltaCoverage(*f.mapIt), Standard()) +
                 (f.setIt - begin(buffer._journaledSet, Standard()));
             for (; f.setIt != jSetSplitter[jobId + 1]; ++f.setIt, ++covIt)
             {
                 DeltaTypeSelector deltaSelector;
                 if (*covIt)  // If the current sequence covers the current delta.
-                    applyOnDelta(f, getDeltaType(*(*f.mapIt).hostIter), deltaSelector);
+                    applyOnDelta(f, getDeltaType(*f.mapIt), deltaSelector);
             }
         }
     }
@@ -350,8 +354,8 @@ struct NetSizeExtractor
     template <typename TTag>
     inline void operator()(TTag const &)
     {
-        if ((*mapIt).info == ExtensionInfo::IS_BEGIN)
-            val = netSize(host(container(mapIt))._deltaStore, getStorePosition(*(*mapIt).hostIter), TTag());
+        if ((*mapIt).deltaTypeEnd != DeltaEndType::IS_RIGHT)
+            val = netSize(container(mapIt)._deltaStore, getStorePosition(*mapIt), TTag());
         else
             val = 0;
     }
@@ -366,7 +370,7 @@ inline bool
 synchronize(JstBuffer_<TJst, TSpec> & buffer)
 {
     typedef typename Size<JstBuffer_<TJst, TSpec> >::Type                           TSize;
-    typedef typename Member<JstBuffer_<TJst, TSpec>, JstBufferExtensionMap>::Type   TMap;
+    typedef typename Member<JstBuffer_<TJst, TSpec>, JstBufferDeltaMapMember>::Type TMap;
     typedef typename Iterator<TMap, Standard>::Type                                 TMapIter;
     typedef typename MakeSigned<TSize>::Type                                        TSignedSize;
 
@@ -389,23 +393,20 @@ synchronize(JstBuffer_<TJst, TSpec> & buffer)
     // We could only represent infixes over the journaled strings after they have been constructed?
     // So we have a fixed end position and begin position.
 
-    // Make sure the map extension is synchonized.
-    sync(buffer._mapExtension); // TODO(rrahn): Only in the given range.
-
-    buffer._deltaRangeBegin = begin(buffer._mapExtension, Standard());
-    buffer._deltaRangeEnd = end(buffer._mapExtension, Standard());
+    buffer._deltaRangeBegin = begin(*buffer._deltaMapPtr, Standard());
+    buffer._deltaRangeEnd = end(*buffer._deltaMapPtr, Standard());
 
 // TODO(rrahn): Enable this when allowing chunking.
-//    buffer._deltaRangeBegin = std::lower_bound(begin(buffer._mapExtension, Standard()),
-//                                               end(buffer._mapExtension, Standard()),
+//    buffer._deltaRangeBegin = std::lower_bound(begin(buffer._deltaMap, Standard()),
+//                                               end(buffer._deltaMap, Standard()),
 //                                               position(buffer._sourceBegin), DeltaExtensionCompareLessPos_());
-//    buffer._deltaRangeEnd = std::lower_bound(begin(buffer._mapExtension, Standard()), end(buffer._mapExtension, Standard()),
+//    buffer._deltaRangeEnd = std::lower_bound(begin(buffer._deltaMap, Standard()), end(buffer._deltaMap, Standard()),
 //                                             position(buffer._sourceEnd), DeltaExtensionCompareLessPos_());
 
     // Stream from the beginning to the expected range to get the begin positions of the current segment.
     impl::NetSizeExtractor<TSignedSize, TMapIter> f;
-    f.mapIt = begin(buffer._mapExtension, Standard());
-    resize(buffer._startPositions, length(getDeltaCoverage(*(*f.mapIt).hostIter)), position(buffer._sourceBegin), Exact());
+    f.mapIt = begin(*buffer._deltaMapPtr, Standard());
+    resize(buffer._startPositions, length(getDeltaCoverage(*f.mapIt)), position(buffer._sourceBegin), Exact());
 
     if (position(buffer._sourceBegin) == 0)  // Special case: We also set the begin position to 0 even if there is an insertion at the 0th position.
         return true;
@@ -413,9 +414,9 @@ synchronize(JstBuffer_<TJst, TSpec> & buffer)
     for (; f.mapIt != buffer._deltaRangeBegin; ++f.mapIt)
     {
         DeltaTypeSelector selector;
-        applyOnDelta(f, getDeltaType(*(*f.mapIt).hostIter), selector);
-        auto covBegin = begin(getDeltaCoverage(*(*f.mapIt).hostIter), Standard());
-        for (auto covIt = covBegin; covIt != end(getDeltaCoverage(*(*f.mapIt).hostIter), Standard()); ++covIt)
+        applyOnDelta(f, getDeltaType(*f.mapIt), selector);
+        auto covBegin = begin(getDeltaCoverage(*f.mapIt), Standard());
+        for (auto covIt = covBegin; covIt != end(getDeltaCoverage(*f.mapIt), Standard()); ++covIt)
         {
             if (*covIt)
             {
@@ -492,10 +493,13 @@ setSourceEnd(JstBuffer_<TJst, TSpec> & buffer,
 template <typename TJst, typename TSpec>
 inline void
 setDeltaMap(JstBuffer_<TJst, TSpec> & buffer,
-            typename Host<TJst>::Type const & map)
+            typename Member<JstBuffer_<TJst, TSpec>, JstBufferDeltaMapMember>::Type & map)
 {
-    markModified(buffer);
-    setHost(buffer._mapExtension, map);
+    if (buffer._deltaMapPtr != &map)
+    {
+        markModified(buffer);
+        buffer._deltaMapPtr = &map;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -546,7 +550,7 @@ inline void
 clear(JstBuffer_<TJst, TSpec> & buffer)
 {
     buffer._isSynchronized = false;
-    clear(buffer._mapExtension);
+    buffer._deltaMapPtr = nullptr;
     clear(buffer._startPositions);
 }
 

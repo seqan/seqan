@@ -242,7 +242,8 @@ _createJournaledStrings(StringSet<TString> & set,
                 }
                 case DELTA_TYPE_DEL:
                 {
-                    erase(seq, getDeltaPosition(*it), getDeltaPosition(*it)+ deltaValue(it, DeltaTypeDel()));
+                    if((*it).deltaTypeEnd != DeltaEndType::IS_RIGHT)
+                        erase(seq, getDeltaPosition(*it), getDeltaPosition(*it)+ deltaValue(it, DeltaTypeDel()));
                     break;
                 }
                 case DELTA_TYPE_INS:
@@ -252,8 +253,11 @@ _createJournaledStrings(StringSet<TString> & set,
                 }
                 case DELTA_TYPE_SV:
                 {
-                    erase(seq, getDeltaPosition(*it), getDeltaPosition(*it) + deltaValue(it, DeltaTypeSV()).i1);
-                    insert(seq, getDeltaPosition(*it), deltaValue(it, DeltaTypeSV()).i2);
+                    if((*it).deltaTypeEnd != DeltaEndType::IS_RIGHT)
+                    {
+                        erase(seq, getDeltaPosition(*it), getDeltaPosition(*it) + deltaValue(it, DeltaTypeSV()).i1);
+                        insert(seq, getDeltaPosition(*it), deltaValue(it, DeltaTypeSV()).i2);
+                    }
                     break;
                 }
             }
@@ -300,8 +304,6 @@ _createJst(TJst & jst, TInFile & configIn)
 // Define a typed test for the creation of different scenarios.
 SEQAN_DEFINE_TEST(test_journaled_string_tree_create)
 {
-    typedef StringSet<DnaString>    TSet;
-
     CharString path = SEQAN_PATH_TO_ROOT();
     append(path, "/tests/journaled_string_tree/testConfig.txt");
 
