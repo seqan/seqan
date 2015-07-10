@@ -162,9 +162,31 @@ getContextIterator(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const
     return impl::activeNode(me).curEdgeIt;
 }
 
+
 // ----------------------------------------------------------------------------
 // Function impl::mapSourceToVirtual()
 // ----------------------------------------------------------------------------
+
+template <typename TDeltaMapIter>
+struct MapSourceToVirtualHelper_
+{
+    typedef typename Size<TDeltaMapIter>::Type TSize;
+
+
+    TSize           virtOffset;
+    TDeltaMapIter   iter;
+
+    MapSourceToVirtualHelper_() : virtOffset(0)
+    {}
+
+    template <typename TTag>
+    inline void
+    operator()(TTag const & /*deltaType*/)
+    {
+        virtOffset += insertionSize(container(iter)._deltaStore, getStorePosition(*iter), TTag());
+    }
+
+};
 
 template <typename TIterator, typename TDeltaMap, typename TProxyId, typename THostPos>
 inline void
@@ -251,32 +273,37 @@ mapBranchPointToVirtual(TIterator & resultIt,
 
     // TODO(rmaerker): Can remove the binary Search here!
     // Find the first node that is left or equal to the current physical position!
+    MapSourceToVirtualHelper_<TVarIterator>  f;
     TMapEntry child;
     child.deltaPosition = _physicalPosition(resultIt);
-    TVarIterator itVar = std::upper_bound(begin(variantStore, Standard()), end(variantStore, Standard()), child,
-                                          DeltaMapEntryPosLessThanComparator_());
+    f.iter = std::upper_bound(begin(variantStore, Standard()), end(variantStore, Standard()), child,
+                              DeltaMapEntryPosLessThanComparator_());
 
-    SEQAN_ASSERT_LEQ(getDeltaPosition(*itVar), static_cast<TDeltaMapPos const>(hostPos));
+    SEQAN_ASSERT_LEQ(getDeltaPosition(*f.iter), static_cast<TDeltaMapPos const>(hostPos));
 
-    TDeltaMapPos virtualOffset = 0;
+//    TDeltaMapPos virtualOffset = 0;
     // Now we move to the right until we find the node that we are looking for and reconstruct the offset of the virtual positions.
-    while (getDeltaPosition(*itVar) != static_cast<TDeltaMapPos const>(hostPos) && !atEnd(itVar, variantStore))
+    while (getDeltaPosition(*f.iter) != static_cast<TDeltaMapPos const>(hostPos) && !atEnd(f.iter))
     {
-        if (getDeltaCoverage(*itVar)[proxyId] != true)  // irrelevant variant.
+        if (getDeltaCoverage(*f.iter)[proxyId] != true || isRightEnd(*f.iter))  // irrelevant variant.
         {
-            ++itVar;
+            ++f.iter;
             continue;
         }
+        DeltaTypeSelector selector;
 
-        if (getDeltaType(*itVar) == DELTA_TYPE_INS)
-            virtualOffset += length(deltaValue(itVar, DeltaTypeIns()));
-        else if (getDeltaType(*itVar) == DELTA_TYPE_SNP)
-            ++virtualOffset;
-        else if (getDeltaType(*itVar) == DELTA_TYPE_SV)
-            virtualOffset += length(deltaValue(itVar, DeltaTypeSV()).i2);
-        ++itVar;
+        applyOnDelta(f, getDeltaType(*f.iter), selector);
+//
+//        virtualOffset += insertionSize(variantStore._deltaStore, getDeltaStorePosition(*itVar), )
+//        if (getDeltaType(*itVar) == DELTA_TYPE_INS)
+//            virtualOffset += length(deltaValue(itVar, DeltaTypeIns()));
+//        else if (getDeltaType(*itVar) == DELTA_TYPE_SNP)
+//            ++virtualOffset;
+//        else if (getDeltaType(*itVar) == DELTA_TYPE_SV)
+//            virtualOffset += length(deltaValue(itVar, DeltaTypeSV()).i2);
+        ++f.iter;
     }
-    resultIt += virtualOffset + 1;  // Set the iterator to the beginning of the variant.
+    resultIt += f.virtOffset + 1;  // Set the iterator to the beginning of the variant.
 }
 
 // ----------------------------------------------------------------------------
@@ -291,7 +318,7 @@ getPos(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me,
 {
     if (SEQAN_UNLIKELY(atEnd(it)))
         return length(impl::source(container(me)));
-    return (*it).deltaPos;
+    return getDeltaPosition(*it);
 }
 
 // ----------------------------------------------------------------------------
@@ -304,9 +331,8 @@ toNextDeltaBehindDeletion(JstTraversalNode<TJst> & node,
                           TSize const delSize)
 {
     // Move to next valid delta position. Skip all nodes that lie within the range of the deletion.
-    while (!atEnd(node.nextDelta) && (impl::isEndPoint(node.nextDelta) ||
-           (getDeltaPosition(*(impl::hostIter(node.nextDelta))) <
-           getDeltaPosition(*impl::hostIter(node.curDelta)) + delSize)))
+    while (!atEnd(node.nextDelta) && (isRightEnd(*node.nextDelta) ||
+           (getDeltaPosition(*node.nextDelta)) < getDeltaPosition(*node.curDelta) + delSize))
     {
         ++node.nextDelta;
     }
@@ -326,8 +352,8 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
     typedef typename TTraversalNode::TDeltaIterator TDeltaIt   SEQAN_TYPEDEF_FOR_DEBUG;
     typedef typename Position<TDeltaIt>::Type       TPos       SEQAN_TYPEDEF_FOR_DEBUG;
     // We set the coverage of the left child to be the one of the parent & coverage(curDelta);
-    transform(child.coverage, parent.coverage, getDeltaCoverage(*impl::hostIter(parent.nextDelta)), FunctorBitwiseAnd());
-    transform(parent.coverage, parent.coverage, getDeltaCoverage(*impl::hostIter(parent.nextDelta)),
+    transform(child.coverage, parent.coverage, getDeltaCoverage(*parent.nextDelta), FunctorBitwiseAnd());
+    transform(parent.coverage, parent.coverage, getDeltaCoverage(*parent.nextDelta),
               FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
 
 //#if defined(DEBUG_JST_TRAVERSAL)
@@ -351,13 +377,13 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
         {
             parent.endEdgeIt = begin(container(it)._buffer._journaledSet[proxyId], Standard());
             impl::mapBranchPointToVirtual(parent.endEdgeIt, host(container(it)), proxyId,
-                                          getDeltaPosition(*impl::hostIter(parent.nextDelta)));
+                                          getDeltaPosition(*parent.nextDelta));
             // We have the sequence iterators updated and the coverage.
             // So far the remainingLength and the curNode remain the same.
         }
         else  // We move to the base sequence.
         {
-            parent.endEdgeIt = iter(impl::source(container(it)), getDeltaPosition(*impl::hostIter(parent.nextDelta)));
+            parent.endEdgeIt = iter(impl::source(container(it)), getDeltaPosition(*parent.nextDelta));
         }
     }
     else
@@ -366,12 +392,11 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
         // remap child node to new journal sequence.
         child.endEdgeIt = begin(container(it)._buffer._journaledSet[proxyId], Standard());
         impl::mapBranchPointToVirtual(child.endEdgeIt, host(container(it)), proxyId,
-                                      getDeltaPosition(*impl::hostIter(child.curDelta)));
+                                      getDeltaPosition(*child.curDelta));
     }
 
     // Move to next valid delta position, note that we skip all end points and all deltas that occur at the same position.
-    while ((!atEnd(child.nextDelta)) && (impl::isEndPoint(child.nextDelta) ||
-           getPos(it, child.nextDelta) == getPos(it, child.curDelta)))
+    while (!atEnd(child.nextDelta) && (isRightEnd(*child.nextDelta) || getPos(it, child.nextDelta) == getPos(it, child.curDelta)))
     {
         ++child.nextDelta;
     }
@@ -383,12 +408,11 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
     {
         // We should keep the mappedSrcEndPos of the base node already in sync.
         child.mappedSrcEndPos += branchLength(container(it));
-        switch (getDeltaType(*impl::hostIter(child.curDelta)))
+        switch (getDeltaType(*child.curDelta))
         {
             case DELTA_TYPE_DEL:
             {
-                delSize = deletionSize(host(container(it))._deltaStore,
-                                       getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeDel());
+                delSize = deletionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeDel());
                 child.mappedSrcEndPos += delSize;
                 // We need to skip all deleted
                 impl::toNextDeltaBehindDeletion(child, delSize);
@@ -397,18 +421,15 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
             }
             case DELTA_TYPE_INS:
             {
-                insSize = insertionSize(host(container(it))._deltaStore,
-                                        getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeIns());
+                insSize = insertionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeIns());
                 child.remainingSize += insSize;
                 break;
             }
             case DELTA_TYPE_SV:
             {
-                delSize = deletionSize(host(container(it))._deltaStore,
-                                       getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeSV());
+                delSize = deletionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeSV());
                 child.mappedSrcEndPos += delSize;
-                insSize = insertionSize(host(container(it))._deltaStore,
-                                        getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeSV());
+                insSize = insertionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeSV());
                 child.remainingSize += insSize - 1;
                 impl::toNextDeltaBehindDeletion(child, delSize);
                 break;
@@ -419,30 +440,26 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
     else
     {
         // Now we are down somewhere in an internal subtree.
-        switch (getDeltaType(*impl::hostIter(child.curDelta)))
+        switch (getDeltaType(*child.curDelta))
         {
             case DELTA_TYPE_DEL:
             {
-                delSize = deletionSize(host(container(it))._deltaStore,
-                                       getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeDel());
+                delSize = deletionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeDel());
                 child.mappedSrcEndPos += delSize;
                 impl::toNextDeltaBehindDeletion(child, delSize);
                 break;
             }
             case DELTA_TYPE_INS:
             {
-                insSize = insertionSize(host(container(it))._deltaStore,
-                                        getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeIns());
+                insSize = insertionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeIns());
                 break;
             }
             case DELTA_TYPE_SV:
             {
-                delSize = deletionSize(host(container(it))._deltaStore,
-                                       getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeSV());
+                delSize = deletionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeSV());
 
                 child.mappedSrcEndPos += delSize;
-                insSize = insertionSize(host(container(it))._deltaStore,
-                                        getStorePosition(*impl::hostIter(child.curDelta)), DeltaTypeSV());
+                insSize = insertionSize(host(container(it))._deltaStore, getStorePosition(*child.curDelta), DeltaTypeSV());
                 impl::toNextDeltaBehindDeletion(child, delSize);
                 break;
             }
@@ -507,11 +524,10 @@ advanceBase(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me,
 
     while (!atEnd(base.nextDelta) && impl::getPos(me, base.curDelta) == impl::getPos(me, base.nextDelta))
     {
-        if (impl::isEndPoint(base.nextDelta))
-            transform(base.coverage, base.coverage, getDeltaCoverage(*impl::hostIter(base.nextDelta)),
-                      FunctorBitwiseOr());
+        if (isRightEnd(*base.nextDelta))
+            transform(base.coverage, base.coverage, getDeltaCoverage(*base.nextDelta), FunctorBitwiseOr());
         else
-            impl::updateOnDeletion(base, impl::hostIter(base.nextDelta));  // Update the coverage of the base node if the current delta represents a deletion.
+            impl::updateOnDeletion(base, base.nextDelta);  // Update the coverage of the base node if the current delta represents a deletion.
         ++base.nextDelta;
     }
     // base.nextDelta might point to an merge point.
@@ -551,7 +567,7 @@ updateParent(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me,
 
     // Make sure that for a right subtree we don't consider merge points, because we cannot be within a branch
     // coming from a delta while at the same time there is a deletion to be covered.
-    while(!atEnd(parent.nextDelta) && impl::isEndPoint(parent.nextDelta))  // Move the nextDelta iterator to the next branch point, in case the current one is an endPoint.
+    while(!atEnd(parent.nextDelta) && isRightEnd(*parent.nextDelta))  // Move the nextDelta iterator to the next branch point, in case the current one is an endPoint.
     {
         ++parent.nextDelta;
     }
@@ -641,7 +657,7 @@ expandNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
 
     while (!atEnd(parentPtr->nextDelta) && impl::getPos(it, parentPtr->nextDelta) == impl::getPos(it, parentPtr->curDelta))
     {
-        if (SEQAN_LIKELY(!impl::isEndPoint(parentPtr->nextDelta)))  // Skip points, where we merge a deletion.
+        if (SEQAN_LIKELY(!isRightEnd(*parentPtr->nextDelta)))  // Skip points, where we merge a deletion.
         {
             auto child = *parentPtr;
             if (impl::createBranch(it, *parentPtr, child) && impl::moveWindow(it, &child, stepSize) == 0 &&
@@ -715,7 +731,7 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
 
     node.begEdgeIt = begin(impl::source(jst), Standard());  // This points to some value already -> what could this position be?
     node.curEdgeIt = node.begEdgeIt;
-    node.endEdgeIt = node.begEdgeIt + (getDeltaPosition(*(*node.nextDelta).hostIter) - position(node.begEdgeIt));
+    node.endEdgeIt = node.begEdgeIt + (getDeltaPosition(*node.nextDelta) - position(node.begEdgeIt));
     node.mappedSrcEndPos = position(node.endEdgeIt);
     node.remainingSize = me._branchLength - 1;
     node.isBase = true;

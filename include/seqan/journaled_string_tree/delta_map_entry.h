@@ -338,7 +338,7 @@ template <typename TRefPos, typename TStorePos>
 inline bool
 isLeftEnd(DeltaMapEntry<TRefPos, TStorePos> const & deltaEntry)
 {
-    return (deltaEntry.deltaEndType == DeltaEndType::IS_LEFT || deltaEntry.deltaEndType == DeltaEndType::IS_BOTH);
+    return deltaEntry.deltaEndType == DeltaEndType::IS_LEFT;
 }
 
 // ----------------------------------------------------------------------------
@@ -349,7 +349,7 @@ template <typename TRefPos, typename TStorePos>
 inline bool
 isRightEnd(DeltaMapEntry<TRefPos, TStorePos> const & deltaEntry)
 {
-    return (deltaEntry.deltaEndType == DeltaEndType::IS_RIGHT || deltaEntry.deltaEndType == DeltaEndType::IS_BOTH);
+    return deltaEntry.deltaTypeEnd == DeltaEndType::IS_RIGHT;
 }
 
 // ----------------------------------------------------------------------------

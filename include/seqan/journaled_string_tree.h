@@ -56,8 +56,6 @@
 #include <seqan/journaled_string_tree/delta_map_entry.h>
 #include <seqan/journaled_string_tree/delta_map.h>
 #include <seqan/journaled_string_tree/delta_map_iterator.h>
-#include <seqan/journaled_string_tree/delta_map_extension.h>
-#include <seqan/journaled_string_tree/delta_map_extension_iterator.h>
 
 // ===========================================================================
 // Journaled String Tree.
