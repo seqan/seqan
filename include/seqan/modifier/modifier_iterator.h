@@ -542,7 +542,7 @@ template <typename THost, typename TSpec, typename TContainer>
 inline typename Position<ModifiedIterator<THost, TSpec> const>::Type
 position(ModifiedIterator<THost, TSpec> const & me, TContainer const &cont)
 {
-    return position(host(me), cont);
+    return me - begin(cont, Standard());
 }
 
 // --------------------------------------------------------------------------
@@ -598,7 +598,7 @@ inline bool
 atBegin(ModifiedIterator<THost, TSpec> & me,
         TContainer const & container)
 {
-    return atBegin(const_cast<ModifiedIterator<THost, TSpec> const &>(me), container);
+    return me == begin(container, Standard());
 }
 
 template <typename THost, typename TSpec, typename TContainer>
@@ -606,7 +606,7 @@ inline bool
 atBegin(ModifiedIterator<THost, TSpec> const & me,
         TContainer const & container)
 {
-    return atBegin(host(me), container);
+    return me == begin(container, Standard());
 }
 
 template <typename THost, typename TSpec>
@@ -632,7 +632,7 @@ inline bool
 atEnd(ModifiedIterator<THost, TSpec> & me,
       TContainer const & container)
 {
-    return atEnd(const_cast<ModifiedIterator<THost, TSpec> const &>(me), container);
+    return me == end(container, Standard());
 }
 
 template <typename THost, typename TSpec, typename TContainer>
@@ -640,7 +640,7 @@ inline bool
 atEnd(ModifiedIterator<THost, TSpec> const & me,
       TContainer const & container)
 {
-    return atEnd(host(me), container);
+    return me == end(container, Standard());
 }
 
 template <typename THost, typename TSpec>
