@@ -46,68 +46,171 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TObserver, typename TList = String<TObserver*> >
-class Observable
+// Type alias used to hide std::tuple in SeqAn namespace.
+template <typename... TObservers>
+using ObserverList = std::tuple<TObservers...>;
+
+// ----------------------------------------------------------------------------
+// Class Observable
+// ----------------------------------------------------------------------------
+
+template <typename TObserverList>
+class Observable;
+
+template <typename... TObservers>
+class Observable<ObserverList<TObservers...> >
 {
 public:
-    TList   observerList;
+    typedef ObserverList<TObservers...> TObserverList;
+    // non empty class.
+    TObserverList   observers;
+
+    // Default C'tor.
+    Observable()
+    {}
+
+    // Custom C'tor with lvalue list.
+    Observable(TObserverList const & list) : observers(list)
+    {}
+
+    // Custom C'tor with rvalue list.
+    Observable(TObserverList && list) : observers(std::forward<TObserverList>(list))
+    {}
+
+};
+
+// Special version which is the empty tuple, with no member.
+template <>
+class Observable<ObserverList<> >
+{
+    // empty class.
 };
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Metafunction LENGTH
+// ----------------------------------------------------------------------------
+
+template <typename... TObservers>
+struct LENGTH<ObserverList<TObservers...> >
+{
+    static constexpr unsigned VALUE = sizeof...(TObservers);
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction Element
+// ----------------------------------------------------------------------------
+
+template <unsigned INDEX, typename TObject>
+struct Element;
+
+template <unsigned INDEX, typename TFirst, typename... TObservers>
+struct Element<INDEX, ObserverList<TFirst, TObservers...> >
+{
+    static_assert(INDEX < LENGTH<ObserverList<TFirst, TObservers...> >::VALUE);
+    typedef typename Element<INDEX - 1, ObserverList<TObservers...> >::Type Type;
+};
+
+template <typename TFirst, typename... TObservers>
+struct Element<0, ObserverList<TFirst, TObservers...> >
+{
+    typedef TFirst Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction NotifyObserver
+// ----------------------------------------------------------------------------
+
+template <unsigned INDEX>
+struct NotifyObserver
+{
+    template <typename TObserverList, typename TTag>
+    inline void operator()(Observable<TObserverList> & subject, TTag const & /*tag*/)
+    {
+        std::get<INDEX>(subject.observers)(TTag());
+        NotifyObserver<INDEX - 1>{}(subject, TTag());
+    }
+};
+
+template <>
+struct NotifyObserver<0>
+{
+
+    template <typename TObserverList, typename TTag>
+    inline void operator()(Observable<TObserverList> & subject, TTag const & /*tag*/)
+    {
+        std::get<0>(subject.observers)(TTag());
+    }
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function addObserver()
+// Function length()
 // ----------------------------------------------------------------------------
 
-template <typename TList, typename TObserver>
-inline void addObserver(Observable<void, TList> & /*subject*/, TObserver & /*observer*/)
+template <typename TObserverList>
+inline constexpr unsigned
+length(Observable<TObserverList> const & /*subject*/)
+{
+    return LENGTH<TObserverList>::VALUE;
+}
+
+// ----------------------------------------------------------------------------
+// Function setObserver()
+// ----------------------------------------------------------------------------
+
+template <unsigned INDEX, typename TObserver>
+inline void
+setObserver(Observable<ObserverList<> > & /*subject*/,
+            TObserver & /*observer*/)
 {
     // no-op;
 }
 
-template <typename TObserver, typename TList>
-inline void addObserver(Observable<TObserver, TList> & subject, TObserver & observer)
+template <unsigned INDEX, typename TObserverList, typename TObserver>
+inline void
+setObserver(Observable<TObserverList> & subject,
+            TObserver && observer)
 {
-    appendValue(subject.observerList, &observer);
-}
-
-// ----------------------------------------------------------------------------
-// Function deleteObserver()
-// ----------------------------------------------------------------------------
-
-template <typename TList, typename TObserver>
-inline void deleteObserver(Observable<void, TList> & /*subject*/, TObserver & /*observer*/)
-{
-    // no-op;
-}
-
-template <typename TObserver, typename TList>
-inline void deleteObserver(Observable<TObserver, TList> & subject, TObserver & observer)
-{
-    std::remove(begin(subject.observerList), end(subject.observerList), &observer);
+    static_assert(INDEX < LENGTH<TObserverList>::VALUE);
+    std::get<INDEX>(subject.observers) = std::forward<TObserver>(observer);
 }
 
 // ----------------------------------------------------------------------------
 // Function notify()
 // ----------------------------------------------------------------------------
 
-template <typename TList, typename TEventTag>
-inline void notify(Observable<void, TList> & /*subject*/, TEventTag const & /*event tag*/)
+template <typename TEventTag>
+inline void
+notify(Observable<ObserverList<> > & /*subject*/,
+       TEventTag const & /*event tag*/)
 {
     // no-op;
 }
 
-template <typename TObserver, typename TList, typename TEventTag>
-inline void notify(Observable<TObserver, TList> & subject, TEventTag const & /*event tag*/)
+template <typename TObserverList, typename TEventTag>
+inline void
+notify(Observable<TObserverList> & subject,
+       TEventTag const & /*event tag*/)
 {
-    for (TObserver* obPtr : subject.observerList)
-        update(*obPtr, TEventTag());
+    NotifyObserver<LENGTH<TObserverList>::VALUE - 1>{}(subject, TEventTag());
+}
+
+// ----------------------------------------------------------------------------
+// Function makeObserverList
+// ----------------------------------------------------------------------------
+
+template <typename... TObservers>
+inline ObserverList<TObservers...>
+makeObserverList(TObservers&&... observers)
+{
+    return std::make_tuple(std::forward<TObservers>(observers)...);
 }
 
 }

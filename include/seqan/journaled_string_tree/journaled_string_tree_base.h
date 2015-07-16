@@ -79,13 +79,6 @@ struct JstSourceMember_;
 typedef Tag<JstSourceMember_> JstSourceMember;
 
 // ----------------------------------------------------------------------------
-// Tag JstDeltaMapWrapperMember
-// ----------------------------------------------------------------------------
-
-struct JstDeltaMapWrapperMember_;
-typedef Tag<JstDeltaMapWrapperMember_> JstDeltaMapWrapperMember;
-
-// ----------------------------------------------------------------------------
 // Tag PushEvent
 // ----------------------------------------------------------------------------
 
@@ -140,7 +133,7 @@ struct DefaultJstConfig
 // Metafunction Traverser
 // ----------------------------------------------------------------------------
 
-template <typename TContainer, typename TObserver = void>
+template <typename TContainer, typename TObserverList = ObserverList<> >
 struct Traverser;
 
 // ----------------------------------------------------------------------------

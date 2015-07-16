@@ -46,11 +46,11 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TJst, typename TSpec, typename TObserver>
-class TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> : public Observable<TObserver>
+template <typename TJst, typename TSpec, typename TObserverList>
+class TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserverList> : public Observable<TObserverList>
 {
 public:
-    typedef Observable<TObserver>                                       TSuper;
+    typedef Observable<TObserverList>                                   TSuper;
     typedef typename Member<TraverserImpl, TraverserStackMember>::Type  TStack;
     typedef typename Value<TStack>::Type                                TNode;
     typedef typename Size<TraverserImpl>::Type                          TSize;
@@ -84,21 +84,18 @@ public:
         init(*this, jst, 1);
     }
 
-    // C'tor with the jst and the observer.
-    template <typename TObserver_>
-    TraverserImpl(TJst & jst, TObserver_ & observer, SEQAN_CTOR_DISABLE_IF(IsSameType<TObserver_, void>)) :
-        TSuper(),
+    // C'tor with the jst and list of observers.
+    TraverserImpl(TJst & jst, TObserverList && observers) :
+        TSuper(std::forward<TObserverList>(observers)),
         _contPtr(nullptr),
         _stackPtr(impl::createStack<TStack>())
     {
-        addObserver(*this, observer);
         init(*this, jst, 1);
-        ignoreUnusedVariableWarning(dummy);
     }
 
     // Copy c'tor.
     template <typename TOtherJst>
-    TraverserImpl(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec>, TObserver> const & other,
+    TraverserImpl(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec>, TObserverList> const & other,
                   SEQAN_CTOR_ENABLE_IF(IsConstructible<TJst, TOtherJst>)) :
         _contPtr(other._contPtr),
         _branchLength(other._historySize),
@@ -112,7 +109,7 @@ public:
 
     template <typename TOtherJst>
     inline SEQAN_FUNC_ENABLE_IF(IsConstructible<TJst, TOtherJst>, TraverserImpl &)
-    operator=(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec>, TObserver> const & other)
+    operator=(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec>, TObserverList> const & other)
     {
         if (*this != &other)
         {

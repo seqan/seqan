@@ -34,12 +34,14 @@
 // Facade header for the journaled string tree.
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_H_
-#define EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_H_
+#ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_H_
+#define INCLUDE_SEQAN_JOURNALED_STRING_TREE_H_
 
 // ===========================================================================
 // Prerequisites.
 // ===========================================================================
+
+#ifdef SEQAN_CXX11_STANDARD
 
 #include <seqan/basic.h>
 #include <seqan/file.h>
@@ -47,6 +49,9 @@
 #include <seqan/sequence_journaled.h>
 #include <seqan/journaled_set.h>
 #include <seqan/parallel.h>
+
+// TODO(rrahn): Might put this to basic.
+#include <seqan/journaled_string_tree/observable.h>
 
 // ===========================================================================
 // Delta Map.
@@ -69,10 +74,9 @@
 // Journaled String Tree Traverser.
 // ===========================================================================
 
-#include <seqan/journaled_string_tree/observable.h>
-
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser_node.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser_util.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser.h>
 
-#endif // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_H_
+#endif // SEQAN_CXX11_STANDARD
+#endif // INCLUDE_SEQAN_JOURNALED_STRING_TREE_H_

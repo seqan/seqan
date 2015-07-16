@@ -36,6 +36,13 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 # Add definitions set by find_package (SeqAn).
 add_definitions (${SEQAN_DEFINITIONS})
 
+add_executable (test_basic_observable
+                test_basic_observable.cpp
+                test_basic_observable.h)
+
+# Add dependencies found by find_package (SeqAn).
+target_link_libraries (test_basic_observable ${SEQAN_LIBRARIES})
+ 
 # Update the list of file names below if you add source files to your test.
 add_executable (test_journaled_string_tree
                 test_journaled_string_tree.cpp

@@ -53,7 +53,7 @@ template <typename TSpec = void>
 struct JstTraversalSpec
 {};
 
-template <typename TContainer, typename TSpec, typename TObserver = void>
+template <typename TContainer, typename TSpec, typename TObserverList = ObserverList<> >
 class TraverserImpl;
 
 // ============================================================================
