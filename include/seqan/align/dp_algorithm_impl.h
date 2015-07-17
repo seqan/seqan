@@ -175,6 +175,214 @@ void prepareAlign(StringSet<Align<TSequence, TAlignSpec> > & align,
 }
 
 // ----------------------------------------------------------------------------
+// Function _prepareOverlapMasks()
+// ----------------------------------------------------------------------------
+
+template<typename TAlloc>
+inline void
+_prepareOverlapMasks(std::vector<TSimdAlign, TAlloc> & masks,
+                     std::vector<size_t> const & endsAlign,
+                     size_t dimH,
+                     bool RIGHT,
+                     bool BOTTOM)
+{
+    for(auto endPos: endsAlign)
+    {
+        for(size_t x = (endPos/dimH)*dimH; BOTTOM && x < endPos; ++x)
+            masks[x] |= masks[endPos];
+        for(size_t x = endPos%dimH; RIGHT && x < endPos; x+=dimH)
+            masks[x] |= masks[endPos];
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function _prepareLocalAlignMasks()
+// ----------------------------------------------------------------------------
+
+template<typename TAlloc>
+inline void
+_prepareLocalAlignMasks(std::vector<TSimdAlign, TAlloc> & masks,
+                        std::vector<size_t> const & endsAlign,
+                        size_t dimH,
+                        size_t dimV)
+{
+    _prepareOverlapMasks(masks, endsAlign, dimH, true, false);
+    for(int v = 0; v < dimV; ++v)
+    {
+        int lim = v*dimH;
+        for(int pos = (v+1)*dimH - 2; pos >= lim; --pos)
+            masks[pos] |= masks[pos+1];
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function _checkAndCreateSimdRepresentation()
+// ----------------------------------------------------------------------------
+
+template<typename TSimdVector, typename TStringH, typename TStringV, typename TAlloc>
+void _checkAndCreateSimdRepresentation(StringSet<TStringH> const & stringsH,
+                                       StringSet<TStringV> const & stringsV,
+                                       size_t pos,
+                                       String<TSimdVector> & simdH,
+                                       String<TSimdVector> & simdV,
+                                       std::vector<TSimdAlign, TAlloc> & masks,
+                                       std::vector<size_t> & endsH,
+                                       std::vector<size_t> & endsV,
+                                       std::vector<size_t> & endsAlign)
+{
+    // check if all sequences have the same length
+    unsigned int numAlignments = LENGTH<TSimdAlign>::VALUE;
+    bool allEqualH = true, allEqualV = true;
+    std::vector<size_t> seqLengthsH(numAlignments), seqLengthsV(numAlignments);
+    seqLengthsH[0] = length(stringsH[pos]);
+    seqLengthsV[0] = length(stringsV[pos]);
+    for(unsigned i = 1; i < numAlignments; ++i)
+    {
+        seqLengthsH[i] = length(stringsH[pos+i]);
+        seqLengthsV[i] = length(stringsV[pos+i]);
+        if(seqLengthsH[i] != seqLengthsH[i-1])
+            allEqualH = false;
+        if(seqLengthsV[i] != seqLengthsV[i-1])
+            allEqualV = false;
+    }
+
+    // if yes, create SIMD representation without doing anything else
+    if(allEqualH && allEqualV)
+    {
+        resize(simdH, seqLengthsH[0]);
+        resize(simdV, seqLengthsV[0]);
+        _createSimdRepresentation(simdH, stringsH, pos, seqLengthsH[0]);
+        _createSimdRepresentation(simdV, stringsV, pos, seqLengthsV[0]);
+        return;
+    }
+
+    // otherwise we have to copy the sequences to be able to add a
+    // padding character before calling _createSimdRepresentation,
+    // because all sequences must have the same length
+    size_t maxH = *std::max_element(seqLengthsH.begin(), seqLengthsH.end());
+    size_t maxV = *std::max_element(seqLengthsV.begin(), seqLengthsV.end());
+
+    // and we have to prepare the bit masks of the DPScoutState
+    masks.resize(maxH*maxV, createVector<TSimdAlign>(0));
+
+    // copy strings and add padding chars
+    StringSet<TStringH> paddedH;
+    StringSet<TStringV> paddedV;
+    resize(paddedH, numAlignments);
+    resize(paddedV, numAlignments);
+    for(unsigned i = 0; i < numAlignments; ++i)
+    {
+        // add padding: the padding character should be part of the amino acid alphabet
+        // otherwise a possible score matrix look-up fails, we use 'A' therefor
+        assignValue(paddedH, i, stringsH[pos+i]);
+        assignValue(paddedV, i, stringsV[pos+i]);
+        resize(paddedH[i], maxH, 'A');
+        resize(paddedV[i], maxV, 'A');
+
+        // mark the original end position of the alignment in the masks (with -1, all bits set)
+        endsAlign.push_back((seqLengthsV[i]-1) * maxH + (seqLengthsH[i]-1));
+        assignValue(masks[*endsAlign.rbegin()], i, -1);
+        endsH.push_back(seqLengthsH[i]-1);
+        endsV.push_back(seqLengthsV[i]-1);
+    }
+
+    // sort the end positions, remove duplicates
+    std::sort(endsH.begin(), endsH.end());
+    endsH.erase( std::unique( endsH.begin(), endsH.end() ), endsH.end() );
+    std::sort(endsV.begin(), endsV.end());
+    endsV.erase( std::unique( endsV.begin(), endsV.end() ), endsV.end() );
+    std::sort(endsAlign.begin(), endsAlign.end());
+    endsAlign.erase( std::unique( endsAlign.begin(), endsAlign.end() ), endsAlign.end() );
+
+    // now create SIMD representation
+    resize(simdH, maxH);
+    resize(simdV, maxV);
+    _createSimdRepresentation(simdH, paddedH, 0, maxH);
+    _createSimdRepresentation(simdV, paddedV, 0, maxV);
+}
+
+
+template<typename TSequence, typename TAlignSpec, typename TSimdVector, typename TAlloc>
+void _checkAndCreateSimdRepresentation(StringSet<Align<TSequence, TAlignSpec> > & align,
+                                       size_t pos,
+                                       String<TSimdVector> & simdH,
+                                       String<TSimdVector> & simdV,
+                                       std::vector<TSimdAlign, TAlloc> & masks,
+                                       std::vector<size_t> & endsH,
+                                       std::vector<size_t> & endsV,
+                                       std::vector<size_t> & endsAlign)
+{
+    // check if all sequences have the same length
+    unsigned int numAlignments = LENGTH<TSimdAlign>::VALUE;
+    bool allEqualH = true, allEqualV = true;
+    std::vector<size_t> seqLengthsH(numAlignments), seqLengthsV(numAlignments);
+    seqLengthsH[0] = length(source(row(align[pos], 0)));
+    seqLengthsV[0] = length(source(row(align[pos], 1)));
+    for(unsigned i = 1; i < numAlignments; ++i)
+    {
+        seqLengthsH[i] = length(source(row(align[pos+i], 0)));
+        seqLengthsV[i] = length(source(row(align[pos+i], 1)));
+        if(seqLengthsH[i] != seqLengthsH[i-1])
+            allEqualH = false;
+        if(seqLengthsV[i] != seqLengthsV[i-1])
+            allEqualV = false;
+    }
+
+    // if yes, create SIMD representation without doing anything else
+    if(allEqualH && allEqualV)
+    {
+        resize(simdH, seqLengthsH[0]);
+        resize(simdV, seqLengthsV[0]);
+        _createSimdRepresentation(simdH, align, pos, seqLengthsH[0], 0);
+        _createSimdRepresentation(simdV, align, pos, seqLengthsV[0], 1);
+        return;
+    }
+
+    // otherwise we have to copy the sequences to be able to add a
+    // padding character before calling _createSimdRepresentation,
+    // because all sequences must have the same length
+    size_t maxH = *std::max_element(seqLengthsH.begin(), seqLengthsH.end());
+    size_t maxV = *std::max_element(seqLengthsV.begin(), seqLengthsV.end());
+
+    // and we have to prepare the bit masks of the DPScoutState
+    masks.resize(maxH*maxV, createVector<TSimdAlign>(0));
+
+    // copy strings and add padding chars
+    StringSet<TSequence> paddedH, paddedV;
+    resize(paddedH, numAlignments);
+    resize(paddedV, numAlignments);
+    for(unsigned i = 0; i < numAlignments; ++i)
+    {
+        // add padding: the padding character should be part of the amino acid alphabet
+        // otherwise a possible score matrix look-up fails, we use 'A' therefor
+        assignValue(paddedH, i, source(row(align[pos+i], 0)));
+        assignValue(paddedV, i, source(row(align[pos+i], 1)));
+        resize(paddedH[i], maxH, 'A');
+        resize(paddedV[i], maxV, 'A');
+
+        // mark the original end position of the alignment in the masks (with -1, all bits set)
+        endsAlign.push_back((seqLengthsV[i]-1) * maxH + (seqLengthsH[i]-1));
+        assignValue(masks[*endsAlign.rbegin()], i, -1);
+        endsH.push_back(seqLengthsH[i]-1);
+        endsV.push_back(seqLengthsV[i]-1);
+    }
+
+    // sort the end positions, remove duplicates
+    std::sort(endsH.begin(), endsH.end());
+    endsH.erase( std::unique( endsH.begin(), endsH.end() ), endsH.end() );
+    std::sort(endsV.begin(), endsV.end());
+    endsV.erase( std::unique( endsV.begin(), endsV.end() ), endsV.end() );
+    std::sort(endsAlign.begin(), endsAlign.end());
+    endsAlign.erase( std::unique( endsAlign.begin(), endsAlign.end() ), endsAlign.end() );
+
+    // now create SIMD representation
+    resize(simdH, maxH);
+    resize(simdV, maxV);
+    _createSimdRepresentation(simdH, paddedH, 0, maxH);
+    _createSimdRepresentation(simdV, paddedV, 0, maxV);
+}
+
+// ----------------------------------------------------------------------------
 // Function _createSimdRepresentation()
 // ----------------------------------------------------------------------------
 
@@ -406,8 +614,208 @@ _computeCell(TDPScout & scout,
 // iterated by the outer loop. For the column-wise navigation the track is equivalent with the column.
 template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSeqHValue,
           typename TSeqVValue, typename TSeqVIterator, typename TScoringScheme, typename TColumnDescriptor, typename TDPProfile>
-inline SEQAN_FUNC_ENABLE_IF(Not<And<Is<ScoreMatrixConcept<TScoringScheme> >,
-                                    Is<SimdVectorConcept<TSeqHValue> > > >, void)
+inline SEQAN_FUNC_ENABLE_IF(And<Is<ScoreMatrixConcept<TScoringScheme> >,
+                                Is<SimdDefaultConcept<TDPScout> > >, void)
+_computeTrack(TDPScout & scout,
+              TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
+              TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
+              TSeqHValue const & seqHValue,
+              TSeqVValue const & seqVValue,
+              TSeqVIterator const & seqBegin,
+              TSeqVIterator const & seqEnd,
+              TScoringScheme const & scoringScheme,
+              TColumnDescriptor const &,
+              TDPProfile const &)
+{
+    // Set the iterator to the begin of the track.
+    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), FirstCell());
+    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), FirstCell());
+
+    // precompute the row of the scoring matrix for future look-ups
+    TSeqHValue matrix_row = createVector<TSeqHValue>(TScoringScheme::VALUE_SIZE) * seqHValue;
+
+    // Compute the first cell.
+    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+                 previousCellVertical(dpScoreMatrixNavigator), matrix_row, seqVValue, scoringScheme,
+                 TColumnDescriptor(), FirstCell(), TDPProfile());
+
+    TSeqVIterator iter = seqBegin;
+    TSeqVIterator itEnd = (seqEnd - 1);
+    // Compute the inner cells of the current track.
+    for (; iter != itEnd; ++iter)
+    {
+        // Set the iterator to the next cell within the track.
+        _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
+        _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
+        // Compute the inner cell.
+        _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+                     previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+                     previousCellVertical(dpScoreMatrixNavigator), matrix_row,
+                     sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
+                     TColumnDescriptor(), InnerCell(), TDPProfile());
+    }
+    // Set the iterator to the last cell of the track.
+    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
+    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
+    // Compute the last cell.
+    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+                 previousCellVertical(dpScoreMatrixNavigator), matrix_row,
+                 sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
+                 TColumnDescriptor(), LastCell(), TDPProfile());
+}
+
+template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSeqHValue,
+          typename TSeqVValue, typename TSeqVIterator, typename TScoringScheme, typename TColumnDescriptor, typename TDPProfile>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<ScoreMatrixConcept<TScoringScheme> >,
+                                Is<SimdVariableConcept<TDPScout> > >, void)
+_computeTrack(TDPScout & scout,
+              TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
+              TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
+              TSeqHValue const & seqHValue,
+              TSeqVValue const & seqVValue,
+              TSeqVIterator const & seqBegin,
+              TSeqVIterator const & seqEnd,
+              TScoringScheme const & scoringScheme,
+              TColumnDescriptor const &,
+              TDPProfile const &)
+{
+    // Set the iterator to the begin of the track.
+    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), FirstCell());
+    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), FirstCell());
+
+    // precompute the row of the scoring matrix for future look-ups
+    TSeqHValue matrix_row = createVector<TSeqHValue>(TScoringScheme::VALUE_SIZE) * seqHValue;
+
+    // Initilaize SIMD version with multiple end points.
+    scout.state->nextEndsV = scout.state->endsV.begin();
+    scout.state->posV = 0;
+
+    // Compute the first cell.
+    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+                 previousCellVertical(dpScoreMatrixNavigator), matrix_row, seqVValue, scoringScheme,
+                 TColumnDescriptor(), FirstCell(), TDPProfile());
+
+    TSeqVIterator iter = seqBegin;
+    TSeqVIterator itEnd = (seqEnd - 1);
+    // Compute the inner cells of the current track.
+    for (; iter != itEnd; ++iter)
+    {
+        // Set the iterator to the next cell within the track.
+        _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
+        _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
+        // Compute the inner cell.
+        if (SEQAN_UNLIKELY( position(iter) == *(scout.state->nextEndsV) ))
+        {
+            _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+                         previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+                         previousCellVertical(dpScoreMatrixNavigator), matrix_row,
+                         sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
+                         TColumnDescriptor(), LastCell(), TDPProfile());
+            ++scout.state->nextEndsV;
+        }
+        else
+        {
+            _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+                         previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+                         previousCellVertical(dpScoreMatrixNavigator), matrix_row,
+                         sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
+                         TColumnDescriptor(), InnerCell(), TDPProfile());
+        }
+        ++scout.state->posV;
+    }
+    // Set the iterator to the last cell of the track.
+    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
+    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
+
+    // Compute the last cell.
+    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+                 previousCellVertical(dpScoreMatrixNavigator), matrix_row,
+                 sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
+                 TColumnDescriptor(), LastCell(), TDPProfile());
+}
+
+template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSeqHValue,
+          typename TSeqVValue, typename TSeqVIterator, typename TScoringScheme, typename TColumnDescriptor, typename TDPProfile>
+inline SEQAN_FUNC_ENABLE_IF(And<Not<Is<ScoreMatrixConcept<TScoringScheme> > >,
+                                Is<SimdVariableConcept<TDPScout> > >, void)
+_computeTrack(TDPScout & scout,
+              TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
+              TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
+              TSeqHValue const & seqHValue,
+              TSeqVValue const & seqVValue,
+              TSeqVIterator const & seqBegin,
+              TSeqVIterator const & seqEnd,
+              TScoringScheme const & scoringScheme,
+              TColumnDescriptor const &,
+              TDPProfile const &)
+{
+    // Set the iterator to the begin of the track.
+    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), FirstCell());
+    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), FirstCell());
+
+    // Initilaize SIMD version with multiple end points.
+    scout.state->nextEndsV = scout.state->endsV.begin();
+    scout.state->posV = 0;
+
+    // Compute the first cell.
+    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+                 previousCellVertical(dpScoreMatrixNavigator), seqHValue, seqVValue, scoringScheme,
+                 TColumnDescriptor(), FirstCell(), TDPProfile());
+
+    TSeqVIterator iter = seqBegin;
+    TSeqVIterator itEnd = (seqEnd - 1);
+    // Compute the inner cells of the current track.
+    for (; iter != itEnd; ++iter)
+    {
+        // Set the iterator to the next cell within the track.
+        _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
+        _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
+
+        // Compute the inner cell.
+        if (SEQAN_UNLIKELY( position(iter) == *(scout.state->nextEndsV) ))
+        {
+            _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+                         previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+                         previousCellVertical(dpScoreMatrixNavigator), seqHValue,
+                         sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
+                         TColumnDescriptor(), LastCell(), TDPProfile());
+            ++scout.state->nextEndsV;
+        }
+        else
+        {
+            _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+                         previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+                         previousCellVertical(dpScoreMatrixNavigator), seqHValue,
+                         sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
+                         TColumnDescriptor(), InnerCell(), TDPProfile());
+        }
+        ++scout.state->posV;
+    }
+    // Set the iterator to the last cell of the track.
+    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
+    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
+
+    // Compute the last cell.
+    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+                 previousCellVertical(dpScoreMatrixNavigator), seqHValue,
+                 sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
+                 TColumnDescriptor(), LastCell(), TDPProfile());
+}
+
+template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSeqHValue,
+          typename TSeqVValue, typename TSeqVIterator, typename TScoringScheme, typename TColumnDescriptor, typename TDPProfile>
+inline SEQAN_FUNC_ENABLE_IF(And<And<Not<And<Is<ScoreMatrixConcept<TScoringScheme> >,
+                                            Is<SimdDefaultConcept<TDPScout> > > >,
+                                    Not<And<Is<ScoreMatrixConcept<TScoringScheme> >,
+                                        Is<SimdVariableConcept<TDPScout> > > > >,
+                                Not<And<Not<Is<ScoreMatrixConcept<TScoringScheme> > >,
+                                        Is<SimdVariableConcept<TDPScout> > > > >, void)
 _computeTrack(TDPScout & scout,
               TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
               TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
@@ -461,62 +869,6 @@ _computeTrack(TDPScout & scout,
 //    std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << std::endl;
 //    std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << "(" << _horizontalScoreOfCell(value(dpScoreMatrixNavigator)) << "," << _verticalScoreOfCell(value(dpScoreMatrixNavigator)) << ")" << std::endl;
 }
-
-
-template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSeqHValue,
-          typename TSeqVValue, typename TSeqVIterator, typename TScoringScheme, typename TColumnDescriptor, typename TDPProfile>
-inline SEQAN_FUNC_ENABLE_IF(And<Is<ScoreMatrixConcept<TScoringScheme> >,
-                                Is<SimdVectorConcept<TSeqHValue> > >, void)
-_computeTrack(TDPScout & scout,
-              TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
-              TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
-              TSeqHValue const & seqHValue,
-              TSeqVValue const & seqVValue,
-              TSeqVIterator const & seqBegin,
-              TSeqVIterator const & seqEnd,
-              TScoringScheme const & scoringScheme,
-              TColumnDescriptor const &,
-              TDPProfile const &)
-{
-    // Set the iterator to the begin of the track.
-    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), FirstCell());
-    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), FirstCell());
-
-    // precompute the row of the scoring matrix for future look-ups
-    TSeqHValue matrix_row = createVector<TSeqHValue>(TScoringScheme::VALUE_SIZE) * seqHValue;
-
-    // Compute the first cell.
-    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                 previousCellVertical(dpScoreMatrixNavigator), matrix_row, seqVValue, scoringScheme,
-                 TColumnDescriptor(), FirstCell(), TDPProfile());
-
-    TSeqVIterator iter = seqBegin;
-    TSeqVIterator itEnd = (seqEnd - 1);
-    // Compute the inner cells of the current track.
-    for (; iter != itEnd; ++iter)
-    {
-        // Set the iterator to the next cell within the track.
-        _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
-        _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
-        // Compute the inner cell.
-        _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-                     previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                     previousCellVertical(dpScoreMatrixNavigator), matrix_row,
-                     sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
-                     TColumnDescriptor(), InnerCell(), TDPProfile());
-    }
-    // Set the iterator to the last cell of the track.
-    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
-    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
-    // Compute the last cell.
-    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                 previousCellVertical(dpScoreMatrixNavigator), matrix_row,
-                 sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
-                 TColumnDescriptor(), LastCell(), TDPProfile());
-}
-
 
 // TODO(rmaerker): Debug code!
 //template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSeqHValue,
@@ -616,7 +968,95 @@ _computeAlignmentHelperCheckTerminate(DPScout_<TDPCell,Terminator_<TSpec> > cons
 // Computes the standard DP-algorithm.
 template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSequenceH,
           typename TSequenceV, typename TScoringScheme, typename TAlignmentAlgo, typename TGapCosts, typename TTraceFlag>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVariableConcept<TDPScout> >, void)
+_computeUnbandedAlignment(TDPScout & scout,
+                          TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
+                          TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
+                          TSequenceH const & seqH,
+                          TSequenceV const & seqV,
+                          TScoringScheme const & scoringScheme,
+                          DPProfile_<TAlignmentAlgo, TGapCosts, TTraceFlag> const & dpProfile)
+{
+    typedef typename Iterator<TSequenceH const, Rooted>::Type TConstSeqHIterator;
+    typedef typename Iterator<TSequenceV const, Rooted>::Type TConstSeqVIterator;
+
+    // Initilaize SIMD version with multiple end points.
+    scout.state->nextEndsH = scout.state->endsH.begin();
+    scout.state->posH = 0;
+
+    // ============================================================================
+    // PREPROCESSING
+    // ============================================================================
+
+    TConstSeqVIterator seqVBegin = begin(seqV, Rooted());
+    TConstSeqVIterator seqVEnd = end(seqV, Rooted());
+
+    SEQAN_ASSERT_GT(length(seqH), 0u);
+    SEQAN_ASSERT_GT(length(seqV), 0u);
+    _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
+                  sequenceEntryForScore(scoringScheme, seqH, 0),
+                  sequenceEntryForScore(scoringScheme, seqV, 0),
+                  seqVBegin, seqVEnd, scoringScheme,
+                  MetaColumnDescriptor<DPInitialColumn, FullColumn>(), dpProfile);
+
+    // ============================================================================
+    // MAIN DP
+    // ============================================================================
+
+    TConstSeqHIterator seqHIter = begin(seqH, Rooted());
+    TConstSeqHIterator seqHIterEnd = end(seqH, Rooted()) - 1;
+    for (; seqHIter != seqHIterEnd; ++seqHIter)
+    {
+        // We might only select it if SIMD version is available.
+        if (SEQAN_UNLIKELY(position(seqHIter) ==  *(scout.state->nextEndsH)))
+        {
+            _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
+                          sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
+                          sequenceEntryForScore(scoringScheme, seqV, 0),
+                          seqVBegin, seqVEnd, scoringScheme,
+                          MetaColumnDescriptor<DPFinalColumn, FullColumn>(), dpProfile);
+            ++scout.state->nextEndsH;
+        }
+        else
+        {
+            _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
+                          sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
+                          sequenceEntryForScore(scoringScheme, seqV, 0),
+                          seqVBegin, seqVEnd, scoringScheme,
+                          MetaColumnDescriptor<DPInnerColumn, FullColumn>(), dpProfile);
+        }
+        if (_computeAlignmentHelperCheckTerminate(scout))
+        {
+            return;
+        }
+        ++scout.state->posH;
+    }
+
+    // ============================================================================
+    // POSTPROCESSING
+    // ============================================================================
+
+    _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
+                  sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
+                  sequenceEntryForScore(scoringScheme, seqV, 0),
+                  seqVBegin, seqVEnd, scoringScheme,
+                  MetaColumnDescriptor<DPFinalColumn, FullColumn>(), dpProfile);
+
+    // If we compute only the single option. we need to check if there are other possibilities at the end.
+    // Traceback only from Diagonal, but could also come from vertical or horizontal.
+
+//    for (unsigned i = 0; i < length(recMatrix); ++i)
+//    {
+//        std::cout << recMatrix[i]._score << "\t";
+//    }
+//    std::cout << std::endl;
+}
+
+
+// Computes the standard DP-algorithm.
+template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSequenceH,
+          typename TSequenceV, typename TScoringScheme, typename TAlignmentAlgo, typename TGapCosts, typename TTraceFlag>
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVariableConcept<TDPScout> > >, void)
 _computeUnbandedAlignment(TDPScout & scout,
                           TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
                           TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
@@ -660,7 +1100,7 @@ _computeUnbandedAlignment(TDPScout & scout,
 
         if (_computeAlignmentHelperCheckTerminate(scout))
         {
-                return;
+            return;
         }
     }
 
@@ -673,15 +1113,6 @@ _computeUnbandedAlignment(TDPScout & scout,
                   sequenceEntryForScore(scoringScheme, seqV, 0),
                   seqVBegin, seqVEnd, scoringScheme,
                   MetaColumnDescriptor<DPFinalColumn, FullColumn>(), dpProfile);
-
-    // If we compute only the single option. we need to check if there are other possibilities at the end.
-    // Traceback only from Diagonal, but could also come from vertical or horizontal.
-
-//    for (unsigned i = 0; i < length(recMatrix); ++i)
-//    {
-//        std::cout << recMatrix[i]._score << "\t";
-//    }
-//    std::cout << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -1518,7 +1949,7 @@ inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, void)
 _correctTraceValue(TTraceNavigator & traceNavigator,
                    DPScout_<DPCell_<TScoreValue, AffineGaps>, TDPScoutSpec>  const & dpScout)
 {
-    _setToPosition(traceNavigator, maxHostPosition(dpScout, 0));
+    _setToPosition(traceNavigator, maxHostPosition(dpScout));
 
     if (_verticalScoreOfCell(dpScout._maxScore) == _scoreOfCell(dpScout._maxScore))
     {
@@ -1550,7 +1981,7 @@ inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, void)
 _correctTraceValue(TTraceNavigator & traceNavigator,
                    DPScout_<DPCell_<TScoreValue, DynamicGaps>, TDPScoutSpec>  const & dpScout)
 {
-    _setToPosition(traceNavigator, maxHostPosition(dpScout, 0));
+    _setToPosition(traceNavigator, maxHostPosition(dpScout));
     if (isGapExtension(dpScout._maxScore, DynamicGapExtensionVertical()))
     {
         value(traceNavigator) &= ~TraceBitMap_::DIAGONAL;
@@ -1606,7 +2037,7 @@ _computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
     typedef DPMatrixNavigator_<TDPScoreMatrix, DPScoreMatrix, NavigateColumnWise> TDPScoreMatrixNavigator;
     typedef DPMatrixNavigator_<TDPTraceMatrix, DPTraceMatrix<TTraceFlag>, NavigateColumnWise> TDPTraceMatrixNavigator;
 
-    typedef typename ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm>::Type TDPScoutSpec;
+    typedef typename ScoutSpecForSimdAlignment_<TScoutState>::Type TDPScoutSpec;
     typedef DPScout_<TDPScoreValue, TDPScoutSpec> TDPScout;
 
     // Check if current dp settings are valid. If not return infinity value for dp score value.
@@ -1661,8 +2092,8 @@ _computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return maxScore(dpScout);
 
-    storeu(&dpScout._maxHostPosition[0], dpScout._maxHostLow);
-    storeu(&dpScout._maxHostPosition[LENGTH<typename Value<TScoreScheme>::Type>::VALUE / 2], dpScout._maxHostHigh);
+    //storeu(&dpScout._maxHostPosition[0], dpScout._maxHostLow);
+    //storeu(&dpScout._maxHostPosition[LENGTH<typename Value<TScoreScheme>::Type>::VALUE / 2], dpScout._maxHostHigh);
     size_t numAlignments = length(traceSegments);
     for(size_t i = 0; i < numAlignments; ++i)
     {

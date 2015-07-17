@@ -97,40 +97,11 @@ public:
     TDPCell _maxScore;
 
     // The corresponding host position within the underlying dp-matrix.
-    uint32_t _maxHostPosition[LENGTH<TScoreValue>::VALUE] __attribute__((aligned(SEQAN_SIZEOF_MAX_VECTOR)));
-
-#if defined(__AVX2__) || defined(__SSE3__)
-
-    //internally used in the SIMD version for performance reasons
-    //SIMD register size divided by 16bit is the amount of alignments
-    //so we need two vectors of type 32bit to save the host for all alignments
-    SimdVector<int32_t>::Type _maxHostLow; //first half of alignments
-    SimdVector<int32_t>::Type _maxHostHigh; //other half
+    uint32_t _maxHostPosition;
 
     DPScout_() {}
     DPScout_(DPScoutState_<Default> const & /*state*/) {}
-    
-    DPScout_(DPScout_ const & other) :
-        _maxScore(other._maxScore), _maxHostPosition(other._maxHostPosition),
-        _maxHostLow(other._maxHostLow), _maxHostHigh(_maxHostHigh){}
 
-    DPScout_ & operator=(DPScout_ const & other)
-    {
-        if (this != &other)
-        {
-            _maxScore = other._maxScore;
-            _maxHostPosition = other._maxHostPosition;
-            _maxHostLow = other._maxHostLow;
-            _maxHostHigh = other._maxHostHigh;
-        }
-        return *this;
-    }
-
-#else
-
-    DPScout_() {}
-    DPScout_(DPScoutState_<Default> const & /*state*/) {}
-    
     DPScout_(DPScout_ const & other) :
         _maxScore(other._maxScore), _maxHostPosition(other._maxHostPosition) {}
 
@@ -143,8 +114,6 @@ public:
         }
         return *this;
     }
-
-#endif
 };
 
 // Terminator_ Specialization
@@ -222,41 +191,6 @@ struct ScoutStateSpecForScout_
 // Functions
 // ============================================================================
 
-
-// ----------------------------------------------------------------------------
-// Function _copySimdCell()
-// ----------------------------------------------------------------------------
-
-template <typename TDPCell, typename TSpec, typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<LinearGapCosts<TDPCell> >, void)
-_copySimdCell(DPScout_<TDPCell, TSpec> & dpScout, 
-              TDPCell const & activeCell, 
-              TScoreValue const & cmp)
-{
-    dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
-}
-
-template <typename TDPCell, typename TSpec, typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<AffineGapCosts<TDPCell> >, void)
-_copySimdCell(DPScout_<TDPCell, TSpec> & dpScout, 
-              TDPCell const & activeCell, 
-              TScoreValue const & cmp)
-{
-    dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
-    dpScout._maxScore._horizontalScore = blend(dpScout._maxScore._horizontalScore, activeCell._horizontalScore, cmp);
-    dpScout._maxScore._verticalScore = blend(dpScout._maxScore._verticalScore, activeCell._verticalScore, cmp);
-}
-
-template <typename TDPCell, typename TSpec, typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<DynamicGapCosts<TDPCell> >, void)
-_copySimdCell(DPScout_<TDPCell, TSpec> & dpScout, 
-              TDPCell const & activeCell, 
-              TScoreValue const & cmp)
-{
-    dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
-    dpScout._maxScore._flagMask = blend(dpScout._maxScore._flagMask, activeCell._flagMask, cmp);
-}
-
 // ----------------------------------------------------------------------------
 // Function _scoutBestScore()
 // ----------------------------------------------------------------------------
@@ -264,7 +198,7 @@ _copySimdCell(DPScout_<TDPCell, TSpec> & dpScout,
 // Tracks the new score, if it is the new maximum.
 template <typename TDPCell, typename TSpec, typename TTraceMatrixNavigator,
           typename TIsLastColumn, typename TIsLastRow>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<typename Value<TDPCell>::Type> > >, void)
+inline void
 _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
                 TDPCell const & activeCell,
                 TTraceMatrixNavigator const & navigator,
@@ -274,32 +208,8 @@ _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
     if (_scoreOfCell(activeCell) > _scoreOfCell(dpScout._maxScore))
     {
         dpScout._maxScore = activeCell;
-        dpScout._maxHostPosition[0] = position(navigator);
+        dpScout._maxHostPosition = position(navigator);
     }
-}
-
-template <typename TDPCell, typename TSpec, typename TTraceMatrixNavigator,
-          typename TIsLastColumn, typename TIsLastRow>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<typename Value<TDPCell>::Type> >, void)
-_scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
-                TDPCell const & activeCell,
-                TTraceMatrixNavigator const & navigator,
-                TIsLastColumn const & /**/,
-                TIsLastRow const & /**/)
-{
-    TSimdAlign cmp = cmpGt(_scoreOfCell(activeCell), _scoreOfCell(dpScout._maxScore));
-    _copySimdCell(dpScout, activeCell, cmp);
-#if defined(__AVX2__)
-    dpScout._maxHostLow = blend(dpScout._maxHostLow, createVector<SimdVector<int32_t>::Type>(position(navigator)), 
-                                _mm256_cvtepi16_epi32(_mm256_castsi256_si128(reinterpret_cast<__m256i&>(cmp)))); 
-    dpScout._maxHostHigh = blend(dpScout._maxHostHigh, createVector<SimdVector<int32_t>::Type>(position(navigator)), 
-                                _mm256_cvtepi16_epi32(_mm256_extractf128_si256(reinterpret_cast<__m256i&>(cmp),1)));
-#elif defined(__SSE3__)
-    dpScout._maxHostLow = blend(dpScout._maxHostLow, createVector<SimdVector<int32_t>::Type>(position(navigator)), 
-                                _mm_unpacklo_epi16(reinterpret_cast<__m128i&>(cmp), reinterpret_cast<__m128i&>(cmp))); 
-    dpScout._maxHostHigh = blend(dpScout._maxHostHigh, createVector<SimdVector<int32_t>::Type>(position(navigator)), 
-                                _mm_unpackhi_epi16(reinterpret_cast<__m128i&>(cmp), reinterpret_cast<__m128i&>(cmp)));
-#endif
 }
 
 // TODO(rmaerker): Why is this needed?
@@ -342,9 +252,9 @@ maxScore(DPScout_<TDPCell, TScoutSpec> const & dpScout)
 // Returns the host position that holds the current maximum score.
 template <typename TDPCell, typename TScoutSpec>
 inline unsigned int
-maxHostPosition(DPScout_<TDPCell, TScoutSpec> const & dpScout, size_t pos)
+maxHostPosition(DPScout_<TDPCell, TScoutSpec> const & dpScout)
 {
-    return dpScout._maxHostPosition[pos];
+    return dpScout._maxHostPosition;
 }
 
 // ----------------------------------------------------------------------------

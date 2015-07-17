@@ -564,7 +564,7 @@ String<TScoreValue> globalAlignmentScore(StringSet<TString, TSpec> const & strin
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOff> TAlignConfig2;
     typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
 
-    DPScoutState_<Default> dpScoutState;
+    DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
     String<TraceSegment_<unsigned, unsigned> > traceSegments;
 
     //create a SIMD scoring scheme
@@ -664,7 +664,7 @@ String<TScoreValue> globalAlignmentScore(TString const & stringH,
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOff> TAlignConfig2;
     typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
 
-    DPScoutState_<Default> dpScoutState;
+    DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
     String<TraceSegment_<unsigned, unsigned> > traceSegments;
 
     //create a SIMD scoring scheme
@@ -783,7 +783,7 @@ String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & a
     {
         StringSet<String<TTraceSegment> > trace;
         resize(trace, sizeBatch);
-        DPScoutState_<Default> dpScoutState;
+        DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
         _createSimdRepresentation(stringSimdH, align, pos*sizeBatch, lenH, 0);
         _createSimdRepresentation(stringSimdV, align, pos*sizeBatch, lenV, 1);
         TSimdAlign resultsBatch = _setUpAndRunAlignment(trace, dpScoutState, stringSimdH, stringSimdV,

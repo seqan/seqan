@@ -825,7 +825,7 @@ _computeTraceback(TTarget & target,
                        DPBandConfig<TBandFlag> const & band,
                        DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const & dpProfile)
 {
-    _computeTraceback(target, matrixNavigator, maxHostPosition(dpScout, 0), seqH, seqV, band, dpProfile);
+    _computeTraceback(target, matrixNavigator, maxHostPosition(dpScout), seqH, seqV, band, dpProfile);
 }
 
 // ----------------------------------------------------------------------------

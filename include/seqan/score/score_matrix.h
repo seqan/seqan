@@ -158,9 +158,9 @@ public:
 };
 
 SEQAN_CONCEPT(ScoreMatrixConcept, (T)) {};
-template <typename TValue, typename TSequenceValue, typename TSpec>                                                                             
-SEQAN_CONCEPT_IMPL((Score<TValue, ScoreMatrix<TSequenceValue, TSpec> >),       (ScoreMatrixConcept));                              
-template <typename TValue, typename TSequenceValue, typename TSpec>                                                                                  
+template <typename TValue, typename TSequenceValue, typename TSpec>
+SEQAN_CONCEPT_IMPL((Score<TValue, ScoreMatrix<TSequenceValue, TSpec> >),       (ScoreMatrixConcept));
+template <typename TValue, typename TSequenceValue, typename TSpec>
 SEQAN_CONCEPT_IMPL((Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const), (ScoreMatrixConcept));
 
 

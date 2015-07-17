@@ -119,6 +119,7 @@
 
 // The DP Scout
 #include <seqan/align/dp_scout.h>
+#include <seqan/align/dp_scout_simd.h>
 
 // Stores the actual trace segment that was detected during traceback.
 // The trace segments can be adapted into any alignment representation

@@ -243,7 +243,7 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
     //create a SIMD scoring scheme
     Score<TSimdAlign, TScoreSpec> scoringSchemeSimd = _setSimdScoringScheme(scoringScheme, TSimdAlign());
     
-    size_t const numAlignments = length(align); 
+    size_t const numAlignments = length(align);
     size_t const lenH = length(source(row(align[0], 0)));
     size_t const lenV = length(source(row(align[0], 1)));
     size_t const sizeBatch = LENGTH<TSimdAlign>::VALUE;
@@ -258,10 +258,10 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
     {
         StringSet<String<TTraceSegment> > trace;
         resize(trace, sizeBatch);
-        DPScoutState_<Default> dpScoutState;
+        DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
         _createSimdRepresentation(stringSimdH, align, pos*sizeBatch, lenH, 0);
         _createSimdRepresentation(stringSimdV, align, pos*sizeBatch, lenV, 1);
-        TSimdAlign resultsBatch = _setUpAndRunAlignment(trace, dpScoutState, stringSimdH, stringSimdV, 
+        TSimdAlign resultsBatch = _setUpAndRunAlignment(trace, dpScoutState, stringSimdH, stringSimdV,
                                                       scoringSchemeSimd, TAlignConfig2(lowerDiag, upperDiag), tag);
         for(size_t x = pos*sizeBatch; x < (pos+1)*sizeBatch; ++x)
         {
