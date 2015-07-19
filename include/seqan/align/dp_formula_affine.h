@@ -60,7 +60,7 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_::TTraceValue)
+inline typename SelectTraceValueType_<TScoreValue>::Type
 _retrieveTraceAffine(TScoreValue const & globalMax,
                      TScoreValue const & diagScore,
                      TScoreValue const & horiScore,
@@ -69,31 +69,12 @@ _retrieveTraceAffine(TScoreValue const & globalMax,
                      TScoreValue const & vertiOpenScore,
                      RecursionDirectionAll const &)
 {
-    typename TraceBitMap_::TTraceValue traceValue(TraceBitMap_::NONE);
-    _conditionalOrOnEquality(traceValue, globalMax, diagScore, TraceBitMap_::DIAGONAL);
-    _conditionalOrOnEquality(traceValue, globalMax, horiScore, TraceBitMap_::HORIZONTAL);
-    _conditionalOrOnEquality(traceValue, globalMax, horiOpenScore, TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
-    _conditionalOrOnEquality(traceValue, globalMax, vertiScore, TraceBitMap_::VERTICAL);
-    _conditionalOrOnEquality(traceValue, globalMax, vertiOpenScore, TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
-    return traceValue;
-}
-
-template <typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, TScoreValue)
-_retrieveTraceAffine(TScoreValue const & globalMax,
-                     TScoreValue const & diagScore,
-                     TScoreValue const & horiScore,
-                     TScoreValue const & horiOpenScore,
-                     TScoreValue const & vertiScore,
-                     TScoreValue const & vertiOpenScore,
-                     RecursionDirectionAll const &)
-{
-    TScoreValue traceValue = TraceSimd::NONE;
-    _conditionalOrOnEquality(traceValue, globalMax, diagScore, TraceSimd::DIAGONAL);
-    _conditionalOrOnEquality(traceValue, globalMax, horiScore, TraceSimd::HORIZONTAL);
-    _conditionalOrOnEquality(traceValue, globalMax, horiOpenScore, TraceSimd::MAX_FROM_HORIZONTAL_MATRIX);
-    _conditionalOrOnEquality(traceValue, globalMax, vertiScore, TraceSimd::VERTICAL);
-    _conditionalOrOnEquality(traceValue, globalMax, vertiOpenScore, TraceSimd::MAX_FROM_VERTICAL_MATRIX);
+    typename SelectTraceValueType_<TScoreValue>::Type traceValue = TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE;
+    _conditionalOrOnEquality(traceValue, globalMax, diagScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::DIAGONAL);
+    _conditionalOrOnEquality(traceValue, globalMax, horiScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::HORIZONTAL);
+    _conditionalOrOnEquality(traceValue, globalMax, horiOpenScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX);
+    _conditionalOrOnEquality(traceValue, globalMax, vertiScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::VERTICAL);
+    _conditionalOrOnEquality(traceValue, globalMax, vertiOpenScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX);
     return traceValue;
 }
 
@@ -102,7 +83,7 @@ _retrieveTraceAffine(TScoreValue const & globalMax,
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_::TTraceValue)
+inline typename SelectTraceValueType_<TScoreValue>::Type
 _retrieveTraceAffine(TScoreValue const & globalMax,
                      TScoreValue const & diagScore,
                      TScoreValue const & horiScore,
@@ -111,27 +92,10 @@ _retrieveTraceAffine(TScoreValue const & globalMax,
                      TScoreValue const &,
                      RecursionDirectionUpperDiagonal const &)
 {
-    typename TraceBitMap_::TTraceValue traceValue(TraceBitMap_::NONE);
-    _conditionalOrOnEquality(traceValue, globalMax, diagScore, TraceBitMap_::DIAGONAL);
-    _conditionalOrOnEquality(traceValue, globalMax, horiScore, TraceBitMap_::HORIZONTAL);
-    _conditionalOrOnEquality(traceValue, globalMax, horiOpenScore, TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
-    return traceValue;
-}
-
-template <typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, TScoreValue)
-_retrieveTraceAffine(TScoreValue const & globalMax,
-                     TScoreValue const & diagScore,
-                     TScoreValue const & horiScore,
-                     TScoreValue const & horiOpenScore,
-                     TScoreValue const &,
-                     TScoreValue const &,
-                     RecursionDirectionUpperDiagonal const &)
-{
-    TScoreValue traceValue = TraceSimd::NONE;
-    _conditionalOrOnEquality(traceValue, globalMax, diagScore, TraceSimd::DIAGONAL);
-    _conditionalOrOnEquality(traceValue, globalMax, horiScore, TraceSimd::HORIZONTAL);
-    _conditionalOrOnEquality(traceValue, globalMax, horiOpenScore, TraceSimd::MAX_FROM_HORIZONTAL_MATRIX);
+    typename SelectTraceValueType_<TScoreValue>::Type traceValue = TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE;
+    _conditionalOrOnEquality(traceValue, globalMax, diagScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::DIAGONAL);
+    _conditionalOrOnEquality(traceValue, globalMax, horiScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::HORIZONTAL);
+    _conditionalOrOnEquality(traceValue, globalMax, horiOpenScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX);
     return traceValue;
 }
 
@@ -140,7 +104,7 @@ _retrieveTraceAffine(TScoreValue const & globalMax,
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_::TTraceValue)
+inline typename SelectTraceValueType_<TScoreValue>::Type
 _retrieveTraceAffine(TScoreValue const & globalMax,
                      TScoreValue const & diagScore,
                      TScoreValue const &,
@@ -149,27 +113,10 @@ _retrieveTraceAffine(TScoreValue const & globalMax,
                      TScoreValue const & vertiOpenScore,
                      RecursionDirectionLowerDiagonal const &)
 {
-    typename TraceBitMap_::TTraceValue traceValue(TraceBitMap_::NONE);
-    _conditionalOrOnEquality(traceValue, globalMax, diagScore, TraceBitMap_::DIAGONAL);
-    _conditionalOrOnEquality(traceValue, globalMax, vertiScore, TraceBitMap_::VERTICAL);
-    _conditionalOrOnEquality(traceValue, globalMax, vertiOpenScore, TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
-    return traceValue;
-}
-
-template <typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, TScoreValue)
-_retrieveTraceAffine(TScoreValue const & globalMax,
-                     TScoreValue const & diagScore,
-                     TScoreValue const &,
-                     TScoreValue const &,
-                     TScoreValue const & vertiScore,
-                     TScoreValue const & vertiOpenScore,
-                     RecursionDirectionLowerDiagonal const &)
-{
-    TScoreValue traceValue = TraceSimd::NONE;
-    _conditionalOrOnEquality(traceValue, globalMax, diagScore, TraceSimd::DIAGONAL);
-    _conditionalOrOnEquality(traceValue, globalMax, vertiScore, TraceSimd::VERTICAL);
-    _conditionalOrOnEquality(traceValue, globalMax, vertiOpenScore, TraceSimd::MAX_FROM_VERTICAL_MATRIX);
+    typename SelectTraceValueType_<TScoreValue>::Type traceValue = TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE;
+    _conditionalOrOnEquality(traceValue, globalMax, diagScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::DIAGONAL);
+    _conditionalOrOnEquality(traceValue, globalMax, vertiScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::VERTICAL);
+    _conditionalOrOnEquality(traceValue, globalMax, vertiOpenScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX);
     return traceValue;
 }
 
@@ -178,7 +125,7 @@ _retrieveTraceAffine(TScoreValue const & globalMax,
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_::TTraceValue)
+inline typename SelectTraceValueType_<TScoreValue>::Type
 _retrieveTraceAffine(TScoreValue const & globalMax,
                      TScoreValue const &,
                      TScoreValue const & horiScore,
@@ -187,25 +134,9 @@ _retrieveTraceAffine(TScoreValue const & globalMax,
                      TScoreValue const &,
                      RecursionDirectionHorizontal const &)
 {
-    typename TraceBitMap_::TTraceValue traceValue(TraceBitMap_::NONE);
-    _conditionalOrOnEquality(traceValue, globalMax, horiScore, TraceBitMap_::HORIZONTAL);
-    _conditionalOrOnEquality(traceValue, globalMax, horiOpenScore, TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
-    return traceValue;
-}
-
-template <typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, TScoreValue)
-_retrieveTraceAffine(TScoreValue const & globalMax,
-                     TScoreValue const &,
-                     TScoreValue const & horiScore,
-                     TScoreValue const & horiOpenScore,
-                     TScoreValue const &,
-                     TScoreValue const &,
-                     RecursionDirectionHorizontal const &)
-{
-    TScoreValue traceValue = TraceSimd::NONE;
-    _conditionalOrOnEquality(traceValue, globalMax, horiScore, TraceSimd::HORIZONTAL);
-    _conditionalOrOnEquality(traceValue, globalMax, horiOpenScore, TraceSimd::MAX_FROM_HORIZONTAL_MATRIX);
+    typename SelectTraceValueType_<TScoreValue>::Type traceValue = TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE;
+    _conditionalOrOnEquality(traceValue, globalMax, horiScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::HORIZONTAL);
+    _conditionalOrOnEquality(traceValue, globalMax, horiOpenScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX);
     return traceValue;
 }
 
@@ -214,7 +145,7 @@ _retrieveTraceAffine(TScoreValue const & globalMax,
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_::TTraceValue)
+inline typename SelectTraceValueType_<TScoreValue>::Type
 _retrieveTraceAffine(TScoreValue const & globalMax,
                      TScoreValue const &,
                      TScoreValue const &,
@@ -223,25 +154,9 @@ _retrieveTraceAffine(TScoreValue const & globalMax,
                      TScoreValue const & vertiOpenScore,
                      RecursionDirectionVertical const &)
 {
-    typename TraceBitMap_::TTraceValue traceValue(TraceBitMap_::NONE);
-    _conditionalOrOnEquality(traceValue, globalMax, vertiScore, TraceBitMap_::VERTICAL);
-    _conditionalOrOnEquality(traceValue, globalMax, vertiOpenScore, TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
-    return traceValue;
-}
-
-template <typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, TScoreValue)
-_retrieveTraceAffine(TScoreValue const & globalMax,
-                     TScoreValue const &,
-                     TScoreValue const &,
-                     TScoreValue const &,
-                     TScoreValue const & vertiScore,
-                     TScoreValue const & vertiOpenScore,
-                     RecursionDirectionVertical const &)
-{
-    TScoreValue traceValue = TraceSimd::NONE;
-    _conditionalOrOnEquality(traceValue, globalMax, vertiScore, TraceSimd::VERTICAL);
-    _conditionalOrOnEquality(traceValue, globalMax, vertiOpenScore, TraceSimd::MAX_FROM_VERTICAL_MATRIX);
+    typename SelectTraceValueType_<TScoreValue>::Type traceValue = TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE;
+    _conditionalOrOnEquality(traceValue, globalMax, vertiScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::VERTICAL);
+    _conditionalOrOnEquality(traceValue, globalMax, vertiOpenScore, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX);
     return traceValue;
 }
 
@@ -273,7 +188,7 @@ _internalComputeScore(DPCell_<TScoreValue, TAffineGaps> & activeCell,
                       RecursionDirectionDiagonal const &)
 {
     activeCell._score = blend(activeCell._score, rightCompare, cmpGt(rightCompare, activeCell._score));
-    return TraceSimd::NONE;
+    return TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE;
 }
 
 template <typename TScoreValue, typename TAffineGaps, typename TTraceValueL, typename TTraceValueGap, typename TGapsPlacement>
@@ -304,7 +219,9 @@ _internalComputeScore(DPCell_<TScoreValue, TAffineGaps> & activeCell,
 {
     TScoreValue cmp = cmpGt(activeCell._score, rightCompare);
     activeCell._score = blend(rightCompare, activeCell._score, cmp);
-    return blend(TraceSimd::DIAGONAL | leftTrace, leftTrace | gapTrace, cmp);
+    return blend(TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::DIAGONAL | leftTrace,
+                 leftTrace | gapTrace,
+                 cmp);
 }
 
 template <typename TScoreValue, typename TAffineGaps, typename TTraceValueL, typename TTraceValueGap, typename TGapsPlacement>
@@ -339,8 +256,8 @@ _internalComputeScore(DPCell_<TScoreValue, TAffineGaps> & activeCell,
     TScoreValue cmpE = cmpEq(rightCompare, activeCell._score);
     TScoreValue result = leftTrace | gapTrace;
     activeCell._score = blend(activeCell._score, rightCompare, cmpG);
-    result = blend(result, TraceSimd::DIAGONAL | leftTrace, cmpG);
-    return blend(result, leftTrace | TraceSimd::DIAGONAL | gapTrace, cmpE);
+    result = blend(result, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::DIAGONAL | leftTrace, cmpG);
+    return blend(result, leftTrace | TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::DIAGONAL | gapTrace, cmpE);
 }
 
 // ----------------------------------------------------------------------------
@@ -375,7 +292,7 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     TScoreValue cmp = cmpGt(rightCompare, activeCell._horizontalScore);
     activeCell._horizontalScore = blend(activeCell._horizontalScore, rightCompare, cmp);
     activeCell._score = activeCell._horizontalScore;
-    return TraceSimd::NONE;
+    return TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE;
 }
 
 template <typename TScoreValue, typename TTraceValueL, typename TTraceValueR, typename TGapsPlacement>
@@ -483,7 +400,7 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     TScoreValue cmp = cmpGt(rightCompare, activeCell._verticalScore);
     activeCell._verticalScore = blend(activeCell._verticalScore, rightCompare, cmp);
     activeCell._score = activeCell._verticalScore;
-    return TraceSimd::NONE;
+    return TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE;
 }
 
 template <typename TScoreValue, typename TTraceValueL, typename TTraceValueR, typename TGapsPlacement>
@@ -579,7 +496,7 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
 {
     activeCell._score = blend(activeCell._score, activeCell._horizontalScore,
                               cmpGt(activeCell._horizontalScore, activeCell._score));
-    return TraceSimd::NONE;
+    return TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE;
 }
 
 template <typename TScoreValue, typename TGapsPlacement>
@@ -602,7 +519,9 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
 {
     TScoreValue cmp = cmpGt(activeCell._horizontalScore, activeCell._score);
     activeCell._score = blend(activeCell._score, activeCell._horizontalScore, cmp);
-    return blend(TraceSimd::MAX_FROM_VERTICAL_MATRIX, TraceSimd::MAX_FROM_HORIZONTAL_MATRIX, cmp);
+    return blend(TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX,
+                 TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX,
+                 cmp);
 }
 
 template <typename TScoreValue, typename TGapsPlacement>
@@ -629,9 +548,14 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     TScoreValue cmpE = cmpEq(activeCell._horizontalScore, activeCell._score);
     activeCell._score = blend(activeCell._score, activeCell._horizontalScore, cmpG);
 
-    TScoreValue result = TraceSimd::MAX_FROM_VERTICAL_MATRIX;
-    result = blend(result, TraceSimd::MAX_FROM_HORIZONTAL_MATRIX, cmpG);
-    return blend(result, TraceSimd::MAX_FROM_VERTICAL_MATRIX | TraceSimd::MAX_FROM_HORIZONTAL_MATRIX, cmpE);
+    TScoreValue result = TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX;
+    result = blend(result,
+                   TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX,
+                   cmpG);
+    return blend(result,
+                 TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX
+                        | TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX,
+                 cmpE);
 }
 
 // ----------------------------------------------------------------------------
@@ -640,7 +564,7 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline typename SelectTraceValueType_<TScoreValue>::Type
 _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                 DPCell_<TScoreValue, AffineGaps> const & previousDiagonal,
                 DPCell_<TScoreValue, AffineGaps> const & previousHorizontal,
@@ -651,54 +575,27 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                 RecursionDirectionAll const &,
                 DPProfile_<TAlgorithm, AffineGaps, TTracebackConfig> const &)
 {
-    typedef typename TraceBitMap_::TTraceValue TTraceValue;
-
-    // Now we have to find a smart version to solve this problem. Which is not as easy I would think.
-
-    activeCell._horizontalScore = _horizontalScoreOfCell(previousHorizontal) +
-                                        scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
-    TScoreValue tmpScore = _scoreOfCell(previousHorizontal) + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
-    TTraceValue tvGap = _internalComputeScore(activeCell, tmpScore, TraceBitMap_::HORIZONTAL, TraceBitMap_::HORIZONTAL_OPEN,
-                                              TTracebackConfig(), RecursionDirectionHorizontal());
-
-    // Now we can decide for the optimal score in horizontal score or not?
-    activeCell._verticalScore = _verticalScoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
-    tmpScore = _scoreOfCell(previousVertical) + scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal);
-    tvGap |= _internalComputeScore(activeCell, tmpScore, TraceBitMap_::VERTICAL, TraceBitMap_::VERTICAL_OPEN, TTracebackConfig(), RecursionDirectionVertical());
-
-    // Finds the maximum between the vertical and the horizontal matrix. Stores the flag for coming from a potential direction.
-    TTraceValue tvMax = _internalComputeScore(activeCell, TTracebackConfig());  // Stores from where the maximal score comes.
-    tmpScore = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
-    return _internalComputeScore(activeCell, tmpScore, tvGap, tvMax, TTracebackConfig(), RecursionDirectionDiagonal());
-}
-
-
-template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
-          typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
-_doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
-                DPCell_<TScoreValue, AffineGaps> const & previousDiagonal,
-                DPCell_<TScoreValue, AffineGaps> const & previousHorizontal,
-                DPCell_<TScoreValue, AffineGaps> const & previousVertical,
-                TSequenceHValue const & seqHVal,
-                TSequenceVValue const & seqVVal,
-                TScoringScheme const & scoringScheme,
-                RecursionDirectionAll const &,
-                DPProfile_<TAlgorithm, AffineGaps, TTracebackConfig> const &)
-{
-    typedef TScoreValue TTraceValue;
+    typedef typename SelectTraceValueType_<TScoreValue>::Type TTraceValue;
 
     // Now we have to find a smart version to solve this problem. Which is not as easy I would think.
     activeCell._horizontalScore = _horizontalScoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
     TScoreValue tmpScore = _scoreOfCell(previousHorizontal) + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
-    TTraceValue tvGap = _internalComputeScore(activeCell, tmpScore, TraceSimd::HORIZONTAL, 
-                                              TraceSimd::HORIZONTAL_OPEN, TTracebackConfig(), RecursionDirectionHorizontal());
+    TTraceValue tvGap = _internalComputeScore(activeCell,
+                                              tmpScore,
+                                              TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::HORIZONTAL,
+                                              TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::HORIZONTAL_OPEN,
+                                              TTracebackConfig(),
+                                              RecursionDirectionHorizontal());
 
     // Now we can decide for the optimal score in horizontal score or not?
     activeCell._verticalScore = _verticalScoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
     tmpScore = _scoreOfCell(previousVertical) + scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal);
-    tvGap |= _internalComputeScore(activeCell, tmpScore, TraceSimd::VERTICAL, 
-                                   TraceSimd::VERTICAL_OPEN, TTracebackConfig(), RecursionDirectionVertical());
+    tvGap |= _internalComputeScore(activeCell,
+                                   tmpScore,
+                                   TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::VERTICAL,
+                                   TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::VERTICAL_OPEN,
+                                   TTracebackConfig(),
+                                   RecursionDirectionVertical());
 
     // Finds the maximum between the vertical and the horizontal matrix. Stores the flag for coming from a potential direction.
     TTraceValue tvMax = _internalComputeScore(activeCell, TTracebackConfig());  // Stores from where the maximal score comes.
@@ -712,7 +609,7 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline typename SelectTraceValueType_<TScoreValue>::Type
 _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                 DPCell_<TScoreValue, AffineGaps> const & previousDiagonal,
                 DPCell_<TScoreValue, AffineGaps> const & previousHorizontal,
@@ -723,40 +620,24 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                 RecursionDirectionUpperDiagonal const &,
                 DPProfile_<TAlgorithm, AffineGaps, TTracebackConfig> const &)
 {
-    typedef typename TraceBitMap_::TTraceValue TTraceValue;
-    activeCell._horizontalScore = _horizontalScoreOfCell(previousHorizontal)
-                                         + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
-
-    activeCell._verticalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
-    TScoreValue tmpScore = _scoreOfCell(previousHorizontal) + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
-    TTraceValue tv = _internalComputeScore(activeCell, tmpScore, TraceBitMap_::HORIZONTAL, TraceBitMap_::HORIZONTAL_OPEN, TTracebackConfig(), RecursionDirectionHorizontal());
-    tmpScore = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
-    return _internalComputeScore(activeCell, tmpScore, tv, TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX, TTracebackConfig(), RecursionDirectionDiagonal());
-}
-
-template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
-          typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
-_doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
-                DPCell_<TScoreValue, AffineGaps> const & previousDiagonal,
-                DPCell_<TScoreValue, AffineGaps> const & previousHorizontal,
-                DPCell_<TScoreValue, AffineGaps> const & /*previousVertical*/,
-                TSequenceHValue const & seqHVal,
-                TSequenceVValue const & seqVVal,
-                TScoringScheme const & scoringScheme,
-                RecursionDirectionUpperDiagonal const &,
-                DPProfile_<TAlgorithm, AffineGaps, TTracebackConfig> const &)
-{
-    typedef TScoreValue TTraceValue;
+    typedef typename SelectTraceValueType_<TScoreValue>::Type TTraceValue;
 
     activeCell._horizontalScore = _horizontalScoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
     activeCell._verticalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
     TScoreValue tmpScore = _scoreOfCell(previousHorizontal) + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
-    TTraceValue tv = _internalComputeScore(activeCell, tmpScore, TraceSimd::HORIZONTAL, 
-                                           TraceSimd::HORIZONTAL_OPEN, TTracebackConfig(), RecursionDirectionHorizontal());
+    TTraceValue tv = _internalComputeScore(activeCell,
+                                           tmpScore,
+                                           TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::HORIZONTAL,
+                                           TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::HORIZONTAL_OPEN,
+                                           TTracebackConfig(),
+                                           RecursionDirectionHorizontal());
     tmpScore = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
-    return _internalComputeScore(activeCell, tmpScore, tv, TraceSimd::MAX_FROM_HORIZONTAL_MATRIX, 
-                                 TTracebackConfig(), RecursionDirectionDiagonal());
+    return _internalComputeScore(activeCell,
+                                 tmpScore,
+                                 tv,
+                                 TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX,
+                                 TTracebackConfig(),
+                                 RecursionDirectionDiagonal());
 }
 
 // ----------------------------------------------------------------------------
@@ -765,7 +646,7 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline typename SelectTraceValueType_<TScoreValue>::Type
 _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                 DPCell_<TScoreValue, AffineGaps> const & previousDiagonal,
                 DPCell_<TScoreValue, AffineGaps> const & /*previousHorizontal*/,
@@ -776,48 +657,28 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                 RecursionDirectionLowerDiagonal const &,
                 DPProfile_<TAlgorithm, AffineGaps, TTracebackConfig> const &)
 {
-    typedef typename TraceBitMap_::TTraceValue TTraceValue;
-
-    activeCell._verticalScore = _verticalScoreOfCell(previousVertical) +
-                                        scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
-    TScoreValue tmpScore = _scoreOfCell(previousVertical) + scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal);
-
-    activeCell._horizontalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
-    // This computes the difference between the vertical extend and vertical open.
-    TTraceValue tv = _internalComputeScore(activeCell, tmpScore, TraceBitMap_::VERTICAL, TraceBitMap_::VERTICAL_OPEN, TTracebackConfig(), RecursionDirectionVertical());
-
-    // Up to here, activeCell stores the highest value of vertical or vertical open.
-    tmpScore = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
-    return _internalComputeScore(activeCell, tmpScore, tv, TraceBitMap_::MAX_FROM_VERTICAL_MATRIX, TTracebackConfig(), RecursionDirectionDiagonal());  // Now we have this problem. How do we determine if the max comes from the vertical distance.
-}
-
-template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
-          typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
-_doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
-                DPCell_<TScoreValue, AffineGaps> const & previousDiagonal,
-                DPCell_<TScoreValue, AffineGaps> const & /*previousHorizontal*/,
-                DPCell_<TScoreValue, AffineGaps> const & previousVertical,
-                TSequenceHValue const & seqHVal,
-                TSequenceVValue const & seqVVal,
-                TScoringScheme const & scoringScheme,
-                RecursionDirectionLowerDiagonal const &,
-                DPProfile_<TAlgorithm, AffineGaps, TTracebackConfig> const &)
-{
-    typedef TScoreValue TTraceValue;
+    typedef typename SelectTraceValueType_<TScoreValue>::Type TTraceValue;
 
     activeCell._verticalScore = _verticalScoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
     TScoreValue tmpScore = _scoreOfCell(previousVertical) + scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal);
 
     activeCell._horizontalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
     // This computes the difference between the vertical extend and vertical open.
-    TTraceValue tv = _internalComputeScore(activeCell, tmpScore, TraceSimd::VERTICAL, 
-                                           TraceSimd::VERTICAL_OPEN, TTracebackConfig(), RecursionDirectionVertical());
+    TTraceValue tv = _internalComputeScore(activeCell,
+                                           tmpScore,
+                                           TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::VERTICAL,
+                                           TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::VERTICAL_OPEN,
+                                           TTracebackConfig(),
+                                           RecursionDirectionVertical());
 
     // Up to here, activeCell stores the highest value of vertical or vertical open.
     tmpScore = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
-    return _internalComputeScore(activeCell, tmpScore, tv, TraceSimd::MAX_FROM_VERTICAL_MATRIX,
-                                 TTracebackConfig(), RecursionDirectionDiagonal());  // Now we have this problem. How do we determine if the max comes from the vertical distance.
+    return _internalComputeScore(activeCell,
+                                 tmpScore,
+                                 tv,
+                                 TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX,
+                                 TTracebackConfig(),
+                                 RecursionDirectionDiagonal());  // Now we have this problem. How do we determine if the max comes from the vertical distance.
 }
 
 // ----------------------------------------------------------------------------
@@ -826,7 +687,7 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline typename SelectTraceValueType_<TScoreValue>::Type
 _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                 DPCell_<TScoreValue, AffineGaps> const & /*previousDiagonal*/,
                 DPCell_<TScoreValue, AffineGaps> const & previousHorizontal,
@@ -837,35 +698,16 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                 RecursionDirectionHorizontal const &,
                 DPProfile_<TAlgorithm, AffineGaps, TTracebackConfig> const &)
 {
-    //typedef typename TraceBitMap_::TTraceValue TTraceValue;
     TScoreValue tmpGapOpenHorizontal = _scoreOfCell(previousHorizontal) + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
     activeCell._horizontalScore = _horizontalScoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
 
     activeCell._verticalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
-    return _internalComputeScore(activeCell, tmpGapOpenHorizontal, TraceBitMap_::HORIZONTAL, TraceBitMap_::HORIZONTAL_OPEN, 
-                                 TTracebackConfig(), RecursionDirectionHorizontal()) | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
-}
-
-template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
-          typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, TScoreValue)
-_doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
-                DPCell_<TScoreValue, AffineGaps> const & /*previousDiagonal*/,
-                DPCell_<TScoreValue, AffineGaps> const & previousHorizontal,
-                DPCell_<TScoreValue, AffineGaps> const & /*previousVertical*/,
-                TSequenceHValue const & seqHVal,
-                TSequenceVValue const & seqVVal,
-                TScoringScheme const & scoringScheme,
-                RecursionDirectionHorizontal const &,
-                DPProfile_<TAlgorithm, AffineGaps, TTracebackConfig> const &)
-{
-    //typedef typename TraceBitMap_::TTraceValue TTraceValue;
-    TScoreValue tmpGapOpenHorizontal = _scoreOfCell(previousHorizontal) + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
-    activeCell._horizontalScore = _horizontalScoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
-
-    activeCell._verticalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
-    return _internalComputeScore(activeCell, tmpGapOpenHorizontal, TraceSimd::HORIZONTAL, TraceSimd::HORIZONTAL_OPEN, 
-                                 TTracebackConfig(), RecursionDirectionHorizontal()) | TraceSimd::MAX_FROM_HORIZONTAL_MATRIX;
+    return _internalComputeScore(activeCell,
+                                tmpGapOpenHorizontal,
+                                TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::HORIZONTAL,
+                                TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::HORIZONTAL_OPEN,
+                                TTracebackConfig(),
+                                RecursionDirectionHorizontal()) | TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX;
 }
 
 // ----------------------------------------------------------------------------
@@ -874,7 +716,7 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline typename SelectTraceValueType_<TScoreValue>::Type
 _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                 DPCell_<TScoreValue, AffineGaps> const & /*previousDiagonal*/,
                 DPCell_<TScoreValue, AffineGaps> const & /*previousHorizontal*/,
@@ -890,31 +732,12 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
 
     // Here we distinguish between vertical and vertical open.
     activeCell._horizontalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
-    return _internalComputeScore(activeCell, tmpGapOpenVertical, TraceBitMap_::VERTICAL, TraceBitMap_::VERTICAL_OPEN, 
-                                 TTracebackConfig(), RecursionDirectionVertical()) | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
-}
-
-template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
-          typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
-_doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
-                DPCell_<TScoreValue, AffineGaps> const & /*previousDiagonal*/,
-                DPCell_<TScoreValue, AffineGaps> const & /*previousHorizontal*/,
-                DPCell_<TScoreValue, AffineGaps> const & previousVertical,
-                TSequenceHValue const & seqHVal,
-                TSequenceVValue const & seqVVal,
-                TScoringScheme const & scoringScheme,
-                RecursionDirectionVertical const &,
-                DPProfile_<TAlgorithm, AffineGaps, TTracebackConfig> const &)
-{
-    //typedef typename TraceBitMap_::TTraceValue TTraceValue;
-    TScoreValue tmpGapOpenVertical = _scoreOfCell(previousVertical) + scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal);
-    activeCell._verticalScore = _verticalScoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
-
-    // Here we distinguish between vertical and vertical open.
-    activeCell._horizontalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
-    return _internalComputeScore(activeCell, tmpGapOpenVertical, TraceSimd::VERTICAL, TraceSimd::VERTICAL_OPEN, TTracebackConfig(), 
-                                 RecursionDirectionVertical()) | TraceSimd::MAX_FROM_VERTICAL_MATRIX;
+    return _internalComputeScore(activeCell,
+                                 tmpGapOpenVertical,
+                                 TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::VERTICAL,
+                                 TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::VERTICAL_OPEN,
+                                 TTracebackConfig(),
+                                 RecursionDirectionVertical()) | TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX;
 }
 
 }  // namespace seqan

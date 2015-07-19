@@ -212,13 +212,13 @@ _computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                                            seqVVal, scoringScheme, recDir, dpProfile);
     if (IsLocalAlignment_<TDPProfile>::VALUE)
     {
-        TScoreValue cmp = cmpGt(TraceSimd::ONE, activeCell._score);
-        _setScoreOfCell(activeCell, TraceSimd::NONE, cmp);
-        _setHorizontalScoreOfCell(activeCell, TraceSimd::NONE, cmp);
-        _setVerticalScoreOfCell(activeCell, TraceSimd::NONE, cmp);
-        return blend(traceDir, TraceSimd::NONE, cmp);
+        TScoreValue cmp = cmpGt(createVector<TScoreValue>(1), activeCell._score);
+        _setScoreOfCell(activeCell, TraceValue<TScoreValue>::NONE, cmp);
+        _setHorizontalScoreOfCell(activeCell, TraceValue<TScoreValue>::NONE, cmp);
+        _setVerticalScoreOfCell(activeCell, TraceValue<TScoreValue>::NONE, cmp);
+        return blend(traceDir, TraceValue<TScoreValue>::NONE, cmp);
     }
-    
+
     return traceDir;
 }
 
@@ -265,9 +265,9 @@ _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
     setGapExtension(activeCell, False(), False(), createVector<TScoreValue>(-1));
 
     if (!IsTracebackEnabled_<TDPProfile>::VALUE)
-        return TraceSimd::NONE;
+        return TraceValue<TScoreValue>::NONE;
 
-    return TraceSimd::DIAGONAL;
+    return TraceValue<TScoreValue>::DIAGONAL;
 }
 
 // ----------------------------------------------------------------------------
@@ -304,8 +304,8 @@ _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                 RecursionDirectionZero const &,
                 DPProfile_<TAlgoTag, TGapCosts, TTraceFlag> const &)
 {
-    _scoreOfCell(activeCell) = TraceSimd::NONE;
-    return TraceSimd::NONE;
+    _scoreOfCell(activeCell) = createVector<TScoreValue>(0);
+    return TraceValue<TScoreValue>::NONE;
 }
 
 }  // namespace seqan

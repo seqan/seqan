@@ -183,8 +183,8 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
 isGapExtension(DPCell_<TScoreValue, DynamicGaps> const & cell,
                TSpec const & /*spec*/)
 {
-    return blend(cell._flagMask & TraceSimd::MASK_VERTICAL_GAP,
-                 cell._flagMask & TraceSimd::MASK_HORIZONTAL_GAP,
+    return blend(cell._flagMask & createVector<TScoreValue>(MASK_VERTICAL_GAP),
+                 cell._flagMask & createVector<TScoreValue>(MASK_HORIZONTAL_GAP),
                  createVector<TScoreValue>(IsSameType<TSpec, DynamicGapExtensionHorizontal>::VALUE));
 }
 

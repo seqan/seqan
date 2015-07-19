@@ -1971,9 +1971,15 @@ _correctTraceValue(TTraceNavigator & traceNavigator,
     _setToPosition(traceNavigator, maxHostPosition(dpScout, pos));
     TScoreValue cmpV = cmpEq(_verticalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore));
     TScoreValue cmpH = cmpEq(_horizontalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore));
-    value(traceNavigator) = blend(value(traceNavigator), value(traceNavigator) & ~TraceSimd::DIAGONAL, cmpV | cmpH);
-    value(traceNavigator) = blend(value(traceNavigator), value(traceNavigator) | TraceSimd::MAX_FROM_VERTICAL_MATRIX, cmpV);
-    value(traceNavigator) = blend(value(traceNavigator), value(traceNavigator) | TraceSimd::MAX_FROM_HORIZONTAL_MATRIX, cmpH);
+    value(traceNavigator) = blend(value(traceNavigator),
+                                  value(traceNavigator) & ~TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::DIAGONAL,
+                                  cmpV | cmpH);
+    value(traceNavigator) = blend(value(traceNavigator),
+                                  value(traceNavigator) | TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX,
+                                  cmpV);
+    value(traceNavigator) = blend(value(traceNavigator),
+                                  value(traceNavigator) | TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX,
+                                  cmpH);
 }
 
 template <typename TTraceNavigator, typename TScoreValue, typename TDPScoutSpec>
@@ -2002,9 +2008,15 @@ _correctTraceValue(TTraceNavigator & traceNavigator,
     _setToPosition(traceNavigator, maxHostPosition(dpScout, pos));
     TScoreValue cmpV = isGapExtension(dpScout._maxScore, DynamicGapExtensionVertical());
     TScoreValue cmpH = isGapExtension(dpScout._maxScore, DynamicGapExtensionHorizontal());
-    value(traceNavigator) = blend(value(traceNavigator), value(traceNavigator) & ~TraceSimd::DIAGONAL, cmpV | cmpH);
-    value(traceNavigator) = blend(value(traceNavigator), value(traceNavigator) | TraceSimd::MAX_FROM_VERTICAL_MATRIX, cmpV);
-    value(traceNavigator) = blend(value(traceNavigator), value(traceNavigator) | TraceSimd::MAX_FROM_HORIZONTAL_MATRIX, cmpH);
+    value(traceNavigator) = blend(value(traceNavigator),
+                                  value(traceNavigator) & ~TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::DIAGONAL,
+                                  cmpV | cmpH);
+    value(traceNavigator) = blend(value(traceNavigator),
+                                  value(traceNavigator) | TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX,
+                                  cmpV);
+    value(traceNavigator) = blend(value(traceNavigator),
+                                  value(traceNavigator) | TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX,
+                                  cmpH);
 }
 
 // ----------------------------------------------------------------------------
