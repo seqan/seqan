@@ -57,9 +57,14 @@ SEQAN_BEGIN_TESTSUITE(test_delta_map)
     // Tests for delta map.
     SEQAN_CALL_TEST(test_delta_map_insert);
     SEQAN_CALL_TEST(test_delta_map_erase);
+    SEQAN_CALL_TEST(test_delta_map_lower_bound);
+    SEQAN_CALL_TEST(test_delta_map_upper_bound);
+    SEQAN_CALL_TEST(test_delta_map_count);
+    SEQAN_CALL_TEST(test_delta_map_equal_range);
     SEQAN_CALL_TEST(test_delta_map_find);
     SEQAN_CALL_TEST(test_delta_map_size);
     SEQAN_CALL_TEST(test_delta_map_empty);
+
     SEQAN_CALL_TEST(test_delta_map_iterator);
     SEQAN_CALL_TEST(test_delta_map_iterator_copy_constructor);
     SEQAN_CALL_TEST(test_delta_map_iterator_assign);

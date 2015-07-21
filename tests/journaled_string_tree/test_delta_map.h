@@ -78,13 +78,13 @@ inline void createMock(DeltaMap<TConfig, TSpec> & map)
     TCoverage cov3;
     _getCoverage(cov3, 10, 2);
 
-    SEQAN_ASSERT(insert(map, 5, 1, cov3, DeltaTypeDel()));
-    SEQAN_ASSERT(insert(map, 1, TSV(2, "TGAT"), cov1, DeltaTypeSV()));
-    SEQAN_ASSERT(insert(map, 4, "ACGT", cov3, DeltaTypeIns()));
-    SEQAN_ASSERT(insert(map, 2, 'C', cov2, DeltaTypeSnp()));
-    SEQAN_ASSERT(insert(map, 20, 2, cov2, DeltaTypeDel()));
-    SEQAN_ASSERT(insert(map, 0, 'A', cov1, DeltaTypeSnp()));
-    SEQAN_ASSERT(insert(map, 1, 3, cov2, DeltaTypeDel()));
+    insert(map, 5, 1, cov3, DeltaTypeDel());
+    insert(map, 1, TSV(2, "TGAT"), cov1, DeltaTypeSV());
+    insert(map, 4, "ACGT", cov3, DeltaTypeIns());
+    insert(map, 2, 'C', cov2, DeltaTypeSnp());
+    insert(map, 20, 2, cov2, DeltaTypeDel());
+    insert(map, 0, 'A', cov1, DeltaTypeSnp());
+    insert(map, 1, 3, cov2, DeltaTypeDel());
 }
 
 SEQAN_DEFINE_TEST(test_delta_map_insert)
@@ -105,42 +105,151 @@ SEQAN_DEFINE_TEST(test_delta_map_insert)
     TCoverage cov3;
     _getCoverage(cov3, 10, 2);
 
-    SEQAN_ASSERT_NOT(insert(deltaMap,  2, deltaMap._deltaStore._snpData[0], cov2, DeltaTypeSnp()));
-    SEQAN_ASSERT_NOT(insert(deltaMap,  1,  deltaMap._deltaStore._svData[0], cov1, DeltaTypeSV()));
-    SEQAN_ASSERT_NOT(insert(deltaMap,  1, deltaMap._deltaStore._delData[2], cov2, DeltaTypeDel()));
+    insert(deltaMap,  2, deltaMap._deltaStore._snpData[0], cov2, DeltaTypeSnp());
+    insert(deltaMap,  1,  deltaMap._deltaStore._svData[0], cov1, DeltaTypeSV());
+    insert(deltaMap,  1, deltaMap._deltaStore._delData[2], cov2, DeltaTypeDel());
 
     SEQAN_ASSERT_EQ(deltaMap._entries[0], TEntry(0, TRecord(DELTA_TYPE_SNP, 1), cov1, DeltaEndType::IS_BOTH));
-    SEQAN_ASSERT_EQ(deltaMap._entries[1], TEntry(1, TRecord(DELTA_TYPE_DEL, 2), cov2, DeltaEndType::IS_LEFT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[2], TEntry(1, TRecord(DELTA_TYPE_SV, 0), cov1, DeltaEndType::IS_LEFT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[3], TEntry(2, TRecord(DELTA_TYPE_SNP, 0), cov2, DeltaEndType::IS_BOTH));
-    SEQAN_ASSERT_EQ(deltaMap._entries[4], TEntry(2, TRecord(DELTA_TYPE_SV, 0), cov1, DeltaEndType::IS_RIGHT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[5], TEntry(3, TRecord(DELTA_TYPE_DEL, 2), cov2, DeltaEndType::IS_RIGHT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[6], TEntry(4, TRecord(DELTA_TYPE_INS, 0), cov3, DeltaEndType::IS_BOTH));
-    SEQAN_ASSERT_EQ(deltaMap._entries[7], TEntry(5, TRecord(DELTA_TYPE_DEL, 0), cov3, DeltaEndType::IS_BOTH));
-    SEQAN_ASSERT_EQ(deltaMap._entries[8], TEntry(20, TRecord(DELTA_TYPE_DEL, 1), cov2, DeltaEndType::IS_LEFT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[9], TEntry(21, TRecord(DELTA_TYPE_DEL, 1), cov2, DeltaEndType::IS_RIGHT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[1], TEntry(1, TRecord(DELTA_TYPE_DEL, 3), cov2, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[2], TEntry(1, TRecord(DELTA_TYPE_DEL, 2), cov2, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[3], TEntry(1, TRecord(DELTA_TYPE_SV, 1), cov1, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[4], TEntry(1, TRecord(DELTA_TYPE_SV, 0), cov1, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[5], TEntry(2, TRecord(DELTA_TYPE_SNP, 2), cov2, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(deltaMap._entries[6], TEntry(2, TRecord(DELTA_TYPE_SNP, 0), cov2, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(deltaMap._entries[7], TEntry(2, TRecord(DELTA_TYPE_SV, 1), cov1, DeltaEndType::IS_RIGHT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[8], TEntry(2, TRecord(DELTA_TYPE_SV, 0), cov1, DeltaEndType::IS_RIGHT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[9], TEntry(3, TRecord(DELTA_TYPE_DEL, 3), cov2, DeltaEndType::IS_RIGHT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[10], TEntry(3, TRecord(DELTA_TYPE_DEL, 2), cov2, DeltaEndType::IS_RIGHT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[11], TEntry(4, TRecord(DELTA_TYPE_INS, 0), cov3, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(deltaMap._entries[12], TEntry(5, TRecord(DELTA_TYPE_DEL, 0), cov3, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(deltaMap._entries[13], TEntry(20, TRecord(DELTA_TYPE_DEL, 1), cov2, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[14], TEntry(21, TRecord(DELTA_TYPE_DEL, 1), cov2, DeltaEndType::IS_RIGHT));
 }
 
 SEQAN_DEFINE_TEST(test_delta_map_erase)
 {
     typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
+    typedef typename DeltaCoverage<TDeltaMap>::Type TCoverage;
 
     TDeltaMap deltaMap;
     createMock(deltaMap);
 
-    SEQAN_ASSERT(erase(deltaMap,  2, DeltaTypeSnp()));
-    SEQAN_ASSERT(erase(deltaMap,  5, DeltaTypeDel()));
-    SEQAN_ASSERT(erase(deltaMap,  1, DeltaTypeSV()));
-    SEQAN_ASSERT(erase(deltaMap,  0, DeltaTypeSnp()));
-    SEQAN_ASSERT(erase(deltaMap,  4, DeltaTypeIns()));
-    SEQAN_ASSERT(erase(deltaMap, 20, DeltaTypeDel()));
-    SEQAN_ASSERT(erase(deltaMap,  1, DeltaTypeDel()));
+    TCoverage cov2;
+    _getCoverage(cov2, 10, 5);
+    insert(deltaMap,  1, deltaMap._deltaStore._delData[2], cov2, DeltaTypeDel());
+
+    SEQAN_ASSERT_EQ(erase(deltaMap,  2, DeltaTypeSnp()), 1u);
+    SEQAN_ASSERT_EQ(erase(deltaMap,  5, DeltaTypeDel()), 1u);
+    SEQAN_ASSERT_EQ(erase(deltaMap,  1, DeltaTypeSV()), 2u);
+    SEQAN_ASSERT_EQ(erase(deltaMap,  0, DeltaTypeSnp()), 1u);
+    SEQAN_ASSERT_EQ(erase(deltaMap,  4, DeltaTypeIns()), 1u);
+    SEQAN_ASSERT_EQ(erase(deltaMap, 20, DeltaTypeDel()), 2u);
+    SEQAN_ASSERT_EQ(erase(deltaMap,  1, DeltaTypeDel()), 4u);
     SEQAN_ASSERT_EQ(length(deltaMap._entries), 0u);
     SEQAN_ASSERT_EQ(length(deltaMap._deltaStore._snpData), 0u);
     SEQAN_ASSERT_EQ(length(deltaMap._deltaStore._delData), 0u);
     SEQAN_ASSERT_EQ(length(deltaMap._deltaStore._insData), 0u);
     SEQAN_ASSERT_EQ(length(deltaMap._deltaStore._svData), 0u);
-    SEQAN_ASSERT_NOT(erase(deltaMap,  1, DeltaTypeDel()));
+    SEQAN_ASSERT_EQ(erase(deltaMap,  1, DeltaTypeDel()), 0u);
+}
+
+SEQAN_DEFINE_TEST(test_delta_map_lower_bound)
+{
+
+    typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
+    typedef typename DeltaCoverage<TDeltaMap>::Type TCoverage;
+    typedef typename Member<TDeltaMap, DeltaMapEntriesMember>::Type TEntries;
+    typedef typename Value<TEntries>::Type TEntry;
+    typedef DeltaRecord<TEntry>::Type TRecord;
+
+    TDeltaMap deltaMap;
+    createMock(deltaMap);
+
+    TCoverage cov1;
+    _getCoverage(cov1, 10, 3);
+    TCoverage cov2;
+    _getCoverage(cov2, 10, 5);
+    TCoverage cov3;
+    _getCoverage(cov3, 10, 2);
+
+    insert(deltaMap,  1, deltaMap._deltaStore._delData[2], cov1, DeltaTypeDel());
+    SEQAN_ASSERT_EQ(*lowerBound(deltaMap, 7, DeltaTypeSnp()), TEntry(20, TRecord(DELTA_TYPE_DEL, 1), cov2, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT(lowerBound(deltaMap, 22, DeltaTypeSnp()) == end(deltaMap, Standard()));
+    SEQAN_ASSERT_EQ(*lowerBound(deltaMap, 4, DeltaTypeIns()), TEntry(4, TRecord(DELTA_TYPE_INS, 0), cov3, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(*lowerBound(deltaMap, 1, DeltaTypeDel()), TEntry(1, TRecord(DELTA_TYPE_DEL, 3), cov1, DeltaEndType::IS_LEFT));
+}
+
+SEQAN_DEFINE_TEST(test_delta_map_upper_bound)
+{
+    typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
+    typedef typename DeltaCoverage<TDeltaMap>::Type TCoverage;
+    typedef typename Member<TDeltaMap, DeltaMapEntriesMember>::Type TEntries;
+    typedef typename Value<TEntries>::Type TEntry;
+    typedef DeltaRecord<TEntry>::Type TRecord;
+
+    TDeltaMap deltaMap;
+    createMock(deltaMap);
+
+    TCoverage cov1;
+    _getCoverage(cov1, 10, 3);
+    TCoverage cov2;
+    _getCoverage(cov2, 10, 5);
+    TCoverage cov3;
+    _getCoverage(cov3, 10, 2);
+
+    insert(deltaMap,  1, deltaMap._deltaStore._delData[2], cov1, DeltaTypeDel());
+    SEQAN_ASSERT_EQ(*upperBound(deltaMap, 7, DeltaTypeSnp()), TEntry(20, TRecord(DELTA_TYPE_DEL, 1), cov2, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT(upperBound(deltaMap, 22, DeltaTypeSnp()) == end(deltaMap, Standard()));
+    SEQAN_ASSERT_EQ(*upperBound(deltaMap, 4, DeltaTypeIns()), TEntry(5, TRecord(DELTA_TYPE_DEL, 0), cov3, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(*upperBound(deltaMap, 1, DeltaTypeDel()), TEntry(1, TRecord(DELTA_TYPE_SV, 0), cov1, DeltaEndType::IS_LEFT));
+
+}
+
+SEQAN_DEFINE_TEST(test_delta_map_count)
+{
+    typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
+    typedef typename DeltaCoverage<TDeltaMap>::Type TCoverage;
+
+    TDeltaMap deltaMap;
+    createMock(deltaMap);
+
+    TCoverage cov1;
+    _getCoverage(cov1, 10, 3);
+
+    insert(deltaMap,  1, deltaMap._deltaStore._delData[2], cov1, DeltaTypeDel());
+
+    SEQAN_ASSERT_EQ(count(deltaMap, 7, DeltaTypeSnp()), 0u);
+    SEQAN_ASSERT_EQ(count(deltaMap, 4, DeltaTypeIns()), 1u);
+    SEQAN_ASSERT_EQ(count(deltaMap, 1, DeltaTypeDel()), 2u);
+}
+
+SEQAN_DEFINE_TEST(test_delta_map_equal_range)
+{
+    typedef DeltaMap<TestDeltaMapConfig, Default> TDeltaMap;
+    typedef typename DeltaCoverage<TDeltaMap>::Type TCoverage;
+
+    TDeltaMap deltaMap;
+    createMock(deltaMap);
+
+    TCoverage cov1;
+    _getCoverage(cov1, 10, 3);
+
+    insert(deltaMap,  1, deltaMap._deltaStore._delData[2], cov1, DeltaTypeDel());
+
+    auto range = equalRange(deltaMap, 7, DeltaTypeSnp());
+    SEQAN_ASSERT(range.i1 == range.i2);
+
+    range = equalRange(deltaMap, 22, DeltaTypeSnp());
+    SEQAN_ASSERT(range.i1 == end(deltaMap, Standard()));
+    SEQAN_ASSERT(range.i2 == end(deltaMap, Standard()));
+
+    range = equalRange(deltaMap, 4, DeltaTypeIns());
+    SEQAN_ASSERT_EQ(*range.i1, *lowerBound(deltaMap, 4, DeltaTypeIns()));
+    SEQAN_ASSERT_EQ(*range.i2, *upperBound(deltaMap, 4, DeltaTypeIns()));
+
+    range = equalRange(deltaMap, 1, DeltaTypeDel());
+    SEQAN_ASSERT_EQ(*range.i1, *lowerBound(deltaMap, 1, DeltaTypeDel()));
+    SEQAN_ASSERT_EQ(*range.i2, *upperBound(deltaMap, 1, DeltaTypeDel()));
 }
 
 SEQAN_DEFINE_TEST(test_delta_map_find)
@@ -410,6 +519,5 @@ SEQAN_DEFINE_TEST(test_delta_map_entry_delta_coverage)
     SEQAN_ASSERT_EQ(getDeltaCoverage(*it2++), cov1);
     SEQAN_ASSERT_EQ(getDeltaCoverage(*(it2+2)), cov3);
 }
-
 
 #endif  // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_DELTA_MAP_H_

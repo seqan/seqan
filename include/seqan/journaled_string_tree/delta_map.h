@@ -333,60 +333,51 @@ lbWrapper(DeltaMap<TConfig, TSpec> & deltaMap, TEntry const & entry, TFunctor co
 }
 
 // ----------------------------------------------------------------------------
-// Function impl::lowerBound
+// Function impl::ubWrapper
 // ----------------------------------------------------------------------------
 
-// Only searches for the position.
-template <typename TConfig, typename TSpec, typename TPosition>
+template <typename TConfig, typename TSpec, typename TEntry, typename TFunctor>
 inline typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type
-lowerBound(DeltaMap<TConfig, TSpec> const & deltaMap, TPosition refPosition)
+ubWrapper(DeltaMap<TConfig, TSpec> const & deltaMap, TEntry const & entry, TFunctor const & f)
 {
-    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
-    typedef typename Value<TDeltaMap>::Type TEntry;
-
-    TEntry entry;
-    entry.deltaPosition = refPosition;
-    return lbWrapper(deltaMap, entry, DeltaMapEntryPosLessThanComparator_());
+    return std::upper_bound(begin(deltaMap, Standard()), end(deltaMap, Standard()), entry, f);
 }
 
-template <typename TConfig, typename TSpec, typename TPosition>
+template <typename TConfig, typename TSpec, typename TEntry, typename TFunctor>
 inline typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type
-lowerBound(DeltaMap<TConfig, TSpec> & deltaMap, TPosition refPosition)
+ubWrapper(DeltaMap<TConfig, TSpec> & deltaMap, TEntry const & entry, TFunctor const & f)
 {
-    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
-    typedef typename Value<TDeltaMap>::Type TEntry;
-
-    TEntry entry;
-    entry.deltaPosition = refPosition;
-    return lbWrapper(deltaMap, entry, DeltaMapEntryPosLessThanComparator_());
+    return std::upper_bound(begin(deltaMap, Standard()), end(deltaMap, Standard()), entry, f);
 }
 
-// Searches for the position and the delta type.
-template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaType>
-inline typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type
-lowerBound(DeltaMap<TConfig, TSpec> const & deltaMap, TPosition refPosition, TDeltaType /*deltaType*/)
-{
-    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
-    typedef typename Value<TDeltaMap>::Type TEntry;
-
-    TEntry entry;
-    entry.deltaPosition = refPosition;
-    entry.deltaRecord.i1 = selectDeltaType(TDeltaType());
-    return lbWrapper(deltaMap, entry, DeltaMapEntryPosAndTypeLessThanComparator_());
-}
-
-template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaType>
-inline typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type
-lowerBound(DeltaMap<TConfig, TSpec> & deltaMap, TPosition refPosition, TDeltaType /*deltaType*/)
-{
-    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
-    typedef typename Value<TDeltaMap>::Type TEntry;
-
-    TEntry entry;
-    entry.deltaPosition = refPosition;
-    entry.deltaRecord.i1 = selectDeltaType(TDeltaType());
-    return lbWrapper(deltaMap, entry, DeltaMapEntryPosAndTypeLessThanComparator_());
-}
+//// ----------------------------------------------------------------------------
+//// Function impl::lowerBound
+//// ----------------------------------------------------------------------------
+//
+//// Only searches for the position.
+//template <typename TConfig, typename TSpec, typename TPosition>
+//inline typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type
+//lowerBound(DeltaMap<TConfig, TSpec> const & deltaMap, TPosition refPosition)
+//{
+//    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
+//    typedef typename Value<TDeltaMap>::Type TEntry;
+//
+//    TEntry entry;
+//    entry.deltaPosition = refPosition;
+//    return lbWrapper(deltaMap, entry, DeltaMapEntryPosLessThanComparator_());
+//}
+//
+//template <typename TConfig, typename TSpec, typename TPosition>
+//inline typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type
+//lowerBound(DeltaMap<TConfig, TSpec> & deltaMap, TPosition refPosition)
+//{
+//    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
+//    typedef typename Value<TDeltaMap>::Type TEntry;
+//
+//    TEntry entry;
+//    entry.deltaPosition = refPosition;
+//    return lbWrapper(deltaMap, entry, DeltaMapEntryPosLessThanComparator_());
+//}
 
 // ----------------------------------------------------------------------------
 // Function impl::checkNoDuplicate()
@@ -450,7 +441,7 @@ insert(Iter<TDeltaMap, DeltaMapIteratorSpec> mapIt,
     if (endType == DeltaEndType::IS_LEFT)
     {
         deltaPos += deltaValue - 1;
-        mapIt = impl::lowerBound(*mapIt._mapPtr, deltaPos, DeltaTypeDel());
+        mapIt = lowerBound(*mapIt._mapPtr, deltaPos, DeltaTypeDel());
         insertValue(mapIt._mapPtr->_entries, mapIt - begin(*mapIt._mapPtr, Standard()),
                     TEntry(deltaPos, TDeltaRecord(DELTA_TYPE_DEL, storePos), coverage, DeltaEndType::IS_RIGHT));
     }
@@ -478,7 +469,7 @@ insert(Iter<TDeltaMap, DeltaMapIteratorSpec> mapIt,
     if (endType == DeltaEndType::IS_LEFT)
     {
         deltaPos += deltaValue.i1 - 1;
-        mapIt = impl::lowerBound(*mapIt._mapPtr, deltaPos, DeltaTypeSV());
+        mapIt = lowerBound(*mapIt._mapPtr, deltaPos, DeltaTypeSV());
         insertValue(mapIt._mapPtr->_entries, mapIt - begin(*mapIt._mapPtr, Standard()),
                     TEntry(deltaPos, TDeltaRecord(DELTA_TYPE_SV, storePos), coverage, DeltaEndType::IS_RIGHT));
     }
@@ -490,6 +481,108 @@ insert(Iter<TDeltaMap, DeltaMapIteratorSpec> mapIt,
 // Functions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Function lowerBound()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn DeltaMap#lowerBound
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Finds the element specified by the given delta position and delta type.
+ *
+ * @signature TIterator lowerBound(deltaMap, pos, type)
+ *
+ * @param[in] deltaMap  The delta map that is searched for the element.
+ * @param[in] pos       The delta position to be searched for.
+ * @param[in] type      The type of the delta operation. Must be of type @link DeltaTypeTags @endlink.
+ *
+ * @return TIterator An @link DeltaMap#Iterator @endlink pointing to the corresponding element.
+ *  If the key is not contained @link DeltaMap#end @endlink is returned.
+ *
+ * @remark The runtime is logarithmic in the size of the map.
+ */
+
+// Searches for the position and the delta type.
+template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaType>
+inline typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type
+lowerBound(DeltaMap<TConfig, TSpec> const & deltaMap,
+           TPosition const refPosition,
+           TDeltaType /*deltaType*/)
+{
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
+    typedef typename Value<TDeltaMap>::Type TEntry;
+
+    TEntry entry;
+    entry.deltaPosition = refPosition;
+    entry.deltaRecord.i1 = selectDeltaType(TDeltaType());
+    return impl::lbWrapper(deltaMap, entry, DeltaMapEntryPosAndTypeLessThanComparator_());
+}
+
+template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaType>
+inline typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type
+lowerBound(DeltaMap<TConfig, TSpec> & deltaMap,
+           TPosition refPosition,
+           TDeltaType /*deltaType*/)
+{
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
+    typedef typename Value<TDeltaMap>::Type TEntry;
+
+    TEntry entry;
+    entry.deltaPosition = refPosition;
+    entry.deltaRecord.i1 = selectDeltaType(TDeltaType());
+    return impl::lbWrapper(deltaMap, entry, DeltaMapEntryPosAndTypeLessThanComparator_());
+}
+
+// ----------------------------------------------------------------------------
+// Function upperBound()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn DeltaMap#upperBound
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Finds the element specified by the given delta position and delta type.
+ *
+ * @signature TIterator lowerBound(deltaMap, pos, type)
+ *
+ * @param[in] deltaMap  The delta map that is searched for the element.
+ * @param[in] pos       The delta position to be searched for.
+ * @param[in] type      The type of the delta operation. Must be of type @link DeltaTypeTags @endlink.
+ *
+ * @return TIterator An @link DeltaMap#Iterator @endlink pointing to the corresponding element.
+ *  If the key is not contained @link DeltaMap#end @endlink is returned.
+ *
+ * @remark The runtime is logarithmic in the size of the map.
+ */
+
+template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaType>
+inline typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type
+upperBound(DeltaMap<TConfig, TSpec> const & deltaMap,
+           TPosition const refPosition,
+           TDeltaType /*deltaType*/)
+{
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
+    typedef typename Value<TDeltaMap>::Type TEntry;
+
+    TEntry entry;
+    entry.deltaPosition = refPosition;
+    entry.deltaRecord.i1 = selectDeltaType(TDeltaType());
+    return impl::ubWrapper(deltaMap, entry, DeltaMapEntryPosAndTypeLessThanComparator_());
+}
+
+template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaType>
+inline typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type
+upperBound(DeltaMap<TConfig, TSpec> & deltaMap,
+           TPosition refPosition,
+           TDeltaType /*deltaType*/)
+{
+    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
+    typedef typename Value<TDeltaMap>::Type TEntry;
+
+    TEntry entry;
+    entry.deltaPosition = refPosition;
+    entry.deltaRecord.i1 = selectDeltaType(TDeltaType());
+    return impl::ubWrapper(deltaMap, entry, DeltaMapEntryPosAndTypeLessThanComparator_());
+}
 // ----------------------------------------------------------------------------
 // Function find()
 // ----------------------------------------------------------------------------
@@ -515,8 +608,10 @@ template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaT
 inline typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type
 find(DeltaMap<TConfig, TSpec> const & deltaMap, TPosition refPosition, TDeltaType /*deltaType*/)
 {
-    auto it = impl::lowerBound(deltaMap, refPosition, TDeltaType());
-    if (getDeltaPosition(*it) == refPosition && getDeltaRecord(*it).i1 == selectDeltaType(TDeltaType()))
+    auto it = lowerBound(deltaMap, refPosition, TDeltaType());
+    if (it != end(deltaMap, Standard()) &&
+        static_cast<TPosition>(getDeltaPosition(*it)) == refPosition &&
+        getDeltaRecord(*it).i1 == selectDeltaType(TDeltaType()))
         return it;
     return end(deltaMap, Standard());
 }
@@ -525,14 +620,81 @@ template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaT
 inline typename Iterator<DeltaMap<TConfig, TSpec>, Standard>::Type
 find(DeltaMap<TConfig, TSpec> & deltaMap, TPosition refPosition, TDeltaType /*deltaType*/)
 {
-    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
-    typedef typename Value<TDeltaMap>::Type TEntry;
-    typedef typename DeltaPosition<TEntry>::Type TDeltaPos;
-    auto it = impl::lowerBound(deltaMap, refPosition, TDeltaType());
-    if (getDeltaPosition(*it) == static_cast<TDeltaPos>(refPosition) &&
+    auto it = lowerBound(deltaMap, refPosition, TDeltaType());
+    if (it != end(deltaMap, Standard()) &&
+        static_cast<TPosition>(getDeltaPosition(*it)) == refPosition &&
         getDeltaRecord(*it).i1 == selectDeltaType(TDeltaType()))
         return it;
     return end(deltaMap, Standard());
+}
+
+// ----------------------------------------------------------------------------
+// Function count()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn DeltaMap#count
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Finds the element specified by the given delta position and delta type.
+ *
+ * @signature TIterator count(deltaMap, pos, type)
+ *
+ * @param[in] deltaMap  The delta map that is searched for the element.
+ * @param[in] pos       The delta position to be searched for.
+ * @param[in] type      The type of the delta operation. Must be of type @link DeltaTypeTags @endlink.
+ *
+ * @return TIterator An @link DeltaMap#Iterator @endlink pointing to the corresponding element.
+ *  If the key is not contained @link DeltaMap#end @endlink is returned.
+ *
+ * @remark The runtime is logarithmic in the size of the map.
+ */
+
+template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaType>
+inline typename Size<DeltaMap<TConfig, TSpec> >::Type
+count(DeltaMap<TConfig, TSpec> const & deltaMap,
+      TPosition refPosition,
+      Tag<TDeltaType> /*deltaType*/)
+{
+    auto itB = lowerBound(deltaMap, refPosition, Tag<TDeltaType>());
+    auto count = 0;
+    while (itB != end(deltaMap, Standard()) &&
+           static_cast<TPosition>(getDeltaPosition(*itB)) == refPosition &&
+           getDeltaRecord(*itB).i1 == selectDeltaType(Tag<TDeltaType>()))
+    {
+        ++count;
+        ++itB;
+    }
+    return count;
+}
+
+// ----------------------------------------------------------------------------
+// Function equalRange()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn DeltaMap#lowerBound
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Finds the element specified by the given delta position and delta type.
+ *
+ * @signature TIterator equalRange(deltaMap, pos, type)
+ *
+ * @param[in] deltaMap  The delta map that is searched for the element.
+ * @param[in] pos       The delta position to be searched for.
+ * @param[in] type      The type of the delta operation. Must be of type @link DeltaTypeTags @endlink.
+ *
+ * @return TIterator An @link DeltaMap#Iterator @endlink pointing to the corresponding element.
+ *  If the key is not contained @link DeltaMap#end @endlink is returned.
+ *
+ * @remark The runtime is logarithmic in the size of the map.
+ */
+
+template <typename TConfig, typename TSpec, typename TPosition, typename TDeltaType>
+inline Pair<typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type>
+equalRange(DeltaMap<TConfig, TSpec> const & deltaMap, TPosition refPosition, TDeltaType /*deltaType*/)
+{
+    auto rBeg = lowerBound(deltaMap, refPosition, TDeltaType());
+    auto rEnd = upperBound(deltaMap, refPosition, TDeltaType());
+    return Pair<typename Iterator<DeltaMap<TConfig, TSpec> const, Standard>::Type>(rBeg, rEnd);
 }
 
 // ----------------------------------------------------------------------------
@@ -557,9 +719,10 @@ find(DeltaMap<TConfig, TSpec> & deltaMap, TPosition refPosition, TDeltaType /*de
  * @remark The map is implemented as a vector and the insertion time is linear in worst case.
  */
 
+// TODO(rrahn): Change to return iterator as specified for insert of associative containers of the STL.
 template <typename TConfig, typename TSpec, typename TDeltaPos, typename TDeltaValue,
           typename TCoverage, typename TDeltaType>
-inline bool
+inline void
 insert(DeltaMap<TConfig, TSpec> & deltaMap,
        TDeltaPos deltaPos,
        TDeltaValue const & value,
@@ -574,15 +737,8 @@ insert(DeltaMap<TConfig, TSpec> & deltaMap,
     if (SEQAN_UNLIKELY(empty(deltaMap)))
         reserve(deltaMap._entries, 1);
 
-    auto it = impl::lowerBound(deltaMap, deltaPos, TDeltaType());
-    if (SEQAN_UNLIKELY(it != end(deltaMap, Standard()) &&
-                       getDeltaPosition(*it) == static_cast<TEntryPos>(deltaPos) &&
-                       getDeltaRecord(*it).i1 == selectDeltaType(TDeltaType()) &&
-                       deltaValue(it, TDeltaType()) == static_cast<TDeltaValueType>(value)))
-        return false;
-
+    auto it = lowerBound(deltaMap, deltaPos, TDeltaType());
     impl::insert(it, deltaPos, value, coverage, TDeltaType());
-    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -605,8 +761,12 @@ insert(DeltaMap<TConfig, TSpec> & deltaMap,
  * @remark The map is implemented as a vector and the insertion time is linear in worst case.
  */
 
+// TODO(rrahn): Change to return iterator as specified for insert of associative containers of the STL.
+// This is the key based method.
+// Also implement the iterator base method.
+// TODO(rrahn): Put position and delta type into a key type.
 template <typename TConfig, typename TSpec, typename TDeltaPos, typename TDeltaType>
-inline bool
+inline typename Size<DeltaMap<TConfig, TSpec> >::Type
 erase(DeltaMap<TConfig, TSpec> & deltaMap,
       TDeltaPos deltaPos,
       TDeltaType /*deltaType*/)
@@ -619,34 +779,44 @@ erase(DeltaMap<TConfig, TSpec> & deltaMap,
     if (SEQAN_UNLIKELY(empty(deltaMap)))  // Check for empty deltaMap.
         return false;
 
-    auto it = find(deltaMap, deltaPos, TDeltaType());
-    if (SEQAN_UNLIKELY(it == end(deltaMap, Standard())))
-        return false;  // Element does not exists.
+    auto itRange = equalRange(deltaMap, deltaPos, TDeltaType());
+    auto count = itRange.i2 - itRange.i1;
+    if (itRange.i1 == end(deltaMap, Standard()))
+        return count;  // If lower bound is at end, there is no element with the given key.
 
-    // Find potential right end of this delta.
-    auto itR = it;
-    if (!IsSameType<TDeltaType, DeltaTypeIns>::VALUE)
-        itR = find(deltaMap,
-                          deltaPos + deletionSize(deltaMap._deltaStore, getDeltaRecord(*it).i2, TDeltaType()) - 1,
-                          TDeltaType());
-    SEQAN_ASSERT_LEQ(it - begin(deltaMap, Standard()), itR - begin(deltaMap, Standard()));
-
-    // 1. Erase the delta record from the corresponding delta store.
-    TStoreSize storePos = getDeltaRecord(value(it)).i2;
-    SEQAN_ASSERT_LT(storePos, length(getDeltaStore(deltaMap._deltaStore, TDeltaType())));
-    eraseDeltaValue(deltaMap._deltaStore, storePos, TDeltaType());
-    // 2. Erase corresponding entry.
-    if (it != itR)  // Erase right end of delta operation.
-        erase(deltaMap._entries, itR - begin(deltaMap, Standard()));
-    erase(deltaMap._entries, it - begin(deltaMap, Standard()));
-    // 3. Update record position for all entries
-    forEach(deltaMap, [storePos](TEntry & entry)
+    for (auto it = itRange.i1; it != itRange.i2; ++it)
     {
-        if (getDeltaRecord(entry).i1 == selectDeltaType(TDeltaType()) && getDeltaRecord(entry).i2 > storePos)
-            --getDeltaRecord(entry).i2;  // Decrease record position by one.
-    });
+        // Find potential right end of this delta.
+        if (!IsSameType<TDeltaType, DeltaTypeIns>::VALUE)
+        {
+            auto itR = find(deltaMap,
+                            deltaPos + deletionSize(deltaMap._deltaStore, getDeltaRecord(*it).i2, TDeltaType()) - 1,
+                            TDeltaType());
 
-    return true;
+            SEQAN_ASSERT_LEQ(position(it, deltaMap), position(itR, deltaMap));
+            if (it != itR)
+            {
+                erase(deltaMap._entries, itR - begin(deltaMap, Standard()));
+                ++count;  // Increase count number by removed entry.
+            }
+        }
+
+        // Erase the delta record from the corresponding delta store.
+        TStoreSize storePos = getDeltaRecord(*it).i2;
+        SEQAN_ASSERT_LT(storePos, length(getDeltaStore(deltaMap._deltaStore, TDeltaType())));
+        eraseDeltaValue(deltaMap._deltaStore, storePos, TDeltaType());
+        // Update record position for all entries.
+        forEach(deltaMap, [storePos](TEntry & entry)
+        {
+            if (getDeltaRecord(entry).i1 == selectDeltaType(TDeltaType()) && getDeltaRecord(entry).i2 > storePos)
+                --getDeltaRecord(entry).i2;  // Decrease record position by one.
+        });
+    }
+
+    // Erase all entries in the range of equal values.
+    erase(deltaMap._entries, position(itRange.i1, deltaMap), position(itRange.i2, deltaMap));
+
+    return count;
 }
 
 // ----------------------------------------------------------------------------
@@ -849,10 +1019,33 @@ empty(DeltaMap<TConfig, TSpec> const & deltaMap)
  */
 
 template <typename TConfig, typename TSpec>
-inline typename Size<DeltaMap<TConfig, TSpec> >::Type
-size(DeltaMap<TConfig, TSpec> const & deltaMap)
+inline auto
+size(DeltaMap<TConfig, TSpec> const & deltaMap) -> decltype(length(deltaMap._entries))
 {
     return length(deltaMap._entries);
+}
+
+// ----------------------------------------------------------------------------
+// Function maxSize()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn DeltaMap#maxSize
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Returns the number of mapped delta events.
+ *
+ * @signature TSize size(deltaMap)
+ *
+ * @param[in] deltaMap  The map to get the size for.
+ *
+ * @return TSize The number of delta events stored in the map.
+ */
+
+template <typename TConfig, typename TSpec>
+constexpr typename Size<DeltaMap<TConfig, TSpec> >::Type
+maxSize(DeltaMap<TConfig, TSpec> const & /*deltaMap*/)
+{
+    return MaxValue<typename Size<DeltaMap<TConfig, TSpec> >::Type>::VALUE;
 }
 
 }
