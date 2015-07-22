@@ -685,8 +685,8 @@ inline void
 _createVertices(Graph<TSpec>& g,
                 TVertexDescriptor const maxId)
 {
-        // Create missing vertices
-        while (maxId >= getIdUpperBound(g.data_id_managerV)) addVertex(g);
+    // Create missing vertices
+    while (maxId >= getIdUpperBound(g.data_id_managerV)) addVertex(g);
 }
 
 //////////////////////////////////////////////////////////////////////////////
