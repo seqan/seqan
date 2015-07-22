@@ -356,37 +356,6 @@ atBegin(T const & it, TContainer const & cont)
     return it == begin(cont, Standard());
 }
 
-template <typename T, typename TContainer>
-inline SEQAN_HOST_DEVICE bool
-atBegin(T const & it, TContainer & cont)
-{
-    SEQAN_CHECKPOINT;
-    return it == begin(cont, Standard());
-}
-
-template <typename T, typename TContainer>
-inline SEQAN_HOST_DEVICE bool
-atBegin(T & it, TContainer & cont)
-{
-    SEQAN_CHECKPOINT;
-    return it == begin(cont, Standard());
-}
-
-template <typename T, typename TContainer>
-inline SEQAN_HOST_DEVICE bool
-atBegin(T & it, TContainer const & cont)
-{
-    SEQAN_CHECKPOINT;
-    return it == begin(cont, Standard());
-}
-
-template <typename T>
-inline SEQAN_HOST_DEVICE bool
-atBegin(T & it)
-{
-    return atBegin(it, container(it));
-}
-
 template <typename T>
 inline SEQAN_HOST_DEVICE bool
 atBegin(T const & it)
@@ -400,47 +369,12 @@ atBegin(T const & it)
 
 template <typename T, typename TContainer>
 inline SEQAN_HOST_DEVICE bool
-atEnd(T & it,
-      TContainer const & cont)
-{
-    SEQAN_CHECKPOINT;
-    return it == end(cont, Standard());
-}
-
-template <typename T, typename TContainer>
-inline SEQAN_HOST_DEVICE bool
 atEnd(T const & it,
       TContainer const & cont)
 {
     SEQAN_CHECKPOINT;
     return it == end(cont, Standard());
 }
-
-template <typename T, typename TContainer>
-inline SEQAN_HOST_DEVICE bool
-atEnd(T & it,
-      TContainer & cont)
-{
-    SEQAN_CHECKPOINT;
-    return it == end(cont, Standard());
-}
-
-template <typename T, typename TContainer>
-inline SEQAN_HOST_DEVICE bool
-atEnd(T const & it,
-      TContainer & cont)
-{
-    SEQAN_CHECKPOINT;
-    return it == end(cont, Standard());
-}
-
-//template <typename T>
-//inline SEQAN_HOST_DEVICE bool
-//atEnd(T & it)
-//{
-//    SEQAN_CHECKPOINT;
-//    return atEnd(it, container(it));
-//}
 
 template <typename T>
 inline SEQAN_HOST_DEVICE bool
