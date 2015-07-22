@@ -319,10 +319,9 @@ struct GetValue<ModifiedIterator<THost, ModView<TFunctor> > > : Value<ModifiedIt
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TFunctor>
-struct Reference<ModifiedIterator<THost, ModView<TFunctor> > >
-{
-    typedef typename Value<ModifiedIterator<THost, ModView<TFunctor> > >::Type & Type;
-};
+struct Reference<ModifiedIterator<THost, ModView<TFunctor> > > : Value<ModifiedIterator<THost, ModView<TFunctor> > >
+{};
+
 
 // --------------------------------------------------------------------------
 // Metafunction Cargo                                        [ModifiedString]
@@ -337,7 +336,7 @@ struct Cargo< ModifiedString<THost, ModView<TFunctor> > >
 // ==========================================================================
 // Functions
 // ==========================================================================
-
+//TODO make value() call getValue, remove tmp_value
 // --------------------------------------------------------------------------
 // Function value()                                        [ModifiedIterator]
 // --------------------------------------------------------------------------
