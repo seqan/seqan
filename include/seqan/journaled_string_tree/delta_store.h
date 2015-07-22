@@ -142,6 +142,10 @@ enum DeltaType
     DELTA_TYPE_SV = Find<DeltaTypeSelector, DeltaTypeSV>::VALUE
 };
 
+
+namespace impl
+{
+
 // ----------------------------------------------------------------------------
 // Class DeltaStore
 // ----------------------------------------------------------------------------
@@ -169,6 +173,8 @@ public:
     {}
 };
 
+}  // namespace impl
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -189,37 +195,37 @@ struct BitsPerValue<DeltaType>
 
 // DeltaTypeSnp.
 template <typename TSnp, typename TDel, typename TIns, typename TSV>
-struct Member<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSnp>
+struct Member<impl::DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSnp>
 {
     typedef String<TSnp> Type;
 };
 
 // DeltaTypeDel.
 template <typename TSnp, typename TDel, typename TIns, typename TSV>
-struct Member<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeDel>
+struct Member<impl::DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeDel>
 {
     typedef String<TDel> Type;
 };
 
 // DeltaTypeIns.
 template <typename TSnp, typename TDel, typename TIns, typename TSV>
-struct Member<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeIns>
+struct Member<impl::DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeIns>
 {
     typedef String<TIns> Type;
 };
 
 // DeltaTypeSV.
 template <typename TSnp, typename TDel, typename TIns, typename TSV>
-struct Member<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSV>
+struct Member<impl::DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSV>
 {
     typedef String<TSV> Type;
 };
 
 // Generic const version.
 template <typename TSnp, typename TDel, typename TIns, typename TSV, typename TDeltaType>
-struct Member<DeltaStore<TSnp, TDel, TIns, TSV> const, TDeltaType>
+struct Member<impl::DeltaStore<TSnp, TDel, TIns, TSV> const, TDeltaType>
 {
-    typedef DeltaStore<TSnp, TDel, TIns, TSV> TStore_;
+    typedef impl::DeltaStore<TSnp, TDel, TIns, TSV> TStore_;
     typedef typename Member<TStore_, TDeltaType>::Type const Type;
 };
 
@@ -228,13 +234,13 @@ struct Member<DeltaStore<TSnp, TDel, TIns, TSV> const, TDeltaType>
 // ----------------------------------------------------------------------------
 
 template <typename TSnp, typename TDel, typename TIns, typename TSV>
-struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSnp>
+struct DeltaValue<impl::DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSnp>
 {
     typedef TSnp Type;
 };
 
 template <typename TSnp, typename TDel, typename TIns, typename TSV>
-struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeSnp>
+struct DeltaValue<impl::DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeSnp>
 {
     typedef TSnp const Type;
 };
@@ -244,13 +250,13 @@ struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeSnp>
 // ----------------------------------------------------------------------------
 
 template <typename TSnp, typename TDel, typename TIns, typename TSV>
-struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeDel>
+struct DeltaValue<impl::DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeDel>
 {
     typedef TDel Type;
 };
 
 template <typename TSnp, typename TDel, typename TIns, typename TSV>
-struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeDel>
+struct DeltaValue<impl::DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeDel>
 {
     typedef TDel const Type;
 };
@@ -260,13 +266,13 @@ struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeDel>
 // ----------------------------------------------------------------------------
 
 template <typename TSnp, typename TDel, typename TIns, typename TSV>
-struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeIns>
+struct DeltaValue<impl::DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeIns>
 {
     typedef TIns Type;
 };
 
 template <typename TSnp, typename TDel, typename TIns, typename TSV>
-struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeIns>
+struct DeltaValue<impl::DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeIns>
 {
     typedef TIns const Type;
 };
@@ -276,19 +282,19 @@ struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeIns>
 // ----------------------------------------------------------------------------
 
 template <typename TSnp, typename TDel, typename TIns, typename TSV>
-struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSV>
+struct DeltaValue<impl::DeltaStore<TSnp, TDel, TIns, TSV>, DeltaTypeSV>
 {
     typedef TSV Type;
 };
 
 template <typename TSnp, typename TDel, typename TIns, typename TSV>
-struct DeltaValue<DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeSV>
+struct DeltaValue<impl::DeltaStore<TSnp, TDel, TIns, TSV> const, DeltaTypeSV>
 {
     typedef TSV const Type;
 };
 
 // ============================================================================
-// Functions
+// Punlic Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
@@ -322,6 +328,13 @@ setDeltaType(DeltaTypeSelector & selector, DeltaType const deltaType)
 {
     value(selector) = deltaType;
 }
+
+// ============================================================================
+// Private Functions
+// ============================================================================
+
+namespace impl
+{
 
 // ----------------------------------------------------------------------------
 // Function getDeltaStore()                                     [DeltaTypeSnp]
@@ -554,6 +567,8 @@ netSize(TStore const & store, TPos const pos, TTag const & /*tag*/)
            static_cast<TSignedSize>(deletionSize(store, pos, TTag()));
 }
 
-}
+}  // namespace impl
+
+}  // namespace seqan
 
 #endif // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_STORE_H_

@@ -59,9 +59,9 @@ struct DeltaRecord;
 
 enum class DeltaEndType : __uint8
 {
-    IS_LEFT,
-    IS_RIGHT,
-    IS_BOTH
+    IS_RIGHT = 1,   // 0x01
+    IS_LEFT  = 2,   // 0x10
+    IS_BOTH  = 3    // 0x11
 };
 
 // ----------------------------------------------------------------------------
@@ -127,7 +127,13 @@ struct DeltaMapEntryPosAndTypeLessThanComparator_
     bool operator()(TEntry const & lhs, TEntry const & rhs)
     {
         if (lhs.deltaPosition == rhs.deltaPosition)
+        {
+            if (lhs.deltaRecord.i1 == rhs.deltaRecord.i1)
+            {
+                return lhs.deltaTypeEnd < rhs.deltaTypeEnd;  // Order: IS_RIGHT, IS_LEFT, IS_BOTH
+            }
             return lhs.deltaRecord.i1 > rhs.deltaRecord.i1;  // Switch the comaprison in descending order to match ordering of DeltaTypeSelector.
+        }
         return lhs.deltaPosition < rhs.deltaPosition;
     }
 };

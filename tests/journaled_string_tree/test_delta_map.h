@@ -108,22 +108,28 @@ SEQAN_DEFINE_TEST(test_delta_map_insert)
     insert(deltaMap,  2, deltaMap._deltaStore._snpData[0], cov2, DeltaTypeSnp());
     insert(deltaMap,  1,  deltaMap._deltaStore._svData[0], cov1, DeltaTypeSV());
     insert(deltaMap,  1, deltaMap._deltaStore._delData[2], cov2, DeltaTypeDel());
+    insert(deltaMap,  3, 1, cov1, DeltaTypeDel());
+    insert(deltaMap,  3, 4, cov1, DeltaTypeDel());
+
 
     SEQAN_ASSERT_EQ(deltaMap._entries[0], TEntry(0, TRecord(DELTA_TYPE_SNP, 1), cov1, DeltaEndType::IS_BOTH));
-    SEQAN_ASSERT_EQ(deltaMap._entries[1], TEntry(1, TRecord(DELTA_TYPE_DEL, 3), cov2, DeltaEndType::IS_LEFT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[2], TEntry(1, TRecord(DELTA_TYPE_DEL, 2), cov2, DeltaEndType::IS_LEFT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[3], TEntry(1, TRecord(DELTA_TYPE_SV, 1), cov1, DeltaEndType::IS_LEFT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[4], TEntry(1, TRecord(DELTA_TYPE_SV, 0), cov1, DeltaEndType::IS_LEFT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[5], TEntry(2, TRecord(DELTA_TYPE_SNP, 2), cov2, DeltaEndType::IS_BOTH));
-    SEQAN_ASSERT_EQ(deltaMap._entries[6], TEntry(2, TRecord(DELTA_TYPE_SNP, 0), cov2, DeltaEndType::IS_BOTH));
-    SEQAN_ASSERT_EQ(deltaMap._entries[7], TEntry(2, TRecord(DELTA_TYPE_SV, 1), cov1, DeltaEndType::IS_RIGHT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[8], TEntry(2, TRecord(DELTA_TYPE_SV, 0), cov1, DeltaEndType::IS_RIGHT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[9], TEntry(3, TRecord(DELTA_TYPE_DEL, 3), cov2, DeltaEndType::IS_RIGHT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[10], TEntry(3, TRecord(DELTA_TYPE_DEL, 2), cov2, DeltaEndType::IS_RIGHT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[11], TEntry(4, TRecord(DELTA_TYPE_INS, 0), cov3, DeltaEndType::IS_BOTH));
-    SEQAN_ASSERT_EQ(deltaMap._entries[12], TEntry(5, TRecord(DELTA_TYPE_DEL, 0), cov3, DeltaEndType::IS_BOTH));
-    SEQAN_ASSERT_EQ(deltaMap._entries[13], TEntry(20, TRecord(DELTA_TYPE_DEL, 1), cov2, DeltaEndType::IS_LEFT));
-    SEQAN_ASSERT_EQ(deltaMap._entries[14], TEntry(21, TRecord(DELTA_TYPE_DEL, 1), cov2, DeltaEndType::IS_RIGHT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[1], TEntry(1, TRecord(DELTA_TYPE_DEL, 2), cov2, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[2], TEntry(1, TRecord(DELTA_TYPE_DEL, 3), cov2, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[3], TEntry(1, TRecord(DELTA_TYPE_SV, 0), cov1, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[4], TEntry(1, TRecord(DELTA_TYPE_SV, 1), cov1, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[5], TEntry(2, TRecord(DELTA_TYPE_SNP, 0), cov2, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(deltaMap._entries[6], TEntry(2, TRecord(DELTA_TYPE_SNP, 2), cov2, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(deltaMap._entries[7], TEntry(2, TRecord(DELTA_TYPE_SV, 0), cov1, DeltaEndType::IS_RIGHT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[8], TEntry(2, TRecord(DELTA_TYPE_SV, 1), cov1, DeltaEndType::IS_RIGHT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[9], TEntry(3, TRecord(DELTA_TYPE_DEL, 2), cov2, DeltaEndType::IS_RIGHT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[10], TEntry(3, TRecord(DELTA_TYPE_DEL, 3), cov2, DeltaEndType::IS_RIGHT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[11], TEntry(3, TRecord(DELTA_TYPE_DEL, 4), cov1, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(deltaMap._entries[12], TEntry(3, TRecord(DELTA_TYPE_DEL, 5), cov1, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[13], TEntry(4, TRecord(DELTA_TYPE_INS, 0), cov3, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(deltaMap._entries[14], TEntry(5, TRecord(DELTA_TYPE_DEL, 0), cov3, DeltaEndType::IS_BOTH));
+    SEQAN_ASSERT_EQ(deltaMap._entries[15], TEntry(6, TRecord(DELTA_TYPE_DEL, 5), cov1, DeltaEndType::IS_RIGHT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[16], TEntry(20, TRecord(DELTA_TYPE_DEL, 1), cov2, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(deltaMap._entries[17], TEntry(21, TRecord(DELTA_TYPE_DEL, 1), cov2, DeltaEndType::IS_RIGHT));
 }
 
 SEQAN_DEFINE_TEST(test_delta_map_erase)
@@ -176,7 +182,7 @@ SEQAN_DEFINE_TEST(test_delta_map_lower_bound)
     SEQAN_ASSERT_EQ(*lowerBound(deltaMap, 7, DeltaTypeSnp()), TEntry(20, TRecord(DELTA_TYPE_DEL, 1), cov2, DeltaEndType::IS_LEFT));
     SEQAN_ASSERT(lowerBound(deltaMap, 22, DeltaTypeSnp()) == end(deltaMap, Standard()));
     SEQAN_ASSERT_EQ(*lowerBound(deltaMap, 4, DeltaTypeIns()), TEntry(4, TRecord(DELTA_TYPE_INS, 0), cov3, DeltaEndType::IS_BOTH));
-    SEQAN_ASSERT_EQ(*lowerBound(deltaMap, 1, DeltaTypeDel()), TEntry(1, TRecord(DELTA_TYPE_DEL, 3), cov1, DeltaEndType::IS_LEFT));
+    SEQAN_ASSERT_EQ(*lowerBound(deltaMap, 1, DeltaTypeDel()), TEntry(1, TRecord(DELTA_TYPE_DEL, 2), cov2, DeltaEndType::IS_LEFT));
 }
 
 SEQAN_DEFINE_TEST(test_delta_map_upper_bound)

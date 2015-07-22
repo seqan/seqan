@@ -43,9 +43,9 @@
 using namespace seqan;
 
 template <typename TSnp, typename TDel>
-DeltaStore<TSnp, TDel> createMock()
+impl::DeltaStore<TSnp, TDel> createMock()
 {
-    DeltaStore<TSnp, TDel> store;
+    impl::DeltaStore<TSnp, TDel> store;
 
     resize(store._snpData, 3);
     store._snpData[0] = 'A';
@@ -87,7 +87,7 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_select_delta_type)
 
 SEQAN_DEFINE_TEST(test_delta_map_delta_store_get_delta_store)
 {
-    DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
+    impl::DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
 
     SEQAN_ASSERT_EQ(getDeltaStore(store, DeltaTypeSnp()), store._snpData);
     SEQAN_ASSERT_EQ(getDeltaStore(store, DeltaTypeDel()), store._delData);
@@ -99,7 +99,7 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_add_delta_value)
 {
     typedef Pair<unsigned, DnaString> TPair;
     { // Add into empty store.
-        DeltaStore<Dna, unsigned> store;
+        impl::DeltaStore<Dna, unsigned> store;
         SEQAN_ASSERT_EQ(addDeltaValue(store, 'C', DeltaTypeSnp()), 0u);
         SEQAN_ASSERT_EQ(store._snpData[0], 'C');
         SEQAN_ASSERT_EQ(addDeltaValue(store, "ATG", DeltaTypeIns()), 0u);
@@ -112,7 +112,7 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_add_delta_value)
     }
 
     { // Add into filled store.
-        DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
+        impl::DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
         SEQAN_ASSERT_EQ(addDeltaValue(store, 'C', DeltaTypeSnp()), 3u);
         SEQAN_ASSERT_EQ(store._snpData[3], 'C');
         SEQAN_ASSERT_EQ(addDeltaValue(store, "CG", DeltaTypeIns()), 2u);
@@ -128,13 +128,13 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_add_delta_value)
 SEQAN_DEFINE_TEST(test_delta_map_delta_store_erase_delta_value)
 {   
     { // Erase from empty store.
-        DeltaStore<Dna, unsigned> store;
+        impl::DeltaStore<Dna, unsigned> store;
         SEQAN_ASSERT_EQ(eraseDeltaValue(store, 0, DeltaTypeSnp()), 0u);
         SEQAN_ASSERT_EQ(eraseDeltaValue(store, 3, DeltaTypeDel()), 0u);
     }
 
     { // Erase from filled store.
-        DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
+        impl::DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
         SEQAN_ASSERT_EQ(eraseDeltaValue(store, 1, DeltaTypeSnp()), 2u);
         SEQAN_ASSERT_EQ(store._snpData[1], 'C');
         SEQAN_ASSERT_EQ(eraseDeltaValue(store, 0, DeltaTypeIns()), 1u);
@@ -151,7 +151,7 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_delta_value)
 {
     typedef Pair<unsigned, DnaString> TPair;
 
-    DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
+    impl::DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
 
     SEQAN_ASSERT_EQ(deltaValue(store, 2, DeltaTypeSnp()), 'C');
     SEQAN_ASSERT_EQ(deltaValue(store, 1, DeltaTypeIns()), "CG");
@@ -162,7 +162,7 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_delta_value)
 SEQAN_DEFINE_TEST(test_delta_map_delta_store_clear)
 {
     { // Clear empty store.
-        DeltaStore<Dna, unsigned> store;
+        impl::DeltaStore<Dna, unsigned> store;
         clear(store);
         SEQAN_ASSERT_EQ(length(store._snpData), 0u);
         SEQAN_ASSERT_EQ(length(store._insData), 0u);
@@ -171,7 +171,7 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_clear)
     }
 
     { // Clear filled store.
-        DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
+        impl::DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
         clear(store);
         SEQAN_ASSERT_EQ(length(store._snpData), 0u);
         SEQAN_ASSERT_EQ(length(store._insData), 0u);
@@ -182,7 +182,7 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_clear)
 
 SEQAN_DEFINE_TEST(test_delta_map_delta_store_deletion_size)
 {
-    DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
+    impl::DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
 
     SEQAN_ASSERT_EQ(deletionSize(store, 2, DeltaTypeSnp()), 1u);
     SEQAN_ASSERT_EQ(deletionSize(store, 1, DeltaTypeIns()), 0u);
@@ -192,7 +192,7 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_deletion_size)
 
 SEQAN_DEFINE_TEST(test_delta_map_delta_store_insertion_size)
 {
-    DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
+    impl::DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
 
     SEQAN_ASSERT_EQ(insertionSize(store, 2, DeltaTypeSnp()), 1u);
     SEQAN_ASSERT_EQ(insertionSize(store, 1, DeltaTypeIns()), 2u);
@@ -202,7 +202,7 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_insertion_size)
 
 SEQAN_DEFINE_TEST(test_delta_map_delta_store_net_size)
 {
-    DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
+    impl::DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
 
     SEQAN_ASSERT_EQ(netSize(store, 2, DeltaTypeSnp()), 0);
     SEQAN_ASSERT_EQ(netSize(store, 1, DeltaTypeIns()), 2);
