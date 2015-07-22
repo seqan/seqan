@@ -130,14 +130,8 @@ struct Value<ModifiedIterator<THost, TSpec> const> : Value<ModifiedIterator<THos
 // Metafunction GetValue
 // --------------------------------------------------------------------------
 
-//NOTE(h-2): ModifiedStringIterators always return by value since some
-// modified strings result in values being created anyway (e.g. ModViews)
-// and depending on scope these might be lost.
-// For example iterators over infixes of ModViews would otherwise reference
-// part of the stack that were freed.
-
 template <typename THost, typename TSpec>
-struct GetValue< ModifiedIterator<THost, TSpec> > : Value<THost>
+struct GetValue< ModifiedIterator<THost, TSpec> > : GetValue<THost>
 {};
 
 template <typename THost, typename TSpec>
@@ -148,10 +142,8 @@ struct GetValue<ModifiedIterator<THost, TSpec> const> : GetValue<ModifiedIterato
 // Metafunction Reference
 // --------------------------------------------------------------------------
 
-//NOTE(h-2): see above
-
 template <typename THost, typename TSpec>
-struct Reference<ModifiedIterator<THost, TSpec> > : Value<THost>
+struct Reference<ModifiedIterator<THost, TSpec> > : Reference<THost>
 {};
 
 template <typename THost, typename TSpec>
@@ -538,11 +530,20 @@ position(ModifiedIterator<THost, TSpec> const & me)
     return position(host(me));
 }
 
+// rooted overload
+template <typename TContainer1, typename TIterator, typename TSpec1, typename TSpec2, typename TContainer2>
+inline typename Position<ModifiedIterator<Iter<TContainer1, AdaptorIterator<TIterator, TSpec1> >, TSpec2> const>::Type
+position(ModifiedIterator<Iter<TContainer1, AdaptorIterator<TIterator, TSpec1> >, TSpec2> const & me,
+        TContainer2 const &)
+{
+    return position(me); // rooted has container
+}
+
 template <typename THost, typename TSpec, typename TContainer>
 inline typename Position<ModifiedIterator<THost, TSpec> const>::Type
 position(ModifiedIterator<THost, TSpec> const & me, TContainer const &cont)
 {
-    return position(host(me), cont);
+    return me - begin(cont, Standard());
 }
 
 // --------------------------------------------------------------------------
@@ -593,29 +594,6 @@ operator>(ModifiedIterator<THost, TSpec> const & a, ModifiedIterator<THost, TSpe
 // Function atBegin()
 // --------------------------------------------------------------------------
 
-template <typename THost, typename TSpec, typename TContainer>
-inline bool
-atBegin(ModifiedIterator<THost, TSpec> & me,
-        TContainer const & container)
-{
-    return atBegin(const_cast<ModifiedIterator<THost, TSpec> const &>(me), container);
-}
-
-template <typename THost, typename TSpec, typename TContainer>
-inline bool
-atBegin(ModifiedIterator<THost, TSpec> const & me,
-        TContainer const & container)
-{
-    return atBegin(host(me), container);
-}
-
-template <typename THost, typename TSpec>
-inline bool
-atBegin(ModifiedIterator<THost, TSpec> & me)
-{
-    return atBegin(const_cast<ModifiedIterator<THost, TSpec> const &>(me));
-}
-
 template <typename THost, typename TSpec>
 inline bool
 atBegin(ModifiedIterator<THost, TSpec> const & me)
@@ -623,16 +601,41 @@ atBegin(ModifiedIterator<THost, TSpec> const & me)
     return atBegin(host(me));
 }
 
+// rooted overload
+template <typename TContainer1, typename TIterator, typename TSpec1, typename TSpec2, typename TContainer2>
+inline bool
+atBegin(ModifiedIterator<Iter<TContainer1, AdaptorIterator<TIterator, TSpec1> >, TSpec2> const & me,
+        TContainer2 const &)
+{
+    return atBegin(me);
+}
+
+template <typename THost, typename TSpec, typename TContainer>
+inline bool
+atBegin(ModifiedIterator<THost, TSpec> const & me,
+        TContainer const & container)
+{
+    return me == begin(container, Standard());
+}
+
 // --------------------------------------------------------------------------
 // Function atEnd()
 // --------------------------------------------------------------------------
 
-template <typename THost, typename TSpec, typename TContainer>
+template <typename THost, typename TSpec>
 inline bool
-atEnd(ModifiedIterator<THost, TSpec> & me,
-      TContainer const & container)
+atEnd(ModifiedIterator<THost, TSpec> const & me)
 {
-    return atEnd(const_cast<ModifiedIterator<THost, TSpec> const &>(me), container);
+    return atEnd(host(me));
+}
+
+// rooted overload
+template <typename TContainer1, typename TIterator, typename TSpec1, typename TSpec2, typename TContainer2>
+inline bool
+atEnd(ModifiedIterator<Iter<TContainer1, AdaptorIterator<TIterator, TSpec1> >, TSpec2> const & me,
+      TContainer2 const &)
+{
+    return atEnd(me);
 }
 
 template <typename THost, typename TSpec, typename TContainer>
@@ -640,21 +643,7 @@ inline bool
 atEnd(ModifiedIterator<THost, TSpec> const & me,
       TContainer const & container)
 {
-    return atEnd(host(me), container);
-}
-
-template <typename THost, typename TSpec>
-inline bool
-atEnd(ModifiedIterator<THost, TSpec> & me)
-{
-    return atEnd(const_cast<ModifiedIterator<THost, TSpec> const &>(me));
-}
-
-template <typename THost, typename TSpec>
-inline bool
-atEnd(ModifiedIterator<THost, TSpec> const & me)
-{
-    return atEnd(host(me));
+    return me == end(container, Standard());
 }
 
 }

@@ -42,6 +42,7 @@
 #include <seqan/file.h>
 
 #include <seqan/reduced_aminoacid.h>
+#include <seqan/modifier.h>
 
 using namespace seqan;
 
@@ -107,6 +108,71 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10)
         conv = aas;
         SEQAN_ASSERT_EQ(CharString(conv), "ABCBBFGHIIKIIBAPBKSSAIFFBAF");
     }
+}
+
+template <typename TModString>
+void _testReducedAminoAcidMurphy10ModIteratorsImpl(TModString & conv)
+{
+    typedef typename Iterator<TModString, Standard>::Type TIt;
+    typedef typename Iterator<TModString, Rooted>::Type TItR;
+
+    CharString toCharString = conv;
+    SEQAN_ASSERT_EQ(toCharString,
+                    "ABCBBFGHIIKIIBAPBKSSAIFFBAF");
+
+    // iterating
+    {
+        unsigned c = 0;
+        for (TIt it = begin(conv, Standard()), itEnd = end(conv, Standard());
+             it != itEnd;
+             ++it, ++c)
+            SEQAN_ASSERT_EQ(char(*it), toCharString[c]);
+    }
+
+    // atBegin, atEnd, position (Standard)
+    {
+        TIt it = begin(conv, Standard());
+        SEQAN_ASSERT(atBegin(it, conv));
+        SEQAN_ASSERT_EQ(position(it, conv), 0u);
+
+        it = end(conv, Standard());
+        SEQAN_ASSERT(atEnd(it, conv));
+        SEQAN_ASSERT_EQ(position(it, conv), length(conv));
+    }
+
+    // atBegin, atEnd, position (Rooted)
+    {
+        TItR it = begin(conv, Rooted());
+        SEQAN_ASSERT(atBegin(it));
+        SEQAN_ASSERT(atBegin(it, conv));
+        SEQAN_ASSERT_EQ(position(it), 0u);
+        SEQAN_ASSERT_EQ(position(it, conv), 0u);
+
+        it = end(conv, Rooted());
+        SEQAN_ASSERT(atEnd(it));
+        SEQAN_ASSERT(atEnd(it, conv));
+        SEQAN_ASSERT_EQ(position(it), length(conv));
+        SEQAN_ASSERT_EQ(position(it, conv), length(conv));
+    }
+}
+
+SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10_moditerators)
+{
+    typedef ModifiedString<String<AminoAcid>,
+                           ModView<FunctorConvert<AminoAcid,ReducedAminoAcid<Murphy10>>>> TModString;
+    String<AminoAcid> aas = "ABCDEFGHIJKLMNOPQRSTUVWYZX*";
+
+    TModString conv(aas);
+    _testReducedAminoAcidMurphy10ModIteratorsImpl(conv);
+
+    TModString const conv2(aas);
+    _testReducedAminoAcidMurphy10ModIteratorsImpl(conv2);
+
+    Segment<TModString, InfixSegment> convinf = infix(conv, 0, length(conv));
+    _testReducedAminoAcidMurphy10ModIteratorsImpl(convinf);
+
+    Segment<TModString const, InfixSegment> conv2inf = infix(conv2, 0, length(conv));
+    _testReducedAminoAcidMurphy10ModIteratorsImpl(conv2inf);
 }
 
 #endif  // SEQAN_TESTS_REDUCED_ALPHABET_H_
