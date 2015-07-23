@@ -350,7 +350,7 @@ position(TIterator const & it,
 
 template <typename T, typename TContainer>
 inline SEQAN_HOST_DEVICE bool
-atBegin(T const & it, TContainer const & cont)
+atBegin(T & it, TContainer & cont)
 {
     SEQAN_CHECKPOINT;
     return it == begin(cont, Standard());
@@ -369,8 +369,8 @@ atBegin(T const & it)
 
 template <typename T, typename TContainer>
 inline SEQAN_HOST_DEVICE bool
-atEnd(T const & it,
-      TContainer const & cont)
+atEnd(T & it,
+      TContainer & cont)
 {
     SEQAN_CHECKPOINT;
     return it == end(cont, Standard());
