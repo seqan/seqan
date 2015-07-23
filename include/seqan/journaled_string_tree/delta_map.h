@@ -783,11 +783,6 @@ insert(DeltaMap<TConfig, TSpec> & deltaMap,
        TCoverage const & coverage,
        TDeltaType const & /*deltaType*/)
 {
-    typedef DeltaMap<TConfig, TSpec> TDeltaMap;
-    typedef typename Value<TDeltaMap>::Type TEntry;
-    typedef typename DeltaPosition<TEntry>::Type TEntryPos;
-    typedef typename DeltaValue<TDeltaMap, TDeltaType>::Type TDeltaValueType;
-
     if (SEQAN_UNLIKELY(empty(deltaMap)))
         reserve(deltaMap._entries, 1);
 

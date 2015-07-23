@@ -155,6 +155,7 @@ container(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
 // Function deltaValue()
 // ----------------------------------------------------------------------------
 
+// TODO(rrahn): Let iterator return proxy and access values using the proxy.
 /*!
  * @fn DeltaMapIterator#deltaValue
  *
@@ -181,6 +182,113 @@ inline typename DeltaValue<typename Container<Iter<TDeltaMap, DeltaMapIteratorSp
 deltaValue(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter, TTag const & tag)
 {
     return deltaValue(container(iter)._deltaStore, getDeltaRecord(value(iter)).i2, tag);
+}
+
+namespace impl
+{
+
+template <typename TIter>
+struct GetInsSizeFunctor
+{
+    TIter & _it;
+    decltype(impl::insertionSize(container(_it)._deltaStore, getStorePosition(*_it), DeltaTypeIns())) val;
+
+    GetInsSizeFunctor()
+    {}
+
+    GetInsSizeFunctor(TIter & it) : _it(it)
+    {}
+
+    template <typename TDeltaType>
+    inline void
+    operator()(TDeltaType)
+    {
+        val = impl::insertionSize(container(_it)._deltaStore, getStorePosition(*_it), TDeltaType());
+    }
+};
+
+template <typename TIter>
+struct GetDelSizeFunctor
+{
+    TIter & _it;
+    decltype(impl::deletionSize(container(_it)._deltaStore, getStorePosition(*_it), DeltaTypeDel())) val;
+
+    GetDelSizeFunctor()
+    {}
+
+    GetDelSizeFunctor(TIter & it) : _it(it)
+    {}
+
+    template <typename TDeltaType>
+    inline void
+    operator()(TDeltaType)
+    {
+        val = impl::deletionSize(container(_it)._deltaStore, getStorePosition(*_it), TDeltaType());
+    }
+};
+
+template <typename TIter>
+struct GetNetSizeFunctor
+{
+    TIter & _it;
+    decltype(impl::netSize(container(_it)._deltaStore, getStorePosition(*_it), DeltaTypeSV())) val;
+
+    GetNetSizeFunctor()
+    {}
+
+    GetNetSizeFunctor(TIter it) : _it(it)
+    {}
+
+    template <typename TDeltaType>
+    inline void
+    operator()(TDeltaType)
+    {
+        val = impl::netSize(container(_it)._deltaStore, getStorePosition(*_it), TDeltaType());
+    }
+};
+
+}  // namespace impl
+
+// ----------------------------------------------------------------------------
+// Function insSize();
+// ----------------------------------------------------------------------------
+
+template <typename TDeltaMap>
+inline auto
+insSize(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter) -> decltype(impl::GetInsSizeFunctor<Iter<TDeltaMap, DeltaMapIteratorSpec> >().val)
+{
+    impl::GetInsSizeFunctor<Iter<TDeltaMap, DeltaMapIteratorSpec> const> f(iter);
+    DeltaTypeSelector deltaTypes;
+    applyOnDelta(f, getDeltaType(*iter), deltaTypes);
+    return f.val;
+}
+
+// ----------------------------------------------------------------------------
+// Function delSize();
+// ----------------------------------------------------------------------------
+
+template <typename TDeltaMap>
+inline auto
+delSize(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter) -> decltype(impl::GetDelSizeFunctor<Iter<TDeltaMap, DeltaMapIteratorSpec> >().val)
+{
+    impl::GetDelSizeFunctor<Iter<TDeltaMap, DeltaMapIteratorSpec> const> f(iter);
+    DeltaTypeSelector deltaTypes;
+    applyOnDelta(f, getDeltaType(*iter), deltaTypes);
+    return f.val;
+}
+
+// ----------------------------------------------------------------------------
+// Function netSize();
+// ----------------------------------------------------------------------------
+
+template <typename TDeltaMap>
+inline auto
+netSize(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter) -> decltype(impl::GetNetSizeFunctor<Iter<TDeltaMap, DeltaMapIteratorSpec> >().val)
+{
+    impl::GetNetSizeFunctor<Iter<TDeltaMap, DeltaMapIteratorSpec> const> f(iter);
+    DeltaTypeSelector deltaTypes;
+    applyOnDelta(f, getDeltaType(*iter), deltaTypes);
+    return f.val;
 }
 
 // ----------------------------------------------------------------------------
