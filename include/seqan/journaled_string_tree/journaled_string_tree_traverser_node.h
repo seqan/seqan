@@ -46,7 +46,7 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-
+// TODO(rrahn): Redesign interface.
 template <typename TJst>
 class JstTraversalNode
 {
@@ -54,8 +54,7 @@ public:
     typedef typename Member<TJst, JstSourceMember>::Type                TSequence;
     typedef typename Iterator<TSequence, Standard>::Type                TSeqIterator;
     typedef typename Position<TSequence>::Type                          TPosition;
-    typedef typename Member<TJst, JstBufferMember>::Type                TJstBuffer;
-    typedef typename Member<TJstBuffer, JstBufferDeltaMapMember>::Type  TDeltaMap;
+    typedef typename Member<TJst, JstDeltaMapMember>::Type              TDeltaMap;
     typedef typename Iterator<TDeltaMap, Standard>::Type                TDeltaIterator;
     typedef typename DeltaCoverage<TDeltaMap>::Type                     TCoverage;
     typedef typename Size<TJst>::Type                                   TSize;

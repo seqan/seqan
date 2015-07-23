@@ -79,6 +79,13 @@ struct JstSourceMember_;
 typedef Tag<JstSourceMember_> JstSourceMember;
 
 // ----------------------------------------------------------------------------
+// Tag JstDeltaMapMember
+// ----------------------------------------------------------------------------
+
+struct JstDeltaMapMember_;
+typedef Tag<JstDeltaMapMember_> JstDeltaMapMember;
+
+// ----------------------------------------------------------------------------
 // Tag PushEvent
 // ----------------------------------------------------------------------------
 

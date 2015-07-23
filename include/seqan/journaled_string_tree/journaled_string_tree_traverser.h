@@ -55,14 +55,18 @@ public:
     typedef typename Value<TStack>::Type                                TNode;
     typedef typename Size<TraverserImpl>::Type                          TSize;
     typedef std::shared_ptr<TStack>                                     TStackPtr;
+    typedef JstBuffer_<TJst>                                            TBuffer;  // Provides a sequence context.
+    typedef std::shared_ptr<TBuffer>                                    TBufferPtr;
+
 
 
     // __ Member Variables ____________________________________________________
 
-    TJst *       _contPtr;  // Should be always const.
-    TSize        _branchLength;
-    TSize        _contextSize;
-    TStackPtr    _stackPtr;
+    TJst *      _contPtr;  // TODO(rmaerker): Should always be const.
+    TSize       _branchLength   = 1;
+    TSize       _contextSize    = 1;
+    TStackPtr   _stackPtr;
+    TBufferPtr  _bufferPtr;
 
     // __ Constructors ________________________________________________________
 
@@ -70,27 +74,72 @@ public:
     TraverserImpl() :
         TSuper(),
         _contPtr(nullptr),
-        _branchLength(0),
-        _contextSize(0),
-        _stackPtr(impl::createStack<TStack>())
+        _stackPtr(impl::createStack<TStack>()),
+        _bufferPtr(impl::createBuffer<TBuffer>())
     {}
 
     // C'tor with just the jst.
     TraverserImpl(TJst & jst) :
         TSuper(),
         _contPtr(nullptr),
-        _stackPtr(impl::createStack<TStack>())
+        _stackPtr(impl::createStack<TStack>()),
+        _bufferPtr(impl::createBuffer<TBuffer>())
     {
-        init(*this, jst, 1);
+        init(*this, jst);
+    }
+
+    // C'tor with the jst and the context or branch size.
+    template <typename TSize>
+    TraverserImpl(TJst & jst, TSize const contextSize) :
+    TSuper(),
+    _contPtr(nullptr),
+    _stackPtr(impl::createStack<TStack>()),
+    _bufferPtr(impl::createBuffer<TBuffer>())
+    {
+        init(*this, jst, contextSize);
+    }
+
+    // C'tor with the jst and the context or branch size.
+    template <typename TSize>
+    TraverserImpl(TJst & jst, TSize const contextSize, TSize const branchLength) :
+        TSuper(),
+        _contPtr(nullptr),
+        _stackPtr(impl::createStack<TStack>()),
+        _bufferPtr(impl::createBuffer<TBuffer>())
+    {
+        init(*this, jst, contextSize, branchLength);
     }
 
     // C'tor with the jst and list of observers.
     TraverserImpl(TJst & jst, TObserverList && observers) :
         TSuper(std::forward<TObserverList>(observers)),
         _contPtr(nullptr),
-        _stackPtr(impl::createStack<TStack>())
+        _stackPtr(impl::createStack<TStack>()),
+        _bufferPtr(impl::createBuffer<TBuffer>())
     {
-        init(*this, jst, 1);
+        init(*this, jst);
+    }
+
+    // C'tor with the jst and list of observers.
+    template <typename TSize>
+    TraverserImpl(TJst & jst, TSize const contextSize, TObserverList && observers) :
+        TSuper(std::forward<TObserverList>(observers)),
+        _contPtr(nullptr),
+        _stackPtr(impl::createStack<TStack>()),
+        _bufferPtr(impl::createBuffer<TBuffer>())
+    {
+        init(*this, jst, contextSize);
+    }
+
+    // C'tor with the jst and list of observers.
+    template <typename TSize>
+    TraverserImpl(TJst & jst, TSize const contextSize, TSize const branchLength, TObserverList && observers) :
+        TSuper(std::forward<TObserverList>(observers)),
+        _contPtr(nullptr),
+        _stackPtr(impl::createStack<TStack>()),
+        _bufferPtr(impl::createBuffer<TBuffer>())
+    {
+        init(*this, jst, contextSize, branchLength);
     }
 
     // Copy c'tor.
@@ -100,7 +149,8 @@ public:
         _contPtr(other._contPtr),
         _branchLength(other._historySize),
         _contextSize(other._contextSize),
-        _stackPtr(other._stackPtr)
+        _stackPtr(other._stackPtr),
+        _bufferPtr(other._bufferPtr)
     {
         ignoreUnusedVariableWarning(dummy);
     }
@@ -117,6 +167,7 @@ public:
             _branchLength =other._historySize;
             _contextSize = other._contextSize;
             _stackPtr = other._stackPtr;
+            _bufferPtr = other._bufferPtr;
         }
         return *this;
     }
@@ -251,6 +302,30 @@ container(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
     return *me._contPtr;
 }
 
+//// ----------------------------------------------------------------------------
+//// Function setContextSize();
+//// ----------------------------------------------------------------------------
+//
+//template <typename TJst, typename TSpec, typename TObserver, typename TSize>
+//inline void
+//setContextSize(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
+//               TSize contextSize)
+//{
+//    me._contextSize = contextSize;
+//}
+//
+//// ----------------------------------------------------------------------------
+//// Function setBranchLength();
+//// ----------------------------------------------------------------------------
+//
+//template <typename TJst, typename TSpec, typename TObserver, typename TSize>
+//inline void
+//setBranchLength(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
+//                TSize branchLength)
+//{
+//    me._branchLength = branchLength;
+//}
+
 // ----------------------------------------------------------------------------
 // Function goNext();
 // ----------------------------------------------------------------------------
@@ -317,7 +392,7 @@ inline bool
 atEnd(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
 {
     SEQAN_ASSERT(me._stackPtr != nullptr);
-    return length(*me._stackPtr) == 1 && back(*me._stackPtr).endEdgeIt == sourceEnd(container(me)._buffer);
+    return length(*me._stackPtr) == 1 && back(*me._stackPtr).endEdgeIt == sourceEnd(impl::buffer(me));
 }
 
 // ----------------------------------------------------------------------------
@@ -329,9 +404,27 @@ template <typename TJst, typename TSpec, typename TObserver,
 inline void
 init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
      TJst & jst,
+     TSize const contextSize,
+     TSize const branchLength)
+{
+    impl::init(me, jst, contextSize, branchLength);
+}
+
+template <typename TJst, typename TSpec, typename TObserver, typename TSize>
+inline void
+init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
+     TJst & jst,
      TSize const contextSize)
 {
-    impl::init(me, jst, contextSize);
+    init(me, jst, contextSize, contextSize);
+}
+
+template <typename TJst, typename TSpec, typename TObserver>
+inline void
+init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
+     TJst & jst)
+{
+    init(me, jst, 1);
 }
 
 }  // namespace seqan

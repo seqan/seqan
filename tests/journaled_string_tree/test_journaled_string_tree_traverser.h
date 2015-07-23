@@ -43,28 +43,125 @@
 #include <seqan/journaled_string_tree.h>
 
 #include "test_config_reader.h"
-#include "test_journaled_string_tree.h"
+//#include "test_journaled_string_tree.h"
 
 using namespace seqan;
+
+struct TestJstPosConfig_
+{
+    typedef __uint16 TDeltaPos;
+    typedef Dna      TSnpValue;
+    typedef __uint16 TDelValue;
+    typedef String<Dna> TInsValue;
+    typedef Pair<TDelValue, TInsValue> TSVValue;
+};
+
+template <typename TString, typename TRef, typename TDeltaMap>
+inline void
+_createJournaledStrings(StringSet<TString> & set,
+                        TRef const & source,
+                        TDeltaMap const & map,
+                        unsigned const dim)
+{
+
+    for (unsigned seqId = 0; seqId < dim; ++seqId)
+    {
+        TString seq = source;
+        auto it = end(map, Standard());
+        auto itBegin = begin(map, Standard());
+
+        while (it != itBegin)
+        {
+            --it;
+            if (!getDeltaCoverage(*it)[seqId])
+                continue;
+            switch (getDeltaType(*it))
+            {
+                case DELTA_TYPE_SNP:
+                {
+                    erase(seq, getDeltaPosition(*it));
+                    insertValue(seq, getDeltaPosition(*it), deltaValue(it, DeltaTypeSnp()));
+                    break;
+                }
+                case DELTA_TYPE_DEL:
+                {
+                    if((*it).deltaTypeEnd != DeltaEndType::IS_RIGHT)
+                        erase(seq, getDeltaPosition(*it), getDeltaPosition(*it)+ deltaValue(it, DeltaTypeDel()));
+                    break;
+                }
+                case DELTA_TYPE_INS:
+                {
+                    insert(seq, getDeltaPosition(*it), deltaValue(it, DeltaTypeIns()));
+                    break;
+                }
+                case DELTA_TYPE_SV:
+                {
+                    if((*it).deltaTypeEnd != DeltaEndType::IS_RIGHT)
+                    {
+                        erase(seq, getDeltaPosition(*it), getDeltaPosition(*it) + deltaValue(it, DeltaTypeSV()).i1);
+                        insert(seq, getDeltaPosition(*it), deltaValue(it, DeltaTypeSV()).i2);
+                    }
+                    break;
+                }
+            }
+        }
+        appendValue(set, seq);
+    }
+}
+
+template <typename TJst, typename TInFile>
+inline void
+_createJst(TJst & jst, TInFile & configIn)
+{
+    while (!atEnd(configIn))
+    {
+        TestConfigRecord_<Dna, unsigned> record;
+        readRecord(record, configIn);
+
+        switch (record.deltaType)
+        {
+            case DELTA_TYPE_SNP:
+            {
+                insert(jst, record.pos, record.snp, record.coverage, DeltaTypeSnp());
+                break;
+            }
+            case DELTA_TYPE_DEL:
+            {
+                insert(jst, record.pos, record.del, record.coverage, DeltaTypeDel());
+                break;
+            }
+            case DELTA_TYPE_INS:
+            {
+                insert(jst, record.pos, record.ins, record.coverage, DeltaTypeIns());
+                break;
+            }
+            case DELTA_TYPE_SV:
+            {
+                insert(jst, record.pos, record.stv, record.coverage, DeltaTypeSV());
+                break;
+            }
+        }
+    }
+}
 
 template <typename TJst>
 inline TJst _createSimpleJst()
 {
-    typename Host<typename Member<TJst, JstSourceMember>::Type>::Type seq = "AGATCGAGCGAGCTAGCGACTCAG";
-    TJst jst(seq, 10, 100);
+    typename Host<typename Member<TJst, JstSourceMember>::Type>::Type const seq = "AGATCGAGCGAGCTAGCGACTCAG";
+    TJst jst(seq, 100);
     String<unsigned> ids;
     appendValue(ids, 0);
     appendValue(ids, 3);
     appendValue(ids, 9);
     appendValue(ids, 99);
 
-    insertNode(jst, 1, 3, ids, DeltaTypeDel());
-    insertNode(jst, 8, "CGTA", ids, DeltaTypeIns());
-    insertNode(jst, 10, 'C', ids, DeltaTypeSnp());
-    insertNode(jst, 15, 2, ids, DeltaTypeDel());
-    insertNode(jst, 20, 'A', ids, DeltaTypeSnp());
+    insert(jst, 1, 3, ids, DeltaTypeDel());
+    insert(jst, 8, "CGTA", ids, DeltaTypeIns());
+    insert(jst, 10, 'C', ids, DeltaTypeSnp());
+    insert(jst, 15, 2, ids, DeltaTypeDel());
+    insert(jst, 20, 'A', ids, DeltaTypeSnp());
 
-    SEQAN_ASSERT(create(jst));
+//    SEQAN_ASSERT(create(jst));
     return jst;
 }
 
@@ -76,8 +173,8 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_constructor)
     {  // Default ctor.
         TTraverser traverser;
         SEQAN_ASSERT(traverser._contPtr == nullptr);
-        SEQAN_ASSERT(traverser._branchLength == 0);
-        SEQAN_ASSERT(traverser._contextSize == 0);
+        SEQAN_ASSERT(traverser._branchLength == 1);
+        SEQAN_ASSERT(traverser._contextSize == 1);
         SEQAN_ASSERT(traverser._stackPtr.get() != nullptr);
         SEQAN_ASSERT(empty(*traverser._stackPtr) == true);
     }
@@ -87,8 +184,8 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_constructor)
 
         TTraverser traverser(jst);
         SEQAN_ASSERT(traverser._contPtr == &jst);
-        SEQAN_ASSERT(traverser._branchLength == branchLength(jst));
-        SEQAN_ASSERT(traverser._contextSize == 1);
+        SEQAN_ASSERT(traverser._branchLength == 1u);
+        SEQAN_ASSERT(traverser._contextSize == 1u);
         SEQAN_ASSERT(traverser._stackPtr.get() != nullptr);
         SEQAN_ASSERT(length(*traverser._stackPtr) == 1u);
     }
@@ -128,10 +225,10 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_init)
         init(test, jst, 1);
 
         SEQAN_ASSERT(test._contPtr == &jst);
-        SEQAN_ASSERT(test._branchLength == branchLength(jst));
+        SEQAN_ASSERT(test._branchLength == 1u);
         SEQAN_ASSERT(test._contextSize == 1u);
         SEQAN_ASSERT(length(*test._stackPtr) == 1u);
-        SEQAN_ASSERT(*back(*test._stackPtr).curEdgeIt == 'A');
+        SEQAN_ASSERT_EQ(*(back(*test._stackPtr).curEdgeIt), 'A');
     }
 
     {
@@ -139,7 +236,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_init)
         init(test, jst, 5);
 
         SEQAN_ASSERT(test._contPtr == &jst);
-        SEQAN_ASSERT(test._branchLength == branchLength(jst));
+        SEQAN_ASSERT(test._branchLength == 5u);
         SEQAN_ASSERT(test._contextSize == 5u);
         SEQAN_ASSERT(length(*test._stackPtr) == 3u);
         SEQAN_ASSERT(*(back(*test._stackPtr).curEdgeIt) == 'G');
@@ -150,7 +247,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_init)
         init(test, jst, 10);
 
         SEQAN_ASSERT(test._contPtr == &jst);
-        SEQAN_ASSERT(test._branchLength == branchLength(jst));
+        SEQAN_ASSERT(test._branchLength == 10u);
         SEQAN_ASSERT(test._contextSize == 10u);
         SEQAN_ASSERT_EQ(length(*test._stackPtr), 4u);
         SEQAN_ASSERT(*(back(*test._stackPtr).curEdgeIt) == 'C');
@@ -180,7 +277,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_context_iterator)
     TJst jst = _createSimpleJst<TJst>();
     TTraverser test(jst);
 
-    SEQAN_ASSERT(contextIterator(test) == begin(impl::source(jst), Standard()));
+    SEQAN_ASSERT(contextIterator(test) == begin(impl::member(jst, JstSourceMember()), Standard()));
 }
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_go_next)
@@ -189,7 +286,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_go_next)
     typedef TraverserImpl<TJst, JstTraversalSpec<> > TTraverser;
 
     TJst jst = _createSimpleJst<TJst>();
-    TTraverser test(jst);
+    TTraverser test(jst, 1, 10);
 
     SEQAN_ASSERT(*contextIterator(test) == 'A');
     goNext(test);
@@ -213,7 +310,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_at_end)
     TTraverser test(jst);
 
     SEQAN_ASSERT_EQ(atEnd(test), false);
-    for (unsigned i = 0; i < 70; ++i)
+    for (unsigned i = 0; i < 28; ++i)
     {
         goNext(test);
     }
@@ -246,18 +343,18 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_basic_traversal)
     readHeader(header, configIn);
     DnaString seq = header.ref;
 
-    JournaledStringTree<DnaString, TestJstPosConfig_> jst(seq, 10, length(context(configIn)));
+    JournaledStringTree<DnaString, TestJstPosConfig_> jst(seq, length(context(configIn)));
     _createJst(jst, configIn);
 
-    SEQAN_ASSERT(create(jst));
+//    SEQAN_ASSERT(create(jst));
 
     StringSet<DnaString> testSeqs;
-    resize(testSeqs, dimension(jst));
+    resize(testSeqs, length(jst));
 
     std::stringstream strStream;
 
 
-    typename Traverser<JournaledStringTree<DnaString, TestJstPosConfig_> >::Type sub(jst);
+    typename Traverser<JournaledStringTree<DnaString, TestJstPosConfig_> >::Type sub(jst, 1, 10);
 
     while (!atEnd(sub))
     {
@@ -280,9 +377,12 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_basic_traversal)
         goNext(sub);
         
     }
-    
-    for (unsigned i = 0; i < length(jst._buffer._journaledSet); ++i)
-        SEQAN_ASSERT_MSG(testSeqs[i] == jst._buffer._journaledSet[i], "Sequence %d did not match", i);
+
+    for (unsigned i = 0; i < length(impl::buffer(sub)._journaledSet); ++i)
+    {
+//        std::cout << testSeqs[i] << std::endl;
+        SEQAN_ASSERT_MSG(testSeqs[i] == impl::buffer(sub)._journaledSet[i], "Sequence %d did not match", i);
+    }
 }
 
 #endif // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_TRAVERSER_H_

@@ -41,14 +41,14 @@ SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
 {
     // Tests for journaled string tree
     SEQAN_CALL_TEST(test_journaled_string_tree_constructor);
-    SEQAN_CALL_TEST(test_journaled_string_tree_dimension);
-    SEQAN_CALL_TEST(test_journaled_string_tree_insert_node);
-    SEQAN_CALL_TEST(test_journaled_string_tree_erase_node);
+    SEQAN_CALL_TEST(test_journaled_string_tree_length);
+    SEQAN_CALL_TEST(test_journaled_string_tree_set_host);
+    SEQAN_CALL_TEST(test_journaled_string_tree_host);
+    SEQAN_CALL_TEST(test_journaled_string_tree_insert);
+    SEQAN_CALL_TEST(test_journaled_string_tree_erase);
     SEQAN_CALL_TEST(test_journaled_string_tree_clear);
-    SEQAN_CALL_TEST(test_journaled_string_tree_container);
-    SEQAN_CALL_TEST(test_journaled_string_tree_set_branch_length);
-    SEQAN_CALL_TEST(test_journaled_string_tree_branch_length);
+    SEQAN_CALL_TEST(test_journaled_string_tree_empty);
     SEQAN_CALL_TEST(test_journaled_string_tree_max_size);
-    SEQAN_CALL_TEST(test_journaled_string_tree_create);
+    SEQAN_CALL_TEST(test_journaled_string_tree_size);
 }
 SEQAN_END_TESTSUITE

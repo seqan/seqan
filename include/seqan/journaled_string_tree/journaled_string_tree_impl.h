@@ -81,19 +81,15 @@ class JournaledStringTree
 public:
 
     typedef JournaledStringTree<TSequence, TConfig, Default>                        TJst;
-    typedef typename Host<TJst>::Type                                               TDeltaMap;
+    typedef typename Member<TJst, JstDeltaMapMember>::Type                          TDeltaMap;
     typedef typename Member<TJst, JstSourceMember>::Type                            TSource;
     typedef typename Iterator<TSource, Standard>::Type                              TSrcIter;
     typedef typename Size<TJst>::Type                                               TSize;
-    typedef typename Member<TJst, JstBufferMember>::Type                            TBuffer;
 
 
-    TSize                       _branchLength;      // The history size which is used to prune the branches after the historySize is reached.
-    TSize                       _dimension;         // Number of sequences represented by the JST.
-    TSource                     _source;            // A journaled String representing the baseSequence.
-
-    Holder<TDeltaMap>           _mapHolder;
-    TBuffer                     _buffer;            // The buffer represenging the journaled stings.
+    TSize       _dimension = 0;         // Number of sequences represented by the JST.
+    TSource     _source;            // A journaled String representing the baseSequence.
+    TDeltaMap   _map;
 
     /*!
      * @fn JournaledStringTree::JournaledStringTree
@@ -104,40 +100,22 @@ public:
      * @signature JournaledStringTree(source, branchLength, deltaMap);
      *
      * @param source        The underlying base sequence.
-     * @param branchLength  The maximal length of a branch. (Prunes the branch, i.e. defines the maximum size of the sequence context).
      * @param dimension     The number of sequences represented in this object.
      * @param deltaMap      A delta map of type @link DeltaMap @endlink.
      */
 
+    JournaledStringTree() = delete;
+
     // Custom constructor.
-    template <typename TSeq, typename TDim>
-    JournaledStringTree(TSeq const & source, TSize branchLength, TDim dimension) :
-        _branchLength(branchLength),
-        _dimension(dimension),
-        _buffer()
+    template <typename TDim>
+    JournaledStringTree(TDim dimension) : _dimension(dimension), _source()
+    {}
+
+    // Custom constructor.
+    template <typename TDim, typename TSequence2>
+    JournaledStringTree(TSequence2 & source, TDim dimension) : _dimension(dimension)
     {
         setHost(_source, source);
-        create(_mapHolder);
-        setDeltaMap(_buffer, value(_mapHolder));
-        setSourceBegin(_buffer, begin(_source, Standard()));
-        setSourceEnd(_buffer, end(_source, Standard()));
-    }
-
-    template <typename TSeq, typename TSize>
-    JournaledStringTree(TSeq const & source, TSize branchLength, TDeltaMap & deltaMap) :
-        _branchLength(branchLength),
-        _buffer()
-    {
-        SEQAN_ASSERT(!empty(deltaMap));  // TODO(rrahn): Use exception instead.
-
-        setHost(_source, source);
-        setValue(_mapHolder, deltaMap);
-        setDeltaMap(_buffer, value(_mapHolder));
-        setSourceBegin(_buffer, begin(_source, Standard()));
-        setSourceEnd(_buffer, end(_source, Standard()));
-
-        _dimension = length(getDeltaCoverage(*begin(host(*this))));
-        setDeltaMap(_buffer, host(*this));
     }
 };
 
@@ -186,7 +164,14 @@ struct Spec<JournaledStringTree<TSequence, TConfig, TSpec> const>
 template <typename TSequence, typename TConfig, typename TSpec>
 struct Size<JournaledStringTree<TSequence, TConfig, TSpec> >
 {
-    typedef size_t Type;
+    typedef typename Member<JournaledStringTree<TSequence, TConfig, TSpec>, JstDeltaMapMember>::Type    TDeltaMap_;
+    typedef typename Size<TDeltaMap_>::Type                                                             TDeltaMapSize_;
+    typedef typename Member<JournaledStringTree<TSequence, TConfig, TSpec>, JstSourceMember>::Type      TSource_;
+    typedef typename Size<TSource_>::Type                                                               TSrcSize_;
+
+    typedef typename If<Eval<sizeof(TDeltaMapSize_) < sizeof(TSrcSize_)>,
+                        TSrcSize_,
+                        TDeltaMapSize_>::Type Type;  // Size type is the largest size type of delta map or source.
 };
 
 // ----------------------------------------------------------------------------
@@ -208,7 +193,8 @@ struct Size<JournaledStringTree<TSequence, TConfig, TSpec> >
 template <typename TSequence, typename TConfig, typename TSpec>
 struct Position<JournaledStringTree<TSequence, TConfig, TSpec> >
 {
-    typedef typename TConfig::TDeltaPos Type;
+    typedef typename Member<JournaledStringTree<TSequence, TConfig, TSpec>, JstDeltaMapMember>::Type    TDeltaMap_;
+    typedef typename Position<TDeltaMap_>::Type Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -229,53 +215,48 @@ struct Position<JournaledStringTree<TSequence, TConfig, TSpec> >
 template <typename TSeq, typename TConfig, typename TSpec>
 struct Host<JournaledStringTree<TSeq, TConfig, TSpec> >
 {
-    typedef DeltaMap<TConfig> Type;
+    typedef TSeq Type;
 };
 
 template <typename TSeq, typename TConfig, typename TSpec>
 struct Host<JournaledStringTree<TSeq, TConfig, TSpec> const >
 {
-    typedef DeltaMap<TConfig> const Type;
+    typedef TSeq const Type;
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction Source
+// Metafunction JstSourceMember
 // ----------------------------------------------------------------------------
 
-/*
- * @mfn JournaledStringTree#Source
- * @headerfile <seqan/journaled_string_tree.h>
- * @brief The source sequence type.
- *
- * @signature Source<TJst>::Type;
- *
- * @tparam TJst The type of the journal string tree to get the  source type for.
- *
- * @return TSource The type of the underlying source sequence, which is represented as a @link JournaledString @endlink.
- */
 template <typename TSeq, typename TConfig, typename TSpec>
 struct Member<JournaledStringTree<TSeq, TConfig, TSpec>, JstSourceMember>
 {
-    typedef typename Spec<TSeq>::Type           TSpec_;
-    typedef typename Value<TSeq>::Type          TValue_;
-    typedef String<TValue_, Journaled<TSpec_> > Type;
+    typedef typename Spec<TSeq>::Type                   TSpec_;
+    typedef typename Value<TSeq>::Type                  TValue_;
+    typedef String<TValue_, Journaled<TSpec_> >         Type;
 };
 
 template <typename TSeq, typename TConfig, typename TSpec>
 struct Member<JournaledStringTree<TSeq, TConfig, TSpec> const, JstSourceMember>
 {
-    typedef JournaledStringTree<TSeq, TConfig, TSpec> TJst;
-    typedef typename Source<TJst>::Type const Type;
+    typedef typename Member<JournaledStringTree<TSeq, TConfig, TSpec>, JstSourceMember>::Type const Type;
 };
 
 // ----------------------------------------------------------------------------
 // Metafunction Member<TJst, JstBufferMember>
 // ----------------------------------------------------------------------------
 
-template <typename TJst>
-struct Member<TJst, JstBufferMember>
+template <typename TSeq, typename TConfig, typename TSpec>
+struct Member<JournaledStringTree<TSeq, TConfig, TSpec>, JstDeltaMapMember>
 {
-    typedef JstBuffer_<TJst> Type;
+    typedef DeltaMap<TConfig> Type;
+};
+
+// TODO(rrahn): Check if there is a default const Member metafunction.
+template <typename TSeq, typename TConfig, typename TSpec>
+struct Member<JournaledStringTree<TSeq, TConfig, TSpec> const, JstDeltaMapMember>
+{
+    typedef DeltaMap<TConfig> const Type;
 };
 
 // ============================================================================
@@ -286,21 +267,43 @@ namespace impl
 {
 
 // ----------------------------------------------------------------------------
-// Function impl::source();
+// Function impl::member();                                   [JstSourceMember]
 // ----------------------------------------------------------------------------
 
 template <typename TSequence, typename TConfig, typename TSpec>
 inline typename Member<JournaledStringTree<TSequence, TConfig, TSpec>, JstSourceMember>::Type &
-source(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
+member(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
+       JstSourceMember const & /*tag*/)
 {
     return jst._source;
 }
 
 template <typename TSequence, typename TConfig, typename TSpec>
 inline typename Member<JournaledStringTree<TSequence, TConfig, TSpec> const, JstSourceMember>::Type &
-source(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
+member(JournaledStringTree<TSequence, TConfig, TSpec> const & jst,
+       JstSourceMember const & /*tag*/)
 {
     return jst._source;
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::member();                                 [JstDeltaMapMember]
+// ----------------------------------------------------------------------------
+
+template <typename TSequence, typename TConfig, typename TSpec>
+inline typename Member<JournaledStringTree<TSequence, TConfig, TSpec>, JstDeltaMapMember>::Type &
+member(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
+       JstDeltaMapMember const & /*tag*/)
+{
+    return jst._map;
+}
+
+template <typename TSequence, typename TConfig, typename TSpec>
+inline typename Member<JournaledStringTree<TSequence, TConfig, TSpec> const, JstDeltaMapMember>::Type &
+member(JournaledStringTree<TSequence, TConfig, TSpec> const & jst,
+       JstDeltaMapMember const & /*tag*/)
+{
+    return jst._map;
 }
 
 }
@@ -316,113 +319,83 @@ source(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
 /*!
  * @fn JournaledStringTree#host
  * @headerfile <seqan/journaled_string_tree.h>
- * @brief Returns a reference to the underlying host holding the delta information of the journaled string tree.
+ * @brief Returns the set base sequence.
  *
  * @signature THost host(jst);
  *
- * @param[in] jst    The Journal String Tree.
+ * @param[in] jst The Journal String Tree.
  *
  * @return THost A reference to the host of type @link JournaledStringTree#Host @endlink.
- *
- * Note that other objects might depent on the returned host. Any iterator, pointer or reference that refer to this
- * host may get invalidated if it is changed.
  */
 
 template <typename TSequence, typename TConfig, typename TSpec>
 inline typename Host<JournaledStringTree<TSequence, TConfig, TSpec> >::Type &
 host(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
 {
-    return value(jst._mapHolder);
+    return host(jst._source);
 }
 
 template <typename TSequence, typename TConfig, typename TSpec>
 inline typename Host<JournaledStringTree<TSequence, TConfig, TSpec> const>::Type &
 host(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
 {
-    return value(jst._mapHolder);
+    return host(jst._source);
 }
 
 // ----------------------------------------------------------------------------
-// Function dimension()
+// Function setHost()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn JournaledStringTree#dimension
+ * @fn JournaledStringTree#setHost
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Sets the base sequence of the Journaled-String-Tree.
+ *
+ * @signature void setHost(jst, host);
+ *
+ * @param[in,out] jst   The Journal String Tree.
+ * @param[in]     host  The new host to set.
+ *
+ * When setting a new host, the <tt>jst</tt> will be cleared before.
+ */
+
+template <typename TSequence, typename TConfig, typename TSpec, typename THost>
+inline void
+setHost(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
+        THost & host)
+{
+    clear(jst);
+    setHost(jst._source, host);
+}
+
+// ----------------------------------------------------------------------------
+// Function length()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn JournaledStringTree#length
  * @headerfile <seqan/journaled_string_tree.h>
  * @brief Returns the number of sequences represented by the Journaled-String-Tree.
  *
- * @signature TSize dimension(jst);
+ * @signature TSize length(jst);
  *
- * @param[in] jst The Journal String Tree to query the dimension for.
+ * @param[in] jst The Journal-String-Tree to query the length for.
  *
  * @return TSize The number of sequences represented by the <tt>jst<\tt>. Of type @link JournaledStringTree#Size @endlink.
  */
 
 template <typename TSequence, typename TConfig, typename TSpec>
 inline typename Size<JournaledStringTree<TSequence, TConfig, TSpec> const>::Type
-dimension(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
+length(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
 {
     return jst._dimension;
-}
-
-// ----------------------------------------------------------------------------
-// Function branchLength()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn JournaledStringTree#branchLength
- * @headerfile <seqan/journaled_string_tree.h>
- * @brief Returns the branch length of the Journaled-String-Tree.
- *
- * @signature TSize branchLength(jst);
- *
- * @param[in] jst The object to query the branch length for.
- *
- * The branch length parameter indicates the length of the spawned branch in the <tt>jst</tt>, which restricts the
- * maximal sequence context size to this value.
- *
- * @return TSize The branch length of type @link JournaledStringTree#Size @endlink.
- */
-
-template <typename TSequence, typename TConfig, typename TSpec>
-inline typename Size<JournaledStringTree<TSequence, TConfig, TSpec> const>::Type
-branchLength(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
-{
-    return jst._branchLength;
-}
-
-// ----------------------------------------------------------------------------
-// Function setBranchLength()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn JournaledStringTree#setBranchLength
- * @headerfile <seqan/journaled_string_tree.h>
- * @brief Sets the branch length for the Journaled-String-Tree.
- *
- * @signature void setBranchLength(jst, l);
- *
- * @param[in,out] jst The object to set the new branch length for.
- * @param[in]     l   The new branch length. Must implement the @link IntegerConcept @endlink.
- *
- * @note After changing the branch length, the <tt>jst</jst> needs to be recreated with @link JournaledStringTree#create 
- * @endlink, otherwise access to the object may result in undefined behaviour.
- */
-
-template <typename TSequence, typename TConfig, typename TSpec, typename TSize>
-inline void
-setBranchLength(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
-                TSize const l)
-{
-    jst._branchLength = l;
-    markModified(jst._buffer);
 }
 
 // ----------------------------------------------------------------------------
 // Function maxSize()
 // ----------------------------------------------------------------------------
 
-/*!
+/*
  * @fn JournaledStringTree#maxSize
  * @headerfile <seqan/journaled_string_tree.h>
  * @brief Returns the maximal length the the Journaled-String-Tree can reach.
@@ -436,9 +409,55 @@ setBranchLength(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
 
 template <typename TSequence, typename TConfig, typename TSpec>
 constexpr typename Size<JournaledStringTree<TSequence, TConfig, TSpec> >::Type
-maxSize(JournaledStringTree<TSequence, TConfig, TSpec> const /*jst*/)
+maxSize(JournaledStringTree<TSequence, TConfig, TSpec> const & /*jst*/)
 {
-    return MaxValue<typename TConfig::TDeltaPos>::VALUE;
+    return maxSize(typename Member<JournaledStringTree<TSequence, TConfig, TSpec>, JstDeltaMapMember>::Type());
+}
+
+// ----------------------------------------------------------------------------
+// Function size()
+// ----------------------------------------------------------------------------
+
+/*
+ * @fn JournaledStringTree#size
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Returns the number of delta operations stored in the Journaled-String-Tree.
+ *
+ * @signature TSize maxSize(jst);
+ *
+ * @param[in] jst The Journal String Tree to query the maximal length for.
+ *
+ * @return TSize The maximal size. Of type @link JournaledStringTree#Size @endlink.
+ */
+
+template <typename TSequence, typename TConfig, typename TSpec>
+inline typename Size<JournaledStringTree<TSequence, TConfig, TSpec> >::Type
+size(JournaledStringTree<TSequence, TConfig, TSpec> const jst)
+{
+    return size(jst._map);
+}
+
+// ----------------------------------------------------------------------------
+// Function empty()
+// ----------------------------------------------------------------------------
+
+/*
+ * @fn JournaledStringTree#size
+ * @headerfile <seqan/journaled_string_tree.h>
+ * @brief Returns the delta operations stored in the Journaled-String-Tree.
+ *
+ * @signature TSize maxSize(jst);
+ *
+ * @param[in] jst The Journal String Tree to query the maximal length for.
+ *
+ * @return TSize The maximal size. Of type @link JournaledStringTree#Size @endlink.
+ */
+
+template <typename TSequence, typename TConfig, typename TSpec>
+inline bool
+empty(JournaledStringTree<TSequence, TConfig, TSpec> const jst)
+{
+    return empty(jst._map);
 }
 
 // ----------------------------------------------------------------------------
@@ -463,14 +482,12 @@ inline void
 clear(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
 {
     jst._dimension = 0;
-    jst._branchLength = 0;
     reset(jst._source);
-    clear(jst._mapHolder);
-    clear(jst._buffer);
+    clear(jst._map);
 }
 
 // ----------------------------------------------------------------------------
-// Function insertNode()
+// Function insert();
 // ----------------------------------------------------------------------------
 
 /*!
@@ -501,37 +518,38 @@ clear(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
 
 template <typename TSequence, typename TConfig, typename TSpec, typename TPos, typename TValue, typename TIds,
           typename TDeltaType>
-inline SEQAN_FUNC_ENABLE_IF(Is<StringConcept<TIds> >, bool)
-insertNode(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
-           TPos srcPos,
-           TValue const & deltaVal,
-           TIds const & ids,
-           TDeltaType /*deltaType*/)
+inline SEQAN_FUNC_ENABLE_IF(Is<StringConcept<TIds> >, void)
+insert(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
+       TPos srcPos,
+       TValue const & deltaVal,
+       TIds const & ids,
+       TDeltaType /*deltaType*/)
 {
     typedef JournaledStringTree<TSequence, TConfig, TSpec>  TJst;
-    typedef typename Host<TJst>::Type                       TDeltaMap;
+    typedef typename Member<TJst, JstDeltaMapMember>::Type  TDeltaMap;
     typedef typename DeltaCoverage<TDeltaMap>::Type         TCoverage;
     typedef typename Value<TIds>::Type                      TID;
-    typedef typename MakeUnsigned<TPos>::Type               TMaxPos SEQAN_TYPEDEF_FOR_DEBUG;
     typedef typename Size<TJst>::Type                       TSize   SEQAN_TYPEDEF_FOR_DEBUG;
 
-    SEQAN_ASSERT_LT(static_cast<TMaxPos>(srcPos), maxSize(jst));
-
+    if (IsSameType<TDeltaType, DeltaTypeIns>::VALUE)
+        SEQAN_ASSERT_LEQ(static_cast<TSize>(srcPos), length(impl::member(jst, JstSourceMember())));  // Make sure the delta position does not exceed the source.
+    else
+        SEQAN_ASSERT_LT(static_cast<TSize>(srcPos), length(impl::member(jst, JstSourceMember())));
     // Transform the ids into coverage value.
     TCoverage coverage;
-    resize(coverage, dimension(jst), false, Exact());
+    resize(coverage, length(jst), false, Exact());
 
     forEach(ids,[&jst, &coverage](TID seqId)
     {
-        SEQAN_ASSERT_LT(static_cast<TSize>(seqId), dimension(jst));  // Check that id is valid.
+        SEQAN_ASSERT_LT(static_cast<TSize>(seqId), length(jst));  // Check that id is valid.
         coverage[seqId] = true;
     });
-    markModified(jst._buffer);
-    return insert(host(jst), srcPos, deltaVal, coverage, TDeltaType());
+
+    insert(impl::member(jst, JstDeltaMapMember()), srcPos, deltaVal, coverage, TDeltaType());
 }
 
 // ----------------------------------------------------------------------------
-// Function eraseNode()
+// Function erase();
 // ----------------------------------------------------------------------------
 
 /*!
@@ -556,172 +574,17 @@ insertNode(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
  */
 
 template <typename TSequence, typename TConfig, typename TSpec, typename TPos, typename TDeltaType>
-inline bool
-eraseNode(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
-          TPos srcPos,
-          TDeltaType /*deltaType*/)
+inline auto
+erase(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
+      TPos srcPos,
+      TDeltaType /*deltaType*/) -> decltype(erase(impl::member(jst, JstDeltaMapMember()), srcPos, TDeltaType()))
 {
-    markModified(jst._buffer);
-    return erase(host(jst), srcPos, TDeltaType());
+    return erase(impl::member(jst, JstDeltaMapMember()), srcPos, TDeltaType());
 }
 
-// ----------------------------------------------------------------------------
-// Function create()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn JournaledStringTree#create
- * @headerfile <seqan/journaled_string_tree.h>
- * @brief Creates the sequence context.
- *
- * @signature bool create(jst);
- *
- * @param[in,out]   jst     The object to be created.
- *
- * After modifying the <tt>jst</tt> it needs to be recreated before it can be used.
- *
- * @return bool <tt>true<\tt> if the tree could be created, <tt>false</tt> otherwise.
- */
-
-template <typename TSequence, typename TConfig, typename TSpec>
-inline bool
-create(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
-{
-    return create(jst._buffer);
-}
-
-// TODO(rrahn): Implement me!
-//// ----------------------------------------------------------------------------
-//// Function setSourceBegin()
-//// ----------------------------------------------------------------------------
-//
-//template <typename TSequence, typename TConfig, typename TSpec,
-//          typename TPosition>
-//inline void
-//setSourceBegin(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
-//               TPosition const beginPos)
-//{
-//    setSourceBegin(jst._buffer, iter(jst._source, beginPos, Standard()));
-//}
-//
-//// ----------------------------------------------------------------------------
-//// Function setSourceEnd()
-//// ----------------------------------------------------------------------------
-//
-//template <typename TSequence, typename TConfig, typename TSpec,
-//          typename TPosition>
-//inline void
-//setSourceEnd(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
-//             TPosition const endPos)
-//{
-//    setSourceEnd(jst._buffer, iter(jst._source, endPos, Standard()));
-//}
-
-//// ----------------------------------------------------------------------------
-//// Function setSourceBegin()
-//// ----------------------------------------------------------------------------
-//
-//// TODO(rrahn): Consider only const based version.
-//template <typename TSequence, typename TConfig, typename TSpec>
-//inline typename Iterator<typename Source<JournaledStringTree<TSequence, TConfig, TSpec> >::Type, Standard>::Type &
-//sourceBegin(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
-//{
-//    return jst._sourceBegin;
-//}
-//
-//template <typename TSequence, typename TConfig, typename TSpec>
-//inline typename Iterator<typename Source<JournaledStringTree<TSequence, TConfig, TSpec> const>::Type, Standard>::Type &
-//sourceBegin(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
-//{
-//    return jst._sourceBegin;
-//}
-
-//// ----------------------------------------------------------------------------
-//// Function sourceEnd()
-//// ----------------------------------------------------------------------------
-//
-//template <typename TSequence, typename TConfig, typename TSpec>
-//inline typename Iterator<typename Source<JournaledStringTree<TSequence, TConfig, TSpec> >::Type, Standard>::Type &
-//sourceEnd(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
-//{
-//    return jst._sourceEnd;
-//}
-//
-//template <typename TSequence, typename TConfig, typename TSpec>
-//inline typename Iterator<typename Source<JournaledStringTree<TSequence, TConfig, TSpec> const>::Type, Standard>::Type &
-//sourceEnd(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
-//{
-//    return jst._sourceEnd;
-//}
-//
-//// ----------------------------------------------------------------------------
-//// Function sourceEndPosition()
-//// ----------------------------------------------------------------------------
-//
-//template <typename TSequence, typename TConfig, typename TSpec>
-//inline typename Position<JournaledStringTree<TSequence, TConfig, TSpec> >::Type
-//sourceBegin(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
-//{
-//    return position(sourceBegin(jst._buffer));
-//}
-//
-//// ----------------------------------------------------------------------------
-//// Function sourceEndPosition()
-//// ----------------------------------------------------------------------------
-//
-//template <typename TSequence, typename TConfig, typename TSpec>
-//inline typename Position<JournaledStringTree<TSequence, TConfig, TSpec> >::Type
-//sourceEnd(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
-//{
-//    return position(sourceEnd(jst._buffer));
-//}
-
-// TODO(rrahn): Why do we need a traverser function? We can simply create one. We could create an Iterator, which
-// wrapps an traverser with context size 1.
-
-//// ----------------------------------------------------------------------------
-//// Function traverser()
-//// ----------------------------------------------------------------------------
-//
-//template <typename TSequence, typename TConfig, typename TSpec,
-//          typename TSize,
-//          typename TObserver>
-//inline typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec>, TObserver>::Type
-//traverser(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
-//          TSize const contextSize,
-//          TObserver & observer)
-//{
-//    SEQAN_ASSERT_GEQ(contextSize, static_cast<TSize>(1));
-//    return typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec>, TObserver>::Type(jst, contextSize, observer);
-//}
-//
-//template <typename TSequence, typename TConfig, typename TSpec,
-//          typename TSize,
-//          typename TObserver>
-//inline typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec> const, TObserver>::Type
-//traverser(JournaledStringTree<TSequence, TConfig, TSpec> const & jst,
-//          TSize const contextSize,
-//          TObserver & observer)
-//{
-//    SEQAN_ASSERT_GEQ(contextSize, static_cast<TSize>(1));
-//    return typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec> const, TObserver>::Type(jst, contextSize, observer);
-//}
-//
-//template <typename TSequence, typename TConfig, typename TSpec,
-//          typename TSize>
-//inline typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec>, void>::Type
-//traverser(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
-//          TSize const contextSize)
-//{
-//    return typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec>, void>::Type(jst);
-//}
-//
-//template <typename TSequence, typename TConfig, typename TSpec>
-//inline typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec> const>::Type
-//traverser(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
-//{
-//    return typename Traverser<JournaledStringTree<TSequence, TConfig, TSpec> const>::Type(jst);
-//}
+// TODO(rrahn): Implement emplace when needed.
+// TODO(rrahn): Implement emplace_hint when needed.
+// TODO(rrahn): Implement swap when needed.
 
 }
 

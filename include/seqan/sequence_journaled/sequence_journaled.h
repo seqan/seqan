@@ -82,7 +82,7 @@ public:
     typedef TJournalSpec_ TJournalSpec;
     typedef TBufferSpec_ TBufferSpec;
 
-    typedef String<TValue, THostSpec> THost;
+    typedef typename Host<TThis_>::Type THost;
     typedef typename Size<THost>::Type TSize;
     typedef typename Position<THost>::Type TPosition;
     typedef String<TValue, TBufferSpec> TInsertionBuffer;
@@ -526,15 +526,15 @@ setHost(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journ
     reinit(journaledString._journalEntries, length(str));
 }
 
-template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TSequence2>
-inline void
-setHost(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journaledString, TSequence2 const & str)
-{
-    SEQAN_CHECKPOINT;
-    setValue(journaledString._holder, str);
-    journaledString._length = length(str);
-    reinit(journaledString._journalEntries, length(str));
-}
+//template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TSequence2>
+//inline void
+//setHost(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journaledString, TSequence2 const & str)
+//{
+//    SEQAN_CHECKPOINT;
+//    setValue(journaledString._holder, str);
+//    journaledString._length = length(str);
+//    reinit(journaledString._journalEntries, length(str));
+//}
 
 // ----------------------------------------------------------------------------
 // Function host

@@ -67,13 +67,13 @@
 // ===========================================================================
 
 #include <seqan/journaled_string_tree/journaled_string_tree_base.h>
-#include <seqan/journaled_string_tree/journaled_string_tree_sequence_buffer.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_impl.h>
 
 // ===========================================================================
 // Journaled String Tree Traverser.
 // ===========================================================================
 
+#include <seqan/journaled_string_tree/journaled_string_tree_sequence_buffer.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser_node.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser_util.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser.h>

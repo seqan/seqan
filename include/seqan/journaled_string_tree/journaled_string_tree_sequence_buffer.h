@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-// Basic defintions and forwards used globally for this module.
+// Jst traversal buffer used to construct sequence contents.
 // ==========================================================================
 
 #ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_SEQUENCE_BUFFER_H_
@@ -70,7 +70,7 @@ public:
 
     typedef typename Member<JstBuffer_, JstBufferSetMember>::Type           TJournaledSet;
     typedef typename Member<TJournaledStringTree, JstSourceMember>::Type    TSource;
-    typedef typename Iterator<TSource const, Rooted>::Type                  TSourceIterator;
+    typedef typename Iterator<TSource, Rooted>::Type                        TSourceIterator;
 
     typedef typename Member<JstBuffer_, JstBufferDeltaMapMember>::Type      TDeltaMap;
     typedef typename Iterator<TDeltaMap, Standard>::Type                    TDeltaIterator;
@@ -144,13 +144,13 @@ struct Member<JstBuffer_<TJournaledStringTree, TSpec>, JstBufferSetMember>
 template <typename TJst, typename TSpec>
 struct Member<JstBuffer_<TJst, TSpec>, JstBufferDeltaMapMember>
 {
-    typedef typename Host<TJst>::Type  Type;
+    typedef typename Member<TJst, JstDeltaMapMember>::Type Type;
 };
 
 template <typename TJst, typename TSpec>
 struct Member<JstBuffer_<TJst, TSpec> const, JstBufferDeltaMapMember>
 {
-    typedef typename Host<TJst>::Type  Type;
+    typedef typename Member<TJst, JstDeltaMapMember>::Type const Type;
 };
 
 // ============================================================================
@@ -310,9 +310,9 @@ create(JstBuffer_<TJst, TSpec> & buffer)
     resize(buffer._journaledSet, length(buffer._startPositions), Exact());
 
     forEach(buffer._journaledSet, [&buffer](TJString &jStr)
-                                  {
-                                      setHost(jStr, host(container(buffer._sourceBegin)));
-                                  }, Parallel());
+    {
+        setHost(jStr, host(container(buffer._sourceBegin)));
+    }, Parallel());
 
     // Construct the journaled string context
 
@@ -342,26 +342,6 @@ create(JstBuffer_<TJst, TSpec> & buffer)
 }
 
 // ----------------------------------------------------------------------------
-// Functor impl::NetSizeExtractor
-// ----------------------------------------------------------------------------
-
-template <typename TSignedSize, typename TMapIter>
-struct NetSizeExtractor
-{
-    TMapIter    mapIt;
-    TSignedSize val;
-
-    template <typename TTag>
-    inline void operator()(TTag const &)
-    {
-        if ((*mapIt).deltaTypeEnd != DeltaEndType::IS_RIGHT)
-            val = netSize(container(mapIt)._deltaStore, getStorePosition(*mapIt), TTag());
-        else
-            val = 0;
-    }
-};
-
-// ----------------------------------------------------------------------------
 // Function impl::synchronize()
 // ----------------------------------------------------------------------------
 
@@ -370,10 +350,6 @@ inline bool
 synchronize(JstBuffer_<TJst, TSpec> & buffer)
 {
     typedef typename Size<JstBuffer_<TJst, TSpec> >::Type                           TSize;
-    typedef typename Member<JstBuffer_<TJst, TSpec>, JstBufferDeltaMapMember>::Type TMap;
-    typedef typename Iterator<TMap, Standard>::Type                                 TMapIter;
-    typedef typename MakeSigned<TSize>::Type                                        TSignedSize;
-
 
     SEQAN_ASSERT(buffer._sourceBegin < buffer._sourceEnd);
 
@@ -404,27 +380,25 @@ synchronize(JstBuffer_<TJst, TSpec> & buffer)
 //                                             position(buffer._sourceEnd), DeltaExtensionCompareLessPos_());
 
     // Stream from the beginning to the expected range to get the begin positions of the current segment.
-    impl::NetSizeExtractor<TSignedSize, TMapIter> f;
-    f.mapIt = begin(*buffer._deltaMapPtr, Standard());
-    resize(buffer._startPositions, length(getDeltaCoverage(*f.mapIt)), position(buffer._sourceBegin), Exact());
+    auto mapIt = begin(*buffer._deltaMapPtr, Standard());
+    resize(buffer._startPositions, length(getDeltaCoverage(*mapIt)), position(buffer._sourceBegin), Exact());
 
     if (position(buffer._sourceBegin) == 0)  // Special case: We also set the begin position to 0 even if there is an insertion at the 0th position.
         return true;
 
-    for (; f.mapIt != buffer._deltaRangeBegin; ++f.mapIt)
+    for (; mapIt != buffer._deltaRangeBegin; ++mapIt)
     {
-        DeltaTypeSelector selector;
-        applyOnDelta(f, getDeltaType(*f.mapIt), selector);
-        auto covBegin = begin(getDeltaCoverage(*f.mapIt), Standard());
-        for (auto covIt = covBegin; covIt != end(getDeltaCoverage(*f.mapIt), Standard()); ++covIt)
+        auto net = netSize(mapIt);
+        auto covBegin = begin(getDeltaCoverage(*mapIt), Standard());
+        for (auto covIt = covBegin; covIt != end(getDeltaCoverage(*mapIt), Standard()); ++covIt)
         {
             if (*covIt)
             {
-                if (SEQAN_UNLIKELY(static_cast<TSize>(std::abs(f.val)) > buffer._startPositions[covIt - covBegin] &&
-                                   (f.val < 0)))
+                if (SEQAN_UNLIKELY(static_cast<TSize>(std::abs(net)) > buffer._startPositions[covIt - covBegin] &&
+                                   (net < 0)))
                     buffer._startPositions[covIt - covBegin] = 0;  // In case the entire prefix of this sequence is deleted.
                 else
-                    buffer._startPositions[covIt - covBegin] += f.val;
+                    buffer._startPositions[covIt - covBegin] += net;
             }
         }
     }
@@ -563,6 +537,23 @@ inline void
 markModified(JstBuffer_<TJst, TSpec> & buffer)
 {
     buffer._isSynchronized = false;
+}
+
+// ----------------------------------------------------------------------------
+// Function init();
+// ----------------------------------------------------------------------------
+
+// TODO(rrahn): Fix constness issue.
+template <typename TJst, typename TSpec>
+inline void
+init(JstBuffer_<TJst, TSpec> & me,
+     TJst & jst)
+{
+    setDeltaMap(me, impl::member(jst, JstDeltaMapMember()));
+    setSourceBegin(me, begin(impl::member(jst, JstSourceMember()), Standard()));
+    setSourceEnd(me, end(impl::member(jst, JstSourceMember()), Standard()));
+    sync(me);
+    create(me);
 }
 
 }  // namespace seqan
