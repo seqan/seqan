@@ -68,7 +68,6 @@ struct FileFormat;
 
 typedef
 #if SEQAN_HAS_ZLIB
-    TagList<BgzfFile,
     TagList<GZFile,
 #endif
 #if SEQAN_HAS_BZIP2
@@ -79,7 +78,6 @@ typedef
     >
 #endif
 #if SEQAN_HAS_ZLIB
-    >
     >
 #endif
     CompressedFileTypes;  // if TagSelector is set to -1, the file format is auto-detected
