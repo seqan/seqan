@@ -110,7 +110,7 @@ struct Element;
 template <unsigned INDEX, typename TFirst, typename... TObservers>
 struct Element<INDEX, ObserverList<TFirst, TObservers...> >
 {
-    static_assert(INDEX < LENGTH<ObserverList<TFirst, TObservers...> >::VALUE);
+    static_assert(INDEX < LENGTH<ObserverList<TFirst, TObservers...> >::VALUE, "Trying to access element behind the end.");
     typedef typename Element<INDEX - 1, ObserverList<TObservers...> >::Type Type;
 };
 
@@ -178,7 +178,7 @@ inline void
 setObserver(Observable<TObserverList> & subject,
             TObserver && observer)
 {
-    static_assert(INDEX < LENGTH<TObserverList>::VALUE);
+    static_assert(INDEX < LENGTH<TObserverList>::VALUE, "Trying to access element behind the end.");
     std::get<INDEX>(subject.observers) = std::forward<TObserver>(observer);
 }
 
