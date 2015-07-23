@@ -306,6 +306,15 @@ position(ModifiedIterator<THost, ModReverse> const & me)
         return length(container(host(me))) - 1 - position(host(me));
 }
 
+// rooted overload
+template <typename TContainer1, typename TIterator, typename TSpec, typename TContainer2>
+inline typename Position<ModifiedIterator<Iter<TContainer1, AdaptorIterator<TIterator, TSpec> >, ModReverse> const>::Type
+position(ModifiedIterator<Iter<TContainer1, AdaptorIterator<TIterator, TSpec> >, ModReverse> const & me,
+         TContainer2 const &)
+{
+    return position(me); // rooted has container
+}
+
 template <typename THost, typename TContainer>
 inline typename Position<ModifiedIterator<THost, ModReverse> const>::Type
 position(ModifiedIterator<THost, ModReverse> const & me, TContainer const &cont)
