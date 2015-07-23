@@ -655,18 +655,17 @@ String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stri
     TSimdAlign resultsBatch;
     for(size_t pos = 0; pos < numAlignments/sizeBatch; ++pos)
     {
-        String<TSimdAlign> stringSimdH, stringSimdV;
-        std::vector<TSimdAlign, AlignmentAllocator<TSimdAlign, SEQAN_SIZEOF_MAX_VECTOR> > masks;
-        std::vector<size_t> endsH, endsV, endsAlign;
+        String<TSimdAlign> stringSimdH, stringSimdV, masksH, masksV, masks;
+        std::vector<size_t> endsH, endsV;
 
         // create the SIMD representation of the alignments
         // in case of a variable length alignment the variables masks, endsH, endsV will be filled
         _checkAndCreateSimdRepresentation(stringsH, stringsV, pos*sizeBatch,
                                           stringSimdH, stringSimdV,
-                                          masks, endsH, endsV, endsAlign);
+                                          masksH, masksV, masks, endsH, endsV);
 
         // if alignments have equal dimensions do nothing
-        if(endsAlign.size() == 0)
+        if(endsH.size() == 0)
         {
             DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
             resultsBatch = _setUpAndRunAlignment(traceSegments, dpScoutState, stringSimdH, stringSimdV,
@@ -675,17 +674,18 @@ String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stri
         // otherwise prepare the special DPScoutState
         else
         {
-            // update the masks in case of an overlap alignment
-            if(BOTTOM || RIGHT)
-                _prepareOverlapMasks(masks, endsAlign, length(stringSimdH), RIGHT, BOTTOM);
-
             DPScoutState_<SimdAlignmentScoutVariable> dpScoutState;
-            dpScoutState.dimH = length(stringSimdH);
-            std::swap(dpScoutState.masks, masks);
+            dpScoutState.dimV = length(stringSimdV);
+            dpScoutState.isLocalAlignment = false;
+            dpScoutState.RIGHT = RIGHT;
+            dpScoutState.BOTTOM = BOTTOM;
+            swap(dpScoutState.masksH, masksH);
+            swap(dpScoutState.masksV, masksV);
+            swap(dpScoutState.masks, masks);
             std::swap(dpScoutState.endsH, endsH);
             std::swap(dpScoutState.endsV, endsV);
             resultsBatch = _setUpAndRunAlignment(traceSegments, dpScoutState, stringSimdH, stringSimdV,
-                                                          scoringSchemeSimd, TAlignConfig2(), TGapModel());
+                                                 scoringSchemeSimd, TAlignConfig2(), TGapModel());
         }
 
         for(size_t x = pos*sizeBatch; x < (pos+1)*sizeBatch; ++x)
@@ -777,18 +777,17 @@ String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
     TSimdAlign resultsBatch;
     for(size_t pos = 0; pos < numAlignments/sizeBatch; ++pos)
     {
-        String<TSimdAlign> stringSimdH, stringSimdV;
-        std::vector<TSimdAlign, AlignmentAllocator<TSimdAlign, SEQAN_SIZEOF_MAX_VECTOR> > masks;
-        std::vector<size_t> endsH, endsV, endsAlign;
+        String<TSimdAlign> stringSimdH, stringSimdV, masksH, masksV, masks;
+        std::vector<size_t> endsH, endsV;
 
         // create the SIMD representation of the alignments
         // in case of a variable length alignment the variables masks, endsH, endsV will be filled
         _checkAndCreateSimdRepresentation(stringsH, stringsV, pos*sizeBatch,
                                           stringSimdH, stringSimdV,
-                                          masks, endsH, endsV, endsAlign);
+                                          masksH, masksV, masks, endsH, endsV);
 
         // if alignments have equal dimensions do nothing
-        if(endsAlign.size() == 0)
+        if(endsH.size() == 0)
         {
             DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
             resultsBatch = _setUpAndRunAlignment(traceSegments, dpScoutState, stringSimdH, stringSimdV,
@@ -797,13 +796,14 @@ String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
         // otherwise prepare the special DPScoutState
         else
         {
-            // update the masks in case of an overlap alignment
-            if(BOTTOM || RIGHT)
-                _prepareOverlapMasks(masks, endsAlign, length(stringSimdH), RIGHT, BOTTOM);
-
             DPScoutState_<SimdAlignmentScoutVariable> dpScoutState;
-            dpScoutState.dimH = length(stringSimdH);
-            std::swap(dpScoutState.masks, masks);
+            dpScoutState.dimV = length(stringSimdV);
+            dpScoutState.isLocalAlignment = false;
+            dpScoutState.RIGHT = RIGHT;
+            dpScoutState.BOTTOM = BOTTOM;
+            swap(dpScoutState.masksH, masksH);
+            swap(dpScoutState.masksV, masksV);
+            swap(dpScoutState.masks, masks);
             std::swap(dpScoutState.endsH, endsH);
             std::swap(dpScoutState.endsV, endsV);
             resultsBatch = _setUpAndRunAlignment(traceSegments, dpScoutState, stringSimdH, stringSimdV,
@@ -897,18 +897,17 @@ String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & a
     {
         StringSet<String<TTraceSegment> > trace;
         resize(trace, sizeBatch);
-        String<TSimdAlign> stringSimdH, stringSimdV;
-        std::vector<TSimdAlign, AlignmentAllocator<TSimdAlign, SEQAN_SIZEOF_MAX_VECTOR> > masks;
-        std::vector<size_t> endsH, endsV, endsAlign;
+        String<TSimdAlign> stringSimdH, stringSimdV, masksH, masksV, masks;
+        std::vector<size_t> endsH, endsV;
 
         // create the SIMD representation of the alignments
         // in case of a variable length alignment the variables masks, endsH, endsV will be filled
         _checkAndCreateSimdRepresentation(align, pos*sizeBatch,
                                           stringSimdH, stringSimdV,
-                                          masks, endsH, endsV, endsAlign);
+                                          masksH, masksV, masks, endsH, endsV);
 
         // if alignments have equal dimensions do nothing
-        if(endsAlign.size() == 0)
+        if(endsH.size() == 0)
         {
             DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
             resultsBatch = _setUpAndRunAlignment(trace, dpScoutState, stringSimdH, stringSimdV,
@@ -917,13 +916,14 @@ String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & a
         // otherwise prepare the special DPScoutState
         else
         {
-            // update the masks in case of an overlap alignment
-            if(BOTTOM || RIGHT)
-                _prepareOverlapMasks(masks, endsAlign, length(stringSimdH), RIGHT, BOTTOM);
-
             DPScoutState_<SimdAlignmentScoutVariable> dpScoutState;
-            dpScoutState.dimH = length(stringSimdH);
-            std::swap(dpScoutState.masks, masks);
+            dpScoutState.dimV = length(stringSimdV);
+            dpScoutState.isLocalAlignment = false;
+            dpScoutState.RIGHT = RIGHT;
+            dpScoutState.BOTTOM = BOTTOM;
+            swap(dpScoutState.masksH, masksH);
+            swap(dpScoutState.masksV, masksV);
+            swap(dpScoutState.masks, masks);
             std::swap(dpScoutState.endsH, endsH);
             std::swap(dpScoutState.endsV, endsV);
             resultsBatch = _setUpAndRunAlignment(trace, dpScoutState, stringSimdH, stringSimdV,

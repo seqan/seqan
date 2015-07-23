@@ -175,60 +175,20 @@ void prepareAlign(StringSet<Align<TSequence, TAlignSpec> > & align,
 }
 
 // ----------------------------------------------------------------------------
-// Function _prepareOverlapMasks()
-// ----------------------------------------------------------------------------
-
-template<typename TAlloc>
-inline void
-_prepareOverlapMasks(std::vector<TSimdAlign, TAlloc> & masks,
-                     std::vector<size_t> const & endsAlign,
-                     size_t dimH,
-                     bool RIGHT,
-                     bool BOTTOM)
-{
-    for(auto endPos: endsAlign)
-    {
-        for(size_t x = (endPos/dimH)*dimH; BOTTOM && x < endPos; ++x)
-            masks[x] |= masks[endPos];
-        for(size_t x = endPos%dimH; RIGHT && x < endPos; x+=dimH)
-            masks[x] |= masks[endPos];
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function _prepareLocalAlignMasks()
-// ----------------------------------------------------------------------------
-
-template<typename TAlloc>
-inline void
-_prepareLocalAlignMasks(std::vector<TSimdAlign, TAlloc> & masks,
-                        std::vector<size_t> const & endsAlign,
-                        size_t dimH,
-                        size_t dimV)
-{
-    _prepareOverlapMasks(masks, endsAlign, dimH, true, false);
-    for(int v = 0; v < dimV; ++v)
-    {
-        int lim = v*dimH;
-        for(int pos = (v+1)*dimH - 2; pos >= lim; --pos)
-            masks[pos] |= masks[pos+1];
-    }
-}
-
-// ----------------------------------------------------------------------------
 // Function _checkAndCreateSimdRepresentation()
 // ----------------------------------------------------------------------------
 
-template<typename TSimdVector, typename TStringH, typename TStringV, typename TAlloc>
+template<typename TSimdVector, typename TStringH, typename TStringV>
 void _checkAndCreateSimdRepresentation(StringSet<TStringH> const & stringsH,
                                        StringSet<TStringV> const & stringsV,
                                        size_t pos,
                                        String<TSimdVector> & simdH,
                                        String<TSimdVector> & simdV,
-                                       std::vector<TSimdAlign, TAlloc> & masks,
+                                       String<TSimdAlign> & masksH,
+                                       String<TSimdAlign> & masksV,
+                                       String<TSimdAlign> & masks,
                                        std::vector<size_t> & endsH,
-                                       std::vector<size_t> & endsV,
-                                       std::vector<size_t> & endsAlign)
+                                       std::vector<size_t> & endsV)
 {
     // check if all sequences have the same length
     unsigned int numAlignments = LENGTH<TSimdAlign>::VALUE;
@@ -263,7 +223,9 @@ void _checkAndCreateSimdRepresentation(StringSet<TStringH> const & stringsH,
     size_t maxV = *std::max_element(seqLengthsV.begin(), seqLengthsV.end());
 
     // and we have to prepare the bit masks of the DPScoutState
-    masks.resize(maxH*maxV, createVector<TSimdAlign>(0));
+    resize(masks, maxV, createVector<TSimdAlign>(0));
+    resize(masksV, maxV, createVector<TSimdAlign>(0));
+    resize(masksH, maxH, createVector<TSimdAlign>(0));
 
     // copy strings and add padding chars
     StringSet<TStringH> paddedH;
@@ -280,8 +242,8 @@ void _checkAndCreateSimdRepresentation(StringSet<TStringH> const & stringsH,
         resize(paddedV[i], maxV, 'A');
 
         // mark the original end position of the alignment in the masks (with -1, all bits set)
-        endsAlign.push_back((seqLengthsV[i]-1) * maxH + (seqLengthsH[i]-1));
-        assignValue(masks[*endsAlign.rbegin()], i, -1);
+        assignValue(masksH[seqLengthsH[i]-1], i, -1);
+        assignValue(masksV[seqLengthsV[i]-1], i, -1);
         endsH.push_back(seqLengthsH[i]-1);
         endsV.push_back(seqLengthsV[i]-1);
     }
@@ -291,8 +253,6 @@ void _checkAndCreateSimdRepresentation(StringSet<TStringH> const & stringsH,
     endsH.erase( std::unique( endsH.begin(), endsH.end() ), endsH.end() );
     std::sort(endsV.begin(), endsV.end());
     endsV.erase( std::unique( endsV.begin(), endsV.end() ), endsV.end() );
-    std::sort(endsAlign.begin(), endsAlign.end());
-    endsAlign.erase( std::unique( endsAlign.begin(), endsAlign.end() ), endsAlign.end() );
 
     // now create SIMD representation
     resize(simdH, maxH);
@@ -302,15 +262,16 @@ void _checkAndCreateSimdRepresentation(StringSet<TStringH> const & stringsH,
 }
 
 
-template<typename TSequence, typename TAlignSpec, typename TSimdVector, typename TAlloc>
+template<typename TSequence, typename TAlignSpec, typename TSimdVector>
 void _checkAndCreateSimdRepresentation(StringSet<Align<TSequence, TAlignSpec> > & align,
                                        size_t pos,
                                        String<TSimdVector> & simdH,
                                        String<TSimdVector> & simdV,
-                                       std::vector<TSimdAlign, TAlloc> & masks,
+                                       String<TSimdAlign> & masksH,
+                                       String<TSimdAlign> & masksV,
+                                       String<TSimdAlign> & masks,
                                        std::vector<size_t> & endsH,
-                                       std::vector<size_t> & endsV,
-                                       std::vector<size_t> & endsAlign)
+                                       std::vector<size_t> & endsV)
 {
     // check if all sequences have the same length
     unsigned int numAlignments = LENGTH<TSimdAlign>::VALUE;
@@ -345,7 +306,9 @@ void _checkAndCreateSimdRepresentation(StringSet<Align<TSequence, TAlignSpec> > 
     size_t maxV = *std::max_element(seqLengthsV.begin(), seqLengthsV.end());
 
     // and we have to prepare the bit masks of the DPScoutState
-    masks.resize(maxH*maxV, createVector<TSimdAlign>(0));
+    resize(masks, maxV, createVector<TSimdAlign>(0));
+    resize(masksV, maxV, createVector<TSimdAlign>(0));
+    resize(masksH, maxH, createVector<TSimdAlign>(0));
 
     // copy strings and add padding chars
     StringSet<TSequence> paddedH, paddedV;
@@ -361,8 +324,8 @@ void _checkAndCreateSimdRepresentation(StringSet<Align<TSequence, TAlignSpec> > 
         resize(paddedV[i], maxV, 'A');
 
         // mark the original end position of the alignment in the masks (with -1, all bits set)
-        endsAlign.push_back((seqLengthsV[i]-1) * maxH + (seqLengthsH[i]-1));
-        assignValue(masks[*endsAlign.rbegin()], i, -1);
+        assignValue(masksH[seqLengthsH[i]-1], i, -1);
+        assignValue(masksV[seqLengthsV[i]-1], i, -1);
         endsH.push_back(seqLengthsH[i]-1);
         endsV.push_back(seqLengthsV[i]-1);
     }
@@ -372,8 +335,6 @@ void _checkAndCreateSimdRepresentation(StringSet<Align<TSequence, TAlignSpec> > 
     endsH.erase( std::unique( endsH.begin(), endsH.end() ), endsH.end() );
     std::sort(endsV.begin(), endsV.end());
     endsV.erase( std::unique( endsV.begin(), endsV.end() ), endsV.end() );
-    std::sort(endsAlign.begin(), endsAlign.end());
-    endsAlign.erase( std::unique( endsAlign.begin(), endsAlign.end() ), endsAlign.end() );
 
     // now create SIMD representation
     resize(simdH, maxH);
@@ -689,6 +650,7 @@ _computeTrack(TDPScout & scout,
     TSeqHValue matrix_row = createVector<TSeqHValue>(TScoringScheme::VALUE_SIZE) * seqHValue;
 
     // Initilaize SIMD version with multiple end points.
+    scout.state->updateMasks();
     scout.state->nextEndsV = scout.state->endsV.begin();
     scout.state->posV = 0;
 
@@ -758,6 +720,7 @@ _computeTrack(TDPScout & scout,
     _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), FirstCell());
 
     // Initilaize SIMD version with multiple end points.
+    scout.state->updateMasks();
     scout.state->nextEndsV = scout.state->endsV.begin();
     scout.state->posV = 0;
 

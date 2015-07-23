@@ -342,18 +342,17 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
     {
         StringSet<String<TTraceSegment> > trace;
         resize(trace, sizeBatch);
-        String<TSimdAlign> stringSimdH, stringSimdV;
-        std::vector<TSimdAlign, AlignmentAllocator<TSimdAlign, SEQAN_SIZEOF_MAX_VECTOR> > masks;
-        std::vector<size_t> endsH, endsV, endsAlign;
+        String<TSimdAlign> stringSimdH, stringSimdV, masksH, masksV, masks;
+        std::vector<size_t> endsH, endsV;
 
         // create the SIMD representation of the alignments
         // in case of a variable length alignment the variables masks, endsH, endsV will be filled
         _checkAndCreateSimdRepresentation(align, pos*sizeBatch,
                                           stringSimdH, stringSimdV,
-                                          masks, endsH, endsV, endsAlign);
+                                          masksH, masksV, masks, endsH, endsV);
 
         // if alignments have equal dimensions do nothing
-        if(endsAlign.size() == 0)
+        if(endsH.size() == 0)
         {
             DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
             resultsBatch = _setUpAndRunAlignment(trace, dpScoutState, stringSimdH, stringSimdV,
@@ -362,12 +361,14 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
         // otherwise prepare the special DPScoutState
         else
         {
-            // specifiy the masks for a local alignment
-            _prepareLocalAlignMasks(masks, endsAlign, length(stringSimdH), length(stringSimdV));
-
             DPScoutState_<SimdAlignmentScoutVariable> dpScoutState;
-            dpScoutState.dimH = length(stringSimdH);
-            std::swap(dpScoutState.masks, masks);
+            dpScoutState.dimV = length(stringSimdV);
+            dpScoutState.isLocalAlignment = true;
+            dpScoutState.RIGHT = false;
+            dpScoutState.BOTTOM = false;
+            swap(dpScoutState.masksH, masksH);
+            swap(dpScoutState.masksV, masksV);
+            swap(dpScoutState.masks, masks);
             std::swap(dpScoutState.endsH, endsH);
             std::swap(dpScoutState.endsV, endsV);
             resultsBatch = _setUpAndRunAlignment(trace, dpScoutState, stringSimdH, stringSimdV,

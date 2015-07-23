@@ -71,17 +71,27 @@ template <>
 class DPScoutState_<SimdAlignmentScoutVariable>
 {
 public:
-    std::vector<TSimdAlign, AlignmentAllocator<TSimdAlign, SEQAN_SIZEOF_MAX_VECTOR> > masks;
+    String<TSimdAlign> masksH, masksV, masks;
     std::vector<size_t> endsH, endsV;
+    decltype(endsH.begin()) nextEndsH, nextEndsV;
 
-    decltype(endsH.begin()) nextEndsH;
-    decltype(endsV.begin()) nextEndsV;
-
-    size_t dimH;
-    size_t posH;
-    size_t posV;
+    size_t dimV, posH, posV;
+    bool RIGHT, BOTTOM, isLocalAlignment;
 
     DPScoutState_() {}
+
+    inline void updateMasks()
+    {
+        for(size_t pos = 0; pos < dimV; ++pos)
+            masks[pos] = masksH[posH] & masksV[pos];
+        if(isLocalAlignment || (RIGHT && posH == *nextEndsH))
+            for(size_t pos = dimV-2; pos != MaxValue<size_t>::VALUE; --pos)
+                masks[pos] |= masks[pos+1];
+        if(BOTTOM)
+            for(auto pos: endsV)
+                for(auto it = nextEndsH; it != endsH.end(); ++it)
+                    masks[pos] |= (masksH[*it] & masksV[pos]);
+    }
 };
 
 // ----------------------------------------------------------------------------
@@ -249,7 +259,7 @@ _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScoutVariable> & dpScout,
                 TIsLastRow const & /**/)
 {
     TSimdAlign cmp = cmpGt(_scoreOfCell(activeCell), _scoreOfCell(dpScout._maxScore));
-    cmp &= dpScout.state->masks[dpScout.state->posV * dpScout.state->dimH + dpScout.state->posH];
+    cmp &= dpScout.state->masks[dpScout.state->posV];
     _copySimdCell(dpScout, activeCell, cmp);
     _updateHostPositions(dpScout, cmp, createVector<SimdVector<int32_t>::Type>(position(navigator)));
 }
