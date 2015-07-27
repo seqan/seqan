@@ -201,7 +201,8 @@ struct EdgeType<Graph<Directed<TCargo, WithSourceId> > > {
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo>
-struct EdgeType<Graph<Directed<TCargo, WithSourceId> > const> {
+struct EdgeType<Graph<Directed<TCargo, WithSourceId> > const>
+{
     typedef EdgeStump<TCargo, true, true, true, WithSourceId> const Type;
 };
 
@@ -222,7 +223,8 @@ struct EdgeType<Graph<Undirected<TCargo, TSpec> > const> {
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo>
-struct EdgeType<Graph<Undirected<TCargo, WithoutEdgeId> > > {
+struct EdgeType<Graph<Undirected<TCargo, WithoutEdgeId> > >
+{
     typedef EdgeStump<TCargo, true, true, false, WithoutEdgeId> Type;
 };
 
