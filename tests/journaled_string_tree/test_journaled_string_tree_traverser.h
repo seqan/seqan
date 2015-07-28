@@ -41,6 +41,8 @@
 
 #include <seqan/basic.h>
 #include <seqan/journaled_string_tree.h>
+#include <seqan/stream.h>
+#include <seqan/vcf_io.h>
 
 #include "test_config_reader.h"
 //#include "test_journaled_string_tree.h"
@@ -109,9 +111,9 @@ _createJournaledStrings(StringSet<TString> & set,
     }
 }
 
-template <typename TJst, typename TInFile>
-inline void
-_createJst(TJst & jst, TInFile & configIn)
+template <typename TFile>
+inline auto
+_createJstFromFile(TJst & jst, TInFile & configIn) -> decltype(_createJstFromFile(path))
 {
     while (!atEnd(configIn))
     {
@@ -335,7 +337,9 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_context_size)
 SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_basic_traversal)
 {
     CharString path = SEQAN_PATH_TO_ROOT();
-    append(path, "/tests/journaled_string_tree/testConfig.txt");
+    append(path, "/tests/journaled_string_tree/testConfig.vcf");
+
+    auto jst = _createJstFromFile(path);
 
     TestConfigFileIn_ configIn(toCString(path));
 

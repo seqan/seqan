@@ -49,6 +49,8 @@
 #include <seqan/sequence_journaled.h>
 #include <seqan/journaled_set.h>
 #include <seqan/parallel.h>
+#include <seqan/stream.h>
+#include <seqan/vcf_io.h>
 
 // TODO(rrahn): Might put this to basic.
 #include <seqan/journaled_string_tree/observable.h>
@@ -77,6 +79,12 @@
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser_node.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser_util.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser.h>
+
+// ===========================================================================
+// Journaled String Tree Traverser IO.
+// ===========================================================================
+
+#include <seqan/journaled_string_tree/journaled_string_tree_convert_vcf.h>
 
 #endif // SEQAN_CXX11_STANDARD
 #endif // INCLUDE_SEQAN_JOURNALED_STRING_TREE_H_

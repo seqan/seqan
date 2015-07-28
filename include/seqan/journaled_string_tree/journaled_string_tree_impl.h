@@ -108,14 +108,14 @@ public:
 
     // Custom constructor.
     template <typename TDim>
-    JournaledStringTree(TDim dimension) : _dimension(dimension), _source()
+    JournaledStringTree(TDim const dimension) : _dimension(dimension), _source()
     {}
 
     // Custom constructor.
-    template <typename TDim, typename TSequence2>
-    JournaledStringTree(TSequence2 & source, TDim dimension) : _dimension(dimension)
+    template <typename TSequence2, typename TDim>
+    JournaledStringTree(TSequence2 && source, TDim const dimension) : _dimension(dimension)
     {
-        setHost(_source, source);
+        setHost(_source, std::forward<TSequence2>(source));
     }
 };
 
@@ -304,6 +304,35 @@ member(JournaledStringTree<TSequence, TConfig, TSpec> const & jst,
        JstDeltaMapMember const & /*tag*/)
 {
     return jst._map;
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::openJstFromFile();
+// ----------------------------------------------------------------------------
+
+template <typename TSequence, typename TConfig, typename TSpec>
+inline bool
+openJstFromFile(JournaledStringTree<TSequence, TConfig, TSpec> & /*jst*/,
+                const char * /*fileName*/,
+                FileOpenMode const /*mode*/,
+                TagSelector<> const & /*format*/)
+{
+    return false;
+}
+
+template <typename TSequence, typename TConfig, typename TSpec, typename TTagList>
+inline bool
+openJstFromFile(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
+                const char * fileName,
+                FileOpenMode const mode,
+                TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormat;
+
+    if (isEqual(format, TFormat()))
+        return openJstFromFile(jst, fileName, mode, TFormat());
+    else
+        return openJstFromFile(jst, fileName, mode, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 }
@@ -585,6 +614,19 @@ erase(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
 // TODO(rrahn): Implement emplace when needed.
 // TODO(rrahn): Implement emplace_hint when needed.
 // TODO(rrahn): Implement swap when needed.
+
+template <typename TSequence, typename TConfig, typename TSpec>
+inline bool
+open(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
+     const char * fileName,
+     FileOpenMode const mode)
+{
+    // Figure out the end of the file name.
+    JstFileFormatSelector selector;
+    guessFormatFromFilename(fileName, selector);
+
+    return impl::openFromFile(jst, fileName, mode, selector);
+}
 
 }
 

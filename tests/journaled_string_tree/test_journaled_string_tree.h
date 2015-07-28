@@ -69,9 +69,16 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_constructor)
         SEQAN_ASSERT(empty(jst1._map));
         SEQAN_ASSERT(!empty(jst1._source));
         SEQAN_ASSERT(jst1._source == hostSeq);
+        SEQAN_ASSERT(&host(jst1._source) == &hostSeq);
 
         TJst2 jst2(hostSeqConst, 100);
         SEQAN_ASSERT(jst2._source == hostSeqConst);
+
+        TJst jst3("ACGTAGAACTTGA", 100);
+        SEQAN_ASSERT_EQ(jst3._dimension, static_cast<TSize>(100));
+        SEQAN_ASSERT(empty(jst3._map));
+        SEQAN_ASSERT(!empty(jst3._source));
+        SEQAN_ASSERT(jst3._source == "ACGTAGAACTTGA");
     }
 
     {  // Copy c'tor
