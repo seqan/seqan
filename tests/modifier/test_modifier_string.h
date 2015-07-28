@@ -104,7 +104,8 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_construct)
 
         TString original;
         TModifiedString modified(original);
-        TModifiedString modified2(suffix(original, 0));
+//NOTE(h-2): ModStrings cannot be constructed from temporaries
+//         TModifiedString modified2(suffix(original, 0));
     }
 
     {
@@ -117,7 +118,8 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_construct)
 
         TInnerModifiedString modified(frag);
         TOuterModifiedString modified2(frag);
-        TOuterModifiedString modified3(suffix(frag, 0));
+//NOTE(h-2): ModStrings cannot be constructed from temporaries
+//         TOuterModifiedString modified3(suffix(frag, 0));
     }
 }
 

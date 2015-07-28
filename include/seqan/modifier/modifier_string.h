@@ -125,22 +125,6 @@ public:
         ignoreUnusedVariableWarning(dummy);
     }
 
-#ifdef SEQAN_CXX11_STANDARD
-
-    // Constructor for an inner host type; forward host to hosted type.
-    template <typename THost_>
-    explicit
-    ModifiedString(THost_ && host,
-                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<
-                                            typename RemoveReference<THost>::Type,
-                                            typename RemoveReference<THost_>::Type >)) :
-            _host(std::forward<THost_>(host)), _cargo()
-    {
-        ignoreUnusedVariableWarning(dummy);
-    }
-
-#else // SEQAN_CXX11_STANDARD
-
     // Constructor for an inner host type; forward host to hosted type.
     template <typename THost_>
     explicit
@@ -150,17 +134,6 @@ public:
     {
         ignoreUnusedVariableWarning(dummy);
     }
-
-    template <typename THost_>
-    explicit
-    ModifiedString(THost_ const & host,
-                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
-            _host(host), _cargo()
-    {
-        ignoreUnusedVariableWarning(dummy);
-    }
-
-#endif // SEQAN_CXX11_STANDARD
 
     template <typename TPos>
     inline typename Reference<ModifiedString>::Type
