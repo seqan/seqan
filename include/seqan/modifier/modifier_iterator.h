@@ -68,25 +68,25 @@ template <typename THost, typename TSpec> class ModifiedString;
  * <tt>THost</tt> can also be a modified iterator, so you can create custom iterators by combining predefined ones.
  */
 
-template <typename THost, typename TSpec = void>
+template <typename THostIter, typename TSpec = void>
 class ModifiedIterator
 {
 public:
     typedef typename Cargo<ModifiedIterator>::Type TCargo_;
 
-    THost _host;
+    THostIter _host;
     TCargo_ _cargo;
 
     ModifiedIterator()
     {}
 
-    template <typename TOtherHost>
-    ModifiedIterator(ModifiedIterator<TOtherHost, TSpec> const & origin):
+    template <typename TOtherHostIter>
+    ModifiedIterator(ModifiedIterator<TOtherHostIter, TSpec> const & origin):
             _host(origin._host), _cargo(origin._cargo)
     {}
 
     explicit
-    ModifiedIterator(THost const & host): _host(host)
+    ModifiedIterator(THostIter const & host): _host(host)
     {}
 };
 
@@ -147,7 +147,7 @@ struct Reference<ModifiedIterator<THost, TSpec> > : Reference<THost>
 {};
 
 template <typename THost, typename TSpec>
-struct Reference<ModifiedIterator<THost, TSpec> const> : Reference< ModifiedIterator<THost, TSpec> >
+struct Reference<ModifiedIterator<THost, TSpec> const> : Reference<THost const>
 {};
 
 // --------------------------------------------------------------------------
@@ -374,7 +374,7 @@ goNext(ModifiedIterator<THost, TSpec> & me)
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-inline ModifiedIterator<THost, TSpec> const &
+inline ModifiedIterator<THost, TSpec> &
 operator++(ModifiedIterator<THost, TSpec> & me)
 {
     goNext(me);
@@ -406,7 +406,7 @@ goPrevious(ModifiedIterator<THost, TSpec> & me)
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-inline ModifiedIterator<THost, TSpec> const &
+inline ModifiedIterator<THost, TSpec> &
 operator--(ModifiedIterator<THost, TSpec> & me)
 {
     goPrevious(me);

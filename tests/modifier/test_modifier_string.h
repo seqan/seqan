@@ -435,9 +435,88 @@ SEQAN_DEFINE_TEST(test_modifier_minimal)
 
     TString original = "The QUICK brown fox.";
     TInnerModifiedString inner(original);
+
     // static_cast<typename seqan::Parameter_<TString>::Type *>(seqan::Nothing());  // #=> non-const reference
     // static_cast<typename TInnerModifiedString::THostPointer_ *>(seqan::Nothing());  // #=> const pointer
     // static_cast<typename seqan::Pointer_<TString>::Type *>(seqan::Nothing());
 }
+
+SEQAN_DEFINE_TEST(test_modifier_reverse_back_front)
+{
+    using namespace seqan;
+
+    {
+        typedef CharString TString;
+        typedef ModifiedString<TString, ModReverse> TInnerModifiedString;
+        typedef typename Iterator<TInnerModifiedString, Standard>::Type TIt;
+
+        TString original = "The QUICK brown fox.";
+        TInnerModifiedString inner(original);
+
+        TIt it = begin(inner, Standard());
+        SEQAN_ASSERT_EQ(*it, '.');
+        SEQAN_ASSERT_EQ((*begin(inner, Standard())), '.');
+        it = end(inner, Standard());
+        --it;
+        SEQAN_ASSERT_EQ(*it, 'T');
+
+        SEQAN_ASSERT_EQ(front(inner), '.');
+        SEQAN_ASSERT_EQ(back(inner), 'T');
+    }
+    {
+        typedef CharString const TString;
+        typedef ModifiedString<TString, ModReverse> TInnerModifiedString;
+        typedef typename Iterator<TInnerModifiedString, Standard>::Type TIt;
+
+        TString original = "The QUICK brown fox.";
+        TInnerModifiedString inner(original);
+
+        TIt it = begin(inner, Standard());
+        SEQAN_ASSERT_EQ(*it, '.');
+        SEQAN_ASSERT_EQ((*begin(inner, Standard())), '.');
+        it = end(inner, Standard());
+        --it;
+        SEQAN_ASSERT_EQ(*it, 'T');
+
+        SEQAN_ASSERT_EQ(front(inner), '.');
+        SEQAN_ASSERT_EQ(back(inner), 'T');
+    }
+}
+
+SEQAN_DEFINE_TEST(test_modifier_reverse_iterator_metafunctions)
+{
+    using namespace seqan;
+
+    typedef ModifiedIterator<CharString, ModReverse> TModifiedIterator;
+
+    {
+        typedef char TExpected;
+        typedef Value<TModifiedIterator>::Type TResult;
+        bool res = IsSameType<TExpected, TResult>::VALUE;
+        SEQAN_ASSERT(res);
+        #ifdef SEQAN_CXX11_STANDARD
+        static_assert(std::is_same<TExpected, TResult>::value, "Different type expected.");
+        #endif
+    }
+    {
+        typedef char const & TExpected;
+        typedef GetValue<TModifiedIterator>::Type TResult;
+        bool res = IsSameType<TExpected, TResult>::VALUE;
+        SEQAN_ASSERT(res);
+        #ifdef SEQAN_CXX11_STANDARD
+        static_assert(std::is_same<TExpected, TResult>::value, "Different type expected.");
+        #endif
+    }
+    {
+        typedef char & TExpected;
+        typedef Reference<TModifiedIterator>::Type TResult;
+        bool res = IsSameType<TExpected, TResult>::VALUE;
+        #ifdef SEQAN_CXX11_STANDARD
+        static_assert(std::is_same<TExpected, TResult>::value, "Different type expected.");
+        #endif
+        SEQAN_ASSERT(res);
+    }
+}
+
 
 #endif // #ifndef SEQAN_TESTS_MODIFIER_TEST_MODIFIER_STRING_H_

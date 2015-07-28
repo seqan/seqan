@@ -103,7 +103,7 @@ struct Cargo<ModifiedIterator<THost, ModReverse> >
 template <typename THost>
 struct Iterator<ModifiedString<THost, ModReverse>, Standard>
 {
-    typedef ModifiedIterator<typename Iterator<THost const, Rooted>::Type, ModReverse> Type;
+    typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, ModReverse> Type;
 };
 
 template <typename THost>
@@ -273,6 +273,16 @@ operator-=(ModifiedIterator<THost, ModReverse> & me, TDelta delta)
         host(me) -= -delta;
     }
     return me;
+}
+// --------------------------------------------------------------------------
+// Function operator-()                         [ModReverse ModifiedIterator]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TPos>
+inline ModifiedIterator<THost, ModReverse>
+operator-(ModifiedIterator<THost, ModReverse> me, TPos const i)
+{
+    return me -= i;
 }
 
 // --------------------------------------------------------------------------
