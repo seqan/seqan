@@ -156,24 +156,6 @@ _getVertexString(Graph<Directed<TCargo, TSpec> > const & g)
     return const_cast<String<TEdgeStump*>&>(g.data_vertex);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TCargo, typename TSpec>
-inline typename Size<Graph<Directed<TCargo, WithSourceId> > >::Type
-_getVertexStringSize(Graph<Directed<TCargo, TSpec> > const & g)
-{
-    return length(g.data_vertex);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TCargo>
-inline typename Size<Graph<Directed<TCargo, WithSourceId> > >::Type
-_getVertexInStringSize(Graph<Directed<TCargo, WithSourceId> > const & g)
-{
-    return length(g.data_vertex_in);
-}
-
 /////////////////////////////////////////////////////////////////////////////
 
 template <typename TCargo, typename TSpec>
@@ -211,8 +193,8 @@ _copyGraph(Graph<Directed<TCargo, WithSourceId> > & dest,
     typedef typename Iterator<String<TEdgeStump*> const, Standard>::Type TIterConst;
     typedef typename Iterator<String<TEdgeStump*>, Standard>::Type TIter;
     clear(dest);
-    resize(dest.data_vertex, _getVertexStringSize(source));
-    resize(dest.data_vertex_in, _getVertexInStringSize(source));
+    resize(dest.data_vertex, length(source.data_vertex));
+    resize(dest.data_vertex_in, length(source.data_vertex_in));
     TIter itInit = begin(dest.data_vertex, Standard());
     TIter itInitEnd = end(dest.data_vertex, Standard());
     for (;itInit != itInitEnd; ++itInit)
@@ -270,7 +252,7 @@ _copyGraph(Graph<Directed<TCargo, TSpec> > & dest,
     typedef typename Iterator<String<TEdgeStump*> const, Standard>::Type TIterConst;
     typedef typename Iterator<String<TEdgeStump*>, Standard>::Type TIter;
     clear(dest);
-    resize(dest.data_vertex, _getVertexStringSize(source));
+    resize(dest.data_vertex, length(source.data_vertex));
     TIter itInit = begin(dest.data_vertex, Standard());
     TIter itInitEnd = end(dest.data_vertex, Standard());
     for (;itInit != itInitEnd; ++itInit)
