@@ -69,7 +69,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_iterator_metafunctions)
         SEQAN_ASSERT(res);
     }
     {
-        typedef char & TExpected;
+        typedef char TExpected;
         typedef Reference<TModifiedIterator>::Type TResult;
         bool res = IsSameType<TExpected, TResult>::VALUE;
         SEQAN_ASSERT(res);
