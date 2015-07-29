@@ -147,7 +147,7 @@ struct Reference<ModifiedIterator<THost, TSpec> > : Reference<THost>
 {};
 
 template <typename THost, typename TSpec>
-struct Reference<ModifiedIterator<THost, TSpec> const> : Reference<THost const>
+struct Reference<ModifiedIterator<THost, TSpec> const> : Reference<THost>
 {};
 
 // --------------------------------------------------------------------------

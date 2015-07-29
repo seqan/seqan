@@ -311,31 +311,30 @@ struct Iterator<ModifiedString<THost, TSpec>, Rooted>
 
 // TODO(holtgrew): Should the result of Iterator<> be a const iterator for const ModifiedString objects?
 //          weese: I chose more lenient variant (A), i.e. constness is not propagated upwards.
-//    h-2 + rrhan: changed back to B since A causes problems with proper usage of begin() and end()
 
 // VARIANT A: const ModifiedString does not propagate its constness upwards
-// template <typename THost, typename TSpec >
-// struct Iterator<ModifiedString<THost, TSpec> const, Standard>
-// {
-//     typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, TSpec> Type;
-// };
-// template <typename THost, typename TSpec >
-// struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
-// {
-//     typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, TSpec> Type;
-// };
-
-// VARIANT B: const ModifiedString propagates its constness upwards
 template <typename THost, typename TSpec >
 struct Iterator<ModifiedString<THost, TSpec> const, Standard>
 {
-   typedef ModifiedIterator<typename Iterator<THost const, Standard>::Type, TSpec> Type;
+    typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, TSpec> Type;
 };
 template <typename THost, typename TSpec >
 struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
 {
-   typedef ModifiedIterator<typename Iterator<THost const, Rooted>::Type, TSpec> Type;
+    typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, TSpec> Type;
 };
+
+// VARIANT B: const ModifiedString propagates its constness upwards
+// template <typename THost, typename TSpec >
+// struct Iterator<ModifiedString<THost, TSpec> const, Standard>
+// {
+//    typedef ModifiedIterator<typename Iterator<THost const, Standard>::Type, TSpec> Type;
+// };
+// template <typename THost, typename TSpec >
+// struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
+// {
+//    typedef ModifiedIterator<typename Iterator<THost const, Rooted>::Type, TSpec> Type;
+// };
 
 // --------------------------------------------------------------------------
 // Metafunction Host
@@ -359,16 +358,16 @@ struct Host<ModifiedString<THost, TSpec> > {
 };
 
 // VARIANT A: const ModifiedString does not propagate its constness upwards
-// template <typename THost, typename TSpec >
-// struct Host<ModifiedString<THost, TSpec> const > {
-//     typedef typename ConvertArrayToPointer<THost>::Type Type;
-// };
-
-// VARIANT B: const ModifiedString propagates its constness upwards
 template <typename THost, typename TSpec >
 struct Host<ModifiedString<THost, TSpec> const > {
-   typedef typename ConvertArrayToPointer<THost const>::Type Type;
+    typedef typename ConvertArrayToPointer<THost>::Type Type;
 };
+
+// VARIANT B: const ModifiedString propagates its constness upwards
+// template <typename THost, typename TSpec >
+// struct Host<ModifiedString<THost, TSpec> const > {
+//    typedef typename ConvertArrayToPointer<THost const>::Type Type;
+// };
 
 // --------------------------------------------------------------------------
 // Metafunction Parameter_
@@ -553,7 +552,7 @@ value(ModifiedString<THost, TSpec> & me, TPos pos)
 }
 
 template <typename THost, typename TSpec, typename TPos>
-inline typename Reference<ModifiedString<THost, TSpec> const >::Type
+inline typename Reference<ModifiedString<THost, TSpec> const>::Type
 value(ModifiedString<THost, TSpec> const & me, TPos pos)
 {
     return value(begin(me, Standard()) + pos);

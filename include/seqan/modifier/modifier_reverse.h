@@ -109,7 +109,7 @@ struct Iterator<ModifiedString<THost, ModReverse>, Standard>
 template <typename THost>
 struct Iterator<ModifiedString<THost, ModReverse> const, Standard>
 {
-    typedef ModifiedIterator<typename Iterator<THost const, Rooted>::Type, ModReverse> Type;
+    typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, ModReverse> Type;
 };
 
 // --------------------------------------------------------------------------
