@@ -359,6 +359,24 @@ writeRecords(FormattedFile<Bam, Output, TSpec> & file, TRecords const & records)
         write(file.iter, buffers[i]);
 }
 
+// ----------------------------------------------------------------------------
+// Function getFileExtensions()
+// ----------------------------------------------------------------------------
+// NOTE(h-2): this is overloaded so we get Bgzf in addition to other
+// compressions which is crucial for Bam
+
+template <typename TDirection, typename TSpec>
+static std::vector<std::string>
+getFileExtensions(FormattedFile<Bam, TDirection, TSpec> const & file)
+{
+    std::vector<std::string> extensions;
+    _getCompressionExtensions(extensions,
+                              typename FormattedFile<Bam, TDirection, TSpec>::TFileFormats(),
+                              CompressedFileTypesWithBgzf_(),
+                              false);
+    return extensions;
+}
+
 }  // namespace seqan
 
 #endif // SEQAN_BAM_IO_BAM_FILE_H_

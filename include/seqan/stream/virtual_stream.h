@@ -68,6 +68,30 @@ struct FileFormat;
 
 typedef
 #if SEQAN_HAS_ZLIB
+    TagList<BgzfFile,
+    TagList<GZFile,
+#endif
+#if SEQAN_HAS_BZIP2
+    TagList<BZ2File,
+#endif
+    TagList<Nothing>
+#if SEQAN_HAS_BZIP2
+    >
+#endif
+#if SEQAN_HAS_ZLIB
+    >
+    >
+#endif
+    CompressedFileTypesWithBgzf_;  // if TagSelector is set to -1, the file format is auto-detected
+
+// --------------------------------------------------------------------------
+// TagList CompressedFileTypes
+// --------------------------------------------------------------------------
+// NOTE(h-2): this currently lacks BGZF, so that we don't get .fasta.bam, .m8.bam ...
+// in the long term bgzf should just not contain .bam but that would require more changes
+
+typedef
+#if SEQAN_HAS_ZLIB
     TagList<GZFile,
 #endif
 #if SEQAN_HAS_BZIP2
@@ -80,7 +104,7 @@ typedef
 #if SEQAN_HAS_ZLIB
     >
 #endif
-    CompressedFileTypes;  // if TagSelector is set to -1, the file format is auto-detected
+    CompressedFileTypes;
 
 // ============================================================================
 // Metafunctions
@@ -315,7 +339,7 @@ public:
 template <typename TValue, typename TDirection, typename TTraits>
 struct FileFormat<VirtualStream<TValue, TDirection, TTraits> >
 {
-    typedef TagSelector<CompressedFileTypes> Type;
+    typedef TagSelector<CompressedFileTypesWithBgzf_> Type;
 };
 
 // ----------------------------------------------------------------------------
