@@ -141,13 +141,23 @@ void SangerSequencingSimulator::simulateRead(
     // Simulate sequence (materialize mismatches and insertions).
     typedef seqan::ModifiedString<seqan::ModifiedString<TFragment, seqan::ModView<seqan::FunctorComplement<seqan::Dna5> > >, seqan::ModReverse> TRevCompFrag;
     if ((dir == LEFT) && (strand == FORWARD))
+    {
         _simulateSequence(seq, rng, prefix(frag, sampleLength), cigar);
+    }
     else if ((dir == LEFT) && (strand == REVERSE))
-        _simulateSequence(seq, rng, TRevCompFrag(prefix(frag, sampleLength)), cigar);
+    {
+        seqan::Prefix<TFragment>::Type holder(prefix(frag, sampleLength));
+        _simulateSequence(seq, rng, TRevCompFrag(holder), cigar);
+    }
     else if ((dir == RIGHT) && (strand == FORWARD))
+    {
         _simulateSequence(seq, rng, suffix(frag, length(frag) - sampleLength), cigar);
+    }
     else  // ((dir == RIGHT) && (strand == REVERSE))
-        _simulateSequence(seq, rng, TRevCompFrag(suffix(frag, length(frag) - sampleLength)), cigar);
+    {
+        seqan::Suffix<TFragment>::Type holder(suffix(frag, length(frag) - sampleLength));
+        _simulateSequence(seq, rng, TRevCompFrag(holder), cigar);
+    }
 
     // Simulate Qualities.
     this->_simulateQualities(quals, cigar, sampleLength);

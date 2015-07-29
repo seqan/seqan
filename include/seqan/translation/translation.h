@@ -245,8 +245,8 @@ _translateImplLoop(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
 
     if (i % 2)
     {
-        TRevComp revComp(value(source, i/2));
-        _translateString(target[i], revComp, TCode());
+         TVal val(value(source, i/2));
+        _translateString(target[i], TRevComp(val), TCode());
     }
     else
     {
@@ -286,9 +286,8 @@ _translateImplLoop(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
 
     if ((i % 6) > 2)
     {
-        TRevComp revComp(prefix(value(source, i/6),
-                                length(value(source,i/6)) - (i % 3)));
-        _translateString(target[i], revComp, TCode());
+         TVal val(prefix(value(source, i/6), length(value(source,i/6)) - (i % 3)));
+        _translateString(target[i], TRevComp(val), TCode());
     }
     else
     {

@@ -254,13 +254,23 @@ void IlluminaSequencingSimulator::simulateRead(TRead & seq, TQualities & quals, 
     // Simulate sequence (materialize mismatches and insertions).
     typedef seqan::ModifiedString<seqan::ModifiedString<TFragment, seqan::ModView<seqan::FunctorComplement<seqan::Dna5> > >, seqan::ModReverse> TRevCompFrag;
     if ((dir == LEFT) && (strand == FORWARD))
+    {
         _simulateSequence(seq, rng, prefix(frag, lenInRef), cigar);
+    }
     else if ((dir == LEFT) && (strand == REVERSE))
-        _simulateSequence(seq, rng, TRevCompFrag(prefix(frag, lenInRef)), cigar);
+    {
+        seqan::Prefix<TFragment>::Type holder(prefix(frag, lenInRef));
+        _simulateSequence(seq, rng, TRevCompFrag(holder), cigar);
+    }
     else if ((dir == RIGHT) && (strand == FORWARD))
+    {
         _simulateSequence(seq, rng, suffix(frag, length(frag) - lenInRef), cigar);
+    }
     else  // ((dir == RIGHT) && (strand == REVERSE))
-        _simulateSequence(seq, rng, TRevCompFrag(suffix(frag, length(frag) - lenInRef)), cigar);
+    {
+        seqan::Suffix<TFragment>::Type holder(suffix(frag, length(frag) - lenInRef));
+        _simulateSequence(seq, rng, TRevCompFrag(holder), cigar);
+    }
 
     // Simulate qualities.
     _simulateQualities(quals, cigar);
