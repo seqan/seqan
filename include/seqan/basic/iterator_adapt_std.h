@@ -360,12 +360,11 @@ moveValue(Iter<TContainer, StdIteratorAdaptor> & me,
 // Function operator==()
 // ----------------------------------------------------------------------------
 
-template <typename TContainer>
-inline bool
+template <typename TContainer, typename TContainer2>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<TContainer const &, TContainer2 const &>, bool)
 operator==(Iter<TContainer, StdIteratorAdaptor> const & left,
-           Iter<TContainer, StdIteratorAdaptor> const & right)
+           Iter<TContainer2, StdIteratorAdaptor> const & right)
 {
-    SEQAN_CHECKPOINT;
     return hostIterator(left) == hostIterator(right);
 }
 
@@ -373,12 +372,11 @@ operator==(Iter<TContainer, StdIteratorAdaptor> const & left,
 // Function operator!=()
 // ----------------------------------------------------------------------------
 
-template <typename TContainer>
-inline bool
+template <typename TContainer, typename TContainer2>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<TContainer const &, TContainer2 const &>, bool)
 operator!=(Iter<TContainer, StdIteratorAdaptor> const & left,
-           Iter<TContainer, StdIteratorAdaptor> const & right)
+           Iter<TContainer2, StdIteratorAdaptor> const & right)
 {
-    SEQAN_CHECKPOINT;
     return hostIterator(left) != hostIterator(right);
 }
 
@@ -386,12 +384,11 @@ operator!=(Iter<TContainer, StdIteratorAdaptor> const & left,
 // Function operator<()
 // ----------------------------------------------------------------------------
 
-template <typename TContainer>
-inline bool
+template <typename TContainer, typename TContainer2>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<TContainer const &, TContainer2 const &>, bool)
 operator<(Iter<TContainer, StdIteratorAdaptor> const & left,
-          Iter<TContainer, StdIteratorAdaptor> const & right)
+          Iter<TContainer2, StdIteratorAdaptor> const & right)
 {
-    SEQAN_CHECKPOINT;
     return hostIterator(left) < hostIterator(right);
 }
 
@@ -399,12 +396,11 @@ operator<(Iter<TContainer, StdIteratorAdaptor> const & left,
 // Function operator>()
 // ----------------------------------------------------------------------------
 
-template <typename TContainer>
-inline bool
+template <typename TContainer, typename TContainer2>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<TContainer const &, TContainer2 const &>, bool)
 operator>(Iter<TContainer, StdIteratorAdaptor> const & left,
-          Iter<TContainer, StdIteratorAdaptor> const & right)
+          Iter<TContainer2, StdIteratorAdaptor> const & right)
 {
-    SEQAN_CHECKPOINT;
     return hostIterator(left) > hostIterator(right);
 }
 
@@ -412,10 +408,10 @@ operator>(Iter<TContainer, StdIteratorAdaptor> const & left,
 // Function operator<=()
 // ----------------------------------------------------------------------------
 
-template <typename TContainer>
-inline bool
+template <typename TContainer, typename TContainer2>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<TContainer const &, TContainer2 const &>, bool)
 operator<=(Iter<TContainer, StdIteratorAdaptor> const & left,
-           Iter<TContainer, StdIteratorAdaptor> const & right)
+           Iter<TContainer2, StdIteratorAdaptor> const & right)
 {
     return hostIterator(left) <= hostIterator(right);
 }
@@ -424,12 +420,11 @@ operator<=(Iter<TContainer, StdIteratorAdaptor> const & left,
 // Function operator>=()
 // ----------------------------------------------------------------------------
 
-template <typename TContainer>
-inline bool
+template <typename TContainer, typename TContainer2>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<TContainer const &, TContainer2 const &>, bool)
 operator>=(Iter<TContainer, StdIteratorAdaptor> const & left,
-           Iter<TContainer, StdIteratorAdaptor> const & right)
+           Iter<TContainer2, StdIteratorAdaptor> const & right)
 {
-    SEQAN_CHECKPOINT;
     return hostIterator(left) >= hostIterator(right);
 }
 
