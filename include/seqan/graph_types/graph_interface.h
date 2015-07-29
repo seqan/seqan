@@ -194,7 +194,8 @@ struct EdgeType<Graph<Tree<TCargo, TSpec> > const> {
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo>
-struct EdgeType<Graph<Directed<TCargo, WithSourceId> > > {
+struct EdgeType<Graph<Directed<TCargo, WithSourceId> > >
+{
     typedef EdgeStump<TCargo, true, true, true, WithSourceId> Type;
 };
 

@@ -693,7 +693,7 @@ removeEdge(Graph<Directed<TCargo, TSpec> > & g,
     TEdgeStump* current = g.data_vertex[source];
     while (current != (TEdgeStump*) 0)
     {
-        if ((TVertexDescriptor) getTarget(current) == target)
+        if (static_cast<TVertexDescriptor>(getTarget(current)) == target)
             break;
 
         pred = current;
@@ -907,7 +907,7 @@ findEdge(Graph<Directed<TCargo, TSpec> > const & g,
     TEdgeStump* current = g.data_vertex[v];
     while (current != (TEdgeStump*) 0)
     {
-        if ( (TVertexDescriptor) getTarget(current) == w)
+        if (static_cast<TVertexDescriptor>(getTarget(current)) == w)
             return current;
 
         current = getNextT(current);
@@ -937,11 +937,11 @@ write(TFile & target,
             continue;
 
         TEdgeStump* current = getValue(it);
-        appendNumber(target, (int)pos);
+        appendNumber(target, static_cast<int>(pos));
         write(target, " -> ");
         while (current != 0)
         {
-            appendNumber(target, (int) getTarget(current));
+            appendNumber(target, static_cast<int>(getTarget(current)));
             writeValue(target, ',');
             current = getNextT(current);
         }
