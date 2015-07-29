@@ -86,8 +86,8 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         typedef StringSet<TString, TSetSpec> const TText;
 
-        typename Size<TString>::Type _offset;
         TText &_text;
+        typename Size<TString>::Type _offset;
 
         SuffixLess_(TText &text):
             _text(text) {}
