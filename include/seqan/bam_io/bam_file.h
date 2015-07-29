@@ -372,7 +372,7 @@ getFileExtensions(FormattedFile<Bam, TDirection, TSpec> const & file)
     std::vector<std::string> extensions;
     _getCompressionExtensions(extensions,
                               typename FormattedFile<Bam, TDirection, TSpec>::TFileFormats(),
-                              CompressedFileTypesWithBgzf_(),
+                              CompressedFileTypes(),
                               false);
     return extensions;
 }

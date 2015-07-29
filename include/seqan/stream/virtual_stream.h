@@ -82,7 +82,7 @@ typedef
     >
     >
 #endif
-    CompressedFileTypesWithBgzf_;  // if TagSelector is set to -1, the file format is auto-detected
+    CompressedFileTypes;  // if TagSelector is set to -1, the file format is auto-detected
 
 // --------------------------------------------------------------------------
 // TagList CompressedFileTypes
@@ -104,7 +104,7 @@ typedef
 #if SEQAN_HAS_ZLIB
     >
 #endif
-    CompressedFileTypes;
+    CompressedFileTypesWithoutBgzf_;
 
 // ============================================================================
 // Metafunctions
@@ -339,7 +339,7 @@ public:
 template <typename TValue, typename TDirection, typename TTraits>
 struct FileFormat<VirtualStream<TValue, TDirection, TTraits> >
 {
-    typedef TagSelector<CompressedFileTypesWithBgzf_> Type;
+    typedef TagSelector<CompressedFileTypes> Type;
 };
 
 // ----------------------------------------------------------------------------
