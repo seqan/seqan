@@ -136,15 +136,14 @@ struct MagicHeader<BlastReport, T> :
 template <typename T>
 struct FileExtensions<BlastReport, T>
 {
-    static constexpr char const * VALUE[2] =
+    static constexpr char const * VALUE[1] =
     {
-        ".m0",
-        ".bm0"
+        ".m0"
     };
 };
 
 template <typename T>
-constexpr char const * FileExtensions<BlastReport, T>::VALUE[2];
+constexpr char const * FileExtensions<BlastReport, T>::VALUE[1];
 
 // ----------------------------------------------------------------------------
 // Metafunction FormattedFileContext
