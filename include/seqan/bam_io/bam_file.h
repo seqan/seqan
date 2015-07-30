@@ -367,7 +367,7 @@ writeRecords(FormattedFile<Bam, Output, TSpec> & file, TRecords const & records)
 
 template <typename TDirection, typename TSpec>
 static std::vector<std::string>
-getFileExtensions(FormattedFile<Bam, TDirection, TSpec> const & file)
+getFileExtensions(FormattedFile<Bam, TDirection, TSpec> const &)
 {
     std::vector<std::string> extensions;
     _getCompressionExtensions(extensions,
