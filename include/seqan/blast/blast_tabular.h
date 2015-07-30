@@ -201,17 +201,15 @@ struct MagicHeader<BlastTabular, T> :
 template <typename T>
 struct FileExtensions<BlastTabular, T>
 {
-    static constexpr char const * VALUE[4] =
+    static constexpr char const * VALUE[2] =
     {
         ".m8",
-        ".bm8",
-        ".m9",
-        ".bm9"
+        ".m9"
     };
 };
 
 template <typename T>
-constexpr char const * FileExtensions<BlastTabular, T>::VALUE[4];
+constexpr char const * FileExtensions<BlastTabular, T>::VALUE[2];
 
 // ----------------------------------------------------------------------------
 // Class BlastMatchField
