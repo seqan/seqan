@@ -306,12 +306,23 @@ struct Value<ModifiedIterator<THost, ModView<TFunctor> > >
     typedef typename RemoveConst_<TResult_>::Type   Type;
 };
 
+template <typename THost, typename TFunctor>
+struct Value<ModifiedIterator<THost, ModView<TFunctor> > const> :
+    Value<ModifiedIterator<THost, ModView<TFunctor> > >
+{};
+
 // --------------------------------------------------------------------------
 // Metafunction GetValue                                   [ModifiedIterator]
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TFunctor>
-struct GetValue<ModifiedIterator<THost, ModView<TFunctor> > > : Value<ModifiedIterator<THost, ModView<TFunctor> > >
+struct GetValue<ModifiedIterator<THost, ModView<TFunctor> > > :
+    Value<ModifiedIterator<THost, ModView<TFunctor> > >
+{};
+
+template <typename THost, typename TFunctor>
+struct GetValue<ModifiedIterator<THost, ModView<TFunctor> > const> :
+    Value<ModifiedIterator<THost, ModView<TFunctor> > >
 {};
 
 // --------------------------------------------------------------------------
@@ -319,7 +330,13 @@ struct GetValue<ModifiedIterator<THost, ModView<TFunctor> > > : Value<ModifiedIt
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TFunctor>
-struct Reference<ModifiedIterator<THost, ModView<TFunctor> > > : Value<ModifiedIterator<THost, ModView<TFunctor> > >
+struct Reference<ModifiedIterator<THost, ModView<TFunctor> > > :
+    Value<ModifiedIterator<THost, ModView<TFunctor> > >
+{};
+
+template <typename THost, typename TFunctor>
+struct Reference<ModifiedIterator<THost, ModView<TFunctor> > const> :
+    Value<ModifiedIterator<THost, ModView<TFunctor> > >
 {};
 
 // NOTE(h-2): ModView element access is always by copy never by reference

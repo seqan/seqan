@@ -93,6 +93,16 @@ public:
     }
 
     template <typename TOtherString, typename TOtherSpec>
+    StringSet(StringSet<TOtherString, Owner<ConcatDirect<TOtherSpec> > > & other) :
+        limits(other.limits), concat(other.concat)
+    {}
+
+    template <typename TOtherString, typename TOtherSpec>
+    StringSet(StringSet<TOtherString, Owner<ConcatDirect<TOtherSpec> > > const & other) :
+        limits(other.limits), concat(other.concat)
+    {}
+
+    template <typename TOtherString, typename TOtherSpec>
     StringSet(StringSet<TOtherString, TOtherSpec> &other)
     {
         _initStringSetLimits(*this);
