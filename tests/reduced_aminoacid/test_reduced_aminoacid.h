@@ -159,8 +159,10 @@ void _testReducedAminoAcidMurphy10ModIteratorsImpl(TModString & conv)
 
 SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10_moditerators)
 {
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >
+            ReducedAminoAcidMurphy10;
     typedef ModifiedString<String<AminoAcid>,
-                           ModView<FunctorConvert<AminoAcid,ReducedAminoAcid<Murphy10>>>> TModString;
+                           ModView<FunctorConvert<AminoAcid, ReducedAminoAcidMurphy10>>> TModString;
     String<AminoAcid> aas = "ABCDEFGHIJKLMNOPQRSTUVWYZX*";
 
     TModString conv(aas);
@@ -190,7 +192,8 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10_modview_fmindex)
     typedef String<AminoAcid>                                               TOrigString;
     typedef StringSet<TOrigString, Owner<ConcatDirect<> > >                 TOrigSet;
 
-    typedef ModView<FunctorConvert<AminoAcid,ReducedAminoAcid<Murphy10>>>   TModView;
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >         ReducedAminoAcidMurphy10;
+    typedef ModView<FunctorConvert<AminoAcid, ReducedAminoAcidMurphy10> >   TModView;
     typedef ModifiedString<TOrigString, TModView>                           TModString;
     typedef StringSet<TModString, Owner<ConcatDirect<> > >                  TModSet;
 
