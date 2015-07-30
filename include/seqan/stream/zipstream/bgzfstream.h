@@ -490,7 +490,7 @@ public:
                     // decompress block
                     job.size = _decompressBlock(
                         &job.buffer[0] + MAX_PUTBACK, capacity(job.buffer),
-                        &job.inputBuffer[0], BGZF_BLOCK_HEADER_LENGTH + tailLen, compressionCtx);
+                        &job.inputBuffer[0], job.compressedSize, compressionCtx);
 
                     // signal that job is ready
                     {
