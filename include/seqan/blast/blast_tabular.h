@@ -204,9 +204,7 @@ struct FileExtensions<BlastTabular, T>
     static constexpr char const * VALUE[4] =
     {
         ".m8",
-        ".bm8",
-        ".m9",
-        ".bm9"
+        ".m9"
     };
 };
 
