@@ -201,15 +201,17 @@ struct MagicHeader<BlastTabular, T> :
 template <typename T>
 struct FileExtensions<BlastTabular, T>
 {
-    static constexpr char const * VALUE[2] =
+    static constexpr char const * VALUE[4] =
     {
         ".m8",
-        ".m9"
+        ".bm8",
+        ".m9",
+        ".bm9"
     };
 };
 
 template <typename T>
-constexpr char const * FileExtensions<BlastTabular, T>::VALUE[2];
+constexpr char const * FileExtensions<BlastTabular, T>::VALUE[4];
 
 // ----------------------------------------------------------------------------
 // Class BlastMatchField
@@ -520,7 +522,7 @@ struct BlastMatchField
          "identical matches, Alignment length, Number of mismatches, Number of "
          "gap openings, Start of alignment in query, End of alignment in query,"
          " Start of alignment in subject, End of alignment in subject, Expect "
-         "value, Bit score",
+         "value, Bit score)",
         "Query Seq-id",
         "Query GI",
         "Query accesion",
@@ -620,6 +622,12 @@ struct BlastMatchField
         false,
         false
     };
+
+    /*!
+     * @var static_constexpr_unsigned_const BlastMatchField::numFields
+     * @brief The number of defined fields (useful for iterating).
+     */
+    static constexpr unsigned const numFields = 45;
 };
 
 template <typename TVoidSpec>
