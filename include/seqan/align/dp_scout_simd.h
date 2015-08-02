@@ -80,17 +80,37 @@ public:
 
     DPScoutState_() {}
 
+    inline void updateMasksRight()
+    {
+        for(size_t pos = dimV-2; pos != MaxValue<size_t>::VALUE; --pos)
+            masks[pos] |= masks[pos+1];
+    }
+
+    inline void updateMasksBottom()
+    {
+        for(auto pos: endsV)
+            for(auto it = nextEndsH; it != endsH.end(); ++it)
+                masks[pos] |= (masksH[*it] & masksV[pos]);
+    }
+
     inline void updateMasks()
     {
         for(size_t pos = 0; pos < dimV; ++pos)
             masks[pos] = masksH[posH] & masksV[pos];
-        if(isLocalAlignment || (RIGHT && posH == *nextEndsH))
-            for(size_t pos = dimV-2; pos != MaxValue<size_t>::VALUE; --pos)
-                masks[pos] |= masks[pos+1];
-        if(BOTTOM)
-            for(auto pos: endsV)
-                for(auto it = nextEndsH; it != endsH.end(); ++it)
-                    masks[pos] |= (masksH[*it] & masksV[pos]);
+        //for local alignments the BOTTOM parameter must be checked first
+        if(isLocalAlignment)
+        {
+            updateMasksBottom();
+            updateMasksRight();
+        }
+        else
+        {
+            if(RIGHT && posH == *nextEndsH)
+                updateMasksRight();
+            if(BOTTOM)
+                updateMasksBottom();
+        }
+
     }
 };
 

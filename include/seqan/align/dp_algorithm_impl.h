@@ -200,10 +200,8 @@ void _checkAndCreateSimdRepresentation(StringSet<TStringH> const & stringsH,
     {
         seqLengthsH[i] = length(stringsH[pos+i]);
         seqLengthsV[i] = length(stringsV[pos+i]);
-        if(seqLengthsH[i] != seqLengthsH[i-1])
-            allEqualH = false;
-        if(seqLengthsV[i] != seqLengthsV[i-1])
-            allEqualV = false;
+        allEqualH &= (seqLengthsH[i] == seqLengthsH[i-1]);
+        allEqualV &= (seqLengthsV[i] == seqLengthsV[i-1]);
     }
 
     // if yes, create SIMD representation without doing anything else
@@ -283,10 +281,8 @@ void _checkAndCreateSimdRepresentation(StringSet<Align<TSequence, TAlignSpec> > 
     {
         seqLengthsH[i] = length(source(row(align[pos+i], 0)));
         seqLengthsV[i] = length(source(row(align[pos+i], 1)));
-        if(seqLengthsH[i] != seqLengthsH[i-1])
-            allEqualH = false;
-        if(seqLengthsV[i] != seqLengthsV[i-1])
-            allEqualV = false;
+        allEqualH &= (seqLengthsH[i] == seqLengthsH[i-1]);
+        allEqualV &= (seqLengthsV[i] == seqLengthsV[i-1]);
     }
 
     // if yes, create SIMD representation without doing anything else
