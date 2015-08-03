@@ -705,6 +705,47 @@ SEQAN_DEFINE_TEST(testMultipleStrings_Ticket1109)
     Iterator< TIndex, TopDown<> >::Type it(index);
 }
 
+SEQAN_DEFINE_TEST(testTrieIterator)
+{
+    typedef StringSet<CharString>               TText;
+    typedef Index<TText, IndexSa<> >            TIndex;
+    typedef Iterator<TIndex, TopDown<> >::Type  TIter;
+
+    TText text;
+    appendValue(text, "bananamama");
+    appendValue(text, "bananajoe");
+
+    TIndex index(text);
+    indexCreate(index, FibreSA(), Trie());
+    TIter it(index);
+    goDown(it);
+    SEQAN_ASSERT_EQ(parentEdgeLabel(it), 'b');
+    SEQAN_ASSERT_EQ(countOccurrences(it), 2u);
+    goDown(it, "anana");
+    goDown(it);
+    SEQAN_ASSERT_EQ(parentEdgeLabel(it), 'j');
+}
+
+SEQAN_DEFINE_TEST(testRadixTreeIterator)
+{
+    typedef StringSet<CharString>               TText;
+    typedef Index<TText, IndexWotd<> >          TIndex;
+    typedef Iterator<TIndex, TopDown<> >::Type  TIter;
+
+    TText text;
+    appendValue(text, "bananamama");
+    appendValue(text, "bananajoe");
+
+    TIndex index(text);
+    indexCreate(index, WotdDir(), Trie());
+    TIter it(index);
+    goDown(it);
+    SEQAN_ASSERT_EQ(parentEdgeLabel(it), "banana");
+    SEQAN_ASSERT_EQ(countOccurrences(it), 2u);
+    goDown(it);
+    SEQAN_ASSERT_EQ(parentEdgeLabel(it), "joe");
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 
