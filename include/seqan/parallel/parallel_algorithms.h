@@ -529,13 +529,13 @@ countIf(TContainer const & c, TUnaryPredicate p, Parallel)
 // Function removeIf(Parallel)
 // ----------------------------------------------------------------------------
 
-template <typename TContainer, typename TUnaryPredicate>
-inline void
-removeIf(TContainer & c, TUnaryPredicate p, Parallel)
-{
-    typename Iterator<TContainer, Standard>::Type newEnd = __gnu_parallel::remove_if(begin(c, Standard()), end(c, Standard()), p);
-    resize(c, position(newEnd, c), Exact());
-}
+//template <typename TContainer, typename TUnaryPredicate>
+//inline void
+//removeIf(TContainer & c, TUnaryPredicate p, Parallel)
+//{
+//    typename Iterator<TContainer, Standard>::Type newEnd = __gnu_parallel::remove_if(begin(c, Standard()), end(c, Standard()), p);
+//    resize(c, position(newEnd, c), Exact());
+//}
 
 // ----------------------------------------------------------------------------
 // Function accumulate(Parallel)
