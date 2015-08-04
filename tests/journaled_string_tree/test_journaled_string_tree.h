@@ -40,8 +40,6 @@
 #include <seqan/basic.h>
 #include <seqan/journaled_string_tree.h>
 
-#include "test_config_reader.h"
-
 using namespace seqan;
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_constructor)
@@ -201,6 +199,57 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_clear)
     SEQAN_ASSERT(empty(jst._map));
 }
 
+SEQAN_DEFINE_TEST(test_journaled_string_tree_resize)
+{
+    Dna5String seq = "CGTATAGGANNAGAT";
+
+    {  // Resize on empty jst
+        JournaledStringTree<Dna5String> jst(seq, 100);
+        resize(jst, 50);
+        SEQAN_ASSERT_EQ(length(jst), 50u);
+
+        resize(jst, 150);
+        SEQAN_ASSERT_EQ(length(jst), 150u);
+    }
+
+    {
+        JournaledStringTree<Dna5String> jst(seq, 100);
+
+        String<unsigned> ids;
+        appendValue(ids, 0);
+        appendValue(ids, 3);
+        appendValue(ids, 99);
+
+        insert(jst, 5, 'C', ids, DeltaTypeSnp());
+        insert(jst, 2, 3, ids, DeltaTypeDel());
+        insert(jst, 5, "CGTA", ids, DeltaTypeIns());
+
+        resize(jst, 150);
+        auto& map = impl::member(jst, JstDeltaMapMember());
+        for (auto& entry : map)
+        {
+            SEQAN_ASSERT_EQ(length(getDeltaCoverage(entry)), 150u);
+            SEQAN_ASSERT_EQ(getDeltaCoverage(entry)[0], true);
+            SEQAN_ASSERT_EQ(getDeltaCoverage(entry)[1], false);
+            SEQAN_ASSERT_EQ(getDeltaCoverage(entry)[99], true);
+            SEQAN_ASSERT_EQ(getDeltaCoverage(entry)[100], false);
+            SEQAN_ASSERT_EQ(getDeltaCoverage(entry)[125], false);
+            SEQAN_ASSERT_EQ(getDeltaCoverage(entry)[149], false);
+        }
+
+        resize(jst, 50);
+        for (auto& entry : map)
+        {
+            SEQAN_ASSERT_EQ(length(getDeltaCoverage(entry)), 50u);
+            SEQAN_ASSERT_EQ(getDeltaCoverage(entry)[0], true);
+            SEQAN_ASSERT_EQ(getDeltaCoverage(entry)[1], false);
+            SEQAN_ASSERT_EQ(getDeltaCoverage(entry)[3], true);
+            SEQAN_ASSERT_EQ(getDeltaCoverage(entry)[49], false);
+        }
+    }
+}
+
+
 SEQAN_DEFINE_TEST(test_journaled_string_tree_empty)
 {
     Dna5String seq = "CGTATAGGANNAGAT";
@@ -246,6 +295,5 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_max_size)
 
     SEQAN_ASSERT_EQ(maxSize(jst), MaxValue<TSize>::VALUE);
 }
-
 
 #endif // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_

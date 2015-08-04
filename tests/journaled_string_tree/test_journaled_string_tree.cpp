@@ -48,6 +48,7 @@ SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree)
     SEQAN_CALL_TEST(test_journaled_string_tree_erase);
     SEQAN_CALL_TEST(test_journaled_string_tree_clear);
     SEQAN_CALL_TEST(test_journaled_string_tree_empty);
+    SEQAN_CALL_TEST(test_journaled_string_tree_resize);
     SEQAN_CALL_TEST(test_journaled_string_tree_max_size);
     SEQAN_CALL_TEST(test_journaled_string_tree_size);
 }

@@ -236,7 +236,7 @@ struct GetNetSizeFunctor
     GetNetSizeFunctor()
     {}
 
-    GetNetSizeFunctor(TIter it) : _it(it)
+    GetNetSizeFunctor(TIter & it) : _it(it)
     {}
 
     template <typename TDeltaType>

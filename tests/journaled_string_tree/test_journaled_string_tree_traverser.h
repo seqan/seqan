@@ -42,10 +42,6 @@
 #include <seqan/basic.h>
 #include <seqan/journaled_string_tree.h>
 #include <seqan/stream.h>
-#include <seqan/vcf_io.h>
-
-#include "test_config_reader.h"
-//#include "test_journaled_string_tree.h"
 
 using namespace seqan;
 
@@ -111,41 +107,6 @@ _createJournaledStrings(StringSet<TString> & set,
     }
 }
 
-template <typename TFile>
-inline auto
-_createJstFromFile(TJst & jst, TInFile & configIn) -> decltype(_createJstFromFile(path))
-{
-    while (!atEnd(configIn))
-    {
-        TestConfigRecord_<Dna, unsigned> record;
-        readRecord(record, configIn);
-
-        switch (record.deltaType)
-        {
-            case DELTA_TYPE_SNP:
-            {
-                insert(jst, record.pos, record.snp, record.coverage, DeltaTypeSnp());
-                break;
-            }
-            case DELTA_TYPE_DEL:
-            {
-                insert(jst, record.pos, record.del, record.coverage, DeltaTypeDel());
-                break;
-            }
-            case DELTA_TYPE_INS:
-            {
-                insert(jst, record.pos, record.ins, record.coverage, DeltaTypeIns());
-                break;
-            }
-            case DELTA_TYPE_SV:
-            {
-                insert(jst, record.pos, record.stv, record.coverage, DeltaTypeSV());
-                break;
-            }
-        }
-    }
-}
-
 template <typename TJst>
 inline TJst _createSimpleJst()
 {
@@ -164,6 +125,68 @@ inline TJst _createSimpleJst()
     insert(jst, 20, 'A', ids, DeltaTypeSnp());
 
 //    SEQAN_ASSERT(create(jst));
+    return jst;
+}
+
+
+template <typename TJst>
+inline TJst _createComplexJst()
+{
+//    POS	TYPE	S0	S1	S2	S3	S4	S5	S6	S7	S8	S9	MOD
+//     0	SNP		0	1	0	1	0	1	1	1	0	0	C
+//     0	INS		1	0	1	0	0	0	0	0	0	0	TTG
+//     0	DEL		0	0	0	0	1	0	0	0	0	1	2
+//     1	SNP		0	1	1	1	0	0	0	1	0	0	G
+//     5	STV		1	0	0	0	1	0	0	1	0	0	3,CTC
+//     6	INS		0	1	1	0	0	0	1	0	0	0	GGTAGACAACG
+//     8	DEL		1	0	0	0	0	0	1	1	0	1	10
+//     8	DEL		0	1	0	0	1	0	0	0	0	0	5
+//    10	SNP		0	0	1	0	0	1	0	0	0	0	G
+//    13	DEL		0	1	0	0	0	0	0	0	0	0	5
+//    13	DEL		0	0	0	0	1	1	0	0	0	0	8
+//    20	SNP		1	1	0	0	0	0	1	0	0	0	T
+//    40	INS		1	0	1	0	0	0	1	0	1	0	TGAC
+//    41	INS		1	0	1	0	0	0	0	1	0	1	GTAGA
+//    41	STV		0	1	0	0	0	1	1	0	0	0	5,A
+//    58	DEL		1	0	0	0	0	0	0	0	1	1	10
+//    60	SNP		0	1	1	1	1	1	1	1	0	0	G
+//    61	STV		0	0	1	0	0	1	1	1	0	0	2,TA
+//    63	DEL		0	0	0	1	0	1	0	1	0	0	3
+//    66	INS		0	0	0	0	1	0	1	1	0	0	AGGTA
+//    90	DEL		1	0	0	0	0	0	0	0	0	0	9
+//    90	DEL		0	1	0	0	0	0	0	0	0	0	10
+//    99	SNP		0	0	1	0	0	0	0	0	0	0	T
+//    100	INS		0	0	0	1	0	0	0	0	0	0	CCT
+
+    typename Host<typename Member<TJst, JstSourceMember>::Type>::Type const
+        seq = "ACGTGGGATTACGGACGAGCGGACTGATTTAGGAGGACAGTACGGGACTACGGACGTACTACGAGCGACTATCGACGAGAGGAGATCAGGCATTAAGCCC";
+    TJst jst(std::move(seq), 10);
+
+    insert(jst, 0, 'C',                                 std::vector<unsigned>{1, 3, 5, 6, 7},       DeltaTypeSnp());
+    insert(jst, 0, "TTG",                               std::vector<unsigned>{0, 2},                DeltaTypeIns());
+    insert(jst, 0, 2,                                   std::vector<unsigned>{4, 9},                DeltaTypeDel());
+    insert(jst, 1, 'G',                                 std::vector<unsigned>{1, 2, 3, 7},          DeltaTypeSnp());
+    insert(jst, 5, Pair<unsigned, DnaString>(3, "CTC"), std::vector<unsigned>{0, 4, 7},             DeltaTypeSV());
+    insert(jst, 6, "GGTAGACAACG",                       std::vector<unsigned>{1, 2, 6},             DeltaTypeIns());
+    insert(jst, 8, 10,                                  std::vector<unsigned>{0, 6, 7, 9},          DeltaTypeDel());
+    insert(jst, 8, 5,                                   std::vector<unsigned>{1, 4},                DeltaTypeDel());
+    insert(jst, 10, 'G',                                std::vector<unsigned>{2, 5},                DeltaTypeSnp());
+    insert(jst, 13, 5,                                  std::vector<unsigned>{1},                   DeltaTypeDel());
+    insert(jst, 13, 8,                                  std::vector<unsigned>{4, 5},                DeltaTypeDel());
+    insert(jst, 20, 'T',                                std::vector<unsigned>{0, 1, 6},             DeltaTypeSnp());
+    insert(jst, 40, "TGAC",                             std::vector<unsigned>{0, 2, 6, 8},          DeltaTypeIns());
+    insert(jst, 41, "GTAGA",                            std::vector<unsigned>{0, 2, 7, 9},          DeltaTypeIns());
+    insert(jst, 41, Pair<unsigned, DnaString>(5, "A"),  std::vector<unsigned>{1, 5, 6},             DeltaTypeSV());
+    insert(jst, 58, 10,                                 std::vector<unsigned>{0, 8, 9},             DeltaTypeDel());
+    insert(jst, 60, 'G',                                std::vector<unsigned>{1, 2, 3, 4, 5, 6, 7}, DeltaTypeSnp());
+    insert(jst, 61, Pair<unsigned, DnaString>(2, "TA"), std::vector<unsigned>{2, 5, 6, 7},          DeltaTypeSV());
+    insert(jst, 63, 3,                                  std::vector<unsigned>{3, 5, 7},             DeltaTypeDel());
+    insert(jst, 66, "AGGTA",                            std::vector<unsigned>{4, 6, 7},             DeltaTypeIns());
+    insert(jst, 90, 9,                                  std::vector<unsigned>{0},                   DeltaTypeDel());
+    insert(jst, 90, 10,                                 std::vector<unsigned>{1},                   DeltaTypeDel());
+    insert(jst, 99, 'T',                                std::vector<unsigned>{2},                   DeltaTypeSnp());
+    insert(jst, 100, "CCT",                             std::vector<unsigned>{3},                   DeltaTypeIns());
+
     return jst;
 }
 
@@ -336,21 +359,8 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_context_size)
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_basic_traversal)
 {
-    CharString path = SEQAN_PATH_TO_ROOT();
-    append(path, "/tests/journaled_string_tree/testConfig.vcf");
-
-    auto jst = _createJstFromFile(path);
-
-    TestConfigFileIn_ configIn(toCString(path));
-
-    TestConfigHeader_<DnaString> header;
-    readHeader(header, configIn);
-    DnaString seq = header.ref;
-
-    JournaledStringTree<DnaString, TestJstPosConfig_> jst(seq, length(context(configIn)));
-    _createJst(jst, configIn);
-
-//    SEQAN_ASSERT(create(jst));
+    typedef JournaledStringTree<DnaString> TJst;
+    auto jst = _createComplexJst<TJst>();
 
     StringSet<DnaString> testSeqs;
     resize(testSeqs, length(jst));
@@ -358,7 +368,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_basic_traversal)
     std::stringstream strStream;
 
 
-    typename Traverser<JournaledStringTree<DnaString, TestJstPosConfig_> >::Type sub(jst, 1, 10);
+    typename Traverser<TJst>::Type sub(jst, 1, 10);
 
     while (!atEnd(sub))
     {
