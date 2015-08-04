@@ -71,6 +71,9 @@
 #pragma warning( disable : 4345 )
 #pragma warning( disable : 4351 )
 
+// allow multiple constructors
+#pragma warning( disable : 4521 )
+
 // ==========================================================================
 // Define Integers
 // ==========================================================================
@@ -133,9 +136,11 @@ inline T round(T const & x)
 }
 
 // Rename some underscore-functions in Windows.
+#if _MSC_VER < 1900
 #ifndef snprintf
 #define snprintf _snprintf
 #endif  // #ifndef snprintf
+#endif
 
 // Define ftello
 #ifndef ftello
