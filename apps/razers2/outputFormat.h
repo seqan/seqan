@@ -785,7 +785,7 @@ void dumpMatches(
 
 		case 2:	// Eland Format
 			_sep_ = '\t';
-			for(unsigned readNo = 0; readNo < length(store.readSeqStore); ++readNo)
+			for (unsigned readNo = 0; it != itEnd; ++readNo, it++)
 			{
 				TQuality	qual = getValue(store.alignQualityStore, (*it).id);
 				switch (options.readNaming)
@@ -867,7 +867,6 @@ void dumpMatches(
 						}
 					}
 					file << std::endl;
-					++it;
 				}
 			}
 			break;
