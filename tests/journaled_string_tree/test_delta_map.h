@@ -34,8 +34,8 @@
 // Test for the delta map.
 // ==========================================================================
 
-#ifndef EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_DELTA_MAP_H_
-#define EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_DELTA_MAP_H_
+#ifndef TESTS_JOURNALED_STRING_TREE_TEST_DELTA_MAP_H_
+#define TESTS_JOURNALED_STRING_TREE_TEST_DELTA_MAP_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -526,4 +526,4 @@ SEQAN_DEFINE_TEST(test_delta_map_entry_delta_coverage)
     SEQAN_ASSERT_EQ(getDeltaCoverage(*(it2+2)), cov3);
 }
 
-#endif  // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_DELTA_MAP_H_
+#endif  // TESTS_JOURNALED_STRING_TREE_TEST_DELTA_MAP_H_

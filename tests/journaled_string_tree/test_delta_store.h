@@ -34,8 +34,8 @@
 // Tests for the delta store.
 // ==========================================================================
 
-#ifndef EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_DELTA_STORE_H_
-#define EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_DELTA_STORE_H_
+#ifndef TESTS_JOURNALED_STRING_TREE_TEST_DELTA_STORE_H_
+#define TESTS_JOURNALED_STRING_TREE_TEST_DELTA_STORE_H_
 
 #include <seqan/basic.h>
 #include <seqan/journaled_string_tree.h>
@@ -210,4 +210,4 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_net_size)
     SEQAN_ASSERT_EQ(netSize(store, 1, DeltaTypeSV()), -2);
 }
 
-#endif // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_DELTA_STORE_H_
+#endif // TESTS_JOURNALED_STRING_TREE_TEST_DELTA_STORE_H_

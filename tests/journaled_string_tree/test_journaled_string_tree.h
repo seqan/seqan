@@ -34,8 +34,8 @@
 // Tests for the journaled string tree.
 // ==========================================================================
 
-#ifndef EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_
-#define EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_
+#ifndef TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_
+#define TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_
 
 #include <seqan/basic.h>
 #include <seqan/journaled_string_tree.h>
@@ -296,4 +296,4 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_max_size)
     SEQAN_ASSERT_EQ(maxSize(jst), MaxValue<TSize>::VALUE);
 }
 
-#endif // EXTRAS_TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_
+#endif // TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_
