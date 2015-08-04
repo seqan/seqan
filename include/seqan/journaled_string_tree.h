@@ -44,6 +44,8 @@
 #ifdef SEQAN_CXX11_STANDARD
 
 #include <seqan/basic.h>
+#include <seqan/sequence.h>
+#include <seqan/modifier.h>
 #include <seqan/sequence_journaled.h>
 #include <seqan/journaled_set.h>
 #include <seqan/parallel.h>
