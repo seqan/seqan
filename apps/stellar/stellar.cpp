@@ -581,6 +581,9 @@ void _setParser(ArgumentParser & parser)
 
 // TODO(holtgrew): Move this into a SeqAn misc module.
 
+// not supported anymore in vc2015
+// https://msdn.microsoft.com/en-us/library/bb531344.aspx
+#if _MSC_VER < 1900
 class ScientificNotationExponentOutputNormalizer
 {
 public:
@@ -602,8 +605,8 @@ public:
         _set_output_format(_oldExponentFormat);
 #endif
     }
-
 };
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 // Parses and outputs parameters, calls _stellarOnAll().
@@ -673,7 +676,9 @@ int mainWithOptions(TOptions & options, String<TAlphabet>)
 int main(int argc, const char * argv[])
 {
     // Makes sure that printing doubles in scientific notation is normalized on all platforms.
+#if _MSC_VER < 1900
     ScientificNotationExponentOutputNormalizer scientificNotationNormalizer;
+#endif
 
     // command line parsing
     ArgumentParser parser("stellar");
