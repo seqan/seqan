@@ -583,7 +583,6 @@ void _setParser(ArgumentParser & parser)
 
 // not supported anymore in vc2015
 // https://msdn.microsoft.com/en-us/library/bb531344.aspx
-#if _MSC_VER < 1900
 class ScientificNotationExponentOutputNormalizer
 {
 public:
@@ -592,7 +591,7 @@ public:
     ScientificNotationExponentOutputNormalizer() :
         _oldExponentFormat(0)
     {
-#ifdef PLATFORM_WINDOWS_VS
+#if _MSC_VER < 1900
         // Set scientific format to print two places.
         unsigned _oldExponentFormat = _set_output_format(_TWO_DIGIT_EXPONENT);
 #endif
@@ -600,13 +599,12 @@ public:
 
     ~ScientificNotationExponentOutputNormalizer()
     {
-#ifdef PLATFORM_WINDOWS_VS
+#if _MSC_VER < 1900
         // Enable old exponent format.
         _set_output_format(_oldExponentFormat);
 #endif
     }
 };
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 // Parses and outputs parameters, calls _stellarOnAll().
@@ -676,9 +674,7 @@ int mainWithOptions(TOptions & options, String<TAlphabet>)
 int main(int argc, const char * argv[])
 {
     // Makes sure that printing doubles in scientific notation is normalized on all platforms.
-#if _MSC_VER < 1900
     ScientificNotationExponentOutputNormalizer scientificNotationNormalizer;
-#endif
 
     // command line parsing
     ArgumentParser parser("stellar");
