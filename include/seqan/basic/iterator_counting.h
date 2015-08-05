@@ -170,10 +170,11 @@ assignValue(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & me, TValue _va
 // Function operator==()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TIncrementable>
-inline bool
+//NOTE(h-2): the other operators should get a similar const-container-tolerant interface
+template <typename TSpec, typename TIncrementable, typename TIncrementable2>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<TIncrementable const &, TIncrementable2 const &>, bool)
 operator==(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left,
-           Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
+           Iter<TIncrementable2, CountingIteratorImpl_<TSpec> > const & right)
 {
     return position(left) == position(right);
 }

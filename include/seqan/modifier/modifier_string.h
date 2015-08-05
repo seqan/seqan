@@ -125,22 +125,6 @@ public:
         ignoreUnusedVariableWarning(dummy);
     }
 
-#ifdef SEQAN_CXX11_STANDARD
-
-    // Constructor for an inner host type; forward host to hosted type.
-    template <typename THost_>
-    explicit
-    ModifiedString(THost_ && host,
-                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<
-                                            typename RemoveReference<THost>::Type,
-                                            typename RemoveReference<THost_>::Type >)) :
-            _host(std::forward<THost_>(host)), _cargo()
-    {
-        ignoreUnusedVariableWarning(dummy);
-    }
-
-#else // SEQAN_CXX11_STANDARD
-
     // Constructor for an inner host type; forward host to hosted type.
     template <typename THost_>
     explicit
@@ -150,17 +134,6 @@ public:
     {
         ignoreUnusedVariableWarning(dummy);
     }
-
-    template <typename THost_>
-    explicit
-    ModifiedString(THost_ const & host,
-                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
-            _host(host), _cargo()
-    {
-        ignoreUnusedVariableWarning(dummy);
-    }
-
-#endif // SEQAN_CXX11_STANDARD
 
     template <typename TPos>
     inline typename Reference<ModifiedString>::Type
@@ -352,16 +325,16 @@ struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
 };
 
 // VARIANT B: const ModifiedString propagates its constness upwards
-//template <typename THost, typename TSpec >
-//struct Iterator<ModifiedString<THost, TSpec> const, Standard>
-//{
+// template <typename THost, typename TSpec >
+// struct Iterator<ModifiedString<THost, TSpec> const, Standard>
+// {
 //    typedef ModifiedIterator<typename Iterator<THost const, Standard>::Type, TSpec> Type;
-//};
-//template <typename THost, typename TSpec >
-//struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
-//{
+// };
+// template <typename THost, typename TSpec >
+// struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
+// {
 //    typedef ModifiedIterator<typename Iterator<THost const, Rooted>::Type, TSpec> Type;
-//};
+// };
 
 // --------------------------------------------------------------------------
 // Metafunction Host
@@ -391,10 +364,10 @@ struct Host<ModifiedString<THost, TSpec> const > {
 };
 
 // VARIANT B: const ModifiedString propagates its constness upwards
-//template <typename THost, typename TSpec >
-//struct Host<ModifiedString<THost, TSpec> const > {
+// template <typename THost, typename TSpec >
+// struct Host<ModifiedString<THost, TSpec> const > {
 //    typedef typename ConvertArrayToPointer<THost const>::Type Type;
-//};
+// };
 
 // --------------------------------------------------------------------------
 // Metafunction Parameter_
@@ -579,7 +552,7 @@ value(ModifiedString<THost, TSpec> & me, TPos pos)
 }
 
 template <typename THost, typename TSpec, typename TPos>
-inline typename Reference<ModifiedString<THost, TSpec> const >::Type
+inline typename Reference<ModifiedString<THost, TSpec> const>::Type
 value(ModifiedString<THost, TSpec> const & me, TPos pos)
 {
     return value(begin(me, Standard()) + pos);

@@ -43,6 +43,7 @@ SEQAN_BEGIN_TESTSUITE(test_reduced_aminoacid)
 {
 //     SEQAN_CALL_TEST(test_reduced_aminoacid_cluster_red);
     SEQAN_CALL_TEST(test_reduced_aminoacid_murphy10);
-
+    SEQAN_CALL_TEST(test_reduced_aminoacid_murphy10_moditerators);
+    SEQAN_CALL_TEST(test_reduced_aminoacid_murphy10_modview_fmindex);
 }
 SEQAN_END_TESTSUITE

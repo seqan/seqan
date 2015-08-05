@@ -86,8 +86,8 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         typedef StringSet<TString, TSetSpec> const TText;
 
-        typename Size<TString>::Type _offset;
         TText &_text;
+        typename Size<TString>::Type _offset;
 
         SuffixLess_(TText &text):
             _text(text) {}
@@ -203,6 +203,34 @@ namespace SEQAN_NAMESPACE_MAIN
             begin(SA, Standard()),
             end(SA, Standard()),
             SuffixLess_<typename Value<TSA>::Type, TText const>(s));
+    }
+
+    // Fill suffix array with permutation (i, 0)
+    template <typename TSA, typename TString, typename TSSetSpec>
+    inline void
+    fillSuffixArray(TSA &sa, StringSet<TString, TSSetSpec> const & /* s */, Trie const &)
+    {
+        typedef typename Iterator<TSA, Standard>::Type  TIter;
+        typedef typename Value<TSA>::Type               TSAValue;
+
+        TIter it = begin(sa, Standard());
+        TIter itEnd = end(sa, Standard());
+        for (; it != itEnd; ++it)
+            *it = TSAValue(position(it, sa), 0);
+    }
+
+    template <typename TSA, typename TString, typename TSSetSpec>
+    inline void
+    createSuffixArray(TSA &sa, StringSet<TString, TSSetSpec> const &s, Trie const &)
+    {
+        typedef StringSet<TString, TSSetSpec>           TText;
+        typedef typename Value<TSA>::Type               TSAValue;
+
+        // 1. Fill suffix array with permutation (i, 0)
+        fillSuffixArray(sa, s, Trie());
+
+        // 2. Sort suffix array with quicksort
+        sort(sa, SuffixLess_<TSAValue, TText const>(s));
     }
 
     //////////////////////////////////////////////////////////////////////////////
