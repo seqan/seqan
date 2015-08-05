@@ -102,6 +102,11 @@ add_executable (test_index_fm
                 test_index_helpers.h)
 target_link_libraries (test_index_fm ${SEQAN_LIBRARIES})
 
+add_executable (test_index_bifm
+                test_index_bifm.cpp
+                test_index_helpers.h)
+target_link_libraries (test_index_bifm ${SEQAN_LIBRARIES})
+
 add_executable (test_index_vstree
                 test_index_vstree.cpp
                 test_index_fm_stree.h
@@ -164,6 +169,7 @@ add_test (NAME test_test_index_fm_rank_dictionary COMMAND $<TARGET_FILE:test_ind
 add_test (NAME test_test_index_fm_sparse_string COMMAND $<TARGET_FILE:test_index_fm_sparse_string>)
 add_test (NAME test_test_index_base COMMAND $<TARGET_FILE:test_index_base>)
 add_test (NAME test_test_index_fm COMMAND $<TARGET_FILE:test_index_fm>)
+add_test (NAME test_test_index_bifm COMMAND $<TARGET_FILE:test_index_bifm>)
 add_test (NAME test_test_index_vstree COMMAND $<TARGET_FILE:test_index_vstree>)
 if (NOT CMAKE_COMPILER_IS_GNUCXX OR (450 LESS _GCC_VERSION))
     add_test (NAME test_test_index_stree_iterators COMMAND $<TARGET_FILE:test_index_stree_iterators>)
