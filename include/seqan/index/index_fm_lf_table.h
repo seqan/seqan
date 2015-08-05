@@ -663,7 +663,7 @@ inline void createLF(LF<TText, TSpec, TConfig> & lf, TOtherText const & text, TS
     _createBwt(lf, bwt, text, sa);
 
     // Index BWT bwt for rank queries.
-    createRankDictionary(lf.bwt, bwt, lf.sums);
+    createRankDictionary(lf.bwt, bwt);
 
     // Add sentinels to prefix sum.
     TSize sentinelsCount = countSequences(text);
