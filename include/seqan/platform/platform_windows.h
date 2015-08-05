@@ -73,6 +73,8 @@
 
 // allow multiple constructors
 #pragma warning( disable : 4521 )
+// allow functions like strncpy without warning
+#define _CRT_SECURE_NO_WARNINGS
 
 // ==========================================================================
 // Define Integers
