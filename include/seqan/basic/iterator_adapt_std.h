@@ -61,7 +61,7 @@ namespace std
 	// For now, this is a workaround.
 #if _MSC_VER == 1900
 	template<class _Ty, class Tag>
-	struct _Is_iterator<typename seqan::Iter<_Ty, Tag>>
+	struct _Is_iterator<typename seqan::Iter<_Ty, Tag> >
 		: true_type
 	{
 	};
