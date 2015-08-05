@@ -55,6 +55,14 @@ namespace std
         typedef typename seqan::Value<TIter>::Type * pointer; // nolint
         typedef typename seqan::Reference<TIter>::Type reference; // nolint
     };
+
+	// there is a bug in vc2015 stl, it doesnt check the iterator_traits correctly
+	// I have reported this bug to microsoft already. For now, this is a workaround.
+	template<class _Ty>
+	struct _Is_iterator<typename seqan::Iter<_Ty, seqan::StdIteratorAdaptor>>
+		: true_type
+	{
+	};
 }
 
 namespace seqan {
