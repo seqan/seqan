@@ -591,8 +591,11 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
     // Fill the sentinel positions (they are all at the beginning of the bwt).
     for (TSize i = 1; i <= seqNum; ++i, ++bwtIt)
     {
-        assignValue(bwtIt, back(text[seqNum - i]));
-        setValue(lf.sentinels, bwtIt - bwtItBeg, false);
+        if (length(text[seqNum - i]) > 0)
+        {
+            assignValue(bwtIt, back(text[seqNum - i]));
+            setValue(lf.sentinels, bwtIt - bwtItBeg, false);
+        }
     }
 
     // Compute the rest of the bwt.
