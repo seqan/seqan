@@ -129,12 +129,12 @@ if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
     ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP"))
     message (STATUS "Configuring demos")
     add_subdirectory (demos)
+    message (STATUS "Configuring apps")
+    add_subdirectory (apps)
+    message (STATUS "Configuring dox")
+    add_subdirectory (dox)
 endif ()
 
-message (STATUS "Configuring apps")
-add_subdirectory (apps)
-message (STATUS "Configuring dox")
-add_subdirectory (dox)
 message (STATUS "Configuring manual")
 add_subdirectory (manual)
 message (STATUS "Configuring util/py_lib")
@@ -163,3 +163,18 @@ include (package)
 # ===========================================================================
 
 include (SeqAnCtdSetup)
+
+# ===========================================================================
+# Install all C++ header files
+# ===========================================================================
+
+install (DIRECTORY include/seqan DESTINATION "${CMAKE_INSTALL_PREFIX}/include")
+
+# ===========================================================================
+# Install pkg-config file on Unix-like systems
+# ===========================================================================
+
+if (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
+	configure_file("pkg-config/seqan-2.pc.in" "pkg-config/seqan-2.pc" @ONLY)
+	install(FILES "${CMAKE_BINARY_DIR}/pkg-config/seqan-2.pc" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/pkgconfig")
+endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
