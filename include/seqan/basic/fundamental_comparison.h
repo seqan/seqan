@@ -144,6 +144,12 @@ SEQAN_HOST_DEVICE inline bool ordGreater(TValue1 const & left, TValue2 const & r
     return ordValue(left) > ordValue(static_cast<TValue1>(right));
 }
 
+template <typename TValue1, typename TValue2>
+SEQAN_HOST_DEVICE inline bool ordGreaterEqual(TValue1 const & left, TValue2 const & right)
+{
+    return ordValue(left) >= ordValue(static_cast<TValue1>(right));
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_FUNDAMENTAL_COMPARISON_H_

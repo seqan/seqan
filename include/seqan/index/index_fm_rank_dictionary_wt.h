@@ -319,6 +319,54 @@ getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos 
     return 0;
 }
 
+template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
+inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type
+getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character, unsigned int & smaller)
+{
+    typedef typename Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreTreeStructure>::Type  TWaveletTreeStructure;
+    typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type         TWaveletTreeStructureString;
+    typedef typename Value<TWaveletTreeStructureString>::Type                               TWaveletTreeStructureEntry;
+    typedef typename Value<TWaveletTreeStructureEntry, 1>::Type                             TChar_;
+
+    TPos sum = pos;
+    TPos treePos = 0;
+
+    // determine the leaf containing the character
+    // count the number of 1 or 0 up to the computed position
+    // count the number of characters smaller to the specified position
+    typename Iterator<TWaveletTreeStructure const, TopDown<> >::Type it(dict.waveletTreeStructure, treePos);
+    TChar_ charInTree = dict.waveletTreeStructure.minCharValue;
+
+    while (true)
+    {
+        TPos addValue = getRank(dict.ranks[treePos], sum);
+        if (ordGreater(getCharacter(it), character))
+        {
+            if (addValue > sum) return 0;
+
+            sum -= addValue;
+            if (!goLeftChild(it))
+                break;
+        }
+        else
+        {
+            smaller += sum - addValue + 1;
+            if (addValue == 0) return 0;
+
+            charInTree = getCharacter(it);
+            sum = addValue - 1;
+            if (!goRightChild(it))
+                break;
+        }
+        treePos = getPosition(it);
+    }
+
+    if (ordEqual(charInTree, character))
+        return sum + 1;
+
+    return 0;
+}
+
 // ----------------------------------------------------------------------------
 // Function _fillStructure()
 // ----------------------------------------------------------------------------

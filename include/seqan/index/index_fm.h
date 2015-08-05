@@ -74,7 +74,12 @@ namespace seqan {
  *        default @link FMIndexConfig @endlink object the type of <tt>TSentinelsSpec</tt> is a two level
  *        @link RankDictionary @endlink.
  */
-template <typename TSpec = void, typename TLengthSum = size_t>
+
+//TODO:cpockrandt: documentation for template parameter
+struct FMUnidirectional;
+struct FMBidirectional;
+
+template <typename TSpec = void, typename TLengthSum = size_t, typename TBidirectional = FMUnidirectional>
 struct FMIndexConfig
 {
     typedef TLengthSum                                  LengthSum;
@@ -124,7 +129,7 @@ typedef Tag<FibreSALF_> const           FibreSALF;
  * @tag FMIndexFibres#FibreText
  * @brief The original text of the index.
  *
- * @tagFMIndexFibres#FibreSA
+ * @tag FMIndexFibres#FibreSA
  * @brief The compressed suffix array of the text.
  *
  * @tag FMIndexFibres#FibreLF
