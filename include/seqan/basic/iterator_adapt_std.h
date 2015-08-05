@@ -58,8 +58,8 @@ namespace std
 
 	// there is a bug in vc2015 stl, it doesnt check the iterator_traits correctly
 	// I have reported this bug to microsoft already. For now, this is a workaround.
-	template<class _Ty>
-	struct _Is_iterator<typename seqan::Iter<_Ty, seqan::StdIteratorAdaptor>>
+	template<class _Ty, class Tag>
+	struct _Is_iterator<typename seqan::Iter<_Ty, Tag>>
 		: true_type
 	{
 	};
