@@ -1693,6 +1693,8 @@ void test_pattern_copycon() {
     typedef Pattern<CharString, TPatternSpec> TPattern;
     TPattern p1("Some needle");
     TPattern p2(p1);
+    TPattern const p3(p2);
+    TPattern const p4(p3);
 }
 
 template <typename TPatternSpec>
@@ -1701,8 +1703,35 @@ void test_pattern_assign() {
     typedef Pattern<CharString, TPatternSpec> TPattern;
     TPattern p1("Some needle");
     TPattern p2;
+    TPattern const p3(p1);
+    TPattern p4;
     p2 = p1;
+    p4 = p3;
 }
+
+#ifdef SEQAN_CXX11_STANDARD
+
+template <typename TPatternSpec>
+void test_pattern_movecon() {
+    typedef Pattern<CharString, TPatternSpec> TPattern;
+    TPattern p1("Some needle");
+    TPattern p2(std::move(p1));
+    TPattern const p3(std::move(p2));
+    TPattern const p4(std::move(p3));
+}
+
+template <typename TPatternSpec>
+void test_pattern_moveassign() {
+    SEQAN_CHECKPOINT;
+    typedef Pattern<CharString, TPatternSpec> TPattern;
+    TPattern p1("Some needle");
+    TPattern p2;
+    TPattern const p3(p1);
+    TPattern p4;
+    p2 = std::move(p1);
+    p4 = std::move(p3);
+}
+#endif  // SEQAN_CXX11_STANDARD
 
 SEQAN_DEFINE_TEST(test_pattern_copycon) {
     // Test whether the needle is preserved in copying a pattern.
@@ -1730,6 +1759,29 @@ SEQAN_DEFINE_TEST(test_pattern_assign) {
     test_pattern_assign<Bfam<Trie> >();
 }
 
+#ifdef SEQAN_CXX11_STANDARD
+SEQAN_DEFINE_TEST(test_pattern_movecon) {
+    test_pattern_movecon<Simple>();
+    test_pattern_movecon<Horspool>();
+    test_pattern_movecon<ShiftAnd>();
+    test_pattern_movecon<ShiftOr>();
+    test_pattern_copycon<HammingSimple>();
+    test_pattern_copycon<WildShiftAnd>();
+    test_pattern_copycon<Bfam<Oracle> >();
+    test_pattern_copycon<Bfam<Trie> >();
+}
+
+SEQAN_DEFINE_TEST(test_pattern_moveassign) {
+    test_pattern_moveassign<Simple>();
+    test_pattern_moveassign<Horspool>();
+    test_pattern_moveassign<ShiftAnd>();
+    test_pattern_moveassign<ShiftOr>();
+    test_pattern_assign<HammingSimple>();
+    test_pattern_assign<WildShiftAnd>();
+    test_pattern_assign<Bfam<Oracle> >();
+    test_pattern_assign<Bfam<Trie> >();
+}
+#endif  // SEQAN_CXX11_STANDARD
 
 SEQAN_BEGIN_TESTSUITE(test_find) {
 //     SEQAN_CALL_TEST(test_myers_trigger_bug);
@@ -1783,6 +1835,11 @@ SEQAN_BEGIN_TESTSUITE(test_find) {
 
     SEQAN_CALL_TEST(test_pattern_copycon);
     SEQAN_CALL_TEST(test_pattern_assign);
+
+#ifdef SEQAN_CXX11_STANDARD
+    SEQAN_CALL_TEST(test_pattern_movecon);
+    SEQAN_CALL_TEST(test_pattern_moveassign);
+#endif  // SEQAN_CXX11_STANDARD
 
     // Verify checkpoints in all files in this module.
     SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_hamming_simple.h");
