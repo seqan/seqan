@@ -672,102 +672,12 @@ _patternMatchNOfFinder(Pattern<TNeedle, Myers<TSpec, THasState, void> > & patter
     _patternMatchNOfFinderImpl(pattern, match);
 }
 
-
-// data_host is not used anymore, the needle can be reconstructed from the bitmasks
-//template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec, typename TNeedle2>
-//inline void
-//_myersSetHost(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > &, TNeedle2 const &)
-//{
-//}
-//
-//template <typename TNeedle, typename TSpec, typename TFinderCSP, typename TPatternCSP, typename THasState, typename TFindBeginPatternSpec, typename TNeedle2>
-//inline void
-//_myersSetHost(Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > & pattern, TNeedle2 const & ndl)
-//{
-//    setValue(pattern.data_host, ndl);
-//}
-
-// TODO(rrahn): At the moment we simply delegate to _patternFirstInit, as I am not sure if it is called from somewhere else.
 template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
 inline void
 _reinitPattern(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > & pattern)
 {
     _patternFirstInit(pattern, needle(pattern));
 }
-
-
-//____________________________________________________________________________
-
-
-//template <typename TNeedle, typename TSpec, typename TFinderCSP, typename TPatternCSP, typename THasState, typename TFindBeginPatternSpec>
-//inline typename Host<Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > >::Type &
-//host(Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > & pattern)
-//{
-//SEQAN_CHECKPOINT
-//    return value(pattern.data_host);
-//}
-//
-//
-//template <typename TNeedle, typename TSpec, typename TFinderCSP, typename TPatternCSP, typename THasState, typename TFindBeginPatternSpec>
-//inline typename Host<Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > const>::Type &
-//host(Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > const & pattern)
-//{
-//SEQAN_CHECKPOINT
-//    return value(pattern.data_host);
-//}
-//
-//
-//template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-//inline TNeedle
-//host(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > const & pattern)
-//{
-//SEQAN_CHECKPOINT
-//
-//    typedef typename Pattern<TNeedle, Myers<TSpec, TFindBeginPatternSpec> >::TWord TWord;
-//    typedef typename Value<TNeedle>::Type TValue;
-//
-//    TNeedle temp;
-//    resize(temp, pattern.needleSize, Exact());
-//
-//    unsigned blockCount = (pattern.needleSize + pattern.MACHINE_WORD_SIZE - 1) / pattern.MACHINE_WORD_SIZE;
-//    TValue v = TValue();
-//    for (unsigned i = 0; i < length(pattern.bitMasks); i += blockCount)
-//    {
-//        for (unsigned j = 0; j < pattern.needleSize; j++)
-//            if ((pattern.bitMasks[i + j / pattern.MACHINE_WORD_SIZE] & (TWord)1 << (j % pattern.MACHINE_WORD_SIZE)) != (TWord)0)
-//                temp[j] = v;
-//        ++v;
-//    }
-//    return temp;
-//}
-//
-//template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-//inline TNeedle
-//host(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > & pattern)
-//{
-//SEQAN_CHECKPOINT
-//    typedef Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > TPattern;
-//    return host(const_cast<TPattern const &>(pattern));
-//}
-
-//____________________________________________________________________________
-
-//template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-//inline TNeedle
-//needle(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > const & pattern)
-//{
-//SEQAN_CHECKPOINT
-//    return host(pattern);
-//}
-//
-//template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-//inline TNeedle
-//needle(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > & pattern)
-//{
-//SEQAN_CHECKPOINT
-//    typedef Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > TPattern;
-//    return host(const_cast<TPattern const &>(pattern));
-//}
 
 //____________________________________________________________________________
 /*!

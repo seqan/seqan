@@ -239,6 +239,17 @@ public:
 
     Pattern() {}
 
+
+#ifdef SEQAN_CXX11_STANDARD
+    Pattern(TIndex && index, TSize depth) :
+        data_host(std::forward<TIndex>(index)),
+        index_iterator(index),
+        depth(depth)
+    {
+        setHost(*this, std::forward<TIndex>(index));
+    }
+
+#else
     Pattern(TIndex & index, TSize depth) :
         data_host(index),
         index_iterator(index),
@@ -254,7 +265,7 @@ public:
     {
         setHost(*this, index);
     }
-
+#endif  // SEQAN_CXX11_STANDARD
     ~Pattern()
     {
 #ifdef SEQAN_DEBUG
@@ -680,10 +691,8 @@ void _moveIteratorAtRoot(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, 
     me.index_iterator = TIndexIterator(host(me));
 }
 
-// TODO(rrahn): I am not sure about the index version. Should it always be copied? Seems very error prone to me!
-template <typename TNeedle, typename TSpec, typename TDistance, typename TBacktrackingSpec, typename TNewNeedle, typename TNewSpec>
-void setHost(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & me,
-             Index<TNewNeedle, TNewSpec> const & index)
+template <typename TNeedle, typename TSpec, typename TDistance, typename TBacktrackingSpec>
+void _reinitPattern(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & me)
 {
     typedef Index<TNeedle, TSpec>                                       TIndex;
     typedef typename Iterator< TIndex, TopDown<> >::Type                TIndexIterator;
@@ -693,9 +702,6 @@ void setHost(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackin
     typedef typename EdgeLabel<TIndexIterator>::Type                    TPrefix;
     typedef PrefixAligner_<TPrefix, TDistance>                           TPrefixAligner;
     //typedef typename BacktrackingState_<TPrefix, TDistance>::Type                    TState;
-
-    // TODO(esiragusa): Update index holder
-    setValue(me.data_host, index);
 
     // Init backtracking on root node
     _moveIteratorAtRoot(me);
@@ -724,13 +730,6 @@ void setHost(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackin
 
     // Call PrefixAligner_ constructor
     me.prefix_aligner = TPrefixAligner();
-}
-
-template <typename TNeedle, typename TDistance, typename TBacktrackingSpec, typename TNewNeedle, typename TNewSpec>
-void setHost(Pattern<TNeedle, Backtracking<TDistance, TBacktrackingSpec> > & me,
-             Index<TNewNeedle, TNewSpec> & needle)
-{
-    setHost(me, reinterpret_cast<TNeedle const &>(needle));
 }
 
 // ============================================================================

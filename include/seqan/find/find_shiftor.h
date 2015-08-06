@@ -151,64 +151,6 @@ _reinitPattern(Pattern<TNeedle, ShiftOr> & me)
     */
 }
 
-//template <typename TNeedle, typename TNeedle2>
-//inline void
-//setHost(Pattern<TNeedle, ShiftOr> & me, TNeedle2 & needle)
-//{
-//    setHost(me, const_cast<TNeedle2 const &>(needle));
-//}
-//
-////____________________________________________________________________________
-//
-//template <typename TNeedle>
-//inline TNeedle
-//host(Pattern<TNeedle, ShiftOr> const & pattern)
-//{
-//SEQAN_CHECKPOINT
-//
-//    typedef typename Pattern<TNeedle, ShiftOr>::TWord TWord;
-//    typedef typename Value<TNeedle>::Type TValue;
-//
-//    TNeedle temp;
-//    resize(temp, pattern.needleLength, Exact());
-//
-//    TValue v = TValue();
-//    for (unsigned i = 0; i < length(pattern.bitMasks); i += pattern.blockCount)
-//    {
-//        for (unsigned j = 0; j < pattern.needleLength; j++)
-//            if ((pattern.bitMasks[i + j / pattern.MACHINE_WORD_SIZE] & (TWord)1 << (j % pattern.MACHINE_WORD_SIZE)) == (TWord)0)
-//                temp[j] = v;
-//        ++v;
-//    }
-//    return temp;
-//}
-//
-//template <typename TNeedle>
-//inline TNeedle
-//host(Pattern<TNeedle, ShiftOr> & pattern)
-//{
-//SEQAN_CHECKPOINT
-//    return host(const_cast<Pattern<TNeedle, ShiftOr> const &>(pattern));
-//}
-//
-////____________________________________________________________________________
-//
-//template <typename TNeedle>
-//inline TNeedle
-//needle(Pattern<TNeedle, ShiftOr> const & pattern)
-//{
-//SEQAN_CHECKPOINT
-//    return host(pattern);
-//}
-//
-//template <typename TNeedle>
-//inline TNeedle
-//needle(Pattern<TNeedle, ShiftOr> & pattern)
-//{
-//SEQAN_CHECKPOINT
-//    return host(const_cast<Pattern<TNeedle, ShiftOr> const &>(pattern));
-//}
-
 //____________________________________________________________________________
 
 template <typename TNeedle>

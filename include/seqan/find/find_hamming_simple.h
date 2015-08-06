@@ -83,19 +83,19 @@ public:
     Pattern(TNeedle2 && ndl,
             int k = -1,
             SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
-                :   maxDistance(-1),
+                :   maxDistance(-k),
                     distance(0),
                     matchNFlags(0)
     {
-        setHost(*this, std::forward<TNeedle2>(ndl), k);
+        setHost(*this, std::forward<TNeedle2>(ndl));
         ignoreUnusedVariableWarning(dummy);
     }
 
 #else
     template <typename TNeedle2>
-    Pattern(const TNeedle2 &ndl, int k = -1) : maxDistance(-1), distance(0), matchNFlags(0) {
+    Pattern(const TNeedle2 &ndl, int k = -1) : maxDistance(-k), distance(0), matchNFlags(0) {
         SEQAN_CHECKPOINT;
-        setHost(*this, ndl, k);
+        setHost(*this, ndl);
     }
 #endif  // SEQAN_CXX11_STANDARD
 };
@@ -120,18 +120,6 @@ inline void _patternMatchNOfFinder(Pattern<TNeedle, HammingSimple> & pattern, bo
     else
         pattern.matchNFlags &= 1;  // &= 01b
     pattern.matchNFlags |= 4;
-}
-
-
-template <typename TNeedle>
-void _reinitPattern(Pattern<TNeedle, HammingSimple> & me, int k)
-{
-    SEQAN_CHECKPOINT;
-
-    SEQAN_ASSERT_NOT(empty(needle(me)));
-    SEQAN_ASSERT_LEQ_MSG(k, 0, "Are you confusing distances and scores?");
-
-    me.maxDistance = -k;
 }
 
 template <typename TNeedle>

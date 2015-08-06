@@ -122,21 +122,6 @@ public:
     {
         create(data_host);
     }
-//
-//    DPMatrix_(DPMatrix_ const & other) :
-//        data_host(other.data_host) {}
-//
-//    ~DPMatrix_() {}
-//
-//    DPMatrix_ & operator=(DPMatrix_ const & other)
-//    {
-//        if (this != &other)
-//        {
-//            data_host = other.data_host;
-//        }
-//        return *this;
-//    }
-
 };
 
 // ============================================================================

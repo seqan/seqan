@@ -1783,6 +1783,26 @@ SEQAN_DEFINE_TEST(test_pattern_moveassign) {
 }
 #endif  // SEQAN_CXX11_STANDARD
 
+template <TNeedle>
+struct Foo
+{
+    TNeedle * data_host;
+
+    Foo(TNeedle && ndl) :
+    {
+        data_host = *ndl;
+    }
+};
+
+SEQAN_DEFINE_TEST(pointer_to_types)
+{
+    String<Dna> dnaString;
+    auto revString = reverseString(dnaString);
+
+
+
+}
+
 SEQAN_BEGIN_TESTSUITE(test_find) {
 //     SEQAN_CALL_TEST(test_myers_trigger_bug);
     SEQAN_CALL_TEST(test_myers_find_begin);

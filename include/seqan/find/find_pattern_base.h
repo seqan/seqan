@@ -264,18 +264,7 @@ setHost(Pattern<TNeedle, TSpec> & me,
     _reinitPattern(me);
 }
 
-template <typename TNeedle, typename TSpec, typename TNeedle2, typename TError>
-inline void
-setHost(Pattern<TNeedle, TSpec> & me,
-        TNeedle2 && ndl,
-        TError const k)
-{
-    SEQAN_ASSERT(!empty(ndl));
-    setValue(_dataHost(me), std::forward<TNeedle2>(ndl));  // Set generic setHost function.
-    _reinitPattern(me, k);
-}
-
-#else
+#else  // SEQAN_CXX11_STANDARD
 
 template <typename TNeedle, typename TSpec, typename TNeedle2>
 inline void
@@ -295,28 +284,6 @@ setHost(Pattern<TNeedle, TSpec> & me,
     SEQAN_ASSERT(!empty(ndl));
     setValue(_dataHost(me), ndl);  // Set generic setHost function.
     _reinitPattern(me);
-}
-
-template <typename TNeedle, typename TSpec, typename TNeedle2, typename TError>
-inline void
-setHost(Pattern<TNeedle, TSpec> & me,
-        TNeedle2 const & ndl,
-        TError const k)
-{
-    SEQAN_ASSERT(!empty(ndl));
-    setValue(_dataHost(me), ndl);  // Set generic setHost function.
-    _reinitPattern(me, k);
-}
-
-template <typename TNeedle, typename TSpec, typename TNeedle2, typename TError>
-inline void
-setHost(Pattern<TNeedle, TSpec> & me,
-        TNeedle2 & ndl,
-        TError const k)
-{
-    SEQAN_ASSERT(!empty(ndl));
-    setValue(_dataHost(me), ndl);  // Set generic setHost function.
-    _reinitPattern(me, k);
 }
 
 #endif  // SEQAN_CXX11_STANDARD

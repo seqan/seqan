@@ -63,20 +63,6 @@ public:
     {
         create(data_host);
     }
-
-//    DPMatrix_(DPMatrix_ const & other) :
-//        data_host(other.data_host) {}
-//
-//    ~DPMatrix_() {}
-//
-//    DPMatrix_ & operator=(DPMatrix_ const & other)
-//    {
-//        if (this != &other)
-//        {
-//            _dataHost = other._dataHost;
-//        }
-//        return *this;
-//    }
 };
 
 // ============================================================================
