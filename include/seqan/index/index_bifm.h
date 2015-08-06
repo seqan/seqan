@@ -46,7 +46,6 @@ namespace seqan {
 template <typename TSpec = void, typename TConfig = FMIndexConfig<TSpec> >
 class BidirectionalFMIndex;
 
-
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -163,23 +162,23 @@ struct Fibre<Index<TText, BidirectionalFMIndex<TSpec, TConfig> >, FibreTempSA>
 template <typename TText, typename TSpec, typename TSpec2, typename TLengthSum, typename TBidirectional>
 class Index<TText, BidirectionalFMIndex<TSpec, FMIndexConfig<TSpec2, TLengthSum, TBidirectional> > >
 {
-	typedef typename BiFMReversedText<TText>::Type													TRevText;
-	typedef Index<TRevText, FMIndex<TSpec, FMIndexConfig<TSpec2, TLengthSum, FMBidirectional> > >	TRevIndex;
-	typedef Index<TText, FMIndex<TSpec, FMIndexConfig<TSpec2, TLengthSum, FMBidirectional> > >		TFwdIndex;
+    typedef typename BiFMReversedText<TText>::Type                                                    TRevText;
+    typedef Index<TRevText, FMIndex<TSpec, FMIndexConfig<TSpec2, TLengthSum, FMBidirectional> > >    TRevIndex;
+    typedef Index<TText, FMIndex<TSpec, FMIndexConfig<TSpec2, TLengthSum, FMBidirectional> > >        TFwdIndex;
 
-	public:
+    public:
 
-	TRevText	revText;
-	TRevIndex		rev;
-	TFwdIndex		fwd;
+    TRevText    revText;
+    TRevIndex        rev;
+    TFwdIndex        fwd;
 
-	Index()	{}
+    Index()    {}
 
-	Index(TText & text) :
-		revText(text),
-		rev(revText),
-		fwd(text)
-	{}
+    Index(TText & text) :
+        revText(text),
+        rev(revText),
+        fwd(text)
+    {}
 };
 
 // ============================================================================
@@ -264,7 +263,7 @@ indexLF(Index<TText, BidirectionalFMIndex<TSpec, TConfig> > const & index)
 template <typename TText, typename TSpec, typename TConfig>
 inline bool indexCreate(Index<TText, BidirectionalFMIndex<TSpec, TConfig> > & index, FibreSALF)
 {
-	return indexCreate(index.fwd) && indexCreate(index.bwd);
+    return indexCreate(index.fwd) && indexCreate(index.bwd);
 }
 
 template <typename TText, typename TSpec, typename TConfig>
@@ -287,30 +286,30 @@ template <typename TText, typename TSpec, typename TConfig>
 SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, BidirectionalFMIndex<TSpec, TConfig> > & index, FibreSALF const)
 {
     return !(empty(getFibre(index.fwd, FibreSA())) || empty(getFibre(index.fwd, FibreLF()))
-    		||
-			empty(getFibre(index.rev, FibreSA())) || empty(getFibre(index.rev, FibreLF())));
+            ||
+            empty(getFibre(index.rev, FibreSA())) || empty(getFibre(index.rev, FibreLF())));
 }
 
 template <typename TText, typename TSpec, typename TConfig>
 SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, BidirectionalFMIndex<TSpec, TConfig> > const & index, FibreSALF const)
 {
     return !(empty(getFibre(index.fwd, FibreSA())) || empty(getFibre(index.fwd, FibreLF()))
-    		||
-			empty(getFibre(index.rev, FibreSA())) || empty(getFibre(index.rev, FibreLF())));
+            ||
+            empty(getFibre(index.rev, FibreSA())) || empty(getFibre(index.rev, FibreLF())));
 }
 
 // This function can be used to open a previously saved index.
 template <typename TText, typename TSpec, typename TConfig>
 inline bool open(Index<TText, BidirectionalFMIndex<TSpec, TConfig> > & index, const char * fileName)
 {
-	String<char> name;
+    String<char> name;
 
-	name = fileName;    append(name, ".fwd");
+    name = fileName;    append(name, ".fwd");
     bool fwdIndex = open(index.fwd, toCString(name), DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >::VALUE);
     if (fwdIndex)
     {
-    	name = fileName;    append(name, ".bwd");
-    	return open(index.rev, toCString(name), DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >::VALUE);
+        name = fileName;    append(name, ".bwd");
+        return open(index.rev, toCString(name), DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >::VALUE);
     }
     return false;
 }
@@ -319,15 +318,15 @@ inline bool open(Index<TText, BidirectionalFMIndex<TSpec, TConfig> > & index, co
 template <typename TText, typename TSpec, typename TConfig>
 inline bool save(Index<TText, BidirectionalFMIndex<TSpec, TConfig> > const & index, const char * fileName)
 {
-	String<char> name;
+    String<char> name;
 
-	name = fileName;    append(name, ".fwd");
-	bool fwdIndex = save(index.fwd, toCString(name), DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >::VALUE);
-	if (fwdIndex)
-	{
-		name = fileName;    append(name, ".bwd");
-		return save(index.rev, toCString(name), DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >::VALUE);
-	}
+    name = fileName;    append(name, ".fwd");
+    bool fwdIndex = save(index.fwd, toCString(name), DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >::VALUE);
+    if (fwdIndex)
+    {
+        name = fileName;    append(name, ".bwd");
+        return save(index.rev, toCString(name), DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >::VALUE);
+    }
     return false;
 }
 
