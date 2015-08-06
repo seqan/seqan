@@ -239,7 +239,7 @@ protected:
         // reset buffer pointers
         setg(&buffer[putbackSize - numPutback],     // beginning of putback area
              &buffer[putbackSize],                  // read position
-             &buffer[putbackSize + static_cast<unsigned int>(numRead)]);       // end position
+             &buffer[putbackSize + static_cast<size_t>(numRead)]);       // end position
 
         if (numRead <= 0)
         {
