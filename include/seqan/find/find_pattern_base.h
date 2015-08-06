@@ -45,13 +45,6 @@ namespace seqan {
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TNeedle>
-class PatternBase
-{
-public:
-    Holder<TNeedle>  data_host;
-};
-
 /*!
  * @class Pattern
  * @headerfile <seqan/find.h>
@@ -260,7 +253,7 @@ setHost(Pattern<TNeedle, TSpec> & me,
         TNeedle2 && ndl)
 {
     SEQAN_ASSERT(!empty(ndl));
-    setValue(_dataHost(me), std::forward<TNeedle2>(ndl));  // Set generic setHost function.
+    setValue(_dataHost(me), std::forward<TNeedle2>(ndl));
     _reinitPattern(me);
 }
 
@@ -272,7 +265,7 @@ setHost(Pattern<TNeedle, TSpec> & me,
         TNeedle2 const & ndl)
 {
     SEQAN_ASSERT(!empty(ndl));
-    setValue(_dataHost(me), ndl);  // Set generic setHost function.
+    setValue(_dataHost(me), ndl);
     _reinitPattern(me);
 }
 
@@ -282,7 +275,7 @@ setHost(Pattern<TNeedle, TSpec> & me,
         TNeedle2 & ndl)
 {
     SEQAN_ASSERT(!empty(ndl));
-    setValue(_dataHost(me), ndl);  // Set generic setHost function.
+    setValue(_dataHost(me), ndl);
     _reinitPattern(me);
 }
 

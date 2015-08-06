@@ -1731,6 +1731,88 @@ void test_pattern_moveassign() {
     p2 = std::move(p1);
     p4 = std::move(p3);
 }
+
+template <typename TPatternSpec>
+void test_pattern_set_host()
+{
+    typedef Pattern<DnaString, TPatternSpec> TPattern;
+
+    {  // Set to lvalue reference.
+        TPattern p;
+        DnaString ndl = "AGTGGATAGAGAT";
+        setHost(p, ndl);
+
+        SEQAN_ASSERT(&host(p) == &ndl);
+    }
+
+    {  // Set to lvalue with different alphabet causing the source to be changed.
+        DnaString ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, ndl);
+        SEQAN_ASSERT_EQ(&host(p), &ndl);
+
+        CharString ndl2 = "AT CARLS";
+        setHost(p, ndl2);
+        SEQAN_ASSERT(&host(p) == &ndl);
+        SEQAN_ASSERT_EQ(ndl, "ATACAAAA");
+        SEQAN_ASSERT_EQ(ndl2, "AT CARLS");
+    }
+
+    {  // Set to const lvalue reference with different alphabet causing the source to be changed.
+        DnaString const ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, ndl);
+        SEQAN_ASSERT(&host(p) != &ndl);
+        SEQAN_ASSERT_EQ(host(p), ndl);
+
+        CharString ndl2 = "AT CARLS";
+        setHost(p, ndl2);
+        SEQAN_ASSERT(&host(p) != &ndl);
+        SEQAN_ASSERT_EQ(ndl, "AGTGGATAGAGAT");
+        SEQAN_ASSERT_EQ(ndl2, "AT CARLS");
+        SEQAN_ASSERT_EQ(host(p), "ATACAAAA");
+    }
+
+    {  // Set with rvalue reference.
+        DnaString ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, std::move(ndl));
+        SEQAN_ASSERT(&host(p) != &ndl);
+        SEQAN_ASSERT_EQ(host(p), "AGTGGATAGAGAT");
+    }
+
+    {  // Set to rvalue reference after setting holder dependent.
+        DnaString ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, ndl);
+        SEQAN_ASSERT(&host(p) == &ndl);
+
+        CharString ndl2 = "AT CARLS";
+        setHost(p, std::move(ndl2));
+        SEQAN_ASSERT(&host(p) == &ndl);
+        SEQAN_ASSERT_EQ(ndl, "ATACAAAA");
+        SEQAN_ASSERT_EQ(host(p), "ATACAAAA");
+    }
+
+    {  // Set to rvalue reference before setting holder dependent.
+        DnaString ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, std::move(ndl));
+        SEQAN_ASSERT(&host(p) != &ndl);
+        SEQAN_ASSERT_EQ(host(p), "AGTGGATAGAGAT");
+
+        CharString ndl2 = "AT CARLS";
+        setHost(p, ndl2);
+        SEQAN_ASSERT_EQ(host(p), "ATACAAAA");
+    }
+
+    {  // Set to rvalue with different alphabet.
+        TPattern p;
+        setHost(p, "AT CARLS");
+        SEQAN_ASSERT_EQ(host(p), "ATACAAAA");
+    }
+}
+
 #endif  // SEQAN_CXX11_STANDARD
 
 SEQAN_DEFINE_TEST(test_pattern_copycon) {
@@ -1780,6 +1862,27 @@ SEQAN_DEFINE_TEST(test_pattern_moveassign) {
     test_pattern_assign<WildShiftAnd>();
     test_pattern_assign<Bfam<Oracle> >();
     test_pattern_assign<Bfam<Trie> >();
+}
+
+// TODO(rrahn): Should be a typed test for all pattern classes.
+SEQAN_DEFINE_TEST(test_pattern_set_host) {
+    test_pattern_set_host<Simple>();
+    test_pattern_set_host<Horspool>();
+    test_pattern_set_host<ShiftAnd>();
+    test_pattern_set_host<ShiftOr>();
+    test_pattern_set_host<HammingSimple>();
+    test_pattern_set_host<WildShiftAnd>();
+    test_pattern_set_host<Bfam<Oracle> >();
+    test_pattern_set_host<Bfam<Trie> >();
+    test_pattern_set_host<AhoCorasick>();
+    test_pattern_set_host<Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, void> >();
+    test_pattern_set_host<Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, Myers<FindPrefix> > >();
+    test_pattern_set_host<Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, void> >();
+    test_pattern_set_host<Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, Myers<FindPrefix> > >();
+    test_pattern_set_host<Myers<FindInfix, void> >();
+    test_pattern_set_host<Myers<FindInfix, Myers<FindPrefix> > >();
+    test_pattern_set_host<Myers<FindPrefix, void> >();
+    test_pattern_set_host<Myers<FindPrefix, Myers<FindPrefix> > >();
 }
 #endif  // SEQAN_CXX11_STANDARD
 
@@ -1839,6 +1942,7 @@ SEQAN_BEGIN_TESTSUITE(test_find) {
 #ifdef SEQAN_CXX11_STANDARD
     SEQAN_CALL_TEST(test_pattern_movecon);
     SEQAN_CALL_TEST(test_pattern_moveassign);
+    SEQAN_CALL_TEST(test_pattern_set_host);
 #endif  // SEQAN_CXX11_STANDARD
 
     // Verify checkpoints in all files in this module.
