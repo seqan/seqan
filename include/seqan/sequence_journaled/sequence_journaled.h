@@ -515,6 +515,18 @@ set(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
  * @param[in]     str The string to set as the host.
  */
 
+#ifdef SEQAN_CXX11_STANDARD
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TSequence2>
+inline
+void
+setHost(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journaledString,
+        TSequence2 && str)
+{
+    setValue(journaledString._holder, str);
+    journaledString._length = length(str);
+    reinit(journaledString._journalEntries, length(str));
+}
+#else
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TSequence2>
 inline
 void
@@ -525,7 +537,7 @@ setHost(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journ
     journaledString._length = length(str);
     reinit(journaledString._journalEntries, length(str));
 }
-
+#endif  // SEQAN_CXX11_STANDARD
 // ----------------------------------------------------------------------------
 // Function host
 // ----------------------------------------------------------------------------

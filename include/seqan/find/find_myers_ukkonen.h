@@ -298,6 +298,16 @@ public:
             largeState = new TLargeState(*other.largeState);
     }
 
+#ifdef SEQAN_CXX11_STANDARD
+    // Add move constructor.
+    PatternState_(PatternState_ && other):
+        TSmallState(std::forward<PatternState_>(other)),
+        largeState(NULL)
+    {
+        swap(largeState, other.largeState);
+    }
+#endif  // SEQAN_CXX11_STANDARD
+
     ~PatternState_()
     {
         delete largeState;
@@ -318,6 +328,20 @@ public:
         }
         return *this;
     }
+
+#ifdef SEQAN_CXX11_STANDARD
+    // Add move assignment.
+    PatternState_&
+    operator=(PatternState_ && other)
+    {
+        TSmallState::operator=(std::forward<PatternState_>(other));
+        delete largeState;
+        largeState = NULL; // *this is now in a valid state in case of self assignment.
+        largeState = other.largeState;
+        other.largeState = NULL;  // We moved the data.
+        return *this;
+    }
+#endif  // SEQAN_CXX11_STANDARD
 };
 
 
@@ -334,6 +358,7 @@ struct MyersSmallPattern_
     typedef unsigned long TWord;
 #endif
 
+    Holder<TNeedle> data_host;   // Hold a reference to the needle
     String<TWord> bitMasks;        // encode the needle with bitmasks for each alphabet character
     unsigned needleSize;        // needle size
 
@@ -411,6 +436,24 @@ public:
             largePattern = new TLargePattern(*other.largePattern);
     }
 
+#ifdef SEQAN_CXX11_STANDARD
+    // Add move constructor.
+    Pattern(Pattern && other) :
+        TSmallPattern(std::forward<Pattern>(other)),
+        TPatternState(std::forward<Pattern>(other)),
+        largePattern(NULL)
+    {
+        swap(largePattern, other.largePattern);  // swap the content setting the large pattern of other to NULL.
+    }
+
+    template <typename TNeedle2>
+    Pattern(TNeedle2 && ndl, int _limit = -1) :
+        largePattern(NULL)
+    {
+        setScoreLimit(*this, _limit);
+        setHost(*this, std::forward<TNeedle2>(ndl));
+    }
+#else
     template <typename TNeedle2>
     Pattern(TNeedle2 const & ndl, int _limit = -1):
         largePattern(NULL)
@@ -418,6 +461,7 @@ public:
         setScoreLimit(*this, _limit);
         setHost(*this, ndl);
     }
+#endif  // SEQAN_CXX11_STANDARD
 
     ~Pattern()
     {
@@ -440,6 +484,21 @@ public:
         }
         return *this;
     }
+
+#ifdef SEQAN_CXX11_STANDARD
+    // Add move assignment.
+    Pattern &
+    operator= (Pattern && other)
+    {
+        TSmallPattern::operator=(std::forward<Pattern>(other));
+        TPatternState::operator=(std::forward<Pattern>(other));
+        delete largePattern;  // delete old data.
+        largePattern = NULL;  // *this is now in a valid state in case of self-assignment.
+        largePattern = other.largePattern;  // Move data.
+        other.largePattern = NULL;  // Reset other to default.
+        return *this;
+    }
+#endif  // SEQAN_CXX11_STANDARD
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -613,110 +672,11 @@ _patternMatchNOfFinder(Pattern<TNeedle, Myers<TSpec, THasState, void> > & patter
     _patternMatchNOfFinderImpl(pattern, match);
 }
 
-
-// data_host is not used anymore, the needle can be reconstructed from the bitmasks
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec, typename TNeedle2>
-inline void
-_myersSetHost(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > &, TNeedle2 const &)
-{
-}
-
-template <typename TNeedle, typename TSpec, typename TFinderCSP, typename TPatternCSP, typename THasState, typename TFindBeginPatternSpec, typename TNeedle2>
-inline void
-_myersSetHost(Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > & pattern, TNeedle2 const & ndl)
-{
-    setValue(pattern.data_host, ndl);
-}
-
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec, typename TNeedle2>
-inline void
-setHost(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > & pattern, TNeedle2 & ndl)
-{
-    _myersSetHost(pattern, ndl);
-    _patternFirstInit(pattern, ndl);
-}
-
-
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec, typename TNeedle2>
-inline void
-setHost(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > & pattern, TNeedle2 const & ndl)
-{
-    _myersSetHost(pattern, ndl);
-    _patternFirstInit(pattern, ndl);
-}
-
-
-//____________________________________________________________________________
-
-
-template <typename TNeedle, typename TSpec, typename TFinderCSP, typename TPatternCSP, typename THasState, typename TFindBeginPatternSpec>
-inline typename Host<Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > >::Type &
-host(Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > & pattern)
-{
-SEQAN_CHECKPOINT
-    return value(pattern.data_host);
-}
-
-
-template <typename TNeedle, typename TSpec, typename TFinderCSP, typename TPatternCSP, typename THasState, typename TFindBeginPatternSpec>
-inline typename Host<Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > const>::Type &
-host(Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > const & pattern)
-{
-SEQAN_CHECKPOINT
-    return value(pattern.data_host);
-}
-
-
 template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-inline TNeedle
-host(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > const & pattern)
+inline void
+_reinitPattern(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > & pattern)
 {
-SEQAN_CHECKPOINT
-
-    typedef typename Pattern<TNeedle, Myers<TSpec, TFindBeginPatternSpec> >::TWord TWord;
-    typedef typename Value<TNeedle>::Type TValue;
-
-    TNeedle temp;
-    resize(temp, pattern.needleSize, Exact());
-
-    unsigned blockCount = (pattern.needleSize + pattern.MACHINE_WORD_SIZE - 1) / pattern.MACHINE_WORD_SIZE;
-    TValue v = TValue();
-    for (unsigned i = 0; i < length(pattern.bitMasks); i += blockCount)
-    {
-        for (unsigned j = 0; j < pattern.needleSize; j++)
-            if ((pattern.bitMasks[i + j / pattern.MACHINE_WORD_SIZE] & (TWord)1 << (j % pattern.MACHINE_WORD_SIZE)) != (TWord)0)
-                temp[j] = v;
-        ++v;
-    }
-    return temp;
-}
-
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-inline TNeedle
-host(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > & pattern)
-{
-SEQAN_CHECKPOINT
-    typedef Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > TPattern;
-    return host(const_cast<TPattern const &>(pattern));
-}
-
-//____________________________________________________________________________
-
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-inline TNeedle
-needle(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > const & pattern)
-{
-SEQAN_CHECKPOINT
-    return host(pattern);
-}
-
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-inline TNeedle
-needle(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > & pattern)
-{
-SEQAN_CHECKPOINT
-    typedef Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > TPattern;
-    return host(const_cast<TPattern const &>(pattern));
+    _patternFirstInit(pattern, needle(pattern));
 }
 
 //____________________________________________________________________________
