@@ -204,7 +204,6 @@ allocate(T const &,
     if (data)
         SEQAN_PROADD(SEQAN_PROMEMORY, count * sizeof(TValue));
 #endif
-	memset((void*)data, 0, count * sizeof(TValue));
 }
 
 template <typename T, typename TValue, typename TSize, typename TUsage>
@@ -232,7 +231,6 @@ allocate(T &,
     if (data)
         SEQAN_PROADD(SEQAN_PROMEMORY, count * sizeof(TValue));
 #endif
-	memset((void*)data, 0, count * sizeof(TValue));
 }
 
 // ----------------------------------------------------------------------------
