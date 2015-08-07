@@ -488,7 +488,6 @@ void preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tai
 {
 	StringSet<bool> rem;
 	_preTrim(seqs, ids, head, nexus, tail, min, stats, rem);
-	unsigned limit = length(seqs);
 	_preTrimRemove(std::vector<TSeqs*>{&seqs}, std::vector<TIds*>{&ids}, rem, DemultiplexingParams(), stats);
 }
 
@@ -498,7 +497,7 @@ void preTrim(TSeqs& seqs, TIds& ids, DemultiplexingParams& demultiplexParams, un
 {
 	StringSet<bool> rem;
 	_preTrim(seqs, ids, head, nexus, tail, min, stats, rem);
-	_preTrimRemove(std::vector<TSeqs*>{&seqs}, std::vector<TIds*>{&ids}, rem, demultiplexParams, stats);
+	_preTrimRemove(std::vector<TSeqs*>() = { &seqs }, std::vector<TIds*>() = {&ids}, rem, demultiplexParams, stats);
 }
 
 
