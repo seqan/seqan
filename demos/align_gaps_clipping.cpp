@@ -9,8 +9,6 @@ using namespace seqan;
 
 int main()
 {
-    typedef Position<Gaps<CharString> >::Type TPos;
-
     // Create sequence variable and gaps basd on sequence.
     CharString seq("ABCDEFGHIJ");
     Gaps<CharString> gaps(seq);

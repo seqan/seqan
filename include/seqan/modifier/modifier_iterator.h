@@ -68,25 +68,25 @@ template <typename THost, typename TSpec> class ModifiedString;
  * <tt>THost</tt> can also be a modified iterator, so you can create custom iterators by combining predefined ones.
  */
 
-template <typename THost, typename TSpec = void>
+template <typename THostIter, typename TSpec = void>
 class ModifiedIterator
 {
 public:
     typedef typename Cargo<ModifiedIterator>::Type TCargo_;
 
-    THost _host;
+    THostIter _host;
     TCargo_ _cargo;
 
     ModifiedIterator()
     {}
 
-    template <typename TOtherHost>
-    ModifiedIterator(ModifiedIterator<TOtherHost, TSpec> const & origin):
+    template <typename TOtherHostIter>
+    ModifiedIterator(ModifiedIterator<TOtherHostIter, TSpec> const & origin):
             _host(origin._host), _cargo(origin._cargo)
     {}
 
     explicit
-    ModifiedIterator(THost const & host): _host(host)
+    ModifiedIterator(THostIter const & host): _host(host)
     {}
 };
 
@@ -147,7 +147,7 @@ struct Reference<ModifiedIterator<THost, TSpec> > : Reference<THost>
 {};
 
 template <typename THost, typename TSpec>
-struct Reference<ModifiedIterator<THost, TSpec> const> : Reference< ModifiedIterator<THost, TSpec> >
+struct Reference<ModifiedIterator<THost, TSpec> const> : Reference<THost>
 {};
 
 // --------------------------------------------------------------------------
@@ -374,7 +374,7 @@ goNext(ModifiedIterator<THost, TSpec> & me)
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-inline ModifiedIterator<THost, TSpec> const &
+inline ModifiedIterator<THost, TSpec> &
 operator++(ModifiedIterator<THost, TSpec> & me)
 {
     goNext(me);
@@ -406,7 +406,7 @@ goPrevious(ModifiedIterator<THost, TSpec> & me)
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-inline ModifiedIterator<THost, TSpec> const &
+inline ModifiedIterator<THost, TSpec> &
 operator--(ModifiedIterator<THost, TSpec> & me)
 {
     goPrevious(me);
@@ -520,7 +520,7 @@ operator-(ModifiedIterator<THost, TSpec> const & a, ModifiedIterator<THost, TSpe
 //}
 
 // --------------------------------------------------------------------------
-// Function position()
+// Function position() (overloads for rooted iterators only)
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
@@ -530,11 +530,12 @@ position(ModifiedIterator<THost, TSpec> const & me)
     return position(host(me));
 }
 
-template <typename THost, typename TSpec, typename TContainer>
-inline typename Position<ModifiedIterator<THost, TSpec> const>::Type
-position(ModifiedIterator<THost, TSpec> const & me, TContainer const &cont)
+template <typename TContainer1, typename TIterator, typename TSpec1, typename TSpec2, typename TContainer2>
+inline typename Position<ModifiedIterator<Iter<TContainer1, AdaptorIterator<TIterator, TSpec1> >, TSpec2> const>::Type
+position(ModifiedIterator<Iter<TContainer1, AdaptorIterator<TIterator, TSpec1> >, TSpec2> const & me,
+        TContainer2 const &)
 {
-    return position(host(me), cont);
+    return position(me); // rooted has container
 }
 
 // --------------------------------------------------------------------------
@@ -582,31 +583,8 @@ operator>(ModifiedIterator<THost, TSpec> const & a, ModifiedIterator<THost, TSpe
 }
 
 // --------------------------------------------------------------------------
-// Function atBegin()
+// Function atBegin() (overloads for rooted iterators only)
 // --------------------------------------------------------------------------
-
-template <typename THost, typename TSpec, typename TContainer>
-inline bool
-atBegin(ModifiedIterator<THost, TSpec> & me,
-        TContainer const & container)
-{
-    return atBegin(const_cast<ModifiedIterator<THost, TSpec> const &>(me), container);
-}
-
-template <typename THost, typename TSpec, typename TContainer>
-inline bool
-atBegin(ModifiedIterator<THost, TSpec> const & me,
-        TContainer const & container)
-{
-    return atBegin(host(me), container);
-}
-
-template <typename THost, typename TSpec>
-inline bool
-atBegin(ModifiedIterator<THost, TSpec> & me)
-{
-    return atBegin(const_cast<ModifiedIterator<THost, TSpec> const &>(me));
-}
 
 template <typename THost, typename TSpec>
 inline bool
@@ -615,38 +593,33 @@ atBegin(ModifiedIterator<THost, TSpec> const & me)
     return atBegin(host(me));
 }
 
+// rooted overload
+template <typename TContainer1, typename TIterator, typename TSpec1, typename TSpec2, typename TContainer2>
+inline bool
+atBegin(ModifiedIterator<Iter<TContainer1, AdaptorIterator<TIterator, TSpec1> >, TSpec2> const & me,
+        TContainer2 const &)
+{
+    return atBegin(me);
+}
+
 // --------------------------------------------------------------------------
-// Function atEnd()
+// Function atEnd() (overloads for rooted iterators only)
 // --------------------------------------------------------------------------
-
-template <typename THost, typename TSpec, typename TContainer>
-inline bool
-atEnd(ModifiedIterator<THost, TSpec> & me,
-      TContainer const & container)
-{
-    return atEnd(const_cast<ModifiedIterator<THost, TSpec> const &>(me), container);
-}
-
-template <typename THost, typename TSpec, typename TContainer>
-inline bool
-atEnd(ModifiedIterator<THost, TSpec> const & me,
-      TContainer const & container)
-{
-    return atEnd(host(me), container);
-}
-
-template <typename THost, typename TSpec>
-inline bool
-atEnd(ModifiedIterator<THost, TSpec> & me)
-{
-    return atEnd(const_cast<ModifiedIterator<THost, TSpec> const &>(me));
-}
 
 template <typename THost, typename TSpec>
 inline bool
 atEnd(ModifiedIterator<THost, TSpec> const & me)
 {
     return atEnd(host(me));
+}
+
+// rooted overload
+template <typename TContainer1, typename TIterator, typename TSpec1, typename TSpec2, typename TContainer2>
+inline bool
+atEnd(ModifiedIterator<Iter<TContainer1, AdaptorIterator<TIterator, TSpec1> >, TSpec2> const & me,
+      TContainer2 const &)
+{
+    return atEnd(me);
 }
 
 }

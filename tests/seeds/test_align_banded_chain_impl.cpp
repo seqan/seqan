@@ -990,6 +990,31 @@ void testBandedChainAlignmentBandExtension(TGapSpec)
 
     }
 }
+
+SEQAN_DEFINE_TEST(test_banded_chain_alignment_issue_1020)
+{
+    using namespace seqan;
+
+    DnaString query = "ATCTCTCTCAACAAAACAACGAGGAGGAGTGAAAAGAGAGAGAT";
+    DnaString ref   = "ATCTCTCTCAACAACAACAACGGAGGAGGAGGAAAAGAGAGAGAT";
+
+    typedef Seed<Simple> TSeed;
+    String<TSeed> seedChain;
+    appendValue(seedChain, TSeed( 0,  0, 14));
+    appendValue(seedChain, TSeed(30, 31, 14));
+    Score<int, Simple> scoringScheme(2, -1, -2);
+
+    Align<DnaString, ArrayGaps> align;
+    resize(rows(align), 2);
+    assignSource(row(align, 0), query);
+    assignSource(row(align, 1), ref);
+
+    int res = bandedChainAlignment(align, seedChain, scoringScheme, 14);
+    SEQAN_ASSERT_EQ(res, 80);
+    SEQAN_ASSERT_EQ(row(align, 0), "ATCTCTCTCAACAA-AACAAC-GAGGAGGAGTGAAAAGAGAGAGAT");
+    SEQAN_ASSERT_EQ(row(align, 1), "ATCTCTCTCAACAACAACAACGGAGGAGGAG-GAAAAGAGAGAGAT");
+}
+
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_empty_set_linear)
 {
     testBandedChainAlignmentEmptyChain(seqan::LinearGaps());
@@ -1064,5 +1089,6 @@ SEQAN_BEGIN_TESTSUITE(test_banded_chain_impl)
     SEQAN_CALL_TEST(test_banded_chain_alignment_special_seeds_affine);
     SEQAN_CALL_TEST(test_banded_chain_alignment_band_extensions_linear);
     SEQAN_CALL_TEST(test_banded_chain_alignment_band_extensions_affine);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_issue_1020);
 }
 SEQAN_END_TESTSUITE

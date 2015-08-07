@@ -354,9 +354,8 @@ struct FormattedFile
 
         _getCompressionExtensions(extensions,
                                   TFileFormats(),
-                                  typename FileFormat<TStream>::Type(),
-//                                  true);
-                                  IsSameType<TDirection, Output>::VALUE);
+                                  CompressedFileTypesWithoutBgzf_(),
+                                  false);
         return extensions;
     }
 };

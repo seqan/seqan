@@ -47,7 +47,6 @@ void search(TIter & it, TStringSet const & pattern)
 int main(int argc, char * argv[])
 {
     typedef String<Dna5> TString;
-    typedef StringSet<String<Dna5> > TStringSet;
     typedef Index<StringSet<TString>, FMIndex<> > TIndex;
     typedef Iterator<TIndex, TopDown<> >::Type TIter;
 

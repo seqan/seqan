@@ -306,12 +306,23 @@ struct Value<ModifiedIterator<THost, ModView<TFunctor> > >
     typedef typename RemoveConst_<TResult_>::Type   Type;
 };
 
+template <typename THost, typename TFunctor>
+struct Value<ModifiedIterator<THost, ModView<TFunctor> > const> :
+    Value<ModifiedIterator<THost, ModView<TFunctor> > >
+{};
+
 // --------------------------------------------------------------------------
 // Metafunction GetValue                                   [ModifiedIterator]
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TFunctor>
-struct GetValue<ModifiedIterator<THost, ModView<TFunctor> > > : Value<ModifiedIterator<THost, ModView<TFunctor> > >
+struct GetValue<ModifiedIterator<THost, ModView<TFunctor> > > :
+    Value<ModifiedIterator<THost, ModView<TFunctor> > >
+{};
+
+template <typename THost, typename TFunctor>
+struct GetValue<ModifiedIterator<THost, ModView<TFunctor> > const> :
+    Value<ModifiedIterator<THost, ModView<TFunctor> > >
 {};
 
 // --------------------------------------------------------------------------
@@ -319,10 +330,26 @@ struct GetValue<ModifiedIterator<THost, ModView<TFunctor> > > : Value<ModifiedIt
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TFunctor>
-struct Reference<ModifiedIterator<THost, ModView<TFunctor> > >
-{
-    typedef typename Value<ModifiedIterator<THost, ModView<TFunctor> > >::Type & Type;
-};
+struct Reference<ModifiedIterator<THost, ModView<TFunctor> > > :
+    Value<ModifiedIterator<THost, ModView<TFunctor> > >
+{};
+
+template <typename THost, typename TFunctor>
+struct Reference<ModifiedIterator<THost, ModView<TFunctor> > const> :
+    Value<ModifiedIterator<THost, ModView<TFunctor> > >
+{};
+
+// NOTE(h-2): ModView element access is always by copy never by reference
+// This is a workaround for dangling references to the stack when
+// combining infixes and modified views, more precisely:
+//  if you iterate over an infix of a modview then value() on the iterator
+//  will return reference to the tmp_value inside the moditerator
+//  which might have been destructed.
+// This is a more general problem that stems from the fact that
+// "virtual strings" of the same type (infixes, modstrings) can be
+// automatically compacted into one layer, but combinations cannot.
+// This workaround happens in ModView, because it is used less frequently
+// then Infixes.
 
 // --------------------------------------------------------------------------
 // Metafunction Cargo                                        [ModifiedString]
@@ -337,26 +364,6 @@ struct Cargo< ModifiedString<THost, ModView<TFunctor> > >
 // ==========================================================================
 // Functions
 // ==========================================================================
-
-// --------------------------------------------------------------------------
-// Function value()                                        [ModifiedIterator]
-// --------------------------------------------------------------------------
-
-template <typename THost, typename TFunctor>
-inline typename Reference<ModifiedIterator<THost, ModView<TFunctor> > >::Type
-value(ModifiedIterator<THost, ModView<TFunctor> > & me)
-{
-    me.tmp_value = cargo(me).func(getValue(host(me)));
-    return me.tmp_value;
-}
-
-template <typename THost, typename TFunctor>
-inline typename Reference<ModifiedIterator<THost, ModView<TFunctor> > const>::Type
-value(ModifiedIterator<THost, ModView<TFunctor> > const & me)
-{
-    me.tmp_value = cargo(me).func(getValue(host(me)));
-    return me.tmp_value;
-}
 
 // --------------------------------------------------------------------------
 // Function getValue()                                     [ModifiedIterator]
@@ -377,23 +384,21 @@ getValue(ModifiedIterator<THost, ModView<TFunctor> > const & me)
 }
 
 // --------------------------------------------------------------------------
-// Function value()                                          [ModifiedString]
+// Function value()                                        [ModifiedIterator]
 // --------------------------------------------------------------------------
 
-template <typename THost, typename TFunctor, typename TPos>
-inline typename Reference<ModifiedString<THost, ModView<TFunctor> > >::Type
-value(ModifiedString<THost, ModView<TFunctor> > & me, TPos pos)
+template <typename THost, typename TFunctor>
+inline typename GetValue<ModifiedIterator<THost, ModView<TFunctor> > >::Type
+value(ModifiedIterator<THost, ModView<TFunctor> > & me)
 {
-    me.tmp_value = cargo(me).func(getValue(host(me), pos));
-    return me.tmp_value;
+    return getValue(me);
 }
 
-template <typename THost, typename TFunctor, typename TPos>
-inline typename Reference<ModifiedString<THost, ModView<TFunctor> > const>::Type
-value(ModifiedString<THost, ModView<TFunctor> > const & me, TPos pos)
+template <typename THost, typename TFunctor>
+inline typename GetValue<ModifiedIterator<THost, ModView<TFunctor> > const>::Type
+value(ModifiedIterator<THost, ModView<TFunctor> > const & me)
 {
-    me.tmp_value = cargo(me).func(getValue(host(me), pos));
-    return me.tmp_value;
+    return getValue(me);
 }
 
 // --------------------------------------------------------------------------
@@ -412,6 +417,24 @@ inline typename GetValue<ModifiedString<THost, ModView<TFunctor> > const>::Type
 getValue(ModifiedString<THost, ModView<TFunctor> > const & me, TPos pos)
 {
     return cargo(me).func(getValue(host(me), pos));
+}
+
+// --------------------------------------------------------------------------
+// Function value()                                          [ModifiedString]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TFunctor, typename TPos>
+inline typename GetValue<ModifiedString<THost, ModView<TFunctor> > >::Type
+value(ModifiedString<THost, ModView<TFunctor> > & me, TPos pos)
+{
+    return getValue(me, pos);
+}
+
+template <typename THost, typename TFunctor, typename TPos>
+inline typename GetValue<ModifiedString<THost, ModView<TFunctor> > const>::Type
+value(ModifiedString<THost, ModView<TFunctor> > const & me, TPos pos)
+{
+    return getValue(me, pos);
 }
 
 // --------------------------------------------------------------------------
