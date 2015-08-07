@@ -163,7 +163,7 @@ template <typename TText, typename TSpec, typename TSpec2, typename TLengthSum, 
 class Index<TText, BidirectionalFMIndex<TSpec, FMIndexConfig<TSpec2, TLengthSum, TBidirectional> > >
 {
     typedef typename BiFMReversedText<TText>::Type                                                    TRevText;
-    typedef Index<TRevText, FMIndex<TSpec, FMIndexConfig<TSpec2, TLengthSum, FMBidirectional> > >    TRevIndex;
+    typedef Index<TRevText, FMIndex<TSpec, FMIndexConfig<TSpec2, TLengthSum, FMBidirectional> > >     TRevIndex;
     typedef Index<TText, FMIndex<TSpec, FMIndexConfig<TSpec2, TLengthSum, FMBidirectional> > >        TFwdIndex;
 
     public:

@@ -52,15 +52,15 @@ template <typename TText, class TOccSpec, typename TLengthSum, typename TBidirec
 class Iter<Index<TText, BidirectionalFMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, TBidirectional> > >, VSTree<TopDown<TSpec> > >
 {
 public:
-    typedef Index<TText, BidirectionalFMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, TBidirectional> > >    TBiIndex;
+    typedef Index<TText, BidirectionalFMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, TBidirectional> > >  TBiIndex;
 
-    typedef typename BiFMReversedText<TText>::Type                                                        TRevText;
+    typedef typename BiFMReversedText<TText>::Type                                                      TRevText;
 
-    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >        TFwdIndex;
-    typedef Index<TRevText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >    TRevIndex;
+    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >     TFwdIndex;
+    typedef Index<TRevText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >  TRevIndex;
 
-    typedef Iter<TFwdIndex, VSTree<TopDown<TSpec> > >                                                    TFwdIndexIter;
-    typedef Iter<TRevIndex, VSTree<TopDown<TSpec> > >                                                    TRevIndexIter;
+    typedef Iter<TFwdIndex, VSTree<TopDown<TSpec> > >                                                   TFwdIndexIter;
+    typedef Iter<TRevIndex, VSTree<TopDown<TSpec> > >                                                   TRevIndexIter;
 
     TFwdIndexIter    fwdIter;
     TRevIndexIter    bwdIter;
@@ -113,15 +113,15 @@ template <typename TText, class TOccSpec, typename TLengthSum, typename TBidirec
 class Iter<Index<TText, BidirectionalFMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, TBidirectional> > >, VSTree<TopDown<ParentLinks<TSpec> > > >
 {
 public:
-    typedef Index<TText, BidirectionalFMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, TBidirectional> > >    TBiIndex;
+    typedef Index<TText, BidirectionalFMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, TBidirectional> > >  TBiIndex;
 
     typedef typename BiFMReversedText<TText>::Type                                                            TRevText;
 
-    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >            TFwdIndex;
+    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >           TFwdIndex;
     typedef Index<TRevText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >        TRevIndex;
 
-    typedef Iter<TFwdIndex, VSTree<TopDown<ParentLinks<TSpec> > > >                                            TFwdIndexIter;
-    typedef Iter<TRevIndex, VSTree<TopDown<ParentLinks<TSpec> > > >                                            TRevIndexIter;
+    typedef Iter<TFwdIndex, VSTree<TopDown<ParentLinks<TSpec> > > >                                           TFwdIndexIter;
+    typedef Iter<TRevIndex, VSTree<TopDown<ParentLinks<TSpec> > > >                                           TRevIndexIter;
 
     TFwdIndexIter    fwdIter;
     TRevIndexIter    bwdIter;
@@ -176,7 +176,7 @@ class Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FM
 public:
     typedef Iter    iterator;
 
-    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >        TFwdIndex;
+    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >       TFwdIndex;
     typedef typename BiFMReversedText<TText>::Type                                                        TRevText;
     typedef Index<TRevText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >    TRevIndex;
 
@@ -249,12 +249,12 @@ class Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FM
 public:
     typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > TIndex;
     typedef Iter<TIndex, VSTree<TopDown<TSpec> > > TBase;
-    typedef    typename HistoryStack_<Iter>::Type      TStack;
-    typedef Iter                                    iterator;
+    typedef typename HistoryStack_<Iter>::Type     TStack;
+    typedef Iter                                   iterator;
 
-    typedef typename BiFMReversedText<TText>::Type                                            TRevText;
-    typedef Index<TRevText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >    TRevIndex;
-    typedef Iter<TRevIndex, VSTree< TopDown<ParentLinks<TSpec> > > >    TRevIndexIter;
+    typedef typename BiFMReversedText<TText>::Type TRevText;
+    typedef Index<TRevText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > TRevIndex;
+    typedef Iter<TRevIndex, VSTree< TopDown<ParentLinks<TSpec> > > > TRevIndexIter;
 
     TStack            history;    // contains all previously visited intervals (allows to go up)
     TRevIndexIter     *revIter;    // container of all necessary tables
@@ -307,7 +307,7 @@ inline bool _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOc
                            Pair<typename Size<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > >::Type> & _range,
                            TChar c)
 {
-    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >    TIndex;
+    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > TIndex;
     typedef typename Fibre<TIndex, FibreLF>::Type TLF;
 
     TIndex const & index = container(it);
