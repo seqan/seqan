@@ -376,7 +376,7 @@ struct Iterator< Matrix<TValue, DIMENSION> const, TIteratorSpec >
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TValue, unsigned DIMENSION>
-inline unsigned int
+inline typename Size<Matrix<TValue, DIMENSION> const>::Type
 dimension(Matrix<TValue, DIMENSION> const & me)
 {
     return length(_dataLengths(me));
