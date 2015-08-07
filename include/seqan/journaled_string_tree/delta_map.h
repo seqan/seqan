@@ -104,7 +104,7 @@ typedef Tag<DeltaMapStoreMember_> DeltaMapStoreMember;
  * Given the delta type the function @link DeltaMapIterator#deltaValue @endlink can be used to access the corresponding 
  * value.
  *
- * The delta map implements the @link AssociativeContainerConcept @endlink and is a multi-map.
+ * The delta map implements the interfaces of the <b>AssociativeContainerConcept<\b> and is a multi-map.
  */
 
 template <typename TConfig, typename TSpec = Default>
@@ -748,8 +748,8 @@ count(DeltaMap<TConfig, TSpec> const & deltaMap,
  * @param[in] type      The type of the delta operation. Must be of type @link DeltaTypeTags @endlink.
  *
  * @return Pair<TIterator> A @link Pair @endlink of iterator types @link DeltaMap#Iterator @endlink. The first value points
- *  to the first element that compares not less than the specified key or to the @link DeltaMap#end @enlink if such an elment could not be found.
- * The second value points to the first element that does not compare less than or equal to the specified key or to the @link DeltaMap#end @enlink if such an elment could not be found.
+ *  to the first element that compares not less than the specified key or to the @link DeltaMap#end @endlink if such an elment could not be found.
+ * The second value points to the first element that does not compare less than or equal to the specified key or to the @link DeltaMap#end @endlink if such an elment could not be found.
  *
  * @remark The runtime is logarithmic in the size of the map.
  */
