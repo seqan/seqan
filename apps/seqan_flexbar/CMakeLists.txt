@@ -16,6 +16,14 @@ set (SEQAN_APP_VERSION "1.0.2")
 # Dependencies
 # ----------------------------------------------------------------------------
 
+find_package(CXX11 REQUIRED)
+
+# Disable RazerS3 for MinGW and VS8 and earlier.
+if (NOT CXX11_FOUND)
+    message (STATUS "  RazerS 3 cannot be built with MinGW or with MS Visual C++ 8 and earlier.")
+    return ()
+endif (NOT CXX11_FOUND)
+
 # Search SeqAn and select dependencies.
 set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB BZip2)
 find_package (SeqAn REQUIRED)
