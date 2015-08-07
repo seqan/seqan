@@ -152,6 +152,30 @@ container(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
 }
 
 // ----------------------------------------------------------------------------
+// Function deltaType()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn DeltaMapIterator#deltaType
+ *
+ * @headerfile <seqan/journaled_string_tree.h>
+ *
+ * @brief Returns the delta type associated with the current value the iterator is pointing to.
+ *
+ * @signature DeltaType deltaType(it);
+ * @param[in]   it   The iterator pointing to the value for which the delta type should be determined.
+ *
+ * @return DeltaType The type of the current value. Of type @link DeltaType @endlink.
+ */
+
+template <typename TDeltaMap>
+inline DeltaType
+deltaType(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
+{
+    return getDeltaType(*iter);
+}
+
+// ----------------------------------------------------------------------------
 // Function deltaValue()
 // ----------------------------------------------------------------------------
 
@@ -164,16 +188,18 @@ container(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
  * @brief Returns the delta value associated with the current iterator position.
  *
  * @signature TDeltaValue deltaValue(it, tag);
- * @param[in]   it  The iterator to query the SNP event for.
+ * @param[in]   it  The iterator to query the delta event for.
  * @param[in]   tag The tag used to select the requested delta type.
  *
  * @return TDeltaValue A reference to the delta at the current iterator position of type @link DeltaMap#DeltaValue @endlink.
+ * @remark Note the expression <tt>isDeltaType(deltaType(it), tag)<\tt> must evaluate to <tt>true<\tt>, otherwise the result is undefined.
  */
 
 template <typename TDeltaMap, typename TTag>
 inline typename DeltaValue<typename Container<Iter<TDeltaMap, DeltaMapIteratorSpec> >::Type, TTag>::Type &
 deltaValue(Iter<TDeltaMap, DeltaMapIteratorSpec> & iter, TTag const & tag)
 {
+    SEQAN_ASSERT(isDeltaType(deltaType(iter), TTag()));
     return deltaValue(container(iter)._deltaStore, getDeltaRecord(value(iter)).i2, tag);
 }
 

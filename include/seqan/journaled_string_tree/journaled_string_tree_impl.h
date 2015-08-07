@@ -63,7 +63,7 @@ namespace seqan
  *            class JournaledStringTree<TDeltaStore, TConfig, TSpec>;
  *
  * @tparam TSequence Type of underlying base sequence.
- * @tparam TConfig   A configuration object, whose traits can be used to specialize the underlying @link DetlaMap @endlink. Defaults to @link DefaultJstConfig @endlink.
+ * @tparam TConfig   A configuration object, whose traits can be used to specialize the underlying @link DeltaMap @endlink. Defaults to @link DefaultJstConfig @endlink.
  * @tparam TSpec     The specialization tag for the journaled string tree. Defaults to @link Default @endlink.
  *
  * This data structure stores a virtual set of sequences in a compressed form. The sequences are described in form of a pointer
