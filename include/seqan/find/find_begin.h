@@ -129,6 +129,10 @@ struct FindBeginImpl_
     _findBeginInit(TPattern & pattern, TNeedle & needle_)
     {
 //        setNeedle(pattern.data_findBeginPattern, reverseString(needle(pattern)));
+        // TODO(rrahn): Mhmm, is this really intended here, or is it due to a wrong design of setHost of patterns which always copies instread of strong the reference where it can?
+        // It could happen, that we are really overwriting the original needle, if it was passed as non-const lvalue reference.
+        // The version above would be safer, as reverseString always returns a copy.
+        // But maybe the set function of ModifiedStrings is overloaded such that we will do a copy anyway in the holder class.
         setHost(needle(pattern.data_findBeginPattern), needle_);
         setScoringScheme(pattern.data_findBeginPattern, scoringScheme(pattern));
     }
