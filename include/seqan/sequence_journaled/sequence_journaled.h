@@ -82,7 +82,7 @@ public:
     typedef TJournalSpec_ TJournalSpec;
     typedef TBufferSpec_ TBufferSpec;
 
-    typedef String<TValue, THostSpec> THost;
+    typedef typename Host<TThis_>::Type THost;
     typedef typename Size<THost>::Type TSize;
     typedef typename Position<THost>::Type TPosition;
     typedef String<TValue, TBufferSpec> TInsertionBuffer;
@@ -538,6 +538,7 @@ setHost(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journ
     reinit(journaledString._journalEntries, length(str));
 }
 #endif  // SEQAN_CXX11_STANDARD
+
 // ----------------------------------------------------------------------------
 // Function host
 // ----------------------------------------------------------------------------
