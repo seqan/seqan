@@ -127,9 +127,11 @@ public:
     {}
 
 #ifdef SEQAN_CXX11_STANDARD
+#if (!defined(_MSC_VER) || _MSC_VER >= 1900) && (!defined(PLATFORM_WINDOWS_MINGW))
     Pattern(Pattern && other) = default;
     Pattern& operator = (Pattern && other) = default;
-#endif
+#endif  // (!defined(_MSC_VER) || _MSC_VER >= 1900) && (!defined(PLATFORM_WINDOWS_MINGW))
+#endif  // SEQAN_CXX11_STANDARD
     inline Pattern &
     operator = (Pattern const & other)
     {
