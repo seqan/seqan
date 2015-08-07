@@ -5,3 +5,4 @@ sandbox
 !sandbox/CMakeLists.txt
 *.pyc
 *~
+apps/razers2/tests/razers2.exe

@@ -517,7 +517,7 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, Demultiplexin
 	StringSet<bool> rem1, rem2;
 	_preTrim(seqs, ids, head, nexus, tail, min, stats, rem1);
 	_preTrim(seqsRev, idsRev, head, nexus, tail, min, stats, rem2);
-	for (int i = 0; i < length(rem1); i++)
+	for (unsigned int i = 0; i < length(rem1); i++)
 		rem1[i] = rem1[i] | rem2[i];	// remove both strands if either is marked for removal (true = 1)
 	std::vector<TSeqs*> seqsVector;
 	std::vector<TIds*> idsVector;
