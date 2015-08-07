@@ -304,7 +304,8 @@ public:
         TSmallState(std::forward<PatternState_>(other)),
         largeState(NULL)
     {
-        swap(largeState, other.largeState);
+        largeState = other.largeState;
+        other.largeState = NULL;
     }
 #endif  // SEQAN_CXX11_STANDARD
 

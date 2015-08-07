@@ -80,7 +80,6 @@ typedef Tag<SparseDPMatrix_> SparseDPMatrix;
 struct FullDPMatrix_;
 typedef Tag<FullDPMatrix_> FullDPMatrix;
 
-
 // ----------------------------------------------------------------------------
 // Enum DPMatrixDimension
 // ----------------------------------------------------------------------------
