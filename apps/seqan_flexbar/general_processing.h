@@ -486,9 +486,7 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
 template<typename TSeqs, typename TIds>
 void preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
 {
-	StringSet<bool> rem;
-	_preTrim(seqs, ids, head, nexus, tail, min, stats, rem);
-	_preTrimRemove(std::vector<TSeqs*>() = { &seqs }, std::vector<TIds*>() = { &ids }, rem, DemultiplexingParams(), stats);
+	preTrim(seqs, ids, DemultiplexingParams(), head, nexus, tail, min, stats);
 }
 
 // overload for single end multiplex
