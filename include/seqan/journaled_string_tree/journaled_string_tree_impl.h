@@ -403,7 +403,7 @@ setHost(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
         THost && host)
 {
     clear(jst);
-    setHost(jst._source, host);
+    setHost(jst._source, std::forward<THost>(host));
 }
 
 // ----------------------------------------------------------------------------
