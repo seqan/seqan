@@ -488,7 +488,7 @@ void preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tai
 {
 	StringSet<bool> rem;
 	_preTrim(seqs, ids, head, nexus, tail, min, stats, rem);
-	_preTrimRemove(std::vector<TSeqs*>{&seqs}, std::vector<TIds*>{&ids}, rem, DemultiplexingParams(), stats);
+	_preTrimRemove(std::vector<TSeqs*>() = { &seqs }, std::vector<TIds*>() = { &ids }, rem, DemultiplexingParams(), stats);
 }
 
 // overload for single end multiplex
@@ -497,7 +497,9 @@ void preTrim(TSeqs& seqs, TIds& ids, DemultiplexingParams& demultiplexParams, un
 {
 	StringSet<bool> rem;
 	_preTrim(seqs, ids, head, nexus, tail, min, stats, rem);
-	_preTrimRemove(std::vector<TSeqs*>() = { &seqs }, std::vector<TIds*>() = {&ids}, rem, demultiplexParams, stats);
+	const std::vector<TSeqs*> seqsVector = { &seqs };
+	const std::vector<TIds*> idsVector = { &ids };
+	_preTrimRemove(seqsVector, idsVector, rem, demultiplexParams, stats);
 }
 
 
@@ -517,11 +519,13 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, Demultiplexin
 	_preTrim(seqsRev, idsRev, head, nexus, tail, min, stats, rem2);
 	for (int i = 0; i < length(rem1); i++)
 		rem1[i] = rem1[i] | rem2[i];	// remove both strands if either is marked for removal (true = 1)
-	_preTrimRemove(std::vector<TSeqs*>{&seqs}, std::vector<TIds*>{&ids}, rem1, DemultiplexingParams(), stats);
+	const std::vector<TSeqs*> seqsVector = { &seqs };
+	const std::vector<TIds*> idsVector = { &ids };
+	_preTrimRemove(seqsVector, idsVector, rem1, DemultiplexingParams(), stats);
 }
 
 template<typename TSeqs, typename TIds>
-void _preTrimRemove(std::vector<TSeqs*> &seqsVector, std::vector<TIds*> &idsVector, StringSet<bool> const& rem, DemultiplexingParams& demultiplexParams, GeneralStats& stats)
+void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TIds*> &idsVector, StringSet<bool> const& rem, DemultiplexingParams& demultiplexParams, GeneralStats& stats)
 {
 	assert(!seqsVector.empty() && !idsVector.empty());
 	assert(seqsVector.size() == idsVector.size());
