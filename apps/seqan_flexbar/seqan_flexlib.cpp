@@ -109,6 +109,12 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
         "nq", "noQualities", "Force .fa format for output files.");
         addOption(parser, noQualOpt);
 
+	seqan::ArgParseOption firstReadsOpt = seqan::ArgParseOption(
+			"fr", "reads", "Process only first n reads.",
+			seqan::ArgParseOption::INTEGER, "VALUE");
+	setMinValue(firstReadsOpt, "1");
+	addOption(parser, firstReadsOpt);
+
     seqan::ArgParseOption threadOpt = seqan::ArgParseOption(
         "tnum", "threads", "Number of threads used.",
         seqan::ArgParseOption::INTEGER, "THREADS");
@@ -156,6 +162,13 @@ void ArgumentParserBuilder::addFilteringOptions(seqan::ArgumentParser & parser)
     setDefaultValue(leftTrimOpt, 0);
     setMinValue(leftTrimOpt, "0");
     addOption(parser, leftTrimOpt);
+
+	seqan::ArgParseOption nexusTrimOpt = seqan::ArgParseOption(
+		"tn", "trimNexus", "Number of Bases of random Barcode to be trimmed from the 5'end(s) before further processing.",
+		seqan::ArgParseArgument::INTEGER, "LENGTH");
+	setDefaultValue(nexusTrimOpt, 0);
+	setMinValue(nexusTrimOpt, "0");
+	addOption(parser, nexusTrimOpt);
 
     seqan::ArgParseOption rigthTrimOpt = seqan::ArgParseOption(
         "tr", "trimRight", "Number of Bases to be trimmed from the 3'end(s) before further processing.",
@@ -610,6 +623,7 @@ struct ProcessingParams
     seqan::Dna substitute;
     unsigned uncalled;
     unsigned trimLeft;
+	unsigned trimNexus;
     unsigned trimRight;
     unsigned minLen;
     unsigned finalMinLength;
@@ -621,6 +635,7 @@ struct ProcessingParams
         substitute('A'), 
         uncalled(0),
         trimLeft(0),
+		trimNexus(0),
         trimRight(0),
         minLen(0),
         finalMinLength(0),
@@ -642,28 +657,6 @@ enum MatchMode
     E_USER
 };
 
-struct DemultiplexingParams
-{
-    seqan::String<char> barcodeFile;
-    seqan::StringSet<seqan::String<seqan::Dna5> > barcodes;
-    seqan::StringSet<seqan::String<char> > barcodeIds;
-    seqan::String<char> multiplexFile;
-    seqan::StringSet<seqan::String<seqan::Dna5Q> > multiplex;
-    bool approximate;
-    bool hardClip;
-    bool run;
-    bool runx;
-    bool exclude;
-    DemultiplexStats stats;
-
-    DemultiplexingParams() :
-        approximate(false),
-        hardClip(false),
-        run(false),
-        runx(false),
-        exclude(false)
-    {};
-};
 struct AdapterTrimmingParams
 {
     bool paired;
@@ -1121,18 +1114,10 @@ void preprocessingStage(TSeqs& seqs, TIds& ids, DemultiplexingParams& demultiple
     if (processingParams.runPre)
     {
         //Trimming and filtering
-        if (processingParams.trimLeft + processingParams.trimRight + processingParams.minLen != 0)
+        if (processingParams.trimLeft + processingParams.trimNexus + processingParams.trimRight + processingParams.minLen != 0)
         {
-            if (demultiplexingParams.multiplexFile != "")
-            {
-                preTrim(seqs, ids, demultiplexingParams.multiplex, processingParams.trimLeft,
-                    processingParams.trimRight, processingParams.minLen, generalStats);
-            }
-            else
-            {
-                preTrim(seqs, ids, processingParams.trimLeft, processingParams.trimRight,
-                    processingParams.minLen, generalStats);
-            }
+            preTrim(seqs, ids, demultiplexingParams, processingParams.trimLeft,
+                processingParams.trimNexus, processingParams.trimRight, processingParams.minLen, generalStats);
         }
         //Detecting uncalled Bases
         if (seqan::isSet(parser, "u"))
@@ -1173,18 +1158,10 @@ void preprocessingStage(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev,
     if (processingParams.runPre)
     {
         //Trimming and filtering
-        if (processingParams.trimLeft + processingParams.trimRight + processingParams.minLen != 0)
+        if (processingParams.trimLeft + processingParams.trimNexus + processingParams.trimRight + processingParams.minLen != 0)
         {
-            if (demultiplexingParams.multiplexFile != "")
-            {
-                preTrim(seqs, ids, seqsRev, idsRev, demultiplexingParams.multiplex, processingParams.trimLeft,
-                    processingParams.trimRight, processingParams.minLen, generalStats);
-            }
-            else
-            {
-                preTrim(seqs, ids, seqsRev, idsRev, processingParams.trimLeft, processingParams.trimRight,
-                    processingParams.minLen, generalStats);
-            }
+            preTrim(seqs, ids, seqsRev, idsRev, demultiplexingParams, processingParams.trimLeft, processingParams.trimNexus,
+                processingParams.trimRight, processingParams.minLen, generalStats);
         }
         //Detecting uncalled Bases
         if (seqan::isSet(parser, "u"))
@@ -1504,7 +1481,7 @@ void postprocessingStage(TSeqSet& seqSet, TIdSet& idSet, ProcessingParams& param
         {
             for (unsigned i = 0; i < length(seqSet); ++i)
             {
-                preTrim(seqSet[i], idSet[i], 0, 0, params.finalMinLength, stats);
+                preTrim(seqSet[i], idSet[i], 0, 0, 0, params.finalMinLength, stats);
             }
         }
         else if (params.finalLength != 0)
@@ -1526,7 +1503,7 @@ void postprocessingStage(TSeqSet& seqSet, TIdSet& idSet, TSeqSet& seqSet2, TIdSe
         {
             for (unsigned i = 0; i < length(seqSet); ++i)
             {
-                preTrim(seqSet[i], idSet[i], seqSet2[i], idSet2[i], 0, 0, params.finalMinLength, stats);
+                preTrim(seqSet[i], idSet[i], seqSet2[i], idSet2[i], 0, 0, 0, params.finalMinLength, stats);
             }
         }
         else if (params.finalLength != 0)
@@ -1732,6 +1709,9 @@ int flexbarMain(int argc, char const ** argv)
     getOptionValue(threads, parser, "tnum");
     omp_set_num_threads(threads);
 
+	int firstReads;
+	getOptionValue(firstReads, parser, "fr");
+
     //--------------------------------------------------
     // Parse pre- and postprocessing parameters.
     //--------------------------------------------------
@@ -1750,7 +1730,8 @@ int flexbarMain(int argc, char const ** argv)
             return 1;
         }
         getOptionValue(processingParams.trimLeft, parser, "tl");
-        getOptionValue(processingParams.trimRight, parser, "tr");
+		getOptionValue(processingParams.trimNexus, parser, "tn");
+		getOptionValue(processingParams.trimRight, parser, "tr");
         getOptionValue(processingParams.minLen, parser, "ml");
         if (seqan::isSet(parser, "fl"))
         {
@@ -1760,7 +1741,7 @@ int flexbarMain(int argc, char const ** argv)
         {
             getOptionValue(processingParams.finalMinLength , parser, "fm");
         }
-        processingParams.runPre = ((processingParams.minLen + processingParams.trimLeft + processingParams.trimRight != 0)
+        processingParams.runPre = ((processingParams.minLen + processingParams.trimLeft + processingParams.trimNexus + processingParams.trimRight != 0)
             || isSet(parser, "u"));
         processingParams.runPost = (processingParams.finalLength + processingParams.finalMinLength != 0);
         if(flexiProgram == FILTERING)
@@ -1968,7 +1949,8 @@ int flexbarMain(int argc, char const ** argv)
         {
             std::cout << "Pre-, Postprocessing and Filtering:\n";
             std::cout << "\tPre-trim 5'-end length: " << processingParams.trimLeft << "\n";
-            std::cout << "\tPre-trim 3'-end length: " << processingParams.trimRight << "\n";
+			std::cout << "\tPre-trim 5'-end random Barcode length: " << processingParams.trimLeft << "\n";
+			std::cout << "\tPre-trim 3'-end length: " << processingParams.trimRight << "\n";
             std::cout << "\tExclude reads shorter than: " << processingParams.minLen << "\n";
             if (isSet(parser, "u"))
             {
@@ -2091,7 +2073,7 @@ int flexbarMain(int argc, char const ** argv)
         seqan::String<seqan::StringSet<seqan::CharString> > idSet;
         seqan::String<seqan::StringSet<Dna5QString> > seqSet;
 
-        while (!atEnd(programParams.fileStream1))
+        while (!atEnd(programParams.fileStream1) && (programParams.readCount <= firstReads))
         {
             clear(idSet);
             clear(seqSet);

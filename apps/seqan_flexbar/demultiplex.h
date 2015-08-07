@@ -51,7 +51,6 @@
 #include <seqan/sequence.h>
 #include <seqan/index.h>
 #include <seqan/seq_io.h>
-#include "general_processing.h"
 
 using namespace seqan;
 
@@ -66,13 +65,35 @@ struct DemultiplexStats
 	String<unsigned> groups;
 };
 
+struct DemultiplexingParams
+{
+	seqan::String<char> barcodeFile;
+	seqan::StringSet<seqan::String<seqan::Dna5> > barcodes;
+	seqan::StringSet<seqan::String<char> > barcodeIds;
+	seqan::String<char> multiplexFile;
+	seqan::StringSet<seqan::String<seqan::Dna5Q> > multiplex;
+	bool approximate;
+	bool hardClip;
+	bool run;
+	bool runx;
+	bool exclude;
+	DemultiplexStats stats;
+
+	DemultiplexingParams() :
+		approximate(false),
+		hardClip(false),
+		run(false),
+		runx(false),
+		exclude(false)
+	{};
+};
 
 // ============================================================================
 // Functions
 // ============================================================================
 
-template <typename TSeqs, typename TIds, typename TBarcodes> //This version works with paired-end data
-bool check(TSeqs& seqs,  TIds& ids, TSeqs& seqsRev, TIds& idsRev, TBarcodes& barcodes, GeneralStats& stats)
+template <typename TSeqs, typename TIds, typename TBarcodes, typename TStats> //This version works with paired-end data
+bool check(TSeqs& seqs,  TIds& ids, TSeqs& seqsRev, TIds& idsRev, TBarcodes& barcodes, TStats& stats)
 {
 	unsigned len = length(barcodes[0]);
 	for (unsigned i = 1; i < length(barcodes); ++i)
@@ -108,8 +129,8 @@ bool check(TSeqs& seqs,  TIds& ids, TSeqs& seqsRev, TIds& idsRev, TBarcodes& bar
 	return true;
 }
 //Overload for single-end data
-template <typename TSeqs, typename TIds, typename TBarcodes>
-bool check(TSeqs& seqs, TIds& ids,TBarcodes& barcodes, GeneralStats& stats) 
+template <typename TSeqs, typename TIds, typename TBarcodes, typename TStats>
+bool check(TSeqs& seqs, TIds& ids,TBarcodes& barcodes, TStats& stats) 
 {
 	unsigned len = length(barcodes[0]);
 	for (unsigned i = 1; i < length(barcodes); ++i)

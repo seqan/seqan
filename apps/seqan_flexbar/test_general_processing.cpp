@@ -49,6 +49,7 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
+#include "demultiplex.h"
 #include "general_processing.h"
 
 using namespace seqan;
@@ -443,7 +444,7 @@ SEQAN_DEFINE_TEST(preTrim_test)
     appendValue(ids, "None");
     StringSet<String<char> > ids2 = ids;
 
-    preTrim(seqs2, ids2, 3, 3, 4, stats);
+    preTrim(seqs2, ids2, 3, 0, 3, 4, stats);
     SEQAN_ASSERT_EQ(seqs2[0], "TAAC");
     SEQAN_ASSERT_EQ(ids2[0], "loeschenTrim");
     SEQAN_ASSERT_EQ(seqs2[1], "AAACTT");
@@ -455,7 +456,7 @@ SEQAN_DEFINE_TEST(preTrim_test)
 
     seqs2 = seqs;
     ids2 = ids;
-    preTrim(seqs2, ids2, 6, 5, 1, stats);
+    preTrim(seqs2, ids2, 6, 0, 5, 1, stats);
     SEQAN_ASSERT_EQ(seqs2[1], "C");
     SEQAN_ASSERT_EQ(ids2[1], "Head/Tail");
     SEQAN_ASSERT_EQ(seqs2[0], "AGA");
@@ -465,19 +466,19 @@ SEQAN_DEFINE_TEST(preTrim_test)
 
     seqs2 = seqs;
     ids2 = ids;
-    preTrim(seqs2, ids2, 6, 0, 1, stats);
+    preTrim(seqs2, ids2, 6, 0, 0, 1, stats);
     SEQAN_ASSERT_EQ(seqs2[2], "G");
     SEQAN_ASSERT_EQ(ids2[2], "Head");
 
     seqs2 = seqs;
     ids2 = ids;
-    preTrim(seqs2, ids2, 0, 6, 1, stats);
+    preTrim(seqs2, ids2, 0, 0, 6, 1, stats);
     SEQAN_ASSERT_EQ(seqs2[4], "T");
     SEQAN_ASSERT_EQ(ids2[4], "Tail");
 
     seqs2 = seqs;
     ids2 = ids;
-    preTrim(seqs2, ids2, 0, 0, 6, stats);
+    preTrim(seqs2, ids2, 0, 0, 0, 6, stats);
     SEQAN_ASSERT_EQ(seqs2[4], "TAAAAAA");
     SEQAN_ASSERT_EQ(ids2[4], "Tail");
     SEQAN_ASSERT_EQ(seqs2[3], "GATTACAGATTACA");
@@ -515,7 +516,7 @@ SEQAN_DEFINE_TEST(preTrim_paired_test)
     StringSet<String<char> > idsRev = ids;
     StringSet<String<char> > idsRev2 = idsRev;
 
-    preTrim(seqs2, ids2, seqsRev2, idsRev2, 3, 3, 4, stats);
+    preTrim(seqs2, ids2, seqsRev2, idsRev2, 3, 0, 3, 4, stats);
     SEQAN_ASSERT_EQ(seqs2[0], "TAAC");
     SEQAN_ASSERT_EQ(ids2[0], "loeschenTrim");
     SEQAN_ASSERT_EQ(seqs2[1], "AAACTT");
@@ -527,7 +528,7 @@ SEQAN_DEFINE_TEST(preTrim_paired_test)
     seqsRev2 = seqsRev;
     ids2 = ids;
     idsRev2 = idsRev;
-    preTrim(seqs2, ids2, seqsRev2, idsRev2, 6, 5, 1, stats);
+    preTrim(seqs2, ids2, seqsRev2, idsRev2, 6, 0, 5, 1, stats);
     SEQAN_ASSERT_EQ(seqs2[0], "C");
     SEQAN_ASSERT_EQ(ids2[0], "Head/Tail");
     SEQAN_ASSERT_EQ(length(ids2), 1u);
@@ -537,7 +538,7 @@ SEQAN_DEFINE_TEST(preTrim_paired_test)
     seqsRev2 = seqsRev;
     ids2 = ids;
     idsRev2 = idsRev;
-    preTrim(seqs2, ids2, seqsRev2, idsRev2, 6, 0, 1, stats);
+    preTrim(seqs2, ids2, seqsRev2, idsRev2, 6, 0, 0, 1, stats);
     SEQAN_ASSERT_EQ(seqs2[2], "G");
     SEQAN_ASSERT_EQ(ids2[2], "Head");
 
@@ -545,7 +546,7 @@ SEQAN_DEFINE_TEST(preTrim_paired_test)
     seqsRev2 = seqsRev;
     ids2 = ids;
     idsRev2 = idsRev;
-    preTrim(seqs2, ids2, seqsRev2, idsRev2, 0, 6, 1, stats);
+    preTrim(seqs2, ids2, seqsRev2, idsRev2, 0, 0, 6, 1, stats);
     SEQAN_ASSERT_EQ(seqs2[3], "T");
     SEQAN_ASSERT_EQ(ids2[3], "Tail");
 
@@ -553,7 +554,7 @@ SEQAN_DEFINE_TEST(preTrim_paired_test)
     seqsRev2 = seqsRev;
     ids2 = ids;
     idsRev2 = idsRev;
-    preTrim(seqs2, ids2, seqsRev2, idsRev2, 0, 0, 6, stats);
+    preTrim(seqs2, ids2, seqsRev2, idsRev2, 0, 0, 0, 6, stats);
     SEQAN_ASSERT_EQ(seqs2[3], "TAAAAAA");
     SEQAN_ASSERT_EQ(ids2[3], "Tail");
     SEQAN_ASSERT_EQ(length(seqs2), 4u);

@@ -482,474 +482,233 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
     }
 }
 
-
-template<typename TSeqs, typename TIds> //Version for single end data
-void preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned tail, unsigned min, GeneralStats& stats)
+// overload for single end 
+template<typename TSeqs, typename TIds>
+void preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
 {
-    int i = 0;
-    int limit = length(seqs);
-    StringSet<bool> rem;
-
-    resize(rem, limit);
-    if (head > 0 && tail > 0)
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if (length(seqs[i]) > (head + tail))
-            {
-                erase(seqs[i], 0, head);
-                erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
-                if (length(seqs[i]) >= min)
-                {
-                    rem[i] = false;
-                }
-                else
-                {
-                    rem[i] = true;
-                }
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    else if (head > 0)
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-           if (length(seqs[i]) > head)
-            {
-                erase(seqs[i], 0, head);
-                if (length(seqs[i]) >= min)
-                {
-                    rem[i] = false;
-                }
-                else
-                {
-                    rem[i] = true;
-                }
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    else if (tail > 0)
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if (length(seqs[i]) > tail)
-            {
-                erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
-                if (length(seqs[i]) >= min)
-                {
-                    rem[i] = false;
-                }
-                else
-                {
-                    rem[i] = true;
-                }
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    else
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if (length(seqs[i]) >= min)
-            {
-                rem[i] = false;
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    unsigned  ex = 0;
-    for (int j = length(rem) - 1; j >= 0; --j)
-    {
-        if (rem[j])
-        {
-            swap(seqs[j], seqs[limit - ex - 1]);
-            swap(ids[j], ids[limit - ex - 1]);
-            ++ex;
-        }
-    }
-    if (ex != 0)
-    {
-        resize(seqs, limit - ex);
-        resize(ids, limit - ex);
-        stats.removedSeqsShort += ex;
-    }
+	StringSet<bool> rem;
+	_preTrim(seqs, ids, head, nexus, tail, min, stats, rem);
+	unsigned limit = length(seqs);
+	_preTrimRemove(std::vector<TSeqs*>{&seqs}, std::vector<TIds*>{&ids}, rem, DemultiplexingParams(), stats);
 }
 
-//Overload for single end data with multiplex barcodes
-template<typename TSeqs, typename TIds, typename TMulti>
-void preTrim(TSeqs& seqs, TIds& ids, TMulti& multiplex, unsigned head, unsigned tail, unsigned min, GeneralStats& stats)
+// overload for single end multiplex
+template<typename TSeqs, typename TIds>
+void preTrim(TSeqs& seqs, TIds& ids, DemultiplexingParams& demultiplexParams, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
 {
-    int i = 0;
-    int limit = length(seqs);
-    StringSet<bool> rem;
-
-    resize(rem, limit);
-    if (head > 0 && tail > 0)
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if (length(seqs[i]) > (head + tail))
-            {
-                erase(seqs[i], 0, head);
-                erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
-                if (length(seqs[i]) >= min)
-                {
-                    rem[i] = false;
-                }
-                else
-                {
-                    rem[i] = true;
-                }
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    else if (head > 0)
-    {
-       SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-           if (length(seqs[i]) > head)
-            {
-                erase(seqs[i], 0, head);
-                if (length(seqs[i]) >= min)
-                {
-                    rem[i] = false;
-                }
-                else
-                {
-                    rem[i] = true;
-                }
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    else if (tail > 0)
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if (length(seqs[i]) > tail)
-            {
-                erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
-                if (length(seqs[i]) >= min)
-                {
-                    rem[i] = false;
-                }
-                else
-                {
-                    rem[i] = true;
-                }
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    else
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if (length(seqs[i]) >= min)
-            {
-                rem[i] = false;
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    unsigned ex = 0;
-    for (int j = length(rem) - 1; j >= 0; --j)
-    {
-        if (rem[j])
-        {
-            swap(seqs[j], seqs[limit - ex -1]);
-            swap(ids[j], ids[limit - ex -1]);
-            swap(multiplex[j], multiplex[limit - ex -1]);
-            ++ex;
-        }
-    }
-    if (ex != 0)
-    {
-        resize(seqs, limit - ex);
-        resize(ids, limit - ex);
-        resize(multiplex, limit - ex);
-        stats.removedSeqsShort += ex;
-    }
+	StringSet<bool> rem;
+	_preTrim(seqs, ids, head, nexus, tail, min, stats, rem);
+	_preTrimRemove(std::vector<TSeqs*>{&seqs}, std::vector<TIds*>{&ids}, rem, demultiplexParams, stats);
 }
 
-//Overload for paired end data
-template<typename TSeqs, typename TIds> 
-void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head, unsigned tail, unsigned min,
-    GeneralStats& stats)
+
+// overload for paired end
+template<typename TSeqs, typename TIds>
+void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
+{
+	preTrim(seqs, ids, seqsRev, idsRev, DemultiplexingParams(), head, nexus, tail, min, stats);
+}
+
+// overload for paired end multiplex
+template<typename TSeqs, typename TIds>
+void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, DemultiplexingParams& demultiplexParams, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
+{
+	StringSet<bool> rem1, rem2;
+	_preTrim(seqs, ids, head, nexus, tail, min, stats, rem1);
+	_preTrim(seqsRev, idsRev, head, nexus, tail, min, stats, rem2);
+	for (int i = 0; i < length(rem1); i++)
+		rem1[i] = rem1[i] | rem2[i];	// remove both strands if either is marked for removal (true = 1)
+	_preTrimRemove(std::vector<TSeqs*>{&seqs}, std::vector<TIds*>{&ids}, rem1, DemultiplexingParams(), stats);
+}
+
+template<typename TSeqs, typename TIds>
+void _preTrimRemove(std::vector<TSeqs*> &seqsVector, std::vector<TIds*> &idsVector, StringSet<bool> const& rem, DemultiplexingParams& demultiplexParams, GeneralStats& stats)
+{
+	assert(!seqsVector.empty() && !idsVector.empty());
+	assert(seqsVector.size() == idsVector.size());
+	unsigned ex = 0;
+	unsigned limit = length(**seqsVector.begin());
+	bool demultiplex = (length(demultiplexParams.multiplexFile) > 0);
+	for (int j = limit - 1; j >= 0; j--)
+	{
+		if (rem[j])
+		{
+			for(auto &it : seqsVector) { swap((*it)[j], (*it)[limit - ex - 1]); };
+			for(auto &it : idsVector) { swap((*it)[j], (*it)[limit - ex - 1]); };
+			if (demultiplex)
+				swap(demultiplexParams.multiplex[j], demultiplexParams.multiplex[limit - ex -1]);
+			++ex;
+		}
+	}
+	if (ex != 0)
+	{
+		for (auto &it : seqsVector) { resize(*it, limit - ex); };
+		for (auto &it : idsVector) { resize(*it, limit - ex); };
+		if (demultiplex)
+			resize(demultiplexParams.multiplex, limit - ex);
+		stats.removedSeqsShort += ex;
+	}
+}
+
+// main preTrim function
+template<typename TSeqs, typename TIds>
+void _preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats, StringSet<bool>& rem)
 {
     int i = 0;
     int limit = length(seqs);
-    StringSet<bool> rem;
-    resize(rem, limit);
-    if (head > 0 && tail > 0)
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if ((length(seqs[i]) > (head + tail)) && (length(seqsRev[i]) > (head + tail)))
-            {
-                erase(seqs[i], 0, head);
-                erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
-                erase(seqsRev[i], 0, head);
-                erase(seqsRev[i], length(seqsRev[i]) - tail, length(seqsRev[i]));
-                if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min)) 
-                {
-                    rem[i] = false;
-                }
-                else
-                {
-                    rem[i] = true;
-                }
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    else if (head > 0)
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if ((length(seqs[i]) > head) && (length(seqsRev[i]) > head))
-            {
-                erase(seqs[i], 0, head);
-                erase(seqsRev[i], 0, head);
-                if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min))
-                {
-                    rem[i] = false;
-                }
-                else
-                {
-                    rem[i] = true;
-                }
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    else if (tail > 0)
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if ((length(seqs[i]) > tail) && (length(seqsRev[i]) > tail))
-            {
-                erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
-                erase(seqsRev[i], length(seqsRev[i]) - tail, length(seqsRev[i]));
-                if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min))
-                {
-                    rem[i] = false;
-                }
-                else
-                {
-                    rem[i] = true;
-                }
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    else
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min))
-            {
-                rem[i] = false;
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    unsigned ex = 0;
-    for (int j = length(rem) - 1; j >= 0; --j)
-    {
-        if (rem[j])
-        {
-            swap(seqs[j], seqs[limit - ex - 1]);
-            swap(seqsRev[j], seqsRev[limit - ex - 1]);
-            swap(ids[j], ids[limit - ex - 1]);
-            swap(idsRev[j], idsRev[limit - ex - 1]);
-            ++ex;
-        }
-    }
-    if (ex != 0)
-    {
-        resize(seqs, limit - ex);
-        resize(seqsRev, limit - ex);
-        resize(ids, limit - ex);
-        resize(idsRev, limit - ex);
-        stats.removedSeqsShort += (2 * ex);
-    }
 
+    resize(rem, limit);
+
+	// disable this omp, because making a local copy of ids for every threat is not worth it
+	//SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
+	for (i = 0; i < limit; i++)
+	{
+		if (length(seqs[i]) > (head + nexus + tail))
+		{
+			if (head > 0)
+				erase(seqs[i], 0, head);
+			if (nexus > 0)
+			{
+				ids[i] = prefix(seqs[i], nexus);
+				erase(seqs[i], 0, nexus);
+			}
+			if (tail > 0)
+				erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
+
+			// check if trimmed sequence is at least of length min
+			// if not, remove it
+			if (length(seqs[i]) >= min)
+				rem[i] = false;
+			else
+				rem[i] = true;
+		}
+		// if the sequence was too short to be trimmed, remove it
+		else
+			rem[i] = true;
+	}
 }
 
 //Overload for paired end data with multiplex barcodes
-template<typename TSeqs, typename TIds,  typename TMulti> 
-void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& multiplex, unsigned head, unsigned tail, unsigned min,
-    GeneralStats& stats)
-{
-    int i = 0;
-    int limit = length(seqs);
-    StringSet<bool> rem;
-    resize(rem, limit);
-    if (head > 0 && tail > 0)
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if ((length(seqs[i]) > (head + tail)) && (length(seqsRev[i]) > (head + tail)))
-            {
-                erase(seqs[i], 0, head);
-                erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
-                erase(seqsRev[i], 0, head);
-                erase(seqsRev[i], length(seqsRev[i]) - tail, length(seqsRev[i]));
-                if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min)) 
-                {
-                    rem[i] = false;
-                }
-                else
-                {
-                    rem[i] = true;
-                }
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    else if (head > 0)
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if ((length(seqs[i]) > head) && (length(seqsRev[i]) > head))
-            {
-                erase(seqs[i], 0, head);
-                erase(seqsRev[i], 0, head);
-                if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min))
-                {
-                    rem[i] = false;
-                }
-                else
-                {
-                    rem[i] = true;
-                }
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    else if (tail > 0)
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if ((length(seqs[i]) > tail) && (length(seqsRev[i]) > tail))
-            {
-                erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
-                erase(seqsRev[i], length(seqsRev[i]) - tail, length(seqsRev[i]));
-                if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min))
-                {
-                    rem[i] = false;
-                }
-                else
-                {
-                    rem[i] = true;
-                }
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    else
-    {
-        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-        for (i = 0; i < limit; ++i)
-        {
-            if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min))
-            {
-                rem[i] = false;
-            }
-            else
-            {
-                rem[i] = true;
-            }
-        }
-    }
-    unsigned ex = 0;
-    for (int j = length(rem) - 1; j >= 0; --j)
-    {
-        if (rem[j])
-        {
-            swap(seqs[j], seqs[j - ex - 1]);
-            swap(seqsRev[j], seqsRev[j - ex - 1]);
-            swap(ids[j], ids[j - ex - 1]);
-            swap(idsRev[j], idsRev[j - ex - 1]);
-            swap(multiplex[j], multiplex[j - ex - 1]);
-            ++ex;
-        }
-    }
-    if (ex != 0)
-    {
-        resize(seqs, limit - ex);
-        resize(seqsRev, limit - ex);
-        resize(ids, limit - ex);
-        resize(idsRev, limit - ex);
-        resize(multiplex, limit - ex);
-        stats.removedSeqsShort += (2 * ex);
-    }
-}
+//template<typename TSeqs, typename TIds,  typename TMulti> 
+//void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& multiplex, unsigned head, unsigned tail, unsigned min,
+//    GeneralStats& stats)
+//{
+//    int i = 0;
+//    int limit = length(seqs);
+//    StringSet<bool> rem;
+//    resize(rem, limit);
+//    if (head > 0 && tail > 0)
+//    {
+//        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
+//        for (i = 0; i < limit; ++i)
+//        {
+//            if ((length(seqs[i]) > (head + tail)) && (length(seqsRev[i]) > (head + tail)))
+//            {
+//                erase(seqs[i], 0, head);
+//                erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
+//                erase(seqsRev[i], 0, head);
+//                erase(seqsRev[i], length(seqsRev[i]) - tail, length(seqsRev[i]));
+//                if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min)) 
+//                {
+//                    rem[i] = false;
+//                }
+//                else
+//                {
+//                    rem[i] = true;
+//                }
+//            }
+//            else
+//            {
+//                rem[i] = true;
+//            }
+//        }
+//    }
+//    else if (head > 0)
+//    {
+//        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
+//        for (i = 0; i < limit; ++i)
+//        {
+//            if ((length(seqs[i]) > head) && (length(seqsRev[i]) > head))
+//            {
+//                erase(seqs[i], 0, head);
+//                erase(seqsRev[i], 0, head);
+//                if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min))
+//                {
+//                    rem[i] = false;
+//                }
+//                else
+//                {
+//                    rem[i] = true;
+//                }
+//            }
+//            else
+//            {
+//                rem[i] = true;
+//            }
+//        }
+//    }
+//    else if (tail > 0)
+//    {
+//        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
+//        for (i = 0; i < limit; ++i)
+//        {
+//            if ((length(seqs[i]) > tail) && (length(seqsRev[i]) > tail))
+//            {
+//                erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
+//                erase(seqsRev[i], length(seqsRev[i]) - tail, length(seqsRev[i]));
+//                if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min))
+//                {
+//                    rem[i] = false;
+//                }
+//                else
+//                {
+//                    rem[i] = true;
+//                }
+//            }
+//            else
+//            {
+//                rem[i] = true;
+//            }
+//        }
+//    }
+//    else
+//    {
+//        SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
+//        for (i = 0; i < limit; ++i)
+//        {
+//            if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min))
+//            {
+//                rem[i] = false;
+//            }
+//            else
+//            {
+//                rem[i] = true;
+//            }
+//        }
+//    }
+//    unsigned ex = 0;
+//    for (int j = length(rem) - 1; j >= 0; --j)
+//    {
+//        if (rem[j])
+//        {
+//            swap(seqs[j], seqs[j - ex - 1]);
+//            swap(seqsRev[j], seqsRev[j - ex - 1]);
+//            swap(ids[j], ids[j - ex - 1]);
+//            swap(idsRev[j], idsRev[j - ex - 1]);
+//            swap(multiplex[j], multiplex[j - ex - 1]);
+//            ++ex;
+//        }
+//    }
+//    if (ex != 0)
+//    {
+//        resize(seqs, limit - ex);
+//        resize(seqsRev, limit - ex);
+//        resize(ids, limit - ex);
+//        resize(idsRev, limit - ex);
+//        resize(multiplex, limit - ex);
+//        stats.removedSeqsShort += (2 * ex);
+//    }
+//}
 
 //Trims sequences to specific length and deletes to short ones together with their IDs
 template<typename TSeqs,typename TIds>

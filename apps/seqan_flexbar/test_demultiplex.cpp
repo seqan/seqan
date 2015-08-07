@@ -49,6 +49,7 @@
 #include <seqan/index.h>
 #include <seqan/seq_io.h>
 #include "demultiplex.h"
+#include "general_processing.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif
