@@ -495,8 +495,10 @@ void preTrim(TSeqs& seqs, TIds& ids, DemultiplexingParams& demultiplexParams, un
 {
 	StringSet<bool> rem;
 	_preTrim(seqs, ids, head, nexus, tail, min, stats, rem);
-	const std::vector<TSeqs*> seqsVector = { &seqs };
-	const std::vector<TIds*> idsVector = { &ids };
+	std::vector<TSeqs*> seqsVector;
+	std::vector<TIds*> idsVector;
+	seqsVector.emplace_back(&seqs);
+	idsVector.emplace_back(&ids);
 	_preTrimRemove(seqsVector, idsVector, rem, demultiplexParams, stats);
 }
 
@@ -517,8 +519,12 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, Demultiplexin
 	_preTrim(seqsRev, idsRev, head, nexus, tail, min, stats, rem2);
 	for (int i = 0; i < length(rem1); i++)
 		rem1[i] = rem1[i] | rem2[i];	// remove both strands if either is marked for removal (true = 1)
-	const std::vector<TSeqs*> seqsVector = { &seqs };
-	const std::vector<TIds*> idsVector = { &ids };
+	std::vector<TSeqs*> seqsVector;
+	std::vector<TIds*> idsVector;
+	seqsVector.emplace_back(&seqs);
+	seqsVector.emplace_back(&seqsRev);
+	idsVector.emplace_back(&ids);
+	idsVector.emplace_back(&idsRev);
 	_preTrimRemove(seqsVector, idsVector, rem1, DemultiplexingParams(), stats);
 }
 
