@@ -168,7 +168,7 @@ int insertSize(char* s)
 SEQAN_DEFINE_TEST(match_test)
 {
 	Auto a = Auto();
-	User u(7, 2);
+	User u(7, 2, 0);
 
 	// Up to 5 overlap no error is allowed.
 	SEQAN_ASSERT(isMatch(5,0,&a));

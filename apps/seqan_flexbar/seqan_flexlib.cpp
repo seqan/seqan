@@ -270,11 +270,17 @@ void ArgumentParserBuilder::addAdapterTrimmingOptions(seqan::ArgumentParser & pa
         "np", "no-paired", "Trim paired-end input with single-end trimming method.");
     addOption(parser, pairedModeOpt);
 
-    seqan::ArgParseOption rateOpt = seqan::ArgParseOption(
+    seqan::ArgParseOption errorOpt = seqan::ArgParseOption(
         "e", "errors", "Allowed errors in adapter detection.",
         seqan::ArgParseOption::INTEGER, "VALUE");
-    setDefaultValue(rateOpt, 0);
-    addOption(parser, rateOpt);
+    setDefaultValue(errorOpt, 0);
+    addOption(parser, errorOpt);
+
+	seqan::ArgParseOption rateOpt = seqan::ArgParseOption(
+		"er", "error rate", "Allowed errors per overlap in adapter detection.",
+		seqan::ArgParseOption::DOUBLE, "VALUE");
+	setDefaultValue(rateOpt, 0);
+	addOption(parser, rateOpt);
 
     seqan::ArgParseOption overlapOpt = seqan::ArgParseOption(
         "ol", "overlap", "Minimum length of overlap for a significant adapter match.",
@@ -991,13 +997,13 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
     }
     // TRIMMING MODE ----------------------------
     // User must fully specify mode, if he wants to. (But not specifying both is ok too.)
-    if (seqan::isSet(parser, "e") != seqan::isSet(parser, "overlap"))
+    if ((seqan::isSet(parser, "er") || seqan::isSet(parser, "e")) != seqan::isSet(parser, "overlap"))
     {
-        std::cerr << "User must define both error rate (-e) and minimum overlap (-o).\n";
+        std::cerr << "User must define both error (-e) or error rate (-er) and minimum overlap (-o).\n";
         return 1;
     }
     // Read both options (if one is given, the above check guarantees that the other is too.)
-	if (seqan::isSet(parser, "e")) {
+	if (seqan::isSet(parser, "overlap")) {
 		// If user tried to specify alignment parameters, but didn't activate adapter trimming, warn and exit.
 		if (!params.run)
 		{
@@ -1006,9 +1012,11 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
 		}
 		int o;
 		int e;
+		double er;
 		getOptionValue(o, parser, "overlap");
 		getOptionValue(e, parser, "e");
-		params.mode.reset(new User(o, e));
+		getOptionValue(er, parser, "er");
+		params.mode.reset(new User(o, e, er));
         params.mmode = E_USER;
     }
     // Otherwise use the automatic configuration.
@@ -1332,7 +1340,6 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet, TIds& id
     //DEBUG_MSG("Trimming single-end adapters.\n");
     switch(params.mmode)
     {
-
         case E_USER:
         {
 			for (unsigned i = 0; i < length(seqSet); ++i)
@@ -2045,15 +2052,29 @@ int flexbarMain(int argc, char const ** argv)
             {
                 std::cout << "\tForce single-end method: NO\n";
             }
-            if (isSet(parser, "e"))
+            if (isSet(parser, "e") && !isSet(parser, "er"))
             {
                 unsigned e, o;
                 getOptionValue(e, parser, "e");
                 getOptionValue(o, parser, "overlap");
-                std::cout << "\tAllowed mismatches: " << e << "\n";
+				std::cout << "\tAllowed mismatches: " << e << "\n";
                 std::cout << "\tMinimum overlap " << o << "\n";
             }
-            std::cout << "\n";
+			else if (!isSet(parser, "e") && isSet(parser, "er"))
+			{
+				unsigned o;
+				double er;
+				getOptionValue(er, parser, "er");
+				getOptionValue(o, parser, "overlap");
+				std::cout << "\tAllowed error rate: " << er << "\n";
+				std::cout << "\tMinimum overlap " << o << "\n";
+			}
+			else
+			{
+				std::cout << "\nWarning: errors and error rate can not be specified both at the same time.\n";
+				return 1;
+			}
+			std::cout << "\n";
         }
         if (qualityTrimmingParams.run)
         {

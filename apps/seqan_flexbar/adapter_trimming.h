@@ -87,12 +87,17 @@ struct Mode {};
 struct Auto : Mode {};
 
 //Tagging struct representing the the match algorithm working
-//with values supplied by the user. Saves those values as members.
+//with values supplied by the user. Saves those  values as members.
 struct User : Mode
 {
 	int min_length; //The minimum length of the overlap.
 	int errors;     //The maximum number of errors we allow.
-	User (int m, int e): min_length(m), errors(e) {}
+	double errorRate;  //The maximum number of errors allowed per overlap
+	bool erMode;
+	User (int m, int e, double er): min_length(m), errors(e), errorRate(er)
+	{
+		erMode = ((e == 0) && (er != 0));
+	}
 };
 
 struct AdapterTrimmingStats
@@ -359,7 +364,10 @@ inline bool isMatch(int overlap, int mismatches, const Auto *)
 //Overload for user-definied matching options
 inline bool isMatch(int overlap, int mismatches, const User* userOptions)
 {
-	return overlap >= userOptions->min_length && mismatches <= userOptions->errors;
+	if (userOptions->erMode)
+		return overlap >= userOptions->min_length && (static_cast<double>(mismatches)/static_cast<double>(overlap)) <= userOptions->errorRate;
+	else
+		return overlap >= userOptions->min_length && mismatches <= userOptions->errors;
 }
 
 template <typename TSeq, typename TAdapter, typename TSpec>
