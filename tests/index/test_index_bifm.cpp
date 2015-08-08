@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+// Author: Christopher Pockrandt <christopher.pockrandt@fu-berlin.de>
 // ==========================================================================
 
 #include <seqan/basic.h>
@@ -39,153 +39,129 @@
 
 using namespace seqan;
 
-template <typename TBiFMIndex>
-inline bool
-testBidirectionalIndex(unsigned int textLength, unsigned int patternLength)
+// generating a random text and reversing it
+template <typename TString>
+inline void
+generateText(StringSet<TString, Owner<ConcatDirect<void> > > &text,
+             StringSet<TString, Owner<ConcatDirect<void> > > &revText,
+             const unsigned int textLength,
+             const unsigned int seqNumb)
 {
-	typedef DnaString											TText;
+    for (unsigned int i = 0; i < seqNumb; ++i) {
+        TString _text, _revText;
+        generateText<TString>(_text, textLength);
+        appendValue(text, _text);
 
-	typedef Index<TText, FMIndex<> >							TFMIndex;
-	typedef typename Iterator<TFMIndex, TopDown<> >::Type		TFMIter;
-	typedef typename Iterator<TBiFMIndex, TopDown<> >::Type		TBiFMIter;
-
-	TText text, pattern;
-	generateText<TText>(text, textLength);
-	generateText<TText>(pattern, patternLength);
-
-	TText revText(text);
-	reverse(revText);
-
-	TFMIndex fmIndex1(text);
-	TFMIndex fmIndex2(revText);
-	TFMIter fm1(fmIndex1);
-	TFMIter fm2(fmIndex2);
-
-	TBiFMIndex bifmIndex(text);
-
-	TBiFMIter bifm1(bifmIndex);
-	TBiFMIter bifm2(bifmIndex);
-
-	bool res1 = true, res2 = true, res3 = true, res4 = true;
-
-	unsigned int i;
-	for (i = 0; i < patternLength; ++i)
-	{
-		res1 &= goDown(fm1, pattern[patternLength - i - 1]);
-		res2 &= goDown(fm2, pattern[i]);
-		res3 &= rightExtend(bifm1, pattern[i]);
-		res4 &= leftExtend(bifm2, pattern[patternLength - i - 1]);
-	}
-
-	if (i == patternLength)
-	{
-	    SEQAN_ASSERT_EQ(res1, res2);
-	    SEQAN_ASSERT_EQ(res1, res3);
-	    SEQAN_ASSERT_EQ(res1, res4);
-
-	    if (res1) // if all are true
-	    {
-	    	SEQAN_ASSERT_EQ(fm1.vDesc.range, bifm1.fwdIter.vDesc.range);
-	    	SEQAN_ASSERT_EQ(fm1.vDesc.range, bifm2.fwdIter.vDesc.range);
-	    	SEQAN_ASSERT_EQ(fm2.vDesc.range, bifm1.bwdIter.vDesc.range);
-	    	SEQAN_ASSERT_EQ(fm2.vDesc.range, bifm2.bwdIter.vDesc.range);
-	    }
-	}
-
-	return 0;
+        resize(_revText, textLength);
+        for (unsigned int j = 0; j < textLength; ++j)
+        {
+            _revText[j] = _text[textLength - j - 1];
+        }
+        appendValue(revText, _revText);
+    }
 }
 
-template <typename TBiFMIndex>
-inline bool
-testBidirectionalIndex(unsigned int textLength, unsigned int patternLength, unsigned int seqNumb)
+// generating a random text and reversing it
+template <typename TText>
+inline void
+generateText(TText &text, TText &revText, const unsigned int textLength, const unsigned int /*seqNumb*/)
 {
-	typedef DnaString											TString;
-	typedef StringSet<TString, Owner<ConcatDirect<void> > >		TText;
+    generateText<TText>(text, textLength);
+    revText = text;
+    reverse(revText);
+}
 
-	typedef Index<TText, FMIndex<> >							TFMIndex;
-	typedef typename Iterator<TFMIndex, TopDown<> >::Type		TFMIter;
-	typedef typename Iterator<TBiFMIndex, TopDown<> >::Type		TBiFMIter;
+// comparing two lists of occurrences
+template <typename TIter1, typename TIter2>
+inline void
+compareOccurrences(TIter1 &iter1, TIter2 &iter2)
+{
+    typedef typename Container<TIter1>::Type  TIndex1;
+    typedef typename Container<TIter2>::Type  TIndex2;
+    typedef typename Infix<typename Fibre<TIndex1, FibreSA>::Type const>::Type  TOccs1;
+    typedef typename Infix<typename Fibre<TIndex2, FibreSA>::Type const>::Type  TOccs2;
+    TOccs1 occs1 = getOccurrences(iter1);
+    TOccs2 occs2 = getOccurrences(iter2);
 
-	TText text, revText;
-	TString pattern;
+    SEQAN_ASSERT_EQ(length(occs1), length(occs2));
+    for (unsigned int i = 0; i < length(occs1); ++i)
+    {
+        SEQAN_ASSERT_EQ(occs1[i], occs2[i]);
+    }
+}
 
-	unsigned int i;
-	for (i = 0; i < seqNumb; ++i) {
-		TString _text, _revText;
-		generateText<TString>(_text, textLength);
-		appendValue(text, _text);
+// testing the bidirectional FM index by comparing ranges and hits against two stand-alone
+// FM indices of the original and the reversed text
+template <typename TBiFMIndex, typename TPattern>
+inline bool
+testBidirectionalIndex(const unsigned int textLength, const unsigned int patternLength, const unsigned int seqNumb = 1)
+{
+    typedef typename Fibre<TBiFMIndex, FibreText>::Type        TText;
 
-		resize(_revText, textLength);
-		for (unsigned int j = 0; j < textLength; ++j)
-		{
-			_revText[j] = _text[textLength - j - 1];
-		}
-		appendValue(revText, _revText);
-	}
+    typedef Index<TText, FMIndex<> >                           TFMIndex;
+    typedef typename Iterator<TFMIndex, TopDown<> >::Type      TFMIter;
+    typedef typename Iterator<TBiFMIndex, TopDown<> >::Type    TBiFMIter;
 
-	generateText<TString>(pattern, patternLength);
+    TText text, revText;
+    myGenerateText(text, revText, textLength, seqNumb);
 
-	TFMIndex fmIndex1(text);
-	TFMIndex fmIndex2(revText);
-	TFMIter fm1(fmIndex1);
-	TFMIter fm2(fmIndex2);
+    TPattern pattern;
+    generateText<TPattern>(pattern, patternLength);
+    ModifiedString<TPattern, ModReverse> revPattern(pattern);
 
-	TBiFMIndex bifmIndex(text);
+    TFMIndex indexFwd(text);
+    TFMIndex indexRev(revText);
+    TFMIter itFwd(indexFwd);
+    TFMIter itRev(indexRev);
 
-	TBiFMIter bifm1(bifmIndex);
-	TBiFMIter bifm2(bifmIndex);
+    TBiFMIndex bifmIndex(text);
+    TBiFMIter bifm1(bifmIndex);
+    TBiFMIter bifm2(bifmIndex);
 
-	bool res1 = true, res2 = true, res3 = true, res4 = true;
+    bool res1 = goDown(itFwd, revPattern);
+    bool res2 = goDown(itRev, pattern);
+    bool res3 = rightExtend(bifm1, pattern);
+    bool res4 = leftExtend(bifm2, revPattern);
 
-	for (i = 0; i < patternLength; ++i)
-	{
-		res1 &= goDown(fm1, pattern[patternLength - i - 1]);
-		res2 &= goDown(fm2, pattern[i]);
-		res3 &= rightExtend(bifm1, pattern[i]);
-		res4 &= leftExtend(bifm2, pattern[patternLength - i - 1]);
-	}
+    SEQAN_ASSERT_EQ(res1, res2);
+    SEQAN_ASSERT_EQ(res1, res3);
+    SEQAN_ASSERT_EQ(res1, res4);
 
-	if (i == patternLength)
-	{
-	    SEQAN_ASSERT_EQ(res1, res2);
-	    SEQAN_ASSERT_EQ(res1, res3);
-	    SEQAN_ASSERT_EQ(res1, res4);
+    if (res1) // if all are true
+    {
+        SEQAN_ASSERT_EQ(countOccurrences(itFwd), countOccurrences(bifm1.fwdIter));
+        SEQAN_ASSERT_EQ(countOccurrences(itFwd), countOccurrences(bifm2.fwdIter));
+        SEQAN_ASSERT_EQ(countOccurrences(itRev), countOccurrences(bifm1.bwdIter));
+        SEQAN_ASSERT_EQ(countOccurrences(itRev), countOccurrences(bifm2.bwdIter));
 
-	    if (res1) // if all are true
-	    {
-	    	SEQAN_ASSERT_EQ(fm1.vDesc.range, bifm1.fwdIter.vDesc.range);
-	    	SEQAN_ASSERT_EQ(fm1.vDesc.range, bifm2.fwdIter.vDesc.range);
-	    	SEQAN_ASSERT_EQ(fm2.vDesc.range, bifm1.bwdIter.vDesc.range);
-	    	SEQAN_ASSERT_EQ(fm2.vDesc.range, bifm2.bwdIter.vDesc.range);
-	    }
-	}
+        compareOccurrences(itFwd, bifm1.fwdIter);
+        compareOccurrences(itFwd, bifm2.fwdIter);
+        compareOccurrences(itRev, bifm1.bwdIter);
+        compareOccurrences(itRev, bifm2.bwdIter);
+    }
 
-	return 0;
+    return 0;
 }
 
 SEQAN_DEFINE_TEST(bifm_index_iterator_range_check)
 {
     using namespace seqan;
+
+    typedef DnaString TText;
+    typedef Index<TText, BidirectionalFMIndex<> > TIndex;
+    typedef Index<StringSet<TText, Owner<ConcatDirect<void> > >, BidirectionalFMIndex<> >  TStringSetIndex;
+
+    for (int textLength = 1; textLength < 15; ++textLength)
     {
-    	typedef DnaString TText;
-    	typedef Index<TText, BidirectionalFMIndex<> > TIndex;
-    	typedef Index<StringSet<TText, Owner<ConcatDirect<void> > >, BidirectionalFMIndex<> >  TStringSetIndex;
-		for (int textLength = 0; textLength < 15; ++textLength)
-		{
-			for (int patternLength = 0; patternLength <= textLength; ++patternLength)
-			{
-				testBidirectionalIndex<TIndex>(textLength, patternLength);
-				for (int stringSetSize = 1; stringSetSize <= 15; ++stringSetSize)
-				{
-					testBidirectionalIndex<TStringSetIndex>(textLength, patternLength, stringSetSize);
-				}
-			}
-		}
+        for (int patternLength = 0; patternLength <= textLength; ++patternLength)
+        {
+            testBidirectionalIndex<TIndex, TText>(textLength, patternLength);
+            for (int stringSetSize = 1; stringSetSize <= 3; ++stringSetSize)
+            {
+                testBidirectionalIndex<TStringSetIndex, TText>(textLength, patternLength, stringSetSize);
+            }
+        }
     }
-    {
-    	testBidirectionalIndex<Index<DnaString, BidirectionalFMIndex<> > >(10000, 100);
-    	testBidirectionalIndex<Index<StringSet<DnaString, Owner<ConcatDirect<void> > >, BidirectionalFMIndex<> > >(10000, 100, 10);
-	}
 }
 
 // ========================================================================== 

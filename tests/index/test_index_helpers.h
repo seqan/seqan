@@ -114,28 +114,6 @@ void generateText(StringSet<TText> & text, unsigned numSeq = 1000, unsigned seqL
     }
 }
 
-template <typename TText, typename TOwner>
-void generateText(StringSet<TText, TOwner> & text, unsigned numSeq = 1000, unsigned seqLength = 2000)
-{
-    typedef typename Value<TText>::Type TChar;
-
-    int minChar = MinValue<TChar>::VALUE;
-    unsigned alphabetSize = ValueSize<TChar>::VALUE;
-
-    Rng<MersenneTwister> rng(SEED);
-
-    resize(text, numSeq);
-
-    for (unsigned i = 0; i < numSeq; ++i) {
-        TText _text;
-        resize(_text, seqLength);
-        for (unsigned j = 0; j < seqLength; ++j)
-            _text[j] = pickRandomNumber(rng) % alphabetSize - minChar;
-        genRandomStr(_text, seqLength);
-        appendValue(text, _text);
-	}
-}
-
 // --------------------------------------------------------------------------
 // Function generatePattern
 // --------------------------------------------------------------------------
