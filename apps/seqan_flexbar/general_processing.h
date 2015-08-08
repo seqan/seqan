@@ -482,11 +482,48 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
     }
 }
 
+
+template<typename TSeqs, typename TIds>
+void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TIds*> &idsVector, StringSet<bool> const& rem, DemultiplexingParams& demultiplexParams, GeneralStats& stats)
+{
+	assert(!seqsVector.empty() && !idsVector.empty());
+	assert(seqsVector.size() == idsVector.size());
+	unsigned ex = 0;
+	unsigned limit = length(**seqsVector.begin());
+	bool demultiplex = (length(demultiplexParams.multiplexFile) > 0);
+	for (int j = limit - 1; j >= 0; j--)
+	{
+		if (rem[j])
+		{
+			for (auto &it : seqsVector) { swap((*it)[j], (*it)[limit - ex - 1]); };
+			for (auto &it : idsVector) { swap((*it)[j], (*it)[limit - ex - 1]); };
+			if (demultiplex)
+				swap(demultiplexParams.multiplex[j], demultiplexParams.multiplex[limit - ex - 1]);
+			++ex;
+		}
+	}
+	if (ex != 0)
+	{
+		for (auto &it : seqsVector) { resize(*it, limit - ex); };
+		for (auto &it : idsVector) { resize(*it, limit - ex); };
+		if (demultiplex)
+			resize(demultiplexParams.multiplex, limit - ex);
+		stats.removedSeqsShort += ex;
+	}
+}
+
 // overload for single end 
 template<typename TSeqs, typename TIds>
 void preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
 {
 	preTrim(seqs, ids, DemultiplexingParams(), head, nexus, tail, min, stats);
+}
+
+// overload for paired end
+template<typename TSeqs, typename TIds>
+void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
+{
+	preTrim(seqs, ids, seqsRev, idsRev, DemultiplexingParams(), head, nexus, tail, min, stats);
 }
 
 // overload for single end multiplex
@@ -500,14 +537,6 @@ void preTrim(TSeqs& seqs, TIds& ids, DemultiplexingParams& demultiplexParams, un
 	seqsVector.emplace_back(&seqs);
 	idsVector.emplace_back(&ids);
 	_preTrimRemove(seqsVector, idsVector, rem, demultiplexParams, stats);
-}
-
-
-// overload for paired end
-template<typename TSeqs, typename TIds>
-void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
-{
-	preTrim(seqs, ids, seqsRev, idsRev, DemultiplexingParams(), head, nexus, tail, min, stats);
 }
 
 // overload for paired end multiplex
@@ -526,35 +555,6 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, Demultiplexin
 	idsVector.emplace_back(&ids);
 	idsVector.emplace_back(&idsRev);
 	_preTrimRemove(seqsVector, idsVector, rem1, DemultiplexingParams(), stats);
-}
-
-template<typename TSeqs, typename TIds>
-void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TIds*> &idsVector, StringSet<bool> const& rem, DemultiplexingParams& demultiplexParams, GeneralStats& stats)
-{
-	assert(!seqsVector.empty() && !idsVector.empty());
-	assert(seqsVector.size() == idsVector.size());
-	unsigned ex = 0;
-	unsigned limit = length(**seqsVector.begin());
-	bool demultiplex = (length(demultiplexParams.multiplexFile) > 0);
-	for (int j = limit - 1; j >= 0; j--)
-	{
-		if (rem[j])
-		{
-			for(auto &it : seqsVector) { swap((*it)[j], (*it)[limit - ex - 1]); };
-			for(auto &it : idsVector) { swap((*it)[j], (*it)[limit - ex - 1]); };
-			if (demultiplex)
-				swap(demultiplexParams.multiplex[j], demultiplexParams.multiplex[limit - ex -1]);
-			++ex;
-		}
-	}
-	if (ex != 0)
-	{
-		for (auto &it : seqsVector) { resize(*it, limit - ex); };
-		for (auto &it : idsVector) { resize(*it, limit - ex); };
-		if (demultiplex)
-			resize(demultiplexParams.multiplex, limit - ex);
-		stats.removedSeqsShort += ex;
-	}
 }
 
 // main preTrim function
