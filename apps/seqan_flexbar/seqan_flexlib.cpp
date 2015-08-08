@@ -1922,10 +1922,15 @@ int flexbarMain(int argc, char const ** argv)
             std::cout << "\tCompress output: NO" << "\n";
         }
         */
-        if (isSet(parser, "nq") && (value(format(programParams.fileStream1)) !=
+		if (isSet(parser, "fr") && (value(format(programParams.fileStream1)) !=
+			Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE))
+		{
+			std::cout << "\tForce no-quality output: YES\n";
+		}
+		if (isSet(parser, "nq") && (value(format(programParams.fileStream1)) !=
                                     Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE))
         {
-            std::cout << "\tForce no-quality output: YES\n";
+            std::cout << "\tProcess only first n reads: " << firstReads << "\n";
         }
         else if (value(format(programParams.fileStream1)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE)
         {

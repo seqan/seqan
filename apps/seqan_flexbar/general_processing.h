@@ -514,7 +514,7 @@ void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TId
 
 // main preTrim function
 template<typename TSeqs, typename TIds>
-void _preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats, StringSet<bool>& rem)
+void _preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, StringSet<bool>& rem)
 {
 	int i = 0;
 	int limit = length(seqs);
@@ -551,11 +551,11 @@ void _preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned ta
 }
 
 // overload for single end multiplex
-template<typename TSeqs, typename TIds>
-void preTrim(TSeqs& seqs, TIds& ids, DemultiplexingParams& demultiplexParams, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
+template<typename TSeqs, typename TIds, typename TDemultiplexingParams>
+void preTrim(TSeqs& seqs, TIds& ids, TDemultiplexingParams&& demultiplexParams, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
 {
 	StringSet<bool> rem;
-	_preTrim(seqs, ids, head, nexus, tail, min, stats, rem);
+	_preTrim(seqs, ids, head, nexus, tail, min, rem);
 	std::vector<TSeqs*> seqsVector;
 	std::vector<TIds*> idsVector;
 	seqsVector.emplace_back(&seqs);
@@ -564,12 +564,12 @@ void preTrim(TSeqs& seqs, TIds& ids, DemultiplexingParams& demultiplexParams, un
 }
 
 // overload for paired end multiplex
-template<typename TSeqs, typename TIds>
-void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, DemultiplexingParams& demultiplexParams, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
+template<typename TSeqs, typename TIds, typename TDemultiplexingParams>
+void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TDemultiplexingParams&& demultiplexParams, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
 {
 	StringSet<bool> rem1, rem2;
-	_preTrim(seqs, ids, head, nexus, tail, min, stats, rem1);
-	_preTrim(seqsRev, idsRev, head, nexus, tail, min, stats, rem2);
+	_preTrim(seqs, ids, head, nexus, tail, min, rem1);
+	_preTrim(seqsRev, idsRev, head, nexus, tail, min, rem2);
 	for (unsigned int i = 0; i < length(rem1); i++)
 		rem1[i] = rem1[i] | rem2[i];	// remove both strands if either is marked for removal (true = 1)
 	std::vector<TSeqs*> seqsVector;
@@ -585,16 +585,14 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, Demultiplexin
 template<typename TSeqs, typename TIds>
 void preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
 {
-	DemultiplexingParams demultiplexingParams;
-	preTrim(seqs, ids, demultiplexingParams, head, nexus, tail, min, stats);
+	preTrim(seqs, ids, DemultiplexingParams(), head, nexus, tail, min, stats);
 }
 
 // overload for paired end
 template<typename TSeqs, typename TIds>
 void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
 {
-	DemultiplexingParams demultiplexingParams;
-	preTrim(seqs, ids, seqsRev, idsRev, demultiplexingParams, head, nexus, tail, min, stats);
+	preTrim(seqs, ids, seqsRev, idsRev, DemultiplexingParams(), head, nexus, tail, min, stats);
 }
 
 //Overload for paired end data with multiplex barcodes
