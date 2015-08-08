@@ -195,7 +195,7 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
 	TAda ada = TAda(          "TTTTTTTTTTT");
 
 	int len = length(seq);
-	int removed = stripAdapter(seq, ada, &Auto());
+	int removed = stripAdapter(seq, ada, std::unique_ptr<Auto>(new Auto()).get());
 	SEQAN_ASSERT_EQ(removed, 5);
 	SEQAN_ASSERT_EQ(len - length(seq), 5u);
 
@@ -203,7 +203,7 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
 	//                || |||||||		   
 	ada = TAda(     "GAATATATATTT"); 
 	len = length(seq);
-	removed = stripAdapter(seq, ada, &Auto());
+	removed = stripAdapter(seq, ada, std::unique_ptr<Auto>(new Auto()).get());
 	SEQAN_ASSERT_EQ(removed, 12);
 	SEQAN_ASSERT_EQ(len - length(seq), 12u);
 }
