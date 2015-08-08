@@ -512,18 +512,42 @@ void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TId
 	}
 }
 
-// overload for single end 
+// main preTrim function
 template<typename TSeqs, typename TIds>
-void preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
+void _preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats, StringSet<bool>& rem)
 {
-	preTrim(seqs, ids, DemultiplexingParams(), head, nexus, tail, min, stats);
-}
+	int i = 0;
+	int limit = length(seqs);
 
-// overload for paired end
-template<typename TSeqs, typename TIds>
-void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
-{
-	preTrim(seqs, ids, seqsRev, idsRev, DemultiplexingParams(), head, nexus, tail, min, stats);
+	resize(rem, limit);
+
+	// disable this omp, because making a local copy of ids for every threat is not worth it
+	//SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
+	for (i = 0; i < limit; i++)
+	{
+		if (length(seqs[i]) >(head + nexus + tail))
+		{
+			if (head > 0)
+				erase(seqs[i], 0, head);
+			if (nexus > 0)
+			{
+				ids[i] = prefix(seqs[i], nexus);
+				erase(seqs[i], 0, nexus);
+			}
+			if (tail > 0)
+				erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
+
+			// check if trimmed sequence is at least of length min
+			// if not, remove it
+			if (length(seqs[i]) >= min)
+				rem[i] = false;
+			else
+				rem[i] = true;
+		}
+		// if the sequence was too short to be trimmed, remove it
+		else
+			rem[i] = true;
+	}
 }
 
 // overload for single end multiplex
@@ -557,42 +581,18 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, Demultiplexin
 	_preTrimRemove(seqsVector, idsVector, rem1, DemultiplexingParams(), stats);
 }
 
-// main preTrim function
+// overload for single end 
 template<typename TSeqs, typename TIds>
-void _preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats, StringSet<bool>& rem)
+void preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
 {
-    int i = 0;
-    int limit = length(seqs);
+	preTrim(seqs, ids, DemultiplexingParams(), head, nexus, tail, min, stats);
+}
 
-    resize(rem, limit);
-
-	// disable this omp, because making a local copy of ids for every threat is not worth it
-	//SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-	for (i = 0; i < limit; i++)
-	{
-		if (length(seqs[i]) > (head + nexus + tail))
-		{
-			if (head > 0)
-				erase(seqs[i], 0, head);
-			if (nexus > 0)
-			{
-				ids[i] = prefix(seqs[i], nexus);
-				erase(seqs[i], 0, nexus);
-			}
-			if (tail > 0)
-				erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
-
-			// check if trimmed sequence is at least of length min
-			// if not, remove it
-			if (length(seqs[i]) >= min)
-				rem[i] = false;
-			else
-				rem[i] = true;
-		}
-		// if the sequence was too short to be trimmed, remove it
-		else
-			rem[i] = true;
-	}
+// overload for paired end
+template<typename TSeqs, typename TIds>
+void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
+{
+	preTrim(seqs, ids, seqsRev, idsRev, DemultiplexingParams(), head, nexus, tail, min, stats);
 }
 
 //Overload for paired end data with multiplex barcodes
