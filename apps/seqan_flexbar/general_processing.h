@@ -578,21 +578,23 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, Demultiplexin
 	seqsVector.emplace_back(&seqsRev);
 	idsVector.emplace_back(&ids);
 	idsVector.emplace_back(&idsRev);
-	_preTrimRemove(seqsVector, idsVector, rem1, DemultiplexingParams(), stats);
+	_preTrimRemove(seqsVector, idsVector, rem1, demultiplexParams, stats);
 }
 
 // overload for single end 
 template<typename TSeqs, typename TIds>
 void preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
 {
-	preTrim(seqs, ids, DemultiplexingParams(), head, nexus, tail, min, stats);
+	DemultiplexingParams demultiplexingParams;
+	preTrim(seqs, ids, demultiplexingParams, head, nexus, tail, min, stats);
 }
 
 // overload for paired end
 template<typename TSeqs, typename TIds>
 void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
 {
-	preTrim(seqs, ids, seqsRev, idsRev, DemultiplexingParams(), head, nexus, tail, min, stats);
+	DemultiplexingParams demultiplexingParams;
+	preTrim(seqs, ids, seqsRev, idsRev, demultiplexingParams, head, nexus, tail, min, stats);
 }
 
 //Overload for paired end data with multiplex barcodes
