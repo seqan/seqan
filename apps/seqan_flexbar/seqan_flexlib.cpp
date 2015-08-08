@@ -664,7 +664,9 @@ struct AdapterTrimmingParams
     bool run;
     Dna5QString adapter1;
     Dna5QString adapter2;
-    Mode mode;
+	// casting to base class was not safe, therefore introduction of a pointer
+	// this is safe, as long as no deep copy is done
+    std::unique_ptr<Mode> mode; 
     MatchMode mmode;
     AdapterTrimmingStats stats;
     AdapterTrimmingParams() : paired(false), noAdapter(false), run(false), mmode(E_AUTO) {};
@@ -995,24 +997,24 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
         return 1;
     }
     // Read both options (if one is given, the above check guarantees that the other is too.)
-    if (seqan::isSet(parser, "e")){
-        // If user tried to specify alignment parameters, but didn't activate adapter trimming, warn and exit.
-        if (!params.run)
-        {
-            std::cerr << "Adapter removal alignment parameters require adapters or --no-adapter flag.\n";
-            return 1;
-        }
-        int o;
-        int e;
-        getOptionValue(o, parser, "overlap");
-        getOptionValue(e, parser, "e");
-        params.mode = User(o, e);
+	if (seqan::isSet(parser, "e")) {
+		// If user tried to specify alignment parameters, but didn't activate adapter trimming, warn and exit.
+		if (!params.run)
+		{
+			std::cerr << "Adapter removal alignment parameters require adapters or --no-adapter flag.\n";
+			return 1;
+		}
+		int o;
+		int e;
+		getOptionValue(o, parser, "overlap");
+		getOptionValue(e, parser, "e");
+		params.mode.reset(new User(o, e));
         params.mmode = E_USER;
     }
     // Otherwise use the automatic configuration.
     else
     {
-        params.mode = Auto();
+        params.mode.reset(new Auto());
         params.mmode = E_AUTO;
     }
     return 0;
@@ -1330,11 +1332,12 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet, TIds& id
     //DEBUG_MSG("Trimming single-end adapters.\n");
     switch(params.mmode)
     {
+
         case E_USER:
         {
-            for (unsigned i = 0; i < length(seqSet); ++i)
-            {
-                stripAdapterBatch(seqSet[i], idSet[i], params.adapter2, (User&) params.mode, params.stats, false, tagOpt);
+			for (unsigned i = 0; i < length(seqSet); ++i)
+			{
+                stripAdapterBatch(seqSet[i], idSet[i], params.adapter2, (User*) params.mode.get(), params.stats, false, tagOpt);
             }
             break;
         }
@@ -1342,7 +1345,7 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet, TIds& id
         {
             for (unsigned i = 0; i < length(seqSet); ++i)
             {
-                stripAdapterBatch(seqSet[i], idSet[i], params.adapter2, (Auto&) params.mode, params.stats, false, tagOpt);
+                stripAdapterBatch(seqSet[i], idSet[i], params.adapter2, (Auto*) params.mode.get(), params.stats, false, tagOpt);
             }
             break;
         }
@@ -1367,14 +1370,14 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet1, TIds& i
             {
                 case E_USER:
                 {
-                    stripAdapterBatch(seqSet1[i], idSet1[i], params.adapter2, (User&)params.mode, params.stats, tagOpt);
-                    stripReverseAdapterBatch(seqSet2[i], idSet2[i], params.adapter1, (User&)params.mode, params.stats, tagOpt);
+                    stripAdapterBatch(seqSet1[i], idSet1[i], params.adapter2, (User*)params.mode.get(), params.stats, tagOpt);
+                    stripReverseAdapterBatch(seqSet2[i], idSet2[i], params.adapter1, (User*)params.mode.get(), params.stats, tagOpt);
                     break;
                 }
                 case E_AUTO:
                 {
-                    stripAdapterBatch(seqSet1[i], idSet1[i], params.adapter2, (Auto&)params.mode, params.stats, tagOpt);
-                    stripReverseAdapterBatch(seqSet2[i], idSet2[i], params.adapter1, (Auto&)params.mode, params.stats, tagOpt);
+                    stripAdapterBatch(seqSet1[i], idSet1[i], params.adapter2, (Auto*)params.mode.get(), params.stats, tagOpt);
+                    stripReverseAdapterBatch(seqSet2[i], idSet2[i], params.adapter1, (Auto*)params.mode.get(), params.stats, tagOpt);
                     break;
                 }
             }
@@ -1631,28 +1634,28 @@ void printStatistics(ProgramParams& programParams, GeneralStats& generalStats, D
     double surv_proc_2 = (double)survived2 / (double)programParams.readCount * 100;
     std::cout << "File 1:\n";
     std::cout << "-------\n";
-    std::cout << "  Surviving: " << survived1 << "/" << programParams.readCount
-              << " (" << std::setprecision(3) << surv_proc_1 << "%)\n";
+    std::cout << "  Surviving: " << survived2 << "/" << programParams.readCount
+              << " (" << std::setprecision(3) << surv_proc_2 << "%)\n";
     if (adapter)
     {
-            std::cout << "   Adapters: " << adapterParams.stats.a1count << "\n";
+            std::cout << "   Adapters: " << adapterParams.stats.a2count << "\n";
     }
     std::cout << std::endl;
     if (paired)
     {
         std::cout << "File 2:\n";
         std::cout << "-------\n";
-        std::cout << "  Surviving: " << survived2 << "/"
-                  << programParams.readCount << " (" << surv_proc_2 << "%)\n";
+        std::cout << "  Surviving: " << survived1 << "/"
+                  << programParams.readCount << " (" << surv_proc_1 << "%)\n";
         if (adapter)
         {
-            std::cout << "   Adapters: " << adapterParams.stats.a2count << "\n";
+            std::cout << "   Adapters: " << adapterParams.stats.a1count << "\n";
         }
         std::cout << std::endl;
     }
-    if (adapter && (adapterParams.stats.a2count + adapterParams.stats.a2count != 0))
+    if (adapter && (adapterParams.stats.a1count + adapterParams.stats.a2count != 0))
     {
-        int mean = adapterParams.stats.overlapSum/(read_factor*programParams.readCount);
+        int mean = adapterParams.stats.overlapSum/(adapterParams.stats.a1count + adapterParams.stats.a2count);
         std::cout << "Adapter sizes:\n";
         std::cout << "Min: " << adapterParams.stats.minOverlap << ",  Mean: " << mean
                 << ", Max: " << adapterParams.stats.maxOverlap << "\n\n";
@@ -1916,7 +1919,7 @@ int flexbarMain(int argc, char const ** argv)
         if (isSet(parser, "c"))
         {
             std::cout << "\tCompress output: YES" << "\n";
-        }
+        }tag
         else
         {
             std::cout << "\tCompress output: NO" << "\n";
@@ -2078,7 +2081,7 @@ int flexbarMain(int argc, char const ** argv)
         seqan::String<seqan::StringSet<seqan::CharString> > idSet;
         seqan::String<seqan::StringSet<Dna5QString> > seqSet;
 
-        while (!atEnd(programParams.fileStream1) && (programParams.readCount <= firstReads))
+        while (!atEnd(programParams.fileStream1) && (programParams.readCount < firstReads))
         {
             clear(idSet);
             clear(seqSet);

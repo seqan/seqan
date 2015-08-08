@@ -343,7 +343,7 @@ void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, TSeq& seq, TA
 }
 
 //Version for automatic matching options
-inline bool isMatch(int overlap, int mismatches, const Auto &)
+inline bool isMatch(int overlap, int mismatches, const Auto *)
 {
 	int errors = 0; // No errors for overlap up to 5 bases.
 	if (overlap > 5)
@@ -357,13 +357,13 @@ inline bool isMatch(int overlap, int mismatches, const Auto &)
 	return mismatches <= errors;
 }
 //Overload for user-definied matching options
-inline bool isMatch(int overlap, int mismatches, const User& userOptions)
+inline bool isMatch(int overlap, int mismatches, const User* userOptions)
 {
-	return overlap >= userOptions.min_length && mismatches <= userOptions.errors;
+	return overlap >= userOptions->min_length && mismatches <= userOptions->errors;
 }
 
 template <typename TSeq, typename TAdapter, typename TSpec>
-unsigned stripAdapter(TSeq& seq, TAdapter& adapter, TSpec const & spec)
+unsigned stripAdapter(TSeq& seq, TAdapter& adapter, TSpec const* spec)
 {
 	typedef seqan::Align<TSeq> TAlign;
 	seqan::Pair<unsigned, TAlign> ret;
@@ -382,7 +382,7 @@ unsigned stripAdapter(TSeq& seq, TAdapter& adapter, TSpec const & spec)
     }
 }
 template <typename TSeq, typename TId, typename TAdapter, typename TSpec>
-unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& idSet, TAdapter& adapter, TSpec const & spec,
+unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& idSet, TAdapter& adapter, TSpec const* spec,
 		AdapterTrimmingStats& stats, bool reverse = false, bool tagOpt = false)
 {
 	int t_num = omp_get_max_threads();
@@ -414,7 +414,7 @@ unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& i
             append(idSet[i], "[AdapterRemoved]");
         }
 	}
-	if (!reverse)
+	if (reverse)
     {
 		stats.a1count += a_count;
     }
@@ -437,7 +437,7 @@ unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& i
 }
 
 template <typename TSeq, typename TId, typename TSpec>
-unsigned stripReverseAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& IdSet, TSeq& adapter, TSpec const & spec,
+unsigned stripReverseAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& IdSet, TSeq& adapter, TSpec const* spec,
 		AdapterTrimmingStats& stats, bool tagOpt)
 {
 	typedef typename Value<TSeq>::Type TAlphabet;
