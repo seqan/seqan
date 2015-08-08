@@ -18,9 +18,9 @@ set (SEQAN_APP_VERSION "1.0.2")
 
 find_package(CXX11 REQUIRED)
 
-# Disable RazerS3 for MinGW and VS8 and earlier.
+# Disable flexbar if no CXX11 available.
 if (NOT CXX11_FOUND)
-    message (STATUS "  RazerS 3 cannot be built with MinGW or with MS Visual C++ 8 and earlier.")
+    message (STATUS "  flexbar cannot be built with MinGW or with MS Visual C++ 8 and earlier.")
     return ()
 endif (NOT CXX11_FOUND)
 

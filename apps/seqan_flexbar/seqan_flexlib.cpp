@@ -112,7 +112,8 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
 	seqan::ArgParseOption firstReadsOpt = seqan::ArgParseOption(
 			"fr", "reads", "Process only first n reads.",
 			seqan::ArgParseOption::INTEGER, "VALUE");
-	setMinValue(firstReadsOpt, "1");
+	setDefaultValue(firstReadsOpt, 0);
+	setMinValue(firstReadsOpt, "0");
 	addOption(parser, firstReadsOpt);
 
     seqan::ArgParseOption threadOpt = seqan::ArgParseOption(
@@ -1641,8 +1642,8 @@ void printStatistics(ProgramParams& programParams, GeneralStats& generalStats, D
     double surv_proc_2 = (double)survived2 / (double)programParams.readCount * 100;
     std::cout << "File 1:\n";
     std::cout << "-------\n";
-    std::cout << "  Surviving: " << survived2 << "/" << programParams.readCount
-              << " (" << std::setprecision(3) << surv_proc_2 << "%)\n";
+    std::cout << "  Surviving: " << survived1 << "/" << programParams.readCount
+              << " (" << std::setprecision(3) << surv_proc_1 << "%)\n";
     if (adapter)
     {
             std::cout << "   Adapters: " << adapterParams.stats.a2count << "\n";
@@ -1652,8 +1653,8 @@ void printStatistics(ProgramParams& programParams, GeneralStats& generalStats, D
     {
         std::cout << "File 2:\n";
         std::cout << "-------\n";
-        std::cout << "  Surviving: " << survived1 << "/"
-                  << programParams.readCount << " (" << surv_proc_1 << "%)\n";
+        std::cout << "  Surviving: " << survived2 << "/"
+                  << programParams.readCount << " (" << surv_proc_2 << "%)\n";
         if (adapter)
         {
             std::cout << "   Adapters: " << adapterParams.stats.a1count << "\n";
@@ -1664,7 +1665,7 @@ void printStatistics(ProgramParams& programParams, GeneralStats& generalStats, D
     {
         int mean = adapterParams.stats.overlapSum/(adapterParams.stats.a1count + adapterParams.stats.a2count);
         std::cout << "Adapter sizes:\n";
-        std::cout << "Min: " << adapterParams.stats.minOverlap << ",  Mean: " << mean
+        std::cout << "Min: " << adapterParams.stats.minOverlap << ", Mean: " << mean
                 << ", Max: " << adapterParams.stats.maxOverlap << "\n\n";
     }
     // Print processing and IO time. IO is (approx.) the whole loop without the processing part.
@@ -1715,12 +1716,13 @@ int flexbarMain(int argc, char const ** argv)
     seqan::CharString output;
     getOptionValue(output, parser, "output");
 
-    int threads;
+    int threads = 1;
     getOptionValue(threads, parser, "tnum");
     omp_set_num_threads(threads);
 
-	int firstReads;
-	getOptionValue(firstReads, parser, "fr");
+	unsigned firstReads = std::numeric_limits<unsigned>::max();
+	if (seqan::isSet(parser, "fr"))
+		getOptionValue(firstReads, parser, "fr");
 
     //--------------------------------------------------
     // Parse pre- and postprocessing parameters.
