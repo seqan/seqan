@@ -167,23 +167,23 @@ int insertSize(char* s)
 
 SEQAN_DEFINE_TEST(match_test)
 {
-	Auto a = Auto();
-	User u(7, 2, 0);
+    AdapterMatchSettings a;
+    AdapterMatchSettings u(7, 2, 0);
 
 	// Up to 5 overlap no error is allowed.
-	SEQAN_ASSERT(isMatch(5,0,&a));
-	SEQAN_ASSERT_NOT(isMatch(5,1,&a));
+	SEQAN_ASSERT(isMatch(5,0,a));
+	SEQAN_ASSERT_NOT(isMatch(5,1,a));
 	// From 5 to 10 one error is allowed.
-	SEQAN_ASSERT(isMatch(10,1,&a));
-	SEQAN_ASSERT_NOT(isMatch(10,2,&a));
+	SEQAN_ASSERT(isMatch(10,1,a));
+	SEQAN_ASSERT_NOT(isMatch(10,2,a));
 	// Otherwise 33% errors are allowed.
-	SEQAN_ASSERT(isMatch(100,33,&a));
-	SEQAN_ASSERT_NOT(isMatch(100,34,&a));
+	SEQAN_ASSERT(isMatch(100,33,a));
+	SEQAN_ASSERT_NOT(isMatch(100,34,a));
 
 	// We need an overlap of length 7 and no more than 2 errors.
-	SEQAN_ASSERT_NOT(isMatch(5,3,&u));
-	SEQAN_ASSERT_NOT(isMatch(7,3,&u));
-	SEQAN_ASSERT(isMatch(7,2,&u));
+	SEQAN_ASSERT_NOT(isMatch(5,3,u));
+	SEQAN_ASSERT_NOT(isMatch(7,3,u));
+	SEQAN_ASSERT(isMatch(7,2,u));
 }
 
 SEQAN_DEFINE_TEST(strip_adapter_test)
@@ -195,8 +195,8 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
 	TAda ada = TAda(          "TTTTTTTTTTT");
 
 	int len = length(seq);
-	Auto autoOption;
-	int removed = stripAdapter(seq, ada, &autoOption);
+    AdapterMatchSettings autoOption;
+	int removed = stripAdapter(seq, ada, autoOption);
 	SEQAN_ASSERT_EQ(removed, 5);
 	SEQAN_ASSERT_EQ(len - length(seq), 5u);
 
@@ -204,7 +204,7 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
 	//                || |||||||		   
 	ada = TAda(     "GAATATATATTT"); 
 	len = length(seq);
-	removed = stripAdapter(seq, ada, &autoOption);
+	removed = stripAdapter(seq, ada, autoOption);
 	SEQAN_ASSERT_EQ(removed, 12);
 	SEQAN_ASSERT_EQ(len - length(seq), 12u);
 }

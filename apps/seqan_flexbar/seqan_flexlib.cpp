@@ -673,7 +673,7 @@ struct AdapterTrimmingParams
     Dna5QString adapter2;
 	// casting to base class was not safe, therefore introduction of a pointer
 	// this is safe, as long as no deep copy is done
-    std::unique_ptr<Mode> mode; 
+    AdapterMatchSettings mode;
     MatchMode mmode;
     AdapterTrimmingStats stats;
     AdapterTrimmingParams() : paired(false), noAdapter(false), run(false), mmode(E_AUTO) {};
@@ -1017,13 +1017,13 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
 		getOptionValue(o, parser, "overlap");
 		getOptionValue(e, parser, "e");
 		getOptionValue(er, parser, "er");
-		params.mode.reset(new User(o, e, er));
+		params.mode = AdapterMatchSettings(o, e, er);
         params.mmode = E_USER;
     }
     // Otherwise use the automatic configuration.
     else
     {
-        params.mode.reset(new Auto());
+        params.mode = AdapterMatchSettings();
         params.mmode = E_AUTO;
     }
     return 0;
@@ -1335,29 +1335,9 @@ template <typename TSeqs, typename TIds>
 void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet, TIds& idSet, bool tagOpt)
 {
     if (!params.run)
-    {
         return;
-    }
-    //DEBUG_MSG("Trimming single-end adapters.\n");
-    switch(params.mmode)
-    {
-        case E_USER:
-        {
-			for (unsigned i = 0; i < length(seqSet); ++i)
-			{
-                stripAdapterBatch(seqSet[i], idSet[i], params.adapter2, (User*) params.mode.get(), params.stats, false, tagOpt);
-            }
-            break;
-        }
-        case E_AUTO:
-        {
-            for (unsigned i = 0; i < length(seqSet); ++i)
-            {
-                stripAdapterBatch(seqSet[i], idSet[i], params.adapter2, (Auto*) params.mode.get(), params.stats, false, tagOpt);
-            }
-            break;
-        }
-    }
+	for (unsigned i = 0; i < length(seqSet); ++i)
+        stripAdapterBatch(seqSet[i], idSet[i], params.adapter2, params.mode, params.stats, false, tagOpt);
 }
 
 //Overload for paired-end data
@@ -1373,26 +1353,11 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet1, TIds& i
     {
         if (!params.paired)
         {
-            //DEBUG_MSG("Trimming paired-end adapters in single-end mode.\n");
-            switch(params.mmode)
-            {
-                case E_USER:
-                {
-                    stripAdapterBatch(seqSet1[i], idSet1[i], params.adapter2, (User*)params.mode.get(), params.stats, tagOpt);
-                    stripReverseAdapterBatch(seqSet2[i], idSet2[i], params.adapter1, (User*)params.mode.get(), params.stats, tagOpt);
-                    break;
-                }
-                case E_AUTO:
-                {
-                    stripAdapterBatch(seqSet1[i], idSet1[i], params.adapter2, (Auto*)params.mode.get(), params.stats, tagOpt);
-                    stripReverseAdapterBatch(seqSet2[i], idSet2[i], params.adapter1, (Auto*)params.mode.get(), params.stats, tagOpt);
-                    break;
-                }
-            }
+            stripAdapterBatch(seqSet1[i], idSet1[i], params.adapter2, params.mode, params.stats, tagOpt);
+            stripReverseAdapterBatch(seqSet2[i], idSet2[i], params.adapter1, params.mode, params.stats, tagOpt);
         }
         else
         {
-            //DEBUG_MSG("Trimming paired-end adapters.\n");
             stripPairBatch(seqSet1[i], idSet1[i], seqSet2[i], idSet2[i], params.stats, tagOpt);
         }
     }

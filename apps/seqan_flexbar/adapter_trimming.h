@@ -80,24 +80,20 @@ namespace seqan{
 // Define scoring function type.
 typedef Score<int, ScoreMatrix<Dna5, AdapterScoringMatrix> > TScore;
 
-
-//brief A struct encapsulating information about the match algorithm.
-struct Mode {};
-//brief Tagging struct for the automatic match algorithm.
-struct Auto : Mode {};
-
 //Tagging struct representing the the match algorithm working
 //with values supplied by the user. Saves those  values as members.
-struct User : Mode
+struct AdapterMatchSettings
 {
-	int min_length; //The minimum length of the overlap.
+    AdapterMatchSettings(int m, int e, double er) : min_length(m), errors(e), errorRate(er), modeAuto(false)
+    {
+        erMode = ((e == 0) && (er != 0));
+    }
+    AdapterMatchSettings() : modeAuto(true) {};
+    int min_length; //The minimum length of the overlap.
 	int errors;     //The maximum number of errors we allow.
 	double errorRate;  //The maximum number of errors allowed per overlap
 	bool erMode;
-	User (int m, int e, double er): min_length(m), errors(e), errorRate(er)
-	{
-		erMode = ((e == 0) && (er != 0));
-	}
+    bool modeAuto;
 };
 
 struct AdapterTrimmingStats
@@ -348,30 +344,32 @@ void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, TSeq& seq, TA
 }
 
 //Version for automatic matching options
-inline bool isMatch(int overlap, int mismatches, const Auto *)
+inline bool isMatch(int overlap, int mismatches, const AdapterMatchSettings &adatperMatchSettings)
 {
-	int errors = 0; // No errors for overlap up to 5 bases.
-	if (overlap > 5)
+    if (adatperMatchSettings.modeAuto)
     {
-		errors = 1; // One error for overlap up to 10 bases.
+        int errors = 0; // No errors for overlap up to 5 bases.
+        if (overlap > 5)
+        {
+            errors = 1; // One error for overlap up to 10 bases.
+        }
+        if (overlap > 10)
+        {
+            errors = int(0.33 * overlap); //33% of overlap length otherwise.
+        }
+        return mismatches <= errors;
     }
-	if (overlap > 10)
+    else 
     {
-		errors = int(0.33 * overlap); //33% of overlap length otherwise.
+        if (adatperMatchSettings.erMode)
+            return overlap >= adatperMatchSettings.min_length && (static_cast<double>(mismatches) / static_cast<double>(overlap)) <= adatperMatchSettings.errorRate;
+        else
+            return overlap >= adatperMatchSettings.min_length && mismatches <= adatperMatchSettings.errors;
     }
-	return mismatches <= errors;
-}
-//Overload for user-definied matching options
-inline bool isMatch(int overlap, int mismatches, const User* userOptions)
-{
-	if (userOptions->erMode)
-		return overlap >= userOptions->min_length && (static_cast<double>(mismatches)/static_cast<double>(overlap)) <= userOptions->errorRate;
-	else
-		return overlap >= userOptions->min_length && mismatches <= userOptions->errors;
 }
 
 template <typename TSeq, typename TAdapter, typename TSpec>
-unsigned stripAdapter(TSeq& seq, TAdapter& adapter, TSpec const* spec)
+unsigned stripAdapter(TSeq& seq, TAdapter& adapter, TSpec const& spec)
 {
 	typedef seqan::Align<TSeq> TAlign;
 	seqan::Pair<unsigned, TAlign> ret;
@@ -390,7 +388,7 @@ unsigned stripAdapter(TSeq& seq, TAdapter& adapter, TSpec const* spec)
     }
 }
 template <typename TSeq, typename TId, typename TAdapter, typename TSpec>
-unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& idSet, TAdapter& adapter, TSpec const* spec,
+unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& idSet, TAdapter& adapter, TSpec const& spec,
 		AdapterTrimmingStats& stats, bool reverse = false, bool tagOpt = false)
 {
 	int t_num = omp_get_max_threads();
@@ -445,7 +443,7 @@ unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& i
 }
 
 template <typename TSeq, typename TId, typename TSpec>
-unsigned stripReverseAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& IdSet, TSeq& adapter, TSpec const* spec,
+unsigned stripReverseAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& IdSet, TSeq& adapter, TSpec const& spec,
 		AdapterTrimmingStats& stats, bool tagOpt)
 {
 	typedef typename Value<TSeq>::Type TAlphabet;
