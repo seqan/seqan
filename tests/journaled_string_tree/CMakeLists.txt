@@ -16,6 +16,11 @@ message (STATUS "Configuring tests/journaled_string_tree")
 
 find_package(CXX11 REQUIRED)
 
+if (WIN32)
+    message (STATUS "   Not building journaled string tree test under Windows. Incomplete C++11 support.")
+    return()
+endif (WIN32)
+
 # Enable module only with CXX11 support.
 if (NOT CXX11_FOUND)
     message (STATUS "  Cannot build journaled string tree module tests.")
