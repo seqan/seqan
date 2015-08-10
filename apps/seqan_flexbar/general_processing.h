@@ -491,7 +491,7 @@ void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TId
 	unsigned ex = 0;
 	unsigned limit = length(**seqsVector.begin());
 	bool demultiplex = (length(demultiplexParams.multiplexFile) > 0);
-	for (int j = limit - 1; j >= 0; j--)
+	for (int j = limit - 1; j >= 0; --j)
 	{
 		if (rem[j])
 		{
@@ -522,7 +522,7 @@ void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const unsigned nexus,
 	resize(rem, limit);
 
 	SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-	for (i = 0; i < limit; i++)
+	for (i = 0; i < limit; ++i)
 	{
 		if (length(seqs[i]) >(head + nexus + tail))
 		{
@@ -569,7 +569,7 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TDemultiplexi
 	String<bool> rem1, rem2;
 	_preTrim(seqs, ids, head, nexus, tail, min, rem1);
 	_preTrim(seqsRev, idsRev, head, nexus, tail, min, rem2);
-	for (unsigned int i = 0; i < length(rem1); i++)
+	for (unsigned int i = 0; i < length(rem1); ++i)
 		rem1[i] = rem1[i] | rem2[i];	// remove both strands if either is marked for removal (true = 1)
 	std::vector<TSeqs*> seqsVector;
 	std::vector<TIds*> idsVector;

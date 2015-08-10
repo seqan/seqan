@@ -1342,15 +1342,25 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet, TIds& id
 {
     if (!params.run)
         return;
-    Iterator<TIds>::Type itIdSet = begin(idSet);
+
+    // nested for each had some problems, but why?
+    for (int i = 0; i < length(params.adapter2); i++)
+    {
+        Iterator<TIds>::Type itIdSet = iter(idSet, 1);
+        std::for_each(begin(seqSet) + 1, end(seqSet), [&](seqan::StringSet<Dna5QString> &seq) {
+            stripAdapterBatch(seq, value(itIdSet), params.adapter2[i], params.mode, params.stats, false, tagOpt);
+            itIdSet++;});
+    }
+
     // a bit ugly until range based for_each becomes available
     // Iterate through the groups that have been demultiplexed by barcodes
-    std::for_each(begin(params.adapter2), end(params.adapter2), [&](auto const adapter) {
-        itIdSet = begin(idSet);
-        std::for_each(begin(seqSet), end(seqSet), [&](auto seq) {
-            stripAdapterBatch(seq, getValue(itIdSet), adapter, params.mode, params.stats, false, tagOpt);
-        ++itIdSet;});
-    });
+    //    Iterator<TIds>::Type itIdSet;
+    //    std::for_each(begin(params.adapter2), end(params.adapter2), [&](auto const adapter) {
+    //    itIdSet = begin(idSet)+1;
+    //    std::for_each(begin(seqSet)+1, end(seqSet), [&](seqan::StringSet<Dna5QString> &seq) {
+    //        stripAdapterBatch(seq, value(itIdSet), adapter, params.mode, params.stats, false, tagOpt);
+    //    ++itIdSet;});
+    //});
 }
 
 //Overload for paired-end data

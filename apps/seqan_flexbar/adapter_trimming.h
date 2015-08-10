@@ -373,7 +373,7 @@ unsigned stripAdapter(TSeq& seq, TAdapter const& adapter, TSpec const& spec)
 {
 	typedef seqan::Align<TSeq> TAlign;
 	seqan::Pair<unsigned, TAlign> ret;
-    alignAdapter(ret, seq, adapter);
+    alignAdapter(ret, seq, adapter);    // align crashes if seq is an empty string!
 	int overlap = getOverlap(ret.i2);
 	int score = ret.i1;
 	int mismatches = (overlap-score) / 2;
@@ -402,6 +402,8 @@ unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& i
 	SEQAN_OMP_PRAGMA(parallel for schedule(static) reduction(+:a_count, overlapSum))
 	for (int i=0; i < len; ++i)
 	{
+        if (empty(value(set, i)))
+            continue;
         unsigned over = stripAdapter(value(set, i), adapter, spec);
 		overlapSum += over;
 		a_count += (over != 0);
