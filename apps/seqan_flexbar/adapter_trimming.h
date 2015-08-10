@@ -84,11 +84,11 @@ typedef Score<int, ScoreMatrix<Dna5, AdapterScoringMatrix> > TScore;
 //with values supplied by the user. Saves those  values as members.
 struct AdapterMatchSettings
 {
-    AdapterMatchSettings(int m, int e, double er) : min_length(m), errors(e), errorRate(er), modeAuto(false)
+    AdapterMatchSettings(int m, int e, double er) : min_length(m), errors(e), errorRate(er), erMode(false), modeAuto(false)
     {
-        erMode = ((e == 0) && (er != 0));
+     //   erMode = ((e == 0) && (er != 0));
     }
-    AdapterMatchSettings() : modeAuto(true) {};
+    AdapterMatchSettings() : min_length(0), errors(0), errorRate(0), erMode(false), modeAuto(true) {};
     int min_length; //The minimum length of the overlap.
 	int errors;     //The maximum number of errors we allow.
 	double errorRate;  //The maximum number of errors allowed per overlap
@@ -222,7 +222,7 @@ unsigned stripPair(TSeq& seq1, TSeq& seq2)
  //Overload using adapter information.
  //Currently not in use, because not as good as the version without adapters.
 template <typename TSeq>
-unsigned stripPair(TSeq& seq1, TSeq& adapter1, TSeq& seq2, TSeq& adapter2)
+unsigned stripPair(TSeq& seq1, TSeq const& adapter1, TSeq& seq2, TSeq const& adapter2)
 {
 	typedef typename Value<TSeq>::Type TAlphabet;
 	typedef typename STRING_REVERSE_COMPLEMENT<TAlphabet>::Type TReverseComplement;
@@ -335,7 +335,7 @@ unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idS
 }
 
 template <typename TSeq, typename TAdapter>
-void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, TSeq& seq, TAdapter& adapter)
+void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, TSeq& seq, TAdapter const& adapter)
 {
 	// Global free-end alignment. The Alignment configuration specifies that gaps on the
 	// start of the read and at the end of the adapter are not penalized -> 5'-3' overlap.
@@ -344,7 +344,7 @@ void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, TSeq& seq, TA
 }
 
 //Version for automatic matching options
-inline bool isMatch(int overlap, int mismatches, const AdapterMatchSettings &adatperMatchSettings)
+inline bool isMatch(const int overlap, const int mismatches, const AdapterMatchSettings &adatperMatchSettings)
 {
     if (adatperMatchSettings.modeAuto)
     {
@@ -369,7 +369,7 @@ inline bool isMatch(int overlap, int mismatches, const AdapterMatchSettings &ada
 }
 
 template <typename TSeq, typename TAdapter, typename TSpec>
-unsigned stripAdapter(TSeq& seq, TAdapter& adapter, TSpec const& spec)
+unsigned stripAdapter(TSeq& seq, TAdapter const& adapter, TSpec const& spec)
 {
 	typedef seqan::Align<TSeq> TAlign;
 	seqan::Pair<unsigned, TAlign> ret;
@@ -388,7 +388,7 @@ unsigned stripAdapter(TSeq& seq, TAdapter& adapter, TSpec const& spec)
     }
 }
 template <typename TSeq, typename TId, typename TAdapter, typename TSpec>
-unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& idSet, TAdapter& adapter, TSpec const& spec,
+unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& idSet, TAdapter const& adapter, TSpec const& spec,
 		AdapterTrimmingStats& stats, bool reverse = false, bool tagOpt = false)
 {
 	int t_num = omp_get_max_threads();
@@ -443,7 +443,7 @@ unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& i
 }
 
 template <typename TSeq, typename TId, typename TSpec>
-unsigned stripReverseAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& IdSet, TSeq& adapter, TSpec const& spec,
+unsigned stripReverseAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& IdSet, TSeq const& adapter, TSpec const& spec,
 		AdapterTrimmingStats& stats, bool tagOpt)
 {
 	typedef typename Value<TSeq>::Type TAlphabet;

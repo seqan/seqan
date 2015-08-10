@@ -669,10 +669,10 @@ struct AdapterTrimmingParams
     bool paired;
     bool noAdapter;
     bool run;
-    Dna5QString adapter1;
-    Dna5QString adapter2;
-	// casting to base class was not safe, therefore introduction of a pointer
-	// this is safe, as long as no deep copy is done
+    typedef Dna5QString TAdapter;
+    typedef seqan::StringSet<TAdapter> TAdapterSet;
+    TAdapterSet adapter1;
+    TAdapterSet adapter2;
     AdapterMatchSettings mode;
     MatchMode mmode;
     AdapterTrimmingStats stats;
@@ -987,8 +987,14 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
             std::cerr << "Error while opening file'" << adapterFile << "'.\n";
             return 1;
         }
-        readRecord(id, params.adapter1, adapterInFile);
-        readRecord(id, params.adapter2, adapterInFile);
+        AdapterTrimmingParams::TAdapter tempAdapter;
+        while (!atEnd(adapterInFile))
+        {
+            readRecord(id, tempAdapter, adapterInFile);
+            appendValue(params.adapter1, tempAdapter);
+            readRecord(id, tempAdapter, adapterInFile);
+            appendValue(params.adapter2, tempAdapter);
+        }
     }
     // If they are not given, but we would need them (single-end trimming), output error.
     else if (isSet(parser, "np") || (params.noAdapter && fileCount == 1))
@@ -1336,8 +1342,15 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet, TIds& id
 {
     if (!params.run)
         return;
-	for (unsigned i = 0; i < length(seqSet); ++i)
-        stripAdapterBatch(seqSet[i], idSet[i], params.adapter2, params.mode, params.stats, false, tagOpt);
+    Iterator<TIds>::Type itIdSet = begin(idSet);
+    // a bit ugly until range based for_each becomes available
+    // Iterate through the groups that have been demultiplexed by barcodes
+    std::for_each(begin(params.adapter2), end(params.adapter2), [&](auto const adapter) {
+        itIdSet = begin(idSet);
+        std::for_each(begin(seqSet), end(seqSet), [&](auto seq) {
+            stripAdapterBatch(seq, getValue(itIdSet), adapter, params.mode, params.stats, false, tagOpt);
+        ++itIdSet;});
+    });
 }
 
 //Overload for paired-end data
@@ -1353,8 +1366,10 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet1, TIds& i
     {
         if (!params.paired)
         {
-            stripAdapterBatch(seqSet1[i], idSet1[i], params.adapter2, params.mode, params.stats, tagOpt);
-            stripReverseAdapterBatch(seqSet2[i], idSet2[i], params.adapter1, params.mode, params.stats, tagOpt);
+            std::for_each(begin(params.adapter2), end(params.adapter2),
+                [&](auto const adapter) {stripAdapterBatch(seqSet2[i], idSet2[i], adapter, params.mode, params.stats, tagOpt);});
+            std::for_each(begin(params.adapter1), end(params.adapter1),
+                [&](auto const adapter) {stripAdapterBatch(seqSet1[i], idSet1[i], adapter, params.mode, params.stats, tagOpt);});
         }
         else
         {

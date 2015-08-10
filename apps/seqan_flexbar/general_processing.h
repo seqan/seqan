@@ -514,7 +514,7 @@ void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TId
 
 // main preTrim function
 template<typename TSeqs, typename TIds>
-void _preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, String<bool>& rem)
+void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const unsigned nexus, const unsigned tail, const unsigned min, String<bool>& rem)
 {
 	int i = 0;
 	int limit = length(seqs);
