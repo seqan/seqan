@@ -507,10 +507,12 @@ matchVerify(
 	TGenomeInfixRev		infRev(inf);
 	TMyersFinderRev		myersFinderRev(infRev);
 	TReadRev			readRev;
+    TRead               readInf;
 	if(IsSameType<TSufPrefSpec,LongestSuffix>::VALUE)
-		setHost(readRev,infix(readSet[rseqNo],length(readSet[rseqNo])-options.minMatchLen,length(readSet[rseqNo])));
+		readInf = infix(readSet[rseqNo],length(readSet[rseqNo])-options.minMatchLen,length(readSet[rseqNo]));
 	else
-		setHost(readRev,infix(readSet[rseqNo],0,options.minMatchLen));
+		readInf = infix(readSet[rseqNo],0,options.minMatchLen);
+    setHost(readRev, readInf);
 
 	TMyersPatternRev	myersPatternRev(readRev);
 	
