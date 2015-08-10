@@ -1874,7 +1874,6 @@ SEQAN_DEFINE_TEST(test_pattern_set_host) {
     test_pattern_set_host<WildShiftAnd>();
     test_pattern_set_host<Bfam<Oracle> >();
     test_pattern_set_host<Bfam<Trie> >();
-    test_pattern_set_host<AhoCorasick>();
     test_pattern_set_host<Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, void> >();
     test_pattern_set_host<Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, Myers<FindPrefix> > >();
     test_pattern_set_host<Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, void> >();
