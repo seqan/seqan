@@ -691,8 +691,8 @@ struct QualityTrimmingParams
 
 struct ProgramParams
 {
-    int fileCount;
-    int readCount;
+    unsigned int fileCount;
+    unsigned int readCount;
     double processTime, ioTime;
     seqan::SeqFileIn fileStream1, fileStream2;
 
