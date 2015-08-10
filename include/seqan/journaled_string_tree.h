@@ -41,7 +41,7 @@
 // Prerequisites.
 // ===========================================================================
 
-#ifdef SEQAN_CXX11_STANDARD
+#ifdef SEQAN_CXX11_STANDARD && (!_MSC_VER || _MSC_VER >= 1900) && (!PLATFORM_WINDOWS_MINGW)
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -79,5 +79,5 @@
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser_util.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser.h>
 
-#endif // SEQAN_CXX11_STANDARD
+#endif // SEQAN_CXX11_STANDARD && (!_MSC_VER || _MSC_VER >= 1900) && (!PLATFORM_WINDOWS_MINGW)
 #endif // INCLUDE_SEQAN_JOURNALED_STRING_TREE_H_

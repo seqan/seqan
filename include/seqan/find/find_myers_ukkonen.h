@@ -444,7 +444,8 @@ public:
         TPatternState(std::forward<Pattern>(other)),
         largePattern(NULL)
     {
-        swap(largePattern, other.largePattern);  // swap the content setting the large pattern of other to NULL.
+		largePattern = other.largePattern;
+		other.largePattern = NULL;
     }
 
     template <typename TNeedle2>
