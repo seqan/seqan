@@ -484,10 +484,10 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
 
 
 template<typename TSeqs, typename TIds>
-void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TIds*> &idsVector, StringSet<bool> const& rem, DemultiplexingParams& demultiplexParams, GeneralStats& stats)
+void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TIds*> &idsVector, String<bool> const& rem, DemultiplexingParams& demultiplexParams, GeneralStats& stats)
 {
-	assert(!seqsVector.empty() && !idsVector.empty());
-	assert(seqsVector.size() == idsVector.size());
+	SEQAN_ASSERT(!seqsVector.empty() && !idsVector.empty());
+	SEQAN_ASSERT_EQ(seqsVector.size(), idsVector.size());
 	unsigned ex = 0;
 	unsigned limit = length(**seqsVector.begin());
 	bool demultiplex = (length(demultiplexParams.multiplexFile) > 0);
@@ -514,15 +514,14 @@ void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TId
 
 // main preTrim function
 template<typename TSeqs, typename TIds>
-void _preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, StringSet<bool>& rem)
+void _preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, String<bool>& rem)
 {
 	int i = 0;
 	int limit = length(seqs);
 
 	resize(rem, limit);
 
-	// disable this omp, because making a local copy of ids for every threat is not worth it
-	//SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
+	SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
 	for (i = 0; i < limit; i++)
 	{
 		if (length(seqs[i]) >(head + nexus + tail))
@@ -531,7 +530,7 @@ void _preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned ta
 				erase(seqs[i], 0, head);
 			if (nexus > 0)
 			{
-				ids[i] = prefix(seqs[i], nexus);
+				ids[i] = prefix(seqs[i], nexus);	// changing different elements from different threads is thread safe
 				erase(seqs[i], 0, nexus);
 			}
 			if (tail > 0)
@@ -554,7 +553,7 @@ void _preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned ta
 template<typename TSeqs, typename TIds, typename TDemultiplexingParams>
 void preTrim(TSeqs& seqs, TIds& ids, TDemultiplexingParams&& demultiplexParams, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
 {
-	StringSet<bool> rem;
+	String<bool> rem;
 	_preTrim(seqs, ids, head, nexus, tail, min, rem);
 	std::vector<TSeqs*> seqsVector;
 	std::vector<TIds*> idsVector;
@@ -567,7 +566,7 @@ void preTrim(TSeqs& seqs, TIds& ids, TDemultiplexingParams&& demultiplexParams, 
 template<typename TSeqs, typename TIds, typename TDemultiplexingParams>
 void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TDemultiplexingParams&& demultiplexParams, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
 {
-	StringSet<bool> rem1, rem2;
+	String<bool> rem1, rem2;
 	_preTrim(seqs, ids, head, nexus, tail, min, rem1);
 	_preTrim(seqsRev, idsRev, head, nexus, tail, min, rem2);
 	for (unsigned int i = 0; i < length(rem1); i++)
