@@ -620,18 +620,18 @@ matchVerify(
 	SwiftSemiGlobal,					// Edit distance
 	TSufPrefSpec)						// Swift specialization
 {
-	typedef Segment<TGenome, InfixSegment>				TGenomeInfix;
-	typedef typename Value<TReadSet>::Type				TRead;
+	typedef Segment<TGenome, InfixSegment>              TGenomeInfix;
+	typedef typename Value<TReadSet>::Type              TRead;
 	
 	// find read match end
-	typedef Finder<TGenomeInfix>					    TMyersFinder;
-	typedef typename Value<TMyersPatterns>::Type		TMyersPattern;
+	typedef Finder<TGenomeInfix>                        TMyersFinder;
+	typedef typename Value<TMyersPatterns>::Type        TMyersPattern;
 	
 	// find read match begin
-	typedef ModifiedString<TGenomeInfix, ModReverse>	TGenomeInfixRev;
-	typedef ModifiedString<TRead, ModReverse>	        TReadRev;
-	typedef Finder<TGenomeInfixRev>					    TMyersFinderRev;
-	typedef Pattern<TReadRev, MyersUkkonenGlobal>		TMyersPatternRev;
+	typedef ModifiedString<TGenomeInfix, ModReverse>    TGenomeInfixRev;
+	typedef ModifiedString<TRead, ModReverse>           TReadRev;
+	typedef Finder<TGenomeInfixRev>                     TMyersFinderRev;
+	typedef Pattern<TReadRev, MyersUkkonenGlobal>       TMyersPatternRev;
 
 	TMyersFinder myersFinder(inf);
 	TMyersPattern &myersPattern = forwardPatterns[rseqNo];  //have to make sure this only contains the prefix
