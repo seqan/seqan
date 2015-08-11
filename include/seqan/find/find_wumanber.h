@@ -90,7 +90,7 @@ public:
     {
     }
 
-#ifdef SEQAN_CXX11_STANDARD
+#if defined(SEQAN_CXX11_STANDARD) && (!_MSC_VER || _MSC_VER >= 1900) && (!PLATFORM_WINDOWS_MINGW)
     Pattern(Pattern && other) = delete;
     Pattern & operator=(Pattern && other) = delete;
 
