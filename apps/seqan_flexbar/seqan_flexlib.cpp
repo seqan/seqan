@@ -97,6 +97,10 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
 {
     // GENERAL OPTIONS -----------------------------------------
     addSection(parser, "General Options");
+
+    seqan::ArgParseOption showSpeed = seqan::ArgParseOption(
+        "ss", "showSpeed", "Show speed in base pairs per second");
+    addOption(parser, showSpeed);
     
     seqan::ArgParseOption recordOpt = seqan::ArgParseOption(
         "r", "records", "Number of records to be read in one run.",
@@ -1695,6 +1699,8 @@ int flexbarMain(int argc, char const ** argv)
     unsigned records;
     getOptionValue(records, parser, "r");
 
+    const bool showSpeed = isSet(parser, "ss");
+
     seqan::CharString output;
     getOptionValue(output, parser, "output");
 
@@ -2124,7 +2130,10 @@ int flexbarMain(int argc, char const ** argv)
             // Append to output file.
             outputStreams.writeSeqs(idSet, seqSet, map, demultiplexingParams.barcodeIds);
             // Information
-            std::cout << "\r" << programParams.readCount << "   " << static_cast<int>(programParams.readCount/SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
+            if (showSpeed)
+                std::cout << "\r" << programParams.readCount << "   " << static_cast<int>(programParams.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
+            else
+                std::cout << "\r" << programParams.readCount;
         }
      }
      else
@@ -2179,7 +2188,10 @@ int flexbarMain(int argc, char const ** argv)
             // Append to output file.
             outputStreams.writeSeqs(idSet1, seqSet1, idSet2, seqSet2, map, demultiplexingParams.barcodeIds);
             // Information
-            std::cout << "\r" << programParams.readCount << "   " << static_cast<int>(programParams.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
+            if (showSpeed)
+                std::cout << "\r" << programParams.readCount << "   " << static_cast<int>(programParams.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
+            else
+                std::cout << "\r" << programParams.readCount;
         }
     }
     double loop = SEQAN_PROTIMEDIFF(loopTime);

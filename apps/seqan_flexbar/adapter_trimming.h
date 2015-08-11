@@ -106,6 +106,7 @@ struct AdapterMatchSettings
         erMode = ((e == 0) && (er != 0));
     }
     AdapterMatchSettings() : min_length(0), errors(0), errorRate(0), erMode(false), modeAuto(true), singleMatch(false) {};
+   
     int min_length; //The minimum length of the overlap.
 	int errors;     //The maximum number of errors we allow.
 	double errorRate;  //The maximum number of errors allowed per overlap
@@ -116,9 +117,6 @@ struct AdapterMatchSettings
 
 struct AdapterTrimmingStats
 {
-	unsigned a1count, a2count;
-	unsigned overlapSum;
-	unsigned minOverlap, maxOverlap;
 	AdapterTrimmingStats() : a1count(0), a2count(0), overlapSum(0),
 			minOverlap(std::numeric_limits<unsigned>::max()), maxOverlap(0) {};
 
@@ -127,8 +125,8 @@ struct AdapterTrimmingStats
         a1count += rhs.a1count;
         a2count += rhs.a2count;
         overlapSum += rhs.overlapSum;
-        minOverlap = minOverlap > rhs.minOverlap ? minOverlap : rhs.minOverlap;
-        maxOverlap = maxOverlap < rhs.maxOverlap ? maxOverlap : rhs.maxOverlap;
+        minOverlap = minOverlap < rhs.minOverlap ? minOverlap : rhs.minOverlap;
+        maxOverlap = maxOverlap < rhs.maxOverlap ? rhs.maxOverlap : maxOverlap;
         return *this;
     }
 	void clear()
@@ -139,6 +137,10 @@ struct AdapterTrimmingStats
 		minOverlap = std::numeric_limits<unsigned>::max();
 		maxOverlap = 0;
 	}
+
+    unsigned a1count, a2count;
+    unsigned overlapSum;
+    unsigned minOverlap, maxOverlap;
 };
 
 // ============================================================================
@@ -385,6 +387,8 @@ void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, TSeq& seq, TA
 //Version for automatic matching options
 inline bool isMatch(const int overlap, const int mismatches, const AdapterMatchSettings &adatperMatchSettings)
 {
+    if (overlap == 0)
+        return false;
     if (adatperMatchSettings.modeAuto)
     {
         int errors = 0; // No errors for overlap up to 5 bases.
@@ -414,19 +418,19 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapterSet const&
     typedef typename seqan::Row<TAlign>::Type TRow;
 	seqan::Pair<unsigned, TAlign> ret;
 
-    unsigned int removed{ 0 };
+    unsigned removed{ 0 };
     for (AdapterItem const& adapterItem : adapterSet)
     {
         //std::cout << "seq: " << seq << std::endl;
         //std::cout << "adapter: " << adapterItem.seq << std::endl;
         alignAdapter(ret, seq, adapterItem);    // align crashes if seq is an empty string!
-        const int overlap = getOverlap(ret.i2);
+        const unsigned int overlap = getOverlap(ret.i2);
         const int score = ret.i1;
         const int mismatches = (overlap - score) / 2;
-        //std::cout << "score: " << ret.i1 << " overlap: " << overlap << " mismatches: " << mismatches <<std::endl;
-        //std::cout << ret.i2 << std::endl;
         if (isMatch(overlap, mismatches, spec))
         {
+            //std::cout << "score: " << ret.i1 << " overlap: " << overlap << " mismatches: " << mismatches << std::endl;
+            //std::cout << ret.i2 << std::endl;
             TRow row2 = row(ret.i2, 1);
             //std::cout << "adapter start position: " << toViewPosition(row2, 0) << std::endl;
             removed += length(seq) - toViewPosition(row2, 0);
