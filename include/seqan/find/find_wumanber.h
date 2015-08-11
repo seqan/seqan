@@ -90,7 +90,7 @@ public:
     {
     }
 
-#ifdef SEQAN_CXX11_STANDARD
+#if defined(SEQAN_CXX11_CORE)
     Pattern(Pattern && other) = delete;
     Pattern & operator=(Pattern && other) = delete;
 
@@ -108,7 +108,7 @@ public:
         SEQAN_CHECKPOINT
         setHost(*this, ndl);
     }
-#endif  // SEQAN_CXX11_STANDARD
+#endif  // SEQAN_CXX11_CORE
 
     ~Pattern()
     {

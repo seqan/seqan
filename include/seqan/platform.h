@@ -83,6 +83,11 @@
 #define SEQAN_CXX11_STL
 #endif
 
+// Are the C++11 core language features available (for instance variadic templates, dfaulted and deleted move constructor functions, constexpr, etc.)?
+#if defined(SEQAN_CXX11_STANDARD) && (!defined(_MSC_VER) || _MSC_VER >= 1900) && !defined(PLATFORM_WINDOWS_MINGW)
+#define SEQAN_CXX11_CORE
+#endif
+
 // C++ restrict keyword, see e.g. platform_gcc.h
 #ifndef SEQAN_RESTRICT
 #define SEQAN_RESTRICT
