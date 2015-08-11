@@ -1348,7 +1348,7 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet, TIds& id
     //        stripAdapterBatch(seq, value(itIdSet++), adapter, params.mode, params.stats, false, tagOpt);});
     //}
 
-        Iterator<TIds>::Type itIdSet = begin(idSet);
+        typename Iterator<TIds>::Type itIdSet = begin(idSet);
         std::for_each(begin(seqSet), end(seqSet), [&](seqan::StringSet<Dna5QString> &seq) {
             stripAdapterBatch(seq, value(itIdSet++), params.adapter2, params.mode, params.stats, false, tagOpt);});
 
@@ -2124,7 +2124,7 @@ int flexbarMain(int argc, char const ** argv)
             // Append to output file.
             outputStreams.writeSeqs(idSet, seqSet, map, demultiplexingParams.barcodeIds);
             // Information
-            std::cout << "\r" << programParams.readCount;
+            std::cout << "\r" << programParams.readCount << "   " << static_cast<int>(programParams.readCount/SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
         }
      }
      else
@@ -2179,7 +2179,7 @@ int flexbarMain(int argc, char const ** argv)
             // Append to output file.
             outputStreams.writeSeqs(idSet1, seqSet1, idSet2, seqSet2, map, demultiplexingParams.barcodeIds);
             // Information
-            std::cout << "\r" << 2*programParams.readCount;
+            std::cout << "\r" << programParams.readCount << "   " << static_cast<int>(programParams.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
         }
     }
     double loop = SEQAN_PROTIMEDIFF(loopTime);

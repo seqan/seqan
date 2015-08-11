@@ -410,8 +410,8 @@ inline bool isMatch(const int overlap, const int mismatches, const AdapterMatchS
 template <typename TSeq, typename TAdapterSet, typename TSpec>
 unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec, const bool reverse)
 {
-	typedef seqan::Align<TSeq> TAlign;
-    typedef seqan::Row<TAlign>::Type TRow;
+	typedef typename seqan::Align<TSeq> TAlign;
+    typedef typename seqan::Row<TAlign>::Type TRow;
 	seqan::Pair<unsigned, TAlign> ret;
 
     unsigned int removed{ 0 };
