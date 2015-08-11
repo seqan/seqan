@@ -90,7 +90,7 @@ public:
     {
     }
 
-#if defined(SEQAN_CXX11_STANDARD) && (!_MSC_VER || _MSC_VER >= 1900) && (!PLATFORM_WINDOWS_MINGW)
+#if defined(SEQAN_CXX11_CORE)
     Pattern(Pattern && other) = delete;
     Pattern & operator=(Pattern && other) = delete;
 
@@ -108,7 +108,7 @@ public:
         SEQAN_CHECKPOINT
         setHost(*this, ndl);
     }
-#endif  // SEQAN_CXX11_STANDARD
+#endif  // SEQAN_CXX11_CORE
 
     ~Pattern()
     {
