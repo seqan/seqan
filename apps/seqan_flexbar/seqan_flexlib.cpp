@@ -669,8 +669,6 @@ struct AdapterTrimmingParams
     bool paired;
     bool noAdapter;
     bool run;
-    typedef Dna5QString TAdapter;
-    typedef seqan::StringSet<TAdapter> TAdapterSet;
     TAdapterSet adapter1;
     TAdapterSet adapter2;
     AdapterMatchSettings mode;
@@ -987,7 +985,7 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
             std::cerr << "Error while opening file'" << adapterFile << "'.\n";
             return 1;
         }
-        AdapterTrimmingParams::TAdapter tempAdapter;
+        TAdapter tempAdapter;
         while (!atEnd(adapterInFile))
         {
             readRecord(id, tempAdapter, adapterInFile);
@@ -1222,7 +1220,7 @@ int demultiplexingStage(DemultiplexingParams& params, TSeqsVec& seqs, TIdsVec& i
         return 0;
     }
     seqan::StringSet<seqan::String<int> > groups;
-    if (params.runx &&! params.approximate)
+    if (params.runx && !params.approximate)
     {
         //DEBUG_MSG(std::cout << "Demultiplexing exact multiplex single-end reads.\n");
         doAll(groups, params.multiplex, params.barcodes, esaFinder, params.stats, params.exclude);
@@ -1343,24 +1341,20 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet, TIds& id
     if (!params.run)
         return;
 
-    // nested for each had some problems, but why?
-    for (int i = 0; i < length(params.adapter2); i++)
-    {
-        Iterator<TIds>::Type itIdSet = iter(idSet, 1);
-        std::for_each(begin(seqSet) + 1, end(seqSet), [&](seqan::StringSet<Dna5QString> &seq) {
-            stripAdapterBatch(seq, value(itIdSet), params.adapter2[i], params.mode, params.stats, false, tagOpt);
-            itIdSet++;});
-    }
+    //for(const AdapterTrimmingParams::TAdapter& adapter: params.adapter2)
+    //{
+    //    Iterator<TIds>::Type itIdSet = begin(idSet);
+    //    std::for_each(begin(seqSet) , end(seqSet), [&](seqan::StringSet<Dna5QString> &seq) {
+    //        stripAdapterBatch(seq, value(itIdSet++), adapter, params.mode, params.stats, false, tagOpt);});
+    //}
 
-    // a bit ugly until range based for_each becomes available
-    // Iterate through the groups that have been demultiplexed by barcodes
-    //    Iterator<TIds>::Type itIdSet;
-    //    std::for_each(begin(params.adapter2), end(params.adapter2), [&](auto const adapter) {
-    //    itIdSet = begin(idSet)+1;
-    //    std::for_each(begin(seqSet)+1, end(seqSet), [&](seqan::StringSet<Dna5QString> &seq) {
-    //        stripAdapterBatch(seq, value(itIdSet), adapter, params.mode, params.stats, false, tagOpt);
-    //    ++itIdSet;});
-    //});
+        Iterator<TIds>::Type itIdSet = begin(idSet);
+        std::for_each(begin(seqSet), end(seqSet), [&](seqan::StringSet<Dna5QString> &seq) {
+            stripAdapterBatch(seq, value(itIdSet++), params.adapter2, params.mode, params.stats, false, tagOpt);});
+
+    //for (int i = 0; i < length(params.adapter2); i++)
+    //    for (int k = 0;k < length(seqSet);k++)
+    //        stripAdapterBatch(seqSet[k], idSet[k], params.adapter2[i], params.mode, params.stats, false, tagOpt);    
 }
 
 //Overload for paired-end data
@@ -1376,10 +1370,8 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet1, TIds& i
     {
         if (!params.paired)
         {
-            std::for_each(begin(params.adapter2), end(params.adapter2),
-                [&](auto const adapter) {stripAdapterBatch(seqSet2[i], idSet2[i], adapter, params.mode, params.stats, tagOpt);});
-            std::for_each(begin(params.adapter1), end(params.adapter1),
-                [&](auto const adapter) {stripAdapterBatch(seqSet1[i], idSet1[i], adapter, params.mode, params.stats, tagOpt);});
+            stripAdapterBatch(seqSet2[i], idSet2[i], params.adapter2, params.mode, params.stats, tagOpt);
+            stripAdapterBatch(seqSet1[i], idSet1[i], params.adapter1, params.mode, params.stats, tagOpt);
         }
         else
         {
@@ -1892,6 +1884,7 @@ int flexbarMain(int argc, char const ** argv)
         getOptionValue(out, parser, "output");
         std::cout << "Overview:\n";
         std::cout << "=========\n";
+        std::cout << "Application Type: " << sizeof(void*) * 8 << " bit" << std::endl;
         getArgumentValue(filename1, parser, 0, 0);
         std::cout << "Forward-read file: " << filename1 << "\n";
         if (programParams.fileCount == 2)

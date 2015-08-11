@@ -77,6 +77,23 @@ namespace seqan{
 	};
 }
 
+struct AdapterItem;
+typedef seqan::Dna5QString TAdapter;
+typedef std::vector< AdapterItem > TAdapterSet;
+struct AdapterItem
+{
+    AdapterItem() : anchored(false) {};
+    AdapterItem(const TAdapter &adapter) : seq(adapter), anchored(false) {};
+
+    TAdapter seq;
+    // the anchored matching mode should have the same functionality as cutadapt's anchored mode
+    // see http://cutadapt.readthedocs.org/en/latest/guide.html
+    // In anchored mode, the adapter has to start (3" adapter) or has to end (5" adapter) with the sequence
+    // The anchored mode is rarely used, at least for 3" adapters
+    // Todo: implement rooted mode
+    bool anchored;
+};
+
 // Define scoring function type.
 typedef Score<int, ScoreMatrix<Dna5, AdapterScoringMatrix> > TScore;
 
@@ -84,16 +101,17 @@ typedef Score<int, ScoreMatrix<Dna5, AdapterScoringMatrix> > TScore;
 //with values supplied by the user. Saves those  values as members.
 struct AdapterMatchSettings
 {
-    AdapterMatchSettings(int m, int e, double er) : min_length(m), errors(e), errorRate(er), erMode(false), modeAuto(false)
+    AdapterMatchSettings(int m, int e, double er) : min_length(m), errors(e), errorRate(er), erMode(false), modeAuto(false), singleMatch(false)
     {
-     //   erMode = ((e == 0) && (er != 0));
+        erMode = ((e == 0) && (er != 0));
     }
-    AdapterMatchSettings() : min_length(0), errors(0), errorRate(0), erMode(false), modeAuto(true) {};
+    AdapterMatchSettings() : min_length(0), errors(0), errorRate(0), erMode(false), modeAuto(true), singleMatch(false) {};
     int min_length; //The minimum length of the overlap.
 	int errors;     //The maximum number of errors we allow.
 	double errorRate;  //The maximum number of errors allowed per overlap
 	bool erMode;
     bool modeAuto;
+    bool singleMatch;
 };
 
 struct AdapterTrimmingStats
@@ -103,6 +121,16 @@ struct AdapterTrimmingStats
 	unsigned minOverlap, maxOverlap;
 	AdapterTrimmingStats() : a1count(0), a2count(0), overlapSum(0),
 			minOverlap(std::numeric_limits<unsigned>::max()), maxOverlap(0) {};
+
+    AdapterTrimmingStats& operator+= (AdapterTrimmingStats const& rhs)
+    {
+        a1count += rhs.a1count;
+        a2count += rhs.a2count;
+        overlapSum += rhs.overlapSum;
+        minOverlap = minOverlap > rhs.minOverlap ? minOverlap : rhs.minOverlap;
+        maxOverlap = maxOverlap < rhs.maxOverlap ? maxOverlap : rhs.maxOverlap;
+        return *this;
+    }
 	void clear()
 	{
 		a1count = 0;
@@ -334,13 +362,24 @@ unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idS
 	return a1count + a2count;
 }
 
-template <typename TSeq, typename TAdapter>
-void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, TSeq& seq, TAdapter const& adapter)
+template <typename TSeq, typename TAdapterItem>
+void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, TSeq& seq, TAdapterItem const& adapterItem)
 {
-	// Global free-end alignment. The Alignment configuration specifies that gaps on the
-	// start of the read and at the end of the adapter are not penalized -> 5'-3' overlap.
-	// We also don't allow gaps by setting the gap penalty high.
-	alignPair(ret, seq, adapter, seqan::AlignConfig<true, false, true, false>(), true);
+	// Gaps are not allowed by setting the gap penalty high.
+    // Changed the AlignConfig to behave like cutadapt's non anchored mode
+    // examples using ADAPTER as adapter, required overlap 4, allowed error rate 0.2
+    //
+    // NNADAPTERMYSEQUENCE -> MYSEQUENCE
+    // MYSEQUENCEADAPTERXX -> MYSEQUENCE
+    // DAPTERMYSEQUENCE -> MYSEQUENCE
+    // MYSEQUENCEDAPTER -> MYSEQUENC
+    //
+    // anchored mode would look like
+    // NNADAPTERMYSEQUENCE -> NNADAPTERMYSEQUENCE
+    // MYSEQUENCEADAPTERXX -> NNADAPTERMYSEQUENCE
+    // DAPTERMYSEQUENCE -> NNADAPTERMYSEQUENCE
+    // MYSEQUENCEDAPTER -> MYSEQUENC
+    alignPair(ret, seq, adapterItem.seq, seqan::AlignConfig<true, true, true, true>(), true);
 }
 
 //Version for automatic matching options
@@ -368,80 +407,81 @@ inline bool isMatch(const int overlap, const int mismatches, const AdapterMatchS
     }
 }
 
-template <typename TSeq, typename TAdapter, typename TSpec>
-unsigned stripAdapter(TSeq& seq, TAdapter const& adapter, TSpec const& spec)
+template <typename TSeq, typename TAdapterSet, typename TSpec>
+unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec, const bool reverse)
 {
 	typedef seqan::Align<TSeq> TAlign;
+    typedef seqan::Row<TAlign>::Type TRow;
 	seqan::Pair<unsigned, TAlign> ret;
-    alignAdapter(ret, seq, adapter);    // align crashes if seq is an empty string!
-	int overlap = getOverlap(ret.i2);
-	int score = ret.i1;
-	int mismatches = (overlap-score) / 2;
-	if (isMatch(overlap, mismatches, spec))
-	{
-		seqan::erase(seq, length(seq) - overlap, length(seq));
-		return overlap;
-	}
-    else
+
+    unsigned int removed{ 0 };
+    for (AdapterItem const& adapterItem : adapterSet)
     {
-	    return 0;
+        //std::cout << "seq: " << seq << std::endl;
+        //std::cout << "adapter: " << adapterItem.seq << std::endl;
+        alignAdapter(ret, seq, adapterItem);    // align crashes if seq is an empty string!
+        const int overlap = getOverlap(ret.i2);
+        const int score = ret.i1;
+        const int mismatches = (overlap - score) / 2;
+        //std::cout << "score: " << ret.i1 << " overlap: " << overlap << " mismatches: " << mismatches <<std::endl;
+        //std::cout << ret.i2 << std::endl;
+        if (isMatch(overlap, mismatches, spec))
+        {
+            TRow row2 = row(ret.i2, 1);
+            //std::cout << "adapter start position: " << toViewPosition(row2, 0) << std::endl;
+            removed += length(seq) - toViewPosition(row2, 0);
+            seqan::erase(seq, toViewPosition(row2, 0), length(seq));
+            //std::cout << "stripped seq: " << seq << std::endl;
+            stats.overlapSum += overlap;
+            if (reverse)
+                ++stats.a1count;
+            else
+                ++stats.a2count;
+
+            stats.maxOverlap = stats.maxOverlap > overlap ? stats.maxOverlap : overlap;
+            stats.minOverlap = stats.minOverlap < overlap ? stats.minOverlap : overlap;
+            if(spec.singleMatch || empty(seq))
+                return removed;
+        }
     }
+    return removed;
 }
-template <typename TSeq, typename TId, typename TAdapter, typename TSpec>
-unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& idSet, TAdapter const& adapter, TSpec const& spec,
+
+template <typename TSeq, typename TAdapterSet, typename TSpec>
+unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec)
+{
+    return stripAdapter(seq, stats, adapterSet, spec, false);
+}
+
+template <typename TSeq, typename TId, typename TAdapterSet, typename TSpec>
+unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& idSet, TAdapterSet const& adapterSet, TSpec const& spec,
 		AdapterTrimmingStats& stats, bool reverse = false, bool tagOpt = false)
 {
 	int t_num = omp_get_max_threads();
 	// Create local counting variables to avoid concurrency problems.
-	unsigned a_count = 0, overlapSum = 0;
 	seqan::String<unsigned> minOverlap;
 	seqan::String<unsigned> maxOverlap;
+    std::vector<AdapterTrimmingStats> adapterTrimmingStatsVector;
 	seqan::resize(minOverlap, t_num, std::numeric_limits<unsigned>::max());
 	seqan::resize(maxOverlap, t_num, 0);
+    seqan::resize(adapterTrimmingStatsVector, t_num);
 	int len = length(set);
-	SEQAN_OMP_PRAGMA(parallel for schedule(static) reduction(+:a_count, overlapSum))
-	for (int i=0; i < len; ++i)
-	{
-        if (empty(value(set, i)))
-            continue;
-        unsigned over = stripAdapter(value(set, i), adapter, spec);
-		overlapSum += over;
-		a_count += (over != 0);
-		// Thread saves local min/max seen in the batch it processed.
-		int t_id = omp_get_thread_num();
-		if (over > 0 && over < minOverlap[t_id])
+	SEQAN_OMP_PRAGMA(parallel for schedule(static))
+        for (int i = 0; i < len; ++i)
         {
-            minOverlap[t_id] = over;
-        }
-		if (over > 0 && over > maxOverlap[t_id])
-        {
-            maxOverlap[t_id] = over;
-        }
+            if (empty(value(set, i)))
+                continue;
+        const int t_id = omp_get_thread_num();
+        // Thread saves local min/max seen in the batch it processed.
+        const unsigned over = stripAdapter(value(set, i), adapterTrimmingStatsVector[t_id], adapterSet, spec, reverse);
         if (tagOpt && over != 0)
         {
             append(idSet[i], "[AdapterRemoved]");
         }
 	}
-	if (reverse)
-    {
-		stats.a1count += a_count;
-    }
-	else
-    {
-		stats.a2count += a_count;
-    }
-	stats.overlapSum += overlapSum;
-	unsigned batch_min = *std::min_element(begin(minOverlap), end(minOverlap));
-	unsigned batch_max = *std::max_element(begin(maxOverlap), end(maxOverlap));
-	if (batch_min < stats.minOverlap)
-    {
-        stats.minOverlap = batch_min;
-    }
-	if (batch_max > stats.maxOverlap)
-    {
-        stats.maxOverlap = batch_max;
-    }
-	return a_count;
+    std::for_each(adapterTrimmingStatsVector.begin(), adapterTrimmingStatsVector.end(), 
+        [&stats](AdapterTrimmingStats const& _stats) {stats += _stats;});
+	return stats.a1count + stats.a2count;
 }
 
 template <typename TSeq, typename TId, typename TSpec>

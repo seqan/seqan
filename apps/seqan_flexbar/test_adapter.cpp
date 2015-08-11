@@ -189,22 +189,24 @@ SEQAN_DEFINE_TEST(match_test)
 SEQAN_DEFINE_TEST(strip_adapter_test)
 {
 	typedef seqan::String<seqan::Dna5Q> TSeq;
-	typedef seqan::String<seqan::Dna5> TAda;
+    typedef seqan::String<seqan::Dna5Q> TAda;
+    TAdapterSet adapterSet;
 
 	TSeq seq = TSeq("AAAAAAAAAATTTTT");
-	TAda ada = TAda(          "TTTTTTTTTTT");
+    TAda ada = TAda(          "TTTTTTTTTTT");
 
 	int len = length(seq);
     AdapterMatchSettings autoOption;
-	int removed = stripAdapter(seq, ada, autoOption);
+    AdapterTrimmingStats stats;
+    int removed = stripAdapter(seq, stats, TAdapterSet{AdapterItem(ada)}, autoOption);
 	SEQAN_ASSERT_EQ(removed, 5);
 	SEQAN_ASSERT_EQ(len - length(seq), 5u);
 
 	seq = TSeq("AAAAAAAAAATATATTA");
 	//                || |||||||		   
-	ada = TAda(     "GAATATATATTT"); 
+    ada = TAda(     "GAATATATATTT");
 	len = length(seq);
-	removed = stripAdapter(seq, ada, autoOption);
+	removed = stripAdapter(seq, stats, TAdapterSet{ AdapterItem(ada) }, autoOption);
 	SEQAN_ASSERT_EQ(removed, 12);
 	SEQAN_ASSERT_EQ(len - length(seq), 12u);
 }
@@ -217,19 +219,19 @@ SEQAN_DEFINE_TEST(align_adapter_test)
 	TSeq seq = TSeq("AAAAAAAAAATTTTT");
 	TAda ada = TAda("TTTTTTTTTTT");
 	seqan::Pair<unsigned, seqan::Align<TSeq> > pair;
-    alignAdapter(pair, seq, ada);
+    alignAdapter(pair, seq, AdapterItem(ada));
 	SEQAN_ASSERT_EQ(pair.i1, 5u);
 
 	seq = TSeq("AAAAAAAAAATATATTA");
 	//                    |||||		   
 	ada = TAda(       "GGTTATATATTT"); // front and back gaps are allowed
-	alignAdapter(pair, seq, ada);
+	alignAdapter(pair, seq, AdapterItem(ada));
 	SEQAN_ASSERT_EQ(pair.i1, 2u);
 
 	seq = TSeq("AAAAAAAAAATATATTA");
 	//                || |||||||		   
 	ada = TAda(     "GAATATATATTT"); // front and back gaps are allowed
-	alignAdapter(pair, seq, ada);
+	alignAdapter(pair, seq, AdapterItem(ada));
 	SEQAN_ASSERT_EQ(pair.i1, 6u);
 }
 
