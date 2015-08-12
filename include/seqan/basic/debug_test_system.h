@@ -611,17 +611,19 @@ struct StaticData
     {
         // Get path to include.
         const char * file = __FILE__;
-        size_t pos = -1;
+        size_t pos = 0;
+        bool found = false;
         for (size_t i = 0; i < strlen(file) - strlen("include"); ++i)
         {
             if (strncmp(file + i, "include", strlen("include")) == 0)
             {
                 pos = i;
+                found = true;
             }
         }
         for (; pos > 0 && *(file + pos - 1) != '/' &&  *(file + pos - 1) != '\\'; --pos)
             continue;
-        if (pos == -1)
+        if (!found)
         {
             std::cerr << "Could not extrapolate path to repository from __FILE__ == \""
                       << __FILE__ << "\"" << std::endl;
