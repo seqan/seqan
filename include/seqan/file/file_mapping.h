@@ -730,7 +730,7 @@ unmapFileSegment(FileMapping<TSpec> &, void *addr, TSize size)
 
 #endif
     if (!result)
-        SEQAN_FAIL("unmapFileSegment(%x,%i) failed: \"%s\"", reinterpret_cast<unsigned long>(addr), size, strerror(errno));
+        SEQAN_FAIL("unmapFileSegment(%x,%i) failed: \"%s\"", addr, size, strerror(errno));
     return result;
 }
 
