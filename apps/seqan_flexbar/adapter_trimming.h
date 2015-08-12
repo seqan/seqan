@@ -31,6 +31,7 @@
 // ==========================================================================
 // Author: Benjamin Strauch <b.strauch@fu-berlin.de>
 // Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
+// Author: Benjamin Menkuec <benjamin@menkuec.de>
 // ==========================================================================
 // This file provides the adapter trimming functionality of seqan-flexbar
 // which is based in the implementation of the original flexbar program in 
@@ -480,7 +481,7 @@ unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& i
         const unsigned over = stripAdapter(value(set, i), adapterTrimmingStatsVector[t_id], adapterSet, spec, reverse);
         if (tagOpt && over != 0)
         {
-            append(idSet[i], "[AdapterRemoved]");
+            append(idSet[i], " AdapterRemoved");
         }
 	}
     std::for_each(adapterTrimmingStatsVector.begin(), adapterTrimmingStatsVector.end(), 

@@ -31,6 +31,7 @@
 // ==========================================================================
 // Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // Author: Benjamin Strauch <b.strauch@fu-berlin.de>
+// Author: Benjamin Menkuec <benjamin@menkuec.de>
 // ==========================================================================
 // This file provides the argument parsing functionality is of
 // seqan-flexbar which is based in the implementation of the original
@@ -168,12 +169,9 @@ void ArgumentParserBuilder::addFilteringOptions(seqan::ArgumentParser & parser)
     setMinValue(leftTrimOpt, "0");
     addOption(parser, leftTrimOpt);
 
-	seqan::ArgParseOption nexusTrimOpt = seqan::ArgParseOption(
-		"tn", "trimNexus", "Number of Bases of random Barcode to be trimmed from the 5'end(s) before further processing.",
-		seqan::ArgParseArgument::INTEGER, "LENGTH");
-	setDefaultValue(nexusTrimOpt, 0);
-	setMinValue(nexusTrimOpt, "0");
-	addOption(parser, nexusTrimOpt);
+	seqan::ArgParseOption tagTrimmingOpt = seqan::ArgParseOption(
+		"tt", "tagTrimming", "Write trimmed-out segments into id");
+	addOption(parser, tagTrimmingOpt);
 
     seqan::ArgParseOption rigthTrimOpt = seqan::ArgParseOption(
         "tr", "trimRight", "Number of Bases to be trimmed from the 3'end(s) before further processing.",
@@ -634,11 +632,11 @@ struct ProcessingParams
     seqan::Dna substitute;
     unsigned uncalled;
     unsigned trimLeft;
-	unsigned trimNexus;
     unsigned trimRight;
     unsigned minLen;
     unsigned finalMinLength;
     unsigned finalLength;
+    bool tagTrimming;
     bool runPre;
     bool runPost;
 
@@ -646,11 +644,11 @@ struct ProcessingParams
         substitute('A'), 
         uncalled(0),
         trimLeft(0),
-		trimNexus(0),
         trimRight(0),
         minLen(0),
         finalMinLength(0),
         finalLength(0),
+        tagTrimming(false),
         runPre(false),
         runPost(false) {};
 };
@@ -1133,10 +1131,10 @@ void preprocessingStage(TSeqs& seqs, TIds& ids, DemultiplexingParams& demultiple
     if (processingParams.runPre)
     {
         //Trimming and filtering
-        if (processingParams.trimLeft + processingParams.trimNexus + processingParams.trimRight + processingParams.minLen != 0)
+        if (processingParams.trimLeft + processingParams.trimRight + processingParams.minLen != 0)
         {
             preTrim(seqs, ids, demultiplexingParams, processingParams.trimLeft,
-                processingParams.trimNexus, processingParams.trimRight, processingParams.minLen, generalStats);
+                processingParams.tagTrimming, processingParams.trimRight, processingParams.minLen, generalStats);
         }
         //Detecting uncalled Bases
         if (seqan::isSet(parser, "u"))
@@ -1177,9 +1175,9 @@ void preprocessingStage(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev,
     if (processingParams.runPre)
     {
         //Trimming and filtering
-        if (processingParams.trimLeft + processingParams.trimNexus + processingParams.trimRight + processingParams.minLen != 0)
+        if (processingParams.trimLeft + processingParams.trimRight + processingParams.minLen != 0)
         {
-            preTrim(seqs, ids, seqsRev, idsRev, demultiplexingParams, processingParams.trimLeft, processingParams.trimNexus,
+            preTrim(seqs, ids, seqsRev, idsRev, demultiplexingParams, processingParams.trimLeft, processingParams.tagTrimming,
                 processingParams.trimRight, processingParams.minLen, generalStats);
         }
         //Detecting uncalled Bases
@@ -1730,7 +1728,7 @@ int flexbarMain(int argc, char const ** argv)
             return 1;
         }
         getOptionValue(processingParams.trimLeft, parser, "tl");
-		getOptionValue(processingParams.trimNexus, parser, "tn");
+        processingParams.tagTrimming = seqan::isSet(parser, "tt");
 		getOptionValue(processingParams.trimRight, parser, "tr");
         getOptionValue(processingParams.minLen, parser, "ml");
         if (seqan::isSet(parser, "fl"))
@@ -1741,7 +1739,7 @@ int flexbarMain(int argc, char const ** argv)
         {
             getOptionValue(processingParams.finalMinLength , parser, "fm");
         }
-        processingParams.runPre = ((processingParams.minLen + processingParams.trimLeft + processingParams.trimNexus + processingParams.trimRight != 0)
+        processingParams.runPre = ((processingParams.minLen + processingParams.trimLeft + processingParams.trimRight != 0)
             || isSet(parser, "u"));
         processingParams.runPost = (processingParams.finalLength + processingParams.finalMinLength != 0);
         if(flexiProgram == FILTERING)

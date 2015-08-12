@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
+// Author: Benjamin Menkuec <benjamin@menkuec.de>
 // ==========================================================================
 // This file provides functions used by different parts of seqan-flexbar
 // which is based in the implementation of the original flexbar program
@@ -514,7 +515,7 @@ void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TId
 
 // main preTrim function
 template<typename TSeqs, typename TIds>
-void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const unsigned nexus, const unsigned tail, const unsigned min, String<bool>& rem)
+void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const bool tagTrimming, const unsigned tail, const unsigned min, String<bool>& rem)
 {
 	int i = 0;
 	int limit = length(seqs);
@@ -524,17 +525,28 @@ void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const unsigned nexus,
 	SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
 	for (i = 0; i < limit; ++i)
 	{
-		if (length(seqs[i]) >(head + nexus + tail))
+		if (length(seqs[i]) >(head + tail))
 		{
 			if (head > 0)
+            {
+                if (tagTrimming)
+                {
+                    seqan::String<char> tempString = " TL:";
+                    append(tempString, prefix(seqs[i], head));
+                    append(ids[i], std::move(tempString));	// changing different elements from different threads is thread safe
+                }
 				erase(seqs[i], 0, head);
-			if (nexus > 0)
-			{
-				ids[i] = prefix(seqs[i], nexus);	// changing different elements from different threads is thread safe
-				erase(seqs[i], 0, nexus);
 			}
-			if (tail > 0)
-				erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
+            if (tail > 0)
+            {
+                if (tagTrimming)
+                {
+                    seqan::String<char> tempString = " TR:";
+                    append(tempString, suffix(seqs[i], length(seqs[i])-tail));
+                    append(ids[i], std::move(tempString));	
+                }
+                erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
+            }
 
 			// check if trimmed sequence is at least of length min
 			// if not, remove it
@@ -551,10 +563,10 @@ void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const unsigned nexus,
 
 // overload for single end multiplex
 template<typename TSeqs, typename TIds, typename TDemultiplexingParams>
-void preTrim(TSeqs& seqs, TIds& ids, TDemultiplexingParams&& demultiplexParams, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
+void preTrim(TSeqs& seqs, TIds& ids, TDemultiplexingParams&& demultiplexParams, unsigned head, const bool tagTrimming, unsigned tail, unsigned min, GeneralStats& stats)
 {
 	String<bool> rem;
-	_preTrim(seqs, ids, head, nexus, tail, min, rem);
+	_preTrim(seqs, ids, head, tagTrimming, tail, min, rem);
 	std::vector<TSeqs*> seqsVector;
 	std::vector<TIds*> idsVector;
 	seqsVector.emplace_back(&seqs);
@@ -564,11 +576,11 @@ void preTrim(TSeqs& seqs, TIds& ids, TDemultiplexingParams&& demultiplexParams, 
 
 // overload for paired end multiplex
 template<typename TSeqs, typename TIds, typename TDemultiplexingParams>
-void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TDemultiplexingParams&& demultiplexParams, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
+void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TDemultiplexingParams&& demultiplexParams, unsigned head, const bool tagTrimming, unsigned tail, unsigned min, GeneralStats& stats)
 {
 	String<bool> rem1, rem2;
-	_preTrim(seqs, ids, head, nexus, tail, min, rem1);
-	_preTrim(seqsRev, idsRev, head, nexus, tail, min, rem2);
+	_preTrim(seqs, ids, head, tagTrimming, tail, min, rem1);
+	_preTrim(seqsRev, idsRev, head, tagTrimming, tail, min, rem2);
 	for (unsigned int i = 0; i < length(rem1); ++i)
 		rem1[i] = rem1[i] | rem2[i];	// remove both strands if either is marked for removal (true = 1)
 	std::vector<TSeqs*> seqsVector;
@@ -582,16 +594,16 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TDemultiplexi
 
 // overload for single end 
 template<typename TSeqs, typename TIds>
-void preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
+void preTrim(TSeqs& seqs, TIds& ids, unsigned head, const bool tagTrimming, unsigned tail, unsigned min, GeneralStats& stats)
 {
-	preTrim(seqs, ids, DemultiplexingParams(), head, nexus, tail, min, stats);
+	preTrim(seqs, ids, DemultiplexingParams(), head, tagTrimming, tail, min, stats);
 }
 
 // overload for paired end
 template<typename TSeqs, typename TIds>
-void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head, unsigned nexus, unsigned tail, unsigned min, GeneralStats& stats)
+void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head, const bool tagTrimming, unsigned tail, unsigned min, GeneralStats& stats)
 {
-	preTrim(seqs, ids, seqsRev, idsRev, DemultiplexingParams(), head, nexus, tail, min, stats);
+	preTrim(seqs, ids, seqsRev, idsRev, DemultiplexingParams(), head, tagTrimming, tail, min, stats);
 }
 
 //Trims sequences to specific length and deletes to short ones together with their IDs
