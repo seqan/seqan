@@ -611,7 +611,7 @@ struct StaticData
     {
         // Get path to include.
         const char * file = __FILE__;
-        int pos = -1;
+        size_t pos = -1;
         for (size_t i = 0; i < strlen(file) - strlen("include"); ++i)
         {
             if (strncmp(file + i, "include", strlen("include")) == 0)
@@ -627,7 +627,6 @@ struct StaticData
                       << __FILE__ << "\"" << std::endl;
             exit(1);
         }
-
         static char buffer[1024];
         strncpy(&buffer[0], file, pos);
         buffer[pos - 1] = '\0';
@@ -1669,7 +1668,7 @@ verifyCheckPoints(const char * file)
 
 
 
-    int len = strlen(StaticData::pathToRoot()) +
+    size_t len = strlen(StaticData::pathToRoot()) +
               strlen("/") + strlen(file) + 1;
     char * absolutePath = new char[len];
     absolutePath[0] = '\0';
