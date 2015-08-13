@@ -372,7 +372,7 @@ inline static void globalExceptionHandler()
         SEQAN_FAIL("Uncaught exception of unknown type.\n");
     }
 }
-#endif  // #if defined(SEQAN_EXCEPTIONS) && !defined(SEQAN_NO_GLOBAL_EXCEPTION_HANDLER)
+#endif  // #if defined(SEQAN_EXCEPTIONS) && defined(SEQAN_INSTALL_GLOBAL_EXCEPTION_HANDLER)
 
 }  // namespace seqan
 
