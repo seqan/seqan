@@ -335,8 +335,21 @@ Assignment 3
         .. includefrags:: demos/tutorial/bam_io/solution3.cpp
 
 
+
+Using BAM Indices
+-----------------
+
+SeqAn also contains support for reading BAM indices with the format ``.bai``. These indices can be built using the ``samtools index`` command.
+
+You can read such indices into a :dox:`BaiBamIndex` object with the function :dox:`BamIndex#read`. Then, you can use the function :dox:`BamIndex#jumpToRegion` to jump within BAM files.
+
+After jumping, the next record that is read is before at the given position. This means, you have to manually read as many records up until the one you are looking for is found. The reason for this is that the function :dox:`BamIndex#jumpToRegion` would have to read until it finds the first record that is right from or at the given position. This would lead to this record being lost.
+
+.. includefrags:: demos/tutorial/bam_io/example7.cpp
+
+
 Next Steps
-~~~~~~~~~~
+----------
 
 * Read the `SAM Format Specification <http://samtools.sourceforge.net/SAM1.pdf>`_.
 * Continue with the :ref:`tutorial`.
