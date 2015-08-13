@@ -341,7 +341,7 @@ Using BAM Indices
 
 SeqAn also contains features for reading BAM indices with the format ``.bai``. These indices can be built using the ``samtools index`` command. At this present, SeqAn dose not support index building, but this will be supported in the near future. 
 
-You can read such indices into a :dox:`BaiBamIndex` object with the function :dox:`BamIndex#open`. Then, you can use the function :dox:`BamIndex#jumpToRegion` to jump within BAM files. After jumping, the next record to be read is before the given region. Therefore, you have to skip records until the one you are looking for. 
+You can read indices into a :dox:`BaiBamIndex` object with the function :dox:`BamIndex#open`. Then, you can use the function :dox:`BamIndex#jumpToRegion` to jump within BAM files. After jumping, the next record to be read is before the given region. Therefore, you have to skip records until the one you are looking for. 
 
 .. includefrags:: demos/tutorial/bam_io/example7.cpp
 
