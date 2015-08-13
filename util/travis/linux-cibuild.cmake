@@ -21,11 +21,7 @@ set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_ERRORS 1000)
 set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_WARNINGS 1000)
 
 # try to speed up the builds so we don't get killed
-if ("$ENV{CXX}" MATCHES ".*(clang\\+\\+-?.*)")
-  set(CTEST_BUILD_FLAGS -j6)
-else ("$ENV{CXX}" MATCHES ".*(clang\\+\\+-?.*)")
-  set(CTEST_BUILD_FLAGS -j4)
-endif ("$ENV{CXX}" MATCHES ".*(clang\\+\\+-?.*)")
+set(CTEST_BUILD_FLAGS -j2)
 
 # we want makefiles
 set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
