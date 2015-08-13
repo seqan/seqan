@@ -81,6 +81,24 @@ public:
     Pattern() : data_limit(0), data_maxscore(0)
     {}
 
+#ifdef SEQAN_CXX11_STANDARD
+    template <typename TNeedle2>
+    Pattern(TNeedle2 && ndl, TScore const & _score_func, TScoreValue _limit = 0) :
+        data_score(_score_func),
+        data_limit(_limit),
+        data_maxscore(0)
+    {
+        setHost(*this, std::forward<TNeedle2>(ndl));
+    }
+
+    template <typename TNeedle2>
+    Pattern(TNeedle2 && ndl, TScoreValue _limit = 0) :
+        data_limit(_limit),
+        data_maxscore(0)
+    {
+        setHost(*this, std::forward<TNeedle2>(ndl));
+    }
+#else  // TODO(rrahn): Replace when c11 is standard.
     Pattern(TNeedle & _needle, TScore const & _score_func, TScoreValue _limit = 0) :
         data_score(_score_func), data_limit(_limit), data_maxscore(0)
     {
@@ -92,6 +110,7 @@ public:
     {
         setHost(*this, _needle);
     }
+#endif  // SEQAN_CXX11_STANDARD
 
     Pattern(TScoreValue _limit) : data_limit(_limit), data_maxscore(0)
     {
@@ -107,6 +126,12 @@ public:
         data_maxscore( other.data_maxscore)
     {}
 
+#ifdef SEQAN_CXX11_STANDARD
+#if (!defined(_MSC_VER) || _MSC_VER >= 1900) && (!defined(PLATFORM_WINDOWS_MINGW))
+    Pattern(Pattern && other) = default;
+    Pattern& operator = (Pattern && other) = default;
+#endif  // (!defined(_MSC_VER) || _MSC_VER >= 1900) && (!defined(PLATFORM_WINDOWS_MINGW))
+#endif  // SEQAN_CXX11_STANDARD
     inline Pattern &
     operator = (Pattern const & other)
     {
@@ -118,6 +143,9 @@ public:
 
         return *this;
     }
+
+    ~Pattern()
+    {}
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -151,43 +179,15 @@ struct FindBeginPatternSpec <Pattern<TNeedle, DPSearch<TScore, FindPrefix, TFind
     typedef void Type;
 };
 
-//////////////////////////////////////////////////////////////////////////////
-
-
-template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
-inline typename Host<Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > >::Type &
-host(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > & me)
-{
-    return value(me.data_host);
-}
-
-template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
-inline typename Host<Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > const>::Type &
-host(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> >  const & me)
-{
-    return value(me.data_host);
-}
-
 
 //____________________________________________________________________________
 
-template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec, typename TNeedle2>
-void
-setHost(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > & me,
-        TNeedle2 & ndl)
+template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
+inline void
+_reinitPattern(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > & me)
 {
-    me.data_host = ndl;
     clear(me.data_tab);
 }
-template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec, typename TNeedle2>
-void
-setHost(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > & me,
-        TNeedle2 const & ndl)
-{
-    me.data_host = ndl;
-    clear(me.data_tab);
-}
-
 
 //____________________________________________________________________________
 

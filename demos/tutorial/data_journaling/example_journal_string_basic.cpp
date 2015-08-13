@@ -9,7 +9,6 @@ int main()
 //![main]
 //![typedef]
     typedef String<char, Journaled<Alloc<>, SortedArray, Alloc<> > > TJournaledString;
-    typedef Host<TJournaledString>::Type THost;
 //![typedef]
 
 //![init]

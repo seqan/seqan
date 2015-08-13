@@ -8,8 +8,6 @@ using namespace seqan;
 
 int main()
 {
-    bool success;
-
     // interpret string literal as int
     int x = 0;
     // successful cast

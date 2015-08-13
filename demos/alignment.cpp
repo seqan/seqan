@@ -8,8 +8,6 @@
 int main()
 {
     using namespace seqan;
-    typedef Value<Gaps<Dna5String, ArrayGaps> >::Type TValue;
-    using namespace seqan;
 
 ///Two DNA sequences that shall be aligned.
     typedef String<Dna> TSequence;
