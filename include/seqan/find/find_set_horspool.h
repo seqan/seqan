@@ -92,40 +92,32 @@ public:
     Pattern() {
     }
 
+#ifdef SEQAN_CXX11_STANDARD
+    template <typename TNeedle2>
+    Pattern(TNeedle2 && ndl,
+            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
+    {
+        setHost(*this, std::forward<TNeedle2>(ndl));
+        ignoreUnusedVariableWarning(dummy);
+    }
+#else
     template <typename TNeedle2>
     Pattern(TNeedle2 const & ndl)
     {
         setHost(*this, ndl);
     }
+#endif  // SEQAN_CXX11_STANDARD
 
-    ~Pattern() {
-        SEQAN_CHECKPOINT
-    }
 //____________________________________________________________________________
-};
-
-//////////////////////////////////////////////////////////////////////////////
-// Host Metafunctions
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle>
-struct Host< Pattern<TNeedle, SetHorspool> >
-{
-    typedef TNeedle Type;
-};
-
-template <typename TNeedle>
-struct Host< Pattern<TNeedle, SetHorspool> const>
-{
-    typedef TNeedle const Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
 // Functions
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, SetHorspool> & me, TNeedle2 const & needle) {
+template <typename TNeedle>
+void _reinitPattern(Pattern<TNeedle, SetHorspool> & me)
+{
     SEQAN_CHECKPOINT
     typedef typename Value<TNeedle>::Type TKeyword;
     typedef typename Size<TKeyword>::Type TSize;
@@ -139,15 +131,14 @@ void setHost (Pattern<TNeedle, SetHorspool> & me, TNeedle2 const & needle) {
     me.data_lmin=0;
 
     // Create Trie
-    createTrieOnReverse(me.data_reverseTrie,me.data_terminalStateMap,needle);
+    createTrieOnReverse(me.data_reverseTrie,me.data_terminalStateMap, needle(me));
     assignRoot(me.data_reverseTrie,0);
-    setValue(me.data_host, needle);
 
     // Create jump map
     TSize alphabet_size = ValueSize<TAlphabet>::VALUE;
     resize(me.data_dMap, alphabet_size);
     me.data_lmin = _getInfinity<TSize>();
-    typename Iterator<TNeedle2 const, Rooted>::Type it = begin(needle);
+    typename Iterator<TNeedle, Rooted>::Type it = begin(needle(me));
     for(;!atEnd(it);goNext(it)) {
         TSize tmp = length(*it);
         if (tmp<me.data_lmin) me.data_lmin = tmp;
@@ -177,12 +168,6 @@ void setHost (Pattern<TNeedle, SetHorspool> & me, TNeedle2 const & needle) {
     */
 }
 
-template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, SetHorspool> & me, TNeedle2 & needle)
-{
-    setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
-}
-
 //____________________________________________________________________________
 
 
@@ -193,25 +178,6 @@ SEQAN_CHECKPOINT
     clear(me.data_endPositions);
     me.data_keywordIndex = 0;
     me.data_lastState = getRoot(me.data_reverseTrie);
-}
-
-
-//____________________________________________________________________________
-
-template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, SetHorspool>const>::Type &
-host(Pattern<TNeedle, SetHorspool> & me)
-{
-SEQAN_CHECKPOINT
-    return value(me.data_host);
-}
-
-template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, SetHorspool>const>::Type &
-host(Pattern<TNeedle, SetHorspool> const & me)
-{
-SEQAN_CHECKPOINT
-    return value(me.data_host);
 }
 
 //____________________________________________________________________________

@@ -41,7 +41,7 @@
 
 using namespace seqan;
 
-#if !defined(_MSC_VER)  // Currently, there are some issues with MSVC and concepts.
+#if !defined(_MSC_VER) || _MSC_VER <= 1900  // Currently, there are some issues with MSVC and concepts.
 class EnableIfExample
 {
 public:
@@ -52,7 +52,8 @@ public:
     EnableIfExample(T const & n, SEQAN_CTOR_ENABLE_IF(Is<IntegerConcept<T> >)) :
         num(0)
     {
-        ignoreUnusedVariableWarning(dummy);
+        //ignoreUnusedVariableWarning(dummy);
+        std::cout << "Integer constructor, n = " << n << std::endl;
     }
 
 //![enable if example constructor]
@@ -62,7 +63,8 @@ public:
     EnableIfExample(T const & n, SEQAN_CTOR_DISABLE_IF(Is<IntegerConcept<T> >)) :
         num(0)
     {
-        ignoreUnusedVariableWarning(dummy);
+        //ignoreUnusedVariableWarning(dummy);
+        std::cout << "Non-integer constructor, n = " << n << std::endl;
     }
 
 //![disable if example constructor]
@@ -81,16 +83,16 @@ public:
     { /* ... */}
 //![disable if example function]
 };
-#endif  // #if !defined(_MSC_VER)
+#endif  // #if !defined(_MSC_VER) || _MSC_VER <= 1900 
 
 int main()
 {
-#if !defined(_MSC_VER)
+#if !defined(_MSC_VER) || _MSC_VER <= 1900 
     EnableIfExample ex1(1);
     (void)ex1;
     EnableIfExample ex2("asdf");
     (void)ex2;
-#endif  // #if !defined(_MSC_VER)
+#endif  // #if !defined(_MSC_VER) || _MSC_VER <= 1900 
 
     return 0;
 }

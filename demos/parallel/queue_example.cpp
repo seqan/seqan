@@ -9,7 +9,7 @@ int main()
     ConcurrentQueue<unsigned> queue;
 
     // start two threads
-    SEQAN_OMP_PRAGMA(sections num_threads(2))
+    SEQAN_OMP_PRAGMA(parallel sections num_threads(2))
     {
         SEQAN_OMP_PRAGMA(section)
         {
@@ -20,7 +20,7 @@ int main()
         SEQAN_OMP_PRAGMA(section)
         {
             bool equal = true;
-            for (int i = 9999; i != 0; --i)
+            for (unsigned i = 9999; i != 0; --i)
                 equal &= (i == popFront(queue));
             std::cout << (equal ? "SUCCESS" : "FAILURE") << std::endl;
         }

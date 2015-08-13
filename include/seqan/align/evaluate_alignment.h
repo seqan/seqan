@@ -67,6 +67,9 @@ namespace seqan {
  *
  * All members are initialized to <tt>0</tt>.
  *
+ * @var unsigned AlignmentStats::numGaps;
+ * @brief Number of gap characters (sum of numGapOpens and numGapExtensions)
+ *
  * @var unsigned AlignmentStats::numGapOpens;
  * @brief Number of gap open events.
  *
@@ -91,6 +94,9 @@ namespace seqan {
  * @var unsigned AlignmentStats::numNegativeScores;
  * @brief Number of residues aligned with negative score.
  *
+ * @var unsigned AlignmentStats::alignmentLength;
+ * @brief Length of the aligned region
+ *
  * @var float AlignmentStats::alignmentSimilarity;
  * @brief The resulting alignment percent similarity (positive).
  *
@@ -103,7 +109,8 @@ namespace seqan {
 
 struct AlignmentStats
 {
-    // Number of gap opens/gap extensions.
+    // Number of gap characters/opens/gap extensions.
+    unsigned numGaps;
     unsigned numGapOpens;
     unsigned numGapExtensions;
     // Number of insertions and deletions.
@@ -116,6 +123,9 @@ struct AlignmentStats
     unsigned numPositiveScores;
     unsigned numNegativeScores;
 
+    // length of the alignment
+    unsigned alignmentLength;
+
     // the alignment identity and similarity scores
     float alignmentSimilarity;
     float alignmentIdentity;
@@ -123,9 +133,9 @@ struct AlignmentStats
     // The alignment score.
     int alignmentScore;
 
-    AlignmentStats() : numGapOpens(0), numGapExtensions(0), numInsertions(0), numDeletions(0),
+    AlignmentStats() : numGaps(0), numGapOpens(0), numGapExtensions(0), numInsertions(0), numDeletions(0),
                        numMatches(0), numMismatches(0), numPositiveScores(0), numNegativeScores(0),
-                       alignmentSimilarity(0.0), alignmentIdentity(0.0), alignmentScore(0)
+                       alignmentLength(0), alignmentSimilarity(0.0), alignmentIdentity(0.0), alignmentScore(0)
     {}
 };
 
@@ -153,6 +163,7 @@ struct AlignmentStats
 inline
 void clear(AlignmentStats & stats)
 {
+    stats.numGaps = 0;
     stats.numGapOpens = 0;
     stats.numGapExtensions = 0;
     stats.numInsertions = 0;
@@ -161,6 +172,7 @@ void clear(AlignmentStats & stats)
     stats.numMismatches = 0;
     stats.numPositiveScores = 0;
     stats.numNegativeScores = 0;
+    stats.alignmentLength = 0;
     stats.alignmentSimilarity = 0.0;
     stats.alignmentIdentity = 0.0;
     stats.alignmentScore = 0;
@@ -277,10 +289,14 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
     SEQAN_ASSERT(it0 == itEnd0);
     SEQAN_ASSERT(it1 == itEnd1);
 
+    stats.numGaps = stats.numGapOpens + stats.numGapExtensions;
+
     // Finally, compute the alignment similarity from the various counts
-    float alignmentLength = static_cast<float>(length(row(align, 0)));
-    stats.alignmentSimilarity = 100.0 * static_cast<float>(stats.numPositiveScores) / alignmentLength;
-    stats.alignmentIdentity = 100.0 * static_cast<float>(stats.numMatches) / alignmentLength;
+    stats.alignmentLength = length(row(align, 0));
+    stats.alignmentSimilarity = 100.0 * static_cast<float>(stats.numPositiveScores)
+                                / static_cast<float>(stats.alignmentLength);
+    stats.alignmentIdentity = 100.0 * static_cast<float>(stats.numMatches)
+                              / static_cast<float>(stats.alignmentLength);
 
     return stats.alignmentScore;
 }

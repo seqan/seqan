@@ -611,23 +611,24 @@ struct StaticData
     {
         // Get path to include.
         const char * file = __FILE__;
-        int pos = -1;
+        size_t pos = 0;
+        bool found = false;
         for (size_t i = 0; i < strlen(file) - strlen("include"); ++i)
         {
             if (strncmp(file + i, "include", strlen("include")) == 0)
             {
                 pos = i;
+                found = true;
             }
         }
         for (; pos > 0 && *(file + pos - 1) != '/' &&  *(file + pos - 1) != '\\'; --pos)
             continue;
-        if (pos == -1)
+        if (!found)
         {
             std::cerr << "Could not extrapolate path to repository from __FILE__ == \""
                       << __FILE__ << "\"" << std::endl;
             exit(1);
         }
-
         static char buffer[1024];
         strncpy(&buffer[0], file, pos);
         buffer[pos - 1] = '\0';
@@ -1669,7 +1670,7 @@ verifyCheckPoints(const char * file)
 
 
 
-    int len = strlen(StaticData::pathToRoot()) +
+    size_t len = strlen(StaticData::pathToRoot()) +
               strlen("/") + strlen(file) + 1;
     char * absolutePath = new char[len];
     absolutePath[0] = '\0';

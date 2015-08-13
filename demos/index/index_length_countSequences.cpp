@@ -6,7 +6,6 @@ int main()
 {
     typedef StringSet<String<char> >    TText;
     typedef Index<TText>                TIndex;
-    typedef SAValue<TIndex>::Type       TSAValue;
 
     TText text;
     appendValue(text, "MISSISSIPPI");

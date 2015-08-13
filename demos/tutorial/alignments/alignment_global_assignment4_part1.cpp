@@ -8,7 +8,6 @@ int main()
 {
     typedef String<Dna> TSequence;
     typedef StringSet<TSequence> TStringSet;
-    typedef Align<TSequence, ArrayGaps> TAlign;
 
     TStringSet strings;
     appendValue(strings, "AAATGACATGGATTG");
@@ -34,7 +33,8 @@ int main()
 
         }
     }
-
+    (void)bestSeqIdx1; // do not trigger "set but not used"- warning
+    (void)bestSeqIdx2;
     return 0;
 }
 //![completeSolution]

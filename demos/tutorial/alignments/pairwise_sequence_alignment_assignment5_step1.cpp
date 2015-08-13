@@ -7,10 +7,6 @@ using namespace seqan;
 int main()
 {
     typedef String<char> TSequence;
-    typedef StringSet<TSequence> TStringSet;
-    typedef Gaps<TSequence, ArrayGaps> TGaps;
-    typedef Iterator<TGaps>::Type TGapsIterator;
-    typedef Iterator<String<int> >::Type TIterator;
 
     TSequence text =    "MISSISSIPPIANDMISSOURI";
     TSequence pattern = "SISSI";

@@ -71,6 +71,7 @@
 #pragma warning( disable : 4345 )
 #pragma warning( disable : 4351 )
 
+
 // ==========================================================================
 // Define Integers
 // ==========================================================================
@@ -113,7 +114,12 @@ typedef unsigned __int8 __uint8;
 
 // C++11 is supported by Visual C++ >=v10
 #if _MSC_VER >= 1600
-#  define SEQAN_CXX11_STANDARD
+#define SEQAN_CXX11_STANDARD
+#endif
+
+// full C++11 support in Visual C++ >= 2015
+#if _MSC_VER >= 1900
+#define SEQAN_CXX11_COMPLETE
 #endif
 
 // ==========================================================================
@@ -128,9 +134,11 @@ inline T round(T const & x)
 }
 
 // Rename some underscore-functions in Windows.
+#if _MSC_VER < 1900
 #ifndef snprintf
 #define snprintf _snprintf
 #endif  // #ifndef snprintf
+#endif
 
 // Define ftello
 #ifndef ftello

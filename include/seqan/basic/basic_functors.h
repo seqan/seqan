@@ -64,6 +64,12 @@ struct OrFunctor
     {
         return func1(val) || func2(val);
     }
+
+    template <typename TValue>
+    bool operator() (TValue const & val) const
+    {
+        return func1(val) || func2(val);
+    }
 };
 
 // ----------------------------------------------------------------------------
@@ -88,6 +94,12 @@ struct AndFunctor
     {
         return func1(val) && func2(val);
     }
+
+    template <typename TValue>
+    bool operator() (TValue const & val) const
+    {
+        return func1(val) && func2(val);
+    }
 };
 
 // ----------------------------------------------------------------------------
@@ -108,6 +120,13 @@ struct NotFunctor
 
     template <typename TValue>
     bool operator() (TValue const & val)
+    {
+        return !func(val);
+    }
+
+
+    template <typename TValue>
+    bool operator() (TValue const & val) const
     {
         return !func(val);
     }
