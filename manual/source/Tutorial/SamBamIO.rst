@@ -336,7 +336,7 @@ Assignment 3
 
 
 Using BAM Indices
------------------------
+-----------------
 
 SeqAn also contains support for reading BAM indices with the format ``.bai``. These indices can be built using the ``samtools index`` command.
 
