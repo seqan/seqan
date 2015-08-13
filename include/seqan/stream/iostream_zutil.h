@@ -1,4 +1,4 @@
-/* zutil.h -- internal interface and configuration of the compression library
+/* iostream_zutil.h -- internal interface and configuration of the compression library
  * Copyright (C) 1995-2002 Jean-loup Gailly.
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
@@ -8,10 +8,10 @@
    subject to change. Applications should only use zlib.h.
  */
 
-/* @(#) $Id: zutil.h,v 1.2 2003/06/28 15:03:05 pelikhan Exp $ */
+/* @(#) $Id: iostream_zutil.h,v 1.2 2003/06/28 15:03:05 pelikhan Exp $ */
 
-#ifndef _Z_UTIL_H
-#define _Z_UTIL_H
+#ifndef INCLUDE_SEQAN_STREAM_IOSTREAM_ZUTIL_H_
+#define INCLUDE_SEQAN_STREAM_IOSTREAM_ZUTIL_H_
 
 //#include "zlib.h"
 
@@ -226,4 +226,4 @@ void   zcfree  OF((voidpf opaque, voidpf ptr));
 #undef local
 #endif
 
-#endif /* _Z_UTIL_H */
+#endif /* INCLUDE_SEQAN_STREAM_IOSTREAM_ZUTIL_H_ */
