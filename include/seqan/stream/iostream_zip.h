@@ -32,13 +32,13 @@
 // Author: Jonathan de Halleux, dehalleux@pelikhan.com, 2003
 
 
-#ifndef INCLUDED_utility_io_zipstream_HPP
-#define INCLUDED_utility_io_zipstream_HPP
+#ifndef INCLUDE_SEQAN_STREAM_IOSTREAM_ZIP_H_
+#define INCLUDE_SEQAN_STREAM_IOSTREAM_ZIP_H_
 
 
 // Zlib headers
 #include <zlib.h>
-#include "zutil.h"
+#include "iostream_zutil.h"
 
 
 
@@ -659,7 +659,7 @@ typedef  basic_zip_istream< wchar_t >  zip_wistream;
 
 
 // Implementation
-#include "zipstream_impl.h"
+#include "iostream_zip_impl.h"
 
 
-#endif // INCLUDED_utility_io_zipstream_HPP
+#endif // INCLUDE_SEQAN_STREAM_IOSTREAM_ZIP_H_

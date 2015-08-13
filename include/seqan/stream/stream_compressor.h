@@ -39,7 +39,7 @@
 #if SEQAN_HAS_ZLIB
 // Zlib headers
 #include <zlib.h>
-#include "zipstream/zutil.h"
+#include "iostream_zutil.h"
 #endif
 
 #include <algorithm>    // copy
