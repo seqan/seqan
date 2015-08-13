@@ -32,12 +32,12 @@
 // Author: Jonathan de Halleux, dehalleux@pelikhan.com, 2003
 
 
-#ifndef INCLUDED_utility_io_zipstream_IPP
-#define INCLUDED_utility_io_zipstream_IPP
+#ifndef INCLUDE_SEQAN_STREAM_IOSTREAM_ZIP_IMPL_H_
+#define INCLUDE_SEQAN_STREAM_IOSTREAM_ZIP_IMPL_H_
 
 
 // Unit headers
-#include "zipstream.h"
+#include "iostream_zip.h"
 
 // C++ headers
 #include <sstream>
@@ -672,4 +672,4 @@ namespace detail {
 } // namespace zlib_stream
 
 
-#endif // INCLUDED_utility_io_zipstream_IPP
+#endif // INCLUDE_SEQAN_STREAM_IOSTREAM_ZIP_IMPL_H_

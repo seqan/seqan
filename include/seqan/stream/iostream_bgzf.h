@@ -18,15 +18,15 @@ Author: Jonathan de Halleux, dehalleux@pelikhan.com, 2003   (original zlib strea
 Author: David Weese, dave.weese@gmail.com, 2014             (extension to parallel block-wise compression in bgzf format)
 */
 
-#ifndef BGZFSTREAM_HPP
-#define BGZFSTREAM_HPP
+#ifndef INCLUDE_SEQAN_STREAM_IOSTREAM_BGZF_H_
+#define INCLUDE_SEQAN_STREAM_IOSTREAM_BGZF_H_
 
 
 #include <vector>
 #include <iostream>
 #include <algorithm>
 #include <zlib.h>
-#include "zutil.h"
+#include "iostream_zutil.h"
 
 namespace seqan {
 
@@ -970,6 +970,6 @@ typedef basic_bgzf_istream<wchar_t> bgzf_wistream;
 
 }  // namespace seqan
 
-#include "bgzfstream_impl.h"
+#include "iostream_bgzf_impl.h"
 
-#endif
+#endif // INCLUDE_SEQAN_STREAM_IOSTREAM_BGZF_H_
