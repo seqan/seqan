@@ -350,7 +350,7 @@ struct AssertFunctor
 // Function globalExceptionHandler()
 // ----------------------------------------------------------------------------
 
-#if defined(SEQAN_EXCEPTIONS) && !defined(SEQAN_NO_GLOBAL_EXCEPTION_HANDLER)
+#if defined(SEQAN_EXCEPTIONS) && defined(SEQAN_INSTALL_GLOBAL_EXCEPTION_HANDLER)
 // Declare global exception handler.
 static void globalExceptionHandler();
 
