@@ -51,34 +51,34 @@ class BidirectionalFMIndex;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction BiFMReversedText
+// Metafunction RevTextFibre
 // ----------------------------------------------------------------------------
 
 /*!
- * @class BiFMReversedText
+ * @class RevTextFibre
  * @headerfile <seqan/index.h>
  * @brief A helper object that stores the type of the modifier of a given type @endlink.
  *
  * @signature template <TText>
- *            struct BiFMReversedText;
+ *            struct RevTextFibre;
  */
 
 template <typename TText>
-struct BiFMReversedText
+struct RevTextFibre
 {
     typedef ModifiedString<TText, ModReverse> Type;
 };
 
 template <typename TText>
-struct BiFMReversedText<ModifiedString<TText, ModReverse> >
+struct RevTextFibre<ModifiedString<TText, ModReverse> >
 {
     typedef TText Type;
 };
 
 template <typename TText, typename TTextConfig>
-struct BiFMReversedText<StringSet<TText, TTextConfig> >
+struct RevTextFibre<StringSet<TText, TTextConfig> >
 {
-    typedef StringSet<typename BiFMReversedText<TText>::Type, TTextConfig> Type;
+    typedef StringSet<typename RevTextFibre<TText>::Type, TTextConfig> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -139,6 +139,7 @@ struct Fibre<Index<TText, BidirectionalFMIndex<TSpec, TConfig> >, FibreTempSA>
 /*!
  * @class BidirectionalFMIndex
  * @extends Index
+ * @implements StringTrieConcept
  * @headerfile <seqan/index.h>
  * @brief A bidirectional index based on the Burrows-Wheeler transform.
  *
@@ -162,7 +163,7 @@ struct Fibre<Index<TText, BidirectionalFMIndex<TSpec, TConfig> >, FibreTempSA>
 template <typename TText, typename TSpec, typename TSpec2, typename TLengthSum, typename TBidirectional>
 class Index<TText, BidirectionalFMIndex<TSpec, FMIndexConfig<TSpec2, TLengthSum, TBidirectional> > >
 {
-    typedef typename BiFMReversedText<TText>::Type                                                    TRevText;
+    typedef typename RevTextFibre<TText>::Type                                                    TRevText;
     typedef Index<TRevText, FMIndex<TSpec, FMIndexConfig<TSpec2, TLengthSum, FMBidirectional> > >     TRevIndex;
     typedef Index<TText, FMIndex<TSpec, FMIndexConfig<TSpec2, TLengthSum, FMBidirectional> > >        TFwdIndex;
 
@@ -180,6 +181,12 @@ class Index<TText, BidirectionalFMIndex<TSpec, FMIndexConfig<TSpec2, TLengthSum,
         fwd(text)
     {}
 };
+
+template <typename TText, typename TSpec, typename TConfig>
+SEQAN_CONCEPT_IMPL((Index<TText, BidirectionalFMIndex<TSpec, TConfig> >), (StringTrieConcept));
+
+template <typename TText, typename TSpec, typename TConfig>
+SEQAN_CONCEPT_IMPL((Index<TText, BidirectionalFMIndex<TSpec, TConfig> > const), (StringTrieConcept));
 
 // ============================================================================
 // Functions
@@ -206,7 +213,7 @@ inline void clear(Index<TText, BidirectionalFMIndex<TSpec, TConfig> > & index)
 template <typename TText, typename TSpec, typename TConfig>
 inline bool empty(Index<TText, BidirectionalFMIndex<TSpec, TConfig> > const & index)
 {
-    return empty(index.fwd) && empty(index.bwd);
+    return empty(index.fwd) || empty(index.bwd);
 }
 
 // ----------------------------------------------------------------------------
@@ -308,7 +315,7 @@ inline bool open(Index<TText, BidirectionalFMIndex<TSpec, TConfig> > & index, co
     bool fwdIndex = open(index.fwd, toCString(name), DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >::VALUE);
     if (fwdIndex)
     {
-        name = fileName;    append(name, ".bwd");
+        name = fileName;    append(name, ".rev");
         return open(index.rev, toCString(name), DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >::VALUE);
     }
     return false;
@@ -324,7 +331,7 @@ inline bool save(Index<TText, BidirectionalFMIndex<TSpec, TConfig> > const & ind
     bool fwdIndex = save(index.fwd, toCString(name), DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >::VALUE);
     if (fwdIndex)
     {
-        name = fileName;    append(name, ".bwd");
+        name = fileName;    append(name, ".rev");
         return save(index.rev, toCString(name), DefaultOpenMode<Index<TText, FMIndex<TSpec, TConfig> > >::VALUE);
     }
     return false;

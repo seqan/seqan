@@ -321,7 +321,7 @@ getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos 
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
 inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type
-getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character, unsigned int & smaller)
+getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character, TPos & smaller)
 {
     typedef typename Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreTreeStructure>::Type  TWaveletTreeStructure;
     typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type         TWaveletTreeStructureString;

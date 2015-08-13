@@ -229,7 +229,7 @@ struct LF
 
     template <typename TPos, typename TValue>
     SEQAN_HOST_DEVICE typename Size<LF const>::Type
-    operator() (TPos pos, TValue val, unsigned int & smaller) const
+    operator() (TPos pos, TValue val, TPos & smaller) const
     {
         return _getBwtRank(*this, pos, val, smaller);
     }
@@ -463,7 +463,7 @@ _getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val)
 template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TValue>
 SEQAN_HOST_DEVICE inline
 typename Size<LF<TText, TSpec, TConfig> >::Type
-_getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val, unsigned int & smaller)
+_getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val, TPos & smaller)
 {
     typedef LF<TText, TSpec, TConfig> const                TLF;
     typedef typename Size<TLF>::Type                       TSize;
@@ -474,11 +474,11 @@ _getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val, unsigned
     {
         rank += getRank(lf.bwt, pos - 1, val, smaller);
 
-        if (ordGreaterEqual(lf.sentinelSubstitute, val))
+        if (!ordLess(lf.sentinelSubstitute, val)) // lf.sentinelSubstitute >= val
         {
             TPos senti = _getSentinelsRank(lf, pos - 1);
             smaller += senti;
-            if (lf.sentinelSubstitute == (int) val)
+            if (ordEqual(lf.sentinelSubstitute, val))
                 rank -= senti;
         }
     }
