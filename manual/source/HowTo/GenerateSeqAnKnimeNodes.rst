@@ -105,7 +105,7 @@ We then execute ant and pass the variables ``knime.sdk`` with the path to the KN
 
 The generated files are within the *generated_plugin* directory of the directory *GenericKnimeNodes*.
 
-If you ran into problems, you may copy the file :download:`knime_node_app.zip <knime_node_app.zip>`, which contains the ``knime_node`` app and the adjusted *CMakeList.txt* file.
+If you ran into problems, you may copy the file `knime_node_app.zip <https://github.com/seqan/knime_node_template/archive/master.zip>`_, which contains the ``knime_node`` app and the adjusted *CMakeList.txt* file.
 Unpack this file in the ``apps`` directory.
 You still have to call *ant* though.
 
