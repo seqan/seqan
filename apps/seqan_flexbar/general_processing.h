@@ -54,6 +54,8 @@
 
 #include <seqan/stream.h>
 
+#include "helper_functions.h"
+
 using namespace seqan;
 
 // ============================================================================
@@ -72,6 +74,8 @@ struct GeneralStats
 // ============================================================================
 // Functions
 // ============================================================================
+
+
 
 template<typename TAlpha, typename TSub>
 int findN(String<TAlpha>& seq, unsigned allowed, TSub substitute)
@@ -531,9 +535,9 @@ void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const bool tagTrimmin
             {
                 if (tagTrimming)
                 {
-                    seqan::String<char> tempString = " TL:";
+                    seqan::CharString tempString = ":TL:";
                     append(tempString, prefix(seqs[i], head));
-                    append(ids[i], std::move(tempString));	// changing different elements from different threads is thread safe
+                    insertAfterFirstToken(ids[i], tempString);
                 }
 				erase(seqs[i], 0, head);
 			}
@@ -541,9 +545,9 @@ void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const bool tagTrimmin
             {
                 if (tagTrimming)
                 {
-                    seqan::String<char> tempString = " TR:";
+                    seqan::CharString  tempString = ":TR:";
                     append(tempString, suffix(seqs[i], length(seqs[i])-tail));
-                    append(ids[i], std::move(tempString));	
+                    insertAfterFirstToken(ids[i], std::move(tempString));
                 }
                 erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
             }

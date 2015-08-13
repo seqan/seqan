@@ -472,17 +472,15 @@ unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& i
     seqan::resize(adapterTrimmingStatsVector, t_num);
 	int len = length(set);
 	SEQAN_OMP_PRAGMA(parallel for schedule(static))
-        for (int i = 0; i < len; ++i)
-        {
-            if (empty(value(set, i)))
-                continue;
+    for (int i = 0; i < len; ++i)
+    {
+        if (empty(value(set, i)))
+            continue;
         const int t_id = omp_get_thread_num();
-        // Thread saves local min/max seen in the batch it processed.
+        // Every thread has its own adapterTrimmingStatsVector
         const unsigned over = stripAdapter(value(set, i), adapterTrimmingStatsVector[t_id], adapterSet, spec, reverse);
         if (tagOpt && over != 0)
-        {
-            append(idSet[i], " AdapterRemoved");
-        }
+            insertAfterFirstToken(idSet[i], TId(":AdapterRemoved"));
 	}
     std::for_each(adapterTrimmingStatsVector.begin(), adapterTrimmingStatsVector.end(), 
         [&stats](AdapterTrimmingStats const& _stats) {stats += _stats;});
