@@ -108,7 +108,7 @@ Currently the following exact online algorithms for searching a single sequence 
 :dox:`AhoCorasickPattern AhoCorasick`
   :cite:`Aho1975`
 
-:dox:`MultipleShiftAndPattern MultiShiftAnd`
+:dox:`MultipleShiftAndPattern MultipleShiftAnd`
   Extension of :dox:`ShiftAndPattern ShiftAnd`, should only be used if the sum of needle lengths doesn't exceed the machine word size.
 
 Assignment 1

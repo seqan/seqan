@@ -198,6 +198,15 @@ scoreGapExtend(Score<TValue, TSpec> const & me) {
     return me.data_gap_extend;
 }
 
+/*!
+ * @fn SimpleScore#setScoreGapExtend
+ * @brief Set gap extend score.
+ *
+ * @signature void setScoreGapExtend(score, value);
+ *
+ * @param[in,out] score The SimpleScore scoring scheme to set the gap extend value for.
+ * @param[in]     value The value to set the gap open score to.
+ */
 
 template <typename TValue, typename TSpec>
 inline void

@@ -258,7 +258,7 @@ void smoothErrorCurve(String<WeightedMatch> & errorCurve)
             {
                 currentMax = _max(currentMax, value(it).distance);
 //                 std::cerr << "value(" << value(it) << ") = " << currentMax << std::endl;
-                value(it).distance = currentMax;
+                value(host(it)).distance = currentMax;
             }
         }
 

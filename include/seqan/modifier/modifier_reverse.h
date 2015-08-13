@@ -103,13 +103,13 @@ struct Cargo<ModifiedIterator<THost, ModReverse> >
 template <typename THost>
 struct Iterator<ModifiedString<THost, ModReverse>, Standard>
 {
-    typedef ModifiedIterator<typename Iterator<THost const, Rooted>::Type, ModReverse> Type;
+    typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, ModReverse> Type;
 };
 
 template <typename THost>
 struct Iterator<ModifiedString<THost, ModReverse> const, Standard>
 {
-    typedef ModifiedIterator<typename Iterator<THost const, Rooted>::Type, ModReverse> Type;
+    typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, ModReverse> Type;
 };
 
 // --------------------------------------------------------------------------
@@ -274,6 +274,16 @@ operator-=(ModifiedIterator<THost, ModReverse> & me, TDelta delta)
     }
     return me;
 }
+// --------------------------------------------------------------------------
+// Function operator-()                         [ModReverse ModifiedIterator]
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TPos>
+inline ModifiedIterator<THost, ModReverse>
+operator-(ModifiedIterator<THost, ModReverse> me, TPos const i)
+{
+    return me -= i;
+}
 
 // --------------------------------------------------------------------------
 // Function operator-()                         [ModReverse ModifiedIterator]
@@ -304,6 +314,15 @@ position(ModifiedIterator<THost, ModReverse> const & me)
         return length(container(host(me)));
     else
         return length(container(host(me))) - 1 - position(host(me));
+}
+
+// rooted overload
+template <typename TContainer1, typename TIterator, typename TSpec, typename TContainer2>
+inline typename Position<ModifiedIterator<Iter<TContainer1, AdaptorIterator<TIterator, TSpec> >, ModReverse> const>::Type
+position(ModifiedIterator<Iter<TContainer1, AdaptorIterator<TIterator, TSpec> >, ModReverse> const & me,
+         TContainer2 const &)
+{
+    return position(me); // rooted has container
 }
 
 template <typename THost, typename TContainer>

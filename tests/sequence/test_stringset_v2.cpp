@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2006-2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,21 +29,19 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Jochen Singer <jochen.singer@fu-berlin.de>
 // Author: Hannes Hauswedell <hannes.hauswedell@fu-berlin.de>
 // ==========================================================================
-// Tests for reduced_aminoacid
+// This file coordinates the calls of tests to ensure that the sequence
+// module fulfills the requirements.
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/sequence.h>
 
-#include "test_reduced_aminoacid.h"
+// lots of stuff is still not checked and not working
+#include "test_string_set.h"
 
-SEQAN_BEGIN_TESTSUITE(test_reduced_aminoacid)
-{
-//     SEQAN_CALL_TEST(test_reduced_aminoacid_cluster_red);
-    SEQAN_CALL_TEST(test_reduced_aminoacid_murphy10);
-    SEQAN_CALL_TEST(test_reduced_aminoacid_murphy10_moditerators);
-    SEQAN_CALL_TEST(test_reduced_aminoacid_murphy10_modview_fmindex);
+int main(int argc, char const ** argv) {
+    seqan::TestSystem::init(argc, argv);
+    return seqan::TestSystem::runAll();
 }
-SEQAN_END_TESTSUITE
