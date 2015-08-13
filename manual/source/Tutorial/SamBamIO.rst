@@ -335,8 +335,9 @@ Assignment 3
         .. includefrags:: demos/tutorial/bam_io/solution3.cpp
 
 
+
 Using BAM Indices
------------------------
+-----------------
 
 SeqAn also contains support for reading BAM indices with the format ``.bai``. These indices can be built using the ``samtools index`` command.
 
@@ -348,7 +349,7 @@ After jumping, the next record that is read is before at the given position. Thi
 
 
 Next Steps
-~~~~~~~~~~
+----------
 
 * Read the `SAM Format Specification <http://samtools.sourceforge.net/SAM1.pdf>`_.
 * Continue with the :ref:`tutorial`.
