@@ -350,7 +350,7 @@ struct AssertFunctor
 // Function globalExceptionHandler()
 // ----------------------------------------------------------------------------
 
-#if defined(SEQAN_EXCEPTIONS) && defined(SEQAN_INSTALL_GLOBAL_EXCEPTION_HANDLER)
+#if defined(SEQAN_EXCEPTIONS) && defined(SEQAN_GLOBAL_EXCEPTION_HANDLER)
 // Declare global exception handler.
 static void globalExceptionHandler();
 
@@ -372,7 +372,7 @@ inline static void globalExceptionHandler()
         SEQAN_FAIL("Uncaught exception of unknown type.\n");
     }
 }
-#endif  // #if defined(SEQAN_EXCEPTIONS) && defined(SEQAN_INSTALL_GLOBAL_EXCEPTION_HANDLER)
+#endif  // #if defined(SEQAN_EXCEPTIONS) && defined(SEQAN_GLOBAL_EXCEPTION_HANDLER)
 
 }  // namespace seqan
 

@@ -153,7 +153,7 @@ macro (seqan_register_apps)
     endif ()
 
     # Enable global exception handler for all seqan apps.
-    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_INSTALL_GLOBAL_EXCEPTION_HANDLER")
+    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
 
     # Get all direct entries of the current source directory into ENTRIES.
     file (GLOB ENTRIES
@@ -653,7 +653,7 @@ function (seqan_register_demos)
     endif (${ARGC} GREATER 0)
 
     # Enable global exception handler for demos.
-    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_INSTALL_GLOBAL_EXCEPTION_HANDLER")
+    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
 
     # Install demo source files when releasing and build demos when developing.
     if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE")
@@ -691,7 +691,7 @@ macro (seqan_register_tests)
             CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 
     # Add global exception handler
-    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_INSTALL_GLOBAL_EXCEPTION_HANDLER")
+    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
 
     # Conditionally enable coverage mode by setting the appropriate flags.
     if (MODEL STREQUAL "NightlyCoverage")
