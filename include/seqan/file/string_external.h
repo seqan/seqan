@@ -518,7 +518,7 @@ namespace SEQAN_NAMESPACE_MAIN
         inline TIterator operator- (TDifference delta) const {
             TDifference dPNo  = delta / PAGESIZE;
             TDifference dPOfs = delta % PAGESIZE;
-            if (pageOfs >= dPOfs)
+            if (static_cast<TDifference>(pageOfs) >= dPOfs)
                 return TIterator(extString, pageNo - dPNo, pageOfs - dPOfs);
             else
                 return TIterator(extString, pageNo - dPNo - 1, PAGESIZE + pageOfs - dPOfs);

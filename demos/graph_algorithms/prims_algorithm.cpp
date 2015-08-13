@@ -7,7 +7,6 @@ int main()
 {
     typedef Graph<Undirected<> > TGraph;
     typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
-    typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef Size<TGraph>::Type TSize;
 
     // Create graph with 14 undirected edges {0,1}, {0,6}, ...

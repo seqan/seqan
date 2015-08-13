@@ -14,7 +14,6 @@ int main()
     typedef Size<TAlphabet>::Type TSize;
     typedef Graph<Hmm<TAlphabet, TProbability, Default> > THmm;
     typedef VertexDescriptor<THmm>::Type TVertexDescriptor;
-    typedef EdgeDescriptor<THmm>::Type TEdgeDescriptor;
 
     Dna dnaA = Dna('A');
     Dna dnaC = Dna('C');
