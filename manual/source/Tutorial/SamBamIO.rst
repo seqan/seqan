@@ -60,7 +60,8 @@ The :ref:`tutorial-fragment-store` Tutorial shows how to get a more high-level a
     However, storing the whole alignment of a 120GB BAM file obviously is not a good idea.
 
     The SAM/BAM I/O functionaliy in SeqAn is meant for sequentially reading through SAM and BAM files.
-    Jumping within BAM files using BAI indices is described in the :ref:`tutorial-sam-bam-io` tutorial.
+    Jumping within BAM files using BAI indices is described in the `Using BAM Indices`_.
+
 
 SAM / BAM Format
 ----------------
@@ -334,8 +335,18 @@ Assignment 3
         .. includefrags:: demos/tutorial/bam_io/solution3.cpp
 
 
+Using BAM Indices
+-----------------
+
+SeqAn also contains features for reading BAM indices with the format ``.bai``. These indices can be built using the ``samtools index`` command. In the near future we plan to support building the bam index with SeqAn as well.   
+
+You can read indices into a :dox:`BaiBamIndex` object with the function :dox:`BamIndex#open`. Then, you can use the function :dox:`BamIndex#jumpToRegion` to jump to a specific position within BAM files. After jumping, the next record to be read is before the given region. Therefore, you have to skip records until you access the one you are looking for. 
+
+.. includefrags:: demos/tutorial/bam_io/example7.cpp
+
+
 Next Steps
-~~~~~~~~~~
+----------
 
 * Read the `SAM Format Specification <http://samtools.sourceforge.net/SAM1.pdf>`_.
 * Continue with the :ref:`tutorial`.
