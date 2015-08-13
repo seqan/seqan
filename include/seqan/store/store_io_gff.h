@@ -61,7 +61,8 @@ struct IOContextGff_
 
     CharString gtfGeneId;
     CharString gtfGeneName;
-    CharString gtfTranscriptName;       // transcipt_id is stored in parentName
+    CharString gffTranscriptId;     // For Gtf transcipt_id is stored in parentName
+    CharString gtfTranscriptName;
 
     TId annotationId;
     TAnnotation annotation;
@@ -94,11 +95,12 @@ inline void clear(IOContextGff_<TFragmentStore, TSpec> & ctx)
 //
 // reads in one annotation line from a Gff file
 
-template <typename TFragmentStore, typename TSpec>
+template <typename TFragmentStore, typename TSpec, typename TTagList>
 inline void
 _readOneAnnotation(
     IOContextGff_<TFragmentStore, TSpec> & ctx,
-    GffRecord const & record)
+    GffRecord const & record,
+    TagSelector<TTagList> const & format)
 {
 //IOREV _nodoc_ _hasCRef_
     typedef typename TFragmentStore::TContigPos         TContigPos;
@@ -141,10 +143,24 @@ _readOneAnnotation(
             appendValue(ctx.values, ctx._value);
         }
 
-        if (ctx._key == "Parent" || ctx._key == "ParentID" || ctx._key == "transcript_id")
+        if (ctx._key == "Parent" || ctx._key == "ParentID")
         {
             ctx.parentKey = ctx._key;
             ctx.parentName = ctx._value;
+        }
+        else if (ctx._key == "transcript_id")
+        {
+            if (isEqual(format, Gtf()))
+            {
+                ctx.parentKey = ctx._key;
+                ctx.parentName = ctx._value;
+            }
+            else
+            {
+                // According to the Gff3 specifications, transcript_id should NOT hold any special meaning,
+                // only Id should be used in determining parent/child relations.
+                ctx.gffTranscriptId = ctx._value;
+            }
         }
         else if (ctx._key == "transcript_name")
         {
@@ -298,6 +314,10 @@ _storeOneAnnotation(
         _adjustParent(parent, ctx.annotation);
         if (!empty(ctx.gtfTranscriptName))
             annotationAssignValueByKey(fragStore, parent, "transcript_name", ctx.gtfTranscriptName);
+
+        // Gff only.
+        if (!empty(ctx.gffTranscriptId))
+            annotationAssignValueByKey(fragStore, parent, "transcript_id", ctx.gffTranscriptId);
     }
 }
 
@@ -321,7 +341,7 @@ readRecords(FragmentStore<TSpec, TConfig> & fragStore,
     while (!atEnd(gffFile))
     {
         readRecord(record, gffFile);
-        _readOneAnnotation(ctx, record);
+        _readOneAnnotation(ctx, record, format(gffFile));
         _storeOneAnnotation(fragStore, ctx);
     }
     _storeClearAnnoBackLinks(fragStore.annotationStore);
