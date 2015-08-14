@@ -69,34 +69,18 @@ Do this instead.
 Exceptions
 ^^^^^^^^^^
 
-Currently, the SeqAn code does not use any exceptions and is not exception safe.
-Do not use any exceptions yourself, instead use return codes.
-
-.. container:: foldable
-
-    The following is an example where two chars are read using ``<cstdio>`` I/O.
-    We use a return code of ``0`` to indicate no errors.
-
-    .. code-block:: cpp
-
-        int readSome(char & c, FILE * fp)
-        {
-            int res = fgetc(fp);
-            if (res < 0)
-                return res;
-            res = fgetc(fp);
-            if (res < 0)
-                return res;
-            c = res;
-            return 0;
-        }
+SeqAn functions throw exceptions only to report unrecoverable errors, usually during I/O.
+Instead, functions expected to either success or fail use boolean return values to report their status.
 
 Virtual Member Functions
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Do not use virtual member functions.
-Since we mostly use template subclassing instead of C++ built-in subclassing, there rarely is the need for member functions.
-In the case where there are member functions, they should not be ``virtual`` since this is slow when used in tight loops.
+SeqAn heavily uses template subclassing instead of C++ built-in subclassing.
+This technique requires using global member functions instead of in-class member functions.
+
+If the design requires using in-class member functions, the keyword ``virtual`` should be avoided.
+Virtual member functions cannot be inlined and are thus slow when used in tight loops.
+
 
 ``static_cast<>``
 ^^^^^^^^^^^^^^^^^
