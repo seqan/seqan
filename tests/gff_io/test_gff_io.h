@@ -133,6 +133,66 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gff)
     SEQAN_ASSERT_EQ(goldString, compare);
 }
 
+SEQAN_DEFINE_TEST(test_store_io_comment_processing_context_gff)
+{
+    CharString gffPath = SEQAN_PATH_TO_ROOT();
+
+    // slightly modified version of "example.gff". 3 lines of comments are included.
+    append(gffPath, "/tests/gff_io/example_with_comments.gff");
+
+    String<char, MMap<> > inString;
+    open(inString, toCString(gffPath));
+    Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(inString);
+
+    CharString buffer;
+
+    GffRecord record;
+    readRecord(record, buffer, iter);
+
+    SEQAN_ASSERT_EQ(record.ref, "ctg123");
+    SEQAN_ASSERT_EQ(record.source, "");
+    SEQAN_ASSERT_EQ(record.type, "mRNA");
+    SEQAN_ASSERT_EQ(record.beginPos, 1299u);
+    SEQAN_ASSERT_EQ(record.endPos, 9000u);
+    SEQAN_ASSERT_NEQ(record.score, record.score);
+    SEQAN_ASSERT_EQ(record.strand, '+');
+    SEQAN_ASSERT_EQ(record.phase, '.');
+    SEQAN_ASSERT_EQ(record.tagNames[0], "ID");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "mrna0001");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "Name");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "sonichedgehog;hehe");
+
+    readRecord(record, buffer, iter);
+    SEQAN_ASSERT_EQ(record.ref, "ctg123");
+    SEQAN_ASSERT_EQ(record.source, "");
+    SEQAN_ASSERT_EQ(record.type, "exon");
+    SEQAN_ASSERT_EQ(record.beginPos, 1299u);
+    SEQAN_ASSERT_EQ(record.endPos, 1500u);
+    SEQAN_ASSERT_NEQ(record.score, record.score);
+    SEQAN_ASSERT_EQ(record.strand, '+');
+    SEQAN_ASSERT_EQ(record.phase, '.');
+    SEQAN_ASSERT_EQ(record.tagNames[0], "ID");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "exon00001");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "Parent");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "mrn a0001");
+
+    readRecord(record, buffer, iter);
+    SEQAN_ASSERT_EQ(record.ref, "ctg123");
+    SEQAN_ASSERT_EQ(record.source, "");
+    SEQAN_ASSERT_EQ(record.type, "exon");
+    SEQAN_ASSERT_EQ(record.beginPos, 1049u);
+    SEQAN_ASSERT_EQ(record.endPos, 1500u);
+    SEQAN_ASSERT_NEQ(record.score, record.score);
+    SEQAN_ASSERT_EQ(record.strand, '+');
+    SEQAN_ASSERT_EQ(record.phase, '.');
+    SEQAN_ASSERT_EQ(record.tagNames[0], "ID");
+    SEQAN_ASSERT_EQ(record.tagValues[0], "exon00002");
+    SEQAN_ASSERT_EQ(record.tagNames[1], "Name");
+    SEQAN_ASSERT_EQ(record.tagValues[1], "");
+    SEQAN_ASSERT_EQ(record.tagNames[2], "Parent");
+}
+
+
 // Complex GTF format, from pseudogenes.org
 SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
 {
