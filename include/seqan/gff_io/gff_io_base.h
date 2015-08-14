@@ -354,7 +354,7 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
         skipLine(iter);
 
     clear(record);
-    skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty linesa
+    skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty lines
 
     // read column 1: seqid
     readUntil(record.ref, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
