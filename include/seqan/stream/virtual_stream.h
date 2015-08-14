@@ -439,26 +439,6 @@ tagApply(VirtualStreamFactoryContext_<VirtualStream<TValue, TDirection, TTraits>
     return new VirtualStreamContext_<TValue, TDirection, Tag<TFormat> >(ctx.stream);
 }
 
-
-template <typename TContext>
-inline typename Value<TContext>::Type
-tagApply(TContext &, TagSelector<>)
-{
-    return typename Value<TContext>::Type();
-}
-
-template <typename TContext, typename TTagList>
-inline typename Value<TContext>::Type
-tagApply(TContext &ctx, TagSelector<TTagList> &format)
-{
-    typedef typename TTagList::Type TFormatTag;
-
-    if (isEqual(format, TFormatTag()))
-        return tagApply(ctx, TFormatTag());
-
-    return tagApply(ctx, static_cast<typename TagSelector<TTagList>::Base &>(format));
-}
-
 // ----------------------------------------------------------------------------
 // _guessFormat wrapper
 // ----------------------------------------------------------------------------
