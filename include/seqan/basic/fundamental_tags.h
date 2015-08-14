@@ -553,7 +553,10 @@ inline void assign(TagSelector<TTagList> &selector, TagSelector<TTagList> const 
     selector.tagId = other.tagId;
 }
 
-// tagApply()
+// --------------------------------------------------------------------------
+// Function tagApply()
+// --------------------------------------------------------------------------
+
 template <typename TFunctor, typename TTag>
 inline bool
 tagApply(TFunctor &func, TagList<TTag>)
@@ -568,6 +571,29 @@ tagApply(TFunctor &func, TagList<TTag, TSubList>)
     if (func(TTag()))
         return true;
     return tagApply(func, TSubList());
+}
+
+// --------------------------------------------------------------------------
+// Function tagApply()
+// --------------------------------------------------------------------------
+
+template <typename TContext>
+inline typename Value<TContext>::Type
+tagApply(TContext &, TagSelector<>)
+{
+    return typename Value<TContext>::Type();
+}
+
+template <typename TContext, typename TTagList>
+inline typename Value<TContext>::Type
+tagApply(TContext &ctx, TagSelector<TTagList> &format)
+{
+    typedef typename TTagList::Type TFormatTag;
+
+    if (isEqual(format, TFormatTag()))
+        return tagApply(ctx, TFormatTag());
+
+    return tagApply(ctx, static_cast<typename TagSelector<TTagList>::Base &>(format));
 }
 
 

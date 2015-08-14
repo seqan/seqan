@@ -330,25 +330,25 @@ void testStringSetCopyConstructible(TStringSet & /*Tag*/)
 
     TStringSet stringSet1;
     appendValue(stringSet1, str1);
-    SEQAN_ASSERT_EQ(CharString(stringSet1[0]), "AAAA");
+    SEQAN_ASSERT(stringSet1[0] == str1);
     appendValue(stringSet1, str2);
-    SEQAN_ASSERT_EQ(CharString(stringSet1[1]), "CC");
+    SEQAN_ASSERT(stringSet1[1] == str2);
     appendValue(stringSet1, str3);
-    SEQAN_ASSERT_EQ(CharString(stringSet1[2]), "GGG");
+    SEQAN_ASSERT(stringSet1[2] == str3);
 
     {
         TStringSet stringSet2(stringSet1);
-
-        SEQAN_ASSERT_EQ(CharString(getValue(stringSet2, 0)), "AAAA");
-        SEQAN_ASSERT_EQ(CharString(getValue(stringSet2, 1)), "CC");
-        SEQAN_ASSERT_EQ(CharString(getValue(stringSet2, 2)), "GGG");
+        
+        SEQAN_ASSERT(getValue(stringSet2, 0) == str1);
+        SEQAN_ASSERT(getValue(stringSet2, 1) == str2);
+        SEQAN_ASSERT(getValue(stringSet2, 2) == str3);
     }
     {
         TStringSet const stringSet2(stringSet1);
 
-        SEQAN_ASSERT_EQ(CharString(getValue(stringSet2, 0)), "AAAA");
-        SEQAN_ASSERT_EQ(CharString(getValue(stringSet2, 1)), "CC");
-        SEQAN_ASSERT_EQ(CharString(getValue(stringSet2, 2)), "GGG");
+        SEQAN_ASSERT(getValue(stringSet2, 0) == str1);
+        SEQAN_ASSERT(getValue(stringSet2, 1) == str2);
+        SEQAN_ASSERT(getValue(stringSet2, 2) == str3);
     }
 }
 
@@ -571,14 +571,14 @@ void testStringSetAppendValue(TStringSet & /*Tag*/)
     TString str("ACGT");
     appendValue(stringSet, str);
     SEQAN_ASSERT_EQ(length(stringSet), 1u);
-    SEQAN_ASSERT_EQ(CharString(stringSet[0]), "ACGT");
+    SEQAN_ASSERT(stringSet[0] == str);
 
     // Test the appendValue function
-    str = TString("CGTA");
-    appendValue(stringSet, str);
+    TString str2 = TString("CGTA");
+    appendValue(stringSet, str2);
     SEQAN_ASSERT_EQ(length(stringSet), 2u);
-    SEQAN_ASSERT_EQ(CharString(stringSet[0]), "ACGT");
-    SEQAN_ASSERT_EQ(CharString(stringSet[1]), "CGTA");
+    SEQAN_ASSERT(stringSet[0] == str);
+    SEQAN_ASSERT(stringSet[1] == str2);
 }
 
 // TODO(singer): AppendValue is not available for string sets of packed strings
@@ -656,7 +656,7 @@ void testStringSetAssignValue(TStringSet & /*Tag*/)
     resize(stringSet, 3u);
     assignValue(stringSet, 1u, string);
     SEQAN_ASSERT_EQ(length(stringSet), 3u);
-    SEQAN_ASSERT_EQ(stringSet[1], string);
+    SEQAN_ASSERT(stringSet[1] == string);  // Fixes compiler warning if string alphabet type is not char type.
 }
 
 // template <typename TValue, typename TStringSetSpec>
@@ -777,7 +777,7 @@ void testStringSetBack(TStringSet & /*Tag*/)
     // val is a reference in contrast to the const version of back()
     TString & val = back(stringSet);
     val = "TTTT";
-    SEQAN_ASSERT_EQ(val, stringSet[1]);
+    SEQAN_ASSERT(val == stringSet[1]);
 }
 
 // Test of back() for const strings.
@@ -799,9 +799,9 @@ void testStringSetBack(TStringSet const & /*Tag*/)
 
     // val is a reference in contrast to the const version of back()
     TString val = back(stringSet);
-    SEQAN_ASSERT_EQ(val, TString(stringSet[1]));
+    SEQAN_ASSERT(val == TString(stringSet[1]));
     val = "TTTT";
-    SEQAN_ASSERT_EQ(TString(stringSet[1]), str2);
+    SEQAN_ASSERT(TString(stringSet[1]) == str2);
 }
 
 // TODO(singer)
@@ -852,9 +852,9 @@ void testStringSetBegin(TStringSet & /*Tag*/)
     appendValue(nonConstStringSet, str);
     appendValue(nonConstStringSet, str2);
     TStringSet stringSet(nonConstStringSet);
-    SEQAN_ASSERT_EQ(TString(*begin(stringSet)), str);
-    SEQAN_ASSERT_EQ(TString(*begin(stringSet, Standard())), str);
-    SEQAN_ASSERT_EQ(TString(*begin(stringSet, Rooted())), str);
+    SEQAN_ASSERT(TString(*begin(stringSet)) == str);
+    SEQAN_ASSERT(TString(*begin(stringSet, Standard())) == str);
+    SEQAN_ASSERT(TString(*begin(stringSet, Rooted())) == str);
 }
 // TODO(singer): No appendValue for string sets of packed strings
 // template <typename TValue, typename TStringSetSpec>
@@ -1075,9 +1075,10 @@ void testStringSetEnd(TStringSet & /*Tag*/)
     --standardIter;
     --rootedIter;
 
-    SEQAN_ASSERT_EQ(*iter, str2);
-    SEQAN_ASSERT_EQ(*standardIter, str2);
-    SEQAN_ASSERT_EQ(*rootedIter, str2);
+    // Fixes compiler warning if string alphabet type is not char type.
+    SEQAN_ASSERT(*iter == str2);
+    SEQAN_ASSERT(*standardIter == str2);
+    SEQAN_ASSERT(*rootedIter == str2);
 }
 
 // TODO(singer): No appendValue for string sets of packed strings
@@ -1174,11 +1175,11 @@ void testStringSetErase(TStringSet & /*Tag*/)
     appendValue(stringSet, str);
     appendValue(stringSet, str2);
     appendValue(stringSet, str3);
-    SEQAN_ASSERT_EQ(stringSet[1], str2);
+    SEQAN_ASSERT(stringSet[1] == str2);
     erase(stringSet, 1);
     SEQAN_ASSERT_EQ(length(stringSet), 2u);
-    SEQAN_ASSERT_EQ(stringSet[0], str);
-    SEQAN_ASSERT_EQ(stringSet[1], str3);
+    SEQAN_ASSERT(stringSet[0] == str);
+    SEQAN_ASSERT(stringSet[1] == str3);
 }
 
 // TODO(singer): Seg. fault
@@ -1235,11 +1236,11 @@ void testStringSetEraseBack(TStringSet & /*Tag*/)
     appendValue(stringSet, str);
     appendValue(stringSet, str);
     appendValue(stringSet, str2);
-    SEQAN_ASSERT_EQ(stringSet[2], str2);
+    SEQAN_ASSERT(stringSet[2] == str2);
     eraseBack(stringSet);
     SEQAN_ASSERT_EQ(length(stringSet), 2u);
-    SEQAN_ASSERT_EQ(stringSet[0], TString());
-    SEQAN_ASSERT_EQ(stringSet[1], TString());
+    SEQAN_ASSERT(stringSet[0] == TString());
+    SEQAN_ASSERT(stringSet[1] == TString());
 }
 
 // TODO(singer): No appendValue for string sets of packed strings
@@ -1280,7 +1281,7 @@ void testStringSetFront(TStringSet & /*Tag*/)
     // val is a reference in contrast to the const version of front()
     TString & val = front(stringSet);
     val = "TTTT";
-    SEQAN_ASSERT_EQ(val, stringSet[0]);
+    SEQAN_ASSERT(val == stringSet[0]);
 }
 
 // Test of front() for const strings.
@@ -1302,9 +1303,9 @@ void testStringSetFront(TStringSet const & /*Tag*/)
 
     // val is a reference in contrast to the const version of front()
     TString val = front(stringSet);
-    SEQAN_ASSERT_EQ(val, stringSet[0]);
+    SEQAN_ASSERT(val == stringSet[0]);
     val = "TTTT";
-    SEQAN_ASSERT_EQ(stringSet[0], str);
+    SEQAN_ASSERT(stringSet[0] == str);
 }
 
 // TODO(singer): No appendValue for string sets of packed strings
@@ -1372,7 +1373,7 @@ void testStringSetGetValue(TStringSet & /*Tag*/)
     appendValue(nonConstStringSet, str2);
     appendValue(nonConstStringSet, str3);
     TStringSet stringSet(nonConstStringSet);
-    SEQAN_ASSERT_EQ(TString(getValue(stringSet, 1)), TString(str2));
+    SEQAN_ASSERT(TString(getValue(stringSet, 1)) == TString(str2));
 }
 
 // TODO(singer): No appendValue for string sets of packed strings
@@ -1416,7 +1417,7 @@ void testStringSetGetValueById(TStringSet & /*Tag*/)
     appendValue(nonConstStringSet, str2);
     appendValue(nonConstStringSet, str3);
     TStringSet stringSet(nonConstStringSet);
-    SEQAN_ASSERT_EQ(getValueById(stringSet, typename Id<TStringSet>::Type(1)), str2);
+    SEQAN_ASSERT(getValueById(stringSet, typename Id<TStringSet>::Type(1)) == str2);
 }
 
 // TODO(singer): No appendValue for string sets of packed strings
@@ -1679,7 +1680,7 @@ void testStringSetIter(TStringSet & /*Tag*/)
         TIterator iterator = iter(stringSet, 0);
         TStandardIterator standardIterator = iter(stringSet, 0);
         TRootedIterator rootedIterator = iter(stringSet, 0);
-        SEQAN_ASSERT_EQ(TString(getValue(iterator)), "AAAA");
+        SEQAN_ASSERT(TString(getValue(iterator)) == "AAAA");
         SEQAN_ASSERT(getValue(iterator) == getValue(stringSet, 0));
         SEQAN_ASSERT(getValue(standardIterator) == getValue(stringSet, 0));
         SEQAN_ASSERT(getValue(rootedIterator) == getValue(stringSet, 0));
@@ -1700,7 +1701,7 @@ void testStringSetIter(TStringSet & /*Tag*/)
         TIterator iterator = iter(stringSet, 3);
         TStandardIterator standardIterator = iter(stringSet, 3);
         TRootedIterator rootedIterator = iter(stringSet, 3);
-        SEQAN_ASSERT_EQ(TString(getValue(iterator)), "TTTT");
+        SEQAN_ASSERT(TString(getValue(iterator)) == "TTTT");
         SEQAN_ASSERT(getValue(iterator) == getValue(stringSet, 3));
         SEQAN_ASSERT(getValue(standardIterator) == getValue(stringSet, 3));
         SEQAN_ASSERT(getValue(rootedIterator) == getValue(stringSet, 3));
@@ -1939,8 +1940,8 @@ void testStringSetResize(TStringSet & /*Tag*/)
     SEQAN_ASSERT_EQ(length(stringSet), 10u);
     // TODO (singer): resize should initialize newly allocated memory,
     // which it does not at the moment!
-    SEQAN_ASSERT_EQ(stringSet[0], TString());
-    SEQAN_ASSERT_EQ(stringSet[9], TString());
+    SEQAN_ASSERT(stringSet[0] == TString());
+    SEQAN_ASSERT(stringSet[9] == TString());
 
     resize(stringSet, 0u);
     SEQAN_ASSERT_EQ(length(stringSet), 0u);
@@ -2105,12 +2106,12 @@ void testStringSetValue(TStringSet & /*Tag*/)
     appendValue(stringSet, str2);
     appendValue(stringSet, str3);
     TString & value_ = value(stringSet, 0);
-    SEQAN_ASSERT_EQ(value_, str1);
+    SEQAN_ASSERT(value_ == str1);
 
     value_ = "GGGG";
     TString str4("GGGG");
-    SEQAN_ASSERT_EQ(value_, str4);
-    SEQAN_ASSERT_EQ(stringSet[0], str4);
+    SEQAN_ASSERT(value_ == str4);
+    SEQAN_ASSERT(stringSet[0] == str4);
 }
 
 // Test of value().
@@ -2135,12 +2136,12 @@ void testStringSetValue(TStringSet const & /*Tag*/)
 
     TStringSet stringSet(nonConstStringSet);
     TString value_ = value(stringSet, 0);
-    SEQAN_ASSERT_EQ(value_, str1);
+    SEQAN_ASSERT(value_ == str1);
 
     value_ = "GGGG";
     TString str4("GGGG");
-    SEQAN_ASSERT_EQ(value_, str4);
-    SEQAN_ASSERT_EQ(stringSet[0], str1);
+    SEQAN_ASSERT(value_ == str4);
+    SEQAN_ASSERT(stringSet[0] == str1);
 }
 // TODO(singer): Seg. fault
 template <typename TValue>
