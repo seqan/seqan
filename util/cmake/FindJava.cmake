@@ -69,7 +69,8 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-include(${CMAKE_CURRENT_LIST_DIR}/CMakeFindJavaCommon.cmake)
+#include(${CMAKE_CURRENT_LIST_DIR}/CMakeFindJavaCommon.cmake)
+include(${CMAKE_MODULE_PATH}/CMakeFindJavaCommon.cmake)
 
 # The HINTS option should only be used for values computed from the system.
 set(_JAVA_HINTS)
