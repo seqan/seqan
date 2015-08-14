@@ -55,8 +55,8 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-template <typename TFormattedFile>
-struct FileFormat;
+template <typename TStream>
+struct StreamFormat;
 
 // ============================================================================
 // Tags, Enums
@@ -246,21 +246,35 @@ struct VirtualStreamContext_<TValue, TDirection, Nothing>:
 // --------------------------------------------------------------------------
 // Class VirtualStream
 // --------------------------------------------------------------------------
+// The VirtualStream class auto-detects data compression from file name or stream.
+// It inherits from std::basic_Xstream to provide the convenient stream interface.
+// It accepts a file or stream.
 
-// The VirtualStream class handles a file or input stream and auto-detects data
-// compression from file name or stream.
-// We inherit from std::basic_Xstream to provide the convenient stream interface.
+/*!
+ * @class VirtualStream
+ * @implements StreamConcept
+ * @headerfile <seqan/stream.h>
+ * @brief Provides seamless (de)compression for another @link StreamConcept stream @endlink.
+ *
+ * @signature template <typename TValue, typename TDirection, typename TTraits>
+ *            class VirtualStream;
+ *
+ * @tparam TValue       The stream value type, e.g. <tt>char</tt>.
+ * @tparam TDirection   The stream direction, one of @link DirectionTags @endlink.
+ * @tparam TTraits      The stream traits, defaults to <tt>std::char_traits&lt;TValue&gt;</tt>.
+ */
+
 template <typename TValue, typename TDirection, typename TTraits = std::char_traits<TValue> >
 class VirtualStream: public BasicStream<TValue, TDirection, TTraits>::Type
 {
 public:
     typedef typename BasicStream<TValue, TDirection, TTraits>::Type TStream;                // the stream base class we expose
-    typedef std::fstream                                            TFile;                  // if a real file should be opened
-//    typedef FileStream<char, TDirection>                            TFile;                  // if a real file should be opened
+    typedef std::basic_fstream<TValue>                              TFile;                  // if a real file should be opened
+//    typedef FileStream<TValue, TDirection>                          TFile;                  // if a real file should be opened
     typedef BufferedStream<TStream, TDirection>                     TBufferedStream;        // if input stream is not buffered
     typedef std::basic_streambuf<TValue>                            TStreamBuffer;          // the streambuf to use
     typedef VirtualStreamContextBase_<TValue>                       TVirtualStreamContext;  // the owner of the streambuf
-    typedef typename FileFormat<VirtualStream>::Type                TFormat;                // detected format
+    typedef typename StreamFormat<VirtualStream>::Type              TFormat;                // detected stream format
 
     TFile                   file;
     TBufferedStream         bufferedStream;
@@ -268,6 +282,20 @@ public:
     TVirtualStreamContext   *context;
     TFormat                 format;
 
+    /*!
+     * @fn VirtualStream::VirtualStream
+     * @brief Default constructor and construction from stream, stream buffer, or filename.
+     *
+     * @signature VirtualStream::VirtualStream();
+     * @signature VirtualStream::VirtualStream(stream);
+     * @signature VirtualStream::VirtualStream(streamBuf);
+     * @signature VirtualStream::VirtualStream(fileName, openMode);
+     *
+     * @param[in] stream    The @link StreamConcept stream @endlink to attach to.
+     * @param[in] streamBuf The @link StreamBuffer stream buffer @endlink to attach to.
+     * @param[in] fileName  Path to the file to open. Type: <tt>char const *</tt>.
+     * @param[in] openMode  The open mode. Type: <tt>int</tt>.
+     */
     VirtualStream():
         TStream(NULL),
         streamBuf(),
@@ -323,6 +351,14 @@ public:
         return streamBuf;
     }
 
+    /*!
+     * @fn VirtualStream::getFileExtensions
+     * @brief Static function that returns a list of allowed file format extension.
+     *
+     * @signature TExtensionVector getFileExtensions()
+     *
+     * @return TExtensionVector A <tt>std::vector&lt;std::string&gt;</tt> with the allowed file extensions.
+     */
     static std::vector<std::string>
     getFileExtensions()
     {
@@ -333,11 +369,26 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction FileFormats
+// Metafunction StreamFormat
 // ----------------------------------------------------------------------------
 
+/*!
+ * @defgroup StreamFormats Stream Formats
+ * @brief Tags for identifying stream formats.
+ */
+
+/*!
+ * @mfn VirtualStream#StreamFormat
+ * @brief Metafunction for retrieving the format type of a @link VirtualStream @endlink.
+ *
+ * @signature StreamFormat<TStream>::Type;
+ *
+ * @tparam TStream  The stream file type to query for its file format type.
+ * @return Type     The resulting @link VirtualStream @endlink file formats type.
+ */
+
 template <typename TValue, typename TDirection, typename TTraits>
-struct FileFormat<VirtualStream<TValue, TDirection, TTraits> >
+struct StreamFormat<VirtualStream<TValue, TDirection, TTraits> >
 {
     typedef TagSelector<CompressedFileTypes> Type;
 };
@@ -431,6 +482,7 @@ struct Value<VirtualStreamFactoryContext_<TVirtualStream> >
 // --------------------------------------------------------------------------
 // Function tagApply()
 // --------------------------------------------------------------------------
+// NOTE(esiragusa): private / impl.
 
 template <typename TValue, typename TDirection, typename TTraits, typename TFormat>
 inline VirtualStreamContextBase_<TValue> *
@@ -509,6 +561,20 @@ _getUncompressedBasename(TFilename const & fname, TagSelector<TTagList> const & 
 // Function open()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn VirtualStream#open
+ * @brief Open a VirtualStream.
+ *
+ * @signature bool open(stream, fileStream);
+ * @signature bool open(stream, fileName, openMode);
+ *
+ * @param[in,out] stream        The VirtualStream to open.
+ * @param[in,out  fileStream    File stream to attach to. Type: <tt>std::fstream</tt>.
+ * @param[in]     fileName      Path to the file to open. Type: <tt>char const *</tt>.
+ * @param[in]     openMode      The open mode. Type: <tt>int</tt>.
+ * @return bool <tt>true</tt> in the case of success, <tt>false</tt> otherwise.
+ */
+
 template <typename TValue, typename TDirection, typename TTraits, typename TStream, typename TCompressionType>
 inline SEQAN_FUNC_DISABLE_IF(IsPointer<TStream>, bool)
 open(VirtualStream<TValue, TDirection, TTraits> &stream, TStream &fileStream, TCompressionType & compressionType)
@@ -562,7 +628,7 @@ inline SEQAN_FUNC_DISABLE_IF(IsPointer<TStream>, bool)
 open(VirtualStream<TValue, Input> &stream, TStream &fileStream)
 {
     // detect compression type from file extension
-    assign(stream.format, typename FileFormat<VirtualStream<TValue, Input> >::Type());
+    assign(stream.format, typename StreamFormat<VirtualStream<TValue, Input> >::Type());
     return open(stream, fileStream, stream.format);
 }
 
@@ -580,7 +646,7 @@ open(VirtualStream<TValue, TDirection, TTraits> &stream,
         return false;
 
     // detect compression type from file extension
-    assign(stream.format, typename FileFormat<TVirtualStream>::Type());
+    assign(stream.format, typename StreamFormat<TVirtualStream>::Type());
 
     if (IsSameType<TDirection, Input>::VALUE && _isPipe(fileName))
         open(stream, stream.file, stream.format);               // read from a pipe (without file extension)
@@ -607,6 +673,16 @@ open(VirtualStream<TValue, TDirection, TTraits> &stream,
 // Function close()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn VirtualStream#close
+ * @brief Close a VirtualStream.
+ *
+ * @signature bool close(stream);
+ *
+ * @param[in,out] stream The VirtualStream to close.
+ * @return bool <tt>true</tt> in the case of success, <tt>false</tt> otherwise.
+ */
+
 template <typename TValue, typename TDirection, typename TTraits>
 inline bool
 close(VirtualStream<TValue, TDirection, TTraits> &stream)
@@ -614,7 +690,7 @@ close(VirtualStream<TValue, TDirection, TTraits> &stream)
     delete stream.context;
     stream.context = NULL;
     stream.streamBuf = NULL;
-    assign(stream.format, typename FileFormat<VirtualStream<TValue, TDirection, TTraits> >::Type());
+    assign(stream.format, typename StreamFormat<VirtualStream<TValue, TDirection, TTraits> >::Type());
     return !stream.file.is_open() || close(stream.file);
 }
 
@@ -622,8 +698,18 @@ close(VirtualStream<TValue, TDirection, TTraits> &stream)
 // Function format()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn VirtualStream#format
+ * @brief Return the format of a VirtualStream.
+ *
+ * @signature TFormat format(stream);
+ *
+ * @param[in] stream The VirtualStream to check.
+ * @return TFormat   The type as returned from @link VirtualStream#StreamFormat @endlink.
+ */
+
 template <typename TValue, typename TDirection, typename TTraits>
-inline typename FileFormat<VirtualStream<TValue, TDirection, TTraits> >::Type &
+inline typename StreamFormat<VirtualStream<TValue, TDirection, TTraits> >::Type &
 format(VirtualStream<TValue, TDirection, TTraits> &stream)
 {
     return stream.format;
