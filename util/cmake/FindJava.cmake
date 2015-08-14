@@ -69,7 +69,7 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-include(${CMAKE_MODULE_PATH}/CMakeFindJavaCommon.cmake)
+include(${CMAKE_ROOT}/Modules/CMakeFindJavaCommon.cmake)
 
 # The HINTS option should only be used for values computed from the system.
 set(_JAVA_HINTS)
@@ -184,7 +184,7 @@ find_program(Java_JAVADOC_EXECUTABLE
   PATHS ${_JAVA_PATHS}
 )
 
-include(${CMAKE_MODULE_PATH}/FindPackageHandleStandardArgs.cmake)
+include(${CMAKE_ROOT}/Modules/FindPackageHandleStandardArgs.cmake)
 if(Java_FIND_COMPONENTS)
   foreach(component ${Java_FIND_COMPONENTS})
     # User just want to execute some Java byte-compiled
