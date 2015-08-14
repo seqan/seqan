@@ -39,7 +39,8 @@ add_executable (test_bam_io
                test_read_sam.h
                test_write_bam.h
                test_write_sam.h
-               test_bam_file.h)
+               test_bam_file.h
+               test_bam_index.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_bam_io ${SEQAN_LIBRARIES})
