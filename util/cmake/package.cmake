@@ -46,7 +46,7 @@ if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
     ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_APPS"))
     include (SetCPackSystemName)
 
-    # NOTE that you have to run "make docs" before running cpack.  The reason
+    # NOTE that you have to run "make dox" before running cpack.  The reason
     # is that we cannot add dependencies to the install target at the moment.
     # See: http://public.kitware.com/Bug/view.php?id=8438
 

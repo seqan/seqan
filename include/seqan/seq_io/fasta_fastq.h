@@ -139,8 +139,7 @@ struct FileExtensions<Raw, T>
 template <typename T>
 char const * FileExtensions<Raw, T>::VALUE[1] =
 {
-    ".txt"      // default output extension
-//    ".seq"
+    ".raw"      // default output extension
 };
 
 // ----------------------------------------------------------------------------
