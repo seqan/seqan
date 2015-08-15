@@ -17,10 +17,10 @@ Permission is granted to anyone to use this software for any purpose, including 
 Author: Jonathan de Halleux, dehalleux@pelikhan.com, 2003   (original zlib stream)
 Author: David Weese, dave.weese@gmail.com, 2014             (extension to parallel block-wise compression in bgzf format)
 */
-#ifndef BGZFSTREAM_IPP
-#define BGZFSTREAM_IPP
+#ifndef INCLUDE_SEQAN_STREAM_IOSTREAM_BGZF_IMPL_H_
+#define INCLUDE_SEQAN_STREAM_IOSTREAM_BGZF_IMPL_H_
 
-#include "bgzfstream.h"
+#include "iostream_bgzf.h"
 #include <sstream>
 
 namespace seqan {
@@ -200,4 +200,4 @@ namespace detail{
 
 }  // namespace seqan
 
-#endif
+#endif // INCLUDE_SEQAN_STREAM_IOSTREAM_BGZF_IMPL_H_

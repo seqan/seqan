@@ -16,10 +16,10 @@ Permission is granted to anyone to use this software for any purpose, including 
 
 Author: Jonathan de Halleux, dehalleux@pelikhan.com, 2003
 */
-#ifndef BZIP2STREAM_IPP
-#define BZIP2STREAM_IPP
+#ifndef INCLUDE_SEQAN_STREAM_IOSTREAM_BZIP2_IMPL_H_
+#define INCLUDE_SEQAN_STREAM_IOSTREAM_BZIP2_IMPL_H_
 
-#include "bzip2stream.h"
+#include "iostream_bzip2.h"
 
 namespace bzip2_stream{
 
@@ -427,4 +427,4 @@ namespace bzip2_stream{
 
 } // zlib_sream
 
-#endif
+#endif // INCLUDE_SEQAN_STREAM_IOSTREAM_BZIP2_IMPL_H_
