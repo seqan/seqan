@@ -152,6 +152,9 @@ macro (seqan_register_apps)
       set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
     endif ()
 
+    # Enable global exception handler for all seqan apps.
+    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
+
     # Get all direct entries of the current source directory into ENTRIES.
     file (GLOB ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -581,6 +584,9 @@ macro (seqan_install_demos_release)
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cpp
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
 
+    # Set global definitions set for demos.
+    add_definitions (${SEQAN_DEFINITIONS})
+
     # Get path to current source directory, relative from root.  Will be used to install demos in.
     file (RELATIVE_PATH INSTALL_DIR "${SEQAN_ROOT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
@@ -652,6 +658,9 @@ function (seqan_register_demos)
         set (PREFIX "")
     endif (${ARGC} GREATER 0)
 
+    # Enable global exception handler for demos.
+    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
+
     # Install demo source files when releasing and build demos when developing.
     if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE")
         seqan_install_demos_release ()
@@ -686,6 +695,9 @@ macro (seqan_register_tests)
             CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
     string (REGEX REPLACE "-DNDEBUG" ""
             CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+
+    # Add global exception handler
+    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
 
     # Conditionally enable coverage mode by setting the appropriate flags.
     if (MODEL STREQUAL "NightlyCoverage")
