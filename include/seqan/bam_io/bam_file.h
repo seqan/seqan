@@ -248,10 +248,10 @@ readRecords(TRecords & records, FormattedFile<Bam, Input, TSpec> & file, TSize m
 {
     String<CharString> & buffers = context(file).buffers;
     if ((TSize)length(buffers) < maxRecords)
-    {
         resize(buffers, maxRecords, Exact());
+    if ((TSize)length(records) < maxRecords)
         resize(records, maxRecords, Exact());
-    }
+
 
     TSize numRecords = 0;
     for (; numRecords < maxRecords && !atEnd(file.iter); ++numRecords)
