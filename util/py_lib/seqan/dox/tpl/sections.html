@@ -714,7 +714,7 @@ Render the grouped macros details
       <dt>See Also</dt>
       <dd>
         {% for link in subentry.sortedSees() %}
-      <dd>{{ link|transtext(False)|translink }}</dd>
+      <dd>{{ link|transtext(True) }}</dd>
       {% endfor %}
       </dd>
       {% endif %}
@@ -838,7 +838,7 @@ Render the grouped macros details
   <dt>See Also</dt>
   <dd>
   {% for link in subentry.sortedSees() %}
-  <dd>{{ link|transtext(False)|translink }}</dd>
+  <dd>{{ link|transtext(True) }}</dd>
   {% endfor %}
   </dd>
 {% endif %}
@@ -1014,7 +1014,7 @@ Render the interface functions details
   <h4>See Also</h4>
   <ul>
     {% for link in subentry.sortedSees() %}
-    <li>{{ link|transtext(False)|translink }}</li>
+    <li>{{ link|transtext(True) }}</li>
     {% endfor %}
   </ul>
   {% endif %}
