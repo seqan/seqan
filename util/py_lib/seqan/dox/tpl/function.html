@@ -18,9 +18,6 @@
 <!-- @returns -->
 {{ sections.return_values(function) }}
 
-<!-- @throw -->
-{{ sections.throws(function) }}
-
 <!--
  =============================================================================
   Detailed Description
@@ -77,6 +74,12 @@
   </div>
 </div>
 {% endif %}
+
+<!-- @throw -->
+{{ sections.throws(function) }}
+
+<!-- @datarace -->
+{{ sections.dataraces(function) }}
 
 <!-- @see -->
 {{ sections.see_also(function) }}
