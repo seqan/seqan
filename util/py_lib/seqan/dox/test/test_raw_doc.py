@@ -575,6 +575,28 @@ class ThrowTest(unittest.TestCase):
         ret = raw_doc.RawThrow(self.tok, self.txt_type, self.txt_text)
         self.assertEqual(ret.getFormatted(self.formatter),
                          '@throw type text\n')
+        
+
+class DataRaceTest(unittest.TestCase):
+    """Test for the RawDataRace class, mostly tests instance variables."""
+
+    def setUp(self):
+        self.tok = lexer.Token('COMMAND_DATARACE', '@datarace', 0, 0, 0)
+        self.tok_text = lexer.Token('WORD', 'text', 0, 0, 0)
+        self.txt_text = raw_doc.RawText([self.tok_text])
+        self.formatter = raw_doc.DoxFormatter()
+
+    def testCreation(self):
+        ret = raw_doc.RawThrow(self.tok, self.txt_text)
+        self.assertEqual(ret.text, self.txt_text)
+
+    def testGetType(self):
+        ret = raw_doc.RawThrow(self.tok, self.txt_text)
+        self.assertEqual(ret.getType(), 'datarace')
+
+    def testGetFormatted(self):
+        ret = raw_doc.RawThrow(self.tok, self.txt_text)
+        self.assertEqual(ret.getFormatted(self.formatter), '@throw text\n')
 
 
 class SignatureTest(unittest.TestCase):
