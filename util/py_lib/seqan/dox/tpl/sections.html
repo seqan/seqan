@@ -819,6 +819,21 @@ Render the grouped macros details
   {% endfor %}
 {% endif %}
 
+{% if subentry.dataraces %}
+  <dt>Data Races</dt>
+
+  {% for datarace in subentry.dataraces %}
+  <dd>
+    {{ datarace.desc|transtext(False) }}
+  </dd>
+  {% endfor %}
+{% else %}
+  <dt>Data Races</dt>
+  <dd>
+    Thread safety unknown!
+  </dd>
+{% endif %}
+
 {% if subentry.sees %}
   <dt>See Also</dt>
   <dd>
@@ -941,7 +956,7 @@ Render the interface functions details
     {% endfor %}
   </table>
   {% endif %}
-
+  
   {% if subentry.returns %}
   <h4>Returns</h4>
   <table class="overview">
@@ -954,6 +969,17 @@ Render the interface functions details
   </table>
   {% endif %}
 
+	<!-- General description -->
+
+  <div class="docstring">
+    <div class="discussion">
+      {{ body(subentry, start_heading=4) }}
+    </div>
+  </div>
+ 
+
+  <!-- Throws Section -->
+	
   {% if subentry.throws %}
   <h4>Thrown Exceptions</h4>
   <table class="overview">
@@ -965,13 +991,25 @@ Render the interface functions details
     {% endfor %}
   </table>
   {% endif %}
-
-  <div class="docstring">
-    <div class="discussion">
-      {{ body(subentry, start_heading=4) }}
-    </div>
+  
+  <!-- Data Races Section  -->
+  
+  <h4>Data Races</h4>
+  <div class="discussion">
+  {% if subentry.dataraces %}	
+	{% for datarace in subentry.dataraces %}
+  	<p>
+    	{{ datarace.desc|transtext(False) }}
+  	</p>
+  	{% endfor %}
+  {% else %}
+    Thread safety unknown!
+  {% endif %}
   </div>
-
+	
+	
+  <!-- Sees section -->
+  
   {% if subentry.sees %}
   <h4>See Also</h4>
   <ul>
@@ -1319,6 +1357,29 @@ Render the throw details.
 </table>
 {% endif %}
 {% endmacro %}
+
+<!--
+Macro dararaces(entry)
+
+Render the dataraces details.
+-->
+
+{% macro dataraces(entry, h_level=2) -%}
+<h{{ h_level }} class="clause_header">Data Races</h{{ h_level }}>
+{% if entry.dataraces %}
+	<div class="summary compact">
+		{% for draces in entry.dataraces %}
+    	<p>
+    		{{ draces.desc|transtext(False) }}
+    	</p>
+		{% endfor %}
+	</div>
+{% else %}
+	<div class="summary compact">
+ 		Thread safety unknown!
+	</div>
+{% endif %}
+{%- endmacro %}
 
 <!--
 Macro dox_source(entry)

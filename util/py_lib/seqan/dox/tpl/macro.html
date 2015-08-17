@@ -15,10 +15,6 @@
 <!-- @returns -->
 {{ sections.return_values(macro) }}
 
-<!-- @throw -->
-{{ sections.throws(macro) }}
-
-
 <!--
  =============================================================================
   Detailed Description
@@ -74,6 +70,12 @@
   </div>
 </div>
 {% endif %}
+
+<!-- @throw -->
+{{ sections.throws(macro) }}
+
+<!-- @datarace -->
+{{ sections.dataraces(macro) }}
 
 <!-- @see -->
 {{ sections.see_also(macro) }}

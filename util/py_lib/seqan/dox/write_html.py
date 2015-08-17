@@ -462,8 +462,7 @@ class HtmlWriter(object):
             html = self.tpl_manager.render('adaption.html', adaption=entry,  **common_kwargs)
         elif entry.kind == 'shortcut':
             html = self.tpl_manager.render('shortcut.html', shortcut=entry,  **common_kwargs)
-        elif entry.kind in ['global_function', 'member_function',
-                            'interface_function']:
+        elif entry.kind in ['global_function', 'member_function', 'interface_function']:
             html = self.tpl_manager.render('function.html', function=entry,  **common_kwargs)
         elif entry.kind in ['global_metafunction', 'interface_metafunction']:
             html = self.tpl_manager.render('metafunction.html', metafunction=entry,  **common_kwargs)
