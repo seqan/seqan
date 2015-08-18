@@ -279,7 +279,7 @@ if on_rtd:
 # release as configured in the release.
 doxlinks_base_url = 'http://docs.seqan.de/seqan/develop/'
 if on_rtd:
-  seqan_branch = os.environ.get('RTD_VERSION_SLUG', develop)  # Assume develop if RTD_VERSION_SLUG is not defined.
+  seqan_branch = os.environ.get('RTD_VERSION_SLUG', 'develop')  # Assume develop if RTD_VERSION_SLUG is not defined.
   seqan_release = seqan_branch.replace('seqan-v', '')
   doxlinks_base_url = 'http://docs.seqan.de/seqan/%s/' % seqan_release
 
