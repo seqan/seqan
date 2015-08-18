@@ -681,7 +681,7 @@ class RawMacro(RawCodeEntry):
     def addThrow(self, t):
         self.throws.append(t)
     
-    def addDataRaces(self, d):
+    def addDataRace(self, d):
         self.dataraces.append(d)
 
     def getType(self):
@@ -1403,7 +1403,7 @@ class RawDataRace(object):
         return 'datarace'
 
     def getFormatted(self, formatter):
-        return formatter.formatCommand('datarace', self.text.text, self.name.text)
+        return formatter.formatCommand('datarace', self.text.text)
 
 
 class RawSignature(object):
