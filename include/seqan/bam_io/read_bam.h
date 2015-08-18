@@ -188,22 +188,18 @@ _readBamRecord(TBuffer & rawRecord, TForwardIter & iter, Bam)
     write(rawRecord, iter, (size_t)recordLen);
 }
 
-template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 readRecord(BamAlignmentRecord & record,
-           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-           TForwardIter & iter,
-           Bam const & /* tag */)
+    BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+    Iterator<CharString, Standard>::Type & it,
+    __int32 remainingBytes,
+    Bam const & /* tag */)
 {
-    typedef typename Iterator<CharString, Standard>::Type                             TCharIter;
     typedef typename Iterator<String<CigarElement<> >, Standard>::Type SEQAN_RESTRICT TCigarIter;
     typedef typename Iterator<IupacString, Standard>::Type SEQAN_RESTRICT             TSeqIter;
     typedef typename Iterator<CharString, Standard>::Type SEQAN_RESTRICT              TQualIter;
-
-    // Read size and data of the remaining block in one chunk (fastest).
-    __int32 remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
-    TCharIter it = begin(context.buffer, Standard());
-
+    
     // BamAlignmentRecordCore.
     arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char*>(&record));
     it += sizeof(BamAlignmentRecordCore);
@@ -271,6 +267,22 @@ readRecord(BamAlignmentRecord & record,
     // tags
     resize(record.tags, remainingBytes, Exact());
     arrayCopyForward(it, it + remainingBytes, begin(record.tags, Standard()));
+}
+
+template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline void
+readRecord(BamAlignmentRecord & record,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           Bam const & /* tag */)
+{
+    typedef typename Iterator<CharString, Standard>::Type                             TCharIter;
+
+
+    // Read size and data of the remaining block in one chunk (fastest).
+    __int32 remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
+    TCharIter it = begin(context.buffer, Standard());
+    readRecord(record, context, it, remainingBytes, Bam());
 }
 
 }  // namespace seqan
