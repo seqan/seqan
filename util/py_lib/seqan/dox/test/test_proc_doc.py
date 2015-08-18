@@ -804,7 +804,7 @@ class TestConvertFunction(TestConverterBase):
                '@tparam    T1      The type of the first template parameter.\n'
                '@return    TReturn The return value.\n'
                '@throw     Excpetion The exception type.\n'
-               '@dataraces This function is thread safe.\n'
+               '@datarace This function is thread safe.\n'
                '\n'
                'This is the first paragraph.\n'
                '@section First <em>heading</em>\n'
@@ -922,7 +922,7 @@ class TestConvertMacro(TestConverterBase):
         self.assertEqual(proc_macro.throws[0].desc.toHtmlLike(), txt)
         # dataraces
         self.assertEqual(len(proc_macro.dataraces), 1)
-        txt = '<div>This function is not thred safe.</div>'
+        txt = '<div>This function is not thread safe.</div>'
         self.assertEqual(proc_macro.dataraces[0].desc.toHtmlLike(), txt)
         # brief
         txt = '<div>This is the <i>very important</i> macro brief.</div>'
@@ -979,7 +979,7 @@ class TestConvertMacro(TestConverterBase):
         self.assertEqual(proc_macro.throws[0].desc.toHtmlLike(), txt)
         # dataraces
         self.assertEqual(len(proc_macro.dataraces), 1)
-        txt = '<div>This function is not thred safe.</div>'
+        txt = '<div>This function is not thread safe.</div>'
         self.assertEqual(proc_macro.dataraces[0].desc.toHtmlLike(), txt)
         # brief
         txt = '<div>This is the <i>very important</i> class brief.</div>'
