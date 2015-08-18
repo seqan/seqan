@@ -587,16 +587,16 @@ class DataRaceTest(unittest.TestCase):
         self.formatter = raw_doc.DoxFormatter()
 
     def testCreation(self):
-        ret = raw_doc.RawThrow(self.tok, self.txt_text)
-        self.assertEqual(ret.text, self.txt_text)
+        dataRace = raw_doc.RawDataRace(self.tok, self.txt_text)
+        self.assertEqual(dataRace.text, self.txt_text)
 
     def testGetType(self):
-        ret = raw_doc.RawThrow(self.tok, self.txt_text)
-        self.assertEqual(ret.getType(), 'datarace')
+        dataRace = raw_doc.RawDataRace(self.tok, self.txt_text)
+        self.assertEqual(dataRace.getType(), 'datarace')
 
     def testGetFormatted(self):
-        ret = raw_doc.RawThrow(self.tok, self.txt_text)
-        self.assertEqual(ret.getFormatted(self.formatter), '@throw text\n')
+        dataRace = raw_doc.RawDataRace(self.tok, self.txt_text)
+        self.assertEqual(dataRace.getFormatted(self.formatter), '@datarace text\n')
 
 
 class SignatureTest(unittest.TestCase):
