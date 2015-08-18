@@ -276,7 +276,7 @@ if on_rtd:
 
 # Configure the base URL for dox links.  By default, we point to the develop
 # branch, but if we are on readthedocs then we compute the URL from the
-# release as configured in the release.
+# RTD_VERSION_SLUG configured by the rtd environment.
 doxlinks_base_url = 'http://docs.seqan.de/seqan/develop/'
 if on_rtd:
   seqan_branch = os.environ.get('RTD_VERSION_SLUG', 'develop')  # Assume develop if RTD_VERSION_SLUG is not defined.
