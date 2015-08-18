@@ -168,6 +168,7 @@ public:
     TNameStoreCacheMember   _contigNamesCache;
     TLengthStoreMember      _contigLengths;
     CharString              buffer;
+    CharString              streamBuffer;
     String<CharString>      buffers;
     String<unsigned>        translateFile2GlobalRefId;
 

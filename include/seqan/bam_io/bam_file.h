@@ -253,15 +253,18 @@ readRecords(TRecords & records, FormattedFile<Bam, Input, TSpec> & file, TSize m
         resize(records, maxRecords, Exact());
     }
 
+    const unsigned averageBamRecordSize = 2000;
+    context(file).streamBuffer.resize(maxRecords * averageBamRecordSize);
+    file.stream.rdbuf()->pubsetbuf(&context(file).streamBuffer, length(context(file).streamBuffer));
+
     TSize numRecords = 0;
     for (; numRecords < maxRecords && !atEnd(file.iter); ++numRecords)
         _readBamRecord(buffers[numRecords], file.iter, file.format);
 
-//    SEQAN_OMP_PRAGMA(parallel for)
+    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
     for (int i = 0; i < (int)numRecords; ++i)
     {
-        CharIterator bufIter = begin(buffers[i]);
-        readRecord(records[i], context(file), bufIter, file.format);
+        readRecord(records[i], context(file), begin(buffers[i]), length(buffers[i]), file.format);
     }
     return numRecords;
 }
