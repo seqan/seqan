@@ -654,6 +654,22 @@ class ProcThrow(object):
     def visitTextNodes(self, visitor):
         """Visit all text nodes using the given visitor."""
         visitor.visit(self.desc)
+        
+
+class ProcDataRace(object):
+    """Documentation of a @datarace entry.
+
+    @ivar raw: The raw version of this ProcDataRace (required for location lookup).
+    @ivar desc: The documentation of the @datarace clause. TextNode.
+    """
+
+    def __init__(self, raw):
+        self.raw = raw
+        self.desc = TextNode()
+
+    def visitTextNodes(self, visitor):
+        """Visit all text nodes using the given visitor."""
+        visitor.visit(self.desc)
 
 
 class ProcFunction(ProcCodeEntry):
@@ -664,6 +680,7 @@ class ProcFunction(ProcCodeEntry):
     @ivar tparams:
     @ivar returns:
     @ivar throws: List of ProcThrow objects.
+    @ivar dataraces: List of ProcDataRace objects.
     """
 
     def __init__(self, raw, name, brief=None, body=None, sees=[]):
@@ -672,6 +689,7 @@ class ProcFunction(ProcCodeEntry):
         self.tparams = []
         self.returns = []
         self.throws = []
+        self.dataraces = []
 
     @property
     def kind(self):
@@ -703,6 +721,8 @@ class ProcFunction(ProcCodeEntry):
             p.visitTextNodes(visitor)
         for t in self.throws:
             t.visitTextNodes(visitor)
+        for d in self.dataraces:
+            d.visitTextNodes(visitor)
         
     def addParam(self, p):
         self.params.append(p)
@@ -715,6 +735,9 @@ class ProcFunction(ProcCodeEntry):
 
     def addThrow(self, t):
         self.throws.append(t)
+    
+    def addDataRace(self, t):
+        self.dataraces.append(t)
 
 
 class ProcMacro(ProcCodeEntry):
@@ -724,6 +747,7 @@ class ProcMacro(ProcCodeEntry):
                   concepts.
     @ivar returns: Name displayed for return type.
     @ivar throws: List of ProcThrow objects.
+    @ivar throws: List of ProcDataRace objects.
     """
 
     def __init__(self, raw, name, brief=None, body=None, sees=[]):
@@ -731,6 +755,7 @@ class ProcMacro(ProcCodeEntry):
         self.params = []
         self.returns = []
         self.throws = []
+        self.dataraces = []
 
     @property
     def local_name(self):
@@ -756,6 +781,8 @@ class ProcMacro(ProcCodeEntry):
             p.visitTextNodes(visitor)
         for t in self.throws:
             t.visitTextNodes(visitor)
+        for d in self.dataraces:
+            d.visitTextNodes(visitor)
 
     def addParam(self, p):
         self.params.append(p)
@@ -765,6 +792,9 @@ class ProcMacro(ProcCodeEntry):
 
     def addThrow(self, t):
         self.throws.append(t)
+        
+    def addDataRace(self, d):
+        self.dataraces.append(d)
 
 
 class ProcMetafunction(ProcCodeEntry):
@@ -1352,6 +1382,10 @@ class FunctionConverter(CodeEntryConverter):
             proc_throw.type = t.name.text
             proc_throw.desc = self.rawTextToTextNode(t.text)
             function.addThrow(proc_throw)
+        for d in raw_entry.dataraces:
+            proc_datarace = ProcDataRace(d)
+            proc_datarace.desc = self.rawTextToTextNode(d.text) 
+            function.addDataRace(proc_datarace)
         return function
 
 
@@ -1385,6 +1419,10 @@ class MacroConverter(CodeEntryConverter):
             proc_throw.type = t.name.text
             proc_throw.desc = self.rawTextToTextNode(t.text)
             macro.addThrow(proc_throw)
+        for d in raw_entry.dataraces:
+            proc_datarace = ProcDataRace(d)
+            proc_datarace.desc = self.rawTextToTextNode(d.text) 
+            macro.addDataRace(proc_datarace)
         return macro
 
 

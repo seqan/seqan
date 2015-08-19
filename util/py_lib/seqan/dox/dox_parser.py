@@ -363,7 +363,7 @@ class ReturnState(ParamState):
 class ThrowState(ParamState):
     """Handler used in *DocState for handling @throw clauses.
     
-    Stores return type in self.name (member variable inherited from
+    Stores throw type in self.name (member variable inherited from
     ParamState).  Sorry for any confusion.  The flag self.type_read
     is used for storing whether the type has been read.
     """
@@ -381,6 +381,17 @@ class ThrowState(ParamState):
                 self.type_read = True
             elif self.name or token.type not in dox_tokens.WHITESPACE:
                 self.name.append(token)
+
+class DataRaceState(GenericSimpleClauseState):
+    """Handler used in *DocState for handling @datarace clauses.
+        
+       Inherits from GenericSimpleClauseState.
+    """
+
+    def __init__(self, parser, parent):
+        GenericSimpleClauseState.__init__(self, parser, parent)
+        self.entry_class = raw_doc.RawDataRace
+        self.type_read = False
 
 
 class SectionState(object):
@@ -619,6 +630,7 @@ class GenericDocState(object):
                              'COMMAND_SEE' : SeeState(self.parser, self),
                              'COMMAND_RETURN' : ReturnState(self.parser, self),
                              'COMMAND_THROW' : ThrowState(self.parser, self),
+                             'COMMAND_DATARACE' : DataRaceState(self.parser, self),
                              'COMMAND_PARAM' : ParamState(self.parser, self),
                              'COMMAND_TPARAM' : TParamState(self.parser, self),
                              'COMMAND_SECTION' : SectionState(self.parser, self),
@@ -667,6 +679,8 @@ class GenericDocState(object):
                 self.entry.addReturn(entry)
             elif entry.getType() == 'throw':
                 self.entry.addThrow(entry)
+            elif entry.getType() == 'datarace':
+                self.entry.addDataRace(entry)
             elif entry.getType() == 'extends':
                 self.entry.addExtends(entry)
             elif entry.getType() == 'implements':
@@ -713,9 +727,9 @@ class FunctionDocState(GenericDocState):
                                      'COMMAND_PARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_RETURN',
-                                     'COMMAND_THROW', 'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED',
-                                     'COMMAND_NOTE', 'COMMAND_WARNING', 'COMMAND_AKA',
-                                     'COMMAND_INTERNAL'])
+                                     'COMMAND_THROW', 'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 
+                                     'COMMAND_NOTE', 'COMMAND_WARNING', 'COMMAND_AKA', 
+                                     'COMMAND_INTERNAL', 'COMMAND_DATARACE'])
 
 
 class MacroDocState(GenericDocState):
@@ -729,7 +743,7 @@ class MacroDocState(GenericDocState):
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_RETURN',
                                      'COMMAND_THROW', 'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED',
                                      'COMMAND_NOTE', 'COMMAND_WARNING', 'COMMAND_AKA',
-                                     'COMMAND_INTERNAL'])
+                                     'COMMAND_INTERNAL', 'COMMAND_DATARACE'])
 
 
 class MetafunctionDocState(GenericDocState):

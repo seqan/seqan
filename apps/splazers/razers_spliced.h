@@ -777,7 +777,7 @@ extendMatch(TReadSet &readSet, TSize rseqNo, TInf & inf, TMatch &m, TOptions &op
 
     TQueryPrefix queryPrefix = prefix(readSet[rseqNo], beginPositionH(seed));
     TDatabasePrefix databasePrefix = prefix(inf, beginPositionV(seed));
-    extScore = _extendSeedGappedXDropOneDirection(seed, queryPrefix, databasePrefix, EXTEND_LEFT, scoreMatrix, scoreDropOff);
+    extScore = _extendSeedGappedXDropOneDirection(seed, databasePrefix, queryPrefix, EXTEND_LEFT, scoreMatrix, scoreDropOff);
     
 //	m.gBegin = leftDim1(seed) + beginPosition(inf);
 //	m.mScore = rightDim0(seed) - leftDim0(seed) + 1;
@@ -839,7 +839,7 @@ extendMatch(TReadSet &readSet, TSize rseqNo, TInf & inf, TMatch &m, TOptions &op
 
     TQuerySuffix querySuffix = suffix(readSet[rseqNo], endPositionH(seed));
     TDatabaseSuffix databaseSuffix = suffix(inf, endPositionV(seed));
-    extScore = _extendSeedGappedXDropOneDirection(seed, querySuffix, databaseSuffix, EXTEND_RIGHT, scoreMatrix, scoreDropOff);
+    extScore = _extendSeedGappedXDropOneDirection(seed, databaseSuffix, querySuffix, EXTEND_RIGHT, scoreMatrix, scoreDropOff);
 
 
 	//extendSeedScore(seed,extScore,scoreDropOff,scoreMatrix, readSet[rseqNo],inf,1,GappedXDrop());
