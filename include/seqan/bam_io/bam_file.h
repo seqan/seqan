@@ -247,9 +247,9 @@ inline SEQAN_FUNC_ENABLE_IF(And<IsSameType<typename Value<TRecords>::Type, BamAl
 readRecords(TRecords & records, FormattedFile<Bam, Input, TSpec> & file, TSize maxRecords)
 {
     String<CharString> & buffers = context(file).buffers;
-    if ((TSize)length(buffers) < maxRecords)
+    if (static_cast<TSize>(length(buffers)) < maxRecords)
         resize(buffers, maxRecords, Exact());
-    if ((TSize)length(records) < maxRecords)
+    if (static_cast<TSize>(length(records)) < maxRecords)
         resize(records, maxRecords, Exact());
 
 
