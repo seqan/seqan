@@ -46,6 +46,7 @@
 
 #include <seqan/align.h>
 #include <seqan/find.h>
+#include "helper_function"
 
 using namespace seqan;
 
