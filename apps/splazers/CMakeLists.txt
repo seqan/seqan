@@ -20,6 +20,11 @@ set (SEQAN_APP_VERSION "1.2")
 set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
+if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
+    message (STATUS "  Not building splazers on 32bit architectures.")
+    return ()
+endif()
+
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------
