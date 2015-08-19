@@ -214,7 +214,8 @@ if (MSVC)
   # TODO(holtgrew): This rather belongs into the SeqAn build system and notso much into FindSeqAn.cmake.
 
   # Force to always compile with W2.
-  add_definitions (/W2)
+  # add_definitions (/W2)
+  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W2")
 
   # Disable warnings about unsecure (although standard) functions.
   add_definitions (-D_SCL_SECURE_NO_WARNINGS)
