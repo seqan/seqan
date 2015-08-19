@@ -64,6 +64,7 @@ add_library (seqan_flexlib
              read_trimming.h
              adapter_trimming.h
              general_processing.h
+			 helper_functions.h
              seqan_flexbar.h
              seqan_flexlib.cpp)
 target_link_libraries (seqan_flexlib ${SEQAN_LIBRARIES})

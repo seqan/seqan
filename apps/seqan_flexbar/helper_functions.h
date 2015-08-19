@@ -54,4 +54,4 @@ void insertAfterFirstToken(TDest& dest, TSource&& source)
         }
 }
 
-#endif HELPERFUNCTIONS_H_
+#endif // HELPERFUNCTIONS_H_
