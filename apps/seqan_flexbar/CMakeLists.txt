@@ -28,12 +28,18 @@ endif (NOT CXX11_FOUND)
 set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB BZip2)
 find_package (SeqAn REQUIRED)
 
+find_package(Boost 1.36.0)
+if(NOT Boost_FOUND)
+    message (STATUS "  flexbar cannot be built without Boost.")
+    return ()
+endif()
+
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------
 
 # Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS})
+include_directories (${SEQAN_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
 # Add definitions set by find_package (SeqAn).
 add_definitions (${SEQAN_DEFINITIONS})
