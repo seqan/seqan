@@ -218,7 +218,7 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10_modview_fmindex)
     indexRequire(index, FibreSALF());         // instantiate
 
     // actual search is only done if lambdas are available
-#ifdef SEQAN_CXX11_STANDARD
+#if defined(SEQAN_CXX11_STANDARD) && (!_MSC_VER || _MSC_VER >= 1700)
     typedef typename Iterator<Index<TModSet, TFMIndex>, TopDown<>>::Type TIndexIt;
 
     std::vector<std::pair<uint64_t, uint64_t>> hits;

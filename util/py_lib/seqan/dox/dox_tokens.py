@@ -26,7 +26,7 @@ CLAUSE_STARTING = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_SEE', 'COMM
                        'COMMAND_SECTION', 'COMMAND_SUBSECTION', 'COMMAND_INCLUDE',
                        'COMMAND_EXTENDS', 'COMMAND_IMPLEMENTS', 'COMMAND_SNIPPET',
                        'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
-                       'COMMAND_INTERNAL', 'COMMAND_AKA', 'COMMAND_HTMLONLY'])
+                       'COMMAND_INTERNAL', 'COMMAND_AKA', 'COMMAND_HTMLONLY', 'COMMAND_DATARACE'])
 NON_PARAGRAPH = set(['COMMAND_ENDCODE', 'COMMAND_ENDHTMONLY'])
 LINE_BREAKS = set(['BREAK', 'EMPTYLINE'])
 
@@ -61,6 +61,7 @@ LEXER_TOKENS = (
     ('COMMAND_SEE',          r'@see'),
     ('COMMAND_RETURN',       r'@return'),
     ('COMMAND_THROW',        r'@throw'),
+    ('COMMAND_DATARACE',     r'@datarace'),
     ('COMMAND_PARAM',        r'@param'),
     ('COMMAND_TPARAM',       r'@tparam'),
     ('COMMAND_SECTION',      r'@section'),

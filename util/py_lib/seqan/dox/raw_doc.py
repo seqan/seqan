@@ -559,6 +559,7 @@ class RawFunction(RawCodeEntry):
     @ivar params List of RawParameter objects.
     @ivar returns List of RawReturn objects.
     @ivar throw List of RawThrow objects.
+    @ivar datarace List of RawDataRace objects. 
     """
     
     def __init__(self, first_token, briefs=[]):
@@ -567,6 +568,7 @@ class RawFunction(RawCodeEntry):
         self.params = []
         self.returns = []
         self.throws = []
+        self.dataraces = []
 
     def addTParam(self, p):
         self.tparams.append(p)
@@ -579,6 +581,9 @@ class RawFunction(RawCodeEntry):
 
     def addThrow(self, t):
         self.throws.append(t)
+        
+    def addDataRace(self, d):
+        self.dataraces.append(d)
 
     def getType(self):
         if '#' in self.name.text:
@@ -628,6 +633,10 @@ class RawFunction(RawCodeEntry):
             res.append('\n')
         for x in self.throws:
             res.append(x.getFormatted(formatter))
+        if self.dataraces:
+            res.append('\n')
+        for x in self.dataraces:
+            res.append(x.getFormatted(formatter))
         if not self.body.empty:
             res.append('\n')
         res += self.body.getFormatted(formatter)
@@ -653,6 +662,7 @@ class RawMacro(RawCodeEntry):
     @ivar params List of RawParameter objects.
     @ivar returns List of RawReturn objects.
     @ivar throws List of RawThrow objects.
+    @ivar dataraces List of RawDataRace objects.
     """
     
     def __init__(self, first_token, briefs=[]):
@@ -660,6 +670,7 @@ class RawMacro(RawCodeEntry):
         self.params = []
         self.returns = []
         self.throws = []
+        self.dataraces = []
 
     def addParam(self, p):
         self.params.append(p)
@@ -669,6 +680,9 @@ class RawMacro(RawCodeEntry):
 
     def addThrow(self, t):
         self.throws.append(t)
+    
+    def addDataRace(self, d):
+        self.dataraces.append(d)
 
     def getType(self):
         if '#' in self.name.text:
@@ -711,6 +725,10 @@ class RawMacro(RawCodeEntry):
         if self.throws:
             res.append('\n')
         for x in self.throws:
+            res.append(x.getFormatted(formatter))
+        if self.dataraces:
+            res.append('\n')
+        for x in self.dataraces:
             res.append(x.getFormatted(formatter))
         if not self.body.empty:
             res.append('\n')
@@ -1369,6 +1387,23 @@ class RawThrow(RawParam):
 
     def getFormatted(self, formatter):
         return formatter.formatCommand('throw', self.text.text, self.name.text)
+    
+    
+class RawDataRace(object):
+    """RawDoc for one data race description.
+    
+    @ivar text The @datarace clauses's parameter.
+    """
+    
+    def __init__(self, first_token, text=RawText()):
+        self.first_token = first_token
+        self.text = text
+
+    def getType(self):
+        return 'datarace'
+
+    def getFormatted(self, formatter):
+        return formatter.formatCommand('datarace', self.text.text)
 
 
 class RawSignature(object):
