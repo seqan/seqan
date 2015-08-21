@@ -345,7 +345,6 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_mod_pos)
     typedef seqan::String<TPos>                     TPositions;
     typedef seqan::ModPos<TPositions>               TModPos;
     typedef seqan::ModifiedString<TString, TModPos> TModString;
-    typedef seqan::Iterator<TModString, seqan::Standard>::Type  TModIter;
 
     // One level only.
     {
