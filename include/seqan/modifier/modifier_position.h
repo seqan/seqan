@@ -31,6 +31,7 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
+// A Position ModifiedString represents a permutation of the host string.
 
 #ifndef SEQAN_MODIFIER_MODIFIER_POSITION_H_
 #define SEQAN_MODIFIER_MODIFIER_POSITION_H_
@@ -150,30 +151,12 @@ struct Iterator<ModifiedString<THost, ModPos<TPositions> > const, Rooted>
 // ----------------------------------------------------------------------------
 // Metafunction Prefix
 // ----------------------------------------------------------------------------
-
-//template <typename THost, typename TPositions>
-//struct Prefix<ModifiedString<THost, ModPos<TPositions> > >
-//{
-//    typedef ModifiedString<THost, ModPos<TPositions> >    Type;
-//};
-//
-//template <typename THost, typename TPositions>
-//struct Prefix<ModifiedString<THost, ModPos<TPositions> > const> :
-//    Prefix<ModifiedString<THost, ModPos<TPositions> > > {};
+// NOTE(esiragusa): not implemented.
 
 // ----------------------------------------------------------------------------
 // Metafunction Suffix
 // ----------------------------------------------------------------------------
-
-//template <typename THost, typename TPositions>
-//struct Suffix<ModifiedString<THost, ModPos<TPositions> > >
-//{
-//    typedef ModifiedString<THost, ModPos<TPositions> >    Type;
-//};
-//
-//template <typename THost, typename TPositions>
-//struct Suffix<ModifiedString<THost, ModPos<TPositions> > const> :
-//    Suffix<ModifiedString<THost, ModPos<TPositions> > > {};
+// NOTE(esiragusa): not implemented.
 
 // ----------------------------------------------------------------------------
 // Metafunction Infix
@@ -339,62 +322,17 @@ inline void clear(ModifiedString<THost, ModPos<TPositions> > & me)
 // ----------------------------------------------------------------------------
 // Function resize()
 // ----------------------------------------------------------------------------
-// this function doesn't do anything as we are not allowed to change the host (only its elements)
-// it is, however, implemented for algorithms that get a sequence to work on
-// and need to make sure that it has a certain length
-
-//template <typename THost, typename TPositions, typename TSize, typename TValue, typename TExpand>
-//inline typename Size< ModifiedString<THost, ModPos<TPositions> > >::Type
-//resize(ModifiedString<THost, ModPos<TPositions> > & me, TSize new_length, TValue /* val */, Tag<TExpand>)
-//{
-//    ignoreUnusedVariableWarning(new_length);
-//
-//    SEQAN_ASSERT_EQ(new_length, (TSize)length(me));
-//    return length(me);
-//}
-//
-//template <typename THost, typename TPositions, typename TSize, typename TExpand>
-//inline typename Size< ModifiedString<THost, ModPos<TPositions> > >::Type
-//resize(ModifiedString<THost, ModPos<TPositions> > & me, TSize new_length, Tag<TExpand> tag)
-//{
-//    return resize(me, new_length, Nothing(), tag);
-//}
+// NOTE(esiragusa): a dummy implementation like ContainerView could be necessary.
 
 // ----------------------------------------------------------------------------
 // Function prefix()
 // ----------------------------------------------------------------------------
-
-//template <typename THost, typename TPositions, typename TPosEnd>
-//inline typename Prefix<ModifiedString<THost, ModPos<TPositions> > const>::Type
-//prefix(ModifiedString<THost, ModPos<TPositions> > const & me, TPosEnd pos_end)
-//{
-//    return typename Prefix<ModifiedString<THost, ModPos<TPositions> > const>::Type(me._begin, me._begin + pos_end);
-//}
-//
-//template <typename THost, typename TPositions, typename TPosEnd>
-//inline typename Prefix<ModifiedString<THost, ModPos<TPositions> > >::Type
-//prefix(ModifiedString<THost, ModPos<TPositions> > & me, TPosEnd pos_end)
-//{
-//    return prefix(reinterpret_cast<ModifiedString<THost, ModPos<TPositions> > const &>(me), pos_end);
-//}
+// NOTE(esiragusa): not implemented.
 
 // ----------------------------------------------------------------------------
 // Function suffix()
 // ----------------------------------------------------------------------------
-
-//template <typename THost, typename TPositions, typename TPosBegin>
-//inline typename Suffix<ModifiedString<THost, ModPos<TPositions> > const>::Type
-//suffix(ModifiedString<THost, ModPos<TPositions> > const & me, TPosBegin pos_begin)
-//{
-//    return typename Suffix<ModifiedString<THost, ModPos<TPositions> > const>::Type(me._begin + pos_begin, me._end);
-//}
-//
-//template <typename THost, typename TPositions, typename TPosBegin>
-//inline typename Suffix<ModifiedString<THost, ModPos<TPositions> > >::Type
-//suffix(ModifiedString<THost, ModPos<TPositions> > & me, TPosBegin pos_begin)
-//{
-//    return suffix(reinterpret_cast<ModifiedString<THost, ModPos<TPositions> > const &>(me), pos_begin);
-//}
+// NOTE(esiragusa): not implemented.
 
 // ----------------------------------------------------------------------------
 // Function infix()
