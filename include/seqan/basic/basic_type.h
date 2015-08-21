@@ -359,7 +359,7 @@ SEQAN_HOST_DEVICE inline _toParameter(T & _object)
 }
 
 template <typename T>
-typename Parameter_<T>::Type
+typename Parameter_<T const>::Type
 SEQAN_HOST_DEVICE inline _toParameter(T const & _object)
 {
     return _object;
