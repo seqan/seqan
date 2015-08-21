@@ -352,6 +352,8 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_mod_pos)
         TString original = "CGAT";
 
         TModString modified(original);
+        TPositions positions;
+        setCargo(modified, positions);
         SEQAN_ASSERT(empty(modified));
 
         resize(cargo(modified), length(original), 0, seqan::Exact());
