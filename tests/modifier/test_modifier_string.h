@@ -338,6 +338,40 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_mod_view_segment)
     }
 }
 
+SEQAN_DEFINE_TEST(test_modifier_modified_string_mod_pos)
+{
+    typedef seqan::CharString                       TString;
+    typedef seqan::Position<TString>::Type          TPos;
+    typedef seqan::String<TPos>                     TPositions;
+    typedef seqan::ModPos<TPositions>               TModPos;
+    typedef seqan::ModifiedString<TString, TModPos> TModString;
+    typedef seqan::Iterator<TModString, seqan::Standard>::Type  TModIter;
+
+    // One level only.
+    {
+        TString original = "CGAT";
+
+        TModString modified(original);
+        SEQAN_ASSERT(empty(modified));
+
+        resize(cargo(modified), length(original), 0, seqan::Exact());
+        SEQAN_ASSERT_EQ(modified, "CCCC");
+
+        assign(cargo(modified), seqan::Range<TPos>(0, length(original)));
+        SEQAN_ASSERT_EQ(original, modified);
+
+        reverse(cargo(modified));
+        SEQAN_ASSERT_EQ(modified, "TAGC");
+
+        seqan::sort(modified);
+        SEQAN_ASSERT_EQ(original, "CGAT");
+        SEQAN_ASSERT_EQ(modified, "ACGT");
+
+        SEQAN_ASSERT_EQ(infix(modified, 1, 3), "CG");
+    }
+}
+
+
 SEQAN_DEFINE_TEST(test_modifier_modified_string_literal)
 {
     // Host a literal.

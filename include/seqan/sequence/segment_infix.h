@@ -623,6 +623,14 @@ SEQAN_CHECKPOINT
 }
 
 template <typename T, typename TPosBegin, typename TPosEnd>
+SEQAN_HOST_DEVICE inline typename Infix<T const>::Type
+infix(T const & t, TPosBegin pos_begin, TPosEnd pos_end)
+{
+SEQAN_CHECKPOINT
+    return typename Infix<T const>::Type(t, pos_begin, pos_end);
+}
+
+template <typename T, typename TPosBegin, typename TPosEnd>
 inline typename Infix<T *>::Type
 infix(T * t, TPosBegin pos_begin, TPosEnd pos_end)
 {
@@ -684,7 +692,7 @@ SEQAN_CHECKPOINT
 
 template <typename T, typename TPosBegin, typename TSize>
 SEQAN_HOST_DEVICE inline typename Infix<T>::Type
-infixWithLength(T & t, TPosBegin pos_begin, TSize length)
+infixWithLength(T SEQAN_FORWARD_ARG t, TPosBegin pos_begin, TSize length)
 {
 SEQAN_CHECKPOINT
     return infix(t, pos_begin, pos_begin + length);
