@@ -342,6 +342,52 @@ countIf(TContainer const & c, TUnaryPredicate p, Tag<TParallelTag> const & /* ta
 }
 
 // ----------------------------------------------------------------------------
+// Function removeIf()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TUnaryPredicate, typename TParallelTag>
+inline void
+removeIf(TContainer & c, TUnaryPredicate p, Tag<TParallelTag> const & /* tag */)
+{
+    typename Iterator<TContainer, Standard>::Type newEnd = std::remove_if(begin(c, Standard()), end(c, Standard()), p);
+    resize(c, position(newEnd, c), Exact());
+}
+
+// ----------------------------------------------------------------------------
+// Function accumulate()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TValue, typename TParallelTag>
+inline typename Value<TContainer>::Type
+accumulate(TContainer const & c, TValue const & v, Tag<TParallelTag> const & /* tag */)
+{
+    return std::accumulate(begin(c, Standard()), end(c, Standard()), v);
+}
+
+// ----------------------------------------------------------------------------
+// Function innerProduct()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TValue, typename TParallelTag>
+inline typename Value<TContainer>::Type
+innerProduct(TContainer const & c, TValue const & v, Tag<TParallelTag> const & /* tag */)
+{
+    return std::inner_product(begin(c, Standard()), end(c, Standard()), begin(c, Standard()), v);
+}
+
+// ----------------------------------------------------------------------------
+// Function nthElement()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TPosition, typename TParallelTag>
+inline typename Value<TContainer>::Type
+nthElement(TContainer & c, TPosition p, Tag<TParallelTag> const & /* tag */)
+{
+    std::nth_element(begin(c, Standard()), begin(c, Standard()) + p, end(c, Standard()));
+    return getValue(c, p);
+}
+
+// ----------------------------------------------------------------------------
 // Function maxElement()
 // ----------------------------------------------------------------------------
 
@@ -477,6 +523,52 @@ inline typename Difference<TContainer>::Type
 countIf(TContainer const & c, TUnaryPredicate p, Parallel)
 {
     return __gnu_parallel::count_if(begin(c, Standard()), end(c, Standard()), p);
+}
+
+// ----------------------------------------------------------------------------
+// Function removeIf(Parallel)
+// ----------------------------------------------------------------------------
+
+//template <typename TContainer, typename TUnaryPredicate>
+//inline void
+//removeIf(TContainer & c, TUnaryPredicate p, Parallel)
+//{
+//    typename Iterator<TContainer, Standard>::Type newEnd = __gnu_parallel::remove_if(begin(c, Standard()), end(c, Standard()), p);
+//    resize(c, position(newEnd, c), Exact());
+//}
+
+// ----------------------------------------------------------------------------
+// Function accumulate(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TValue>
+inline typename Value<TContainer>::Type
+accumulate(TContainer const & c, TValue const & v, Parallel)
+{
+    return __gnu_parallel::accumulate(begin(c, Standard()), end(c, Standard()), v);
+}
+
+// ----------------------------------------------------------------------------
+// Function innerProduct(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TValue>
+inline typename Value<TContainer>::Type
+innerProduct(TContainer const & c, TValue const & v, Parallel)
+{
+    return __gnu_parallel::inner_product(begin(c, Standard()), end(c, Standard()), begin(c, Standard()), v);
+}
+
+// ----------------------------------------------------------------------------
+// Function nthElement(Parallel)
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TPosition>
+inline typename Value<TContainer>::Type
+nthElement(TContainer & c, TPosition p, Parallel)
+{
+    __gnu_parallel::nth_element(begin(c, Standard()), begin(c, Standard()) + p, end(c, Standard()));
+    return getValue(c, p);
 }
 
 // ----------------------------------------------------------------------------
@@ -631,6 +723,50 @@ inline typename Difference<TContainer>::Type
 countIf(TContainer const & c, TUnaryPredicate p)
 {
     return countIf(c, p, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function removeIf()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TUnaryPredicate>
+inline void
+removeIf(TContainer & c, TUnaryPredicate p)
+{
+    removeIf(c, p, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function accumulate()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TValue>
+inline typename Value<TContainer>::Type
+accumulate(TContainer const & c, TValue const & v)
+{
+    return accumulate(c, v, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function innerProduct()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TValue>
+inline typename Value<TContainer>::Type
+innerProduct(TContainer const & c, TValue const & v)
+{
+    return innerProduct(c, v, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function nthElement()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TPosition>
+inline typename Value<TContainer>::Type
+nthElement(TContainer & c, TPosition p)
+{
+    return nthElement(c, p, Serial());
 }
 
 // ----------------------------------------------------------------------------
