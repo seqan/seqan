@@ -1541,7 +1541,7 @@ void printStatistics(ProgramParams& programParams, GeneralStats& generalStats, D
         }
         if (generalStats.removedSeqsShort != 0)
         {
-            std::cout << "  Due to shortness:\t" << dropped - generalStats.removedSeqs << "\t(" 
+            std::cout << "  Due to shortness:\t" << generalStats.removedSeqsShort << "\t(" 
                 << std::setprecision(3) << double(generalStats.removedSeqsShort) / dropped * 100 << "%)\n";
         }
     }
