@@ -93,8 +93,8 @@ public:
     // ------------------------------------------------------------------------
 
     Iter() :
-        TBase(0),
-        data_container(TContainerPointer_(0))
+        TBase(),
+        data_container(TContainerPointer_())
     {}
 
     Iter(typename Parameter_<TContainer>::Type container_, TPosition position_ = 0) :
