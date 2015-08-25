@@ -68,25 +68,23 @@ struct Verifier
 // Class Verifier
 // ----------------------------------------------------------------------------
 
-template <typename THaystack, typename TNeedle, typename TSpec>
-struct Verifier<THaystack, TNeedle, Filter<TSpec> >
+template <typename THaystack, typename TNeedle>
+struct Verifier<THaystack, TNeedle, AffineGaps>
 {
-    typedef typename Infix<THaystack const>::Type           THaystackInfix;
-    typedef Finder<THaystackInfix>                          TFinder;
-    typedef StringSet<TNeedle, Segment<TNeedle> >           TSeedsSet;
-    typedef Pattern<TSeedsSet, TSpec>                       TPattern;
+    typedef typename Infix<THaystack const>::Type   THaystackInfix;
+    typedef String<GapAnchor<int> >                 TGapAnchors;
+    typedef AnchorGaps<TGapAnchors>                 TAnchorGaps;
 
+    // Thread-private data.
+    TGapAnchors contigAnchors;
+    TGapAnchors readAnchors;
+
+    // Shared-memory read-only data.
     THaystack const &   haystack;
-    TFinder             finder;
-    TSeedsSet           seeds;
-    TPattern            pattern;
 
     Verifier(THaystack const & haystack) :
         haystack(haystack)
-    {
-//        _patternMatchNOfPattern(pattern, false);
-//        _patternMatchNOfFinder(pattern, false);
-    }
+    {}
 };
 
 // ----------------------------------------------------------------------------
@@ -96,7 +94,7 @@ struct Verifier<THaystack, TNeedle, Filter<TSpec> >
 template <typename THaystack, typename TNeedle, typename TSpec,
           typename THaystackPos, typename TErrors, typename TDelegate>
 inline void
-verify(Verifier<THaystack, TNeedle, TSpec> & verifier,
+verify(Verifier<THaystack, TNeedle, TSpec> & me,
        TNeedle const & needle,
        THaystackPos haystackBegin,
        THaystackPos haystackEnd,
@@ -106,66 +104,68 @@ verify(Verifier<THaystack, TNeedle, TSpec> & verifier,
     typedef Verifier<THaystack, TNeedle, TSpec>         TVerifier;
     typedef typename TVerifier::THaystackInfix          THaystackInfix;
 
-    THaystackInfix haystackInfix = infix(verifier.haystack, haystackBegin, haystackEnd);
+    THaystackInfix haystackInfix = infix(me.haystack, haystackBegin, haystackEnd);
 
-    clear(verifier.finder);
-    setHost(verifier.finder, haystackInfix);
-    setHost(verifier.pattern, needle);
+    clear(me.finder);
+    setHost(me.finder, haystackInfix);
+    setHost(me.pattern, needle);
 
     // TODO(esiragusa): Enumerate all minima.
-    bool paired = false;
-    while (find(verifier.finder, verifier.pattern, -static_cast<int>(maxErrors)))
-        paired = true;
-
-//    if (paired) delegate(verifier);
-    if (paired) delegate(haystackBegin, haystackEnd, maxErrors);
+    if (find(me.finder, me.pattern, -static_cast<int>(maxErrors)))
+        delegate(haystackBegin, haystackEnd, maxErrors);
 }
 
 // ----------------------------------------------------------------------------
 // Function verify()
 // ----------------------------------------------------------------------------
 
-template <typename THaystack, typename TNeedle, typename TSpec,
+template <typename THaystack, typename TNeedle,
           typename THaystackPos, typename TErrors, typename TDelegate>
 inline void
-verify(Verifier<THaystack, TNeedle, Filter<TSpec> > & verifier,
-       TNeedle & needle,
+verify(Verifier<THaystack, TNeedle, AffineGaps> & me,
+       TNeedle const & needle,
        THaystackPos haystackBegin,
        THaystackPos haystackEnd,
        TErrors maxErrors,
        TDelegate & delegate)
 {
-    typedef Verifier<THaystack, TNeedle, TSpec>         TVerifier;
+    typedef Verifier<THaystack, TNeedle, AffineGaps>    TVerifier;
     typedef typename TVerifier::THaystackInfix          THaystackInfix;
-    typedef typename Size<TNeedle>::Type                TNeedleSize;
-    typedef uint64_t                                    TWord;
+    typedef typename TVerifier::TAnchorGaps             TAnchorGaps;
+    typedef Gaps<THaystackInfix, TAnchorGaps>           TContigGaps;
+    typedef Gaps<TNeedle const, TAnchorGaps>            TReadGaps;
+    typedef typename Size<THaystack>::Type              TCount;
 
-    TNeedleSize seedsCount = maxErrors + 1;
-    TNeedleSize seedLength = BitsPerValue<TWord>::VALUE / seedsCount;
-//    TNeedleSize needleLength = length(needle);
-//    TNeedleSize seedLength = needleLength / seedsCount;
+    THaystackInfix haystackInfix = infix(me.haystack, haystackBegin, haystackEnd);
 
-    clear(verifier.seeds);
-    reserve(verifier.seeds, seedsCount, Exact());
-    setHost(verifier.seeds, needle);
+    clear(me.contigAnchors);
+    clear(me.readAnchors);
+    TContigGaps contigGaps(haystackInfix, me.contigAnchors);
+    TReadGaps readGaps(needle, me.readAnchors);
 
-    for (TNeedleSize seedId = 0; seedId < seedsCount; ++seedId)
-        appendInfixWithLength(verifier.seeds, seedId * seedLength, seedLength, Exact());
+    int errors = globalAlignment(contigGaps, readGaps,
+                                 Score<int>(0, -1000, -999, -1001),           // Match, mismatch, extend, open.
+                                 AlignConfig<true, false, false, true>(),     // Top, left, right, bottom.
+                                 Gotoh()) / -999;
 
-    THaystackInfix haystackInfix = infix(verifier.haystack, haystackBegin, haystackEnd);
+    clipSemiGlobal(contigGaps, readGaps);
 
-    clear(verifier.finder);
-    setHost(verifier.finder, haystackInfix);
-    setHost(verifier.pattern, verifier.seeds);
+    TCount gapOpens = countGapOpens(contigGaps) + countGapOpens(readGaps);
+    TCount gapExtensions = countGapExtensions(contigGaps) + countGapExtensions(readGaps);
+    TCount events = errors + gapOpens - gapExtensions;
 
+    if (events <= maxErrors)
+    {
+        // DEBUG
+//        std::cerr << std::endl;
+//        std::cerr << events << " = " << errors << " + " << gapOpens << " - " << gapExtensions << std::endl;
+//        std::cerr << std::endl;
+//        _writeAlignment(haystackInfix, needle, Score<int>(0, -1000, -999, -1001));
 
-    // TODO(esiragusa): Enumerate all minima.
-    bool paired = false;
-    while (find(verifier.finder, verifier.pattern))
-        paired = true;
-
-//    if (paired) delegate(verifier);
-    if (paired) delegate(haystackBegin, haystackEnd, maxErrors);
+        THaystackPos matchBegin = posAdd(haystackBegin, clippedBeginPosition(readGaps));
+        THaystackPos matchEnd = posAdd(matchBegin, length(readGaps));
+        delegate(matchBegin, matchEnd, errors);
+    }
 }
 
 #endif  // #ifndef APP_YARA_FIND_VERIFIER_H_

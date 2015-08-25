@@ -694,12 +694,12 @@ inline unsigned long countHits(Mapper<TSpec, TConfig> const & me)
 template <unsigned ERRORS, typename TSpec, typename TConfig, typename TBucketId>
 inline void extendHits(Mapper<TSpec, TConfig> & me, TBucketId bucketId)
 {
-    typedef MapperTraits<TSpec, TConfig>    TTraits;
-    typedef HitsExtender<TSpec, TTraits>    THitsExtender;
-
-    typename TTraits::TMatchesAppender appender(me.matchesByCoord);
+    typedef MapperTraits<TSpec, TConfig>        TTraits;
+    typedef HitsExtender<TSpec, TTraits>        THitsExtender;
+    typedef typename TTraits::TMatchesAppender  TMatchesAppender;
 
     start(me.timer);
+    TMatchesAppender appender(me.matchesByCoord);
     THitsExtender extender(me.ctx, appender, me.contigs.seqs,
                            me.seeds[bucketId], me.hits[bucketId], me.ranks[bucketId], ERRORS,
                            indexSA(me.index), me.options);
@@ -758,41 +758,6 @@ inline void aggregateMatches(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs)
         std::cerr << "Matches count:\t\t\t" << lengthSum(me.matchesSetByCoord) << std::endl;
     }
 }
-
-// ----------------------------------------------------------------------------
-// Function verifyMatches()
-// ----------------------------------------------------------------------------
-// Verifies all mates in within the insert window of their matches.
-
-//template <typename TSpec, typename TConfig, typename TReadSeqs>
-//inline void verifyMatches(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs)
-//{
-//    _verifyMatchesImpl(me, readSeqs, typename TConfig::TAnchoring());
-//}
-//
-//template <typename TSpec, typename TConfig, typename TReadSeqs, typename TAnchoring>
-//inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & /* me */, TReadSeqs & /* readSeqs */, TAnchoring) {}
-//
-//template <typename TSpec, typename TConfig, typename TReadSeqs>
-//inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, AnchorOne)
-//{
-//    typedef MapperTraits<TSpec, TConfig>    TTraits;
-//    typedef AnchorsVerifier<TSpec, TTraits> TMatchesVerifier;
-//
-//    start(me.timer);
-//    TMatchesVerifier verifier(me.ctx, me.pairs,
-//                              me.contigs.seqs, readSeqs,
-//                              me.matchesSetByCoord, me.options);
-//    stop(me.timer);
-//
-//    if (me.options.verbose > 1)
-//    {
-//        std::cerr << "Verification time:\t\t" << me.timer << std::endl;
-//        std::cerr << "Mates count:\t\t\t" << length(me.pairs) << std::endl;
-//        std::cerr << "Mapped pairs:\t\t\t" <<
-//                countMappedReads(readSeqs, me.pairs, typename TConfig::TThreading()) << std::endl;
-//    }
-//}
 
 // ----------------------------------------------------------------------------
 // Function clearMatches()
@@ -935,6 +900,8 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     },
     typename TTraits::TThreading());
 
+    if (empty(libraryLengths)) return;
+
     // Remove library outliers > 6 * median.
     unsigned libraryMedian = nthElement(libraryLengths, length(libraryLengths) / 2, typename TTraits::TThreading());
     removeIf(libraryLengths, std::bind2nd(std::greater<unsigned>(), 6.0 * libraryMedian), typename TTraits::TThreading());
@@ -1051,6 +1018,39 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
 }
 
 // ----------------------------------------------------------------------------
+// Function verifyMatches()
+// ----------------------------------------------------------------------------
+// Verifies all mates in within the insert window of their matches.
+
+template <typename TSpec, typename TConfig>
+inline void verifyMatches(Mapper<TSpec, TConfig> & me)
+{
+    _verifyMatchesImpl(me, typename TConfig::TSequencing());
+}
+
+template <typename TSpec, typename TConfig, typename TSequencing>
+inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & /* me */, TSequencing) {}
+
+template <typename TSpec, typename TConfig>
+inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
+{
+    typedef MapperTraits<TSpec, TConfig>                    TTraits;
+    typedef AnchorsVerifier<TSpec, TTraits>                 TMatchesVerifier;
+    typedef typename TTraits::TMatchesAppender              TMatchesAppender;
+    typedef typename TTraits::TMatchesSet                   TMatchesSet;
+    typedef typename Value<TMatchesSet const>::Type         TMatchesSetValue;
+
+    auto anchorsCount = length(me.matchesByCoord);
+    start(me.timer);
+    TMatchesAppender appender(me.matchesByCoord);
+    TMatchesVerifier verifier(me.ctx, appender,
+                              me.contigs.seqs, me.reads.seqs,
+                              me.optimalMatchesSet, me.options);
+    stop(me.timer);
+    std::cerr << "Rescued mates:\t\t\t" << length(me.matchesByCoord) - anchorsCount << std::endl;
+}
+
+// ----------------------------------------------------------------------------
 // Function alignMatches()
 // ----------------------------------------------------------------------------
 
@@ -1150,8 +1150,8 @@ inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, All
     clearSeeds(me);
     clearHits(me);
     aggregateMatches(me, readSeqs);
-//    verifyMatches(me, readSeqs);
     rankMatches(me, readSeqs);
+    verifyMatches(me);
     alignMatches(me);
     writeMatches(me);
     clearMatches(me);
@@ -1208,8 +1208,8 @@ inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, Str
     }
 
     aggregateMatches(me, readSeqs);
-//    verifyMatches(me, readSeqs);
     rankMatches(me, readSeqs);
+    verifyMatches(me);
     alignMatches(me);
     writeMatches(me);
     clearMatches(me);
