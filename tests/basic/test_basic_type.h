@@ -475,22 +475,6 @@ SEQAN_DEFINE_TEST(seqan_basic_type_to_parameter)
     SEQAN_ASSERT_EQ(*p4, 99);
 }
 
-SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_const_parameter)
-{
-    bool b = IsSameType<ConstParameter_<int>::Type, int const &>::Type::VALUE;
-    SEQAN_ASSERT(b);
-    b = IsSameType<ConstParameter_<int const>::Type, int const &>::Type::VALUE;
-    SEQAN_ASSERT(b);
-    b = IsSameType<ConstParameter_<int *>::Type, int const *>::Type::VALUE;
-    SEQAN_ASSERT(b);
-    b = IsSameType<ConstParameter_<int const *>::Type, int const *>::Type::VALUE;
-    SEQAN_ASSERT(b);
-    b = IsSameType<ConstParameter_<int [5]>::Type, int const *>::Type::VALUE;
-    SEQAN_ASSERT(b);
-    b = IsSameType<ConstParameter_<int const [5]>::Type, int const *>::Type::VALUE;
-    SEQAN_ASSERT(b);
-}
-
 namespace seqan {
 
 template <>

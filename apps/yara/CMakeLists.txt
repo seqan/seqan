@@ -52,7 +52,7 @@ endif (NOT SEQAN_HAS_BZIP2)
 # App-Level Configuration
 # ----------------------------------------------------------------------------
 
-set (SEQAN_APP_VERSION "0.9.3")
+set (SEQAN_APP_VERSION "0.9.4")
 
 option (YARA_LARGE_CONTIGS "Set to ON to enable support for more than 32k contigs or contigs longer than 4Gbp." OFF)
 if (YARA_LARGE_CONTIGS)
@@ -123,7 +123,6 @@ add_executable(yara_mapper    mapper.cpp
                               mapper_filter.h
                               mapper_extender.h
                               mapper_verifier.h
-                              mapper_selector.h
                               mapper_aligner.h
                               mapper_writer.h
                               basic_alphabet.h
