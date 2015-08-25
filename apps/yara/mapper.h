@@ -231,6 +231,7 @@ struct Stats
     unsigned long loadedReads;
     unsigned long mappedReads;
     unsigned long pairedReads;
+    unsigned long rescuedReads;
 
     Stats() :
         loadContigs(0),
@@ -248,7 +249,8 @@ struct Stats
         writeMatches(0),
         loadedReads(0),
         mappedReads(0),
-        pairedReads(0)
+        pairedReads(0),
+        rescuedReads(0)
     {}
 };
 
@@ -1049,10 +1051,14 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
     stop(me.timer);
     me.stats.verifyMatches += getValue(me.timer);
 
+    if (me.options.verbose > 0)
+    {
+        me.stats.rescuedReads += length(me.matchesByCoord) - anchorsCount;
+    }
     if (me.options.verbose > 1)
     {
-        std::cerr << "Rescued mates:\t\t\t" << length(me.matchesByCoord) - anchorsCount << std::endl;
-        std::cerr << "Verification time:\t\t\t" << me.timer << std::endl;
+        std::cerr << "Rescued reads:\t\t\t" << length(me.matchesByCoord) - anchorsCount << std::endl;
+        std::cerr << "Verification time:\t\t" << me.timer << std::endl;
     }
 }
 
