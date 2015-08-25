@@ -74,10 +74,19 @@ struct Verifier<THaystack, TNeedle, AffineGaps>
     typedef typename Infix<THaystack const>::Type   THaystackInfix;
     typedef String<GapAnchor<int> >                 TGapAnchors;
     typedef AnchorGaps<TGapAnchors>                 TAnchorGaps;
+    typedef typename Size<THaystackInfix>::Type     TSize;
+    typedef typename Position<THaystackInfix>::Type TPosition;
+    typedef TraceSegment_<TPosition, TSize>         TTraceSegment;
+    typedef String<TTraceSegment>                   TTrace;
+    typedef DPScoutState_<Default>                  TDPState;
+    typedef DPContext<int, AffineGaps>              TDPContext;
 
     // Thread-private data.
-    TGapAnchors contigAnchors;
-    TGapAnchors readAnchors;
+    TGapAnchors     contigAnchors;
+    TGapAnchors     readAnchors;
+    TTrace          traceSegments;
+    TDPState        dpScoutState;
+    TDPContext      dpContext;
 
     // Shared-memory read-only data.
     THaystack const &   haystack;
@@ -136,6 +145,10 @@ verify(Verifier<THaystack, TNeedle, AffineGaps> & me,
     typedef Gaps<TNeedle const, TAnchorGaps>            TReadGaps;
     typedef typename Size<THaystack>::Type              TCount;
 
+    typedef AlignConfig<true, false, false, true>                       TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type         TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
+
     THaystackInfix haystackInfix = infix(me.haystack, haystackBegin, haystackEnd);
 
     clear(me.contigAnchors);
@@ -143,10 +156,20 @@ verify(Verifier<THaystack, TNeedle, AffineGaps> & me,
     TContigGaps contigGaps(haystackInfix, me.contigAnchors);
     TReadGaps readGaps(needle, me.readAnchors);
 
-    int errors = globalAlignment(contigGaps, readGaps,
-                                 Score<int>(0, -1000, -999, -1001),           // Match, mismatch, extend, open.
-                                 AlignConfig<true, false, false, true>(),     // Top, left, right, bottom.
-                                 Gotoh()) / -999;
+    clear(me.traceSegments);
+    int errors = _setUpAndRunAlignment(me.dpContext,
+                                       me.traceSegments,
+                                       me.dpScoutState,
+                                       source(contigGaps),
+                                       source(readGaps),
+                                       Score<int>(0, -1000, -999, -1001),
+                                       TAlignConfig2()) / -999;
+    _adaptTraceSegmentsTo(contigGaps, readGaps, me.traceSegments);
+
+//    int errors = globalAlignment(contigGaps, readGaps,
+//                                 Score<int>(0, -1000, -999, -1001),           // Match, mismatch, extend, open.
+//                                 AlignConfig<true, false, false, true>(),     // Top, left, right, bottom.
+//                                 Gotoh()) / -999;
 
     clipSemiGlobal(contigGaps, readGaps);
 
