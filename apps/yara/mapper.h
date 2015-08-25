@@ -224,6 +224,7 @@ struct Stats
     TValue sortMatches;
     TValue compactMatches;
     TValue selectPairs;
+    TValue verifyMatches;
     TValue alignMatches;
     TValue writeMatches;
 
@@ -242,6 +243,7 @@ struct Stats
         sortMatches(0),
         compactMatches(0),
         selectPairs(0),
+        verifyMatches(0),
         alignMatches(0),
         writeMatches(0),
         loadedReads(0),
@@ -1037,8 +1039,6 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
     typedef MapperTraits<TSpec, TConfig>                    TTraits;
     typedef AnchorsVerifier<TSpec, TTraits>                 TMatchesVerifier;
     typedef typename TTraits::TMatchesAppender              TMatchesAppender;
-    typedef typename TTraits::TMatchesSet                   TMatchesSet;
-    typedef typename Value<TMatchesSet const>::Type         TMatchesSetValue;
 
     auto anchorsCount = length(me.matchesByCoord);
     start(me.timer);
@@ -1047,7 +1047,13 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
                               me.contigs.seqs, me.reads.seqs,
                               me.optimalMatchesSet, me.options);
     stop(me.timer);
-    std::cerr << "Rescued mates:\t\t\t" << length(me.matchesByCoord) - anchorsCount << std::endl;
+    me.stats.verifyMatches += getValue(me.timer);
+
+    if (me.options.verbose > 1)
+    {
+        std::cerr << "Rescued mates:\t\t\t" << length(me.matchesByCoord) - anchorsCount << std::endl;
+        std::cerr << "Verification time:\t\t\t" << me.timer << std::endl;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -1239,7 +1245,10 @@ inline void printStats(Mapper<TSpec, TConfig> const & me, Timer<TValue> const & 
     std::cerr << "Sorting time:\t\t\t" << me.stats.sortMatches << " sec" << "\t\t" << me.stats.sortMatches / total << " %" << std::endl;
     std::cerr << "Compaction time:\t\t" << me.stats.compactMatches << " sec" << "\t\t" << me.stats.compactMatches / total << " %" << std::endl;
     if (IsSameType<typename TConfig::TSequencing, PairedEnd>::VALUE)
+    {
         std::cerr << "Pairing time:\t\t\t" << me.stats.selectPairs << " sec" << "\t\t" << me.stats.selectPairs / total << " %" << std::endl;
+        std::cerr << "Verification time:\t\t\t" << me.stats.verifyMatches << " sec" << "\t\t" << me.stats.verifyMatches / total << " %" << std::endl;
+    }
     std::cerr << "Alignment time:\t\t\t" << me.stats.alignMatches << " sec" << "\t\t" << me.stats.alignMatches / total << " %" << std::endl;
     std::cerr << "Output time:\t\t\t" << me.stats.writeMatches << " sec" << "\t\t" << me.stats.writeMatches / total << " %" << std::endl;
 
