@@ -194,6 +194,8 @@ struct MapperTraits
     typedef String<TMatch>                                          TMatches;
     typedef ConcurrentAppender<TMatches>                            TMatchesAppender;
     typedef StringSet<TMatches, Segment<TMatches> >                 TMatchesSet;
+    typedef typename Suffix<TMatches>::Type                         TMates;
+    typedef StringSet<TMates, Segment<TMates> >                     TMatesSet;
 
     typedef typename Position<TMatches>::Type                       TMatchesPos;
     typedef String<TMatchesPos>                                     TMatchesPositions;
@@ -290,6 +292,9 @@ struct Mapper
     typename Traits::TMatchesViewSet    suboptimalMatchesSet;
     typename Traits::TMatchesViewView   primaryMatches;
     typename Traits::TMatchesProbs      primaryMatchesProbs;
+
+    typename Traits::TMates             matesByCoord;
+    typename Traits::TMatesSet          matesSetByCoord;
 
     typename Traits::TCigar             cigars;
     typename Traits::TCigarSet          cigarSet;
@@ -779,6 +784,8 @@ inline void clearMatches(Mapper<TSpec, TConfig> & me)
     shrinkToFit(me.matchesByCoord);
     clear(me.primaryMatches);
 //    shrinkToFit(me.primaryMatches);
+
+    clear(me.matesSetByCoord);
 }
 
 // ----------------------------------------------------------------------------
@@ -1038,11 +1045,14 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & /* me */, TSequencing) {
 template <typename TSpec, typename TConfig>
 inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
 {
-    typedef MapperTraits<TSpec, TConfig>                    TTraits;
-    typedef AnchorsVerifier<TSpec, TTraits>                 TMatchesVerifier;
-    typedef typename TTraits::TMatchesAppender              TMatchesAppender;
+    typedef MapperTraits<TSpec, TConfig>            TTraits;
+    typedef AnchorsVerifier<TSpec, TTraits>         TMatchesVerifier;
+    typedef typename TTraits::TMatchesAppender      TMatchesAppender;
+    typedef typename TTraits::TMatch                TMatch;
+    typedef typename TTraits::TMatesSet             TMatesSet;
+    typedef typename Iterator<TMatesSet>::Type      TMatesSetIt;
 
-    auto anchorsCount = length(me.matchesByCoord);
+    unsigned long anchorsCount = length(me.matchesByCoord);
     start(me.timer);
     TMatchesAppender appender(me.matchesByCoord);
     TMatchesVerifier verifier(me.ctx, appender,
@@ -1050,6 +1060,15 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
                               me.optimalMatchesSet, me.options);
     stop(me.timer);
     me.stats.verifyMatches += getValue(me.timer);
+
+    // Sort matches by readId and bucket them.
+    me.matesByCoord = suffix(me.matchesByCoord, anchorsCount);
+    sort(me.matesByCoord, MatchSorter<TMatch, ReadId>(), typename TConfig::TThreading());
+    setHost(me.matesSetByCoord, me.matesByCoord);
+    bucket(me.matesSetByCoord, Getter<TMatch, ReadId>(), getReadsCount(me.reads.seqs), typename TConfig::TThreading());
+
+    resize(cargo(me.matchesByErrors), length(host(me.matchesByErrors)), Exact());
+    iota(suffix(cargo(me.matchesByErrors), anchorsCount), anchorsCount);
 
     if (me.options.verbose > 0)
     {
@@ -1060,6 +1079,24 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
         std::cerr << "Rescued reads:\t\t\t" << length(me.matchesByCoord) - anchorsCount << std::endl;
         std::cerr << "Verification time:\t\t" << me.timer << std::endl;
     }
+
+    // Update primary matches with mates.
+    iterate(me.matesSetByCoord, [&](TMatesSetIt const & matesSetIt)
+    {
+        auto mateId = position(matesSetIt, me.matesSetByCoord);
+        auto anchorId = getMateId(me.reads.seqs, mateId);
+        auto const & mates = value(matesSetIt);
+
+        if (!empty(mates))
+        {
+            SEQAN_ASSERT_NOT(isValid(me.primaryMatches[mateId]));
+            setPosition(me.primaryMatches, mateId, stringSetPositions(me.matesSetByCoord)[mateId] + beginPosition(me.matesByCoord));
+            SEQAN_ASSERT(isEqual(me.primaryMatches[mateId], front(mates)));
+            setPaired(me.ctx, mateId);
+            setPaired(me.ctx, anchorId);
+        }
+    },
+    Standard(), Serial());
 }
 
 // ----------------------------------------------------------------------------
