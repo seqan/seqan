@@ -214,7 +214,7 @@ struct MemberBits<Match<TSpec>, ReadSize>
 template <typename TSpec>
 struct MemberBits<Match<TSpec>, Errors>
 {
-    static const unsigned VALUE = 5;
+    static const unsigned VALUE = 7;
 };
 }
 
