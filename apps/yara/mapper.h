@@ -1052,14 +1052,12 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
     typedef typename TTraits::TMatesSet             TMatesSet;
     typedef typename Iterator<TMatesSet>::Type      TMatesSetIt;
 
-    unsigned long anchorsCount = length(me.matchesByCoord);
     start(me.timer);
+    unsigned long anchorsCount = length(me.matchesByCoord);
     TMatchesAppender appender(me.matchesByCoord);
     TMatchesVerifier verifier(me.ctx, appender,
                               me.contigs.seqs, me.reads.seqs,
                               me.optimalMatchesSet, me.options);
-    stop(me.timer);
-    me.stats.verifyMatches += getValue(me.timer);
 
     // Sort matches by readId and bucket them.
     me.matesByCoord = suffix(me.matchesByCoord, anchorsCount);
@@ -1069,16 +1067,6 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
 
     resize(cargo(me.matchesByErrors), length(host(me.matchesByErrors)), Exact());
     iota(suffix(cargo(me.matchesByErrors), anchorsCount), anchorsCount);
-
-    if (me.options.verbose > 0)
-    {
-        me.stats.rescuedReads += length(me.matchesByCoord) - anchorsCount;
-    }
-    if (me.options.verbose > 1)
-    {
-        std::cerr << "Rescued reads:\t\t\t" << length(me.matchesByCoord) - anchorsCount << std::endl;
-        std::cerr << "Verification time:\t\t" << me.timer << std::endl;
-    }
 
     // Update primary matches with mates.
     iterate(me.matesSetByCoord, [&](TMatesSetIt const & matesSetIt)
@@ -1097,6 +1085,19 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
         }
     },
     Standard(), Serial());
+
+    stop(me.timer);
+    me.stats.verifyMatches += getValue(me.timer);
+
+    if (me.options.verbose > 0)
+    {
+        me.stats.rescuedReads += length(me.matchesByCoord) - anchorsCount;
+    }
+    if (me.options.verbose > 1)
+    {
+        std::cerr << "Rescued matches:\t\t\t" << length(me.matchesByCoord) - anchorsCount << std::endl;
+        std::cerr << "Verification time:\t\t" << me.timer << std::endl;
+    }
 }
 
 // ----------------------------------------------------------------------------
