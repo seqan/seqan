@@ -143,8 +143,11 @@ inline void _findMatesImpl(AnchorsVerifier<TSpec, Traits> & me, TMatchesSetIt co
 
     SEQAN_ASSERT(empty(me.anchorsSet[mateId]));
 
-    for (auto const & anchor : anchors)
-        _findMateImpl(me, anchor);
+//    for (auto const & anchor : anchors)
+//        _findMateImpl(me, anchor);
+
+    if (length(anchors) == 1)
+        _findMateImpl(me, front(anchors));
 }
 
 // ----------------------------------------------------------------------------
