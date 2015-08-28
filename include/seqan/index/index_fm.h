@@ -75,7 +75,6 @@ namespace seqan {
  *        @link RankDictionary @endlink.
  */
 
-//TODO:cpockrandt: documentation for template parameter
 struct FMUnidirectional;
 struct FMBidirectional;
 

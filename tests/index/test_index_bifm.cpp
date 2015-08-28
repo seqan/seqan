@@ -103,7 +103,7 @@ testBidirectionalIndex(const unsigned int textLength, const unsigned int pattern
     typedef typename Iterator<TBiFMIndex, TopDown<> >::Type    TBiFMIter;
 
     TText text, revText;
-    myGenerateText(text, revText, textLength, seqNumb);
+    generateText(text, revText, textLength, seqNumb);
 
     TPattern pattern;
     generateText<TPattern>(pattern, patternLength);
@@ -120,8 +120,8 @@ testBidirectionalIndex(const unsigned int textLength, const unsigned int pattern
 
     bool res1 = goDown(itFwd, revPattern);
     bool res2 = goDown(itRev, pattern);
-    bool res3 = rightExtend(bifm1, pattern);
-    bool res4 = leftExtend(bifm2, revPattern);
+    bool res3 = goDown(bifm1.bwdIter, pattern);
+    bool res4 = goDown(bifm2.fwdIter, revPattern);
 
     SEQAN_ASSERT_EQ(res1, res2);
     SEQAN_ASSERT_EQ(res1, res3);

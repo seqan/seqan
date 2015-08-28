@@ -290,6 +290,36 @@ _goDownChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TS
     return false;
 }
 
+template <typename TText, typename TOccSpec, typename TLengthSum, typename TSpec, typename TChar>
+SEQAN_HOST_DEVICE inline bool
+_goDownChar(Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >, VSTree<TopDown<TSpec> > > & it, TChar c)
+{
+    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >        TIndex;
+    typedef Pair<typename Size<TIndex>::Type>                   TRange;
+
+    TRange _range1;
+    TRange _range2;
+
+    if (_getNodeByChar(it, value(it), _range1, _range2, c))
+    {
+        _historyPush(it);
+
+        value(it).range = _range1;
+        value(it).lastChar = c;
+        value(it).repLen++;
+
+        _historyPush(*it.revIter);
+
+        value(*it.revIter).range = _range2;
+        value(*it.revIter).lastChar = c;
+        value(*it.revIter).repLen++;
+
+        return true;
+    }
+
+    return false;
+}
+
 // ----------------------------------------------------------------------------
 // Function _goDown()                                                [Iterator]
 // ----------------------------------------------------------------------------
@@ -367,6 +397,48 @@ _goDownString(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<
     return stringIt == stringEnd;
 }
 
+template <typename TText, typename TOccSpec, typename TLengthSum, typename TSpec, typename TString, typename TSize>
+SEQAN_HOST_DEVICE inline bool
+_goDownString(Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >, VSTree<TopDown<TSpec> > > &it,
+              TString const & string,
+              TSize & lcp)
+{
+    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >        TIndex;
+    typedef Pair<typename Size<TIndex>::Type>                   TRange;
+    typedef typename Iterator<TString const, Standard>::Type    TStringIter;
+
+    _historyPush(it);
+
+    TStringIter stringIt = begin(string, Standard());
+    TStringIter stringEnd = end(string, Standard());
+
+    for (lcp = 0; stringIt != stringEnd; ++stringIt, ++lcp)
+    {
+        TRange _range;
+
+        // NOTE(esiragusa): isLeaf() early exit is slower on CUDA.
+        // NOTE(esiragusa): this should be faster only for texts over small alphabets consisting of few/long sequences.
+#ifdef __CUDA_ARCH__
+        if (!_getNodeByChar(it, value(it), _range, value(stringIt))) break;
+#else
+        if (isLeaf(it) || !_getNodeByChar(it, value(it), _range, value(stringIt))) break;
+#endif
+
+        value(it).range = _range;
+    }
+
+    value(it).repLen += lcp;
+    value(*it.revIter).repLen += lcp;
+
+    if (lcp)
+    {
+        value(it).lastChar = value(stringIt - 1);
+        value(*it.revIter).lastChar = value(stringIt - 1);
+    }
+
+    return stringIt == stringEnd;
+}
+
 // ----------------------------------------------------------------------------
 // Function _goRight()                                               [Iterator]
 // ----------------------------------------------------------------------------
@@ -399,6 +471,37 @@ _goRight(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec
     // TODO(esiragusa): Fix increment for alphabets with qualities.
 //    for (TAlphabetSize c = ordValue(value(it).lastChar) + 1; c < ValueSize<TAlphabet>::VALUE; ++c)
     for (value(it).lastChar++; ordValue(value(it).lastChar) < ValueSize<TAlphabet>::VALUE; value(it).lastChar++)
+    {
+        if (_getNodeByChar(it, parentDesc, _range, value(it).lastChar))
+        {
+            value(it).range = _range;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+template <typename TText, typename TOccSpec, typename TLengthSum, typename TSpec, typename TDfsOrder>
+SEQAN_HOST_DEVICE inline bool
+_goRight(Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >, VSTree<TopDown<TSpec> > > & it,
+         VSTreeIteratorTraits<TDfsOrder, True> const)
+{
+    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >        TIndex;
+    typedef typename Value<TIndex>::Type                        TAlphabet;
+    typedef Pair<typename Size<TIndex>::Type>                   TRange;
+
+    typedef typename VertexDescriptor<TIndex>::Type             TVertexDescriptor;
+
+    if (isRoot(it)) return false;
+
+    TVertexDescriptor parentDesc = nodeUp(it);
+    TRange _range;
+
+    // TODO(esiragusa): Fix increment for alphabets with qualities.
+//    for (TAlphabetSize c = ordValue(value(it).lastChar) + 1; c < ValueSize<TAlphabet>::VALUE; ++c)
+    for (value(it).lastChar++, value(*it.revIter).lastChar++; ordValue(value(it).lastChar) < ValueSize<TAlphabet>::VALUE; value(it).lastChar++, value(*it.revIter).lastChar++)
     {
         if (_getNodeByChar(it, parentDesc, _range, value(it).lastChar))
         {
