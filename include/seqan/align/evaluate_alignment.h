@@ -221,7 +221,7 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
     {
         if (isGap(it0))
         {
-            if (isGapOpen0)
+            if (!isGapOpen0)
             {
                 stats.numGapOpens += 1;
                 stats.alignmentScore += scoreGapOpen(scoringScheme);
