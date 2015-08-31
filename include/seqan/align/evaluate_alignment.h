@@ -233,7 +233,7 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
     {
         if (isGap(it0))
         {
-            if (isGapOpen0)
+            if (!isGapOpen0)
             {
                 stats.numGapOpens += 1;
                 stats.alignmentScore += scoreGapOpen(scoringScheme);
@@ -279,7 +279,7 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
             stats.alignmentScore += scoreVal;
             // Register other statistics.
             bool isMatch = (c0 == c1);
-            bool isPositive = (scoreVal >= 0);
+            bool isPositive = (scoreVal > 0);
             stats.numMatches += isMatch;
             stats.numMismatches += !isMatch;
             stats.numPositiveScores += isPositive;
