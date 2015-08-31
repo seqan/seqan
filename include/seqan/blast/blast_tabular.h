@@ -393,11 +393,12 @@ struct BlastMatchField
     };
 
     /*!
-     * @var static_constexpr_char_const_*_const BlastMatchField::optionLabels[]
+     * @var static_constexpr_const_std::array<char_const*,45> BlastMatchField::optionLabels[]
      * @brief An array of CStrings representing the command line parameter name of each field
      */
-    static constexpr char const * const optionLabels [] =
+    static constexpr const std::array<char const *, 45> optionLabels
     {
+      {
         "std",
         "qseqid",
         "qgi",
@@ -443,6 +444,7 @@ struct BlastMatchField
         "sstrand",
         "qcovs",
         "qcovhsp"
+      }
     };
 
     /*!
@@ -456,12 +458,13 @@ struct BlastMatchField
     };
 
     /*!
-     * @var static_constexpr_char_const_*_const BlastMatchField::columnLabels[]
+     * @var static_constexpr_const_std::array<char_const*,45> BlastMatchField::columnLabels[]
      * @brief An array of CStrings representing the <b>column label</b> of each possible field; for the
      * @link BlastIOContext::legacyFormat @endlink, use @link BlastMatchField::legacyColumnLabels @endlink instead.
      */
-    static constexpr char const * const columnLabels [] =
+    static constexpr const std::array<char const *, 45> columnLabels
     {
+      {
         "query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. "
         "end, evalue, bit score",
         "query id",
@@ -508,14 +511,16 @@ struct BlastMatchField
         "subject strand",
         "% subject coverage",
         "% hsp coverage"
+      }
     };
 
     /*!
-     * @var static_constexpr_char_const_*_const BlastMatchField::descriptions[]
+     * @var static_constexpr_const_std::array<char_const*,45> BlastMatchField::descriptions[]
      * @brief An array of CStrings representing the human-readable descriptions of each field
      */
-    static constexpr char const * const descriptions [] =
+    static constexpr const std::array<char const *, 45> descriptions
     {
+      {
         "Default 12 columns (Query Seq-id, Subject Seq-id, Percentage of "
          "identical matches, Alignment length, Number of mismatches, Number of "
          "gap openings, Start of alignment in query, End of alignment in query,"
@@ -565,15 +570,17 @@ struct BlastMatchField
         "Subject Strand",
         "Query Coverage Per Subject",
         "Query Coverage Per HSP"
+      }
     };
 
     /*!
-     * @var static_constexpr_bool_const BlastMatchField::implemented[]
+     * @var static_constexpr_const_std::array<bool,45> BlastMatchField::implemented[]
      * @brief An array of bools revealing whether the Blast I/O module supports printing this field
      */
     //TODO(c++14): change to std::bitset that is initialized with binary literal
-    static constexpr bool const implemented [] =
+    static constexpr const std::array<bool, 45> implemented
     {
+      {
         true,
         true,
         false,
@@ -619,26 +626,27 @@ struct BlastMatchField
         false,
         false,
         false
+      }
     };
 };
 
 template <typename TVoidSpec>
-constexpr char const * const BlastMatchField<TVoidSpec>::optionLabels[45];
+constexpr const std::array<char const *, 45> BlastMatchField<TVoidSpec>::optionLabels;
 
 template <typename TVoidSpec>
 constexpr char const * const BlastMatchField<TVoidSpec>::legacyColumnLabels;
 
 template <typename TVoidSpec>
-constexpr char const * const BlastMatchField<TVoidSpec>::columnLabels[45];
+constexpr const std::array<char const *, 45> BlastMatchField<TVoidSpec>::columnLabels;
 
 template <typename TVoidSpec>
-constexpr char const * const BlastMatchField<TVoidSpec>::descriptions[45];
+constexpr const std::array<char const *, 45> BlastMatchField<TVoidSpec>::descriptions;
 
 template <typename TVoidSpec>
-constexpr bool const BlastMatchField<TVoidSpec>::implemented[45];
+constexpr const std::array<bool, 45> BlastMatchField<TVoidSpec>::implemented;
 
 template <typename TVoidSpec>
-constexpr std::array<typename BlastMatchField<TVoidSpec>::Enum const, 12> BlastMatchField<TVoidSpec>::defaults;
+constexpr const std::array<typename BlastMatchField<TVoidSpec>::Enum const, 12> BlastMatchField<TVoidSpec>::defaults;
 
 // ============================================================================
 // Metafunctions and global const-expressions
