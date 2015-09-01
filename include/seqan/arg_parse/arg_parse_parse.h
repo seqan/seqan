@@ -325,6 +325,11 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
         printHelp(me, outputStream);
         return ArgumentParser::PARSE_HELP;
     }
+    else if (isSet(me, "full-help"))
+    {
+        printHelp(me, outputStream, "txt", true);
+        return ArgumentParser::PARSE_HELP;
+    }
     else if (isSet(me, "export-help"))
     {
         std::string format;

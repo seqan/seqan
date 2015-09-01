@@ -583,16 +583,20 @@ inline void _addValidValuesRestrictions(std::string & text, ArgParseOption const
 
 /*!
  * @fn ArgumentParser#printHelp
- * @brief Prints the complete help message for the parser.
+ * @brief Prints the help message for the parser.
  *
- * @signature void printHelp(parser, out, format);
+ * @signature void printHelp(parser, out, format, showAdvancedOptions);
  *
- * @param[in,out] parser The ArgumentParser print the help for.
- * @param[out]    out    The output stream to print to (<tt>std::ostream</tt>).
- * @param[in]     format The format to print, one of "html", "man", and "txt".
+ * @param[in,out] parser                The ArgumentParser print the help for.
+ * @param[out]    out                   The output stream to print to (<tt>std::ostream</tt>).
+ * @param[in]     format                The format to print, one of "html", "man", and "txt".
+ * @param[in]     showAdvancedOptions   Also show advanced options to user (default = false).
  */
 
-inline void printHelp(ArgumentParser const & me, std::ostream & stream, CharString const & format)
+inline void printHelp(ArgumentParser const & me,
+                      std::ostream & stream,
+                      CharString const & format,
+                      bool const showAdvancedOptions)
 {
     ToolDoc toolDoc(me._toolDoc);
     clearEntries(toolDoc);  // We will append me._toolDoc later.
@@ -619,8 +623,9 @@ inline void printHelp(ArgumentParser const & me, std::ostream & stream, CharStri
             std::string title = opt._helpText;
             append(title, ":");
             addSubSection(toolDoc, title);
+            //TODO(h-2): don't add empty sections
         }
-        else if (!isHidden(opt))
+        else if (!isHidden(opt) && (!isAdvanced(opt) || showAdvancedOptions))
         {
             // Build list item term.
             std::string term;
@@ -678,14 +683,19 @@ inline void printHelp(ArgumentParser const & me, std::ostream & stream, CharStri
     print(stream, toolDoc, format);
 }
 
+inline void printHelp(ArgumentParser const & me, std::ostream & stream, CharString const & format)
+{
+    printHelp(me, stream, format, false);
+}
+
 inline void printHelp(ArgumentParser const & me, std::ostream & stream)
 {
-    printHelp(me, stream, "txt");
+    printHelp(me, stream, "txt", false);
 }
 
 inline void printHelp(ArgumentParser const & me)
 {
-    printHelp(me, std::cerr, "txt");
+    printHelp(me, std::cerr, "txt", false);
 }
 
 }  // namespace seqan
