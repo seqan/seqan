@@ -633,6 +633,9 @@ public:
     CharString _shortDescription;
     CharString _date;
     CharString _version;
+    CharString _shortCopyright;
+    CharString _longCopyright;
+    CharString _citation;
     CharString _manTitle;
     CharString _category;
     unsigned _manSection;
@@ -646,7 +649,8 @@ public:
 
     ToolDoc(ToolDoc const & toolDoc) :
         _name(toolDoc._name), _shortDescription(toolDoc._shortDescription),
-        _date(toolDoc._date), _version(toolDoc._version), _manTitle(toolDoc._manTitle),
+        _date(toolDoc._date), _version(toolDoc._version), _shortCopyright(toolDoc._shortCopyright),
+        _longCopyright(toolDoc._longCopyright), _citation(toolDoc._citation), _manTitle(toolDoc._manTitle),
         _category(toolDoc._category), _manSection(1)
     {
         append(*this, toolDoc);
@@ -918,7 +922,7 @@ inline CharString const & getDate(ToolDoc const & doc)
  * @headerfile <seqan/arg_parse.h>
  * @brief Set the tool version string.
  *
- * @signature void setName(toolDoc, str);
+ * @signature void setVersion(toolDoc, str);
  *
  * @param[in,out] toolDoc The ToolDoc object to the set the version string for.
  * @param[in]     str     The version string of the tool (@link CharString @endlink).
@@ -949,6 +953,130 @@ inline CharString const & getVersion(ToolDoc const & doc)
 {
     return doc._version;
 }
+
+// --------------------------------------------------------------------------
+// Function setShortCopyright()                                              ToolDoc
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#setShortCopyright
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set the tool short copyright string.
+ *
+ * @signature void setShortCopyright(toolDoc, str);
+ *
+ * @param[in,out] toolDoc The ToolDoc object to the set the short copyright string for.
+ * @param[in]     str     The short copyright string of the tool (@link CharString @endlink).
+ */
+
+inline void setShortCopyright(ToolDoc & doc, CharString const & shortCopyright)
+{
+    doc._shortCopyright = shortCopyright;
+}
+
+// --------------------------------------------------------------------------
+// Function getShortCopyright()                                              ToolDoc
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#getShortCopyright
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Get the tool short copyright string.
+ *
+ * @signature CharString getShortCopyright(toolDoc);
+ *
+ * @param[in] toolDoc The ToolDoc object to the get the short copyright string.
+ *
+ * @return CharString Resulting short copyright string (@link CharString @endlink).
+ */
+
+inline CharString const & getShortCopyright(ToolDoc const & doc)
+{
+    return doc._shortCopyright;
+}
+
+// --------------------------------------------------------------------------
+// Function setLongCopyright()                                              ToolDoc
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#setLongCopyright
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set the tool long copyright string.
+ *
+ * @signature void setLongCopyright(toolDoc, str);
+ *
+ * @param[in,out] toolDoc The ToolDoc object to the set the long copyright string for.
+ * @param[in]     str     The long copyright string of the tool (@link CharString @endlink).
+ */
+
+inline void setLongCopyright(ToolDoc & doc, CharString const & longCopyright)
+{
+    doc._longCopyright = longCopyright;
+}
+
+// --------------------------------------------------------------------------
+// Function getLongCopyright()                                              ToolDoc
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#getLongCopyright
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Get the tool long copyright string.
+ *
+ * @signature CharString getLongCopyright(toolDoc);
+ *
+ * @param[in] toolDoc The ToolDoc object to the get the long copyright string.
+ *
+ * @return CharString Resulting long copyright string (@link CharString @endlink).
+ */
+
+inline CharString const & getLongCopyright(ToolDoc const & doc)
+{
+    return doc._longCopyright;
+}
+
+// --------------------------------------------------------------------------
+// Function setCitation()                                              ToolDoc
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#setCitation
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set the tool citation string.
+ *
+ * @signature void setCitation(toolDoc, str);
+ *
+ * @param[in,out] toolDoc The ToolDoc object to the set the citation string for.
+ * @param[in]     str     The citation string of the tool (@link CharString @endlink).
+ */
+
+inline void setCitation(ToolDoc & doc, CharString const & citation)
+{
+    doc._citation = citation;
+}
+
+// --------------------------------------------------------------------------
+// Function getCitation()                                              ToolDoc
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#getCitation
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Get the tool citation string.
+ *
+ * @signature CharString getCitation(toolDoc);
+ *
+ * @param[in] toolDoc The ToolDoc object to the get the citation string.
+ *
+ * @return CharString Resulting citation string (@link CharString @endlink).
+ */
+
+inline CharString const & getCitation(ToolDoc const & doc)
+{
+    return doc._citation;
+}
+
 
 // --------------------------------------------------------------------------
 // Function setManTitle()                                             ToolDoc
@@ -1208,6 +1336,8 @@ void HtmlToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
            << "<p>Last update: " << _toHtml(doc._date) << ", " << doc._name
            << " version: " << doc._version << "</p>\n";
 
+    //TODO(h-2): add legal
+
     // Print HTML boilerplate footer.
     stream << "</body></html>";
 }
@@ -1280,7 +1410,37 @@ void TextToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
     std::fill_n(out, _layout.leftPadding, ' ');
     stream << doc._name << " version: " << doc._version << "\n";
     std::fill_n(out, _layout.leftPadding, ' ');
-    stream << "Last update " << doc._date << "\n";
+    stream << "Last update: " << doc._date << "\n";
+    std::fill_n(out, _layout.leftPadding, ' ');
+    stream << "SeqAn version: " << std::string(SEQAN_VERSION_STRING) << "\n";
+
+    // Print legal stuff
+    if ((!empty(doc._shortCopyright)) || (!empty(doc._longCopyright)) || (!empty(doc._citation)))
+    {
+        stream << "\n" << _toText("\\fB") << "LEGAL" << _toText("\\fP") << "\n";
+
+        if (!empty(doc._shortCopyright))
+        {
+            std::fill_n(out, _layout.leftPadding, ' ');
+            stream << doc._name << " Copyright: ";
+            for (int i = 0; i < 25 - static_cast<int>(length(doc._name)); ++i)
+                stream << ' ';
+            stream << doc._shortCopyright << "\n";
+        }
+        std::fill_n(out, _layout.leftPadding, ' ');
+        stream << "SeqAn Copyright:                     2006-2015 Knut Reinert, FU-Berlin; released under the 3-clause BSDL.\n";
+        if (!empty(doc._citation))
+        {
+            std::fill_n(out, _layout.leftPadding, ' ');
+            stream << "In your academic works please cite:  " << doc._citation << "\n";
+        }
+        if (!empty(doc._longCopyright))
+        {
+            std::fill_n(out, _layout.leftPadding, ' ');
+            stream << "For full copyright and/or warranty information see " << _toText("\\fB")
+                   << "--copyright" << _toText("\\fP") << ".\n";
+        }
+    }
 }
 
 inline
@@ -1348,6 +1508,7 @@ void ManToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
         break;
         }
     }
+    //TODO(h-2): add legal... version missing too?
 }
 
 }  // namespace seqan

@@ -313,6 +313,11 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
         printVersion(me, outputStream);
         return ArgumentParser::PARSE_VERSION;
     }
+    else if (hasOption(me, "copyright") && isSet(me, "copyright"))
+    {
+        printLongCopyright(me, outputStream);
+        return ArgumentParser::PARSE_COPYRIGHT;
+    }
     else if (hasOption(me, "write-ctd") && isSet(me, "write-ctd"))
     {
         if (writeCTD(me))
