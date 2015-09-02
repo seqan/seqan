@@ -87,7 +87,7 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     setHelpText(parser, 3, "Testing output file arguments");
 
     // export ctd
-    seqan::CharString outPath = "/tmp/test.ctd";//SEQAN_TEMP_FILENAME();
+    seqan::CharString outPath = SEQAN_TEMP_FILENAME();
     append(outPath, ".ctd");
 
     std::ofstream ofstream(toCString(outPath), std::ofstream::out | std::ofstream::binary);
