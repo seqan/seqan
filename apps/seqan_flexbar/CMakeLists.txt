@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_seqan_flexbar)
 message (STATUS "Configuring apps/seqan_flexbar")
 
-set (SEQAN_APP_VERSION "1.0.2")
+set (SEQAN_APP_VERSION "1.1.0")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -123,7 +123,7 @@ set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} ${KNIME_FLEX_NODES} CACHE IN
 if (SEQAN_BUILD_SYSTEM STREQUAL "APP:seqan_flexbar")
   set (CPACK_PACKAGE_NAME "seqan_flexbar")
   set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "SeqAn::Flexbar - Flexible barcode and adapter removal for sequencing platforms in SeqAn")
-  set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Jochen Singer <jochen.singer@fu-berlin.de>")
+  set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Benjamin Menkuec <benjamin@menkuec.de>")
   set (CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
 
   seqan_configure_cpack_app (seqan_flexbar "seqan_flexbar")
