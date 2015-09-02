@@ -99,9 +99,13 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     // GENERAL OPTIONS -----------------------------------------
     addSection(parser, "General Options");
 
-    seqan::ArgParseOption showSpeed = seqan::ArgParseOption(
+    seqan::ArgParseOption showSpeedOpt = seqan::ArgParseOption(
         "ss", "showSpeed", "Show speed in base pairs per second");
-    addOption(parser, showSpeed);
+    addOption(parser, showSpeedOpt);
+
+    seqan::ArgParseOption writeStatsOpt = seqan::ArgParseOption(
+        "st", "writeStats", "Write statistics into a file");
+    addOption(parser, writeStatsOpt);
     
     seqan::ArgParseOption recordOpt = seqan::ArgParseOption(
         "r", "records", "Number of records to be read in one run.",
@@ -733,11 +737,16 @@ public:
         return map.find(key) == map.end();
     }
 
+    seqan::CharString getBaseFilename(void)
+    {
+        return prefix(basePath, length(basePath) - length(extension));
+    }
+
     //Adds a new output streams to the collection of streams.
     void addStream(seqan::CharString fileName, int id, bool useDefault)
     {
         //Prepend basePath and append file extension to the filename.
-        seqan::CharString path = prefix(basePath, length(basePath) - length(extension));
+        seqan::CharString path = getBaseFilename();
         if (fileName != "")
             seqan::append(path, "_");
         if (useDefault)
@@ -1512,48 +1521,49 @@ void postprocessingStage(TSeqSet& seqSet, TIdSet& idSet, TSeqSet& seqSet2, TIdSe
 }
 
 // END PROGRAM STAGES ---------------------
-void printStatistics(ProgramParams& programParams, GeneralStats& generalStats, DemultiplexingParams& demultiplexParams,
-                AdapterTrimmingParams& adapterParams, QualityTrimmingParams& qualityParams, bool timing)
+template <typename TOutStream>
+void printStatistics(const ProgramParams& programParams, const GeneralStats& generalStats, DemultiplexingParams& demultiplexParams,
+                const AdapterTrimmingParams& adapterParams, const QualityTrimmingParams& qualityParams, const bool timing, TOutStream &outStream)
 {
     bool paired = programParams.fileCount == 2;
     bool adapter = adapterParams.run;
     int read_factor = (1+paired);
-    std::cout << std::endl;
-    std::cout << "\r\rRead statistics\n";
-    std::cout << "===============\n";
-    std::cout << "Reads processed:\t" << read_factor * programParams.readCount;
+    outStream << std::endl;
+    outStream << "\r\rRead statistics\n";
+    outStream << "===============\n";
+    outStream << "Reads processed:\t" << read_factor * programParams.readCount;
     if (paired) 
     {
-        std::cout << " (2 * " << programParams.readCount << ")";
+        outStream << " (2 * " << programParams.readCount << ")";
     }
-    std::cout << std::endl;
+    outStream << std::endl;
     double dropped = qualityParams.stats.dropped_1 + qualityParams.stats.dropped_2 + generalStats.removedSeqs
         + generalStats.removedSeqsShort + (demultiplexParams.exclude * demultiplexParams.stats.groups[0]);
     double dropped_d = (generalStats.removedSeqs + generalStats.removedSeqsShort) / read_factor;
-    std::cout << "  Reads dropped:\t" << dropped << "\t(" << std::setprecision(3) 
+    outStream << "  Reads dropped:\t" << dropped << "\t(" << std::setprecision(3) 
         << dropped / (double(programParams.readCount * read_factor)) * 100 << "%)\n";
     if (dropped != 0.0)
     {
         if (generalStats.removedSeqs != 0)
         {
-            std::cout << "  Due to N content:\t" << generalStats.removedSeqs << "\t(" << std::setprecision(3)
+            outStream << "  Due to N content:\t" << generalStats.removedSeqs << "\t(" << std::setprecision(3)
                 << double(generalStats.removedSeqs) / dropped * 100 << "%)\n";
         }
         if (generalStats.removedSeqsShort != 0)
         {
-            std::cout << "  Due to shortness:\t" << generalStats.removedSeqsShort << "\t(" 
+            outStream << "  Due to shortness:\t" << generalStats.removedSeqsShort << "\t(" 
                 << std::setprecision(3) << double(generalStats.removedSeqsShort) / dropped * 100 << "%)\n";
         }
     }
     if (generalStats.uncalledBases != 0)
         {
-            std::cout << "  Remaining uncalled (or masked) bases: " << generalStats.uncalledBases << "\n";
+            outStream << "  Remaining uncalled (or masked) bases: " << generalStats.uncalledBases << "\n";
         }
     //Statistics for Demultiplexing
     if (demultiplexParams.run)    
     {
-        std::cout << "\nBarcode Demultiplexing statistics\n";
-        std::cout << "=================================\n";
+        outStream << "\nBarcode Demultiplexing statistics\n";
+        outStream << "=================================\n";
         if (demultiplexParams.approximate)                //Calculates the original barcode ID from the modified barcodes
         {
             int val = length(demultiplexParams.barcodes[0])*5; //Number of barcode variations for one barcode
@@ -1590,30 +1600,30 @@ void printStatistics(ProgramParams& programParams, GeneralStats& generalStats, D
         {
             barcodesTotal = barcodesTotal/(length(demultiplexParams.barcodes[0])*5);
         }
-        std::cout << "Barcodes used: " << usedBarcodes << "/" << barcodesTotal << "\t\t(" 
+        outStream << "Barcodes used: " << usedBarcodes << "/" << barcodesTotal << "\t\t(" 
             << std::setprecision(3) << (double)usedBarcodes/(double)barcodesTotal*100 << "%)\n";
-        std::cout << "Reads per barcode:\n";
-        std::cout << "Unidentified:\t" << read_factor * demultiplexParams.stats.groups[0];
-        if (programParams.readCount - dropped_d != 0)
+        outStream << "Reads per barcode:\n";
+        outStream << "Unidentified:\t" << read_factor * demultiplexParams.stats.groups[0];
+        if (programParams.readCount != 0)
         {
-            std::cout  << "\t\t(" << std::setprecision(3) << (double)demultiplexParams.stats.groups[0] /
-                ((double)programParams.readCount - dropped_d) * 100 << "%)";
+            outStream  << "\t\t(" << std::setprecision(3) << (double)demultiplexParams.stats.groups[0] /
+                ((double)programParams.readCount) * 100 << "%)";
         }  
-        std::cout << "\n";
+        outStream << "\n";
         for (unsigned i = 1; i < length(demultiplexParams.stats.groups); ++i)
         {
-            std::cout << demultiplexParams.barcodeIds[i-1]<<":\t" << read_factor * demultiplexParams.stats.groups[i];
-            if (programParams.readCount - dropped_d != 0)
+            outStream << demultiplexParams.barcodeIds[i-1]<<":\t" << read_factor * demultiplexParams.stats.groups[i];
+            if (programParams.readCount != 0)
             {
-                std::cout  << "\t\t(" << std::setprecision(3) << (double)demultiplexParams.stats.groups[i] /
-                    ((double)programParams.readCount - dropped_d) * 100 << "%)";
+                outStream  << "\t\t(" << std::setprecision(3) << (double)demultiplexParams.stats.groups[i] /
+                    ((double)programParams.readCount) * 100 << "%)";
             }
-            std::cout << "\n";
+            outStream << "\n";
         }
-        std::cout << std::endl;
+        outStream << std::endl;
     }
-    std::cout << "File statistics\n";
-    std::cout << "===============\n";
+    outStream << "File statistics\n";
+    outStream << "===============\n";
     // How many reads are left.
     int survived1 = programParams.readCount - qualityParams.stats.dropped_1
         - ((generalStats.removedSeqs +  generalStats.removedSeqsShort
@@ -1624,42 +1634,42 @@ void printStatistics(ProgramParams& programParams, GeneralStats& generalStats, D
     // In percentage points.
     double surv_proc_1 = (double)survived1 / (double)programParams.readCount * 100;
     double surv_proc_2 = (double)survived2 / (double)programParams.readCount * 100;
-    std::cout << "File 1:\n";
-    std::cout << "-------\n";
-    std::cout << "  Surviving: " << survived1 << "/" << programParams.readCount
+    outStream << "File 1:\n";
+    outStream << "-------\n";
+    outStream << "  Surviving: " << survived1 << "/" << programParams.readCount
               << " (" << std::setprecision(3) << surv_proc_1 << "%)\n";
     if (adapter)
     {
-            std::cout << "   Adapters: " << adapterParams.stats.a2count << "\n";
+            outStream << "   Adapters: " << adapterParams.stats.a2count << "\n";
     }
-    std::cout << std::endl;
+    outStream << std::endl;
     if (paired)
     {
-        std::cout << "File 2:\n";
-        std::cout << "-------\n";
-        std::cout << "  Surviving: " << survived2 << "/"
+        outStream << "File 2:\n";
+        outStream << "-------\n";
+        outStream << "  Surviving: " << survived2 << "/"
                   << programParams.readCount << " (" << surv_proc_2 << "%)\n";
         if (adapter)
         {
-            std::cout << "   Adapters: " << adapterParams.stats.a1count << "\n";
+            outStream << "   Adapters: " << adapterParams.stats.a1count << "\n";
         }
-        std::cout << std::endl;
+        outStream << std::endl;
     }
     if (adapter && (adapterParams.stats.a1count + adapterParams.stats.a2count != 0))
     {
         int mean = adapterParams.stats.overlapSum/(adapterParams.stats.a1count + adapterParams.stats.a2count);
-        std::cout << "Adapter sizes:\n";
-        std::cout << "Min: " << adapterParams.stats.minOverlap << ", Mean: " << mean
+        outStream << "Adapter sizes:\n";
+        outStream << "Min: " << adapterParams.stats.minOverlap << ", Mean: " << mean
                 << ", Max: " << adapterParams.stats.maxOverlap << "\n\n";
     }
     // Print processing and IO time. IO is (approx.) the whole loop without the processing part.
     if (timing)
     {
-        std::cout << "Time statistics:\n";
-        std::cout << "==================\n";
-        std::cout << "Processing time: " << std::setw(5) << programParams.processTime << " seconds.\n";
-        std::cout << "       I/O time: " << std::setw(5) << programParams.ioTime << " seconds.\n";
-        std::cout << std::endl;
+        outStream << "Time statistics:\n";
+        outStream << "==================\n";
+        outStream << "Processing time: " << std::setw(5) << programParams.processTime << " seconds.\n";
+        outStream << "       I/O time: " << std::setw(5) << programParams.ioTime << " seconds.\n";
+        outStream << std::endl;
     }
 }
 
@@ -1953,7 +1963,6 @@ int flexbarMain(int argc, char const ** argv)
         {
             std::cout << "Pre-, Postprocessing and Filtering:\n";
             std::cout << "\tPre-trim 5'-end length: " << processingParams.trimLeft << "\n";
-			std::cout << "\tPre-trim 5'-end random Barcode length: " << processingParams.trimLeft << "\n";
 			std::cout << "\tPre-trim 3'-end length: " << processingParams.trimRight << "\n";
             std::cout << "\tExclude reads shorter than: " << processingParams.minLen << "\n";
             if (isSet(parser, "u"))
@@ -2195,7 +2204,17 @@ int flexbarMain(int argc, char const ** argv)
     double loop = SEQAN_PROTIMEDIFF(loopTime);
     programParams.ioTime = loop - programParams.processTime;
 
-    printStatistics(programParams, generalStats, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, !isSet(parser, "ni"));
-
+    printStatistics(programParams, generalStats, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, !isSet(parser, "ni"), std::cout);
+    if (isSet(parser, "st"))
+    {
+        std::ofstream statFile;
+#ifdef _MSC_VER
+        statFile.open(std::string(seqan::toCString(outputStreams.getBaseFilename())) + "_flexbar_statistics.txt", _SH_DENYNO);
+#else
+        statFile.open(std::string(seqan::toCString(outputStreams.getBaseFilename())) + "_flexbar_statistics.txt");
+#endif
+        printStatistics(programParams, generalStats, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, !isSet(parser, "ni"), statFile);
+        statFile.close();
+    }
     return 0;
 }
