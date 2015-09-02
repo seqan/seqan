@@ -339,7 +339,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
     {
         std::string format;
         getOptionValue(format, me, "export-help");
-        printHelp(me, outputStream, format);
+        printHelp(me, outputStream, format, true);
         return ArgumentParser::PARSE_EXPORT_HELP;
     }
     else if (argc == 1 && !(_allRequiredSet(me) && _allArgumentsSet(me)))

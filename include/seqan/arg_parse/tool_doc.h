@@ -1334,10 +1334,33 @@ void HtmlToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
 
     // Print version and date.
     stream << "<h2>Version</h2>\n"
-           << "<p>Last update: " << _toHtml(doc._date) << ", " << doc._name
-           << " version: " << doc._version << "</p>\n";
+           << "<strong>Last update:</strong> " << _toHtml(doc._date) << "<br>\n<strong>"
+           << doc._name << " version:</strong> " << doc._version << "<br>\n"
+           << "<strong>SeqAn version:</strong> " << SEQAN_VERSION_MAJOR << '.' <<  SEQAN_VERSION_MINOR << '.'
+           << SEQAN_VERSION_PATCH;
+    if (SEQAN_VERSION_PRE_RELEASE != 0)
+        stream << "-pre" << SEQAN_VERSION_PRE_RELEASE;
+    stream << "<br>\n";
 
-    //TODO(h-2): add legal
+    // Print legal stuff
+    if ((!empty(doc._shortCopyright)) || (!empty(doc._longCopyright)) || (!empty(doc._citation)))
+    {
+        stream << "<h2>Legal</h2>\n<strong>";
+
+        if (!empty(doc._shortCopyright))
+            stream << doc._name << " Copyright: </strong>"
+                   << doc._shortCopyright << "<br>\n<strong>";
+
+        stream << "SeqAn Copyright:</strong> 2006-2015 Knut Reinert, FU-Berlin; released under the 3-clause BSDL.<br>\n<strong>";
+
+        if (!empty(doc._citation))
+            stream << "In your academic works please cite:</strong> " << doc._citation << "<br>\n";
+        else
+            stream << "</strong>";
+
+        if (!empty(doc._longCopyright))
+            stream << "For full copyright and/or warranty information see <tt>--copyright</tt>.\n";
+    }
 
     // Print HTML boilerplate footer.
     stream << "</body></html>";
@@ -1409,9 +1432,9 @@ void TextToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
     // Print version and date.
     stream << "\n" << _toText("\\fB") << "VERSION" << _toText("\\fP") << "\n";
     std::fill_n(out, _layout.leftPadding, ' ');
-    stream << doc._name << " version: " << doc._version << "\n";
-    std::fill_n(out, _layout.leftPadding, ' ');
     stream << "Last update: " << doc._date << "\n";
+    std::fill_n(out, _layout.leftPadding, ' ');
+    stream << doc._name << " version: " << doc._version << "\n";
     std::fill_n(out, _layout.leftPadding, ' ');
     stream << "SeqAn version: " << SEQAN_VERSION_MAJOR << '.' <<  SEQAN_VERSION_MINOR << '.'
            << SEQAN_VERSION_PATCH;
@@ -1513,7 +1536,23 @@ void ManToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
         break;
         }
     }
-    //TODO(h-2): add legal... version missing too?
+
+    // Print legal stuff
+    if ((!empty(doc._shortCopyright)) || (!empty(doc._longCopyright)) || (!empty(doc._citation)))
+    {
+        stream << ".SH LEGAL\n";
+
+        if (!empty(doc._shortCopyright))
+            stream << "\\fB" << doc._name << " Copyright:\\fR " << doc._shortCopyright << "\n.br\n";
+
+        stream << "\\fBSeqAn Copyright:\\fR 2006-2015 Knut Reinert, FU-Berlin; released under the 3-clause BSDL.\n.br\n";
+
+        if (!empty(doc._citation))
+            stream << "\\fBIn your academic works please cite:\\fR " << doc._citation << "\n.br\n";
+
+        if (!empty(doc._longCopyright))
+            stream << "For full copyright and/or warranty information see \\fB--copyright\\fR.\n";
+    }
 }
 
 }  // namespace seqan

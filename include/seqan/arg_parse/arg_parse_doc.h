@@ -595,7 +595,11 @@ inline void printShortHelp(ArgumentParser const & me)
 inline void printVersion(ArgumentParser const & me, std::ostream & stream)
 {
     stream << getAppName(me) << " version: " << getVersion(me) << std::endl;
-    stream << "SeqAn version: " << std::string(SEQAN_VERSION_STRING) << std::endl;
+    stream << "SeqAn version: " << SEQAN_VERSION_MAJOR << '.' <<  SEQAN_VERSION_MINOR << '.'
+           << SEQAN_VERSION_PATCH;
+    if (SEQAN_VERSION_PRE_RELEASE != 0)
+        stream << "-pre" << SEQAN_VERSION_PRE_RELEASE;
+    stream << "\n";
 }
 
 inline void printVersion(ArgumentParser const & me)
