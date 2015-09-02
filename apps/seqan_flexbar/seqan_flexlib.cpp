@@ -1528,7 +1528,6 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
     bool paired = programParams.fileCount == 2;
     bool adapter = adapterParams.run;
     int read_factor = (1+paired);
-    outStream << std::endl;
     outStream << "\r\rRead statistics\n";
     outStream << "===============\n";
     outStream << "Reads processed:\t" << read_factor * programParams.readCount;
@@ -2207,11 +2206,11 @@ int flexbarMain(int argc, char const ** argv)
     printStatistics(programParams, generalStats, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, !isSet(parser, "ni"), std::cout);
     if (isSet(parser, "st"))
     {
-        std::ofstream statFile;
+        std::fstream statFile;
 #ifdef _MSC_VER
-        statFile.open(std::string(seqan::toCString(outputStreams.getBaseFilename())) + "_flexbar_statistics.txt", _SH_DENYNO);
+        statFile.open(std::string(seqan::toCString(outputStreams.getBaseFilename())) + "_flexbar_statistics.txt", std::fstream::out, _SH_DENYNO);
 #else
-        statFile.open(std::string(seqan::toCString(outputStreams.getBaseFilename())) + "_flexbar_statistics.txt");
+        statFile.open(std::string(seqan::toCString(outputStreams.getBaseFilename())) + "_flexbar_statistics.txt", std::fstream::out);
 #endif
         printStatistics(programParams, generalStats, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, !isSet(parser, "ni"), statFile);
         statFile.close();
