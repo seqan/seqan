@@ -39,6 +39,7 @@
 
 #include <seqan/misc/terminal.h>
 #include <seqan/arg_parse/xml_support.h>
+#include <seqan/version.h>
 
 namespace seqan {
 
@@ -1412,7 +1413,11 @@ void TextToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
     std::fill_n(out, _layout.leftPadding, ' ');
     stream << "Last update: " << doc._date << "\n";
     std::fill_n(out, _layout.leftPadding, ' ');
-    stream << "SeqAn version: " << std::string(SEQAN_VERSION_STRING) << "\n";
+    stream << "SeqAn version: " << SEQAN_VERSION_MAJOR << '.' <<  SEQAN_VERSION_MINOR << '.'
+           << SEQAN_VERSION_PATCH;
+    if (SEQAN_VERSION_PRE_RELEASE != 0)
+        stream << "-pre" << SEQAN_VERSION_PRE_RELEASE;
+    stream << "\n";
 
     // Print legal stuff
     if ((!empty(doc._shortCopyright)) || (!empty(doc._longCopyright)) || (!empty(doc._citation)))

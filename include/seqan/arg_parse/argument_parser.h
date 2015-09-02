@@ -203,8 +203,8 @@ public:
 
     void init()
     {
-        addOption(*this, ArgParseOption("h", "help", "Display a help message."));
-        addOption(*this, ArgParseOption("hh", "full-help", "Display a help message with advanced options."));
+        addOption(*this, ArgParseOption("h", "help", "Display the help message."));
+        addOption(*this, ArgParseOption("hh", "full-help", "Display the help message with advanced options."));
         hideOption(*this, "full-help", true); // hidden by default
 
         // hidden flags used for export of man pages and ctd formats

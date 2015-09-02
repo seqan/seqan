@@ -619,13 +619,13 @@ inline void printVersion(ArgumentParser const & me)
 
 inline void printLongCopyright(ArgumentParser const & me, std::ostream & stream)
 {
-    stream << "Copyright information for " << getAppName(me) << ":" << std::endl;
-    stream << "=============================================================================" << std::endl;
-    stream << me._toolDoc._longCopyright << std::endl;
     stream << "=============================================================================" << std::endl
-           << "" << std::endl
+           << "Copyright information for " << getAppName(me) << ":" << std::endl
+           << "-----------------------------------------------------------------------------" << std::endl
+           << me._toolDoc._longCopyright << std::endl << std::endl
+           << "=============================================================================" << std::endl
            << "This program contains SeqAn code licensed under the following terms:" << std::endl
-           << "" << std::endl
+           << "-----------------------------------------------------------------------------" << std::endl
            << " Copyright (c) 2006-2015, Knut Reinert, FU Berlin" << std::endl
            << " All rights reserved." << std::endl
            << "" << std::endl
