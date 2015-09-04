@@ -1432,12 +1432,12 @@ void TextToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
     // Print version and date.
     stream << "\n" << _toText("\\fB") << "VERSION" << _toText("\\fP") << "\n";
     std::fill_n(out, _layout.leftPadding, ' ');
-    stream << "Last update: " << doc._date << "\n";
+    stream << _toText("\\fB") << "Last update: " << _toText("\\fP") << doc._date << "\n";
     std::fill_n(out, _layout.leftPadding, ' ');
-    stream << doc._name << " version: " << doc._version << "\n";
+    stream << _toText("\\fB") << doc._name << " version: " << _toText("\\fP") << doc._version << "\n";
     std::fill_n(out, _layout.leftPadding, ' ');
-    stream << "SeqAn version: " << SEQAN_VERSION_MAJOR << '.' <<  SEQAN_VERSION_MINOR << '.'
-           << SEQAN_VERSION_PATCH;
+    stream << _toText("\\fB") << "SeqAn version: " << _toText("\\fP") << SEQAN_VERSION_MAJOR << '.'
+           <<  SEQAN_VERSION_MINOR << '.' << SEQAN_VERSION_PATCH;
     if (SEQAN_VERSION_PRE_RELEASE != 0)
         stream << "-pre" << SEQAN_VERSION_PRE_RELEASE;
     stream << "\n";
@@ -1450,17 +1450,17 @@ void TextToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
         if (!empty(doc._shortCopyright))
         {
             std::fill_n(out, _layout.leftPadding, ' ');
-            stream << doc._name << " Copyright: ";
-            for (int i = 0; i < 25 - static_cast<int>(length(doc._name)); ++i)
-                stream << ' ';
-            stream << doc._shortCopyright << "\n";
+            stream << _toText("\\fB") << doc._name << " Copyright: "
+                   << _toText("\\fP") << doc._shortCopyright << "\n";
         }
         std::fill_n(out, _layout.leftPadding, ' ');
-        stream << "SeqAn Copyright:                     2006-2015 Knut Reinert, FU-Berlin; released under the 3-clause BSDL.\n";
+        stream << _toText("\\fB") << "SeqAn Copyright: " << _toText("\\fP")
+               << "2006-2015 Knut Reinert, FU-Berlin; released under the 3-clause BSDL.\n";
         if (!empty(doc._citation))
         {
             std::fill_n(out, _layout.leftPadding, ' ');
-            stream << "In your academic works please cite:  " << doc._citation << "\n";
+            stream << _toText("\\fB") << "In your academic works please cite: " << _toText("\\fP")
+                   << doc._citation << "\n";
         }
         if (!empty(doc._longCopyright))
         {
