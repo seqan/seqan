@@ -19,7 +19,7 @@ Tutorial
    :maxdepth: 2
 
    Tutorial/GettingStarted
-   Tutorial/FirstStepsInSeqAn
+   Tutorial/AFirstExample
    Tutorial/BackgroundAndMotivation
 
    Tutorial/Sequences
@@ -35,13 +35,13 @@ Tutorial
 
    Tutorial/Indices
    Tutorial/IndexIterators
-   Tutorial/IndexQGram
+   Tutorial/QgramIndex
 
    Tutorial/PatternMatching
 
    Tutorial/Graphs
 
-   Tutorial/InputOutputOverview
+   Tutorial/FileIOOverview
    Tutorial/SequenceIO
    Tutorial/IndexedFastaIO
    Tutorial/SamBamIO
@@ -57,7 +57,7 @@ Tutorial
 
    Tutorial/ParsingCommandLineArguments
 
-   Tutorial/AnnotationStore
+   Tutorial/GenomeAnnotations
 
    Tutorial/FragmentStore
    Tutorial/ConsensusAlignment
@@ -71,7 +71,7 @@ Tutorial
 
    Tutorial/BasicTechniques
    Tutorial/Metafunctions
-   Tutorial/TemplateSubclassing
+   Tutorial/GenericProgramming
    Tutorial/GlobalFunctionInterface
 
    Tutorial/Basics
