@@ -74,7 +74,7 @@ Includes
 Support for a specific format comes by including a specific header file.
 In this case, we include the BAM header file:
 
-.. includefrags:: demos/tutorial/base_io/example1.cpp
+.. includefrags:: demos/tutorial/file_io_overview/example1.cpp
    :fragment: include
 
 
@@ -85,12 +85,12 @@ Classes of type :dox:`FormattedFileIn` and :dox:`FormattedFileOut` allow to :dox
 
 A file can be opened by passing the filename to the constructor:
 
-.. includefrags:: demos/tutorial/base_io/example1.cpp
+.. includefrags:: demos/tutorial/file_io_overview/example1.cpp
    :fragment: ctor
 
 Alternatively, a file can be opened after construction by calling :dox:`FormattedFile#open`:
 
-.. includefrags:: demos/tutorial/base_io/example1.cpp
+.. includefrags:: demos/tutorial/file_io_overview/example1.cpp
    :fragment: open
 
 Noe that any file is closed *automatically* whenever the :dox:`FormattedFileIn` or :dox:`FormattedFileOut` object goes out of scope.
@@ -103,7 +103,7 @@ To access the header, we need an object representing the format-specific header.
 In this case, we use an object of type :dox:`BamHeader`.
 The content of this object can be ignored for now, it will be covered in the :ref:`tutorial-sam-bam-io` tutorial.
 
-.. includefrags:: demos/tutorial/base_io/example1.cpp
+.. includefrags:: demos/tutorial/file_io_overview/example1.cpp
    :fragment: header
 
 Function :dox:`FormattedFileIn#readHeader` reads the header from the input SAM file and :dox:`FormattedFileOut#writeHeader` writes it to the BAM output file.
@@ -117,7 +117,7 @@ Each call to :dox:`FormattedFileIn#readRecord` reads one record from the SAM inp
 Each call to :dox:`FormattedFileOut#writeRecord` writes the record just read to the BAM output files.
 We check the end of the input file by calling :dox:`FormattedFile#atEnd`.
 
-.. includefrags:: demos/tutorial/base_io/example1.cpp
+.. includefrags:: demos/tutorial/file_io_overview/example1.cpp
    :fragment: records
 
 Our small SAM to BAM conversion demo is ready.
@@ -157,7 +157,7 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/base_io/solution1.cpp
+        .. includefrags:: demos/tutorial/file_io_overview/solution1.cpp
 
 
 Format Errors
@@ -180,7 +180,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/base_io/solution2.cpp
+        .. includefrags:: demos/tutorial/file_io_overview/solution2.cpp
 
 
 Streams
@@ -208,7 +208,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/base_io/solution3.cpp
+        .. includefrags:: demos/tutorial/file_io_overview/solution3.cpp
 
 
 Next Steps

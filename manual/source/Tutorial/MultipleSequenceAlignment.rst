@@ -42,24 +42,24 @@ The following example shows how to compute a global multiple sequence alignment 
 
 First, we include the necessary headers and begin the ``main`` function by declaring our strings as a char array.
 
-.. includefrags:: demos/tutorial/alignments/alignment_msa.cpp
+.. includefrags:: demos/tutorial/multiple_sequence_alignment/msa.cpp
    :fragment: main
 
 Next, we build a :dox:`Align` object with underling :dox:`String SeqAn Strings` over the :dox:`AminoAcid` alphabet.
 We create four rows and assign the previously defined amino acid strings into the rows.
 
-.. includefrags:: demos/tutorial/alignments/alignment_msa.cpp
+.. includefrags:: demos/tutorial/multiple_sequence_alignment/msa.cpp
    :fragment: init
 
 Finally, we call :dox:`globalMsaAlignment` and print ``align`` to the standard output.
 We use the :dox:`Blosum62` score matrix with the penalties from above.
 
-.. includefrags:: demos/tutorial/alignments/alignment_msa.cpp
+.. includefrags:: demos/tutorial/multiple_sequence_alignment/msa.cpp
    :fragment: alignment
 
 The output of the program look as follows.
 
-.. includefrags:: demos/tutorial/alignments/alignment_msa.cpp.stdout
+.. includefrags:: demos/tutorial/multiple_sequence_alignment/msa.cpp.stdout
 
 Note that we stored the MSA in an :dox:`Align` object which allows easy access to the individual rows of the MSA as :dox:`Gaps` objects.
 :dox:`globalMsaAlignment` also allows storing the alignment as an :dox:`AlignmentGraph`.
@@ -81,11 +81,11 @@ Assignment 1
 
         The solution looks as follows.
 
-        .. includefrags:: demos/tutorial/alignments/alignment_msa_assignment1.cpp
+        .. includefrags:: demos/tutorial/multiple_sequence_alignment/assignment1.cpp
 
         And here is the program's output.
 
-        .. includefrags:: demos/tutorial/alignments/alignment_msa_assignment1.cpp.stdout
+        .. includefrags:: demos/tutorial/multiple_sequence_alignment/assignment1.cpp.stdout
 
 Computing Consensus Sequences
 -----------------------------
@@ -97,22 +97,22 @@ It is used by creating a :dox:`String` over :dox:`ProfileChar` as the alphabet.
 The following program first computes a global MSA of four variants of exon1 of the gene SHH.
 First, we compute the alignment as in the example above.
 
-.. includefrags:: demos/tutorial/alignments/alignment_msa_consensus.cpp
+.. includefrags:: demos/tutorial/multiple_sequence_alignment/consensus.cpp
    :fragment: align
 
 Then, we create the profile string with the length of the MSA.
 We then count the number of characters (and gap pseudo-characters which have an ``ordValue`` of ``4`` for :dox:`Gaps` over :dox:`Dna`) at each position.
 
-.. includefrags:: demos/tutorial/alignments/alignment_msa_consensus.cpp
+.. includefrags:: demos/tutorial/multiple_sequence_alignment/consensus.cpp
    :fragment: profile-computation
 
 Finally, we compute the consensus and print it to the standard output.
 At each position, the consensus is called as the character with the highest count.
 Note that ``getMaxIndex`` breaks ties by the ordinal value of the caracters, i.e. ``A`` would be preferred over ``C``, ``C`` over ``G`` and so on.
 
-.. includefrags:: demos/tutorial/alignments/alignment_msa_consensus.cpp
+.. includefrags:: demos/tutorial/multiple_sequence_alignment/consensus.cpp
    :fragment: consensus-calling
 
 The output of the program is as follows.
 
-.. includefrags:: demos/tutorial/alignments/alignment_msa_consensus.cpp.stdout
+.. includefrags:: demos/tutorial/multiple_sequence_alignment/consensus.cpp.stdout
