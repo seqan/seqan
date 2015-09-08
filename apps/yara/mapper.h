@@ -71,7 +71,7 @@ struct Options
 
     bool                singleEnd;
     unsigned            libraryLength;
-    unsigned            libraryError;
+    unsigned            libraryDev;
     LibraryOrientation  libraryOrientation;
     TList               libraryOrientationList;
 
@@ -97,7 +97,7 @@ struct Options
         quick(false),
         singleEnd(true),
         libraryLength(),
-        libraryError(),
+        libraryDev(),
         libraryOrientation(FWD_REV),
 //        anchorOne(false),
         readsCount(100000),
@@ -269,6 +269,9 @@ struct Mapper
     Timer<double>                       timer;
     Stats<double>                       stats;
 
+    unsigned                            libraryLength;
+    unsigned                            libraryDev;
+
     typename Traits::TContigs           contigs;
     typename Traits::TIndex             index;
     typename Traits::TReads             reads;
@@ -301,6 +304,8 @@ struct Mapper
 
     Mapper(Options const & options) :
         options(options),
+        libraryLength(),
+        libraryDev(),
         readsFile(options.readsCount)
     {};
 };
@@ -935,8 +940,9 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
         std::cerr << "Library stddev:\t\t\t" << libraryDev << std::endl;
     }
 
-    if (me.options.libraryLength) libraryMean = me.options.libraryLength;
-    if (me.options.libraryError) libraryDev = me.options.libraryError;
+    // Set library mean and error as provided in input or just computed.
+    me.libraryLength = me.options.libraryLength ? me.options.libraryLength : libraryMean;
+    me.libraryDev = me.options.libraryDev ? me.options.libraryDev : libraryDev;
 
     resize(me.primaryMatchesProbs, getReadsCount(readSeqs), 0.0, Exact());
 
@@ -961,7 +967,7 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
                          firstMatchOptimalRate, secondMatchOptimalRate,
                          secondBestCount, secondSubCount,
                          readSeqs, me.contigs.seqs,
-                         libraryMean, libraryDev);
+                         me.libraryLength, me.libraryDev);
 
         // Second mate match with all first mate matches.
         Pair<TMatchesSetValueIt, double> secondPrimary =
@@ -969,7 +975,7 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
                          secondMatchOptimalRate, firstMatchOptimalRate,
                          firstBestCount, firstSubCount,
                          readSeqs, me.contigs.seqs,
-                         libraryMean, libraryDev);
+                         me.libraryLength, me.libraryDev);
 
         // No feasible pair found.
         if (atEnd(getValueI1(firstPrimary), firstMatches) || atEnd(getValueI1(secondPrimary), secondMatches))
@@ -1003,7 +1009,7 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
         me.primaryMatchesProbs[secondId] = getValueI2(secondPrimary);
 
         // Set reads as properly paired.
-//        if (isProper(me.primaryMatches[firstId], me.primaryMatches[secondId], libraryMean, libraryDev))
+//        if (isProper(me.primaryMatches[firstId], me.primaryMatches[secondId], me.libraryLength, me.libraryDev))
 //        {
             setPaired(me.ctx, firstId);
             setPaired(me.ctx, secondId);
@@ -1057,7 +1063,9 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
     TMatchesAppender appender(me.matchesByCoord);
     TMatchesVerifier verifier(me.ctx, appender,
                               me.contigs.seqs, me.reads.seqs,
-                              me.optimalMatchesSet, me.options);
+                              me.optimalMatchesSet,
+                              me.libraryLength, me.libraryDev,
+                              me.options);
 
     // Sort matches by readId and bucket them.
     me.matesByCoord = suffix(me.matchesByCoord, anchorsCount);

@@ -182,9 +182,9 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
                                      ArgParseOption::INTEGER));
     setMinValue(parser, "library-length", "1");
 
-    addOption(parser, ArgParseOption("le", "library-error", "Deviation from the expected library length. \
+    addOption(parser, ArgParseOption("ld", "library-deviation", "Deviation from the expected library length. \
                                             Default: autodetected.", ArgParseOption::INTEGER));
-    setMinValue(parser, "library-error", "0");
+    setMinValue(parser, "library-deviation", "0");
 
 //    addOption(parser, ArgParseOption("lo", "library-orientation", "Expected orientation of the segments in the library.",
 //                                     ArgParseOption::STRING));
@@ -286,7 +286,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse paired-end mapping options.
     getOptionValue(options.libraryLength, parser, "library-length");
-    getOptionValue(options.libraryError, parser, "library-error");
+    getOptionValue(options.libraryDev, parser, "library-deviation");
 //    getOptionValue(options.libraryOrientation, parser, "library-orientation", options.libraryOrientationList);
 
     getOptionValue(options.threadsCount, parser, "threads");

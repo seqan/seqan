@@ -74,6 +74,8 @@ struct AnchorsVerifier
     TContigSeqs const & contigSeqs;
     TReadSeqs /*const*/ & readSeqs;
     TMatchesSet const & anchorsSet;
+    unsigned            libraryLength;
+    unsigned            libraryDev;
     Options const &     options;
 
     AnchorsVerifier(TReadsContext & ctx,
@@ -81,6 +83,8 @@ struct AnchorsVerifier
                     TContigSeqs const & contigSeqs,
                     TReadSeqs /*const*/ & readSeqs,
                     TMatchesSet const & anchorsSet,
+                    unsigned libraryLength,
+                    unsigned libraryDev,
                     Options const & options) :
         verifier(contigSeqs),
         prototype(),
@@ -89,6 +93,8 @@ struct AnchorsVerifier
         contigSeqs(contigSeqs),
         readSeqs(readSeqs),
         anchorsSet(anchorsSet),
+        libraryLength(libraryLength),
+        libraryDev(libraryDev),
         options(options)
     {
         _verifyAnchorsImpl(*this);
@@ -223,14 +229,14 @@ inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
     setValueI1(contigEnd, getMember(anchor, ContigId()));
 
     contigBegin.i2 = 0;
-    if (getMember(anchor, ContigBegin()) + me.options.libraryLength > me.options.libraryError)
-        contigBegin.i2 = getMember(anchor, ContigBegin()) + me.options.libraryLength - me.options.libraryError;
+    if (getMember(anchor, ContigBegin()) + me.libraryLength > me.libraryDev)
+        contigBegin.i2 = getMember(anchor, ContigBegin()) + me.libraryLength - 3 * me.libraryDev;
     contigBegin.i2 = _min(contigBegin.i2, contigLength);
 
-    contigEnd.i2 = _min(getMember(anchor, ContigBegin()) + me.options.libraryLength + me.options.libraryError, contigLength);
+    contigEnd.i2 = _min(getMember(anchor, ContigBegin()) + me.libraryLength + 3 * me.libraryDev, contigLength);
 
     SEQAN_ASSERT_LEQ(getValueI2(contigBegin), getValueI2(contigEnd));
-    SEQAN_ASSERT_LEQ(getValueI2(contigEnd) - getValueI2(contigBegin), 2 * me.options.libraryError);
+    SEQAN_ASSERT_LEQ(getValueI2(contigEnd) - getValueI2(contigBegin), 6 * me.libraryDev);
 }
 
 template <typename TSpec, typename Traits, typename TContigPos, typename TMatch>
@@ -244,15 +250,15 @@ inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
     setValueI1(contigEnd, getMember(anchor, ContigId()));
 
     contigBegin.i2 = 0;
-    if (getMember(anchor, ContigEnd()) > me.options.libraryLength + me.options.libraryError)
-        contigBegin.i2 = getMember(anchor, ContigEnd()) - me.options.libraryLength - me.options.libraryError;
+    if (getMember(anchor, ContigEnd()) > me.libraryLength + 3 * me.libraryDev)
+        contigBegin.i2 = getMember(anchor, ContigEnd()) - me.libraryLength - 3 * me.libraryDev;
 
     contigEnd.i2 = 0;
-    if (getMember(anchor, ContigEnd()) + me.options.libraryError > me.options.libraryLength)
-        contigEnd.i2 = getMember(anchor, ContigEnd()) - me.options.libraryLength + me.options.libraryError;
+    if (getMember(anchor, ContigEnd()) + me.libraryDev > me.libraryLength)
+        contigEnd.i2 = getMember(anchor, ContigEnd()) - me.libraryLength + 3 * me.libraryDev;
 
     SEQAN_ASSERT_LEQ(getValueI2(contigBegin), getValueI2(contigEnd));
-    SEQAN_ASSERT_LEQ(getValueI2(contigEnd) - getValueI2(contigBegin), 2 * me.options.libraryError);
+    SEQAN_ASSERT_LEQ(getValueI2(contigEnd) - getValueI2(contigBegin), 6 * me.libraryDev);
 }
 
 #endif  // #ifndef APP_YARA_MAPPER_VERIFIER_H_
