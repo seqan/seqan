@@ -823,6 +823,7 @@ findProperMates(TMatches const & mates, TMatch const & match,
     typedef typename Size<TReadSeqs>::Type          TReadId;
     typedef typename Value<TReadSeqs const>::Type   TReadSeq;
     typedef typename Size<TReadSeq>::Type           TReadSeqSize;
+    typedef typename MakeSigned<TReadSeqSize>::Type TSignedSize;
 
     TReadId mateId = getMateId(readSeqs, getMember(match, ReadId()));
     TReadSeqSize mateLength = length(readSeqs[mateId]);
@@ -835,21 +836,26 @@ findProperMates(TMatches const & mates, TMatch const & match,
     mateLeq.errors = 0;
     mateGeq.errors = MemberLimits<TMatch, Errors>::VALUE;
 
+    TReadSeqSize deltaMinus = std::max((TSignedSize)0, (TSignedSize)mean - 6 * stdDev - (TSignedSize)mateLength);
+    TReadSeqSize deltaPlus = std::max((TSignedSize)0, (TSignedSize)mean + 6 * stdDev - (TSignedSize)mateLength);
+
     // --> ... mate
     if (onForwardStrand(match))
     {
-        addContigPosition(mateLeq, _max(0u, mean - 6 * stdDev - mateLength), contigSeqs);
-        addContigPosition(mateGeq, _max(0u, mean + 6 * stdDev - mateLength), contigSeqs);
+        addContigPosition(mateLeq, deltaMinus, contigSeqs);
+        addContigPosition(mateGeq, deltaPlus, contigSeqs);
     }
     // mate ... <--
     else
     {
-        subContigPosition(mateLeq, _max(0u, mean + 6 * stdDev - mateLength));
-        subContigPosition(mateGeq, _max(0u, mean - 6 * stdDev - mateLength));
+        subContigPosition(mateLeq, deltaPlus);
+        subContigPosition(mateGeq, deltaMinus);
     }
 
     TIter first = std::lower_bound(begin(mates, Standard()), end(mates, Standard()), mateLeq, MatchSorter<TMatch, ContigBegin>());
     TIter last = std::upper_bound(begin(mates, Standard()), end(mates, Standard()), mateGeq, MatchSorter<TMatch, ContigEnd>());
+
+    SEQAN_ASSERT_LEQ(first, last);
 
     return infix(mates, position(first, mates), position(last, mates));
 }

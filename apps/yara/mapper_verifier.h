@@ -213,6 +213,7 @@ inline void _addMatchImpl(AnchorsVerifier<TSpec, Traits> & me,
 // ----------------------------------------------------------------------------
 // Computes the insert window.
 
+// --> ... mate
 template <typename TSpec, typename Traits, typename TContigPos, typename TMatch>
 inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
                               TContigPos & contigBegin,
@@ -239,6 +240,7 @@ inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
     SEQAN_ASSERT_LEQ(getValueI2(contigEnd) - getValueI2(contigBegin), 6 * me.libraryDev);
 }
 
+// mate ... <--
 template <typename TSpec, typename Traits, typename TContigPos, typename TMatch>
 inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
                               TContigPos & contigBegin,

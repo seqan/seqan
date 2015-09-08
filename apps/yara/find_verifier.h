@@ -151,6 +151,8 @@ verify(Verifier<THaystack, TNeedle, AffineGaps> & me,
 
     THaystackInfix haystackInfix = infix(me.haystack, haystackBegin, haystackEnd);
 
+    if (empty(haystackInfix)) return;
+
     clear(me.contigAnchors);
     clear(me.readAnchors);
     TContigGaps contigGaps(haystackInfix, me.contigAnchors);
