@@ -1103,7 +1103,7 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
     }
     if (me.options.verbose > 1)
     {
-        std::cerr << "Rescued matches:\t\t\t" << length(me.matchesByCoord) - anchorsCount << std::endl;
+        std::cerr << "Rescued reads:\t\t\t" << length(me.matchesByCoord) - anchorsCount << std::endl;
         std::cerr << "Verification time:\t\t" << me.timer << std::endl;
     }
 }
