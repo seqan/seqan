@@ -44,10 +44,10 @@ Tutorial
    Tutorial/FileIOOverview
    Tutorial/SequenceIO
    Tutorial/IndexedFastaIO
-   Tutorial/SamBamIO
+   Tutorial/SamAndBamIO
    Tutorial/VcfIO
    Tutorial/BedIO
-   Tutorial/GffGtfIO
+   Tutorial/GffAndGtfIO
 
    Tutorial/Modifiers
 
@@ -66,7 +66,7 @@ Tutorial
    Tutorial/SimpleRnaSeq
    Tutorial/SimpleReadMapping
    Tutorial/MiniBowtie
-   Tutorial/JournalSet
+   Tutorial/JournaledSet
    Tutorial/KnimeNode
 
    Tutorial/BasicTechniques

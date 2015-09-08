@@ -151,7 +151,7 @@ A First Working Example
 
 The following program reads a file named ``example.sam`` and prints its contents back to the user on standard output.
 
-.. includefrags:: demos/tutorial/bam_io/example1.cpp
+.. includefrags:: demos/tutorial/sam_and_bam_io/example1.cpp
 
 We instantiate a :dox:`BamFileIn` object for reading and a :dox:`BamFileOut` object for writing.
 First, we read the BAM header with :dox:`FormattedFileIn#readRecord` and we write it with :dox:`FormattedFileOut#writeRecord`.
@@ -172,7 +172,7 @@ Assignment 1
    Solution
       .. container:: foldable
 
-         .. includefrags:: demos/tutorial/bam_io/solution1.cpp
+         .. includefrags:: demos/tutorial/sam_and_bam_io/solution1.cpp
 
 
 Accessing the Header
@@ -186,7 +186,7 @@ All remaining BAM header information is stored in the class :dox:`BamHeader`.
 
 The following program accesses the :dox:`BamIOContext` of its :dox:`BamFileIn` and prints the reference sequence names and lengths present in the BAM header.
 
-.. includefrags:: demos/tutorial/bam_io/example2.cpp
+.. includefrags:: demos/tutorial/sam_and_bam_io/example2.cpp
 
 Accessing the Records
 ---------------------
@@ -257,7 +257,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/bam_io/solution2.cpp
+        .. includefrags:: demos/tutorial/sam_and_bam_io/solution2.cpp
 
 
 Accessing the Records' Tags
@@ -332,7 +332,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/bam_io/solution3.cpp
+        .. includefrags:: demos/tutorial/sam_and_bam_io/solution3.cpp
 
 
 Using BAM Indices
@@ -342,7 +342,7 @@ SeqAn also contains features for reading BAM indices with the format ``.bai``. T
 
 You can read indices into a :dox:`BaiBamIndex` object with the function :dox:`BamIndex#open`. Then, you can use the function :dox:`BamFileIn#jumpToRegion` to jump to a specific position within BAM files. After jumping, the next record to be read is before the given region. Therefore, you have to skip records until you access the one you are looking for.
 
-.. includefrags:: demos/tutorial/bam_io/example7.cpp
+.. includefrags:: demos/tutorial/sam_and_bam_io/example7.cpp
 
 
 Next Steps

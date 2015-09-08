@@ -45,11 +45,11 @@ Consider the following program.
 It creates a fragment store and then reads a small reference (with a length of 2kb) from a FASTA file and also a SAM file with reads spanning a complex indel region at position ~920.
 Finally, it prints the multi-read alignment around this position using :dox:`AlignedReadLayout`.
 
-.. includefrags:: demos/tutorial/realign/step1.cpp
+.. includefrags:: demostutorial/realignment/step1.cpp
 
 The output of the program is as follows:
 
-.. includefrags:: demos/tutorial/realign/step1.cpp.stdout
+.. includefrags:: demostutorial/realignment/step1.cpp.stdout
 
 Performing the Realignment
 --------------------------
@@ -76,9 +76,9 @@ The parameter ``bandwidth`` controls the bandwidth of the banded alignment used 
 If ``includeReference`` is ``true`` then the reference is added as a pseudo-read (a new read at the end of the read store).
 This can be used for computing alignments of the reads agains the original reference.
 
-.. includefrags:: demos/tutorial/realign/step2.cpp
+.. includefrags:: demostutorial/realignment/step2.cpp
 
 Here is the program's output.
 The reference pseudo-read is here shown as the first read (second row) below the reference (first row).
 
-.. includefrags:: demos/tutorial/realign/step2.cpp.stdout
+.. includefrags:: demostutorial/realignment/step2.cpp.stdout

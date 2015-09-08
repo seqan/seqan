@@ -124,7 +124,7 @@ A First Working Example
 
 The following example shows an example of a program that reads the file with the path ``example.gff`` and prints its contents back to the user on standard output.
 
-.. includefrags:: demos/tutorial/gff_io/example1.cpp
+.. includefrags:: demos/tutorial/gff_and_gft_io/example1.cpp
 
 The program first opens a :dox:`GffFileIn` for reading and a :dox:`GffFileOut` for writing.
 The GFF records are read into :dox:`GffRecord` objects which we will focus on below.
@@ -143,7 +143,7 @@ Assignment 1
    Solution
       .. container:: foldable
 
-         .. includefrags:: demos/tutorial/gff_io/solution1.cpp
+         .. includefrags:: demos/tutorial/gff_and_gft_io/solution1.cpp
 
 
 Accessing the Records
@@ -201,7 +201,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/gff_io/solution2.cpp
+        .. includefrags:: demos/tutorial/gff_and_gft_io/solution2.cpp
 
         The output is
 
@@ -235,7 +235,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/gff_io/solution3.cpp
+        .. includefrags:: demos/tutorial/gff_and_gft_io/solution3.cpp
 
 Next Steps
 ----------

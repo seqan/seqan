@@ -76,7 +76,7 @@ A First Working Example
 Let us start out with a minimal working example.
 The following program reads a FASTA file called ``example.fa`` and prints out the identifier and the sequence of the first record.
 
-.. includefrags:: demos/tutorial/seq_io/example1.cpp
+.. includefrags:: demos/tutorial/sequence_io/example1.cpp
 
 We call the :dox:`FormattedFile#FormattedFile SeqFileIn constructor` with the path to the file to read.
 Successively, we call the function :dox:`SeqFileIn#readRecord` to read the first record from the file.
@@ -106,7 +106,7 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/seq_io/solution1.cpp
+        .. includefrags:: demos/tutorial/sequence_io/solution1.cpp
 
 
 Handling Errors
@@ -129,7 +129,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/seq_io/solution2.cpp
+        .. includefrags:: demos/tutorial/sequence_io/solution2.cpp
 
 
 Accessing Records in Batches
@@ -192,7 +192,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/seq_io/solution3.cpp
+        .. includefrags:: demos/tutorial/sequence_io/solution3.cpp
 
 
 Accessing Qualities
@@ -249,7 +249,7 @@ Assignment 4
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/seq_io/solution4.cpp
+        .. includefrags:: demos/tutorial/sequence_io/solution4.cpp
 
 
 Next Steps

@@ -135,7 +135,7 @@ Now that the Fragment Store contains the whole annotation tree, we want to trave
 In the annotation tree, genes are (the only) children of the root node.
 To efficiently retrieve the genes that overlap read alignments later, we want to use interval trees, one for each contig.
 To construct an interval tree, we first need to collect :dox:`IntervalAndCargo` objects in a string and pass them to :dox:`IntervalTree#createIntervalTree`.
-See the interval tree demo in ``demos/interval_tree.cpp`` for more details.
+See the interval tree demo in ``demos/tutorial/simple_rna_seq/interval_tree.cpp`` for more details.
 As cargo we use the gene's annotation id to later retrieve all gene specific information.
 The strings of ``IntervalAndCargo`` objects should be grouped by ``contigId`` and stored in an (outer) string of strings.
 For the sake of simplicity we don't differ between genes on the forward or reverse strand and instead always consider the corresponding intervals on the forward strand.
