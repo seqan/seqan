@@ -104,11 +104,11 @@ typedef Tag<ArrayGaps_> ArrayGaps;
  * The following example shows the construction of the gaps object from the image above together with some calls to
  * <tt>toViewPosition</tt> and <tt>toSourcePosition</tt>.
  *
- * @include demos/align/gaps_example.cpp
+ * @include demos/dox/align/gaps_example.cpp
  *
  * The output is as follows:
  *
- * @include demos/align/gaps_example.cpp.stdout
+ * @include demos/dox/align/gaps_example.cpp.stdout
  */
 
 template <typename TSequence, typename TSpec = ArrayGaps>

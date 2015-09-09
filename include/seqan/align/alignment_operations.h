@@ -72,11 +72,11 @@ namespace seqan {
  *
  * @section Examples
  *
- * @include demos/align/integrate_align.cpp
+ * @include demos/dox/align/integrate_align.cpp
  *
  * The output is as follows:
  *
- * @include demos/align/integrate_align.cpp.stdout
+ * @include demos/dox/align/integrate_align.cpp.stdout
  */
 
 template <typename TSource1, typename TSpec1, typename TSource2, typename TSpec2, typename TPos>
