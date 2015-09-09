@@ -108,7 +108,7 @@ _nextInSortedSequence(TSortedSequence const& list, TIterator const& prev) {
  *
  * @section Example
  *
- * @include demos/graph_algorithms/longest_increasing_subsequence.cpp
+ * @include demos/dox/graph_algorithms/longest_increasing_subsequence.cpp
  *
  * @code{.console}
  * 5,3,4,9,6,2,1,8,7,10,
@@ -196,7 +196,7 @@ longestIncreasingSubsequence(TString const& str, TPositions& pos) {
  *
  * @section Example
  *
- * @include demos/graph_algorithms/longest_common_subsequence.cpp
+ * @include demos/dox/graph_algorithms/longest_common_subsequence.cpp
  *
  * @code{.console}
  * Score = 3
@@ -351,7 +351,7 @@ globalAlignment(TAlign& align,
  *
  * @section Example
  *
- * @include demos/graph_algorithms/heaviest_increasing_subsequence.cpp
+ * @include demos/dox/graph_algorithms/heaviest_increasing_subsequence.cpp
  *
  * @code{.console}
  * z(Weight=1),e(Weight=1),i(Weight=10),t(Weight=1),g(Weight=1),e(Weight=1),i(Weight=1),s(Weight=1),t(Weight=1),

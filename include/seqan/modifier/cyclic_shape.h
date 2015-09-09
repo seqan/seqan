@@ -85,11 +85,11 @@ typedef GappedShape<Default> GenericShape;
  * is not allowed in @link Shape @endlink.
  *
  * @section Examples
- * @include demos/cyclic_shape.cpp
+ * @include demos/dox/modifier/cyclic_shape.cpp
  *
  * The output is as follows:
  *
- * @include demos/cyclic_shape.cpp.stdout
+ * @include demos/dox/modifier/cyclic_shape.cpp.stdout
  *
  * @see ModCyclicShapeModifiedString
  * @see ModCyclicShapeModifiedIterator
@@ -145,11 +145,11 @@ struct Size<CyclicShape<TSpec> >
  * For longer sequences, prefer the @link FixedCyclicShape @endlink.
  *
  * @section Examples
- * @include demos/cyclic_shape.cpp
+ * @include demos/dox/modifier/cyclic_shape.cpp
  *
  * The output is as follows:
  *
- * @include demos/cyclic_shape.cpp.stdout
+ * @include demos/dox/modifier/cyclic_shape.cpp.stdout
  *
  * @see ModCyclicShapeModifiedString
  * @see ModCyclicShapeModifiedIterator
@@ -186,7 +186,7 @@ public:
      * The default constructor generates the pattern "1".
      * The copy constructor copies the GenericCyclicShape shape.
      *
-     * @snippet demos/cyclic_shape_snippets.cpp Define GenericCyclicShape
+     * @snippet demos/dox/modifier/cyclic_shape_snippets.cpp Define GenericCyclicShape
      *
      * @Remarks
      *
@@ -280,7 +280,7 @@ public:
      * This constructor does not do anything, the FixedCyclicShape is defined by its type alone.
      * See the example on how to create a CyclicShape:
      *
-     * @snippet demos/cyclic_shape_snippets.cpp Define FixedCyclicShape
+     * @snippet demos/dox/modifier/cyclic_shape_snippets.cpp Define FixedCyclicShape
      */
     CyclicShape()
     {}
@@ -546,7 +546,7 @@ cyclicShapeToString(
  * the distances between care positions, to a <tt>positions</tt> string directly
  * containing the care positions. See the example:
  *
- * @snippet demos/cyclic_shape_snippets.cpp CyclicShape Care Positions
+ * @snippet demos/dox/modifier/cyclic_shape_snippets.cpp CyclicShape Care Positions
  */
 
 template<typename TString, typename TSpec>

@@ -78,9 +78,9 @@ namespace seqan {
  *
  * @section Example
  *
- * @include demos/graph_algorithms/dijkstra.cpp
+ * @include demos/dox/graph_algorithms/dijkstra.cpp
  *
- * @include demos/graph_algorithms/dijkstra.cpp.stdout
+ * @include demos/dox/graph_algorithms/dijkstra.cpp.stdout
  *
  * @see dagShortestPath
  * @see bellmanFordAlgorithm

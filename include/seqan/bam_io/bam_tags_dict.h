@@ -94,11 +94,11 @@ struct Position<BamTagsDict>
  *
  * @section Example
  *
- * @include demos/bam_io/bam_tags_dict.cpp
+ * @include demos/dox/bam_io/bam_tags_dict.cpp
  *
  * Output is:
  *
- * @include demos/bam_io/bam_tags_dict.cpp.stdout
+ * @include demos/dox/bam_io/bam_tags_dict.cpp.stdout
  *
  * @see getBamTypeSize
  * @see getBamTypeChar
