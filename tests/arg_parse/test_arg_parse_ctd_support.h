@@ -70,9 +70,12 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     setValidValues(parser, "ip", "btx");
     addOption(parser, seqan::ArgParseOption("op", "output-prefix-option", "set an output prefix", seqan::ArgParseArgument::OUTPUT_PREFIX));
     setValidValues(parser, "output-prefix-option", "blub");
-    addOption(parser, seqan::ArgParseOption("hi", "hidden", "a hidden option - will be advanced in the ctd", seqan::ArgParseArgument::STRING));
 
+    addOption(parser, seqan::ArgParseOption("hi", "hidden", "a hidden option - will not appear in the ctd", seqan::ArgParseArgument::STRING));
     hideOption(parser, "hi");
+
+    addOption(parser, seqan::ArgParseOption("ad", "advanced", "an advanced option - will appear as advanced in the ctd, too", seqan::ArgParseArgument::STRING));
+    setAdvanced(parser, "advanced");
 
     addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::DOUBLE, "DOUBLE"));
     setHelpText(parser, 0, "Double Argument");
