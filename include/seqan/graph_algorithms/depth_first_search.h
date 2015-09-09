@@ -104,9 +104,9 @@ _dfsVisit(Graph<TSpec> const& g,
  *
  * @section Example
  *
- * @include demos/graph_algorithms/depth_first_search.cpp
+ * @include demos/dox/graph_algorithms/depth_first_search.cpp
  *
- * @include demos/graph_algorithms/depth_first_search.cpp.stdout
+ * @include demos/dox/graph_algorithms/depth_first_search.cpp.stdout
  *
  * @see breadthFirstSearch
  */

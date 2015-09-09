@@ -108,9 +108,9 @@ struct BadLexicalCast : ParseError
  *
  * The following example shows some lexical cast from various sequence types to numbers.
  *
- * @include demos/stream/lexical_cast.cpp
+ * @include demos/dox/stream/lexical_cast.cpp
  *
- * @include demos/stream/lexical_cast.cpp.stdout
+ * @include demos/dox/stream/lexical_cast.cpp.stdout
  */
 
 // single char
