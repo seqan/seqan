@@ -6,7 +6,7 @@ MUMmer is a tool to search for multiple exact matches (MUMs) between 2 given seq
 starting point for a multiple genome alignment algorithm.  This example shows how to implement a simple version of
 MUMer to find multiple exact matches of n sequences (n>=2) in SeqAn.
 
-@include demos/index/index_mummy.cpp
+@include demos/dox/index/mummy.cpp
 
 If you run the tool on 2 sequences it outputs exactly the same matches as MUMmer (called with -mum option), it only
 differs in the * order of outputted matches.  To get matches with increasing positions at the first sequence we

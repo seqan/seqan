@@ -6,7 +6,7 @@
  * (MUM) is a unique match that is not part of any longer unique match. The following example demonstrates how to iterate
  * over all MUMs and output them.
  *
- * @include demos/index/index_mums.cpp
+ * @include demos/dox/index/mums.cpp
  *
  * The only maximal matches that occur in all 3 sequences are "SeqAn" and "sequence". They occur exactly once and thus
  * are maximal unique matches.
