@@ -836,25 +836,9 @@ open(ModifiedString<THost, TSpec> &, const char *, int)
     return true; // NOOP; this has to be done manually right now
 }
 
-template <typename THost, typename TSpec >
-inline bool
-open(ModifiedString<THost, TSpec> const &, const char *, int)
-{
-    return true; // NOOP; this has to be done manually right now
-}
-
 template <typename THost, typename TSpec, typename TSpec2>
 inline bool
 open(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > &,
-     const char *,
-     int)
-{
-    return true; // NOOP; this has to be done manually right now
-}
-
-template <typename THost, typename TSpec, typename TSpec2>
-inline bool
-open(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > const &,
      const char *,
      int)
 {
@@ -867,23 +851,7 @@ open(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > cons
 
 template <typename THost, typename TSpec >
 inline bool
-save(ModifiedString<THost, TSpec> &, const char *, int)
-{
-    return true; // NOOP; this has to be done manually right now
-}
-
-template <typename THost, typename TSpec >
-inline bool
 save(ModifiedString<THost, TSpec> const &, const char *, int)
-{
-    return true; // NOOP; this has to be done manually right now
-}
-
-template <typename THost, typename TSpec, typename TSpec2>
-inline bool
-save(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > &,
-     const char *,
-     int)
 {
     return true; // NOOP; this has to be done manually right now
 }
