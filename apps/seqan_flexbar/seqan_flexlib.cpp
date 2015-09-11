@@ -1528,6 +1528,7 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
     bool paired = programParams.fileCount == 2;
     bool adapter = adapterParams.run;
     int read_factor = (1+paired);
+    outStream << std::endl;
     outStream << "\r\rRead statistics\n";
     outStream << "===============\n";
     outStream << "Reads processed:\t" << read_factor * programParams.readCount;
@@ -1538,7 +1539,6 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
     outStream << std::endl;
     double dropped = qualityParams.stats.dropped_1 + qualityParams.stats.dropped_2 + generalStats.removedSeqs
         + generalStats.removedSeqsShort + (demultiplexParams.exclude * demultiplexParams.stats.groups[0]);
-    //double dropped_d = (generalStats.removedSeqs + generalStats.removedSeqsShort) / read_factor;
     outStream << "  Reads dropped:\t" << dropped << "\t(" << std::setprecision(3) 
         << dropped / (double(programParams.readCount * read_factor)) * 100 << "%)\n";
     if (dropped != 0.0)
