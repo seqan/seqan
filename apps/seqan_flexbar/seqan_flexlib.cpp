@@ -1538,7 +1538,7 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
     outStream << std::endl;
     double dropped = qualityParams.stats.dropped_1 + qualityParams.stats.dropped_2 + generalStats.removedSeqs
         + generalStats.removedSeqsShort + (demultiplexParams.exclude * demultiplexParams.stats.groups[0]);
-    double dropped_d = (generalStats.removedSeqs + generalStats.removedSeqsShort) / read_factor;
+    //double dropped_d = (generalStats.removedSeqs + generalStats.removedSeqsShort) / read_factor;
     outStream << "  Reads dropped:\t" << dropped << "\t(" << std::setprecision(3) 
         << dropped / (double(programParams.readCount * read_factor)) * 100 << "%)\n";
     if (dropped != 0.0)
