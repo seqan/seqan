@@ -90,16 +90,16 @@ struct BlastMatch
 
     /*!
      * @var TPos BlastMatch::qStart;
-     * @brief The start of the alignment on the query sequence.
+     * @brief The start of the alignment on the (possibly translated) query sequence.
      *
      * @var TPos BlastMatch::qEnd;
-     * @brief The end of the alignment on the query sequence.
+     * @brief The end of the alignment on the (possibly translated) query sequence.
      *
      * @var TPos BlastMatch::sStart;
-     * @brief The start of the alignment on the subject sequence.
+     * @brief The start of the alignment on the (possibly translated) subject sequence.
      *
      * @var TPos BlastMatch::sEnd;
-     * @brief The end of the alignment on the subject sequence.
+     * @brief The end of the alignment on the (possibly translated) subject sequence.
      */
     TPos            qStart        = 0;
     TPos            qEnd          = 0;
@@ -108,10 +108,10 @@ struct BlastMatch
 
     /*!
      * @var TPos BlastMatch::qLength;
-     * @brief The length of the query sequences.
+     * @brief The length of the original query sequence (possibly before translation).
      *
      * @var TPos BlastMatch::sLength;
-     * @brief The length of the subject sequence.
+     * @brief The length of the original subject sequence (possibly before translation).
      */
     TPos            qLength       = 0;
     TPos            sLength       = 0;

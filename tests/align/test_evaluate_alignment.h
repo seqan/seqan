@@ -54,7 +54,7 @@ SEQAN_DEFINE_TEST(test_align_compute_alignment_stats)
     // Compute the alignment.
     seqan::Blosum62 scoringScheme(-1, -12);
     int score = globalAlignment(align, scoringScheme);
-    // std::cerr << align;
+//     std::cerr << align;
     SEQAN_ASSERT_EQ(score, 159);
 
     // Compute alignment statistics.
@@ -66,8 +66,8 @@ SEQAN_DEFINE_TEST(test_align_compute_alignment_stats)
     SEQAN_ASSERT_EQ(stats.numGapExtensions, 9u);
     SEQAN_ASSERT_EQ(stats.numMatches, 41u);
     SEQAN_ASSERT_EQ(stats.numMismatches, 96u);
-    SEQAN_ASSERT_EQ(stats.numPositiveScores, 91u);
-    SEQAN_ASSERT_EQ(stats.numNegativeScores, 46u);
+    SEQAN_ASSERT_EQ(stats.numPositiveScores, 69u);
+    SEQAN_ASSERT_EQ(stats.numNegativeScores, 68u);
     SEQAN_ASSERT_EQ(stats.alignmentScore, 159);
 }
 

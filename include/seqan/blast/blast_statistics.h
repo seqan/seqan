@@ -1052,7 +1052,8 @@ inline double
 computeEValue(TBlastMatch & match,
               BlastIOContext<TScore, p, h> & context)
 {
-    __uint64 ql = match.qLength; // convert to 64bit, once
+    // convert to 64bit and divide for translated sequences
+    __uint64 ql = match.qLength / (qIsTranslated(context.blastProgram) ? 3 : 1);
     // length adjustment not yet computed
     if (context._cachedLengthAdjustments.find(ql) == context._cachedLengthAdjustments.end())
         context._cachedLengthAdjustments[ql] = _lengthAdjustment(context.dbTotalLength, ql, context.scoringScheme);

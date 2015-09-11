@@ -331,7 +331,7 @@ _writeField(TFwdIterator & s,
             if (match.bitScore > 9999)
                 formatString = "%4.3le";
             else if (match.bitScore > 99.9)
-                formatString = "%4.0ld";
+                formatString = "%4.0lf";
             else
                 formatString = "%4.1lf";
 
