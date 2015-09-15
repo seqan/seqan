@@ -183,7 +183,7 @@ unsigned dropReads(seqan::StringSet<TId> & idSet, seqan::StringSet<TSeq> & seqSe
 {
 	const auto len = length(seqSet);
     decltype(length(seqSet)) keep = 0;
-    for (int i = 0; i < len; ++i)
+    for (decltype(length(seqSet)) i = 0; i < len; ++i)
     {
         if (length(seqSet[i]) >= min_length)
         {
