@@ -493,27 +493,28 @@ void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TId
 {
 	SEQAN_ASSERT(!seqsVector.empty() && !idsVector.empty());
 	SEQAN_ASSERT_EQ(seqsVector.size(), idsVector.size());
-	unsigned ex = 0;
+	unsigned keep = 0;
 	unsigned limit = length(**seqsVector.begin());
 	bool demultiplex = (length(demultiplexParams.multiplexFile) > 0);
-	for (int j = limit - 1; j >= 0; --j)
+    // better use remove erase idiom
+	for (int j = 0; j < limit; ++j)
 	{
-		if (rem[j])
+		if (!rem[j])
 		{
-			for (auto &it : seqsVector) { swap((*it)[j], (*it)[limit - ex - 1]); };
-			for (auto &it : idsVector) { swap((*it)[j], (*it)[limit - ex - 1]); };
+			for (auto &it : seqsVector) { (*it)[keep] = (*it)[j]; };
+			for (auto &it : idsVector) { (*it)[keep] =  (*it)[j]; };
 			if (demultiplex)
-				swap(demultiplexParams.multiplex[j], demultiplexParams.multiplex[limit - ex - 1]);
-			++ex;
+				demultiplexParams.multiplex[keep] = demultiplexParams.multiplex[j];
+			++keep;
 		}
 	}
-	if (ex != 0)
+	if (keep != limit)
 	{
-		for (auto &it : seqsVector) { resize(*it, limit - ex); };
-		for (auto &it : idsVector) { resize(*it, limit - ex); };
+		for (auto &it : seqsVector) { resize(*it, keep); };
+		for (auto &it : idsVector) { resize(*it, keep); };
 		if (demultiplex)
-			resize(demultiplexParams.multiplex, limit - ex);
-		stats.removedSeqsShort += ex;
+			resize(demultiplexParams.multiplex, keep);
+		stats.removedSeqsShort += limit - keep;
 	}
 }
 
@@ -563,6 +564,7 @@ void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const bool tagTrimmin
 		else
 			rem[i] = true;
 	}
+    //seqan::erase(seqs, std::remove_if(begin(seqs), end(seqs), [&min](const auto& element) {return length(element) <= min;}), end(seqs));
 }
 
 // overload for single end multiplex

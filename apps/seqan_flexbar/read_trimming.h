@@ -182,36 +182,21 @@ unsigned dropReads(seqan::StringSet<TId> & idSet, seqan::StringSet<TSeq> & seqSe
 		unsigned const min_length, QualityTrimmingStats& stats)
 {
 	int len = length(seqSet);
-    seqan::StringSet<bool> rem;
-    resize(rem, len);
-    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
+    unsigned int keep = 0;
     for (int i = 0; i < len; ++i)
     {
-        if (length(seqSet[i]) < min_length)
+        if (length(seqSet[i]) >= min_length)
         {
-            rem[i] = true;
-        }
-        else
-        {
-            rem[i] = false;
+            seqSet[keep] = seqSet[i];
+            idSet[keep++] = seqSet[i];
         }
     }
 
-    unsigned ex = 0;
-	for (int i = len - 1; i >= 0; --i)
-	{
-		if (rem[i])
-        {
-            seqan::swap(seqSet[i], seqSet[len - ex - 1]);
-            seqan::swap(idSet[i], idSet[len - ex - 1]);
-            ++ex;
-        }
-	}
-    if (ex != 0)
+    if (keep != len)
     {
-        seqan::resize(seqSet, len - ex);
-        seqan::resize(idSet, len - ex);
-        stats.dropped_1 += ex;
+        seqan::resize(seqSet, keep);
+        seqan::resize(idSet, keep);
+        stats.dropped_1 += len - keep;
     }
 	return 0;
 }
