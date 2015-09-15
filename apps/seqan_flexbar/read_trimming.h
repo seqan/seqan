@@ -188,7 +188,7 @@ unsigned dropReads(seqan::StringSet<TId> & idSet, seqan::StringSet<TSeq> & seqSe
         if (length(seqSet[i]) >= min_length)
         {
             seqSet[keep] = seqSet[i];
-            idSet[keep++] = seqSet[i];
+            idSet[keep++] = idSet[i];
         }
     }
 
