@@ -493,11 +493,11 @@ void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TId
 {
 	SEQAN_ASSERT(!seqsVector.empty() && !idsVector.empty());
 	SEQAN_ASSERT_EQ(seqsVector.size(), idsVector.size());
-	unsigned keep = 0;
-	unsigned limit = length(**seqsVector.begin());
-	bool demultiplex = (length(demultiplexParams.multiplexFile) > 0);
+	const auto limit = length(**seqsVector.begin());
+    decltype(length(demultiplexParams.multiplexFile)) keep = 0;
+    bool demultiplex = (length(demultiplexParams.multiplexFile) > 0);
     // better use remove erase idiom
-	for (int j = 0; j < limit; ++j)
+	for (decltype(length(demultiplexParams.multiplexFile)) j = 0; j < limit; ++j)
 	{
 		if (!rem[j])
 		{

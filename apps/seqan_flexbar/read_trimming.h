@@ -181,8 +181,8 @@ template <typename TId, typename TSeq>
 unsigned dropReads(seqan::StringSet<TId> & idSet, seqan::StringSet<TSeq> & seqSet,
 		unsigned const min_length, QualityTrimmingStats& stats)
 {
-	int len = length(seqSet);
-    unsigned int keep = 0;
+	const auto len = length(seqSet);
+    decltype(length(seqSet)) keep = 0;
     for (int i = 0; i < len; ++i)
     {
         if (length(seqSet[i]) >= min_length)
