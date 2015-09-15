@@ -20,7 +20,7 @@ find_package(CXX11 REQUIRED)
 
 # Disable flexbar if no CXX11 available.
 if (NOT CXX11_FOUND)
-    message (STATUS "  flexbar cannot be built with MinGW or with MS Visual C++ 8 and earlier.")
+    message (STATUS "  C++11 compiler required to build flexbar")
     return ()
 endif (NOT CXX11_FOUND)
 
