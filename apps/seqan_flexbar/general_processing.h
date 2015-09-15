@@ -617,7 +617,7 @@ template<typename TSeqs,typename TIds>
 void trimTo(TSeqs& seqs, TIds& ids, const unsigned len, GeneralStats& stats)
 {
     StringSet<bool> rem;
-    int limit = length(seqs);
+    const auto limit = length(seqs);
     resize(rem, limit);
     SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
     for (int i = 0; i < limit; ++i)
@@ -635,21 +635,21 @@ void trimTo(TSeqs& seqs, TIds& ids, const unsigned len, GeneralStats& stats)
             }
         }    
     }
-    unsigned ex = 0;
-    for (int j = limit - 1; j >= 0; --j)
+    decltype(length(seqs)) keep = 0;
+    for (decltype(length(seqs)) j = 0; j < limit; ++j)
     {
-        if (rem[j])
+        if (!rem[j])
         {
-            swap(seqs[j], seqs[limit  - ex - 1]);
-            swap(ids[j], ids[limit  - ex - 1]);
-            ++ex;
+            seqs[keep] = seqs[j];
+            ids[keep] = ids[j];
+            ++keep;
         }
     }
-    if (ex != 0)
+    if (keep != limit)
     {
-        resize(seqs, limit - ex);
-        resize(ids, limit - ex);
-        stats.removedSeqsShort += ex;
+        resize(seqs, keep);
+        resize(ids, keep);
+        stats.removedSeqsShort += limit - keep;
     }
 }
 
@@ -681,25 +681,25 @@ void trimTo(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, const unsigned
             }
         }    
     }
-    unsigned ex = 0;
-    for (int j = length(rem) - 1; j >= 0; --j)
+    decltype(length(seqs)) keep = 0;
+    for (decltype(length(seqs)) j = 0; j < limit; ++j)
     {
-        if (rem[j])
+        if (!rem[j])
         {
-            swap(seqs[j], seqs[limit - ex - 1]);            
-            swap(seqsRev[j], seqsRev[limit - ex - 1]);
-            swap(ids[j], ids[limit - ex - 1]);
-            swap(idsRev[j], idsRev[limit - ex - 1]);
-            ++ex;
+            seqs[keep] = seqs[j];
+            seqsRev[keep] = seqsRev[j];
+            ids[keep] = ids[j];
+            idsRev[keep] = idsRev[j];
+            ++keep;
         }
     }
-    if (ex != 0)
+    if (keep != limit)
     {
-        resize(seqs, limit - ex);
-        resize(seqsRev, limit - ex);
-        resize(ids, limit - ex);
-        resize(idsRev, limit - ex);
-        stats.removedSeqsShort += (2 * ex);
+        resize(seqs, keep);
+        resize(seqsRev, keep);
+        resize(ids, keep);
+        resize(idsRev, keep);
+        stats.removedSeqsShort += limit - keep;
     }
 }
 

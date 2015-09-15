@@ -210,7 +210,7 @@ unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqS
 	// too short. If only one read of the pair is too short, mark it
 	// with a single N. If both reads are too short, remove them.
 	// Possible feature for the future generation: Write out orphaned reads to extra file.
-    int len = length(seqSet1);
+    const auto len = length(seqSet1);
     seqan::StringSet<bool> rem;
     resize(rem, len);
     unsigned dropped1 = 0;
@@ -245,24 +245,24 @@ unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqS
     }
     stats.dropped_1 += dropped1;
     stats.dropped_2 += dropped2;
-    unsigned ex = 0;
-    for (int i = len - 1; i >= 0; --i)
+    decltype(length(seqSet1)) keep = 0;
+    for (decltype(length(seqSet1)) i = 0; i < 0; ++i)
     {
-        if (rem[i])
+        if (!rem[i])
         {
-            seqan::swap(seqSet1[i], seqSet1[len - ex - 1]);
-            seqan::swap(idSet1[i], idSet1[len - ex - 1]);
-            seqan::swap(seqSet2[i], seqSet2[len - ex - 1]);
-            seqan::swap(idSet2[i], idSet2[len - ex - 1]);
-            ++ex;
+            seqSet1[keep] = seqSet1[i];
+            idSet1[keep] = idSet1[i];
+            seqSet2[keep] = seqSet2[i];
+            idSet2[keep] = idSet2[i];
+            ++keep;
         }
     }
-    if (ex != 0)
+    if (keep != len)
     {
-        resize(seqSet1, len - ex);
-        resize(idSet1, len - ex);
-        resize(seqSet2, len - ex);
-        resize(idSet2, len - ex);
+        resize(seqSet1, keep);
+        resize(idSet1, keep);
+        resize(seqSet2, keep);
+        resize(idSet2, keep);
     }
 	return 0;
 }
