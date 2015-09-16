@@ -55,6 +55,47 @@ namespace seqan {
 // Functions
 // ============================================================================
 
+template <typename TSource0, typename TGapSpec0,
+          typename TSource1, typename TGapSpec1,
+          typename TPos>
+inline void
+integrateGaps(Gaps<TSource0, TGapSpec0> & targetRow,
+              Gaps<TSource1, TGapSpec1> const & sourceRow,
+              TPos const viewPos)
+{
+    typedef typename Iterator<Gaps<TSource0, TGapSpec0> >::Type TTargetIt;
+    typedef typename Iterator<Gaps<TSource1, TGapSpec1> const, Standard>::Type TSourceIt;
+
+    // This assertion ensures that the number of sequence characters after viewPos is greater than or equal to
+    // the number of source characters in the clipped infix row.
+    SEQAN_ASSERT_GEQ(endPosition(targetRow) - toSourcePosition(targetRow, viewPos),
+                     endPosition(sourceRow) - beginPosition(sourceRow));
+
+    // init iterators
+    TTargetIt it = iter(targetRow, viewPos);
+
+    // walk through Gaps containers and copy gaps
+    for (TSourceIt infixIt = begin(sourceRow, Standard()); !atEnd(infixIt);)
+    {
+        TPos gapSize = countGaps(infixIt);
+        insertGaps(it, gapSize);
+        goFurther(it, gapSize+1);
+        goFurther(infixIt, gapSize+1);
+    }
+}
+
+template <typename TSource0, typename TGapSpec0,
+          typename TSource1, typename TGapSpec1>
+inline void
+integrateGaps(Gaps<TSource0, TGapSpec0> & targetRow,
+              Gaps<TSource1, TGapSpec1> const & sourceRow)
+{
+    typename Position<TSource0>::Type viewPos = beginPosition(source(sourceRow))
+                                              - beginPosition(source(targetRow))
+                                              + beginPosition(sourceRow); // correct for infixes
+    integrateGaps(targetRow, sourceRow, toViewPosition(targetRow, viewPos));
+}
+
 // ----------------------------------------------------------------------------
 // Function integrateAlign()
 // ----------------------------------------------------------------------------
@@ -84,58 +125,21 @@ void integrateAlign(Align<TSource1, TSpec1> & align,
                     Align<TSource2, TSpec2> const & infixAlign,
                     String<TPos> const & viewPos)
 {
-    typedef Align<TSource1, TSpec1> TAlign;
-    typedef Align<TSource2, TSpec2> TInfixAlign;
-    typedef typename Size<TAlign>::Type TSize;
-
-    typedef typename Row<TAlign>::Type TRow;
-    typedef typename Row<TInfixAlign const>::Type TInfixRow;
-
-    // Iterators on align and infixAlign.
-    typename Iterator<TRow>::Type it;
-    typedef typename Iterator<TInfixRow, Standard>::Type TInfixRowIt;
-
-
+    //TODO assert numrows(infix>= orig)
+    typedef typename Size<Align<TSource1, TSpec1> >::Type TSize;
+    //NOTE(h-2): could be parallelized
     for (TSize i = 0; i < length(rows(align)); ++i)
-    {
-        TInfixRow const & infixRow = row(infixAlign, i);
-        // This assertion ensures that the number of sequence characters after viewPos[i] is greater than or equal to
-        // the number of source characters in the clipped infix row.
-        SEQAN_ASSERT_GEQ(endPosition(row(align, i)) - toSourcePosition(row(align, i), viewPos[i]),
-                endPosition(infixRow) - beginPosition(infixRow));
-
-        // init iterators
-        it = iter(row(align, i), value(viewPos, i));
-
-        // walk through Gaps containers and copy gaps
-        for (TInfixRowIt infixIt = begin(infixRow, Standard()); !atEnd(infixIt);)
-        {
-            TSize gapSize = countGaps(infixIt);
-            insertGaps(it, gapSize);
-            goFurther(it, gapSize+1);
-            goFurther(infixIt, gapSize+1);
-        }
-    }
+        integrateGaps(row(align, i), row(infixAlign, i), viewPos[i]);
 }
 
-template <typename TSource, typename TSpec1, typename TSpec2>
-void integrateAlign(Align<TSource, TSpec1> & align,
-                    Align<typename Infix<TSource>::Type, TSpec2> const & infixAlign)
+template <typename TSource1, typename TSpec1, typename TSource2, typename TSpec2>
+void integrateAlign(Align<TSource1, TSpec1> & align,
+                    Align<TSource2, TSpec2> const & infixAlign)
 {
-    typedef typename Size<TSource>::Type TSize;
-    typedef typename Position<typename Row<Align<TSource, TSpec1> >::Type>::Type TPos;
-
-    String<TPos> viewPos;
-    TPos pos;
-    for (TSize i = 0; i < length(rows(infixAlign)); ++i)
-    {
-        pos = beginPosition(source(row(infixAlign, i)))
-            - beginPosition(source(row(align, i)))
-            + beginPosition(row(infixAlign, i));
-        appendValue(viewPos, toViewPosition(row(align, i), pos));
-    }
-
-    integrateAlign(align, infixAlign, viewPos);
+    typedef typename Size<Align<TSource1, TSpec1> >::Type TSize;
+    //NOTE(h-2): could be parallelized
+    for (TSize i = 0; i < length(rows(align)); ++i)
+        integrateGaps(row(align, i), row(infixAlign, i));
 }
 
 }  // namespace seqan
