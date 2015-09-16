@@ -188,9 +188,12 @@ void clear(AlignmentStats & stats)
  * @brief Compute alignment statistics.
  *
  * @signature TScoreVal computeAlignmentStats([stats, ]align, scoringScheme);
+ * @signature TScoreVal computeAlignmentStats(row0, row1, scoringScheme);
  *
  * @param[out] stats The @link AlignmentStats @endlink object to store alignment statistics in.
  * @param[in]  align The @link Align @endlink object to score.
+ * @param[in]  row0  The first row (@link Gaps @endlink object).
+ * @param[in]  row1  The second row (@link Gaps @endlink object).
  * @param[in]  score The @link Score @endlink object to use for the scoring scheme.
  *
  * @return TScoreVal The score value of the alignment, of the same type as the value type of <tt>scoringScheme</tt>
@@ -206,25 +209,25 @@ void clear(AlignmentStats & stats)
  * @include demos/align/compute_alignment_stats.cpp.stdout
  */
 
-template <typename TSource, typename TAlignSpec, typename TScoreVal, typename TScoreSpec>
+template <typename TSource0, typename TGapsSpec0,
+          typename TSource1, typename TGapsSpec1,
+          typename TScoreVal, typename TScoreSpec>
 TScoreVal computeAlignmentStats(AlignmentStats & stats,
-                                Align<TSource, TAlignSpec> const & align,
+                                Gaps<TSource0, TGapsSpec0> const & row0,
+                                Gaps<TSource1, TGapsSpec1> const & row1,
                                 Score<TScoreVal, TScoreSpec> const & scoringScheme)
 {
-    SEQAN_ASSERT_EQ_MSG(length(rows(align)), 2u, "Only works with pairwise alignments.");
-    SEQAN_ASSERT_EQ_MSG(length(row(align, 0)), length(row(align, 1)), "Invalid alignment!");
     clear(stats);
 
-    typedef Align<TSource, TAlignSpec> const TAlign;
-    typedef typename Row<TAlign>::Type TGaps;
-    typedef typename Iterator<TGaps, Standard>::Type TGapsIter;
-    typedef typename Value<typename Source<TGaps>::Type>::Type TAlphabet;
+    typedef typename Iterator<Gaps<TSource0, TGapsSpec0> const, Standard>::Type TGapsIter0;
+    typedef typename Iterator<Gaps<TSource1, TGapsSpec1> const, Standard>::Type TGapsIter1;
+    typedef typename Value<TSource0>::Type TAlphabet;
 
     // Get iterators.
-    TGapsIter it0 = begin(row(align, 0));
-    TGapsIter itEnd0 = end(row(align, 0));
-    TGapsIter it1 = begin(row(align, 1));
-    TGapsIter itEnd1 = end(row(align, 1));
+    TGapsIter0 it0      = begin(row0);
+    TGapsIter0 itEnd0   = end(row0);
+    TGapsIter1 it1      = begin(row1);
+    TGapsIter1 itEnd1   = end(row1);
 
     // State whether we have already opened a gap.
     bool isGapOpen0 = false, isGapOpen1 = false;
@@ -274,7 +277,8 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
         if (!isGap(it0) && !isGap(it1))
         {
             // Compute the alignment score and register in stats.
-            TAlphabet c0 = *it0, c1 = *it1;
+            TAlphabet c0 = *it0;
+            TAlphabet c1 = static_cast<TAlphabet>(*it1);
             TScoreVal scoreVal = score(scoringScheme, c0, c1);
             stats.alignmentScore += scoreVal;
             // Register other statistics.
@@ -292,13 +296,24 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
     stats.numGaps = stats.numGapOpens + stats.numGapExtensions;
 
     // Finally, compute the alignment similarity from the various counts
-    stats.alignmentLength = length(row(align, 0));
+    stats.alignmentLength = length(row0);
     stats.alignmentSimilarity = 100.0 * static_cast<float>(stats.numPositiveScores)
                                 / static_cast<float>(stats.alignmentLength);
     stats.alignmentIdentity = 100.0 * static_cast<float>(stats.numMatches)
                               / static_cast<float>(stats.alignmentLength);
 
     return stats.alignmentScore;
+}
+
+template <typename TSource, typename TAlignSpec, typename TScoreVal, typename TScoreSpec>
+TScoreVal computeAlignmentStats(AlignmentStats & stats,
+                                Align<TSource, TAlignSpec> const & align,
+                                Score<TScoreVal, TScoreSpec> const & scoringScheme)
+{
+    SEQAN_ASSERT_EQ_MSG(length(rows(align)), 2u, "Only works with pairwise alignments.");
+    SEQAN_ASSERT_EQ_MSG(length(row(align, 0)), length(row(align, 1)), "Invalid alignment!");
+
+    return computeAlignmentStats(stats, row(align, 0), row(align, 1), scoringScheme);
 }
 
 template <typename TGaps, typename TAlignSpec, typename TScoreVal, typename TScoreSpec>

@@ -920,7 +920,7 @@ inline void
 computeAlignmentStats(TBlastMatch & match,
                       BlastIOContext<TScore, p, h> const & context)
 {
-    computeAlignmentStats(match.alignStats, match.align, seqanScheme(context.scoringScheme));
+    computeAlignmentStats(match.alignStats, match.alignRow0, match.alignRow1, seqanScheme(context.scoringScheme));
 }
 
 // ----------------------------------------------------------------------------
