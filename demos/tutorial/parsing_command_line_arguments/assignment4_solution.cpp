@@ -4,14 +4,16 @@
 
 struct ModifyStringOptions
 {
-	unsigned period;
-	bool toUppercase;
-	bool toLowercase;
-	seqan::CharString text;
+    unsigned period;
+    unsigned rangeBegin, rangeEnd;
+    bool toUppercase;
+    bool toLowercase;
+    seqan::CharString text;
 
-	ModifyStringOptions() :
-	    period(1), toUppercase(false), toLowercase(false)
-	{}
+    ModifyStringOptions() :
+        period(1), rangeBegin(0), rangeEnd(0),toUppercase(false),
+        toLowercase(false)
+    {}
 };
 
 seqan::ArgumentParser::ParseResult
