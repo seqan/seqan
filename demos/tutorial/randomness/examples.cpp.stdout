@@ -1,0 +1,8 @@
+pickRandomNumber(rng) == 1608637542
+pickRandomNumber(rng, uniformDouble) == 0.950714
+pickRandomNumber(rng, uniformInt) == 27
+pickRandomNumber(rng, normal) == 0.419823
+pickRandomNumber(rng, logNormal) == 1.22431
+pickRandomNumber(rng, logNormal2) == 2.78004
+pickRandomNumber(rng, logNormal3) == 0.00155248
+shuffle("Hello World!") ==  o!reWlloHld

@@ -1,0 +1,10 @@
+0:Berlin
+1:Hamburg
+2:Hannover
+3:Mainz
+4:Munich
+Shortest path from Hannover to Berlin: 286
+Shortest path from Hannover to Hamburg: 575
+Shortest path from Hannover to Hannover: 0
+Shortest path from Hannover to Mainz: 859
+Shortest path from Hannover to Munich: 572

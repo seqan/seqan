@@ -195,7 +195,7 @@ public:
  *
  * @section Example
  *
- * @include demos/graph_align/graph_align.cpp
+ * @include demos/dox/graph_align/graph_align.cpp
  *
  * @code{.console}
  * Score = -8

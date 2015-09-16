@@ -199,11 +199,11 @@ void clear(AlignmentStats & stats)
  *
  * @section Examples
  *
- * @include demos/align/compute_alignment_stats.cpp
+ * @include demos/dox/align/compute_alignment_stats.cpp
  *
  * The output is as follows:
  *
- * @include demos/align/compute_alignment_stats.cpp.stdout
+ * @include demos/dox/align/compute_alignment_stats.cpp.stdout
  */
 
 template <typename TSource, typename TAlignSpec, typename TScoreVal, typename TScoreSpec>

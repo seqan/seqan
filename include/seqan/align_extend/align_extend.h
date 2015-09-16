@@ -450,11 +450,11 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
  *
  * @section Example
  *
- * @include demos/align_extend/extend_alignment.cpp
+ * @include demos/dox/align_extend/extend_alignment.cpp
  *
  * The output is as follows:
  *
- * @include demos/align_extend/extend_alignment.cpp.stdout
+ * @include demos/dox/align_extend/extend_alignment.cpp.stdout
  *
  * @section Remarks
  *

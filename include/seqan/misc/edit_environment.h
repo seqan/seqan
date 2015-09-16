@@ -88,9 +88,9 @@ struct EditEnvironment;
  *
  * @section Examples
  *
- * @include demos/misc/enumerate_strings.cpp
+ * @include demos/dox/misc/enumerate_strings.cpp
  *
- * @include demos/misc/enumerate_strings.cpp.stdout
+ * @include demos/dox/misc/enumerate_strings.cpp.stdout
  */
 
 /*!

@@ -48,19 +48,19 @@ ModReverse
 We begin with the specialization :dox:`ModReverseString` from the example above.
 Now we have a given string:
 
-.. includefrags:: demos/tutorial/modifiers/modifier_modreverse.cpp
+.. includefrags:: demos/tutorial/modifiers/modreverse.cpp
    :fragment: main
 
 and want to get the reverse.
 So we need a :dox:`ModifiedString` specialized with ``String<char>`` and :dox:`ModReverseString`.
 We create the modifier and link it with ``myString``:
 
-.. includefrags:: demos/tutorial/modifiers/modifier_modreverse.cpp
+.. includefrags:: demos/tutorial/modifiers/modreverse.cpp
    :fragment: modifier
 
 The result is:
 
-.. includefrags:: demos/tutorial/modifiers/modifier_modreverse.cpp
+.. includefrags:: demos/tutorial/modifiers/modreverse.cpp
    :fragment: output1
 
 .. code-block:: console
@@ -70,7 +70,7 @@ The result is:
 
 To verify that we didn't copy ``myString``, we replace an infix of the original string and see that, as a side effect, the modified string has also changed:
 
-.. includefrags:: demos/tutorial/modifiers/modifier_modreverse.cpp
+.. includefrags:: demos/tutorial/modifiers/modreverse.cpp
    :fragment: output2
 
 .. code-block:: console

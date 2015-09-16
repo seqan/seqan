@@ -1,0 +1,6 @@
+Allocating and clearing 100000 times blocks of size 10 with MultiPool Allocator took 0.00160217
+Allocating and clearing 100000 times blocks of size 10 with Standard Allocator took 0.023572
+Allocating and clearing 100000 times blocks of size 100 with MultiPool Allocator took 0.0129499
+Allocating and clearing 100000 times blocks of size 100 with Standard Allocator took 0.0315518
+Allocating and clearing 100000 times blocks of size 1000 with MultiPool Allocator took 0.132747
+Allocating and clearing 100000 times blocks of size 1000 with Standard Allocator took 0.119664

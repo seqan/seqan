@@ -1,0 +1,5 @@
+Template Subclassing Demo
+foo(MyClass<typename TSpec> const & obj) called!  obj.x == 0
+foo(MyClass<SpecB> const & obj) called!  obj.x == 1
+foo(MyClass<SpecC> const & obj) called!  obj.x == 0
+foo(MyClass<typename TSpec> const & obj) called!  obj.x == 2
