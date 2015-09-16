@@ -330,7 +330,7 @@ public:
 
         for(unsigned int i=0; i<length(stringSet); i++)
         {
-            p+= emittedProbability(stringSet[i]);
+            p*= emittedProbability(stringSet[i]);
         }
 
         return p;
