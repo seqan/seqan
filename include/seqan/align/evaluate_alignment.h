@@ -187,8 +187,8 @@ void clear(AlignmentStats & stats)
  * @headerfile <seqan/align.h>
  * @brief Compute alignment statistics.
  *
- * @signature TScoreVal computeAlignmentStats([stats, ]align, scoringScheme);
- * @signature TScoreVal computeAlignmentStats(row0, row1, scoringScheme);
+ * @signature TScoreVal computeAlignmentStats(stats, align, scoringScheme);
+ * @signature TScoreVal computeAlignmentStats(stats, row0, row1, scoringScheme);
  *
  * @param[out] stats The @link AlignmentStats @endlink object to store alignment statistics in.
  * @param[in]  align The @link Align @endlink object to score.
@@ -316,6 +316,7 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
     return computeAlignmentStats(stats, row(align, 0), row(align, 1), scoringScheme);
 }
 
+// NOTE(h-2): this interface is deprecated. Don't use it.
 template <typename TGaps, typename TAlignSpec, typename TScoreVal, typename TScoreSpec>
 TScoreVal computeAlignmentStats(Align<TGaps, TAlignSpec> const & align,
                                 Score<TScoreVal, TScoreSpec> const & scoringScheme)
