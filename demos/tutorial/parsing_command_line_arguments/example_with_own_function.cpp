@@ -42,7 +42,7 @@ parseCommandLine(ModifyStringOptions & options, int argc, char const ** argv)
         return res;
 
     // Extract option values.    
-    getOptionValue(option.period, parser, "period");
+    getOptionValue(options.period, parser, "period");
     options.toUppercase = isSet(parser, "uppercase");
     options.toLowercase = isSet(parser, "lowercase");
     getArgumentValue(options.text, parser, 0);

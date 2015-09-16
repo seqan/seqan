@@ -41,15 +41,15 @@ int main(int argc, char const ** argv)
 
     // Extract option values and print them.
     ModifyStringOptions options;    
-    getOptionValue(option.period, parser, "period");
+    getOptionValue(options.period, parser, "period");
     options.toUppercase = isSet(parser, "uppercase");
     options.toLowercase = isSet(parser, "lowercase");
     getArgumentValue(options.text, parser, 0);
 
-    std::cout << "period   \t" << period << '\n'
-              << "uppercase\t" << toUppercase << '\n'
-              << "lowercase\t" << toLowercase << '\n'
-              << "text     \t" << text << '\n';
+    std::cout << "period   \t" << options.period << '\n'
+              << "uppercase\t" << options.toUppercase << '\n'
+              << "lowercase\t" << options.toLowercase << '\n'
+              << "text     \t" << options.text << '\n';
 
     return 0;
 }
