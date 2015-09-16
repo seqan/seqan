@@ -187,8 +187,8 @@ unsigned dropReads(seqan::StringSet<TId> & idSet, seqan::StringSet<TSeq> & seqSe
     {
         if (length(seqSet[i]) >= min_length)
         {
-            seqSet[keep] = seqSet[i];
-            idSet[keep++] = idSet[i];
+            seqSet[keep] = std::move(seqSet[i]);
+            idSet[keep++] = std::move(idSet[i]);
         }
     }
 
@@ -250,10 +250,10 @@ unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqS
     {
         if (!rem[i])
         {
-            seqSet1[keep] = seqSet1[i];
-            idSet1[keep] = idSet1[i];
-            seqSet2[keep] = seqSet2[i];
-            idSet2[keep] = idSet2[i];
+            seqSet1[keep] = std::move(seqSet1[i]);
+            idSet1[keep] = std::move(idSet1[i]);
+            seqSet2[keep] = std::move(seqSet2[i]);
+            idSet2[keep] = std::move(idSet2[i]);
             ++keep;
         }
     }

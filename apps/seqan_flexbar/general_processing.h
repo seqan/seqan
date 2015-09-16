@@ -501,8 +501,8 @@ void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TId
 	{
 		if (!rem[j])
 		{
-			for (auto &it : seqsVector) { (*it)[keep] = (*it)[j]; };
-			for (auto &it : idsVector) { (*it)[keep] =  (*it)[j]; };
+			for (auto &it : seqsVector) { (*it)[keep] = std::move((*it)[j]); };
+			for (auto &it : idsVector) { (*it)[keep] = std::move((*it)[j]); };
 			if (demultiplex)
 				demultiplexParams.multiplex[keep] = demultiplexParams.multiplex[j];
 			++keep;
@@ -640,8 +640,8 @@ void trimTo(TSeqs& seqs, TIds& ids, const unsigned len, GeneralStats& stats)
     {
         if (!rem[j])
         {
-            seqs[keep] = seqs[j];
-            ids[keep] = ids[j];
+            seqs[keep] = std::move(seqs[j]);
+            ids[keep] = std::move(ids[j]);
             ++keep;
         }
     }
@@ -686,10 +686,10 @@ void trimTo(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, const unsigned
     {
         if (!rem[j])
         {
-            seqs[keep] = seqs[j];
-            seqsRev[keep] = seqsRev[j];
-            ids[keep] = ids[j];
-            idsRev[keep] = idsRev[j];
+            seqs[keep] = std::move(seqs[j]);
+            seqsRev[keep] = std::move(seqsRev[j]);
+            ids[keep] = std::move(ids[j]);
+            idsRev[keep] = std::move(idsRev[j]);
             ++keep;
         }
     }
