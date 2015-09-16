@@ -55,6 +55,7 @@
 #include <seqan/stream.h>
 
 #include "helper_functions.h"
+#include <initializer_list>
 
 using namespace seqan;
 
@@ -184,26 +185,12 @@ void processN(TSeqs& seqs, TIds& ids, unsigned allowed, GeneralStats& stats)
     {
         res[i] = findN(seqs[i], allowed);
     }
-    unsigned ex = 0;
     for (int  i = length(res) -1; i >= 0; --i)
     {
-        if (res[i] == -1)
-        {
-            swap(seqs[i], seqs[limit - ex - 1]);
-            swap(ids[i], ids[limit - ex - 1]);
-            ++ex;
-        }
-        else
-        {
+        if (res[i] != -1)
             stats.uncalledBases += res[i];
-        }
     }   
-    if (ex != 0)
-    {
-        resize(seqs, limit - ex);
-        resize(ids, limit - ex);
-        stats.removedSeqs += ex;
-    }
+    stats.removedSeqs += _eraseSeqs(res, -1, seqs, ids);
 }
 
 //paired-end data with substitutions
@@ -229,26 +216,7 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned all
         }
     }
     stats.uncalledBases += uncalled;
-    unsigned ex = 0;
-    for (int i = length(res) - 1; i >= 0 ; --i)
-    {
-        if (res[i] == -1)
-        {
-            swap(seqs[i], seqs[limit - ex - 1]);
-            swap(ids[i], ids[limit - ex - 1]);
-            swap(seqsRev[i], seqsRev[limit - ex - 1]);
-            swap(idsRev[i], idsRev[limit - ex - 1]);
-            ++ex;
-        }
-    }
-    if (ex != 0)
-    {
-        resize(seqs, limit - ex);
-        resize(ids, limit - ex);
-        resize(seqsRev, limit - ex);
-        resize(idsRev, limit - ex);
-        stats.removedSeqs += (2 * ex);
-    }
+    stats.removedSeqs += 2 * _eraseSeqs(res, -1, seqs, seqsRev, ids, idsRev);
 }
 
 //paired-end data without substitutions
@@ -274,26 +242,7 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned all
         }
     }
     stats.uncalledBases += uncalled;
-    unsigned ex = 0;
-    for (int i = length(res) - 1; i >= 0 ; --i)
-    {
-        if (res[i] == -1)
-        {
-            swap(seqs[i], seqs[limit - ex - 1]);
-            swap(ids[i], ids[limit - ex - 1]);
-            swap(seqsRev[i], seqsRev[limit - ex - 1]);
-            swap(idsRev[i], idsRev[limit - ex - 1]);
-            ++ex;
-        }
-    }
-    if (ex != 0)
-    {
-        resize(seqs, limit - ex);
-        resize(ids, limit - ex);
-        resize(seqsRev, limit - ex);
-        resize(idsRev, limit - ex);
-        stats.removedSeqs += (2 * ex);
-    }
+    stats.removedSeqs += 2 * _eraseSeqs(res, -1, seqs, seqsRev, ids, idsRev);
 }
 
 //Overload single-end data with substitutions and multiplex barcodes
@@ -319,24 +268,7 @@ void processN(TSeqs& seqs, TIds& ids, TMulti& multiplex, unsigned allowed, TSub 
         }
     }
     stats.uncalledBases += uncalled;
-    unsigned ex = 0;
-    for (int i = length(res) - 1; i >= 0 ; --i) 
-    {
-        if (res[i] == -1)
-        {
-            swap(seqs[i], seqs[limit - ex - 1]);
-            swap(ids[i], ids[limit - ex - 1]);
-            swap(multiplex[i], multiplex[limit - ex - 1]);
-            ++ex;
-        }
-    }
-    if (ex != 0)
-    {
-        resize(seqs, limit-ex);
-        resize(ids, limit-ex);
-        resize(multiplex, limit-ex);
-        stats.removedSeqs += ex;
-    }
+    stats.removedSeqs += _eraseSeqs(res, -1, seqs, ids, multiplex);
 }
 
 //Overload for single-end data, no substitutions and multiplex barcodes
@@ -362,24 +294,7 @@ void processN(TSeqs& seqs, TIds& ids, TMulti& multiplex, unsigned allowed, Gener
         }
     }
     stats.uncalledBases += uncalled;
-    unsigned ex = 0;
-    for (int i = length(res) - 1; i >= 0 ; --i) 
-    {
-        if (res[i] == -1)
-        {                               
-            swap(seqs[i], seqs[limit - ex - 1]);
-            swap(ids[i], ids[limit - ex - 1]);
-            swap(multiplex[i], multiplex[limit - ex - 1]);
-            ++ex;
-        }
-    }
-    if (ex != 0)
-    {
-        resize(seqs, limit-ex);
-        resize(ids, limit-ex);
-        resize(multiplex, limit-ex);
-        stats.removedSeqs += ex;
-    }
+    stats.removedSeqs += _eraseSeqs(res, -1, seqs, ids);
 }
 
 //paired-end data with substitutions and multiplex barcodes
@@ -411,28 +326,7 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
         }
     }
     stats.uncalledBases += uncalled;
-    unsigned ex = 0;
-    for (int i = length(res) - 1; i >= 0 ; --i) 
-    {
-        if (res[i] == -1)
-        {
-            swap(seqs[i], seqs[limit - ex - 1]);
-            swap(seqsRev[i], seqsRev[limit - ex - 1]);
-            swap(ids[i], ids[limit - ex - 1]);
-            swap(idsRev[i], idsRev[limit - ex - 1]);
-            swap(multiplex[i], multiplex[limit - ex - 1]);
-            ++ex;
-        }
-    }
-    if (ex != 0)
-    {
-        resize(seqs, limit-ex);
-        resize(seqsRev, limit-ex);
-        resize(ids, limit-ex);
-        resize(idsRev, limit-ex);
-        resize(multiplex, limit-ex);
-        stats.removedSeqs += (2 * ex);
-    }
+    stats.removedSeqs += 2 * _eraseSeqs(res, -1, seqs, seqsRev, ids, idsRev);
 }
 
 //paired-end data without substitutions and multiplex barcodes
@@ -463,69 +357,28 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
         }
     }
     stats.uncalledBases += uncalled;
-    unsigned ex = 0;
-    for (int i = length(res) - 1; i >= 0 ; --i) 
-    {
-        if (res[i] == -1)
-        {
-            swap(seqs[i], seqs[limit - ex - 1]);
-            swap(seqsRev[i], seqsRev[limit - ex - 1]);
-            swap(ids[i], ids[limit - ex - 1]);
-            swap(idsRev[i], idsRev[limit - ex - 1]);
-            swap(multiplex[i], multiplex[limit - ex - 1]);
-            ++ex;
-        }
-    }
-    if (ex != 0)
-    {
-        resize(seqs, limit-ex);
-        resize(seqsRev, limit-ex);
-        resize(ids, limit-ex);
-        resize(idsRev, limit-ex);
-        resize(multiplex, limit-ex);
-        stats.removedSeqs += (2 * ex);
-    }
+    stats.removedSeqs += 2 * _eraseSeqs(res, -1, seqs, seqsRev, ids, idsRev);
 }
 
+template <class F, class... Ts>
+void for_each_argument(F f, Ts&&... a) {
+    (void)std::initializer_list<int>{(f(std::forward<Ts>(a)), 0)...};
+}
 
-template<typename TSeqs, typename TIds>
-void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TIds*> &idsVector, String<bool> const& rem, DemultiplexingParams& demultiplexParams, GeneralStats& stats)
+template<typename Trem, typename TremVal, typename... TContainer>
+auto _eraseSeqs(const Trem& rem, const TremVal remVal, TContainer&... container)
 {
-	SEQAN_ASSERT(!seqsVector.empty() && !idsVector.empty());
-	SEQAN_ASSERT_EQ(seqsVector.size(), idsVector.size());
-	const auto limit = length(**seqsVector.begin());
-    const auto demultiplex = (bool)(length(demultiplexParams.multiplexFile) > 0);
-
-    for (auto& pSeqs : seqsVector)
+    const auto numRemoveElements = std::count(begin(rem), end(rem), remVal);
+    auto eraseElements = [&rem, numRemoveElements, remVal](auto seq)  // erase Elements using the remove erase idiom
     {
-        const auto beginAddr = (void*)&*begin(*pSeqs);
-        std::remove_if(begin(*pSeqs), end(*pSeqs), 
-            [&rem, &beginAddr](const auto& element) {
-            return rem[&element - beginAddr];});
-    }
-    for (auto& pIDs : idsVector)
-    {
-        const auto beginAddr = (void*)&*begin(*pIDs);
-        std::remove_if(begin(*pIDs), end(*pIDs), 
-            [&rem, &beginAddr](const auto& element) {
-            return rem[&element - beginAddr];});
-    }
-    if (demultiplex)
-    {
-        const auto beginAddr = (void*)&*begin(demultiplexParams.multiplex);
-        std::remove_if(begin(demultiplexParams.multiplex), end(demultiplexParams.multiplex), [&rem, &beginAddr](const auto& element) {
-            return rem[&element - beginAddr];});
-    }
-
-    const auto newSize = std::count(begin(rem), end(rem), false);
-    if (newSize != limit)
-	{
-		for (auto& it : seqsVector) { resize(*it, newSize); };
-		for (auto& it : idsVector) { resize(*it, newSize); };
-		if (demultiplex)
-			resize(demultiplexParams.multiplex, newSize);
-		stats.removedSeqsShort += limit - newSize;
-	}
+        const auto beginAddr = (void*)&*begin(seq);
+        std::remove_if(begin(seq), end(seq),
+            [&rem, &beginAddr, remVal](const auto& element) {
+            return rem[&element - beginAddr] == remVal;});
+        resize(seq, length(seq)- numRemoveElements);
+    };
+    for_each_argument(eraseElements, container...);
+    return length(rem) - numRemoveElements;
 }
 
 // main preTrim function
@@ -581,11 +434,10 @@ void preTrim(TSeqs& seqs, TIds& ids, TDemultiplexingParams&& demultiplexParams, 
 {
 	String<bool> rem;
 	_preTrim(seqs, ids, head, tagTrimming, tail, min, rem);
-	std::vector<TSeqs*> seqsVector;
-	std::vector<TIds*> idsVector;
-	seqsVector.emplace_back(&seqs);
-	idsVector.emplace_back(&ids);
-	_preTrimRemove(seqsVector, idsVector, rem, demultiplexParams, stats);
+    if(length(demultiplexParams.multiplexFile) > 0)
+        stats.removedSeqsShort += _eraseSeqs(rem, true, seqs, ids, demultiplexParams.multiplex);
+    else
+        stats.removedSeqsShort += _eraseSeqs(rem, true, seqs, ids);
 }
 
 // overload for paired end multiplex
@@ -597,13 +449,10 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TDemultiplexi
 	_preTrim(seqsRev, idsRev, head, tagTrimming, tail, min, rem2);
 	for (unsigned int i = 0; i < length(rem1); ++i)
 		rem1[i] = rem1[i] | rem2[i];	// remove both strands if either is marked for removal (true = 1)
-	std::vector<TSeqs*> seqsVector;
-	std::vector<TIds*> idsVector;
-	seqsVector.emplace_back(&seqs);
-	seqsVector.emplace_back(&seqsRev);
-	idsVector.emplace_back(&ids);
-	idsVector.emplace_back(&idsRev);
-	_preTrimRemove(seqsVector, idsVector, rem1, demultiplexParams, stats);
+    if (length(demultiplexParams.multiplexFile) > 0)
+        stats.removedSeqsShort += _eraseSeqs(rem1, true, seqs, seqsRev, ids, idsRev, demultiplexParams.multiplex);
+    else
+        stats.removedSeqsShort += _eraseSeqs(rem1, true, seqs, seqsRev, ids, idsRev);
 }
 
 // overload for single end 
@@ -643,22 +492,7 @@ void trimTo(TSeqs& seqs, TIds& ids, const unsigned len, GeneralStats& stats)
             }
         }    
     }
-    decltype(length(seqs)) keep = 0;
-    for (decltype(length(seqs)) j = 0; j < limit; ++j)
-    {
-        if (!rem[j])
-        {
-            seqs[keep] = seqs[j];
-            ids[keep] = ids[j];
-            ++keep;
-        }
-    }
-    if (keep != limit)
-    {
-        resize(seqs, keep);
-        resize(ids, keep);
-        stats.removedSeqsShort += limit - keep;
-    }
+    stats.removedSeqsShort += _eraseSeqs(rem, true, seqs, ids);
 }
 
 //Overload for paired end-data
@@ -689,26 +523,7 @@ void trimTo(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, const unsigned
             }
         }    
     }
-    decltype(length(seqs)) keep = 0;
-    for (decltype(length(seqs)) j = 0; j < limit; ++j)
-    {
-        if (!rem[j])
-        {
-            seqs[keep] = seqs[j];
-            seqsRev[keep] = seqsRev[j];
-            ids[keep] = ids[j];
-            idsRev[keep] = idsRev[j];
-            ++keep;
-        }
-    }
-    if (keep != limit)
-    {
-        resize(seqs, keep);
-        resize(seqsRev, keep);
-        resize(ids, keep);
-        resize(idsRev, keep);
-        stats.removedSeqsShort += limit - keep;
-    }
+    stats.removedSeqsShort += _eraseSeqs(rem, true, seqs, seqsRev, ids, idsRev);
 }
 
 #endif  // #ifndef SANDBOX_GROUP3_APPS_SEQDPT_GENERALPROCESSING_H_
