@@ -90,9 +90,10 @@ inline void
 integrateGaps(Gaps<TSource0, TGapSpec0> & targetRow,
               Gaps<TSource1, TGapSpec1> const & sourceRow)
 {
-    typename Position<TSource0>::Type viewPos = beginPosition(source(sourceRow))
-                                              - beginPosition(source(targetRow))
-                                              + beginPosition(sourceRow); // correct for infixes
+    typename Position<TSource0>::Type viewPos = beginPosition(source(sourceRow)) // correct for infixes
+                                              - beginPosition(source(targetRow)) // ...
+                                              + beginPosition(sourceRow);        // respect source clipping
+
     integrateGaps(targetRow, sourceRow, toViewPosition(targetRow, viewPos));
 }
 
