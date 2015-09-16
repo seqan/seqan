@@ -16,11 +16,11 @@ set (SEQAN_APP_VERSION "1.1.0")
 # Dependencies
 # ----------------------------------------------------------------------------
 
-find_package(CXX11 REQUIRED)
+find_package(CXX14 REQUIRED)
 
 # Disable flexbar if no CXX11 available.
-if (NOT CXX11_FOUND)
-    message (STATUS "  C++11 compiler required to build flexbar")
+if (NOT CXX14_FOUND)
+    message (STATUS "  C++14 compiler required to build flexbar")
     return ()
 endif (NOT CXX11_FOUND)
 
