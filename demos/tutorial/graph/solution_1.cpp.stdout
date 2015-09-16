@@ -1,0 +1,10 @@
+Adjacency list:
+0 -> 1,
+1 -> 2,
+2 -> 3,
+3 -> 
+Edge list:
+Source: 0,Target: 1 (Id: 0)
+Source: 1,Target: 2 (Id: 1)
+Source: 2,Target: 3 (Id: 2)
+
