@@ -16,13 +16,22 @@ set (SEQAN_APP_VERSION "1.1.0")
 # Dependencies
 # ----------------------------------------------------------------------------
 
+find_package(CXX11 REQUIRED)
+
+# Disable flexbar if no CXX11 available.
+if (NOT CXX11_FOUND)
+    message (STATUS "  C++11 compiler required to build flexbar")
+    return ()
+endif (NOT CXX11_FOUND)
+
+
 find_package(CXX14 REQUIRED)
 
 # Disable flexbar if no CXX11 available.
 if (NOT CXX14_FOUND)
     message (STATUS "  C++14 compiler required to build flexbar")
     return ()
-endif (NOT CXX11_FOUND)
+endif (NOT CXX14_FOUND)
 
 # Search SeqAn and select dependencies.
 set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB BZip2)
@@ -82,7 +91,7 @@ set_target_properties (sflexDMulti PROPERTIES COMPILE_DEFINITIONS "FLEX_PROG=DEM
 set_target_properties (sflexFilter PROPERTIES COMPILE_DEFINITIONS "FLEX_PROG=FILTERING")
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS} ${CXX14_CXX_FLAGS}")
 
 # ----------------------------------------------------------------------------
 # Installation
