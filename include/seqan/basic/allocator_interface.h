@@ -322,7 +322,7 @@ deallocate(
     if (data && count)  // .. to use count if SEQAN_PROFILE is not defined
         SEQAN_PROSUB(SEQAN_PROMEMORY, count * sizeof(TValue));
 #endif
-//  operator delete ((void *) data);
+    //  operator delete ((void *) data);
 #ifdef PLATFORM_WINDOWS_VS
     _aligned_free((void *) data);
 #else

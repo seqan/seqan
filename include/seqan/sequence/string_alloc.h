@@ -182,6 +182,14 @@ public:
         return *this;
     }
 
+    inline
+        String & operator=(String const && source)
+    {
+        move(*this, source);
+        SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
+        return *this;
+    }
+
     ~String()
     {
         arrayDestruct(this->data_begin, this->data_end);

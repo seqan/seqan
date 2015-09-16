@@ -182,15 +182,15 @@ unsigned dropReads(seqan::StringSet<TId> & idSet, seqan::StringSet<TSeq> & seqSe
 		unsigned const min_length, QualityTrimmingStats& stats)
 {
 	const auto len = length(seqSet);
-    decltype(length(seqSet)) keep = 0;
-    for (decltype(length(seqSet)) i = 0; i < len; ++i)
-    {
-        if (length(seqSet[i]) >= min_length)
-        {
-            seqSet[keep] = std::move(seqSet[i]);
-            idSet[keep++] = std::move(idSet[i]);
-        }
-    }
+    auto keep = (decltype(length(seqSet)))0;
+    const auto beginAddr = (void*)&*begin(seqSet);
+
+    std::remove_if(begin(seqSet), end(seqSet),
+        [&beginAddr, &idSet, min_length, &keep](const auto& element) {
+        if (length(element) < min_length)
+            return true;
+        idSet[keep++] = std::move(idSet[&element - beginAddr]);
+        return false;});
 
     if (keep != len)
     {
@@ -250,10 +250,10 @@ unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqS
     {
         if (!rem[i])
         {
-            seqSet1[keep] = std::move(seqSet1[i]);
-            idSet1[keep] = std::move(idSet1[i]);
-            seqSet2[keep] = std::move(seqSet2[i]);
-            idSet2[keep] = std::move(idSet2[i]);
+            seqSet1[keep] = seqSet1[i];
+            idSet1[keep] = idSet1[i];
+            seqSet2[keep] = seqSet2[i];
+            idSet2[keep] = idSet2[i];
             ++keep;
         }
     }

@@ -494,27 +494,37 @@ void _preTrimRemove(const std::vector<TSeqs*> &seqsVector, const std::vector<TId
 	SEQAN_ASSERT(!seqsVector.empty() && !idsVector.empty());
 	SEQAN_ASSERT_EQ(seqsVector.size(), idsVector.size());
 	const auto limit = length(**seqsVector.begin());
-    decltype(length(demultiplexParams.multiplexFile)) keep = 0;
-    bool demultiplex = (length(demultiplexParams.multiplexFile) > 0);
-    // better use remove erase idiom
-	for (decltype(length(demultiplexParams.multiplexFile)) j = 0; j < limit; ++j)
+    const auto demultiplex = (bool)(length(demultiplexParams.multiplexFile) > 0);
+
+    for (auto& pSeqs : seqsVector)
+    {
+        const auto beginAddr = (void*)&*begin(*pSeqs);
+        std::remove_if(begin(*pSeqs), end(*pSeqs), 
+            [&rem, &beginAddr](const auto& element) {
+            return rem[&element - beginAddr];});
+    }
+    for (auto& pIDs : idsVector)
+    {
+        const auto beginAddr = (void*)&*begin(*pIDs);
+        std::remove_if(begin(*pIDs), end(*pIDs), 
+            [&rem, &beginAddr](const auto& element) {
+            return rem[&element - beginAddr];});
+    }
+    if (demultiplex)
+    {
+        const auto beginAddr = (void*)&*begin(demultiplexParams.multiplex);
+        std::remove_if(begin(demultiplexParams.multiplex), end(demultiplexParams.multiplex), [&rem, &beginAddr](const auto& element) {
+            return rem[&element - beginAddr];});
+    }
+
+    const auto newSize = std::count(begin(rem), end(rem), false);
+    if (newSize != limit)
 	{
-		if (!rem[j])
-		{
-			for (auto &it : seqsVector) { (*it)[keep] = std::move((*it)[j]); };
-			for (auto &it : idsVector) { (*it)[keep] = std::move((*it)[j]); };
-			if (demultiplex)
-				demultiplexParams.multiplex[keep] = demultiplexParams.multiplex[j];
-			++keep;
-		}
-	}
-	if (keep != limit)
-	{
-		for (auto &it : seqsVector) { resize(*it, keep); };
-		for (auto &it : idsVector) { resize(*it, keep); };
+		for (auto& it : seqsVector) { resize(*it, newSize); };
+		for (auto& it : idsVector) { resize(*it, newSize); };
 		if (demultiplex)
-			resize(demultiplexParams.multiplex, keep);
-		stats.removedSeqsShort += limit - keep;
+			resize(demultiplexParams.multiplex, newSize);
+		stats.removedSeqsShort += limit - newSize;
 	}
 }
 
@@ -523,8 +533,7 @@ template<typename TSeqs, typename TIds>
 void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const bool tagTrimming, const unsigned tail, const unsigned min, String<bool>& rem)
 {
 	int i = 0;
-	int limit = length(seqs);
-
+	const auto limit = (int)length(seqs);
 	resize(rem, limit);
 
 	SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
@@ -564,7 +573,6 @@ void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const bool tagTrimmin
 		else
 			rem[i] = true;
 	}
-    //seqan::erase(seqs, std::remove_if(begin(seqs), end(seqs), [&min](const auto& element) {return length(element) <= min;}), end(seqs));
 }
 
 // overload for single end multiplex
@@ -640,8 +648,8 @@ void trimTo(TSeqs& seqs, TIds& ids, const unsigned len, GeneralStats& stats)
     {
         if (!rem[j])
         {
-            seqs[keep] = std::move(seqs[j]);
-            ids[keep] = std::move(ids[j]);
+            seqs[keep] = seqs[j];
+            ids[keep] = ids[j];
             ++keep;
         }
     }
@@ -686,10 +694,10 @@ void trimTo(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, const unsigned
     {
         if (!rem[j])
         {
-            seqs[keep] = std::move(seqs[j]);
-            seqsRev[keep] = std::move(seqsRev[j]);
-            ids[keep] = std::move(ids[j]);
-            idsRev[keep] = std::move(idsRev[j]);
+            seqs[keep] = seqs[j];
+            seqsRev[keep] = seqsRev[j];
+            ids[keep] = ids[j];
+            idsRev[keep] = idsRev[j];
             ++keep;
         }
     }
