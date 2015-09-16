@@ -183,17 +183,16 @@ SEQAN_DEFINE_TEST(test_blast_scoring_scheme)
 
 SEQAN_DEFINE_TEST(test_blast_blastmatch_stats_and_score)
 {
-    typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
-    typedef BlastMatch<TAlign> TBlastMatch;
+    typedef Gaps<String<AminoAcid>, ArrayGaps> TGaps;
+    typedef BlastMatch<TGaps, TGaps> TBlastMatch;
 
     TBlastMatch m;
 
     String<AminoAcid> src0 = "ARNDAYVBRNDCQFGCYVBQARNDCQEGEG";
     String<AminoAcid> src1 = "ARNAYVBRNDCCYCYVBQARNQEGEG";
 
-    resize(rows(m.align), 2);
-    assignSource(row(m.align, 0), src0);
-    assignSource(row(m.align, 1), src1);
+    assignSource(m.alignRow0, src0);
+    assignSource(m.alignRow1, src1);
 
     typedef Blosum62 TScheme;
     BlastScoringScheme<TScheme> scheme;
@@ -201,14 +200,14 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_stats_and_score)
     setScoreGapExtend(scheme, -1);
     SEQAN_ASSERT(isValid(scheme));
 
-    int score = globalAlignment(m.align, seqanScheme(scheme));
+    int score = globalAlignment(m.alignRow0, m.alignRow1, seqanScheme(scheme));
 //     ARNDAYVBRNDCQFGCYVBQARNDCQEGEG
 //     ||| ||||||||   ||||||||  |||||
 //     ARN-AYVBRNDCCY-CYVBQARN--QEGEG
 
     SEQAN_ASSERT_EQ(score, 94);
 
-    computeAlignmentStats(m.alignStats, m.align, seqanScheme(scheme));
+    computeAlignmentStats(m.alignStats, m.alignRow0, m.alignRow1, seqanScheme(scheme));
 
     SEQAN_ASSERT_EQ(m.alignStats.alignmentScore, score);
     SEQAN_ASSERT_EQ(m.alignStats.alignmentLength, 30u);
@@ -221,8 +220,8 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_stats_and_score)
 
 SEQAN_DEFINE_TEST(test_blast_blastmatch_bit_score_e_value)
 {
-    typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
-    typedef BlastMatch<TAlign> TBlastMatch;
+    typedef Gaps<String<AminoAcid>, ArrayGaps> TGaps;
+    typedef BlastMatch<TGaps, TGaps> TBlastMatch;
     typedef Blosum62 TScheme;
 
     TBlastMatch m;
@@ -234,23 +233,22 @@ SEQAN_DEFINE_TEST(test_blast_blastmatch_bit_score_e_value)
     "LNLPGGLTLIQARGNEKETI";
     String<AminoAcid> src1 = "VAYAQPRKLCYP";
 
-    resize(rows(m.align), 2);
-    assignSource(row(m.align, 0), src0);
-    assignSource(row(m.align, 1), src1);
+    assignSource(m.alignRow0, src0);
+    assignSource(m.alignRow1, src1);
 
     BlastScoringScheme<TScheme> scheme;
     setScoreGapOpenBlast(scheme, -11);
     setScoreGapExtend(scheme, -1);
     SEQAN_ASSERT(isValid(scheme));
 
-    int score = localAlignment(m.align, seqanScheme(scheme));
+    int score = localAlignment(m.alignRow0, m.alignRow1, seqanScheme(scheme));
 //         VAYAQTKPRRLCFP
 //         |||||  || || |
 //         VAYAQ--PRKLCYP
 
     SEQAN_ASSERT_EQ(score, 48);
 
-    computeAlignmentStats(m.alignStats, m.align, seqanScheme(scheme));
+    computeAlignmentStats(m.alignStats, m.alignRow0, m.alignRow1, seqanScheme(scheme));
 
     SEQAN_ASSERT_EQ(m.alignStats.alignmentScore, score);
     SEQAN_ASSERT_EQ(m.alignStats.alignmentLength, 14u);

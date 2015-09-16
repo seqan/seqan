@@ -229,13 +229,14 @@ template <typename TFwdIterator,
           typename TQId,
           typename TSId,
           typename TPos,
-          typename TAlign,
+          typename TAlignRow0,
+          typename TAlignRow1,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeField(TFwdIterator & s,
             BlastIOContext<TScore, p, h> & context,
-            BlastMatch<TAlign, TPos, TQId, TSId> const & match,
+            BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & match,
             typename BlastMatchField<>::Enum const fieldId,
             BlastTabular const &)
 {
@@ -417,13 +418,14 @@ template <typename TQId,
           typename TFwdIterator,
           typename TScore,
           typename TPos,
-          typename TAlign,
+          typename TAlignRow0,
+          typename TAlignRow1,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeMatch(TFwdIterator & stream,
            BlastIOContext<TScore, p, h> & context,
-           BlastMatch<TAlign, TPos, TQId, TSId> const & match,
+           BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & match,
            BlastTabular const & /*tag*/)
 {
     if (SEQAN_LIKELY(!context.legacyFormat))
