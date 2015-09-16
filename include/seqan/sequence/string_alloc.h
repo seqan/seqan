@@ -182,6 +182,7 @@ public:
         return *this;
     }
 
+#ifdef SEQAN_CXX11_STANDARD
     inline
         String & operator=(String const && source)
     {
@@ -189,6 +190,7 @@ public:
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
         return *this;
     }
+#endif
 
     ~String()
     {
