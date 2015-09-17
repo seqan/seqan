@@ -126,7 +126,7 @@ void integrateAlign(Align<TSource1, TSpec1> & align,
                     Align<TSource2, TSpec2> const & infixAlign,
                     String<TPos> const & viewPos)
 {
-    //TODO assert numrows(infix>= orig)
+    SEQAN_ASSERT_EQ_MSG(length(rows(infixAlign)), length(rows(align)), "Both align objects need same number of rows.");
     typedef typename Size<Align<TSource1, TSpec1> >::Type TSize;
     //NOTE(h-2): could be parallelized
     for (TSize i = 0; i < length(rows(align)); ++i)
@@ -137,6 +137,7 @@ template <typename TSource1, typename TSpec1, typename TSource2, typename TSpec2
 void integrateAlign(Align<TSource1, TSpec1> & align,
                     Align<TSource2, TSpec2> const & infixAlign)
 {
+    SEQAN_ASSERT_EQ_MSG(length(rows(infixAlign)), length(rows(align)), "Both align objects need same number of rows.");
     typedef typename Size<Align<TSource1, TSpec1> >::Type TSize;
     //NOTE(h-2): could be parallelized
     for (TSize i = 0; i < length(rows(align)); ++i)

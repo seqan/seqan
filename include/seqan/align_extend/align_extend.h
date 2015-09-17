@@ -67,11 +67,10 @@ template <typename TGaps0, typename TGaps1, typename TDPContext>
 inline void
 clear(AliExtContext_<TGaps0, TGaps1, TDPContext> & prov)
 {
-    // the expected behaviour for the alignObjects is that they shouldn't
+    // the expected behaviour for the gaps objects is that they shouldn't
     // have to be cleared, since every row is always assignSource'd before it
     // is used. However this DOES NOT CLEAR the object and causes undefined
-    // behaviour
-    // instead we have to clear() the array_gaps:
+    // behaviour instead we have to clear() each gaps object explicitly:
 
     clear(prov.leftRow0);
     clear(prov.rightRow0);
@@ -220,7 +219,7 @@ template <typename TSource0, typename TSource1, typename TGapsSpec0, typename TG
           typename TString0, typename TString1, typename TPos, typename TScoreValue, typename TScoreSpec,
           typename TBoolBanded, typename TBoolXDrop, typename TAliExtContext_>
 inline TScoreValue
-_extendAlignmentImpl(Gaps<TSource0, TGapsSpec0> & row0, // TODO replace TSource with Infix<TString const>
+_extendAlignmentImpl(Gaps<TSource0, TGapsSpec0> & row0,
                      Gaps<TSource1, TGapsSpec1> & row1,
                      TScoreValue const & origScore,
                      TString0 const & hSeq,
@@ -348,7 +347,7 @@ _extendAlignmentImpl(Gaps<TSource0, TGapsSpec0> & row0, // TODO replace TSource 
     if (extendRight)
     {
         TInf0 inf0 = infix(hSeq, hEndPos, length(hSeq));
-        TInf0 inf1 = infix(vSeq, vEndPos, length(vSeq));
+        TInf1 inf1 = infix(vSeq, vEndPos, length(vSeq));
 
         clear(alignContext.traceSegment);
         rightScore = _setUpAndRunAlignImpl(alignContext, inf0, inf1, scoreScheme, lowerDiag, upperDiag, xDrop,
@@ -373,6 +372,7 @@ _extendAlignmentImpl(Gaps<TSource0, TGapsSpec0> & row0, // TODO replace TSource 
     return leftScore + centerScore + rightScore;
 }
 
+// get rows from align object
 template <typename TStringInfix, typename TAlignSpec, typename TString,
           typename TPos, typename TScoreValue, typename TScoreSpec,
           typename TBoolBanded, typename TBoolXDrop, typename TAliExtContext_>
