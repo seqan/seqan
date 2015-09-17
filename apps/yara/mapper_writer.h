@@ -233,9 +233,9 @@ inline void _writeMatchesImpl(MatchesWriter<TSpec, Traits> & me, TMatchIt const 
     TMatch const & primary = value(it);
 
     if (isValid(primary))
-        _writeMappedRead(me, position(it, me.primaryMatches), primary);
+        _writeMappedRead(me, position(it, me.primaryMatches), primary, typename Traits::TSequencing());
     else
-        _writeUnmappedRead(me, position(it, me.primaryMatches));
+        _writeUnmappedRead(me, position(it, me.primaryMatches), typename Traits::TSequencing());
 }
 
 // ----------------------------------------------------------------------------
@@ -244,13 +244,37 @@ inline void _writeMatchesImpl(MatchesWriter<TSpec, Traits> & me, TMatchIt const 
 // Writes one unmapped read.
 
 template <typename TSpec, typename Traits, typename TReadId>
-inline void _writeUnmappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId)
+inline void _writeUnmappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, SingleEnd)
+{
+    clear(me.record);
+    _fillReadName(me, readId);
+    _fillReadSeqQual(me, readId);
+    me.record.mapQ = 0;
+//    _fillMateInfo(me, readId);
+
+    appendReadGroup(me.record, me.options.readGroup);
+    me.record.flag |= BAM_FLAG_UNMAPPED;
+    _writeRecord(me);
+}
+
+template <typename TSpec, typename Traits, typename TReadId>
+inline void _writeUnmappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, PairedEnd)
 {
     clear(me.record);
     _fillReadName(me, readId);
     _fillReadSeqQual(me, readId);
     me.record.mapQ = 0;
     _fillMateInfo(me, readId);
+
+    TReadId mateId = getMateId(me.reads.seqs, readId);
+
+    if (isMapped(me.ctx, mateId))
+    {
+        auto const & mate = me.primaryMatches[mateId];
+        _fillReadPosition(me, mate);
+        _fillMatePosition(me, mate);
+    }
+
     appendReadGroup(me.record, me.options.readGroup);
     me.record.flag |= BAM_FLAG_UNMAPPED;
     _writeRecord(me);
@@ -262,13 +286,7 @@ inline void _writeUnmappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId
 // Writes one block of matches.
 
 template <typename TSpec, typename Traits, typename TReadId, typename TMatch>
-inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, TMatch const & primary)
-{
-    _writeMappedReadImpl(me, readId, primary, typename Traits::TSequencing());
-}
-
-template <typename TSpec, typename Traits, typename TReadId, typename TMatch>
-inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId readId, TMatch const & primary, SingleEnd)
+inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, TMatch const & primary, SingleEnd)
 {
     typedef typename Traits::TMatches           TMatches;
     typedef typename Size<TMatches>::Type       TSize;
@@ -281,8 +299,9 @@ inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId read
     _fillReadName(me, getReadSeqId(primary, me.reads.seqs));
     _fillReadSeqQual(me, getReadSeqId(primary, me.reads.seqs));
     _fillReadPosition(me, primary);
+    _fillReadOrientation(me, primary);
     _fillReadAlignment(me, primary);
-    _fillMateInfo(me, readId);
+//    _fillMateInfo(me, readId);
 
     TMatches const & matches = me.matchesSet[readId];
     TSize bestCount = countMatchesInBestStratum(matches);
@@ -308,7 +327,7 @@ inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId read
 }
 
 template <typename TSpec, typename Traits, typename TReadId, typename TMatch>
-inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId readId, TMatch const & primary, PairedEnd)
+inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, TMatch const & primary, PairedEnd)
 {
     typedef typename Traits::TMatches                           TMatches;
     typedef typename Size<TMatches>::Type                       TSize;
@@ -318,6 +337,7 @@ inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId read
     _fillReadName(me, getReadSeqId(primary, me.reads.seqs));
     _fillReadSeqQual(me, getReadSeqId(primary, me.reads.seqs));
     _fillReadPosition(me, primary);
+    _fillReadOrientation(me, primary);
     _fillReadAlignment(me, primary);
     _fillMateInfo(me, readId);
 
@@ -326,18 +346,28 @@ inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId read
     TSize subCount = length(matches) - bestCount;
     _fillReadInfo(me, bestCount, subCount);
 
-    if (isPaired(me.ctx, readId))
+    TReadId mateId = getMateId(me.reads.seqs, readId);
+
+    if (isMapped(me.ctx, mateId))
     {
-        TReadId mateId = getMateId(me.reads.seqs, readId);
         TMatch const & mate = me.primaryMatches[mateId];
-        _fillMatePosition(me, primary, mate);
-        me.record.mapQ = getMapq(me.primaryMatchesProbs[readId]);
+        _fillMatePosition(me, mate);
+
+        if (isPaired(me.ctx, readId))
+        {
+            _fillMateInsert(me, primary, mate);
+            me.record.mapQ = getMapq(me.primaryMatchesProbs[readId]);
+        }
+        else
+        {
+            double errorRate = getErrorRate(primary, me.reads.seqs);
+            double prob = getMatchProb(errorRate, errorRate, bestCount, subCount);
+            me.record.mapQ = getMapq(prob);
+        }
     }
     else
     {
-        double errorRate = getErrorRate(primary, me.reads.seqs);
-        double prob = getMatchProb(errorRate, errorRate, bestCount, subCount);
-        me.record.mapQ = getMapq(prob);
+        _fillMatePosition(me, primary);
     }
 
     // Find the primary match in the list of matches.
@@ -415,12 +445,19 @@ inline void _fillReadSeqQual(MatchesWriter<TSpec, Traits> & me, TReadSeqId readS
 template <typename TSpec, typename Traits, typename TMatch>
 inline void _fillReadPosition(MatchesWriter<TSpec, Traits> & me, TMatch const & match)
 {
-    if (onReverseStrand(match))
-        me.record.flag |= BAM_FLAG_RC;
-
     me.record.rID = getMember(match, ContigId());
     me.record.beginPos = getMember(match, ContigBegin());
-    appendErrors(me.record, getMember(match, Errors()));
+}
+
+// ----------------------------------------------------------------------------
+// Function _fillReadOrientation()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename Traits, typename TMatch>
+inline void _fillReadOrientation(MatchesWriter<TSpec, Traits> & me, TMatch const & match)
+{
+    if (onReverseStrand(match))
+        me.record.flag |= BAM_FLAG_RC;
 }
 
 // ----------------------------------------------------------------------------
@@ -431,6 +468,7 @@ template <typename TSpec, typename Traits, typename TMatch>
 inline void _fillReadAlignment(MatchesWriter<TSpec, Traits> & me, TMatch const & match)
 {
     me.record.cigar = me.cigarSet[getMember(match, ReadId())];
+    appendErrors(me.record, getMember(match, Errors()));
 }
 
 // --------------------------------------------------------------------------
@@ -439,15 +477,6 @@ inline void _fillReadAlignment(MatchesWriter<TSpec, Traits> & me, TMatch const &
 
 template <typename TSpec, typename Traits, typename TReadId>
 inline void _fillMateInfo(MatchesWriter<TSpec, Traits> & me, TReadId readId)
-{
-    _fillMateInfoImpl(me, readId, typename Traits::TSequencing());
-}
-
-template <typename TSpec, typename Traits, typename TReadId>
-inline void _fillMateInfoImpl(MatchesWriter<TSpec, Traits> & /* me */, TReadId /* readId */, SingleEnd) {}
-
-template <typename TSpec, typename Traits, typename TReadId>
-inline void _fillMateInfoImpl(MatchesWriter<TSpec, Traits> & me, TReadId readId, PairedEnd)
 {
     me.record.flag |= BAM_FLAG_MULTIPLE;
 
@@ -465,16 +494,24 @@ inline void _fillMateInfoImpl(MatchesWriter<TSpec, Traits> & me, TReadId readId,
 // --------------------------------------------------------------------------
 
 template <typename TSpec, typename Traits, typename TMatch>
-inline void _fillMatePosition(MatchesWriter<TSpec, Traits> & me, TMatch const & match, TMatch const & mate)
+inline void _fillMatePosition(MatchesWriter<TSpec, Traits> & me, TMatch const & mate)
 {
-    if (orientationProper(match, mate))
-        me.record.flag |= BAM_FLAG_ALL_PROPER;
-
     if (onReverseStrand(mate))
         me.record.flag |= BAM_FLAG_NEXT_RC;
 
     me.record.rNextId = getMember(mate, ContigId());
     me.record.pNext = getMember(mate, ContigBegin());
+}
+
+// --------------------------------------------------------------------------
+// Function _fillMateInsert()
+// --------------------------------------------------------------------------
+
+template <typename TSpec, typename Traits, typename TMatch>
+inline void _fillMateInsert(MatchesWriter<TSpec, Traits> & me, TMatch const & match, TMatch const & mate)
+{
+    if (orientationProper(match, mate))
+        me.record.flag |= BAM_FLAG_ALL_PROPER;
 
     if (getMember(match, ContigId()) == getMember(mate, ContigId()))
     {
