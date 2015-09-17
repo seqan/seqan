@@ -112,12 +112,12 @@ void _reversePartialTrace(String<TraceSegment_<TPosition,
 // Function _setUpAndRunAlignImpl()
 // ----------------------------------------------------------------------------
 
-template <typename TAliExtContext_, typename TString, typename TScoreValue,
+template <typename TAliExtContext_, typename TString0, typename TString1, typename TScoreValue,
           typename TScoreSpec, typename TTracebackConfig>
 inline TScoreValue
 _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
-                      TString const & str0,
-                      TString const & str1,
+                      TString0 const & str0,
+                      TString1 const & str1,
                       Score<TScoreValue, TScoreSpec> const & scoreScheme,
                       int const /*lowerDiag*/,
                       int const /*upperDiag*/,
@@ -135,19 +135,19 @@ _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
                                  TAlignConfig());
 }
 
-template <typename TAliExtContext_, typename TString, typename TScoreValue,
+template <typename TAliExtContext_, typename TString0, typename TString1, typename TScoreValue,
           typename TScoreSpec, typename TTracebackConfig>
 inline TScoreValue
-_setUpAndRunAlignImpl( TAliExtContext_ & alignContext,
-                       TString const & str0,
-                       TString const & str1,
-                       Score<TScoreValue, TScoreSpec> const & scoreScheme,
-                       int const lowerDiag,
-                       int const upperDiag,
-                       TScoreValue const /*xDrop*/,
-                       TTracebackConfig const & /*gapOrientation*/,
-                       True const & /*TBoolBanded*/,
-                       False const & /*TBoolXDrop*/)
+_setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
+                      TString0 const & str0,
+                      TString1 const & str1,
+                      Score<TScoreValue, TScoreSpec> const & scoreScheme,
+                      int const lowerDiag,
+                      int const upperDiag,
+                      TScoreValue const /*xDrop*/,
+                      TTracebackConfig const & /*gapOrientation*/,
+                      True const & /*TBoolBanded*/,
+                      False const & /*TBoolXDrop*/)
 {
     typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
     typedef AlignConfig2<AlignExtend_<>, DPBandConfig<BandOn>, TFreeEndGaps,
@@ -158,12 +158,12 @@ _setUpAndRunAlignImpl( TAliExtContext_ & alignContext,
                                  TAlignConfig(lowerDiag, upperDiag));
 }
 
-template <typename TAliExtContext_, typename TString, typename TScoreValue,
+template <typename TAliExtContext_, typename TString0, typename TString1, typename TScoreValue,
           typename TScoreSpec, typename TTracebackConfig>
 inline TScoreValue
 _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
-                      TString const & str0,
-                      TString const & str1,
+                      TString0 const & str0,
+                      TString1 const & str1,
                       Score<TScoreValue, TScoreSpec> const & scoreScheme,
                       int const /*lowerDiag*/,
                       int const /*upperDiag*/,
@@ -181,12 +181,12 @@ _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
                                  TAlignConfig());
 }
 
-template <typename TAliExtContext_, typename TString, typename TScoreValue,
+template <typename TAliExtContext_, typename TString0, typename TString1, typename TScoreValue,
           typename TScoreSpec, typename TTracebackConfig>
 inline TScoreValue
 _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
-                      TString const & str0,
-                      TString const & str1,
+                      TString0 const & str0,
+                      TString1 const & str1,
                       Score<TScoreValue, TScoreSpec> const & scoreScheme,
                       int const lowerDiag,
                       int const upperDiag,
