@@ -67,15 +67,8 @@ template <typename TGaps0, typename TGaps1, typename TDPContext>
 inline void
 clear(AliExtContext_<TGaps0, TGaps1, TDPContext> & prov)
 {
-    // the expected behaviour for the gaps objects is that they shouldn't
-    // have to be cleared, since every row is always assignSource'd before it
-    // is used. However this DOES NOT CLEAR the object and causes undefined
-    // behaviour instead we have to clear() each gaps object explicitly:
-
-    clear(prov.leftRow0);
-    clear(prov.rightRow0);
-    clear(prov.leftRow1);
-    clear(prov.rightRow1);
+    // gaps don't need to be cleared, because they are always
+    // re-assigned before use; dpContext, too!
 
     // trace segment always needs to be cleared
     clear(prov.traceSegment);
@@ -258,6 +251,9 @@ _extendAlignmentImpl(Gaps<TSource0, TGapsSpec0> & row0,
     TScoreValue centerScore = origScore;
     TScoreValue rightScore  = 0;
 
+    TPos newAlignLen = length(row0);
+
+    // centerScore was set to "compute yourself" by interface function without score parameter
     if (centerScore == minValue<TScoreValue>())
     {
         centerScore = 0;
@@ -303,8 +299,8 @@ _extendAlignmentImpl(Gaps<TSource0, TGapsSpec0> & row0,
         // un-reverve
         _reversePartialTrace(alignContext.traceSegment, length(inf0), length(inf1));
 
-        assignSource(alignContext.leftRow0, inf0);
-        assignSource(alignContext.leftRow1, inf1);
+        setSource(alignContext.leftRow0, inf0);
+        setSource(alignContext.leftRow1, inf1);
 
         _adaptTraceSegmentsTo(alignContext.leftRow0, alignContext.leftRow1, alignContext.traceSegment);
 
@@ -314,6 +310,8 @@ _extendAlignmentImpl(Gaps<TSource0, TGapsSpec0> & row0,
             integrateGaps(row1, alignContext.leftRow1);
             setClippedBeginPosition(row0, clippedBeginPosition(alignContext.leftRow0));
             setClippedBeginPosition(row1, clippedBeginPosition(alignContext.leftRow1));
+
+            newAlignLen += length(alignContext.leftRow0);
         }
         else
         {
@@ -353,21 +351,21 @@ _extendAlignmentImpl(Gaps<TSource0, TGapsSpec0> & row0,
         rightScore = _setUpAndRunAlignImpl(alignContext, inf0, inf1, scoreScheme, lowerDiag, upperDiag, xDrop,
                                            TracebackConfig_<CompleteTrace, GapsLeft>(), TBoolBanded(), TBoolXDrop());
 
-        assignSource(alignContext.rightRow0, inf0);
-        assignSource(alignContext.rightRow1, inf1);
+        setSource(alignContext.rightRow0, inf0);
+        setSource(alignContext.rightRow1, inf1);
         _adaptTraceSegmentsTo(alignContext.rightRow0, alignContext.rightRow1, alignContext.traceSegment);
 
         if (length(alignContext.rightRow0) > 0)
         {
             integrateGaps(row0, alignContext.rightRow0);
             integrateGaps(row1, alignContext.rightRow1);
+
+            newAlignLen += length(alignContext.rightRow0);
         }
     }
 
-    setClippedEndPosition(row0, clippedBeginPosition(row0) + length(alignContext.leftRow0) +
-                          length(alignContext.centerRow0) + length(alignContext.rightRow0));
-    setClippedEndPosition(row1, clippedBeginPosition(row1) + length(alignContext.leftRow1) +
-                          length(alignContext.centerRow1) + length(alignContext.rightRow1));
+    setClippedEndPosition(row0, clippedBeginPosition(row0) + newAlignLen);
+    setClippedEndPosition(row1, clippedBeginPosition(row1) + newAlignLen);
 
     return leftScore + centerScore + rightScore;
 }
