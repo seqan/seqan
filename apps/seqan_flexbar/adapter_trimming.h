@@ -48,7 +48,6 @@
 #include <seqan/find.h>
 #include "helper_functions.h"
 
-using namespace seqan;
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -97,7 +96,7 @@ struct AdapterItem
 };
 
 // Define scoring function type.
-typedef Score<int, ScoreMatrix<Dna5, AdapterScoringMatrix> > TScore;
+typedef seqan::Score<int, seqan::ScoreMatrix<seqan::Dna5, seqan::AdapterScoringMatrix> > TScore;
 
 //Tagging struct representing the the match algorithm working
 //with values supplied by the user. Saves those  values as members.
@@ -154,9 +153,9 @@ struct AdapterTrimmingStats
 template <class TValue>
 struct STRING_REVERSE_COMPLEMENT
 {
-	typedef ModifiedString<
-			ModifiedString<	String<TValue>, ModView<FunctorComplement<TValue> > >,
-			ModReverse>	Type;
+	typedef seqan::ModifiedString<
+			seqan::ModifiedString<	seqan::String<TValue>, seqan::ModView<seqan::FunctorComplement<TValue> > >,
+			seqan::ModReverse>	Type;
 };
 
 // ============================================================================
@@ -221,7 +220,7 @@ unsigned stripPair(TSeq& seq1, TSeq& seq2)
 {
 	// When aligning the two sequences, the complementary sequence is reversed and
 	// complemented, so we have an overlap alignment with complementary bases being the same.
-	typedef typename Value<TSeq>::Type TAlphabet;
+	typedef typename seqan::Value<TSeq>::Type TAlphabet;
 	typedef typename STRING_REVERSE_COMPLEMENT<TAlphabet>::Type TReverseComplement;
 	TReverseComplement mod(seq2);
 	typedef seqan::Align<TSeq> TAlign;

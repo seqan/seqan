@@ -52,17 +52,16 @@
 #include <seqan/index.h>
 #include <seqan/seq_io.h>
 
-using namespace seqan;
 
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
-typedef String<Dna5Q> TAlphabet;
+typedef seqan::String<seqan::Dna5Q> TAlphabet;
 
 struct DemultiplexStats
 {
-	String<unsigned> groups;
+	seqan::String<unsigned> groups;
 };
 
 struct DemultiplexingParams
@@ -175,7 +174,7 @@ void getPrefix(TSeqs& prefices, TSeqs& seqs, unsigned len)
 }
 
 template <typename TBarcode>
-void buildVariations(StringSet<Dna5String>& variations, const TBarcode& barcode)
+void buildVariations(seqan::StringSet<seqan::Dna5String>& variations, const TBarcode& barcode)
 {
 	int limit = (length(barcode))*5;		    //possible number of variations with one error (A,T,G,C,N)
 	resize(variations, limit);				    //resizes according to calculated number of variations
@@ -225,7 +224,7 @@ int findExactIndex(const TPrefix& prefix, TFinder& finder)
 }
 
 template <typename TPrefices, typename TFinder, typename TStats>
-void findAllExactIndex(String<int>& matches, const TPrefices& prefices, const TFinder& finder, TStats& stats)
+void findAllExactIndex(seqan::String<int>& matches, const TPrefices& prefices, const TFinder& finder, TStats& stats)
 {
     resize(matches, length(prefices));
 
@@ -257,7 +256,7 @@ void findAllExactIndex(String<int>& matches, const TPrefices& prefices, const TF
 }
 
 template <typename TSeqs>
-void clipBarcodes(TSeqs& seqs, const String<int>& matches, unsigned len)
+void clipBarcodes(TSeqs& seqs, const seqan::String<int>& matches, unsigned len)
 {
 	int limit = length(matches);
 	SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
@@ -281,7 +280,7 @@ void clipBarcodes(TSeqs& seqs, int len)
 }
 
 template <typename TMatches, typename TBarcodes>
-void group(StringSet<String<int> >& sortedSequences, const TMatches& matches, const TBarcodes& barcodes, bool exclude)
+void group(seqan::StringSet<seqan::String<int> >& sortedSequences, const TMatches& matches, const TBarcodes& barcodes, bool exclude)
 {
 	resize(sortedSequences, length(barcodes)+1);
 	for (unsigned i = 0; i < length(matches); ++i)
@@ -295,7 +294,7 @@ void group(StringSet<String<int> >& sortedSequences, const TMatches& matches, co
 
 //Overload if approximate search has been used.
 template <typename TMatches, typename TBarcodes, typename TApprox>
-void group(StringSet<String<int> >& sortedSequences, const TMatches& matches,
+void group(seqan::StringSet<seqan::String<int> >& sortedSequences, const TMatches& matches,
     const TBarcodes& barcodes, TApprox const &, bool exclude)
 {
 	resize(sortedSequences, length(barcodes)/5+1);
@@ -311,7 +310,7 @@ void group(StringSet<String<int> >& sortedSequences, const TMatches& matches,
 
 //Using exact search and multiplex barcodes.
 template<typename TBarcodes, typename TMultiplex ,typename TFinder>
-void doAll(StringSet<String<int> >& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes,
+void doAll(seqan::StringSet<seqan::String<int> >& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes,
     TFinder& esaFinder, DemultiplexStats& stats, bool exclude)
 {
 	String<int> matches;
@@ -320,7 +319,7 @@ void doAll(StringSet<String<int> >& sortedSequences, TMultiplex& multiplex, TBar
 }
 // Using approximate search and multiplex barcodes.
 template<typename TBarcodes, typename TMultiplex ,typename TFinder, typename TApprox>
-void doAll(StringSet<String<int> >& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes, TFinder& esaFinder,
+void doAll(seqan::StringSet<seqan::String<int> >& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes, TFinder& esaFinder,
     DemultiplexStats& stats, const TApprox approximate, bool exclude)
 {
 	String<int> matches;
@@ -329,7 +328,7 @@ void doAll(StringSet<String<int> >& sortedSequences, TMultiplex& multiplex, TBar
 }
 //Using exact search and inline barcodes.
 template<typename TSeqs, typename TBarcodes, typename TFinder>
-void doAll(StringSet<String<int> >& sortedSequences, TSeqs& seqs, TBarcodes& barcodes, TFinder& esaFinder, bool hardClip,
+void doAll(seqan::StringSet<seqan::String<int> >& sortedSequences, TSeqs& seqs, TBarcodes& barcodes, TFinder& esaFinder, bool hardClip,
     DemultiplexStats& stats, bool exclude)
 {
 	TSeqs prefices;
@@ -348,7 +347,7 @@ void doAll(StringSet<String<int> >& sortedSequences, TSeqs& seqs, TBarcodes& bar
 }
 // Using approximate search and inline barcodes.
 template<typename TSeqs, typename TBarcodes, typename TFinder, typename TApprox>
-void doAll(StringSet<String<int> >& sortedSequences, TSeqs& seqs, TBarcodes& barcodes, TFinder& esaFinder,
+void doAll(seqan::StringSet<seqan::String<int> >& sortedSequences, TSeqs& seqs, TBarcodes& barcodes, TFinder& esaFinder,
     bool hardClip, DemultiplexStats& stats, const TApprox approximate, bool exclude)
 {
 	TSeqs prefices;
@@ -368,8 +367,8 @@ void doAll(StringSet<String<int> >& sortedSequences, TSeqs& seqs, TBarcodes& bar
 
 //Version for paired-end data
 template<typename TSeqs, typename TIds>
-void buildSets(TSeqs& seqs, TSeqs& seqsRev, TIds& ids, TIds& idsRev, const StringSet<String<int> >& groups,
-		String<TSeqs>& gSeqs, String<TSeqs>& gSeqsRev, String<TIds>& gIds, String<TIds>& gIdsRev)
+void buildSets(TSeqs& seqs, TSeqs& seqsRev, TIds& ids, TIds& idsRev, const seqan::StringSet<seqan::String<int> >& groups,
+    seqan::String<TSeqs>& gSeqs, seqan::String<TSeqs>& gSeqsRev, seqan::String<TIds>& gIds, seqan::String<TIds>& gIdsRev)
 {
 	unsigned len = length(groups);
     resize(gSeqs, len);
@@ -402,7 +401,7 @@ void buildSets(TSeqs& seqs, TSeqs& seqsRev, TIds& ids, TIds& idsRev, const Strin
 }
 //Overload for single-end data.
 template<typename TSeqs, typename TIds>
-void buildSets(TSeqs& seqs, TIds& ids, const StringSet<String<int> >& groups, String<TSeqs>& gSeqs, String<TIds>& gIds)
+void buildSets(TSeqs& seqs, TIds& ids, const seqan::StringSet<seqan::String<int> >& groups, seqan::String<TSeqs>& gSeqs, seqan::String<TIds>& gIds)
 {
 	resize(gSeqs, length(groups));
 	resize(gIds, length(groups));

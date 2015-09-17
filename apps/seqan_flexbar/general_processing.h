@@ -57,7 +57,6 @@
 #include "helper_functions.h"
 #include <initializer_list>
 
-using namespace seqan;
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -79,7 +78,7 @@ struct GeneralStats
 
 
 template<typename TAlpha, typename TSub>
-int findN(String<TAlpha>& seq, unsigned allowed, TSub substitute)
+int findN(seqan::String<TAlpha>& seq, unsigned allowed, TSub substitute)
 {
     unsigned limit = length(seq);
     TAlpha wanted = 'N';
@@ -101,7 +100,7 @@ int findN(String<TAlpha>& seq, unsigned allowed, TSub substitute)
 
 //Overload if no substitution shall be performed
 template<typename TAlpha>
-int findN(String<TAlpha>& seq, unsigned allowed)
+int findN(seqan::String<TAlpha>& seq, unsigned allowed)
 {
     unsigned limit = length(seq);
     TAlpha wanted = 'N';
@@ -180,16 +179,15 @@ void processN(TSeqs& seqs, TIds& ids, unsigned allowed, GeneralStats& stats)
     int limit = length(seqs);
     StringSet<int> res;
     resize(res, limit);
-    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
+    unsigned uncalled = 0;
+    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static) reduction(+:uncalled))
     for (int i = 0; i < limit; ++i)
     {
         res[i] = findN(seqs[i], allowed);
-    }
-    for (int  i = length(res) -1; i >= 0; --i)
-    {
         if (res[i] != -1)
-            stats.uncalledBases += res[i];
-    }   
+            uncalled += res[i];
+    }
+    stats.uncalledBases += uncalled;
     stats.removedSeqs += _eraseSeqs(res, -1, seqs, ids);
 }
 
@@ -360,30 +358,11 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
     stats.removedSeqs += 2 * _eraseSeqs(res, -1, seqs, seqsRev, ids, idsRev);
 }
 
-template <class F, class... Ts>
-void for_each_argument(F f, Ts&&... a) {
-    (void)std::initializer_list<int>{(f(std::forward<Ts>(a)), 0)...};
-}
 
-template<typename Trem, typename TremVal, typename... TContainer>
-auto _eraseSeqs(const Trem& rem, const TremVal remVal, TContainer&... container)
-{
-    const auto numRemoveElements = std::count(begin(rem), end(rem), remVal);
-    auto eraseElements = [&rem, numRemoveElements, remVal](auto seq)  // erase Elements using the remove erase idiom
-    {
-        const auto beginAddr = (void*)&*begin(seq);
-        std::remove_if(begin(seq), end(seq),
-            [&rem, &beginAddr, remVal](const auto& element) {
-            return rem[&element - beginAddr] == remVal;});
-        resize(seq, length(seq)- numRemoveElements);
-    };
-    for_each_argument(eraseElements, container...);
-    return length(rem) - numRemoveElements;
-}
 
 // main preTrim function
 template<typename TSeqs, typename TIds>
-void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const bool tagTrimming, const unsigned tail, const unsigned min, String<bool>& rem)
+void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const bool tagTrimming, const unsigned tail, const unsigned min, seqan::String<bool>& rem)
 {
 	int i = 0;
 	const auto limit = (int)length(seqs);

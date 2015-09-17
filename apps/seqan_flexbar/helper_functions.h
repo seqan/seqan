@@ -42,6 +42,8 @@
 #ifndef HELPERFUNCTIONS_H_
 #define HELPERFUNCTIONS_H_
 
+#include <future>
+
 template <typename TDest, typename TSource>
 void insertAfterFirstToken(TDest& dest, TSource&& source)
 {
@@ -52,6 +54,52 @@ void insertAfterFirstToken(TDest& dest, TSource&& source)
             insert(dest, k, std::forward<TSource>(source));
             break;
         }
+}
+
+template <class F, class... Ts>
+void for_each_argument(F f, Ts&&... a) {
+    // destructor of temps blocks until all threads are finished
+    auto temp = std::make_tuple(f(std::forward<Ts>(a))...); 
+}
+
+template<typename Trem, typename TremVal, typename... TContainer>
+auto _eraseSeqs(const Trem& rem, const TremVal remVal, TContainer&&... container)
+{
+    const auto numRemoveElements = std::count(begin(rem), end(rem), remVal);
+    auto eraseElements = [&rem, numRemoveElements, remVal](auto& seq)  // erase Elements using the remove erase idiom
+    {
+        const auto beginAddr = (void*)&*begin(seq);
+        std::remove_if(begin(seq), end(seq),
+            [&rem, &beginAddr, remVal](const auto& element) {
+            return rem[&element - beginAddr] == remVal;});
+        resize(seq, length(seq) - numRemoveElements);
+        return 0;
+    };
+    for_each_argument(eraseElements, std::forward<TContainer>(container)...);
+    return numRemoveElements;
+}
+
+// parallel execution brings no speedup here, because memory io is the bottle neck
+template<typename Trem, typename TremVal, typename... TContainer>
+auto _eraseSeqsDisabled(const Trem& rem, const TremVal remVal, TContainer&&... container)
+{
+    const auto numRemoveElements = std::count(begin(rem), end(rem), remVal);
+    // eraseElementsWrapper returns a future 
+    auto eraseElementsWrapper = [&rem, numRemoveElements, remVal](auto& seq)
+    {
+        auto eraseElements = [&rem, numRemoveElements, remVal](auto* seq)  // erase Elements using the remove erase idiom
+        {
+            const auto beginAddr = (void*)&*begin(*seq);
+            std::remove_if(begin(*seq), end(*seq),
+                [&rem, &beginAddr, remVal](const auto& element) {
+                return rem[&element - beginAddr] == remVal;});
+            resize(*seq, length(*seq) - numRemoveElements);
+        };
+        return std::async(std::launch::async | std::launch::deferred, eraseElements, &seq);
+    };
+    // blocks until all futures are ready
+    for_each_argument(eraseElementsWrapper, std::forward<TContainer>(container)...);
+    return numRemoveElements;
 }
 
 #endif // HELPERFUNCTIONS_H_

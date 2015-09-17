@@ -29,6 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Benjamin Menkuec <benjamin@menkuec.de>
 // Author: Benjamin Strauch <b.strauch@fu-berlin.de>
 // Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // ==========================================================================
@@ -43,6 +44,8 @@
 
 #ifndef SANDBOX_GROUP3_APPS_SEQDPT_READTRIMMING_H_
 #define SANDBOX_GROUP3_APPS_SEQDPT_READTRIMMING_H_
+
+#include "helper_functions.h"
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -181,23 +184,16 @@ template <typename TId, typename TSeq>
 unsigned dropReads(seqan::StringSet<TId> & idSet, seqan::StringSet<TSeq> & seqSet,
 		unsigned const min_length, QualityTrimmingStats& stats)
 {
-	const auto len = length(seqSet);
-    auto keep = (decltype(length(seqSet)))0;
+    seqan::String<bool> rem;
+    resize(rem, length(idSet));
+
     const auto beginAddr = (void*)&*begin(seqSet);
-
-    std::remove_if(begin(seqSet), end(seqSet),
-        [&beginAddr, &idSet, min_length, &keep](const auto& element) {
+    for (const auto& element : seqSet)
         if (length(element) < min_length)
-            return true;
-        idSet[keep++] = std::move(idSet[&element - beginAddr]);
-        return false;});
-
-    if (keep != len)
-    {
-        seqan::resize(seqSet, keep);
-        seqan::resize(idSet, keep);
-        stats.dropped_1 += len - keep;
-    }
+            rem[&element - beginAddr] = true;
+        else
+            rem[&element - beginAddr] = false;
+    stats.dropped_1 += _eraseSeqs(rem, true, seqSet, idSet);
 	return 0;
 }
 
@@ -245,25 +241,7 @@ unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqS
     }
     stats.dropped_1 += dropped1;
     stats.dropped_2 += dropped2;
-    decltype(length(seqSet1)) keep = 0;
-    for (decltype(length(seqSet1)) i = 0; i < 0; ++i)
-    {
-        if (!rem[i])
-        {
-            seqSet1[keep] = seqSet1[i];
-            idSet1[keep] = idSet1[i];
-            seqSet2[keep] = seqSet2[i];
-            idSet2[keep] = idSet2[i];
-            ++keep;
-        }
-    }
-    if (keep != len)
-    {
-        resize(seqSet1, keep);
-        resize(idSet1, keep);
-        resize(seqSet2, keep);
-        resize(idSet2, keep);
-    }
+    _eraseSeqs(rem, true, seqSet1, seqSet2, idSet1, idSet2);
 	return 0;
 }
 

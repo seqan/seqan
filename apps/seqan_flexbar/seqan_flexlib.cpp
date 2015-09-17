@@ -77,6 +77,8 @@
 // after refactorization.
 FlexiProgram flexiProgram;
 
+using namespace seqan;
+
 // --------------------------------------------------------------------------
 // Class ArgumentParserBuilder
 // --------------------------------------------------------------------------
