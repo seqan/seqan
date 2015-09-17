@@ -39,396 +39,81 @@
 
 namespace seqan {
 
-// ==========================================================================
-// Classes
-// ==========================================================================
-
-// ----------------------------------------------------------------------------
-// Class BidirectionalFMIndex-Iter
-// ----------------------------------------------------------------------------
-
-// TopDown-Iterator for bidirectional FM index
-template <typename TText, typename TOccSpec, typename TLengthSum, typename TBidirectional, typename TSpec>
-class Iter<Index<TText, BidirectionalFMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, TBidirectional> > >, VSTree<TopDown<TSpec> > >
-{
-public:
-    typedef Index<TText, BidirectionalFMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, TBidirectional> > >  TBiIndex;
-
-    typedef typename RevTextFibre<TText>::Type                                                      TRevText;
-
-    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >     TFwdIndex;
-    typedef Index<TRevText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >  TRevIndex;
-
-    typedef Iter<TFwdIndex, VSTree<TopDown<TSpec> > >                                                   TFwdIndexIter;
-    typedef Iter<TRevIndex, VSTree<TopDown<TSpec> > >                                                   TRevIndexIter;
-
-    TFwdIndexIter    fwdIter;
-    TRevIndexIter    bwdIter;
-
-//____________________________________________________________________________
-
-    Iter():
-        fwdIter(),
-        bwdIter() {}
-
-    Iter(TBiIndex &_index):
-        fwdIter(*(&_index.fwd)),
-        bwdIter(*(&_index.rev))
-    {
-        fwdIter.setRevIter(bwdIter);
-        bwdIter.setRevIter(fwdIter);
-    }
-
-    Iter(TBiIndex &_index, MinimalCtor):
-        fwdIter(*(&_index.fwd), MinimalCtor()),
-        bwdIter(*(&_index.rev), MinimalCtor())
-    {
-        fwdIter.setRevIter(bwdIter);
-        bwdIter.setRevIter(fwdIter);
-    }
-
-    template <typename TSpec2>
-    Iter(Iter<TBiIndex, VSTree<TopDown<TSpec2> > > const &_origin):
-        fwdIter(*(&_origin.fwdIter)),
-        bwdIter(*(&_origin.bwdIter))
-    {
-        fwdIter.setRevIter(bwdIter);
-        bwdIter.setRevIter(fwdIter);
-    }
-
-//____________________________________________________________________________
-
-    template <typename TSpec2>
-    inline Iter const &
-    operator = (Iter<TBiIndex, VSTree<TopDown<TSpec2> > > const &_origin)
-    {
-        fwdIter = *(&_origin.fwdIter);
-        bwdIter = *(&_origin.bwdIter);
-        return *this;
-    }
-};
-
-// TopDown-Iterator with history stack for bidirectional FM index
-template <typename TText, typename TOccSpec, typename TLengthSum, typename TBidirectional, typename TSpec>
-class Iter<Index<TText, BidirectionalFMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, TBidirectional> > >, VSTree<TopDown<ParentLinks<TSpec> > > >
-{
-public:
-    typedef Index<TText, BidirectionalFMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, TBidirectional> > >  TBiIndex;
-
-    typedef typename RevTextFibre<TText>::Type                                                            TRevText;
-
-    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >           TFwdIndex;
-    typedef Index<TRevText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >        TRevIndex;
-
-    typedef Iter<TFwdIndex, VSTree<TopDown<ParentLinks<TSpec> > > >                                           TFwdIndexIter;
-    typedef Iter<TRevIndex, VSTree<TopDown<ParentLinks<TSpec> > > >                                           TRevIndexIter;
-
-    TFwdIndexIter    fwdIter;
-    TRevIndexIter    bwdIter;
-
-//____________________________________________________________________________
-
-    Iter():
-        fwdIter(),
-        bwdIter() {}
-
-    Iter(TBiIndex &_index):
-        fwdIter(*(&_index.fwd)),
-        bwdIter(*(&_index.rev))
-    {
-        fwdIter.setRevIter(bwdIter);
-        bwdIter.setRevIter(fwdIter);
-    }
-
-    Iter(TBiIndex &_index, MinimalCtor):
-        fwdIter(*(&_index.fwd), MinimalCtor()),
-        bwdIter(*(&_index.rev), MinimalCtor())
-    {
-        fwdIter.setRevIter(bwdIter);
-        bwdIter.setRevIter(fwdIter);
-    }
-
-    template <typename TSpec2>
-    Iter(Iter<TBiIndex, VSTree<TopDown<ParentLinks<TSpec2> > > > const &_origin):
-        fwdIter(*(&_origin.fwdIter)),
-        bwdIter(*(&_origin.bwdIter))
-    {
-        fwdIter.setRevIter(bwdIter);
-        bwdIter.setRevIter(fwdIter);
-    }
-
-//____________________________________________________________________________
-
-    template <typename TSpec2>
-    inline Iter const &
-    operator = (Iter<TBiIndex, VSTree<TopDown<ParentLinks<TSpec2> > > > const &_origin)
-    {
-        fwdIter = *(&_origin.fwdIter);
-        bwdIter = *(&_origin.bwdIter);
-        return *this;
-    }
-};
-
-// Specialization of undirectional FM index iterator for use in the bidirectional FM index iterator
-template <typename TText, typename TOccSpec, typename TLengthSum, typename TSpec>
-class Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >, VSTree<TopDown<TSpec> > >
-{
-public:
-    typedef Iter    iterator;
-
-    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >       TFwdIndex;
-    typedef typename RevTextFibre<TText>::Type                                                        TRevText;
-    typedef Index<TRevText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >    TRevIndex;
-
-    typedef Iter<TFwdIndex, VSTree< TopDown<TSpec> > >    TFwdIndexIter;
-    typedef Iter<TRevIndex, VSTree< TopDown<TSpec> > >    TRevIndexIter;
-
-    typedef typename VertexDescriptor<TFwdIndex>::Type    TVertexDesc;
-
-    TRevIndexIter     *revIter;    // container of all necessary tables
-
-    TFwdIndex const    *index;        // container of all necessary tables
-    TVertexDesc        vDesc;        // current interval in suffix array and
-                                // right border of parent interval (needed in goRight)
-
-    // pseudo history stack (to go up at most one node)
-    TVertexDesc        _parentDesc;
-
-//____________________________________________________________________________
-
-    Iter() : index() {}
-
-    Iter(TFwdIndex &_index):
-        revIter(0),
-        index(&_index)
-    {
-        _indexRequireTopDownIteration(_index);
-        goRoot(*this);
-    }
-
-    Iter(TFwdIndex &_index, MinimalCtor):
-        index(&_index),
-        vDesc(MinimalCtor()),
-        _parentDesc(MinimalCtor()) {}
-
-    // NOTE(esiragusa): _parentDesc is unitialized
-    Iter(TFwdIndex &_index, TVertexDesc const &_vDesc):
-        index(&_index),
-        vDesc(_vDesc)
-    {
-        _indexRequireTopDownIteration(_index);
-    }
-
-    template <typename TSpec2>
-    Iter(Iter<TFwdIndex, VSTree<TopDown<TSpec2> > > const &_origin):
-        index(&container(_origin)),
-        vDesc(value(_origin)),
-        _parentDesc(nodeUp(_origin)) {}
-
-//____________________________________________________________________________
-
-    template <typename TSpec2>
-    inline Iter const &
-    operator = (Iter<TFwdIndex, VSTree<TopDown<TSpec2> > > const &_origin)
-    {
-        revIter = 0;
-        index = &container(_origin);
-        vDesc = value(_origin);
-        _parentDesc = nodeUp(_origin);
-        return *this;
-    }
-
-    void setRevIter(TRevIndexIter &_revIter)
-    {
-        revIter = &_revIter;
-    }
-};
-
-// Specialization of undirectional FM index iterator with history stack for use in the bidirectional FM index iterator with history stack
-template <typename TText, typename TOccSpec, typename TLengthSum, typename TSpec>
-class Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >, VSTree<TopDown<ParentLinks<TSpec> > > >:
-    public Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >, VSTree<TopDown<TSpec> > >
-{
-public:
-
-    typedef typename RevTextFibre<TText>::Type TRevText;
-    typedef Index<TRevText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > TRevIndex;
-    typedef Iter<TRevIndex, VSTree< TopDown<ParentLinks<TSpec> > > > TRevIndexIter;
-
-    TRevIndexIter     *revIter;    // container of all necessary tables
-
-    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > TIndex;
-    typedef Iter<TIndex, VSTree<TopDown<TSpec> > > TBase;
-    typedef typename HistoryStack_<Iter>::Type     TStack;
-    typedef Iter                                   iterator;
-
-    TStack            history;    // contains all previously visited intervals (allows to go up)
-
-//____________________________________________________________________________
-
-    SEQAN_HOST_DEVICE
-    Iter() :
-        TBase()
-    {}
-
-    SEQAN_HOST_DEVICE
-    Iter(TIndex &_index):
-        revIter(0),
-        TBase(_index) {}
-
-    SEQAN_HOST_DEVICE
-    Iter(TIndex &_index, MinimalCtor):
-        TBase(_index, MinimalCtor()) {}
-
-    SEQAN_HOST_DEVICE
-    Iter(Iter const &_origin):
-        TBase((TBase const &)_origin),
-        history(_origin.history) {}
-
-//____________________________________________________________________________
-
-    SEQAN_HOST_DEVICE inline
-    Iter const &
-    operator = (Iter const &_origin)
-    {
-        revIter = 0;
-        *(TBase*)(this) = _origin;
-        history = _origin.history;
-        return *this;
-    }
-
-    void setRevIter(TRevIndexIter &_revIter)
-    {
-        revIter = &_revIter;
-    }
-};
+struct BidirectionalFwd_;
+struct BidirectionalBwd_;
+typedef Tag<BidirectionalFwd_> const         Fwd;
+typedef Tag<BidirectionalBwd_> const         Bwd;
 
 // ============================================================================
 // Functions
 // ============================================================================
 
-// specialized method for updating both search intervals of the fm iterators
-template <typename TText, typename TOccSpec, typename TLengthSum, typename TSpec, typename TChar>
-inline bool _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >, VSTree<TopDown<TSpec> > > const & it,
-                           typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > >::Type const & vDesc,
-                           Pair<typename Size<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > >::Type> & _range,
-                           TChar c)
+template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TDirection>
+inline void update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > & it, TDirection)
 {
-    typedef typename Size<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > >::Type TSize;
-    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > TIndex;
-    typedef typename Fibre<TIndex, FibreLF>::Type TLF;
+    typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, Bwd, Fwd>::type TOppositeDirection;
 
-    TIndex const & index = container(it);
-    TLF const & lf = indexLF(index);
+    typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, TText, typename RevTextFibre<TText>::Type>::type TDirText;
+    typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, typename RevTextFibre<TText>::Type, TText>::type TOppDirText;
 
-    _range = range(index, vDesc);
-    TSize smaller1 = 0, smaller2 = 0;
-    _range.i1 = lf(_range.i1, c, smaller1);
-    _range.i2 = lf(_range.i2, c, smaller2);
+    typedef Iter<Index<TDirText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > TDirIter;
+    typedef Iter<Index<TOppDirText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > TOppDirIter;
 
-    if (_range.i1 < _range.i2)
-    {
-        if (_isRoot(vDesc))
-        {
-            value(*it.revIter).range.i1 = _range.i1;
-            value(*it.revIter).range.i2 = _range.i2;
-        }
-        else
-        {
-            value(*it.revIter).range.i1 += smaller2 - smaller1;
-            value(*it.revIter).range.i2 = value(*it.revIter).range.i1 + (_range.i2 - _range.i1);
-        }
+    _historyPush(getIter(it, TOppositeDirection()));
 
-        return true;
-    }
+    TDirIter & dirIter = getIter(it, TDirection());
+    TOppDirIter & oppDirIter = getIter(it, TOppositeDirection());
 
-    return false;
-}
-template <typename TText, typename TOccSpec, typename TLengthSum, typename TSpec, typename TChar>
-inline bool _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > >, VSTree<TopDown<TSpec> > > const & it,
-                           typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > >::Type const & vDesc,
-                           Pair<typename Size<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > >::Type> & _range1,
-                           Pair<typename Size<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > >::Type> & _range2,
-                           TChar c)
-{
-    typedef typename Size<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > >::Type TSize;
-    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum, FMBidirectional> > > TIndex;
-    typedef typename Fibre<TIndex, FibreLF>::Type TLF;
+	value(oppDirIter).range.i1 += value(dirIter).smaller;
+	value(oppDirIter).range.i2 = value(oppDirIter).range.i1 + value(dirIter).range.i2 - value(dirIter).range.i1;
 
-    TIndex const & index = container(it);
-    TLF const & lf = indexLF(index);
-
-    _range1 = range(index, vDesc);
-    TSize smaller1 = 0, smaller2 = 0;
-    _range1.i1 = lf(_range1.i1, c, smaller1);
-    _range1.i2 = lf(_range1.i2, c, smaller2);
-
-    if (_range1.i1 < _range1.i2)
-    {
-        if (_isRoot(vDesc))
-        {
-            _range2.i1 = _range1.i1;
-            _range2.i2 = _range1.i2;
-        }
-        else
-        {
-            _range2.i1 = value(*it.revIter).range.i1 + smaller2 - smaller1;
-            _range2.i2 = _range2.i1 + _range1.i2 - _range1.i1;
-        }
-
-        return true;
-    }
-
-    return false;
+    value(oppDirIter).repLen = value(dirIter).repLen; // do not increment in case of goRight
 }
 
-// ----------------------------------------------------------------------------
-// Function goUp()                                                   [Iterator]
-// ----------------------------------------------------------------------------
 
-// go up one edge
-template <typename TText, typename TOccSpec, typename TSpec2, typename TLengthSum, typename TSpec>
+template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TString, typename TSize, typename TDirection>
 SEQAN_HOST_DEVICE inline bool
-_goUp(Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TSpec2, TLengthSum, FMBidirectional> > >, VSTree<TopDown<TSpec> > > & it)
+_goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > &it,
+              TString const & string,
+              TSize & lcp,
+              TDirection)
 {
-    if (isRoot(it)) return false;
+    typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
+    typedef Iter<TIndex, VSTree<TopDown<TSpec> > >                TIter;
+    typedef typename Size<TIndex>::Type                           TSize2;
+    typedef Pair<TSize2>                                           TRange;
+    typedef typename Iterator<TString const, Standard>::Type    TStringIter;
 
-    _historyPop(it);
-    _historyPop(*it.revIter);
-    return true;
-}
+    typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, Bwd, Fwd>::type TOppositeDirection;
 
-template <typename TText, typename TOccSpec, typename TSpec2, typename TLengthSum, typename TSpec>
-SEQAN_HOST_DEVICE inline bool
-_goUp(Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TSpec2, TLengthSum, FMBidirectional> > >, VSTree<TopDown<ParentLinks<TSpec> > > > & it)
-{
-    if (isRoot(it)) return false;
+    TStringIter stringIt = begin(string, Standard());
+    TStringIter stringEnd = end(string, Standard());
 
-    _historyPop(it);
-    _historyPop(*it.revIter);
-    return true;
-}
+    _historyPush(getIter(it, TDirection()));
 
-// ----------------------------------------------------------------------------
-// Function goRoot()                                                 [Iterator]
-// ----------------------------------------------------------------------------
-
-template < typename TText, typename TOccSpec, typename TSpec2, typename TLengthSum, typename TSpec>
-SEQAN_HOST_DEVICE inline void goRoot(Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TSpec2, TLengthSum, FMBidirectional> > >, VSTree<TSpec> > &it)
-{
-    // avoid trying to access it.revIter during construction of it, when it.revIter is not set
-    if (it.revIter)
+    for (lcp = 0; stringIt != stringEnd; ++stringIt, ++lcp)
     {
-        _historyClear(*it.revIter);
-        clear(*it.revIter);
-        if (!empty(indexSA(container(*it.revIter))))
-            _setSizeInval(value(*it.revIter).range.i2);
+        TRange _range;
+        TSize2 _smaller = 0;
+
+        // NOTE(esiragusa): isLeaf() early exit is slower on CUDA.
+        // NOTE(esiragusa): this should be faster only for texts over small alphabets consisting of few/long sequences.
+#ifdef __CUDA_ARCH__
+        if (!_getNodeByChar(getIter(it, TDirection()), value(getIter(it, TDirection())), _range, _smaller, value(stringIt))) break;
+#else
+        if (isLeaf(getIter(it, TDirection())) || !_getNodeByChar(getIter(it, TDirection()), value(getIter(it, TDirection())), _range, _smaller, value(stringIt))) break;
+#endif
+
+        value(getIter(it, TDirection())).range = _range;
+        value(getIter(it, TDirection())).smaller = _smaller;
+        update(it, TDirection());
     }
 
-    _historyClear(it);
-    clear(it);                            // start in root node with range (0,infty)
-    if (!empty(indexSA(container(it))))
-        _setSizeInval(value(it).range.i2);    // infty is equivalent to length(index) and faster to compare
+    value(getIter(it, TDirection())).repLen += lcp;
+
+    if (lcp) value(getIter(it, TDirection())).lastChar = value(stringIt - 1);
+
+    return stringIt == stringEnd;
 }
 
 }

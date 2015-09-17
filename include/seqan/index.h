@@ -74,6 +74,7 @@
 #endif  // #ifdef SEQAN_PARALLEL
 
 #include <seqan/index/index_base.h>
+#include <seqan/index/index_bidirectional.h>
 
 #include <seqan/index/find_index_binary.h>
 
@@ -135,6 +136,7 @@
 
 #include <seqan/index/index_esa_base.h>
 #include <seqan/index/index_esa_stree.h>
+#include <seqan/index/index_bidirectional_stree.h>
 #include <seqan/index/index_wotd.h>
 #include <seqan/index/index_dfi.h>
 #include <seqan/index/index_sa_stree.h>

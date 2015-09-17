@@ -71,25 +71,6 @@ generateText(TText &text, TText &revText, const unsigned int textLength, const u
     reverse(revText);
 }
 
-// comparing two lists of occurrences
-template <typename TIter1, typename TIter2>
-inline void
-compareOccurrences(TIter1 &iter1, TIter2 &iter2)
-{
-    typedef typename Container<TIter1>::Type  TIndex1;
-    typedef typename Container<TIter2>::Type  TIndex2;
-    typedef typename Infix<typename Fibre<TIndex1, FibreSA>::Type const>::Type  TOccs1;
-    typedef typename Infix<typename Fibre<TIndex2, FibreSA>::Type const>::Type  TOccs2;
-    TOccs1 occs1 = getOccurrences(iter1);
-    TOccs2 occs2 = getOccurrences(iter2);
-
-    SEQAN_ASSERT_EQ(length(occs1), length(occs2));
-    for (unsigned int i = 0; i < length(occs1); ++i)
-    {
-        SEQAN_ASSERT_EQ(occs1[i], occs2[i]);
-    }
-}
-
 // testing the bidirectional FM index by comparing ranges and hits against two stand-alone
 // FM indices of the original and the reversed text
 template <typename TBiFMIndex, typename TPattern>
@@ -120,24 +101,19 @@ testBidirectionalIndex(const unsigned int textLength, const unsigned int pattern
 
     bool res1 = goDown(itFwd, revPattern);
     bool res2 = goDown(itRev, pattern);
-    bool res3 = goDown(bifm1.bwdIter, pattern);
-    bool res4 = goDown(bifm2.fwdIter, revPattern);
+    bool res3 = goDown(bifm1, pattern, Bwd());
+    bool res4 = goDown(bifm2, revPattern, Fwd());
 
     SEQAN_ASSERT_EQ(res1, res2);
     SEQAN_ASSERT_EQ(res1, res3);
     SEQAN_ASSERT_EQ(res1, res4);
 
-    if (res1) // if all are true
+    if (res1) // if pattern was found in string
     {
-        SEQAN_ASSERT_EQ(countOccurrences(itFwd), countOccurrences(bifm1.fwdIter));
-        SEQAN_ASSERT_EQ(countOccurrences(itFwd), countOccurrences(bifm2.fwdIter));
-        SEQAN_ASSERT_EQ(countOccurrences(itRev), countOccurrences(bifm1.bwdIter));
-        SEQAN_ASSERT_EQ(countOccurrences(itRev), countOccurrences(bifm2.bwdIter));
-
-        compareOccurrences(itFwd, bifm1.fwdIter);
-        compareOccurrences(itFwd, bifm2.fwdIter);
-        compareOccurrences(itRev, bifm1.bwdIter);
-        compareOccurrences(itRev, bifm2.bwdIter);
+        SEQAN_ASSERT(getOccurrences(itFwd) == getOccurrences(bifm1.fwdIter));
+        SEQAN_ASSERT(getOccurrences(itFwd) == getOccurrences(bifm2.fwdIter));
+        SEQAN_ASSERT(getOccurrences(itRev) == getOccurrences(bifm1.revIter));
+        SEQAN_ASSERT(getOccurrences(itRev) == getOccurrences(bifm2.revIter));
     }
 
     return 0;
@@ -148,8 +124,8 @@ SEQAN_DEFINE_TEST(bifm_index_iterator_range_check)
     using namespace seqan;
 
     typedef DnaString TText;
-    typedef Index<TText, BidirectionalFMIndex<> > TIndex;
-    typedef Index<StringSet<TText, Owner<ConcatDirect<void> > >, BidirectionalFMIndex<> >  TStringSetIndex;
+    typedef Index<TText, BidirectionalIndex<FMIndex<> > > TIndex;
+    typedef Index<StringSet<TText, Owner<ConcatDirect<void> > >, BidirectionalIndex<FMIndex<> > >  TStringSetIndex;
 
     for (int textLength = 1; textLength < 15; ++textLength)
     {
