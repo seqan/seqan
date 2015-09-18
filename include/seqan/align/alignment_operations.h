@@ -63,7 +63,7 @@ integrateGaps(Gaps<TSource0, TGapSpec0> & targetRow,
               Gaps<TSource1, TGapSpec1> const & sourceRow,
               TPos const viewPos)
 {
-    typedef typename Iterator<Gaps<TSource0, TGapSpec0> >::Type TTargetIt;
+    typedef typename Iterator<Gaps<TSource0, TGapSpec0>, Standard >::Type TTargetIt;
     typedef typename Iterator<Gaps<TSource1, TGapSpec1> const, Standard>::Type TSourceIt;
 
     // This assertion ensures that the number of sequence characters after viewPos is greater than or equal to
@@ -75,12 +75,12 @@ integrateGaps(Gaps<TSource0, TGapSpec0> & targetRow,
     TTargetIt it = iter(targetRow, viewPos);
 
     // walk through Gaps containers and copy gaps
-    for (TSourceIt infixIt = begin(sourceRow, Standard()); !atEnd(infixIt);)
+    for (TSourceIt sIt = begin(sourceRow, Standard()), sItEnd = end(sourceRow, Standard()); sIt != sItEnd;)
     {
-        TPos gapSize = countGaps(infixIt);
+        TPos gapSize = countGaps(sIt);
         insertGaps(it, gapSize);
         goFurther(it, gapSize+1);
-        goFurther(infixIt, gapSize+1);
+        goFurther(sIt, gapSize+1);
     }
 }
 
