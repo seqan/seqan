@@ -55,7 +55,7 @@ namespace seqan
  * @link BlastMatch::qLength @endlink, @link BlastMatch::sLength @endlink,
  * @link BlastMatch::qFrameShift @endlink and @link BlastMatch::sFrameShift @endlink.
  *
- * If you then also set a valid alignRow-members (@link BlastMatch::alignRow0 @endlink, 
+ * If you then also set valid alignRow-members (@link BlastMatch::alignRow0 @endlink, 
  * @link BlastMatch::alignRow1 @endlink), you can let the other members be computed by
  * @link BlastMatch#computeAlignmentStats @endlink and
  * @link BlastMatch#computeBitScore @endlink, @link BlastMatch#computeEValue @endlink.
