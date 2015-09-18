@@ -408,7 +408,6 @@ int basic_zip_istream<Elem, Tr, ElemA, ByteT, ByteAT>::check_header()
     z_stream & zip_stream = this->rdbuf()->get_zip_stream();
 
     std::basic_istream<Elem, Tr> & istream = this->rdbuf()->get_istream();
-    bool m_is_gzip;
 
     // Check the gzip magic header
     for (len = 0; len < 2; len++)
