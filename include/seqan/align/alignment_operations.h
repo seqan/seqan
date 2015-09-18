@@ -63,7 +63,7 @@ integrateGaps(Gaps<TSource0, TGapSpec0> & targetRow,
               Gaps<TSource1, TGapSpec1> const & sourceRow,
               TPos const viewPos)
 {
-    typedef typename Iterator<Gaps<TSource0, TGapSpec0>, Standard >::Type TTargetIt;
+    typedef typename Iterator<Gaps<TSource0, TGapSpec0>, Standard>::Type TTargetIt;
     typedef typename Iterator<Gaps<TSource1, TGapSpec1> const, Standard>::Type TSourceIt;
 
     // This assertion ensures that the number of sequence characters after viewPos is greater than or equal to
