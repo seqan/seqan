@@ -334,15 +334,15 @@ void clipBarcodes(TSeqs& seqs, int len)
     }
 }
 
-template <typename TMatches, typename TBarcodes>
-void group(std::vector<int>& sortedSequences, const TMatches& matches, const TBarcodes& barcodes, bool exclude)
+template <typename TRead, typename TMatches, typename TBarcodes>
+void group(std::vector<TRead>& reads, const TMatches& matches, const TBarcodes& barcodes, bool exclude)
 {
-	resize(sortedSequences, length(barcodes)+1);
+    float dividend = float(length(barcodes[0])*5.0);
 	for (unsigned i = 0; i < length(matches); ++i)
     {                                                       //adds index of sequence to respective group.
 		if ((!exclude) || (matches[i] != -1))                //Check if unidentified seqs have to be excluded
         {                                                   //offset by 1 is necessary since group 0 is...
-            appendValue(sortedSequences, matches[i]);  //...reserved for unidentified sequences)
+            reads[i].demuxResult = int(floor(float(matches[i]) / dividend));  //...reserved for unidentified sequences)
         }
     }                                                  
 }
@@ -361,17 +361,16 @@ void group(TGroups& sortedSequences, const TMatches& matches, const TBarcodes& b
 }
 
 //Overload if approximate search has been used.
-template <typename TMatches, typename TBarcodes, typename TApprox>
-void group(std::vector<int>& sortedSequences, const TMatches& matches,
+template <typename TRead, typename TMatches, typename TBarcodes, typename TApprox>
+void group(std::vector<TRead>& reads, const TMatches& matches,
     const TBarcodes& barcodes, TApprox const &, bool exclude)
 {
-    resize(sortedSequences, length(barcodes) / 5 + 1);
     float dividend = float(length(barcodes[0])*5.0);		//value by which the index will be corrected.
     for (unsigned i = 0; i < length(matches); ++i)			//adds index of sequence to respective group.
     {
         if ((!exclude) || (matches[i] != -1))                //Check if unidentified seqs have to be excluded
         {
-            appendValue(sortedSequences, int(floor(float(matches[i]) / dividend)));
+            reads[i].demuxResult = int(floor(float(matches[i]) / dividend));
         }
     }
 }
@@ -392,6 +391,16 @@ void group(TGroups& sortedSequences, const TMatches& matches,
 }
 
 //Using exact search and multiplex barcodes.
+template<typename TRead, typename TBarcodes, typename TMultiplex, typename TFinder>
+void doAll(std::vector<TRead>& reads, TMultiplex& multiplex, TBarcodes& barcodes,
+    TFinder& esaFinder, DemultiplexStats& stats, bool exclude)
+{
+    String<int> matches;
+    findAllExactIndex(matches, multiplex, esaFinder, stats);
+    group(reads, matches, barcodes, exclude);
+}
+
+
 template<typename TGroups, typename TBarcodes, typename TMultiplex ,typename TFinder>
 void doAll(TGroups& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes,
     TFinder& esaFinder, DemultiplexStats& stats, bool exclude)

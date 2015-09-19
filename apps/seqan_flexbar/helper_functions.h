@@ -45,34 +45,54 @@
 #include <future>
 #include <string>
 
-struct ReadBase {};
-
-struct Read : ReadBase
+struct ReadBase 
 {
     std::string seq;
     std::string id;
-    //std::string multiplex;
-    //int demuxResult;
+    int demuxResult;
 
-    Read::Read() = default;
-    Read::Read(const Read& rhs) = default;
+    ReadBase() = default;
+    ReadBase(const ReadBase& rhs) = default;
 
-    bool operator==(const Read& rhs) const
+    bool operator==(const ReadBase& rhs) const
     {
-        return seq == rhs.seq && id == rhs.id;
+        return seq == rhs.seq && id == rhs.id && demuxResult == rhs.demuxResult;
     }
 
-    Read& operator=(const Read&& rhs)
+    ReadBase& operator=(const ReadBase&& rhs)
     {
         seq = std::move(rhs.seq);
         id = std::move(rhs.id);
+        demuxResult = rhs.demuxResult;
         return *this;
     }
+};
 
-    //bool friend operator<(const Read& lhs, const Read& rhs)
-    //{
-    //    return false;
-    //}
+struct Read : ReadBase
+{
+};
+
+struct ReadMultiplex : ReadBase
+{
+    std::string multiplex;
+    bool operator==(const ReadMultiplex& rhs) const
+    {
+        return ReadBase::operator==(rhs) && multiplex == rhs.multiplex;
+    }
+    ReadMultiplex& operator=(const ReadMultiplex&& rhs)
+    {
+        ReadBase::operator=(std::move(rhs));
+        multiplex = std::move(rhs.multiplex);
+        return *this;
+    }
+};
+
+struct ReadPairedEnd : ReadBase
+{
+};
+
+struct ReadMultiplexPairedEnd : ReadBase
+{
 };
 
 template <typename TDest, typename TSource>

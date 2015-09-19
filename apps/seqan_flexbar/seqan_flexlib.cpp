@@ -701,8 +701,11 @@ struct ProgramParams
     unsigned int readCount;
     double processTime, ioTime;
     seqan::SeqFileIn fileStream1, fileStream2;
+    bool showSpeed;
+    unsigned int firstReads;
+    unsigned records;
 
-    ProgramParams() : fileCount(0), readCount(0), processTime(0), ioTime(0) {};
+    ProgramParams() : fileCount(0), readCount(0), processTime(0), ioTime(0), showSpeed(false), firstReads(0), records(0) {};
 };
 
 //TODO(singer): THIS NEEDS TO BE REDONE/DELETED
@@ -929,13 +932,13 @@ public:
         }
     }
     //Writes the sets of ids and sequences to their corresponding files. Used for single-end data.
-    template <typename TMap, typename TNames>
-    void writeSeqs(std::vector<Read>& reads, TMap& map, std::vector<int>& groups, TNames& names)
+    template <typename TRead, typename TNames>
+    void writeSeqs(std::vector<TRead>& reads, TNames& names)
     {
         updateStreams(names, false);
         for (unsigned i = 0; i < length(reads); ++i)
         {
-            unsigned streamIndex = groups[i] + 1;
+            unsigned streamIndex = reads[i].demuxResult + 1;
             writeRecord(*fileStreams[streamIndex], std::move(reads[i].id), seqan::Dna5QString(std::move(reads[i].seq)));
         }
     }
@@ -1174,6 +1177,13 @@ int loadProgramParams(seqan::ArgumentParser const & parser, ProgramParams & para
             return 1;
         }
     }
+    params.showSpeed = isSet(parser, "ss");
+
+    params.firstReads = std::numeric_limits<unsigned>::max();
+    if (seqan::isSet(parser, "fr"))
+        getOptionValue(params.firstReads, parser, "fr");
+
+    getOptionValue(params.records, parser, "r");
     return 0;
 }
 
@@ -1342,9 +1352,9 @@ void preprocessingStage(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev,
 }
 // DEMULTIPLEXING
 //Version for single-end data
-template <typename TFinder, typename TMap, typename TGroups>
+template <typename TFinder>
 int demultiplexingStage(DemultiplexingParams& params, std::vector<Read>& reads, TFinder& esaFinder,
-    TMap& map, TGroups& groups, GeneralStats& generalStats)
+    GeneralStats& generalStats)
 {
     if (!params.run)
     {
@@ -1353,7 +1363,7 @@ int demultiplexingStage(DemultiplexingParams& params, std::vector<Read>& reads, 
     if (params.runx && !params.approximate)
     {
         //DEBUG_MSG(std::cout << "Demultiplexing exact multiplex single-end reads.\n");
-        doAll(groups, params.multiplex, params.barcodes, esaFinder, params.stats, params.exclude);
+        doAll(reads, params.multiplex, params.barcodes, esaFinder, params.stats, params.exclude);
     }
     else if (!params.approximate)
     {
@@ -1362,12 +1372,12 @@ int demultiplexingStage(DemultiplexingParams& params, std::vector<Read>& reads, 
             return 1;
         }
         //DEBUG_MSG("Demultiplexing exact inline single-end reads.\n");
-        doAll(groups, reads, params.barcodes, esaFinder, params.hardClip, params.stats, params.exclude);
+        doAll(reads, reads, params.barcodes, esaFinder, params.hardClip, params.stats, params.exclude);
     }
     else if (params.runx && params.approximate)
     {
         //DEBUG_MSG("Demultiplexing approximate multiplex single-end reads.\n");
-        doAll(groups, params.multiplex, params.barcodes, esaFinder, params.stats, params.approximate, params.exclude);
+        doAll(reads, params.multiplex, params.barcodes, esaFinder, params.stats, params.approximate, params.exclude);
     }
     else
     {
@@ -1376,19 +1386,9 @@ int demultiplexingStage(DemultiplexingParams& params, std::vector<Read>& reads, 
             return 1;
         }
         //DEBUG_MSG("Demultiplexing approximate inline single-end reads.\n");
-        doAll(groups, reads, params.barcodes, esaFinder, params.hardClip, params.stats,
+        doAll(reads, reads, params.barcodes, esaFinder, params.hardClip, params.stats,
             params.approximate, params.exclude);
     }
-    // Saves information on how groups correspond to barcodes.
-    clear(map);
-    for (unsigned i = 0; i < length(groups); ++i)
-    {
-        if (length(groups[i]) != 0)
-        {
-            appendValue(map, i);
-        }
-    }
-    // Sorting the results into the sequence- and ID Strings
     return 0;
 }
 
@@ -1571,8 +1571,6 @@ void qualityTrimmingStage(QualityTrimmingParams& params, std::vector<TRead>& rea
 {
     if (params.run)
     {
-        //DEBUG_MSG("Trimming qualities.\n");
-        // Templates don't support runtime polymorphism, so code paths for all possibilities.
         switch (params.trim_mode)
         {
         case E_WINDOW:
@@ -1601,10 +1599,7 @@ void qualityTrimmingStage(QualityTrimmingParams& params, std::vector<TRead>& rea
         }
         }
     }
-    for (unsigned i = 0; i < length(reads); ++i)
-    {
-        dropReads(reads, params.min_length, params.stats);
-    }
+    dropReads(reads, params.min_length, params.stats);
 }
 
 template <typename TIds, typename TSeqs>
@@ -1903,6 +1898,61 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
 }
 
 // END FUNCTION DEFINITIONS ---------------------------------------------
+template<typename TRead, typename TParser, typename TEsaFinder>
+int mainLoop(TRead, ProgramParams& programParams, DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
+    QualityTrimmingParams& qualityTrimmingParams, TParser& parser, TEsaFinder& esaFinder, CharString& output, bool noQuality, bool tagOpt, GeneralStats& generalStats)
+{
+    OutputStreams outputStreams(output, noQuality);
+    std::vector<TRead> readSet(programParams.records);
+    TRead read;
+    SEQAN_PROTIMESTART(loopTime);
+    while (!atEnd(programParams.fileStream1) && (programParams.readCount < programParams.firstReads))
+    {
+        unsigned int i = 0;
+        readSet.resize(programParams.records);
+        while (i < programParams.records && !atEnd(programParams.fileStream1))
+        {
+            readRecord(readSet[i].id, readSet[i].seq, programParams.fileStream1);
+            ++i;
+        }
+        readSet.resize(i);
+
+        programParams.readCount += i;
+        SEQAN_PROTIMESTART(processTime);            // START of processing time.
+
+                                                    //loadMultiplex(multiplexInFile, demultiplexingParams, records);
+                                                    //loadMultiplex(multiplexInFile, demultiplexingParams, readSet);
+        if (demultiplexingParams.runx)
+            return 1;
+
+        // Preprocessing and Filtering
+        preprocessingStage(readSet, processingParams, parser, generalStats);
+
+
+        // Demultiplexing
+        if (demultiplexingStage(demultiplexingParams, readSet, esaFinder, generalStats) != 0)
+            return 1;
+
+        // Adapter trimming
+        adapterTrimmingStage(adapterTrimmingParams, readSet, tagOpt);
+
+        // Quality trimming
+        qualityTrimmingStage(qualityTrimmingParams, readSet, tagOpt);
+
+        // Postprocessing
+        postprocessingStage(readSet, processingParams, generalStats);
+        programParams.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
+
+                                                                        // Append to output file.
+        outputStreams.writeSeqs(readSet, demultiplexingParams.barcodeIds);
+        // Information
+        if (programParams.showSpeed)
+            std::cout << "\r" << programParams.readCount << "   " << static_cast<int>(programParams.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
+        else
+            std::cout << "\r" << programParams.readCount;
+    }
+    return 0;
+}
 
 // ----------------------------------------------------------------------------
 // Function main()
@@ -1933,21 +1983,12 @@ int flexbarMain(int argc, char const ** argv)
     //--------------------------------------------------
     GeneralStats generalStats;
 
-    unsigned records;
-    getOptionValue(records, parser, "r");
-
-    const bool showSpeed = isSet(parser, "ss");
-
     seqan::CharString output;
     getOptionValue(output, parser, "output");
 
     int threads = 1;
     getOptionValue(threads, parser, "tnum");
     omp_set_num_threads(threads);
-
-	unsigned firstReads = std::numeric_limits<unsigned>::max();
-	if (seqan::isSet(parser, "fr"))
-		getOptionValue(firstReads, parser, "fr");
 
     //--------------------------------------------------
     // Parse pre- and postprocessing parameters.
@@ -2149,7 +2190,7 @@ int flexbarMain(int argc, char const ** argv)
         }
         std:: cout << "\n"; 
         std::cout << "General Options:\n";
-        std::cout << "\tReads per block: " << records * ((programParams.fileCount == 2) + 1)<< "\n";
+        std::cout << "\tReads per block: " << programParams.records * ((programParams.fileCount == 2) + 1)<< "\n";
         /*
         if (isSet(parser, "c"))
         {
@@ -2168,7 +2209,7 @@ int flexbarMain(int argc, char const ** argv)
 		if (isSet(parser, "nq") && (value(format(programParams.fileStream1)) !=
                                     Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE))
         {
-            std::cout << "\tProcess only first n reads: " << firstReads << "\n";
+            std::cout << "\tProcess only first n reads: " << programParams.firstReads << "\n";
         }
         else if (value(format(programParams.fileStream1)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE)
         {
@@ -2322,62 +2363,7 @@ int flexbarMain(int argc, char const ** argv)
 
     if (fileCount == 1)
     {
-        if (!demultiplexingParams.run)
-            outputStreams.addStream("", 0, useDefault);
-
-        std::vector<Read> readSet(records);
-        seqan::String<seqan::StringSet<seqan::CharString> > idSet;
-        seqan::String<seqan::StringSet<Dna5QString> > seqSet;
-        Read read;
-        using TGroups = std::vector<int>;
-
-        while (!atEnd(programParams.fileStream1) && (programParams.readCount < firstReads))
-        {
-            TGroups groups;
-
-            unsigned int i = 0;
-            readSet.resize(records);
-            while(i < records && !atEnd(programParams.fileStream1))
-            {
-                readRecord(readSet[i].id, readSet[i].seq, programParams.fileStream1);
-                ++i;
-            }
-            readSet.resize(i);
-
-            programParams.readCount+= i;
-            SEQAN_PROTIMESTART(processTime);            // START of processing time.
-
-            //loadMultiplex(multiplexInFile, demultiplexingParams, records);
-            //loadMultiplex(multiplexInFile, demultiplexingParams, readSet);
-            if (demultiplexingParams.runx)
-                return 1;
-
-            // Preprocessing and Filtering
-            preprocessingStage(readSet, processingParams, parser, generalStats);
-
-
-            // Demultiplexing
-            if (demultiplexingStage(demultiplexingParams, readSet, esaFinder, map, groups, generalStats) != 0)
-                    return 1;
-
-            // Adapter trimming
-            adapterTrimmingStage(adapterTrimmingParams, readSet, tagOpt);
-
-            // Quality trimming
-            qualityTrimmingStage(qualityTrimmingParams, readSet, tagOpt);
-
-            // Postprocessing
-            postprocessingStage(readSet, processingParams, generalStats);
-            programParams.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
-
-            // Append to output file.
-            outputStreams.writeSeqs(readSet, map, groups, demultiplexingParams.barcodeIds);
-            // Information
-            if (showSpeed)
-                std::cout << "\r" << programParams.readCount << "   " << static_cast<int>(programParams.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
-            else
-                std::cout << "\r" << programParams.readCount;
-        }
+        mainLoop(Read(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, noQuality, tagOpt, generalStats);
      }
      else
      {
@@ -2399,13 +2385,13 @@ int flexbarMain(int argc, char const ** argv)
             appendValue(idSet2, seqan::StringSet<seqan::CharString>());
             appendValue(seqSet2, seqan::StringSet<Dna5QString>());
 
-            readRecords(idSet1[0], seqSet1[0], programParams.fileStream1, records);
-            readRecords(idSet2[0], seqSet2[0], programParams.fileStream2, records);
+            readRecords(idSet1[0], seqSet1[0], programParams.fileStream1, programParams.records);
+            readRecords(idSet2[0], seqSet2[0], programParams.fileStream2, programParams.records);
 
             programParams.readCount += length(idSet1[0]);
             SEQAN_PROTIMESTART(processTime); // START of processing time.
 
-            loadMultiplex(multiplexInFile, demultiplexingParams , records);
+            loadMultiplex(multiplexInFile, demultiplexingParams , programParams.records);
             if (demultiplexingParams.runx)
                 return 1;
 
@@ -2431,7 +2417,7 @@ int flexbarMain(int argc, char const ** argv)
             // Append to output file.
             outputStreams.writeSeqs(idSet1, seqSet1, idSet2, seqSet2, map, demultiplexingParams.barcodeIds);
             // Information
-            if (showSpeed)
+            if (programParams.showSpeed)
                 std::cout << "\r" << programParams.readCount << "   " << static_cast<int>(programParams.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
             else
                 std::cout << "\r" << programParams.readCount;
