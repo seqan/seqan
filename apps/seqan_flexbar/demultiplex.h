@@ -183,18 +183,20 @@ bool check(TSeqs& seqs, TIds& ids,TBarcodes& barcodes, TStats& stats)
 	return true;
 }
 
-void getPrefix(std::vector<std::string>& prefices, std::vector<Read>& reads, unsigned len)
+template <template <typename> typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>,Read<TSeq>>::value || std::is_same<TRead<TSeq>,ReadPairedEnd<TSeq>>::value>>
+void getPrefix(std::vector<TSeq>& prefices, std::vector<TRead<TSeq>>& reads, unsigned len)
 {
     int limit = reads.size();
     prefices.resize(limit);
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
         for (int i = 0; i < limit; ++i) //Remark: OMP requires an integer as loop-variable
         {
-            prefices[i] = reads[i].seq.substr(0,len);
+            prefices[i] = prefix(reads[i].seq, len);
         }
 }
 
-void getPrefix(std::vector<std::string>& prefices, std::vector<ReadMultiplex>& reads, unsigned len)
+template <template <typename> typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
+void getPrefix(std::vector<TSeq>& prefices, std::vector<TRead<TSeq>>& reads, unsigned len, bool = false)
 {
     int limit = reads.size();
     prefices.resize(limit);
@@ -307,7 +309,7 @@ void clipBarcodes(std::vector<TRead>& reads, const seqan::String<int>& matches, 
         for (int i = 0; i < limit; ++i)
             if (matches[i] != -1)					//only erases barcode from sequence if it could be matched
             {
-                reads[i].seq.erase(0, len);
+                erase(reads[i].seq, 0, len);
             }
 }
 
@@ -331,7 +333,7 @@ void clipBarcodes(std::vector<TRead>& reads, int len)
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
         for (int i = 0; i < limit; ++i)
         {
-            reads[i].seq.erase(0, len);
+            erase(reads[i].seq, 0, len);
         }
 }
 
@@ -354,7 +356,7 @@ void group(std::vector<TRead>& reads, const TMatches& matches, const TBarcodes& 
     {                                                       //adds index of sequence to respective group.
 		if ((!exclude) || (matches[i] != -1))                //Check if unidentified seqs have to be excluded
         {                                                   //offset by 1 is necessary since group 0 is...
-            reads[i].demuxResult = matches[i];               //...reserved for unidentified sequences)
+            reads[i].demuxResult = matches[i] + 1;               //...reserved for unidentified sequences)
         }
     }                                                  
 }
@@ -382,7 +384,7 @@ void group(std::vector<TRead>& reads, const TMatches& matches,
     {
         if ((!exclude) || (matches[i] != -1))                //Check if unidentified seqs have to be excluded
         {
-            reads[i].demuxResult = int(floor(float(matches[i]) / dividend));
+            reads[i].demuxResult = int(floor(float(matches[i]) / dividend)) + 1;
         }
     }
 }
@@ -421,15 +423,15 @@ void doAll(TGroups& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes,
 }
 
 //Using exact search 
-template<typename TRead, typename TBarcodes, typename TFinder>
-void doAll(std::vector<TRead>& reads, TBarcodes& barcodes, TFinder& esaFinder, bool hardClip,
+template<template <typename> typename TRead, typename TSeq, typename TBarcodes, typename TFinder>
+void doAll(std::vector<TRead<TSeq>>& reads, TBarcodes& barcodes, TFinder& esaFinder, bool hardClip,
     DemultiplexStats& stats, bool exclude)
 {
-    std::vector<std::string> prefices;
+    std::vector<TSeq> prefices;
     getPrefix(prefices, reads, length(barcodes[0]));
     std::vector<int> matches;
     findAllExactIndex(matches, prefices, esaFinder, stats);
-    if (std::is_same<TRead, Read>::value)   // clipping is not done for multiplex barcodes, only for inline barcodes
+    if (std::is_same<TRead<TSeq>, Read<TSeq>>::value)   // clipping is not done for multiplex barcodes, only for inline barcodes
     {
         if (hardClip)		//clip barcodes according to selected method
         {
@@ -463,11 +465,11 @@ void doAll(seqan::StringSet<seqan::String<int> >& sortedSequences, TSeqs& seqs, 
     group(sortedSequences, matches, barcodes, exclude);
 }
 // Using approximate search
-template<typename TRead, typename TBarcodes, typename TFinder, typename TApprox>
-void doAll(std::vector<TRead>& reads, TBarcodes& barcodes, TFinder& esaFinder,
+template<template <typename> typename TRead, typename TSeq, typename TBarcodes, typename TFinder, typename TApprox>
+void doAll(std::vector<TRead<TSeq>>& reads, TBarcodes& barcodes, TFinder& esaFinder,
     bool hardClip, DemultiplexStats& stats, const TApprox approximate, bool exclude)
 {
-    std::vector<std::string> prefices;
+    std::vector<TSeq> prefices;
     getPrefix(prefices, reads, length(barcodes[0]));
     std::vector<int> matches;
     findAllExactIndex(matches, prefices, esaFinder, stats);

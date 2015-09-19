@@ -453,8 +453,9 @@ unsigned stripAdapter(TRead& read, AdapterTrimmingStats& stats, TAdapterSet cons
             //std::cout << ret.i2 << std::endl;
             TRow row2 = row(ret.i2, 1);
             //std::cout << "adapter start position: " << toViewPosition(row2, 0) << std::endl;
-            removed += length(read.seq) - toViewPosition(row2, 0);
-            seqan::erase(read.seq, toViewPosition(row2, 0), length(read.seq));
+            const auto seqLen = length(read.seq);
+            removed += seqLen - toViewPosition(row2, 0);
+            seqan::erase(read.seq, toViewPosition(row2, 0), seqLen);
             //std::cout << "stripped seq: " << seq << std::endl;
             stats.overlapSum += overlap;
             if (TStripAdapterDirection::value == adapterDirection::reverse)
@@ -512,8 +513,8 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapterSet const&
     return removed;
 }
 
-template <typename TAdapterSet, typename TSpec>
-unsigned stripAdapter(Read& read, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec)
+template <template <typename> typename TRead, typename TSeq, typename TAdapterSet, typename TSpec>
+unsigned stripAdapter(TRead<TSeq>& read, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec)
 {
     return stripAdapter<TAdapterSet, TSpec, false>(read, stats, adapterSet, spec);
 }
@@ -541,7 +542,7 @@ unsigned stripAdapterBatch(std::vector<TRead>& reads, TAdapterSet const& adapter
     SEQAN_OMP_PRAGMA(parallel for schedule(static))
         for (int i = 0; i < len; ++i)
         {
-            if (reads[i].seq.empty())
+            if (seqan::empty(reads[i].seq))
                 continue;
             const int t_id = omp_get_thread_num();
             // Every thread has its own adapterTrimmingStatsVector

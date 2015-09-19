@@ -159,7 +159,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     }
 
     seqan::ArgParseOption adInfoOpt = seqan::ArgParseOption(
-        "ni", "noInfo", "Don't print paramter overwiev to console.");
+        "ni", "noInfo", "Don't print paramter overview to console.");
     addOption(parser, adInfoOpt);
 }
 
@@ -938,7 +938,7 @@ public:
         updateStreams(names, false);
         for (unsigned i = 0; i < length(reads); ++i)
         {
-            unsigned streamIndex = reads[i].demuxResult + 1;
+            unsigned streamIndex = reads[i].demuxResult;
             writeRecord(*fileStreams[streamIndex], std::move(reads[i].id), seqan::Dna5QString(std::move(reads[i].seq)));
         }
     }
@@ -1011,13 +1011,13 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
     return 0;
 }
 
-template<typename TRead>
-inline void loadMultiplex(std::vector<TRead>& reads, seqan::SeqFileIn& multiplexFile, unsigned records)
+template<template <typename> typename TRead, typename TSeq>
+inline void loadMultiplex(std::vector<TRead<TSeq>>& reads, seqan::SeqFileIn& multiplexFile, unsigned records)
 {
 }
 
-template<>
-inline void loadMultiplex<ReadMultiplex>(std::vector<ReadMultiplex>& reads, seqan::SeqFileIn& multiplexFile, unsigned records)
+template<template <typename> typename TRead, typename TSeq>
+inline void loadMultiplex(std::vector<ReadMultiplex<TSeq>>& reads, seqan::SeqFileIn& multiplexFile, unsigned records)
 {
     seqan::String<char> id;
     unsigned int i = 0;
@@ -1389,6 +1389,64 @@ int demultiplexingStage(DemultiplexingParams& params, std::vector<TRead>& reads,
     return 0;
 }
 
+
+template <typename TSeqsVec, typename TIdsVec, typename TFinder,typename TMap>
+int demultiplexingStage(DemultiplexingParams& params, TSeqsVec& seqs, TIdsVec& ids, TFinder& esaFinder, 
+    TMap& map, GeneralStats& generalStats)
+{
+    if (!params.run)
+    {
+        return 0;
+    }
+    seqan::StringSet<seqan::String<int> > groups;
+    if (params.runx && !params.approximate)
+    {
+        //DEBUG_MSG(std::cout << "Demultiplexing exact multiplex single-end reads.\n");
+        doAll(groups, params.multiplex, params.barcodes, esaFinder, params.stats, params.exclude);
+    }
+    else if (!params.approximate)
+    {
+        if (!check(seqs[0], ids[0], params.barcodes, generalStats))        // On Errors with barcodes return 1;
+        {
+            return 1;
+        }
+        //DEBUG_MSG("Demultiplexing exact inline single-end reads.\n");
+        doAll(groups, seqs[0], params.barcodes, esaFinder, params.hardClip, params.stats, params.exclude);
+    }
+    else if (params.runx && params.approximate)
+    {
+        //DEBUG_MSG("Demultiplexing approximate multiplex single-end reads.\n");
+        doAll(groups, params.multiplex, params.barcodes, esaFinder, params.stats, params.approximate, params.exclude);
+    }
+    else
+    {
+        if (!check(seqs[0], ids[0], params.barcodes, generalStats))            // On Errors with barcodes return 1;
+        {
+            return 1;
+        }
+        //DEBUG_MSG("Demultiplexing approximate inline single-end reads.\n");
+        doAll(groups, seqs[0], params.barcodes, esaFinder, params.hardClip, params.stats,
+            params.approximate, params.exclude);
+    }
+    // Saves information on how groups correspond to barcodes.
+    clear(map);
+    for (unsigned i = 0; i < length(groups); ++i)
+    {
+        if (length(groups[i]) != 0)
+        {
+            appendValue(map,i);
+        }
+    }
+    // Sorting the results into the sequence- and ID Strings
+    seqan::String<seqan::StringSet<seqan::String<seqan::Dna5Q> > > sortedSeqs; 
+    seqan::String<seqan::StringSet<seqan::String<char> > > sortedIds;
+    buildSets(seqs[0], ids[0], groups, sortedSeqs, sortedIds);
+    resize(seqs, length(sortedSeqs));
+    resize(ids, length(sortedIds));
+    seqs = sortedSeqs;
+    ids = sortedIds;
+    return 0;
+}
 //Version for paired-end data
 template <typename TSeqsVec, typename TIdsVec, typename TFinder, typename TMap>
 int demultiplexingStage(DemultiplexingParams& params, TSeqsVec& seqs, TSeqsVec& seqsRev, TIdsVec& ids,
@@ -1514,27 +1572,16 @@ void qualityTrimmingStage(QualityTrimmingParams& params, std::vector<TRead>& rea
         {
         case E_WINDOW:
         {
-            for (unsigned i = 0; i < length(reads); ++i)
-            {
-                trimBatch(reads, params.cutoff, Mean(5), tagOpt);
-            }
+            trimBatch(reads, params.cutoff, Mean(5), tagOpt);
             break;
         }
         case E_BWA:
         {
-            for (unsigned i = 0; i < length(reads); ++i)
-            {
-                trimBatch(reads, params.cutoff, BWA(), tagOpt);
-            }
-            break;
+            trimBatch(reads, params.cutoff, BWA(), tagOpt);
         }
         case E_TAIL:
         {
-            for (unsigned i = 0; i < length(reads); ++i)
-            {
-                trimBatch(reads, params.cutoff, Tail(), tagOpt);
-            }
-            break;
+            trimBatch(reads, params.cutoff, Tail(), tagOpt);
         }
         }
     }
@@ -1839,9 +1886,9 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
 // END FUNCTION DEFINITIONS ---------------------------------------------
 template<typename TRead, typename TParser, typename TEsaFinder>
 int mainLoop(TRead, ProgramParams& programParams, DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
-    QualityTrimmingParams& qualityTrimmingParams, TParser& parser, TEsaFinder& esaFinder, CharString& output, bool noQuality, bool tagOpt, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats)
+    QualityTrimmingParams& qualityTrimmingParams, TParser& parser, TEsaFinder& esaFinder, CharString& output, bool tagOpt, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
+    OutputStreams& outputStreams)
 {
-    OutputStreams outputStreams(output, noQuality);
     std::vector<TRead> readSet(programParams.records);
     TRead read;
     SEQAN_PROTIMESTART(loopTime);
@@ -2300,17 +2347,24 @@ int flexbarMain(int argc, char const ** argv)
     // Start processing. Different functions are needed for one or two input files.
     std::cout << "\nProcessing reads...\n" << std::endl;
 
+
     if (fileCount == 1)
     {
-        if(isSet(parser, "x"))
-            mainLoop(Read(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, noQuality, tagOpt, multiplexInFile, generalStats);
+        if (!demultiplexingParams.run)
+            outputStreams.addStream("", 0, useDefault);
+        if(demultiplexingParams.runx)
+            mainLoop(Read<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
         else
-            mainLoop(ReadMultiplex(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, noQuality, tagOpt, multiplexInFile, generalStats);
+            mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
     }
      else
      {
-        if (!demultiplexingParams.run)
-            outputStreams.addStreams("", "", 0, useDefault);
+         if (!demultiplexingParams.run)
+             outputStreams.addStreams("", "", 0, useDefault);
+         if (demultiplexingParams.runx)
+             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
+         else
+             mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
 
         seqan::String<seqan::StringSet<seqan::CharString> > idSet1, idSet2;
         seqan::String<seqan::StringSet<Dna5QString> > seqSet1, seqSet2;

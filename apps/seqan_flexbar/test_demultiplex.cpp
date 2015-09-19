@@ -406,7 +406,7 @@ SEQAN_DEFINE_TEST(group_test)
 // Checks the correctness of the doAll function performing all demultiplexing operations for exact inline barcode matching.
 SEQAN_DEFINE_TEST(doAll_Exact_test_new)
 {
-    std::vector<Read> reads(4);
+    std::vector<Read<seqan::Dna5QString>> reads(4);
     reads[0].seq = "AAAAAAGTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG";
     reads[1].seq = "GGGGGGAGTACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC";
     reads[2].seq = "AAAAAATAGCTAGCTAGCTAGCTAGCTAGCTAGC";
@@ -507,7 +507,7 @@ SEQAN_DEFINE_TEST(doAll_Exact_test)
 // for exact multiplex barcode matching.
 SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test_new)
 {
-    std::vector<ReadMultiplex> reads(4);
+    std::vector<ReadMultiplex<seqan::Dna5QString>> reads(4);
     reads[0].seq = "GTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG";
     reads[1].seq = "AGTACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC";
     reads[2].seq = "TAGCTAGCTAGCTAGCTAGCTAGCTAGC";
@@ -652,9 +652,9 @@ SEQAN_BEGIN_TESTSUITE(test_my_app_funcs)
 	SEQAN_CALL_TEST(clipBarcodes_test);
 	SEQAN_CALL_TEST(clipBarcodesStrict_test);
 	SEQAN_CALL_TEST(group_test);
-	SEQAN_CALL_TEST(doAll_Exact_test);
+	//SEQAN_CALL_TEST(doAll_Exact_test);
     SEQAN_CALL_TEST(doAll_Exact_test_new);
-    SEQAN_CALL_TEST(doAll_Exact_Multiplex_test);
+    //SEQAN_CALL_TEST(doAll_Exact_Multiplex_test);
     SEQAN_CALL_TEST(doAll_Exact_Multiplex_test_new);
     SEQAN_CALL_TEST(Input_test);
 }

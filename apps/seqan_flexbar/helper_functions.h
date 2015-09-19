@@ -45,9 +45,12 @@
 #include <future>
 #include <string>
 
+template<typename TSeq>
 struct ReadBase 
 {
-    std::string seq;
+    using seqType = TSeq;
+
+    TSeq seq;
     std::string id;
     int demuxResult;
 
@@ -68,11 +71,13 @@ struct ReadBase
     }
 };
 
-struct Read : ReadBase
+template<typename TSeq>
+struct Read : ReadBase<TSeq>
 {
 };
 
-struct ReadMultiplex : ReadBase
+template<typename TSeq>
+struct ReadMultiplex : ReadBase<TSeq>
 {
     std::string demultiplex;
 
@@ -91,12 +96,46 @@ struct ReadMultiplex : ReadBase
     }
 };
 
-struct ReadPairedEnd : ReadBase
+template<typename TSeq>
+struct ReadPairedEnd : ReadBase<TSeq>
 {
+    TSeq seqRev;
+    std::string idRev;
+
+    ReadPairedEnd() = default;
+    ReadPairedEnd(const ReadPairedEnd& rhs) = default;
+
+    bool operator==(const ReadPairedEnd& rhs) const
+    {
+        return ReadBase::operator==(rhs) && seqRev == rhs.seqRev && idRev == rhs.idRev;
+    }
+    ReadPairedEnd& operator=(const ReadPairedEnd&& rhs)
+    {
+        ReadBase::operator=(std::move(rhs));
+        seqRev = std::move(rhs.seqRev);
+        idRev = std::move(rhs.idRev);
+        return *this;
+    }
 };
 
-struct ReadMultiplexPairedEnd : ReadBase
+template<typename TSeq>
+struct ReadMultiplexPairedEnd : ReadPairedEnd<TSeq>
 {
+    std::string demultiplex;
+
+    ReadMultiplexPairedEnd() = default;
+    ReadMultiplexPairedEnd(const ReadMultiplexPairedEnd& rhs) = default;
+
+    bool operator==(const ReadMultiplexPairedEnd& rhs) const
+    {
+        return ReadPairedEnd::operator==(rhs) && demultiplex == rhs.demultiplex;
+    }
+    ReadMultiplexPairedEnd& operator=(const ReadMultiplexPairedEnd&& rhs)
+    {
+        ReadPairedEnd::operator=(std::move(rhs));
+        demultiplex = std::move(rhs.demultiplex);
+        return *this;
+    }
 };
 
 template <typename TDest, typename TSource>
@@ -167,6 +206,11 @@ auto _eraseSeqsDisabled(const Trem& rem, const TremVal remVal, TContainer&&... c
     // blocks until all futures are ready
     for_each_argument(eraseElementsWrapper, std::forward<TContainer>(container)...);
     return numRemoveElements;
+}
+
+std::string prefix2(const std::string& str, unsigned int len)
+{
+    return str.substr(0, len);
 }
 
 #endif // HELPERFUNCTIONS_H_

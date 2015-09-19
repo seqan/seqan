@@ -371,7 +371,8 @@ void _preTrim(std::vector<TRead>& readSet, const unsigned head, const unsigned t
     SEQAN_OMP_PRAGMA(parallel for default(shared) private(i)schedule(static))
         for (i = 0; i < limit; ++i)
         {
-            if (length(readSet[i].seq) >(head + tail))
+            const auto seqLen = length(readSet[i].seq);
+            if (seqLen >(head + tail))
             {
                 if (head > 0)
                 {
@@ -385,13 +386,14 @@ void _preTrim(std::vector<TRead>& readSet, const unsigned head, const unsigned t
                 }
                 if (tail > 0)
                 {
+                    const auto seqLen = length(readSet[i].seq);
                     if (tagTrimming)
                     {
                         std::string tempString = ":TR:";
-                        append(tempString, suffix(readSet[i].seq, length(readSet[i].seq) - tail));
+                        append(tempString, suffix(readSet[i].seq, seqLen - tail));
                         insertAfterFirstToken(readSet[i].id, std::move(tempString));
                     }
-                    erase(readSet[i].seq, length(readSet[i].seq) - tail, length(readSet[i].seq));
+                    erase(readSet[i].seq, seqLen - tail, seqLen);
                 }
 
                 // check if trimmed sequence is at least of length min
