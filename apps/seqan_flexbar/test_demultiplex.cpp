@@ -404,6 +404,54 @@ SEQAN_DEFINE_TEST(group_test)
 	}
 }
 // Checks the correctness of the doAll function performing all demultiplexing operations for exact inline barcode matching.
+SEQAN_DEFINE_TEST(doAll_Exact_test_new)
+{
+    std::vector<Read> reads(4);
+    reads[0].seq = "AAAAAAGTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG";
+    reads[1].seq = "GGGGGGAGTACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC";
+    reads[2].seq = "AAAAAATAGCTAGCTAGCTAGCTAGCTAGCTAGC";
+    reads[3].seq = "TAGTCATACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC";
+
+    reads[0].id = "Adenin1";
+    reads[1].id = "Guanin";
+    reads[2].id = "Adenin2";
+    reads[3].id = "Unidentifiziert";
+
+    StringSet<String<Dna5Q> > barcodes;
+    appendValue(barcodes, "GGGGGG");
+    appendValue(barcodes, "CCCCCC");
+    appendValue(barcodes, "AAAAAA");
+
+    DemultiplexStats demultiplexStats;
+    resize(demultiplexStats.groups, length(barcodes) + 1);
+
+    auto expectedReads = reads;
+    expectedReads[0].seq = "GTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG";
+    expectedReads[1].seq = "AGTACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC";
+    expectedReads[2].seq = "TAGCTAGCTAGCTAGCTAGCTAGCTAGC";
+    expectedReads[3].seq = "TAGTCATACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC";
+
+    expectedReads[0].demuxResult = 2;
+    expectedReads[1].demuxResult = 0;
+    expectedReads[2].demuxResult = 2;
+    expectedReads[3].demuxResult = -1;
+
+
+    Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
+    Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
+    indexRequire(indexSet, FibreSA());
+
+    doAll(reads, barcodes, esaFinder, false, demultiplexStats, false);
+
+    for (unsigned i = 0; i < length(expectedReads); ++i)
+    {
+        SEQAN_ASSERT_EQ(expectedReads[i].demuxResult, reads[i].demuxResult);
+        for (unsigned j = 0; j < length(expectedReads[i].seq); ++j)
+        {
+            SEQAN_ASSERT_EQ(expectedReads[i].seq[j], reads[i].seq[j]);
+        }
+    }
+}
 SEQAN_DEFINE_TEST(doAll_Exact_test)
 {
 	StringSet<String<Dna5Q> > seqs;
@@ -457,6 +505,58 @@ SEQAN_DEFINE_TEST(doAll_Exact_test)
 }
 // Checks the correctness of the doAll function performing all demultiplexing operations
 // for exact multiplex barcode matching.
+SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test_new)
+{
+    std::vector<ReadMultiplex> reads(4);
+    reads[0].seq = "GTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG";
+    reads[1].seq = "AGTACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC";
+    reads[2].seq = "TAGCTAGCTAGCTAGCTAGCTAGCTAGC";
+    reads[3].seq = "GGGG";
+
+    reads[0].id = "Adenin1";
+    reads[1].id = "Guanin";
+    reads[2].id = "Adenin2";
+    reads[3].id = "Unidentifiziert";
+
+    reads[0].demultiplex = "AAAAAA";
+    reads[1].demultiplex = "GGGGGG";
+    reads[2].demultiplex = "GGCCGG";
+    reads[3].demultiplex = "AAAAAA";
+
+    StringSet<String<Dna> > barcodes;
+    appendValue(barcodes, "GGGGGG");
+    appendValue(barcodes, "CCCCCC");
+    appendValue(barcodes, "AAAAAA");
+
+    DemultiplexStats demultiplexStats;
+    resize(demultiplexStats.groups, length(barcodes) + 1);
+
+    auto expectedReads = reads;
+    expectedReads[0].seq = "GTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG";
+    expectedReads[1].seq = "AGTACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC";
+    expectedReads[2].seq = "TAGCTAGCTAGCTAGCTAGCTAGCTAGC";
+    expectedReads[3].seq = "GGGG";
+
+    expectedReads[0].demuxResult = 2;
+    expectedReads[1].demuxResult = 0;
+    expectedReads[2].demuxResult = -1;
+    expectedReads[3].demuxResult = 2;
+
+
+    Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
+    Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
+    indexRequire(indexSet, FibreSA());
+    doAll(reads, barcodes, esaFinder, false, demultiplexStats, false);
+
+    for (unsigned i = 0; i < length(expectedReads); ++i)
+    {
+        SEQAN_ASSERT_EQ(expectedReads[i].demuxResult, reads[i].demuxResult);
+        for (unsigned j = 0; j < length(expectedReads[i].seq); ++j)
+        {
+            SEQAN_ASSERT_EQ(expectedReads[i].seq[j], reads[i].seq[j]);
+        }
+    }
+}
 SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test)
 {
 	StringSet<String<Dna5Q> > seqs;
@@ -553,7 +653,9 @@ SEQAN_BEGIN_TESTSUITE(test_my_app_funcs)
 	SEQAN_CALL_TEST(clipBarcodesStrict_test);
 	SEQAN_CALL_TEST(group_test);
 	SEQAN_CALL_TEST(doAll_Exact_test);
-	SEQAN_CALL_TEST(doAll_Exact_Multiplex_test);
-	SEQAN_CALL_TEST(Input_test);
+    SEQAN_CALL_TEST(doAll_Exact_test_new);
+    SEQAN_CALL_TEST(doAll_Exact_Multiplex_test);
+    SEQAN_CALL_TEST(doAll_Exact_Multiplex_test_new);
+    SEQAN_CALL_TEST(Input_test);
 }
 SEQAN_END_TESTSUITE

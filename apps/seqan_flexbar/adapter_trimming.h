@@ -430,8 +430,8 @@ struct StripAdapterDirection
     static const bool value = _direction;
 };
 
-template <typename TAdapterSet, typename TSpec, typename TStripAdapterDirection, typename TTagAdapter>
-unsigned stripAdapter(Read& read, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec, 
+template <typename TRead, typename TAdapterSet, typename TSpec, typename TStripAdapterDirection, typename TTagAdapter>
+unsigned stripAdapter(TRead& read, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec,
     TStripAdapterDirection, TTagAdapter)
 {
     typedef typename seqan::Align<seqan::Dna5String> TAlign;

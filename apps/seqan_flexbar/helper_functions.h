@@ -74,15 +74,19 @@ struct Read : ReadBase
 
 struct ReadMultiplex : ReadBase
 {
-    std::string multiplex;
+    std::string demultiplex;
+
+    ReadMultiplex() = default;
+    ReadMultiplex(const ReadMultiplex& rhs) = default;
+
     bool operator==(const ReadMultiplex& rhs) const
     {
-        return ReadBase::operator==(rhs) && multiplex == rhs.multiplex;
+        return ReadBase::operator==(rhs) && demultiplex == rhs.demultiplex;
     }
     ReadMultiplex& operator=(const ReadMultiplex&& rhs)
     {
         ReadBase::operator=(std::move(rhs));
-        multiplex = std::move(rhs.multiplex);
+        demultiplex = std::move(rhs.demultiplex);
         return *this;
     }
 };
