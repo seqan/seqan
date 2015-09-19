@@ -52,6 +52,8 @@
 #include <seqan/index.h>
 #include <seqan/seq_io.h>
 
+#include "helper_functions.h"
+
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -128,6 +130,26 @@ bool check(TSeqs& seqs,  TIds& ids, TSeqs& seqsRev, TIds& idsRev, TBarcodes& bar
 	return true;
 }
 //Overload for single-end data
+template <typename TReads, typename TBarcodes, typename TStats>
+bool check(TReads& reads, TBarcodes& barcodes, TStats& stats)
+{
+    unsigned len = length(barcodes[0]);
+    for (unsigned i = 1; i < length(barcodes); ++i)
+    {
+        if (len != length(barcodes[i]))
+        {
+            std::cerr << "ERROR: Barcodes differ in length. All barcodes must be of equal length.\n";
+            return false;
+        }
+    } //Iterating backward to avoid error after deletion of a sequence
+    unsigned ex = 0;
+    auto it = std::remove_if(reads.begin(), reads.end(), [len](auto& read) {return length(read.seq) <= len;});
+    stats.removedSeqsShort += std::distance(it, reads.end());
+    reads.erase(it, reads.end());
+    return true;
+}
+
+
 template <typename TSeqs, typename TIds, typename TBarcodes, typename TStats>
 bool check(TSeqs& seqs, TIds& ids,TBarcodes& barcodes, TStats& stats) 
 {
@@ -160,6 +182,18 @@ bool check(TSeqs& seqs, TIds& ids,TBarcodes& barcodes, TStats& stats)
     }
 	return true;
 }
+
+void getPrefix(std::vector<std::string>& prefices, std::vector<Read>& reads, unsigned len)
+{
+    int limit = reads.size();
+    prefices.resize(limit);
+    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
+        for (int i = 0; i < limit; ++i) //Remark: OMP requires an integer as loop-variable
+        {
+            prefices[i] = reads[i].seq.substr(0,len);
+        }
+}
+
 
 template <typename TSeqs>
 void getPrefix(TSeqs& prefices, TSeqs& seqs, unsigned len)
@@ -223,8 +257,8 @@ int findExactIndex(const TPrefix& prefix, TFinder& finder)
 	else return -1;								//return -1 if no hit occured
 }
 
-template <typename TPrefices, typename TFinder, typename TStats>
-void findAllExactIndex(seqan::String<int>& matches, const TPrefices& prefices, const TFinder& finder, TStats& stats)
+template <typename TMatches, typename TPrefices, typename TFinder, typename TStats>
+void findAllExactIndex(TMatches& matches, const TPrefices& prefices, const TFinder& finder, TStats& stats)
 {
     resize(matches, length(prefices));
 
@@ -255,6 +289,17 @@ void findAllExactIndex(seqan::String<int>& matches, const TPrefices& prefices, c
     }
 }
 
+void clipBarcodes(std::vector<Read>& reads, const seqan::String<int>& matches, unsigned len)
+{
+    int limit = reads.size();
+    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
+        for (int i = 0; i < limit; ++i)
+            if (matches[i] != -1)					//only erases barcode from sequence if it could be matched
+            {
+                reads[i].seq.erase(0, len);
+            }
+}
+
 template <typename TSeqs>
 void clipBarcodes(TSeqs& seqs, const seqan::String<int>& matches, unsigned len)
 {
@@ -268,6 +313,16 @@ void clipBarcodes(TSeqs& seqs, const seqan::String<int>& matches, unsigned len)
 }
 
 //Overload for deleting the barcodes in any case.
+void clipBarcodes(std::vector<Read>& reads, int len)
+{
+    int limit = reads.size();
+    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
+        for (int i = 0; i < limit; ++i)
+        {
+            reads[i].seq.erase(0, len);
+        }
+}
+
 template <typename TSeqs>
 void clipBarcodes(TSeqs& seqs, int len)
 {
@@ -280,21 +335,49 @@ void clipBarcodes(TSeqs& seqs, int len)
 }
 
 template <typename TMatches, typename TBarcodes>
-void group(seqan::StringSet<seqan::String<int> >& sortedSequences, const TMatches& matches, const TBarcodes& barcodes, bool exclude)
+void group(std::vector<int>& sortedSequences, const TMatches& matches, const TBarcodes& barcodes, bool exclude)
 {
 	resize(sortedSequences, length(barcodes)+1);
 	for (unsigned i = 0; i < length(matches); ++i)
     {                                                       //adds index of sequence to respective group.
 		if ((!exclude) || (matches[i] != -1))                //Check if unidentified seqs have to be excluded
         {                                                   //offset by 1 is necessary since group 0 is...
-            appendValue(sortedSequences[matches[i]+1], i);  //...reserved for unidentified sequences)
+            appendValue(sortedSequences, matches[i]);  //...reserved for unidentified sequences)
         }
     }                                                  
 }
 
+template <typename TGroups, typename TMatches, typename TBarcodes>
+void group(TGroups& sortedSequences, const TMatches& matches, const TBarcodes& barcodes, bool exclude)
+{
+    resize(sortedSequences, length(barcodes) + 1);
+    for (unsigned i = 0; i < length(matches); ++i)
+    {                                                       //adds index of sequence to respective group.
+        if ((!exclude) || (matches[i] != -1))                //Check if unidentified seqs have to be excluded
+        {                                                   //offset by 1 is necessary since group 0 is...
+            appendValue(sortedSequences[matches[i] + 1], i);  //...reserved for unidentified sequences)
+        }
+    }
+}
+
 //Overload if approximate search has been used.
 template <typename TMatches, typename TBarcodes, typename TApprox>
-void group(seqan::StringSet<seqan::String<int> >& sortedSequences, const TMatches& matches,
+void group(std::vector<int>& sortedSequences, const TMatches& matches,
+    const TBarcodes& barcodes, TApprox const &, bool exclude)
+{
+    resize(sortedSequences, length(barcodes) / 5 + 1);
+    float dividend = float(length(barcodes[0])*5.0);		//value by which the index will be corrected.
+    for (unsigned i = 0; i < length(matches); ++i)			//adds index of sequence to respective group.
+    {
+        if ((!exclude) || (matches[i] != -1))                //Check if unidentified seqs have to be excluded
+        {
+            appendValue(sortedSequences, int(floor(float(matches[i]) / dividend)));
+        }
+    }
+}
+
+template <typename TGroups, typename TMatches, typename TBarcodes, typename TApprox>
+void group(TGroups& sortedSequences, const TMatches& matches,
     const TBarcodes& barcodes, TApprox const &, bool exclude)
 {
 	resize(sortedSequences, length(barcodes)/5+1);
@@ -309,8 +392,8 @@ void group(seqan::StringSet<seqan::String<int> >& sortedSequences, const TMatche
 }
 
 //Using exact search and multiplex barcodes.
-template<typename TBarcodes, typename TMultiplex ,typename TFinder>
-void doAll(seqan::StringSet<seqan::String<int> >& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes,
+template<typename TGroups, typename TBarcodes, typename TMultiplex ,typename TFinder>
+void doAll(TGroups& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes,
     TFinder& esaFinder, DemultiplexStats& stats, bool exclude)
 {
 	String<int> matches;
@@ -318,8 +401,8 @@ void doAll(seqan::StringSet<seqan::String<int> >& sortedSequences, TMultiplex& m
     group(sortedSequences, matches, barcodes, exclude);
 }
 // Using approximate search and multiplex barcodes.
-template<typename TBarcodes, typename TMultiplex ,typename TFinder, typename TApprox>
-void doAll(seqan::StringSet<seqan::String<int> >& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes, TFinder& esaFinder,
+template<typename TGroups, typename TBarcodes, typename TMultiplex ,typename TFinder, typename TApprox>
+void doAll(TGroups& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes, TFinder& esaFinder,
     DemultiplexStats& stats, const TApprox approximate, bool exclude)
 {
 	String<int> matches;
@@ -327,6 +410,26 @@ void doAll(seqan::StringSet<seqan::String<int> >& sortedSequences, TMultiplex& m
     group(sortedSequences, matches, barcodes, approximate, exclude);
 }
 //Using exact search and inline barcodes.
+template<typename TGroups, typename TBarcodes, typename TFinder>
+void doAll(TGroups& sortedSequences, std::vector<Read>& reads, TBarcodes& barcodes, TFinder& esaFinder, bool hardClip,
+    DemultiplexStats& stats, bool exclude)
+{
+    std::vector<std::string> prefices;
+    getPrefix(prefices, reads, length(barcodes[0]));
+    std::vector<int> matches;
+    findAllExactIndex(matches, prefices, esaFinder, stats);
+    if (hardClip)		//clip barcodes according to selected method
+    {
+        clipBarcodes(reads, length(barcodes[0]));
+    }
+    else
+    {
+        clipBarcodes(reads, matches, length(barcodes[0]));
+    }
+    group(sortedSequences, matches, barcodes, exclude);
+}
+
+
 template<typename TSeqs, typename TBarcodes, typename TFinder>
 void doAll(seqan::StringSet<seqan::String<int> >& sortedSequences, TSeqs& seqs, TBarcodes& barcodes, TFinder& esaFinder, bool hardClip,
     DemultiplexStats& stats, bool exclude)
@@ -346,6 +449,25 @@ void doAll(seqan::StringSet<seqan::String<int> >& sortedSequences, TSeqs& seqs, 
     group(sortedSequences, matches, barcodes, exclude);
 }
 // Using approximate search and inline barcodes.
+template<typename TGroups, typename TBarcodes, typename TFinder, typename TApprox>
+void doAll(TGroups& sortedSequences, std::vector<Read>& reads, TBarcodes& barcodes, TFinder& esaFinder,
+    bool hardClip, DemultiplexStats& stats, const TApprox approximate, bool exclude)
+{
+    std::vector<std::string> prefices;
+    getPrefix(prefices, reads, length(barcodes[0]));
+    std::vector<int> matches;
+    findAllExactIndex(matches, prefices, esaFinder, stats);
+    if (hardClip)		//clip barcodes according to selected method
+    {
+        clipBarcodes(reads, length(barcodes[0]));
+    }
+    else
+    {
+        clipBarcodes(reads, matches, length(barcodes[0]));
+    }
+    group(sortedSequences, matches, barcodes, approximate, exclude);
+}
+
 template<typename TSeqs, typename TBarcodes, typename TFinder, typename TApprox>
 void doAll(seqan::StringSet<seqan::String<int> >& sortedSequences, TSeqs& seqs, TBarcodes& barcodes, TFinder& esaFinder,
     bool hardClip, DemultiplexStats& stats, const TApprox approximate, bool exclude)

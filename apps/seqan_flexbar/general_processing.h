@@ -361,7 +361,55 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
 
 
 // main preTrim function
-template<typename TSeqs, typename TIds>
+template<typename TRead, bool tagTrimming>
+void _preTrim(std::vector<TRead>& readSet, const unsigned head, const unsigned tail, const unsigned min, std::vector<bool>& rem)
+{
+    int i = 0;
+    const auto limit = (int)length(readSet);
+    resize(rem, limit);
+
+    SEQAN_OMP_PRAGMA(parallel for default(shared) private(i)schedule(static))
+        for (i = 0; i < limit; ++i)
+        {
+            if (length(readSet[i].seq) >(head + tail))
+            {
+                if (head > 0)
+                {
+                    if (tagTrimming)
+                    {
+                        std::string tempString = ":TL:";
+                        append(tempString, prefix(readSet[i].seq, head));
+                        insertAfterFirstToken(readSet[i].id, tempString);
+                    }
+                    erase(readSet[i].seq, 0, head);
+                }
+                if (tail > 0)
+                {
+                    if (tagTrimming)
+                    {
+                        std::string tempString = ":TR:";
+                        append(tempString, suffix(readSet[i].seq, length(readSet[i].seq) - tail));
+                        insertAfterFirstToken(readSet[i].id, std::move(tempString));
+                    }
+                    erase(readSet[i].seq, length(readSet[i].seq) - tail, length(readSet[i].seq));
+                }
+
+                // check if trimmed sequence is at least of length min
+                // if not, remove it
+                if (length(readSet[i].seq) >= min)
+                    rem[i] = false;
+                else
+                    rem[i] = true;
+            }
+            // if the sequence was too short to be trimmed, remove it
+            else
+                rem[i] = true;
+        }
+}
+
+
+
+template<typename TSeqs, typename TIds, typename = std::enable_if_t < std::is_same<TIds, seqan::StringSet<seqan::CharString, seqan::Owner<seqan::Default>>>::value >>
 void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const bool tagTrimming, const unsigned tail, const unsigned min, seqan::String<bool>& rem)
 {
 	int i = 0;
@@ -408,6 +456,18 @@ void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const bool tagTrimmin
 }
 
 // overload for single end multiplex
+template <typename TRead>
+void preTrim(std::vector<TRead>& reads, unsigned head, unsigned tail, unsigned min, const bool tagTrimming, GeneralStats& stats)
+{
+    std::vector<bool> rem;
+    if(tagTrimming)
+        _preTrim<TRead, true>(reads, head, tail, min, rem);
+    else
+        _preTrim<TRead, false>(reads, head, tail, min, rem);
+    stats.removedSeqsShort += _eraseSeqs(rem, true, reads);
+}
+
+
 template<typename TSeqs, typename TIds, typename TDemultiplexingParams>
 void preTrim(TSeqs& seqs, TIds& ids, TDemultiplexingParams&& demultiplexParams, unsigned head, const bool tagTrimming, unsigned tail, unsigned min, GeneralStats& stats)
 {
@@ -449,6 +509,31 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head
 }
 
 //Trims sequences to specific length and deletes to short ones together with their IDs
+template<typename TRead>
+void trimTo(std::vector<TRead>& reads, const unsigned len, GeneralStats& stats)
+{
+    std::vector<bool> rem;
+    const auto limit = length(reads);
+    resize(rem, limit);
+    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
+        for (int i = 0; i < limit; ++i)
+        {
+            if (length(reads[i].seq) < len)
+            {
+                rem[i] = true;
+            }
+            else
+            {
+                rem[i] = false;
+                if (length(reads[i].seq) > len)
+                {
+                    erase(reads[i].seq, len, length(reads[i].seq));
+                }
+            }
+        }
+    stats.removedSeqsShort += _eraseSeqs(rem, true, reads);
+}
+
 template<typename TSeqs,typename TIds>
 void trimTo(TSeqs& seqs, TIds& ids, const unsigned len, GeneralStats& stats)
 {

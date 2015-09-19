@@ -113,7 +113,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
         "r", "records", "Number of records to be read in one run.",
         seqan::ArgParseOption::INTEGER, "VALUE");
     setDefaultValue(recordOpt, 10000);
-    setMinValue(recordOpt, "10");
+    setMinValue(recordOpt, "1");
     addOption(parser, recordOpt);
 
     seqan::ArgParseOption noQualOpt = seqan::ArgParseOption(
@@ -801,6 +801,71 @@ public:
     //This method takes a String of integers and checks if these integers are
     //already associated with a stream. If not, a new stream is added and the opened
     //file is named according to the list of names. One or two files are created.
+    template <typename TNames>
+    void updateStreams(TNames& names, bool pair)
+    {
+
+        for (unsigned i = 0; i < length(names) + 1; ++i)
+        {
+            unsigned streamIndex = i;
+            bool missing = pair ? exists(streamIndex, pairedFileStreams) : exists(streamIndex, fileStreams);
+            // If no stream for this id exists, create one.
+            if (missing)
+            {
+                // If the index is 0 (unidentified) create special stream.
+                // Otherwise use index to get appropriate name for output file.
+                seqan::CharString file;
+                if (streamIndex > 0)
+                {
+                    file = names[streamIndex - 1];
+                }
+                else
+                {
+                    file = seqan::CharString("unidentified");
+                }
+                // Add file extension to stream and create it.
+                if (pair)
+                {
+                    // Create a new subfolder at basePath/[barcodeID, unidentified].
+                    seqan::CharString folderPath(basePath);
+                    seqan::append(folderPath, file);
+                    /*
+                    int result = 0;
+                    #ifdef __linux__
+                    result = mkdir(seqan::toCString(folderPath), 0777);
+                    #elif _WIN32
+                    result = _mkdir(seqan::toCString(folderPath));
+                    #endif
+                    if (result==-1)
+                    {
+                    if (errno == EEXIST)
+                    {
+                    std::cerr << "Warning: Directory " << folderPath << " already exists.\n";
+                    }
+                    }
+                    */
+                    // Turn file target from [barcodeID,unidentified]
+                    // to subfolder [barcodeID, unidentified]/[barcodeID, unidentified]
+                    seqan::CharString filePath(file);
+                    seqan::append(file, "/");
+                    seqan::append(file, filePath);
+                    // To differentiate between the paired reads, add index to the file name.
+                    seqan::CharString file2 = file;
+                    seqan::append(file, seqan::CharString("_1"));
+                    seqan::append(file2, seqan::CharString("_2"));
+                    this->addStreams(file, file2, streamIndex);
+                }
+                else
+                {
+                    //std::cerr << file << " " << streamIndex << std::endl;
+                    this->addStream(file, streamIndex);
+                }
+            }
+        }
+    }
+
+
+
     template <typename TMap, typename TNames>
     void updateStreams(TMap& map, TNames& names, bool pair)
     {
@@ -864,6 +929,17 @@ public:
         }
     }
     //Writes the sets of ids and sequences to their corresponding files. Used for single-end data.
+    template <typename TMap, typename TNames>
+    void writeSeqs(std::vector<Read>& reads, TMap& map, std::vector<int>& groups, TNames& names)
+    {
+        updateStreams(names, false);
+        for (unsigned i = 0; i < length(reads); ++i)
+        {
+            unsigned streamIndex = groups[i] + 1;
+            writeRecord(*fileStreams[streamIndex], std::move(reads[i].id), seqan::Dna5QString(std::move(reads[i].seq)));
+        }
+    }
+
     template <typename TIds, typename TSeqs, typename TMap, typename TNames>
     void writeSeqs(TIds& ids, TSeqs& seqs, TMap& map, TNames& names)
     {
@@ -915,7 +991,7 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
 
     if (!open(bcFile, path, OPEN_RDONLY))
     {
-        std::cerr << "Error while opening file'" <<  params.barcodeFile << "'.\n";
+        std::cerr << "Error while opening file'" << params.barcodeFile << "'.\n";
         return 1;
     }
     readRecords(params.barcodeIds, params.barcodes, bcFile);
@@ -924,7 +1000,7 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
     {
         buildAllVariations(params.barcodes);
     }
-    seqan::resize(params.stats.groups, seqan::length(params.barcodes)+1);
+    seqan::resize(params.stats.groups, seqan::length(params.barcodes) + 1);
     for (unsigned i = 0; i < seqan::length(params.stats.groups); ++i)
     {
         params.stats.groups[i] = 0;             //Sets the right size for the stats String and fills it with 0.
@@ -1133,6 +1209,48 @@ int checkParams(ProgramParams const & programParams, ProcessingParams const & pr
 }
 
 // PROGRAM STAGES ---------------------
+//Preprocessing Stage
+template<typename TReadSet>
+void preprocessingStage(TReadSet& readSet, 
+    ProcessingParams& processingParams, seqan::ArgumentParser const & parser, GeneralStats& generalStats)
+{
+    if (processingParams.runPre)
+    {
+        //Trimming and filtering
+        if (processingParams.trimLeft + processingParams.trimRight + processingParams.minLen != 0)
+        {
+            preTrim(readSet, processingParams.trimLeft,
+                processingParams.tagTrimming, processingParams.trimRight, processingParams.minLen, generalStats);
+        }
+        //Detecting uncalled Bases
+        //if (seqan::isSet(parser, "u"))
+        //{
+        //    if (seqan::isSet(parser, "s"))
+        //    {
+        //        if (demultiplexingParams.multiplexFile != "")
+        //        {
+        //            processN(seqs, ids, demultiplexingParams.multiplex, processingParams.uncalled,
+        //                processingParams.substitute, generalStats);
+        //        }
+        //        else
+        //        {
+        //            processN(seqs, ids, processingParams.uncalled, processingParams.substitute, generalStats);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (demultiplexingParams.multiplexFile != "")
+        //        {
+        //            processN(seqs, ids, demultiplexingParams.multiplex, processingParams.uncalled, generalStats);
+        //        }
+        //        else
+        //        {
+        //            processN(seqs, ids, processingParams.uncalled, generalStats);
+        //        }
+        //    }
+        //}
+    }
+}
 
 //Preprocessing Stage
 template<typename TSeqs, typename TIds>
@@ -1224,6 +1342,57 @@ void preprocessingStage(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev,
 }
 // DEMULTIPLEXING
 //Version for single-end data
+template <typename TFinder, typename TMap, typename TGroups>
+int demultiplexingStage(DemultiplexingParams& params, std::vector<Read>& reads, TFinder& esaFinder,
+    TMap& map, TGroups& groups, GeneralStats& generalStats)
+{
+    if (!params.run)
+    {
+        return 0;
+    }
+    if (params.runx && !params.approximate)
+    {
+        //DEBUG_MSG(std::cout << "Demultiplexing exact multiplex single-end reads.\n");
+        doAll(groups, params.multiplex, params.barcodes, esaFinder, params.stats, params.exclude);
+    }
+    else if (!params.approximate)
+    {
+        if (!check(reads, params.barcodes, generalStats))        // On Errors with barcodes return 1;
+        {
+            return 1;
+        }
+        //DEBUG_MSG("Demultiplexing exact inline single-end reads.\n");
+        doAll(groups, reads, params.barcodes, esaFinder, params.hardClip, params.stats, params.exclude);
+    }
+    else if (params.runx && params.approximate)
+    {
+        //DEBUG_MSG("Demultiplexing approximate multiplex single-end reads.\n");
+        doAll(groups, params.multiplex, params.barcodes, esaFinder, params.stats, params.approximate, params.exclude);
+    }
+    else
+    {
+        if (!check(reads, params.barcodes, generalStats))            // On Errors with barcodes return 1;
+        {
+            return 1;
+        }
+        //DEBUG_MSG("Demultiplexing approximate inline single-end reads.\n");
+        doAll(groups, reads, params.barcodes, esaFinder, params.hardClip, params.stats,
+            params.approximate, params.exclude);
+    }
+    // Saves information on how groups correspond to barcodes.
+    clear(map);
+    for (unsigned i = 0; i < length(groups); ++i)
+    {
+        if (length(groups[i]) != 0)
+        {
+            appendValue(map, i);
+        }
+    }
+    // Sorting the results into the sequence- and ID Strings
+    return 0;
+}
+
+
 template <typename TSeqsVec, typename TIdsVec, typename TFinder,typename TMap>
 int demultiplexingStage(DemultiplexingParams& params, TSeqsVec& seqs, TIdsVec& ids, TFinder& esaFinder, 
     TMap& map, GeneralStats& generalStats)
@@ -1348,26 +1517,28 @@ int demultiplexingStage(DemultiplexingParams& params, TSeqsVec& seqs, TSeqsVec& 
 
 // ADAPTER TRIMMING
 //Version for single-end data
+template <typename TRead>
+void adapterTrimmingStage(AdapterTrimmingParams& params, std::vector<TRead>& reads, bool tagOpt)
+{
+    if (!params.run)
+        return;
+    if(tagOpt)
+        stripAdapterBatch<TRead, TAdapterSet, AdapterMatchSettings>(reads, params.adapter2, params.mode, params.stats,
+            StripAdapterDirection<adapterDirection::forward>(), TagAdapter<true>());
+    else
+        stripAdapterBatch<TRead, TAdapterSet, AdapterMatchSettings>(reads, params.adapter2, params.mode, params.stats,
+            StripAdapterDirection<adapterDirection::forward>(), TagAdapter<false>());
+}
+
+
 template <typename TSeqs, typename TIds>
 void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet, TIds& idSet, bool tagOpt)
 {
     if (!params.run)
         return;
-
-    //for(const AdapterTrimmingParams::TAdapter& adapter: params.adapter2)
-    //{
-    //    Iterator<TIds>::Type itIdSet = begin(idSet);
-    //    std::for_each(begin(seqSet) , end(seqSet), [&](seqan::StringSet<Dna5QString> &seq) {
-    //        stripAdapterBatch(seq, value(itIdSet++), adapter, params.mode, params.stats, false, tagOpt);});
-    //}
-
-        typename Iterator<TIds>::Type itIdSet = begin(idSet);
-        std::for_each(begin(seqSet), end(seqSet), [&](seqan::StringSet<Dna5QString> &seq) {
-            stripAdapterBatch(seq, value(itIdSet++), params.adapter2, params.mode, params.stats, false, tagOpt);});
-
-    //for (int i = 0; i < length(params.adapter2); i++)
-    //    for (int k = 0;k < length(seqSet);k++)
-    //        stripAdapterBatch(seqSet[k], idSet[k], params.adapter2[i], params.mode, params.stats, false, tagOpt);    
+    typename Iterator<TIds>::Type itIdSet = begin(idSet);
+    std::for_each(begin(seqSet), end(seqSet), [&](seqan::StringSet<Dna5QString> &seq) {
+        stripAdapterBatch(seq, value(itIdSet++), params.adapter2, params.mode, params.stats, false, tagOpt);});
 }
 
 //Overload for paired-end data
@@ -1395,6 +1566,47 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet1, TIds& i
 
 // QUALITY TRIMMING
 //Version for single-ende data
+template <typename TRead>
+void qualityTrimmingStage(QualityTrimmingParams& params, std::vector<TRead>& reads, bool tagOpt)
+{
+    if (params.run)
+    {
+        //DEBUG_MSG("Trimming qualities.\n");
+        // Templates don't support runtime polymorphism, so code paths for all possibilities.
+        switch (params.trim_mode)
+        {
+        case E_WINDOW:
+        {
+            for (unsigned i = 0; i < length(reads); ++i)
+            {
+                trimBatch(reads, params.cutoff, Mean(5), tagOpt);
+            }
+            break;
+        }
+        case E_BWA:
+        {
+            for (unsigned i = 0; i < length(reads); ++i)
+            {
+                trimBatch(reads, params.cutoff, BWA(), tagOpt);
+            }
+            break;
+        }
+        case E_TAIL:
+        {
+            for (unsigned i = 0; i < length(reads); ++i)
+            {
+                trimBatch(reads, params.cutoff, Tail(), tagOpt);
+            }
+            break;
+        }
+        }
+    }
+    for (unsigned i = 0; i < length(reads); ++i)
+    {
+        dropReads(reads, params.min_length, params.stats);
+    }
+}
+
 template <typename TIds, typename TSeqs>
 void qualityTrimmingStage(QualityTrimmingParams& params, TIds& idSet, TSeqs& seqSet, bool tagOpt)
 {
@@ -1478,6 +1690,22 @@ void qualityTrimmingStage(QualityTrimmingParams& params, TIds& idSet1, TSeqs& se
     }
 }
 //Postprocessing
+template<typename TRead>
+void postprocessingStage(std::vector<TRead>& reads, ProcessingParams& params, GeneralStats& stats)
+{
+    if (params.runPost)
+    {
+        if ((params.finalMinLength != 0) && (params.finalLength == 0))
+        {           
+            preTrim(reads, 0, 0, params.finalMinLength, false, stats);
+        }
+        else if (params.finalLength != 0)
+        {
+            trimTo(reads, params.finalLength, stats);
+        }
+    }
+}
+
 template<typename TSeqSet, typename TIdSet>
 void postprocessingStage(TSeqSet& seqSet, TIdSet& idSet, ProcessingParams& params, GeneralStats& stats)
 {
@@ -2092,51 +2320,58 @@ int flexbarMain(int argc, char const ** argv)
     // Start processing. Different functions are needed for one or two input files.
     std::cout << "\nProcessing reads...\n" << std::endl;
 
-
     if (fileCount == 1)
     {
         if (!demultiplexingParams.run)
             outputStreams.addStream("", 0, useDefault);
 
+        std::vector<Read> readSet(records);
         seqan::String<seqan::StringSet<seqan::CharString> > idSet;
         seqan::String<seqan::StringSet<Dna5QString> > seqSet;
+        Read read;
+        using TGroups = std::vector<int>;
 
         while (!atEnd(programParams.fileStream1) && (programParams.readCount < firstReads))
         {
-            clear(idSet);
-            clear(seqSet);
+            TGroups groups;
 
-            appendValue(idSet, seqan::StringSet<seqan::CharString>());
-            appendValue(seqSet, seqan::StringSet<Dna5QString>());
+            unsigned int i = 0;
+            readSet.resize(records);
+            while(i < records && !atEnd(programParams.fileStream1))
+            {
+                readRecord(readSet[i].id, readSet[i].seq, programParams.fileStream1);
+                ++i;
+            }
+            readSet.resize(i);
 
-            readRecords(idSet[0], seqSet[0], programParams.fileStream1, records);
-
-            programParams.readCount += length(idSet[0]);
+            programParams.readCount+= i;
             SEQAN_PROTIMESTART(processTime);            // START of processing time.
 
-            loadMultiplex(multiplexInFile, demultiplexingParams, records);
+            //loadMultiplex(multiplexInFile, demultiplexingParams, records);
+            //loadMultiplex(multiplexInFile, demultiplexingParams, readSet);
             if (demultiplexingParams.runx)
                 return 1;
 
             // Preprocessing and Filtering
-            preprocessingStage(seqSet[0], idSet[0], demultiplexingParams, processingParams, parser, generalStats);
+            preprocessingStage(readSet, processingParams, parser, generalStats);
+
 
             // Demultiplexing
-            if (demultiplexingStage(demultiplexingParams, seqSet, idSet, esaFinder, map, generalStats) != 0)
-                return 1;
+            if (demultiplexingStage(demultiplexingParams, readSet, esaFinder, map, groups, generalStats) != 0)
+                    return 1;
 
             // Adapter trimming
-            adapterTrimmingStage(adapterTrimmingParams, seqSet, idSet, tagOpt);
+            adapterTrimmingStage(adapterTrimmingParams, readSet, tagOpt);
 
             // Quality trimming
-            qualityTrimmingStage(qualityTrimmingParams, idSet, seqSet, tagOpt);
+            qualityTrimmingStage(qualityTrimmingParams, readSet, tagOpt);
 
             // Postprocessing
-            postprocessingStage(seqSet, idSet, processingParams, generalStats);
+            postprocessingStage(readSet, processingParams, generalStats);
             programParams.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
 
             // Append to output file.
-            outputStreams.writeSeqs(idSet, seqSet, map, demultiplexingParams.barcodeIds);
+            outputStreams.writeSeqs(readSet, map, groups, demultiplexingParams.barcodeIds);
             // Information
             if (showSpeed)
                 std::cout << "\r" << programParams.readCount << "   " << static_cast<int>(programParams.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";

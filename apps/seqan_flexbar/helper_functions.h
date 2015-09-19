@@ -43,6 +43,37 @@
 #define HELPERFUNCTIONS_H_
 
 #include <future>
+#include <string>
+
+struct ReadBase {};
+
+struct Read : ReadBase
+{
+    std::string seq;
+    std::string id;
+    //std::string multiplex;
+    //int demuxResult;
+
+    Read::Read() = default;
+    Read::Read(const Read& rhs) = default;
+
+    bool operator==(const Read& rhs) const
+    {
+        return seq == rhs.seq && id == rhs.id;
+    }
+
+    Read& operator=(const Read&& rhs)
+    {
+        seq = std::move(rhs.seq);
+        id = std::move(rhs.id);
+        return *this;
+    }
+
+    //bool friend operator<(const Read& lhs, const Read& rhs)
+    //{
+    //    return false;
+    //}
+};
 
 template <typename TDest, typename TSource>
 void insertAfterFirstToken(TDest& dest, TSource&& source)
@@ -62,14 +93,26 @@ void for_each_argument(F f, Ts&&... a) {
     auto temp = std::make_tuple(f(std::forward<Ts>(a))...); 
 }
 
+template<typename Trem, typename TremVal, typename TRead>
+auto _eraseSeqs(const Trem& rem, const TremVal remVal, std::vector<TRead>& reads)
+{
+    const auto numRemoveElements = std::count(rem.begin(), rem.end(), remVal);
+    const auto beginAddr = (void*)&*(reads.begin());
+    std::remove_if(reads.begin(), reads.end(),
+        [&rem, &beginAddr, remVal](const auto& element) {
+        return rem[&element - beginAddr] == remVal;});
+    reads.resize(reads.size() - numRemoveElements);
+    return numRemoveElements;
+}
+
 template<typename Trem, typename TremVal, typename... TContainer>
 auto _eraseSeqs(const Trem& rem, const TremVal remVal, TContainer&&... container)
 {
     const auto numRemoveElements = std::count(begin(rem), end(rem), remVal);
     auto eraseElements = [&rem, numRemoveElements, remVal](auto& seq)  // erase Elements using the remove erase idiom
     {
-        const auto beginAddr = (void*)&*begin(seq);
-        std::remove_if(begin(seq), end(seq),
+        const auto beginAddr = (void*)&*seqan::begin(seq);
+        std::remove_if(seqan::begin(seq), seqan::end(seq),
             [&rem, &beginAddr, remVal](const auto& element) {
             return rem[&element - beginAddr] == remVal;});
         resize(seq, length(seq) - numRemoveElements);

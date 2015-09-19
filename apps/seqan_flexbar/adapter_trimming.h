@@ -412,6 +412,66 @@ inline bool isMatch(const int overlap, const int mismatches, const AdapterMatchS
     }
 }
 
+enum adapterDirection : bool
+{
+    reverse, 
+forward
+};
+
+template<bool _val>
+struct TagAdapter
+{
+    static const bool value = _val;
+};
+
+template<bool _direction>
+struct StripAdapterDirection
+{
+    static const bool value = _direction;
+};
+
+template <typename TAdapterSet, typename TSpec, typename TStripAdapterDirection, typename TTagAdapter>
+unsigned stripAdapter(Read& read, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec, 
+    TStripAdapterDirection, TTagAdapter)
+{
+    typedef typename seqan::Align<seqan::Dna5String> TAlign;
+    typedef typename seqan::Row<TAlign>::Type TRow;
+    seqan::Pair<unsigned, TAlign> ret;
+
+    unsigned removed{ 0 };
+    for (AdapterItem const& adapterItem : adapterSet)
+    {
+        //std::cout << "seq: " << seq << std::endl;
+        //std::cout << "adapter: " << adapterItem.seq << std::endl;
+        alignAdapter(ret, seqan::Dna5String(read.seq), adapterItem);    // align crashes if seq is an empty string!
+        const unsigned int overlap = getOverlap(ret.i2);
+        const int score = ret.i1;
+        const int mismatches = (overlap - score) / 2;
+        if (isMatch(overlap, mismatches, spec))
+        {
+            //std::cout << "score: " << ret.i1 << " overlap: " << overlap << " mismatches: " << mismatches << std::endl;
+            //std::cout << ret.i2 << std::endl;
+            TRow row2 = row(ret.i2, 1);
+            //std::cout << "adapter start position: " << toViewPosition(row2, 0) << std::endl;
+            removed += length(read.seq) - toViewPosition(row2, 0);
+            seqan::erase(read.seq, toViewPosition(row2, 0), length(read.seq));
+            //std::cout << "stripped seq: " << seq << std::endl;
+            stats.overlapSum += overlap;
+            if (TStripAdapterDirection::value == adapterDirection::reverse)
+                ++stats.a1count;
+            else
+                ++stats.a2count;
+
+            stats.maxOverlap = stats.maxOverlap > overlap ? stats.maxOverlap : overlap;
+            stats.minOverlap = stats.minOverlap < overlap ? stats.minOverlap : overlap;
+            if (spec.singleMatch || empty(read.seq))
+                return removed;
+        }
+    }
+    return removed;
+}
+
+
 template <typename TSeq, typename TAdapterSet, typename TSpec>
 unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec, const bool reverse)
 {
@@ -452,11 +512,48 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapterSet const&
     return removed;
 }
 
+template <typename TAdapterSet, typename TSpec>
+unsigned stripAdapter(Read& read, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec)
+{
+    return stripAdapter<TAdapterSet, TSpec, false>(read, stats, adapterSet, spec);
+}
+
+
 template <typename TSeq, typename TAdapterSet, typename TSpec>
 unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec)
 {
     return stripAdapter(seq, stats, adapterSet, spec, false);
 }
+
+template <typename TRead, typename TAdapterSet, typename TSpec, typename TStripAdapterDirection, typename TTagAdapter>
+unsigned stripAdapterBatch(std::vector<TRead>& reads, TAdapterSet const& adapterSet, TSpec const& spec,
+    AdapterTrimmingStats& stats, TStripAdapterDirection, TTagAdapter)
+{
+    int t_num = omp_get_max_threads();
+    // Create local counting variables to avoid concurrency problems.
+    seqan::String<unsigned> minOverlap;
+    seqan::String<unsigned> maxOverlap;
+    std::vector<AdapterTrimmingStats> adapterTrimmingStatsVector;
+    seqan::resize(minOverlap, t_num, std::numeric_limits<unsigned>::max());
+    seqan::resize(maxOverlap, t_num, 0);
+    seqan::resize(adapterTrimmingStatsVector, t_num);
+    int len = length(reads);
+    SEQAN_OMP_PRAGMA(parallel for schedule(static))
+        for (int i = 0; i < len; ++i)
+        {
+            if (reads[i].seq.empty())
+                continue;
+            const int t_id = omp_get_thread_num();
+            // Every thread has its own adapterTrimmingStatsVector
+            const unsigned over = stripAdapter(reads[i], adapterTrimmingStatsVector[t_id], adapterSet, spec, TStripAdapterDirection(), TTagAdapter());
+            if (TTagAdapter::value && over != 0)
+                insertAfterFirstToken(reads[i].id, ":AdapterRemoved");
+        }
+    std::for_each(adapterTrimmingStatsVector.begin(), adapterTrimmingStatsVector.end(),
+        [&stats](AdapterTrimmingStats const& _stats) {stats += _stats;});
+    return stats.a1count + stats.a2count;
+}
+
 
 template <typename TSeq, typename TId, typename TAdapterSet, typename TSpec>
 unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& idSet, TAdapterSet const& adapterSet, TSpec const& spec,

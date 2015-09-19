@@ -152,11 +152,34 @@ template <typename TSeq, typename TSpec>
 unsigned trimRead(TSeq& seq, unsigned const cutoff, TSpec const & spec)
 {
 	unsigned ret, cut_pos;
-	cut_pos = _trimRead(seq, cutoff, spec);
+	cut_pos = _trimRead(seqan::Dna5QString(seq), cutoff, spec);
 	ret = length(seq) - cut_pos;
 	erase(seq, cut_pos, length(seq));
     return ret;
 }
+
+template <typename TRead, typename TSpec>
+unsigned _trimReads(std::vector<TRead>& reads, unsigned const cutoff, TSpec const & spec, bool tagOpt)
+{
+    int trimmedReads = 0;
+    int len = length(reads);
+    SEQAN_OMP_PRAGMA(parallel for schedule(static) reduction(+:trimmedReads))
+        for (int i = 0; i < len; ++i)
+        {
+            auto& read = reads[i];
+            unsigned trimmed = trimRead(read.seq, cutoff, spec);
+            if (trimmed > 0)
+            {
+                ++trimmedReads;
+                if (tagOpt)
+                {
+                    append(reads[i].id, "[Trimmed]");
+                }
+            }
+        }
+    return trimmedReads;
+}
+
 template <typename TSet, typename TIdSet, typename TSpec>
 unsigned _trimReads(TSet & seqSet, TIdSet& idSet, unsigned const cutoff, TSpec const & spec, bool tagOpt)
 {
@@ -178,6 +201,23 @@ unsigned _trimReads(TSet & seqSet, TIdSet& idSet, unsigned const cutoff, TSpec c
         }
 	}
 	return trimmedReads;
+}
+
+template <typename TRead>
+unsigned dropReads(std::vector<TRead>& reads,
+    unsigned const min_length, QualityTrimmingStats& stats)
+{
+    std::vector<bool> rem;
+    resize(rem, length(reads));
+
+    const auto beginAddr = (void*)&*reads.begin();
+    for (const auto& element : reads)
+        if (length(element.seq) < min_length)
+            rem[&element - beginAddr] = true;
+        else
+            rem[&element - beginAddr] = false;
+    stats.dropped_1 += _eraseSeqs(rem, true, reads);
+    return 0;
 }
 
 template <typename TId, typename TSeq>
@@ -243,6 +283,14 @@ unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqS
     stats.dropped_2 += dropped2;
     _eraseSeqs(rem, true, seqSet1, seqSet2, idSet1, idSet2);
 	return 0;
+}
+
+template <typename TRead, typename TSpec>
+unsigned trimBatch(std::vector<TRead>& reads, unsigned const cutoff,
+    TSpec const& spec, bool tagOpt)
+{
+    unsigned trimmedReads = _trimReads(reads, cutoff, spec, tagOpt);
+    return trimmedReads;
 }
 
 template <typename TSeq, typename TId, typename TSpec>
