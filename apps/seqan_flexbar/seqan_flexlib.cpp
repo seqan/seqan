@@ -1011,13 +1011,13 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
     return 0;
 }
 
-template<template <typename> typename TRead, typename TSeq>
+template<template <typename> typename TRead, typename TSeq, typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value>>
 inline void loadMultiplex(std::vector<TRead<TSeq>>& reads, seqan::SeqFileIn& multiplexFile, unsigned records)
 {
 }
 
-template<template <typename> typename TRead, typename TSeq>
-inline void loadMultiplex(std::vector<ReadMultiplex<TSeq>>& reads, seqan::SeqFileIn& multiplexFile, unsigned records)
+template<template <typename> typename TRead, typename TSeq, typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
+inline void loadMultiplex(std::vector<TRead<TSeq>>& reads, seqan::SeqFileIn& multiplexFile, unsigned records, bool = false)
 {
     seqan::String<char> id;
     unsigned int i = 0;
@@ -2353,18 +2353,18 @@ int flexbarMain(int argc, char const ** argv)
         if (!demultiplexingParams.run)
             outputStreams.addStream("", 0, useDefault);
         if(demultiplexingParams.runx)
-            mainLoop(Read<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
-        else
             mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
+        else
+            mainLoop(Read<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
     }
      else
      {
          if (!demultiplexingParams.run)
              outputStreams.addStreams("", "", 0, useDefault);
          if (demultiplexingParams.runx)
-             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
-         else
              mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
+         else
+             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
 
         seqan::String<seqan::StringSet<seqan::CharString> > idSet1, idSet2;
         seqan::String<seqan::StringSet<Dna5QString> > seqSet1, seqSet2;
