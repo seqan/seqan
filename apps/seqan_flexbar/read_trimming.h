@@ -207,6 +207,8 @@ template <typename TRead>
 unsigned dropReads(std::vector<TRead>& reads,
     unsigned const min_length, QualityTrimmingStats& stats)
 {
+    if (empty(reads))
+        return 0;
     std::vector<bool> rem;
     resize(rem, length(reads));
 

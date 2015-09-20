@@ -932,8 +932,9 @@ public:
         }
     }
     //Writes the sets of ids and sequences to their corresponding files. Used for single-end data.
-    template <typename TRead, typename TNames>
-    void writeSeqs(std::vector<TRead>& reads, TNames& names)
+    template <template <typename> typename TRead, typename TSeq, typename TNames, 
+        typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value >>
+    void writeSeqs(std::vector<TRead<TSeq>>& reads, TNames& names, bool = false)
     {
         updateStreams(names, false);
         for (unsigned i = 0; i < length(reads); ++i)
@@ -943,29 +944,19 @@ public:
         }
     }
 
-    template <typename TIds, typename TSeqs, typename TMap, typename TNames>
-    void writeSeqs(TIds& ids, TSeqs& seqs, TMap& map, TNames& names)
+    template <template <typename> typename TRead, typename TSeq, typename TNames,
+        typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value >>
+        void writeSeqs(std::vector<TRead<TSeq>>& reads, TNames& names)
     {
-        updateStreams(map, names, false);
-        for (unsigned i = 0; i < length(seqs); ++i)
+        updateStreams(names, false);
+        for (unsigned i = 0; i < length(reads); ++i)
         {
-            unsigned streamIndex = map[i];
-            writeRecords(*fileStreams[streamIndex], ids[i], seqs[i]);
+            unsigned streamIndex = reads[i].demuxResult;
+            writeRecord(*pairedFileStreams[streamIndex].i1, std::move(reads[i].id), seqan::Dna5QString(std::move(reads[i].seq)));
+            writeRecord(*pairedFileStreams[streamIndex].i2, std::move(reads[i].idRev), seqan::Dna5QString(std::move(reads[i].seqRev)));
         }
     }
-    //Overload of writeSeqs for paired-end data.
-    template <typename TIds, typename TSeqs, typename TMap, typename TNames>
-    void writeSeqs(TIds& ids1, TSeqs& seqs1, TIds& ids2, TSeqs& seqs2, TMap& map, TNames& names)
-    {
-        updateStreams(map, names, true);
-        for (unsigned i = 0; i < length(seqs1); ++i)
-        {
-            unsigned streamIndex = map[i];
-            TStreamPair tmp = pairedFileStreams[streamIndex];
-            writeRecords(*tmp.i1, ids1[i], seqs1[i]);
-            writeRecords(*tmp.i2, ids2[i], seqs2[i]);
-        }
-    }
+
     //Destructor of the object holding the output streams. Needed
      //to destroy the streams properly after they have been created with new.
     ~OutputStreams()
@@ -1883,27 +1874,68 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
     }
 }
 
+template < template<typename> typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value> >
+unsigned int readReads(std::vector<TRead<TSeq>>& reads, ProgramParams& programParams, bool = false)
+{
+    unsigned int i = 0;
+    reads.resize(programParams.records);
+    while (i < programParams.records && !atEnd(programParams.fileStream1))
+    {
+        readRecord(reads[i].id, reads[i].seq, programParams.fileStream1);
+        ++i;
+    }
+    reads.resize(i);
+    return i;
+}
+
+template < template<typename> typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value> >
+unsigned int readReads(std::vector<TRead<TSeq>>& reads, ProgramParams& programParams)
+{
+    unsigned int i = 0;
+    reads.resize(programParams.records);
+    while (i < programParams.records && !atEnd(programParams.fileStream1))
+    {
+        readRecord(reads[i].id, reads[i].seq, programParams.fileStream1);
+        readRecord(reads[i].idRev, reads[i].seqRev, programParams.fileStream2);
+        ++i;
+    }
+    reads.resize(i);
+    return i;
+}
+
+
+struct ReadWriterBase {
+    virtual ~ReadWriterBase() = default;
+};
+
+template<template<typename> typename TRead, typename TSeq>
+struct ReadWriter : ReadWriterBase
+{
+    ReadWriter(std::vector<TRead<TSeq>>&& reads, OutputStreams& outputStreams, DemultiplexingParams& demultiplexingParams)
+        : tlsReads(std::move(reads)), _future(std::async(std::launch::async | std::launch::deferred, [&outputStreams, &demultiplexingParams, this]() {outputStreams.writeSeqs(std::move(tlsReads), demultiplexingParams.barcodeIds);}))
+    {
+        //std::cout << std::endl<<"ctor" << std::endl;
+    }
+    ~ReadWriter() { 
+    //    std::cout << std::endl << "dtor" << std::endl; 
+    };
+    std::vector<TRead<TSeq>> tlsReads;
+    std::future<void> _future;
+};
+
 // END FUNCTION DEFINITIONS ---------------------------------------------
-template<typename TRead, typename TParser, typename TEsaFinder>
-int mainLoop(TRead, ProgramParams& programParams, DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
+template<template <typename>typename TRead, typename TSeq, typename TParser, typename TEsaFinder>
+int mainLoop(TRead<TSeq>, ProgramParams& programParams, DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
     QualityTrimmingParams& qualityTrimmingParams, TParser& parser, TEsaFinder& esaFinder, CharString& output, bool tagOpt, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
     OutputStreams& outputStreams)
 {
-    std::vector<TRead> readSet(programParams.records);
-    TRead read;
+    std::vector<TRead<TSeq>> readSet(programParams.records);
+    TRead<TSeq> read;
     SEQAN_PROTIMESTART(loopTime);
+    std::unique_ptr<ReadWriterBase> readWriter;
     while (!atEnd(programParams.fileStream1) && (programParams.readCount < programParams.firstReads))
     {
-        unsigned int i = 0;
-        readSet.resize(programParams.records);
-        while (i < programParams.records && !atEnd(programParams.fileStream1))
-        {
-            readRecord(readSet[i].id, readSet[i].seq, programParams.fileStream1);
-            ++i;
-        }
-        readSet.resize(i);
-
-        programParams.readCount += i;
+        programParams.readCount += readReads(readSet, programParams);
         SEQAN_PROTIMESTART(processTime);            // START of processing time.
 
         //loadMultiplex(multiplexInFile, demultiplexingParams, records);
@@ -1930,7 +1962,10 @@ int mainLoop(TRead, ProgramParams& programParams, DemultiplexingParams& demultip
         programParams.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
 
                                                                         // Append to output file.
-        outputStreams.writeSeqs(readSet, demultiplexingParams.barcodeIds);
+        //auto readsCopy = readSet;
+        //auto future = std::async(std::launch::async, [&outputStreams, &readsCopy, &demultiplexingParams]() {
+        //    outputStreams.writeSeqs(readsCopy, demultiplexingParams.barcodeIds);});
+        readWriter.reset(new ReadWriter<TRead,TSeq>(std::move(readSet), outputStreams, demultiplexingParams));
         // Information
         if (programParams.showSpeed)
             std::cout << "\r" << programParams.readCount << "   " << static_cast<int>(programParams.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
@@ -2366,58 +2401,9 @@ int flexbarMain(int argc, char const ** argv)
          else
              mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
 
-        seqan::String<seqan::StringSet<seqan::CharString> > idSet1, idSet2;
-        seqan::String<seqan::StringSet<Dna5QString> > seqSet1, seqSet2;
 
-        while (!(atEnd(programParams.fileStream1) || atEnd(programParams.fileStream2)))
-        {
-            clear(idSet1); 
-            clear(idSet2);
-            clear(seqSet1); 
-            clear(seqSet2);
-
-            appendValue(idSet1, seqan::StringSet<seqan::CharString>());
-            appendValue(seqSet1, seqan::StringSet<Dna5QString>());
-            appendValue(idSet2, seqan::StringSet<seqan::CharString>());
-            appendValue(seqSet2, seqan::StringSet<Dna5QString>());
-
-            readRecords(idSet1[0], seqSet1[0], programParams.fileStream1, programParams.records);
-            readRecords(idSet2[0], seqSet2[0], programParams.fileStream2, programParams.records);
-
-            programParams.readCount += length(idSet1[0]);
-            SEQAN_PROTIMESTART(processTime); // START of processing time.
-
-            //loadMultiplex(multiplexInFile, demultiplexingParams , programParams.records);
-            if (demultiplexingParams.runx)
-                return 1;
-
-            // Generall Processing
-            preprocessingStage(seqSet1[0], idSet1[0], seqSet2[0], idSet2[0], demultiplexingParams, processingParams,
-                               parser, generalStats);
-
-            // Demultiplexing.
-            if (demultiplexingStage(demultiplexingParams, seqSet1, seqSet2, idSet1, idSet2,
-                                esaFinder, map, generalStats) != 0)
-                return 1;
-
-            // Adapter trimming.
-            adapterTrimmingStage(adapterTrimmingParams, seqSet1, idSet1, seqSet2, idSet2, tagOpt);
-
-            // Quality trimming.
-            qualityTrimmingStage(qualityTrimmingParams, idSet1, seqSet1, idSet2, seqSet2, tagOpt);
-
-            // Postprocessing
-            postprocessingStage(seqSet1, idSet1, seqSet2, idSet2, processingParams, generalStats);
-            programParams.processTime += SEQAN_PROTIMEDIFF(processTime); // END of processing time.
-
-            // Append to output file.
-            outputStreams.writeSeqs(idSet1, seqSet1, idSet2, seqSet2, map, demultiplexingParams.barcodeIds);
-            // Information
-            if (programParams.showSpeed)
-                std::cout << "\r" << programParams.readCount << "   " << static_cast<int>(programParams.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
-            else
-                std::cout << "\r" << programParams.readCount;
-        }
+            //readRecords(idSet1[0], seqSet1[0], programParams.fileStream1, programParams.records);
+            //readRecords(idSet2[0], seqSet2[0], programParams.fileStream2, programParams.records);
     }
     double loop = SEQAN_PROTIMEDIFF(loopTime);
     programParams.ioTime = loop - programParams.processTime;
