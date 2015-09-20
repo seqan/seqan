@@ -15,6 +15,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Lesser General Public License for more details.
 ==========================================================================*/
 
+//#define SEQAN_TCOFFEE_DEBUG
+
 #include <seqan/basic.h>
 #include <seqan/graph_msa.h>
 #include <seqan/modifier.h>
@@ -23,8 +25,6 @@ Lesser General Public License for more details.
 #include <seqan/stream.h>
 
 using namespace seqan;
-
-//#define SEQAN_DEBUG
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -467,7 +467,7 @@ _setUpArgumentParser(ArgumentParser & parser)
 
 int main(int argc, const char *argv [])
 {
-#ifdef SEQAN_DEBUG
+#ifdef SEQAN_TCOFFEE_DEBUG
     double totalStartTime = sysTime();
     std::cout << std::fixed << std::setprecision(5);
 #endif
@@ -503,7 +503,7 @@ int main(int argc, const char *argv [])
     else
         _initScoreMatrix(parser, AminoAcid());
 
-#ifdef SEQAN_DEBUG
+#ifdef SEQAN_TCOFFEE_DEBUG
     std::cout << std::setw(30) << std::left << "Total time:" << std::setw(10) << std::right << sysTime() - totalStartTime << "  s" << std::endl;
 #endif
 

@@ -39,8 +39,6 @@
 #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_EXACT_ITERATIVE_H_
 #define SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_EXACT_ITERATIVE_H_
 
-//#define SEQAN_DEBUG
-
 namespace seqan {
 
 struct TagExactRefinement_;
@@ -508,7 +506,7 @@ SEQAN_CHECKPOINT
     typedef typename Cargo<typename Value<TPropertyMap>::Type>::Type TAlignmentPointer;
     typedef typename Iterator<String<TAlignmentPointer>, Rooted>::Type TSegmentIterator;
 
-#ifdef SEQAN_DEBUG
+#ifdef SEQAN_TCOFFEE_DEBUG
     double refinementTime = sysTime();
 #endif
 
@@ -642,7 +640,7 @@ SEQAN_CHECKPOINT
     //}
     //std::cout <<"building tree..."<<std::flush;
 
-#ifdef SEQAN_DEBUG
+#ifdef SEQAN_TCOFFEE_DEBUG
     std::cout << std::setw(30) << std::left << "Segment-match refinement:" << std::setw(10) << std::right << sysTime() - refinementTime << "  s" << std::endl;
 
     double buildGraphTime = sysTime();
@@ -652,7 +650,7 @@ SEQAN_CHECKPOINT
     //build refined alignment graph
     _makeAlignmentGraphFromRefinedSegments(all_nodes,alis,score_type,seq,seq_map,ali_graph,tag,annotation);
 
-#ifdef SEQAN_DEBUG
+#ifdef SEQAN_TCOFFEE_DEBUG
     std::cout << std::setw(30) << std::left << "Build alignment graph:" << std::setw(10) << std::right << sysTime() - buildGraphTime << "  s" << std::endl;
 #endif
 

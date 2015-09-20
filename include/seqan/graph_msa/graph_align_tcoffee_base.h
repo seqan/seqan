@@ -33,8 +33,6 @@
 #ifndef SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_BASE_H
 #define SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_BASE_H
 
-//#define SEQAN_DEBUG
-
 namespace SEQAN_NAMESPACE_MAIN
 {
 
@@ -138,7 +136,7 @@ buildAlignmentGraph(String<TFragment, TSpec1>& matches,
     // Segment-match refinement
     matchRefinement(matches,strSet,outGraph);
 
-#ifdef SEQAN_DEBUG
+#ifdef SEQAN_TCOFFEE_DEBUG
     double adaptScoresTime = sysTime();
 #endif
 
@@ -168,7 +166,7 @@ buildAlignmentGraph(String<TFragment, TSpec1>& matches,
         }
     }
 
-#ifdef SEQAN_DEBUG
+#ifdef SEQAN_TCOFFEE_DEBUG
     std::cout << std::setw(30) << std::left << "Adapt scores:" << std::setw(10) << std::right << sysTime() - adaptScoresTime << "  s" << std::endl;
 #endif
 }
