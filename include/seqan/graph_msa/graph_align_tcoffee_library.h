@@ -83,11 +83,11 @@ namespace SEQAN_NAMESPACE_MAIN
  * @defgroup MultipleSequenceAlignmentTags Multiple Sequence Alignment Tags
  * @brief Tags specifying types of multiple alignment.
  *
- * @tag MultipleSequenceAlignmentTags#OrdinaryAlignment
+ * @tag MultipleSequenceAlignmentTags#DefaultAlignment
  * @headerfile <seqan/graph_msa.h>
- * @brief Ordinary alignment with quite small number of sequences.
+ * @brief Usual alignment with quite small number of sequences.
  *
- * @signature typedef Tag<OrdinaryAlignment_> OrdinaryAlignment;
+ * @signature typedef Tag<DefaultAlignment_> DefaultAlignment;
  *
  *
  * @tag MultipleSequenceAlignmentTags#DeepAlignment
@@ -111,8 +111,8 @@ struct LcsLibrary_;
 typedef Tag<LcsLibrary_> const LcsLibrary;
 
 
-struct OrdinaryAlignment_;
-typedef Tag<OrdinaryAlignment_> const OrdinaryAlignment;
+struct DefaultAlignment_;
+typedef Tag<DefaultAlignment_> const DefaultAlignment;
 
 struct DeepAlignment_;
 typedef Tag<DeepAlignment_> const DeepAlignment;
@@ -731,7 +731,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TScores& scores,
                      LocalPairwiseLibrary)
 {
-    appendSegmentMatches(str, pList, score_type, matches, scores, LocalPairwiseLibrary(), OrdinaryAlignment());
+    appendSegmentMatches(str, pList, score_type, matches, scores, LocalPairwiseLibrary(), DefaultAlignment());
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -744,7 +744,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TSegmentMatches& matches,
                      TScoreValues& scores,
                      LocalPairwiseLibrary,
-                     OrdinaryAlignment)
+                     DefaultAlignment)
 {
     typedef StringSet<TString, Dependent<TSpec> > TStringSet;
     typedef String<TSize2, TSpec2> TPairList;

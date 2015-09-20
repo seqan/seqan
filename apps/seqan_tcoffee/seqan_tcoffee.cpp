@@ -391,7 +391,7 @@ _setUpArgumentParser(ArgumentParser & parser)
 
     addOption(parser,
               ArgParseOption("pa", "pairwise-alignment", "Pairwise alignment method. "
-                             "Default: \\fIunbanded\\fP for ordinary alignments (< 50 sequences), "
+                             "Default: \\fIunbanded\\fP for usual alignments (< 50 sequences), "
                              "\\fIbanded\\fP for deep alignments (>= 50 sequences)",
                              ArgParseArgument::STRING));
     setValidValues(parser, "pa", "unbanded banded");

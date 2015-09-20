@@ -407,14 +407,14 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
                     if (isDeepAlignment)
                         _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, DeepAlignment());
                     else
-                        _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, OrdinaryAlignment());
+                        _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, DefaultAlignment());
                 }
                 else
                 {
                     if (isDeepAlignment)
                         _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, msaOpt.bandWidth, DeepAlignment());
                     else
-                        _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, msaOpt.bandWidth, OrdinaryAlignment());
+                        _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, msaOpt.bandWidth, DefaultAlignment());
                 }
             }
             else if (*begIt == 2)
