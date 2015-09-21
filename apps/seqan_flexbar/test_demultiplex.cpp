@@ -57,6 +57,28 @@
 using namespace seqan;
 
 // Used for loading the sequences. Needed for the io-test.
+template<template<typename> typename TRead, typename TSeq>
+int loadSeqs(char const * path, std::vector<TRead<TSeq>>& reads)
+{
+    SeqFileIn seqFile;
+    unsigned records = 1000;									//number of records to be read
+
+    if (!open(seqFile, path))
+    {
+        std::cerr << "Error while opening the sequence-file.\n";
+        return 1;
+    }
+
+    unsigned counter = 0;
+    TRead<TSeq> read;
+    while (!atEnd(seqFile) && counter < records)
+    {
+        readRecord(read.id, read.seq, seqFile);
+        reads.emplace_back(std::move(read));
+        ++counter;
+    }
+    return 0;
+}
 int loadSeqs(char const * path, StringSet<String<char> >& ids, StringSet<String<Dna5Q> >& seqs)
 {
 	SeqFileIn seqFile;
@@ -97,20 +119,21 @@ int loadBarcodes(char const * path, StringSet<String<char> >& bcids, StringSet<S
 SEQAN_DEFINE_TEST(check_test)
 {
 	GeneralStats generalStats;
+    using TRead = Read<seqan::Dna5QString>;
+    std::vector<TRead> reads(5);
     
     StringSet<String<Dna5Q> > seqs;
-	appendValue(seqs, "TACGTAGCTACTGACTGACT");
-	appendValue(seqs, "G");
-	appendValue(seqs, "TACGTCTGACT");
-	appendValue(seqs, "");
-	appendValue(seqs, "ATCGA");
+    reads[0].seq = "TACGTAGCTACTGACTGACT";
+    reads[1].seq = "G";
+    reads[2].seq = "TACGTCTGACT";
+    reads[3].seq = "";
+    reads[4].seq = "ATCGA";
 
-	StringSet<String<char> > ids;
-	appendValue(ids, "ErsteSeq");
-	appendValue(ids, "LoeschenEins");
-	appendValue(ids, "ZweiteSeq");
-	appendValue(ids, "LoeschenLeer");
-	appendValue(ids, "LoeschenFuenf");
+    reads[0].id = "ErsteSeq";
+    reads[1].id = "LoeschenEins";
+    reads[2].id = "ZweiteSeq";
+    reads[3].id = "LoeschenLeer";
+    reads[4].id = "LoeschenFuenf";
 
 	StringSet<String<Dna5Q> > barcodesFalse;
 	appendValue(barcodesFalse, "ACGAGT");
@@ -124,50 +147,49 @@ SEQAN_DEFINE_TEST(check_test)
 	appendValue(barcodesTrue, "AGCTAA");
 	appendValue(barcodesTrue, "GTGACA");
 
-	StringSet<String<Dna5Q> > exspectedSeqs;
-	appendValue(exspectedSeqs, "TACGTAGCTACTGACTGACT");
-	appendValue(exspectedSeqs, "TACGTCTGACT");
+    std::vector<TRead> expectedReads(2);
+    expectedReads[0].seq = "TACGTAGCTACTGACTGACT";
+    expectedReads[1].seq = "TACGTCTGACT";
 
-	StringSet<String<char> > exspectedIds;
-	appendValue(exspectedIds, "ErsteSeq");
-	appendValue(exspectedIds, "ZweiteSeq");
+    expectedReads[0].id = "ErsteSeq";
+    expectedReads[1].id = "ZweiteSeq";
 
-	bool resF = check(seqs, ids, barcodesFalse, generalStats);
-	bool resT = check(seqs, ids, barcodesTrue, generalStats);
+	bool resF = check(reads, barcodesFalse, generalStats);
+	bool resT = check(reads, barcodesTrue, generalStats);
 
 	SEQAN_ASSERT_EQ(false, resF);
 	SEQAN_ASSERT_EQ(true, resT);
-	SEQAN_ASSERT_EQ(2u, length(seqs));
-	SEQAN_ASSERT_EQ(2u, length(ids));
-	SEQAN_ASSERT_EQ(exspectedSeqs[0], seqs[0]);
-	SEQAN_ASSERT_EQ(exspectedIds[0], ids[0]);
-	SEQAN_ASSERT_EQ(exspectedSeqs[1], seqs[1]);
-	SEQAN_ASSERT_EQ(exspectedIds[1], ids[1]);
+	SEQAN_ASSERT_EQ(2u, length(reads));
+	SEQAN_ASSERT_EQ(expectedReads[0].seq, reads[0].seq);
+    SEQAN_ASSERT_EQ(expectedReads[0].id, reads[0].id);
+    SEQAN_ASSERT_EQ(expectedReads[1].seq, reads[1].seq);
+    SEQAN_ASSERT_EQ(expectedReads[1].id, reads[1].id);
 }
 // Checks the correctness of the getPrefix function which extract the prefices from a set of sequences.
 SEQAN_DEFINE_TEST(getPrefix_test)
 {
-	StringSet<String<Dna5Q> > given;
-	appendValue(given, "GATACAGACTGAGCATGTGATCGAC");
-	appendValue(given, "AATTCCGTACGTAGCTACGTACGTACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC");
-	appendValue(given, "GTTGGAGTACGTAGCTACGTACGTACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC");
+    using TRead = Read<seqan::Dna5QString>;
+    std::vector<TRead> reads(3);
+    reads[0].seq = "GATACAGACTGAGCATGTGATCGAC";
+    reads[1].seq = "AATTCCGTACGTAGCTACGTACGTACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC";
+    reads[2].seq = "GTTGGAGTACGTAGCTACGTACGTACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC";
 	
-	StringSet<String<Dna5Q> > exspectedSet;
-	appendValue(exspectedSet, "GATACAGACTGAGCATGTGATCGAC");
-	appendValue(exspectedSet, "AATTCCGTACGTAGCTACGTACGTACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC");
-	appendValue(exspectedSet, "GTTGGAGTACGTAGCTACGTACGTACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC");
-
+    std::vector<TRead> expectedReads(3);
+    expectedReads[0].seq = "GATACAGACTGAGCATGTGATCGAC";
+    expectedReads[1].seq = "AATTCCGTACGTAGCTACGTACGTACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC";
+    expectedReads[2].seq = "GTTGGAGTACGTAGCTACGTACGTACGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGC";
+        
 	StringSet<String<Dna5Q> > exspected;
 	appendValue(exspected, "GATACA");
 	appendValue(exspected, "AATTCC");
 	appendValue(exspected, "GTTGGA");
 		
-	StringSet<String<Dna5Q> > res;
-    getPrefix(res, given, 6);
+	std::vector<seqan::Dna5QString> res;
+    getPrefix(res, reads, 6);
 	for (unsigned i = 0; i < length(exspected); ++i)
 	{
 		SEQAN_ASSERT_EQ(exspected[i], res[i]);
-		SEQAN_ASSERT_EQ(exspectedSet[i], given[i]);
+		SEQAN_ASSERT_EQ(expectedReads[i].seq, reads[i].seq);
 	}
 }
 // Checks the correct production of all possible barcode variations with 1 Error on one single barcode
@@ -248,14 +270,6 @@ SEQAN_DEFINE_TEST(buildAllVariations_test)
 	{
 		SEQAN_ASSERT_EQ(exspected[i], barcodes[i]); 
 	}
-	/*for (unsigned i = 0; i < 10; ++i)
-	{
-		SEQAN_ASSERT_EQ(id1, bcids[i]);
-	}
-	for (unsigned i = 10; i < 20; ++i)
-	{
-		SEQAN_ASSERT_EQ(id2, bcids[i]);
-	}*/
 }
 
 // Checks the correctness of the findExactIndex function which searches for one piece of sequence in the barcodes. Implicitly checks the construction of the Index.
@@ -328,42 +342,43 @@ SEQAN_DEFINE_TEST(findAllExactIndex_test)
 // Checks the correctnes of the clipBarcodes function which erases the first x bases of a sequence.
 SEQAN_DEFINE_TEST(clipBarcodes_test)
 {
-	StringSet<String<Dna5Q> > seqs;
-	appendValue(seqs, "AAAAAAGTGACTGATCGTACGACTG");
-	appendValue(seqs, "GGGGGGGGGGGGGGGG");
+    using TRead = Read<seqan::Dna5QString>;
+    std::vector<TRead> reads(2);
+    reads[0].seq = "AAAAAAGTGACTGATCGTACGACTG";
+    reads[1].seq = "GGGGGGGGGGGGGGGG";
 
 	String<int> matches;
 	appendValue(matches, 0);
 	appendValue(matches, -1);
 
 	StringSet<String<Dna5Q> > exspected ;
-	appendValue(seqs, "GTGACTGATCGTACGACTG");
-	appendValue(seqs, "GGGGGGGGGGGGGGGG");
+	appendValue(exspected, "GTGACTGATCGTACGACTG");
+	appendValue(exspected, "GGGGGGGGGGGGGGGG");
 
-	clipBarcodes(seqs, matches, 6);
+	clipBarcodes(reads, matches, 6);
 	for (unsigned i = 0; i < length(exspected); ++i)
 	{
-		SEQAN_ASSERT_EQ(exspected[i], seqs[i]);
+		SEQAN_ASSERT_EQ(exspected[i], reads[i].seq);
 	}
 	
 }
 // Checks the correctnes of the clipBarcodes function using the hardClip method and therefore also clipping sequences without matching barcode.
 SEQAN_DEFINE_TEST(clipBarcodesStrict_test)
 {
-	StringSet<String<Dna5Q> > seqs;
-	appendValue(seqs, "AAAAAAGTGACTGATCGTACGACTG");
-	appendValue(seqs, "GGGGGGGGGGGGGGGG");
+    using TRead = Read<seqan::Dna5QString>;
+    std::vector<TRead> reads(2);
+    reads[0].seq = "GTGACTGATCGTACGACTG";
+    reads[1].seq = "GGGGGGGGGGGGGGGG";
 
-	StringSet<String<Dna5Q> > exspected ;
-	appendValue(seqs, "GTGACTGATCGTACGACTG");
-	appendValue(seqs, "GGGGGGGGGG");
+    StringSet<String<Dna5Q> > exspected;
+    appendValue(exspected, "GATCGTACGACTG");
+    appendValue(exspected, "GGGGGGGGGG");
 
-	clipBarcodes(seqs, 6);
-	for (unsigned i = 0; i < length(exspected); ++i)
-	{
-		SEQAN_ASSERT_EQ(exspected[i], seqs[i]);
-	}
-	
+    clipBarcodes(reads, 6);
+    for (unsigned i = 0; i < length(exspected); ++i)
+    {
+        SEQAN_ASSERT_EQ(exspected[i], reads[i].seq);
+    }
 }
 // Checks the correctnes of the group function which builds the groups of barcodes matching the same barcodes. Implicitly checks resizeGroups.
 SEQAN_DEFINE_TEST(group_test)
@@ -383,28 +398,24 @@ SEQAN_DEFINE_TEST(group_test)
 	appendValue(matches, 1);
 	appendValue(matches, 2);
 
-	StringSet<String<int> > exspected;
-	resize(exspected, 7);
-	appendValue(exspected[0], 3);
-	appendValue(exspected[1], 0);
-	appendValue(exspected[2], 2);
-	appendValue(exspected[2], 4);	//expected[4] is left empty since the barcode has no matching sequences
-	appendValue(exspected[3], 5);
-	appendValue(exspected[5], 1);
+    std::vector<Read<seqan::Dna5QString>> reads(6);
+    std::vector<Read<seqan::Dna5QString>> expectedReads(6);
+    expectedReads[0].demuxResult = 1;
+    expectedReads[1].demuxResult = 5;
+    expectedReads[2].demuxResult = 2;
+    expectedReads[3].demuxResult = 0;
+    expectedReads[4].demuxResult = 2;
+    expectedReads[5].demuxResult = 3;
 	
-	StringSet<String<int> > res;
-    group(res, matches, barcodes, false);
+    group(reads, matches, barcodes, false);
 	
-	for (unsigned i = 0; i < length(exspected); ++i)
+	for (unsigned i = 0; i < length(expectedReads); ++i)
 	{
-		for (unsigned j = 0; j < length(exspected[i]); ++j)
-		{
-			SEQAN_ASSERT_EQ(exspected[i][j], res[i][j]);
-		}
+		SEQAN_ASSERT_EQ(expectedReads[i].demuxResult, reads[i].demuxResult);
 	}
 }
 // Checks the correctness of the doAll function performing all demultiplexing operations for exact inline barcode matching.
-SEQAN_DEFINE_TEST(doAll_Exact_test_new)
+SEQAN_DEFINE_TEST(doAll_Exact_test)
 {
     std::vector<Read<seqan::Dna5QString>> reads(4);
     reads[0].seq = "AAAAAAGTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG";
@@ -431,11 +442,10 @@ SEQAN_DEFINE_TEST(doAll_Exact_test_new)
     expectedReads[2].seq = "TAGCTAGCTAGCTAGCTAGCTAGCTAGC";
     expectedReads[3].seq = "TAGTCATACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC";
 
-    expectedReads[0].demuxResult = 2;
-    expectedReads[1].demuxResult = 0;
-    expectedReads[2].demuxResult = 2;
-    expectedReads[3].demuxResult = -1;
-
+    expectedReads[0].demuxResult = 3;
+    expectedReads[1].demuxResult = 1;
+    expectedReads[2].demuxResult = 3;
+    expectedReads[3].demuxResult = 0;
 
     Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
     Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
@@ -452,60 +462,10 @@ SEQAN_DEFINE_TEST(doAll_Exact_test_new)
         }
     }
 }
-SEQAN_DEFINE_TEST(doAll_Exact_test)
-{
-	StringSet<String<Dna5Q> > seqs;
-	appendValue(seqs, "AAAAAAGTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG");
-	appendValue(seqs, "GGGGGGAGTACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC");
-	appendValue(seqs, "AAAAAATAGCTAGCTAGCTAGCTAGCTAGCTAGC");
-	appendValue(seqs, "TAGTCATACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC");
 
-	StringSet<String<char> > ids;
-	appendValue(ids, "Adenin1");
-	appendValue(ids, "Guanin");
-	appendValue(ids, "Adenin2");
-	appendValue(ids, "Unidentifiziert");
-
-	StringSet<String<Dna5Q> > barcodes;
-	appendValue(barcodes, "GGGGGG");
-	appendValue(barcodes, "CCCCCC");
-	appendValue(barcodes, "AAAAAA");
-
-	DemultiplexStats demultiplexStats;
-	resize(demultiplexStats.groups, length(barcodes)+1);
-
-	StringSet<String<Dna5Q> > exspectedSeqs;
-	appendValue(exspectedSeqs, "GTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG");
-	appendValue(exspectedSeqs, "AGTACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC");
-	appendValue(exspectedSeqs, "TAGCTAGCTAGCTAGCTAGCTAGCTAGC");
-	appendValue(exspectedSeqs, "TAGTCATACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC");
-
-	StringSet<String<int> > exspected;
-	resize(exspected, 4);
-	appendValue(exspected[0], 3);
-	appendValue(exspected[1], 1);	//exspected[2] is left empty since the associated barcode is not matched
-	appendValue(exspected[3], 0);
-	appendValue(exspected[3], 2);
-
-	Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
-	Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
-	indexRequire(indexSet, FibreSA());
-
-	StringSet<String<int> > res;
-    doAll(res, seqs, barcodes, esaFinder, false, demultiplexStats, false);
-
-	for (unsigned i = 0; i < length(exspected); ++i)
-	{
-		for (unsigned j = 0; j < length(exspected[i]); ++j)
-		{
-			SEQAN_ASSERT_EQ(exspected[i][j], res[i][j]);
-			SEQAN_ASSERT_EQ(exspectedSeqs[exspected[i][j]], seqs[res[i][j]]);
-		}
-	}
-}
 // Checks the correctness of the doAll function performing all demultiplexing operations
 // for exact multiplex barcode matching.
-SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test_new)
+SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test)
 {
     std::vector<ReadMultiplex<seqan::Dna5QString>> reads(4);
     reads[0].seq = "GTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG";
@@ -537,11 +497,10 @@ SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test_new)
     expectedReads[2].seq = "TAGCTAGCTAGCTAGCTAGCTAGCTAGC";
     expectedReads[3].seq = "GGGG";
 
-    expectedReads[0].demuxResult = 2;
-    expectedReads[1].demuxResult = 0;
-    expectedReads[2].demuxResult = -1;
-    expectedReads[3].demuxResult = 2;
-
+    expectedReads[0].demuxResult = 3;
+    expectedReads[1].demuxResult = 1;
+    expectedReads[2].demuxResult = 0;
+    expectedReads[3].demuxResult = 3;
 
     Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
     Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
@@ -557,71 +516,21 @@ SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test_new)
         }
     }
 }
-SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test)
-{
-	StringSet<String<Dna5Q> > seqs;
-	appendValue(seqs, "GTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG");
-	appendValue(seqs, "AGTACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC");
-	appendValue(seqs, "TAGCTAGCTAGCTAGCTAGCTAGCTAGC");
-	appendValue(seqs, "GGGG");
 
-	StringSet<String<Dna5Q> > multiplex;
-	appendValue(multiplex, "AAAAAA");
-	appendValue(multiplex, "GGGGGG");
-	appendValue(multiplex, "GGCCGG");
-	appendValue(multiplex, "AAAAAA");
-
-	StringSet<String<Dna> > barcodes;
-	appendValue(barcodes, "GGGGGG");
-	appendValue(barcodes, "CCCCCC");
-	appendValue(barcodes, "AAAAAA");
-
-	DemultiplexStats demultiplexStats;
-	resize(demultiplexStats.groups, length(barcodes)+1);
-
-	StringSet<String<Dna5Q> > exspectedSeqs;
-	appendValue(exspectedSeqs, "GTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG");
-	appendValue(exspectedSeqs, "AGTACGTACGTAGCTAGCTAGCATGCTAGCTAGCTAC");
-	appendValue(exspectedSeqs, "TAGCTAGCTAGCTAGCTAGCTAGCTAGC");
-	appendValue(exspectedSeqs, "GGGG");
-
-	StringSet<String<int> > exspected;
-	resize(exspected, 4);
-	appendValue(exspected[0], 2);
-	appendValue(exspected[1], 1);	//exspected[2] is left empty since the associated barcode is not matched
-	appendValue(exspected[3], 0);
-	appendValue(exspected[3], 3);
-
-	Index<StringSet<String<Dna> >, IndexEsa<> > indexSet(barcodes);
-	Finder<Index<StringSet<String<Dna> >, IndexEsa<> > > esaFinder(indexSet);
-	indexRequire(indexSet, FibreSA());
-
-	StringSet<String<int> > res;
-    doAll(res, multiplex, barcodes, esaFinder, demultiplexStats, false);
-
-	for (unsigned i = 0; i < length(exspected); ++i)
-	{
-		for (unsigned j = 0; j < length(exspected[i]); ++j)
-		{
-			SEQAN_ASSERT_EQ(exspected[i][j], res[i][j]);
-			SEQAN_ASSERT_EQ(exspectedSeqs[exspected[i][j]], seqs[res[i][j]]);
-		}
-	}
-}
 // Checks the correctness of the functions if they are applied on external data.
 SEQAN_DEFINE_TEST(Input_test)
 {
-	StringSet<String<char> > ids;
-	StringSet<String<Dna5Q> > seqs;
 	StringSet<String<char> > bcids;
 	StringSet<String<Dna> > bcs;
+    using TRead = Read<seqan::Dna5QString>;
 
 	CharString seqpath = SEQAN_PATH_TO_ROOT();
     append(seqpath, "/apps/seqan_flexbar/tests/seqs.fa");
 	String<char> bcpath = SEQAN_PATH_TO_ROOT();
     append(bcpath, "/apps/seqan_flexbar/tests/barcodes.fa");
 
-	SEQAN_ASSERT_EQ(0, loadSeqs(toCString(seqpath), ids, seqs));
+    std::vector<TRead> reads;
+	SEQAN_ASSERT_EQ(0, loadSeqs(toCString(seqpath), reads));
 	SEQAN_ASSERT_EQ(0, loadBarcodes(toCString(bcpath), bcids, bcs));
 
 	DemultiplexStats demultiplexStats;
@@ -632,9 +541,7 @@ SEQAN_DEFINE_TEST(Input_test)
 	indexRequire(indexSet, FibreSA());
 
 	StringSet<String<int> > groups;
-    doAll(groups, seqs, bcs, esaFinder, false, demultiplexStats, false);
-	String<StringSet<String<Dna5Q> > > gSeqs;
-	String<StringSet<String<char> > > gIds;
+    doAll(reads, bcs, esaFinder, false, demultiplexStats, false);
 }
 
 
@@ -652,10 +559,8 @@ SEQAN_BEGIN_TESTSUITE(test_my_app_funcs)
 	SEQAN_CALL_TEST(clipBarcodes_test);
 	SEQAN_CALL_TEST(clipBarcodesStrict_test);
 	SEQAN_CALL_TEST(group_test);
-	//SEQAN_CALL_TEST(doAll_Exact_test);
-    SEQAN_CALL_TEST(doAll_Exact_test_new);
-    //SEQAN_CALL_TEST(doAll_Exact_Multiplex_test);
-    SEQAN_CALL_TEST(doAll_Exact_Multiplex_test_new);
+    SEQAN_CALL_TEST(doAll_Exact_test);
+    SEQAN_CALL_TEST(doAll_Exact_Multiplex_test);
     SEQAN_CALL_TEST(Input_test);
 }
 SEQAN_END_TESTSUITE
