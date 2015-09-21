@@ -180,37 +180,14 @@ unsigned _trimReads(std::vector<TRead>& reads, unsigned const cutoff, TSpec cons
     return trimmedReads;
 }
 
-template <typename TSet, typename TIdSet, typename TSpec>
-unsigned _trimReads(TSet & seqSet, TIdSet& idSet, unsigned const cutoff, TSpec const & spec, bool tagOpt)
-{
-	typedef typename seqan::Value<TSet>::Type TSeq;
-	int trimmedReads = 0;
-	int len = length(seqSet);
-	SEQAN_OMP_PRAGMA(parallel for schedule(static) reduction(+:trimmedReads))
-	for (int i=0; i < len; ++i)
-	{
-		TSeq& read = value(seqSet, i);
-		unsigned trimmed = trimRead(read, cutoff, spec);
-		if (trimmed > 0)
-        {
-            ++trimmedReads;
-            if (tagOpt)
-            {
-                append(idSet[i], "[Trimmed]");
-            }
-        }
-	}
-	return trimmedReads;
-}
-
-template <typename TRead>
-unsigned dropReads(std::vector<TRead>& reads,
-    unsigned const min_length, QualityTrimmingStats& stats)
+template <template <typename>typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value>>
+unsigned dropReads(std::vector<TRead<TSeq>>& reads,
+    unsigned const min_length, QualityTrimmingStats& stats, bool = false)
 {
     if (empty(reads))
         return 0;
     std::vector<bool> rem;
-    resize(rem, length(reads));
+    rem.resize(length(reads));
 
     const auto beginAddr = (void*)&*reads.begin();
     for (const auto& element : reads)
@@ -222,70 +199,26 @@ unsigned dropReads(std::vector<TRead>& reads,
     return 0;
 }
 
-template <typename TId, typename TSeq>
-unsigned dropReads(seqan::StringSet<TId> & idSet, seqan::StringSet<TSeq> & seqSet,
-		unsigned const min_length, QualityTrimmingStats& stats)
+template <template <typename>typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
+unsigned dropReads(std::vector<TRead<TSeq>>& reads,
+    unsigned const min_length, QualityTrimmingStats& stats)
 {
-    seqan::String<bool> rem;
-    resize(rem, length(idSet));
+    if (empty(reads))
+        return 0;
+    std::vector<bool> rem;
+    rem.resize(length(reads));
 
-    const auto beginAddr = (void*)&*begin(seqSet);
-    for (const auto& element : seqSet)
-        if (length(element) < min_length)
+    const auto beginAddr = (void*)&*reads.begin();
+    for (const auto& element : reads)
+        if (length(element.seq) < min_length || length(element.seqRev) < min_length)
             rem[&element - beginAddr] = true;
         else
             rem[&element - beginAddr] = false;
-    stats.dropped_1 += _eraseSeqs(rem, true, seqSet, idSet);
-	return 0;
+    stats.dropped_1 += _eraseSeqs(rem, true, reads);
+    stats.dropped_2 = stats.dropped_1;
+    return 0;
 }
 
-//overload for paired end data
-template <typename TId, typename TSeq>
-unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqSet1,
-		  seqan::StringSet<TId> & idSet2, seqan::StringSet<TSeq> & seqSet2, unsigned const min_length, QualityTrimmingStats& stats)
-{
-	// Iterate over the set and drop filter out those reads that are
-	// too short. If only one read of the pair is too short, mark it
-	// with a single N. If both reads are too short, remove them.
-	// Possible feature for the future generation: Write out orphaned reads to extra file.
-    const auto len = length(seqSet1);
-    seqan::StringSet<bool> rem;
-    resize(rem, len);
-    unsigned dropped1 = 0;
-    unsigned dropped2 = 0;
-    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static) reduction(+:dropped1, dropped2))
-    for (int i = 0; i < len; ++i)
-    {
-        bool drop1 = length(seqSet1[i]) < min_length;
-		bool drop2 = length(seqSet2[i]) < min_length;
-        if (drop1 && drop2)
-        {
-            rem[i] = true;
-            ++dropped1;
-            ++dropped2;
-        }
-        else if (drop1)
-        {
-            rem[i] = false;
-            ++dropped1;
-			seqan::moveValue(seqSet1, i, TSeq("N"));
-        }
-        else if (drop2)
-        {
-            rem[i] = false;
-            ++dropped2;
-			seqan::moveValue(seqSet2, i, TSeq("N"));
-        } 
-        else
-        {
-            rem[i] = false;
-        }
-    }
-    stats.dropped_1 += dropped1;
-    stats.dropped_2 += dropped2;
-    _eraseSeqs(rem, true, seqSet1, seqSet2, idSet1, idSet2);
-	return 0;
-}
 
 template <typename TRead, typename TSpec>
 unsigned trimBatch(std::vector<TRead>& reads, unsigned const cutoff,
@@ -293,23 +226,5 @@ unsigned trimBatch(std::vector<TRead>& reads, unsigned const cutoff,
 {
     unsigned trimmedReads = _trimReads(reads, cutoff, spec, tagOpt);
     return trimmedReads;
-}
-
-template <typename TSeq, typename TId, typename TSpec>
-unsigned trimBatch(seqan::StringSet<TSeq>& seqSet, seqan::StringSet<TId>& idSet, unsigned const cutoff,
-    TSpec const& spec, bool tagOpt)
-{
-	unsigned trimmedReads = _trimReads(seqSet, idSet, cutoff, spec, tagOpt);
-	return trimmedReads;
-}
-
-template <typename TSeq, typename TId, typename TSpec>
-seqan::Pair<unsigned, unsigned> trimPairBatch(seqan::StringSet<TSeq>& seqSet1, seqan::StringSet<TId>& idSet1,
-    seqan::StringSet<TSeq> & seqSet2, seqan::StringSet<TId>& idSet2, unsigned const cutoff,
-    TSpec const & spec, bool tagOpt)
-{
-	unsigned trimmedReads1 = _trimReads(seqSet1, idSet1, cutoff, spec, tagOpt);
-	unsigned trimmedReads2 = _trimReads(seqSet2, idSet2, cutoff, spec, tagOpt);
-	return seqan::Pair<unsigned, unsigned>(trimmedReads1, trimmedReads2);
 }
 #endif  // #ifndef SANDBOX_GROUP3_APPS_SEQDPT_READTRIMMING_H_

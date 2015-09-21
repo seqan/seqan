@@ -51,80 +51,70 @@
 
 SEQAN_DEFINE_TEST(drop_reads_test)
 {
-	typedef seqan::String<seqan::Dna5Q> TString;
-	typedef seqan::CharString TID;
-	seqan::StringSet<TString> test;
-	seqan::StringSet<TID> testID;
-    seqan::StringSet<TString> testRev;
-    seqan::StringSet<TID> testIDRev;
+    using TRead = Read<seqan::Dna5QString>;
+    std::vector<TRead> reads(5);
 
-	seqan::appendValue(testID, TString("1"));
-	seqan::appendValue(test, TString("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-	seqan::appendValue(testID, TString("2"));
-	seqan::appendValue(test, TString("AAAAAAAAAAAAAAAAAAAA"));
-	seqan::appendValue(testID, TString("3"));
-	seqan::appendValue(test, TString("AAAAA"));
-	seqan::appendValue(testID, TString("4"));
-	seqan::appendValue(test, TString("AAA"));
-	seqan::appendValue(testID, TString("5"));
-	seqan::appendValue(test, TString("A"));
+    reads[0].id = "1";
+    reads[0].seq = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    reads[1].id = "2";
+    reads[1].seq = "AAAAAAAAAAAAAAAAAAAA";
+    reads[2].id = "3";
+    reads[2].seq = "AAAAA";
+    reads[3].id = "4";
+    reads[3].seq = "AAA";
+    reads[4].id = "5";
+    reads[4].seq = "A";
 
-    testRev = test;
-    testIDRev = testID;
+    std::vector<ReadPairedEnd<seqan::Dna5QString>> readsPairedEnd(5);
+    for (unsigned int i = 0;i < 5;++i)
+    {
+        readsPairedEnd[i].id = readsPairedEnd[i].idRev = reads[i].id;
+        readsPairedEnd[i].seq = readsPairedEnd[i].seqRev = reads[i].seq;
+    }
 
 	QualityTrimmingStats tmp;
 
-	dropReads(testID, test, 2, tmp);
-	SEQAN_ASSERT_EQ(length(test), 4u);
+	dropReads(reads, 2, tmp);
+	SEQAN_ASSERT_EQ(length(reads), 4u);
 
-	dropReads(testID, test, 4, tmp);
-	SEQAN_ASSERT_EQ(length(test), 3u);
+	dropReads(reads, 4, tmp);
+	SEQAN_ASSERT_EQ(length(reads), 3u);
 
-	dropReads(testID, test, 6, tmp);
-	SEQAN_ASSERT_EQ(length(test), 2u);
+	dropReads(reads, 6, tmp);
+	SEQAN_ASSERT_EQ(length(reads), 2u);
 
-	dropReads(testID, test, 24, tmp);
-	SEQAN_ASSERT_EQ(length(test), 1u);
+	dropReads(reads, 24, tmp);
+	SEQAN_ASSERT_EQ(length(reads), 1u);
 
-	dropReads(testID, test, 50, tmp);
-	SEQAN_ASSERT_EQ(length(test), 0u);
+	dropReads(reads, 50, tmp);
+	SEQAN_ASSERT_EQ(length(reads), 0u);
      
     //Part for paired End
-    seqan::appendValue(testID, TString("1"));
-	seqan::appendValue(test, TString("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-	seqan::appendValue(testID, TString("2"));
-	seqan::appendValue(test, TString("AAAAAAAAAAAAAAAAAAAA"));
-	seqan::appendValue(testID, TString("3"));
-	seqan::appendValue(test, TString("AAAAA"));
-	seqan::appendValue(testID, TString("4"));
-	seqan::appendValue(test, TString("AAA"));
-	seqan::appendValue(testID, TString("5"));
-	seqan::appendValue(test, TString("A"));
     tmp.dropped_1 = 0;
     tmp.dropped_2 = 0;
 
-    dropReads(testID, test, testIDRev, testRev, 2, tmp);
-    SEQAN_ASSERT_EQ(length(test), 4u);
+    dropReads(readsPairedEnd, 2, tmp);
+    SEQAN_ASSERT_EQ(length(readsPairedEnd), 4u);
     SEQAN_ASSERT_EQ(tmp.dropped_1, 1u);
     SEQAN_ASSERT_EQ(tmp.dropped_2, 1u);
 
-    dropReads(testID, test, testIDRev, testRev, 4, tmp);
-    SEQAN_ASSERT_EQ(length(test), 3u);
+    dropReads(readsPairedEnd, 4, tmp);
+    SEQAN_ASSERT_EQ(length(readsPairedEnd), 3u);
     SEQAN_ASSERT_EQ(tmp.dropped_1, 2u);
     SEQAN_ASSERT_EQ(tmp.dropped_2, 2u);
 
-    dropReads(testID, test, testIDRev, testRev, 6, tmp);
-    SEQAN_ASSERT_EQ(length(test), 2u);
+    dropReads(readsPairedEnd, 6, tmp);
+    SEQAN_ASSERT_EQ(length(readsPairedEnd), 2u);
     SEQAN_ASSERT_EQ(tmp.dropped_1, 3u);
     SEQAN_ASSERT_EQ(tmp.dropped_2, 3u);
 
-    dropReads(testID, test, testIDRev, testRev, 24, tmp);
-    SEQAN_ASSERT_EQ(length(test), 1u);
+    dropReads(readsPairedEnd, 24, tmp);
+    SEQAN_ASSERT_EQ(length(readsPairedEnd), 1u);
     SEQAN_ASSERT_EQ(tmp.dropped_1, 4u);
     SEQAN_ASSERT_EQ(tmp.dropped_2, 4u);
 
-    dropReads(testID, test, testIDRev, testRev, 50, tmp);
-    SEQAN_ASSERT_EQ(length(test), 0u);
+    dropReads(readsPairedEnd, 50, tmp);
+    SEQAN_ASSERT_EQ(length(readsPairedEnd), 0u);
     SEQAN_ASSERT_EQ(tmp.dropped_1, 5u);
     SEQAN_ASSERT_EQ(tmp.dropped_2, 5u);
 
