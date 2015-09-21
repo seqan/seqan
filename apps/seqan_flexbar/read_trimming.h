@@ -180,7 +180,7 @@ unsigned _trimReads(std::vector<TRead>& reads, unsigned const cutoff, TSpec cons
     return trimmedReads;
 }
 
-template <template <typename>typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value>>
+template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value>>
 unsigned dropReads(std::vector<TRead<TSeq>>& reads,
     unsigned const min_length, QualityTrimmingStats& stats, bool = false)
 {
@@ -199,7 +199,7 @@ unsigned dropReads(std::vector<TRead<TSeq>>& reads,
     return 0;
 }
 
-template <template <typename>typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
+template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
 unsigned dropReads(std::vector<TRead<TSeq>>& reads,
     unsigned const min_length, QualityTrimmingStats& stats)
 {

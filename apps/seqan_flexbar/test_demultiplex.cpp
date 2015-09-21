@@ -57,7 +57,7 @@
 using namespace seqan;
 
 // Used for loading the sequences. Needed for the io-test.
-template<template<typename> typename TRead, typename TSeq>
+template<template<typename> class TRead, typename TSeq>
 int loadSeqs(char const * path, std::vector<TRead<TSeq>>& reads)
 {
     SeqFileIn seqFile;

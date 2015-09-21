@@ -935,7 +935,7 @@ public:
         }
     }
     //Writes the sets of ids and sequences to their corresponding files. Used for single-end data.
-    template <template <typename> typename TRead, typename TSeq, typename TNames, 
+    template <template <typename> class TRead, typename TSeq, typename TNames, 
         typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value >>
     void writeSeqs(std::vector<TRead<TSeq>>&& reads, TNames& names, bool = false)
     {
@@ -947,7 +947,7 @@ public:
         }
     }
 
-    template <template <typename> typename TRead, typename TSeq, typename TNames,
+    template <template <typename> class TRead, typename TSeq, typename TNames,
         typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value >>
         void writeSeqs(std::vector<TRead<TSeq>>&& reads, TNames& names)
     {
@@ -1005,7 +1005,7 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
     return 0;
 }
 
-template<template <typename> typename TRead, typename TSeq, typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value>>
+template<template <typename> class TRead, typename TSeq, typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value>>
 inline void loadMultiplex(std::vector<TRead<TSeq>>& reads, seqan::SeqFileIn& multiplexFile, unsigned records)
 {
     (void)reads;
@@ -1013,7 +1013,7 @@ inline void loadMultiplex(std::vector<TRead<TSeq>>& reads, seqan::SeqFileIn& mul
     (void)records;
 }
 
-template<template <typename> typename TRead, typename TSeq, typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
+template<template <typename> class TRead, typename TSeq, typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
 inline void loadMultiplex(std::vector<TRead<TSeq>>& reads, seqan::SeqFileIn& multiplexFile, unsigned records, bool = false)
 {
     seqan::String<char> id;
@@ -1885,7 +1885,7 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
     }
 }
 
-template < template<typename> typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value> >
+template < template<typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value> >
 unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int records, ProgramVars& programVars, bool = false)
 {
     reads.resize(records);
@@ -1899,7 +1899,7 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
     return i;
 }
 
-template < template<typename> typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value> >
+template < template<typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value> >
 unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int records, ProgramVars& programVars)
 {
     reads.resize(records);
@@ -1914,7 +1914,7 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
     return i;
 }
 
-template<template<typename> typename TRead, typename TSeq>
+template<template<typename> class TRead, typename TSeq>
 struct ReadWriter
 {
     ReadWriter(std::vector<TRead<TSeq>>&& reads, OutputStreams& outputStreams, const DemultiplexingParams& demultiplexingParams)
@@ -1929,7 +1929,7 @@ struct ReadWriter
     std::future<void> _future;
 };
 
-template<template<typename> typename TRead, typename TSeq>
+template<template<typename> class TRead, typename TSeq>
 struct ReadReader
 {
     ReadReader(unsigned int records, ProgramVars& programVars)
@@ -1946,7 +1946,7 @@ struct ReadReader
 };
 
 // END FUNCTION DEFINITIONS ---------------------------------------------
-template<template <typename>typename TRead, typename TSeq, typename TParser, typename TEsaFinder>
+template<template <typename> class TRead, typename TSeq, typename TParser, typename TEsaFinder>
 int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
     QualityTrimmingParams& qualityTrimmingParams, TParser& parser, TEsaFinder& esaFinder, bool tagOpt, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
     OutputStreams& outputStreams)

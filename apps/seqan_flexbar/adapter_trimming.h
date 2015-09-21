@@ -389,7 +389,7 @@ struct StripAdapterDirection
     static const bool value = _direction;
 };
 
-template <template <typename>typename TRead, typename TSeq, typename TAdapterSet, typename TSpec, typename TStripAdapterDirection>
+template <template <typename> class TRead, typename TSeq, typename TAdapterSet, typename TSpec, typename TStripAdapterDirection>
 unsigned stripAdapter(TRead<TSeq>& read, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec,
     TStripAdapterDirection)
 {

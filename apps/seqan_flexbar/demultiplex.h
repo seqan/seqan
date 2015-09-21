@@ -111,7 +111,7 @@ bool check(TReads& reads, TBarcodes& barcodes, TStats& stats)
     return true;
 }
 
-template <template <typename> typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>,Read<TSeq>>::value || std::is_same<TRead<TSeq>,ReadPairedEnd<TSeq>>::value>>
+template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>,Read<TSeq>>::value || std::is_same<TRead<TSeq>,ReadPairedEnd<TSeq>>::value>>
 void getPrefix(std::vector<TSeq>& prefices, std::vector<TRead<TSeq>>& reads, unsigned len)
 {
     int limit = reads.size();
@@ -123,7 +123,7 @@ void getPrefix(std::vector<TSeq>& prefices, std::vector<TRead<TSeq>>& reads, uns
         }
 }
 
-template <template <typename> typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
+template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
 void getPrefix(std::vector<TSeq>& prefices, std::vector<TRead<TSeq>>& reads, unsigned len, bool = false)
 {
     (void)len;
@@ -271,7 +271,7 @@ void group(std::vector<TRead>& reads, const TMatches& matches,
 }
 
 //Using exact search 
-template<template <typename> typename TRead, typename TSeq, typename TBarcodes, typename TFinder>
+template<template <typename> class TRead, typename TSeq, typename TBarcodes, typename TFinder>
 void doAll(std::vector<TRead<TSeq>>& reads, TBarcodes& barcodes, TFinder& esaFinder, bool hardClip,
     DemultiplexStats& stats, bool exclude)
 {
@@ -294,7 +294,7 @@ void doAll(std::vector<TRead<TSeq>>& reads, TBarcodes& barcodes, TFinder& esaFin
 }
 
 // Using approximate search
-template<template <typename> typename TRead, typename TSeq, typename TBarcodes, typename TFinder, typename TApprox>
+template<template <typename> class TRead, typename TSeq, typename TBarcodes, typename TFinder, typename TApprox>
 void doAll(std::vector<TRead<TSeq>>& reads, TBarcodes& barcodes, TFinder& esaFinder,
     bool hardClip, DemultiplexStats& stats, const TApprox approximate, bool exclude)
 {
