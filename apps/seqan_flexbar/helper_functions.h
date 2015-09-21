@@ -220,10 +220,10 @@ template<typename Trem, typename TremVal, typename TRead>
 auto _eraseSeqs(const Trem& rem, const TremVal remVal, std::vector<TRead>& reads)
 {
     const auto numRemoveElements = std::count(rem.begin(), rem.end(), remVal);
-    const auto beginAddr = reinterpret_cast<size_t>(&*reads.begin());
+    auto index = (unsigned int)0;
     std::remove_if(reads.begin(), reads.end(),
-        [&rem, &beginAddr, remVal](const auto& element) {
-        return rem[reinterpret_cast<size_t>(&element) - beginAddr] == remVal;});
+        [&rem, remVal, &index](const auto& element) {
+        return rem[index++] == remVal;});
     reads.resize(reads.size() - numRemoveElements);
     return numRemoveElements;
 }
