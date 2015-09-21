@@ -205,19 +205,19 @@ SEQAN_DEFINE_TEST(processN_paired_test)
     appendValue(ids, "Null2");
     StringSet<String<char> > exspectedIds;
     appendValue(exspectedIds, "Null");
-    appendValue(exspectedIds, "Null2"); //Due to swap action!
-    appendValue(exspectedIds, "Zwei");
+    appendValue(exspectedIds, "Zwei"); //Due to swap action!
     appendValue(exspectedIds, "Drei");
+    appendValue(exspectedIds, "Null2");
    
     StringSet<String<char> > ids2 = ids;
     StringSet<String<char> > idsRev2 = ids;
     unsigned allowed = 3;
     StringSet<String<Dna5> > exspectedNoSub;
     appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC"); //Due to swap action!
-    appendValue(exspectedNoSub, "NGGGACTGTACACGTGATCGTACGTAGCAGGN");
+    appendValue(exspectedNoSub, "NGGGACTGTACACGTGATCGTACGTAGCAGGN"); //Due to swap action!
     appendValue(exspectedNoSub, "NATGACTGTAGGNGGGATCGTACGTAGCAGGN");
-   
+    appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC");
+    
     processN(seqs2, ids2, seqsRev2, idsRev2, allowed, stats);        //No Substitutions
     SEQAN_ASSERT_EQ(stats.removedSeqs, 4u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 10u);
@@ -236,11 +236,11 @@ SEQAN_DEFINE_TEST(processN_paired_test)
     idsRev2 = ids;
     Dna substitute = 'A';
     StringSet<String<Dna5> > exspectedSub = exspectedNoSub;
+    exspectedSub[1][0] = substitute;
+    exspectedSub[1][31] = substitute;
     exspectedSub[2][0] = substitute;
+    exspectedSub[2][12] = substitute;
     exspectedSub[2][31] = substitute;
-    exspectedSub[3][0] = substitute;
-    exspectedSub[3][12] = substitute;
-    exspectedSub[3][31] = substitute;
 
     processN(seqs2, ids2, seqsRev2, idsRev2, allowed, substitute, stats);
     SEQAN_ASSERT_EQ(stats.removedSeqs, 4u);
@@ -343,10 +343,10 @@ SEQAN_DEFINE_TEST(processN_paired_multiplex_test)
 
     StringSet<String<Dna5Q> > exspectedMultiplex;
     appendValue(exspectedMultiplex, "ACTGTA");
-    appendValue(exspectedMultiplex, "GGGTAC");
     appendValue(exspectedMultiplex, "GTACGA");
     appendValue(exspectedMultiplex, "GTACTG");
-
+    appendValue(exspectedMultiplex, "GGGTAC");
+    
     StringSet<String<Dna5> >seqs;
     appendValue(seqs, "ATGACTGTACACGTGATCGTACGTAGCAGC");
     appendValue(seqs, "ATGGNGGGTACACGTGATCGTACGTAGCAGC");
@@ -372,18 +372,18 @@ SEQAN_DEFINE_TEST(processN_paired_multiplex_test)
     appendValue(ids, "Null2");
     StringSet<String<char> > exspectedIds;
     appendValue(exspectedIds, "Null");
-    appendValue(exspectedIds, "Null2"); //Due to swap action!
-    appendValue(exspectedIds, "Zwei");
+    appendValue(exspectedIds, "Zwei"); //Due to swap action!
     appendValue(exspectedIds, "Drei");
+    appendValue(exspectedIds, "Null2");
     StringSet<String<char> > ids2 = ids;
     StringSet<String<char> > idsRev2 = ids;
     unsigned allowed = 3;
     StringSet<String<Dna5> > exspectedNoSub;
     appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC"); //Due to swap action!
-    appendValue(exspectedNoSub, "NGGGACTGTACACGTGATCGTACGTAGCAGGN");
+    appendValue(exspectedNoSub, "NGGGACTGTACACGTGATCGTACGTAGCAGGN"); 
     appendValue(exspectedNoSub, "NATGACTGTAGGNGGGATCGTACGTAGCAGGN");
-
+    appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC");
+    
     processN(seqs2, ids2, seqsRev2, idsRev2, multiplex2, allowed, stats);        //No Substitutions
     SEQAN_ASSERT_EQ(stats.removedSeqs, 4u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 10u);
@@ -404,11 +404,11 @@ SEQAN_DEFINE_TEST(processN_paired_multiplex_test)
     multiplex2 = multiplex;
     Dna substitute = 'A';
     StringSet<String<Dna5> > exspectedSub = exspectedNoSub;
+    exspectedSub[1][0] = substitute;
+    exspectedSub[1][31] = substitute;
     exspectedSub[2][0] = substitute;
+    exspectedSub[2][12] = substitute;
     exspectedSub[2][31] = substitute;
-    exspectedSub[3][0] = substitute;
-    exspectedSub[3][12] = substitute;
-    exspectedSub[3][31] = substitute;
 
     processN(seqs2, ids2, seqsRev2, idsRev2, multiplex2, allowed, substitute, stats);
     SEQAN_ASSERT_EQ(stats.removedSeqs, 4u);
@@ -423,196 +423,176 @@ SEQAN_DEFINE_TEST(processN_paired_multiplex_test)
 SEQAN_DEFINE_TEST(preTrim_test)
 {
     GeneralStats stats;
+    using TRead = Read<seqan::Dna5QString>;
+    std::vector<TRead> reads(7);
+    std::vector<TRead> reads2(7);
 
-    StringSet<String<Dna> > seqs;
-    appendValue(seqs, "ACGTAACTGA");
-    appendValue(seqs, "AAAAAACTTTTT");
-    appendValue(seqs, "AAAAAAG");
-    appendValue(seqs, "TACGG");
-    appendValue(seqs, "TAAAAAA");
-    appendValue(seqs, "");
-    appendValue(seqs, "GATTACAGATTACA");
-    StringSet<String<Dna> > seqs2 = seqs;
+    reads[0].seq = "ACGTAACTGA";
+    reads[1].seq = "AAAAAACTTTTT";
+    reads[2].seq = "AAAAAAG";
+    reads[3].seq = "TACGG";
+    reads[4].seq = "TAAAAAA";
+    reads[5].seq = "";
+    reads[6].seq = "GATTACAGATTACA";
 
-    StringSet<String<char> > ids;
-    appendValue(ids, "loeschenTrim");
-    appendValue(ids, "Head/Tail");
-    appendValue(ids, "Head");
-    appendValue(ids, "loeschenNone");
-    appendValue(ids, "Tail");
-    appendValue(ids, "loeschenLeer");
-    appendValue(ids, "None");
-    StringSet<String<char> > ids2 = ids;
+    reads[0].id = "loeschenTrim";
+    reads[1].id = "Head/Tail";
+    reads[2].id = "Head";
+    reads[3].id = "loeschenNone";
+    reads[4].id = "Tail";
+    reads[5].id = "loeschenLeer";
+    reads[6].id = "None";
 
-    preTrim(seqs2, ids2, 3, 0, 3, 4, stats);
-    SEQAN_ASSERT_EQ(seqs2[0], "TAAC");
-    SEQAN_ASSERT_EQ(ids2[0], "loeschenTrim");
-    SEQAN_ASSERT_EQ(seqs2[1], "AAACTT");
-    SEQAN_ASSERT_EQ(ids2[1], "Head/Tail");
-    SEQAN_ASSERT_EQ(seqs2[2], "TACAGATT");
-    SEQAN_ASSERT_EQ(ids2[2], "None");
-    SEQAN_ASSERT_EQ(length(ids2), 3u);
-    SEQAN_ASSERT_EQ(length(seqs2), 3u);
+    reads2 = reads;
 
-    seqs2 = seqs;
-    ids2 = ids;
-    preTrim(seqs2, ids2, 6, 0, 5, 1, stats);
-    SEQAN_ASSERT_EQ(seqs2[1], "C");
-    SEQAN_ASSERT_EQ(ids2[1], "Head/Tail");
-    SEQAN_ASSERT_EQ(seqs2[0], "AGA");
-    SEQAN_ASSERT_EQ(ids2[0], "None");
-    SEQAN_ASSERT_EQ(length(ids2), 2u);
-    SEQAN_ASSERT_EQ(length(seqs2), 2u);
+    preTrim(reads2, 3, 3, 4, false, stats);
+    SEQAN_ASSERT_EQ(reads2[0].seq, "TAAC");
+    SEQAN_ASSERT_EQ(reads2[0].id, "loeschenTrim");
+    SEQAN_ASSERT_EQ(reads2[1].seq, "AAACTT");
+    SEQAN_ASSERT_EQ(reads2[1].id, "Head/Tail");
+    SEQAN_ASSERT_EQ(reads2[2].seq, "TACAGATT");
+    SEQAN_ASSERT_EQ(reads2[2].id, "None");
+    SEQAN_ASSERT_EQ(length(reads2), 3u);
 
-    seqs2 = seqs;
-    ids2 = ids;
-    preTrim(seqs2, ids2, 6, 0, 0, 1, stats);
-    SEQAN_ASSERT_EQ(seqs2[2], "G");
-    SEQAN_ASSERT_EQ(ids2[2], "Head");
+    reads2 = reads;
+    preTrim(reads2, 6, 5, 1, false, stats);
+    SEQAN_ASSERT_EQ(reads2[0].seq, "C");
+    SEQAN_ASSERT_EQ(reads2[0].id, "Head/Tail");
+    SEQAN_ASSERT_EQ(reads2[1].seq, "AGA");
+    SEQAN_ASSERT_EQ(reads2[1].id, "None");
+    SEQAN_ASSERT_EQ(length(reads2), 2u);
 
-    seqs2 = seqs;
-    ids2 = ids;
-    preTrim(seqs2, ids2, 0, 0, 6, 1, stats);
-    SEQAN_ASSERT_EQ(seqs2[4], "T");
-    SEQAN_ASSERT_EQ(ids2[4], "Tail");
+    reads2 = reads;
+    preTrim(reads2, 6, 0, 1, false, stats);
+    SEQAN_ASSERT_EQ(reads2[2].seq, "G");
+    SEQAN_ASSERT_EQ(reads2[2].id, "Head");
 
-    seqs2 = seqs;
-    ids2 = ids;
-    preTrim(seqs2, ids2, 0, 0, 0, 6, stats);
-    SEQAN_ASSERT_EQ(seqs2[4], "TAAAAAA");
-    SEQAN_ASSERT_EQ(ids2[4], "Tail");
-    SEQAN_ASSERT_EQ(seqs2[3], "GATTACAGATTACA");
-    SEQAN_ASSERT_EQ(ids2[3], "None");
-    SEQAN_ASSERT_EQ(length(seqs2), 5u);
-    SEQAN_ASSERT_EQ(length(ids2), 5u);
+    reads2 = reads;
+    preTrim(reads2, 0, 6, 1, false, stats);
+    SEQAN_ASSERT_EQ(reads2[3].seq, "T");
+    SEQAN_ASSERT_EQ(reads2[3].id, "Tail");
+
+    reads2 = reads;
+    preTrim(reads2, 0, 0, 6, false, stats);
+    SEQAN_ASSERT_EQ(reads2[3].seq, "TAAAAAA");
+    SEQAN_ASSERT_EQ(reads2[3].id, "Tail");
+    SEQAN_ASSERT_EQ(reads2[4].seq, "GATTACAGATTACA");
+    SEQAN_ASSERT_EQ(reads2[4].id, "None");
+    SEQAN_ASSERT_EQ(length(reads2), 5u);
 }
 
 SEQAN_DEFINE_TEST(preTrim_paired_test)
 {
     GeneralStats stats;
+    using TRead = ReadPairedEnd<seqan::Dna5QString>;
+    std::vector<TRead> reads(7);
+    std::vector<TRead> reads2(7);
 
-    StringSet<String<Dna> > seqs;
-    appendValue(seqs, "ACGTAACTGA");
-    appendValue(seqs, "AAAAAACTTTTT");
-    appendValue(seqs, "AAAAAAG");
-    appendValue(seqs, "TACGG");
-    appendValue(seqs, "TAAAAAA");
-    appendValue(seqs, "");
-    appendValue(seqs, "GATTACAGATTACA");
-    StringSet<String<Dna> > seqs2 = seqs;
-    StringSet<String<Dna> > seqsRev = seqs;
-    seqsRev[6] = "GTCA";
-    StringSet<String<Dna> > seqsRev2 = seqsRev;
+    reads[0].seq = "ACGTAACTGA";
+    reads[1].seq = "AAAAAACTTTTT";
+    reads[2].seq = "AAAAAAG";
+    reads[3].seq = "TACGG";
+    reads[4].seq = "TAAAAAA";
+    reads[5].seq = "";
+    reads[6].seq = "GATTACAGATTACA";
 
-    StringSet<String<char> > ids;
-    appendValue(ids, "loeschenTrim");
-    appendValue(ids, "Head/Tail");
-    appendValue(ids, "Head");
-    appendValue(ids, "loeschenNone");
-    appendValue(ids, "Tail");
-    appendValue(ids, "loeschenLeer");
-    appendValue(ids, "loeschenRev");
-    StringSet<String<char> > ids2 = ids;
-    StringSet<String<char> > idsRev = ids;
-    StringSet<String<char> > idsRev2 = idsRev;
+    reads[0].id = "loeschenTrim";
+    reads[1].id = "Head/Tail";
+    reads[2].id = "Head";
+    reads[3].id = "loeschenNone";
+    reads[4].id = "Tail";
+    reads[5].id = "loeschenLeer";
+    reads[6].id = "None";
+    for (unsigned int i = 0;i < 7;++i)
+    {
+        reads[i].seqRev = reads[i].seq;
+        reads[i].idRev = reads[i].id;
+    }
+    reads[6].seqRev = "GTCA";
 
-    preTrim(seqs2, ids2, seqsRev2, idsRev2, 3, 0, 3, 4, stats);
-    SEQAN_ASSERT_EQ(seqs2[0], "TAAC");
-    SEQAN_ASSERT_EQ(ids2[0], "loeschenTrim");
-    SEQAN_ASSERT_EQ(seqs2[1], "AAACTT");
-    SEQAN_ASSERT_EQ(ids2[1], "Head/Tail");
-    SEQAN_ASSERT_EQ(length(ids2), 2u);
-    SEQAN_ASSERT_EQ(length(seqs2), 2u);
+    reads2 = reads;
+    preTrim(reads2, 3, 3, 4, false, stats);
+    SEQAN_ASSERT_EQ(reads2[0].seq, "TAAC");
+    SEQAN_ASSERT_EQ(reads2[0].id, "loeschenTrim");
+    SEQAN_ASSERT_EQ(reads2[1].seq, "AAACTT");
+    SEQAN_ASSERT_EQ(reads2[1].id, "Head/Tail");
+    SEQAN_ASSERT_EQ(length(reads2), 2u);
 
-    seqs2 = seqs;
-    seqsRev2 = seqsRev;
-    ids2 = ids;
-    idsRev2 = idsRev;
-    preTrim(seqs2, ids2, seqsRev2, idsRev2, 6, 0, 5, 1, stats);
-    SEQAN_ASSERT_EQ(seqs2[0], "C");
-    SEQAN_ASSERT_EQ(ids2[0], "Head/Tail");
-    SEQAN_ASSERT_EQ(length(ids2), 1u);
-    SEQAN_ASSERT_EQ(length(seqs2), 1u);
+    reads2 = reads;
+    preTrim(reads2, 6, 5, 1, false, stats);
+    SEQAN_ASSERT_EQ(reads2[0].seq, "C");
+    SEQAN_ASSERT_EQ(reads2[0].id, "Head/Tail");
+    SEQAN_ASSERT_EQ(length(reads2), 1u);
 
-    seqs2 = seqs;
-    seqsRev2 = seqsRev;
-    ids2 = ids;
-    idsRev2 = idsRev;
-    preTrim(seqs2, ids2, seqsRev2, idsRev2, 6, 0, 0, 1, stats);
-    SEQAN_ASSERT_EQ(seqs2[2], "G");
-    SEQAN_ASSERT_EQ(ids2[2], "Head");
+    reads2 = reads;
+    preTrim(reads2, 6, 0, 1, false, stats);
+    SEQAN_ASSERT_EQ(reads2[2].seq, "G");
+    SEQAN_ASSERT_EQ(reads2[2].id, "Head");
 
-    seqs2 = seqs;
-    seqsRev2 = seqsRev;
-    ids2 = ids;
-    idsRev2 = idsRev;
-    preTrim(seqs2, ids2, seqsRev2, idsRev2, 0, 0, 6, 1, stats);
-    SEQAN_ASSERT_EQ(seqs2[3], "T");
-    SEQAN_ASSERT_EQ(ids2[3], "Tail");
+    reads2 = reads;
+    preTrim(reads2, 0, 6, 1, false, stats);
+    SEQAN_ASSERT_EQ(reads2[3].seq, "T");
+    SEQAN_ASSERT_EQ(reads2[3].id, "Tail");
 
-    seqs2 = seqs;
-    seqsRev2 = seqsRev;
-    ids2 = ids;
-    idsRev2 = idsRev;
-    preTrim(seqs2, ids2, seqsRev2, idsRev2, 0, 0, 0, 6, stats);
-    SEQAN_ASSERT_EQ(seqs2[3], "TAAAAAA");
-    SEQAN_ASSERT_EQ(ids2[3], "Tail");
-    SEQAN_ASSERT_EQ(length(seqs2), 4u);
-    SEQAN_ASSERT_EQ(length(ids2), 4u);
+    reads2 = reads;
+    preTrim(reads2, 0, 0, 6, false, stats);
+    SEQAN_ASSERT_EQ(reads2[3].seq, "TAAAAAA");
+    SEQAN_ASSERT_EQ(reads2[3].id, "Tail");
+    SEQAN_ASSERT_EQ(length(reads2), 4u);
 }
 
 SEQAN_DEFINE_TEST(trimTo_test)
 {
     GeneralStats stats;
+    using TRead = Read<seqan::Dna5QString>;
+    std::vector<TRead> reads(4);
     
-    StringSet<String<char> > seqs;
-    appendValue(seqs, "123456789");
-    appendValue(seqs, "123456");
-    appendValue(seqs, "1234567");
-    appendValue(seqs, "");
+    reads[0].seq = "123456789";
+    reads[1].seq = "123456";
+    reads[2].seq = "1234567";
+    reads[3].seq = "";
 
-    StringSet<String<char> > ids;
-    appendValue(ids, "neun");
-    appendValue(ids, "sechs");
-    appendValue(ids, "sieben");
-    appendValue(ids, "null");
+    reads[0].id = "neun";
+    reads[1].id = "sechs";
+    reads[2].id = "sieben";
+    reads[3].id = "null";
 
-    trimTo(seqs, ids, 7, stats);
+    trimTo(reads, 7, stats);
 
-    SEQAN_ASSERT_EQ(seqs[0], "1234567");
-    SEQAN_ASSERT_EQ(seqs[1], "1234567");
-    SEQAN_ASSERT_EQ(ids[0], "neun");
-    SEQAN_ASSERT_EQ(ids[1], "sieben");
-    SEQAN_ASSERT_EQ(length(seqs), 2u);
-    SEQAN_ASSERT_EQ(length(ids), 2u);
+    SEQAN_ASSERT_EQ(reads[0].seq, "1234567");
+    SEQAN_ASSERT_EQ(reads[1].seq, "1234567");
+    SEQAN_ASSERT_EQ(reads[0].id, "neun");
+    SEQAN_ASSERT_EQ(reads[1].id, "sieben");
+    SEQAN_ASSERT_EQ(length(reads), 2u);
 }
 
 SEQAN_DEFINE_TEST(trimTo_paired_test)
 {
     GeneralStats stats;
+    using TRead = ReadPairedEnd<seqan::Dna5QString>;
+    std::vector<TRead> reads(4);
 
-    StringSet<String<char> > seqs;
-    appendValue(seqs, "123456789");
-    appendValue(seqs, "123456");
-    appendValue(seqs, "1234567");
-    appendValue(seqs, "");
+    reads[0].seq = "123456789";
+    reads[1].seq = "123456";
+    reads[2].seq = "1234567";
+    reads[3].seq = "";
 
-    StringSet<String<char> > seqsRev = seqs;
-    seqsRev[0] = "123456";
+    reads[0].id = "neun";
+    reads[1].id = "sechs";
+    reads[2].id = "sieben";
+    reads[3].id = "null";
+    for (unsigned int i = 0;i < 4;++i)
+    {
+        reads[i].seqRev = reads[i].seq;
+        reads[i].idRev = reads[i].id;
+    }
+    reads[0].seqRev = "123456";
 
-    StringSet<String<char> > ids;
-    appendValue(ids, "neun");
-    appendValue(ids, "fuenf");
-    appendValue(ids, "sieben");
-    appendValue(ids, "null");
-    StringSet<String<char> > idsRev = ids;
+    trimTo(reads, 7, stats);
 
-    trimTo(seqs, ids, seqsRev, idsRev, 7, stats);
-
-    SEQAN_ASSERT_EQ(seqs[0], "1234567");
-    SEQAN_ASSERT_EQ(ids[0], "sieben");
-    SEQAN_ASSERT_EQ(length(seqs), 1u);
-    SEQAN_ASSERT_EQ(length(ids), 1u);
+    SEQAN_ASSERT_EQ(reads[0].seq, "1234567");
+    SEQAN_ASSERT_EQ(reads[0].id, "sieben");
+    SEQAN_ASSERT_EQ(length(reads), 1u);
 }
 
 SEQAN_BEGIN_TESTSUITE(test_my_app_funcs)

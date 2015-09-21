@@ -295,7 +295,7 @@ void processN(TSeqs& seqs, TIds& ids, TMulti& multiplex, unsigned allowed, Gener
         }
     }
     stats.uncalledBases += uncalled;
-    stats.removedSeqs += _eraseSeqs(res, -1, seqs, ids);
+    stats.removedSeqs += _eraseSeqs(res, -1, seqs, ids, multiplex);
 }
 
 //paired-end data with substitutions and multiplex barcodes
@@ -327,7 +327,7 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
         }
     }
     stats.uncalledBases += uncalled;
-    stats.removedSeqs += 2 * _eraseSeqs(res, -1, seqs, seqsRev, ids, idsRev);
+    stats.removedSeqs += 2 * _eraseSeqs(res, -1, seqs, seqsRev, ids, idsRev, multiplex);
 }
 
 //paired-end data without substitutions and multiplex barcodes
@@ -358,14 +358,15 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
         }
     }
     stats.uncalledBases += uncalled;
-    stats.removedSeqs += 2 * _eraseSeqs(res, -1, seqs, seqsRev, ids, idsRev);
+    stats.removedSeqs += 2 * _eraseSeqs(res, -1, seqs, seqsRev, ids, idsRev, multiplex);
 }
 
 
 
 // main preTrim function
-template<typename TRead, bool tagTrimming>
-void _preTrim(std::vector<TRead>& readSet, const unsigned head, const unsigned tail, const unsigned min, std::vector<bool>& rem)
+template<template <typename>typename TRead, typename TSeq, bool tagTrimming,
+    typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplex < TSeq >> ::value >>
+void _preTrim(std::vector<TRead<TSeq>>& readSet, const unsigned head, const unsigned tail, const unsigned min, std::vector<bool>& rem, bool = false)
 {
     int i = 0;
     const auto limit = (int)length(readSet);
@@ -412,110 +413,79 @@ void _preTrim(std::vector<TRead>& readSet, const unsigned head, const unsigned t
         }
 }
 
-
-
-template<typename TSeqs, typename TIds, typename = std::enable_if_t < std::is_same<TIds, seqan::StringSet<seqan::CharString, seqan::Owner<seqan::Default>>>::value >>
-void _preTrim(TSeqs& seqs, TIds& ids, const unsigned head, const bool tagTrimming, const unsigned tail, const unsigned min, seqan::String<bool>& rem)
+template<template <typename>typename TRead, typename TSeq, bool tagTrimming,
+    typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplexPairedEnd < TSeq >> ::value >>
+    void _preTrim(std::vector<TRead<TSeq>>& readSet, const unsigned head, const unsigned tail, const unsigned min, std::vector<bool>& rem)
 {
-	int i = 0;
-	const auto limit = (int)length(seqs);
-	resize(rem, limit);
+    int i = 0;
+    const auto limit = (int)length(readSet);
+    resize(rem, limit);
 
-	SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-	for (i = 0; i < limit; ++i)
-	{
-		if (length(seqs[i]) >(head + tail))
-		{
-			if (head > 0)
+    SEQAN_OMP_PRAGMA(parallel for default(shared) private(i)schedule(static))
+        for (i = 0; i < limit; ++i)
+        {
+            const auto seqLen = std::min(length(readSet[i].seq), length(readSet[i].seqRev));
+            if (seqLen >(head + tail) )
             {
-                if (tagTrimming)
+                if (head > 0)
                 {
-                    seqan::CharString tempString = ":TL:";
-                    append(tempString, prefix(seqs[i], head));
-                    insertAfterFirstToken(ids[i], tempString);
+                    if (tagTrimming)
+                    {
+                        std::string tempString = ":TL:";
+                        append(tempString, prefix(readSet[i].seq, head));
+                        insertAfterFirstToken(readSet[i].id, tempString);
+                        tempString = ":TL:";
+                        append(tempString, prefix(readSet[i].seqRev, head));
+                        insertAfterFirstToken(readSet[i].idRev, tempString);
+                    }
+                    erase(readSet[i].seq, 0, head);
+                    erase(readSet[i].seqRev, 0, head);
                 }
-				erase(seqs[i], 0, head);
-			}
-            if (tail > 0)
-            {
-                if (tagTrimming)
+                if (tail > 0)
                 {
-                    seqan::CharString  tempString = ":TR:";
-                    append(tempString, suffix(seqs[i], length(seqs[i])-tail));
-                    insertAfterFirstToken(ids[i], std::move(tempString));
+                    const auto seqLen = length(readSet[i].seq);
+                    if (tagTrimming)
+                    {
+                        std::string tempString = ":TR:";
+                        append(tempString, suffix(readSet[i].seq, seqLen - tail));
+                        insertAfterFirstToken(readSet[i].id, std::move(tempString));
+                        tempString = ":TR:";
+                        append(tempString, suffix(readSet[i].seqRev, seqLen - tail));
+                        insertAfterFirstToken(readSet[i].idRev, std::move(tempString));
+                    }
+                    erase(readSet[i].seq, seqLen - tail, seqLen);
+                    erase(readSet[i].seqRev, seqLen - tail, seqLen);
                 }
-                erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
+
+                // check if trimmed sequence is at least of length min
+                // if not, remove it
+                const auto seqLen = std::min(length(readSet[i].seq), length(readSet[i].seqRev));
+                if (seqLen >= min)
+                    rem[i] = false;
+                else
+                    rem[i] = true;
             }
-
-			// check if trimmed sequence is at least of length min
-			// if not, remove it
-			if (length(seqs[i]) >= min)
-				rem[i] = false;
-			else
-				rem[i] = true;
-		}
-		// if the sequence was too short to be trimmed, remove it
-		else
-			rem[i] = true;
-	}
+            // if the sequence was too short to be trimmed, remove it
+            else
+                rem[i] = true;
+        }
 }
 
-// overload for single end multiplex
-template <typename TRead>
-void preTrim(std::vector<TRead>& reads, unsigned head, unsigned tail, unsigned min, const bool tagTrimming, GeneralStats& stats)
+template <template<typename>typename TRead, typename TSeq>
+void preTrim(std::vector<TRead<TSeq>>& reads, unsigned head, unsigned tail, unsigned min, const bool tagTrimming, GeneralStats& stats)
 {
     std::vector<bool> rem;
     if(tagTrimming)
-        _preTrim<TRead, true>(reads, head, tail, min, rem);
+        _preTrim<TRead, TSeq, true>(reads, head, tail, min, rem);
     else
-        _preTrim<TRead, false>(reads, head, tail, min, rem);
+        _preTrim<TRead, TSeq, false>(reads, head, tail, min, rem);
     stats.removedSeqsShort += _eraseSeqs(rem, true, reads);
 }
 
-
-template<typename TSeqs, typename TIds, typename TDemultiplexingParams>
-void preTrim(TSeqs& seqs, TIds& ids, TDemultiplexingParams&& demultiplexParams, unsigned head, const bool tagTrimming, unsigned tail, unsigned min, GeneralStats& stats)
-{
-	String<bool> rem;
-	_preTrim(seqs, ids, head, tagTrimming, tail, min, rem);
-    if(length(demultiplexParams.multiplexFile) > 0)
-        stats.removedSeqsShort += _eraseSeqs(rem, true, seqs, ids, demultiplexParams.multiplex);
-    else
-        stats.removedSeqsShort += _eraseSeqs(rem, true, seqs, ids);
-}
-
-// overload for paired end multiplex
-template<typename TSeqs, typename TIds, typename TDemultiplexingParams>
-void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TDemultiplexingParams&& demultiplexParams, unsigned head, const bool tagTrimming, unsigned tail, unsigned min, GeneralStats& stats)
-{
-	String<bool> rem1, rem2;
-	_preTrim(seqs, ids, head, tagTrimming, tail, min, rem1);
-	_preTrim(seqsRev, idsRev, head, tagTrimming, tail, min, rem2);
-	for (unsigned int i = 0; i < length(rem1); ++i)
-		rem1[i] = rem1[i] | rem2[i];	// remove both strands if either is marked for removal (true = 1)
-    if (length(demultiplexParams.multiplexFile) > 0)
-        stats.removedSeqsShort += _eraseSeqs(rem1, true, seqs, seqsRev, ids, idsRev, demultiplexParams.multiplex);
-    else
-        stats.removedSeqsShort += _eraseSeqs(rem1, true, seqs, seqsRev, ids, idsRev);
-}
-
-// overload for single end 
-template<typename TSeqs, typename TIds>
-void preTrim(TSeqs& seqs, TIds& ids, unsigned head, const bool tagTrimming, unsigned tail, unsigned min, GeneralStats& stats)
-{
-	preTrim(seqs, ids, DemultiplexingParams(), head, tagTrimming, tail, min, stats);
-}
-
-// overload for paired end
-template<typename TSeqs, typename TIds>
-void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head, const bool tagTrimming, unsigned tail, unsigned min, GeneralStats& stats)
-{
-	preTrim(seqs, ids, seqsRev, idsRev, DemultiplexingParams(), head, tagTrimming, tail, min, stats);
-}
-
 //Trims sequences to specific length and deletes to short ones together with their IDs
-template<typename TRead>
-void trimTo(std::vector<TRead>& reads, const unsigned len, GeneralStats& stats)
+template<template <typename>typename TRead, typename TSeq, 
+    typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplex < TSeq >> ::value >>
+    void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, GeneralStats& stats, bool = true)
 {
     std::vector<bool> rem;
     const auto limit = length(reads);
@@ -539,60 +509,31 @@ void trimTo(std::vector<TRead>& reads, const unsigned len, GeneralStats& stats)
     stats.removedSeqsShort += _eraseSeqs(rem, true, reads);
 }
 
-template<typename TSeqs,typename TIds>
-void trimTo(TSeqs& seqs, TIds& ids, const unsigned len, GeneralStats& stats)
+template<template <typename>typename TRead, typename TSeq,
+    typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplexPairedEnd < TSeq >> ::value >>
+    void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, GeneralStats& stats)
 {
-    StringSet<bool> rem;
-    const auto limit = length(seqs);
+    std::vector<bool> rem;
+    const auto limit = length(reads);
     resize(rem, limit);
-    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
-    for (int i = 0; i < limit; ++i)
-    {
-        if (length(seqs[i]) < len)
+    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
+        for (int i = 0; i < limit; ++i)
         {
-            rem[i] = true;
-        }
-        else 
-        {
-            rem[i] = false;
-            if (length(seqs[i]) > len)
+            if (std::min(length(reads[i].seq), length(reads[i].seqRev)) < len)
             {
-                erase(seqs[i], len, length(seqs[i]));
+                rem[i] = true;
             }
-        }    
-    }
-    stats.removedSeqsShort += _eraseSeqs(rem, true, seqs, ids);
+            else
+            {
+                rem[i] = false;
+                if (length(reads[i].seq) > len)
+                    erase(reads[i].seq, len, length(reads[i].seq));
+                if (length(reads[i].seqRev) > len)
+                    erase(reads[i].seqRev, len, length(reads[i].seqRev));
+            }
+        }
+    stats.removedSeqsShort += _eraseSeqs(rem, true, reads);
 }
 
-//Overload for paired end-data
-template<typename TSeqs,typename TIds>
-void trimTo(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, const unsigned len, GeneralStats& stats)
-{
-    int i = 0;
-    StringSet<bool> rem;
-    int limit = length(seqs);
-    resize(rem, limit);
-    SEQAN_OMP_PRAGMA(parallel for default(shared) private(i) schedule(static))
-    for (i = 0; i < limit; ++i)
-    {
-        if ((length(seqs[i]) < len) || (length(seqsRev[i]) < len))
-        {
-            rem[i] = true;
-        }
-        else 
-        {
-            rem[i] = false;
-            if (length(seqs[i]) > len)
-            {
-                erase(seqs[i], len, length(seqs[i]));
-            }
-            if (length(seqsRev[i]) > len)
-            {
-                erase(seqsRev[i], len, length(seqsRev[i]));
-            }
-        }    
-    }
-    stats.removedSeqsShort += _eraseSeqs(rem, true, seqs, seqsRev, ids, idsRev);
-}
 
 #endif  // #ifndef SANDBOX_GROUP3_APPS_SEQDPT_GENERALPROCESSING_H_

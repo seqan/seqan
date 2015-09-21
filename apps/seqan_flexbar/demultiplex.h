@@ -93,43 +93,6 @@ struct DemultiplexingParams
 // Functions
 // ============================================================================
 
-template <typename TSeqs, typename TIds, typename TBarcodes, typename TStats> //This version works with paired-end data
-bool check(TSeqs& seqs,  TIds& ids, TSeqs& seqsRev, TIds& idsRev, TBarcodes& barcodes, TStats& stats)
-{
-	unsigned len = length(barcodes[0]);
-	for (unsigned i = 1; i < length(barcodes); ++i)
-	{
-		if (len != length(barcodes[i]))
-		{
-			std::cerr << "ERROR: Barcodes differ in length. All barcodes must be of equal length.\n";
-			return false;
-		}
-	}   //Iterating backward to avoid error after deletion of a sequence
-    unsigned ex = 0;
-	for (int i = length(seqs) - 1; i >= 0; --i)  
-	{   //integer necessary because unsigned would cause error after last iteration
-		if (length(seqs[i]) <= len)	
-		{
-            //Divinding the comming jobs between the threads
-            //sorting all  sequences which shall be deleted to the end of the container
-            swap(seqs[i], seqs[len - ex - 1]);
-            swap(seqsRev[i], seqsRev[len - ex - 1]);
-            swap(ids[i], ids[len - ex - 1]);
-            swap(idsRev[i], idsRev[len - ex - 1]);
-            ++ex;
-		}
-	}
-    if (ex != 0)
-    {
-        resize(seqs, len - ex);
-        resize(seqsRev, len - ex);
-        resize(ids, len - ex);
-        resize(idsRev, len - ex);
-        stats.removedSeqsShort += (2 * ex);
-    }
-	return true;
-}
-//Overload for single-end data
 template <typename TReads, typename TBarcodes, typename TStats>
 bool check(TReads& reads, TBarcodes& barcodes, TStats& stats)
 {

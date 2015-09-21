@@ -67,7 +67,7 @@ struct ReadBase
     {
         return seq == rhs.seq && id == rhs.id && demuxResult == rhs.demuxResult;
     }
-
+    ReadBase& operator=(const ReadBase& rhs) = default;
     ReadBase& operator=(const ReadBase&& rhs)
     {
         seq = std::move(rhs.seq);
@@ -109,6 +109,7 @@ struct ReadMultiplex : ReadBase<TSeq>
     {
         return ReadBase::operator==(rhs) && demultiplex == rhs.demultiplex;
     }
+    ReadMultiplex& operator=(const ReadMultiplex& rhs) = default;
     ReadMultiplex& operator=(const ReadMultiplex&& rhs)
     {
         ReadBase::operator=(std::move(rhs));
@@ -130,6 +131,7 @@ struct ReadPairedEnd : ReadBase<TSeq>
     {
         return ReadBase::operator==(rhs) && seqRev == rhs.seqRev && idRev == rhs.idRev;
     }
+    ReadPairedEnd& operator=(const ReadPairedEnd& rhs) = default;
     ReadPairedEnd& operator=(const ReadPairedEnd&& rhs)
     {
         ReadBase::operator=(std::move(rhs));
@@ -151,6 +153,7 @@ struct ReadMultiplexPairedEnd : ReadPairedEnd<TSeq>
     {
         return ReadPairedEnd::operator==(rhs) && demultiplex == rhs.demultiplex;
     }
+    ReadMultiplexPairedEnd& operator=(const ReadMultiplexPairedEnd& rhs) = default;
     ReadMultiplexPairedEnd& operator=(const ReadMultiplexPairedEnd&& rhs)
     {
         ReadPairedEnd::operator=(std::move(rhs));
