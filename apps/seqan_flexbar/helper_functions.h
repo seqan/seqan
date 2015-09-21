@@ -220,10 +220,10 @@ template<typename Trem, typename TremVal, typename TRead>
 auto _eraseSeqs(const Trem& rem, const TremVal remVal, std::vector<TRead>& reads)
 {
     const auto numRemoveElements = std::count(rem.begin(), rem.end(), remVal);
-    auto index = (unsigned int)0;
+    const auto beginAddr = &*reads.begin();
     std::remove_if(reads.begin(), reads.end(),
-        [&rem, remVal, &index](const auto& element) {
-        return rem[index++] == remVal;});
+        [&rem, &beginAddr, remVal](const auto& element) {
+        return rem[&element - beginAddr] == remVal;});
     reads.resize(reads.size() - numRemoveElements);
     return numRemoveElements;
 }
@@ -234,10 +234,10 @@ auto _eraseSeqs(const Trem& rem, const TremVal remVal, TContainer&&... container
     const auto numRemoveElements = std::count(begin(rem), end(rem), remVal);
     auto eraseElements = [&rem, numRemoveElements, remVal](auto& seq)  // erase Elements using the remove erase idiom
     {
-        const auto beginAddr = reinterpret_cast<size_t>(&*seqan::begin(seq));
+        const auto beginAddr = &*seqan::begin(seq);
         std::remove_if(seqan::begin(seq), seqan::end(seq),
             [&rem, &beginAddr, remVal](const auto& element) {
-            return rem[reinterpret_cast<size_t>(&element) - beginAddr] == remVal;});
+            return rem[&element - beginAddr] == remVal;});
         resize(seq, length(seq) - numRemoveElements);
         return 0;
     };
@@ -255,10 +255,10 @@ auto _eraseSeqsDisabled(const Trem& rem, const TremVal remVal, TContainer&&... c
     {
         auto eraseElements = [&rem, numRemoveElements, remVal](auto* seq)  // erase Elements using the remove erase idiom
         {
-            const auto beginAddr = reinterpret_cast<size_t>(&*begin(*seq));
+            const auto beginAddr = &*begin(*seq));
             std::remove_if(begin(*seq), end(*seq),
                 [&rem, &beginAddr, remVal](const auto& element) {
-                return rem[reinterpret_cast<size_t>(&element) - beginAddr] == remVal;});
+                return rem[&element - beginAddr] == remVal;});
             resize(*seq, length(*seq) - numRemoveElements);
         };
         return std::async(std::launch::async | std::launch::deferred, eraseElements, &seq);

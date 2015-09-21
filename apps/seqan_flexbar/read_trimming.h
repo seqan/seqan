@@ -189,7 +189,6 @@ unsigned dropReads(std::vector<TRead<TSeq>>& reads,
     std::vector<bool> rem;
     rem.resize(length(reads));
 
-   // auto index = 
     const auto beginAddr = &*reads.begin();
     for (const auto& element : reads)
         if (length(element.seq) < min_length)
@@ -209,12 +208,12 @@ unsigned dropReads(std::vector<TRead<TSeq>>& reads,
     std::vector<bool> rem;
     rem.resize(length(reads));
 
-    const auto beginAddr = reinterpret_cast<size_t>(&*reads.begin());
+    const auto beginAddr = &*reads.begin();
     for (const auto& element : reads)
         if (length(element.seq) < min_length || length(element.seqRev) < min_length)
-            rem[reinterpret_cast<size_t>(&element) - beginAddr] = true;
+            rem[&element - beginAddr] = true;
         else
-            rem[reinterpret_cast<size_t>(&element) - beginAddr] = false;
+            rem[&element - beginAddr] = false;
     stats.dropped_1 += _eraseSeqs(rem, true, reads);
     stats.dropped_2 = stats.dropped_1;
     return 0;
