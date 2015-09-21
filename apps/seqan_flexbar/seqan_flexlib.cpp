@@ -937,7 +937,7 @@ public:
     //Writes the sets of ids and sequences to their corresponding files. Used for single-end data.
     template <template <typename> typename TRead, typename TSeq, typename TNames, 
         typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value >>
-    void writeSeqs(std::vector<TRead<TSeq>>& reads, TNames& names, bool = false)
+    void writeSeqs(std::vector<TRead<TSeq>>&& reads, TNames& names, bool = false)
     {
         updateStreams(names, false);
         for (unsigned i = 0; i < length(reads); ++i)
@@ -949,7 +949,7 @@ public:
 
     template <template <typename> typename TRead, typename TSeq, typename TNames,
         typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value >>
-        void writeSeqs(std::vector<TRead<TSeq>>& reads, TNames& names)
+        void writeSeqs(std::vector<TRead<TSeq>>&& reads, TNames& names)
     {
         updateStreams(names, false);
         for (unsigned i = 0; i < length(reads); ++i)
@@ -1008,6 +1008,9 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
 template<template <typename> typename TRead, typename TSeq, typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value>>
 inline void loadMultiplex(std::vector<TRead<TSeq>>& reads, seqan::SeqFileIn& multiplexFile, unsigned records)
 {
+    (void)reads;
+    (void)multiplexFile;
+    (void)records;
 }
 
 template<template <typename> typename TRead, typename TSeq, typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
@@ -1241,6 +1244,7 @@ void preprocessingStage(TReadSet& readSet,
             preTrim(readSet, processingParams.trimLeft,
                 processingParams.tagTrimming, processingParams.trimRight, processingParams.minLen, generalStats);
         }
+        (void)parser;
         //Detecting uncalled Bases
         //if (seqan::isSet(parser, "u"))
         //{
@@ -1944,7 +1948,7 @@ struct ReadReader
 // END FUNCTION DEFINITIONS ---------------------------------------------
 template<template <typename>typename TRead, typename TSeq, typename TParser, typename TEsaFinder>
 int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
-    QualityTrimmingParams& qualityTrimmingParams, TParser& parser, TEsaFinder& esaFinder, CharString& output, bool tagOpt, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
+    QualityTrimmingParams& qualityTrimmingParams, TParser& parser, TEsaFinder& esaFinder, bool tagOpt, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
     OutputStreams& outputStreams)
 {
     std::vector<TRead<TSeq>> readSet(programParams.records);
@@ -1996,7 +2000,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
             // therefore only 1 write at the time will be active
             readWriter.reset(new ReadWriter<TRead, TSeq>(std::move(readSet), outputStreams, demultiplexingParams));
         else
-            outputStreams.writeSeqs(readSet, demultiplexingParams.barcodeIds);
+            outputStreams.writeSeqs(std::move(readSet), demultiplexingParams.barcodeIds);
         
         // Print information
         if (programParams.showSpeed)
@@ -2417,18 +2421,18 @@ int flexbarMain(int argc, char const ** argv)
         if (!demultiplexingParams.run)
             outputStreams.addStream("", 0, useDefault);
         if(demultiplexingParams.runx)
-            mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
+            mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
         else
-            mainLoop(Read<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
+            mainLoop(Read<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
     }
      else
      {
          if (!demultiplexingParams.run)
              outputStreams.addStreams("", "", 0, useDefault);
          if (demultiplexingParams.runx)
-             mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
+             mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
          else
-             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
+             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
 
 
             //readRecords(idSet1[0], seqSet1[0], programParams.fileStream1, programParams.records);

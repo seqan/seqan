@@ -407,7 +407,7 @@ SEQAN_DEFINE_TEST(group_test)
     expectedReads[4].demuxResult = 2;
     expectedReads[5].demuxResult = 3;
 	
-    group(reads, matches, barcodes, false);
+    group(reads, matches, false);
 	
 	for (unsigned i = 0; i < length(expectedReads); ++i)
 	{

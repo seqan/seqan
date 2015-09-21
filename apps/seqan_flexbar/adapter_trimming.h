@@ -162,6 +162,61 @@ struct STRING_REVERSE_COMPLEMENT
 // Functions
 // ============================================================================
 
+
+template <typename TRow>
+unsigned countTotalGaps(TRow& row)
+{
+	return length(row) - length(source(row));
+}
+
+template <typename TAlign>
+unsigned getOverlap(TAlign& align)
+{
+	typedef typename seqan::Row<TAlign>::Type TRow;
+	TRow &row1 = seqan::row(align,0);
+	TRow &row2 = seqan::row(align,1);
+	return length(source(row1)) - countTotalGaps(row2);
+}
+
+template <typename TAlign>
+unsigned getInsertSize(TAlign& align)
+{
+	typedef typename seqan::Row<TAlign>::Type TRow;
+	TRow &row1 = seqan::row(align,0);
+	TRow &row2 = seqan::row(align,1);
+	unsigned seq1_length = length(source(row1));
+	unsigned seq2_length = length(source(row2));
+	// Calculate overlap and overhangs.
+	unsigned overlap = seq1_length - countTotalGaps(row2);
+	unsigned seq2l = seqan::countGaps(seqan::begin(row1)); // Overhang of sequence 2 = Gaps at start of row 1.
+	unsigned seq1r = countTotalGaps(row2) - seqan::countGaps(seqan::begin(row2)); // Overhang of sequence 1 = Gaps at end of row 2.
+	// Insert size: Add sequence lengths, subtract common region (overlap)
+	// and subtract overhangs left and right of insert.
+	return seq1_length + seq2_length - overlap - (seq2l + seq1r);
+}
+
+
+template <typename TSeq1, typename TSeq2, bool TTop, bool TLeft, bool TRight, bool TBottom>
+void alignPair(seqan::Pair<unsigned, seqan::Align<TSeq1> >& ret, const TSeq1& seq1, const TSeq2& seq2,
+		const seqan::AlignConfig<TTop, TLeft, TRight, TBottom>& config, bool band = false)
+{
+    seqan::resize(rows(ret.i2), 2);
+    seqan::assignSource(row(ret.i2, 0), seq1);
+    seqan::assignSource(row(ret.i2, 1), seq2);
+	// Overlap alignment. We again don't allow gaps, since they are unlikely in Illumina data.
+	// We mostly use AlignConfigs true,false,true,false and true,true,true,true here.
+	TScore adapterScore(-100);
+	// If we can do a banded alignment, restrict ourselves to the upper half of the matrix.
+    if (band)
+    {
+        ret.i1 = globalAlignment(ret.i2, adapterScore, config, -2, length(seq1));
+    }
+    else
+    {
+        ret.i1 = globalAlignment(ret.i2, adapterScore, config);
+    }
+}
+
 template <typename TSeq>
 unsigned stripPair(TSeq& seq1, TSeq& seq2)
 {
@@ -197,52 +252,7 @@ unsigned stripPair(TSeq& seq1, TSeq& seq2)
     }
     return insert;
 }
-//Overload using adapter information.
-//Currently not in use, because not as good as the version without adapters.
-template <typename TSeq>
-unsigned stripPair(TSeq& seq1, TSeq const& adapter1, TSeq& seq2, TSeq const& adapter2)
-{
-    typedef typename Value<TSeq>::Type TAlphabet;
-    typedef typename STRING_REVERSE_COMPLEMENT<TAlphabet>::Type TReverseComplement;
-    // Add adapters to the sequences.
-    seqan::insert(seq1, 0, adapter2);
-    seqan::insert(seq2, 0, adapter1);
-    TReverseComplement mod(seq2);
-    typedef seqan::Align<TSeq> TAlign;
-    seqan::Pair<unsigned, TAlign> ret;
-    alignPair(ret, seq1, mod, seqan::AlignConfig<true, false, true, false>(), true);
-    TAlign align = ret.i2;
-    unsigned score = ret.i1;
-    unsigned overlap = getOverlap(align);
-    unsigned mismatches = (overlap - score) / 2;
-    // We can still get the proper insert size from the overlap, since we only
-    // get properly overlapping alignments in this alignment mode. We just have
-    // to subtract the adapter additions. One exception is the case where they
-    // don't overlap at all, but in this case getInsertSize returns 0.
-    unsigned insert = getInsertSize(align);
-    if (insert > 0)
-    {
-        insert = insert - length(adapter1) - length(adapter2);
-    }
-    // Remove adapter sequences again.
-    seqan::erase(seq1, 0, length(adapter2));
-    seqan::erase(seq2, 0, length(adapter1));
-    // Check the quality of the overlap.
-    if (mismatches >= overlap * 0.15)
-    {
-        return 0;
-    }
-    // Cut down to insert size, if necessary.
-    if (length(seq1) > insert)
-    {
-        seqan::erase(seq1, insert, length(seq1));
-    }
-    if (length(seq2) > insert)
-    {
-        seqan::erase(seq2, insert, length(seq2));
-    }
-    return insert;
-}
+
 
 template <typename TSeq, typename TId>
 unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idSet1,
@@ -313,61 +323,9 @@ unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idS
 }
 
 
-template <typename TSeq1, typename TSeq2, bool TTop, bool TLeft, bool TRight, bool TBottom>
-void alignPair(seqan::Pair<unsigned, seqan::Align<TSeq1> >& ret, TSeq1& seq1, TSeq2& seq2,
-		const seqan::AlignConfig<TTop, TLeft, TRight, TBottom>& config, bool band = false)
-{
-    seqan::resize(rows(ret.i2), 2);
-    seqan::assignSource(row(ret.i2, 0), seq1);
-    seqan::assignSource(row(ret.i2, 1), seq2);
-	// Overlap alignment. We again don't allow gaps, since they are unlikely in Illumina data.
-	// We mostly use AlignConfigs true,false,true,false and true,true,true,true here.
-	TScore adapterScore(-100);
-	// If we can do a banded alignment, restrict ourselves to the upper half of the matrix.
-    if (band)
-    {
-        ret.i1 = globalAlignment(ret.i2, adapterScore, config, -2, length(seq1));
-    }
-    else
-    {
-        ret.i1 = globalAlignment(ret.i2, adapterScore, config);
-    }
-}
-
-template <typename TRow>
-unsigned countTotalGaps(TRow& row)
-{
-	return length(row) - length(source(row));
-}
-
-template <typename TAlign>
-unsigned getOverlap(TAlign& align)
-{
-	typedef typename seqan::Row<TAlign>::Type TRow;
-	TRow &row1 = seqan::row(align,0);
-	TRow &row2 = seqan::row(align,1);
-	return length(source(row1)) - countTotalGaps(row2);
-}
-
-template <typename TAlign>
-unsigned getInsertSize(TAlign& align)
-{
-	typedef typename seqan::Row<TAlign>::Type TRow;
-	TRow &row1 = seqan::row(align,0);
-	TRow &row2 = seqan::row(align,1);
-	unsigned seq1_length = length(source(row1));
-	unsigned seq2_length = length(source(row2));
-	// Calculate overlap and overhangs.
-	unsigned overlap = seq1_length - countTotalGaps(row2);
-	unsigned seq2l = seqan::countGaps(seqan::begin(row1)); // Overhang of sequence 2 = Gaps at start of row 1.
-	unsigned seq1r = countTotalGaps(row2) - seqan::countGaps(seqan::begin(row2)); // Overhang of sequence 1 = Gaps at end of row 2.
-	// Insert size: Add sequence lengths, subtract common region (overlap)
-	// and subtract overhangs left and right of insert.
-	return seq1_length + seq2_length - overlap - (seq2l + seq1r);
-}
 
 template <typename TSeq, typename TAdapterItem>
-void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, TSeq& seq, TAdapterItem const& adapterItem)
+void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, const TSeq& seq, TAdapterItem const& adapterItem)
 {
 	// Gaps are not allowed by setting the gap penalty high.
     // Changed the AlignConfig to behave like cutadapt's non anchored mode

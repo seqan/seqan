@@ -45,6 +45,42 @@
 #include <future>
 #include <string>
 
+#include <seqan/basic.h>
+#include <seqan/sequence.h>
+
+
+// C++17 functions
+
+void append(std::string& str1, const std::string& str2)
+{
+    str1 += str2;
+}
+
+unsigned int length(const std::string& str)
+{
+    return str.size();
+}
+
+template <typename T>
+unsigned int length(const std::vector<T>& vec)
+{
+    return vec.size();
+}
+
+template <typename T>
+void resize(std::vector<T>& vec, unsigned int len)
+{
+    vec.resize(len);
+}
+
+
+void insert(std::string& dest, unsigned int k, const std::string& token)
+{
+    dest.insert(k, token);
+}
+
+//
+
 template<typename TSeq>
 struct ReadBase 
 {
@@ -107,12 +143,12 @@ struct ReadMultiplex : ReadBase<TSeq>
 
     bool operator==(const ReadMultiplex& rhs) const
     {
-        return ReadBase::operator==(rhs) && demultiplex == rhs.demultiplex;
+        return ReadBase<TSeq>::operator==(rhs) && demultiplex == rhs.demultiplex;
     }
     ReadMultiplex& operator=(const ReadMultiplex& rhs) = default;
     ReadMultiplex& operator=(const ReadMultiplex&& rhs)
     {
-        ReadBase::operator=(std::move(rhs));
+        ReadBase<TSeq>::operator=(std::move(rhs));
         demultiplex = std::move(rhs.demultiplex);
         return *this;
     }
@@ -129,12 +165,12 @@ struct ReadPairedEnd : ReadBase<TSeq>
 
     bool operator==(const ReadPairedEnd& rhs) const
     {
-        return ReadBase::operator==(rhs) && seqRev == rhs.seqRev && idRev == rhs.idRev;
+        return ReadBase<TSeq>::operator==(rhs) && seqRev == rhs.seqRev && idRev == rhs.idRev;
     }
     ReadPairedEnd& operator=(const ReadPairedEnd& rhs) = default;
     ReadPairedEnd& operator=(const ReadPairedEnd&& rhs)
     {
-        ReadBase::operator=(std::move(rhs));
+        ReadBase<TSeq>::operator=(std::move(rhs));
         seqRev = std::move(rhs.seqRev);
         idRev = std::move(rhs.idRev);
         return *this;
@@ -151,12 +187,12 @@ struct ReadMultiplexPairedEnd : ReadPairedEnd<TSeq>
 
     bool operator==(const ReadMultiplexPairedEnd& rhs) const
     {
-        return ReadPairedEnd::operator==(rhs) && demultiplex == rhs.demultiplex;
+        return ReadPairedEnd<TSeq>::operator==(rhs) && demultiplex == rhs.demultiplex;
     }
     ReadMultiplexPairedEnd& operator=(const ReadMultiplexPairedEnd& rhs) = default;
     ReadMultiplexPairedEnd& operator=(const ReadMultiplexPairedEnd&& rhs)
     {
-        ReadPairedEnd::operator=(std::move(rhs));
+        ReadPairedEnd<TSeq>::operator=(std::move(rhs));
         demultiplex = std::move(rhs.demultiplex);
         return *this;
     }
@@ -177,17 +213,17 @@ void insertAfterFirstToken(TDest& dest, TSource&& source)
 template <class F, class... Ts>
 void for_each_argument(F f, Ts&&... a) {
     // destructor of temps blocks until all threads are finished
-    auto temp = std::make_tuple(f(std::forward<Ts>(a))...); 
+    std::make_tuple(f(std::forward<Ts>(a))...); 
 }
 
 template<typename Trem, typename TremVal, typename TRead>
 auto _eraseSeqs(const Trem& rem, const TremVal remVal, std::vector<TRead>& reads)
 {
     const auto numRemoveElements = std::count(rem.begin(), rem.end(), remVal);
-    const auto beginAddr = (void*)&*(reads.begin());
+    const auto beginAddr = reinterpret_cast<size_t>(&*reads.begin());
     std::remove_if(reads.begin(), reads.end(),
         [&rem, &beginAddr, remVal](const auto& element) {
-        return rem[&element - beginAddr] == remVal;});
+        return rem[reinterpret_cast<size_t>(&element) - beginAddr] == remVal;});
     reads.resize(reads.size() - numRemoveElements);
     return numRemoveElements;
 }
@@ -198,10 +234,10 @@ auto _eraseSeqs(const Trem& rem, const TremVal remVal, TContainer&&... container
     const auto numRemoveElements = std::count(begin(rem), end(rem), remVal);
     auto eraseElements = [&rem, numRemoveElements, remVal](auto& seq)  // erase Elements using the remove erase idiom
     {
-        const auto beginAddr = (void*)&*seqan::begin(seq);
+        const auto beginAddr = reinterpret_cast<size_t>(&*seqan::begin(seq));
         std::remove_if(seqan::begin(seq), seqan::end(seq),
             [&rem, &beginAddr, remVal](const auto& element) {
-            return rem[&element - beginAddr] == remVal;});
+            return rem[reinterpret_cast<size_t>(&element) - beginAddr] == remVal;});
         resize(seq, length(seq) - numRemoveElements);
         return 0;
     };
@@ -219,10 +255,10 @@ auto _eraseSeqsDisabled(const Trem& rem, const TremVal remVal, TContainer&&... c
     {
         auto eraseElements = [&rem, numRemoveElements, remVal](auto* seq)  // erase Elements using the remove erase idiom
         {
-            const auto beginAddr = (void*)&*begin(*seq);
+            const auto beginAddr = reinterpret_cast<size_t>(&*begin(*seq));
             std::remove_if(begin(*seq), end(*seq),
                 [&rem, &beginAddr, remVal](const auto& element) {
-                return rem[&element - beginAddr] == remVal;});
+                return rem[reinterpret_cast<size_t>(&element) - beginAddr] == remVal;});
             resize(*seq, length(*seq) - numRemoveElements);
         };
         return std::async(std::launch::async | std::launch::deferred, eraseElements, &seq);
@@ -231,5 +267,6 @@ auto _eraseSeqsDisabled(const Trem& rem, const TremVal remVal, TContainer&&... c
     for_each_argument(eraseElementsWrapper, std::forward<TContainer>(container)...);
     return numRemoveElements;
 }
+
 
 #endif // HELPERFUNCTIONS_H_

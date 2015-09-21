@@ -127,7 +127,7 @@ template<typename TSeqs, typename TIds, typename TSub>
 void processN(TSeqs& seqs, TIds& ids, unsigned allowed, TSub substitute, GeneralStats& stats)
 {
     int limit = length(seqs);
-    StringSet<int> res;
+    seqan::StringSet<int> res;
     resize(res, limit);
     SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
     for (int i = 0; i < limit; ++i)
@@ -180,7 +180,7 @@ template<typename TSeqs, typename TIds>
 void processN(TSeqs& seqs, TIds& ids, unsigned allowed, GeneralStats& stats)
 {
     int limit = length(seqs);
-    StringSet<int> res;
+    seqan::StringSet<int> res;
     resize(res, limit);
     unsigned uncalled = 0;
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static) reduction(+:uncalled))
@@ -199,7 +199,7 @@ template<typename TSeqs, typename TIds, typename TSub>
 void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned allowed, TSub substitute, GeneralStats& stats)
 {
     int limit = length(seqs);
-    StringSet<int> res;
+    seqan::StringSet<int> res;
     resize(res, limit);
     unsigned uncalled = 0;
     SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static) reduction(+:uncalled))
@@ -225,7 +225,7 @@ template<typename TSeqs, typename TIds>
 void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned allowed, GeneralStats& stats)
 {
     int limit = length(seqs);
-    StringSet<int> res;
+    seqan::StringSet<int> res;
     resize(res, limit);
     unsigned uncalled = 0;
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static) reduction(+:uncalled))
@@ -251,7 +251,7 @@ template<typename TSeqs, typename TIds, typename TMulti, typename TSub>
 void processN(TSeqs& seqs, TIds& ids, TMulti& multiplex, unsigned allowed, TSub substitute, GeneralStats& stats)
 {
     int limit = length(seqs);
-    StringSet<int> res;
+    seqan::StringSet<int> res;
     resize(res, limit);
     unsigned uncalled = 0;
     SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static) reduction(+:uncalled))
@@ -277,7 +277,7 @@ template<typename TSeqs, typename TIds, typename TMulti>
 void processN(TSeqs& seqs, TIds& ids, TMulti& multiplex, unsigned allowed, GeneralStats& stats)
 {
     int limit = length(seqs);
-    StringSet<int> res;
+    seqan::StringSet<int> res;
     resize(res, limit);
     unsigned uncalled = 0;
     SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static) reduction(+:uncalled))
@@ -304,7 +304,7 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
     TSub substitute, GeneralStats& stats)
 {
     int limit = length(seqs);
-    StringSet<int> res;
+    seqan::StringSet<int> res;
     resize(res, limit);
     unsigned uncalled = 0;
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static) reduction(+:uncalled))
@@ -335,7 +335,7 @@ template<typename TSeqs, typename TIds, typename TMulti >
 void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& multiplex, unsigned allowed, GeneralStats& stats)
 {
     int limit = length(seqs);
-    StringSet<int> res;
+    seqan::StringSet<int> res;
     resize(res, limit);
     unsigned uncalled = 0;
     SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static) reduction(+:uncalled))
@@ -370,7 +370,7 @@ void _preTrim(std::vector<TRead<TSeq>>& readSet, const unsigned head, const unsi
 {
     int i = 0;
     const auto limit = (int)length(readSet);
-    resize(rem, limit);
+    rem.resize(limit);
 
     SEQAN_OMP_PRAGMA(parallel for default(shared) private(i)schedule(static))
         for (i = 0; i < limit; ++i)
@@ -419,7 +419,7 @@ template<template <typename>typename TRead, typename TSeq, bool tagTrimming,
 {
     int i = 0;
     const auto limit = (int)length(readSet);
-    resize(rem, limit);
+    rem.resize(limit);
 
     SEQAN_OMP_PRAGMA(parallel for default(shared) private(i)schedule(static))
         for (i = 0; i < limit; ++i)
@@ -489,9 +489,9 @@ template<template <typename>typename TRead, typename TSeq,
 {
     std::vector<bool> rem;
     const auto limit = length(reads);
-    resize(rem, limit);
+    rem.resize(limit);
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
-        for (int i = 0; i < limit; ++i)
+        for (unsigned int i = 0; i < limit; ++i)
         {
             if (length(reads[i].seq) < len)
             {
@@ -515,9 +515,9 @@ template<template <typename>typename TRead, typename TSeq,
 {
     std::vector<bool> rem;
     const auto limit = length(reads);
-    resize(rem, limit);
+    rem.resize(limit);
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
-        for (int i = 0; i < limit; ++i)
+        for (unsigned int i = 0; i < limit; ++i)
         {
             if (std::min(length(reads[i].seq), length(reads[i].seqRev)) < len)
             {

@@ -105,7 +105,6 @@ bool check(TReads& reads, TBarcodes& barcodes, TStats& stats)
             return false;
         }
     } //Iterating backward to avoid error after deletion of a sequence
-    unsigned ex = 0;
     auto it = std::remove_if(reads.begin(), reads.end(), [len](auto& read) {return length(read.seq) <= len;});
     stats.removedSeqsShort += std::distance(it, reads.end());
     reads.erase(it, reads.end());
@@ -127,6 +126,7 @@ void getPrefix(std::vector<TSeq>& prefices, std::vector<TRead<TSeq>>& reads, uns
 template <template <typename> typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
 void getPrefix(std::vector<TSeq>& prefices, std::vector<TRead<TSeq>>& reads, unsigned len, bool = false)
 {
+    (void)len;
     int limit = reads.size();
     prefices.resize(limit);
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
@@ -161,14 +161,14 @@ void buildVariations(seqan::StringSet<seqan::Dna5String>& variations, const TBar
 template <typename TBarcodes>
 void buildAllVariations(TBarcodes& barcodes)
 {
-	StringSet<Dna5String> newbarcodes;			//stores the new barcodes
+	seqan::StringSet<seqan::Dna5String> newbarcodes;			//stores the new barcodes
 	for (unsigned i = 0; i < length(barcodes); ++i)
 	{
-		StringSet<Dna5String> tempbarcodes;
+		seqan::StringSet<seqan::Dna5String> tempbarcodes;
         buildVariations(tempbarcodes, barcodes[i]);
 		for (unsigned j = 0; j < length(tempbarcodes); ++j)
         {
-			appendValue(newbarcodes, tempbarcodes[j]);
+			seqan::appendValue(newbarcodes, tempbarcodes[j]);
         }
 	}
 	clear(barcodes);
@@ -195,7 +195,7 @@ void findAllExactIndex(TMatches& matches, const TPrefices& prefices, const TFind
 #ifdef _OPENMP
     tnum = omp_get_max_threads();
 #endif
-    StringSet<TFinder> finderSet;
+    seqan::StringSet<TFinder> finderSet;
     resize(finderSet, tnum);            //creating a set of finders to prevent their continous re-initialisation
     for (int i = 0; i < tnum; ++i)
     {
@@ -242,8 +242,8 @@ void clipBarcodes(std::vector<TRead>& reads, int len)
         }
 }
 
-template <typename TRead, typename TMatches, typename TBarcodes>
-void group(std::vector<TRead>& reads, const TMatches& matches, const TBarcodes& barcodes, bool exclude)
+template <typename TRead, typename TMatches>
+void group(std::vector<TRead>& reads, const TMatches& matches, bool exclude)
 {
 
 	for (unsigned i = 0; i < length(matches); ++i)
@@ -290,7 +290,7 @@ void doAll(std::vector<TRead<TSeq>>& reads, TBarcodes& barcodes, TFinder& esaFin
             clipBarcodes(reads, matches, length(barcodes[0]));
         }
     }
-    group(reads, matches, barcodes, exclude);
+    group(reads, matches, exclude);
 }
 
 // Using approximate search
