@@ -188,27 +188,29 @@ SEQAN_DEFINE_TEST(match_test)
 
 SEQAN_DEFINE_TEST(strip_adapter_test)
 {
-	typedef seqan::String<seqan::Dna5Q> TSeq;
     typedef seqan::String<seqan::Dna5Q> TAda;
     TAdapterSet adapterSet;
+    using TRead = Read<seqan::Dna5QString>;
+    TRead read;
 
-	TSeq seq = TSeq("AAAAAAAAAATTTTT");
-    TAda ada = TAda(          "TTTTTTTTTTT");
+    read.seq = "AAAAAAAAAATTTTT";
+    TAda ada = TAda(         "TTTTTTTTTTT");
 
-	int len = length(seq);
+	int len = length(read.seq);
     AdapterMatchSettings autoOption;
     AdapterTrimmingStats stats;
-    int removed = stripAdapter(seq, stats, TAdapterSet{AdapterItem(ada)}, autoOption);
+    int removed = stripAdapter(read, stats, TAdapterSet{AdapterItem(ada)}, autoOption, TagAdapter<false>());
 	SEQAN_ASSERT_EQ(removed, 5);
-	SEQAN_ASSERT_EQ(len - length(seq), 5u);
+	SEQAN_ASSERT_EQ(len - length(read.seq), 5u);
 
-	seq = TSeq("AAAAAAAAAATATATTA");
+    read.seq = "AAAAAAAAAATATATTA";
+    //seq = TSeq("AAAAAAAAAATATATTA");
 	//                || |||||||		   
     ada = TAda(     "GAATATATATTT");
-	len = length(seq);
-	removed = stripAdapter(seq, stats, TAdapterSet{ AdapterItem(ada) }, autoOption);
+	len = length(read.seq);
+	removed = stripAdapter(read, stats, TAdapterSet{ AdapterItem(ada) }, autoOption, TagAdapter<false>());
 	SEQAN_ASSERT_EQ(removed, 12);
-	SEQAN_ASSERT_EQ(len - length(seq), 12u);
+	SEQAN_ASSERT_EQ(len - length(read.seq), 12u);
 }
 
 SEQAN_DEFINE_TEST(align_adapter_test)

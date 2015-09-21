@@ -162,6 +162,157 @@ struct STRING_REVERSE_COMPLEMENT
 // Functions
 // ============================================================================
 
+template <typename TSeq>
+unsigned stripPair(TSeq& seq1, TSeq& seq2)
+{
+    // When aligning the two sequences, the complementary sequence is reversed and
+    // complemented, so we have an overlap alignment with complementary bases being the same.
+    typedef typename seqan::Value<TSeq>::Type TAlphabet;
+    typedef typename STRING_REVERSE_COMPLEMENT<TAlphabet>::Type TReverseComplement;
+    TReverseComplement mod(seq2);
+    typedef seqan::Align<TSeq> TAlign;
+    seqan::Pair<unsigned, TAlign> ret;
+    alignPair(ret, seq1, mod, seqan::AlignConfig<true, true, true, true>());
+    unsigned score = ret.i1;
+    TAlign align = ret.i2;
+    // Use the overlap of the two sequences to determine the end position.
+    unsigned overlap = getOverlap(align);
+    unsigned mismatches = (overlap - score) / 2;
+    // We require a certain correct overlap to exclude spurious hits.
+    // (Especially reverse 3'->5' alignments not caused by adapters.)
+    if (overlap <= 5 || mismatches > overlap * 0.15)
+    {
+        return 0;
+    }
+    // Get actual size of the insert (possible to determine from overlap etc.).
+    unsigned insert = getInsertSize(align);
+    // Now cut both sequences to insert size (no cuts happen if they are smaller)
+    if (length(seq1) > insert)
+    {
+        seqan::erase(seq1, insert, length(seq1));
+    }
+    if (length(seq2) > insert)
+    {
+        seqan::erase(seq2, insert, length(seq2));
+    }
+    return insert;
+}
+//Overload using adapter information.
+//Currently not in use, because not as good as the version without adapters.
+template <typename TSeq>
+unsigned stripPair(TSeq& seq1, TSeq const& adapter1, TSeq& seq2, TSeq const& adapter2)
+{
+    typedef typename Value<TSeq>::Type TAlphabet;
+    typedef typename STRING_REVERSE_COMPLEMENT<TAlphabet>::Type TReverseComplement;
+    // Add adapters to the sequences.
+    seqan::insert(seq1, 0, adapter2);
+    seqan::insert(seq2, 0, adapter1);
+    TReverseComplement mod(seq2);
+    typedef seqan::Align<TSeq> TAlign;
+    seqan::Pair<unsigned, TAlign> ret;
+    alignPair(ret, seq1, mod, seqan::AlignConfig<true, false, true, false>(), true);
+    TAlign align = ret.i2;
+    unsigned score = ret.i1;
+    unsigned overlap = getOverlap(align);
+    unsigned mismatches = (overlap - score) / 2;
+    // We can still get the proper insert size from the overlap, since we only
+    // get properly overlapping alignments in this alignment mode. We just have
+    // to subtract the adapter additions. One exception is the case where they
+    // don't overlap at all, but in this case getInsertSize returns 0.
+    unsigned insert = getInsertSize(align);
+    if (insert > 0)
+    {
+        insert = insert - length(adapter1) - length(adapter2);
+    }
+    // Remove adapter sequences again.
+    seqan::erase(seq1, 0, length(adapter2));
+    seqan::erase(seq2, 0, length(adapter1));
+    // Check the quality of the overlap.
+    if (mismatches >= overlap * 0.15)
+    {
+        return 0;
+    }
+    // Cut down to insert size, if necessary.
+    if (length(seq1) > insert)
+    {
+        seqan::erase(seq1, insert, length(seq1));
+    }
+    if (length(seq2) > insert)
+    {
+        seqan::erase(seq2, insert, length(seq2));
+    }
+    return insert;
+}
+
+template <typename TSeq, typename TId>
+unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idSet1,
+    seqan::StringSet<TSeq>& set2, seqan::StringSet<TId>& idSet2, AdapterTrimmingStats& stats, bool tagOpt)
+{
+    int t_num = 1;
+#ifdef _OPENMP
+    t_num = omp_get_max_threads();
+#endif
+    // Create local counting variables to avoid concurrency problems.
+    unsigned a1count = 0, a2count = 0, overlapSum = 0;
+    seqan::String<unsigned> minOverlap;
+    seqan::String<unsigned> maxOverlap;
+    seqan::resize(minOverlap, t_num, std::numeric_limits<unsigned>::max());
+    seqan::resize(maxOverlap, t_num, 0);
+    int len = length(set1);
+    SEQAN_OMP_PRAGMA(parallel for schedule(static) reduction(+:a1count, a2count, overlapSum))
+        for (int i = 0; i < len; ++i)
+        {
+            // The reads processed in this iteration. The lengths will change after stripPair().
+            TSeq& read1 = value(set1, i);
+            TSeq& read2 = value(set2, i);
+            unsigned len1 = length(read1);
+            unsigned len2 = length(read2);
+            stripPair(read1, read2);
+            // Determine how much was cut off. (Length before and after.)
+            unsigned over1 = len1 - length(read1);
+            unsigned over2 = len2 - length(read2);
+            // Apply tags
+            if (over1 != 0 && tagOpt)
+            {
+                append(idSet1[i], "[AdapterRemoved]");
+            }
+            if (over2 != 0 && tagOpt)
+            {
+                append(idSet2[i], "[AdapterRemoved]");
+            }
+            // Count cuts.
+            a1count += (over1 != 0);
+            a2count += (over2 != 0);
+            overlapSum += over1 + over2; // Count for each mate.
+                                         // Thread saves local min/max seen in the batch it processed.
+            int t_id = omp_get_thread_num();
+            if (over1 > 0 && std::min(over1, over2) < minOverlap[t_id])
+            {
+                minOverlap[t_id] = std::min(over1, over2);
+            }
+            if (over2 > 0 && std::max(over1, over2) > maxOverlap[t_id])
+            {
+                maxOverlap[t_id] = std::max(over1, over2);
+            }
+        }
+    // Update statistics using information gathered by the threads.
+    stats.a1count += a1count;
+    stats.a2count += a2count;
+    stats.overlapSum += overlapSum;
+    unsigned batch_min = *std::min_element(begin(minOverlap), end(minOverlap));
+    unsigned batch_max = *std::max_element(begin(maxOverlap), end(maxOverlap));
+    if (batch_min < stats.minOverlap)
+    {
+        stats.minOverlap = batch_min;
+    }
+    if (batch_max > stats.maxOverlap)
+    {
+        stats.maxOverlap = batch_max;
+    }
+    return a1count + a2count;
+}
+
+
 template <typename TSeq1, typename TSeq2, bool TTop, bool TLeft, bool TRight, bool TBottom>
 void alignPair(seqan::Pair<unsigned, seqan::Align<TSeq1> >& ret, TSeq1& seq1, TSeq2& seq2,
 		const seqan::AlignConfig<TTop, TLeft, TRight, TBottom>& config, bool band = false)
@@ -213,156 +364,6 @@ unsigned getInsertSize(TAlign& align)
 	// Insert size: Add sequence lengths, subtract common region (overlap)
 	// and subtract overhangs left and right of insert.
 	return seq1_length + seq2_length - overlap - (seq2l + seq1r);
-}
-
-template <typename TSeq>
-unsigned stripPair(TSeq& seq1, TSeq& seq2)
-{
-	// When aligning the two sequences, the complementary sequence is reversed and
-	// complemented, so we have an overlap alignment with complementary bases being the same.
-	typedef typename seqan::Value<TSeq>::Type TAlphabet;
-	typedef typename STRING_REVERSE_COMPLEMENT<TAlphabet>::Type TReverseComplement;
-	TReverseComplement mod(seq2);
-	typedef seqan::Align<TSeq> TAlign;
-	seqan::Pair<unsigned, TAlign> ret;
-    alignPair(ret, seq1, mod, seqan::AlignConfig<true, true, true, true>());
-	unsigned score = ret.i1;
-	TAlign align = ret.i2;
-	// Use the overlap of the two sequences to determine the end position.
-	unsigned overlap = getOverlap(align);
-	unsigned mismatches = (overlap-score) / 2;
-	// We require a certain correct overlap to exclude spurious hits.
-	// (Especially reverse 3'->5' alignments not caused by adapters.)
-	if (overlap <= 5 || mismatches > overlap * 0.15)
-    {
-		return 0;
-    }
-	// Get actual size of the insert (possible to determine from overlap etc.).
-	unsigned insert = getInsertSize(align);
-	// Now cut both sequences to insert size (no cuts happen if they are smaller)
-	if (length(seq1) > insert)
-    {
-		seqan::erase(seq1, insert, length(seq1));
-    }
-	if (length(seq2) > insert)
-    {
-		seqan::erase(seq2, insert, length(seq2));
-    }
-	return insert;
-}
- //Overload using adapter information.
- //Currently not in use, because not as good as the version without adapters.
-template <typename TSeq>
-unsigned stripPair(TSeq& seq1, TSeq const& adapter1, TSeq& seq2, TSeq const& adapter2)
-{
-	typedef typename Value<TSeq>::Type TAlphabet;
-	typedef typename STRING_REVERSE_COMPLEMENT<TAlphabet>::Type TReverseComplement;
-	// Add adapters to the sequences.
-	seqan::insert(seq1, 0, adapter2);
-	seqan::insert(seq2, 0, adapter1);
-	TReverseComplement mod(seq2);
-	typedef seqan::Align<TSeq> TAlign;
-	seqan::Pair<unsigned, TAlign> ret;
-    alignPair(ret, seq1, mod, seqan::AlignConfig<true, false, true, false>(), true);
-	TAlign align = ret.i2;
-	unsigned score = ret.i1;
-	unsigned overlap = getOverlap(align);
-	unsigned mismatches = (overlap-score) / 2;
-	// We can still get the proper insert size from the overlap, since we only
-	// get properly overlapping alignments in this alignment mode. We just have
-	// to subtract the adapter additions. One exception is the case where they
-	// don't overlap at all, but in this case getInsertSize returns 0.
-	unsigned insert = getInsertSize(align);
-	if (insert > 0)
-    {
-		insert = insert - length(adapter1) - length(adapter2);
-    }
-	// Remove adapter sequences again.
-	seqan::erase(seq1, 0, length(adapter2));
-	seqan::erase(seq2, 0, length(adapter1));
-	// Check the quality of the overlap.
-	if (mismatches >= overlap * 0.15)
-    {
-		return 0;
-    }
-	// Cut down to insert size, if necessary.
-	if (length(seq1) > insert)
-    {
-		seqan::erase(seq1, insert, length(seq1));
-    }
-	if (length(seq2) > insert)
-    {
-		seqan::erase(seq2, insert, length(seq2));
-    }
-	return insert;
-}
-
-template <typename TSeq, typename TId>
-unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idSet1,
-    seqan::StringSet<TSeq>& set2, seqan::StringSet<TId>& idSet2, AdapterTrimmingStats& stats, bool tagOpt)
-{
-    int t_num = 1;
-#ifdef _OPENMP
-    t_num = omp_get_max_threads();
-#endif
-	// Create local counting variables to avoid concurrency problems.
-	unsigned a1count = 0, a2count = 0, overlapSum = 0;
-	seqan::String<unsigned> minOverlap;
-	seqan::String<unsigned> maxOverlap;
-	seqan::resize(minOverlap, t_num, std::numeric_limits<unsigned>::max());
-	seqan::resize(maxOverlap, t_num, 0);
-	int len = length(set1);
-	SEQAN_OMP_PRAGMA(parallel for schedule(static) reduction(+:a1count, a2count, overlapSum))
-	for (int i = 0; i < len; ++i)
-	{
-		// The reads processed in this iteration. The lengths will change after stripPair().
-		TSeq& read1 = value(set1, i);
-		TSeq& read2 = value(set2, i);
-		unsigned len1 = length(read1);
-		unsigned len2 = length(read2);
-		stripPair(read1, read2);
-		// Determine how much was cut off. (Length before and after.)
-		unsigned over1 = len1 - length(read1);
-		unsigned over2 = len2 - length(read2);
-        // Apply tags
-        if (over1 != 0 && tagOpt)
-        {
-            append(idSet1[i], "[AdapterRemoved]");
-        }
-        if (over2 != 0 && tagOpt)
-        {
-            append(idSet2[i], "[AdapterRemoved]");
-        }
-		// Count cuts.
-		a1count += (over1 != 0);
-		a2count += (over2 != 0);
-		overlapSum += over1 + over2; // Count for each mate.
-		// Thread saves local min/max seen in the batch it processed.
-		int t_id = omp_get_thread_num();
-		if (over1 > 0 && std::min(over1,over2) < minOverlap[t_id])
-        {
-            minOverlap[t_id] = std::min(over1,over2);
-        }
-		if (over2 > 0 && std::max(over1,over2) > maxOverlap[t_id])
-        {
-            maxOverlap[t_id] = std::max(over1,over2);
-        }
-	}
-	// Update statistics using information gathered by the threads.
-	stats.a1count += a1count;
-	stats.a2count += a2count;
-	stats.overlapSum += overlapSum;
-	unsigned batch_min = *std::min_element(begin(minOverlap), end(minOverlap));
-	unsigned batch_max = *std::max_element(begin(maxOverlap), end(maxOverlap));
-	if (batch_min < stats.minOverlap) 
-    {
-        stats.minOverlap = batch_min;
-    }
-	if (batch_max > stats.maxOverlap)
-    {
-        stats.maxOverlap = batch_max;
-    }
-	return a1count + a2count;
 }
 
 template <typename TSeq, typename TAdapterItem>
@@ -430,9 +431,9 @@ struct StripAdapterDirection
     static const bool value = _direction;
 };
 
-template <typename TRead, typename TAdapterSet, typename TSpec, typename TStripAdapterDirection, typename TTagAdapter>
-unsigned stripAdapter(TRead& read, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec,
-    TStripAdapterDirection, TTagAdapter)
+template <template <typename>typename TRead, typename TSeq, typename TAdapterSet, typename TSpec, typename TStripAdapterDirection>
+unsigned stripAdapter(TRead<TSeq>& read, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec,
+    TStripAdapterDirection)
 {
     typedef typename seqan::Align<seqan::Dna5String> TAlign;
     typedef typename seqan::Row<TAlign>::Type TRow;
@@ -472,60 +473,6 @@ unsigned stripAdapter(TRead& read, AdapterTrimmingStats& stats, TAdapterSet cons
     return removed;
 }
 
-
-template <typename TSeq, typename TAdapterSet, typename TSpec>
-unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec, const bool reverse)
-{
-	typedef typename seqan::Align<TSeq> TAlign;
-    typedef typename seqan::Row<TAlign>::Type TRow;
-	seqan::Pair<unsigned, TAlign> ret;
-
-    unsigned removed{ 0 };
-    for (AdapterItem const& adapterItem : adapterSet)
-    {
-        //std::cout << "seq: " << seq << std::endl;
-        //std::cout << "adapter: " << adapterItem.seq << std::endl;
-        alignAdapter(ret, seq, adapterItem);    // align crashes if seq is an empty string!
-        const unsigned int overlap = getOverlap(ret.i2);
-        const int score = ret.i1;
-        const int mismatches = (overlap - score) / 2;
-        if (isMatch(overlap, mismatches, spec))
-        {
-            //std::cout << "score: " << ret.i1 << " overlap: " << overlap << " mismatches: " << mismatches << std::endl;
-            //std::cout << ret.i2 << std::endl;
-            TRow row2 = row(ret.i2, 1);
-            //std::cout << "adapter start position: " << toViewPosition(row2, 0) << std::endl;
-            removed += length(seq) - toViewPosition(row2, 0);
-            seqan::erase(seq, toViewPosition(row2, 0), length(seq));
-            //std::cout << "stripped seq: " << seq << std::endl;
-            stats.overlapSum += overlap;
-            if (reverse)
-                ++stats.a1count;
-            else
-                ++stats.a2count;
-
-            stats.maxOverlap = stats.maxOverlap > overlap ? stats.maxOverlap : overlap;
-            stats.minOverlap = stats.minOverlap < overlap ? stats.minOverlap : overlap;
-            if(spec.singleMatch || empty(seq))
-                return removed;
-        }
-    }
-    return removed;
-}
-
-template <template <typename> typename TRead, typename TSeq, typename TAdapterSet, typename TSpec>
-unsigned stripAdapter(TRead<TSeq>& read, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec)
-{
-    return stripAdapter<TAdapterSet, TSpec, false>(read, stats, adapterSet, spec);
-}
-
-
-template <typename TSeq, typename TAdapterSet, typename TSpec>
-unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec)
-{
-    return stripAdapter(seq, stats, adapterSet, spec, false);
-}
-
 template <typename TRead, typename TAdapterSet, typename TSpec, typename TStripAdapterDirection, typename TTagAdapter>
 unsigned stripAdapterBatch(std::vector<TRead>& reads, TAdapterSet const& adapterSet, TSpec const& spec,
     AdapterTrimmingStats& stats, TStripAdapterDirection, TTagAdapter)
@@ -546,53 +493,13 @@ unsigned stripAdapterBatch(std::vector<TRead>& reads, TAdapterSet const& adapter
                 continue;
             const int t_id = omp_get_thread_num();
             // Every thread has its own adapterTrimmingStatsVector
-            const unsigned over = stripAdapter(reads[i], adapterTrimmingStatsVector[t_id], adapterSet, spec, TStripAdapterDirection(), TTagAdapter());
+            const unsigned over = stripAdapter(reads[i], adapterTrimmingStatsVector[t_id], adapterSet, spec, TStripAdapterDirection());
             if (TTagAdapter::value && over != 0)
                 insertAfterFirstToken(reads[i].id, ":AdapterRemoved");
         }
     std::for_each(adapterTrimmingStatsVector.begin(), adapterTrimmingStatsVector.end(),
         [&stats](AdapterTrimmingStats const& _stats) {stats += _stats;});
     return stats.a1count + stats.a2count;
-}
-
-
-template <typename TSeq, typename TId, typename TAdapterSet, typename TSpec>
-unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& idSet, TAdapterSet const& adapterSet, TSpec const& spec,
-		AdapterTrimmingStats& stats, bool reverse = false, bool tagOpt = false)
-{
-	int t_num = omp_get_max_threads();
-	// Create local counting variables to avoid concurrency problems.
-	seqan::String<unsigned> minOverlap;
-	seqan::String<unsigned> maxOverlap;
-    std::vector<AdapterTrimmingStats> adapterTrimmingStatsVector;
-	seqan::resize(minOverlap, t_num, std::numeric_limits<unsigned>::max());
-	seqan::resize(maxOverlap, t_num, 0);
-    seqan::resize(adapterTrimmingStatsVector, t_num);
-	int len = length(set);
-	SEQAN_OMP_PRAGMA(parallel for schedule(static))
-    for (int i = 0; i < len; ++i)
-    {
-        if (empty(value(set, i)))
-            continue;
-        const int t_id = omp_get_thread_num();
-        // Every thread has its own adapterTrimmingStatsVector
-        const unsigned over = stripAdapter(value(set, i), adapterTrimmingStatsVector[t_id], adapterSet, spec, reverse);
-        if (tagOpt && over != 0)
-            insertAfterFirstToken(idSet[i], TId(":AdapterRemoved"));
-	}
-    std::for_each(adapterTrimmingStatsVector.begin(), adapterTrimmingStatsVector.end(), 
-        [&stats](AdapterTrimmingStats const& _stats) {stats += _stats;});
-	return stats.a1count + stats.a2count;
-}
-
-template <typename TSeq, typename TId, typename TSpec>
-unsigned stripReverseAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& IdSet, TSeq const& adapter, TSpec const& spec,
-		AdapterTrimmingStats& stats, bool tagOpt)
-{
-	typedef typename Value<TSeq>::Type TAlphabet;
-	typedef typename STRING_REVERSE_COMPLEMENT<TAlphabet>::Type TReverseComplement;
-	TReverseComplement mod(adapter);
-	return stripAdapterBatch(set, IdSet, mod, spec, stats, true, tagOpt);
 }
 
 #endif  // #ifndef SANDBOX_GROUP3_APPS_SEQDPT_ADAPTERTRIMMING_H_
