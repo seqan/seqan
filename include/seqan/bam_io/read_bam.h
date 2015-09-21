@@ -96,6 +96,7 @@ readHeader(BamHeader & header,
            TForwardIter & iter,
            Bam const & /*tag*/)
 {
+    clear(header);
     // Read BAM magic string.
     String<char, Array<4> > magic;
     read(magic, iter, 4);
