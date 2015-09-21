@@ -695,17 +695,20 @@ struct QualityTrimmingParams
        QualityTrimmingParams() : trim_mode(E_WINDOW), cutoff(-1), min_length(1), run(false) {};
 };
 
+struct ProgramVars
+{
+    seqan::SeqFileIn fileStream1, fileStream2;
+};
+
 struct ProgramParams
 {
     unsigned int fileCount;
-    unsigned int readCount;
-    double processTime, ioTime;
-    seqan::SeqFileIn fileStream1, fileStream2;
     bool showSpeed;
     unsigned int firstReads;
     unsigned records;
+    unsigned int num_threads;
 
-    ProgramParams() : fileCount(0), readCount(0), processTime(0), ioTime(0), showSpeed(false), firstReads(0), records(0) {};
+    ProgramParams() : fileCount(0), showSpeed(false), firstReads(0), records(0), num_threads(0) {};
 };
 
 //TODO(singer): THIS NEEDS TO BE REDONE/DELETED
@@ -1156,24 +1159,24 @@ int loadQualityTrimmingParams(seqan::ArgumentParser const & parser, QualityTrimm
     return 0;
 }
 
-int loadProgramParams(seqan::ArgumentParser const & parser, ProgramParams & params)
+int loadProgramParams(seqan::ArgumentParser const & parser, ProgramParams& params, ProgramVars& vars)
 {
     params.fileCount = getArgumentValueCount(parser, 0);
     // Load files.
     seqan::CharString fileName1, fileName2;
     getArgumentValue(fileName1, parser, 0, 0);
-    if (openStream(fileName1, params.fileStream1) != 0)
+    if (openStream(fileName1, vars.fileStream1) != 0)
     {
         return 1;
     }
     if (params.fileCount == 2)
     {
         getArgumentValue(fileName2, parser, 0, 1);
-        if (openStream(fileName2, params.fileStream2) != 0)
+        if (openStream(fileName2, vars.fileStream2) != 0)
         {
             return 1;
         }
-        if (value(format(params.fileStream1)) != value(format(params.fileStream2)))
+        if (value(format(vars.fileStream1)) != value(format(vars.fileStream2)))
         {
             std::cerr << "Input files must have the same file format.\n";
             return 1;
@@ -1185,11 +1188,15 @@ int loadProgramParams(seqan::ArgumentParser const & parser, ProgramParams & para
     if (seqan::isSet(parser, "fr"))
         getOptionValue(params.firstReads, parser, "fr");
 
+    params.num_threads = 1;
+    getOptionValue(params.num_threads, parser, "tnum");
+    omp_set_num_threads(params.num_threads);
+
     getOptionValue(params.records, parser, "r");
     return 0;
 }
 
-int checkParams(ProgramParams const & programParams, ProcessingParams const & processingParams,
+int checkParams(ProgramParams const & programParams, ProgramVars const& programVars, ProcessingParams const & processingParams,
     DemultiplexingParams const & demultiplexingParams, AdapterTrimmingParams const & adapterTrimmingParams,
     QualityTrimmingParams & qualityTrimmingParams)
 {
@@ -1204,9 +1211,9 @@ int checkParams(ProgramParams const & programParams, ProcessingParams const & pr
     // If quality trimming was selected, check if file format includes qualities.
     if (qualityTrimmingParams.run)
     {
-        if ((value(format(programParams.fileStream1)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fastq>::VALUE) ||
+        if ((value(format(programVars.fileStream1)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fastq>::VALUE) ||
             ((programParams.fileCount == 2) &&
-            (value(format(programParams.fileStream2)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fastq>::VALUE)))
+            (value(format(programVars.fileStream2)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fastq>::VALUE)))
         {
             std::cerr << "\nQuality trimming requires quality information, please specify fq files." << std::endl;
             return 1;
@@ -1733,16 +1740,16 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
     outStream << std::endl;
     outStream << "\r\rRead statistics\n";
     outStream << "===============\n";
-    outStream << "Reads processed:\t" << read_factor * programParams.readCount;
+    outStream << "Reads processed:\t" << read_factor * generalStats.readCount;
     if (paired) 
     {
-        outStream << " (2 * " << programParams.readCount << ")";
+        outStream << " (2 * " << generalStats.readCount << ")";
     }
     outStream << std::endl;
     double dropped = qualityParams.stats.dropped_1 + qualityParams.stats.dropped_2 + generalStats.removedSeqs
         + generalStats.removedSeqsShort + (demultiplexParams.exclude * demultiplexParams.stats.groups[0]);
     outStream << "  Reads dropped:\t" << dropped << "\t(" << std::setprecision(3) 
-        << dropped / (double(programParams.readCount * read_factor)) * 100 << "%)\n";
+        << dropped / (double(generalStats.readCount * read_factor)) * 100 << "%)\n";
     if (dropped != 0.0)
     {
         if (generalStats.removedSeqs != 0)
@@ -1805,19 +1812,19 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
             << std::setprecision(3) << (double)usedBarcodes/(double)barcodesTotal*100 << "%)\n";
         outStream << "Reads per barcode:\n";
         outStream << "Unidentified:\t" << read_factor * demultiplexParams.stats.groups[0];
-        if (programParams.readCount != 0)
+        if (generalStats.readCount != 0)
         {
             outStream  << "\t\t(" << std::setprecision(3) << (double)demultiplexParams.stats.groups[0] /
-                ((double)programParams.readCount) * 100 << "%)";
+                ((double)generalStats.readCount) * 100 << "%)";
         }  
         outStream << "\n";
         for (unsigned i = 1; i < length(demultiplexParams.stats.groups); ++i)
         {
             outStream << demultiplexParams.barcodeIds[i-1]<<":\t" << read_factor * demultiplexParams.stats.groups[i];
-            if (programParams.readCount != 0)
+            if (generalStats.readCount != 0)
             {
                 outStream  << "\t\t(" << std::setprecision(3) << (double)demultiplexParams.stats.groups[i] /
-                    ((double)programParams.readCount) * 100 << "%)";
+                    ((double)generalStats.readCount) * 100 << "%)";
             }
             outStream << "\n";
         }
@@ -1826,18 +1833,18 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
     outStream << "File statistics\n";
     outStream << "===============\n";
     // How many reads are left.
-    int survived1 = programParams.readCount - qualityParams.stats.dropped_1
+    int survived1 = generalStats.readCount - qualityParams.stats.dropped_1
         - ((generalStats.removedSeqs +  generalStats.removedSeqsShort
         + (demultiplexParams.exclude * demultiplexParams.stats.groups[0])) / read_factor);
-    int survived2 = programParams.readCount - qualityParams.stats.dropped_2
+    int survived2 = generalStats.readCount - qualityParams.stats.dropped_2
         - ((generalStats.removedSeqs + generalStats.removedSeqsShort
         + (demultiplexParams.exclude * demultiplexParams.stats.groups[0])) / read_factor);
     // In percentage points.
-    double surv_proc_1 = (double)survived1 / (double)programParams.readCount * 100;
-    double surv_proc_2 = (double)survived2 / (double)programParams.readCount * 100;
+    double surv_proc_1 = (double)survived1 / (double)generalStats.readCount * 100;
+    double surv_proc_2 = (double)survived2 / (double)generalStats.readCount * 100;
     outStream << "File 1:\n";
     outStream << "-------\n";
-    outStream << "  Surviving: " << survived1 << "/" << programParams.readCount
+    outStream << "  Surviving: " << survived1 << "/" << generalStats.readCount
               << " (" << std::setprecision(3) << surv_proc_1 << "%)\n";
     if (adapter)
     {
@@ -1849,7 +1856,7 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
         outStream << "File 2:\n";
         outStream << "-------\n";
         outStream << "  Surviving: " << survived2 << "/"
-                  << programParams.readCount << " (" << surv_proc_2 << "%)\n";
+                  << generalStats.readCount << " (" << surv_proc_2 << "%)\n";
         if (adapter)
         {
             outStream << "   Adapters: " << adapterParams.stats.a1count << "\n";
@@ -1868,20 +1875,20 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
     {
         outStream << "Time statistics:\n";
         outStream << "==================\n";
-        outStream << "Processing time: " << std::setw(5) << programParams.processTime << " seconds.\n";
-        outStream << "       I/O time: " << std::setw(5) << programParams.ioTime << " seconds.\n";
+        outStream << "Processing time: " << std::setw(5) << generalStats.processTime << " seconds.\n";
+        outStream << "       I/O time: " << std::setw(5) << generalStats.ioTime << " seconds.\n";
         outStream << std::endl;
     }
 }
 
 template < template<typename> typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value> >
-unsigned int readReads(std::vector<TRead<TSeq>>& reads, ProgramParams& programParams, bool = false)
+unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int records, ProgramVars& programVars, bool = false)
 {
+    reads.resize(records);
     unsigned int i = 0;
-    reads.resize(programParams.records);
-    while (i < programParams.records && !atEnd(programParams.fileStream1))
+    while (i < records && !atEnd(programVars.fileStream1))
     {
-        readRecord(reads[i].id, reads[i].seq, programParams.fileStream1);
+        readRecord(reads[i].id, reads[i].seq, programVars.fileStream1);
         ++i;
     }
     reads.resize(i);
@@ -1889,30 +1896,25 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, ProgramParams& programPa
 }
 
 template < template<typename> typename TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value> >
-unsigned int readReads(std::vector<TRead<TSeq>>& reads, ProgramParams& programParams)
+unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int records, ProgramVars& programVars)
 {
+    reads.resize(records);
     unsigned int i = 0;
-    reads.resize(programParams.records);
-    while (i < programParams.records && !atEnd(programParams.fileStream1))
+    while (i < records && !atEnd(programVars.fileStream1))
     {
-        readRecord(reads[i].id, reads[i].seq, programParams.fileStream1);
-        readRecord(reads[i].idRev, reads[i].seqRev, programParams.fileStream2);
+        readRecord(reads[i].id, reads[i].seq, programVars.fileStream1);
+        readRecord(reads[i].idRev, reads[i].seqRev, programVars.fileStream2);
         ++i;
     }
     reads.resize(i);
     return i;
 }
 
-
-struct ReadWriterBase {
-    virtual ~ReadWriterBase() = default;
-};
-
 template<template<typename> typename TRead, typename TSeq>
-struct ReadWriter : ReadWriterBase
+struct ReadWriter
 {
-    ReadWriter(std::vector<TRead<TSeq>>&& reads, OutputStreams& outputStreams, DemultiplexingParams& demultiplexingParams)
-        : tlsReads(std::move(reads)), _future(std::async(std::launch::async | std::launch::deferred, [&outputStreams, &demultiplexingParams, this]() {outputStreams.writeSeqs(std::move(tlsReads), demultiplexingParams.barcodeIds);}))
+    ReadWriter(std::vector<TRead<TSeq>>&& reads, OutputStreams& outputStreams, const DemultiplexingParams& demultiplexingParams)
+        : tlsReads(std::move(reads)), _future(std::async(std::launch::async, [&outputStreams, &demultiplexingParams, this]() {outputStreams.writeSeqs(std::move(tlsReads), demultiplexingParams.barcodeIds);}))
     {
         //std::cout << std::endl<<"ctor" << std::endl;
     }
@@ -1923,19 +1925,46 @@ struct ReadWriter : ReadWriterBase
     std::future<void> _future;
 };
 
+template<template<typename> typename TRead, typename TSeq>
+struct ReadReader
+{
+    ReadReader(unsigned int records, ProgramVars& programVars)
+    {
+        _future = std::async(std::launch::async,
+            [this, records, &programVars]() {return readReads(tlsReads, records, programVars);});
+        //std::cout << std::endl<<"ctor" << std::endl;
+    }
+    ~ReadReader() {
+        //    std::cout << std::endl << "dtor" << std::endl; 
+    };
+    std::vector<TRead<TSeq>> tlsReads;
+    std::future<unsigned int> _future;
+};
+
 // END FUNCTION DEFINITIONS ---------------------------------------------
 template<template <typename>typename TRead, typename TSeq, typename TParser, typename TEsaFinder>
-int mainLoop(TRead<TSeq>, ProgramParams& programParams, DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
+int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
     QualityTrimmingParams& qualityTrimmingParams, TParser& parser, TEsaFinder& esaFinder, CharString& output, bool tagOpt, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
     OutputStreams& outputStreams)
 {
     std::vector<TRead<TSeq>> readSet(programParams.records);
     TRead<TSeq> read;
     SEQAN_PROTIMESTART(loopTime);
-    std::unique_ptr<ReadWriterBase> readWriter;
-    while (!atEnd(programParams.fileStream1) && (programParams.readCount < programParams.firstReads))
+    std::unique_ptr<ReadWriter<TRead, TSeq>> readWriter;
+    std::unique_ptr<ReadReader<TRead, TSeq>> readReader;
+    while (generalStats.readCount < programParams.firstReads)
     {
-        programParams.readCount += readReads(readSet, programParams);
+        if(readReader == false)
+            readReader.reset(new ReadReader<TRead, TSeq>(programParams.records, programVars));
+        const auto numReadsRead = readReader->_future.get();
+        if (numReadsRead == 0)
+            break;
+        generalStats.readCount += numReadsRead;
+        readSet = std::move(readReader->tlsReads);
+        if (programParams.num_threads > 1)
+            readReader.reset(new ReadReader<TRead, TSeq>(programParams.records, programVars));
+
+        //generalStats.readCount += readReads(readSet, programParams.records, programVars);
         SEQAN_PROTIMESTART(processTime);            // START of processing time.
 
         //loadMultiplex(multiplexInFile, demultiplexingParams, records);
@@ -1959,18 +1988,21 @@ int mainLoop(TRead<TSeq>, ProgramParams& programParams, DemultiplexingParams& de
 
         // Postprocessing
         postprocessingStage(readSet, processingParams, generalStats);
-        programParams.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
+        generalStats.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
 
-                                                                        // Append to output file.
-        //auto readsCopy = readSet;
-        //auto future = std::async(std::launch::async, [&outputStreams, &readsCopy, &demultiplexingParams]() {
-        //    outputStreams.writeSeqs(readsCopy, demultiplexingParams.barcodeIds);});
-        readWriter.reset(new ReadWriter<TRead,TSeq>(std::move(readSet), outputStreams, demultiplexingParams));
-        // Information
-        if (programParams.showSpeed)
-            std::cout << "\r" << programParams.readCount << "   " << static_cast<int>(programParams.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
+        // Write processed reads to file
+        if (programParams.num_threads > 1)
+            // reset calls the destructor of the future inside ReadWriter, this destructor blocks until the previous write has completed
+            // therefore only 1 write at the time will be active
+            readWriter.reset(new ReadWriter<TRead, TSeq>(std::move(readSet), outputStreams, demultiplexingParams));
         else
-            std::cout << "\r" << programParams.readCount;
+            outputStreams.writeSeqs(readSet, demultiplexingParams.barcodeIds);
+        
+        // Print information
+        if (programParams.showSpeed)
+            std::cout << "\r" << generalStats.readCount << "   " << static_cast<int>(generalStats.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
+        else
+            std::cout << "\r" << generalStats.readCount;
     }
     return 0;
 }
@@ -2006,10 +2038,6 @@ int flexbarMain(int argc, char const ** argv)
 
     seqan::CharString output;
     getOptionValue(output, parser, "output");
-
-    int threads = 1;
-    getOptionValue(threads, parser, "tnum");
-    omp_set_num_threads(threads);
 
     //--------------------------------------------------
     // Parse pre- and postprocessing parameters.
@@ -2150,10 +2178,11 @@ int flexbarMain(int argc, char const ** argv)
     //--------------------------------------------------
 
     ProgramParams programParams;
-    if (loadProgramParams(parser, programParams) != 0)
+    ProgramVars programVars;
+    if (loadProgramParams(parser, programParams, programVars) != 0)
         return 1;
 
-    if (checkParams(programParams, processingParams, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams) != 0)
+    if (checkParams(programParams, programVars, processingParams, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams) != 0)
         return 1;
 
     //--------------------------------------------------
@@ -2161,7 +2190,7 @@ int flexbarMain(int argc, char const ** argv)
     //--------------------------------------------------
 
     // Prepare output stream object and initial mapping from StringSets to files.
-    bool noQuality = (value(format(programParams.fileStream1)) ==
+    bool noQuality = (value(format(programVars.fileStream1)) ==
                       Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE);
     if (isSet(parser, "nq"))
     {
@@ -2222,21 +2251,21 @@ int flexbarMain(int argc, char const ** argv)
             std::cout << "\tCompress output: NO" << "\n";
         }
         */
-		if (isSet(parser, "fr") && (value(format(programParams.fileStream1)) !=
+		if (isSet(parser, "fr") && (value(format(programVars.fileStream1)) !=
 			Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE))
 		{
 			std::cout << "\tForce no-quality output: YES\n";
 		}
-		if (isSet(parser, "nq") && (value(format(programParams.fileStream1)) !=
+		if (isSet(parser, "nq") && (value(format(programVars.fileStream1)) !=
                                     Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE))
         {
             std::cout << "\tProcess only first n reads: " << programParams.firstReads << "\n";
         }
-        else if (value(format(programParams.fileStream1)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE)
+        else if (value(format(programVars.fileStream1)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE)
         {
             std::cout << "\tForce no-quality output: NO\n";
         }
-        std::cout << "\tNumber of threads: " << threads << "\n";
+        std::cout << "\tNumber of threads: " << programParams.num_threads << "\n";
         if(flexiProgram == ADAPTER_REMOVAL || flexiProgram == QUALITY_CONTROL|| flexiProgram == ALL_STEPS)
         {
             if (isSet(parser, "t"))
@@ -2388,25 +2417,25 @@ int flexbarMain(int argc, char const ** argv)
         if (!demultiplexingParams.run)
             outputStreams.addStream("", 0, useDefault);
         if(demultiplexingParams.runx)
-            mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
+            mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
         else
-            mainLoop(Read<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
+            mainLoop(Read<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
     }
      else
      {
          if (!demultiplexingParams.run)
              outputStreams.addStreams("", "", 0, useDefault);
          if (demultiplexingParams.runx)
-             mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
+             mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
          else
-             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
+             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, output, tagOpt, multiplexInFile, generalStats, outputStreams);
 
 
             //readRecords(idSet1[0], seqSet1[0], programParams.fileStream1, programParams.records);
             //readRecords(idSet2[0], seqSet2[0], programParams.fileStream2, programParams.records);
     }
     double loop = SEQAN_PROTIMEDIFF(loopTime);
-    programParams.ioTime = loop - programParams.processTime;
+    generalStats.ioTime = loop - generalStats.processTime;
 
     printStatistics(programParams, generalStats, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, !isSet(parser, "ni"), std::cout);
     if (isSet(parser, "st"))

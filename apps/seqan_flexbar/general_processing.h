@@ -67,8 +67,11 @@ struct GeneralStats
 	unsigned removedSeqs;       //Number of deleted sequences due to N's
     unsigned long uncalledBases;//Number of uncalled bases (evtl. Masked) in surviving sequences
     unsigned removedSeqsShort;  //Number of deleted sequences due to shortness.
+    unsigned int readCount;
+    double processTime;
+    double ioTime;
 
-    GeneralStats() : removedSeqs(0), uncalledBases(0), removedSeqsShort(0) {};
+    GeneralStats() : removedSeqs(0), uncalledBases(0), removedSeqsShort(0), readCount(0), processTime(0), ioTime(0) {};
 };
 
 // ============================================================================

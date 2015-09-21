@@ -56,6 +56,12 @@ struct ReadBase
 
     ReadBase() = default;
     ReadBase(const ReadBase& rhs) = default;
+    ReadBase(ReadBase&& rhs)
+    {
+        seq = std::move(rhs.seq);
+        id = std::move(rhs.id);
+        demuxResult = rhs.demuxResult;
+    }
 
     bool operator==(const ReadBase& rhs) const
     {
@@ -74,6 +80,21 @@ struct ReadBase
 template<typename TSeq>
 struct Read : ReadBase<TSeq>
 {
+    //Read() = default;
+    //Read(const Read& rhs) = default;
+    //Read(Read&& rhs)
+    //{
+    //}
+    //bool operator==(const Read& rhs) const
+    //{
+    //    return ReadBase::operator==(rhs);
+    //}
+
+    //Read& operator=(const Read&& rhs)
+    //{
+    //    ReadBase::operator=(std::move(rhs));
+    //    return *this;
+    //}
 };
 
 template<typename TSeq>
@@ -206,11 +227,6 @@ auto _eraseSeqsDisabled(const Trem& rem, const TremVal remVal, TContainer&&... c
     // blocks until all futures are ready
     for_each_argument(eraseElementsWrapper, std::forward<TContainer>(container)...);
     return numRemoveElements;
-}
-
-std::string prefix2(const std::string& str, unsigned int len)
-{
-    return str.substr(0, len);
 }
 
 #endif // HELPERFUNCTIONS_H_
