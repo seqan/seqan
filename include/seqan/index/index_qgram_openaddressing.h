@@ -104,6 +104,9 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Cargo<Index>::Type                    TCargo;
         typedef typename Size<Index>::Type                    TSize;
 
+        typedef typename Fibre<Index, QGramHashSA>::Type            THashSA;        
+        typedef typename Fibre<Index, QGramCountsSA>::Type          TCountsSA;
+
         TTextMember     text;        // underlying text
         TSA                sa;            // suffix array sorted by the first q chars
         TDir            dir;        // bucket directory
@@ -113,6 +116,9 @@ namespace SEQAN_NAMESPACE_MAIN
         TCargo            cargo;        // user-defined cargo
         TBucketMap        bucketMap;    // bucketMap table (used by open-addressing index)
         TSize            stepSize;    // store every <stepSize>'th q-gram in the index
+
+        THashSA             hashSA;
+        TCountsSA           countsSA;
 
         double            alpha;        // for m entries the hash map has at least size alpha*m
 
@@ -276,6 +282,9 @@ namespace SEQAN_NAMESPACE_MAIN
         // otherwise do quadratic probing to avoid clustering (Cormen 1998)
         TSize delta = 0;
         (void)delta;
+
+        unsigned count = 0;
+
         while (bucketMap.qgramCode[h1] != code && bucketMap.qgramCode[h1] != TBucketMap::EMPTY)
         {
 #ifdef SEQAN_OPENADDRESSING_COMPACT
@@ -283,9 +292,12 @@ namespace SEQAN_NAMESPACE_MAIN
 #else
             h1 = (h1 + delta + 1) & hlen;       // for power2-sized tables the (i*i+i)/2 probing guarantees the same
             ++delta;
+            
+            //count++;
 #endif
         }
         return h1;
+        //return count;
     }
 
     template <typename TBucketMap>
@@ -312,11 +324,11 @@ namespace SEQAN_NAMESPACE_MAIN
         double num_qgrams = _qgramQGramCount(index) * index.alpha;
         double max_qgrams = pow((double)ValueSize<TTextValue>::VALUE, (double)weight(indexShape(index)));
         __int64 qgrams;
-
+        std::cout << num_qgrams << " " << sizeof(TDirValue) << " " << sizeof(THashValue) << " " << max_qgrams << std::endl;
         // compare size of open adressing with 1-1 mapping and use the smaller one
         if (num_qgrams * (sizeof(TDirValue) + sizeof(THashValue)) < max_qgrams * sizeof(TDirValue))
         {
-            qgrams = (__int64)ceil(num_qgrams);
+           qgrams = (__int64)ceil(num_qgrams);
 #ifndef SEQAN_OPENADDRESSING_COMPACT
             __int64 power2 = 1;
             while (power2 < qgrams)
@@ -332,66 +344,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
         return qgrams + 1;
     }
-
-// ----------------------------------------------------------------------------
-// Function open()
-// ----------------------------------------------------------------------------
-
-template < typename TText, typename TShapeSpec>
-inline bool open(Index<TText, IndexQGram<TShapeSpec, OpenAddressing> > &index, const char *fileName, int openMode)
-{
-    String<char> name;
-    
-    name = fileName;    append(name, ".txt");
-    if (!open(getFibre(index, QGramText()), toCString(name), openMode)) return false;
-    
-    name = fileName;    append(name, ".sa");
-    if (!open(getFibre(index, QGramSA()), toCString(name), openMode)) return false;
-    
-    name = fileName;    append(name, ".dir");
-    if (!open(getFibre(index, QGramDir()), toCString(name), openMode)) return false;
-
-    name = fileName;    append(name, ".bkt");
-    if (!open(getFibre(index, QGramBucketMap()).qgramCode, toCString(name), openMode)) return false;
-
-    return true;
-}
-
-template <typename TText, typename TShapeSpec>
-inline bool open(Index<TText, IndexQGram<TShapeSpec, OpenAddressing> > &index, const char *fileName)
-{
-    return open(index, fileName, OPEN_RDONLY);
-}
-
-// ----------------------------------------------------------------------------
-// Function save()
-// ----------------------------------------------------------------------------
-
-template <typename TText, typename TShapeSpec>
-inline bool save(Index<TText, IndexQGram<TShapeSpec, OpenAddressing> > &index, const char *fileName, int openMode)
-{
-    String<char> name;
-    
-    name = fileName;    append(name, ".txt");
-    if (!save(getFibre(index, QGramText()), toCString(name), openMode)) return false;
-    
-    name = fileName;    append(name, ".sa");
-    if (!save(getFibre(index, QGramSA()), toCString(name), openMode)) return false;
-    
-    name = fileName;    append(name, ".dir");
-    if (!save(getFibre(index, QGramDir()), toCString(name), openMode)) return false;
-
-    name = fileName;    append(name, ".bkt");
-    if (!save(getFibre(index, QGramBucketMap()).qgramCode, toCString(name), openMode)) return false;
-
-    return true;
-}
-
-template <typename TText, typename TShapeSpec>
-inline bool save(Index<TText, IndexQGram<TShapeSpec, OpenAddressing> > &index, const char *fileName)
-{
-    return save(index, fileName, OPEN_WRONLY | OPEN_CREATE);
-}
 
 }
 
