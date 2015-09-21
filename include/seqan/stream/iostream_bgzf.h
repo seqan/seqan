@@ -1,38 +1,26 @@
-/*
-zipstream Library License:
---------------------------
-
-The zlib/libpng License Copyright (c) 2003 Jonathan de Halleux.
-
-This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
-
-Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
-
-1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-
-2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
-
-3. This notice may not be removed or altered from any source distribution
-
-Author: Jonathan de Halleux, dehalleux@pelikhan.com, 2003   (original zlib stream)
-Author: David Weese, dave.weese@gmail.com, 2014             (extension to parallel block-wise compression in bgzf format)
-*/
+// zipstream Library License:
+// --------------------------
+//
+// The zlib/libpng License Copyright (c) 2003 Jonathan de Halleux.
+//
+// This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source distribution
+//
+//
+// Author: Jonathan de Halleux, dehalleux@pelikhan.com, 2003   (original zlib stream)
+// Author: David Weese, dave.weese@gmail.com, 2014             (extension to parallel block-wise compression in bgzf format)
 
 #ifndef INCLUDE_SEQAN_STREAM_IOSTREAM_BGZF_H_
 #define INCLUDE_SEQAN_STREAM_IOSTREAM_BGZF_H_
 
-
-#include <vector>
-#include <iostream>
-#include <algorithm>
-#include <zlib.h>
-#include "iostream_zutil.h"
-
 namespace seqan {
-
-/// default gzip buffer size,
-/// change this to suite your needs
-const size_t default_buffer_size = 4096;
 
 const unsigned BGZF_MAX_BLOCK_SIZE = 64 * 1024;
 const unsigned BGZF_BLOCK_HEADER_LENGTH = 18;
@@ -43,13 +31,13 @@ const unsigned ZLIB_BLOCK_OVERHEAD = 5; // 5 bytes block overhead (see 3.2.4. at
 // always fits in one block even for level Z_NO_COMPRESSION.
 const unsigned BGZF_BLOCK_SIZE = BGZF_MAX_BLOCK_SIZE - BGZF_BLOCK_HEADER_LENGTH - BGZF_BLOCK_FOOTER_LENGTH - ZLIB_BLOCK_OVERHEAD;
 
-/// Compression strategy, see bgzf doc.
-enum EStrategy
-{
-    StrategyFiltered = 1,
-    StrategyHuffmanOnly = 2,
-    DefaultStrategy = 0
-};
+// ===========================================================================
+// Classes
+// ===========================================================================
+
+// --------------------------------------------------------------------------
+// Class basic_bgzf_streambuf
+// --------------------------------------------------------------------------
 
 template<
     typename Elem,
@@ -285,9 +273,13 @@ public:
             overflow(EOF);
     }
 
-    /// returns a reference to the output stream
+    // returns a reference to the output stream
     ostream_reference get_ostream() const    { return serializer.worker.ostream; };
 };
+
+// --------------------------------------------------------------------------
+// Class basic_unbgzf_streambuf
+// --------------------------------------------------------------------------
 
 template<
     typename Elem,
@@ -738,14 +730,14 @@ public:
         return seekoff(off_type(pos), std::ios_base::beg, openMode);
     }
 
-    /// returns the compressed input istream
-    istream_reference get_istream()    { return serializer.istream;};
+    // returns the compressed input istream
+    istream_reference get_istream()    { return serializer.istream; };
 };
 
-/* \brief Base class for zip ostreams
+// --------------------------------------------------------------------------
+// Class basic_bgzf_ostreambase
+// --------------------------------------------------------------------------
 
-Contains a basic_bgzf_streambuf.
-*/
 template<
     typename Elem,
     typename Tr = std::char_traits<Elem>,
@@ -756,14 +748,8 @@ template<
 class basic_bgzf_ostreambase : virtual public std::basic_ios<Elem,Tr>
 {
 public:
-    typedef std::basic_ostream<Elem, Tr>& ostream_reference;
-    typedef basic_bgzf_streambuf<
-        Elem,
-        Tr,
-        ElemA,
-        ByteT,
-        ByteAT
-        > bgzf_streambuf_type;
+    typedef std::basic_ostream<Elem, Tr>&                        ostream_reference;
+    typedef basic_bgzf_streambuf<Elem, Tr, ElemA, ByteT, ByteAT> bgzf_streambuf_type;
 
     basic_bgzf_ostreambase(ostream_reference ostream_)
         : m_buf(ostream_)
@@ -771,25 +757,25 @@ public:
         this->init(&m_buf );
     };
 
-    /// returns the underlying zip ostream object
-    bgzf_streambuf_type* rdbuf() { return &m_buf; };
+    // returns the underlying zip ostream object
+    bgzf_streambuf_type* rdbuf()            { return &m_buf; };
+    // returns the bgzf error state
+    int get_zerr() const                    { return m_buf.get_err(); };
+    // returns the uncompressed data crc
+    long get_crc() const                    { return m_buf.get_crc(); };
+    // returns the compressed data size
+    long get_out_size() const               { return m_buf.get_out_size(); };
+    // returns the uncompressed data size
+    long get_in_size() const                { return m_buf.get_in_size(); };
 
-    /// returns the bgzf error state
-    int get_zerr() const                    {    return m_buf.get_err();};
-    /// returns the uncompressed data crc
-    long get_crc() const                    {    return m_buf.get_crc();};
-    /// returns the compressed data size
-    long get_out_size() const                {    return m_buf.get_out_size();};
-    /// returns the uncompressed data size
-    long get_in_size() const                {    return m_buf.get_in_size();};
 private:
     bgzf_streambuf_type m_buf;
 };
 
-/* \brief Base class for unzip istreams
+// --------------------------------------------------------------------------
+// Class basic_bgzf_istreambase
+// --------------------------------------------------------------------------
 
-Contains a basic_unbgzf_streambuf.
-*/
 template<
     typename Elem,
     typename Tr = std::char_traits<Elem>,
@@ -800,14 +786,8 @@ template<
 class basic_bgzf_istreambase : virtual public std::basic_ios<Elem,Tr>
 {
 public:
-    typedef std::basic_istream<Elem, Tr>& istream_reference;
-    typedef basic_unbgzf_streambuf<
-        Elem,
-        Tr,
-        ElemA,
-        ByteT,
-        ByteAT
-        > unbgzf_streambuf_type;
+    typedef std::basic_istream<Elem, Tr>&                           istream_reference;
+    typedef basic_unbgzf_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>  unbgzf_streambuf_type;
 
     basic_bgzf_istreambase(istream_reference ostream_)
         : m_buf(ostream_)
@@ -815,44 +795,26 @@ public:
         this->init(&m_buf );
     };
 
-    /// returns the underlying unzip istream object
+    // returns the underlying unzip istream object
     unbgzf_streambuf_type* rdbuf() { return &m_buf; };
 
-    /// returns the bgzf error state
-    int get_zerr() const                    {    return m_buf.get_zerr();};
-    /// returns the uncompressed data crc
-    long get_crc() const                    {    return m_buf.get_crc();};
-    /// returns the uncompressed data size
-    long get_out_size() const                {    return m_buf.get_out_size();};
-    /// returns the compressed data size
-    long get_in_size() const                {    return m_buf.get_in_size();};
+    // returns the bgzf error state
+    int get_zerr() const                    { return m_buf.get_zerr(); };
+    // returns the uncompressed data crc
+    long get_crc() const                    { return m_buf.get_crc(); };
+    // returns the uncompressed data size
+    long get_out_size() const               { return m_buf.get_out_size(); };
+    // returns the compressed data size
+    long get_in_size() const                { return m_buf.get_in_size(); };
+
 private:
     unbgzf_streambuf_type m_buf;
 };
 
-/*brief A zipper ostream
+// --------------------------------------------------------------------------
+// Class basic_bgzf_ostream
+// --------------------------------------------------------------------------
 
-This class is a ostream decorator that behaves 'almost' like any other ostream.
-
-At construction, it takes any ostream that shall be used to output of the compressed data.
-
-When finished, you need to call the special method zflush or call the destructor
-to flush all the intermidiate streams.
-
-Example:
-\code
-// creating the target zip string, could be a fstream
-ostringstream ostringstream_;
-// creating the zip layer
-bgzf_ostream zipper(ostringstream_);
-
-
-// writing data
-zipper<<f<<" "<<d<<" "<<ui<<" "<<ul<<" "<<us<<" "<<c<<" "<<dum;
-// zip ostream needs special flushing...
-zipper.zflush();
-\endcode
-*/
 template<
     typename Elem,
     typename Tr = std::char_traits<Elem>,
@@ -865,18 +827,16 @@ class basic_bgzf_ostream :
     public std::basic_ostream<Elem,Tr>
 {
 public:
-    typedef basic_bgzf_ostreambase<
-        Elem,Tr,ElemA,ByteT,ByteAT> bgzf_ostreambase_type;
-    typedef std::basic_ostream<Elem,Tr> ostream_type;
-    typedef ostream_type& ostream_reference;
+    typedef basic_bgzf_ostreambase<Elem,Tr,ElemA,ByteT,ByteAT> bgzf_ostreambase_type;
+    typedef std::basic_ostream<Elem,Tr>                        ostream_type;
+    typedef ostream_type&                                      ostream_reference;
 
-    basic_bgzf_ostream(ostream_reference ostream_)
-    :
+    basic_bgzf_ostream(ostream_reference ostream_) :
         bgzf_ostreambase_type(ostream_),
         ostream_type(bgzf_ostreambase_type::rdbuf())
     {}
 
-    /// flush inner buffer and zipper buffer
+    // flush inner buffer and zipper buffer
     basic_bgzf_ostream<Elem,Tr>& zflush()
     {
         this->flush(); this->rdbuf()->flush(); return *this;
@@ -895,23 +855,10 @@ private:
 #endif
 };
 
-/* \brief A zipper istream
+// --------------------------------------------------------------------------
+// Class basic_bgzf_istream
+// --------------------------------------------------------------------------
 
-This class is a istream decorator that behaves 'almost' like any other ostream.
-
-At construction, it takes any istream that shall be used to input of the compressed data.
-
-Simlpe example:
-\code
-// create a stream on zip string
-istringstream istringstream_( ostringstream_.str());
-// create unzipper istream
-bgzf_istream unzipper( istringstream_);
-
-// read and unzip
-unzipper>>f_r>>d_r>>ui_r>>ul_r>>us_r>>c_r>>dum_r;
-\endcode
-*/
 template<
     typename Elem,
     typename Tr = std::char_traits<Elem>,
@@ -924,27 +871,26 @@ class basic_bgzf_istream :
     public std::basic_istream<Elem,Tr>
 {
 public:
-    typedef basic_bgzf_istreambase<
-        Elem,Tr,ElemA,ByteT,ByteAT> bgzf_istreambase_type;
-    typedef std::basic_istream<Elem,Tr> istream_type;
-    typedef istream_type& istream_reference;
-    typedef char byte_type;
+    typedef basic_bgzf_istreambase<Elem,Tr,ElemA,ByteT,ByteAT> bgzf_istreambase_type;
+    typedef std::basic_istream<Elem,Tr>                        istream_type;
+    typedef istream_type &                                     istream_reference;
+    typedef char                                               byte_type;
 
-    basic_bgzf_istream(istream_reference istream_)
-      :
+    basic_bgzf_istream(istream_reference istream_) :
         bgzf_istreambase_type(istream_),
         istream_type(bgzf_istreambase_type::rdbuf()),
         m_is_gzip(false),
         m_gbgzf_data_size(0)
     {};
 
-    /// returns true if it is a gzip file
-    bool is_gzip() const                {    return m_is_gzip;};
-    /// return data size check
-    bool check_data_size() const        {    return this->get_out_size() == m_gbgzf_data_size;};
+    // returns true if it is a gzip file
+    bool is_gzip() const                { return m_is_gzip; };
+    // return data size check
+    bool check_data_size() const        { return this->get_out_size() == m_gbgzf_data_size; };
 
-    /// return the data size in the file
-    long get_gbgzf_data_size() const        {    return m_gbgzf_data_size;};
+    // return the data size in the file
+    long get_gbgzf_data_size() const    { return m_gbgzf_data_size; };
+
 protected:
     static void read_long(istream_reference in_, unsigned long& x_);
 
@@ -959,17 +905,19 @@ private:
 #endif
 };
 
-/// A typedef for basic_bgzf_ostream<char>
+// ===========================================================================
+// Typedefs
+// ===========================================================================
+
+// A typedef for basic_bgzf_ostream<char>
 typedef basic_bgzf_ostream<char> bgzf_ostream;
-/// A typedef for basic_bgzf_ostream<wchar_t>
+// A typedef for basic_bgzf_ostream<wchar_t>
 typedef basic_bgzf_ostream<wchar_t> bgzf_wostream;
-/// A typedef for basic_bgzf_istream<char>
+// A typedef for basic_bgzf_istream<char>
 typedef basic_bgzf_istream<char> bgzf_istream;
-/// A typedef for basic_bgzf_istream<wchart>
+// A typedef for basic_bgzf_istream<wchart>
 typedef basic_bgzf_istream<wchar_t> bgzf_wistream;
 
 }  // namespace seqan
-
-#include "iostream_bgzf_impl.h"
 
 #endif // INCLUDE_SEQAN_STREAM_IOSTREAM_BGZF_H_
