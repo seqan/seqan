@@ -255,7 +255,7 @@ auto _eraseSeqsDisabled(const Trem& rem, const TremVal remVal, TContainer&&... c
     {
         auto eraseElements = [&rem, numRemoveElements, remVal](auto* seq)  // erase Elements using the remove erase idiom
         {
-            const auto beginAddr = &*begin(*seq));
+            const auto beginAddr = &*begin(*seq);
             std::remove_if(begin(*seq), end(*seq),
                 [&rem, &beginAddr, remVal](const auto& element) {
                 return rem[&element - beginAddr] == remVal;});
