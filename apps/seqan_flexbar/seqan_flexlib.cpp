@@ -1774,16 +1774,15 @@ struct ReadWriter
 template<template<typename> class TRead, typename TSeq>
 struct ReadReader
 {
-    ReadReader(unsigned int records, ProgramVars& programVars)
+    ReadReader(std::vector<TRead<TSeq>> &tlsReads, unsigned int records, ProgramVars& programVars)
     {
         _future = std::async(std::launch::async,
-            [this, records, &programVars]() {return readReads(tlsReads, records, programVars);});
+            [&tlsReads, records, &programVars]() {return readReads(tlsReads, records, programVars);});
         //std::cout << std::endl<<"ctor" << std::endl;
     }
     ~ReadReader() {
         //    std::cout << std::endl << "dtor" << std::endl; 
     };
-    std::vector<TRead<TSeq>> tlsReads;
     std::future<unsigned int> _future;
 };
 
@@ -1798,17 +1797,18 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
     SEQAN_PROTIMESTART(loopTime);
     std::unique_ptr<ReadWriter<TRead, TSeq>> readWriter;
     std::unique_ptr<ReadReader<TRead, TSeq>> readReader;
+    std::vector<TRead<TSeq>> tlsReads;
     while (generalStats.readCount < programParams.firstReads)
     {
         if(readReader == false)
-            readReader.reset(new ReadReader<TRead, TSeq>(programParams.records, programVars));
+            readReader.reset(new ReadReader<TRead, TSeq>(tlsReads, programParams.records, programVars));
         const auto numReadsRead = readReader->_future.get();
         if (numReadsRead == 0)
             break;
         generalStats.readCount += numReadsRead;
-        readSet = std::move(readReader->tlsReads);
+        readSet = std::move(tlsReads);
         if (programParams.num_threads > 1)
-            readReader.reset(new ReadReader<TRead, TSeq>(programParams.records, programVars));
+            readReader.reset(new ReadReader<TRead, TSeq>(tlsReads, programParams.records, programVars));
         else
             readReader.release();
 
