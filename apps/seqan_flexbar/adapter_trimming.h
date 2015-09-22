@@ -366,8 +366,7 @@ unsigned stripAdapterBatch(std::vector<TRead>& reads, TAdapterSet const& adapter
 {
     int t_num = omp_get_max_threads();
     // Create local counting variables to avoid concurrency problems.
-    std::vector<AdapterTrimmingStats> adapterTrimmingStatsVector;
-    seqan::resize(adapterTrimmingStatsVector, t_num);
+    std::vector<AdapterTrimmingStats> adapterTrimmingStatsVector(t_num);
     int len = length(reads);
     SEQAN_OMP_PRAGMA(parallel for schedule(static))
         for (int i = 0; i < len; ++i)
