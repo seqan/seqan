@@ -142,8 +142,8 @@ struct ReadMultiplex : ReadBase<TSeq>
     ReadMultiplex() = default;
     ReadMultiplex(const ReadMultiplex& rhs) = default;
     ReadMultiplex(ReadMultiplex&& rhs) noexcept(std::is_nothrow_move_constructible<TSeq>::value)
+    : ReadBase<TSeq>(std::move(rhs))
     {
-        ReadBase<TSeq>::ReadBase(std::move(rhs));
         demultiplex = std::move(rhs.demultiplex);
     }
 
@@ -169,8 +169,8 @@ struct ReadPairedEnd : ReadBase<TSeq>
     ReadPairedEnd() = default;
     ReadPairedEnd(const ReadPairedEnd& rhs) = default;
     ReadPairedEnd(ReadPairedEnd&& rhs) noexcept(std::is_nothrow_move_constructible<TSeq>::value)
+    : ReadBase<TSeq>(std::move(rhs))
     {
-        ReadBase<TSeq>::ReadBase(std::move(rhs));
         seqRev = std::move(rhs.seqRev);
         idRev = std::move(rhs.idRev);
     }
@@ -197,8 +197,8 @@ struct ReadMultiplexPairedEnd : ReadPairedEnd<TSeq>
     ReadMultiplexPairedEnd() = default;
     ReadMultiplexPairedEnd(const ReadMultiplexPairedEnd& rhs) = default;
     ReadMultiplexPairedEnd(ReadMultiplexPairedEnd&& rhs) noexcept(std::is_nothrow_move_constructible<TSeq>::value)
-    {
-        ReadPairedEnd<TSeq>::ReadPairedEnd(std::move(rhs));
+    : ReadPairedEnd<TSeq>(std::move(rhs))
+    {  
         demultiplex = std::move(rhs.demultiplex);
     }
 
