@@ -1809,6 +1809,8 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
         readSet = std::move(readReader->tlsReads);
         if (programParams.num_threads > 1)
             readReader.reset(new ReadReader<TRead, TSeq>(programParams.records, programVars));
+        else
+            readReader.release();
 
         //generalStats.readCount += readReads(readSet, programParams.records, programVars);
         SEQAN_PROTIMESTART(processTime);            // START of processing time.
