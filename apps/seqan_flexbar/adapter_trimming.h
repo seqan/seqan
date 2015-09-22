@@ -253,77 +253,6 @@ unsigned stripPair(TSeq& seq1, TSeq& seq2) noexcept
     return insert;
 }
 
-
-template <typename TSeq, typename TId>
-unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idSet1,
-    seqan::StringSet<TSeq>& set2, seqan::StringSet<TId>& idSet2, AdapterTrimmingStats& stats, bool tagOpt) noexcept
-{
-    int t_num = 1;
-#ifdef _OPENMP
-    t_num = omp_get_max_threads();
-#endif
-    // Create local counting variables to avoid concurrency problems.
-    unsigned a1count = 0, a2count = 0, overlapSum = 0;
-    seqan::String<unsigned> minOverlap;
-    seqan::String<unsigned> maxOverlap;
-    seqan::resize(minOverlap, t_num, std::numeric_limits<unsigned>::max());
-    seqan::resize(maxOverlap, t_num, 0);
-    int len = length(set1);
-    SEQAN_OMP_PRAGMA(parallel for schedule(static) reduction(+:a1count, a2count, overlapSum))
-        for (int i = 0; i < len; ++i)
-        {
-            // The reads processed in this iteration. The lengths will change after stripPair().
-            TSeq& read1 = value(set1, i);
-            TSeq& read2 = value(set2, i);
-            unsigned len1 = length(read1);
-            unsigned len2 = length(read2);
-            stripPair(read1, read2);
-            // Determine how much was cut off. (Length before and after.)
-            unsigned over1 = len1 - length(read1);
-            unsigned over2 = len2 - length(read2);
-            // Apply tags
-            if (over1 != 0 && tagOpt)
-            {
-                append(idSet1[i], "[AdapterRemoved]");
-            }
-            if (over2 != 0 && tagOpt)
-            {
-                append(idSet2[i], "[AdapterRemoved]");
-            }
-            // Count cuts.
-            a1count += (over1 != 0);
-            a2count += (over2 != 0);
-            overlapSum += over1 + over2; // Count for each mate.
-                                         // Thread saves local min/max seen in the batch it processed.
-            int t_id = omp_get_thread_num();
-            if (over1 > 0 && std::min(over1, over2) < minOverlap[t_id])
-            {
-                minOverlap[t_id] = std::min(over1, over2);
-            }
-            if (over2 > 0 && std::max(over1, over2) > maxOverlap[t_id])
-            {
-                maxOverlap[t_id] = std::max(over1, over2);
-            }
-        }
-    // Update statistics using information gathered by the threads.
-    stats.a1count += a1count;
-    stats.a2count += a2count;
-    stats.overlapSum += overlapSum;
-    unsigned batch_min = *std::min_element(begin(minOverlap), end(minOverlap));
-    unsigned batch_max = *std::max_element(begin(maxOverlap), end(maxOverlap));
-    if (batch_min < stats.minOverlap)
-    {
-        stats.minOverlap = batch_min;
-    }
-    if (batch_max > stats.maxOverlap)
-    {
-        stats.maxOverlap = batch_max;
-    }
-    return a1count + a2count;
-}
-
-
-
 template <typename TSeq, typename TAdapterItem>
 void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, const TSeq& seq, TAdapterItem const& adapterItem) noexcept
 {
@@ -437,11 +366,7 @@ unsigned stripAdapterBatch(std::vector<TRead>& reads, TAdapterSet const& adapter
 {
     int t_num = omp_get_max_threads();
     // Create local counting variables to avoid concurrency problems.
-    seqan::String<unsigned> minOverlap;
-    seqan::String<unsigned> maxOverlap;
     std::vector<AdapterTrimmingStats> adapterTrimmingStatsVector;
-    seqan::resize(minOverlap, t_num, std::numeric_limits<unsigned>::max());
-    seqan::resize(maxOverlap, t_num, 0);
     seqan::resize(adapterTrimmingStatsVector, t_num);
     int len = length(reads);
     SEQAN_OMP_PRAGMA(parallel for schedule(static))

@@ -149,7 +149,7 @@ unsigned _trimRead(const TSeq& seq, unsigned const _cutoff, Mean const & spec) n
 }
 
 template <typename TSeq, typename TSpec>
-unsigned trimRead(TSeq& seq, unsigned const cutoff, TSpec const & spec)
+unsigned trimRead(TSeq& seq, unsigned const cutoff, TSpec const & spec) noexcept
 {
 	unsigned ret, cut_pos;
 	cut_pos = _trimRead(seqan::Dna5QString(seq), cutoff, spec);
