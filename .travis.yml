@@ -17,5 +17,25 @@ before_script:
       export CXX=g++-4.8 CC=gcc-4.8;
       gcc-4.8 --version;
     fi
+  - if [ "$CXX" == "clang++" ];
+    then
+        pushd .;
+        svn co --quiet http://llvm.org/svn/llvm-project/libcxx/trunk libcxx || svn co --quiet http://llvm.org/svn/llvm-project/libcxx/trunk libcxx || svn co --quiet http://llvm.org/svn/llvm-project/libcxx/trunk libcxx;
+        cd libcxx/lib && bash buildit;
+        sudo cp ./libc++.so.1.0 /usr/lib/;
+        sudo mkdir /usr/include/c++/v1;
+        cd .. && sudo cp -r include/* /usr/include/c++/v1/;
+        cd /usr/lib && sudo ln -sf libc++.so.1.0 libc++.so;
+        sudo ln -sf libc++.so.1.0 libc++.so.1;
+        popd;
+        pushd .;
+        svn co --quiet http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi || svn co --quiet http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi || svn co --quiet http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi;
+        cd libcxxabi/lib && bash buildit;
+        sudo cp libc++abi.so.1.0 /usr/lib;
+        cd .. && sudo cp -r include/* /usr/include/c++/v1/;
+        sudo ln -s /usr/lib/libc++abi.so.1.0 /usr/lib/libc++abi.so.1;
+        sudo ln -s /usr/lib/libc++abi.so.1 /usr/lib/libc++abi.so;
+        popd;
+    fi
 script:
   ./util/travis/linux-cibuild.sh
