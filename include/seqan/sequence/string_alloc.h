@@ -184,7 +184,7 @@ public:
 
 #ifdef SEQAN_CXX11_STANDARD
     inline
-        String & operator=(String const && source)
+        String & operator=(String const && source) noexcept
     {
         move(*this, source);
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
@@ -411,7 +411,7 @@ move(String & target,
 template <typename TTargetValue, typename TSourceValue, typename TSpec>
 inline void
 move(String<TTargetValue, Alloc<TSpec> > & target,
-     String<TSourceValue, Alloc<TSpec> > & source)
+     String<TSourceValue, Alloc<TSpec> > & source) noexcept
 {
     _moveContiguous(target, source);
 }
@@ -427,7 +427,7 @@ move(String<TTargetValue, Alloc<TSpec> > & target,
 template <typename TValue, typename TSpec>
 inline void
 move(String<TValue, Alloc<TSpec> > & target,
-     String<TValue, Alloc<TSpec> > & source)
+     String<TValue, Alloc<TSpec> > & source) noexcept
 {
     arrayDestruct(target.data_begin, target.data_end);
     _deallocateStorage(target, target.data_begin, target.data_capacity);
@@ -444,7 +444,7 @@ move(String<TValue, Alloc<TSpec> > & target,
 template <typename TValue, typename TSpec>
 inline void
 move(String<TValue, Alloc<TSpec> > & target,
-     String<TValue, Alloc<TSpec> > const & source)
+     String<TValue, Alloc<TSpec> > const & source) noexcept
 {
     move(target, const_cast<String<TValue, Alloc<TSpec> > &>(source));
 }

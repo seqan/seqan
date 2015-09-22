@@ -164,13 +164,13 @@ struct STRING_REVERSE_COMPLEMENT
 
 
 template <typename TRow>
-unsigned countTotalGaps(TRow& row)
+unsigned countTotalGaps(TRow& row) noexcept
 {
 	return length(row) - length(source(row));
 }
 
 template <typename TAlign>
-unsigned getOverlap(TAlign& align)
+unsigned getOverlap(TAlign& align) noexcept
 {
 	typedef typename seqan::Row<TAlign>::Type TRow;
 	TRow &row1 = seqan::row(align,0);
@@ -179,7 +179,7 @@ unsigned getOverlap(TAlign& align)
 }
 
 template <typename TAlign>
-unsigned getInsertSize(TAlign& align)
+unsigned getInsertSize(TAlign& align) noexcept
 {
 	typedef typename seqan::Row<TAlign>::Type TRow;
 	TRow &row1 = seqan::row(align,0);
@@ -198,7 +198,7 @@ unsigned getInsertSize(TAlign& align)
 
 template <typename TSeq1, typename TSeq2, bool TTop, bool TLeft, bool TRight, bool TBottom>
 void alignPair(seqan::Pair<unsigned, seqan::Align<TSeq1> >& ret, const TSeq1& seq1, const TSeq2& seq2,
-		const seqan::AlignConfig<TTop, TLeft, TRight, TBottom>& config, bool band = false)
+		const seqan::AlignConfig<TTop, TLeft, TRight, TBottom>& config, bool band = false) noexcept
 {
     seqan::resize(rows(ret.i2), 2);
     seqan::assignSource(row(ret.i2, 0), seq1);
@@ -218,7 +218,7 @@ void alignPair(seqan::Pair<unsigned, seqan::Align<TSeq1> >& ret, const TSeq1& se
 }
 
 template <typename TSeq>
-unsigned stripPair(TSeq& seq1, TSeq& seq2)
+unsigned stripPair(TSeq& seq1, TSeq& seq2) noexcept
 {
     // When aligning the two sequences, the complementary sequence is reversed and
     // complemented, so we have an overlap alignment with complementary bases being the same.
@@ -256,7 +256,7 @@ unsigned stripPair(TSeq& seq1, TSeq& seq2)
 
 template <typename TSeq, typename TId>
 unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idSet1,
-    seqan::StringSet<TSeq>& set2, seqan::StringSet<TId>& idSet2, AdapterTrimmingStats& stats, bool tagOpt)
+    seqan::StringSet<TSeq>& set2, seqan::StringSet<TId>& idSet2, AdapterTrimmingStats& stats, bool tagOpt) noexcept
 {
     int t_num = 1;
 #ifdef _OPENMP
@@ -325,7 +325,7 @@ unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idS
 
 
 template <typename TSeq, typename TAdapterItem>
-void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, const TSeq& seq, TAdapterItem const& adapterItem)
+void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, const TSeq& seq, TAdapterItem const& adapterItem) noexcept
 {
 	// Gaps are not allowed by setting the gap penalty high.
     // Changed the AlignConfig to behave like cutadapt's non anchored mode
@@ -345,7 +345,7 @@ void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, const TSeq& s
 }
 
 //Version for automatic matching options
-inline bool isMatch(const int overlap, const int mismatches, const AdapterMatchSettings &adatperMatchSettings)
+inline bool isMatch(const int overlap, const int mismatches, const AdapterMatchSettings &adatperMatchSettings) noexcept
 {
     if (overlap == 0)
         return false;
@@ -391,7 +391,7 @@ struct StripAdapterDirection
 
 template <template <typename> class TRead, typename TSeq, typename TAdapterSet, typename TSpec, typename TStripAdapterDirection>
 unsigned stripAdapter(TRead<TSeq>& read, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec,
-    TStripAdapterDirection)
+    TStripAdapterDirection) noexcept
 {
     typedef typename seqan::Align<seqan::Dna5String> TAlign;
     typedef typename seqan::Row<TAlign>::Type TRow;

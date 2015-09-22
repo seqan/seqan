@@ -93,7 +93,7 @@ inline unsigned getQuality(const seqan::String<seqan::Dna5Q>& seq, unsigned i)
 // Trimming methods
 // ----------------------------------------------------------------------------
 template <typename TSeq>
-unsigned _trimRead(const TSeq& seq, unsigned const cutoff, Tail const &)
+unsigned _trimRead(const TSeq& seq, unsigned const cutoff, Tail const &) noexcept
 {
 	for (int i = length(seq) - 1; i >= 0; --i)
     {
@@ -107,7 +107,7 @@ unsigned _trimRead(const TSeq& seq, unsigned const cutoff, Tail const &)
 
 //Trimming mechanism using BWA. Trim to argmax_x sum_{i=x+1}^l {cutoff - q_i}
 template <typename TSeq>
-unsigned _trimRead(const TSeq& seq, unsigned const cutoff, BWA const &)
+unsigned _trimRead(const TSeq& seq, unsigned const cutoff, BWA const &) noexcept
 {
 	int max_arg = length(seq) - 1, sum = 0, max = 0;
 	for (int i = length(seq) - 1; i >= 0; --i)
@@ -128,7 +128,7 @@ unsigned _trimRead(const TSeq& seq, unsigned const cutoff, BWA const &)
 
 // Trim by shifting a window over the sequence and cut where avg. qual. in window turns bad the first time.
 template <typename TSeq>
-unsigned _trimRead(const TSeq& seq, unsigned const _cutoff, Mean const & spec)
+unsigned _trimRead(const TSeq& seq, unsigned const _cutoff, Mean const & spec) noexcept
 {
 	unsigned window = spec.window;
 	unsigned avg = 0, i = 0;

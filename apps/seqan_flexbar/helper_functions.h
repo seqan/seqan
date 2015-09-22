@@ -92,7 +92,7 @@ struct ReadBase
 
     ReadBase() = default;
     ReadBase(const ReadBase& rhs) = default;
-    ReadBase(ReadBase&& rhs)
+    ReadBase(ReadBase&& rhs) noexcept(std::is_nothrow_move_constructible<TSeq>::value)
     {
         seq = std::move(rhs.seq);
         id = std::move(rhs.id);
@@ -104,7 +104,7 @@ struct ReadBase
         return seq == rhs.seq && id == rhs.id && demuxResult == rhs.demuxResult;
     }
     ReadBase& operator=(const ReadBase& rhs) = default;
-    ReadBase& operator=(const ReadBase&& rhs)
+    ReadBase& operator=(const ReadBase&& rhs) noexcept(std::is_nothrow_move_assignable<TSeq>::value)
     {
         seq = std::move(rhs.seq);
         id = std::move(rhs.id);
@@ -118,17 +118,18 @@ struct Read : ReadBase<TSeq>
 {
     //Read() = default;
     //Read(const Read& rhs) = default;
-    //Read(Read&& rhs)
+    //Read(Read&& rhs) noexcept
     //{
+    //    ReadBase<TSeq>::ReadBase(std::move(rhs));
     //}
     //bool operator==(const Read& rhs) const
     //{
-    //    return ReadBase::operator==(rhs);
+    //    return ReadBase<TSeq>::operator==(rhs);
     //}
-
-    //Read& operator=(const Read&& rhs)
+    //Read& operator=(const Read& rhs) = default;
+    //Read& operator=(const Read&& rhs) noexcept
     //{
-    //    ReadBase::operator=(std::move(rhs));
+    //    ReadBase<TSeq>::operator=(std::move(rhs));
     //    return *this;
     //}
 };
@@ -140,13 +141,18 @@ struct ReadMultiplex : ReadBase<TSeq>
 
     ReadMultiplex() = default;
     ReadMultiplex(const ReadMultiplex& rhs) = default;
+    ReadMultiplex(ReadMultiplex&& rhs) noexcept(std::is_nothrow_move_constructible<TSeq>::value)
+    {
+        ReadBase<TSeq>::ReadBase(std::move(rhs));
+        demultiplex = std::move(rhs.demultiplex);
+    }
 
     bool operator==(const ReadMultiplex& rhs) const
     {
         return ReadBase<TSeq>::operator==(rhs) && demultiplex == rhs.demultiplex;
     }
     ReadMultiplex& operator=(const ReadMultiplex& rhs) = default;
-    ReadMultiplex& operator=(const ReadMultiplex&& rhs)
+    ReadMultiplex& operator=(const ReadMultiplex&& rhs)  noexcept(std::is_nothrow_move_assignable<TSeq>::value)
     {
         ReadBase<TSeq>::operator=(std::move(rhs));
         demultiplex = std::move(rhs.demultiplex);
@@ -162,13 +168,19 @@ struct ReadPairedEnd : ReadBase<TSeq>
 
     ReadPairedEnd() = default;
     ReadPairedEnd(const ReadPairedEnd& rhs) = default;
+    ReadPairedEnd(ReadPairedEnd&& rhs) noexcept(std::is_nothrow_move_constructible<TSeq>::value)
+    {
+        ReadBase<TSeq>::ReadBase(std::move(rhs));
+        seqRev = std::move(rhs.seqRev);
+        idRev = std::move(rhs.idRev);
+    }
 
     bool operator==(const ReadPairedEnd& rhs) const
     {
         return ReadBase<TSeq>::operator==(rhs) && seqRev == rhs.seqRev && idRev == rhs.idRev;
     }
     ReadPairedEnd& operator=(const ReadPairedEnd& rhs) = default;
-    ReadPairedEnd& operator=(const ReadPairedEnd&& rhs)
+    ReadPairedEnd& operator=(const ReadPairedEnd&& rhs)  noexcept(std::is_nothrow_move_assignable<TSeq>::value)
     {
         ReadBase<TSeq>::operator=(std::move(rhs));
         seqRev = std::move(rhs.seqRev);
@@ -184,13 +196,18 @@ struct ReadMultiplexPairedEnd : ReadPairedEnd<TSeq>
 
     ReadMultiplexPairedEnd() = default;
     ReadMultiplexPairedEnd(const ReadMultiplexPairedEnd& rhs) = default;
+    ReadMultiplexPairedEnd(ReadMultiplexPairedEnd&& rhs) noexcept(std::is_nothrow_move_constructible<TSeq>::value)
+    {
+        ReadPairedEnd<TSeq>::ReadPairedEnd(std::move(rhs));
+        demultiplex = std::move(rhs.demultiplex);
+    }
 
     bool operator==(const ReadMultiplexPairedEnd& rhs) const
     {
         return ReadPairedEnd<TSeq>::operator==(rhs) && demultiplex == rhs.demultiplex;
     }
     ReadMultiplexPairedEnd& operator=(const ReadMultiplexPairedEnd& rhs) = default;
-    ReadMultiplexPairedEnd& operator=(const ReadMultiplexPairedEnd&& rhs)
+    ReadMultiplexPairedEnd& operator=(const ReadMultiplexPairedEnd&& rhs)  noexcept(std::is_nothrow_move_assignable<TSeq>::value)
     {
         ReadPairedEnd<TSeq>::operator=(std::move(rhs));
         demultiplex = std::move(rhs.demultiplex);
@@ -217,7 +234,7 @@ void for_each_argument(F f, Ts&&... a) {
 }
 
 template<typename Trem, typename TremVal, typename TRead>
-auto _eraseSeqs(const Trem& rem, const TremVal remVal, std::vector<TRead>& reads)
+auto _eraseSeqs(const Trem& rem, const TremVal remVal, std::vector<TRead>& reads) noexcept
 {
     const auto numRemoveElements = std::count(rem.begin(), rem.end(), remVal);
     const auto beginAddr = &*reads.begin();
@@ -229,7 +246,7 @@ auto _eraseSeqs(const Trem& rem, const TremVal remVal, std::vector<TRead>& reads
 }
 
 template<typename Trem, typename TremVal, typename... TContainer>
-auto _eraseSeqs(const Trem& rem, const TremVal remVal, TContainer&&... container)
+auto _eraseSeqs(const Trem& rem, const TremVal remVal, TContainer&&... container) noexcept
 {
     const auto numRemoveElements = std::count(begin(rem), end(rem), remVal);
     auto eraseElements = [&rem, numRemoveElements, remVal](auto& seq)  // erase Elements using the remove erase idiom

@@ -176,7 +176,7 @@ void buildAllVariations(TBarcodes& barcodes)
 }
 
 template <typename TPrefix, typename TFinder>
-int findExactIndex(const TPrefix& prefix, TFinder& finder)
+int findExactIndex(const TPrefix& prefix, TFinder& finder) noexcept
 {
 	clear(finder);								//resets finder
 	if (find(finder, prefix))
@@ -219,7 +219,7 @@ void findAllExactIndex(TMatches& matches, const TPrefices& prefices, const TFind
 }
 
 template <typename TRead>
-void clipBarcodes(std::vector<TRead>& reads, const seqan::String<int>& matches, unsigned len)
+void clipBarcodes(std::vector<TRead>& reads, const seqan::String<int>& matches, unsigned len) noexcept
 {
     int limit = reads.size();
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
@@ -232,7 +232,7 @@ void clipBarcodes(std::vector<TRead>& reads, const seqan::String<int>& matches, 
 
 //Overload for deleting the barcodes in any case.
 template<typename TRead>
-void clipBarcodes(std::vector<TRead>& reads, int len)
+void clipBarcodes(std::vector<TRead>& reads, int len) noexcept
 {
     int limit = reads.size();
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
@@ -243,7 +243,7 @@ void clipBarcodes(std::vector<TRead>& reads, int len)
 }
 
 template <typename TRead, typename TMatches>
-void group(std::vector<TRead>& reads, const TMatches& matches, bool exclude)
+void group(std::vector<TRead>& reads, const TMatches& matches, bool exclude) noexcept
 {
 
 	for (unsigned i = 0; i < length(matches); ++i)
@@ -258,7 +258,7 @@ void group(std::vector<TRead>& reads, const TMatches& matches, bool exclude)
 //Overload if approximate search has been used.
 template <typename TRead, typename TMatches, typename TBarcodes, typename TApprox>
 void group(std::vector<TRead>& reads, const TMatches& matches,
-    const TBarcodes& barcodes, TApprox const &, bool exclude)
+    const TBarcodes& barcodes, TApprox const &, bool exclude) noexcept
 {
     float dividend = float(length(barcodes[0])*5.0);		//value by which the index will be corrected.
     for (unsigned i = 0; i < length(matches); ++i)			//adds index of sequence to respective group.

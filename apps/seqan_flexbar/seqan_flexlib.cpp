@@ -1363,8 +1363,8 @@ void preprocessingStage(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev,
         }
     }
 }
+
 // DEMULTIPLEXING
-//Version for single-end data
 template <typename TRead, typename TFinder>
 int demultiplexingStage(DemultiplexingParams& params, std::vector<TRead>& reads, TFinder& esaFinder,
     GeneralStats& generalStats)
@@ -1391,131 +1391,7 @@ int demultiplexingStage(DemultiplexingParams& params, std::vector<TRead>& reads,
     return 0;
 }
 
-
-template <typename TSeqsVec, typename TIdsVec, typename TFinder,typename TMap>
-int demultiplexingStage(DemultiplexingParams& params, TSeqsVec& seqs, TIdsVec& ids, TFinder& esaFinder, 
-    TMap& map, GeneralStats& generalStats)
-{
-    if (!params.run)
-    {
-        return 0;
-    }
-    seqan::StringSet<seqan::String<int> > groups;
-    if (params.runx && !params.approximate)
-    {
-        //DEBUG_MSG(std::cout << "Demultiplexing exact multiplex single-end reads.\n");
-        doAll(groups, params.multiplex, params.barcodes, esaFinder, params.stats, params.exclude);
-    }
-    else if (!params.approximate)
-    {
-        if (!check(seqs[0], ids[0], params.barcodes, generalStats))        // On Errors with barcodes return 1;
-        {
-            return 1;
-        }
-        //DEBUG_MSG("Demultiplexing exact inline single-end reads.\n");
-        doAll(groups, seqs[0], params.barcodes, esaFinder, params.hardClip, params.stats, params.exclude);
-    }
-    else if (params.runx && params.approximate)
-    {
-        //DEBUG_MSG("Demultiplexing approximate multiplex single-end reads.\n");
-        doAll(groups, params.multiplex, params.barcodes, esaFinder, params.stats, params.approximate, params.exclude);
-    }
-    else
-    {
-        if (!check(seqs[0], ids[0], params.barcodes, generalStats))            // On Errors with barcodes return 1;
-        {
-            return 1;
-        }
-        //DEBUG_MSG("Demultiplexing approximate inline single-end reads.\n");
-        doAll(groups, seqs[0], params.barcodes, esaFinder, params.hardClip, params.stats,
-            params.approximate, params.exclude);
-    }
-    // Saves information on how groups correspond to barcodes.
-    clear(map);
-    for (unsigned i = 0; i < length(groups); ++i)
-    {
-        if (length(groups[i]) != 0)
-        {
-            appendValue(map,i);
-        }
-    }
-    // Sorting the results into the sequence- and ID Strings
-    seqan::String<seqan::StringSet<seqan::String<seqan::Dna5Q> > > sortedSeqs; 
-    seqan::String<seqan::StringSet<seqan::String<char> > > sortedIds;
-    buildSets(seqs[0], ids[0], groups, sortedSeqs, sortedIds);
-    resize(seqs, length(sortedSeqs));
-    resize(ids, length(sortedIds));
-    seqs = sortedSeqs;
-    ids = sortedIds;
-    return 0;
-}
-//Version for paired-end data
-template <typename TSeqsVec, typename TIdsVec, typename TFinder, typename TMap>
-int demultiplexingStage(DemultiplexingParams& params, TSeqsVec& seqs, TSeqsVec& seqsRev, TIdsVec& ids,
-    TIdsVec& idsRev, TFinder& esaFinder, TMap& map, GeneralStats& generalStats)
-{
-    if (!params.run)
-    {
-        return 0;
-    }
-    seqan::StringSet<seqan::String<int> > groups;
-    if (params.runx && !params.approximate)
-    {
-        //DEBUG_MSG("Demultiplexing exact multiplex paired-end reads.\n");
-        doAll(groups, params.multiplex, params.barcodes, esaFinder, params.stats, params.exclude);
-    }
-    else if (!params.approximate)
-    {
-        if (!check(seqs[0], ids[0], seqsRev[0], idsRev[0] , params.barcodes, generalStats))
-        {
-            return 1;            // On Errors with barcodes return 1;            
-        }
-        //DEBUG_MSG("Demultiplexing exact inline paired-end reads.\n");
-        doAll(groups, seqs[0], params.barcodes, esaFinder, params.hardClip, params.stats, params.exclude);
-    }
-    else if (params.runx && params.approximate)
-    {
-        //DEBUG_MSG("Demultiplexing approximate multiplex paired-end reads.\n");
-        doAll(groups, params.multiplex, params.barcodes, esaFinder, params.stats, params.approximate, params.exclude);
-    }
-    else
-    {
-        if (!check(seqs[0], ids[0], seqsRev[0], idsRev[0], params.barcodes, generalStats))
-        {
-            return 1;           // On Erros with barcodes return 1;
-        }
-        //DEBUG_MSG("Demultiplexing approximate inline paired-end reads.\n");
-        doAll(groups, seqs[0], params.barcodes, esaFinder, params.hardClip, params.stats,
-            params.approximate, params.exclude);
-    }
-    // Saves information on how groups correspond to barcodes.
-    clear(map);
-    for (unsigned i = 0; i < length(groups); ++i)
-    {
-        if (length(groups[i]) != 0) 
-        {
-           appendValue(map,i);
-        }
-    }
-    // Sorting the results into the sequence- and ID Strings
-    seqan::String<seqan::StringSet<seqan::String<seqan::Dna5Q> > > sortedSeqs; 
-    seqan::String<seqan::StringSet<seqan::String<seqan::Dna5Q> > > sortedSeqsRev; 
-    seqan::String<seqan::StringSet<seqan::String<char> > > sortedIds;
-    seqan::String<seqan::StringSet<seqan::String<char> > > sortedIdsRev;
-    buildSets(seqs[0], seqsRev[0] ,ids[0], idsRev[0], groups, sortedSeqs, sortedSeqsRev, sortedIds, sortedIdsRev);
-    resize(seqs, length(sortedSeqs));
-    resize(seqsRev, length(sortedSeqs));
-    resize(ids, length(sortedIds));
-    resize(idsRev, length(sortedIds));
-    seqs = sortedSeqs;
-    seqsRev = sortedSeqsRev;
-    ids = sortedIds;
-    idsRev = sortedIdsRev;
-    return 0;
-}
-
 // ADAPTER TRIMMING
-//Version for single-end data
 template <typename TRead>
 void adapterTrimmingStage(AdapterTrimmingParams& params, std::vector<TRead>& reads, bool tagOpt)
 {
@@ -1527,40 +1403,6 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, std::vector<TRead>& rea
     else
         stripAdapterBatch<TRead, TAdapterSet, AdapterMatchSettings>(reads, params.adapter2, params.mode, params.stats,
             StripAdapterDirection<adapterDirection::forward>(), TagAdapter<false>());
-}
-
-
-template <typename TSeqs, typename TIds>
-void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet, TIds& idSet, bool tagOpt)
-{
-    if (!params.run)
-        return;
-    typename Iterator<TIds>::Type itIdSet = begin(idSet);
-    std::for_each(begin(seqSet), end(seqSet), [&](seqan::StringSet<Dna5QString> &seq) {
-        stripAdapterBatch(seq, value(itIdSet++), params.adapter2, params.mode, params.stats, false, tagOpt);});
-}
-
-//Overload for paired-end data
-template <typename TSeqs, typename TIds>
-void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet1, TIds& idSet1, TSeqs& seqSet2, TIds& idSet2, bool tagOpt)
-{
-    if (!params.run)
-    {
-        return;
-    }
-    typename seqan::Iterator<TSeqs, Rooted>::Type it1, it2;
-    for (unsigned i = 0; i < length(seqSet1); ++i)
-    {
-        if (!params.paired)
-        {
-            stripAdapterBatch(seqSet2[i], idSet2[i], params.adapter2, params.mode, params.stats, tagOpt);
-            stripAdapterBatch(seqSet1[i], idSet1[i], params.adapter1, params.mode, params.stats, tagOpt);
-        }
-        else
-        {
-            stripPairBatch(seqSet1[i], idSet1[i], seqSet2[i], idSet2[i], params.stats, tagOpt);
-        }
-    }
 }
 
 // QUALITY TRIMMING
