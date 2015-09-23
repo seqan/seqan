@@ -1786,6 +1786,7 @@ struct ReadReader
     std::future<unsigned int> _future;
 };
 
+
 // END FUNCTION DEFINITIONS ---------------------------------------------
 template<template <typename> class TRead, typename TSeq, typename TParser, typename TEsaFinder>
 int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
@@ -1800,19 +1801,22 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
     std::vector<TRead<TSeq>> tlsReads;
     while (generalStats.readCount < programParams.firstReads)
     {
-        if (programParams.num_threads > 1 && _MSC_VER >= 1900)
-        {
-            if (readReader == false)
-                readReader.reset(new ReadReader<TRead, TSeq>(tlsReads, programParams.records, programVars));
-            const auto numReadsRead = readReader->_future.get();
-            if (numReadsRead == 0)
-                break;
-            generalStats.readCount += numReadsRead;
-            readSet = std::move(tlsReads);
+#if defined(_MSV_VER) && _MSC_VER >= 1900
+        if (readReader == false)
             readReader.reset(new ReadReader<TRead, TSeq>(tlsReads, programParams.records, programVars));
-        }
+        const auto numReadsRead = readReader->_future.get();
+        generalStats.readCount += numReadsRead;
+        readSet = std::move(tlsReads);
+        if(programParams.num_threads > 1)
+            readReader.reset(new ReadReader<TRead, TSeq>(tlsReads, programParams.records, programVars));
         else
             generalStats.readCount += readReads(readSet, programParams.records, programVars);
+#else
+        const auto numReadsRead = readReads(readSet, programParams.records, programVars);
+        generalStats.readCount += numReadsRead;
+#endif
+        if (numReadsRead == 0)
+            break;
 
         //generalStats.readCount += readReads(readSet, programParams.records, programVars);
         SEQAN_PROTIMESTART(processTime);            // START of processing time.
@@ -1841,13 +1845,13 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
         generalStats.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
 
         // Write processed reads to file
-        if (programParams.num_threads > 1 && _MSC_VER >= 1900)
+#if defined(_MSV_VER) && _MSC_VER >= 1900
             // reset calls the destructor of the future inside ReadWriter, this destructor blocks until the previous write has completed
             // therefore only 1 write at the time will be active
             readWriter.reset(new ReadWriter<TRead, TSeq>(std::move(readSet), outputStreams, demultiplexingParams));
-        else
+#else
             outputStreams.writeSeqs(std::move(readSet), demultiplexingParams.barcodeIds);
-        
+#endif        
         // Print information
         if (programParams.showSpeed)
             std::cout << "\r" << generalStats.readCount << "   " << static_cast<int>(generalStats.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
