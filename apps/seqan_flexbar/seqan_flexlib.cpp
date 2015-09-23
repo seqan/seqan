@@ -1275,116 +1275,23 @@ void preprocessingStage(TReadSet& readSet,
     }
 }
 
-//Preprocessing Stage
-template<typename TSeqs, typename TIds>
-void preprocessingStage(TSeqs& seqs, TIds& ids, DemultiplexingParams& demultiplexingParams,
-    ProcessingParams& processingParams, seqan::ArgumentParser const & parser, GeneralStats& generalStats)
-{
-    if (processingParams.runPre)
-    {
-        //Trimming and filtering
-        if (processingParams.trimLeft + processingParams.trimRight + processingParams.minLen != 0)
-        {
-            preTrim(seqs, ids, demultiplexingParams, processingParams.trimLeft,
-                processingParams.tagTrimming, processingParams.trimRight, processingParams.minLen, generalStats);
-        }
-        //Detecting uncalled Bases
-        if (seqan::isSet(parser, "u"))
-        {
-            if (seqan::isSet(parser, "s"))
-            {
-                if (demultiplexingParams.multiplexFile != "")
-                {
-                    processN(seqs, ids, demultiplexingParams.multiplex, processingParams.uncalled,
-                        processingParams.substitute, generalStats);
-                }
-                else
-                {
-                    processN(seqs, ids, processingParams.uncalled, processingParams.substitute, generalStats);
-                }
-            }
-            else
-            {
-                if (demultiplexingParams.multiplexFile != "")
-                {
-                    processN(seqs, ids, demultiplexingParams.multiplex, processingParams.uncalled, generalStats);
-                }
-                else
-                {
-                    processN(seqs, ids, processingParams.uncalled, generalStats);
-                }
-            }
-        }
-    }
-}
-
-//Overload for paired-end data
-template<typename TSeqs, typename TIds>
-void preprocessingStage(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev,
-    DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams,
-    seqan::ArgumentParser const & parser, GeneralStats& generalStats)
-{
-    if (processingParams.runPre)
-    {
-        //Trimming and filtering
-        if (processingParams.trimLeft + processingParams.trimRight + processingParams.minLen != 0)
-        {
-            preTrim(seqs, ids, seqsRev, idsRev, demultiplexingParams, processingParams.trimLeft, processingParams.tagTrimming,
-                processingParams.trimRight, processingParams.minLen, generalStats);
-        }
-        //Detecting uncalled Bases
-        if (seqan::isSet(parser, "u"))
-        {
-            if (seqan::isSet(parser, "s"))
-            {
-                if (demultiplexingParams.multiplexFile != "")
-                {
-                    processN(seqs, ids, seqsRev, idsRev, demultiplexingParams.multiplex, processingParams.uncalled,
-                        processingParams.substitute, generalStats);
-                }
-                else
-                {
-                    processN(seqs, ids, seqsRev, idsRev, processingParams.uncalled, processingParams.substitute,
-                        generalStats);
-                }
-            }
-            else
-            {
-                if (demultiplexingParams.multiplexFile != "")
-                {
-                    processN(seqs, ids, seqsRev, idsRev, demultiplexingParams.multiplex, processingParams.uncalled,
-                        generalStats);
-                }
-                else
-                {
-                    processN(seqs, ids, seqsRev, idsRev, processingParams.uncalled, generalStats);
-                }
-            }
-        }
-    }
-}
-
 // DEMULTIPLEXING
 template <typename TRead, typename TFinder>
 int demultiplexingStage(DemultiplexingParams& params, std::vector<TRead>& reads, TFinder& esaFinder,
     GeneralStats& generalStats)
 {
     if (!params.run)
-    {
         return 0;
-    }
     if (!params.approximate)
     {
-        //DEBUG_MSG(std::cout << "Demultiplexing exact single-end reads.\n");
+        //DEBUG_MSG(std::cout << "Demultiplexing exact reads.\n");
         doAll(reads, params.barcodes, esaFinder, params.hardClip, params.stats, params.exclude);
     }
     else
     {
         if (!check(reads, params.barcodes, generalStats))            // On Errors with barcodes return 1;
-        {
             return 1;
-        }
-        //DEBUG_MSG("Demultiplexing approximate single-end reads.\n");
+        //DEBUG_MSG("Demultiplexing approximate reads.\n");
         doAll(reads, params.barcodes, esaFinder, params.hardClip, params.stats,
             params.approximate, params.exclude);
     }
@@ -1522,7 +1429,7 @@ void postprocessingStage(std::vector<TRead>& reads, ProcessingParams& params, Ge
     {
         if ((params.finalMinLength != 0) && (params.finalLength == 0))
         {           
-            preTrim(reads, 0, 0, params.finalMinLength, false, stats);
+            stats.removedSeqsShort += postTrim(reads, params.finalMinLength);
         }
         else if (params.finalLength != 0)
         {
@@ -1774,15 +1681,16 @@ struct ReadWriter
 template<template<typename> class TRead, typename TSeq>
 struct ReadReader
 {
-    ReadReader(std::vector<TRead<TSeq>> &tlsReads, unsigned int records, ProgramVars& programVars)
+    ReadReader(unsigned int records, ProgramVars& programVars)
     {
         _future = std::async(std::launch::async,
-            [&tlsReads, records, &programVars]() {return readReads(tlsReads, records, programVars);});
+            [this, records, &programVars]() {return readReads(tlsReads, records, programVars);});
         //std::cout << std::endl<<"ctor" << std::endl;
     }
     ~ReadReader() {
         //    std::cout << std::endl << "dtor" << std::endl; 
     };
+    std::vector<TRead<TSeq>> tlsReads;
     std::future<unsigned int> _future;
 };
 
@@ -1798,17 +1706,16 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
     SEQAN_PROTIMESTART(loopTime);
     std::unique_ptr<ReadWriter<TRead, TSeq>> readWriter;
     std::unique_ptr<ReadReader<TRead, TSeq>> readReader;
-    std::vector<TRead<TSeq>> tlsReads;
     while (generalStats.readCount < programParams.firstReads)
     {
-#if defined(_MSV_VER) && _MSC_VER >= 1900
+#if defined(_MSC_VER) && _MSC_VER >= 1900
         if (readReader == false)
-            readReader.reset(new ReadReader<TRead, TSeq>(tlsReads, programParams.records, programVars));
+            readReader.reset(new ReadReader<TRead, TSeq>(programParams.records, programVars));
         const auto numReadsRead = readReader->_future.get();
         generalStats.readCount += numReadsRead;
-        readSet = std::move(tlsReads);
+        readSet = std::move(readReader->tlsReads);
         if(programParams.num_threads > 1)
-            readReader.reset(new ReadReader<TRead, TSeq>(tlsReads, programParams.records, programVars));
+            readReader.reset(new ReadReader<TRead, TSeq>(programParams.records, programVars));
         else
             generalStats.readCount += readReads(readSet, programParams.records, programVars);
 #else
@@ -1845,7 +1752,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
         generalStats.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
 
         // Write processed reads to file
-#if defined(_MSV_VER) && _MSC_VER >= 1900
+#if defined(_MSC_VER) && _MSC_VER >= 1900
             // reset calls the destructor of the future inside ReadWriter, this destructor blocks until the previous write has completed
             // therefore only 1 write at the time will be active
             readWriter.reset(new ReadWriter<TRead, TSeq>(std::move(readSet), outputStreams, demultiplexingParams));
