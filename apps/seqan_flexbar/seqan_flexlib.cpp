@@ -1800,17 +1800,19 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
     std::vector<TRead<TSeq>> tlsReads;
     while (generalStats.readCount < programParams.firstReads)
     {
-        if(readReader == false)
+        if (programParams.num_threads > 1 && _MSC_VER >= 1900)
+        {
+            if (readReader == false)
+                readReader.reset(new ReadReader<TRead, TSeq>(tlsReads, programParams.records, programVars));
+            const auto numReadsRead = readReader->_future.get();
+            if (numReadsRead == 0)
+                break;
+            generalStats.readCount += numReadsRead;
+            readSet = std::move(tlsReads);
             readReader.reset(new ReadReader<TRead, TSeq>(tlsReads, programParams.records, programVars));
-        const auto numReadsRead = readReader->_future.get();
-        if (numReadsRead == 0)
-            break;
-        generalStats.readCount += numReadsRead;
-        readSet = std::move(tlsReads);
-        if (programParams.num_threads > 1)
-            readReader.reset(new ReadReader<TRead, TSeq>(tlsReads, programParams.records, programVars));
+        }
         else
-            readReader.release();
+            generalStats.readCount += readReads(readSet, programParams.records, programVars);
 
         //generalStats.readCount += readReads(readSet, programParams.records, programVars);
         SEQAN_PROTIMESTART(processTime);            // START of processing time.
@@ -1839,7 +1841,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
         generalStats.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
 
         // Write processed reads to file
-        if (programParams.num_threads > 1)
+        if (programParams.num_threads > 1 && _MSC_VER >= 1900)
             // reset calls the destructor of the future inside ReadWriter, this destructor blocks until the previous write has completed
             // therefore only 1 write at the time will be active
             readWriter.reset(new ReadWriter<TRead, TSeq>(std::move(readSet), outputStreams, demultiplexingParams));
