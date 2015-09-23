@@ -13,6 +13,12 @@ else
   export BUILD_NAME=${TRAVIS_COMMIT}
 fi
 
+# manually select GCC version
+if [ "$CC" == "gcc" ];
+then
+  export CXX=g++-4.8 CC=gcc-4.8;
+fi
+
 # disable OpenMP warnings for clang
 if [ "${CXX}" == "clang++" ]; then
   export CXXFLAGS="${CXXFLAGS} -DSEQAN_IGNORE_MISSING_OPENMP=1"
