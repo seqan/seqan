@@ -10,21 +10,21 @@ cache:
 install:
   - if [ "$CC" == "gcc" ]; then export CXX=g++-4.8 CC=gcc-4.8; fi
 addons:
-  sources:
-    - ubuntu-toolchain-r-test
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
     packages:
-    - cmake
-    - gcc-4.8
-    - g++-4.8
-    - clang
-    - zlib1g-dev
-    - libbz2-dev
-    - libboost-dev
-    - python
-    - python-nose
-    - python-jinja2
-    - python-pip
+      - cmake
+      - gcc-4.8
+      - g++-4.8
+      - clang
+      - zlib1g-dev
+      - libbz2-dev
+      - libboost-dev
+      - python
+      - python-nose
+      - python-jinja2
+      - python-pip
 before_script:
   - export PATH=$HOME/.local/bin:$PATH
   - pip install -r manual/requirements.txt --user `whoami`
