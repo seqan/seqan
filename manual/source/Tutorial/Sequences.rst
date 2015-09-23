@@ -69,8 +69,8 @@ You can find detailed information in the tutorial :ref:`tutorial-alphabets`.
 
 .. code-block:: cpp
 
-   String<Dna>        myGenome;   // A string of nucleotides.
-   String<AminAcid>   myProtein;  // A string of amino acids.
+   String<Dna>         myGenome;   // A string of nucleotides.
+   String<AminoAcid>   myProtein;  // A string of amino acids.
 
 For commonly used string parameterizations, SeqAn has a range of shortcuts implemented, e.g. :dox:`DnaString`, :dox:`RnaString` and :dox:`Peptide`.
 
