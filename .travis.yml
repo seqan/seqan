@@ -7,6 +7,8 @@ cache:
   apt: true
   directories:
   - _build
+install:
+  - if [ "$CC" == "gcc" ]; then export CXX=g++-4.8 CC=gcc-4.8; fi
 addons:
   apt:
     packages:
@@ -20,6 +22,7 @@ addons:
     - python-pip
     - gcc-4.8
     - g++-4.8
+    - clang
 before_script:
   - export PATH=$HOME/.local/bin:$PATH
   - pip install -r manual/requirements.txt --user `whoami`
