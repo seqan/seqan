@@ -1847,6 +1847,8 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
 #ifdef _MULTITHREADED_IO
             // reset calls the destructor of the future inside ReadWriter, this destructor blocks until the previous write has completed
             // therefore only 1 write at the time will be active
+            if(readWriter)            
+                readWriter->_future.get();
             readWriter.reset(new ReadWriter<TRead, TSeq>(std::move(readSet), outputStreams, demultiplexingParams));
 #else
             outputStreams.writeSeqs(std::move(readSet), demultiplexingParams.barcodeIds);
