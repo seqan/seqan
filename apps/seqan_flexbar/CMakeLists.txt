@@ -11,6 +11,7 @@ project (seqan_apps_seqan_flexbar)
 message (STATUS "Configuring apps/seqan_flexbar")
 
 set (SEQAN_APP_VERSION "1.1.0")
+add_definitions ("-D_MULTITHREADED_IO")
 
 # ----------------------------------------------------------------------------
 # Dependencies

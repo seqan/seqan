@@ -1786,7 +1786,6 @@ struct ReadReader
     std::future<unsigned int> _future;
 };
 
-
 // END FUNCTION DEFINITIONS ---------------------------------------------
 template<template <typename> class TRead, typename TSeq, typename TParser, typename TEsaFinder>
 int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
@@ -1801,7 +1800,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
     std::vector<TRead<TSeq>> tlsReads;
     while (generalStats.readCount < programParams.firstReads)
     {
-#if defined(_MSV_VER) && _MSC_VER >= 1900
+#ifdef _MULTITHREADED_IO
         if (readReader == false)
             readReader.reset(new ReadReader<TRead, TSeq>(tlsReads, programParams.records, programVars));
         const auto numReadsRead = readReader->_future.get();
@@ -1845,7 +1844,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
         generalStats.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
 
         // Write processed reads to file
-#if defined(_MSV_VER) && _MSC_VER >= 1900
+#ifdef _MULTITHREADED_IO
             // reset calls the destructor of the future inside ReadWriter, this destructor blocks until the previous write has completed
             // therefore only 1 write at the time will be active
             readWriter.reset(new ReadWriter<TRead, TSeq>(std::move(readSet), outputStreams, demultiplexingParams));
