@@ -94,7 +94,7 @@ struct DemultiplexingParams
 // ============================================================================
 
 template <typename TReads, typename TBarcodes, typename TStats>
-bool check(TReads& reads, TBarcodes& barcodes, TStats& stats)
+bool check(TReads& reads, TBarcodes& barcodes, TStats& stats) noexcept
 {
     unsigned len = length(barcodes[0]);
     for (unsigned i = 1; i < length(barcodes); ++i)
@@ -115,7 +115,7 @@ template <template <typename> class TRead, typename TSeq, typename = std::enable
 void getPrefix(std::vector<TSeq>& prefices, std::vector<TRead<TSeq>>& reads, unsigned len)
 {
     int limit = reads.size();
-    prefices.resize(limit);
+    assert(prefices.size() == reads.size());
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
         for (int i = 0; i < limit; ++i) //Remark: OMP requires an integer as loop-variable
         {
@@ -187,9 +187,9 @@ int findExactIndex(const TPrefix& prefix, TFinder& finder) noexcept
 }
 
 template <typename TMatches, typename TPrefices, typename TFinder, typename TStats>
-void findAllExactIndex(TMatches& matches, const TPrefices& prefices, const TFinder& finder, TStats& stats)
+void findAllExactIndex(TMatches& matches, const TPrefices& prefices, const TFinder& finder, TStats& stats) noexcept
 {
-    resize(matches, length(prefices));
+    assert(length(machtes) == length(prefices));
 
 	int tnum = 1;
 #ifdef _OPENMP
@@ -298,9 +298,9 @@ template<template <typename> class TRead, typename TSeq, typename TBarcodes, typ
 void doAll(std::vector<TRead<TSeq>>& reads, TBarcodes& barcodes, TFinder& esaFinder,
     bool hardClip, DemultiplexStats& stats, const TApprox approximate, bool exclude)
 {
-    std::vector<TSeq> prefices;
+    std::vector<TSeq> prefices(length(reads));
     getPrefix(prefices, reads, length(barcodes[0]));
-    std::vector<int> matches;
+    std::vector<int> matches(length(prefices));
     findAllExactIndex(matches, prefices, esaFinder, stats);
     if (hardClip)		//clip barcodes according to selected method
     {

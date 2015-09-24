@@ -158,8 +158,14 @@ unsigned trimRead(TSeq& seq, unsigned const cutoff, TSpec const & spec) noexcept
     return ret;
 }
 
-template <typename TRead, typename TSpec>
-unsigned _trimReads(std::vector<TRead>& reads, unsigned const cutoff, TSpec const & spec, bool tagOpt)
+template<bool tag>
+struct TagTrimming
+{
+    static const bool value = tag;
+};
+
+template <typename TRead, typename TSpec, typename TTagTrimming>
+unsigned _trimReads(std::vector<TRead>& reads, unsigned const cutoff, TSpec const & spec, TTagTrimming) noexcept(!TTagTrimming::value)
 {
     int trimmedReads = 0;
     int len = length(reads);
@@ -171,7 +177,7 @@ unsigned _trimReads(std::vector<TRead>& reads, unsigned const cutoff, TSpec cons
             if (trimmed > 0)
             {
                 ++trimmedReads;
-                if (tagOpt)
+                if (TTagTrimming::value)
                 {
                     append(reads[i].id, "[Trimmed]");
                 }
@@ -186,8 +192,7 @@ unsigned dropReads(std::vector<TRead<TSeq>>& reads,
 {
     if (empty(reads))
         return 0;
-    std::vector<bool> rem;
-    rem.resize(length(reads));
+    std::vector<bool> rem(length(reads));
 
     const auto beginAddr = &*reads.begin();
     for (const auto& element : reads)
@@ -205,8 +210,7 @@ unsigned dropReads(std::vector<TRead<TSeq>>& reads,
 {
     if (empty(reads))
         return 0;
-    std::vector<bool> rem;
-    rem.resize(length(reads));
+    std::vector<bool> rem(length(reads));
 
     const auto beginAddr = &*reads.begin();
     for (const auto& element : reads)
@@ -224,7 +228,11 @@ template <typename TRead, typename TSpec>
 unsigned trimBatch(std::vector<TRead>& reads, unsigned const cutoff,
     TSpec const& spec, bool tagOpt)
 {
-    unsigned trimmedReads = _trimReads(reads, cutoff, spec, tagOpt);
+    unsigned trimmedReads;
+    if(tagOpt)
+        trimmedReads = _trimReads(reads, cutoff, spec, TagTrimming<true>());
+    else
+        trimmedReads = _trimReads(reads, cutoff, spec, TagTrimming<false>());
     return trimmedReads;
 }
 #endif  // #ifndef SANDBOX_GROUP3_APPS_SEQDPT_READTRIMMING_H_

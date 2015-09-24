@@ -362,7 +362,7 @@ unsigned stripAdapter(TRead<TSeq>& read, AdapterTrimmingStats& stats, TAdapterSe
 
 template <typename TRead, typename TAdapterSet, typename TSpec, typename TStripAdapterDirection, typename TTagAdapter>
 unsigned stripAdapterBatch(std::vector<TRead>& reads, TAdapterSet const& adapterSet, TSpec const& spec,
-    AdapterTrimmingStats& stats, TStripAdapterDirection, TTagAdapter)
+    AdapterTrimmingStats& stats, TStripAdapterDirection, TTagAdapter) noexcept(!TTagAdapter::value)
 {
     int t_num = omp_get_max_threads();
     // Create local counting variables to avoid concurrency problems.
