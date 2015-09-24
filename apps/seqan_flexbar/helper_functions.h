@@ -111,6 +111,10 @@ struct ReadBase
         demuxResult = rhs.demuxResult;
         return *this;
     }
+    inline unsigned int minSeqLen() const noexcept
+    {
+        return length(seq);
+    }
 };
 
 template<typename TSeq>
@@ -137,7 +141,7 @@ struct Read : ReadBase<TSeq>
 template<typename TSeq>
 struct ReadMultiplex : ReadBase<TSeq>
 {
-    std::string demultiplex;
+    TSeq demultiplex;
 
     ReadMultiplex() = default;
     ReadMultiplex(const ReadMultiplex& rhs) = default;
@@ -187,12 +191,16 @@ struct ReadPairedEnd : ReadBase<TSeq>
         idRev = std::move(rhs.idRev);
         return *this;
     }
+    inline unsigned int minSeqLen() const noexcept
+    {
+        return std::min(length(seq), length(seqRev));
+    }
 };
 
 template<typename TSeq>
 struct ReadMultiplexPairedEnd : ReadPairedEnd<TSeq>
 {
-    std::string demultiplex;
+    TSeq demultiplex;
 
     ReadMultiplexPairedEnd() = default;
     ReadMultiplexPairedEnd(const ReadMultiplexPairedEnd& rhs) = default;

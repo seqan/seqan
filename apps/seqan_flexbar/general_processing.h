@@ -78,294 +78,109 @@ struct GeneralStats
 // Functions
 // ============================================================================
 
+struct NoSubstitute {};
 
-
-template<typename TAlpha, typename TSub>
-int findN(seqan::String<TAlpha>& seq, unsigned allowed, TSub substitute)
+template<typename TSeqChar, typename TSub>
+void replaceN(TSeqChar& seqChar, const TSub sub) noexcept
 {
-    unsigned limit = length(seq);
-    TAlpha wanted = 'N';
+    seqChar = sub;
+}
+
+template<typename TSeqChar>
+void replaceN(TSeqChar& seqChar, const NoSubstitute) noexcept
+{
+    (void)seqChar;
+}
+
+template<typename TSeq, typename TSub>
+inline int findNUniversal(TSeq& seq, unsigned allowed, const TSub substitute) noexcept
+{
+    const TSeq wanted = 'N';
     unsigned c = 0;
-    for (unsigned i = 0; i < limit; ++i)
+    for (auto& seqChar : seq)
     {
-        if (seq[i] == wanted)
+        if (seqChar == wanted)
         {
-            seq[i] = substitute;
+            replaceN(seqChar, substitute);
             ++c;
             if (c > allowed)
-            {
                 return -1;       //sequence will be removed
-            }
         }
     }
     return c;                   //sequence not deleted, number of substitutions returned
 }
 
-//Overload if no substitution shall be performed
-template<typename TAlpha>
-int findN(seqan::String<TAlpha>& seq, unsigned allowed)
+template<template<typename> typename TRead, typename TSeq, typename TSub,
+    typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>> ::value >>
+inline int findNMultiplex(TRead<TSeq>& read, unsigned allowed, const TSub substitute, bool = false) noexcept
 {
-    unsigned limit = length(seq);
-    TAlpha wanted = 'N';
-    unsigned c = 0;
-    for (unsigned i = 0; i < limit; ++i)
-    {
-        if (seq[i] == wanted)
-        {
-            ++c;
-            if (c > allowed)
-            {
-                return -1;       //sequence will be removed
-            }
-        }
-    }
-    return c;                   //sequence not deleted, number of N's returned
+    return 0;
 }
 
-//single-end data with substitutions
-template<typename TSeqs, typename TIds, typename TSub>
-void processN(TSeqs& seqs, TIds& ids, unsigned allowed, TSub substitute, GeneralStats& stats)
+template<template<typename> typename TRead, typename TSeq, typename TSub,
+    typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq >> ::value >>
+inline int findNMultiplex(TRead<TSeq>& read, unsigned allowed, const TSub substitute) noexcept
 {
-    int limit = length(seqs);
-    seqan::StringSet<int> res;
-    resize(res, limit);
-    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
-    for (int i = 0; i < limit; ++i)
-    {
-        res[i] = findN(seqs[i], allowed, substitute);
-    }
-    //Simply erasing a sequence would lead to unnecessary reallocations, therefore we use another method
+    return findNUniversal(read.demultiplex, allowed, substitute);
+}
+
+template<template<typename> typename TRead, typename TSeq, typename TSub,
+    typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq >> ::value >>
+inline int findNPairedEnd(TRead<TSeq>& read, unsigned allowed, const TSub substitute, bool = false) noexcept
+{
+    return 0;
+}
+
+template<template<typename> typename TRead, typename TSeq, typename TSub,
+    typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq >> ::value >>
+inline int findNPairedEnd(TRead<TSeq>& read, unsigned allowed, const TSub substitute) noexcept
+{
+    return findNUniversal(read.seqRev, allowed, substitute);
+}
+
+template<template<typename> typename TRead, typename TSeq, typename TSub>
+int findN(TRead<TSeq>& read, unsigned allowed, const TSub substitute) noexcept
+{
+    auto c = findNUniversal(read.seq, allowed, substitute);
+    if (c == -1)
+        return -1;
+    const auto c2 = findNMultiplex(read, allowed, substitute);
+    if (c2 == -1)
+        return -1;
+    c += c2;
+    const auto c3 = findNPairedEnd(read, allowed, substitute);
+    if (c3 == -1)
+        return -1;
+    c += c3;
+    return c;                   //sequence not deleted, number of substitutions returned
+}
+
+//universal function for all combinations of options
+template<template <typename> typename TRead, typename TSeq, typename TSub>
+void processN(std::vector<TRead<TSeq>>& reads, unsigned allowed, TSub substitute, GeneralStats& stats)
+{
+    int limit = length(reads);
+    std::vector<int> res(limit);
+    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
+        for (int i = 0; i < limit; ++i)
+        {
+            res[i] = findN(reads[i], allowed, substitute);
+        }
+
     unsigned ex = 0;
-    for (int i = length(res) - 1; i >= 0 ; --i)
-    {                                   //integer necessary because unsigned would cause error after last iteration
-        if (res[i] == -1)                //Placing all sequences/ids which shall be erased at the end of their container
-        {
-            SEQAN_OMP_PRAGMA(parallel default(shared))
-            {
-                SEQAN_OMP_PRAGMA(sections nowait)
-                {
-                    SEQAN_OMP_PRAGMA(section)     //distributing the swapping actions
-                    swap(seqs[i], seqs[limit - ex - 1]);
-                    SEQAN_OMP_PRAGMA(section)
-                    swap(ids[i], ids[limit - ex - 1]);
-                    SEQAN_OMP_PRAGMA(section)
-                    ++ex;
-                }
-            }
-        }
-        else
-        {
+    stats.removedSeqs += _eraseSeqs(res, -1, reads);
+    for (int i = length(res) - 1; i >= 0; --i)
+    {
+        if (res[i] != -1)
             stats.uncalledBases += res[i];
-        } 
-    }
-    if (ex != 0)
-    {
-        SEQAN_OMP_PRAGMA(parallel default(shared))
-        {
-            SEQAN_OMP_PRAGMA(sections nowait)
-            {   //Resizing the containers to erase all unwanted sequences/ids at once
-                SEQAN_OMP_PRAGMA(section)
-                resize(seqs, limit - ex);
-                SEQAN_OMP_PRAGMA(section)
-                resize(ids, limit - ex);
-                SEQAN_OMP_PRAGMA(section)
-                stats.removedSeqs += ex;
-            }
-        }
     }
 }
 
-//Overload for single-end data and no substitutions
-template<typename TSeqs, typename TIds>
-void processN(TSeqs& seqs, TIds& ids, unsigned allowed, GeneralStats& stats)
-{
-    int limit = length(seqs);
-    seqan::StringSet<int> res;
-    resize(res, limit);
-    unsigned uncalled = 0;
-    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static) reduction(+:uncalled))
-    for (int i = 0; i < limit; ++i)
-    {
-        res[i] = findN(seqs[i], allowed);
-        if (res[i] != -1)
-            uncalled += res[i];
-    }
-    stats.uncalledBases += uncalled;
-    stats.removedSeqs += _eraseSeqs(res, -1, seqs, ids);
-}
-
-//paired-end data with substitutions
-template<typename TSeqs, typename TIds, typename TSub>
-void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned allowed, TSub substitute, GeneralStats& stats)
-{
-    int limit = length(seqs);
-    seqan::StringSet<int> res;
-    resize(res, limit);
-    unsigned uncalled = 0;
-    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static) reduction(+:uncalled))
-    for (int i = 0; i < limit; ++i)
-    {
-        res[i] = findN(seqs[i], allowed, substitute);
-        if (res[i] != -1)
-        {
-            int resTemp = res[i];
-            res[i] = findN(seqsRev[i], allowed, substitute);
-            if (res[i] != -1)
-            {
-                uncalled += (res[i] + resTemp);
-            }
-        }
-    }
-    stats.uncalledBases += uncalled;
-    stats.removedSeqs += 2 * _eraseSeqs(res, -1, seqs, seqsRev, ids, idsRev);
-}
-
-//paired-end data without substitutions
-template<typename TSeqs, typename TIds>
-void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned allowed, GeneralStats& stats)
-{
-    int limit = length(seqs);
-    seqan::StringSet<int> res;
-    resize(res, limit);
-    unsigned uncalled = 0;
-    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static) reduction(+:uncalled))
-    for (int i = 0; i < limit; ++i)
-    {
-        res[i] = findN(seqs[i], allowed);
-        if (res[i] != -1)
-        {
-            int resTemp = res[i];
-            res[i] = findN(seqsRev[i], allowed);
-            if (res[i] != -1)
-            {
-                uncalled += (res[i] + resTemp);
-            }
-        }
-    }
-    stats.uncalledBases += uncalled;
-    stats.removedSeqs += 2 * _eraseSeqs(res, -1, seqs, seqsRev, ids, idsRev);
-}
-
-//Overload single-end data with substitutions and multiplex barcodes
-template<typename TSeqs, typename TIds, typename TMulti, typename TSub>
-void processN(TSeqs& seqs, TIds& ids, TMulti& multiplex, unsigned allowed, TSub substitute, GeneralStats& stats)
-{
-    int limit = length(seqs);
-    seqan::StringSet<int> res;
-    resize(res, limit);
-    unsigned uncalled = 0;
-    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static) reduction(+:uncalled))
-    for (int i = 0; i < limit; ++i)
-    {
-        res[i] = findN(seqs[i], allowed, substitute);
-        if (res[i] != -1)
-        {
-            int resTemp = res[i];
-            res[i] = findN(multiplex[i], allowed, substitute);
-            if (res[i] != -1)
-            {
-                uncalled += (res[i] + resTemp);
-            }
-        }
-    }
-    stats.uncalledBases += uncalled;
-    stats.removedSeqs += _eraseSeqs(res, -1, seqs, ids, multiplex);
-}
-
-//Overload for single-end data, no substitutions and multiplex barcodes
-template<typename TSeqs, typename TIds, typename TMulti>
-void processN(TSeqs& seqs, TIds& ids, TMulti& multiplex, unsigned allowed, GeneralStats& stats)
-{
-    int limit = length(seqs);
-    seqan::StringSet<int> res;
-    resize(res, limit);
-    unsigned uncalled = 0;
-    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static) reduction(+:uncalled))
-    for (int i = 0; i < limit; ++i)
-    {
-        res[i] = findN(seqs[i], allowed);
-        if (res[i] != -1)
-        {
-            int resTemp = res[i];
-            res[i] = findN(multiplex[i], allowed);
-            if (res[i] != -1)
-            {
-                uncalled += (res[i] + resTemp);
-            }
-        }
-    }
-    stats.uncalledBases += uncalled;
-    stats.removedSeqs += _eraseSeqs(res, -1, seqs, ids, multiplex);
-}
-
-//paired-end data with substitutions and multiplex barcodes
-template<typename TSeqs, typename TIds, typename TMulti, typename TSub>
-void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& multiplex, unsigned allowed,
-    TSub substitute, GeneralStats& stats)
-{
-    int limit = length(seqs);
-    seqan::StringSet<int> res;
-    resize(res, limit);
-    unsigned uncalled = 0;
-    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static) reduction(+:uncalled))
-    for (int i = 0; i < limit; ++i)
-    {
-        res[i] = findN(seqs[i], allowed, substitute);
-        if (res[i] != -1)
-        {
-            int resTemp = res[i];
-            res[i] = findN(seqsRev[i], allowed, substitute);
-            if (res[i] != -1)
-            {
-                resTemp += res[i];
-                res[i] = findN(multiplex[i], allowed, substitute);
-                if (res[i] != -1)
-                {
-                    uncalled += (res[i] + resTemp);
-                }
-            }
-        }
-    }
-    stats.uncalledBases += uncalled;
-    stats.removedSeqs += 2 * _eraseSeqs(res, -1, seqs, seqsRev, ids, idsRev, multiplex);
-}
-
-//paired-end data without substitutions and multiplex barcodes
-template<typename TSeqs, typename TIds, typename TMulti >
-void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& multiplex, unsigned allowed, GeneralStats& stats)
-{
-    int limit = length(seqs);
-    seqan::StringSet<int> res;
-    resize(res, limit);
-    unsigned uncalled = 0;
-    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static) reduction(+:uncalled))
-    for (int i = 0; i < limit; ++i)
-    {
-        res[i] = findN(seqs[i], allowed);
-        if (res[i] != -1)
-        {
-            int resTemp = res[i];
-            res[i] = findN(seqsRev[i], allowed);
-            if (res[i] != -1)
-            {
-                resTemp += res[i];
-                res[i] = findN(multiplex[i], allowed);
-                if (res[i] != -1)
-                {
-                    uncalled += (res[i] + resTemp);
-                }
-            }
-        }
-    }
-    stats.uncalledBases += uncalled;
-    stats.removedSeqs += 2 * _eraseSeqs(res, -1, seqs, seqsRev, ids, idsRev, multiplex);
-}
-
-template<typename TRead>    
-unsigned int postTrim(std::vector<TRead>& reads, const unsigned min)
+template<template <typename> class TRead, typename TSeq>
+    unsigned int postTrim(std::vector<TRead<TSeq>>& reads, const unsigned min)
 {
     const auto numReads = (int)length(reads);
-    reads.erase(std::remove_if(reads.begin(), reads.end(), [min](const auto& read) {return length(read.seq) >= min;}), reads.end());
+    reads.erase(std::remove_if(reads.begin(), reads.end(), [min](const auto& read) {return read.minSeqLen() < min;}), reads.end());
     return numReads - length(reads);
 }
 
@@ -403,7 +218,7 @@ void _preTrim(std::vector<TRead<TSeq>>& readSet, const unsigned head, const unsi
 
                 // check if trimmed sequence is at least of length min
                 // if not, remove it
-                if (length(readSet[i].seq) >= min)
+                if (readSet[i].minSeqLen() >= min)
                     rem[i] = false;
                 else
                     rem[i] = true;
@@ -460,8 +275,7 @@ template<template <typename> class TRead, typename TSeq, bool tagTrimming,
 
                 // check if trimmed sequence is at least of length min
                 // if not, remove it
-                const auto seqLen = std::min(length(readSet[i].seq), length(readSet[i].seqRev));
-                if (seqLen >= min)
+                if (readSet[i].minSeqLen() >= min)
                     rem[i] = false;
                 else
                     rem[i] = true;

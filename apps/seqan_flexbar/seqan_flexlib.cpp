@@ -1245,33 +1245,18 @@ void preprocessingStage(TReadSet& readSet,
                 processingParams.tagTrimming, processingParams.trimRight, processingParams.minLen, generalStats);
         }
         (void)parser;
-        //Detecting uncalled Bases
-        //if (seqan::isSet(parser, "u"))
-        //{
-        //    if (seqan::isSet(parser, "s"))
-        //    {
-        //        if (demultiplexingParams.multiplexFile != "")
-        //        {
-        //            processN(seqs, ids, demultiplexingParams.multiplex, processingParams.uncalled,
-        //                processingParams.substitute, generalStats);
-        //        }
-        //        else
-        //        {
-        //            processN(seqs, ids, processingParams.uncalled, processingParams.substitute, generalStats);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (demultiplexingParams.multiplexFile != "")
-        //        {
-        //            processN(seqs, ids, demultiplexingParams.multiplex, processingParams.uncalled, generalStats);
-        //        }
-        //        else
-        //        {
-        //            processN(seqs, ids, processingParams.uncalled, generalStats);
-        //        }
-        //    }
-        //}
+       // Detecting uncalled Bases
+        if (seqan::isSet(parser, "u"))
+        {
+            if (seqan::isSet(parser, "s"))
+            {
+                processN(readSet, processingParams.uncalled, processingParams.substitute, generalStats);
+            }
+            else
+            {
+                processN(readSet, processingParams.uncalled, NoSubstitute(), generalStats);
+            }
+        }
     }
 }
 
