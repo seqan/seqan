@@ -157,7 +157,7 @@ int findN(TRead<TSeq>& read, unsigned allowed, const TSub substitute) noexcept
 
 //universal function for all combinations of options
 template<template <typename> typename TRead, typename TSeq, typename TSub>
-void processN(std::vector<TRead<TSeq>>& reads, unsigned allowed, TSub substitute, GeneralStats& stats)
+void processN(std::vector<TRead<TSeq>>& reads, unsigned allowed, TSub substitute, GeneralStats& stats) noexcept
 {
     int limit = length(reads);
     std::vector<int> res(limit);
@@ -177,7 +177,7 @@ void processN(std::vector<TRead<TSeq>>& reads, unsigned allowed, TSub substitute
 }
 
 template<template <typename> class TRead, typename TSeq>
-    unsigned int postTrim(std::vector<TRead<TSeq>>& reads, const unsigned min)
+    unsigned int postTrim(std::vector<TRead<TSeq>>& reads, const unsigned min) noexcept
 {
     const auto numReads = (int)length(reads);
     reads.erase(std::remove_if(reads.begin(), reads.end(), [min](const auto& read) {return read.minSeqLen() < min;}), reads.end());
@@ -300,7 +300,7 @@ void preTrim(std::vector<TRead<TSeq>>& reads, unsigned head, unsigned tail, unsi
 //Trims sequences to specific length and deletes to short ones together with their IDs
 template<template <typename> class TRead, typename TSeq, 
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplex < TSeq >> ::value >>
-    void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, GeneralStats& stats, bool = true) 
+    void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, GeneralStats& stats, bool = true) noexcept
 {
     const auto limit = (int)length(reads);
     std::vector<bool> rem(limit);
@@ -325,7 +325,7 @@ template<template <typename> class TRead, typename TSeq,
 
 template<template <typename> class TRead, typename TSeq,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplexPairedEnd < TSeq >> ::value >>
-    void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, GeneralStats& stats) 
+    void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, GeneralStats& stats) noexcept
 {
     const auto limit = (int)length(reads);
     std::vector<bool> rem(limit);

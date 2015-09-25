@@ -645,6 +645,8 @@ struct ProcessingParams
     bool tagTrimming;
     bool runPre;
     bool runPost;
+    bool runSubstitute;
+    bool runCheckUncalled;
 
     ProcessingParams() :
         substitute('A'), 
@@ -656,7 +658,9 @@ struct ProcessingParams
         finalLength(0),
         tagTrimming(false),
         runPre(false),
-        runPost(false) {};
+        runPost(false), 
+        runSubstitute(false),
+        runCheckUncalled(false) {};
 };
 
 enum TrimmingMode
@@ -1234,7 +1238,7 @@ int checkParams(ProgramParams const & programParams, ProgramVars const& programV
 //Preprocessing Stage
 template<typename TReadSet>
 void preprocessingStage(TReadSet& readSet, 
-    ProcessingParams& processingParams, seqan::ArgumentParser const & parser, GeneralStats& generalStats)
+    ProcessingParams& processingParams, GeneralStats& generalStats)
 {
     if (processingParams.runPre)
     {
@@ -1244,11 +1248,10 @@ void preprocessingStage(TReadSet& readSet,
             preTrim(readSet, processingParams.trimLeft,
                 processingParams.tagTrimming, processingParams.trimRight, processingParams.minLen, generalStats);
         }
-        (void)parser;
        // Detecting uncalled Bases
-        if (seqan::isSet(parser, "u"))
+        if (processingParams.runCheckUncalled)
         {
-            if (seqan::isSet(parser, "s"))
+            if (processingParams.runSubstitute)
             {
                 processN(readSet, processingParams.uncalled, processingParams.substitute, generalStats);
             }
@@ -1667,41 +1670,54 @@ template<template<typename> class TRead, typename TSeq>
 struct ReadReader
 {
     ReadReader(unsigned int records, ProgramVars& programVars)
+        :_records(records), _programVars(programVars), tlsReads(records)
     {
-        _future = std::async(std::launch::async,
-            [this, records, &programVars]() {return readReads(tlsReads, records, programVars);});
         //std::cout << std::endl<<"ctor" << std::endl;
     }
     ~ReadReader() {
         //    std::cout << std::endl << "dtor" << std::endl; 
     };
+    bool getReads(std::vector<TRead<TSeq>>& reads)
+    {
+        if (!_future.valid())
+            _startNewRead();
+        _future.get();
+        reads = std::move(tlsReads);
+        _startNewRead();
+        return true;
+    };
+private:
+    unsigned int _records;
+    ProgramVars& _programVars;
     std::vector<TRead<TSeq>> tlsReads;
     std::future<unsigned int> _future;
+
+    void _startNewRead()
+    {
+        _future = std::async(std::launch::async,
+            [this]() {return readReads(tlsReads, _records, _programVars);});
+    }
 };
 
 // END FUNCTION DEFINITIONS ---------------------------------------------
-template<template <typename> class TRead, typename TSeq, typename TParser, typename TEsaFinder>
+template<template <typename> class TRead, typename TSeq, typename TEsaFinder>
 int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
-    QualityTrimmingParams& qualityTrimmingParams, TParser& parser, TEsaFinder& esaFinder, bool tagOpt, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
+    QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder, bool tagOpt, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
     OutputStreams& outputStreams)
 {
     std::vector<TRead<TSeq>> readSet(programParams.records);
     TRead<TSeq> read;
     SEQAN_PROTIMESTART(loopTime);
+    ReadReader<TRead, TSeq> readReader(programParams.records, programVars);
     std::unique_ptr<ReadWriter<TRead, TSeq>> readWriter;
-    std::unique_ptr<ReadReader<TRead, TSeq>> readReader;
     while (generalStats.readCount < programParams.firstReads)
     {
 #ifdef _MULTITHREADED_IO
-        if (readReader == false)
-            readReader.reset(new ReadReader<TRead, TSeq>(programParams.records, programVars));
-        const auto numReadsRead = readReader->_future.get();
+        readReader.getReads(readSet);
+        const auto numReadsRead = readSet.size();
+        if (numReadsRead == 0)
+            break;
         generalStats.readCount += numReadsRead;
-        readSet = std::move(readReader->tlsReads);
-        if(programParams.num_threads > 1)
-            readReader.reset(new ReadReader<TRead, TSeq>(programParams.records, programVars));
-        else
-            generalStats.readCount += readReads(readSet, programParams.records, programVars);
 #else
         const auto numReadsRead = readReads(readSet, programParams.records, programVars);
         generalStats.readCount += numReadsRead;
@@ -1718,7 +1734,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
             return 1;
 
         // Preprocessing and Filtering
-        preprocessingStage(readSet, processingParams, parser, generalStats);
+        preprocessingStage(readSet, processingParams, generalStats);
 
 
         // Demultiplexing
@@ -1796,6 +1812,8 @@ int flexbarMain(int argc, char const ** argv)
         seqan::CharString substituteString;
         getOptionValue(substituteString, parser, "s");
         processingParams.substitute = substituteString[0];
+        processingParams.runCheckUncalled = seqan::isSet(parser, "u");
+        processingParams.runSubstitute = seqan::isSet(parser, "s");
         getOptionValue(processingParams.uncalled, parser, "u");
         if (seqan::isSet(parser, "s") && (!seqan::isSet(parser, "u") || processingParams.uncalled == 0))
         {
@@ -2164,18 +2182,18 @@ int flexbarMain(int argc, char const ** argv)
         if (!demultiplexingParams.run)
             outputStreams.addStream("", 0, useDefault);
         if(demultiplexingParams.runx)
-            mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
+            mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
         else
-            mainLoop(Read<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
+            mainLoop(Read<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
     }
      else
      {
          if (!demultiplexingParams.run)
              outputStreams.addStreams("", "", 0, useDefault);
          if (demultiplexingParams.runx)
-             mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
+             mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
          else
-             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, parser, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
+             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
 
 
             //readRecords(idSet1[0], seqSet1[0], programParams.fileStream1, programParams.records);

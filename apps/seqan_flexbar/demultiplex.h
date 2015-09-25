@@ -189,7 +189,7 @@ int findExactIndex(const TPrefix& prefix, TFinder& finder) noexcept
 template <typename TMatches, typename TPrefices, typename TFinder, typename TStats>
 void findAllExactIndex(TMatches& matches, const TPrefices& prefices, const TFinder& finder, TStats& stats) noexcept
 {
-    assert(length(machtes) == length(prefices));
+    assert(length(matches) == length(prefices));
 
 	int tnum = 1;
 #ifdef _OPENMP
