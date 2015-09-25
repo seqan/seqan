@@ -941,7 +941,7 @@ public:
     //Writes the sets of ids and sequences to their corresponding files. Used for single-end data.
     template <template <typename> class TRead, typename TSeq, typename TNames, 
         typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value >>
-    void writeSeqs(std::vector<TRead<TSeq>>&& reads, TNames& names, bool = false)
+    void writeSeqs(std::vector<TRead<TSeq>>& reads, TNames& names, bool = false)
     {
         updateStreams(names, false);
         for (unsigned i = 0; i < length(reads); ++i)
@@ -953,7 +953,7 @@ public:
 
     template <template <typename> class TRead, typename TSeq, typename TNames,
         typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value >>
-        void writeSeqs(std::vector<TRead<TSeq>>&& reads, TNames& names)
+        void writeSeqs(std::vector<TRead<TSeq>>& reads, TNames& names)
     {
         updateStreams(names, false);
         for (unsigned i = 0; i < length(reads); ++i)
@@ -1272,16 +1272,13 @@ int demultiplexingStage(DemultiplexingParams& params, std::vector<TRead>& reads,
         return 0;
     if (!params.approximate)
     {
-        //DEBUG_MSG(std::cout << "Demultiplexing exact reads.\n");
-        doAll(reads, params.barcodes, esaFinder, params.hardClip, params.stats, params.exclude);
+        doAll(reads, params.barcodes, esaFinder, params.hardClip, params.stats, ApproximateBarcodeMatching(), params.exclude);
     }
     else
     {
         if (!check(reads, params.barcodes, generalStats))            // On Errors with barcodes return 1;
             return 1;
-        //DEBUG_MSG("Demultiplexing approximate reads.\n");
-        doAll(reads, params.barcodes, esaFinder, params.hardClip, params.stats,
-            params.approximate, params.exclude);
+        doAll(reads, params.barcodes, esaFinder, params.hardClip, params.stats, ExactBarcodeMatching(), params.exclude);
     }
     return 0;
 }
@@ -1654,34 +1651,35 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
 template<template<typename> class TRead, typename TSeq>
 struct ReadWriter
 {
-    ReadWriter(std::vector<TRead<TSeq>>&& reads, OutputStreams& outputStreams, const DemultiplexingParams& demultiplexingParams)
-        : tlsReads(std::move(reads)), _future(std::async(std::launch::async, [&outputStreams, &demultiplexingParams, this]() {outputStreams.writeSeqs(std::move(tlsReads), demultiplexingParams.barcodeIds);}))
+    ReadWriter(OutputStreams& outputStreams, const DemultiplexingParams& demultiplexingParams)
+        : _outputStreams(outputStreams), _demultiplexingParams(demultiplexingParams)
+    {}
+    ~ReadWriter() {};
+    void writeReads(std::unique_ptr<std::vector<TRead<TSeq>>>&& reads)
     {
-        //std::cout << std::endl<<"ctor" << std::endl;
+        if (_future.valid())
+            _future.wait();
+        tlsReads = std::move(reads);
+        _future = std::async(std::launch::async, [this]() {_outputStreams.writeSeqs(*tlsReads, _demultiplexingParams.barcodeIds);});
     }
-    ~ReadWriter() { 
-    //    std::cout << std::endl << "dtor" << std::endl; 
-    };
-    std::vector<TRead<TSeq>> tlsReads;
-    std::future<void> _future;
+    private:
+        OutputStreams& _outputStreams;
+        const DemultiplexingParams& _demultiplexingParams;
+        std::unique_ptr<std::vector<TRead<TSeq>>> tlsReads;
+        std::future<void> _future;
 };
 
 template<template<typename> class TRead, typename TSeq>
 struct ReadReader
 {
     ReadReader(unsigned int records, ProgramVars& programVars)
-        :_records(records), _programVars(programVars), tlsReads(records)
+        :_records(records), _programVars(programVars) {};
+    ~ReadReader() {};
+    bool getReads(std::unique_ptr<std::vector<TRead<TSeq>>>& reads)
     {
-        //std::cout << std::endl<<"ctor" << std::endl;
-    }
-    ~ReadReader() {
-        //    std::cout << std::endl << "dtor" << std::endl; 
-    };
-    bool getReads(std::vector<TRead<TSeq>>& reads)
-    {
-        if (!_future.valid())
+        if (!tlsReads)
             _startNewRead();
-        _future.get();
+        _future.wait();
         reads = std::move(tlsReads);
         _startNewRead();
         return true;
@@ -1689,13 +1687,14 @@ struct ReadReader
 private:
     unsigned int _records;
     ProgramVars& _programVars;
-    std::vector<TRead<TSeq>> tlsReads;
+    std::unique_ptr<std::vector<TRead<TSeq>>> tlsReads;
     std::future<unsigned int> _future;
 
     void _startNewRead()
     {
+        tlsReads.reset(new std::vector<TRead<TSeq>>);
         _future = std::async(std::launch::async,
-            [this]() {return readReads(tlsReads, _records, _programVars);});
+            [this]() {return readReads(*tlsReads, _records, _programVars);});
     }
 };
 
@@ -1705,16 +1704,17 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
     QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder, bool tagOpt, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
     OutputStreams& outputStreams)
 {
-    std::vector<TRead<TSeq>> readSet(programParams.records);
+    std::unique_ptr<std::vector<TRead<TSeq>>> readSet;
     TRead<TSeq> read;
-    SEQAN_PROTIMESTART(loopTime);
     ReadReader<TRead, TSeq> readReader(programParams.records, programVars);
-    std::unique_ptr<ReadWriter<TRead, TSeq>> readWriter;
+    ReadWriter<TRead, TSeq> readWriter(outputStreams, demultiplexingParams);
+
+    SEQAN_PROTIMESTART(loopTime);
     while (generalStats.readCount < programParams.firstReads)
     {
 #ifdef _MULTITHREADED_IO
         readReader.getReads(readSet);
-        const auto numReadsRead = readSet.size();
+        const auto numReadsRead = readSet->size();
         if (numReadsRead == 0)
             break;
         generalStats.readCount += numReadsRead;
@@ -1725,41 +1725,35 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
         if (numReadsRead == 0)
             break;
 
-        //generalStats.readCount += readReads(readSet, programParams.records, programVars);
         SEQAN_PROTIMESTART(processTime);            // START of processing time.
 
         //loadMultiplex(multiplexInFile, demultiplexingParams, records);
-        loadMultiplex(readSet, multiplexInFile, programParams.records);
+        loadMultiplex(*readSet, multiplexInFile, programParams.records);
         if (demultiplexingParams.runx)
             return 1;
 
         // Preprocessing and Filtering
-        preprocessingStage(readSet, processingParams, generalStats);
-
+        preprocessingStage(*readSet, processingParams, generalStats);
 
         // Demultiplexing
-        if (demultiplexingStage(demultiplexingParams, readSet, esaFinder, generalStats) != 0)
+        if (demultiplexingStage(demultiplexingParams, *readSet, esaFinder, generalStats) != 0)
             return 1;
 
         // Adapter trimming
-        adapterTrimmingStage(adapterTrimmingParams, readSet, tagOpt);
+        adapterTrimmingStage(adapterTrimmingParams, *readSet, tagOpt);
 
         // Quality trimming
-        qualityTrimmingStage(qualityTrimmingParams, readSet, tagOpt);
+        qualityTrimmingStage(qualityTrimmingParams, *readSet, tagOpt);
 
         // Postprocessing
-        postprocessingStage(readSet, processingParams, generalStats);
+        postprocessingStage(*readSet, processingParams, generalStats);
         generalStats.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
 
         // Write processed reads to file
 #ifdef _MULTITHREADED_IO
-            // reset calls the destructor of the future inside ReadWriter, this destructor blocks until the previous write has completed
-            // therefore only 1 write at the time will be active
-            if(readWriter)            
-                readWriter->_future.get();
-            readWriter.reset(new ReadWriter<TRead, TSeq>(std::move(readSet), outputStreams, demultiplexingParams));
+        readWriter.writeReads(std::move(readSet));
 #else
-            outputStreams.writeSeqs(std::move(readSet), demultiplexingParams.barcodeIds);
+        outputStreams.writeSeqs(readSet, demultiplexingParams.barcodeIds);
 #endif        
         // Print information
         if (programParams.showSpeed)

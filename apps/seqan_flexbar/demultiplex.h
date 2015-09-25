@@ -72,7 +72,6 @@ struct DemultiplexingParams
 	seqan::StringSet<seqan::String<seqan::Dna5> > barcodes;
 	seqan::StringSet<seqan::String<char> > barcodeIds;
 	seqan::String<char> multiplexFile;
-	seqan::StringSet<seqan::String<seqan::Dna5Q> > multiplex;
 	bool approximate;
 	bool hardClip;
 	bool run;
@@ -242,10 +241,13 @@ void clipBarcodes(std::vector<TRead>& reads, int len) noexcept
         }
 }
 
-template <typename TRead, typename TMatches>
-void group(std::vector<TRead>& reads, const TMatches& matches, bool exclude) noexcept
-{
+struct ApproximateBarcodeMatching {};
+struct ExactBarcodeMatching {};
 
+template <typename TRead, typename TMatches>
+void group(std::vector<TRead>& reads, const TMatches& matches, 
+    const ExactBarcodeMatching&, bool exclude) noexcept
+{
 	for (unsigned i = 0; i < length(matches); ++i)
     {                                                       //adds index of sequence to respective group.
 		if ((!exclude) || (matches[i] != -1))                //Check if unidentified seqs have to be excluded
@@ -255,10 +257,18 @@ void group(std::vector<TRead>& reads, const TMatches& matches, bool exclude) noe
     }                                                  
 }
 
-//Overload if approximate search has been used.
-template <typename TRead, typename TMatches, typename TBarcodes, typename TApprox>
+template <typename TRead, typename TMatches, typename TBarcodes>
 void group(std::vector<TRead>& reads, const TMatches& matches,
-    const TBarcodes& barcodes, TApprox const &, bool exclude) noexcept
+    const TBarcodes& barcodes, const ExactBarcodeMatching& dummy, bool exclude) noexcept
+{
+    (void)barcodes;
+    group(reads, matches, dummy, exclude);
+}
+
+//Overload if approximate search has been used.
+template <typename TRead, typename TMatches, typename TBarcodes>
+void group(std::vector<TRead>& reads, const TMatches& matches,
+    const TBarcodes& barcodes, const ApproximateBarcodeMatching&, bool exclude) noexcept
 {
     float dividend = float(length(barcodes[0])*5.0);		//value by which the index will be corrected.
     for (unsigned i = 0; i < length(matches); ++i)			//adds index of sequence to respective group.
@@ -270,30 +280,6 @@ void group(std::vector<TRead>& reads, const TMatches& matches,
     }
 }
 
-//Using exact search 
-template<template <typename> class TRead, typename TSeq, typename TBarcodes, typename TFinder>
-void doAll(std::vector<TRead<TSeq>>& reads, TBarcodes& barcodes, TFinder& esaFinder, bool hardClip,
-    DemultiplexStats& stats, bool exclude)
-{
-    std::vector<TSeq> prefices;
-    getPrefix(prefices, reads, length(barcodes[0]));
-    std::vector<int> matches;
-    findAllExactIndex(matches, prefices, esaFinder, stats);
-    if (std::is_same<TRead<TSeq>, Read<TSeq>>::value)   // clipping is not done for multiplex barcodes, only for inline barcodes
-    {
-        if (hardClip)		//clip barcodes according to selected method
-        {
-            clipBarcodes(reads, length(barcodes[0]));
-        }
-        else
-        {
-            clipBarcodes(reads, matches, length(barcodes[0]));
-        }
-    }
-    group(reads, matches, exclude);
-}
-
-// Using approximate search
 template<template <typename> class TRead, typename TSeq, typename TBarcodes, typename TFinder, typename TApprox>
 void doAll(std::vector<TRead<TSeq>>& reads, TBarcodes& barcodes, TFinder& esaFinder,
     bool hardClip, DemultiplexStats& stats, const TApprox approximate, bool exclude)

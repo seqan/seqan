@@ -407,7 +407,7 @@ SEQAN_DEFINE_TEST(group_test)
     expectedReads[4].demuxResult = 2;
     expectedReads[5].demuxResult = 3;
 	
-    group(reads, matches, false);
+    group(reads, matches, ExactBarcodeMatching(), false);
 	
 	for (unsigned i = 0; i < length(expectedReads); ++i)
 	{
@@ -451,7 +451,7 @@ SEQAN_DEFINE_TEST(doAll_Exact_test)
     Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
     indexRequire(indexSet, FibreSA());
 
-    doAll(reads, barcodes, esaFinder, false, demultiplexStats, false);
+    doAll(reads, barcodes, esaFinder, false, demultiplexStats, ExactBarcodeMatching(), false);
 
     for (unsigned i = 0; i < length(expectedReads); ++i)
     {
@@ -505,7 +505,7 @@ SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test)
     Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
     Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
     indexRequire(indexSet, FibreSA());
-    doAll(reads, barcodes, esaFinder, false, demultiplexStats, false);
+    doAll(reads, barcodes, esaFinder, false, demultiplexStats, ExactBarcodeMatching(), false);
 
     for (unsigned i = 0; i < length(expectedReads); ++i)
     {
@@ -541,7 +541,7 @@ SEQAN_DEFINE_TEST(Input_test)
 	indexRequire(indexSet, FibreSA());
 
 	StringSet<String<int> > groups;
-    doAll(reads, bcs, esaFinder, false, demultiplexStats, false);
+    doAll(reads, bcs, esaFinder, false, demultiplexStats, ExactBarcodeMatching(), false);
 }
 
 
