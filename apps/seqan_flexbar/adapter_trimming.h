@@ -385,7 +385,7 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
 
 template < template <typename> typename TRead, typename TSeq, typename TAdaptersArray, typename TSpec, typename TTagAdapter,
     typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value> >
-unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec,
+unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec, const bool pairedNoAdapterFile,
     AdapterTrimmingStats& stats, TTagAdapter, bool = false) noexcept(!TTagAdapter::value)
 {
     int t_num = omp_get_max_threads();
@@ -409,10 +409,9 @@ unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const
 }
 
 // pairedEnd adapters will be trimmed in single mode, each seperately
-// TODO: implement alignPair
 template < template <typename> typename TRead, typename TSeq, typename TAdaptersArray, typename TSpec, typename TTagAdapter,
     typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value> >
-unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec,
+unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec, const bool pairedNoAdapterFile,
     AdapterTrimmingStats& stats, TTagAdapter) noexcept(!TTagAdapter::value)
 {
     int t_num = omp_get_max_threads();
@@ -426,9 +425,17 @@ unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const
                 continue;
             const int t_id = omp_get_thread_num();
             // Every thread has its own adapterTrimmingStatsVector
-            unsigned over = stripAdapter(reads[i].seq, adapterTrimmingStatsVector[t_id], adapters[1], spec, StripAdapterDirection<adapterDirection::forward>());
-            if (!seqan::empty(reads[i].seqRev))
-                over += stripAdapter(reads[i].seqRev, adapterTrimmingStatsVector[t_id], adapters[0], spec, StripAdapterDirection<adapterDirection::reverse>());
+            unsigned over = 0;
+            if (pairedNoAdapterFile)
+            {
+                stripPair(reads[i].seq, reads[i].seqRev);
+            }
+            else
+            {
+                over = stripAdapter(reads[i].seq, adapterTrimmingStatsVector[t_id], adapters[1], spec, StripAdapterDirection<adapterDirection::forward>());
+                if (!seqan::empty(reads[i].seqRev))
+                    over += stripAdapter(reads[i].seqRev, adapterTrimmingStatsVector[t_id], adapters[0], spec, StripAdapterDirection<adapterDirection::reverse>());
+            }
             if (TTagAdapter::value && over != 0)
                 insertAfterFirstToken(reads[i].id, ":AdapterRemoved");
         }

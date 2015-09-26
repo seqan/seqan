@@ -272,12 +272,8 @@ void ArgumentParserBuilder::addAdapterTrimmingOptions(seqan::ArgumentParser & pa
     addOption(parser, adapterFileOpt);
 
     seqan::ArgParseOption noAdapterOpt = seqan::ArgParseOption(
-        "na", "no-adapter", "Trim adapters from paired-end reads without using reference adapters.");
+        "pa", "paired-adapterTrimming", "Trim adapters from paired-end reads without using reference adapters.");
     addOption(parser, noAdapterOpt);
-
-    seqan::ArgParseOption pairedModeOpt = seqan::ArgParseOption(
-        "np", "no-paired", "Trim paired-end input with single-end trimming method.");
-    addOption(parser, pairedModeOpt);
 
     seqan::ArgParseOption errorOpt = seqan::ArgParseOption(
         "e", "errors", "Allowed errors in adapter detection.",
@@ -678,14 +674,13 @@ enum MatchMode
 
 struct AdapterTrimmingParams
 {
-    bool paired;
-    bool noAdapter;
+    bool pairedNoAdapterFile;
     bool run;
     std::array<TAdapterSet, 2> adapters;
     AdapterMatchSettings mode;
     MatchMode mmode;
     AdapterTrimmingStats stats;
-    AdapterTrimmingParams() : paired(false), noAdapter(false), run(false), mmode(E_AUTO) {};
+    AdapterTrimmingParams() : pairedNoAdapterFile(false), run(false), mmode(E_AUTO) {};
 };
 
 struct QualityTrimmingParams
@@ -1061,10 +1056,9 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
     // PAIRED-END ------------------------------
     int fileCount =  getArgumentValueCount(parser, 0);
     // Only consider paired-end mode if two files are given and user wants paired mode.
-    params.paired = fileCount == 2 && !isSet(parser, "np");
-    params.noAdapter = isSet(parser, "na");
+    params.pairedNoAdapterFile = fileCount == 2 && isSet(parser, "pa");
     // Set run flag, depending on essential parameters.
-    params.run = isSet(parser,"a") || (params.noAdapter && fileCount == 2);
+    params.run = isSet(parser,"a") || (isSet(parser, "pa") && fileCount == 2);
     // ADAPTER SEQUENCES ----------------------------
     seqan::CharString adapterFile, id;
     // If adapter sequences are given, we read them in any case.
@@ -1087,9 +1081,14 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
         }
     }
     // If they are not given, but we would need them (single-end trimming), output error.
-    else if (isSet(parser, "np") || (params.noAdapter && fileCount == 1))
+    else if ((isSet(parser, "pa") && fileCount == 1))
     {
-        std::cerr << "Unpaired adapter removal requires adapter sequences.\n";
+        std::cerr << "Unpaired adapter removal requires paired reads.\n";
+        return 1;
+    }
+    else if (isSet(parser, "pa"))
+    {
+        std::cerr << "You can not specify adapters for paired adapter removal.\n";
         return 1;
     }
     // TRIMMING MODE ----------------------------
@@ -1278,9 +1277,9 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, std::vector<TRead>& rea
     if (!params.run)
         return;
     if(tagOpt)
-        stripAdapterBatch(reads, params.adapters, params.mode, params.stats, TagAdapter<true>());
+        stripAdapterBatch(reads, params.adapters, params.mode, params.pairedNoAdapterFile, params.stats, TagAdapter<true>());
     else
-        stripAdapterBatch(reads, params.adapters, params.mode, params.stats, TagAdapter<false>());
+        stripAdapterBatch(reads, params.adapters, params.mode, params.pairedNoAdapterFile, params.stats, TagAdapter<false>());
 }
 
 // QUALITY TRIMMING
@@ -1967,21 +1966,16 @@ int flexbarMain(int argc, char const ** argv)
             {
                 std::cout << "\tAdapter file: NONE\n";
             }
-            if (adapterTrimmingParams.noAdapter)
+            if (programParams.fileCount == 2)
             {
-                std::cout << "\tDon't use Adapter file: YES\n";
-            }
-            else
-            {
-                std::cout << "\tDon't use Adapter file: NO\n";
-            }
-            if (isSet(parser, "np"))
-            {
-                std::cout << "\tForce single-end method: YES\n";
-            }
-            else
-            {
-                std::cout << "\tForce single-end method: NO\n";
+                if (adapterTrimmingParams.pairedNoAdapterFile)
+                {
+                    std::cout << "\tPaired end Mode: without adapter file\n";
+                }
+                else
+                {
+                    std::cout << "\tPaired end Mode: with adapter file\n";
+                }
             }
             if (isSet(parser, "e") && !isSet(parser, "er"))
             {
