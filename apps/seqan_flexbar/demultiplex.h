@@ -68,10 +68,10 @@ struct DemultiplexStats
 
 struct DemultiplexingParams
 {
-	seqan::String<char> barcodeFile;
+	std::string barcodeFile;
 	seqan::StringSet<seqan::String<seqan::Dna5> > barcodes;
-	seqan::StringSet<seqan::String<char> > barcodeIds;
-	seqan::String<char> multiplexFile;
+	seqan::StringSet<seqan::CharString> barcodeIds;
+	std::string multiplexFile;
 	bool approximate;
 	bool hardClip;
 	bool run;
@@ -282,19 +282,22 @@ void group(std::vector<TRead>& reads, const TMatches& matches,
 
 template<template <typename> class TRead, typename TSeq, typename TBarcodes, typename TFinder, typename TApprox>
 void doAll(std::vector<TRead<TSeq>>& reads, TBarcodes& barcodes, TFinder& esaFinder,
-    bool hardClip, DemultiplexStats& stats, const TApprox approximate, bool exclude)
+    bool hardClip, DemultiplexStats& stats, const TApprox& approximate, bool exclude)
 {
     std::vector<TSeq> prefices(length(reads));
     getPrefix(prefices, reads, length(barcodes[0]));
     std::vector<int> matches(length(prefices));
     findAllExactIndex(matches, prefices, esaFinder, stats);
-    if (hardClip)		//clip barcodes according to selected method
+    if (std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value)   // clipping is not done for multiplex barcodes, only for inline barcodes
     {
-        clipBarcodes(reads, length(barcodes[0]));
-    }
-    else
-    {
-        clipBarcodes(reads, matches, length(barcodes[0]));
+        if (hardClip)		//clip barcodes according to selected method
+        {
+            clipBarcodes(reads, length(barcodes[0]));
+        }
+        else
+        {
+            clipBarcodes(reads, matches, length(barcodes[0]));
+        }
     }
     group(reads, matches, barcodes, approximate, exclude);
 }

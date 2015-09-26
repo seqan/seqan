@@ -49,8 +49,7 @@
 #include <seqan/sequence.h>
 
 
-// C++17 functions
-
+// seqan->std interface functions
 void append(std::string& str1, const std::string& str2)
 {
     str1 += str2;
