@@ -383,11 +383,12 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
     return removed;
 }
 
-template < template <typename> typename TRead, typename TSeq, typename TAdaptersArray, typename TSpec, typename TTagAdapter,
+template < template <typename> class TRead, typename TSeq, typename TAdaptersArray, typename TSpec, typename TTagAdapter,
     typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value> >
 unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec, const bool pairedNoAdapterFile,
     AdapterTrimmingStats& stats, TTagAdapter, bool = false) noexcept(!TTagAdapter::value)
 {
+    (void)pairedNoAdapterFile;
     int t_num = omp_get_max_threads();
     // Create local counting variables to avoid concurrency problems.
     std::vector<AdapterTrimmingStats> adapterTrimmingStatsVector(t_num);
@@ -409,7 +410,7 @@ unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const
 }
 
 // pairedEnd adapters will be trimmed in single mode, each seperately
-template < template <typename> typename TRead, typename TSeq, typename TAdaptersArray, typename TSpec, typename TTagAdapter,
+template < template <typename> class TRead, typename TSeq, typename TAdaptersArray, typename TSpec, typename TTagAdapter,
     typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value> >
 unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec, const bool pairedNoAdapterFile,
     AdapterTrimmingStats& stats, TTagAdapter) noexcept(!TTagAdapter::value)

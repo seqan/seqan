@@ -1373,7 +1373,7 @@ void postprocessingStage(TSeqSet& seqSet, TIdSet& idSet, TSeqSet& seqSet2, TIdSe
 // END PROGRAM STAGES ---------------------
 template <typename TOutStream>
 void printStatistics(const ProgramParams& programParams, const GeneralStats& generalStats, DemultiplexingParams& demultiplexParams,
-                const AdapterTrimmingParams& adapterParams, const QualityTrimmingParams& qualityParams, const bool timing, TOutStream &outStream)
+                const AdapterTrimmingParams& adapterParams, const bool timing, TOutStream &outStream)
 {
     bool paired = programParams.fileCount == 2;
     bool adapter = adapterParams.run;
@@ -2040,7 +2040,7 @@ int flexbarMain(int argc, char const ** argv)
     double loop = SEQAN_PROTIMEDIFF(loopTime);
     generalStats.ioTime = loop - generalStats.processTime;
 
-    printStatistics(programParams, generalStats, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, !isSet(parser, "ni"), std::cout);
+    printStatistics(programParams, generalStats, demultiplexingParams, adapterTrimmingParams, !isSet(parser, "ni"), std::cout);
     if (isSet(parser, "st"))
     {
         std::fstream statFile;
@@ -2049,7 +2049,7 @@ int flexbarMain(int argc, char const ** argv)
 #else
         statFile.open(std::string(seqan::toCString(outputStreams.getBaseFilename())) + "_flexbar_statistics.txt", std::fstream::out);
 #endif
-        printStatistics(programParams, generalStats, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, !isSet(parser, "ni"), statFile);
+        printStatistics(programParams, generalStats, demultiplexingParams, adapterTrimmingParams, !isSet(parser, "ni"), statFile);
         statFile.close();
     }
     return 0;

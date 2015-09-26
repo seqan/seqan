@@ -61,7 +61,7 @@ unsigned int length(const std::string& str)
 }
 
 template <typename T>
-unsigned int length(const std::vector<T>& vec)
+unsigned int length(const std::vector<T>& vec) noexcept
 {
     return vec.size();
 }
@@ -192,7 +192,7 @@ struct ReadPairedEnd : ReadBase<TSeq>
     }
     inline unsigned int minSeqLen() const noexcept
     {
-        return std::min(length(seq), length(seqRev));
+        return std::min(length(ReadBase<TSeq>::seq), length(seqRev));
     }
 };
 

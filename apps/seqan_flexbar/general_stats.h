@@ -16,4 +16,4 @@ struct GeneralStats
     GeneralStats() : removedN(0), removedDemultiplex(0), uncalledBases(0), removedShort(0), readCount(0), processTime(0), ioTime(0) {};
 };
 
-#endif GENERALSTATS_H_
+#endif

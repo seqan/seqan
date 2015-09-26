@@ -100,35 +100,41 @@ inline int findNUniversal(TSeq& seq, unsigned allowed, const TSub substitute) no
     return c;                   //sequence not deleted, number of substitutions returned
 }
 
-template<template<typename> typename TRead, typename TSeq, typename TSub,
+template<template<typename> class TRead, typename TSeq, typename TSub,
     typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>> ::value >>
 inline int findNMultiplex(TRead<TSeq>& read, unsigned allowed, const TSub substitute, bool = false) noexcept
 {
+    (void)read;
+    (void)allowed;
+    (void)substitute;
     return 0;
 }
 
-template<template<typename> typename TRead, typename TSeq, typename TSub,
+template<template<typename> class TRead, typename TSeq, typename TSub,
     typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq >> ::value >>
 inline int findNMultiplex(TRead<TSeq>& read, unsigned allowed, const TSub substitute) noexcept
 {
     return findNUniversal(read.demultiplex, allowed, substitute);
 }
 
-template<template<typename> typename TRead, typename TSeq, typename TSub,
+template<template<typename> class TRead, typename TSeq, typename TSub,
     typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq >> ::value >>
 inline int findNPairedEnd(TRead<TSeq>& read, unsigned allowed, const TSub substitute, bool = false) noexcept
 {
+    (void)read;
+    (void)allowed;
+    (void)substitute;
     return 0;
 }
 
-template<template<typename> typename TRead, typename TSeq, typename TSub,
+template<template<typename> class TRead, typename TSeq, typename TSub,
     typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq >> ::value >>
 inline int findNPairedEnd(TRead<TSeq>& read, unsigned allowed, const TSub substitute) noexcept
 {
     return findNUniversal(read.seqRev, allowed, substitute);
 }
 
-template<template<typename> typename TRead, typename TSeq, typename TSub>
+template<template<typename> class TRead, typename TSeq, typename TSub>
 int findN(TRead<TSeq>& read, unsigned allowed, const TSub substitute) noexcept
 {
     auto c = findNUniversal(read.seq, allowed, substitute);
@@ -157,7 +163,6 @@ void processN(std::vector<TRead<TSeq>>& reads, unsigned allowed, TSub substitute
             res[i] = findN(reads[i], allowed, substitute);
         }
 
-    unsigned ex = 0;
     stats.removedN += _eraseSeqs(res, -1, reads);
     for (int i = length(res) - 1; i >= 0; --i)
     {
@@ -203,7 +208,7 @@ void _preTrim(std::vector<TRead<TSeq>>& readSet, const unsigned head, const unsi
                         insertToken += ":TR:" + std::string(suffix(readSet[i].seq, seqLen - tail));
                     erase(readSet[i].seq, seqLen - tail, seqLen);
                 }
-                if(!empty(insertToken))
+                if(insertToken.size() != 0)
                     insertAfterFirstToken(readSet[i].id, std::move(insertToken));
 
                 // check if trimmed sequence is at least of length min
