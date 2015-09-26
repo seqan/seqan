@@ -145,14 +145,14 @@ SEQAN_DEFINE_TEST(processN_test)
     appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC");
 
     processN(reads2, allowed, NoSubstitute(), stats);        //No Substitutions
-    SEQAN_ASSERT_EQ(stats.removedSeqs, 1u);
+    SEQAN_ASSERT_EQ(stats.removedN, 1u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 6u);
     for (unsigned i = 0; i < length(exspectedNoSub); ++i)
     {
         SEQAN_ASSERT_EQ(exspectedNoSub[i], reads2[i].seq);
     }
 
-    stats.removedSeqs = 0;
+    stats.removedN = 0;
     stats.uncalledBases = 0;
     reads2 = reads;
     Dna substitute = 'A';
@@ -165,7 +165,7 @@ SEQAN_DEFINE_TEST(processN_test)
     exspectedSub[3][31] = substitute;
 
     processN(reads2, allowed, substitute, stats);
-    SEQAN_ASSERT_EQ(stats.removedSeqs, 1u);
+    SEQAN_ASSERT_EQ(stats.removedN, 1u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 6u);
     for (unsigned i = 0; i < length(exspectedSub); ++i)
     {
@@ -208,7 +208,7 @@ SEQAN_DEFINE_TEST(processN_paired_test)
     unsigned allowed = 3;
     
     processN(reads2, allowed, NoSubstitute(), stats);        //No Substitutions
-    SEQAN_ASSERT_EQ(stats.removedSeqs, 2u);
+    SEQAN_ASSERT_EQ(stats.removedN, 2u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 10u);
     for (unsigned i = 0; i < length(expectedReads); ++i)
     {
@@ -217,7 +217,7 @@ SEQAN_DEFINE_TEST(processN_paired_test)
         SEQAN_ASSERT_EQ(reads2[i].seqRev, expectedReads[i].seqRev);
     }
 
-    stats.removedSeqs = 0;
+    stats.removedN = 0;
     stats.uncalledBases = 0;
     Dna substitute = 'A';
     reads2 = reads;
@@ -228,7 +228,7 @@ SEQAN_DEFINE_TEST(processN_paired_test)
     expectedReads[2].seq[31] = substitute;
 
     processN(reads2, allowed, substitute, stats);
-    SEQAN_ASSERT_EQ(stats.removedSeqs, 2u);
+    SEQAN_ASSERT_EQ(stats.removedN, 2u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 10u);
     for (unsigned i = 0; i < length(expectedReads); ++i)
     {
@@ -267,7 +267,7 @@ SEQAN_DEFINE_TEST(processN_multiplex_test)
     unsigned allowed = 3;
 
     processN(reads2, allowed, NoSubstitute(), stats);        //No Substitutions
-    SEQAN_ASSERT_EQ(stats.removedSeqs, 1u);
+    SEQAN_ASSERT_EQ(stats.removedN, 1u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 6u);
     for (unsigned i = 0; i < length(expectedReads); ++i)
     {
@@ -275,7 +275,7 @@ SEQAN_DEFINE_TEST(processN_multiplex_test)
         SEQAN_ASSERT_EQ(expectedReads[i].demultiplex, reads2[i].demultiplex);
     }
 
-    stats.removedSeqs = 0;
+    stats.removedN = 0;
     stats.uncalledBases = 0;
     reads2 = reads;
     Dna substitute = 'A';
@@ -287,7 +287,7 @@ SEQAN_DEFINE_TEST(processN_multiplex_test)
     expectedReads[3].seq[31] = substitute;
 
     processN(reads2, allowed, substitute, stats);
-    SEQAN_ASSERT_EQ(stats.removedSeqs, 1u);
+    SEQAN_ASSERT_EQ(stats.removedN, 1u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 6u);
     for (unsigned i = 0; i < length(expectedReads); ++i)
     {
@@ -335,7 +335,7 @@ SEQAN_DEFINE_TEST(processN_paired_multiplex_test)
     unsigned allowed = 3;
     
     processN(reads2, allowed, NoSubstitute(), stats);        //No Substitutions
-    SEQAN_ASSERT_EQ(stats.removedSeqs, 2u);
+    SEQAN_ASSERT_EQ(stats.removedN, 2u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 10u);
     for (unsigned i = 0; i < length(expectedReads); ++i)
     {
@@ -345,7 +345,7 @@ SEQAN_DEFINE_TEST(processN_paired_multiplex_test)
         SEQAN_ASSERT_EQ(reads2[i].demultiplex, expectedReads[i].demultiplex);
     }
 
-    stats.removedSeqs = 0;
+    stats.removedN = 0;
     stats.uncalledBases = 0;
     reads2 = reads;
     Dna substitute = 'A';
@@ -356,7 +356,7 @@ SEQAN_DEFINE_TEST(processN_paired_multiplex_test)
     expectedReads[2].seq[31] = substitute;
 
     processN(reads2, allowed, substitute, stats);
-    SEQAN_ASSERT_EQ(stats.removedSeqs, 2u);
+    SEQAN_ASSERT_EQ(stats.removedN, 2u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 10u);
     for (unsigned i = 0; i < length(expectedReads); ++i)
     {

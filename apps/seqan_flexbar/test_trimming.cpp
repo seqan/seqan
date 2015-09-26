@@ -72,52 +72,45 @@ SEQAN_DEFINE_TEST(drop_reads_test)
         readsPairedEnd[i].seq = readsPairedEnd[i].seqRev = reads[i].seq;
     }
 
-	QualityTrimmingStats tmp;
+    unsigned removedReads = 0;
 
-	dropReads(reads, 2, tmp);
+	removedReads += dropReads(reads, 2);
 	SEQAN_ASSERT_EQ(length(reads), 4u);
 
-	dropReads(reads, 4, tmp);
+    removedReads += dropReads(reads, 4);
 	SEQAN_ASSERT_EQ(length(reads), 3u);
 
-	dropReads(reads, 6, tmp);
+    removedReads += dropReads(reads, 6);
 	SEQAN_ASSERT_EQ(length(reads), 2u);
 
-	dropReads(reads, 24, tmp);
+    removedReads += dropReads(reads, 24);
 	SEQAN_ASSERT_EQ(length(reads), 1u);
 
-	dropReads(reads, 50, tmp);
+    removedReads += dropReads(reads, 50);
 	SEQAN_ASSERT_EQ(length(reads), 0u);
      
     //Part for paired End
-    tmp.dropped_1 = 0;
-    tmp.dropped_2 = 0;
+    removedReads = 0;
 
-    dropReads(readsPairedEnd, 2, tmp);
+    removedReads += dropReads(readsPairedEnd, 2);
     SEQAN_ASSERT_EQ(length(readsPairedEnd), 4u);
-    SEQAN_ASSERT_EQ(tmp.dropped_1, 1u);
-    SEQAN_ASSERT_EQ(tmp.dropped_2, 1u);
+    SEQAN_ASSERT_EQ(removedReads, 1u);
 
-    dropReads(readsPairedEnd, 4, tmp);
+    removedReads += dropReads(readsPairedEnd, 4);
     SEQAN_ASSERT_EQ(length(readsPairedEnd), 3u);
-    SEQAN_ASSERT_EQ(tmp.dropped_1, 2u);
-    SEQAN_ASSERT_EQ(tmp.dropped_2, 2u);
+    SEQAN_ASSERT_EQ(removedReads, 2u);
 
-    dropReads(readsPairedEnd, 6, tmp);
+    removedReads += dropReads(readsPairedEnd, 6);
     SEQAN_ASSERT_EQ(length(readsPairedEnd), 2u);
-    SEQAN_ASSERT_EQ(tmp.dropped_1, 3u);
-    SEQAN_ASSERT_EQ(tmp.dropped_2, 3u);
+    SEQAN_ASSERT_EQ(removedReads, 3u);
 
-    dropReads(readsPairedEnd, 24, tmp);
+    removedReads += dropReads(readsPairedEnd, 24);
     SEQAN_ASSERT_EQ(length(readsPairedEnd), 1u);
-    SEQAN_ASSERT_EQ(tmp.dropped_1, 4u);
-    SEQAN_ASSERT_EQ(tmp.dropped_2, 4u);
+    SEQAN_ASSERT_EQ(removedReads, 4u);
 
-    dropReads(readsPairedEnd, 50, tmp);
+    removedReads += dropReads(readsPairedEnd, 50);
     SEQAN_ASSERT_EQ(length(readsPairedEnd), 0u);
-    SEQAN_ASSERT_EQ(tmp.dropped_1, 5u);
-    SEQAN_ASSERT_EQ(tmp.dropped_2, 5u);
-
+    SEQAN_ASSERT_EQ(removedReads, 5u);
 }
 
 SEQAN_DEFINE_TEST(sliding_window_test)

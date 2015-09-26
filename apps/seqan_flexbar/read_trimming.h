@@ -46,6 +46,7 @@
 #define SANDBOX_GROUP3_APPS_SEQDPT_READTRIMMING_H_
 
 #include "helper_functions.h"
+#include "general_stats.h"
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -60,17 +61,6 @@ struct BWA {};
 struct Mean {
 	unsigned window;	// The window size used for quality calculations.
 	Mean(unsigned w) : window(w) {}
-};
-
-struct QualityTrimmingStats
-{
-	unsigned dropped_1, dropped_2;
-	QualityTrimmingStats() : dropped_1(0), dropped_2(0) {};
-	void clear()
-	{
-		dropped_1 = 0;
-		dropped_2 = 0;
-	}
 };
 
 // ============================================================================
@@ -187,8 +177,7 @@ unsigned _trimReads(std::vector<TRead>& reads, unsigned const cutoff, TSpec cons
 }
 
 template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value>>
-unsigned dropReads(std::vector<TRead<TSeq>>& reads,
-    unsigned const min_length, QualityTrimmingStats& stats, bool = false)
+unsigned dropReads(std::vector<TRead<TSeq>>& reads, unsigned const min_length, bool = false)
 {
     if (empty(reads))
         return 0;
@@ -200,13 +189,11 @@ unsigned dropReads(std::vector<TRead<TSeq>>& reads,
             rem[&element - beginAddr] = true;
         else
             rem[&element - beginAddr] = false;
-    stats.dropped_1 += _eraseSeqs(rem, true, reads);
-    return 0;
+    return _eraseSeqs(rem, true, reads);
 }
 
 template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
-unsigned dropReads(std::vector<TRead<TSeq>>& reads,
-    unsigned const min_length, QualityTrimmingStats& stats)
+unsigned dropReads(std::vector<TRead<TSeq>>& reads, unsigned const min_length) 
 {
     if (empty(reads))
         return 0;
@@ -218,15 +205,12 @@ unsigned dropReads(std::vector<TRead<TSeq>>& reads,
             rem[&element - beginAddr] = true;
         else
             rem[&element - beginAddr] = false;
-    stats.dropped_1 += _eraseSeqs(rem, true, reads);
-    stats.dropped_2 = stats.dropped_1;
-    return 0;
+    return _eraseSeqs(rem, true, reads);
 }
 
 
 template <typename TRead, typename TSpec>
-unsigned trimBatch(std::vector<TRead>& reads, unsigned const cutoff,
-    TSpec const& spec, bool tagOpt)
+unsigned trimBatch(std::vector<TRead>& reads, unsigned const cutoff, TSpec const& spec, bool tagOpt)
 {
     unsigned trimmedReads;
     if(tagOpt)

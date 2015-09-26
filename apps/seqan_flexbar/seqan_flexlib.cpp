@@ -695,7 +695,6 @@ struct QualityTrimmingParams
     int cutoff;
     int min_length;
     bool run;
-    QualityTrimmingStats stats;
        QualityTrimmingParams() : trim_mode(E_WINDOW), cutoff(-1), min_length(1), run(false) {};
 };
 
@@ -1001,11 +1000,6 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
     {
         buildAllVariations(params.barcodes);
     }
-    seqan::resize(params.stats.groups, seqan::length(params.barcodes) + 1);
-    for (unsigned i = 0; i < seqan::length(params.stats.groups); ++i)
-    {
-        params.stats.groups[i] = 0;             //Sets the right size for the stats String and fills it with 0.
-    }
     return 0;
 }
 
@@ -1059,11 +1053,6 @@ int loadDemultiplexingParams(seqan::ArgumentParser const& parser, Demultiplexing
         getOptionValue(params.barcodeFile, parser, "b");
         if (loadBarcodes(toCString(params.barcodeFile), params) != 0)
             return 1;
-    }
-    else
-    {
-        resize(params.stats.groups , 1);
-        params.stats.groups[0] = 0;
     }
     return 0;
 }
@@ -1272,13 +1261,13 @@ int demultiplexingStage(DemultiplexingParams& params, std::vector<TRead>& reads,
         return 0;
     if (!params.approximate)
     {
-        doAll(reads, params.barcodes, esaFinder, params.hardClip, params.stats, ExactBarcodeMatching(), params.exclude);
+        doAll(reads, params.barcodes, esaFinder, params.hardClip, generalStats, ExactBarcodeMatching(), params.exclude);
     }
     else
     {
         if (!check(reads, params.barcodes, generalStats))            // On Errors with barcodes return 1;
             return 1;
-        doAll(reads, params.barcodes, esaFinder, params.hardClip, params.stats, ApproximateBarcodeMatching(), params.exclude);
+        doAll(reads, params.barcodes, esaFinder, params.hardClip, generalStats, ApproximateBarcodeMatching(), params.exclude);
     }
     return 0;
 }
@@ -1300,7 +1289,7 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, std::vector<TRead>& rea
 // QUALITY TRIMMING
 //Version for single-ende data
 template <typename TRead>
-void qualityTrimmingStage(QualityTrimmingParams& params, std::vector<TRead>& reads, bool tagOpt)
+void qualityTrimmingStage(const QualityTrimmingParams& params, std::vector<TRead>& reads, GeneralStats& stats, bool tagOpt)
 {
     if (params.run)
     {
@@ -1321,91 +1310,9 @@ void qualityTrimmingStage(QualityTrimmingParams& params, std::vector<TRead>& rea
         }
         }
     }
-    dropReads(reads, params.min_length, params.stats);
+    stats.removedQuality += dropReads(reads, params.min_length);
 }
 
-template <typename TIds, typename TSeqs>
-void qualityTrimmingStage(QualityTrimmingParams& params, TIds& idSet, TSeqs& seqSet, bool tagOpt)
-{
-    if (params.run)
-    {
-        //DEBUG_MSG("Trimming qualities.\n");
-        // Templates don't support runtime polymorphism, so code paths for all possibilities.
-        switch (params.trim_mode)
-        {
-            case E_WINDOW:
-            {
-                for (unsigned i=0; i < length(idSet); ++i)
-                {
-                    trimBatch(seqSet[i], idSet[i], params.cutoff, Mean(5), tagOpt);
-                }
-                break;
-            }
-            case E_BWA:
-                {
-                for (unsigned i=0; i < length(idSet); ++i)
-                {
-                    trimBatch(seqSet[i], idSet[i],params.cutoff, BWA(), tagOpt);
-                }
-                break;
-                }
-            case E_TAIL:
-            {
-                for (unsigned i=0; i < length(idSet); ++i)
-                {
-                    trimBatch(seqSet[i], idSet[i], params.cutoff, Tail(), tagOpt);
-                }
-                break;
-            }
-        }
-    }
-    for (unsigned i=0; i < length(idSet); ++i)
-    {
-        dropReads(idSet[i], seqSet[i], params.min_length, params.stats);
-    }
-}
-
-//Overload for paired-end data
-template <typename TIds, typename TSeqs>
-void qualityTrimmingStage(QualityTrimmingParams& params, TIds& idSet1, TSeqs& seqSet1, TIds& idSet2, TSeqs& seqSet2, bool tagOpt)
-{
-    if (params.run)
-    {
-        //DEBUG_MSG("Trimming (pair) qualities.\n");
-        // Templates don't support runtime polymorphism, so code paths for all possibilities.
-        switch (params.trim_mode)
-        {
-            case E_WINDOW:
-            {
-                for (unsigned i=0; i < length(idSet1); ++i)
-                {
-                    trimPairBatch(seqSet1[i], idSet1[i], seqSet2[i], idSet2[i], params.cutoff, Mean(5), tagOpt);
-                }
-                break;
-            }
-            case E_BWA:
-            {
-                for (unsigned i=0; i < length(idSet1); ++i)
-                {
-                    trimPairBatch(seqSet1[i], idSet1[i], seqSet2[i], idSet2[i], params.cutoff, BWA(), tagOpt);
-                }
-                break;
-            }
-            case E_TAIL:
-            {
-                for (unsigned i=0; i < length(idSet1); ++i)
-                {
-                    trimPairBatch(seqSet1[i], idSet1[i], seqSet2[i], idSet2[i], params.cutoff, Tail(), tagOpt);
-                }
-                break;
-            }
-        }
-    }
-    for (unsigned i = 0; i < length(idSet1); ++i)
-    {
-        dropReads(idSet1[i], seqSet1[i], idSet2[i], seqSet2[i], params.min_length, params.stats);
-    }
-}
 //Postprocessing
 template<typename TRead>
 void postprocessingStage(std::vector<TRead>& reads, ProcessingParams& params, GeneralStats& stats)
@@ -1414,7 +1321,7 @@ void postprocessingStage(std::vector<TRead>& reads, ProcessingParams& params, Ge
     {
         if ((params.finalMinLength != 0) && (params.finalLength == 0))
         {           
-            stats.removedSeqsShort += postTrim(reads, params.finalMinLength);
+            stats.removedShort += postTrim(reads, params.finalMinLength);
         }
         else if (params.finalLength != 0)
         {
@@ -1474,31 +1381,35 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
 {
     bool paired = programParams.fileCount == 2;
     bool adapter = adapterParams.run;
-    int read_factor = (1+paired);
     outStream << std::endl;
     outStream << "\r\rRead statistics\n";
     outStream << "===============\n";
-    outStream << "Reads processed:\t" << read_factor * generalStats.readCount;
+    outStream << "Reads processed:\t" << generalStats.readCount;
     if (paired) 
     {
-        outStream << " (2 * " << generalStats.readCount << ")";
+        outStream << " (2 * " << generalStats.readCount << " single reads)";
     }
     outStream << std::endl;
-    double dropped = qualityParams.stats.dropped_1 + qualityParams.stats.dropped_2 + generalStats.removedSeqs
-        + generalStats.removedSeqsShort + (demultiplexParams.exclude * demultiplexParams.stats.groups[0]);
+    double dropped = generalStats.removedQuality + generalStats.removedN
+        + generalStats.removedShort + (demultiplexParams.exclude * generalStats.removedDemultiplex);
     outStream << "  Reads dropped:\t" << dropped << "\t(" << std::setprecision(3) 
-        << dropped / (double(generalStats.readCount * read_factor)) * 100 << "%)\n";
+        << dropped / double(generalStats.readCount) * 100 << "%)\n";
     if (dropped != 0.0)
     {
-        if (generalStats.removedSeqs != 0)
+        if (generalStats.removedN != 0)
         {
-            outStream << "  Due to N content:\t" << generalStats.removedSeqs << "\t(" << std::setprecision(3)
-                << double(generalStats.removedSeqs) / dropped * 100 << "%)\n";
+            outStream << "    Due to N content:\t" << generalStats.removedN << "\t(" << std::setprecision(3)
+                << double(generalStats.removedN) / dropped * 100 << "%)\n";
         }
-        if (generalStats.removedSeqsShort != 0)
+        if (generalStats.removedQuality != 0)
         {
-            outStream << "  Due to shortness:\t" << generalStats.removedSeqsShort << "\t(" 
-                << std::setprecision(3) << double(generalStats.removedSeqsShort) / dropped * 100 << "%)\n";
+            outStream << "    Due to quality:\t" << generalStats.removedQuality << "\t("
+                << std::setprecision(3) << double(generalStats.removedQuality) / dropped * 100 << "%)\n";
+        }
+        if (generalStats.removedShort != 0)
+        {
+            outStream << "    Due to shortness:\t" << generalStats.removedShort << "\t("
+                << std::setprecision(3) << double(generalStats.removedShort) / dropped * 100 << "%)\n";
         }
     }
     if (generalStats.uncalledBases != 0)
@@ -1510,58 +1421,27 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
     {
         outStream << "\nBarcode Demultiplexing statistics\n";
         outStream << "=================================\n";
-        if (demultiplexParams.approximate)                //Calculates the original barcode ID from the modified barcodes
-        {
-            int val = length(demultiplexParams.barcodes[0])*5; //Number of barcode variations for one barcode
-            seqan::String<unsigned> newgroups;
-            resize(newgroups, (length(demultiplexParams.stats.groups)-1)/val+1);
-            newgroups[0] = demultiplexParams.stats.groups[0];
-            for (unsigned i = 1; i < length(newgroups); ++i)
-            {
-                unsigned sum = 0;
-                for (unsigned j = i*val-val+1; j <= i*val; ++j)
-                {
-                    sum += demultiplexParams.stats.groups[j];
-                }
-                newgroups[i] = sum;
-            }
-            clear(demultiplexParams.stats.groups);
-            demultiplexParams.stats.groups = newgroups;
-            resize(newgroups,0);
-        }
-        unsigned usedBarcodes = 0;
-        for (unsigned i = 0; i < length(demultiplexParams.stats.groups); ++i)
-        {
-            if (demultiplexParams.stats.groups[i] != 0)
-            {
-                ++usedBarcodes;
-            }
-        }
-        if (usedBarcodes != 0) //in case 0 barcodes were used
-        {
-            --usedBarcodes;        //correction for unidentified group    
-        }
+
         unsigned barcodesTotal = length(demultiplexParams.barcodes);
         if (demultiplexParams.approximate)
         {
             barcodesTotal = barcodesTotal/(length(demultiplexParams.barcodes[0])*5);
         }
-        outStream << "Barcodes used: " << usedBarcodes << "/" << barcodesTotal << "\t\t(" 
-            << std::setprecision(3) << (double)usedBarcodes/(double)barcodesTotal*100 << "%)\n";
+
         outStream << "Reads per barcode:\n";
-        outStream << "Unidentified:\t" << read_factor * demultiplexParams.stats.groups[0];
+        outStream << "Unidentified:\t" << generalStats.matchedBarcodeReads[0];
         if (generalStats.readCount != 0)
         {
-            outStream  << "\t\t(" << std::setprecision(3) << (double)demultiplexParams.stats.groups[0] /
+            outStream  << "\t\t(" << std::setprecision(3) << (double)generalStats.matchedBarcodeReads[0] /
                 ((double)generalStats.readCount) * 100 << "%)";
         }  
         outStream << "\n";
-        for (unsigned i = 1; i < length(demultiplexParams.stats.groups); ++i)
+        for (unsigned i = 1; i < barcodesTotal; ++i)
         {
-            outStream << demultiplexParams.barcodeIds[i-1]<<":\t" << read_factor * demultiplexParams.stats.groups[i];
+            outStream << demultiplexParams.barcodeIds[i-1]<<":\t" << (double)generalStats.matchedBarcodeReads[i];
             if (generalStats.readCount != 0)
             {
-                outStream  << "\t\t(" << std::setprecision(3) << (double)demultiplexParams.stats.groups[i] /
+                outStream  << "\t\t(" << std::setprecision(3) << (double)(double)generalStats.matchedBarcodeReads[i] /
                     ((double)generalStats.readCount) * 100 << "%)";
             }
             outStream << "\n";
@@ -1571,36 +1451,20 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
     outStream << "File statistics\n";
     outStream << "===============\n";
     // How many reads are left.
-    int survived1 = generalStats.readCount - qualityParams.stats.dropped_1
-        - ((generalStats.removedSeqs +  generalStats.removedSeqsShort
-        + (demultiplexParams.exclude * demultiplexParams.stats.groups[0])) / read_factor);
-    int survived2 = generalStats.readCount - qualityParams.stats.dropped_2
-        - ((generalStats.removedSeqs + generalStats.removedSeqsShort
-        + (demultiplexParams.exclude * demultiplexParams.stats.groups[0])) / read_factor);
+    int survived = generalStats.readCount - generalStats.removedN
+        - generalStats.removedQuality - generalStats.removedShort
+        - demultiplexParams.exclude * generalStats.removedDemultiplex;
     // In percentage points.
-    double surv_proc_1 = (double)survived1 / (double)generalStats.readCount * 100;
-    double surv_proc_2 = (double)survived2 / (double)generalStats.readCount * 100;
+    double surv_proc = (double)survived / (double)generalStats.readCount * 100;
     outStream << "File 1:\n";
     outStream << "-------\n";
-    outStream << "  Surviving: " << survived1 << "/" << generalStats.readCount
-              << " (" << std::setprecision(3) << surv_proc_1 << "%)\n";
+    outStream << "  Surviving: " << survived << "/" << generalStats.readCount
+              << " (" << std::setprecision(3) << surv_proc << "%)\n";
     if (adapter)
     {
             outStream << "   Adapters: " << adapterParams.stats.a2count << "\n";
     }
     outStream << std::endl;
-    if (paired)
-    {
-        outStream << "File 2:\n";
-        outStream << "-------\n";
-        outStream << "  Surviving: " << survived2 << "/"
-                  << generalStats.readCount << " (" << surv_proc_2 << "%)\n";
-        if (adapter)
-        {
-            outStream << "   Adapters: " << adapterParams.stats.a1count << "\n";
-        }
-        outStream << std::endl;
-    }
     if (adapter && (adapterParams.stats.a1count + adapterParams.stats.a2count != 0))
     {
         int mean = adapterParams.stats.overlapSum/(adapterParams.stats.a1count + adapterParams.stats.a2count);
@@ -1743,7 +1607,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
         adapterTrimmingStage(adapterTrimmingParams, *readSet, tagOpt);
 
         // Quality trimming
-        qualityTrimmingStage(qualityTrimmingParams, *readSet, tagOpt);
+        qualityTrimmingStage(qualityTrimmingParams, *readSet, generalStats, tagOpt);
 
         // Postprocessing
         postprocessingStage(*readSet, processingParams, generalStats);
@@ -1861,10 +1725,6 @@ int flexbarMain(int argc, char const ** argv)
 
         if(flexiProgram == DEMULTIPLEXING)
             demultiplexingParams.run = true;
-    }
-    else
-    {
-        resize(demultiplexingParams.stats.groups , 1, 0u);
     }
 
     //--------------------------------------------------
@@ -2169,7 +2029,7 @@ int flexbarMain(int argc, char const ** argv)
     }
     // Start processing. Different functions are needed for one or two input files.
     std::cout << "\nProcessing reads...\n" << std::endl;
-
+    generalStats.matchedBarcodeReads.resize(length(demultiplexingParams.barcodeIds)+1);
 
     if (fileCount == 1)
     {

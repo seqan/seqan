@@ -55,6 +55,7 @@
 #include <seqan/stream.h>
 
 #include "helper_functions.h"
+#include "general_stats.h"
 #include <initializer_list>
 
 
@@ -62,17 +63,6 @@
 // Tags, Classes, Enums
 // ============================================================================
 
-struct GeneralStats
-{
-	unsigned removedSeqs;       //Number of deleted sequences due to N's
-    unsigned long uncalledBases;//Number of uncalled bases (evtl. Masked) in surviving sequences
-    unsigned removedSeqsShort;  //Number of deleted sequences due to shortness.
-    unsigned int readCount;
-    double processTime;
-    double ioTime;
-
-    GeneralStats() : removedSeqs(0), uncalledBases(0), removedSeqsShort(0), readCount(0), processTime(0), ioTime(0) {};
-};
 
 // ============================================================================
 // Functions
@@ -168,7 +158,7 @@ void processN(std::vector<TRead<TSeq>>& reads, unsigned allowed, TSub substitute
         }
 
     unsigned ex = 0;
-    stats.removedSeqs += _eraseSeqs(res, -1, reads);
+    stats.removedN += _eraseSeqs(res, -1, reads);
     for (int i = length(res) - 1; i >= 0; --i)
     {
         if (res[i] != -1)
@@ -294,7 +284,7 @@ void preTrim(std::vector<TRead<TSeq>>& reads, unsigned head, unsigned tail, unsi
         _preTrim<TRead, TSeq, true>(reads, head, tail, min, rem);
     else
         _preTrim<TRead, TSeq, false>(reads, head, tail, min, rem);
-    stats.removedSeqsShort += _eraseSeqs(rem, true, reads);
+    stats.removedShort += _eraseSeqs(rem, true, reads);
 }
 
 //Trims sequences to specific length and deletes to short ones together with their IDs
@@ -320,7 +310,7 @@ template<template <typename> class TRead, typename TSeq,
                 }
             }
         }
-    stats.removedSeqsShort += _eraseSeqs(rem, true, reads);
+    stats.removedShort += _eraseSeqs(rem, true, reads);
 }
 
 template<template <typename> class TRead, typename TSeq,
@@ -345,7 +335,7 @@ template<template <typename> class TRead, typename TSeq,
                     erase(reads[i].seqRev, len, length(reads[i].seqRev));
             }
         }
-    stats.removedSeqsShort += _eraseSeqs(rem, true, reads);
+    stats.removedShort += _eraseSeqs(rem, true, reads);
 }
 
 
