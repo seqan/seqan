@@ -1232,8 +1232,8 @@ void preprocessingStage(TReadSet& readSet,
         //Trimming and filtering
         if (processingParams.trimLeft + processingParams.trimRight + processingParams.minLen != 0)
         {
-            preTrim(readSet, processingParams.trimLeft,
-                processingParams.tagTrimming, processingParams.trimRight, processingParams.minLen, generalStats);
+            preTrim(readSet, processingParams.trimLeft, processingParams.trimRight,
+                processingParams.tagTrimming, processingParams.minLen, generalStats);
         }
        // Detecting uncalled Bases
         if (processingParams.runCheckUncalled)
@@ -2036,10 +2036,6 @@ int flexbarMain(int argc, char const ** argv)
              mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
          else
              mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
-
-
-            //readRecords(idSet1[0], seqSet1[0], programParams.fileStream1, programParams.records);
-            //readRecords(idSet2[0], seqSet2[0], programParams.fileStream2, programParams.records);
     }
     double loop = SEQAN_PROTIMEDIFF(loopTime);
     generalStats.ioTime = loop - generalStats.processTime;

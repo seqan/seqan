@@ -200,7 +200,7 @@ void _preTrim(std::vector<TRead<TSeq>>& readSet, const unsigned head, const unsi
                 {
                     const auto seqLen = length(readSet[i].seq);
                     if (tagTrimming)
-                        insertToken += ":TR:" + std::string(prefix(readSet[i].seq, seqLen - tail));
+                        insertToken += ":TR:" + std::string(suffix(readSet[i].seq, seqLen - tail));
                     erase(readSet[i].seq, seqLen - tail, seqLen);
                 }
                 if(!empty(insertToken))
