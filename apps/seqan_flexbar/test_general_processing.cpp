@@ -56,19 +56,19 @@ using namespace seqan;
 
 SEQAN_DEFINE_TEST(findN_test)
 {
-    StringSet<String<Dna5> >seqs;
-    appendValue(seqs, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    appendValue(seqs, "ATGGNGGGTACACGTGATCGTACGTAGCAGC");
-    appendValue(seqs, "NGGGACTGTACACGTGATCGTACGTAGCAGGN");
-    appendValue(seqs, "NATGACTGTAGGNGGGATCGTACGTAGCAGGN");
-    appendValue(seqs, "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN");
-    appendValue(seqs, "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
-    appendValue(seqs, "ACTGTACGTGATCG.AATGCTGACTGACTGAC");
-    appendValue(seqs, ".ACTGTACGTGATCG.AATGCTGACTGACTGAC");
-    appendValue(seqs, "ACT.GTACGTGATCG.AATGCTGACTGA.CTGAC");
-    appendValue(seqs, "ACT.GTACGTGATCG.AATGC.TGACTGACTG.AC");
-    appendValue(seqs, ".......");
-    appendValue(seqs, "");
+    std::vector<Read<seqan::Dna5QString>> reads(12);
+    reads[0].seq = "ATGACTGTACACGTGATCGTACGTAGCAGC";
+    reads[1].seq = "ATGGNGGGTACACGTGATCGTACGTAGCAGC";
+    reads[2].seq = "NGGGACTGTACACGTGATCGTACGTAGCAGGN";
+    reads[3].seq = "NATGACTGTAGGNGGGATCGTACGTAGCAGGN";
+    reads[4].seq = "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN";
+    reads[5].seq = "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN";
+    reads[6].seq = "ACTGTACGTGATCG.AATGCTGACTGACTGAC";
+    reads[7].seq = ".ACTGTACGTGATCG.AATGCTGACTGACTGAC";
+    reads[8].seq = "ACT.GTACGTGATCG.AATGCTGACTGA.CTGAC";
+    reads[9].seq = "ACT.GTACGTGATCG.AATGC.TGACTGACTG.AC";
+    reads[10].seq = ".......";
+    reads[11].seq = "";
     unsigned allowed = 3;
     StringSet<int> exspectedNoSub;
     appendValue(exspectedNoSub, 0);
@@ -83,34 +83,33 @@ SEQAN_DEFINE_TEST(findN_test)
     appendValue(exspectedNoSub, -1);
     appendValue(exspectedNoSub, -1);
     appendValue(exspectedNoSub, 0);
-    StringSet<int> res;
-    resize(res, length(seqs));
-    for (unsigned i = 0; i < length(seqs); ++i)
+    std::vector<int> res(length(reads));
+    for (unsigned i = 0; i < length(reads); ++i)
     {
-        res[i] = findN(seqs[i], allowed);           //Test WITHOUT substitutions
+        res[i] = findN(reads[i], allowed, NoSubstitute());           //Test WITHOUT substitutions
     }
     for (unsigned i = 0; i < length(exspectedNoSub); ++i)
     {
         SEQAN_ASSERT_EQ(exspectedNoSub[i], res[i]);
     }
 
-    StringSet<String<Dna5> > seqs2 = seqs;
-    seqs2[1][4] = 'A';
-    seqs2[2][0] = 'A';
-    seqs2[2][31] = 'A';
-    seqs2[3][0] = 'A';
-    seqs2[3][12] = 'A';
-    seqs2[3][31] = 'A';
-    seqs2[4][0] = 'A';
-    seqs2[4][12] = 'A';
-    seqs2[4][20] = 'A';
-    seqs2[5][0] = 'A';
-    seqs2[5][1] = 'A';
-    seqs2[5][2] = 'A';
+    auto reads2 = reads;
+    reads2[1].seq[4] = 'A';
+    reads2[2].seq[0] = 'A';
+    reads2[2].seq[31] = 'A';
+    reads2[3].seq[0] = 'A';
+    reads2[3].seq[12] = 'A';
+    reads2[3].seq[31] = 'A';
+    reads2[4].seq[0] = 'A';
+    reads2[4].seq[12] = 'A';
+    reads2[4].seq[20] = 'A';
+    reads2[5].seq[0] = 'A';
+    reads2[5].seq[1] = 'A';
+    reads2[5].seq[2] = 'A';
 
-     for (unsigned i = 0; i < length(seqs); ++i)
+     for (unsigned i = 0; i < length(reads); ++i)
     {
-        res[i] = findN(seqs[i], allowed, 'A');      //Test WITH substitutions
+        res[i] = findN(reads[i], allowed, 'A');      //Test WITH substitutions
     }
     for (unsigned i = 0; i < 5; ++i)
     {
@@ -121,23 +120,22 @@ SEQAN_DEFINE_TEST(findN_test)
 SEQAN_DEFINE_TEST(processN_test)
 {
     GeneralStats stats;
+    std::vector<Read<seqan::Dna5QString>> reads(6);
+    reads[0].seq = "ATGACTGTACACGTGATCGTACGTAGCAGC";
+    reads[1].seq = "ATGGNGGGTACACGTGATCGTACGTAGCAGC";
+    reads[2].seq = "NGGGACTGTACACGTGATCGTACGTAGCAGGN";
+    reads[3].seq = "NATGACTGTAGGNGGGATCGTACGTAGCAGGN";
+    reads[4].seq = "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN";
+    reads[5].seq = "ATGACTGTACACGTGATCGTACGTAGCAGC";
 
-    StringSet<String<Dna5> >seqs;
-    appendValue(seqs, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    appendValue(seqs, "ATGGNGGGTACACGTGATCGTACGTAGCAGC");
-    appendValue(seqs, "NGGGACTGTACACGTGATCGTACGTAGCAGGN");
-    appendValue(seqs, "NATGACTGTAGGNGGGATCGTACGTAGCAGGN");
-    appendValue(seqs, "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN");
-    appendValue(seqs, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    StringSet<String<Dna5> >seqs2 = seqs;
-    StringSet<String<char> > ids;
-    appendValue(ids, "Null");
-    appendValue(ids, "Eins");
-    appendValue(ids, "Zwei");
-    appendValue(ids, "Drei");
-    appendValue(ids, "Vier");
-    appendValue(ids, "Null2");
-    StringSet<String<char> > ids2 = ids;
+    reads[0].id = "Null";
+    reads[1].id = "Eins";
+    reads[2].id = "Zwei";
+    reads[3].id = "Drei";
+    reads[4].id = "Vier";
+    reads[5].id = "Null2";
+    auto reads2 = reads;
+
     unsigned allowed = 3;
     StringSet<String<Dna5> > exspectedNoSub;
     appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC");
@@ -146,18 +144,17 @@ SEQAN_DEFINE_TEST(processN_test)
     appendValue(exspectedNoSub, "NATGACTGTAGGNGGGATCGTACGTAGCAGGN");
     appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC");
 
-    processN(seqs2, ids2, allowed, stats);        //No Substitutions
+    processN(reads2, allowed, NoSubstitute(), stats);        //No Substitutions
     SEQAN_ASSERT_EQ(stats.removedSeqs, 1u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 6u);
     for (unsigned i = 0; i < length(exspectedNoSub); ++i)
     {
-        SEQAN_ASSERT_EQ(exspectedNoSub[i], seqs2[i]);
+        SEQAN_ASSERT_EQ(exspectedNoSub[i], reads2[i].seq);
     }
 
     stats.removedSeqs = 0;
     stats.uncalledBases = 0;
-    seqs2 = seqs;
-    ids2 = ids;
+    reads2 = reads;
     Dna substitute = 'A';
     StringSet<String<Dna5> > exspectedSub = exspectedNoSub;
     exspectedSub[1][4] = substitute;
@@ -167,12 +164,12 @@ SEQAN_DEFINE_TEST(processN_test)
     exspectedSub[3][12] = substitute;
     exspectedSub[3][31] = substitute;
 
-    processN(seqs2, ids2, allowed, substitute, stats);
+    processN(reads2, allowed, substitute, stats);
     SEQAN_ASSERT_EQ(stats.removedSeqs, 1u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 6u);
     for (unsigned i = 0; i < length(exspectedSub); ++i)
     {
-        SEQAN_ASSERT_EQ(exspectedSub[i], seqs2[i]);
+        SEQAN_ASSERT_EQ(exspectedSub[i], reads2[i].seq);
     }
 }
 
@@ -180,243 +177,191 @@ SEQAN_DEFINE_TEST(processN_paired_test)
 {
     GeneralStats stats;
     
-    StringSet<String<Dna5> >seqs;
-    appendValue(seqs, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    appendValue(seqs, "ATGGNGGGTACACGTGATCGTACGTAGCAGC");
-    appendValue(seqs, "NGGGACTGTACACGTGATCGTACGTAGCAGGN");
-    appendValue(seqs, "NATGACTGTAGGNGGGATCGTACGTAGCAGGN");
-    appendValue(seqs, "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN");
-    appendValue(seqs, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    StringSet<String<Dna5> >seqsRev;
-    appendValue(seqsRev, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    appendValue(seqsRev, "ATGNGNGGGTANCACGTGATCGTNACGTAGCANGC");
-    appendValue(seqsRev, "NGGGACTGTACACGTGATCGTACGTAGCAGGN");
-    appendValue(seqsRev, "NATGACTGTAGGNGGGATCGTACGTAGCAGGN");
-    appendValue(seqsRev, "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN");
-    appendValue(seqsRev, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    StringSet<String<Dna5> >seqs2 = seqs;
-    StringSet<String<Dna5> >seqsRev2 = seqsRev;
-    StringSet<String<char> > ids;
-    appendValue(ids, "Null");
-    appendValue(ids, "Eins");
-    appendValue(ids, "Zwei");
-    appendValue(ids, "Drei");
-    appendValue(ids, "Vier");
-    appendValue(ids, "Null2");
-    StringSet<String<char> > exspectedIds;
-    appendValue(exspectedIds, "Null");
-    appendValue(exspectedIds, "Zwei"); //Due to swap action!
-    appendValue(exspectedIds, "Drei");
-    appendValue(exspectedIds, "Null2");
-   
-    StringSet<String<char> > ids2 = ids;
-    StringSet<String<char> > idsRev2 = ids;
+    std::vector<ReadPairedEnd<seqan::Dna5QString>> reads(6);
+    reads[0].seq = "ATGACTGTACACGTGATCGTACGTAGCAGC";
+    reads[1].seq = "ATGGNGGGTACACGTGATCGTACGTAGCAGC";
+    reads[2].seq = "NGGGACTGTACACGTGATCGTACGTAGCAGGN";
+    reads[3].seq = "NATGACTGTAGGNGGGATCGTACGTAGCAGGN";
+    reads[4].seq = "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN";
+    reads[5].seq = "ATGACTGTACACGTGATCGTACGTAGCAGC";
+
+    reads[0].seqRev = "ATGACTGTACACGTGATCGTACGTAGCAGC";
+    reads[1].seqRev = "ATGNGNGGGTANCACGTGATCGTNACGTAGCANGC";
+    reads[2].seqRev = "NGGGACTGTACACGTGATCGTACGTAGCAGGN";
+    reads[3].seqRev = "NATGACTGTAGGNGGGATCGTACGTAGCAGGN";
+    reads[4].seqRev = "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN";
+    reads[5].seqRev = "ATGACTGTACACGTGATCGTACGTAGCAGC";
+
+    reads[0].id = "Null";
+    reads[1].id = "Eins";
+    reads[2].id = "Zwei";
+    reads[3].id = "Drei";
+    reads[4].id = "Vier";
+    reads[5].id = "Null2";
+
+    auto reads2 = reads;
+    auto expectedReads = reads;
+
+    expectedReads.erase(expectedReads.begin() + 1);
+    expectedReads.erase(expectedReads.begin() + 3);
+
     unsigned allowed = 3;
-    StringSet<String<Dna5> > exspectedNoSub;
-    appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    appendValue(exspectedNoSub, "NGGGACTGTACACGTGATCGTACGTAGCAGGN"); //Due to swap action!
-    appendValue(exspectedNoSub, "NATGACTGTAGGNGGGATCGTACGTAGCAGGN");
-    appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC");
     
-    processN(seqs2, ids2, seqsRev2, idsRev2, allowed, stats);        //No Substitutions
-    SEQAN_ASSERT_EQ(stats.removedSeqs, 4u);
+    processN(reads2, allowed, NoSubstitute(), stats);        //No Substitutions
+    SEQAN_ASSERT_EQ(stats.removedSeqs, 2u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 10u);
-    for (unsigned i = 0; i < length(exspectedNoSub); ++i)
+    for (unsigned i = 0; i < length(expectedReads); ++i)
     {
-        SEQAN_ASSERT_EQ(ids2[i], exspectedIds[i]);
-        SEQAN_ASSERT_EQ(exspectedNoSub[i], seqs2[i]);
-        SEQAN_ASSERT_EQ(idsRev2[i], exspectedIds[i]);
+        SEQAN_ASSERT_EQ(reads2[i].id, expectedReads[i].id);
+        SEQAN_ASSERT_EQ(reads2[i].seq, expectedReads[i].seq);
+        SEQAN_ASSERT_EQ(reads2[i].seqRev, expectedReads[i].seqRev);
     }
 
     stats.removedSeqs = 0;
     stats.uncalledBases = 0;
-    seqs2 = seqs;
-    seqsRev2 = seqsRev;
-    ids2 = ids;
-    idsRev2 = ids;
     Dna substitute = 'A';
-    StringSet<String<Dna5> > exspectedSub = exspectedNoSub;
-    exspectedSub[1][0] = substitute;
-    exspectedSub[1][31] = substitute;
-    exspectedSub[2][0] = substitute;
-    exspectedSub[2][12] = substitute;
-    exspectedSub[2][31] = substitute;
+    reads2 = reads;
+    expectedReads[1].seq[0] = substitute;
+    expectedReads[1].seq[31] = substitute;
+    expectedReads[2].seq[0] = substitute;
+    expectedReads[2].seq[12] = substitute;
+    expectedReads[2].seq[31] = substitute;
 
-    processN(seqs2, ids2, seqsRev2, idsRev2, allowed, substitute, stats);
-    SEQAN_ASSERT_EQ(stats.removedSeqs, 4u);
+    processN(reads2, allowed, substitute, stats);
+    SEQAN_ASSERT_EQ(stats.removedSeqs, 2u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 10u);
-    for (unsigned i = 0; i < length(exspectedSub); ++i)
+    for (unsigned i = 0; i < length(expectedReads); ++i)
     {
-        SEQAN_ASSERT_EQ(exspectedSub[i], seqs2[i]);
+        SEQAN_ASSERT_EQ(expectedReads[i].seq, reads2[i].seq);
     }
 }
 
 SEQAN_DEFINE_TEST(processN_multiplex_test)
 {
     GeneralStats stats;
+    std::vector<ReadMultiplex<seqan::Dna5QString>> reads(6);
+    reads[0].seq = "ATGACTGTACACGTGATCGTACGTAGCAGC";
+    reads[1].seq = "ATGGNGGGTACACGTGATCGTACGTAGCAGC";
+    reads[2].seq = "NGGGACTGTACACGTGATCGTACGTAGCAGGN";
+    reads[3].seq = "NATGACTGTAGGNGGGATCGTACGTAGCAGGN";
+    reads[4].seq = "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN";
+    reads[5].seq = "ATGACTGTACACGTGATCGTACGTAGCAGC";
 
-    StringSet<String<Dna5> >multiplex;
-    appendValue(multiplex, "ACTGTA");
-    appendValue(multiplex, "TGACGT");
-    appendValue(multiplex, "GTACGA");
-    appendValue(multiplex, "GTACTG");
-    appendValue(multiplex, "AAAAAA");
-    appendValue(multiplex, "GGGTAC");
-    StringSet<String<Dna5> >multiplex2 = multiplex;
-    
-    StringSet<String<Dna5> > exspectedMultiplex;
-    appendValue(exspectedMultiplex, "ACTGTA");
-    appendValue(exspectedMultiplex, "TGACGT");
-    appendValue(exspectedMultiplex, "GTACGA");
-    appendValue(exspectedMultiplex, "GTACTG");
-    appendValue(exspectedMultiplex, "GGGTAC");
+    reads[0].demultiplex = "ACTGTA";
+    reads[1].demultiplex = "TGACGT";
+    reads[2].demultiplex = "GTACGA";
+    reads[3].demultiplex = "GTACTG";
+    reads[4].demultiplex = "AAAAAA";
+    reads[5].demultiplex = "GGGTAC";
 
-    StringSet<String<Dna5> >seqs;
-    appendValue(seqs, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    appendValue(seqs, "ATGGNGGGTACACGTGATCGTACGTAGCAGC");
-    appendValue(seqs, "NGGGACTGTACACGTGATCGTACGTAGCAGGN");
-    appendValue(seqs, "NATGACTGTAGGNGGGATCGTACGTAGCAGGN");
-    appendValue(seqs, "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN");
-    appendValue(seqs, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    StringSet<String<Dna5> >seqs2 = seqs;
-    StringSet<String<char> > ids;
-    appendValue(ids, "Null");
-    appendValue(ids, "Eins");
-    appendValue(ids, "Zwei");
-    appendValue(ids, "Drei");
-    appendValue(ids, "Vier");
-    appendValue(ids, "Null2");
-    StringSet<String<char> > ids2 = ids;
+    reads[0].id = "Null";
+    reads[1].id = "Eins";
+    reads[2].id = "Zwei";
+    reads[3].id = "Drei";
+    reads[4].id = "Vier";
+    reads[5].id = "Null2";
+    auto reads2 = reads;
+    auto expectedReads = reads;
+    expectedReads.erase(expectedReads.begin() + 4);
+
     unsigned allowed = 3;
-    StringSet<String<Dna5> > exspectedNoSub;
-    appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    appendValue(exspectedNoSub, "ATGGNGGGTACACGTGATCGTACGTAGCAGC");
-    appendValue(exspectedNoSub, "NGGGACTGTACACGTGATCGTACGTAGCAGGN");
-    appendValue(exspectedNoSub, "NATGACTGTAGGNGGGATCGTACGTAGCAGGN");
-    appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC");
 
-    processN(seqs2, ids2, multiplex2, allowed, stats);        //No Substitutions
+    processN(reads2, allowed, NoSubstitute(), stats);        //No Substitutions
     SEQAN_ASSERT_EQ(stats.removedSeqs, 1u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 6u);
-    for (unsigned i = 0; i < length(exspectedNoSub); ++i)
+    for (unsigned i = 0; i < length(expectedReads); ++i)
     {
-        SEQAN_ASSERT_EQ(exspectedNoSub[i], seqs2[i]);
-        SEQAN_ASSERT_EQ(exspectedMultiplex[i], multiplex2[i]);
+        SEQAN_ASSERT_EQ(expectedReads[i].seq, reads2[i].seq);
+        SEQAN_ASSERT_EQ(expectedReads[i].demultiplex, reads2[i].demultiplex);
     }
 
     stats.removedSeqs = 0;
     stats.uncalledBases = 0;
-    seqs2 = seqs;
-    ids2 = ids;
-    multiplex2 = multiplex;
+    reads2 = reads;
     Dna substitute = 'A';
-    StringSet<String<Dna5> > exspectedSub = exspectedNoSub;
-    exspectedSub[1][4] = substitute;
-    exspectedSub[2][0] = substitute;
-    exspectedSub[2][31] = substitute;
-    exspectedSub[3][0] = substitute;
-    exspectedSub[3][12] = substitute;
-    exspectedSub[3][31] = substitute;
+    expectedReads[1].seq[4] = substitute;
+    expectedReads[2].seq[0] = substitute;
+    expectedReads[2].seq[31] = substitute;
+    expectedReads[3].seq[0] = substitute;
+    expectedReads[3].seq[12] = substitute;
+    expectedReads[3].seq[31] = substitute;
 
-    processN(seqs2, ids2, multiplex2, allowed, substitute, stats);
+    processN(reads2, allowed, substitute, stats);
     SEQAN_ASSERT_EQ(stats.removedSeqs, 1u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 6u);
-    for (unsigned i = 0; i < length(exspectedSub); ++i)
+    for (unsigned i = 0; i < length(expectedReads); ++i)
     {
-        SEQAN_ASSERT_EQ(exspectedSub[i], seqs2[i]);
-        SEQAN_ASSERT_EQ(exspectedMultiplex[i], multiplex2[i]);
+        SEQAN_ASSERT_EQ(expectedReads[i].seq, reads2[i].seq);
+        SEQAN_ASSERT_EQ(expectedReads[i].demultiplex, reads2[i].demultiplex);
     }
 }
 
 SEQAN_DEFINE_TEST(processN_paired_multiplex_test)
 {
     GeneralStats stats;
+    std::vector<ReadMultiplexPairedEnd<seqan::Dna5QString>> reads(6);
+    reads[0].seq = "ATGACTGTACACGTGATCGTACGTAGCAGC";
+    reads[1].seq = "ATGGNGGGTACACGTGATCGTACGTAGCAGC";
+    reads[2].seq = "NGGGACTGTACACGTGATCGTACGTAGCAGGN";
+    reads[3].seq = "NATGACTGTAGGNGGGATCGTACGTAGCAGGN";
+    reads[4].seq = "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN";
+    reads[5].seq = "ATGACTGTACACGTGATCGTACGTAGCAGC";
 
-    StringSet<String<Dna5Q> >multiplex;
-    appendValue(multiplex, "ACTGTA");
-    appendValue(multiplex, "TGACGT");
-    appendValue(multiplex, "GTACGA");
-    appendValue(multiplex, "GTACTG");
-    appendValue(multiplex, "AAAAAA");
-    appendValue(multiplex, "GGGTAC");
-    StringSet<String<Dna5Q> >multiplex2 = multiplex;
+    reads[0].seqRev = "ATGACTGTACACGTGATCGTACGTAGCAGC";
+    reads[1].seqRev = "ATGNGNGGGTANCACGTGATCGTNACGTAGCANGC";
+    reads[2].seqRev = "NGGGACTGTACACGTGATCGTACGTAGCAGGN";
+    reads[3].seqRev = "NATGACTGTAGGNGGGATCGTACGTAGCAGGN";
+    reads[4].seqRev = "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN";
+    reads[5].seqRev = "ATGACTGTACACGTGATCGTACGTAGCAGC";
 
-    StringSet<String<Dna5Q> > exspectedMultiplex;
-    appendValue(exspectedMultiplex, "ACTGTA");
-    appendValue(exspectedMultiplex, "GTACGA");
-    appendValue(exspectedMultiplex, "GTACTG");
-    appendValue(exspectedMultiplex, "GGGTAC");
-    
-    StringSet<String<Dna5> >seqs;
-    appendValue(seqs, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    appendValue(seqs, "ATGGNGGGTACACGTGATCGTACGTAGCAGC");
-    appendValue(seqs, "NGGGACTGTACACGTGATCGTACGTAGCAGGN");
-    appendValue(seqs, "NATGACTGTAGGNGGGATCGTACGTAGCAGGN");
-    appendValue(seqs, "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN");
-    appendValue(seqs, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    StringSet<String<Dna5> >seqsRev;
-    appendValue(seqsRev, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    appendValue(seqsRev, "ATGNGNGGGTANCACGTGATCGTNACGTAGCANGC");
-    appendValue(seqsRev, "NGGGACTGTACACGTGATCGTACGTAGCAGGN");
-    appendValue(seqsRev, "NATGACTGTAGGNGGGATCGTACGTAGCAGGN");
-    appendValue(seqsRev, "NGGGACTGTAGGNGGGATGGNGGGTAGCAGGN");
-    appendValue(seqsRev, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    StringSet<String<Dna5> >seqs2 = seqs;
-    StringSet<String<Dna5> >seqsRev2 = seqsRev;
-    StringSet<String<char> > ids;
-    appendValue(ids, "Null");
-    appendValue(ids, "Eins");
-    appendValue(ids, "Zwei");
-    appendValue(ids, "Drei");
-    appendValue(ids, "Vier");
-    appendValue(ids, "Null2");
-    StringSet<String<char> > exspectedIds;
-    appendValue(exspectedIds, "Null");
-    appendValue(exspectedIds, "Zwei"); //Due to swap action!
-    appendValue(exspectedIds, "Drei");
-    appendValue(exspectedIds, "Null2");
-    StringSet<String<char> > ids2 = ids;
-    StringSet<String<char> > idsRev2 = ids;
+    reads[0].demultiplex = "ACTGTA";
+    reads[1].demultiplex = "TGACGT";
+    reads[2].demultiplex = "GTACGA";
+    reads[3].demultiplex = "GTACTG";
+    reads[4].demultiplex = "AAAAAA";
+    reads[5].demultiplex = "GGGTAC";
+
+    reads[0].id = "Null";
+    reads[1].id = "Eins";
+    reads[2].id = "Zwei";
+    reads[3].id = "Drei";
+    reads[4].id = "Vier";
+    reads[5].id = "Null2";
+    auto reads2 = reads;
+    auto expectedReads = reads;
+    expectedReads.erase(expectedReads.begin() + 1);
+    expectedReads.erase(expectedReads.begin() + 3);
+
     unsigned allowed = 3;
-    StringSet<String<Dna5> > exspectedNoSub;
-    appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC");
-    appendValue(exspectedNoSub, "NGGGACTGTACACGTGATCGTACGTAGCAGGN"); 
-    appendValue(exspectedNoSub, "NATGACTGTAGGNGGGATCGTACGTAGCAGGN");
-    appendValue(exspectedNoSub, "ATGACTGTACACGTGATCGTACGTAGCAGC");
     
-    processN(seqs2, ids2, seqsRev2, idsRev2, multiplex2, allowed, stats);        //No Substitutions
-    SEQAN_ASSERT_EQ(stats.removedSeqs, 4u);
+    processN(reads2, allowed, NoSubstitute(), stats);        //No Substitutions
+    SEQAN_ASSERT_EQ(stats.removedSeqs, 2u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 10u);
-    for (unsigned i = 0; i < length(exspectedNoSub); ++i)
+    for (unsigned i = 0; i < length(expectedReads); ++i)
     {
-        SEQAN_ASSERT_EQ(exspectedNoSub[i], seqs2[i]);
-        SEQAN_ASSERT_EQ(ids2[i], exspectedIds[i]);
-        SEQAN_ASSERT_EQ(idsRev2[i], exspectedIds[i]);
-        SEQAN_ASSERT_EQ(multiplex2[i], exspectedMultiplex[i]);
+        SEQAN_ASSERT_EQ(reads2[i].seq, expectedReads[i].seq);
+        SEQAN_ASSERT_EQ(reads2[i].id, expectedReads[i].id);
+        SEQAN_ASSERT_EQ(reads2[i].seqRev, expectedReads[i].seqRev);
+        SEQAN_ASSERT_EQ(reads2[i].demultiplex, expectedReads[i].demultiplex);
     }
 
     stats.removedSeqs = 0;
     stats.uncalledBases = 0;
-    seqs2 = seqs;
-    seqsRev2 = seqsRev;
-    ids2 = ids;
-    idsRev2 = ids;
-    multiplex2 = multiplex;
+    reads2 = reads;
     Dna substitute = 'A';
-    StringSet<String<Dna5> > exspectedSub = exspectedNoSub;
-    exspectedSub[1][0] = substitute;
-    exspectedSub[1][31] = substitute;
-    exspectedSub[2][0] = substitute;
-    exspectedSub[2][12] = substitute;
-    exspectedSub[2][31] = substitute;
+    expectedReads[1].seq[0] = substitute;
+    expectedReads[1].seq[31] = substitute;
+    expectedReads[2].seq[0] = substitute;
+    expectedReads[2].seq[12] = substitute;
+    expectedReads[2].seq[31] = substitute;
 
-    processN(seqs2, ids2, seqsRev2, idsRev2, multiplex2, allowed, substitute, stats);
-    SEQAN_ASSERT_EQ(stats.removedSeqs, 4u);
+    processN(reads2, allowed, substitute, stats);
+    SEQAN_ASSERT_EQ(stats.removedSeqs, 2u);
     SEQAN_ASSERT_EQ(stats.uncalledBases, 10u);
-    for (unsigned i = 0; i < length(exspectedSub); ++i)
+    for (unsigned i = 0; i < length(expectedReads); ++i)
     {
-        SEQAN_ASSERT_EQ(exspectedSub[i], seqs2[i]);
-        SEQAN_ASSERT_EQ(multiplex2[i], exspectedMultiplex[i]);
+        SEQAN_ASSERT_EQ(reads2[i].seq, expectedReads[i].seq);
+        SEQAN_ASSERT_EQ(reads2[i].demultiplex, expectedReads[i].demultiplex);
     }
 }
 
@@ -603,11 +548,11 @@ SEQAN_BEGIN_TESTSUITE(test_my_app_funcs)
 	tnum = omp_get_max_threads();
 #endif
 	std::cout<<"\nRunning Tests using " << tnum << " thread(s).\n\n";
-    //SEQAN_CALL_TEST(findN_test);
-    //SEQAN_CALL_TEST(processN_test);
-    //SEQAN_CALL_TEST(processN_paired_test);
-    //SEQAN_CALL_TEST(processN_multiplex_test);
-    //SEQAN_CALL_TEST(processN_paired_multiplex_test);
+    SEQAN_CALL_TEST(findN_test);
+    SEQAN_CALL_TEST(processN_test);
+    SEQAN_CALL_TEST(processN_paired_test);
+    SEQAN_CALL_TEST(processN_multiplex_test);
+    SEQAN_CALL_TEST(processN_paired_multiplex_test);
     SEQAN_CALL_TEST(preTrim_test);
     SEQAN_CALL_TEST(preTrim_paired_test);
     SEQAN_CALL_TEST(trimTo_test);

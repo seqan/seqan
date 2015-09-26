@@ -941,7 +941,7 @@ public:
     //Writes the sets of ids and sequences to their corresponding files. Used for single-end data.
     template <template <typename> class TRead, typename TSeq, typename TNames, 
         typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value >>
-    void writeSeqs(std::vector<TRead<TSeq>>& reads, TNames& names, bool = false)
+    void writeSeqs(std::vector<TRead<TSeq>>&& reads, TNames& names, bool = false)
     {
         updateStreams(names, false);
         for (unsigned i = 0; i < length(reads); ++i)
@@ -953,7 +953,7 @@ public:
 
     template <template <typename> class TRead, typename TSeq, typename TNames,
         typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value >>
-        void writeSeqs(std::vector<TRead<TSeq>>& reads, TNames& names)
+        void writeSeqs(std::vector<TRead<TSeq>>&& reads, TNames& names)
     {
         updateStreams(names, false);
         for (unsigned i = 0; i < length(reads); ++i)
