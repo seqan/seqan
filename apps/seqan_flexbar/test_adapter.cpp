@@ -199,7 +199,7 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
 	int len = length(read.seq);
     AdapterMatchSettings autoOption;
     AdapterTrimmingStats stats;
-    int removed = stripAdapter(read, stats, TAdapterSet{AdapterItem(ada)}, autoOption, TagAdapter<false>());
+    int removed = stripAdapter(read.seq, stats, TAdapterSet{AdapterItem(ada)}, autoOption, TagAdapter<false>());
 	SEQAN_ASSERT_EQ(removed, 5);
 	SEQAN_ASSERT_EQ(len - length(read.seq), 5u);
 
@@ -208,7 +208,7 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
 	//                || |||||||		   
     ada = TAda(     "GAATATATATTT");
 	len = length(read.seq);
-	removed = stripAdapter(read, stats, TAdapterSet{ AdapterItem(ada) }, autoOption, TagAdapter<false>());
+	removed = stripAdapter(read.seq, stats, TAdapterSet{ AdapterItem(ada) }, autoOption, TagAdapter<false>());
 	SEQAN_ASSERT_EQ(removed, 12);
 	SEQAN_ASSERT_EQ(len - length(read.seq), 12u);
 }

@@ -48,6 +48,20 @@
 #include <seqan/find.h>
 #include "helper_functions.h"
 
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+
+//brief A metafunction which constructs a ModifiedString type for an Alphabet.
+template <class TValue>
+struct STRING_REVERSE_COMPLEMENT
+{
+    typedef seqan::ModifiedString<
+        seqan::ModifiedString<	seqan::String<TValue>, seqan::ModView<seqan::FunctorComplement<TValue> > >,
+        seqan::ModReverse>	Type;
+};
+
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -78,15 +92,26 @@ namespace seqan{
 	};
 }
 
+using TAdapterAlphabet = seqan::Dna5Q;
+using TAdapterSequence = seqan::String<TAdapterAlphabet>;
+
 struct AdapterItem;
-typedef seqan::Dna5QString TAdapter;
 typedef std::vector< AdapterItem > TAdapterSet;
+using TReverseComplement = STRING_REVERSE_COMPLEMENT<TAdapterAlphabet>::Type;
+
 struct AdapterItem
 {
     AdapterItem() : anchored(false) {};
-    AdapterItem(const TAdapter &adapter) : seq(adapter), anchored(false) {};
+    AdapterItem(const TAdapterSequence &adapter) : seq(adapter), anchored(false) {};
+    AdapterItem(const TAdapterSequence &adapter, const bool anchored) : seq(adapter), anchored(anchored) {};
 
-    TAdapter seq;
+    AdapterItem getReverseComplement() const noexcept
+    {
+        auto seqCopy = seq;
+        return AdapterItem(TReverseComplement(seqCopy), anchored);
+    }
+
+    TAdapterSequence seq;
     // the anchored matching mode should have the same functionality as cutadapt's anchored mode
     // see http://cutadapt.readthedocs.org/en/latest/guide.html
     // In anchored mode, the adapter has to start (3" adapter) or has to end (5" adapter) with the sequence
@@ -144,19 +169,7 @@ struct AdapterTrimmingStats
     unsigned minOverlap, maxOverlap;
 };
 
-// ============================================================================
-// Metafunctions
-// ============================================================================
 
-
-//brief A metafunction which constructs a ModifiedString type for an Alphabet.
-template <class TValue>
-struct STRING_REVERSE_COMPLEMENT
-{
-	typedef seqan::ModifiedString<
-			seqan::ModifiedString<	seqan::String<TValue>, seqan::ModView<seqan::FunctorComplement<TValue> > >,
-			seqan::ModReverse>	Type;
-};
 
 // ============================================================================
 // Functions
@@ -318,20 +331,30 @@ struct StripAdapterDirection
     static const bool value = _direction;
 };
 
-template <template <typename> class TRead, typename TSeq, typename TAdapterSet, typename TSpec, typename TStripAdapterDirection>
-unsigned stripAdapter(TRead<TSeq>& read, AdapterTrimmingStats& stats, TAdapterSet const& adapterSet, TSpec const& spec,
-    TStripAdapterDirection) noexcept
+template <typename TSeq, typename TAdapters, typename TSpec, typename TStripAdapterDirection>
+unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& adapters, TSpec const& spec,
+    const TStripAdapterDirection&) noexcept
 {
     typedef typename seqan::Align<seqan::Dna5String> TAlign;
     typedef typename seqan::Row<TAlign>::Type TRow;
     seqan::Pair<unsigned, TAlign> ret;
 
     unsigned removed{ 0 };
-    for (AdapterItem const& adapterItem : adapterSet)
+
+    for (auto const& adapterItem : adapters)
     {
         //std::cout << "seq: " << seq << std::endl;
         //std::cout << "adapter: " << adapterItem.seq << std::endl;
-        alignAdapter(ret, seqan::Dna5String(read.seq), adapterItem);    // align crashes if seq is an empty string!
+        if (length(adapterItem.seq) == 0)
+            continue;
+
+        if (TStripAdapterDirection::value == adapterDirection::reverse)
+        {
+            alignAdapter(ret, seqan::Dna5String(seq), adapterItem.getReverseComplement());    // align crashes if seq is an empty string!
+        }
+        else
+            alignAdapter(ret, seqan::Dna5String(seq), adapterItem);    // align crashes if seq is an empty string!
+
         const unsigned int overlap = getOverlap(ret.i2);
         const int score = ret.i1;
         const int mismatches = (overlap - score) / 2;
@@ -341,9 +364,9 @@ unsigned stripAdapter(TRead<TSeq>& read, AdapterTrimmingStats& stats, TAdapterSe
             //std::cout << ret.i2 << std::endl;
             TRow row2 = row(ret.i2, 1);
             //std::cout << "adapter start position: " << toViewPosition(row2, 0) << std::endl;
-            const auto seqLen = length(read.seq);
+            const auto seqLen = length(seq);
             removed += seqLen - toViewPosition(row2, 0);
-            seqan::erase(read.seq, toViewPosition(row2, 0), seqLen);
+            seqan::erase(seq, toViewPosition(row2, 0), seqLen);
             //std::cout << "stripped seq: " << seq << std::endl;
             stats.overlapSum += overlap;
             if (TStripAdapterDirection::value == adapterDirection::reverse)
@@ -353,16 +376,17 @@ unsigned stripAdapter(TRead<TSeq>& read, AdapterTrimmingStats& stats, TAdapterSe
 
             stats.maxOverlap = stats.maxOverlap > overlap ? stats.maxOverlap : overlap;
             stats.minOverlap = stats.minOverlap < overlap ? stats.minOverlap : overlap;
-            if (spec.singleMatch || empty(read.seq))
+            if (spec.singleMatch || empty(seq))
                 return removed;
         }
     }
     return removed;
 }
 
-template <typename TRead, typename TAdapterSet, typename TSpec, typename TStripAdapterDirection, typename TTagAdapter>
-unsigned stripAdapterBatch(std::vector<TRead>& reads, TAdapterSet const& adapterSet, TSpec const& spec,
-    AdapterTrimmingStats& stats, TStripAdapterDirection, TTagAdapter) noexcept(!TTagAdapter::value)
+template < template <typename> typename TRead, typename TSeq, typename TAdaptersArray, typename TSpec, typename TTagAdapter,
+    typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value> >
+unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec,
+    AdapterTrimmingStats& stats, TTagAdapter, bool = false) noexcept(!TTagAdapter::value)
 {
     int t_num = omp_get_max_threads();
     // Create local counting variables to avoid concurrency problems.
@@ -375,7 +399,36 @@ unsigned stripAdapterBatch(std::vector<TRead>& reads, TAdapterSet const& adapter
                 continue;
             const int t_id = omp_get_thread_num();
             // Every thread has its own adapterTrimmingStatsVector
-            const unsigned over = stripAdapter(reads[i], adapterTrimmingStatsVector[t_id], adapterSet, spec, TStripAdapterDirection());
+            const unsigned over = stripAdapter(reads[i].seq, adapterTrimmingStatsVector[t_id], adapters[1], spec, StripAdapterDirection<adapterDirection::forward>());
+            if (TTagAdapter::value && over != 0)
+                insertAfterFirstToken(reads[i].id, ":AdapterRemoved");
+        }
+    std::for_each(adapterTrimmingStatsVector.begin(), adapterTrimmingStatsVector.end(),
+        [&stats](AdapterTrimmingStats const& _stats) {stats += _stats;});
+    return stats.a1count + stats.a2count;
+}
+
+// pairedEnd adapters will be trimmed in single mode, each seperately
+// TODO: implement alignPair
+template < template <typename> typename TRead, typename TSeq, typename TAdaptersArray, typename TSpec, typename TTagAdapter,
+    typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value> >
+unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec,
+    AdapterTrimmingStats& stats, TTagAdapter) noexcept(!TTagAdapter::value)
+{
+    int t_num = omp_get_max_threads();
+    // Create local counting variables to avoid concurrency problems.
+    std::vector<AdapterTrimmingStats> adapterTrimmingStatsVector(t_num);
+    int len = length(reads);
+    SEQAN_OMP_PRAGMA(parallel for schedule(static))
+        for (int i = 0; i < len; ++i)
+        {
+            if (seqan::empty(reads[i].seq))
+                continue;
+            const int t_id = omp_get_thread_num();
+            // Every thread has its own adapterTrimmingStatsVector
+            unsigned over = stripAdapter(reads[i].seq, adapterTrimmingStatsVector[t_id], adapters[1], spec, StripAdapterDirection<adapterDirection::forward>());
+            if (!seqan::empty(reads[i].seqRev))
+                over += stripAdapter(reads[i].seqRev, adapterTrimmingStatsVector[t_id], adapters[0], spec, StripAdapterDirection<adapterDirection::reverse>());
             if (TTagAdapter::value && over != 0)
                 insertAfterFirstToken(reads[i].id, ":AdapterRemoved");
         }

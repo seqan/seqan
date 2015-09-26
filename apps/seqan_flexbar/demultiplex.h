@@ -60,8 +60,6 @@
 // Tags, Classes, Enums
 // ============================================================================
 
-typedef seqan::String<seqan::Dna5Q> TAlphabet;
-
 struct DemultiplexingParams
 {
 	std::string barcodeFile;
@@ -91,27 +89,28 @@ template <typename TReads, typename TBarcodes, typename TStats>
 bool check(TReads& reads, TBarcodes& barcodes, TStats& stats) noexcept
 {
     unsigned len = length(barcodes[0]);
-    for (unsigned i = 1; i < length(barcodes); ++i)
+    for (const auto& barcode : barcodes)
     {
-        if (len != length(barcodes[i]))
+        if (len != length(barcode))
         {
             std::cerr << "ERROR: Barcodes differ in length. All barcodes must be of equal length.\n";
             return false;
         }
-    } //Iterating backward to avoid error after deletion of a sequence
+    }
     auto it = std::remove_if(reads.begin(), reads.end(), [len](auto& read) {return length(read.seq) <= len;});
     stats.removedShort += std::distance(it, reads.end());
     reads.erase(it, reads.end());
     return true;
 }
 
+// always use the forward read for barcode detection
 template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>,Read<TSeq>>::value || std::is_same<TRead<TSeq>,ReadPairedEnd<TSeq>>::value>>
 void getPrefix(std::vector<TSeq>& prefices, std::vector<TRead<TSeq>>& reads, unsigned len)
 {
     int limit = reads.size();
     assert(prefices.size() == reads.size());
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
-        for (int i = 0; i < limit; ++i) //Remark: OMP requires an integer as loop-variable
+        for (int i = 0; i < limit; ++i)
         {
             prefices[i] = prefix(reads[i].seq, len);
         }

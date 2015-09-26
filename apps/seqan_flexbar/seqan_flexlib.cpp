@@ -681,8 +681,7 @@ struct AdapterTrimmingParams
     bool paired;
     bool noAdapter;
     bool run;
-    TAdapterSet adapter1;
-    TAdapterSet adapter2;
+    std::array<TAdapterSet, 2> adapters;
     AdapterMatchSettings mode;
     MatchMode mmode;
     AdapterTrimmingStats stats;
@@ -1078,13 +1077,13 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
             std::cerr << "Error while opening file'" << adapterFile << "'.\n";
             return 1;
         }
-        TAdapter tempAdapter;
+        TAdapterSequence tempAdapter;
         while (!atEnd(adapterInFile))
         {
             readRecord(id, tempAdapter, adapterInFile);
-            appendValue(params.adapter1, tempAdapter);
+            appendValue(params.adapters[0], tempAdapter);
             readRecord(id, tempAdapter, adapterInFile);
-            appendValue(params.adapter2, tempAdapter);
+            appendValue(params.adapters[1], tempAdapter);
         }
     }
     // If they are not given, but we would need them (single-end trimming), output error.
@@ -1279,11 +1278,9 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, std::vector<TRead>& rea
     if (!params.run)
         return;
     if(tagOpt)
-        stripAdapterBatch<TRead, TAdapterSet, AdapterMatchSettings>(reads, params.adapter2, params.mode, params.stats,
-            StripAdapterDirection<adapterDirection::forward>(), TagAdapter<true>());
+        stripAdapterBatch(reads, params.adapters, params.mode, params.stats, TagAdapter<true>());
     else
-        stripAdapterBatch<TRead, TAdapterSet, AdapterMatchSettings>(reads, params.adapter2, params.mode, params.stats,
-            StripAdapterDirection<adapterDirection::forward>(), TagAdapter<false>());
+        stripAdapterBatch(reads, params.adapters, params.mode, params.stats, TagAdapter<false>());
 }
 
 // QUALITY TRIMMING
