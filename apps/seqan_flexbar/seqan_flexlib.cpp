@@ -1254,7 +1254,7 @@ void preprocessingStage(TReadSet& readSet,
 
 // DEMULTIPLEXING
 template <typename TRead, typename TFinder>
-int demultiplexingStage(DemultiplexingParams& params, std::vector<TRead>& reads, TFinder& esaFinder,
+int demultiplexingStage(const DemultiplexingParams& params, std::vector<TRead>& reads, TFinder& esaFinder,
     GeneralStats& generalStats)
 {
     if (!params.run)
@@ -1564,8 +1564,8 @@ private:
 
 // END FUNCTION DEFINITIONS ---------------------------------------------
 template<template <typename> class TRead, typename TSeq, typename TEsaFinder>
-int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
-    QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder, bool tagOpt, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
+int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, const DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
+    const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder, bool tagOpt, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
     OutputStreams& outputStreams)
 {
     std::unique_ptr<std::vector<TRead<TSeq>>> readSet;
@@ -1579,13 +1579,10 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
 #ifdef _MULTITHREADED_IO
         readReader.getReads(readSet);
         const auto numReadsRead = readSet->size();
-        if (numReadsRead == 0)
-            break;
-        generalStats.readCount += numReadsRead;
 #else
         const auto numReadsRead = readReads(readSet, programParams.records, programVars);
-        generalStats.readCount += numReadsRead;
 #endif
+        generalStats.readCount += numReadsRead;
         if (numReadsRead == 0)
             break;
 

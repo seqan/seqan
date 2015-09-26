@@ -209,7 +209,7 @@ void findAllExactIndex(TMatches& matches, const TPrefices& prefices, const TFind
 }
 
 template <typename TRead>
-void clipBarcodes(std::vector<TRead>& reads, const seqan::String<int>& matches, unsigned len) noexcept
+void clipBarcodes(std::vector<TRead>& reads, const seqan::String<int>& matches, const unsigned len) noexcept
 {
     int limit = reads.size();
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
@@ -222,7 +222,7 @@ void clipBarcodes(std::vector<TRead>& reads, const seqan::String<int>& matches, 
 
 //Overload for deleting the barcodes in any case.
 template<typename TRead>
-void clipBarcodes(std::vector<TRead>& reads, int len) noexcept
+void clipBarcodes(std::vector<TRead>& reads, const int len) noexcept
 {
     int limit = reads.size();
     SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
@@ -276,7 +276,7 @@ void group(std::vector<TRead>& reads, const TMatches& matches,
 }
 
 template<template <typename> class TRead, typename TSeq, typename TBarcodes, typename TFinder, typename TApprox>
-void doAll(std::vector<TRead<TSeq>>& reads, const TBarcodes& barcodes, TFinder& esaFinder,
+void doAll(std::vector<TRead<TSeq>>& reads, const TBarcodes& barcodes, const TFinder& esaFinder,
     const bool hardClip, GeneralStats& stats, const TApprox& approximate, bool exclude)
 {
     std::vector<TSeq> prefices(length(reads));
