@@ -679,8 +679,9 @@ struct AdapterTrimmingParams
     std::array<TAdapterSet, 2> adapters;
     AdapterMatchSettings mode;
     MatchMode mmode;
+    bool tag;
     AdapterTrimmingStats stats;
-    AdapterTrimmingParams() : pairedNoAdapterFile(false), run(false), mmode(E_AUTO) {};
+    AdapterTrimmingParams() : pairedNoAdapterFile(false), run(false), mmode(E_AUTO), tag(false) {};
 };
 
 struct QualityTrimmingParams
@@ -689,7 +690,8 @@ struct QualityTrimmingParams
     int cutoff;
     int min_length;
     bool run;
-       QualityTrimmingParams() : trim_mode(E_WINDOW), cutoff(-1), min_length(1), run(false) {};
+    bool tag;
+       QualityTrimmingParams() : trim_mode(E_WINDOW), cutoff(-1), min_length(1), run(false), tag(false) {};
 };
 
 struct ProgramVars
@@ -1224,8 +1226,7 @@ int checkParams(ProgramParams const & programParams, ProgramVars const& programV
 // PROGRAM STAGES ---------------------
 //Preprocessing Stage
 template<typename TReadSet>
-void preprocessingStage(TReadSet& readSet, 
-    ProcessingParams& processingParams, GeneralStats& generalStats)
+void preprocessingStage(ProcessingParams& processingParams, TReadSet& readSet, GeneralStats& generalStats)
 {
     if (processingParams.runPre)
     {
@@ -1272,11 +1273,11 @@ int demultiplexingStage(const DemultiplexingParams& params, std::vector<TRead>& 
 
 // ADAPTER TRIMMING
 template <typename TRead>
-void adapterTrimmingStage(AdapterTrimmingParams& params, std::vector<TRead>& reads, bool tagOpt)
+void adapterTrimmingStage(AdapterTrimmingParams& params, std::vector<TRead>& reads)
 {
     if (!params.run)
         return;
-    if(tagOpt)
+    if(params.tag)
         stripAdapterBatch(reads, params.adapters, params.mode, params.pairedNoAdapterFile, params.stats, TagAdapter<true>());
     else
         stripAdapterBatch(reads, params.adapters, params.mode, params.pairedNoAdapterFile, params.stats, TagAdapter<false>());
@@ -1285,7 +1286,7 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, std::vector<TRead>& rea
 // QUALITY TRIMMING
 //Version for single-ende data
 template <typename TRead>
-void qualityTrimmingStage(const QualityTrimmingParams& params, std::vector<TRead>& reads, GeneralStats& stats, bool tagOpt)
+void qualityTrimmingStage(const QualityTrimmingParams& params, std::vector<TRead>& reads, GeneralStats& stats)
 {
     if (params.run)
     {
@@ -1293,16 +1294,16 @@ void qualityTrimmingStage(const QualityTrimmingParams& params, std::vector<TRead
         {
         case E_WINDOW:
         {
-            trimBatch(reads, params.cutoff, Mean(5), tagOpt);
+            trimBatch(reads, params.cutoff, Mean(5), params.tag);
             break;
         }
         case E_BWA:
         {
-            trimBatch(reads, params.cutoff, BWA(), tagOpt);
+            trimBatch(reads, params.cutoff, BWA(), params.tag);
         }
         case E_TAIL:
         {
-            trimBatch(reads, params.cutoff, Tail(), tagOpt);
+            trimBatch(reads, params.cutoff, Tail(), params.tag);
         }
         }
     }
@@ -1643,7 +1644,7 @@ private:
 // END FUNCTION DEFINITIONS ---------------------------------------------
 template<template <typename> class TRead, typename TSeq, typename TEsaFinder>
 int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, const DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
-    const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder, bool tagOpt, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
+    const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
     OutputStreams& outputStreams)
 {
     std::unique_ptr<std::vector<TRead<TSeq>>> readSet;
@@ -1674,17 +1675,17 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
             return 1;
 
         // Preprocessing and Filtering
-        preprocessingStage(*readSet, processingParams, generalStats);
+        preprocessingStage(processingParams, *readSet, generalStats);
 
         // Demultiplexing
         if (demultiplexingStage(demultiplexingParams, *readSet, esaFinder, generalStats) != 0)
             return 1;
 
         // Adapter trimming
-        adapterTrimmingStage(adapterTrimmingParams, *readSet, tagOpt);
+        adapterTrimmingStage(adapterTrimmingParams, *readSet);
 
         // Quality trimming
-        qualityTrimmingStage(qualityTrimmingParams, *readSet, generalStats, tagOpt);
+        qualityTrimmingStage(qualityTrimmingParams, *readSet, generalStats);
 
         // Postprocessing
         postprocessingStage(*readSet, processingParams, generalStats);
@@ -1848,7 +1849,6 @@ int flexbarMain(int argc, char const ** argv)
     //--------------------------------------------------
 
     AdapterTrimmingParams adapterTrimmingParams;
-    bool tagOpt = false;
 
     if(flexiProgram == ADAPTER_REMOVAL || flexiProgram == QUALITY_CONTROL|| flexiProgram == ALL_STEPS)
     {
@@ -1859,12 +1859,13 @@ int flexbarMain(int argc, char const ** argv)
                 return 1;
             }
         }
-        tagOpt = seqan::isSet(parser, "t");
+        const bool tagOpt = seqan::isSet(parser, "t");
         if (tagOpt && !(qualityTrimmingParams.run || adapterTrimmingParams.run))
         {
             std::cout << "\nWarning: Tag option was selected without selecting adapter removal or quality-trimming stage.\n";
                 return 1;
         }
+        adapterTrimmingParams.tag = qualityTrimmingParams.tag = tagOpt;
         if(flexiProgram == ADAPTER_REMOVAL)
             adapterTrimmingParams.run = true;
     }
@@ -2108,18 +2109,18 @@ int flexbarMain(int argc, char const ** argv)
         if (!demultiplexingParams.run)
             outputStreams.addStream("", 0, useDefault);
         if(demultiplexingParams.runx)
-            mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
+            mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, multiplexInFile, generalStats, outputStreams);
         else
-            mainLoop(Read<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
+            mainLoop(Read<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, multiplexInFile, generalStats, outputStreams);
     }
      else
      {
          if (!demultiplexingParams.run)
              outputStreams.addStreams("", "", 0, useDefault);
          if (demultiplexingParams.runx)
-             mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
+             mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, multiplexInFile, generalStats, outputStreams);
          else
-             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, tagOpt, multiplexInFile, generalStats, outputStreams);
+             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, multiplexInFile, generalStats, outputStreams);
     }
     double loop = SEQAN_PROTIMEDIFF(loopTime);
     generalStats.ioTime = loop - generalStats.processTime;
