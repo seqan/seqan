@@ -47,6 +47,7 @@
 #include <seqan/align.h>
 #include <seqan/find.h>
 #include "helper_functions.h"
+#include "general_stats.h"
 
 // ============================================================================
 // Metafunctions
@@ -140,35 +141,6 @@ struct AdapterMatchSettings
     bool modeAuto;
     bool singleMatch;
 };
-
-struct AdapterTrimmingStats
-{
-	AdapterTrimmingStats() : a1count(0), a2count(0), overlapSum(0),
-			minOverlap(std::numeric_limits<unsigned>::max()), maxOverlap(0) {};
-
-    AdapterTrimmingStats& operator+= (AdapterTrimmingStats const& rhs)
-    {
-        a1count += rhs.a1count;
-        a2count += rhs.a2count;
-        overlapSum += rhs.overlapSum;
-        minOverlap = minOverlap < rhs.minOverlap ? minOverlap : rhs.minOverlap;
-        maxOverlap = maxOverlap < rhs.maxOverlap ? rhs.maxOverlap : maxOverlap;
-        return *this;
-    }
-	void clear()
-	{
-		a1count = 0;
-		a2count = 0;
-		overlapSum = 0;
-		minOverlap = std::numeric_limits<unsigned>::max();
-		maxOverlap = 0;
-	}
-
-    unsigned a1count, a2count;
-    unsigned overlapSum;
-    unsigned minOverlap, maxOverlap;
-};
-
 
 
 // ============================================================================

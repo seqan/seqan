@@ -680,7 +680,6 @@ struct AdapterTrimmingParams
     AdapterMatchSettings mode;
     MatchMode mmode;
     bool tag;
-    AdapterTrimmingStats stats;
     AdapterTrimmingParams() : pairedNoAdapterFile(false), run(false), mmode(E_AUTO), tag(false) {};
 };
 
@@ -1273,14 +1272,14 @@ int demultiplexingStage(const DemultiplexingParams& params, std::vector<TRead>& 
 
 // ADAPTER TRIMMING
 template <typename TRead>
-void adapterTrimmingStage(AdapterTrimmingParams& params, std::vector<TRead>& reads)
+void adapterTrimmingStage(const AdapterTrimmingParams& params, std::vector<TRead>& reads, GeneralStats& stats)
 {
     if (!params.run)
         return;
     if(params.tag)
-        stripAdapterBatch(reads, params.adapters, params.mode, params.pairedNoAdapterFile, params.stats, TagAdapter<true>());
+        stripAdapterBatch(reads, params.adapters, params.mode, params.pairedNoAdapterFile, stats.adapterTrimmingStats, TagAdapter<true>());
     else
-        stripAdapterBatch(reads, params.adapters, params.mode, params.pairedNoAdapterFile, params.stats, TagAdapter<false>());
+        stripAdapterBatch(reads, params.adapters, params.mode, params.pairedNoAdapterFile, stats.adapterTrimmingStats, TagAdapter<false>());
 }
 
 // QUALITY TRIMMING
@@ -1415,15 +1414,15 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
               << " (" << std::setprecision(3) << surv_proc << "%)\n";
     if (adapter)
     {
-            outStream << "   Adapters: " << adapterParams.stats.a2count << "\n";
+            outStream << "   Adapters: " << generalStats.adapterTrimmingStats.a2count << "\n";
     }
     outStream << std::endl;
-    if (adapter && (adapterParams.stats.a1count + adapterParams.stats.a2count != 0))
+    if (adapter && (generalStats.adapterTrimmingStats.a1count + generalStats.adapterTrimmingStats.a2count != 0))
     {
-        int mean = adapterParams.stats.overlapSum/(adapterParams.stats.a1count + adapterParams.stats.a2count);
+        int mean = generalStats.adapterTrimmingStats.overlapSum/(generalStats.adapterTrimmingStats.a1count + generalStats.adapterTrimmingStats.a2count);
         outStream << "Adapter sizes:\n";
-        outStream << "Min: " << adapterParams.stats.minOverlap << ", Mean: " << mean
-                << ", Max: " << adapterParams.stats.maxOverlap << "\n\n";
+        outStream << "Min: " << generalStats.adapterTrimmingStats.minOverlap << ", Mean: " << mean
+                << ", Max: " << generalStats.adapterTrimmingStats.maxOverlap << "\n\n";
     }
     // Print processing and IO time. IO is (approx.) the whole loop without the processing part.
     if (timing)
@@ -1599,7 +1598,7 @@ private:
 
 // END FUNCTION DEFINITIONS ---------------------------------------------
 template<template <typename> class TRead, typename TSeq, typename TEsaFinder>
-int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, const DemultiplexingParams& demultiplexingParams, const ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
+int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, const DemultiplexingParams& demultiplexingParams, const ProcessingParams& processingParams, const AdapterTrimmingParams& adapterTrimmingParams,
     const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
     OutputStreams& outputStreams)
 {
@@ -1625,7 +1624,6 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
 
         SEQAN_PROTIMESTART(processTime);            // START of processing time.
 
-        //loadMultiplex(multiplexInFile, demultiplexingParams, records);
         loadMultiplex(*readSet, multiplexInFile, programParams.records);
         if (demultiplexingParams.runx)
             return 1;
@@ -1638,7 +1636,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
             return 1;
 
         // Adapter trimming
-        adapterTrimmingStage(adapterTrimmingParams, *readSet);
+        adapterTrimmingStage(adapterTrimmingParams, *readSet, generalStats);
 
         // Quality trimming
         qualityTrimmingStage(qualityTrimmingParams, *readSet, generalStats);
