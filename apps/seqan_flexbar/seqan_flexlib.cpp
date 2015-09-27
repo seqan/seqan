@@ -1508,25 +1508,63 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
     return i;
 }
 
-template<template<typename> class TRead, typename TSeq>
+template<template<typename> class TRead, typename TSeq, typename TWriteItem>
 struct ReadWriter
 {
-    ReadWriter(OutputStreams& outputStreams)
-        : _outputStreams(outputStreams)
-    {}
-    ~ReadWriter() {};
-    template<typename TBarcodes>
-    void writeReads(std::unique_ptr<std::vector<TRead<TSeq>>>& reads, TBarcodes& barcodeIds)
+    ReadWriter(OutputStreams& outputStreams, unsigned int bins)
+        : _outputStreams(outputStreams), _tlsReadSets(bins + 1), _run(true)
     {
-        if (_future.valid())
-            _future.wait();
-        tlsReads = std::move(reads);
-        _future = std::async(std::launch::async, [this, barcodeIds]() {return _outputStreams.writeSeqs(std::move(*tlsReads), barcodeIds);});
+        _thread = std::thread([this]() 
+        {
+            while (_run)
+            {
+                for (auto& readSet : _tlsReadSets)
+                {
+                    if (readSet.first.try_lock())
+                    {
+                        if (std::get<0>(readSet.second))
+                        {
+                            _outputStreams.writeSeqs(std::move(*std::get<0>(readSet.second)), std::get<1>(readSet.second));
+                            std::get<0>(readSet.second).release();
+                        }
+                        readSet.first.unlock();
+                    }
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            }
+        });
+    }
+    ~ReadWriter() 
+    {
+        _run = false;
+        if (_thread.joinable())
+            _thread.join();
+    };
+    void writeReads(TWriteItem&& writeItem) noexcept
+    {
+        while (true)
+        {
+            for (auto& reads : _tlsReadSets)
+            {
+                if (reads.first.try_lock())
+                {
+                    if (!std::get<0>(reads.second))
+                    {
+                        reads.second = std::move(writeItem);
+                        reads.first.unlock();
+                        return;
+                    }
+                    reads.first.unlock();
+                }
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        }
     }
     private:
         OutputStreams& _outputStreams;
-        std::unique_ptr<std::vector<TRead<TSeq>>> tlsReads;
-        std::future<void> _future;
+        std::vector<std::pair<std::mutex, TWriteItem>> _tlsReadSets;
+        std::thread _thread;
+        std::atomic_bool _run;
 };
 
 template<template<typename> class TRead, typename TSeq>
@@ -1563,7 +1601,7 @@ struct ReadReader
         if (_thread.joinable())
             _thread.join();
     };
-    bool getReads(std::unique_ptr<std::vector<TRead<TSeq>>>& reads)
+    bool getReads(std::unique_ptr<std::vector<TRead<TSeq>>>& reads) noexcept
     {
         while (true)
         {
@@ -1581,6 +1619,7 @@ struct ReadReader
                     readSet.first.unlock();
                 }
             }
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
         return false;
     };
@@ -1601,7 +1640,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
     std::unique_ptr<std::vector<TRead<TSeq>>> readSet;
     TRead<TSeq> read;
     ReadReader<TRead, TSeq> readReader(programParams.records, programVars, programParams.num_threads);
-    ReadWriter<TRead, TSeq> readWriter(outputStreams);
+    ReadWriter<TRead, TSeq, std::tuple<std::unique_ptr<std::vector<TRead<TSeq>>>,decltype(DemultiplexingParams::barcodeIds)>> readWriter(outputStreams, programParams.num_threads);
 
     SEQAN_PROTIMESTART(loopTime);
     while (generalStats.readCount < programParams.firstReads)
@@ -1643,7 +1682,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
 
         // Write processed reads to file
 #ifdef _MULTITHREADED_IO
-        readWriter.writeReads(readSet, demultiplexingParams.barcodeIds);
+        readWriter.writeReads(std::make_tuple(std::move(readSet), std::move(demultiplexingParams.barcodeIds)));
 #else
         outputStreams.writeSeqs(readSet, demultiplexingParams.barcodeIds);
 #endif        
