@@ -107,26 +107,19 @@ bool check(TReads& reads, TBarcodes& barcodes, TStats& stats) noexcept
 template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>,Read<TSeq>>::value || std::is_same<TRead<TSeq>,ReadPairedEnd<TSeq>>::value>>
 void getPrefix(std::vector<TSeq>& prefices, std::vector<TRead<TSeq>>& reads, unsigned len)
 {
-    int limit = reads.size();
     assert(prefices.size() == reads.size());
-    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
-        for (int i = 0; i < limit; ++i)
-        {
-            prefices[i] = prefix(reads[i].seq, len);
-        }
+
+    std::transform(reads.begin(), reads.end(), prefices.begin(), [len](const auto& read) {
+        return prefix(read.seq, len);});
 }
 
 template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
 void getPrefix(std::vector<TSeq>& prefices, std::vector<TRead<TSeq>>& reads, unsigned len, bool = false)
 {
     (void)len;
-    int limit = reads.size();
-    prefices.resize(limit);
-    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
-        for (int i = 0; i < limit; ++i) //Remark: OMP requires an integer as loop-variable
-        {
-            prefices[i] = reads[i].demultiplex;
-        }
+    std::transform(reads.begin(), reads.end(), prefices.begin(), [](const auto& read) {
+        return read.demultiplex;
+    });
 }
 
 template <typename TBarcode>
@@ -167,7 +160,7 @@ void buildAllVariations(TBarcodes& barcodes)
 }
 
 template <typename TPrefix, typename TFinder>
-int findExactIndex(const TPrefix& prefix, TFinder& finder) noexcept
+inline int findExactIndex(const TPrefix& prefix, TFinder& finder) noexcept
 {
 	clear(finder);								//resets finder
 	if (find(finder, prefix))
@@ -178,51 +171,32 @@ int findExactIndex(const TPrefix& prefix, TFinder& finder) noexcept
 }
 
 template <typename TMatches, typename TPrefices, typename TFinder>
-void findAllExactIndex(TMatches& matches, const TPrefices& prefices, const TFinder& finder) noexcept
+void findAllExactIndex(TMatches& matches, const TPrefices& prefices, TFinder finder) noexcept
 {
     assert(length(matches) == length(prefices));
 
-	int tnum = 1;
-#ifdef _OPENMP
-    tnum = omp_get_max_threads();
-#endif
-    seqan::StringSet<TFinder> finderSet;
-    resize(finderSet, tnum);            //creating a set of finders to prevent their continous re-initialisation
-    for (int i = 0; i < tnum; ++i)
-    {
-        finderSet[i] = finder;
-    }
-	int limit = length(prefices);
-	for (int i = 0; i < limit; ++i)
-	{
-		int tid = 0;
-        int hit = findExactIndex(prefices[i], finderSet[tid]);
-		matches[i] = hit;
-	}
+    std::transform(seqan::begin(prefices), seqan::end(prefices), seqan::begin(matches), [&finder](const auto& prefix)->auto {
+        return findExactIndex(prefix, finder);});
 }
 
 template <typename TRead>
 void clipBarcodes(std::vector<TRead>& reads, const seqan::String<int>& matches, const unsigned len) noexcept
 {
     int limit = reads.size();
-    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
-        for (int i = 0; i < limit; ++i)
-            if (matches[i] != -1)					//only erases barcode from sequence if it could be matched
-            {
-                erase(reads[i].seq, 0, len);
-            }
+    for (int i = 0; i < limit; ++i)
+        if (matches[i] != -1)					//only erases barcode from sequence if it could be matched
+        {
+            erase(reads[i].seq, 0, len);
+        }
 }
 
 //Overload for deleting the barcodes in any case.
 template<typename TRead>
 void clipBarcodes(std::vector<TRead>& reads, const int len) noexcept
 {
-    int limit = reads.size();
-    SEQAN_OMP_PRAGMA(parallel for default(shared)schedule(static))
-        for (int i = 0; i < limit; ++i)
-        {
-            erase(reads[i].seq, 0, len);
-        }
+    std::transform(reads.begin(), reads.end(), reads.begin(), [len](auto& read)->auto {
+        erase(read.seq, 0, len);
+        return read;});
 }
 
 struct ApproximateBarcodeMatching {};

@@ -123,8 +123,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
 	seqan::ArgParseOption firstReadsOpt = seqan::ArgParseOption(
 			"fr", "reads", "Process only first n reads.",
 			seqan::ArgParseOption::INTEGER, "VALUE");
-	setDefaultValue(firstReadsOpt, 0);
-	setMinValue(firstReadsOpt, "0");
+	setMinValue(firstReadsOpt, "1");
 	addOption(parser, firstReadsOpt);
 
     seqan::ArgParseOption threadOpt = seqan::ArgParseOption(
@@ -1388,12 +1387,12 @@ void printStatistics(const ProgramParams& programParams, const TStats& generalSt
                 ((double)generalStats.readCount) * 100 << "%)";
         }  
         outStream << "\n";
-        for (unsigned i = 1; i < barcodesTotal; ++i)
+        for (unsigned i = 1; i <= barcodesTotal; ++i)
         {
-            outStream << demultiplexParams.barcodeIds[i-1]<<":\t" << (double)generalStats.matchedBarcodeReads[i];
+            outStream << demultiplexParams.barcodeIds[i-1]<<":\t" << generalStats.matchedBarcodeReads[i];
             if (generalStats.readCount != 0)
             {
-                outStream  << "\t\t(" << std::setprecision(3) << (double)(double)generalStats.matchedBarcodeReads[i] /
+                outStream  << "\t\t(" << std::setprecision(3) << (double)generalStats.matchedBarcodeReads[i] /
                     ((double)generalStats.readCount) * 100 << "%)";
             }
             outStream << "\n";
@@ -1490,16 +1489,18 @@ struct ReadWriter
                     {
                         if (std::get<0>(readSet.second))
                         {
+                            const auto t1 = std::chrono::steady_clock::now();
                             _outputStreams.writeSeqs(std::move(*std::get<0>(readSet.second)), std::get<1>(readSet.second));
                             std::get<0>(readSet.second).reset(nullptr); // delete written data
                             _stats += std::get<2>(readSet.second);
+                            const auto ioTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
+                            _stats.ioTime += ioTime;
                             readSet.first.unlock();
                             const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - _startTime).count();
                             if (_programParams.showSpeed)
                                 std::cout << "\r" << _stats.readCount << "   " << static_cast<int>(_stats.readCount / deltaTime) << " BPs";
                             else
                                 std::cout << "\r" << _stats.readCount;
-
                         }
                         else  // nothing to do
                         {
@@ -1538,6 +1539,18 @@ struct ReadWriter
             _thread.join();
         stats = _stats;
     }
+    bool idle() noexcept
+    {
+        unsigned int numEmpty = 0;
+        for (auto& readSet : _tlsReadSets)
+            if (readSet.first.try_lock())
+            {
+                if (!std::get<0>(readSet.second))
+                    ++numEmpty;
+                readSet.first.unlock();
+            }
+        return numEmpty == _tlsReadSets.size();
+    }
     private:
         const ProgramParams& _programParams;
         OutputStreams& _outputStreams;
@@ -1554,7 +1567,7 @@ struct ReadReader
 {
     ReadReader(const ProgramParams& programParams, InputFileStreams& inputFileStreams, unsigned int sleepMS, TProcessor& processor)
         :_programParams(programParams), _inputFileStreams(inputFileStreams), _tlsReadSets(programParams.num_threads + 1) , 
-        _run(false), _eof(false), _sleepMS(sleepMS), _processor(processor)
+        _run(false), _eof(false), _sleepMS(sleepMS), _numReads(0), _processor(processor)
     {}
     ~ReadReader() 
     {
@@ -1574,21 +1587,19 @@ struct ReadReader
                 {
                     if (readSet.first.try_lock())
                     {
-                        if (!readSet.second) // empty slot -> start new Read
+                        if (!readSet.second && !_eof) // empty slot -> start new Read
                         {
                             nothingToDo = false;
                             readSet.second.reset(new std::vector<TRead<TSeq>>(_programParams.records));
                             readReads(*(readSet.second), _programParams.records, _inputFileStreams);
                             loadMultiplex(*(readSet.second), _programParams.records, _inputFileStreams.fileStreamMultiplex);
-                            if (readSet.second->empty())    // no more reads available, exit the thread
+                            _numReads += readSet.second->size();
+                            if (readSet.second->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
                             {
-                                _run = false;
                                 _eof = true;
-                                readSet.first.unlock();
-                                return;
                             }
                         }
-                        else if(_processor.hasSpace()) // available read -> send it to processor
+                        else if(readSet.second && _processor.hasSpace()) // available read -> send it to processor
                         {
                             nothingToDo = false;
                             _processor.addTask(std::move(readSet.second));
@@ -1601,9 +1612,23 @@ struct ReadReader
             }
         });
     }
-    bool eof() noexcept
+    bool eof() const noexcept
     {
         return _eof;
+    }
+    bool idle() noexcept
+    {
+        if (!_eof)
+            return false;
+        unsigned int numEmpty = 0;
+        for (auto& readSet : _tlsReadSets)
+            if (readSet.first.try_lock())
+            {
+                if (!readSet.second)
+                    ++numEmpty;
+                readSet.first.unlock();
+            }
+        return numEmpty == _tlsReadSets.size();
     }
     bool getReads(std::unique_ptr<std::vector<TRead<TSeq>>>& reads) noexcept
     {
@@ -1634,6 +1659,7 @@ private:
     std::atomic_bool _run;
     std::atomic_bool _eof;
     unsigned int _sleepMS;
+    unsigned int _numReads;
     TProcessor& _processor;
 };
 
@@ -1659,6 +1685,10 @@ struct ProcessingUnit
     {
         return _futures.size() < _programParams.num_threads;
     }
+    bool idle() const noexcept
+    {
+        return _futures.size() == 0;
+    }
     bool getResult(std::tuple<TpReads&, GeneralStats&>& result)
     {
         auto it = _futures.begin();
@@ -1677,10 +1707,10 @@ struct ProcessingUnit
 
     std::tuple<TpReads, GeneralStats> doProcessing(std::vector<TRead>* reads)
     {
-        SEQAN_PROTIMESTART(processTime);            // START of processing time
         GeneralStats generalStats(length(_demultiplexingParams.barcodeIds) + 1);
         generalStats.readCount = reads->size();
-                                                    // Preprocessing and Filtering
+        
+        // Preprocessing and Filtering
         preprocessingStage(_processingParams, *reads, generalStats);
 
         // Demultiplexing
@@ -1695,7 +1725,6 @@ struct ProcessingUnit
 
         // Postprocessing
         postprocessingStage(_processingParams, *reads, generalStats);
-        generalStats.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
         return std::make_tuple(std::unique_ptr<std::vector<TRead>>(reads), generalStats);
     }
 private:
@@ -1711,8 +1740,6 @@ private:
     std::vector<std::future<std::tuple<TpReads, GeneralStats>>> _futures;
 
 };
-
-#undef _MULTITHREADED_IO
 
 // END FUNCTION DEFINITIONS ---------------------------------------------
 template<template <typename> class TRead, typename TSeq, typename TEsaFinder, typename TStats>
@@ -1735,42 +1762,40 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
 #ifdef _MULTITHREADED_IO
     readReader.start();
     readWriter.start();
-#else
-#endif
-
-    SEQAN_PROTIMESTART(loopTime);
-    while (generalStats.readCount < programParams.firstReads && !readReader.eof())
+    while (!(readReader.eof() && readReader.idle() && processingUnit.idle() && readWriter.idle())) // shortcut is used most of the time -> xxx.idle() get called only after eof is set
     {
-#ifdef _MULTITHREADED_IO
         auto result = make_tuple(std::ref(readSet), std::ref(generalStats));
-            if (processingUnit.getResult(result))
-                readWriter.writeReads(std::make_tuple(std::move(readSet), demultiplexingParams.barcodeIds, std::move(generalStats)));
-            else
-                std::this_thread::sleep_for(std::chrono::milliseconds(threadIdleSleepTimeMS));
+        if (processingUnit.getResult(result))
+            readWriter.writeReads(std::make_tuple(std::move(readSet), demultiplexingParams.barcodeIds, std::move(generalStats)));
+        else
+            std::this_thread::sleep_for(std::chrono::milliseconds(threadIdleSleepTimeMS));
+    }
+    readWriter.getStats(stats);
 #else
+    const auto tMain = std::chrono::steady_clock::now();
+    while (generalStats.readCount < programParams.firstReads)
+    {
         readSet.reset(new std::vector<TRead<TSeq>>(programParams.records));
+        auto t1 = std::chrono::steady_clock::now();
         const auto numReadsRead = readReads(*readSet, programParams.records, inputFileStreams);
-        generalStats.readCount += numReadsRead;
+        generalStats.ioTime += std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
         if (numReadsRead == 0)
             break;
 
         auto res = processingUnit.doProcessing(readSet.release());
         generalStats += std::get<1>(res);
 
+        t1 = std::chrono::steady_clock::now();
         outputStreams.writeSeqs(std::move(*(std::get<0>(res))), demultiplexingParams.barcodeIds);
+        generalStats.ioTime += std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
         // Print information
         if (programParams.showSpeed)
-            std::cout << "\r" << generalStats.readCount << "   " << static_cast<int>(generalStats.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
+            std::cout << "\r" << generalStats.readCount << "   " << static_cast<int>(generalStats.readCount / std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - tMain).count()) << " BPs";
         else
             std::cout << "\r" << generalStats.readCount;
-#endif
     }
-#ifdef _MULTITHREADED_IO
-    readWriter.getStats(stats);
-#else
     stats = generalStats;
 #endif
-
     return 0;
 }
 
@@ -2190,7 +2215,7 @@ int flexbarMain(int argc, char const ** argv)
              mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, inputFileStreams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, outputStreams, generalStats);
     }
     double loop = SEQAN_PROTIMEDIFF(loopTime);
-    generalStats.ioTime = loop - generalStats.processTime;
+    generalStats.processTime = loop - generalStats.ioTime;
 
     printStatistics(programParams, generalStats, demultiplexingParams, adapterTrimmingParams, !isSet(parser, "ni"), std::cout);
     if (isSet(parser, "st"))
