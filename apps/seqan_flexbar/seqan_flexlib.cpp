@@ -1625,9 +1625,6 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
 
         SEQAN_PROTIMESTART(processTime);            // START of processing time.
 
-        if (demultiplexingParams.runx)
-            return 1;
-
         // Preprocessing and Filtering
         preprocessingStage(processingParams, *readSet, generalStats);
 
