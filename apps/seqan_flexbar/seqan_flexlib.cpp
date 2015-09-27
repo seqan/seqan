@@ -1532,30 +1532,63 @@ struct ReadWriter
 template<template<typename> class TRead, typename TSeq>
 struct ReadReader
 {
-    ReadReader(unsigned int records, ProgramVars& programVars)
-        :_records(records), _programVars(programVars) {};
-    ~ReadReader() {};
+    ReadReader(unsigned int records, ProgramVars& programVars, unsigned int bins)
+        :_records(records), _programVars(programVars), _tlsReadSets(bins + 1) , _run(true)
+    {
+        _thread = std::thread([this]() 
+        {
+            while (_run)
+            {
+                for (auto& readSet : _tlsReadSets)
+                {
+                    if (readSet.first.try_lock())
+                    {
+                        if (!readSet.second)
+                        {
+                            readSet.second.reset(new std::vector<TRead<TSeq>>(_records));
+                            readReads(*(readSet.second), _records, _programVars);
+                            if (readSet.second->empty())    // no more reads available, exit the thread
+                                return;
+                        }
+                        readSet.first.unlock();
+                    }
+                }
+            }
+        });
+    };
+    ~ReadReader() 
+    {
+        _run = false;
+        if (_thread.joinable())
+            _thread.join();
+    };
     bool getReads(std::unique_ptr<std::vector<TRead<TSeq>>>& reads)
     {
-        if (!tlsReads)
-            _startNewRead();
-        _future.wait();
-        reads = std::move(tlsReads);
-        _startNewRead();
-        return true;
+        while (true)
+        {
+            for (auto& readSet : _tlsReadSets)
+            {
+                if (readSet.first.try_lock())
+                {
+                    if (readSet.second)
+                    {
+                        reads = std::move(readSet.second);
+                        readSet.second.release();
+                        readSet.first.unlock();
+                        return reads->empty() ? false : true;
+                    }
+                    readSet.first.unlock();
+                }
+            }
+        }
+        return false;
     };
 private:
     unsigned int _records;
     ProgramVars& _programVars;
-    std::unique_ptr<std::vector<TRead<TSeq>>> tlsReads;
-    std::future<unsigned int> _future;
-
-    void _startNewRead()
-    {
-        tlsReads.reset(new std::vector<TRead<TSeq>>);
-        _future = std::async(std::launch::async,
-            [this]() {return readReads(*tlsReads, _records, _programVars);});
-    }
+    std::vector<std::pair<std::mutex,std::unique_ptr<std::vector<TRead<TSeq>>>>> _tlsReadSets;
+    std::thread _thread;
+    std::atomic_bool _run;
 };
 
 // END FUNCTION DEFINITIONS ---------------------------------------------
@@ -1566,14 +1599,15 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
 {
     std::unique_ptr<std::vector<TRead<TSeq>>> readSet;
     TRead<TSeq> read;
-    ReadReader<TRead, TSeq> readReader(programParams.records, programVars);
+    ReadReader<TRead, TSeq> readReader(programParams.records, programVars, programParams.num_threads);
     ReadWriter<TRead, TSeq> readWriter(outputStreams);
 
     SEQAN_PROTIMESTART(loopTime);
     while (generalStats.readCount < programParams.firstReads)
     {
 #ifdef _MULTITHREADED_IO
-        readReader.getReads(readSet);
+        if (!readReader.getReads(readSet))
+            break;
         const auto numReadsRead = readSet->size();
 #else
         const auto numReadsRead = readReads(readSet, programParams.records, programVars);
