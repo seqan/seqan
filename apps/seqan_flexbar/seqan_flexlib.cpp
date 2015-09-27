@@ -1672,22 +1672,22 @@ struct ProcessingUnit
         const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder &esaFinder, TReadWriter& readWriter) : _programParams(programParams), _processingParams(processingParams), _demultiplexingParams(demultiplexingParams), 
         _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _esaFinder(esaFinder), _readWriter(readWriter), _futures(_programParams.num_threads + 1){};
 
-    bool addTask(TpReads&& reads)
+    void addTask(TpReads&& reads)   // blocks until task could be added
     {
-        for (auto& element : _futures)
-        {
-            if (element.first.try_lock())
+        while(true)
+            for (auto& element : _futures)
             {
-                if (!element.second.valid())
+                if (element.first.try_lock())
                 {
-                    element.second = std::async(std::launch::async, &ProcessingUnit::doProcessing, this, reads.release());
+                    if (!element.second.valid())
+                    {
+                        element.second = std::async(std::launch::async, &ProcessingUnit::doProcessing, this, reads.release());
+                        element.first.unlock();
+                        return;
+                    }
                     element.first.unlock();
-                    return true;
                 }
-                element.first.unlock();
             }
-        }
-        return false;
     }
     bool hasSpace() noexcept
     {
@@ -1705,9 +1705,17 @@ struct ProcessingUnit
         }
         return false;
     }
-    bool idle() const noexcept
+    bool idle() noexcept
     {
-        return _futures.size() == 0;
+        unsigned int numEmpty = 0;
+        for (auto& element : _futures)
+            if (element.first.try_lock())
+            {
+                if (!element.second.valid())
+                    ++numEmpty;
+                element.first.unlock();
+            }
+        return numEmpty == _futures.size();
     }
     bool getResult(std::tuple<TpReads&, GeneralStats&>& result)
     {
