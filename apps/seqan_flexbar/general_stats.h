@@ -40,10 +40,60 @@ struct GeneralStats
     unsigned int readCount;
     double processTime;
     double ioTime;
-    std::vector<unsigned> matchedBarcodeReads;
+    std::vector<unsigned int> matchedBarcodeReads;
     AdapterTrimmingStats adapterTrimmingStats;
 
-    GeneralStats() : removedN(0), removedDemultiplex(0), uncalledBases(0), removedShort(0), readCount(0), processTime(0), ioTime(0) {};
+    GeneralStats(): removedN(0), removedDemultiplex(0), removedQuality(0), uncalledBases(0), removedShort(0), readCount(0), processTime(0), ioTime(0) {};
+    GeneralStats(unsigned int N) : GeneralStats() 
+    { 
+        matchedBarcodeReads.resize(N); 
+    };
+    GeneralStats(const GeneralStats& rhs) = default;
+    GeneralStats(GeneralStats&& rhs) = default;
+    //{
+    //    removedN = rhs.removedN;
+    //    removedDemultiplex = rhs.removedDemultiplex;
+    //    removedQuality = rhs.removedQuality;
+    //    uncalledBases = rhs.uncalledBases;
+    //    removedShort = rhs.removedShort;
+    //    readCount = rhs.readCount;
+    //    processTime = rhs.processTime;
+    //    ioTime = rhs.ioTime;
+    //    matchedBarcodeReads = rhs.matchedBarcodeReads;
+    //    adapterTrimmingStats = rhs.adapterTrimmingStats;
+    //};
+    GeneralStats& operator=(const GeneralStats& rhs) = default;
+    GeneralStats& operator=(GeneralStats&& rhs) = default;
+    //{
+    //    removedN = rhs.removedN;
+    //    removedDemultiplex = rhs.removedDemultiplex;
+    //    removedQuality = rhs.removedQuality;
+    //    uncalledBases = rhs.uncalledBases;
+    //    removedShort = rhs.removedShort;
+    //    readCount = rhs.readCount;
+    //    processTime = rhs.processTime;
+    //    ioTime = rhs.ioTime;
+    //    matchedBarcodeReads = rhs.matchedBarcodeReads;
+    //    adapterTrimmingStats = rhs.adapterTrimmingStats;
+    //    return *this;
+    //}
+
+    GeneralStats& operator+=(const GeneralStats& rhs)
+    {
+        removedN += rhs.removedN;
+        removedDemultiplex += rhs.removedDemultiplex;
+        removedQuality += rhs.removedQuality;
+        uncalledBases += rhs.uncalledBases;
+        removedShort += rhs.removedShort;
+        readCount += rhs.readCount;
+        processTime += rhs.processTime;
+        ioTime += rhs.ioTime;
+        if (matchedBarcodeReads.size() != rhs.matchedBarcodeReads.size())
+            matchedBarcodeReads.resize(rhs.matchedBarcodeReads.size());
+        matchedBarcodeReads = matchedBarcodeReads + rhs.matchedBarcodeReads;
+        adapterTrimmingStats += rhs.adapterTrimmingStats;
+        return *this;
+    }
 };
 
 #endif

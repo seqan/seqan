@@ -152,8 +152,8 @@ int findN(TRead<TSeq>& read, unsigned allowed, const TSub substitute) noexcept
 }
 
 //universal function for all combinations of options
-template<template <typename> typename TRead, typename TSeq, typename TSub>
-void processN(std::vector<TRead<TSeq>>& reads, unsigned allowed, TSub substitute, GeneralStats& stats) noexcept
+template<template <typename> typename TRead, typename TSeq, typename TSub, typename TStats>
+void processN(std::vector<TRead<TSeq>>& reads, unsigned allowed, TSub substitute, TStats& stats) noexcept
 {
     int limit = length(reads);
     std::vector<int> res(limit);
@@ -182,120 +182,99 @@ template<template <typename> class TRead, typename TSeq>
 // main preTrim function
 template<template <typename> class TRead, typename TSeq, bool tagTrimming,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplex < TSeq >> ::value >>
-void _preTrim(std::vector<TRead<TSeq>>& readSet, const unsigned head, const unsigned tail, const unsigned min, std::vector<bool>& rem, bool = false) noexcept(!tagTrimming)
+unsigned int _preTrim(std::vector<TRead<TSeq>>& readSet, const unsigned head, const unsigned tail, const unsigned min, bool = false) noexcept(!tagTrimming)
 {
-    int i = 0;
-    const auto limit = (int)length(readSet);
-    assert(rem.size() == length(readSet));
-
-    SEQAN_OMP_PRAGMA(parallel for default(shared) private(i)schedule(static))
-        for (i = 0; i < limit; ++i)
+    std::transform(readSet.begin(), readSet.end(), readSet.begin(), [head, tail](auto& read) -> auto 
+    {
+        const auto seqLen = length(read.seq);
+        if (seqLen > (head + tail))
         {
-            const auto seqLen = length(readSet[i].seq);
-            if (seqLen >(head + tail))
+            std::string insertToken;
+            if (head > 0)
             {
-                std::string insertToken;
-                if (head > 0)
-                {
-                    if (tagTrimming)
-                        insertToken = ":TL:" + std::string(prefix(readSet[i].seq, head));
-                    erase(readSet[i].seq, 0, head);
-                }
-                if (tail > 0)
-                {
-                    const auto seqLen = length(readSet[i].seq);
-                    if (tagTrimming)
-                        insertToken += ":TR:" + std::string(suffix(readSet[i].seq, seqLen - tail));
-                    erase(readSet[i].seq, seqLen - tail, seqLen);
-                }
-                if(insertToken.size() != 0)
-                    insertAfterFirstToken(readSet[i].id, std::move(insertToken));
-
-                // check if trimmed sequence is at least of length min
-                // if not, remove it
-                if (readSet[i].minSeqLen() >= min)
-                    rem[i] = false;
-                else
-                    rem[i] = true;
+                if (tagTrimming)
+                    insertToken = ":TL:" + std::string(prefix(read.seq, head));
+                erase(read.seq, 0, head);
             }
-            // if the sequence was too short to be trimmed, remove it
-            else
-                rem[i] = true;
+            if (tail > 0)
+            {
+                const auto seqLen = length(read.seq);
+                if (tagTrimming)
+                    insertToken += ":TR:" + std::string(suffix(read.seq, seqLen - tail));
+                erase(read.seq, seqLen - tail, seqLen);
+            }
+            if (insertToken.size() != 0)
+                insertAfterFirstToken(read.id, std::move(insertToken));
         }
+        return read;
+    });
+    unsigned int oldLen = readSet.size();
+    readSet.erase(std::remove_if(readSet.begin(), readSet.end(), [min](auto& read) {return read.minSeqLen() < min;}), readSet.end());
+    return oldLen - readSet.size();
 }
 
 template<template <typename> class TRead, typename TSeq, bool tagTrimming,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplexPairedEnd < TSeq >> ::value >>
-    void _preTrim(std::vector<TRead<TSeq>>& readSet, const unsigned head, const unsigned tail, const unsigned min, std::vector<bool>& rem) noexcept(!tagTrimming)
+    unsigned int _preTrim(std::vector<TRead<TSeq>>& readSet, const unsigned head, const unsigned tail, const unsigned min) noexcept(!tagTrimming)
 {
-    int i = 0;
-    const auto limit = (int)length(readSet);
-    assert(rem.size() == length(readSet));
-
-    SEQAN_OMP_PRAGMA(parallel for default(shared) private(i)schedule(static))
-        for (i = 0; i < limit; ++i)
+    std::transform(readSet.begin(), readSet.end(), readSet.begin(), [head, tail](auto& read) -> auto
+    {
+        const auto seqLen = length(read.seq);
+        if (seqLen >(head + tail))
         {
-            const auto seqLen = std::min(length(readSet[i].seq), length(readSet[i].seqRev));
-            if (seqLen > (head + tail))
+            std::string insertToken;
+            if (head > 0)
             {
-                if (head > 0)
+                if (tagTrimming)
                 {
-                    if (tagTrimming)
-                    {
-                        std::string tempString = ":TL:";
-                        append(tempString, prefix(readSet[i].seq, head));
-                        insertAfterFirstToken(readSet[i].id, std::move(tempString));
-                        tempString = ":TL:";
-                        append(tempString, prefix(readSet[i].seqRev, head));
-                        insertAfterFirstToken(readSet[i].idRev, std::move(tempString));
-                    }
-                    erase(readSet[i].seq, 0, head);
-                    erase(readSet[i].seqRev, 0, head);
+                    std::string tempString = ":TL:";
+                    append(tempString, prefix(read.seq, head));
+                    insertAfterFirstToken(read.id, std::move(tempString));
+                    tempString = ":TL:";
+                    append(tempString, prefix(read.seqRev, head));
+                    insertAfterFirstToken(read.idRev, std::move(tempString));
                 }
-                if (tail > 0)
-                {
-                    const auto seqLen = length(readSet[i].seq);
-                    if (tagTrimming)
-                    {
-                        std::string tempString = ":TR:";
-                        append(tempString, suffix(readSet[i].seq, seqLen - tail));
-                        insertAfterFirstToken(readSet[i].id, std::move(tempString));
-                        tempString = ":TR:";
-                        append(tempString, suffix(readSet[i].seqRev, seqLen - tail));
-                        insertAfterFirstToken(readSet[i].idRev, std::move(tempString));
-                    }
-                    erase(readSet[i].seq, seqLen - tail, seqLen);
-                    erase(readSet[i].seqRev, seqLen - tail, seqLen);
-                }
-
-                // check if trimmed sequence is at least of length min
-                // if not, remove it
-                if (readSet[i].minSeqLen() >= min)
-                    rem[i] = false;
-                else
-                    rem[i] = true;
+                erase(read.seq, 0, head);
+                erase(read.seqRev, 0, head);
             }
-            // if the sequence was too short to be trimmed, remove it
-            else
-                rem[i] = true;
+            if (tail > 0)
+            {
+                const auto seqLen = length(read.seq);
+                if (tagTrimming)
+                {
+                    std::string tempString = ":TR:";
+                    append(tempString, suffix(read.seq, seqLen - tail));
+                    insertAfterFirstToken(read.id, std::move(tempString));
+                    tempString = ":TR:";
+                    append(tempString, suffix(read.seqRev, seqLen - tail));
+                    insertAfterFirstToken(read.idRev, std::move(tempString));
+                }
+                erase(read.seq, seqLen - tail, seqLen);
+                erase(read.seqRev, seqLen - tail, seqLen);
+            }
+            if (insertToken.size() != 0)
+                insertAfterFirstToken(read.id, std::move(insertToken));
         }
+        return read;
+    });
+    unsigned int oldLen = readSet.size();
+    readSet.erase(std::remove_if(readSet.begin(), readSet.end(), [min](auto& read) {return read.minSeqLen() < min;}), readSet.end());
+    return oldLen - readSet.size();
 }
 
-template <template<typename> class TRead, typename TSeq>
-void preTrim(std::vector<TRead<TSeq>>& reads, unsigned head, unsigned tail, unsigned min, const bool tagTrimming, GeneralStats& stats)
+template <template<typename> class TRead, typename TSeq, typename TStats>
+void preTrim(std::vector<TRead<TSeq>>& reads, unsigned head, unsigned tail, unsigned min, const bool tagTrimming, TStats& stats)
 {
-    std::vector<bool> rem(length(reads));
     if(tagTrimming)
-        _preTrim<TRead, TSeq, true>(reads, head, tail, min, rem);
+        stats.removedShort += _preTrim<TRead, TSeq, true>(reads, head, tail, min);
     else
-        _preTrim<TRead, TSeq, false>(reads, head, tail, min, rem);
-    stats.removedShort += _eraseSeqs(rem, true, reads);
+        stats.removedShort += _preTrim<TRead, TSeq, false>(reads, head, tail, min);
 }
 
 //Trims sequences to specific length and deletes to short ones together with their IDs
-template<template <typename> class TRead, typename TSeq, 
+template<template <typename> class TRead, typename TSeq, typename TStats,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplex < TSeq >> ::value >>
-    void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, GeneralStats& stats, bool = true) noexcept
+    void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, TStats& stats, bool = true) noexcept
 {
     const auto limit = (int)length(reads);
     std::vector<bool> rem(limit);
@@ -318,9 +297,9 @@ template<template <typename> class TRead, typename TSeq,
     stats.removedShort += _eraseSeqs(rem, true, reads);
 }
 
-template<template <typename> class TRead, typename TSeq,
+template<template <typename> class TRead, typename TSeq, typename TStats,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplexPairedEnd < TSeq >> ::value >>
-    void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, GeneralStats& stats) noexcept
+    void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, TStats& stats) noexcept
 {
     const auto limit = (int)length(reads);
     std::vector<bool> rem(limit);

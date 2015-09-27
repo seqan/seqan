@@ -1224,8 +1224,8 @@ int checkParams(ProgramParams const & programParams, InputFileStreams const& inp
 
 // PROGRAM STAGES ---------------------
 //Preprocessing Stage
-template<typename TReadSet>
-void preprocessingStage(const ProcessingParams& processingParams, TReadSet& readSet, GeneralStats& generalStats)
+template<typename TReadSet, typename TStats>
+void preprocessingStage(const ProcessingParams& processingParams, TReadSet& readSet, TStats& generalStats)
 {
     if (processingParams.runPre)
     {
@@ -1251,9 +1251,9 @@ void preprocessingStage(const ProcessingParams& processingParams, TReadSet& read
 }
 
 // DEMULTIPLEXING
-template <typename TRead, typename TFinder>
+template <typename TRead, typename TFinder, typename TStats>
 int demultiplexingStage(const DemultiplexingParams& params, std::vector<TRead>& reads, TFinder& esaFinder,
-    GeneralStats& generalStats)
+    TStats& generalStats)
 {
     if (!params.run)
         return 0;
@@ -1271,8 +1271,8 @@ int demultiplexingStage(const DemultiplexingParams& params, std::vector<TRead>& 
 }
 
 // ADAPTER TRIMMING
-template <typename TRead>
-void adapterTrimmingStage(const AdapterTrimmingParams& params, std::vector<TRead>& reads, GeneralStats& stats)
+template <typename TRead, typename TStats>
+void adapterTrimmingStage(const AdapterTrimmingParams& params, std::vector<TRead>& reads, TStats& stats)
 {
     if (!params.run)
         return;
@@ -1284,8 +1284,8 @@ void adapterTrimmingStage(const AdapterTrimmingParams& params, std::vector<TRead
 
 // QUALITY TRIMMING
 //Version for single-ende data
-template <typename TRead>
-void qualityTrimmingStage(const QualityTrimmingParams& params, std::vector<TRead>& reads, GeneralStats& stats)
+template <typename TRead, typename TStats>
+void qualityTrimmingStage(const QualityTrimmingParams& params, std::vector<TRead>& reads, TStats& stats)
 {
     if (params.run)
     {
@@ -1310,8 +1310,8 @@ void qualityTrimmingStage(const QualityTrimmingParams& params, std::vector<TRead
 }
 
 //Postprocessing
-template<typename TRead>
-void postprocessingStage(const ProcessingParams& params, std::vector<TRead>& reads, GeneralStats& stats)
+template<typename TRead, typename TStats>
+void postprocessingStage(const ProcessingParams& params, std::vector<TRead>& reads, TStats& stats)
 {
     if (params.runPost)
     {
@@ -1327,8 +1327,8 @@ void postprocessingStage(const ProcessingParams& params, std::vector<TRead>& rea
 }
 
 // END PROGRAM STAGES ---------------------
-template <typename TOutStream>
-void printStatistics(const ProgramParams& programParams, const GeneralStats& generalStats, DemultiplexingParams& demultiplexParams,
+template <typename TOutStream, typename TStats>
+void printStatistics(const ProgramParams& programParams, const TStats& generalStats, DemultiplexingParams& demultiplexParams,
                 const AdapterTrimmingParams& adapterParams, const bool timing, TOutStream &outStream)
 {
     bool paired = programParams.fileCount == 2;
@@ -1467,10 +1467,20 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
 template<template<typename> class TRead, typename TSeq, typename TWriteItem>
 struct ReadWriter
 {
-    ReadWriter(OutputStreams& outputStreams, unsigned int bins, unsigned int sleepMS)
-        : _outputStreams(outputStreams), _tlsReadSets(bins + 1), _run(true), _sleepMS(sleepMS)
+    ReadWriter(const ProgramParams& programParams, OutputStreams& outputStreams, unsigned int sleepMS)
+        : _programParams(programParams), _outputStreams(outputStreams), _tlsReadSets(_programParams.num_threads + 1),
+        _run(false), _sleepMS(sleepMS), _startTime(std::chrono::steady_clock::now())
+    {}
+    ~ReadWriter() 
     {
-        _thread = std::thread([this]() 
+        _run = false;
+        if (_thread.joinable())
+            _thread.join();
+    }
+    void start()
+    {
+        _run = true;
+        _thread = std::thread([this]()
         {
             while (_run)
             {
@@ -1482,7 +1492,14 @@ struct ReadWriter
                         {
                             _outputStreams.writeSeqs(std::move(*std::get<0>(readSet.second)), std::get<1>(readSet.second));
                             std::get<0>(readSet.second).reset(nullptr); // delete written data
+                            _stats += std::get<2>(readSet.second);
                             readSet.first.unlock();
+                            const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - _startTime).count();
+                            if (_programParams.showSpeed)
+                                std::cout << "\r" << _stats.readCount << "   " << static_cast<int>(_stats.readCount / deltaTime) << " BPs";
+                            else
+                                std::cout << "\r" << _stats.readCount;
+
                         }
                         else  // nothing to do
                         {
@@ -1494,12 +1511,6 @@ struct ReadWriter
             }
         });
     }
-    ~ReadWriter() 
-    {
-        _run = false;
-        if (_thread.joinable())
-            _thread.join();
-    };
     void writeReads(TWriteItem&& writeItem) noexcept
     {
         while (true)
@@ -1520,53 +1531,80 @@ struct ReadWriter
             std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
     }
+    void getStats(std::tuple_element_t<2, TWriteItem>& stats)
+    {
+        _run = false;
+        if (_thread.joinable())
+            _thread.join();
+        stats = _stats;
+    }
     private:
+        const ProgramParams& _programParams;
         OutputStreams& _outputStreams;
         std::vector<std::pair<std::mutex, TWriteItem>> _tlsReadSets;
         std::thread _thread;
         std::atomic_bool _run;
         unsigned int _sleepMS;
+        std::chrono::time_point<std::chrono::steady_clock> _startTime;
+        std::tuple_element_t<2, TWriteItem> _stats;
 };
 
-template<template<typename> class TRead, typename TSeq>
+template<template<typename> class TRead, typename TSeq, typename TProcessor>
 struct ReadReader
 {
-    ReadReader(unsigned int records, InputFileStreams& inputFileStreams, unsigned int bins, unsigned int sleepMS)
-        :_records(records), _inputFileStreams(inputFileStreams), _tlsReadSets(bins + 1) , _run(true), _sleepMS(sleepMS)
-    {
-        _thread = std::thread([this]() 
-        {
-            while (_run)
-            {
-                for (auto& readSet : _tlsReadSets)
-                {
-                    if (readSet.first.try_lock())
-                    {
-                        if (!readSet.second)
-                        {
-                            readSet.second.reset(new std::vector<TRead<TSeq>>(_records));
-                            readReads(*(readSet.second), _records, _inputFileStreams);
-                            loadMultiplex(*(readSet.second), _records, _inputFileStreams.fileStreamMultiplex);
-                            readSet.first.unlock();
-                            if (readSet.second->empty())    // no more reads available, exit the thread
-                                return;
-                        }
-                        else // nothing to do 
-                        {
-                            readSet.first.unlock();
-                            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
-                        }
-                    }
-                }
-            }
-        });
-    };
+    ReadReader(const ProgramParams& programParams, InputFileStreams& inputFileStreams, unsigned int sleepMS, TProcessor& processor)
+        :_programParams(programParams), _inputFileStreams(inputFileStreams), _tlsReadSets(programParams.num_threads + 1) , 
+        _run(false), _eof(false), _sleepMS(sleepMS), _processor(processor)
+    {}
     ~ReadReader() 
     {
         _run = false;
         if (_thread.joinable())
             _thread.join();
-    };
+    }
+    void start()
+    {
+        _run = true;
+        _thread = std::thread([this]()
+        {
+            while (_run)
+            {
+                bool nothingToDo = true;
+                for (auto& readSet : _tlsReadSets)
+                {
+                    if (readSet.first.try_lock())
+                    {
+                        if (!readSet.second) // empty slot -> start new Read
+                        {
+                            nothingToDo = false;
+                            readSet.second.reset(new std::vector<TRead<TSeq>>(_programParams.records));
+                            readReads(*(readSet.second), _programParams.records, _inputFileStreams);
+                            loadMultiplex(*(readSet.second), _programParams.records, _inputFileStreams.fileStreamMultiplex);
+                            if (readSet.second->empty())    // no more reads available, exit the thread
+                            {
+                                _run = false;
+                                _eof = true;
+                                readSet.first.unlock();
+                                return;
+                            }
+                        }
+                        else if(_processor.hasSpace()) // available read -> send it to processor
+                        {
+                            nothingToDo = false;
+                            _processor.addTask(std::move(readSet.second));
+                        }
+                        readSet.first.unlock();
+                    }
+                }
+                if(nothingToDo)
+                    std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+            }
+        });
+    }
+    bool eof() noexcept
+    {
+        return _eof;
+    }
     bool getReads(std::unique_ptr<std::vector<TRead<TSeq>>>& reads) noexcept
     {
         while (true)
@@ -1589,71 +1627,150 @@ struct ReadReader
         return false;
     };
 private:
-    unsigned int _records;
+    const ProgramParams& _programParams;
     InputFileStreams& _inputFileStreams;
     std::vector<std::pair<std::mutex,std::unique_ptr<std::vector<TRead<TSeq>>>>> _tlsReadSets;
     std::thread _thread;
     std::atomic_bool _run;
+    std::atomic_bool _eof;
     unsigned int _sleepMS;
+    TProcessor& _processor;
 };
 
+template <typename TRead, typename TEsaFinder, typename TReadWriter>
+struct ProcessingUnit
+{
+    using TpReads = std::unique_ptr<std::vector<TRead>>;
+
+    ProcessingUnit(const ProgramParams& programParams, const ProcessingParams& processingParams, const DemultiplexingParams& demultiplexingParams, const AdapterTrimmingParams& adapterTrimmingParams,
+        const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder &esaFinder, TReadWriter& readWriter) : _programParams(programParams), _processingParams(processingParams), _demultiplexingParams(demultiplexingParams), 
+        _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _esaFinder(esaFinder), _readWriter(readWriter){};
+
+    bool addTask(TpReads&& reads)
+    {
+        if (_futures.size() < _programParams.num_threads)
+        {
+            _futures.push_back(std::async(std::launch::async, &ProcessingUnit::doProcessing, this, reads.release()));
+            return true;
+        }
+        return false;
+    }
+    bool hasSpace() const noexcept
+    {
+        return _futures.size() < _programParams.num_threads;
+    }
+    bool getResult(std::tuple<TpReads&, GeneralStats&>& result)
+    {
+        auto it = _futures.begin();
+        while (it != _futures.end())
+        {
+            if (is_ready(*it))
+            {
+                result = std::move(it->get());
+                it = _futures.erase(it);
+                return true;
+            }
+            ++it;
+        }
+        return false;
+    }
+
+    std::tuple<TpReads, GeneralStats> doProcessing(std::vector<TRead>* reads)
+    {
+        SEQAN_PROTIMESTART(processTime);            // START of processing time
+        GeneralStats generalStats(length(_demultiplexingParams.barcodeIds) + 1);
+        generalStats.readCount = reads->size();
+                                                    // Preprocessing and Filtering
+        preprocessingStage(_processingParams, *reads, generalStats);
+
+        // Demultiplexing
+        if (demultiplexingStage(_demultiplexingParams, *reads, _esaFinder, generalStats) != 0)
+            throw("");
+
+        // Adapter trimming
+        adapterTrimmingStage(_adapterTrimmingParams, *reads, generalStats);
+
+        // Quality trimming
+        qualityTrimmingStage(_qualityTrimmingParams, *reads, generalStats);
+
+        // Postprocessing
+        postprocessingStage(_processingParams, *reads, generalStats);
+        generalStats.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
+        return std::make_tuple(std::unique_ptr<std::vector<TRead>>(reads), generalStats);
+    }
+private:
+    const ProgramParams& _programParams;
+    const ProcessingParams& _processingParams;
+    const DemultiplexingParams& _demultiplexingParams;
+    const AdapterTrimmingParams& _adapterTrimmingParams;
+    const QualityTrimmingParams& _qualityTrimmingParams;
+    const TEsaFinder& _esaFinder;
+
+    // main thread variables
+    TReadWriter& _readWriter;
+    std::vector<std::future<std::tuple<TpReads, GeneralStats>>> _futures;
+
+};
+
+#undef _MULTITHREADED_IO
+
 // END FUNCTION DEFINITIONS ---------------------------------------------
-template<template <typename> class TRead, typename TSeq, typename TEsaFinder>
+template<template <typename> class TRead, typename TSeq, typename TEsaFinder, typename TStats>
 int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& inputFileStreams, const DemultiplexingParams& demultiplexingParams, const ProcessingParams& processingParams, const AdapterTrimmingParams& adapterTrimmingParams,
-    const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder, GeneralStats& generalStats,
-    OutputStreams& outputStreams)
+    const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder,
+    OutputStreams& outputStreams, TStats& stats)
 {
     std::unique_ptr<std::vector<TRead<TSeq>>> readSet;
     const unsigned int threadIdleSleepTimeMS = 50;
-    ReadReader<TRead, TSeq> readReader(programParams.records, inputFileStreams, programParams.num_threads, threadIdleSleepTimeMS);
-    ReadWriter<TRead, TSeq, std::tuple<std::unique_ptr<std::vector<TRead<TSeq>>>,decltype(DemultiplexingParams::barcodeIds)>> 
-        readWriter(outputStreams, programParams.num_threads, threadIdleSleepTimeMS);
+    using TReadWriter = ReadWriter<TRead, TSeq, std::tuple<std::unique_ptr<std::vector<TRead<TSeq>>>, decltype(DemultiplexingParams::barcodeIds), GeneralStats>>;
+    using TProcessingUnit = ProcessingUnit<TRead<TSeq>, TEsaFinder, TReadWriter>;
+    using TReadReader = ReadReader<TRead, TSeq, TProcessingUnit>;
+
+    TReadWriter readWriter(programParams, outputStreams, threadIdleSleepTimeMS);
+    TProcessingUnit processingUnit(programParams, processingParams, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, readWriter);
+    TReadReader readReader(programParams, inputFileStreams, threadIdleSleepTimeMS, processingUnit);
+
+    TStats generalStats(length(demultiplexingParams.barcodeIds) + 1);
+
+#ifdef _MULTITHREADED_IO
+    readReader.start();
+    readWriter.start();
+#else
+#endif
 
     SEQAN_PROTIMESTART(loopTime);
-    while (generalStats.readCount < programParams.firstReads)
+    while (generalStats.readCount < programParams.firstReads && !readReader.eof())
     {
 #ifdef _MULTITHREADED_IO
-        if (!readReader.getReads(readSet))
-            break;
-        const auto numReadsRead = readSet->size();
+        auto result = make_tuple(std::ref(readSet), std::ref(generalStats));
+            if (processingUnit.getResult(result))
+                readWriter.writeReads(std::make_tuple(std::move(readSet), demultiplexingParams.barcodeIds, std::move(generalStats)));
+            else
+                std::this_thread::sleep_for(std::chrono::milliseconds(threadIdleSleepTimeMS));
 #else
-        const auto numReadsRead = readReads(readSet, programParams.records, programVars);
-#endif
+        readSet.reset(new std::vector<TRead<TSeq>>(programParams.records));
+        const auto numReadsRead = readReads(*readSet, programParams.records, inputFileStreams);
         generalStats.readCount += numReadsRead;
         if (numReadsRead == 0)
             break;
 
-        SEQAN_PROTIMESTART(processTime);            // START of processing time.
+        auto res = processingUnit.doProcessing(readSet.release());
+        generalStats += std::get<1>(res);
 
-        // Preprocessing and Filtering
-        preprocessingStage(processingParams, *readSet, generalStats);
-
-        // Demultiplexing
-        if (demultiplexingStage(demultiplexingParams, *readSet, esaFinder, generalStats) != 0)
-            return 1;
-
-        // Adapter trimming
-        adapterTrimmingStage(adapterTrimmingParams, *readSet, generalStats);
-
-        // Quality trimming
-        qualityTrimmingStage(qualityTrimmingParams, *readSet, generalStats);
-
-        // Postprocessing
-        postprocessingStage(processingParams, *readSet, generalStats);
-        generalStats.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
-
-        // Write processed reads to file
-#ifdef _MULTITHREADED_IO
-        readWriter.writeReads(std::make_tuple(std::move(readSet), std::move(demultiplexingParams.barcodeIds)));
-#else
-        outputStreams.writeSeqs(readSet, demultiplexingParams.barcodeIds);
-#endif        
+        outputStreams.writeSeqs(std::move(*(std::get<0>(res))), demultiplexingParams.barcodeIds);
         // Print information
         if (programParams.showSpeed)
             std::cout << "\r" << generalStats.readCount << "   " << static_cast<int>(generalStats.readCount / SEQAN_PROTIMEDIFF(loopTime)) << " BPs";
         else
             std::cout << "\r" << generalStats.readCount;
+#endif
     }
+#ifdef _MULTITHREADED_IO
+    readWriter.getStats(stats);
+#else
+    stats = generalStats;
+#endif
+
     return 0;
 }
 
@@ -1684,7 +1801,6 @@ int flexbarMain(int argc, char const ** argv)
     //--------------------------------------------------
     // Parse general parameters.
     //--------------------------------------------------
-    GeneralStats generalStats;
 
     seqan::CharString output;
     getOptionValue(output, parser, "output");
@@ -2053,25 +2169,25 @@ int flexbarMain(int argc, char const ** argv)
     }
     // Start processing. Different functions are needed for one or two input files.
     std::cout << "\nProcessing reads...\n" << std::endl;
-    generalStats.matchedBarcodeReads.resize(length(demultiplexingParams.barcodeIds)+1);
+    GeneralStats generalStats(length(demultiplexingParams.barcodeIds) + 1);
 
     if (fileCount == 1)
     {
         if (!demultiplexingParams.run)
             outputStreams.addStream("", 0, useDefault);
         if(demultiplexingParams.runx)
-            mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, inputFileStreams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, generalStats, outputStreams);
+            mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, inputFileStreams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, outputStreams, generalStats);
         else
-            mainLoop(Read<seqan::Dna5QString>(), programParams, inputFileStreams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, generalStats, outputStreams);
+            mainLoop(Read<seqan::Dna5QString>(), programParams, inputFileStreams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, outputStreams, generalStats);
     }
      else
      {
          if (!demultiplexingParams.run)
              outputStreams.addStreams("", "", 0, useDefault);
          if (demultiplexingParams.runx)
-             mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, inputFileStreams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, generalStats, outputStreams);
+             mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, inputFileStreams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, outputStreams, generalStats);
          else
-             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, inputFileStreams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, generalStats, outputStreams);
+             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, inputFileStreams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, outputStreams, generalStats);
     }
     double loop = SEQAN_PROTIMEDIFF(loopTime);
     generalStats.ioTime = loop - generalStats.processTime;

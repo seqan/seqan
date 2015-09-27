@@ -361,23 +361,15 @@ unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const
     AdapterTrimmingStats& stats, TTagAdapter, bool = false) noexcept(!TTagAdapter::value)
 {
     (void)pairedNoAdapterFile;
-    int t_num = omp_get_max_threads();
-    // Create local counting variables to avoid concurrency problems.
-    std::vector<AdapterTrimmingStats> adapterTrimmingStatsVector(t_num);
     int len = length(reads);
-    SEQAN_OMP_PRAGMA(parallel for schedule(static))
-        for (int i = 0; i < len; ++i)
-        {
-            if (seqan::empty(reads[i].seq))
-                continue;
-            const int t_id = omp_get_thread_num();
-            // Every thread has its own adapterTrimmingStatsVector
-            const unsigned over = stripAdapter(reads[i].seq, adapterTrimmingStatsVector[t_id], adapters[1], spec, StripAdapterDirection<adapterDirection::forward>());
-            if (TTagAdapter::value && over != 0)
-                insertAfterFirstToken(reads[i].id, ":AdapterRemoved");
-        }
-    std::for_each(adapterTrimmingStatsVector.begin(), adapterTrimmingStatsVector.end(),
-        [&stats](AdapterTrimmingStats const& _stats) {stats += _stats;});
+    for(auto& read: reads)
+    {
+        if (seqan::empty(read.seq))
+            continue;
+        const unsigned over = stripAdapter(read.seq, stats, adapters[1], spec, StripAdapterDirection<adapterDirection::forward>());
+        if (TTagAdapter::value && over != 0)
+            insertAfterFirstToken(read.id, ":AdapterRemoved");
+    }
     return stats.a1count + stats.a2count;
 }
 

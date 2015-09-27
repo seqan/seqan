@@ -80,6 +80,25 @@ void insert(std::string& dest, unsigned int k, const std::string& token)
 
 //
 
+template<typename R>
+bool is_ready(std::future<R> const& f)
+{
+    return f.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
+}
+
+template <typename T>
+std::vector<T> operator+(const std::vector<T>& a, const std::vector<T>& b)
+{
+    assert(a.size() == b.size());
+
+    std::vector<T> result;
+    result.reserve(a.size());
+
+    std::transform(a.begin(), a.end(), b.begin(),
+        std::back_inserter(result), std::plus<T>());
+    return result;
+}
+
 template<typename TSeq>
 struct ReadBase 
 {

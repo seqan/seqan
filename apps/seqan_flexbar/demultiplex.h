@@ -134,13 +134,11 @@ void buildVariations(seqan::StringSet<seqan::Dna5String>& variations, const TBar
 {
 	int limit = (length(barcode))*5;		    //possible number of variations with one error (A,T,G,C,N)
 	resize(variations, limit);				    //resizes according to calculated number of variations
-	SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
 	for (int i = 0; i < limit; ++i)
 	{
         assign(variations[i], barcode);	        //fills resultset with original barcode
 	}
 	limit = limit/5;
-	SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
 	for (int i = 0; i < limit; ++i)
 	{										    //each run through the loop modifies 1 position of the barcode 4 times
 		move(variations[5*i][i], 'A');	    	//multiplication with 5 and addition of 0...4 prevents index conflicts
@@ -195,13 +193,9 @@ void findAllExactIndex(TMatches& matches, const TPrefices& prefices, const TFind
         finderSet[i] = finder;
     }
 	int limit = length(prefices);
-	SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
 	for (int i = 0; i < limit; ++i)
 	{
 		int tid = 0;
-#ifdef _OPENMP
-        tid = omp_get_thread_num();
-#endif
         int hit = findExactIndex(prefices[i], finderSet[tid]);
 		matches[i] = hit;
 	}
@@ -234,8 +228,8 @@ void clipBarcodes(std::vector<TRead>& reads, const int len) noexcept
 struct ApproximateBarcodeMatching {};
 struct ExactBarcodeMatching {};
 
-template <typename TRead, typename TMatches>
-void group(std::vector<TRead>& reads, const TMatches& matches, GeneralStats& stats,
+template <typename TRead, typename TMatches, typename TStats>
+void group(std::vector<TRead>& reads, const TMatches& matches, TStats& stats,
     const ExactBarcodeMatching&, const bool exclude) noexcept
 {
     unsigned i = 0;
@@ -249,18 +243,18 @@ void group(std::vector<TRead>& reads, const TMatches& matches, GeneralStats& sta
     }                                                  
 }
 
-template <typename TRead, typename TMatches, typename TBarcodes>
+template <typename TRead, typename TMatches, typename TBarcodes, typename TStats>
 void group(std::vector<TRead>& reads, const TMatches& matches,
-    const TBarcodes& barcodes, GeneralStats& stats, const ExactBarcodeMatching& dummy, bool exclude) noexcept
+    const TBarcodes& barcodes, TStats& stats, const ExactBarcodeMatching& dummy, bool exclude) noexcept
 {
     (void)barcodes;
     group(reads, matches, stats, dummy, exclude);
 }
 
 //Overload if approximate search has been used.
-template <typename TRead, typename TMatches, typename TBarcodes>
+template <typename TRead, typename TMatches, typename TBarcodes, typename TStats>
 void group(std::vector<TRead>& reads, const TMatches& matches,
-    const TBarcodes& barcodes, GeneralStats& stats, const ApproximateBarcodeMatching&, bool exclude) noexcept
+    const TBarcodes& barcodes, TStats& stats, const ApproximateBarcodeMatching&, bool exclude) noexcept
 {
     unsigned i = 0;
     float dividend = float(length(barcodes[0])*5.0);		//value by which the index will be corrected.
@@ -274,9 +268,9 @@ void group(std::vector<TRead>& reads, const TMatches& matches,
     }
 }
 
-template<template <typename> class TRead, typename TSeq, typename TBarcodes, typename TFinder, typename TApprox>
+template<template <typename> class TRead, typename TSeq, typename TBarcodes, typename TFinder, typename TStats, typename TApprox>
 void doAll(std::vector<TRead<TSeq>>& reads, const TBarcodes& barcodes, const TFinder& esaFinder,
-    const bool hardClip, GeneralStats& stats, const TApprox& approximate, bool exclude)
+    const bool hardClip, TStats& stats, const TApprox& approximate, bool exclude)
 {
     std::vector<TSeq> prefices(length(reads));
     getPrefix(prefices, reads, length(barcodes[0]));
