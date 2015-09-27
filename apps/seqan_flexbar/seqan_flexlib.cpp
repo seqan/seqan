@@ -693,9 +693,9 @@ struct QualityTrimmingParams
        QualityTrimmingParams() : trim_mode(E_WINDOW), cutoff(-1), min_length(1), run(false), tag(false) {};
 };
 
-struct ProgramVars
+struct InputFileStreams
 {
-    seqan::SeqFileIn fileStream1, fileStream2;
+    seqan::SeqFileIn fileStream1, fileStream2, fileStreamMultiplex;
 };
 
 struct ProgramParams
@@ -999,7 +999,7 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
 }
 
 template<template <typename> class TRead, typename TSeq, typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value>>
-inline void loadMultiplex(std::vector<TRead<TSeq>>& reads, seqan::SeqFileIn& multiplexFile, unsigned records)
+inline void loadMultiplex(std::vector<TRead<TSeq>>& reads, unsigned records, seqan::SeqFileIn& multiplexFile)
 {
     (void)reads;
     (void)multiplexFile;
@@ -1007,7 +1007,7 @@ inline void loadMultiplex(std::vector<TRead<TSeq>>& reads, seqan::SeqFileIn& mul
 }
 
 template<template <typename> class TRead, typename TSeq, typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
-inline void loadMultiplex(std::vector<TRead<TSeq>>& reads, seqan::SeqFileIn& multiplexFile, unsigned records, bool = false)
+inline void loadMultiplex(std::vector<TRead<TSeq>>& reads, unsigned records, seqan::SeqFileIn& multiplexFile, bool = false)
 {
     seqan::String<char> id;
     unsigned int i = 0;
@@ -1154,7 +1154,7 @@ int loadQualityTrimmingParams(seqan::ArgumentParser const & parser, QualityTrimm
     return 0;
 }
 
-int loadProgramParams(seqan::ArgumentParser const & parser, ProgramParams& params, ProgramVars& vars)
+int loadProgramParams(seqan::ArgumentParser const & parser, ProgramParams& params, InputFileStreams& vars)
 {
     params.fileCount = getArgumentValueCount(parser, 0);
     // Load files.
@@ -1191,7 +1191,7 @@ int loadProgramParams(seqan::ArgumentParser const & parser, ProgramParams& param
     return 0;
 }
 
-int checkParams(ProgramParams const & programParams, ProgramVars const& programVars, ProcessingParams const & processingParams,
+int checkParams(ProgramParams const & programParams, InputFileStreams const& inputFileStreams, ProcessingParams const & processingParams,
     DemultiplexingParams const & demultiplexingParams, AdapterTrimmingParams const & adapterTrimmingParams,
     QualityTrimmingParams & qualityTrimmingParams)
 {
@@ -1206,9 +1206,9 @@ int checkParams(ProgramParams const & programParams, ProgramVars const& programV
     // If quality trimming was selected, check if file format includes qualities.
     if (qualityTrimmingParams.run)
     {
-        if ((value(format(programVars.fileStream1)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fastq>::VALUE) ||
+        if ((value(format(inputFileStreams.fileStream1)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fastq>::VALUE) ||
             ((programParams.fileCount == 2) &&
-            (value(format(programVars.fileStream2)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fastq>::VALUE)))
+            (value(format(inputFileStreams.fileStream2)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fastq>::VALUE)))
         {
             std::cerr << "\nQuality trimming requires quality information, please specify fq files." << std::endl;
             return 1;
@@ -1436,13 +1436,13 @@ void printStatistics(const ProgramParams& programParams, const GeneralStats& gen
 }
 
 template < template<typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value> >
-unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int records, ProgramVars& programVars, bool = false)
+unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int records, InputFileStreams& inputFileStreams, bool = false)
 {
     reads.resize(records);
     unsigned int i = 0;
-    while (i < records && !atEnd(programVars.fileStream1))
+    while (i < records && !atEnd(inputFileStreams.fileStream1))
     {
-        readRecord(reads[i].id, reads[i].seq, programVars.fileStream1);
+        readRecord(reads[i].id, reads[i].seq, inputFileStreams.fileStream1);
         ++i;
     }
     reads.resize(i);
@@ -1450,14 +1450,14 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
 }
 
 template < template<typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value> >
-unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int records, ProgramVars& programVars)
+unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int records, InputFileStreams& inputFileStreams)
 {
     reads.resize(records);
     unsigned int i = 0;
-    while (i < records && !atEnd(programVars.fileStream1))
+    while (i < records && !atEnd(inputFileStreams.fileStream1))
     {
-        readRecord(reads[i].id, reads[i].seq, programVars.fileStream1);
-        readRecord(reads[i].idRev, reads[i].seqRev, programVars.fileStream2);
+        readRecord(reads[i].id, reads[i].seq, inputFileStreams.fileStream1);
+        readRecord(reads[i].idRev, reads[i].seqRev, inputFileStreams.fileStream2);
         ++i;
     }
     reads.resize(i);
@@ -1531,8 +1531,8 @@ struct ReadWriter
 template<template<typename> class TRead, typename TSeq>
 struct ReadReader
 {
-    ReadReader(unsigned int records, ProgramVars& programVars, unsigned int bins, unsigned int sleepMS)
-        :_records(records), _programVars(programVars), _tlsReadSets(bins + 1) , _run(true), _sleepMS(sleepMS)
+    ReadReader(unsigned int records, InputFileStreams& inputFileStreams, unsigned int bins, unsigned int sleepMS)
+        :_records(records), _inputFileStreams(inputFileStreams), _tlsReadSets(bins + 1) , _run(true), _sleepMS(sleepMS)
     {
         _thread = std::thread([this]() 
         {
@@ -1545,7 +1545,8 @@ struct ReadReader
                         if (!readSet.second)
                         {
                             readSet.second.reset(new std::vector<TRead<TSeq>>(_records));
-                            readReads(*(readSet.second), _records, _programVars);
+                            readReads(*(readSet.second), _records, _inputFileStreams);
+                            loadMultiplex(*(readSet.second), _records, _inputFileStreams.fileStreamMultiplex);
                             readSet.first.unlock();
                             if (readSet.second->empty())    // no more reads available, exit the thread
                                 return;
@@ -1589,7 +1590,7 @@ struct ReadReader
     };
 private:
     unsigned int _records;
-    ProgramVars& _programVars;
+    InputFileStreams& _inputFileStreams;
     std::vector<std::pair<std::mutex,std::unique_ptr<std::vector<TRead<TSeq>>>>> _tlsReadSets;
     std::thread _thread;
     std::atomic_bool _run;
@@ -1598,13 +1599,13 @@ private:
 
 // END FUNCTION DEFINITIONS ---------------------------------------------
 template<template <typename> class TRead, typename TSeq, typename TEsaFinder>
-int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, const DemultiplexingParams& demultiplexingParams, const ProcessingParams& processingParams, const AdapterTrimmingParams& adapterTrimmingParams,
-    const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
+int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& inputFileStreams, const DemultiplexingParams& demultiplexingParams, const ProcessingParams& processingParams, const AdapterTrimmingParams& adapterTrimmingParams,
+    const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder, GeneralStats& generalStats,
     OutputStreams& outputStreams)
 {
     std::unique_ptr<std::vector<TRead<TSeq>>> readSet;
     const unsigned int threadIdleSleepTimeMS = 50;
-    ReadReader<TRead, TSeq> readReader(programParams.records, programVars, programParams.num_threads, threadIdleSleepTimeMS);
+    ReadReader<TRead, TSeq> readReader(programParams.records, inputFileStreams, programParams.num_threads, threadIdleSleepTimeMS);
     ReadWriter<TRead, TSeq, std::tuple<std::unique_ptr<std::vector<TRead<TSeq>>>,decltype(DemultiplexingParams::barcodeIds)>> 
         readWriter(outputStreams, programParams.num_threads, threadIdleSleepTimeMS);
 
@@ -1624,7 +1625,6 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
 
         SEQAN_PROTIMESTART(processTime);            // START of processing time.
 
-        loadMultiplex(*readSet, multiplexInFile, programParams.records);
         if (demultiplexingParams.runx)
             return 1;
 
@@ -1829,11 +1829,11 @@ int flexbarMain(int argc, char const ** argv)
     //--------------------------------------------------
 
     ProgramParams programParams;
-    ProgramVars programVars;
-    if (loadProgramParams(parser, programParams, programVars) != 0)
+    InputFileStreams inputFileStreams;
+    if (loadProgramParams(parser, programParams, inputFileStreams) != 0)
         return 1;
 
-    if (checkParams(programParams, programVars, processingParams, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams) != 0)
+    if (checkParams(programParams, inputFileStreams, processingParams, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams) != 0)
         return 1;
 
     //--------------------------------------------------
@@ -1841,7 +1841,7 @@ int flexbarMain(int argc, char const ** argv)
     //--------------------------------------------------
 
     // Prepare output stream object and initial mapping from StringSets to files.
-    bool noQuality = (value(format(programVars.fileStream1)) ==
+    bool noQuality = (value(format(inputFileStreams.fileStream1)) ==
                       Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE);
     if (isSet(parser, "nq"))
     {
@@ -1902,17 +1902,17 @@ int flexbarMain(int argc, char const ** argv)
             std::cout << "\tCompress output: NO" << "\n";
         }
         */
-		if (isSet(parser, "fr") && (value(format(programVars.fileStream1)) !=
+		if (isSet(parser, "fr") && (value(format(inputFileStreams.fileStream1)) !=
 			Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE))
 		{
 			std::cout << "\tForce no-quality output: YES\n";
 		}
-		if (isSet(parser, "nq") && (value(format(programVars.fileStream1)) !=
+		if (isSet(parser, "nq") && (value(format(inputFileStreams.fileStream1)) !=
                                     Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE))
         {
             std::cout << "\tProcess only first n reads: " << programParams.firstReads << "\n";
         }
-        else if (value(format(programVars.fileStream1)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE)
+        else if (value(format(inputFileStreams.fileStream1)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE)
         {
             std::cout << "\tForce no-quality output: NO\n";
         }
@@ -2063,18 +2063,18 @@ int flexbarMain(int argc, char const ** argv)
         if (!demultiplexingParams.run)
             outputStreams.addStream("", 0, useDefault);
         if(demultiplexingParams.runx)
-            mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, multiplexInFile, generalStats, outputStreams);
+            mainLoop(ReadMultiplex<seqan::Dna5QString>(), programParams, inputFileStreams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, generalStats, outputStreams);
         else
-            mainLoop(Read<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, multiplexInFile, generalStats, outputStreams);
+            mainLoop(Read<seqan::Dna5QString>(), programParams, inputFileStreams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, generalStats, outputStreams);
     }
      else
      {
          if (!demultiplexingParams.run)
              outputStreams.addStreams("", "", 0, useDefault);
          if (demultiplexingParams.runx)
-             mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, multiplexInFile, generalStats, outputStreams);
+             mainLoop(ReadMultiplexPairedEnd<seqan::Dna5QString>(), programParams, inputFileStreams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, generalStats, outputStreams);
          else
-             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, programVars, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, multiplexInFile, generalStats, outputStreams);
+             mainLoop(ReadPairedEnd<seqan::Dna5QString>(), programParams, inputFileStreams, demultiplexingParams, processingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, generalStats, outputStreams);
     }
     double loop = SEQAN_PROTIMEDIFF(loopTime);
     generalStats.ioTime = loop - generalStats.processTime;
