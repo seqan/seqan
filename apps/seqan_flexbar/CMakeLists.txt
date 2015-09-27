@@ -35,7 +35,7 @@ if (NOT CXX14_FOUND)
 endif (NOT CXX14_FOUND)
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB BZip2)
+set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)
 find_package (SeqAn REQUIRED)
 
 find_package(Boost 1.36.0)
