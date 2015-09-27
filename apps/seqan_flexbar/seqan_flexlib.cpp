@@ -1511,8 +1511,8 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
 template<template<typename> class TRead, typename TSeq, typename TWriteItem>
 struct ReadWriter
 {
-    ReadWriter(OutputStreams& outputStreams, unsigned int bins)
-        : _outputStreams(outputStreams), _tlsReadSets(bins + 1), _run(true)
+    ReadWriter(OutputStreams& outputStreams, unsigned int bins, unsigned int sleepMS)
+        : _outputStreams(outputStreams), _tlsReadSets(bins + 1), _run(true), _sleepMS(sleepMS)
     {
         _thread = std::thread([this]() 
         {
@@ -1525,12 +1525,16 @@ struct ReadWriter
                         if (std::get<0>(readSet.second))
                         {
                             _outputStreams.writeSeqs(std::move(*std::get<0>(readSet.second)), std::get<1>(readSet.second));
-                            std::get<0>(readSet.second).release();
+                            std::get<0>(readSet.second).reset(nullptr); // delete written data
+                            readSet.first.unlock();
                         }
-                        readSet.first.unlock();
+                        else  // nothing to do
+                        {
+                            readSet.first.unlock();
+                            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+                        }
                     }
                 }
-                std::this_thread::sleep_for(std::chrono::milliseconds(50));
             }
         });
     }
@@ -1557,7 +1561,7 @@ struct ReadWriter
                     reads.first.unlock();
                 }
             }
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
     }
     private:
@@ -1565,13 +1569,14 @@ struct ReadWriter
         std::vector<std::pair<std::mutex, TWriteItem>> _tlsReadSets;
         std::thread _thread;
         std::atomic_bool _run;
+        unsigned int _sleepMS;
 };
 
 template<template<typename> class TRead, typename TSeq>
 struct ReadReader
 {
-    ReadReader(unsigned int records, ProgramVars& programVars, unsigned int bins)
-        :_records(records), _programVars(programVars), _tlsReadSets(bins + 1) , _run(true)
+    ReadReader(unsigned int records, ProgramVars& programVars, unsigned int bins, unsigned int sleepMS)
+        :_records(records), _programVars(programVars), _tlsReadSets(bins + 1) , _run(true), _sleepMS(sleepMS)
     {
         _thread = std::thread([this]() 
         {
@@ -1585,13 +1590,17 @@ struct ReadReader
                         {
                             readSet.second.reset(new std::vector<TRead<TSeq>>(_records));
                             readReads(*(readSet.second), _records, _programVars);
+                            readSet.first.unlock();
                             if (readSet.second->empty())    // no more reads available, exit the thread
                                 return;
                         }
-                        readSet.first.unlock();
+                        else // nothing to do 
+                        {
+                            readSet.first.unlock();
+                            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+                        }
                     }
                 }
-                std::this_thread::sleep_for(std::chrono::milliseconds(50));
             }
         });
     };
@@ -1612,14 +1621,13 @@ struct ReadReader
                     if (readSet.second)
                     {
                         reads = std::move(readSet.second);
-                        readSet.second.release();
                         readSet.first.unlock();
                         return reads->empty() ? false : true;
                     }
                     readSet.first.unlock();
                 }
             }
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
         return false;
     };
@@ -1629,6 +1637,7 @@ private:
     std::vector<std::pair<std::mutex,std::unique_ptr<std::vector<TRead<TSeq>>>>> _tlsReadSets;
     std::thread _thread;
     std::atomic_bool _run;
+    unsigned int _sleepMS;
 };
 
 // END FUNCTION DEFINITIONS ---------------------------------------------
@@ -1638,9 +1647,10 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
     OutputStreams& outputStreams)
 {
     std::unique_ptr<std::vector<TRead<TSeq>>> readSet;
-    TRead<TSeq> read;
-    ReadReader<TRead, TSeq> readReader(programParams.records, programVars, programParams.num_threads);
-    ReadWriter<TRead, TSeq, std::tuple<std::unique_ptr<std::vector<TRead<TSeq>>>,decltype(DemultiplexingParams::barcodeIds)>> readWriter(outputStreams, programParams.num_threads);
+    const unsigned int threadIdleSleepTimeMS = 50;
+    ReadReader<TRead, TSeq> readReader(programParams.records, programVars, programParams.num_threads, threadIdleSleepTimeMS);
+    ReadWriter<TRead, TSeq, std::tuple<std::unique_ptr<std::vector<TRead<TSeq>>>,decltype(DemultiplexingParams::barcodeIds)>> 
+        readWriter(outputStreams, programParams.num_threads, threadIdleSleepTimeMS);
 
     SEQAN_PROTIMESTART(loopTime);
     while (generalStats.readCount < programParams.firstReads)
