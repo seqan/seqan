@@ -1226,7 +1226,7 @@ int checkParams(ProgramParams const & programParams, ProgramVars const& programV
 // PROGRAM STAGES ---------------------
 //Preprocessing Stage
 template<typename TReadSet>
-void preprocessingStage(ProcessingParams& processingParams, TReadSet& readSet, GeneralStats& generalStats)
+void preprocessingStage(const ProcessingParams& processingParams, TReadSet& readSet, GeneralStats& generalStats)
 {
     if (processingParams.runPre)
     {
@@ -1312,7 +1312,7 @@ void qualityTrimmingStage(const QualityTrimmingParams& params, std::vector<TRead
 
 //Postprocessing
 template<typename TRead>
-void postprocessingStage(std::vector<TRead>& reads, ProcessingParams& params, GeneralStats& stats)
+void postprocessingStage(const ProcessingParams& params, std::vector<TRead>& reads, GeneralStats& stats)
 {
     if (params.runPost)
     {
@@ -1325,50 +1325,6 @@ void postprocessingStage(std::vector<TRead>& reads, ProcessingParams& params, Ge
             trimTo(reads, params.finalLength, stats);
         }
     }
-}
-
-template<typename TSeqSet, typename TIdSet>
-void postprocessingStage(TSeqSet& seqSet, TIdSet& idSet, ProcessingParams& params, GeneralStats& stats)
-{
-    if (params.runPost)
-    {
-        if ((params.finalMinLength != 0) && (params.finalLength == 0))
-        {
-            for (unsigned i = 0; i < length(seqSet); ++i)
-            {
-                preTrim(seqSet[i], idSet[i], 0, 0, 0, params.finalMinLength, stats);
-            }
-        }
-        else if (params.finalLength != 0)
-        {
-            for (unsigned i = 0; i < length(seqSet); ++i)
-            {
-                trimTo(seqSet[i], idSet[i], params.finalLength, stats); 
-            }
-        }
-    }
-}
-//Overload for paired-end data
-template<typename TSeqSet, typename TIdSet>
-void postprocessingStage(TSeqSet& seqSet, TIdSet& idSet, TSeqSet& seqSet2, TIdSet& idSet2, ProcessingParams& params, GeneralStats& stats)
-{
-    if (params.runPost)
-    {
-        if ((params.finalMinLength != 0) && (params.finalLength == 0))
-        {
-            for (unsigned i = 0; i < length(seqSet); ++i)
-            {
-                preTrim(seqSet[i], idSet[i], seqSet2[i], idSet2[i], 0, 0, 0, params.finalMinLength, stats);
-            }
-        }
-        else if (params.finalLength != 0)
-        {
-            for (unsigned i = 0; i < length(seqSet); ++i)
-            {
-                trimTo(seqSet[i], idSet[i], seqSet2[i], idSet2[i], params.finalLength, stats);
-            }
-        }
-    }    
 }
 
 // END PROGRAM STAGES ---------------------
@@ -1643,7 +1599,7 @@ private:
 
 // END FUNCTION DEFINITIONS ---------------------------------------------
 template<template <typename> class TRead, typename TSeq, typename TEsaFinder>
-int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, const DemultiplexingParams& demultiplexingParams, ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
+int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& programVars, const DemultiplexingParams& demultiplexingParams, const ProcessingParams& processingParams, AdapterTrimmingParams& adapterTrimmingParams,
     const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder, seqan::SeqFileIn& multiplexInFile, GeneralStats& generalStats,
     OutputStreams& outputStreams)
 {
@@ -1688,7 +1644,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, ProgramVars& progr
         qualityTrimmingStage(qualityTrimmingParams, *readSet, generalStats);
 
         // Postprocessing
-        postprocessingStage(*readSet, processingParams, generalStats);
+        postprocessingStage(processingParams, *readSet, generalStats);
         generalStats.processTime += SEQAN_PROTIMEDIFF(processTime);    // END of processing time.
 
         // Write processed reads to file
