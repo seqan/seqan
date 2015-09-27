@@ -1467,7 +1467,7 @@ template<template<typename> class TRead, typename TSeq, typename TWriteItem>
 struct ReadWriter
 {
     ReadWriter(const ProgramParams& programParams, OutputStreams& outputStreams, unsigned int sleepMS)
-        : _programParams(programParams), _outputStreams(outputStreams), _tlsReadSets(_programParams.num_threads + 1),
+        : _programParams(programParams), _outputStreams(outputStreams), _tlsReadSets(2),
         _run(false), _sleepMS(sleepMS), _startTime(std::chrono::steady_clock::now())
     {}
     ~ReadWriter() 
@@ -1566,7 +1566,7 @@ template<template<typename> class TRead, typename TSeq, typename TProcessor>
 struct ReadReader
 {
     ReadReader(const ProgramParams& programParams, InputFileStreams& inputFileStreams, unsigned int sleepMS, TProcessor& processor)
-        :_programParams(programParams), _inputFileStreams(inputFileStreams), _tlsReadSets(programParams.num_threads + 1) , 
+        :_programParams(programParams), _inputFileStreams(inputFileStreams), _tlsReadSets(2) , 
         _run(false), _eof(false), _sleepMS(sleepMS), _numReads(0), _processor(processor)
     {}
     ~ReadReader() 
@@ -1670,20 +1670,40 @@ struct ProcessingUnit
 
     ProcessingUnit(const ProgramParams& programParams, const ProcessingParams& processingParams, const DemultiplexingParams& demultiplexingParams, const AdapterTrimmingParams& adapterTrimmingParams,
         const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder &esaFinder, TReadWriter& readWriter) : _programParams(programParams), _processingParams(processingParams), _demultiplexingParams(demultiplexingParams), 
-        _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _esaFinder(esaFinder), _readWriter(readWriter){};
+        _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _esaFinder(esaFinder), _readWriter(readWriter), _futures(_programParams.num_threads + 1){};
 
     bool addTask(TpReads&& reads)
     {
-        if (_futures.size() < _programParams.num_threads)
+        for (auto& element : _futures)
         {
-            _futures.push_back(std::async(std::launch::async, &ProcessingUnit::doProcessing, this, reads.release()));
-            return true;
+            if (element.first.try_lock())
+            {
+                if (!element.second.valid())
+                {
+                    element.second = std::async(std::launch::async, &ProcessingUnit::doProcessing, this, reads.release());
+                    element.first.unlock();
+                    return true;
+                }
+                element.first.unlock();
+            }
         }
         return false;
     }
-    bool hasSpace() const noexcept
+    bool hasSpace() noexcept
     {
-        return _futures.size() < _programParams.num_threads;
+        for (auto& element : _futures)
+        {
+            if (element.first.try_lock())
+            {
+                if (!element.second.valid())
+                {
+                    element.first.unlock();
+                    return true;
+                }
+                element.first.unlock();
+            }
+        }
+        return false;
     }
     bool idle() const noexcept
     {
@@ -1691,16 +1711,19 @@ struct ProcessingUnit
     }
     bool getResult(std::tuple<TpReads&, GeneralStats&>& result)
     {
-        auto it = _futures.begin();
-        while (it != _futures.end())
+        for (auto& element : _futures)
         {
-            if (is_ready(*it))
+            if (element.first.try_lock())
             {
-                result = std::move(it->get());
-                it = _futures.erase(it);
-                return true;
+                if (element.second.valid())
+                    if (is_ready(element.second))
+                    {
+                        result = std::move(element.second.get());
+                        element.first.unlock();
+                        return true;
+                    }
+                element.first.unlock();
             }
-            ++it;
         }
         return false;
     }
@@ -1737,7 +1760,7 @@ private:
 
     // main thread variables
     TReadWriter& _readWriter;
-    std::vector<std::future<std::tuple<TpReads, GeneralStats>>> _futures;
+    std::vector<std::pair<std::mutex, std::future<std::tuple<TpReads, GeneralStats>>>> _futures;
 
 };
 
