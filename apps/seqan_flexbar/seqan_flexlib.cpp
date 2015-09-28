@@ -1512,7 +1512,7 @@ struct ReadWriter
             }
         });
     }
-    void writeReads(TWriteItem&& writeItem) noexcept
+    void writeReads(TWriteItem&& writeItem) noexcept    // blocks until item could be added
     {
         while (true)
         {
@@ -1669,12 +1669,16 @@ struct ProcessingUnit
     using TpReads = std::unique_ptr<std::vector<TRead>>;
 
     ProcessingUnit(const ProgramParams& programParams, const ProcessingParams& processingParams, const DemultiplexingParams& demultiplexingParams, const AdapterTrimmingParams& adapterTrimmingParams,
-        const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder &esaFinder, TReadWriter& readWriter) : _programParams(programParams), _processingParams(processingParams), _demultiplexingParams(demultiplexingParams), 
-        _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _esaFinder(esaFinder), _readWriter(readWriter), _futures(_programParams.num_threads + 1){};
+        const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder &esaFinder, TReadWriter& readWriter, unsigned int sleepMS) : _programParams(programParams), _processingParams(processingParams), _demultiplexingParams(demultiplexingParams),
+        _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _esaFinder(esaFinder), _readWriter(readWriter), _futures(_programParams.num_threads + 1), _threads(_programParams.num_threads), _sleepMS(sleepMS){};
 
+    void start()
+    {
+    }
     void addTask(TpReads&& reads)   // blocks until task could be added
     {
-        while(true)
+        while (true)
+        {
             for (auto& element : _futures)
             {
                 if (element.first.try_lock())
@@ -1688,6 +1692,8 @@ struct ProcessingUnit
                     element.first.unlock();
                 }
             }
+            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+        }
     }
     bool hasSpace() noexcept
     {
@@ -1765,10 +1771,12 @@ private:
     const AdapterTrimmingParams& _adapterTrimmingParams;
     const QualityTrimmingParams& _qualityTrimmingParams;
     const TEsaFinder& _esaFinder;
+    const unsigned int _sleepMS;
 
     // main thread variables
     TReadWriter& _readWriter;
     std::vector<std::pair<std::mutex, std::future<std::tuple<TpReads, GeneralStats>>>> _futures;
+    std::vector<std::thread> _threads;
 
 };
 
@@ -1779,13 +1787,13 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
     OutputStreams& outputStreams, TStats& stats)
 {
     std::unique_ptr<std::vector<TRead<TSeq>>> readSet;
-    const unsigned int threadIdleSleepTimeMS = 50;
+    const unsigned int threadIdleSleepTimeMS = 20;
     using TReadWriter = ReadWriter<TRead, TSeq, std::tuple<std::unique_ptr<std::vector<TRead<TSeq>>>, decltype(DemultiplexingParams::barcodeIds), GeneralStats>>;
     using TProcessingUnit = ProcessingUnit<TRead<TSeq>, TEsaFinder, TReadWriter>;
     using TReadReader = ReadReader<TRead, TSeq, TProcessingUnit>;
 
     TReadWriter readWriter(programParams, outputStreams, threadIdleSleepTimeMS);
-    TProcessingUnit processingUnit(programParams, processingParams, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, readWriter);
+    TProcessingUnit processingUnit(programParams, processingParams, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, readWriter, threadIdleSleepTimeMS);
     TReadReader readReader(programParams, inputFileStreams, threadIdleSleepTimeMS, processingUnit);
 
     TStats generalStats(length(demultiplexingParams.barcodeIds) + 1);
