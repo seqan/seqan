@@ -1562,12 +1562,12 @@ struct ReadWriter
         std::tuple_element_t<2, TWriteItem> _stats;
 };
 
-template<template<typename> class TRead, typename TSeq, typename TProcessor>
+template<template<typename> class TRead, typename TSeq>
 struct ReadReader
 {
-    ReadReader(const ProgramParams& programParams, InputFileStreams& inputFileStreams, unsigned int sleepMS, TProcessor& processor)
+    ReadReader(const ProgramParams& programParams, InputFileStreams& inputFileStreams, unsigned int sleepMS)
         :_programParams(programParams), _inputFileStreams(inputFileStreams), _tlsReadSets(2) , 
-        _run(false), _eof(false), _sleepMS(sleepMS), _numReads(0), _processor(processor)
+        _run(false), _eof(false), _sleepMS(sleepMS), _numReads(0)
     {}
     ~ReadReader() 
     {
@@ -1599,11 +1599,11 @@ struct ReadReader
                                 _eof = true;
                             }
                         }
-                        else if(readSet.second && _processor.hasSpace()) // available read -> send it to processor
-                        {
-                            nothingToDo = false;
-                            _processor.addTask(std::move(readSet.second));
-                        }
+                        //else if(readSet.second) 
+                        //{
+                        //    nothingToDo = false;
+                        //    _processor.addTask(std::move(readSet.second));
+                        //}
                         readSet.first.unlock();
                     }
                 }
@@ -1647,6 +1647,8 @@ struct ReadReader
                     readSet.first.unlock();
                 }
             }
+            if (_eof)
+                return false;
             std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
         return false;
@@ -1660,86 +1662,45 @@ private:
     std::atomic_bool _eof;
     unsigned int _sleepMS;
     unsigned int _numReads;
-    TProcessor& _processor;
 };
 
-template <typename TRead, typename TEsaFinder, typename TReadWriter>
+template <typename TRead, typename TEsaFinder, typename TReadReader, typename TReadWriter>
 struct ProcessingUnit
 {
     using TpReads = std::unique_ptr<std::vector<TRead>>;
 
     ProcessingUnit(const ProgramParams& programParams, const ProcessingParams& processingParams, const DemultiplexingParams& demultiplexingParams, const AdapterTrimmingParams& adapterTrimmingParams,
-        const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder &esaFinder, TReadWriter& readWriter, unsigned int sleepMS) : _programParams(programParams), _processingParams(processingParams), _demultiplexingParams(demultiplexingParams),
-        _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _esaFinder(esaFinder), _readWriter(readWriter), _futures(_programParams.num_threads + 1), _threads(_programParams.num_threads), _sleepMS(sleepMS){};
+        const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder &esaFinder, TReadReader& readReader, TReadWriter& readWriter, unsigned int sleepMS) : _programParams(programParams), _processingParams(processingParams), _demultiplexingParams(demultiplexingParams),
+        _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _esaFinder(esaFinder), _readReader(readReader), _readWriter(readWriter), _threads(_programParams.num_threads), _sleepMS(sleepMS){};
 
     void start()
     {
-    }
-    void addTask(TpReads&& reads)   // blocks until task could be added
-    {
-        while (true)
+        for (auto& _thread : _threads)
         {
-            for (auto& element : _futures)
+            _thread = std::thread([this]() 
             {
-                if (element.first.try_lock())
+                TpReads reads;
+                while (_readReader.getReads(reads))
                 {
-                    if (!element.second.valid())
-                    {
-                        element.second = std::async(std::launch::async, &ProcessingUnit::doProcessing, this, reads.release());
-                        element.first.unlock();
-                        return;
-                    }
-                    element.first.unlock();
+                    auto result = doProcessing(reads.release());
+                    _readWriter.writeReads(std::make_tuple(std::move(std::get<0>(result)), _demultiplexingParams.barcodeIds, std::move(std::get<1>(result))));
                 }
-            }
-            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+            });
         }
     }
-    bool hasSpace() noexcept
+    void shutDown()
     {
-        for (auto& element : _futures)
-        {
-            if (element.first.try_lock())
-            {
-                if (!element.second.valid())
-                {
-                    element.first.unlock();
-                    return true;
-                }
-                element.first.unlock();
-            }
-        }
-        return false;
+        for (auto& _thread : _threads)
+            if (_thread.joinable())
+                _thread.join();
     }
-    bool idle() noexcept
+    bool finished() noexcept
     {
-        unsigned int numEmpty = 0;
-        for (auto& element : _futures)
-            if (element.first.try_lock())
-            {
-                if (!element.second.valid())
-                    ++numEmpty;
-                element.first.unlock();
-            }
-        return numEmpty == _futures.size();
-    }
-    bool getResult(std::tuple<TpReads&, GeneralStats&>& result)
-    {
-        for (auto& element : _futures)
-        {
-            if (element.first.try_lock())
-            {
-                if (element.second.valid())
-                    if (is_ready(element.second))
-                    {
-                        result = std::move(element.second.get());
-                        element.first.unlock();
-                        return true;
-                    }
-                element.first.unlock();
-            }
-        }
-        return false;
+        unsigned int numJoinable = 0;
+        for (auto& _thread : _threads)
+            if (_thread.joinable())
+                return false;
+        return true;
     }
 
     std::tuple<TpReads, GeneralStats> doProcessing(std::vector<TRead>* reads)
@@ -1774,8 +1735,8 @@ private:
     const unsigned int _sleepMS;
 
     // main thread variables
+    TReadReader& _readReader;
     TReadWriter& _readWriter;
-    std::vector<std::pair<std::mutex, std::future<std::tuple<TpReads, GeneralStats>>>> _futures;
     std::vector<std::thread> _threads;
 
 };
@@ -1789,25 +1750,24 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
     std::unique_ptr<std::vector<TRead<TSeq>>> readSet;
     const unsigned int threadIdleSleepTimeMS = 20;
     using TReadWriter = ReadWriter<TRead, TSeq, std::tuple<std::unique_ptr<std::vector<TRead<TSeq>>>, decltype(DemultiplexingParams::barcodeIds), GeneralStats>>;
-    using TProcessingUnit = ProcessingUnit<TRead<TSeq>, TEsaFinder, TReadWriter>;
-    using TReadReader = ReadReader<TRead, TSeq, TProcessingUnit>;
+    using TReadReader = ReadReader<TRead, TSeq>;
+    using TProcessingUnit = ProcessingUnit<TRead<TSeq>, TEsaFinder, TReadReader, TReadWriter>;
 
     TReadWriter readWriter(programParams, outputStreams, threadIdleSleepTimeMS);
-    TProcessingUnit processingUnit(programParams, processingParams, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, readWriter, threadIdleSleepTimeMS);
-    TReadReader readReader(programParams, inputFileStreams, threadIdleSleepTimeMS, processingUnit);
+    TReadReader readReader(programParams, inputFileStreams, threadIdleSleepTimeMS);
+    TProcessingUnit processingUnit(programParams, processingParams, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, readReader, readWriter, threadIdleSleepTimeMS);
 
     TStats generalStats(length(demultiplexingParams.barcodeIds) + 1);
 
 #ifdef _MULTITHREADED_IO
     readReader.start();
     readWriter.start();
-    while (!(readReader.eof() && readReader.idle() && processingUnit.idle() && readWriter.idle())) // shortcut is used most of the time -> xxx.idle() get called only after eof is set
+    processingUnit.start();
+    while (!(readReader.eof() && readReader.idle() && processingUnit.finished() && readWriter.idle())) // shortcut is used most of the time -> xxx.idle() get called only after eof is set
     {
-        auto result = make_tuple(std::ref(readSet), std::ref(generalStats));
-        if (processingUnit.getResult(result))
-            readWriter.writeReads(std::make_tuple(std::move(readSet), demultiplexingParams.barcodeIds, std::move(generalStats)));
-        else
-            std::this_thread::sleep_for(std::chrono::milliseconds(threadIdleSleepTimeMS));
+        if (readReader.eof())
+            processingUnit.shutDown();
+        std::this_thread::sleep_for(std::chrono::milliseconds(threadIdleSleepTimeMS));
     }
     readWriter.getStats(stats);
 #else

@@ -328,7 +328,7 @@ SEQAN_DEFINE_TEST(findAllExactIndex_test)
 	indexRequire(indexSet, FibreSA());
 
 	int exspected[] = {1,0,3,2,-1,-1,4,};
-	String<int> res; 
+	std::vector<int> res; 
     findAllExactIndex(res, readPieces, esaFinder);
 	for (unsigned i = 0; i < length(res); ++i)
 	{
@@ -387,7 +387,7 @@ SEQAN_DEFINE_TEST(group_test)
 	appendValue(barcodes, "GAGAGA"); //barcode without matching sequences 
 	appendValue(barcodes, "CCCCCC");
 	
-	String<int> matches;
+    std::vector<int> matches;
 	appendValue(matches, 0);
 	appendValue(matches, 4);
 	appendValue(matches, 1);

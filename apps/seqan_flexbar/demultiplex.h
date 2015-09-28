@@ -163,7 +163,7 @@ template <typename TPrefix, typename TFinder>
 inline int findExactIndex(const TPrefix& prefix, TFinder& finder) noexcept
 {
 	clear(finder);								//resets finder
-	if (find(finder, prefix))
+	if (find(finder, seqan::CharString(prefix)))
     {
 		return getSeqNo(position(finder));		//returns index of barcode. ONLY THE FIRST HIT!
     }
@@ -175,8 +175,14 @@ void findAllExactIndex(TMatches& matches, const TPrefices& prefices, TFinder fin
 {
     assert(length(matches) == length(prefices));
 
-    std::transform(seqan::begin(prefices), seqan::end(prefices), seqan::begin(matches), [&finder](const auto& prefix)->auto {
-        return findExactIndex(prefix, finder);});
+    auto it = matches.begin();
+    for (const auto& prefix : prefices)
+    {
+        *it = findExactIndex(prefix, finder);
+        ++it;
+    }
+    //std::transform(seqan::begin(prefices), seqan::end(prefices), seqan::begin(matches), [&finder](const auto& prefix)->auto { // not working because of seqan problem
+    //    return findExactIndex(prefix, finder);});
 }
 
 template <typename TRead>

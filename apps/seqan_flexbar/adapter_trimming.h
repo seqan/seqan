@@ -376,36 +376,27 @@ unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const
 // pairedEnd adapters will be trimmed in single mode, each seperately
 template < template <typename> class TRead, typename TSeq, typename TAdaptersArray, typename TSpec, typename TTagAdapter,
     typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value> >
-unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec, const bool pairedNoAdapterFile,
-    AdapterTrimmingStats& stats, TTagAdapter) noexcept(!TTagAdapter::value)
+    unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec, const bool pairedNoAdapterFile,
+        AdapterTrimmingStats& stats, TTagAdapter) noexcept(!TTagAdapter::value)
 {
-    int t_num = omp_get_max_threads();
-    // Create local counting variables to avoid concurrency problems.
-    std::vector<AdapterTrimmingStats> adapterTrimmingStatsVector(t_num);
-    int len = length(reads);
-    SEQAN_OMP_PRAGMA(parallel for schedule(static))
-        for (int i = 0; i < len; ++i)
+    for (auto& read : reads)
+    {
+        if (seqan::empty(read.seq))
+            continue;
+        unsigned over = 0;
+        if (pairedNoAdapterFile)
         {
-            if (seqan::empty(reads[i].seq))
-                continue;
-            const int t_id = omp_get_thread_num();
-            // Every thread has its own adapterTrimmingStatsVector
-            unsigned over = 0;
-            if (pairedNoAdapterFile)
-            {
-                stripPair(reads[i].seq, reads[i].seqRev);
-            }
-            else
-            {
-                over = stripAdapter(reads[i].seq, adapterTrimmingStatsVector[t_id], adapters[1], spec, StripAdapterDirection<adapterDirection::forward>());
-                if (!seqan::empty(reads[i].seqRev))
-                    over += stripAdapter(reads[i].seqRev, adapterTrimmingStatsVector[t_id], adapters[0], spec, StripAdapterDirection<adapterDirection::reverse>());
-            }
-            if (TTagAdapter::value && over != 0)
-                insertAfterFirstToken(reads[i].id, ":AdapterRemoved");
+            stripPair(read.seq, read.seqRev);
         }
-    std::for_each(adapterTrimmingStatsVector.begin(), adapterTrimmingStatsVector.end(),
-        [&stats](AdapterTrimmingStats const& _stats) {stats += _stats;});
+        else
+        {
+            over = stripAdapter(read.seq, stats, adapters[1], spec, StripAdapterDirection<adapterDirection::forward>());
+            if (!seqan::empty(read.seqRev))
+                over += stripAdapter(read.seqRev, stats, adapters[0], spec, StripAdapterDirection<adapterDirection::reverse>());
+        }
+        if (TTagAdapter::value && over != 0)
+            insertAfterFirstToken(read.id, ":AdapterRemoved");
+    }
     return stats.a1count + stats.a2count;
 }
 
