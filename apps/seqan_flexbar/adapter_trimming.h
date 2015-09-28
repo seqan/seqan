@@ -361,7 +361,6 @@ unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const
     AdapterTrimmingStats& stats, TTagAdapter, bool = false) noexcept(!TTagAdapter::value)
 {
     (void)pairedNoAdapterFile;
-    int len = length(reads);
     for(auto& read: reads)
     {
         if (seqan::empty(read.seq))

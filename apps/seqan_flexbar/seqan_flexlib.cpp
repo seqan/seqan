@@ -1620,15 +1620,16 @@ struct ReadReader
     {
         if (!_eof)
             return false;
-        unsigned int numEmpty = 0;
         for (auto& readSet : _tlsReadSets)
             if (readSet.first.try_lock())
             {
-                if (!readSet.second)
-                    ++numEmpty;
-                readSet.first.unlock();
+                if (readSet.second)
+                {
+                    readSet.first.unlock();
+                    return false;
+                }
             }
-        return numEmpty == _tlsReadSets.size();
+        return false;
     }
     bool getReads(std::unique_ptr<std::vector<TRead<TSeq>>>& reads) noexcept
     {
@@ -1671,7 +1672,7 @@ struct ProcessingUnit
 
     ProcessingUnit(const ProgramParams& programParams, const ProcessingParams& processingParams, const DemultiplexingParams& demultiplexingParams, const AdapterTrimmingParams& adapterTrimmingParams,
         const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder &esaFinder, TReadReader& readReader, TReadWriter& readWriter, unsigned int sleepMS) : _programParams(programParams), _processingParams(processingParams), _demultiplexingParams(demultiplexingParams),
-        _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _esaFinder(esaFinder), _readReader(readReader), _readWriter(readWriter), _threads(_programParams.num_threads), _sleepMS(sleepMS){};
+        _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _esaFinder(esaFinder),  _sleepMS(sleepMS), _readReader(readReader), _readWriter(readWriter), _threads(_programParams.num_threads){};
 
     void start()
     {
@@ -1696,7 +1697,6 @@ struct ProcessingUnit
     }
     bool finished() noexcept
     {
-        unsigned int numJoinable = 0;
         for (auto& _thread : _threads)
             if (_thread.joinable())
                 return false;
