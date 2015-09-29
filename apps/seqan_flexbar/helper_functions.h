@@ -44,12 +44,51 @@
 
 #include <future>
 #include <string>
+#include <regex>
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
+struct MultiStringMatcher
+{
+    template <typename TContainer>
+    MultiStringMatcher(const TContainer& patterns)
+        : _patterns(patterns)
+    {}
+    template <typename TToken>
+    int getMatchIndex(const TToken& token) const noexcept
+    {
+        unsigned int index = 0;
+        for (const auto& pattern : _patterns)
+        {
+            if (pattern == token)   // likely
+                return index;
+            ++index;
+        }
+        return -1;
+    }
+private:
+    const std::vector<std::string> _patterns;
+};
 
 // seqan->std interface functions
+
+std::string prefix(const std::string& str, unsigned int len)
+{
+    return str.substr(0, len);
+}
+
+inline std::string seqanToStd(const seqan::Dna5QString& rhs) noexcept
+{
+    std::string ret;
+    ret.resize(length(rhs));
+    char c;
+    std::transform(begin(rhs), end(rhs), ret.begin(), [&c](const auto& element){
+        seqan::assign(c, element);
+        return c;
+    });
+    return ret;
+}
 
 void append(std::string& str1, const std::string& str2)
 {
@@ -263,13 +302,12 @@ void for_each_argument(F f, Ts&&... a) {
 template<typename Trem, typename TremVal, typename TRead>
 auto _eraseSeqs(const Trem& rem, const TremVal remVal, std::vector<TRead>& reads) noexcept
 {
-    const auto numRemoveElements = std::count(rem.begin(), rem.end(), remVal);
-    const auto beginAddr = &*reads.begin();
-    std::remove_if(reads.begin(), reads.end(),
-        [&rem, &beginAddr, remVal](const auto& element) {
-        return rem[&element - beginAddr] == remVal;});
-    reads.resize(reads.size() - numRemoveElements);
-    return numRemoveElements;
+    const auto oldSize = reads.size();
+    auto it = rem.cbegin();
+    reads.erase(std::remove_if(reads.begin(), reads.end(),
+        [&rem, &it, remVal](const auto& element) {
+        return *(it++) == remVal;}), reads.end());
+    return oldSize - reads.size();
 }
 
 template<typename Trem, typename TremVal, typename... TContainer>

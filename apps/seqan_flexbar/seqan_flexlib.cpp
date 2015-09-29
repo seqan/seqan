@@ -988,7 +988,15 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
         std::cerr << "Error while opening file'" << params.barcodeFile << "'.\n";
         return 1;
     }
-    readRecords(params.barcodeIds, params.barcodes, bcFile);
+
+    while (!atEnd(bcFile))
+    {
+        std::string id;
+        std::string barcode;
+        readRecord(id, barcode, bcFile);
+        params.barcodeIds.emplace_back(id);
+        params.barcodes.emplace_back(barcode);
+    }
 
     if (params.approximate)                            //modifies the barcodes for approximate matching
     {
@@ -1467,8 +1475,8 @@ template<template<typename> class TRead, typename TSeq, typename TWriteItem>
 struct ReadWriter
 {
     ReadWriter(const ProgramParams& programParams, OutputStreams& outputStreams, unsigned int sleepMS)
-        : _programParams(programParams), _outputStreams(outputStreams), _tlsReadSets(2),
-        _run(false), _sleepMS(sleepMS), _startTime(std::chrono::steady_clock::now())
+        : _programParams(programParams), _outputStreams(outputStreams), _tlsReadSets(_programParams.num_threads + 1),
+        _run(false), _sleepMS(sleepMS), _startTime(std::chrono::steady_clock::now()), _lastScreenUpdate(std::chrono::steady_clock::now())
     {}
     ~ReadWriter() 
     {
@@ -1483,31 +1491,38 @@ struct ReadWriter
         {
             while (_run)
             {
+                bool nothingToDo = true;
                 for (auto& readSet : _tlsReadSets)
                 {
                     if (readSet.first.try_lock())
                     {
                         if (std::get<0>(readSet.second))
                         {
+                            nothingToDo = false;
                             const auto t1 = std::chrono::steady_clock::now();
                             _outputStreams.writeSeqs(std::move(*std::get<0>(readSet.second)), std::get<1>(readSet.second));
                             std::get<0>(readSet.second).reset(nullptr); // delete written data
                             _stats += std::get<2>(readSet.second);
                             const auto ioTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
                             _stats.ioTime += ioTime;
-                            readSet.first.unlock();
-                            const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - _startTime).count();
-                            if (_programParams.showSpeed)
-                                std::cout << "\r" << _stats.readCount << "   " << static_cast<int>(_stats.readCount / deltaTime) << " BPs";
-                            else
-                                std::cout << "\r" << _stats.readCount;
+                            const auto deltaLastScreenUpdate = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - _lastScreenUpdate).count();
+                            if (deltaLastScreenUpdate > 1)
+                            {
+                                const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - _startTime).count();
+                                if (_programParams.showSpeed)
+                                    std::cout << "\r" << _stats.readCount << "   " << static_cast<int>(_stats.readCount / deltaTime) << " BPs";
+                                else
+                                    std::cout << "\r" << _stats.readCount;
+                                _lastScreenUpdate = std::chrono::steady_clock::now();
+                            }
                         }
-                        else  // nothing to do
-                        {
-                            readSet.first.unlock();
-                            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
-                        }
+                        readSet.first.unlock();
                     }
+                }
+                if (nothingToDo)
+                {
+                    //std::cout << "4" << std::endl;
+                    std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
                 }
             }
         });
@@ -1529,6 +1544,7 @@ struct ReadWriter
                     reads.first.unlock();
                 }
             }
+            //std::cout << "3" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
     }
@@ -1559,6 +1575,7 @@ struct ReadWriter
         std::atomic_bool _run;
         unsigned int _sleepMS;
         std::chrono::time_point<std::chrono::steady_clock> _startTime;
+        std::chrono::time_point<std::chrono::steady_clock> _lastScreenUpdate;
         std::tuple_element_t<2, TWriteItem> _stats;
 };
 
@@ -1566,7 +1583,7 @@ template<template<typename> class TRead, typename TSeq>
 struct ReadReader
 {
     ReadReader(const ProgramParams& programParams, InputFileStreams& inputFileStreams, unsigned int sleepMS)
-        :_programParams(programParams), _inputFileStreams(inputFileStreams), _tlsReadSets(2) , 
+        :_programParams(programParams), _inputFileStreams(inputFileStreams), _tlsReadSets(_programParams.num_threads + 1) ,
         _run(false), _eof(false), _sleepMS(sleepMS), _numReads(0)
     {}
     ~ReadReader() 
@@ -1595,20 +1612,16 @@ struct ReadReader
                             loadMultiplex(*(readSet.second), _programParams.records, _inputFileStreams.fileStreamMultiplex);
                             _numReads += readSet.second->size();
                             if (readSet.second->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
-                            {
                                 _eof = true;
-                            }
                         }
-                        //else if(readSet.second) 
-                        //{
-                        //    nothingToDo = false;
-                        //    _processor.addTask(std::move(readSet.second));
-                        //}
                         readSet.first.unlock();
                     }
                 }
-                if(nothingToDo)
+                if (nothingToDo)
+                {
+                    //std::cout << "1" << std::endl;
                     std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+                }
             }
         });
     }
@@ -1649,6 +1662,7 @@ struct ReadReader
             }
             if (_eof)
                 return false;
+            //std::cout << "2" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
         return false;
@@ -1664,14 +1678,14 @@ private:
     unsigned int _numReads;
 };
 
-template <typename TRead, typename TEsaFinder, typename TReadReader, typename TReadWriter>
+template <typename TRead, typename TFinder, typename TReadReader, typename TReadWriter>
 struct ProcessingUnit
 {
     using TpReads = std::unique_ptr<std::vector<TRead>>;
 
     ProcessingUnit(const ProgramParams& programParams, const ProcessingParams& processingParams, const DemultiplexingParams& demultiplexingParams, const AdapterTrimmingParams& adapterTrimmingParams,
-        const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder &esaFinder, TReadReader& readReader, TReadWriter& readWriter, unsigned int sleepMS) : _programParams(programParams), _processingParams(processingParams), _demultiplexingParams(demultiplexingParams),
-        _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _esaFinder(esaFinder), _readReader(readReader), _readWriter(readWriter), _threads(_programParams.num_threads), _sleepMS(sleepMS){};
+        const QualityTrimmingParams& qualityTrimmingParams, TFinder &finder, TReadReader& readReader, TReadWriter& readWriter, unsigned int sleepMS) : _programParams(programParams), _processingParams(processingParams), _demultiplexingParams(demultiplexingParams),
+        _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _finder(finder), _readReader(readReader), _readWriter(readWriter), _threads(_programParams.num_threads), _sleepMS(sleepMS){};
 
     void start()
     {
@@ -1682,8 +1696,7 @@ struct ProcessingUnit
                 TpReads reads;
                 while (_readReader.getReads(reads))
                 {
-                    auto result = doProcessing(reads.release());
-                    _readWriter.writeReads(std::make_tuple(std::move(std::get<0>(result)), _demultiplexingParams.barcodeIds, std::move(std::get<1>(result))));
+                    _readWriter.writeReads(doProcessing(reads.release()));
                 }
             });
         }
@@ -1703,7 +1716,7 @@ struct ProcessingUnit
         return true;
     }
 
-    std::tuple<TpReads, GeneralStats> doProcessing(std::vector<TRead>* reads)
+    std::tuple<TpReads, std::vector<std::string>, GeneralStats> doProcessing(std::vector<TRead>* reads)
     {
         GeneralStats generalStats(length(_demultiplexingParams.barcodeIds) + 1);
         generalStats.readCount = reads->size();
@@ -1712,7 +1725,7 @@ struct ProcessingUnit
         preprocessingStage(_processingParams, *reads, generalStats);
 
         // Demultiplexing
-        if (demultiplexingStage(_demultiplexingParams, *reads, _esaFinder, generalStats) != 0)
+        if (demultiplexingStage(_demultiplexingParams, *reads, _finder, generalStats) != 0)
             throw("");
 
         // Adapter trimming
@@ -1723,7 +1736,7 @@ struct ProcessingUnit
 
         // Postprocessing
         postprocessingStage(_processingParams, *reads, generalStats);
-        return std::make_tuple(std::unique_ptr<std::vector<TRead>>(reads), generalStats);
+        return std::make_tuple(std::unique_ptr<std::vector<TRead>>(reads), _demultiplexingParams.barcodeIds, generalStats);
     }
 private:
     const ProgramParams& _programParams;
@@ -1731,7 +1744,7 @@ private:
     const DemultiplexingParams& _demultiplexingParams;
     const AdapterTrimmingParams& _adapterTrimmingParams;
     const QualityTrimmingParams& _qualityTrimmingParams;
-    const TEsaFinder& _esaFinder;
+    const TFinder& _finder;
     const unsigned int _sleepMS;
 
     // main thread variables
@@ -1747,8 +1760,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
     const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder,
     OutputStreams& outputStreams, TStats& stats)
 {
-    std::unique_ptr<std::vector<TRead<TSeq>>> readSet;
-    const unsigned int threadIdleSleepTimeMS = 20;
+    const unsigned int threadIdleSleepTimeMS = 30;
     using TReadWriter = ReadWriter<TRead, TSeq, std::tuple<std::unique_ptr<std::vector<TRead<TSeq>>>, decltype(DemultiplexingParams::barcodeIds), GeneralStats>>;
     using TReadReader = ReadReader<TRead, TSeq>;
     using TProcessingUnit = ProcessingUnit<TRead<TSeq>, TEsaFinder, TReadReader, TReadWriter>;
@@ -1767,7 +1779,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
     {
         if (readReader.eof())
             processingUnit.shutDown();
-        std::this_thread::sleep_for(std::chrono::milliseconds(threadIdleSleepTimeMS));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10*threadIdleSleepTimeMS));
     }
     readWriter.getStats(stats);
 #else
@@ -1900,25 +1912,12 @@ int flexbarMain(int argc, char const ** argv)
     // Process Barcodes
     //--------------------------------------------------
 
-    seqan::Index<seqan::StringSet<seqan::String<seqan::Dna5> >,
-        seqan::IndexEsa<> > indexSet(demultiplexingParams.barcodes);
-    seqan::Finder<seqan::Index<seqan::StringSet<seqan::String<seqan::Dna5> >,
-        seqan::IndexEsa<> > > esaFinder(indexSet);
-    if(flexiProgram == DEMULTIPLEXING || flexiProgram == ALL_STEPS)
-    {
-        if (isSet(parser, "b"))
-        {
-            indexRequire(indexSet, FibreSA());
-        }
-        else
-        {
-            if(flexiProgram == DEMULTIPLEXING && !isSet(parser, "x"))
-            {
-               std::cerr << "No Barcodefile was provided." << std::endl;
-               return 1;
-            }
-        }
+    MultiStringMatcher esaFinder(demultiplexingParams.barcodes);
 
+    if(flexiProgram == DEMULTIPLEXING && !isSet(parser, "x"))
+    {
+        std::cerr << "No Barcodefile was provided." << std::endl;
+        return 1;
     }
 
     //--------------------------------------------------

@@ -103,7 +103,7 @@ int loadSeqs(char const * path, StringSet<String<char> >& ids, StringSet<String<
 	return 0;
 }
 // Used for loading the sequences. Needed for the io-test.
-int loadBarcodes(char const * path, StringSet<String<char> >& bcids, StringSet<String<Dna> >& bcs)
+int loadBarcodes(char const * path, std::vector<std::string>& bcids, std::vector<std::string>& bcs)
 {
 	SeqFileIn bcFile;
 	
@@ -112,7 +112,15 @@ int loadBarcodes(char const * path, StringSet<String<char> >& bcids, StringSet<S
 		std::cerr << "Error while opening barcode-file.\n";
 		return 1;
 	}
-    readRecords(bcids, bcs, bcFile);
+
+    while (!atEnd(bcFile))
+    {
+        std::string bc;
+        std::string id;
+        readRecord(id, bc, bcFile);
+        bcids.emplace_back(id);
+        bcs.emplace_back(bc);
+    }
 	return 0;
 }
 // Checks the correctness of the check function which checks the size of the barcodes and reads.
@@ -184,7 +192,7 @@ SEQAN_DEFINE_TEST(getPrefix_test)
 	appendValue(exspected, "AATTCC");
 	appendValue(exspected, "GTTGGA");
 		
-	std::vector<seqan::Dna5QString> res;
+	std::vector<seqan::Dna5QString> res(3);
     getPrefix(res, reads, 6);
 	for (unsigned i = 0; i < length(exspected); ++i)
 	{
@@ -275,14 +283,14 @@ SEQAN_DEFINE_TEST(buildAllVariations_test)
 // Checks the correctness of the findExactIndex function which searches for one piece of sequence in the barcodes. Implicitly checks the construction of the Index.
 SEQAN_DEFINE_TEST(findExactIndex_test)
 {
-	StringSet<String<Dna5Q> > barcodes;
+	std::vector<std::string> barcodes;
 	appendValue(barcodes, "AAAAAA");
 	appendValue(barcodes, "CCCCCC");
 	appendValue(barcodes, "GGGGGG");
 	appendValue(barcodes, "TTTTTT");
 	appendValue(barcodes, "ACGTAC");
 
-	StringSet<String<Dna5Q> > readPieces;
+    std::vector<std::string> readPieces;
 	appendValue(readPieces, "CCCCCC");
 	appendValue(readPieces, "AAAAAA");
 	appendValue(readPieces, "TTTTTT");
@@ -292,29 +300,30 @@ SEQAN_DEFINE_TEST(findExactIndex_test)
 	appendValue(readPieces, "ACGTAC");
 	appendValue(readPieces, "ATGACNAANG");	//can't happen in the first place...
 
-	Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
-	Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
-	indexRequire(indexSet, FibreSA());
+	//Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
+	//Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
+	//indexRequire(indexSet, FibreSA());
+    MultiStringMatcher MultiStringMatcher(barcodes);
 
 	int exspected[] = {1,0,3,2,-1,-1,4,-1};
 
 	for (unsigned i = 0; i < length(readPieces); ++i)
 	{
-		int res = findExactIndex(readPieces[i], esaFinder);
+		int res = MultiStringMatcher.getMatchIndex(readPieces[i]);
 		SEQAN_ASSERT_EQ(exspected[i], res);
 	}
 }
 // Checks the correctnes of the findAllExactIndex function which searches for many pieces of sequence in the barcodes. Implicitly checks the construction of the Index.
 SEQAN_DEFINE_TEST(findAllExactIndex_test) 
 {
-	StringSet<String<Dna5Q> > barcodes;
+    std::vector<std::string> barcodes;
 	appendValue(barcodes, "AAAAAA");
 	appendValue(barcodes, "CCCCCC");
 	appendValue(barcodes, "GGGGGG");
 	appendValue(barcodes, "TTTTTT");
 	appendValue(barcodes, "ACGTAC");
 	
-	StringSet<String<Dna5Q> > readPieces;
+    std::vector<std::string> readPieces;
 	appendValue(readPieces, "CCCCCC");
 	appendValue(readPieces, "AAAAAA");
 	appendValue(readPieces, "TTTTTT");
@@ -323,13 +332,14 @@ SEQAN_DEFINE_TEST(findAllExactIndex_test)
 	appendValue(readPieces, "GATACA");
 	appendValue(readPieces, "ACGTAC");
 
-	Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
-	Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
-	indexRequire(indexSet, FibreSA());
+	//Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
+	//Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
+	//indexRequire(indexSet, FibreSA());
+    MultiStringMatcher MultiStringMatcher(barcodes);
 
 	int exspected[] = {1,0,3,2,-1,-1,4,};
-	std::vector<int> res; 
-    findAllExactIndex(res, readPieces, esaFinder);
+	std::vector<int> res(7); 
+    findAllExactIndex(res, readPieces, MultiStringMatcher);
 	for (unsigned i = 0; i < length(res); ++i)
 	{
 		SEQAN_ASSERT_EQ(exspected[i], res[i]);
@@ -344,7 +354,7 @@ SEQAN_DEFINE_TEST(clipBarcodes_test)
     reads[0].seq = "AAAAAAGTGACTGATCGTACGACTG";
     reads[1].seq = "GGGGGGGGGGGGGGGG";
 
-	String<int> matches;
+	std::vector<int> matches;
 	appendValue(matches, 0);
 	appendValue(matches, -1);
 
@@ -404,9 +414,9 @@ SEQAN_DEFINE_TEST(group_test)
     expectedReads[4].demuxResult = 2;
     expectedReads[5].demuxResult = 3;
 
-    GeneralStats stats;
+    GeneralStats stats(length(expectedReads));
 	
-    group(reads, matches, stats, ExactBarcodeMatching(), false);
+    group(reads, matches, stats, ExactBarcodeMatching());
 	
 	for (unsigned i = 0; i < length(expectedReads); ++i)
 	{
@@ -427,7 +437,7 @@ SEQAN_DEFINE_TEST(doAll_Exact_test)
     reads[2].id = "Adenin2";
     reads[3].id = "Unidentifiziert";
 
-    StringSet<String<Dna5Q> > barcodes;
+    std::vector<std::string> barcodes;
     appendValue(barcodes, "GGGGGG");
     appendValue(barcodes, "CCCCCC");
     appendValue(barcodes, "AAAAAA");
@@ -443,12 +453,13 @@ SEQAN_DEFINE_TEST(doAll_Exact_test)
     expectedReads[2].demuxResult = 3;
     expectedReads[3].demuxResult = 0;
 
-    Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
-    Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
-    indexRequire(indexSet, FibreSA());
+    //Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
+    //Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
+    //indexRequire(indexSet, FibreSA());
+    MultiStringMatcher MultiStringMatcher(barcodes);
 
-    GeneralStats stats;
-    doAll(reads, barcodes, esaFinder, false, stats, ExactBarcodeMatching(), false);
+    GeneralStats stats(length(expectedReads));
+    doAll(reads, barcodes, MultiStringMatcher, false, stats, ExactBarcodeMatching(), false);
 
     for (unsigned i = 0; i < length(expectedReads); ++i)
     {
@@ -480,7 +491,7 @@ SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test)
     reads[2].demultiplex = "GGCCGG";
     reads[3].demultiplex = "AAAAAA";
 
-    StringSet<String<Dna> > barcodes;
+    std::vector<std::string> barcodes;
     appendValue(barcodes, "GGGGGG");
     appendValue(barcodes, "CCCCCC");
     appendValue(barcodes, "AAAAAA");
@@ -496,12 +507,13 @@ SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test)
     expectedReads[2].demuxResult = 0;
     expectedReads[3].demuxResult = 3;
 
-    Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
-    Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
-    indexRequire(indexSet, FibreSA());
+    //Index<StringSet<String<Dna5Q> >, IndexEsa<> > indexSet(barcodes);
+    //Finder<Index<StringSet<String<Dna5Q> >, IndexEsa<> > > esaFinder(indexSet);
+    //indexRequire(indexSet, FibreSA());
+    MultiStringMatcher MultiStringMatcher(barcodes);
 
-    GeneralStats stats;
-    doAll(reads, barcodes, esaFinder, false, stats, ExactBarcodeMatching(), false);
+    GeneralStats stats(length(expectedReads));
+    doAll(reads, barcodes, MultiStringMatcher, false, stats, ExactBarcodeMatching(), false);
 
     for (unsigned i = 0; i < length(expectedReads); ++i)
     {
@@ -516,8 +528,8 @@ SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test)
 // Checks the correctness of the functions if they are applied on external data.
 SEQAN_DEFINE_TEST(Input_test)
 {
-	StringSet<String<char> > bcids;
-	StringSet<String<Dna> > bcs;
+    std::vector<std::string> bcids;
+    std::vector<std::string> barcodes;
     using TRead = Read<seqan::Dna5QString>;
 
 	CharString seqpath = SEQAN_PATH_TO_ROOT();
@@ -527,15 +539,16 @@ SEQAN_DEFINE_TEST(Input_test)
 
     std::vector<TRead> reads;
 	SEQAN_ASSERT_EQ(0, loadSeqs(toCString(seqpath), reads));
-	SEQAN_ASSERT_EQ(0, loadBarcodes(toCString(bcpath), bcids, bcs));
+	SEQAN_ASSERT_EQ(0, loadBarcodes(toCString(bcpath), bcids, barcodes));
 
-	Index<StringSet<String<Dna> >, IndexEsa<> > indexSet(bcs);
-	Finder<Index<StringSet<String<Dna> >, IndexEsa<> > > esaFinder(indexSet);
-	indexRequire(indexSet, FibreSA());
+	//Index<StringSet<String<Dna> >, IndexEsa<> > indexSet(bcs);
+	//Finder<Index<StringSet<String<Dna> >, IndexEsa<> > > esaFinder(indexSet);
+	//indexRequire(indexSet, FibreSA());
+    MultiStringMatcher MultiStringMatcher(barcodes);
 
 	StringSet<String<int> > groups;
-    GeneralStats stats;
-    doAll(reads, bcs, esaFinder, false, stats, ExactBarcodeMatching(), false);
+    GeneralStats stats(barcodes.size());
+    doAll(reads, barcodes, MultiStringMatcher, false, stats, ExactBarcodeMatching(), false);
 }
 
 

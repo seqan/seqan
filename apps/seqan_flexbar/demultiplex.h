@@ -40,12 +40,9 @@
 // ==========================================================================
 
 
-#ifndef SANDBOX_GROUP3_APPS_SEQDPT_DEMULTIPLEX_H_
-#define SANDBOX_GROUP3_APPS_SEQDPT_DEMULTIPLEX_H_
+#ifndef DEMULTIPLEX_H
+#define DEMULTIPLEX_H
 
-#ifdef _OPENMP
-#include <omp.h>
-#endif
 #include <seqan/find.h>
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -63,8 +60,8 @@
 struct DemultiplexingParams
 {
 	std::string barcodeFile;
-	seqan::StringSet<seqan::String<seqan::Dna5> > barcodes;
-	seqan::StringSet<seqan::CharString> barcodeIds;
+	std::vector<std::string> barcodes;
+	std::vector<std::string> barcodeIds;
 	std::string multiplexFile;
 	bool approximate;
 	bool hardClip;
@@ -104,26 +101,26 @@ bool check(TReads& reads, TBarcodes& barcodes, TStats& stats) noexcept
 }
 
 // always use the forward read for barcode detection
-template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>,Read<TSeq>>::value || std::is_same<TRead<TSeq>,ReadPairedEnd<TSeq>>::value>>
-void getPrefix(std::vector<TSeq>& prefices, std::vector<TRead<TSeq>>& reads, unsigned len)
+template <typename TPrefices, template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>,Read<TSeq>>::value || std::is_same<TRead<TSeq>,ReadPairedEnd<TSeq>>::value>>
+void getPrefix(TPrefices& prefices, std::vector<TRead<TSeq>>& reads, unsigned len)
 {
     assert(prefices.size() == reads.size());
 
     std::transform(reads.begin(), reads.end(), prefices.begin(), [len](const auto& read) {
-        return prefix(read.seq, len);});
+        return static_cast<const std::string>(prefix(read.seq, len));});
 }
 
-template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
-void getPrefix(std::vector<TSeq>& prefices, std::vector<TRead<TSeq>>& reads, unsigned len, bool = false)
+template <typename TPrefices, template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
+void getPrefix(TPrefices& prefices, std::vector<TRead<TSeq>>& reads, unsigned len, bool = false)
 {
     (void)len;
     std::transform(reads.begin(), reads.end(), prefices.begin(), [](const auto& read) {
-        return read.demultiplex;
+        return seqanToStd(read.demultiplex);
     });
 }
 
-template <typename TBarcode>
-void buildVariations(seqan::StringSet<seqan::Dna5String>& variations, const TBarcode& barcode)
+template <typename TBarcodes, typename TBarcode>
+void buildVariations(TBarcodes& variations, const TBarcode& barcode)
 {
 	int limit = (length(barcode))*5;		    //possible number of variations with one error (A,T,G,C,N)
 	resize(variations, limit);				    //resizes according to calculated number of variations
@@ -145,10 +142,10 @@ void buildVariations(seqan::StringSet<seqan::Dna5String>& variations, const TBar
 template <typename TBarcodes>
 void buildAllVariations(TBarcodes& barcodes)
 {
-	seqan::StringSet<seqan::Dna5String> newbarcodes;			//stores the new barcodes
+    TBarcodes newbarcodes;			//stores the new barcodes
 	for (unsigned i = 0; i < length(barcodes); ++i)
 	{
-		seqan::StringSet<seqan::Dna5String> tempbarcodes;
+        TBarcodes tempbarcodes;
         buildVariations(tempbarcodes, barcodes[i]);
 		for (unsigned j = 0; j < length(tempbarcodes); ++j)
         {
@@ -159,50 +156,43 @@ void buildAllVariations(TBarcodes& barcodes)
 	barcodes = newbarcodes;
 }
 
-template <typename TPrefix, typename TFinder>
-inline int findExactIndex(const TPrefix& prefix, TFinder& finder) noexcept
-{
-	clear(finder);								//resets finder
-	if (find(finder, seqan::CharString(prefix)))
-    {
-		return getSeqNo(position(finder));		//returns index of barcode. ONLY THE FIRST HIT!
-    }
-	else return -1;								//return -1 if no hit occured
-}
-
-template <typename TMatches, typename TPrefices, typename TFinder>
-void findAllExactIndex(TMatches& matches, const TPrefices& prefices, TFinder finder) noexcept
+template <typename TMatches, typename TPrefices, typename TFinder, typename = std::enable_if_t<std::is_same<TPrefices, std::vector<std::string>>::value>>
+void findAllExactIndex(TMatches& matches, const TPrefices& prefices, const TFinder& finder, bool = false) noexcept
 {
     assert(length(matches) == length(prefices));
 
-    auto it = matches.begin();
-    for (const auto& prefix : prefices)
-    {
-        *it = findExactIndex(prefix, finder);
-        ++it;
-    }
-    //std::transform(seqan::begin(prefices), seqan::end(prefices), seqan::begin(matches), [&finder](const auto& prefix)->auto { // not working because of seqan problem
-    //    return findExactIndex(prefix, finder);});
+    std::transform(prefices.begin(), prefices.end(), matches.begin(), [&finder](const auto& prefix)->auto {
+        return finder.getMatchIndex(prefix);});
 }
 
-template <typename TRead>
-void clipBarcodes(std::vector<TRead>& reads, const seqan::String<int>& matches, const unsigned len) noexcept
+template <typename TMatches, template <typename> class TRead, typename TSeq, typename TFinder, 
+    typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value 
+    || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
+void findAllExactIndex(TMatches& matches, const std::vector<TRead<TSeq>>& reads, const TFinder& finder) noexcept
 {
-    int limit = reads.size();
-    for (int i = 0; i < limit; ++i)
-        if (matches[i] != -1)					//only erases barcode from sequence if it could be matched
-        {
-            erase(reads[i].seq, 0, len);
-        }
+    assert(length(matches) == length(reads));
+
+    std::transform(reads.cbegin(), reads.end(), matches.begin(), [&finder](const auto& read)->auto {
+        return finder.getMatchIndex(static_cast<const std::string>(prefix(read.seq,5)));});
+}
+
+
+template <typename TRead>
+void clipBarcodes(std::vector<TRead>& reads, const std::vector<int>& matches, const unsigned len) noexcept
+{
+    auto& it = matches.cbegin();
+    std::for_each(reads.begin(), reads.end(), [&it, len](auto& read) {
+        if(*it == -1)
+            erase(read.seq, 0, len);
+    });
 }
 
 //Overload for deleting the barcodes in any case.
 template<typename TRead>
 void clipBarcodes(std::vector<TRead>& reads, const int len) noexcept
 {
-    std::transform(reads.begin(), reads.end(), reads.begin(), [len](auto& read)->auto {
+    for (auto& read : reads)
         erase(read.seq, 0, len);
-        return read;});
 }
 
 struct ApproximateBarcodeMatching {};
@@ -210,63 +200,65 @@ struct ExactBarcodeMatching {};
 
 template <typename TRead, typename TMatches, typename TStats>
 void group(std::vector<TRead>& reads, const TMatches& matches, TStats& stats,
-    const ExactBarcodeMatching&, const bool exclude) noexcept
+    const ExactBarcodeMatching&) noexcept
 {
-    unsigned i = 0;
-	for (const auto matchResult : matches)
-    {                                                       //adds index of sequence to respective group.
-		if ((!exclude) || (matchResult != -1))                //Check if unidentified seqs have to be excluded
+    auto it = matches.begin();
+    for (auto& read : reads)
+    {
+        if (*it != -1)                //Check if unidentified seqs have to be excluded
         {                                                   //offset by 1 is necessary since group 0 is...
-            reads[i++].demuxResult = matchResult + 1;               //...reserved for unidentified sequences)
-            ++stats.matchedBarcodeReads[matchResult + 1];
+            read.demuxResult = *it + 1;
+            ++stats.matchedBarcodeReads[*it + 1];
         }
-    }                                                  
+        ++it;
+    }
 }
 
 template <typename TRead, typename TMatches, typename TBarcodes, typename TStats>
 void group(std::vector<TRead>& reads, const TMatches& matches,
-    const TBarcodes& barcodes, TStats& stats, const ExactBarcodeMatching& dummy, bool exclude) noexcept
+    const TBarcodes& barcodes, TStats& stats, const ExactBarcodeMatching& dummy) noexcept
 {
     (void)barcodes;
-    group(reads, matches, stats, dummy, exclude);
+    group(reads, matches, stats, dummy);
 }
 
 //Overload if approximate search has been used.
 template <typename TRead, typename TMatches, typename TBarcodes, typename TStats>
 void group(std::vector<TRead>& reads, const TMatches& matches,
-    const TBarcodes& barcodes, TStats& stats, const ApproximateBarcodeMatching&, bool exclude) noexcept
+    const TBarcodes& barcodes, TStats& stats, const ApproximateBarcodeMatching&) noexcept
 {
     unsigned i = 0;
-    float dividend = float(length(barcodes[0])*5.0);		//value by which the index will be corrected.
+    const float dividend = float(length(barcodes[0])*5.0);		//value by which the index will be corrected.
     for (const int matchResult : matches)			        //adds index of sequence to respective group.
     {
-        if ((!exclude) || (matchResult != -1))                //Check if unidentified reads have to be excluded
+        if (matchResult != -1)                //Check if unidentified reads have to be excluded
         {
-            reads[i++].demuxResult = int(floor(float(matchResult) / dividend)) + 1;
+            reads[i].demuxResult = int(floor(float(matchResult) / dividend)) + 1;
             ++stats.matchedBarcodeReads[static_cast<int>(floor(float(matchResult) / dividend)) + 1];
         }
+        else
+            reads[i].demuxResult = 0;
+        ++i;
     }
 }
 
 template<template <typename> class TRead, typename TSeq, typename TBarcodes, typename TFinder, typename TStats, typename TApprox>
-void doAll(std::vector<TRead<TSeq>>& reads, const TBarcodes& barcodes, const TFinder& esaFinder,
-    const bool hardClip, TStats& stats, const TApprox& approximate, bool exclude)
+void doAll(std::vector<TRead<TSeq>>& reads, const TBarcodes& barcodes, const TFinder& finder,
+    const bool hardClip, TStats& stats, const TApprox& approximate, const bool exclude)
 {
-    std::vector<TSeq> prefices(length(reads));
-    getPrefix(prefices, reads, length(barcodes[0]));
-    std::vector<int> matches(length(prefices));
-    findAllExactIndex(matches, prefices, esaFinder);
+    std::vector<int> matches(length(reads));
+    findAllExactIndex<std::vector<int>,TRead, TSeq, TFinder>(matches, reads, finder);
+    if (exclude)
+    {
+        reads.erase(std::remove_if(reads.begin(), reads.end(), [](const auto& read)->auto {return read.demuxResult == 0;}), reads.end());
+    }
     if (std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value)   // clipping is not done for multiplex barcodes, only for inline barcodes
     {
         if (hardClip)		//clip barcodes according to selected method
-        {
             clipBarcodes(reads, length(barcodes[0]));
-        }
         else
-        {
             clipBarcodes(reads, matches, length(barcodes[0]));
-        }
     }
-    group(reads, matches, barcodes, stats, approximate, exclude);
+    group(reads, matches, barcodes, stats, approximate);
 }
-#endif  // #ifndef SANDBOX_GROUP3_APPS_SEQDPT_DEMULTIPLEX_H_
+#endif 

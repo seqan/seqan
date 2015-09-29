@@ -42,8 +42,8 @@
 // ==========================================================================
 
 
-#ifndef SANDBOX_GROUP3_APPS_SEQDPT_READTRIMMING_H_
-#define SANDBOX_GROUP3_APPS_SEQDPT_READTRIMMING_H_
+#ifndef READTRIMMING_H
+#define READTRIMMING_H
 
 #include "helper_functions.h"
 #include "general_stats.h"
@@ -155,24 +155,19 @@ struct TagTrimming
 };
 
 template <typename TRead, typename TSpec, typename TTagTrimming>
-unsigned _trimReads(std::vector<TRead>& reads, unsigned const cutoff, TSpec const & spec, TTagTrimming) noexcept(!TTagTrimming::value)
+unsigned _trimReads(std::vector<TRead>& reads, unsigned const cutoff, const TSpec& spec, TTagTrimming) noexcept(!TTagTrimming::value)
 {
     int trimmedReads = 0;
-    int len = length(reads);
-    SEQAN_OMP_PRAGMA(parallel for schedule(static) reduction(+:trimmedReads))
-        for (int i = 0; i < len; ++i)
+    std::transform(reads.begin(),reads.end(),reads.begin(),[&trimmedReads, cutoff, &spec](auto& read)->auto
+    {
+        if (trimRead(read.seq, cutoff, spec))
         {
-            auto& read = reads[i];
-            unsigned trimmed = trimRead(read.seq, cutoff, spec);
-            if (trimmed > 0)
-            {
-                ++trimmedReads;
-                if (TTagTrimming::value)
-                {
-                    append(reads[i].id, "[Trimmed]");
-                }
-            }
+            ++trimmedReads;
+            if (TTagTrimming::value)
+                append(read.id, "[Trimmed]");
         }
+        return read;
+    });
     return trimmedReads;
 }
 
@@ -181,15 +176,10 @@ unsigned dropReads(std::vector<TRead<TSeq>>& reads, unsigned const min_length, b
 {
     if (empty(reads))
         return 0;
-    std::vector<bool> rem(length(reads));
 
-    const auto beginAddr = &*reads.begin();
-    for (const auto& element : reads)
-        if (length(element.seq) < min_length)
-            rem[&element - beginAddr] = true;
-        else
-            rem[&element - beginAddr] = false;
-    return _eraseSeqs(rem, true, reads);
+    const auto oldSize = reads.size();
+    reads.erase(std::remove_if(reads.begin(), reads.end(), [min_length](const auto& read) ->bool {return length(read.seq) >= min_length ? false : true;}), reads.end());
+    return oldSize - reads.size();
 }
 
 template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
@@ -199,13 +189,9 @@ unsigned dropReads(std::vector<TRead<TSeq>>& reads, unsigned const min_length)
         return 0;
     std::vector<bool> rem(length(reads));
 
-    const auto beginAddr = &*reads.begin();
-    for (const auto& element : reads)
-        if (length(element.seq) < min_length || length(element.seqRev) < min_length)
-            rem[&element - beginAddr] = true;
-        else
-            rem[&element - beginAddr] = false;
-    return _eraseSeqs(rem, true, reads);
+    const auto oldSize = reads.size();
+    reads.erase(std::remove_if(reads.begin(), reads.end(), [min_length](const auto& read) ->bool {return std::min(length(read.seq), length(read.seqRev)) >= min_length ? false : true;}), reads.end());
+    return oldSize - reads.size();
 }
 
 
@@ -219,4 +205,4 @@ unsigned trimBatch(std::vector<TRead>& reads, unsigned const cutoff, TSpec const
         trimmedReads = _trimReads(reads, cutoff, spec, TagTrimming<false>());
     return trimmedReads;
 }
-#endif  // #ifndef SANDBOX_GROUP3_APPS_SEQDPT_READTRIMMING_H_
+#endif

@@ -370,7 +370,6 @@ SEQAN_DEFINE_TEST(preTrim_test)
     GeneralStats stats;
     using TRead = Read<seqan::Dna5QString>;
     std::vector<TRead> reads(7);
-    std::vector<TRead> reads2(7);
 
     reads[0].seq = "ACGTAACTGA";
     reads[1].seq = "AAAAAACTTTTT";
@@ -388,7 +387,7 @@ SEQAN_DEFINE_TEST(preTrim_test)
     reads[5].id = "loeschenLeer";
     reads[6].id = "None";
 
-    reads2 = reads;
+    auto reads2 = reads;
 
     preTrim(reads2, 3, 3, 4, false, stats);
     SEQAN_ASSERT_EQ(reads2[0].seq, "TAAC");

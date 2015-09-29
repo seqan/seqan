@@ -1,5 +1,5 @@
-#ifndef GENERALSTATS_H_
-#define GENERALSTATS_H_
+#ifndef GENERALSTATS_H
+#define GENERALSTATS_H
 
 
 struct AdapterTrimmingStats

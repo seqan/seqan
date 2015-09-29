@@ -194,12 +194,12 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
     TRead read;
 
     read.seq = "AAAAAAAAAATTTTT";
-    TAda ada = TAda(         "TTTTTTTTTTT");
+    TAda ada = TAda(     "TTTTTTTTTTT");
 
 	int len = length(read.seq);
     AdapterMatchSettings autoOption;
     AdapterTrimmingStats stats;
-    int removed = stripAdapter(read.seq, stats, TAdapterSet{AdapterItem(ada)}, autoOption, TagAdapter<false>());
+    int removed = stripAdapter(read.seq, stats, TAdapterSet{AdapterItem(ada)}, autoOption, StripAdapterDirection<adapterDirection::forward>());
 	SEQAN_ASSERT_EQ(removed, 5);
 	SEQAN_ASSERT_EQ(len - length(read.seq), 5u);
 
@@ -208,7 +208,7 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
 	//                || |||||||		   
     ada = TAda(     "GAATATATATTT");
 	len = length(read.seq);
-	removed = stripAdapter(read.seq, stats, TAdapterSet{ AdapterItem(ada) }, autoOption, TagAdapter<false>());
+	removed = stripAdapter(read.seq, stats, TAdapterSet{ AdapterItem(ada) }, autoOption, StripAdapterDirection<adapterDirection::forward>());
 	SEQAN_ASSERT_EQ(removed, 12);
 	SEQAN_ASSERT_EQ(len - length(read.seq), 12u);
 }
@@ -220,21 +220,21 @@ SEQAN_DEFINE_TEST(align_adapter_test)
 
 	TSeq seq = TSeq("AAAAAAAAAATTTTT");
 	TAda ada = TAda("TTTTTTTTTTT");
-	seqan::Pair<unsigned, seqan::Align<TSeq> > pair;
+	std::pair<unsigned, seqan::Align<TSeq> > pair;
     alignAdapter(pair, seq, AdapterItem(ada));
-	SEQAN_ASSERT_EQ(pair.i1, 5u);
+	SEQAN_ASSERT_EQ(pair.first, 5u);
 
 	seq = TSeq("AAAAAAAAAATATATTA");
 	//                    |||||		   
 	ada = TAda(       "GGTTATATATTT"); // front and back gaps are allowed
 	alignAdapter(pair, seq, AdapterItem(ada));
-	SEQAN_ASSERT_EQ(pair.i1, 2u);
+	SEQAN_ASSERT_EQ(pair.first, 2u);
 
 	seq = TSeq("AAAAAAAAAATATATTA");
 	//                || |||||||		   
 	ada = TAda(     "GAATATATATTT"); // front and back gaps are allowed
 	alignAdapter(pair, seq, AdapterItem(ada));
-	SEQAN_ASSERT_EQ(pair.i1, 6u);
+	SEQAN_ASSERT_EQ(pair.first, 6u);
 }
 
 SEQAN_DEFINE_TEST(strip_pair_test)
@@ -254,12 +254,6 @@ SEQAN_DEFINE_TEST(strip_pair_test)
 
 SEQAN_BEGIN_TESTSUITE(test_my_app_funcs)
 {
-    int tnum = 1;
-#ifdef _OPENMP
-	omp_set_num_threads(8);
-	tnum = omp_get_max_threads();
-#endif
-	std::cout<<"\nRunning Tests using " << tnum << " thread(s).\n\n";
     SEQAN_CALL_TEST(get_overlap_test);
 	SEQAN_CALL_TEST(count_gap_test);
 	SEQAN_CALL_TEST(insert_size_test);

@@ -41,8 +41,8 @@
 // Biology 2012, 1, 895-905.
 // ==========================================================================
 
-#ifndef SANDBOX_GROUP3_APPS_SEQDPT_ADAPTERTRIMMING_H_
-#define SANDBOX_GROUP3_APPS_SEQDPT_ADAPTERTRIMMING_H_
+#ifndef ADAPTERTRIMMING_H
+#define ADAPTERTRIMMING_H
 
 #include <seqan/align.h>
 #include <seqan/find.h>
@@ -167,14 +167,14 @@ template <typename TAlign>
 unsigned getInsertSize(TAlign& align) noexcept
 {
 	typedef typename seqan::Row<TAlign>::Type TRow;
-	TRow &row1 = seqan::row(align,0);
-	TRow &row2 = seqan::row(align,1);
-	unsigned seq1_length = length(source(row1));
-	unsigned seq2_length = length(source(row2));
+	const TRow &row1 = seqan::row(align,0);
+	const TRow &row2 = seqan::row(align,1);
+	const unsigned seq1_length = length(source(row1));
+	const unsigned seq2_length = length(source(row2));
 	// Calculate overlap and overhangs.
-	unsigned overlap = seq1_length - countTotalGaps(row2);
-	unsigned seq2l = seqan::countGaps(seqan::begin(row1)); // Overhang of sequence 2 = Gaps at start of row 1.
-	unsigned seq1r = countTotalGaps(row2) - seqan::countGaps(seqan::begin(row2)); // Overhang of sequence 1 = Gaps at end of row 2.
+	const unsigned overlap = seq1_length - countTotalGaps(row2);
+	const unsigned seq2l = seqan::countGaps(seqan::begin(row1)); // Overhang of sequence 2 = Gaps at start of row 1.
+	const unsigned seq1r = countTotalGaps(row2) - seqan::countGaps(seqan::begin(row2)); // Overhang of sequence 1 = Gaps at end of row 2.
 	// Insert size: Add sequence lengths, subtract common region (overlap)
 	// and subtract overhangs left and right of insert.
 	return seq1_length + seq2_length - overlap - (seq2l + seq1r);
@@ -182,23 +182,23 @@ unsigned getInsertSize(TAlign& align) noexcept
 
 
 template <typename TSeq1, typename TSeq2, bool TTop, bool TLeft, bool TRight, bool TBottom>
-void alignPair(seqan::Pair<unsigned, seqan::Align<TSeq1> >& ret, const TSeq1& seq1, const TSeq2& seq2,
+void alignPair(std::pair<unsigned, seqan::Align<TSeq1> >& ret, const TSeq1& seq1, const TSeq2& seq2,
 		const seqan::AlignConfig<TTop, TLeft, TRight, TBottom>& config, bool band = false) noexcept
 {
-    seqan::resize(rows(ret.i2), 2);
-    seqan::assignSource(row(ret.i2, 0), seq1);
-    seqan::assignSource(row(ret.i2, 1), seq2);
+    seqan::resize(rows(ret.second), 2);
+    seqan::assignSource(row(ret.second, 0), seq1);
+    seqan::assignSource(row(ret.second, 1), seq2);
 	// Overlap alignment. We again don't allow gaps, since they are unlikely in Illumina data.
 	// We mostly use AlignConfigs true,false,true,false and true,true,true,true here.
-	TScore adapterScore(-100);
+	const TScore adapterScore(-100);
 	// If we can do a banded alignment, restrict ourselves to the upper half of the matrix.
     if (band)
     {
-        ret.i1 = globalAlignment(ret.i2, adapterScore, config, -2, length(seq1));
+        ret.first = globalAlignment(ret.second, adapterScore, config, -2, length(seq1));
     }
     else
     {
-        ret.i1 = globalAlignment(ret.i2, adapterScore, config);
+        ret.first = globalAlignment(ret.second, adapterScore, config);
     }
 }
 
@@ -211,13 +211,13 @@ unsigned stripPair(TSeq& seq1, TSeq& seq2) noexcept
     typedef typename STRING_REVERSE_COMPLEMENT<TAlphabet>::Type TReverseComplement;
     TReverseComplement mod(seq2);
     typedef seqan::Align<TSeq> TAlign;
-    seqan::Pair<unsigned, TAlign> ret;
+    std::pair<unsigned, TAlign> ret;
     alignPair(ret, seq1, mod, seqan::AlignConfig<true, true, true, true>());
-    unsigned score = ret.i1;
-    TAlign align = ret.i2;
+    const auto& score = ret.first;
+    const TAlign& align = ret.second;
     // Use the overlap of the two sequences to determine the end position.
-    unsigned overlap = getOverlap(align);
-    unsigned mismatches = (overlap - score) / 2;
+    const unsigned overlap = getOverlap(align);
+    const unsigned mismatches = (overlap - score) / 2;
     // We require a certain correct overlap to exclude spurious hits.
     // (Especially reverse 3'->5' alignments not caused by adapters.)
     if (overlap <= 5 || mismatches > overlap * 0.15)
@@ -225,7 +225,7 @@ unsigned stripPair(TSeq& seq1, TSeq& seq2) noexcept
         return 0;
     }
     // Get actual size of the insert (possible to determine from overlap etc.).
-    unsigned insert = getInsertSize(align);
+    const unsigned insert = getInsertSize(align);
     // Now cut both sequences to insert size (no cuts happen if they are smaller)
     if (length(seq1) > insert)
     {
@@ -239,7 +239,7 @@ unsigned stripPair(TSeq& seq1, TSeq& seq2) noexcept
 }
 
 template <typename TSeq, typename TAdapterItem>
-void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, const TSeq& seq, TAdapterItem const& adapterItem) noexcept
+void alignAdapter(std::pair<unsigned, seqan::Align<TSeq> >& ret, const TSeq& seq, TAdapterItem const& adapterItem) noexcept
 {
 	// Gaps are not allowed by setting the gap penalty high.
     // Changed the AlignConfig to behave like cutadapt's non anchored mode
@@ -288,7 +288,7 @@ inline bool isMatch(const int overlap, const int mismatches, const AdapterMatchS
 enum adapterDirection : bool
 {
     reverse, 
-forward
+    forward
 };
 
 template<bool _val>
@@ -307,9 +307,9 @@ template <typename TSeq, typename TAdapters, typename TSpec, typename TStripAdap
 unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& adapters, TSpec const& spec,
     const TStripAdapterDirection&) noexcept
 {
-    typedef typename seqan::Align<seqan::Dna5String> TAlign;
+    typedef typename seqan::Align<TSeq> TAlign;
     typedef typename seqan::Row<TAlign>::Type TRow;
-    seqan::Pair<unsigned, TAlign> ret;
+    std::pair<unsigned, TAlign> ret;
 
     unsigned removed{ 0 };
 
@@ -322,26 +322,26 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
 
         if (TStripAdapterDirection::value == adapterDirection::reverse)
         {
-            alignAdapter(ret, seqan::Dna5String(seq), adapterItem.getReverseComplement());    // align crashes if seq is an empty string!
+            alignAdapter(ret, seq, adapterItem.getReverseComplement());    // align crashes if seq is an empty string!
         }
         else
-            alignAdapter(ret, seqan::Dna5String(seq), adapterItem);    // align crashes if seq is an empty string!
+            alignAdapter(ret, seq, adapterItem);    // align crashes if seq is an empty string!
 
-        const unsigned int overlap = getOverlap(ret.i2);
-        const int score = ret.i1;
+        const unsigned int overlap = getOverlap(ret.second);
+        const int score = ret.first;
         const int mismatches = (overlap - score) / 2;
         if (isMatch(overlap, mismatches, spec))
         {
             //std::cout << "score: " << ret.i1 << " overlap: " << overlap << " mismatches: " << mismatches << std::endl;
             //std::cout << ret.i2 << std::endl;
-            TRow row2 = row(ret.i2, 1);
+            const TRow row2 = row(ret.second, 1);
             //std::cout << "adapter start position: " << toViewPosition(row2, 0) << std::endl;
             const auto seqLen = length(seq);
             removed += seqLen - toViewPosition(row2, 0);
             seqan::erase(seq, toViewPosition(row2, 0), seqLen);
             //std::cout << "stripped seq: " << seq << std::endl;
             stats.overlapSum += overlap;
-            if (TStripAdapterDirection::value == adapterDirection::reverse)
+            if (TStripAdapterDirection::value == adapterDirection::forward)
                 ++stats.a1count;
             else
                 ++stats.a2count;
@@ -361,7 +361,6 @@ unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const
     AdapterTrimmingStats& stats, TTagAdapter, bool = false) noexcept(!TTagAdapter::value)
 {
     (void)pairedNoAdapterFile;
-    int len = length(reads);
     for(auto& read: reads)
     {
         if (seqan::empty(read.seq))
