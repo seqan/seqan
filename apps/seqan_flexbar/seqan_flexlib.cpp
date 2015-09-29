@@ -1633,15 +1633,16 @@ struct ReadReader
     {
         if (!_eof)
             return false;
-        unsigned int numEmpty = 0;
         for (auto& readSet : _tlsReadSets)
             if (readSet.first.try_lock())
             {
-                if (!readSet.second)
-                    ++numEmpty;
-                readSet.first.unlock();
+                if (readSet.second)
+                {
+                    readSet.first.unlock();
+                    return false;
+                }
             }
-        return numEmpty == _tlsReadSets.size();
+        return false;
     }
     bool getReads(std::unique_ptr<std::vector<TRead<TSeq>>>& reads) noexcept
     {
@@ -1709,7 +1710,6 @@ struct ProcessingUnit
     }
     bool finished() noexcept
     {
-        unsigned int numJoinable = 0;
         for (auto& _thread : _threads)
             if (_thread.joinable())
                 return false;
