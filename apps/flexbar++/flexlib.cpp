@@ -646,14 +646,14 @@ struct ProcessingParams
         runCheckUncalled(false) {};
 };
 
-enum TrimmingMode
+enum class TrimmingMode
 {
     E_WINDOW,
     E_BWA,
     E_TAIL
 };
 
-enum MatchMode
+enum class MatchMode
 {
     E_AUTO,
     E_USER
@@ -667,7 +667,7 @@ struct AdapterTrimmingParams
     AdapterMatchSettings mode;
     MatchMode mmode;
     bool tag;
-    AdapterTrimmingParams() : pairedNoAdapterFile(false), run(false), mmode(E_AUTO), tag(false) {};
+    AdapterTrimmingParams() : pairedNoAdapterFile(false), run(false), mmode(MatchMode::E_AUTO), tag(false) {};
 };
 
 struct QualityTrimmingParams
@@ -677,7 +677,7 @@ struct QualityTrimmingParams
     int min_length;
     bool run;
     bool tag;
-       QualityTrimmingParams() : trim_mode(E_WINDOW), cutoff(-1), min_length(1), run(false), tag(false) {};
+       QualityTrimmingParams() : trim_mode(TrimmingMode::E_WINDOW), cutoff(-1), min_length(1), run(false), tag(false) {};
 };
 
 struct InputFileStreams
@@ -1109,13 +1109,13 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
 		getOptionValue(e, parser, "e");
 		getOptionValue(er, parser, "er");
 		params.mode = AdapterMatchSettings(o, e, er);
-        params.mmode = E_USER;
+        params.mmode = MatchMode::E_USER;
     }
     // Otherwise use the automatic configuration.
     else
     {
         params.mode = AdapterMatchSettings();
-        params.mmode = E_AUTO;
+        params.mmode = MatchMode::E_AUTO;
     }
     return 0;
 }
@@ -1127,15 +1127,15 @@ int loadQualityTrimmingParams(seqan::ArgumentParser const & parser, QualityTrimm
     getOptionValue(method, parser, "m");
     if (method == "WIN")
     {
-        params.trim_mode = E_WINDOW;
+        params.trim_mode = TrimmingMode::E_WINDOW;
     }
     else if (method == "BWA")
     {
-        params.trim_mode = E_BWA;
+        params.trim_mode = TrimmingMode::E_BWA;
     }
     else
     {
-        params.trim_mode = E_TAIL;
+        params.trim_mode = TrimmingMode::E_TAIL;
     }
     // QUALITY CUTOFF ----------------------------
     if (isSet(parser, "q"))
@@ -1272,7 +1272,6 @@ void adapterTrimmingStage(const AdapterTrimmingParams& params, std::vector<TRead
 }
 
 // QUALITY TRIMMING
-//Version for single-ende data
 template <typename TRead, typename TStats>
 void qualityTrimmingStage(const QualityTrimmingParams& params, std::vector<TRead>& reads, TStats& stats)
 {
@@ -1280,16 +1279,16 @@ void qualityTrimmingStage(const QualityTrimmingParams& params, std::vector<TRead
     {
         switch (params.trim_mode)
         {
-        case E_WINDOW:
+        case TrimmingMode::E_WINDOW:
         {
             trimBatch(reads, params.cutoff, Mean(5), params.tag);
             break;
         }
-        case E_BWA:
+        case TrimmingMode::E_BWA:
         {
             trimBatch(reads, params.cutoff, BWA(), params.tag);
         }
-        case E_TAIL:
+        case TrimmingMode::E_TAIL:
         {
             trimBatch(reads, params.cutoff, Tail(), params.tag);
         }

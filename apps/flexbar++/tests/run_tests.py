@@ -29,7 +29,7 @@ def main(source_base, binary_base):
     
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
-        'apps/seqan_flexbar/tests')  # tests dir
+        'apps/flexbar++/tests')  # tests dir
 
     # ============================================================
     # Auto-detect the binary path.

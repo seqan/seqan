@@ -102,7 +102,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS} $
 
 # Set variables for installing, depending on the selected build type.
 if (NOT SEQAN_PREFIX_SHARE_DOC)
-  seqan_setup_install_vars (seqan_flexbar)
+  seqan_setup_install_vars (flexbar++)
 endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install seqan_flexbar in ${PREFIX}/bin directory
