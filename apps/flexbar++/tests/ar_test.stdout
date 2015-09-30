@@ -1,0 +1,18 @@
+
+Processing reads...
+
+reads processed: 44
+Read statistics
+===============
+Reads processed:	44
+  Reads dropped:	0	(0%)
+File statistics
+===============
+File 1:
+-------
+  Surviving: 44/44 (100%)
+   Adapters: 15
+
+Adapter sizes:
+Min: 1, Mean: 2, Max: 13
+

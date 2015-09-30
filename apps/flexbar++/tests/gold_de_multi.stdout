@@ -1,0 +1,26 @@
+
+Processing reads...
+
+reads processed: 44
+Read statistics
+===============
+Reads processed:	44
+  Reads dropped:	0	(0%)
+
+Barcode Demultiplexing statistics
+=================================
+Reads per barcode:
+Unidentified:	1		(2.27%)
+Sample37:	1		(2.27%)
+Sample1458:	7		(15.9%)
+Sample26:	13		(29.5%)
+Sample0:	6		(13.6%)
+Sample-1:	10		(22.7%)
+Sample-2:	6		(13.6%)
+
+File statistics
+===============
+File 1:
+-------
+  Surviving: 44/44 (100%)
+
