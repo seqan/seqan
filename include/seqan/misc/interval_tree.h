@@ -325,7 +325,7 @@ public:
  * The following example creates an integer interval tree with string keys.  This tree is quired for keys of intervals
  * that overlap the interval <tt>[550, 990)</tt>.
  *
- * @include demos/misc/interval_tree_example.cpp
+ * @include demos/dox/misc/interval_tree_example.cpp
  *
  * The resulting keys are:
  *

@@ -121,7 +121,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  * This code shows how an index can be used with iterators to achieve a pre-order tree like traversal
  * in DFS of the text "tobeornottobe". In order to do so a Top-Down History iterator is used.
  *
- * @include demos/index/index_iterator.cpp
+ * @include demos/dox/index/iterator.cpp
  *
  * @code{.output}
  *
@@ -1062,11 +1062,11 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  *
  * @section Examples
  *
- * @include demos/index/index_counting.cpp
+ * @include demos/dox/index/counting.cpp
  *
  * The result is as follows:
  *
- * @include demos/index/index_counting.cpp.stdout
+ * @include demos/dox/index/counting.cpp.stdout
  */
 
     template < typename TIndex, class TSpec >
@@ -1547,11 +1547,11 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  * returns an iterator pointing to the root node, while in the second case @link StringTreeConcept#begin @endlink returns a pointer to the
  * left most node.
  *
- * @include demos/index/index_begin_atEnd_representative.cpp
+ * @include demos/dox/index/begin_atEnd_representative.cpp
  *
  * The output is as follows:
  *
- * @include demos/index/index_begin_atEnd_representative.cpp.stdout
+ * @include demos/dox/index/begin_atEnd_representative.cpp.stdout
  */
     template < typename TText, typename TIndexSpec, class TSpec >
     inline typename Iterator<Index<TText, TIndexSpec>, TSpec >::Type
@@ -1738,7 +1738,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  *
  * The following code shows a simple example how the function @link TopDownIterator#goDown @endlink is used.
  *
- * @include demos/index/index_begin_range_goDown_representative_repLength.cpp
+ * @include demos/dox/index/begin_range_goDown_representative_repLength.cpp
  *
  * @code{.output}
  * The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
@@ -2040,7 +2040,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  *
  * The following code shows how the function @link TopDownHistoryIterator#goUp @endlink is used.
  *
- * @include demos/index/index_iterator.cpp
+ * @include demos/dox/index/iterator.cpp
  *
  * @code{.output}
  * be
@@ -2386,7 +2386,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  *
  * The following example shows the usage of the @link VSTreeIterator#atEnd @endlink function.
  *
- * @include demos/index/index_begin_atEnd_representative.cpp
+ * @include demos/dox/index/begin_atEnd_representative.cpp
  *
  * @code{.output}
  * A
@@ -2421,7 +2421,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  *
  * The following example shows the usage of the @link BottomUp#atEnd @endlink function.
  *
- * @include demos/index/index_begin_atEnd_representative.cpp
+ * @include demos/dox/index/begin_atEnd_representative.cpp
  *
  * @code{.output}
  * A
@@ -2467,7 +2467,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  *
  * The following example shows the usage of the @Function.isRoot@ function.
  *
- * @include demos/index/index_begin_atEnd_representative_bottomUp.cpp
+ * @include demos/dox/index/begin_atEnd_representative_bottomUp.cpp
  *
  * code{.output}
  * output:AA
@@ -2698,7 +2698,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  * The following code how @link VSTreeIterator#getFrequency @endlink is used. Note that the result of alternative 1 and 2 is the same,
  * however alternative one copies a string which requires more memory.
  *
- * @include demos/index/index_getOccurrences_getFrequency_range_getFibre.cpp
+ * @include demos/dox/index/getOccurrences_getFrequency_range_getFibre.cpp
  *
  * @code{.output}
  * SSI occurs in 2 sequences.

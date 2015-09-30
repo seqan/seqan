@@ -165,7 +165,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * Segments support element access (reading and writing) as well as random access iteration.
  *
- * @snippet demos/sequence/segment.cpp basic operations
+ * @snippet demos/dox/sequence/segment.cpp basic operations
  *
  * You can get the type of the infix/prefix/suffix of a sequence using @link SegmentableConcept#Infix @endlink,
  * @link SegmentableConcept#Prefix @endlink, and @link SegmentableConcept#Suffix @endlink.  These metafunctions will
@@ -176,12 +176,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * A suffix of a suffix remains a suffix, a prefix of a prefix remains a prefix.  Any other combination leads to
  * the resulting type being a infix segment.
  *
- * @snippet demos/sequence/segment.cpp metafunction examples
+ * @snippet demos/dox/sequence/segment.cpp metafunction examples
  *
  * If you explicitely need a segment and keep the underlying sequence as it is, explicitely use the <tt>Segment</tt>
  * template class.
  *
- * @snippet demos/sequence/segment.cpp explicit segment
+ * @snippet demos/dox/sequence/segment.cpp explicit segment
  *
  * @aka substring
  */

@@ -485,11 +485,11 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  * The following example demonstrates the usage of <tt>splitAlignment</tt> in the first case.  The second case
  * works accordingly.
  *
- * @include demos/align_split/split_alignment.cpp
+ * @include demos/dox/align_split/split_alignment.cpp
  *
  * The output is as follows.
  *
- * @include demos/align_split/split_alignment.cpp.stdout
+ * @include demos/dox/align_split/split_alignment.cpp.stdout
  */
 
 // Variant: unbanded, with Align objects.

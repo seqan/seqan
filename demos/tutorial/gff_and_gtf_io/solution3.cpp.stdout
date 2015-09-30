@@ -1,0 +1,2 @@
+ctg123	.	gene	1000	9000	.	+	.	ID=gene0001;Name=EDEN
+ctg123	.	TF_binding_site	1000	1012	.	+	.	Parent=gene0001

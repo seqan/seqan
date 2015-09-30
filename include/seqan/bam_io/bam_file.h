@@ -61,11 +61,11 @@ namespace seqan {
  *
  * Access SAM or BAM files.
  *
- * @include demos/tutorial/bam_io/solution1.cpp
+ * @include demos/tutorial/sam_and_bam_io/solution1.cpp
  *
  * The output is as follows:
  *
- * @include demos/tutorial/bam_io/example.sam
+ * @include demos/tutorial/sam_and_bam_io/example.sam
  */
 
 typedef FormattedFile<Bam, Input> BamFileIn;
@@ -88,11 +88,11 @@ typedef FormattedFile<Bam, Input> BamFileIn;
  *
  * Access SAM or BAM files.
  *
- * @include demos/tutorial/bam_io/solution1.cpp
+ * @include demos/tutorial/sam_and_bam_io/solution1.cpp
  *
  * The output is as follows:
  *
- * @include demos/tutorial/bam_io/example.sam
+ * @include demos/tutorial/sam_and_bam_io/example.sam
  */
 
 typedef FormattedFile<Bam, Output> BamFileOut;

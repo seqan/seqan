@@ -224,44 +224,8 @@ Assignment 1
 
      .. container:: foldable
 
-        .. code-block:: cpp
+        .. includefrags:: demos/tutorial/sequences/string_assignment_1_solution.cpp
 
-           #include <seqan/sequence.h>
-           #include <seqan/basic.h>
-           #include <seqan/stream.h>
-           #include <seqan/file.h>
-           #include <seqan/modifier.h>
-
-           using namespace seqan;
-
-           Dna getRevCompl(Dna const & nucleotide)
-           {
-               if (nucleotide == (Dna)'A')
-                   return (Dna)'T';
-               if (nucleotide == (Dna)'T')
-                   return (Dna)'A';
-               if (nucleotide == (Dna)'C')
-                   return (Dna)'G';
-               return (Dna)'C';
-           }
-
-           int main()
-           {
-               DnaString genome = "TATATACGCGCGAGTCGT";
-               DnaString revComplGenome;
-               resize(revComplGenome, length(genome));
-
-               for (unsigned i = 0; i < length(genome); ++i)
-               {
-                   revComplGenome[length(genome) - 1 - i] = getRevCompl(genome[i]);
-               }
-
-               std::cout << genome << std::endl;
-               std::cout << revComplGenome << std::endl;
-               reverseComplement(genome);
-               std::cout << genome << std::endl;
-               return 0;
-           }
 
 Workshop Assignment 1
 ^^^^^^^^^^^^^^^^^^^^^
@@ -361,7 +325,7 @@ Workshop Assignment 1
 
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/sequences/string_assignment_1_solution.cpp
+        .. includefrags:: demos/tutorial/sequences/string_workshop_assignment_1_solution.cpp
 
 Comparisons
 ^^^^^^^^^^^
@@ -484,29 +448,7 @@ Assignment 2
 
      .. container:: foldable
 
-        .. code-block:: cpp
-
-           #include <seqan/stream.h>
-           #include <seqan/sequence.h>
-           #include <seqan/file.h>
-
-           using namespace seqan;
-
-           int main()
-           {
-               String<Dna5> nucleotides = "AGTCGTGNNANCT";
-               String<Dna5> lesser;
-               String<Dna5> greater;
-
-               for (unsigned i = 0; i < length(nucleotides); ++i){
-                   if (nucleotides[i] < 'G')
-                       appendValue(lesser, nucleotides[i]);
-                   else if (nucleotides[i] > 'G')
-                       appendValue(greater, nucleotides[i]);
-               }
-               std::cout << "Lesser nucleotides: " << lesser << std::endl;
-               std::cout << "Greater nucleotides: " << greater << std::endl;
-           }
+        .. includefrags:: demos/tutorial/sequences/string_assignment_2_solution.cpp
 
 Assignment 3
 ^^^^^^^^^^^^

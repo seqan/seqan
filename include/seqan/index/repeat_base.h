@@ -174,7 +174,7 @@ namespace seqan {
  *
  * The following demonstrates finding repeats of period 3.
  *
- * @include demos/index/find_repeats.cpp
+ * @include demos/dox/index/find_repeats.cpp
  *
  * @code{.console}
  * # of repeats: 15

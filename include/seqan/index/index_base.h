@@ -195,20 +195,20 @@ template <
  * The following code shows how to search for exact matches between the reference "tobeornottobe" and the
  * pattern "to" with the means of a Finder.
  *
- * @include demos/index/index_finder.cpp
+ * @include demos/dox/index/finder.cpp
  *
  * The result is as follows
  *
- * @include demos/index/index_finder.cpp.stdout
+ * @include demos/dox/index/finder.cpp.stdout
  *
  * This code shows how an index can be used with iterators to achieve a pre-order tree like traversal
  * in DFS of the text "tobeornottobe". In order to do so a Top-Down History iterator is used.
  *
- * @include demos/index/index_iterator.cpp
+ * @include demos/dox/index/iterator.cpp
  *
  * The result is as follows
  *
- * @include demos/index/index_iterator.cpp.stdout
+ * @include demos/dox/index/iterator.cpp.stdout
  *
  * Note that you can also use specialized iterators such as:
  *
@@ -224,11 +224,11 @@ template <
  *
  * You can achieve a post-order traversal like this:
  *
- * @snippet demos/index/index_iterator_short.cpp iteration
+ * @snippet demos/dox/index/iterator_short.cpp iteration
  *
  * The result is as follows
  *
- * @include demos/index/index_iterator_short.cpp.stdout
+ * @include demos/dox/index/iterator_short.cpp.stdout
  */
 
     template <typename TObject, typename TSpec>
@@ -717,11 +717,11 @@ template <
  *
  * The following example shows how to search for a pattern in a string.
  *
- * @include demos/index/index_getOccurrences_getFrequency_range_getFibre.cpp
+ * @include demos/dox/index/getOccurrences_getFrequency_range_getFibre.cpp
  *
  * The output is as follows:
  *
- * @include demos/index/index_getOccurrences_getFrequency_range_getFibre.cpp.stdout
+ * @include demos/dox/index/getOccurrences_getFrequency_range_getFibre.cpp.stdout
  *
  * @see Fibre
  */
@@ -893,11 +893,11 @@ template <
  * The following example shows how to count characters of an index, determine the number of sequences involved and how
  * to search for a pattern.
  *
- * @include demos/index/index_length_countSequences.cpp
+ * @include demos/dox/index/length_countSequences.cpp
  *
  * The output is as follows:
  *
- * @include demos/index/index_length_countSequences.cpp.stdout
+ * @include demos/dox/index/length_countSequences.cpp.stdout
  */
 
     template <typename TText, typename TSpec>
@@ -923,7 +923,7 @@ template <
  * The following example shows how to count characters of an index, determine the number of sequences involved and how
  * to search for a pattern.
  *
- * @include demos/index/index_length_countSequences.cpp
+ * @include demos/dox/index/length_countSequences.cpp
  *
  * The output is as follows:
  *
@@ -1292,11 +1292,11 @@ template <
  *
  * The following code shows how the BWT of a text can be computed.
  *
- * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp
+ * @include demos/dox/index/textAt_indexText_saAt_indexRequire.cpp
  *
  * The output is as follows:
  *
- * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp.stdout
+ * @include demos/dox/index/textAt_indexText_saAt_indexRequire.cpp.stdout
  */
 
     template <typename TText, typename TSpec>
@@ -1527,11 +1527,11 @@ template <
  *
  * The following code shows how the function @link Index#open @endlink is used with indices.
  *
- * @include demos/index/index_open_save.cpp
+ * @include demos/dox/index/open_save.cpp
  *
  * The output is as follows:
  *
- * @include demos/index/index_open_save.cpp.stdout
+ * @include demos/dox/index/open_save.cpp.stdout
  */
 
 // ----------------------------------------------------------------------------
@@ -1559,11 +1559,11 @@ template <
  *
  * The following code shows how the function @link Index#save @endlink is used with indices.
  *
- * @include demos/index/index_open_save.cpp
+ * @include demos/dox/index/open_save.cpp
  *
  * The output is as follows:
  *
- * @include demos/index/index_open_save.cpp.stdout
+ * @include demos/dox/index/open_save.cpp.stdout
  */
 }
 
