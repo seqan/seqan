@@ -51,6 +51,7 @@
 #endif
 #include "demultiplex.h"
 #include "general_processing.h"
+#include "read.h"
 
 using namespace seqan;
 

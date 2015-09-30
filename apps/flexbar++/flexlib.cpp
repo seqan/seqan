@@ -42,6 +42,7 @@
 #endif
 
 #include <iostream>
+#include <future>
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
@@ -58,6 +59,7 @@
 #include "adapter_trimming.h"
 #include "demultiplex.h"
 #include "general_processing.h"
+#include "read.h"
 
 // Global variables are evil, this is for adaption and should be removed
 // after refactorization.

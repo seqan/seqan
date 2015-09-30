@@ -38,13 +38,11 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-
 #include <seqan/stream.h>
 
 #include "helper_functions.h"
 #include "general_stats.h"
 #include <initializer_list>
-
 
 // ============================================================================
 // Tags, Classes, Enums

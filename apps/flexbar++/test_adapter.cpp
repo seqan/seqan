@@ -49,6 +49,7 @@
 #include <seqan/seq_io.h>
 #include <seqan/file.h>
 #include "adapter_trimming.h"
+#include "read.h"
 
 SEQAN_DEFINE_TEST(get_overlap_test)
 {

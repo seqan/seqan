@@ -36,9 +36,7 @@
 #ifndef HELPERFUNCTIONS_H_
 #define HELPERFUNCTIONS_H_
 
-#include <future>
 #include <string>
-#include <regex>
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -107,12 +105,6 @@ void insert(std::string& dest, unsigned int k, const std::string& token)
 
 //
 
-template<typename R>
-bool is_ready(std::future<R> const& f) noexcept
-{
-    return f.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
-}
-
 template <typename T>
 std::vector<T> operator+(const std::vector<T>& a, const std::vector<T>& b) noexcept
 {
@@ -126,147 +118,6 @@ std::vector<T> operator+(const std::vector<T>& a, const std::vector<T>& b) noexc
     return result;
 }
 
-template<typename TSeq>
-struct ReadBase 
-{
-    using seqType = TSeq;
-
-    TSeq seq;
-    std::string id;
-    int demuxResult;
-
-    ReadBase() = default;
-    ReadBase(const ReadBase& rhs) = default;
-    ReadBase(ReadBase&& rhs) noexcept(std::is_nothrow_move_constructible<TSeq>::value)
-    {
-        seq = std::move(rhs.seq);
-        id = std::move(rhs.id);
-        demuxResult = rhs.demuxResult;
-    }
-
-    bool operator==(const ReadBase& rhs) const
-    {
-        return seq == rhs.seq && id == rhs.id && demuxResult == rhs.demuxResult;
-    }
-    ReadBase& operator=(const ReadBase& rhs) = default;
-    ReadBase& operator=(const ReadBase&& rhs) noexcept(std::is_nothrow_move_assignable<TSeq>::value)
-    {
-        seq = std::move(rhs.seq);
-        id = std::move(rhs.id);
-        demuxResult = rhs.demuxResult;
-        return *this;
-    }
-    inline unsigned int minSeqLen() const noexcept
-    {
-        return length(seq);
-    }
-};
-
-template<typename TSeq>
-struct Read : ReadBase<TSeq>
-{
-    //Read() = default;
-    //Read(const Read& rhs) = default;
-    //Read(Read&& rhs) noexcept
-    //{
-    //    ReadBase<TSeq>::ReadBase(std::move(rhs));
-    //}
-    //bool operator==(const Read& rhs) const
-    //{
-    //    return ReadBase<TSeq>::operator==(rhs);
-    //}
-    //Read& operator=(const Read& rhs) = default;
-    //Read& operator=(const Read&& rhs) noexcept
-    //{
-    //    ReadBase<TSeq>::operator=(std::move(rhs));
-    //    return *this;
-    //}
-};
-
-template<typename TSeq>
-struct ReadMultiplex : ReadBase<TSeq>
-{
-    TSeq demultiplex;
-
-    ReadMultiplex() = default;
-    ReadMultiplex(const ReadMultiplex& rhs) = default;
-    ReadMultiplex(ReadMultiplex&& rhs) noexcept(std::is_nothrow_move_constructible<TSeq>::value)
-    : ReadBase<TSeq>(std::move(rhs))
-    {
-        demultiplex = std::move(rhs.demultiplex);
-    }
-
-    bool operator==(const ReadMultiplex& rhs) const
-    {
-        return ReadBase<TSeq>::operator==(rhs) && demultiplex == rhs.demultiplex;
-    }
-    ReadMultiplex& operator=(const ReadMultiplex& rhs) = default;
-    ReadMultiplex& operator=(const ReadMultiplex&& rhs)  noexcept(std::is_nothrow_move_assignable<TSeq>::value)
-    {
-        ReadBase<TSeq>::operator=(std::move(rhs));
-        demultiplex = std::move(rhs.demultiplex);
-        return *this;
-    }
-};
-
-template<typename TSeq>
-struct ReadPairedEnd : ReadBase<TSeq>
-{
-    TSeq seqRev;
-    std::string idRev;
-
-    ReadPairedEnd() = default;
-    ReadPairedEnd(const ReadPairedEnd& rhs) = default;
-    ReadPairedEnd(ReadPairedEnd&& rhs) noexcept(std::is_nothrow_move_constructible<TSeq>::value)
-    : ReadBase<TSeq>(std::move(rhs))
-    {
-        seqRev = std::move(rhs.seqRev);
-        idRev = std::move(rhs.idRev);
-    }
-
-    bool operator==(const ReadPairedEnd& rhs) const
-    {
-        return ReadBase<TSeq>::operator==(rhs) && seqRev == rhs.seqRev && idRev == rhs.idRev;
-    }
-    ReadPairedEnd& operator=(const ReadPairedEnd& rhs) = default;
-    ReadPairedEnd& operator=(const ReadPairedEnd&& rhs)  noexcept(std::is_nothrow_move_assignable<TSeq>::value)
-    {
-        ReadBase<TSeq>::operator=(std::move(rhs));
-        seqRev = std::move(rhs.seqRev);
-        idRev = std::move(rhs.idRev);
-        return *this;
-    }
-    inline unsigned int minSeqLen() const noexcept
-    {
-        return std::min(length(ReadBase<TSeq>::seq), length(seqRev));
-    }
-};
-
-template<typename TSeq>
-struct ReadMultiplexPairedEnd : ReadPairedEnd<TSeq>
-{
-    TSeq demultiplex;
-
-    ReadMultiplexPairedEnd() = default;
-    ReadMultiplexPairedEnd(const ReadMultiplexPairedEnd& rhs) = default;
-    ReadMultiplexPairedEnd(ReadMultiplexPairedEnd&& rhs) noexcept(std::is_nothrow_move_constructible<TSeq>::value)
-    : ReadPairedEnd<TSeq>(std::move(rhs))
-    {  
-        demultiplex = std::move(rhs.demultiplex);
-    }
-
-    bool operator==(const ReadMultiplexPairedEnd& rhs) const
-    {
-        return ReadPairedEnd<TSeq>::operator==(rhs) && demultiplex == rhs.demultiplex;
-    }
-    ReadMultiplexPairedEnd& operator=(const ReadMultiplexPairedEnd& rhs) = default;
-    ReadMultiplexPairedEnd& operator=(const ReadMultiplexPairedEnd&& rhs)  noexcept(std::is_nothrow_move_assignable<TSeq>::value)
-    {
-        ReadPairedEnd<TSeq>::operator=(std::move(rhs));
-        demultiplex = std::move(rhs.demultiplex);
-        return *this;
-    }
-};
 
 template <typename TDest, typename TSource>
 void insertAfterFirstToken(TDest& dest, TSource&& source)

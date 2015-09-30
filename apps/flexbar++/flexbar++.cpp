@@ -35,11 +35,6 @@
 
 // Wrapper for KNIME
 
-// test command line for sflexQC
-// P:\git\seqan\apps/seqan_flexbar/tests\testsample.fq -q 20 -o P:\git\seqan\apps/seqan_flexbar/tests\qc_test.fa -t -ni
-
-// P:\git\seqan\apps/seqan_flexbar/tests\testsample.fq -tl 3 -tr 4 -ml 70 -u 1 -s A -fl 70 -ni -o P:\git\seqan\apps/seqan_flexbar/tests\filter_test.fq
-
 #include "flexbar++.h"
 
 #ifndef FLEX_PROG
