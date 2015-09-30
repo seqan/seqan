@@ -84,9 +84,9 @@ struct LessPairI1_ : public std::unary_function<Pair<TWeight, TPair>, bool>
  *
  * @section Example
  *
- * @include demos/graph_algorithms/kruskals_algorithm.cpp
+ * @include demos/dox/graph_algorithms/kruskals_algorithm.cpp
  *
- * @include demos/graph_algorithms/kruskals_algorithm.cpp.stdout
+ * @include demos/dox/graph_algorithms/kruskals_algorithm.cpp.stdout
  *
  * @see primsAlgorithm
  */

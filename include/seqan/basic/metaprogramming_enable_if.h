@@ -265,7 +265,7 @@ struct DisableIf2<true, T> {};
  * The following shows an example on how to properly use <tt>SEQAN_CTOR_ENABLE_IF</tt> as the last argument to the
  * constructor and suppressing the unused variable warning for the dummy parameter.
  *
- * @snippet demos/basic/enable_if.cpp enable if example constructor
+ * @snippet demos/dox/basic/enable_if.cpp enable if example constructor
  */
 
 #define SEQAN_CTOR_ENABLE_IF(...) typename seqan::EnableIf<__VA_ARGS__>::Type * dummy = 0
@@ -293,7 +293,7 @@ struct DisableIf2<true, T> {};
  * The following shows an example on how to properly use <tt>SEQAN_CTOR_DISABLE_IF</tt> as the last argument to the
  * constructor and suppressing the unused variable warning for the dummy parameter.
  *
- * @snippet demos/basic/enable_if.cpp disable if example constructor
+ * @snippet demos/dox/basic/enable_if.cpp disable if example constructor
  */
 
 #define SEQAN_CTOR_DISABLE_IF(...) typename seqan::DisableIf<__VA_ARGS__>::Type * dummy = 0
@@ -322,7 +322,7 @@ struct DisableIf2<true, T> {};
  * The following shows an example on how to properly use <tt>SEQAN_FUNC_ENABLE_IF</tt> as the last argument to the
  * constructor and suppressing the unused variable warning for the dummy parameter.
  *
- * @snippet demos/basic/enable_if.cpp enable if example function
+ * @snippet demos/dox/basic/enable_if.cpp enable if example function
  */
 
 #define SEQAN_FUNC_ENABLE_IF(...) typename seqan::EnableIf<__VA_ARGS__>::Type
@@ -351,7 +351,7 @@ struct DisableIf2<true, T> {};
  * The following shows an example on how to properly use <tt>SEQAN_FUNC_DISABLE_IF</tt> as the last argument to the
  * constructor and suppressing the unused variable warning for the dummy parameter.
  *
- * @snippet demos/basic/enable_if.cpp disable if example function
+ * @snippet demos/dox/basic/enable_if.cpp disable if example function
  */
 
 #define SEQAN_FUNC_DISABLE_IF(...) typename seqan::DisableIf<__VA_ARGS__>::Type

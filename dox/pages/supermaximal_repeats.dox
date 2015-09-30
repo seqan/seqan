@@ -9,15 +9,15 @@
  *
  * We start by including the required headers and using the namespace seqan.
  *
- * @snippet demos/index/index_supermaxrepeats.cpp includes
+ * @snippet demos/dox/index/supermaxrepeats.cpp includes
  *
  * Afterwards we initialize a stirng with the sequence and build an index over it
  *
- * @snippet demos/index/index_supermaxrepeats.cpp init
+ * @snippet demos/dox/index/supermaxrepeats.cpp init
  *
  * To find supermaximal repeats, we use SeqAn's @link SuperMaxRepeatsIterator SuperMaxRepeats Iterator @endlink and set the minimum repeat length to 3.
  *
- * @snippet demos/index/index_supermaxrepeats.cpp iteration
+ * @snippet demos/dox/index/supermaxrepeats.cpp iteration
  *
  * The only supermaximal repeats of "How many wood would a woodchuck chuck." of length at least 3 are " wood" and
  * "chuck". There are repeats of " wo" which are maximal (see Maximal Repeats), ut not supermaximal, as " wo" is part of

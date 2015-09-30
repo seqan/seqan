@@ -147,7 +147,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @section Example
  *
- * @include demos/pipe/pool_sorter.cpp
+ * @include demos/dox/pipe/pool_sorter.cpp
  *
  * @code{.console}
  * Sorted elements:

@@ -34,28 +34,28 @@ The following program demonstrates this functionality.
 
 First, we include the necessary headers.
 
-.. includefrags:: demos/tutorial/consensus/with_positions.cpp
+.. includefrags:: demos/tutorial/consensus_alignment/with_positions.cpp
    :fragment: includes
 
 Next, the fragment store is filled with reads and approximate positions.
 The true alignment is shown in the comments.
 
-.. includefrags:: demos/tutorial/consensus/with_positions.cpp
+.. includefrags:: demos/tutorial/consensus_alignment/with_positions.cpp
    :fragment: fill_store
 
 This is followed by computing the consensus alignment using the function :dox:`consensusAlignment`.
 
-.. includefrags:: demos/tutorial/consensus/with_positions.cpp
+.. includefrags:: demos/tutorial/consensus_alignment/with_positions.cpp
    :fragment: compute_consensus
 
 Finally, the alignment is printed using an :dox:`AlignedReadLayout` object.
 
-.. includefrags:: demos/tutorial/consensus/with_positions.cpp
+.. includefrags:: demos/tutorial/consensus_alignment/with_positions.cpp
    :fragment: print_layout
 
 Here is the program's output:
 
-.. includefrags:: demos/tutorial/consensus/with_positions.cpp.stdout
+.. includefrags:: demos/tutorial/consensus_alignment/with_positions.cpp.stdout
 
 Consensus without Approximate Positions
 ---------------------------------------
@@ -65,8 +65,8 @@ In this case, the consensus step performs an all-to-all alignment of all reads a
 This is demonstrated by the following program.
 
 
-.. includefrags:: demos/tutorial/consensus/without_positions.cpp
+.. includefrags:: demos/tutorial/consensus_alignment/without_positions.cpp
 
 Here is this modified programs' output:
 
-.. includefrags:: demos/tutorial/consensus/without_positions.cpp.stdout
+.. includefrags:: demos/tutorial/consensus_alignment/without_positions.cpp.stdout
