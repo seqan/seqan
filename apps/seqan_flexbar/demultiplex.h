@@ -29,14 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
-// ==========================================================================
-// This file provides the demultiplexing functionality of seqan-flexbar
-// which is based in the implementation of the original flexbar program
-// in [1].
-// [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
-// Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
-// Biology 2012, 1, 895-905.
+// Author: Benjamin Menkuec <benjamin@menkuec.de>
 // ==========================================================================
 
 
@@ -79,8 +72,49 @@ struct DemultiplexingParams
 };
 
 // ============================================================================
+// Objects
+// ============================================================================
+
+struct BarcodeMatcher
+{
+    template <typename TContainer>
+    BarcodeMatcher(const TContainer& patterns)
+        : _patterns(patterns)
+    {
+        if (patterns.empty())
+            return;
+        _barcodeLength = _patterns[0].size();;
+        for (const auto& pattern : patterns)
+        {
+            assert(pattern.size() == _barcodeLength);
+        }
+    }
+    template <template <typename> class TRead, typename TSeq>
+    int getMatchIndex(const TRead<TSeq>& read) const noexcept
+    {
+        unsigned int index = 0;
+        const std::string prefix = getPrefix(read, getBarcodeLength());
+        for (const auto& pattern : _patterns)
+        {
+            if (pattern == prefix)   // likely
+                return index;
+            ++index;
+        }
+        return -1;
+    }
+    inline unsigned int getBarcodeLength() const noexcept
+    {
+        return _barcodeLength;
+    }
+private:
+    const std::vector<std::string> _patterns;
+    unsigned int _barcodeLength;
+};
+
+// ============================================================================
 // Functions
 // ============================================================================
+
 
 template <typename TReads, typename TBarcodes, typename TStats>
 bool check(TReads& reads, TBarcodes& barcodes, TStats& stats) noexcept
@@ -105,14 +139,12 @@ void buildVariations(TBarcodes& variations, const TBarcode& barcode)
 {
 	int limit = (length(barcode))*5;		    //possible number of variations with one error (A,T,G,C,N)
 	resize(variations, limit);				    //resizes according to calculated number of variations
-	for (int i = 0; i < limit; ++i)
-	{
-        assign(variations[i], barcode);	        //fills resultset with original barcode
-	}
+	for (auto& variation : variations)
+        assign(variation, barcode);	        //fills resultset with original barcode
 	limit = limit/5;
 	for (int i = 0; i < limit; ++i)
-	{										    //each run through the loop modifies 1 position of the barcode 4 times
-		move(variations[5*i][i], 'A');	    	//multiplication with 5 and addition of 0...4 prevents index conflicts
+	{										    
+		move(variations[5*i][i], 'A');	    	
 		move(variations[5*i+1][i], 'C');
 		move(variations[5*i+2][i], 'G');
 		move(variations[5*i+3][i], 'T');
@@ -123,17 +155,14 @@ void buildVariations(TBarcodes& variations, const TBarcode& barcode)
 template <typename TBarcodes>
 void buildAllVariations(TBarcodes& barcodes)
 {
-    TBarcodes newbarcodes;			//stores the new barcodes
-	for (unsigned i = 0; i < length(barcodes); ++i)
+    TBarcodes newbarcodes;
+	for(const auto& barcode : barcodes)
 	{
-        TBarcodes tempbarcodes;
-        buildVariations(tempbarcodes, barcodes[i]);
-		for (unsigned j = 0; j < length(tempbarcodes); ++j)
-        {
-			seqan::appendValue(newbarcodes, tempbarcodes[j]);
-        }
+        TBarcodes tempBarcodes;
+        buildVariations(tempBarcodes, barcode);
+        for (const auto& tempBarcode : tempBarcodes)
+			seqan::appendValue(newbarcodes, tempBarcode);
 	}
-	clear(barcodes);
 	barcodes = newbarcodes;
 }
 
@@ -159,6 +188,7 @@ void clipBarcodes(std::vector<TRead>& reads, const unsigned len, const ClipHard&
 template<typename TRead>
 void clipBarcodes(std::vector<TRead>& reads, const int len, const ClipSoft&) noexcept
 {
+    // unmatched reads are partitioned to the end
     std::for_each(reads.begin(), std::find_if(reads.begin(), reads.end(), [](const auto& read)->auto {return read.demuxResult == 0;}), [len](auto& read) {
         erase(read.seq, 0, len);
     });
@@ -173,8 +203,7 @@ void MatchBarcodes(std::vector<TRead>& reads, const TFinder& finder, TStats& sta
     for (auto& read : reads)
     {
         read.demuxResult = finder.getMatchIndex(read) + 1;
-        if(read.demuxResult!= 0)
-            ++stats.matchedBarcodeReads[read.demuxResult];
+        ++stats.matchedBarcodeReads[read.demuxResult];
     }
 }
 
@@ -185,19 +214,15 @@ void MatchBarcodes(std::vector<TRead>& reads, const TFinder& finder, TStats& sta
     const float dividend = float(finder.getBarcodeLength()*5.0);		//value by which the index will be corrected.
     for (auto& read: reads)			             
     {
-        read.demuxResult = finder.getMatchIndex(read);
+        read.demuxResult = finder.getMatchIndex(read) + 1;
         if (read.demuxResult != -1)
-        {
             read.demuxResult = int(floor(float(read.demuxResult) / dividend)) + 1;
-            ++stats.matchedBarcodeReads[read.demuxResult];
-        }
-        else
-            read.demuxResult = 0;
+        ++stats.matchedBarcodeReads[read.demuxResult];
     }
 }
 
 template<template <typename> class TRead, typename TSeq, typename TFinder, typename TStats, typename TApprox>
-void doAll(std::vector<TRead<TSeq>>& reads, const TFinder& finder,
+void demultiplex(std::vector<TRead<TSeq>>& reads, const TFinder& finder,
     const bool hardClip, TStats& stats, const TApprox& approximate, const bool exclude)
 {
     MatchBarcodes(reads, finder, stats, approximate);
@@ -208,7 +233,7 @@ void doAll(std::vector<TRead<TSeq>>& reads, const TFinder& finder,
 
     if (std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value)   // clipping is not done for multiplex barcodes, only for inline barcodes
     {
-        if (hardClip)		//clip barcodes according to selected method
+        if (hardClip)
             clipBarcodes(reads, finder.getBarcodeLength(), ClipHard());
         else
             clipBarcodes(reads, finder.getBarcodeLength(), ClipSoft());

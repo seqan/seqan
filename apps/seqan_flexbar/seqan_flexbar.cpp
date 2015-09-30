@@ -29,17 +29,16 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Jochen Singer <jochen.singer@fu-berlin.de>
+// Author: Benjamin Menkuec <benjamin@menkuec.de>
+// Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // ==========================================================================
-// This file is used to generate sub-programs of seqan-flexbar which is
-// based in the implementation of the original flexbar program in [1].
-// [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
-// Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
-// Biology 2012, 1, 895-905.
-// ==========================================================================
-
 
 // Wrapper for KNIME
+
+// test command line for sflexQC
+// P:\git\seqan\apps/seqan_flexbar/tests\testsample.fq -q 20 -o P:\git\seqan\apps/seqan_flexbar/tests\qc_test.fa -t -ni
+
+// P:\git\seqan\apps/seqan_flexbar/tests\testsample.fq -tl 3 -tr 4 -ml 70 -u 1 -s A -fl 70 -ni -o P:\git\seqan\apps/seqan_flexbar/tests\filter_test.fq
 
 #include "seqan_flexbar.h"
 

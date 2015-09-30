@@ -379,8 +379,8 @@ SEQAN_DEFINE_TEST(clipBarcodesStrict_test)
     }
 }
 
-// Checks the correctness of the doAll function performing all demultiplexing operations for exact inline barcode matching.
-SEQAN_DEFINE_TEST(doAll_Exact_test)
+// Checks the correctness of the demultiplex function performing all demultiplexing operations for exact inline barcode matching.
+SEQAN_DEFINE_TEST(demultiplex_Exact_test)
 {
     std::vector<Read<seqan::Dna5QString>> reads(4);
     reads[0].seq = "AAAAAAGTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG";
@@ -415,7 +415,7 @@ SEQAN_DEFINE_TEST(doAll_Exact_test)
     BarcodeMatcher BarcodeMatcher(barcodes);
 
     GeneralStats stats(length(expectedReads));
-    doAll(reads, BarcodeMatcher, false, stats, ExactBarcodeMatching(), false);
+    demultiplex(reads, BarcodeMatcher, false, stats, ExactBarcodeMatching(), false);
 
     for (unsigned i = 0; i < length(expectedReads); ++i)
     {
@@ -427,9 +427,9 @@ SEQAN_DEFINE_TEST(doAll_Exact_test)
     }
 }
 
-// Checks the correctness of the doAll function performing all demultiplexing operations
+// Checks the correctness of the demultiplex function performing all demultiplexing operations
 // for exact multiplex barcode matching.
-SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test)
+SEQAN_DEFINE_TEST(demultiplex_Exact_Multiplex_test)
 {
     std::vector<ReadMultiplex<seqan::Dna5QString>> reads(4);
     reads[0].seq = "GTACGATCGTACGTACGATGCTACGATGCATGCTACGATGCTACG";
@@ -466,7 +466,7 @@ SEQAN_DEFINE_TEST(doAll_Exact_Multiplex_test)
     BarcodeMatcher BarcodeMatcher(barcodes);
 
     GeneralStats stats(length(expectedReads));
-    doAll(reads, BarcodeMatcher, false, stats, ExactBarcodeMatching(), false);
+    demultiplex(reads, BarcodeMatcher, false, stats, ExactBarcodeMatching(), false);
 
     for (unsigned i = 0; i < length(expectedReads); ++i)
     {
@@ -501,15 +501,12 @@ SEQAN_DEFINE_TEST(Input_test)
 
 	StringSet<String<int> > groups;
     GeneralStats stats(barcodes.size());
-    doAll(reads, BarcodeMatcher, false, stats, ExactBarcodeMatching(), false);
+    demultiplex(reads, BarcodeMatcher, false, stats, ExactBarcodeMatching(), false);
 }
 
 
 SEQAN_BEGIN_TESTSUITE(test_my_app_funcs)
 {
-	omp_set_num_threads(8);
-	int tnum = omp_get_max_threads();
-	std::cout<<"\nRunning Tests using " << tnum << " thread(s).\n\n";
 	SEQAN_CALL_TEST(check_test);
 	SEQAN_CALL_TEST(getPrefix_test);
 	SEQAN_CALL_TEST(buildVariations_test);
@@ -518,8 +515,8 @@ SEQAN_BEGIN_TESTSUITE(test_my_app_funcs)
 	SEQAN_CALL_TEST(matchBarcodes_test); 
 	SEQAN_CALL_TEST(clipBarcodes_test);
 	SEQAN_CALL_TEST(clipBarcodesStrict_test);
-    SEQAN_CALL_TEST(doAll_Exact_test);
-    SEQAN_CALL_TEST(doAll_Exact_Multiplex_test);
+    SEQAN_CALL_TEST(demultiplex_Exact_test);
+    SEQAN_CALL_TEST(demultiplex_Exact_Multiplex_test);
     SEQAN_CALL_TEST(Input_test);
 }
 SEQAN_END_TESTSUITE

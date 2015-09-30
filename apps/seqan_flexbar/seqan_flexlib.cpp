@@ -29,17 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
-// Author: Benjamin Strauch <b.strauch@fu-berlin.de>
 // Author: Benjamin Menkuec <benjamin@menkuec.de>
-// ==========================================================================
-// This file provides the argument parsing functionality is of
-// seqan-flexbar which is based in the implementation of the original
-// flexbar program in [1].  In addition, the file contains the main body
-// of the program, selecting the sub-routines.
-// [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
-// Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
-// Biology 2012, 1, 895-905.
 // ==========================================================================
 
 #include "seqan_flexbar.h"
@@ -63,10 +53,6 @@
 
 // Headers for creating subdirectories.
 #include <errno.h>
-// For setting the number of threads used by OpenMP.
-#ifdef _OPENMP
-#include <omp.h>
-#endif
 
 #include "read_trimming.h"
 #include "adapter_trimming.h"
@@ -365,7 +351,7 @@ void FilteringParserBuilder::addHeader(seqan::ArgumentParser & parser)
     setShortDescription(parser, "The SeqAn Filtering Toolkit of seqan_flexbar.");
     addUsageLine(parser, " \\fI<READ_FILE1>\\fP \\fI<[READ_FILE2]>\\fP \\fI[OPTIONS]\\fP");
     addDescription(parser,
-       "This program is a sub-routine of SeqAn-Flexbar (a reimplementation of"
+       "This program is a sub-routine of Flexbar++ (a new implementation and extension of"
        " the original flexbar[1]) and can be used to filter reads and apply "
        "sequence independent trimming options");
 
@@ -409,10 +395,10 @@ private:
 void AdapterRemovalParserBuilder::addHeader(seqan::ArgumentParser & parser)
 {
     setCategory(parser, "NGS Quality Control");
-    setShortDescription(parser, "The SeqAn Adapter Removal Toolkit of seqan_flexbar.");
+    setShortDescription(parser, "The Adapter Removal Toolkit of Flexbar++.");
     addUsageLine(parser, " \\fI<READ_FILE1>\\fP \\fI<[READ_FILE2]>\\fP \\fI[OPTIONS]\\fP");
     addDescription(parser,
-        "This program is a sub-routine of SeqAn-Flexbar (a reimplementation of"
+        "This program is a sub-routine of Flexbar++ (a new implementation and extension of"
         " the original flexbar[1]) and removes adapter sequences from reads.");
 
     addDescription(parser, "[1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, "
@@ -457,10 +443,10 @@ private:
 void DemultiplexingParserBuilder::addHeader(seqan::ArgumentParser & parser)
 {
     setCategory(parser, "NGS Quality Control");
-    setShortDescription(parser, "The SeqAn Demultiplexing Toolkit of seqan_flexbar.");
+    setShortDescription(parser, "The SeqAn Demultiplexing Toolkit of Flexbar++.");
     addUsageLine(parser, " \\fI<READ_FILE1>\\fP \\fI<[READ_FILE2]>\\fP \\fI[OPTIONS]\\fP");
     addDescription(parser,
-        "This program is a sub-routine of SeqAn-Flexbar (a reimplementation of"
+        "This program is a sub-routine of Flexbar++ (a new implementation and extension of"
         " the original flexbar[1]) and can be used for demultiplexing of reads.");
 
     addDescription(parser, "[1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, "
@@ -505,10 +491,10 @@ private:
 void QualityControlParserBuilder::addHeader(seqan::ArgumentParser & parser)
 {
     setCategory(parser, "NGS Quality Control");
-    setShortDescription(parser, "The SeqAn Quality Control Toolkit of seqan_flexbar.");
+    setShortDescription(parser, "The SeqAn Quality Control Toolkit of Flexbar++.");
     addUsageLine(parser, " \\fI<READ_FILE1>\\fP \\fI<[READ_FILE2]>\\fP \\fI[OPTIONS]\\fP");
     addDescription(parser,
-        "This program is a sub-routine of SeqAn-Flexbar (a reimplementation of"
+        "This program is a sub-routine of Flexbar++ (a new implementation and extension of"
         " the original flexbar [1]) and can be used for quality controlling of reads.");
 
     addDescription(parser, "[1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, "
@@ -551,11 +537,11 @@ private:
 void AllStepsParserBuilder::addHeader(seqan::ArgumentParser & parser)
 {
     setCategory(parser, "NGS Quality Control");
-    setShortDescription(parser, "The SeqAn NGS-Data Processing Toolkit");
+    setShortDescription(parser, "The Flexbar++ NGS-Data Processing Toolkit");
     addUsageLine(parser, " \\fI<READ_FILE1>\\fP \\fI<[READ_FILE2]>\\fP \\fI[OPTIONS]\\fP");
     addDescription(parser,
-        "SeqAn-Flexbar is a toolkit for the processing of sequenced NGS reads "
-        "and based on the original Flexbar implementation of Dodt [1]. It is "
+        "Flexbar++ is a toolkit for the processing of sequenced NGS reads. "
+        "It is a reimplementation and extension of the original Flexbar implementation of Dodt [1]. It is "
         "possible to demultiplex the reads and order them according to "
         "different kind of barcodes, to remove adapter contamination from "
         "reads, to trim low quality bases, filter N's or trim whole reads. The "
@@ -566,7 +552,7 @@ void AllStepsParserBuilder::addHeader(seqan::ArgumentParser & parser)
             "C.  FLEXBAR—Flexible Barcode and Adapter Processing for "
             "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
 
-    addDescription(parser, "(c) Copyright 2008-2013 by Sebastian Roskosch.");
+    addDescription(parser, "(c) Copyright 2015 by Benjamin Menkuec.");
 
     seqan::setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
@@ -1238,21 +1224,15 @@ void preprocessingStage(const ProcessingParams& processingParams, TReadSet& read
     {
         //Trimming and filtering
         if (processingParams.trimLeft + processingParams.trimRight + processingParams.minLen != 0)
-        {
             preTrim(readSet, processingParams.trimLeft, processingParams.trimRight,
-                processingParams.tagTrimming, processingParams.minLen, generalStats);
-        }
+                processingParams.minLen, processingParams.tagTrimming, generalStats);
        // Detecting uncalled Bases
         if (processingParams.runCheckUncalled)
         {
             if (processingParams.runSubstitute)
-            {
                 processN(readSet, processingParams.uncalled, processingParams.substitute, generalStats);
-            }
             else
-            {
                 processN(readSet, processingParams.uncalled, NoSubstitute(), generalStats);
-            }
         }
     }
 }
@@ -1266,13 +1246,13 @@ int demultiplexingStage(const DemultiplexingParams& params, std::vector<TRead>& 
         return 0;
     if (!params.approximate)
     {
-        doAll(reads, esaFinder, params.hardClip, generalStats, ExactBarcodeMatching(), params.exclude);
+        demultiplex(reads, esaFinder, params.hardClip, generalStats, ExactBarcodeMatching(), params.exclude);
     }
     else
     {
         if (!check(reads, params.barcodes, generalStats))            // On Errors with barcodes return 1;
             return 1;
-        doAll(reads, esaFinder, params.hardClip, generalStats, ApproximateBarcodeMatching(), params.exclude);
+        demultiplex(reads, esaFinder, params.hardClip, generalStats, ApproximateBarcodeMatching(), params.exclude);
     }
     return 0;
 }
@@ -1313,7 +1293,7 @@ void qualityTrimmingStage(const QualityTrimmingParams& params, std::vector<TRead
         }
         }
     }
-    stats.removedQuality += dropReads(reads, params.min_length);
+    stats.removedQuality += removeShortSeqs(reads, params.min_length);
 }
 
 //Postprocessing
@@ -1323,13 +1303,9 @@ void postprocessingStage(const ProcessingParams& params, std::vector<TRead>& rea
     if (params.runPost)
     {
         if ((params.finalMinLength != 0) && (params.finalLength == 0))
-        {           
-            stats.removedShort += postTrim(reads, params.finalMinLength);
-        }
+            stats.removedShort += removeShortSeqs(reads, params.finalMinLength);
         else if (params.finalLength != 0)
-        {
             trimTo(reads, params.finalLength, stats);
-        }
     }
 }
 
@@ -1476,7 +1452,7 @@ struct ReadWriter
 {
     ReadWriter(const ProgramParams& programParams, OutputStreams& outputStreams, unsigned int sleepMS)
         : _programParams(programParams), _outputStreams(outputStreams), _tlsReadSets(_programParams.num_threads + 1),
-        _run(false), _sleepMS(sleepMS), _startTime(std::chrono::steady_clock::now()), _lastScreenUpdate(std::chrono::steady_clock::now())
+        _run(false), _sleepMS(sleepMS), _startTime(std::chrono::steady_clock::now()), _lastScreenUpdate()
     {}
     ~ReadWriter() 
     {
@@ -1510,9 +1486,9 @@ struct ReadWriter
                             {
                                 const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - _startTime).count();
                                 if (_programParams.showSpeed)
-                                    std::cout << "\r" << _stats.readCount << "   " << static_cast<int>(_stats.readCount / deltaTime) << " BPs";
+                                    std::cout << "\rreads processed: " << _stats.readCount << "   (" << static_cast<int>(_stats.readCount / deltaTime) << " Reads/s)";
                                 else
-                                    std::cout << "\r" << _stats.readCount;
+                                    std::cout << "\rreads processed: " << _stats.readCount;
                                 _lastScreenUpdate = std::chrono::steady_clock::now();
                             }
                         }
@@ -1641,8 +1617,9 @@ struct ReadReader
                     readSet.first.unlock();
                     return false;
                 }
+                readSet.first.unlock();
             }
-        return false;
+        return true;
     }
     bool getReads(std::unique_ptr<std::vector<TRead<TSeq>>>& reads) noexcept
     {
@@ -1760,7 +1737,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
     const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder,
     OutputStreams& outputStreams, TStats& stats)
 {
-    const unsigned int threadIdleSleepTimeMS = 30;
+    const unsigned int threadIdleSleepTimeMS = 10;
     using TReadWriter = ReadWriter<TRead, TSeq, std::tuple<std::unique_ptr<std::vector<TRead<TSeq>>>, decltype(DemultiplexingParams::barcodeIds), GeneralStats>>;
     using TReadReader = ReadReader<TRead, TSeq>;
     using TProcessingUnit = ProcessingUnit<TRead<TSeq>, TEsaFinder, TReadReader, TReadWriter>;
@@ -1799,11 +1776,13 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
         t1 = std::chrono::steady_clock::now();
         outputStreams.writeSeqs(std::move(*(std::get<0>(res))), demultiplexingParams.barcodeIds);
         generalStats.ioTime += std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
+
         // Print information
+        const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - tMain).count();
         if (programParams.showSpeed)
-            std::cout << "\r" << generalStats.readCount << "   " << static_cast<int>(generalStats.readCount / std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - tMain).count()) << " BPs";
+            std::cout << "\rreads processed: " << _stats.readCount << "   (" << static_cast<int>(generalStats.readCount / deltaTime) << " Reads/s)";
         else
-            std::cout << "\r" << generalStats.readCount;
+            std::cout << "\rreads processed: " << _stats.readCount;
     }
     stats = generalStats;
 #endif
@@ -1914,7 +1893,7 @@ int flexbarMain(int argc, char const ** argv)
 
     BarcodeMatcher esaFinder(demultiplexingParams.barcodes);
 
-    if(flexiProgram == DEMULTIPLEXING && !isSet(parser, "x"))
+    if(flexiProgram == DEMULTIPLEXING && (!isSet(parser, "x") && !isSet(parser, "b")))
     {
         std::cerr << "No Barcodefile was provided." << std::endl;
         return 1;
@@ -2100,7 +2079,7 @@ int flexbarMain(int argc, char const ** argv)
             }
             else
             {
-                std::cout << "\tMultiplex barcodes:  NO" << demultiplexingParams.multiplexFile << "\n";
+                std::cout << "\tMultiplex barcodes file:  NO" << demultiplexingParams.multiplexFile << "\n";
             }
             if (demultiplexingParams.approximate)
             {

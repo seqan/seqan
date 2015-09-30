@@ -29,23 +29,14 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Benjamin Strauch <b.strauch@fu-berlin.de>
-// Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // Author: Benjamin Menkuec <benjamin@menkuec.de>
-// ==========================================================================
-// This file provides the adapter trimming functionality of seqan-flexbar
-// which is based in the implementation of the original flexbar program in 
-// [1].
-// [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
-// Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
-// Biology 2012, 1, 895-905.
-// ==========================================================================
+// Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
+// ==========================================================================W
 
 #ifndef ADAPTERTRIMMING_H
 #define ADAPTERTRIMMING_H
 
 #include <seqan/align.h>
-#include <seqan/find.h>
 #include "helper_functions.h"
 #include "general_stats.h"
 
@@ -342,9 +333,9 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
             //std::cout << "stripped seq: " << seq << std::endl;
             stats.overlapSum += overlap;
             if (TStripAdapterDirection::value == adapterDirection::forward)
-                ++stats.a1count;
-            else
                 ++stats.a2count;
+            else
+                ++stats.a1count;
 
             stats.maxOverlap = stats.maxOverlap > overlap ? stats.maxOverlap : overlap;
             stats.minOverlap = stats.minOverlap < overlap ? stats.minOverlap : overlap;

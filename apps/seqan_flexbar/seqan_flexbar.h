@@ -1,5 +1,5 @@
 // ==========================================================================
-//                                SeqAn-Flexbar
+//                                Flexbar++
 // ==========================================================================
 // Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -29,19 +29,12 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Benjamin Menkuec <benjamin@menkuec.de>
 // Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
-// Author: Benjamin Strauch <b.strauch@fu-berlin.de>
-// Author: Jochen Singer <jochen.singer@fu-berlin.de>
-// ==========================================================================
-// This file is used to generate sub-programs of seqan-flexbar which is
-// based in the implementation of the original flexbar program in [1].
-// [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
-// Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
-// Biology 2012, 1, 895-905.
 // ==========================================================================
 
-#ifndef SEQAN_FLEXBAR_H_
-#define SEQAN_FLEXBAR_H_
+#ifndef FLEXBAR_H_
+#define FLEXBAR_H_
 
 // ============================================================================
 // Tags, Classes, Enums

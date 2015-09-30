@@ -1,5 +1,5 @@
 // ==========================================================================
-//                             adapterTrimming.h
+//                             helper_functions.h
 // ==========================================================================
 // Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -31,13 +31,7 @@
 // ==========================================================================
 // Author: Benjamin Menkuec <benjamin@menkuec.de>
 // ==========================================================================
-// This file provides the adapter trimming functionality of seqan-flexbar
-// which is based in the implementation of the original flexbar program in 
-// [1].
-// [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
-// Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
-// Biology 2012, 1, 895-905.
-// ==========================================================================
+
 
 #ifndef HELPERFUNCTIONS_H_
 #define HELPERFUNCTIONS_H_
@@ -63,41 +57,6 @@ std::string getPrefix(const TRead<TSeq>& read, unsigned len, bool = false) noexc
     (void)len;
     return seqanToStd(read.demultiplex);
 }
-
-struct BarcodeMatcher
-{
-    template <typename TContainer>
-    BarcodeMatcher(const TContainer& patterns)
-        : _patterns(patterns)
-    {
-        if (patterns.empty())
-            return;
-        const auto len = patterns[0].size();
-        for(const auto& pattern : patterns)
-        {
-            assert(pattern.size() == len);
-        }
-    }
-    template <template <typename> class TRead, typename TSeq>
-    int getMatchIndex(const TRead<TSeq>& read) const noexcept
-    {
-        unsigned int index = 0;
-        const std::string prefix = getPrefix(read, getBarcodeLength());
-        for (const auto& pattern : _patterns)
-        {
-            if (pattern == prefix)   // likely
-                return index;
-            ++index;
-        }
-        return -1;
-    }
-    unsigned int getBarcodeLength() const noexcept
-    {
-        return _patterns[0].size();
-    }
-private:
-    const std::vector<std::string> _patterns;
-};
 
 // seqan->std interface functions
 

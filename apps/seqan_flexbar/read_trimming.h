@@ -30,17 +30,8 @@
 //
 // ==========================================================================
 // Author: Benjamin Menkuec <benjamin@menkuec.de>
-// Author: Benjamin Strauch <b.strauch@fu-berlin.de>
 // Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // ==========================================================================
-// This file provides the quality control functionality of seqan-flexbar
-// which is based in the implementation of the original flexbar program
-// in [1].
-// [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
-// Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
-// Biology 2012, 1, 895-905.
-// ==========================================================================
-
 
 #ifndef READTRIMMING_H
 #define READTRIMMING_H
@@ -170,30 +161,6 @@ unsigned _trimReads(std::vector<TRead>& reads, unsigned const cutoff, const TSpe
     });
     return trimmedReads;
 }
-
-template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value>>
-unsigned dropReads(std::vector<TRead<TSeq>>& reads, unsigned const min_length, bool = false)
-{
-    if (empty(reads))
-        return 0;
-
-    const auto oldSize = reads.size();
-    reads.erase(std::remove_if(reads.begin(), reads.end(), [min_length](const auto& read) ->bool {return length(read.seq) >= min_length ? false : true;}), reads.end());
-    return oldSize - reads.size();
-}
-
-template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
-unsigned dropReads(std::vector<TRead<TSeq>>& reads, unsigned const min_length) 
-{
-    if (empty(reads))
-        return 0;
-    std::vector<bool> rem(length(reads));
-
-    const auto oldSize = reads.size();
-    reads.erase(std::remove_if(reads.begin(), reads.end(), [min_length](const auto& read) ->bool {return std::min(length(read.seq), length(read.seqRev)) >= min_length ? false : true;}), reads.end());
-    return oldSize - reads.size();
-}
-
 
 template <typename TRead, typename TSpec>
 unsigned trimBatch(std::vector<TRead>& reads, unsigned const cutoff, TSpec const& spec, bool tagOpt)

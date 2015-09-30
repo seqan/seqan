@@ -54,6 +54,71 @@
 
 using namespace seqan;
 
+SEQAN_DEFINE_TEST(removeShortSeqs_test)
+{
+    using TRead = Read<seqan::Dna5QString>;
+    std::vector<TRead> reads(5);
+
+    reads[0].id = "1";
+    reads[0].seq = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    reads[1].id = "2";
+    reads[1].seq = "AAAAAAAAAAAAAAAAAAAA";
+    reads[2].id = "3";
+    reads[2].seq = "AAAAA";
+    reads[3].id = "4";
+    reads[3].seq = "AAA";
+    reads[4].id = "5";
+    reads[4].seq = "A";
+
+    std::vector<ReadPairedEnd<seqan::Dna5QString>> readsPairedEnd(5);
+    for (unsigned int i = 0;i < 5;++i)
+    {
+        readsPairedEnd[i].id = readsPairedEnd[i].idRev = reads[i].id;
+        readsPairedEnd[i].seq = readsPairedEnd[i].seqRev = reads[i].seq;
+    }
+
+    unsigned removedReads = 0;
+
+    removedReads += removeShortSeqs(reads, 2);
+    SEQAN_ASSERT_EQ(length(reads), 4u);
+
+    removedReads += removeShortSeqs(reads, 4);
+    SEQAN_ASSERT_EQ(length(reads), 3u);
+
+    removedReads += removeShortSeqs(reads, 6);
+    SEQAN_ASSERT_EQ(length(reads), 2u);
+
+    removedReads += removeShortSeqs(reads, 24);
+    SEQAN_ASSERT_EQ(length(reads), 1u);
+
+    removedReads += removeShortSeqs(reads, 50);
+    SEQAN_ASSERT_EQ(length(reads), 0u);
+
+    //Part for paired End
+    removedReads = 0;
+
+    removedReads += removeShortSeqs(readsPairedEnd, 2);
+    SEQAN_ASSERT_EQ(length(readsPairedEnd), 4u);
+    SEQAN_ASSERT_EQ(removedReads, 1u);
+
+    removedReads += removeShortSeqs(readsPairedEnd, 4);
+    SEQAN_ASSERT_EQ(length(readsPairedEnd), 3u);
+    SEQAN_ASSERT_EQ(removedReads, 2u);
+
+    removedReads += removeShortSeqs(readsPairedEnd, 6);
+    SEQAN_ASSERT_EQ(length(readsPairedEnd), 2u);
+    SEQAN_ASSERT_EQ(removedReads, 3u);
+
+    removedReads += removeShortSeqs(readsPairedEnd, 24);
+    SEQAN_ASSERT_EQ(length(readsPairedEnd), 1u);
+    SEQAN_ASSERT_EQ(removedReads, 4u);
+
+    removedReads += removeShortSeqs(readsPairedEnd, 50);
+    SEQAN_ASSERT_EQ(length(readsPairedEnd), 0u);
+    SEQAN_ASSERT_EQ(removedReads, 5u);
+}
+
+
 SEQAN_DEFINE_TEST(findN_test)
 {
     std::vector<Read<seqan::Dna5QString>> reads(12);
@@ -541,12 +606,7 @@ SEQAN_DEFINE_TEST(trimTo_paired_test)
 
 SEQAN_BEGIN_TESTSUITE(test_my_app_funcs)
 {
-    int tnum = 1;
-#ifdef _OPENMP
-	omp_set_num_threads(8);
-	tnum = omp_get_max_threads();
-#endif
-	std::cout<<"\nRunning Tests using " << tnum << " thread(s).\n\n";
+    SEQAN_CALL_TEST(removeShortSeqs_test);
     SEQAN_CALL_TEST(findN_test);
     SEQAN_CALL_TEST(processN_test);
     SEQAN_CALL_TEST(processN_paired_test);

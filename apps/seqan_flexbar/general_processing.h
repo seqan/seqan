@@ -29,25 +29,15 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // Author: Benjamin Menkuec <benjamin@menkuec.de>
+// Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // ==========================================================================
-// This file provides functions used by different parts of seqan-flexbar
-// which is based in the implementation of the original flexbar program
-// in [1].
-// [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
-// Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
-// Biology 2012, 1, 895-905.
-// ==========================================================================
-
-
 
 #ifndef GENERALPROCESSING_H
 #define GENERALPROCESSING_H
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/parallel.h>
 
 #include <seqan/stream.h>
 
@@ -164,7 +154,7 @@ void processN(std::vector<TRead<TSeq>>& reads, unsigned allowed, TSub substitute
 }
 
 template<template <typename> class TRead, typename TSeq>
-    unsigned int postTrim(std::vector<TRead<TSeq>>& reads, const unsigned min) noexcept
+    unsigned int removeShortSeqs(std::vector<TRead<TSeq>>& reads, const unsigned min) noexcept
 {
     const auto numReads = (int)length(reads);
     reads.erase(std::remove_if(reads.begin(), reads.end(), [min](const auto& read) {return read.minSeqLen() < min;}), reads.end());
@@ -174,9 +164,9 @@ template<template <typename> class TRead, typename TSeq>
 // main preTrim function
 template<template <typename> class TRead, typename TSeq, bool tagTrimming,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplex < TSeq >> ::value >>
-unsigned int _preTrim(std::vector<TRead<TSeq>>& readSet, const unsigned head, const unsigned tail, const unsigned min, bool = false) noexcept(!tagTrimming)
+unsigned int _preTrim(std::vector<TRead<TSeq>>& reads, const unsigned head, const unsigned tail, const unsigned min, bool = false) noexcept(!tagTrimming)
 {
-    std::for_each(readSet.begin(), readSet.end(), [head, tail](auto& read)
+    std::for_each(reads.begin(), reads.end(), [head, tail](auto& read)
     {
         const auto seqLen = length(read.seq);
         if (seqLen > (head + tail))
@@ -201,16 +191,15 @@ unsigned int _preTrim(std::vector<TRead<TSeq>>& readSet, const unsigned head, co
         else
             clear(read.seq);
     });
-    const unsigned int oldLen = readSet.size();
-    readSet.erase(std::remove_if(readSet.begin(), readSet.end(), [min](auto& read) {return read.minSeqLen() < min;}), readSet.end());
-    return oldLen - readSet.size();
+
+    return removeShortSeqs(reads, min);
 }
 
 template<template <typename> class TRead, typename TSeq, bool tagTrimming,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplexPairedEnd < TSeq >> ::value >>
-    unsigned int _preTrim(std::vector<TRead<TSeq>>& readSet, const unsigned head, const unsigned tail, const unsigned min) noexcept(!tagTrimming)
+    unsigned int _preTrim(std::vector<TRead<TSeq>>& reads, const unsigned head, const unsigned tail, const unsigned min) noexcept(!tagTrimming)
 {
-    std::for_each(readSet.begin(), readSet.end(), [head, tail](auto& read)
+    std::for_each(reads.begin(), reads.end(), [head, tail](auto& read)
     {
         const auto seqLen = length(read.seq);
         if (read.minSeqLen() > (head + tail))
@@ -255,9 +244,7 @@ template<template <typename> class TRead, typename TSeq, bool tagTrimming,
             clear(read.seqRev);
         }
     });
-    const unsigned int oldLen = readSet.size();
-    readSet.erase(std::remove_if(readSet.begin(), readSet.end(), [min](auto& read) {return read.minSeqLen() < min;}), readSet.end());
-    return oldLen - readSet.size();
+    return removeShortSeqs(reads, min);
 }
 
 template <template<typename> class TRead, typename TSeq, typename TStats>
@@ -274,43 +261,29 @@ template<template <typename> class TRead, typename TSeq, typename TStats,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplex < TSeq >> ::value >>
     void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, TStats& stats, bool = true) noexcept
 {
-    std::vector<bool> rem(reads.size());
-    auto it = rem.begin();
     for(auto& read : reads)
-    {
-        if (length(read.seq) >= len)
-        {
+        if (read.minSeqLen() > len)
             erase(read.seq, len, length(read.seq));
-            *it = false;
-        }
-        else
-            *it = true;
-        ++it;
-    };
-    stats.removedShort += _eraseSeqs(rem, true, reads);
+
+    removeShortSeqs(reads, len);
 }
 
 template<template <typename> class TRead, typename TSeq, typename TStats,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplexPairedEnd < TSeq >> ::value >>
     void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, TStats& stats) noexcept
 {
-    std::vector<bool> rem(reads.size());
-    auto it = rem.begin();
     for (auto& read : reads)
     {
-            if (std::min(length(read.seq), length(read.seqRev)) >= len)
+            if (read.minSeqLen() > len)
             {
                 if (length(read.seq) > len)
                     erase(read.seq, len, length(read.seq));
                 if (length(read.seqRev) > len)
                     erase(read.seqRev, len, length(read.seqRev));
-                *it = false;
             }
-            else
-                *it = true;
-            ++it;
     }
-    stats.removedShort += _eraseSeqs(rem, true, reads);
+
+    removeShortSeqs(reads, len);
 }
 
 

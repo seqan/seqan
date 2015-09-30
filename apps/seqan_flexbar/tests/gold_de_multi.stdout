@@ -1,7 +1,7 @@
 
 Processing reads...
 
-44
+reads processed: 44
 Read statistics
 ===============
 Reads processed:	44
@@ -9,7 +9,6 @@ Reads processed:	44
 
 Barcode Demultiplexing statistics
 =================================
-Barcodes used: 6/6		(100%)
 Reads per barcode:
 Unidentified:	1		(2.27%)
 Sample37:	1		(2.27%)
