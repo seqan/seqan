@@ -49,23 +49,51 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
-struct MultiStringMatcher
+
+// always use the forward read for barcode detection
+template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value>>
+std::string getPrefix(const TRead<TSeq>& read, unsigned len) noexcept
+{
+    return static_cast<const std::string>(prefix(read.seq, len));
+}
+
+template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
+std::string getPrefix(const TRead<TSeq>& read, unsigned len, bool = false) noexcept
+{
+    (void)len;
+    return seqanToStd(read.demultiplex);
+}
+
+struct BarcodeMatcher
 {
     template <typename TContainer>
-    MultiStringMatcher(const TContainer& patterns)
+    BarcodeMatcher(const TContainer& patterns)
         : _patterns(patterns)
-    {}
-    template <typename TToken>
-    int getMatchIndex(const TToken& token) const noexcept
+    {
+        if (patterns.empty())
+            return;
+        const auto len = patterns[0].size();
+        for(const auto& pattern : patterns)
+        {
+            assert(pattern.size() == len);
+        }
+    }
+    template <template <typename> class TRead, typename TSeq>
+    int getMatchIndex(const TRead<TSeq>& read) const noexcept
     {
         unsigned int index = 0;
+        const std::string prefix = getPrefix(read, getBarcodeLength());
         for (const auto& pattern : _patterns)
         {
-            if (pattern == token)   // likely
+            if (pattern == prefix)   // likely
                 return index;
             ++index;
         }
         return -1;
+    }
+    unsigned int getBarcodeLength() const noexcept
+    {
+        return _patterns[0].size();
     }
 private:
     const std::vector<std::string> _patterns;
@@ -73,7 +101,7 @@ private:
 
 // seqan->std interface functions
 
-std::string prefix(const std::string& str, unsigned int len)
+std::string prefix(const std::string& str, unsigned int len) noexcept
 {
     return str.substr(0, len);
 }
@@ -95,7 +123,7 @@ void append(std::string& str1, const std::string& str2)
     str1 += str2;
 }
 
-unsigned int length(const std::string& str)
+unsigned int length(const std::string& str) noexcept
 {
     return str.size();
 }
@@ -121,13 +149,13 @@ void insert(std::string& dest, unsigned int k, const std::string& token)
 //
 
 template<typename R>
-bool is_ready(std::future<R> const& f)
+bool is_ready(std::future<R> const& f) noexcept
 {
     return f.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
 }
 
 template <typename T>
-std::vector<T> operator+(const std::vector<T>& a, const std::vector<T>& b)
+std::vector<T> operator+(const std::vector<T>& a, const std::vector<T>& b) noexcept
 {
     assert(a.size() == b.size());
 

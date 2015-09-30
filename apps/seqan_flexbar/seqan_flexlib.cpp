@@ -1266,13 +1266,13 @@ int demultiplexingStage(const DemultiplexingParams& params, std::vector<TRead>& 
         return 0;
     if (!params.approximate)
     {
-        doAll(reads, params.barcodes, esaFinder, params.hardClip, generalStats, ExactBarcodeMatching(), params.exclude);
+        doAll(reads, esaFinder, params.hardClip, generalStats, ExactBarcodeMatching(), params.exclude);
     }
     else
     {
         if (!check(reads, params.barcodes, generalStats))            // On Errors with barcodes return 1;
             return 1;
-        doAll(reads, params.barcodes, esaFinder, params.hardClip, generalStats, ApproximateBarcodeMatching(), params.exclude);
+        doAll(reads, esaFinder, params.hardClip, generalStats, ApproximateBarcodeMatching(), params.exclude);
     }
     return 0;
 }
@@ -1607,7 +1607,7 @@ struct ReadReader
                         if (!readSet.second && !_eof) // empty slot -> start new Read
                         {
                             nothingToDo = false;
-                            readSet.second.reset(new std::vector<TRead<TSeq>>(_programParams.records));
+                            readSet.second = std::make_unique<std::vector<TRead<TSeq>>>(_programParams.records);
                             readReads(*(readSet.second), _programParams.records, _inputFileStreams);
                             loadMultiplex(*(readSet.second), _programParams.records, _inputFileStreams.fileStreamMultiplex);
                             _numReads += readSet.second->size();
@@ -1912,7 +1912,7 @@ int flexbarMain(int argc, char const ** argv)
     // Process Barcodes
     //--------------------------------------------------
 
-    MultiStringMatcher esaFinder(demultiplexingParams.barcodes);
+    BarcodeMatcher esaFinder(demultiplexingParams.barcodes);
 
     if(flexiProgram == DEMULTIPLEXING && !isSet(parser, "x"))
     {

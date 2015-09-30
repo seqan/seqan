@@ -100,25 +100,6 @@ bool check(TReads& reads, TBarcodes& barcodes, TStats& stats) noexcept
     return true;
 }
 
-// always use the forward read for barcode detection
-template <typename TPrefices, template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>,Read<TSeq>>::value || std::is_same<TRead<TSeq>,ReadPairedEnd<TSeq>>::value>>
-void getPrefix(TPrefices& prefices, std::vector<TRead<TSeq>>& reads, unsigned len)
-{
-    assert(prefices.size() == reads.size());
-
-    std::transform(reads.begin(), reads.end(), prefices.begin(), [len](const auto& read) {
-        return static_cast<const std::string>(prefix(read.seq, len));});
-}
-
-template <typename TPrefices, template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
-void getPrefix(TPrefices& prefices, std::vector<TRead<TSeq>>& reads, unsigned len, bool = false)
-{
-    (void)len;
-    std::transform(reads.begin(), reads.end(), prefices.begin(), [](const auto& read) {
-        return seqanToStd(read.demultiplex);
-    });
-}
-
 template <typename TBarcodes, typename TBarcode>
 void buildVariations(TBarcodes& variations, const TBarcode& barcode)
 {
@@ -156,109 +137,81 @@ void buildAllVariations(TBarcodes& barcodes)
 	barcodes = newbarcodes;
 }
 
-template <typename TMatches, typename TPrefices, typename TFinder, typename = std::enable_if_t<std::is_same<TPrefices, std::vector<std::string>>::value>>
-void findAllExactIndex(TMatches& matches, const TPrefices& prefices, const TFinder& finder, bool = false) noexcept
+// only used for testing
+template <template <typename> class TRead, typename TSeq, typename TBarcodeFinder>
+void MatchBarcodes(std::vector<TRead<TSeq>>& reads, const TBarcodeFinder& finder) noexcept
 {
-    assert(length(matches) == length(prefices));
-
-    std::transform(prefices.begin(), prefices.end(), matches.begin(), [&finder](const auto& prefix)->auto {
-        return finder.getMatchIndex(prefix);});
+    std::for_each(reads.begin(), reads.end(), [&finder](auto& read){
+        read.demuxResult = finder.getMatchIndex(read);});
 }
 
-template <typename TMatches, template <typename> class TRead, typename TSeq, typename TFinder, 
-    typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value 
-    || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
-void findAllExactIndex(TMatches& matches, const std::vector<TRead<TSeq>>& reads, const TFinder& finder) noexcept
-{
-    assert(length(matches) == length(reads));
-
-    std::transform(reads.cbegin(), reads.end(), matches.begin(), [&finder](const auto& read)->auto {
-        return finder.getMatchIndex(static_cast<const std::string>(prefix(read.seq,5)));});
-}
-
+struct ClipHard {};
+struct ClipSoft {};
 
 template <typename TRead>
-void clipBarcodes(std::vector<TRead>& reads, const std::vector<int>& matches, const unsigned len) noexcept
-{
-    auto& it = matches.cbegin();
-    std::for_each(reads.begin(), reads.end(), [&it, len](auto& read) {
-        if(*it == -1)
-            erase(read.seq, 0, len);
-    });
-}
-
-//Overload for deleting the barcodes in any case.
-template<typename TRead>
-void clipBarcodes(std::vector<TRead>& reads, const int len) noexcept
+void clipBarcodes(std::vector<TRead>& reads, const unsigned len, const ClipHard&) noexcept
 {
     for (auto& read : reads)
         erase(read.seq, 0, len);
 }
 
+//Overload for deleting only matched barcodes 
+template<typename TRead>
+void clipBarcodes(std::vector<TRead>& reads, const int len, const ClipSoft&) noexcept
+{
+    std::for_each(reads.begin(), std::find_if(reads.begin(), reads.end(), [](const auto& read)->auto {return read.demuxResult == 0;}), [len](auto& read) {
+        erase(read.seq, 0, len);
+    });
+}
+
 struct ApproximateBarcodeMatching {};
 struct ExactBarcodeMatching {};
 
-template <typename TRead, typename TMatches, typename TStats>
-void group(std::vector<TRead>& reads, const TMatches& matches, TStats& stats,
-    const ExactBarcodeMatching&) noexcept
+template <typename TRead, typename TFinder, typename TStats>
+void MatchBarcodes(std::vector<TRead>& reads, const TFinder& finder, TStats& stats, const ExactBarcodeMatching&) noexcept
 {
-    auto it = matches.begin();
     for (auto& read : reads)
     {
-        if (*it != -1)                //Check if unidentified seqs have to be excluded
-        {                                                   //offset by 1 is necessary since group 0 is...
-            read.demuxResult = *it + 1;
-            ++stats.matchedBarcodeReads[*it + 1];
-        }
-        ++it;
+        read.demuxResult = finder.getMatchIndex(read) + 1;
+        if(read.demuxResult!= 0)
+            ++stats.matchedBarcodeReads[read.demuxResult];
     }
-}
-
-template <typename TRead, typename TMatches, typename TBarcodes, typename TStats>
-void group(std::vector<TRead>& reads, const TMatches& matches,
-    const TBarcodes& barcodes, TStats& stats, const ExactBarcodeMatching& dummy) noexcept
-{
-    (void)barcodes;
-    group(reads, matches, stats, dummy);
 }
 
 //Overload if approximate search has been used.
-template <typename TRead, typename TMatches, typename TBarcodes, typename TStats>
-void group(std::vector<TRead>& reads, const TMatches& matches,
-    const TBarcodes& barcodes, TStats& stats, const ApproximateBarcodeMatching&) noexcept
+template <typename TRead, typename TFinder, typename TStats>
+void MatchBarcodes(std::vector<TRead>& reads, const TFinder& finder, TStats& stats, const ApproximateBarcodeMatching&) noexcept
 {
-    unsigned i = 0;
-    const float dividend = float(length(barcodes[0])*5.0);		//value by which the index will be corrected.
-    for (const int matchResult : matches)			        //adds index of sequence to respective group.
+    const float dividend = float(finder.getBarcodeLength()*5.0);		//value by which the index will be corrected.
+    for (auto& read: reads)			             
     {
-        if (matchResult != -1)                //Check if unidentified reads have to be excluded
+        read.demuxResult = finder.getMatchIndex(read);
+        if (read.demuxResult != -1)
         {
-            reads[i].demuxResult = int(floor(float(matchResult) / dividend)) + 1;
-            ++stats.matchedBarcodeReads[static_cast<int>(floor(float(matchResult) / dividend)) + 1];
+            read.demuxResult = int(floor(float(read.demuxResult) / dividend)) + 1;
+            ++stats.matchedBarcodeReads[read.demuxResult];
         }
         else
-            reads[i].demuxResult = 0;
-        ++i;
+            read.demuxResult = 0;
     }
 }
 
-template<template <typename> class TRead, typename TSeq, typename TBarcodes, typename TFinder, typename TStats, typename TApprox>
-void doAll(std::vector<TRead<TSeq>>& reads, const TBarcodes& barcodes, const TFinder& finder,
+template<template <typename> class TRead, typename TSeq, typename TFinder, typename TStats, typename TApprox>
+void doAll(std::vector<TRead<TSeq>>& reads, const TFinder& finder,
     const bool hardClip, TStats& stats, const TApprox& approximate, const bool exclude)
 {
-    std::vector<int> matches(length(reads));
-    findAllExactIndex<std::vector<int>,TRead, TSeq, TFinder>(matches, reads, finder);
+    MatchBarcodes(reads, finder, stats, approximate);
     if (exclude)
-    {
         reads.erase(std::remove_if(reads.begin(), reads.end(), [](const auto& read)->auto {return read.demuxResult == 0;}), reads.end());
-    }
+    else
+        std::partition(reads.begin(), reads.end(), [](const auto& read)->auto {return read.demuxResult != 0;});
+
     if (std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value)   // clipping is not done for multiplex barcodes, only for inline barcodes
     {
         if (hardClip)		//clip barcodes according to selected method
-            clipBarcodes(reads, length(barcodes[0]));
+            clipBarcodes(reads, finder.getBarcodeLength(), ClipHard());
         else
-            clipBarcodes(reads, matches, length(barcodes[0]));
+            clipBarcodes(reads, finder.getBarcodeLength(), ClipSoft());
     }
-    group(reads, matches, barcodes, stats, approximate);
 }
 #endif 
