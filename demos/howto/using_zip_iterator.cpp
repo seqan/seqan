@@ -32,9 +32,6 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef DEMOS_HOW_TO_USING_ZIP_ITERATOR_H_
-#define DEMOS_HOW_TO_USING_ZIP_ITERATOR_H_
-
 #include <vector>
 #include <array>
 
@@ -49,29 +46,27 @@ int main()
     DnaString str = "AGT";
     std::array<float, 3> bla = {3.14, 2.71, 1.41};
 
-    auto zipCont = makeZippedView(vec, str, infix(str, 0, 3), bla);
+    auto zipCont = makeZippedView(vec, str, infix(str, 0, 3), bla, reverseString(str));
 
     // Range based for-loop.
     std::cout << "Using range based for-loop!" << std::endl;
-    for (auto&& elem : zipCont)
+    for (auto elem : zipCont)
     {
-        std::cout << (std::get<0>(elem) += 3) << ",  " << std::get<1>(elem) << ", " << std::get<2>(elem) << ", " << std::get<3>(elem) << std::endl;
+        std::cout << (std::get<0>(elem) += 3) << ",  " << std::get<1>(elem) << ", " << std::get<2>(elem) << ", " << std::get<3>(elem) << ", " << std::get<4>(elem) << std::endl;
     }
 
     // Using iterator.
     std::cout << "\nUsing iterator!" << std::endl;
     for (auto it = begin(zipCont, Standard()); it != end(zipCont, Standard()); ++it)
     {
-        std::cout << (std::get<0>(*it) + 3) << ",  " << std::get<1>(*it) << ", " << std::get<2>(*it) << ", " << std::get<3>(*it) << std::endl;
+        std::cout << (std::get<0>(*it) + 3) << ",  " << std::get<1>(*it) << ", " << std::get<2>(*it) << ", " << std::get<3>(*it) << ", " << std::get<4>(*it) << std::endl;
     }
 
     // Using value function and position.
     std::cout << "\nUsing value and position!" << std::endl;
     for (unsigned it = 0; it < length(zipCont); ++it)
     {
-        std::cout << (std::get<0>(value(zipCont,it)) -= 3) << ",  " << std::get<1>(value(zipCont,it)) << ", " << std::get<2>(value(zipCont,it)) << ", " << std::get<3>(value(zipCont,it)) << std::endl;
+        std::cout << (std::get<0>(value(zipCont,it)) -= 3) << ",  " << std::get<1>(value(zipCont,it)) << ", " << std::get<2>(value(zipCont,it)) << ", " << std::get<3>(value(zipCont,it)) << ", " << std::get<3>(value(zipCont, it)) << std::endl;
     }
     return 0;
 }
-
-#endif  // #ifndef DEMOS_HOW_TO_USING_ZIP_ITERATOR_H_
