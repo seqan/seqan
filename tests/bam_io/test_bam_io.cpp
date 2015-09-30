@@ -177,6 +177,7 @@ SEQAN_BEGIN_TESTSUITE(test_bam_io)
 
     // Test BAM indices.
     SEQAN_CALL_TEST(test_bam_io_bam_index_bai);
+    SEQAN_CALL_TEST(test_bam_io_bam_index_write_bai);
 #endif
 }
 SEQAN_END_TESTSUITE

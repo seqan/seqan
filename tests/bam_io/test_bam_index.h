@@ -80,4 +80,21 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_bai)
     SEQAN_ASSERT_NOT(found);
 }
 
+SEQAN_DEFINE_TEST(test_bam_io_bam_index_write_bai)
+{
+    using namespace seqan;
+
+    CharString baiFilename;
+    append(baiFilename, SEQAN_PATH_TO_ROOT());
+    append(baiFilename, "/tests/bam_io/small.bam.bai");
+    BamIndex<Bai> baiIndex;
+    SEQAN_ASSERT(open(baiIndex, toCString(baiFilename)));
+
+    CharString outPath = SEQAN_TEMP_FILENAME();
+    append(outPath, ".bai");
+    _saveIndex(baiIndex, toCString(outPath));
+
+    SEQAN_ASSERT(_compareBinaryFiles(toCString(outPath), toCString(baiFilename)));
+}
+
 #endif  // TESTS_BAM_IO_TEST_BAM_INDEX_H_

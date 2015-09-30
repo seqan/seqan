@@ -529,7 +529,7 @@ open(BamIndex<Bai> & index, char * filename)
 
 inline bool _saveIndex(BamIndex<Bai> const & index, char const * filename)
 {
-    std::cerr << "WRITE INDEX TO " << filename << std::endl;
+    //std::cerr << "WRITE INDEX TO " << filename << std::endl;
     // Open output file.
     std::ofstream out(filename, std::ios::binary | std::ios::out);
 
@@ -570,7 +570,7 @@ inline bool _saveIndex(BamIndex<Bai> const & index, char const * filename)
         }
 
         // Write out linear index.
-        __int32 numIntervals = length(index._linearIndices);
+        __int32 numIntervals = length(linearIndex);
         out.write(reinterpret_cast<char *>(&numIntervals), 4);
         typedef Iterator<String<__uint64> const, Rooted>::Type TLinearIndexIter;
         for (TLinearIndexIter it = begin(linearIndex, Rooted()); !atEnd(it); goNext(it))
@@ -578,7 +578,7 @@ inline bool _saveIndex(BamIndex<Bai> const & index, char const * filename)
     }
 
     // Write the number of unaligned reads if set.
-    std::cerr << "UNALIGNED\t" << index._unalignedCount << std::endl;
+    //std::cerr << "UNALIGNED\t" << index._unalignedCount << std::endl;
     if (index._unalignedCount != maxValue<__uint64>())
         out.write(reinterpret_cast<char const *>(&index._unalignedCount), 8);
 
