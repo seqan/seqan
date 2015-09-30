@@ -165,12 +165,6 @@ include (package)
 include (SeqAnCtdSetup)
 
 # ===========================================================================
-# Install all C++ header files
-# ===========================================================================
-
-install (DIRECTORY include/seqan DESTINATION "${CMAKE_INSTALL_PREFIX}/include")
-
-# ===========================================================================
 # Install pkg-config file on Unix-like systems
 # ===========================================================================
 
