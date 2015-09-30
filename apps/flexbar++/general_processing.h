@@ -137,7 +137,7 @@ int findN(TRead<TSeq>& read, unsigned allowed, const TSub substitute) noexcept
 }
 
 //universal function for all combinations of options
-template<template <typename> typename TRead, typename TSeq, typename TSub, typename TStats>
+template<template <typename> class TRead, typename TSeq, typename TSub, typename TStats>
 void processN(std::vector<TRead<TSeq>>& reads, unsigned allowed, TSub substitute, TStats& stats) noexcept
 {
     std::vector<int> res(length(reads));
@@ -199,7 +199,6 @@ template<template <typename> class TRead, typename TSeq, bool tagTrimming,
 {
     std::for_each(reads.begin(), reads.end(), [head, tail](auto& read)
     {
-        const auto seqLen = length(read.seq);
         if (read.minSeqLen() > (head + tail))
         {
             std::string insertToken;
@@ -263,7 +262,7 @@ template<template <typename> class TRead, typename TSeq, typename TStats,
         if (read.minSeqLen() > len)
             erase(read.seq, len, length(read.seq));
 
-    removeShortSeqs(reads, len);
+    stats.removedShort += removeShortSeqs(reads, len);
 }
 
 template<template <typename> class TRead, typename TSeq, typename TStats,
@@ -281,7 +280,7 @@ template<template <typename> class TRead, typename TSeq, typename TStats,
             }
     }
 
-    removeShortSeqs(reads, len);
+    stats.removedShort += removeShortSeqs(reads, len);
 }
 
 

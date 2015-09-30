@@ -86,6 +86,7 @@ struct BarcodeMatcher
         _barcodeLength = _patterns[0].size();;
         for (const auto& pattern : patterns)
         {
+            (void)pattern;
             assert(pattern.size() == _barcodeLength);
         }
     }
@@ -140,15 +141,15 @@ void buildVariations(TBarcodes& variations, const TBarcode& barcode)
 	int limit = (length(barcode))*5;		    //possible number of variations with one error (A,T,G,C,N)
 	resize(variations, limit);				    //resizes according to calculated number of variations
 	for (auto& variation : variations)
-        assign(variation, barcode);	        //fills resultset with original barcode
+        variation = barcode;	        //fills resultset with original barcode
 	limit = limit/5;
 	for (int i = 0; i < limit; ++i)
 	{										    
-		move(variations[5*i][i], 'A');	    	
-		move(variations[5*i+1][i], 'C');
-		move(variations[5*i+2][i], 'G');
-		move(variations[5*i+3][i], 'T');
-		move(variations[5*i+4][i], 'N');
+		variations[5*i][i] = 'A';	    	
+		variations[5*i+1][i] = 'C';
+		variations[5*i+2][i] = 'G';
+		variations[5*i+3][i] = 'T';
+		variations[5*i+4][i] = 'N';
 	}
 }
 
