@@ -41,20 +41,8 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
+#include "read.h"
 
-// always use the forward read for barcode detection
-template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value>>
-std::string getPrefix(const TRead<TSeq>& read, unsigned len) noexcept
-{
-    return static_cast<const std::string>(prefix(read.seq, len));
-}
-
-template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
-std::string getPrefix(const TRead<TSeq>& read, unsigned len, bool = false) noexcept
-{
-    (void)len;
-    return seqanToStd(read.demultiplex);
-}
 
 // seqan->std interface functions
 
@@ -105,6 +93,20 @@ void insert(std::string& dest, unsigned int k, const std::string& token)
 
 //
 
+// always use the forward read for barcode detection
+template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value>>
+std::string getPrefix(const TRead<TSeq>& read, unsigned len) noexcept
+{
+    return static_cast<const std::string>(prefix(read.seq, len));
+}
+
+template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value>>
+std::string getPrefix(const TRead<TSeq>& read, unsigned len, bool = false) noexcept
+{
+    (void)len;
+    return seqanToStd(read.demultiplex);
+}
+
 template <typename T>
 std::vector<T> operator+(const std::vector<T>& a, const std::vector<T>& b) noexcept
 {
@@ -143,8 +145,7 @@ auto _eraseSeqs(const Trem& rem, const TremVal remVal, std::vector<TRead>& reads
     const auto oldSize = reads.size();
     auto it = rem.cbegin();
     reads.erase(std::remove_if(reads.begin(), reads.end(),
-        [&rem, &it, remVal](const auto& element) {
-        return *(it++) == remVal;}), reads.end());
+        [&rem, &it, remVal](const auto& read) {(void)read;return *(it++) == remVal;}), reads.end());
     return oldSize - reads.size();
 }
 

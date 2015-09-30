@@ -59,6 +59,7 @@
 #include "adapter_trimming.h"
 #include "demultiplex.h"
 #include "general_processing.h"
+#include "helper_functions.h"
 #include "read.h"
 
 // Global variables are evil, this is for adaption and should be removed
@@ -1664,7 +1665,7 @@ struct ProcessingUnit
 
     ProcessingUnit(const ProgramParams& programParams, const ProcessingParams& processingParams, const DemultiplexingParams& demultiplexingParams, const AdapterTrimmingParams& adapterTrimmingParams,
         const QualityTrimmingParams& qualityTrimmingParams, TFinder &finder, TReadReader& readReader, TReadWriter& readWriter, unsigned int sleepMS) : _programParams(programParams), _processingParams(processingParams), _demultiplexingParams(demultiplexingParams),
-        _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _finder(finder), _readReader(readReader), _readWriter(readWriter), _threads(_programParams.num_threads), _sleepMS(sleepMS){};
+        _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _finder(finder), _sleepMS(sleepMS), _readReader(readReader), _readWriter(readWriter), _threads(_programParams.num_threads){};
 
     void start()
     {
