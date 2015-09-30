@@ -128,6 +128,10 @@
 
 #include <seqan/sequence/container_view.h>
 
+#if defined(SEQAN_CXX11_STANDARD)
+#include <seqan/sequence/container_view_zipped.h>
+#endif  // SEQAN_CXX11_STANDARD
+
 // ===========================================================================
 // Adaptions.
 // ===========================================================================

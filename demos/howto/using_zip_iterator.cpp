@@ -29,67 +29,49 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
-// ==========================================================================
-// Facade header for basic_iterator submodule.
+// Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ITERATOR_H_
-#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ITERATOR_H_
+#ifndef DEMOS_HOW_TO_USING_ZIP_ITERATOR_H_
+#define DEMOS_HOW_TO_USING_ZIP_ITERATOR_H_
 
-// --------------------------------------------------------------------------
-// Dependencies
-// --------------------------------------------------------------------------
+#include <vector>
+#include <array>
 
-#include <seqan/platform.h>
-#include <seqan/basic/basic_fundamental.h>
-#include <seqan/basic/basic_concept.h>
-#include <seqan/basic/basic_alphabet.h>
+#include <seqan/sequence.h>
+#include <seqan/stream.h>
 
-#include <seqan/basic/basic_type.h>  // TODO(holtgrew): Temporary dependency
+using namespace seqan;
 
-// --------------------------------------------------------------------------
-// Sub Module Headers
-// --------------------------------------------------------------------------
+int main()
+{
+    std::vector<int> vec = {10, 12, 14};
+    DnaString str = "AGT";
+    std::array<float, 3> bla = {3.14, 2.71, 1.41};
 
-// Iterator interface definition.
-#include <seqan/basic/iterator_interface.h>
+    auto zipCont = makeZippedView(vec, str, infix(str, 0, 3), bla);
 
-// Iter base class.
-#include <seqan/basic/iterator_base.h>
+    // Range based for-loop.
+    std::cout << "Using range based for-loop!" << std::endl;
+    for (auto&& elem : zipCont)
+    {
+        std::cout << (std::get<0>(elem) += 3) << ",  " << std::get<1>(elem) << ", " << std::get<2>(elem) << ", " << std::get<3>(elem) << std::endl;
+    }
 
-// Iterator concept.
-#include <seqan/basic/iterator_concept.h>
+    // Using iterator.
+    std::cout << "\nUsing iterator!" << std::endl;
+    for (auto it = begin(zipCont, Standard()); it != end(zipCont, Standard()); ++it)
+    {
+        std::cout << (std::get<0>(*it) + 3) << ",  " << std::get<1>(*it) << ", " << std::get<2>(*it) << ", " << std::get<3>(*it) << std::endl;
+    }
 
-// PropertyMap concept.
-#include <seqan/basic/property_map_concept.h>
+    // Using value function and position.
+    std::cout << "\nUsing value and position!" << std::endl;
+    for (unsigned it = 0; it < length(zipCont); ++it)
+    {
+        std::cout << (std::get<0>(value(zipCont,it)) -= 3) << ",  " << std::get<1>(value(zipCont,it)) << ", " << std::get<2>(value(zipCont,it)) << ", " << std::get<3>(value(zipCont,it)) << std::endl;
+    }
+    return 0;
+}
 
-// Container concept.
-#include <seqan/basic/container_concept.h>
-
-// Counting iterator.
-#include <seqan/basic/iterator_counting.h>
-
-// Positional iterator.
-#include <seqan/basic/iterator_position.h>
-
-// Makes a container out of begin/end iterators
-#include <seqan/basic/iterator_range.h>
-
-// Iterator for adapting iterators to Rooted Iterators.
-#include <seqan/basic/iterator_adaptor.h>
-
-// Adaption between STL iterators and SeqAn iterators.
-#include <seqan/basic/iterator_adapt_std.h>
-
-// TODO(holtgrew): Does proxy really belong here?
-#include <seqan/basic/proxy_base.h>
-#include <seqan/basic/proxy_iterator.h>
-
-#if defined(SEQAN_CXX11_STANDARD)  // Only if C++11 is enabled.
-// Zip iterator.
-#include <seqan/basic/iterator_zipped.h>
-
-#endif  // (SEQAN_CXX11_STANDARD)
-
-#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ITERATOR_H_
+#endif  // #ifndef DEMOS_HOW_TO_USING_ZIP_ITERATOR_H_
