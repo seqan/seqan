@@ -697,7 +697,7 @@ struct ProgramParams
     ProgramParams() : fileCount(0), showSpeed(false), firstReads(0), records(0), num_threads(0) {};
 };
 
-//TODO(singer): THIS NEEDS TO BE REDONE/DELETED
+//TODO: clean up this object
 class OutputStreams
 {
     typedef seqan::SeqFileOut * PSeqStream;

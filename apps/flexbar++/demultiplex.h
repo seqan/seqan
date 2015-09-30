@@ -215,9 +215,10 @@ void MatchBarcodes(std::vector<TRead>& reads, const TFinder& finder, TStats& sta
     const float dividend = float(finder.getBarcodeLength()*5.0);		//value by which the index will be corrected.
     for (auto& read: reads)			             
     {
-        read.demuxResult = finder.getMatchIndex(read) + 1;
+        read.demuxResult = finder.getMatchIndex(read) ;
         if (read.demuxResult != -1)
-            read.demuxResult = int(floor(float(read.demuxResult) / dividend)) + 1;
+            read.demuxResult = int(floor(float(read.demuxResult) / dividend));
+        ++read.demuxResult;
         ++stats.matchedBarcodeReads[read.demuxResult];
     }
 }
