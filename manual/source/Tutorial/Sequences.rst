@@ -252,7 +252,7 @@ Assignment 2
 
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/sequences/assignment_1b_solution.cpp
+        .. includefrags:: demos/tutorial/sequences/assignment_2_solution.cpp
           :fragment: full
 
 Comparisons

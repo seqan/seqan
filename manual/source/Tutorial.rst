@@ -64,7 +64,6 @@ Tutorial
    Tutorial/Realignment
 
    Tutorial/SimpleRnaSeq
-   Tutorial/MiniBowtie
    Tutorial/JournaledSet
    Tutorial/KnimeNode
 
@@ -228,13 +227,6 @@ The article :ref:`build-manual-integration-with-your-own-build-system` contains 
 
 :ref:`tutorial-simple-rna-seq`
   In this tutorial you will learn how to implement a simple RNA-Seq based gene quantification tool, that computes RPKM expression levels based on a given genome annotation and RNA-Seq read alignments.
-
-:ref:`tutorial-simple-read-mapping`
-  This tutorial shows how to implement a simple read mapping program based on the SWIFT filter and online Hamming finder for verification.
-
-:ref:`tutorial-mini-bowtie`
-  Mini-Bowtie is a very basic read aligner that is inspired by the well known Bowtie program :cite:`Langmead2009`.
-  It serves as an example to show that you can write sophisticated programs with SeqAn using few lines of code.
 
 :ref:`tutorial-data-journaling`
   In this tutorial we demonstrate how you can handle multiple large sequence in main memory while the data structures themself support a certain parallel sequence analysis.
