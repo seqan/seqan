@@ -1,3 +1,7 @@
+// The comment lines containing ![fragment-line] are there for the
+// documentation system.  You can ignore them when reading this file.
+//![full]
+//![top]
 #include <iostream>
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
@@ -24,10 +28,15 @@ int main()
     Dna5String read = "TGGTNTCA";
     // And the begin position of a given alignment between the read and the genome
     unsigned beginPosition = 1;
+//![top]
 
     // Create Infix of type Dna5String and get the corresponding infix sequence of genome
     Infix<Dna5String>::Type inf = infix(genome, beginPosition, beginPosition + length(read));
+
+//![bottom]
     // Call of our function to print the simple alignment
     printAlign(inf, read);
     return 0;
 }
+//![bottom]
+//![full]

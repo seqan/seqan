@@ -1,11 +1,10 @@
 #include <seqan/bed_io.h>
-
 using namespace seqan;
 
 int main()
 {
     // Open input bed file.
-    BedFileIn bedIn("example.bed");
+    BedFileIn bedIn(toCString(getExamplePath("/demos/tutorial/bed_io/example.bed")));
 
     // Attach to standard output.
     BedFileOut bedOut(std::cout, Bed());
