@@ -106,5 +106,5 @@ int main(int, char const **)
     for (; !atEnd(it3); goNext(it3))
         std::cout << value(it3) << std::endl;
 
-    return 1;
+    return 0;
 }
