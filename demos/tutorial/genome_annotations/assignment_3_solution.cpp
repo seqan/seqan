@@ -1,4 +1,3 @@
-#include <fstream>
 #include <iostream>
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
@@ -8,8 +7,10 @@ using namespace seqan;
 
 int main()
 {
+    CharString fileName = getAbsolutePath("/demos/tutorial/genome_annotations/assignment_annotations.gtf");
+    GffFileIn file(toCString(fileName));
+
     FragmentStore<> store;
-    GffFileIn file("assignment_annotations.gtf");
     readRecords(store, file);
     // Create iterator
     Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
