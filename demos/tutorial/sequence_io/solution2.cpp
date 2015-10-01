@@ -2,19 +2,14 @@
 
 using namespace seqan;
 
-int main(int argc, char const ** argv)
+int main()
 {
-    if (argc < 2)
-    {
-        std::cerr << "USAGE: basic_seq_io_example FILENAME\n";
-        return 1;
-    }
-
+    CharString seqFileName = getAbsolutePath("/demos/tutorial/sequence_io/example.fa");
     CharString id;
     Dna5String seq;
 
     SeqFileIn seqFileIn;
-    if (!open(seqFileIn, argv[1]))
+    if (!open(seqFileIn, toCString(seqFileName)))
     {
         std::cerr << "ERROR: Could not open the file.\n";
         return 1;

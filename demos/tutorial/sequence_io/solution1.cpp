@@ -2,18 +2,13 @@
 
 using namespace seqan;
 
-int main(int argc, char const ** argv)
+int main()
 {
-    if (argc < 2)
-    {
-        std::cerr << "USAGE: basic_seq_io_example FILENAME\n";
-        return 1;
-    }
-
+    CharString seqFileName = getAbsolutePath("/demos/tutorial/sequence_io/example.fa");
     CharString id;
     Dna5String seq;
 
-    SeqFileIn seqFileIn(argv[1]);
+    SeqFileIn seqFileIn(toCString(seqFileName));
     readRecord(id, seq, seqFileIn);
     std::cout << id << '\t' << seq << '\n';
 
