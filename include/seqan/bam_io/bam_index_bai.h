@@ -528,12 +528,12 @@ open(BamIndex<Bai> & index, char * filename)
 // ---------------------------------------------------------------------------
 
 /*!
- * @fn BaiIndex#save
- * @brief Save a BaiIndex object.
+ * @fn BamIndex#save
+ * @brief Save a BamIndex object.
  *
  * @signature bool save(baiIndex, baiFileName);
  *
- * @param[in] baiIndex    The BaiIndex to write out.
+ * @param[in] baiIndex    The BamIndex to write out.
  * @param[in] baiFileName The name of the BAI file to write to.
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
@@ -625,12 +625,12 @@ inline void _baiAddAlignmentChunkToBin(BamIndex<Bai> & index,
 // ---------------------------------------------------------------------------
 // TODO(dadi): uncomment when BamIndex.build index is fixed. DOX commented out
 /*
- * @fn BaiIndex#build
- * @brief Create a BaiIndex from BAM file.
+ * @fn BamIndex#build
+ * @brief Create a BamIndex from BAM file.
  *
  * @signature bool build(baiIndex, bamFileName);
  *
- * @param[out] baiIndex    The BaiIndex to build into.
+ * @param[out] baiIndex    The BamIndex to build into.
  * @param[in]  bamFileName Path to the BAM file to build an index for.  Type: <tt>char const *</tt>.
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
