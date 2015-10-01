@@ -1,4 +1,3 @@
-#include <fstream>
 #include <iostream>
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
@@ -8,8 +7,10 @@ using namespace seqan;
 
 int main()
 {
+    CharString fileName = getAbsolutePath("/demos/tutorial/genome_annotations/assignment_annotations.gtf");
+    GffFileIn file(toCString(fileName));
+
     FragmentStore<> store;
-    GffFileIn file("assignment_annotations.gtf");
     readRecords(store, file);
     // Iterate over all leafs, count and print the result
     Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
@@ -18,7 +19,8 @@ int main()
     std::cout << "Number of children for each mRNA: " << std::endl;
     // Go down to the first leaf (first child of the first mRNA)
     while (goDown(it))
-        ;
+    {}
+
     while (!atEnd(it))
     {
         ++count;
@@ -33,7 +35,7 @@ int main()
             goNext(it);
             if (!atEnd(it))
                 while (goDown(it))
-                    ;
+                {}
         }
     }
     return 0;
