@@ -46,31 +46,7 @@ GFF Format
 
 The following is an example of a GFF 3 file:
 
-::
-
-    ctg123  .   gene    1000    9000    .   +   .   ID=gene00001;Name=EDEN
-    ctg123  .   TF_binding_site 1000    1012    .   +   .   Parent=gene00001
-    ctg123  .   mRNA    1050    9000    .   +   .   ID=mRNA00001;Parent=gene00001
-    ctg123  .   mRNA    1050    9000    .   +   .   ID=mRNA00002;Parent=gene00001
-    ctg123  .   mRNA    1300    9000    .   +   .   ID=mRNA00003;Parent=gene00001
-    ctg123  .   exon    1300    1500    .   +   .   Parent=mRNA00003
-    ctg123  .   exon    1050    1500    .   +   .   Parent=mRNA00001,mRNA00002
-    ctg123  .   exon    3000    3902    .   +   .   Parent=mRNA00001,mRNA00003
-    ctg123  .   exon    5000    5500    .   +   .   Parent=mRNA00001,mRNA00002,mRNA00003
-    ctg123  .   exon    7000    9000    .   +   .   Parent=mRNA00001,mRNA00002,mRNA00003
-    ctg123  .   CDS 1201    1500    .   +   0   ID=cds00001;Parent=mRNA00001
-    ctg123  .   CDS 3000    3902    .   +   0   ID=cds00001;Parent=mRNA00001
-    ctg123  .   CDS 5000    5500    .   +   0   ID=cds00001;Parent=mRNA00001
-    ctg123  .   CDS 7000    7600    .   +   0   ID=cds00001;Parent=mRNA00001
-    ctg123  .   CDS 1201    1500    .   +   0   ID=cds00002;Parent=mRNA00002
-    ctg123  .   CDS 5000    5500    .   +   0   ID=cds00002;Parent=mRNA00002
-    ctg123  .   CDS         7000    7600    .   +   0   ID=cds00002;Parent=mRNA00002
-    ctg123  .   CDS 3301    3902    .   +   0   ID=cds00003;Parent=mRNA00003
-    ctg123  .   CDS         5000    5500    .   +   1   ID=cds00003;Parent=mRNA00003
-    ctg123  .   CDS         7000    7600    .   +   1   ID=cds00003;Parent=mRNA00003
-    ctg123  .   CDS 3391    3902    .   +   0   ID=cds00004;Parent=mRNA00003
-    ctg123  .   CDS         5000    5500    .   +   1   ID=cds00004;Parent=mRNA00003
-    ctg123  .   CDS         7000    7600    .   +   1   ID=cds00004;Parent=mRNA00003
+.. includefrags:: demos/tutorial/gff_and_gtf_io/example.gff
 
 The meaning of the columns are as follows:
 
@@ -124,7 +100,7 @@ A First Working Example
 
 The following example shows an example of a program that reads the file with the path ``example.gff`` and prints its contents back to the user on standard output.
 
-.. includefrags:: demos/tutorial/gff_and_gft_io/example1.cpp
+.. includefrags:: demos/tutorial/gff_and_gtf_io/example1.cpp
 
 The program first opens a :dox:`GffFileIn` for reading and a :dox:`GffFileOut` for writing.
 The GFF records are read into :dox:`GffRecord` objects which we will focus on below.
@@ -143,7 +119,7 @@ Assignment 1
    Solution
       .. container:: foldable
 
-         .. includefrags:: demos/tutorial/gff_and_gft_io/solution1.cpp
+         .. includefrags:: demos/tutorial/gff_and_gtf_io/solution1.cpp
 
 
 Accessing the Records
@@ -201,14 +177,12 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/gff_and_gft_io/solution2.cpp
+        .. includefrags:: demos/tutorial/gff_and_gtf_io/solution2.cpp
 
         The output is
 
-        .. code-block:: console
+        .. includefrags:: demos/tutorial/gff_and_gtf_io/solution2.cpp.stdout
 
-           RECORDS ON CONTIGS
-           ctg123  23
 
 Creating a New File
 -------------------
@@ -227,15 +201,12 @@ Assignment 3
      Write a program that prints the following GFF file.
      Create ``GffRecord`` objects and write them to a ``GffFileOut`` using ``writeRecord()``.
 
-     .. code-block:: console
-
-        ctg123  .   gene    1000    9000    .   +   .   ID=gene00001;Name=EDEN
-        ctg123  .   TF_binding_site 1000    1012    .   +   .   Parent=gene00001
+     .. includefrags::demos/tutorial/gff_and_gtf_io/solution3.cpp.stdcout
 
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/gff_and_gft_io/solution3.cpp
+        .. includefrags:: demos/tutorial/gff_and_gtf_io/solution3.cpp
 
 Next Steps
 ----------

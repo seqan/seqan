@@ -5,11 +5,14 @@ using namespace seqan;
 
 int main()
 {
-    // Open input gff file.
+    // Get path to example file.
+    CharString file = getAbsolutePath("/demos/tutorial/gff_and_gtf_io/example.gff");
+
+    // Open input file.
     GffFileIn gffIn;
-    if (!open(gffIn, "example.gff"))
+    if (!open(gffIn, toCString(file)))
     {
-        std::cerr << "ERROR: Could not open example.gff\n";
+        std::cerr << "ERROR: Could not open example.gff" << std::endl;
         return 1;
     }
 

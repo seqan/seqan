@@ -5,8 +5,12 @@ using namespace seqan;
 
 int main()
 {
-    // Open input stream.
-    GffFileIn gffIn("example.gff");
+    // Get path to example file.
+    CharString file = getAbsolutePath("/demos/tutorial/gff_and_gtf_io/example.gff");
+
+    // Open input file.
+    GffFileIn gffIn(toCString(file));
+
     // Open output stream. If target is a ostream we must specify the format.
     GffFileOut gffOut(std::cout, Gtf());
 

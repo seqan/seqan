@@ -1,11 +1,15 @@
+#include <seqan/basic.h>
 #include <seqan/gff_io.h>
 
 using namespace seqan;
 
 int main()
 {
+    // Get path to example file.
+    CharString file = getAbsolutePath("/demos/tutorial/gff_and_gtf_io/example.gff");
+
     // Open input file.
-    GffFileIn gffIn("example.gff");
+    GffFileIn gffIn(toCString(file));
 
     // Attach to standard output.
     GffFileOut gffOut(std::cout, Gff());
