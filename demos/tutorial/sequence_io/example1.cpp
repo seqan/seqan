@@ -4,10 +4,11 @@ using namespace seqan;
 
 int main()
 {
+    CharString seqFileName = getAbsolutePath("/demos/tutorial/sequence_io/example.fa");
     CharString id;
     Dna5String seq;
 
-    SeqFileIn seqFileIn("example.fa");
+    SeqFileIn seqFileIn(toCString(seqFileName));
     readRecord(id, seq, seqFileIn);
     std::cout << id << '\t' << seq << '\n';
 
