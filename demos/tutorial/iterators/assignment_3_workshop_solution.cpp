@@ -78,5 +78,5 @@ int main(int, char const **)
         printAlign(genomeFragment, value(it));
     }
 
-    return 1;
+    return 0;
 }
