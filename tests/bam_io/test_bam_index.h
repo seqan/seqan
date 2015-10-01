@@ -40,12 +40,30 @@
 
 #include <seqan/bam_io.h>
 
-SEQAN_DEFINE_TEST(test_bam_io_bam_index_bai)
-{
-    using namespace seqan;
+using namespace seqan;
 
-    CharString baiFilename;
-    append(baiFilename, SEQAN_PATH_TO_ROOT());
+SEQAN_DEFINE_TEST(test_bam_io_bam_index_build)
+{
+    CharString expectedBaiFilename = SEQAN_PATH_TO_ROOT();
+    append(expectedBaiFilename, "/tests/bam_io/small.bam.bai");
+
+    CharString bamFilename = SEQAN_PATH_TO_ROOT();
+    append(bamFilename, "/tests/bam_io/small.bam");
+
+    CharString tmpOutPath = SEQAN_TEMP_FILENAME();
+    append(tmpOutPath, ".bai");
+
+    BamIndex<Bai> baiIndex;
+    SEQAN_ASSERT(build(baiIndex, toCString(bamFilename), toCString(tmpOutPath)));
+    SEQAN_ASSERT(save(baiIndex));
+
+    SEQAN_ASSERT(_compareBinaryFiles(toCString(tmpOutPath), toCString(expectedBaiFilename)));
+}
+
+
+SEQAN_DEFINE_TEST(test_bam_io_bam_index_open)
+{
+    CharString baiFilename = SEQAN_PATH_TO_ROOT();
     append(baiFilename, "/tests/bam_io/small.bam.bai");
 
     BamIndex<Bai> baiIndex;
@@ -62,8 +80,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_bai)
     SEQAN_ASSERT_EQ(getUnalignedCount(baiIndex), 0u);
 
     // File has same contents as in the SAM test.
-    CharString bamFilename;
-    append(bamFilename, SEQAN_PATH_TO_ROOT());
+    CharString bamFilename = SEQAN_PATH_TO_ROOT();
     append(bamFilename, "/tests/bam_io/small.bam");
 
     BamFileIn bamFile(toCString(bamFilename));
@@ -80,21 +97,20 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_bai)
     SEQAN_ASSERT_NOT(found);
 }
 
-SEQAN_DEFINE_TEST(test_bam_io_bam_index_write_bai)
+SEQAN_DEFINE_TEST(test_bam_io_bam_index_save)
 {
-    using namespace seqan;
-
-    CharString baiFilename;
-    append(baiFilename, SEQAN_PATH_TO_ROOT());
+    CharString baiFilename = SEQAN_PATH_TO_ROOT();
     append(baiFilename, "/tests/bam_io/small.bam.bai");
+    
+    CharString tmpOutPath = SEQAN_TEMP_FILENAME();
+    append(tmpOutPath, ".bai");
+    
     BamIndex<Bai> baiIndex;
     SEQAN_ASSERT(open(baiIndex, toCString(baiFilename)));
-
-    CharString outPath = SEQAN_TEMP_FILENAME();
-    append(outPath, ".bai");
-    _saveIndex(baiIndex, toCString(outPath));
-
-    SEQAN_ASSERT(_compareBinaryFiles(toCString(outPath), toCString(baiFilename)));
+    SEQAN_ASSERT(save(baiIndex, toCString(tmpOutPath)));
+    
+    SEQAN_ASSERT(_compareBinaryFiles(toCString(tmpOutPath), toCString(baiFilename)));
 }
+
 
 #endif  // TESTS_BAM_IO_TEST_BAM_INDEX_H_
