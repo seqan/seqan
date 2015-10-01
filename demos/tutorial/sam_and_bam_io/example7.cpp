@@ -1,6 +1,3 @@
-#include <iostream>
-#include <fstream>
-
 #include <seqan/sequence.h>
 #include <seqan/bam_io.h>
 
