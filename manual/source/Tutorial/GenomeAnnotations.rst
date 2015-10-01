@@ -72,31 +72,32 @@ The following entity-relationship diagram shows the tables holding store annotat
    Stores involved in gene annotation
 
 The instantiation of an :dox:`FragmentStore::annotationStore` happens implicitly with the instantiation of a :dox:`FragmentStore`.
-Therefore we simply type:
+To access the FragmentStore definitions we'll need to include the correct header:
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/genome_annotations/base.cpp
+    :fragment: INCLUDE
 
-   FragmentStore<> store;
+Now we can simply write:
+
+.. includefrags:: demos/tutorial/genome_annotations/base.cpp
+    :fragment: SIGNATURE
 
 Loading an Annotation File
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Before we deal with the actual annotation tree, we will first describe how you can easily load annotations from a `GFF <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <http://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ file into the :dox:`FragmentStore`.
 
-An annotation file can be read from an open input stream with the function :dox:`File#read`.
-A tag specifies if we want to read a GFF, GTF or UCSC file.
+An annotation file can be read from an :dox:`GffFileIn` with the function :dox:`FragmentStore#readRecords`.
+The file extension specifies if we want to read a GFF, GTF or UCSC file.
 The following example shows how to read an GTF file:
 
-.. code-block:: cpp
-
-   // Open input stream from the current directory
-   std::ifstream file("example.gtf", std::ios_base::in | std::ios_base::binary);
-   // Read annotations from the GTF file
-   read(file, store, Gtf());
+.. includefrags:: demos/tutorial/genome_annotations/base.cpp
+    :fragment: LOAD
 
 The GFF-reader is also able to detect and read GTF files.
 The UCSC Genome Browser uses two seperate files, the ``kownGene.txt`` and ``knownIsoforms.txt``.
-They must be read by two consecutive calls of :dox:`File#read` (first ``knownGene.txt`` then ``knownIsoforms.txt``).
+They must be read by using two different :dox:`UcscFileIn` objects (one for ``knownGene.txt`` and one for ``knownIsoforms.txt``).
+Finally you call :dox:`FragmentStore#readRecords` with both :dox:`UcscFileIn` objects.
 
 .. tip::
 
@@ -114,10 +115,8 @@ The annotation tree can be traversed and accessed with the :dox:`AnnotationTreeI
 Again we use the metafunction `dox:ContainerConcept#Iterator Iterator` to determine the appropriate iterator type for our container.
 A new AnnotationTree iterator can be obtained by calling :dox:`ContainerConcept#begin` with a reference to the :dox:`FragmentStore` and the ``AnnotationTree`` tag:
 
-.. code-block:: cpp
-
-   Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
-   it = begin(store, AnnotationTree<>());
+.. includefrags:: demos/tutorial/genome_annotations/base.cpp
+    :fragment: ITERATOR
 
 The AnnotationTree iterator starts at the root node and can be moved to adjacent tree nodes with the functions :dox:`AnnotationTreeIterator#goDown`, :dox:`AnnotationTreeIterator#goUp`, and :dox:`AnnotationTreeIterator#goRight`.
 These functions return a boolean value that indicates whether the iterator could be moved.
@@ -125,29 +124,14 @@ The functions :dox:`AnnotationTreeIterator#isLeaf`, :dox:`AnnotationTreeIterator
 With :dox:`AnnotationTreeIterator#goRoot` or :dox:`AnnotationTreeIterator#goTo` the iterator can be moved to the root node or an arbitrary node given its annotationId.
 If the iterator should not be moved but a new iterator at an adjacent node is required, the functions :dox:`AnnotationTreeIterator#nodeDown`, :dox:`AnnotationTreeIterator#nodeUp`, :dox:`AnnotationTreeIterator#nodeRight` can be used.
 
-.. code-block:: cpp
-
-   // Move the iterator down to a leaf
-   while (goDown(it));
-   // Create a new iterator and if possible move it to the right sibling of the first iterator
-   Iterator<FragmentStore<>, AnnotationTree<> >::Type it2;
-   if (isLastChild(it))
-       it2 = nodeRight(it);
+.. includefrags:: demos/tutorial/genome_annotations/base.cpp
+    :fragment: MOVE
 
 The AnnotationTree iterator supports a preorder DFS traversal and therefore can also be used in typical begin-end loops with the functions :dox:`RootedRandomAccessIteratorConcept#goBegin` (== :dox:`AnnotationTreeIterator#goRoot`), :dox:`RootedRandomAccessIteratorConcept#goEnd`, :dox:`InputIteratorConcept#goNext`, :dox:`RootedIteratorConcept#atBegin`, :dox:`RootedIteratorConcept#atEnd`.
 During a preorder DFS, the descent into subtree can be skipped by :dox:`AnnotationTreeIterator#goNextRight`, or :dox:`AnnotationTreeIterator#goNextUp` which proceeds with the next sibling or returns to the parent node and proceeds with the next node in preorder DFS.
 
-.. code-block:: cpp
-
-   // Move the iterator back to the beginning
-   goBegin(it);
-   // Iterate over the nodes in preorder DFS while the end is not reached and
-   // output if the current node is a leaf
-   for (goBegin(it); atEnd(it); goNext(it))
-   {
-       if (isLeaf(it))
-           std::cout << " current node is leaf" << std::endl;
-   }
+.. includefrags:: demos/tutorial/genome_annotations/base.cpp
+    :fragment: DFS
 
 Asignment 1
 """""""""""
@@ -180,9 +164,8 @@ Asignment 1
 
          .. includefrags:: demos/tutorial/genome_annotations/assignment_1_solution.cpp
 
-         .. code-block:: console
+         .. includefrags:: demos/tutorial/genome_annotations/assignment_1_solution.cpp.stdout
 
-            No. of children of the first mRNA: 9
 
 Assignment 2
 """"""""""""
@@ -207,11 +190,8 @@ Assignment 2
 
         .. includefrags:: demos/tutorial/genome_annotations/assignment_2_solution.cpp
 
-        .. code-block:: console
+        .. includefrags:: demos/tutorial/genome_annotations/assignment_2_solution.cpp.stdout
 
-           9
-           2
-           2
 
 Accessing the Annotation Tree
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -228,32 +208,17 @@ The name of the annotation type, e.g. 'mRNA' or 'exon', can be determined and mo
 
 Assume we have loaded the file ``example.gtf`` with the following content to the :dox:`FragmentStore` *store* and instantiated the iterator *it* of the corresponding annotation tree.
 
-::
-
-    chr1    MySource    exon    150 200 .   +   .   gene_id "381.000"; transcript_id "381.000.1";
-    chr1    MySource    exon    300 401 .   +   .   gene_id "381.000"; transcript_id "381.000.1";
-    chr1    MySource    CDS     380 401 .   +   0   gene_id "381.000"; transcript_id "381.000.1";
-    chr1    MySource    exon    160 210 .   +   .   gene_id "381.000"; transcript_id "381.000.2";
+.. includefrags:: demos/tutorial/genome_annotations/example.gtf
 
 We now want to iterate to the first exon and output a few information:
 
-.. code-block:: cpp
-
-   // Move the iterator to the begin of the annotation tree
-   it = begin(store, AnnotationTree<>());
-   // Go down to exon level
-   while (goDown(it)) ;
-   std::cout << "type: " <<  getType(it) << std::endl;
-   std::cout << "id: " << value(it) << std::endl;
-   std::cout << "begin position: " <<  getAnnotation(it).beginPos << std::endl;
+.. includefrags:: demos/tutorial/genome_annotations/base.cpp
+    :fragment: ACCESS
 
 For our example the output would be:
 
-.. code-block:: console
-
-   type: exon
-   id: 3
-   begin position: 149
+.. includefrags:: demos/tutorial/genome_annotations/base.cpp.stdout
+    :lines: 5-7
 
 An annotation can not only refer to a region of a contig but also contain additional information given as key-value pairs.
 The value of a key can be retrieved or set by :dox:`AnnotationTreeIterator#getValueByKey` and :dox:`AnnotationTreeIterator#assignValueByKey`.
@@ -262,11 +227,8 @@ The values of a node can be cleared with :dox:`AnnotationTreeIterator#clearValue
 A new node can be created as first child, last child, or right sibling of the current node with :dox:`AnnotationTreeIterator#createLeftChild`, :dox:`AnnotationTreeIterator#createRightChild`, or :dox:`AnnotationTreeIterator#createSibling`.
 All three functions return an iterator to the newly created node.
 
-.. code-block:: cpp
-
-   Iterator<FragmentStore<>, AnnotationTree<> >::Type it2;
-   // Create a right sibling of the current node and return an iterator to this new node
-   it2 = createSibling(it);
+.. includefrags:: demos/tutorial/genome_annotations/base.cpp
+    :fragment: CREATE
 
 The following list summarizes the functions provided by the AnnotationTree iterator.
 
@@ -292,7 +254,7 @@ The following list summarizes the functions provided by the AnnotationTree itera
 Assignment 3
 """"""""""""
 
-.. container::
+.. container:: assignment
 
    Type
      Application
@@ -315,14 +277,8 @@ Assignment 3
 
        .. includefrags:: demos/tutorial/genome_annotations/assignment_3_solution.cpp
 
-       .. code-block:: console
+       .. includefrags:: demos/tutorial/genome_annotations/assignment_3_solution.cpp.stdout
 
-          type: exon
-          begin position: 149
-          end position: 200
-          id: 3
-          parent id: 2
-          parent name: 381.000.1
 
 Assignment 4
 """"""""""""
@@ -347,20 +303,13 @@ Assignment 4
 
          .. includefrags:: demos/tutorial/genome_annotations/assignment_4_solution.cpp
 
-         .. code-block:: console
+         .. includefrags:: demos/tutorial/genome_annotations/assignment_4_solution.cpp.stdout
 
-            Average number of mRNAs for genes: 1.5
-            Average number of exons for mRNAs: 3
-            Average length of exons: 95.5556
 
 Write an Annotation File
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-To write an annotation to an open output stream use the function :dox:`File#write` and specify the file format with a tag ``Gff()`` or ``Gtf()``.
+To write an annotation to a file use the function :dox:`FragmentStore#writeRecords`. Note that the format (``Gff()`` or ``Gtf()``) is specified by the file extension.
 
-.. code-block:: cpp
-
-   // Open output stream
-   std::ofstream fileOut("example_out.gtf", std::ios_base::out | std::ios_base::binary);
-   // Write annotations to GTF file
-   write(fileOut, store, Gtf());
+.. includefrags:: demos/tutorial/genome_annotations/base.cpp
+    :fragment: OUT

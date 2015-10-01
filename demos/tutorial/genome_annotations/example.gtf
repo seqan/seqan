@@ -1,0 +1,4 @@
+chr1	MySource	exon	150	200	.	+	.	gene_id "381.000"; transcript_id "381.000.1";
+chr1	MySource	exon	300	401	.	+	.	gene_id "381.000"; transcript_id "381.000.1";
+chr1	MySource	CDS	380	401	.	+	0	gene_id "381.000"; transcript_id "381.000.1";
+chr1	MySource	exon	160	210	.	+	.	gene_id "381.000"; transcript_id "381.000.2";
