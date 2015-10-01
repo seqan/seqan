@@ -4,11 +4,13 @@ using namespace seqan;
 
 int main()
 {
+    CharString bamFileName = getAbsolutePath("/demos/tutorial/sam_and_bam_io/example.sam");
+
     // Open input file.
     BamFileIn bamFileIn;
-    if (!open(bamFileIn, "example.sam"))
+    if (!open(bamFileIn, toCString(bamFileName)))
     {
-        std::cerr << "ERROR: Could not open example.sam!" << std::endl;
+        std::cerr << "ERROR: Could not open " << bamFileName << std::endl;
         return 1;
     }
 

@@ -4,7 +4,9 @@ using namespace seqan;
 
 int main()
 {
-    BamFileIn bamFileIn("example.bam");
+    CharString bamFileName = getAbsolutePath("/demos/tutorial/sam_and_bam_io/example.sam");
+
+    BamFileIn bamFileIn(toCString(bamFileName));
 
     BamHeader header;
     readHeader(header, bamFileIn);
