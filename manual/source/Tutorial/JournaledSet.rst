@@ -107,22 +107,8 @@ Again we print the sequences to see the effects.
 
 Here is the output of our small program.
 
-.. code-block:: console
+.. includefrags:: demos/tutorial/journaled_set/example_journal_string_basic.cpp.stdout
 
-   After creating the Journaled String:
-   Host: thisisahostsequence
-   Journal: thisisahostsequence
-   Nodes: JournalEntries({segmentSource=1, virtualPosition=0, physicalPosition=0, length=19})
-
-   After modifying the Journaled String:
-   Host: thisisahostsequence
-   Journal: thisisamodifiedhost
-   Nodes: JournalEntries({segmentSource=1, virtualPosition=0, physicalPosition=0, length=7}, {segmentSource=2, virtualPosition=7, physicalPosition=0, length=8}, {segmentSource=1, virtualPosition=15, physicalPosition=7, length=4})
-
-   After flatten the Journaled String:
-   Host: thisisamodifiedhost
-   Journal: thisisamodifiedhost
-   Nodes: JournalEntries({segmentSource=1, virtualPosition=0, physicalPosition=0, length=19})
 
 .. important::
 
@@ -181,12 +167,8 @@ Furthermore, we can use the :dox:`JoinConfig` object to specify the method that 
 
 Here is the output of the program.
 
-.. code-block:: console
+.. includefrags:: demos/tutorial/journaled_set/example_join.cpp.stdout
 
-   Reference: DPKKPRGKMSSYAFFVQTSREEHKKKHPDASVNFSEFSKKCSERWKTMSAKEKGKFEDMAKADKARYEREMKTYIPPKGE
-   Journaled Sequence 0: DPKKPRGKMVNSPPAFFVQTSREEHKKKHPDASVFSKKCSERWKTMSAKEKGKFEDMAKARYEREMKTTYIPKGETYIPPKGE
-   Journaled Sequence 1: DPHHPPKPRGKMVNSPPAFFVQTSREEHKPDASVFSKKCSERRMPNHHTMSAKEKGKFEDMAKARYEREMKTTYIPKGETYIPPKGE
-   Journaled Sequence 2: DPKKPRGKMSSYAFFVQTSREEHKKKHPKKCDEFSKKCSERWKTMSAKEKGKFEDARYEREMKTYIPPKGE
 
 Implementing an Online-Search
 -----------------------------
@@ -266,8 +248,21 @@ Assignment 2
      .. container:: foldable
         The following code snippet provides you with the backbone for the search algorithm. Fill in the missing parts ``[A]``, ``[B]``, ``[C]`` and ``[D]``.
 
-        .. includefrags:: demos/tutorial/journaled_set/example_online_search_assignment2_hint.cpp
-           :fragment: findPatternInReferenceHint
+        .. code-block:: cpp
+
+            template <typename TString, typename TPattern>
+            void findPatternInReference(String<int> & hits,
+                                        TString const & reference,
+                                        TPattern const & pattern)
+            {
+            // [A] Check whether pattern fits into the sequence.
+
+            // [B] Iterate over all positions at which the pattern might occur.
+
+            // [C] Evaluate all positions of the pattern until you find a mismatch or you have found a hit.
+
+            // [D] Report begin position at which pattern matches the sequence.
+            }
 
    Solution
      .. container:: foldable
@@ -312,10 +307,8 @@ Assignment 2
 
            And here is the result.
 
-           .. code-block:: console
+           .. includefrags:: demos/tutorial/journaled_set/solution_online_search_assignment2.cpp.stdout
 
-              Search for: GTGGT:
-              Hit in reference  at 311: GTGGT	644: GTGGT
 
 We know can search for all occurrences of a pattern in the reference sequence.
 Now we can try to find all occurrences in the journaled sequences.
@@ -373,8 +366,24 @@ Assignment 3
 
        Use the STL function `std::upper_bound <http://www.cplusplus.com/reference/algorithm/upper_bound/>`_ to conduct a binary search to find the first possible hit from the reference that is also represented by the current node.
 
-       .. includefrags:: demos/tutorial/journaled_set/example_online_search_assignment3_hint.cpp
-          :fragment: findInOriginalNode
+        .. code-block:: cpp
+
+            template <typename TJournalEntriesIterator, typename TPattern>
+            void _findInOriginalNode(String<int> & hitTarget,
+                                     TJournalEntriesIterator & entriesIt,
+                                     TPattern const & pattern,
+                                     String<int> const & refHits)
+            {
+            // [A] Check if hits exist in the reference.
+
+            // [B] Find upper bound to current physical position in sorted refHits using std::upper_bound.
+
+            // [C] Make sure we do not miss hits that begin at physical position of current node.
+
+            // [D] Store all hits that are found in the region of the reference which is covered by this node.
+
+            // [E] Store the correct virtual position and check next hit.
+            }
 
    Solution
      .. container:: foldable
@@ -438,16 +447,8 @@ Assignment 3
 
           And here is the result.
 
-          .. code-block:: console
+          .. includefrags:: demos/tutorial/journaled_set/solution_online_search_assignment3.cpp.stdout
 
-             Search for: GTGGT:
-             Hit in reference  at 311: GTGGT	644: GTGGT
-             Hit in sequence 0 at 312: GTGGT
-             Hit in sequence 1 at 308: GTGGT
-             Hit in sequence 2 at 311: GTGGT
-             Hit in sequence 3 at 327: GTGGT
-             Hit in sequence 4 at 317: GTGGT
-             Hit in sequence 5 at 320: GTGGT
 
 We are almost at the end of our online-search algorithm.
 Let's now implement the method ``_findInPatchNode``.
@@ -490,8 +491,19 @@ Assignment 4
        The following code snippet provides you with the backbone for this function.
        Fill in the missing parts ``[A]``, ``[B]``, ``[C]`` and ``[D]``.
 
-       .. includefrags:: demos/tutorial/journaled_set/example_online_search_assignment4_hint.cpp
-          :fragment: searchAtBorder
+        .. code-block:: cpp
+
+            template <typename TString, typename TPattern>
+            void findPatternInReference(String<int> & hits, TString const & reference, TPattern const & pattern)
+            {
+            // [A] Check whether pattern fits into the sequence.
+
+            // [B] Iterate over all positions at which the pattern might occur.
+
+            // [C] Evaluate all positions of the pattern until you find a mismatch or you have found a hit.
+
+            // [D] Report begin position at which pattern matches the sequence.
+            }
 
    Solution
      .. container:: foldable
@@ -556,31 +568,15 @@ Assignment 4
 
           And here is the result.
 
-          .. code-block:: console
+          .. includefrags:: demos/tutorial/journaled_set/solution_online_search_assignment4.cpp.stdout
 
-             Search for: GTGGT:
-             Hit in reference  at 311: GTGGT	644: GTGGT
-             Hit in sequence 0 at 151: GTGGT	312: GTGGT
-             Hit in sequence 1 at 308: GTGGT
-             Hit in sequence 2 at 311: GTGGT	507: GTGGT
-             Hit in sequence 3 at 327: GTGGT
-             Hit in sequence 4 at 307: GTGGT	312: GTGGT	317: GTGGT
-             Hit in sequence 5 at 0: GTGGT	320: GTGGT	986: GTGGT
 
 Congratulations!
 You have just implemented a cool online-search which is speed up by exploiting the parallelism given by the data set.
 And here is the final result.
 
-.. code-block:: console
+.. includefrags:: demos/tutorial/journaled_set/solution_online_search_assignment4.cpp.stdout
 
-   Search for: GTGGT:
-   Hit in reference  at 311: GTGGT 644: GTGGT
-   Hit in sequence 0 at 151: GTGGT 312: GTGGT
-   Hit in sequence 1 at 308: GTGGT
-   Hit in sequence 2 at 311: GTGGT 507: GTGGT
-   Hit in sequence 3 at 327: GTGGT
-   Hit in sequence 4 at 307: GTGGT 312: GTGGT  317: GTGGT
-   Hit in sequence 5 at 0: GTGGT   320: GTGGT  986: GTGGT
 
 Assignment 5
 """"""""""""
@@ -656,13 +652,4 @@ Assignment 5
 
         And here is the result using the Finder and Pattern concept of SeqAn.
 
-        .. code-block:: console
-
-           Search for: GTGGT:
-           Hit in reference  at 311: GTGGT	644: GTGGT
-           Hit in sequence 0 at 151: GTGGT	312: GTGGT
-           Hit in sequence 1 at 308: GTGGT
-           Hit in sequence 2 at 311: GTGGT	507: GTGGT
-           Hit in sequence 3 at 327: GTGGT
-           Hit in sequence 4 at 307: GTGGT	312: GTGGT	317: GTGGT
-           Hit in sequence 5 at 0: GTGGT	320: GTGGT	986: GTGGT
+        .. includefrags:: demos/tutorial/journaled_set/solution_online_search_finder.cpp.stdout

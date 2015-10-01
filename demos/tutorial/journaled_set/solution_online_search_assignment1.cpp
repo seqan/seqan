@@ -49,7 +49,7 @@ int main()
     typedef StringSet<TJournal, Owner<JournaledSet> > TJournaledSet;
 
     // Open the stream to the file containing the sequences.
-    CharString seqDatabasePath = "/path/to/your/fasta/file/sequences.fasta";
+    CharString seqDatabasePath = getAbsolutePath("/demos/tutorial/journaled_set/sequences.fasta");
     SeqFileIn databaseFile(toCString(seqDatabasePath));
 
     // Reading each sequence and journal them.
@@ -57,6 +57,7 @@ int main()
     JoinConfig<GlobalAlign<JournaledCompact> > joinConfig;
     loadAndJoin(journalSet, databaseFile, joinConfig);
 
+    std::cout << "Done!" << std::endl;
     return 0;
 }
 //![main]
