@@ -31,33 +31,13 @@ FASTA/FASTQ are record-based files.
 A FASTA record contains the sequence id and the sequence characters.
 Here is an example of FASTA file:
 
-::
-
-    >seq1
-    CCCCCCCCCCCCCCC
-    >seq2
-    CGATCGATC
-    >seq3
-    TTTTTTT
+.. includefrags:: demos/tutorial/sequence_io/example.fa
 
 In addition to that, a FASTQ record contains also a quality value for each sequence character.
 Here is an example of FASTQ file:
 
 
-::
-
-    @seq1
-    CCCCCCCCCCCCCCC
-    +
-    IIIIIHIIIIIIIII
-    @seq2
-    CGATCGATC
-    +
-    IIIIIIIII
-    @seq3
-    TTTTTTT
-    +
-    IIIIHHG
+.. includefrags:: demos/tutorial/sequence_io/example.fq
 
 
 SeqFile Formats
@@ -94,14 +74,10 @@ Assignment 1
      Copy the above example of FASTA file in a new file ``example.fa`` in a directory of your choice.
 
      Copy the program above into a new application ``basic_seq_io_example``, adjust the path ``"example.fa"`` to the just created FASTA file, compile the program, and run it.
-     For example, if you stored the file ``example.fa`` in ``/home/username/example.fa``, you replace the line ``seqan::SeqFileIn seqFileIn("example.fa");`` from above with ``seqan::SeqFileIn seqFileIn("/home/username/example.fa");``.
 
      You should see the following output:
 
-     .. code-block:: console
-
-      # basic_seq_io
-      seq1    CCCCCCCCCCCCCCC
+     .. includefrags:: demos/tutorial/sequence_io/example1.cpp.stdout
 
    Solution
      .. container:: foldable
@@ -179,12 +155,7 @@ Assignment 3
 
      You should be able to run your program on the example file we created above and see the following output:
 
-     .. code-block:: console
-
-         # basic_seq_io_example example.fa
-         seq1    CCCCCCCCCCCCCCC
-         seq2    CGATCGATC
-         seq3    TTTTTTT
+     .. includefrags:: demos/tutorial/sequence_io/solution3.cpp.stdout
 
    Hint
      You can use the function :dox:`SeqFileIn#readRecords` to load all records at once.
@@ -239,12 +210,7 @@ Assignment 4
 
      When your program is called on this file, the result should look as follows.
 
-     .. code-block:: console
-
-        # basic_seq_io_example example.fq
-        seq1    CCCCCCCCCCCCCCC    IIIIIHIIIIIIIII
-        seq2    CGATCGATC    IIIIIIIII
-        seq3    TTTTTTT      IIIIHHG
+     .. includefrags:: demos/tutorial/sequence_io/solution4.cpp.stdout
 
    Solution
      .. container:: foldable

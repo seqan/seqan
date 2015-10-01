@@ -64,7 +64,6 @@ Tutorial
    Tutorial/Realignment
 
    Tutorial/SimpleRnaSeq
-   Tutorial/SimpleReadMapping
    Tutorial/MiniBowtie
    Tutorial/JournaledSet
    Tutorial/KnimeNode

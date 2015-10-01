@@ -1,6 +1,3 @@
-#include <iostream>
-#include <fstream>
-
 #include <seqan/sequence.h>
 #include <seqan/bam_io.h>
 
@@ -8,25 +5,23 @@ using namespace seqan;
 
 int main(int argc, char const * argv[])
 {
-    if (argc != 7)
-    {
-        std::cerr << "USAGE: " << argv[0] << " IN.bam IN.bam.bai REF BEGIN END COUNT\n";
-        return 1;
-    }
+    CharString bamFileName = getAbsolutePath("/demos/tutorial/sam_and_bam_io/example.bam");
+    CharString baiFileName = getAbsolutePath("/demos/tutorial/sam_and_bam_io/example.bam.bai");
+    CharString rName = "ref";
 
     // Open BamFileIn for reading.
     BamFileIn inFile;
-    if (!open(inFile, argv[1]))
+    if (!open(inFile, toCString(bamFileName)))
     {
-        std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
+        std::cerr << "ERROR: Could not open " << bamFileName << " for reading.\n";
         return 1;
     }
 
     // Read BAI index.
     BamIndex<Bai> baiIndex;
-    if (!open(baiIndex, argv[2]))
+    if (!open(baiIndex, toCString(baiFileName)))
     {
-        std::cerr << "ERROR: Could not read BAI index file " << argv[2] << "\n";
+        std::cerr << "ERROR: Could not read BAI index file " << baiFileName << "\n";
         return 1;
     }
 
@@ -36,40 +31,27 @@ int main(int argc, char const * argv[])
 
     // Translate from reference name to rID.
     int rID = 0;
-    if (!getIdByName(rID, contigNamesCache(context(inFile)), argv[3]))
+    if (!getIdByName(rID, contigNamesCache(context(inFile)), rName))
     {
-        std::cerr << "ERROR: Reference sequence named " << argv[3] << " not known.\n";
+        std::cerr << "ERROR: Reference sequence named " << rName << " not known.\n";
         return 1;
     }
 
     // Translate BEGIN and END arguments to number, 1-based to 0-based.
-    int beginPos = 0, endPos = 0;
-    if (!lexicalCast(beginPos, argv[4]) || beginPos <= 0)
-    {
-        std::cerr << "ERROR: Begin position " << argv[4] << " is invalid.\n";
-        return 1;
-    }
-    beginPos -= 1;  // 1-based to 0-based.
-    if (!lexicalCast(endPos, argv[5]) || endPos <= 0)
-    {
-        std::cerr << "ERROR: End position " << argv[5] << " is invalid.\n";
-        return 1;
-    }
-    endPos -= 1;  // 1-based to 0-based.
+    int beginPos = 9, endPos = 30;
+
+    // 1-based to 0-based.
+    beginPos -= 1;
+    endPos -= 1;
 
     // Translate number of elements to print to number.
-    int num = 0;
-    if (!lexicalCast(num, argv[6]))
-    {
-        std::cerr << "ERROR: Count " << argv[6] << " is invalid.\n";
-        return 1;
-    }
+    int num = 3;
 
     // Jump the BGZF stream to this position.
     bool hasAlignments = false;
     if (!jumpToRegion(inFile, hasAlignments, rID, beginPos, endPos, baiIndex))
     {
-        std::cerr << "ERROR: Could not jump to " << argv[3] << ":" << argv[4] << "\n";
+        std::cerr << "ERROR: Could not jump to " << beginPos << ":" << endPos << "\n";
         return 1;
     }
     if (!hasAlignments)
