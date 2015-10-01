@@ -88,5 +88,5 @@ int main(int, char const **)
         // Call of our function to print the simple alignment
         printAlign(genomeFragment, value(it2));
     }
-    return 1;
+    return 0;
 }
