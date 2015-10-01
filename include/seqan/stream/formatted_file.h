@@ -748,6 +748,8 @@ inline bool close(FormattedFile<TFileFormat, TDirection, TSpec> & file)
  *
  * @param[in,out] file The FormattedFile to check.
  * @return bool <tt>true</tt> in the case of success, <tt>false</tt> otherwise.
+ *
+ * @datarace Not thread safe.
  */
 
 template <typename TFileFormat, typename TDirection, typename TSpec>
