@@ -116,7 +116,7 @@ Otherwise, important applications in bioinformatics cannot be covered:
 * 4-character DNA,
 * 5-character DNA with ``N``,
 * 15-character IUPAC, and
-* 23-character amino acids.
+* 27-character amino acids.
 
 A simple implementation could simply store such strings as ASCII characters.
 However, there are some implementation tricks that can lead to great reduction of memory usage (e.g. encoding eight 4-character DNA characters in one byte) or running time (fast lookup tables for characters or q-grams) for small alphabets.
@@ -155,35 +155,3 @@ It comes at the cost of some additional typing but has the advantage that the co
 An example will be given in `the section "From OOP to SeqAn" in the First Steps Tutorial <tutorial-first-steps-in-seqan>`_.
 
 The important point is that in contrast to runtime polymorphism such static polymorphism allows the compiler to inline functions.
-
-Performance Example
-^^^^^^^^^^^^^^^^^^^
-
-The following small program shows impressive performance gains when using inlined functions instead of virtual functions.
-We will sort random quadruples of ``int`` values using the STL function ``std::sort``.
-
-In the program, we will sort ``std::vector`` objects of the two types ``Item1`` and ``Item2``.
-The only difference is that the comparison operator ``operator<()`` for ``Item1`` can be inlined while ``operator<()`` for ``Item2`` is ``virtual`` and thus cannot be inlined.
-
-The relevant lines are in ``struct Item1`` and ``struct Item2``.
-
-.. includefrags:: demos/tutorial/background_and_motivation/performance_example.cpp
-
-The resulting differences in running times on a Xeon X5550 @2.67 Ghz machine, compiled with g++ 4.4.5 are as follows.
-Thus, we have an improved performance with a **factor 2** of inlined functions instead of virtual function calls!
-
-.. code-block:: console
-
-    Parameters
-        # iterations: 10
-        # items     : 100000000
-        seed        : 42
-
-    Generating input.
-        time 0.836878 s
-
-    std::sort with inlining
-        time avg 5.43477 s dev 0.0817846
-
-    std::sort without inlining
-        time avg 11.0379 s dev 0.0425878
