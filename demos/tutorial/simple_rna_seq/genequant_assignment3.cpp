@@ -14,7 +14,8 @@ typedef TAnnotation::TId                        TId;
 typedef TAnnotation::TPos                       TPos;
 typedef IntervalAndCargo<TPos, TId>             TInterval;
 typedef IntervalTree<TPos, TId>                 TIntervalTree;
-
+//![definitions]
+//![definitions_end]
 //
 // 1. Load annotations and alignments from files
 //

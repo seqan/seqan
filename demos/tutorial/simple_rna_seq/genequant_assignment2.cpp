@@ -13,7 +13,9 @@ typedef Value<TStore::TAnnotationStore>::Type   TAnnotation;
 typedef TAnnotation::TId                        TId;
 typedef TAnnotation::TPos                       TPos;
 typedef IntervalAndCargo<TPos, TId>             TInterval;
+//![definitions]
 
+//![definitions_end]
 //
 // 1. Load annotations and alignments from files
 //
@@ -62,15 +64,16 @@ int main(int argc, char const * argv[])
 //![main]
     TStore store;
     String<String<TInterval> > intervals;
+//![main]
 //![main_end]
 
-//![main2]
     std::string annotationFileName = getAbsolutePath("/demos/tutorial/simple_rna_seq/example.gtf");
     std::string alignmentFileName = getAbsolutePath("/demos/tutorial/simple_rna_seq/example.sam");
 
     if (!loadFiles(store, annotationFileName, alignmentFileName))
         return 1;
-
+//![main_end]
+//![main2]
     extractGeneIntervals(intervals, store);
 //![main2]
 
