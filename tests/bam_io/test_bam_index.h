@@ -54,8 +54,8 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_build)
     append(tmpOutPath, ".bai");
 
     BamIndex<Bai> baiIndex;
-    SEQAN_ASSERT(build(baiIndex, toCString(bamFilename), toCString(tmpOutPath)));
-    SEQAN_ASSERT(save(baiIndex));
+    SEQAN_ASSERT(build(baiIndex, toCString(bamFilename)));
+    SEQAN_ASSERT(save(baiIndex, toCString(tmpOutPath)));
 
     SEQAN_ASSERT(_compareBinaryFiles(toCString(tmpOutPath), toCString(expectedBaiFilename)));
 }

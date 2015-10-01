@@ -138,11 +138,6 @@ public:
     typedef std::map<__uint32, BaiBamIndexBinData_> TBinIndex_;
     typedef String<__uint64> TLinearIndex_;
 
-    // The name of the BAM file.
-    CharString bamFilename;
-    // The name of the BAI file.
-    CharString baiFilename;
-
     __uint64 _unalignedCount;
 
     // 1<<14 is the size of the minimum bin.
@@ -536,13 +531,10 @@ open(BamIndex<Bai> & index, char * filename)
  * @fn BaiIndex#save
  * @brief Save a BaiIndex object.
  *
- * @signature bool save(baiIndex[, baiFileName]);
+ * @signature bool save(baiIndex, baiFileName);
  *
  * @param[in] baiIndex    The BaiIndex to write out.
- * @param[in] baiFileName The name of the BAI file to write to.  This parameter is optional only if the BAI index knows
- *                        the BAI file name from a previous @link BaiIndex#build @endlink call.  By default, the BAI
- *                        file name from the previous call to @link BaiIndex#build @endlink is used.  Type: <tt>char
- *                        const *</tt>.
+ * @param[in] baiFileName The name of the BAI file to write to.
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
  */
@@ -604,12 +596,6 @@ inline bool save(BamIndex<Bai> const & index, char const * baiFilename)
     return out.good();  // false on error, true on success.
 }
 
-inline bool save(BamIndex<Bai> const & index)
-{
-    if (empty(index.baiFilename))
-        return false;  // Cannot write out if baiFilename member is empty.
-    return save(index, toCString(index.baiFilename));
-}
 
 inline void _baiAddAlignmentChunkToBin(BamIndex<Bai> & index,
                                        __uint32 currBin,
@@ -642,21 +628,16 @@ inline void _baiAddAlignmentChunkToBin(BamIndex<Bai> & index,
  * @fn BaiIndex#build
  * @brief Create a BaiIndex from BAM file.
  *
- * @signature bool build(baiIndex, bamFileName[, baiFileName]);
+ * @signature bool build(baiIndex, bamFileName);
  *
  * @param[out] baiIndex    The BaiIndex to build into.
  * @param[in]  bamFileName Path to the BAM file to build an index for.  Type: <tt>char const *</tt>.
- * @param[in]  baiFileName Path to the BAI file to use as the index file.  Type: <tt>char const *</tt>.
- *                         Default: <tt>"${bamFileName}.bai"</tt>.
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
  */
-inline bool build(BamIndex<Bai> & index, char const * bamFilename, char const * baiFilename)
+inline bool build(BamIndex<Bai> & index, char const * bamFilename)
 {
     // SEQAN_FAIL("This does not work yet!");
-
-    index.bamFilename = bamFilename;
-    index.baiFilename = baiFilename;
 
     index._unalignedCount = 0;
     clear(index._binIndices);
@@ -805,13 +786,6 @@ inline bool build(BamIndex<Bai> & index, char const * bamFilename, char const * 
     // Merge small bins if possible.
     // SEQAN_FAIL("TODO: Merge bins!");
     return true;
-}
-
-inline bool build(BamIndex<Bai> & index, char const * bamFilename)
-{
-    CharString baiFilename(bamFilename);
-    append(baiFilename, ".bai");
-    return build(index, bamFilename, toCString(baiFilename));
 }
 
 
