@@ -15,75 +15,39 @@ typedef TAnnotation::TPos                       TPos;
 typedef IntervalAndCargo<TPos, TId>             TInterval;
 typedef IntervalTree<TPos, TId>                 TIntervalTree;
 typedef Value<TStore::TAlignedReadStore>::Type  TAlignedRead;
-//![definitions]
-
-//![definitions_end]
-// define options
-struct Options
-{
-    std::string annotationFileName;
-    std::string alignmentFileName;
-};
 
 
 //
-// 1. Parse command line and fill Options object
+// 1. Load annotations and alignments from files
 //
-ArgumentParser::ParseResult parseOptions(Options & options, int argc, char const * argv[])
-{
-    ArgumentParser parser("gene_quant");
-    setShortDescription(parser, "A simple gene quantification tool");
-    setVersion(parser, "1.0");
-    setDate(parser, "Sep 2012");
-
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
-    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIANNOTATION FILE\\fP> <\\fIREAD ALIGNMENT FILE\\fP>");
-
-    // Parse command line
-    ArgumentParser::ParseResult res = parse(parser, argc, argv);
-
-    if (res == ArgumentParser::PARSE_OK)
-    {
-        // Extract option values
-        getArgumentValue(options.annotationFileName, parser, 0);
-        getArgumentValue(options.alignmentFileName, parser, 1);
-    }
-
-    return res;
-}
-
-//
-// 2. Load annotations and alignments from files
-//
-bool loadFiles(TStore & store, Options const & options)
+bool loadFiles(TStore & store, std::string const & annotationFileName,  std::string const & alignmentFileName)
 {
     BamFileIn alignmentFile;
-    if (!open(alignmentFile, options.alignmentFileName.c_str()))
+    if (!open(alignmentFile, alignmentFileName.c_str()))
     {
-        std::cerr << "Couldn't open alignment file " << options.alignmentFileName << std::endl;
+        std::cerr << "Couldn't open alignment file " << alignmentFileName << std::endl;
         return false;
     }
-    std::cerr << "Loading read alignments ..... " << std::flush;
+    std::cout << "Loading read alignments ..... " << std::flush;
     readRecords(store, alignmentFile);
-    std::cerr << "[" << length(store.alignedReadStore) << "]" << std::endl;
+    std::cout << "[" << length(store.alignedReadStore) << "]" << std::endl;
 
     // load annotations
     GffFileIn annotationFile;
-    if (!open(annotationFile, options.annotationFileName.c_str()))
+    if (!open(annotationFile, toCString(annotationFileName)))
     {
-        std::cerr << "Couldn't open annotation file" << options.annotationFileName << std::endl;
+        std::cerr << "Couldn't open annotation file" << annotationFileName << std::endl;
         return false;
     }
-    std::cerr << "Loading genome annotation ... " << std::flush;
+    std::cout << "Loading genome annotation ... " << std::flush;
     readRecords(store, annotationFile);
-    std::cerr << "[" << length(store.annotationStore) << "]" << std::endl;
+    std::cout << "[" << length(store.annotationStore) << "]" << std::endl;
 
     return true;
 }
 
 //
-// 3. Extract intervals from gene annotations (grouped by contigId)
+// 2. Extract intervals from gene annotations (grouped by contigId)
 //
 void extractGeneIntervals(String<String<TInterval> > & intervals, TStore const & store)
 {
@@ -98,7 +62,6 @@ void extractGeneIntervals(String<String<TInterval> > & intervals, TStore const &
     do
     {
         SEQAN_ASSERT_EQ(getType(it), "gene");
-
         TPos beginPos = getAnnotation(it).beginPos;
         TPos endPos = getAnnotation(it).endPos;
         TId contigId = getAnnotation(it).contigId;
@@ -113,7 +76,7 @@ void extractGeneIntervals(String<String<TInterval> > & intervals, TStore const &
 }
 
 //
-// 4. Construct interval trees
+// 3. Construct interval trees
 //
 void constructIntervalTrees(String<TIntervalTree> & intervalTrees,
                             String<String<TInterval> > & intervals)
@@ -125,11 +88,12 @@ void constructIntervalTrees(String<TIntervalTree> & intervalTrees,
     for (int i = 0; i < numContigs; ++i)
         createIntervalTree(intervalTrees[i], intervals[i]);
 }
+
 //![definitions_end]
 
 //![yourcode]
 //
-// 5. Count reads per gene
+// 4. Count reads per gene
 //
 void countReadsPerGene(String<unsigned> & readsPerGene, String<TIntervalTree> const & intervalTrees, TStore const & store)
 {
@@ -141,7 +105,6 @@ void countReadsPerGene(String<unsigned> & readsPerGene, String<TIntervalTree> co
 //![yourcode_end]
 int main(int argc, char const * argv[])
 {
-    Options options;
     TStore store;
     String<String<TInterval> > intervals;
 //![yourcode_end]
@@ -152,11 +115,10 @@ int main(int argc, char const * argv[])
 //![main]
 
 //![main_end]
-    ArgumentParser::ParseResult res = parseOptions(options, argc, argv);
-    if (res != ArgumentParser::PARSE_OK)
-        return res == ArgumentParser::PARSE_ERROR;
+    std::string annotationFileName = getAbsolutePath("/demos/tutorial/simple_rna_seq/example.gtf");
+    std::string alignmentFileName = getAbsolutePath("/demos/tutorial/simple_rna_seq/example.sam");
 
-    if (!loadFiles(store, options))
+    if (!loadFiles(store, annotationFileName, alignmentFileName))
         return 1;
 //![main_end]
 
