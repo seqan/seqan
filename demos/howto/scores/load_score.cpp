@@ -64,7 +64,7 @@ int main(int argc, char ** argv)
 
     typedef int TScoreValue;
 
-    Score<TScoreValue, ScoreMatrix<Dna, Default> > scoreMatrix;
+    Score<TScoreValue, ScoreMatrix<Dna5, Default> > scoreMatrix;
     loadScoreMatrix(scoreMatrix, argv[1]);
     showScoringMatrix(scoreMatrix);
 
