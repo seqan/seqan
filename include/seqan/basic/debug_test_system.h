@@ -346,16 +346,6 @@ inline const char * toCString(Demangler<T> const & me)
 #define SEQAN_ENABLE_CHECKPOINTS 0 // SEQAN_ENABLE_TESTING
 #endif  // #ifndef SEQAN_ENABLE_CHECKPOINTS
 
-#if (defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))) || defined(__clang__)
-#  define SEQAN_UNUSED __attribute__((unused))
-#else
-#  define SEQAN_UNUSED
-#endif
-
-// backwards compatibility
-#define SEQAN_UNUSED_TYPEDEF SEQAN_UNUSED
-
-
 /*!
  * @macro TestSystemMacros#SEQAN_TYPEDEF_FOR_DEBUG
  * @headerfile <seqan/basic.h>
