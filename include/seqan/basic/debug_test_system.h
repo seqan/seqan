@@ -361,7 +361,7 @@ inline const char * toCString(Demangler<T> const & me)
  */
 
 #if !SEQAN_ENABLE_DEBUG
-#  if defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))
+#  if (defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))) || defined(__clang__)
 #    define SEQAN_TYPEDEF_FOR_DEBUG __attribute__((unused))
 #  else
 #    define SEQAN_TYPEDEF_FOR_DEBUG
@@ -371,7 +371,7 @@ inline const char * toCString(Demangler<T> const & me)
 #endif
 
 // TODO(holtgrew): This one is for profiling and in tests.
-#if defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))
+#if (defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))) || defined(__clang__)
 #  define SEQAN_UNUSED_TYPEDEF __attribute__((unused))
 #else
 #  define SEQAN_UNUSED_TYPEDEF
