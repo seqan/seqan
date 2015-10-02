@@ -12,9 +12,8 @@ int main()
 //![ctor]
 
 //![open]
-    // Open output SAM file by passing the filename to open.
-    BamFileOut samFileOut;
-    open(samFileOut, "example.sam");
+    // Open output SAM file by passing the context of bamFileIn and the filename to open.
+    BamFileOut samFileOut(context(bamFileIn), toCString(samFileOutName));
 //![open]
 
 //![header]

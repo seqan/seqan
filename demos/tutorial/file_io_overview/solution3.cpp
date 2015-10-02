@@ -4,35 +4,18 @@ using namespace seqan;
 
 int main(int argc, char const ** argv)
 {
-    if (argc < 2)
-    {
-        std::cerr << "USAGE: " << argv[0] << " INPUT.bam [OUTPUT.sam]" << "\n";
-        return 1;
-    }
+    CharString bamFileInName = getAbsolutePath("/demos/tutorial/file_io_overview/example.bam");
 
-    // Open input BAM stream or file.
+    // Open input BAM file.
     BamFileIn bamFileIn;
-    if (isEqual(CharString(argv[1]), "-"))
+    if (!open(bamFileIn, toCString(bamFileInName)))
     {
-        open(bamFileIn, std::cin);
-    }
-    else if (!open(bamFileIn, argv[1]))
-    {
-        std::cerr << "ERROR: could not open input file " << argv[1] << ".\n";
+        std::cerr << "ERROR: could not open input file " << bamFileInName << ".\n";
         return 1;
     }
 
-    // Open output SAM stream or file.
-    BamFileOut samFileOut;
-    if (argc < 3)
-    {
-        open(samFileOut, std::cout, Sam());
-    }
-    else if (!open(samFileOut, argv[2]))
-    {
-        std::cerr << "ERROR: could not open output file " << argv[2] << ".\n";
-        return 1;
-    }
+    // Open output SAM which is the standard output.
+    BamFileOut samFileOut(context(bamFileIn), std::cout, Sam());
 
     // Copy header.
     BamHeader header;
@@ -56,7 +39,7 @@ int main(int argc, char const ** argv)
     {
         try
         {
-            readHeader(header, bamFileIn);
+            readRecord(record, bamFileIn);
             writeRecord(samFileOut, record);
         }
         catch (ParseError const & e)
