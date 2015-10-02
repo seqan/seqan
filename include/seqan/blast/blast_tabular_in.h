@@ -464,7 +464,8 @@ _readCommentLines(BlastRecord<TMatch> & r,
 // Function _readField()
 // ----------------------------------------------------------------------------
 
-template <typename TAlign,
+template <typename TAlignRow0,
+          typename TAlignRow1,
           typename TPos,
           typename TQId,
           typename TSId,
@@ -472,7 +473,7 @@ template <typename TAlign,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readField(BlastMatch<TAlign, TPos, TQId, TSId> & match,
+_readField(BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> & match,
            BlastIOContext<TScore, p, h> & context,
            typename BlastMatchField<>::Enum const fieldId)
 {
@@ -583,7 +584,8 @@ _readField(BlastMatch<TAlign, TPos, TQId, TSId> & match,
 // Function _readMatch()
 // ----------------------------------------------------------------------------
 
-template <typename TAlign,
+template <typename TAlignRow0,
+          typename TAlignRow1,
           typename TPos,
           typename TQId,
           typename TSId,
@@ -592,7 +594,7 @@ template <typename TAlign,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readMatch(BlastMatch<TAlign, TPos, TQId, TSId> & match,
+_readMatch(BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> & match,
            TFwdIterator & iter,
            BlastIOContext<TScore, p, h> & context,
            BlastTabular const &)

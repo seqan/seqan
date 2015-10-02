@@ -410,13 +410,14 @@ template <typename TStream,
           typename TQId,
           typename TSId,
           typename TPos,
-          typename TAlign,
+          typename TAlignRow0,
+          typename TAlignRow1,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeAlignmentBlock(TStream & stream,
                      BlastIOContext<TScore, p, h> & context,
-                     BlastMatch<TAlign, TPos, TQId, TSId> const & m,
+                     BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & m,
                      BlastReport const & /*tag*/)
 {
     TPos const   windowSize  = 60;
@@ -441,9 +442,6 @@ _writeAlignmentBlock(TStream & stream,
     int8_t const     qStep = qIsTranslated(context.blastProgram) ? qStepOne * 3 : qStepOne;
     int8_t const     sStep = sIsTranslated(context.blastProgram) ? sStepOne * 3 : sStepOne;
 
-    auto const & row0        = row(m.align, 0);
-    auto const & row1        = row(m.align, 1);
-
     TPos const   maxPos      = std::max({effQStart, effQEnd, effSStart, effSEnd});
     // max # digits in pos's
     unsigned char const numberWidth = _numberOfDigits(maxPos);
@@ -457,9 +455,9 @@ _writeAlignmentBlock(TStream & stream,
         TPos const end = std::min(static_cast<TPos>(aPos + windowSize), m.alignStats.alignmentLength);
         for (TPos i = aPos; i < end; ++i)
         {
-            if (!isGap(row0, i))
+            if (!isGap(m.alignRow0, i))
                 qPos += qStep;
-            write(stream, value(row0, i));
+            write(stream, value(m.alignRow0, i));
         }
         sprintf(buffer, "  %-*d", numberWidth, (qPos + effQStart) - qStepOne);
         write(stream, buffer);
@@ -470,7 +468,7 @@ _writeAlignmentBlock(TStream & stream,
             write(stream, ' ');
 
         for (TPos i = aPos; i < end; ++i)
-            _writeAlignmentBlockIntermediateChar(stream, context, value(row0,i), value(row1,i), BlastReport());
+            _writeAlignmentBlockIntermediateChar(stream, context, value(m.alignRow0,i), value(m.alignRow1,i), BlastReport());
 
         // Subject line
         sprintf(buffer, "\nSbjct  %-*d  ", numberWidth, sPos + effSStart);
@@ -478,9 +476,9 @@ _writeAlignmentBlock(TStream & stream,
 
         for (TPos i = aPos; i < end; ++i)
         {
-            if (!isGap(row1, i))
+            if (!isGap(m.alignRow1, i))
                 sPos += sStep;
-            write(stream, value(row1, i));
+            write(stream, value(m.alignRow1, i));
         }
         sprintf(buffer, "  %-*d\n\n", numberWidth, (sPos + effSStart) - sStepOne);
         write(stream, buffer);
@@ -499,13 +497,14 @@ template <typename TStream,
           typename TQId,
           typename TSId,
           typename TPos,
-          typename TAlign,
+          typename TAlignRow0,
+          typename TAlignRow1,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeFullMatch(TStream & stream,
                 BlastIOContext<TScore, p, h> & context,
-                BlastMatch<TAlign, TPos, TQId, TSId> const & m,
+                BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & m,
                 BlastReport const & /*tag*/)
 {
     write(stream, "> ");
@@ -542,13 +541,14 @@ template <typename TStream,
           typename TQId,
           typename TSId,
           typename TPos,
-          typename TAlign,
+          typename TAlignRow0,
+          typename TAlignRow1,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeMatchOneLiner(TStream & stream,
                     BlastIOContext<TScore, p, h> &,
-                    BlastMatch<TAlign, TPos, TQId, TSId> const & m,
+                    BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & m,
                     BlastReport const & /*tag*/)
 {
     if (length(m.sId) == 66) // it fits

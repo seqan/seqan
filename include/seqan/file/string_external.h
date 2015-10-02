@@ -142,18 +142,22 @@ namespace SEQAN_NAMESPACE_MAIN
  * pages that certainly won't be accessed any more in the iteration process.
  *
  * The String is implemented like a virtual memory manager.  It divides its character sequence into pages of a fixed
- * length (e.g. 1MB) and maintains a page table with information for each page (e.g. resides in memory or was swapped
+ * length (e.g. 4MB) and maintains a page table with information for each page (e.g. resides in memory or was swapped
  * out, is dirty and needs to be saved, ...).  Besides the page table the String also contains a size-limited list of
  * page frames.  A page frame is reserved internal memory for a page.  When accessing values of a page that is stored in
  * external memory, the page is loaded to a page frame first.  In case that there is no page frame free, another page is
  * swapped out before to free a page frame.
  */
 
+#ifndef _EXTERNAL_STRING_DEFAULT_PAGE_SIZE
+#define _EXTERNAL_STRING_DEFAULT_PAGE_SIZE 4 * 1024 * 1024 // 4MTypes per default
+#endif
+
     // standard external string
     // size is uint32
-    template < typename TFile_ = File<>,                // default file type
-               unsigned PAGESIZE_ = 4 * 1024 * 1024,    // 1MTypes per default
-               unsigned FRAMES_ = 2 >                    // simultanous frames
+    template < typename TFile_ = File<>,                                // default file type
+               unsigned PAGESIZE_ = _EXTERNAL_STRING_DEFAULT_PAGE_SIZE,
+               unsigned FRAMES_ = 2 >                                   // simultanous frames
     struct ExternalConfig {
 //IOREV _bug_ doc says default page size is 2^20, but it is 2^22
         typedef TFile_ TFile;
@@ -168,9 +172,9 @@ namespace SEQAN_NAMESPACE_MAIN
     // ATTENTION:
     // pipes use the size type
     // uint64 blows up your suffix arrays, lcp-tables, ...
-    template < typename TFile_ = File<>,                // default file type
-               unsigned PAGESIZE_ = 4 * 1024 * 1024,    // 1MTypes per default
-               unsigned FRAMES_ = 2 >                    // simultanous frames
+    template < typename TFile_ = File<>,                                // default file type
+               unsigned PAGESIZE_ = _EXTERNAL_STRING_DEFAULT_PAGE_SIZE,
+               unsigned FRAMES_ = 2 >                                   // simultanous frames
     struct ExternalConfigLarge {
 //IOREV contains warning in code comments, need to investigate
         typedef TFile_ TFile;
@@ -181,9 +185,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
     // custom size type
     template < typename TSize_,
-               typename TFile_ = File<>,                // default file type
-               unsigned PAGESIZE_ = 1 * 1024 * 1024,    // 1MTypes per default
-               unsigned FRAMES_ = 2 >                    // simultanous frames
+               typename TFile_ = File<>,                                // default file type
+               unsigned PAGESIZE_ = _EXTERNAL_STRING_DEFAULT_PAGE_SIZE,
+               unsigned FRAMES_ = 2 >                                   // simultanous frames
     struct ExternalConfigSize {
 //IOREV
         typedef TSize_ TSize;

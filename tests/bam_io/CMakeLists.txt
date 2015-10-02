@@ -33,6 +33,7 @@ add_executable (test_bam_io
                test_bam_io.cpp
                test_bam_alignment_record.h
                test_bam_header_record.h
+               test_bam_index.h
                test_bam_io_context.h
                test_bam_sam_conversion.h
                test_bam_tags_dict.h
