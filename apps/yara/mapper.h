@@ -952,6 +952,9 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
         TReadId firstId = getMember(front(firstMatches), ReadId());
         TReadId secondId = getMember(front(secondMatches), ReadId());
 
+        SEQAN_ASSERT(isMapped(me.ctx, firstId));
+        SEQAN_ASSERT(isMapped(me.ctx, secondId));
+
         double firstMatchOptimalRate = toErrorRate(readSeqs, firstId, getMinErrors(me.ctx, firstId));
         double secondMatchOptimalRate = toErrorRate(readSeqs, secondId, getMinErrors(me.ctx, secondId));
 
@@ -1085,11 +1088,24 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
 
         if (!empty(mates))
         {
+            SEQAN_ASSERT(isMapped(me.ctx, anchorId));
+            SEQAN_ASSERT_NOT(isPaired(me.ctx, anchorId));
+            SEQAN_ASSERT(isValid(me.primaryMatches[anchorId]));
+
+            SEQAN_ASSERT_NOT(isMapped(me.ctx, mateId));
+            SEQAN_ASSERT_NOT(isPaired(me.ctx, anchorId));
             SEQAN_ASSERT_NOT(isValid(me.primaryMatches[mateId]));
+
             setPosition(me.primaryMatches, mateId, stringSetPositions(me.matesSetByCoord)[mateId] + beginPosition(me.matesByCoord));
             SEQAN_ASSERT(isEqual(me.primaryMatches[mateId], front(mates)));
+
+            setMapped(me.ctx, mateId);
             setPaired(me.ctx, mateId);
             setPaired(me.ctx, anchorId);
+
+            SEQAN_ASSERT(isMapped(me.ctx, mateId));
+            SEQAN_ASSERT(isPaired(me.ctx, anchorId));
+            SEQAN_ASSERT(isValid(me.primaryMatches[mateId]));
         }
     },
     Standard(), Serial());
