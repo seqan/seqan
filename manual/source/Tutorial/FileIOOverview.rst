@@ -203,7 +203,7 @@ Assignment 3
      Application
 
    Objective
-     Improve the program above to read from standard input and write to standard output.
+     Improve the program above to write to standard output.
 
    Solution
      .. container:: foldable
