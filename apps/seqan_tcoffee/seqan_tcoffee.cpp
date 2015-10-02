@@ -1,6 +1,6 @@
 /*==========================================================================
                SeqAn - The Library for Sequence Analysis
-                         http://www.seqan.de 
+                         http://www.seqan.de
 ============================================================================
 Copyright (C) 2007
 
@@ -133,7 +133,7 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
     getOptionValue(msaOpt.outfile, parser, "outfile");
 
     String<char> optionVal;
-    
+
  /*   getOptionValue(optionVal, parser, "format");
     if (optionVal == "fasta")
         msaOpt.outputFormat = 0;
@@ -141,7 +141,7 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
         msaOpt.outputFormat = 1;
 */
     // *********************************************
-    
+
     // Set segment match generation options
     ::std::string tmpVal;
     for (unsigned int optNo = 0; optNo < getOptionValueCount(parser, "method"); ++optNo)
@@ -173,13 +173,13 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
         {
             msaOpt.pairwiseAlignmentMethod = 1;
         }
-        else if (tmpVal == "banded")  
+        else if (tmpVal == "banded")
         {
             msaOpt.pairwiseAlignmentMethod = 2;
         }
     }
     if (isSet(parser, "band-width")) {
-        if (msaOpt.pairwiseAlignmentMethod == 1)  
+        if (msaOpt.pairwiseAlignmentMethod == 1)
         {
             std::cerr << "Ambiguous pairwise alignment method. Band width cannot be specified for an unbanded method" << std::endl;
             std::exit(0);
@@ -201,7 +201,7 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
                 else if(endsWith(tmpVal,".aln"))
                         appendValue(msaOpt.alnfiles, tmpVal);
     }
-    
+
 /*
     for (unsigned int optNo = 0; optNo < getOptionValueCount(parser, "blast"); ++optNo)
     {
@@ -227,7 +227,7 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
         appendValue(msaOpt.alnfiles, tmpVal);
     }
 */
-    
+
 // Set scoring options
     msaOpt.sc = scMat;
     getOptionValue(msaOpt.sc.data_gap_open, parser, "gop");
@@ -347,7 +347,7 @@ _setUpArgumentParser(ArgumentParser & parser)
     setDate(parser, SEQAN_DATE);
     setAppName(parser,"seqan_tcoffee");
     setCategory(parser, "Sequence Alignment");
-    
+
     setShortDescription(parser, "Multiple sequence alignment");
 
     addUsageLine(parser, "-s <\\fIFASTA FILE\\fP> [\\fIOPTIONS\\fP]");
@@ -386,7 +386,7 @@ _setUpArgumentParser(ArgumentParser & parser)
               ArgParseOption("l", "libraries", "Name of match file. "
                              "To select multiple files recall this option with different arguments.",
                              ArgParseArgument::INPUT_FILE, "", true));
-    
+
     setValidValues(parser, "l", "blast mums aln lib");  // allow blast, mummer aln and tcoffee lib files
 
     addOption(parser,
@@ -471,7 +471,7 @@ int main(int argc, const char *argv [])
     double totalStartTime = sysTime();
     std::cout << std::fixed << std::setprecision(5);
 #endif
-    
+
     // Command line parsing
     ArgumentParser parser("seqan_tcoffee");
     _setUpArgumentParser(parser);

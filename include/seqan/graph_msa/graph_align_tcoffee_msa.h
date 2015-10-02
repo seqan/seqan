@@ -102,7 +102,7 @@ public:
     * @brief Whether or not to use default strategy for choosing pairwise alignment methods.
     */
     bool isDefaultPairwiseAlignment;
-    
+
     /*!
     * @var unsigned MsaOptions::pairwiseAlignmentMethod;
     * @brief Methods for computing pairwise alignment.
@@ -111,7 +111,7 @@ public:
     * Default: 0
     */
     unsigned pairwiseAlignmentMethod;
-    
+
     /*!
     * @var unsigned MsaOptions::bandWidth;
     * @brief Band width for banded alignment. Min value: <tt>2</tt>.
@@ -348,7 +348,7 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         seqTotalLen += length(*it);
     std::cout << std::setw(30) << std::left << "Average sequence length: " << std::setw(10) << std::right << seqTotalLen / nSeq << std::endl;
     std::cout << std::setw(30) << std::left << "Total sequences length: " << std::setw(10) << std::right << seqTotalLen << std::endl;
-    
+
     double segmentGenerationTime = sysTime();
 #endif
 
@@ -392,17 +392,17 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         {
             if (*begIt == 0)
             {
-                if (msaOpt.pairwiseAlignmentMethod == 1 || (msaOpt.isDefaultPairwiseAlignment && !isDeepAlignment))  
+                if (msaOpt.pairwiseAlignmentMethod == 1 || (msaOpt.isDefaultPairwiseAlignment && !isDeepAlignment))
                 {
                     appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, distanceMatrix, GlobalPairwiseLibrary());
                 }
                 else
                 {
                     appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, distanceMatrix, msaOpt.bandWidth, GlobalPairwiseLibrary(), Banded());
-                }   
+                }
             }
             else if (*begIt == 1) {
-                if (msaOpt.pairwiseAlignmentMethod == 1 || (msaOpt.isDefaultPairwiseAlignment && !isDeepAlignment))  
+                if (msaOpt.pairwiseAlignmentMethod == 1 || (msaOpt.isDefaultPairwiseAlignment && !isDeepAlignment))
                 {
                     if (isDeepAlignment)
                         _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, DeepAlignment());
@@ -476,7 +476,7 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
     std::cout << std::setw(30) << std::left << "Segment-match generation:" << std::setw(10) << std::right << sysTime() - segmentGenerationTime << "  s" << std::endl;
     std::cout << std::setw(30) << std::left << "Number of segment-matches:" << std::setw(10) << std::right << length(matches) << std::endl;
 #endif
-    
+
     // Use these segment matches for the initial alignment graph
     TGraph g(seqSet);
     if (!msaOpt.rescore)
@@ -485,7 +485,7 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         buildAlignmentGraph(matches, scores, g, msaOpt.sc, ReScore());
     clear(matches);
     clear(scores);
-    
+
 #ifdef SEQAN_TCOFFEE_DEBUG
     std::cout << std::setw(30) << std::left << "Number of vertices:" << std::setw(10) << std::right << numVertices(g) << std::endl;
     std::cout << std::setw(30) << std::left << "Number of edges:" << std::setw(10) << std::right << numEdges(g) << std::endl;
@@ -538,7 +538,7 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
 #ifdef SEQAN_TCOFFEE_DEBUG
     std::cout << std::setw(30) << std::left << "Triplet extension:" << std::setw(10) << std::right << sysTime() - tripletStartTime << "  s" << std::endl;
     std::cout << std::setw(30) << std::left << "Number of edges after triplet:" << std::setw(10) << std::right << numEdges(g) << std::endl;
-    
+
     double progressiveAlignmentTime = sysTime();
 #endif
 

@@ -638,9 +638,11 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
         TScoreIter itScore = begin(scores, Standard());
         TScoreIter itScoreEnd = end(scores, Standard());
         TMatchIter itMatch = begin(matches, Standard());
-        itScore+=from;
-        itMatch+=from;
-        for(;itScore != itScoreEnd; ++itScore, ++itMatch) *itScore = (*itMatch).len;
+        itScore += from;
+        itMatch += from;
+        for (; itScore != itScoreEnd; ++itScore, ++itMatch) {
+            *itScore = (*itMatch).len;
+        }
     }
 }
 
@@ -973,7 +975,9 @@ _recordScores(TScoreValues & scores,
     TScoreIter itScore = begin(scores, Standard());
     TScoreIter itScoreEnd = end(scores, Standard());
     itScore += from;
-    for (; itScore != itScoreEnd; ++itScore) *itScore = myScore;
+    for (; itScore != itScoreEnd; ++itScore) {
+        *itScore = myScore;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1090,7 +1094,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TDistance& dist,
                      TSize3 const & bandWidth,
                      GlobalPairwiseLibrary,
-                     Banded) 
+                     Banded)
 {
     appendSegmentMatches(str, pList, score_type, matches, scores, dist, AlignConfig<>(), bandWidth, GlobalPairwiseLibrary(), Banded());
 }
