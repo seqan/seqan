@@ -585,6 +585,23 @@ getAlignmentStatistics(String<TFragment, TSpec1> const& matches,
 // Segment Match Generation
 //////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////////
+
+template<typename TStringSet, typename TPairIter>
+inline TStringSet
+_makePairSet(TStringSet const & str, TPairIter const & it1, TPairIter const & it2)
+{
+    typedef typename Id<TStringSet>::Type TId;
+    TStringSet pairSet;
+    TId id1 = positionToId(str, *it1);
+    TId id2 = positionToId(str, *it2);
+    assignValueById(pairSet, const_cast<TStringSet&>(str), id1);
+    assignValueById(pairSet, const_cast<TStringSet&>(str), id2);
+    return pairSet;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -599,20 +616,15 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
     typedef StringSet<TString, Dependent<TSpec> > TStringSet;
     typedef String<TSize2, TSpec2> TPairList;
     typedef typename Size<TStringSet>::Type TSize;
-    typedef typename Id<TStringSet>::Type TId;
     //typedef typename Value<TSegmentMatches>::Type TFragment;
     //typedef typename Value<TScores>::Type TScoreValue;
     typedef typename Iterator<TPairList const, Standard>::Type TPairIter;
 
+    SEQAN_ASSERT_EQ(length(pList) % 2, 0u);
+
     // Pairwise longest common subsequence
-    TPairIter itPair = begin(pList, Standard());
-    TPairIter itPairEnd = end(pList, Standard());
-    for(;itPair != itPairEnd; ++itPair) {
-        TStringSet pairSet;
-        TId id1 = positionToId(str, *itPair); ++itPair;
-        TId id2 = positionToId(str, *itPair);
-        assignValueById(pairSet, const_cast<TStringSet&>(str), id1);
-        assignValueById(pairSet, const_cast<TStringSet&>(str), id2);
+    for (TPairIter itPair = begin(pList, Standard()), itPairEnd = end(pList, Standard()); itPair != itPairEnd; itPair += 2) {
+        TStringSet pairSet = _makePairSet(str, itPair, itPair + 1);
 
         // Lcs between first and second string
         TSize from = length(matches);
@@ -748,20 +760,13 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 {
     typedef StringSet<TString, Dependent<TSpec> > TStringSet;
     typedef String<TSize2, TSpec2> TPairList;
-    typedef typename Id<TStringSet>::Type TId;
     typedef typename Iterator<TPairList const, Standard>::Type TPairIter;
-    
+
+    SEQAN_ASSERT_EQ(length(pList) % 2, 0u);
+
     // Pairwise alignments
-    TPairIter itPair = begin(pList, Standard());
-    TPairIter itPairEnd = end(pList, Standard());
-    for(;itPair != itPairEnd; ++itPair) {
-        // Make a pairwise string-set
-        TStringSet pairSet;
-        TId id1 = positionToId(str, *itPair); ++itPair;
-        TId id2 = positionToId(str, *itPair);
-        assignValueById(pairSet, const_cast<TStringSet&>(str), id1);
-        assignValueById(pairSet, const_cast<TStringSet&>(str), id2);
-        
+    for (TPairIter itPair = begin(pList, Standard()), itPairEnd = end(pList, Standard()); itPair != itPairEnd; itPair += 2) {
+        TStringSet pairSet = _makePairSet(str, itPair, itPair + 1);
         _multiLocalAlignment(pairSet, matches, scores, score_type, 4, SmithWatermanClump());
     }
 }
@@ -781,27 +786,36 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 {
     typedef StringSet<TString, Dependent<TSpec> > TStringSet;
     typedef String<TSize2, TSpec2> TPairList;
-    typedef typename Id<TStringSet>::Type TId;
     typedef typename Iterator<TPairList const, Standard>::Type TPairIter;
     typedef typename Value<TScoreValues>::Type TScoreValue;
     typedef typename Size<TStringSet>::Type TSize;
 
-    // Pairwise alignments
-    TPairIter itPair = begin(pList, Standard());
-    TPairIter itPairEnd = end(pList, Standard());
-    for (; itPair != itPairEnd; ++itPair) {
-        // Make a pairwise string-set
-        TStringSet pairSet;
-        TId id1 = positionToId(str, *itPair); ++itPair;
-        TId id2 = positionToId(str, *itPair);
-        assignValueById(pairSet, const_cast<TStringSet&>(str), id1);
-        assignValueById(pairSet, const_cast<TStringSet&>(str), id2);
+    SEQAN_ASSERT_EQ(length(pList) % 2, 0u);
 
+    // Pairwise alignments
+    for (TPairIter itPair = begin(pList, Standard()), itPairEnd = end(pList, Standard()); itPair != itPairEnd; itPair += 2) {
+        TStringSet pairSet = _makePairSet(str, itPair, itPair + 1);
         TSize from = length(matches);
         TScoreValue myScore = localAlignment(matches, pairSet, score_type);
         TSize to = length(matches);
         _recordScores(scores, myScore, from, to);
     }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+template <typename TStringSet, typename TBandWidth>
+inline Pair<int, int> assureBandedRestriction_(TStringSet const & pairSet, TBandWidth const & bandWidth) {
+    typedef typename Size<TStringSet>::Type TSize;
+    typedef typename MakeSigned<TSize>::Type TSignedSize;
+    // Banded alignment restriction: bottom right corner must be covered
+    TSignedSize lenH = length(pairSet[0]);
+    TSignedSize lenV = length(pairSet[1]);
+    TSignedSize halfWidth = bandWidth / 2;
+    int lowerD = std::min(-halfWidth, -halfWidth + lenH - lenV);
+    int upperD = std::max(halfWidth, halfWidth + lenH - lenV);
+    return Pair<int, int>(lowerD, upperD);
 }
 
 
@@ -821,31 +835,21 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 {
     typedef StringSet<TString, Dependent<TSpec> > TStringSet;
     typedef String<TSize2, TSpec2> TPairList;
-    typedef typename Id<TStringSet>::Type TId;
     typedef typename Iterator<TPairList const, Standard>::Type TPairIter;
     typedef typename Value<TScoreValues>::Type TScoreValue;
     typedef typename Size<TStringSet>::Type TSize;
 
+    SEQAN_ASSERT_EQ(length(pList) % 2, 0u);
+
     // Pairwise alignments
-    TPairIter itPair = begin(pList, Standard());
-    TPairIter itPairEnd = end(pList, Standard());
-    for (; itPair != itPairEnd; ++itPair) {
-        // Make a pairwise string-set
-        TStringSet pairSet;
-        TId id1 = positionToId(str, *itPair); ++itPair;
-        TId id2 = positionToId(str, *itPair);
-        assignValueById(pairSet, const_cast<TStringSet&>(str), id1);
-        assignValueById(pairSet, const_cast<TStringSet&>(str), id2);
+    for (TPairIter itPair = begin(pList, Standard()), itPairEnd = end(pList, Standard()); itPair != itPairEnd; itPair += 2) {
+        TStringSet pairSet = _makePairSet(str, itPair, itPair + 1);
 
-        // Banded alignment restriction: bottom right corner must be covered
-        TSize lenH = length(pairSet[0]);
-        TSize lenV = length(pairSet[1]);
-        size_t halfWidth = bandWidth / 2;
-        int lowerD = std::min(-halfWidth, -halfWidth + lenH - lenV);
-        int upperD = std::max(halfWidth, halfWidth + lenH - lenV);
+        Pair<int, int> bandBottomRight = assureBandedRestriction_(pairSet, bandWidth);
 
+        // Alignment
         TSize from = length(matches);
-        TScoreValue myScore = localAlignment(matches, pairSet, score_type, lowerD, upperD);
+        TScoreValue myScore = localAlignment(matches, pairSet, score_type, bandBottomRight.i1, bandBottomRight.i2);
         TSize to = length(matches);
         _recordScores(scores, myScore, from, to);
     }
@@ -986,25 +990,19 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      GlobalPairwiseLibrary)
 {
     typedef StringSet<TString, Dependent<TSpec> > TStringSet;
-    typedef typename Id<TStringSet>::Type TId;
     typedef typename Size<TStringSet>::Type TSize;
     typedef typename Value<TScoreValues>::Type TScoreValue;
     typedef typename Iterator<String<TSize2, TSpec2> const, Standard>::Type TPairIter;
+
+    SEQAN_ASSERT_EQ(length(pList) % 2, 0u);
 
     // Initialization
     TSize nseq = length(str);
     _resizeWithRespectToDistance(dist, nseq);
 
     // Pairwise alignments
-    TPairIter itPair = begin(pList, Standard());
-    TPairIter itPairEnd = end(pList, Standard());
-    for(;itPair != itPairEnd; ++itPair) {
-        // Make a pairwise string-set
-        TStringSet pairSet;
-        TId id1 = positionToId(str, *itPair); ++itPair;
-        TId id2 = positionToId(str, *itPair);
-        assignValueById(pairSet, const_cast<TStringSet&>(str), id1);
-        assignValueById(pairSet, const_cast<TStringSet&>(str), id2);
+    for (TPairIter itPair = begin(pList, Standard()), itPairEnd = end(pList, Standard()); itPair != itPairEnd; itPair += 2) {
+        TStringSet pairSet = _makePairSet(str, itPair, itPair + 1);
 
         // Alignment
         TSize from = length(matches);
@@ -1014,7 +1012,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
         _recordScores(scores, myScore, from, to);
 
         // Get the alignment statistics
-        _setDistanceValue(matches, pairSet, dist, (TSize) *(itPair-1), (TSize) *itPair, (TSize) nseq, (TSize)from);
+        _setDistanceValue(matches, pairSet, dist, (TSize) * itPair, (TSize) *(itPair + 1), (TSize) nseq, (TSize)from);
     }
 }
 
@@ -1032,45 +1030,34 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TAlignConfig const& ac,
                      TSize3 const & bandWidth,
                      GlobalPairwiseLibrary,
-                     Banded) 
+                     Banded)
 {
     typedef StringSet<TString, Dependent<TSpec> > TStringSet;
-    typedef typename Id<TStringSet>::Type TId;
     typedef typename Size<TStringSet>::Type TSize;
     typedef typename Value<TScoreValues>::Type TScoreValue;
     typedef typename Iterator<String<TSize2, TSpec2> const, Standard>::Type TPairIter;
+
+    SEQAN_ASSERT_EQ(length(pList) % 2, 0u);
 
     // Initialization
     TSize nseq = length(str);
     _resizeWithRespectToDistance(dist, nseq);
 
     // Pairwise alignments
-    TPairIter itPair = begin(pList, Standard());
-    TPairIter itPairEnd = end(pList, Standard());
-    for (; itPair != itPairEnd; ++itPair) {
-        // Make a pairwise string-set
-        TStringSet pairSet;
-        TId id1 = positionToId(str, *itPair); ++itPair;
-        TId id2 = positionToId(str, *itPair);
-        assignValueById(pairSet, const_cast<TStringSet&>(str), id1);
-        assignValueById(pairSet, const_cast<TStringSet&>(str), id2);
-                
-        // Banded alignment restriction: bottom right corner must be covered
-        TSize lenH = length(pairSet[0]);
-        TSize lenV = length(pairSet[1]);
-        size_t halfWidth = bandWidth / 2;
-        int lowerD = std::min(-halfWidth, -halfWidth + lenH - lenV);
-        int upperD = std::max(halfWidth, halfWidth + lenH - lenV);
-        
+    for (TPairIter itPair = begin(pList, Standard()), itPairEnd = end(pList, Standard()); itPair != itPairEnd; itPair += 2) {
+        TStringSet pairSet = _makePairSet(str, itPair, itPair + 1);
+
+        Pair<int, int> bandBottomRight = assureBandedRestriction_(pairSet, bandWidth);
+
         // Alignment
         TSize from = length(matches);
-        TScoreValue myScore = globalAlignment(matches, pairSet, score_type, ac, lowerD, upperD, Gotoh());
+        TScoreValue myScore = globalAlignment(matches, pairSet, score_type, ac, bandBottomRight.i1, bandBottomRight.i2, Gotoh());
         TSize to = length(matches);
 
         _recordScores(scores, myScore, from, to);
 
         // Get the alignment statistics
-        _setDistanceValue(matches, pairSet, dist, (TSize)*(itPair - 1), (TSize)*itPair, (TSize)nseq, (TSize)from);
+        _setDistanceValue(matches, pairSet, dist, (TSize)*itPair, (TSize)*(itPair + 1), (TSize)nseq, (TSize)from);
     }
 }
 
