@@ -368,14 +368,8 @@ inline static void globalExceptionHandler()
     }
 }
 
-#ifdef __GNUC__
-#define IGNORE_WARNING __attribute__ ((unused))
-#else
-#define IGNORE_WARNING
-#endif
-
 // Install global exception handler.
-static const std::terminate_handler IGNORE_WARNING _globalExceptionHandler = std::set_terminate(globalExceptionHandler);
+static const std::terminate_handler SEQAN_UNUSED _globalExceptionHandler = std::set_terminate(globalExceptionHandler);
 
 #endif  // #if defined(SEQAN_EXCEPTIONS) && defined(SEQAN_GLOBAL_EXCEPTION_HANDLER)
 
