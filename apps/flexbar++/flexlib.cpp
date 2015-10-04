@@ -1560,6 +1560,7 @@ struct ReadWriter
 template<template<typename> class TRead, typename TSeq>
 struct ReadReader
 {
+    using TReadSet = std::vector<TRead<TSeq>>;
     ReadReader(const ProgramParams& programParams, InputFileStreams& inputFileStreams, unsigned int sleepMS)
         :_programParams(programParams), _inputFileStreams(inputFileStreams), _tlsReadSets(_programParams.num_threads + 1) ,
         _run(false), _eof(false), _sleepMS(sleepMS), _numReads(0)
@@ -1575,33 +1576,29 @@ struct ReadReader
         _run = true;
         _thread = std::thread([this]()
         {
-            std::unique_ptr < std::vector<TRead<TSeq>>> currentReadSet;
+            std::unique_ptr <TReadSet> currentReadSet;
             while (_run)
             {
-                if (!currentReadSet)
+                if (!currentReadSet)  // load new reads from hd
                 {
                     currentReadSet = std::make_unique<std::vector<TRead<TSeq>>>(_programParams.records);
                     readReads(*currentReadSet, _programParams.records, _inputFileStreams);
                     loadMultiplex(*currentReadSet, _programParams.records, _inputFileStreams.fileStreamMultiplex);
+                    _numReads += currentReadSet->size();
+                    if (currentReadSet->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
+                        _eof = true;
                 }
-                for (auto& readSet : _tlsReadSets)
+                for (auto& readSet : _tlsReadSets)  // now insert reads into a slot
                 {
-                    if (currentReadSet && readSet.first.try_lock())
-                    {
-                        if (!readSet.second && !_eof) // empty slot -> put in current read
-                        {
-                            readSet.second = std::move(currentReadSet);
-                            _numReads += readSet.second->size();
-                            if (readSet.second->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
-                                _eof = true;
-                        }
-                        readSet.first.unlock();
-                    }
+                    if (currentReadSet && !readSet.load())
+                        readSet.store(currentReadSet.release());
                 }
                 if (currentReadSet)  // no empty slow was found, wait a bit
                 {
                     std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
                 }
+                if (_eof && !currentReadSet)
+                    _run = false;
             }
         });
     }
@@ -1614,32 +1611,24 @@ struct ReadReader
         if (!_eof)
             return false;
         for (auto& readSet : _tlsReadSets)
-            if (readSet.first.try_lock())
-            {
-                if (readSet.second)
-                {
-                    readSet.first.unlock();
-                    return false;
-                }
-                readSet.first.unlock();
-            }
+            if (readSet.load())
+                return false;
         return true;
     }
-    bool getReads(std::unique_ptr<std::vector<TRead<TSeq>>>& reads) noexcept
+    bool getReads(std::unique_ptr<TReadSet>& reads) noexcept
     {
+        TReadSet* temp = nullptr;
         while (true)
         {
             for (auto& readSet : _tlsReadSets)
             {
-                if (readSet.first.try_lock())
+                if ((temp = readSet.load())!= nullptr)
                 {
-                    if (readSet.second)
+                    if (readSet.compare_exchange_strong(temp, nullptr))
                     {
-                        reads = std::move(readSet.second);
-                        readSet.first.unlock();
-                        return reads->empty() ? false : true;
+                        reads.reset(temp);
+                        return true;
                     }
-                    readSet.first.unlock();
                 }
             }
             if (_eof)
@@ -1652,7 +1641,7 @@ struct ReadReader
 private:
     const ProgramParams& _programParams;
     InputFileStreams& _inputFileStreams;
-    std::vector<std::pair<std::mutex,std::unique_ptr<std::vector<TRead<TSeq>>>>> _tlsReadSets;
+    std::vector<std::atomic<TReadSet*>> _tlsReadSets;
     std::thread _thread;
     std::atomic_bool _run;
     std::atomic_bool _eof;
