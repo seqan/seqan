@@ -1575,19 +1575,22 @@ struct ReadReader
         _run = true;
         _thread = std::thread([this]()
         {
+            std::unique_ptr < std::vector<TRead<TSeq>>> currentReadSet;
             while (_run)
             {
-                bool nothingToDo = true;
+                if (!currentReadSet)
+                {
+                    currentReadSet = std::make_unique<std::vector<TRead<TSeq>>>(_programParams.records);
+                    readReads(*currentReadSet, _programParams.records, _inputFileStreams);
+                    loadMultiplex(*currentReadSet, _programParams.records, _inputFileStreams.fileStreamMultiplex);
+                }
                 for (auto& readSet : _tlsReadSets)
                 {
-                    if (readSet.first.try_lock())
+                    if (currentReadSet && readSet.first.try_lock())
                     {
-                        if (!readSet.second && !_eof) // empty slot -> start new Read
+                        if (!readSet.second && !_eof) // empty slot -> put in current read
                         {
-                            nothingToDo = false;
-                            readSet.second = std::make_unique<std::vector<TRead<TSeq>>>(_programParams.records);
-                            readReads(*(readSet.second), _programParams.records, _inputFileStreams);
-                            loadMultiplex(*(readSet.second), _programParams.records, _inputFileStreams.fileStreamMultiplex);
+                            readSet.second = std::move(currentReadSet);
                             _numReads += readSet.second->size();
                             if (readSet.second->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
                                 _eof = true;
@@ -1595,9 +1598,8 @@ struct ReadReader
                         readSet.first.unlock();
                     }
                 }
-                if (nothingToDo)
+                if (currentReadSet)  // no empty slow was found, wait a bit
                 {
-                    //std::cout << "1" << std::endl;
                     std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
                 }
             }
