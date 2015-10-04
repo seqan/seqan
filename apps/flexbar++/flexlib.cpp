@@ -1457,7 +1457,10 @@ struct ReadWriter
     ReadWriter(const ProgramParams& programParams, OutputStreams& outputStreams, unsigned int sleepMS)
         : _programParams(programParams), _outputStreams(outputStreams), _tlsReadSets(_programParams.num_threads + 1),
         _run(false), _sleepMS(sleepMS), _startTime(std::chrono::steady_clock::now()), _lastScreenUpdate()
-    {}
+    {
+        for (auto& readSet : _tlsReadSets)
+            readSet.store(nullptr);  // fill initialization does not work for atomics
+    }
     ~ReadWriter() 
     {
         _run = false;
@@ -1469,7 +1472,7 @@ struct ReadWriter
         _run = true;
         _thread = std::thread([this]()
         {
-            TWriteItem* currentWriteItem;
+            TWriteItem* currentWriteItem = nullptr;
             while (_run)
             {
                 bool nothingToDo = true;
@@ -1534,7 +1537,6 @@ struct ReadWriter
     }
     bool idle() noexcept
     {
-        unsigned int numEmpty = 0;
         for (auto& readSet : _tlsReadSets)
             if (readSet.load() != nullptr)
                 return false;
@@ -1559,7 +1561,10 @@ struct ReadReader
     ReadReader(const ProgramParams& programParams, InputFileStreams& inputFileStreams, unsigned int sleepMS)
         :_programParams(programParams), _inputFileStreams(inputFileStreams), _tlsReadSets(_programParams.num_threads + 1) ,
         _run(false), _eof(false), _sleepMS(sleepMS), _numReads(0)
-    {}
+    {
+        for (auto& readSet : _tlsReadSets)
+            readSet.store(nullptr);  // fill initialization does not work for atomics
+    }
     ~ReadReader() 
     {
         _run = false;
@@ -1702,10 +1707,8 @@ struct ProcessingUnit
 
         // Postprocessing
         postprocessingStage(_processingParams, *reads, generalStats);
-        auto tempTuple = std::make_tuple(TpReads(reads), _demultiplexingParams.barcodeIds, generalStats);
-        auto pTuple = new decltype(tempTuple);
-        *pTuple = std::move(tempTuple);
-        return pTuple;
+
+        return new TWriteItem(std::make_tuple(TpReads(reads), _demultiplexingParams.barcodeIds, generalStats));
     }
 private:
     const ProgramParams& _programParams;
