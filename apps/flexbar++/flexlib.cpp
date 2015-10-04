@@ -1449,9 +1449,11 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
     return i;
 }
 
-template<template<typename> class TRead, typename TSeq, typename TWriteItem>
+template<template<typename> class TRead, typename TSeq, typename _TWriteItem>
 struct ReadWriter
 {
+    using TWriteItem = _TWriteItem;
+
     ReadWriter(const ProgramParams& programParams, OutputStreams& outputStreams, unsigned int sleepMS)
         : _programParams(programParams), _outputStreams(outputStreams), _tlsReadSets(_programParams.num_threads + 1),
         _run(false), _sleepMS(sleepMS), _startTime(std::chrono::steady_clock::now()), _lastScreenUpdate()
@@ -1467,34 +1469,35 @@ struct ReadWriter
         _run = true;
         _thread = std::thread([this]()
         {
+            TWriteItem* currentWriteItem;
             while (_run)
             {
                 bool nothingToDo = true;
                 for (auto& readSet : _tlsReadSets)
                 {
-                    if (readSet.first.try_lock())
+                    if ((currentWriteItem = readSet.load())!=nullptr)
                     {
-                        if (std::get<0>(readSet.second))
+                        readSet.store(nullptr); // make the slot free again
+                        nothingToDo = false;
+                        
+                        const auto t1 = std::chrono::steady_clock::now();
+                        _outputStreams.writeSeqs(std::move(*std::get<0>(*currentWriteItem)), std::get<1>(*currentWriteItem));
+                        std::get<0>(*currentWriteItem).reset(nullptr); // delete written data
+                        _stats += std::get<2>(*currentWriteItem);
+                        delete currentWriteItem;
+                        // terminal output
+                        const auto ioTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
+                        _stats.ioTime += ioTime;
+                        const auto deltaLastScreenUpdate = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - _lastScreenUpdate).count();
+                        if (deltaLastScreenUpdate > 1)
                         {
-                            nothingToDo = false;
-                            const auto t1 = std::chrono::steady_clock::now();
-                            _outputStreams.writeSeqs(std::move(*std::get<0>(readSet.second)), std::get<1>(readSet.second));
-                            std::get<0>(readSet.second).reset(nullptr); // delete written data
-                            _stats += std::get<2>(readSet.second);
-                            const auto ioTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
-                            _stats.ioTime += ioTime;
-                            const auto deltaLastScreenUpdate = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - _lastScreenUpdate).count();
-                            if (deltaLastScreenUpdate > 1)
-                            {
-                                const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - _startTime).count();
-                                if (_programParams.showSpeed)
-                                    std::cout << "\rreads processed: " << _stats.readCount << "   (" << static_cast<int>(_stats.readCount / deltaTime) << " Reads/s)";
-                                else
-                                    std::cout << "\rreads processed: " << _stats.readCount;
-                                _lastScreenUpdate = std::chrono::steady_clock::now();
-                            }
+                            const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - _startTime).count();
+                            if (_programParams.showSpeed)
+                                std::cout << "\rreads processed: " << _stats.readCount << "   (" << static_cast<int>(_stats.readCount / deltaTime) << " Reads/s)";
+                            else
+                                std::cout << "\rreads processed: " << _stats.readCount;
+                            _lastScreenUpdate = std::chrono::steady_clock::now();
                         }
-                        readSet.first.unlock();
                     }
                 }
                 if (nothingToDo)
@@ -1505,21 +1508,17 @@ struct ReadWriter
             }
         });
     }
-    void writeReads(TWriteItem&& writeItem) noexcept    // blocks until item could be added
+    void writeReads(TWriteItem* writeItem) noexcept    // blocks until item could be added
     {
         while (true)
         {
             for (auto& reads : _tlsReadSets)
             {
-                if (reads.first.try_lock())
+                if (reads.load() == nullptr)
                 {
-                    if (!std::get<0>(reads.second))
-                    {
-                        reads.second = std::move(writeItem);
-                        reads.first.unlock();
+                    TWriteItem* temp = nullptr;
+                    if(reads.compare_exchange_strong(temp, writeItem))
                         return;
-                    }
-                    reads.first.unlock();
                 }
             }
             //std::cout << "3" << std::endl;
@@ -1537,18 +1536,14 @@ struct ReadWriter
     {
         unsigned int numEmpty = 0;
         for (auto& readSet : _tlsReadSets)
-            if (readSet.first.try_lock())
-            {
-                if (!std::get<0>(readSet.second))
-                    ++numEmpty;
-                readSet.first.unlock();
-            }
-        return numEmpty == _tlsReadSets.size();
+            if (readSet.load() != nullptr)
+                return false;
+        return true;
     }
     private:
         const ProgramParams& _programParams;
         OutputStreams& _outputStreams;
-        std::vector<std::pair<std::mutex, TWriteItem>> _tlsReadSets;
+        std::vector<std::atomic<TWriteItem*>> _tlsReadSets;
         std::thread _thread;
         std::atomic_bool _run;
         unsigned int _sleepMS;
@@ -1653,6 +1648,7 @@ template <typename TRead, typename TFinder, typename TReadReader, typename TRead
 struct ProcessingUnit
 {
     using TpReads = std::unique_ptr<std::vector<TRead>>;
+    using TWriteItem = typename TReadWriter::TWriteItem;
 
     ProcessingUnit(const ProgramParams& programParams, const ProcessingParams& processingParams, const DemultiplexingParams& demultiplexingParams, const AdapterTrimmingParams& adapterTrimmingParams,
         const QualityTrimmingParams& qualityTrimmingParams, TFinder &finder, TReadReader& readReader, TReadWriter& readWriter, unsigned int sleepMS) : _programParams(programParams), _processingParams(processingParams), _demultiplexingParams(demultiplexingParams),
@@ -1686,7 +1682,7 @@ struct ProcessingUnit
         return true;
     }
 
-    std::tuple<TpReads, std::vector<std::string>, GeneralStats> doProcessing(std::vector<TRead>* reads)
+    TWriteItem* doProcessing(std::vector<TRead>* reads)
     {
         GeneralStats generalStats(length(_demultiplexingParams.barcodeIds) + 1);
         generalStats.readCount = reads->size();
@@ -1706,7 +1702,10 @@ struct ProcessingUnit
 
         // Postprocessing
         postprocessingStage(_processingParams, *reads, generalStats);
-        return std::make_tuple(std::unique_ptr<std::vector<TRead>>(reads), _demultiplexingParams.barcodeIds, generalStats);
+        auto tempTuple = std::make_tuple(TpReads(reads), _demultiplexingParams.barcodeIds, generalStats);
+        auto pTuple = new decltype(tempTuple);
+        *pTuple = std::move(tempTuple);
+        return pTuple;
     }
 private:
     const ProgramParams& _programParams;
@@ -1731,7 +1730,8 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
     OutputStreams& outputStreams, TStats& stats)
 {
     const unsigned int threadIdleSleepTimeMS = 10;
-    using TReadWriter = ReadWriter<TRead, TSeq, std::tuple<std::unique_ptr<std::vector<TRead<TSeq>>>, decltype(DemultiplexingParams::barcodeIds), GeneralStats>>;
+    using TWriteItem = std::tuple < std::unique_ptr < std::vector<TRead<TSeq>>>, decltype(DemultiplexingParams::barcodeIds), GeneralStats>;
+    using TReadWriter = ReadWriter<TRead, TSeq, TWriteItem>;
     using TReadReader = ReadReader<TRead, TSeq>;
     using TProcessingUnit = ProcessingUnit<TRead<TSeq>, TEsaFinder, TReadReader, TReadWriter>;
 
