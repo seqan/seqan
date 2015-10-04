@@ -1449,6 +1449,7 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
     return i;
 }
 
+// writes read sets to hd and collects statistics, blocks if all slots are full
 template<template<typename> class TRead, typename TSeq, typename _TWriteItem>
 struct ReadWriter
 {
@@ -1473,6 +1474,7 @@ struct ReadWriter
         _thread = std::thread([this]()
         {
             TWriteItem* currentWriteItem = nullptr;
+            std::mutex _idleMutex;
             while (_run)
             {
                 bool nothingToDo = true;
@@ -1482,6 +1484,7 @@ struct ReadWriter
                     {
                         readSet.store(nullptr); // make the slot free again
                         nothingToDo = false;
+                        _freeSlotAvailableCV.notify_one();
                         
                         const auto t1 = std::chrono::steady_clock::now();
                         _outputStreams.writeSeqs(std::move(*std::get<0>(*currentWriteItem)), std::get<1>(*currentWriteItem));
@@ -1506,13 +1509,16 @@ struct ReadWriter
                 if (nothingToDo)
                 {
                     //std::cout << "4" << std::endl;
-                    std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+                    std::unique_lock<std::mutex> lk(_idleMutex);
+                    _readSetAvailableCV.wait(lk);
+                    //std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
                 }
             }
         });
     }
     void writeReads(TWriteItem* writeItem) noexcept    // blocks until item could be added
     {
+        std::mutex _idleMutex;
         while (true)
         {
             for (auto& reads : _tlsReadSets)
@@ -1520,12 +1526,17 @@ struct ReadWriter
                 if (reads.load() == nullptr)
                 {
                     TWriteItem* temp = nullptr;
-                    if(reads.compare_exchange_strong(temp, writeItem))
+                    if (reads.compare_exchange_strong(temp, writeItem))
+                    {
+                        _readSetAvailableCV.notify_one();
                         return;
+                    }
                 }
             }
             //std::cout << "3" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+            std::unique_lock<std::mutex> lk(_idleMutex);
+            _freeSlotAvailableCV.wait(lk);
+            //std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
     }
     void getStats(std::tuple_element_t<2, TWriteItem>& stats)
@@ -1552,32 +1563,34 @@ struct ReadWriter
         std::chrono::time_point<std::chrono::steady_clock> _startTime;
         std::chrono::time_point<std::chrono::steady_clock> _lastScreenUpdate;
         std::tuple_element_t<2, TWriteItem> _stats;
+        std::condition_variable _freeSlotAvailableCV;
+        std::condition_variable _readSetAvailableCV;
 };
 
+// reads read sets from hd and puts them into slots, waits if no free slots are available
 template<template<typename> class TRead, typename TSeq>
 struct ReadReader
 {
     using TReadSet = std::vector<TRead<TSeq>>;
     ReadReader(const ProgramParams& programParams, InputFileStreams& inputFileStreams, unsigned int sleepMS)
         :_programParams(programParams), _inputFileStreams(inputFileStreams), _tlsReadSets(_programParams.num_threads + 1) ,
-        _run(false), _eof(false), _sleepMS(sleepMS), _numReads(0)
+        _eof(false), _sleepMS(sleepMS), _numReads(0)
     {
         for (auto& readSet : _tlsReadSets)
             readSet.store(nullptr);  // fill initialization does not work for atomics
     }
     ~ReadReader() 
     {
-        _run = false;
         if (_thread.joinable())
             _thread.join();
     }
     void start()
     {
-        _run = true;
         _thread = std::thread([this]()
         {
             std::unique_ptr <TReadSet> currentReadSet;
-            while (_run)
+            std::mutex _idleMutex;
+            while (!_eof || currentReadSet)
             {
                 if (!currentReadSet)  // load new reads from hd
                 {
@@ -1591,18 +1604,21 @@ struct ReadReader
                 for (auto& readSet : _tlsReadSets)  // now insert reads into a slot
                 {
                     if (currentReadSet && !readSet.load())
+                    {
                         readSet.store(currentReadSet.release());
+                        _readSetAvailableCV.notify_one();
+                    }
                 }
                 if (currentReadSet)  // no empty slow was found, wait a bit
                 {
-                    std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+                    std::unique_lock<std::mutex> lk(_idleMutex);
+                    _freeSlotAvailableCV.wait(lk);
+                    //std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
                 }
-                if (_eof && !currentReadSet)
-                    _run = false;
             }
         });
     }
-    bool eof() const noexcept
+    inline bool eof() const noexcept
     {
         return _eof;
     }
@@ -1618,6 +1634,7 @@ struct ReadReader
     bool getReads(std::unique_ptr<TReadSet>& reads) noexcept
     {
         TReadSet* temp = nullptr;
+        std::mutex _idleMutex;
         while (true)
         {
             for (auto& readSet : _tlsReadSets)
@@ -1627,6 +1644,7 @@ struct ReadReader
                     if (readSet.compare_exchange_strong(temp, nullptr))
                     {
                         reads.reset(temp);
+                        _freeSlotAvailableCV.notify_one();
                         return true;
                     }
                 }
@@ -1634,7 +1652,9 @@ struct ReadReader
             if (_eof)
                 return false;
             //std::cout << "2" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+            std::unique_lock<std::mutex> lk(_idleMutex);
+            _readSetAvailableCV.wait(lk);
+            //std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
         return false;
     };
@@ -1643,10 +1663,11 @@ private:
     InputFileStreams& _inputFileStreams;
     std::vector<std::atomic<TReadSet*>> _tlsReadSets;
     std::thread _thread;
-    std::atomic_bool _run;
     std::atomic_bool _eof;
     unsigned int _sleepMS;
     unsigned int _numReads;
+    std::condition_variable _freeSlotAvailableCV;
+    std::condition_variable _readSetAvailableCV;
 };
 
 template <typename TRead, typename TFinder, typename TReadReader, typename TReadWriter>

@@ -164,12 +164,14 @@ template<template <typename> class TRead, typename TSeq, bool tagTrimming,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplex < TSeq >> ::value >>
 unsigned int _preTrim(std::vector<TRead<TSeq>>& reads, const unsigned head, const unsigned tail, const unsigned min, bool = false) noexcept(!tagTrimming)
 {
-    std::for_each(reads.begin(), reads.end(), [head, tail](auto& read)
+    std::string insertToken;
+    if(tagTrimming)
+        insertToken.reserve(8 + head + tail);
+    std::for_each(reads.begin(), reads.end(), [head, tail, &insertToken](auto& read)
     {
         const auto seqLen = length(read.seq);
         if (seqLen > (head + tail))
         {
-            std::string insertToken;
             if (head > 0)
             {
                 if (tagTrimming)
@@ -183,7 +185,7 @@ unsigned int _preTrim(std::vector<TRead<TSeq>>& reads, const unsigned head, cons
                     insertToken += ":TR:" + std::string(suffix(read.seq, seqLen - tail));
                 erase(read.seq, seqLen - tail, seqLen);
             }
-            if (insertToken.size() != 0)
+            if (tagTrimming && insertToken.size() != 0)
                 insertAfterFirstToken(read.id, std::move(insertToken));
         }
         else
@@ -197,7 +199,10 @@ template<template <typename> class TRead, typename TSeq, bool tagTrimming,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplexPairedEnd < TSeq >> ::value >>
     unsigned int _preTrim(std::vector<TRead<TSeq>>& reads, const unsigned head, const unsigned tail, const unsigned min) noexcept(!tagTrimming)
 {
-    std::for_each(reads.begin(), reads.end(), [head, tail](auto& read)
+    std::string tempString;
+    if(tagTrimming)
+        tempString.reserve(8 + head + tail);
+    std::for_each(reads.begin(), reads.end(), [head, tail, &tempString](auto& read)
     {
         if (read.minSeqLen() > (head + tail))
         {
@@ -206,7 +211,7 @@ template<template <typename> class TRead, typename TSeq, bool tagTrimming,
             {
                 if (tagTrimming)
                 {
-                    std::string tempString = ":TL:";
+                    tempString = ":TL:";
                     append(tempString, prefix(read.seq, std::min<int>(length(read.seq), head)));
                     insertAfterFirstToken(read.id, std::move(tempString));
                     tempString = ":TL:";
@@ -222,7 +227,7 @@ template<template <typename> class TRead, typename TSeq, bool tagTrimming,
                 const auto seqLenRev = length(read.seqRev);
                 if (tagTrimming)
                 {
-                    std::string tempString = ":TR:";
+                    tempString = ":TR:";
                     append(tempString, suffix(read.seq, std::max<int>(0, seqLen - tail)));
                     insertAfterFirstToken(read.id, std::move(tempString));
                     tempString = ":TR:";
@@ -232,7 +237,7 @@ template<template <typename> class TRead, typename TSeq, bool tagTrimming,
                 erase(read.seq, std::max<int>(0, seqLen - tail), seqLen);
                 erase(read.seqRev, std::max<int>(0, seqLenRev - tail), seqLenRev);
             }
-            if (insertToken.size() != 0)
+            if (tagTrimming && insertToken.size() != 0)
                 insertAfterFirstToken(read.id, std::move(insertToken));
         }
         else

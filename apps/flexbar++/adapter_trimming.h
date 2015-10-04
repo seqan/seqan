@@ -185,11 +185,11 @@ void alignPair(std::pair<unsigned, seqan::Align<TSeq1> >& ret, const TSeq1& seq1
 	// If we can do a banded alignment, restrict ourselves to the upper half of the matrix.
     if (band)
     {
-        ret.first = globalAlignment(ret.second, adapterScore, config, -2, length(seq1));
+        ret.first = globalAlignment(ret.second, adapterScore, config, -2, length(seq1), seqan::LinearGaps());
     }
     else
     {
-        ret.first = globalAlignment(ret.second, adapterScore, config);
+        ret.first = globalAlignment(ret.second, adapterScore, config, seqan::LinearGaps());
     }
 }
 
