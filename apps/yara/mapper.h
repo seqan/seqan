@@ -916,33 +916,40 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     },
     typename TTraits::TThreading());
 
-    if (empty(libraryLengths)) return;
-
     // Remove library outliers > 6 * median.
-    unsigned libraryMedian = nthElement(libraryLengths, length(libraryLengths) / 2, typename TTraits::TThreading());
-    removeIf(libraryLengths, std::bind2nd(std::greater<unsigned>(), 6.0 * libraryMedian), typename TTraits::TThreading());
-
-    // Compute library mean.
-    unsigned librarySum = accumulate(libraryLengths, 0u, typename TTraits::TThreading());
-    float libraryMean = librarySum / static_cast<float>(length(libraryLengths));
-
-    // Compute library standard deviation.
-    String<float> libraryDiffs;
-    resize(libraryDiffs, length(libraryLengths), Exact());
-    transform(libraryDiffs, libraryLengths, std::bind2nd(std::minus<float>(), libraryMean), typename TTraits::TThreading());
-    float librarySqSum = innerProduct(libraryDiffs, 0.0f, typename TTraits::TThreading());
-    float libraryDev = std::sqrt(librarySqSum / static_cast<float>(length(libraryLengths)));
-
-    if (me.options.verbose > 1)
+    if (!empty(libraryLengths))
     {
-        std::cerr << "Library median:\t\t\t" << libraryMedian << std::endl;
-        std::cerr << "Library mean:\t\t\t" << libraryMean << std::endl;
-        std::cerr << "Library stddev:\t\t\t" << libraryDev << std::endl;
+        unsigned libraryMedian = nthElement(libraryLengths, length(libraryLengths) / 2, typename TTraits::TThreading());
+        removeIf(libraryLengths, std::bind2nd(std::greater<unsigned>(), 6.0 * libraryMedian), typename TTraits::TThreading());
+
+        // Compute library mean.
+        unsigned librarySum = accumulate(libraryLengths, 0u, typename TTraits::TThreading());
+        float libraryMean = librarySum / static_cast<float>(length(libraryLengths));
+
+        // Compute library standard deviation.
+        String<float> libraryDiffs;
+        resize(libraryDiffs, length(libraryLengths), Exact());
+        transform(libraryDiffs, libraryLengths, std::bind2nd(std::minus<float>(), libraryMean), typename TTraits::TThreading());
+        float librarySqSum = innerProduct(libraryDiffs, 0.0f, typename TTraits::TThreading());
+        float libraryDev = std::sqrt(librarySqSum / static_cast<float>(length(libraryLengths)));
+
+        if (me.options.verbose > 1)
+        {
+            std::cerr << "Library median:\t\t\t" << libraryMedian << std::endl;
+            std::cerr << "Library mean:\t\t\t" << libraryMean << std::endl;
+            std::cerr << "Library stddev:\t\t\t" << libraryDev << std::endl;
+        }
+
+        // Set library mean and error as just computed.
+        me.libraryLength = libraryMean;
+        me.libraryDev = libraryDev;
     }
 
-    // Set library mean and error as provided in input or just computed.
-    me.libraryLength = me.options.libraryLength ? me.options.libraryLength : libraryMean;
-    me.libraryDev = me.options.libraryDev ? me.options.libraryDev : libraryDev;
+    // Overwrite library mean and error if provided in input.
+    if (me.options.libraryLength)
+        me.libraryLength = me.options.libraryLength;
+    if (me.options.libraryDev)
+        me.libraryDev = me.options.libraryDev;
 
     resize(me.primaryMatchesProbs, getReadsCount(readSeqs), 0.0, Exact());
 
