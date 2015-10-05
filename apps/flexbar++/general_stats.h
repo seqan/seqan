@@ -38,6 +38,12 @@
 
 struct AdapterTrimmingStats
 {
+    std::vector<std::vector<unsigned>> removedLength;
+    std::vector<unsigned> numRemoved;
+    unsigned a1count, a2count;
+    unsigned overlapSum;
+    unsigned minOverlap, maxOverlap;
+
     AdapterTrimmingStats() : a1count(0), a2count(0), overlapSum(0),
         minOverlap(std::numeric_limits<unsigned>::max()), maxOverlap(0) {};
 
@@ -48,6 +54,27 @@ struct AdapterTrimmingStats
         overlapSum += rhs.overlapSum;
         minOverlap = minOverlap < rhs.minOverlap ? minOverlap : rhs.minOverlap;
         maxOverlap = maxOverlap < rhs.maxOverlap ? rhs.maxOverlap : maxOverlap;
+        {
+            const auto len = rhs.removedLength.size();
+            if (removedLength.size() < len)
+                removedLength.resize(std::max(removedLength.size(), len));
+            for (unsigned int i = 0;i < len;++i)
+            {
+                const auto len2 = rhs.removedLength[i].size();
+                if (removedLength[i].size() < len2)
+                    removedLength[i].resize(len2);
+                for (unsigned k = 0;k < len2;++k)
+                    removedLength[i][k] += rhs.removedLength[i][k];
+            }
+        }
+
+        {
+            const auto len = rhs.numRemoved.size();
+            if (numRemoved.size() < len)
+                numRemoved.resize(len);
+            for (unsigned int i = 0;i < len;++i)
+                numRemoved[i] += rhs.numRemoved[i];
+        }
         return *this;
     }
     void clear()
@@ -58,10 +85,6 @@ struct AdapterTrimmingStats
         minOverlap = std::numeric_limits<unsigned>::max();
         maxOverlap = 0;
     }
-
-    unsigned a1count, a2count;
-    unsigned overlapSum;
-    unsigned minOverlap, maxOverlap;
 };
 
 struct GeneralStats

@@ -100,26 +100,29 @@ struct AdapterItem
         end3,
         end5,
     };
+    AdapterEnd adapterEnd;
     unsigned int overhang;
+    unsigned id;
+    TAdapterSequence seq;
 
-    AdapterItem() : adapterEnd(end3), overhang(0){};
-    AdapterItem(const TAdapterSequence &adapter) : seq(adapter), adapterEnd(end3), overhang(0){};
-    AdapterItem(const TAdapterSequence &adapter, const AdapterEnd adapterEnd, const unsigned overhang) 
-        : seq(adapter), adapterEnd(adapterEnd), overhang(overhang) {};
+    AdapterItem() : adapterEnd(end3), overhang(0), id(0){};
+    AdapterItem(const TAdapterSequence &adapter) : seq(adapter), adapterEnd(end3), overhang(0), id(0){};
+    AdapterItem(const TAdapterSequence &adapter, const AdapterEnd adapterEnd, const unsigned overhang, const unsigned numRemoved)
+        : seq(adapter), adapterEnd(adapterEnd), overhang(overhang), id(id) {};
 
     AdapterItem getReverseComplement() const noexcept
     {
         auto seqCopy = seq;
-        return AdapterItem(TReverseComplement(seqCopy), adapterEnd, overhang);
+        return AdapterItem(TReverseComplement(seqCopy), adapterEnd, overhang, id);
     }
 
-    TAdapterSequence seq;
+
     // the anchored matching mode should have the same functionality as cutadapt's anchored mode
     // see http://cutadapt.readthedocs.org/en/latest/guide.html
     // In anchored mode, the adapter has to start (3" adapter) or has to end (5" adapter) with the sequence
     // The anchored mode is rarely used, at least for 3" adapters
     // Todo: implement rooted mode
-    AdapterEnd adapterEnd;
+
 };
 
 // Define scoring function type.
@@ -284,7 +287,7 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
     std::pair<unsigned, TAlign> ret;
 
     unsigned removed{ 0 };
-    std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> matches;
+    std::vector<std::tuple<unsigned int, unsigned int, AdapterItem>> matches;
     matches.reserve(spec.times);
     TAdapters::value_type::TAdapterSequence adapterSequence;
     for (unsigned int n = 0;n < spec.times; ++n)
@@ -299,23 +302,10 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
 
             // always use banded alignment
             adapterSequence = TStripAdapterDirection::value == adapterDirection::reverse ? adapterItem.getReverseComplement().seq : adapterItem.seq;
-
-            unsigned int eraseStart = 0;
-            unsigned int eraseEnd = 0;
             if (adapterItem.adapterEnd == AdapterItem::end3)
-            {
                 alignPair(ret, seq, adapterSequence, seqan::AlignConfig<true, true, true, true>(), adapterItem.overhang, length(adapterItem.seq) - spec.min_length);
-                eraseStart = toViewPosition(row(ret.second, 1), 0);
-                eraseEnd = length(seq);
-                //std::cout << "adapter start position: " << toViewPosition(row(ret.second, 1), 0) << std::endl;
-            }
             else
-            {
                 alignPair(ret, seq, adapterSequence, seqan::AlignConfig<true, true, true, true>(), length(adapterItem.seq) - spec.min_length, adapterItem.overhang);
-                eraseStart = 0;
-                eraseEnd = toViewPosition(row(ret.second, 1), length(adapterItem.seq)) - toViewPosition(row(ret.second, 0), 0);
-                //std::cout << "adapter end position: " << toViewPosition(row(ret.second, 1), length(adapterItem.seq)) - toViewPosition(row(ret.second, 0), 0) << std::endl;
-            }
 
             const int score = ret.first;
             if (score < 0)
@@ -328,7 +318,7 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
             if (isMatch(overlap, mismatches, spec))
             {
                 const TRow row2 = row(ret.second, 1);
-                matches.push_back(std::make_tuple(score, overlap, eraseStart, eraseEnd));
+                matches.push_back(std::make_tuple(score, overlap, std::ref(adapterItem)));
             }
         }
         if (matches.empty())
@@ -341,12 +331,38 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
                 maxIt = it;
 
         // erase best matching adapter from sequence
+        const auto score = std::get<0>(*maxIt);
         const auto overlap = std::get<1>(*maxIt);
-        const auto eraseStart = std::get<2>(*maxIt);
-        const auto eraseEnd = std::get<3>(*maxIt);
+        AdapterItem adapterItem = std::get<2>(*maxIt);
+        const auto mismatches = (overlap - score) / 2;
+        unsigned int eraseStart = 0;
+        unsigned int eraseEnd = 0;
+        if (adapterItem.adapterEnd == AdapterItem::end3)
+        {
+            alignPair(ret, seq, adapterSequence, seqan::AlignConfig<true, true, true, true>(), adapterItem.overhang, length(adapterItem.seq) - spec.min_length);
+            eraseStart = toViewPosition(row(ret.second, 1), 0);
+            eraseEnd = length(seq);
+            //std::cout << "adapter start position: " << toViewPosition(row(ret.second, 1), 0) << std::endl;
+        }
+        else
+        {
+            alignPair(ret, seq, adapterSequence, seqan::AlignConfig<true, true, true, true>(), length(adapterItem.seq) - spec.min_length, adapterItem.overhang);
+            eraseStart = 0;
+            eraseEnd = toViewPosition(row(ret.second, 1), length(adapterItem.seq)) - toViewPosition(row(ret.second, 0), 0);
+            //std::cout << "adapter end position: " << toViewPosition(row(ret.second, 1), length(adapterItem.seq)) - toViewPosition(row(ret.second, 0), 0) << std::endl;
+        }
         removed += eraseEnd - eraseStart;
+        const auto statisticLen = eraseEnd - eraseStart;
+        if(stats.removedLength.size() < statisticLen)
+            stats.removedLength.resize(statisticLen);
+        if(stats.removedLength[statisticLen -1].size() < mismatches+1)
+            stats.removedLength[statisticLen -1].resize(mismatches+1);
+        ++stats.removedLength[statisticLen -1][mismatches];
         //std::cout << "unstripped seq: " << seq << " erase: " << eraseStart << " " << eraseEnd;
         seqan::erase(seq, eraseStart, eraseEnd);
+        if (stats.numRemoved.size() < adapterItem.id + 1)
+            stats.numRemoved.resize(adapterItem.id + 1);
+        ++stats.numRemoved[adapterItem.id];
         //std::cout << "\nstripped seq  : " << seq << std::endl;
         //std::cout << " ok" << std::endl;
 

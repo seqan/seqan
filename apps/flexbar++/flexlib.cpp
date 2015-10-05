@@ -1088,6 +1088,7 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
         }
         TAdapterSequence tempAdapter;
         AdapterItem adapterItem;
+        unsigned int adapterId = 0;
         while (!atEnd(adapterInFile))
         {
             for (unsigned int i = 0;i < 2;++i)
@@ -1103,6 +1104,7 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
                     continue;
                 }
                 adapterItem.overhang = oh;
+                adapterItem.id = adapterId++;
                 appendValue(params.adapters[i], adapterItem);
             }
         }
@@ -1400,21 +1402,47 @@ void printStatistics(const ProgramParams& programParams, const TStats& generalSt
     outStream << "-------\n";
     outStream << "  Surviving: " << survived << "/" << generalStats.readCount
               << " (" << std::setprecision(3) << surv_proc << "%)\n";
+    outStream << std::endl;
     if (adapter)
     {
-            outStream << "   Adapters: " << generalStats.adapterTrimmingStats.a2count << "\n";
-    }
-    outStream << std::endl;
-    if (adapter && (generalStats.adapterTrimmingStats.a1count + generalStats.adapterTrimmingStats.a2count != 0))
-    {
-        int mean = generalStats.adapterTrimmingStats.overlapSum/(generalStats.adapterTrimmingStats.a1count + generalStats.adapterTrimmingStats.a2count);
-        outStream << "Adapter sizes:\n";
-        outStream << "Min: " << generalStats.adapterTrimmingStats.minOverlap << ", Mean: " << mean
+        outStream << "ADAPTERS" << std::endl;
+        outStream << "========" << std::endl;
+        unsigned int i = 0;
+        for (const auto adapterItem : adapterParams.adapters[1])
+        {
+            if (adapterItem.adapterEnd == AdapterItem::end3)
+                outStream << " 3'";
+            else
+                outStream << " 5'";
+            outStream << "-adapter, ";
+            outStream << generalStats.adapterTrimmingStats.numRemoved[adapterItem.id] << "x, " << adapterItem.seq << std::endl;
+            ++i;
+        }
+        outStream << std::endl;
+        outStream << "removed adapters: " << generalStats.adapterTrimmingStats.a2count << "\n";
+        outStream << std::endl;
+        if ((generalStats.adapterTrimmingStats.a1count + generalStats.adapterTrimmingStats.a2count != 0))
+        {
+            int mean = generalStats.adapterTrimmingStats.overlapSum / (generalStats.adapterTrimmingStats.a1count + generalStats.adapterTrimmingStats.a2count);
+            outStream << "Adapter sizes:\n";
+            outStream << "Min: " << generalStats.adapterTrimmingStats.minOverlap << ", Mean: " << mean
                 << ", Max: " << generalStats.adapterTrimmingStats.maxOverlap << "\n\n";
+        }
+        outStream << "Number of removed adapters\nmismatches\t0\t1\t2\t3\t4\t5\t6\t7\t8\nlength" << std::endl;
+        i = 0;
+        for (const auto adaptersSizeX : generalStats.adapterTrimmingStats.removedLength)
+        {
+            outStream << ++i<<"\t";
+            for (const auto adaptersSizeXMismatchesN : adaptersSizeX)
+                outStream << "\t" << adaptersSizeXMismatchesN;
+            outStream << std::endl;
+        }
     }
+
     // Print processing and IO time. IO is (approx.) the whole loop without the processing part.
     if (timing)
     {
+        outStream << std::endl;
         outStream << "Time statistics:\n";
         outStream << "==================\n";
         outStream << "Processing time: " << std::setw(5) << generalStats.processTime << " seconds.\n";
