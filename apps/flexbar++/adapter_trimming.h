@@ -88,19 +88,30 @@ using TAdapterAlphabet = seqan::Dna5Q;
 using TAdapterSequence = seqan::String<TAdapterAlphabet>;
 
 struct AdapterItem;
-typedef std::vector< AdapterItem > TAdapterSet;
+typedef std::vector< AdapterItem > AdapterSet;
 using TReverseComplement = STRING_REVERSE_COMPLEMENT<TAdapterAlphabet>::Type;
 
 struct AdapterItem
 {
-    AdapterItem() : anchored(false) {};
-    AdapterItem(const TAdapterSequence &adapter) : seq(adapter), anchored(false) {};
-    AdapterItem(const TAdapterSequence &adapter, const bool anchored) : seq(adapter), anchored(anchored) {};
+    using TAdapterSequence = seqan::String<TAdapterAlphabet>;
+
+    enum AdapterEnd
+    {
+        end3,
+        end5,
+    };
+    unsigned int leftOverhang;
+    unsigned int rightOverhang;
+
+    AdapterItem() : adapterEnd(end3), leftOverhang(0), rightOverhang(0) {};
+    AdapterItem(const TAdapterSequence &adapter) : seq(adapter), adapterEnd(end3), leftOverhang(0), rightOverhang(0){};
+    AdapterItem(const TAdapterSequence &adapter, const AdapterEnd adapterEnd, const unsigned leftOverhang, const unsigned rightOverhang) 
+        : seq(adapter), adapterEnd(adapterEnd), leftOverhang(leftOverhang), rightOverhang(rightOverhang) {};
 
     AdapterItem getReverseComplement() const noexcept
     {
         auto seqCopy = seq;
-        return AdapterItem(TReverseComplement(seqCopy), anchored);
+        return AdapterItem(TReverseComplement(seqCopy), adapterEnd, leftOverhang, rightOverhang);
     }
 
     TAdapterSequence seq;
@@ -109,7 +120,7 @@ struct AdapterItem
     // In anchored mode, the adapter has to start (3" adapter) or has to end (5" adapter) with the sequence
     // The anchored mode is rarely used, at least for 3" adapters
     // Todo: implement rooted mode
-    bool anchored;
+    AdapterEnd adapterEnd;
 };
 
 // Define scoring function type.
@@ -117,15 +128,15 @@ typedef seqan::Score<int, seqan::ScoreMatrix<seqan::Dna5, seqan::AdapterScoringM
 
 struct AdapterMatchSettings
 {
-    AdapterMatchSettings(const int m, const int e, const double er, const unsigned int lo, const unsigned int times) : min_length(m), errors(e), leftOverhang(lo), errorRate(er), erMode(false), modeAuto(false), times(times)
+    AdapterMatchSettings(const int m, const int e, const double er, const unsigned int oh, const unsigned int times) : min_length(m), errors(e), overhang(oh), errorRate(er), erMode(false), modeAuto(false), times(times)
     {
         erMode = ((e == 0) && (er != 0));
     }
-    AdapterMatchSettings() : min_length(0), errors(0), leftOverhang(0), errorRate(0), erMode(false), modeAuto(true), times(1) {};
+    AdapterMatchSettings() : min_length(0), errors(0), overhang(0), errorRate(0), erMode(false), modeAuto(true), times(1) {};
    
     int min_length; //The minimum length of the overlap.
 	int errors;     //The maximum number of errors we allow.
-    unsigned int leftOverhang;
+    unsigned int overhang;
 	double errorRate;  //The maximum number of errors allowed per overlap
 	bool erMode;
     bool modeAuto;
@@ -173,7 +184,7 @@ unsigned getInsertSize(TAlign& align) noexcept
 
 template <typename TSeq, typename TAdapter, bool TTop, bool TLeft, bool TRight, bool TBottom>
 void alignPair(std::pair<unsigned, seqan::Align<TSeq> >& ret, const TSeq& seq1, const TAdapter& seq2,
-    const seqan::AlignConfig<TTop, TLeft, TRight, TBottom>& config, const unsigned int leftOverhang, const unsigned int min_overlap) noexcept
+    const seqan::AlignConfig<TTop, TLeft, TRight, TBottom>& config, const unsigned int leftOverhang, const unsigned int rightOverhang) noexcept
 {
     seqan::resize(rows(ret.second), 2);
     seqan::assignSource(row(ret.second, 0), seq1);
@@ -183,7 +194,9 @@ void alignPair(std::pair<unsigned, seqan::Align<TSeq> >& ret, const TSeq& seq1, 
     const TScore adapterScore(-100);
 
     // banded alignment
-    ret.first = globalAlignment(ret.second, adapterScore, config, -static_cast<int>(leftOverhang), length(seq1)-min_overlap, seqan::LinearGaps());
+    const int val1 = -static_cast<int>(leftOverhang);
+    const int val2 = length(seq1) - length(seq2) + rightOverhang;
+    ret.first = globalAlignment(ret.second, adapterScore, config, val1, val2, seqan::LinearGaps());
 }
 
 // used only for testing and paired end data
@@ -276,37 +289,50 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
     std::pair<unsigned, TAlign> ret;
 
     unsigned removed{ 0 };
-    std::vector<std::tuple<unsigned int, TRow, unsigned int>> matches;
+    std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> matches;
     matches.reserve(spec.times);
+    TAdapters::value_type::TAdapterSequence adapterSequence;
     for (unsigned int n = 0;n < spec.times; ++n)
     {
         for (auto const& adapterItem : adapters)
         {
             //std::cout << "seq: " << seq << std::endl;
             //std::cout << "adapter: " << adapterItem.seq << std::endl;
-            if (length(adapterItem.seq) == 0)
+            if (length(adapterItem.seq) < spec.min_length)
                 continue;
 
             // always use banded alignment
-            if (TStripAdapterDirection::value == adapterDirection::reverse)
+            adapterSequence = TStripAdapterDirection::value == adapterDirection::reverse ? adapterItem.getReverseComplement().seq : adapterItem.seq;
+
+            unsigned int eraseStart = 0;
+            unsigned int eraseEnd = 0;
+            if (adapterItem.adapterEnd == AdapterItem::end3)
             {
-                alignPair(ret, seq, adapterItem.getReverseComplement().seq, seqan::AlignConfig<true, true, true, true>(), spec.leftOverhang, spec.min_length);    // align crashes if seq is an empty string!
+                alignPair(ret, seq, adapterSequence, seqan::AlignConfig<true, true, true, true>(), 0, length(adapterItem.seq) - spec.min_length);
+                eraseStart = toViewPosition(row(ret.second, 1), 0);
+                eraseEnd = length(seq);
+                std::cout << "adapter start position: " << toViewPosition(row(ret.second, 1), 0) << std::endl;
             }
             else
-                alignPair(ret, seq, adapterItem.seq, seqan::AlignConfig<true, true, true, true>(), spec.leftOverhang, spec.min_length);    // align crashes if seq is an empty string!
+            {
+                alignPair(ret, seq, adapterSequence, seqan::AlignConfig<true, true, true, true>(), length(adapterItem.seq) - spec.min_length, 0);
+                eraseStart = 0;
+                eraseEnd = toViewPosition(row(ret.second, 1), length(adapterItem.seq)) - toViewPosition(row(ret.second, 0), 0);
+                std::cout << "adapter end position: " << toViewPosition(row(ret.second, 1), length(adapterItem.seq)) - toViewPosition(row(ret.second, 0), 0) << std::endl;
+            }
 
             const int score = ret.first;
             if (score < 0)
                 continue;
             const unsigned int overlap = getOverlap(ret.second);
             const int mismatches = (overlap - score) / 2;
-            //std::cout << "score: " << ret.first << " overlap: " << overlap << " mismatches: " << mismatches << std::endl;
-            //std::cout << ret.second << std::endl;
-            //std::cout << "adapter start position: " << toViewPosition(row(ret.second, 1), 0) << std::endl;
+            std::cout << "score: " << ret.first << " overlap: " << overlap << " mismatches: " << mismatches << std::endl;
+            std::cout << ret.second << std::endl;
+
             if (isMatch(overlap, mismatches, spec))
             {
                 const TRow row2 = row(ret.second, 1);
-                matches.push_back(std::make_tuple(score,row2, overlap));
+                matches.push_back(std::make_tuple(score, overlap, eraseStart, eraseEnd));
             }
         }
         if (matches.empty())
@@ -320,12 +346,14 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
 
         // erase best matching adapter from sequence
         const auto seqLen = length(seq);
-        const auto erasePosition = toViewPosition(std::get<1>(*maxIt), 0);
-        const auto overlap = std::get<2>(*maxIt);
-        removed += seqLen - erasePosition;
+        const auto overlap = std::get<1>(*maxIt);
         //std::cout << "unstripped seq: " << seq << std::endl;
-        seqan::erase(seq, erasePosition, seqLen);
+        const auto eraseStart = std::get<2>(*maxIt);
+        const auto eraseEnd = std::get<3>(*maxIt);
+        removed += eraseEnd - eraseStart;
+        seqan::erase(seq, eraseStart, eraseEnd);
         //std::cout << "stripped seq  : " << seq << std::endl;
+
         stats.overlapSum += overlap;
         if (TStripAdapterDirection::value == adapterDirection::forward)
             ++stats.a2count;

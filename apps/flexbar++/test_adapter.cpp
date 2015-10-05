@@ -189,7 +189,8 @@ SEQAN_DEFINE_TEST(match_test)
 SEQAN_DEFINE_TEST(strip_adapter_test)
 {
     typedef seqan::String<seqan::Dna5Q> TAda;
-    TAdapterSet adapterSet;
+    using AdapterSet = std::vector<AdapterItem>;
+    AdapterSet adapterSet;
     using TRead = Read<seqan::Dna5QString>;
     TRead read;
 
@@ -197,19 +198,45 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
     TAda ada = TAda(     "TTTTTTTTTTT");
 
 	int len = length(read.seq);
+    // overlap=4, error_rate = 0.2, times = 1
     AdapterMatchSettings matchSettings(4, 0, 0.2, 0, 1);
     AdapterTrimmingStats stats;
-    int removed = stripAdapter(read.seq, stats, TAdapterSet{AdapterItem(ada)}, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+ 
+    int removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end3, 0,0) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
 	SEQAN_ASSERT_EQ(removed, 5);
 	SEQAN_ASSERT_EQ(len - length(read.seq), 5u);
 
     read.seq = "AAAAAGAAAATATATTA";
-	//               ||| |||||||		   
+    //               ||| |||||||		   
     ada = TAda(     "GAATATATATTT");
-	len = length(read.seq);
-	removed = stripAdapter(read.seq, stats, TAdapterSet{ AdapterItem(ada) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
-	SEQAN_ASSERT_EQ(removed, 12);
-	SEQAN_ASSERT_EQ(len - length(read.seq), 12u);
+    len = length(read.seq);
+    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end3, 0,0) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+    SEQAN_ASSERT_EQ(removed, 12);
+    SEQAN_ASSERT_EQ(len - length(read.seq), 12u);
+
+    read.seq = "AAAAAGAATATATATA";
+    //               ||||||||||		   
+    ada = TAda(     "GAATATATATTT");
+    len = length(read.seq);
+    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end3, 0,0) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+    SEQAN_ASSERT_EQ(removed, 11);
+    SEQAN_ASSERT_EQ(len - length(read.seq), 11u);
+
+    read.seq = "AAAAAGAATATATATA";
+    //               ||||||||||		   
+    ada = TAda(     "GAATATATATTT");
+    len = length(read.seq);
+    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end5, 0,0) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+    SEQAN_ASSERT_EQ(removed, 0);
+    SEQAN_ASSERT_EQ(len - length(read.seq), 0u);
+
+    read.seq =      "AAAAAGAATATATATA";
+    //               ||||||||		   
+    ada = TAda("CCCCAAAAAAGAAC");
+    len = length(read.seq);
+    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end5, 0,0) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+    SEQAN_ASSERT_EQ(removed, 9);
+    SEQAN_ASSERT_EQ(len - length(read.seq), 9u);
 }
 
 SEQAN_DEFINE_TEST(align_adapter_test)
@@ -235,26 +262,26 @@ SEQAN_DEFINE_TEST(align_adapter_test)
     alignPair(pair, seq, ada, seqan::AlignConfig<true, true, true, true>());
 	SEQAN_ASSERT_EQ(pair.first, 6u);
 
-    unsigned int overlap = 4;
+    unsigned int rightOverhang = 4;
     unsigned int leftOverhang = 4;
     seq = TSeq("CATCATAAAAAATATATTA");
     //          ||||||		   
     ada = TAda("CATCAT"); 
-    alignPair(pair, seq, ada, seqan::AlignConfig<true, true, true, true>(), leftOverhang, overlap);
+    alignPair(pair, seq, ada, seqan::AlignConfig<true, true, true, true>(), leftOverhang, rightOverhang);
     SEQAN_ASSERT_EQ(pair.first, 6u);
 
     // just enough overlap
     seq = TSeq(    "CATCATAAAAAATATATTA");
     //              ||||		   
     ada = TAda("GGGGCATC"); 
-    alignPair(pair, seq, ada, seqan::AlignConfig<true, true, true, true>(), leftOverhang, overlap);
+    alignPair(pair, seq, ada, seqan::AlignConfig<true, true, true, true>(), leftOverhang, rightOverhang);
     SEQAN_ASSERT_EQ(pair.first, 4u);
 
     // not enough overlap, should report score 0
     seq = TSeq(     "CATCATAAAAAATATATTA");
     //               |||		   
     ada = TAda("GGGGGCAT");
-    alignPair(pair, seq, ada, seqan::AlignConfig<true, true, true, true>(), leftOverhang, overlap);
+    alignPair(pair, seq, ada, seqan::AlignConfig<true, true, true, true>(), leftOverhang, rightOverhang);
     SEQAN_ASSERT_EQ(pair.first, 0u);
 }
 

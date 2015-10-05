@@ -280,11 +280,11 @@ void ArgumentParserBuilder::addAdapterTrimmingOptions(seqan::ArgumentParser & pa
     setDefaultValue(overlapOpt, 4);
     addOption(parser, overlapOpt);
 
-    seqan::ArgParseOption leftOverhangOpt = seqan::ArgParseOption(
-        "lo", "leftOverhang", "Number of bases at the 5' end of adapter that don't have to match.",
+    seqan::ArgParseOption overhangOpt = seqan::ArgParseOption(
+        "oh", "overhang", "Number of bases that the adapter can stick over at the opposite end",
         seqan::ArgParseOption::INTEGER, "VALUE");
-    setDefaultValue(leftOverhangOpt, 0);
-    addOption(parser, leftOverhangOpt);
+    setDefaultValue(overhangOpt, 0);
+    addOption(parser, overhangOpt);
 
     seqan::ArgParseOption timesOpt = seqan::ArgParseOption(
         "times", "times", "Do at maximum N iterations of adapter filtering. Every iteration the best matching adapter is removed.",
@@ -669,7 +669,7 @@ struct AdapterTrimmingParams
 {
     bool pairedNoAdapterFile;
     bool run;
-    std::array<TAdapterSet, 2> adapters;
+    std::array<AdapterSet, 2> adapters;
     AdapterMatchSettings mode;
     bool tag;
     AdapterTrimmingParams() : pairedNoAdapterFile(false), run(false), tag(false) {};
@@ -1061,7 +1061,7 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
     // Set run flag, depending on essential parameters.
     params.run = isSet(parser,"a") || (isSet(parser, "pa") && fileCount == 2);
     // ADAPTER SEQUENCES ----------------------------
-    seqan::CharString adapterFile, id;
+    std::string adapterFile, id;
     // If adapter sequences are given, we read them in any case.
     if (isSet(parser, "a"))
     {
@@ -1073,12 +1073,21 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
             return 1;
         }
         TAdapterSequence tempAdapter;
+        AdapterItem adapterItem;
         while (!atEnd(adapterInFile))
         {
-            readRecord(id, tempAdapter, adapterInFile);
-            appendValue(params.adapters[0], tempAdapter);
-            readRecord(id, tempAdapter, adapterInFile);
-            appendValue(params.adapters[1], tempAdapter);
+            for (unsigned int i = 0;i < 2;++i)
+            {
+                readRecord(id, adapterItem.seq, adapterInFile);
+                if (id.find("3'") != std::string::npos)
+                    adapterItem.adapterEnd = AdapterItem::end3;
+                else if (id.find("5'") != std::string::npos)
+                    adapterItem.adapterEnd = AdapterItem::end5;
+                else
+                    std::cerr << "End for adapter \""<< id <<"\" not specified.\n";
+
+                appendValue(params.adapters[i], adapterItem);
+            }
         }
     }
     // If they are not given, but we would need them (single-end trimming), output error.
@@ -1097,14 +1106,14 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
 	int o;
 	int e;
 	double er;
-    int lo;
+    int oh;
     unsigned int times;
     getOptionValue(o, parser, "overlap");
 	getOptionValue(e, parser, "e");
 	getOptionValue(er, parser, "er");
-    getOptionValue(lo, parser, "lo");
+    getOptionValue(oh, parser, "oh");
     getOptionValue(times, parser, "times");
-    params.mode = AdapterMatchSettings(o, e, er, lo, times);
+    params.mode = AdapterMatchSettings(o, e, er, oh, times);
 
     return 0;
 }
@@ -2162,11 +2171,11 @@ int flexbarMain(int argc, char const ** argv)
 				std::cout << "\nWarning: errors and error rate can not be specified both at the same time.\n";
 				return 1;
 			}
-            if (isSet(parser, "lo"))
+            if (isSet(parser, "oh"))
             {
-                unsigned lo;
-                getOptionValue(lo, parser, "lo");
-                std::cout << "\tLeft overhang " << lo << "\n";
+                unsigned overhang;
+                getOptionValue(overhang, parser, "oh");
+                std::cout << "\tOverhang " << overhang << "\n";
             }
             unsigned times;
             getOptionValue(times, parser, "times");
