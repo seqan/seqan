@@ -46,31 +46,7 @@ Finally, the function ``main`` function demostrates some of the things you can d
 
 Here is the output of the program:
 
-.. code-block:: console
-
-    $ make tutorial_init_score
-    $ ./demos/tutorial_init_score
-    Coordinate Products
-    	A	C	G	T	N
-    A	0	0	0	0	0
-    C	0	1	2	3	4
-    G	0	2	4	6	8
-    T	0	3	6	9	12
-    N	0	4	8	12	16
-    User defined matrix (also Dna5 scoring matrix)...
-    	A	C	G	T	N
-    A	1	0	0	0	0
-    C	0	1	0	0	0
-    G	0	0	1	0	0
-    T	0	0	0	1	0
-    N	0	0	0	0	0
-    User DNA scoring scheme...
-    	A	C	G	T	N
-    A	1	0	0	0	0
-    C	0	1	0	0	0
-    G	0	0	1	0	0
-    T	0	0	0	1	0
-    N	0	0	0	0	0
+.. includefrags:: demos/howto/scores/init_score.cpp.stdout
 
 Loading Score Matrices From File
 ------------------------------------
@@ -95,13 +71,4 @@ Finally, the main program loads the scoring matrix from the file given on the co
 
 Here's the program output.
 
-.. code-block:: console
-
-   $ make tutorial_load_score
-   $ ./demos/tutorial_load_score ../../demos/howto/scores/dna_example.txt
-       A   C   G   T
-   A   1   -1  -1  -1
-   C   -1  1   -1  -1
-   G   -1  -1  1   -1
-   T   -1  -1  -1  1
-
+.. includefrags:: demos/howto/scores/load_score.cpp.stdout
