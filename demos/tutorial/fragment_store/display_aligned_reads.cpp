@@ -7,10 +7,16 @@ using namespace seqan;
 
 int main()
 {
-    FragmentStore<> store;
-    loadContigs(store, "ex1.fa");
-    BamFileIn file("ex1.sam");
+    CharString fastaFileName = getAbsolutePath("/demos/tutorial/fragment_store/example.fa");
+    CharString samFileName = getAbsolutePath("/demos/tutorial/fragment_store/example.sam");
+
+    typedef FragmentStore<> TStore;
+
+    TStore store;
+    loadContigs(store, toCString(fastaFileName));
+    BamFileIn file(toCString(samFileName));
     readRecords(store, file);
+
 //![includes]
 
 //![ascii]

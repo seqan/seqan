@@ -7,11 +7,14 @@ using namespace seqan;
 
 int main()
 {
+    CharString fastaFileName = getAbsolutePath("/demos/tutorial/fragment_store/example.fa");
+    CharString samFileName = getAbsolutePath("/demos/tutorial/fragment_store/example.sam");
+
     typedef FragmentStore<> TStore;
 
     TStore store;
-    loadContigs(store, "ex1.fa");
-    BamFileIn file("ex1.sam");
+    loadContigs(store, toCString(fastaFileName));
+    BamFileIn file(toCString(samFileName));
     readRecords(store, file);
 
     SEQAN_ASSERT_GEQ(length(store.alignedReadStore), 5u);
