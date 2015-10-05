@@ -49,29 +49,6 @@ template <typename THaystack, typename TNeedle, typename TSpec>
 struct Verifier
 {
     typedef typename Infix<THaystack const>::Type   THaystackInfix;
-    typedef Finder<THaystackInfix>                  TFinder;
-    typedef Pattern<TNeedle const, TSpec>           TPattern;
-
-    THaystack const &   haystack;
-    TFinder             finder;
-    TPattern            pattern;
-
-    Verifier(THaystack const & haystack) :
-        haystack(haystack)
-    {
-        _patternMatchNOfPattern(pattern, false);
-        _patternMatchNOfFinder(pattern, false);
-    }
-};
-
-// ----------------------------------------------------------------------------
-// Class Verifier
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename TNeedle>
-struct Verifier<THaystack, TNeedle, AffineGaps>
-{
-    typedef typename Infix<THaystack const>::Type   THaystackInfix;
     typedef String<GapAnchor<int> >                 TGapAnchors;
     typedef AnchorGaps<TGapAnchors>                 TAnchorGaps;
     typedef typename Size<THaystackInfix>::Type     TSize;
@@ -97,35 +74,7 @@ struct Verifier<THaystack, TNeedle, AffineGaps>
 };
 
 // ----------------------------------------------------------------------------
-// Function verify()
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename TNeedle, typename TSpec,
-          typename THaystackPos, typename TErrors, typename TDelegate>
-inline void
-verify(Verifier<THaystack, TNeedle, TSpec> & me,
-       TNeedle const & needle,
-       THaystackPos haystackBegin,
-       THaystackPos haystackEnd,
-       TErrors maxErrors,
-       TDelegate & delegate)
-{
-    typedef Verifier<THaystack, TNeedle, TSpec>         TVerifier;
-    typedef typename TVerifier::THaystackInfix          THaystackInfix;
-
-    THaystackInfix haystackInfix = infix(me.haystack, haystackBegin, haystackEnd);
-
-    clear(me.finder);
-    setHost(me.finder, haystackInfix);
-    setHost(me.pattern, needle);
-
-    // TODO(esiragusa): Enumerate all minima.
-    if (find(me.finder, me.pattern, -static_cast<int>(maxErrors)))
-        delegate(haystackBegin, haystackEnd, maxErrors);
-}
-
-// ----------------------------------------------------------------------------
-// Function verify()
+// Function verify<AffineGaps>()
 // ----------------------------------------------------------------------------
 
 template <typename THaystack, typename TNeedle,
@@ -168,6 +117,7 @@ verify(Verifier<THaystack, TNeedle, AffineGaps> & me,
                                        TAlignConfig2()) / -999;
     _adaptTraceSegmentsTo(contigGaps, readGaps, me.traceSegments);
 
+    // PUBLIC INTERFACE
 //    int errors = globalAlignment(contigGaps, readGaps,
 //                                 Score<int>(0, -1000, -999, -1001),           // Match, mismatch, extend, open.
 //                                 AlignConfig<true, false, false, true>(),     // Top, left, right, bottom.
@@ -179,14 +129,27 @@ verify(Verifier<THaystack, TNeedle, AffineGaps> & me,
     TCount gapExtensions = countGapExtensions(contigGaps) + countGapExtensions(readGaps);
     TCount events = errors + gapOpens - gapExtensions;
 
-    if (events <= maxErrors)
-    {
-        // DEBUG
+    // DEBUG
+//    {
 //        std::cerr << std::endl;
 //        std::cerr << events << " = " << errors << " + " << gapOpens << " - " << gapExtensions << std::endl;
 //        std::cerr << std::endl;
-//        _writeAlignment(haystackInfix, needle, Score<int>(0, -1000, -999, -1001));
+//        typedef String<Dna5> TSequence;
+//        typedef Align<TSequence, ArrayGaps> TAlign;
+//        TAlign align;
+//        resize(rows(align), 2);
+//        assignSource(row(align, 0), haystackInfix);
+//        assignSource(row(align, 1), needle);
+//        globalAlignment(align,
+//                         Score<int>(0, -1000, -999, -1001),           // Match, mismatch, extend, open.
+//                         AlignConfig<true, false, false, true>(),     // Top, left, right, bottom.
+//                         Gotoh());
+//        clipSemiGlobal(row(align, 0), row(align, 1));
+//        std::cerr << align << std::endl;
+//    }
 
+    if (events <= maxErrors && ((float)gapExtensions / length(needle)) < 0.25)
+    {
         THaystackPos matchBegin = posAdd(haystackBegin, clippedBeginPosition(readGaps));
         THaystackPos matchEnd = posAdd(matchBegin, length(readGaps));
         delegate(matchBegin, matchEnd, errors);
