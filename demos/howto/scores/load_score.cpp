@@ -55,17 +55,10 @@ void showScoringMatrix(Score<TScoreValue, ScoreMatrix<TSequenceValue, TSpec> > c
 //![main]
 int main(int argc, char ** argv)
 {
-    if (argc != 2)
-    {
-        std::cout << "Invalid argument count!" << std::endl
-                  << "USAGE: load_score FILENAME" << std::endl;
-        return 1;
-    }
-
     typedef int TScoreValue;
 
     Score<TScoreValue, ScoreMatrix<Dna5, Default> > scoreMatrix;
-    loadScoreMatrix(scoreMatrix, argv[1]);
+    loadScoreMatrix(scoreMatrix, toCString(getAbsolutePath("/demos/howto/scores/dna_example.txt")));
     showScoringMatrix(scoreMatrix);
 
     return 0;

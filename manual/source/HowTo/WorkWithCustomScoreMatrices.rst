@@ -64,7 +64,7 @@ We define a function that can show a scoring matrix.
 .. includefrags:: demos/howto/scores/load_score.cpp
    :fragment: show-scoring-matrix
 
-Finally, the main program loads the scoring matrix from the file given on the command line and then shows it.
+Finally, the main program loads the scoring matrix and then shows it.
 
 .. includefrags:: demos/howto/scores/load_score.cpp
    :fragment: main
