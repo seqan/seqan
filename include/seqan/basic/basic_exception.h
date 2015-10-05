@@ -352,11 +352,6 @@ struct AssertFunctor
 
 #if defined(SEQAN_EXCEPTIONS) && defined(SEQAN_GLOBAL_EXCEPTION_HANDLER)
 // Declare global exception handler.
-static void globalExceptionHandler();
-
-// Install global exception handler.
-static const std::terminate_handler _globalExceptionHandler = std::set_terminate(globalExceptionHandler);
-
 inline static void globalExceptionHandler()
 {
     SEQAN_TRY
@@ -372,6 +367,10 @@ inline static void globalExceptionHandler()
         SEQAN_FAIL("Uncaught exception of unknown type.\n");
     }
 }
+
+// Install global exception handler.
+static const std::terminate_handler SEQAN_UNUSED _globalExceptionHandler = std::set_terminate(globalExceptionHandler);
+
 #endif  // #if defined(SEQAN_EXCEPTIONS) && defined(SEQAN_GLOBAL_EXCEPTION_HANDLER)
 
 }  // namespace seqan
