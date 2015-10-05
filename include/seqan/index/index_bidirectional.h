@@ -104,13 +104,13 @@ struct RevTextFibre<StringSet<TText, TTextConfig> >
 template <typename TText, typename TIndexSpec>
 class Index<TText, BidirectionalIndex<TIndexSpec> >
 {
-    typedef typename RevTextFibre<TText>::Type	TRevText;
+    typedef typename RevTextFibre<TText>::Type  TRevText;
     typedef Index<TRevText, TIndexSpec>         TRevIndex;
     typedef Index<TText, TIndexSpec>            TFwdIndex;
 
     public:
 
-    TRevText	revText;
+    TRevText    revText;
     TRevIndex   rev;
     TFwdIndex   fwd;
 
@@ -158,11 +158,11 @@ inline bool open(Index<TText, BidirectionalIndex<TIndexSpec> > & index, const ch
     String<char> name;
 
     name = fileName;    append(name, ".fwd");
-    bool fwdIndex = open(index.fwd, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE);
-    if (fwdIndex)
+    if (open(index.fwd, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE))
     {
+        getFibre(index.rev, FibreText()) = getFibre(index.fwd, FibreText());
         name = fileName;    append(name, ".rev");
-        return open(index.rev, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE, false);
+        return open(index.rev, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE);
     }
     return false;
 }
@@ -174,11 +174,10 @@ inline bool save(Index<TText, BidirectionalIndex<TIndexSpec> > const & index, co
     String<char> name;
 
     name = fileName;    append(name, ".fwd");
-    bool fwdIndex = save(index.fwd, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE);
-    if (fwdIndex)
+    if (save(index.fwd, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE))
     {
         name = fileName;    append(name, ".rev");
-        return save(index.rev, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE, false);
+        return save(index.rev, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE);
     }
     return false;
 }

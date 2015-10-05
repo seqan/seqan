@@ -94,8 +94,8 @@ void generateText(CharString & text, unsigned textLength = 100000)
 // Function generateText(StringSet)
 // --------------------------------------------------------------------------
 
-template <typename TText>
-void generateText(StringSet<TText> & text, unsigned numSeq = 1000, unsigned seqLength = 2000)
+template <typename TText, typename TConfig>
+void generateText(StringSet<TText, TConfig> & text, unsigned numSeq = 1000, unsigned seqLength = 2000)
 {
     typedef typename Value<TText>::Type TChar;
 

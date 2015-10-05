@@ -432,27 +432,6 @@ _getPrefixSum(LF<TText, TSpec, TConfig> const & lf, TValue val)
 // Function _getBwtRank(pos, val)
 // ----------------------------------------------------------------------------
 
-/*template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TValue>
-SEQAN_HOST_DEVICE inline
-typename Size<LF<TText, TSpec, TConfig> >::Type
-_getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val)
-{
-    typedef LF<TText, TSpec, TConfig> const                TLF;
-    typedef typename Size<TLF>::Type                       TSize;
-
-    TSize rank = _getPrefixSum(lf, val);
-
-    if (pos > 0)
-    {
-        rank += getRank(lf.bwt, pos - 1, val);
-
-        if (ordEqual(lf.sentinelSubstitute, val))
-            rank -= _getSentinelsRank(lf, pos - 1);
-    }
-
-    return rank;
-}*/
-
 template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TValue>
 SEQAN_HOST_DEVICE inline Pair<typename Size<LF<TText, TSpec, TConfig> >::Type>
 _getCumulativeBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val)

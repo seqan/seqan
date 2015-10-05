@@ -438,19 +438,10 @@ SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig>
 template <typename TText, typename TSpec, typename TConfig>
 inline bool open(Index<TText, FMIndex<TSpec, TConfig> > & index, const char * fileName, int openMode)
 {
-    return open(index, fileName, openMode, true);
-}
-
-template <typename TText, typename TSpec, typename TConfig>
-inline bool open(Index<TText, FMIndex<TSpec, TConfig> > & index, const char * fileName, int openMode, bool openText)
-{
     String<char> name;
 
-    if (openText)
-    {
-		name = fileName;    append(name, ".txt");
-		if (!open(getFibre(index, FibreText()), toCString(name), openMode)) return false;
-    }
+    name = fileName;    append(name, ".txt");
+    if (!open(getFibre(index, FibreText()), toCString(name), openMode)) return false;
 
     name = fileName;    append(name, ".sa");
     if (!open(getFibre(index, FibreSA()), toCString(name), openMode)) return false;
@@ -477,19 +468,10 @@ inline bool open(Index<TText, FMIndex<TSpec, TConfig> > & index, const char * fi
 template <typename TText, typename TSpec, typename TConfig>
 inline bool save(Index<TText, FMIndex<TSpec, TConfig> > const & index, const char * fileName, int openMode)
 {
-    return save(index, fileName, openMode, true);
-}
-
-template <typename TText, typename TSpec, typename TConfig>
-inline bool save(Index<TText, FMIndex<TSpec, TConfig> > const & index, const char * fileName, int openMode, bool storeText)
-{
     String<char> name;
 
-    if (storeText)
-    {
-		name = fileName;    append(name, ".txt");
-		if (!save(getFibre(index, FibreText()), toCString(name), openMode)) return false;
-    }
+    name = fileName;    append(name, ".txt");
+    if (!save(getFibre(index, FibreText()), toCString(name), openMode)) return false;
 
     name = fileName;    append(name, ".sa");
     if (!save(getFibre(index, FibreSA()), toCString(name), openMode)) return false;

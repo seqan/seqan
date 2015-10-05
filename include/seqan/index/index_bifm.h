@@ -63,21 +63,16 @@ inline bool indexCreate(Index<TText, BidirectionalIndex<TIndexSpec> > & index, T
 // Function indexSupplied()
 // ----------------------------------------------------------------------------
 
-// TODO:cpockrandt
 template <typename TText, typename TIndexSpec>
 SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, BidirectionalIndex<TIndexSpec> > & index, FibreSALF const)
 {
-    return !(empty(getFibre(index.fwd, FibreSA())) || empty(getFibre(index.fwd, FibreLF()))
-            ||
-            empty(getFibre(index.rev, FibreSA())) || empty(getFibre(index.rev, FibreLF())));
+    return indexSupplied(index.fwd, FibreSALF()) && indexSupplied(index.rev, FibreSALF());
 }
 
 template <typename TText, typename TIndexSpec>
 SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, BidirectionalIndex<TIndexSpec> > const & index, FibreSALF const)
 {
-    return !(empty(getFibre(index.fwd, FibreSA())) || empty(getFibre(index.fwd, FibreLF()))
-            ||
-            empty(getFibre(index.rev, FibreSA())) || empty(getFibre(index.rev, FibreLF())));
+    return indexSupplied(index.fwd, FibreSALF()) && indexSupplied(index.rev, FibreSALF());
 }
 
 }

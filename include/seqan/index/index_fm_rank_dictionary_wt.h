@@ -277,18 +277,18 @@ template <typename TValue, typename TSpec, typename TConfig, typename TPos, type
 inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type
 getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character)
 {
-	return getCumulativeRank(dict, pos, character).i1;
+    return getCumulativeRank(dict, pos, character).i1;
 }
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
 inline Pair<typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type>
 getCumulativeRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character)
 {
-	typedef typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type						TSize;
+    typedef typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type                      TSize;
     typedef typename Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreTreeStructure>::Type  TWaveletTreeStructure;
-    typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type         				TWaveletTreeStructureString;
-    typedef typename Value<TWaveletTreeStructureString>::Type                               				TWaveletTreeStructureEntry;
-    typedef typename Value<TWaveletTreeStructureEntry, 1>::Type                             				TChar_;
+    typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type                         TWaveletTreeStructureString;
+    typedef typename Value<TWaveletTreeStructureString>::Type                                               TWaveletTreeStructureEntry;
+    typedef typename Value<TWaveletTreeStructureEntry, 1>::Type                                             TChar_;
 
     TPos sum = pos;
     TPos treePos = 0;

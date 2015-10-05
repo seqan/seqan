@@ -40,9 +40,9 @@
 namespace seqan {
 
 struct BidirectionalFwd_;
-struct BidirectionalBwd_;
+struct BidirectionalRev_;
 typedef Tag<BidirectionalFwd_> const         Fwd;
-typedef Tag<BidirectionalBwd_> const         Bwd;
+typedef Tag<BidirectionalRev_> const         Rev;
 
 // ============================================================================
 // Functions
@@ -51,7 +51,7 @@ typedef Tag<BidirectionalBwd_> const         Bwd;
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TDirection>
 inline void update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > & it, TDirection)
 {
-    typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, Bwd, Fwd>::type TOppositeDirection;
+    typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, Rev, Fwd>::type TOppositeDirection;
 
     typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, TText, typename RevTextFibre<TText>::Type>::type TDirText;
     typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, typename RevTextFibre<TText>::Type, TText>::type TOppDirText;
@@ -59,13 +59,13 @@ inline void update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndex
     typedef Iter<Index<TDirText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > TDirIter;
     typedef Iter<Index<TOppDirText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > TOppDirIter;
 
-    _historyPush(getIter(it, TOppositeDirection()));
+    _historyPush(_iter(it, TOppositeDirection()));
 
-    TDirIter & dirIter = getIter(it, TDirection());
-    TOppDirIter & oppDirIter = getIter(it, TOppositeDirection());
+    TDirIter & dirIter = _iter(it, TDirection());
+    TOppDirIter & oppDirIter = _iter(it, TOppositeDirection());
 
-	value(oppDirIter).range.i1 += value(dirIter).smaller;
-	value(oppDirIter).range.i2 = value(oppDirIter).range.i1 + value(dirIter).range.i2 - value(dirIter).range.i1;
+    value(oppDirIter).range.i1 += value(dirIter).smaller;
+    value(oppDirIter).range.i2 = value(oppDirIter).range.i1 + value(dirIter).range.i2 - value(dirIter).range.i1;
 
     value(oppDirIter).repLen = value(dirIter).repLen; // do not increment in case of goRight
 }
@@ -79,17 +79,17 @@ _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec>
               TDirection)
 {
     typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
-    typedef Iter<TIndex, VSTree<TopDown<TSpec> > >                TIter;
-    typedef typename Size<TIndex>::Type                           TSize2;
-    typedef Pair<TSize2>                                           TRange;
+    typedef Iter<TIndex, VSTree<TopDown<TSpec> > >              TIter;
+    typedef typename Size<TIndex>::Type                         TSize2;
+    typedef Pair<TSize2>                                        TRange;
     typedef typename Iterator<TString const, Standard>::Type    TStringIter;
 
-    typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, Bwd, Fwd>::type TOppositeDirection;
+    typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, Rev, Fwd>::type TOppositeDirection;
 
     TStringIter stringIt = begin(string, Standard());
     TStringIter stringEnd = end(string, Standard());
 
-    _historyPush(getIter(it, TDirection()));
+    _historyPush(_iter(it, TDirection()));
 
     for (lcp = 0; stringIt != stringEnd; ++stringIt, ++lcp)
     {
@@ -101,17 +101,17 @@ _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec>
 #ifdef __CUDA_ARCH__
         if (!_getNodeByChar(getIter(it, TDirection()), value(getIter(it, TDirection())), _range, _smaller, value(stringIt))) break;
 #else
-        if (isLeaf(getIter(it, TDirection())) || !_getNodeByChar(getIter(it, TDirection()), value(getIter(it, TDirection())), _range, _smaller, value(stringIt))) break;
+        if (isLeaf(_iter(it, TDirection())) || !_getNodeByChar(_iter(it, TDirection()), value(_iter(it, TDirection())), _range, _smaller, value(stringIt))) break;
 #endif
 
-        value(getIter(it, TDirection())).range = _range;
-        value(getIter(it, TDirection())).smaller = _smaller;
+        value(_iter(it, TDirection())).range = _range;
+        value(_iter(it, TDirection())).smaller = _smaller;
         update(it, TDirection());
     }
 
-    value(getIter(it, TDirection())).repLen += lcp;
+    value(_iter(it, TDirection())).repLen += lcp;
 
-    if (lcp) value(getIter(it, TDirection())).lastChar = value(stringIt - 1);
+    if (lcp) value(_iter(it, TDirection())).lastChar = value(stringIt - 1);
 
     return stringIt == stringEnd;
 }

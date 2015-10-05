@@ -42,9 +42,9 @@ namespace seqan {
 struct BidirectionalDirection {};
 
 struct BidirectionalFwd_ : BidirectionalDirection {};
-struct BidirectionalBwd_ : BidirectionalDirection {};
+struct BidirectionalRev_ : BidirectionalDirection {};
 typedef Tag<BidirectionalFwd_> const         Fwd;
-typedef Tag<BidirectionalBwd_> const         Bwd;
+typedef Tag<BidirectionalRev_> const         Rev;
 
 // ==========================================================================
 // Classes
@@ -131,32 +131,28 @@ public:
 // ============================================================================
 
 template <typename TText, typename TIndexSpec, typename TSpec>
-inline Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & getIter(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > & it, Fwd)
+inline Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & _iter(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > & it, Fwd)
 {
     return it.fwdIter;
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec>
-inline Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > const & getIter(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it, Fwd)
+inline Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > const & _iter(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it, Fwd)
 {
     return it.fwdIter;
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec>
-inline Iter<Index<typename RevTextFibre<TText>::Type, TIndexSpec>, VSTree<TopDown<TSpec> > > & getIter(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > & it, Bwd)
+inline Iter<Index<typename RevTextFibre<TText>::Type, TIndexSpec>, VSTree<TopDown<TSpec> > > & _iter(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > & it, Rev)
 {
     return it.revIter;
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec>
-inline Iter<Index<typename RevTextFibre<TText>::Type, TIndexSpec>, VSTree<TopDown<TSpec> > > const & getIter(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it, Bwd)
+inline Iter<Index<typename RevTextFibre<TText>::Type, TIndexSpec>, VSTree<TopDown<TSpec> > > const & _iter(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it, Rev)
 {
     return it.revIter;
 }
-
-// override for every index
-template <typename TText, typename TIndexSpec, typename TSpec, typename TDirection>
-void update(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > >, TDirection);
 
 // ----------------------------------------------------------------------------
 // Function goDown()                                                 [Iterator]
@@ -171,7 +167,7 @@ SEQAN_HOST_DEVICE inline bool goDown(Iter<Index<TText, BidirectionalIndex<TIndex
 template <typename TText, typename TIndexSpec, typename TSpec, typename TDirection>
 SEQAN_HOST_DEVICE inline bool goDown(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > &it, Tag<TDirection>)
 {
-    if (goDown(getIter(it, Tag<TDirection>())))
+    if (goDown(_iter(it, Tag<TDirection>())))
     {
         update(it, Tag<TDirection>());
         return true;
@@ -189,7 +185,7 @@ _goDownObject(
     False,
     TDirection)
 {
-    if (_goDownChar(getIter(it, TDirection()), obj))
+    if (_goDownChar(_iter(it, TDirection()), obj))
     {
         update(it, TDirection());
         return true;
@@ -269,13 +265,13 @@ repLength(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSp
 template <typename TText, typename TIndexSpec, typename TSpec>
 SEQAN_HOST_DEVICE inline bool goRight(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > &it)
 {
-	return goRight(it, Fwd());
+    return goRight(it, Fwd());
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec, typename TDirection>
 SEQAN_HOST_DEVICE inline bool goRight(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > &it, Tag<TDirection>)
 {
-    if (goRight(getIter(it, Tag<TDirection>())))
+    if (goRight(_iter(it, Tag<TDirection>())))
     {
         update(it, Tag<TDirection>());
         return true;
@@ -298,7 +294,7 @@ template <typename TText, typename TIndexSpec, typename TSpec, typename TDirecti
 SEQAN_HOST_DEVICE inline typename EdgeLabel<Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > >::Type
 parentEdgeLabel(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it, Tag<TDirection>)
 {
-    return parentEdgeLabel(getIter(it, Tag<TDirection>()));
+    return parentEdgeLabel(_iter(it, Tag<TDirection>()));
 }
 
 // ----------------------------------------------------------------------------
@@ -312,11 +308,18 @@ getOccurrences(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDow
     return getOccurrences(it, Fwd());
 }
 
-template <typename TText, typename TIndexSpec, typename TSpec, typename TDirection>
+template <typename TText, typename TIndexSpec, typename TSpec>
 SEQAN_HOST_DEVICE inline typename Infix< typename Fibre<Index<TText, TIndexSpec>, FibreSA>::Type const >::Type
-getOccurrences(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it, Tag<TDirection>)
+getOccurrences(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it, Fwd)
 {
-    return getOccurrences(getIter(it, Tag<TDirection>()));
+    return getOccurrences(_iter(it, Fwd()));
+}
+
+template <typename TText, typename TIndexSpec, typename TSpec>
+SEQAN_HOST_DEVICE inline typename Infix< typename Fibre<Index<typename RevTextFibre<TText>::Type, TIndexSpec>, FibreSA>::Type const >::Type
+getOccurrences(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it, Rev)
+{
+    return getOccurrences(_iter(it, Rev()));
 }
 
 // ----------------------------------------------------------------------------
@@ -332,7 +335,7 @@ SEQAN_HOST_DEVICE inline bool isLeaf(Iter<Index<TText, BidirectionalIndex<TIndex
 template <typename TText, typename TIndexSpec, typename TSpec, typename TDirection>
 SEQAN_HOST_DEVICE inline bool isLeaf(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it, Tag<TDirection>)
 {
-    return isLeaf(getIter(it, Tag<TDirection>()));
+    return isLeaf(_iter(it, Tag<TDirection>()));
 }
 
 // ----------------------------------------------------------------------------
