@@ -85,6 +85,7 @@ verify(Verifier<THaystack, TNeedle, AffineGaps> & me,
        THaystackPos haystackBegin,
        THaystackPos haystackEnd,
        TErrors maxErrors,
+       TErrors maxIndels,
        TDelegate & delegate)
 {
     typedef Verifier<THaystack, TNeedle, AffineGaps>    TVerifier;
@@ -127,28 +128,10 @@ verify(Verifier<THaystack, TNeedle, AffineGaps> & me,
 
     TCount gapOpens = countGapOpens(contigGaps) + countGapOpens(readGaps);
     TCount gapExtensions = countGapExtensions(contigGaps) + countGapExtensions(readGaps);
+    TCount gaps = gapOpens + gapExtensions;
     TCount events = errors + gapOpens - gapExtensions;
 
-    // DEBUG
-//    {
-//        std::cerr << std::endl;
-//        std::cerr << events << " = " << errors << " + " << gapOpens << " - " << gapExtensions << std::endl;
-//        std::cerr << std::endl;
-//        typedef String<Dna5> TSequence;
-//        typedef Align<TSequence, ArrayGaps> TAlign;
-//        TAlign align;
-//        resize(rows(align), 2);
-//        assignSource(row(align, 0), haystackInfix);
-//        assignSource(row(align, 1), needle);
-//        globalAlignment(align,
-//                         Score<int>(0, -1000, -999, -1001),           // Match, mismatch, extend, open.
-//                         AlignConfig<true, false, false, true>(),     // Top, left, right, bottom.
-//                         Gotoh());
-//        clipSemiGlobal(row(align, 0), row(align, 1));
-//        std::cerr << align << std::endl;
-//    }
-
-    if (events <= maxErrors && ((float)gapExtensions / length(needle)) < 0.25)
+    if (events <= maxErrors && gaps <= maxIndels)
     {
         THaystackPos matchBegin = posAdd(haystackBegin, clippedBeginPosition(readGaps));
         THaystackPos matchEnd = posAdd(matchBegin, length(readGaps));

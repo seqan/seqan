@@ -66,6 +66,7 @@ struct Options
 
     MappingMode         mappingMode;
     float               errorRate;
+    float               indelRate;
     float               strataRate;
     bool                quick;
 
@@ -93,6 +94,7 @@ struct Options
         readGroup("none"),
         mappingMode(STRATA),
         errorRate(0.05f),
+        indelRate(0.25f),
         strataRate(0.00f),
         quick(false),
         singleEnd(true),

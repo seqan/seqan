@@ -188,8 +188,9 @@ inline void _findMateImpl(AnchorsVerifier<TSpec, Traits> & me, TMatch const & an
 
     // Get absolute number of errors.
     TErrors maxErrors = getReadErrors<TMatch>(me.options, length(mateSeq));
+    TErrors maxIndels = getReadIndels<TMatch>(me.options, length(mateSeq));
 
-    verify(me.verifier, mateSeq, contigBegin, contigEnd, maxErrors, me);
+    verify(me.verifier, mateSeq, contigBegin, contigEnd, maxErrors, maxIndels, me);
 }
 
 // ----------------------------------------------------------------------------

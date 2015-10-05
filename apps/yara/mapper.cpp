@@ -186,6 +186,12 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
                                             Default: autodetected.", ArgParseOption::INTEGER));
     setMinValue(parser, "library-deviation", "0");
 
+    addOption(parser, ArgParseOption("i", "indel-rate", "Ignore rescued alignments above this percentual number of indels.",
+                                     ArgParseOption::INTEGER));
+    setMinValue(parser, "indel-rate", "0");
+    setMaxValue(parser, "indel-rate", "50");
+    setDefaultValue(parser, "indel-rate", 100.0 * options.indelRate);
+
 //    addOption(parser, ArgParseOption("lo", "library-orientation", "Expected orientation of the segments in the library.",
 //                                     ArgParseOption::STRING));
 //    setValidValues(parser, "library-orientation", options.libraryOrientationList);
