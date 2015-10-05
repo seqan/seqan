@@ -904,15 +904,16 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
         std::cerr << "Sorting time:\t\t\t" << me.timer << std::endl;
 
     // Update mapped reads.
-    unsigned long mappedReads = 0;
+    transform(me.ctx.mapped, me.primaryMatches, isValid<typename TTraits::TMatchSpec>, typename TTraits::TThreading());
+
     if (me.options.verbose > 0)
     {
-        transform(me.ctx.mapped, me.primaryMatches, isValid<typename TTraits::TMatchSpec>, typename TTraits::TThreading());
-        mappedReads = count(me.ctx.mapped, true, typename TTraits::TThreading());
+        unsigned long mappedReads = count(me.ctx.mapped, true, typename TTraits::TThreading());
         me.stats.mappedReads += mappedReads;
+
+        if (me.options.verbose > 1)
+            std::cerr << "Mapped reads:\t\t\t" << mappedReads << std::endl;
     }
-    if (me.options.verbose > 1)
-        std::cerr << "Mapped reads:\t\t\t" << mappedReads << std::endl;
 
     if (IsSameType<typename TConfig::TSequencing, SingleEnd>::VALUE) return;
 
@@ -1036,16 +1037,16 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     me.stats.selectPairs += getValue(me.timer);
 
     // Update paired reads.
-    unsigned long pairedReads = 0;
     if (me.options.verbose > 0)
     {
-        pairedReads = count(me.ctx.paired, true, typename TTraits::TThreading());
+        unsigned long pairedReads = count(me.ctx.paired, true, typename TTraits::TThreading());
         me.stats.pairedReads += pairedReads;
-    }
-    if (me.options.verbose > 1)
-    {
-        std::cerr << "Pairing time:\t\t\t" << me.timer << std::endl;
-        std::cerr << "Paired reads:\t\t\t" << pairedReads << std::endl;
+
+        if (me.options.verbose > 1)
+        {
+            std::cerr << "Pairing time:\t\t\t" << me.timer << std::endl;
+            std::cerr << "Paired reads:\t\t\t" << pairedReads << std::endl;
+        }
     }
 }
 
