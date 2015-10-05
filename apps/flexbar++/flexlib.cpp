@@ -266,20 +266,31 @@ void ArgumentParserBuilder::addAdapterTrimmingOptions(seqan::ArgumentParser & pa
     seqan::ArgParseOption errorOpt = seqan::ArgParseOption(
         "e", "errors", "Allowed errors in adapter detection.",
         seqan::ArgParseOption::INTEGER, "VALUE");
-    setDefaultValue(errorOpt, 0);
     addOption(parser, errorOpt);
 
 	seqan::ArgParseOption rateOpt = seqan::ArgParseOption(
 		"er", "error rate", "Allowed errors per overlap in adapter detection.",
 		seqan::ArgParseOption::DOUBLE, "VALUE");
-	setDefaultValue(rateOpt, 0);
+	setDefaultValue(rateOpt, 0.2);
 	addOption(parser, rateOpt);
 
     seqan::ArgParseOption overlapOpt = seqan::ArgParseOption(
         "ol", "overlap", "Minimum length of overlap for a significant adapter match.",
         seqan::ArgParseOption::INTEGER, "VALUE");
-    setDefaultValue(overlapOpt, 0);
+    setDefaultValue(overlapOpt, 4);
     addOption(parser, overlapOpt);
+
+    seqan::ArgParseOption leftOverhangOpt = seqan::ArgParseOption(
+        "lo", "leftOverhang", "Number of bases at the 5' end of adapter that don't have to match.",
+        seqan::ArgParseOption::INTEGER, "VALUE");
+    setDefaultValue(leftOverhangOpt, 0);
+    addOption(parser, leftOverhangOpt);
+
+    seqan::ArgParseOption timesOpt = seqan::ArgParseOption(
+        "times", "times", "Do at maximum N iterations of adapter filtering. Every iteration the best matching adapter is removed.",
+        seqan::ArgParseOption::INTEGER, "VALUE");
+    setDefaultValue(timesOpt, 1);
+    addOption(parser, timesOpt);
 
     if (flexiProgram != ALL_STEPS)
     {
@@ -654,21 +665,14 @@ enum class TrimmingMode
     E_TAIL
 };
 
-enum class MatchMode
-{
-    E_AUTO,
-    E_USER
-};
-
 struct AdapterTrimmingParams
 {
     bool pairedNoAdapterFile;
     bool run;
     std::array<TAdapterSet, 2> adapters;
     AdapterMatchSettings mode;
-    MatchMode mmode;
     bool tag;
-    AdapterTrimmingParams() : pairedNoAdapterFile(false), run(false), mmode(MatchMode::E_AUTO), tag(false) {};
+    AdapterTrimmingParams() : pairedNoAdapterFile(false), run(false), tag(false) {};
 };
 
 struct QualityTrimmingParams
@@ -1088,36 +1092,20 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
         std::cerr << "You can not specify adapters for paired adapter removal.\n";
         return 1;
     }
-    // TRIMMING MODE ----------------------------
-    // User must fully specify mode, if he wants to. (But not specifying both is ok too.)
-    if ((seqan::isSet(parser, "er") || seqan::isSet(parser, "e")) != seqan::isSet(parser, "overlap"))
-    {
-        std::cerr << "User must define both error (-e) or error rate (-er) and minimum overlap (-o).\n";
-        return 1;
-    }
-    // Read both options (if one is given, the above check guarantees that the other is too.)
-	if (seqan::isSet(parser, "overlap")) {
-		// If user tried to specify alignment parameters, but didn't activate adapter trimming, warn and exit.
-		if (!params.run)
-		{
-			std::cerr << "Adapter removal alignment parameters require adapters or --no-adapter flag.\n";
-			return 1;
-		}
-		int o;
-		int e;
-		double er;
-		getOptionValue(o, parser, "overlap");
-		getOptionValue(e, parser, "e");
-		getOptionValue(er, parser, "er");
-		params.mode = AdapterMatchSettings(o, e, er);
-        params.mmode = MatchMode::E_USER;
-    }
-    // Otherwise use the automatic configuration.
-    else
-    {
-        params.mode = AdapterMatchSettings();
-        params.mmode = MatchMode::E_AUTO;
-    }
+
+    // Settings for adapter trimming
+	int o;
+	int e;
+	double er;
+    int lo;
+    unsigned int times;
+    getOptionValue(o, parser, "overlap");
+	getOptionValue(e, parser, "e");
+	getOptionValue(er, parser, "er");
+    getOptionValue(lo, parser, "lo");
+    getOptionValue(times, parser, "times");
+    params.mode = AdapterMatchSettings(o, e, er, lo, times);
+
     return 0;
 }
 
@@ -1542,6 +1530,7 @@ struct ReadWriter
     void getStats(std::tuple_element_t<2, TWriteItem>& stats)
     {
         _run = false;
+        _readSetAvailableCV.notify_all();
         if (_thread.joinable())
             _thread.join();
         stats = _stats;
@@ -1599,7 +1588,10 @@ struct ReadReader
                     loadMultiplex(*currentReadSet, _programParams.records, _inputFileStreams.fileStreamMultiplex);
                     _numReads += currentReadSet->size();
                     if (currentReadSet->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
+                    {
                         _eof = true;
+                        _readSetAvailableCV.notify_all();  // make sure that waiting threads wake up so that they can be joined
+                    }
                 }
                 for (auto& readSet : _tlsReadSets)  // now insert reads into a slot
                 {
@@ -1753,7 +1745,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
     const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder,
     OutputStreams& outputStreams, TStats& stats)
 {
-    const unsigned int threadIdleSleepTimeMS = 10;
+    const unsigned int threadIdleSleepTimeMS = 10;  // not used anymore
     using TWriteItem = std::tuple < std::unique_ptr < std::vector<TRead<TSeq>>>, decltype(DemultiplexingParams::barcodeIds), GeneralStats>;
     using TReadWriter = ReadWriter<TRead, TSeq, TWriteItem>;
     using TReadReader = ReadReader<TRead, TSeq>;
@@ -2170,6 +2162,15 @@ int flexbarMain(int argc, char const ** argv)
 				std::cout << "\nWarning: errors and error rate can not be specified both at the same time.\n";
 				return 1;
 			}
+            if (isSet(parser, "lo"))
+            {
+                unsigned lo;
+                getOptionValue(lo, parser, "lo");
+                std::cout << "\tLeft overhang " << lo << "\n";
+            }
+            unsigned times;
+            getOptionValue(times, parser, "times");
+            std::cout << "\tMax adapter trimming iterations " << times << "\n";
 			std::cout << "\n";
         }
         if (qualityTrimmingParams.run)
