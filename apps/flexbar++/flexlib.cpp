@@ -1060,6 +1060,20 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
     params.pairedNoAdapterFile = fileCount == 2 && isSet(parser, "pa");
     // Set run flag, depending on essential parameters.
     params.run = isSet(parser,"a") || (isSet(parser, "pa") && fileCount == 2);
+
+    // Settings for adapter trimming
+    int o;
+    int e;
+    double er;
+    int oh;
+    unsigned int times;
+    getOptionValue(o, parser, "overlap");
+    getOptionValue(e, parser, "e");
+    getOptionValue(er, parser, "er");
+    getOptionValue(oh, parser, "oh");
+    getOptionValue(times, parser, "times");
+    params.mode = AdapterMatchSettings(o, e, er, oh, times);
+
     // ADAPTER SEQUENCES ----------------------------
     std::string adapterFile, id;
     // If adapter sequences are given, we read them in any case.
@@ -1084,8 +1098,11 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
                 else if (id.find("5'") != std::string::npos)
                     adapterItem.adapterEnd = AdapterItem::end5;
                 else
-                    std::cerr << "End for adapter \""<< id <<"\" not specified.\n";
-
+                {
+                    std::cerr << "End for adapter \"" << id << "\" not specified, adapter will be ignored.\n";
+                    continue;
+                }
+                adapterItem.overhang = oh;
                 appendValue(params.adapters[i], adapterItem);
             }
         }
@@ -1102,18 +1119,7 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
         return 1;
     }
 
-    // Settings for adapter trimming
-	int o;
-	int e;
-	double er;
-    int oh;
-    unsigned int times;
-    getOptionValue(o, parser, "overlap");
-	getOptionValue(e, parser, "e");
-	getOptionValue(er, parser, "er");
-    getOptionValue(oh, parser, "oh");
-    getOptionValue(times, parser, "times");
-    params.mode = AdapterMatchSettings(o, e, er, oh, times);
+
 
     return 0;
 }
