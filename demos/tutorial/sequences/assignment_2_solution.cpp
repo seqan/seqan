@@ -16,7 +16,7 @@ void printAlign(TText1 const & genomeFragment, TText2 const & read)
     std::cout << "  read   : " << read << std::endl;
 }
 
-int main(int, char const **)
+int main()
 {
     // Build reads and genomes
     DnaString chr1 = "TATAATATTGCTATCGCGATATCGCTAGCTAGCTACGGATTATGCGCTCTGCGATATATCGCGCTAGATGTGCAGCTCGATCGAATGCACGTGTGTGCGATCGATTAGCGTCGATCATCGATCTATATTAGCGCGCGGTATCGGACGATCATATTAGCGGTCTAGCATTTAG";
@@ -80,7 +80,7 @@ int main(int, char const **)
         // Call of our function to print the simple alignment
         printAlign(genomeFragment, readList[i]);
     }
-    return 1;
+    return 0;
 }
 //![four]
 //![full]
