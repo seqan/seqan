@@ -595,7 +595,6 @@ macro (seqan_install_demos_release)
 endmacro (seqan_install_demos_release)
 
 macro (seqan_build_demos_develop PREFIX)
-
     # Get a list of all .cpp and .cu files in the current directory.
     file (GLOB_RECURSE ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}

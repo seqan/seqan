@@ -224,7 +224,7 @@ if (MSVC)
   endif (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
 
   # Disable warnings about unsecure (although standard) functions.
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /DMP /D_SCL_SECURE_NO_WARNINGS")
+  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /D_SCL_SECURE_NO_WARNINGS")
 endif (MSVC)
 
 # ----------------------------------------------------------------------------
