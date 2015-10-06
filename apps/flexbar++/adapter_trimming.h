@@ -106,9 +106,9 @@ struct AdapterItem
     TAdapterSequence seq;
 
     AdapterItem() : adapterEnd(end3), overhang(0), id(0){};
-    AdapterItem(const TAdapterSequence &adapter) : seq(adapter), adapterEnd(end3), overhang(0), id(0){};
-    AdapterItem(const TAdapterSequence &adapter, const AdapterEnd adapterEnd, const unsigned overhang, const unsigned numRemoved)
-        : seq(adapter), adapterEnd(adapterEnd), overhang(overhang), id(id) {};
+    AdapterItem(const TAdapterSequence &adapter) : adapterEnd(end3), overhang(0), id(0), seq(adapter){};
+    AdapterItem(const TAdapterSequence &adapter, const AdapterEnd adapterEnd, const unsigned overhang, const unsigned id)
+        : adapterEnd(adapterEnd), overhang(overhang), id(id), seq(adapter) {};
 
     AdapterItem getReverseComplement() const noexcept
     {
@@ -134,7 +134,7 @@ struct AdapterMatchSettings
     {}
     AdapterMatchSettings() : min_length(0), errors(0), overhang(0), errorRate(0), times(1) {};
    
-    int min_length; //The minimum length of the overlap.
+    unsigned int min_length; //The minimum length of the overlap.
 	int errors;     //The maximum number of errors we allow.
     unsigned int overhang;
 	double errorRate;  //The maximum number of errors allowed per overlap
@@ -250,7 +250,7 @@ unsigned stripPair(TSeq& seq1, TSeq& seq2) noexcept
 }
 
 //Version for automatic matching options
-inline bool isMatch(const int overlap, const int mismatches, const AdapterMatchSettings &adatperMatchSettings) noexcept
+inline bool isMatch(const unsigned int overlap, const int mismatches, const AdapterMatchSettings &adatperMatchSettings) noexcept
 {
     if (overlap == 0)
         return false;
@@ -292,13 +292,13 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
     {
         matches.clear();
         {
-            TAdapters::value_type::TAdapterSequence adapterSequence;
+            typename TAdapters::value_type::TAdapterSequence adapterSequence;
             std::pair<unsigned, TAlign> ret;
             for (auto const& adapterItem : adapters)
             {
                 //std::cout << "seq: " << seq << std::endl;
                 //std::cout << "adapter: " << adapterItem.seq << std::endl;
-                if (length(adapterItem.seq) < spec.min_length)
+                if (static_cast<unsigned>(length(adapterItem.seq)) < spec.min_length)
                     continue;
 
                 // always use banded alignment
@@ -379,7 +379,7 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
         stats.maxOverlap = std::max(stats.maxOverlap, overlap);
         stats.minOverlap = std::min(stats.minOverlap, overlap);
         // dont try more adapter trimming if the read is too short already
-        if (length(seq) < spec.min_length)
+        if (static_cast<unsigned>(length(seq)) < spec.min_length)
             return removed;
     }
     return removed;
