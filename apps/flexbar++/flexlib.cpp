@@ -669,7 +669,7 @@ struct AdapterTrimmingParams
 {
     bool pairedNoAdapterFile;
     bool run;
-    std::array<AdapterSet, 2> adapters;
+    AdapterSet adapters;
     AdapterMatchSettings mode;
     bool tag;
     AdapterTrimmingParams() : pairedNoAdapterFile(false), run(false), tag(false) {};
@@ -1091,22 +1091,21 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
         unsigned int adapterId = 0;
         while (!atEnd(adapterInFile))
         {
-            for (unsigned int i = 0;i < 2;++i)
+            readRecord(id, adapterItem.seq, adapterInFile);
+            if (id.find("3'") != std::string::npos)
+                adapterItem.adapterEnd = AdapterItem::end3;
+            else if (id.find("5'") != std::string::npos)
+                adapterItem.adapterEnd = AdapterItem::end5;
+            else
             {
-                readRecord(id, adapterItem.seq, adapterInFile);
-                if (id.find("3'") != std::string::npos)
-                    adapterItem.adapterEnd = AdapterItem::end3;
-                else if (id.find("5'") != std::string::npos)
-                    adapterItem.adapterEnd = AdapterItem::end5;
-                else
-                {
-                    std::cerr << "End for adapter \"" << id << "\" not specified, adapter will be ignored.\n";
-                    continue;
-                }
-                adapterItem.overhang = oh;
-                adapterItem.id = adapterId++;
-                appendValue(params.adapters[i], adapterItem);
+                std::cerr << "End for adapter \"" << id << "\" not specified, adapter will be ignored.\n";
+                continue;
             }
+            adapterItem.anchored = id.find(":anchored:") != std::string::npos ? true : false;
+
+            adapterItem.overhang = oh;
+            adapterItem.id = adapterId++;
+            appendValue(params.adapters, adapterItem);
         }
     }
     // If they are not given, but we would need them (single-end trimming), output error.
@@ -1408,7 +1407,7 @@ void printStatistics(const ProgramParams& programParams, const TStats& generalSt
         outStream << "ADAPTERS" << std::endl;
         outStream << "========" << std::endl;
         unsigned int i = 0;
-        for (const auto adapterItem : adapterParams.adapters[1])
+        for (const auto adapterItem : adapterParams.adapters)
         {
             if (adapterItem.adapterEnd == AdapterItem::end3)
                 outStream << " 3'";

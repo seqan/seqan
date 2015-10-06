@@ -103,17 +103,18 @@ struct AdapterItem
     AdapterEnd adapterEnd;
     unsigned int overhang;
     unsigned id;
+    bool anchored;
     TAdapterSequence seq;
 
-    AdapterItem() : adapterEnd(end3), overhang(0), id(0){};
-    AdapterItem(const TAdapterSequence &adapter) : adapterEnd(end3), overhang(0), id(0), seq(adapter){};
-    AdapterItem(const TAdapterSequence &adapter, const AdapterEnd adapterEnd, const unsigned overhang, const unsigned id)
-        : adapterEnd(adapterEnd), overhang(overhang), id(id), seq(adapter) {};
+    AdapterItem() : adapterEnd(end3), overhang(0), id(0), anchored(false){};
+    AdapterItem(const TAdapterSequence &adapter) : adapterEnd(end3), overhang(0), id(0), anchored(false), seq(adapter){};
+    AdapterItem(const TAdapterSequence &adapter, const AdapterEnd adapterEnd, const unsigned overhang, const unsigned id, const bool anchored)
+        : adapterEnd(adapterEnd), overhang(overhang), id(id), anchored(anchored), seq(adapter) {};
 
     AdapterItem getReverseComplement() const noexcept
     {
         auto seqCopy = seq;
-        return AdapterItem(TReverseComplement(seqCopy), adapterEnd, overhang, id);
+        return AdapterItem(TReverseComplement(seqCopy), adapterEnd, overhang, id, anchored);
     }
 
 
@@ -182,7 +183,7 @@ unsigned getInsertSize(TAlign& align) noexcept
 
 template <typename TSeq, typename TAdapter, bool TTop, bool TLeft, bool TRight, bool TBottom>
 void alignPair(std::pair<unsigned, seqan::Align<TSeq> >& ret, const TSeq& seq1, const TAdapter& seq2,
-    const seqan::AlignConfig<TTop, TLeft, TRight, TBottom>& config, const unsigned int leftOverhang, const unsigned int rightOverhang) noexcept
+    const seqan::AlignConfig<TTop, TLeft, TRight, TBottom>& config, const int leftOverhang, const int rightOverhang) noexcept
 {
     seqan::resize(rows(ret.second), 2);
     seqan::assignSource(row(ret.second, 0), seq1);
@@ -192,7 +193,7 @@ void alignPair(std::pair<unsigned, seqan::Align<TSeq> >& ret, const TSeq& seq1, 
     const TScore adapterScore(-100);
 
     // banded alignment
-    const int val1 = -static_cast<int>(leftOverhang);
+    const int val1 = -leftOverhang;
     const int val2 = length(seq1) - length(seq2) + rightOverhang;
     ret.first = globalAlignment(ret.second, adapterScore, config, val1, val2, seqan::LinearGaps());
 }
@@ -304,9 +305,15 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
                 // always use banded alignment
                 adapterSequence = TStripAdapterDirection::value == adapterDirection::reverse ? adapterItem.getReverseComplement().seq : adapterItem.seq;
                 if (adapterItem.adapterEnd == AdapterItem::end3)
-                    alignPair(ret, seq, adapterSequence, seqan::AlignConfig<true, true, true, true>(), adapterItem.overhang, length(adapterItem.seq) - spec.min_length);
+                    if(!adapterItem.anchored)
+                        alignPair(ret, seq, adapterSequence, seqan::AlignConfig<true, true, true, true>(), adapterItem.overhang, length(adapterItem.seq) - spec.min_length);
+                    else
+                        alignPair(ret, seq, adapterSequence, seqan::AlignConfig<true, true, true, true>(), length(adapterSequence)-length(seq), 0);
                 else
-                    alignPair(ret, seq, adapterSequence, seqan::AlignConfig<true, true, true, true>(), length(adapterItem.seq) - spec.min_length, adapterItem.overhang);
+                    if (!adapterItem.anchored)
+                        alignPair(ret, seq, adapterSequence, seqan::AlignConfig<true, true, true, true>(), length(adapterItem.seq) - spec.min_length, adapterItem.overhang);
+                    else
+                        alignPair(ret, seq, adapterSequence, seqan::AlignConfig<true, true, true, true>(), 0, length(adapterSequence) - length(seq));
 
                 const int score = ret.first;
                 if (score < 0)
@@ -395,7 +402,7 @@ unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const
     {
         if (seqan::empty(read.seq))
             continue;
-        const unsigned over = stripAdapter(read.seq, stats, adapters[1], spec, StripAdapterDirection<adapterDirection::forward>());
+        const unsigned over = stripAdapter(read.seq, stats, adapters, spec, StripAdapterDirection<adapterDirection::forward>());
         if (TTagAdapter::value && over != 0)
             insertAfterFirstToken(read.id, ":AdapterRemoved");
     }
@@ -419,9 +426,10 @@ template < template <typename> class TRead, typename TSeq, typename TAdaptersArr
         }
         else
         {
-            over = stripAdapter(read.seq, stats, adapters[1], spec, StripAdapterDirection<adapterDirection::forward>());
-            if (!seqan::empty(read.seqRev))
-                over += stripAdapter(read.seqRev, stats, adapters[0], spec, StripAdapterDirection<adapterDirection::reverse>());
+            // TODO adapter trimming for reverse Read
+            //over = stripAdapter(read.seq, stats, adapters, spec, StripAdapterDirection<adapterDirection::forward>());
+            //if (!seqan::empty(read.seqRev))
+            //    over += stripAdapter(read.seqRev, stats, adapters[0], spec, StripAdapterDirection<adapterDirection::reverse>());
         }
         if (TTagAdapter::value && over != 0)
             insertAfterFirstToken(read.id, ":AdapterRemoved");

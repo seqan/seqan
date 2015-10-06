@@ -29,16 +29,9 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // Author: Benjamin Strauch <b.strauch@fu-berlin.de>
+// Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // Author: Jochen Singer <jochen.singer@fu-berlin.de>
-// ==========================================================================
-// This file provides tests for the adapter trimming of seqan-flexbar
-// which is based in the implementation of the original flexbar program
-// in [1].
-// [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
-// Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
-// Biology 2012, 1, 895-905.
 // ==========================================================================
 
 #undef SEQAN_ENABLE_TESTING
@@ -202,7 +195,7 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
     AdapterMatchSettings matchSettings(4, 0, 0.2, 0, 1);
     AdapterTrimmingStats stats;
  
-    int removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end3, 0,0) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+    int removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end3, 0,0, false) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
 	SEQAN_ASSERT_EQ(removed, 5);
 	SEQAN_ASSERT_EQ(len - length(read.seq), 5u);
 
@@ -210,7 +203,7 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
     //               ||| |||||||		   
     ada = TAda(     "GAATATATATTT");
     len = length(read.seq);
-    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end3, 0,0) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end3, 0,0, false) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
     SEQAN_ASSERT_EQ(removed, 12);
     SEQAN_ASSERT_EQ(len - length(read.seq), 12u);
 
@@ -218,7 +211,7 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
     //               ||||||||||		   
     ada = TAda(     "GAATATATATTT");
     len = length(read.seq);
-    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end3, 0,0) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end3, 0,0, false) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
     SEQAN_ASSERT_EQ(removed, 11);
     SEQAN_ASSERT_EQ(len - length(read.seq), 11u);
 
@@ -226,7 +219,7 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
     //               ||||||||||		   
     ada = TAda(     "GAATATATATTT");
     len = length(read.seq);
-    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end5, 0,0) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end5, 0,0, false) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
     SEQAN_ASSERT_EQ(removed, 0);
     SEQAN_ASSERT_EQ(len - length(read.seq), 0u);
 
@@ -234,9 +227,43 @@ SEQAN_DEFINE_TEST(strip_adapter_test)
     //               ||||||||		   
     ada = TAda("CCCCAAAAAAGAAC");
     len = length(read.seq);
-    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end5, 0,0) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end5, 0,0, false) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
     SEQAN_ASSERT_EQ(removed, 9);
     SEQAN_ASSERT_EQ(len - length(read.seq), 9u);
+
+    // test anchored mode for 5-end adapters
+    read.seq = "AAAAAGAATATATATA";
+    //          ||||||||		   
+    ada = TAda("AAAAAGAAC");
+    len = length(read.seq);
+    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end5, 0,0, true) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+    SEQAN_ASSERT_EQ(removed, 9);
+    SEQAN_ASSERT_EQ(len - length(read.seq), 9u);
+
+    read.seq =  "AAAAAGAATATATATA";
+    //           ||||||||		   
+    ada = TAda("CAAAAAGAAC");
+    len = length(read.seq);
+    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end5, 0,0, true) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+    SEQAN_ASSERT_EQ(removed, 0);
+    SEQAN_ASSERT_EQ(len - length(read.seq), 0u);
+
+    // test anchored mode for 3-end adapters
+    read.seq = "AAAAAGAATATATATA";
+    //               ||||||||||		   
+    ada = TAda(     "GAATATATATT");
+    len = length(read.seq);
+    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end3, 0,0, true) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+    SEQAN_ASSERT_EQ(removed, 11);
+    SEQAN_ASSERT_EQ(len - length(read.seq), 11u);
+
+    read.seq = "AAAAAGAATATATATA";
+    //               ||||||||||		   
+    ada = TAda(     "GAATATATATTT");
+    len = length(read.seq);
+    removed = stripAdapter(read.seq, stats, AdapterSet{ AdapterItem(ada, AdapterItem::end3, 0,0, true) }, matchSettings, StripAdapterDirection<adapterDirection::forward>());
+    SEQAN_ASSERT_EQ(removed, 0);
+    SEQAN_ASSERT_EQ(len - length(read.seq), 0u);
 }
 
 SEQAN_DEFINE_TEST(align_adapter_test)
