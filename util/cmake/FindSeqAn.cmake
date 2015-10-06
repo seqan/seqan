@@ -146,7 +146,7 @@ set (COMPILER_IS_CLANG FALSE)
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set (COMPILER_IS_CLANG TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-		
+
 # Fix CMAKE_COMPILER_IS_GNUCXX for MinGW.
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -248,8 +248,16 @@ if (SEQAN_USE_SEQAN_BUILD_SYSTEM)
 else (SEQAN_USE_SEQAN_BUILD_SYSTEM)
   # When NOT using the SeqAn build system then we only look for one directory
   # with subdirectory seqan and thus only one library.
-  find_path(_SEQAN_BASEDIR "seqan" PATHS ${SEQAN_INCLUDE_PATH})
+  find_path(_SEQAN_BASEDIR "seqan"
+            PATHS ${SEQAN_INCLUDE_PATH} ENV SEQAN_INCLUDE_PATH
+            NO_DEFAULT_PATH)
+
+  if (NOT _SEQAN_BASEDIR)
+    find_path(_SEQAN_BASEDIR "seqan")
+  endif()
+
   mark_as_advanced(_SEQAN_BASEDIR)
+
   if (_SEQAN_BASEDIR)
     set(SEQAN_FOUND        TRUE)
     set(SEQAN_INCLUDE_DIRS_MAIN ${SEQAN_INCLUDE_DIRS_MAIN} ${_SEQAN_BASEDIR})
