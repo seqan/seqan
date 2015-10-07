@@ -209,6 +209,9 @@ Assignment 3
      .. container:: foldable
 
         .. includefrags:: demos/tutorial/file_io_overview/solution3.cpp
+        Running this program results in the following output.
+        
+        .. includefrags:: demos/tutorial/file_io_overview/solution3.cpp.stdout
 
 
 Next Steps
