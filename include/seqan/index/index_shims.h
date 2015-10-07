@@ -757,11 +757,11 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
  *
  * The following code shows how the BWT of an text can be computed.
  *
- * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp
+ * @include demos/dox/index/textAt_indexText_saAt_indexRequire.cpp
  *
  * The output is as follows:
  *
- * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp.stdout
+ * @include demos/dox/index/textAt_indexText_saAt_indexRequire.cpp.stdout
  */
 
     template <typename TText, typename TSpec, typename TFibre>

@@ -38,13 +38,13 @@ These 32-bit numbers are then used by the :dox:`Pdf` specializations to generate
 The following program gives an example.
 First, we include the header ``<seqan/random.h>`` to get access to the module's functionality.
 
-.. includefrags:: demos/tutorial/random/random_examples.cpp
+.. includefrags:: demos/tutorial/randomness/examples.cpp
    :fragment: header
 
 During the initialization of the :dox:`Rng` object you have to pass a seed used as a start point for the randomization.
 Finally, function :dox:`Rng#pickRandomNumber` picks a random number from a :dox:`Rng`.
 
-.. includefrags:: demos/tutorial/random/random_examples.cpp
+.. includefrags:: demos/tutorial/randomness/examples.cpp
    :fragment: random-number-generation-raw
 
 The output of this fragment is:
@@ -56,14 +56,14 @@ The output of this fragment is:
 :dox:`MersenneTwisterRng Mersenne Twister Rng` generates 32-bit ``unsigned`` numbers.
 However, you should not rely on any specific type and use :dox:`Value` metafunction instead.
 
-.. includefrags:: demos/tutorial/random/random_examples.cpp
+.. includefrags:: demos/tutorial/randomness/examples.cpp
    :fragment: random-number-generation-metafunction-value
 
 If you prefer a special distribution of the randomly generated numbers you can use the above mentioned specializations of :dox:`Pdf`.
 SeqAn currently provides normal, log-normal and uniform probability density functions.
 Note, for uniform distributions the range of values is given as a closed interval, i.e. the last value is enclosed in the range.
 
-.. includefrags:: demos/tutorial/random/random_examples.cpp
+.. includefrags:: demos/tutorial/randomness/examples.cpp
    :fragment: random-number-generation-pdf
 
 The output of this fragment is:
@@ -78,7 +78,7 @@ Also note that you can initialize the :dox:`LogNormalPdf Log-Normal Pdf` either 
 By default, you initialize it with the mean and standard deviation (mu and sigma) of the underlying normal distribution.
 Use the tags :dox:`LognormalConstructionTags#MuSigma` and :dox:`LognormalConstructionTags#MeanStdDev` in the constructor to select a mode.
 
-.. includefrags:: demos/tutorial/random/random_examples.cpp
+.. includefrags:: demos/tutorial/randomness/examples.cpp
    :fragment: random-number-generation-log-normal
 
 .. code-block:: console
@@ -92,7 +92,7 @@ Shuffling
 
 The function :dox:`shuffle` allows to shuffle a container, given a random number generator:
 
-.. includefrags:: demos/tutorial/random/random_examples.cpp
+.. includefrags:: demos/tutorial/randomness/examples.cpp
    :fragment: shuffling
 
 The output of this fragment is:

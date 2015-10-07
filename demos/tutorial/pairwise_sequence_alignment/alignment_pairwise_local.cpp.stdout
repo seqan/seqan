@@ -1,0 +1,27 @@
+Score = 19
+      0     .    : 
+        a-philolog
+        | ||| ||||
+        amphibolog
+
+
+Aligns Seq1[0:9] and Seq2[7:16]
+
+Score = 9
+      0     .    
+        ATAAGCGT
+        ||| | ||
+        ATA-GAGT
+
+
+Aligns Seq1[0:7] and Seq2[2:9]
+
+Score = 5
+      0     .  
+        TC-TCG
+        || | |
+        TCATAG
+
+
+Aligns Seq1[7:12] and Seq2[0:5]
+

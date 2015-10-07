@@ -57,11 +57,11 @@ namespace seqan {
  *
  * @section Examples
  *
- * @include demos/score/score.cpp
+ * @include demos/dox/score/score.cpp
  *
  * The output is as follows:
  *
- * @include demos/score/score.cpp.stdout
+ * @include demos/dox/score/score.cpp.stdout
  */
 
 template <typename TValue = int, typename TSpec = Simple>

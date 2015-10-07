@@ -82,9 +82,9 @@ namespace seqan {
  *
  * @section Example
  *
- * @include demos/graph_algorithms/bellman_ford_algorithm.cpp
+ * @include demos/dox/graph_algorithms/bellman_ford_algorithm.cpp
  *
- * @include demos/graph_algorithms/bellman_ford_algorithm.cpp.stdout
+ * @include demos/dox/graph_algorithms/bellman_ford_algorithm.cpp.stdout
  *
  * @see dagShortestPath
  * @see dijkstra

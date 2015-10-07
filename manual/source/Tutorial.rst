@@ -19,7 +19,7 @@ Tutorial
    :maxdepth: 2
 
    Tutorial/GettingStarted
-   Tutorial/FirstStepsInSeqAn
+   Tutorial/AFirstExample
    Tutorial/BackgroundAndMotivation
 
    Tutorial/Sequences
@@ -35,19 +35,19 @@ Tutorial
 
    Tutorial/Indices
    Tutorial/IndexIterators
-   Tutorial/IndexQGram
+   Tutorial/QgramIndex
 
    Tutorial/PatternMatching
 
    Tutorial/Graphs
 
-   Tutorial/InputOutputOverview
+   Tutorial/FileIOOverview
    Tutorial/SequenceIO
    Tutorial/IndexedFastaIO
-   Tutorial/SamBamIO
+   Tutorial/SamAndBamIO
    Tutorial/VcfIO
    Tutorial/BedIO
-   Tutorial/GffGtfIO
+   Tutorial/GffAndGtfIO
 
    Tutorial/Modifiers
 
@@ -57,21 +57,19 @@ Tutorial
 
    Tutorial/ParsingCommandLineArguments
 
-   Tutorial/AnnotationStore
+   Tutorial/GenomeAnnotations
 
    Tutorial/FragmentStore
    Tutorial/ConsensusAlignment
    Tutorial/Realignment
 
    Tutorial/SimpleRnaSeq
-   Tutorial/SimpleReadMapping
-   Tutorial/MiniBowtie
-   Tutorial/JournalSet
+   Tutorial/JournaledSet
    Tutorial/KnimeNode
 
    Tutorial/BasicTechniques
    Tutorial/Metafunctions
-   Tutorial/TemplateSubclassing
+   Tutorial/GenericProgramming
    Tutorial/GlobalFunctionInterface
 
    Tutorial/Basics
@@ -229,13 +227,6 @@ The article :ref:`build-manual-integration-with-your-own-build-system` contains 
 
 :ref:`tutorial-simple-rna-seq`
   In this tutorial you will learn how to implement a simple RNA-Seq based gene quantification tool, that computes RPKM expression levels based on a given genome annotation and RNA-Seq read alignments.
-
-:ref:`tutorial-simple-read-mapping`
-  This tutorial shows how to implement a simple read mapping program based on the SWIFT filter and online Hamming finder for verification.
-
-:ref:`tutorial-mini-bowtie`
-  Mini-Bowtie is a very basic read aligner that is inspired by the well known Bowtie program :cite:`Langmead2009`.
-  It serves as an example to show that you can write sophisticated programs with SeqAn using few lines of code.
 
 :ref:`tutorial-data-journaling`
   In this tutorial we demonstrate how you can handle multiple large sequence in main memory while the data structures themself support a certain parallel sequence analysis.
