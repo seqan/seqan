@@ -124,11 +124,11 @@ namespace seqan {
  * <tt>consensusAlignment()</tt> is then used to compute a MSA and the consensus sequence is stored in
  * <tt>store.contigStore[0].seq</tt>.
  *
- * @include demos/consensus/consensus_alignment.cpp
+ * @include demos/dox/consensus/consensus_alignment.cpp
  *
  * The output is as follows:
  *
- * @include demos/consensus/consensus_alignment.cpp.stdout
+ * @include demos/dox/consensus/consensus_alignment.cpp.stdout
  */
 
 template <typename TSpec, typename TConfig>

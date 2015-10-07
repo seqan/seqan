@@ -78,14 +78,14 @@ A good programming practice is to define all types that shall be used by the fun
 In our case, we define a ``TSequence`` type for our input sequences and an :dox:`Align` object (``TAlign``) type to store the alignment.
 For more information on the Align datastructure, please read the tutorial :ref:`tutorial-alignment-representation`.
 
-.. includefrags:: demos/tutorial/alignments/alignment_global_standard.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_standard.cpp
    :fragment: main
 
 After we defined the types, we can define the variables and objects.
 First, we create two input sequences ``seq1 = "CDFGHC"`` and ``seq2 = "CDEFGAHC"``.
 We then define an 'align' object where we want to put the sequences into, we resize it to manage two :dox:`Gaps` objects, and then assign the sequences to it.
 
-.. includefrags:: demos/tutorial/alignments/alignment_global_standard.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_standard.cpp
    :fragment: init
 
 Now, we can compute our first alignment.
@@ -93,7 +93,7 @@ To do so, we simply call the function :dox:`globalAlignment` and give as input p
 The globalAlignment function returns the score of the best alignment, which we store in the ``score`` variable.
 Afterwards, we print the computed score and the corresponding alignment.
 
-.. includefrags:: demos/tutorial/alignments/alignment_global_standard.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_standard.cpp
    :fragment: alignment
 
 The output is as follows:
@@ -139,7 +139,7 @@ Assignment 1
         We use an :dox:`String` with the :dox:`Dna` alphabet, since we know that we work with DNA sequences.
         The second type is our :dox:`Align` object storing the alignment later on.
 
-        .. includefrags:: demos/tutorial/alignments/alignment_global_assignment1.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment1.cpp
            :fragment: main
 
         In the next step we initialize our objects.
@@ -147,7 +147,7 @@ Assignment 1
         We resize the underlying set of ``align`` that manages the separate :dox:`Gaps` data structures.
         Finally, we assign the input sequences as sources to the corresponding row of ``align``.
 
-        .. includefrags:: demos/tutorial/alignments/alignment_global_assignment1.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment1.cpp
            :fragment: init
 
         Now we compute the alignment using a scoring scheme with affine gap costs.
@@ -155,7 +155,7 @@ Assignment 1
         We store the computed score of the best alignment in the equally named variable ``score``.
         In the end we print the score and the alignment using print methods provided by the ``iostream`` module of the STL.
 
-        .. includefrags:: demos/tutorial/alignments/alignment_global_assignment1.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment1.cpp
            :fragment: alignment
 
         Congratulation!
@@ -195,20 +195,20 @@ We will also make use of the :dox:`AlignmentGraph Alignment Graph` to store the 
 We start again with including the necessary headers and defining all types that we need.
 We define the ``TStringSet`` type to store our input sequences in a StringSet and we define the ``TDepStringSet`` which is an :dox:`DependentStringSet` used internally by the AlignmentGraph.
 
-.. includefrags:: demos/tutorial/alignments/alignment_global_overlap.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_overlap.cpp
    :fragment: main
 
 Before we can initialize the AlignmentGraph we append the input sequences to the StringSet ``strings``.
 Then we simply pass ``strings`` as an argument to the constructor of the AlignmentGraph ``alignG``.
 
-.. includefrags:: demos/tutorial/alignments/alignment_global_overlap.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_overlap.cpp
    :fragment: init
 
 Now we are ready to compute the alignment.
 This time we change two things when calling the ``globalAlignment`` function.
 First, we use an :dox:`AlignmentGraph` to store the computed alignment and second we use the :dox:`AlignConfig` object to compute the overlap alignment.
 
-.. includefrags:: demos/tutorial/alignments/alignment_global_overlap.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_overlap.cpp
    :fragment: alignment
 
 The output is as follows.
@@ -253,12 +253,12 @@ Assignment 2
         In this scenario we use an :dox:`AlignmentGraph` to store the alignment.
         Remember, that the AlignmentGraph uses an :dox:`DependentStringSet` to map the vertices to the correct input sequences.
 
-        .. includefrags:: demos/tutorial/alignments/alignment_global_assignment2.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment2.cpp
            :fragment: main
 
         In the next step we initialize our input StringSet ``strings`` and pass it as argument to the constructor of the AlignmentGraph ``alignG``.
 
-        .. includefrags:: demos/tutorial/alignments/alignment_global_assignment2.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment2.cpp
            :fragment: init
 
         Now we compute the alignment using the Levenshtein distance and a AlignConfig object to set the correct free end-gaps.
@@ -266,7 +266,7 @@ Assignment 2
         Hence, we have to use free end-gaps in the first and last row, which corresponds to the first and the last parameter in the AlignConfig object.
         If you add the shorter sequence at first to ``strings``, then you simply have to flip the ``bool`` values of the AlignConfig object.
 
-        .. includefrags:: demos/tutorial/alignments/alignment_global_assignment2.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment2.cpp
            :fragment: alignment
 
         Here the result of the program.
@@ -310,13 +310,13 @@ We print the alignment and the score.
 
 First the necessary includes and typedefs:
 
-.. includefrags:: demos/tutorial/alignments/alignment_global_specialised.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_specialised.cpp
    :fragment: main
 
 In addition to the previous examined examples we tell the globalAlignment function to use the desired Hirschberg algorithm by explicitly passing the tag ``Hirschberg`` as last parameter.
 The resulting alignment and score are then printed.
 
-.. includefrags:: demos/tutorial/alignments/alignment_global_specialised.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_specialised.cpp
    :fragment: alignment
 
 The output is as follows.
@@ -355,12 +355,12 @@ Assignment 3
         ``TAlign`` and ``TRow`` are defined as in the previous example program.
         The type ``Iterator<TRow>::Type`` will be used to iterate over the rows of the alignment.
 
-        .. includefrags:: demos/tutorial/alignments/alignment_global_assignment3.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment3.cpp
            :fragment: main
 
         In the next step we initialize our input StringSet ``strings`` and pass it as argument to the constructor of the AlignmentGraph ``alignG``.
 
-        .. includefrags:: demos/tutorial/alignments/alignment_global_assignment3.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment3.cpp
            :fragment: init
 
         Now we compute the alignment using the levenshtein distance and a AlignConfig object to set the correct free end-gaps.
@@ -368,10 +368,10 @@ Assignment 3
         Hence, we have to use free end-gaps in the first and last row, which corresponds to the first and the last parameter in the AlignConfig object.
         If you add the shorter sequence at first to ``strings``, then you simply have to flip the ``bool`` values of the AlignConfig object.
 
-        .. includefrags:: demos/tutorial/alignments/alignment_global_assignment3.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment3.cpp
            :fragment: alignment
 
-        .. includefrags:: demos/tutorial/alignments/alignment_global_assignment3.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment3.cpp
            :fragment: view
 
         The output of the program is as follows.
@@ -403,24 +403,24 @@ SeqAn offers the classical Smith-Waterman algorithm that computes the best local
 
 We are going to demonstrate the usage of both in the following example where first the best local alignment of two character strings and then all local alignments of two DNA sequences with a score greater than or equal to 4 are computed.
 
-.. includefrags:: demos/tutorial/alignments/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
    :fragment: main
 
 Let's start with initializing the :dox:`Align` object to contain the two sequences.
 
-.. includefrags:: demos/tutorial/alignments/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
    :fragment: init1
 
 Now the best alignment given the scoring parameters is computed by the function :dox:`localAlignment`.
 The returned score value is printed directly, and the alignment itself in the next line.
 The functions :dox:`Gaps#clippedBeginPosition` and :dox:`Gaps#clippedEndPosition` can be used to retrieve the begin and end position of the matching subsequences within the original sequences.
 
-.. includefrags:: demos/tutorial/alignments/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
    :fragment: ali1
 
 Next, several local alignments of the two given DNA sequences are going to be computed. First, the :dox:`Align` object is created.
 
-.. includefrags:: demos/tutorial/alignments/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
    :fragment: init2
 
 A :dox:`LocalAlignmentEnumerator` object needs to be initialized on the :dox:`Align` object.
@@ -428,7 +428,7 @@ In addition to the Align object and the scoring scheme, we now also pass the ``f
 The ``WatermanEggert`` tag specifies the desired Waterman-Eggert algorithm.
 While the score of the local alignment satisfies the minimal score cutoff, the alignments are printed with their scores and the subsequence begin and end positions.
 
-.. includefrags:: demos/tutorial/alignments/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
    :fragment: ali2
 
 Here is the output of the first part of our example program:
@@ -485,17 +485,17 @@ Assignment 4
 
         The usual includes.
 
-        .. includefrags:: demos/tutorial/alignments/alignment_pairwise_local_assignment1.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local_assignment1.cpp
            :fragment: main
 
         The initialization of the :dox:`Align` object.
 
-        .. includefrags:: demos/tutorial/alignments/alignment_pairwise_local_assignment1.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local_assignment1.cpp
            :fragment: init
 
         Computing the three best alignments with the desired scoring parameters:
 
-        .. includefrags:: demos/tutorial/alignments/alignment_pairwise_local_assignment1.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local_assignment1.cpp
            :fragment: ali
 
         The resulting output is as follows.
@@ -548,13 +548,13 @@ In case of equality, the alignment is equivalent to the hamming distance problem
 Let's compute a banded alignment.
 The first step is to write the ``main`` function body including the type definitions and the initializations.
 
-.. includefrags:: demos/tutorial/alignments/alignment_banded.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_banded.cpp
    :fragment: main
 
 After we initialized everything, we will compute the banded alignment.
 We pass the values ``-2`` for the lower diagonal and ``2`` for the upper diagonal.
 
-.. includefrags:: demos/tutorial/alignments/alignment_banded.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_banded.cpp
    :fragment: alignment
 
 And here is the output:
@@ -599,37 +599,37 @@ Assignment 5
     Solution (Step 1)
       .. container:: foldable
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5_step1.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5_step1.cpp
             :fragment: main
 
     Solution (Step 2)
       .. container:: foldable
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5_step2.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5_step2.cpp
             :fragment: main
 
     Solution (Step 3)
       .. container:: foldable
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5_step3.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5_step3.cpp
             :fragment: main
 
     Solution (Step 4)
       .. container:: foldable
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5_step4.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5_step4.cpp
             :fragment: main
 
     Solution (Step 5)
       .. container:: foldable
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5_step5.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5_step5.cpp
             :fragment: main
 
     Solution (Step 6)
       .. container:: foldable
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5_step6.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5_step6.cpp
             :fragment: main
 
     Complete Solution (and more explanations)
@@ -637,7 +637,7 @@ Assignment 5
 
          Write the `main` body of the program with type definition and initalization of the used data structures.
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
             :fragment: main
 
          In the first part of the algorithm we implement am alignment based verification process to identify positions in the `database` at which we can find our pattern with at most `2` errors.
@@ -645,7 +645,7 @@ Assignment 5
          If the score is greater or equal than `-2`, then we have found a hit.
          We store the begin position of the hit in `locations`.
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
             :fragment: verification
 
          In the second part of the algorithm we iterate over all reported locations.
@@ -653,35 +653,35 @@ Assignment 5
          We also compute a band allowing at most `2` errors in either direction.
          Don't forget to clear the gaps in each iteration, otherwise we might encounter wrong alignments.
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
             :fragment: alignment
 
          In the next part we determine the cigar string for the matched pattern.
          We have to remove leading and trailing gaps in the `gapsPattern` object using the functions :dox:`Gaps#setClippedBeginPosition` and :dox:`Gaps#setClippedEndPosition`.
          We also need to set the clipped begin position for the `gapsText` object such that both Gaps begin at the same position.
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
             :fragment: cigar
 
          First, we identify insertions using the functions :dox:`GapsIterator#isGap` and :dox:`GapsIterator#countGaps`.
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
             :fragment: cigarInsertion
 
          We do the same to identify deletions.
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
             :fragment: cigarDeletion
 
          If there is neither an insertion nor a deletion, then there must be a match or a mismatch. As long as we encounter matches we move forward in the Gaps structures and count the number of consecutive matches. When we are done we report the match count.
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
             :fragment: cigarMatch
 
          In a similar procedure we determine the consecutive substitutions.
          Finally we print out the position of the hit, its total number of edits and the corresponding cigar string.
 
-         .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5.cpp
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
             :fragment: cigarMismatch
 
          Here is the output of this program.

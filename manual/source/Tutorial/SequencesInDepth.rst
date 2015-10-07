@@ -127,22 +127,11 @@ The following overflow strategies exist:
 
 The next example illustrates how the different strategies could be used:
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/sequences_in_depth/example_overflow.cpp
+   :fragment: example
 
-   String<Dna> dnaSeq;
-   // Sets the capacity of dnaSeq to 5.
-   resize(dnaSeq, 4, Exact());
-   // Only "TATA" is assigned to dnaSeq, since dnaSeq is limited to 4.
-   assign(str, "TATAGGGG", Limit());
-   std::cout << dnaSeq << std::endl;
-   // Use the default expansion strategy.
-   append(dnaSeq, "GCGCGC");
-   std::cout << dnaSeq << std::endl;
+.. includefrags:: demos/tutorial/sequences_in_depth/example_overflow.cpp.stdout
 
-.. code-block:: console
-
-   TATA
-   TATAGCGCGC
 
 Workshop Assignment 1
 ^^^^^^^^^^^^^^^^^^^^^

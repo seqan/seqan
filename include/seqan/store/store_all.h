@@ -108,7 +108,7 @@ struct FragmentStoreConfig
  *
  * Load read alignments and a reference genome and display the multiple alignment in a genomic range:
  *
- * @include demos/store/store_example.cpp
+ * @include demos/dox/store/store_example.cpp
  *
  * @code{.console}
  * ATTTAAGAAATTACAAAATATAGTTGAAAGCTCTAACAATAGACTAAACCAAGCAGAAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCTTATGAATTAA

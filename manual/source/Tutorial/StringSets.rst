@@ -274,7 +274,7 @@ Workshop Assignment 4
      #. Build a StringSet of readList. Reuse the Rooted iterator above.
      #. Iterate over the StringSet and print out the values.
 
-     .. includefrags:: demos/tutorial/string_sets/assignment_3b_workshop_solution.cpp
+     .. includefrags:: demos/tutorial/string_sets/assignment_3_workshop_solution.cpp
 
    Solution
      Click **more...** to see the solution.

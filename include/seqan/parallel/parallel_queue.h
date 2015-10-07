@@ -72,11 +72,11 @@ namespace seqan {
  *
  * Simple example for a single producer single consumer (SPSC) dynamic queue.
  *
- * @include demos/parallel/queue_example.cpp
+ * @include demos/dox/parallel/queue_example.cpp
  *
  * The output is:
  *
- * @include demos/parallel/queue_example.cpp.stdout
+ * @include demos/dox/parallel/queue_example.cpp.stdout
  */
 
 template <typename TValue, typename TSpec = void>

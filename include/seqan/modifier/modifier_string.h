@@ -73,27 +73,27 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
  *
  * @subsection Using ModReverseString
  *
- * @include demos/modifier/modified_string.cpp
+ * @include demos/dox/modifier/modified_string.cpp
  *
  * The output is als follows:
  *
- * @include demos/modifier/modified_string.cpp.stdout
+ * @include demos/dox/modifier/modified_string.cpp.stdout
  *
  * @subsection Using a custom functor for ModViewString
  *
- * @include demos/modifier/modified_string_mod_view.cpp
+ * @include demos/dox/modifier/modified_string_mod_view.cpp
  *
  * The output is as follows:
  *
- * @include demos/modifier/modified_string_mod_view.cpp.stdout
+ * @include demos/dox/modifier/modified_string_mod_view.cpp.stdout
  *
  * @subsection Using nested modified strings.
  *
- * @include demos/modifier/modified_string_nested.cpp
+ * @include demos/dox/modifier/modified_string_nested.cpp
  *
  * The output is as follows:
  *
- * @include demos/modifier/modified_string_nested.cpp.stdout
+ * @include demos/dox/modifier/modified_string_nested.cpp.stdout
  */
 
 template <typename THost, typename TSpec = void>

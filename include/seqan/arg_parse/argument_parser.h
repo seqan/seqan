@@ -91,7 +91,7 @@ inline ArgParseArgument & getArgument(ArgumentParser & me, unsigned position);
  *
  * The following gives a simple example of how to use the ArgumentParser class.
  *
- * @include demos/arg_parse/argument_parser.cpp
+ * @include demos/dox/arg_parse/argument_parser.cpp
  *
  * @code{.console}
  * $ demo_arg_parse_argument_parser in.fa out.txt --id 0

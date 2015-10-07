@@ -115,15 +115,15 @@ struct DefaultSeedConfig
  * The following example shows the usage of three seed extension algorithms using the tags <tt>MaxExtend</tt>,
  * <tt>UnGappedXDrop</tt>, and <tt>GappedXDrop</tt>.
  *
- * @include demos/seeds/seeds_extension.cpp
+ * @include demos/dox/seeds/seeds_extension.cpp
  *
  * The output is as follows:
  *
- * @include demos/seeds/seeds_extension.cpp.stdout
+ * @include demos/dox/seeds/seeds_extension.cpp.stdout
  *
  * Here is an example for global seed chaining:
  *
- * @include demos/seeds/seeds_chaining.cpp
+ * @include demos/dox/seeds/seeds_chaining.cpp
  */
 
 template <typename TSpec, typename TConfig = DefaultSeedConfig>

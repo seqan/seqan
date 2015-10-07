@@ -6,17 +6,17 @@
  * A maximal repeat is a repeat that cannot be extended to the left or to right to a longer repeat. The following
  * example demonstrates how to iterate over all maximal repeats and output them.
  *
- * @snippet demos/index_maxrepeats.cpp includes
+ * @snippet demos/dox/index/maxrepeats.cpp includes
  *
  * We begin with a @Class.String@ to store our sequence. Then we create an @Class.Index@ of this @link StringSet @endlink.
  *
  * Afterwards we initialize a string with the sequence and build an index over it
  *
- * @snippet demos/index_maxrepeats.cpp init
+ * @snippet demos/dox/index/maxrepeats.cpp init
  *
  * To find maximal repeats, we use SeqAn's @link MaxRepeatsIterator @endlink and set the minimum repeat length to 3.
  *
- * @snippet demos/index_maxrepeats.cpp iteration
+ * @snippet demos/dox/index/maxrepeats.cpp iteration
  *
  * A repeat can be represented by its length and positions it occurs at.
  * $myRepeatIterator$ iterates over all repeat strings.

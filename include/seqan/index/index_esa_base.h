@@ -99,7 +99,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * The following example shows how a the @link TopDown @endlink tag is used.
  *
- * @include demos/index/index_begin_atEnd_representative.cpp
+ * @include demos/dox/index/begin_atEnd_representative.cpp
  *
  * @code{.output}
  * A
@@ -144,7 +144,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * The following example shows how the @link BottomUp @endlink tag is used.
  *
- * @include demos/index/index_begin_atEnd_representative_bottomUp.cpp
+ * @include demos/dox/index/begin_atEnd_representative_bottomUp.cpp
  *
  * @code{.txt}
  * AA
