@@ -396,28 +396,8 @@ To compute the exon length of the gene (maximal exon length of all mRNA) use an 
 For the number of total mapped reads simply use the number of alignments in the :dox:`FragmentStore::alignedReadStore`.
 Output the gene names and their RPKM values separated by tabs as follows:
 
-.. code-block:: console
+.. includefrags:: demos/tutorial/simple_rna_seq/genequant_solution5.cpp.stdout
 
-   #gene name	        RPKM value
-   ENSMUSG00000053211	5932.12
-   ENSMUSG00000069053	10540.1
-   ENSMUSG00000056673	12271.3
-   ENSMUSG00000069049	10742.2
-   ENSMUSG00000091749	7287.66
-   ENSMUSG00000068457	37162.8
-   ENSMUSG00000069045	13675
-   ENSMUSG00000069044	6380.36
-   ENSMUSG00000077793	2088.62
-   ENSMUSG00000000103	7704.74
-   ENSMUSG00000091571	10965.2
-   ENSMUSG00000069036	127128
-   ENSMUSG00000090405	10965.2
-   ENSMUSG00000090652	35271.2
-   ENSMUSG00000052831	68211.2
-   ENSMUSG00000069031	37564.2
-   ENSMUSG00000071960	34984
-   ENSMUSG00000091987	37056.3
-   ENSMUSG00000090600	2310.18
 
 .. todo: Move the files to somewhere else.
 
