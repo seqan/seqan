@@ -619,7 +619,7 @@ macro (seqan_build_demos_develop PREFIX)
 
     # Add SeqAn flags to CXX and NVCC flags.
     # Set to PARENT_SCOPE since this macro is executed from within a function which declares it's own scope.
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}" PARENT_SCOPE)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" PARENT_SCOPE)
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
