@@ -35,11 +35,19 @@ if (_OPENMP_NOT_FOUND)
     return ()
 endif ()
 
+# Clang-3.7.0 deactivated because of compiler bugs triggered by SeqAn
+if (COMPILER_IS_CLANG AND (_GCC_VERSION EQUAL 370))
+    set(_OPENMP_NOT_FOUND TRUE)
+    return ()
+endif ()
+
 include(CheckCSourceCompiles)
 include(CheckCXXSourceCompiles)
 include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
 
 set(OpenMP_C_FLAG_CANDIDATES
+  #Clang
+  "-fopenmp=libomp"
   #Gnu
   "-fopenmp"
   #Microsoft Visual Studio
