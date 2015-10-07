@@ -300,7 +300,7 @@ Workshop Assignment 4
      Review
 
    Objective
-     Now, use rooted iterators in the example from Workshop ASsignment 3.
+     Now, use rooted iterators in the example from Workshop Assignment 3.
 
    Solution
      Click **more...** to see the solution.
