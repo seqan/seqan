@@ -31,8 +31,13 @@ if (NOT CMAKE_CURRENT_LIST_DIR)  # CMAKE_CURRENT_LIST_DIR only from cmake 2.8.3.
 endif (NOT CMAKE_CURRENT_LIST_DIR)
 
 # Do not try to find OpenMP if we know that it cannot be found.
-# Clang temporarily deactivated because 3.7.0 picked up -fopenmp but doesnt work
-if ((_OPENMP_NOT_FOUND) OR (COMPILER_IS_CLANG))
+if (_OPENMP_NOT_FOUND)
+    return ()
+endif ()
+
+# Clang-3.7.0 deactivated because of compiler bugs triggered by SeqAn
+if (COMPILER_IS_CLANG AND (_GCC_VERSION EQUAL 370))
+    set(_OPENMP_NOT_FOUND TRUE)
     return ()
 endif ()
 
@@ -41,6 +46,8 @@ include(CheckCXXSourceCompiles)
 include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
 
 set(OpenMP_C_FLAG_CANDIDATES
+  #Clang
+  "-fopenmp=libomp"
   #Gnu
   "-fopenmp"
   #Microsoft Visual Studio
