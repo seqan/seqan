@@ -31,7 +31,8 @@ if (NOT CMAKE_CURRENT_LIST_DIR)  # CMAKE_CURRENT_LIST_DIR only from cmake 2.8.3.
 endif (NOT CMAKE_CURRENT_LIST_DIR)
 
 # Do not try to find OpenMP if we know that it cannot be found.
-if (_OPENMP_NOT_FOUND)
+# Clang temporarily deactivated because 3.7.0 picked up -fopenmp but doesnt work
+if ((_OPENMP_NOT_FOUND) OR (COMPILER_IS_CLANG))
     return ()
 endif ()
 
