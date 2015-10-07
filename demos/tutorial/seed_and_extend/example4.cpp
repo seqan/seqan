@@ -32,7 +32,7 @@ int main()
                                       endPositionV(seed)));
 
     globalAlignment(align, scoringScheme);
-    std::cerr << "Resulting alignment\n" << align << "\n";
+    std::cout << "Resulting alignment\n" << align << "\n";
 //![example]
 
 //![footer]

@@ -180,41 +180,16 @@ Assignment 1
      #. Using the ``getRevCompl`` function, get the reverse complement for every nucleotide ``genome`` and store it in reverse order ``revComplGenome``.
      #. Print out the original genome and the reverse complement.
 
-     .. code-block:: cpp
+        .. includefrags:: demos/tutorial/sequences/assignment_1_solution.cpp
+           :fragment: top
 
-        #include <seqan/sequence.h>
-        #include <seqan/basic.h>
-        #include <seqan/stream.h>
-        #include <seqan/file.h>
-        #include <seqan/modifier.h>
+        .. code-block:: cpp
 
-        using namespace seqan;
+           // Your code snippet here
 
-        Dna getRevCompl(Dna const & nucleotide)
-        {
-            if (nucleotide == (Dna)'A')
-                return (Dna)'T';
-            if (nucleotide == (Dna)'T')
-                return (Dna)'A';
-            if (nucleotide == (Dna)'C')
-                return (Dna)'G';
-            return (Dna)'C';
-        }
 
-        int main()
-        {
-            DnaString genome = "TATATACGCGCGAGTCGT";
-            DnaString revComplGenome;
-
-            // Your code snippet
-
-            // And to check if your output is correct,
-            // use the given SeqAn function reverseComplement(),
-            // which modifies the sequence in-place
-            reverseComplement(genome);
-            std::cout << genome << std::endl;
-            return 0;
-        }
+        .. includefrags:: demos/tutorial/sequences/assignment_1_solution.cpp
+           :fragment: bottom
 
    Hints
      Remember that the last element in ``genome`` is stored at position ``length(genome) - 1``.
@@ -224,47 +199,12 @@ Assignment 1
 
      .. container:: foldable
 
-        .. code-block:: cpp
+        .. includefrags:: demos/tutorial/sequences/assignment_1_solution.cpp
+            :fragment: full
 
-           #include <seqan/sequence.h>
-           #include <seqan/basic.h>
-           #include <seqan/stream.h>
-           #include <seqan/file.h>
-           #include <seqan/modifier.h>
 
-           using namespace seqan;
-
-           Dna getRevCompl(Dna const & nucleotide)
-           {
-               if (nucleotide == (Dna)'A')
-                   return (Dna)'T';
-               if (nucleotide == (Dna)'T')
-                   return (Dna)'A';
-               if (nucleotide == (Dna)'C')
-                   return (Dna)'G';
-               return (Dna)'C';
-           }
-
-           int main()
-           {
-               DnaString genome = "TATATACGCGCGAGTCGT";
-               DnaString revComplGenome;
-               resize(revComplGenome, length(genome));
-
-               for (unsigned i = 0; i < length(genome); ++i)
-               {
-                   revComplGenome[length(genome) - 1 - i] = getRevCompl(genome[i]);
-               }
-
-               std::cout << genome << std::endl;
-               std::cout << revComplGenome << std::endl;
-               reverseComplement(genome);
-               std::cout << genome << std::endl;
-               return 0;
-           }
-
-Workshop Assignment 1
-^^^^^^^^^^^^^^^^^^^^^
+Assignment 2
+^^^^^^^^^^^^
 
 .. container:: assignment
 
@@ -280,78 +220,29 @@ Workshop Assignment 1
    #. Build another String bsChr1 as a copy of chr1, and exchange every 'C' with a 'T', as in a bisulfite treated genome.
    #. Print alignments of the reads and chr1 (or bschr1) using the function ``printAlign`` and the string ``alignPosList``.
 
-   .. code-block:: cpp
+    .. includefrags:: demos/tutorial/sequences/assignment_2_solution.cpp
+          :fragment: one
 
-      #include <seqan/stream.h>
-      #include <seqan/sequence.h>
-      #include <seqan/file.h>
+    .. code-block:: cpp
 
-      using namespace seqan;
-      // Function to print simple alignment between two sequences with the same length
-      template <typename TText1, typename TText2>
-      void printAlign(TText1 const & genomeFragment, TText2 const & read)
-      {
-              std::cout <<  "Alignment " << std::endl;
-              std::cout << "  genome : " << genomeFragment << std::endl;
-              std::cout << "  read   : " << read << std::endl;
-      }
+        // Your code snippet here for 1.+2.
 
-      int main(int, char const **)
-      {
-          // Build reads and genomes
-          DnaString chr1 = "TATAATATTGCTATCGCGATATCGCTAGCTAGCTACGGATTATGCGCTCTG"
-                           "CGATATATCGCGCTAGATGTGCAGCTCGATCGAATGCACGTGTGTGCGATC"
-                           "GATTAGCGTCGATCATCGATCTATATTAGCGCGCGGTATCGGACGATCATA"
-                           "TTAGCGGTCTAGCATTTAG";
+    .. includefrags:: demos/tutorial/sequences/assignment_2_solution.cpp
+          :fragment: two
 
-          // Build List containing all reads
-          typedef String<DnaString> TDnaList;
-          TDnaList readList;
-          resize(readList, 4);
-          readList[0] = "TTGCTATCGCGATATCGCTAGCTAGCTACGGATTATGCGCTCTGCGATATATCGCGCT";
-          readList[1] = "TCGATTAGCGTCGATCATCGATCTATATTAGCGCGCGGTATCGGACGATCATATTAGCGGTCTAGCATT";
-          readList[2] = "AGCCTGCGTACGTTGCAGTGCGTGCGTAGACTGTTGCAAGCCGGGGGTTCATGTGCGCTGAAGCACACATGCACA";
-          readList[3] = "CGTGCACTGCTGACGTCGTGGTTGTCACATCGTCGTGCGTGCGTACTGCTGCTGACA";
+    .. code-block:: cpp
 
-          // Append a second chromosome sequence fragment to chr1
-          DnaString chr2 = "AGCCTGCGTACGTTGCAGTGCGTGCGTAGACTGTTGCAAGCCGGGGGTTCAT"
-                           "GTGCGCTGAAGCACACATGCACACGTCTCTGTGTTCCGACGTGTGTCACGTG"
-                           "CACTGCTGACGTCGTGGTTGTCACATCGTCGTGCGTGCGTACTGCTGCTGAC"
-                           "ACATGCTGCTG";
-          append(chr1, chr2);
+        // Your code snippet here for 3.
 
-          // Print readlist
-          std::cout << " \n Read list: " << std::endl;
-          for(unsigned i = 0; i < length(readList); ++i)
-              std::cout << readList[i] << std::endl;
+    .. includefrags:: demos/tutorial/sequences/assignment_2_solution.cpp
+          :fragment: three
 
-          // Assume we have mapped the 4 reads to chr1 (and chr2) and now have the mapping start positions (no gaps).
-          // Store the start position in a String alignPosList: 7, 100, 172, 272
+    .. code-block:: cpp
 
-          // Optional
-          // Bisulfite conversion
-          // Assume chr1 is beeing bisulfate treated: Copy chr1 to a new genome bsChr1 and exchange every 'C' with a 'T'
-          DnaString bsChr1;
+        // Your code snippet here for 3.
 
-          // Print alignments of the reads with chr1 (or bsChr1) sequence using the function printAlign
-          // and the positions in alignPosList.
-          // To do that, you have to create a copy of the fragment in chr1 (bsChr1) that is aligned to the read.
-          std::cout << " \n Print alignment: " << std::endl;
-          for(unsigned i = 0; i < length(readList); ++i)
-          {
-              // Temporary copy of begin position (beginPosition) from alignPosList
-              // of a given alignment between the read and the genome
-
-              // Genome fragment
-              DnaString genomeFragment;
-              // We have to create a copy of the corresponding fragment of the genome, where the read aligns to
-
-
-              // Call of our function to print the simple alignment
-              printAlign(genomeFragment, readList[i]);
-          }
-          return 1;
-      }
+    .. includefrags:: demos/tutorial/sequences/assignment_2_solution.cpp
+          :fragment: four
 
    Hints
      You have to create a copy of the fragment in chr1 (bsChr1) that is aligned to the read.
@@ -361,7 +252,8 @@ Workshop Assignment 1
 
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/sequences/string_assignment_1_solution.cpp
+        .. includefrags:: demos/tutorial/sequences/assignment_2_solution.cpp
+          :fragment: full
 
 Comparisons
 ^^^^^^^^^^^
@@ -445,7 +337,7 @@ In some cases, :dox:`AssignableConcept#move` can also perform an in-place conver
 
    acgtgcat
 
-Assignment 2
+Assignment 3
 ^^^^^^^^^^^^
 
 .. container:: assignment
@@ -484,31 +376,9 @@ Assignment 2
 
      .. container:: foldable
 
-        .. code-block:: cpp
+        .. includefrags:: demos/tutorial/sequences/assignment_3_solution.cpp
 
-           #include <seqan/stream.h>
-           #include <seqan/sequence.h>
-           #include <seqan/file.h>
-
-           using namespace seqan;
-
-           int main()
-           {
-               String<Dna5> nucleotides = "AGTCGTGNNANCT";
-               String<Dna5> lesser;
-               String<Dna5> greater;
-
-               for (unsigned i = 0; i < length(nucleotides); ++i){
-                   if (nucleotides[i] < 'G')
-                       appendValue(lesser, nucleotides[i]);
-                   else if (nucleotides[i] > 'G')
-                       appendValue(greater, nucleotides[i]);
-               }
-               std::cout << "Lesser nucleotides: " << lesser << std::endl;
-               std::cout << "Greater nucleotides: " << greater << std::endl;
-           }
-
-Assignment 3
+Assignment 4
 ^^^^^^^^^^^^
 
 .. container:: assignment
@@ -531,7 +401,7 @@ Assignment 3
 
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/sequences/lexical_assignment_solution.cpp
+        .. includefrags:: demos/tutorial/sequences/assignment_4_solution.cpp
 
 Segments
 ~~~~~~~~
@@ -575,7 +445,7 @@ The segment is *not* a copy of the sequence segment.
    If you want to change the host sequence, you have to explicilty modify this.
    If you want to modify only the segment, you have to explicitly make a copy of the string.
 
-Assignment 4
+Assignment 5
 ^^^^^^^^^^^^
 
 .. container:: assignment
@@ -591,17 +461,34 @@ Assignment 4
      In the main function a fragment of the Dna5String ``genome`` is copied and passed together with the Dna5String ``read`` to a ``print`` function.
      Adjust the code to use an infix of the genome, instead of copying the corresponding fragment.
 
-     .. includefrags:: demos/tutorial/sequences/segments_assignment_hint.cpp
+    .. includefrags:: demos/tutorial/sequences/assignment_5_solution.cpp
+          :fragment: top
+
+
+    .. code-block:: cpp
+
+        // We have to create a copy of the corresponding fragment of the genome, where the read aligns to
+        for (unsigned i = 0; i < length(read); ++i)
+        {
+            appendValue(genomeFragment, genome[beginPosition + i]);
+        }
+
+
+    .. includefrags:: demos/tutorial/sequences/assignment_5_solution.cpp
+          :fragment: bottom
+
+
 
    Solution
      Click **more...** to see the solution.
 
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/sequences/segments_assignment_solution.cpp
+        .. includefrags:: demos/tutorial/sequences/assignment_5_solution.cpp
+            :fragment: full
 
-Workshop Assignment 2
-^^^^^^^^^^^^^^^^^^^^^
+Assignment 6
+^^^^^^^^^^^^
 
 .. container:: assignment
 
@@ -619,4 +506,4 @@ Workshop Assignment 2
 
     .. container:: foldable
 
-       .. includefrags:: demos/tutorial/sequences/segments_assignment_2_solution.cpp
+       .. includefrags:: demos/tutorial/sequences/assignment_6_solution.cpp

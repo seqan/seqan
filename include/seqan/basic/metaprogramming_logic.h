@@ -67,18 +67,18 @@ namespace seqan {
  *
  * Print the values of the tags/metafunctions <tt>True</tt> and <tt>False</tt>.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp tags true false
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp tags true false
  *
  * @section Inheriting from True and False
  *
  * The two tags True and False have the special property that they can also be used as metafunctions and both have a
  * <tt>VALUE</tt> as well as a <tt>TYPE</tt>.  This property makes it very convenient to define metafunctions by inheriting from the <tt>True</tt> or <tt>False</tt>.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp inheriting from true false
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp inheriting from true false
  *
  * The metafunction <tt>IsInt32</tt> can now be used as follows.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp using isint32
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp using isint32
  */
 
 /*!
@@ -158,7 +158,7 @@ struct False
  *
  * Here is an example for this:
  *
- * @snippet demos/basic/metaprogramming_logic.cpp shortcut to type feature
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp shortcut to type feature
  *
  * @see LogicalValuesTags#True
  * @see LogicalValuesTags#False
@@ -179,11 +179,11 @@ struct False
  *
  * We define the following two helper functions.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp true false print helpers
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp true false print helpers
  *
  * Now, we can write the following code and achieve the following output:
  *
- * @snippet demos/basic/metaprogramming_logic.cpp print bool type eval
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp print bool type eval
  */
 
 template <bool B>
@@ -213,11 +213,11 @@ struct Eval<true> : True {};
  *
  * We define the following two helper functions.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp true false print helpers
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp true false print helpers
  *
  * Now, we can write the following code using Not.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp print bool type not
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp print bool type not
  */
 
 template <typename TBool1>
@@ -249,11 +249,11 @@ struct Not<True> : False {};
  *
  * We define the following two helper functions.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp true false print helpers
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp true false print helpers
  *
  * Now, we can write the following code using NotC.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp print bool type notc
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp print bool type notc
  */
 
 template <bool B>
@@ -286,11 +286,11 @@ struct NotC<true> : False {};
  *
  * We define the following two helper functions.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp true false print helpers
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp true false print helpers
  *
  * Now, we can write the following code using Or.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp print bool type or
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp print bool type or
  */
 
 template <typename TBool1, typename TBool2>
@@ -327,11 +327,11 @@ struct Or<True, True> : True {};
  *
  * We define the following two helper functions.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp true false print helpers
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp true false print helpers
  *
  * Now, we can write the following code using OrC.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp print bool type orc
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp print bool type orc
  */
 
 template <bool B1, bool B2>
@@ -368,11 +368,11 @@ struct OrC<true, true> : True {};
  *
  * We define the following two helper functions.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp true false print helpers
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp true false print helpers
  *
  * Now, we can write the following code using And.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp print bool type and
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp print bool type and
  */
 
 template <typename TBool1, typename TBool2>
@@ -409,11 +409,11 @@ struct And<True, True> : True {};
  *
  * We define the following two helper functions.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp true false print helpers
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp true false print helpers
  *
  * Now, we can write the following code using AndC.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp print bool type andc
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp print bool type andc
  */
 
 template <bool B1, bool B2>
@@ -449,11 +449,11 @@ struct AndC<true, true> : True {};
  *
  * We define the following two helper functions.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp true false print helpers
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp true false print helpers
  *
  * Now, we can write the following code using If.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp print bool type if
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp print bool type if
  */
 
 template <typename TCondition, typename T1, typename T2>
@@ -526,11 +526,11 @@ ifSwitch(False, TArgT const &, TArgF const & argFalse)
  *
  * We define the following two helper functions.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp true false print helpers
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp true false print helpers
  *
  * Now, we can write the following code using If.
  *
- * @snippet demos/basic/metaprogramming_logic.cpp print bool type if
+ * @snippet demos/dox/basic/metaprogramming_logic.cpp print bool type if
  */
 
 template <bool FLAG, typename T1, typename T2>

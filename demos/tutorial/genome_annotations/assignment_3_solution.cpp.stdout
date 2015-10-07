@@ -1,0 +1,6 @@
+  type: exon
+  begin position: 149
+  end position: 200
+  id: 3
+  parent id: 2
+  parent name: 381.000.1

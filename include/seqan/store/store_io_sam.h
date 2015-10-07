@@ -338,20 +338,6 @@ readRecords(FragmentStore<TSpec, TConfig> & store,
     }
 }
 
-/*!
- * @fn FragmentStore#readRecords
- * @brief Read all records from one @link BamFileIn @endlink.
- *
- * @signature void readRecords(store, bamFileIn, importFlags);
- *
- * @param[in,out] store       The @link FragmentStore @endlink object to store the records into.
- * @param[in,out] bamFileIn   The @link BamFileIn @endlink object to read from.
- * @param[in]     importFlags The import flags.
- *
- * @throw IOError On low-level I/O errors.
- * @throw ParseError On high-level file format errors.
- */
-
 template <typename TFSSpec, typename TConfig, typename TDirection, typename TSpec>
 inline void
 readRecords(FragmentStore<TFSSpec, TConfig> & store,
@@ -1122,19 +1108,6 @@ writeRecords(FormattedFile<Bam, Output, TSpec> & bamFile,
     // 2. write aligments
     writeAlignments(bamFile, store, functor);
 }
-
-/*!
- * @fn FragmentStore#writeRecords
- * @brief Write all records to one @link BamFileOut @endlink.
- *
- * @signature void readRecords(bamFileOut, store);
- *
- * @param[in,out] bamFileOut  The @link BamFileOut @endlink object to write into.
- * @param[in]     store       The @link FragmentStore @endlink object.
- *
- * @throw IOError On low-level I/O errors.
- * @throw ParseError On high-level file format errors.
- */
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig>
 inline void

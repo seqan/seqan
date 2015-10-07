@@ -66,7 +66,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * The following example program searches for three needles (<tt>queries</tt>) in two haystack sequences (<tt>db</tt>)
  * using the Aho-Corasick algorithm.
  *
- * @include demos/find/finder_aho_corasick.cpp
+ * @include demos/dox/find/finder_aho_corasick.cpp
  *
  * When executed, this program will create the following output.
  *
