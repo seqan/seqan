@@ -426,7 +426,9 @@ template < template <typename> class TRead, typename TSeq, typename TAdaptersArr
         }
         else
         {
-            // TODO adapter trimming for reverse Read
+            (void)spec;
+            (void)adapters;
+            //TODO adapter trimming for reverse Read
             //over = stripAdapter(read.seq, stats, adapters, spec, StripAdapterDirection<adapterDirection::forward>());
             //if (!seqan::empty(read.seqRev))
             //    over += stripAdapter(read.seqRev, stats, adapters[0], spec, StripAdapterDirection<adapterDirection::reverse>());
