@@ -94,5 +94,27 @@ int main()
     std::cout << preB << "\n";  // => "XXx"
 //![explicit segment]
 
+    // This section below is used to remove unused typedef warnings but is not
+    // shown anywhere within the docs.
+    TInfix2  _inf2;
+    TInfix3  _inf3;
+    TInfix4  _inf4;
+    TInfix5  _inf5;
+    TPrefix2 _pref2;
+    TInfix6  _inf6;
+    TInfix7  _inf7;
+    TInfix8  _inf8;
+    TSuffix2 _suf2;
+
+    (void) _inf2;
+    (void) _inf3;
+    (void) _inf4;
+    (void) _inf5;
+    (void) _inf6;
+    (void) _inf7;
+    (void) _inf8;
+    (void) _pref2;
+    (void) _suf2;
+
     return 0;
 }

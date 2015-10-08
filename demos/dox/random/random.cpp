@@ -13,9 +13,6 @@ int main()
     Rng<MersenneTwister> rng(SEED);
     std::cout << "pickRandomNumber(rng) == " << pickRandomNumber(rng) << std::endl;
 
-    typedef Value<Rng<MersenneTwister> >::Type TMTValue;
-    TMTValue value = pickRandomNumber(rng);
-
     Pdf<Uniform<double> > uniformDouble(0, 1);
     std::cout << "pickRandomNumber(rng, uniformDouble) == " << pickRandomNumber(rng, uniformDouble) << std::endl;
 

@@ -42,7 +42,6 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & /*journalSet*/,
 int main()
 {
     // Definition of the used types.
-    typedef String<Dna, Alloc<> > TSequence;
     typedef String<Dna, Journaled<Alloc<>, SortedArray, Alloc<> > > TJournal;
     typedef StringSet<TJournal, Owner<JournaledSet> > TJournaledSet;
 
@@ -51,7 +50,10 @@ int main()
     SeqFileIn databaseFile(toCString(seqDatabasePath));
 
     // Reading each sequence and journal them.
+    TJournaledSet journalSet;
+    JoinConfig<GlobalAlign<JournaledCompact> > joinConfig;
     // [D] Construct Journaled Set and call loadAndJoin
+    loadAndJoin(journalSet, databaseFile, joinConfig);
 
     std::cout << "Done!" << std::endl;
 

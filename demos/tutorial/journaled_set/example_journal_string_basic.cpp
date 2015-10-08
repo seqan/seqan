@@ -13,7 +13,7 @@ int main()
 //![typedef]
 
 //![init]
-    String<char> hostStr = "thisisahostsequence";
+    THost hostStr = "thisisahostsequence";
     TJournaledString journalStr;
     setHost(journalStr, hostStr);
 
