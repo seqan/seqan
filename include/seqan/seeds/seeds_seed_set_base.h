@@ -125,7 +125,7 @@ class SeedSet;
  *
  * @section Examples
  *
- * @include demos/seeds/seeds_add_seed.cpp
+ * @include demos/dox/seeds/seeds_add_seed.cpp
  *
  * The output is as follows:
  *

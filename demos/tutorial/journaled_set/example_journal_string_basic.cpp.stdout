@@ -1,0 +1,14 @@
+After creating the Journaled String:
+Host: thisisahostsequence
+Journal: thisisahostsequence
+Nodes: JournalEntries({segmentSource=1, virtualPosition=0, physicalPosition=0, physicalOriginPosition=0, length=19})
+
+After modifying the Journaled String:
+Host: thisisahostsequence
+Journal: thisisamodifiedhost
+Nodes: JournalEntries({segmentSource=1, virtualPosition=0, physicalPosition=0, physicalOriginPosition=0, length=7}, {segmentSource=2, virtualPosition=7, physicalPosition=0, physicalOriginPosition=0, length=8}, {segmentSource=1, virtualPosition=15, physicalPosition=7, physicalOriginPosition=7, length=4})
+
+After flatten the Journaled String:
+Host: thisisamodifiedhost
+Journal: thisisamodifiedhost
+Nodes: JournalEntries({segmentSource=1, virtualPosition=0, physicalPosition=0, physicalOriginPosition=0, length=19})

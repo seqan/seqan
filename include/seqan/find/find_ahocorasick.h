@@ -66,7 +66,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * The following example program searches for three needles (<tt>queries</tt>) in two haystack sequences (<tt>db</tt>)
  * using the Aho-Corasick algorithm.
  *
- * @include demos/find/finder_aho_corasick.cpp
+ * @include demos/dox/find/finder_aho_corasick.cpp
  *
  * When executed, this program will create the following output.
  *
@@ -115,30 +115,24 @@ public:
     Pattern() : data_keywordIndex(0), data_needleLength(0)
     {}
 
+#ifdef SEQAN_CXX11_STANDARD
+    template <typename TNeedle2>
+    Pattern(TNeedle2 && ndl,
+            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
+        : data_keywordIndex(0), data_needleLength(0)
+    {
+        setHost(*this, std::forward<TNeedle2>(ndl));
+        ignoreUnusedVariableWarning(dummy);
+    }
+#else
+
     template <typename TNeedle2>
     Pattern(TNeedle2 const & ndl) : data_keywordIndex(0), data_needleLength(0)
     {
         setHost(*this, ndl);
     }
-
+#endif  // SEQAN_CXX11_STANDARD
 //____________________________________________________________________________
-};
-
-
-//////////////////////////////////////////////////////////////////////////////
-// Host Metafunctions
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle>
-struct Host< Pattern<TNeedle, AhoCorasick> >
-{
-    typedef TNeedle Type;
-};
-
-template <typename TNeedle>
-struct Host< Pattern<TNeedle, AhoCorasick> const>
-{
-    typedef TNeedle const Type;
 };
 
 
@@ -213,11 +207,10 @@ _createAcTrie(Pattern<TNeedle, AhoCorasick> & me)
 }
 
 
-template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, AhoCorasick> & me, TNeedle2 const & needle) {
+template <typename TNeedle>
+void _reinitPattern(Pattern<TNeedle, AhoCorasick> & me) {
     SEQAN_CHECKPOINT;
-    SEQAN_ASSERT_NOT(empty(needle));
-    setValue(me.data_host, needle);
+    SEQAN_ASSERT_NOT(empty(needle(me)));
     clear(me.data_graph);
     clear(me.data_supplyMap);
     clear(me.data_endPositions);
@@ -238,13 +231,6 @@ void setHost (Pattern<TNeedle, AhoCorasick> & me, TNeedle2 const & needle) {
     //for(unsigned int i=0;i<length(me.data_supplyMap);++i) {
     //    std::cout << i << "->" << getProperty(me.data_supplyMap,i) << std::endl;
     //}
-}
-
-template <typename TNeedle, typename TNeedle2>
-inline void
-setHost (Pattern<TNeedle, AhoCorasick> & me, TNeedle2 & needle)
-{
-    setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
 }
 
 //____________________________________________________________________________

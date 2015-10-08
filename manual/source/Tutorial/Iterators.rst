@@ -174,7 +174,7 @@ Assignment 1
 
       .. container:: foldable
 
-         .. includefrags:: demos/tutorial/iterators/iterators_assignment_1_solution.cpp
+         .. includefrags:: demos/tutorial/iterators/assignment_1_solution.cpp
 
 Assignment 2
 ^^^^^^^^^^^^
@@ -193,7 +193,7 @@ Assignment 2
 
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/iterators/iterators_assignment_2_solution.cpp
+        .. includefrags:: demos/tutorial/iterators/assignment_2_solution.cpp
 
 Workshop Assignment 3
 ^^^^^^^^^^^^^^^^^^^^^
@@ -289,7 +289,7 @@ Workshop Assignment 3
 
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/iterators/iterators_assignment_3_workshop_solution.cpp
+        .. includefrags:: demos/tutorial/iterators/assignment_3_workshop_solution.cpp
 
 Workshop Assignment 4
 ^^^^^^^^^^^^^^^^^^^^^
@@ -300,11 +300,11 @@ Workshop Assignment 4
      Review
 
    Objective
-     Now, use rooted iterators in the example from Workshop ASsignment 3.
+     Now, use rooted iterators in the example from Workshop Assignment 3.
 
    Solution
      Click **more...** to see the solution.
 
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/iterators/iterators_assignment_4_workshop_solution.cpp
+        .. includefrags:: demos/tutorial/iterators/assignment_4_workshop_solution.cpp

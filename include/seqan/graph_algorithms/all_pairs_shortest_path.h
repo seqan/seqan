@@ -170,9 +170,9 @@ _extendShortestPaths(TMatrix& local,
  *
  * @section Example
  *
- * @include demos/graph_algorithms/all_pairs_shortest_path.cpp
+ * @include demos/dox/graph_algorithms/all_pairs_shortest_path.cpp
  *
- * @include demos/graph_algorithms/all_pairs_shortest_path.cpp.stdout
+ * @include demos/dox/graph_algorithms/all_pairs_shortest_path.cpp.stdout
  *
  * @see floydWarshallAlgorithm
  */

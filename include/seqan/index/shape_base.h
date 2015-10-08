@@ -471,7 +471,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * Two hash loop examples.
  * The first loop uses @link Shape#hash @endlink/@link Shape#hashNext @endlink while the second use @link Shape#hashInit @endlink/@link Shape#hashNext @endlink and can process all hashes within the loop.
  *
- * @include demos/index/shape_hash_init.cpp
+ * @include demos/dox/index/shape_hash_init.cpp
  *
  * @code{.stdout}
  * 0    0    1    4    17    4    18    11    47    63    62    56

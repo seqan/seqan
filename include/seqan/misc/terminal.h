@@ -163,7 +163,7 @@ inline bool isAnsiColorTerminal()
  *
  * The following demonstrates the usage.
  *
- * @include demos/misc/get_terminal_size.cpp
+ * @include demos/dox/misc/get_terminal_size.cpp
  *
  * @see isTerminal
  * @see isAnsiColorTerminal

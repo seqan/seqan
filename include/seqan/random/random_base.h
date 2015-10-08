@@ -60,7 +60,7 @@ struct MersenneTwister;
  *
  * The following code shows how to generate random numbers and shuffle a text.
  *
- * @include demos/random/random.cpp
+ * @include demos/dox/random/random.cpp
  *
  * @code{.console}
  * pickRandomNumber(rng) == 1608637542

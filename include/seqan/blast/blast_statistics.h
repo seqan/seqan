@@ -906,8 +906,8 @@ _lengthAdjustment(TSize     const & dbLength,
  * @param[in,out]   blastMatch  A @link BlastMatch @endlink that has a valid align member.
  * @param[in]       context     A @link BlastIOContext @endlink with parameters and buffers.
  *
- * The @link BlastMatch::align @endlink member is used as in-parameter to compute the
- * @link BlastMatch::alignStats @endlink member. This includes the raw
+ * The alignRow-members (@link BlastMatch::alignRow0 @endlink, @link BlastMatch::alignRow1 @endlink) are used as 
+ * in-parameter to compute the @link BlastMatch::alignStats @endlink member. This includes the raw
  * score, amount of gaps, mismatches et cetera. This is a prerequisite for printing a match to file or computing it's
  * e-value.
  */
@@ -920,7 +920,7 @@ inline void
 computeAlignmentStats(TBlastMatch & match,
                       BlastIOContext<TScore, p, h> const & context)
 {
-    computeAlignmentStats(match.alignStats, match.align, seqanScheme(context.scoringScheme));
+    computeAlignmentStats(match.alignStats, match.alignRow0, match.alignRow1, seqanScheme(context.scoringScheme));
 }
 
 // ----------------------------------------------------------------------------
@@ -961,9 +961,9 @@ computeBitScore(double const rawScore, BlastScoringScheme<TScore> const & scheme
  *
  * This  will compute the bit-score for a @link BlastMatch @endlink. At least the following
  * members need to be set before calling this function:
- * <li> blastMatch.@link BlastMatch::alignStats @endlink.@link AlignmentStats::alignmentScore @endlink (if you have a valig
- * @link BlastMatch::align @endlink member set, you can call
- * @link BlastMatch#computeAlignmentStats @endlink on to compute the stats member). </li>
+ * <li> blastMatch.@link BlastMatch::alignStats @endlink.@link AlignmentStats::alignmentScore @endlink (if you have valid
+ * alignRow-members (@link BlastMatch::alignRow0 @endlink, @link BlastMatch::alignRow1 @endlink), you can call
+ * @link BlastMatch#computeAlignmentStats @endlink to compute the stats member). </li>
  */
 
 template <typename TBlastMatch,
@@ -1034,8 +1034,8 @@ computeEValue(__uint64 rawScore,
  *
  * This  will compute the e-value for a @link BlastMatch @endlink. At least the following
  * members need to be set before calling this function:
- * <li> blastMatch.@link BlastMatch::alignStats @endlink.@link AlignmentStats::alignmentScore @endlink (if you have a valig
- * @link BlastMatch::align @endlink member set, you can call
+ * <li> blastMatch.@link BlastMatch::alignStats @endlink.@link AlignmentStats::alignmentScore @endlink (if you have valid
+ * alignRow-members (@link BlastMatch::alignRow0 @endlink, @link BlastMatch::alignRow1 @endlink), you can call
  * @link BlastMatch#computeAlignmentStats @endlink to compute the stats member). </li>
  * <li> blastMatch.@link BlastMatch::qLength @endlink </li>
  * <li> context.@link BlastIOContext::dbTotalLength @endlink </li>
@@ -1052,7 +1052,8 @@ inline double
 computeEValue(TBlastMatch & match,
               BlastIOContext<TScore, p, h> & context)
 {
-    __uint64 ql = match.qLength; // convert to 64bit, once
+    // convert to 64bit and divide for translated sequences
+    __uint64 ql = match.qLength / (qIsTranslated(context.blastProgram) ? 3 : 1);
     // length adjustment not yet computed
     if (context._cachedLengthAdjustments.find(ql) == context._cachedLengthAdjustments.end())
         context._cachedLengthAdjustments[ql] = _lengthAdjustment(context.dbTotalLength, ql, context.scoringScheme);

@@ -144,7 +144,7 @@ _writeBamRecord(TTarget & target,
     // bin_mq_nl
     unsigned l = 0;
     _getLengthInRef(l, record.cigar);
-    record.bin =_reg2Bin(record.beginPos, record.beginPos + l);
+    record.bin =_reg2Bin(record.beginPos, record.beginPos + std::max(1u, l));
 
     // Write fixed-size BamAlignmentRecordCore.
     appendRawPod(target, (BamAlignmentRecordCore &)record);

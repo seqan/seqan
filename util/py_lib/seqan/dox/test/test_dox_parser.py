@@ -222,6 +222,7 @@ class TestMacroParsing(TestDoxParserBase):
                '@param param The parameter.\n'
                '@return TString A path as <tt>char const *</tt>.\n'
                '@throw Exception The exception type.\n'
+               '@datarace This macro is not thread safe.\n'
                '\n'
                '@section This is the first section.\n'
                '\n'
@@ -246,6 +247,8 @@ class TestMacroParsing(TestDoxParserBase):
                     '@return TString A path as <tt>char const *</tt>.\n'
                     '\n'
                     '@throw Exception The exception type.\n'
+                    '\n'
+                    '@datarace This macro is not thread safe.\n'
                     '\n'
                     '@section This is the first section.\n'
                     '\n'
@@ -288,6 +291,16 @@ class TestFunctionParsing(TestDoxParserBase):
         self.assertEqual(fn.throws[0].name.text, 'Exception')
         txt = 'The thrown exception'
         self.assertEqual(fn.throws[0].text.text, txt)
+        
+    def testDataRace(self):
+        txt = ('@fn funktion\n'
+               '@datarace This function is thread safe.')
+        parser = self.parseText(txt)
+        doc = parser.documentation
+        fn = doc.entries[0]
+        self.assertEqual(len(fn.dataraces), 1)
+        txt = 'This function is thread safe.'
+        self.assertEqual(fn.dataraces[0].text.text, txt)
 
     def testGlobalFull(self):
         txt = ('@fn funktion\n'
@@ -305,6 +318,8 @@ class TestFunctionParsing(TestDoxParserBase):
                '@return TRes2 The second return type.\n'
                '\n'
                '@throw Exception The thrown exception.\n'
+               '\n'
+               '@datarace This function is thread safe.\n'
                '\n'
                '@section This is the first section.\n'
                '\n'
@@ -338,6 +353,8 @@ class TestFunctionParsing(TestDoxParserBase):
                     '\n'
                     '@throw Exception The thrown exception.\n'
                     '\n'
+                    '@datarace This function is thread safe.\n'
+                    '\n'
                     '@section This is the first section.\n'
                     '\n'
                     'This is the first paragraph.\n'
@@ -370,6 +387,7 @@ class TestFunctionParsing(TestDoxParserBase):
                '@param     p2 The second parameter.\n'
                '@return TRes1 The first return type.\n'
                '@return TRes2 The second return type.\n'
+               '@datarace This function is thread safe.\n'
                '\n'
                '@section This is the first section.\n'
                '\n'
@@ -400,6 +418,8 @@ class TestFunctionParsing(TestDoxParserBase):
                     '\n'
                     '@return TRes1 The first return type.\n'
                     '@return TRes2 The second return type.\n'
+                    '\n'
+                    '@datarace This function is thread safe.\n'
                     '\n'
                     '@section This is the first section.\n'
                     '\n'

@@ -661,7 +661,7 @@ metafunction then use a ``TXyz`` return type in ``@return`` and document
 
 **Signature** ``@return Exception Label``
 
-Add note on a function or macro throwing ane xception.
+Add note on a function or macro throwing an exception.
 
 .. code-block:: cpp
 
@@ -675,6 +675,28 @@ Add note on a function or macro throwing ane xception.
      * @throw std::runtime_error If something goes wrong.
      */
     void myFunction(char const * filename);
+
+@datarace
+^^^^^^^^^
+
+**Signature** ``@datarace Description``
+
+Describe possible data races for functions and macros.
+If this value is not specified it defaults to ``Thread safety unknown!``
+
+.. code-block:: cpp
+
+    /*!
+     * @fn myFunction
+     * @brief Writes things to a file.
+     * @signature void myFunction(char const * filename);
+     *
+     * @param[in] filename File to write to.
+     *
+     * @datarace This function is not thread safe and concurrent writes to the file might invalidate the output.
+     */
+    void myFunction(char const * filename);
+
 
 @section
 ^^^^^^^^

@@ -152,6 +152,9 @@ macro (seqan_register_apps)
       set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
     endif ()
 
+    # Enable global exception handler for all seqan apps.
+    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
+
     # Get all direct entries of the current source directory into ENTRIES.
     file (GLOB ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -569,17 +572,20 @@ endmacro (_seqan_setup_demo_test CPP_FILE)
 
 # Install all demo source files.
 macro (seqan_install_demos_release)
-    # Set flags for SeqAn.
-    set (SEQAN_FIND_ENABLE_TESTING 0)
-    set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DSEQAN_ENABLE_DEBUG=0")
-    set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DSEQAN_ENABLE_DEBUG=0")
-    set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
+    # Set flags for SeqAn. Use PARENT_SCOPE since it is called from within a function.
+    set (SEQAN_FIND_ENABLE_TESTING 0 PARENT_SCOPE)
+    set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DSEQAN_ENABLE_DEBUG=0" PARENT_SCOPE)
+    set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DSEQAN_ENABLE_DEBUG=0" PARENT_SCOPE)
+    set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1" PARENT_SCOPE)
 
     # Get a list of all .cpp and .cu files in the current directory.
-    file (GLOB ENTRIES
+    file (GLOB_RECURSE ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cpp
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
+
+    # Set global definitions set for demos.
+    add_definitions (${SEQAN_DEFINITIONS})
 
     # Get path to current source directory, relative from root.  Will be used to install demos in.
     file (RELATIVE_PATH INSTALL_DIR "${SEQAN_ROOT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -616,9 +622,8 @@ macro (seqan_build_demos_develop PREFIX)
     seqan_setup_cuda_vars(ARCH sm_20 DEBUG_DEVICE DISABLE_WARNINGS)
 
     # Add SeqAn flags to CXX and NVCC flags.
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    #NOTE(h-2): it is not clear, why the flags have to be added to the defs, but they are not included otherwise
-    add_definitions(${CMAKE_CXX_FLAGS})
+    # Set to PARENT_SCOPE since this macro is executed from within a function which declares it's own scope.
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" PARENT_SCOPE)
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
@@ -651,6 +656,9 @@ function (seqan_register_demos)
     else (${ARGC} GREATER 0)
         set (PREFIX "")
     endif (${ARGC} GREATER 0)
+
+    # Enable global exception handler for demos.
+    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
 
     # Install demo source files when releasing and build demos when developing.
     if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE")
@@ -686,6 +694,9 @@ macro (seqan_register_tests)
             CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
     string (REGEX REPLACE "-DNDEBUG" ""
             CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+
+    # Add global exception handler
+    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
 
     # Conditionally enable coverage mode by setting the appropriate flags.
     if (MODEL STREQUAL "NightlyCoverage")

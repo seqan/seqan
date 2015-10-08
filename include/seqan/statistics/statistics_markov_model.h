@@ -63,7 +63,7 @@ namespace seqan {
  *
  * @subsection Build a MarkovModel from Background
  *
- * @include demos/statistics/build_markov_model.cpp
+ * @include demos/dox/statistics/build_markov_model.cpp
  *
  * The following example shows how to build a MarkovModel over a Dna alphabet from a set of background sequence.  After
  * build the model, we compute the zscore.
@@ -78,7 +78,7 @@ namespace seqan {
  * not have the background word set here but only the model, we compute the variance of a word using the function
  * calculateVariance from the alignment_free module.
  *
- * @include demos/statistics/load_markov_model.cpp
+ * @include demos/dox/statistics/load_markov_model.cpp
  *
  * @code{.console}
  * variance: 0.267919

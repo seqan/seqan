@@ -620,18 +620,18 @@ matchVerify(
 	SwiftSemiGlobal,					// Edit distance
 	TSufPrefSpec)						// Swift specialization
 {
-	typedef Segment<TGenome, InfixSegment>				TGenomeInfix;
-	typedef typename Value<TReadSet>::Type				TRead;
+	typedef Segment<TGenome, InfixSegment>              TGenomeInfix;
+	typedef typename Value<TReadSet>::Type              TRead;
 	
 	// find read match end
-	typedef Finder<TGenomeInfix>					TMyersFinder;
-	typedef typename Value<TMyersPatterns>::Type			TMyersPattern;
+	typedef Finder<TGenomeInfix>                        TMyersFinder;
+	typedef typename Value<TMyersPatterns>::Type        TMyersPattern;
 	
 	// find read match begin
-	typedef ModifiedString<TGenomeInfix, ModReverse>		TGenomeInfixRev;
-	typedef ModifiedString<TRead, ModReverse>			TReadRev;
-	typedef Finder<TGenomeInfixRev>					TMyersFinderRev;
-	typedef Pattern<TReadRev, MyersUkkonenGlobal>			TMyersPatternRev;
+	typedef ModifiedString<TGenomeInfix, ModReverse>    TGenomeInfixRev;
+	typedef ModifiedString<TRead, ModReverse>           TReadRev;
+	typedef Finder<TGenomeInfixRev>                     TMyersFinderRev;
+	typedef Pattern<TReadRev, MyersUkkonenGlobal>       TMyersPatternRev;
 
 	TMyersFinder myersFinder(inf);
 	TMyersPattern &myersPattern = forwardPatterns[rseqNo];  //have to make sure this only contains the prefix
@@ -673,12 +673,14 @@ matchVerify(
 	// find beginning of best semi-global alignment
 	TGenomeInfixRev		infRev(inf);
 	TMyersFinderRev		myersFinderRev(infRev);
-	TReadRev			readRev;
+    TReadRev            readRev;
+    TRead               readInf;  // Needs to be a global variable, since ModifiedString cannot hold a pointer to a temporary.
 	if(IsSameType<TSufPrefSpec,LongestSuffix>::VALUE)
-		setHost(readRev,infix(readSet[rseqNo],length(readSet[rseqNo])-options.minMatchLen,length(readSet[rseqNo])));
-	else
-		setHost(readRev,infix(readSet[rseqNo],0,options.minMatchLen));
-
+        readInf = infix(readSet[rseqNo],length(readSet[rseqNo])-options.minMatchLen,length(readSet[rseqNo]));
+    else
+		readInf = infix(readSet[rseqNo],0,options.minMatchLen);
+    setHost(readRev, readInf);
+    
 	TMyersPatternRev	myersPatternRev(readRev);
 	
 	_patternMatchNOfPattern(myersPatternRev, options.matchN);
@@ -775,7 +777,7 @@ extendMatch(TReadSet &readSet, TSize rseqNo, TInf & inf, TMatch &m, TOptions &op
 
     TQueryPrefix queryPrefix = prefix(readSet[rseqNo], beginPositionH(seed));
     TDatabasePrefix databasePrefix = prefix(inf, beginPositionV(seed));
-    extScore = _extendSeedGappedXDropOneDirection(seed, queryPrefix, databasePrefix, EXTEND_LEFT, scoreMatrix, scoreDropOff);
+    extScore = _extendSeedGappedXDropOneDirection(seed, databasePrefix, queryPrefix, EXTEND_LEFT, scoreMatrix, scoreDropOff);
     
 //	m.gBegin = leftDim1(seed) + beginPosition(inf);
 //	m.mScore = rightDim0(seed) - leftDim0(seed) + 1;
@@ -837,7 +839,7 @@ extendMatch(TReadSet &readSet, TSize rseqNo, TInf & inf, TMatch &m, TOptions &op
 
     TQuerySuffix querySuffix = suffix(readSet[rseqNo], endPositionH(seed));
     TDatabaseSuffix databaseSuffix = suffix(inf, endPositionV(seed));
-    extScore = _extendSeedGappedXDropOneDirection(seed, querySuffix, databaseSuffix, EXTEND_RIGHT, scoreMatrix, scoreDropOff);
+    extScore = _extendSeedGappedXDropOneDirection(seed, databaseSuffix, querySuffix, EXTEND_RIGHT, scoreMatrix, scoreDropOff);
 
 
 	//extendSeedScore(seed,extScore,scoreDropOff,scoreMatrix, readSet[rseqNo],inf,1,GappedXDrop());

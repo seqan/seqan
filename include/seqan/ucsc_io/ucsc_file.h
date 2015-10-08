@@ -67,7 +67,7 @@ typedef FormattedFile<Ucsc, Input>   UcscFileIn;
 // ----------------------------------------------------------------------------
 
 /*!
- * @class UcscFileInOut
+ * @class UcscFileOut
  * @signature typedef FormattedFile<Ucsc, Output> UcscFileOut;
  * @extends FormattedFileOut
  * @headerfile <seqan/ucsc_io.h>

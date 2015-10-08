@@ -17,7 +17,7 @@
  * This is only an example for @link createSuffixArray @endlink and similar functions. For an index based substring search
  * better use the more generic @link Finder @endlink class (see @Demo.Index Finder@ demo).
  *
- * @include demos/index/index_sufarray.cpp
+ * @include demos/dox/index/sufarray.cpp
  *
  * @code{.console}
  * weese@tanne:~/seqan$ cd demos

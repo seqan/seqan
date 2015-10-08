@@ -1,4 +1,4 @@
-seqansphinx>=0.3.0
+seqansphinx>=0.3.2
 sphinx_rtd_theme
 sphinxcontrib-bibtex
 nose

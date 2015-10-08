@@ -94,11 +94,11 @@ struct Position<BamTagsDict>
  *
  * @section Example
  *
- * @include demos/bam_io/bam_tags_dict.cpp
+ * @include demos/dox/bam_io/bam_tags_dict.cpp
  *
  * Output is:
  *
- * @include demos/bam_io/bam_tags_dict.cpp.stdout
+ * @include demos/dox/bam_io/bam_tags_dict.cpp.stdout
  *
  * @see getBamTypeSize
  * @see getBamTypeChar
@@ -324,6 +324,15 @@ _dataHost(BamTagsDict const & bamTags)
 // Function setHost()
 // ----------------------------------------------------------------------------
 
+#ifdef SEQAN_CXX11_STANDARD
+template <typename THost>
+inline void
+setHost(BamTagsDict & me, THost && host_)
+{
+    setValue(_dataHost(me), std::forward<THost>(host_));
+    clear(me._positions);
+}
+#else
 template <typename THost>
 inline void
 setHost(BamTagsDict & me, THost & host_)
@@ -341,7 +350,7 @@ setHost(BamTagsDict & me, THost const & host_)
     setValue(_dataHost(me), host_);
     clear(me._positions);
 }
-
+#endif  // SEQAN_CXX11_STANDARD
 // ----------------------------------------------------------------------------
 // Function length()
 // ----------------------------------------------------------------------------

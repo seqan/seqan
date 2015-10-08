@@ -72,9 +72,9 @@ namespace seqan {
  *
  * @section Example
  *
- * @include demos/graph_algorithms/transitive_closure.cpp
+ * @include demos/dox/graph_algorithms/transitive_closure.cpp
  *
- * @include demos/graph_algorithms/transitive_closure.cpp.stdout
+ * @include demos/dox/graph_algorithms/transitive_closure.cpp.stdout
  */
 template <typename TSpec, typename TMatrix>
 void transitiveClosure(TMatrix & closure,

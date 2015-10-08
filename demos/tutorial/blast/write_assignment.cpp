@@ -12,8 +12,8 @@ int main(int argc, char ** argv)
 
     typedef String<AminoAcid>               TSequence;
     typedef std::string                     TId;
-    typedef Align<TSequence, ArrayGaps>     TAlign;
-    typedef BlastMatch<TAlign>              TBlastMatch;
+    typedef Gaps<TSequence, ArrayGaps>      TGaps;
+    typedef BlastMatch<TGaps, TGaps>        TBlastMatch;
     typedef BlastRecord<TBlastMatch>        TBlastRecord;
     typedef BlastIOContext<Blosum62>        TContext;
 
@@ -75,16 +75,15 @@ int main(int argc, char ** argv)
             appendValue(r.matches, TBlastMatch(qIds[q], sIds[s]));
             TBlastMatch & m = back(records[q].matches);
 
-            resize(rows(m.align), 2);
-            assignSource(row(m.align, 0), queries[q]);
-            assignSource(row(m.align, 1), subjects[s]);
+            assignSource(m.alignRow0, queries[q]);
+            assignSource(m.alignRow1, subjects[s]);
 
-            localAlignment(m.align, seqanScheme(context(outfile).scoringScheme));
+            localAlignment(m.alignRow0, m.alignRow1, seqanScheme(context(outfile).scoringScheme));
 
-            m.qStart = beginPosition(row(m.align, 0));
-            m.qEnd   = endPosition(row(m.align, 0));
-            m.sStart = beginPosition(row(m.align, 1));
-            m.sEnd   = endPosition(row(m.align, 1));
+            m.qStart = beginPosition(m.alignRow0);
+            m.qEnd   = endPosition(m.alignRow0);
+            m.sStart = beginPosition(m.alignRow1);
+            m.sEnd   = endPosition(m.alignRow1);
 
             m.qLength = length(queries[q]);
             m.sLength = length(subjects[s]);
