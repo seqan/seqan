@@ -27,9 +27,9 @@ int main()
 
     // Compute the statistics of the alignment.
     AlignmentStats stats;
-    int scoreVal = computeAlignmentStats(stats, align, scoringScheme);
-    SEQAN_ASSERT_EQ(scoreVal, stats.alignmentScore);
+    computeAlignmentStats(stats, align, scoringScheme);
     std::cout << align
+              << "score:               " << stats.alignmentScore << "\n"
               << "gap opens:           " << stats.numGapOpens << "\n"
               << "gap extensions:      " << stats.numGapExtensions << "\n"
               << "num insertions:      " << stats.numInsertions << "\n"
@@ -47,10 +47,10 @@ int main()
     setClippedBeginPosition(row(align, 0), 5);
     setClippedBeginPosition(row(align, 1), 5);
 
-    scoreVal = computeAlignmentStats(stats, align, scoringScheme);
-    SEQAN_ASSERT_EQ(scoreVal, stats.alignmentScore);
+    computeAlignmentStats(stats, align, scoringScheme);
     std::cout << "Clipping alignment to (5, 100)\n"
               << align
+              << "score:               " << stats.alignmentScore << "\n"
               << "gap opens:           " << stats.numGapOpens << "\n"
               << "gap extensions:      " << stats.numGapExtensions << "\n"
               << "num insertions:      " << stats.numInsertions << "\n"
