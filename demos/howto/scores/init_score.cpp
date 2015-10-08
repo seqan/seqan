@@ -39,59 +39,12 @@ using namespace seqan;
 namespace seqan {
 
 // We have to create a new specialization of the ScoringMatrix_ class
-// for amino acids.  For this, we first create a new tag.
+// for the DNA alphabet.  For this, we first create a new tag.
 struct UserDefinedMatrix {};
-// We also do this for the DNA alphabet.
-struct AnotherUserDefinedMatrix {};
 
-// Then, we specialize the class ScoringMatrix_.
+// Then, we specialize the class ScoringMatrix_ for the Dna5 alphabet.
 template <>
-struct ScoringMatrixData_<int, AminoAcid, UserDefinedMatrix>
-{
-    enum
-    {
-        VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
-        TAB_SIZE = VALUE_SIZE * VALUE_SIZE
-    };
-
-    static inline int const * getData()
-    {
-        // The user defined data table.  In this case, we use the data from BLOSUM-30.
-        static int const _data[TAB_SIZE] =
-        {
-            4, -1, 0, 0, -3, 1, 0, 0, -2, 0, -1, 0, 1, -2, -1, 1, 1, -5, -4, 1, 0, 0, 0, -7,
-            -1, 8, -2, -1, -2, 3, -1, -2, -1, -3, -2, 1, 0, -1, -1, -1, -3, 0, 0, -1, -2, 0, -1, -7,
-            0, -2, 8, 1, -1, -1, -1, 0, -1, 0, -2, 0, 0, -1, -3, 0, 1, -7, -4, -2, 4, -1, 0, -7,
-            0, -1, 1, 9, -3, -1, 1, -1, -2, -4, -1, 0, -3, -5, -1, 0, -1, -4, -1, -2, 5, 0, -1, -7,
-            -3, -2, -1, -3, 17, -2, 1, -4, -5, -2, 0, -3, -2, -3, -3, -2, -2, -2, -6, -2, -2, 0, -2, -7,
-            1, 3, -1, -1, -2, 8, 2, -2, 0, -2, -2, 0, -1, -3, 0, -1, 0, -1, -1, -3, -1, 4, 0, -7,
-            0, -1, -1, 1, 1, 2, 6, -2, 0, -3, -1, 2, -1, -4, 1, 0, -2, -1, -2, -3, 0, 5, -1, -7,
-            0, -2, 0, -1, -4, -2, -2, 8, -3, -1, -2, -1, -2, -3, -1, 0, -2, 1, -3, -3, 0, -2, -1, -7,
-            -2, -1, -1, -2, -5, 0, 0, -3, 14, -2, -1, -2, 2, -3, 1, -1, -2, -5, 0, -3, -2, 0, -1, -7,
-            0, -3, 0, -4, -2, -2, -3, -1, -2, 6, 2, -2, 1, 0, -3, -1, 0, -3, -1, 4, -2, -3, 0, -7,
-            -1, -2, -2, -1, 0, -2, -1, -2, -1, 2, 4, -2, 2, 2, -3, -2, 0, -2, 3, 1, -1, -1, 0, -7,
-            0, 1, 0, 0, -3, 0, 2, -1, -2, -2, -2, 4, 2, -1, 1, 0, -1, -2, -1, -2, 0, 1, 0, -7,
-            1, 0, 0, -3, -2, -1, -1, -2, 2, 1, 2, 2, 6, -2, -4, -2, 0, -3, -1, 0, -2, -1, 0, -7,
-            -2, -1, -1, -5, -3, -3, -4, -3, -3, 0, 2, -1, -2, 10, -4, -1, -2, 1, 3, 1, -3, -4, -1, -7,
-            -1, -1, -3, -1, -3, 0, 1, -1, 1, -3, -3, 1, -4, -4, 11, -1, 0, -3, -2, -4, -2, 0, -1, -7,
-            1, -1, 0, 0, -2, -1, 0, 0, -1, -1, -2, 0, -2, -1, -1, 4, 2, -3, -2, -1, 0, -1, 0, -7,
-            1, -3, 1, -1, -2, 0, -2, -2, -2, 0, 0, -1, 0, -2, 0, 2, 5, -5, -1, 1, 0, -1, 0, -7,
-            -5, 0, -7, -4, -2, -1, -1, 1, -5, -3, -2, -2, -3, 1, -3, -3, -5, 20, 5, -3, -5, -1, -2, -7,
-            -4, 0, -4, -1, -6, -1, -2, -3, 0, -1, 3, -1, -1, 3, -2, -2, -1, 5, 9, 1, -3, -2, -1, -7,
-            1, -1, -2, -2, -2, -3, -3, -3, -3, 4, 1, -2, 0, 1, -4, -1, 1, -3, 1, 5, -2, -3, 0, -7,
-            0, -2, 4, 5, -2, -1, 0, 0, -2, -2, -1, 0, -2, -3, -2, 0, 0, -5, -3, -2, 5, 0, -1, -7,
-            0, 0, -1, 0, 0, 4, 5, -2, 0, -3, -1, 1, -1, -4, 0, -1, -1, -1, -2, -3, 0, 4, 0, -7,
-            0, -1, 0, -1, -2, 0, -1, -1, -1, 0, 0, 0, 0, -1, -1, 0, 0, -2, -1, 0, -1, 0, -1, -7,
-            -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, 1,
-        };
-        return _data;
-    }
-
-};
-
-// And we do this for the Dna5 alphabet.
-template <>
-struct ScoringMatrixData_<int, Dna5, AnotherUserDefinedMatrix>
+struct ScoringMatrixData_<int, Dna5, UserDefinedMatrix>
 {
     enum
     {
@@ -146,7 +99,7 @@ int main()
     //
     // Define types for the score value and the scoring scheme.
     typedef int TValue;
-    typedef Score<TValue, ScoreMatrix<AminoAcid, Default> > TScoringScheme;
+    typedef Score<TValue, ScoreMatrix<Dna5, Default> > TScoringScheme;
     // Define our gap scores in some constants.
     int const gapOpenScore = -1;
     int const gapExtendScore = -1;
@@ -160,38 +113,28 @@ int main()
     // 3. Fill the now-existing ScoreMatrix
     //
     // The scoring scheme now already has a matrix of the size
-    // ValueSize<AminoAcid>::VALUE x ValueSize<AminoAcid>::VALUE which
+    // ValueSize<Dna5>::VALUE x ValueSize<Dna5>::VALUE which
     // we can now fill.
 
-    // 3.1 First, fill it with BLOSUM30.
-    std::cout << "BLOSUM 30" << std::endl;
-    setDefaultScoreMatrix(scoringScheme, Blosum30_());
-    showScoringMatrix(scoringScheme);
-
-    // 3.2 Now, we fill it with the product of the coordinates.
+    // 3.1 We fill the scoring scheme with the product of the coordinates.
     std::cout << std::endl << "Coordinate Products" << std::endl;
-    for (unsigned i = 0; i < ValueSize<AminoAcid>::VALUE; ++i)
+    for (unsigned i = 0; i < ValueSize<Dna5>::VALUE; ++i)
     {
-        for (unsigned j = 0; j < ValueSize<AminoAcid>::VALUE; ++j)
+        for (unsigned j = 0; j < ValueSize<Dna5>::VALUE; ++j)
         {
-            setScore(scoringScheme, AminoAcid(i), AminoAcid(j), i * j);
+            setScore(scoringScheme, Dna5(i), Dna5(j), i * j);
         }
     }
     showScoringMatrix(scoringScheme);
 
-    // 3.3 Now, we fill it with the user defined matrix above.
-    std::cout << "User defined matrix (also BLOSUM 30)..." << std::endl;
+    // 3.2 Now, we fill it with the user defined matrix above.
+    std::cout << "User defined matrix (also Dna5 scoring matrix)..." << std::endl;
     setDefaultScoreMatrix(scoringScheme, UserDefinedMatrix());
     showScoringMatrix(scoringScheme);
 
-    // 4. Create ScoreMatrix object with user-defined matrix.
-    std::cout << "User scoring scheme..." << std::endl;
-    Score<TValue, ScoreMatrix<AminoAcid, UserDefinedMatrix> > userScoringScheme;
-    showScoringMatrix(userScoringScheme);
-
-    // 5. Show our Dna5 scoring matrix.
+    // 4. Show our user-defined Dna5 scoring matrix.
     std::cout << "User DNA scoring scheme..." << std::endl;
-    Score<TValue, ScoreMatrix<Dna5, AnotherUserDefinedMatrix> > userScoringSchemeDna;
+    Score<TValue, ScoreMatrix<Dna5, UserDefinedMatrix> > userScoringSchemeDna;
     showScoringMatrix(userScoringSchemeDna);
 
     return 0;
