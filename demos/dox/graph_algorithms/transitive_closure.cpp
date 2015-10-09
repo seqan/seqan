@@ -7,7 +7,6 @@ int main()
 {
     typedef Graph<Directed<> > TGraph;
     typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
-    typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef Size<TGraph>::Type TSize;
 
     // Create graph with 5 directed edges (3,0), (1,2), ...
