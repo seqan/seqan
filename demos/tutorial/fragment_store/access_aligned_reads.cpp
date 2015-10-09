@@ -21,7 +21,6 @@ int main()
 //![includes]
 
 //![typedefs]
-    typedef Value<TStore::TReadSeqStore>::Type                              TReadSeq;
     typedef Value<TStore::TContigStore>::Type                               TContig;
     typedef Value<TStore::TAlignedReadStore>::Type                          TAlignedRead;
 
