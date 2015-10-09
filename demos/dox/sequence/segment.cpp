@@ -75,7 +75,7 @@ int main()
 //![basic operations]
 
 //![metafunction examples]
-/*  typedef Infix<TInfix>::Type  TInfix2;  // == TInfix
+    typedef Infix<TInfix>::Type  TInfix2;  // == TInfix
     typedef Prefix<TInfix>::Type TInfix3;  // == TInfix
     typedef Suffix<TInfix>::Type TInfix4;  // == TInfix
 
@@ -85,7 +85,7 @@ int main()
 
     typedef Infix<TSuffix>::Type  TInfix7;   // == TInfix
     typedef Prefix<TSuffix>::Type TInfix8;   // == TPrefix
-    typedef Suffix<TSuffix>::Type TSuffix2;  // == TSuffix */
+    typedef Suffix<TSuffix>::Type TSuffix2;  // == TSuffix
 //![metafunction examples]
 
 //![explicit segment]
@@ -95,7 +95,7 @@ int main()
 //![explicit segment]
 
     // This section below is used to remove unused typedef warnings but is not
-    // shown anywhere within the docs.
+    // shown anywhere within the docs. Only the fragments above are displayed.
     TInfix2  _inf2;
     TInfix3  _inf3;
     TInfix4  _inf4;
@@ -106,15 +106,15 @@ int main()
     TInfix8  _inf8;
     TSuffix2 _suf2;
 
-    (void) _inf2;
-    (void) _inf3;
-    (void) _inf4;
-    (void) _inf5;
-    (void) _inf6;
-    (void) _inf7;
-    (void) _inf8;
-    (void) _pref2;
-    (void) _suf2;
+    ignoreUnusedVariableWarning(_inf2);
+    ignoreUnusedVariableWarning(_inf3);
+    ignoreUnusedVariableWarning(_inf4);
+    ignoreUnusedVariableWarning(_inf5);
+    ignoreUnusedVariableWarning(_inf6);
+    ignoreUnusedVariableWarning(_inf7);
+    ignoreUnusedVariableWarning(_inf8);
+    ignoreUnusedVariableWarning(_pref2);
+    ignoreUnusedVariableWarning(_suf2);
 
     return 0;
 }

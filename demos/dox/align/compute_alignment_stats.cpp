@@ -61,6 +61,5 @@ int main()
               << "num negative scores: " << stats.numNegativeScores << "\n"
               << "percent similarity:  " << stats.alignmentSimilarity << "\n"
               << "percent identity:    " << stats.alignmentIdentity << "\n";
-    (void)scoreVal; // don't produce "set but not used" warning w/o DEBUG
     return 0;
 }
