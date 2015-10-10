@@ -169,7 +169,7 @@ unsigned int _preTrim(std::vector<TRead<TSeq>>& reads, const unsigned head, cons
         insertToken.reserve(8 + head + tail);
     std::for_each(reads.begin(), reads.end(), [head, tail, &insertToken](auto& read)
     {
-        const auto seqLen = length(read.seq);
+        auto seqLen = length(read.seq);
         if (seqLen > (head + tail))
         {
             if (head > 0)
@@ -180,7 +180,7 @@ unsigned int _preTrim(std::vector<TRead<TSeq>>& reads, const unsigned head, cons
             }
             if (tail > 0)
             {
-                const auto seqLen = length(read.seq);
+                seqLen = length(read.seq);
                 if (tagTrimming)
                     insertToken += ":TR:" + std::string(suffix(read.seq, seqLen - tail));
                 erase(read.seq, seqLen - tail, seqLen);

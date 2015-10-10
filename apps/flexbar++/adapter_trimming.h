@@ -104,17 +104,18 @@ struct AdapterItem
     unsigned int overhang;
     unsigned id;
     bool anchored;
+    bool reverse;
     TAdapterSequence seq;
 
-    AdapterItem() : adapterEnd(end3), overhang(0), id(0), anchored(false){};
-    AdapterItem(const TAdapterSequence &adapter) : adapterEnd(end3), overhang(0), id(0), anchored(false), seq(adapter){};
-    AdapterItem(const TAdapterSequence &adapter, const AdapterEnd adapterEnd, const unsigned overhang, const unsigned id, const bool anchored)
-        : adapterEnd(adapterEnd), overhang(overhang), id(id), anchored(anchored), seq(adapter) {};
+    AdapterItem() : adapterEnd(end3), overhang(0), id(0), anchored(false), reverse(false){};
+    AdapterItem(const TAdapterSequence &adapter) : adapterEnd(end3), overhang(0), id(0), anchored(false), reverse(false), seq(adapter){};
+    AdapterItem(const TAdapterSequence &adapter, const AdapterEnd adapterEnd, const unsigned overhang, const unsigned id, const bool anchored, const bool reverse)
+        : adapterEnd(adapterEnd), overhang(overhang), id(id), anchored(anchored), reverse(reverse), seq(adapter) {};
 
     AdapterItem getReverseComplement() const noexcept
     {
         auto seqCopy = seq;
-        return AdapterItem(TReverseComplement(seqCopy), adapterEnd, overhang, id, anchored);
+        return AdapterItem(TReverseComplement(seqCopy), adapterEnd, overhang, id, anchored, reverse);
     }
 
 
@@ -293,7 +294,6 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
     {
         matches.clear();
         {
-            typename TAdapters::value_type::TAdapterSequence adapterSequence;
             std::pair<unsigned, TAlign> ret;
             for (auto const& adapterItem : adapters)
             {
@@ -301,9 +301,12 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
                 //std::cout << "adapter: " << adapterItem.seq << std::endl;
                 if (static_cast<unsigned>(length(adapterItem.seq)) < spec.min_length)
                     continue;
+                if (TStripAdapterDirection::value == adapterDirection::reverse && adapterItem.reverse == false)
+                    continue;
+                if (TStripAdapterDirection::value == adapterDirection::forward && adapterItem.reverse == true)
+                    continue;
 
-                // always use banded alignment
-                adapterSequence = TStripAdapterDirection::value == adapterDirection::reverse ? adapterItem.getReverseComplement().seq : adapterItem.seq;
+                const auto& adapterSequence = adapterItem.seq;
                 if (adapterItem.adapterEnd == AdapterItem::end3)
                     if(!adapterItem.anchored)
                         alignPair(ret, seq, adapterSequence, seqan::AlignConfig<true, true, true, true>(), adapterItem.overhang, length(adapterItem.seq) - spec.min_length);
@@ -426,10 +429,9 @@ template < template <typename> class TRead, typename TSeq, typename TAdaptersArr
         }
         else
         {
-            // TODO adapter trimming for reverse Read
-            //over = stripAdapter(read.seq, stats, adapters, spec, StripAdapterDirection<adapterDirection::forward>());
-            //if (!seqan::empty(read.seqRev))
-            //    over += stripAdapter(read.seqRev, stats, adapters[0], spec, StripAdapterDirection<adapterDirection::reverse>());
+            over = stripAdapter(read.seq, stats, adapters, spec, StripAdapterDirection<adapterDirection::forward>());
+            if (!seqan::empty(read.seqRev))
+                over += stripAdapter(read.seqRev, stats, adapters, spec, StripAdapterDirection<adapterDirection::reverse>());
         }
         if (TTagAdapter::value && over != 0)
             insertAfterFirstToken(read.id, ":AdapterRemoved");
