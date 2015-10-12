@@ -239,7 +239,7 @@ Assignment 2
      .. container:: foldable
 
         A semi-global alignment is a special form of an overlap alignment often used when aligning short sequences again a long sequence.
-        Here we only allow free free end-gaps at the beginning and the end of the shorter sequence.
+        Here we only allow free end-gaps at the beginning and the end of the shorter sequence.
 
    Solution
      .. container:: foldable
@@ -338,7 +338,7 @@ Assignment 3
      Application
 
    Objective
-     Write a program that computes a fast global alignment between the :dox:`Rna` sequences ``AAGUGACUUAUUG`` and ``AGUCGGAUCUACUG`` using the Align data structure and the Levenshtein distance.
+     Write a program that computes a global alignment between the :dox:`Rna` sequences ``AAGUGACUUAUUG`` and ``AGUCGGAUCUACUG`` using the Myers-Hirschberg variant. You should use the Align data structure to store the alignment.
      Print the score and the alignment. Additionally, output for each row of the Align object the view positions of the gaps.
 
    Hint
@@ -358,18 +358,17 @@ Assignment 3
         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment3.cpp
            :fragment: main
 
-        In the next step we initialize our input StringSet ``strings`` and pass it as argument to the constructor of the AlignmentGraph ``alignG``.
+        In the next step we initialize our Align object ``align`` with the corresponding source files.
 
         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment3.cpp
            :fragment: init
 
-        Now we compute the alignment using the levenshtein distance and a AlignConfig object to set the correct free end-gaps.
-        In this example we put the shorter sequence on the vertical axis of our alignment matrix.
-        Hence, we have to use free end-gaps in the first and last row, which corresponds to the first and the last parameter in the AlignConfig object.
-        If you add the shorter sequence at first to ``strings``, then you simply have to flip the ``bool`` values of the AlignConfig object.
+        Now we compute the alignment using Myers-Hirschberg algorithm by specifying the correct tag at the end of the function.
 
         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment3.cpp
            :fragment: alignment
+
+        Finally, we iterate over both gap structures and print the view positions of the gaps within the sequences.
 
         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment3.cpp
            :fragment: view
@@ -403,24 +402,24 @@ SeqAn offers the classical Smith-Waterman algorithm that computes the best local
 
 We are going to demonstrate the usage of both in the following example where first the best local alignment of two character strings and then all local alignments of two DNA sequences with a score greater than or equal to 4 are computed.
 
-.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local.cpp
    :fragment: main
 
 Let's start with initializing the :dox:`Align` object to contain the two sequences.
 
-.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local.cpp
    :fragment: init1
 
 Now the best alignment given the scoring parameters is computed by the function :dox:`localAlignment`.
 The returned score value is printed directly, and the alignment itself in the next line.
 The functions :dox:`Gaps#clippedBeginPosition` and :dox:`Gaps#clippedEndPosition` can be used to retrieve the begin and end position of the matching subsequences within the original sequences.
 
-.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local.cpp
    :fragment: ali1
 
 Next, several local alignments of the two given DNA sequences are going to be computed. First, the :dox:`Align` object is created.
 
-.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local.cpp
    :fragment: init2
 
 A :dox:`LocalAlignmentEnumerator` object needs to be initialized on the :dox:`Align` object.
@@ -428,7 +427,7 @@ In addition to the Align object and the scoring scheme, we now also pass the ``f
 The ``WatermanEggert`` tag specifies the desired Waterman-Eggert algorithm.
 While the score of the local alignment satisfies the minimal score cutoff, the alignments are printed with their scores and the subsequence begin and end positions.
 
-.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local.cpp
    :fragment: ali2
 
 Here is the output of the first part of our example program:
@@ -485,17 +484,17 @@ Assignment 4
 
         The usual includes.
 
-        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local_assignment1.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local_assignment1.cpp
            :fragment: main
 
         The initialization of the :dox:`Align` object.
 
-        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local_assignment1.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local_assignment1.cpp
            :fragment: init
 
         Computing the three best alignments with the desired scoring parameters:
 
-        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local_assignment1.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local_assignment1.cpp
            :fragment: ali
 
         The resulting output is as follows.
