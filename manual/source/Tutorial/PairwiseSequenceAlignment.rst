@@ -403,24 +403,24 @@ SeqAn offers the classical Smith-Waterman algorithm that computes the best local
 
 We are going to demonstrate the usage of both in the following example where first the best local alignment of two character strings and then all local alignments of two DNA sequences with a score greater than or equal to 4 are computed.
 
-.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local.cpp
    :fragment: main
 
 Let's start with initializing the :dox:`Align` object to contain the two sequences.
 
-.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local.cpp
    :fragment: init1
 
 Now the best alignment given the scoring parameters is computed by the function :dox:`localAlignment`.
 The returned score value is printed directly, and the alignment itself in the next line.
 The functions :dox:`Gaps#clippedBeginPosition` and :dox:`Gaps#clippedEndPosition` can be used to retrieve the begin and end position of the matching subsequences within the original sequences.
 
-.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local.cpp
    :fragment: ali1
 
 Next, several local alignments of the two given DNA sequences are going to be computed. First, the :dox:`Align` object is created.
 
-.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local.cpp
    :fragment: init2
 
 A :dox:`LocalAlignmentEnumerator` object needs to be initialized on the :dox:`Align` object.
@@ -428,7 +428,7 @@ In addition to the Align object and the scoring scheme, we now also pass the ``f
 The ``WatermanEggert`` tag specifies the desired Waterman-Eggert algorithm.
 While the score of the local alignment satisfies the minimal score cutoff, the alignments are printed with their scores and the subsequence begin and end positions.
 
-.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local.cpp
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local.cpp
    :fragment: ali2
 
 Here is the output of the first part of our example program:
@@ -485,17 +485,17 @@ Assignment 4
 
         The usual includes.
 
-        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local_assignment1.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local_assignment1.cpp
            :fragment: main
 
         The initialization of the :dox:`Align` object.
 
-        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local_assignment1.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local_assignment1.cpp
            :fragment: init
 
         Computing the three best alignments with the desired scoring parameters:
 
-        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_pairwise_local_assignment1.cpp
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local_assignment1.cpp
            :fragment: ali
 
         The resulting output is as follows.
