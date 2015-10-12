@@ -239,7 +239,7 @@ Assignment 2
      .. container:: foldable
 
         A semi-global alignment is a special form of an overlap alignment often used when aligning short sequences again a long sequence.
-        Here we only allow free free end-gaps at the beginning and the end of the shorter sequence.
+        Here we only allow free end-gaps at the beginning and the end of the shorter sequence.
 
    Solution
      .. container:: foldable
@@ -338,7 +338,7 @@ Assignment 3
      Application
 
    Objective
-     Write a program that computes a fast global alignment between the :dox:`Rna` sequences ``AAGUGACUUAUUG`` and ``AGUCGGAUCUACUG`` using the Align data structure and the Levenshtein distance.
+     Write a program that computes a global alignment between the :dox:`Rna` sequences ``AAGUGACUUAUUG`` and ``AGUCGGAUCUACUG`` using the Myers-Hirschberg variant. You should use the Align data structure to store the alignment.
      Print the score and the alignment. Additionally, output for each row of the Align object the view positions of the gaps.
 
    Hint
@@ -358,18 +358,17 @@ Assignment 3
         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment3.cpp
            :fragment: main
 
-        In the next step we initialize our input StringSet ``strings`` and pass it as argument to the constructor of the AlignmentGraph ``alignG``.
+        In the next step we initialize our Align object ``align`` with the corresponding source files.
 
         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment3.cpp
            :fragment: init
 
-        Now we compute the alignment using the levenshtein distance and a AlignConfig object to set the correct free end-gaps.
-        In this example we put the shorter sequence on the vertical axis of our alignment matrix.
-        Hence, we have to use free end-gaps in the first and last row, which corresponds to the first and the last parameter in the AlignConfig object.
-        If you add the shorter sequence at first to ``strings``, then you simply have to flip the ``bool`` values of the AlignConfig object.
+        Now we compute the alignment using Myers-Hirschberg algorithm by specifying the correct tag at the end of the function.
 
         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment3.cpp
            :fragment: alignment
+
+        Finally, we iterate over both gap structures and print the view positions of the gaps within the sequences.
 
         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment3.cpp
            :fragment: view
