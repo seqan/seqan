@@ -74,9 +74,9 @@ namespace seqan {
  *
  * @section Example
  *
- * @include demos/graph_algorithms/strongly_connected_components.cpp
+ * @include demos/dox/graph_algorithms/strongly_connected_components.cpp
  *
- * @include demos/graph_algorithms/strongly_connected_components.cpp.stdout
+ * @include demos/dox/graph_algorithms/strongly_connected_components.cpp.stdout
  */
 template <typename TSpec, typename TComponents>
 typename Size<Graph<TSpec> >::Type

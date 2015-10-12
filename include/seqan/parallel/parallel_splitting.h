@@ -65,11 +65,11 @@ typedef Tag<Equidistant_> Equidistant;
  *
  * Simple example for equidistant (default) splitting.
  *
- * @include demos/parallel/splitter_example.cpp
+ * @include demos/dox/parallel/splitter_example.cpp
  *
  * The output is:
  *
- * @include demos/parallel/splitter_example.cpp.stdout
+ * @include demos/dox/parallel/splitter_example.cpp.stdout
  */
 
 /*!
@@ -109,7 +109,7 @@ typedef Tag<Equidistant_> Equidistant;
  *
  * Simple example for equidistant splitting.
  *
- * @include demos/parallel/splitter_example.cpp
+ * @include demos/dox/parallel/splitter_example.cpp
  *
  * Output:
  *

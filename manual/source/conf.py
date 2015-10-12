@@ -276,11 +276,11 @@ texinfo_documents = [
 
 # -- Options for the Disqus integration -------------------------------------
 
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-if on_rtd:
-    html_context = {
-      'disqus_shortname': 'seqan-manual',
-    }
+#on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+#if on_rtd:
+#    html_context = {
+#      'disqus_shortname': 'seqan-manual',
+#    }
 
 # -- Options for SeqAn plugins ----------------------------------------------
 

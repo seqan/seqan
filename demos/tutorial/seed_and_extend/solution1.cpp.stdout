@@ -1,0 +1,8 @@
+seed1
+beginPositionH == 6
+endPositionH == 14
+beginPositionV == 20
+endPositionV == 28
+lowerDiagonal == -18
+upperDiagonal == -14
+

@@ -73,27 +73,27 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
  *
  * @subsection Using ModReverseString
  *
- * @include demos/modifier/modified_string.cpp
+ * @include demos/dox/modifier/modified_string.cpp
  *
  * The output is als follows:
  *
- * @include demos/modifier/modified_string.cpp.stdout
+ * @include demos/dox/modifier/modified_string.cpp.stdout
  *
  * @subsection Using a custom functor for ModViewString
  *
- * @include demos/modifier/modified_string_mod_view.cpp
+ * @include demos/dox/modifier/modified_string_mod_view.cpp
  *
  * The output is as follows:
  *
- * @include demos/modifier/modified_string_mod_view.cpp.stdout
+ * @include demos/dox/modifier/modified_string_mod_view.cpp.stdout
  *
  * @subsection Using nested modified strings.
  *
- * @include demos/modifier/modified_string_nested.cpp
+ * @include demos/dox/modifier/modified_string_nested.cpp
  *
  * The output is as follows:
  *
- * @include demos/modifier/modified_string_nested.cpp.stdout
+ * @include demos/dox/modifier/modified_string_nested.cpp.stdout
  */
 
 template <typename THost, typename TSpec = void>
@@ -851,14 +851,14 @@ open(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > &,
 
 template <typename THost, typename TSpec >
 inline bool
-save(ModifiedString<THost, TSpec> &, const char *, int)
+save(ModifiedString<THost, TSpec> const &, const char *, int)
 {
     return true; // NOOP; this has to be done manually right now
 }
 
 template <typename THost, typename TSpec, typename TSpec2>
 inline bool
-save(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > &,
+save(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > const &,
      const char *,
      int)
 {

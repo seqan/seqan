@@ -123,7 +123,7 @@ namespace seqan {
  * The following example shows construction of a @link Dna @endlink (specialization of SimpleType) object with from
  * <tt>char</tt> and integer values.
  *
- * @snippet demos/basic/simple_type_construction.cpp simple type construction and assignment
+ * @snippet demos/dox/basic/simple_type_construction.cpp simple type construction and assignment
  */
 
 #ifdef PLATFORM_WINDOWS

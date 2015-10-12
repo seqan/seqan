@@ -82,11 +82,11 @@ typedef Tag<SparseChaining_> SparseChaining;
  * @endlink is built and filled with @link SimpleSeed @endlink object.  Then, a @link String @endlink of @link
  * SimpleSeed @endlink objects is defined and filled using the <tt>chainSeedsGlobally()</tt> function.
  *
- * @include demos/seeds/seeds_chaining.cpp
+ * @include demos/dox/seeds/seeds_chaining.cpp
  *
  * The output is as follows.  Only the first and last seeds are written to <tt>std::cout</tt>.
  *
- * @include demos/seeds/seeds_chaining.cpp.stdout
+ * @include demos/dox/seeds/seeds_chaining.cpp.stdout
  *
  * @section References
  *

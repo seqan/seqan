@@ -75,9 +75,9 @@ namespace seqan {
  *
  * @section Example
  *
- * @include demos/graph_algorithms/prims_algorithm.cpp
+ * @include demos/dox/graph_algorithms/prims_algorithm.cpp
  *
- * @include demos/graph_algorithms/prims_algorithm.cpp.stdout
+ * @include demos/dox/graph_algorithms/prims_algorithm.cpp.stdout
  *
  * @see kruskalsAlgorithm
  */

@@ -114,7 +114,7 @@ Assignment 1
 
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment1.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment1.cpp
 
    Hint
      * Open STL `std::fstream <http://www.cplusplus.com/reference/iostream/ifstream>`_ objects and use the function :dox:`File#read` with a SAM or GTF tag.
@@ -125,7 +125,7 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_solution1.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_solution1.cpp
            :fragment: solution
 
 Extract Gene Intervals
@@ -178,22 +178,22 @@ Assignment 2
 
         Extend the definitions:
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment2.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment2.cpp
            :fragment: definitions
 
         Add a function:
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment2.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment2.cpp
            :fragment: yourcode
 
         Extend the ``main`` function:
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment2.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment2.cpp
            :fragment: main
 
         and
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment2.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment2.cpp
            :fragment: main2
 
    Hint
@@ -216,7 +216,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_solution2.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_solution2.cpp
            :fragment: solution
 
 Construct Interval Trees
@@ -251,22 +251,22 @@ Assignment 3
 
         Extend the definitions:
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment3.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment3.cpp
            :fragment: definitions
 
         Add a function:
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment3.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment3.cpp
            :fragment: yourcode
 
         Extend the ``main`` function:
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment3.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment3.cpp
            :fragment: main
 
         and
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment3.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment3.cpp
            :fragment: main2
 
    Hint
@@ -288,7 +288,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_solution3.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_solution3.cpp
            :fragment: solution
 
 Compute Gene Coverage
@@ -335,22 +335,22 @@ Assignment 4
 
         Extend the definitions:
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment4.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment4.cpp
            :fragment: definitions
 
         Add a function:
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment4.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment4.cpp
            :fragment: yourcode
 
         Extend the ``main`` function:
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment4.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment4.cpp
            :fragment: main
 
         and
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment4.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment4.cpp
            :fragment: main2
 
    Hint
@@ -377,7 +377,7 @@ Assignment 4
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_solution4.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_solution4.cpp
            :fragment: solution
 
 
@@ -396,28 +396,8 @@ To compute the exon length of the gene (maximal exon length of all mRNA) use an 
 For the number of total mapped reads simply use the number of alignments in the :dox:`FragmentStore::alignedReadStore`.
 Output the gene names and their RPKM values separated by tabs as follows:
 
-.. code-block:: console
+.. includefrags:: demos/tutorial/simple_rna_seq/genequant_solution5.cpp.stdout
 
-   #gene name	        RPKM value
-   ENSMUSG00000053211	5932.12
-   ENSMUSG00000069053	10540.1
-   ENSMUSG00000056673	12271.3
-   ENSMUSG00000069049	10742.2
-   ENSMUSG00000091749	7287.66
-   ENSMUSG00000068457	37162.8
-   ENSMUSG00000069045	13675
-   ENSMUSG00000069044	6380.36
-   ENSMUSG00000077793	2088.62
-   ENSMUSG00000000103	7704.74
-   ENSMUSG00000091571	10965.2
-   ENSMUSG00000069036	127128
-   ENSMUSG00000090405	10965.2
-   ENSMUSG00000090652	35271.2
-   ENSMUSG00000052831	68211.2
-   ENSMUSG00000069031	37564.2
-   ENSMUSG00000071960	34984
-   ENSMUSG00000091987	37056.3
-   ENSMUSG00000090600	2310.18
 
 .. todo: Move the files to somewhere else.
 
@@ -440,12 +420,12 @@ Assignment 5
 
         Add a function:
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment5.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment5.cpp
            :fragment: yourcode
 
         Extend the ``main`` function:
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment5.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment5.cpp
            :fragment: main
 
    Hint
@@ -461,7 +441,7 @@ Assignment 5
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/rnaseq/genequant_solution5.cpp
+        .. includefrags:: demos/tutorial/simple_rna_seq/genequant_solution5.cpp
            :fragment: solution
 
 Next Steps

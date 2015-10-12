@@ -80,7 +80,7 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  *
  * In the following example, the types <tt>INPUT_FILE</tt>, <tt>OUTPUT_FILE</tt>, and <tt>DOUBLE</tt> are used.
  *
- * @include demos/arg_parse/argument_parser.cpp
+ * @include demos/dox/arg_parse/argument_parser.cpp
  */
 
 /*!
