@@ -44,7 +44,7 @@ But if you are working on another branch, for example ``master``, you can set th
 
 .. code-block:: console
 
-    (seqan-manual-env) $ export RTD_VERSION_SLUG='master'
+    (seqan-manual-env) $ export READTHEDOCS_VERSION='master'
 
 before you call ``make html`` as described in the previous step.
 This will generate the correct links to the master's version of the dox, i.e., ``http://docs.seqan.de/seqan/master/``
