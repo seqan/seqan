@@ -53,11 +53,11 @@ copyright = u'2015, The SeqAn Team'
 
 # <-- SeqAn: Determine current branch ----------------------------------------------
 
-# Get the current seqan-branch from the RTD_VERSION_SLUG enviornment variable.
+# Get the current seqan-branch from the READTHEDOCS_VERSION enviornment variable.
 # If it is not set, e.g., if you build it manually for testing you can export
 # this variable before calling make html in the manual directory to match your
 # checked out branch.
-seqan_branch = os.environ.get('RTD_VERSION_SLUG', 'develop')
+seqan_branch = os.environ.get('READTHEDOCS_VERSION', 'develop')
 
 # -- SeqAn: Determine current branch ---------------------------------------------->
 
