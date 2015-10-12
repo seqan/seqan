@@ -37,6 +37,7 @@
 #define HELPERFUNCTIONS_H_
 
 #include <string>
+#include <future>
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -92,6 +93,34 @@ void insert(std::string& dest, unsigned int k, const std::string& token)
 }
 
 //
+
+class semaphore
+{
+private:
+    std::mutex mutex_;
+    std::condition_variable condition_;
+    unsigned long count_;
+
+public:
+    semaphore()
+        : count_()
+    {}
+
+    void notify()
+    {
+        std::unique_lock<std::mutex> lock(mutex_);
+        ++count_;
+        condition_.notify_one();
+    }
+
+    void wait()
+    {
+        std::unique_lock<std::mutex> lock(mutex_);
+        while (!count_)
+            condition_.wait(lock);
+        --count_;
+    }
+};
 
 // always use the forward read for barcode detection
 template <template <typename> class TRead, typename TSeq, typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value>>

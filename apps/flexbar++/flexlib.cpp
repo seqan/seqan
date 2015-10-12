@@ -1504,24 +1504,22 @@ struct ReadWriter
         _run = true;
         _thread = std::thread([this]()
         {
-            TWriteItem* currentWriteItem = nullptr;
-            std::mutex _idleMutex;
+            std::unique_ptr<TWriteItem> currentWriteItem;
             while (_run)
             {
                 bool nothingToDo = true;
                 for (auto& readSet : _tlsReadSets)
                 {
-                    if ((currentWriteItem = readSet.load())!=nullptr)
+                    if (readSet.load()!=nullptr)
                     {
+                        currentWriteItem.reset(readSet.load());
                         readSet.store(nullptr); // make the slot free again
                         nothingToDo = false;
-                        _freeSlotAvailableCV.notify_one();
                         
                         const auto t1 = std::chrono::steady_clock::now();
                         _outputStreams.writeSeqs(std::move(*std::get<0>(*currentWriteItem)), std::get<1>(*currentWriteItem));
-                        std::get<0>(*currentWriteItem).reset(nullptr); // delete written data
+                        delete std::get<0>(*currentWriteItem); // delete written data
                         _stats += std::get<2>(*currentWriteItem);
-                        delete currentWriteItem;
                         // terminal output
                         const auto ioTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
                         _stats.ioTime += ioTime;
@@ -1530,26 +1528,23 @@ struct ReadWriter
                         {
                             const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - _startTime).count();
                             if (_programParams.showSpeed)
-                                std::cout << "\rreads processed: " << _stats.readCount << "   (" << static_cast<int>(_stats.readCount / deltaTime) << " Reads/s)";
+                                std::cout << "\rReads processed: " << _stats.readCount << "   (" << static_cast<int>(_stats.readCount / deltaTime) << " Reads/s)";
                             else
-                                std::cout << "\rreads processed: " << _stats.readCount;
+                                std::cout << "\rReads processed: " << _stats.readCount;
                             _lastScreenUpdate = std::chrono::steady_clock::now();
                         }
                     }
                 }
                 if (nothingToDo)
                 {
-                    //std::cout << "4" << std::endl;
-                    std::unique_lock<std::mutex> lk(_idleMutex);
-                    //_readSetAvailableCV.wait(lk);
+                    //std::cout << std::this_thread::get_id() << "-4" << std::endl;
                     std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
                 }
             }
         });
     }
-    void writeReads(TWriteItem* writeItem) noexcept    // blocks until item could be added
+    void writeReads(TWriteItem* writeItem)     // blocks until item could be added
     {
-        std::mutex _idleMutex;
         while (true)
         {
             for (auto& reads : _tlsReadSets)
@@ -1559,21 +1554,17 @@ struct ReadWriter
                     TWriteItem* temp = nullptr;
                     if (reads.compare_exchange_strong(temp, writeItem))
                     {
-                        _readSetAvailableCV.notify_one();
                         return;
                     }
                 }
             }
-            //std::cout << "3" << std::endl;
-            std::unique_lock<std::mutex> lk(_idleMutex);
-            //_freeSlotAvailableCV.wait(lk);
+            //std::cout << std::this_thread::get_id() << "-3" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
     }
     void getStats(std::tuple_element_t<2, TWriteItem>& stats)
     {
         _run = false;
-        _readSetAvailableCV.notify_all();
         if (_thread.joinable())
             _thread.join();
         stats = _stats;
@@ -1595,8 +1586,6 @@ struct ReadWriter
         std::chrono::time_point<std::chrono::steady_clock> _startTime;
         std::chrono::time_point<std::chrono::steady_clock> _lastScreenUpdate;
         std::tuple_element_t<2, TWriteItem> _stats;
-        std::condition_variable _freeSlotAvailableCV;
-        std::condition_variable _readSetAvailableCV;
 };
 
 // reads read sets from hd and puts them into slots, waits if no free slots are available
@@ -1621,7 +1610,6 @@ struct ReadReader
         _thread = std::thread([this]()
         {
             std::unique_ptr <TReadSet> currentReadSet;
-            std::mutex _idleMutex;
             while (!_eof || currentReadSet)
             {
                 if (!currentReadSet)  // load new reads from hd
@@ -1633,7 +1621,6 @@ struct ReadReader
                     if (currentReadSet->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
                     {
                         _eof = true;
-                        _readSetAvailableCV.notify_all();  // make sure that waiting threads wake up so that they can be joined
                     }
                 }
                 for (auto& readSet : _tlsReadSets)  // now insert reads into a slot
@@ -1641,13 +1628,10 @@ struct ReadReader
                     if (currentReadSet && !readSet.load())
                     {
                         readSet.store(currentReadSet.release());
-                        _readSetAvailableCV.notify_one();
                     }
                 }
                 if (currentReadSet)  // no empty slow was found, wait a bit
                 {
-                    std::unique_lock<std::mutex> lk(_idleMutex);
-                    //_freeSlotAvailableCV.wait(lk);
                     std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
                 }
             }
@@ -1666,10 +1650,9 @@ struct ReadReader
                 return false;
         return true;
     }
-    bool getReads(std::unique_ptr<TReadSet>& reads) noexcept
+    bool getReads(TReadSet** reads) noexcept
     {
         TReadSet* temp = nullptr;
-        std::mutex _idleMutex;
         while (true)
         {
             for (auto& readSet : _tlsReadSets)
@@ -1678,17 +1661,14 @@ struct ReadReader
                 {
                     if (readSet.compare_exchange_strong(temp, nullptr))
                     {
-                        reads.reset(temp);
-                        _freeSlotAvailableCV.notify_one();
+                        *reads = temp;
                         return true;
                     }
                 }
             }
             if (_eof)
                 return false;
-            //std::cout << "2" << std::endl;
-            std::unique_lock<std::mutex> lk(_idleMutex);
-            //_readSetAvailableCV.wait(lk);
+            //std::cout << std::this_thread::get_id() << "-2" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
         return false;
@@ -1701,14 +1681,12 @@ private:
     std::atomic_bool _eof;
     unsigned int _sleepMS;
     unsigned int _numReads;
-    std::condition_variable _freeSlotAvailableCV;
-    std::condition_variable _readSetAvailableCV;
 };
 
 template <typename TRead, typename TFinder, typename TReadReader, typename TReadWriter>
 struct ProcessingUnit
 {
-    using TpReads = std::unique_ptr<std::vector<TRead>>;
+    using TpReads = std::vector<TRead>*;
     using TWriteItem = typename TReadWriter::TWriteItem;
 
     ProcessingUnit(const ProgramParams& programParams, const ProcessingParams& processingParams, const DemultiplexingParams& demultiplexingParams, const AdapterTrimmingParams& adapterTrimmingParams,
@@ -1721,10 +1699,10 @@ struct ProcessingUnit
         {
             _thread = std::thread([this]() 
             {
-                TpReads reads;
-                while (_readReader.getReads(reads))
+                TpReads reads = nullptr;
+                while (_readReader.getReads(&reads))
                 {
-                    _readWriter.writeReads(doProcessing(reads.release()));
+                    _readWriter.writeReads(doProcessing(reads));
                 }
             });
         }
@@ -1753,7 +1731,7 @@ struct ProcessingUnit
 
         // Demultiplexing
         if (demultiplexingStage(_demultiplexingParams, *reads, _finder, generalStats) != 0)
-            throw("");
+            std::cerr << "DemultiplexingStage error" << std::endl;
 
         // Adapter trimming
         adapterTrimmingStage(_adapterTrimmingParams, *reads, generalStats);
@@ -1764,7 +1742,7 @@ struct ProcessingUnit
         // Postprocessing
         postprocessingStage(_processingParams, *reads, generalStats);
 
-        return new TWriteItem(std::make_tuple(TpReads(reads), _demultiplexingParams.barcodeIds, generalStats));
+        return new TWriteItem(std::make_tuple(reads, _demultiplexingParams.barcodeIds, generalStats));
     }
 private:
     const ProgramParams& _programParams;
@@ -1789,7 +1767,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
     OutputStreams& outputStreams, TStats& stats)
 {
     const unsigned int threadIdleSleepTimeMS = 10;  // not used anymore
-    using TWriteItem = std::tuple < std::unique_ptr < std::vector<TRead<TSeq>>>, decltype(DemultiplexingParams::barcodeIds), GeneralStats>;
+    using TWriteItem = std::tuple < std::vector<TRead<TSeq>>*, decltype(DemultiplexingParams::barcodeIds), GeneralStats>;
     using TReadWriter = ReadWriter<TRead, TSeq, TWriteItem>;
     using TReadReader = ReadReader<TRead, TSeq>;
     using TProcessingUnit = ProcessingUnit<TRead<TSeq>, TEsaFinder, TReadReader, TReadWriter>;
@@ -1812,31 +1790,31 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
     }
     readWriter.getStats(stats);
 #else
-    const auto tMain = std::chrono::steady_clock::now();
-    while (generalStats.readCount < programParams.firstReads)
-    {
-        readSet.reset(new std::vector<TRead<TSeq>>(programParams.records));
-        auto t1 = std::chrono::steady_clock::now();
-        const auto numReadsRead = readReads(*readSet, programParams.records, inputFileStreams);
-        generalStats.ioTime += std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
-        if (numReadsRead == 0)
-            break;
+    //const auto tMain = std::chrono::steady_clock::now();
+    //while (generalStats.readCount < programParams.firstReads)
+    //{
+    //    readSet.reset(new std::vector<TRead<TSeq>>(programParams.records));
+    //    auto t1 = std::chrono::steady_clock::now();
+    //    const auto numReadsRead = readReads(*readSet, programParams.records, inputFileStreams);
+    //    generalStats.ioTime += std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
+    //    if (numReadsRead == 0)
+    //        break;
 
-        auto res = processingUnit.doProcessing(readSet.release());
-        generalStats += std::get<1>(res);
+    //    auto res = processingUnit.doProcessing(readSet.release());
+    //    generalStats += std::get<1>(res);
 
-        t1 = std::chrono::steady_clock::now();
-        outputStreams.writeSeqs(std::move(*(std::get<0>(res))), demultiplexingParams.barcodeIds);
-        generalStats.ioTime += std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
+    //    t1 = std::chrono::steady_clock::now();
+    //    outputStreams.writeSeqs(std::move(*(std::get<0>(res))), demultiplexingParams.barcodeIds);
+    //    generalStats.ioTime += std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
 
-        // Print information
-        const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - tMain).count();
-        if (programParams.showSpeed)
-            std::cout << "\rreads processed: " << _stats.readCount << "   (" << static_cast<int>(generalStats.readCount / deltaTime) << " Reads/s)";
-        else
-            std::cout << "\rreads processed: " << _stats.readCount;
-    }
-    stats = generalStats;
+    //    // Print information
+    //    const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - tMain).count();
+    //    if (programParams.showSpeed)
+    //        std::cout << "\rreads processed: " << _stats.readCount << "   (" << static_cast<int>(generalStats.readCount / deltaTime) << " Reads/s)";
+    //    else
+    //        std::cout << "\rreads processed: " << _stats.readCount;
+    //}
+    //stats = generalStats;
 #endif
     return 0;
 }
