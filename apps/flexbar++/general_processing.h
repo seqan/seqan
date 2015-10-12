@@ -56,13 +56,13 @@
 struct NoSubstitute {};
 
 template<typename TSeqChar, typename TSub>
-void replaceN(TSeqChar& seqChar, const TSub sub) noexcept
+constexpr void replaceN(TSeqChar& seqChar, const TSub sub) noexcept
 {
     seqChar = sub;
 }
 
 template<typename TSeqChar>
-void replaceN(TSeqChar& seqChar, const NoSubstitute) noexcept
+constexpr void replaceN(TSeqChar& seqChar, const NoSubstitute) noexcept
 {
     (void)seqChar;
 }
@@ -77,8 +77,7 @@ inline int findNUniversal(TSeq& seq, unsigned allowed, const TSub substitute) no
         if (seqChar == wanted)
         {
             replaceN(seqChar, substitute);
-            ++c;
-            if (c > allowed)
+            if (++c > allowed)
                 return -1;       //sequence will be removed
         }
     }
@@ -87,7 +86,7 @@ inline int findNUniversal(TSeq& seq, unsigned allowed, const TSub substitute) no
 
 template<template<typename> class TRead, typename TSeq, typename TSub,
     typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>> ::value >>
-inline int findNMultiplex(TRead<TSeq>& read, unsigned allowed, const TSub substitute, bool = false) noexcept
+constexpr inline int findNMultiplex(TRead<TSeq>& read, unsigned allowed, const TSub substitute, bool = false) noexcept
 {
     (void)read;
     (void)allowed;
@@ -104,7 +103,7 @@ inline int findNMultiplex(TRead<TSeq>& read, unsigned allowed, const TSub substi
 
 template<template<typename> class TRead, typename TSeq, typename TSub,
     typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq >> ::value >>
-inline int findNPairedEnd(TRead<TSeq>& read, unsigned allowed, const TSub substitute, bool = false) noexcept
+constexpr inline int findNPairedEnd(TRead<TSeq>& read, unsigned allowed, const TSub substitute, bool = false) noexcept
 {
     (void)read;
     (void)allowed;
@@ -133,7 +132,7 @@ int findN(TRead<TSeq>& read, unsigned allowed, const TSub substitute) noexcept
     if (c3 == -1)
         return -1;
     c += c3;
-    return c;                   //sequence not deleted, number of substitutions returned
+    return c;
 }
 
 //universal function for all combinations of options
@@ -152,7 +151,7 @@ void processN(std::vector<TRead<TSeq>>& reads, unsigned allowed, TSub substitute
 }
 
 template<template <typename> class TRead, typename TSeq>
-    unsigned int removeShortSeqs(std::vector<TRead<TSeq>>& reads, const unsigned min) noexcept
+unsigned int removeShortSeqs(std::vector<TRead<TSeq>>& reads, const unsigned min) noexcept
 {
     const auto numReads = (int)length(reads);
     reads.erase(std::remove_if(reads.begin(), reads.end(), [min](const auto& read) {return read.minSeqLen() < min;}), reads.end());
@@ -197,7 +196,7 @@ unsigned int _preTrim(std::vector<TRead<TSeq>>& reads, const unsigned head, cons
 
 template<template <typename> class TRead, typename TSeq, bool tagTrimming,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplexPairedEnd < TSeq >> ::value >>
-    unsigned int _preTrim(std::vector<TRead<TSeq>>& reads, const unsigned head, const unsigned tail, const unsigned min) noexcept(!tagTrimming)
+unsigned int _preTrim(std::vector<TRead<TSeq>>& reads, const unsigned head, const unsigned tail, const unsigned min) noexcept(!tagTrimming)
 {
     std::string tempString;
     if(tagTrimming)
@@ -261,7 +260,7 @@ void preTrim(std::vector<TRead<TSeq>>& reads, const unsigned head, const unsigne
 //Trims sequences to specific length and deletes to short ones together with their IDs
 template<template <typename> class TRead, typename TSeq, typename TStats,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplex < TSeq >> ::value >>
-    void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, TStats& stats, bool = true) noexcept
+void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, TStats& stats, bool = true) noexcept
 {
     for(auto& read : reads)
         if (read.minSeqLen() > len)
@@ -272,7 +271,7 @@ template<template <typename> class TRead, typename TSeq, typename TStats,
 
 template<template <typename> class TRead, typename TSeq, typename TStats,
     typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same < TRead<TSeq>, ReadMultiplexPairedEnd < TSeq >> ::value >>
-    void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, TStats& stats) noexcept
+void trimTo(std::vector<TRead<TSeq>>& reads, const unsigned len, TStats& stats) noexcept
 {
     for (auto& read : reads)
     {

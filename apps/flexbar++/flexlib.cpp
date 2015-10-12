@@ -1102,6 +1102,7 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
                 continue;
             }
             adapterItem.anchored = id.find(":anchored:") != std::string::npos ? true : false;
+            adapterItem.reverse = id.find(":reverse:") != std::string::npos ? true : false;
 
             adapterItem.overhang = oh;
             adapterItem.id = adapterId++;
@@ -1540,8 +1541,8 @@ struct ReadWriter
                 {
                     //std::cout << "4" << std::endl;
                     std::unique_lock<std::mutex> lk(_idleMutex);
-                    _readSetAvailableCV.wait(lk);
-                    //std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+                    //_readSetAvailableCV.wait(lk);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
                 }
             }
         });
@@ -1565,8 +1566,8 @@ struct ReadWriter
             }
             //std::cout << "3" << std::endl;
             std::unique_lock<std::mutex> lk(_idleMutex);
-            _freeSlotAvailableCV.wait(lk);
-            //std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+            //_freeSlotAvailableCV.wait(lk);
+            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
     }
     void getStats(std::tuple_element_t<2, TWriteItem>& stats)
@@ -1646,8 +1647,8 @@ struct ReadReader
                 if (currentReadSet)  // no empty slow was found, wait a bit
                 {
                     std::unique_lock<std::mutex> lk(_idleMutex);
-                    _freeSlotAvailableCV.wait(lk);
-                    //std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+                    //_freeSlotAvailableCV.wait(lk);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
                 }
             }
         });
@@ -1687,8 +1688,8 @@ struct ReadReader
                 return false;
             //std::cout << "2" << std::endl;
             std::unique_lock<std::mutex> lk(_idleMutex);
-            _readSetAvailableCV.wait(lk);
-            //std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+            //_readSetAvailableCV.wait(lk);
+            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
         return false;
     };
