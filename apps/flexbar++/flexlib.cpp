@@ -362,7 +362,7 @@ private:
 void FilteringParserBuilder::addHeader(seqan::ArgumentParser & parser)
 {
     setCategory(parser, "NGS Quality Control");
-    setShortDescription(parser, "The SeqAn Filtering Toolkit of seqan_flexbar.");
+    setShortDescription(parser, "The SeqAn Filtering Toolkit of Flexbar++.");
     addUsageLine(parser, " \\fI<READ_FILE1>\\fP \\fI<[READ_FILE2]>\\fP \\fI[OPTIONS]\\fP");
     addDescription(parser,
        "This program is a sub-routine of Flexbar++ (a new implementation and extension of"
@@ -579,7 +579,7 @@ void AllStepsParserBuilder::addHeader(seqan::ArgumentParser & parser)
 
 seqan::ArgumentParser AllStepsParserBuilder::build()
 {
-    seqan::ArgumentParser parser("seqan_flexbar");
+    seqan::ArgumentParser parser("Flexbar++");
 
     addHeader(parser);
     addGeneralOptions(parser);

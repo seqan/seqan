@@ -3,7 +3,7 @@
 # ===========================================================================
 # File: /apps/flexbar++/CMakeLists.txt
 #
-# CMakeLists.txt file for seqan_flexbar.
+# CMakeLists.txt file for Flexbar++.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
@@ -105,12 +105,12 @@ if (NOT SEQAN_PREFIX_SHARE_DOC)
   seqan_setup_install_vars (flexbar++)
 endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
-# Install seqan_flexbar in ${PREFIX}/bin directory
+# Install flexbar++ in ${PREFIX}/bin directory
 install (TARGETS flexbar++
          DESTINATION bin)
 
 # Install non-binary files for the package to "." for app builds and
-# ${PREFIX}/share/doc/seqan_flexbar for SeqAn release builds.
+# ${PREFIX}/share/doc/flexbar++ for SeqAn release builds.
 install (FILES LICENSE
                README
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
@@ -138,6 +138,6 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:flexbar++")
   set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Benjamin Menkuec <benjamin@menkuec.de>")
   set (CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
 
-  seqan_configure_cpack_app (seqan_flexbar "flexbar++")
+  seqan_configure_cpack_app (flexbar++ "flexbar++")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:flexbar++")
 
