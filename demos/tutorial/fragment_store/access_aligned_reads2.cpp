@@ -21,13 +21,14 @@ int main()
 //![includes]
 
 //![typedefs]
+    typedef Value<TStore::TReadSeqStore>::Type                              TReadSeq;
     typedef Value<TStore::TContigStore>::Type                               TContig;
     typedef Value<TStore::TAlignedReadStore>::Type                          TAlignedRead;
 
     typedef Gaps<TContig::TContigSeq, AnchorGaps<TContig::TGapAnchors> >    TContigGaps;
     typedef Gaps<CharString, AnchorGaps<TAlignedRead::TGapAnchors> >  TReadGaps;
 
-    CharString readSeq;
+    TReadSeq readSeq;
 //![typedefs]
 
 //![output]

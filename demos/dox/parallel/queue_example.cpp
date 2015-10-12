@@ -13,7 +13,7 @@ int main()
     {
         SEQAN_OMP_PRAGMA(section)
         {
-            for (int i = 9999; i != 0; --i)
+            for (unsigned i = 9999; i != 0; --i)
                 appendValue(queue, i);
         }
 

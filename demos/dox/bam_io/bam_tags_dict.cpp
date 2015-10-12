@@ -17,17 +17,15 @@ int main()
         if (getTagType(tags, id) == 'i')  // is 32 bit integer
         {
             __int32 x = 0;
-            bool res = extractTagValue(x, tags, id);
-            (void)res; // remove unused variable warning when building w/o DEBUG
-            SEQAN_ASSERT_MSG(res, "Not a valid integer at pos %u!", id);
+            if (!extractTagValue(x, tags, id))
+                SEQAN_ASSERT_FAIL("Not a valid integer at pos %u!", id);
             std::cout << x;
         }
         if (getTagType(tags, id) == 'Z')  // is string
         {
             CharString str;
-            bool res = extractTagValue(str, tags, id);
-            (void)res; // remove unused variable warning when building w/o DEBUG
-            SEQAN_ASSERT_MSG(res, "Not a valid string at pos %u!", id);
+            if (!extractTagValue(str, tags, id))
+                SEQAN_ASSERT_FAIL("Not a valid string at pos %u!", id);
             std::cout << '"' << str << '"';
         }
 
