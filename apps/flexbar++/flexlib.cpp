@@ -1392,7 +1392,7 @@ void printStatistics(const ProgramParams& programParams, const TStats& generalSt
     }
     outStream << "File statistics\n";
     outStream << "===============\n";
-    // How many reads are left.
+    // How many reads are left.f
     int survived = generalStats.readCount - generalStats.removedN
         - generalStats.removedQuality - generalStats.removedShort
         - demultiplexParams.exclude * generalStats.removedDemultiplex;
@@ -1456,9 +1456,11 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
 {
     reads.resize(records);
     unsigned int i = 0;
+    TSeq temp;
     while (i < records && !atEnd(inputFileStreams.fileStream1))
     {
-        readRecord(reads[i].id, reads[i].seq, inputFileStreams.fileStream1);
+        readRecord(reads[i].id, temp, inputFileStreams.fileStream1);
+        reads[i].seq = temp;
         ++i;
     }
     reads.resize(i);
@@ -1518,6 +1520,7 @@ struct ReadWriter
                         //std::this_thread::sleep_for(std::chrono::microseconds(1000000));
                         const auto t1 = std::chrono::steady_clock::now();
                         _outputStreams.writeSeqs(std::move(*std::get<0>(*currentWriteItem)), std::get<1>(*currentWriteItem));
+                        std::get<0>(*currentWriteItem)->clear();
                         delete std::get<0>(*currentWriteItem); // delete written data
                         _stats += std::get<2>(*currentWriteItem);
                         delete currentWriteItem;
@@ -1612,23 +1615,14 @@ struct ReadReader
         _thread = std::thread([this]()
         {
             std::unique_ptr <TReadSet> currentReadSet;
-            std::unique_ptr <TReadSet> currentReadSet2;
             while (!_eof || currentReadSet)
             {
                 if (!currentReadSet)  // load new reads from hd
                 {
                     currentReadSet = std::make_unique<TReadSet>(_programParams.records);
-                    currentReadSet2 = std::make_unique<TReadSet>(_programParams.records);
 
-                    readReads(*currentReadSet2, _programParams.records, _inputFileStreams);
-                    //for (auto& read : *currentReadSet)
-                    //{
-                    //    read.id.reserve(2000);
-                    //    read.id = "guten tag";
-                    //    read.seq = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
-                    //}
-                    //currentReadSet.reset(currentReadSet2.release());
-                    *currentReadSet = *currentReadSet2;
+                    readReads(*currentReadSet, _programParams.records, _inputFileStreams);
+
                     loadMultiplex(*currentReadSet, _programParams.records, _inputFileStreams.fileStreamMultiplex);
                     _numReads += currentReadSet->size();
                     if (currentReadSet->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
