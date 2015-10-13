@@ -369,22 +369,23 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
         //std::cout << "\nstripped seq  : " << seq << std::endl;
 
         // update statistics
-        const auto statisticLen = eraseEnd - eraseStart;
-        if (stats.removedLength.size() < statisticLen)
-            stats.removedLength.resize(statisticLen);
-        if (stats.removedLength[statisticLen - 1].size() < mismatches + 1)
-            stats.removedLength[statisticLen - 1].resize(mismatches + 1);
-        ++stats.removedLength[statisticLen - 1][mismatches];
 
-        if (stats.numRemoved.size() < adapterItem.id + 1)
-            stats.numRemoved.resize(adapterItem.id + 1);
-        ++stats.numRemoved[adapterItem.id];
+        //const auto statisticLen = eraseEnd - eraseStart;
+        //if (stats.removedLength.size() < statisticLen)
+        //    stats.removedLength.resize(statisticLen);
+        //if (stats.removedLength[statisticLen - 1].size() < mismatches + 1)
+        //    stats.removedLength[statisticLen - 1].resize(mismatches + 1);
+        //++stats.removedLength[statisticLen - 1][mismatches];
 
-        stats.overlapSum += overlap;
-        if (TStripAdapterDirection::value == adapterDirection::forward)
-            ++stats.a2count;
-        else
-            ++stats.a1count;
+        //if (stats.numRemoved.size() < adapterItem.id + 1)
+        //    stats.numRemoved.resize(adapterItem.id + 1);
+        //++stats.numRemoved[adapterItem.id];
+
+        //stats.overlapSum += overlap;
+        //if (TStripAdapterDirection::value == adapterDirection::forward)
+        //    ++stats.a2count;
+        //else
+        //    ++stats.a1count;
 
         stats.maxOverlap = std::max(stats.maxOverlap, overlap);
         stats.minOverlap = std::min(stats.minOverlap, overlap);

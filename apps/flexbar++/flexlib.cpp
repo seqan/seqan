@@ -1735,7 +1735,7 @@ struct ProcessingUnit
             std::cerr << "DemultiplexingStage error" << std::endl;
 
         // Adapter trimming
-        //adapterTrimmingStage(_adapterTrimmingParams, *reads, generalStats);
+        adapterTrimmingStage(_adapterTrimmingParams, *reads, generalStats);
 
         // Quality trimming
         qualityTrimmingStage(_qualityTrimmingParams, *reads, generalStats);
