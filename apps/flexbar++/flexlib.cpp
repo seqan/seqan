@@ -1515,12 +1515,13 @@ struct ReadWriter
                         currentWriteItem = readSet.load();
                         readSet.store(nullptr); // make the slot free again
                         nothingToDo = false;
-                        
+                        //std::this_thread::sleep_for(std::chrono::microseconds(1000000));
                         const auto t1 = std::chrono::steady_clock::now();
                         _outputStreams.writeSeqs(std::move(*std::get<0>(*currentWriteItem)), std::get<1>(*currentWriteItem));
                         delete std::get<0>(*currentWriteItem); // delete written data
                         _stats += std::get<2>(*currentWriteItem);
                         delete currentWriteItem;
+
                         // terminal output
                         const auto ioTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
                         _stats.ioTime += ioTime;
@@ -1611,12 +1612,23 @@ struct ReadReader
         _thread = std::thread([this]()
         {
             std::unique_ptr <TReadSet> currentReadSet;
+            std::unique_ptr <TReadSet> currentReadSet2;
             while (!_eof || currentReadSet)
             {
                 if (!currentReadSet)  // load new reads from hd
                 {
-                    currentReadSet = std::make_unique<std::vector<TRead<TSeq>>>(_programParams.records);
-                    readReads(*currentReadSet, _programParams.records, _inputFileStreams);
+                    currentReadSet = std::make_unique<TReadSet>(_programParams.records);
+                    currentReadSet2 = std::make_unique<TReadSet>(_programParams.records);
+
+                    readReads(*currentReadSet2, _programParams.records, _inputFileStreams);
+                    //for (auto& read : *currentReadSet)
+                    //{
+                    //    read.id.reserve(2000);
+                    //    read.id = "guten tag";
+                    //    read.seq = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
+                    //}
+                    //currentReadSet.reset(currentReadSet2.release());
+                    *currentReadSet = *currentReadSet2;
                     loadMultiplex(*currentReadSet, _programParams.records, _inputFileStreams.fileStreamMultiplex);
                     _numReads += currentReadSet->size();
                     if (currentReadSet->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
@@ -1626,9 +1638,10 @@ struct ReadReader
                 }
                 for (auto& readSet : _tlsReadSets)  // now insert reads into a slot
                 {
-                    if (currentReadSet && !readSet.load())
+                    if (currentReadSet && readSet.load() == nullptr)
                     {
                         readSet.store(currentReadSet.release());
+                        break;
                     }
                 }
                 if (currentReadSet)  // no empty slow was found, wait a bit
