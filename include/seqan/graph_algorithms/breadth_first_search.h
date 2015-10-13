@@ -77,9 +77,9 @@ namespace seqan {
  *
  * @section Example
  *
- * @include demos/graph_algorithms/breadth_first_search.cpp
+ * @include demos/dox/graph_algorithms/breadth_first_search.cpp
  *
- * @include demos/graph_algorithms/breadth_first_search.cpp.stdout
+ * @include demos/dox/graph_algorithms/breadth_first_search.cpp.stdout
  *
  * @see depthFirstSearch
  */

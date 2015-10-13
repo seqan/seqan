@@ -153,9 +153,9 @@ _getMinimumAug(Graph<TSpec> const & rG,
  *
  * @section Example
  *
- * @include demos/graph_algorithms/ford_fulkerson_algorithm.cpp
+ * @include demos/dox/graph_algorithms/ford_fulkerson_algorithm.cpp
  *
- * @include demos/graph_algorithms/ford_fulkerson_algorithm.cpp.stdout
+ * @include demos/dox/graph_algorithms/ford_fulkerson_algorithm.cpp.stdout
  */
 template <typename TSpec, typename TVertexDescriptor, typename TCapMap, typename TFlowMap>
 typename Value<TFlowMap>::Type

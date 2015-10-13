@@ -31,33 +31,13 @@ FASTA/FASTQ are record-based files.
 A FASTA record contains the sequence id and the sequence characters.
 Here is an example of FASTA file:
 
-::
-
-    >seq1
-    CCCCCCCCCCCCCCC
-    >seq2
-    CGATCGATC
-    >seq3
-    TTTTTTT
+.. includefrags:: demos/tutorial/sequence_io/example.fa
 
 In addition to that, a FASTQ record contains also a quality value for each sequence character.
 Here is an example of FASTQ file:
 
 
-::
-
-    @seq1
-    CCCCCCCCCCCCCCC
-    +
-    IIIIIHIIIIIIIII
-    @seq2
-    CGATCGATC
-    +
-    IIIIIIIII
-    @seq3
-    TTTTTTT
-    +
-    IIIIHHG
+.. includefrags:: demos/tutorial/sequence_io/example.fq
 
 
 SeqFile Formats
@@ -76,7 +56,7 @@ A First Working Example
 Let us start out with a minimal working example.
 The following program reads a FASTA file called ``example.fa`` and prints out the identifier and the sequence of the first record.
 
-.. includefrags:: demos/tutorial/seq_io/example1.cpp
+.. includefrags:: demos/tutorial/sequence_io/example1.cpp
 
 We call the :dox:`FormattedFile#FormattedFile SeqFileIn constructor` with the path to the file to read.
 Successively, we call the function :dox:`SeqFileIn#readRecord` to read the first record from the file.
@@ -94,19 +74,15 @@ Assignment 1
      Copy the above example of FASTA file in a new file ``example.fa`` in a directory of your choice.
 
      Copy the program above into a new application ``basic_seq_io_example``, adjust the path ``"example.fa"`` to the just created FASTA file, compile the program, and run it.
-     For example, if you stored the file ``example.fa`` in ``/home/username/example.fa``, you replace the line ``seqan::SeqFileIn seqFileIn("example.fa");`` from above with ``seqan::SeqFileIn seqFileIn("/home/username/example.fa");``.
 
      You should see the following output:
 
-     .. code-block:: console
-
-      # basic_seq_io
-      seq1    CCCCCCCCCCCCCCC
+     .. includefrags:: demos/tutorial/sequence_io/example1.cpp.stdout
 
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/seq_io/solution1.cpp
+        .. includefrags:: demos/tutorial/sequence_io/solution1.cpp
 
 
 Handling Errors
@@ -129,7 +105,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/seq_io/solution2.cpp
+        .. includefrags:: demos/tutorial/sequence_io/solution2.cpp
 
 
 Accessing Records in Batches
@@ -179,12 +155,7 @@ Assignment 3
 
      You should be able to run your program on the example file we created above and see the following output:
 
-     .. code-block:: console
-
-         # basic_seq_io_example example.fa
-         seq1    CCCCCCCCCCCCCCC
-         seq2    CGATCGATC
-         seq3    TTTTTTT
+     .. includefrags:: demos/tutorial/sequence_io/solution3.cpp.stdout
 
    Hint
      You can use the function :dox:`SeqFileIn#readRecords` to load all records at once.
@@ -192,7 +163,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/seq_io/solution3.cpp
+        .. includefrags:: demos/tutorial/sequence_io/solution3.cpp
 
 
 Accessing Qualities
@@ -239,17 +210,12 @@ Assignment 4
 
      When your program is called on this file, the result should look as follows.
 
-     .. code-block:: console
-
-        # basic_seq_io_example example.fq
-        seq1    CCCCCCCCCCCCCCC    IIIIIHIIIIIIIII
-        seq2    CGATCGATC    IIIIIIIII
-        seq3    TTTTTTT      IIIIHHG
+     .. includefrags:: demos/tutorial/sequence_io/solution4.cpp.stdout
 
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/seq_io/solution4.cpp
+        .. includefrags:: demos/tutorial/sequence_io/solution4.cpp
 
 
 Next Steps

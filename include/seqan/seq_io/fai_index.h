@@ -111,11 +111,11 @@ clear(FaiIndexEntry_ &entry)
  *
  * The following example demonstrates the usage of the FaiIndex class.
  *
- * @include demos/seq_io/fai_index_example.cpp
+ * @include demos/dox/seq_io/fai_index_example.cpp
  *
  * The output is as follows:
  *
- * @include demos/seq_io/fai_index_example.cpp.stdout
+ * @include demos/dox/seq_io/fai_index_example.cpp.stdout
  *
  * @fn FaiIndex::FaiIndex
  * @brief Constructor.

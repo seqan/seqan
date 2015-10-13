@@ -75,7 +75,7 @@ struct ModCyclicShape
  * CyclicShape is repeated till the end of the string. The iterator behaves as if
  * the don't-care-positions had been deleted without actually copying the string.
  *
- * @snippet demos/cyclic_shape_snippets.cpp Define CyclicShape Modified Iterator
+ * @snippet demos/dox/modifier/cyclic_shape_snippets.cpp Define CyclicShape Modified Iterator
  *
  * @see ModCyclicShapeModifiedString
  * @see CyclicShape
@@ -168,11 +168,11 @@ public:
  *
  * Use case for GenericCyclicShapes:
  *
- * @snippet demos/cyclic_shape_snippets.cpp Define GenericCyclicShape Modified String
+ * @snippet demos/dox/modifier/cyclic_shape_snippets.cpp Define GenericCyclicShape Modified String
  *
  * Use case for FixedCyclicShapes:
  *
- * @snippet demos/cyclic_shape_snippets.cpp Define FixedCyclicShape Modified String
+ * @snippet demos/dox/modifier/cyclic_shape_snippets.cpp Define FixedCyclicShape Modified String
  *
  *
  * @see CyclicShape

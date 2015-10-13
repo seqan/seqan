@@ -97,4 +97,13 @@
 #define SEQAN_UNLIKELY(x) (x)
 #endif
 
+// A macro to eliminate warnings on GCC and Clang
+#if (defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))) || defined(__clang__)
+#  define SEQAN_UNUSED __attribute__((unused))
+#else
+#  define SEQAN_UNUSED
+#endif
+// backwards compatibility
+#define SEQAN_UNUSED_TYPEDEF SEQAN_UNUSED
+
 #endif

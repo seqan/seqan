@@ -78,9 +78,9 @@ namespace seqan {
  *
  * @section Example
  *
- * @include demos/graph_algorithms/floyd_warshall_algorithm.cpp
+ * @include demos/dox/graph_algorithms/floyd_warshall_algorithm.cpp
  *
- * @include demos/graph_algorithms/floyd_warshall_algorithm.cpp.stdout
+ * @include demos/dox/graph_algorithms/floyd_warshall_algorithm.cpp.stdout
  *
  * @see allPairsShortestPath
  */

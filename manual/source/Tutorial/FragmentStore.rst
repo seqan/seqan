@@ -115,57 +115,19 @@ Therefore first a stairs layout of the reads must be computed via :dox:`AlignedR
 The function :dox:`AlignedReadLayout#printAlignment` can then be used to output a window (beginPos,endPos,firstLine,lastLine) of the read alignment against a contig either to a stream or ``SVGFile``.
 The following small example demonstrates how to first load two contigs from a Fasta file and then import a read alignment given in SAM format:
 
-.. includefrags:: demos/tutorial/store/store_diplay_aligned_reads.cpp
+.. includefrags:: demos/tutorial/fragment_store/display_aligned_reads.cpp
    :fragment: includes
 
 Then we create a stairs layout of the aligned reads and output a window from gapped position 0 to 150 and line 0 to 36 of the multiple alignments below contig 1 to standard out.
 
-.. includefrags:: demos/tutorial/store/store_diplay_aligned_reads.cpp
+.. includefrags:: demos/tutorial/fragment_store/display_aligned_reads.cpp
    :fragment: ascii
 
-.. code-block:: console
-
-   TTCAAATGAACTTCTGTAATTGAAAAATTCATTTAAGAAATTACAAAATATAGTTGAAAGCTCTAACAATAGACTAAACCAAGCAGAAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCTTATGAATTAACCCAGTCAGACAAAAATAAA
-   TTCAAATGAACTTCTGTAATTGAAAAATTCATTTAA  AATTACAAAATATAGTTGAAAGCTCTAACAATAGA   AACCAAGCAGAAGAAAGAGGTTCAGAACTTGAAGA  AGTCTCTTATGAATTAACCCAGTCAGACAAAAATA A
-   TTCAAATGAACTTCTGTAATTGAAAAATTCATTTA GAAATTACAAAATATAGTTGAAAGCTCTAACAATA ACTAAACCAAGCAGAAGAAAGAGGTTCAGAACTTG AGACAAGTCTCTTATGAATTAACCCAGTCAGACAA    AAA
-   ttcaaatgaacttctgtaattgaaaaattcattta GAAATTACAAAATATAGTTGAAAGCTCTAACAATAG    AACCAAGCAGAAGAAAGAGGCTCAGAACTTGAAGA  AGTCTCTTATGAATTAACCCAGTCAGACAAAAATA A
-    TCAAATGAACTTCTGTAATTGAAAAATTCATTTAA   ATTACAAAATATAGTTGAAAGATCTAACAATAGAC    CCAAGCAGAAGAAAGAGGTTCAGAACTTGAAGACAA     TTATGAATTAACCCAGTCAGACAAAAATAAA
-       AATGAACTTCTGTAATTGAAAAATTCATTTAAGAA TTACAAAATATAGTTGAAAGCTCTAACAATAGACT     AAGCAGAAGAAAGAGGTTCAGAACTTGAAGACAAG     TATGAATTAACCCAGTCAGACAAAAATAAA
-        ATGAACTTCTGTAATTGAAAAATTCATTTAAGAAA  ACAAAATATAGTTGAAAGCTCTAACAATAGACTAA     GCAGAAGAAAGAGGTTCAGAACTTGAAGACAAGTC    ATGAATTAACCAAGTCAGACAAAAATAAA
-        ATGAACTTCTGTAATTGAAAAATTCATTTAAGAAA  ACAAAATATAGTTGAAAGCTCTAACAATAGACTAA      CAGAAGAAAGAGGTTCAGAACTTGAAGACAAGTCT    TGAATTAACCCAGTCAGACAAAAATAAA
-        ATGAACTTCTGTAATTGAAAAATTCATTTAAGAAA  ACAAAATATAGTTGAAAGCTCTAACAATAGACTAA      CAGAAGAAAGAGGTTCANANNNTGANGACAAGTCT    TGAATTAACCCAGTCAGACAAAAATAAA
-         TGAACTTCTGTAATTGAAAAATTCATTTAAGAAATT CAAAATATAGTTGAAAGCTCTAACAATAGACTAAA       GAAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCT   GAATTAACCCAGTCAGACAAAAANNAA
-         TGAACTTCTGTAATTGAAAAATTCATTTAAGAAAT   AAAATATAGTTGAAAGCTCTAACAATAGACTAAAC       AAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCGT  GAATTAACCCAGTCAGACAAAAATAAA
-         TGAACTTCTGTAATTGAAAAATTCATTTAAGAAAT   AAAATATAGTTGAAAGCTCTAACAATAGACTAAAC       AAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCTT   AATTAACCCAGTCAGACAAAAATAAA
-         TGAACTTCTGTAATTGAAAAATTCATTTAAGAAAT    AAATATAGTTGAAAGCTCTAACAATAGACTAAACC        GAAAGAGGTTCAGAACTTGAAGACAAGTCTCTTATG                       AAA
-          GAACTTCTGTAATTGAAAAATTCATTTAAGAAATT   AAATATAGTTGAAAGCTCTAACAATAGACTAAACC          AAGAGGTTCAGAACTTGAAGACAAGTCTCTTATGA
-          GAACTTCTGTAATTGAAAAATTCATTTAAGAAATT    AATATAGTTGAAAGCTCTAACAATAGACTAAACCAA        AAGAGGTTCAGAACTTGAAGACAAGTCTCTTATGA
-             CTTCTGTAATTGAAAAATTCATTTAAGAAATTACA  ATATAGTTGAAAGCTCTAACAATAGACTAAACCAA          GAGGTTCAGAACTTGAAGACAAGTCTCTTATGAAT
-              TTCTGTAATTGAAAAATTCATTTAAGAAATTACAA   ATAGTTGAAAGCTCTAACAATAGACTAAACCAAGC        GAGGTTCAGAACTTGAAGACAAGTCTCTTATGAAT
-                  GTAATTGAAAAATTCATTTAAGAAATTACAAAATA AGTTGAAAGCTCTAACAATAGACTAAACCAAGCAG       AGGTTCAGAACTTGAAGACAAGTCTCTTATGAATT
-                   TAATTGAAAAATTCATTTAAGAAATTACAAAATAT  TTGAAAGCTCTAACAATAGACTAAACCAAGCAGAA      GGTTCAGAACTTGAAGACAAGTCTCTTATGAATTA
-                    AATTGAAAAATTCATTTAAGAAATTACAAAATATA   GAAAGCTCTAACAATAGACTAAACCAAGCAGAAGAAAGAG TTCAGAACTTGAAGACAAGTCTCTTATGAATTAAC
-                          AAAATTCATTTAAGAAATTACAAAATATAGTTGAA    CTAACAATAGACTAAACCAAGCAGAAGAAAGAGTT      CTTGAAGACAAGTCTCTTATGAATTAACCCAGTCA
-                           AAATTCATTTAAGAAATTACAAAATATAGTTGAAA   CTAACAATAGACTAAACCAAGCAGAAGAAAGAGGTT      TTGAAGACAAGTCTCTTATGAATTAACCCAGTCAG
-                            AATTCATTTAAGAAATTACAAAATATAGTTGAAAG   TAACAATAGACTAAACCAAGCAGAAGAAAGAGGTT       TGAAGACAAGTCTCTTATGAATTAACCCAGTCAGA
-                                CATTTAAGAAATTACAAAATATAGTTGAAAGCTCT ACAATAGACTAAACCAAGCAGAAGAAAGAGGTTCA     TGAAGACAAGTCTCTTATGAATTAACCCAGTCAGACAAAA
-                                   TTAAGAAATTACAAAATATAGTTGAAAGCTCTAAC    GACTAAACCAAGCAGAAGAAAGAGGTTCAGAACTT AAGACAAGTCTCTTATGAATTAACCCAGTCAGACA
-                                    TAAGAAATTACAAAATATAGTTGAAAGCTCTAACAATAGA                     GGTTCAGAACTTGAAGACAAGTCTCTTATGAATTA
-                                           TTACAAAATATAGTTGAAAGCTCTAACAATAGACT                   GGTTCAGAACTTGAAGACAAGTCTCTTATGAATTA
-                                                    ATAGTTGAAAGCTCTAACAATAGACTAAACCAAGC           GTTCAGAACTTGAAGACAAGTCTCTTATGAATTAAC
-                                                           AAAGCTCTAACAATAGACTAAACCAAGCAGAAGAA      TCAGAACTTGAAGACAAGTCTCTTATGAATTAACC
-                                                           AAAGCTCTAACAATAGACTAAACCAAGCAGAAGAA               NAAGACAAGTCTCTTATGAATTAACCCAGTCAGACA
-                                                            AAGCTCTAACAATAGACTAAACCAAGCAGAAGAAA              GAAGACAAGTCTCTTATGAATTAACCCAGTCAGAC
-                                                                  TAACAATAGACTAAACCAAGCAGAAGAAAGAGGTT               AGTCTCTTATGAATTAACCCAGTCAGACAAAAATA
-                                                                  TAACAATAGACTAAACCAAGCAGAAGAAAGAGGTT                GTCTCTTATGAATTAACCCAGTCAGACAAAAATAA
-                                                                   AACAATAGACTAAACCAAGCAGAAGAAAGAGGTTC
-                                                                   AACAATAGACTAAACCAAGCAGAAGAAAGAGGTTC
-                                                                      AATAGACTAAACCAAGCAGAAGAAAGAGGTTCAGA
-                                                                      AATAGACTAAACCAAGCAGAAGAAAGAGGTTCAGA
+.. includefrags:: demos/tutorial/fragment_store/display_aligned_reads.cpp.stdout
 
 The same window can also be exported as a scalable vector graphic in SVG format (supported by Browsers, Inkscape; see :download:`original file <ReadLayout.svg>`]):
 
-.. includefrags:: demos/tutorial/store/store_diplay_aligned_reads.cpp
+.. includefrags:: demos/tutorial/fragment_store/display_aligned_reads.cpp
    :fragment: svg
 
 .. figure:: ReadLayout.png
@@ -181,7 +143,7 @@ In the next step, we want to access several pairwise alignments between reads an
 Therefore we first need to get the associated types that the Fragment Store uses to store contig and read sequences and gaps.
 This can be done by the following typedefs:
 
-.. includefrags:: demos/tutorial/store/store_access_aligned_reads.cpp
+.. includefrags:: demos/tutorial/fragment_store/access_aligned_reads.cpp
    :fragment: typedefs
 
 Now we want to extract and output the alignments from the :dox:`FragmentStore::alignedReadStore` at position 140,144,...,156.
@@ -198,30 +160,10 @@ After that we output both alignment rows.
    The :dox:`Gaps` contains two :dox:`Holder` references to the sequence and the inserted gaps.
    In our example these Holders are dependent and changes made to the Gaps object like the insertion/deletion of gaps would immediatly be persistent in the Fragment Store.
 
-.. includefrags:: demos/tutorial/store/store_access_aligned_reads.cpp
+.. includefrags:: demos/tutorial/fragment_store/access_aligned_reads.cpp
    :fragment: output
 
-.. code-block:: console
-
-   ALIGNMENT 140
-     contig 0:	CTGTGTTTAGTGCCTTTGTTCA-----ACCCCCTTGCAAC     	[266..306[
-     read 149:	CTGTGTTTAGTGCCTTTGTTCA-----ACCCCCTTGCAAC
-
-   ALIGNMENT 144
-     contig 0:	AGTGCCTTTGTTCA-----ACCCCCTTGCAACAACC     	[274..310[
-     read 153:	AGTGCCTTTGTTCACATAGACCCCCTTGCAACAACC
-
-   ALIGNMENT 148
-     contig 0:	TTCA-----ACCCCCTTGCAACAACCTTGAGAACCCCAGG     	[284..324[
-     read 157:	ATAG-----ACCCCCTTGCAACAACCTTGAGAACCCCAGG
-
-   ALIGNMENT 152
-     contig 0:	CA-----ACCCCCTTGCAACAACCTTGAGAACCCCAGGGA     	[286..326[
-     read 161:	CA-----ACCCCCTTGCAACAACCTTGCGAACCCCAGGGA
-
-   ALIGNMENT 156
-     contig 0:	CCCCCTTGCAACAACCTTGAGAACCCCAGGGAATT     	[294..329[
-     read 165:	CCCCCTTGCAACAACCTTGAGAACCCCAGGGAATT
+.. includefrags:: demos/tutorial/fragment_store/access_aligned_reads.cpp.stdout
 
 Assignment 1
 """"""""""""
@@ -246,39 +188,19 @@ Assignment 1
 
         As we copy the read sequence, it suffices to change the type of the target string readSeq and the sequence type of the read :dox:`Gaps` object into CharString, i.e. a :dox:`String` of ``char``.
 
-        .. includefrags:: demos/tutorial/store/store_access_aligned_reads2.cpp
+        .. includefrags:: demos/tutorial/fragment_store/access_aligned_reads2.cpp
            :fragment: typedefs
 
         Then, we not only need to reverse-complement readSeq if the read aligns to the reverse strand (``endPos < beginPos``) but also need to convert its letters into lower-case.
         Therefor SeqAn provides the function :dox:`toLower`.
         Alternatively, we could iterate over readSeq and add ('a'-'A') to its elements.
 
-        .. includefrags:: demos/tutorial/store/store_access_aligned_reads2.cpp
+        .. includefrags:: demos/tutorial/fragment_store/access_aligned_reads2.cpp
            :fragment: output
 
         Running this program results in the following output.
 
-        .. code-block:: console
-
-        ALIGNMENT 140
-          contig 0:	CTGTGTTTAGTGCCTTTGTTCA-----ACCCCCTTGCAAC     	[266..306[
-          read 149:	ctgtgtttagtgcctttgttca-----acccccttgcaac
-
-        ALIGNMENT 144
-          contig 0:	AGTGCCTTTGTTCA-----ACCCCCTTGCAACAACC     	[274..310[
-          read 153:	AGTGCCTTTGTTCACATAGACCCCCTTGCAACAACC
-
-        ALIGNMENT 148
-          contig 0:	TTCA-----ACCCCCTTGCAACAACCTTGAGAACCCCAGG     	[284..324[
-          read 157:	ATAG-----ACCCCCTTGCAACAACCTTGAGAACCCCAGG
-
-        ALIGNMENT 152
-          contig 0:	CA-----ACCCCCTTGCAACAACCTTGAGAACCCCAGGGA     	[286..326[
-          read 161:	CA-----ACCCCCTTGCAACAACCTTGCGAACCCCAGGGA
-
-        ALIGNMENT 156
-          contig 0:	CCCCCTTGCAACAACCTTGAGAACCCCAGGGAATT     	[294..329[
-          read 165:	cccccttgcaacaaccttgagaaccccagggaatt
+        .. includefrags:: demos/tutorial/fragment_store/access_aligned_reads2.cpp.stdout
 
 Gene Annotation
 ^^^^^^^^^^^^^^^
