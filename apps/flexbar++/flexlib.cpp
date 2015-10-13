@@ -1456,11 +1456,11 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
 {
     reads.resize(records);
     unsigned int i = 0;
-    TSeq temp;
+    TSeq seq;
     while (i < records && !atEnd(inputFileStreams.fileStream1))
     {
-        readRecord(reads[i].id, temp, inputFileStreams.fileStream1);
-        reads[i].seq = temp;
+        readRecord(reads[i].id, seq, inputFileStreams.fileStream1);
+        reads[i].seq = seq;
         ++i;
     }
     reads.resize(i);
@@ -1517,6 +1517,8 @@ struct ReadWriter
                         currentWriteItem = readSet.load();
                         readSet.store(nullptr); // make the slot free again
                         nothingToDo = false;
+                        
+                        // used for debuggin slow hd case
                         //std::this_thread::sleep_for(std::chrono::microseconds(1000000));
                         const auto t1 = std::chrono::steady_clock::now();
                         _outputStreams.writeSeqs(std::move(*std::get<0>(*currentWriteItem)), std::get<1>(*currentWriteItem));
@@ -1622,7 +1624,6 @@ struct ReadReader
                     currentReadSet = std::make_unique<TReadSet>(_programParams.records);
 
                     readReads(*currentReadSet, _programParams.records, _inputFileStreams);
-
                     loadMultiplex(*currentReadSet, _programParams.records, _inputFileStreams.fileStreamMultiplex);
                     _numReads += currentReadSet->size();
                     if (currentReadSet->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
