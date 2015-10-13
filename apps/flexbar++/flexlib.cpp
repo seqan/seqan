@@ -1504,7 +1504,7 @@ struct ReadWriter
         _run = true;
         _thread = std::thread([this]()
         {
-            std::unique_ptr<TWriteItem> currentWriteItem;
+            TWriteItem* currentWriteItem;
             while (_run)
             {
                 bool nothingToDo = true;
@@ -1512,7 +1512,7 @@ struct ReadWriter
                 {
                     if (readSet.load()!=nullptr)
                     {
-                        currentWriteItem.reset(readSet.load());
+                        currentWriteItem = readSet.load();
                         readSet.store(nullptr); // make the slot free again
                         nothingToDo = false;
                         
@@ -1520,6 +1520,7 @@ struct ReadWriter
                         _outputStreams.writeSeqs(std::move(*std::get<0>(*currentWriteItem)), std::get<1>(*currentWriteItem));
                         delete std::get<0>(*currentWriteItem); // delete written data
                         _stats += std::get<2>(*currentWriteItem);
+                        delete currentWriteItem;
                         // terminal output
                         const auto ioTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
                         _stats.ioTime += ioTime;
