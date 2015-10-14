@@ -37,6 +37,171 @@
 #include <string>
 #include <future>
 
+//TODO: clean up this object
+class OutputStreams
+{
+    using TSeqStream = std::unique_ptr<seqan::SeqFileOut>;
+    using TStreamPair = std::pair<TSeqStream, TSeqStream>;
+    std::map<int, TStreamPair> fileStreams;
+    const std::string basePath;
+    std::string extension;
+
+
+
+    template < typename TStream, template<typename> class TRead, typename TSeq,
+        typename = std::enable_if_t < std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value  > >
+        inline void writeRecord(TStream& stream, TRead<TSeq>&& read, bool = false)
+    {
+        seqan::writeRecord(*(stream.first), std::move(read.id), std::move(read.seq));
+    }
+
+    template <typename TStream, template<typename> class TRead, typename TSeq,
+        typename = std::enable_if_t < std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value  > >
+        inline void writeRecord(TStream& stream, TRead<TSeq>&& read)
+    {
+        seqan::writeRecord(*(stream.first), std::move(read.id), std::move(read.seq));
+        seqan::writeRecord(*(stream.second), std::move(read.idRev), std::move(read.seqRev));
+    }
+
+public:
+    // Constructor saves a base directory path used for all outputs.
+    // The correct file extension is determined from the base path, according to the available
+    // file extensions of the SeqFileOut and used for all stored files.
+    OutputStreams(const std::string& base, bool /*noQuality*/) : basePath(base)
+    {
+        std::vector<std::string> tmpExtensions = seqan::SeqFileOut::getFileExtensions();
+        for(const auto& tmpExtension : tmpExtensions)
+        {
+            if (seqan::endsWith(basePath, tmpExtension))
+            {
+                extension = tmpExtension;
+                break;
+            }
+        }
+    }
+
+    inline seqan::CharString getBaseFilename(void) const
+    {
+        return prefix(basePath, length(basePath) - length(extension));
+    }
+
+    //Adds a new output streams to the collection of streams.
+    void addStream(seqan::CharString fileName, int id, bool useDefault)
+    {
+        //Prepend basePath and append file extension to the filename.
+        seqan::CharString path = getBaseFilename();
+        if (fileName != "")
+            seqan::append(path, "_");
+        if (useDefault)
+            append(path, "_result");
+
+        seqan::append(path, fileName);
+        seqan::append(path, extension);
+        char* file = seqan::toCString(path);
+        fileStreams[id].first = std::make_unique<seqan::SeqFileOut>(file);
+    }
+
+    void addStream(seqan::CharString fileName, int id)
+    {
+        addStream(fileName, id, false);
+    }
+    //Adds two new output streams to the collection of streams.
+    void addStreams(seqan::CharString fileName1, seqan::CharString fileName2, int id, bool useDefault)
+    {
+        //Prepend basePath and append file extension to the filename.
+        seqan::CharString path1 = prefix(basePath, length(basePath) - length(extension));
+        seqan::CharString path2 = prefix(basePath, length(basePath) - length(extension));
+        if (fileName1 != "")
+            seqan::append(path1, "_");
+        if (fileName2 != "")
+            seqan::append(path2, "_");
+
+        if (useDefault)
+        {
+            append(path1, "_result");
+            append(path2, "_result");
+        }
+
+        seqan::append(path1, fileName1);
+        seqan::append(path1, extension);
+        seqan::append(path2, fileName2);
+        seqan::append(path2, extension);
+        char* file1 = seqan::toCString(path1);
+        char* file2 = seqan::toCString(path2);
+        fileStreams[id] = std::make_pair(std::make_unique<seqan::SeqFileOut>(file1), std::make_unique<seqan::SeqFileOut>(file2));
+    }
+
+    void addStreams(seqan::CharString fileName1, seqan::CharString fileName2, int id)
+    {
+        addStreams(fileName1, fileName2, id, false);
+    }
+
+    //This method takes a String of integers and checks if these integers are
+    //already associated with a stream. If not, a new stream is added and the opened
+    //file is named according to the list of names. One or two files are created.
+    template <typename TNames>
+    void updateStreams(TNames& names, bool pair)
+    {
+
+        for (unsigned i = 0; i < length(names) + 1; ++i)
+        {
+            const unsigned streamIndex = i;
+            // If no stream for this id exists, create one.
+            if (fileStreams.find(streamIndex) == fileStreams.end())
+            {
+                // If the index is 0 (unidentified) create special stream.
+                // Otherwise use index to get appropriate name for output file.
+                seqan::CharString file;
+                if (streamIndex > 0)
+                {
+                    file = names[streamIndex - 1];
+                }
+                else
+                {
+                    file = seqan::CharString("unidentified");
+                }
+                // Add file extension to stream and create it.
+                if (pair)
+                {
+                    // Create a new subfolder at basePath/[barcodeID, unidentified].
+                    seqan::CharString folderPath(basePath);
+                    seqan::append(folderPath, file);
+                    // Turn file target from [barcodeID,unidentified]
+                    // to subfolder [barcodeID, unidentified]/[barcodeID, unidentified]
+                    seqan::CharString filePath(file);
+                    seqan::append(file, "/");
+                    seqan::append(file, filePath);
+                    // To differentiate between the paired reads, add index to the file name.
+                    seqan::CharString file2 = file;
+                    seqan::append(file, seqan::CharString("_1"));
+                    seqan::append(file2, seqan::CharString("_2"));
+                    this->addStreams(file, file2, streamIndex);
+                }
+                else
+                {
+                    //std::cerr << file << " " << streamIndex << std::endl;
+                    this->addStream(file, streamIndex);
+                }
+            }
+        }
+    }
+
+    template <template<typename> class TRead, typename TSeq, typename TNames>
+    void writeSeqs(std::vector<TRead<TSeq>>&& reads, TNames& names)
+    {
+        updateStreams(names, false);
+        for(auto& read : reads)
+        {
+            const unsigned streamIndex = read.demuxResult;
+            writeRecord(fileStreams[streamIndex], std::move(read));
+        }
+    }
+
+    ~OutputStreams(){}
+
+};
+
+
 // writes read sets to hd and collects statistics, blocks if all slots are full
 template<template<typename> class TRead, typename TSeq, typename _TWriteItem, typename TProgramParams, typename TOutputStreams>
 struct ReadWriter
