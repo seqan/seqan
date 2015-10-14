@@ -71,6 +71,9 @@ endforeach ()
 
 add_library (flexlib
              read.h
+			 read_reader.h
+			 read_writer.h
+			 read_processor.h
              demultiplex.h
              read_trimming.h
              adapter_trimming.h

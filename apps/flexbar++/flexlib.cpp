@@ -61,6 +61,9 @@
 #include "general_processing.h"
 #include "helper_functions.h"
 #include "read.h"
+#include "read_reader.h"
+#include "read_writer.h"
+#include "read_processor.h"
 
 // Global variables are evil, this is for adaption and should be removed
 // after refactorization.
@@ -91,7 +94,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     addSection(parser, "General Options");
 
     seqan::ArgParseOption showSpeedOpt = seqan::ArgParseOption(
-        "ss", "showSpeed", "Show speed in base pairs per second");
+        "ss", "showSpeed", "Show speed in base pairs per second.");
     addOption(parser, showSpeedOpt);
 
     seqan::ArgParseOption writeStatsOpt = seqan::ArgParseOption(
@@ -99,9 +102,9 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     addOption(parser, writeStatsOpt);
     
     seqan::ArgParseOption recordOpt = seqan::ArgParseOption(
-        "r", "records", "Number of records to be read in one run.",
+        "r", "records", "Number of records to be read in one run. Adjust this so that one batch of read can fit into your CPU cache.",
         seqan::ArgParseOption::INTEGER, "VALUE");
-    setDefaultValue(recordOpt, 10000);
+    setDefaultValue(recordOpt, 1000);
     setMinValue(recordOpt, "1");
     addOption(parser, recordOpt);
 
@@ -164,7 +167,7 @@ void ArgumentParserBuilder::addFilteringOptions(seqan::ArgumentParser & parser)
     addOption(parser, leftTrimOpt);
 
 	seqan::ArgParseOption tagTrimmingOpt = seqan::ArgParseOption(
-		"tt", "tagTrimming", "Write trimmed-out segments into id");
+		"tt", "tagTrimming", "Write trimmed-out segments into id.");
 	addOption(parser, tagTrimmingOpt);
 
     seqan::ArgParseOption rigthTrimOpt = seqan::ArgParseOption(
@@ -1482,223 +1485,17 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
     return i;
 }
 
-// writes read sets to hd and collects statistics, blocks if all slots are full
-template<template<typename> class TRead, typename TSeq, typename _TWriteItem>
-struct ReadWriter
-{
-    using TWriteItem = _TWriteItem;
 
-    ReadWriter(const ProgramParams& programParams, OutputStreams& outputStreams, unsigned int sleepMS)
-        : _programParams(programParams), _outputStreams(outputStreams), _tlsReadSets(_programParams.num_threads + 1),
-        _run(false), _sleepMS(sleepMS), _startTime(std::chrono::steady_clock::now()), _lastScreenUpdate()
-    {
-        for (auto& readSet : _tlsReadSets)
-            readSet.store(nullptr);  // fill initialization does not work for atomics
-    }
-    ~ReadWriter() 
-    {
-        _run = false;
-        if (_thread.joinable())
-            _thread.join();
-    }
-    void start()
-    {
-        _run = true;
-        _thread = std::thread([this]()
-        {
-            TWriteItem* currentWriteItem;
-            while (_run)
-            {
-                bool nothingToDo = true;
-                for (auto& readSet : _tlsReadSets)
-                {
-                    if (readSet.load()!=nullptr)
-                    {
-                        currentWriteItem = readSet.load();
-                        readSet.store(nullptr); // make the slot free again
-                        nothingToDo = false;
-                        
-                        // used for debuggin slow hd case
-                        //std::this_thread::sleep_for(std::chrono::microseconds(1000000));
-                        const auto t1 = std::chrono::steady_clock::now();
-                        _outputStreams.writeSeqs(std::move(*std::get<0>(*currentWriteItem)), std::get<1>(*currentWriteItem));
-                        std::get<0>(*currentWriteItem)->clear();
-                        delete std::get<0>(*currentWriteItem); // delete written data
-                        _stats += std::get<2>(*currentWriteItem);
-                        delete currentWriteItem;
 
-                        // terminal output
-                        const auto ioTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
-                        _stats.ioTime += ioTime;
-                        const auto deltaLastScreenUpdate = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - _lastScreenUpdate).count();
-                        if (deltaLastScreenUpdate > 1)
-                        {
-                            const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - _startTime).count();
-                            if (_programParams.showSpeed)
-                                std::cout << "\rReads processed: " << _stats.readCount << "   (" << static_cast<int>(_stats.readCount / deltaTime) << " Reads/s)";
-                            else
-                                std::cout << "\rReads processed: " << _stats.readCount;
-                            _lastScreenUpdate = std::chrono::steady_clock::now();
-                        }
-                    }
-                }
-                if (nothingToDo)
-                {
-                    //std::cout << std::this_thread::get_id() << "-4" << std::endl;
-                    std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
-                }
-            }
-        });
-    }
-    void writeReads(TWriteItem* writeItem)     // blocks until item could be added
-    {
-        while (true)
-        {
-            for (auto& reads : _tlsReadSets)
-            {
-                if (reads.load() == nullptr)
-                {
-                    TWriteItem* temp = nullptr;
-                    if (reads.compare_exchange_strong(temp, writeItem))
-                    {
-                        return;
-                    }
-                }
-            }
-            //std::cout << std::this_thread::get_id() << "-3" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
-        }
-    }
-    void getStats(std::tuple_element_t<2, TWriteItem>& stats)
-    {
-        _run = false;
-        if (_thread.joinable())
-            _thread.join();
-        stats = _stats;
-    }
-    bool idle() noexcept
-    {
-        for (auto& readSet : _tlsReadSets)
-            if (readSet.load() != nullptr)
-                return false;
-        return true;
-    }
-    private:
-        const ProgramParams& _programParams;
-        OutputStreams& _outputStreams;
-        std::vector<std::atomic<TWriteItem*>> _tlsReadSets;
-        std::thread _thread;
-        std::atomic_bool _run;
-        unsigned int _sleepMS;
-        std::chrono::time_point<std::chrono::steady_clock> _startTime;
-        std::chrono::time_point<std::chrono::steady_clock> _lastScreenUpdate;
-        std::tuple_element_t<2, TWriteItem> _stats;
-};
 
-// reads read sets from hd and puts them into slots, waits if no free slots are available
-template<template<typename> class TRead, typename TSeq>
-struct ReadReader
-{
-    using TReadSet = std::vector<TRead<TSeq>>;
-    ReadReader(const ProgramParams& programParams, InputFileStreams& inputFileStreams, unsigned int sleepMS)
-        :_programParams(programParams), _inputFileStreams(inputFileStreams), _tlsReadSets(_programParams.num_threads + 1) ,
-        _eof(false), _sleepMS(sleepMS), _numReads(0)
-    {
-        for (auto& readSet : _tlsReadSets)
-            readSet.store(nullptr);  // fill initialization does not work for atomics
-    }
-    ~ReadReader() 
-    {
-        if (_thread.joinable())
-            _thread.join();
-    }
-    void start()
-    {
-        _thread = std::thread([this]()
-        {
-            std::unique_ptr <TReadSet> currentReadSet;
-            while (!_eof || currentReadSet)
-            {
-                if (!currentReadSet)  // load new reads from hd
-                {
-                    currentReadSet = std::make_unique<TReadSet>(_programParams.records);
-
-                    readReads(*currentReadSet, _programParams.records, _inputFileStreams);
-                    loadMultiplex(*currentReadSet, _programParams.records, _inputFileStreams.fileStreamMultiplex);
-                    _numReads += currentReadSet->size();
-                    if (currentReadSet->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
-                    {
-                        _eof = true;
-                    }
-                }
-                for (auto& readSet : _tlsReadSets)  // now insert reads into a slot
-                {
-                    if (currentReadSet && readSet.load() == nullptr)
-                    {
-                        readSet.store(currentReadSet.release());
-                        break;
-                    }
-                }
-                if (currentReadSet)  // no empty slow was found, wait a bit
-                {
-                    std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
-                }
-            }
-        });
-    }
-    inline bool eof() const noexcept
-    {
-        return _eof;
-    }
-    bool idle() noexcept
-    {
-        if (!_eof)
-            return false;
-        for (auto& readSet : _tlsReadSets)
-            if (readSet.load())
-                return false;
-        return true;
-    }
-    bool getReads(TReadSet** reads) noexcept
-    {
-        TReadSet* temp = nullptr;
-        while (true)
-        {
-            for (auto& readSet : _tlsReadSets)
-            {
-                if ((temp = readSet.load())!= nullptr)
-                {
-                    if (readSet.compare_exchange_strong(temp, nullptr))
-                    {
-                        *reads = temp;
-                        return true;
-                    }
-                }
-            }
-            if (_eof)
-                return false;
-            //std::cout << std::this_thread::get_id() << "-2" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
-        }
-        return false;
-    };
-private:
-    const ProgramParams& _programParams;
-    InputFileStreams& _inputFileStreams;
-    std::vector<std::atomic<TReadSet*>> _tlsReadSets;
-    std::thread _thread;
-    std::atomic_bool _eof;
-    unsigned int _sleepMS;
-    unsigned int _numReads;
-};
 
 template <typename TRead, typename TFinder, typename TReadReader, typename TReadWriter>
-struct ProcessingUnit
+struct ReadProcessor
 {
     using TpReads = std::vector<TRead>*;
     using TWriteItem = typename TReadWriter::TWriteItem;
 
-    ProcessingUnit(const ProgramParams& programParams, const ProcessingParams& processingParams, const DemultiplexingParams& demultiplexingParams, const AdapterTrimmingParams& adapterTrimmingParams,
+    ReadProcessor(const ProgramParams& programParams, const ProcessingParams& processingParams, const DemultiplexingParams& demultiplexingParams, const AdapterTrimmingParams& adapterTrimmingParams,
         const QualityTrimmingParams& qualityTrimmingParams, TFinder &finder, TReadReader& readReader, TReadWriter& readWriter, unsigned int sleepMS) : _programParams(programParams), _processingParams(processingParams), _demultiplexingParams(demultiplexingParams),
         _adapterTrimmingParams(adapterTrimmingParams), _qualityTrimmingParams(qualityTrimmingParams), _finder(finder), _sleepMS(sleepMS), _readReader(readReader), _readWriter(readWriter), _threads(_programParams.num_threads){};
 
@@ -1777,24 +1574,24 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
 {
     const unsigned int threadIdleSleepTimeMS = 10;  // not used anymore
     using TWriteItem = std::tuple < std::vector<TRead<TSeq>>*, decltype(DemultiplexingParams::barcodeIds), GeneralStats>;
-    using TReadWriter = ReadWriter<TRead, TSeq, TWriteItem>;
-    using TReadReader = ReadReader<TRead, TSeq>;
-    using TProcessingUnit = ProcessingUnit<TRead<TSeq>, TEsaFinder, TReadReader, TReadWriter>;
+    using ReadReader = ReadReader<TRead, TSeq, ProgramParams, InputFileStreams, true>;
+    using ReadWriter = ReadWriter<TRead, TSeq, TWriteItem, ProgramParams, OutputStreams>;
+    using ReadProcessor = ReadProcessor<TRead<TSeq>, TEsaFinder, ReadReader, ReadWriter>;
 
-    TReadWriter readWriter(programParams, outputStreams, threadIdleSleepTimeMS);
-    TReadReader readReader(programParams, inputFileStreams, threadIdleSleepTimeMS);
-    TProcessingUnit processingUnit(programParams, processingParams, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, readReader, readWriter, threadIdleSleepTimeMS);
+    ReadWriter readWriter(programParams, outputStreams, threadIdleSleepTimeMS);
+    ReadReader readReader(programParams, inputFileStreams, threadIdleSleepTimeMS);
+    ReadProcessor readProcessor(programParams, processingParams, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, readReader, readWriter, threadIdleSleepTimeMS);
 
     TStats generalStats(length(demultiplexingParams.barcodeIds) + 1);
 
 #ifdef _MULTITHREADED_IO
     readReader.start();
     readWriter.start();
-    processingUnit.start();
-    while (!(readReader.eof() && readReader.idle() && processingUnit.finished() && readWriter.idle())) // shortcut is used most of the time -> xxx.idle() get called only after eof is set
+    readProcessor.start();
+    while (!(readReader.eof() && readReader.idle() && readProcessor.finished() && readWriter.idle())) // shortcut is used most of the time -> xxx.idle() get called only after eof is set
     {
         if (readReader.eof())
-            processingUnit.shutDown();
+            readProcessor.shutDown();
         std::this_thread::sleep_for(std::chrono::milliseconds(10*threadIdleSleepTimeMS));
     }
     readWriter.getStats(stats);
