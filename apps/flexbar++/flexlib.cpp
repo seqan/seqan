@@ -1217,10 +1217,6 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
     return i;
 }
 
-
-
-
-
 template <typename TRead, typename TFinder, typename TReadReader, typename TReadWriter>
 struct ReadProcessor
 {
@@ -1304,10 +1300,11 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
     const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder,
     OutputStreams& outputStreams, TStats& stats)
 {
-    const unsigned int threadIdleSleepTimeMS = 10;  // not used anymore
+    const unsigned int threadIdleSleepTimeMS = 10;  // only used when useConditionVariableForIdleWaiting = true
+    constexpr bool useConditionVariableForIdleWaiting = true;
     using TWriteItem = std::tuple < std::vector<TRead<TSeq>>*, decltype(DemultiplexingParams::barcodeIds), GeneralStats>;
-    using ReadReader = ReadReader<TRead, TSeq, ProgramParams, InputFileStreams, true>;
-    using ReadWriter = ReadWriter<TRead, TSeq, TWriteItem, ProgramParams, OutputStreams>;
+    using ReadReader = ReadReader<TRead, TSeq, ProgramParams, InputFileStreams, useConditionVariableForIdleWaiting>;
+    using ReadWriter = ReadWriter<TRead, TSeq, TWriteItem, ProgramParams, OutputStreams, useConditionVariableForIdleWaiting>;
     using ReadProcessor = ReadProcessor<TRead<TSeq>, TEsaFinder, ReadReader, ReadWriter>;
 
     ReadWriter readWriter(programParams, outputStreams, threadIdleSleepTimeMS);

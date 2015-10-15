@@ -63,7 +63,6 @@ class OutputStreams
     //Adds a new output streams to the collection of streams.
     void _addStream(TSeqStream& stream, const std::string fileName, int id, bool useDefault)
     {
-        //Prepend basePath and append file extension to the filename.
         std::string path = getBaseFilename();
         if (fileName != "")
             path += "_";
@@ -76,7 +75,6 @@ class OutputStreams
 
 
 public:
-    // Constructor saves a base directory path used for all outputs.
     // The correct file extension is determined from the base path, according to the available
     // file extensions of the SeqFileOut and used for all stored files.
     OutputStreams(const std::string& base, bool /*noQuality*/) : basePath(base)
@@ -171,11 +169,26 @@ public:
 
 
 // writes read sets to hd and collects statistics, blocks if all slots are full
-template<template<typename> class TRead, typename TSeq, typename _TWriteItem, typename TProgramParams, typename TOutputStreams>
+template<template<typename> class TRead, typename TSeq, typename _TWriteItem, typename TProgramParams, typename TOutputStreams, bool useCV>
 struct ReadWriter
 {
+public:
     using TWriteItem = _TWriteItem;
 
+private:
+    const TProgramParams& _programParams;
+    TOutputStreams& _outputStreams;
+    std::vector<std::atomic<TWriteItem*>> _tlsReadSets;
+    std::thread _thread;
+    std::atomic_bool _run;
+    unsigned int _sleepMS;
+    std::chrono::time_point<std::chrono::steady_clock> _startTime;
+    std::chrono::time_point<std::chrono::steady_clock> _lastScreenUpdate;
+    std::tuple_element_t<2, TWriteItem> _stats;
+    std::condition_variable slotEmptyCV;
+    std::condition_variable readAvailableCV;
+
+public:
     ReadWriter(const TProgramParams& programParams, TOutputStreams& outputStreams, unsigned int sleepMS)
         : _programParams(programParams), _outputStreams(outputStreams), _tlsReadSets(_programParams.num_threads + 1),
         _run(false), _sleepMS(sleepMS), _startTime(std::chrono::steady_clock::now()), _lastScreenUpdate()
@@ -195,6 +208,7 @@ struct ReadWriter
         _thread = std::thread([this]()
         {
             TWriteItem* currentWriteItem;
+            std::mutex waitForDataDummyMutex;
             while (_run)
             {
                 bool nothingToDo = true;
@@ -204,6 +218,8 @@ struct ReadWriter
                     {
                         currentWriteItem = readSet.load();
                         readSet.store(nullptr); // make the slot free again
+                        if (useCV)
+                            slotEmptyCV.notify_one();
                         nothingToDo = false;
 
                         //std::this_thread::sleep_for(std::chrono::milliseconds(1));  // used for debuggin slow hd case
@@ -233,7 +249,13 @@ struct ReadWriter
                 if (nothingToDo)
                 {
                     //std::cout << std::this_thread::get_id() << "-4" << std::endl;
-                    std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+                    if (useCV)
+                    {
+                        std::unique_lock<std::mutex> lk(waitForDataDummyMutex);
+                        readAvailableCV.wait(lk);
+                    }
+                    else
+                        std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
                 }
             }
         });
@@ -249,12 +271,21 @@ struct ReadWriter
                     TWriteItem* temp = nullptr;
                     if (reads.compare_exchange_strong(temp, writeItem))
                     {
+                        if (useCV)
+                            readAvailableCV.notify_one();
                         return;
                     }
                 }
             }
             //std::cout << std::this_thread::get_id() << "-3" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
+            if (useCV)
+            {
+                std::mutex waitForEmptySlotMutex;
+                std::unique_lock<std::mutex> lk(waitForEmptySlotMutex);
+                slotEmptyCV.wait(lk);
+            }
+            else
+                std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
     }
     void getStats(std::tuple_element_t<2, TWriteItem>& stats)
@@ -271,14 +302,4 @@ struct ReadWriter
                 return false;
         return true;
     }
-private:
-    const TProgramParams& _programParams;
-    TOutputStreams& _outputStreams;
-    std::vector<std::atomic<TWriteItem*>> _tlsReadSets;
-    std::thread _thread;
-    std::atomic_bool _run;
-    unsigned int _sleepMS;
-    std::chrono::time_point<std::chrono::steady_clock> _startTime;
-    std::chrono::time_point<std::chrono::steady_clock> _lastScreenUpdate;
-    std::tuple_element_t<2, TWriteItem> _stats;
 };
