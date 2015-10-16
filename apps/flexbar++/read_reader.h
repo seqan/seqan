@@ -81,8 +81,12 @@ public:
                 if (!currentReadSet)  // load new reads from hd
                 {
                     currentReadSet = std::make_unique<TReadSet>(_programParams.records);
-
-                    readReads(*currentReadSet, _programParams.records, _inputFileStreams);
+                    try {
+                        readReads(*currentReadSet, _programParams.records, _inputFileStreams);
+                    }
+                    catch (std::exception& e){
+                        std::cout << "exception while reading :" << e.what() << " at read " << _numReads << std::endl;
+                    }
                     loadMultiplex(*currentReadSet, _programParams.records, _inputFileStreams.fileStreamMultiplex);
                     _numReads += currentReadSet->size();
                     if (currentReadSet->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
