@@ -72,6 +72,12 @@ public:
     }
     void start()
     {
+        /*
+        - check if currentReadSet containts data, if not read data into it
+            - set eof=true if no more data eof reached or max_number_of_reads reached
+        - check if a currentReadSet can be inserted in an empty slot
+        - 
+        */
         _thread = std::thread([this]()
         {
             std::unique_ptr <TReadSet> currentReadSet;
@@ -80,20 +86,21 @@ public:
                 if (!currentReadSet)  // load new reads from hd
                 {
                     currentReadSet = std::make_unique<TReadSet>(_programParams.records);
-                    try {
+                    //try {
                         readReads(*currentReadSet, _programParams.records, _inputFileStreams);
-                    }
-                    catch (std::exception& e){
-                        std::cout << "exception while reading :" << e.what() << " at read " << _numReads << std::endl;
-                    }
+                    //}
+                    //catch (std::exception& e){
+                    //    std::cout << "exception while reading :" << e.what() << " after read " << _numReads << std::endl;
+                    //    throw(e);
+                    //}
                     loadMultiplex(*currentReadSet, _programParams.records, _inputFileStreams.fileStreamMultiplex);
                     _numReads += currentReadSet->size();
                     if (currentReadSet->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
                     {
                         _eof = true;
                         //std::cout << "eof" << std::endl;
-                        if (useSemaphore)
-                            readAvailableSemaphore.signal(std::numeric_limits<int>::max());
+                        if (useSemaphore)  // wakeup all potentially waiting threads so that they can be joined
+                            readAvailableSemaphore.signal(_programParams.num_threads);
                     }
                 }
                 for (auto& readSet : _tlsReadSets)  // now insert reads into a slot
@@ -129,6 +136,12 @@ public:
                 return false;
         return true;
     }
+    /*
+    do the following steps sequentially
+    - check if any slot contains data, if yes take data out and return true
+    - check if eof is reached, if yes return false
+    - go to sleep until data is available
+    */
     bool getReads(TReadSet** reads) noexcept
     {
         TReadSet* temp = nullptr;
