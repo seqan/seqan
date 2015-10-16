@@ -1,34 +1,4 @@
 // ==========================================================================
-//                             helper_functions.h
-// ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
-// All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of Knut Reinert or the FU Berlin nor the names of
-//       its contributors may be used to endorse or promote products derived
-//       from this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL KNUT REINERT OR THE FU BERLIN BE LIABLE
-// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-// OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-// DAMAGE.
-//
-// ==========================================================================
 // Author: Benjamin Menkuec <benjamin@menkuec.de>
 // ==========================================================================
 
@@ -73,47 +43,46 @@ public:
     void start()
     {
         /*
-        - check if currentReadSet containts data, if not read data into it
-            - set eof=true if no more data eof reached or max_number_of_reads reached
-        - check if a currentReadSet can be inserted in an empty slot
-        - 
+        - check if empty slot is available, if yes, read data into it
+            - set eof=true if no more data available or max_number_of_reads reached
+        - return from thread if eof == true
+        - go to sleep if no free slot is available
         */
         _thread = std::thread([this]()
         {
             std::unique_ptr <TReadSet> currentReadSet;
-            while (!_eof || currentReadSet)
+            bool noEmptySlot = true;
+            while (true)
             {
-                if (!currentReadSet)  // load new reads from hd
+                noEmptySlot = true;
+                for (auto& readSet : _tlsReadSets) 
                 {
-                    currentReadSet = std::make_unique<TReadSet>(_programParams.records);
-                    //try {
+                    if (readSet.load() == nullptr)
+                    {
+                        noEmptySlot = false;
+                        currentReadSet = std::make_unique<TReadSet>(_programParams.records);
+                        //try {
                         readReads(*currentReadSet, _programParams.records, _inputFileStreams);
-                    //}
-                    //catch (std::exception& e){
-                    //    std::cout << "exception while reading :" << e.what() << " after read " << _numReads << std::endl;
-                    //    throw(e);
-                    //}
-                    loadMultiplex(*currentReadSet, _programParams.records, _inputFileStreams.fileStreamMultiplex);
-                    _numReads += currentReadSet->size();
-                    if (currentReadSet->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
-                    {
-                        _eof = true;
-                        //std::cout << "eof" << std::endl;
-                        if (useSemaphore)  // wakeup all potentially waiting threads so that they can be joined
-                            readAvailableSemaphore.signal(_programParams.num_threads);
-                    }
-                }
-                for (auto& readSet : _tlsReadSets)  // now insert reads into a slot
-                {
-                    if (currentReadSet && readSet.load() == nullptr)
-                    {
+                        //}
+                        //catch (std::exception& e){
+                        //    std::cout << "exception while reading :" << e.what() << " after read " << _numReads << std::endl;
+                        //    throw(e);
+                        //}
+                        loadMultiplex(*currentReadSet, _programParams.records, _inputFileStreams.fileStreamMultiplex);
+                        _numReads += currentReadSet->size();
+                        if (currentReadSet->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
+                            _eof = true;
                         readSet.store(currentReadSet.release());
-                        if (useSemaphore)
+
+                        if (useSemaphore && _eof)  // wakeup all potentially waiting threads so that they can be joined
+                            readAvailableSemaphore.signal(_programParams.num_threads);
+                        else if (useSemaphore)
                             readAvailableSemaphore.signal();
-                        break;
                     }
+                    if (_eof)
+                        return;
                 }
-                if (currentReadSet && !_eof)  // no empty slow was found, wait a bit
+                if (noEmptySlot)  // no empty slow was found, wait a bit
                 {
                     if (useSemaphore)
                         slotEmptySemaphore.wait();
@@ -147,6 +116,7 @@ public:
         TReadSet* temp = nullptr;
         while (true)
         {
+            bool eof = _eof;
             for (auto& readSet : _tlsReadSets)
             {
                 if ((temp = readSet.load()) != nullptr)
@@ -161,7 +131,7 @@ public:
                 }
             }
             //std::cout << std::this_thread::get_id() << "-2" << std::endl;
-            if (_eof)
+            if (eof) // only return if _eof == true AND all the slots are empty -> therefore read eof BEFORE checking the slots
                 return false;
             else if (useSemaphore)
                 readAvailableSemaphore.wait();
