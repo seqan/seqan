@@ -58,7 +58,6 @@ private:
     LightweightSemaphore readAvailableSemaphore;
 
 public:
-    using TReadSet = std::vector<TRead<TSeq>>;
     ReadReader(const TProgramParams& programParams, TInputFileStreams& inputFileStreams, unsigned int sleepMS)
         :_programParams(programParams), _inputFileStreams(inputFileStreams), _tlsReadSets(_programParams.num_threads + 1),
         _eof(false), _sleepMS(sleepMS), _numReads(0)

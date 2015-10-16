@@ -220,8 +220,8 @@ unsigned stripPair(TSeq& seq1, TSeq& seq2) noexcept
 {
     // When aligning the two sequences, the complementary sequence is reversed and
     // complemented, so we have an overlap alignment with complementary bases being the same.
-    using TAlphabet = seqan::Value<TSeq>::Type;
-    using TReverseComplement = STRING_REVERSE_COMPLEMENT<TAlphabet>::Type;
+    using TAlphabet = typename seqan::Value<TSeq>::Type;
+    using TReverseComplement = typename STRING_REVERSE_COMPLEMENT<TAlphabet>::Type;
     TReverseComplement mod(seq2);
     typedef seqan::Align<TSeq> TAlign;
     std::pair<unsigned, TAlign> ret;
@@ -285,7 +285,7 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
     const TStripAdapterDirection&) noexcept
 {
     using TAlign = seqan::Align<TSeq>;
-    using TRow = seqan::Row<TAlign>::Type;
+    using TRow = typename seqan::Row<TAlign>::Type;
 
     unsigned removed{ 0 };
     std::vector<std::tuple<unsigned int, unsigned int, TAlign, AdapterItem>> matches;
