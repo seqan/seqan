@@ -220,8 +220,8 @@ unsigned stripPair(TSeq& seq1, TSeq& seq2) noexcept
 {
     // When aligning the two sequences, the complementary sequence is reversed and
     // complemented, so we have an overlap alignment with complementary bases being the same.
-    typedef typename seqan::Value<TSeq>::Type TAlphabet;
-    typedef typename STRING_REVERSE_COMPLEMENT<TAlphabet>::Type TReverseComplement;
+    using TAlphabet = seqan::Value<TSeq>::Type;
+    using TReverseComplement = STRING_REVERSE_COMPLEMENT<TAlphabet>::Type;
     TReverseComplement mod(seq2);
     typedef seqan::Align<TSeq> TAlign;
     std::pair<unsigned, TAlign> ret;
@@ -284,8 +284,8 @@ template <typename TSeq, typename TAdapters, typename TStripAdapterDirection>
 unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& adapters, AdapterMatchSettings const& spec,
     const TStripAdapterDirection&) noexcept
 {
-    typedef typename seqan::Align<TSeq> TAlign;
-    typedef typename seqan::Row<TAlign>::Type TRow;
+    using TAlign = seqan::Align<TSeq>;
+    using TRow = seqan::Row<TAlign>::Type;
 
     unsigned removed{ 0 };
     std::vector<std::tuple<unsigned int, unsigned int, TAlign, AdapterItem>> matches;
@@ -377,8 +377,6 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
             stats.removedLength[statisticLen - 1].resize(mismatches + 1);
         ++stats.removedLength[statisticLen - 1][mismatches];
 
-        if (stats.numRemoved.size() < adapterItem.id + 1)
-            stats.numRemoved.resize(adapterItem.id + 1);
         ++stats.numRemoved[adapterItem.id];
 
         stats.overlapSum += overlap;

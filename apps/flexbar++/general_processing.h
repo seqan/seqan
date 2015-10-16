@@ -42,7 +42,6 @@
 
 #include "helper_functions.h"
 #include "general_stats.h"
-#include <initializer_list>
 
 // ============================================================================
 // Tags, Classes, Enums

@@ -94,31 +94,51 @@ void insert(std::string& dest, unsigned int k, const std::string& token)
 
 //
 
-class semaphore
+class SemaphoreTest
 {
 private:
-    std::mutex mutex_;
     std::condition_variable condition_;
-    unsigned long count_;
-
+    std::atomic<unsigned int> count_;
+    std::atomic_bool allowAll_;
+    std::mutex mutex_;
 public:
-    semaphore()
-        : count_()
-    {}
+    SemaphoreTest()
+    {
+        count_.store(0);
+        allowAll_ = false;
+    }
 
     void notify()
     {
-        std::unique_lock<std::mutex> lock(mutex_);
         ++count_;
         condition_.notify_one();
     }
 
-    void wait()
+    void allowAll()
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        while (!count_)
-            condition_.wait(lock);
-        --count_;
+        allowAll_ = true;
+        condition_.notify_all();
+    }
+
+    void wait()
+    {
+        while (!allowAll_)
+        {
+            auto currentVal = count_.load();
+            if (currentVal != 0)
+            {
+                unsigned int expected = currentVal;
+                if (count_.compare_exchange_strong(expected, currentVal -1))
+                    return;
+            }
+            else
+            {
+                std::unique_lock<std::mutex> lock(mutex_);
+                if(!allowAll_)
+                    condition_.wait(lock);
+            }
+        }
     }
 };
 

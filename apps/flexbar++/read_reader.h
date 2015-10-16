@@ -38,10 +38,26 @@
 #include <string>
 #include <future>
 
+#include "semaphore.h"
+
 // reads read sets from hd and puts them into slots, waits if no free slots are available
-template<template<typename> class TRead, typename TSeq, typename TProgramParams, typename TInputFileStreams, bool useCV>
+template<template<typename> class TRead, typename TSeq, typename TProgramParams, typename TInputFileStreams, bool useSemaphore>
 struct ReadReader
 {
+public:
+    using TReadSet = std::vector<TRead<TSeq>>;
+private:
+    const TProgramParams& _programParams;
+    TInputFileStreams& _inputFileStreams;
+    std::vector<std::atomic<TReadSet*>> _tlsReadSets;
+    std::thread _thread;
+    std::atomic_bool _eof;
+    unsigned int _sleepMS;
+    unsigned int _numReads;
+    LightweightSemaphore slotEmptySemaphore;
+    LightweightSemaphore readAvailableSemaphore;
+
+public:
     using TReadSet = std::vector<TRead<TSeq>>;
     ReadReader(const TProgramParams& programParams, TInputFileStreams& inputFileStreams, unsigned int sleepMS)
         :_programParams(programParams), _inputFileStreams(inputFileStreams), _tlsReadSets(_programParams.num_threads + 1),
@@ -60,7 +76,6 @@ struct ReadReader
         _thread = std::thread([this]()
         {
             std::unique_ptr <TReadSet> currentReadSet;
-            std::mutex waitForFreeSlotDummyMutex;
             while (!_eof || currentReadSet)
             {
                 if (!currentReadSet)  // load new reads from hd
@@ -73,6 +88,9 @@ struct ReadReader
                     if (currentReadSet->empty() || _numReads >= _programParams.firstReads)    // no more reads available or maximum read number reached -> dont do further reads
                     {
                         _eof = true;
+                        //std::cout << "eof" << std::endl;
+                        if (useSemaphore)
+                            readAvailableSemaphore.signal(std::numeric_limits<int>::max());
                     }
                 }
                 for (auto& readSet : _tlsReadSets)  // now insert reads into a slot
@@ -80,18 +98,15 @@ struct ReadReader
                     if (currentReadSet && readSet.load() == nullptr)
                     {
                         readSet.store(currentReadSet.release());
-                        if (useCV)
-                            readAvailableCV.notify_one();
+                        if (useSemaphore)
+                            readAvailableSemaphore.signal();
                         break;
                     }
                 }
-                if (currentReadSet)  // no empty slow was found, wait a bit
+                if (currentReadSet && !_eof)  // no empty slow was found, wait a bit
                 {
-                    if (useCV)
-                    {
-                        std::unique_lock<std::mutex> lk(waitForFreeSlotDummyMutex);
-                        slotEmptyCV.wait(lk);
-                    }
+                    if (useSemaphore)
+                        slotEmptySemaphore.wait();
                     else
                         std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
                 }
@@ -123,35 +138,21 @@ struct ReadReader
                     if (readSet.compare_exchange_strong(temp, nullptr))
                     {
                         *reads = temp;
-                        if (useCV)
-                            slotEmptyCV.notify_one();
+                        if (useSemaphore)
+                            slotEmptySemaphore.signal();
                         return true;
                     }
                 }
             }
+            //std::cout << std::this_thread::get_id() << "-2" << std::endl;
             if (_eof)
                 return false;
-            //std::cout << std::this_thread::get_id() << "-2" << std::endl;
-            if (useCV)
-            {
-                std::mutex waitForReadDummyMutex;
-                std::unique_lock<std::mutex> lk(waitForReadDummyMutex);
-                readAvailableCV.wait(lk);
-            }
+            else if (useSemaphore)
+                readAvailableSemaphore.wait();
             else
                 std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
         return false;
     };
-private:
-    const TProgramParams& _programParams;
-    TInputFileStreams& _inputFileStreams;
-    std::vector<std::atomic<TReadSet*>> _tlsReadSets;
-    std::thread _thread;
-    std::atomic_bool _eof;
-    unsigned int _sleepMS;
-    unsigned int _numReads;
-    std::condition_variable slotEmptyCV;
-    std::condition_variable readAvailableCV;
 };
 

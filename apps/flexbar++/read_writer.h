@@ -37,6 +37,8 @@
 #include <string>
 #include <future>
 
+#include "semaphore.h"
+
 class OutputStreams
 {
     using TSeqStream = std::unique_ptr<seqan::SeqFileOut>;
@@ -169,7 +171,7 @@ public:
 
 
 // writes read sets to hd and collects statistics, blocks if all slots are full
-template<template<typename> class TRead, typename TSeq, typename _TWriteItem, typename TProgramParams, typename TOutputStreams, bool useCV>
+template<template<typename> class TRead, typename TSeq, typename _TWriteItem, typename TProgramParams, typename TOutputStreams, bool useSemaphore>
 struct ReadWriter
 {
 public:
@@ -185,8 +187,8 @@ private:
     std::chrono::time_point<std::chrono::steady_clock> _startTime;
     std::chrono::time_point<std::chrono::steady_clock> _lastScreenUpdate;
     std::tuple_element_t<2, TWriteItem> _stats;
-    std::condition_variable slotEmptyCV;
-    std::condition_variable readAvailableCV;
+    LightweightSemaphore readAvailableSemaphore;
+    LightweightSemaphore slotEmptySemaphore;
 
 public:
     ReadWriter(const TProgramParams& programParams, TOutputStreams& outputStreams, unsigned int sleepMS)
@@ -208,7 +210,6 @@ public:
         _thread = std::thread([this]()
         {
             TWriteItem* currentWriteItem;
-            std::mutex waitForDataDummyMutex;
             while (_run)
             {
                 bool nothingToDo = true;
@@ -218,8 +219,8 @@ public:
                     {
                         currentWriteItem = readSet.load();
                         readSet.store(nullptr); // make the slot free again
-                        if (useCV)
-                            slotEmptyCV.notify_one();
+                        if (useSemaphore)
+                            slotEmptySemaphore.signal();
                         nothingToDo = false;
 
                         //std::this_thread::sleep_for(std::chrono::milliseconds(1));  // used for debuggin slow hd case
@@ -249,10 +250,9 @@ public:
                 if (nothingToDo)
                 {
                     //std::cout << std::this_thread::get_id() << "-4" << std::endl;
-                    if (useCV)
+                    if (useSemaphore)
                     {
-                        std::unique_lock<std::mutex> lk(waitForDataDummyMutex);
-                        readAvailableCV.wait(lk);
+                        readAvailableSemaphore.wait();
                     }
                     else
                         std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
@@ -271,19 +271,15 @@ public:
                     TWriteItem* temp = nullptr;
                     if (reads.compare_exchange_strong(temp, writeItem))
                     {
-                        if (useCV)
-                            readAvailableCV.notify_one();
+                        if (useSemaphore)
+                            readAvailableSemaphore.signal();
                         return;
                     }
                 }
             }
             //std::cout << std::this_thread::get_id() << "-3" << std::endl;
-            if (useCV)
-            {
-                std::mutex waitForEmptySlotMutex;
-                std::unique_lock<std::mutex> lk(waitForEmptySlotMutex);
-                slotEmptyCV.wait(lk);
-            }
+            if (useSemaphore)
+                slotEmptySemaphore.wait();
             else
                 std::this_thread::sleep_for(std::chrono::milliseconds(_sleepMS));
         }
@@ -291,6 +287,8 @@ public:
     void getStats(std::tuple_element_t<2, TWriteItem>& stats)
     {
         _run = false;
+        if (useSemaphore)
+            readAvailableSemaphore.signal();
         if (_thread.joinable())
             _thread.join();
         stats = _stats;

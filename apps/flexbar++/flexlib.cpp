@@ -1257,7 +1257,7 @@ struct ReadProcessor
 
     TWriteItem* doProcessing(std::vector<TRead>* reads)
     {
-        GeneralStats generalStats(length(_demultiplexingParams.barcodeIds) + 1);
+        GeneralStats generalStats(length(_demultiplexingParams.barcodeIds) + 1, _adapterTrimmingParams.adapters.size());
         generalStats.readCount = reads->size();
         
         // Preprocessing and Filtering
@@ -1300,18 +1300,18 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
     const QualityTrimmingParams& qualityTrimmingParams, TEsaFinder& esaFinder,
     OutputStreams& outputStreams, TStats& stats)
 {
-    const unsigned int threadIdleSleepTimeMS = 10;  // only used when useConditionVariableForIdleWaiting = true
-    constexpr bool useConditionVariableForIdleWaiting = true;
+    const unsigned int threadIdleSleepTimeMS = 10;  // only used when useSemaphoreForIdleWaiting = false
+    constexpr bool useSemaphoreForIdleWaiting = true;
     using TWriteItem = std::tuple < std::vector<TRead<TSeq>>*, decltype(DemultiplexingParams::barcodeIds), GeneralStats>;
-    using ReadReader = ReadReader<TRead, TSeq, ProgramParams, InputFileStreams, useConditionVariableForIdleWaiting>;
-    using ReadWriter = ReadWriter<TRead, TSeq, TWriteItem, ProgramParams, OutputStreams, useConditionVariableForIdleWaiting>;
+    using ReadReader = ReadReader<TRead, TSeq, ProgramParams, InputFileStreams, useSemaphoreForIdleWaiting>;
+    using ReadWriter = ReadWriter<TRead, TSeq, TWriteItem, ProgramParams, OutputStreams, useSemaphoreForIdleWaiting>;
     using ReadProcessor = ReadProcessor<TRead<TSeq>, TEsaFinder, ReadReader, ReadWriter>;
 
     ReadWriter readWriter(programParams, outputStreams, threadIdleSleepTimeMS);
     ReadReader readReader(programParams, inputFileStreams, threadIdleSleepTimeMS);
     ReadProcessor readProcessor(programParams, processingParams, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams, esaFinder, readReader, readWriter, threadIdleSleepTimeMS);
 
-    TStats generalStats(length(demultiplexingParams.barcodeIds) + 1);
+    TStats generalStats(length(demultiplexingParams.barcodeIds) + 1, adapterTrimmingParams.adapters.size());
 
 #ifdef _MULTITHREADED_IO
     readReader.start();
@@ -1320,7 +1320,9 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
     while (!(readReader.eof() && readReader.idle() && readProcessor.finished() && readWriter.idle())) // shortcut is used most of the time -> xxx.idle() get called only after eof is set
     {
         if (readReader.eof())
+        {
             readProcessor.shutDown();
+        }
         std::this_thread::sleep_for(std::chrono::milliseconds(10*threadIdleSleepTimeMS));
     }
     readWriter.getStats(stats);
@@ -1743,7 +1745,7 @@ int flexbarMain(int argc, char const ** argv)
     }
     // Start processing. Different functions are needed for one or two input files.
     std::cout << "\nProcessing reads...\n" << std::endl;
-    GeneralStats generalStats(length(demultiplexingParams.barcodeIds) + 1);
+    GeneralStats generalStats(length(demultiplexingParams.barcodeIds) + 1, adapterTrimmingParams.adapters.size());
 
     if (fileCount == 1)
     {

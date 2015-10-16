@@ -414,7 +414,7 @@ SEQAN_DEFINE_TEST(demultiplex_Exact_test)
     //indexRequire(indexSet, FibreSA());
     BarcodeMatcher BarcodeMatcher(barcodes);
 
-    GeneralStats stats(length(expectedReads));
+    GeneralStats stats(length(expectedReads),0);
     demultiplex(reads, BarcodeMatcher, false, stats, ExactBarcodeMatching(), false);
 
     for (unsigned i = 0; i < length(expectedReads); ++i)
@@ -465,7 +465,7 @@ SEQAN_DEFINE_TEST(demultiplex_Exact_Multiplex_test)
 
     BarcodeMatcher BarcodeMatcher(barcodes);
 
-    GeneralStats stats(length(expectedReads));
+    GeneralStats stats(length(expectedReads),0);
     demultiplex(reads, BarcodeMatcher, false, stats, ExactBarcodeMatching(), false);
 
     for (unsigned i = 0; i < length(expectedReads); ++i)
@@ -500,7 +500,7 @@ SEQAN_DEFINE_TEST(Input_test)
     BarcodeMatcher BarcodeMatcher(barcodes);
 
 	StringSet<String<int> > groups;
-    GeneralStats stats(barcodes.size());
+    GeneralStats stats(barcodes.size(),0);
     demultiplex(reads, BarcodeMatcher, false, stats, ExactBarcodeMatching(), false);
 }
 

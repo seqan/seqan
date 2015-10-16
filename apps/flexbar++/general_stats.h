@@ -101,9 +101,10 @@ struct GeneralStats
     AdapterTrimmingStats adapterTrimmingStats;
 
     GeneralStats(): removedN(0), removedDemultiplex(0), removedQuality(0), uncalledBases(0), removedShort(0), readCount(0), processTime(0), ioTime(0) {};
-    GeneralStats(unsigned int N) : GeneralStats() 
+    GeneralStats(unsigned int N, unsigned int numAdapters) : GeneralStats() 
     { 
         matchedBarcodeReads.resize(N); 
+        adapterTrimmingStats.numRemoved.resize(numAdapters);
     };
     GeneralStats(const GeneralStats& rhs) = default;
     GeneralStats(GeneralStats&& rhs) = default;
