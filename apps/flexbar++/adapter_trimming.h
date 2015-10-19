@@ -380,7 +380,7 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
         if (stats.numRemoved.size() < adapterItem.id + 1)
         {
             std::cout << "error: numRemoved too small!" << std::endl;
-            throw(std::exception("error: numRemoved too small!"));
+            throw(std::runtime_error("error: numRemoved too small!"));
         }
         ++stats.numRemoved[adapterItem.id];
 

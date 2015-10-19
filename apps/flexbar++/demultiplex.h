@@ -204,10 +204,10 @@ void MatchBarcodes(std::vector<TRead>& reads, const TFinder& finder, TStats& sta
     for (auto& read : reads)
     {
         read.demuxResult = finder.getMatchIndex(read) + 1;
-        if (stats.matchedBarcodeReads.size() < read.demuxResult + 1)
+        if (stats.matchedBarcodeReads.size() < static_cast<unsigned int>(read.demuxResult) + 1)
         {
             std::cout << "error: matchedBarcodeReads too small!" << std::endl;
-            throw(std::exception("error: matchedBarcodeReads too small!"));
+            throw(std::runtime_error("error: matchedBarcodeReads too small!"));
         }
         ++stats.matchedBarcodeReads[read.demuxResult];
     }
@@ -224,10 +224,10 @@ void MatchBarcodes(std::vector<TRead>& reads, const TFinder& finder, TStats& sta
         if (read.demuxResult != -1)
             read.demuxResult = int(floor(float(read.demuxResult) / dividend));
         ++read.demuxResult;
-        if (stats.matchedBarcodeReads.size() < read.demuxResult + 1)
+        if (stats.matchedBarcodeReads.size() < static_cast<unsigned int>(read.demuxResult) + 1)
         {
             std::cout << "error: matchedBarcodeReads too small!" << std::endl;
-            throw(std::exception("error: matchedBarcodeReads too small!"));
+            throw(std::runtime_error("error: matchedBarcodeReads too small!"));
         }
         ++stats.matchedBarcodeReads[read.demuxResult];
     }
