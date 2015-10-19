@@ -1,9 +1,0 @@
-# BLASTN 2.2.25+
-# Query: gi|9626621|ref|NC_001460.1| Human adenovirus A, complete genome
-# Subject: gi|9626158|ref|NC_001405.1| Human adenovirus C, complete genome
-# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
-# 3 hits found
-gi|9626621|ref|NC_001460.1|	gi|9626158|ref|NC_001405.1|	81.13	408	66	11	17730	18131	18827	19229	5e-87	 316
-gi|9626621|ref|NC_001460.1|	gi|9626158|ref|NC_001405.1|	81.63	98	12	6	383	476	433	528	9e-15	76.8
-gi|9626621|ref|NC_001460.1|	gi|9626158|ref|NC_001405.1|	76.27	118	22	6	25147	25261	26644	26758	3e-09	58.4
-# BLAST processed 1 queries

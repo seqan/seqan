@@ -1,7 +1,0 @@
-IV	curated	mRNA	5506800	5508917	.	+	.	Transcript B0273.1; Note "Zn-Finger"
-IV	curated	5'UTR	5506800	5508999	.	+	.	Transcript B0273.1
-IV	curated	exon	5506900	5506996	.	+	.	Transcript B0273.1
-IV	curated	exon	5506026	5506382	.	+	.	Transcript B0273.1
-IV	curated	exon	5506558	5506660	.	+	.	Transcript B0273.1
-IV	curated	exon	5506738	5506852	.	+	.	Transcript B0273.1
-IV	curated	3'UTR	5506852	5508917	.	+	.	Transcript B0273.1
