@@ -197,8 +197,6 @@ public:
 
                         const auto t1 = std::chrono::steady_clock::now();
                         _outputStreams.writeSeqs(std::move(*std::get<0>(*currentWriteItem)), std::get<1>(*currentWriteItem));
-                        std::get<0>(*currentWriteItem)->clear();
-                        delete std::get<0>(*currentWriteItem); // delete written data
                         _stats += std::get<2>(*currentWriteItem);
                         delete currentWriteItem;
 

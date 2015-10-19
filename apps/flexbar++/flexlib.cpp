@@ -1276,7 +1276,7 @@ struct ReadProcessor
         // Postprocessing
         postprocessingStage(_processingParams, *reads, generalStats);
 
-        return new TWriteItem(std::make_tuple(reads, _demultiplexingParams.barcodeIds, generalStats));
+        return new TWriteItem(std::make_tuple(std::unique_ptr<std::vector<TRead>>(reads), _demultiplexingParams.barcodeIds, generalStats));
     }
 private:
     const ProgramParams& _programParams;
@@ -1294,6 +1294,8 @@ private:
 
 };
 
+//#undef _MULTITHREADED_IO
+
 // END FUNCTION DEFINITIONS ---------------------------------------------
 template<template <typename> class TRead, typename TSeq, typename TEsaFinder, typename TStats>
 int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& inputFileStreams, const DemultiplexingParams& demultiplexingParams, const ProcessingParams& processingParams, const AdapterTrimmingParams& adapterTrimmingParams,
@@ -1302,7 +1304,7 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
 {
     const unsigned int threadIdleSleepTimeMS = 10;  // only used when useSemaphoreForIdleWaiting = false
     constexpr bool useSemaphoreForIdleWaiting = true;
-    using TWriteItem = std::tuple < std::vector<TRead<TSeq>>*, decltype(DemultiplexingParams::barcodeIds), GeneralStats>;
+    using TWriteItem = std::tuple < std::unique_ptr<std::vector<TRead<TSeq>>>, decltype(DemultiplexingParams::barcodeIds), GeneralStats>;
     using ReadReader = ReadReader<TRead, TSeq, ProgramParams, InputFileStreams, useSemaphoreForIdleWaiting>;
     using ReadWriter = ReadWriter<TRead, TSeq, TWriteItem, ProgramParams, OutputStreams, useSemaphoreForIdleWaiting>;
     using ReadProcessor = ReadProcessor<TRead<TSeq>, TEsaFinder, ReadReader, ReadWriter>;
@@ -1327,31 +1329,33 @@ int mainLoop(TRead<TSeq>, const ProgramParams& programParams, InputFileStreams& 
     }
     readWriter.getStats(stats);
 #else
-    //const auto tMain = std::chrono::steady_clock::now();
-    //while (generalStats.readCount < programParams.firstReads)
-    //{
-    //    readSet.reset(new std::vector<TRead<TSeq>>(programParams.records));
-    //    auto t1 = std::chrono::steady_clock::now();
-    //    const auto numReadsRead = readReads(*readSet, programParams.records, inputFileStreams);
-    //    generalStats.ioTime += std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
-    //    if (numReadsRead == 0)
-    //        break;
+    std::unique_ptr<std::vector<TRead<TSeq>>> readSet;
+    const auto tMain = std::chrono::steady_clock::now();
+    while (generalStats.readCount < programParams.firstReads)
+    {
+        readSet.reset(new std::vector<TRead<TSeq>>(programParams.records));
+        auto t1 = std::chrono::steady_clock::now();
+        const auto numReadsRead = readReads(*readSet, programParams.records, inputFileStreams);
+        generalStats.ioTime += std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
+        if (numReadsRead == 0)
+            break;
 
-    //    auto res = processingUnit.doProcessing(readSet.release());
-    //    generalStats += std::get<1>(res);
+        auto res = readProcessor.doProcessing(readSet.release());
+        generalStats += std::get<2>(*res);
 
-    //    t1 = std::chrono::steady_clock::now();
-    //    outputStreams.writeSeqs(std::move(*(std::get<0>(res))), demultiplexingParams.barcodeIds);
-    //    generalStats.ioTime += std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
+        t1 = std::chrono::steady_clock::now();
+        outputStreams.writeSeqs(std::move(*(std::get<0>(*res))), demultiplexingParams.barcodeIds);
+        generalStats.ioTime += std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - t1).count();
 
-    //    // Print information
-    //    const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - tMain).count();
-    //    if (programParams.showSpeed)
-    //        std::cout << "\rreads processed: " << _stats.readCount << "   (" << static_cast<int>(generalStats.readCount / deltaTime) << " Reads/s)";
-    //    else
-    //        std::cout << "\rreads processed: " << _stats.readCount;
-    //}
-    //stats = generalStats;
+        // Print information
+        const auto deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::steady_clock::now() - tMain).count();
+        if (programParams.showSpeed)
+            std::cout << "\rreads processed: " << generalStats.readCount << "   (" << static_cast<int>(generalStats.readCount / deltaTime) << " Reads/s)";
+        else
+            std::cout << "\rreads processed: " << generalStats.readCount;
+        delete res;
+    }
+    stats = generalStats;
 #endif
     return 0;
 }
