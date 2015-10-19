@@ -23,13 +23,13 @@ import seqan.app_tests as app_tests
 def main(source_base, binary_base):
     """Main entry point of the script."""
 
-    print 'Executing test for seqan_flexbar'
+    print 'Executing test for flexbar++'
     print '================================'
     print
     
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
-        'apps/seqan_flexbar/tests')  # tests dir
+        'apps/flexbar++/tests')  # tests dir
 
     # ============================================================
     # Auto-detect the binary path.

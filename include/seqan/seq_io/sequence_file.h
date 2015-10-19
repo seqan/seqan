@@ -266,8 +266,8 @@ inline void readRecords(TIdStringSet & meta,
     for (; !atEnd(file) && maxRecords > 0; --maxRecords)
     {
         readRecord(context(file).buffer[0], seqBuffer, file);
-        appendValue(meta, context(file).buffer[0]);
-        appendValue(seq, seqBuffer);
+        appendValue(meta, (context(file).buffer[0]));
+        appendValue(seq, (seqBuffer));
     }
 
     swapPtr(seqBuffer.data_begin, context(file).buffer[1].data_begin);

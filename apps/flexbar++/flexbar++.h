@@ -1,5 +1,5 @@
 // ==========================================================================
-//                                SeqAn-Flexbar
+//                                Flexbar++
 // ==========================================================================
 // Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -29,27 +29,27 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Jochen Singer <jochen.singer@fu-berlin.de>
-// ==========================================================================
-// This file is used to generate sub-programs of seqan-flexbar which is
-// based in the implementation of the original flexbar program in [1].
-// [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
-// Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
-// Biology 2012, 1, 895-905.
+// Author: Benjamin Menkuec <benjamin@menkuec.de>
+// Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // ==========================================================================
 
+#ifndef FLEXBAR_H_
+#define FLEXBAR_H_
 
-// Wrapper for KNIME
+// ============================================================================
+// Tags, Classes, Enums
+// ============================================================================
 
-#include "seqan_flexbar.h"
+enum FlexiProgram {
+    ADAPTER_REMOVAL,
+    DEMULTIPLEXING,
+    FILTERING,
+    QUALITY_CONTROL,
+    ALL_STEPS
+};
 
-#ifndef FLEX_PROG
-#define FLEX_PROG ALL_STEPS
-#endif
+extern FlexiProgram flexiProgram;
 
-int main(int argc, char const ** argv)
-{
-    // Run quality control program.
-    flexiProgram = FLEX_PROG;
-    return flexbarMain(argc, argv);
-}
+int flexbarMain(int argc, char const ** argv);
+
+#endif  // #ifndef SEQAN_FLEXBAR_H_

@@ -1,5 +1,5 @@
 // ==========================================================================
-//                 SeqAn - The Library for Sequence Analysis
+//                                SeqAn-Flexbar
 // ==========================================================================
 // Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -29,70 +29,23 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
-// ==========================================================================
-// Example program used in the documentation of the enable-if metaprogramming
-// utilities.
+// Author: Benjamin Menkuec <benjamin@menkuec.de>
+// Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // ==========================================================================
 
-#include <string>
+// Wrapper for KNIME
 
-#include <seqan/basic.h>
+// P:\data\fastq\SRR1175698.fastq -tnum 1 -fr 10000 -r 1000 -app -times 5 -er 0.2 -ol 4 -fm 4 -ml 4 -t -tt -tl 5 -ss -b P:\git\chip-nexus\data\barcodes.fa -a P:\git\nexus-tools\data\adapters_best.fa -o P:\out.fastq
+// P:\data\fastq\SRR1175698.fastq -tt -ss -b P:\git\nexus-tools\data\barcodes.fa - tl 5 - o P : \data\first1000000demultiplexed.fastq - fr 1000000 -tnum 7
+#include "flexbar++.h"
 
-using namespace seqan;
+#ifndef FLEX_PROG
+#define FLEX_PROG ALL_STEPS
+#endif
 
-#if !defined(_MSC_VER) || _MSC_VER <= 1900  // Currently, there are some issues with MSVC and concepts.
-class EnableIfExample
+int main(int argc, char const ** argv)
 {
-public:
-    int num;
-
-//![enable if example constructor]
-    template <typename T>
-    EnableIfExample(T const & n, SEQAN_CTOR_ENABLE_IF(Is<IntegerConcept<T> >)) :
-        num(0)
-    {
-        //ignoreUnusedVariableWarning(dummy);
-        std::cout << "Integer constructor, n = " << n << std::endl;
-    }
-
-//![enable if example constructor]
-
-//![disable if example constructor]
-    template <typename T>
-    EnableIfExample(T const & n, SEQAN_CTOR_DISABLE_IF(Is<IntegerConcept<T> >)) :
-        num(0)
-    {
-        //ignoreUnusedVariableWarning(dummy);
-        std::cout << "Non-integer constructor, n = " << n << std::endl;
-    }
-
-//![disable if example constructor]
-
-//![enable if example function]
-    template <typename T>
-    SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<T> >)
-    f(T /* x */)
-    { /* ... */ }
-//![enable if example function]
-
-//![disable if example function]
-    template <typename T>
-    SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<T> >)
-    f(T /* x */)
-    { /* ... */}
-//![disable if example function]
-};
-#endif  // #if !defined(_MSC_VER) || _MSC_VER <= 1900 
-
-int main()
-{
-#if !defined(_MSC_VER) || _MSC_VER <= 1900 
-    EnableIfExample ex1(1);
-    ignoreUnusedVariableWarning(ex1);
-    EnableIfExample ex2("asdf");
-    ignoreUnusedVariableWarning(ex2);
-#endif  // #if !defined(_MSC_VER) || _MSC_VER <= 1900 
-
-    return 0;
+    // Run quality control program.
+    flexiProgram = FLEX_PROG;
+    return flexbarMain(argc, argv);
 }

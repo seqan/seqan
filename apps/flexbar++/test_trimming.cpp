@@ -49,87 +49,6 @@
 #include <seqan/file.h>
 #include "read_trimming.h"
 
-SEQAN_DEFINE_TEST(drop_reads_test)
-{
-	typedef seqan::String<seqan::Dna5Q> TString;
-	typedef seqan::CharString TID;
-	seqan::StringSet<TString> test;
-	seqan::StringSet<TID> testID;
-    seqan::StringSet<TString> testRev;
-    seqan::StringSet<TID> testIDRev;
-
-	seqan::appendValue(testID, TString("1"));
-	seqan::appendValue(test, TString("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-	seqan::appendValue(testID, TString("2"));
-	seqan::appendValue(test, TString("AAAAAAAAAAAAAAAAAAAA"));
-	seqan::appendValue(testID, TString("3"));
-	seqan::appendValue(test, TString("AAAAA"));
-	seqan::appendValue(testID, TString("4"));
-	seqan::appendValue(test, TString("AAA"));
-	seqan::appendValue(testID, TString("5"));
-	seqan::appendValue(test, TString("A"));
-
-    testRev = test;
-    testIDRev = testID;
-
-	QualityTrimmingStats tmp;
-
-	dropReads(testID, test, 2, tmp);
-	SEQAN_ASSERT_EQ(length(test), 4u);
-
-	dropReads(testID, test, 4, tmp);
-	SEQAN_ASSERT_EQ(length(test), 3u);
-
-	dropReads(testID, test, 6, tmp);
-	SEQAN_ASSERT_EQ(length(test), 2u);
-
-	dropReads(testID, test, 24, tmp);
-	SEQAN_ASSERT_EQ(length(test), 1u);
-
-	dropReads(testID, test, 50, tmp);
-	SEQAN_ASSERT_EQ(length(test), 0u);
-     
-    //Part for paired End
-    seqan::appendValue(testID, TString("1"));
-	seqan::appendValue(test, TString("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-	seqan::appendValue(testID, TString("2"));
-	seqan::appendValue(test, TString("AAAAAAAAAAAAAAAAAAAA"));
-	seqan::appendValue(testID, TString("3"));
-	seqan::appendValue(test, TString("AAAAA"));
-	seqan::appendValue(testID, TString("4"));
-	seqan::appendValue(test, TString("AAA"));
-	seqan::appendValue(testID, TString("5"));
-	seqan::appendValue(test, TString("A"));
-    tmp.dropped_1 = 0;
-    tmp.dropped_2 = 0;
-
-    dropReads(testID, test, testIDRev, testRev, 2, tmp);
-    SEQAN_ASSERT_EQ(length(test), 4u);
-    SEQAN_ASSERT_EQ(tmp.dropped_1, 1u);
-    SEQAN_ASSERT_EQ(tmp.dropped_2, 1u);
-
-    dropReads(testID, test, testIDRev, testRev, 4, tmp);
-    SEQAN_ASSERT_EQ(length(test), 3u);
-    SEQAN_ASSERT_EQ(tmp.dropped_1, 2u);
-    SEQAN_ASSERT_EQ(tmp.dropped_2, 2u);
-
-    dropReads(testID, test, testIDRev, testRev, 6, tmp);
-    SEQAN_ASSERT_EQ(length(test), 2u);
-    SEQAN_ASSERT_EQ(tmp.dropped_1, 3u);
-    SEQAN_ASSERT_EQ(tmp.dropped_2, 3u);
-
-    dropReads(testID, test, testIDRev, testRev, 24, tmp);
-    SEQAN_ASSERT_EQ(length(test), 1u);
-    SEQAN_ASSERT_EQ(tmp.dropped_1, 4u);
-    SEQAN_ASSERT_EQ(tmp.dropped_2, 4u);
-
-    dropReads(testID, test, testIDRev, testRev, 50, tmp);
-    SEQAN_ASSERT_EQ(length(test), 0u);
-    SEQAN_ASSERT_EQ(tmp.dropped_1, 5u);
-    SEQAN_ASSERT_EQ(tmp.dropped_2, 5u);
-
-}
-
 SEQAN_DEFINE_TEST(sliding_window_test)
 {
 	// No error checking, we assume the file exists (it's a constant test file).
@@ -203,14 +122,7 @@ SEQAN_DEFINE_TEST(cut_bwa_test)
 
 SEQAN_BEGIN_TESTSUITE(test_my_app_funcs)
 {
-	int tnum = 1;
-#ifdef _OPENMP
-    omp_set_num_threads(8);
-	tnum = omp_get_max_threads();
-#endif
-	std::cout<<"\nRunning Tests using " << tnum << " thread(s).\n\n";
     SEQAN_CALL_TEST(sliding_window_test);
-    SEQAN_CALL_TEST(drop_reads_test);
     SEQAN_CALL_TEST(cut_tail_test);
     SEQAN_CALL_TEST(cut_bwa_test);
 }
