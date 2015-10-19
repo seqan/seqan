@@ -39,10 +39,10 @@ This tutorial will walk you through a simple example program that highlights the
 Running Example
 ~~~~~~~~~~~~~~~
 
-Our example program will do a pattern search of a short query sequence in a long database sequence.
-As the score, we will compute the number of equal characters at each position.
+Let's start with a simple example programm. The program will do a pattern search of a short query sequence (pattern) in a long database sequence (text).
+We define the score for each position of the database sequence as the sum of matching characters between the pattern and the text.
 
-The following figure shows an example:
+The following figure shows an expected result:
 
 ::
 
@@ -78,12 +78,16 @@ However, during this tutorial we will not do this, such that SeqAn classes and f
       seqan::String<char> s = "example";
       unsigned i = length(s);
 
-Here, the function ``length`` does not have a namespace prefix.
-The code compiles nevertheless.
-The compiler automatically looks for a function ``length`` in the namespace of its arguments.
+   Here, the function ``length`` does not have a namespace prefix.
+   The code compiles nevertheless.
+   The compiler automatically looks for a function ``length`` in the namespace of its arguments.
 
 Note that we follow the rules for variable, function, and class names as outlined in the :ref:`SeqAn style guide <style-guide-cpp>`.
-For example: (1) variables and functions use lower case, (2) struct, enum and classes use CamelCase, (3) metafunctions start with a capital letter, and (4) metafunction values are UPPERCASE.
+For example: 
+1. variables and functions use lower case,
+2. struct, enum and classes use CamelCase,
+3. metafunctions start with a capital letter, and 
+4. metafunction values are UPPERCASE.
 
 Assignment 1
 ^^^^^^^^^^^^
@@ -214,9 +218,10 @@ Assignment 2
    Hint
      The function head should look like this:
 
-   .. code-block::cpp
+     .. container:: foldable
 
-      void print(seqan::String<int> score)
+        .. includefrags:: demos/tutorial/a_first_example/solution_2.cpp
+           :fragment: head
 
    Solution
      .. container:: foldable
@@ -247,9 +252,8 @@ A ``const`` object cannot be modified.
 
 Therefore we change the signature of computeScore to:
 
-.. code-block:: cpp
-
-    seqan::String<int> computeScore(seqan::String<char> const & text, seqan::String<char> const & pattern)
+.. includefrags:: demos/tutorial/a_first_example/solution_3.cpp
+   :fragment: head
 
 Reading from right to left the function expects two ``references`` to
 ``const objects`` of type ``String`` of ``char``.
@@ -268,9 +272,11 @@ Assignment 3
    Hint
      The function head for ``computeLocalScore`` should look like this:
 
-     .. code-block:: cpp
+     .. container:: foldable
 
-        int computeLocalScore(seqan::String<char> const & subText, seqan::String<char> const & pattern)
+        .. includefrags:: demos/tutorial/a_first_example/solution_3.cpp
+           :fragment: head_local
+        
 
    Solution
      .. container:: foldable
@@ -287,10 +293,8 @@ All used functions inside ``computeScore`` can already handle the other datatype
 The more appropriate solution is a generic design using templates, as often used in the SeqAn library.
 Instead of specifying the input arguments to be references of strings of ``char`` s we could use references of template arguments as shown in the following lines:
 
-.. code-block:: cpp
-
-   template <typename TText, typename TPattern>
-   seqan::String<int> computeScore(TText const & text, TPattern const & pattern)
+.. includefrags:: demos/tutorial/a_first_example/solution_4_templateSubclassing.cpp
+   :fragment: template
 
 The first line above specifies that we create a template function with two template arguments ``TText`` and ``TPattern``.
 At compile time the template arguments are then replace with the correct types.
@@ -344,20 +348,11 @@ In our working example it might be more appropriate to treat ``AminoAcid`` seque
 As you probably know, there is a similarity relation on amino acids: Certain amino acids are more similar to each other, than others.
 Therefore we want to score different kinds of mismatches differently.
 In order to take this into consideration we simple write a ``computeLocalScore()`` function for ``AminoAcid`` strings.
-In the future whenever 'computerScore' is called always the version above is used unless the second argument is of type String.
+In the future whenever 'computerScore' is called always the version above is used unless the second argument is of type String-AminoAcid.
 Note that the second template argument was removed since we are using the specific type String-AminoAcid.
 
-.. code-block:: cpp
-
-   template <typename TText>
-   int computeLocalScore(TText const & subText, seqan::String<seqan::AminoAcid> const & pattern)
-   {
-       int localScore = 0;
-       for (unsigned i = 0; i < seqan::length(pattern); ++i)
-           localScore += seqan::score(seqan::Blosum62(), subText[i], pattern[i]);
-
-       return localScore;
-   }
+.. includefrags:: demos/tutorial/a_first_example/solution_4_templateSubclassing.cpp
+   :fragment: subclassing
 
 In order to score a mismatch we use the function ``score()`` from the SeqAn library.
 Note that we use the :dox:`Blosum62` matrix as a similarity measure.
@@ -479,46 +474,8 @@ Here, the type of the **tag** holds the specialization information.
 
 The code for the two different ``print()`` functions mentioned above could look like this:
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/a_first_example/example_tags_for_print.cpp
 
-   #include <iostream>
-   #include <seqan/sequence.h>
-   #include <seqan/score.h>
-
-   template <typename TText, typename TSpec>
-   void print(TText const & text, TSpec const & /*tag*/)
-   {
-       for (unsigned i = 0; i < seqan::length(text); ++i)
-           std::cout << text[i] << " ";
-       std::cout << std::endl;
-   }
-
-   struct MaxOnly {};
-
-   template <typename TText>
-   void print(TText const & score, MaxOnly const & /*tag*/)
-   {
-       int maxScore = score[0];
-       seqan::String<int> output;
-       appendValue(output, 0);
-       for (unsigned i = 1; i < seqan::length(score); ++i)
-       {
-           if (score[i] > maxScore)
-           {
-               maxScore = score[i];
-               clear(output);
-               resize(output, 1, i);
-           }
-           else if (score[i] == maxScore)
-           {
-               appendValue(output, i);
-           }
-       }
-
-       for (unsigned i = 0; i < seqan::length(output); ++i)
-           std::cout << output[i] << " ";
-       std::cout << std::endl;
-   }
 
 If we call ``print()`` with something different than ``MaxOnly`` then we print all the positions with their similarity, because the generic template function accepts anything as the template argument.
 On the other hand, if we call print with ``MaxOnly`` only the positions with the maximum similarity as well as the maximal similarity will be shown.
