@@ -62,11 +62,11 @@ public:
                         noEmptySlot = false;
                         currentReadSet = std::make_unique<TReadSet>(_programParams.records);
                         try {
-                        readReads(*currentReadSet, _programParams.records, _inputFileStreams);
+                            readReads(*currentReadSet, _programParams.records, _inputFileStreams);
                         }
                         catch (std::exception& e){
                             std::cout << "exception while reading :" << e.what() << " after read " << _numReads << std::endl;
-                            std::terminate();
+                            throw(e);
                         }
                         loadMultiplex(*currentReadSet, _programParams.records, _inputFileStreams.fileStreamMultiplex);
                         _numReads += currentReadSet->size();

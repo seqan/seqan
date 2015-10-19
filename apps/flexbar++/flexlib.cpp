@@ -1294,7 +1294,7 @@ private:
 
 };
 
-//#undef _MULTITHREADED_IO
+#undef _MULTITHREADED_IO
 
 // END FUNCTION DEFINITIONS ---------------------------------------------
 template<template <typename> class TRead, typename TSeq, typename TEsaFinder, typename TStats>
