@@ -57,7 +57,7 @@ copyright = u'2015, The SeqAn Team'
 # If it is not set, e.g., if you build it manually for testing you can export
 # this variable before calling make html in the manual directory to match your
 # checked out branch.
-seqan_branch = os.environ.get('READTHEDOCS_VERSION', 'develop')
+seqan_branch = os.environ.get('READTHEDOCS_VERSION', 'master')
 
 # -- SeqAn: Determine current branch ---------------------------------------------->
 
