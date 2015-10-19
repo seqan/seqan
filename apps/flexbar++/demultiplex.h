@@ -199,18 +199,23 @@ struct ApproximateBarcodeMatching {};
 struct ExactBarcodeMatching {};
 
 template <typename TRead, typename TFinder, typename TStats>
-void MatchBarcodes(std::vector<TRead>& reads, const TFinder& finder, TStats& stats, const ExactBarcodeMatching&) noexcept
+void MatchBarcodes(std::vector<TRead>& reads, const TFinder& finder, TStats& stats, const ExactBarcodeMatching&)
 {
     for (auto& read : reads)
     {
         read.demuxResult = finder.getMatchIndex(read) + 1;
+        if (stats.matchedBarcodeReads.size() < read.demuxResult + 1)
+        {
+            std::cout << "error: matchedBarcodeReads too small!" << std::endl;
+            throw(std::exception("error: matchedBarcodeReads too small!"));
+        }
         ++stats.matchedBarcodeReads[read.demuxResult];
     }
 }
 
 //Overload if approximate search has been used.
 template <typename TRead, typename TFinder, typename TStats>
-void MatchBarcodes(std::vector<TRead>& reads, const TFinder& finder, TStats& stats, const ApproximateBarcodeMatching&) noexcept
+void MatchBarcodes(std::vector<TRead>& reads, const TFinder& finder, TStats& stats, const ApproximateBarcodeMatching&)
 {
     const float dividend = float(finder.getBarcodeLength()*5.0);		//value by which the index will be corrected.
     for (auto& read: reads)			             
@@ -219,6 +224,11 @@ void MatchBarcodes(std::vector<TRead>& reads, const TFinder& finder, TStats& sta
         if (read.demuxResult != -1)
             read.demuxResult = int(floor(float(read.demuxResult) / dividend));
         ++read.demuxResult;
+        if (stats.matchedBarcodeReads.size() < read.demuxResult + 1)
+        {
+            std::cout << "error: matchedBarcodeReads too small!" << std::endl;
+            throw(std::exception("error: matchedBarcodeReads too small!"));
+        }
         ++stats.matchedBarcodeReads[read.demuxResult];
     }
 }

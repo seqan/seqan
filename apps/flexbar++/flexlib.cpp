@@ -32,6 +32,7 @@
 // Author: Benjamin Menkuec <benjamin@menkuec.de>
 // ==========================================================================
 
+#include <algorithm>
 #include "flexbar++.h"
 
 #define SEQAN_PROFILE
@@ -1154,11 +1155,12 @@ void printStatistics(const ProgramParams& programParams, const TStats& generalSt
             ++i;
         }
         outStream << std::endl;
-        outStream << "removed adapters: " << generalStats.adapterTrimmingStats.a2count << "\n";
+        const auto totalRemoved = std::accumulate(generalStats.adapterTrimmingStats.numRemoved.begin(), generalStats.adapterTrimmingStats.numRemoved.end(), 0);
+        outStream << "removed adapters: " << totalRemoved << "\n";
         outStream << std::endl;
-        if ((generalStats.adapterTrimmingStats.a1count + generalStats.adapterTrimmingStats.a2count != 0))
+        if (totalRemoved != 0)
         {
-            int mean = generalStats.adapterTrimmingStats.overlapSum / (generalStats.adapterTrimmingStats.a1count + generalStats.adapterTrimmingStats.a2count);
+            int mean = generalStats.adapterTrimmingStats.overlapSum / totalRemoved;
             outStream << "Adapter sizes:\n";
             outStream << "Min: " << generalStats.adapterTrimmingStats.minOverlap << ", Mean: " << mean
                 << ", Max: " << generalStats.adapterTrimmingStats.maxOverlap << "\n\n";

@@ -282,7 +282,7 @@ struct StripAdapterDirection
 
 template <typename TSeq, typename TAdapters, typename TStripAdapterDirection>
 unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& adapters, AdapterMatchSettings const& spec,
-    const TStripAdapterDirection&) noexcept
+    const TStripAdapterDirection&)
 {
     using TAlign = seqan::Align<TSeq>;
     using TRow = typename seqan::Row<TAlign>::Type;
@@ -377,13 +377,14 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
             stats.removedLength[statisticLen - 1].resize(mismatches + 1);
         ++stats.removedLength[statisticLen - 1][mismatches];
 
+        if (stats.numRemoved.size() < adapterItem.id + 1)
+        {
+            std::cout << "error: numRemoved too small!" << std::endl;
+            throw(std::exception("error: numRemoved too small!"));
+        }
         ++stats.numRemoved[adapterItem.id];
 
         stats.overlapSum += overlap;
-        if (TStripAdapterDirection::value == adapterDirection::forward)
-            ++stats.a2count;
-        else
-            ++stats.a1count;
 
         stats.maxOverlap = std::max(stats.maxOverlap, overlap);
         stats.minOverlap = std::min(stats.minOverlap, overlap);
@@ -396,7 +397,7 @@ unsigned stripAdapter(TSeq& seq, AdapterTrimmingStats& stats, TAdapters const& a
 
 template < template <typename> class TRead, typename TSeq, typename TAdaptersArray, typename TSpec, typename TTagAdapter,
     typename = std::enable_if_t<std::is_same<TRead<TSeq>, Read<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplex<TSeq>>::value> >
-unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec, const bool pairedNoAdapterFile,
+void stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec, const bool pairedNoAdapterFile,
     AdapterTrimmingStats& stats, TTagAdapter, bool = false) noexcept(!TTagAdapter::value)
 {
     (void)pairedNoAdapterFile;
@@ -408,13 +409,13 @@ unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const
         if (TTagAdapter::value && over != 0)
             insertAfterFirstToken(read.id, ":AdapterRemoved");
     }
-    return stats.a1count + stats.a2count;
+    return;
 }
 
 // pairedEnd adapters will be trimmed in single mode, each seperately
 template < template <typename> class TRead, typename TSeq, typename TAdaptersArray, typename TSpec, typename TTagAdapter,
     typename = std::enable_if_t<std::is_same<TRead<TSeq>, ReadPairedEnd<TSeq>>::value || std::is_same<TRead<TSeq>, ReadMultiplexPairedEnd<TSeq>>::value> >
-    unsigned stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec, const bool pairedNoAdapterFile,
+    void stripAdapterBatch(std::vector<TRead<TSeq>>& reads, TAdaptersArray const& adapters, TSpec const& spec, const bool pairedNoAdapterFile,
         AdapterTrimmingStats& stats, TTagAdapter) noexcept(!TTagAdapter::value)
 {
     for (auto& read : reads)
@@ -435,7 +436,7 @@ template < template <typename> class TRead, typename TSeq, typename TAdaptersArr
         if (TTagAdapter::value && over != 0)
             insertAfterFirstToken(read.id, ":AdapterRemoved");
     }
-    return stats.a1count + stats.a2count;
+    return;
 }
 
 #endif  // #ifndef SANDBOX_GROUP3_APPS_SEQDPT_ADAPTERTRIMMING_H_
