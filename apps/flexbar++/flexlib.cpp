@@ -1222,7 +1222,7 @@ unsigned int readReads(std::vector<TRead<TSeq>>& reads, const unsigned int recor
 template <typename TRead, typename TFinder, typename TReadReader, typename TReadWriter>
 struct ReadProcessor
 {
-    using TpReads = std::vector<TRead>*;
+    using TpReads = std::unique_ptr<std::vector<TRead>>;
     using TWriteItem = typename TReadWriter::TWriteItem;
 
     ReadProcessor(const ProgramParams& programParams, const ProcessingParams& processingParams, const DemultiplexingParams& demultiplexingParams, const AdapterTrimmingParams& adapterTrimmingParams,
@@ -1235,10 +1235,10 @@ struct ReadProcessor
         {
             _thread = std::thread([this]() 
             {
-                TpReads reads = nullptr;
-                while (_readReader.getReads(&reads))
+                TpReads reads;
+                while (_readReader.getReads(reads))
                 {
-                    _readWriter.writeReads(doProcessing(reads));
+                    _readWriter.writeReads(doProcessing(std::move(reads)));
                 }
             });
         }
@@ -1257,7 +1257,7 @@ struct ReadProcessor
         return true;
     }
 
-    TWriteItem* doProcessing(std::vector<TRead>* reads)
+    TWriteItem* doProcessing(TpReads reads)
     {
         GeneralStats generalStats(length(_demultiplexingParams.barcodeIds) + 1, _adapterTrimmingParams.adapters.size());
         generalStats.readCount = reads->size();
@@ -1278,7 +1278,7 @@ struct ReadProcessor
         // Postprocessing
         postprocessingStage(_processingParams, *reads, generalStats);
 
-        return new TWriteItem(std::make_tuple(std::unique_ptr<std::vector<TRead>>(reads), _demultiplexingParams.barcodeIds, generalStats));
+        return new TWriteItem(std::make_tuple(std::move(reads), _demultiplexingParams.barcodeIds, generalStats));
     }
 private:
     const ProgramParams& _programParams;

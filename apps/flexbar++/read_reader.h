@@ -111,7 +111,7 @@ public:
     - check if eof is reached, if yes return false
     - go to sleep until data is available
     */
-    bool getReads(TReadSet** reads) noexcept
+    bool getReads(std::unique_ptr<TReadSet>& reads) noexcept
     {
         TReadSet* temp = nullptr;
         while (true)
@@ -123,7 +123,7 @@ public:
                 {
                     if (readSet.compare_exchange_strong(temp, nullptr))
                     {
-                        *reads = temp;
+                        reads.reset(temp);
                         if (useSemaphore)
                             slotEmptySemaphore.signal();
                         return true;
