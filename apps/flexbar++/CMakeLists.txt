@@ -98,7 +98,7 @@ set_target_properties (sflexDMulti PROPERTIES COMPILE_DEFINITIONS "FLEX_PROG=DEM
 set_target_properties (sflexFilter PROPERTIES COMPILE_DEFINITIONS "FLEX_PROG=FILTERING")
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS} ${CXX14_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "-pthread ${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS} ${CXX14_CXX_FLAGS}")
 
 # ----------------------------------------------------------------------------
 # Installation
