@@ -23,19 +23,9 @@
 
 namespace zlib_stream {
 
-namespace detail {
-
-const int gz_magic[2] = { 0x1f, 0x8b };     // gzip magic header
-
-// gzip flag byte
-const int gz_ascii_flag  = 0x01;     // bit 0 set: file probably ascii text
-const int gz_head_crc    = 0x02;     // bit 1 set: header CRC present
-const int gz_extra_field = 0x04;     // bit 2 set: extra field present
-const int gz_orig_name   = 0x08;     // bit 3 set: original file name present
-const int gz_comment     = 0x10;     // bit 4 set: file comment present
-const int gz_reserved    = 0xE0;     // bits 5..7: reserved
-
-} // namespace detail
+// --------------------------------------------------------------------------
+// Class basic_zip_streambuf
+// --------------------------------------------------------------------------
 
 template <typename Elem,
           typename Tr,
@@ -52,8 +42,7 @@ basic_zip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::basic_zip_streambuf(
     ) :
     m_ostream(ostream_),
     m_output_buffer(buffer_size_, 0),
-    m_buffer(buffer_size_, 0),
-    m_crc(0)
+    m_buffer(buffer_size_, 0)
 {
     m_zip_stream.zalloc = (alloc_func)0;
     m_zip_stream.zfree = (free_func)0;
@@ -67,7 +56,7 @@ basic_zip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::basic_zip_streambuf(
         &m_zip_stream,
         std::min(9, static_cast<int>(level_)),
         Z_DEFLATED,
-        -static_cast<int>(window_size_),      // <-- changed
+        static_cast<int>(window_size_),
         std::min(9, static_cast<int>(memory_level_)),
         static_cast<int>(strategy_)
         );
@@ -148,9 +137,6 @@ bool basic_zip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::zip_to_stream(
     m_zip_stream.next_out = &(m_output_buffer[0]);
     size_t remainder = 0;
 
-    // updating crc
-    m_crc = crc32(m_crc, m_zip_stream.next_in, m_zip_stream.avail_in);
-
     do
     {
         m_err = deflate(&m_zip_stream, 0);
@@ -198,9 +184,6 @@ std::streamsize basic_zip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::flush(int f
     m_zip_stream.avail_out = static_cast<uInt>(m_output_buffer.size());
     m_zip_stream.next_out = &(m_output_buffer[0]);
     size_t remainder = 0;
-
-    // updating crc
-    m_crc = crc32(m_crc, m_zip_stream.next_in, m_zip_stream.avail_in);
 
     do
     {
@@ -254,6 +237,10 @@ std::streamsize basic_zip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::flush_final
     return flush(Z_FINISH);
 }
 
+// --------------------------------------------------------------------------
+// Class basic_unzip_streambuf
+// --------------------------------------------------------------------------
+
 template <typename Elem,
           typename Tr,
           typename ElemA,
@@ -267,8 +254,7 @@ basic_unzip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::basic_unzip_streambuf(
     ) :
     m_istream(istream_),
     m_input_buffer(input_buffer_size_),
-    m_buffer(read_buffer_size_),
-    m_crc(0)
+    m_buffer(read_buffer_size_)
 {
     // setting zalloc, zfree and opaque
     m_zip_stream.zalloc = (alloc_func)0;
@@ -279,24 +265,11 @@ basic_unzip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::basic_unzip_streambuf(
     m_zip_stream.avail_out = 0;
     m_zip_stream.next_out = NULL;
 
-    m_err = inflateInit2(&m_zip_stream, -static_cast<int>(window_size_));
+    m_err = inflateInit2(&m_zip_stream, static_cast<int>(window_size_));
 
     this->setg(&(m_buffer[0]) + 4,  // beginning of putback area
                &(m_buffer[0]) + 4,  // read position
                &(m_buffer[0]) + 4); // end position
-}
-
-template <typename Elem,
-          typename Tr,
-          typename ElemA,
-          typename ByteT,
-          typename ByteAT>
-size_t basic_unzip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::fill_input_buffer()
-{
-    m_zip_stream.next_in = &(m_input_buffer[0]);
-    m_istream.read((char_type *)(&(m_input_buffer[0])),
-                   static_cast<std::streamsize>(m_input_buffer.size() / sizeof(char_type)));
-    return m_zip_stream.avail_in = m_istream.gcount() * sizeof(char_type);
 }
 
 template <typename Elem,
@@ -361,20 +334,34 @@ std::streamsize basic_unzip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::unzip_fro
 
         if (m_zip_stream.avail_in)
             m_err = inflate(&m_zip_stream, Z_SYNC_FLUSH);
-    }
-    while (m_err == Z_OK && m_zip_stream.avail_out != 0 && count != 0);
 
-    // updating crc
-    m_crc = crc32(m_crc,
-                (byte_buffer_type)buffer_,
-                buffer_size_ - m_zip_stream.avail_out / sizeof(char_type));
+        if (m_err == Z_STREAM_END)
+            inflateReset(&m_zip_stream);
+        else if (m_err < 0)
+            break;
+    }
+    while (m_zip_stream.avail_out > 0 && count > 0);
+
     std::streamsize n_read = buffer_size_ - m_zip_stream.avail_out / sizeof(char_type);
 
     // check if it is the end
-    if (m_err == Z_STREAM_END)
+    if (m_zip_stream.avail_out > 0 && m_err == Z_STREAM_END)
         put_back_from_zip_stream();
 
     return n_read;
+}
+
+template <typename Elem,
+          typename Tr,
+          typename ElemA,
+          typename ByteT,
+          typename ByteAT>
+size_t basic_unzip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::fill_input_buffer()
+{
+    m_zip_stream.next_in = &(m_input_buffer[0]);
+    m_istream.read((char_type *)(&(m_input_buffer[0])),
+                   static_cast<std::streamsize>(m_input_buffer.size() / sizeof(char_type)));
+    return m_zip_stream.avail_in = m_istream.gcount() * sizeof(char_type);
 }
 
 template <typename Elem,
@@ -391,150 +378,6 @@ void basic_unzip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::put_back_from_zip_st
     m_istream.seekg(-static_cast<int>(m_zip_stream.avail_in), std::ios_base::cur);
 
     m_zip_stream.avail_in = 0;
-}
-
-template <typename Elem,
-          typename Tr,
-          typename ElemA,
-          typename ByteT,
-          typename ByteAT>
-int basic_zip_istream<Elem, Tr, ElemA, ByteT, ByteAT>::check_header()
-{
-    int method;     // method byte
-    int flags;      // flags byte
-    uInt len;
-    int c;
-    int err = 0;
-    z_stream & zip_stream = this->rdbuf()->get_zip_stream();
-
-    std::basic_istream<Elem, Tr> & istream = this->rdbuf()->get_istream();
-
-    // Check the gzip magic header
-    for (len = 0; len < 2; len++)
-    {
-        c = (int)istream.get();
-        if (c != zlib_stream::detail::gz_magic[len])
-        {
-            if (len != 0)
-                istream.unget();
-            if (!traits_type::eq_int_type(c, traits_type::eof()))
-                istream.unget();
-
-            err = zip_stream.avail_in != 0 ? Z_OK : Z_STREAM_END;
-            m_is_gzip = false;
-            return err;
-        }
-    }
-
-    m_is_gzip = true;
-    method = (int)istream.get();
-    flags = (int)istream.get();
-    if (method != Z_DEFLATED || (flags & zlib_stream::detail::gz_reserved) != 0)
-    {
-        err = Z_DATA_ERROR;
-        return err;
-    }
-
-    // Discard time, xflags and OS code:
-    for (len = 0; len < 6; len++)
-        istream.get();
-
-    if ((flags & zlib_stream::detail::gz_extra_field) != 0)
-    {
-        // skip the extra field
-        len  =  (uInt)istream.get();
-        len += ((uInt)istream.get()) << 8;
-        // len is garbage if EOF but the loop below will quit anyway
-        while (len-- != 0 && !traits_type::eq_int_type(istream.get(), traits_type::eof())) ;
-    }
-    if ((flags & zlib_stream::detail::gz_orig_name) != 0)
-    {
-        // skip the original file name
-        while ((c = istream.get()) != 0 && !traits_type::eq_int_type(c, traits_type::eof())) ;
-    }
-    if ((flags & zlib_stream::detail::gz_comment) != 0)
-    {
-        // skip the .gz file comment
-        while ((c = istream.get()) != 0 && !traits_type::eq_int_type(c, traits_type::eof())) ;
-    }
-    if ((flags & zlib_stream::detail::gz_head_crc) != 0)
-    {      // skip the header crc
-        for (len = 0; len < 2; len++)
-            istream.get();
-    }
-    err = istream.eof() ? Z_DATA_ERROR : Z_OK;
-
-    return err;
-}
-
-template <typename Elem,
-          typename Tr,
-          typename ElemA,
-          typename ByteT,
-          typename ByteAT>
-void basic_zip_istream<Elem, Tr, ElemA, ByteT, ByteAT>::read_footer()
-{
-    if (m_is_gzip)
-    {
-        read_uint32(m_gzip_crc);
-        read_uint32(m_gzip_data_size);
-    }
-}
-
-template <typename Elem,
-          typename Tr,
-          typename ElemA,
-          typename ByteT,
-          typename ByteAT>
-void basic_zip_ostream<Elem, Tr, ElemA, ByteT, ByteAT>::put_uint32(uLong x)
-{
-    this->write(reinterpret_cast<char *>(&x), 1);
-    this->write(reinterpret_cast<char *>(&x + 1), 1);
-    this->write(reinterpret_cast<char *>(&x + 2), 1);
-    this->write(reinterpret_cast<char *>(&x + 3), 1);
-}
-
-template <typename Elem,
-          typename Tr,
-          typename ElemA,
-          typename ByteT,
-          typename ByteAT>
-void basic_zip_istream<Elem, Tr, ElemA, ByteT, ByteAT>::read_uint32(uLong & x)
-{
-    this->read(reinterpret_cast<char *>(&x), 1);
-    this->read(reinterpret_cast<char *>(&x + 1), 1);
-    this->read(reinterpret_cast<char *>(&x + 2), 1);
-    this->read(reinterpret_cast<char *>(&x + 3), 1);
-}
-
-template <typename Elem,
-          typename Tr,
-          typename ElemA,
-          typename ByteT,
-          typename ByteAT>
-void basic_zip_ostream<Elem, Tr, ElemA, ByteT, ByteAT>::add_header()
-{
-          typename Tr::char_type zero = 0;
-
-    this->rdbuf()->get_ostream()
-    .put(static_cast<typename Tr::char_type>(detail::gz_magic[0]))
-    .put(static_cast<typename Tr::char_type>(detail::gz_magic[1]))
-    .put(static_cast<typename Tr::char_type>(Z_DEFLATED))
-    .put(zero)         //flags
-    .put(zero).put(zero).put(zero).put(zero)         // time
-    .put(zero)         //xflags
-    .put(static_cast<typename Tr::char_type>(OS_CODE));
-}
-
-template <typename Elem,
-          typename Tr,
-          typename ElemA,
-          typename ByteT,
-          typename ByteAT>
-void basic_zip_ostream<Elem, Tr, ElemA, ByteT, ByteAT>::add_footer()
-{
-    put_uint32(this->rdbuf()->get_crc());
-    put_uint32(this->rdbuf()->get_in_size());
 }
 
 } // namespace zlib_stream

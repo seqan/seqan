@@ -92,20 +92,6 @@ public:
     // This method should be called at the end of the compression.
     std::streamsize flush_finalize();
 
-    // returns a reference to the output stream
-    ostream_reference get_ostream() const   { return m_ostream; }
-
-    // returns the latest zlib error status
-    int get_zerr() const                    { return m_err; }
-
-    // returns the crc of the input data compressed so far.
-    uLong get_crc() const                   { return m_crc; }
-
-    // returns the size (bytes) of the input data compressed so far.
-    uLong get_in_size() const               { return m_zip_stream.total_in; }
-
-    // returns the size (bytes) of the compressed data so far.
-    uLong get_out_size() const              { return m_zip_stream.total_out; }
 
 private:
     bool zip_to_stream(char_type *, std::streamsize);
@@ -118,7 +104,6 @@ private:
     int m_err;
     byte_vector_type m_output_buffer;
     char_vector_type m_buffer;
-    uLong m_crc;
 };
 
 // --------------------------------------------------------------------------
@@ -161,21 +146,8 @@ public:
 
     // returns the compressed input istream
     istream_reference get_istream()  { return m_istream; }
-
     // returns the zlib stream structure
     z_stream & get_zip_stream()      { return m_zip_stream; }
-
-    // returns the latest zlib error state
-    int get_zerr() const             { return m_err; }
-
-    // returns the crc of the uncompressed data so far
-    uLong get_crc() const            { return m_crc; }
-
-    // returns the number of uncompressed bytes
-    uLong get_out_size() const       { return m_zip_stream.total_out; }
-
-    // returns the number of read compressed bytes
-    uLong get_in_size() const        { return m_zip_stream.total_in; }
 
 private:
     void put_back_from_zip_stream();
@@ -187,7 +159,6 @@ private:
     int m_err;
     byte_vector_type m_input_buffer;
     char_vector_type m_buffer;
-    uLong m_crc;
 };
 
 // --------------------------------------------------------------------------
@@ -225,15 +196,6 @@ public:
     // returns the underlying zip ostream object
     zip_streambuf_type * rdbuf() { return &m_buf; }
 
-    // returns the zlib error state
-    int get_zerr() const                    { return m_buf.get_err(); }
-    // returns the uncompressed data crc
-    uLong get_crc() const                   { return m_buf.get_crc(); }
-    // returns the compressed data size
-    uLong get_out_size() const              { return m_buf.get_out_size(); }
-    // returns the uncompressed data size
-    uLong get_in_size() const               { return m_buf.get_in_size(); }
-
 private:
     zip_streambuf_type m_buf;
 };
@@ -268,18 +230,6 @@ public:
 
     // returns the underlying unzip istream object
     unzip_streambuf_type * rdbuf() { return &m_buf; }
-
-    // returns the zlib error state
-    int get_zerr() const           { return m_buf.get_zerr(); }
-
-    // returns the uncompressed data crc
-    uLong get_crc() const          { return m_buf.get_crc(); }
-
-    // returns the uncompressed data size
-    uLong get_out_size() const     { return m_buf.get_out_size(); }
-
-    // returns the compressed data size
-    uLong get_in_size() const      { return m_buf.get_in_size(); }
 
 private:
     unzip_streambuf_type m_buf;
@@ -330,50 +280,27 @@ public:
     // window_size_ see zlib doc
     // memory_level_ see zlib doc
     // buffer_size_ the buffer size used to zip data
-    //
-    // When is_gzip_ is true, a gzip header and footer is automatically added.
 
     basic_zip_ostream(ostream_reference ostream_,
-                      bool is_gzip_ = true,
                       size_t level_ = Z_DEFAULT_COMPRESSION,
                       EStrategy strategy_ = DefaultStrategy,
-                      size_t window_size_ = 15,
+                      size_t window_size_ = 31, // 15 (size) + 16 (gzip header)
                       size_t memory_level_ = 8,
                       size_t buffer_size_ = ZIP_DEFAULT_BUFFER_SIZE) :
         zip_ostreambase_type(ostream_, level_, strategy_, window_size_, memory_level_, buffer_size_),
-        ostream_type(this->rdbuf()),
-        m_is_gzip(is_gzip_)
-    {
-        if (m_is_gzip)
-            add_header();
-    }
+        ostream_type(this->rdbuf())
+    {}
 
     ~basic_zip_ostream()
     {
         this->flush(); this->rdbuf()->flush_finalize();
-
-        if (m_is_gzip && (this->rdbuf()->get_zerr() == Z_STREAM_END))
-        {
-            add_footer();
-            this->flush();
-        }
     }
-
-    // returns true if it is a gzip
-    bool is_gzip() const        { return m_is_gzip; }
 
     // flush inner buffer and zipper buffer
     basic_zip_ostream<Elem, Tr> & zflush()
     {
         this->flush(); this->rdbuf()->flush(); return *this;
     }
-
-private:
-    void put_uint32(uLong x);
-    void add_header();
-    void add_footer();
-
-    bool m_is_gzip;
 
 #ifdef _WIN32
 private:
@@ -424,47 +351,12 @@ public:
     // input_buffer_size_
 
     basic_zip_istream(istream_reference istream_,
-                      size_t window_size_ = 15,
+                      size_t window_size_ = 31, // 15 (size) + 16 (gzip header)
                       size_t read_buffer_size_ = ZIP_DEFAULT_BUFFER_SIZE,
                       size_t input_buffer_size_ = ZIP_DEFAULT_BUFFER_SIZE) :
         zip_istreambase_type(istream_, window_size_, read_buffer_size_, input_buffer_size_),
-        istream_type(this->rdbuf()),
-        m_is_gzip(false),
-        m_gzip_crc(0),
-        m_gzip_data_size(0)
-    {
-        if (this->rdbuf()->get_zerr() == Z_OK)
-            check_header();
-    }
-
-    // returns true if it is a gzip file
-    bool is_gzip() const                { return m_is_gzip; }
-
-    // reads the gzip header
-    void read_footer();
-
-    // return crc check result
-    // return true if crc check is succesful
-    // When you have finished reading the compressed data, call read_footer to read the uncompressed data crc.
-    // This method compares it to the crc of the uncompressed data.
-    bool check_crc() const              { return this->get_crc() == m_gzip_crc; }
-
-    // return data size check
-    bool check_data_size() const        { return this->get_out_size() == m_gzip_data_size; }
-
-    // return the crc value in the file
-    uLong get_gzip_crc() const          { return m_gzip_crc; }
-
-    // return the data size in the file
-    uLong get_gzip_data_size() const    { return m_gzip_data_size; }
-
-private:
-    void read_uint32(uLong & x);
-    int check_header();
-
-    bool m_is_gzip;
-    uLong m_gzip_crc;
-    uLong m_gzip_data_size;
+        istream_type(this->rdbuf())
+    {}
 
 #ifdef _WIN32
 private:
