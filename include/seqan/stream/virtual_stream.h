@@ -40,15 +40,6 @@
 #ifndef SEQAN_STREAM_VIRTUAL_STREAM_
 #define SEQAN_STREAM_VIRTUAL_STREAM_
 
-#if SEQAN_HAS_ZLIB
-#include "iostream_zip.h"
-#include "iostream_bgzf.h"
-#endif
-
-#if SEQAN_HAS_BZIP2
-#include "iostream_bzip2.h"
-#endif
-
 namespace seqan {
 
 // ============================================================================
