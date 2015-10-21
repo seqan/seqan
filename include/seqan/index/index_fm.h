@@ -366,9 +366,10 @@ _findFirstIndex(Finder<Index<TText, FMIndex<TSpec, TConfig> >, TSpecFinder> & fi
 template <typename TText, typename TSpec, typename TConfig>
 inline bool indexCreate(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSALF)
 {
-    typedef Index<TText, FMIndex<TSpec, TConfig> >      TIndex;
-    typedef typename Fibre<TIndex, FibreTempSA>::Type   TTempSA;
-    typedef typename Size<TIndex>::Type                 TSize;
+    typedef Index<TText, FMIndex<TSpec, TConfig> >               TIndex;
+    typedef typename Fibre<TIndex, FibreTempSA>::Type            TTempSA;
+    typedef typename Size<TIndex>::Type                          TSize;
+    typedef typename DefaultIndexCreator<TIndex, FibreSA>::Type  TAlgo;
 
     TText const & text = indexText(index);
 
@@ -379,7 +380,7 @@ inline bool indexCreate(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSAL
 
     // Create the full SA.
     resize(tempSA, lengthSum(text), Exact());
-    createSuffixArray(tempSA, text, Skew7());
+    createSuffixArray(tempSA, text, TAlgo());
 
     // Create the LF table.
     createLF(indexLF(index), text, tempSA);
