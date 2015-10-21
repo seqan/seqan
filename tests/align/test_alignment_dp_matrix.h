@@ -294,7 +294,7 @@ void testAlignmentDPMatrixGetValueMF(TSpec const &)
     typedef DPMatrix_<int, TSpec> TDPMatrix;
     typedef DPMatrix_<int, TSpec> const TDPMatrixConst;
 
-    bool result = IsSameType<typename GetValue<TDPMatrix>::Type, int &>::VALUE;
+    bool result = IsSameType<typename GetValue<TDPMatrix>::Type, int const &>::VALUE;
     bool result2 = IsSameType<typename GetValue<TDPMatrixConst>::Type, int const &>::VALUE;
 
     SEQAN_ASSERT_EQ(result, true);
