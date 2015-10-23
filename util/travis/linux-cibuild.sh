@@ -2,7 +2,7 @@
 
 # get some infos from git to embed it in the build name
 export SOURCE_DIRECTORY=`pwd`
-mkdir -p _build
+mkdir -p ctest-builds
 
 # define the build name
 if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
@@ -25,7 +25,7 @@ if [ -f ${SOURCE_DIRECTORY}/failed ]; then
   exit -1
 fi
 
-FAILED_TEST=$(find _build -name "Test.xml" -type f | xargs grep "<Test Status=\"failed\">" -c)
+FAILED_TEST=$(find ctest-builds -name "Test.xml" -type f | xargs grep "<Test Status=\"failed\">" -c)
 
 if [ "${FAILED_TEST}" -gt "0" ]; then
     exit -1

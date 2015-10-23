@@ -5,6 +5,10 @@ compiler:
   - clang
 cache:
   apt: true
+  directories:
+    - $HOME/build/seqan/seqan/ctest-builds
+before_cache:
+  - find $HOME/build/seqan/seqan/ctest-builds -name "*.xml" -type f -delete
 install:
   - if [ "$CC" == "gcc" ]; then export CXX=g++-4.8 CC=gcc-4.8; fi
 addons:
