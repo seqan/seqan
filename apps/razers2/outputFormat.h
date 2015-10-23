@@ -785,9 +785,8 @@ void dumpMatches(
 
 		case 2:	// Eland Format
 			_sep_ = '\t';
-			for(unsigned readNo = 0; readNo < length(store.readSeqStore); ++readNo)
+			for (unsigned readNo = 0; readNo < length(store.readSeqStore); ++readNo)
 			{
-				TQuality	qual = getValue(store.alignQualityStore, (*it).id);
 				switch (options.readNaming)
 				{
 					// 0..filename is the read's Fasta id
@@ -815,6 +814,7 @@ void dumpMatches(
 					}
 				} else
 				{
+					TQuality	qual = getValue(store.alignQualityStore, (*it).id);
 					SEQAN_ASSERT_EQ(readNo, (*it).readId);
 					file << store.readSeqStore[readNo] << _sep_;
 					unsigned bestMatches = 1;
