@@ -4,6 +4,27 @@ SeqAn Changelog
 This file summarizes the changes to the SeqAn library and apps.
 
 
+Release 2.0.1
+~~~~~~~~~~~~~
+
+Minor release with bug fixes, improvements and some new features should be backward compatible with 2.0.0. Support for Visual Studio 2015 was added as well as compiler warnings removed.
+
+Selected Features and Improvements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- improvement of the ZIP Stream
+- BAM index file (.bai) can be saved
+- added ``open()`` and ``save()`` for OpenAddressing QGramIndex
+- added a BAM index tutorial
+- Visual Studio 2015 support
+
+Selected Bug Fixes
+^^^^^^^^^^^^^^^^^^
+
+- added missing O character to amino acid alphabet
+- Yara-App: fixed bzip2 detection
+
+
 Release 2.0.0
 ~~~~~~~~~~~~~
 
