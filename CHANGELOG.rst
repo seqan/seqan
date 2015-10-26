@@ -21,7 +21,7 @@ Selected Features and Improvements
 Selected Bug Fixes
 ^^^^^^^^^^^^^^^^^^
 
-- added missing O character to amino acid alphabet
+- added missing character ``O`` to amino acid alphabet
 - Yara-App: fixed bzip2 detection
 
 
