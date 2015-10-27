@@ -105,6 +105,7 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:gustaf")
   set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Gustaf - Generic multi-split alignment finder")
   set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Kathrin Trappe <kathrin.trappe@fu-berlin.de>")
   set (CPACK_PACKAGE_VENDOR "Kathrin Trappe <kathrin.trappe@fu-berlin.de>")
+  set (CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.rst")
 
   seqan_configure_cpack_app (gustaf "gustaf")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:gustaf")
