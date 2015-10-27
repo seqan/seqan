@@ -70,7 +70,7 @@ come in. Gustaf always expect two files, and in default expects the second
 mates (MATES2) to be reverse complemented in relation to the first mates
 (MATES1), see option `-rc` to turn this behaviour off.
 
-### Non-optional arguments
+###### Non-optional arguments
 
 Gustaf always expects both a database and a query file in Fasta format.
 Important: Following conventions, all Ids (line starting
@@ -94,7 +94,7 @@ variant breakpoints in GFF format, breakpoint.vcf in VCF format.
 The default behaviour can be modified by adding options to the command line.
 See `gustaf --help` and `gustaf_mate_joining --help`
 
-### Output Formats
+###### Output Formats
 
 Gustaf currently supports the GFF and the VCF output format for reporting
 breakpoints. Using option `-do`, Gustaf creates a Dot file of each(!) read
@@ -116,7 +116,7 @@ the files *adeno_modified_reads_mates1* and *adeno_modified_reads_mates2*
 for paired-end mode.
 
 
-### Single-end Mode
+###### Single-end Mode
 
 There is a pre-calculated Stellar output file *stellar.gff* for the
 single-end read file computed by calling
@@ -140,7 +140,7 @@ In the second run, Gustaf used the pre-calculated file with Stellar matches
 (use this option for larger datasets where you want to run Stellar separately
 and reuse the Stellar output for multiple Gustaf runs).
 
-### Paired-end Mode
+###### Paired-end Mode
 
 In paired-end mode, we join both read pair files before calling Stellar.
 This can be done using the app `gustaf_mate_joining` by calling
