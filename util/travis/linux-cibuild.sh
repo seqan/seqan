@@ -18,6 +18,11 @@ if [ "${CXX}" == "clang++" ]; then
   export CXXFLAGS="${CXXFLAGS} -DSEQAN_IGNORE_MISSING_OPENMP=1"
 fi
 
+# touch all ctest builds
+find ctest-builds -exec touch {} \;
+sleep 1
+git diff --name-only HEAD HEAD~1 | xargs touch
+
 ctest -V -S util/travis/linux-cibuild.cmake
 
 # we indicate build failures if ctest experienced any errors
