@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_param_chooser)
 message (STATUS "Configuring apps/param_chooser")
 
-set (SEQAN_APP_VERSION "0.0.0")
+set (SEQAN_APP_VERSION "0.0.1")
 
 # ----------------------------------------------------------------------------
 # Dependencies

@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_alf)
 message (STATUS "Configuring apps/alf")
 
-set (SEQAN_APP_VERSION "1.1.1")
+set (SEQAN_APP_VERSION "1.1.2")
 
 # ----------------------------------------------------------------------------
 # Dependencies
