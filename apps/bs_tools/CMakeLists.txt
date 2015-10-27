@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_bs_tools)
 message (STATUS "Configuring apps/bs_tools")
 
-set (SEQAN_APP_VERSION "0.1.1")
+set (SEQAN_APP_VERSION "0.1.2")
 
 # ----------------------------------------------------------------------------
 # Dependencies
