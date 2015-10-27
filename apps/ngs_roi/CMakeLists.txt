@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_ngs_roi)
 message (STATUS "Configuring apps/ngs_roi")
 
-set (SEQAN_APP_VERSION "0.2.3")
+set (SEQAN_APP_VERSION "0.2.4")
 
 # ----------------------------------------------------------------------------
 # Dependencies
