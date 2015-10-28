@@ -4,6 +4,88 @@ SeqAn Changelog
 This file summarizes the changes to the SeqAn library and apps.
 
 
+Release 2.0.1
+~~~~~~~~~~~~~
+
+Minor release including several library bug-fixes as well as better documentation and infrastructure.
+All library modules are backward compatible with 2.0.0.
+For a complete list of changes visit `GitHub <https://github.com/seqan/seqan/pulls?q=is%3Apr+is%3Amerged++milestone%3A%22Release+2.0.1%22+>`_.
+
+Library Bug Fixes
+^^^^^^^^^^^^^^^^^
+
+- Basic:
+    - Added AminoAcid symbol "O"
+    - Disabled global exception handler by default
+
+- Sequence:
+    - Added missing overloads for const Strings
+    - Fixed and tested StringSet
+    - Reworked STL containers adaption
+    - Fixed several bugs in ModifiedStrings and ModifiedIterators
+
+- Stream:
+    - Worked around I/O with std::string
+    - Supported multi-stream gzip files produced by Illumina Casava
+    - Fixed BgzfStream tell()
+
+- SeqIO:
+    - Changed Raw file extension from .txt to .raw
+
+- BAM I/O:
+    - Fixed BIN computation
+    - Fixed a bug in jumpToOrphans()
+    - Fixed internal concurrency problems
+    - Fixed readBamHeader() to clear the BamHeader
+    - Added assertions to writeRecord()
+    - Added BamIndex::save() to save .bai files
+
+- Gff I/O:
+    - Fixed parsing of comment lines
+
+- FragmentStore:
+    - Fixed loading Gtf/Gff3 files
+
+- Index:
+    - Fixed open() and save() for WT FMIndex
+    - Added open() and save() for OpenAddressing QGramIndex
+
+- Seeds:
+    - Fixed a bug in sparse chaining
+    - Fixed a bug in banded chain alignment
+
+Documentation Updates
+^^^^^^^^^^^^^^^^^^^^^
+
+- Manual:
+    - Fixed and improved several Tutorials and HowTos
+    - Added version-aware links to the dox
+
+- Dox:
+    - Added @datarace entity
+    - Fixed broken links in "See Also" section
+    - Fixed a problem with close button in the side pane
+    - Documented class VirtualStream
+
+- Demos:
+    - Restructured demos directory
+    - Fixed several broken demos
+
+Infrastructure Updates
+^^^^^^^^^^^^^^^^^^^^^^
+
+- Platform Support:
+    - Added support for GCC 4.9 and Clang 3.7
+    - Preliminary support for Clang 3.8 with OpenMP
+    - Preliminary support for Visual Studio 2015
+    - Preliminary support for FreeBSD 10.2
+
+- Build System:
+   - Tested all demos
+   - Upgraged TravisCI builds to run on Docker
+   - Fixed Java detection
+
+
 Release 2.0.0
 ~~~~~~~~~~~~~
 
