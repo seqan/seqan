@@ -18,10 +18,18 @@ if [ "${CXX}" == "clang++" ]; then
   export CXXFLAGS="${CXXFLAGS} -DSEQAN_IGNORE_MISSING_OPENMP=1"
 fi
 
+ls -l apps/yara/mapper.cpp
+ls -l ctest-builds/bin/yara_mapper
+
+git diff --name-only HEAD HEAD~1
+
 # touch all ctest builds
 find ctest-builds -exec touch {} \;
 sleep 1
 git diff --name-only HEAD HEAD~1 | xargs touch
+
+ls -l apps/yara/mapper.cpp
+ls -l ctest-builds/bin/yara_mapper
 
 ctest -V -S util/travis/linux-cibuild.cmake
 
