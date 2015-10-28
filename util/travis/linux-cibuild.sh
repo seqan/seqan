@@ -21,6 +21,9 @@ fi
 ls -l apps/yara/mapper.cpp
 ls -l ctest-builds/bin/yara_mapper
 
+ls -l demos/howto/scores/init_score.cpp
+ls -l ctest-builds/bin/demo_howto_scores_init_score.cpp
+
 git diff --name-only HEAD HEAD~1
 
 # touch all ctest builds
@@ -30,6 +33,9 @@ git diff --name-only HEAD HEAD~1 | xargs touch
 
 ls -l apps/yara/mapper.cpp
 ls -l ctest-builds/bin/yara_mapper
+
+ls -l demos/howto/scores/init_score.cpp
+ls -l ctest-builds/bin/demo_howto_scores_init_score.cpp
 
 ctest -V -S util/travis/linux-cibuild.cmake
 
