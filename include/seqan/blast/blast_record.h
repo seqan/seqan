@@ -80,6 +80,10 @@ struct BlastMatch
     typedef TQId_ TQId;
     typedef TSId_ TSId;
 
+    // internal use numerical ids
+    __uint32 _n_qId;
+    __uint32 _n_sId;
+
     /*!
      * @var TQId BlastMatch::qId;
      * @brief The verbose Id of the query.
