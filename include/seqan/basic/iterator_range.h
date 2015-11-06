@@ -102,6 +102,15 @@ public:
     // Operator =
     // ------------------------------------------------------------------------
 
+    SEQAN_HOST_DEVICE
+    Range &
+    operator=(Range const &other)
+    {
+        begin = other.begin;
+        end = other.end;
+        return *this;
+    }
+
     template <typename TOtherContainer>
    
     Range &
@@ -316,6 +325,14 @@ resize(
 template <typename TIterator, typename TContainer>
 inline void
 assign(Range<TIterator> &range, TContainer &cont)
+{
+    range.begin = begin(cont, Standard());
+    range.end = end(cont, Standard());
+}
+
+template <typename TIterator, typename TContainer>
+SEQAN_HOST_DEVICE inline void
+assign(Range<TIterator> &range, TContainer const &cont)
 {
     range.begin = begin(cont, Standard());
     range.end = end(cont, Standard());
