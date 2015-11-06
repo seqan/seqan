@@ -131,8 +131,8 @@ _setUpAndRunAlignImpl(TAliExtContext_ & alignContext,
                          TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfig;
 
     DPScoutState_<Default> scoutState;
-    return _setUpAndRunAlignment(alignContext.dpContext, alignContext.traceSegment, scoutState, str0, str1, scoreScheme,
-                                 TAlignConfig());
+    return _setUpAndRunAlignment(alignContext.traceSegment, scoutState, str0, str1, scoreScheme,
+                                 TAlignConfig(), alignContext.dpContext);
 }
 
 template <typename TAliExtContext_, typename TString0, typename TString1, typename TScoreValue,
@@ -416,7 +416,7 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
 {
     if (scoreGapOpen(scoreScheme) == scoreGapExtend(scoreScheme))
     {
-        typedef DPContext<TScoreValue, LinearGaps> TDPContext;
+        typedef DPContext<DPCell_<TScoreValue, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
         typedef AliExtContext_<Gaps<TStringInfix, TAlignSpec>,
                                Gaps<TStringInfix, TAlignSpec>,
                                TDPContext> TAliExtContext_;
@@ -426,7 +426,7 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
     }
     else
     {
-        typedef DPContext<TScoreValue, AffineGaps> TDPContext;
+        typedef DPContext<DPCell_<TScoreValue, AffineGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
         typedef AliExtContext_<Gaps<TStringInfix, TAlignSpec>,
                                Gaps<TStringInfix, TAlignSpec>,
                                TDPContext> TAliExtContext_;

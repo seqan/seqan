@@ -59,13 +59,13 @@ namespace seqan {
 // Metafunction PreferGapsAtEnd_
 // ----------------------------------------------------------------------------
 
-template <typename TFreeEndGaps, typename TMatrixSpec, typename TTracebackSpec>
+template <typename TFreeEndGaps, typename TMatrixSpec, typename TTracebackSpec, typename TExecPolicy>
 struct PreferGapsAtEnd_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TMatrixSpec>,
-                                   AffineGaps, TTracebackSpec> > : False{};
+                                   AffineGaps, TTracebackSpec, TExecPolicy> > : False{};
 
-template <typename TFreeEndGaps, typename TTracebackSpec>
+template <typename TFreeEndGaps, typename TTracebackSpec, typename TExecPolicy>
 struct PreferGapsAtEnd_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainFinalDPMatrix>,
-                                   AffineGaps, TTracebackSpec> > : True{};
+                                   AffineGaps, TTracebackSpec, TExecPolicy> > : True{};
 
 // ============================================================================
 // Functions
@@ -235,7 +235,7 @@ _correctDPCellForAffineGaps(DPCell_<TScoreValue, AffineGaps> & dpCell, TTraceVal
 
 template<typename TTarget, typename TDPTraceMatrixNavigator, typename TDPCell, typename TScoutSpec,
          typename TSequenceH, typename TSequenceV, typename TBandFlag, typename TFreeEndGaps, typename TDPMatrixLocation,
-         typename TGapCosts, typename TTracebackSpec>
+         typename TGapCosts, typename TTracebackSpec, typename TExecPolicy>
 void _computeTraceback(TTarget & target,
                        TDPTraceMatrixNavigator & matrixNavigator,
                        unsigned maxHostPosition,
@@ -243,7 +243,7 @@ void _computeTraceback(TTarget & target,
                        TSequenceH const & seqH,
                        TSequenceV const & seqV,
                        DPBandConfig<TBandFlag> const & band,
-                       DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTracebackSpec> const & dpProfile)
+                       DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTracebackSpec, TExecPolicy> const & dpProfile)
 {
     typedef DPScout_<TDPCell, TScoutSpec> TDPScout_;
     typedef typename TDPScout_::TScoutState TScoutState_;
@@ -360,14 +360,14 @@ template <typename TTarget,
           typename TDPCell, typename TScoutSpec,
           typename TSequenceH, typename TSequenceV,
           typename TBandFlag,
-          typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackSpec>
+          typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackSpec, typename TExecPolicy>
 void _computeTraceback(StringSet<TTarget> & targetSet,
                        TDPTraceMatrixNavigator & matrixNavigator,
                        DPScout_<TDPCell, TScoutSpec> & dpScout,
                        TSequenceH const & seqH,
                        TSequenceV const & seqV,
                        DPBandConfig<TBandFlag> const & band,
-                       DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTracebackSpec> const & dpProfile)
+                       DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTracebackSpec, TExecPolicy> const & dpProfile)
 {
     typedef DPScout_<TDPCell, TScoutSpec> TDPScout;
     typedef typename TDPScout::TMaxHostPositionString TMaxHostPositions;

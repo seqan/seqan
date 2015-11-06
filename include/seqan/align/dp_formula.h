@@ -199,8 +199,8 @@ _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue, typename TGapCosts, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
-          typename TAlgoTag, typename TTraceFlag>
-inline typename TraceBitMap_<TScoreValue>::Type
+          typename TAlgoTag, typename TTraceFlag, typename TExecPolicy>
+inline typename TraceBitMap_::TTraceValue
 _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                 DPCell_<TScoreValue, TGapCosts> const & /*previousDiagonal*/,
                 DPCell_<TScoreValue, TGapCosts> const & /*previousHorizontal*/,
@@ -209,7 +209,7 @@ _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                 TSequenceVValue const & /*seqVVal*/,
                 TScoringScheme const & /*scoringScheme*/,
                 RecursionDirectionZero const &,
-                DPProfile_<TAlgoTag, TGapCosts, TTraceFlag> const &)
+                DPProfile_<TAlgoTag, TGapCosts, TTraceFlag, TExecPolicy> const &)
 {
     _scoreOfCell(activeCell) = createVector<TScoreValue>(0);
     return TraceBitMap_<TScoreValue>::NONE;
