@@ -278,6 +278,13 @@ setGapExtension(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TF1 , TF2, TScoreVa
     // no-op
 }
 
+template <typename TTarget, typename TScoreValue, typename TGapSpec>
+inline void
+write(TTarget & target, DPCell_<TScoreValue, TGapSpec> const & cell)
+{
+    write(target, _scoreOfCell(cell));
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_CELL_H_
