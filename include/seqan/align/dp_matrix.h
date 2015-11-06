@@ -495,7 +495,7 @@ resize(DPMatrix_<TValue, TMatrixSpec, THost> & dpMatrix)
     typedef typename Size<DPMatrix_<TValue, TMatrixSpec, THost> >::Type TSize;
 
     TSize reqSize = updateFactors(dpMatrix);
-    if (reqSize >= length(dpMatrix))
+    if (reqSize > length(dpMatrix))
         resize(host(dpMatrix), reqSize, Exact());
 }
 
@@ -507,7 +507,7 @@ resize(DPMatrix_<TValue, TMatrixSpec, THost> & dpMatrix,
     typedef typename Size<DPMatrix_<TValue, TMatrixSpec, THost> >::Type TSize;
 
     TSize reqSize = updateFactors(dpMatrix);
-    if (reqSize >= length(dpMatrix))
+    if (reqSize > length(dpMatrix))
         resize(host(dpMatrix), reqSize, fillValue, Exact());
 }
 
