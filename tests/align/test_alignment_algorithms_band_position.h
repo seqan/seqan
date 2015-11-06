@@ -44,7 +44,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case1)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -109,7 +109,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case2)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -172,7 +172,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case3)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -234,7 +234,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case4)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -295,7 +295,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case5)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -359,7 +359,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case6)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -422,7 +422,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case7)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -485,7 +485,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case8)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -547,7 +547,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case9)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -609,7 +609,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case10)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
     //012345678901
@@ -670,7 +670,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case11)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -733,7 +733,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case12)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -795,7 +795,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case13)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
     //012345678901
@@ -857,7 +857,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case14)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -920,7 +920,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case15)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -982,7 +982,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case16)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1043,7 +1043,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case17)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1104,7 +1104,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case18)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1165,7 +1165,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case19)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1226,7 +1226,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case20)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1287,7 +1287,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case21)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1348,7 +1348,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case22)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1409,7 +1409,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case23)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1470,7 +1470,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case24)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1533,7 +1533,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case25)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1595,7 +1595,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case26)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1658,7 +1658,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case27)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1719,7 +1719,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case28)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1781,7 +1781,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case29)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1842,7 +1842,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case30)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1903,7 +1903,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case31)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_::TTraceValue> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
