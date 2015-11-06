@@ -170,7 +170,9 @@
 // Parallel DP
 //################################################################################
 
+#if defined(SEQAN_CXX11_STANDARD)
 #include <seqan/align/dp_parallel.h>
+#endif  // SEQAN_CXX11_STANDARD
 
 //################################################################################
 // Old module
