@@ -39,8 +39,19 @@
  * @signature #define PLATFORM_GCC
  */
 
+// GNU COMPATIBLE
 #ifndef PLATFORM_GCC
 #define PLATFORM_GCC
+
+#if !defined(__clang__) && !defined(__ICC) && !defined(PLATFORM_GNU)
+// ACTUALLY GNU
+#define PLATFORM_GNU
+#endif
+
+#if defined(__clang__) && !defined(__ICC) && !defined(PLATFORM_CLANG)
+// ACTUALLY CLANG
+#define PLATFORM_CLANG
+#endif
 
 // should be set before including anything
 #ifndef _FILE_OFFSET_BITS
