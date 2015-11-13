@@ -4,7 +4,7 @@ using namespace seqan;
 
 int main(int argc, char const ** argv)
 {
-    CharString bamFileInName = getAbsolutePath("/demos/tutorial/file_io_overview/example.bam");
+    CharString bamFileInName = getAbsolutePath("demos/tutorial/file_io_overview/example.bam");
 
     // Open input BAM file.
     BamFileIn bamFileIn;
