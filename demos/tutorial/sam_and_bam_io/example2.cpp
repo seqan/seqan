@@ -4,7 +4,7 @@ using namespace seqan;
 
 int main()
 {
-    CharString bamFileName = getAbsolutePath("/demos/tutorial/sam_and_bam_io/example.sam");
+    CharString bamFileName = getAbsolutePath("demos/tutorial/sam_and_bam_io/example.sam");
 
     BamFileIn bamFileIn(toCString(bamFileName));
 
