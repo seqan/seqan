@@ -202,7 +202,9 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   endif ()
 
   # disable some warnings on ICC
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
+  if (COMPILER_IS_INTEL)
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
+  endif (COMPILER_IS_INTEL)
 endif ()
 
 # Windows Setup
