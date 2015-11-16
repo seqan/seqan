@@ -43,14 +43,16 @@
 #ifndef PLATFORM_GCC
 #define PLATFORM_GCC
 
-#if !defined(__clang__) && !defined(__ICC) && !defined(PLATFORM_GNU)
-// ACTUALLY GNU
-#define PLATFORM_GNU
-#endif
-
-#if defined(__clang__) && !defined(__ICC) && !defined(PLATFORM_CLANG)
-// ACTUALLY CLANG
-#define PLATFORM_CLANG
+#if defined(__clang__)
+#   ifndef PLATFORM_CLANG
+#       define PLATFORM_CLANG
+#   endif
+#elif defined(__ICC)
+    // INTEL COMPILER handled in different file
+#else
+#   ifndef PLATFORM_GNU
+#       define PLATFORM_GNU
+#   endif
 #endif
 
 // should be set before including anything
