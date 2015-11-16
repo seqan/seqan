@@ -183,9 +183,11 @@ _testBlastOutputGenerateContent(TFile & file,
         }
     }
 
-    // sort by bit-score
-    for (auto & r : records)
-        r.matches.sort();
+    // sort by bit-score (range based for-loop broken on ICC)
+    for (auto it = begin(records, Standard()), itEnd = end(records, Standard());
+         it != itEnd;
+         ++it)
+         it->matches.sort();
 
     _testBlastOutputWriteFile(file, context, records, TFormat());
 }
