@@ -1656,7 +1656,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     TSize col = 0;
     typename TPosToVertexMap::const_iterator it = g.data_pvMap.begin();
     unsigned int compIndex = 0;
-    unsigned int compIndexLen = length(order);
+    unsigned long compIndexLen = length(order);
     TIdType currentSeq = it->first.first;
     for(; it != g.data_pvMap.end(); ++it) {
         if (it->first.first != currentSeq) {
