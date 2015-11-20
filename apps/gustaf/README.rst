@@ -22,11 +22,8 @@ Overview
 Installation
 ------------
 
-| Precompiled binaries (Linux 64-bit, Windows, Mac OS X) of Gustaf can
-  be downloaded from the SeqAn projects download page: http://www.seqan.de/downloads/projects.html
-
 | Gustaf is distributed with SeqAn - The C++ Sequence Analysis Library
-  (see http://www.seqan.de). To build Gustaf yourself, you can check out the
+  (see http://www.seqan.de). Please check out the
   latest version of SeqAn and build a release version with:
 
 ::
@@ -36,6 +33,10 @@ Installation
     cd seqan-build
     cmake ../seqan -DCMAKE_BUILD_TYPE=Release
     make gustaf
+
+
+| Precompiled binaries (Linux 64-bit, Windows, Mac OS X) of Gustaf can
+  be downloaded from the SeqAn project page: http://www.seqan.de/projects/gustaf
 
 Usage
 -----
