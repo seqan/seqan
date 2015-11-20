@@ -6,7 +6,7 @@ using namespace seqan;
 int main()
 {
     // Get path to example file.
-    CharString file = getAbsolutePath("/demos/tutorial/gff_and_gtf_io/example.gff");
+    CharString file = getAbsolutePath("demos/tutorial/gff_and_gtf_io/example.gff");
 
     // Open input file.
     GffFileIn gffIn;
