@@ -6,7 +6,7 @@
 using namespace seqan;
 int main()
 {
-    CharString fileName = getAbsolutePath("/demos/tutorial/genome_annotations/assignment_annotations.gtf");
+    CharString fileName = getAbsolutePath("demos/tutorial/genome_annotations/assignment_annotations.gtf");
     GffFileIn file(toCString(fileName));
 
     FragmentStore<> store;
