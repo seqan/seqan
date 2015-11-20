@@ -35,6 +35,14 @@
 #ifndef INCLUDE_SEQAN_ALIGN_DP_PARALLEL_H_
 #define INCLUDE_SEQAN_ALIGN_DP_PARALLEL_H_
 
+// #define __ORG_OMP_
+#define __TBB_TASKS_
+
+#ifdef __TBB_TASKS_
+#include "tbb/task.h"
+#include "tbb/enumerable_thread_specific.h"
+#endif
+
 namespace seqan
 {
 
@@ -582,6 +590,8 @@ void implParallelTrace(TTarget & target,
     implParallelTrace(target, blockPos, idxH, idxV, tracebackBlocks, seqH, seqV, DPProfile(), lastTraceValue);
 }
 
+#ifdef __ORG_OMP_
+
 // ----------------------------------------------------------------------------
 // Function implParallelAlign()
 // ----------------------------------------------------------------------------
@@ -762,6 +772,217 @@ implParallelAlign(TTarget & target,
 
     return _scoreOfCell(back(back(tileBuffer.horizontalBuffer)).i1);
 }
+
+#endif
+
+#ifdef __TBB_TASKS_
+
+// ----------------------------------------------------------------------------
+// Function implParallelAlign()
+// ----------------------------------------------------------------------------
+
+// The block wise wrapper interface to arrange the dp matrix into blocks and process them via the minor diagonal.
+template <typename TTarget,
+          typename TTraceHost,
+          typename TSeqH,
+          typename TSeqV,
+          typename TScoreValue, typename TScoreSpec>
+inline TScoreValue
+implParallelAlign(TTarget & target,
+                  TTraceHost & traceHost,
+                  TSeqH const & seqH,
+                  TSeqV const & seqV,
+                  Score<TScoreValue, TScoreSpec> const & score)
+{
+    // Iterator over the blocks.
+    typedef typename Iterator<TSeqH const, Standard>::Type  TBlockH;
+    typedef typename Iterator<TSeqV const, Standard>::Type  TBlockV;
+
+    // Iterator to the traceback host (the original memory for the trace matrix).
+    typedef typename Iterator<TTraceHost, Standard>::Type   TTraceIter;
+    typedef Range<TTraceIter>                               TTraceTile;  // Defines the tiles for the trace matrix.
+
+    typedef typename Value<TTraceHost>::Type                TTraceValue;
+    typedef DPCell_<TScoreValue, AffineGaps>                TDPCell;        // Type of the DPCell; at moment this is fixed to AffineGaps.
+    typedef Pair<TDPCell, TTraceValue>                      TBufferValue;   // Value type for the tile buffer: Used to store last row or column of a tile to intialize the neighboring tile.
+    typedef String<TBufferValue>                            TBuffer;
+    typedef DPTileBuffer<TBuffer>                           TTileBuffer;    // Represents the global buffer for all blocks.
+
+    // ----------------------------------------------------------------------------
+    // Standard configuration.
+
+    // TODO(rrahn): Refine design. This design is based on the internal DP module and must be revised when changing the public API interface.
+    typedef typename SubstituteAlignConfig_<AlignConfig<> >::Type TFreeEndGaps;
+    typedef DPProfile_<GlobalAlignment_<TFreeEndGaps>, AffineGaps, TracebackOn<>, Parallel> TDPProfile;  // A type trait to configure the DP algorithm.
+
+    typedef DPScoutState_<DPTiled<TBuffer> > TDPScoutState;  // Through the dpScoutState we access the buffer per tile.
+
+
+    // ----------------------------------------------------------------------------
+    // Initialize TileBuffer.
+
+    // The buffer is initialized, depending on the DPProfile. So we use the internal _doComputeScore function for this.
+    TTileBuffer tileBuffer;
+    resize(tileBuffer.horizontalBuffer, length(seqH), Exact());
+    resize(tileBuffer.verticalBuffer, length(seqV), Exact());
+
+    TBufferValue tmp;
+    tmp.i2 = _doComputeScore(tmp.i1, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), score, RecursionDirectionZero(), TDPProfile());
+    for (auto itH = begin(tileBuffer.horizontalBuffer, Standard()); itH != end(tileBuffer.horizontalBuffer, Standard()); ++itH)
+    {
+        resize(*itH, length(front(seqH)), Exact());
+        for (auto it = begin(*itH, Standard()); it != end(*itH, Standard()); ++it)
+        {
+            it->i2 = _doComputeScore(it->i1, TDPCell(), tmp.i1, TDPCell(), Nothing(), Nothing(), score, RecursionDirectionHorizontal(), TDPProfile());
+            tmp.i1 = it->i1;
+        }
+
+    }
+    tmp.i2 = _doComputeScore(tmp.i1, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), score, RecursionDirectionZero(), TDPProfile());
+    for (auto itV = begin(tileBuffer.verticalBuffer, Standard()); itV != end(tileBuffer.verticalBuffer, Standard()); ++itV)
+    {
+        resize(*itV, length(front(seqV)) + 1, Exact());
+        auto it = begin(*itV, Standard());
+        it->i2 = tmp.i2;
+        it->i1 = tmp.i1;
+        ++it;
+        for (; it != end(*itV, Standard()); ++it)
+        {
+            it->i2 = _doComputeScore(it->i1, TDPCell(), TDPCell(), tmp.i1, Nothing(), Nothing(), score, RecursionDirectionVertical(), TDPProfile());
+            tmp.i1 = it->i1;
+            tmp.i2 = it->i2;
+        }
+    }
+
+    // ----------------------------------------------------------------------------
+    // Initialize the block iterators.
+
+    TBlockH blockHBeg = begin(seqH, Standard());
+    TBlockV blockVBeg = begin(seqV, Standard());
+    TBlockH blockHEnd = blockHBeg + 1;
+
+    TBlockH blockHIt;
+    TBlockV blockVIt;
+
+    // ----------------------------------------------------------------------------
+    // Initialize the trace blocks.
+
+    TTraceIter itTraceBeg = begin(traceHost, Standard());
+    TTraceIter itTraceEnd = itTraceBeg;
+
+    // We use the tracebackBlock array as an index to access the correct part of the traceback host
+    // for the current DP tile. Thus, we can arrange the traceback matrices in the order of the minor
+    // diagonal, while accessing the correct block using the horziontal and vertical block index.
+    // Maybe use an unordered map instead? Key would be the pair of h_block and v_block index.
+
+    String<TTraceTile> tracebackBlock;
+    resize(tracebackBlock, length(seqH) * length(seqV), Exact());
+
+    // The number of minor diagonals.
+    unsigned numDiag = length(seqH) + length(seqV);
+
+    // Iterate over the blocks via the antidiagonals and store the current traceback block as range
+    // in the corresponding field of the tracebackBlock array. This array will fit into the cache and
+    // thus does not need to be arranged along the antidiagonals. This makes the access to the
+    // traceback tile much easier.
+
+    // TODO(rrahn): Check if the preprocessing is faster/slower than accessing the traceback blocks in the non-antidiagonal way.
+    for (unsigned diag = 1; diag < numDiag; ++diag)
+    {
+        // Set iterator.
+        blockVIt  = blockVBeg + _min(diag - 1, length(seqV) - 1);           // Vertical block starts at current minor diagonal or at the end of seqV.
+        blockHIt  = blockHBeg + _max(0, static_cast<int>(diag) - static_cast<int>(length(seqV)));
+        blockHEnd = blockHBeg + _min(diag, length(seqH));
+        // Inner Loop:
+        for (; blockHIt != blockHEnd; ++blockHIt, --blockVIt)
+        {
+            // Set the trace block.
+            itTraceEnd += (length(*blockHIt) + 1) * (length(*blockVIt) + 1);
+            tracebackBlock[((blockHIt - blockHBeg) * length(seqV)) + (blockVIt - blockVBeg)] = toRange(itTraceBeg, itTraceEnd);
+            itTraceBeg = itTraceEnd;
+        }
+    }
+    // Sanity check: The itTraceEnd must now be at the end of the traceHost.
+    SEQAN_ASSERT_EQ(itTraceEnd, end(traceHost, Standard()));
+
+    // ----------------------------------------------------------------------------
+    // Compute the block as a parallel wave front over the minor diagonal.
+    // Parallelization modeled after https://software.intel.com/en-us/node/506110
+
+    // TODO(rrahn): Check if dpContex should be copied to each thread or if we make an array of dpContext of the size of numThreads.
+    // TODO(pcostanz): this tbb construct creates a copy per thread; check ETS_key_usage_type for potential additional performance improvements
+    typedef tbb::enumerable_thread_specific<DPContext<DPCell_<TScoreValue, AffineGaps>, typename TraceBitMap_::TTraceValue,
+      String<DPCell_<TScoreValue, AffineGaps> >, TTraceTile> > TDpContext;
+    TDpContext dpContext;
+
+
+    class DagTask: public tbb::task {
+    public:
+      DagTask* successor[2];
+
+    private:
+      const int i, j;
+      TDpContext& dpContext;
+      String<TTraceTile>& tracebackBlock;
+      const TSeqH& seqH;
+      const TSeqV& seqV;
+      TTileBuffer& tileBuffer;
+      const Score<TScoreValue, TScoreSpec>& score;
+
+    public:
+      DagTask(const int i, const int j,
+	      TDpContext& dpContext,
+	      String<TTraceTile>& tracebackBlock,
+	      const TSeqH& seqH, const TSeqV& seqV,
+	      TTileBuffer& tileBuffer,
+	      const Score<TScoreValue, TScoreSpec>& score) :
+        i(i), j(j),
+        dpContext(dpContext),
+	tracebackBlock(tracebackBlock),
+	seqH(seqH), seqV(seqV),
+	tileBuffer(tileBuffer),
+	score(score)
+      {}
+
+      task* execute() {
+	auto& localDpContext = dpContext.local();
+	getDpTraceMatrix(localDpContext) = tracebackBlock[(i * length(seqV)) + j];
+	TDPScoutState scoutState(tileBuffer.horizontalBuffer[i], tileBuffer.verticalBuffer[j]);
+	String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments. Only needed for the old interface. They are not filled.
+	_computeAlignment(localDpContext, traceSegments, scoutState, seqH[i], seqV[j], score, DPBandConfig<BandOff>(), TDPProfile());
+
+	// spawning right and downward neighbors
+	for (int k=0; k<2; ++k)
+	  if (DagTask* t = successor[k])
+	    if (t->decrement_ref_count() == 0) spawn(*t);
+
+	return nullptr;
+      }
+    };
+
+    DagTask* graph[length(seqH)][length(seqV)];
+    for (int i=length(seqH); --i>=0;) {
+      for (int j=length(seqV); --j>=0;) {
+	graph[i][j] = new (tbb::task::allocate_root() ) DagTask(i, j, dpContext, tracebackBlock, seqH, seqV, tileBuffer, score);
+	graph[i][j]->successor[0] = i+1<length(seqH) ? graph[i+1][j] : nullptr;
+	graph[i][j]->successor[1] = j+1<length(seqV) ? graph[i][j+1] : nullptr;
+	graph[i][j]->set_ref_count((i>0?1:0)+(j>0?1:0));
+      }
+    }
+    auto lastTask = graph[length(seqH)-1][length(seqV)-1];
+    lastTask->increment_ref_count();
+    lastTask->spawn_and_wait_for_all(*graph[0][0]);
+    lastTask->execute();
+    tbb::task::destroy(*lastTask);
+
+    // TODO(rrahn): Fix to also support local and semi-global alignment!
+    implParallelTrace(target, length(back(tracebackBlock)) - 1, length(seqH) - 1, length(seqV) - 1, tracebackBlock,
+                      seqH, seqV, TDPProfile());
+    return _scoreOfCell(back(back(tileBuffer.horizontalBuffer)).i1);
+}
+
+#endif
+
 
 // ----------------------------------------------------------------------------
 // Function parallelAlign()
