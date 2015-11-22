@@ -730,7 +730,7 @@ void beginTestSuite(const char * testSuiteName, const char * argv0)
     const char * ptr = std::min(strchr(argv0, '\\'), strchr(argv0, '/'));     // On Windows, we can have both \ and /.
     for (; ptr != 0; ptr = std::min(strchr(ptr + 1, '\\'), strchr(ptr + 1, '/')))
         end = ptr;
-    int rpos = end - argv0;
+    long rpos = end - argv0;
     if (rpos <= 0)
     {
         StaticData::basePath() = new char[2];
@@ -738,7 +738,7 @@ void beginTestSuite(const char * testSuiteName, const char * argv0)
     }
     else
     {
-        int len = rpos;
+        long len = rpos;
         StaticData::basePath() = new char[len];
         strncpy(StaticData::basePath(), argv0, len);
     }
