@@ -754,7 +754,7 @@ void beginTestSuite(const char * testSuiteName, const char * argv0)
     const char * ptr = std::min(strchr(argv0, '\\'), strchr(argv0, '/'));     // On Windows, we can have both \ and /.
     for (; ptr != 0; ptr = std::min(strchr(ptr + 1, '\\'), strchr(ptr + 1, '/')))
         end = ptr;
-    long rpos = end - argv0;
+    std::size_t rpos = end - argv0;
     if (rpos <= 0)
     {
         StaticData::basePath() = new char[2];
@@ -762,7 +762,7 @@ void beginTestSuite(const char * testSuiteName, const char * argv0)
     }
     else
     {
-        long len = rpos;
+        std::size_t len = rpos;
         StaticData::basePath() = new char[len];
         strncpy(StaticData::basePath(), argv0, len);
     }
@@ -1658,8 +1658,8 @@ verifyCheckPoints(const char * file)
 
 
 
-    unsigned long len = strlen(StaticData::pathToRoot()) +
-                        strlen("/") + strlen(file) + 1;
+    std::size_t len = strlen(StaticData::pathToRoot()) +
+                      strlen("/") + strlen(file) + 1;
     char * absolutePath = new char[len];
     absolutePath[0] = '\0';
     strcat(absolutePath, StaticData::pathToRoot());

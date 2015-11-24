@@ -84,7 +84,7 @@ public:
     { SEQAN_CHECKPOINT; }
 
     inline
-    unsigned long
+    unsigned
     operator()()
     {
         SEQAN_CHECKPOINT;
@@ -109,7 +109,7 @@ struct Value<const Rng<MersenneTwister> > : Value<Rng<MersenneTwister> > {};
 // Functions
 // ===========================================================================
 
-inline unsigned long
+inline unsigned
 pickRandomNumber(Rng<MersenneTwister> & mt)
 {
     SEQAN_CHECKPOINT;

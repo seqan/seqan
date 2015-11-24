@@ -1635,6 +1635,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     typedef typename Size<TGraph>::Type TSize;
     typedef typename Id<TGraph>::Type TIdType;
     typedef typename TGraph::TPosToVertexMap_ TPosToVertexMap;
+	typedef typename Position<String<unsigned int> >::Type TOrderLength;
     typedef std::map<unsigned int, unsigned int> TComponentLength;
 
     // Strongly Connected Components, topological sort, and length of each component
@@ -1656,7 +1657,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     TSize col = 0;
     typename TPosToVertexMap::const_iterator it = g.data_pvMap.begin();
     unsigned int compIndex = 0;
-    unsigned long compIndexLen = length(order);
+    TOrderLength compIndexLen = length(order);
     TIdType currentSeq = it->first.first;
     for(; it != g.data_pvMap.end(); ++it) {
         if (it->first.first != currentSeq) {
