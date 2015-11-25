@@ -1047,7 +1047,7 @@ namespace SEQAN_NAMESPACE_MAIN
         return aio_error(&request);
     }
 
-    inline int _returnValue(AiocbWrapper & request) {
+    inline ssize_t _returnValue(AiocbWrapper & request) {
 //IOREV _nodoc_
         return aio_return(&request);
     }

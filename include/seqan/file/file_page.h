@@ -888,7 +888,7 @@ struct MMap;
     }
 
     template <typename TValue, typename TFile> inline
-    std::size_t readBucket(PageBucket<TValue> &b, int pageNo, size_t pageSize, size_t dataSize, TFile &file)
+    size_t readBucket(PageBucket<TValue> &b, int pageNo, size_t pageSize, size_t dataSize, TFile &file)
     {
 //IOREV _nodoc_
         typedef typename Position<TFile>::Type TPos;
@@ -1305,7 +1305,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
         // Function is a functor which is called with a PageFrame object,
         // that is dirty or not READY (in an IO transfer)
         template <class Function>
-        inline int mru(Function Func_, unsigned maxLevel = PRIORITY_LEVELS - 1)
+        inline typename MakeSigned<typename Position<String<void*> >::Type>::Type mru(Function Func_, unsigned maxLevel = PRIORITY_LEVELS - 1)
         {
             for(unsigned i = 0; i <= maxLevel; ++i) {
                 PageLRUList::const_iterator I = lruList[i].end();
@@ -1515,7 +1515,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
     }
 
     template <typename TValue, typename TSize, typename T, class Function>
-    inline std::size_t equiDistantAlignedDistribution(
+    inline size_t equiDistantAlignedDistribution(
         Buffer<TValue> &_clusterBuffer, size_t aligning, size_t _bufferSize, T const &me,
         TSize _size, size_t _pageSize,
         Function const &Func_)

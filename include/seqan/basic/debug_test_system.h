@@ -600,7 +600,7 @@ struct StaticData
     {
         // Get path to include.
         const char * file = __FILE__;
-        int pos = -1;
+        size_t pos = ~0;
         for (size_t i = 0; i < strlen(file) - strlen("include"); ++i)
         {
             if (strncmp(file + i, "include", strlen("include")) == 0)
@@ -610,7 +610,7 @@ struct StaticData
         }
         for (; pos > 0 && *(file + pos - 1) != '/' &&  *(file + pos - 1) != '\\'; --pos)
             continue;
-        if (pos == -1)
+        if (pos == static_cast<size_t>(~0))
         {
             std::cerr << "Could not extrapolate path to repository from __FILE__ == \""
                       << __FILE__ << "\"" << std::endl;
@@ -754,7 +754,7 @@ void beginTestSuite(const char * testSuiteName, const char * argv0)
     const char * ptr = std::min(strchr(argv0, '\\'), strchr(argv0, '/'));     // On Windows, we can have both \ and /.
     for (; ptr != 0; ptr = std::min(strchr(ptr + 1, '\\'), strchr(ptr + 1, '/')))
         end = ptr;
-    std::size_t rpos = end - argv0;
+    size_t rpos = end - argv0;
     if (rpos <= 0)
     {
         StaticData::basePath() = new char[2];
@@ -762,7 +762,7 @@ void beginTestSuite(const char * testSuiteName, const char * argv0)
     }
     else
     {
-        std::size_t len = rpos;
+        size_t len = rpos;
         StaticData::basePath() = new char[len];
         strncpy(StaticData::basePath(), argv0, len);
     }
@@ -1658,8 +1658,8 @@ verifyCheckPoints(const char * file)
 
 
 
-    std::size_t len = strlen(StaticData::pathToRoot()) +
-                      strlen("/") + strlen(file) + 1;
+    size_t len = strlen(StaticData::pathToRoot()) +
+                 strlen("/") + strlen(file) + 1;
     char * absolutePath = new char[len];
     absolutePath[0] = '\0';
     strcat(absolutePath, StaticData::pathToRoot());
