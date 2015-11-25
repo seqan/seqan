@@ -498,6 +498,8 @@ macro (seqan_get_repository_info)
   # Set SeqAn date of last commit.
   if (_SEQAN_WC_LAST_CHANGED_DATE)
     set (SEQAN_DATE "${_SEQAN_WC_LAST_CHANGED_DATE}")
+    # icc doesn't cope with spaces..
+    string(REPLACE " " "_" SEQAN_DATE "${SEQAN_DATE}")
     message (STATUS "  Determined repository date is ${SEQAN_DATE}")
   else ()
     message (STATUS "  Repository date not determined.")
