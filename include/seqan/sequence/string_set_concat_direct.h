@@ -429,6 +429,70 @@ inline void insertValue(
 }
 
 // --------------------------------------------------------------------------
+// Function replace()
+// --------------------------------------------------------------------------
+
+// special case
+template <typename TString, typename TSpec, typename TPositionBegin, typename TPositionEnd, typename TExpand >
+inline void replace(
+    StringSet<TString, Owner<ConcatDirect<TSpec> > > & target,
+    TPositionBegin pos_begin,
+    TPositionEnd pos_end,
+    StringSet<TString, Owner<ConcatDirect<TSpec> > > const & source,
+    Tag<TExpand> tag)
+{
+    typedef typename StringSetLimits<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type   TLimits;
+
+    TLimits source_limits;
+    unsigned len = length(source);
+
+    appendValue(source_limits, target.limits[pos_begin]);
+    for(unsigned i = 0; i < len; ++i)
+        appendValue(source_limits, source_limits[i] + length(source[i]));
+    for(unsigned i = pos_end+1; i < length(target.limits); ++i)
+        appendValue(source_limits, source_limits[len-1+i-pos_begin] + (target.limits[i] - target.limits[i-1]));
+
+    replace(target.concat, pos_begin, pos_end, source.concat, tag);
+    replace(target.limits, pos_begin, length(target.limits), source_limits);
+}
+
+// // general case
+// template <typename TString, typename TSpec, typename TPositionBegin, typename TPositionEnd, typename TSource, typename TExpand >
+// inline SEQAN_FUNC_ENABLE_IF(And<IsSequence<TSource>, IsSequence<typename Value<TSource>::Type> >, void)
+// replace(
+//     StringSet<TString, Owner<TSpec> > & target,
+//     TPositionBegin pos_begin,
+//     TPositionEnd pos_end,
+//     TSource & source,
+//     Tag<TExpand> tag)
+// {
+//     unsigned min = std::min((pos_end - pos_begin), length(source));
+//     int diff = (pos_end - pos_begin) - length(source);
+
+//     for(unsigned i = 0; i < min; ++i)
+//         assignValue(target.strings[pos_begin + i], i, source[i]);
+
+//     if(diff < 0) // insert remaining elements from source
+//     {
+//         unsigned old_len = length(target);
+//         unsigned source_len = length(source) - min;
+//         unsigned new_len = old_len + source_len;
+
+//         resize(target.strings, new_len);
+//         for (unsigned i = new_len - 1; i >= pos_begin + length(source); --i)
+//             swap(target.strings[i - source_len], target.strings[i]);
+//         for (unsigned i = 0+min; i < source_len; ++i)
+//             assignValue(target.strings[pos_begin+i], i, source[i]);
+//     }
+//     else if(diff > 0)
+//     {
+//         erase(target.strings, min, pos_end);
+//     }
+
+//     target.limitsValid = false;
+// }
+
+// --------------------------------------------------------------------------
 // Function erase()
 // --------------------------------------------------------------------------
 
