@@ -51,10 +51,10 @@ typedef Tag<BidirectionalRev_> const         Rev;
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TDirection>
 inline void update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > & it, TDirection)
 {
-    typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, Rev, Fwd>::type TOppositeDirection;
+    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::value, Rev, Fwd>::type TOppositeDirection;
 
-    typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, TText, typename RevTextFibre<TText>::Type>::type TDirText;
-    typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, typename RevTextFibre<TText>::Type, TText>::type TOppDirText;
+    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::value, TText, typename RevTextFibre<TText>::Type>::type TDirText;
+    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::value, typename RevTextFibre<TText>::Type, TText>::type TOppDirText;
 
     typedef Iter<Index<TDirText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > TDirIter;
     typedef Iter<Index<TOppDirText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > TOppDirIter;
@@ -79,12 +79,9 @@ _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec>
               TDirection)
 {
     typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
-    typedef Iter<TIndex, VSTree<TopDown<TSpec> > >              TIter;
     typedef typename Size<TIndex>::Type                         TSize2;
     typedef Pair<TSize2>                                        TRange;
     typedef typename Iterator<TString const, Standard>::Type    TStringIter;
-
-    typedef typename std::conditional<std::is_same<TDirection, Tag<BidirectionalFwd_> >::value, Rev, Fwd>::type TOppositeDirection;
 
     TStringIter stringIt = begin(string, Standard());
     TStringIter stringEnd = end(string, Standard());
