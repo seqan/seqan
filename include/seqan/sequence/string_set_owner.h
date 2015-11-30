@@ -202,6 +202,21 @@ inline void assignValue(
 }
 
 // --------------------------------------------------------------------------
+// Function insertValue()
+// --------------------------------------------------------------------------
+
+template <typename TString, typename TSpec, typename TPos, typename TSequence, typename TExpand >
+inline void insertValue(
+    StringSet<TString, Owner<TSpec> > & me,
+    TPos pos,
+    TSequence const & seq,
+    Tag<TExpand> tag)
+{
+    insertValue(me.strings, pos, seq, tag);
+    me.limitsValid = false;
+}
+
+// --------------------------------------------------------------------------
 // Function clear()
 // --------------------------------------------------------------------------
 
