@@ -7,7 +7,7 @@ int main()
 {
     // Open input bed file.
     BedFileIn bedIn;
-    if (!open(bedIn, toCString(getAbsolutePath("/demos/tutorial/bed_io/example.bed"))))
+    if (!open(bedIn, toCString(getAbsolutePath("demos/tutorial/bed_io/example.bed"))))
     {
         std::cerr << "ERROR: Could not open example.bed\n";
         return 1;

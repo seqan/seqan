@@ -146,16 +146,22 @@ set (COMPILER_IS_CLANG FALSE)
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set (COMPILER_IS_CLANG TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-		
+
 # Fix CMAKE_COMPILER_IS_GNUCXX for MinGW.
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   set (CMAKE_COMPILER_IS_GNUCXX TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
+# Intel
+set (COMPILER_IS_INTEL FALSE)
+if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  set (COMPILER_IS_INTEL TRUE)
+endif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+
 # GCC Setup
 
-if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   # Tune warnings for GCC.
   set (CMAKE_CXX_WARNING_LEVEL 4)
   # NOTE: First location to set SEQAN_CXX_FLAGS at the moment.  If you write
@@ -194,6 +200,11 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
   elseif (CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
     set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_CXX_FLAGS_RELEASE} -g -fno-omit-frame-pointer")
   endif ()
+
+  # disable some warnings on ICC
+  if (COMPILER_IS_INTEL)
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
+  endif (COMPILER_IS_INTEL)
 endif ()
 
 # Windows Setup
@@ -254,8 +265,16 @@ if (SEQAN_USE_SEQAN_BUILD_SYSTEM)
 else (SEQAN_USE_SEQAN_BUILD_SYSTEM)
   # When NOT using the SeqAn build system then we only look for one directory
   # with subdirectory seqan and thus only one library.
-  find_path(_SEQAN_BASEDIR "seqan" PATHS ${SEQAN_INCLUDE_PATH})
+  find_path(_SEQAN_BASEDIR "seqan"
+            PATHS ${SEQAN_INCLUDE_PATH} ENV SEQAN_INCLUDE_PATH
+            NO_DEFAULT_PATH)
+
+  if (NOT _SEQAN_BASEDIR)
+    find_path(_SEQAN_BASEDIR "seqan")
+  endif()
+
   mark_as_advanced(_SEQAN_BASEDIR)
+
   if (_SEQAN_BASEDIR)
     set(SEQAN_FOUND        TRUE)
     set(SEQAN_INCLUDE_DIRS_MAIN ${SEQAN_INCLUDE_DIRS_MAIN} ${_SEQAN_BASEDIR})
@@ -360,9 +379,6 @@ if (NOT _SEQAN_FIND_OPENMP EQUAL -1)
     set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${OpenMP_INCLUDE_DIRS})
     set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_OPENMP=1")
     set (SEQAN_CXX_FLAGS        "${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    if (COMPILER_IS_CLANG)
-        set (SEQAN_LIBRARIES     ${SEQAN_LIBRARIES}          omp)
-    endif()
   endif ()
 endif ()
 

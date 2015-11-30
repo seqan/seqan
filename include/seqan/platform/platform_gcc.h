@@ -39,8 +39,21 @@
  * @signature #define PLATFORM_GCC
  */
 
+// GNU COMPATIBLE
 #ifndef PLATFORM_GCC
 #define PLATFORM_GCC
+
+#if defined(__clang__)
+#ifndef PLATFORM_CLANG
+#define PLATFORM_CLANG
+#endif
+#elif defined(__ICC)
+    // INTEL COMPILER handled in different file
+#else
+#ifndef PLATFORM_GNU
+#define PLATFORM_GNU
+#endif
+#endif
 
 // should be set before including anything
 #ifndef _FILE_OFFSET_BITS

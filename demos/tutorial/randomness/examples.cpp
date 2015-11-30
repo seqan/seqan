@@ -24,7 +24,7 @@ int main()
 
 //![ignore-variable-value]
     // This fragment is not included from the tutorial.
-    (void) value;  // Suppress unused variable warning.
+    ignoreUnusedVariableWarning(value);  // Suppress unused variable warning.
 //![ignore-variable-value]
 
 //![random-number-generation-pdf]

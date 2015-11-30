@@ -4,7 +4,7 @@ using namespace seqan;
 
 int main()
 {
-    CharString seqFileName = getAbsolutePath("/demos/tutorial/sequence_io/example.fq");
+    CharString seqFileName = getAbsolutePath("demos/tutorial/sequence_io/example.fq");
 
     SeqFileIn seqFileIn;
     if (!open(seqFileIn, toCString(seqFileName)))

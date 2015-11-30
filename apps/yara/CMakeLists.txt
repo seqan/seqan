@@ -23,6 +23,12 @@ if (NOT (CXX11_FOUND AND CXX11_STL_FOUND))
     return ()
 endif (NOT (CXX11_FOUND AND CXX11_STL_FOUND))
 
+# Disable older MSVC.
+if (MSVC AND MSVC_VERSION LESS 1800)
+    message (STATUS "  Visual Studio 2012 or newer required to build yara.")
+    return ()
+endif ()
+
 # Disable parallelism in MSVC as it supports only OpenMP 2.0.
 if (MSVC)
   set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)

@@ -87,9 +87,9 @@ int main()
 {
 #if !defined(_MSC_VER)
     EnableIfExample ex1(1);
-    (void)ex1;
+    ignoreUnusedVariableWarning(ex1);
     EnableIfExample ex2("asdf");
-    (void)ex2;
+    ignoreUnusedVariableWarning(ex2);
 #endif  // #if !defined(_MSC_VER)
 
     return 0;

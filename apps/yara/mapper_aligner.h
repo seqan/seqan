@@ -217,7 +217,7 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt & match
 
     // Compute cigar.
     clear(me.cigar);
-    getCigarString(me.cigar, contigGaps, readGaps);
+    getCigarString(me.cigar, contigGaps, readGaps, length(contigInfix));
 
     // Copy cigar to set.
     // TODO(esiragusa): use assign if possible.

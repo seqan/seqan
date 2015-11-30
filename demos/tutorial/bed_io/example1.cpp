@@ -4,7 +4,7 @@ using namespace seqan;
 int main()
 {
     // Open input bed file.
-    BedFileIn bedIn(toCString(getAbsolutePath("/demos/tutorial/bed_io/example.bed")));
+    BedFileIn bedIn(toCString(getAbsolutePath("demos/tutorial/bed_io/example.bed")));
 
     // Attach to standard output.
     BedFileOut bedOut(std::cout, Bed());

@@ -7,8 +7,8 @@ using namespace seqan;
 
 int main()
 {
-    CharString fastaFileName = getAbsolutePath("/demos/tutorial/fragment_store/example.fa");
-    CharString samFileName = getAbsolutePath("/demos/tutorial/fragment_store/example.sam");
+    CharString fastaFileName = getAbsolutePath("demos/tutorial/fragment_store/example.fa");
+    CharString samFileName = getAbsolutePath("demos/tutorial/fragment_store/example.sam");
 
     typedef FragmentStore<> TStore;
 
@@ -25,9 +25,9 @@ int main()
     typedef Value<TStore::TAlignedReadStore>::Type                          TAlignedRead;
 
     typedef Gaps<TContig::TContigSeq, AnchorGaps<TContig::TGapAnchors> >    TContigGaps;
-    typedef Gaps<CharString, AnchorGaps<TAlignedRead::TGapAnchors> >  TReadGaps;
+    typedef Gaps<TStore::TReadSeq, AnchorGaps<TAlignedRead::TGapAnchors> >  TReadGaps;
 
-    CharString readSeq;
+    TStore::TReadSeq readSeq;
 //![typedefs]
 
 //![output]

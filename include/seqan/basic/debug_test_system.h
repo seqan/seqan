@@ -2766,7 +2766,7 @@ void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
 
 inline std::string getAbsolutePath(const char * path)
 {
-    return std::string(SEQAN_PATH_TO_ROOT()) + path;
+    return std::string(SEQAN_PATH_TO_ROOT()) + "/" + path;
 }
 
 }  // namespace seqan

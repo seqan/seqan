@@ -41,12 +41,19 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & /*journalSet*/,
 
 int main()
 {
+    // Definition of the used types.
+    typedef String<Dna, Journaled<Alloc<>, SortedArray, Alloc<> > > TJournal;
+    typedef StringSet<TJournal, Owner<JournaledSet> > TJournaledSet;
+
     // Open the stream to the file containing the sequences.
-    CharString seqDatabasePath = getAbsolutePath("/demos/tutorial/journaled_set/sequences.fasta");
+    CharString seqDatabasePath = getAbsolutePath("demos/tutorial/journaled_set/sequences.fasta");
     SeqFileIn databaseFile(toCString(seqDatabasePath));
 
     // Reading each sequence and journal them.
+    TJournaledSet journalSet;
+    JoinConfig<GlobalAlign<JournaledCompact> > joinConfig;
     // [D] Construct Journaled Set and call loadAndJoin
+    loadAndJoin(journalSet, databaseFile, joinConfig);
 
     std::cout << "Done!" << std::endl;
 

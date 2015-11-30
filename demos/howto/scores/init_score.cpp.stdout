@@ -1,0 +1,22 @@
+
+Coordinate Products
+	A	C	G	T	N
+A	0	0	0	0	0
+C	0	1	2	3	4
+G	0	2	4	6	8
+T	0	3	6	9	12
+N	0	4	8	12	16
+User defined matrix (also Dna5 scoring matrix)...
+	A	C	G	T	N
+A	1	0	0	0	0
+C	0	1	0	0	0
+G	0	0	1	0	0
+T	0	0	0	1	0
+N	0	0	0	0	0
+User DNA scoring scheme...
+	A	C	G	T	N
+A	1	0	0	0	0
+C	0	1	0	0	0
+G	0	0	1	0	0
+T	0	0	0	1	0
+N	0	0	0	0	0
