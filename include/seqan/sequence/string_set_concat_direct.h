@@ -457,40 +457,36 @@ inline void replace(
 }
 
 // // general case
-// template <typename TString, typename TSpec, typename TPositionBegin, typename TPositionEnd, typename TSource, typename TExpand >
-// inline SEQAN_FUNC_ENABLE_IF(And<IsSequence<TSource>, IsSequence<typename Value<TSource>::Type> >, void)
-// replace(
-//     StringSet<TString, Owner<TSpec> > & target,
-//     TPositionBegin pos_begin,
-//     TPositionEnd pos_end,
-//     TSource & source,
-//     Tag<TExpand> tag)
-// {
-//     unsigned min = std::min((pos_end - pos_begin), length(source));
-//     int diff = (pos_end - pos_begin) - length(source);
+template <typename TString, typename TSpec, typename TPositionBegin, typename TPositionEnd, typename TSource, typename TExpand >
+inline SEQAN_FUNC_ENABLE_IF(And<Is<ContainerConcept<TSource> >, Is<ContainerConcept<typename Value<TSource>::Type> > >, void)
+replace(StringSet<TString, Owner<ConcatDirect<TSpec> > > & target,
+        TPositionBegin pos_begin,
+        TPositionEnd pos_end,
+        TSource const & source,
+        Tag<TExpand> tag)
+{
+    typedef StringSet<TString, Owner<ConcatDirect<TSpec> > > TStringSet;
+    typedef typename Position<TStringSet>::Type TPos;
+    typedef typename StringSetLimits<TStringSet>::Type TLimits;
+    typedef typename Concatenator<TStringSet>::Type TConcatenator;
 
-//     for(unsigned i = 0; i < min; ++i)
-//         assignValue(target.strings[pos_begin + i], i, source[i]);
+    // update limits
+    TLimits source_limits;
+    TPos len = length(source);
 
-//     if(diff < 0) // insert remaining elements from source
-//     {
-//         unsigned old_len = length(target);
-//         unsigned source_len = length(source) - min;
-//         unsigned new_len = old_len + source_len;
+    appendValue(source_limits, target.limits[pos_begin]);
+    for(TPos i = 0; i < len; ++i)
+        appendValue(source_limits, source_limits[i] + length(source[i]));
+    for(TPos i = pos_end+1; i < length(target.limits); ++i)
+        appendValue(source_limits, source_limits[len-1+i-pos_begin] + (target.limits[i] - target.limits[i-1]));
 
-//         resize(target.strings, new_len);
-//         for (unsigned i = new_len - 1; i >= pos_begin + length(source); --i)
-//             swap(target.strings[i - source_len], target.strings[i]);
-//         for (unsigned i = 0+min; i < source_len; ++i)
-//             assignValue(target.strings[pos_begin+i], i, source[i]);
-//     }
-//     else if(diff > 0)
-//     {
-//         erase(target.strings, min, pos_end);
-//     }
+    replace(target.limits, pos_begin, length(target.limits), source_limits);
 
-//     target.limitsValid = false;
-// }
+    // update concat
+    erase(target.concat, pos_begin, pos_end);
+    TConcatenator source_concat = concat(source);
+    insert(target.concat, pos_begin, source_concat, tag);
+}
 
 // --------------------------------------------------------------------------
 // Function erase()
