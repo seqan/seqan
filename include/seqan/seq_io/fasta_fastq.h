@@ -377,7 +377,7 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, 
     }
     skipUntil(iter, NotFunctor<IsWhitespace>());        // skip Fastq qualities
     TFastqBegin fastqBegin;
-    if(!fastqBegin(*(iter)) && *(iter) != '\xff' )
+    if(!fastqBegin(*(iter)) && *(iter) != '\xff' )  // check if next record follows
         throw ParseError("quality line(s) have different length");
 }
 
@@ -419,7 +419,7 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
     skipUntil(iter, qualCountDown);                     // skip Fastq qualities
     skipUntil(iter, NotFunctor<IsWhitespace>());        // skip Fastq qualities
     TFastqBegin fastqBegin;
-    if(!fastqBegin(*(iter)) && *(iter) != '\xff' )
+    if(!fastqBegin(*(iter)) && *(iter) != '\xff' )  // check if next record follows
         throw ParseError("quality line(s) have different length");
 }
 
