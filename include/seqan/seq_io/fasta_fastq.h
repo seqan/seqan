@@ -373,12 +373,14 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, 
     }
     else
     {
-        skipUntil(iter, qualCountDown);                     // skip Fastq qualities
+        skipUntil(iter, qualCountDown);              // skip Fastq qualities
     }
-    skipUntil(iter, NotFunctor<IsWhitespace>());        // skip Fastq qualities
+    // next record should follow immediately
+    skipUntil(iter, NotFunctor<IsWhitespace>());     // ignore/skip white spaces
     TFastqBegin fastqBegin;
-    if(!fastqBegin(*(iter)) && *(iter) != '\xff' )  // check if next record follows
-        throw ParseError("quality line(s) have different length");
+    if(!fastqBegin(*(iter)) && *(iter) != '\xff' )
+        throw ParseError("Fastq quality string is expected to be of the same "
+                     "length as the sequence! But was not.");
 }
 
 // ----------------------------------------------------------------------------
@@ -414,13 +416,14 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
     // values instead of (1) reading only 1 line or (2) until the next '@'
     CountDownFunctor<NotFunctor<TQualIgnore> > qualCountDown(length(seq));
     TQualIgnoreOrAssert qualIgnore;
+    readUntil(qual, iter, qualCountDown, qualIgnore); // read Fastq qualities
 
-    readUntil(qual, iter, qualCountDown, qualIgnore);  // read Fastq qualities
-    skipUntil(iter, qualCountDown);                     // skip Fastq qualities
-    skipUntil(iter, NotFunctor<IsWhitespace>());        // skip Fastq qualities
+    // next record should follow immediately
+    skipUntil(iter, NotFunctor<IsWhitespace>());      // ignore/skip white spaces
     TFastqBegin fastqBegin;
-    if(!fastqBegin(*(iter)) && *(iter) != '\xff' )  // check if next record follows
-        throw ParseError("quality line(s) have different length");
+    if(!fastqBegin(*(iter)) && *(iter) != '\xff' )
+        throw ParseError("Fastq quality string is expected to be of the same "
+                         "length as the sequence! But was not.");
 }
 
 // ----------------------------------------------------------------------------
