@@ -391,7 +391,7 @@ goFurther(Iter<TGaps, GapsIterator<ArrayGaps> > & it,
     {
         // Number of elements in bucket and number of remaining (behind offset in bucket).
         unsigned count = it._container->_array[it._bucketIndex];
-        unsigned shift = count - it._bucketOffset;
+        size_t shift = count - it._bucketOffset;
 
         if (shift < counter)
         {
