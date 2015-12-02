@@ -153,9 +153,15 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   set (CMAKE_COMPILER_IS_GNUCXX TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
+# Intel
+set (COMPILER_IS_INTEL FALSE)
+if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  set (COMPILER_IS_INTEL TRUE)
+endif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+
 # GCC Setup
 
-if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   # Tune warnings for GCC.
   set (CMAKE_CXX_WARNING_LEVEL 4)
   # NOTE: First location to set SEQAN_CXX_FLAGS at the moment.  If you write
@@ -194,6 +200,11 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
   elseif (CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
     set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_CXX_FLAGS_RELEASE} -g -fno-omit-frame-pointer")
   endif ()
+
+  # disable some warnings on ICC
+  if (COMPILER_IS_INTEL)
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
+  endif (COMPILER_IS_INTEL)
 endif ()
 
 # Windows Setup
@@ -302,7 +313,7 @@ mark_as_advanced(_SEQAN_HAVE_EXECINFO)
 if (_SEQAN_HAVE_EXECINFO)
   set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-DSEQAN_HAS_EXECINFO=1")
   if (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
-    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} execinfo)
+    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} execinfo elf)
   endif (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 endif (_SEQAN_HAVE_EXECINFO)
 
@@ -312,6 +323,11 @@ endif (_SEQAN_HAVE_EXECINFO)
 if (APPLE)
   set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} stdc++)
 endif (APPLE)
+
+# always use libc++ with clang
+# if (COMPILER_IS_CLANG)
+#     set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-stdlib=libc++")
+# endif()
 
 # ZLIB
 

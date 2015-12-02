@@ -498,6 +498,8 @@ macro (seqan_get_repository_info)
   # Set SeqAn date of last commit.
   if (_SEQAN_WC_LAST_CHANGED_DATE)
     set (SEQAN_DATE "${_SEQAN_WC_LAST_CHANGED_DATE}")
+    # icc doesn't cope with spaces..
+    string(REPLACE " " "_" SEQAN_DATE "${SEQAN_DATE}")
     message (STATUS "  Determined repository date is ${SEQAN_DATE}")
   else ()
     message (STATUS "  Repository date not determined.")
@@ -604,7 +606,11 @@ macro (seqan_build_demos_develop PREFIX)
     # Find SeqAn with all dependencies.
     set (SEQAN_FIND_DEPENDENCIES ALL)
     find_package (SeqAn REQUIRED)
-
+    find_package (CXX11)
+    find_package (OpenMP)
+    if (OPENMP_FOUND AND CMAKE_COMPILER_IS_GNUCXX)
+        set(SEQAN_LIBRARIES ${SEQAN_LIBRARIES} -lgomp)
+    endif()
     # Setup include directories and definitions for SeqAn; flags follow below.
     include_directories (${SEQAN_INCLUDE_DIRS})
     add_definitions (${SEQAN_DEFINITIONS})

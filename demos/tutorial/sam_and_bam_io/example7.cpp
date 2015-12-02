@@ -5,8 +5,8 @@ using namespace seqan;
 
 int main(int argc, char const * argv[])
 {
-    CharString bamFileName = getAbsolutePath("/demos/tutorial/sam_and_bam_io/example.bam");
-    CharString baiFileName = getAbsolutePath("/demos/tutorial/sam_and_bam_io/example.bam.bai");
+    CharString bamFileName = getAbsolutePath("demos/tutorial/sam_and_bam_io/example.bam");
+    CharString baiFileName = getAbsolutePath("demos/tutorial/sam_and_bam_io/example.bam.bai");
     CharString rName = "ref";
 
     // Open BamFileIn for reading.

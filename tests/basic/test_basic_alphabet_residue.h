@@ -787,12 +787,12 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_iupac)
     {
         std::stringstream ss;
         ss << Iupac('A') << Iupac('C') << Iupac('G') << Iupac('U') << Iupac('N');
-        SEQAN_ASSERT_EQ(ss.str(), "ACG=N");
+        SEQAN_ASSERT_EQ(ss.str(), "ACGUN");
     }
     {
         std::stringstream ss;
         ss << Iupac('A') << Iupac('C') << Iupac('G') << Iupac('=') << Iupac('N');
-        SEQAN_ASSERT_EQ(ss.str(), "ACG=N");
+        SEQAN_ASSERT_EQ(ss.str(), "ACGUN");
     }
 }
 

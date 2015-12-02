@@ -39,8 +39,21 @@
  * @signature #define PLATFORM_GCC
  */
 
+// GNU COMPATIBLE
 #ifndef PLATFORM_GCC
 #define PLATFORM_GCC
+
+#if defined(__clang__)
+#ifndef PLATFORM_CLANG
+#define PLATFORM_CLANG
+#endif
+#elif defined(__ICC)
+    // INTEL COMPILER handled in different file
+#else
+#ifndef PLATFORM_GNU
+#define PLATFORM_GNU
+#endif
+#endif
 
 // should be set before including anything
 #ifndef _FILE_OFFSET_BITS
@@ -171,6 +184,17 @@ typedef uint8_t __uint8;   // nolint
 #  if __has_feature(cxx_static_assert)
 #    define SEQAN_CXX11_STANDARD
 #  endif
+#endif
+
+// full C++11 support in GCC >= 4.9 and Clang >= 3.4 (unless linked against old glibcxx)
+#if defined(SEQAN_CXX11_STANDARD)
+#   if !defined(__clang__) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 409)
+#       define SEQAN_CXX11_COMPLETE
+#   elif defined(__clang__) && (__clang_major__ * 100 + __clang_minor__ >= 304)
+#       if __has_include(<regex>) && !__has_include(<bits/regex_grep_matcher.h>)
+#           define SEQAN_CXX11_COMPLETE
+#       endif
+#   endif
 #endif
 
 #define SEQAN_LIKELY(expr)    __builtin_expect(!!(expr), 1)
