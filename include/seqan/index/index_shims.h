@@ -840,10 +840,10 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
     template <typename TValue>
     inline bool open(TValue & value, const char *fileName, int openMode)
     {
-        String<TValue, External< ExternalConfigLarge<> > > extString;
-        if (!open(extString, fileName, openMode & ~OPEN_CREATE)) return false;
-        if (!empty(extString)) assign(value, front(extString));
-        return true;
+        File<> f;
+        if (!open(f, fileName, openMode & ~OPEN_CREATE))
+            return false;
+        return read(f, &value, 1);
     }
 
     template <typename TValue>
@@ -965,11 +965,10 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
     template <typename TValue>
     inline bool save(TValue const &val, const char *fileName, int openMode)
     {
-        String<TValue, External< ExternalConfigLarge<> > > extString;
-        if (!open(extString, fileName, openMode)) return false;
-        clear(extString);
-        appendValue(extString, val);
-        return true;
+        File<> f;
+        if (!open(f, fileName, openMode))
+            return false;
+        return write(f, &value, 1);
     }
 
     template <typename TValue>
