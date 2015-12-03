@@ -963,7 +963,7 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
 // save
 
     template <typename TValue>
-    inline bool save(TValue const &val, const char *fileName, int openMode)
+    inline bool save(TValue const &value, const char *fileName, int openMode)
     {
         File<> f;
         if (!open(f, fileName, openMode))
