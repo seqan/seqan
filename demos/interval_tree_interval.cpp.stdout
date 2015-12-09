@@ -1,0 +1,8 @@
+length(tree) == 2
+
+query for point 15
+=> 0 1
+
+query for interval [20, 30)
+=> 1
+

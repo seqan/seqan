@@ -278,6 +278,24 @@ parse(GenomicRegion & region, CharString const & regionString)
         SEQAN_THROW(ParseError("GenomicRegion: End postition less than 1"));
 }
 
+// ---------------------------------------------------------------------------
+// Function beginPos()
+// ---------------------------------------------------------------------------
+
+inline __int32 beginPos(GenomicRegion const & region)
+{
+    return region.beginPos;
+}
+
+// ---------------------------------------------------------------------------
+// Function endPos()
+// ---------------------------------------------------------------------------
+
+inline __int32 endPos(GenomicRegion const & region)
+{
+    return region.endPos;
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef INCLUDE_SEQAN_SEQ_IO_GENOMIC_REGION_H_

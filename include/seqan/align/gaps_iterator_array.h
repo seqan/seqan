@@ -580,7 +580,7 @@ removeGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, TCount count)
     if (gaps._array[idx] == TArrayValue(0))
     {
         // No merging for leading and trailing gap.
-        if (idx == TArrayPos(0) || idx == TArrayPos(length(gaps._array) - 1))
+        if (idx != TArrayPos(0) && idx != TArrayPos(length(gaps._array) - 1))
         {
             gaps._array[idx - 1] += gaps._array[idx + 1];
             erase(gaps._array, idx, idx + 2);
