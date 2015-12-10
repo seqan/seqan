@@ -1612,9 +1612,12 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Insert)
 
 //    testConstructDeconstruct(strSet);
 }
-//
+
 // Test of insertValue().
-// TODO (singer): no insertValue function implemented.
+// this should work, but doesnt
+template <typename TSpec>
+void testStringSetInsertValue(StringSet<String<short, Packed<TSpec> >, Owner<ConcatDirect<> > > & /*Tag*/) {}
+
 template <typename TStringSet>
 void testStringSetInsertValue(TStringSet & /*Tag*/)
 {
