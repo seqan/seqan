@@ -313,7 +313,7 @@ inline void assignValue(
     {
         TSignedLimitValue delta = (TSignedLimitValue)length(seq) - oldSize;
         TSize size = length(me);
-        while (pos < size)
+        while (static_cast<TSize>(pos) < size)
             me.limits[++pos] += delta;
     }
 }
@@ -424,7 +424,7 @@ inline void insertValue(
     insertValue(me.limits, pos, me.limits[pos], tag);
     TLimitValue delta = (TLimitValue)length(seq);
     TSize size = length(me);
-    while (pos <size)
+    while (static_cast<TSize>(pos) < size)
         me.limits[++pos] += delta;
 }
 
