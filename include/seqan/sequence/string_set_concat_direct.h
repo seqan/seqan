@@ -313,7 +313,7 @@ inline void assignValue(
     {
         TSignedLimitValue delta = (TSignedLimitValue)length(seq) - oldSize;
         TSize size = length(me);
-        while (pos < size)
+        while (static_cast<TSize>(pos) < size)
             me.limits[++pos] += delta;
     }
 }
@@ -424,8 +424,68 @@ inline void insertValue(
     insertValue(me.limits, pos, me.limits[pos], tag);
     TLimitValue delta = (TLimitValue)length(seq);
     TSize size = length(me);
-    while (pos <size)
+    while (static_cast<TSize>(pos) < size)
         me.limits[++pos] += delta;
+}
+
+// --------------------------------------------------------------------------
+// Function replace()
+// --------------------------------------------------------------------------
+
+// special case
+template <typename TString, typename TSpec, typename TPositionBegin, typename TPositionEnd, typename TExpand >
+inline void replace(
+    StringSet<TString, Owner<ConcatDirect<TSpec> > > & target,
+    TPositionBegin pos_begin,
+    TPositionEnd pos_end,
+    StringSet<TString, Owner<ConcatDirect<TSpec> > > const & source,
+    Tag<TExpand> tag)
+{
+    typedef typename StringSetLimits<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type   TLimits;
+
+    TLimits source_limits;
+    unsigned len = length(source);
+
+    appendValue(source_limits, target.limits[pos_begin]);
+    for(unsigned i = 0; i < len; ++i)
+        appendValue(source_limits, source_limits[i] + length(source[i]));
+    for(unsigned i = pos_end+1; i < length(target.limits); ++i)
+        appendValue(source_limits, source_limits[len-1+i-pos_begin] + (target.limits[i] - target.limits[i-1]));
+
+    replace(target.concat, pos_begin, pos_end, source.concat, tag);
+    replace(target.limits, pos_begin, length(target.limits), source_limits);
+}
+
+// // general case
+template <typename TString, typename TSpec, typename TPositionBegin, typename TPositionEnd, typename TSource, typename TExpand >
+inline SEQAN_FUNC_ENABLE_IF(And<Is<ContainerConcept<TSource> >, Is<ContainerConcept<typename Value<TSource>::Type> > >, void)
+replace(StringSet<TString, Owner<ConcatDirect<TSpec> > > & target,
+        TPositionBegin pos_begin,
+        TPositionEnd pos_end,
+        TSource const & source,
+        Tag<TExpand> tag)
+{
+    typedef StringSet<TString, Owner<ConcatDirect<TSpec> > > TStringSet;
+    typedef typename Position<TStringSet>::Type TPos;
+    typedef typename StringSetLimits<TStringSet>::Type TLimits;
+    typedef typename Concatenator<TStringSet>::Type TConcatenator;
+
+    // update limits
+    TLimits source_limits;
+    TPos len = length(source);
+
+    appendValue(source_limits, target.limits[pos_begin]);
+    for(TPos i = 0; i < len; ++i)
+        appendValue(source_limits, source_limits[i] + length(source[i]));
+    for(TPos i = pos_end+1; i < length(target.limits); ++i)
+        appendValue(source_limits, source_limits[len-1+i-pos_begin] + (target.limits[i] - target.limits[i-1]));
+
+    replace(target.limits, pos_begin, length(target.limits), source_limits);
+
+    // update concat
+    erase(target.concat, pos_begin, pos_end);
+    TConcatenator source_concat = concat(source);
+    insert(target.concat, pos_begin, source_concat, tag);
 }
 
 // --------------------------------------------------------------------------
