@@ -352,7 +352,6 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
     double segmentGenerationTime = sysTime();
 #endif
 
-
     // Select all possible pairs for global and local alignments
     String<TSize> pList;
     selectPairs(seqSet, pList);
@@ -547,14 +546,6 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
 
     clear(guideTree);
     clear(g);
-
-    //TStringSet& str = stringSet(gAlign);
-    //for(TSize i = 0; i<length(str);++i) {
-    //    for(TSize j=0;j<length(str[i]);++j) {
-    //        std::cout << ordValue(str[i][j]) << ',';
-    //    }
-    //    std::cout << std::endl;
-    //}
 
 #ifdef SEQAN_TCOFFEE_DEBUG
     std::cout << std::setw(30) << std::left << "Progressive alignment:" << std::setw(10) << std::right << sysTime() - progressiveAlignmentTime << "  s" << std::endl;

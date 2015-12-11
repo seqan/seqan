@@ -110,13 +110,11 @@ typedef Tag<KmerLibrary_> const KmerLibrary;
 struct LcsLibrary_;
 typedef Tag<LcsLibrary_> const LcsLibrary;
 
-
 struct DefaultAlignment_;
 typedef Tag<DefaultAlignment_> const DefaultAlignment;
 
 struct DeepAlignment_;
 typedef Tag<DeepAlignment_> const DeepAlignment;
-
 
 // ---------------------------------------------------------------------------
 // BEGIN OF TO BE REMOVED LEGACY CODE
@@ -513,7 +511,6 @@ selectPairs(StringSet<TString, TSpec> const& str,
     }
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 // Alignment statistics
 //////////////////////////////////////////////////////////////////////////////
@@ -602,9 +599,6 @@ _makePairSet(TStringSet const & str, TPairIter const & it1, TPairIter const & it
 
 //////////////////////////////////////////////////////////////////////////////
 
-
-//////////////////////////////////////////////////////////////////////////////
-
 template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TSegmentMatches, typename TScores>
 inline void
 appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
@@ -645,7 +639,6 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
         }
     }
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -733,7 +726,6 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
     appendSegmentMatches(str, matches, scores, 3, KmerLibrary());
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScores>
@@ -773,7 +765,6 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
     }
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues>
@@ -804,7 +795,6 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
     }
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TStringSet, typename TBandWidth>
@@ -819,7 +809,6 @@ inline Pair<int, int> assureBandedRestriction_(TStringSet const & pairSet, TBand
     int upperD = std::max(halfWidth, halfWidth + lenH - lenV);
     return Pair<int, int>(lowerD, upperD);
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -856,7 +845,6 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
         _recordScores(scores, myScore, from, to);
     }
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -945,7 +933,6 @@ _setDistanceValue(String<TFragment, TSpec1>& matches,
     addEdge(dist, i, j, normalizedSimilarity);
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFragment, typename TSpec, typename TString, typename TSpec2, typename TSize>
@@ -1020,7 +1007,6 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
     }
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues, typename TDistance, typename TAlignConfig, typename TSize3>
@@ -1065,7 +1051,6 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
     }
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues, typename TDistance>
@@ -1080,7 +1065,6 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 {
     appendSegmentMatches(str, pList, score_type, matches, scores, dist, AlignConfig<>(), GlobalPairwiseLibrary() );
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 
