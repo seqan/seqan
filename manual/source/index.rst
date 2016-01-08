@@ -1,3 +1,4 @@
+
 SeqAn Manual
 ============
 
@@ -9,32 +10,45 @@ It contains algorithms and data structures for
 * online and indexed string search,
 * efficient I/O of bioinformatics file formats,
 * sequence alignment, and
-* much more.
-
-Table Of Contents
------------------
+* many many more.
 
 
-:ref:`tutorial`
-  Each tutorial takes 30 to 60 minutes of your time for learning how to use SeqAn.
-  Jump right into using SeqAn using our tutorials!
+.. todo:: Finish this overview part here.
 
-  * Detailed installation descriptions are available in the :ref:`tutorial-getting-started` Tutorial.
+This page is structured in three sections. If you are new to SeqAn and you want to learn more about it, how to use it, and how to get up and running then read the :ref:`tutorial-getting-started` ...
+If you are already aquainted to SeqAn and you are looking for specific problems, have a look at our HowTos.  ...
+If you want to contribute or or start as a SeqAn-Developer look into the Developer Documentation section which gives you all the details about the infrastructure, architecture and how things are done in SeqAn.
 
-:ref:`how-to`
-  Use these short and target-oriented articles to solve common, specific problems.
+Tutorials
+---------
 
-:ref:`build-manual`
-  These articles describe how to use the SeqAn build system and integrate into your **Makefiles**, for example.
+    :ref:`tutorial-getting-started`
+        Start here to setup a working development environment for SeqAn for your specific system.
 
-:ref:`infrastructure`
-  These pages describe the SeqAn infrastructure and are mostly interesting to SeqAn developers.
+    :ref:`tutorial`
+        Tutorials are a nice way to get a first
+        Each tutorial takes 30 to 60 minutes of your time for learning how to use SeqAn.
+        Jump right into using SeqAn using our tutorials!
 
-:ref:`style-guide`
-  Please follow these style guides for SeqAn library and application code.
+        * Detailed installation descriptions are available in the :ref:`tutorial-getting-started` Tutorial.
 
-:ref:`glossary`
-  These pages contain definitions of various terms.
+    :ref:`tutorial-how-to`
+        Use these short and target-oriented articles to solve common, specific problems.
+
+Contributing to SeqAn
+---------------------
+
+    :ref:`internal-build-manual`
+        These articles describe how to use the SeqAn build system and integrate into your **Makefiles**, for example.
+
+    :ref:`internal-infrastructure`
+        These pages describe the SeqAn infrastructure and are mostly interesting to SeqAn developers.
+
+    :ref:`internal-style-guide`
+        Please follow these style guides for SeqAn library and application code.
+
+
+
 
 API Documentation
 -----------------
@@ -42,17 +56,51 @@ API Documentation
 The API documentation can be found on :dox:`mainpage here`.
 
 .. toctree::
-   :hidden:
-   :maxdepth: 2
+    :caption: Tutorials
+    :name: tutorial
+    :hidden:
+    :maxdepth: 1
+    :titlesonly:
 
-   Tutorial
-   HowTo
-   Infrastructure
-   BuildManual
-   StyleGuide
-   Glossary
+    Tutorial/GettingStarted/index
+    Tutorial/DataStructures/index
+    Tutorial/Algorithms/index
+    Tutorial/InputOutput/index
+    Tutorial/HowTo/index
+    Tutorial/Workflows/index
+    Tutorial/Applications/index
 
-   zreferences
+.. toctree::
+    :caption: Get Involved
+    :name: internal
+    :hidden:
+    :maxdepth: 1
+    :titlesonly:
+
+    GetInvolved/Contributors/index
+    GetInvolved/Infrastructure/index
+    GetInvolved/BuildManual/index
+    GetInvolved/StyleGuide/index
+
+.. toctree::
+    :caption: Follow Us
+    :name: follow
+    :hidden:
+    :maxdepth: 1
+    :titlesonly:
+
+    SeqAn Project <http://seqan.de>
+    GitHub <http://github.com/seqan>
+    Twitter <http://twitter.com/seqan>
+    RSS Feeds <http://www.seqan.de/feed/>
+    SeqAn Mailinglist <https://lists.fu-berlin.de/listinfo/seqan-dev#subscribe>
+
+.. toctree::
+    :hidden:
+    :caption: Appendix
+    :titlesonly:
+
+    zreferences
 
 .. Generated pages, should not appear
 
