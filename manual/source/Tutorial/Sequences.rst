@@ -45,17 +45,14 @@ Building Strings
 Let's first have a look at an example on how to define a :dox:`String`.
 The type of the contained value is specified by the first template argument, e.g. ``char`` or ``int``.
 
-.. code-block:: cpp
-
-   String<char>  myText;     // A string of characters.
-   String<int>   myNumbers;  // A string of integers.
+.. includefrags:: demos/tutorial/sequences/base.cpp
+    :fragment: string_example
 
 Any type that provides a default constructor, a copy constructor and an assignment operator can be used as the alphabet / contained type of a :dox:`String`.
 This includes the C++ `POD types <http://www.parashift.com/c++-faq-lite/intrinsic-types.html#faq-26.7>`_, e.g. ``char``, ``int``, ``double`` etc., but you can use more complex types, e.g. :dox:`String Strings`, too.
 
-.. code-block:: cpp
-
-   String<String<char> >   myStringList;   // A string of character strings.
+.. includefrags:: demos/tutorial/sequences/base.cpp
+    :fragment: string_of_strings_example
 
 .. hint::
 
@@ -67,35 +64,27 @@ This includes the C++ `POD types <http://www.parashift.com/c++-faq-lite/intrinsi
 SeqAn also provides the following types that are useful in bioinformatics: :dox:`AminoAcid`, :dox:`Dna`, :dox:`Dna5`, :dox:`DnaQ`, :dox:`Dna5Q`, :dox:`Finite`, :dox:`Iupac`, :dox:`Rna`, :dox:`Rna5`.
 You can find detailed information in the tutorial :ref:`tutorial-alphabets`.
 
-.. code-block:: cpp
-
-   String<Dna>         myGenome;   // A string of nucleotides.
-   String<AminoAcid>   myProtein;  // A string of amino acids.
+.. includefrags:: demos/tutorial/sequences/base.cpp
+    :fragment: special_types_example
 
 For commonly used string parameterizations, SeqAn has a range of shortcuts implemented, e.g. :dox:`DnaString`, :dox:`RnaString` and :dox:`Peptide`.
 
-.. code-block:: cpp
-
-   // Instead of String<Dna> dnaSeq we can also write:
-   DnaString dnaSeq = "TATA";
+.. includefrags:: demos/tutorial/sequences/base.cpp
+    :fragment: shortcuts_example
 
 The user can specify the kind of string that should be used in an optional second template argument of :dox:`String`.
 This is also known as selecting the specialization of a class in SeqAn.
 The default string implementation is :dox:`AllocString Alloc String`, which the best choice for most cases.
 
-.. code-block:: cpp
-
-   String<Dna>              myGenome;   // A default string of nucleotides.
-   String<Dna, Alloc<> >    myGenome;   // The same as above.
+.. includefrags:: demos/tutorial/sequences/base.cpp
+    :fragment: specification_example
 
 For some scenarios though, there might be other types more suitable.
 One such example is when processing extremely large strings that are much larger than the available main memory.
 In this case, using :dox:`ExternalString External Strings` is a good choice.
 
-.. code-block:: cpp
-
-   // Most of the string is stored on the disk.
-   String<Dna, External<> > myLargeGenome;
+.. includefrags:: demos/tutorial/sequences/base.cpp
+    :fragment: specification2_example
 
 More details about the different specializations you can find in the tutorial :ref:`tutorial-sequences-in-depth`.
 
@@ -106,9 +95,8 @@ More details about the different specializations you can find in the tutorial :r
    One advantage of using Strings is that the user does not need to reserve memory manually with **new** and does not need **delete** to free memory.
    Instead, those operations are automatically handeld by the :dox:`String` class.
 
-   .. code-block:: cpp
-
-      String<Dna> myGenome = "TATACGCG";
+   .. includefrags:: demos/tutorial/sequences/base.cpp
+        :fragment: initialization_example
 
 Functionality
 ^^^^^^^^^^^^^
@@ -116,15 +104,10 @@ Functionality
 SeqAn also provides the common C++ operators for strings. You can use
 them like STL strings, for example:
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/sequences/functionality_example1.cpp
+    :fragment: main
 
-   String<Dna> dnaSeq = "TATA";
-   dnaSeq += "CGCG";
-   std::cout << dnaSeq << std::endl;
-
-.. code-block:: console
-
-   TATACGCG
+.. includefrags:: demos/tutorial/sequences/functionality_example1.cpp.stdout
 
 Each sequence object has a capacity, i.e. the maximum length of a sequence that can be stored in this object.
 While some sequence types have a fixed capacity, the capacity of other sequence classes like :dox:`AllocString Alloc String` or ``std::basic_string`` can be changed at runtime.
@@ -135,31 +118,20 @@ In the following example, a :dox:`String` of :dox:`Dna5String`, we first set the
 After assigning two elements we append one more element with :dox:`StringConcept#appendValue`.
 In the last step the capacity is implicitly changed.
 
-.. code-block:: cpp
-
-   String<Dna5String> readList;
-   resize(readList, 2);
-   readList[0] = "GGTTTCGACG";
-   readList[1] = "AAGATGTCGC";
-   appendValue(readList, "TATGCATGAT");
+.. includefrags:: demos/tutorial/sequences/functionality_example2.cpp
+    :fragment: main
 
 Using the function :dox:`ContainerConcept#length`, we can now get the length of our strings, e.g.:
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/sequences/functionality_example2.cpp
+    :fragment: print
 
-   std::cout << length(readList) << std::endl;
-   std::cout << length(readList[0]) << std::endl;
-
-.. code-block:: console
-
-   3
-   10
+.. includefrags:: demos/tutorial/sequences/functionality_example2.cpp.stdout
 
 To empty a :dox:`String`, the function :dox:`StringConcept#clear` resets the object.
 
-.. code-block:: cpp
-
-   clear(readList);
+.. includefrags:: demos/tutorial/sequences/functionality_example2.cpp
+    :fragment: clear
 
 SeqAn offers a range of other functions for the work with the :dox:`String` class, e.g. :dox:`AssignableConcept#assign`, :dox:`RandomAccessContainerConcept#assignValue`, :dox:`RandomAccessContainerConcept#value`, :dox:`IteratorAssociatedTypesConcept#getValue`, :dox:`ContainerConcept#empty`, etc.
 The full list of functions you can find in the documentation :dox:`String`.
@@ -260,43 +232,24 @@ Comparisons
 
 Two sequences can be lexicographically **compared** using standard operators such as ``<`` or ``>=``.
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/sequences/comparisons_example.cpp
+    :fragment: main
 
-   String<char> a = "beta";
-   String<char> b = "alpha";
-
-   std::cout << (a != b) << std::endl;
-   std::cout << (a < b) << std::endl;
-   std::cout << (a > b) << std::endl;
-
-.. code-block:: console
-
-   1
-   0
-   1
+.. includefrags:: demos/tutorial/sequences/comparisons_example.cpp.stdout
 
 Each comparison involves a scan of the two sequences for searching the first mismatch between the strings.
 This could be costly if the two sequences share a long common prefix.
 Suppose we want to branch in a program depending on whether ``a < b``, ``a == b``, or ``a > b``.
 
-.. code-block:: cpp
-
-   if (a < b)      { /* code for case "a < b"  */ }
-   else if (a > b) { /* code for case "a > b"  */ }
-   else            { /* code for case "a == b" */ }
+.. includefrags:: demos/tutorial/sequences/comparisons_example.cpp
+    :fragment: first
 
 In this case, although only one scan would be enough to decide what case is to be applied, each operator ``>`` and ``<`` performs a new comparison.
 SeqAn offers the class :dox:`Lexical` to avoid unnecessary sequence scans.
 Lexicals can store the result of a comparison, for example:
 
-.. code-block:: cpp
-
-   // Compare a and b and store the result in comp
-   Lexical<> comp(a, b);
-
-   if (isLess(comp))         { /* code for case "a < b"  */ }
-   else if (isGreater(comp)) { /* code for case "a > b"  */ }
-   else                      { /* code for case "a == b" */ }
+.. includefrags:: demos/tutorial/sequences/comparisons_example.cpp
+    :fragment: second
 
 Conversions
 ^^^^^^^^^^^
