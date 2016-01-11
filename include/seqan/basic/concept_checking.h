@@ -584,7 +584,7 @@ template <class T> SEQAN_HOST_DEVICE inline void ignoreUnusedVariableWarning(T c
  *
  * @signature SEQAN_CONCEPT_REFINE(name, params, refinedConcepts)
  *
- * @param params Template paramter list in parantheses, e.g. (T) or (T1)(T2).
+ * @param params Template parameter list in parantheses, e.g. (T) or (T1)(T2).
  *               Typically, template parameters are models, i.e. one or multiple
  *               classes that should be checked for fulfilling a concept.This is
  *               a sequence of the Boost Preprocessor Library, read <a
