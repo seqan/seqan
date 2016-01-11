@@ -201,8 +201,8 @@ macro (seqan_build_system_init)
                  DESTINATION share/doc/seqan)
         # Install pkg-config file, except on Windows.
         if (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
-            configure_file("util/pkgconfig/seqan.pc.in" "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION}.pc" @ONLY)
-            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION}.pc" DESTINATION share/pkgconfig)
+            configure_file("util/pkgconfig/seqan.pc.in" "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_MAJOR_VERSION}.pc" @ONLY)
+            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_MAJOR_VERSION}.pc" DESTINATION share/pkgconfig)
         endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
     endif ()
 
