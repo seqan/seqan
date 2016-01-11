@@ -1614,10 +1614,6 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Insert)
 }
 
 // Test of insertValue().
-// this should work, but doesnt
-template <typename TSpec>
-void testStringSetInsertValue(StringSet<String<short, Packed<TSpec> >, Owner<ConcatDirect<> > > & /*Tag*/) {}
-
 template <typename TStringSet>
 void testStringSetInsertValue(TStringSet & /*Tag*/)
 {
@@ -1630,7 +1626,7 @@ void testStringSetInsertValue(TStringSet & /*Tag*/)
     resize(stringSet, 1u);
     insertValue(stringSet, 0, "ACGT");
     SEQAN_ASSERT_EQ(length(stringSet), 2u);
-    SEQAN_ASSERT_EQ(TString(stringSet[0]), TString("ACGT"));
+    SEQAN_ASSERT_EQ(stringSet[0], TString("ACGT"));
     SEQAN_ASSERT_EQ(stringSet[1], TString());
 }
 
