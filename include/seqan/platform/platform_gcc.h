@@ -88,8 +88,6 @@
 #define SEQAN_IS_32_BIT 1
 #endif  // #if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
 
-//#include <unistd.h>
-#include <inttypes.h>
 
 #define finline __inline__
 

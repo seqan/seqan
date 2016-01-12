@@ -80,20 +80,13 @@
 // Define Integers
 // ==========================================================================
 
+
 // TODO(holtgrew): It would probably be better to define these in namespace seqan only.
 
-typedef unsigned __int64 __uint64;
-typedef unsigned __int32 __uint32;
-typedef unsigned __int16 __uint16;
-typedef unsigned __int8 __uint8;
-
-// Define ISO C9x compliant integers.
-//
-// For Visual Studio versions more current than 2010, we can use <stdint.h>.  Otherwise,
-// we have provide our own bundled stdint.h header.  Using this header can be disabled
-// by defining the precompiler variable SEQAN_INCLUDE_BUNDLED_STDINT as 0.
-
-#include <stdint.h>
+typedef uint64_t __uint64;
+typedef uint32_t __uint32;
+typedef uint16_t __uint16;
+typedef uint8_t __uint8;
 
 // ==========================================================================
 // Define SeqAn Specific Macros.
