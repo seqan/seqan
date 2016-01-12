@@ -25,7 +25,6 @@ function addVersionSelection(arr)
 
     // current selection is.. 
     cur_sel = window.location.pathname.split("/")[2];
-    cur_sel = "master"; // should be deleted
 
     for(i=0; i < arr.length; ++i)
     {
