@@ -1626,8 +1626,8 @@ void testStringSetInsertValue(TStringSet & /*Tag*/)
     resize(stringSet, 1u);
     insertValue(stringSet, 0, "ACGT");
     SEQAN_ASSERT_EQ(length(stringSet), 2u);
-    SEQAN_ASSERT_EQ(stringSet[0], TString("ACGT"));
-    SEQAN_ASSERT_EQ(stringSet[1], TString());
+    SEQAN_ASSERT(stringSet[0] == TString("ACGT"));
+    SEQAN_ASSERT(stringSet[1] == TString());
 }
 
 SEQAN_TYPED_TEST(StringSetTestCommon, InsertValue)
