@@ -42,8 +42,6 @@
     #include "platform/platform_solaris.h"
 #elif __ICC
     #include "platform/platform_icc.h"
-#elif __PGI
-    #include "platform/platform_pgi.h"
 #else
     #include "platform/platform_gcc.h"
 #endif
