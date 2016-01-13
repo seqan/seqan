@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_BASIC_ITERATOR_ZIPPED_H_
-#define INCLUDE_SEQAN_BASIC_ITERATOR_ZIPPED_H_
+#ifndef INCLUDE_SEQAN_BASIC_ITERATOR_ZIP_H_
+#define INCLUDE_SEQAN_BASIC_ITERATOR_ZIP_H_
 
 #include <tuple>
 
@@ -46,11 +46,12 @@ namespace seqan
 
 // This function enables us to use the initializer-list trick to expand a parameter pack,
 // in order to call a function on each element of the parameter pack.
-template <typename T> inline void
-_seqanUnpackFunc(std::initializer_list<T> const /*unusued*/)
+template <typename T>
+inline void
+_seqanUnpackFunc(std::initializer_list<T> const /*unused*/)
 {}
 
-// I use this macro to hide wrapping the function call as an initializer-list.
+// This macro is used to hide wrapping the function call as an initializer-list.
 #define SEQAN_UNPACK_FUNC(f) _seqanUnpackFunc({(f, 0)...})
 
 // ============================================================================
@@ -59,22 +60,61 @@ _seqanUnpackFunc(std::initializer_list<T> const /*unusued*/)
 
 // Traits to hold the indices of the corresponding tuple.
 template <unsigned... >
-struct TupleIndices
+struct IndexSequence
 {};
 
 // Tag to determine the zip iterator.
 struct ZipIterator_;
 typedef Tag<ZipIterator_> ZipIterator;
 
-// The ZipIterator wraps a pack of Iterator Types.
-// We use a std::tuple to store the different iterators.
-// The tuple also helps to use variadic templates, while being compliant with
-// the SeqAn class definitions.
+
+/*!
+ * @class ZipIterator
+ *
+ * @extends Iter
+ * @implements IteratorAssociatedTypesConcept
+ *
+ * @headerfile <seqan/basic.h>
+ *
+ * @brief Zips multiple iterators over different containers into a single iterator.
+ *
+ * @signature template <typename... TIteratorTypes>
+              class Iter<std::tuple<TIteratorTypes...>, ZipIterator>;
+ *
+ * @tparam TIteratorTypes A template parameter pack with one or more @link ContainerConcept#Iterator @endlink types.
+ *
+ * This iterator ties together different iterator types for different containers of the same size.
+ * It allows to operate on a single iterator, if multiple containers need to be traversed simultaneously.
+ * Note, that all operations are still executed in a serial fashion.
+ * If the zip iterator is dereferenced it returns a <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a>
+ * containing the dereferenced values of all embedded iterators.
+ *
+ * @section Example
+ *
+ * The following shows an example on how to use the zip iterator:
+ *
+ * @include demos/dox/basic/zip_iterator.cpp
+ *
+ * This outputs the following to the console:
+ * @include demos/dox/basic/zip_iterator.cpp.stdout
+ *
+ * @note Throws an assertion if <tt>sizeof...(TIteratorTypes) == 0</tt> is true.
+ */
+
 template <typename... TIteratorPack>
 class Iter<std::tuple<TIteratorPack...>, ZipIterator>
 {
 public:
     std::tuple<TIteratorPack...> dataIter;  // tuple stores the different iterators.
+
+    /*!
+     * @fn ZipIterator#ZipIterator
+     * @brief Constructor.
+     * @signature Iter()
+     *            Iter(TIteratorTypes... args)
+     *
+     * @param args The iterator instances to create the @link ZipIterator @endlink from. Default constructors are not listed.
+     */
 
     // Default c'tor.
     Iter()
@@ -82,34 +122,41 @@ public:
         static_assert(sizeof...(TIteratorPack) > 0, "Requires at least one argument!");
     }
 
-    // Custom c'tor to create from tuple.
-    Iter(std::tuple<TIteratorPack...> && iterTuple) : dataIter(iterTuple)
-    {
-        static_assert(sizeof...(TIteratorPack) > 0, "Requires at least one argument!");
-    }
+    // Custom c'tor to create from iterator pack
+    Iter(TIteratorPack... iterPack) : dataIter(std::make_tuple(iterPack...))
+    {}
 };
-
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction MakeTupleIndices
+// Metafunction MakeIndexSequence
 // ----------------------------------------------------------------------------
 
 // This metafunction recursively calls itself, while adding a new index to the growing
 // Indices pack.
 template<unsigned ID, unsigned... Indices>
-struct MakeTupleIndices :
-MakeTupleIndices<ID-1, ID-1, Indices...>
+struct MakeIndexSequence :
+MakeIndexSequence<ID-1, ID-1, Indices...>
 {};
 
-// Base case to stop the recursion and to define the TupleIndices with the indices pack.
+// Base case to stop the recursion and to define the IndexSequence with the indices pack.
 template<unsigned... Indices>
-struct MakeTupleIndices<0, Indices...>
+struct MakeIndexSequence<0, Indices...>
 {
-    typedef TupleIndices<Indices...> Type;
+    typedef IndexSequence<Indices...> Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction Container
+// ----------------------------------------------------------------------------
+
+template <typename... TIteratorPack>
+struct Container<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
+{
+    typedef std::tuple<typename Container<TIteratorPack>::Type...> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -121,7 +168,7 @@ struct MakeTupleIndices<0, Indices...>
 template <typename... TIteratorPack>
 struct Value<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
 {
-    typedef std::tuple<typename Value<TIteratorPack>::Type...>  Type;
+    typedef std::tuple<typename Value<TIteratorPack>::Type...> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -132,7 +179,7 @@ struct Value<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
 template <typename... TIteratorPack>
 struct GetValue<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
 {
-    typedef std::tuple<typename GetValue<TIteratorPack>::Type...>  Type;
+    typedef std::tuple<typename GetValue<TIteratorPack>::Type...> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -143,7 +190,7 @@ struct GetValue<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
 template <typename... TIteratorPack>
 struct Reference<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
 {
-    typedef std::tuple<typename Reference<TIteratorPack>::Type...>  Type;
+    typedef std::tuple<typename Reference<TIteratorPack>::Type...> Type;
 };
 
 // Unclear why we need that! It should be possible to let the generic implementation
@@ -191,12 +238,12 @@ namespace impl
 // private increment interface.
 // Uses the initializer-trick to apply the ++operator to all elements in the tuple
 // using pack expansion.
-template <typename... TIteratorPack, unsigned... TUPLE_INDICES>
+template <typename... TIteratorPack, unsigned... INDEX_SEQUENCE>
 inline void
 increment(std::tuple<TIteratorPack...> & me,
-          TupleIndices<TUPLE_INDICES...> const)
+          IndexSequence<INDEX_SEQUENCE...> const)
 {
-    SEQAN_UNPACK_FUNC(++std::get<TUPLE_INDICES>(me));
+    SEQAN_UNPACK_FUNC(++std::get<INDEX_SEQUENCE>(me));
 }
 
 // ----------------------------------------------------------------------------
@@ -204,12 +251,12 @@ increment(std::tuple<TIteratorPack...> & me,
 // ----------------------------------------------------------------------------
 
 // Same here for decrement.
-template <typename... TIteratorPack, unsigned... TUPLE_INDICES>
+template <typename... TIteratorPack, unsigned... INDEX_SEQUENCE>
 inline void
 decrement(std::tuple<TIteratorPack...> & me,
-          TupleIndices<TUPLE_INDICES...> const)
+          IndexSequence<INDEX_SEQUENCE...> const)
 {
-    SEQAN_UNPACK_FUNC(--std::get<TUPLE_INDICES>(me));
+    SEQAN_UNPACK_FUNC(--std::get<INDEX_SEQUENCE>(me));
 }
 
 // ----------------------------------------------------------------------------
@@ -220,7 +267,7 @@ decrement(std::tuple<TIteratorPack...> & me,
 template <typename... TIteratorPack, unsigned... INDICES, typename TIntegral>
 inline void
 advance(std::tuple<TIteratorPack...> & me,
-        TupleIndices<INDICES...> const,
+        IndexSequence<INDICES...> const,
         TIntegral const steps)
 {
     SEQAN_UNPACK_FUNC(std::advance(std::get<INDICES>(me), steps));
@@ -231,23 +278,51 @@ advance(std::tuple<TIteratorPack...> & me,
 // ----------------------------------------------------------------------------
 
 // Dereference each iterator in the tuple and forward return values as tuple.
-template <typename... TIteratorPack, unsigned... TUPLE_INDICES>
+template <typename... TIteratorPack, unsigned... INDEX_SEQUENCE>
 inline auto
 dereference(std::tuple<TIteratorPack...> & me,
-            TupleIndices<TUPLE_INDICES...> const) -> decltype(std::forward_as_tuple(*std::get<TUPLE_INDICES>(me)...))
+            IndexSequence<INDEX_SEQUENCE...> const) -> decltype(std::forward_as_tuple(*std::get<INDEX_SEQUENCE>(me)...))
 {
-    return std::forward_as_tuple(*std::get<TUPLE_INDICES>(me)...);
+    return std::forward_as_tuple(*std::get<INDEX_SEQUENCE>(me)...);
 }
 
-template <typename... TIteratorPack, unsigned... TUPLE_INDICES>
+template <typename... TIteratorPack, unsigned... INDEX_SEQUENCE>
 inline auto
 dereference(std::tuple<TIteratorPack...> const & me,
-            TupleIndices<TUPLE_INDICES...> const) -> decltype(std::forward_as_tuple(*std::get<TUPLE_INDICES>(me)...))
+            IndexSequence<INDEX_SEQUENCE...> const) -> decltype(std::forward_as_tuple(*std::get<INDEX_SEQUENCE>(me)...))
 {
-    return std::forward_as_tuple(*std::get<TUPLE_INDICES>(me)...);
+    return std::forward_as_tuple(*std::get<INDEX_SEQUENCE>(me)...);
 }
 
+// ----------------------------------------------------------------------------
+// Function impl::assignValue
+// ----------------------------------------------------------------------------
+
+// Dereference each iterator in the tuple and forward return values as tuple.
+template <typename... TRefPack, typename... TValuePack, unsigned... INDEX_SEQUENCE>
+inline void
+assignValue(std::tuple<TRefPack...> targetPack,
+            std::tuple<TValuePack...> const & sourcePack,
+            IndexSequence<INDEX_SEQUENCE...> const)
+{
+    SEQAN_UNPACK_FUNC(assign(std::get<INDEX_SEQUENCE>(targetPack), std::get<INDEX_SEQUENCE>(sourcePack)));
 }
+
+// ----------------------------------------------------------------------------
+// Function impl::moveValue
+// ----------------------------------------------------------------------------
+
+// Dereference each iterator in the tuple and forward return values as tuple.
+template <typename... TRefPack, typename... TValuePack, unsigned... INDEX_SEQUENCE>
+inline void
+moveValue(std::tuple<TRefPack...> targetPack,
+          std::tuple<TValuePack...> const & sourcePack,
+          IndexSequence<INDEX_SEQUENCE...> const)
+{
+    SEQAN_UNPACK_FUNC(move(std::get<INDEX_SEQUENCE>(targetPack), std::get<INDEX_SEQUENCE>(sourcePack)));
+}
+
+}  // namespace impl
 
 // ----------------------------------------------------------------------------
 // Function operator*
@@ -257,14 +332,14 @@ template <typename... TIteratorPack>
 inline typename Reference<Iter<std::tuple<TIteratorPack...>, ZipIterator> >::Type
 operator*(Iter<std::tuple<TIteratorPack...>, ZipIterator> & me)
 {
-    return impl::dereference(me.dataIter, typename MakeTupleIndices<sizeof...(TIteratorPack)>::Type());
+    return impl::dereference(me.dataIter, typename MakeIndexSequence<sizeof...(TIteratorPack)>::Type());
 }
 
 template <typename... TIteratorPack>
 inline typename Reference<Iter<std::tuple<TIteratorPack...>, ZipIterator> const>::Type
 operator*(Iter<std::tuple<TIteratorPack...>, ZipIterator> const & me)
 {
-    return impl::dereference(me.dataIter, typename MakeTupleIndices<sizeof...(TIteratorPack)>::Type());
+    return impl::dereference(me.dataIter, typename MakeIndexSequence<sizeof...(TIteratorPack)>::Type());
 }
 
 // ----------------------------------------------------------------------------
@@ -275,7 +350,7 @@ template <typename... TIteratorPack>
 inline Iter<std::tuple<TIteratorPack...>, ZipIterator> &
 operator++(Iter<std::tuple<TIteratorPack...>, ZipIterator> & me /*pre-increment*/)
 {
-    impl::increment(me.dataIter, typename MakeTupleIndices<sizeof...(TIteratorPack)>::Type());
+    impl::increment(me.dataIter, typename MakeIndexSequence<sizeof...(TIteratorPack)>::Type());
     return me;
 }
 
@@ -288,7 +363,7 @@ inline Iter<std::tuple<TIteratorPack...>, ZipIterator>
 operator++(Iter<std::tuple<TIteratorPack...>, ZipIterator> & me, int const /*post-increment*/)
 {
     typename std::remove_reference<decltype(me)>::type tmp(me);
-    impl::increment(me.dataIter, typename MakeTupleIndices<sizeof...(TIteratorPack)>::Type());
+    impl::increment(me.dataIter, typename MakeIndexSequence<sizeof...(TIteratorPack)>::Type());
     return tmp;
 }
 
@@ -302,7 +377,7 @@ operator+(Iter<std::tuple<TIteratorPack...>, ZipIterator> me,
           TIntegral const steps)
 {
     impl::advance(me.dataIter,
-                  typename MakeTupleIndices<sizeof...(TIteratorPack)>::Type(),
+                  typename MakeIndexSequence<sizeof...(TIteratorPack)>::Type(),
                   steps);
     return me;
 }
@@ -313,7 +388,7 @@ operator+(TIntegral const steps,
           Iter<std::tuple<TIteratorPack...>, ZipIterator> me)
 {
     impl::advance(me.dataIter,
-                  typename MakeTupleIndices<sizeof...(TIteratorPack)>::Type(),
+                  typename MakeIndexSequence<sizeof...(TIteratorPack)>::Type(),
                   steps);
     return me;
 }
@@ -328,7 +403,7 @@ operator+=(Iter<std::tuple<TIteratorPack...>, ZipIterator> & me,
            TIntegral const steps)
 {
     impl::advance(me.dataIter,
-                  typename MakeTupleIndices<sizeof...(TIteratorPack)>::Type(),
+                  typename MakeIndexSequence<sizeof...(TIteratorPack)>::Type(),
                   steps);
     return me;
 }
@@ -341,7 +416,7 @@ template <typename... TIteratorPack>
 inline Iter<std::tuple<TIteratorPack...>, ZipIterator>&
 operator--(Iter<std::tuple<TIteratorPack...>, ZipIterator> & me /*pre-increment*/)
 {
-    impl::decrement(me.dataIter, typename MakeTupleIndices<sizeof...(TIteratorPack)>::Type());
+    impl::decrement(me.dataIter, typename MakeIndexSequence<sizeof...(TIteratorPack)>::Type());
     return me;
 }
 
@@ -354,7 +429,7 @@ inline Iter<std::tuple<TIteratorPack...>, ZipIterator>
 operator--(Iter<std::tuple<TIteratorPack...>, ZipIterator> & me, int const /*post-increment*/)
 {
     typename std::remove_reference<decltype(me)>::type tmp(me);
-    impl::decrement(me.dataIter, typename MakeTupleIndices<sizeof...(TIteratorPack)>::Type());
+    impl::decrement(me.dataIter, typename MakeIndexSequence<sizeof...(TIteratorPack)>::Type());
     return tmp;
 }
 
@@ -368,7 +443,7 @@ operator-(Iter<std::tuple<TIteratorPack...>, ZipIterator> me,
           TIntegral const steps)
 {
     typedef typename MakeSigned<TIntegral>::Type TSigned;
-    impl::advance(me.dataIter, typename MakeTupleIndices<sizeof...(TIteratorPack)>::Type(),
+    impl::advance(me.dataIter, typename MakeIndexSequence<sizeof...(TIteratorPack)>::Type(),
                   -static_cast<TSigned>(steps));
     return me;
 }
@@ -391,7 +466,7 @@ operator-=(Iter<std::tuple<TIteratorPack...>, ZipIterator> & me,
            TIntegral const steps)
 {
     typedef typename MakeSigned<TIntegral>::Type TSigned;
-    impl::advance(me.dataIter, typename MakeTupleIndices<sizeof...(TIteratorPack)>::Type(),
+    impl::advance(me.dataIter, typename MakeIndexSequence<sizeof...(TIteratorPack)>::Type(),
                   -static_cast<TSigned>(steps));
     return me;
 }
@@ -481,17 +556,53 @@ swap(Iter<std::tuple<TIteratorPack...>, ZipIterator> & lhs,
 }
 
 // ----------------------------------------------------------------------------
-// Function makeZippedIterator()
+// Function assignValue()
 // ----------------------------------------------------------------------------
 
-//  helper function
+template <typename... TIteratorPack, typename... TValuePack>
+inline void
+assignValue(Iter<std::tuple<TIteratorPack...>, ZipIterator> & target,
+            std::tuple<TValuePack...> const & value)
+{
+    static_assert(sizeof...(TIteratorPack) == sizeof...(TValuePack), "Wrong number of arguments.");
+    impl::assignValue(*target, value, typename MakeIndexSequence<sizeof...(TIteratorPack)>::Type());
+}
+
+// ----------------------------------------------------------------------------
+// Function moveValue()
+// ----------------------------------------------------------------------------
+
+template <typename... TIteratorPack, typename... TValuePack>
+inline void
+moveValue(Iter<std::tuple<TIteratorPack...>, ZipIterator> & target,
+          std::tuple<TValuePack...> const & value)
+{
+    static_assert(sizeof...(TIteratorPack) == sizeof...(TValuePack), "Wrong number of arguments.");
+    impl::moveValue(*target, value, typename MakeIndexSequence<sizeof...(TIteratorPack)>::Type());
+}
+
+// ----------------------------------------------------------------------------
+// Function makeZipIterator()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn makeZipIterator
+ * @headerfile <seqan/basic_iterator.h>
+ * @brief Creates a @link ZipIterator @endlink, deducing the iterator types from the arguments.
+ *
+ * @signature iter makeZipIterator(TIteratorTypes... args)
+ *
+ * @param [in] args One or more iterator instances to construct the @link ZipIterator @endlink from.
+ *
+ * @return iter A @link ZipIterator @endlink containing the given iterator instances.
+ */
 template <typename... TIteratorPack>
 inline Iter<std::tuple<TIteratorPack... >, ZipIterator>
-makeZippedIterator(TIteratorPack... iterPack)
+makeZipIterator(TIteratorPack... iterPack)
 {
-    return Iter<std::tuple<TIteratorPack... >, ZipIterator>(std::make_tuple(iterPack...));
+    return Iter<std::tuple<TIteratorPack... >, ZipIterator>(iterPack...);
 }
 
 }
 
-#endif  // #ifndef INCLUDE_SEQAN_BASIC_ITERATOR_ZIPPED_H_
+#endif  // #ifndef INCLUDE_SEQAN_BASIC_ITERATOR_ZIP_H_

@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_SEQUENCE_CONTAINER_VIEW_ZIPPED_H_
-#define INCLUDE_SEQAN_SEQUENCE_CONTAINER_VIEW_ZIPPED_H_
+#ifndef INCLUDE_SEQAN_SEQUENCE_CONTAINER_VIEW_ZIP_H_
+#define INCLUDE_SEQAN_SEQUENCE_CONTAINER_VIEW_ZIP_H_
 
 namespace seqan
 {
@@ -50,9 +50,32 @@ namespace seqan
 template <typename TSpec = void>
 struct ZipContainer;
 
+/*!
+ * @class ZipContainerView
+ * @extends ContainerView
+ * @headerfile <seqan/sequence.h>
+ *
+ * @brief Ties one or more containers into a non-resizable container view together.
+ *
+ * @signature template <typename... TContTypes, typename TSpec>
+              class ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> >
+ *
+ * @tparam TContTypes One or more types of all containers tied into the zip container view.
+ * @tparam TSpec The specialization type.
+ *
+ * @section Example
+ * 
+ * The following example demonstrates the functionality of the @link ZipContainerView @endlink:
+ *
+ * @include demos/dox/sequence/container_view_zip.cpp
+ * 
+ * This outputs the following to the console:
+ * @include demos/dox/sequence/container_view_zip.cpp.stdout
+ */
+
 // Use tuple to store variadic container types.
-template <typename... TContPack, typename TSpec>
-class ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> >
+template <typename... TContTypes, typename TSpec>
+class ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> >
 {
 public:
     typedef typename Iterator<ContainerView, Standard>::Type TIterator;
@@ -62,19 +85,19 @@ public:
 
     ContainerView() : _begin(), _end()
     {
-        static_assert(sizeof...(TContPack) > 0, "Requries at least one argument!");
+        static_assert(sizeof...(TContTypes) > 0, "Requries at least one argument!");
     }
 
     template <typename... TOtherContPack>
     ContainerView(TOtherContPack && ...contArgs)
     {
         static_assert(sizeof...(TOtherContPack) > 0, "Requires at least one argument!");
-        static_assert(sizeof...(TOtherContPack) == sizeof...(TContPack), "Number of parameters don't match!");
+        static_assert(sizeof...(TOtherContPack) == sizeof...(TContTypes), "Number of parameters don't match!");
 
-        // TODO: We need to assert if lenght of containers differ!
+        // TODO(rrahn): Check if all containers contain same number of elements.
 
-        _begin = makeZippedIterator(begin(contArgs, Standard())...);
-        _end   = makeZippedIterator(  end(contArgs, Standard())...);
+        _begin = makeZipIterator(begin(contArgs, Standard())...);
+        _end   = makeZipIterator(  end(contArgs, Standard())...);
     }
 
     // Custom c'tor setting the iterators.
@@ -88,8 +111,7 @@ public:
     // ------------------------------------------------------------------------
 
     template <typename TOtherContainer>
-    SEQAN_HOST_DEVICE inline
-    ContainerView &
+    inline ContainerView &
     operator= (TOtherContainer & other)
     {
         assign(*this, other);
@@ -101,16 +123,14 @@ public:
     // ------------------------------------------------------------------------
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline
-    typename Reference<ContainerView>::Type
+    inline typename Reference<ContainerView>::Type
     operator[] (TPos pos)
     {
         return value(*this, pos);
     }
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline
-    typename GetValue<ContainerView>::Type
+    inline typename GetValue<ContainerView>::Type
     operator[] (TPos pos) const
     {
         return getValue(*this, pos);
@@ -132,17 +152,17 @@ public:
 // ----------------------------------------------------------------------------
 
 // Delegate to the Value MF of the ZipIterator.
-template <typename... TContPack, typename TSpec>
-struct Value<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > >
+template <typename... TContTypes, typename TSpec>
+struct Value<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > >
 {
-    typedef typename Iterator<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> >, Standard>::Type TIter_;
+    typedef typename Iterator<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> >, Standard>::Type TIter_;
     typedef typename Value<TIter_>::Type                                                                     Type;
 };
 
-template <typename... TContPack, typename TSpec>
-struct Value<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > const>
+template <typename... TContTypes, typename TSpec>
+struct Value<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > const>
 {
-    typedef typename Iterator<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > const, Standard>::Type TIter_;
+    typedef typename Iterator<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > const, Standard>::Type TIter_;
     typedef typename Value<TIter_>::Type                                                                           Type;
 };
 
@@ -150,17 +170,17 @@ struct Value<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > const
 // Metafunction GetValue
 // ----------------------------------------------------------------------------
 
-template <typename... TContPack, typename TSpec>
-struct GetValue<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > >
+template <typename... TContTypes, typename TSpec>
+struct GetValue<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > >
 {
-    typedef typename Iterator<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> >, Standard>::Type TIter_;
+    typedef typename Iterator<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> >, Standard>::Type TIter_;
     typedef typename GetValue<TIter_>::Type                                                                  Type;
 };
 
-template <typename... TContPack, typename TSpec>
-struct GetValue<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > const>
+template <typename... TContTypes, typename TSpec>
+struct GetValue<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > const>
 {
-    typedef typename Iterator<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > const, Standard>::Type TIter_;
+    typedef typename Iterator<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > const, Standard>::Type TIter_;
     typedef typename GetValue<TIter_>::Type                                                                        Type;
 };
 
@@ -168,29 +188,28 @@ struct GetValue<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > co
 // Metafunction Reference
 // ----------------------------------------------------------------------------
 
-template <typename... TContPack, typename TSpec>
-struct Reference<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > >
+template <typename... TContTypes, typename TSpec>
+struct Reference<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > >
 {
-    typedef typename Iterator<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> >, Standard>::Type TIter_;
+    typedef typename Iterator<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> >, Standard>::Type TIter_;
     typedef typename Reference<TIter_>::Type                                                                 Type;
 };
 
-template <typename... TContPack, typename TSpec>
-struct Reference<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > const>
+template <typename... TContTypes, typename TSpec>
+struct Reference<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > const>
 {
-    typedef typename Iterator<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > const, Standard>::Type TIter_;
+    typedef typename Iterator<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > const, Standard>::Type TIter_;
     typedef typename Reference<TIter_>::Type                                                                       Type;
 };
-
 
 // ----------------------------------------------------------------------------
 // Metafunction Difference
 // ----------------------------------------------------------------------------
 
-template <typename... TContPack, typename TSpec>
-struct Difference<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > >
+template <typename... TContTypes, typename TSpec>
+struct Difference<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > >
 {
-    typedef typename Iterator<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> >, Standard>::Type TIter_;
+    typedef typename Iterator<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> >, Standard>::Type TIter_;
     typedef typename Difference<TIter_>::Type                                                                Type;
 };
 
@@ -198,10 +217,10 @@ struct Difference<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > 
 // Metafunction Size
 // ----------------------------------------------------------------------------
 
-template <typename... TContPack, typename TSpec>
-struct Size<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > >
+template <typename... TContTypes, typename TSpec>
+struct Size<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > >
 {
-    typedef typename Iterator<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> >, Standard>::Type TIter_;
+    typedef typename Iterator<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> >, Standard>::Type TIter_;
     typedef typename Size<TIter_>::Type                                                                      Type;
 };
 
@@ -209,10 +228,10 @@ struct Size<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > >
 // Metafunction Position
 // ----------------------------------------------------------------------------
 
-template <typename... TContPack, typename TSpec>
-struct Position<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > >
+template <typename... TContTypes, typename TSpec>
+struct Position<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > >
 {
-    typedef typename Iterator<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> >, Standard>::Type TIter_;
+    typedef typename Iterator<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> >, Standard>::Type TIter_;
     typedef typename Position<TIter_>::Type                                                                  Type;
 };
 
@@ -223,16 +242,16 @@ struct Position<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > >
 // TODO(rrahn): View (Segment)
 
 // Create Zipped Iterator.
-template <typename... TContPack, typename TSpec>
-struct Iterator<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> >, Standard>
+template <typename... TContTypes, typename TSpec>
+struct Iterator<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> >, Standard>
 {
-    typedef Iter<std::tuple<typename Iterator<TContPack, Standard>::Type...>, ZipIterator> Type;
+    typedef Iter<std::tuple<typename Iterator<TContTypes, Standard>::Type...>, ZipIterator> Type;
 };
 
-template <typename... TContPack, typename TSpec>
-struct Iterator<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > const, Standard>
+template <typename... TContTypes, typename TSpec>
+struct Iterator<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > const, Standard>
 {
-    typedef Iter<std::tuple<typename Iterator<TContPack const, Standard>::Type...>, ZipIterator> Type;
+    typedef Iter<std::tuple<typename Iterator<TContTypes const, Standard>::Type...>, ZipIterator> Type;
 };
 
 // ============================================================================
@@ -242,25 +261,37 @@ struct Iterator<ContainerView<std::tuple<TContPack...>, ZipContainer<TSpec> > co
 // Uses default functions from base ContainerView.
 
 // ----------------------------------------------------------------------------
-// Function makeZippedView()
+// Function makeZipView()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn makeZipView
+ * @headerfile <seqan/sequence.h>
+ * @brief Creates a @link ZipContainerView @endlink, deducing the container types from the arguments.
+ *
+ * @signature cont makeZipView(TContainerTypes... args)
+ *
+ * @param [in] args One or more container instance to construct the @link ZipContainerView @endlink from.
+ *
+ * @return cont A @link ZipContainerView @endlink containing the views over the given containers..
+ */
+
 // Helper function to create zipped view from container pack.
-template <typename... TContPack, typename TSpec>
-inline ContainerView<std::tuple<typename std::remove_reference<TContPack>::type...>, ZipContainer<TSpec> >
-makeZippedView(TContPack && ...contArgs,
-               TSpec const)
+template <typename... TContTypes, typename TSpec>
+inline ContainerView<std::tuple<typename std::remove_reference<TContTypes>::type...>, ZipContainer<TSpec> >
+makeZipView(TContTypes && ...contArgs,
+            TSpec const)
 {
-    return ContainerView<std::tuple<typename std::remove_reference<TContPack>::type...>, ZipContainer<TSpec> >(std::forward<TContPack>(contArgs)...);
+    return ContainerView<std::tuple<typename std::remove_reference<TContTypes>::type...>, ZipContainer<TSpec> >(std::forward<TContTypes>(contArgs)...);
 }
 
-template <typename... TContPack>
-inline ContainerView<std::tuple<typename std::remove_reference<TContPack>::type...>, ZipContainer<> >
-makeZippedView(TContPack && ...contArgs)
+template <typename... TContTypes>
+inline ContainerView<std::tuple<typename std::remove_reference<TContTypes>::type...>, ZipContainer<> >
+makeZipView(TContTypes && ...contArgs)
 {
-    return ContainerView<std::tuple<typename std::remove_reference<TContPack>::type...>, ZipContainer<> >(std::forward<TContPack>(contArgs)...);
+    return ContainerView<std::tuple<typename std::remove_reference<TContTypes>::type...>, ZipContainer<> >(std::forward<TContTypes>(contArgs)...);
 }
 
 }
 
-#endif  // #ifndef INCLUDE_SEQAN_SEQUENCE_CONTAINER_VIEW_ZIPPED_H_
+#endif  // #ifndef INCLUDE_SEQAN_SEQUENCE_CONTAINER_VIEW_ZIP_H_
