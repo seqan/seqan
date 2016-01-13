@@ -126,9 +126,8 @@ struct FormattedFileContext<FormattedFile<Bam, Output, StringSet<TString, Owner<
 // ----------------------------------------------------------------------------
 // Metafunction SeqFileBuffer_
 // ----------------------------------------------------------------------------
-// Overloaded to load FastA files with Iupac symbols.
+// Overloaded to load FastQ files with Iupac symbols.
 
-#ifdef YARA_INDEXER
 namespace seqan {
 template <typename TString, typename TSSetSpec, typename TSpec>
 struct SeqFileBuffer_<StringSet<TString, TSSetSpec>, TSpec>
@@ -136,7 +135,6 @@ struct SeqFileBuffer_<StringSet<TString, TSSetSpec>, TSpec>
     typedef String<Iupac>   Type;
 };
 }
-#endif
 
 // ============================================================================
 // FMIndex

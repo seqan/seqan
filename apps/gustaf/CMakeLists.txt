@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_gustaf)
 message (STATUS "Configuring apps/gustaf")
 
-set (SEQAN_APP_VERSION "1.0.1")
+set (SEQAN_APP_VERSION "1.0.2")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -105,6 +105,7 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:gustaf")
   set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Gustaf - Generic multi-split alignment finder")
   set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Kathrin Trappe <kathrin.trappe@fu-berlin.de>")
   set (CPACK_PACKAGE_VENDOR "Kathrin Trappe <kathrin.trappe@fu-berlin.de>")
+  set (CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.rst")
 
   seqan_configure_cpack_app (gustaf "gustaf")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:gustaf")

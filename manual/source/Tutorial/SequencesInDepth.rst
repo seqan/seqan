@@ -104,7 +104,7 @@ Each sequence object has a capacity, i.e. the reserved space for this object.
 The capacity can be set explicitly by functions such as :dox:`String#reserve` or :dox:`StringConcept#resize`.
 It can also bet set implicitly by functions like :dox:`ContainerConcept#append`, :dox:`AssignableConcept#assign`, :dox:`StringConcept#insert` or :dox:`StringConcept#replace`, if the operation's result exceeds the length of the target sequence.
 
-If the current capacity of a sequence is exceeded by chaning the length, we say that the sequence overflows.
+If the current capacity of a sequence is exceeded by chaining the length, we say that the sequence overflows.
 There are several overflow strategies that determine what actually happens when a string should be expanded beyond its capacity.
 The user can specify this for a function call by additionally handing over a tag.
 If no overflow strategy is specified, a default overflow strategy is selected depending on the type of the sequence.
@@ -127,22 +127,11 @@ The following overflow strategies exist:
 
 The next example illustrates how the different strategies could be used:
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/sequences_in_depth/example_overflow.cpp
+   :fragment: example
 
-   String<Dna> dnaSeq;
-   // Sets the capacity of dnaSeq to 5.
-   resize(dnaSeq, 4, Exact());
-   // Only "TATA" is assigned to dnaSeq, since dnaSeq is limited to 4.
-   assign(str, "TATAGGGG", Limit());
-   std::cout << dnaSeq << std::endl;
-   // Use the default expansion strategy.
-   append(dnaSeq, "GCGCGC");
-   std::cout << dnaSeq << std::endl;
+.. includefrags:: demos/tutorial/sequences_in_depth/example_overflow.cpp.stdout
 
-.. code-block:: console
-
-   TATA
-   TATAGCGCGC
 
 Workshop Assignment 1
 ^^^^^^^^^^^^^^^^^^^^^

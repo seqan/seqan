@@ -74,11 +74,11 @@ struct Owner {};
  *
  * @section Examples
  *
- * @include demos/sequence/stringset.cpp
+ * @include demos/dox/sequence/stringset.cpp
  *
  * The output is as follows:
  *
- * @include demos/sequence/stringset.cpp.stdout
+ * @include demos/dox/sequence/stringset.cpp.stdout
  */
 
 template <typename TString, typename TSpec = Owner<> >

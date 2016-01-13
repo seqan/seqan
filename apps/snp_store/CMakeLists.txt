@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_snp_store)
 message (STATUS "Configuring apps/snp_store")
 
-set (SEQAN_APP_VERSION "1.2")
+set (SEQAN_APP_VERSION "1.3")
 
 # ----------------------------------------------------------------------------
 # Dependencies

@@ -158,13 +158,13 @@ public:
     // Pointer Operators;  Have to be defined within class.
     // ------------------------------------------------------------------------
 
-    typename Value<Iter>::Type *
+    typename std::iterator_traits<TIterator>::pointer
     operator->()
     {
         return &*data_iterator;
     }
 
-    typename Value<Iter>::Type const *
+    typename std::iterator_traits<TIterator>::pointer const
     operator->() const
     {
         return &*data_iterator;

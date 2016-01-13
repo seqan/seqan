@@ -120,11 +120,11 @@ struct NameStoreLess_
  * The demo below shows how to initialize a NameStoreCache with an existing name store, lookup existing names, add new
  * names, and add names during lookup.
  *
- * @include demos/misc/name_store_cache.cpp
+ * @include demos/dox/misc/name_store_cache.cpp
  *
  * Here is the output:
  *
- * @include demos/misc/name_store_cache.cpp.stdout
+ * @include demos/dox/misc/name_store_cache.cpp.stdout
  */
 
 /*!

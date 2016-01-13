@@ -146,16 +146,22 @@ set (COMPILER_IS_CLANG FALSE)
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set (COMPILER_IS_CLANG TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-		
+
 # Fix CMAKE_COMPILER_IS_GNUCXX for MinGW.
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   set (CMAKE_COMPILER_IS_GNUCXX TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
+# Intel
+set (COMPILER_IS_INTEL FALSE)
+if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  set (COMPILER_IS_INTEL TRUE)
+endif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+
 # GCC Setup
 
-if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   # Tune warnings for GCC.
   set (CMAKE_CXX_WARNING_LEVEL 4)
   # NOTE: First location to set SEQAN_CXX_FLAGS at the moment.  If you write
@@ -194,6 +200,11 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
   elseif (CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
     set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_CXX_FLAGS_RELEASE} -g -fno-omit-frame-pointer")
   endif ()
+
+  # disable some warnings on ICC
+  if (COMPILER_IS_INTEL)
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
+  endif (COMPILER_IS_INTEL)
 endif ()
 
 # Windows Setup
@@ -201,7 +212,7 @@ endif ()
 if (WIN32)
   # Always set NOMINMAX such that <Windows.h> does not define min/max as
   # macros.
-  add_definitions (-DNOMINMAX)
+  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -DNOMINMAX")
 endif (WIN32)
 
 # Visual Studio Setup
@@ -214,11 +225,17 @@ if (MSVC)
   # TODO(holtgrew): This rather belongs into the SeqAn build system and notso much into FindSeqAn.cmake.
 
   # Force to always compile with W2.
-  # add_definitions (/W2)
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W2")
+  # Use the /W2 warning level for visual studio.
+  SET(CMAKE_CXX_WARNING_LEVEL 2)
+  if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+    STRING (REGEX REPLACE "/W[0-4]"
+            "/W2" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  else (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W2")
+  endif (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
 
   # Disable warnings about unsecure (although standard) functions.
-  add_definitions (-D_SCL_SECURE_NO_WARNINGS)
+  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /D_SCL_SECURE_NO_WARNINGS")
 endif (MSVC)
 
 # ----------------------------------------------------------------------------
@@ -248,8 +265,16 @@ if (SEQAN_USE_SEQAN_BUILD_SYSTEM)
 else (SEQAN_USE_SEQAN_BUILD_SYSTEM)
   # When NOT using the SeqAn build system then we only look for one directory
   # with subdirectory seqan and thus only one library.
-  find_path(_SEQAN_BASEDIR "seqan" PATHS ${SEQAN_INCLUDE_PATH})
+  find_path(_SEQAN_BASEDIR "seqan"
+            PATHS ${SEQAN_INCLUDE_PATH} ENV SEQAN_INCLUDE_PATH
+            NO_DEFAULT_PATH)
+
+  if (NOT _SEQAN_BASEDIR)
+    find_path(_SEQAN_BASEDIR "seqan")
+  endif()
+
   mark_as_advanced(_SEQAN_BASEDIR)
+
   if (_SEQAN_BASEDIR)
     set(SEQAN_FOUND        TRUE)
     set(SEQAN_INCLUDE_DIRS_MAIN ${SEQAN_INCLUDE_DIRS_MAIN} ${_SEQAN_BASEDIR})

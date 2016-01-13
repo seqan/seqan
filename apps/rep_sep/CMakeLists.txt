@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_rep_sep)
 message (STATUS "Configuring apps/rep_sep")
 
-set (SEQAN_APP_VERSION "0.1.2")
+set (SEQAN_APP_VERSION "0.1.3")
 
 # ----------------------------------------------------------------------------
 # Dependencies

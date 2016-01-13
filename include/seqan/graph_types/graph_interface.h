@@ -79,11 +79,11 @@ struct Hmm;
  * This is an example for Dijktra's algorithm on a directed graph with an external property map.  The property map
  * labels the edges with weights.  The xample only outputs distances, not th edetails of the paths.
  *
- * @include demos/graph/graph_algo_dijkstra.cpp
+ * @include demos/dox/graph_types/graph_algo_dijkstra.cpp
  *
  * The output of the distances is as follows:
  *
- * @include demos/graph/graph_algo_dijkstra.cpp.stdout
+ * @include demos/dox/graph_types/graph_algo_dijkstra.cpp.stdout
  */
 
 template<typename TSpec = Directed<> >
