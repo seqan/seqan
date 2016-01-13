@@ -86,10 +86,7 @@
 #include <seqan/basic/proxy_base.h>
 #include <seqan/basic/proxy_iterator.h>
 
-#if defined(SEQAN_CXX11_STANDARD)  // Only if C++11 is enabled.
-// Zip iterator.
-#include <seqan/basic/iterator_zipped.h>
-
-#endif  // (SEQAN_CXX11_STANDARD)
+// Zip iterator. Requires C++11
+#include <seqan/basic/iterator_zip.h>
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ITERATOR_H_
