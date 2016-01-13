@@ -145,8 +145,8 @@ SEQAN_DEFINE_SIMD_VECTOR_(SimdVector16Short,    short,          32)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector16UShort,   unsigned short, 32)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Int,       int,            32)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8UInt,      unsigned int,   32)
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Int64,     __int64,        32)
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4UInt64,    __uint64,       32)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Int64,     int64_t,        32)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4UInt64,    uint64_t,       32)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Float,     float,          32)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Double,    double,         32)
 #endif
@@ -168,8 +168,8 @@ SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Short,     short,          16)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8UShort,    unsigned short, 16)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Int,       int,            16)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4UInt,      unsigned int,   16)
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Int64,     __int64,        16)
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2UInt64,    __uint64,       16)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Int64,     int64_t,        16)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2UInt64,    uint64_t,       16)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Float,     float,          16)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Double,    double,         16)
 #endif
@@ -419,10 +419,10 @@ inline TSimdVector1
 _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<16, 8>, SimdParams_<8, 8>)
 {
 #if defined(SEQAN_IS_32_BIT)
-    __m128i idx = _mm_slli_epi16(_mm_unpacklo_epi32(_mm_cvtsi32_si128(reinterpret_cast<const __uint32 &>(indices)),
-                                                    _mm_cvtsi32_si128(reinterpret_cast<const __uint64 &>(indices) >> 32)), 1);
+    __m128i idx = _mm_slli_epi16(_mm_unpacklo_epi32(_mm_cvtsi32_si128(reinterpret_cast<const uint32_t &>(indices)),
+                                                    _mm_cvtsi32_si128(reinterpret_cast<const uint64_t &>(indices) >> 32)), 1);
 #else
-    __m128i idx = _mm_slli_epi16(_mm_cvtsi64_si128(reinterpret_cast<const __uint64 &>(indices)), 1);
+    __m128i idx = _mm_slli_epi16(_mm_cvtsi64_si128(reinterpret_cast<const uint64_t &>(indices)), 1);
 #endif  // defined(SEQAN_IS_32_BIT)
     return reinterpret_cast<TSimdVector1>(_mm_shuffle_epi8(
         reinterpret_cast<const __m128i &>(vector),

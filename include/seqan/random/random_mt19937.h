@@ -128,7 +128,7 @@ pickRandomNumber(Rng<MersenneTwister> & mt)
  */
 
 inline void
-reSeed(Rng<MersenneTwister> & mt, __uint32 const seed = 0)
+reSeed(Rng<MersenneTwister> & mt, uint32_t const seed = 0)
 {
     SEQAN_CHECKPOINT;
 

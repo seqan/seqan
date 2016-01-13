@@ -119,8 +119,8 @@ struct IsSimple
 
 // user defined types (re-specializations are allowed here)
 template <> struct IsSimple<wchar_t> { typedef True Type; };
-template <> struct IsSimple<__int64> { typedef True Type; };
-template <> struct IsSimple<__uint64> { typedef True Type; };
+template <> struct IsSimple<int64_t> { typedef True Type; };
+template <> struct IsSimple<uint64_t> { typedef True Type; };
 
 template <typename T>
 struct IsSimple<T const> : public IsSimple<T> {};

@@ -299,7 +299,7 @@ buildIndex(BamTagsDict const & bamTags)
             c = *(it++);
             union {
                 char raw[4];
-                __uint32 len;
+                uint32_t len;
             } tmp;
             arrayCopyForward(it, it + 4, tmp.raw);
             it += 4 + tmp.len * getBamTypeSize(c);
@@ -545,13 +545,13 @@ extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
  *
  * @section Remarks
  *
- * Note that this function is defined for the <tt>__int16</tt>, <tt>__uint16</tt> etc. but not for the types
- * <tt>short</tt>, <tt>int</tt> etc. An exception are 8-bit characters/char, where it is defined for <tt>__int8</tt>,
- * <tt>__uint8</tt>, and <tt>char</tt> unless <tt>char</tt> is equal to one of the other two types. This is important
+ * Note that this function is defined for the <tt>int16_t</tt>, <tt>uint16_t</tt> etc. but not for the types
+ * <tt>short</tt>, <tt>int</tt> etc. An exception are 8-bit characters/char, where it is defined for <tt>int8_t</tt>,
+ * <tt>uint8_t</tt>, and <tt>char</tt> unless <tt>char</tt> is equal to one of the other two types. This is important
  * when used in @link BamTagsDict#setTagValue @endlink etc. since BAM gives type chars for printable characters, signed
  * 8-bit numbers and unsigned 8-bit numbers.
  *
- * If <tt>__int8</tt> and <tt>__uint8</tt> are not identical to <tt>char</tt>, we can make this decision from the type,
+ * If <tt>int8_t</tt> and <tt>uint8_t</tt> are not identical to <tt>char</tt>, we can make this decision from the type,
  * otherwise we cannot and we will give the integer types a higher precedence.
  *
  * In your programs, this should not make any difference, only the written SAM/BAM will differ.
@@ -613,7 +613,7 @@ inline char getBamTypeChar(T const &)
  * setTagValue(tags, "XC", 'X');  // char
  * @endcode
  *
- * If <tt>char</tt> is equal to <tt>__int8</tt> or <tt>__uint8</tt> then the last line produces an entry with type 'c'
+ * If <tt>char</tt> is equal to <tt>int8_t</tt> or <tt>uint8_t</tt> then the last line produces an entry with type 'c'
  * or 'C'. To make sure that the type char 'A' (for "printable character") is written to the file, give it explicitely:
  *
  * @code{.cpp}
@@ -622,16 +622,16 @@ inline char getBamTypeChar(T const &)
  *
  * Note that on most systems <tt>int</tt>s have a width of 32 bytes, but the C++ standard leaves this open. For all
  * types but characters, you should not give an explicit type char but use one of the types with explicit width and
- * signed/unsigned qualifier such as <tt>__int32</tt>, <tt>__uint32</tt> etc.
+ * signed/unsigned qualifier such as <tt>int32_t</tt>, <tt>uint32_t</tt> etc.
  *
  * @code{.cpp}
  * // The following is not recommended since the type of <tt>x</tt> is not "unsigned 32 bit int."
- * __int32 x = -1;
+ * int32_t x = -1;
  * setTagValue(tags, "XB", x, 'I');
  * // Instead, explicitely use an unsigned type if you need one.  Note that your compiler
  * // might warn you about assigning -1 to an unsigned variable so you know that you are
  * // probably doing something unintended.
- * __uint32 y = -1;
+ * uint32_t y = -1;
  * setTagValue(tags, "XB", y);
  *
  * // Do not do this!

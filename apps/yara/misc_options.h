@@ -293,7 +293,7 @@ inline TReadSeqSize getReadStrata(TOptions const & options, TReadSeqSize readSeq
 template <typename TOptions>
 bool saveContigsLimits(TOptions const & options)
 {
-    String<__uint64> limits;
+    String<uint64_t> limits;
 
     appendValue(limits, options.contigsMaxLength);
     appendValue(limits, options.contigsSize);
@@ -312,7 +312,7 @@ bool saveContigsLimits(TOptions const & options)
 template <typename TOptions>
 bool openContigsLimits(TOptions & options)
 {
-    String<__uint64> limits;
+    String<uint64_t> limits;
 
     CharString contigsLimitFile(options.contigsIndexFile);
     append(contigsLimitFile, ".txt.size");

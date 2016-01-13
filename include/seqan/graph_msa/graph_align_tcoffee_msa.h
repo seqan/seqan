@@ -508,7 +508,7 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
             getDistanceMatrix(g, distanceMatrix, KmerDistance());
         // Get distance matrix values for a precision of 10 decimal digits.
         for (unsigned i = 0; i < length(distanceMatrix); ++i)
-            distanceMatrix[i] = static_cast<__int64>(distanceMatrix[i] * 1e10) / 1e10;
+            distanceMatrix[i] = static_cast<int64_t>(distanceMatrix[i] * 1e10) / 1e10;
         if (msaOpt.build == 0)
             njTree(distanceMatrix, guideTree);
         else if (msaOpt.build == 1)

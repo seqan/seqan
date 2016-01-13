@@ -62,14 +62,14 @@ namespace seqan
  *
  * @tparam TAlignRow0 Type of the first alignment row, usually @link Gaps @endlink
  * @tparam TAlignRow1 Type of the second alignment row, usually @link Gaps @endlink
- * @tparam TPos   Position type of the sequences, defaults to <tt>__uint32</tt>
+ * @tparam TPos   Position type of the sequences, defaults to <tt>uint32_t</tt>
  * @tparam TQId   Type of qId, defaults to std::string
  * @tparam TSId   Type of sId, defaults to std::string
  */
 
 template <typename TAlignRow0_ = Gaps<CharString, ArrayGaps>,
           typename TAlignRow1_ = Gaps<CharString, ArrayGaps>,
-          typename TPos_ = __uint32,
+          typename TPos_ = uint32_t,
           typename TQId_ = std::string,
           typename TSId_ = std::string>
 struct BlastMatch
@@ -81,8 +81,8 @@ struct BlastMatch
     typedef TSId_ TSId;
 
     // internal use numerical ids
-    __uint32 _n_qId;
-    __uint32 _n_sId;
+    uint32_t _n_qId;
+    uint32_t _n_sId;
 
     /*!
      * @var TQId BlastMatch::qId;
@@ -138,8 +138,8 @@ struct BlastMatch
      * complement strand [subject sequence, only applies for BlastFormatProgram ==
      * TBLASTN | TBLASTX].
      */
-    __int8          qFrameShift   = 1;
-    __int8          sFrameShift   = 1;
+    int8_t          qFrameShift   = 1;
+    int8_t          sFrameShift   = 1;
 
     /*!
      * @var double BlastMatch::eValue;

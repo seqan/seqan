@@ -64,7 +64,7 @@ struct FxBamCoverageOptions
     seqan::CharString outPath;
 
     // Window size to use for computation.
-    __int32 windowSize;
+    int32_t windowSize;
 
     FxBamCoverageOptions() : verbosity(1), windowSize(10*1000)
     {}
