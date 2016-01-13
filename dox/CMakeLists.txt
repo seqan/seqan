@@ -23,19 +23,15 @@ add_test (build_dox
   -i ${CMAKE_CURRENT_SOURCE_DIR}/pages
   --image-dir ${CMAKE_CURRENT_SOURCE_DIR}/images)
 
-if (${SEQAN_BUILD_SYSTEM} MATCHES "LIBRARY")
+if (${SEQAN_BUILD_SYSTEM} MATCHES "SEQAN_RELEASE_LIBRARY") # includes SEQAN_RELEASE_LIBRARY
 
-    add_custom_target (dox
+    add_custom_target (dox ALL
         ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../util/bin/dox.py
         -b ${CMAKE_CURRENT_SOURCE_DIR}/..
         -i ${CMAKE_CURRENT_SOURCE_DIR}/../include/seqan
         -i ${CMAKE_CURRENT_SOURCE_DIR}/pages
         --image-dir ${CMAKE_CURRENT_SOURCE_DIR}/images)
-    
-    # You have to run "make dox" before calling make install.  We cannot
-    # add dependencies to the install target at the moment.  Also see:
-    # http://public.kitware.com/Bug/view.php?id=8438
-    
+
     install (DIRECTORY ${CMAKE_BINARY_DIR}/dox/html
-            DESTINATION share/doc/seqan)
+             DESTINATION share/doc/seqan)
 endif ()
