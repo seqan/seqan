@@ -147,10 +147,19 @@ macro (seqan_register_apps)
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
 
     # enable static linkage for seqan apps
-    if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG AND NOT MINGW)
-      set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-      set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
-    endif ()
+    if (NOT CMAKE_SYSTEM_NAME MATCHES "Windows")
+        set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+        # libstdc++ is being used and needs be explicitly "statified"
+        if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_SYSTEM_NAME MATCHES "Linux")
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
+        endif (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_SYSTEM_NAME MATCHES "Linux")
+        # if not apple make other libs static (apple does not support static builds except for the above)
+        if (NOT APPLE)
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+        endif (NOT APPLE)
+        # not that these checks are more than OS, because we have many possible combinations between
+        # OS, compiler and STL used
+    endif (NOT CMAKE_SYSTEM_NAME MATCHES "Windows")
 
     # Enable global exception handler for all seqan apps.
     set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
