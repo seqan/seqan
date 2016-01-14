@@ -1,28 +1,55 @@
-sudo: false
+sudo: required
+dist: trusty
 language: cpp
-compiler:
-  - gcc-4.8
-  - clang
-cache:
-  apt: true
-install:
-  - if [ "$CC" == "gcc" ]; then export CXX=g++-4.8 CC=gcc-4.8; fi
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - cmake
-      - gcc-4.8
-      - g++-4.8
-      - clang
-      - zlib1g-dev
-      - libbz2-dev
-      - libboost-dev
-      - python
-      - python-nose
-      - python-jinja2
-      - python-pip
+matrix:
+  include:
+    - os: linux
+      compiler: gcc-5
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-5', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      install: ['export CXX="g++-5" CC="gcc-5"' ]
+
+    - os: linux
+      compiler: gcc-4.9
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.9', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      install: ['export CXX="g++-4.9" CC="gcc-4.9"' ]
+
+    - os: linux
+      compiler: gcc-4.9
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.8', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      install: ['export CXX="g++-4.8" CC="gcc-4.8"' ]
+
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['clang', 'g++-4.9', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
+
+    - os: osx
+      compiler: clang-3.6
+      before_install:
+        - sudo brew update
+        - sudo brew tap homebrew/versions
+        - sudo brew install llvm36
+      install: ['export CXX="clang++-3.6" CC="clang-3.6"' ]
+
+    - os: osx
+      compiler: clang-3.7
+      before_install:
+        - sudo brew update
+        - sudo brew tap homebrew/versions
+        - sudo brew install llvm37
+      install: ['export CXX="clang++-3.7" CC="clang-3.7"' ]
+
 before_script:
   - export PATH=$HOME/.local/bin:$PATH
   - pip install -r manual/requirements.txt --user `whoami`
