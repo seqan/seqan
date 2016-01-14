@@ -448,7 +448,8 @@ macro (seqan_setup_cuda_vars)
       # NVCC mistakes /usr/bin/cc as gcc.
       #list (APPEND CUDA_NVCC_FLAGS "-ccbin /usr/bin/clang")
       # NVCC does not support libc++.
-      set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libstdc++")
+#(h-2): deactivated the following line because it affects non-cude, too; also this should work with modern nvcc
+#       set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libstdc++")
     endif ()
   endif ()
 endmacro (seqan_setup_cuda_vars)
