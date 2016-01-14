@@ -1,17 +1,18 @@
 sudo: required
 dist: trusty
 language: cpp
+cache: ccache
 matrix:
   include:
     - os: linux
-      compiler: gcc-5
+      compiler: gcc-4.8
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
-      install: ['export CXX="g++-5" CC="gcc-5"' ]
+          packages: ['g++-4.8', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      install: ['export CXX="g++-4.8" CC="gcc-4.8"' ]
 
-    - os: linux
+   - os: linux
       compiler: gcc-4.9
       addons:
         apt:
@@ -19,15 +20,15 @@ matrix:
           packages: ['g++-4.9', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
       install: ['export CXX="g++-4.9" CC="gcc-4.9"' ]
 
-    - os: linux
-      compiler: gcc-4.9
+   - os: linux
+      compiler: gcc-5
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.8', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
-      install: ['export CXX="g++-4.8" CC="gcc-4.8"' ]
+          packages: ['g++-5', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      install: ['export CXX="g++-5" CC="gcc-5"' ]
 
-    - os: linux
+   - os: linux
       compiler: clang
       addons:
         apt:
