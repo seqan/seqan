@@ -373,7 +373,7 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, 
     }
     else
     {
-        skipUntil(iter, qualCountDown);              // skip Fastq qualities
+        skipUntil(iter, qualCountDown);                     // skip Fastq qualities
     }
     // next record should follow immediately
     skipUntil(iter, NotFunctor<IsWhitespace>());     // ignore/skip white spaces
