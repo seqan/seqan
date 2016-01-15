@@ -87,11 +87,15 @@ typedef Tag<ZipIterator_> ZipIterator;
  * It allows to operate on a single iterator, if multiple containers need to be traversed simultaneously.
  * Note, that all operations are still executed in a serial fashion.
  * If the zip iterator is dereferenced it returns a <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a>
- * containing the dereferenced values of all embedded iterators.
+ * containing the dereferenced values of all embedded iterators. 
+ * The metafunctions @link Value @endlink, @link GetValue @endlink and @link Reference @endlink
+ * are overloaded to accordingly.
+ *
+ * To easily create a zip iterator one can use the helper function @link makeZipIterator @endlink.
  *
  * @section Example
  *
- * The following shows an example on how to use the zip iterator:
+ * The following example demonstrates the function of the zip iterator:
  *
  * @include demos/dox/basic/zip_iterator.cpp
  *
@@ -153,6 +157,19 @@ struct MakeIndexSequence<0, Indices...>
 // Metafunction Container
 // ----------------------------------------------------------------------------
 
+
+/*!
+ * @mfn ZipIterator#Container
+ * @headerfile <seqan/basic.h>
+ * @brief Retruns the Container type of the @link ZipIterator @endlink.
+ *
+ * @signature typename Container<TZipIterator>::Type;
+ *
+ * @tparam TZipIterator The type of the @link ZipIterator @endlink.
+ *
+ * @return TRes A <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a> containing the container
+ *               types of all iterator types embedded in the <tt>TZipIterator</tt> type.
+ */
 template <typename... TIteratorPack>
 struct Container<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
 {
@@ -165,6 +182,19 @@ struct Container<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
 
 // We expand each iterator type in the param pack to call its Value metafunction
 // and define a tuple with the value types.
+
+/*!
+ * @mfn ZipIterator#Value
+ * @headerfile <seqan/basic.h>
+ * @brief Retruns the Value type of the @link ZipIterator @endlink.
+ *
+ * @signature typename Value<TZipIterator>::Type;
+ *
+ * @tparam TZipIterator The type of the @link ZipIterator @endlink.
+ *
+ * @return TRes A <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a> containing the value
+ *               types of all iterator types embedded in the <tt>TZipIterator</tt> type.
+ */
 template <typename... TIteratorPack>
 struct Value<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
 {
@@ -175,7 +205,18 @@ struct Value<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
 // Metafunction GetValue
 // ----------------------------------------------------------------------------
 
-// See above.
+/*!
+ * @mfn ZipIterator#GetValue
+ * @headerfile <seqan/basic.h>
+ * @brief Retruns the GetValue type of the @link ZipIterator @endlink.
+ *
+ * @signature typename GetValue<TZipIterator>::Type;
+ *
+ * @tparam TZipIterator The type of the @link ZipIterator @endlink.
+ *
+ * @return TRes A <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a> containing the value
+ *               types of all iterator types embedded in the <tt>TZipIterator</tt> type.
+ */
 template <typename... TIteratorPack>
 struct GetValue<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
 {
@@ -186,7 +227,18 @@ struct GetValue<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
 // Metafunction Reference
 // ----------------------------------------------------------------------------
 
-// See above.
+/*!
+ * @mfn ZipIterator#Reference
+ * @headerfile <seqan/basic.h>
+ * @brief Retruns the Reference type of the @link ZipIterator @endlink.
+ *
+ * @signature typename GetValue<TZipIterator>::Type;
+ *
+ * @tparam TZipIterator The type of the @link ZipIterator @endlink.
+ *
+ * @return TRes A <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a> containing the value
+ *               types of all iterator types embedded in the <tt>TZipIterator</tt> type.
+ */
 template <typename... TIteratorPack>
 struct Reference<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
 {

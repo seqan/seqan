@@ -65,6 +65,12 @@ struct Resizable;
  *
  * @tparam TContainer The container type to create the view for.
  * @tparam TSpec The specialization type. Defaults to void.
+ *
+ * A @link ContainerView @endlink is a lightweight data structure storing only a begin and end 
+ * pointer to an underlying container. The view can represent any range between the 
+ * global begin and end of the contaniner. The view itself implements the @link ContainerConcept @endlink.
+ * The default implementation however is not resizable. The @link ResizableContainerView @endlink supports 
+ * resizing of the view, but must not change the capacity of the underlying container.
  */
 
 
@@ -160,7 +166,7 @@ public:
 // ----------------------------------------------------------------------------
 
 /*!
- * @class ReizableContainerView
+ * @class ResizableContainerView
  * @extends ContainerView
  * @headerfile <seqan/sequence.h>
  *
@@ -232,6 +238,11 @@ SEQAN_CONCEPT_IMPL((ContainerView<TContainer, TSpec> const), (ContainerConcept))
 // ----------------------------------------------------------------------------
 // Metafunction View
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn ContainerView#View
+ * 
+ */
 
 template <typename TValue, typename TAlloc>
 struct View<String<TValue, TAlloc> >
