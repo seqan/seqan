@@ -11,7 +11,7 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.8', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
-      install: export PATH=/usr/lib/ccache:$PATH" CXX="g++-4.8" CC="gcc-4.8"
+      install: export PATH="/usr/lib/ccache:$PATH" CXX="g++-4.8" CC="gcc-4.8"
 
     - os: linux
       compiler: gcc-4.9
@@ -73,6 +73,7 @@ matrix:
 before_script:
   - export PATH=$HOME/.local/bin:$PATH
   - pip install -r manual/requirements.txt --user `whoami`
+  - rm -rf ${HOME}/.ccache
   - mkdir -p ${HOME}/ccache/${TRAVIS_OS_NAME}/${CXX}
   - ln -s  ${HOME}/ccache/${TRAVIS_OS_NAME}/${CXX} ${HOME}/.ccache
 script:

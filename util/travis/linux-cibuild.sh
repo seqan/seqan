@@ -14,7 +14,7 @@ else
 fi
 
 # disable OpenMP warnings for clang
-if [ "${CXX}" == "clang++" ]; then
+if [ "${CXX}" MATCHES "clang" ]; then
   export CXXFLAGS="${CXXFLAGS} -DSEQAN_IGNORE_MISSING_OPENMP=1"
 fi
 
