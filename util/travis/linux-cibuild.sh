@@ -14,7 +14,7 @@ else
 fi
 
 # disable OpenMP warnings for clang
-if [ "${CXX}" MATCHES "clang" ]; then
+if [ "$(echo ${CXX} | cut -c1-5)" = "clang" ]; then
   export CXXFLAGS="${CXXFLAGS} -DSEQAN_IGNORE_MISSING_OPENMP=1"
 fi
 
