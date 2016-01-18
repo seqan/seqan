@@ -16,11 +16,6 @@ enable_language(CXX)
 check_cxx_compiler_flag("-std=c++14" CXX14_FOUND)
 if (CXX14_FOUND)
     set (CXX11_CXX_FLAGS "-std=c++14")
-else (CXX14_FOUND)
-    check_cxx_compiler_flag("-std=c++1y" CXX14_FOUND)
-    if (CXX14_FOUND)
-        set (CXX11_CXX_FLAGS "-std=c++1y")
-    endif (CXX14_FOUND)
 endif (CXX14_FOUND)
 
 # c++14 implies c++11

@@ -26,13 +26,6 @@ if (CXX11_FOUND)
      set (CXX11_CXX_FLAGS "${CXX11_CXX_FLAGS} -stdlib=libc++ -Qunused-arguments")
   endif (CMAKE_HOST_APPLE AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
 
-else (CXX11_FOUND)
-
-  check_cxx_compiler_flag("-std=c++0x" CXX11_FOUND)
-  if (CXX11_FOUND)
-    set (CXX11_CXX_FLAGS "-std=c++0x")
-  endif (CXX11_FOUND)
-
 endif (CXX11_FOUND)
 
 # By default, C++11 compiler support implies the C++11 STL.
