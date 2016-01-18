@@ -73,6 +73,7 @@ matrix:
 before_script:
   - export PATH=$HOME/.local/bin:$PATH
   - pip install -r manual/requirements.txt --user `whoami`
+  - /usr/sbin/update-ccache-symlinks
   - rm -rf ${HOME}/.ccache
   - mkdir -p ${HOME}/ccache/${TRAVIS_OS_NAME}/${CXX}
   - ln -s  ${HOME}/ccache/${TRAVIS_OS_NAME}/${CXX} ${HOME}/.ccache
