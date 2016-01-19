@@ -6,30 +6,39 @@ cache:
 before_install: mkdir -p ${HOME}/.local/bin/
 matrix:
   include:
-    # deactivated just for speeding up testing
-    #- os: linux
-      #compiler: gcc-4.8
-      #addons:
-        #apt:
-          #sources: ['ubuntu-toolchain-r-test']
-          #packages: ['g++-4.8', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
-      #install: export CXX="g++-4.8" CC="gcc-4.8"
+    - os: linux
+      compiler: gcc-4.8
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.8', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      install: export CXX="g++-4.8" CC="gcc-4.8"
 
-    #- os: linux
-      #compiler: gcc-4.9
-      #addons:
-        #apt:
-          #sources: ['ubuntu-toolchain-r-test']
-          #packages: ['g++-4.9', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
-      #install: export CXX="g++-4.9" CC="gcc-4.9"
+    - os: linux
+      compiler: gcc-4.9
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.9', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      install: export CXX="g++-4.9" CC="gcc-4.9"
 
-    #- os: linux
-      #compiler: gcc-5
-      #addons:
-        #apt:
-          #sources: ['ubuntu-toolchain-r-test']
-          #packages: ['g++-5', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
-      #install: export PATH="/usr/lib/ccache:$PATH" CXX="g++-5" CC="gcc-5"
+    - os: linux
+      compiler: gcc-5
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-5', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      install: export CXX="g++-5" CC="gcc-5"
+
+    - os: linux
+      compiler: clang-3.4
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.9', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
+      install:
+        - export CXX="clang++-3.4" CC="clang-3.4"
+        - ln -s /usr/bin/ccache ${HOME}/.local/bin/clang++-3.4
 
     - os: linux
       compiler: clang-3.5
@@ -82,8 +91,8 @@ before_script:
   - export PATH=$HOME/.local/bin:/usr/lib/ccache:$PATH
   - pip install -r manual/requirements.txt --user `whoami`
   - rm -rf ${HOME}/.ccache
-  - mkdir -p ${HOME}/ccache/${TRAVIS_OS_NAME}/${CXX}
-  - ln -s  ${HOME}/ccache/${TRAVIS_OS_NAME}/${CXX} ${HOME}/.ccache
+  - mkdir -p ${HOME}/ccache/${TRAVIS_BRANCH}/${TRAVIS_OS_NAME}/${CXX}
+  - ln -s  ${HOME}/ccache/${TRAVIS_BRANCH}/${TRAVIS_OS_NAME}/${CXX} ${HOME}/.ccache
 script:
   - ccache -s
   - ./util/travis/linux-cibuild.sh
