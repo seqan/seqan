@@ -43,7 +43,10 @@ namespace seqan
 // ============================================================================
 
 template <typename TPattern>
-struct PatternState;
+struct GetPatternState
+{
+    using Type = Nothing;
+};
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -80,7 +83,6 @@ public:
 
     PatternBase(TPattern & pattern) : _derived(pattern)
     {}
-
 };
 
 
@@ -88,7 +90,7 @@ template <typename TPattern, typename TCxtPosition>
 class PatternBase<TPattern, True, TCxtPosition>
 {
 public:
-    using TState = typename PatternState<TPattern>::Type;
+    using TState = typename GetPatternState<TPattern>::Type;
 
     TPattern & _derived;
     TState _state;
@@ -290,6 +292,20 @@ needle(Pattern2<TNeedle, TSpec> const & obj)
     return host(obj);
 }
 
+// Returns the state.
+template <typename TPattern, typename THasState, typename TCxtPosition>
+inline typename GetPatternState<TPattern>::Type &
+state(PatternBase<TPattern, THasState, TCxtPosition> & pattern)
+{
+    return pattern._state;
+}
+
+template <typename TPattern, typename THasState, typename TCxtPosition>
+inline typename GetPatternState<TPattern const>::Type &
+state(PatternBase<TPattern, THasState, TCxtPosition> const & pattern)
+{
+    return pattern._state;
+}
 
 template <typename TPattern, typename THasState, typename TCxtPosition,
           typename TTraverser,

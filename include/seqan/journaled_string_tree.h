@@ -87,6 +87,7 @@
 
 #include <seqan/journaled_string_tree/pattern_base.h>
 #include <seqan/journaled_string_tree/pattern_horspool.h>
+#include <seqan/journaled_string_tree/pattern_shift_and.h>
 
 #endif // SEQAN_CXX11_STANDARD
 #endif // INCLUDE_SEQAN_JOURNALED_STRING_TREE_H_

@@ -46,22 +46,24 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TNeedle>
-struct PatternState<Pattern2<TNeedle, ShiftAnd> >
+
+template <typename TPattern>
+struct PatternStateShiftAnd_
 {
-    typedef unsigned int TWord;
-    constexpr TWord MACHINE_WORD_SIZE = sizeof(TWord) * 8;
+    using TWord = unsigned int;
+    static constexpr TWord MACHINE_WORD_SIZE = sizeof(TWord) * 8;
 
     String<TWord> prefSufMatch;        // Set of all the prefixes of needle that match a suffix of haystack (called D in "Navarro")
 };
 
 template <typename TNeedle>
 class Pattern2<TNeedle, ShiftAnd> :
-public PatternBase<Pattern2<TNeedle, ShiftAnd>, True, ContextBegin>
+    public PatternBase<Pattern2<TNeedle, ShiftAnd>, True, ContextBegin>
 {
 public:
-    typedef typename Size<TNeedle>::Type TSize;
-    typedef PatternBase<Pattern2<TNeedle, ShiftAnd>, True, ContextBegin> TBase;
+    using TBase  = PatternBase<Pattern2<TNeedle, ShiftAnd>, True, ContextBegin>;
+    using TState = typename GetPatternState<Pattern2>::Type;
+    using TWord  = typename TState::TWord;
 
     Holder<TNeedle>     data_host;
     String<TWord>       bitMasks;            // Look up table for each character in the alphabet (called B in "Navarro")
@@ -82,6 +84,18 @@ public:
 // Metafunctions
 // ============================================================================
 
+template <typename TNeedle>
+struct GetPatternState<Pattern2<TNeedle, ShiftAnd> >
+{
+    using Type = PatternStateShiftAnd_<Pattern2<TNeedle, ShiftAnd> >;
+};
+
+template <typename TNeedle>
+struct GetPatternState<Pattern2<TNeedle, ShiftAnd> const>
+{
+    using Type = PatternStateShiftAnd_<Pattern2<TNeedle, ShiftAnd> > const;
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -90,51 +104,37 @@ template <typename TNeedle>
 void
 _reinitPattern(Pattern2<TNeedle, ShiftAnd> & me)
 {
-    typedef typename Value<TNeedle>::Type TValue;
-    typedef typename Size<TNeedle>::Type TSize;
-    typedef typename ValueSize<TValue>::Type TValSize;
+    using TWord = typename Pattern2<TNeedle, ShiftAnd>::TWord;
+    using TValue = typename Value<TNeedle>::Type;
 
-    TNeedle& ndl = needle(me);
-    SEQAN_ASSERT_NOT(empty(ndl));
+    me.needleLength = length(needle(me));
+    if (me.needleLength < 1)
+        me.blockCount = 1;
+    else
+        me.blockCount = (me.needleLength - 1) / BitsPerValue<TWord>::VALUE + 1;
 
-    TSize value_size = ValueSize<TValue>::VALUE;
-    //make room for map
-    resize(me.data_map, value_size);
+    clear(me.bitMasks);
+    resize(me.bitMasks, me.blockCount * ValueSize<TValue>::VALUE, 0, Exact());
 
-    //fill map
-    TValSize jump_width = length(ndl);
-    arrayFill(begin(me.data_map, Standard()), begin(me.data_map, Standard()) + value_size, jump_width);
+    clear(state(me).prefSufMatch);
+    resize(state(me).prefSufMatch, me.blockCount, 0, Exact());
 
-    typename Iterator<TNeedle, Standard>::Type it;
-    it = begin(ndl, Standard());
-    while (jump_width > 1)
-    {
-        me.data_map[ordValue(getValue(it))] = --jump_width;
-        ++it;
-    }
+    for (TWord j = 0; j < me.needleLength; ++j)
+        me.bitMasks[me.blockCount * ordValue(convert<TValue>(getValue(needle(me), j))) + j / state(me).MACHINE_WORD_SIZE] |=
+                    static_cast<TWord>(1) << (j % state(me).MACHINE_WORD_SIZE);
+
 }
-
 
 template <typename TNeedle, typename TIterator>
 inline std::pair<TIterator, bool>
 run(Pattern2<TNeedle, ShiftAnd> & me,
-    TIterator hystkBegin,
-    TIterator hystkEnd)
+    TIterator hystkIt)
 {
-    using TDiff = typename Difference<TIterator>::Type;
-    SEQAN_ASSERT(!empty(needle(me)));
+    using TWord = typename Pattern2<TNeedle, ShiftAnd>::TWord;
+    using TValue = typename Value<TNeedle>::Type;
 
-    // Sanity check: Range must have same size as needle!
-    if (hystkEnd - hystkBegin != static_cast<TDiff>(length(needle(me))))
-        return std::pair<TIterator, bool>(hystkBegin + me.data_map[ordValue(getValue(--hystkEnd))], false);
-
-    auto ndlIt = end(needle(me), Standard());
-    TIterator hstkIt = hystkEnd;
-    while (getValue(--ndlIt) == getValue(--hstkIt) && hstkIt != hystkBegin)
-    {}
-    
-    return std::pair<TIterator, bool>(hystkBegin + me.data_map[ordValue(getValue(--hystkEnd))],
-                                      hstkIt == hystkBegin && getValue(ndlIt) == getValue(hstkIt));
+    state(me).prefSufMatch[0] = ((state(me).prefSufMatch[0] << 1) | (TWord)1) & me.bitMasks[ordValue(convert<TValue>(getValue(hystkIt)))];
+    return std::pair<TIterator, bool>(++hystkIt, (state(me).prefSufMatch[0] & (static_cast<TWord>(1) << (me.needleLength - 1))) != 0);
 }
 }  // namespace seqan
 
