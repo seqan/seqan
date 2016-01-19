@@ -460,24 +460,27 @@ endmacro (seqan_setup_cuda_vars)
 # ---------------------------------------------------------------------------
 
 macro (seqan_get_version)
-  try_run(_SEQAN_RUN_RESULT
-          _SEQAN_COMPILE_RESULT
-          ${CMAKE_BINARY_DIR}/CMakeFiles/SeqAnVersion
-          ${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/SeqAnVersion.cpp
-          CMAKE_FLAGS -DINCLUDE_DIRECTORIES:STRING=${CMAKE_CURRENT_SOURCE_DIR}/include
-          COMPILE_OUTPUT_VARIABLE _COMPILE_OUTPUT
-          RUN_OUTPUT_VARIABLE _RUN_OUTPUT)
-  if (NOT _RUN_OUTPUT)
-    message("")
-    message("ERROR: Could not determine SeqAn version.")
-    message("COMPILE OUTPUT:")
-    message(${_COMPILE_OUTPUT})
-  endif (NOT _RUN_OUTPUT)
-  string(REGEX REPLACE ".*SEQAN_VERSION_MAJOR:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_MAJOR ${_RUN_OUTPUT})
-  string(REGEX REPLACE ".*SEQAN_VERSION_MINOR:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_MINOR ${_RUN_OUTPUT})
-  string(REGEX REPLACE ".*SEQAN_VERSION_PATCH:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_PATCH ${_RUN_OUTPUT})
-  string(REGEX REPLACE ".*SEQAN_VERSION_PRE_RELEASE:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_PRE_RELEASE ${_RUN_OUTPUT})
-  set(SEQAN_VERSION "${SEQAN_VERSION_MAJOR}.${SEQAN_VERSION_MINOR}.${SEQAN_VERSION_PATCH}")
+  # Read from CMAKE_SOURCE_DIR the /include/seqan/version.h
+  get_filename_component(_SEQAN_VERSION_H "${CMAKE_SOURCE_DIR}/include/seqan/version.h" ABSOLUTE)
+  # If file wasn't found seqan version is set to 0.0.0
+  set (_SEQAN_VERSION_IDS MAJOR MINOR PATCH PRE_RELEASE)
+  foreach (_ID ${_SEQAN_VERSION_IDS})
+    set(_SEQAN_VERSION_${_ID} "0")
+  endforeach(_ID ${_SEQAN_VERSION_IDS})
+
+  # Error log if version.h not found, otherwise read version from
+  # version.h and cache it.
+  if (NOT EXISTS ${_SEQAN_VERSION_H})
+    message ("")
+    message ("ERROR: Could not determine SeqAn version.")
+    message ("Could not find file: ${_SEQAN_VERSION_H}")
+  else ()
+    foreach (_ID ${_SEQAN_VERSION_IDS})
+      file (STRINGS ${_SEQAN_VERSION_H} _VERSION_${_ID} REGEX ".*SEQAN_VERSION_${_ID}.*")
+      string (REGEX REPLACE ".*SEQAN_VERSION_${_ID}[ |\t]+([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_${_ID} ${_VERSION_${_ID}})
+    endforeach(_ID ${_SEQAN_VERSION_IDS})
+  endif ()
+  set (SEQAN_VERSION_STRING "${SEQAN_VERSION_MAJOR}.${SEQAN_VERSION_MINOR}.${SEQAN_VERSION_PATCH}")
 endmacro (seqan_get_version)
 
 # ---------------------------------------------------------------------------
