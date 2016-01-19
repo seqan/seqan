@@ -84,6 +84,7 @@ before_script:
   - rm -rf ${HOME}/.ccache
   - mkdir -p ${HOME}/ccache/${TRAVIS_OS_NAME}/${CXX}
   - ln -s  ${HOME}/ccache/${TRAVIS_OS_NAME}/${CXX} ${HOME}/.ccache
+  - export CCACHE_CPP2=yes
 script:
   - ccache -s
   - ./util/travis/linux-cibuild.sh
