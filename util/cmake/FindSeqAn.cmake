@@ -408,13 +408,13 @@ if (NOT DEFINED SEQAN_VERSION_STRING)
   # Scan all include dirs identified by the build system and
   # check if there is a file version.h in a subdir seqan/
   # If exists store absolute path to file and break loop.
+
   set (_SEQAN_VERSION_H "")
   foreach(_INCLUDE_DIR ${SEQAN_INCLUDE_DIRS_MAIN})
-    get_filename_component(_VERSION_FILE "${_INCLUDE_DIR}/seqan/version.h" ABSOLUTE)
-    if (EXISTS ${_VERSION_FILE})
-       set (_SEQAN_VERSION_H ${_VERSION_FILE})
+    get_filename_component(_SEQAN_VERSION_H "${_INCLUDE_DIR}/seqan/version.h" ABSOLUTE)
+    if (EXISTS ${_SEQAN_VERSION_H})
        break()
-    endif(EXISTS ${_VERSION_FILE})
+    endif()
   endforeach()
 
   set (_SEQAN_VERSION_IDS MAJOR MINOR PATCH PRE_RELEASE)
@@ -422,20 +422,20 @@ if (NOT DEFINED SEQAN_VERSION_STRING)
   # If file wasn't found seqan version is set to 0.0.0
   foreach (_ID ${_SEQAN_VERSION_IDS})
     set(_SEQAN_VERSION_${_ID} "0")
-  endforeach(_ID ${_SEQAN_VERSION_IDS})
+  endforeach()
 
   # Error log if version.h not found, otherwise read version from
   # version.h and cache it.
-  if ("${_SEQAN_VERSION_H}" STREQUAL "")
+  if (NOT EXISTS "${_SEQAN_VERSION_H}")
     message ("")
     message ("ERROR: Could not determine SeqAn version.")
     message ("Could not find file: ${_SEQAN_VERSION_H}")
-  else ("${_SEQAN_VERSION_H}" STREQUAL "")
+  else ()
     foreach (_ID ${_SEQAN_VERSION_IDS})
       file (STRINGS ${_SEQAN_VERSION_H} _VERSION_${_ID} REGEX ".*SEQAN_VERSION_${_ID}.*")
       string (REGEX REPLACE ".*SEQAN_VERSION_${_ID}[ |\t]+([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_${_ID} ${_VERSION_${_ID}})
-    endforeach(_ID ${_SEQAN_VERSION_IDS})
-  endif ("${_SEQAN_VERSION_H}" STREQUAL "")
+    endforeach ()
+  endif ()
 
   # Check for pre release.
   if (SEQAN_VERSION_PRE_RELEASE EQUAL 1)
