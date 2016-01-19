@@ -37,8 +37,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['clang-3.4', 'g++-4.9', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
       install:
-        - export CXX="clang++-3.4" CC="clang-3.4"
-        - ln -s /usr/bin/ccache ${HOME}/.local/bin/clang++-3.4
+        - export CXX="clang++" CC="clang"
+        - ln -s /usr/bin/ccache ${HOME}/.local/bin/clang++
 
     - os: linux
       compiler: clang-3.5
