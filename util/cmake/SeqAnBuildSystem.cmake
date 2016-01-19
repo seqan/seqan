@@ -199,6 +199,13 @@ macro (seqan_build_system_init)
                        README.rst
                        CHANGELOG.rst
                  DESTINATION share/doc/seqan)
+        # Install pkg-config file, except on Windows.
+        if (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
+            configure_file("util/pkgconfig/seqan.pc.in" "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" @ONLY)
+            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION share/pkgconfig)
+            # Install FindSeqAn TODO(h-2) rename FindSeqAn.cmake to FindSeqAn${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
+            install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/FindSeqAn.cmake" DESTINATION share/cmake/Modules)
+        endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
     endif ()
 
     set (SEQAN_BUILD_SYSTEM "DEVELOP" CACHE STRING "Build/Release mode to select. One of DEVELOP SEQAN_RELEASE, APP:\${APP_NAME}. Defaults to DEVELOP.")

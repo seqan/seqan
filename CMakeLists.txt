@@ -110,6 +110,7 @@ set (SEQAN_USE_SEQAN_BUILD_SYSTEM TRUE CACHE INTERNAL "Use SeqAn build system." 
 #set (SEQAN_PREFIX_SHARE .)
 include (SeqAnBuildSystem)
 set (SEQAN_ROOT_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE INTERNAL "Root source directory." FORCE)
+seqan_get_version ()
 seqan_build_system_init ()
 seqan_get_repository_info ()
 
