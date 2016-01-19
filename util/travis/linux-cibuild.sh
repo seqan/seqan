@@ -15,7 +15,7 @@ fi
 
 # disable OpenMP warnings for clang
 if [ "$(echo ${CXX} | cut -c1-5)" = "clang" ]; then
-  export CXXFLAGS="${CXXFLAGS} -DSEQAN_IGNORE_MISSING_OPENMP=1"
+  export CXXFLAGS="${CXXFLAGS} -Qunused-arguments -DSEQAN_IGNORE_MISSING_OPENMP=1"
 fi
 
 ctest -V -S util/travis/linux-cibuild.cmake
