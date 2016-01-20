@@ -31,6 +31,16 @@ matrix:
       install: export CXX="g++-5" CC="gcc-5"
 
     - os: linux
+      compiler: gcc-6
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-6', 'gcc-6', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      install:
+        - export CXX="g++-6" CC="gcc-6"
+        - ln -s /usr/bin/ccache ${HOME}/.local/bin/g++-6
+
+    - os: linux
       compiler: clang-3.4
       addons:
         apt:
