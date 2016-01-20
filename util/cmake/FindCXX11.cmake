@@ -1,32 +1,8 @@
-if(__FIND_CXX11_CMAKE__)
-  return()
-endif()
-set(__FIND_CXX11_CMAKE__ TRUE)
 
-# Visual Studio 2008 (vs9) doesn't seem to support C++11 directly (only as TR1)
-if (MSVC AND MSVC_VERSION GREATER 1500)
-  set(CXX11_FOUND 1)
-  # Visual Studio 2010 (vs10) doesn't support C++11 STL.
-  if (MSVC_VERSION GREATER 1600)
-    set(CXX11_STL_FOUND 1)
-  endif (MSVC_VERSION GREATER 1600)
-  return ()
-endif (MSVC AND MSVC_VERSION GREATER 1500)
+message(AUTHOR_WARNING "Since Seqan 2.1.0, we require at least C++11 "
+        "and select automatically the highest available C++ standard. "
+        "Thus, finding C++11 via `find(CXX11)` and including the variable "
+        "`CXX11_CXX_FLAGS` into `SEQAN_CXX_FLAGS` or `CMAKE_CXX_FLAGS` are not "
+        "necessary anymore. Please remove those instructions.")
 
-include(CheckCXXCompilerFlag)
-enable_language(CXX)
-
-check_cxx_compiler_flag("-std=c++11" CXX11_FOUND)
-if (CXX11_FOUND)
-  set (CXX11_CXX_FLAGS "-std=c++11")
-
-  # Tested on Mac OS X 10.8.2 with XCode 4.6 Command Line Tools
-  # Clang requires this to find the correct c++11 headers
-  if (CMAKE_HOST_APPLE AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
-     set (CXX11_CXX_FLAGS "${CXX11_CXX_FLAGS} -stdlib=libc++ -Qunused-arguments")
-  endif (CMAKE_HOST_APPLE AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
-
-endif (CXX11_FOUND)
-
-# By default, C++11 compiler support implies the C++11 STL.
-set(CXX11_STL_FOUND ${CXX11_FOUND})
+include(FindStdCXX)

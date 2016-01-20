@@ -228,6 +228,14 @@ macro (seqan_build_system_init)
 
     SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
          ${PROJECT_BINARY_DIR}/bin)
+
+    # find the highest c++ standard and select it
+    find_package(StdCXX REQUIRED)
+    # NOTE: First location to set SEQAN_CXX_FLAGS at the moment.  If you write
+    # to the variable for the first time earlier, update this line to append to
+    # the variable instead of overwriting.
+    set (SEQAN_CXX_FLAGS "${STD_CXX_FLAG}")
+
 endmacro (seqan_build_system_init)
 
 # ---------------------------------------------------------------------------

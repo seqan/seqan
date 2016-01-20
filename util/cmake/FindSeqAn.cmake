@@ -164,10 +164,7 @@ endif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
 if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   # Tune warnings for GCC.
   set (CMAKE_CXX_WARNING_LEVEL 4)
-  # NOTE: First location to set SEQAN_CXX_FLAGS at the moment.  If you write
-  # to the variable for the first time earlier, update this line to append to
-  # the variable instead of overwriting.
-  set (SEQAN_CXX_FLAGS "-W -Wall -Wno-long-long -fstrict-aliasing -Wstrict-aliasing")
+  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -Wno-long-long -fstrict-aliasing -Wstrict-aliasing")
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
 
   # Determine GCC version.
@@ -191,7 +188,7 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   else (400 GREATER _GCC_VERSION)
     set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -pedantic -Wno-variadic-macros")
   endif (400 GREATER _GCC_VERSION)
-  
+
   # Force GCC to keep the frame pointer when debugging is enabled.  This is
   # mainly important for 64 bit but does not get into the way on 32 bit either
   # at minimal performance impact.
