@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_PATTERN_HORSPOOL_H_
-#define INCLUDE_SEQAN_JOURNALED_STRING_TREE_PATTERN_HORSPOOL_H_
+#ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_HORSPOOL_H_
+#define INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_HORSPOOL_H_
 
 namespace seqan
 {
@@ -47,24 +47,17 @@ namespace seqan
 // ============================================================================
 
 template <typename TNeedle>
-class Pattern2<TNeedle, Horspool> :
-    public PatternBase<Pattern2<TNeedle, Horspool>, False, ContextRange>
+class JstExtension<Pattern<TNeedle, Horspool> > :
+    public JstExtensionBase<JstExtension<Pattern<TNeedle, Horspool> >, False, ContextRange>
 {
 public:
     typedef typename Size<TNeedle>::Type TSize;
-    typedef PatternBase<Pattern2<TNeedle, Horspool>, False, ContextRange> TBase;
+    typedef JstExtensionBase<JstExtension<Pattern<TNeedle, Horspool> >, False, ContextRange> TBase;
 
-    Holder<TNeedle>      data_host;
-    String<TSize>        data_map;
+    Pattern<TNeedle, Horspool>& _pattern;
 
-    Pattern2() {}
-
-    template <typename TNeedle2>
-    Pattern2(TNeedle2 && ndl, SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern2 const &>)) : TBase(*this)
-    {
-        setHost(*this, std::forward<TNeedle2>(ndl));
-        ignoreUnusedVariableWarning(dummy);
-    }
+    JstExtension(Pattern<TNeedle, Horspool> & pattern) : TBase(*this), _pattern(pattern)
+    {}
 };
 
 // ============================================================================
@@ -75,57 +68,28 @@ public:
 // Functions
 // ============================================================================
 
-template <typename TNeedle>
-void
-_reinitPattern(Pattern2<TNeedle, Horspool> & me)
-{
-    typedef typename Value<TNeedle>::Type TValue;
-    typedef typename Size<TNeedle>::Type TSize;
-    typedef typename ValueSize<TValue>::Type TValSize;
-
-    TNeedle& ndl = needle(me);
-    SEQAN_ASSERT_NOT(empty(ndl));
-
-    TSize value_size = ValueSize<TValue>::VALUE;
-    //make room for map
-    resize(me.data_map, value_size);
-
-    //fill map
-    TValSize jump_width = length(ndl);
-    arrayFill(begin(me.data_map, Standard()), begin(me.data_map, Standard()) + value_size, jump_width);
-
-    typename Iterator<TNeedle, Standard>::Type it;
-    it = begin(ndl, Standard());
-    while (jump_width > 1)
-    {
-        me.data_map[ordValue(getValue(it))] = --jump_width;
-        ++it;
-    }
-}
-
-
 template <typename TNeedle, typename TIterator>
 inline std::pair<TIterator, bool>
-run(Pattern2<TNeedle, Horspool> & me,
+run(JstExtension<Pattern<TNeedle, Horspool> > const & me,
     TIterator hystkBegin,
     TIterator hystkEnd)
 {
     using TDiff = typename Difference<TIterator>::Type;
-    SEQAN_ASSERT(!empty(needle(me)));
+    SEQAN_ASSERT(!empty(needle(me._pattern)));
 
     // Sanity check: Range must have same size as needle!
-    if (hystkEnd - hystkBegin != static_cast<TDiff>(length(needle(me))))
-        return std::pair<TIterator, bool>(hystkBegin + me.data_map[ordValue(getValue(--hystkEnd))], false);
+    if (hystkEnd - hystkBegin != static_cast<TDiff>(length(needle(me._pattern))))
+        return std::pair<TIterator, bool>(hystkBegin + me._pattern.data_map[ordValue(getValue(--hystkEnd))], false);
 
-    auto ndlIt = end(needle(me), Standard());
+    auto ndlIt = end(needle(me._pattern), Standard());
     TIterator hstkIt = hystkEnd;
     while (getValue(--ndlIt) == getValue(--hstkIt) && hstkIt != hystkBegin)
     {}
 
-    return std::pair<TIterator, bool>(hystkBegin + me.data_map[ordValue(getValue(--hystkEnd))],
+    return std::pair<TIterator, bool>(hystkBegin + me._pattern.data_map[ordValue(getValue(--hystkEnd))],
                                       hstkIt == hystkBegin && getValue(ndlIt) == getValue(hstkIt));
 }
 
 }  // namespace seqan
 
-#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_PATTERN_HORSPOOL_H_
+#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_HORSPOOL_H_

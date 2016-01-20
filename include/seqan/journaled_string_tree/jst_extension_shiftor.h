@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_PATTERN_SHIFT_AND_H_
-#define INCLUDE_SEQAN_JOURNALED_STRING_TREE_PATTERN_SHIFT_AND_H_
+#ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_SHIFT_OR_H_
+#define INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_SHIFT_OR_H_
 
 namespace seqan
 {
@@ -48,35 +48,36 @@ namespace seqan
 
 
 template <typename TPattern>
-struct PatternStateShiftAnd_
+struct PatternStateShiftOr_
 {
-    using TWord = unsigned int;
-    static constexpr TWord MACHINE_WORD_SIZE = sizeof(TWord) * 8;
+    using TWord = typename TPattern::TWord;
 
     String<TWord> prefSufMatch;        // Set of all the prefixes of needle that match a suffix of haystack (called D in "Navarro")
 };
 
 template <typename TNeedle>
-class Pattern2<TNeedle, ShiftAnd> :
-    public PatternBase<Pattern2<TNeedle, ShiftAnd>, True, ContextBegin>
+class JstExtension<Pattern<TNeedle, ShiftOr> > :
+    public JstExtensionBase<JstExtension<Pattern<TNeedle, ShiftOr> >, True, ContextBegin>
 {
 public:
-    using TBase  = PatternBase<Pattern2<TNeedle, ShiftAnd>, True, ContextBegin>;
-    using TState = typename GetPatternState<Pattern2>::Type;
-    using TWord  = typename TState::TWord;
+    using TPattern = Pattern<TNeedle, ShiftOr>;
+    using TBase    = JstExtensionBase<JstExtension<Pattern<TNeedle, ShiftOr> >, True, ContextBegin>;
+    using TWord    = typename TPattern::TWord;
 
-    Holder<TNeedle>     data_host;
-    String<TWord>       bitMasks;            // Look up table for each character in the alphabet (called B in "Navarro")
-    TWord               needleLength;                // e.g., needleLength=33 --> blockCount=2 (iff w=32 bits)
-    TWord               blockCount;                // #unsigned ints required to store needle
+    static constexpr TWord WORD_INDEX_HIGH_BIT = BitsPerValue<TWord>::VALUE - 1;
 
-    Pattern2() {}
+    TPattern&  _pattern;
+    TWord      carry;
+    TWord      mask;
+    bool       isLongNeedle;
 
-    template <typename TNeedle2>
-    Pattern2(TNeedle2 && ndl, SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern2 const &>)) : TBase(*this)
+    JstExtension(TPattern & pattern) : TBase(*this), _pattern(pattern)
     {
-        setHost(*this, std::forward<TNeedle2>(ndl));
-        ignoreUnusedVariableWarning(dummy);
+        // Explicitly force to initialize pattern due to implementation detail.
+        _patternInit(_pattern);
+        state(*this).prefSufMatch = _pattern.prefSufMatch;
+        mask = static_cast<TWord>(1) << (_pattern.needleLength - 1) % BitsPerValue<TWord>::VALUE;
+        isLongNeedle = _pattern.blockCount > 1;
     }
 };
 
@@ -85,57 +86,66 @@ public:
 // ============================================================================
 
 template <typename TNeedle>
-struct GetPatternState<Pattern2<TNeedle, ShiftAnd> >
+struct GetPatternState<JstExtension<Pattern<TNeedle, ShiftOr> > >
 {
-    using Type = PatternStateShiftAnd_<Pattern2<TNeedle, ShiftAnd> >;
+    using Type = PatternStateShiftOr_<Pattern<TNeedle, ShiftOr> >;
 };
 
 template <typename TNeedle>
-struct GetPatternState<Pattern2<TNeedle, ShiftAnd> const>
+struct GetPatternState<JstExtension<Pattern<TNeedle, ShiftOr> > const>
 {
-    using Type = PatternStateShiftAnd_<Pattern2<TNeedle, ShiftAnd> > const;
+    using Type = PatternStateShiftOr_<Pattern<TNeedle, ShiftOr> > const;
 };
 
 // ============================================================================
 // Functions
 // ============================================================================
 
-template <typename TNeedle>
-void
-_reinitPattern(Pattern2<TNeedle, ShiftAnd> & me)
+namespace impl
 {
-    using TWord = typename Pattern2<TNeedle, ShiftAnd>::TWord;
+
+template <typename TNeedle, typename TIterator>
+inline std::pair<TIterator, bool>
+runLongNeedle(JstExtension<Pattern<TNeedle, ShiftOr> > & me,
+              TIterator hystkIt)
+{
+    using TWord = typename Pattern<TNeedle, ShiftOr>::TWord;
     using TValue = typename Value<TNeedle>::Type;
 
-    me.needleLength = length(needle(me));
-    if (me.needleLength < 1)
-        me.blockCount = 1;
-    else
-        me.blockCount = (me.needleLength - 1) / BitsPerValue<TWord>::VALUE + 1;
-
-    clear(me.bitMasks);
-    resize(me.bitMasks, me.blockCount * ValueSize<TValue>::VALUE, 0, Exact());
-
-    clear(state(me).prefSufMatch);
-    resize(state(me).prefSufMatch, me.blockCount, 0, Exact());
-
-    for (TWord j = 0; j < me.needleLength; ++j)
-        me.bitMasks[me.blockCount * ordValue(convert<TValue>(getValue(needle(me), j))) + j / state(me).MACHINE_WORD_SIZE] |=
-                    static_cast<TWord>(1) << (j % state(me).MACHINE_WORD_SIZE);
-
+    me.carry = 0;
+    for(TWord block = 0; block < me._pattern.blockCount; ++block)
+    {
+        bool newCarry = isBitSet(state(me).prefSufMatch[block], me.WORD_INDEX_HIGH_BIT);
+        state(me).prefSufMatch[block] = ((state(me).prefSufMatch[block] << 1) | me.carry) |
+                                        me._pattern.bitMasks[me._pattern.blockCount * ordValue(convert<TValue>(getValue(hystkIt))) +
+                                                     block];
+        me.carry = newCarry;
+    }
+    return std::pair<TIterator, bool>(++hystkIt, !(state(me).prefSufMatch[me._pattern.blockCount - 1] & me.mask));
 }
 
 template <typename TNeedle, typename TIterator>
 inline std::pair<TIterator, bool>
-run(Pattern2<TNeedle, ShiftAnd> & me,
+runShortNeedle(JstExtension<Pattern<TNeedle, ShiftOr> > & me,
+               TIterator hystkIt)
+{
+    using TValue = typename Value<TNeedle>::Type;
+    state(me).prefSufMatch[0] = (state(me).prefSufMatch[0] << 1) |
+                                me._pattern.bitMasks[ordValue(convert<TValue>(getValue(hystkIt)))];
+    return std::pair<TIterator, bool>(++hystkIt, !(state(me).prefSufMatch[0] & me.mask));
+}
+
+}  // namespace impl
+
+
+template <typename TNeedle, typename TIterator>
+inline std::pair<TIterator, bool>
+run(JstExtension<Pattern<TNeedle, ShiftOr> > & me,
     TIterator hystkIt)
 {
-    using TWord = typename Pattern2<TNeedle, ShiftAnd>::TWord;
-    using TValue = typename Value<TNeedle>::Type;
-
-    state(me).prefSufMatch[0] = ((state(me).prefSufMatch[0] << 1) | (TWord)1) & me.bitMasks[ordValue(convert<TValue>(getValue(hystkIt)))];
-    return std::pair<TIterator, bool>(++hystkIt, (state(me).prefSufMatch[0] & (static_cast<TWord>(1) << (me.needleLength - 1))) != 0);
+    return (me.isLongNeedle) ? impl::runLongNeedle(me, hystkIt) : impl::runShortNeedle(me, hystkIt);
 }
+
 }  // namespace seqan
 
-#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_PATTERN_SHIFT_AND_H_
+#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_SHIFT_OR_H_
