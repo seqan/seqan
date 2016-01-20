@@ -30,15 +30,14 @@ matrix:
           packages: ['g++-5', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
       install: export CXX="g++-5" CC="gcc-5"
 
-    - os: linux
-      compiler: gcc-6
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-6', 'gcc-6', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
-      install:
-        - export CXX="g++-6" CC="gcc-6"
-        - ln -s /usr/bin/ccache ${HOME}/.local/bin/g++-6
+    # package not whitelisted currently
+    #- os: linux
+      #compiler: gcc-6
+      #addons:
+        #apt:
+          #sources: ['ubuntu-toolchain-r-test']
+          #packages: ['g++-6', 'gcc-6', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      #install: export CXX="g++-6" CC="gcc-6"
 
     - os: linux
       compiler: clang-3.4
@@ -46,9 +45,7 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['clang-3.4', 'g++-4.8', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
-      install:
-        - export CXX="clang++" CC="clang"
-        - ln -s /usr/bin/ccache ${HOME}/.local/bin/clang++
+      install: export CXX="clang++" CC="clang"
 
     - os: linux
       compiler: clang-3.5
@@ -56,9 +53,7 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5']
           packages: ['clang-3.5', 'g++-4.9', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
-      install:
-        - export CXX="clang++-3.5" CC="clang-3.5"
-        - ln -s /usr/bin/ccache ${HOME}/.local/bin/clang++-3.5
+      install: export CXX="clang++-3.5" CC="clang-3.5"
 
     - os: linux
       compiler: clang-3.6
@@ -66,9 +61,7 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
           packages: ['clang-3.6', 'g++-4.9', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
-      install:
-        - export CXX="clang++-3.6" CC="clang-3.6"
-        - ln -s /usr/bin/ccache ${HOME}/.local/bin/clang++-3.6
+      install: export CXX="clang++-3.6" CC="clang-3.6"
 
     - os: linux
       compiler: clang-3.7
@@ -76,9 +69,7 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
           packages: ['clang-3.7', 'g++-4.9', 'cmake', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
-      install:
-        - export CXX="clang++-3.7" CC="clang-3.7"
-        - ln -s /usr/bin/ccache ${HOME}/.local/bin/clang++-3.7
+      install: export CXX="clang++-3.7" CC="clang-3.7"
 
 # currently too slow on osx
     #- os: osx
@@ -103,6 +94,8 @@ before_script:
   - rm -rf ${HOME}/.ccache
   - mkdir -p ${HOME}/ccache/${TRAVIS_BRANCH}/${TRAVIS_OS_NAME}/${CXX}
   - ln -s  ${HOME}/ccache/${TRAVIS_BRANCH}/${TRAVIS_OS_NAME}/${CXX} ${HOME}/.ccache
+  - ln -s /usr/bin/ccache ${HOME}/.local/bin/${CXX}
+  - ln -s /usr/bin/ccache ${HOME}/.local/bin/${CC}
 script:
   - ccache -s
   - ./util/travis/linux-cibuild.sh
