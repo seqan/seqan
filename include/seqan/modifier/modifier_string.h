@@ -73,27 +73,27 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
  *
  * @subsection Using ModReverseString
  *
- * @include demos/modifier/modified_string.cpp
+ * @include demos/dox/modifier/modified_string.cpp
  *
  * The output is als follows:
  *
- * @include demos/modifier/modified_string.cpp.stdout
+ * @include demos/dox/modifier/modified_string.cpp.stdout
  *
  * @subsection Using a custom functor for ModViewString
  *
- * @include demos/modifier/modified_string_mod_view.cpp
+ * @include demos/dox/modifier/modified_string_mod_view.cpp
  *
  * The output is as follows:
  *
- * @include demos/modifier/modified_string_mod_view.cpp.stdout
+ * @include demos/dox/modifier/modified_string_mod_view.cpp.stdout
  *
  * @subsection Using nested modified strings.
  *
- * @include demos/modifier/modified_string_nested.cpp
+ * @include demos/dox/modifier/modified_string_nested.cpp
  *
  * The output is as follows:
  *
- * @include demos/modifier/modified_string_nested.cpp.stdout
+ * @include demos/dox/modifier/modified_string_nested.cpp.stdout
  */
 
 template <typename THost, typename TSpec = void>
@@ -107,12 +107,16 @@ public:
     TCargo_ _cargo;
 
     // Default constructor.
-    ModifiedString() : _host(), _cargo()
+    ModifiedString() :
+        _host(),
+        _cargo()
     {}
 
     // Construct with the actual host.
     explicit
-    ModifiedString(typename Parameter_<THost>::Type host) : _host(_toPointer(host)), _cargo()
+    ModifiedString(typename Parameter_<THost>::Type host) :
+        _host(_toPointer(host)),
+        _cargo()
     {}
 
     // Constructor for creating a ModifiedString with const host from a non-const host.
@@ -120,20 +124,51 @@ public:
     explicit
     ModifiedString(THost_ & host,
                    SEQAN_CTOR_ENABLE_IF(IsConstructible<THost, THost_>)) :
-            _host(_toPointer(host)), _cargo()
+            _host(_toPointer(host)),
+            _cargo()
     {
         ignoreUnusedVariableWarning(dummy);
     }
+
+#ifdef SEQAN_CXX11_STANDARD
+
+    // Constructor for an inner host type; forward host to hosted type.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ && host,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<
+                                            typename RemoveReference<THost>::Type,
+                                            typename RemoveReference<THost_>::Type >)) :
+            _host(std::forward<THost_>(host)),
+            _cargo()
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
+
+#else // SEQAN_CXX11_STANDARD
 
     // Constructor for an inner host type; forward host to hosted type.
     template <typename THost_>
     explicit
     ModifiedString(THost_ & host,
                    SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
-            _host(host), _cargo()
+            _host(host),
+            _cargo()
     {
         ignoreUnusedVariableWarning(dummy);
     }
+
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ const & host,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
+            _host(host),
+            _cargo()
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
+
+#endif // SEQAN_CXX11_STANDARD
 
     template <typename TPos>
     inline typename Reference<ModifiedString>::Type
@@ -151,7 +186,7 @@ public:
 
     ModifiedString & operator= (THost & other)
     {
-        _host = _toPointer(other);
+        assign(*this, other);
         return *this;
     }
 };
@@ -325,16 +360,16 @@ struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
 };
 
 // VARIANT B: const ModifiedString propagates its constness upwards
-// template <typename THost, typename TSpec >
-// struct Iterator<ModifiedString<THost, TSpec> const, Standard>
-// {
+//template <typename THost, typename TSpec >
+//struct Iterator<ModifiedString<THost, TSpec> const, Standard>
+//{
 //    typedef ModifiedIterator<typename Iterator<THost const, Standard>::Type, TSpec> Type;
-// };
-// template <typename THost, typename TSpec >
-// struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
-// {
+//};
+//template <typename THost, typename TSpec >
+//struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
+//{
 //    typedef ModifiedIterator<typename Iterator<THost const, Rooted>::Type, TSpec> Type;
-// };
+//};
 
 // --------------------------------------------------------------------------
 // Metafunction Host
@@ -364,10 +399,10 @@ struct Host<ModifiedString<THost, TSpec> const > {
 };
 
 // VARIANT B: const ModifiedString propagates its constness upwards
-// template <typename THost, typename TSpec >
-// struct Host<ModifiedString<THost, TSpec> const > {
+//template <typename THost, typename TSpec >
+//struct Host<ModifiedString<THost, TSpec> const > {
 //    typedef typename ConvertArrayToPointer<THost const>::Type Type;
-// };
+//};
 
 // --------------------------------------------------------------------------
 // Metafunction Parameter_
@@ -825,6 +860,17 @@ getObjectId(ModifiedString<THost, TSpec> const & me)
     return getObjectId(host(me));
 }
 
+// ----------------------------------------------------------------------------
+// Function assign()
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TSpec, typename TOtherHost, typename TOtherSpec>
+inline void assign(ModifiedString<THost, TSpec> & me, ModifiedString<TOtherHost, TOtherSpec> const & other)
+{
+    setHost(me, host(other));
+    assign(cargo(me), cargo(other));
+}
+
 // --------------------------------------------------------------------------
 // Function open()
 // --------------------------------------------------------------------------
@@ -851,14 +897,14 @@ open(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > &,
 
 template <typename THost, typename TSpec >
 inline bool
-save(ModifiedString<THost, TSpec> &, const char *, int)
+save(ModifiedString<THost, TSpec> const &, const char *, int)
 {
     return true; // NOOP; this has to be done manually right now
 }
 
 template <typename THost, typename TSpec, typename TSpec2>
 inline bool
-save(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > &,
+save(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > const &,
      const char *,
      int)
 {

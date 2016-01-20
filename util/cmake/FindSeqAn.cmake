@@ -146,16 +146,22 @@ set (COMPILER_IS_CLANG FALSE)
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set (COMPILER_IS_CLANG TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-		
+
 # Fix CMAKE_COMPILER_IS_GNUCXX for MinGW.
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   set (CMAKE_COMPILER_IS_GNUCXX TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
+# Intel
+set (COMPILER_IS_INTEL FALSE)
+if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  set (COMPILER_IS_INTEL TRUE)
+endif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+
 # GCC Setup
 
-if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   # Tune warnings for GCC.
   set (CMAKE_CXX_WARNING_LEVEL 4)
   # NOTE: First location to set SEQAN_CXX_FLAGS at the moment.  If you write
@@ -194,6 +200,11 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
   elseif (CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
     set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_CXX_FLAGS_RELEASE} -g -fno-omit-frame-pointer")
   endif ()
+
+  # disable some warnings on ICC
+  if (COMPILER_IS_INTEL)
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
+  endif (COMPILER_IS_INTEL)
 endif ()
 
 # Windows Setup
@@ -201,7 +212,7 @@ endif ()
 if (WIN32)
   # Always set NOMINMAX such that <Windows.h> does not define min/max as
   # macros.
-  add_definitions (-DNOMINMAX)
+  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -DNOMINMAX")
 endif (WIN32)
 
 # Visual Studio Setup
@@ -214,10 +225,17 @@ if (MSVC)
   # TODO(holtgrew): This rather belongs into the SeqAn build system and notso much into FindSeqAn.cmake.
 
   # Force to always compile with W2.
-  add_definitions (/W2)
+  # Use the /W2 warning level for visual studio.
+  SET(CMAKE_CXX_WARNING_LEVEL 2)
+  if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+    STRING (REGEX REPLACE "/W[0-4]"
+            "/W2" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  else (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W2")
+  endif (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
 
   # Disable warnings about unsecure (although standard) functions.
-  add_definitions (-D_SCL_SECURE_NO_WARNINGS)
+  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /D_SCL_SECURE_NO_WARNINGS")
 endif (MSVC)
 
 # ----------------------------------------------------------------------------
@@ -247,8 +265,16 @@ if (SEQAN_USE_SEQAN_BUILD_SYSTEM)
 else (SEQAN_USE_SEQAN_BUILD_SYSTEM)
   # When NOT using the SeqAn build system then we only look for one directory
   # with subdirectory seqan and thus only one library.
-  find_path(_SEQAN_BASEDIR "seqan" PATHS ${SEQAN_INCLUDE_PATH})
+  find_path(_SEQAN_BASEDIR "seqan"
+            PATHS ${SEQAN_INCLUDE_PATH} ENV SEQAN_INCLUDE_PATH
+            NO_DEFAULT_PATH)
+
+  if (NOT _SEQAN_BASEDIR)
+    find_path(_SEQAN_BASEDIR "seqan")
+  endif()
+
   mark_as_advanced(_SEQAN_BASEDIR)
+
   if (_SEQAN_BASEDIR)
     set(SEQAN_FOUND        TRUE)
     set(SEQAN_INCLUDE_DIRS_MAIN ${SEQAN_INCLUDE_DIRS_MAIN} ${_SEQAN_BASEDIR})
@@ -287,7 +313,7 @@ mark_as_advanced(_SEQAN_HAVE_EXECINFO)
 if (_SEQAN_HAVE_EXECINFO)
   set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-DSEQAN_HAS_EXECINFO=1")
   if (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
-    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} execinfo)
+    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} execinfo elf)
   endif (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 endif (_SEQAN_HAVE_EXECINFO)
 
@@ -378,29 +404,40 @@ set (SEQAN_INCLUDE_DIRS ${SEQAN_INCLUDE_DIRS_MAIN} ${SEQAN_INCLUDE_DIRS_DEPS})
 # ----------------------------------------------------------------------------
 
 if (NOT DEFINED SEQAN_VERSION_STRING)
-  if (NOT CMAKE_CURRENT_LIST_DIR)  # CMAKE_CURRENT_LIST_DIR only from cmake 2.8.3.
-    get_filename_component (CMAKE_CURRENT_LIST_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
-  endif (NOT CMAKE_CURRENT_LIST_DIR)
 
-  try_run (_SEQAN_RUN_RESULT
-           _SEQAN_COMPILE_RESULT
-           ${CMAKE_BINARY_DIR}/CMakeFiles/SeqAnVersion
-           ${CMAKE_CURRENT_LIST_DIR}/SeqAnVersion.cpp
-           CMAKE_FLAGS "-DINCLUDE_DIRECTORIES:STRING=${SEQAN_INCLUDE_DIRS_MAIN}"
-           COMPILE_OUTPUT_VARIABLE _COMPILE_OUTPUT
-           RUN_OUTPUT_VARIABLE _RUN_OUTPUT)
-  if (NOT _RUN_OUTPUT)
+  # Scan all include dirs identified by the build system and
+  # check if there is a file version.h in a subdir seqan/
+  # If exists store absolute path to file and break loop.
+
+  set (_SEQAN_VERSION_H "")
+  foreach(_INCLUDE_DIR ${SEQAN_INCLUDE_DIRS_MAIN})
+    get_filename_component(_SEQAN_VERSION_H "${_INCLUDE_DIR}/seqan/version.h" ABSOLUTE)
+    if (EXISTS ${_SEQAN_VERSION_H})
+       break()
+    endif()
+  endforeach()
+
+  set (_SEQAN_VERSION_IDS MAJOR MINOR PATCH PRE_RELEASE)
+
+  # If file wasn't found seqan version is set to 0.0.0
+  foreach (_ID ${_SEQAN_VERSION_IDS})
+    set(_SEQAN_VERSION_${_ID} "0")
+  endforeach()
+
+  # Error log if version.h not found, otherwise read version from
+  # version.h and cache it.
+  if (NOT EXISTS "${_SEQAN_VERSION_H}")
     message ("")
     message ("ERROR: Could not determine SeqAn version.")
-    message ("COMPILE OUTPUT:")
-    message (${_COMPILE_OUTPUT})
-  endif (NOT _RUN_OUTPUT)
+    message ("Could not find file: ${_SEQAN_VERSION_H}")
+  else ()
+    foreach (_ID ${_SEQAN_VERSION_IDS})
+      file (STRINGS ${_SEQAN_VERSION_H} _VERSION_${_ID} REGEX ".*SEQAN_VERSION_${_ID}.*")
+      string (REGEX REPLACE ".*SEQAN_VERSION_${_ID}[ |\t]+([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_${_ID} ${_VERSION_${_ID}})
+    endforeach ()
+  endif ()
 
-  string (REGEX REPLACE ".*SEQAN_VERSION_MAJOR:([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_MAJOR ${_RUN_OUTPUT})
-  string (REGEX REPLACE ".*SEQAN_VERSION_MINOR:([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_MINOR ${_RUN_OUTPUT})
-  string (REGEX REPLACE ".*SEQAN_VERSION_PATCH:([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_PATCH ${_RUN_OUTPUT})
-  string (REGEX REPLACE ".*SEQAN_VERSION_PRE_RELEASE:([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_PRE_RELEASE ${_RUN_OUTPUT})
-
+  # Check for pre release.
   if (SEQAN_VERSION_PRE_RELEASE EQUAL 1)
     set (_SEQAN_VERSION_DEVELOPMENT "TRUE")
   else ()

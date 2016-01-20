@@ -102,8 +102,8 @@ _testBlastOutputGenerateContent(TFile & file,
     typedef StringSet<String<AminoAcid>> TSubjects;
     typedef StringSet<CharString> TSIds;
 
-    typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
-    typedef BlastMatch<TAlign, __uint32, typename Value<TQIds>::Type, typename Value<TSIds>::Type> TBlastMatch;
+    typedef Gaps<String<AminoAcid>, ArrayGaps> TGaps;
+    typedef BlastMatch<TGaps, TGaps, __uint32, typename Value<TQIds>::Type, typename Value<TSIds>::Type> TBlastMatch;
     typedef BlastRecord<TBlastMatch> TBlastRecord;
 
     TQueries queries;
@@ -160,16 +160,16 @@ _testBlastOutputGenerateContent(TFile & file,
         {
             records[q].matches.emplace_back(qIds[q], sIds[s]);
             TBlastMatch & m = records[q].matches.back();
-            resize(rows(m.align), 2);
-            assignSource(row(m.align, 0), queries[q]);
-            assignSource(row(m.align, 1), subjects[s]);
 
-            localAlignment(m.align, seqanScheme(context.scoringScheme));
+            assignSource(m.alignRow0, queries[q]);
+            assignSource(m.alignRow1, subjects[s]);
 
-            m.qStart = beginPosition(row(m.align, 0));
-            m.qEnd   = endPosition(row(m.align, 0));
-            m.sStart = beginPosition(row(m.align, 1));
-            m.sEnd   = endPosition(row(m.align, 1));
+            localAlignment(m.alignRow0, m.alignRow1, seqanScheme(context.scoringScheme));
+
+            m.qStart = beginPosition(m.alignRow0);
+            m.qEnd   = endPosition(m.alignRow0);
+            m.sStart = beginPosition(m.alignRow1);
+            m.sEnd   = endPosition(m.alignRow1);
 
             m.qLength = length(queries[q]);
             m.sLength = length(subjects[s]);
@@ -183,9 +183,11 @@ _testBlastOutputGenerateContent(TFile & file,
         }
     }
 
-    // sort by bit-score
-    for (auto & r : records)
-        r.matches.sort();
+    // sort by bit-score (range based for-loop broken on ICC)
+    for (auto it = begin(records, Standard()), itEnd = end(records, Standard());
+         it != itEnd;
+         ++it)
+         it->matches.sort();
 
     _testBlastOutputWriteFile(file, context, records, TFormat());
 }

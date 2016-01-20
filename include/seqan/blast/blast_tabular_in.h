@@ -270,8 +270,8 @@ _readCommentLinesImpl(BlastRecord<TMatch> & r,
 
     do
     {
-        if (std::regex_search(begin(context._lineBuffer, Standard()),
-                              end(context._lineBuffer, Standard()),
+        if (std::regex_search(std::begin(context._lineBuffer),
+                              std::end(context._lineBuffer),
                               std::regex("^# T?BLAST")))
         {
             // last line of file
@@ -289,8 +289,8 @@ _readCommentLinesImpl(BlastRecord<TMatch> & r,
                                                                             ' ')
                                                                   - begin(context.versionString, Standard())));
 
-                context.legacyFormat = !std::regex_search(begin(context.versionString, Standard()),
-                                                          end(context.versionString, Standard()),
+                context.legacyFormat = !std::regex_search(std::begin(context.versionString),
+                                                          std::end(context.versionString),
                                                           std::regex("\\d\\.\\d\\.\\d{1,2}\\+"));
             }
         }
@@ -312,9 +312,9 @@ _readCommentLinesImpl(BlastRecord<TMatch> & r,
             // make sure target is big enough
             resize(context._stringBuffer, length(context._lineBuffer) - 10);
             // use escape character as placeholder for replacement since strSplit only handles single characters
-            std::regex_replace(begin(context._stringBuffer, Standard()),
-                               begin(context._lineBuffer, Standard()) + 10, // skip "# Fields:"
-                               end(context._lineBuffer, Standard()),
+            std::regex_replace(std::begin(context._stringBuffer),
+                               std::begin(context._lineBuffer) + 10, // skip "# Fields:"
+                               std::end(context._lineBuffer),
                                std::regex(", "),
                                "\x7F");
             // shrink back down to actual size (replacing two letters with one makes string shorter!)
@@ -400,8 +400,8 @@ _readCommentLinesImpl(BlastRecord<TMatch> & r,
         _goNextLine(context, iter, BlastTabular());
 
     } while (startsWith(context._lineBuffer, "#") &&                   // still on comments
-             !std::regex_search(begin(context._lineBuffer, Standard()),// start of next record
-                                end(context._lineBuffer, Standard()),
+             !std::regex_search(std::begin(context._lineBuffer),// start of next record
+                                std::end(context._lineBuffer),
                                 std::regex("^# T?BLAST")));
 
     if (context.blastProgram == BlastProgram::UNKNOWN)
@@ -464,7 +464,8 @@ _readCommentLines(BlastRecord<TMatch> & r,
 // Function _readField()
 // ----------------------------------------------------------------------------
 
-template <typename TAlign,
+template <typename TAlignRow0,
+          typename TAlignRow1,
           typename TPos,
           typename TQId,
           typename TSId,
@@ -472,7 +473,7 @@ template <typename TAlign,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readField(BlastMatch<TAlign, TPos, TQId, TSId> & match,
+_readField(BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> & match,
            BlastIOContext<TScore, p, h> & context,
            typename BlastMatchField<>::Enum const fieldId)
 {
@@ -583,7 +584,8 @@ _readField(BlastMatch<TAlign, TPos, TQId, TSId> & match,
 // Function _readMatch()
 // ----------------------------------------------------------------------------
 
-template <typename TAlign,
+template <typename TAlignRow0,
+          typename TAlignRow1,
           typename TPos,
           typename TQId,
           typename TSId,
@@ -592,7 +594,7 @@ template <typename TAlign,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
-_readMatch(BlastMatch<TAlign, TPos, TQId, TSId> & match,
+_readMatch(BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> & match,
            TFwdIterator & iter,
            BlastIOContext<TScore, p, h> & context,
            BlastTabular const &)

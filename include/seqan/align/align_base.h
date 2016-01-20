@@ -72,11 +72,11 @@ namespace seqan {
  *
  * Here is an example of using an Align object with @link globalAlignment @endlink.
  *
- * @include demos/align/align.cpp
+ * @include demos/dox/align/align.cpp
  *
  * The output is as follows:
  *
- * @include demos/align/align.cpp.stdout
+ * @include demos/dox/align/align.cpp.stdout
  *
  * @see globalAlignment
  * @see localAlignment

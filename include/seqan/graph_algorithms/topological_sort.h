@@ -74,9 +74,9 @@ namespace seqan {
  *
  * @section Example
  *
- * @include demos/graph_algorithms/topological_sort.cpp
+ * @include demos/dox/graph_algorithms/topological_sort.cpp
  *
- * @include demos/graph_algorithms/topological_sort.cpp.stdout
+ * @include demos/dox/graph_algorithms/topological_sort.cpp.stdout
  */
 template <typename TSpec, typename TVertexDescriptor>
 void topologicalSort(String<TVertexDescriptor> & topSort,

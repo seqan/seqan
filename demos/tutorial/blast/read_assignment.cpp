@@ -10,8 +10,8 @@ int main(int argc, char **argv)
     if (argc != 2)
         return 1;
 
-    typedef Align<String<AminoAcid>, ArrayGaps> TAlign;
-    typedef BlastMatch<TAlign> TBlastMatch;
+    typedef Gaps<String<AminoAcid>, ArrayGaps> TGaps;
+    typedef BlastMatch<TGaps, TGaps> TBlastMatch;
     typedef BlastRecord<TBlastMatch> TBlastRecord;
     typedef BlastIOContext<> TContext;
 

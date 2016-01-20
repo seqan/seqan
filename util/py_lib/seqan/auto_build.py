@@ -261,7 +261,7 @@ class BuildStep(object):
         popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
         out_data, err_data = popen.communicate()
         if popen.returncode != 0:
-            print('ERROR during make docs call.', file=sys.stderr)
+            print('ERROR during make dox call.', file=sys.stderr)
             print(out_data, file=sys.stderr)
             print(err_data, file=sys.stderr)
         # Execute Make.

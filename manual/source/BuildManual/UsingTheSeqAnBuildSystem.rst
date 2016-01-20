@@ -100,7 +100,7 @@ The library will be installed to ``~/local/seqan``.
     ~ # cd seqan-build/library_only
     library_only # cmake ../../seqan-src -DCMAKE_INSTALL_PREFIX=~/local/seqan \
                      -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY
-    library_only # make docs
+    library_only # make dox
     library_only # make install
 
 The user can now find the SeqAn library in ``~/local/seqan/include``:
@@ -189,7 +189,7 @@ Packaging Library Releases
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Packaging the library and documentation is quite simple. Note that we
-have to build the documentation using ``make docs`` before calling
+have to build the documentation using ``make dox`` before calling
 ``make package`` because of a `bug in
 CMake <http://public.kitware.com/Bug/view.php?id=8438>`_ that prevents
 us from doing it automatically.
@@ -205,7 +205,7 @@ whether it is a pre-release of the next version.
     ~ # mkdir -p seqan-build/release_library
     ~ # cd seqan-build/release_library
     release_library # cmake ../../seqan-src -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY
-    release_library # make docs
+    release_library # make dox
     release_library # make package
 
 On Linux, this will build three archives:
@@ -337,7 +337,7 @@ Library Only
 
     release_library # cmake ../../seqan-src -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY \
                         -DSEQAN_NIGHTLY_RELEASE=TRUE
-    release_library # make docs
+    release_library # make dox
     release_library # make package
     release_library # ls -l seqan-library-20121120-*
     -rw-rw-r-- 1 USER GROUP 3368034 Nov 20 14:07 seqan-library-20121120-Linux.deb

@@ -1,0 +1,12 @@
+#!genome-build BDGP 5
+#!genome-version BDGP5
+#!genome-date 2006-04
+#!genome-build-accession NCBI:GCA_000001215.1
+#!genebuild-last-updated 2012-04
+Uextra	FlyBase	gene	523024	523086	.	-	.	gene_id "FBgn0264003"; gene_version "5"; gene_name "mir-5613"; gene_source "FlyBase"; gene_biotype "pre_miRNA";
+Uextra	FlyBase	transcript	523024	523086	.	-	.	gene_id "FBgn0264003"; gene_version "5"; transcript_id "FBtr0330361"; transcript_version "5"; gene_name "mir-5613"; gene_source "FlyBase"; gene_biotype "pre_miRNA"; transcript_name "mir-5613-RM"; transcript_source "FlyBase"; transcript_biotype "pre_miRNA";
+Uextra	FlyBase	exon	523024	523086	.	-	.	gene_id "FBgn0264003"; gene_version "5"; transcript_id "FBtr0330361"; transcript_version "5"; exon_number "1"; gene_name "mir-5613"; gene_source "FlyBase"; gene_biotype "pre_miRNA"; transcript_name "mir-5613-RM"; transcript_source "FlyBase"; transcript_biotype "pre_miRNA"; exon_id "FBtr0330361:1"; exon_version "1";
+Uextra	FlyBase	transcript	523024	523048	.	-	.	gene_id "FBgn0264003"; gene_version "5"; transcript_id "FBtr0330363"; transcript_version "5"; gene_name "mir-5613"; gene_source "FlyBase"; gene_biotype "pre_miRNA"; transcript_name "mir-5613-RB"; transcript_source "FlyBase"; transcript_biotype "miRNA";
+Uextra	FlyBase	exon	523024	523048	.	-	.	gene_id "FBgn0264003"; gene_version "5"; transcript_id "FBtr0330363"; transcript_version "5"; exon_number "1"; gene_name "mir-5613"; gene_source "FlyBase"; gene_biotype "pre_miRNA"; transcript_name "mir-5613-RB"; transcript_source "FlyBase"; transcript_biotype "miRNA"; exon_id "FBtr0330363:1"; exon_version "1";
+Uextra	FlyBase	transcript	523060	523086	.	-	.	gene_id "FBgn0264003"; gene_version "5"; transcript_id "FBtr0330362"; transcript_version "5"; gene_name "mir-5613"; gene_source "FlyBase"; gene_biotype "pre_miRNA"; transcript_name "mir-5613-RA"; transcript_source "FlyBase"; transcript_biotype "miRNA";
+Uextra	FlyBase	exon	523060	523086	.	-	.	gene_id "FBgn0264003"; gene_version "5"; transcript_id "FBtr0330362"; transcript_version "5"; exon_number "1"; gene_name "mir-5613"; gene_source "FlyBase"; gene_biotype "pre_miRNA"; transcript_name "mir-5613-RA"; transcript_source "FlyBase"; transcript_biotype "miRNA"; exon_id "FBtr0330362:1"; exon_version "1";

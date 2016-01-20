@@ -55,28 +55,34 @@ namespace seqan
  * @link BlastMatch::qLength @endlink, @link BlastMatch::sLength @endlink,
  * @link BlastMatch::qFrameShift @endlink and @link BlastMatch::sFrameShift @endlink.
  *
- * If you then also set a valid @link BlastMatch::align @endlink you can
- * let the other members be computed by
+ * If you then also set valid alignRow-members (@link BlastMatch::alignRow0 @endlink, 
+ * @link BlastMatch::alignRow1 @endlink), you can let the other members be computed by
  * @link BlastMatch#computeAlignmentStats @endlink and
  * @link BlastMatch#computeBitScore @endlink, @link BlastMatch#computeEValue @endlink.
  *
- * @tparam TAlign Type of the @link Align @endlink member, defaults to
- * <tt>Align<CharString, ArrayGaps></tt>
- * @tparam TPos  Position type of the sequences, defaults to <tt>__uint32</tt>
- * @tparam TQId  Type of qId, defaults to std::string
- * @tparam TSId  Type of sId, defaults to std::string
+ * @tparam TAlignRow0 Type of the first alignment row, usually @link Gaps @endlink
+ * @tparam TAlignRow1 Type of the second alignment row, usually @link Gaps @endlink
+ * @tparam TPos   Position type of the sequences, defaults to <tt>__uint32</tt>
+ * @tparam TQId   Type of qId, defaults to std::string
+ * @tparam TSId   Type of sId, defaults to std::string
  */
 
-template <typename TAlign_ = Align<CharString, ArrayGaps>,
+template <typename TAlignRow0_ = Gaps<CharString, ArrayGaps>,
+          typename TAlignRow1_ = Gaps<CharString, ArrayGaps>,
           typename TPos_ = __uint32,
           typename TQId_ = std::string,
           typename TSId_ = std::string>
 struct BlastMatch
 {
-    typedef TAlign_ TAlign;
+    typedef TAlignRow0_ TAlignRow0;
+    typedef TAlignRow1_ TAlignRow1;
     typedef TPos_ TPos;
     typedef TQId_ TQId;
     typedef TSId_ TSId;
+
+    // internal use numerical ids
+    __uint32 _n_qId;
+    __uint32 _n_sId;
 
     /*!
      * @var TQId BlastMatch::qId;
@@ -90,16 +96,16 @@ struct BlastMatch
 
     /*!
      * @var TPos BlastMatch::qStart;
-     * @brief The start of the alignment on the query sequence.
+     * @brief The start of the alignment on the (possibly translated) query sequence.
      *
      * @var TPos BlastMatch::qEnd;
-     * @brief The end of the alignment on the query sequence.
+     * @brief The end of the alignment on the (possibly translated) query sequence.
      *
      * @var TPos BlastMatch::sStart;
-     * @brief The start of the alignment on the subject sequence.
+     * @brief The start of the alignment on the (possibly translated) subject sequence.
      *
      * @var TPos BlastMatch::sEnd;
-     * @brief The end of the alignment on the subject sequence.
+     * @brief The end of the alignment on the (possibly translated) subject sequence.
      */
     TPos            qStart        = 0;
     TPos            qEnd          = 0;
@@ -108,10 +114,10 @@ struct BlastMatch
 
     /*!
      * @var TPos BlastMatch::qLength;
-     * @brief The length of the query sequences.
+     * @brief The length of the original query sequence (possibly before translation).
      *
      * @var TPos BlastMatch::sLength;
-     * @brief The length of the subject sequence.
+     * @brief The length of the original subject sequence (possibly before translation).
      */
     TPos            qLength       = 0;
     TPos            sLength       = 0;
@@ -152,10 +158,14 @@ struct BlastMatch
     AlignmentStats  alignStats;
 
     /*!
-     * @var TAlign BlastMatch::align;
-     * @brief @link Align @endlink object of the alignment.
+     * @var TAlign BlastMatch::alignRow0;
+     * @brief First alignment row (@link Gaps @endlink object).
+     *
+     * @var TAlign BlastMatch::alignRow1;
+     * @brief Second alignment row (@link Gaps @endlink object).
      */
-    TAlign          align;
+    TAlignRow0      alignRow0;
+    TAlignRow1      alignRow1;
 
     /*!
      * @fn BlastMatch::BlastMatch()
@@ -185,8 +195,7 @@ struct BlastMatch
                         sEnd,
                         qLength,
                         sLength,
-// align too big to compare
-//                         align,
+// gaps too expensive too to compare
                         qFrameShift,
                         sFrameShift
 //                         alignStats
@@ -202,9 +211,9 @@ struct BlastMatch
                         bm2.sEnd,
                         bm2.qLength,
                         bm2.sLength,
+// gaps too expensive too to compare
                         bm2.qFrameShift,
                         bm2.sFrameShift
-//                         bm2.align,
 //                         bm2.alignStats
 // scores have rounding errors
 //                         bm2.eValue,
@@ -245,7 +254,8 @@ struct BlastMatch
         qFrameShift   = 1;
         sFrameShift   = 1;
         clear(alignStats);
-        clear(align.data_rows);
+        clear(alignRow0);
+        clear(alignRow1);
     }
 
     inline void _maxInitialize()
@@ -281,7 +291,8 @@ struct BlastMatch
         alignStats.alignmentIdentity    = std::numeric_limits<float>::max();
         alignStats.alignmentScore       = std::numeric_limits<unsigned>::max();
 
-        clear(align.data_rows);
+        clear(alignRow0);
+        clear(alignRow1);
     }
 };
 
@@ -298,12 +309,13 @@ _memberIsSet(TNumber const & in)
     return (in != std::numeric_limits<TNumber>::max());
 }
 
-template <typename TQId,
-          typename TSId,
+template <typename TAlignRow0,
+          typename TAlignRow1,
           typename TPos,
-          typename TAlign>
+          typename TQId,
+          typename TSId>
 inline void
-clear(BlastMatch<TAlign, TPos, TQId, TSId> & match)
+clear(BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> & match)
 {
     match._clear();
 }

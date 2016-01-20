@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_seqcons)
 message (STATUS "Configuring apps/seqcons")
 
-set (SEQAN_APP_VERSION "0.23.2")
+set (SEQAN_APP_VERSION "0.23.3")
 
 # ----------------------------------------------------------------------------
 # Dependencies

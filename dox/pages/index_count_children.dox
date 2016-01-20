@@ -5,7 +5,7 @@
  * This example shows how to iterate over a suffix tree and print the number of children and the number of occurrences
  * of the node representatitves.
  *
- * @include demos/index/index_counting.cpp
+ * @include demos/dox/index/counting.cpp
  *
  * The only maximal matches that occur in all 3 sequences are "SeqAn" and "sequence". They occur exactly once and thus
  * are maximal unique matches.

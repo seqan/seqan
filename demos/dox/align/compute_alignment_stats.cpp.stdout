@@ -1,0 +1,52 @@
+      0     .    :    .    :    .    :    .    :    .    : 
+        MGLSDGEWQLVLNVWGKVEADIPGHGQEVLIRLFKGHPETLEKFDKFKHL
+        | |   |       | |        | | | |||  || |   |  |   
+        MSLTKTERTIIVSMWAKISTQADTIGTETLERLFLSHPQTKTYFPHF---
+
+     50     .    :    .    :    .    :    .    :    .    : 
+        KSEDEMKASEDLKKHGATVLTALGGILKKKGHHEAEIKPLAQSHATKHKI
+           |    |  |  ||  |  | |   |           |   ||     
+        ---DLHPGSAQLRAHGSKVVAAVGDAVKSIDDIGGALSKLSELHAYILRV
+
+    100     .    :    .    :    .    :    .    :    .    
+        PVKYLEFISECIIQVLQSKHPGDFGADAQGAMNKALELFRKDMASNYK
+                | |    |    | || | |  |  | |    |     | 
+        DPVNFKLLSHCLLVTLAARFPADFTAEAHAAWDKFLSVTEK-----YR
+
+
+score:               159
+gap opens:           2
+gap extensions:      9
+num insertions:      11
+num deletions:       0
+num matches:         41
+num mismatches:      96
+num positive scores: 69
+num negative scores: 68
+percent similarity:  46.6216
+percent identity:    27.7027
+
+
+Clipping alignment to (5, 100)
+      0     .    :    .    :    .    :    .    :    .    : 
+        GEWQLVLNVWGKVEADIPGHGQEVLIRLFKGHPETLEKFDKFKHLKSEDE
+         |       | |        | | | |||  || |   |  |      | 
+        TERTIIVSMWAKISTQADTIGTETLERLFLSHPQTKTYFPHF------DL
+
+     50     .    :    .    :    .    :    .    :    . 
+        MKASEDLKKHGATVLTALGGILKKKGHHEAEIKPLAQSHATKHKI
+           |  |  ||  |  | |   |           |   ||     
+        HPGSAQLRAHGSKVVAAVGDAVKSIDDIGGALSKLSELHAYILRV
+
+
+score:               99
+gap opens:           1
+gap extensions:      5
+num insertions:      6
+num deletions:       0
+num matches:         26
+num mismatches:      63
+num positive scores: 43
+num negative scores: 46
+percent similarity:  45.2632
+percent identity:    27.3684

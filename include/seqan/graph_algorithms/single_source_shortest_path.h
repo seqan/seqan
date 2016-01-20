@@ -190,9 +190,9 @@ _relax(Graph<TSpec> const& g,
  *
  * @section Example
  *
- * @include demos/graph_algorithms/dag_shortest_path.cpp
+ * @include demos/dox/graph_algorithms/dag_shortest_path.cpp
  *
- * @include demos/graph_algorithms/dag_shortest_path.cpp.stdout
+ * @include demos/dox/graph_algorithms/dag_shortest_path.cpp.stdout
  *
  * @see bellmanFordAlgorithm
  * @see dijkstra

@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_pair_align)
 message (STATUS "Configuring apps/pair_align")
 
-set (SEQAN_APP_VERSION "1.2")
+set (SEQAN_APP_VERSION "1.3")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -35,6 +35,9 @@ add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 
+# Add CXX flags found by find_package (SeqAn).
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+
 # Update the list of file names below if you add source files to your application.
 add_executable (pair_align pair_align.cpp)
 
@@ -44,9 +47,6 @@ add_subdirectory(lib)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (pair_align pair_align_lib ${SEQAN_LIBRARIES})
-
-# Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # ----------------------------------------------------------------------------
 # Installation

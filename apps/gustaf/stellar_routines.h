@@ -625,7 +625,7 @@ _importSequences(CharString const & fileName,
         return false;
     }
 
-    TSequence seq;
+    String<Iupac> seq;
     TId id;
     TId sId;
     unsigned seqCount = 0;
