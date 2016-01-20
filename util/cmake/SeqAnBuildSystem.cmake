@@ -157,6 +157,10 @@ macro (seqan_register_apps)
         if (NOT APPLE)
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
         endif (NOT APPLE)
+        # on linux cmake adds -rdynamic automatically which clang can't handle in static builds
+        if (CMAKE_SYSTEM_NAME MATCHES "Linux" AND COMPILER_IS_CLANG)
+            SET(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+        endif (CMAKE_SYSTEM_NAME MATCHES "Linux" AND COMPILER_IS_CLANG)
         # not that these checks are more than OS, because we have many possible combinations between
         # OS, compiler and STL used
     endif (NOT CMAKE_SYSTEM_NAME MATCHES "Windows")
