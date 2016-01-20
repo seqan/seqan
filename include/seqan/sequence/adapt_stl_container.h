@@ -497,14 +497,12 @@ length(std::forward_list<TChar, TAlloc> const & me)
     return l;
 }
 
-#ifdef SEQAN_CXX11_COMPLETE
 template <typename TChar, std::size_t N>
 constexpr std::size_t
 length(std::array<TChar, N> const & me)
 {
     return me.size();
 }
-#endif
 
 // ----------------------------------------------------------------------------
 // Function capacity
@@ -524,14 +522,12 @@ capacity(std::basic_string<TChar, TTraits, TAlloc> const & me)
     return me.capacity();
 }
 
-#ifdef SEQAN_CXX11_COMPLETE
 template <typename TChar, std::size_t N>
 constexpr std::size_t
 capacity(std::array<TChar, N> const & me)
 {
     return me.size();
 }
-#endif
 
 // for other types the default overload to length holds
 
@@ -550,14 +546,12 @@ empty(TContainer const & me)
     return me.empty();
 }
 
-#ifdef SEQAN_CXX11_COMPLETE
 template <typename TChar, std::size_t N>
 constexpr bool
 empty(std::array<TChar, N> const & me)
 {
     return me.empty();
 }
-#endif
 #endif
 
 // ----------------------------------------------------------------------------

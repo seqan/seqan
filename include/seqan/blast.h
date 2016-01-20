@@ -39,8 +39,6 @@
 
 #include <seqan/platform.h>
 
-#ifdef SEQAN_CXX11_COMPLETE
-
 #include <cinttypes>
 #include <cmath>
 #include <cstdio>
@@ -65,12 +63,5 @@
 #include "blast/blast_tabular_in.h"
 #include "blast/blast_tabular_out.h"
 #include "blast/blast_report_out.h"
-
-#else //SEQAN_CXX11_COMPLETE
-
-#error The blast module requires C++11 support. \
-If your compiler supports C++11, please define SEQAN_CXX11_COMPLETE
-
-#endif //SEQAN_CXX11_COMPLETE
 
 #endif

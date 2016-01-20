@@ -75,8 +75,4 @@ typedef uint16_t __uint16; // nolint
 // default 8bit type
 typedef uint8_t __uint8;   // nolint
 
-#if (__INTEL_COMPILER >= 1500)
-#define SEQAN_CXX11_COMPLETE
-#endif
-
 #endif  // #ifndef PLATFORM_INTEL
