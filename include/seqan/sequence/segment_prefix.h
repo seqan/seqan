@@ -120,14 +120,13 @@ public:
         return *this;
     }
 
-#if (!defined(_MSC_VER) || _MSC_VER >= 1800)
     template<typename T> explicit operator T () const
     {
         T temp_copy;
         assign(temp_copy, *this);
         return temp_copy;
     }
-#endif
+
 //____________________________________________________________________________
 
 public:

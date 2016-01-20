@@ -538,7 +538,7 @@ capacity(std::array<TChar, N> const & me)
 // VC2015 implements some C++17 functions which would collide for
 // applications that do using namespace std
 // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4280.pdf
-#if _MSC_VER < 1900
+#ifndef _MSC_VER
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, bool)
 empty(TContainer const & me)

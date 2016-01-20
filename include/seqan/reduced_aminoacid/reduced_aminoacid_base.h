@@ -75,10 +75,8 @@ namespace seqan {
 template <typename TRedSpec>
 struct ReducedAminoAcid_ {};
 
-#if ( !defined (_MSC_VER) || _MSC_VER >= 1800 )
 template <typename TRedSpec>
 using ReducedAminoAcid = SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >;
-#endif
 
 // ============================================================================
 // Metafunctions
