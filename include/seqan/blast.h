@@ -69,7 +69,7 @@
 #else //SEQAN_CXX11_COMPLETE
 
 #error The blast module requires C++11 support. \
-If your compiler supports C++11, please define SEQAN_CXX11_STANDARD
+If your compiler supports C++11, please define SEQAN_CXX11_COMPLETE
 
 #endif //SEQAN_CXX11_COMPLETE
 

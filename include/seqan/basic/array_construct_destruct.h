@@ -253,43 +253,6 @@ struct ValueConstructor_
         typedef typename RemoveConst<TValue>::Type TNonConstValue;
         new( (void*) & value(it) ) TNonConstValue(SEQAN_FORWARD(TParam, param_));
     }
-
-#ifndef SEQAN_CXX11_STANDARD
-    template <typename TIterator, typename TParam>
-    static inline void
-    construct(TIterator it,
-              TParam & param_,
-              Move const & tag,
-              True)
-    {
-        typedef typename Value<TIterator>::Type    TValue;
-        typedef typename RemoveConst<TValue>::Type TNonConstValue;
-        new( (void*) & value(it) ) TNonConstValue(param_, tag);
-    }
-
-    template <typename TIterator, typename TParam>
-    static inline void
-    construct(TIterator it,
-              TParam & param_,
-              Move const &,
-              False)
-    {
-        typedef typename Value<TIterator>::Type    TValue;
-        typedef typename RemoveConst<TValue>::Type TNonConstValue;
-        new( (void*) & value(it) ) TNonConstValue(param_);
-    }
-
-    template <typename TIterator, typename TParam>
-    static inline void
-    construct(TIterator it,
-              TParam & param_,
-              Move const & tag)
-    {
-        typedef typename Value<TIterator>::Type    TValue;
-        typedef typename RemoveConst<TValue>::Type TNonConstValue;
-        construct(it, param_, tag, typename HasMoveConstructor<TNonConstValue>::Type());
-    }
-#endif
 };
 
 // Helper code for constructing values behind iterators that return proxies
@@ -303,11 +266,6 @@ struct ValueConstructorProxy_
 
     template <typename TIterator, typename TParam>
     static inline void construct(TIterator, TParam SEQAN_FORWARD_CARG) {}
-
-#ifndef SEQAN_CXX11_STANDARD
-    template <typename TIterator, typename TParam>
-    static inline void construct(TIterator, TParam &, Move const & ) {}
-#endif
 };
 
 template <typename TIterator>
@@ -346,28 +304,6 @@ valueConstruct(TIterator it,
 
     TConstructor::construct(it, SEQAN_FORWARD(TParam, param_));
 }
-
-#ifndef SEQAN_CXX11_STANDARD
-template <typename TIterator, typename TParam>
-inline void
-valueConstruct(TIterator it,
-               TParam & param_,
-               Move const & tag)
-{
-    typedef typename IfC<
-        IsSameType<
-            typename Value<TIterator>::Type &,
-            typename Reference<TIterator>::Type
-        >::VALUE,
-    // THEN
-        ValueConstructor_,          // true,  types are equal
-    // ELSE
-        ValueConstructorProxy_      // false, types differ -> value() returns a proxy
-    >::Type TConstructor;
-
-    TConstructor::construct(it, param_, tag);
-}
-#endif
 
 // ----------------------------------------------------------------------------
 // Function valueDestruct() using iterators
@@ -574,11 +510,7 @@ _arrayConstructMoveDefault(TSource1 source_begin,
         // cannot move from const reference or proxy.
         // valueConstruct(target_begin, value(source_begin), Move());
         // TODO(holtgrew): We need a "has move constructor" metafunction to switch between move/copy constructing before we can use the line here.
-#ifdef SEQAN_CXX11_STANDARD
         valueConstruct(target_begin, std::move<decltype(*source_begin)>(*source_begin));
-#else
-        valueConstruct(target_begin, value(source_begin), Move());
-#endif
         ++source_begin;
         ++target_begin;
     }
@@ -827,16 +759,7 @@ _arrayMoveForwardDefault(TSource1 source_begin,
                           TSource2 source_end,
                           TTarget target_begin)
 {
-#ifdef SEQAN_CXX11_STANDARD
     std::move(source_begin, source_end, target_begin);
-#else
-    while (source_begin != source_end)
-    {
-        move(*target_begin, *source_begin);
-        ++source_begin;
-        ++target_begin;
-    }
-#endif
 }
 
 template<typename TTarget, typename TSource1, typename TSource2>
@@ -883,16 +806,7 @@ _arrayMoveBackwardDefault(TSource1 source_begin,
                           TSource2 source_end,
                           TTarget target_begin)
 {
-#ifdef SEQAN_CXX11_STANDARD
     std::move_backward(source_begin, source_end, target_begin + (source_end - source_begin));
-#else
-    target_begin += (source_end - source_begin);
-    while (source_end != source_begin) {
-        --source_end;
-        --target_begin;
-        move(*target_begin, *source_end);
-    }
-#endif
 }
 
 template<typename TTarget, typename TSource1, typename TSource2>

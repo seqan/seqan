@@ -75,19 +75,7 @@ typedef uint16_t __uint16; // nolint
 // default 8bit type
 typedef uint8_t __uint8;   // nolint
 
-// detect gcc C++11 support
-#if defined(__GXX_EXPERIMENTAL_CXX0X__)
-#  define SEQAN_CXX11_STANDARD
-#endif
-
-// detect clang C++11 support
-#ifdef __has_feature
-#  if __has_feature(cxx_static_assert)
-#    define SEQAN_CXX11_STANDARD
-#  endif
-#endif
-
-#if defined(SEQAN_CXX11_STANDARD) && (__INTEL_COMPILER >= 1500)
+#if (__INTEL_COMPILER >= 1500)
 #define SEQAN_CXX11_COMPLETE
 #endif
 

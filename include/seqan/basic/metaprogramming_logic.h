@@ -487,24 +487,6 @@ ifSwitch(False, TArgT const &, TArgF SEQAN_FORWARD_ARG argFalse)
     return SEQAN_FORWARD(TArgF, argFalse);
 }
 
-#ifndef SEQAN_CXX11_STANDARD
-
-template <typename TArgT, typename TArgF>
-inline TArgT const &
-ifSwitch(True, TArgT const & argTrue, TArgF const &)
-{
-    return SEQAN_FORWARD(TArgT, argTrue);
-}
-
-template <typename TArgT, typename TArgF>
-inline TArgF const &
-ifSwitch(False, TArgT const &, TArgF const & argFalse)
-{
-    return SEQAN_FORWARD(TArgF, argFalse);
-}
-
-#endif
-
 // ----------------------------------------------------------------------------
 // Metafunction IfC
 // ----------------------------------------------------------------------------

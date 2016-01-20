@@ -245,8 +245,6 @@ _dataHost(Pattern<TNeedle, TSpec> const & me)
 
 //host access: see basic_host.h
 
-#ifdef SEQAN_CXX11_STANDARD
-
 template <typename TNeedle, typename TSpec, typename TNeedle2>
 inline void
 setHost(Pattern<TNeedle, TSpec> & me,
@@ -256,30 +254,6 @@ setHost(Pattern<TNeedle, TSpec> & me,
     setValue(_dataHost(me), std::forward<TNeedle2>(ndl));
     _reinitPattern(me);
 }
-
-#else  // SEQAN_CXX11_STANDARD
-
-template <typename TNeedle, typename TSpec, typename TNeedle2>
-inline void
-setHost(Pattern<TNeedle, TSpec> & me,
-        TNeedle2 const & ndl)
-{
-    SEQAN_ASSERT(!empty(ndl));
-    setValue(_dataHost(me), ndl);
-    _reinitPattern(me);
-}
-
-template <typename TNeedle, typename TSpec, typename TNeedle2>
-inline void
-setHost(Pattern<TNeedle, TSpec> & me,
-        TNeedle2 & ndl)
-{
-    SEQAN_ASSERT(!empty(ndl));
-    setValue(_dataHost(me), ndl);
-    _reinitPattern(me);
-}
-
-#endif  // SEQAN_CXX11_STANDARD
 
 //////////////////////////////////////////////////////////////////////////////
 

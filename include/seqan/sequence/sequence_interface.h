@@ -634,7 +634,6 @@ front(T const & me)
     return *begin(me, Standard());
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename T>
 inline SEQAN_FUNC_DISABLE_IF(IsSameType<T, T &>, typename Value<T>::Type)
 front(T && me)
@@ -642,8 +641,6 @@ front(T && me)
     SEQAN_CHECKPOINT;
     return *begin(me, Standard());
 }
-
-#endif
 
 // --------------------------------------------------------------------------
 // Function back()
@@ -665,7 +662,6 @@ back(T & me)
     return *(end(me, Standard()) - 1);
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename T>
 inline SEQAN_FUNC_DISABLE_IF(IsSameType<T, T &>, typename Value<T>::Type)
 back(T && me)
@@ -673,8 +669,6 @@ back(T && me)
     SEQAN_CHECKPOINT;
     return *(end(me, Standard()) - 1);
 }
-
-#endif
 
 //NOTE(h-2): why do we have this?
 template <typename T>

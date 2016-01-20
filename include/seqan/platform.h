@@ -58,30 +58,15 @@
 // SEQAN_FORWARD .......... pass a variable as (of type T) as it was given to a function
 // SEQAN_MOVE ............. pass a variable to a function and never use it again
 
-#ifdef SEQAN_CXX11_STANDARD
-
-    #define SEQAN_AUTO_PTR_NAME     unique_ptr
-    #define SEQAN_FORWARD_ARG       &&
-    #define SEQAN_FORWARD_CARG      &&
-    #define SEQAN_FORWARD_RETURN    &&
-    #define SEQAN_FORWARD(T, x)     std::forward<T>(x)
-    #define SEQAN_MOVE(x)           std::move(x)
-
-#else  // #ifdef SEQAN_CXX11_STANDARD
-
-    #define SEQAN_AUTO_PTR_NAME     auto_ptr
-    #define SEQAN_FORWARD_ARG       &
-    #define SEQAN_FORWARD_CARG      const &
-    #define SEQAN_FORWARD_RETURN
-    #define SEQAN_FORWARD(T, x)     x
-    #define SEQAN_MOVE(x)           x
-
-#endif  // #ifdef SEQAN_CXX11_STANDARD
+#define SEQAN_AUTO_PTR_NAME     unique_ptr
+#define SEQAN_FORWARD_ARG       &&
+#define SEQAN_FORWARD_CARG      &&
+#define SEQAN_FORWARD_RETURN    &&
+#define SEQAN_FORWARD(T, x)     std::forward<T>(x)
+#define SEQAN_MOVE(x)           std::move(x)
 
 // Is the C++11 STL (thread, atomic, chrono) available?
-#if defined(SEQAN_CXX11_STANDARD) && (!defined(_MSC_VER) || _MSC_VER >= 1700) && !defined(PLATFORM_WINDOWS_MINGW)
 #define SEQAN_CXX11_STL
-#endif
 
 // C++ restrict keyword, see e.g. platform_gcc.h
 #ifndef SEQAN_RESTRICT

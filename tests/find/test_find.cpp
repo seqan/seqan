@@ -1709,8 +1709,6 @@ void test_pattern_assign() {
     p4 = p3;
 }
 
-#ifdef SEQAN_CXX11_STANDARD
-
 template <typename TPatternSpec>
 void test_pattern_movecon() {
     typedef Pattern<CharString, TPatternSpec> TPattern;
@@ -1813,8 +1811,6 @@ void test_pattern_set_host()
     }
 }
 
-#endif  // SEQAN_CXX11_STANDARD
-
 SEQAN_DEFINE_TEST(test_pattern_copycon) {
     // Test whether the needle is preserved in copying a pattern.
     // See http://trac.mi.fu-berlin.de/seqan/ticket/318
@@ -1841,7 +1837,6 @@ SEQAN_DEFINE_TEST(test_pattern_assign) {
     test_pattern_assign<Bfam<Trie> >();
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 SEQAN_DEFINE_TEST(test_pattern_movecon) {
     test_pattern_movecon<Simple>();
     test_pattern_movecon<Horspool>();
@@ -1883,7 +1878,6 @@ SEQAN_DEFINE_TEST(test_pattern_set_host) {
     test_pattern_set_host<Myers<FindPrefix, void> >();
     test_pattern_set_host<Myers<FindPrefix, Myers<FindPrefix> > >();
 }
-#endif  // SEQAN_CXX11_STANDARD
 
 SEQAN_BEGIN_TESTSUITE(test_find) {
 //     SEQAN_CALL_TEST(test_myers_trigger_bug);
@@ -1938,11 +1932,9 @@ SEQAN_BEGIN_TESTSUITE(test_find) {
     SEQAN_CALL_TEST(test_pattern_copycon);
     SEQAN_CALL_TEST(test_pattern_assign);
 
-#ifdef SEQAN_CXX11_STANDARD
     SEQAN_CALL_TEST(test_pattern_movecon);
     SEQAN_CALL_TEST(test_pattern_moveassign);
     SEQAN_CALL_TEST(test_pattern_set_host);
-#endif  // SEQAN_CXX11_STANDARD
 
     // Verify checkpoints in all files in this module.
     SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_hamming_simple.h");

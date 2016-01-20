@@ -71,7 +71,6 @@ SEQAN_CONCEPT_IMPL((std::basic_string<TChar, TTraits, TAlloc>), (StlContainerCon
 template<typename TChar, typename TTraits, typename TAlloc>
 SEQAN_CONCEPT_IMPL((std::basic_string<TChar, TTraits, TAlloc> const), (StlContainerConcept));
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, typename TAlloc>
 SEQAN_CONCEPT_IMPL((std::forward_list<TChar, TAlloc>), (StlContainerConcept));
 
@@ -83,7 +82,6 @@ SEQAN_CONCEPT_IMPL((std::array<TChar, N>), (StlContainerConcept));
 
 template <typename TChar, std::size_t N>
 SEQAN_CONCEPT_IMPL((std::array<TChar, N> const), (StlContainerConcept));
-#endif
 
 /* NOTE(h-2) on ConceptChecking and universal references
  *
@@ -190,10 +188,8 @@ struct Iterator<CONT const, Rooted> \
 SUPERMACRO__(std::vector<TChar COMMA TAlloc>,      typename TChar COMMA typename TAlloc)
 SUPERMACRO__(std::deque<TChar COMMA TAlloc>,       typename TChar COMMA typename TAlloc)
 SUPERMACRO__(std::list<TChar COMMA TAlloc>,        typename TChar COMMA typename TAlloc)
-#ifdef SEQAN_CXX11_STANDARD
 SUPERMACRO__(std::forward_list<TChar COMMA TAlloc>,typename TChar COMMA typename TAlloc)
 SUPERMACRO__(std::array<TChar COMMA N>,            typename TChar COMMA std::size_t N)
-#endif
 SUPERMACRO__(std::basic_string<TChar COMMA TTraits COMMA TAlloc>, typename TChar COMMA typename TTraits COMMA typename TAlloc)
 
 // ----------------------------------------------------------------------------
@@ -220,7 +216,6 @@ struct IsContiguous<std::basic_string<TChar, TTraits, TAlloc> const> :
     public True
 {};
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, size_t N>
 struct IsContiguous<std::array<TChar, N> > :
     public True
@@ -230,7 +225,6 @@ template <typename TChar, size_t N>
 struct IsContiguous<std::array<TChar, N> const> :
     public True
 {};
-#endif
 
 // ----------------------------------------------------------------------------
 // Mfn HasSubscriptOperator (different for e.g. std::deque)
@@ -261,12 +255,10 @@ struct IsSequence<std::deque<TChar, TAlloc> > : True {};
 template <typename TChar, typename TAlloc>
 struct IsSequence<std::list<TChar, TAlloc> > : True {};
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, typename TAlloc>
 struct IsSequence<std::forward_list<TChar, TAlloc> > : True {};
 
 //NOTE(h-2): array isn't by SeqAn definition, right?
-#endif
 
 template <typename TChar, typename TCharTraits, typename TAlloc>
 struct IsSequence<std::basic_string<TChar, TCharTraits, TAlloc> > : True {};
@@ -278,10 +270,8 @@ struct IsSequence<std::basic_string<TChar, TCharTraits, TAlloc> > : True {};
 template <typename TContainer>
 struct FixedSize_ : public False {};
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, size_t N>
 struct FixedSize_<std::array<TChar, N> > : public True {};
-#endif
 
 // ===========================================================================
 // Functions
@@ -377,7 +367,6 @@ end(TContainer const & me, Rooted const &)
 // Function _iterStl (like seqan's iter() but for stl-iterators)
 // ----------------------------------------------------------------------------
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TContainer,
           typename TPos>
 inline typename TContainer::iterator
@@ -401,35 +390,6 @@ _iterStl(TContainer const & me,
                          "Trying to get an iterator behind a container through _iterStl().");
     return std::next(me.begin(), pos);
 }
-#else
-template <typename TContainer,
-          typename TPos>
-inline typename TContainer::iterator
-_iterStl(TContainer & me,
-         TPos const pos)
-{
-    SEQAN_ASSERT_LEQ_MSG(pos,
-                         static_cast<TPos>(length(me)),
-                         "Trying to get an iterator behind a container through _iterStl().");
-    typename TContainer::iterator it = me.begin();
-    std::advance(it, pos);
-    return it;
-}
-
-template <typename TContainer,
-          typename TPos>
-inline typename TContainer::const_iterator
-_iterStl(TContainer const & me,
-         TPos const pos)
-{
-    SEQAN_ASSERT_LEQ_MSG(pos,
-                         static_cast<TPos>(length(me)),
-                         "Trying to get an iterator behind a container through _iterStl().");
-    typename TContainer::const_iterator it = me.begin();
-    std::advance(it, pos);
-    return it;
-}
-#endif
 
 // ----------------------------------------------------------------------------
 // Function iter (Standard) (only overloaded for non-contiguous)
@@ -453,7 +413,6 @@ iter(std::list<TChar, TAlloc> const & me,
     return _iterStl(me, pos);
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, typename TAlloc, typename TPos>
 inline typename Iterator<std::forward_list<TChar, TAlloc>, Standard const>::Type
 iter(std::forward_list<TChar, TAlloc> & me,
@@ -471,7 +430,6 @@ iter(std::forward_list<TChar, TAlloc> const & me,
 {
     return _iterStl(me, pos);
 }
-#endif
 
 // ----------------------------------------------------------------------------
 // Function iter (Rooted) (only overloaded for non-contiguous)
@@ -497,7 +455,6 @@ iter(std::list<TChar, TAlloc> const & me,
     return TIterator(me, iter(me, pos, Standard()));
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, typename TAlloc, typename TPos>
 inline typename Iterator<std::forward_list<TChar, TAlloc>, Rooted>::Type
 iter(std::forward_list<TChar, TAlloc> & me,
@@ -517,7 +474,6 @@ iter(std::forward_list<TChar, TAlloc> const & me,
     typedef typename Iterator<std::forward_list<TChar, TAlloc> const, Rooted>::Type TIterator;
     return TIterator(me, iter(me, pos, Standard()));
 }
-#endif
 
 // ----------------------------------------------------------------------------
 // Function length
@@ -530,7 +486,6 @@ length(TContainer const & me)
     return me.size();
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, typename TAlloc>
 inline typename Size<std::forward_list<TChar, TAlloc> >::Type
 length(std::forward_list<TChar, TAlloc> const & me)
@@ -541,7 +496,6 @@ length(std::forward_list<TChar, TAlloc> const & me)
 
     return l;
 }
-#endif
 
 #ifdef SEQAN_CXX11_COMPLETE
 template <typename TChar, std::size_t N>
@@ -585,7 +539,7 @@ capacity(std::array<TChar, N> const & me)
 // Function empty
 // ----------------------------------------------------------------------------
 
-// VC2015 implements some C++17 functions which would collide for 
+// VC2015 implements some C++17 functions which would collide for
 // applications that do using namespace std
 // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4280.pdf
 #if _MSC_VER < 1900
@@ -630,7 +584,6 @@ reserve(std::basic_string<TChar, TTraits, TAlloc> & me,
     return capacity(me);
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, typename TAlloc, typename TSize, typename TExpand>
 inline typename Size<std::vector<TChar, TAlloc> >::Type
 reserve(std::vector<TChar, TAlloc> && me,
@@ -650,7 +603,6 @@ reserve(std::basic_string<TChar, TTraits, TAlloc> && me,
     me.reserve(s);
     return capacity(me);
 }
-#endif
 
 // for other types the default overload holds
 
@@ -721,7 +673,6 @@ value(TContainer const & me, TPos const pos)
     return me[pos];
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TContainer,
           typename TPos>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<TContainer> >,
@@ -730,7 +681,6 @@ value(TContainer && me, TPos const pos)
 {
     return me[pos];
 }
-#endif
 
 // linear complexity for list and fwd list
 template <typename TContainer,
@@ -751,7 +701,6 @@ value(TContainer const & me, TPos const pos)
     return *(_iterStl(me, pos));
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TContainer,
           typename TPos>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<TContainer> >,
@@ -760,7 +709,6 @@ value(TContainer && me, TPos const pos)
 {
     return *(_iterStl(me, pos));
 }
-#endif
 
 // --------------------------------------------------------------------------
 // Function getValue
@@ -775,7 +723,6 @@ getValue(TContainer const & me, TPos const pos)
     return me[pos];
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TContainer,
           typename TPos>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<TContainer> >,
@@ -784,7 +731,6 @@ getValue(TContainer && me, TPos const pos)
 {
     return me[pos];
 }
-#endif
 
 // linear complexity for list and fwd list
 template <typename TContainer,
@@ -796,7 +742,6 @@ getValue(TContainer const & me, TPos const pos)
     return *(_iterStl(me, pos));
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TContainer,
           typename TPos>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<TContainer> >,
@@ -805,7 +750,6 @@ getValue(TContainer && me, TPos const pos)
 {
     return *(_iterStl(me, pos));
 }
-#endif
 
 // ----------------------------------------------------------------------------
 // Function front
@@ -819,7 +763,6 @@ getValue(TContainer && me, TPos const pos)
 
 // default implementation used
 
-#ifdef SEQAN_CXX11_STANDARD
 // forward_list doesnt have back, we achieve it in linear time
 template <typename TChar, typename TAlloc>
 inline TChar &
@@ -841,7 +784,6 @@ back(std::forward_list<TChar, TAlloc> && me)
 {
     return *(std::next(me.before_begin(), length(me)));
 }
-#endif
 
 // ----------------------------------------------------------------------------
 // Function assign
@@ -911,7 +853,6 @@ insert(TContainer SEQAN_FORWARD_ARG me,
               iter(source, std::min(length(source), limit), Standard()));
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 // forward_list doesnt have insert, we achieve it slower
 template <typename TChar, typename TAlloc, typename TSource, typename TExpand>
 inline void
@@ -956,7 +897,6 @@ insert(std::forward_list<TChar, TAlloc> && me,
 {
     insert(me, pos, source, limit);
 }
-#endif
 
 // ----------------------------------------------------------------------------
 // Function append
@@ -1059,7 +999,6 @@ insertValue(TContainer SEQAN_FORWARD_ARG me,
     me.insert(_iterStl(SEQAN_FORWARD(TContainer, me), pos), SEQAN_FORWARD(TSource, source));
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, typename TAlloc, typename TSource, typename TExpand>
 inline void
 insertValue(std::forward_list<TChar, TAlloc> & me,
@@ -1079,7 +1018,6 @@ insertValue(std::forward_list<TChar, TAlloc> && me,
 {
     insertValue(me, pos, source);
 }
-#endif
 
 // ----------------------------------------------------------------------------
 // Function appendValue
@@ -1097,7 +1035,6 @@ appendValue(TContainer SEQAN_FORWARD_ARG me,
     me.push_back(SEQAN_FORWARD(TSource, source));
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, typename TAlloc, typename TSource, typename TExpand>
 inline void
 appendValue(std::forward_list<TChar, TAlloc> & me,
@@ -1115,7 +1052,6 @@ appendValue(std::forward_list<TChar, TAlloc> && me,
 {
     appendValue(me, source);
 }
-#endif
 
 // ----------------------------------------------------------------------------
 // Function prependValue
@@ -1160,7 +1096,6 @@ prependValue(std::basic_string<TChar, TTraits, TAlloc> & me,
     insertValue(me, 0, SEQAN_FORWARD(TSource, source));
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 // && to &
 template <typename TChar, typename TAlloc, typename TSource>
 inline void
@@ -1177,7 +1112,6 @@ prependValue(std::basic_string<TChar, TTraits, TAlloc> && me,
 {
     prependValue(me, std::forward<TSource>(source));
 }
-#endif
 
 // ----------------------------------------------------------------------------
 // Function erase
@@ -1193,7 +1127,6 @@ erase(TContainer SEQAN_FORWARD_ARG me,
     me.erase(_iterStl(me, pos), _iterStl(me, posEnd));
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, typename TAlloc>
 inline void
 erase(std::forward_list<TChar, TAlloc> & me,
@@ -1211,7 +1144,6 @@ erase(std::forward_list<TChar, TAlloc> && me,
 {
     erase(me, pos, posEnd);
 }
-#endif
 
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
@@ -1248,7 +1180,6 @@ eraseFront(std::basic_string<TChar, TTraits, TAlloc> & me)
     me.erase(me.begin());
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, typename TAlloc>
 inline void
 eraseFront(std::vector<TChar, TAlloc> && me)
@@ -1262,7 +1193,6 @@ eraseFront(std::basic_string<TChar, TTraits, TAlloc> && me)
 {
     me.erase(me.begin());
 }
-#endif
 
 // ----------------------------------------------------------------------------
 // Function eraseBack
@@ -1276,7 +1206,6 @@ eraseBack(TContainer SEQAN_FORWARD_ARG me)
     me.pop_back();
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TChar, typename TAlloc>
 inline void
 eraseBack(std::forward_list<TChar, TAlloc> & me)
@@ -1299,17 +1228,6 @@ eraseBack(std::forward_list<TChar, TAlloc> && me)
 {
     eraseBack(me);
 }
-#endif
-
-#ifndef SEQAN_CXX11_STANDARD
-template <typename TChar, typename TTraits, typename TAlloc>
-inline void
-eraseBack(std::basic_string<TChar, TTraits, TAlloc> & me)
-{
-    if (length(me) > 0)
-        me.erase(me.end() - 1);
-}
-#endif
 
 // ----------------------------------------------------------------------------
 // Function replace
@@ -1398,7 +1316,6 @@ assign(std::basic_string<char, TTraits, TAlloc> & me,
     me = source;
 }
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, void)
 assign(TContainer && me,
@@ -1414,7 +1331,6 @@ assign(std::basic_string<char, TTraits, TAlloc> && me,
 {
     me = source;
 }
-#endif
 
 }
 

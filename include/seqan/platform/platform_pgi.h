@@ -73,16 +73,4 @@ typedef uint16_t __uint16; // nolint
 typedef int8_t __int8;     // nolint
 typedef uint8_t __uint8;   // nolint
 
-// detect gcc C++11 support
-#if defined(__GXX_EXPERIMENTAL_CXX0X__)
-#  define SEQAN_CXX11_STANDARD
-#endif
-
-// detect clang C++11 support
-#ifdef __has_feature
-#  if __has_feature(cxx_static_assert)
-#    define SEQAN_CXX11_STANDARD
-#  endif
-#endif
-
 #endif  // #ifndef PLATFORM_GCC

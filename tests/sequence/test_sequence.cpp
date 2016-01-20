@@ -63,13 +63,12 @@ SEQAN_BEGIN_TESTSUITE(Sequence tests)
     SEQAN_CALL_TEST(test_sequence_adaptions_iterators_std_vector);
     SEQAN_CALL_TEST(test_sequence_adaptions_sequence_interface_std_vector);
     SEQAN_CALL_TEST(test_sequence_adaptions_sequence_memory_std_vector);
-    
-#ifdef SEQAN_CXX11_STANDARD
+
     // Test adaptions for std::array.
     SEQAN_CALL_TEST(test_sequence_adaptions_metafunctions_std_array);
     SEQAN_CALL_TEST(test_sequence_adaptions_iterators_std_array);
     SEQAN_CALL_TEST(test_sequence_adaptions_sequence_interface_std_array);
-#endif
+
     // Test adaptions for std::list.
     SEQAN_CALL_TEST(test_sequence_adaptions_metafunctions_std_list);
     SEQAN_CALL_TEST(test_sequence_adaptions_iterators_std_list);

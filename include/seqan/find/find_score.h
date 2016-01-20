@@ -81,7 +81,6 @@ public:
     Pattern() : data_limit(0), data_maxscore(0)
     {}
 
-#ifdef SEQAN_CXX11_STANDARD
     template <typename TNeedle2>
     Pattern(TNeedle2 && ndl, TScore const & _score_func, TScoreValue _limit = 0) :
         data_score(_score_func),
@@ -98,19 +97,6 @@ public:
     {
         setHost(*this, std::forward<TNeedle2>(ndl));
     }
-#else  // TODO(rrahn): Replace when c11 is standard.
-    Pattern(TNeedle & _needle, TScore const & _score_func, TScoreValue _limit = 0) :
-        data_score(_score_func), data_limit(_limit), data_maxscore(0)
-    {
-        setHost(*this, _needle);
-    }
-
-    Pattern(TNeedle & _needle, TScoreValue _limit = 0):
-        data_limit(_limit), data_maxscore(0)
-    {
-        setHost(*this, _needle);
-    }
-#endif  // SEQAN_CXX11_STANDARD
 
     Pattern(TScoreValue _limit) : data_limit(_limit), data_maxscore(0)
     {
@@ -126,12 +112,11 @@ public:
         data_maxscore( other.data_maxscore)
     {}
 
-#ifdef SEQAN_CXX11_STANDARD
 #if (!defined(_MSC_VER) || _MSC_VER >= 1900) && (!defined(PLATFORM_WINDOWS_MINGW))
     Pattern(Pattern && other) = default;
     Pattern& operator = (Pattern && other) = default;
 #endif  // (!defined(_MSC_VER) || _MSC_VER >= 1900) && (!defined(PLATFORM_WINDOWS_MINGW))
-#endif  // SEQAN_CXX11_STANDARD
+
     inline Pattern &
     operator = (Pattern const & other)
     {

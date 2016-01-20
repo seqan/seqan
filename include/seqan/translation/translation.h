@@ -494,8 +494,7 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  * the latter is possible).
  *
  * Please note that specifying the GeneticCode at compile time avoids having
- * unrequired conversion tables in memory. The implementation profits slightly
- * from having SEQAN_CXX11_STANDARD defined.
+ * unrequired conversion tables in memory.
  * @section Example
  *
  * @code{.cpp}

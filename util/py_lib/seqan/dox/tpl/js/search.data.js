@@ -665,7 +665,6 @@ window.searchData = [
   {title:'FragmentStore::PredefinedAnnotationTypes',text:'',akas:'',subentries:'variable ANNO_ROOT;,variable ANNO_GENE;,variable ANNO_MRNA;,variable ANNO_CDS;,variable ANNO_EXON;,variable ANNO_FIVE_PRIME_UTR;,variable ANNO_INTRON;,variable ANNO_THREE_PRIME_UTR;',loc:'enum_FragmentStore_58_58PredefinedAnnotationTypes.html',langEntity:'enum'},
   {title:'erase',text:'',akas:'',subentries:'',loc:'global_function_erase.html',langEntity:'global_function'},
   {title:'sortAlignedReads',text:'',akas:'',subentries:'',loc:'global_function_sortAlignedReads.html',langEntity:'global_function'},
-  {title:'SEQAN_CXX11_STANDARD',text:'',akas:'',subentries:'',loc:'macro_SEQAN_95CXX_49_49_95STANDARD.html',langEntity:'macro'},
   {title:'CStyleString',text:'',akas:'',subentries:'',loc:'class_CStyleString.html',langEntity:'class'},
   {title:'startsWith',text:'',akas:'',subentries:'',loc:'global_function_startsWith.html',langEntity:'global_function'},
   {title:'SuperMaxRepeatsIterator',text:'',akas:'',subentries:'',loc:'class_SuperMaxRepeatsIterator.html',langEntity:'class'},

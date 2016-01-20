@@ -1452,17 +1452,6 @@ valueConstruct(Iter<TPackedString, Packed<THostspec> > const & it,
     assignValue(it, SEQAN_FORWARD(TParam, param_));
 }
 
-#ifndef SEQAN_CXX11_STANDARD
-template <typename TPackedString, typename THostspec, typename TParam>
-inline void
-valueConstruct(Iter<TPackedString, Packed<THostspec> > const & it,
-               TParam const & param_,
-               Move const & /*tag*/)
-{
-    moveValue(it, param_);
-}
-#endif
-
 // --------------------------------------------------------------------------
 // Function valueDestruct()
 // --------------------------------------------------------------------------

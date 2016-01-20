@@ -68,13 +68,11 @@ namespace SEQAN_NAMESPACE_MAIN
             other.hMutex = NULL;
         }
 
-#ifdef SEQAN_CXX11_STANDARD
         Mutex(Mutex && other) :
             hMutex(other.hMutex)
         {
             other.hMutex = NULL;
         }
-#endif
 
         ~Mutex() {
             if (*this)
@@ -136,13 +134,11 @@ namespace SEQAN_NAMESPACE_MAIN
             other.hMutex = NULL;
         }
 
-#ifdef SEQAN_CXX11_STANDARD
         Mutex(Mutex && other) :
             hMutex(other.hMutex)
         {
             other.hMutex = NULL;
         }
-#endif
 
         ~Mutex() {
             if (*this)
