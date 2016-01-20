@@ -14,15 +14,6 @@ message (STATUS "Configuring apps/yara")
 # Dependencies
 # ----------------------------------------------------------------------------
 
-# Search C++11.
-find_package(CXX11 REQUIRED)
-
-# Stop here if there is no C++11 with STL.
-if (NOT (CXX11_FOUND AND CXX11_STL_FOUND))
-    message (STATUS "  C++11 compiler required to build yara.")
-    return ()
-endif (NOT (CXX11_FOUND AND CXX11_STL_FOUND))
-
 # Disable older MSVC.
 if (MSVC AND MSVC_VERSION LESS 1800)
     message (STATUS "  Visual Studio 2012 or newer required to build yara.")
@@ -113,7 +104,7 @@ add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # Update the list of file names below if you add source files to your application.
 add_executable(yara_indexer indexer.cpp
