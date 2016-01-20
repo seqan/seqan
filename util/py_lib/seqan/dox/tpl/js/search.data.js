@@ -723,7 +723,6 @@ window.searchData = [
   {title:'Tuple',text:'',akas:'',subentries:'interface_metafunction LENGTH,interface_metafunction Value',loc:'class_Tuple.html',langEntity:'class'},
   {title:'upgmaTree',text:'',akas:'',subentries:'',loc:'global_function_upgmaTree.html',langEntity:'global_function'},
   {title:'SimplePattern',text:'',akas:'',subentries:'',loc:'class_SimplePattern.html',langEntity:'class'},
-  {title:'PLATFORM_WINDOWS_MINGW',text:'',akas:'',subentries:'',loc:'macro_PLATFORM_95WINDOWS_95MINGW.html',langEntity:'macro'},
   {title:'printDebugLevel',text:'',akas:'',subentries:'',loc:'global_function_printDebugLevel.html',langEntity:'global_function'},
   {title:'SEQAN_CONCEPT',text:'',akas:'',subentries:'',loc:'macro_SEQAN_95CONCEPT.html',langEntity:'macro'},
   {title:'translate',text:'',akas:'',subentries:'',loc:'global_function_translate.html',langEntity:'global_function'},

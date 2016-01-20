@@ -34,9 +34,7 @@
 #ifndef SEQAN_PLATFORM_H
 #define SEQAN_PLATFORM_H
 
-#ifdef __MINGW32__
-    #include "platform/platform_mingw.h"
-#elif _MSC_VER
+#ifdef _MSC_VER
     #include "platform/platform_windows.h"
 #elif __SUNPRO_C
     #include "platform/platform_solaris.h"

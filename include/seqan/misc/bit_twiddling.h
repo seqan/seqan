@@ -597,7 +597,7 @@ _bitScanForward(TWord word, WordSize_<NUM_BITS>)
     return _bitScanForwardGeneric(word, WordSize_<NUM_BITS>());
 }
 
-#if defined(PLATFORM_GCC) || defined(PLATFORM_WINDOWS_MINGW)
+#if defined(PLATFORM_GCC)
 
 template <typename TWord>
 inline TWord
@@ -698,7 +698,7 @@ _bitScanForward(TWord word, WordSize_<32>)
     _BitScanForward(&index, static_cast<unsigned long>(word));
     return index;
 }
-#endif  // #if defined(PLATFORM_GCC) || defined(PLATFORM_WINDOWS_MINGW)
+#endif  // #if defined(PLATFORM_GCC)
 #endif  // #ifdef PLATFORM_GCC
 
 // ----------------------------------------------------------------------------

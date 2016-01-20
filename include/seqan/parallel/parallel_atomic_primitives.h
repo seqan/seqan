@@ -38,9 +38,9 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_ATOMIC_PRIMITIVES_H_
 #define SEQAN_PARALLEL_PARALLEL_ATOMIC_PRIMITIVES_H_
 
-#if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
+#if defined(PLATFORM_WINDOWS)
 #include <intrin.h>
-#endif  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
+#endif  // #if defined(PLATFORM_WINDOWS)
 
 namespace seqan {
 
@@ -225,7 +225,7 @@ struct Atomic
 #define SEQAN_CACHE_LINE_SIZE 128
 #endif
 
-#if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
+#if defined(PLATFORM_WINDOWS)
 
 // ----------------------------------------------------------------------------
 // Implementation in MSVC
@@ -302,7 +302,7 @@ template <typename T>
 inline T atomicPostDec(T volatile & x) { return atomicDec(x) + 1; }
 
 
-#else  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
+#else  // #if defined(PLATFORM_WINDOWS)
 
 // ----------------------------------------------------------------------------
 // Implementation in GCC (LLVM is GCC compatible)
@@ -400,7 +400,7 @@ inline T1 * atomicAdd(T1 * volatile & x, T2 y)
     return (T1 *) __sync_add_and_fetch((size_t volatile *)&x, y * sizeof(T2));
 }
 
-#endif  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
+#endif  // #if defined(PLATFORM_WINDOWS)
 
 
 // ----------------------------------------------------------------------------
@@ -446,4 +446,4 @@ template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T cmp, T y
 
 } // namespace seqan
 
-#endif  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
+#endif  // #if defined(PLATFORM_WINDOWS)
