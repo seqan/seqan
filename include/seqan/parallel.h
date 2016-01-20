@@ -68,10 +68,8 @@
 #include <numeric>
 #endif // PLATFORM_GCC
 
-#ifdef SEQAN_CXX11_STL
 #include <atomic>
 #include <thread>
-#endif
 
 // ============================================================================
 // Module Headers

@@ -65,9 +65,6 @@
 #define SEQAN_FORWARD(T, x)     std::forward<T>(x)
 #define SEQAN_MOVE(x)           std::move(x)
 
-// Is the C++11 STL (thread, atomic, chrono) available?
-#define SEQAN_CXX11_STL
-
 // C++ restrict keyword, see e.g. platform_gcc.h
 #ifndef SEQAN_RESTRICT
 #define SEQAN_RESTRICT

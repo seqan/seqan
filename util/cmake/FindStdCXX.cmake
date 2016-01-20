@@ -9,7 +9,6 @@
 #                  supported.
 # CXX11_FOUND      True, if the compiler supports C++11
 # CXX14_FOUND      True, if the compiler supports C++14
-# CXX11_STL_FOUND  @deprecated
 
 if (STD_CXX_FLAG OR __FIND_STD_CXX_CMAKE__)
     return()
@@ -23,7 +22,6 @@ macro (_seqan_cxx_standard_windows)
     # Visual Studio 2010 (vs10) doesn't support C++11 STL.
     if (MSVC AND MSVC_VERSION GREATER 1600)
         set(CXX11_FOUND 1)
-        set(CXX11_STL_FOUND 1)
 
         return ()
     endif (MSVC AND MSVC_VERSION GREATER 1600)
@@ -57,12 +55,8 @@ macro (_seqan_cxx_standard_gcc)
 
 endmacro(_seqan_cxx_standard_gcc)
 
-
 _seqan_cxx_standard_windows()
 _seqan_cxx_standard_gcc()
-
-# By default, C++11 compiler support implies the C++11 STL.
-set(CXX11_STL_FOUND ${CXX11_FOUND})
 
 if (NOT CXX11_FOUND)
     message (FATAL_ERROR "Seqan requires since v2.1.0 C++11.")
