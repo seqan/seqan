@@ -63,11 +63,7 @@ namespace seqan {
 // If the compiler issues warnings about old C style casts,
 // then enable this:
 //
-//#if defined(__GNUC__) && ((__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 4)))
-//#  define BOOST_STATIC_ASSERT_BOOL_CAST( x ) ((x) == 0 ? false : true)
-//#else
 #define SEQAN_STATIC_ASSERT_BOOL_CAST(x) (bool)(x)
-//#endif
 
 #define SEQAN_STATIC_ASSERT( B ) static_assert(B, #B)
 
