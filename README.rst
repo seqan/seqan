@@ -29,7 +29,7 @@ The library is tested on the following compilers:
 All operating systems supported by the respective compilers should work with SeqAn. We test on 32-bit and 64-bit Intel/AMD architectures.
 
 To build tests, demos, and official SeqAn applications you also need:
-  * CMake >= 2.8.2 (http://cmake.org/)
+  * CMake >= 3.0.0 (http://cmake.org/)
 
 Some of the official applications might have additional requirements or work only on a subset of platforms.
 
