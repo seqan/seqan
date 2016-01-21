@@ -22,9 +22,9 @@ Prerequisites
 -------------------
 
 The library is tested on the following compilers:
-  * GCC >= 4.7 (e.g. Debian stable/wheezy)
-  * Clang >= 3.3 (e.g. Xcode >= 5)
-  * Visual C++ 10 (2010), 11 (2012), 12 (2013)
+  * GCC >= 4.9 (e.g. Debian stable/jessie)
+  * Clang >= 3.5 (e.g. Xcode >= 6)
+  * Visual C++ 14 (2015)
 
 All operating systems supported by the respective compilers should work with SeqAn. We test on 32-bit and 64-bit Intel/AMD architectures.
 
