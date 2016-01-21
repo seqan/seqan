@@ -36,8 +36,6 @@
 
 #ifdef _MSC_VER
     #include "platform/platform_windows.h"
-#elif __SUNPRO_C
-    #include "platform/platform_solaris.h"
 #elif __ICC
     #include "platform/platform_icc.h"
 #else
