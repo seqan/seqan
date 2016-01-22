@@ -431,57 +431,81 @@ void testAlignGapsIteratorCountGapsCountCharactersIsGap(TGapsSpec const & /*spec
 
     SEQAN_ASSERT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 2u);
+    SEQAN_ASSERT_EQ(countGaps(it, CountRight()), 2u);
+    SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 0u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, CountRight()), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 0u);
     ++it;
 
     SEQAN_ASSERT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 1u);
+    SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 1u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 0u);
     ++it;
 
     SEQAN_ASSERT_NOT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 0u);
+    SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 2u);
     SEQAN_ASSERT_EQ(countCharacters(it), 2u);
+    SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 0u);
     ++it;
 
     SEQAN_ASSERT_NOT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 0u);
+    SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 0u);
     SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+    SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 1u);
     ++it;
 
     SEQAN_ASSERT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 2u);
+    SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 0u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 2u);
     ++it;
 
     SEQAN_ASSERT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 1u);
+    SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 1u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 0u);
     ++it;
 
     SEQAN_ASSERT_NOT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 0u);
+    SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 2u);
     SEQAN_ASSERT_EQ(countCharacters(it), 2u);
+    SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 0u);
     ++it;
 
     SEQAN_ASSERT_NOT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 0u);
+    SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 0u);
     SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+    SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 1u);
     ++it;
 
     SEQAN_ASSERT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 2u);
+    SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 0u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 2u);
     ++it;
 
     SEQAN_ASSERT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 1u);
+    SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 1u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 0u);
     ++it;
 
     SEQAN_ASSERT(atEnd(it));
     SEQAN_ASSERT_EQ(countGaps(it), 0u);
+    SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 2u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 0u);
 }
 
 template <typename TGapsSpec>
@@ -517,47 +541,65 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
 
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 1u);
+        SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 0u);
         ++it;
 
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 1u);
         SEQAN_ASSERT_EQ(countCharacters(it), 2u);
+        SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 0u);
         ++it;
 
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+        SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 1u);
         ++it;
 
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 2u);
+        SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 2u);
         ++it;
 
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 1u);
+        SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 1u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 0u);
         ++it;
 
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 2u);
         SEQAN_ASSERT_EQ(countCharacters(it), 2u);
+        SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 0u);
         ++it;
 
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+        SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 1u);
         ++it;
 
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 1u);
+        SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 2u);
         ++it;
 
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countGaps(it, CountLeft()), 1u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it, CountLeft()), 0u);
     }
 
     // Clip into leading/trailing characters.
