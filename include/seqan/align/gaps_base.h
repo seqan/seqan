@@ -67,6 +67,36 @@ typedef Tag<ArrayGaps_> ArrayGaps;
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @defgroup CountingDirectionTags Counting Direction Tags
+ * @brief Tags to select the direction to count either the gaps or characters from the current view position.
+ */
+
+/*!
+ * @tag CountingDirectionTags#CountLeft
+ * @headerfile <seqan/align.h>
+ * @brief Counts all consecutive gaps/characters preceeding the current view position. 
+ *        Note, the count does not include the current position.
+ *
+ * @signature struct CountLeft_;
+ *            typedef Tag<CountLeft_> CountLeft;
+ */
+
+struct CountLeft_;
+typedef Tag<CountLeft_> CountLeft;
+
+/*!
+ * @tag CountingDirectionTags#CountRight
+ * @headerfile <seqan/align.h>
+ * @brief Counts all consecutive gaps/characters following the current view position.
+ *        Note, the count includes the current position.
+ *
+ * @signature struct CountRight_;
+ *            typedef Tag<CountRight_> CountRight;
+ */
+struct CountRight_;
+typedef Tag<CountRight_> CountRight;
+
 // ----------------------------------------------------------------------------
 // Class Gaps
 // ----------------------------------------------------------------------------
@@ -499,20 +529,31 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
  * @fn Gaps#countGaps
  * @brief The number of gaps following a position.
  *
- * @signature TSize countGaps(gaps, viewPos);
+ * @signature TSize countGaps(gaps, viewPos[, dir]);
  *
  * @param[in] gaps    The Gaps object to query.
  * @param[in] viewPos View position (including clipping and gaps) to query at.
+ * @param[in] dir     A tag to specify the counting direction. One of @link CountingDirectionTags @endlink.
+ *                    Defaults to @link CountingDirectionTags#CountRight @endlink.
  *
  * @return TSize The number of gap characters at <tt>viewPos</tt>  (Metafunction: @link ContainerConcept#Size
  *               @endlink).
  */
 
+template <typename TSequence, typename TSpec,
+          typename TPos,
+          typename TDirSpec>
+typename Size<Gaps<TSequence, TSpec> >::Type
+countGaps(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos, Tag<TDirSpec> const /*tag*/)
+{
+    return countGaps(iter(gaps, clippedViewPos, Standard()), Tag<TDirSpec>());
+}
+
 template <typename TSequence, typename TSpec, typename TPos>
 typename Size<Gaps<TSequence, TSpec> >::Type
 countGaps(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
 {
-    return countGaps(iter(gaps, clippedViewPos, Standard()));
+    return countGaps(gaps, clippedViewPos, CountRight());
 }
 
 // ----------------------------------------------------------------------------
@@ -567,20 +608,33 @@ countTrailingGaps(TGaps const & gaps)
  * @fn Gaps#countCharacters
  * @brief The number of characters following a position.
  *
- * @signature TSize countCharacters(gaps, viewPos);
+ * @signature TSize countCharacters(gaps, viewPos[, dir]);
  *
  * @param[in] gaps    The Gaps object to query.
  * @param[in] viewPos View position (including clipping and gaps) to query at.
+ * @param[in] dir     A tag to specify the counting direction. One of @link CountingDirectionTags @endlink.
+ *                    Defaults to @link CountingDirectionTags#CountRight @endlink.
  *
  * @return TSize The number of non-gaps characters characters at <tt>viewPos</tt> (Metafunction: @link
  *               ContainerConcept#Size @endlink).
  */
 
+template <typename TSequence, typename TSpec,
+          typename TPos,
+          typename TDirSpec>
+typename Size<Gaps<TSequence, TSpec> >::Type
+countCharacters(Gaps<TSequence, TSpec> const & gaps,
+                TPos clippedViewPos,
+                Tag<TDirSpec> const /*dir*/)
+{
+    return countCharacters(iter(gaps, clippedViewPos, Standard()), Tag<TDirSpec>());
+}
+
 template <typename TSequence, typename TSpec, typename TPos>
 typename Size<Gaps<TSequence, TSpec> >::Type
 countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
 {
-    return countCharacters(iter(gaps, clippedViewPos, Standard()));
+    return countCharacters(gaps, clippedViewPos, CountRight());
 }
 
 // ----------------------------------------------------------------------------
