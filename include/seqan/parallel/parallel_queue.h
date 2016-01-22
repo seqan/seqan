@@ -605,7 +605,7 @@ popFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me)
  */
 
 template <typename TValue, typename TSpec, typename TParallel>
-inline TValue SEQAN_FORWARD_RETURN
+inline TValue
 popFront(ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel> parallelTag)
 {
     TValue result;
@@ -615,11 +615,11 @@ popFront(ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel> parallelTag)
     {
         waitFor(spinDelay);
     }
-    return SEQAN_MOVE(result);
+    return result;
 }
 
 template <typename TValue, typename TSpec>
-inline TValue SEQAN_FORWARD_RETURN
+inline TValue
 popFront(ConcurrentQueue<TValue, TSpec> & me)
 {
     return popFront(me, typename DefaultParallelSpec<ConcurrentQueue<TValue, TSpec> >::Type());
