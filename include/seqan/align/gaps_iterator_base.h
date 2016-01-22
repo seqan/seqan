@@ -280,12 +280,21 @@ bool isCharacter(Iter<TGaps, GapsIterator<TSpec> > const & it)
  * @fn GapsIterator#countCharacters
  * @brief Count characters at iterator.
  *
- * @signature TSize countCharacters(it);
+ * @signature TSize countCharacters(it[, dir]);
  *
- * @param[in] it Iterator for counting characters at.
+ * @param[in] it  Iterator for counting characters at.
+ * @param[in] dir A tag to specify the counting direction. One of @link CountingDirectionTags @endlink.
+ *                Defaults to @link CountingDirectionTags#CountRight @endlink.
  *
  * @return TSize Number of characters.
  */
+
+template <typename TGaps, typename TSpec>
+inline typename Size<TGaps>::Type
+countCharacters(Iter<TGaps, GapsIterator<TSpec> > const & it)
+{
+    return countCharacters(it, CountRight());
+}
 
 // ----------------------------------------------------------------------------
 // Function isGap()
@@ -310,12 +319,21 @@ bool isCharacter(Iter<TGaps, GapsIterator<TSpec> > const & it)
  * @fn GapsIterator#countGaps
  * @brief Count gaps at iterator.
  *
- * @signature TSize countGaps(it);
+ * @signature TSize countGaps(it[, dir]);
  *
  * @param[in] it Iterator for counting gaps at.
+ * @param[in] dir A tag to specify the counting direction. One of @link CountingDirectionTags @endlink.
+ *                Defaults to @link CountingDirectionTags#CountRight @endlink.
  *
  * @return TSize Number of gaps.
  */
+
+template <typename TGaps, typename TSpec>
+inline typename Size<TGaps>::Type
+countGaps(Iter<TGaps, GapsIterator<TSpec> > const & it)
+{
+    return countGaps(it, CountRight());
+}
 
 // ----------------------------------------------------------------------------
 // Function insertGaps()
