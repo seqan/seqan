@@ -262,6 +262,9 @@ template <typename TGaps, typename TGapAnchors>
 inline typename Size<TGaps>::Type
 countGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me, LeftOfViewPos const /*dir*/)
 {
+    typedef Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > TIter;
+    typedef typename TIter::TGapAnchor TGapAnchor;
+
     if (isGap(me))
     {
         if (me.prevAnchor.gapPos < me.viewBegin.gapPos)
@@ -271,7 +274,7 @@ countGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me, LeftO
     // In case we are at the beginning of a new anchor we need to get back the previous one.
     if (me.prevAnchor.gapPos == me.current.gapPos)
     {
-        decltype(me.prevAnchor) tmp;
+        TGapAnchor tmp;
         _getAnchor(tmp, *me.data_container, me.anchorIdx - 1);
         if (tmp.gapPos < me.viewBegin.gapPos)
             tmp.gapPos = me.viewBegin.gapPos;
