@@ -283,17 +283,20 @@ bool isCharacter(Iter<TGaps, GapsIterator<TSpec> > const & it)
  * @signature TSize countCharacters(it[, dir]);
  *
  * @param[in] it  Iterator for counting characters at.
- * @param[in] dir A tag to specify the counting direction. One of @link CountingDirectionTags @endlink.
+ * @param[in] dir A tag to specify the counting direction. One of @link GapDirectionTags @endlink.
  *                Defaults to @link CountingDirectionTags#CountRight @endlink.
  *
  * @return TSize Number of characters.
+ *
+ * If the the direction tag is @link GapDirectionTags#RightOfViewPos @endlink the current view position will be
+ * included in the count, and excluded when @link GapDirectionTags#LeftOfViewPos @endlink is selected.
  */
 
 template <typename TGaps, typename TSpec>
 inline typename Size<TGaps>::Type
 countCharacters(Iter<TGaps, GapsIterator<TSpec> > const & it)
 {
-    return countCharacters(it, CountRight());
+    return countCharacters(it, RightOfViewPos());
 }
 
 // ----------------------------------------------------------------------------
@@ -322,17 +325,20 @@ countCharacters(Iter<TGaps, GapsIterator<TSpec> > const & it)
  * @signature TSize countGaps(it[, dir]);
  *
  * @param[in] it Iterator for counting gaps at.
- * @param[in] dir A tag to specify the counting direction. One of @link CountingDirectionTags @endlink.
- *                Defaults to @link CountingDirectionTags#CountRight @endlink.
+ * @param[in] dir A tag to specify the counting direction. One of @link GapDirectionTags @endlink.
+ *                Defaults to @link GapDirectionTags#RightOfViewPos @endlink.
  *
  * @return TSize Number of gaps.
+ *
+ * If the the direction tag is @link GapDirectionTags#RightOfViewPos @endlink the current view position will be
+ * included in the count, and excluded when @link GapDirectionTags#LeftOfViewPos @endlink is selected.
  */
 
 template <typename TGaps, typename TSpec>
 inline typename Size<TGaps>::Type
 countGaps(Iter<TGaps, GapsIterator<TSpec> > const & it)
 {
-    return countGaps(it, CountRight());
+    return countGaps(it, RightOfViewPos());
 }
 
 // ----------------------------------------------------------------------------

@@ -756,9 +756,9 @@ assignSource(Gaps<TSequence, AnchorGaps<TGapAnchor> > & gaps, TSequence2 const &
  * @endcode
  */
 
-template <typename TSource, typename TGapAnchors, typename TPosition>
+template <typename TSource, typename TGapAnchors, typename TPosition, typename TRightOfViewPos>
 inline TPosition
-positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition pos)
+positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition pos, TRightOfViewPos const /*dir*/)
 {
     typedef typename Position<typename Value<TGapAnchors>::Type>::Type TAnchorPos;
 
@@ -786,11 +786,19 @@ positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
     _getAnchor(prevAnchor, me, anchorIdx);
     _getAnchor(nextAnchor, me, anchorIdx + 1);
 
+    // View position points to a source.
     if (nextAnchor.seqPos - prevAnchor.seqPos > (int)pos - prevAnchor.gapPos)
         seqPos = prevAnchor.seqPos + (pos - prevAnchor.gapPos);
-    else
-        seqPos = nextAnchor.seqPos;
+    else  // View position points to a gap
+        seqPos = (TRightOfViewPos::VALUE) ? nextAnchor.seqPos : (_max(static_cast<TPosition>(nextAnchor.seqPos) - 1, 0));
     return seqPos;
+}
+
+template <typename TSource, typename TGapAnchors, typename TPosition>
+inline TPosition
+positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition pos)
+{
+    return positionGapToSeq(me, pos, True());
 }
 
 // ----------------------------------------------------------------------------
@@ -889,13 +897,15 @@ toViewPosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps, TPosition
 // Function toSourcePosition()
 // ----------------------------------------------------------------------------
 
-template <typename TSequence, typename TGapAnchors, typename TPosition>
+template <typename TSequence, typename TGapAnchors, typename TPosition, typename TRightOfViewPos>
 inline typename Position<TSequence>::Type
-toSourcePosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps, TPosition clippedViewPos)
+toSourcePosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps,
+                 TPosition clippedViewPos,
+                 TRightOfViewPos const /*dir*/)
 {
     // TODO(weese): possibly change positionGapToSeq interface to consider a different zero
     // shifted by data_cutBegin
-    return positionGapToSeq(gaps, clippedViewPos + gaps.data_viewCutBegin + gaps.data_cutBegin);
+    return positionGapToSeq(gaps, clippedViewPos + gaps.data_viewCutBegin + gaps.data_cutBegin, TRightOfViewPos());
 }
 
 // ----------------------------------------------------------------------------

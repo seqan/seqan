@@ -241,7 +241,7 @@ position(Iter<TGaps, GapsIterator<ArrayGaps> > const & it)
 // Count left.
 template <typename TGaps>
 inline typename Size<TGaps>::Type
-countGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, CountLeft const /*tag*/)
+countGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, LeftOfViewPos const /*tag*/)
 {
     typedef typename Size<TGaps>::Type TSize;
     TSize result = 0;
@@ -262,7 +262,7 @@ countGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, CountLeft const /*ta
 // Count right.
 template <typename TGaps>
 inline typename Size<TGaps>::Type
-countGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, CountRight const /*tag*/)
+countGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, RightOfViewPos const /*tag*/)
 {
     if (!isGap(it) || atEnd(it))
         return 0;  // Not on a gap or at end, no gap here.
@@ -281,7 +281,7 @@ countGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, CountRight const /*t
 
 template <typename TGaps>
 inline typename Size<TGaps>::Type
-countCharacters(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, CountLeft const /*dir*/)
+countCharacters(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, LeftOfViewPos const /*dir*/)
 {
     typedef typename Size<TGaps>::Type TSize;
     TSize result = 0;
@@ -301,7 +301,7 @@ countCharacters(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, CountLeft cons
 
 template <typename TGaps>
 inline typename Size<TGaps>::Type
-countCharacters(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, CountRight const /*dir*/)
+countCharacters(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, RightOfViewPos const /*dir*/)
 {
     if (isGap(it) || atEnd(it))
         return 0;  // On a gap or at end, no characters here.
