@@ -284,7 +284,7 @@ bool isCharacter(Iter<TGaps, GapsIterator<TSpec> > const & it)
  *
  * @param[in] it  Iterator for counting characters at.
  * @param[in] dir A tag to specify the counting direction. One of @link GapDirectionTags @endlink.
- *                Defaults to @link CountingDirectionTags#CountRight @endlink.
+ *                Defaults to @link GapDirectionTags#RightOfViewPos @endlink.
  *
  * @return TSize Number of characters.
  *

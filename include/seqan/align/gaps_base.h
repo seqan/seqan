@@ -83,7 +83,7 @@ typedef Tag<ArrayGaps_> ArrayGaps;
 typedef False LeftOfViewPos;
 
 /*!
- * @tag CountingDirectionTags#CountRight
+ * @tag GapDirectionTags#RightOfViewPos
  * @headerfile <seqan/align.h>
  * @brief Projects to the right side of the current view position.
  *

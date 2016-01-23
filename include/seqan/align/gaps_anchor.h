@@ -790,7 +790,8 @@ positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
     if (nextAnchor.seqPos - prevAnchor.seqPos > (int)pos - prevAnchor.gapPos)
         seqPos = prevAnchor.seqPos + (pos - prevAnchor.gapPos);
     else  // View position points to a gap
-        seqPos = (TRightOfViewPos::VALUE) ? nextAnchor.seqPos : (_max(static_cast<TPosition>(nextAnchor.seqPos) - 1, 0));
+        seqPos = (TRightOfViewPos::VALUE) ? nextAnchor.seqPos : (_max(static_cast<TPosition>(nextAnchor.seqPos) - 1,
+                                                                      static_cast<TPosition>(0)));
     return seqPos;
 }
 
