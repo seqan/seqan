@@ -176,7 +176,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     hideOption(getOption(parser, "quick"));
 
     // Setup paired-end mapping options.
-    addSection(parser, "Paired-End / Mate-Pair Mapping Options");
+    addSection(parser, "Paired-End Mapping Options");
 
     addOption(parser, ArgParseOption("ll", "library-length", "Expected library length. Default: autodetected.",
                                      ArgParseOption::INTEGER));
