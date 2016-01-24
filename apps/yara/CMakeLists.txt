@@ -79,6 +79,10 @@ if (YARA_ARCH_NATIVE)
   if (CMAKE_COMPILER_IS_GNUCXX AND APPLE)
     set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mno-avx")
   endif (CMAKE_COMPILER_IS_GNUCXX AND APPLE)
+
+  if (COMPILER_IS_INTEL)
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -xHOST -ipo -no-prec-div -fp-model fast=2")
+  endif (COMPILER_IS_INTEL)
 endif (YARA_ARCH_NATIVE)
 
 # ----------------------------------------------------------------------------
