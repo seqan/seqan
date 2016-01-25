@@ -426,7 +426,7 @@ assignSource(Gaps<TSequence, ArrayGaps> & gaps, TSequence2 const & source)
 
 template <typename TSequence, typename TPosition>
 inline typename Position<TSequence>::Type
-toSourcePosition(Gaps<TSequence, ArrayGaps> const & gaps, TPosition const clippedViewPos, LeftOfViewPos & const /*tag*/)
+toSourcePosition(Gaps<TSequence, ArrayGaps> const & gaps, TPosition const clippedViewPos, LeftOfViewPos const & /*tag*/)
 {
     typedef Gaps<TSequence, ArrayGaps>         TGaps;
     typedef typename Position<TGaps>::Type     TGapsPos;
@@ -468,7 +468,7 @@ toSourcePosition(Gaps<TSequence, ArrayGaps> const & gaps, TPosition const clippe
 
 template <typename TSequence, typename TPosition>
 inline typename Position<TSequence>::Type
-toSourcePosition(Gaps<TSequence, ArrayGaps> const & gaps, TPosition const clippedViewPos, RightOfViewPos & const /*tag*/)
+toSourcePosition(Gaps<TSequence, ArrayGaps> const & gaps, TPosition const clippedViewPos, RightOfViewPos const & /*tag*/)
 {
     typedef Gaps<TSequence, ArrayGaps>         TGaps;
     typedef typename Position<TGaps>::Type     TGapsPos;

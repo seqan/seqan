@@ -553,7 +553,7 @@ template <typename TSequence, typename TSpec,
           typename TPos,
           typename TDirSpec>
 typename Size<Gaps<TSequence, TSpec> >::Type
-countGaps(Gaps<TSequence, TSpec> const & gaps, TPos const clippedViewPos, TDirSpec & const /*tag*/)
+countGaps(Gaps<TSequence, TSpec> const & gaps, TPos const clippedViewPos, TDirSpec const & /*tag*/)
 {
     return countGaps(iter(gaps, clippedViewPos, Standard()), TDirSpec());
 }
@@ -637,7 +637,7 @@ template <typename TSequence, typename TSpec,
 typename Size<Gaps<TSequence, TSpec> >::Type
 countCharacters(Gaps<TSequence, TSpec> const & gaps,
                 TPos const clippedViewPos,
-                TDirSpec & const /*dir*/)
+                TDirSpec const & /*dir*/)
 {
     return countCharacters(iter(gaps, clippedViewPos, Standard()), TDirSpec());
 }
