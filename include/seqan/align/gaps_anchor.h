@@ -756,9 +756,9 @@ assignSource(Gaps<TSequence, AnchorGaps<TGapAnchor> > & gaps, TSequence2 const &
  * @endcode
  */
 
-template <typename TSource, typename TGapAnchors, typename TPosition, typename TRightOfViewPos>
+template <typename TSource, typename TGapAnchors, typename TPosition, typename TProjectionDir>
 inline TPosition
-positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition pos, TRightOfViewPos const /*dir*/)
+positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition const pos, TProjectionDir & const /*dir*/)
 {
     typedef typename Position<typename Value<TGapAnchors>::Type>::Type TAnchorPos;
 
@@ -790,8 +790,8 @@ positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
     if (nextAnchor.seqPos - prevAnchor.seqPos > (int)pos - prevAnchor.gapPos)
         seqPos = prevAnchor.seqPos + (pos - prevAnchor.gapPos);
     else  // View position points to a gap
-        seqPos = (TRightOfViewPos::VALUE) ? nextAnchor.seqPos : (_max(static_cast<TPosition>(nextAnchor.seqPos) - 1,
-                                                                      static_cast<TPosition>(0)));
+        seqPos = (IsSameType<TProjectionDir, RightOfViewPos>::VALUE) ? nextAnchor.seqPos :
+                    (_max(static_cast<TPosition>(nextAnchor.seqPos) - 1, static_cast<TPosition>(0)));
     return seqPos;
 }
 
@@ -889,7 +889,7 @@ positionSeqToGap(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
 
 template <typename TSequence, typename TGapAnchors, typename TPosition>
 inline typename Position<Gaps<TSequence, AnchorGaps<TGapAnchors> > >::Type
-toViewPosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps, TPosition sourcePosition)
+toViewPosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps, TPosition const sourcePosition)
 {
     return positionSeqToGap(gaps, sourcePosition) - gaps.data_viewCutBegin - gaps.data_cutBegin;
 }

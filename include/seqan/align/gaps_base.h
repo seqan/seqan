@@ -77,19 +77,24 @@ typedef Tag<ArrayGaps_> ArrayGaps;
  * @headerfile <seqan/align.h>
  * @brief Projects to the left side of the current view position.
  *
- * @signature typedef False LeftOfViewPos;
+ * @signature struct LeftOfViewPos_;
+ *            typedef Tag<LeftOfViewPos_> LeftOfViewPos;
  */
 
-typedef False LeftOfViewPos;
+struct LeftOfViewPos_;
+typedef Tag<LeftOfViewPos_> LeftOfViewPos;
 
 /*!
  * @tag GapDirectionTags#RightOfViewPos
  * @headerfile <seqan/align.h>
  * @brief Projects to the right side of the current view position.
  *
- * @signature typedef True RightOfViewPos;
+ * @signature struct RightOfViewPos_;
+ *            typedef Tag<RightOfViewPos_> RightOfViewPos;
  */
-typedef True RightOfViewPos;
+
+struct RightOfViewPos_;
+typedef Tag<RightOfViewPos_> RightOfViewPos;
 
 // ----------------------------------------------------------------------------
 // Class Gaps
@@ -393,7 +398,7 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 
 template <typename TSequence, typename TSpec, typename TPosition>
 inline typename Position<TSequence>::Type
-toSourcePosition(Gaps<TSequence, TSpec> const & gaps, TPosition clippedViewPos)
+toSourcePosition(Gaps<TSequence, TSpec> const & gaps, TPosition const clippedViewPos)
 {
     return toSourcePosition(gaps, clippedViewPos, RightOfViewPos());
 }
@@ -548,14 +553,14 @@ template <typename TSequence, typename TSpec,
           typename TPos,
           typename TDirSpec>
 typename Size<Gaps<TSequence, TSpec> >::Type
-countGaps(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos, TDirSpec const /*tag*/)
+countGaps(Gaps<TSequence, TSpec> const & gaps, TPos const clippedViewPos, TDirSpec & const /*tag*/)
 {
     return countGaps(iter(gaps, clippedViewPos, Standard()), TDirSpec());
 }
 
 template <typename TSequence, typename TSpec, typename TPos>
 typename Size<Gaps<TSequence, TSpec> >::Type
-countGaps(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
+countGaps(Gaps<TSequence, TSpec> const & gaps, TPos const clippedViewPos)
 {
     return countGaps(gaps, clippedViewPos, RightOfViewPos());
 }
@@ -631,15 +636,15 @@ template <typename TSequence, typename TSpec,
           typename TDirSpec>
 typename Size<Gaps<TSequence, TSpec> >::Type
 countCharacters(Gaps<TSequence, TSpec> const & gaps,
-                TPos clippedViewPos,
-                TDirSpec const /*dir*/)
+                TPos const clippedViewPos,
+                TDirSpec & const /*dir*/)
 {
     return countCharacters(iter(gaps, clippedViewPos, Standard()), TDirSpec());
 }
 
 template <typename TSequence, typename TSpec, typename TPos>
 typename Size<Gaps<TSequence, TSpec> >::Type
-countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
+countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos const clippedViewPos)
 {
     return countCharacters(gaps, clippedViewPos, RightOfViewPos());
 }
