@@ -23,6 +23,12 @@ if (NOT (CXX11_FOUND AND CXX11_STL_FOUND))
     return ()
 endif (NOT (CXX11_FOUND AND CXX11_STL_FOUND))
 
+# Disable older MSVC.
+if (MSVC AND MSVC_VERSION LESS 1800)
+    message (STATUS "  Visual Studio 2012 or newer required to build yara.")
+    return ()
+endif ()
+
 # Disable parallelism in MSVC as it supports only OpenMP 2.0.
 if (MSVC)
   set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)
@@ -52,7 +58,7 @@ endif (NOT SEQAN_HAS_BZIP2)
 # App-Level Configuration
 # ----------------------------------------------------------------------------
 
-set (SEQAN_APP_VERSION "0.9.3")
+set (SEQAN_APP_VERSION "0.9.4")
 
 option (YARA_LARGE_CONTIGS "Set to ON to enable support for more than 32k contigs or contigs longer than 4Gbp." OFF)
 if (YARA_LARGE_CONTIGS)
@@ -123,7 +129,6 @@ add_executable(yara_mapper    mapper.cpp
                               mapper_filter.h
                               mapper_extender.h
                               mapper_verifier.h
-                              mapper_selector.h
                               mapper_aligner.h
                               mapper_writer.h
                               basic_alphabet.h

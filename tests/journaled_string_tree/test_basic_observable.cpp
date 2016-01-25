@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2010, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,20 +29,20 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
-// ==========================================================================
-// Prints the current SeqAn version as it is available from the header
-// <seqan/version.h>.
+// Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#include <iostream>
-#include <seqan/version.h>
+#include <seqan/basic.h>
 
-int main()
+#include "test_basic_observable.h"
+
+SEQAN_BEGIN_TESTSUITE(test_basic_observable)
 {
-    std::cerr << "SEQAN_VERSION_MAJOR:" << SEQAN_VERSION_MAJOR << "\n"
-              << "SEQAN_VERSION_MINOR:" << SEQAN_VERSION_MINOR << "\n"
-              << "SEQAN_VERSION_PATCH:" << SEQAN_VERSION_PATCH << "\n"
-              << "SEQAN_VERSION_PRE_RELEASE:" << SEQAN_VERSION_PRE_RELEASE << "\n";
-    return 0;
+    // Tests for basic observable pattern.
+    SEQAN_CALL_TEST(test_basic_observable_constructor);
+    SEQAN_CALL_TEST(test_basic_observable_length);
+    SEQAN_CALL_TEST(test_basic_observable_set_observer);
+    SEQAN_CALL_TEST(test_basic_observable_notify);
+    SEQAN_CALL_TEST(test_basic_observable_make_observer_list);
 }
+SEQAN_END_TESTSUITE

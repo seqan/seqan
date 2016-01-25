@@ -68,7 +68,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_vector)
     // Test GetValue<>::VALUE
     {
         typedef GetValue<TVector>::Type TGetValue;
-        bool b = IsSameType<TGetValue, TElement &>::VALUE;
+        bool b = IsSameType<TGetValue, TElement const &>::VALUE;
         SEQAN_ASSERT(b);
         typedef GetValue<TConstVector>::Type TConstGetValue;
         b = IsSameType<TConstGetValue, TElement const &>::VALUE;
@@ -251,14 +251,14 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_memory_std_vector)
     }
     // test replace with limits
     {
-        std::vector<int> vec_target(6,100);
+        std::vector<int> vec_target(8,100);
         std::vector<int> vec_source(6,10);
         typename Position< std::vector<int> >::Type pos_begin = 4;
         typename Position< std::vector<int> >::Type pos_end = 8;
 
 
         // replace with insertion
-        typename Size< std::vector<int> >::Type limit = 9;
+        typename Size< std::vector<int> >::Type limit = 5;
 
         replace(vec_target,pos_begin,pos_end,vec_source,limit);
 
@@ -298,13 +298,13 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_string)
     // Test GetValue<>::VALUE
     {
         typedef GetValue<TString>::Type TGetValue;
-        bool b = IsSameType<TGetValue, TElement &>::VALUE;
+        bool b = IsSameType<TGetValue, TElement const &>::VALUE;
         SEQAN_ASSERT(b);
         typedef GetValue<TConstString>::Type TConstGetValue;
         b = IsSameType<TConstGetValue, TElement const &>::VALUE;
         SEQAN_ASSERT(b);
     }
-    // Test GetReference<>::VALUE
+    // Test Reference<>::VALUE
     {
         typedef Reference<TString>::Type TReference;
         bool b = IsSameType<TReference, TElement &>::VALUE;
@@ -327,11 +327,11 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_string)
     // Test Iterator<, Standard>::VALUE
     {
         typedef Iterator<TString, Standard>::Type TIterator;
-        typedef Value<TString>::Type * TExpected;
+        typedef Iter<TString, StdIteratorAdaptor> TExpected;
         bool b = IsSameType<TIterator, TExpected>::VALUE;
         SEQAN_ASSERT(b);
         typedef Iterator<TConstString, Standard>::Type TConstIterator;
-        typedef Value<TConstString>::Type const * TExpectedConst;
+        typedef Iter<TString const, StdIteratorAdaptor> TExpectedConst;
         b = IsSameType<TConstIterator, TExpectedConst>::VALUE;
         SEQAN_ASSERT(b);
     }
@@ -484,13 +484,13 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_list)
     // Test GetValue<>::VALUE
     {
         typedef GetValue<TList>::Type TGetValue;
-        bool b = IsSameType<TGetValue, TElement &>::VALUE;
+        bool b = IsSameType<TGetValue, TElement const &>::VALUE;
         SEQAN_ASSERT(b);
         typedef GetValue<TConstList>::Type TConstGetValue;
         b = IsSameType<TConstGetValue, TElement const &>::VALUE;
         SEQAN_ASSERT(b);
     }
-    // Test GetReference<>::VALUE
+    // Test Reference<>::VALUE
     {
         typedef Reference<TList>::Type TReference;
         bool b = IsSameType<TReference, TElement &>::VALUE;
@@ -744,5 +744,147 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_interface_std_list)
         SEQAN_ASSERT_EQ(3u, capacity(mutableList));
     }
 }
+
+#ifdef SEQAN_CXX11_STANDARD
+// Tests the return types and existence of the metafunctions for STL arrays.
+SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_array)
+{
+    using namespace seqan;
+
+    typedef int TElement;
+    typedef std::array<TElement, 1> TArray;
+    typedef TArray const TConstArray;
+
+    // Test IsContiguous<>::VALUE
+    {
+        bool b = IsContiguous<TArray>::VALUE;
+        SEQAN_ASSERT(b);
+        b = IsContiguous<TConstArray>::VALUE;
+        SEQAN_ASSERT(b);
+    }
+    // Test Value<>::VALUE
+    {
+        typedef Value<TArray>::Type TValue;
+        bool b = IsSameType<TValue, TElement>::VALUE;
+        SEQAN_ASSERT(b);
+        typedef Value<TConstArray>::Type TConstValue;
+        b = IsSameType<TConstValue, TElement>::VALUE;
+        SEQAN_ASSERT(b);
+    }
+    // Test GetValue<>::VALUE
+    {
+        typedef GetValue<TArray>::Type TGetValue;
+        bool b = IsSameType<TGetValue, TElement const &>::VALUE;
+        SEQAN_ASSERT(b);
+        typedef GetValue<TConstArray>::Type TConstGetValue;
+        b = IsSameType<TConstGetValue, TElement const &>::VALUE;
+        SEQAN_ASSERT(b);
+    }
+    // Test GetReference<>::VALUE
+    {
+        typedef Reference<TArray>::Type TReference;
+        bool b = IsSameType<TReference, TElement &>::VALUE;
+        SEQAN_ASSERT(b);
+        typedef Reference<TConstArray>::Type TConstReference;
+        b = IsSameType<TConstReference, TElement const &>::VALUE;
+        SEQAN_ASSERT(b);
+    }
+    // Test Iterator<, Rooted>::VALUE
+    {
+        typedef Iterator<TArray, Rooted>::Type TIterator;
+        typedef Iter<TArray, AdaptorIterator<Iter<TArray, StdIteratorAdaptor> > > TExpected;
+        bool b = IsSameType<TIterator, TExpected>::VALUE;
+        SEQAN_ASSERT(b);
+        typedef Iterator<TConstArray, Rooted>::Type TConstIterator;
+        typedef Iter<TConstArray, AdaptorIterator<Iter<TConstArray, StdIteratorAdaptor> > > TExpectedConst;
+        b = IsSameType<TConstIterator, TExpectedConst>::VALUE;
+        SEQAN_ASSERT(b);
+    }
+    // Test Iterator<, Standard>::VALUE
+    {
+        typedef Iterator<TArray, Standard>::Type TIterator;
+        typedef Iter<TArray, StdIteratorAdaptor> TExpected;
+        bool b = IsSameType<TIterator, TExpected>::VALUE;
+        SEQAN_ASSERT(b);
+        typedef Iterator<TConstArray, Standard>::Type TConstIterator;
+        typedef Iter<TConstArray, StdIteratorAdaptor> TExpectedConst;
+        b = IsSameType<TConstIterator, TExpectedConst>::VALUE;
+        SEQAN_ASSERT(b);
+    }
+    // Test Position<>::VALUE
+    {
+        typedef Position<TArray>::Type TPosition;
+        bool b = IsSameType<TPosition, TArray::size_type>::VALUE;
+        SEQAN_ASSERT(b);
+        typedef Position<TConstArray>::Type TConstPosition;
+        b = IsSameType<TConstPosition, TArray::size_type>::VALUE;
+        SEQAN_ASSERT(b);
+    }
+    // Test Size<>::VALUE
+    {
+        typedef Size<TArray>::Type TPosition;
+        bool b = IsSameType<TPosition, TArray::size_type>::VALUE;
+        SEQAN_ASSERT(b);
+        typedef Size<TConstArray>::Type TConstPosition;
+        b = IsSameType<TConstPosition, TArray::size_type>::VALUE;
+        SEQAN_ASSERT(b);
+    }
+}
+
+
+// Test iterators for STL strings.
+SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_array)
+{
+    using namespace seqan;
+
+    // Test const iterator.
+    {
+        std::array<int, 3> const vec = { {100, 101, 102} };
+        //typedef Iterator<std::array<int> const>::Type TIterator;
+
+        std::array<int, 2>  vecCopy;
+        std::copy(vec.begin(), vec.begin()+2, vecCopy.begin());
+
+        SEQAN_ASSERT_EQ(vecCopy[0],vec[0]);
+        SEQAN_ASSERT_EQ(vecCopy[1],vec[1]);
+
+    }
+
+    // Test non-const iterator.
+    {
+        std::array<int, 3> vec = { {100, 101, 102} };
+        //typedef Iterator<std::array<int> >::Type TIterator;
+
+        std::array<int, 2> vecCopy;
+        std::copy(vec.begin(), vec.begin()+2, vecCopy.begin());
+
+        SEQAN_ASSERT_EQ(vecCopy[0],vec[0]);
+        SEQAN_ASSERT_EQ(vecCopy[1],vec[1]);
+    }
+}
+
+
+// Tests for the basic sequence functions for STL strings,
+// e.g. value(), front(), back().
+SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_interface_std_array)
+{
+    using namespace seqan;
+
+    std::array<int, 2> vec = { {100, 101} };
+
+    // value(str, i), getValue(str, i)
+    SEQAN_ASSERT_EQ(value(vec, 0), 100);
+    SEQAN_ASSERT_EQ(value(vec, 1), 101);
+    // front(), back()
+    SEQAN_ASSERT_EQ(front(vec),100);
+    SEQAN_ASSERT_EQ(back(vec),101);
+
+    // length()
+    SEQAN_ASSERT_EQ(length(vec), 2u);
+
+    // TODO(holtgrew): Anything else missing? Probably...
+}
+
+#endif // def SEQAN_CXX11_STANDARD
 
 #endif  // TEST_SEQUENCE_TEST_SEQUENCE_STD_ADAPTIONS_H_

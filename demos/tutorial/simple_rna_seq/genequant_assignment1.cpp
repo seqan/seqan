@@ -23,8 +23,8 @@ bool loadFiles(TStore & store, std::string const & annotationFileName,  std::str
 int main(int argc, char const * argv[])
 {
     TStore store;
-    std::string annotationFileName = getAbsolutePath("/demos/tutorial/simple_rna_seq/example.gtf");
-    std::string alignmentFileName = getAbsolutePath("/demos/tutorial/simple_rna_seq/example.sam");
+    std::string annotationFileName = getAbsolutePath("demos/tutorial/simple_rna_seq/example.gtf");
+    std::string alignmentFileName = getAbsolutePath("demos/tutorial/simple_rna_seq/example.sam");
 
     if (!loadFiles(store, annotationFileName, annotationFileName))
         return 1;

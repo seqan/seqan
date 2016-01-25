@@ -295,6 +295,170 @@ SEQAN_DEFINE_TEST(test_graph_types_types_directed)
     SEQAN_ASSERT(sourceVertex(multiG, edgeD1) == 1);
     SEQAN_ASSERT(sourceVertex(multiG, edgeD2) == 0); // EdgeDescriptor invalid
     SEQAN_ASSERT(sourceVertex(multiG, edgeD3) == 1);
+
+//____________________________________________________________________________
+//Graph with source id
+
+    typedef Graph<Directed<void, WithSourceId> > GraphWithSourceId;
+    typedef VertexDescriptor<GraphWithSourceId>::Type TVertexDescriptorSourceId;
+    typedef EdgeDescriptor<GraphWithSourceId>::Type TEdgeDescriptorSourceId;
+
+    GraphWithSourceId g4;
+    SEQAN_ASSERT(numVertices(g4) == 0);
+    SEQAN_ASSERT(numEdges(g4) == 0);
+    SEQAN_ASSERT(empty(g4) == true);
+
+    // Add vertex
+    TVertexDescriptorSourceId v0_4 = addVertex(g4);
+    SEQAN_ASSERT(v0_4 == 0);
+    SEQAN_ASSERT(outDegree(g4, v0_4) == 0);
+    SEQAN_ASSERT(inDegree(g4, 0) == 0);
+    SEQAN_ASSERT(degree(g4, 0) == 0);
+    SEQAN_ASSERT(numVertices(g4) == 1);
+    SEQAN_ASSERT(empty(g4) == false);
+
+    // Add edge
+    TEdgeDescriptorSourceId e1_4 = addEdge(g4, v0_4, v0_4);
+    SEQAN_ASSERT(findEdge(g4, v0_4, v0_4) == e1_4);
+    SEQAN_ASSERT(_getVertexString(g4)[0] == e1_4);
+    SEQAN_ASSERT(getIdUpperBound(_getVertexIdManager(g4)) == 1);
+    SEQAN_ASSERT(getIdUpperBound(_getEdgeIdManager(g4)) == 1);
+    SEQAN_ASSERT(targetVertex(g4, e1_4) == 0);
+    SEQAN_ASSERT(sourceVertex(g4, e1_4) == 0);  // Not expensive in GraphWithSourceId!
+    SEQAN_ASSERT(numEdges(g4) == 1);
+    SEQAN_ASSERT(outDegree(g4, v0_4) == 1);
+    SEQAN_ASSERT(inDegree(g4, v0_4) == 1);
+    SEQAN_ASSERT(degree(g4, v0_4) == 2);
+
+    // Add further edges and vertices
+    TVertexDescriptorSourceId v1_4 = addVertex(g4);
+    TEdgeDescriptorSourceId e2_4 = addEdge(g4, 0, 1);
+    SEQAN_ASSERT(v1_4 == 1);
+    SEQAN_ASSERT(numVertices(g4) == 2);
+    SEQAN_ASSERT(targetVertex(g4, e2_4) == 1);
+    SEQAN_ASSERT(sourceVertex(g4, e2_4) == 0);
+    SEQAN_ASSERT(numEdges(g4) == 2);
+    SEQAN_ASSERT(outDegree(g4, v0_4) == 2);
+    SEQAN_ASSERT(inDegree(g4, 1) == 1);
+    SEQAN_ASSERT(inDegree(g4, 0) == 1);
+    SEQAN_ASSERT(degree(g4, 0) == 3);
+
+    // Add more vertices and edges
+    addVertex(g4);  //2
+    TVertexDescriptorSourceId v3_4 = addVertex(g4);  //3
+    addVertex(g4);  //4
+    addEdge(g4, 3, 4);
+    TEdgeDescriptorSourceId my_edge_4 = addEdge(g4, 3, 1);
+    addEdge(g4, 3, 0);
+    SEQAN_ASSERT(v3_4 == 3);
+    SEQAN_ASSERT(numVertices(g4) == 5);
+    SEQAN_ASSERT(targetVertex(g4, e2_4) == 1);
+    SEQAN_ASSERT(sourceVertex(g4, e2_4) == 0);
+    SEQAN_ASSERT(targetVertex(g4, my_edge_4) == 1);
+    SEQAN_ASSERT(sourceVertex(g4, my_edge_4) == 3);
+    SEQAN_ASSERT(numEdges(g4) == 5);
+    SEQAN_ASSERT(outDegree(g4, v3_4) == 3);
+
+    // Output
+    std::stringstream sstream4;
+    sstream4 << g4;
+    char const * EXPECTED_4 =
+        "Adjacency list:\n"
+        "0 -> 1,0,\n"
+        "1 -> \n"
+        "2 -> \n"
+        "3 -> 0,1,4,\n"
+        "4 -> \n"
+        "Edge list:\n"
+        "Source: 0,Target: 1 (Id: 1)\n"
+        "Source: 0,Target: 0 (Id: 0)\n"
+        "Source: 3,Target: 0 (Id: 4)\n"
+        "Source: 3,Target: 1 (Id: 3)\n"
+        "Source: 3,Target: 4 (Id: 2)\n";
+    SEQAN_ASSERT(EXPECTED_4 == sstream4.str());
+
+    // Remove edges
+    SEQAN_ASSERT(outDegree(g4, v3_4) == 3);
+    removeEdge(g4, my_edge_4);
+    SEQAN_ASSERT(outDegree(g4, v3_4) == 2);
+    removeEdge(g4, 0, 1);
+    SEQAN_ASSERT(numEdges(g4) == 3);
+
+    // Remove vertices
+    TEdgeDescriptorSourceId e3_4 = addEdge(g4, 3, 3);
+    addEdge(g4, 1, 3);
+    addEdge(g4, 0, 3);
+    addEdge(g4, 0, 4);
+    SEQAN_ASSERT(outDegree(g4, 0) == 3);
+    SEQAN_ASSERT(outDegree(g4, 1) == 1);
+    SEQAN_ASSERT(targetVertex(g4, e3_4) == 3);
+    SEQAN_ASSERT(sourceVertex(g4, e3_4) == 3);
+    removeVertex(g4, v3_4);
+    SEQAN_ASSERT(outDegree(g4, 0) == 2);
+    SEQAN_ASSERT(outDegree(g4, 1) == 0);
+    SEQAN_ASSERT(numVertices(g4) == 4);
+    SEQAN_ASSERT(numEdges(g4) == 2);
+
+    // Clear graph
+    clearEdges(g4);
+    SEQAN_ASSERT(numVertices(g4) == 4);
+    SEQAN_ASSERT(numEdges(g4) == 0);
+    addEdge(g4, 2, 0);
+    addEdge(g4, 4, 1);
+    clearVertices(g4);
+    SEQAN_ASSERT(numVertices(g4) == 0);
+    SEQAN_ASSERT(numEdges(g4) == 0);
+    addVertex(g4); addVertex(g4); addVertex(g4);
+    addVertex(g4); addVertex(g4);
+    addEdge(g4, 2, 0);
+    addEdge(g4, 4, 1);
+    clear(g4);
+    SEQAN_ASSERT(numVertices(g4) == 0);
+    SEQAN_ASSERT(numEdges(g4) == 0);
+    addVertex(g4); addVertex(g4); addVertex(g4);
+    addVertex(g4); addVertex(g4);
+    addEdge(g4, 2, 0);
+    addEdge(g4, 4, 1);
+    addEdge(g4, 4, 2);
+    removeVertex(g4, 3);
+    SEQAN_ASSERT(numVertices(g4) == 4);
+    SEQAN_ASSERT(numEdges(g4) == 3);
+    SEQAN_ASSERT(outDegree(g4, 4) == 2);
+    SEQAN_ASSERT(inDegree(g4, 4) == 0);
+
+    // Transpose
+    transpose(g4);
+    SEQAN_ASSERT(numVertices(g4) == 4);
+    SEQAN_ASSERT(numEdges(g4) == 3);
+    SEQAN_ASSERT(outDegree(g4, 4) == 0);
+    SEQAN_ASSERT(inDegree(g4, 4) == 2);
+    GraphWithSourceId g4_copy(g4);
+    SEQAN_ASSERT(numVertices(g4_copy) == 4);
+    SEQAN_ASSERT(numEdges(g4_copy) == 3);
+    SEQAN_ASSERT(outDegree(g4_copy, 4) == 0);
+    SEQAN_ASSERT(inDegree(g4_copy, 4) == 2);
+    addVertex(g4_copy);
+    addEdge(g4_copy, 3, 0);
+    g4_copy = g4;
+    SEQAN_ASSERT(numVertices(g4_copy) == 4);
+    SEQAN_ASSERT(numEdges(g4_copy) == 3);
+    SEQAN_ASSERT(outDegree(g4_copy, 4) == 0);
+    SEQAN_ASSERT(inDegree(g4_copy, 4) == 2);
+    //Copies the graph and transposes just the copy
+    transpose(g4, g4_copy);  // g4 does not change!
+    SEQAN_ASSERT(numVertices(g4_copy) == 4);
+    SEQAN_ASSERT(numEdges(g4_copy) == 3);
+    SEQAN_ASSERT(outDegree(g4_copy, 4) == 2);
+    SEQAN_ASSERT(inDegree(g4_copy, 4) == 0);
+    removeVertex(g4, 0);
+
+    // Adjacency matrix
+    String<unsigned int> mat4;
+    getAdjacencyMatrix(g4, mat4);
+    unsigned int len4 = (unsigned int) std::sqrt((double) length(mat4));
+    SEQAN_ASSERT(getValue(mat4, 1 * len4 + 4) == 1);
+    SEQAN_ASSERT(getValue(mat4, 2 * len4 + 4) == 1);
+    SEQAN_ASSERT(getValue(mat4, 2 * len4 + 2) == 0);
 }
 
 SEQAN_DEFINE_TEST(test_graph_types_types_undirected)
