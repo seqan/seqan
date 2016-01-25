@@ -919,7 +919,7 @@ _storageUpdated(T const & me)
 template<typename TTarget, typename TSource>
 inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
 assign(TTarget && target,
-       TSource SEQAN_FORWARD_CARG source,
+       TSource && source,
        typename Size<TTarget>::Type limit)
 {
     SEQAN_CHECKPOINT;
@@ -983,7 +983,7 @@ append(TTarget && target,
 template <typename T, typename TValue>
 inline void
 appendValue(T && me,
-            TValue SEQAN_FORWARD_CARG _value)
+            TValue && _value)
 {
     appendValue(SEQAN_FORWARD(T, me), SEQAN_FORWARD(TValue, _value), typename DefaultOverflowImplicit<T>::Type());
 }
@@ -1058,7 +1058,7 @@ template <typename T, typename TPosition, typename TValue>
 inline void
 insertValue(T && me,
             TPosition const pos,
-            TValue SEQAN_FORWARD_CARG _value)
+            TValue && _value)
 {
     SEQAN_CHECKPOINT;
     insertValue(SEQAN_FORWARD(T, me), pos, SEQAN_FORWARD(TValue, _value), typename DefaultOverflowImplicit<T>::Type());

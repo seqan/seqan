@@ -1447,7 +1447,7 @@ valueConstruct(Iter<TPackedString, Packed<THostspec> > const & /*it*/)
 template <typename TPackedString, typename THostspec, typename TParam>
 inline void
 valueConstruct(Iter<TPackedString, Packed<THostspec> > const & it,
-               TParam SEQAN_FORWARD_CARG param_)
+               TParam && param_)
 {
     assignValue(it, SEQAN_FORWARD(TParam, param_));
 }

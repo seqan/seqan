@@ -146,7 +146,7 @@ template <typename TJst, typename TSpec, typename TObserver,
           typename TTraversalNode>
 inline void
 pushNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
-         TTraversalNode SEQAN_FORWARD_CARG node)
+         TTraversalNode && node)
 {
 #if defined(DEBUG_JST_TRAVERSAL)
     //    std::cout << "-----> Journal " << container(node.endEdgeIt) << std::endl;

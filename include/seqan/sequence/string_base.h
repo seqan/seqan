@@ -1314,7 +1314,7 @@ struct AppendValueToString_
     template <typename T, typename TValue>
     static inline void
     appendValue_(T & me,
-                 TValue SEQAN_FORWARD_CARG _value)
+                 TValue && _value)
     {
         typedef typename Value<T>::Type TTargetValue;
         typedef typename Size<T>::Type TSize;
@@ -1343,7 +1343,7 @@ struct AppendValueToString_
 template <typename TTargetValue, typename TTargetSpec, typename TValue, typename TExpand>
 inline void
 appendValue(String<TTargetValue, TTargetSpec> & me,
-            TValue SEQAN_FORWARD_CARG _value,
+            TValue && _value,
             Tag<TExpand>)
 {
     AppendValueToString_<Tag<TExpand> >::appendValue_(me, SEQAN_FORWARD(TValue, _value));
@@ -1356,7 +1356,7 @@ appendValue(String<TTargetValue, TTargetSpec> & me,
 template <typename TTargetValue, typename TTargetSpec, typename TValue, typename TExpand>
 inline void
 appendValue(String<TTargetValue, TTargetSpec> & me,
-            TValue SEQAN_FORWARD_CARG _value,
+            TValue && _value,
             Tag<TExpand> const & expandTag,
             Serial)
 {

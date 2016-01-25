@@ -284,7 +284,7 @@ struct FixedSize_<std::array<TChar, N> > : public True {};
 
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, void const *)
-getObjectId(TContainer SEQAN_FORWARD_CARG me)
+getObjectId(TContainer && me)
 {
     if (me.empty())
         return NULL;
@@ -988,7 +988,7 @@ inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
 insertValue(TContainer && me,
             typename Size<typename RemoveReference<TContainer>::Type>::Type const pos,
-            TSource SEQAN_FORWARD_CARG source,
+            TSource && source,
             Tag<TExpand> const &)
 {
     me.insert(_iterStl(SEQAN_FORWARD(TContainer, me), pos), SEQAN_FORWARD(TSource, source));
@@ -1024,7 +1024,7 @@ template <typename TContainer,
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
 appendValue(TContainer && me,
-            TSource SEQAN_FORWARD_CARG source,
+            TSource && source,
             Tag<TExpand> const &)
 {
     me.push_back(SEQAN_FORWARD(TSource, source));
@@ -1057,7 +1057,7 @@ template <typename TContainer,
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
 prependValue(TContainer && me,
-             TSource SEQAN_FORWARD_CARG source)
+             TSource && source)
 {
     me.push_front(SEQAN_FORWARD(TSource, source));
 }
@@ -1068,7 +1068,7 @@ template <typename TContainer,
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
 prependValue(TContainer && me,
-             TSource SEQAN_FORWARD_CARG source,
+             TSource && source,
              Tag<TExpand> const &)
 {
     prependValue(SEQAN_FORWARD(TContainer, me), SEQAN_FORWARD(TSource, source));
@@ -1078,7 +1078,7 @@ prependValue(TContainer && me,
 template <typename TChar, typename TAlloc, typename TSource>
 inline void
 prependValue(std::vector<TChar, TAlloc> & me,
-             TSource SEQAN_FORWARD_CARG source)
+             TSource && source)
 {
     insertValue(me, 0, SEQAN_FORWARD(TSource, source));
 }
@@ -1086,7 +1086,7 @@ prependValue(std::vector<TChar, TAlloc> & me,
 template <typename TChar, typename TTraits, typename TAlloc, typename TSource>
 inline void
 prependValue(std::basic_string<TChar, TTraits, TAlloc> & me,
-             TSource SEQAN_FORWARD_CARG source)
+             TSource && source)
 {
     insertValue(me, 0, SEQAN_FORWARD(TSource, source));
 }

@@ -247,7 +247,7 @@ struct ValueConstructor_
     template <typename TIterator, typename TParam>
     static inline void
     construct(TIterator it,
-              TParam SEQAN_FORWARD_CARG param_)
+              TParam && param_)
     {
         typedef typename Value<TIterator>::Type    TValue;
         typedef typename RemoveConst<TValue>::Type TNonConstValue;
@@ -265,7 +265,7 @@ struct ValueConstructorProxy_
     static inline void construct(TIterator) {}
 
     template <typename TIterator, typename TParam>
-    static inline void construct(TIterator, TParam SEQAN_FORWARD_CARG) {}
+    static inline void construct(TIterator, TParam &&) {}
 };
 
 template <typename TIterator>
@@ -289,7 +289,7 @@ valueConstruct(TIterator it)
 template <typename TIterator, typename TParam>
 inline void
 valueConstruct(TIterator it,
-               TParam SEQAN_FORWARD_CARG param_)
+               TParam && param_)
 {
     typedef typename IfC<
         IsSameType<

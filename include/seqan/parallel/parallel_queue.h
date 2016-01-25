@@ -627,7 +627,7 @@ popFront(ConcurrentQueue<TValue, TSpec> & me)
 
 template <typename TValue, typename TSpec, typename TValue2>
 inline bool
-_queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue2 SEQAN_FORWARD_CARG, Insist)
+_queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue2 &&, Insist)
 {
     ignoreUnusedVariableWarning(me);
     SEQAN_ASSERT_GT(capacity(me.data), 1u);
@@ -636,7 +636,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue2 SEQAN_FORWARD_CARG, 
 
 template <typename TValue, typename TSpec, typename TValue2>
 inline bool
-_queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue2 SEQAN_FORWARD_CARG, Limit)
+_queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue2 &&, Limit)
 {
     ignoreUnusedVariableWarning(me);
     SEQAN_ASSERT_GT(capacity(me.data), 1u);
@@ -646,7 +646,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue2 SEQAN_FORWARD_CARG, 
 template <typename TValue, typename TSpec, typename TValue2, typename TExpand>
 inline bool
 _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
-               TValue2 SEQAN_FORWARD_CARG val,
+               TValue2 && val,
                Tag<TExpand> expandTag)
 {
     typedef ConcurrentQueue<TValue, TSpec>                  TQueue;
@@ -734,7 +734,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
 template <typename TValue, typename TSpec, typename TValue2, typename TExpand, typename TParallel>
 inline void
 appendValue(ConcurrentQueue<TValue, TSpec> & me,
-            TValue2 SEQAN_FORWARD_CARG val,
+            TValue2 && val,
             Tag<TExpand> expandTag,
             Tag<TParallel> parallelTag)
 {
@@ -792,7 +792,7 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
 template <typename TValue, typename TSpec, typename TValue2, typename TExpand>
 inline void
 appendValue(ConcurrentQueue<TValue, TSpec> & me,
-            TValue2 SEQAN_FORWARD_CARG val,
+            TValue2 && val,
             Tag<TExpand> expandTag)
 {
     appendValue(me, SEQAN_FORWARD(TValue2, val), expandTag, typename DefaultParallelSpec<ConcurrentQueue<TValue, TSpec> >::Type());
