@@ -477,14 +477,14 @@ template <typename TArgT, typename TArgF>
 inline TArgT &&
 ifSwitch(True, TArgT && argTrue, TArgF const &)
 {
-    return SEQAN_FORWARD(TArgT, argTrue);
+    return std::forward<TArgT>(argTrue);
 }
 
 template <typename TArgT, typename TArgF>
 inline TArgF &&
 ifSwitch(False, TArgT const &, TArgF && argFalse)
 {
-    return SEQAN_FORWARD(TArgF, argFalse);
+    return std::forward<TArgF>(argFalse);
 }
 
 // ----------------------------------------------------------------------------

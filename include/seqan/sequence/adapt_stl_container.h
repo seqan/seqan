@@ -827,7 +827,7 @@ insert(TContainer && me,
        TSource const & source,
        Tag<TExpand> const &)
 {
-    me.insert(_iterStl(SEQAN_FORWARD(TContainer, me), pos),
+    me.insert(_iterStl(std::forward<TContainer>(me), pos),
               begin(source, Standard()),
               end(source, Standard()));
 }
@@ -843,7 +843,7 @@ insert(TContainer && me,
        typename Size<TSource>::Type const limit,
        Tag<TExpand> const &)
 {
-    me.insert(_iterStl(SEQAN_FORWARD(TContainer, me), pos),
+    me.insert(_iterStl(std::forward<TContainer>(me), pos),
               begin(source, Standard()),
               iter(source, std::min(length(source), limit), Standard()));
 }
@@ -906,7 +906,7 @@ append(TContainer && me,
        TSource const & source,
        Tag<TExpand> const &)
 {
-    insert(SEQAN_FORWARD(TContainer, me), length(me), source);
+    insert(std::forward<TContainer>(me), length(me), source);
 }
 
 template <typename TContainer,
@@ -919,7 +919,7 @@ append(TContainer && me,
        typename Size<typename RemoveReference<TContainer>::Type>::Type const limit,
        Tag<TExpand> const &)
 {
-    insert(SEQAN_FORWARD(TContainer, me), length(me), source, limit);
+    insert(std::forward<TContainer>(me), length(me), source, limit);
 }
 
 // forward list is handled downstream in insert
@@ -935,7 +935,7 @@ inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<
 prepend(TContainer && me,
         TSource const & source)
 {
-    insert(SEQAN_FORWARD(TContainer, me), 0, source);
+    insert(std::forward<TContainer>(me), 0, source);
 }
 
 template <typename TContainer,
@@ -947,7 +947,7 @@ prepend(TContainer && me,
         TSource const & source,
         Tag<TExpand> const &)
 {
-    insert(SEQAN_FORWARD(TContainer, me), 0, source);
+    insert(std::forward<TContainer>(me), 0, source);
 }
 
 template <typename TContainer,
@@ -959,7 +959,7 @@ prepend(TContainer && me,
         TSource const & source,
         typename Size<typename RemoveReference<TContainer>::Type>::Type const limit)
 {
-    insert(SEQAN_FORWARD(TContainer, me), 0, source, limit);
+    insert(std::forward<TContainer>(me), 0, source, limit);
 }
 
 template <typename TContainer,
@@ -972,7 +972,7 @@ prepend(TContainer && me,
         typename Size<typename RemoveReference<TContainer>::Type>::Type const limit,
         Tag<TExpand> const &)
 {
-    insert(SEQAN_FORWARD(TContainer, me), 0, source, limit);
+    insert(std::forward<TContainer>(me), 0, source, limit);
 }
 
 // forward list is handled downstream in insert
@@ -991,7 +991,7 @@ insertValue(TContainer && me,
             TSource && source,
             Tag<TExpand> const &)
 {
-    me.insert(_iterStl(SEQAN_FORWARD(TContainer, me), pos), SEQAN_FORWARD(TSource, source));
+    me.insert(_iterStl(std::forward<TContainer>(me), pos), std::forward<TSource>(source));
 }
 
 template <typename TChar, typename TAlloc, typename TSource, typename TExpand>
@@ -1027,7 +1027,7 @@ appendValue(TContainer && me,
             TSource && source,
             Tag<TExpand> const &)
 {
-    me.push_back(SEQAN_FORWARD(TSource, source));
+    me.push_back(std::forward<TSource>(source));
 }
 
 template <typename TChar, typename TAlloc, typename TSource, typename TExpand>
@@ -1059,7 +1059,7 @@ inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<
 prependValue(TContainer && me,
              TSource && source)
 {
-    me.push_front(SEQAN_FORWARD(TSource, source));
+    me.push_front(std::forward<TSource>(source));
 }
 
 template <typename TContainer,
@@ -1071,7 +1071,7 @@ prependValue(TContainer && me,
              TSource && source,
              Tag<TExpand> const &)
 {
-    prependValue(SEQAN_FORWARD(TContainer, me), SEQAN_FORWARD(TSource, source));
+    prependValue(std::forward<TContainer>(me), std::forward<TSource>(source));
 }
 
 // vector and string dont have push_front, we achieve it in linear time
@@ -1080,7 +1080,7 @@ inline void
 prependValue(std::vector<TChar, TAlloc> & me,
              TSource && source)
 {
-    insertValue(me, 0, SEQAN_FORWARD(TSource, source));
+    insertValue(me, 0, std::forward<TSource>(source));
 }
 
 template <typename TChar, typename TTraits, typename TAlloc, typename TSource>
@@ -1088,7 +1088,7 @@ inline void
 prependValue(std::basic_string<TChar, TTraits, TAlloc> & me,
              TSource && source)
 {
-    insertValue(me, 0, SEQAN_FORWARD(TSource, source));
+    insertValue(me, 0, std::forward<TSource>(source));
 }
 
 // && to &
@@ -1146,7 +1146,7 @@ inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<
 erase(TContainer && me,
       typename Size<typename RemoveReference<TContainer>::Type>::Type const pos)
 {
-    erase(SEQAN_FORWARD(TContainer, me), pos, pos + 1);
+    erase(std::forward<TContainer>(me), pos, pos + 1);
 }
 
 // ----------------------------------------------------------------------------

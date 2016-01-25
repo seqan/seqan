@@ -1449,7 +1449,7 @@ inline void
 valueConstruct(Iter<TPackedString, Packed<THostspec> > const & it,
                TParam && param_)
 {
-    assignValue(it, SEQAN_FORWARD(TParam, param_));
+    assignValue(it, std::forward<TParam>(param_));
 }
 
 // --------------------------------------------------------------------------

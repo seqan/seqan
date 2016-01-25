@@ -418,7 +418,7 @@ appendValue(String<TTargetValue, Block<SPACE> > & me, TValue && value, Tag<TExpa
         ++me.lastValue;
         back(me.blocks)->data_length += 1;
     }
-    valueConstruct(me.lastValue, SEQAN_FORWARD(TValue, value));
+    valueConstruct(me.lastValue, std::forward<TValue>(value));
 }
 
 // ----------------------------------------------------------------------------

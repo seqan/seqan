@@ -152,7 +152,7 @@ pushNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
     //    std::cout << "-----> Journal " << container(node.endEdgeIt) << std::endl;
     std::cout << "        PUSH: (" << node << ")" << std::endl;
 #endif //defined(DEBUG_JST_TRAVERSAL)
-    appendValue(impl::stack(me), SEQAN_FORWARD(TTraversalNode, node));
+    appendValue(impl::stack(me), std::forward<TTraversalNode>(node));
     notify(me, PushEvent());
 }
 

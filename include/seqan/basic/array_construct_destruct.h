@@ -251,7 +251,7 @@ struct ValueConstructor_
     {
         typedef typename Value<TIterator>::Type    TValue;
         typedef typename RemoveConst<TValue>::Type TNonConstValue;
-        new( (void*) & value(it) ) TNonConstValue(SEQAN_FORWARD(TParam, param_));
+        new( (void*) & value(it) ) TNonConstValue(std::forward<TParam>(param_));
     }
 };
 
@@ -302,7 +302,7 @@ valueConstruct(TIterator it,
         ValueConstructorProxy_      // false, types differ -> value() returns a proxy
     >::Type TConstructor;
 
-    TConstructor::construct(it, SEQAN_FORWARD(TParam, param_));
+    TConstructor::construct(it, std::forward<TParam>(param_));
 }
 
 // ----------------------------------------------------------------------------

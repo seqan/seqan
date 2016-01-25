@@ -923,8 +923,8 @@ assign(TTarget && target,
        typename Size<TTarget>::Type limit)
 {
     SEQAN_CHECKPOINT;
-    assign(SEQAN_FORWARD(TTarget, target),
-           SEQAN_FORWARD(TSource, source),
+    assign(std::forward<TTarget>(target),
+           std::forward<TSource>(source),
            limit,
            typename DefaultOverflowImplicit<TTarget>::Type());
 }
@@ -985,7 +985,7 @@ inline void
 appendValue(T && me,
             TValue && _value)
 {
-    appendValue(SEQAN_FORWARD(T, me), SEQAN_FORWARD(TValue, _value), typename DefaultOverflowImplicit<T>::Type());
+    appendValue(std::forward<T>(me), std::forward<TValue>(_value), typename DefaultOverflowImplicit<T>::Type());
 }
 
 // --------------------------------------------------------------------------
@@ -1013,7 +1013,7 @@ insert(T && me,
        Tag<TExpand> const &)
 {
     SEQAN_CHECKPOINT;
-    replace(SEQAN_FORWARD(T, me), pos, pos, insertSeq, Tag<TExpand>());
+    replace(std::forward<T>(me), pos, pos, insertSeq, Tag<TExpand>());
 }
 
 template <typename T, typename TPosition, typename TSeq>
@@ -1023,7 +1023,7 @@ insert(T && me,
        TSeq const & insertSeq)
 {
     SEQAN_CHECKPOINT;
-    insert(SEQAN_FORWARD(T, me), pos, insertSeq, typename DefaultOverflowImplicit<T>::Type());
+    insert(std::forward<T>(me), pos, insertSeq, typename DefaultOverflowImplicit<T>::Type());
 }
 
 template <typename T,
@@ -1061,7 +1061,7 @@ insertValue(T && me,
             TValue && _value)
 {
     SEQAN_CHECKPOINT;
-    insertValue(SEQAN_FORWARD(T, me), pos, SEQAN_FORWARD(TValue, _value), typename DefaultOverflowImplicit<T>::Type());
+    insertValue(std::forward<T>(me), pos, std::forward<TValue>(_value), typename DefaultOverflowImplicit<T>::Type());
 }
 
 // --------------------------------------------------------------------------
@@ -1091,7 +1091,7 @@ replace(TTarget && target,
         TPositionEnd const pos_end,
         TSource const & source)
 {
-    replace(SEQAN_FORWARD(TTarget, target),
+    replace(std::forward<TTarget>(target),
             pos_begin,
             pos_end,
             source,
@@ -1106,7 +1106,7 @@ replace(TTarget && target,
         TSource const & source,
         typename Size<TTarget>::Type const limit)
 {
-    replace(SEQAN_FORWARD(TTarget, target),
+    replace(std::forward<TTarget>(target),
             pos_begin,
             pos_end,
             source,
@@ -1179,7 +1179,7 @@ reserve(T && me,
         Tag<TExpand> const &)
 {
     SEQAN_CHECKPOINT;
-    return _capacityReturned(SEQAN_FORWARD(T, me), new_capacity, Tag<TExpand>());
+    return _capacityReturned(std::forward<T>(me), new_capacity, Tag<TExpand>());
 }
 
 template <typename T,
@@ -1189,7 +1189,7 @@ reserve(T && me,
         TSize const new_capacity)
 {
     SEQAN_CHECKPOINT;
-    return reserve(SEQAN_FORWARD(T, me), new_capacity, typename DefaultOverflowExplicit<T>::Type());
+    return reserve(std::forward<T>(me), new_capacity, typename DefaultOverflowExplicit<T>::Type());
 }
 
 // --------------------------------------------------------------------------
@@ -1203,7 +1203,7 @@ resize(T && me,
        TSize const new_length)
 {
     SEQAN_CHECKPOINT;
-    return resize(SEQAN_FORWARD(T, me), new_length, typename DefaultOverflowExplicit<T>::Type());
+    return resize(std::forward<T>(me), new_length, typename DefaultOverflowExplicit<T>::Type());
 }
 
 template <typename T,
@@ -1215,7 +1215,7 @@ resize(T && me,
        TValue const & val)
 {
     SEQAN_CHECKPOINT;
-    return resize(SEQAN_FORWARD(T, me), new_length, val, typename DefaultOverflowExplicit<T>::Type());
+    return resize(std::forward<T>(me), new_length, val, typename DefaultOverflowExplicit<T>::Type());
 }
 
 // --------------------------------------------------------------------------

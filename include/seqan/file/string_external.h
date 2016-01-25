@@ -2071,7 +2071,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 Tag<TExpand> expand)
     {
         resize(me, me.data_size + 1, expand);
-        back(me) = SEQAN_FORWARD(TValue, value);
+        back(me) = std::forward<TValue>(value);
     }
 
 //____________________________________________________________________________
