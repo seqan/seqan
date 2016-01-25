@@ -147,10 +147,23 @@ macro (seqan_register_apps)
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
 
     # enable static linkage for seqan apps
-    if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG AND NOT MINGW)
-      set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-      set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
-    endif ()
+    if (NOT CMAKE_SYSTEM_NAME MATCHES "Windows")
+        set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+        # libstdc++ is being used and needs be explicitly "statified"
+        if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_SYSTEM_NAME MATCHES "Linux")
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
+        endif (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_SYSTEM_NAME MATCHES "Linux")
+        # if not apple make other libs static (apple does not support static builds except for the above)
+        if (NOT APPLE)
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+        endif (NOT APPLE)
+        # on linux cmake adds -rdynamic automatically which clang can't handle in static builds
+        if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+            SET(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+        endif (CMAKE_SYSTEM_NAME MATCHES "Linux")
+        # not that these checks are more than OS, because we have many possible combinations between
+        # OS, compiler and STL used
+    endif (NOT CMAKE_SYSTEM_NAME MATCHES "Windows")
 
     # Enable global exception handler for all seqan apps.
     set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
@@ -446,7 +459,8 @@ macro (seqan_setup_cuda_vars)
       # NVCC mistakes /usr/bin/cc as gcc.
       #list (APPEND CUDA_NVCC_FLAGS "-ccbin /usr/bin/clang")
       # NVCC does not support libc++.
-      set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libstdc++")
+#(h-2): deactivated the following line because it affects non-cude, too; also this should work with modern nvcc
+#       set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libstdc++")
     endif ()
   endif ()
 endmacro (seqan_setup_cuda_vars)
@@ -491,7 +505,7 @@ endmacro (seqan_get_version)
 
 macro (seqan_get_repository_info)
   set (_SEQAN_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
-
+  message (STATUS "  Selected repository dir: ${CMAKE_SOURCE_DIR}")
   # Get Git information.
   if (EXISTS ${_SEQAN_GIT_DIR})
     find_package (GitInfo QUIET)
