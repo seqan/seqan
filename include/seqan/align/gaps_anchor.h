@@ -799,7 +799,7 @@ template <typename TSource, typename TGapAnchors, typename TPosition>
 inline TPosition
 positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition pos)
 {
-    return positionGapToSeq(me, pos, True());
+    return positionGapToSeq(me, pos, RightOfViewPos());
 }
 
 // ----------------------------------------------------------------------------
