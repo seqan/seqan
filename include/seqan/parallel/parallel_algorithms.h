@@ -312,7 +312,7 @@ inline void generate(TTarget & target, TGenerator g, Tag<TParallelTag> const & /
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TValue, typename TParallelTag>
-inline void iota(TTarget SEQAN_FORWARD_ARG target, TValue val, Tag<TParallelTag> const & /* tag */)
+inline void iota(TTarget && target, TValue val, Tag<TParallelTag> const & /* tag */)
 {
     std::iota(begin(target, Standard()), end(target, Standard()), val);
 }
@@ -430,13 +430,13 @@ minElement(TContainer const & c, Tag<TParallelTag> const & /* tag */)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TBinaryPredicate, typename TParallelTag>
-inline void sort(TContainer SEQAN_FORWARD_ARG c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag */)
+inline void sort(TContainer && c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag */)
 {
     return std::sort(begin(c, Standard()), end(c, Standard()), p);
 }
 
 template <typename TContainer, typename TParallelTag>
-inline void sort(TContainer SEQAN_FORWARD_ARG c, Tag<TParallelTag> const & /* tag */)
+inline void sort(TContainer && c, Tag<TParallelTag> const & /* tag */)
 {
     return std::sort(begin(c, Standard()), end(c, Standard()));
 }
@@ -446,13 +446,13 @@ inline void sort(TContainer SEQAN_FORWARD_ARG c, Tag<TParallelTag> const & /* ta
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TBinaryPredicate, typename TParallelTag>
-inline void stableSort(TContainer SEQAN_FORWARD_ARG c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag */)
+inline void stableSort(TContainer && c, TBinaryPredicate p, Tag<TParallelTag> const & /* tag */)
 {
     return std::stable_sort(begin(c, Standard()), end(c, Standard()), p);
 }
 
 template <typename TContainer, typename TParallelTag>
-inline void stableSort(TContainer SEQAN_FORWARD_ARG c, Tag<TParallelTag> const & /* tag */)
+inline void stableSort(TContainer && c, Tag<TParallelTag> const & /* tag */)
 {
     return std::stable_sort(begin(c, Standard()), end(c, Standard()));
 }
@@ -614,13 +614,13 @@ minElement(TContainer const & c, Parallel)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TBinaryPredicate>
-inline void sort(TContainer SEQAN_FORWARD_ARG c, TBinaryPredicate p, Parallel)
+inline void sort(TContainer && c, TBinaryPredicate p, Parallel)
 {
     return __gnu_parallel::sort(begin(c, Standard()), end(c, Standard()), p);
 }
 
 template <typename TContainer>
-inline void sort(TContainer SEQAN_FORWARD_ARG c, Parallel)
+inline void sort(TContainer && c, Parallel)
 {
     return __gnu_parallel::sort(begin(c, Standard()), end(c, Standard()));
 }
@@ -630,13 +630,13 @@ inline void sort(TContainer SEQAN_FORWARD_ARG c, Parallel)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TBinaryPredicate>
-inline void stableSort(TContainer SEQAN_FORWARD_ARG c, TBinaryPredicate p, Parallel)
+inline void stableSort(TContainer && c, TBinaryPredicate p, Parallel)
 {
     return __gnu_parallel::stable_sort(begin(c, Standard()), end(c, Standard()), p);
 }
 
 template <typename TContainer>
-inline void stableSort(TContainer SEQAN_FORWARD_ARG c, Parallel)
+inline void stableSort(TContainer && c, Parallel)
 {
     return __gnu_parallel::stable_sort(begin(c, Standard()), end(c, Standard()));
 }
@@ -694,7 +694,7 @@ inline void generate(TTarget & target, TGenerator g)
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TValue>
-inline void iota(TTarget SEQAN_FORWARD_ARG target, TValue val)
+inline void iota(TTarget && target, TValue val)
 {
     iota(target, val, Serial());
 }
@@ -806,13 +806,13 @@ minElement(TContainer const & c)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TBinaryPredicate>
-inline void sort(TContainer SEQAN_FORWARD_ARG c, TBinaryPredicate p)
+inline void sort(TContainer && c, TBinaryPredicate p)
 {
     sort(c, p, Serial());
 }
 
 template <typename TContainer>
-inline void sort(TContainer SEQAN_FORWARD_ARG c)
+inline void sort(TContainer && c)
 {
     sort(c, Serial());
 }
@@ -822,13 +822,13 @@ inline void sort(TContainer SEQAN_FORWARD_ARG c)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TBinaryPredicate>
-inline void stableSort(TContainer SEQAN_FORWARD_ARG c, TBinaryPredicate p)
+inline void stableSort(TContainer && c, TBinaryPredicate p)
 {
     stableSort(c, p, Serial());
 }
 
 template <typename TContainer>
-inline void stableSort(TContainer SEQAN_FORWARD_ARG c)
+inline void stableSort(TContainer && c)
 {
     stableSort(c, Serial());
 }

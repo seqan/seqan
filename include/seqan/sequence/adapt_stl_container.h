@@ -97,10 +97,11 @@ SEQAN_CONCEPT_IMPL((std::array<TChar, N> const), (StlContainerConcept));
  * not defined for reference types).
  *
  * So in the following you will see a RemoveReference< > around the type
- * whenever the function takes a && argument or SEQAN_FORWARD_ARG argument AND
- * it shall act as univeral reference (e.g. length()). But in some cases it
- * shall not (because there is a different overload for the l-value-reference
- * arg) and it is  intentionally omitted, e.g. value().
+ * whenever the function takes a && argument AND it shall act as univeral
+ * reference (e.g. length()). But in some cases it shall not (because there is a
+ * different overload for the l-value-reference arg) and it is  intentionally
+ * omitted, e.g. value().
+
  */
 
 // ===========================================================================
@@ -610,7 +611,7 @@ template <typename TContainer,
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >,
                             typename Size<typename RemoveReference<TContainer>::Type>::Type)
-resize(TContainer SEQAN_FORWARD_ARG me,
+resize(TContainer && me,
        TSize const s,
        Tag<TExpand> const &)
 {
@@ -624,7 +625,7 @@ template <typename TContainer,
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >,
                             typename Size<typename RemoveReference<TContainer>::Type>::Type)
-resize(TContainer SEQAN_FORWARD_ARG me,
+resize(TContainer && me,
        TSize const s,
        typename Value<typename RemoveReference<TContainer>::Type>::Type const & val,
        Tag<TExpand> const &)
@@ -640,7 +641,7 @@ resize(TContainer SEQAN_FORWARD_ARG me,
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-clear(TContainer SEQAN_FORWARD_ARG me)
+clear(TContainer && me)
 {
     me.clear();
 }
@@ -785,7 +786,7 @@ back(std::forward_list<TChar, TAlloc> && me)
 
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, void)
-assign(TContainer SEQAN_FORWARD_ARG me,
+assign(TContainer && me,
        typename RemoveReference<TContainer>::Type source)
 {
     std::swap(me, source);
@@ -795,7 +796,7 @@ template <typename TContainer,
           typename TSource>
 inline SEQAN_FUNC_ENABLE_IF(And<Not<IsSameType<typename RemoveReference<TContainer>::Type, TSource> >,
                                 Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> > >, void)
-assign(TContainer SEQAN_FORWARD_ARG me,
+assign(TContainer && me,
        TSource const & source)
 {
     me.assign(begin(source, Standard()), end(source, Standard()));
@@ -804,7 +805,7 @@ assign(TContainer SEQAN_FORWARD_ARG me,
 template <typename TContainer,
           typename TSource>
 inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, void)
-assign(TContainer SEQAN_FORWARD_ARG me,
+assign(TContainer && me,
        TSource const & source,
        typename Size<TSource>::Type limit)
 {
@@ -821,7 +822,7 @@ template <typename TContainer,
           typename TExpand>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-insert(TContainer SEQAN_FORWARD_ARG me,
+insert(TContainer && me,
        typename Size<typename RemoveReference<TContainer>::Type>::Type const pos,
        TSource const & source,
        Tag<TExpand> const &)
@@ -836,7 +837,7 @@ template <typename TContainer,
           typename TExpand>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-insert(TContainer SEQAN_FORWARD_ARG me,
+insert(TContainer && me,
        typename Size<typename RemoveReference<TContainer>::Type>::Type const pos,
        TSource const & source,
        typename Size<TSource>::Type const limit,
@@ -901,7 +902,7 @@ template <typename TContainer,
           typename TExpand>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-append(TContainer SEQAN_FORWARD_ARG me,
+append(TContainer && me,
        TSource const & source,
        Tag<TExpand> const &)
 {
@@ -913,7 +914,7 @@ template <typename TContainer,
           typename TExpand>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-append(TContainer SEQAN_FORWARD_ARG me,
+append(TContainer && me,
        TSource const & source,
        typename Size<typename RemoveReference<TContainer>::Type>::Type const limit,
        Tag<TExpand> const &)
@@ -931,7 +932,7 @@ template <typename TContainer,
           typename TSource>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-prepend(TContainer SEQAN_FORWARD_ARG me,
+prepend(TContainer && me,
         TSource const & source)
 {
     insert(SEQAN_FORWARD(TContainer, me), 0, source);
@@ -942,7 +943,7 @@ template <typename TContainer,
           typename TExpand>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-prepend(TContainer SEQAN_FORWARD_ARG me,
+prepend(TContainer && me,
         TSource const & source,
         Tag<TExpand> const &)
 {
@@ -954,7 +955,7 @@ template <typename TContainer,
           typename TExpand>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-prepend(TContainer SEQAN_FORWARD_ARG me,
+prepend(TContainer && me,
         TSource const & source,
         typename Size<typename RemoveReference<TContainer>::Type>::Type const limit)
 {
@@ -966,7 +967,7 @@ template <typename TContainer,
           typename TExpand>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-prepend(TContainer SEQAN_FORWARD_ARG me,
+prepend(TContainer && me,
         TSource const & source,
         typename Size<typename RemoveReference<TContainer>::Type>::Type const limit,
         Tag<TExpand> const &)
@@ -985,7 +986,7 @@ template <typename TContainer,
           typename TExpand>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-insertValue(TContainer SEQAN_FORWARD_ARG me,
+insertValue(TContainer && me,
             typename Size<typename RemoveReference<TContainer>::Type>::Type const pos,
             TSource SEQAN_FORWARD_CARG source,
             Tag<TExpand> const &)
@@ -1022,7 +1023,7 @@ template <typename TContainer,
           typename TExpand>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-appendValue(TContainer SEQAN_FORWARD_ARG me,
+appendValue(TContainer && me,
             TSource SEQAN_FORWARD_CARG source,
             Tag<TExpand> const &)
 {
@@ -1055,7 +1056,7 @@ template <typename TContainer,
           typename TSource>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-prependValue(TContainer SEQAN_FORWARD_ARG me,
+prependValue(TContainer && me,
              TSource SEQAN_FORWARD_CARG source)
 {
     me.push_front(SEQAN_FORWARD(TSource, source));
@@ -1066,7 +1067,7 @@ template <typename TContainer,
           typename TExpand>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-prependValue(TContainer SEQAN_FORWARD_ARG me,
+prependValue(TContainer && me,
              TSource SEQAN_FORWARD_CARG source,
              Tag<TExpand> const &)
 {
@@ -1114,7 +1115,7 @@ prependValue(std::basic_string<TChar, TTraits, TAlloc> && me,
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-erase(TContainer SEQAN_FORWARD_ARG me,
+erase(TContainer && me,
       typename Size<typename RemoveReference<TContainer>::Type>::Type const pos,
       typename Size<typename RemoveReference<TContainer>::Type>::Type const posEnd)
 {
@@ -1142,7 +1143,7 @@ erase(std::forward_list<TChar, TAlloc> && me,
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-erase(TContainer SEQAN_FORWARD_ARG me,
+erase(TContainer && me,
       typename Size<typename RemoveReference<TContainer>::Type>::Type const pos)
 {
     erase(SEQAN_FORWARD(TContainer, me), pos, pos + 1);
@@ -1155,7 +1156,7 @@ erase(TContainer SEQAN_FORWARD_ARG me,
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-eraseFront(TContainer SEQAN_FORWARD_ARG me)
+eraseFront(TContainer && me)
 {
     me.pop_front();
 }
@@ -1195,7 +1196,7 @@ eraseFront(std::basic_string<TChar, TTraits, TAlloc> && me)
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-eraseBack(TContainer SEQAN_FORWARD_ARG me)
+eraseBack(TContainer && me)
 {
     me.pop_back();
 }
@@ -1232,7 +1233,7 @@ template <typename TContainer,
           typename TExpand>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-replace(TContainer SEQAN_FORWARD_ARG me,
+replace(TContainer && me,
         typename Size<typename RemoveReference<TContainer>::Type>::Type const pos,
         typename Size<typename RemoveReference<TContainer>::Type>::Type const posEnd,
         TSource const & source,
@@ -1248,7 +1249,7 @@ template <typename TContainer,
           typename TExpand>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >,
                                 Not<FixedSize_<typename RemoveReference<TContainer>::Type> > >, void)
-replace(TContainer SEQAN_FORWARD_ARG me,
+replace(TContainer && me,
         typename Size<typename RemoveReference<TContainer>::Type>::Type const pos,
         typename Size<typename RemoveReference<TContainer>::Type>::Type const posEnd,
         TSource const & source,
@@ -1265,14 +1266,14 @@ replace(TContainer SEQAN_FORWARD_ARG me,
 // NOTE(h-2): seqan's reverse doesn't work for some stl containers
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<TContainer> >, HasSubscriptOperator<TContainer> >)
-reverse(TContainer SEQAN_FORWARD_ARG me)
+reverse(TContainer && me)
 {
     std::reverse(me.begin(), me.end());
 }
 
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<StlContainerConcept<TContainer> >, Not<HasSubscriptOperator<TContainer> > >)
-reverse(TContainer SEQAN_FORWARD_ARG me)
+reverse(TContainer && me)
 {
     me.reverse();
 }

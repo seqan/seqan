@@ -474,15 +474,15 @@ struct If<False, T1, T2>
 
 
 template <typename TArgT, typename TArgF>
-inline TArgT SEQAN_FORWARD_ARG
-ifSwitch(True, TArgT SEQAN_FORWARD_ARG argTrue, TArgF const &)
+inline TArgT &&
+ifSwitch(True, TArgT && argTrue, TArgF const &)
 {
     return SEQAN_FORWARD(TArgT, argTrue);
 }
 
 template <typename TArgT, typename TArgF>
-inline TArgF SEQAN_FORWARD_ARG
-ifSwitch(False, TArgT const &, TArgF SEQAN_FORWARD_ARG argFalse)
+inline TArgF &&
+ifSwitch(False, TArgT const &, TArgF && argFalse)
 {
     return SEQAN_FORWARD(TArgF, argFalse);
 }

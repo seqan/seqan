@@ -918,7 +918,7 @@ _storageUpdated(T const & me)
 
 template<typename TTarget, typename TSource>
 inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<TTarget>::Type> >, void)
-assign(TTarget SEQAN_FORWARD_ARG target,
+assign(TTarget && target,
        TSource SEQAN_FORWARD_CARG source,
        typename Size<TTarget>::Type limit)
 {
@@ -946,7 +946,7 @@ assign(TTarget SEQAN_FORWARD_ARG target,
 
 template<typename TTarget, typename TSource>
 inline void
-append(TTarget SEQAN_FORWARD_ARG target,
+append(TTarget && target,
        TSource const & source)
 {
     SEQAN_CHECKPOINT;
@@ -955,7 +955,7 @@ append(TTarget SEQAN_FORWARD_ARG target,
 
 template<typename TTarget, typename TSource>
 inline void
-append(TTarget SEQAN_FORWARD_ARG target,
+append(TTarget && target,
        TSource const & source,
        typename Size<TTarget>::Type const limit)
 {
@@ -982,7 +982,7 @@ append(TTarget SEQAN_FORWARD_ARG target,
 
 template <typename T, typename TValue>
 inline void
-appendValue(T SEQAN_FORWARD_ARG me,
+appendValue(T && me,
             TValue SEQAN_FORWARD_CARG _value)
 {
     appendValue(SEQAN_FORWARD(T, me), SEQAN_FORWARD(TValue, _value), typename DefaultOverflowImplicit<T>::Type());
@@ -1007,7 +1007,7 @@ appendValue(T SEQAN_FORWARD_ARG me,
 
 template <typename T, typename TPosition, typename TSeq, typename TExpand>
 inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void)
-insert(T SEQAN_FORWARD_ARG me,
+insert(T && me,
        TPosition const pos,
        TSeq const & insertSeq,
        Tag<TExpand> const &)
@@ -1018,7 +1018,7 @@ insert(T SEQAN_FORWARD_ARG me,
 
 template <typename T, typename TPosition, typename TSeq>
 inline void
-insert(T SEQAN_FORWARD_ARG me,
+insert(T && me,
        TPosition const pos,
        TSeq const & insertSeq)
 {
@@ -1029,7 +1029,7 @@ insert(T SEQAN_FORWARD_ARG me,
 template <typename T,
           typename TSource>
 inline void
-insert(T SEQAN_FORWARD_ARG me,
+insert(T && me,
        typename Size<typename RemoveReference<T>::Type>::Type const pos,
        TSource const & source,
        typename Size<TSource>::Type const limit)
@@ -1056,7 +1056,7 @@ insert(T SEQAN_FORWARD_ARG me,
 
 template <typename T, typename TPosition, typename TValue>
 inline void
-insertValue(T SEQAN_FORWARD_ARG me,
+insertValue(T && me,
             TPosition const pos,
             TValue SEQAN_FORWARD_CARG _value)
 {
@@ -1086,7 +1086,7 @@ insertValue(T SEQAN_FORWARD_ARG me,
 
 template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
 inline void
-replace(TTarget SEQAN_FORWARD_ARG target,
+replace(TTarget && target,
         TPositionBegin const pos_begin,
         TPositionEnd const pos_end,
         TSource const & source)
@@ -1100,7 +1100,7 @@ replace(TTarget SEQAN_FORWARD_ARG target,
 
 template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
 inline void
-replace(TTarget SEQAN_FORWARD_ARG target,
+replace(TTarget && target,
         TPositionBegin const pos_begin,
         TPositionEnd const pos_end,
         TSource const & source,
@@ -1174,7 +1174,7 @@ template <typename T,
           typename TSize,
           typename TExpand>
 inline typename Size<T>::Type
-reserve(T SEQAN_FORWARD_ARG me,
+reserve(T && me,
         TSize const new_capacity,
         Tag<TExpand> const &)
 {
@@ -1185,7 +1185,7 @@ reserve(T SEQAN_FORWARD_ARG me,
 template <typename T,
           typename TSize>
 inline typename Size<T>::Type
-reserve(T SEQAN_FORWARD_ARG me,
+reserve(T && me,
         TSize const new_capacity)
 {
     SEQAN_CHECKPOINT;
@@ -1199,7 +1199,7 @@ reserve(T SEQAN_FORWARD_ARG me,
 template <typename T,
           typename TSize>
 inline typename Size<T>::Type
-resize(T SEQAN_FORWARD_ARG me,
+resize(T && me,
        TSize const new_length)
 {
     SEQAN_CHECKPOINT;
@@ -1210,7 +1210,7 @@ template <typename T,
           typename TSize,
           typename TValue>
 inline typename Size<T>::Type
-resize(T SEQAN_FORWARD_ARG me,
+resize(T && me,
        TSize const new_length,
        TValue const & val)
 {
