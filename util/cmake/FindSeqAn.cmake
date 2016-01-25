@@ -168,30 +168,30 @@ endif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 # Check required compiler versions.
 # ----------------------------------------------------------------------------
 
-if(CMAKE_COMPILER_IS_GNUCXX)
+if (CMAKE_COMPILER_IS_GNUCXX)
 
     # require at least gcc 4.9
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
         message(AUTHOR_WARNING "GCC version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 4.9! Anything below is untested.")
-    endif()
+    endif ()
 
 elseif (COMPILER_IS_CLANG)
 
     # require at least clang 3.5
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.5)
         message(AUTHOR_WARNING "Clang version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 3.5! Anything below is untested.")
-    endif()
+    endif ()
 
-elseif(COMPILER_IS_MSVC)
+elseif (COMPILER_IS_MSVC)
 
     # require at least MSVC 19.0
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0")
         message(FATAL_ERROR "MSVC version (${CMAKE_CXX_COMPILER_VERSION}) must be at least 19.0 (Visual Studio 2015)!")
-    endif()
+    endif ()
 
-else()
+else ()
     message(WARNING "You are using an unsupported compiler! Compilation has only been tested with >= Clang 3.5, >= GCC 4.9 and >= MSVC 19.0 (VS 2015).")
-endif()
+endif ()
 
 # ----------------------------------------------------------------------------
 # Compile-specific settings and workarounds around missing CMake features.
