@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_HORSPOOL_H_
-#define INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_HORSPOOL_H_
+#ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_STACK_OBSERVER_H_
+#define INCLUDE_SEQAN_JOURNALED_STRING_TREE_STACK_OBSERVER_H_
 
 namespace seqan
 {
@@ -42,21 +42,45 @@ namespace seqan
 // Forwards
 // ============================================================================
 
+template <typename TObject>
+struct ObservedValue
+{
+    using Type = Nothing;
+};
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TNeedle>
-class JstExtension<Pattern<TNeedle, Horspool> > :
-    public JstExtensionBase<JstExtension<Pattern<TNeedle, Horspool> >, ContextRange>
+// ----------------------------------------------------------------------------
+// Tag PushEvent
+// ----------------------------------------------------------------------------
+
+struct PushEvent_;
+typedef Tag<PushEvent_> PushEvent;
+
+// ----------------------------------------------------------------------------
+// Tag PopEvent
+// ----------------------------------------------------------------------------
+
+struct PopEvent_;
+typedef Tag<PopEvent_> PopEvent;
+
+// ----------------------------------------------------------------------------
+// Class StackObserver
+// ----------------------------------------------------------------------------
+
+template <typename TObject>
+class StackObserver
 {
 public:
-    typedef typename Size<TNeedle>::Type TSize;
-    typedef JstExtensionBase<JstExtension<Pattern<TNeedle, Horspool> >, ContextRange> TBase;
+    using TValue = typename ObservedValue<TObject>::Type;
+    using TStack = String<TValue, Block<> >;
 
-    Pattern<TNeedle, Horspool>& _pattern;
+    TObject & _obj;
+    TStack _data;
 
-    JstExtension(Pattern<TNeedle, Horspool> & pattern) : TBase(*this), _pattern(pattern)
+    StackObserver(TObject & obj) : _obj(obj)
     {}
 };
 
@@ -68,33 +92,31 @@ public:
 // Functions
 // ============================================================================
 
-template <typename TNeedle, typename TIterator>
-inline std::pair<size_t, bool>
-run(JstExtension<Pattern<TNeedle, Horspool> > const & me,
-    TIterator hystkBegin,
-    TIterator hystkEnd)
+// ----------------------------------------------------------------------------
+// Function notify(); PushEvent
+// ----------------------------------------------------------------------------
+
+template <typename TObject>
+inline void
+notify(StackObserver<TObject> & me,
+       PushEvent const & /*tag*/)
 {
-    using TDiff = typename Difference<TIterator>::Type;
-    SEQAN_ASSERT(!empty(needle(me._pattern)));
-
-    // Sanity check: Range must have same size as needle!
-#if defined(JST_FIND_DEBUG)
-    std::cout << "Dist: " << (hystkEnd - hystkBegin) << " val: " << getValue(hystkEnd) << " -> "<< std::flush;
-#endif
-    if (hystkEnd - hystkBegin != static_cast<TDiff>(length(needle(me._pattern)) - 1))
-        return std::pair<size_t, bool>(me._pattern.data_map[ordValue(getValue(hystkEnd))], false);
-
-    auto ndlIt = end(needle(me._pattern), Standard()) - 1;
-    TIterator hstkIt = hystkEnd;
-    while (hstkIt != hystkBegin && getValue(ndlIt) == getValue(hstkIt))
-    {
-        --ndlIt; --hstkIt;
-    }
-
-    return std::pair<size_t, bool>(me._pattern.data_map[ordValue(getValue(hystkEnd))],
-                                   hstkIt == hystkBegin && getValue(ndlIt) == getValue(hstkIt));
+    appendValue(me._data, getObservedValue(me._obj));
 }
 
-}  // namespace seqan
+// ----------------------------------------------------------------------------
+// Function notify(); PopEvent
+// ----------------------------------------------------------------------------
 
-#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_HORSPOOL_H_
+template <typename TObject>
+inline void
+notify(StackObserver<TObject> & me,
+       PopEvent const & /*tag*/)
+{
+    setObservedValue(me._obj, std::move(back(me._data)));
+    eraseBack(me._data);
+}
+
+}
+
+#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_STACK_OBSERVER_H_

@@ -57,11 +57,11 @@ struct PatternStateShiftOr_
 
 template <typename TNeedle>
 class JstExtension<Pattern<TNeedle, ShiftOr> > :
-    public JstExtensionBase<JstExtension<Pattern<TNeedle, ShiftOr> >, True, ContextBegin>
+    public JstExtensionBase<JstExtension<Pattern<TNeedle, ShiftOr> >, ContextEnd>
 {
 public:
     using TPattern = Pattern<TNeedle, ShiftOr>;
-    using TBase    = JstExtensionBase<JstExtension<Pattern<TNeedle, ShiftOr> >, True, ContextBegin>;
+    using TBase    = JstExtensionBase<JstExtension<Pattern<TNeedle, ShiftOr> >, ContextEnd>;
     using TWord    = typename TPattern::TWord;
 
     static constexpr TWord WORD_INDEX_HIGH_BIT = BitsPerValue<TWord>::VALUE - 1;
@@ -97,6 +97,16 @@ struct GetPatternState<JstExtension<Pattern<TNeedle, ShiftOr> > const>
     using Type = PatternStateShiftOr_<Pattern<TNeedle, ShiftOr> > const;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction ProxySelectionMethod
+// ----------------------------------------------------------------------------
+
+template <typename TNeedle>
+struct ProxySelectionMethod<JstExtension<Pattern<TNeedle, ShiftOr> > >
+{
+    using Type = SelectFirstProxy;
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -105,7 +115,7 @@ namespace impl
 {
 
 template <typename TNeedle, typename TIterator>
-inline std::pair<TIterator, bool>
+inline std::pair<size_t, bool>
 runLongNeedle(JstExtension<Pattern<TNeedle, ShiftOr> > & me,
               TIterator hystkIt)
 {
@@ -121,25 +131,25 @@ runLongNeedle(JstExtension<Pattern<TNeedle, ShiftOr> > & me,
                                                      block];
         me.carry = newCarry;
     }
-    return std::pair<TIterator, bool>(++hystkIt, !(state(me).prefSufMatch[me._pattern.blockCount - 1] & me.mask));
+    return std::pair<size_t, bool>(1, !(state(me).prefSufMatch[me._pattern.blockCount - 1] & me.mask));
 }
 
 template <typename TNeedle, typename TIterator>
-inline std::pair<TIterator, bool>
+inline std::pair<size_t, bool>
 runShortNeedle(JstExtension<Pattern<TNeedle, ShiftOr> > & me,
                TIterator hystkIt)
 {
     using TValue = typename Value<TNeedle>::Type;
     state(me).prefSufMatch[0] = (state(me).prefSufMatch[0] << 1) |
                                 me._pattern.bitMasks[ordValue(convert<TValue>(getValue(hystkIt)))];
-    return std::pair<TIterator, bool>(++hystkIt, !(state(me).prefSufMatch[0] & me.mask));
+    return std::pair<size_t, bool>(1, !(state(me).prefSufMatch[0] & me.mask));
 }
 
 }  // namespace impl
 
 
 template <typename TNeedle, typename TIterator>
-inline std::pair<TIterator, bool>
+inline std::pair<size_t, bool>
 run(JstExtension<Pattern<TNeedle, ShiftOr> > & me,
     TIterator hystkIt)
 {

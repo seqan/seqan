@@ -53,15 +53,17 @@ struct PatternStateShiftAnd_
     using TWord = typename TPattern::TWord;
 
     String<TWord> prefSufMatch;        // Set of all the prefixes of needle that match a suffix of haystack (called D in "Navarro")
+
+    
 };
 
 template <typename TNeedle>
 class JstExtension<Pattern<TNeedle, ShiftAnd> > :
-    public JstExtensionBase<JstExtension<Pattern<TNeedle, ShiftAnd> >, True, ContextBegin>
+    public JstExtensionBase<JstExtension<Pattern<TNeedle, ShiftAnd> >, ContextEnd>
 {
 public:
     using TPattern = Pattern<TNeedle, ShiftAnd>;
-    using TBase    = JstExtensionBase<JstExtension<Pattern<TNeedle, ShiftAnd> >, True, ContextBegin>;
+    using TBase    = JstExtensionBase<JstExtension<Pattern<TNeedle, ShiftAnd> >, ContextEnd>;
     using TWord    = typename TPattern::TWord;
 
     static constexpr TWord WORD_INDEX_HIGH_BIT = BitsPerValue<TWord>::VALUE - 1;
@@ -97,6 +99,16 @@ struct GetPatternState<JstExtension<Pattern<TNeedle, ShiftAnd> > const>
     using Type = PatternStateShiftAnd_<Pattern<TNeedle, ShiftAnd> > const;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction ProxySelectionMethod
+// ----------------------------------------------------------------------------
+
+template <typename TNeedle>
+struct ProxySelectionMethod<JstExtension<Pattern<TNeedle, ShiftAnd> > >
+{
+    using Type = SelectFirstProxy;
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -105,7 +117,7 @@ namespace impl
 {
 
 template <typename TNeedle, typename TIterator>
-inline std::pair<TIterator, bool>
+inline std::pair<size_t, bool>
 runLongNeedle(JstExtension<Pattern<TNeedle, ShiftAnd> > & me,
               TIterator hystkIt)
 {
@@ -121,25 +133,28 @@ runLongNeedle(JstExtension<Pattern<TNeedle, ShiftAnd> > & me,
                                         me._pattern.bitMasks[me._pattern.blockCount * ordValue(convert<TValue>(getValue(hystkIt))) + block];
         me.carry = newCarry;
     }
-    return std::pair<TIterator, bool>(++hystkIt, (state(me).prefSufMatch[me._pattern.blockCount-1] & me.mask) != 0);
+    return std::pair<size_t, bool>(1, (state(me).prefSufMatch[me._pattern.blockCount-1] & me.mask) != 0);
 }
 
 template <typename TNeedle, typename TIterator>
-inline std::pair<TIterator, bool>
+inline std::pair<size_t, bool>
 runShortNeedle(JstExtension<Pattern<TNeedle, ShiftAnd> > & me,
                TIterator hystkIt)
 {
     using TWord = typename Pattern<TNeedle, ShiftAnd>::TWord;
     using TValue = typename Value<TNeedle>::Type;
 
+//    std::cout <<"     " << getValue(hystkIt)<< std::endl;
+
     state(me).prefSufMatch[0] = ((state(me).prefSufMatch[0] << 1) | static_cast<TWord>(1)) &
                                 me._pattern.bitMasks[ordValue(convert<TValue>(getValue(hystkIt)))];
-    return std::pair<TIterator, bool>(++hystkIt, (state(me).prefSufMatch[0] & me.mask) != 0);
+
+    return std::pair<size_t, bool>(1, (state(me).prefSufMatch[0] & me.mask) != 0);
 }
 }  // namespace impl
 
 template <typename TNeedle, typename TIterator>
-inline std::pair<TIterator, bool>
+inline std::pair<size_t, bool>
 run(JstExtension<Pattern<TNeedle, ShiftAnd> > & me,
     TIterator hystkIt)
 {

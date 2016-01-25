@@ -33,25 +33,19 @@
 // ==========================================================================
 
 //#define DEBUG_JST_TRAVERSAL
+//#define JST_FIND_DEBUG
 
 #include <seqan/basic.h>
 #include <seqan/file.h>
 
-#include "test_journaled_string_tree_traverser.h"
+#include "test_journaled_string_tree_find.h"
 
-SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree_traverser)
+SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree_find)
 {
     // Tests for journaled string tree
-    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_constructor);
-    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_traverser);
-    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_init);
-    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_context_size);
-    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_branch_size);
-    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_at_end);
-    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_advance);
-    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_context_iterator);
-
-    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_container);
-    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_basic_traversal);
+    SEQAN_CALL_TEST(test_journaled_string_tree_find_horspool);
+    SEQAN_CALL_TEST(test_journaled_string_tree_find_shiftand);
+    SEQAN_CALL_TEST(test_journaled_string_tree_find_shiftor);
+    SEQAN_CALL_TEST(test_journaled_string_tree_find_myers);
 }
 SEQAN_END_TESTSUITE

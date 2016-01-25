@@ -48,12 +48,12 @@ namespace seqan
 
 template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
 class JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > > :
-    public JstExtensionBase<JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > >, THasState, ContextBegin>
+    public JstExtensionBase<JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > >, ContextEnd>
 {
 public:
 
     using TPattern = Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> >;
-    using TBase    = JstExtensionBase<JstExtension<TPattern>, THasState, ContextBegin>;
+    using TBase    = JstExtensionBase<JstExtension<TPattern>, ContextEnd>;
     using TWord    = typename TPattern::TWord;
 
     static constexpr TWord WORD_INDEX_HIGH_BIT = BitsPerValue<TWord>::VALUE - 1;
@@ -71,6 +71,7 @@ public:
     JstExtension(TPattern & pattern) : TBase(*this), _pattern(pattern)
     {
         // Explicitly force to initialize pattern due to implementation detail.
+        state(*this) = _pattern;
         Nothing t;
         _patternInit(_pattern, state(*this), t);
         lastBit = static_cast<TWord>(1) << (_pattern.needleSize - 1);
@@ -82,16 +83,38 @@ public:
 // Metafunctions
 // ============================================================================
 
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-struct GetPatternState<JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > > >
+template <typename TNeedle, typename TSpec, typename TFindBeginPatternSpec>
+struct GetPatternState<JstExtension<Pattern<TNeedle, Myers<TSpec, True, TFindBeginPatternSpec> > > >
 {
-    using Type = PatternState_<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> >;
+    using Type = PatternState_<TNeedle, Myers<TSpec, True, TFindBeginPatternSpec> >;
 };
 
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-struct GetPatternState<JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > > const>
+template <typename TNeedle, typename TSpec, typename TFindBeginPatternSpec>
+struct GetPatternState<JstExtension<Pattern<TNeedle, Myers<TSpec, True, TFindBeginPatternSpec> > > const>
 {
-    using Type = PatternState_<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > const;
+    using Type = PatternState_<TNeedle, Myers<TSpec, True, TFindBeginPatternSpec> > const;
+};
+
+
+// If state is disabled
+template <typename TNeedle, typename TSpec, typename TFindBeginPatternSpec>
+struct GetPatternState<JstExtension<Pattern<TNeedle, Myers<TSpec, False, TFindBeginPatternSpec> > > >
+{
+    using Type = Nothing;
+};
+
+template <typename TNeedle, typename TSpec, typename TFindBeginPatternSpec>
+struct GetPatternState<JstExtension<Pattern<TNeedle, Myers<TSpec, False, TFindBeginPatternSpec> > > const> :
+        public GetPatternState<JstExtension<Pattern<TNeedle, Myers<TSpec, False, TFindBeginPatternSpec> > > >{};
+
+// ----------------------------------------------------------------------------
+// Metafunction ProxySelectionMethod
+// ----------------------------------------------------------------------------
+
+template <typename TNeedle, typename TSpec, typename TState, typename TFindBeginPatternSpec>
+struct ProxySelectionMethod<JstExtension<Pattern<TNeedle, Myers<TSpec, TState, TFindBeginPatternSpec> > > >
+{
+    using Type = SelectFirstProxy;
 };
 
 // ============================================================================
@@ -102,7 +125,7 @@ namespace impl
 {
 
 template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec, typename TIterator>
-inline std::pair<TIterator, bool>
+inline std::pair<size_t, bool>
 runLongNeedle(JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > > & me,
               TIterator hystkIt)
 {
@@ -182,7 +205,7 @@ runLongNeedle(JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPa
 
     if ((largeState.scoreMask == largePattern.finalScoreMask) && (largeState.lastBlock == largePattern.blockCount - 1))
     {
-        return std::pair<TIterator, bool>(++hystkIt, true);
+        return std::pair<size_t, bool>(1, true);
     }
     else {
         largeState.scoreMask <<= 1;
@@ -196,11 +219,11 @@ runLongNeedle(JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPa
         else if ((largeState.VN[largeState.lastBlock] & largeState.scoreMask) != static_cast<TWord>(0))
             s.errors--;
     }
-    return std::pair<TIterator, bool>(++hystkIt, false);
+    return std::pair<size_t, bool>(1, false);
 }
 
 template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec, typename TIterator>
-inline std::pair<TIterator, bool>
+inline std::pair<size_t, bool>
 runShortNeedle(JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > > & me,
                TIterator hystkIt)
 {
@@ -223,12 +246,12 @@ runShortNeedle(JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginP
     else if ((me.HN & me.lastBit) != static_cast<TWord>(0))
         s.errors--;
 
-    return std::pair<TIterator, bool>(++hystkIt, s.errors <= s.maxErrors);
+    return std::pair<size_t, bool>(1, s.errors <= s.maxErrors);
 }
 }  // namespace impl
 
 template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec, typename TIterator>
-inline std::pair<TIterator, bool>
+inline std::pair<size_t, bool>
 run(JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > > & me,
     TIterator hystkIt)
 {

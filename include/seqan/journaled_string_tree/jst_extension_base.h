@@ -42,11 +42,23 @@ namespace seqan
 // Forwards
 // ============================================================================
 
-template <typename TPattern>
+template <typename TExtension>
 struct GetPatternState
 {
     using Type = Nothing;
 };
+
+template <typename TAlgorithm>
+struct ProxySelectionMethod
+{
+    using Type = SelectValidProxy;
+};
+
+
+template <typename TAlgorithm>
+struct ProxySelectionMethod<TAlgorithm const> :
+    ProxySelectionMethod<TAlgorithm>{};
+
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -72,27 +84,14 @@ using ContextRange = Tag<ContextRange_>;
 // Class JstExtensionBase
 // ----------------------------------------------------------------------------
 
-template <typename TPattern, typename THasState, typename TCxtPosition = ContextRange>
-class JstExtensionBase;
-
-template <typename TPattern, typename TCxtPosition>
-class JstExtensionBase<TPattern, False, TCxtPosition>
-{
-public:
-    TPattern & _derived;
-
-    JstExtensionBase(TPattern & pattern) : _derived(pattern)
-    {}
-};
-
-template <typename TExtension, typename TCxtPosition>
-class JstExtensionBase<TExtension, True, TCxtPosition>
+template <typename TExtension, typename TCxtPosition = ContextRange>
+class JstExtensionBase
 {
 public:
     using TState = typename GetPatternState<TExtension>::Type;
 
-    TExtension& _derived;
-    TState      _state;
+    TExtension&         _derived;
+    mutable TState      _state;
 
     JstExtensionBase(TExtension & ext) : _derived(ext)
     {}
@@ -103,10 +102,35 @@ public:
 // ============================================================================
 
 template <typename TObject>
-struct HasState : False{};
+struct HasState;
 
-template <typename TExtension, typename THasState, typename TCxtPosition>
-struct HasState<JstExtensionBase<TExtension, THasState, TCxtPosition> > : THasState{};
+template <typename TPattern>
+struct HasState<JstExtension<TPattern> > :
+    If<IsSameType<typename GetPatternState<JstExtension<TPattern> >::Type, Nothing>, False, True>::Type{};
+
+template <typename TExtension, typename TCxtPosition>
+struct HasState<JstExtensionBase<TExtension, TCxtPosition> > :
+    public HasState<TExtension>{};
+
+// ----------------------------------------------------------------------------
+// Metafunction ObservedValue
+// ----------------------------------------------------------------------------
+
+template <typename TPattern>
+struct ObservedValue<JstExtension<TPattern> > :
+    public GetPatternState<JstExtension<TPattern> >{};
+
+template <typename TPattern>
+struct ObservedValue<JstExtension<TPattern> const> :
+    public GetPatternState<JstExtension<TPattern> const>{};
+
+template <typename TExtension, typename TCxtPosition>
+struct ObservedValue<JstExtensionBase<TExtension, TCxtPosition> > :
+    public ObservedValue<TExtension>{};
+
+template <typename TExtension, typename TCxtPosition>
+struct ObservedValue<JstExtensionBase<TExtension, TCxtPosition> const> :
+    public ObservedValue<TExtension const>{};
 
 // ============================================================================
 // Functions
@@ -116,7 +140,7 @@ namespace impl
 {
 template <typename TExtension, typename TTraverser>
 inline auto
-run(TExtension & extension, TTraverser & traverser, ContextBegin /*tag*/) ->
+run(TExtension & extension, TTraverser const & traverser, ContextBegin /*tag*/) ->
     decltype(run(extension, contextBegin(traverser)))
 {
     return run(extension, contextBegin(traverser));
@@ -124,7 +148,7 @@ run(TExtension & extension, TTraverser & traverser, ContextBegin /*tag*/) ->
 
 template <typename TExtension, typename TTraverser>
 inline auto
-run(TExtension & extension, TTraverser & traverser, ContextEnd /*tag*/) ->
+run(TExtension & extension, TTraverser const & traverser, ContextEnd /*tag*/) ->
     decltype(run(extension, contextEnd(traverser)))
 {
     return run(extension, contextEnd(traverser));
@@ -132,7 +156,7 @@ run(TExtension & extension, TTraverser & traverser, ContextEnd /*tag*/) ->
 
 template <typename TExtension, typename TTraverser>
 inline auto
-run(TExtension & extension, TTraverser & traverser, ContextRange /*tag*/) ->
+run(TExtension & extension, TTraverser const & traverser, ContextRange /*tag*/) ->
     decltype(run(extension, contextBegin(traverser), contextEnd(traverser)))
 {
     return run(extension, contextBegin(traverser), contextEnd(traverser));
@@ -141,36 +165,143 @@ run(TExtension & extension, TTraverser & traverser, ContextRange /*tag*/) ->
 }  // namespace impl
 
 // Returns the state.
-template <typename TExtension, typename THasState, typename TCxtPosition>
+
+// ----------------------------------------------------------------------------
+// Function state();
+// ----------------------------------------------------------------------------
+
+template <typename TExtension, typename TCxtPosition>
 inline typename GetPatternState<TExtension>::Type &
-state(JstExtensionBase<TExtension, THasState, TCxtPosition> & extBase)
+state(JstExtensionBase<TExtension, TCxtPosition> & extBase)
 {
     return extBase._state;
 }
 
-template <typename TExtension, typename THasState, typename TCxtPosition>
+template <typename TExtension, typename TCxtPosition>
 inline typename GetPatternState<TExtension const>::Type &
-state(JstExtensionBase<TExtension, THasState, TCxtPosition> const & extBase)
+state(JstExtensionBase<TExtension, TCxtPosition> const & extBase)
 {
     return extBase._state;
 }
 
 // ----------------------------------------------------------------------------
-// Function find
+// Function setState();
 // ----------------------------------------------------------------------------
 
-template <typename TExtension, typename THasState, typename TCxtPosition,
+template <typename TExtension, typename TCxtPosition>
+inline void
+setState(JstExtensionBase<TExtension, TCxtPosition> & extBase,
+         typename GetPatternState<TExtension>::Type const state)
+{
+    extBase._state = state;
+}
+
+// ----------------------------------------------------------------------------
+// Function getObservedValue();
+// ----------------------------------------------------------------------------
+
+template <typename TExtension, typename TCxtPosition>
+inline auto
+getObservedValue(JstExtensionBase<TExtension, TCxtPosition> & extBase) -> decltype(state(extBase))
+{
+//    std::cout << " Get state: " << std::flush;
+//    for (unsigned i = 0; i < extBase._derived._pattern.needleLength; ++i)
+//        std::cout << ((state(extBase).prefSufMatch[0] >> (extBase._derived._pattern.needleLength - (i + 1))) & 1) << std::flush;
+//    // CGAGCGG
+//    std::cout << std::endl;
+    return state(extBase);
+}
+
+template <typename TExtension, typename TCxtPosition>
+inline auto
+getObservedValue(JstExtensionBase<TExtension, TCxtPosition> const & extBase) -> decltype(state(extBase))
+{
+    return state(extBase);
+}
+
+// ----------------------------------------------------------------------------
+// Function setObservedValue();
+// ----------------------------------------------------------------------------
+
+template <typename TExtension, typename TCxtPosition, typename TValue>
+inline void
+setObservedValue(JstExtensionBase<TExtension, TCxtPosition> & extBase,
+                 TValue const val)
+{
+    setState(extBase, val);
+
+//    std::cout << " Set state: " << std::flush;
+//    for (unsigned i = 0; i < extBase._derived._pattern.needleLength; ++i)
+//        std::cout << ((state(extBase).prefSufMatch[0] >> (extBase._derived._pattern.needleLength - (i + 1))) & 1) << std::flush;
+//    // CGAGCGG
+//    std::cout << std::endl;
+}
+
+// ----------------------------------------------------------------------------
+// Function run
+// ----------------------------------------------------------------------------
+
+template <typename TExtension, typename TCxtPosition,
           typename TTraverser,
           typename TDelegate>
 inline auto
-run(JstExtensionBase<TExtension, THasState, TCxtPosition> & extension,
-    TTraverser & traverser,
+run(JstExtensionBase<TExtension, TCxtPosition> & extension,
+    TTraverser const & traverser,
     TDelegate && delegate) -> decltype(impl::run(extension._derived, traverser, TCxtPosition()).first)
 {
     auto res = impl::run(extension._derived, traverser, TCxtPosition());
     if (res.second)
         delegate();
     return res.first;
+}
+
+// ----------------------------------------------------------------------------
+// Function find
+// ----------------------------------------------------------------------------
+
+template <typename TContainer, typename TSpec,
+          typename TAlgorithm,
+          typename TDelegate,
+          typename TObserver>
+inline void
+_find(TraverserImpl<TContainer, JstTraversalSpec<TSpec> > & traverser,
+      TAlgorithm & algorithm,
+      TDelegate && delegate,
+      TObserver & observer)
+{
+    using TProxySelector = typename ProxySelectionMethod<TAlgorithm>::Type;
+    init(traverser, observer, TProxySelector());
+
+    while (!atEnd(traverser))
+    {
+#if defined(JST_FIND_DEBUG)
+        _fillTestSet(traverser);
+#endif
+        auto steps = run(algorithm, traverser, delegate);
+
+        advance(traverser, steps, observer, TProxySelector());
+    }
+}
+
+template <typename TContainer, typename TSpec,
+          typename TAlgorithm,
+          typename TDelegate>
+inline void
+find(TraverserImpl<TContainer, JstTraversalSpec<TSpec> > & traverser,
+     TAlgorithm & algorithm,
+     TDelegate && delegate)
+{
+    if (HasState<TAlgorithm>::VALUE)
+    {
+        StackObserver<TAlgorithm> algoObserver(algorithm);
+        auto observer = makeObserverList(algoObserver);
+        _find(traverser, algorithm, delegate, observer);
+    }
+    else
+    {  // Disabled observer.
+        auto observer = makeObserverList();
+        _find(traverser, algorithm, delegate, observer);
+    }
 }
 
 }  // namespace seqan

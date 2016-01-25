@@ -38,6 +38,10 @@
 namespace seqan
 {
 
+#if defined(JST_FIND_DEBUG)
+    StringSet<DnaString> __testSet;
+#endif // JST_FIND_DEBUG
+
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -45,7 +49,7 @@ namespace seqan
 template <typename TObject>
 struct StringContext;
 
-template <typename TContainer, typename TSpec, typename TObserverList = ObserverList<> >
+template <typename TContainer, typename TSpecList = ObserverList<> >
 class TraverserImpl;
 
 // ============================================================================
@@ -59,6 +63,20 @@ template <typename TSpec = void>
 struct JstTraversalSpec
 {};
 
+// ----------------------------------------------------------------------------
+// Tag SlectFirstProxy
+// ----------------------------------------------------------------------------
+
+struct SelectFirstProxy_;
+typedef Tag<SelectFirstProxy_> SelectFirstProxy;
+
+// ----------------------------------------------------------------------------
+// Tag SlectValidProxy
+// ----------------------------------------------------------------------------
+
+struct SelectValidProxy_;
+typedef Tag<SelectValidProxy_> SelectValidProxy;
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -67,8 +85,8 @@ struct JstTraversalSpec
 // Metafunction Member<TJst, JstBufferMember>
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver>
-struct Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>, JstBufferMember>
+template <typename TJst, typename TSpec>
+struct Member<TraverserImpl<TJst, JstTraversalSpec<TSpec> >, JstBufferMember>
 {
     typedef JstBuffer_<TJst> Type;
 };
@@ -95,16 +113,16 @@ createBuffer()
 // Function impl::buffer();
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver>
-inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>, JstBufferMember>::Type &
-buffer(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
+template <typename TJst, typename TSpec>
+inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec> >, JstBufferMember>::Type &
+buffer(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me)
 {
     return *me._bufferPtr;
 }
 
-template <typename TJst, typename TSpec, typename TObserver>
-inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const, JstBufferMember>::Type &
-buffer(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
+template <typename TJst, typename TSpec>
+inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec> > const, JstBufferMember>::Type &
+buffer(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
 {
     return *me._bufferPtr;
 }
@@ -124,16 +142,16 @@ createStack()
 // Function impl::stack();
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver>
-inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>, TraverserStackMember>::Type &
-stack(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
+template <typename TJst, typename TSpec>
+inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec> >, TraverserStackMember>::Type &
+stack(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me)
 {
     return *me._stackPtr;
 }
 
-template <typename TJst, typename TSpec, typename TObserver>
-inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const, TraverserStackMember>::Type &
-stack(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
+template <typename TJst, typename TSpec>
+inline typename Member<TraverserImpl<TJst, JstTraversalSpec<TSpec> > const, TraverserStackMember>::Type &
+stack(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
 {
     return *me._stackPtr;
 }
@@ -142,68 +160,175 @@ stack(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
 // Function impl::pushNode();
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver,
-          typename TTraversalNode>
+template <typename TJst, typename TSpec,
+          typename TTraversalNode,
+          typename TObserver>
 inline void
-pushNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
-         TTraversalNode SEQAN_FORWARD_CARG node)
+pushNode(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
+         TTraversalNode && node,
+         TObserver & observer)
 {
 #if defined(DEBUG_JST_TRAVERSAL)
     //    std::cout << "-----> Journal " << container(node.endEdgeIt) << std::endl;
     std::cout << "        PUSH: (" << node << ")" << std::endl;
 #endif //defined(DEBUG_JST_TRAVERSAL)
-    appendValue(impl::stack(me), SEQAN_FORWARD(TTraversalNode, node));
-    notify(me, PushEvent());
+//    std::cout << "+ PUSH" << std::endl;
+    appendValue(impl::stack(me), std::forward<TTraversalNode>(node));
+    notify(observer, PushEvent());
 }
 
 // ----------------------------------------------------------------------------
 // Function impl::popNode();
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver>
+template <typename TJst, typename TSpec,
+          typename TObserver>
 inline void
-popNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
+popNode(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
+        TObserver & observer)
 {
 
 #if defined(DEBUG_JST_TRAVERSAL)
     std::cout << "        POP: (" << impl::activeNode(me) << ")" << std::endl;
 #endif //defined(DEBUG_JST_TRAVERSAL)
+//    std::cout << "- POP" << std::endl;
     eraseBack(impl::stack(me));
-    notify(me, PopEvent());
+    notify(observer, PopEvent());
 }
 
 // ----------------------------------------------------------------------------
 // Function impl::activeNode()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver>
+template <typename TJst, typename TSpec>
 inline JstTraversalNode<TJst> const &
-activeNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
+activeNode(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
 {
     return back(impl::stack(me));
 }
 
-template <typename TJst, typename TSpec, typename TObserver>
+template <typename TJst, typename TSpec>
 inline JstTraversalNode<TJst> &
-activeNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me)
+activeNode(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me)
 {
     return back(impl::stack(me));
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::baseNode()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec>
+inline JstTraversalNode<TJst> const &
+baseNode(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
+{
+    return front(impl::stack(me));
+}
+
+template <typename TJst, typename TSpec>
+inline JstTraversalNode<TJst> &
+baseNode(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me)
+{
+    return front(impl::stack(me));
 }
 
 // ----------------------------------------------------------------------------
 // Function impl::getContextIterator()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver>
-inline typename ContextIterator<TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const>::Type
-getContextIterator(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me)
+template <typename TJst, typename TSpec>
+inline typename ContextIterator<TraverserImpl<TJst, JstTraversalSpec<TSpec> > const>::Type
+getContextIterator(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
 {
     return impl::activeNode(me).curEdgeIt;
 }
 
+// ----------------------------------------------------------------------------
+// Function impl::getContextBegin()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec>
+inline typename ContextIterator<TraverserImpl<TJst, JstTraversalSpec<TSpec> > const>::Type
+getContextBegin(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
+{
+    if (length(*me._stackPtr) == 1)
+        return  (sourceBegin(buffer(me)) + contextSize(me) > activeNode(me).curEdgeIt) ? sourceBegin(buffer(me)) :
+            activeNode(me).curEdgeIt - (contextSize(me) - 1);
+    else
+        return activeNode(me).curEdgeIt  - (contextSize(me) - 1);
+}
 
 // ----------------------------------------------------------------------------
-// Function impl::mapSourceToVirtual()
+// Function impl::getContextEnd()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec>
+inline typename ContextIterator<TraverserImpl<TJst, JstTraversalSpec<TSpec> > const>::Type
+getContextEnd(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
+{
+    return getContextIterator(me);
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::refineCoverage()
+// ----------------------------------------------------------------------------
+
+template <typename TCoverage,
+          typename TNode>
+inline void
+refineCoverage(TCoverage & cov,
+               TNode const & node)
+{
+    auto tmp = node.headDelta;
+    while (!atEnd(tmp) && tmp != node.branchRoot)
+    {
+#if defined(JST_FIND_DEBUG)
+        std::cout << "(" << cov << ") & ~(" << getDeltaCoverage(*tmp) << ") = " << std::flush;
+#endif  // defi ned(JST_FIND_DEBUG)
+        if (!isRightEnd(*tmp))
+            transform(cov, cov, getDeltaCoverage(*tmp), FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
+#if defined(JST_FIND_DEBUG)
+        std::cout << "(" << cov << ")" << std::endl;
+#endif  // defined(JST_FIND_DEBUG)
+        ++tmp;
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::refineCoverageBranch()
+// ----------------------------------------------------------------------------
+
+template <typename TCoverage, typename TNode>
+inline void
+refineCoverageBranch(TCoverage & cov, TNode const & activeNode)
+{
+    // First we go from the head of the base node to the head of the active node.
+    // We only check for right ends, that are between the head of the active node and the head of the base node.
+    // Note, that active node is branched off from base node and that base node might lie within a deleted region.
+    // However, the head of the active node might have passed this delted region, so we need to enable the
+    // sequences that are not affected by the deletion anymore.
+//    auto tmp = baseNode.headDelta;
+//    while (!atEnd(tmp) && tmp != activeNode.headDelta)
+//    {
+//        if (isRightEnd(*tmp))
+//            transform(cov, cov, getDeltaCoverage(*tmp), FunctorBitwiseOr());
+//        ++tmp;
+//    }
+//    SEQAN_ASSERT(tmp == activeNode.headDelta);
+
+    // Second we go from the head of the active node to the branch root.
+    // Now we can simply switch of all sequences that still affect the region between the head of the
+    // active node and the root of the branch. Since those candidates have been searched already previously.
+    auto tmp = activeNode.headDelta;
+    while (!atEnd(tmp) && tmp != activeNode.branchRoot)
+    {
+        transform(cov, cov, getDeltaCoverage(*tmp), FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
+        ++tmp;
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::mapBranchPointToVirtual()
 // ----------------------------------------------------------------------------
 
 template <typename TDeltaMapIter>
@@ -341,10 +466,10 @@ mapBranchPointToVirtual(TIterator & resultIt,
 // Function impl::getPos()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver,
+template <typename TJst, typename TSpec,
           typename THostIter>
 inline typename Position<THostIter>::Type
-getPos(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me,
+getPos(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me,
        THostIter const & it)
 {
     if (SEQAN_UNLIKELY(atEnd(it)))
@@ -370,22 +495,102 @@ toNextDeltaBehindDeletion(JstTraversalNode<TJst> & node,
 }
 
 // ----------------------------------------------------------------------------
-// Function impl::branchOut()
+// Function impl::updateOnDeletion()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver,
-          typename TTraversalNode>
+template <typename TTraversalNode,
+typename THostIter>
+inline void
+updateOnDeletion(TTraversalNode & base, THostIter const & hostIt)
+{
+    switch (getDeltaType(*hostIt))
+    {
+        case DELTA_TYPE_DEL:
+        {
+            if (deletionSize(container(hostIt)._deltaStore, getStorePosition(*hostIt), DeltaTypeDel()) > 1)
+                transform(base.coverage, base.coverage, getDeltaCoverage(*hostIt),
+                          FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
+            break;
+        }
+        case DELTA_TYPE_SV:
+        {
+            if (deletionSize(container(hostIt)._deltaStore, getStorePosition(*hostIt), DeltaTypeSV()) > 1)
+                transform(base.coverage, base.coverage, getDeltaCoverage(*hostIt),
+                          FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
+            break;
+        }
+        default: break;
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::selectProxy()
+// ----------------------------------------------------------------------------
+
+template <typename TTraverserNode>
+inline auto
+selectProxy(TTraverserNode const & node, SelectFirstProxy const & /*tag*/) -> decltype(bitScanForward(node.coverage))
+{
+    return bitScanForward(node.coverage);
+}
+
+template <typename TTraverserNode>
+inline auto
+selectProxy(TTraverserNode const & node, SelectValidProxy const & /*tag*/) -> decltype(bitScanForward(node.coverage))
+{
+    // Simply take the first proxy, if there are no deltas reaching into
+    // the region between head and branch root.
+    if (node.headDelta == node.branchRoot)
+        return (node.coverage[node.proxyId]) ? node.proxyId : bitScanForward(node.coverage);
+
+    auto tmp1 = node.coverage;
+    decltype(tmp1) tmp2;
+    auto deltaIt = node.branchRoot;
+    while(deltaIt != node.headDelta)
+    {
+        --deltaIt;
+        transform(tmp2, tmp1, getDeltaCoverage(*deltaIt),
+                  FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
+        if (testAllZeros(tmp2))
+            return (tmp1[node.proxyId]) ? node.proxyId : bitScanForward(tmp1);
+        tmp1 = tmp2;
+    }
+    return (tmp2[node.proxyId]) ? node.proxyId : bitScanForward(tmp2);
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::createBranch()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec,
+          typename TTraversalNode,
+          typename TProxySelection>
 inline bool
-createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
+createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
              TTraversalNode & parent,
-             TTraversalNode & child)
+             TTraversalNode & child,
+             Tag<TProxySelection> const & /*tag*/)
 {
     typedef typename TTraversalNode::TDeltaIterator TDeltaIt   SEQAN_TYPEDEF_FOR_DEBUG;
     typedef typename Position<TDeltaIt>::Type       TPos       SEQAN_TYPEDEF_FOR_DEBUG;
+
     // We set the coverage of the left child to be the one of the parent & coverage(curDelta);
-    transform(child.coverage, parent.coverage, getDeltaCoverage(*parent.nextDelta), FunctorBitwiseAnd());
-    transform(parent.coverage, parent.coverage, getDeltaCoverage(*parent.nextDelta),
-              FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
+    // If coming from the base we use the base coverage, i.e. all bits true, to avoid
+    // cicumstantial updating of the coverage when the context head passes previously
+    // visited branch nodes, who still affect the current base node.
+
+    if (parent.isBase)
+    {
+        child.branchRoot = parent.nextDelta;
+        updateOnDeletion(parent, parent.nextDelta);  // Only update base coverage if current delta is Del|SV.
+        transform(child.coverage, me._baseCov, getDeltaCoverage(*parent.nextDelta), FunctorBitwiseAnd());
+    }
+    else  // Update the parent coverage.
+    {
+        transform(child.coverage, parent.coverage, getDeltaCoverage(*parent.nextDelta), FunctorBitwiseAnd());
+        transform(parent.coverage, parent.coverage, getDeltaCoverage(*parent.nextDelta),
+                  FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
+    }
 
 //#if defined(DEBUG_JST_TRAVERSAL)
 //    std::cout << "Coverage Child: " << _printCoverage(child.coverage) << std::endl;
@@ -395,19 +600,19 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
     child.curDelta = parent.nextDelta;
 
     // A) First get the proxyId of the updated child coverage.
-    auto proxyId = bitScanForward(child.coverage);
-    if (proxyId >= length(container(me)))
+    child.proxyId = impl::selectProxy(child, Tag<TProxySelection>());
+    if (child.proxyId >= length(container(me)))
         return false;  // We can skip this child, since it has an empty coverage.
 
     // B) Remap the sequence iterators according to the new positions.
-    if (&buffer(me)._journaledSet[proxyId] == &container(parent.endEdgeIt))
+    if (&buffer(me)._journaledSet[child.proxyId] == &container(parent.endEdgeIt))
     {
         // remap parent node to new journal sequence.
-        proxyId = bitScanForward(parent.coverage);
-        if (proxyId < length(container(me)) && !parent.fromBase)
+        parent.proxyId = impl::selectProxy(parent, Tag<TProxySelection>());
+        if (parent.proxyId < length(container(me)) && !parent.isBase)
         {
-            parent.endEdgeIt = begin(buffer(me)._journaledSet[proxyId], Standard());
-            impl::mapBranchPointToVirtual(parent.endEdgeIt, impl::member(container(me), JstDeltaMapMember()), proxyId,
+            parent.endEdgeIt = begin(buffer(me)._journaledSet[parent.proxyId], Standard());
+            impl::mapBranchPointToVirtual(parent.endEdgeIt, impl::member(container(me), JstDeltaMapMember()), parent.proxyId,
                                           getDeltaPosition(*parent.nextDelta));
             // We have the sequence iterators updated and the coverage.
             // So far the remainingLength and the curNode remain the same.
@@ -421,8 +626,8 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
     {
         // map child node to new journal sequence.
         // remap child node to new journal sequence.
-        child.endEdgeIt = begin(buffer(me)._journaledSet[proxyId], Standard());
-        impl::mapBranchPointToVirtual(child.endEdgeIt, impl::member(container(me), JstDeltaMapMember()), proxyId,
+        child.endEdgeIt = begin(buffer(me)._journaledSet[child.proxyId], Standard());
+        impl::mapBranchPointToVirtual(child.endEdgeIt, impl::member(container(me), JstDeltaMapMember()), child.proxyId,
                                       getDeltaPosition(*child.curDelta));
     }
 
@@ -498,82 +703,96 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
 }
 
 // ----------------------------------------------------------------------------
-// Function impl::updateOnDeletion()
-// ----------------------------------------------------------------------------
-
-template <typename TTraversalNode,
-          typename THostIter>
-inline void
-updateOnDeletion(TTraversalNode & base, THostIter const & hostIt)
-{
-    switch (getDeltaType(*hostIt))
-    {
-        case DELTA_TYPE_DEL:
-        {
-            if (deletionSize(container(hostIt)._deltaStore, getStorePosition(*hostIt), DeltaTypeDel()) > 1)
-                transform(base.coverage, base.coverage, getDeltaCoverage(*hostIt),
-                          FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
-            break;
-        }
-        case DELTA_TYPE_SV:
-        {
-            if (deletionSize(container(hostIt)._deltaStore, getStorePosition(*hostIt), DeltaTypeSV()) > 1)
-                transform(base.coverage, base.coverage, getDeltaCoverage(*hostIt),
-                          FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
-            break;
-        }
-        default: break;
-    }
-}
-
-// ----------------------------------------------------------------------------
 // Function impl::advanceBase()
 // ----------------------------------------------------------------------------
+// TODO(rrahn): Remove!
+//template <typename TJst, typename TSpec,
+//          typename TTraversalNode>
+//inline void
+//advanceBase(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me,
+//            TTraversalNode & base)
+//{
+//    SEQAN_ASSERT(base.curDelta == base.nextDelta);
+//
+//#if defined(DEBUG_JST_TRAVERSAL)
+//    std::cout << "        BASE before --> " << base << std::endl;
+//#endif // defined(DEBUG_JST_TRAVERSAL)
+//
+//    while (!atEnd(base.nextDelta) && impl::getPos(me, base.curDelta) == impl::getPos(me, base.nextDelta))
+//    {
+//        if (isRightEnd(*base.nextDelta))
+//            transform(base.coverage, base.coverage, getDeltaCoverage(*base.nextDelta), FunctorBitwiseOr());
+//        else
+//            impl::updateOnDeletion(base, base.nextDelta);  // Update the coverage of the base node if the current delta represents a deletion.
+//        ++base.nextDelta;
+//    }
+//    // base.nextDelta might point to an merge point.
+//    base.begEdgeIt = base.endEdgeIt;
+//    //getDeltaPosition(*impl::hostIter(base.curDelta)) - position(base.begEdgeIt);
+//    base.curEdgeIt = base.begEdgeIt;
+//    auto posN = impl::getPos(me, base.nextDelta);
+//    auto posC = impl::getPos(me, base.curDelta);
+//    base.endEdgeIt += (posN - posC);
+//    base.mappedSrcEndPos = posN;  // TODO(rrahn): Remove.
+//#if defined(DEBUG_JST_TRAVERSAL)
+//    std::cout << "        BASE after ---> " << base << std::endl;
+//#endif // defined(DEBUG_JST_TRAVERSAL)
+//}
 
-template <typename TJst, typename TSpec, typename TObserver,
+// ----------------------------------------------------------------------------
+// Function updateContextHead();
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec,
           typename TTraversalNode>
 inline void
-advanceBase(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me,
-            TTraversalNode & base)
+updateContextHead(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me,
+                  TTraversalNode & parent)
 {
-    SEQAN_ASSERT(base.curDelta == base.nextDelta);
-
-#if defined(DEBUG_JST_TRAVERSAL)
-    std::cout << "        BASE before --> " << base << std::endl;
-#endif // defined(DEBUG_JST_TRAVERSAL)
-
-    while (!atEnd(base.nextDelta) && impl::getPos(me, base.curDelta) == impl::getPos(me, base.nextDelta))
+    using TPos = decltype(parent.headSrcPos);
+    // headSrcPos is ahead of headDelta
+    while (!atEnd(parent.headDelta) && parent.headDelta < parent.branchRoot &&
+           static_cast<TPos>(impl::getPos(me, parent.headDelta)) < parent.headSrcPos)
     {
-        if (isRightEnd(*base.nextDelta))
-            transform(base.coverage, base.coverage, getDeltaCoverage(*base.nextDelta), FunctorBitwiseOr());
-        else
-            impl::updateOnDeletion(base, base.nextDelta);  // Update the coverage of the base node if the current delta represents a deletion.
-        ++base.nextDelta;
+        if (parent.isBase)
+        {
+            if (isRightEnd(*parent.headDelta))  // If we passed the head of the context beyond a merge point we update the coverage accordingly.
+                transform(parent.coverage, parent.coverage, getDeltaCoverage(*parent.headDelta), FunctorBitwiseOr());
+            else  // If we reach a deletion again, we need to record this.
+                updateOnDeletion(parent, parent.headDelta);
+        }
+        ++parent.headDelta;
     }
-    // base.nextDelta might point to an merge point.
-    base.begEdgeIt = base.endEdgeIt;
-    //getDeltaPosition(*impl::hostIter(base.curDelta)) - position(base.begEdgeIt);
-    base.curEdgeIt = base.begEdgeIt;
-    auto posN = impl::getPos(me, base.nextDelta);
-    auto posC = impl::getPos(me, base.curDelta);
-    base.endEdgeIt += posN - posC;
-    base.mappedSrcEndPos = posN;  // TODO(rrahn): Remove.
-#if defined(DEBUG_JST_TRAVERSAL)
-    std::cout << "        BASE after ---> " << base << std::endl;
-#endif // defined(DEBUG_JST_TRAVERSAL)
+
+    // Now we have to parse all nodes between current head and root for the base node.
+    // If we find a deletion or SV we make sure the corresponding sequences are
+    // deleted from the base coverage.
+    if (parent.isBase)
+    {
+        auto tmp = parent.headDelta;
+        while (!atEnd(tmp) && tmp < parent.branchRoot)
+        {
+            updateOnDeletion(parent, tmp);
+            ++tmp;
+        }
+
+    }
+//    if (parent.isBase && (static_cast<TPos>(impl::getPos(me, parent.headDelta)) == parent.headSrcPos) &&
+//        isRightEnd(*parent.headDelta))
+//        transform(parent.coverage, parent.coverage, getDeltaCoverage(*parent.headDelta), FunctorBitwiseOr());
 }
 
 // ----------------------------------------------------------------------------
-// Function impl::updateParent()
+// Function impl::advanceParent()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver,
+template <typename TJst, typename TSpec,
           typename TTraversalNode>
 inline bool
-updateParent(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me,
+advanceParent(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me,
              TTraversalNode & parent)
 {
-    SEQAN_ASSERT_NOT(parent.isBase);        // Should never be the base node.
+//    SEQAN_ASSERT_NOT(parent.isBase);        // Should never be the base node.
 
 #if defined(DEBUG_JST_TRAVERSAL)
     std::cout << "        EXPAND Parent before --> " << parent << std::endl;
@@ -585,12 +804,16 @@ updateParent(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> const & me,
     parent.begEdgeIt = parent.endEdgeIt;
     parent.curEdgeIt = parent.begEdgeIt;
 
-    // Make sure that for a right subtree we don't consider merge points, because we cannot be within a branch
+    // Make sure that for an inner subtree we don't consider merge points, because we cannot be within a branch
     // coming from a delta while at the same time there is a deletion to be covered.
-    while(!atEnd(parent.nextDelta) && isRightEnd(*parent.nextDelta))  // Move the nextDelta iterator to the next branch point, in case the current one is an endPoint.
-    {
+    // However when coming from the base the next node might as well be a mergepoint to be considered.
+    // Move the nextDelta iterator to the next branch point, in case the current one is an endPoint.
+    while(!atEnd(parent.nextDelta) && isRightEnd(*parent.nextDelta))
         ++parent.nextDelta;
-    }
+
+    if (parent.isBase)
+        parent.branchRoot = parent.nextDelta;
+
     parent.mappedSrcEndPos += impl::getPos(me, parent.nextDelta) - impl::getPos(me, parent.curDelta);
     auto posC = impl::getPos(me, parent.curDelta);
     parent.endEdgeIt += impl::getPos(me, parent.nextDelta) - posC;
@@ -618,6 +841,7 @@ shiftWindowBy(TNode & node, TSize stepSize)
     {
         auto minSteps = _min(static_cast<TDiff>(stepSize), node.endEdgeIt - node.curEdgeIt);
         node.curEdgeIt += minSteps;
+        node.headSrcPos += minSteps;
         if (!node.isBase)
             node.remainingSize -= minSteps;
         return stepSize - minSteps;
@@ -625,6 +849,7 @@ shiftWindowBy(TNode & node, TSize stepSize)
 
     auto minSteps = _min(static_cast<TDiff>(node.remainingSize), node.endEdgeIt - node.curEdgeIt);
     node.curEdgeIt += minSteps;
+    node.headSrcPos += minSteps;
     if (!node.isBase)
         node.remainingSize -= minSteps;
     return stepSize - minSteps;
@@ -635,23 +860,29 @@ shiftWindowBy(TNode & node, TSize stepSize)
 // ----------------------------------------------------------------------------
 
 // Forward declaration for recursive call.
-template <typename TJst, typename TSpec, typename TObserver,
+template <typename TJst, typename TSpec,
           typename TTraversalNode,
-          typename TSize>
+          typename TSize,
+          typename TObserver,
+          typename TProxySelector>
 inline TSize
-moveWindow(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> &, TTraversalNode*, TSize);
+moveWindow(TraverserImpl<TJst, JstTraversalSpec<TSpec> > &, TTraversalNode*, TSize, TObserver&, TProxySelector const &);
 
 // ----------------------------------------------------------------------------
 // Function impl::expandNode();
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver,
+template <typename TJst, typename TSpec,
           typename TTraversalNode,
-          typename TSize>
+          typename TSize,
+          typename TObserver,
+          typename TProxySelector>
 inline TSize
-expandNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
+expandNode(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & it,
            TTraversalNode * parentPtr,
-           TSize stepSize)
+           TSize stepSize,
+           TObserver & observer,
+           TProxySelector const & /*tag*/)
 {
 
 #if defined(DEBUG_JST_TRAVERSAL)
@@ -665,53 +896,60 @@ expandNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
         return stepSize;
     }
 
-    if (parentPtr->isBase)  // At a branching point coming from base.
-    {
-        SEQAN_ASSERT(length(*it._stackPtr) == 1u);
-        appendValue(*it._stackPtr, *parentPtr);  // Copy the base node and mark it from base. This represents all contexts without the delta at the current position.
-        impl::advanceBase(it, *parentPtr);
-        parentPtr = &back(*it._stackPtr);
-        parentPtr->fromBase = true;
-    }
-
+//    if (parentPtr->isBase)  // At a branching point coming from base.
+//    {
+//        SEQAN_ASSERT(length(*it._stackPtr) == 1u);
+////        impl::pushNode(it, *parentPtr, observer);  // Copy the base node and mark it from base. This represents all contexts without the delta at the current position.
+//        appendValue(*it._stackPtr, *parentPtr);
+//        impl::advanceBase(it, *parentPtr);
+//        parentPtr = &back(*it._stackPtr);
+//        parentPtr->fromBase = true;
+//    }
     while (!atEnd(parentPtr->nextDelta) && impl::getPos(it, parentPtr->nextDelta) == impl::getPos(it, parentPtr->curDelta))
     {
         if (SEQAN_LIKELY(!isRightEnd(*parentPtr->nextDelta)))  // Skip points, where we merge a deletion.
         {
             auto child = *parentPtr;
-            if (impl::createBranch(it, *parentPtr, child) && impl::moveWindow(it, &child, stepSize) == 0 &&
-                child.remainingSize >= 0)
+            if (impl::createBranch(it, *parentPtr, child, TProxySelector()) &&
+                impl::moveWindow(it, &child, stepSize, observer, TProxySelector()) == 0 && child.remainingSize >= 0)
             {
                 if (SEQAN_LIKELY(!atEnd(child.curDelta)))  // Skip the node in case we reached the end already.
-                    impl::pushNode(it, SEQAN_MOVE(child));
+                    impl::pushNode(it, SEQAN_MOVE(child), observer);
             }
         }
         ++parentPtr->nextDelta;  // Move to the next branch point.
     }
-    parentPtr->isBase = false;
-    impl::updateParent(it, *parentPtr);
-    return impl::moveWindow(it, parentPtr, stepSize);  // Recursive call to move as long as stepSize is greater 0.
+//    parentPtr->isBase = false;
+    impl::advanceParent(it, *parentPtr);
+    return impl::moveWindow(it, parentPtr, stepSize, observer, TProxySelector());  // Recursive call to move as long as stepSize is greater 0.
 }
 
 // ----------------------------------------------------------------------------
 // Function impl::moveWindow()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver,
+template <typename TJst, typename TSpec,
           typename TTraversalNode,
-          typename TSize>
+          typename TSize,
+          typename TObserver,
+          typename TProxySelector>
 inline TSize
-moveWindow(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
+moveWindow(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
            TTraversalNode* parentPtr,
-           TSize stepSize)
+           TSize stepSize,
+           TObserver & observer,
+           TProxySelector const & /*tag*/)
 {
 #if defined(DEBUG_JST_TRAVERSAL)
     std::cout << "############################## BEGIN ########################################" << std::endl;
     std::cout << "MOVE by (" << stepSize << ") -> " << parentPtr << std::endl;
 #endif //defined(DEBUG_JST_TRAVERSAL)
     stepSize = impl::shiftWindowBy(*parentPtr, stepSize);
+    // we moved the context head -> might need to update the coverage and the
+    impl::updateContextHead(me, *parentPtr);
+
     if (parentPtr->curEdgeIt == parentPtr->endEdgeIt)  // Reached branching point => expand node.
-        stepSize = impl::expandNode(it, parentPtr, stepSize);
+        stepSize = impl::expandNode(me, parentPtr, stepSize, observer, TProxySelector());
 
 #if defined(DEBUG_JST_TRAVERSAL)
     std::cout << "Remaining (" << stepSize << ") -> " << parentPtr << std::endl;
@@ -724,22 +962,19 @@ moveWindow(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
 // Function init()
 // ----------------------------------------------------------------------------
 
-template <typename TJst, typename TSpec, typename TObserver,
-          typename TSize>
+template <typename TJst, typename TSpec,
+          typename TObserver,
+          typename TProxySelector>
 inline void
-init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
-     TJst & jst,
-     TSize const contextSize,
-     TSize const branchLength)
+init(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
+     TObserver & observer,
+     Tag<TProxySelector> const & /*tag*/)
 {
-    typedef typename TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver>::TNode TNode;
+    typedef typename TraverserImpl<TJst, JstTraversalSpec<TSpec> >::TNode TNode;
 
-    SEQAN_ASSERT(contextSize > 0);
-    SEQAN_ASSERT(branchLength > 0);
-
-    me._contextSize = contextSize;
-    me._branchLength = _max(contextSize, branchLength);
-    me._contPtr = &jst;
+    SEQAN_ASSERT(me._contPtr != nullptr);
+    SEQAN_ASSERT(me._contextSize > 0);
+    SEQAN_ASSERT(me._branchLength >= me._contextSize);
 
     SEQAN_ASSERT(me._bufferPtr);
     SEQAN_ASSERT(me._stackPtr);
@@ -747,31 +982,128 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
     clear(buffer(me));
     clear(stack(me));
 
-    init(buffer(me), jst);
+    init(buffer(me), container(me));
+
+    resize(me._baseCov, length(container(me)), true, Exact());
 
     TNode node;
-    resize(node.coverage, length(jst), true, Exact());
+    node.coverage = me._baseCov;
+
+    node.headSrcPos = -static_cast<decltype(node.headSrcPos)>(me._contextSize) + 1;
+    node.headDelta = buffer(me)._deltaRangeBegin - 1;
+    node.branchRoot = node.headDelta;
 
     node.curDelta = buffer(me)._deltaRangeBegin - 1;
     node.nextDelta = buffer(me)._deltaRangeBegin;
+    node.headDelta = node.nextDelta;
+    node.branchRoot = node.headDelta;
 
-    node.begEdgeIt = begin(impl::member(jst, JstSourceMember()), Standard());  // This points to some value already -> what could this position be?
+    node.proxyId = 0;
+
+    node.begEdgeIt = begin(impl::member(container(me), JstSourceMember()), Standard());  // This points to some value already -> what could this position be?
     node.curEdgeIt = node.begEdgeIt;
     node.endEdgeIt = node.begEdgeIt + (getDeltaPosition(*node.nextDelta) - position(node.begEdgeIt));
     node.mappedSrcEndPos = position(node.endEdgeIt);
     node.remainingSize = me._branchLength - 1;
     node.isBase = true;
-    node.fromBase = false;
-    appendValue(*me._stackPtr, SEQAN_MOVE(node));  // Push onto stack.
+//    node.fromBase = false;
+
+//    appendValue(*me._stackPtr, SEQAN_MOVE(node));
+    impl::pushNode(me, std::move(node), observer);  // Push onto stack.
 
     // After we realized this.
     TNode* basePtr = &impl::activeNode(me);
 
     SEQAN_ASSERT_GEQ(me._contextSize, 1u);
-    impl::moveWindow(me, basePtr, me._contextSize - 1);   // We move the traverser to the beginning of the
+    impl::moveWindow(me, basePtr, 0, observer, Tag<TProxySelector>());   // We move the traverser to the first position.
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::positionReference();
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec>
+inline typename Position<TraverserImpl<TJst, JstTraversalSpec<TSpec> > >::Type
+positionReference(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
+{
+    // Easy case, since all sequences must be in a original node.
+    using TPosVec = typename Position<TraverserImpl<TJst, JstTraversalSpec<TSpec> > >::Type;
+    using TPosVal = typename Value<TPosVec>::Type;
+
+    auto tmp = impl::baseNode(me).coverage;
+    // Refine the coverage.
+    impl::refineCoverage(tmp, impl::baseNode(me));
+
+    TPosVec posVec;
+    auto hostPos = position(impl::baseNode(me).curEdgeIt, host(container(me)));
+    auto covBegin = begin(tmp, Standard());
+    auto covEnd = end(tmp, Standard());
+
+    for (auto it = covBegin; it != covEnd; ++it)
+    {
+        if (getValue(it))
+        {
+            auto seqId = it - covBegin;
+            appendValue(posVec, TPosVal(seqId, hostToVirtualPosition(impl::buffer(me)._journaledSet[seqId], hostPos)));
+        }
+    }
+    return posVec;
+}
+
+// ----------------------------------------------------------------------------
+// Function impl::positionBranch();
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec>
+inline typename Position<TraverserImpl<TJst, JstTraversalSpec<TSpec> > >::Type
+positionBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
+{
+    using TPosVec = typename Position<TraverserImpl<TJst, JstTraversalSpec<TSpec> > >::Type;
+    using TPosVal = typename Value<TPosVec>::Type;
+
+    auto tmp = impl::activeNode(me).coverage;
+    impl::refineCoverageBranch(tmp, impl::activeNode(me));
+
+    TPosVec posVec;
+    auto dist = impl::activeNode(me).curEdgeIt - impl::activeNode(me).begEdgeIt;
+    auto covBegin = begin(tmp, Standard());
+    auto covEnd = end(tmp, Standard());
+
+    for (auto it = covBegin; it != covEnd; ++it)
+    {
+        if (getValue(it))
+        {
+            auto seqId = it - covBegin;
+            auto tmpJournalIt = begin(buffer(me)._journaledSet[seqId], Standard());
+
+            impl::mapBranchPointToVirtual(tmpJournalIt, impl::member(container(me), JstDeltaMapMember()), seqId,
+                                          getDeltaPosition(*impl::activeNode(me).curDelta));
+            appendValue(posVec, TPosVal(seqId, position(tmpJournalIt) + dist));
+        }
+    }
+    return posVec;
 }
 
 }  // namespace impl
+
+// Helper functions:
+
+#if defined(JST_FIND_DEBUG)
+    template <typename TTraverser>
+    inline void _fillTestSet(TTraverser const & trav)
+    {
+        auto pos = position(trav);
+        for (auto p : pos)
+            appendValue(__testSet[p.i1], impl::buffer(trav)._journaledSet[p.i1][p.i2]);
+    }
+
+    inline void _printTestSet()
+    {
+        auto count = 0;
+        for (auto seq : __testSet)
+            std::cout << "Seq" << count++ << ": " << seq << std::endl;
+    }
+#endif // JST_FIND_DEBUG
 
 }  // namespace seqan.
 

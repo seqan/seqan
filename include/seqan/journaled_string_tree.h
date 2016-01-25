@@ -53,6 +53,7 @@
 
 // TODO(rrahn): Might put this to basic.
 #include <seqan/journaled_string_tree/observable.h>
+#include <seqan/journaled_string_tree/stack_observer.h>
 
 // ===========================================================================
 // Delta Map.

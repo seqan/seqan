@@ -16,11 +16,6 @@ message (STATUS "Configuring tests/journaled_string_tree")
 
 find_package(CXX11 REQUIRED)
 
-if (WIN32)
-    message (STATUS "   Not building journaled string tree test under Windows. Incomplete C++11 support.")
-    return()
-endif (WIN32)
-
 # Enable module only with CXX11 support.
 if (NOT CXX11_FOUND)
     message (STATUS "  Cannot build journaled string tree module tests.")
@@ -70,6 +65,13 @@ add_executable (test_journaled_string_tree_traverser
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_journaled_string_tree_traverser ${SEQAN_LIBRARIES})
+
+add_executable (test_journaled_string_tree_find
+                test_journaled_string_tree_find.cpp
+                test_journaled_string_tree_find.h)
+
+# Add dependencies found by find_package (SeqAn).
+target_link_libraries (test_journaled_string_tree_find ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")

@@ -127,10 +127,11 @@ struct Element<0, ObserverList<TFirst, TObservers...> >
 template <unsigned INDEX>
 struct NotifyObserver
 {
-    template <typename TObserverList, typename TTag>
-    inline void operator()(Observable<TObserverList> & subject, TTag const & /*tag*/)
+    template <typename... TObserver, typename TTag>
+    inline void operator()(ObserverList<TObserver...> & subject, TTag const & /*tag*/)
     {
-        std::get<INDEX>(subject.observers)(TTag());
+//        std::get<INDEX>(subject.observers)(TTag());
+        notify(std::get<INDEX>(subject), TTag());
         NotifyObserver<INDEX - 1>{}(subject, TTag());
     }
 };
@@ -139,10 +140,10 @@ template <>
 struct NotifyObserver<0>
 {
 
-    template <typename TObserverList, typename TTag>
-    inline void operator()(Observable<TObserverList> & subject, TTag const & /*tag*/)
+    template <typename... TObserver, typename TTag>
+    inline void operator()(ObserverList<TObserver...> & subject, TTag const & /*tag*/)
     {
-        std::get<0>(subject.observers)(TTag());
+        notify(std::get<0>(subject), TTag());
     }
 };
 
@@ -188,6 +189,22 @@ setObserver(Observable<TObserverList> & subject,
 
 template <typename TEventTag>
 inline void
+notify(ObserverList<> & /*subject*/,
+       TEventTag const & /*event tag*/)
+{
+    // no-op;
+}
+
+template <typename... TObserver, typename TEventTag>
+inline void
+notify(ObserverList<TObserver...> & subject,
+       TEventTag const & /*event tag*/)
+{
+    NotifyObserver<LENGTH<ObserverList<TObserver...> >::VALUE - 1>{}(subject, TEventTag());
+}
+
+template <typename TEventTag>
+inline void
 notify(Observable<ObserverList<> > & /*subject*/,
        TEventTag const & /*event tag*/)
 {
@@ -210,7 +227,7 @@ template <typename... TObservers>
 inline ObserverList<TObservers...>
 makeObserverList(TObservers&&... observers)
 {
-    return std::make_tuple(std::forward<TObservers>(observers)...);
+    return std::forward_as_tuple(observers...);
 }
 
 }
