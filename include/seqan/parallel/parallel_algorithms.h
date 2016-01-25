@@ -313,7 +313,7 @@ inline void generate(TTarget & target, TGenerator g, Tag<TParallelTag> const & /
 
 #ifdef SEQAN_CXX11_STANDARD
 template <typename TTarget, typename TValue, typename TParallelTag>
-inline void iota(TTarget & target, TValue val, Tag<TParallelTag> const & /* tag */)
+inline void iota(TTarget SEQAN_FORWARD_ARG target, TValue val, Tag<TParallelTag> const & /* tag */)
 {
     std::iota(begin(target, Standard()), end(target, Standard()), val);
 }
@@ -697,7 +697,7 @@ inline void generate(TTarget & target, TGenerator g)
 
 #ifdef SEQAN_CXX11_STANDARD
 template <typename TTarget, typename TValue>
-inline void iota(TTarget & target, TValue val)
+inline void iota(TTarget SEQAN_FORWARD_ARG target, TValue val)
 {
     iota(target, val, Serial());
 }
