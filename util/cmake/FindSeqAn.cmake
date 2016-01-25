@@ -159,6 +159,23 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
   set (COMPILER_IS_INTEL TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
 
+# ----------------------------------------------------------------------------
+# Require C++11
+# ----------------------------------------------------------------------------
+
+if (NOT CXX11_FOUND)
+    message (FATAL_ERROR "Seqan requires since v2.1.0 c++11. "
+      "Set `set('CXX11_FOUND',  1)` if your compiler support natively c++11 or "
+      "when you set the compiler flag for c++11 via `SEQAN_CXX_FLAGS`. "
+      "For example, if you use gcc you should set "
+      "`set(SEQAN_CXX_FLAGS \"${SEQAN_CXX_FLAGS} -std=c++11\")`. \n"
+      "You can also copy the following cmake utility from "
+      "https://github.com/seqan/seqan/blob/master/util/cmake/FindStdCXX.cmake "
+      "into your cmake directory and automatically select the cxx standard "
+      "by calling `find_package(StdCXX REQUIRED)`.")
+    return ()
+endif (NOT CXX11_FOUND)
+
 # GCC Setup
 
 if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
