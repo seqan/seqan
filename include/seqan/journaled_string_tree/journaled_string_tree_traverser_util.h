@@ -683,7 +683,7 @@ expandNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
                 child.remainingSize >= 0)
             {
                 if (SEQAN_LIKELY(!atEnd(child.curDelta)))  // Skip the node in case we reached the end already.
-                    impl::pushNode(it, SEQAN_MOVE(child));
+                    impl::pushNode(it, std::move(child));
             }
         }
         ++parentPtr->nextDelta;  // Move to the next branch point.
@@ -762,7 +762,7 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
     node.remainingSize = me._branchLength - 1;
     node.isBase = true;
     node.fromBase = false;
-    appendValue(*me._stackPtr, SEQAN_MOVE(node));  // Push onto stack.
+    appendValue(*me._stackPtr, std::move(node));  // Push onto stack.
 
     // After we realized this.
     TNode* basePtr = &impl::activeNode(me);
