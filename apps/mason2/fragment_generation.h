@@ -46,8 +46,8 @@
 #include <fstream>
 #include <vector>
 #include <memory>
+#include <random>
 
-#include <seqan/random.h>
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 
@@ -58,7 +58,7 @@
 // Forwards
 // ============================================================================
 
-typedef seqan::Rng<seqan::MersenneTwister> TRng;
+typedef std::mt19937 TRng;
 
 inline void trimAfterSpace(seqan::CharString & s);
 
@@ -117,11 +117,11 @@ public:
     // The random number generator to use.
     TRng & rng;
     // The probability density function for the simulation.
-    seqan::Pdf<seqan::Uniform<int> > pdf;
+    std::uniform_int_distribution<int> dist;
 
     UniformFragmentSamplerImpl(TRng & rng, int minLength, int maxLength, int fragSizeLowerBound) :
             minLength(minLength), maxLength(maxLength), fragSizeLowerBound(fragSizeLowerBound),
-            rng(rng), pdf(minLength, maxLength)
+            rng(rng), dist(minLength, maxLength)
     {}
 
     virtual void generate(Fragment & frag, int rId, unsigned contigLength,
@@ -153,11 +153,11 @@ public:
     // The random number generator to use.
     TRng & rng;
     // The probability density function for the simulation.
-    seqan::Pdf<seqan::Normal> pdf;
+    std::uniform_int_distribution<int> dist;
 
     NormalFragmentSamplerImpl(TRng & rng, int meanLength, int stdDevLength, int fragSizeLowerBound) :
             meanLength(meanLength), stdDevLength(stdDevLength), fragSizeLowerBound(fragSizeLowerBound),
-            rng(rng), pdf(meanLength, stdDevLength)
+            rng(rng), dist(meanLength, stdDevLength)
     {}
 
     virtual void generate(Fragment & frag, int rId, unsigned contigLength,
@@ -329,13 +329,13 @@ void UniformFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned co
     unsigned const MAX_TRIES = 1000;
     for (unsigned tryNo = 0; tryNo < MAX_TRIES; ++tryNo)
     {
-        fragLength = pickRandomNumber(rng, pdf);
+        fragLength = dist(rng);
         if (fragLength <= 0 || fragLength > (int)contigLength ||
             (fragSizeLowerBound && fragSizeLowerBound > fragLength))
             continue;  // Try again
 
-        seqan::Pdf<seqan::Uniform<int> > posPdf(0, contigLength - fragLength);
-        int beginPos = pickRandomNumber(rng, posPdf);
+        std::uniform_int_distribution<int> posDist(0, contigLength - fragLength);
+        int beginPos = posDist(rng);
 
         frag.rId = rId;
         frag.beginPos = beginPos;
@@ -371,13 +371,13 @@ void NormalFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned con
     unsigned tryNo = 0;
     for (; tryNo < MAX_TRIES; ++tryNo)
     {
-        fragLength = static_cast<int>(pickRandomNumber(rng, pdf));
+        fragLength = static_cast<int>(dist(rng));
         if (fragLength <= 0 || fragLength > (int)contigLength ||
             (fragSizeLowerBound && fragSizeLowerBound > fragLength))
             continue;  // Try again
 
-        seqan::Pdf<seqan::Uniform<int> > posPdf(0, contigLength - fragLength);
-        int beginPos = pickRandomNumber(rng, posPdf);
+        std::uniform_int_distribution<int> posDist(0, contigLength - fragLength);
+        int beginPos = posDist(rng);
 
         frag.rId = rId;
         frag.beginPos = beginPos;

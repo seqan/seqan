@@ -638,8 +638,8 @@ public:
 
     void init(int seed, int methSeed, MasonSimulatorOptions const & newOptions)
     {
-        reSeed(rng, seed);
-        reSeed(methRng, methSeed);
+        rng.seed(seed);
+        methRng.seed(methSeed);
         options = &newOptions;
         buildAlignments = !empty(options->outFileNameSam);
 

@@ -46,8 +46,6 @@
 // Forwards
 // ============================================================================
 
-typedef seqan::Rng<> TRng;
-
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -151,13 +149,13 @@ public:
     TRng & rng;
 
     // Beta probability density functions for level generation.
-    seqan::Pdf<seqan::Beta> pdfCG, pdfCHG, pdfCHH;
+    std::gamma_distribution<double> pdfCG, pdfCHG, pdfCHH; // TODO::(smehringer) change to beta distribution!
 
     MethylationLevelSimulator(TRng & rng, MethylationLevelSimulatorOptions const & options) :
             options(options), rng(rng),
-            pdfCG(options.methMuCG, options.methSigmaCG, seqan::MeanStdDev()),
-            pdfCHG(options.methMuCHG, options.methSigmaCHG, seqan::MeanStdDev()),
-            pdfCHH(options.methMuCHH, options.methSigmaCHH, seqan::MeanStdDev())
+            pdfCG(options.methMuCG, options.methSigmaCG),
+            pdfCHG(options.methMuCHG, options.methSigmaCHG),
+            pdfCHH(options.methMuCHH, options.methSigmaCHH)
     {}
 
     // Simulate methylation levels for the sequence in contig.  The results are stored in levels.
@@ -219,12 +217,12 @@ public:
             case 27:    // CAG
             case 42:    // CTG
                 // std::cerr << "CHG fw    \t" << dbg << "\t" << dbg2 << "\t" << pos << "\n";
-                levels.setLevelF(pos, pickRandomNumber(rng, pdfCHG));
-                levels.setLevelR(pos + 2, pickRandomNumber(rng, pdfCHG));
+                levels.setLevelF(pos, pdfCHG(rng));
+                levels.setLevelR(pos + 2, pdfCHG(rng));
                 break;
             case 32:  // CCG
-                levels.setLevelF(pos, pickRandomNumber(rng, pdfCHG));
-                levels.setLevelR(pos + 2, pickRandomNumber(rng, pdfCG)); 
+                levels.setLevelF(pos, pdfCHG(rng));
+                levels.setLevelR(pos + 2, pdfCG(rng)); 
                 break;
             case 25:    // CAA
             case 26:    // CAC
@@ -236,7 +234,7 @@ public:
             case 41:    // CTC
             case 43:    // CTT
                 // std::cerr << "CHH       \t" << dbg << "\t" << dbg2 << "\t" << pos << "\n";
-                levels.setLevelF(pos, pickRandomNumber(rng, pdfCHH));
+                levels.setLevelF(pos, pdfCHH(rng));
                 break;
             case 2:     // AAG
             case 12:    // AGG
@@ -247,7 +245,7 @@ public:
             case 77:    // TAG
             case 87:    // TGG
             case 92:    // TTG
-                levels.setLevelR(pos + 2, pickRandomNumber(rng, pdfCHH));
+                levels.setLevelR(pos + 2, pdfCHH(rng));
                 break;
 
             default:
@@ -264,8 +262,8 @@ public:
             // seqan::Dna5String dbg;
             // unhash(dbg, hashValue, 2);
             // std::cerr << "CpG     \t" << dbg << "\n";
-            levels.setLevelF(pos, pickRandomNumber(rng, pdfCG));
-            levels.setLevelR(pos + 1, pickRandomNumber(rng, pdfCG));
+            levels.setLevelF(pos, pdfCG(rng));
+            levels.setLevelR(pos + 1, pdfCG(rng));
         }
     }
 };
