@@ -35,7 +35,11 @@
                         hash = '::' + tmp.split('::')[1];
                         console.log('p == ' + p + ' -- hash = ' + hash);
                     }
-                    if(window.lookup.hasOwnProperty(p)) {
+
+                    if(window.lookup.hasOwnProperty(p+hash)) { // eg. "enum_*.html"
+                        redirectTo = window.lookup[p+hash] + '.html'
+                    }
+                    else if(window.lookup.hasOwnProperty(p)) { // valid for entries in "class_*.html"
                         redirectTo = window.lookup[p] + '.html#' + encodeURIComponent(p + hash);
                     } else {
                         $(window.parent['main'].document).find('#content').prepend('<div class="open-in-frame alert alert-danger">Could not find page for <strong>' + p + '</strong></div>'); 
