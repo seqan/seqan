@@ -58,7 +58,7 @@ endif (NOT SEQAN_HAS_BZIP2)
 # App-Level Configuration
 # ----------------------------------------------------------------------------
 
-set (SEQAN_APP_VERSION "0.9.4")
+set (SEQAN_APP_VERSION "0.9.5")
 
 option (YARA_LARGE_CONTIGS "Set to ON to enable support for more than 32k contigs or contigs longer than 4Gbp." OFF)
 if (YARA_LARGE_CONTIGS)
@@ -79,6 +79,10 @@ if (YARA_ARCH_NATIVE)
   if (CMAKE_COMPILER_IS_GNUCXX AND APPLE)
     set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mno-avx")
   endif (CMAKE_COMPILER_IS_GNUCXX AND APPLE)
+
+  if (COMPILER_IS_INTEL)
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -xHOST -ipo -no-prec-div -fp-model fast=2")
+  endif (COMPILER_IS_INTEL)
 endif (YARA_ARCH_NATIVE)
 
 # ----------------------------------------------------------------------------

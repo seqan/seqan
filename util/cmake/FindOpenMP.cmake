@@ -31,14 +31,15 @@ if (NOT CMAKE_CURRENT_LIST_DIR)  # CMAKE_CURRENT_LIST_DIR only from cmake 2.8.3.
 endif (NOT CMAKE_CURRENT_LIST_DIR)
 
 # Do not try to find OpenMP if we know that it cannot be found.
-if (_OPENMP_NOT_FOUND)
+if (OPENMP_NOT_FOUND)
     return ()
 endif ()
 
-# Clang-3.7.0 deactivated because of compiler bugs triggered by SeqAn
-if (COMPILER_IS_CLANG AND (_GCC_VERSION EQUAL 370))
-    set(_OPENMP_NOT_FOUND TRUE)
-    message (STATUS "OpenMP cannot be used becase Clang-3.7.0 has a bug. Please update your clang!")
+# Clang-3.7.x deactivated because of compiler bugs triggered by SeqAn
+if (COMPILER_IS_CLANG AND (_GCC_VERSION MATCHES "^37[0-9]$"))
+    set (OPENMP_NOT_FOUND TRUE CACHE INTERNAL
+         "Set such that OpenMP is not searched for more than once.")
+    message (STATUS "Because of a bug in clang-3.7.x OpenMP cannot be used (even if available). Please update your clang!")
     return ()
 endif ()
 

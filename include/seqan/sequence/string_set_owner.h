@@ -196,9 +196,79 @@ inline void assignValue(
     {
         TSignedLimitValue delta = (TSignedLimitValue)length(seq) - oldSize;
         TSize size = length(me);
-        while (pos < size)
+        while (static_cast<TSize>(pos) < size)
             me.limits[++pos] += delta;
     }
+}
+
+// --------------------------------------------------------------------------
+// Function insertValue()
+// --------------------------------------------------------------------------
+
+template <typename TString, typename TSpec, typename TPos, typename TSequence, typename TExpand >
+inline void insertValue(
+    StringSet<TString, Owner<TSpec> > & me,
+    TPos pos,
+    TSequence const & seq,
+    Tag<TExpand> tag)
+{
+    insertValue(me.strings, pos, seq, tag);
+    me.limitsValid = false;
+}
+
+// --------------------------------------------------------------------------
+// Function replace()
+// --------------------------------------------------------------------------
+
+// special case
+template <typename TString, typename TPositionBegin, typename TPositionEnd, typename TExpand >
+inline void replace(
+    StringSet<TString, Owner<> > & target,
+    TPositionBegin pos_begin,
+    TPositionEnd pos_end,
+    StringSet<TString, Owner<> > const & source,
+    Tag<TExpand> tag)
+{
+    replace(target.strings, pos_begin, pos_end, source.strings, tag);
+    target.limitsValid = false;
+}
+
+// general case
+template <typename TString, typename TSpec, typename TPositionBegin, typename TPositionEnd, typename TSource, typename TExpand >
+inline SEQAN_FUNC_ENABLE_IF(And<Is<ContainerConcept<TSource> >, Is<ContainerConcept<typename Value<TSource>::Type> > >, void)
+replace(StringSet<TString, Owner<TSpec> > & target,
+        TPositionBegin pos_begin,
+        TPositionEnd pos_end,
+        TSource const & source,
+        Tag<TExpand> tag)
+{
+    typedef typename Position<StringSet<TString, Owner<TSpec> > >::Type TPos;
+    typedef typename MakeSigned<TPos>::Type TPosDiff;
+
+    TPos min = std::min((TPos)(pos_end - pos_begin), (TPos)length(source));
+    TPosDiff diff = (pos_end - pos_begin) - length(source);
+
+    for (TPos i = 0; i < min; ++i)
+        assignValue(target.strings, i, source[i]);
+
+    if (diff < 0) // insert remaining elements from source
+    {
+        TPos old_len = length(target);
+        TPos source_len = length(source) - min;
+        TPos new_len = old_len + source_len;
+
+        resize(target.strings, new_len, tag);
+        for (TPos i = new_len - 1; i >= pos_begin + length(source); --i)
+            swap(target.strings[i - source_len], target.strings[i]);
+        for (TPos i = 0 + min; i < source_len; ++i)
+            assignValue(target.strings, i, source[i]);
+    }
+    else if (diff > 0)
+    {
+        erase(target.strings, min, pos_end);
+    }
+
+    target.limitsValid = false;
 }
 
 // --------------------------------------------------------------------------

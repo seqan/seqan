@@ -246,6 +246,8 @@ inline void _writeMatchesImpl(MatchesWriter<TSpec, Traits> & me, TMatchIt const 
 template <typename TSpec, typename Traits, typename TReadId>
 inline void _writeUnmappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, SingleEnd)
 {
+    SEQAN_ASSERT_NOT(isMapped(me.ctx, readId));
+
     clear(me.record);
     _fillReadName(me, readId);
     _fillReadSeqQual(me, readId);
@@ -259,6 +261,8 @@ inline void _writeUnmappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId
 template <typename TSpec, typename Traits, typename TReadId>
 inline void _writeUnmappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, PairedEnd)
 {
+    SEQAN_ASSERT_NOT(isMapped(me.ctx, readId));
+
     clear(me.record);
     _fillReadName(me, readId);
     _fillReadSeqQual(me, readId);
@@ -292,6 +296,7 @@ inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, 
     typedef typename Size<TMatches>::Type       TSize;
     typedef typename Iterator<TMatches const, Standard>::Type   TIter;
 
+    SEQAN_ASSERT(isMapped(me.ctx, readId));
     SEQAN_ASSERT_EQ(readId, getMember(primary, ReadId()));
     SEQAN_ASSERT_EQ((unsigned)getMinErrors(me.ctx, readId), getMember(primary, Errors()));
 
@@ -332,6 +337,9 @@ inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, 
     typedef typename Traits::TMatches                           TMatches;
     typedef typename Size<TMatches>::Type                       TSize;
     typedef typename Iterator<TMatches const, Standard>::Type   TIter;
+
+    SEQAN_ASSERT(isMapped(me.ctx, readId));
+    SEQAN_ASSERT_EQ(readId, getMember(primary, ReadId()));
 
     clear(me.record);
     _fillReadName(me, getReadSeqId(primary, me.reads.seqs));

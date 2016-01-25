@@ -8,8 +8,8 @@ int main()
 //![include]
 //![ctor]
     // Open input BAM file, BamFileIn supports both SAM and BAM files.
-    CharString bamFileInName = getAbsolutePath("/demos/tutorial/file_io_overview/example.bam");
-    CharString samFileOutName = getAbsolutePath("/demos/tutorial/file_io_overview/example.sam");
+    CharString bamFileInName = getAbsolutePath("demos/tutorial/file_io_overview/example.bam");
+    CharString samFileOutName = getAbsolutePath("demos/tutorial/file_io_overview/example.sam");
     BamFileIn bamFileIn(toCString(bamFileInName));
 //![ctor]
 

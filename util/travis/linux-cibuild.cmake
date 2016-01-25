@@ -19,6 +19,8 @@ file(WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" ${INITIAL_CACHE})
 # customize reporting of errors in CDash
 set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_ERRORS 1000)
 set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_WARNINGS 1000)
+set(CTEST_CUSTOM_WARNING_EXCEPTION "statically linked applications")
+
 
 # Use 4 build threads
 set(CTEST_BUILD_FLAGS -j4)

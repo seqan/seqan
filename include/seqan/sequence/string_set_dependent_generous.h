@@ -139,6 +139,33 @@ inline void appendValue(
 }
 
 // --------------------------------------------------------------------------
+// Function insertValue()
+// --------------------------------------------------------------------------
+
+template <typename TString, typename TPos, typename TExpand >
+inline void insertValue(
+    StringSet<TString, Dependent<Generous> > & me,
+    TPos pos,
+    TString const & obj,
+    Tag<TExpand> tag)
+{
+    typedef StringSet<TString, Dependent<Generous> > TStringSet;
+    typedef typename Size<TStringSet>::Type TSize;
+    typedef typename StringSetLimits<TStringSet>::Type TLimits;
+    typedef typename Value<TLimits>::Type TLimitValue;
+
+    insertValue(me.strings, pos, const_cast<TString*>(&obj), tag);
+
+    insertValue(me.limits, pos, me.limits[pos] + length(obj), tag);
+    TLimitValue delta = (TLimitValue)length(obj);
+    TSize size = length(me);
+    while (pos+1 <size)
+        me.limits[++pos] += delta;
+
+    me.limitsValid = false; // needed here ?
+}
+
+// --------------------------------------------------------------------------
 // Function clear()
 // --------------------------------------------------------------------------
 
