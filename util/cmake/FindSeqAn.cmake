@@ -164,7 +164,7 @@ endif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
 # ----------------------------------------------------------------------------
 
 if (NOT CXX11_FOUND)
-    message (FATAL_ERROR "Seqan requires since v2.1.0 c++11. "
+    message (FATAL_ERROR "SeqAn requires C++11 since v2.1.0. "
       "Set `set('CXX11_FOUND',  1)` if your compiler support natively c++11 or "
       "when you set the compiler flag for c++11 via `SEQAN_CXX_FLAGS`. "
       "For example, if you use gcc you should set "

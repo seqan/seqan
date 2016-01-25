@@ -59,6 +59,6 @@ _seqan_cxx_standard_windows()
 _seqan_cxx_standard_gcc()
 
 if (NOT CXX11_FOUND)
-    message (FATAL_ERROR "Seqan requires since v2.1.0 C++11.")
+    message (FATAL_ERROR "SeqAn requires C++11 since v2.1.0.")
     return ()
 endif (NOT CXX11_FOUND)
