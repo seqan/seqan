@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the align_extend module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 project (seqan_extras_tests_blast)
 message (STATUS "Configuring tests/blast")
 
