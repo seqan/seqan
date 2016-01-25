@@ -260,7 +260,7 @@ isClipped(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me)
 
 template <typename TGaps, typename TGapAnchors>
 inline typename Size<TGaps>::Type
-countGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me, LeftOfViewPos & const /*dir*/)
+countGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me, LeftOfViewPos const & /*dir*/)
 {
     typedef Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > TIter;
     typedef typename TIter::TGapAnchor TGapAnchor;
@@ -285,7 +285,7 @@ countGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me, LeftO
 
 template <typename TGaps, typename TGapAnchors>
 inline typename Size<TGaps>::Type
-countGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me, RightOfViewPos & const /*dir*/)
+countGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me, RightOfViewPos const & /*dir*/)
 {
     if (!isGap(me))
         return 0;
@@ -300,7 +300,7 @@ countGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me, Right
 
 template <typename TGaps, typename TGapAnchors>
 inline typename Size<TGaps>::Type
-countCharacters(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me, LeftOfViewPos & const /*dir*/)
+countCharacters(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me, LeftOfViewPos const & /*dir*/)
 {
     if (!isGap(me))
         return me.current.seqPos - me.prevAnchor.seqPos;
@@ -312,7 +312,7 @@ countCharacters(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me,
 
 template <typename TGaps, typename TGapAnchors>
 inline typename Size<TGaps>::Type
-countCharacters(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me, RightOfViewPos & const /*dir*/)
+countCharacters(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me, RightOfViewPos const & /*dir*/)
 {
     if (isGap(me))
         return 0;
