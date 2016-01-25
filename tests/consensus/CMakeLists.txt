@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the consensus module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 project (seqan_tests_consensus)
 message (STATUS "Configuring tests/consensus")
 

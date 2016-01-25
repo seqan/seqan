@@ -198,7 +198,7 @@ Below you can find a minimal example ``CMakeLists.txt`` file that uses the ``Fin
 
 .. code-block:: cmake
 
-   cmake_minimum_required (VERSION 2.8.2)
+   cmake_minimum_required (VERSION 3.0.0)
    project (apps_dfi)
 
    # ----------------------------------------------------------------------------
