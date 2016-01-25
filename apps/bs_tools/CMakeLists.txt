@@ -6,7 +6,7 @@
 # CMakeLists.txt file for bs_tools.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_bs_tools)
 message (STATUS "Configuring apps/bs_tools")
 

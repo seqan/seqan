@@ -140,7 +140,7 @@ The relevant lines from the file
 
 .. code-block:: cmake
 
-    cmake_minimum_required (VERSION 2.8.2)
+    cmake_minimum_required (VERSION 3.0.0)
     project (seqan_tests_align)
     message (STATUS "Configuring tests/my_module")
 

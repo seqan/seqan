@@ -137,7 +137,7 @@ if (NOT SEQAN_FIND_ENABLE_TESTING)
 endif ()
 
 # ----------------------------------------------------------------------------
-# Compile-specific settings and workarounds around missing CMake features.
+# Determine compiler.
 # ----------------------------------------------------------------------------
 
 # Recognize Clang compiler.
@@ -147,8 +147,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set (COMPILER_IS_CLANG TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
-# Fix CMAKE_COMPILER_IS_GNUCXX for MinGW.
-
+set (CMAKE_COMPILER_IS_GNUCXX FALSE)
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   set (CMAKE_COMPILER_IS_GNUCXX TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -158,6 +157,41 @@ set (COMPILER_IS_INTEL FALSE)
 if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
   set (COMPILER_IS_INTEL TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+
+# Visual Studio
+set (COMPILER_IS_MSVC FALSE)
+if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  set (COMPILER_IS_MSVC TRUE)
+endif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+
+# ----------------------------------------------------------------------------
+# Check required compiler versions.
+# ----------------------------------------------------------------------------
+
+if (CMAKE_COMPILER_IS_GNUCXX)
+
+    # require at least gcc 4.9
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
+        message(AUTHOR_WARNING "GCC version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 4.9! Anything below is untested.")
+    endif ()
+
+elseif (COMPILER_IS_CLANG)
+
+    # require at least clang 3.5
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.5)
+        message(AUTHOR_WARNING "Clang version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 3.5! Anything below is untested.")
+    endif ()
+
+elseif (COMPILER_IS_MSVC)
+
+    # require at least MSVC 19.0
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0")
+        message(FATAL_ERROR "MSVC version (${CMAKE_CXX_COMPILER_VERSION}) must be at least 19.0 (Visual Studio 2015)!")
+    endif ()
+
+else ()
+    message(WARNING "You are using an unsupported compiler! Compilation has only been tested with >= Clang 3.5, >= GCC 4.9 and >= MSVC 19.0 (VS 2015).")
+endif ()
 
 # ----------------------------------------------------------------------------
 # Require C++11
@@ -175,6 +209,10 @@ if (NOT CXX11_FOUND)
       "by calling `find_package(StdCXX REQUIRED)`.")
     return ()
 endif (NOT CXX11_FOUND)
+
+# ----------------------------------------------------------------------------
+# Compile-specific settings and workarounds around missing CMake features.
+# ----------------------------------------------------------------------------
 
 # GCC Setup
 
