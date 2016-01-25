@@ -59,6 +59,11 @@
 #define SEQAN_FORWARD(T, x)     std::forward<T>(x)
 #define SEQAN_MOVE(x)           std::move(x)
 
+// backwards compatibility
+#define SEQAN_CXX11_STL 1
+#define SEQAN_CXX11_STANDARD 1
+#define SEQAN_CXX11_COMPLETE 1
+
 // C++ restrict keyword, see e.g. platform_gcc.h
 #ifndef SEQAN_RESTRICT
 #define SEQAN_RESTRICT
