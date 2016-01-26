@@ -49,8 +49,7 @@
  * SEQAN_AUTO_PTR_NAME .... alias for the auto_ptr class template deprecated in C++11.
  *                          @deprecated use the RHS
  *
- * SEQAN_FORWARD_ARG,       @deprecated use the RHS
- *
+ * SEQAN_FORWARD_ARG and
  * SEQAN_FORWARD_CARG ..... macros to insert between argument type and name ...
  *                          @deprecated use the RHS
  *
