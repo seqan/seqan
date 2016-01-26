@@ -45,12 +45,24 @@
 // NOTE(esiragusa): nvcc header must be included even if __CUDACC__ is not defined.
 #include "platform/platform_nvcc.h"
 
-// SEQAN_AUTO_PTR_NAME .... alias for the auto_ptr class template deprecated in C++11.
-// SEQAN_FORWARD_ARG,
-// SEQAN_FORWARD_CARG ..... macros to insert between argument type and name ...
-// SEQAN_FORWARD_RETURN ... or return type and function name to declare forwarding of variables
-// SEQAN_FORWARD .......... pass a variable as (of type T) as it was given to a function
-// SEQAN_MOVE ............. pass a variable to a function and never use it again
+/**
+ * SEQAN_AUTO_PTR_NAME .... alias for the auto_ptr class template deprecated in C++11.
+ *                          @deprecated use the RHS
+ *
+ * SEQAN_FORWARD_ARG,       @deprecated use the RHS
+ *
+ * SEQAN_FORWARD_CARG ..... macros to insert between argument type and name ...
+ *                          @deprecated use the RHS
+ *
+ * SEQAN_FORWARD_RETURN ... or return type and function name to declare forwarding of variables
+ *                          @deprecated use the RHS
+ *
+ * SEQAN_FORWARD .......... pass a variable as (of type T) as it was given to a function
+ *                          @deprecated use the RHS
+ *
+ * SEQAN_MOVE ............. pass a variable to a function and never use it again
+ *                          @deprecated use the RHS
+ */
 
 #define SEQAN_AUTO_PTR_NAME     unique_ptr
 #define SEQAN_FORWARD_ARG       &&
