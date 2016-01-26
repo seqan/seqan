@@ -36,7 +36,7 @@
                         console.log('p == ' + p + ' -- hash = ' + hash);
                     }
                     if(window.lookup.hasOwnProperty(p+hash)) { // eg. "enum_*.html"
-                        redirectTo = window.lookup[p+hash] + '.html'
+                        redirectTo = window.lookup[p+hash] + '.html';
                     }
                     else if(window.lookup.hasOwnProperty(p)) { // valid for entries in "class_*.html"
                         redirectTo = window.lookup[p] + '.html#' + encodeURIComponent(p + hash);
