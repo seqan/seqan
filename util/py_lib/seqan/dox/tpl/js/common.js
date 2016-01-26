@@ -35,7 +35,6 @@
                         hash = '::' + tmp.split('::')[1];
                         console.log('p == ' + p + ' -- hash = ' + hash);
                     }
-
                     if(window.lookup.hasOwnProperty(p+hash)) { // eg. "enum_*.html"
                         redirectTo = window.lookup[p+hash] + '.html'
                     }
