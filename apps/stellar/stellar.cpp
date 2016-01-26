@@ -434,10 +434,10 @@ _parseOptions(ArgumentParser & parser, TOptions & options)
     getOptionValue(options.disabledQueriesFile, parser, "outDisabled");
     getOptionValue(options.noRT, parser, "no-rt");
 
-    CharString tmp = options.outputFile;
-    toLower(tmp);
-
-    if (endsWith(tmp, ".gff"))
+    CharString tmp = options.outputFile; 
+    toLower(tmp); 
+    
+    if (endsWith(tmp, ".gff")) 
         options.outputFormat = "gff";
     else if (endsWith(tmp, ".txt"))
         options.outputFormat = "txt";

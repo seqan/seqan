@@ -57,7 +57,7 @@ SEQAN_BEGIN_TESTSUITE(Sequence tests)
     SEQAN_CALL_TEST(test_sequence_adaptions_iterators_std_string);
     SEQAN_CALL_TEST(test_sequence_adaptions_sequence_interface_std_string);
     SEQAN_CALL_TEST(test_sequence_adaptions_sequence_memory_std_string);
-
+	
 	// Test adaptions for std::vector.
     SEQAN_CALL_TEST(test_sequence_adaptions_metafunctions_std_vector);
     SEQAN_CALL_TEST(test_sequence_adaptions_iterators_std_vector);
@@ -73,7 +73,7 @@ SEQAN_BEGIN_TESTSUITE(Sequence tests)
     SEQAN_CALL_TEST(test_sequence_adaptions_metafunctions_std_list);
     SEQAN_CALL_TEST(test_sequence_adaptions_iterators_std_list);
     SEQAN_CALL_TEST(test_sequence_adaptions_sequence_interface_std_list);
-
+    
     // Use the constant EMPTY_STRING once to get rid of linker error in Visual Studio.
     (void)seqan::String<char const, seqan::CStyle>::EMPTY_STRING;
 
