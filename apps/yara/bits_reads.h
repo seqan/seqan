@@ -186,4 +186,10 @@ getMateSeqId(TReadSeqs const & readSeqs, TReadSeqId readSeqId)
     }
 }
 
+template <typename TReadSeqs, typename TReadId, typename TErrors>
+inline float toErrorRate(TReadSeqs const & readSeqs, TReadId readId, TErrors errors)
+{
+    return (float)errors / length(readSeqs[readId]);
+}
+
 #endif  // #ifndef APP_YARA_BITS_READS_H_

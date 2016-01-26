@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the ucsc_io module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 project (seqan_tests_test_ucsc_io)
 message (STATUS "Configuring tests/test_ucsc_io")
 

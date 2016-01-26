@@ -6,7 +6,7 @@
 # CMakeLists.txt file for sak.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_sak)
 message (STATUS "Configuring apps/sak")
 

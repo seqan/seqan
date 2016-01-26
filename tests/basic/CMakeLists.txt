@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the basic module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 project (seqan_tests_basic)
 message (STATUS "Configuring tests/basic")
 
@@ -122,6 +122,29 @@ add_executable (
   test_basic_iterator.h)
 target_link_libraries (test_basic_iterator ${SEQAN_LIBRARIES})
 
+add_executable (
+  test_basic_simd_vector
+  test_basic_simd_vector.cpp
+  test_basic_simd_vector.h)
+target_link_libraries (test_basic_simd_vector ${SEQAN_LIBRARIES})
+
+if (MSVC)
+  SET (_FLAGS "/arch:SSE4")
+else (MSVC)
+  SET (_FLAGS "-march=native")
+  if (CMAKE_COMPILER_IS_GNUCXX)
+    SET (_FLAGS "${_FLAGS} -fabi-version=6")
+    if (APPLE)
+      #exec_program("/usr/sbin/sysctl -n hw.optional.avx2_0" OUTPUT_VARIABLE _HAS_AVX2)
+      #if (NOT "${_HAS_AVX2}" EQUAL "1")
+      SET (_FLAGS "${_FLAGS} -mno-avx")
+      #endif ()
+    endif (APPLE)
+  endif (CMAKE_COMPILER_IS_GNUCXX)
+endif (MSVC)
+
+SET_TARGET_PROPERTIES(test_basic_simd_vector PROPERTIES COMPILE_FLAGS ${_FLAGS})
+
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
@@ -142,3 +165,4 @@ add_test (NAME test_test_basic_smart_pointer COMMAND $<TARGET_FILE:test_basic_sm
 add_test (NAME test_test_basic_container COMMAND $<TARGET_FILE:test_basic_container>)
 add_test (NAME test_test_basic_proxy COMMAND $<TARGET_FILE:test_basic_proxy>)
 add_test (NAME test_test_basic_iterator COMMAND $<TARGET_FILE:test_basic_iterator>)
+add_test (NAME test_test_basic_simd_vector COMMAND $<TARGET_FILE:test_basic_simd_vector>)

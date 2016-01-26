@@ -374,7 +374,7 @@ This is useful when having many ``CMakeLists.txt`` files open and you want to qu
    # CMakeLists.txt file for my_app.
    # ===========================================================================
 
-   cmake_minimum_required (VERSION 2.8.2)
+   cmake_minimum_required (VERSION 3.0.0)
    project (src_my_app)
    message (STATUS "Configuring src/my_app")
 

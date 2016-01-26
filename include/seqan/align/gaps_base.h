@@ -560,6 +560,82 @@ countTrailingGaps(TGaps const & gaps)
 }
 
 // ----------------------------------------------------------------------------
+// Function countGapOpens()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#countGapOpens
+ * @brief The number of gap openings.
+ *
+ * @signature TSize countGapOpens(gaps);
+ *
+ * @param[in] gaps    The Gaps object to query.
+ *
+ * @return TSize The total number of gap openings (Metafunction: @link ContainerConcept#Size @endlink).
+ */
+
+template <typename TGaps>
+inline typename Size<TGaps>::Type
+countGapOpens(TGaps const & gaps)
+{
+    typedef typename Iterator<TGaps const, Standard>::Type   TIter;
+    typedef typename Size<TGaps const>::Type                 TCount;
+
+    TCount count = 0;
+
+    TIter it = begin(gaps, Standard());
+    TIter itEnd = end(gaps, Standard());
+
+    while (it != itEnd)
+    {
+        count += isGap(it);
+        it += std::max(countGaps(it), (TCount)1);
+    }
+
+    SEQAN_ASSERT(it == itEnd);
+
+    return count;
+}
+
+// ----------------------------------------------------------------------------
+// Function countGapExtensions()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#countGapExtensions
+ * @brief The number of gap extensions.
+ *
+ * @signature TSize countGapExtensions(gaps);
+ *
+ * @param[in] gaps    The Gaps object to query.
+ *
+ * @return TSize The total number of gap extensions (Metafunction: @link ContainerConcept#Size @endlink).
+ */
+
+template <typename TGaps>
+inline typename Size<TGaps>::Type
+countGapExtensions(TGaps const & gaps)
+{
+    typedef typename Iterator<TGaps const, Standard>::Type   TIter;
+    typedef typename Size<TGaps const>::Type                 TCount;
+
+    TCount count = 0;
+
+    TIter it = begin(gaps, Standard());
+    TIter itEnd = end(gaps, Standard());
+
+    while (it != itEnd)
+    {
+        count += countGaps(it);
+        it += std::max(countGaps(it), (TCount)1);
+    }
+
+    SEQAN_ASSERT(it == itEnd);
+
+    return count;
+}
+
+// ----------------------------------------------------------------------------
 // Function countCharacters()
 // ----------------------------------------------------------------------------
 

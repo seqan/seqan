@@ -66,54 +66,29 @@ public:
     Pattern() {
     }
 
+#ifdef SEQAN_CXX11_STANDARD
+    template <typename TNeedle2>
+    Pattern(TNeedle2 && ndl,
+            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
+    {
+        ignoreUnusedVariableWarning(dummy);
+        setHost(*this, std::forward<TNeedle2>(ndl));
+    }
+#else
     template <typename TNeedle2>
     Pattern(TNeedle2 const & ndl)
     {
 SEQAN_CHECKPOINT
         setHost(*this, ndl);
     }
-
-    ~Pattern() {
-        SEQAN_CHECKPOINT
-    }
+#endif  // SEQAN_CXX11_STANDARD
 //____________________________________________________________________________
-};
-
-//////////////////////////////////////////////////////////////////////////////
-// Host Metafunctions
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle>
-struct Host< Pattern<TNeedle, Quasar> >
-{
-    typedef TNeedle Type;
-};
-
-template <typename TNeedle>
-struct Host< Pattern<TNeedle, Quasar> const>
-{
-    typedef TNeedle const Type;
 };
 
 
 //////////////////////////////////////////////////////////////////////////////
 // Functions
 //////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle, typename TNeedle2>
-inline void
-setHost (Pattern<TNeedle, Quasar> & me, TNeedle2 const& needle)
-{
-    SEQAN_CHECKPOINT
-    setValue(me.data_host, needle);
-}
-
-template <typename TNeedle, typename TNeedle2>
-inline void
-setHost (Pattern<TNeedle, Quasar> & me, TNeedle2 & needle)
-{
-    setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
-}
 
 //____________________________________________________________________________
 
@@ -124,24 +99,6 @@ inline void _patternInit (Pattern<TNeedle, Quasar> & /*me*/)
 SEQAN_CHECKPOINT
 }
 
-
-//____________________________________________________________________________
-
-template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, Quasar>const>::Type &
-host(Pattern<TNeedle, Quasar> & me)
-{
-SEQAN_CHECKPOINT
-    return value(me.data_host);
-}
-
-template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, Quasar>const>::Type &
-host(Pattern<TNeedle, Quasar> const & me)
-{
-SEQAN_CHECKPOINT
-    return value(me.data_host);
-}
 
 //____________________________________________________________________________
 

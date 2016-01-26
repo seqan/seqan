@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the parse_lm module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 project (seqan_tests_parse_lm)
 message (STATUS "Configuring tests/parse_lm")
 

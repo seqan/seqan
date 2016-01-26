@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the graph_msa module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 project (seqan_tests_graph_msa)
 message (STATUS "Configuring tests/graph_msa")
 

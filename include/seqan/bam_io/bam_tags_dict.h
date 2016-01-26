@@ -109,6 +109,13 @@ struct Position<BamTagsDict>
  * @brief Constructor
  *
  * @signature BamTagsDict::BamTagsDict();
+ * @signature BamTagsDict::BamTagsDict(tags);
+ *
+ * @param[in,out] tags The tags string of a @link BamAlignmentRecord @endlink to be indexed and or modified.
+ *
+ * Note, the second constructor stores a reference to <tt>tags</tt> using a @link Holder @endlink.
+ * In case of modifying the BamTagsDict by adding or removing tags those changes will be transparently transferred
+ * to the origin of <tt>tags</tt>.
  */
 
 class BamTagsDict
@@ -163,9 +170,9 @@ host(BamTagsDict const & bamTags)
  * @fn BamTagsDict#hasIndex
  * @brief Returns whether the BamTagsDict has an index.
  *
- * @signature bool hasIndex(dict);
+ * @signature bool hasIndex(tagsDict);
  *
- * @param[in] dict The @link BamTagsDict @endlink to query.
+ * @param[in] tagsDict The @link BamTagsDict @endlink to query.
  *
  * @return bool <tt>true</tt> if <tt>dict</tt> has an index and <tt>false</tt> otherwise.
  */
@@ -246,9 +253,9 @@ getBamTypeSize(char c)
  * @fn BamTagsDict#buildIndex
  * @brief Build index for a BamTagsDict  object.
  *
- * @signature void buildIndex(bamTags);
+ * @signature void buildIndex(tagsDict);
  *
- * @param[in,out] bamTags The BamTagsDict object to build the index for.
+ * @param[in,out] tagsDict The BamTagsDict object to build the index for.
  */
 
 inline void
@@ -324,6 +331,15 @@ _dataHost(BamTagsDict const & bamTags)
 // Function setHost()
 // ----------------------------------------------------------------------------
 
+#ifdef SEQAN_CXX11_STANDARD
+template <typename THost>
+inline void
+setHost(BamTagsDict & me, THost && host_)
+{
+    setValue(_dataHost(me), std::forward<THost>(host_));
+    clear(me._positions);
+}
+#else
 template <typename THost>
 inline void
 setHost(BamTagsDict & me, THost & host_)
@@ -341,7 +357,7 @@ setHost(BamTagsDict & me, THost const & host_)
     setValue(_dataHost(me), host_);
     clear(me._positions);
 }
-
+#endif  // SEQAN_CXX11_STANDARD
 // ----------------------------------------------------------------------------
 // Function length()
 // ----------------------------------------------------------------------------
@@ -376,10 +392,10 @@ length(BamTagsDict const & tags)
  * @fn BamTagsDict#getTagType
  * @brief Returns the tag type char for an entry of a BamTagsDict.
  *
- * @signature char getTagType(tags, id);
+ * @signature char getTagType(tagsDict, id);
  *
- * @param[in] tags The BamTagsDict to query.
- * @param[in] id   The id of the tag for which to determine the type. See @link BamTagsDict#findTagKey @endlink.
+ * @param[in] tagsDict The BamTagsDict to query.
+ * @param[in] id       The id of the tag for which to determine the type. See @link BamTagsDict#findTagKey @endlink.
  *
  * @return char A <tt>char</tt> that identifies the tag type.
  */
@@ -449,13 +465,13 @@ findTagKey(TId & id, BamTagsDict const & tags, TKey const & key)
  * @fn BamTagsDict#extractTagValue
  * @brief Extract and cast "atomic" value from tags string with index <tt>id</tt>.
  *
- * @signature bool extractTagValue(dest, tags, id)
+ * @signature bool extractTagValue(dest, tagsDict, id)
  *
  * @param[out] dest The variable to write the value to.The value is first copied in a variable of the type indicated in
  *                  the BAM file. Then it is cast into the type of <tt>dest</tt>.
  *
- * @param[in] tags The BamTagsDict object to query.
- * @param[in] id   The id of the tag to extract the value from. See @link BamTagsDict#findTagKey @endlink.
+ * @param[in] tagsDict The BamTagsDict object to query.
+ * @param[in] id       The id of the tag to extract the value from. See @link BamTagsDict#findTagKey @endlink.
  *
  * @return bool <tt>true</tt> if the value could be extracted.
  *
@@ -497,7 +513,7 @@ struct ExtractTagValueHelper_
 };
 
 template <typename TResultValue, typename TId>
-SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TResultValue> >, bool)
+SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TResultValue> >, bool)
 extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
 {
     typedef Infix<Host<BamTagsDict const>::Type>::Type TInfix;
@@ -582,14 +598,14 @@ inline char getBamTypeChar(T const &)
  *
  * @brief Set the value of a tag through a @link BamTagsDict @endlink.
  *
- * @signature bool setTagValue(tags, key, val[, typeC]);
+ * @signature bool setTagValue(tagsDict, key, val[, typeC]);
  *
- * @param[in,out] tags  The BamTagsDict to modify.
- * @param[in]     key   The key of the tag. Must be a sequence of length 2.
- * @param[in]     val   The value to set the tag to.
- * @param[in]     typeC BAM type char to use. For portability (so the generated files are the same on all platforms), use
- *                      a signed/unsigned qualified type for <tt>val</tt> or give <tt>typeC</tt>. Also see the remarks
- *                      for @link getBamTypeChar @endlink. Types: getBamTypeChar@.
+ * @param[in,out] tagsDict  The BamTagsDict to modify.
+ * @param[in]     key       The key of the tag. Must be a sequence of length 2.
+ * @param[in]     val       The value to set the tag to.
+ * @param[in]     typeC     BAM type char to use. For portability (so the generated files are the same on all platforms), use
+ *                          a signed/unsigned qualified type for <tt>val</tt> or give <tt>typeC</tt>. Also see the remarks
+ *                          for @link getBamTypeChar @endlink. Types: getBamTypeChar@.
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.  This function can fail if the key is not a valid tag id (e.g. does
  *              not have length 2) or if the type of <tt>val</tt> is not an atomic value or a string (anything but
@@ -672,7 +688,7 @@ struct ToBamTagValueHelper_
 
 // Convert "atomic" value to BAM tag.  Return whether val was atomic.
 template <typename TBamValueSequence, typename TValue>
-SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TValue> >, bool)
+SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TValue> >, bool)
 _toBamTagValue(TBamValueSequence & result, TValue const & val, char typeC)
 {
     if (typeC == 'Z')
@@ -753,14 +769,14 @@ setTagValue(BamTagsDict & tags, TKey const & key, TValue const & val)
  *
  * @brief Append a tag/value pair to a @link BamTagsDict @endlink.
  *
- * @signature bool appendTagValue(tags, key, val[, typeC]);
+ * @signature bool appendTagValue(tagsDict, key, val[, typeC]);
  *
- * @param[in,out] tags  The BamTagsDict to modify.
- * @param[in]     key   The key of the tag. Must be a sequence of length 2.
- * @param[in]     val   The value to set the tag to.
- * @param[in]     typeC BAM type char to use. For portability (so the generated files are the same on all platforms), use
- *                      a signed/unsigned qualified type for <tt>val</tt> or give <tt>typeC</tt>. Also see the remarks
- *                      for @link getBamTypeChar @endlink. Types: getBamTypeChar@.
+ * @param[in,out] tagsDict  The BamTagsDict to modify.
+ * @param[in]     key       The key of the tag. Must be a sequence of length 2.
+ * @param[in]     val       The value to set the tag to.
+ * @param[in]     typeC     BAM type char to use. For portability (so the generated files are the same on all platforms), use
+ *                          a signed/unsigned qualified type for <tt>val</tt> or give <tt>typeC</tt>. Also see the remarks
+ *                          for @link getBamTypeChar @endlink. Types: getBamTypeChar@.
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.  This function can fail if the key is not a valid tag id (e.g. does
  *              not have length 2) or if the type of <tt>val</tt> is not an atomic value or a string (anything but
@@ -822,7 +838,7 @@ appendTagValue(TDictOrString & tags, TKey const & key, TValue const & val)
  */
 
 template <typename TKey>
-inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TKey> >, bool)
+inline SEQAN_FUNC_DISABLE_IF(Is<NumberConcept<TKey> >, bool)
 eraseTag(BamTagsDict & tags, TKey const & key)
 {
     if (!hasIndex(tags))
@@ -838,7 +854,7 @@ eraseTag(BamTagsDict & tags, TKey const & key)
 }
 
 template <typename TId>
-inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TId> >, bool)
+inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TId> >, bool)
 eraseTag(BamTagsDict & tags, TId const & id)
 {
     typedef typename Iterator<String<typename BamTagsDict::TPos>, Standard>::Type TIter;
@@ -853,6 +869,35 @@ eraseTag(BamTagsDict & tags, TId const & id)
     for (; it != itEnd; ++it)
         *it -= delta;
     return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function tagsToBamRecord();
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamTagsDict#tagsToBamRecord
+ * @brief Writes the .
+ *
+ * @signature void tagsToBamRecord(record, tagsDict)
+ *
+ * @param[out] record   The @link BamAlignmentRecord @endlink whose tags field is overwritten.
+ * @param[in]  tagsDict The @link BamTagsDict @endlink to get the tags from.
+ *
+ * This is semantically the same as:
+ * @code{.cpp}
+ * record.tags = host(tagsDict);
+ * @endcode
+ *
+ * See @link BamTagsDict @endlink for an example.
+ */
+
+
+inline void
+tagsToBamRecord(BamAlignmentRecord & record,
+                BamTagsDict const & dict)
+{
+    record.tags = host(dict);
 }
 
 }  // namespace seqan

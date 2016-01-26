@@ -37,7 +37,6 @@
 #ifndef APP_YARA_BITS_MATCHES_H_
 #define APP_YARA_BITS_MATCHES_H_
 
-
 namespace seqan {
 
 // ============================================================================
@@ -215,7 +214,7 @@ struct MemberBits<Match<TSpec>, ReadSize>
 template <typename TSpec>
 struct MemberBits<Match<TSpec>, Errors>
 {
-    static const unsigned VALUE = 5;
+    static const unsigned VALUE = 7;
 };
 }
 
@@ -276,36 +275,12 @@ struct MatchesCompactor
     }
 };
 
-// ----------------------------------------------------------------------------
-// Class MatchesPicker
-// ----------------------------------------------------------------------------
-
-template <typename TMatches>
-struct MatchesPicker
-{
-    typedef typename Value<TMatches>::Type TMatch;
-
-    Rng<MersenneTwister> rng;
-    TMatch invalid;
-
-    MatchesPicker() :
-        rng(0xABAD1DEA)
-    {
-        setInvalid(invalid);
-    }
-
-    TMatch operator() (TMatches const & matches)
-    {
-        return empty(matches) ? invalid : matches[pickRandomNumber(rng) % length(matches)];
-    }
-};
-
 // ============================================================================
-// Functions
-// ============================================================================
-
-// ----------------------------------------------------------------------------
 // Match Setters
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function setReadId()
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TReadSeqs, typename TReadSeqId>
@@ -314,6 +289,16 @@ inline void setReadId(Match<TSpec> & me, TReadSeqs const & readSeqs, TReadSeqId 
     me.readId = getReadId(readSeqs, readSeqId);
     me.isRev = isRevReadSeq(readSeqs, readSeqId);
 }
+
+template <typename TSpec, typename TReadId>
+inline void setReadId(Match<TSpec> & me, TReadId readId)
+{
+    me.readId = readId;
+}
+
+// ----------------------------------------------------------------------------
+// Function setContigPosition()
+// ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TContigBegin, typename TContigEnd>
 inline void setContigPosition(Match<TSpec> & me, TContigBegin contigBegin, TContigEnd contigEnd)
@@ -326,6 +311,46 @@ inline void setContigPosition(Match<TSpec> & me, TContigBegin contigBegin, TCont
     me.contigEnd = getValueI2(contigEnd) - getValueI2(contigBegin);
 }
 
+// ----------------------------------------------------------------------------
+// Function addContigPosition()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TDelta, typename TContigSeqs>
+inline void addContigPosition(Match<TSpec> & me, TDelta delta, TContigSeqs const & contigSeqs)
+{
+    typedef typename Member<Match<TSpec>, ContigSize>::Type TContigSize;
+
+    SEQAN_ASSERT_GEQ(delta, 0u);
+    TContigSize contigLength = length(contigSeqs[getMember(me, ContigId())]);
+    me.contigBegin = (me.contigBegin + me.contigEnd + delta < contigLength) ?
+                      me.contigBegin + delta : contigLength - me.contigEnd;
+}
+
+// ----------------------------------------------------------------------------
+// Function subContigPosition()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TDelta>
+inline void subContigPosition(Match<TSpec> & me, TDelta delta)
+{
+    SEQAN_ASSERT_GEQ(delta, 0u);
+    me.contigBegin = (me.contigBegin > delta) ? me.contigBegin - delta : 0;
+}
+
+// ----------------------------------------------------------------------------
+// Function flipStrand()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+inline void flipStrand(Match<TSpec> & me)
+{
+    me.isRev = !me.isRev;
+}
+
+// ----------------------------------------------------------------------------
+// Function setInvalid()
+// ----------------------------------------------------------------------------
+
 template <typename TSpec>
 inline void setInvalid(Match<TSpec> & me)
 {
@@ -336,6 +361,10 @@ inline void setInvalid(Match<TSpec> & me)
     me.contigEnd = 0;
     me.errors = MemberLimits<Match<TSpec>, Errors>::VALUE;
 }
+
+// ============================================================================
+// Match Getters
+// ============================================================================
 
 // ----------------------------------------------------------------------------
 // Function getMember()
@@ -383,11 +412,29 @@ getMember(Match<TSpec> const & me, Errors)
     return me.errors;
 }
 
+// ----------------------------------------------------------------------------
+// Function getCigarLength()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+inline unsigned getCigarLength(Match<TSpec> const & me)
+{
+    return isInvalid(me) ? 0 : 2 * getMember(me, Errors()) + 1;
+}
+
+// ----------------------------------------------------------------------------
+// Function onReverseStrand()
+// ----------------------------------------------------------------------------
+
 template <typename TSpec>
 inline bool onReverseStrand(Match<TSpec> const & me)
 {
     return me.isRev;
 }
+
+// ----------------------------------------------------------------------------
+// Function onForwardStrand()
+// ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline bool onForwardStrand(Match<TSpec> const & me)
@@ -396,21 +443,18 @@ inline bool onForwardStrand(Match<TSpec> const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Composite Getters
+// Function isInvalid()
 // ----------------------------------------------------------------------------
-
-template <typename TReadSeqs, typename TSpec>
-inline typename Size<TReadSeqs>::Type
-getReadSeqId(Match<TSpec> const & me, TReadSeqs const & readSeqs)
-{
-    return onForwardStrand(me) ? getFirstMateFwdSeqId(readSeqs, me.readId) : getFirstMateRevSeqId(readSeqs, me.readId);
-}
 
 template <typename TSpec>
 inline bool isInvalid(Match<TSpec> const & me)
 {
     return getMember(me, ContigBegin()) == getMember(me, ContigEnd());
 }
+
+// ----------------------------------------------------------------------------
+// Function isValid()
+// ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline bool isValid(Match<TSpec> const & me)
@@ -419,60 +463,35 @@ inline bool isValid(Match<TSpec> const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function getErrors()
+// Function getReadSeqId()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec>
-inline typename Member<Match<TSpec>, Errors>::Type
-getErrors(Match<TSpec> const & a, Match<TSpec> const & b)
+template <typename TSpec, typename TReadSeqs>
+inline typename Size<TReadSeqs>::Type
+getReadSeqId(Match<TSpec> const & me, TReadSeqs const & readSeqs)
 {
-    return (typename Member<Match<TSpec>, Errors>::Type)getMember(a, Errors()) + getMember(b, Errors());
+    return onForwardStrand(me) ? getFirstMateFwdSeqId(readSeqs, me.readId) : getFirstMateRevSeqId(readSeqs, me.readId);
 }
 
 // ----------------------------------------------------------------------------
-// Function getTemplateLength()
+// Function getReadLength()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec>
-inline typename Member<Match<TSpec>, ContigSize>::Type
-getTemplateLength(Match<TSpec> const & a, Match<TSpec> const & b)
+template <typename TSpec, typename TReadSeqs>
+inline typename Member<Match<TSpec>, ReadSize>::Type
+getReadLength(Match<TSpec> const & me, TReadSeqs const & readSeqs)
 {
-    typedef typename Member<Match<TSpec>, ContigSize>::Type TContigSize;
-
-    if (getMember(a, ContigId()) != getMember(b, ContigId()))
-        return MaxValue<TContigSize>::VALUE;
-
-    if (getMember(a, ContigBegin()) < getMember(b, ContigBegin()))
-        return getMember(b, ContigEnd()) - getMember(a, ContigBegin());
-    else
-        return getMember(a, ContigEnd()) - getMember(b, ContigBegin());
+    return length(readSeqs[getMember(me, ReadId())]);
 }
 
 // ----------------------------------------------------------------------------
-// Function getTemplateDeviation()
+// Function getErrorRate()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TSize>
-inline typename Member<Match<TSpec>, ContigSize>::Type
-getTemplateDeviation(Match<TSpec> const & a, Match<TSpec> const & b, TSize expectedLength)
+template <typename TSpec, typename TReadSeqs>
+inline float getErrorRate(Match<TSpec> const & me, TReadSeqs const & readSeqs)
 {
-    typedef typename Member<Match<TSpec>, ContigSize>::Type TContigSize;
-    typedef typename MakeSigned<TContigSize>::Type          TSignedContigSize;
-
-    if (isValid(a) && isValid(a))
-        return _abs((TSignedContigSize)getTemplateLength(a, b) - (TSignedContigSize)expectedLength);
-    else
-        return MaxValue<TContigSize>::VALUE;
-}
-
-// ----------------------------------------------------------------------------
-// Function cigarLength()
-// ----------------------------------------------------------------------------
-
-template <typename TSpec>
-inline unsigned getCigarLength(Match<TSpec> const & me)
-{
-    return isInvalid(me) ? 0 : 2 * getMember(me, Errors()) + 1;
+    return (float)getMember(me, Errors()) / getReadLength(me, readSeqs);
 }
 
 // ----------------------------------------------------------------------------
@@ -505,6 +524,21 @@ inline __uint64 getSortKey(Match<TSpec> const & me, ContigEnd)
            ((__uint64)getMember(me, Errors()));
 }
 
+// ============================================================================
+// Match Pair Getters
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function getErrors()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+inline typename Member<Match<TSpec>, Errors>::Type
+getErrors(Match<TSpec> const & a, Match<TSpec> const & b)
+{
+    return (typename Member<Match<TSpec>, Errors>::Type)getMember(a, Errors()) + getMember(b, Errors());
+}
+
 // ----------------------------------------------------------------------------
 // Function strandEqual()
 // ----------------------------------------------------------------------------
@@ -522,7 +556,7 @@ inline bool strandEqual(Match<TSpec> const & a, Match<TSpec> const & b)
 template <typename TSpec>
 inline bool contigEqual(Match<TSpec> const & a, Match<TSpec> const & b)
 {
-    return getMember(a, ContigId()) == getMember(b, ContigId()) && strandEqual(a, b);
+    return getMember(a, ContigId()) == getMember(b, ContigId());
 }
 
 // ----------------------------------------------------------------------------
@@ -532,7 +566,7 @@ inline bool contigEqual(Match<TSpec> const & a, Match<TSpec> const & b)
 template <typename TSpec>
 inline bool isDuplicate(Match<TSpec> const & a, Match<TSpec> const & b, ContigBegin)
 {
-    return contigEqual(a, b) && getMember(a, ContigBegin()) == getMember(b, ContigBegin());
+    return contigEqual(a, b) && strandEqual(a, b) && getMember(a, ContigBegin()) == getMember(b, ContigBegin());
 }
 
 // ----------------------------------------------------------------------------
@@ -542,8 +576,91 @@ inline bool isDuplicate(Match<TSpec> const & a, Match<TSpec> const & b, ContigBe
 template <typename TSpec>
 inline bool isDuplicate(Match<TSpec> const & a, Match<TSpec> const & b, ContigEnd)
 {
-    return contigEqual(a, b) && getMember(a, ContigEnd()) == getMember(b, ContigEnd());
+    return contigEqual(a, b) && strandEqual(a, b) && getMember(a, ContigEnd()) == getMember(b, ContigEnd());
 }
+
+// ----------------------------------------------------------------------------
+// Function isEqual()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+inline bool isEqual(Match<TSpec> const & a, Match<TSpec> const & b)
+{
+    return getMember(a, ReadId()) == getMember(b, ReadId()) &&
+           contigEqual(a, b) && strandEqual(a, b) &&
+           getMember(a, ContigBegin()) == getMember(b, ContigBegin()) &&
+           getMember(a, ContigEnd()) == getMember(b, ContigEnd()) &&
+           getMember(a, Errors()) == getMember(b, Errors());
+}
+
+// ----------------------------------------------------------------------------
+// Function getLibraryLength()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+inline typename Member<Match<TSpec>, ContigSize>::Type
+getLibraryLength(Match<TSpec> const & a, Match<TSpec> const & b)
+{
+    typedef typename Member<Match<TSpec>, ContigSize>::Type TContigSize;
+
+    if (isValid(a) && isValid(b) && contigEqual(a, b))
+    {
+        if (getMember(b, ContigEnd()) > getMember(a, ContigBegin()))
+            return getMember(b, ContigEnd()) - getMember(a, ContigBegin());
+        else
+            return getMember(a, ContigEnd()) - getMember(b, ContigBegin());
+    }
+    else
+    {
+        return MaxValue<TContigSize>::VALUE;
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function getLibraryDeviation()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TSize>
+inline typename Member<Match<TSpec>, ContigSize>::Type
+getLibraryDeviation(Match<TSpec> const & a, Match<TSpec> const & b, TSize meanLength)
+{
+    typedef typename Member<Match<TSpec>, ContigSize>::Type TContigSize;
+    typedef typename MakeSigned<TContigSize>::Type          TSignedContigSize;
+
+    if (isValid(a) && isValid(b) && contigEqual(a, b))
+        return _abs((TSignedContigSize)getLibraryLength(a, b) - (TSignedContigSize)meanLength);
+    else
+        return MaxValue<TContigSize>::VALUE;
+}
+
+// ----------------------------------------------------------------------------
+// Function orientationProper()
+// ----------------------------------------------------------------------------
+// Check orientation --> ... <--
+
+template <typename TSpec>
+inline bool orientationProper(Match<TSpec> const & one, Match<TSpec> const & two)
+{
+    bool oneBeforeTwo = getMember(one, ContigBegin()) < getMember(two, ContigBegin());
+
+    return ((onForwardStrand(one) && onReverseStrand(two) && oneBeforeTwo) ||
+            (onForwardStrand(two) && onReverseStrand(one) && !oneBeforeTwo));
+}
+
+// ----------------------------------------------------------------------------
+// Function isProper()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TMean, typename TStdDev>
+inline bool isProper(Match<TSpec> const & one, Match<TSpec> const & two, TMean mean, TStdDev stdDev)
+{
+    return orientationProper(one, two) &&
+           getLibraryDeviation(one, two, mean) < 6 * stdDev;
+}
+
+// ============================================================================
+// Functions
+// ============================================================================
 
 // ----------------------------------------------------------------------------
 // Function compactUniqueMatches()
@@ -684,110 +801,250 @@ findMatch(TMatches const & matches, TMatch const & match)
 // Function sortMatches()
 // ----------------------------------------------------------------------------
 
-//template <typename TMatches, typename TKey>
-//inline void sortMatches(TMatches & matches)
-//{
-//    typedef typename Value<TMatches>::Type  TMatch;
-//
-//    sort(matches, MatchSorter<TMatch, TKey>());
-//}
-
-template <typename TIterator, typename TKey>
-inline void sortMatches(TIterator & it)
+template <typename TMatches, typename TKey>
+inline void sortMatches(TMatches SEQAN_FORWARD_ARG matches)
 {
-    typedef typename Value<TIterator>::Type TMatches;
     typedef typename Value<TMatches>::Type  TMatch;
 
-    TMatches matches = value(it);
     sort(matches, MatchSorter<TMatch, TKey>());
 }
 
 // ----------------------------------------------------------------------------
-// Function findSameContig()
+// Function findProperMates()
 // ----------------------------------------------------------------------------
-// Find the first pair of matches on the same contig.
 
-template <typename TMatchesIterator, typename TMatches>
-inline bool findSameContig(TMatchesIterator & leftIt, TMatchesIterator & rightIt,
-                           TMatches const & left, TMatches const & right)
+template <typename TMatches, typename TMatch, typename TReadSeqs, typename TContigSeqs, typename TNumber1, typename TNumber2>
+inline typename Infix<TMatches const>::Type
+findProperMates(TMatches const & mates, TMatch const & match,
+                TReadSeqs const & readSeqs, TContigSeqs const & contigSeqs,
+                TNumber1 mean, TNumber2 stdDev)
 {
-    while (!atEnd(leftIt, left) && !atEnd(rightIt, right))
+    typedef typename Iterator<TMatches const>::Type TIter;
+    typedef typename Size<TReadSeqs>::Type          TReadId;
+    typedef typename Value<TReadSeqs const>::Type   TReadSeq;
+    typedef typename Size<TReadSeq>::Type           TReadSeqSize;
+    typedef typename MakeSigned<TReadSeqSize>::Type TSignedSize;
+
+    TReadId mateId = getMateId(readSeqs, getMember(match, ReadId()));
+    TReadSeqSize mateLength = length(readSeqs[mateId]);
+
+    // Create lower and upper bound for the mate.
+    TMatch mateLeq = match;
+    setReadId(mateLeq, mateId);
+    flipStrand(mateLeq);
+    TMatch mateGeq = mateLeq;
+    mateLeq.errors = 0;
+    mateGeq.errors = MemberLimits<TMatch, Errors>::VALUE;
+
+    TReadSeqSize deltaMinus = std::max((TSignedSize)0, (TSignedSize)mean - 6 * stdDev - (TSignedSize)mateLength);
+    TReadSeqSize deltaPlus = std::max((TSignedSize)0, (TSignedSize)mean + 6 * stdDev - (TSignedSize)mateLength);
+
+    // --> ... mate
+    if (onForwardStrand(match))
     {
-        if (getMember(*leftIt, ContigId()) < getMember(*rightIt, ContigId()))
-            findNextContig(leftIt, left, getMember(*leftIt, ContigId()));
-        else if (getMember(*leftIt, ContigId()) > getMember(*rightIt, ContigId()))
-            findNextContig(rightIt, right, getMember(*rightIt, ContigId()));
-        else
-            return true;
+        addContigPosition(mateLeq, deltaMinus, contigSeqs);
+        addContigPosition(mateGeq, deltaPlus, contigSeqs);
+    }
+    // mate ... <--
+    else
+    {
+        subContigPosition(mateLeq, deltaPlus);
+        subContigPosition(mateGeq, deltaMinus);
     }
 
-    return false;
+    TIter first = std::lower_bound(begin(mates, Standard()), end(mates, Standard()), mateLeq, MatchSorter<TMatch, ContigBegin>());
+    TIter last = std::upper_bound(begin(mates, Standard()), end(mates, Standard()), mateGeq, MatchSorter<TMatch, ContigEnd>());
+
+    SEQAN_ASSERT_LEQ(first, last);
+
+    return infix(mates, position(first, mates), position(last, mates));
 }
 
 // ----------------------------------------------------------------------------
-// Function findNextContig()
+// Function forAllMatchesPairs()
 // ----------------------------------------------------------------------------
-// Find the first match after given contigId.
 
-template <typename TMatchesIterator, typename TMatches, typename TContigId>
-inline void findNextContig(TMatchesIterator & it, TMatches const & matches, TContigId contigId)
+template <typename TMatchesSet, typename TReadSeqs, typename TBinaryFunction, typename TThreading>
+inline void forAllMatchesPairs(TMatchesSet const & matchesSet, TReadSeqs const & readSeqs, TBinaryFunction && func, TThreading)
 {
-    while (!atEnd(it, matches) && getMember(*it, ContigId()) <= contigId) ++it;
-}
+    typedef typename Size<TReadSeqs>::Type             TReadId;
+    typedef typename Value<TMatchesSet const>::Type    TMatches;
 
-// ----------------------------------------------------------------------------
-// Function findReverseStrand()
-// ----------------------------------------------------------------------------
-// Find the first match on the reverse strand of the given contigId.
-
-template <typename TMatchesIterator, typename TMatches, typename TContigId>
-inline void findReverseStrand(TMatchesIterator & it, TMatches const & matches, TContigId contigId)
-{
-    while (!atEnd(it, matches) && (getMember(*it, ContigId()) <= contigId) && onForwardStrand(*it)) ++it;
-}
-
-// ----------------------------------------------------------------------------
-// Function bucketMatches()
-// ----------------------------------------------------------------------------
-
-template <typename TMatches, typename TDelegate>
-inline void bucketMatches(TMatches const & left, TMatches const & right, TDelegate & delegate)
-{
-    typedef typename Iterator<TMatches const, Standard>::Type   TIterator;
-    typedef typename Infix<TMatches const>::Type                TInfix;
-
-    TIterator leftIt = begin(left, Standard());
-    TIterator rightIt = begin(right, Standard());
-
-    // Find matches on the same contig.
-    while (findSameContig(leftIt, rightIt, left, right))
+    forEach(seqan::Range<TReadId>(0, getPairsCount(readSeqs)), [&](TReadId pairId)
     {
-        unsigned contigId = getMember(*leftIt, ContigId());
+        TReadId firstId = getFirstMateFwdSeqId(readSeqs, pairId);
+        TReadId secondId = getSecondMateFwdSeqId(readSeqs, pairId);
 
-        TIterator leftBegin;
-        TIterator rightBegin;
+        TMatches const & firstMatches = matchesSet[firstId];
+        TMatches const & secondMatches = matchesSet[secondId];
 
-        // Find matches on forward strand.
-        leftBegin = leftIt;
-        rightBegin = rightIt;
-        findReverseStrand(leftIt, left, contigId);
-        findReverseStrand(rightIt, right, contigId);
-        TInfix leftFwd = infix(left, position(leftBegin, left), position(leftIt, left));
-        TInfix rightFwd = infix(right, position(rightBegin, right), position(rightIt, right));
+        if (!empty(firstMatches) && !empty(secondMatches))
+            func(firstMatches, secondMatches);
+    },
+    TThreading());
+}
 
-        // Find matches on reverse strand.
-        leftBegin = leftIt;
-        rightBegin = rightIt;
-        findNextContig(leftIt, left, contigId);
-        findNextContig(rightIt, right, contigId);
-        TInfix leftRev = infix(left, position(leftBegin, left), position(leftIt, left));
-        TInfix rightRev = infix(right, position(rightBegin, right), position(rightIt, right));
+// ----------------------------------------------------------------------------
+// Function getResidualWeight()
+// ----------------------------------------------------------------------------
+// Residual weight of unseen strata.
 
-        delegate(leftFwd, rightRev, FwdRev());
-        delegate(leftFwd, rightFwd, FwdFwd());
-        delegate(leftRev, rightFwd, RevFwd());
-        delegate(leftRev, rightRev, RevRev());
-    }
+template <typename TErrorRate>
+inline double getResidualWeight(TErrorRate errorRate)
+{
+    double p = std::pow(10.0, std::min(2.0, 100.0 * errorRate - 7.0));
+    return p / (1.0 - p);
+}
+
+// ----------------------------------------------------------------------------
+// Function getMatchWeight()
+// ----------------------------------------------------------------------------
+// Weight of one match.
+
+template <typename TErrorRate>
+inline double getMatchWeight(TErrorRate errorRate, TErrorRate optimalRate)
+{
+    return (1.0 - errorRate) / std::pow(10.0, 300.0 * (errorRate - optimalRate));
+}
+
+// ----------------------------------------------------------------------------
+// Function getStratumWeight()
+// ----------------------------------------------------------------------------
+// Weight of one stratum.
+
+template <typename TErrorRate, typename TCount>
+inline double getStratumWeight(TErrorRate errorRate, TErrorRate optimalRate, TCount stratumCount)
+{
+    return stratumCount * getMatchWeight(errorRate, optimalRate);
+}
+
+// ----------------------------------------------------------------------------
+// Function getFirstTwoStrataWeight()
+// ----------------------------------------------------------------------------
+// Weight of first two strata.
+
+template <typename TErrorRate, typename TCount>
+inline double getFirstTwoStrataWeight(TErrorRate optimalRate, TCount optimalCount, TCount subCount)
+{
+    return getStratumWeight(optimalRate, optimalRate, optimalCount) +
+           getStratumWeight(optimalRate + 0.01, optimalRate, subCount) +
+           getResidualWeight(optimalRate);
+}
+
+// ----------------------------------------------------------------------------
+// Function getMatchProb()
+// ----------------------------------------------------------------------------
+// Single-end match.
+
+template <typename TErrorRate, typename TCount>
+inline double getMatchProb(TErrorRate errorRate, TErrorRate optimalRate, TCount optimalCount, TCount subCount)
+{
+    return getMatchWeight(errorRate, optimalRate) / getFirstTwoStrataWeight(optimalRate, optimalCount, subCount);
+}
+
+// ----------------------------------------------------------------------------
+// Function getLibraryProb()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TMean, typename TStdDev>
+inline double getLibraryProb(Match<TSpec> const & one, Match<TSpec> const & two, TMean mean, TStdDev stdDev)
+{
+    if (!isProper(one, two, mean, stdDev)) return 0.0009; // 0.001 * 0.90
+
+    double libraryDev = getLibraryDeviation(one, two, mean);
+    double libraryScore = (double)libraryDev / stdDev;
+
+    // 1.0 - 2.0 * zScore(libraryScore)
+    static const double SQRT_2 = 1.41421356237;
+    return std::max(0.001, std::erfc((double)libraryScore / SQRT_2));
+}
+
+// ----------------------------------------------------------------------------
+// Function findPrimaryMatch()
+// ----------------------------------------------------------------------------
+
+template <typename TMatches, typename TErrorRate, typename TCount, typename TReadSeqs, typename TContigSeqs,
+          typename TMean, typename TStdDev>
+inline Pair<typename Iterator<TMatches, Standard>::Type, double>
+findPrimaryMatch(TMatches const & firstMatches,
+                 TMatches const & secondMatches,
+                 TErrorRate firstOptimalRate,
+                 TErrorRate secondOptimalRate,
+                 TCount secondOptimalCount,
+                 TCount secondSubCount,
+                 TReadSeqs const & readSeqs,
+                 TContigSeqs const & contigSeqs,
+                 TMean mean,
+                 TStdDev stdDev)
+{
+    typedef typename Value<TMatches const>::Type                TMatch;
+    typedef typename Iterator<TMatches const, Standard>::Type   TMatchesIt;
+    typedef Pair<TMatchesIt, double>                            TPair;
+
+    double firstMatchesWeightSum = 0;
+    double firstMatchWeightMax = 0;
+    TMatchesIt firstMatchBestIt = end(firstMatches, Standard());
+
+    iterate(firstMatches, [&](TMatchesIt firstMatchesIt)
+    {
+        TMatch const & firstMatch = value(firstMatchesIt);
+        double firstMatchWeight = 0;
+
+        TCount secondOptimalImproperCount = secondOptimalCount;
+        TCount secondSubImproperCount = secondSubCount;
+
+        TMatches const & mates = findProperMates(secondMatches, firstMatch, readSeqs, contigSeqs, mean, stdDev);
+
+        forEach(mates, [&](TMatch const & secondMatch)
+        {
+            // Sum weights of proper match.
+            double secondErrorRate = getErrorRate(secondMatch, readSeqs);
+            firstMatchWeight += getMatchWeight(secondErrorRate, secondOptimalRate) *
+                                getLibraryProb(firstMatch, secondMatch, mean, stdDev);
+
+            // Decrease number of improper matches.
+            if (secondErrorRate == secondOptimalRate)
+                --secondOptimalImproperCount;
+            else if (secondErrorRate == secondOptimalRate + 0.01)
+                --secondSubImproperCount;
+        });
+
+        // Sum weights of improper matches.
+        firstMatchWeight += (getStratumWeight(secondOptimalRate, secondOptimalRate, secondOptimalImproperCount) +
+                             getStratumWeight(secondOptimalRate + 0.01, secondOptimalRate, secondSubImproperCount) +
+                             getResidualWeight(secondOptimalRate)) * 0.0009;
+
+        double firstErrorRate = getErrorRate(firstMatch, readSeqs);
+        firstMatchWeight *= getMatchWeight(firstErrorRate, firstOptimalRate);
+
+        // Update best matches.
+        if (firstMatchWeight > firstMatchWeightMax)
+        {
+            firstMatchWeightMax = firstMatchWeight;
+            firstMatchBestIt = firstMatchesIt;
+        }
+
+        // Update sum of weights.
+        firstMatchesWeightSum += firstMatchWeight;
+    },
+    Standard(), Serial());
+
+    double firstMatchBestProb = firstMatchWeightMax / firstMatchesWeightSum;
+
+    return TPair(firstMatchBestIt, firstMatchBestProb);
+}
+
+// ----------------------------------------------------------------------------
+// Function write()
+// ----------------------------------------------------------------------------
+// Debug.
+
+template <typename TStream, typename TSpec>
+inline void write(TStream & stream, Match<TSpec> const & me)
+{
+    stream << getMember(me, ReadId()) << " @ " << (unsigned)getMember(me, ContigId()) << '/' << onReverseStrand(me)
+           << " : " << Pair<unsigned>(getMember(me, ContigBegin()), getMember(me, ContigEnd()))
+           << " + " << getMember(me, Errors()) << '\n';
 }
 
 #endif  // #ifndef APP_YARA_BITS_MATCHES_H_

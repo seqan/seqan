@@ -251,6 +251,13 @@ assign(String<TValue, Block<SPACE> >& target, TSource const& source)
         appendValue(target, *it);
 }
 
+template<typename TValue, size_t SPACE, typename TSource, typename TExpand>
+inline void
+assign(String<TValue, Block<SPACE> >& target, TSource const& source, Tag<TExpand> const &)
+{
+    assign(target, source);
+}
+
 // ----------------------------------------------------------------------------
 // Function value()
 // ----------------------------------------------------------------------------

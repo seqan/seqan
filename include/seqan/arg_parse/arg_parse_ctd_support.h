@@ -339,6 +339,11 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
          ++optionMapIterator)
     {
         ArgParseOption const & opt = *optionMapIterator;
+
+        // exclude hidden
+        if (isHidden(opt))
+            continue;
+
         std::string optionIdentifier = _getPrefixedOptionName(opt);
         std::string refName = toolname + "." + _getOptionName(opt);
 
@@ -377,6 +382,10 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
 
         // exclude help, version, etc.
         if (!_includeInCTD(opt))
+            continue;
+
+        // exclude hidden
+        if (isHidden(opt))
             continue;
 
         // prefer short name for options
@@ -425,7 +434,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
             ctdfile << "supported_formats=\"" << xmlEscape(_join(supported_formats, ",")) << "\" ";
 
         ctdfile << "required=\"" << (isRequired(opt) ? "true" : "false") << "\" ";
-        ctdfile << "advanced=\"" << (isHidden(opt) ? "true" : "false") << "\" ";
+        ctdfile << "advanced=\"" << (isAdvanced(opt) ? "true" : "false") << "\" ";
 
         // Write out tags attribute.
         if (!opt.tags.empty())

@@ -182,7 +182,7 @@ struct GetValue<Range<TIterator> const>:
 // ----------------------------------------------------------------------------
 
 template <typename TIterator>
-struct Reference<Range<TIterator> >:
+struct Reference<Range<TIterator> > :
     Reference<TIterator> {};
 
 template <typename TIterator>
@@ -355,6 +355,17 @@ Range<typename Iterator<TContainer const, Standard>::Type>
 toRange(TContainer const &cont)
 {
     return Range<typename Iterator<TContainer const, Standard>::Type >(begin(cont, Standard()), end(cont, Standard()));
+}
+
+// ----------------------------------------------------------------------------
+// getObjectId()
+// ----------------------------------------------------------------------------
+
+template <typename TIterator>
+inline void const *
+getObjectId(Range<TIterator> const & /* me */)
+{
+    return NULL;
 }
 
 // ----------------------------------------------------------------------------
