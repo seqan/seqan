@@ -881,7 +881,7 @@ eraseTag(BamTagsDict & tags, TId const & id)
 
 /*!
  * @fn BamTagsDict#tagsToBamRecord
- * @brief Writes the .
+ * @brief Writes bam tags to the <tt>tags</tt> field of the given @link BamAlignmentRecord @endlink.
  *
  * @signature void tagsToBamRecord(record, tagsDict)
  *
