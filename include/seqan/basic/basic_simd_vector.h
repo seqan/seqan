@@ -409,11 +409,17 @@ _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdPara
         reinterpret_cast<const __m128i &>(vector),
         reinterpret_cast<const __m128i &>(indices)));
 }
+
 template <typename TSimdVector1, typename TSimdVector2>
 inline TSimdVector1
 _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<16, 8>, SimdParams_<8, 8>)
 {
+#if defined(SEQAN_IS_32_BIT)
+    __m128i idx = _mm_slli_epi16(_mm_unpacklo_epi32(_mm_cvtsi32_si128(reinterpret_cast<const __uint32 &>(indices)),
+                                                    _mm_cvtsi32_si128(reinterpret_cast<const __uint64 &>(indices) >> 32)), 1);
+#else
     __m128i idx = _mm_slli_epi16(_mm_cvtsi64_si128(reinterpret_cast<const __uint64 &>(indices)), 1);
+#endif  // defined(SEQAN_IS_32_BIT)
     return reinterpret_cast<TSimdVector1>(_mm_shuffle_epi8(
         reinterpret_cast<const __m128i &>(vector),
         _mm_unpacklo_epi8(idx, _mm_add_epi8(idx, _mm_set1_epi8(1)))));
