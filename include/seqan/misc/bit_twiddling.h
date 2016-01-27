@@ -336,18 +336,7 @@ inline unsigned _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
 // ----------------------------------------------------------------------------
 // MSVC implementations.
 
-#if defined(_MSC_VER) && (_MSC_VER <= 1400)  // MSVC <= 2005, no intrinsic.
-
-template <typename TWord, unsigned NUM_BITS>
-inline unsigned
-_popCountImpl(TWord word, WordSize_<NUM_BITS> const & /*tag*/)
-{
-    return _popCountImplGeneric(word);
-}
-
-#endif  // #if defined(_MSC_VER) && (_MSC_VER <= 1400)  // MSVC <= 2005, no intrinsic.
-
-#if defined(_MSC_VER) && (_MSC_VER > 1400)  // MSVC >= 2008, has intrinsic
+#if defined(_MSC_VER) // MSVC >= 2008, has intrinsic
 
 #if defined(__SSE4_2__)
 
@@ -418,7 +407,7 @@ _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
     return _popCountImpl(static_cast<const __uint16>(word), WordSize_<16>());
 }
 
-#endif  // #if defined(_MSC_VER) && (_MSC_VER <= 1400)
+#endif  // #if defined(_MSC_VER)
 
 // ----------------------------------------------------------------------------
 // Function _popCountImpl()
@@ -608,7 +597,7 @@ _bitScanForward(TWord word, WordSize_<NUM_BITS>)
     return _bitScanForwardGeneric(word, WordSize_<NUM_BITS>());
 }
 
-#if defined(PLATFORM_GCC) || defined(PLATFORM_WINDOWS_MINGW)
+#if defined(PLATFORM_GCC)
 
 template <typename TWord>
 inline TWord
@@ -709,7 +698,7 @@ _bitScanForward(TWord word, WordSize_<32>)
     _BitScanForward(&index, static_cast<unsigned long>(word));
     return index;
 }
-#endif  // #if defined(PLATFORM_GCC) || defined(PLATFORM_WINDOWS_MINGW)
+#endif  // #if defined(PLATFORM_GCC)
 #endif  // #ifdef PLATFORM_GCC
 
 // ----------------------------------------------------------------------------

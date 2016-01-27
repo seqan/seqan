@@ -35,21 +35,12 @@
 #ifndef INCLUDE_SEQAN_BAM_IO_BAM_SCANNER_CACHE_H_
 #define INCLUDE_SEQAN_BAM_IO_BAM_SCANNER_CACHE_H_
 
-#ifdef SEQAN_CXX11_STANDARD
 #include <functional>
 #include <unordered_map>
-#else
-#include <tr1/functional>
-#include <tr1/unordered_map>
-#endif
 
 namespace seqan {
 
-#ifdef SEQAN_CXX11_STANDARD
 using namespace std;
-#else
-using namespace std::tr1;
-#endif
 
 // ============================================================================
 // Forwards

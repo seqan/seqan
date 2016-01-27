@@ -1,7 +1,7 @@
 #ifndef APPS_RAZERS_PARALLEL_STORE_H
 #define APPS_RAZERS_PARALLEL_STORE_H
 
-#if defined(PLATFORM_GCC) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
+#if defined(PLATFORM_GCC)
 #include <parallel/algorithm>
 #include <parallel/numeric>
 #else
@@ -13,7 +13,7 @@
 
 namespace seqan {
 
-#if defined(PLATFORM_GCC) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
+#if defined(PLATFORM_GCC)
 
 // use MCSTL which is part of the GCC since version 4.3
 

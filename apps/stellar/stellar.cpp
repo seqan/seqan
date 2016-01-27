@@ -591,22 +591,10 @@ public:
     ScientificNotationExponentOutputNormalizer() :
         _oldExponentFormat(0)
     {
-#ifdef PLATFORM_WINDOWS_VS
-#if _MSC_VER < 1900
-        // Set scientific format to print two places.
-        unsigned _oldExponentFormat = _set_output_format(_TWO_DIGIT_EXPONENT);
-#endif
-#endif
     }
 
     ~ScientificNotationExponentOutputNormalizer()
     {
-#ifdef PLATFORM_WINDOWS_VS
-#if _MSC_VER < 1900
-        // Enable old exponent format.
-        _set_output_format(_oldExponentFormat);
-#endif
-#endif
     }
 };
 

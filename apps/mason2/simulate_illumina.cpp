@@ -384,9 +384,9 @@ void IlluminaSequencingSimulator::_simulateCigar(TCigarString & cigar)
 // Function SequencingSimulatorFactory::make()
 // ----------------------------------------------------------------------------
 
-std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> SequencingSimulatorFactory::make()
+std::unique_ptr<SequencingSimulator> SequencingSimulatorFactory::make()
 {
-    std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> res;
+    std::unique_ptr<SequencingSimulator> res;
 
     switch (seqOptions.sequencingTechnology)
     {

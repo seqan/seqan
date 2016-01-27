@@ -298,7 +298,6 @@ public:
             largeState = new TLargeState(*other.largeState);
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     // Add move constructor.
     PatternState_(PatternState_ && other):
         TSmallState(std::forward<PatternState_>(other)),
@@ -307,7 +306,6 @@ public:
         largeState = other.largeState;
         other.largeState = NULL;
     }
-#endif  // SEQAN_CXX11_STANDARD
 
     ~PatternState_()
     {
@@ -330,7 +328,6 @@ public:
         return *this;
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     // Add move assignment.
     PatternState_&
     operator=(PatternState_ && other)
@@ -342,7 +339,7 @@ public:
         other.largeState = NULL;  // We moved the data.
         return *this;
     }
-#endif  // SEQAN_CXX11_STANDARD
+
 };
 
 
@@ -437,15 +434,14 @@ public:
             largePattern = new TLargePattern(*other.largePattern);
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     // Add move constructor.
     Pattern(Pattern && other) :
         TSmallPattern(std::forward<Pattern>(other)),
         TPatternState(std::forward<Pattern>(other)),
         largePattern(NULL)
     {
-		largePattern = other.largePattern;
-		other.largePattern = NULL;
+        largePattern = other.largePattern;
+        other.largePattern = NULL;
     }
 
     template <typename TNeedle2>
@@ -455,15 +451,6 @@ public:
         setScoreLimit(*this, _limit);
         setHost(*this, std::forward<TNeedle2>(ndl));
     }
-#else
-    template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl, int _limit = -1):
-        largePattern(NULL)
-    {
-        setScoreLimit(*this, _limit);
-        setHost(*this, ndl);
-    }
-#endif  // SEQAN_CXX11_STANDARD
 
     ~Pattern()
     {
@@ -487,7 +474,6 @@ public:
         return *this;
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     // Add move assignment.
     Pattern &
     operator= (Pattern && other)
@@ -500,7 +486,6 @@ public:
         other.largePattern = NULL;  // Reset other to default.
         return *this;
     }
-#endif  // SEQAN_CXX11_STANDARD
 };
 
 //////////////////////////////////////////////////////////////////////////////

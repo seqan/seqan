@@ -627,7 +627,7 @@ popFront(ConcurrentQueue<TValue, TSpec> & me)
 
 template <typename TValue, typename TSpec, typename TValue2>
 inline bool
-_queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue2 SEQAN_FORWARD_CARG, Insist)
+_queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue2 &&, Insist)
 {
     ignoreUnusedVariableWarning(me);
     SEQAN_ASSERT_GT(capacity(me.data), 1u);
@@ -636,7 +636,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue2 SEQAN_FORWARD_CARG, 
 
 template <typename TValue, typename TSpec, typename TValue2>
 inline bool
-_queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue2 SEQAN_FORWARD_CARG, Limit)
+_queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue2 &&, Limit)
 {
     ignoreUnusedVariableWarning(me);
     SEQAN_ASSERT_GT(capacity(me.data), 1u);
@@ -646,7 +646,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me, TValue2 SEQAN_FORWARD_CARG, 
 template <typename TValue, typename TSpec, typename TValue2, typename TExpand>
 inline bool
 _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
-               TValue2 SEQAN_FORWARD_CARG val,
+               TValue2 && val,
                Tag<TExpand> expandTag)
 {
     typedef ConcurrentQueue<TValue, TSpec>                  TQueue;
@@ -678,7 +678,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
         if (cap != 0)
         {
             TIter it = begin(me.data, Standard()) + (tailPos & (roundSize - 1));
-            valueConstruct(it, SEQAN_FORWARD(TValue2, val));
+            valueConstruct(it, std::forward<TValue2>(val));
             tailPos = headPos + roundSize;
             valueWasAppended = true;
         }
@@ -734,7 +734,7 @@ _queueOverflow(ConcurrentQueue<TValue, TSpec> & me,
 template <typename TValue, typename TSpec, typename TValue2, typename TExpand, typename TParallel>
 inline void
 appendValue(ConcurrentQueue<TValue, TSpec> & me,
-            TValue2 SEQAN_FORWARD_CARG val,
+            TValue2 && val,
             Tag<TExpand> expandTag,
             Tag<TParallel> parallelTag)
 {
@@ -769,7 +769,7 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
                 if (atomicCasBool(me.tailWritePos, tailWritePos, newTailWritePos, parallelTag))
                 {
                     TIter it = begin(me.data, Standard()) + (tailWritePos & (roundSize - 1));
-                    valueConstruct(it, SEQAN_FORWARD(TValue2, val));
+                    valueConstruct(it, std::forward<TValue2>(val));
 
                     // wait for pending previous writes and synchronize tailPos to tailWritePos
                     spinCas(me.tailPos, tailWritePos, newTailWritePos);
@@ -782,7 +782,7 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
         }
 
         // if possible extend capacity and return (spin loop otherwise)
-        if (_queueOverflow(me, SEQAN_FORWARD(TValue2, val), expandTag))
+        if (_queueOverflow(me, std::forward<TValue2>(val), expandTag))
             return;
 
         waitFor(spinDelay);
@@ -792,10 +792,10 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
 template <typename TValue, typename TSpec, typename TValue2, typename TExpand>
 inline void
 appendValue(ConcurrentQueue<TValue, TSpec> & me,
-            TValue2 SEQAN_FORWARD_CARG val,
+            TValue2 && val,
             Tag<TExpand> expandTag)
 {
-    appendValue(me, SEQAN_FORWARD(TValue2, val), expandTag, typename DefaultParallelSpec<ConcurrentQueue<TValue, TSpec> >::Type());
+    appendValue(me, std::forward<TValue2>(val), expandTag, typename DefaultParallelSpec<ConcurrentQueue<TValue, TSpec> >::Type());
 }
 
 }  // namespace seqan

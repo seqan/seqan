@@ -41,8 +41,6 @@
 // Prerequisites.
 // ===========================================================================
 
-#ifdef SEQAN_CXX11_STANDARD
-
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/modifier.h>
@@ -79,5 +77,4 @@
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser_util.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser.h>
 
-#endif // SEQAN_CXX11_STANDARD
 #endif // INCLUDE_SEQAN_JOURNALED_STRING_TREE_H_
