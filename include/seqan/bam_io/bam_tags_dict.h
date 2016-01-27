@@ -122,6 +122,7 @@ class BamTagsDict
 {
 public:
     typedef Host<BamTagsDict>::Type TBamTagsSequence;
+    typedef typename RemoveConst<TBamTagsSequence>::Type TBamTagsSeqNonConst;
     typedef Position<TBamTagsSequence>::Type TPos;
 
     Holder<TBamTagsSequence> _host;
@@ -130,7 +131,10 @@ public:
     BamTagsDict() {}
 
     explicit
-    BamTagsDict(TBamTagsSequence & tags) : _host(tags) {}
+    BamTagsDict(TBamTagsSeqNonConst & tags) : _host(tags) {}
+
+    explicit
+    BamTagsDict(TBamTagsSeqNonConst const & tags) : _host(tags) {}
 
     template <typename TPos>
     inline Infix<Host<BamTagsDict const>::Type>::Type
