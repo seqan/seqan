@@ -67,6 +67,35 @@ typedef Tag<ArrayGaps_> ArrayGaps;
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @defgroup GapDirectionTags Gap Direction Tags
+ * @brief Tags to select the direction to which side of a view position an operation should be projected.
+ */
+
+/*!
+ * @tag GapDirectionTags#LeftOfViewPos
+ * @headerfile <seqan/align.h>
+ * @brief Projects to the left side of the current view position.
+ *
+ * @signature struct LeftOfViewPos_;
+ *            typedef Tag<LeftOfViewPos_> LeftOfViewPos;
+ */
+
+struct LeftOfViewPos_;
+typedef Tag<LeftOfViewPos_> LeftOfViewPos;
+
+/*!
+ * @tag GapDirectionTags#RightOfViewPos
+ * @headerfile <seqan/align.h>
+ * @brief Projects to the right side of the current view position.
+ *
+ * @signature struct RightOfViewPos_;
+ *            typedef Tag<RightOfViewPos_> RightOfViewPos;
+ */
+
+struct RightOfViewPos_;
+typedef Tag<RightOfViewPos_> RightOfViewPos;
+
 // ----------------------------------------------------------------------------
 // Class Gaps
 // ----------------------------------------------------------------------------
@@ -367,6 +396,13 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *              @endlink).
  */
 
+template <typename TSequence, typename TSpec, typename TPosition>
+inline typename Position<TSequence>::Type
+toSourcePosition(Gaps<TSequence, TSpec> const & gaps, TPosition const clippedViewPos)
+{
+    return toSourcePosition(gaps, clippedViewPos, RightOfViewPos());
+}
+
 // ----------------------------------------------------------------------------
 // Function isGap()
 // ----------------------------------------------------------------------------
@@ -499,20 +535,34 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
  * @fn Gaps#countGaps
  * @brief The number of gaps following a position.
  *
- * @signature TSize countGaps(gaps, viewPos);
+ * @signature TSize countGaps(gaps, viewPos[, dir]);
  *
  * @param[in] gaps    The Gaps object to query.
  * @param[in] viewPos View position (including clipping and gaps) to query at.
+ * @param[in] dir     A tag to specify the counting direction. One of @link GapDirectionTags @endlink.
+ *                    Defaults to @link GapDirectionTags#RightOfViewPos @endlink.
  *
  * @return TSize The number of gap characters at <tt>viewPos</tt>  (Metafunction: @link ContainerConcept#Size
  *               @endlink).
+ *
+ * If the the direction tag is @link GapDirectionTags#RightOfViewPos @endlink the current view position will be 
+ * included in the count, and excluded when @link GapDirectionTags#LeftOfViewPos @endlink is selected.
  */
+
+template <typename TSequence, typename TSpec,
+          typename TPos,
+          typename TDirSpec>
+typename Size<Gaps<TSequence, TSpec> >::Type
+countGaps(Gaps<TSequence, TSpec> const & gaps, TPos const clippedViewPos, TDirSpec const & /*tag*/)
+{
+    return countGaps(iter(gaps, clippedViewPos, Standard()), TDirSpec());
+}
 
 template <typename TSequence, typename TSpec, typename TPos>
 typename Size<Gaps<TSequence, TSpec> >::Type
-countGaps(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
+countGaps(Gaps<TSequence, TSpec> const & gaps, TPos const clippedViewPos)
 {
-    return countGaps(iter(gaps, clippedViewPos, Standard()));
+    return countGaps(gaps, clippedViewPos, RightOfViewPos());
 }
 
 // ----------------------------------------------------------------------------
@@ -643,20 +693,36 @@ countGapExtensions(TGaps const & gaps)
  * @fn Gaps#countCharacters
  * @brief The number of characters following a position.
  *
- * @signature TSize countCharacters(gaps, viewPos);
+ * @signature TSize countCharacters(gaps, viewPos[, dir]);
  *
  * @param[in] gaps    The Gaps object to query.
  * @param[in] viewPos View position (including clipping and gaps) to query at.
+ * @param[in] dir     A tag to specify the counting direction. One of @link GapDirectionTags @endlink.
+ *                    Defaults to @link GapDirectionTags#RightOfViewPos @endlink.
  *
  * @return TSize The number of non-gaps characters characters at <tt>viewPos</tt> (Metafunction: @link
  *               ContainerConcept#Size @endlink).
+ *
+ * If the the direction tag is @link GapDirectionTags#RightOfViewPos @endlink the current view position will be
+ * included in the count, and excluded when @link GapDirectionTags#LeftOfViewPos @endlink is selected.
  */
+
+template <typename TSequence, typename TSpec,
+          typename TPos,
+          typename TDirSpec>
+typename Size<Gaps<TSequence, TSpec> >::Type
+countCharacters(Gaps<TSequence, TSpec> const & gaps,
+                TPos const clippedViewPos,
+                TDirSpec const & /*dir*/)
+{
+    return countCharacters(iter(gaps, clippedViewPos, Standard()), TDirSpec());
+}
 
 template <typename TSequence, typename TSpec, typename TPos>
 typename Size<Gaps<TSequence, TSpec> >::Type
-countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
+countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos const clippedViewPos)
 {
-    return countCharacters(iter(gaps, clippedViewPos, Standard()));
+    return countCharacters(gaps, clippedViewPos, RightOfViewPos());
 }
 
 // ----------------------------------------------------------------------------
