@@ -122,7 +122,7 @@ class BamTagsDict
 {
 public:
     typedef Host<BamTagsDict>::Type TBamTagsSequence;
-    typedef typename RemoveConst<TBamTagsSequence>::Type TBamTagsSeqNonConst;
+    typedef RemoveConst<TBamTagsSequence>::Type TBamTagsSeqNonConst;
     typedef Position<TBamTagsSequence>::Type TPos;
 
     Holder<TBamTagsSequence> _host;
