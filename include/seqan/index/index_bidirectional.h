@@ -57,7 +57,7 @@ class BidirectionalIndex;
 /*!
  * @class RevTextFibre
  * @headerfile <seqan/index.h>
- * @brief A helper object that stores the type of the modifier of a given type @endlink.
+ * @brief A helper object that stores the type of the modifier of a given type.
  *
  * @signature template <TText>
  *            struct RevTextFibre;
