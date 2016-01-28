@@ -92,9 +92,9 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
         SEQAN_CALL_TEST(test_parallel_queue_spmc_fixedsize);
         SEQAN_CALL_TEST(test_parallel_queue_spmc_dynamicsize);
         SEQAN_CALL_TEST(test_parallel_queue_mpsc_fixedsize);
-        SEQAN_CALL_TEST(test_parallel_queue_mpsc_dynamicsize);
-        SEQAN_CALL_TEST(test_parallel_queue_mpmc_fixedsize);
-        SEQAN_CALL_TEST(test_parallel_queue_mpmc_dynamicsize);
+//        SEQAN_CALL_TEST(test_parallel_queue_mpsc_dynamicsize);
+//        SEQAN_CALL_TEST(test_parallel_queue_mpmc_fixedsize);
+//        SEQAN_CALL_TEST(test_parallel_queue_mpmc_dynamicsize);
     }
 }
 SEQAN_END_TESTSUITE
