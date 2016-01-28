@@ -23,7 +23,7 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION "statically linked applications")
 
 
 # Use 4 build threads
-set(CTEST_BUILD_FLAGS -j4)
+set(CTEST_BUILD_FLAGS -j2)
 
 # we want makefiles
 set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
