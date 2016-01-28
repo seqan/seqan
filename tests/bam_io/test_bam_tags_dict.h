@@ -573,4 +573,32 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_erase_tag)
     }
 }
 
+SEQAN_DEFINE_TEST(test_bam_tags_dict_const_bam_tags_sequence)
+{
+    using namespace seqan;
+    CharString bamStr, samStr = "AA:Z:value1\tAB:Z:value2\tAC:i:30";
+    assignTagsSamToBam(bamStr, samStr);
+
+    CharString const bamStrConst = bamStr;
+
+    BamTagsDict tagsNonConst(bamStr);
+    BamTagsDict tagsConst(bamStrConst);
+
+    buildIndex(tagsNonConst);
+    buildIndex(tagsConst);
+
+    SEQAN_ASSERT(host(tagsConst) == host(tagsNonConst));
+    appendTagValue(tagsConst, "AS", 10, 'i');
+    SEQAN_ASSERT(bamStr != host(tagsConst));
+
+    appendTagValue(tagsNonConst, "AS", 10, 'i');
+    SEQAN_ASSERT(bamStr == host(tagsConst));
+
+    unsigned tagId;
+    SEQAN_ASSERT(findTagKey(tagId, tagsConst, "AS"));
+    SEQAN_ASSERT(tagId == 3u);
+    SEQAN_ASSERT(findTagKey(tagId, tagsNonConst, "AS"));
+    SEQAN_ASSERT(tagId == 3u);
+}
+
 #endif  // TESTS_BAM_IO_TEST_BAM_TAGS_DICT_DICT_H_
