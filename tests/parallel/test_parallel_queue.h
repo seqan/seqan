@@ -41,9 +41,7 @@
 #include <seqan/sequence.h>
 #include <seqan/parallel.h>
 
-#ifdef SEQAN_CXX11_STL
 #include <chrono>
-#endif
 
 SEQAN_DEFINE_TEST(test_parallel_queue_simple)
 {
@@ -171,11 +169,8 @@ void testMPMCQueue(size_t initialCapacity)
 //    std::cout <<chkSum<<std::endl;
 
     volatile unsigned chkSum2 = 0;
-#ifdef SEQAN_CXX11_STL
     size_t threadCount = std::thread::hardware_concurrency();
-#else
-    size_t threadCount = omp_get_max_threads();
-#endif
+
     // limit thread count as virtualbox (used by Travis) seems to have problems with thread congestion
     if (threadCount > 4)
         threadCount = 4;
@@ -193,72 +188,53 @@ void testMPMCQueue(size_t initialCapacity)
     SEQAN_ASSERT_GEQ(threadCount, 2u);
     seqan::Splitter<unsigned> splitter(0, length(random), writerCount);
 
-#ifdef SEQAN_CXX11_STL
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
-#else
-    double start = omp_get_wtime();
-#endif
 
-#ifdef SEQAN_CXX11_STL
     std::vector<std::thread> workers;
     for (size_t tid = 0; tid < threadCount; ++tid)
     {
         workers.push_back(std::thread([&,tid]()
         {
-#else
-    SEQAN_OMP_PRAGMA(parallel num_threads(threadCount))
-    {
-        size_t tid = omp_get_thread_num();
-#endif
-        if (tid < writerCount)
-        {
-            seqan::ScopedWriteLock<TQueue> writeLock(queue);
-            // barrier for all writers to set up
-            waitForWriters(queue, writerCount);
-
-//            printf("start writer #%ld\n", tid);
-            for (unsigned j = splitter[tid]; j != splitter[tid + 1]; ++j)
+            if (tid < writerCount)
             {
-                appendValue(queue, random[j], TResizeTag(), TParallelPush());
+                seqan::ScopedWriteLock<TQueue> writeLock(queue);
+                // barrier for all writers to set up
+                waitForWriters(queue, writerCount);
+
+    //            printf("start writer #%ld\n", tid);
+                for (unsigned j = splitter[tid]; j != splitter[tid + 1]; ++j)
+                {
+                    appendValue(queue, random[j], TResizeTag(), TParallelPush());
+                }
+    //            printf("stop writer #%ld %d\n", tid, splitter[tid + 1] - splitter[tid]);
             }
-//            printf("stop writer #%ld %d\n", tid, splitter[tid + 1] - splitter[tid]);
-        }
 
-        if (tid >= writerCount)
-        {
-            seqan::ScopedReadLock<TQueue> readLock(queue);
-            // barrier for all writers to set up
-            waitForFirstValue(queue);
-
-//            printf("start reader #%lu\n",  (long unsigned)tid);
-            unsigned chkSumLocal = 0, val = 0, cnt = 0;
-            while (popFront(val, queue, TParallelPop()))
+            if (tid >= writerCount)
             {
-                chkSumLocal ^= val;
-                ++cnt;
-//                if ((cnt & 0xff) == 0)
-//                    printf("%ld ", tid);
-            }
-            seqan::atomicXor(chkSum2, chkSumLocal);
-            printf("stop reader #%lu %d\n", (long unsigned)tid, cnt);
-        }
-    }
-#ifdef SEQAN_CXX11_STL
-    ));
-    }
-#endif
+                seqan::ScopedReadLock<TQueue> readLock(queue);
+                // barrier for all writers to set up
+                waitForFirstValue(queue);
 
-#ifdef SEQAN_CXX11_STL
+    //            printf("start reader #%lu\n",  (long unsigned)tid);
+                unsigned chkSumLocal = 0, val = 0, cnt = 0;
+                while (popFront(val, queue, TParallelPop()))
+                {
+                    chkSumLocal ^= val;
+                    ++cnt;
+    //                if ((cnt & 0xff) == 0)
+    //                    printf("%ld ", tid);
+                }
+                seqan::atomicXor(chkSum2, chkSumLocal);
+                printf("stop reader #%lu %d\n", (long unsigned)tid, cnt);
+            }
+        }));
+    }
+
     for (auto &t : workers)
         t.join();
-#endif
 
-#ifdef SEQAN_CXX11_STL
     std::chrono::steady_clock::time_point stop = std::chrono::steady_clock::now();
     double timeSpan = std::chrono::duration_cast<std::chrono::duration<double> >(stop - start).count();
-#else
-    double timeSpan = omp_get_wtime() - start;
-#endif
     std::cout << "throughput: " << (__uint64)(length(random) / timeSpan) << " values/s" << std::endl;
 
 

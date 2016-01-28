@@ -39,9 +39,7 @@ Table Of Contents
 API Documentation
 -----------------
 
-.. TODO Update this with s/dev3/1.5.0/ after putting the docs there.
-
-The API documentation can be found on `here <http://docs.seqan.de/seqan/dev3>`_.
+The API documentation can be found on :dox:`mainpage here`.
 
 .. toctree::
    :hidden:

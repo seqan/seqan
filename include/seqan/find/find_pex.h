@@ -187,7 +187,6 @@ class Pattern<TNeedle, Pex<TVerification, TMultiFinder > >:
        limit(1), lastFPos(0), lastFNdl(0), findNext(false), patternNeedsInit(true)
    {}
 
-#ifdef SEQAN_CXX11_STANDARD
     template <typename TNeedle2>
     Pattern(TNeedle2 && ndl,
             SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>)) :
@@ -211,22 +210,6 @@ class Pattern<TNeedle, Pex<TVerification, TMultiFinder > >:
     {
         setHost(*this, std::forward<TNeedle2>(ndl));
     }
-
-#else
-   template <typename TNeedle2>
-   Pattern(TNeedle2 const & ndl) :
-       limit(1), lastFPos(0), lastFNdl(0), findNext(false), patternNeedsInit(true)
-   {
-     setHost(*this, ndl);
-   }
-
-   template <typename TNeedle2>
-   Pattern(TNeedle2 const & ndl, int _limit = -1) :
-       limit(-_limit), lastFPos(0), lastFNdl(0), findNext(false), patternNeedsInit(true)
-   {
-     setHost(*this, ndl);
-   }
-#endif  // SEQAN_CXX11_STANDARD
 };
 
 //////////////////////////////////////////////////////////////////////////////

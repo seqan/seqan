@@ -78,7 +78,6 @@ public:
 
     Pattern() : maxDistance(-1), distance(0), matchNFlags(0) {}
 
-#ifdef SEQAN_CXX11_STANDARD
     template <typename TNeedle2>
     Pattern(TNeedle2 && ndl,
             int k = -1,
@@ -91,13 +90,6 @@ public:
         ignoreUnusedVariableWarning(dummy);
     }
 
-#else
-    template <typename TNeedle2>
-    Pattern(const TNeedle2 &ndl, int k = -1) : maxDistance(-k), distance(0), matchNFlags(0) {
-        SEQAN_CHECKPOINT;
-        setHost(*this, ndl);
-    }
-#endif  // SEQAN_CXX11_STANDARD
 };
 
 

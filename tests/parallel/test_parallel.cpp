@@ -61,7 +61,7 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
     // this problem is fixed. See http://llvm.org/bugs/show_bug.cgi?id=9041
     //
     // There is a problem with compare-and-swap on MinGW, too.
-#if !defined(__llvm__) && !defined(PLATFORM_WINDOWS_MINGW)
+#if !defined(__llvm__)
     // Tests for atomic primitives.
     SEQAN_CALL_TEST(test_parallel_atomic_inc);
     SEQAN_CALL_TEST(test_parallel_atomic_dec);
@@ -73,7 +73,7 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
     // Tests for misc simpmle atomic operations.
     SEQAN_CALL_TEST(test_parallel_atomic_min);
     SEQAN_CALL_TEST(test_parallel_atomic_max);
-#endif  // #if !defined(__llvm__) && !defined(PLATFORM_WINDOWS_MINGW)
+#endif  // #if !defined(__llvm__)
 
     SEQAN_CALL_TEST(test_parallel_splitter_equidistant);
     SEQAN_CALL_TEST(test_parallel_splitting_compute_splitters);
@@ -85,12 +85,7 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
     SEQAN_CALL_TEST(test_parallel_queue_resize);
     SEQAN_CALL_TEST(test_parallel_queue_non_pod);
 
-#if defined(_OPENMP) || defined(SEQAN_CXX11_STANDARD)
-#ifdef SEQAN_CXX11_STL
     if (std::thread::hardware_concurrency() >= 2u)
-#else
-    if (omp_get_max_threads() >= 2)
-#endif
     {
         SEQAN_CALL_TEST(test_parallel_queue_spsc_fixedsize);
         SEQAN_CALL_TEST(test_parallel_queue_spsc_dynamicsize);
@@ -101,6 +96,5 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
         SEQAN_CALL_TEST(test_parallel_queue_mpmc_fixedsize);
         SEQAN_CALL_TEST(test_parallel_queue_mpmc_dynamicsize);
     }
-#endif
 }
 SEQAN_END_TESTSUITE

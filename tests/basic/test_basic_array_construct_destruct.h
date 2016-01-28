@@ -95,7 +95,6 @@ struct CDStruct
         return *this;
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     CDStruct(CDStruct && other)
             : copiedFrom(-1), movedFrom(other.id), assignedFrom(-1), setFrom(-1)
     {
@@ -113,7 +112,6 @@ struct CDStruct
         setFrom = -1;
         return *this;
     }
-#endif
 
     ~CDStruct()
     {
@@ -245,28 +243,6 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_construct_value_pointer)
         SEQAN_ASSERT_EQ(CDStruct::assignments, 0);
     }
 
-#ifndef SEQAN_CXX11_STANDARD
-    // Move construction.
-    {
-        char space[sizeof(CDStruct)];
-        CDStruct other;
-        resetCDStructStatics();
-
-        CDStruct * ptr = reinterpret_cast<CDStruct * >(&space[0]);
-        valueConstruct(ptr, other, seqan::Move());
-
-        SEQAN_ASSERT_EQ(ptr->copiedFrom, -1);
-        SEQAN_ASSERT_EQ(ptr->movedFrom, other.id);
-
-        SEQAN_ASSERT_EQ(CDStruct::lastOther, &other);
-        SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 0);
-        SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 0);
-        SEQAN_ASSERT_EQ(CDStruct::moveConstructions, 1);
-        SEQAN_ASSERT_EQ(CDStruct::moves, 0);
-        SEQAN_ASSERT_EQ(CDStruct::destructions, 0);
-        SEQAN_ASSERT_EQ(CDStruct::assignments, 0);
-    }
-#endif
 }
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_destruct_value_pointer)

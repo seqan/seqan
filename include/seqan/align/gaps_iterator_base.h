@@ -280,12 +280,24 @@ bool isCharacter(Iter<TGaps, GapsIterator<TSpec> > const & it)
  * @fn GapsIterator#countCharacters
  * @brief Count characters at iterator.
  *
- * @signature TSize countCharacters(it);
+ * @signature TSize countCharacters(it[, dir]);
  *
- * @param[in] it Iterator for counting characters at.
+ * @param[in] it  Iterator for counting characters at.
+ * @param[in] dir A tag to specify the counting direction. One of @link GapDirectionTags @endlink.
+ *                Defaults to @link GapDirectionTags#RightOfViewPos @endlink.
  *
  * @return TSize Number of characters.
+ *
+ * If the the direction tag is @link GapDirectionTags#RightOfViewPos @endlink the current view position will be
+ * included in the count, and excluded when @link GapDirectionTags#LeftOfViewPos @endlink is selected.
  */
+
+template <typename TGaps, typename TSpec>
+inline typename Size<TGaps>::Type
+countCharacters(Iter<TGaps, GapsIterator<TSpec> > const & it)
+{
+    return countCharacters(it, RightOfViewPos());
+}
 
 // ----------------------------------------------------------------------------
 // Function isGap()
@@ -310,12 +322,24 @@ bool isCharacter(Iter<TGaps, GapsIterator<TSpec> > const & it)
  * @fn GapsIterator#countGaps
  * @brief Count gaps at iterator.
  *
- * @signature TSize countGaps(it);
+ * @signature TSize countGaps(it[, dir]);
  *
  * @param[in] it Iterator for counting gaps at.
+ * @param[in] dir A tag to specify the counting direction. One of @link GapDirectionTags @endlink.
+ *                Defaults to @link GapDirectionTags#RightOfViewPos @endlink.
  *
  * @return TSize Number of gaps.
+ *
+ * If the the direction tag is @link GapDirectionTags#RightOfViewPos @endlink the current view position will be
+ * included in the count, and excluded when @link GapDirectionTags#LeftOfViewPos @endlink is selected.
  */
+
+template <typename TGaps, typename TSpec>
+inline typename Size<TGaps>::Type
+countGaps(Iter<TGaps, GapsIterator<TSpec> > const & it)
+{
+    return countGaps(it, RightOfViewPos());
+}
 
 // ----------------------------------------------------------------------------
 // Function insertGaps()

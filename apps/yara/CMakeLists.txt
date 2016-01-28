@@ -6,22 +6,13 @@
 # CMakeLists.txt file for yara.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_yara)
 message (STATUS "Configuring apps/yara")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
-
-# Search C++11.
-find_package(CXX11 REQUIRED)
-
-# Stop here if there is no C++11 with STL.
-if (NOT (CXX11_FOUND AND CXX11_STL_FOUND))
-    message (STATUS "  C++11 compiler required to build yara.")
-    return ()
-endif (NOT (CXX11_FOUND AND CXX11_STL_FOUND))
 
 # Disable older MSVC.
 if (MSVC AND MSVC_VERSION LESS 1800)
@@ -58,7 +49,7 @@ endif (NOT SEQAN_HAS_BZIP2)
 # App-Level Configuration
 # ----------------------------------------------------------------------------
 
-set (SEQAN_APP_VERSION "0.9.4")
+set (SEQAN_APP_VERSION "0.9.5")
 
 option (YARA_LARGE_CONTIGS "Set to ON to enable support for more than 32k contigs or contigs longer than 4Gbp." OFF)
 if (YARA_LARGE_CONTIGS)
@@ -79,6 +70,10 @@ if (YARA_ARCH_NATIVE)
   if (CMAKE_COMPILER_IS_GNUCXX AND APPLE)
     set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mno-avx")
   endif (CMAKE_COMPILER_IS_GNUCXX AND APPLE)
+
+  if (COMPILER_IS_INTEL)
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -xHOST -ipo -no-prec-div -fp-model fast=2")
+  endif (COMPILER_IS_INTEL)
 endif (YARA_ARCH_NATIVE)
 
 # ----------------------------------------------------------------------------
@@ -109,7 +104,7 @@ add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # Update the list of file names below if you add source files to your application.
 add_executable(yara_indexer indexer.cpp

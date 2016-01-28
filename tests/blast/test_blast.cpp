@@ -36,8 +36,6 @@
 
 #include <seqan/basic.h>
 
-#if defined(SEQAN_CXX11_COMPLETE)
-
 #include <seqan/file.h>
 #include <seqan/sequence.h>
 #include <seqan/blast.h>
@@ -95,13 +93,3 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_read_tabular_with_comments_legacy_constexpr);
 }
 SEQAN_END_TESTSUITE
-
-#else
-SEQAN_BEGIN_TESTSUITE(test_blast)
-{
-    std::cerr << "BLAST module tests not run, because your compiler is too old. "
-                 "You need *full* C++11 support, i.e. GCC>=4.9, Clang>=3.4, MSVC>=2015."
-              << std::endl;
-}
-SEQAN_END_TESTSUITE
-#endif

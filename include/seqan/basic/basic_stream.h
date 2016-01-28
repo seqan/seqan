@@ -64,7 +64,7 @@ length(TContainer const & me);
 
 template <typename TContainer, typename TSource>
 inline void
-appendValue(TContainer SEQAN_FORWARD_ARG me, TSource SEQAN_FORWARD_CARG source);
+appendValue(TContainer && me, TSource && source);
 
 /*!
  * @macro SEQAN_HAS_ZLIB

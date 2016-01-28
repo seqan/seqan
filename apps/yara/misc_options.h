@@ -263,6 +263,18 @@ inline TReadSeqSize getReadErrors(TOptions const & options, TReadSeqSize readSeq
 }
 
 // ----------------------------------------------------------------------------
+// Function getReadIndels()
+// ----------------------------------------------------------------------------
+// Returns the absolute number of indels for a given read sequence.
+
+template <typename TMatch, typename TOptions, typename TReadSeqSize>
+inline TReadSeqSize getReadIndels(TOptions const & options, TReadSeqSize readSeqLength)
+{
+    return std::min((TReadSeqSize)(readSeqLength * options.indelRate),
+                    (TReadSeqSize)MemberLimits<TMatch, Errors>::VALUE);
+}
+
+// ----------------------------------------------------------------------------
 // Function getReadStrata()
 // ----------------------------------------------------------------------------
 // Returns the absolute number of strata for a given read sequence.
