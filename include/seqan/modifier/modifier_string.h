@@ -911,6 +911,14 @@ save(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > cons
     return true; // NOOP; this has to be done manually right now
 }
 
+// --------------------------------------------------------------------------
+// Function clear()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec >
+inline void clear(ModifiedString<THost, TSpec> &)
+{}
+
 }  // namespace seqan
 
 #endif  // SEQAN_MODIFIER_MODIFIER_STRING_H_

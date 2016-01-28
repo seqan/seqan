@@ -128,6 +128,16 @@ class Index<TText, BidirectionalIndex<TIndexSpec> >
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function indexCreate()
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TIndexSpec, typename TFibre>
+inline bool indexCreate(Index<TText, BidirectionalIndex<TIndexSpec> > & index, TFibre)
+{
+    return indexCreate(index.fwd, TFibre()) && indexCreate(index.rev, TFibre());
+}
+
+// ----------------------------------------------------------------------------
 // Function clear()
 // ----------------------------------------------------------------------------
 
@@ -148,7 +158,7 @@ inline void clear(Index<TText, BidirectionalIndex<TIndexSpec> > & index)
 template <typename TText, typename TIndexSpec>
 inline bool empty(Index<TText, BidirectionalIndex<TIndexSpec> > const & index)
 {
-    return empty(index.fwd) || empty(index.bwd);
+    return empty(index.fwd) || empty(index.rev);
 }
 
 // This function can be used to open a previously saved index.
@@ -160,7 +170,6 @@ inline bool open(Index<TText, BidirectionalIndex<TIndexSpec> > & index, const ch
     name = fileName;    append(name, ".fwd");
     if (open(index.fwd, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE))
     {
-        getFibre(index.rev, FibreText()) = getFibre(index.fwd, FibreText());
         name = fileName;    append(name, ".rev");
         return open(index.rev, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE);
     }
@@ -180,6 +189,22 @@ inline bool save(Index<TText, BidirectionalIndex<TIndexSpec> > const & index, co
         return save(index.rev, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE);
     }
     return false;
+}
+
+// ----------------------------------------------------------------------------
+// Function getFibre()
+// ----------------------------------------------------------------------------
+// only used for testing open/save
+
+template <typename TText, typename TSpec>
+inline typename Fibre<Index<TText, TSpec>, FibreText>::Type &
+getFibre(Index<TText, BidirectionalIndex<TSpec> > &index, FibreText) {
+    return value(index.fwd.text);
+}
+template <typename TText, typename TSpec>
+inline typename Fibre<Index<TText, TSpec>, const FibreText>::Type &
+getFibre(Index<TText, BidirectionalIndex<TSpec> > const &index, FibreText) {
+    return value(index.fwd.text);
 }
 
 }

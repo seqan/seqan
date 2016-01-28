@@ -51,10 +51,10 @@ typedef Tag<BidirectionalRev_> const         Rev;
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TDirection>
 inline void update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > & it, TDirection)
 {
-    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::value, Rev, Fwd>::type TOppositeDirection;
+    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::VALUE, Rev, Fwd>::Type TOppositeDirection;
 
-    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::value, TText, typename RevTextFibre<TText>::Type>::type TDirText;
-    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::value, typename RevTextFibre<TText>::Type, TText>::type TOppDirText;
+    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::VALUE, TText, typename RevTextFibre<TText>::Type>::Type TDirText;
+    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::VALUE, typename RevTextFibre<TText>::Type, TText>::Type TOppDirText;
 
     typedef Iter<Index<TDirText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > TDirIter;
     typedef Iter<Index<TOppDirText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > TOppDirIter;

@@ -339,6 +339,22 @@ SEQAN_HOST_DEVICE inline bool isLeaf(Iter<Index<TText, BidirectionalIndex<TIndex
 }
 
 // ----------------------------------------------------------------------------
+// Function isRoot()                                                 [Iterator]
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TIndexSpec, typename TSpec>
+SEQAN_HOST_DEVICE inline bool isRoot(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
+{
+    return isRoot(it, Fwd());
+}
+
+template <typename TText, typename TIndexSpec, typename TSpec, typename TDirection>
+SEQAN_HOST_DEVICE inline bool isRoot(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it, Tag<TDirection>)
+{
+    return isRoot(_iter(it, Tag<TDirection>()));
+}
+
+// ----------------------------------------------------------------------------
 // Function goUp()                                                   [Iterator]
 // ----------------------------------------------------------------------------
 
@@ -358,6 +374,17 @@ SEQAN_HOST_DEVICE inline void goRoot(Iter<Index<TText, BidirectionalIndex<TIndex
 {
     goRoot(it.fwdIter);
     goRoot(it.revIter);
+}
+
+// ----------------------------------------------------------------------------
+// Function countOccurrences()                                       [Iterator]
+// ----------------------------------------------------------------------------
+
+template < typename TText, typename TIndexSpec, typename TSpec >
+SEQAN_HOST_DEVICE inline typename Size<Index<TText, BidirectionalIndex<TIndexSpec> > >::Type
+countOccurrences(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TSpec> > const &it)
+{
+    return countOccurrences(it.fwdIter);
 }
 
 }

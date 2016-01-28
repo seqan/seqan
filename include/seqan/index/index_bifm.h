@@ -53,10 +53,10 @@ SEQAN_CONCEPT_IMPL((Index<TText, BidirectionalIndex<FMIndex<TSpec, TConfig> > > 
 // Function indexCreate()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TIndexSpec, typename TFibre>
-inline bool indexCreate(Index<TText, BidirectionalIndex<TIndexSpec> > & index, TFibre)
+template <typename TText, typename TSpec, typename TConfig>
+inline bool indexCreate(Index<TText, BidirectionalIndex<FMIndex<TSpec, TConfig> > > & index)
 {
-    return indexCreate(index.fwd, TFibre()) && indexCreate(index.rev, TFibre());
+    return indexCreate(index.fwd, FibreSALF()) && indexCreate(index.rev, FibreSALF());
 }
 
 // ----------------------------------------------------------------------------
