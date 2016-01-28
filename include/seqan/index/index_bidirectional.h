@@ -167,7 +167,7 @@ inline bool open(Index<TText, BidirectionalIndex<TIndexSpec> > & index, const ch
 {
     String<char> name;
 
-    name = fileName;    append(name, ".fwd");
+    name = fileName;
     if (open(index.fwd, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE))
     {
         name = fileName;    append(name, ".rev");
@@ -182,7 +182,7 @@ inline bool save(Index<TText, BidirectionalIndex<TIndexSpec> > const & index, co
 {
     String<char> name;
 
-    name = fileName;    append(name, ".fwd");
+    name = fileName;
     if (save(index.fwd, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE))
     {
         name = fileName;    append(name, ".rev");
