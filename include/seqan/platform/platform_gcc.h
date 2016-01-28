@@ -164,39 +164,6 @@ typedef uint16_t __uint16; // nolint
 typedef int8_t __int8;     // nolint
 typedef uint8_t __uint8;   // nolint
 
-/*!
- * @macro SEQAN_CXX11_STANDARD
- * @headerfile <seqan/platform.h>
- * @brief Defined if the compiler has some C++11 support.
- *
- * @signature #define SEQAN_CXX_STANDARD
- *
- * @note This this auto-detection is not perfect and support differs.
- */
-
-// detect gcc C++11 support
-#if defined(__GXX_EXPERIMENTAL_CXX0X__)
-#  define SEQAN_CXX11_STANDARD
-#endif
-
-// detect clang C++11 support
-#ifdef __has_feature
-#  if __has_feature(cxx_static_assert)
-#    define SEQAN_CXX11_STANDARD
-#  endif
-#endif
-
-// full C++11 support in GCC >= 4.9 and Clang >= 3.4 (unless linked against old glibcxx)
-#if defined(SEQAN_CXX11_STANDARD)
-#   if !defined(__clang__) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 409)
-#       define SEQAN_CXX11_COMPLETE
-#   elif defined(__clang__) && (__clang_major__ * 100 + __clang_minor__ >= 304)
-#       if __has_include(<regex>) && !__has_include(<bits/regex_grep_matcher.h>)
-#           define SEQAN_CXX11_COMPLETE
-#       endif
-#   endif
-#endif
-
 #define SEQAN_LIKELY(expr)    __builtin_expect(!!(expr), 1)
 #define SEQAN_UNLIKELY(expr)  __builtin_expect(!!(expr), 0)
 

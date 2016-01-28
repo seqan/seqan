@@ -802,7 +802,7 @@ findMatch(TMatches const & matches, TMatch const & match)
 // ----------------------------------------------------------------------------
 
 template <typename TMatches, typename TKey>
-inline void sortMatches(TMatches SEQAN_FORWARD_ARG matches)
+inline void sortMatches(TMatches && matches)
 {
     typedef typename Value<TMatches>::Type  TMatch;
 

@@ -192,26 +192,11 @@ struct MakeSigned_ : MakeSigned<T> {};
  * @return Type A corresponding non-reference type, e.g. <tt>int</tt> for <tt>T = &amp; int</tt>.
  */
 
-#ifdef SEQAN_CXX11_STANDARD
-
 template <typename T>
 struct RemoveReference
 {
     typedef typename std::remove_reference<T>::type Type;
 };
-
-#else
-
-template <typename T>
-struct RemoveReference
-{
-    typedef T Type;
-};
-
-template <typename T>
-struct RemoveReference<T &> : RemoveReference<T> {};
-
-#endif
 
 // ----------------------------------------------------------------------------
 // Metafunction RemoveReference
@@ -229,35 +214,11 @@ struct RemoveReference<T &> : RemoveReference<T> {};
  * @return Type A corresponding non-pointer type, e.g. <tt>int</tt> for <tt>T = *int</tt>.
  */
 
-#ifdef SEQAN_CXX11_STANDARD
-
 template <typename T>
 struct RemovePointer
 {
     typedef typename std::remove_pointer<T>::type Type;
 };
-
-#else
-
-template <typename T>
-struct RemovePointer
-{
-    typedef T Type;
-};
-
-template <typename T>
-struct RemovePointer<T *>
-{
-    typedef T Type;
-};
-
-template <typename T>
-struct RemovePointer<T * const>
-{
-    typedef T Type;
-};
-
-#endif
 
 template <typename T>
 struct IsPointer : False {};

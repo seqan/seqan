@@ -93,13 +93,7 @@ typedef unsigned __int8 __uint8;
 // we have provide our own bundled stdint.h header.  Using this header can be disabled
 // by defining the precompiler variable SEQAN_INCLUDE_BUNDLED_STDINT as 0.
 
-#if _MSC_VER >= 1600
 #include <stdint.h>
-#else
-#if !defined(SEQAN_INCLUDE_BUNDLED_STDINT) || SEQAN_INCLUDE_BUNDLED_STDINT
-#include "seqan/platform/windows_stdint.h"
-#endif  // #if !defined(SEQAN_INCLUDE_BUNDLED_STDINT) || SEQAN_INCLUDE_BUNDLED_STDINT
-#endif  // #if _MSC_VER >= 1600
 
 // ==========================================================================
 // Define SeqAn Specific Macros.
@@ -116,16 +110,6 @@ typedef unsigned __int8 __uint8;
 #define SEQAN_IS_32_BIT 1
 #endif  // #if defined(_WIN64)
 
-// C++11 is supported by Visual C++ >=v10
-#if _MSC_VER >= 1600
-#define SEQAN_CXX11_STANDARD
-#endif
-
-// full C++11 support in Visual C++ >= 2015
-#if _MSC_VER >= 1900
-#define SEQAN_CXX11_COMPLETE
-#endif
-
 // ==========================================================================
 // Visual Studio Specific Workarounds.
 // ==========================================================================
@@ -136,13 +120,6 @@ inline T round(T const & x)
 {
     return static_cast<T>(floor(x + 0.5));
 }
-
-// Rename some underscore-functions in Windows.
-#if _MSC_VER < 1900
-#ifndef snprintf
-#define snprintf _snprintf
-#endif  // #ifndef snprintf
-#endif
 
 // Define ftello
 #ifndef ftello

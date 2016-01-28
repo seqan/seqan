@@ -23,7 +23,7 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION "statically linked applications")
 
 
 # Use 4 build threads
-set(CTEST_BUILD_FLAGS -j4)
+set(CTEST_BUILD_FLAGS -j2)
 
 # we want makefiles
 set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
@@ -41,7 +41,7 @@ ctest_start     (Continuous)
 ctest_configure (BUILD "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE _configure_ret)
 ctest_build     (BUILD "${CTEST_BINARY_DIRECTORY}" NUMBER_ERRORS _build_errors
                                                    NUMBER_WARNINGS _build_warnings)
-ctest_test      (BUILD "${CTEST_BINARY_DIRECTORY}" PARALLEL_LEVEL 4)
+ctest_test      (BUILD "${CTEST_BINARY_DIRECTORY}" PARALLEL_LEVEL 2)
 ctest_submit()
 
 # indicate errors

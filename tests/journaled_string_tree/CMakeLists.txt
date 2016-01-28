@@ -14,19 +14,6 @@ message (STATUS "Configuring tests/journaled_string_tree")
 # Dependencies
 # ----------------------------------------------------------------------------
 
-find_package(CXX11 REQUIRED)
-
-if (WIN32)
-    message (STATUS "   Not building journaled string tree test under Windows. Incomplete C++11 support.")
-    return()
-endif (WIN32)
-
-# Enable module only with CXX11 support.
-if (NOT CXX11_FOUND)
-    message (STATUS "  Cannot build journaled string tree module tests.")
-    return ()
-endif (NOT CXX11_FOUND)
-
 # Search SeqAn and select dependencies.
 set (SEQAN_FIND_DEPENDENCIES OpenMP)
 find_package (SeqAn REQUIRED)
@@ -47,7 +34,7 @@ add_executable (test_basic_observable
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_basic_observable ${SEQAN_LIBRARIES})
- 
+
 # Update the list of file names below if you add source files to your test.
 add_executable (test_journaled_string_tree
                 test_journaled_string_tree.cpp
@@ -55,7 +42,7 @@ add_executable (test_journaled_string_tree
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_journaled_string_tree ${SEQAN_LIBRARIES})
-                
+
 add_executable (test_delta_map
                 test_delta_map.cpp
                 test_delta_store.h
@@ -72,7 +59,7 @@ add_executable (test_journaled_string_tree_traverser
 target_link_libraries (test_journaled_string_tree_traverser ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # Enable OpenMP.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")

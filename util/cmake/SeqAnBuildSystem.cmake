@@ -228,6 +228,14 @@ macro (seqan_build_system_init)
 
     SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
          ${PROJECT_BINARY_DIR}/bin)
+
+    # find the highest c++ standard and select it
+    find_package(StdCXX REQUIRED)
+    # NOTE: First location to set SEQAN_CXX_FLAGS at the moment.  If you write
+    # to the variable for the first time earlier, update this line to append to
+    # the variable instead of overwriting.
+    set (SEQAN_CXX_FLAGS "${STD_CXX_FLAG}")
+
 endmacro (seqan_build_system_init)
 
 # ---------------------------------------------------------------------------
@@ -627,7 +635,6 @@ macro (seqan_build_demos_develop PREFIX)
     # Find SeqAn with all dependencies.
     set (SEQAN_FIND_DEPENDENCIES ALL)
     find_package (SeqAn REQUIRED)
-    find_package (CXX11)
     find_package (OpenMP)
     if (OPENMP_FOUND AND CMAKE_COMPILER_IS_GNUCXX)
         set(SEQAN_LIBRARIES ${SEQAN_LIBRARIES} -lgomp)
@@ -646,7 +653,7 @@ macro (seqan_build_demos_develop PREFIX)
 
     # Add SeqAn flags to CXX and NVCC flags.
     # Set to PARENT_SCOPE since this macro is executed from within a function which declares it's own scope.
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" PARENT_SCOPE)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" PARENT_SCOPE)
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})

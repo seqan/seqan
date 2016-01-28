@@ -16,14 +16,6 @@ set (SEQAN_APP_VERSION "3.5")
 # Dependencies
 # ----------------------------------------------------------------------------
 
-find_package(CXX11 REQUIRED)
-
-# Disable RazerS3 for MinGW and VS8 and earlier.
-if (NOT CXX11_FOUND)
-    message (STATUS "  RazerS 3 cannot be built with MinGW or with MS Visual C++ 8 and earlier.")
-    return ()
-endif (NOT CXX11_FOUND)
-
 # Disable RazerS3 on Travis CI because of computational resource limits.
 if (SEQAN_TRAVIS_BUILD)
     message (STATUS "  RazerS 3 is not built on Travis CI.")
@@ -83,7 +75,7 @@ target_link_libraries (razers3_quality2prob ${SEQAN_LIBRARIES})
 #target_link_libraries (razers3_compPHSens ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # ----------------------------------------------------------------------------
 # Installation

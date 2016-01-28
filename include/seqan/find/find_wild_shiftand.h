@@ -103,7 +103,6 @@ public:
         : _valid(false)
         {}
 
-#ifdef SEQAN_CXX11_STANDARD
     template <typename TNeedle2>
     Pattern(TNeedle2 && ndl,
             SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
@@ -112,14 +111,7 @@ public:
         setHost(*this, std::forward<TNeedle2>(ndl));
         ignoreUnusedVariableWarning(dummy);
     }
-#else
 
-    template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl)
-        : _valid(false) {
-        setHost(*this, ndl);
-    }
-#endif // SEQAN_CXX11_STANDARD
 //____________________________________________________________________________
 };
 
@@ -563,7 +555,6 @@ SEQAN_CHECKPOINT
 // Need to overload setHost, since we cannot convert the needle if TNeedle of pattern is a different alphabet,
 // which does not handle wildcard characters.
 
-#ifdef SEQAN_CXX11_STANDARD
 template <typename TNeedle, typename TNeedle2>
 inline void setHost(Pattern<TNeedle, WildShiftAnd> & me,
                     TNeedle2 && ndl)
@@ -571,24 +562,7 @@ inline void setHost(Pattern<TNeedle, WildShiftAnd> & me,
     _reinitPattern(me, ndl);
     setValue(_dataHost(me), std::forward<TNeedle2>(ndl));
 }
-#else
-template <typename TNeedle, typename TNeedle2>
-inline void setHost(Pattern<TNeedle, WildShiftAnd> & me,
-                    TNeedle2 & ndl)
-{
-    _reinitPattern(me, ndl);
-    setValue(_dataHost(me), ndl);
-}
 
-template <typename TNeedle, typename TNeedle2>
-inline void setHost(Pattern<TNeedle, WildShiftAnd> & me,
-                    TNeedle2 const & ndl)
-{
-    _reinitPattern(me, ndl);
-    setValue(_dataHost(me), ndl);
-}
-
-#endif
 //____________________________________________________________________________
 
 

@@ -1,6 +1,5 @@
 #include <iostream>
 #include <seqan/basic.h>
-#ifdef SEQAN_CXX11_COMPLETE
 #include <seqan/blast.h>
 
 using namespace seqan;
@@ -40,10 +39,3 @@ int main()
 
     return 0;
 }
-#else
-int main()
-{
-    std::cerr << "Demo not run, because you don't have full C++11 support.\n";
-    return 0;
-}
-#endif
