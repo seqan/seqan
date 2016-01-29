@@ -313,10 +313,8 @@ void Roche454SequencingSimulator::simulateRead(
     seqan::String<unsigned> realBaseCount;
 
     // Probability density function to use for the background noise.
-    std::lognormal_distribution<double> distNoise(seqan::calcLognormDistM(roche454Options.backgroundNoiseMean,
-                                                                          roche454Options.backgroundNoiseStdDev),
-                                                  seqan::calcLognormDistS(roche454Options.backgroundNoiseMean,
-                                                                          roche454Options.backgroundNoiseStdDev));
+    std::lognormal_distribution<double> distNoise(seqan::calcLogNormalDistParam(roche454Options.backgroundNoiseMean,
+                                                                                roche454Options.backgroundNoiseStdDev));
 
     // Initialize information about the current homopolymer length.
     unsigned homopolymerLength = 0;

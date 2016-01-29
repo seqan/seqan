@@ -154,12 +154,10 @@ public:
 
     MethylationLevelSimulator(TRng & rng, MethylationLevelSimulatorOptions const & options) :
             options(options), rng(rng),
-            pdfCG(seqan::calcBetaDistAlpha(options.methMuCG, options.methSigmaCG),
-                  seqan::calcBetaDistBeta(options.methMuCG, options.methSigmaCG)),
-            pdfCHG(seqan::calcBetaDistAlpha(options.methMuCHG, options.methSigmaCHG),
-                   seqan::calcBetaDistBeta(options.methMuCHG, options.methSigmaCHG)),
-            pdfCHH(seqan::calcBetaDistAlpha(options.methMuCHH, options.methSigmaCHH),
-                   seqan::calcBetaDistBeta(options.methMuCHH, options.methSigmaCHH))
+            pdfCG(seqan::calcBetaDistParam(static_cast<double>(options.methMuCG),
+                                           static_cast<double>(options.methSigmaCG))),
+            pdfCHG(seqan::calcBetaDistParam(options.methMuCHG, options.methSigmaCHG)),
+            pdfCHH(seqan::calcBetaDistParam(options.methMuCHH, options.methSigmaCHH))
     {}
 
     // Simulate methylation levels for the sequence in contig.  The results are stored in levels.
