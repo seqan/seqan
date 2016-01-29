@@ -89,7 +89,7 @@ typedef Tag<ZipIterator_> ZipIterator;
  * If the zip iterator is dereferenced it returns a <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a>
  * containing the dereferenced values of all embedded iterators. 
  * The metafunctions @link Value @endlink, @link GetValue @endlink and @link Reference @endlink
- * are overloaded to accordingly.
+ * are overloaded accordingly.
  *
  * To easily create a zip iterator one can use the helper function @link makeZipIterator @endlink.
  *
@@ -156,7 +156,6 @@ struct MakeIndexSequence<0, Indices...>
 // ----------------------------------------------------------------------------
 // Metafunction Container
 // ----------------------------------------------------------------------------
-
 
 /*!
  * @mfn ZipIterator#Container
