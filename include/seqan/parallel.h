@@ -60,7 +60,7 @@
 // ----------------------------------------------------------------------------
 // Use MCSTL which is part of the GCC since version 4.3
 
-#if defined(_OPENMP) && defined(PLATFORM_GCC)
+#if defined(_OPENMP) && defined(PLATFORM_GNU)
 #include <parallel/algorithm>
 #include <parallel/numeric>
 #else
