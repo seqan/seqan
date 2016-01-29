@@ -134,15 +134,13 @@ char const * FileExtensions<GZFile, T>::VALUE[1] =
 template <typename T>
 struct FileExtensions<BgzfFile, T>
 {
-    static char const * VALUE[2];
+    static char const * VALUE[1];
 };
 
 template <typename T>
-char const * FileExtensions<BgzfFile, T>::VALUE[2] =
+char const * FileExtensions<BgzfFile, T>::VALUE[1] =
 {
-    ".bgzf",      // default output extension
-    ".bam"        // BAM files are bgzf compressed
-
+    ".bgzf",      // default output extension will be changed to ".bam" in case of BAM files
     // if you add extensions here, extend getBasename() below
 };
 

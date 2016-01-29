@@ -97,6 +97,7 @@ readHeader(BamHeader & header,
            Bam const & /*tag*/)
 {
     clear(header);
+    FileExtensions<BgzfFile>::VALUE[0] = ".bam";
     // Read BAM magic string.
     String<char, Array<4> > magic;
     read(magic, iter, 4);

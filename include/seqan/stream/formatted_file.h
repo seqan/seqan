@@ -354,7 +354,7 @@ struct FormattedFile
 
         _getCompressionExtensions(extensions,
                                   TFileFormats(),
-                                  CompressedFileTypesWithoutBgzf_(),
+                                  CompressedFileTypes(),
                                   false);
         return extensions;
     }
