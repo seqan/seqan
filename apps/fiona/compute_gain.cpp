@@ -1,6 +1,7 @@
 #include <cctype>
 #include <iostream>
 #include <map>
+#include <random>
 
 #include <seqan/basic.h>
 #include <seqan/align.h>
@@ -11,7 +12,6 @@
 #include <seqan/bam_io.h>
 #include <seqan/arg_parse.h>
 #include <seqan/parallel.h>
-#include <seqan/random.h>
 
 // Data structure for options.
 struct Options
@@ -997,8 +997,8 @@ int main(int argc, char const ** argv)
     --chunksLeftToRead;
 
     // to reduce the number of threads waiting in front of the critical section
-    Rng<MersenneTwister> rng(42);
-    Pdf<Uniform<double> > chunkSizeNoise(options.chunkSize, 2 * options.chunkSize);
+    std::mt19937 rng(42);
+    std::uniform_real_distribution<double> distChunkSizeNoise(options.chunkSize, 2 * options.chunkSize);
 
     SEQAN_OMP_PRAGMA(parallel num_threads(options.numThreads))
     while (!stop && !error)
@@ -1019,7 +1019,7 @@ int main(int argc, char const ** argv)
         SEQAN_OMP_PRAGMA(critical (read_chunk))
         {
             int const tid = omp_get_thread_num();
-            unsigned myChunkSize = (unsigned)pickRandomNumber(rng, chunkSizeNoise);
+            unsigned myChunkSize = (unsigned)distChunkSizeNoise(rng);
             seqan::CharString prevName;
             seqan::CharString postId;
             clear(recordPre.qName);
