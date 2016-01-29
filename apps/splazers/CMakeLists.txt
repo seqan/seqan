@@ -17,7 +17,6 @@ set (SEQAN_APP_VERSION "1.3")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)

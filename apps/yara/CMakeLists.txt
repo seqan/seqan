@@ -21,29 +21,29 @@ if (MSVC AND MSVC_VERSION LESS 1800)
 endif ()
 
 # Disable parallelism in MSVC as it supports only OpenMP 2.0.
-if (MSVC)
-  set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)
-else ()
-  set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB BZip2)
+if (NOT MSVC)
+    find_package (OpenMP)
 endif ()
 
 # Search SeqAn and select dependencies.
+find_package (ZLIB)
+find_package (BZip2)
 find_package (SeqAn REQUIRED)
 
 # Warn if OpenMP was not found.
-if (NOT SEQAN_HAS_OPENMP)
+if (NOT OPENMP_FOUND)
   message (STATUS "  OpenMP 3.0 not found: building yara without multi-threading.")
-endif (NOT SEQAN_HAS_OPENMP)
+endif (NOT OPENMP_FOUND)
 
 # Warn if Zlib was not found.
-if (NOT SEQAN_HAS_ZLIB)
+if (NOT ZLIB_FOUND)
   message (STATUS "  Zlib not found: building yara without gzipped input and BAM output.")
-endif (NOT SEQAN_HAS_ZLIB)
+endif (NOT ZLIB_FOUND)
 
 # Warn if BZip2 was not found.
-if (NOT SEQAN_HAS_BZIP2)
+if (NOT BZIP2_FOUND)
   message (STATUS "  BZip2 not found: building yara without bzipped input.")
-endif (NOT SEQAN_HAS_BZIP2)
+endif (NOT BZIP2_FOUND)
 
 # ----------------------------------------------------------------------------
 # App-Level Configuration

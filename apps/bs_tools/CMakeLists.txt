@@ -17,8 +17,7 @@ set (SEQAN_APP_VERSION "0.1.2")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB)
-
+find_package (ZLIB)
 find_package (SeqAn REQUIRED)
 find_package (Boost)
 

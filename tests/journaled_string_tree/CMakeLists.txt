@@ -15,7 +15,7 @@ message (STATUS "Configuring tests/journaled_string_tree")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES OpenMP)
+find_package (OpenMP)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

@@ -15,7 +15,8 @@ message (STATUS "Configuring tests/stream")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)
+find_package (ZLIB)
+find_package (BZip2)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

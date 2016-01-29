@@ -23,7 +23,9 @@ if (SEQAN_TRAVIS_BUILD)
 endif ()
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB BZip2)
+find_package (OpenMP)
+find_package (ZLIB)
+find_package (BZip2)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

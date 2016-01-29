@@ -16,7 +16,6 @@ message (STATUS "Configuring tests/graph_types")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # Clang 3.2.0 has a bug that prevents test_graph_types from compiling.  See

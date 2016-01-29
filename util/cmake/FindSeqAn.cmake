@@ -120,9 +120,6 @@ set(_SEQAN_ALL_LIBRARIES     ZLIB BZip2 OpenMP CUDA)
 # ----------------------------------------------------------------------------
 
 # SEQAN_FIND_DEPENDENCIES
-if (NOT SEQAN_FIND_DEPENDENCIES)
-  set(SEQAN_FIND_DEPENDENCIES "DEFAULT")
-endif ()
 if (SEQAN_FIND_DEPENDENCIES STREQUAL "DEFAULT")
   set(SEQAN_FIND_DEPENDENCIES ${_SEQAN_DEFAULT_LIBRARIES})
 elseif (SEQAN_FIND_DEPENDENCIES STREQUAL "ALL")
@@ -135,6 +132,8 @@ endif ()
 if (NOT SEQAN_FIND_ENABLE_TESTING)
   set(SEQAN_FIND_ENABLE_TESTING "FALSE")
 endif ()
+
+# SEQAN_FIND_DEPENDENCIES IS DEPRECATED, just use find_package!
 
 # ----------------------------------------------------------------------------
 # Determine compiler.

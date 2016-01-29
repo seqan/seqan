@@ -633,9 +633,11 @@ macro (seqan_build_demos_develop PREFIX)
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
 
     # Find SeqAn with all dependencies.
-    set (SEQAN_FIND_DEPENDENCIES ALL)
-    find_package (SeqAn REQUIRED)
     find_package (OpenMP)
+    find_package (ZLIB)
+    find_package (BZip2)
+    find_package (SeqAn REQUIRED)
+
     if (OPENMP_FOUND AND CMAKE_COMPILER_IS_GNUCXX)
         set(SEQAN_LIBRARIES ${SEQAN_LIBRARIES} -lgomp)
     endif()

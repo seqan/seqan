@@ -17,7 +17,7 @@ set (SEQAN_APP_VERSION "1.2.2")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB)
+find_package (ZLIB)
 find_package (SeqAn REQUIRED)
 
 if (NOT ZLIB_FOUND)

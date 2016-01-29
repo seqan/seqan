@@ -15,7 +15,7 @@ message (STATUS "Configuring tests/tabix_io")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB)
+find_package (ZLIB)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------
