@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_consensus_v2)
+project (seqan_tests_consensus_v2 CXX)
 message (STATUS "Configuring tests/consensus_v2")
 
 # ----------------------------------------------------------------------------

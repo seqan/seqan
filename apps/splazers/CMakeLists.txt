@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_apps_splazers)
+project (seqan_apps_splazers CXX)
 message (STATUS "Configuring apps/splazers")
 
 set (SEQAN_APP_VERSION "1.3")

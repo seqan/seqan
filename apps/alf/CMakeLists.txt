@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_apps_alf)
+project (seqan_apps_alf CXX)
 message (STATUS "Configuring apps/alf")
 
 set (SEQAN_APP_VERSION "1.1.2")

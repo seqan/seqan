@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_statistics)
+project (seqan_tests_statistics CXX)
 message (STATUS "Configuring tests/statistics")
 
 # ----------------------------------------------------------------------------

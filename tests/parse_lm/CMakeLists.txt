@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_parse_lm)
+project (seqan_tests_parse_lm CXX)
 message (STATUS "Configuring tests/parse_lm")
 
 # ----------------------------------------------------------------------------

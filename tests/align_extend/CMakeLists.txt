@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_align_extend)
+project (seqan_tests_align_extend CXX)
 message (STATUS "Configuring tests/align_extend")
 
 # ----------------------------------------------------------------------------

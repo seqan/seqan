@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_apps_sgip)
+project (seqan_apps_sgip CXX)
 message (STATUS "Configuring apps/sgip")
 
 set (SEQAN_APP_VERSION "1.4")

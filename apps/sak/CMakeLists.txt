@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_apps_sak)
+project (seqan_apps_sak CXX)
 message (STATUS "Configuring apps/sak")
 
 set (SEQAN_APP_VERSION "0.4")

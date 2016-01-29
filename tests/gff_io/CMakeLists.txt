@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_gff_io)
+project (seqan_tests_gff_io CXX)
 message (STATUS "Configuring tests/gff_io")
 
 # ----------------------------------------------------------------------------

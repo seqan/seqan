@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_sequence_journaled)
+project (seqan_tests_sequence_journaled CXX)
 message (STATUS "Configuring tests/sequence_journaled")
 
 # ----------------------------------------------------------------------------

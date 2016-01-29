@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_apps_insegt)
+project (seqan_apps_insegt CXX)
 message (STATUS "Configuring apps/insegt")
 
 set (SEQAN_APP_VERSION "1.1.2")

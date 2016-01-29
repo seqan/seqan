@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_alignment_free)
+project (seqan_tests_alignment_free CXX)
 message (STATUS "Configuring tests/alignment_free")
 
 # ----------------------------------------------------------------------------

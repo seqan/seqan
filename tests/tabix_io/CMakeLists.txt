@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_tabix_io)
+project (seqan_tests_tabix_io CXX)
 message (STATUS "Configuring tests/tabix_io")
 
 # ----------------------------------------------------------------------------

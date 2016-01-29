@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_apps_fiona)
+project (seqan_apps_fiona CXX)
 message (STATUS "Configuring apps/fiona")
 
 set (SEQAN_APP_VERSION "0.2.2")

@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_journaled_string_tree)
+project (seqan_tests_journaled_string_tree CXX)
 message (STATUS "Configuring tests/journaled_string_tree")
 
 # ----------------------------------------------------------------------------

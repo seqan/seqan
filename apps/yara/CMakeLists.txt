@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_apps_yara)
+project (seqan_apps_yara CXX)
 message (STATUS "Configuring apps/yara")
 
 # ----------------------------------------------------------------------------

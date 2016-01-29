@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_apps_bs_tools)
+project (seqan_apps_bs_tools CXX)
 message (STATUS "Configuring apps/bs_tools")
 
 set (SEQAN_APP_VERSION "0.1.2")

@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_translation)
+project (seqan_tests_translation CXX)
 message (STATUS "Configuring tests/translation")
 
 # ----------------------------------------------------------------------------

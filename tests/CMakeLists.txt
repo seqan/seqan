@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests)
+project (seqan_tests CXX)
 message (STATUS "Configuring tests")
 
 # Setup flags and register all subdirectories.

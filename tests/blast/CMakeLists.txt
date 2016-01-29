@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_extras_tests_blast)
+project (seqan_extras_tests_blast CXX)
 message (STATUS "Configuring tests/blast")
 
 # ----------------------------------------------------------------------------

@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_apps_stellar)
+project (seqan_apps_stellar CXX)
 message (STATUS "Configuring apps/stellar")
 
 set (SEQAN_APP_VERSION "1.4.3")

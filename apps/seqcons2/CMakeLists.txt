@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_apps_seqcons2)
+project (seqan_apps_seqcons2 CXX)
 message (STATUS "Configuring apps/seqcons2")
 
 set (SEQAN_APP_VERSION "2.0.1")

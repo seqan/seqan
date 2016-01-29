@@ -106,7 +106,7 @@
 # ============================================================================
 
 include(FindPackageMessage)
-include(CheckIncludeFiles)
+include(CheckIncludeFileCXX)
 
 # ----------------------------------------------------------------------------
 # Define Constants.
@@ -360,7 +360,7 @@ endif ()
 
 # libexecinfo -- implicit
 
-check_include_files(execinfo.h _SEQAN_HAVE_EXECINFO)
+check_include_file_cxx(execinfo.h _SEQAN_HAVE_EXECINFO)
 mark_as_advanced(_SEQAN_HAVE_EXECINFO)
 if (_SEQAN_HAVE_EXECINFO)
   set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-DSEQAN_HAS_EXECINFO=1")

@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (extras_tests_realign)
+project (extras_tests_realign CXX)
 message (STATUS "Configuring tests/realign")
 
 # ----------------------------------------------------------------------------
