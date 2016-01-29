@@ -37,11 +37,15 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
 
-#ifdef __SSE4_1__
+#if defined(__SSE4_1__) || defined(__AVX__)
  #include <immintrin.h>
 #else
 // SSE4.1 or greater required
+#ifdef _MSC_VER
+ #pragma message("SSE4.1 instruction set not enabled")
+#else
  #warning "SSE4.1 instruction set not enabled"
+#endif  // _MSC_VER
 #endif
 
 
