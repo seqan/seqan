@@ -840,7 +840,7 @@ _getCompressionExtensions(
     typedef Tag<TFormat_> TFormat;
 
     std::vector<std::string> compressionExtensions;
-    _getFileExtensions(compressionExtensions, compress, primaryExtensionOnly);
+    _getFileExtensions(compressionExtensions, compress, true);
 
     unsigned len = (primaryExtensionOnly)? 1 : sizeof(FileExtensions<TFormat>::VALUE) / sizeof(char*);
     for (unsigned i = 0; i < len; ++i)
