@@ -371,55 +371,62 @@ endif (_SEQAN_HAVE_EXECINFO)
 
 # ZLIB
 
+set (SEQAN_HAS_ZLIB FALSE)
+
+# should SeqAn search for dependency?
 list(FIND SEQAN_FIND_DEPENDENCIES "ZLIB" _SEQAN_FIND_ZLIB)
 mark_as_advanced(_SEQAN_FIND_ZLIB)
-
-set (SEQAN_HAS_ZLIB FALSE)
 if (NOT _SEQAN_FIND_ZLIB EQUAL -1)
-  find_package(ZLIB QUIET)
-  if (ZLIB_FOUND)
-    set (SEQAN_HAS_ZLIB     TRUE)
+    find_package(ZLIB QUIET)
+endif ()
+
+if (ZLIB_FOUND)
+    set (SEQAN_HAS_ZLIB     TRUE) # deprecated: use ZLIB_FOUND instead
     set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${ZLIB_LIBRARIES})
     set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${ZLIB_INCLUDE_DIRS})
     set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_ZLIB=1")
-  endif ()
 endif ()
 
 # BZip2
 
+set (SEQAN_HAS_BZIP2 FALSE)
+
+# should SeqAn search for dependency?
 list(FIND SEQAN_FIND_DEPENDENCIES "BZip2" _SEQAN_FIND_BZIP2)
 mark_as_advanced(_SEQAN_FIND_BZIP2)
-
-set (SEQAN_HAS_BZIP2 FALSE)
 if (NOT _SEQAN_FIND_BZIP2 EQUAL -1)
-  find_package(BZip2 QUIET)
-  if (BZIP2_FOUND)
-    set (SEQAN_HAS_BZIP2    TRUE)
+    find_package(BZip2 QUIET)
+endif ()
+
+if (BZIP2_FOUND)
+    set (SEQAN_HAS_BZIP2    TRUE) # deprecated: use BZIP2_FOUND instead
     set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${BZIP2_LIBRARIES})
     set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${BZIP2_INCLUDE_DIRS})
     set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_BZIP2=1")
-  endif ()
-endif()
+endif ()
 
 # OpenMP
 
+set (SEQAN_HAS_OPENMP FALSE)
+
+# should SeqAn search for dependency?
 list(FIND SEQAN_FIND_DEPENDENCIES "OpenMP" _SEQAN_FIND_OPENMP)
 mark_as_advanced(_SEQAN_FIND_OPENMP)
-
-set (SEQAN_HAS_OPENMP FALSE)
 if (NOT _SEQAN_FIND_OPENMP EQUAL -1)
-  find_package(OpenMP QUIET)
-  # Note that in the following, we do not check for OPENMP_FOUND since this is
-  # only true if both C and C++ compiler support OpenMP.  This is not the case
-  # if the user has a compiler without OpenMP support by default and overrides
-  # only the C++ compiler (e.g. on winter 2013's Mac Os X).
-  if (OpenMP_CXX_FLAGS)
-    set (SEQAN_HAS_OPENMP   TRUE)
-    set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${OpenMP_LIBRARIES})
-    set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${OpenMP_INCLUDE_DIRS})
-    set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_OPENMP=1")
-    set (SEQAN_CXX_FLAGS        "${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-  endif ()
+    find_package(OpenMP QUIET)
+endif ()
+
+if (OPENMP_FOUND)
+    if (COMPILER_IS_CLANG AND (_GCC_VERSION MATCHES "^37[0-9]$"))
+        message (STATUS "Because of a bug in clang-3.7.x OpenMP cannot be used (even if available). Please update your clang!")
+        set (OPENMP_FOUND FALSE)
+    else ()
+        set (SEQAN_HAS_OPENMP TRUE) # deprecated: use OPENMP_FOUND instead
+        set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${OpenMP_LIBRARIES})
+        set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${OpenMP_INCLUDE_DIRS})
+        set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_OPENMP=1")
+        set (SEQAN_CXX_FLAGS        "${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    endif ()
 endif ()
 
 # CUDA
