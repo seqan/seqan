@@ -107,6 +107,7 @@
 
 include(FindPackageMessage)
 include(CheckIncludeFileCXX)
+include(CheckCXXSourceCompiles)
 
 # ----------------------------------------------------------------------------
 # Define Constants.
@@ -186,6 +187,8 @@ elseif (COMPILER_IS_MSVC)
     # require at least MSVC 19.0
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0")
         message(FATAL_ERROR "MSVC version (${CMAKE_CXX_COMPILER_VERSION}) must be at least 19.0 (Visual Studio 2015)!")
+    else ()
+        set (CXX11_FOUND TRUE CACHE INTERNAL "Availability of c++11") # always active
     endif ()
 
 else ()
@@ -197,16 +200,20 @@ endif ()
 # ----------------------------------------------------------------------------
 
 if (NOT CXX11_FOUND)
-    message (FATAL_ERROR "SeqAn requires C++11 since v2.1.0. "
-      "Set `set('CXX11_FOUND',  1)` if your compiler support natively c++11 or "
-      "when you set the compiler flag for c++11 via `SEQAN_CXX_FLAGS`. "
-      "For example, if you use gcc you should set "
-      "`set(SEQAN_CXX_FLAGS \"${SEQAN_CXX_FLAGS} -std=c++11\")`. \n"
-      "You can also copy the following cmake utility from "
-      "https://github.com/seqan/seqan/blob/master/util/cmake/FindStdCXX.cmake "
-      "into your cmake directory and automatically select the cxx standard "
-      "by calling `find_package(StdCXX REQUIRED)`.")
-    return ()
+    set(CXXSTD_TEST_SOURCE
+    "#if !defined(__cplusplus) || (__cplusplus < 201103L)
+    #error NOCXX11
+    #endif
+    int main() {}")
+    check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX11_DETECTED)
+    set (CXX11_FOUND ${CXX11_DETECTED} CACHE INTERNAL "Availability of c++11")
+    if (NOT CXX11_FOUND)
+        message (FATAL_ERROR "SeqAn requires C++11 since v2.1.0, but your compiler does "
+                "not support it. Make sure that you specify -std=c++11 in your CMAKE_CXX_FLAGS. "
+                "If you absolutely know what you are doing, you can overwrite this check "
+                " by defining CXX11_FOUND.")
+        return ()
+    endif (NOT CXX11_FOUND)
 endif (NOT CXX11_FOUND)
 
 # ----------------------------------------------------------------------------
