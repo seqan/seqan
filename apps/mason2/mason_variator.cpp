@@ -434,7 +434,7 @@ public:
             {
                 std::uniform_int_distribution<int> distNegateSize(0, 1);
                 if (distNegateSize(rng))
-                    size = -size;
+                    size = -std::min(size, static_cast<int>(pos));  // The deletion can not be larger than the current position, as it is modeled as the end of the deletion.
                 if (!simulateSVIndel(variants, haploCount, rId, pos, size, seq))
                     continue;
                 if (back(variants.svRecords).size < 0)

@@ -153,7 +153,7 @@ public:
     // The random number generator to use.
     TRng & rng;
     // The probability density function for the simulation.
-    std::uniform_int_distribution<int> dist;
+    std::normal_distribution<> dist;
 
     NormalFragmentSamplerImpl(TRng & rng, int meanLength, int stdDevLength, int fragSizeLowerBound) :
             meanLength(meanLength), stdDevLength(stdDevLength), fragSizeLowerBound(fragSizeLowerBound),
