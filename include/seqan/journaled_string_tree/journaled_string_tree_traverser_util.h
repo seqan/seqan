@@ -146,13 +146,13 @@ template <typename TJst, typename TSpec, typename TObserver,
           typename TTraversalNode>
 inline void
 pushNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
-         TTraversalNode SEQAN_FORWARD_CARG node)
+         TTraversalNode && node)
 {
 #if defined(DEBUG_JST_TRAVERSAL)
     //    std::cout << "-----> Journal " << container(node.endEdgeIt) << std::endl;
     std::cout << "        PUSH: (" << node << ")" << std::endl;
 #endif //defined(DEBUG_JST_TRAVERSAL)
-    appendValue(impl::stack(me), SEQAN_FORWARD(TTraversalNode, node));
+    appendValue(impl::stack(me), std::forward<TTraversalNode>(node));
     notify(me, PushEvent());
 }
 
@@ -683,7 +683,7 @@ expandNode(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & it,
                 child.remainingSize >= 0)
             {
                 if (SEQAN_LIKELY(!atEnd(child.curDelta)))  // Skip the node in case we reached the end already.
-                    impl::pushNode(it, SEQAN_MOVE(child));
+                    impl::pushNode(it, std::move(child));
             }
         }
         ++parentPtr->nextDelta;  // Move to the next branch point.
@@ -762,7 +762,7 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec>, TObserver> & me,
     node.remainingSize = me._branchLength - 1;
     node.isBase = true;
     node.fromBase = false;
-    appendValue(*me._stackPtr, SEQAN_MOVE(node));  // Push onto stack.
+    appendValue(*me._stackPtr, std::move(node));  // Push onto stack.
 
     // After we realized this.
     TNode* basePtr = &impl::activeNode(me);

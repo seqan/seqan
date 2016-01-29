@@ -64,10 +64,8 @@
 #include <numeric>
 
 #include <seqan/platform.h>
-#ifdef SEQAN_CXX11_STANDARD
 #include <forward_list>
 #include <array>
-#endif
 
 // ----------------------------------------------------------------------------
 // Basic

@@ -6,7 +6,7 @@
 # CMakeLists.txt file for seqcons2.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_seqcons2)
 message (STATUS "Configuring apps/seqcons2")
 
@@ -19,13 +19,6 @@ set (SEQAN_APP_VERSION "2.0.1")
 # Search SeqAn and select dependencies.
 set (SEQAN_FIND_DEPENDENCIES ZLIB)
 find_package (SeqAn REQUIRED)
-
-# Use C++11.
-find_package (CXX11)
-if (NOT CXX11_FOUND)
-  message (STATUS "  C++11 not found, skipping.")
-  return ()
-endif ()
 
 # ----------------------------------------------------------------------------
 # Build Setup
@@ -54,7 +47,7 @@ add_executable (seqcons2
 target_link_libraries (seqcons2 ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # ----------------------------------------------------------------------------
 # Installation

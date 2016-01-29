@@ -365,8 +365,8 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_mod_pos)
         SEQAN_ASSERT_EQ(modified, "TAGC");
 
         seqan::sort(modified);
-        SEQAN_ASSERT_EQ(original, "CGAT");
         SEQAN_ASSERT_EQ(modified, "ACGT");
+        SEQAN_ASSERT_EQ(original, "TGCA");
 
         SEQAN_ASSERT_EQ(infix(modified, 1, 3), "CG");
     }
@@ -529,26 +529,20 @@ SEQAN_DEFINE_TEST(test_modifier_reverse_iterator_metafunctions)
         typedef Value<TModifiedIterator>::Type TResult;
         bool res = IsSameType<TExpected, TResult>::VALUE;
         SEQAN_ASSERT(res);
-        #ifdef SEQAN_CXX11_STANDARD
         static_assert(std::is_same<TExpected, TResult>::value, "Different type expected.");
-        #endif
     }
     {
         typedef char const & TExpected;
         typedef GetValue<TModifiedIterator>::Type TResult;
         bool res = IsSameType<TExpected, TResult>::VALUE;
         SEQAN_ASSERT(res);
-        #ifdef SEQAN_CXX11_STANDARD
         static_assert(std::is_same<TExpected, TResult>::value, "Different type expected.");
-        #endif
     }
     {
         typedef char & TExpected;
         typedef Reference<TModifiedIterator>::Type TResult;
         bool res = IsSameType<TExpected, TResult>::VALUE;
-        #ifdef SEQAN_CXX11_STANDARD
         static_assert(std::is_same<TExpected, TResult>::value, "Different type expected.");
-        #endif
         SEQAN_ASSERT(res);
     }
 }

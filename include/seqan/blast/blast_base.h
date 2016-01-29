@@ -184,7 +184,7 @@ struct BlastProgramSelector<BlastProgram::DYNAMIC>
 constexpr bool
 qHasRevComp(BlastProgram const p)
 {
-    return (!(p==BlastProgram::BLASTP) || (p==BlastProgram::TBLASTN));
+    return ((p!=BlastProgram::BLASTP) && (p!=BlastProgram::TBLASTN));
 }
 
 // ----------------------------------------------------------------------------

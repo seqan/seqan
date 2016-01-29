@@ -234,7 +234,7 @@ public:
     IlluminaSequencingOptions illuminaOptions;
 
     // Storage for the Illumina simulation.
-    std::SEQAN_AUTO_PTR_NAME<IlluminaModel> model;
+    std::unique_ptr<IlluminaModel> model;
 
     IlluminaSequencingSimulator(TRng & rng, TRng & methRng, SequencingOptions const & seqOptions,
                                 IlluminaSequencingOptions const & illuminaOptions);
@@ -274,7 +274,7 @@ public:
     Roche454SequencingOptions roche454Options;
 
     // Precomputed model data for 454 Sequencing.
-    std::SEQAN_AUTO_PTR_NAME<Roche454Model> model;
+    std::unique_ptr<Roche454Model> model;
 
     Roche454SequencingSimulator(TRng & rng, TRng & methRng,
                                 SequencingOptions const & seqOptions,
@@ -349,7 +349,7 @@ public:
             roche454Options(roche454Options), sangerOptions(sangerOptions)
     {}
 
-    std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> make();
+    std::unique_ptr<SequencingSimulator> make();
 };
 
 // ============================================================================

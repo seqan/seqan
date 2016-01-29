@@ -43,6 +43,7 @@ SEQAN_BEGIN_TESTSUITE(test_store)
 {
     // the UCSC knownGene format
     SEQAN_CALL_TEST(test_store_io_read_ucsc_known_genes);
+    SEQAN_CALL_TEST(test_store_io_read_ucsc_known_genes_and_isoforms);
     SEQAN_CALL_TEST(test_store_io_write_ucsc_known_genes);
 
     // the gff format

@@ -1,30 +1,86 @@
 sudo: false
 language: cpp
-compiler:
-  - gcc-4.8
-  - clang
 cache:
-  apt: true
-install:
-  - if [ "$CC" == "gcc" ]; then export CXX=g++-4.8 CC=gcc-4.8; fi
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - cmake
-      - gcc-4.8
-      - g++-4.8
-      - clang
-      - zlib1g-dev
-      - libbz2-dev
-      - libboost-dev
-      - python
-      - python-nose
-      - python-jinja2
-      - python-pip
+  directories:
+    - $HOME/ccache
+before_install: mkdir -p ${HOME}/.local/bin/
+matrix:
+  include:
+    - os: linux
+      compiler: gcc-4.9
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
+          packages: ['g++-4.9', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      install: export CXX="g++-4.9" CC="gcc-4.9"
+
+    - os: linux
+      compiler: gcc-5
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
+          packages: ['g++-5', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      install: export CXX="g++-5" CC="gcc-5"
+
+    # package not whitelisted currently
+    #- os: linux
+      #compiler: gcc-6
+      #addons:
+        #apt:
+          #sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
+          #packages: ['g++-6', 'gcc-6', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      #install: export CXX="g++-6" CC="gcc-6"
+
+    - os: linux
+      compiler: clang-3.5
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports', 'llvm-toolchain-precise-3.5']
+          packages: ['clang-3.5', 'g++-4.9', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
+      install: export CXX="clang++-3.5" CC="clang-3.5"
+
+    - os: linux
+      compiler: clang-3.6
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports', 'llvm-toolchain-precise-3.6']
+          packages: ['clang-3.6', 'g++-4.9', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
+      install: export CXX="clang++-3.6" CC="clang-3.6"
+
+    - os: linux
+      compiler: clang-3.7
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports', 'llvm-toolchain-precise-3.7']
+          packages: ['clang-3.7', 'g++-4.9', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
+      install: export CXX="clang++-3.7" CC="clang-3.7"
+
+# currently too slow on osx
+    #- os: osx
+      #compiler: clang-3.6
+      #before_install:
+        #- sudo brew update
+        #- sudo brew tap homebrew/versions
+        #- sudo brew install llvm36
+      #install: ['export CXX="clang++-3.6" CC="clang-3.6"' ]
+
+    #- os: osx
+      #compiler: clang-3.7
+      #before_install:
+        #- sudo brew update
+        #- sudo brew tap homebrew/versions
+        #- sudo brew install llvm37
+      #install: ['export CXX="clang++-3.7" CC="clang-3.7"' ]
+
 before_script:
-  - export PATH=$HOME/.local/bin:$PATH
+  - export PATH=$HOME/.local/bin:/usr/lib/ccache:$PATH
   - pip install -r manual/requirements.txt --user `whoami`
+  - rm -rf ${HOME}/.ccache
+  - mkdir -p ${HOME}/ccache/${TRAVIS_BRANCH}/${TRAVIS_OS_NAME}/${CXX}
+  - ln -s  ${HOME}/ccache/${TRAVIS_BRANCH}/${TRAVIS_OS_NAME}/${CXX} ${HOME}/.ccache
+  - ln -s /usr/bin/ccache ${HOME}/.local/bin/${CXX}
+  - ln -s /usr/bin/ccache ${HOME}/.local/bin/${CC}
 script:
-  ./util/travis/linux-cibuild.sh
+  - ccache -s
+  - ./util/travis/linux-cibuild.sh
+  - ccache -s

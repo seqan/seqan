@@ -649,7 +649,7 @@ public:
         // Create sequencing simulator.
         SequencingSimulatorFactory simFactory(rng, methRng, options->seqOptions, options->illuminaOptions,
                                               options->rocheOptions, options->sangerOptions);
-        std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> ptr = simFactory.make();
+        std::unique_ptr<SequencingSimulator> ptr = simFactory.make();
         seqSimulator = ptr.release();
     }
 
@@ -840,11 +840,11 @@ public:
     // alignment information relative to the materialized sequence.
     IdSplitter fragmentSplitter;
     // Helper for joining the FASTQ files.
-    std::SEQAN_AUTO_PTR_NAME<FastxJoiner<seqan::Fastq> > fastxJoiner;
+    std::unique_ptr<FastxJoiner<seqan::Fastq> > fastxJoiner;
     // Helper for storing SAM records for each contig/haplotype pair.  In the end, we will join this again.
     IdSplitter alignmentSplitter;
     // Helper for joining the SAM files.
-    std::SEQAN_AUTO_PTR_NAME<SamJoiner> alignmentJoiner;
+    std::unique_ptr<SamJoiner> alignmentJoiner;
 
     // The BamHeader to use.
     seqan::BamHeader bamHeader;
@@ -859,7 +859,7 @@ public:
     // For writing left/right reads.
     seqan::SeqFileOut outSeqsLeft, outSeqsRight;
     // For writing the final SAM/BAM file.
-    std::SEQAN_AUTO_PTR_NAME<seqan::BamFileOut> outBamStream;
+    std::unique_ptr<seqan::BamFileOut> outBamStream;
 
     MasonSimulatorApp(MasonSimulatorOptions const & options) :
             options(options), rng(options.seed), methRng(options.methSeed),

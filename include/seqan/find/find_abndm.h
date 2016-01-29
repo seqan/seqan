@@ -131,7 +131,6 @@ public:
         blockCount(0), last(0), needleLength(0), haystackLength(0), limit(1), cP(0), findNext(false)
     {}
 
-#ifdef SEQAN_CXX11_STANDARD
     template <typename TNeedle2>
     Pattern(TNeedle2 && ndl,
             SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>)) :
@@ -161,22 +160,7 @@ public:
     {
         setHost(*this, std::forward<TNeedle2>(ndl));
     }
-#else
-    template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl) :
-        blockCount(0), last(0), needleLength(0), haystackLength(0), limit(1), cP(0), findNext(false),
-        verifier(ndl,-1)
-    {
-        setHost(*this, ndl);
-    }
 
-    template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl, int _limit = -1) :
-        limit(- _limit), cP(0), verifier(ndl,_limit)
-    {
-        setHost(*this, ndl);
-    }
-#endif  // SEQAN_CXX11_STANDARD
 };
 
 //////////////////////////////////////////////////////////////////////////////

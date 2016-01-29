@@ -54,12 +54,12 @@ struct AnchorsVerifier
     typedef typename Traits::TReadSeqs         TReadSeqs;
     typedef typename Traits::TReadSeq          TReadSeq;
     typedef typename Traits::TReadsContext     TReadsContext;
-    typedef typename Traits::TMatchesSet       TMatchesSet;
-    typedef typename Traits::TMatches          TMatches;
+    typedef typename Traits::TMatchesViewSet   TMatchesSet;
+    typedef typename Traits::TMatchesAppender  TMatches;
     typedef typename Traits::TMatch            TMatch;
 
-    typedef Myers<>                                     TAlgorithm;
-//    typedef Filter<MultipleShiftAnd>                    TAlgorithm;
+//    typedef Myers<>                                     TAlgorithm;
+    typedef AffineGaps                                  TAlgorithm;
     typedef Verifier<TContigSeqs, TReadSeq, TAlgorithm> TVerifier;
 
     // Thread-private data.
@@ -74,6 +74,8 @@ struct AnchorsVerifier
     TContigSeqs const & contigSeqs;
     TReadSeqs /*const*/ & readSeqs;
     TMatchesSet const & anchorsSet;
+    unsigned            libraryLength;
+    unsigned            libraryDev;
     Options const &     options;
 
     AnchorsVerifier(TReadsContext & ctx,
@@ -81,6 +83,8 @@ struct AnchorsVerifier
                     TContigSeqs const & contigSeqs,
                     TReadSeqs /*const*/ & readSeqs,
                     TMatchesSet const & anchorsSet,
+                    unsigned libraryLength,
+                    unsigned libraryDev,
                     Options const & options) :
         verifier(contigSeqs),
         prototype(),
@@ -89,14 +93,17 @@ struct AnchorsVerifier
         contigSeqs(contigSeqs),
         readSeqs(readSeqs),
         anchorsSet(anchorsSet),
+        libraryLength(libraryLength),
+        libraryDev(libraryDev),
         options(options)
     {
         _verifyAnchorsImpl(*this);
     }
 
-    void operator() (TMatch const & anchor)
+    template <typename TMatchesSetIt>
+    void operator() (TMatchesSetIt const & anchorsSetIt)
     {
-        _findMateImpl(*this, anchor);
+        _findMatesImpl(*this, anchorsSetIt);
     }
 
     template <typename TMatchPos, typename TMatchErrors>
@@ -118,11 +125,35 @@ struct AnchorsVerifier
 template <typename TSpec, typename Traits>
 inline void _verifyAnchorsImpl(AnchorsVerifier<TSpec, Traits> & me)
 {
-    // TODO(esiragusa): guess the number of pairs.
-    reserve(me.mates, lengthSum(me.anchorsSet), Exact());
+    // Guess the number of mates.
+    reserve(me.mates, length(me.mates) + length(me.anchorsSet), Exact());
 
     // Iterate over all anchors.
-    forEach(concat(me.anchorsSet), me, typename Traits::TThreading());
+    iterate(me.anchorsSet, me, Standard(), typename Traits::TThreading());
+}
+
+// ----------------------------------------------------------------------------
+// Function _findMatesImpl()
+// ----------------------------------------------------------------------------
+// Verifies all anchors.
+
+template <typename TSpec, typename Traits, typename TMatchesSetIt>
+inline void _findMatesImpl(AnchorsVerifier<TSpec, Traits> & me, TMatchesSetIt const & anchorsSetIt)
+{
+    auto const & anchors = *anchorsSetIt;
+    auto readId = position(anchorsSetIt, me.anchorsSet);
+    auto mateId = getMateId(me.readSeqs, readId);
+
+    if (empty(anchors) || isMapped(me.ctx, mateId))
+        return;
+
+    SEQAN_ASSERT(empty(me.anchorsSet[mateId]));
+
+//    for (auto const & anchor : anchors)
+//        _findMateImpl(me, anchor);
+
+    if (length(anchors) == 1)
+        _findMateImpl(me, front(anchors));
 }
 
 // ----------------------------------------------------------------------------
@@ -139,10 +170,6 @@ inline void _findMateImpl(AnchorsVerifier<TSpec, Traits> & me, TMatch const & an
     typedef typename Size<TReadSeqs>::Type              TReadId;
     typedef typename Value<TReadSeqs>::Type             TReadSeq;
     typedef typename Size<TReadSeq>::Type               TErrors;
-
-//    typedef Myers<>                                     TAlgorithm;
-//    typedef Filter<MultipleShiftAnd>                    TAlgorithm;
-//    typedef Verifier<TContigSeqs, TReadSeq, TAlgorithm> TVerifier;
 
     // Get mate seq.
     TReadId mateSeqId = getMateSeqId(me.readSeqs, getReadSeqId(anchor, me.readSeqs));
@@ -161,8 +188,9 @@ inline void _findMateImpl(AnchorsVerifier<TSpec, Traits> & me, TMatch const & an
 
     // Get absolute number of errors.
     TErrors maxErrors = getReadErrors<TMatch>(me.options, length(mateSeq));
+    TErrors maxIndels = getReadIndels<TMatch>(me.options, length(mateSeq));
 
-    verify(me.verifier, mateSeq, contigBegin, contigEnd, maxErrors, me);
+    verify(me.verifier, mateSeq, contigBegin, contigEnd, maxErrors, maxIndels, me);
 }
 
 // ----------------------------------------------------------------------------
@@ -178,7 +206,7 @@ inline void _addMatchImpl(AnchorsVerifier<TSpec, Traits> & me,
 {
     setContigPosition(me.prototype, matchBegin, matchEnd);
     me.prototype.errors = matchErrors;
-    appendValue(me.mates, me.prototype, Insist(), typename Traits::TThreading());
+    appendValue(me.mates, me.prototype, Generous(), typename Traits::TThreading());
 }
 
 // ----------------------------------------------------------------------------
@@ -186,6 +214,7 @@ inline void _addMatchImpl(AnchorsVerifier<TSpec, Traits> & me,
 // ----------------------------------------------------------------------------
 // Computes the insert window.
 
+// --> ... mate
 template <typename TSpec, typename Traits, typename TContigPos, typename TMatch>
 inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
                               TContigPos & contigBegin,
@@ -196,22 +225,23 @@ inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
     typedef typename Traits::TContig                TContig;
     typedef typename Size<TContig>::Type            TContigSize;
 
-    TContigSize contigLength = length(me.contigSeqs[getContigId(anchor)]);
+    TContigSize contigLength = length(me.contigSeqs[getMember(anchor, ContigId())]);
 
-    setValueI1(contigBegin, getContigId(anchor));
-    setValueI1(contigEnd, getContigId(anchor));
+    setValueI1(contigBegin, getMember(anchor, ContigId()));
+    setValueI1(contigEnd, getMember(anchor, ContigId()));
 
     contigBegin.i2 = 0;
-    if (getMember(anchor, ContigBegin()) + me.options.libraryLength > me.options.libraryError)
-        contigBegin.i2 = getMember(anchor, ContigBegin()) + me.options.libraryLength - me.options.libraryError;
+    if (getMember(anchor, ContigBegin()) + me.libraryLength > me.libraryDev)
+        contigBegin.i2 = getMember(anchor, ContigBegin()) + me.libraryLength - 3 * me.libraryDev;
     contigBegin.i2 = _min(contigBegin.i2, contigLength);
 
-    contigEnd.i2 = _min(getMember(anchor, ContigBegin()) + me.options.libraryLength + me.options.libraryError, contigLength);
+    contigEnd.i2 = _min(getMember(anchor, ContigBegin()) + me.libraryLength + 3 * me.libraryDev, contigLength);
 
     SEQAN_ASSERT_LEQ(getValueI2(contigBegin), getValueI2(contigEnd));
-    SEQAN_ASSERT_LEQ(getValueI2(contigEnd) - getValueI2(contigBegin), 2 * me.options.libraryError);
+    SEQAN_ASSERT_LEQ(getValueI2(contigEnd) - getValueI2(contigBegin), 6 * me.libraryDev);
 }
 
+// mate ... <--
 template <typename TSpec, typename Traits, typename TContigPos, typename TMatch>
 inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
                               TContigPos & contigBegin,
@@ -219,19 +249,19 @@ inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
                               TMatch const & anchor,
                               LeftMate)
 {
-    setValueI1(contigBegin, getContigId(anchor));
-    setValueI1(contigEnd, getContigId(anchor));
+    setValueI1(contigBegin, getMember(anchor, ContigId()));
+    setValueI1(contigEnd, getMember(anchor, ContigId()));
 
     contigBegin.i2 = 0;
-    if (getMember(anchor, ContigEnd()) > me.options.libraryLength + me.options.libraryError)
-        contigBegin.i2 = getMember(anchor, ContigEnd()) - me.options.libraryLength - me.options.libraryError;
+    if (getMember(anchor, ContigEnd()) > me.libraryLength + 3 * me.libraryDev)
+        contigBegin.i2 = getMember(anchor, ContigEnd()) - me.libraryLength - 3 * me.libraryDev;
 
     contigEnd.i2 = 0;
-    if (getMember(anchor, ContigEnd()) + me.options.libraryError > me.options.libraryLength)
-        contigEnd.i2 = getMember(anchor, ContigEnd()) - me.options.libraryLength + me.options.libraryError;
+    if (getMember(anchor, ContigEnd()) + me.libraryDev > me.libraryLength)
+        contigEnd.i2 = getMember(anchor, ContigEnd()) - me.libraryLength + 3 * me.libraryDev;
 
     SEQAN_ASSERT_LEQ(getValueI2(contigBegin), getValueI2(contigEnd));
-    SEQAN_ASSERT_LEQ(getValueI2(contigEnd) - getValueI2(contigBegin), 2 * me.options.libraryError);
+    SEQAN_ASSERT_LEQ(getValueI2(contigEnd) - getValueI2(contigBegin), 6 * me.libraryDev);
 }
 
 #endif  // #ifndef APP_YARA_MAPPER_VERIFIER_H_

@@ -66,7 +66,6 @@ public:
     Pattern() {
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     template <typename TNeedle2>
     Pattern(TNeedle2 && ndl,
             SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
@@ -74,14 +73,7 @@ public:
         ignoreUnusedVariableWarning(dummy);
         setHost(*this, std::forward<TNeedle2>(ndl));
     }
-#else
-    template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl)
-    {
-SEQAN_CHECKPOINT
-        setHost(*this, ndl);
-    }
-#endif  // SEQAN_CXX11_STANDARD
+
 //____________________________________________________________________________
 };
 

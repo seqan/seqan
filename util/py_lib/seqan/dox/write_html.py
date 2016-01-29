@@ -26,7 +26,7 @@ def escapeName(name):
     escape = '_'
     xs = []
     for c in name:
-        if c.isalnum() or c in ['-']:
+        if c.isalnum() or c in "-:":
             xs.append(c)
         else:
             xs += [escape, str(ord(c))]

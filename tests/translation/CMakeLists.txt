@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the translation module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 project (seqan_tests_translation)
 message (STATUS "Configuring tests/translation")
 
@@ -17,7 +17,6 @@ message (STATUS "Configuring tests/translation")
 # Search SeqAn and select dependencies.
 set (SEQAN_FIND_DEPENDENCIES OpenMP)
 find_package(SeqAn REQUIRED)
-find_package(CXX11)
 
 # ----------------------------------------------------------------------------
 # Build Setup
@@ -37,9 +36,6 @@ target_link_libraries (test_translation ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
-if (CXX11_FOUND)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
-endif (CXX11_FOUND)
 
 # ----------------------------------------------------------------------------
 # Register with CTest

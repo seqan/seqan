@@ -183,7 +183,7 @@ public:
     FragmentSamplerOptions options;
 
     // The actual generator implementation to use.
-    std::SEQAN_AUTO_PTR_NAME<FragmentSamplerImpl> impl;
+    std::unique_ptr<FragmentSamplerImpl> impl;
 
     FragmentSampler(TRng & rng, FragmentSamplerOptions const & options) : options(options)
     {
