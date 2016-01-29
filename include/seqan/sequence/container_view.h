@@ -239,11 +239,6 @@ SEQAN_CONCEPT_IMPL((ContainerView<TContainer, TSpec> const), (ContainerConcept))
 // Metafunction View
 // ----------------------------------------------------------------------------
 
-/*!
- * @mfn ContainerView#View
- * 
- */
-
 template <typename TValue, typename TAlloc>
 struct View<String<TValue, TAlloc> >
 {
