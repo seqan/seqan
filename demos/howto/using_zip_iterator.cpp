@@ -44,9 +44,9 @@ int main()
 {
     std::vector<int> vec = {10, 12, 14};
     DnaString str = "AGT";
-    std::array<float, 3> bla = {3.14, 2.71, 1.41};
+    std::array<float, 3> arr = { {3.14, 2.71, 1.41} };
 
-    auto zipCont = makeZippedView(vec, str, infix(str, 0, 3), bla, reverseString(str));
+    auto zipCont = makeZipView(vec, str, infix(str, 0, 3), arr, reverseString(str));
 
     // Range based for-loop.
     std::cout << "Using range based for-loop!" << std::endl;
@@ -66,7 +66,7 @@ int main()
     std::cout << "\nUsing value and position!" << std::endl;
     for (unsigned it = 0; it < length(zipCont); ++it)
     {
-        std::cout << (std::get<0>(value(zipCont,it)) -= 3) << ",  " << std::get<1>(value(zipCont,it)) << ", " << std::get<2>(value(zipCont,it)) << ", " << std::get<3>(value(zipCont,it)) << ", " << std::get<3>(value(zipCont, it)) << std::endl;
+        std::cout << (std::get<0>(value(zipCont,it)) -= 3) << ",  " << std::get<1>(value(zipCont,it)) << ", " << std::get<2>(value(zipCont,it)) << ", " << std::get<3>(value(zipCont,it)) << ", " << std::get<4>(value(zipCont, it)) << std::endl;
     }
     return 0;
 }
