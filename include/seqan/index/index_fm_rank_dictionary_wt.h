@@ -277,14 +277,14 @@ template <typename TValue, typename TSpec, typename TConfig, typename TPos, type
 inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type
 getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character)
 {
-    return getCumulativeRank(dict, pos, character).i1;
+    TPos smaller;
+    return getCumulativeRank(dict, pos, character, smaller);
 }
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
-inline Pair<typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type>
-getCumulativeRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character)
+inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type
+getCumulativeRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character, TPos & smaller)
 {
-    typedef typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type                      TSize;
     typedef typename Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreTreeStructure>::Type  TWaveletTreeStructure;
     typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type                         TWaveletTreeStructureString;
     typedef typename Value<TWaveletTreeStructureString>::Type                                               TWaveletTreeStructureEntry;
@@ -292,7 +292,7 @@ getCumulativeRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & d
 
     TPos sum = pos;
     TPos treePos = 0;
-    TPos smaller = 0;
+    smaller = 0;
 
     // determine the leaf containing the character
     // count the number of 1 or 0 up to the computed position
@@ -305,7 +305,7 @@ getCumulativeRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & d
         TPos addValue = getRank(dict.ranks[treePos], sum);
         if (ordGreater(getCharacter(it), character))
         {
-            if (addValue > sum) return Pair<TSize>(0, smaller);
+            if (addValue > sum) return 0;
 
             sum -= addValue;
             if (!goLeftChild(it))
@@ -314,7 +314,7 @@ getCumulativeRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & d
         else
         {
             smaller += sum - addValue + 1;
-            if (addValue == 0) return Pair<TSize>(0, smaller);
+            if (addValue == 0) return 0;
 
             charInTree = getCharacter(it);
             sum = addValue - 1;
@@ -325,9 +325,9 @@ getCumulativeRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & d
     }
 
     if (ordEqual(charInTree, character))
-        return Pair<TSize>(sum + 1, smaller);
+        return sum + 1;
 
-    return Pair<TSize>(0, smaller);
+    return 0;
 }
 
 // ----------------------------------------------------------------------------

@@ -107,34 +107,37 @@ inline bool open(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > & 
 // ----------------------------------------------------------------------------
 // This function is overloaded for Dna5 and Dna5Q to let Ns always mismatch.
 
-template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec>
+template <typename TText, typename TOccSpec, typename TSize_, typename TLen_, typename TSum_, typename TAlloc_, typename TSpec, typename TSize>
 SEQAN_HOST_DEVICE inline bool
-_getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it,
-               typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type const & vDesc,
-               Pair<typename Size<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type> & _range,
+_getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > >, VSTree<TopDown<TSpec> > > const & it,
+               typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > > >::Type const & vDesc,
+               Pair<typename Size<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > > >::Type> & _range,
+               TSize & smaller,
                Dna5 c)
 {
     return _getNodeByCharImpl(it, vDesc, _range, c);
 }
 
-template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec>
+template <typename TText, typename TOccSpec, typename TSize_, typename TLen_, typename TSum_, typename TAlloc_, typename TSpec, typename TSize>
 SEQAN_HOST_DEVICE inline bool
-_getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it,
-               typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type const & vDesc,
-               Pair<typename Size<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type> & _range,
+_getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > >, VSTree<TopDown<TSpec> > > const & it,
+               typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > > >::Type const & vDesc,
+               Pair<typename Size<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > > >::Type> & _range,
+               TSize & smaller,
                Dna5Q c)
 {
-    return _getNodeByCharImpl(it, vDesc, _range, c);
+    return _getNodeByCharImpl(it, vDesc, _range, smaller, c);
 }
 
-template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TChar>
+template <typename TText, typename TOccSpec, typename TSize_, typename TLen_, typename TSum_, typename TAlloc_, typename TSpec, typename TSize, typename TChar>
 SEQAN_HOST_DEVICE inline bool
-_getNodeByCharImpl(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it,
-               typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type const & vDesc,
-               Pair<typename Size<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type> & _range,
+_getNodeByCharImpl(Iter<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > >, VSTree<TopDown<TSpec> > > const & it,
+               typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > > >::Type const & vDesc,
+               Pair<typename Size<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > > >::Type> & _range,
+               TSize & /*smaller*/,
                TChar c)
 {
-    typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
+    typedef Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > >        TIndex;
     typedef typename Fibre<TIndex, FibreLF>::Type               TLF;
     typedef typename Value<TIndex>::Type                        TAlphabet;
 
@@ -142,6 +145,30 @@ _getNodeByCharImpl(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<Top
     TLF const & lf = indexLF(index);
 
     if (ordValue(c) >= ValueSize<TAlphabet>::VALUE) return false;
+
+    _range = range(index, vDesc);
+
+    _range.i1 = lf(_range.i1, c);
+    _range.i2 = lf(_range.i2, c);
+
+    return _range.i1 < _range.i2;
+}
+
+// This function is overloaded for YaraFMConfig because the LevelDictionary for the occurrence table
+// does not support cumulativeSearch (calculating the smaller value) yet.
+template <typename TText, typename TOccSpec, typename TSize_, typename TLen_, typename TSum_, typename TAlloc_, typename TSpec, typename TSize, typename TChar>
+SEQAN_HOST_DEVICE inline bool
+_getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > >, VSTree<TopDown<TSpec> > > const & it,
+               typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > > >::Type const & vDesc,
+               Pair<typename Size<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > > >::Type> & _range,
+               TSize & /*smaller*/,
+               TChar c)
+{
+    typedef Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > >        TIndex;
+    typedef typename Fibre<TIndex, FibreLF>::Type               TLF;
+
+    TIndex const & index = container(it);
+    TLF const & lf = indexLF(index);
 
     _range = range(index, vDesc);
 
