@@ -762,7 +762,7 @@ _bestExtension(TInfix const & infH,
 template <typename TSource, typename TSpec1, typename TSpec2>
 void
 integrateAlign(Align<TSource, TSpec1> & align,
-			   Align<Segment<typename Infix<TSource>::Type, InfixSegment>, TSpec2> const & infixAlign) {
+			   Align<Segment<Segment<TSource, InfixSegment>, InfixSegment>, TSpec2> const & infixAlign) {
 	typedef typename Size<TSource>::Type TSize;
 	typedef typename Position<typename Row<Align<TSource, TSpec1> >::Type>::Type TPos;
 
