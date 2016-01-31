@@ -231,6 +231,7 @@ struct LF
     SEQAN_HOST_DEVICE typename Size<LF const>::Type
     operator() (TPos pos, TValue val, TPos & smaller) const
     {
+        smaller = 0; // in case it was not initialized before
         return _getCumulativeBwtRank(*this, pos, val, smaller);
     }
 };

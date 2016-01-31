@@ -74,10 +74,9 @@ testBidirectionalIndex(TText & text, TPattern & pattern)
 
     if (res1) // if pattern was found in string
     {
-        getOccurrences(bifm2, Rev());
         SEQAN_ASSERT(getOccurrences(itFwd) == getOccurrences(bifm1, Fwd()));
         SEQAN_ASSERT(getOccurrences(itFwd) == getOccurrences(bifm2, Fwd()));
-        SEQAN_ASSERT(getOccurrences(itRev) == getOccurrences(_iter(bifm1, Rev())));
+        SEQAN_ASSERT(getOccurrences(itRev) == getOccurrences(bifm1, Rev()));
         SEQAN_ASSERT(getOccurrences(itRev) == getOccurrences(bifm2, Rev()));
     }
 
@@ -98,7 +97,6 @@ SEQAN_DEFINE_TEST(bifm_index_iterator_range_check)
 
     for (unsigned int patternLength = 0; patternLength <= textLength; ++patternLength)
     {
-
         TText text, pattern;
         generateText(text, textLength);
         generateText(pattern, patternLength);
@@ -106,7 +104,7 @@ SEQAN_DEFINE_TEST(bifm_index_iterator_range_check)
         testBidirectionalIndex<TIndex>(text, pattern);
 
         TStringSet stringSet;
-        for (unsigned int stringSetSize = 1; stringSetSize <= 3; ++stringSetSize)
+        for (unsigned int stringSetSize = 1; stringSetSize <= 10; ++stringSetSize)
         {
             generateText(text, textLength);
             appendValue(stringSet, text);
