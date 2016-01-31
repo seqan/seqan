@@ -36,6 +36,8 @@
 
 #include <seqan/basic.h>
 
+#ifndef PLATFORM_WINDOWS_VS
+
 #include <seqan/file.h>
 #include <seqan/sequence.h>
 #include <seqan/blast.h>
@@ -93,3 +95,7 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_read_tabular_with_comments_legacy_constexpr);
 }
 SEQAN_END_TESTSUITE
+
+#else
+#pragma message("Due to a bug in Microsoft Visual Studio 2015 the BLAST module is deactivated.")
+#endif

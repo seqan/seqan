@@ -1,5 +1,6 @@
 #include <iostream>
 #include <seqan/basic.h>
+#ifndef PLATFORM_WINDOWS_VS
 #include <seqan/blast.h>
 
 using namespace seqan;
@@ -104,3 +105,10 @@ int main(int argc, char ** argv)
 
     return 0;
 }
+#else
+int main()
+{
+    std::cerr << "Demo not run, because of a bug in Microsoft Visual Studio 2015.\n";
+    return 0;
+}
+#endif
