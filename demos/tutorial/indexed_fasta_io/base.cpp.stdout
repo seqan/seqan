@@ -1,0 +1,4 @@
+/Users/smehringer/Projects/seqan/include/seqan/basic/basic_exception.h:363 FAILED!  (Uncaught exception of type seqan::FileOpenError: Could not open file path/to/file.fasta)
+
+stack trace:
+
