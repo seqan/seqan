@@ -38,7 +38,7 @@
 #include <seqan/index.h>  // for Shape<>
 #include <seqan/sequence.h>
 #include <seqan/sequence_journaled.h>  // for the journal
-#include <seqan/misc/random_util.h> // for beta distribution
+#include <seqan/random.h> // for beta distribution
 
 #include "mason_types.h"
 #include "mason_options.h"
@@ -154,10 +154,9 @@ public:
 
     MethylationLevelSimulator(TRng & rng, MethylationLevelSimulatorOptions const & options) :
             options(options), rng(rng),
-            pdfCG(seqan::calcBetaDistParam(static_cast<double>(options.methMuCG),
-                                           static_cast<double>(options.methSigmaCG))),
-            pdfCHG(seqan::calcBetaDistParam(options.methMuCHG, options.methSigmaCHG)),
-            pdfCHH(seqan::calcBetaDistParam(options.methMuCHH, options.methSigmaCHH))
+            pdfCG(seqan::cvtBetaDistParam(options.methMuCG,options.methSigmaCG)),
+            pdfCHG(seqan::cvtBetaDistParam(options.methMuCHG, options.methSigmaCHG)),
+            pdfCHH(seqan::cvtBetaDistParam(options.methMuCHH, options.methSigmaCHH))
     {}
 
     // Simulate methylation levels for the sequence in contig.  The results are stored in levels.

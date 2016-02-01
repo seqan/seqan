@@ -67,13 +67,6 @@ public:
             : _k(k), _useSqrt(useSqrt), _noiseMu(noiseMu), _noiseSigma(noiseSigma), _size(0)
     {}
 
-    ThresholdMatrix(double k, bool useSqrt, double noiseMean, double noiseStdDev, seqan::MeanStdDev const & /*tag*/)
-            : _k(k), _useSqrt(useSqrt),
-              _noiseMu(::std::log(noiseMean) - 0.5 * ::std::log(1.0 + noiseStdDev * noiseStdDev / noiseMean / noiseMean)),
-              _noiseSigma(::std::sqrt(::std::log(1.0 + noiseStdDev * noiseStdDev / noiseMean / noiseMean))),
-              _size(0)
-    {}
-
     inline double
     computeThreshold(unsigned r1, unsigned r2) const
     {
@@ -176,8 +169,9 @@ public:
     inline void
     setNoiseMeanStdDev(double mean, double stdDev)
     {
-        _noiseMu = ::std::log(mean) - 0.5 * ::std::log(1.0 + stdDev * stdDev / mean / mean);
-        _noiseSigma = ::std::sqrt(::std::log(1.0 + stdDev * stdDev / mean / mean));
+        auto tmp = seqan::cvtLogNormalDistParam(mean, stdDev);
+        _noiseMu = tmp.m();
+        _noiseSigma = tmp.s();
     }
 
     inline double
@@ -313,8 +307,8 @@ void Roche454SequencingSimulator::simulateRead(
     seqan::String<unsigned> realBaseCount;
 
     // Probability density function to use for the background noise.
-    std::lognormal_distribution<double> distNoise(seqan::calcLogNormalDistParam(roche454Options.backgroundNoiseMean,
-                                                                                roche454Options.backgroundNoiseStdDev));
+    std::lognormal_distribution<double> distNoise(seqan::cvtLogNormalDistParam(roche454Options.backgroundNoiseMean,
+                                                                               roche454Options.backgroundNoiseStdDev));
 
     // Initialize information about the current homopolymer length.
     unsigned homopolymerLength = 0;

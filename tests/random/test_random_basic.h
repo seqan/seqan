@@ -31,33 +31,29 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Umbrella header for the random module.
+// Tests for the random number generation code in seqan/random.
 // ==========================================================================
 
-#ifndef SEQAN_RANDOM_H_
-#define SEQAN_RANDOM_H_
+#ifndef TEST_RANDOM_TEST_RANDOM_BASIC_H_
+#define TEST_RANDOM_TEST_RANDOM_BASIC_H_
 
-//____________________________________________________________________________
-// Prerequisites
+// Test GetDefaultRang and defaultRng().
+SEQAN_DEFINE_TEST(test_default_rng)
+{
+    using namespace seqan;
 
-#include <sstream>
-#include <random>
+    // Test that calling the function works.
+    typedef String<Dna> TTag;
+    typedef typename GetDefaultRng<TTag>::Type TRng;
+    TRng & rng = defaultRng(TTag());
+    (void)rng;
 
-#include <seqan/basic.h>
-#include <seqan/stream.h>
+    // Test that a reference is returned and the global state changes.
+    typedef typename TRng::result_type TValue;
+    TValue x1 = defaultRng(TTag())();
+    TValue x2 = defaultRng(TTag())();
+    TValue x3 = defaultRng(TTag())();
+    SEQAN_ASSERT(x1 != x2 || x2 != x3);  // 3 times the same value is not probable!
+}
 
-//____________________________________________________________________________
-// Module Headers
-
-// Basic Definitions
-#include <seqan/random/random_base.h>
-
-// Rng With Special Distributions not contained in the STL.
-#include <seqan/random/random_beta.h>
-
-// Functions with randomness.
-#include <seqan/random/random_util.h>
-
-//____________________________________________________________________________
-
-#endif  // SEQAN_RANDOM_H_
+#endif  // TEST_RANDOM_TEST_RANDOM_BASIC_H_

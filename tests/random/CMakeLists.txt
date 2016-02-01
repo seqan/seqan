@@ -31,9 +31,9 @@ add_definitions (${SEQAN_DEFINITIONS})
 # Update the list of file names below if you add source files to your test.
 add_executable (test_random
                test_random.cpp
-               test_random_dists.h
-               test_random_rng.h
-               test_random_shuffle.h)
+               test_random_beta.h
+               test_random_basic.h
+               test_random_util.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_random ${SEQAN_LIBRARIES})

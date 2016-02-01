@@ -578,8 +578,8 @@ void generateSequence(TSequenceSet & sequences,
 
     // TODO(holtgrew): It should be possible to use a per-call RNG.
     typedef typename GetDefaultRng<TGraph>::Type TRng;
-    typedef Pdf<Uniform<double> > TPdf;
-    TPdf pdf(0.0, 1.0);
+
+    std::uniform_real_distribution<double> pdf(0.0, 1.0);
     TRng & rng = defaultRng(TGraph());
 
     // Initialization
@@ -598,7 +598,7 @@ void generateSequence(TSequenceSet & sequences,
         bool stop = false;
         TSize pos = 0;
         while (pos < maxLength) {
-            TProbability prob = pickRandomNumber(rng, pdf);
+            TProbability prob = pdf(rng);
             TProbability compareProb = 0.0;
             TOutEdgeIterator itState(hmm, currentState);
             // Determine the next state
@@ -615,7 +615,7 @@ void generateSequence(TSequenceSet & sequences,
                     appendValue(stat, nextState);
                     if (!isSilent(hmm, nextState)) {
                         compareProb =0.0;
-                        prob = pickRandomNumber(rng, pdf);
+                        prob = pdf(rng);
                         for (TSize c=0;c<alphSize;++c){
                             compareProb += getEmissionProbability(hmm,targetVertex(hmm, value(itState)), TAlphabet(c));
                             if (prob <= compareProb) {
@@ -788,7 +788,7 @@ _fillHmmRandom(Graph<Hmm<TAlphabet, TProbability, TSpec> >& hmm,
     typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 
     // Initialization
-    Pdf<Uniform<TSize> > pdf(20, 99);
+    std::uniform_int_distribution<TSize> pdf(20, 99);
     TSize alphSize = ValueSize<TAlphabet>::VALUE;
 
     // Iterate over all states
@@ -799,7 +799,7 @@ _fillHmmRandom(Graph<Hmm<TAlphabet, TProbability, TSpec> >& hmm,
             String<TSize> counts;
             TSize sum = 0;
             for(TSize i = 0;i<oD;++i) {
-                TSize rd = pickRandomNumber(rng, pdf);
+                TSize rd = pdf(rng);
                 sum += rd;
                 appendValue(counts, rd);
             }
@@ -811,7 +811,7 @@ _fillHmmRandom(Graph<Hmm<TAlphabet, TProbability, TSpec> >& hmm,
             String<TSize> counts;
             TSize sum = 0;
             for(TSize i = 0;i<alphSize;++i) {
-                TSize rd = pickRandomNumber(rng, pdf);
+                TSize rd = pdf(rng);
                 sum += rd;
                 appendValue(counts, rd);
             }
