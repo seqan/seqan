@@ -37,4 +37,13 @@ int main()
     //![initialization_example]
     String<Dna> myGenome = "TATACGCG";
     //![initialization_example]
+
+    //![assignment5_code_to_change]
+    // We have to create a copy of the corresponding fragment of the genome, where the read aligns to
+    // Change this piece of code using an infix of the genome
+    for (unsigned i = 0; i < length(read); ++i)
+    {
+        appendValue(genomeFragment, genome[beginPosition + i]);
+    }    
+    //![assignment5_code_to_change]
 } 

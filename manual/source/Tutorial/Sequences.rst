@@ -261,34 +261,20 @@ SeqAn offers different conversion alternatives.
 The source sequence is copied into the target sequence.
 This can be done by assignment (``operator=``) or using the function :dox:`AssignableConcept#assign`.
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/sequences/conversions_copy_example.cpp
+    :fragment: main
 
-   String<Dna> source = "acgtgcat";
-   String<char> target;
-   assign(target, source);
-   std::cout << target;
-
-.. code-block:: console
-
-   acgtgcat
+.. includefrags:: demos/tutorial/sequences/conversions_copy_example.cpp.stdout
 
 **Move conversion.**
 If the source sequence is not needed any more after the conversion, it is always advisable to use :dox:`AssignableConcept#move` instead of :dox:`AssignableConcept#assign`.
 The function :dox:`AssignableConcept#move` does not make a copy but can reuse the source sequence storage.
 In some cases, :dox:`AssignableConcept#move` can also perform an in-place conversion.
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/sequences/conversions_move_example.cpp
+    :fragment: main
 
-   String<char> source = "acgtgcat";
-   String<Dna> target;
-
-   // The in-place move conversion.
-   move(target, source);
-   std::cout << target;
-
-.. code-block:: console
-
-   acgtgcat
+.. includefrags:: demos/tutorial/sequences/conversions_move_example.cpp.stdout
 
 Assignment 3
 ^^^^^^^^^^^^
@@ -303,26 +289,7 @@ Assignment 3
      Copy the code below. Adjust the code such that all nucleotides, which are lexicographically smaller than a Dna5 ``'G'`` are stored in a list ``lesser``, while all nucleotides which are greater, should be stored in a list ``greater``.
      Print out the final lists.
 
-     .. code-block:: cpp
-
-        #include <seqan/stream.h>
-        #include <seqan/sequence.h>
-        #include <seqan/file.h>
-
-        using namespace seqan;
-
-        int main()
-        {
-            String<Dna5> nucleotides = "AGTCGTGNNANCT";
-            String<Dna5> selected;
-            // Append all elements of nucleotides, apart of Gs,
-            // to the list selected.
-            for (unsigned i = 0; i < length(nucleotides); ++i){
-                appendValue(selected, nucleotides[i]);
-            }
-            std::cout << "Selected nucleotides: " << selected << std::endl;
-            return 0;
-        }
+     .. includefrags:: demos/tutorial/sequences/assignment_3.cpp
 
    Solution
      Click **more...** to see the solution.
@@ -371,23 +338,11 @@ The first parameter is the sequence we build the prefix from, the second the **e
 For :dox:`SegmentableConcept#infix`\ es, we have to provide both the including start and the excluding end position.
 For :dox:`SegmentableConcept#suffix`\ es, the second parameter of the function denotes the including starting position of the suffix:
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/sequences/segments_example.cpp
+    :fragment: main
 
-   String<Dna> dnaSeq = "AGTTGGCATG";
-   Prefix<String<Dna> >::Type pre = prefix(dnaSeq, 4);
-   std::cout << "Prefix: " << pre << std::endl;
+.. includefrags:: demos/tutorial/sequences/segments_example.cpp.stdout
 
-   Infix<String<Dna> >::Type inf = infix(dnaSeq, 4, 7);
-   std::cout << "Infix: " << inf << std::endl;
-
-   Suffix<String<Dna> >::Type suf = suffix(dnaSeq, 4);
-   std::cout << "Suffix: " << suf << std::endl;
-
-.. code-block:: console
-
-   Prefix: AGTT
-   Infix: GGC
-   Suffix: GGCATG
 
 Segments store a pointer on the underlying sequence object, the *host*, and an start and/or end position, depending on the type of segment.
 The segment is *not* a copy of the sequence segment.
@@ -418,19 +373,11 @@ Assignment 5
           :fragment: top
 
 
-    .. code-block:: cpp
-
-        // We have to create a copy of the corresponding fragment of the genome, where the read aligns to
-        for (unsigned i = 0; i < length(read); ++i)
-        {
-            appendValue(genomeFragment, genome[beginPosition + i]);
-        }
-
+    .. includefrags:: demos/tutorial/sequences/base.cpp
+          :fragment: assignment5_code_to_change
 
     .. includefrags:: demos/tutorial/sequences/assignment_5_solution.cpp
           :fragment: bottom
-
-
 
    Solution
      Click **more...** to see the solution.
