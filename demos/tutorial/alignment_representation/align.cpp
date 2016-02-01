@@ -23,6 +23,7 @@ int main()
     assignSource(row(align, 1), seq2);
 //![init]
 
+std::cout << "//![output_manipulation]\n";
 //![manipulation]
     std::cout << align;
     TRow & row1 = row(align, 0);
@@ -53,7 +54,9 @@ int main()
         std::cout << toViewPosition(row2, i) << ",";
     std::cout << std::endl;
 //![printingViewPos]
+std::cout << "//![output_manipulation]\n";
 
+std::cout << "//![output_clipping]\n";
 //![clipping]
     std::cout << std::endl << "Before clipping:\n" << align;
     setClippedBeginPosition(row1, 1);
@@ -80,7 +83,9 @@ int main()
         std::cout << toViewPosition(row2, i) << ",";
     std::cout << std::endl;
 //![clipping]
+std::cout << "//![output_clipping]\n";
 
+std::cout << "//![output_gaps]\n";
 //![iteratingRowClipped]
     typedef Iterator<TRow>::Type TRowIterator;
     TRowIterator it = begin(row1);
@@ -107,7 +112,9 @@ int main()
             std::cout << *it;
     }
     std::cout << std::endl;
-
+//![iteratingRowClipped2]
+std::cout << "//![output_gaps]\n";
+//![return]
     return 0;
 }
-//![iteratingRowClipped2]
+//![return]
