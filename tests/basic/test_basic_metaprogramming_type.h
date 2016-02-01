@@ -72,16 +72,13 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_make_signed)
     SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<signed   long>::Type,   signed long>::VALUE), true);
     SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<         long>::Type,   signed long>::VALUE), true);
 
-// MSVC does not distinguis between char and __int8.
-#if !defined(_MSC_VER)
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<__int8  >::Type, __int8>::VALUE), true);
-#endif  // #if !defined(_MSC_VER)
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<__int16 >::Type, __int16>::VALUE), true);
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<__uint16>::Type, __int16>::VALUE), true);
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<__int32 >::Type, __int32>::VALUE), true);
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<__uint32>::Type, __int32>::VALUE), true);
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<__int64 >::Type, __int64>::VALUE), true);
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<__uint64>::Type, __int64>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<int8_t  >::Type, int8_t>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<int16_t >::Type, int16_t>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<uint16_t>::Type, int16_t>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<int32_t >::Type, int32_t>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<uint32_t>::Type, int32_t>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<int64_t >::Type, int64_t>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<uint64_t>::Type, int64_t>::VALUE), true);
 }
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_make_unsigned)
@@ -101,14 +98,14 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_make_unsigned)
     SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<signed   long>::Type,   unsigned long>::VALUE), true);
     SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<         long>::Type,   unsigned long>::VALUE), true);
 
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<__int8  >::Type, __uint8>::VALUE), true);
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<__uint8 >::Type, __uint8>::VALUE), true);
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<__int16 >::Type, __uint16>::VALUE), true);
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<__uint16>::Type, __uint16>::VALUE), true);
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<__int32 >::Type, __uint32>::VALUE), true);
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<__uint32>::Type, __uint32>::VALUE), true);
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<__int64 >::Type, __uint64>::VALUE), true);
-    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<__uint64>::Type, __uint64>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<int8_t  >::Type, uint8_t>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<uint8_t >::Type, uint8_t>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<int16_t >::Type, uint16_t>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<uint16_t>::Type, uint16_t>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<int32_t >::Type, uint32_t>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<uint32_t>::Type, uint32_t>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<int64_t >::Type, uint64_t>::VALUE), true);
+    SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<uint64_t>::Type, uint64_t>::VALUE), true);
 }
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_remove_reference)

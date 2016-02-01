@@ -136,17 +136,17 @@ struct NotFunctor
 // Functor CountDownFunctor
 // ----------------------------------------------------------------------------
 
-template <typename TFunctor = True, __uint64 REMAINING = 0>
+template <typename TFunctor = True, uint64_t REMAINING = 0>
 struct CountDownFunctor
 {
-    __uint64 remaining;
+    uint64_t remaining;
     TFunctor func;
 
-    CountDownFunctor(__uint64 remaining = REMAINING):
+    CountDownFunctor(uint64_t remaining = REMAINING):
         remaining(remaining)
     {}
 
-    CountDownFunctor(__uint64 remaining, TFunctor const &func):
+    CountDownFunctor(uint64_t remaining, TFunctor const &func):
         remaining(remaining),
         func(func)
     {}
@@ -174,7 +174,7 @@ struct CountDownFunctor
 template <typename TFunctor = True>
 struct CountFunctor
 {
-    __uint64 count;
+    uint64_t count;
     TFunctor func;
 
     CountFunctor() : count(0)
@@ -191,7 +191,7 @@ struct CountFunctor
         return false;
     }
 
-    operator __uint64() const
+    operator uint64_t() const
     {
         return count;
     }
@@ -204,7 +204,7 @@ inline void clear(CountFunctor<TFunctor> &func)
 }
 
 template <typename TFunctor>
-inline __uint64 & value(CountFunctor<TFunctor> &func)
+inline uint64_t & value(CountFunctor<TFunctor> &func)
 {
     return func.count;
 }

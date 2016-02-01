@@ -58,21 +58,12 @@
 #define SEQAN_IS_32_BIT 1
 #endif  // #if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
 
-//#include <unistd.h>
-#include <inttypes.h>
 
 #define finline __inline__
 
-// default 64bit type
-typedef uint64_t __uint64; // nolint
-
-// default 32bit type
-typedef uint32_t __uint32; // nolint
-
-// default 16bit type
-typedef uint16_t __uint16; // nolint
-
-// default 8bit type
-typedef uint8_t __uint8;   // nolint
+typedef uint64_t __uint64;
+typedef uint32_t __uint32;
+typedef uint16_t __uint16;
+typedef uint8_t __uint8;
 
 #endif  // #ifndef PLATFORM_INTEL

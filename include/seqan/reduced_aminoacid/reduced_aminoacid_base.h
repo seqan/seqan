@@ -88,7 +88,7 @@ using ReducedAminoAcid = SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >
 
 template <typename TRedSpec>
 struct CompareType<SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >,
-                   __uint8>
+                   uint8_t>
 {
     typedef SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> > Type;
 };

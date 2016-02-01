@@ -486,7 +486,7 @@ template <typename TGaps, typename TSpec, typename TDiff>
 inline Iter<TGaps, GapsIterator<TSpec> > &
 operator-=(Iter<TGaps, GapsIterator<TSpec> > & it, TDiff diff)
 {
-    goFurther(it, -(__int64)(diff));
+    goFurther(it, -(int64_t)(diff));
     return it;
 }
 

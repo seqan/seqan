@@ -515,7 +515,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_is_integral)
     SEQAN_ASSERT(b);
     b = IsInteger<long int>::Type::VALUE;
     SEQAN_ASSERT(b);
-    b = IsInteger<__int64>::Type::VALUE;
+    b = IsInteger<int64_t>::Type::VALUE;
     SEQAN_ASSERT(b);
     b = IsInteger<TestStruct1_>::Type::VALUE;
     SEQAN_ASSERT_NOT(b);

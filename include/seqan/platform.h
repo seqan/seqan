@@ -34,6 +34,8 @@
 #ifndef SEQAN_PLATFORM_H
 #define SEQAN_PLATFORM_H
 
+#include <cinttypes>
+
 #ifdef _MSC_VER
     #include "platform/platform_windows.h"
 #elif __ICC

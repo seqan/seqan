@@ -235,7 +235,7 @@ void testMPMCQueue(size_t initialCapacity)
 
     std::chrono::steady_clock::time_point stop = std::chrono::steady_clock::now();
     double timeSpan = std::chrono::duration_cast<std::chrono::duration<double> >(stop - start).count();
-    std::cout << "throughput: " << (__uint64)(length(random) / timeSpan) << " values/s" << std::endl;
+    std::cout << "throughput: " << (uint64_t)(length(random) / timeSpan) << " values/s" << std::endl;
 
 
 //    std::cout << "len: " << length(queue) << std::endl;

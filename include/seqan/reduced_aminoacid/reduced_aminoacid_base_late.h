@@ -82,7 +82,7 @@ inline void assign(char & c_target, SimpleType<unsigned char,
 template <typename TRedSpec>
 inline void assign(SimpleType<unsigned char,
                    ReducedAminoAcid_<TRedSpec> > & target,
-                   __uint8 c_source)
+                   uint8_t c_source)
 {
     target.value = TranslateTableByteToRedAA_<TRedSpec>::VALUE[c_source];
 }
