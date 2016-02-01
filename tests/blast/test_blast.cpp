@@ -98,4 +98,5 @@ SEQAN_END_TESTSUITE
 
 #else
 #pragma message("Due to a bug in Microsoft Visual Studio 2015 the BLAST module is deactivated.")
+int main() {}
 #endif
