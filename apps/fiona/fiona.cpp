@@ -270,7 +270,7 @@ struct FionaOptions
     // Verbosity:  0 - quiet, 1 - normal, 2 - verbose, 3 - very verbose.
     int verbosity;
 
-	__int64 genomeLength;
+	int64_t genomeLength;
 	double strictness;
 	unsigned acceptedMismatches;
 	int maxIndelLength;
@@ -642,7 +642,7 @@ namespace seqan
             std::cerr << "Purge repetitive k-mers ........... " << std::flush;
 
         // extract bucket numbers
-        __uint64 suffixCount = 0;
+        uint64_t suffixCount = 0;
         String<unsigned> bktIdx;
 
 //        #pragma omp parallel for reduction(+:suffixCount)
@@ -661,7 +661,7 @@ namespace seqan
         // contain overall at most 2% of all suffixes
         if (options.verbosity >= 1)
             std::cerr << " suffixes: " << suffixCount << std::endl;
-        __uint64 threshN1 = (__uint64)(suffixCount * options.kmerAbundanceCutoff);
+        uint64_t threshN1 = (uint64_t)(suffixCount * options.kmerAbundanceCutoff);
         Dna5String kmer;
         suffixCount = 0;
         for (unsigned i = 0; i < length(bktIdx); ++i)
@@ -696,7 +696,7 @@ namespace seqan
             std::cerr << "Purge repetitive k-mers ........... " << std::flush;
 
         // extract bucket numbers
-        __uint64 suffixCount = 0;
+        uint64_t suffixCount = 0;
         String<unsigned> bktIdx;
 
 //        #pragma omp parallel for reduction(+:suffixCount)
@@ -2797,7 +2797,7 @@ void DestructibleExpectedBases(
 
         for (unsigned readLen = 1; readLen < length(readLenHist); ++readLen)
         {
-            __uint64 numReads = readLenHist[readLen];
+            uint64_t numReads = readLenHist[readLen];
             if (numReads == 0)
                 continue;
 
@@ -4180,7 +4180,7 @@ unsigned correctReads(
 
 	/*table with the theoretical values*/
 
-    String<__uint64> readLengthHist;
+    String<uint64_t> readLengthHist;
     computeReadLengthHistogram(readLengthHist, store.readSeqStore);
     unsigned maxReadLength = length(readLengthHist) - 1;
     if (options.verbosity >= 2)
@@ -4592,7 +4592,7 @@ unsigned correctReads(
         // Compute mean read length as an estimate.  This will be the read length for Illumina data and for now
         // a good enough value for 454 data.
         // TODO: Think of something more clever in the future.
-		__uint64 readLengthSum = 0;
+		uint64_t readLengthSum = 0;
 		for (unsigned i = 0; i < readCount; ++i)
 		    readLengthSum += length(store.readSeqStore[i]);
 		unsigned readLength = readLengthSum / readCount;
@@ -4602,7 +4602,7 @@ unsigned correctReads(
 		/* a = readLength - path_label + 1 */
 		/*here plus 1 also because the level is between fromLevel and toLevel*/
 		double a = readLength - options.fromLevel + 2;
-		options.genomeLength = static_cast<__int64>(readCount * a / expectedValueGivenLevel);
+		options.genomeLength = static_cast<int64_t>(readCount * a / expectedValueGivenLevel);
         if (options.verbosity >= 1)
         {
             std::cerr << "Expected median coverage :" << expectedValueGivenLevel << " for k-mer of length:" << options.fromLevel << std::endl; 
@@ -4640,7 +4640,7 @@ unsigned correctReads(
 	TFionaQgramIndex qgramIndex(prefixes);
     cargo(qgramIndex).optionsPtr = &options;
 
-	String<__uint64> packages;
+	String<uint64_t> packages;
 	SEQAN_PROTIMESTART(constructQgramExt);
     if (options.verbosity >= 1)
         std::cerr << "Construct external q-gram index ... " << std::flush;
@@ -4664,21 +4664,21 @@ unsigned correctReads(
 
     // 2. create super packages for multiple q-gram index creations
     unsigned dirLen = length(origDir);
-    __uint64 numSuffixes = 0;
+    uint64_t numSuffixes = 0;
     SEQAN_OMP_PRAGMA(parallel for reduction(+ : numSuffixes))
     for (int i = 0; i < (int)dirLen; ++i)
         if (origDir[i] != (TQGramDirValue)-1)
             numSuffixes += origDir[i];
 
-	String<__uint64> superPackages;
-    __uint64 sumSuffixes = 0;
-    __uint64 nextThresh = 0;
+	String<uint64_t> superPackages;
+    uint64_t sumSuffixes = 0;
+    uint64_t nextThresh = 0;
     for (unsigned i = 0; i < dirLen; ++i)
     {
         if (nextThresh <= sumSuffixes)
         {
             appendValue(superPackages, i);
-            nextThresh = (length(superPackages) * numSuffixes) / (__uint64)options.numSuperPackages;
+            nextThresh = (length(superPackages) * numSuffixes) / (uint64_t)options.numSuperPackages;
         }
         if (origDir[i] != (TQGramDirValue)-1)
             sumSuffixes += origDir[i];
@@ -4758,7 +4758,7 @@ unsigned correctReads(
 //	std::cerr << "Purge repetitive k-mers ........... " << std::flush;
 //    for (i = 0; i < dirLen - 1; ++i)
 //    {
-//        __uint64 bucketLen = indexDir(qgramIndex)[i + 1] - indexDir(qgramIndex)[i];
+//        uint64_t bucketLen = indexDir(qgramIndex)[i + 1] - indexDir(qgramIndex)[i];
 //        indexDir(qgramIndex)[i] = dstIt - beginSA;
 //        // copy bucket unless it is marked for removal
 //        if (!maskedBuckets[i])
@@ -4778,9 +4778,9 @@ unsigned correctReads(
     packages = indexDir(qgramIndex);
 #else
     unsigned dirLen = length(indexDir(qgramIndex));
-    __uint64 numPacks = options.packagesPerThread * omp_get_max_threads();
-    __uint64 numSuffixes = back(indexDir(qgramIndex));
-    __uint64 nextThresh = numSuffixes / numPacks;
+    uint64_t numPacks = options.packagesPerThread * omp_get_max_threads();
+    uint64_t numSuffixes = back(indexDir(qgramIndex));
+    uint64_t nextThresh = numSuffixes / numPacks;
 	appendValue(packages, 0);
     for (unsigned i = 1; i < dirLen; ++i)
     {
@@ -4828,7 +4828,7 @@ unsigned correctReads(
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic,1))
 	for (int i = 1; i < (int)length(packages); ++i)
 	{
-        typedef __uint64                            TFileSize;
+        typedef uint64_t                            TFileSize;
 
         SEQAN_OMP_PRAGMA(atomic)
         ++finished;

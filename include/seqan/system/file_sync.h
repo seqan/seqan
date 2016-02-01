@@ -87,8 +87,8 @@ namespace SEQAN_NAMESPACE_MAIN
 //IOREV _windows_ _nodoc_
     public:
 
-        typedef __int64            FilePtr;
-        typedef __int64         SizeType;   // type of file size
+        typedef int64_t            FilePtr;
+        typedef int64_t         SizeType;   // type of file size
         typedef unsigned int    SizeType_;  // type of transfer size (for read or write)
         typedef int                Handle;
 

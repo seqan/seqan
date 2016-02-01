@@ -208,8 +208,8 @@ std::pair<int, int> ContigPicker::pick()
     int rID = 0;
     if (lengthSums.size() > 1u)
     {
-        std::uniform_int_distribution<__int64> dist(0, lengthSums.back() - 1);
-        __int64 x = dist(rng);
+        std::uniform_int_distribution<int64_t> dist(0, lengthSums.back() - 1);
+        int64_t x = dist(rng);
         for (unsigned i = 0; i < lengthSums.size(); ++i)
         {
             if (x >= lengthSums[i])

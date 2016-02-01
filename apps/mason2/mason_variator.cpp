@@ -258,11 +258,11 @@ public:
     void _distributeVariations()
     {
         // Build prefix sume for distributing variations to contig proportional to the length.
-        seqan::String<__int64> limits;
+        seqan::String<int64_t> limits;
         appendValue(limits, 0);
         for (unsigned i = 0; i < numSeqs(faiIndex); ++i)
             appendValue(limits, back(limits) + sequenceLength(faiIndex, i));
-        __int64 lengthSum = back(limits);
+        int64_t lengthSum = back(limits);
 
         if (options.verbosity >= 3)
         {
@@ -273,8 +273,8 @@ public:
 
         for (unsigned i = 0; i < length(variationSizeRecords); ++i)
         {
-            std::uniform_int_distribution<__int64> dist(0, lengthSum - 1);
-            __int64 x = dist(rng);
+            std::uniform_int_distribution<int64_t> dist(0, lengthSum - 1);
+            int64_t x = dist(rng);
             if (options.verbosity >= 3)
                 std::cerr << "  x == " << x << "\n";
             for (unsigned j = 0; j + 1 < length(limits); ++j)

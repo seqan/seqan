@@ -170,7 +170,7 @@ readRecord(VcfRecord & record,
     readUntil(buffer, iter, NextEntry());
     if (empty(buffer))
         SEQAN_THROW(EmptyFieldError("POS"));
-    record.beginPos = lexicalCast<__int32>(buffer) - 1; // Translate from 1-based to 0-based.
+    record.beginPos = lexicalCast<int32_t>(buffer) - 1; // Translate from 1-based to 0-based.
     skipOne(iter);
 
     // ID

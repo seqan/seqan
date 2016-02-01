@@ -562,7 +562,7 @@ reverse(TSequence & sequence, Tag<TParallelTag> parallelTag)
     Splitter<TPos> splitter(0, length(sequence) / 2, parallelTag);
 
     // disable multi-threading if sequence is too small
-    // __uint64 cast is for 8bit size types for which comparison would be always true
+    // uint64_t cast is for 8bit size types for which comparison would be always true
     if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE && _reverseDoSequential(length(sequence)))
         resize(splitter, 1);
 

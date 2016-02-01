@@ -1005,9 +1005,9 @@ _computeEValue(double const rawScore,
 
 template <typename TScore>
 inline double
-computeEValue(__uint64 rawScore,
-              __uint64 const queryLength,
-              __uint64 const dbLength,
+computeEValue(uint64_t rawScore,
+              uint64_t const queryLength,
+              uint64_t const dbLength,
               BlastScoringScheme<TScore> const & scheme)
 {
     typedef KarlinAltschulValues<TScore> TKAValues;
@@ -1015,7 +1015,7 @@ computeEValue(__uint64 rawScore,
     if ((TKAValues::nParams >= 11) && (TKAValues::VALUE[scheme.parameterIndex][10]))
         --rawScore;
 
-    __uint64 adj = _lengthAdjustment(dbLength, queryLength, scheme);
+    uint64_t adj = _lengthAdjustment(dbLength, queryLength, scheme);
     return _computeEValue(rawScore, queryLength - adj, dbLength - adj, scheme);
 }
 
@@ -1053,12 +1053,12 @@ computeEValue(TBlastMatch & match,
               BlastIOContext<TScore, p, h> & context)
 {
     // convert to 64bit and divide for translated sequences
-    __uint64 ql = match.qLength / (qIsTranslated(context.blastProgram) ? 3 : 1);
+    uint64_t ql = match.qLength / (qIsTranslated(context.blastProgram) ? 3 : 1);
     // length adjustment not yet computed
     if (context._cachedLengthAdjustments.find(ql) == context._cachedLengthAdjustments.end())
         context._cachedLengthAdjustments[ql] = _lengthAdjustment(context.dbTotalLength, ql, context.scoringScheme);
 
-    __uint64 adj = context._cachedLengthAdjustments[ql];
+    uint64_t adj = context._cachedLengthAdjustments[ql];
 
     match.eValue = _computeEValue(match.alignStats.alignmentScore,
                                   ql - adj,

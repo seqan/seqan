@@ -103,7 +103,7 @@ _testBlastOutputGenerateContent(TFile & file,
     typedef StringSet<CharString> TSIds;
 
     typedef Gaps<String<AminoAcid>, ArrayGaps> TGaps;
-    typedef BlastMatch<TGaps, TGaps, __uint32, typename Value<TQIds>::Type, typename Value<TSIds>::Type> TBlastMatch;
+    typedef BlastMatch<TGaps, TGaps, uint32_t, typename Value<TQIds>::Type, typename Value<TSIds>::Type> TBlastMatch;
     typedef BlastRecord<TBlastMatch> TBlastRecord;
 
     TQueries queries;

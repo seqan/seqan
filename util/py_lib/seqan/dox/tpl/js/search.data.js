@@ -147,7 +147,7 @@ window.searchData = [
   {title:'MyersUkkonenBanded',text:'',akas:'',subentries:'',loc:'global_typedef_MyersUkkonenBanded.html',langEntity:'global_typedef'},
   {title:'MatePairStoreElement',text:'',akas:'',subentries:'member_function MatePairStoreElement,member_variable INVALID_ID;,member_variable libId;,member_variable readId;',loc:'class_MatePairStoreElement.html',langEntity:'class'},
   {title:'HardwiredShape',text:'',akas:'',subentries:'',loc:'class_HardwiredShape.html',langEntity:'class'},
-  {title:'StandardIntegers',text:'',akas:'',subentries:'grouped_typedef __int64,grouped_typedef __uint64,grouped_typedef __int32,grouped_typedef __uint32,grouped_typedef __int16,grouped_typedef __uint16,grouped_typedef __int8,grouped_typedef __uint8',loc:'group_StandardIntegers.html',langEntity:'group'},
+  {title:'StandardIntegers',text:'',akas:'',subentries:'grouped_typedef int64_t,grouped_typedef uint64_t,grouped_typedef int32_t,grouped_typedef uint32_t,grouped_typedef int16_t,grouped_typedef uint16_t,grouped_typedef int8_t,grouped_typedef uint8_t',loc:'group_StandardIntegers.html',langEntity:'group'},
   {title:'bundle5',text:'',akas:'',subentries:'',loc:'global_function_bundle_53.html',langEntity:'global_function'},
   {title:'TraceBack',text:'',akas:'',subentries:'',loc:'tag_TraceBack.html',langEntity:'tag'},
   {title:'bundle3',text:'',akas:'',subentries:'',loc:'global_function_bundle_51.html',langEntity:'global_function'},

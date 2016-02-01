@@ -1102,14 +1102,14 @@ _patternInitSmallStateBanded(
         TWord HP = VN | ~(VP | D0);
     //    const int PADDING = sizeof(TWord)*2 + 1;
     //    std::cerr << std::hex;
-    //    std::cerr << "\tD0"<<std::setw(PADDING)<<(__uint64)D0<<"\tHN"<<std::setw(PADDING)<<(__uint64)HN<<"\tHP"<<std::setw(PADDING)<<(__uint64)HP << std::endl;
+    //    std::cerr << "\tD0"<<std::setw(PADDING)<<(uint64_t)D0<<"\tHN"<<std::setw(PADDING)<<(uint64_t)HN<<"\tHP"<<std::setw(PADDING)<<(uint64_t)HP << std::endl;
 
         // moving register down corresponds to shifting HP/HN up (right shift)
         // HP/HN --> shift --> VP/VN (modified Myers)
         X = D0 >> 1;
         VN = X & HP;
         VP = HN | ~(X | HP);
-    //    std::cerr << "\t  "<<std::setw(PADDING)<<' '<<"\tVN"<<std::setw(PADDING)<<(__uint64)VN<<"\tVP"<<std::setw(PADDING)<<(__uint64)VP << std::endl;
+    //    std::cerr << "\t  "<<std::setw(PADDING)<<' '<<"\tVN"<<std::setw(PADDING)<<(uint64_t)VN<<"\tVP"<<std::setw(PADDING)<<(uint64_t)VP << std::endl;
     //    std::cerr << std::dec;
 
 #ifdef SEQAN_DEBUG_MYERSBITVECTOR
@@ -1444,11 +1444,11 @@ _findMyersSmallPatternsBanded(
         TWord HP = VN | ~(VP | D0);
     //    const int PADDING = sizeof(TWord)*2 + 1;
     //    std::cerr << std::hex;
-    //    std::cerr << "\tD0"<<std::setw(PADDING)<<(__uint64)D0<<"\tHN"<<std::setw(PADDING)<<(__uint64)HN<<"\tHP"<<std::setw(PADDING)<<(__uint64)HP<<std::endl;
+    //    std::cerr << "\tD0"<<std::setw(PADDING)<<(uint64_t)D0<<"\tHN"<<std::setw(PADDING)<<(uint64_t)HN<<"\tHP"<<std::setw(PADDING)<<(uint64_t)HP<<std::endl;
         X = (HP << 1) | 1;
         VN = X & D0;
         VP = (HN << 1) | ~(X | D0);
-    //    std::cerr << "\t  "<<std::setw(PADDING)<<' '<<"\tVN"<<std::setw(PADDING)<<(__uint64)VN<<"\tVP"<<std::setw(PADDING)<<(__uint64)VP<<std::endl;
+    //    std::cerr << "\t  "<<std::setw(PADDING)<<' '<<"\tVN"<<std::setw(PADDING)<<(uint64_t)VN<<"\tVP"<<std::setw(PADDING)<<(uint64_t)VP<<std::endl;
     //    std::cerr << std::dec;
         errors += (HP >> (BitsPerValue<TWord>::VALUE - 2)) & 1;
         errors -= (HN >> (BitsPerValue<TWord>::VALUE - 2)) & 1;

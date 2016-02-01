@@ -39,6 +39,8 @@
 
 #include <seqan/platform.h>
 
+#ifndef PLATFORM_WINDOWS_VS
+
 #include <cinttypes>
 #include <cmath>
 #include <cstdio>
@@ -63,5 +65,9 @@
 #include "blast/blast_tabular_in.h"
 #include "blast/blast_tabular_out.h"
 #include "blast/blast_report_out.h"
+
+#else
+#error Due to a bug in Microsoft Visual Studio 2015 the BLAST module is deactivated.
+#endif
 
 #endif

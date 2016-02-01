@@ -88,8 +88,6 @@
 #define SEQAN_IS_32_BIT 1
 #endif  // #if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
 
-//#include <unistd.h>
-#include <inttypes.h>
 
 #define finline __inline__
 
@@ -102,48 +100,56 @@
  * @typedef StandardIntegers#__int64
  * @headerfile <seqan/platform.h>
  * @brief Signed 64-bit integer type.
+ * @deprecated Use int64_t instead.
  *
  * @signature typedef (...) __int64;
  *
  * @typedef StandardIntegers#__uint64
  * @headerfile <seqan/platform.h>
  * @brief Unsigned 64-bit integer type.
+ * @deprecated Use uint64_t instead.
  *
  * @signature typdef (...) __uint64;
  *
  * @typedef StandardIntegers#__int32
  * @headerfile <seqan/platform.h>
  * @brief Signed 32-bit integer type.
+ * @deprecated Use int32_t instead.
  *
  * @signature typedef (...) __int32;
  *
  * @typedef StandardIntegers#__uint32
  * @headerfile <seqan/platform.h>
  * @brief Unsigned 32-bit integer type.
+ * @deprecated Use uint32_t instead.
  *
  * @signature typdef (...) __uint32;
  *
  * @typedef StandardIntegers#__int16
  * @headerfile <seqan/platform.h>
  * @brief Signed 16-bit integer type.
+ * @deprecated Use int16_t instead.
  *
  * @signature typedef (...) __int16;
  *
  * @typedef StandardIntegers#__uint16
  * @headerfile <seqan/platform.h>
  * @brief Unsigned 16-bit integer type.
+ * @deprecated Use uint16_t instead.
  *
  * @signature typdef (...) __uint16;
  *
  * @typedef StandardIntegers#__int8
  * @headerfile <seqan/platform.h>
  * @brief Signed 8-bit integer type.
+ * @deprecated Use int8_t instead.
  *
  * @signature typedef (...) __int8;
  *
  * @typedef StandardIntegers#__uint8
  * @headerfile <seqan/platform.h>
  * @brief Unsigned 8-bit integer type.
+ * @deprecated Use uint8_t instead.
  *
  * @signature typdef (...) __uint8;
  */

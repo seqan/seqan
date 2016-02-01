@@ -342,7 +342,7 @@ _getAnchor(TAnchor & anchor, Gaps<TSource, AnchorGaps<TGapAnchors> > const & me,
                     anchor.seqPos = maxValue(anchor.gapPos);
                 // if the sequence has a length > 0, but there is an anchor behind the end
                 // -> elongate sequence
-                else if ((__int64)anchor.seqPos < (__int64)back(_dataAnchors(me)).seqPos)
+                else if ((int64_t)anchor.seqPos < (int64_t)back(_dataAnchors(me)).seqPos)
                     anchor.seqPos = back(_dataAnchors(me)).seqPos;
             }
             anchor.gapPos = maxValue(anchor.gapPos);
@@ -762,7 +762,7 @@ positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition c
 {
     typedef typename Position<typename Value<TGapAnchors>::Type>::Type TAnchorPos;
 
-    GapAnchor<__int64> prevAnchor, nextAnchor;
+    GapAnchor<int64_t> prevAnchor, nextAnchor;
     TPosition           seqPos;
     int                 anchorIdx;
 
@@ -852,7 +852,7 @@ positionSeqToGap(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
 {
     typedef typename Position<typename Value<TGapAnchors>::Type>::Type TAnchorPos;
 
-    GapAnchor<__int64>  prevAnchor, nextAnchor;
+    GapAnchor<int64_t>  prevAnchor, nextAnchor;
     TPosition           gapPos;
     int                 anchorIdx;
 

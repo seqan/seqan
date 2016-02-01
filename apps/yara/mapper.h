@@ -52,9 +52,9 @@ struct Options
     typedef std::vector<TString>            TList;
     typedef FileFormat<BamFileOut>::Type    TOutputFormat;
 
-    __uint64            contigsSize;
-    __uint64            contigsMaxLength;
-    __uint64            contigsSum;
+    uint64_t            contigsSize;
+    uint64_t            contigsMaxLength;
+    uint64_t            contigsSum;
 
     CharString          contigsIndexFile;
     Pair<CharString>    readsFile;
@@ -121,9 +121,9 @@ struct Options
 template <typename TThreading_       = Parallel,
           typename TSequencing_      = SingleEnd,
           typename TStrategy_        = Strata,
-          typename TContigsSize_     = __uint8,
-          typename TContigsLen_      = __uint32,
-          typename TContigsSum_      = __uint32,
+          typename TContigsSize_     = uint8_t,
+          typename TContigsLen_      = uint32_t,
+          typename TContigsSum_      = uint32_t,
           typename TAlloc_           = MMap<>,
           unsigned BUCKETS_          = 3>
 struct ReadMapperConfig

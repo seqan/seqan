@@ -462,7 +462,7 @@ inline void stableSort(TContainer && c, Tag<TParallelTag> const & /* tag */)
 // ============================================================================
 
 // use MCSTL which is part of the GCC since version 4.3
-#if defined(_OPENMP) && defined(PLATFORM_GCC)
+#if defined(_OPENMP) && defined(PLATFORM_GNU)
 
 // ----------------------------------------------------------------------------
 // Function forEach(Parallel)
@@ -641,7 +641,7 @@ inline void stableSort(TContainer && c, Parallel)
     return __gnu_parallel::stable_sort(begin(c, Standard()), end(c, Standard()));
 }
 
-#endif  // #ifdef PLATFORM_GCC
+#endif  // #ifdef PLATFORM_GNU
 
 // ============================================================================
 // Shortcuts for STL Wrappers

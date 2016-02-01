@@ -61,20 +61,20 @@ struct SakOptions
     seqan::CharString outPath;
 
     // Set if one sequence is to be retrieved.
-    seqan::String<__uint64> seqIndices;
+    seqan::String<uint64_t> seqIndices;
 
     // Set if multiple sequences are to be retrieved.
-    seqan::String<seqan::Pair<__uint64> > seqIndexRanges;
+    seqan::String<seqan::Pair<uint64_t> > seqIndexRanges;
 
     // Set if output is to be limited to an infix.
-    __uint64 seqInfixBegin;
-    __uint64 seqInfixEnd;
+    uint64_t seqInfixBegin;
+    uint64_t seqInfixEnd;
 
     // Whether or not to reverse-complement the result.
     bool reverseComplement;
 
     // Maximal length of sequence characters to print.
-    __uint64 maxLength;
+    uint64_t maxLength;
 
     // Prefix of read names to output if not empty.
     seqan::CharString readPattern;
@@ -84,10 +84,10 @@ struct SakOptions
 
     SakOptions() :
         verbosity(1),
-        seqInfixBegin(seqan::maxValue<__uint64>()),
-        seqInfixEnd(seqan::maxValue<__uint64>()),
+        seqInfixBegin(seqan::maxValue<uint64_t>()),
+        seqInfixEnd(seqan::maxValue<uint64_t>()),
         reverseComplement(false),
-        maxLength(seqan::maxValue<__uint64>())
+        maxLength(seqan::maxValue<uint64_t>())
     {
     }
 };
@@ -244,7 +244,7 @@ parseArgs(SakOptions & options,
         seqan::CharString buffer;
         for (unsigned i = 0; i < seqan::length(sequenceRanges); ++i)
         {
-            seqan::Pair<__uint64> range;
+            seqan::Pair<uint64_t> range;
             if (!parseRange(range.i1, range.i2, sequenceRanges[i]))
             {
                 std::cerr << "ERROR: Invalid range " << sequenceRanges[i] << "\n";
@@ -354,12 +354,12 @@ int main(int argc, char ** argv)
     }
 
     // Compute index of last sequence to write if any.
-    __uint64 endIdx = seqan::maxValue<__uint64>();
+    uint64_t endIdx = seqan::maxValue<uint64_t>();
     for (unsigned i = 0; i < length(options.seqIndices); ++i)
-        if (endIdx == seqan::maxValue<__uint64>() || endIdx > options.seqIndices[i] + 1)
+        if (endIdx == seqan::maxValue<uint64_t>() || endIdx > options.seqIndices[i] + 1)
             endIdx = options.seqIndices[i] + 1;
     for (unsigned i = 0; i < length(options.seqIndexRanges); ++i)
-        if (endIdx == seqan::maxValue<__uint64>() || endIdx > options.seqIndexRanges[i].i2)
+        if (endIdx == seqan::maxValue<uint64_t>() || endIdx > options.seqIndexRanges[i].i2)
             endIdx = options.seqIndexRanges[i].i2;
     if (options.verbosity >= 2)
         std::cerr << "Sequence end idx: " << endIdx << "\n";
@@ -370,7 +370,7 @@ int main(int argc, char ** argv)
     startTime = seqan::sysTime();
 
     unsigned idx = 0;
-    __uint64 charsWritten = 0;
+    uint64_t charsWritten = 0;
     seqan::CharString id;
     seqan::CharString seq;
     seqan::CharString quals;
@@ -428,12 +428,12 @@ int main(int argc, char ** argv)
         if (writeOut)
         {
             // Get begin and end index of infix to write out.
-            __uint64 infixBegin = 0;
-            if (options.seqInfixBegin != seqan::maxValue<__uint64>())
+            uint64_t infixBegin = 0;
+            if (options.seqInfixBegin != seqan::maxValue<uint64_t>())
                 infixBegin = options.seqInfixBegin;
             if (infixBegin > length(seq))
                 infixBegin = length(seq);
-            __uint64 infixEnd = length(seq);
+            uint64_t infixEnd = length(seq);
             if (options.seqInfixEnd < length(seq))
                 infixEnd = options.seqInfixEnd;
             if (infixEnd < infixBegin)

@@ -312,21 +312,21 @@ template <typename TWord>
 SEQAN_DEVICE
 inline unsigned _popCountImpl(TWord word, WordSize_<32> const & /*tag*/)
 {
-    return __popc(static_cast<__uint32>(word));
+    return __popc(static_cast<uint32_t>(word));
 }
 
 template <typename TWord>
 SEQAN_DEVICE
 inline unsigned _popCountImpl(TWord word, WordSize_<16> const & /*tag*/)
 {
-    return __popc(static_cast<__uint32>(word));
+    return __popc(static_cast<uint32_t>(word));
 }
 
 template <typename TWord>
 SEQAN_DEVICE
 inline unsigned _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
 {
-    return __popc(static_cast<__uint32>(word));
+    return __popc(static_cast<uint32_t>(word));
 }
 
 #else   // #if defined(__CUDA_ARCH__)
@@ -345,14 +345,14 @@ inline unsigned
 _popCountImpl(TWord word, WordSize_<64> const & /*tag*/)
 {
     // 64-bit Windows, 64 bit intrinsic available
-    return __popcnt64(static_cast<__uint64>(word));
+    return __popcnt64(static_cast<uint64_t>(word));
 }
 
 template <typename TWord>
 inline unsigned
 _popCountImpl(TWord word, WordSize_<32> const & /*tag*/)
 {
-    return __popcnt(static_cast<__uint32>(word));
+    return __popcnt(static_cast<uint32_t>(word));
 }
 
 #else // #if defined(__SSE4_2__)
@@ -365,16 +365,16 @@ _popCountImpl(TWord word, WordSize_<64> const & /*tag*/)
 
 #if defined(__SSE4_2__)
     // 64-bit Windows, SSE4.2 bit intrinsic available
-    return _mm_popcnt_u64(static_cast<__uint64>(word));
+    return _mm_popcnt_u64(static_cast<uint64_t>(word));
 #else
     // 64-bit Windows, 64 bit intrinsic available
-    return __popcnt64(static_cast<__uint64>(word));
+    return __popcnt64(static_cast<uint64_t>(word));
 #endif
 
 #else // #if defined(_WIN64)
 
     // 32-bit Windows, 64 bit intrinsic not available
-    return __popcnt(static_cast<__uint32>(word)) + __popcnt(static_cast<__uint32>(word >> 32));
+    return __popcnt(static_cast<uint32_t>(word)) + __popcnt(static_cast<uint32_t>(word >> 32));
 
 #endif // #if defined(_WIN64)
 }
@@ -385,9 +385,9 @@ _popCountImpl(TWord word, WordSize_<32> const & /*tag*/)
 {
 #if defined(__SSE4_2__)
     // SSE4.2 bit intrinsic available
-    return _mm_popcnt_u32(static_cast<__uint32>(word));
+    return _mm_popcnt_u32(static_cast<uint32_t>(word));
 #else
-    return __popcnt(static_cast<__uint32>(word));
+    return __popcnt(static_cast<uint32_t>(word));
 #endif
 }
 
@@ -397,14 +397,14 @@ template <typename TWord>
 inline unsigned
 _popCountImpl(TWord word, WordSize_<16> const & /*tag*/)
 {
-    return __popcnt16(static_cast<__uint16>(word));
+    return __popcnt16(static_cast<uint16_t>(word));
 }
 
 template <typename TWord>
 inline unsigned
 _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
 {
-    return _popCountImpl(static_cast<const __uint16>(word), WordSize_<16>());
+    return _popCountImpl(static_cast<const uint16_t>(word), WordSize_<16>());
 }
 
 #endif  // #if defined(_MSC_VER)
@@ -435,14 +435,14 @@ template <typename TWord>
 inline unsigned
 _popCountImpl(TWord word, WordSize_<16> const & /*tag*/)
 {
-    return _popCountImpl(static_cast<__uint32>(word), WordSize_<32>());
+    return _popCountImpl(static_cast<uint32_t>(word), WordSize_<32>());
 }
 
 template <typename TWord>
 inline unsigned
 _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
 {
-    return _popCountImpl(static_cast<__uint32>(word), WordSize_<32>());
+    return _popCountImpl(static_cast<uint32_t>(word), WordSize_<32>());
 }
 
 #endif    // GCC or CLANG
@@ -541,7 +541,7 @@ template <typename TWord>
 inline TWord
 _bitScanReverseGeneric(TWord word, WordSize_<32>)
 {
-    return DeBruijnMultiplyLookup[static_cast<__uint32>(word * 0x077CB531U) >> 27];
+    return DeBruijnMultiplyLookup[static_cast<uint32_t>(word * 0x077CB531U) >> 27];
 }
 
 // bitScanReverse for 64 bit integers using DeBruijn sequence by Kim Walisch and Mark Dickinson.
@@ -550,7 +550,7 @@ inline TWord
 _bitScanReverseGeneric(TWord word, WordSize_<64>)
 {
     word |= word >> 1; word |= word >> 2; word |= word >> 4; word |= word >> 8; word |= word >> 16; word |= word >> 32;
-    return DeBruijnMultiplyLookupBSR64[static_cast<__uint64>(word * 0x03f79d71b4cb0a89ULL) >> 58];
+    return DeBruijnMultiplyLookupBSR64[static_cast<uint64_t>(word * 0x03f79d71b4cb0a89ULL) >> 58];
 }
 
 // ----------------------------------------------------------------------------
@@ -576,14 +576,14 @@ template <typename TWord>
 inline TWord
 _bitScanForwardGeneric(TWord word, WordSize_<32>)
 {
-    return DeBruijnMultiplyLookup[static_cast<__uint32>(((word & -static_cast<__int32>(word)) * 0x077CB531U)) >> 27];
+    return DeBruijnMultiplyLookup[static_cast<uint32_t>(((word & -static_cast<int32_t>(word)) * 0x077CB531U)) >> 27];
 }
 
 template <typename TWord>
 inline TWord
 _bitScanForwardGeneric(TWord word, WordSize_<64>)
 {
-    return DeBruijnMultiplyLookupBSF64[static_cast<__uint64>((word & -static_cast<__int64>(word)) * 0x03f79d71b4cb0a89ULL) >> 58];
+    return DeBruijnMultiplyLookupBSF64[static_cast<uint64_t>((word & -static_cast<int64_t>(word)) * 0x03f79d71b4cb0a89ULL) >> 58];
 }
 
 // ----------------------------------------------------------------------------
@@ -636,7 +636,7 @@ inline TWord
 _bitScanReverse(TWord word, WordSize_<64>)
 {
     unsigned long index;
-    _BitScanReverse64(&index, static_cast<unsigned __int64>(word));
+    _BitScanReverse64(&index, static_cast<unsigned int64_t>(word));
     return index;
 }
 
@@ -645,7 +645,7 @@ inline TWord
 _bitScanForward(TWord word, WordSize_<64>)
 {
     unsigned long index;
-    _BitScanForward64(&index, static_cast<unsigned __int64>(word));
+    _BitScanForward64(&index, static_cast<unsigned int64_t>(word));
     return index;
 }
 #else

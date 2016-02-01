@@ -52,9 +52,9 @@ using namespace std;
 
 struct BamScannerCacheKey_
 {
-    __int32     rID;
-    __int32     beginPos;
-    __uint64    qnameHash;
+    int32_t     rID;
+    int32_t     beginPos;
+    uint64_t    qnameHash;
 
     bool operator== (BamScannerCacheKey_ const &other) const
     {
@@ -64,7 +64,7 @@ struct BamScannerCacheKey_
 
 struct BamScannerCacheSearchKey_
 {
-    typedef __uint16 TFlag;
+    typedef uint16_t TFlag;
 
     BamScannerCacheKey_ cacheKey;
     TFlag flags;
@@ -76,7 +76,7 @@ struct BamScannerCacheHash_ :
 {
     size_t operator()(BamScannerCacheKey_ const &v) const
     {
-        return std::hash<__int32>()(v.rID) ^ std::hash<__int32>()(v.beginPos) ^ std::hash<__uint64>()(v.qnameHash);
+        return std::hash<int32_t>()(v.rID) ^ std::hash<int32_t>()(v.beginPos) ^ std::hash<uint64_t>()(v.qnameHash);
     }
 };
 
@@ -110,13 +110,13 @@ public:
 // ============================================================================
 
 template <typename TSequence>
-__uint64 _suffixHash(TSequence const &sequence)
+uint64_t _suffixHash(TSequence const &sequence)
 {
     typedef typename Iterator<TSequence const, Standard>::Type  TIter;
     typedef typename Value<TSequence>::Type                     TValue;
     typedef typename Size<TSequence>::Type                      TSize;
 
-    const __uint64 ALPH_SIZE = ValueSize<TValue>::VALUE;
+    const uint64_t ALPH_SIZE = ValueSize<TValue>::VALUE;
     const unsigned MAX_LEN = LogN<~(ALPH_SIZE - 1) / ALPH_SIZE, ALPH_SIZE>::VALUE + 1;
 
     TSize len = length(sequence);
@@ -133,7 +133,7 @@ __uint64 _suffixHash(TSequence const &sequence)
 
     TIter it = itEnd - len;
 
-    __uint64 hash = 0;
+    uint64_t hash = 0;
     for (; it != itEnd; ++it)
         hash = hash * ALPH_SIZE + ordValue(*it);
     return hash;

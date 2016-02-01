@@ -80,13 +80,13 @@ struct FastqStats
     unsigned maxLength;
     
     // Number of bases in column i.
-    seqan::String<__int64> numBases;
+    seqan::String<int64_t> numBases;
     // Smallest score in column i.
-    seqan::String<__int32> minScores;
+    seqan::String<int32_t> minScores;
     // Largest score in column i.
-    seqan::String<__int32> maxScores;
+    seqan::String<int32_t> maxScores;
     // Sum of scores in column i.
-    seqan::String<__int64> sumScores;
+    seqan::String<int64_t> sumScores;
     // Mean of scores in column i.
     seqan::String<double> meanScores;
     // First quartile quality score (Q1) for column i.
@@ -98,18 +98,18 @@ struct FastqStats
     // Inter-quartile range  (Q3-Q1) for column i.
     seqan::String<double> interQuartileRanges;
     // Left-whisker value for boxplotting for column i.
-    seqan::String<__int32> leftWhiskers;
+    seqan::String<int32_t> leftWhiskers;
     // Right-whisker value for boxplotting for column i.
-    seqan::String<__int32> rightWhiskers;
+    seqan::String<int32_t> rightWhiskers;
     // Number of nucleotides A, C, G, T, N for column i.
-    seqan::String<seqan::String<__int64> > nucleotideCounts;
+    seqan::String<seqan::String<int64_t> > nucleotideCounts;
 
     // -----------------------------------------------------------------------
     // Histogram Members
     // -----------------------------------------------------------------------
 
     // Quality histogram.
-    seqan::String<std::map<__int32, __int32> > qualHistos;
+    seqan::String<std::map<int32_t, int32_t> > qualHistos;
 
     // -----------------------------------------------------------------------
     // Constructor
@@ -190,7 +190,7 @@ struct FastqStats
             unsigned medianN = n / 2;
             unsigned thirdQN = (3 * n) / 4;
             unsigned count = 0;  // Number of bases up to here.
-            for (std::map<__int32, __int32>::const_iterator it = qualHistos[i].begin(); it != qualHistos[i].end(); ++it)
+            for (std::map<int32_t, int32_t>::const_iterator it = qualHistos[i].begin(); it != qualHistos[i].end(); ++it)
             {
                 if (count < firstQN && count + it->second >= firstQN)
                     firstQuartiles[i] = it->first;
@@ -213,10 +213,10 @@ struct FastqStats
             rightWhiskers[i] = static_cast<int>(thirdQuartiles[i]);
             double leftWhiskerBound = ((double)firstQuartiles[i]) - 1.5 * interQuartileRanges[i];
             double rightWhiskerBound = ((double)thirdQuartiles[i]) + 1.5 * interQuartileRanges[i];
-            for (std::map<__int32, __int32>::const_iterator it = qualHistos[i].begin(); it != qualHistos[i].end(); ++it)
+            for (std::map<int32_t, int32_t>::const_iterator it = qualHistos[i].begin(); it != qualHistos[i].end(); ++it)
                 if (leftWhiskers[i] > it->first && it->first >= leftWhiskerBound)
                     leftWhiskers[i] = it->first;
-            for (std::map<__int32, __int32>::const_iterator it = qualHistos[i].begin(); it != qualHistos[i].end(); ++it)
+            for (std::map<int32_t, int32_t>::const_iterator it = qualHistos[i].begin(); it != qualHistos[i].end(); ++it)
                 if (rightWhiskers[i] < it->first && it->first <= rightWhiskerBound)
                     rightWhiskers[i] = it->first;
         }
