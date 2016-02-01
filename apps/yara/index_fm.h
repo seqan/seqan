@@ -115,7 +115,7 @@ _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, T
                TSize & smaller,
                Dna5 c)
 {
-    return _getNodeByCharImpl(it, vDesc, _range, c);
+    return _getNodeByCharImpl(it, vDesc, _range, smaller, c);
 }
 
 template <typename TText, typename TOccSpec, typename TSize_, typename TLen_, typename TSum_, typename TAlloc_, typename TSpec, typename TSize>
