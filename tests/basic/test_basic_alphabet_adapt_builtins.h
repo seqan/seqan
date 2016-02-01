@@ -319,21 +319,12 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int8)
     {
         int8_t b = 0, c = 42;
 
-#if defined(PLATFORM_WINDOWS_VS)
-        SEQAN_ASSERT_EQ(minValue(int8_t()), 0);
-        SEQAN_ASSERT_EQ(minValue<int8_t>(), 0);
-        SEQAN_ASSERT_EQ(+(MinValue<int8_t>::VALUE), 0);
-        SEQAN_ASSERT_EQ(maxValue(int8_t()), '\xff');
-        SEQAN_ASSERT_EQ(maxValue<int8_t>(), '\xff');
-        SEQAN_ASSERT_EQ(+(MaxValue<int8_t>::VALUE), '\xff');
-#else  // #if defined(PLATFORM_WINDOWS_VS)
         SEQAN_ASSERT_EQ(minValue(int8_t()), -128);
         SEQAN_ASSERT_EQ(minValue<int8_t>(), -128);
         SEQAN_ASSERT_EQ(+(MinValue<int8_t>::VALUE), -128);
         SEQAN_ASSERT_GEQ(maxValue(int8_t()), 127);
         SEQAN_ASSERT_GEQ(maxValue<int8_t>(), 127);
         SEQAN_ASSERT_GEQ(+(MaxValue<int8_t>::VALUE), 127);
-#endif  // #if defined(PLATFORM_WINDOWS_VS)
         SEQAN_ASSERT(b < c);
     }
 

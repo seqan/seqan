@@ -72,10 +72,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_make_signed)
     SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<signed   long>::Type,   signed long>::VALUE), true);
     SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<         long>::Type,   signed long>::VALUE), true);
 
-// MSVC does not distinguis between char and int8_t.
-#if !defined(_MSC_VER)
     SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<int8_t  >::Type, int8_t>::VALUE), true);
-#endif  // #if !defined(_MSC_VER)
     SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<int16_t >::Type, int16_t>::VALUE), true);
     SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<uint16_t>::Type, int16_t>::VALUE), true);
     SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<int32_t >::Type, int32_t>::VALUE), true);
