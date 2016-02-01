@@ -367,7 +367,7 @@ Other shortcuts are ``DnaString`` for ``String<Dna>`` (:ref:`sequence tutorial <
    The main idea of template subclassing is to exploit the C++ template matching mechanism.
    For example, in the following code, the function calls (1) and (3) will call the function ``myFunction()`` in variant (A) while the function call (2) will call variant (B).
 
-   .. includefrags:: demos/tutorial/a_first_example/tempSubclassing_example.cpp
+   .. includefrags:: demos/tutorial/a_first_example/example_tempSubclassing.cpp
 
 For a detailed description and more examples see the tutorial :ref:`Template Subclassing <tutorial-template-subclassing>`.
 
@@ -425,7 +425,7 @@ Here, the type of the **tag** holds the specialization information.
 
    Consider the following example:
 
-   .. includefrags:: demos/tutorial/a_first_example/tags_example.cpp
+   .. includefrags:: demos/tutorial/a_first_example/example_tags.cpp
 
    The function call in line (3) will call ``myFunction()`` in the variant in line (1).
    The function call in line (4) will call ``myFunction()`` in the variant in line (2).

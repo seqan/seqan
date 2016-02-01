@@ -104,10 +104,10 @@ Functionality
 SeqAn also provides the common C++ operators for strings. You can use
 them like STL strings, for example:
 
-.. includefrags:: demos/tutorial/sequences/functionality_example1.cpp
+.. includefrags:: demos/tutorial/sequences/example_functionality1.cpp
     :fragment: main
 
-.. includefrags:: demos/tutorial/sequences/functionality_example1.cpp.stdout
+.. includefrags:: demos/tutorial/sequences/example_functionality1.cpp.stdout
 
 Each sequence object has a capacity, i.e. the maximum length of a sequence that can be stored in this object.
 While some sequence types have a fixed capacity, the capacity of other sequence classes like :dox:`AllocString Alloc String` or ``std::basic_string`` can be changed at runtime.
@@ -118,19 +118,19 @@ In the following example, a :dox:`String` of :dox:`Dna5String`, we first set the
 After assigning two elements we append one more element with :dox:`StringConcept#appendValue`.
 In the last step the capacity is implicitly changed.
 
-.. includefrags:: demos/tutorial/sequences/functionality_example2.cpp
+.. includefrags:: demos/tutorial/sequences/example_functionality2.cpp
     :fragment: main
 
 Using the function :dox:`ContainerConcept#length`, we can now get the length of our strings, e.g.:
 
-.. includefrags:: demos/tutorial/sequences/functionality_example2.cpp
+.. includefrags:: demos/tutorial/sequences/example_functionality2.cpp
     :fragment: print
 
-.. includefrags:: demos/tutorial/sequences/functionality_example2.cpp.stdout
+.. includefrags:: demos/tutorial/sequences/example_functionality2.cpp.stdout
 
 To empty a :dox:`String`, the function :dox:`StringConcept#clear` resets the object.
 
-.. includefrags:: demos/tutorial/sequences/functionality_example2.cpp
+.. includefrags:: demos/tutorial/sequences/example_functionality2.cpp
     :fragment: clear
 
 SeqAn offers a range of other functions for the work with the :dox:`String` class, e.g. :dox:`AssignableConcept#assign`, :dox:`RandomAccessContainerConcept#assignValue`, :dox:`RandomAccessContainerConcept#value`, :dox:`IteratorAssociatedTypesConcept#getValue`, :dox:`ContainerConcept#empty`, etc.
@@ -232,23 +232,23 @@ Comparisons
 
 Two sequences can be lexicographically **compared** using standard operators such as ``<`` or ``>=``.
 
-.. includefrags:: demos/tutorial/sequences/comparisons_example.cpp
+.. includefrags:: demos/tutorial/sequences/example_comparisons.cpp
     :fragment: main
 
-.. includefrags:: demos/tutorial/sequences/comparisons_example.cpp.stdout
+.. includefrags:: demos/tutorial/sequences/example_comparisons.cpp.stdout
 
 Each comparison involves a scan of the two sequences for searching the first mismatch between the strings.
 This could be costly if the two sequences share a long common prefix.
 Suppose we want to branch in a program depending on whether ``a < b``, ``a == b``, or ``a > b``.
 
-.. includefrags:: demos/tutorial/sequences/comparisons_example.cpp
+.. includefrags:: demos/tutorial/sequences/example_comparisons.cpp
     :fragment: first
 
 In this case, although only one scan would be enough to decide what case is to be applied, each operator ``>`` and ``<`` performs a new comparison.
 SeqAn offers the class :dox:`Lexical` to avoid unnecessary sequence scans.
 Lexicals can store the result of a comparison, for example:
 
-.. includefrags:: demos/tutorial/sequences/comparisons_example.cpp
+.. includefrags:: demos/tutorial/sequences/example_comparisons.cpp
     :fragment: second
 
 Conversions
@@ -261,20 +261,20 @@ SeqAn offers different conversion alternatives.
 The source sequence is copied into the target sequence.
 This can be done by assignment (``operator=``) or using the function :dox:`AssignableConcept#assign`.
 
-.. includefrags:: demos/tutorial/sequences/conversions_copy_example.cpp
+.. includefrags:: demos/tutorial/sequences/example_conversions_copy.cpp
     :fragment: main
 
-.. includefrags:: demos/tutorial/sequences/conversions_copy_example.cpp.stdout
+.. includefrags:: demos/tutorial/sequences/example_conversions_copy.cpp.stdout
 
 **Move conversion.**
 If the source sequence is not needed any more after the conversion, it is always advisable to use :dox:`AssignableConcept#move` instead of :dox:`AssignableConcept#assign`.
 The function :dox:`AssignableConcept#move` does not make a copy but can reuse the source sequence storage.
 In some cases, :dox:`AssignableConcept#move` can also perform an in-place conversion.
 
-.. includefrags:: demos/tutorial/sequences/conversions_move_example.cpp
+.. includefrags:: demos/tutorial/sequences/example_conversions_move.cpp
     :fragment: main
 
-.. includefrags:: demos/tutorial/sequences/conversions_move_example.cpp.stdout
+.. includefrags:: demos/tutorial/sequences/example_conversions_move.cpp.stdout
 
 Assignment 3
 ^^^^^^^^^^^^
@@ -338,10 +338,10 @@ The first parameter is the sequence we build the prefix from, the second the **e
 For :dox:`SegmentableConcept#infix`\ es, we have to provide both the including start and the excluding end position.
 For :dox:`SegmentableConcept#suffix`\ es, the second parameter of the function denotes the including starting position of the suffix:
 
-.. includefrags:: demos/tutorial/sequences/segments_example.cpp
+.. includefrags:: demos/tutorial/sequences/example_segments.cpp
     :fragment: main
 
-.. includefrags:: demos/tutorial/sequences/segments_example.cpp.stdout
+.. includefrags:: demos/tutorial/sequences/example_segments.cpp.stdout
 
 
 Segments store a pointer on the underlying sequence object, the *host*, and an start and/or end position, depending on the type of segment.
