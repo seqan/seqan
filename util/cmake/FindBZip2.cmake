@@ -29,7 +29,7 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-# SeqAnBuildSystem: TODO(h-2): remove this file, once 
+# SeqAnBuildSystem: TODO(h-2): remove this file and CheckSymbolExists.cmake, once we require Cmake>=3.4
 
 set(_BZIP2_PATHS PATHS
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\GnuWin32\\Bzip2;InstallPath]"
