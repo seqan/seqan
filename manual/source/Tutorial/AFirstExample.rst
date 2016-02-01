@@ -73,10 +73,8 @@ However, during this tutorial we will not do this, such that SeqAn classes and f
    In many cases, the Koenig lookup rule in C++ for functions makes this unnecessary.
    Consider the following, compiling, example.
 
-   .. code-block:: cpp
-
-      seqan::String<char> s = "example";
-      unsigned i = length(s);
+   .. includefrags:: demos/tutorial/a_first_example/base.cpp
+       :fragment: lookup_rule
 
    Here, the function ``length`` does not have a namespace prefix.
    The code compiles nevertheless.
@@ -369,33 +367,7 @@ Other shortcuts are ``DnaString`` for ``String<Dna>`` (:ref:`sequence tutorial <
    The main idea of template subclassing is to exploit the C++ template matching mechanism.
    For example, in the following code, the function calls (1) and (3) will call the function ``myFunction()`` in variant (A) while the function call (2) will call variant (B).
 
-   .. code-block:: cpp
-
-      struct SpecA;
-      struct SpecB;
-      struct SpecC;
-
-      template <typename TAlphabet, typename TSpec>
-      class String<TAlphabet, TSpec>;
-
-      template <typename TAlphabet, typename TSpec>
-      void myFunction(String<TAlphabet, TSpec> const & str);  // Variant (A)
-
-      template <typename TAlphabet>
-      void myFunction(String<TAlphabet, SpecB> const & str);  // Variant (B)
-
-      // ...
-
-      int main()
-      {
-          String<char, SpecA> a;
-          String<char, SpecB> b;
-          String<char, SpecC> c;
-
-          myFunction(a);            // calls (A)
-          myFunction(b);            // calls (B)
-          myFunction(c);            // calls (A)
-      }
+   .. includefrags:: demos/tutorial/a_first_example/tempSubclassing_example.cpp
 
 For a detailed description and more examples see the tutorial :ref:`Template Subclassing <tutorial-template-subclassing>`.
 
@@ -425,9 +397,8 @@ Tags in SeqAn
 
 Sometimes you will see something like this:
 
-.. code-block:: cpp
-
-   globalAlignment(align, seqan::MyersHirschberg())
+.. includefrags:: demos/tutorial/a_first_example/base.cpp
+      :fragment: seqan_tags
 
 Having a closer look you will notice that there is a default constructor call (``MyersHirschberg()`` ) within a function call.
 Using this mechanism one can specify which function to call at compile time.
@@ -454,20 +425,7 @@ Here, the type of the **tag** holds the specialization information.
 
    Consider the following example:
 
-   .. code-block:: cpp
-
-      struct TagA {};
-      struct TagB {};
-
-      void myFunction(TagA const &);  // (1)
-      void myFunction(TagB const &);  // (2)
-
-      int main()
-      {
-          myFunction(TagA());  // (3)
-          myFunction(TagB());  // (4)
-          return 0;
-      }
+   .. includefrags:: demos/tutorial/a_first_example/tags_example.cpp
 
    The function call in line (3) will call ``myFunction()`` in the variant in line (1).
    The function call in line (4) will call ``myFunction()`` in the variant in line (2).
