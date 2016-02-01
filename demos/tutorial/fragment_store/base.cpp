@@ -4,8 +4,8 @@
 using namespace seqan;
 
 int main(){
-	
-	typedef FragmentStore<> TStore;
+    
+    typedef FragmentStore<> TStore;
     TStore store;
 
 //![iterator]
@@ -13,5 +13,5 @@ Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
 it = begin(store, AnnotationTree<>());
 //![iterator]
 
-	return 0;
+    return 0;
 }
