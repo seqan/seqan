@@ -40,7 +40,6 @@
 #include "test_basic_iterator.h"
 #include "test_basic_iterator_zip.h"
 
-
 SEQAN_BEGIN_TESTSUITE(test_basic_iterator)
 {
     SEQAN_CALL_TEST(test_basic_iterator_adapt_pointer_metafunctions);

@@ -136,7 +136,6 @@ SEQAN_DEFINE_TEST(test_basic_iterator_zip_constructors)
     std::vector<int> vec{1, 2, 3};
     std::string str("abc");
 
-
     // Construct from list of iterators.
     TIterator it(begin(vec, Standard()), begin(str, Standard()));
 
