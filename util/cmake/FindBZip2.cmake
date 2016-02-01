@@ -29,6 +29,8 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
+# SeqAnBuildSystem: TODO(h-2): remove this file, once 
+
 set(_BZIP2_PATHS PATHS
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\GnuWin32\\Bzip2;InstallPath]"
   )
@@ -39,7 +41,7 @@ if (NOT BZIP2_LIBRARIES)
     find_library(BZIP2_LIBRARY_RELEASE NAMES bz2 bzip2 ${_BZIP2_PATHS} PATH_SUFFIXES lib)
     find_library(BZIP2_LIBRARY_DEBUG NAMES bzip2d ${_BZIP2_PATHS} PATH_SUFFIXES lib)
 
-    include(${CMAKE_CURRENT_LIST_DIR}/SelectLibraryConfigurations.cmake)
+    include(SelectLibraryConfigurations)
     SELECT_LIBRARY_CONFIGURATIONS(BZIP2)
 endif ()
 
@@ -50,14 +52,14 @@ endif ()
 
 # handle the QUIETLY and REQUIRED arguments and set BZip2_FOUND to TRUE if
 # all listed variables are TRUE
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(BZip2
                                   REQUIRED_VARS BZIP2_LIBRARIES BZIP2_INCLUDE_DIR
                                   VERSION_VAR BZIP2_VERSION_STRING)
 
 if (BZIP2_FOUND)
-   include(${CMAKE_CURRENT_LIST_DIR}/CheckSymbolExists.cmake)
-   include(${CMAKE_CURRENT_LIST_DIR}/CMakePushCheckState.cmake)
+   include(CheckSymbolExists)
+   include(CMakePushCheckState)
    cmake_push_check_state()
    set(CMAKE_REQUIRED_QUIET ${BZip2_FIND_QUIETLY})
    set(CMAKE_REQUIRED_INCLUDES ${BZIP2_INCLUDE_DIR})
