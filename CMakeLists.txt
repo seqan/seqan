@@ -6,7 +6,7 @@
 # Main CMakeLists.txt file.
 # ===========================================================================
 
-project (seqan)
+project (seqan CXX)
 
 # ===========================================================================
 # We require CMake 3.0.0. Since it is available in the currently stable

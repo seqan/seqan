@@ -106,7 +106,8 @@
 # ============================================================================
 
 include(FindPackageMessage)
-include(CheckIncludeFiles)
+include(CheckIncludeFileCXX)
+include(CheckCXXSourceCompiles)
 
 # ----------------------------------------------------------------------------
 # Define Constants.
@@ -120,9 +121,6 @@ set(_SEQAN_ALL_LIBRARIES     ZLIB BZip2 OpenMP CUDA)
 # ----------------------------------------------------------------------------
 
 # SEQAN_FIND_DEPENDENCIES
-if (NOT SEQAN_FIND_DEPENDENCIES)
-  set(SEQAN_FIND_DEPENDENCIES "DEFAULT")
-endif ()
 if (SEQAN_FIND_DEPENDENCIES STREQUAL "DEFAULT")
   set(SEQAN_FIND_DEPENDENCIES ${_SEQAN_DEFAULT_LIBRARIES})
 elseif (SEQAN_FIND_DEPENDENCIES STREQUAL "ALL")
@@ -135,6 +133,8 @@ endif ()
 if (NOT SEQAN_FIND_ENABLE_TESTING)
   set(SEQAN_FIND_ENABLE_TESTING "FALSE")
 endif ()
+
+# SEQAN_FIND_DEPENDENCIES IS DEPRECATED, just use find_package!
 
 # ----------------------------------------------------------------------------
 # Determine compiler.
@@ -187,6 +187,8 @@ elseif (COMPILER_IS_MSVC)
     # require at least MSVC 19.0
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0")
         message(FATAL_ERROR "MSVC version (${CMAKE_CXX_COMPILER_VERSION}) must be at least 19.0 (Visual Studio 2015)!")
+    else ()
+        set (CXX11_FOUND TRUE CACHE INTERNAL "Availability of c++11") # always active
     endif ()
 
 else ()
@@ -198,16 +200,20 @@ endif ()
 # ----------------------------------------------------------------------------
 
 if (NOT CXX11_FOUND)
-    message (FATAL_ERROR "SeqAn requires C++11 since v2.1.0. "
-      "Set `set('CXX11_FOUND',  1)` if your compiler support natively c++11 or "
-      "when you set the compiler flag for c++11 via `SEQAN_CXX_FLAGS`. "
-      "For example, if you use gcc you should set "
-      "`set(SEQAN_CXX_FLAGS \"${SEQAN_CXX_FLAGS} -std=c++11\")`. \n"
-      "You can also copy the following cmake utility from "
-      "https://github.com/seqan/seqan/blob/master/util/cmake/FindStdCXX.cmake "
-      "into your cmake directory and automatically select the cxx standard "
-      "by calling `find_package(StdCXX REQUIRED)`.")
-    return ()
+    set(CXXSTD_TEST_SOURCE
+    "#if !defined(__cplusplus) || (__cplusplus < 201103L)
+    #error NOCXX11
+    #endif
+    int main() {}")
+    check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX11_DETECTED)
+    set (CXX11_FOUND ${CXX11_DETECTED} CACHE INTERNAL "Availability of c++11")
+    if (NOT CXX11_FOUND)
+        message (FATAL_ERROR "SeqAn requires C++11 since v2.1.0, but your compiler does "
+                "not support it. Make sure that you specify -std=c++11 in your CMAKE_CXX_FLAGS. "
+                "If you absolutely know what you are doing, you can overwrite this check "
+                " by defining CXX11_FOUND.")
+        return ()
+    endif (NOT CXX11_FOUND)
 endif (NOT CXX11_FOUND)
 
 # ----------------------------------------------------------------------------
@@ -360,7 +366,7 @@ endif ()
 
 # libexecinfo -- implicit
 
-check_include_files(execinfo.h _SEQAN_HAVE_EXECINFO)
+check_include_file_cxx(execinfo.h _SEQAN_HAVE_EXECINFO)
 mark_as_advanced(_SEQAN_HAVE_EXECINFO)
 if (_SEQAN_HAVE_EXECINFO)
   set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-DSEQAN_HAS_EXECINFO=1")
@@ -371,55 +377,62 @@ endif (_SEQAN_HAVE_EXECINFO)
 
 # ZLIB
 
+set (SEQAN_HAS_ZLIB FALSE)
+
+# should SeqAn search for dependency?
 list(FIND SEQAN_FIND_DEPENDENCIES "ZLIB" _SEQAN_FIND_ZLIB)
 mark_as_advanced(_SEQAN_FIND_ZLIB)
-
-set (SEQAN_HAS_ZLIB FALSE)
 if (NOT _SEQAN_FIND_ZLIB EQUAL -1)
-  find_package(ZLIB QUIET)
-  if (ZLIB_FOUND)
-    set (SEQAN_HAS_ZLIB     TRUE)
+    find_package(ZLIB QUIET)
+endif ()
+
+if (ZLIB_FOUND)
+    set (SEQAN_HAS_ZLIB     TRUE) # deprecated: use ZLIB_FOUND instead
     set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${ZLIB_LIBRARIES})
     set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${ZLIB_INCLUDE_DIRS})
     set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_ZLIB=1")
-  endif ()
 endif ()
 
 # BZip2
 
+set (SEQAN_HAS_BZIP2 FALSE)
+
+# should SeqAn search for dependency?
 list(FIND SEQAN_FIND_DEPENDENCIES "BZip2" _SEQAN_FIND_BZIP2)
 mark_as_advanced(_SEQAN_FIND_BZIP2)
-
-set (SEQAN_HAS_BZIP2 FALSE)
 if (NOT _SEQAN_FIND_BZIP2 EQUAL -1)
-  find_package(BZip2 QUIET)
-  if (BZIP2_FOUND)
-    set (SEQAN_HAS_BZIP2    TRUE)
+    find_package(BZip2 QUIET)
+endif ()
+
+if (BZIP2_FOUND)
+    set (SEQAN_HAS_BZIP2    TRUE) # deprecated: use BZIP2_FOUND instead
     set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${BZIP2_LIBRARIES})
     set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${BZIP2_INCLUDE_DIRS})
     set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_BZIP2=1")
-  endif ()
-endif()
+endif ()
 
 # OpenMP
 
+set (SEQAN_HAS_OPENMP FALSE)
+
+# should SeqAn search for dependency?
 list(FIND SEQAN_FIND_DEPENDENCIES "OpenMP" _SEQAN_FIND_OPENMP)
 mark_as_advanced(_SEQAN_FIND_OPENMP)
-
-set (SEQAN_HAS_OPENMP FALSE)
 if (NOT _SEQAN_FIND_OPENMP EQUAL -1)
-  find_package(OpenMP QUIET)
-  # Note that in the following, we do not check for OPENMP_FOUND since this is
-  # only true if both C and C++ compiler support OpenMP.  This is not the case
-  # if the user has a compiler without OpenMP support by default and overrides
-  # only the C++ compiler (e.g. on winter 2013's Mac Os X).
-  if (OpenMP_CXX_FLAGS)
-    set (SEQAN_HAS_OPENMP   TRUE)
-    set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${OpenMP_LIBRARIES})
-    set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${OpenMP_INCLUDE_DIRS})
-    set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_OPENMP=1")
-    set (SEQAN_CXX_FLAGS        "${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-  endif ()
+    find_package(OpenMP QUIET)
+endif ()
+
+if (OPENMP_FOUND)
+    if (COMPILER_IS_CLANG AND (_GCC_VERSION MATCHES "^37[0-9]$"))
+        message (STATUS "Because of a bug in clang-3.7.x OpenMP cannot be used (even if available). Please update your clang!")
+        set (OPENMP_FOUND FALSE)
+    else ()
+        set (SEQAN_HAS_OPENMP TRUE) # deprecated: use OPENMP_FOUND instead
+        set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${OpenMP_LIBRARIES})
+        set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${OpenMP_INCLUDE_DIRS})
+        set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_OPENMP=1")
+        set (SEQAN_CXX_FLAGS        "${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    endif ()
 endif ()
 
 # CUDA

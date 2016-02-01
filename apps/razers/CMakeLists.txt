@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_apps_razers)
+project (seqan_apps_razers CXX)
 message (STATUS "Configuring apps/razers")
 
 set (SEQAN_APP_VERSION "1.5")
@@ -17,7 +17,6 @@ set (SEQAN_APP_VERSION "1.5")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

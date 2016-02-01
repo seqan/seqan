@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_apps_searchjoin)
+project (seqan_apps_searchjoin CXX)
 message (STATUS "Configuring apps/searchjoin")
 
 set (SEQAN_APP_VERSION "0.5")
@@ -17,7 +17,7 @@ set (SEQAN_APP_VERSION "0.5")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES OpenMP)
+find_package (OpenMP)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

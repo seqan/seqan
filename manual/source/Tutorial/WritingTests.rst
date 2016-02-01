@@ -145,7 +145,6 @@ The relevant lines from the file
     message (STATUS "Configuring tests/my_module")
 
     # Search SeqAn and select dependencies.
-    set (SEQAN_FIND_DEPENDENCIES NONE)
     find_package (SeqAn REQUIRED)
 
     # Add include directories.

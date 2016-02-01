@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_apps)
+project (seqan_apps CXX)
 message (STATUS "Configuring apps")
 
 # Register all apps in core.  The apps will be built in SEQAN_RELEASE mode or

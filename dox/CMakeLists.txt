@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_dox)
+project (seqan_dox CXX)
 
 find_package (PythonInterp)
 if (NOT PYTHONINTERP_FOUND)

@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_index)
+project (seqan_tests_index CXX)
 message (STATUS "Configuring tests/index")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,7 @@ message (STATUS "Configuring tests/index")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES OpenMP)
+find_package (OpenMP)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
-project (seqan_%(CMAKE_PROJECT_NAME)s)
+project (seqan_%(CMAKE_PROJECT_NAME)s CXX)
 message (STATUS "Configuring %(CMAKE_PROJECT_PATH)s")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,6 @@ message (STATUS "Configuring %(CMAKE_PROJECT_PATH)s")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

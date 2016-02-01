@@ -45,6 +45,7 @@
 # APP:${app_name}
 
 include (SeqAnUsabilityAnalyzer)
+include (CheckCXXCompilerFlag)
 
 # ---------------------------------------------------------------------------
 # Normalize CMAKE_CXX_FLAGS to be a string.
@@ -229,12 +230,20 @@ macro (seqan_build_system_init)
     SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
          ${PROJECT_BINARY_DIR}/bin)
 
-    # find the highest c++ standard and select it
-    find_package(StdCXX REQUIRED)
-    # NOTE: First location to set SEQAN_CXX_FLAGS at the moment.  If you write
-    # to the variable for the first time earlier, update this line to append to
-    # the variable instead of overwriting.
-    set (SEQAN_CXX_FLAGS "${STD_CXX_FLAG}")
+    if (NOT MSVC)
+        # find the highest c++ standard and select it
+        check_cxx_compiler_flag("-std=c++11" CXX11_DETECTED)
+        check_cxx_compiler_flag("-std=c++14" CXX14_DETECTED)
+    endif ()
+
+    set (CXX11_FOUND ${CXX11_DETECTED} CACHE INTERNAL "Availability of c++11")
+    set (CXX14_FOUND ${CXX14_DETECTED} CACHE INTERNAL "Availability of c++14")
+
+    if (CXX14_FOUND)
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+    elseif (CXX11_FOUND)
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    endif ()
 
 endmacro (seqan_build_system_init)
 
@@ -633,9 +642,11 @@ macro (seqan_build_demos_develop PREFIX)
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
 
     # Find SeqAn with all dependencies.
-    set (SEQAN_FIND_DEPENDENCIES ALL)
-    find_package (SeqAn REQUIRED)
     find_package (OpenMP)
+    find_package (ZLIB)
+    find_package (BZip2)
+    find_package (SeqAn REQUIRED)
+
     if (OPENMP_FOUND AND CMAKE_COMPILER_IS_GNUCXX)
         set(SEQAN_LIBRARIES ${SEQAN_LIBRARIES} -lgomp)
     endif()
