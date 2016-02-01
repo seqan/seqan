@@ -67,7 +67,6 @@ struct IndexSequence
 struct ZipIterator_;
 typedef Tag<ZipIterator_> ZipIterator;
 
-
 /*!
  * @class ZipIterator
  *
@@ -78,8 +77,7 @@ typedef Tag<ZipIterator_> ZipIterator;
  *
  * @brief Zips multiple iterators over different containers into a single iterator.
  *
- * @signature template <typename... TIteratorTypes>
-              class Iter<std::tuple<TIteratorTypes...>, ZipIterator>;
+ * @signature class Iter<std::tuple<TIteratorTypes...>, ZipIterator>;
  *
  * @tparam TIteratorTypes A template parameter pack with one or more @link ContainerConcept#Iterator @endlink types.
  *

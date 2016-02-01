@@ -73,7 +73,6 @@ struct Resizable;
  * resizing of the view, but must not change the capacity of the underlying container.
  */
 
-
 template <typename TContainer, typename TSpec = void>
 class ContainerView
 {

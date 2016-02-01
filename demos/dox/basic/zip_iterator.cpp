@@ -30,6 +30,5 @@ int main()
     for (; it != itEnd; ++it)
         std::cout << std::get<1>(*it) << ", " << std::get<0>(*it) << ": " << std::get<2>(*it) << std::endl;
 
-
     return 0;
 }
