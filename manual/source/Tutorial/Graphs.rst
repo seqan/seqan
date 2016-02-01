@@ -68,9 +68,8 @@ Analogously, there is the metafunction :dox:`Graph#EdgeDescriptor` for edge desc
 
 We can now create the graph ``g`` of our type ``TGraph``.
 
-.. code-block:: cpp
-
-   TGraph g;
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
+   :fragment: create-g
 
 For our example, we add five vertices for the five cities, and six edges connecting the cities.
 
@@ -100,9 +99,8 @@ After executing this example, there should be a file ``graph.dot`` in your direc
 
 Alternatively, you can use the standard output to print the graph to the screen:
 
-.. code-block:: cpp
-
-   std::cout << g << '\n';
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
+   :fragment: alternatively-graph-io
 
 Assignment 1
 """"""""""""
@@ -123,7 +121,11 @@ Assignment 1
 
      .. container:: foldable
 
-	.. includefrags:: demos/tutorial/graph/solution_1.cpp
+		.. includefrags:: demos/tutorial/graph/solution_1.cpp
+
+		The output is the following:
+
+		.. includefrags:: demos/tutorial/graph/solution_1.cpp.stdout
 
 Assignment 2
 """"""""""""
@@ -144,51 +146,27 @@ Assignment 2
 
      .. container:: foldable
 
-	We first have to include the corresponding header file for graphs.
-	Instead of ``<seqan/graph_types.h>``, we can also include ``<seqan/graph_algorithms.h>`` as it already includes ``<seqan/graph_types.h>``.
+		We first have to include the corresponding header file for graphs.
+		Instead of ``<seqan/graph_types.h>``, we can also include ``<seqan/graph_algorithms.h>`` as it already includes ``<seqan/graph_types.h>``.
 
-	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
-	   :fragment: includes
+		.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
+		   :fragment: includes
 
-	This time we define a :dox:`DirectedGraph` without cargo at the edges.
+		This time we define a :dox:`DirectedGraph` without cargo at the edges.
 
-	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
-	   :fragment: typedefs
+		.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
+		   :fragment: typedefs
 
-	The function :dox:`Graph#addEdges` takes as parameters an array of vertex descriptors and the number of edges.
-	The array of vertex descriptors is sorted in the way predecessor1, successor1, predecessor2, successor2, ...
+		The function :dox:`Graph#addEdges` takes as parameters an array of vertex descriptors and the number of edges.
+		The array of vertex descriptors is sorted in the way predecessor1, successor1, predecessor2, successor2, ...
 
-	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
-	   :fragment: main-graph-construction
+		.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
+		   :fragment: main-graph-construction
 
-	The screen output of the graph consists of an adjacency list for the vertices and an edge list:
+		The screen output of the graph consists of an adjacency list for the vertices and an edge list:
 
-	.. code-block:: console
-
-	   Adjacency list:
-	   0 -> 4,
-	   1 -> 0,
-	   2 -> 3,1,
-	   3 -> 2,
-	   4 -> 1,
-	   5 -> 6,4,1,
-	   6 -> 5,2,
-	   7 -> 7,6,3,
-	   Edge list:
-	   Source: 0,Target: 4 (Id: 1)
-	   Source: 1,Target: 0 (Id: 0)
-	   Source: 2,Target: 3 (Id: 7)
-	   Source: 2,Target: 1 (Id: 2)
-	   Source: 3,Target: 2 (Id: 6)
-	   Source: 4,Target: 1 (Id: 3)
-	   Source: 5,Target: 6 (Id: 11)
-	   Source: 5,Target: 4 (Id: 9)
-	   Source: 5,Target: 1 (Id: 4)
-	   Source: 6,Target: 5 (Id: 10)
-	   Source: 6,Target: 2 (Id: 5)
-	   Source: 7,Target: 7 (Id: 13)
-	   Source: 7,Target: 6 (Id: 12)
-	   Source: 7,Target: 3 (Id: 8)
+		.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp.stdout
+		   :fragment: main-graph-construction
 
 Assignment 3
 """"""""""""
@@ -279,30 +257,13 @@ Assignment 3
 
 	To check the HMM we can simply output it to the screen:
 
-	.. code-block:: cpp
-
-	   std::cout << hmm << '\n';
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
+	   :fragment: print-model
 
 	This should yield the following:
 
-	.. code-block:: console
-
-	   Alphabet:
-	   {A,C,G,T}
-	   States:
-	   {0 (Silent),1,2,3,4 (Silent)}
-	   Begin state: 0
-	   End state: 4
-	   Transition probabilities:
-	   0 -> 1 (1.000000)
-	   1 -> 2 (0.100000) ,1 (0.900000)
-	   2 -> 3 (1.000000)
-	   3 -> 4 (0.100000) ,3 (0.900000)
-	   4 ->
-	   Emission probabilities:
-	   1: A (0.250000) ,C (0.250000) ,G (0.250000) ,T (0.250000)
-	   2: A (0.050000) ,C (0.000000) ,G (0.950000) ,T (0.000000)
-	   3: A (0.400000) ,C (0.100000) ,G (0.100000) ,T (0.400000)
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp.stdout
+	   :fragment: print-model
 
 Property Maps And Iterators
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -346,13 +307,8 @@ To print out all city names we have to call the function :dox:`PropertyMapConcep
 
 The output of this piece of code should look as follows:
 
-.. code-block:: console
-
-   0:Berlin
-   1:Hamburg
-   2:Hannover
-   3:Mainz
-   4:Munich
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp.stdout
+   :fragment: iterate-and-output-properties
 
 Assignment 4
 """"""""""""
@@ -391,9 +347,8 @@ Assignment 4
 
 	For the chosen starting point, only two other vertices can be reached:
 
-	.. code-block:: console
-
-	   Iterate from 'a' in depth-first-search ordering: a, e, b,
+	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp.stdout
+	   :fragment: iterate-dfs
 
 Graph Algorithms
 ~~~~~~~~~~~~~~~~
@@ -468,9 +423,8 @@ The ``distMap`` indicates the length of the shortest path to each vertex.
 
 Having defined all these property maps, we can then call the function :dox:`dijkstra`:
 
-.. code-block:: cpp
-
-   dijkstra(g,vertHannover,cargoMap,predMap,distMap);
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
+   :fragment: dijkstra
 
 Finally, we have to output the result.
 Therefore, we define a second vertex iterator ``itV2`` and access the distances just like the city names with the function :dox:`PropertyMapConcept#property` on the corresponding property map.
@@ -507,19 +461,13 @@ Assignments 5
 	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: output-connected-components
 
+	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
+	   :fragment: return
+
 	The output for the graph defined in the `Assignment 4`_ looks as follows:
 
-	.. code-block:: console
-
-	   Strongly Connected Components:
-	   Vertex a: Component = 3
-	   Vertex b: Component = 3
-	   Vertex c: Component = 2
-	   Vertex d: Component = 2
-	   Vertex e: Component = 3
-	   Vertex f: Component = 1
-	   Vertex g: Component = 1
-	   Vertex h: Component = 0
+	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp.stdout
+	   :fragment: output-connected-components
 
 	The graph consists of four components.
 	The first contains vertex ``a``, ``b``, and ``e``, the second contains vertex ``c`` and ``d``, the third
@@ -566,14 +514,8 @@ Assignment 6
 
 	The output of the above piece of code is:
 
-	.. code-block:: console
-
-	   Viterbi algorithm
-	   Probability of best path: 1.25465e-18
-	   Sequence:
-	   C,T,T,C,A,T,G,T,G,A,A,A,G,C,A,G,A,C,G,T,A,A,G,T,C,A,
-	   State path:
-	   0 (Silent),1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,3,3,3,3,3,3,3,4 (Silent)
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp.stdout
+	   :fragment: viterbi
 
 	It is even simpler to use the forward algorithm in SeqAn since it needs only the HMM and the sequence as parameters and returns a single probability.
 	This is the probability of the HMM to generate the given sequence. The corresponding function is named :dox:`HmmAlgorithms#forwardAlgorithm`.
@@ -588,9 +530,5 @@ Assignment 6
 
 	The output of these two code fragments is:
 
-	.. code-block:: console
-
-	    Forward algorithm
-	    Probability that the HMM generated the sequence: 2.71585e-18
-	    Backward algorithm
-	    Probability that the HMM generated the sequence: 2.71585e-18
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp.stdout
+	   :fragment: forward-backward

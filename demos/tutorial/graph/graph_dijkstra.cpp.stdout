@@ -1,8 +1,24 @@
+Adjacency list:
+0 -> 4,3,2,1,
+1 -> 3,0,
+2 -> 4,0,
+3 -> 1,0,
+4 -> 2,0,
+Edge list:
+Source: 0,Target: 4 (Id: 3)
+Source: 0,Target: 3 (Id: 2)
+Source: 0,Target: 2 (Id: 1)
+Source: 0,Target: 1 (Id: 0)
+Source: 1,Target: 3 (Id: 5)
+Source: 2,Target: 4 (Id: 4)
+
+//![iterate-and-output-properties]
 0:Berlin
 1:Hamburg
 2:Hannover
 3:Mainz
 4:Munich
+//![iterate-and-output-properties]
 Shortest path from Hannover to Berlin: 286
 Shortest path from Hannover to Hamburg: 575
 Shortest path from Hannover to Hannover: 0

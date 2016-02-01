@@ -40,6 +40,10 @@ int main()
     dotFile.close();
 //![main-graph-io]
 
+//![alternatively-graph-io]
+    std::cout << g << '\n';
+//![alternatively-graph-io]
+
 //![definition-property-map]
     typedef String<char> TCityName;
     typedef String<TCityName> TProperties;
@@ -55,6 +59,7 @@ int main()
     assignProperty(cityNames, vertHannover, "Hannover");
 //![enter-properties]
 
+std::cout << "//![iterate-and-output-properties]\n";
 //![iterate-and-output-properties]
     typedef Iterator<TGraph, VertexIterator>::Type TVertexIterator;
     TVertexIterator itV(g);
@@ -63,6 +68,7 @@ int main()
         std::cout << value(itV) << ':' << getProperty(cityNames, value(itV)) << std::endl;
     }
 //![iterate-and-output-properties]
+    std::cout << "//![iterate-and-output-properties]\n";
 
 //![dijkstra-containers]
     typedef Size<TGraph>::Type TSize;
