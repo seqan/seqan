@@ -6,8 +6,8 @@
 # CMakeLists.txt file for fiona.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_apps_fiona)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_apps_fiona CXX)
 message (STATUS "Configuring apps/fiona")
 
 set (SEQAN_APP_VERSION "0.2.2")
@@ -17,12 +17,13 @@ set (SEQAN_APP_VERSION "0.2.2")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB)
+find_package (OpenMP)
+find_package (ZLIB)
 find_package (SeqAn REQUIRED)
 find_package (Boost)
 
 # Stop here if we cannot find Boost or OpenMP.
-if (NOT Boost_FOUND OR NOT OpenMP_FLAG_DETECTED)
+if (NOT Boost_FOUND OR NOT OPENMP_FOUND)
     message (STATUS "  Boost or OpenMP not found, not building fiona.")
     return ()
 endif ()

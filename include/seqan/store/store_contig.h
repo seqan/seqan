@@ -124,7 +124,7 @@ struct ContigStoreElement
     typedef TContigSeq_            TContigSeq;
     typedef TGapAnchor_            TGapAnchor;
     typedef TSpec_                TSpec;
-    typedef __int64                TPos;
+    typedef int64_t                TPos;
     typedef String<TGapAnchor>    TGapAnchors;
 
     static const TId INVALID_ID;

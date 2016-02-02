@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the find_swift module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_find_swift)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_find_swift CXX)
 message (STATUS "Configuring tests/find_swift")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,6 @@ message (STATUS "Configuring tests/find_swift")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

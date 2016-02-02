@@ -160,13 +160,13 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
     template <typename TValue>
     struct Host<String<TValue, Packed<ErrorPackedString> > >
     {
-        typedef String<__int64, Array<1> > Type;
+        typedef String<int64_t, Array<1> > Type;
     };
 
     template <typename TValue>
     struct Host<String<TValue, Packed<ErrorPackedString> > const >
     {
-        typedef String<__int64, Array<1> > const Type;
+        typedef String<int64_t, Array<1> > const Type;
     };
 
 

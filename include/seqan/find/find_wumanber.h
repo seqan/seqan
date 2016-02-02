@@ -76,7 +76,7 @@ public:
             //note: if to_verify_begin == to_verify_end then searching in Haystack must go on
 
     //preprocessed data: these members are initialized in setHost
-    Holder<TNeedle> needle;
+    Holder<TNeedle> data_host;
     String<TNeedlePosition> verify_tab; //table of keywords to verify depending on the last value (HASH)
     String<TNeedlePosition *> verify; //directory into verify_tab
     String<TSize> shift; //table of skip widths (SHIFT)
@@ -91,10 +91,11 @@ public:
     }
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl)
+    Pattern(TNeedle2 && ndl,
+            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
     {
-        SEQAN_CHECKPOINT
-        setHost(*this, ndl);
+        setHost(*this, std::forward<TNeedle2>(ndl));
+        ignoreUnusedVariableWarning(dummy);
     }
 
     ~Pattern()
@@ -105,7 +106,8 @@ public:
 private:
     Pattern(Pattern const& other);
     Pattern const & operator=(Pattern const & other);
-
+    Pattern(Pattern && other);
+    Pattern & operator=(Pattern && other);
 //____________________________________________________________________________
 };
 
@@ -348,20 +350,15 @@ struct WuManberHash_<TNeedle, 3>
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TNeedle, typename TNeedle2>
-void _setHostWuManber(Pattern<TNeedle, WuManber> & me,
-                       TNeedle2 const & needle_)
+template <typename TNeedle>
+void _reinitPattern(Pattern<TNeedle, WuManber> & me)
 {
     SEQAN_CHECKPOINT;
-    SEQAN_ASSERT_NOT(empty(needle_));
 
     typedef typename Iterator<TNeedle, Standard>::Type TNeedleIterator;
     typedef typename Value<TNeedle>::Type TKeyword;
     typedef typename Value<TKeyword>::Type TValue;
     typedef typename Size<TKeyword>::Type TSize;
-
-    //me.needle
-    setValue(me.needle, needle_);
 
     //determine lmin
     me.lmin = maxValue<TSize>();
@@ -403,39 +400,6 @@ void _setHostWuManber(Pattern<TNeedle, WuManber> & me,
     if (me.q == 2) WuManberImpl_<TNeedle, 2>::initialize(me);
     else if (me.q == 3) WuManberImpl_<TNeedle, 3>::initialize(me);
     else WuManberImpl_<TNeedle, 1>::initialize(me);
-}
-
-template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, WuManber> & me,
-              TNeedle2 const & needle)
-{
-    _setHostWuManber(me, needle);
-}
-
-template <typename TNeedle, typename TNeedle2>
-inline void
-setHost(Pattern<TNeedle, WuManber> & me,
-        TNeedle2 & needle)
-{
-    _setHostWuManber(me, needle);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, WuManber> >::Type &
-host(Pattern<TNeedle, WuManber> & me)
-{
-SEQAN_CHECKPOINT
-    return value(me.needle);
-}
-
-template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, WuManber> const>::Type &
-host(Pattern<TNeedle, WuManber> const & me)
-{
-SEQAN_CHECKPOINT
-    return value(me.needle);
 }
 
 //////////////////////////////////////////////////////////////////////////////

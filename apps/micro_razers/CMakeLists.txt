@@ -6,8 +6,8 @@
 # CMakeLists.txt file for MicroRazerS.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_apps_micro_razers)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_apps_micro_razers CXX)
 message (STATUS "Configuring apps/micro_razers")
 
 set (SEQAN_APP_VERSION "1.0.3")
@@ -17,7 +17,6 @@ set (SEQAN_APP_VERSION "1.0.3")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

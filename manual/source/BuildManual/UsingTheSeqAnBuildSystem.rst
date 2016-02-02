@@ -374,13 +374,13 @@ This is useful when having many ``CMakeLists.txt`` files open and you want to qu
    # CMakeLists.txt file for my_app.
    # ===========================================================================
 
-   cmake_minimum_required (VERSION 2.8.2)
+   cmake_minimum_required (VERSION 3.0.0)
    project (src_my_app)
    message (STATUS "Configuring src/my_app")
 
 Then comes the section that searches for the app's dependencies.
 By default, the app only depends on the package SeqAn.
-By setting the variable ``SEQAN_FIND_DEPENDENCIES``, we can configure which dependencies the call to ``find_package (SeqAn REQUIRED)`` will try to find.
+By calling ``find_package(PKG)`` **before** ``find_package (SeqAn REQUIRED)`` you can configure SeqAn to also make use of the dependency specified dependency. Valid values for PKG are ``OpenMP``, ``ZLIB`` and ``BZip2``.
 See the :ref:`build-manual-using-the-find-seqan-cmake-module` for more details.
 
 .. code-block:: cmake
@@ -390,7 +390,6 @@ See the :ref:`build-manual-using-the-find-seqan-cmake-module` for more details.
     # ----------------------------------------------------------------------------
 
     # Search SeqAn and select dependencies.
-    set (SEQAN_FIND_DEPENDENCIES NONE)
     find_package (SeqAn REQUIRED)
 
 The call to ``find_package (SeqAn REQUIRED)`` will then set the

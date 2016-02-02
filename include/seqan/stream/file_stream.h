@@ -277,11 +277,11 @@ clear(FilePageTable<TValue, TDirection, TSpec> & pager)
 // ----------------------------------------------------------------------------
 
 template <unsigned PAGESIZE, typename TPos>
-inline Pair<__int64, unsigned>
+inline Pair<int64_t, unsigned>
 _getPageOffsetAndLength(FixedPagingScheme<PAGESIZE> const & scheme, TPos pos)
 {
     SEQAN_ASSERT_EQ(scheme.pageSize & (scheme.pageSize - 1), 0);  // pageSize must be a power of 2
-    return Pair<__int64, unsigned>((__int64)pos & ~(__int64)(scheme.pageSize - 1), scheme.pageSize);
+    return Pair<int64_t, unsigned>((int64_t)pos & ~(int64_t)(scheme.pageSize - 1), scheme.pageSize);
 }
 
 // ----------------------------------------------------------------------------
@@ -867,7 +867,7 @@ struct FileStreamBuffer :
         if (pager.fileSize <= readPagePos)
             return false;
 
-        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager.table, readPagePos);
+        Pair<int64_t, unsigned> ol = _getPageOffsetAndLength(pager.table, readPagePos);
         readPage = &fetchFilePage(pager, ol.i1, ol.i2);
         this->setg(readPage->data.begin, readPage->data.begin, readPage->data.end);
         return true;
@@ -898,7 +898,7 @@ struct FileStreamBuffer :
             writePage = NULL;
         }
 
-        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager.table, writePagePos);
+        Pair<int64_t, unsigned> ol = _getPageOffsetAndLength(pager.table, writePagePos);
         writePage = &fetchFilePage(pager, ol.i1, ol.i2);
         this->setp(writePage->data.begin, writePage->data.begin + capacity(writePage->data));
         return true;
@@ -1003,7 +1003,7 @@ struct FileStreamBuffer :
 
 
         // Fetch new page.
-        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager.table, pos);
+        Pair<int64_t, unsigned> ol = _getPageOffsetAndLength(pager.table, pos);
         readPage = &fetchFilePage(pager, ol.i1, ol.i2);
         readPagePos = readPage->filePos;
 
@@ -1033,7 +1033,7 @@ struct FileStreamBuffer :
 
 
         // Fetch new page.
-        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager.table, pos);
+        Pair<int64_t, unsigned> ol = _getPageOffsetAndLength(pager.table, pos);
         writePage = &fetchFilePage(pager, ol.i1, ol.i2);
         writePagePos = writePage->filePos;
 

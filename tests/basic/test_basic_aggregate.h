@@ -417,8 +417,8 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_pair_base_comparison_same_spec)
 
 SEQAN_DEFINE_TEST(test_basic_aggregates_pair_base_comparison_different_spec)
 {
-    Pair<int, __int64> p00(0, 0);
-    Pair<int, __int64, Pack> p01(0, 1);
+    Pair<int, int64_t> p00(0, 0);
+    Pair<int, int64_t, Pack> p01(0, 1);
     Pair<int, short int, BitPacked<20, 12> > p10(1, 0);
 
     SEQAN_ASSERT(p00 == p00);
@@ -638,8 +638,8 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_pair_packed_comparison_same_spec)
 
 SEQAN_DEFINE_TEST(test_basic_aggregates_pair_packed_comparison_different_spec)
 {
-    Pair<int, __int64> p00(0, 0);
-    Pair<int, __int64, Pack> p01(0, 1);
+    Pair<int, int64_t> p00(0, 0);
+    Pair<int, int64_t, Pack> p01(0, 1);
     Pair<int, short int, BitPacked<20, 12> > p10(1, 0);
 
     SEQAN_ASSERT(p00 == p00);
@@ -843,8 +843,8 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_pair_bit_packed_comparison_same_spec)
 
 SEQAN_DEFINE_TEST(test_basic_aggregates_pair_bit_packed_comparison_different_spec)
 {
-    Pair<int, __int64> p00(0, 0);
-    Pair<int, __int64, Pack> p01(0, 1);
+    Pair<int, int64_t> p00(0, 0);
+    Pair<int, int64_t, Pack> p01(0, 1);
     Pair<int, short int, BitPacked<20, 12> > p10(1, 0);
 
     SEQAN_ASSERT(p00 == p00);
@@ -1057,8 +1057,8 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_triple_base_comparison_same_spec)
 
 SEQAN_DEFINE_TEST(test_basic_aggregates_triple_base_comparison_different_spec)
 {
-    Triple<int, __int64, char> t001(0, 0, 1);
-    Triple<int, __int64, char, Pack> t010(0, 1, 0);
+    Triple<int, int64_t, char> t001(0, 0, 1);
+    Triple<int, int64_t, char, Pack> t010(0, 1, 0);
     Triple<int, short int, char > t100(1, 0, 0);
 
     SEQAN_ASSERT(t001 == t001);
@@ -1287,8 +1287,8 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_triple_packed_comparison_same_spec)
 
 SEQAN_DEFINE_TEST(test_basic_aggregates_triple_packed_comparison_different_spec)
 {
-    Triple<int, __int64, char> t001(0, 0, 1);
-    Triple<int, __int64, char, Pack> t010(0, 1, 0);
+    Triple<int, int64_t, char> t001(0, 0, 1);
+    Triple<int, int64_t, char, Pack> t010(0, 1, 0);
     Triple<int, short int, char, BitPacked<20, 12> > t100(1, 0, 0);
 
     SEQAN_ASSERT(t001 == t001);

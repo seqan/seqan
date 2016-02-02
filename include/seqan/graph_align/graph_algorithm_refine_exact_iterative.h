@@ -506,6 +506,9 @@ SEQAN_CHECKPOINT
     typedef typename Cargo<typename Value<TPropertyMap>::Type>::Type TAlignmentPointer;
     typedef typename Iterator<String<TAlignmentPointer>, Rooted>::Type TSegmentIterator;
 
+#ifdef SEQAN_TCOFFEE_DEBUG
+    double refinementTime = sysTime();
+#endif
 
     ////////////////////////////////////////////////////////////////
     TValue numSequences = length(seq);
@@ -637,9 +640,20 @@ SEQAN_CHECKPOINT
     //}
     //std::cout <<"building tree..."<<std::flush;
 
+#ifdef SEQAN_TCOFFEE_DEBUG
+    std::cout << std::setw(30) << std::left << "Segment-match refinement:" << std::setw(10) << std::right << sysTime() - refinementTime << "  s" << std::endl;
+
+    double buildGraphTime = sysTime();
+#endif
+
     ////////////////////////////////////////////////////////////////
     //build refined alignment graph
     _makeAlignmentGraphFromRefinedSegments(all_nodes,alis,score_type,seq,seq_map,ali_graph,tag,annotation);
+
+#ifdef SEQAN_TCOFFEE_DEBUG
+    std::cout << std::setw(30) << std::left << "Build alignment graph:" << std::setw(10) << std::right << sysTime() - buildGraphTime << "  s" << std::endl;
+#endif
+
 }
 
 

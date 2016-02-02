@@ -169,8 +169,8 @@ Note how most fields are represented by :dox:`CharString Strings`:
    class VcfRecord
    {
    public:
-       __int32 rID;                          // CHROM
-       __int32 beginPos;                     // POS
+       int32_t rID;                          // CHROM
+       int32_t beginPos;                     // POS
        CharString id;                        // ID
        CharString ref;                       // REF
        CharString alt;                       // ALT
@@ -181,8 +181,8 @@ Note how most fields are represented by :dox:`CharString Strings`:
        StringSet<CharString> genotypeInfos;  // <individual1> <individual2> ..
 
        // Constants for marking reference id and position as invalid.
-       static const __int32 INVALID_REFID = -1;
-       static const __int32 INVALID_POS = -1;
+       static const int32_t INVALID_REFID = -1;
+       static const int32_t INVALID_POS = -1;
        // This function returns the float value for "invalid quality".
        static float MISSING_QUAL();
    };

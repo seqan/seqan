@@ -42,7 +42,7 @@
 #ifndef SANDBOX_JAGLA_APPS_NGS_ROI_PNG_CANVAS_H_
 #define SANDBOX_JAGLA_APPS_NGS_ROI_PNG_CANVAS_H_
 
-#include <seqan/basic.h>  // for __uint32 etc.
+#include <seqan/basic.h>  // for uint32_t etc.
 
 #include <fstream>
 #include <stdexcept>
@@ -116,8 +116,8 @@ public:
 
 struct PngIhdrChunk
 {
-    __uint32 width;
-    __uint32 height;
+    uint32_t width;
+    uint32_t height;
     char bitDepth;
     char colorType;
     char compressionMethod;
@@ -497,13 +497,13 @@ public:
         _writeChunk(out, iendChunk);
     }
 
-    __uint32 swapUInt32(__uint32 val)
+    uint32_t swapUInt32(uint32_t val)
     {
         val = ((val << 8) & 0xFF00FF00 ) | ((val >> 8) & 0xFF00FF );
         return (val << 16) | (val >> 16);
     }
 
-    __int32 swapInt32(int32_t val)
+    int32_t swapInt32(int32_t val)
     {
         val = ((val << 8) & 0xFF00FF00) | ((val >> 8) & 0xFF00FF );
         return (val << 16) | ((val >> 16) & 0xFFFF);
@@ -513,7 +513,7 @@ public:
     void _writeChunk(std::fstream & out, TChunk const & chunk)
     {
         // Write payload length.
-        __uint32 size = swapUInt32(chunk.size());
+        uint32_t size = swapUInt32(chunk.size());
         out.write(reinterpret_cast<char const *>(&size), 4);
 
         // Write chunk type.
@@ -523,7 +523,7 @@ public:
         out.write(reinterpret_cast<char const *>(chunk.payload()), chunk.size());
 
         // Compute and write CRC32.
-        __uint32 crc = crc32(0, NULL, 0);
+        uint32_t crc = crc32(0, NULL, 0);
         crc = crc32(crc, reinterpret_cast<Bytef const *>(chunk.type()), 4);
         if (chunk.size() > 0u)
             crc = crc32(crc, reinterpret_cast<Bytef const *>(reinterpret_cast<char const *>(chunk.payload())), chunk.size());

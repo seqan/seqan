@@ -47,18 +47,18 @@ typedef Tag<Tsv_> Tsv;
 struct RabemaStats
 {
     // Number of intervals that were to find.
-    __uint64 intervalsToFind;
+    uint64_t intervalsToFind;
     // Number of intervals that were actually found.
-    __uint64 intervalsFound;
+    uint64_t intervalsFound;
     // SAM records that did not correspond to alignments below the configured maximal error rate.
-    __uint64 invalidAlignments;
+    uint64_t invalidAlignments;
 
     // Total number of reads.
-    __uint64 totalReads;
+    uint64_t totalReads;
     // Number of reads with alignments below maximal error rate.
-    __uint64 mappedReads;
+    uint64_t mappedReads;
     // Total number of reads with GSI records equals number of normalized intervals to find.
-    __uint64 readsInGsi;
+    uint64_t readsInGsi;
     // Normalized number of found intervals.
     double normalizedIntervals;
     // Number of additional alignments in SAM file with low enough error rate but no GSI record.

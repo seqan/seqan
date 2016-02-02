@@ -87,7 +87,7 @@ namespace seqan
 #endif
 
 #ifdef PLATFORM_WINDOWS
-    typedef __int64   ProfileInt_; //IOREV _notio_
+    typedef int64_t   ProfileInt_; //IOREV _notio_
 #else
     typedef int64_t ProfileInt_; //IOREV _notio_
 #endif

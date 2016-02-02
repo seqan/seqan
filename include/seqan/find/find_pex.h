@@ -187,56 +187,41 @@ class Pattern<TNeedle, Pex<TVerification, TMultiFinder > >:
        limit(1), lastFPos(0), lastFNdl(0), findNext(false), patternNeedsInit(true)
    {}
 
-   template <typename TNeedle2>
-   Pattern(TNeedle2 const & ndl) :
-       limit(1), lastFPos(0), lastFNdl(0), findNext(false), patternNeedsInit(true)
-   {
-     setHost(*this, ndl);
-   }
+    template <typename TNeedle2>
+    Pattern(TNeedle2 && ndl,
+            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>)) :
+        limit(1),
+        lastFPos(0),
+        lastFNdl(0),
+        findNext(false),
+        patternNeedsInit(true)
+    {
+        setHost(*this, std::forward<TNeedle2>(ndl));
+        ignoreUnusedVariableWarning(dummy);
+    }
 
-   template <typename TNeedle2>
-   Pattern(TNeedle2 const & ndl, int _limit = -1) :
-       limit(-_limit), lastFPos(0), lastFNdl(0), findNext(false), patternNeedsInit(true)
-   {
-     setHost(*this, ndl);
-   }
+    template <typename TNeedle2>
+    Pattern(TNeedle2 && ndl, int _limit = -1) :
+        limit(-_limit),
+        lastFPos(0),
+        lastFNdl(0),
+        findNext(false),
+        patternNeedsInit(true)
+    {
+        setHost(*this, std::forward<TNeedle2>(ndl));
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TNeedle, typename TNeedle2, typename TVerification, typename TMultiFinder>
-void setHost (Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me, TNeedle2 const & needle)
+template <typename TNeedle, typename TVerification, typename TMultiFinder>
+void _reinitPattern(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me)
 {
   // initialisation of the find-tree etc. will be done when patternInit
   // is called to assure that we already know the scoreLimit
-  me.data_host = needle;
-  me.needleLength = length(needle);
+  me.needleLength = length(needle(me));
   me.findNext = false;
   me.patternNeedsInit = true;
-}
-
-template <typename TNeedle, typename TNeedle2, typename TVerification, typename TMultiFinder>
-void setHost (Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me, TNeedle2 & needle)
-{
-  setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle, typename TVerification, typename TMultiFinder>
-inline typename Host<Pattern<TNeedle, Pex<TVerification,TMultiFinder > > >::Type &
-host(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me)
-{
-SEQAN_CHECKPOINT
-  return value(me.data_host);
-}
-
-template <typename TNeedle, typename TVerification, typename TMultiFinder>
-inline typename Host<Pattern<TNeedle, Pex<TVerification,TMultiFinder > > const>::Type &
-host(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > const & me)
-{
-SEQAN_CHECKPOINT
-  return value(me.data_host);
 }
 
 //////////////////////////////////////////////////////////////////////////////

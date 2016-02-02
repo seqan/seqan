@@ -127,7 +127,7 @@ bool loadReads(
         return false;
 
 
-    String<__uint64>    qualSum;
+    String<uint64_t>    qualSum;
     String<Dna5Q>       seq[2];
     CharString          qual[2];
     CharString          seqId[2];
@@ -620,7 +620,7 @@ void _mapMatePairReads(
     typedef Pattern<TReadIndex, TFilterSpec>                TFilterPattern;
 
     // MATE-PAIR FILTRATION
-    typedef Pair<__int64, TMatch>                           TDequeueValue;
+    typedef Pair<int64_t, TMatch>                           TDequeueValue;
     typedef Dequeue<TDequeueValue>                          TDequeue;
     typedef typename TDequeue::TIter                        TDequeueIterator;
 
@@ -680,12 +680,12 @@ void _mapMatePairReads(
     TFilterFinderR filterFinderR(genomeInf, options.repeatLength, 1);
 
     TDequeue fifo;                      // stores left-mate potential matches
-    String<__int64> lastPotMatchNo;     // last number of a left-mate potential
-    __int64 lastNo = 0;                 // last number over all left-mate pot. matches in the queue
-    __int64 firstNo = 0;                // first number over all left-mate pot. match in the queue
+    String<int64_t> lastPotMatchNo;     // last number of a left-mate potential
+    int64_t lastNo = 0;                 // last number over all left-mate pot. matches in the queue
+    int64_t firstNo = 0;                // first number over all left-mate pot. match in the queue
     Pair<TGPos> gPair;
 
-    resize(lastPotMatchNo, length(host(filterPatternL)), (__int64) - 2, Exact());
+    resize(lastPotMatchNo, length(host(filterPatternL)), (int64_t) - 2, Exact());
 
     TSize gLength = length(genome);
 
@@ -758,9 +758,9 @@ void _mapMatePairReads(
         bool rightVerified = false;
         TDequeueIterator it;
         unsigned leftReadId = store.matePairStore[matePairId].readId[0];
-        __int64 last = (__int64) - 1;
-        __int64 lastValid = (__int64) - 1;
-        __int64 i;
+        int64_t last = (int64_t) - 1;
+        int64_t lastValid = (int64_t) - 1;
+        int64_t i;
         for (i = lastPotMatchNo[matePairId]; firstNo <= i; last = i, i = (*it).i1)
         {
 //            std::cout<< "\t[" << i << "]" << "\t" << fifo[3].i1 << std::endl;
@@ -820,7 +820,7 @@ void _mapMatePairReads(
                 if (last != lastValid)
                 {
                     SEQAN_ASSERT_NEQ(lastValid, i);
-                    if (lastValid == (__int64) - 1)
+                    if (lastValid == (int64_t) - 1)
                         lastPotMatchNo[matePairId] = i;
                     else
                         value(fifo, lastValid - firstNo).i1 = i;
@@ -869,13 +869,13 @@ void _mapMatePairReads(
                     if (bestLeftScore <= score)
                     {
                         // distance between left mate beginning and right mate end
-                        __int64 dist = (__int64)verifierR.m.endPos - (__int64)(*it).i2.beginPos;
+                        int64_t dist = (int64_t)verifierR.m.endPos - (int64_t)(*it).i2.beginPos;
                         int libSizeError = options.libraryLength - dist;
 /*
                         if (orientation == 'F')
-                            std::cout << (__int64)(*it).i2.beginPos << "\t" << (__int64)verifierR.m.beginPos;
+                            std::cout << (int64_t)(*it).i2.beginPos << "\t" << (int64_t)verifierR.m.beginPos;
                         else
-                            std::cout << (__int64)(*it).i2.endPos << "\t" << (__int64)verifierR.m.endPos;
+                            std::cout << (int64_t)(*it).i2.endPos << "\t" << (int64_t)verifierR.m.endPos;
                         std::cout << '\t' << dist << '\t' << libSizeError << std::endl;
 */
 #ifdef RAZERS_DEBUG_MATEPAIRS
@@ -909,7 +909,7 @@ void _mapMatePairReads(
         if (last != lastValid)
         {
             SEQAN_ASSERT_NEQ(lastValid, i);
-            if (lastValid == (__int64) - 1)
+            if (lastValid == (int64_t) - 1)
                 lastPotMatchNo[matePairId] = i;
             else
                 value(fifo, lastValid - firstNo).i1 = i;
@@ -975,7 +975,7 @@ void _mapMatePairReads(
                 std::cerr << "\nHIT\tR\t" << mR.readId << "\t" << store.readNameStore[mR.readId] << "\t" << mR.beginPos << "\t" << mR.endPos << std::endl;
 #endif  // #ifdef RAZERS_DEBUG_MATEPAIRS
 
-                if ((__int64)length(store.alignedReadStore) > options.compactThresh)
+                if ((int64_t)length(store.alignedReadStore) > options.compactThresh)
                 {
                     typename Size<TAlignedReadStore>::Type oldSize = length(store.alignedReadStore);
                     if (IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE || options.threshold == 0)
@@ -983,7 +983,7 @@ void _mapMatePairReads(
                     compactPairMatches(store, matches, cnts, options, filterPatternL, filterPatternR, COMPACT);
 
                     if (length(store.alignedReadStore) * 4 > oldSize)                   // the threshold should not be raised
-                        options.compactThresh = (__int64)(options.compactThresh * options.compactMult);
+                        options.compactThresh = (int64_t)(options.compactThresh * options.compactMult);
                     //options.compactThresh += (options.compactThresh >> 1);	// if too many matches were removed
 
                     if (options._debugLevel >= 2)

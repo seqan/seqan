@@ -132,19 +132,35 @@ public:
     {}
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl) :
-        blockCount(0), last(0), needleLength(0), haystackLength(0), limit(1), cP(0), findNext(false),
-        verifier(ndl,-1)
+    Pattern(TNeedle2 && ndl,
+            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>)) :
+        blockCount(0),
+        last(0),
+        needleLength(0),
+        haystackLength(0),
+        limit(1),
+        cP(0),
+        findNext(false),
+        verifier(std::forward<TNeedle2>(ndl), -1)
     {
-        setHost(*this, ndl);
+        setHost(*this, std::forward<TNeedle2>(ndl));
+        ignoreUnusedVariableWarning(dummy);
     }
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl, int _limit = -1) :
-        limit(- _limit), cP(0), verifier(ndl,_limit)
+    Pattern(TNeedle2 && ndl, int _limit = -1) :
+        blockCount(0),
+        last(0),
+        needleLength(0),
+        haystackLength(0),
+        limit(- _limit),
+        cP(0),
+        findNext(false),
+        verifier(std::forward<TNeedle2>(ndl), _limit)
     {
-        setHost(*this, ndl);
+        setHost(*this, std::forward<TNeedle2>(ndl));
     }
+
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -162,8 +178,8 @@ void _printR(Pattern<TNeedle, AbndmAlgo> & me)
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, AbndmAlgo> & me, TNeedle2 const& needle)
+template <typename TNeedle>
+void _reinitPattern(Pattern<TNeedle, AbndmAlgo> & me)
 {
 SEQAN_CHECKPOINT
     typedef unsigned int TWord;
@@ -172,7 +188,7 @@ SEQAN_CHECKPOINT
     me.cP = 0;
     me.findNext = false;
 
-    me.needleLength = length(needle);
+    me.needleLength = length(needle(me));
     if (me.needleLength<1)
         me.blockCount = 1;
     else
@@ -183,13 +199,13 @@ SEQAN_CHECKPOINT
 
     for (TWord j = 0; j < me.needleLength; ++j) {
         // Determine character position in array table
-        TWord pos = convert<TWord>(getValue(needle,j));
+        TWord pos = convert<TWord>(getValue(needle(me),j));
         me.b_table[me.blockCount*pos + j / BitsPerValue<TWord>::VALUE] |= (1<<(j%BitsPerValue<TWord>::VALUE));
     }
 
 #ifdef SEQAN_DEBUG_ABNDM
-    std::cout << "Needle:   " << needle << std::endl;
-    std::cout << "|Needle|: " << length(needle) << std::endl;
+    std::cout << "Needle:   " << needle(me) << std::endl;
+    std::cout << "|Needle|: " << length(needle(me)) << std::endl;
     std::cout << "Alphabet size: " << ValueSize<TValue>::VALUE << std::endl;
 
     for(unsigned i=0;i<ValueSize<TValue>::VALUE;++i) {
@@ -206,14 +222,7 @@ SEQAN_CHECKPOINT
 #endif
     clear(me.r_table); // init is only possible if we know the the error count
 
-    me.data_host = needle;
-    setHost(me.verifier,needle);
-}
-
-template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, AbndmAlgo> & me, TNeedle2 & needle)
-{
-    setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
+    setHost(me.verifier, needle(me));  // Set the same host to the verifier.
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -227,24 +236,6 @@ inline void _patternInit (Pattern<TNeedle, AbndmAlgo> & me)
     me.findNext = false;
     me.last = 0;
     _findBeginInit(me, needle(me));
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, AbndmAlgo> >::Type &
-host(Pattern<TNeedle, AbndmAlgo> & me)
-{
-    SEQAN_CHECKPOINT
-    return value(me.data_host);
-}
-
-template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, AbndmAlgo> const>::Type &
-host(Pattern<TNeedle, AbndmAlgo> const & me)
-{
-    SEQAN_CHECKPOINT
-    return value(me.data_host);
 }
 
 //////////////////////////////////////////////////////////////////////////////

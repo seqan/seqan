@@ -208,8 +208,8 @@ std::pair<int, int> ContigPicker::pick()
     int rID = 0;
     if (lengthSums.size() > 1u)
     {
-        seqan::Pdf<seqan::Uniform<__int64> > pdf(0, lengthSums.back() - 1);
-        __int64 x = pickRandomNumber(rng, pdf);
+        seqan::Pdf<seqan::Uniform<int64_t> > pdf(0, lengthSums.back() - 1);
+        int64_t x = pickRandomNumber(rng, pdf);
         for (unsigned i = 0; i < lengthSums.size(); ++i)
         {
             if (x >= lengthSums[i])

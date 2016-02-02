@@ -369,6 +369,8 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
     for (unsigned i = 0; i < length(globalBreakpoints); ++i)
     {
         TBreakpoint & tempBP = globalBreakpoints[i];
+        // Added support check in 2phase breakpoint extraction adaption (but only for bp, not be...)
+        //if (tempBP.svtype != 0) // 0=invalid
         if (tempBP.svtype != 0 && tempBP.support >= msplazerOptions.support) // 0=invalid
         {
             if (tempBP.svtype == TBreakpoint::DISPDUPLICATION && tempBP.translSuppStartPos && tempBP.translSuppEndPos)
@@ -1022,14 +1024,14 @@ void _fillVcfHeader(seqan::VcfHeader & vcfHeader,
 }
 
 template <typename TId>
-__int32 _getrID(StringSet<TId> & databaseIDs, TId dbID)
+int32_t _getrID(StringSet<TId> & databaseIDs, TId dbID)
 {
     for (unsigned i = 0; i < length(databaseIDs); ++i)
     {
         TId sID;
 	_getShortId(sID, databaseIDs[i]);
         if (sID == dbID)
-            return static_cast<__int32>(i);
+            return static_cast<int32_t>(i);
     }
     return maxValue<int>();
 }
@@ -1069,7 +1071,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
     }
 
     VcfRecord vcf_record;
-    __int32 id = maxValue<int>();
+    int32_t id = maxValue<int>();
     for (unsigned i = 0; i < length(globalBreakpoints); ++i)
     {
         TBreakpoint & bp = globalBreakpoints[i];
@@ -1096,7 +1098,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
             } else
             {
                 // extra write function because we have to write 6 records here instead of 1
-                __int32 id2 = maxValue<int>();
+                int32_t id2 = maxValue<int>();
                 id2 = _getrID(databaseIDs, bp.endSeqId);
                 if (_writeVcfTranslocation(vcfOut, bp, databases[id], databases[id2], id, id2, i))
                         std::cerr << "Error while writing breakpoint translocation vcf record!" << std::endl;
