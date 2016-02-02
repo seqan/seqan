@@ -21,15 +21,16 @@ The licenses for the applications themselves can be found in the LICENSE files.
 Prerequisites
 -------------------
 
-The library is tested on the following compilers:
-  * GCC >= 4.9 (e.g. Debian stable/jessie)
-  * Clang >= 3.5 (e.g. Xcode >= 6)
-  * Visual C++ 14 (2015)
+Linux, Mac OSX, FreeBSD:
+  * GCC ≥ 4.9
+  * LLVM / Clang ≥ 3.5
+Windows:
+  * Visual C++ ≥ 14.0 / Visual Studio ≥ 2015
 
-All operating systems supported by the respective compilers should work with SeqAn. We test on 32-bit and 64-bit Intel/AMD architectures.
+We test on 32-bit and 64-bit Intel/AMD architectures, although we highly recommend 64-bit platforms.
 
 To build tests, demos, and official SeqAn applications you also need:
-  * CMake >= 3.0.0 (http://cmake.org/)
+  * CMake ≥ 3.0 (http://cmake.org/)
 
 Some of the official applications might have additional requirements or work only on a subset of platforms.
 
