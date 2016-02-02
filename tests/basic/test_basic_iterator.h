@@ -160,39 +160,6 @@ void resetCDStructStatics()
 // ==========================================================================
 
 // --------------------------------------------------------------------------
-// Pointer adaptions to test the positional iterator.
-// --------------------------------------------------------------------------
-
-template <typename TValue, typename TPos>
-inline TValue &
-value(TValue * me,
-      TPos pos)
-{
-    SEQAN_CHECKPOINT;
-    return me[pos];
-}
-
-template <typename TValue, typename TValue2, typename TPos>
-inline void
-assignValue(TValue * me,
-            TPos pos,
-            TValue2 const & _value)
-{
-    SEQAN_CHECKPOINT;
-    seqan::assign(value(me, pos), _value);
-}
-
-template <typename TValue, typename TValue2, typename TPos>
-inline void
-moveValue(TValue * me,
-          TPos pos,
-          TValue2 const & _value)
-{
-    SEQAN_CHECKPOINT;
-    move(value(me, pos), _value);
-}
-
-// --------------------------------------------------------------------------
 // Tests for Pointer Adaption to Iterator Concept
 // --------------------------------------------------------------------------
 
@@ -1029,6 +996,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_transport_value)
         resetCDStructStatics();
 
         TIterator it(&values[0], 0);
+        
         assignValue(it, values[2]);
 
         SEQAN_ASSERT_EQ(it->copiedFrom, -1);
