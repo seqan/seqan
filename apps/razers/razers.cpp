@@ -87,7 +87,7 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
     {
         if(options._debugLevel >=1)
             cout << endl << "Reading multiple genome files:" <<endl;
-        
+
         unsigned i = 1;
         CharString line;
         while(!atEnd(reader))
@@ -121,16 +121,16 @@ int mapReads(
     StringSet<CharString>    genomeNames;    // genome names, taken from the Fasta file
     StringSet<CharString>    readNames;        // read names, taken from the Fasta file
     TMatches                matches;        // resulting forward/reverse matches
-    String<String<unsigned short> >     stats;        // needed for mapping quality calculation 
+    String<String<unsigned short> >     stats;        // needed for mapping quality calculation
 
     // dump configuration in verbose mode
-    if (options._debugLevel >= 1) 
+    if (options._debugLevel >= 1)
     {
         CharString bitmap;
         Shape<Dna, GenericShape> shape;
         stringToShape(shape, options.shape);
         shapeToString(bitmap, shape);
-        
+
         cerr << "___SETTINGS____________" << endl;
         cerr << "Genome file:                     \t" << genomeFileNames[0] << endl;
         if (length(readFileNames) > 1u && empty(readFileNames[1]))
@@ -155,7 +155,7 @@ int mapReads(
         cerr << "Taboo length:                    \t" << options.tabooLength << endl;
         cerr << endl;
     }
-    
+
     // circumvent numerical obstacles
     options.errorRate += 0.0000001;
 
@@ -180,7 +180,7 @@ int mapReads(
             cerr << "Failed to load reads" << endl;
             return RAZERS_READS_FAILED;
         }
-    } 
+    }
 
     if (options._debugLevel >= 1) cerr << lengthSum(readSet) << " bps of " << length(readSet) << " reads loaded." << endl;
     options.timeLoadFiles = SEQAN_PROTIMEDIFF(load_time);
@@ -214,7 +214,7 @@ int mapReads(
             case RAZERS_GENOME_FAILED:
                 cerr << "Failed to load genomes" << endl;
                 break;
-            
+
             case RAZERS_INVALID_SHAPE:
                 cerr << "Invalid Shape" << endl;
                 break;
@@ -363,7 +363,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     setMinValue(parser, "max-distance", "0"));
     setDefaultValue(parser, "max-distance", options.maxDistance));
 #endif
-    
+
     addOption(parser, ArgParseOption("mcl", "min-clipped-len", "Set minimal read length for read clipping.", ArgParseOption::INTEGER));
     setMinValue(parser, "min-clipped-len", "0");
     setDefaultValue(parser, "min-clipped-len", options.minClippedLen);
@@ -373,7 +373,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
 //    addOption(parser, CommandLineOption("sm", "spliced-mapping",   "min. match length for prefix/suffix alignment strategy", OptionType::Int | OptionType::Label, options.minMatchLen));
 //    addOption(parser, CommandLineOption("maxD", "max-distance",    "max distance of pref/suff match", OptionType::Int | OptionType::Label, options.maxDistance));
 //#endif
-//    
+//
 //    addOption(parser, CommandLineOption("mcl", "min-clipped-len",  "min. read length for read clipping", OptionType::Int | OptionType::Label, options.minClippedLen));
 //    addOption(parser, CommandLineOption("qih", "quality-in-header","quality string in fasta header", OptionType::Boolean));
 //
@@ -552,7 +552,7 @@ extractOptions(
                     stop = true;
                     i = length(options.shape);
             }
-        if ((ones == 0 || ones > 31) && !stop) 
+        if ((ones == 0 || ones > 31) && !stop)
         {
             cerr << "Invalid Shape" << endl;
             stop = true;
@@ -581,7 +581,7 @@ extractOptions(
 
 //////////////////////////////////////////////////////////////////////////////
 // Command line parsing and parameter choosing
-int main(int argc, const char *argv[]) 
+int main(int argc, const char *argv[])
 {
     RazerSOptions<>            options;
     ParamChooserOptions        pm_options;
@@ -593,7 +593,7 @@ int main(int argc, const char *argv[])
     // Change defaults
     options.forward = false;
     options.reverse = false;
-    
+
     // Set up command line parser.
     ArgumentParser argParser;
     setUpArgumentParser(argParser, options, pm_options);
@@ -643,7 +643,7 @@ int main(int argc, const char *argv[])
 
     if (options.trimLength > readLength)
         options.trimLength = readLength;
-        
+
 #ifndef NO_PARAM_CHOOSER
     if (!(isSet(argParser, "shape") || isSet(argParser, "threshold")))
     {
@@ -676,7 +676,7 @@ int main(int argc, const char *argv[])
                 cerr << "___PARAMETER_CHOOSING__" << endl;
             if (!chooseParams(options,pm_options))
             {
-                if (pm_options.verbose) 
+                if (pm_options.verbose)
                     cerr << "Couldn't find preprocessed parameter files. Please configure manually (options --shape and --threshold)." << endl;
                 cerr << "Using default configurations (shape = " << options.shape << " and q-gram lemma)." << endl;
             }
@@ -688,7 +688,7 @@ int main(int argc, const char *argv[])
             return RAZERS_READS_FAILED;
         }
     }
-#endif    
+#endif
 
 #ifdef RAZERS_PARALLEL
     tbb::task_scheduler_init scheduler;
