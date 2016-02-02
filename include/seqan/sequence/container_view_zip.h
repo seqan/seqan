@@ -277,13 +277,6 @@ struct Iterator<ContainerView<std::tuple<TContTypes...>, ZipContainer<TSpec> > c
  */
 
 // Helper function to create zipped view from container pack.
-template <typename... TContTypes, typename TSpec>
-inline ContainerView<std::tuple<typename std::remove_reference<TContTypes>::type...>, ZipContainer<TSpec> >
-makeZipView(TContTypes && ...contArgs,
-            TSpec const)
-{
-    return ContainerView<std::tuple<typename std::remove_reference<TContTypes>::type...>, ZipContainer<TSpec> >(std::forward<TContTypes>(contArgs)...);
-}
 
 template <typename... TContTypes>
 inline ContainerView<std::tuple<typename std::remove_reference<TContTypes>::type...>, ZipContainer<> >

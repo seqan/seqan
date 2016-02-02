@@ -44,7 +44,7 @@ int main()
 {
     std::vector<int> vec = {10, 12, 14};
     DnaString str = "AGT";
-    std::array<float, 3> arr = { {3.14, 2.71, 1.41} };
+    std::array<double, 3> arr = { {3.14, 2.71, 1.41} };
 
     auto zipCont = makeZipView(vec, str, infix(str, 0, 3), arr, reverseString(str));
 
