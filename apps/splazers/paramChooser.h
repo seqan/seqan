@@ -632,7 +632,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
 	//StringSet<Dna5String> testReads;
 	StringSet<CharString> dummyIDs;
 	resize(testGenome, 1);
-    std::mt19937 rng(/*seed=*/time(NULL));
+	std::mt19937 rng(/*seed=*/time(NULL));
 	simulateGenome(rng, testGenome[0], 500000);					// generate 1Mbp genomic sequence
 	simulateReads(rng,
 		testReads, dummyIDs, testGenome, 
