@@ -131,14 +131,14 @@ bool loadReads(
     if (!success)
         return false;
 
-	CharString fastaId[2];
-	String<Dna5Q> seq[2];
-	CharString qual[2];
-	
-	unsigned kickoutcount = 0;
-	unsigned maxReadLength = 0;
-	while (!atEnd(leftMates) && !atEnd(rightMates))
-	{
+    CharString fastaId[2];
+    String<Dna5Q> seq[2];
+    CharString qual[2];
+
+    unsigned kickoutcount = 0;
+    unsigned maxReadLength = 0;
+    while (!atEnd(leftMates) && !atEnd(rightMates))
+    {
         readRecord(fastaId[0], seq[0], qual[0], leftMates);         // read Fasta id, sequence and qualities
         readRecord(fastaId[1], seq[1], qual[1], rightMates);        // read Fasta id, sequence and qualities
 

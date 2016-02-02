@@ -362,7 +362,9 @@ getGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
 
         for(int i = 0; i < ((int) itGaps->gapPos - (int) itGaps->seqPos) - diff; ++i)
             appendValue(gappedConsensus, gapChar, Generous());
-            diff = (itGaps->gapPos - itGaps->seqPos);
+        //NOTE(h-2): the next line was previously indented although it belonged to the for loop
+        //           in case of unexpected behaviour, enclose these statements in {}
+        diff = (itGaps->gapPos - itGaps->seqPos);
     }
     for(;seqContigIt != seqContigItEnd; ++seqContigIt)
         appendValue(gappedConsensus, *seqContigIt, Generous());
