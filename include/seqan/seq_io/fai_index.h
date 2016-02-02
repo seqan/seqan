@@ -324,7 +324,7 @@ inline void readRegion(String<TValue, TSpec> & str,
     beginPos = std::min((TEndPos)beginPos, seqLen);
     endPos = std::min(std::max((TEndPos)beginPos, endPos), seqLen);
     TEndPos toRead = endPos - beginPos;
-    
+
     clear(str);
     if (toRead == 0)
         return;
@@ -597,7 +597,7 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
                             CountFunctor<True>,                             // 1st count functor counts bytes
                             CountFunctor<NotFunctor<IsWhitespace> >         // 2nd count functor counts non-whitespaces
                          > > countCharsPerLine;
-    
+
     while (!atEnd(iter) && !TFastaBegin()(value(iter)))
     {
         // check for consistency

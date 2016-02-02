@@ -137,6 +137,7 @@ longestIncreasingSubsequence(TString const& str, TPositions& pos) {
     // Walk through the sequence and build the decreasing covers
     typedef typename Iterator<TString const, Rooted>::Type TStringIter;
     TStringIter endIt = end(str);
+
     for(TStringIter it = begin(str); it != endIt; ++it) {
         // Get previous element
         TSortedSequenceIter a_k_it = _previousInSortedSequence(list, std::make_pair(*it, 0));
