@@ -38,9 +38,9 @@ Note that tags are final and a new tag has to be created if any code is to be ch
 User Perspective
 ~~~~~~~~~~~~~~~~
 
-The user can clone either the ``master`` or the ``develop`` branch or any tagged version (e.g. ``yara-v0.9.0`` or ``seqan-v1.4.2``) to his local computer. 
-The user could then proceed as the developer (see below) but there are dedicated modes in the SeqAn build system for easier installation. 
-A user might also want to install the library to an include folder. 
+The user can clone either the ``master`` or the ``develop`` branch or any tagged version (e.g. ``yara-v0.9.0`` or ``seqan-v1.4.2``) to his local computer.
+The user could then proceed as the developer (see below) but there are dedicated modes in the SeqAn build system for easier installation.
+A user might also want to install the library to an include folder.
 We will look at both use cases.
 
 User App Installation
@@ -63,12 +63,12 @@ Here is an example for the application Razers 3.
     release-razers3 # make install
 
 .. hint::
-    
-    
+
+
 	The user can of course install any tagged version by using the command
-	
+
 	.. code-block:: console
-	    
+
 	    # git clone -b <tag> https://github.com/seqan/seqan tag-src
 
 After executing this, the user will find the following structure in ``~/local/bin/razers3``, including the example files and documentation.
@@ -90,7 +90,7 @@ User Library Installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The user could also want to install the library headers only.
-The checkout step is the same as above, but he has to create a new build directory and execute CMake with different parameters. 
+The checkout step is the same as above, but he has to create a new build directory and execute CMake with different parameters.
 The library will be installed to ``~/local/seqan``.
 
 .. code-block:: console
@@ -183,7 +183,7 @@ The packages have the following structure:
     yara-0.9.2-Linux-x86_64/bin/yara_indexer
     yara-0.9.2-Linux-x86_64/LICENSE
     yara-0.9.2-Linux-x86_64/README.rst
-    
+
 
 Packaging Library Releases
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -238,12 +238,6 @@ Let us look at the contents of one (they all contain the same files):
     drwxrwxr-x root/root         0 2012-11-20 13:57 ./usr/include/seqan/statistics/
     -rw-r--r-- root/root     24044 2012-11-06 13:28 ./usr/include/seqan/statistics/statistics_markov_model.h
     -rw-r--r-- root/root     15533 2012-11-06 13:28 ./usr/include/seqan/statistics/statistics_base.h
-    drwxrwxr-x root/root         0 2012-11-20 13:57 ./usr/include/seqan/random/
-    -rw-r--r-- root/root     15590 2012-11-06 13:28 ./usr/include/seqan/random/ext_MersenneTwister.h
-    -rw-r--r-- root/root      4767 2012-11-06 13:28 ./usr/include/seqan/random/random_rng_functor.h
-    -rw-r--r-- root/root      5810 2012-11-06 13:28 ./usr/include/seqan/random/random_uniform.h
-    -rw-r--r-- root/root      4796 2012-11-06 13:28 ./usr/include/seqan/random/random_normal.h
-    -rw-r--r-- root/root      3879 2012-11-06 13:28 ./usr/include/seqan/random/random_shuffle.h
     ...
 
 Packaging All Apps
@@ -348,14 +342,14 @@ SeqAn Developer Perspective
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 SeqAn developers want to develop their own applications using SeqAn.
-When they want to use the SeqAn build system, they can follow these 
-instructions to (1) fork the application template from github, 
+When they want to use the SeqAn build system, they can follow these
+instructions to (1) fork the application template from github,
 (2) setup their apps, and (3) create releases of the applications.
 
 Getting the Template
 ^^^^^^^^^^^^^^^^^^^^
 
-Getting the application template can be achieved by forking the project ``https://github.com/seqan/APP_TEMPLATE.git``. 
+Getting the application template can be achieved by forking the project ``https://github.com/seqan/APP_TEMPLATE.git``.
 This repository contains a template structure for the application containing all necessary files and a starting point from which to begin the development.
 One of the files already present is the template repository is the ``CMakeLists.txt`` file.
 Since you will have to adjust the file to your project, let us have a look at the file in detail.
@@ -506,11 +500,11 @@ Finally, we configure the application packaging system for building individual a
 
     If you use the markdown feature for your ``README`` with the file ending ``*.rst``, then you need to explicitly tell **CPack**, which the correct README file is.
     You can do this by adding the following line to the **CPack Install** section.
-    
+
     .. code-block:: console
-        
+
         set (CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.rst")
-        
+
     Also make sure to replace all occurrences of ``README`` with ``README.rst`` in the **INSTALLATION** section.
 
 Building Apps
@@ -527,8 +521,8 @@ repository. Let us say that we want to build the app
     release # cmake ../../seqan-src
     release # make my_app
 
-Note that the default build type is the release mode. 
-The binaries will be built with optimization and without debug symbols. 
+Note that the default build type is the release mode.
+The binaries will be built with optimization and without debug symbols.
 To build apps with debug symbols and without optimization with Makefiles, use the CMake paraemter ``-DCMAKE_BUILD_TYPE=Debug``.
 When using IDE files such as for Xcode, you can select the optimization state from within the IDE.
 
@@ -543,12 +537,12 @@ When using IDE files such as for Xcode, you can select the optimization state fr
 Windows Notes
 ~~~~~~~~~~~~~
 
-The descriptions above apply to Linux/Mac systems. 
+The descriptions above apply to Linux/Mac systems.
 On Windows we can use the GitHub client which can be downloaded `here <https://windows.github.com>`_.
 Following the installation instructions will install a GitHub GUI client to manage your repository and a command line tool called ``Git Shell`` which emulates a unix like system so we can use the same commands as described before.
 
-However, the main difference is that when building with the Visual Studio tools, one does not use ``make`` for building applications. 
-When developing, users can simply open the generated Visual Studio ``*.sln`` solution files and then use Visual Studio for building the applications. 
+However, the main difference is that when building with the Visual Studio tools, one does not use ``make`` for building applications.
+When developing, users can simply open the generated Visual Studio ``*.sln`` solution files and then use Visual Studio for building the applications.
 When packaging, users can use the ``msbuild`` command as described below.
 
 As an example, we adapt the description of creating an SeqAn application release on Windows.
@@ -563,7 +557,7 @@ The next steps are typed into the Command Prompt (``Start > All Programs > GitHu
 
 You can then open the generated ``seqan.sln`` file in ``C:\seqan-build`` with Visual Studio and build the packages from there.
 
-Alternatively, ``msbuild`` can be used. 
+Alternatively, ``msbuild`` can be used.
 This program is only available when using the Visual Studio Command Prompt.
 For Visual Studio 2010, you can start it through the start menu as follows:
 ``Start > Programs > Microsoft Visual Studio 2010 > Visual Studio Tools > Visual Studio Command Prompt 2010``.
