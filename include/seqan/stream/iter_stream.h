@@ -102,13 +102,13 @@ public:
     template <typename TOffset>
     void advanceChunk(TOffset ofs, Input)
     {
-        this->gbump(ofs);
+        this->gbump(static_cast<int>(ofs));
     }
 
     template <typename TOffset>
     void advanceChunk(TOffset ofs, Output)
     {
-        this->pbump(ofs);
+        this->pbump(static_cast<int>(ofs));
     }
 
     void reserveChunk(Input)

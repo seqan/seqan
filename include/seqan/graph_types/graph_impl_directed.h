@@ -594,7 +594,7 @@ addEdge(Graph<Directed<TCargo, TSpec> > & g,
 
     typedef Graph<Directed<TCargo, TSpec> > TGraph;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
-    typedef typename Id<TGraph>::Type TId;
+    typedef typename Value<typename TGraph::TEdgeIdManager_>::Type TId;
 
     TEdgeStump* edge_ptr;
     allocate(g.data_allocator, edge_ptr, 1);

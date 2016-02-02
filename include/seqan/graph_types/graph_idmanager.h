@@ -282,7 +282,7 @@ getIdLowerBound(IdManager<TIdType, TSpec> const& idm)
  */
 
 template<typename TIdType, typename TSpec>
-inline typename Value<IdManager<TIdType, TSpec> >::Type
+inline typename Size<IdManager<TIdType, TSpec> >::Type
 idCount(IdManager<TIdType, TSpec> const& idm)
 {
     return (length(idm.data_in_use) - length(idm.data_freeIds));
