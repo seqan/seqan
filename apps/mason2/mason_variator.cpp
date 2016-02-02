@@ -40,9 +40,9 @@
 // TODO(holtgrew): Currently, there only is support for left-to-right translocations.
 // TODO(holtgrew): Allow inversion in translocation.
 // TODO(holtgrew): Simulate different SNPs/small variations for duplications, input for repeat separation.
+#include <random>
 
 #include <seqan/arg_parse.h>
-#include <seqan/random.h>
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 #include <seqan/vcf_io.h>
@@ -61,7 +61,7 @@
 // Classes
 // ==========================================================================
 
-typedef seqan::Rng<> TRng;
+typedef std::mt19937 TRng;
 typedef seqan::JournalEntries<seqan::JournalEntry<unsigned, int>, seqan::SortedArray> TJournalEntries;
 
 // --------------------------------------------------------------------------
@@ -273,7 +273,8 @@ public:
 
         for (unsigned i = 0; i < length(variationSizeRecords); ++i)
         {
-            int64_t x = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int64_t> >(0, lengthSum - 1));
+            std::uniform_int_distribution<int64_t> dist(0, lengthSum - 1);
+            int64_t x = dist(rng);
             if (options.verbosity >= 3)
                 std::cerr << "  x == " << x << "\n";
             for (unsigned j = 0; j + 1 < length(limits); ++j)
@@ -321,7 +322,8 @@ public:
             int tries = 0;
             for (; tries < MAX_TRIES; ++tries)
             {
-                int pos = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, length(seq) - 1));
+                std::uniform_int_distribution<int> dist(0, length(seq) - 1);
+                int pos = dist(rng);
 
                 switch (record.kind)
                 {
@@ -408,29 +410,31 @@ public:
         // For each base, compute the whether to simulate a SNP and/or small indel.
         for (unsigned pos = 0; pos < length(seq); ++pos)
         {
-            seqan::Pdf<seqan::Uniform<double> > pdf(0, 1);
+            std::uniform_real_distribution<double> dist(0,1);
 
             // Pick variant type if any.
-            bool isIndel = (pickRandomNumber(rng, pdf) < options.svIndelRate);
-            bool isInversion = (pickRandomNumber(rng, pdf) < options.svInversionRate);
-            bool isTranslocation = (pickRandomNumber(rng, pdf) < options.svTranslocationRate);
-            bool isDuplication = (pickRandomNumber(rng, pdf) < options.svDuplicationRate);
+            bool isIndel = (dist(rng) < options.svIndelRate);
+            bool isInversion = (dist(rng) < options.svInversionRate);
+            bool isTranslocation = (dist(rng) < options.svTranslocationRate);
+            bool isDuplication = (dist(rng) < options.svDuplicationRate);
             while (isIndel + isInversion + isTranslocation + isDuplication > 1)
             {
-                isIndel = (pickRandomNumber(rng, pdf) < options.svIndelRate);
-                isInversion = (pickRandomNumber(rng, pdf) < options.svInversionRate);
-                isTranslocation = (pickRandomNumber(rng, pdf) < options.svTranslocationRate);
-                isDuplication = (pickRandomNumber(rng, pdf) < options.svDuplicationRate);
+                isIndel = (dist(rng) < options.svIndelRate);
+                isInversion = (dist(rng) < options.svInversionRate);
+                isTranslocation = (dist(rng) < options.svTranslocationRate);
+                isDuplication = (dist(rng) < options.svDuplicationRate);
             }
             if (!isIndel && !isInversion && !isTranslocation && !isDuplication)
                 continue;  // no variant picked
 
-            int size = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(options.minSVSize,
-                                                                              options.maxSVSize));
+            std::uniform_int_distribution<int> distSize(options.minSVSize, options.maxSVSize);
+            int size = distSize(rng);
+
             if (isIndel)
             {
-                if (pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, 1)))
-                    size = -size;
+                std::uniform_int_distribution<int> distNegateSize(0, 1);
+                if (distNegateSize(rng))
+                    size = -std::min(size, static_cast<int>(pos));  // The deletion can not be larger than the current position, as it is modeled as the end of the deletion.
                 if (!simulateSVIndel(variants, haploCount, rId, pos, size, seq))
                     continue;
                 if (back(variants.svRecords).size < 0)
@@ -472,7 +476,8 @@ public:
         if (isNearN(seq, pos))
             return false;  // do not allow insertion into gap
 
-        int hId = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, haploCount - 1));
+        std::uniform_int_distribution<int> distHaplo(0, haploCount - 1);
+        int hId = distHaplo(rng);
         appendValue(variants.svRecords, StructuralVariantRecord(
                 StructuralVariantRecord::INDEL, hId, rId, pos, size));
         back(variants.svRecords).seq = indelSeq;
@@ -502,9 +507,9 @@ public:
             return false;  // do not allow deletion to overlap with gap
         else if (!deletion && isNearN(seq, pos))
             return false;  // do not allow insertion into gap
-        seqan::Pdf<seqan::Uniform<int> > pdf(0, 3);
+        std::uniform_int_distribution<int> dist(0, 3);
         for (int i = 0; i < size; ++i)  // not executed in case of deleted sequence
-            appendValue(indelSeq, seqan::Dna5(pickRandomNumber(rng, pdf)));
+            appendValue(indelSeq, seqan::Dna5(dist(rng)));
 
         return simulateSVIndel(variants, haploCount, rId, pos, size, seq, indelSeq);
     }
@@ -516,7 +521,8 @@ public:
             return false;
         if (overlapsWithN(seq, pos, pos + size))
             return false;  // do not allow segment to overlap with stretch
-        int hId = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, haploCount - 1));
+        std::uniform_int_distribution<int> distHaplo(0, haploCount - 1);
+        int hId = distHaplo(rng);
         appendValue(variants.svRecords, StructuralVariantRecord(
                 StructuralVariantRecord::INVERSION, hId, rId, pos, size));
         if (options.genVarIDs)
@@ -533,9 +539,11 @@ public:
     bool simulateTranslocation(Variants & variants, int haploCount, int rId, unsigned pos, int size,
                                seqan::CharString const & seq)
     {
-        int hId = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, haploCount - 1));
-        int tPos = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(pos + size + options.minSVSize,
-                                                                          pos + size + options.maxSVSize));
+        std::uniform_int_distribution<int> distHaplo(0, haploCount - 1);
+        std::uniform_int_distribution<int> distPos(pos + size + options.minSVSize,
+                                                   pos + size + options.maxSVSize);
+        int hId = distHaplo(rng);
+        int tPos = distPos(rng);
         if (tPos >= (int)sequenceLength(faiIndex, rId))
             return false;
         if (overlapsWithN(seq, pos, pos + size) || isNearN(seq, tPos))
@@ -644,17 +652,17 @@ public:
                 continue;
             }
 
-            seqan::Pdf<seqan::Uniform<double> > pdf(0, 1);
+            std::uniform_real_distribution<double> dist(0, 1);
 
             // Perform experiment for SNP and small indel.
-            bool isSnp = (pickRandomNumber(rng, pdf) < options.snpRate);
-            bool isIndel = (pickRandomNumber(rng, pdf) < options.smallIndelRate);
+            bool isSnp = (dist(rng) < options.snpRate);
+            bool isIndel = (dist(rng) < options.smallIndelRate);
             int const MAX_TRIES = 1000;
             int tryNo = 0;
             for (; isSnp && isIndel && (tryNo < MAX_TRIES); ++tryNo)
             {
-                isSnp = (pickRandomNumber(rng, pdf) < options.snpRate);
-                isIndel = (pickRandomNumber(rng, pdf) < options.smallIndelRate);
+                isSnp = (dist(rng) < options.snpRate);
+                isIndel = (dist(rng) < options.smallIndelRate);
                 if (pos == 0)
                     isIndel = false;  // No indel at beginning, complex VCF case.
             }
@@ -708,7 +716,8 @@ public:
         seqan::Dna5 from = seq[pos];
         for (int hId = 0; hId < haploCount; ++hId)
         {
-            int toInt = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, 2));
+            std::uniform_int_distribution<int> dist(0, 2);
+            int toInt = dist(rng);
             if (ordValue(from) <= toInt)
                 toInt += 1;
             // std::cerr << hId << "\t" << rId << "\t" << pos << "\t" << from << "\t" << seqan::Dna5(toInt) << "\n";
@@ -724,12 +733,16 @@ public:
     bool simulateSmallIndel(Variants & variants, seqan::CharString & seq, int haploCount, int rId, unsigned pos)
     {
         // Indels are simulated for one haplotype only.
-        int hId = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, haploCount - 1));
+        std::uniform_int_distribution<int> distHaplo(0, haploCount - 1);
+        std::uniform_int_distribution<int> distSize(options.minSmallIndelSize,
+                                                    options.maxSmallIndelSize);
+        std::uniform_int_distribution<int> distDeletion(0, 1);
+        std::uniform_int_distribution<int> distDNA(0, 3);
+        int hId = distHaplo(rng);
         seqan::CharString indelSeq;
         reserve(indelSeq, options.maxSmallIndelSize);
-        int indelSize = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(options.minSmallIndelSize,
-                                                                               options.maxSmallIndelSize));
-        bool deletion = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, 1));
+        int indelSize = distSize(rng);
+        bool deletion = distDeletion(rng);
         if (deletion && (pos + indelSize) > sequenceLength(faiIndex, rId))
             return false;  // not enough space at the end
         if (deletion && overlapsWithN(seq, pos, pos + indelSize))
@@ -737,9 +750,8 @@ public:
         else if (!deletion && isNearN(seq, pos))
             return false;  // no insertion next to N
         indelSize = deletion ? -indelSize : indelSize;
-        seqan::Pdf<seqan::Uniform<int> > pdf(0, 3);
         for (int i = 0; i < indelSize; ++i)  // not executed in case of deleted sequence
-            appendValue(indelSeq, seqan::Dna5(pickRandomNumber(rng, pdf)));
+            appendValue(indelSeq, seqan::Dna5(distDNA(rng)));
         appendValue(variants.smallIndels, SmallIndelRecord(hId, rId, pos, indelSize, indelSeq));
         return true;
     }

@@ -34,8 +34,8 @@
 // Tests for the shuffle() function.
 // ==========================================================================
 
-#ifndef TEST_RANDOM_TEST_RANDOM_SHUFFLE_H_
-#define TEST_RANDOM_TEST_RANDOM_SHUFFLE_H_
+#ifndef TEST_RANDOM_TEST_RANDOM_UTIL_H_
+#define TEST_RANDOM_TEST_RANDOM_UTIL_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -45,7 +45,7 @@ SEQAN_DEFINE_TEST(test_random_shuffle)
 {
     using namespace seqan;
 
-    Rng<MersenneTwister> mt(0);
+    std::mt19937 mt(0);
     CharString container = "Hello!";
     CharString const before = container;
 
@@ -53,4 +53,25 @@ SEQAN_DEFINE_TEST(test_random_shuffle)
     SEQAN_ASSERT_NEQ(before, container);
 }
 
-#endif  // TEST_RANDOM_TEST_RANDOM_SHUFFLE_H_
+SEQAN_DEFINE_TEST(test_random_cvt_beta_param)
+{
+    using namespace seqan;
+
+    using TParam = BetaDistribution<double>::param_type;
+    TParam p = cvtBetaDistParam(0.3, 0.2);
+    SEQAN_ASSERT_IN_DELTA(p.alpha(), 1.275, 0.01);
+    SEQAN_ASSERT_IN_DELTA(p.beta(), 2.975, 0.01);
+}
+
+SEQAN_DEFINE_TEST(test_random_cvt_lognormal_param)
+{
+    using namespace seqan;
+
+    using TParam = std::lognormal_distribution<double>::param_type;
+
+    TParam p = cvtLogNormalDistParam(1.0, 1.0);
+    SEQAN_ASSERT_IN_DELTA(p.m(), -0.346574, 0.01);
+    SEQAN_ASSERT_IN_DELTA(p.s(), 0.832555, 0.01);
+}
+
+#endif  // TEST_RANDOM_TEST_RANDOM_UTIL_H_

@@ -1,5 +1,5 @@
 // ==========================================================================
-//                         Mason - A Read Simulator
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -31,50 +31,29 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Common typedefs for Mason plus Exceptions.
+// Tests for the random number generation code in seqan/random.
 // ==========================================================================
 
-#ifndef APPS_MASON2_MASON_TYPES_H_
-#define APPS_MASON2_MASON_TYPES_H_
+#ifndef TEST_RANDOM_TEST_RANDOM_BASIC_H_
+#define TEST_RANDOM_TEST_RANDOM_BASIC_H_
 
-#include <stdexcept>
-#include <random>
-
-// ============================================================================
-// Forwards
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Typedef TRng
-// ----------------------------------------------------------------------------
-
-// We use the Mersenne Twister 19937 from the standard library in mason.
-
-typedef std::mt19937 TRng;
-
-// ============================================================================
-// Tags, Classes, Enums
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Class MasonIOException
-// ----------------------------------------------------------------------------
-
-// Thrown in case of I/O errors.
-
-class MasonIOException : public std::runtime_error
+// Test GetDefaultRang and defaultRng().
+SEQAN_DEFINE_TEST(test_default_rng)
 {
-public:
-    explicit MasonIOException(const std::string & whatArg) : std::runtime_error(whatArg)
-    {}
-};
+    using namespace seqan;
 
-// ============================================================================
-// Metafunctions
-// ============================================================================
+    // Test that calling the function works.
+    typedef String<Dna> TTag;
+    typedef typename GetDefaultRng<TTag>::Type TRng;
+    TRng & rng = defaultRng(TTag());
+    (void)rng;
 
-// ============================================================================
-// Functions
-// ============================================================================
+    // Test that a reference is returned and the global state changes.
+    typedef typename TRng::result_type TValue;
+    TValue x1 = defaultRng(TTag())();
+    TValue x2 = defaultRng(TTag())();
+    TValue x3 = defaultRng(TTag())();
+    SEQAN_ASSERT(x1 != x2 || x2 != x3);  // 3 times the same value is not probable!
+}
 
-#endif  // #ifndef APPS_MASON2_MASON_TYPES_H_
+#endif  // TEST_RANDOM_TEST_RANDOM_BASIC_H_

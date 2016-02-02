@@ -30,12 +30,13 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-// Shuffling.
+// Shuffling and conversion
 // ==========================================================================
 
-#ifndef SEQAN_RANDOM_RANDOM_SHUFFLE_H_
-#define SEQAN_RANDOM_RANDOM_SHUFFLE_H_
+#ifndef INCLUDE_SEQAN_RANDOM_RANDOM_UTIL_H_
+#define INCLUDE_SEQAN_RANDOM_RANDOM_UTIL_H_
 
 namespace seqan {
 
@@ -75,8 +76,8 @@ void shuffle(TContainer & container, TRNG & rng)
 
     TValue tmp;
     for (TPosition i = 0, iend = length(container); i < iend; ++i) {
-        Pdf<Uniform<TPosition> > uniformDist(i, iend - 1);
-        TPosition j = pickRandomNumber(rng, uniformDist);
+        std::uniform_int_distribution<TPosition> uniformDist(i, iend - 1);
+        TPosition j = uniformDist(rng);
         // swap
         move(tmp, container[i]);
         move(container[i], container[j]);
@@ -84,6 +85,50 @@ void shuffle(TContainer & container, TRNG & rng)
     }
 }
 
+/*!
+ * @fn calcBetaDistParam
+ * @headerfile <seqan/random.h>
+ * @brief Computes alpha and beta paramters for the beta distribution from mean and stddev of the underlying distribution.
+ *
+ * @signature param cvtBetaDistParam(mean, stddev);
+ *
+ * @param[in] mean   The mean of the underlying distribution.
+ * @param[in] stddev The standard deviation of the underlying distribution.
+ *
+ * @return param The distribution specific paramter of type <tt> typename beta_distribution::param_type </tt>.
+ */
+
+template<typename TRealType>
+auto cvtBetaDistParam(TRealType const & mean, TRealType const & stddev)
+    -> typename BetaDistribution<TRealType>::param_type
+{
+    using TParamType = typename BetaDistribution<TRealType>::param_type;
+    return TParamType((((1 - mean) / stddev / stddev - 1 / mean) * mean * mean), ((((1 - mean) / stddev / stddev - 1 / mean) * mean * mean) * (1 / mean - 1)));
+}
+
+/*!
+ * @fn calcLogNormalDistParam
+ * @headerfile <seqan/random.h>
+ * @brief Computes <tt>m</tt> and <tt>s</tt> paramters for the lognormal distribution from mean and stddev of the underlying distribution.
+ *
+ * @signature param cvtLogNormalDistParam(mean, stddev);
+ *
+ * @param[in] mean   The mean of the underlying distribution.
+ * @param[in] stddev The standard deviation of the underlying distribution.
+ *
+ * @return param The distribution specific paramter of type <tt> typename lognormal_distribution::param_type </tt>.
+ *
+ */
+// compute paramters m and s for lognorm from mean and stddev.
+template<typename TRealType>
+auto cvtLogNormalDistParam(TRealType const & mean, TRealType const & stddev)
+    -> typename std::lognormal_distribution<TRealType>::param_type
+{
+    using TParamType = typename std::lognormal_distribution<TRealType>::param_type;
+    return TParamType(static_cast<TRealType>(std::log(mean) - 0.5 * std::log(1.0 + stddev * stddev / mean / mean)),
+                      static_cast<TRealType>(std::sqrt(std::log(1.0 + stddev * stddev / mean / mean))));
+}
+
 }  // namespace seqan
 
-#endif  // SEQAN_RANDOM_RANDOM_SHUFFLE_H_
+#endif  // INCLUDE_SEQAN_RANDOM_RANDOM_UTIL_H_

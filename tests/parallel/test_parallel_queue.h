@@ -37,6 +37,8 @@
 #ifndef TEST_PARALLEL_TEST_PARALLEL_QUEUE_H_
 #define TEST_PARALLEL_TEST_PARALLEL_QUEUE_H_
 
+#include <random>
+
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/parallel.h>
@@ -155,14 +157,14 @@ void testMPMCQueue(size_t initialCapacity)
 
     TQueue queue(initialCapacity);
     seqan::String<unsigned> random;
-    seqan::Rng<seqan::MersenneTwister> rng(0);
+    std::mt19937 rng(0);
 
     unsigned chkSum = 0;
 
     resize(random, 100000);
     for (unsigned i = 0; i < length(random); ++i)
     {
-        random[i] = pickRandomNumber(rng);
+        random[i] = rng();
 //        random[i] = i;
         chkSum ^= random[i];
     }
