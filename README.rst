@@ -25,7 +25,7 @@ Linux, Mac OSX, FreeBSD:
   * GCC ≥ 4.8
   * LLVM / Clang ≥ 3.4
 Windows:
-  * Visual C++ ≥ 16.0 / Visual Studio ≥ 2010
+  * Visual C++ ≥ 10.0 / Visual Studio ≥ 2010
 
 We test on 32-bit and 64-bit Intel/AMD architectures, although we highly recommend 64-bit platforms.
 
