@@ -63,7 +63,7 @@ struct StreamIterator {};
  * @headerfile <seqan/stream.h>
  * @brief Buffer to use in stream.
  *
- * @signature template <typename TValue[, typenam TTraits]>
+ * @signature template <typename TValue[, typename TTraits]>
  *            class StreamBuffer : public std::basic_streambuf<TValue, TTraits>;
  *
  * @tparam TValue  The value type of the stream buffer.

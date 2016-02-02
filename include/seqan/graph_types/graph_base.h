@@ -155,7 +155,7 @@ struct EdgeIdHandler;
 
 /*!
  * @mfn Graph#VertexIdHandler
- * @brief Type of an object that repreestns an IdManager.
+ * @brief Type of an object that represents an IdManager.
  *
  * @signature VertexIdHandler<T>::Type;
  *
