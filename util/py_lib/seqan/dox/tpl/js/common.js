@@ -25,31 +25,38 @@
         if(window != window.parent && window.name == 'list') {
             try {
                 var redirectTo = null;
-                var hash = $.urlHash(window.parent.location);
-                if($.urlParam('p', window.parent.location)) {
-                    var p = $.urlParam('p', window.parent.location).split('/')[0];
-                    if (p.indexOf('::') != -1)
-                    {
-                        var tmp = p;
-                        p = tmp.split('::')[0];
-                        hash = '::' + tmp.split('::')[1];
-                        console.log('p == ' + p + ' -- hash = ' + hash);
-                    }
-                    if(window.lookup.hasOwnProperty(p+hash)) { // eg. "enum_*.html"
-                        redirectTo = window.lookup[p+hash] + '.html';
-                    }
-                    else if(window.lookup.hasOwnProperty(p)) { // valid for entries in "class_*.html"
-                        redirectTo = window.lookup[p] + '.html#' + encodeURIComponent(p + hash);
+                var p = null;
+                var hash = null;
+
+                // from parameter p 
+                if($.urlParam('p',window.parent.location))
+                {
+                    p = decodeURIComponent($.urlParam('p',window.parent.location).split('/')[0]);
+                    if(window.lookup.hasOwnProperty(p)) { 
+                        var name = window.lookup[p];
+                        var splitPos = name.indexOf('_'); // first '_'
+                        var category = name.substr(0, splitPos);
+                        filename = $.encodeName(name.substr(splitPos+1, name.length-splitPos)); // encoding(just like python)
+                        redirectTo = category + "_" + filename + ".html";
                     } else {
                         $(window.parent['main'].document).find('#content').prepend('<div class="open-in-frame alert alert-danger">Could not find page for <strong>' + p + '</strong></div>'); 
                         // TODO: start search using search form for p
                     }
-                } else {
-                    if(hash.length > 1) {
-                        redirectTo = hash.substr(1) + '.html';
-                    }
                 }
 
+                // from hash (start with #) 
+                if($.urlHash(window.parent.location)) 
+                {
+                    hash = decodeURIComponent($.urlHash(window.parent.location));
+                    redirectTo += hash;
+                }
+
+                // exception
+                if( p == null && hash.length > 1)
+                    redirectTo = hash.substr(1) + '.html';
+
+                // move
+                console.log("p: " + p + ", hash: " + hash + ", redirectTo: " + redirectTo);
                 if(redirectTo) {
                     window.parent['main'].location = redirectTo;
                 }
@@ -107,6 +114,26 @@
             }
 		}
 	});
+})(jQuery);
+
+/**
+ * Encode html file name. 
+ * This function encodes html file names compliant with the write_html.py.
+ */
+(function ($) {
+    $.extend({
+        encodeName: function(name) {
+            var tmp = "";
+            for (var i = 0, len = name.length; i < len; i++) {           
+                if (name[i].match(/[0-9a-z]/i))
+                    tmp += name[i]
+                else
+                    tmp += '_' + name[i].charCodeAt(0);
+            }
+            // console.log('The encoded name: ' + tmp);
+            return tmp;
+        }
+    });
 })(jQuery);
 
 /**
