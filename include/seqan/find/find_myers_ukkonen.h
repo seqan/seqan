@@ -960,7 +960,7 @@ _myersGetBitmask(PatternState_<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP,
         return 0;
 
     if (IsSameType<TFinderCSP, NMatchesAll_>::VALUE && value == unknownValue<TValue>())
-        return (shift < BitsPerValue<TWord>::VALUE)? -1 << shift: -1;
+        return static_cast<TWord>((shift < BitsPerValue<TWord>::VALUE) ? (~0u << shift) : ~0u);
 
     unsigned ord = ordValue(value);
     TWord res;

@@ -546,17 +546,17 @@ int main(int argc, const char *argv[])
     for (unsigned i = 0; i < length(readFileNames); ++i)
         getArgumentValue(readFileNames[i], parser, 1, i);
 
-	if(length(readFileNames) == 2)
-		options.minMatchLen = 0;  //switch off split mapping if mate pairs are given
+    if(length(readFileNames) == 2)
+        options.minMatchLen = 0;  //switch off split mapping if mate pairs are given
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Check options
-	if ((options.outputFormat == 4 && options.minMatchLen == 0) && (stop = true))
-		cerr << "Invalid output format option. Note that SAM output is only available for split mapping." << endl;
-	if ((options.outputFormat > 4 && options.outputFormat != 33 ) && (stop = true))
-		cerr << "Invalid output format option." << endl;
-	if (isSet(parser, "shape"))
-	{
+    //////////////////////////////////////////////////////////////////////////////
+    // Check options
+    if ((options.outputFormat == 4 && options.minMatchLen == 0) && (stop = true))
+        cerr << "Invalid output format option. Note that SAM output is only available for split mapping." << endl;
+    if ((options.outputFormat > 4 && options.outputFormat != 33 ) && (stop = true))
+        cerr << "Invalid output format option." << endl;
+    if (isSet(parser, "shape"))
+    {
 		unsigned ones = 0;
 		unsigned zeros = 0;
 		for(unsigned i = 0; i < length(options.shape); ++i)
@@ -590,18 +590,17 @@ int main(int argc, const char *argv[])
 		options.thresholdR = options.threshold;
 
 	}
-	if (length(readFileNames) == 1 && !options.anchored)
-		options.libraryLength = -1;		// only 1 readset -> disable mate-pair mapping
+    if (length(readFileNames) == 1 && !options.anchored)
+        options.libraryLength = -1;		// only 1 readset -> disable mate-pair mapping
     if ((getArgumentValueCount(parser, 1) > maxReadFiles) && (stop = true))
-		cerr << "More than " << maxReadFiles << " read files specified." << endl;
+        cerr << "More than " << maxReadFiles << " read files specified." << endl;
     if ((getArgumentValueCount(parser, 1) == 0) && (stop = true))
         cerr << "No read files specified." << endl;
-	if ((options.minClippedLen < 0) && (stop = true))
-		cerr << "Min. clipped read length must be a value greater 0" << endl;
+    if ((options.minClippedLen < 0) && (stop = true))
+        cerr << "Min. clipped read length must be a value greater 0" << endl;
 
-
-	options.errorRate = (100.0 - options.errorRate) / 100.0;
-	pm_options.optionLossRate = (100.0 - pm_options.optionLossRate) / 100.0;
+    options.errorRate = (100.0 - options.errorRate) / 100.0;
+    pm_options.optionLossRate = (100.0 - pm_options.optionLossRate) / 100.0;
 	if (stop)
 	{
 		cerr << "Exiting ..." << endl;

@@ -210,15 +210,15 @@ createAnnoCountGFF(TFile & annoOutput, TAnnoCountStore & annoCountStore, TAnnoNo
 	for ( ; itCount != itCountEnd; goNext(itCount), goNext(itAnno), goNext(itNorm))
 	{
         if (getValue(itAnno).typeId != INVALID_ID)
-	        if (fragStore.annotationTypeStore[getValue(itAnno).typeId] == "<root>") continue;  
-		// contig-name
-		if (getValue(itAnno).contigId == INVALID_ID )
-			annoOutput << "INVALID_ID\t";
-		else
-			annoOutput << getValue(fragStore.contigNameStore, getValue(itAnno).contigId) << '\t';
-		annoOutput << "Annotation_Count\tregion\t";
-		// startposition endposition orientation . 
-		if (getValue(itAnno).beginPos == INVALID_POS)
+            if (fragStore.annotationTypeStore[getValue(itAnno).typeId] == "<root>") continue;
+        // contig-name
+        if (getValue(itAnno).contigId == INVALID_ID )
+            annoOutput << "INVALID_ID\t";
+        else
+            annoOutput << getValue(fragStore.contigNameStore, getValue(itAnno).contigId) << '\t';
+        annoOutput << "Annotation_Count\tregion\t";
+        // startposition endposition orientation .
+        if (getValue(itAnno).beginPos == INVALID_POS)
 		{
 			annoOutput << ".\t.\t" << getValue(itCount);
 			if (getValue(itAnno).parentId == INVALID_ID || (fragStore.annotationStore[getValue(itAnno).parentId].typeId != INVALID_ID && fragStore.annotationTypeStore[fragStore.annotationStore[getValue(itAnno).parentId].typeId] == "<root>"))

@@ -2174,9 +2174,9 @@ int mapReads(
     (void)readRegions;
 #endif
 
-	Shape<Dna, SimpleShape>		ungapped;
-	Shape<Dna, OneGappedShape>	onegapped;
-	Shape<Dna, GenericShape>	gapped;
+    Shape<Dna, SimpleShape>		ungapped;
+    Shape<Dna, OneGappedShape>	onegapped;
+    Shape<Dna, GenericShape>	gapped;
 
 	// 2x3 SPECIALIZATION
 
