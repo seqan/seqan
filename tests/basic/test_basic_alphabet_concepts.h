@@ -58,14 +58,14 @@ inline void testAlphabetConcepts()
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<signed long>));
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<long>));
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<unsigned long>));
-    SEQAN_CONCEPT_ASSERT((AlphabetConcept<__int8>));
-    SEQAN_CONCEPT_ASSERT((AlphabetConcept<__uint8 >));
-    SEQAN_CONCEPT_ASSERT((AlphabetConcept<__int16>));
-    SEQAN_CONCEPT_ASSERT((AlphabetConcept<__uint16>));
-    SEQAN_CONCEPT_ASSERT((AlphabetConcept<__int32>));
-    SEQAN_CONCEPT_ASSERT((AlphabetConcept<__uint32>));
-    SEQAN_CONCEPT_ASSERT((AlphabetConcept<__int64>));
-    SEQAN_CONCEPT_ASSERT((AlphabetConcept<__uint64>));
+    SEQAN_CONCEPT_ASSERT((AlphabetConcept<int8_t>));
+    SEQAN_CONCEPT_ASSERT((AlphabetConcept<uint8_t >));
+    SEQAN_CONCEPT_ASSERT((AlphabetConcept<int16_t>));
+    SEQAN_CONCEPT_ASSERT((AlphabetConcept<uint16_t>));
+    SEQAN_CONCEPT_ASSERT((AlphabetConcept<int32_t>));
+    SEQAN_CONCEPT_ASSERT((AlphabetConcept<uint32_t>));
+    SEQAN_CONCEPT_ASSERT((AlphabetConcept<int64_t>));
+    SEQAN_CONCEPT_ASSERT((AlphabetConcept<uint64_t>));
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<float>));
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<double>));
 

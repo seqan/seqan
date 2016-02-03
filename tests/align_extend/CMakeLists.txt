@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the align_extend module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_align_extend)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_align_extend CXX)
 message (STATUS "Configuring tests/align_extend")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,6 @@ message (STATUS "Configuring tests/align_extend")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

@@ -22,15 +22,15 @@ Prerequisites
 -------------------
 
 Linux, Mac OSX, FreeBSD:
-  * GCC ≥ 4.8
-  * LLVM / Clang ≥ 3.4
+  * GCC ≥ 4.9
+  * LLVM / Clang ≥ 3.5
 Windows:
-  * Visual C++ ≥ 10.0 / Visual Studio ≥ 2010
+  * Visual C++ ≥ 14.0 / Visual Studio ≥ 2015
 
 We test on 32-bit and 64-bit Intel/AMD architectures, although we highly recommend 64-bit platforms.
 
 To build tests, demos, and official SeqAn applications you also need:
-  * CMake ≥ 2.8.2 (http://cmake.org/)
+  * CMake ≥ 3.0 (http://cmake.org/)
 
 Some of the official applications might have additional requirements or work only on a subset of platforms.
 

@@ -313,15 +313,33 @@ struct Parameter_
 };
 
 template <typename T>
+struct Parameter_<T const>
+{
+    typedef T const & Type;
+};
+
+template <typename T>
 struct Parameter_<T *>
 {
     typedef T * Type;
+};
+
+template <typename T>
+struct Parameter_<T const *>
+{
+    typedef T const * Type;
 };
 
 template <typename T, size_t I>
 struct Parameter_<T [I]>
 {
     typedef T * Type;
+};
+
+template <typename T, size_t I>
+struct Parameter_<T const [I]>
+{
+    typedef T const * Type;
 };
 
 // TODO(holtgrew): Really required?
@@ -346,44 +364,6 @@ SEQAN_HOST_DEVICE inline _toParameter(T const & _object)
 {
     return _object;
 }
-
-//____________________________________________________________________________
-
-// TODO(holtgrew): Really required?
-
-template <typename T>
-struct ConstParameter_
-{
-    typedef T const & Type;
-};
-
-template <typename T>
-struct ConstParameter_<T const>:
-    public ConstParameter_<T> {};
-
-template <typename T>
-struct ConstParameter_<T *>
-{
-    typedef T const * Type;
-};
-
-template <typename T>
-struct ConstParameter_<T const *>
-{
-    typedef T const * Type;
-};
-
-template <typename T, size_t I>
-struct ConstParameter_<T [I]>
-{
-    typedef T const * Type;
-};
-
-template <typename T, size_t I>
-struct ConstParameter_<T const [I]>
-{
-    typedef T const * Type;
-};
 
 //____________________________________________________________________________
 

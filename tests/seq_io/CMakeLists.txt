@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the seq_io module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_seq_io)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_seq_io CXX)
 message (STATUS "Configuring tests/seq_io")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,8 @@ message (STATUS "Configuring tests/seq_io")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)
+find_package (ZLIB)
+find_package (BZip2)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

@@ -104,8 +104,8 @@ struct Tuple
     typename StoredTupleValue_<TValue>::Type &
     operator[](TPos k)
     {
-        SEQAN_ASSERT_GEQ(static_cast<__int64>(k), 0);
-        SEQAN_ASSERT_LT(static_cast<__int64>(k), static_cast<__int64>(SIZE));
+        SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
+        SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
         return i[k];
     }
 
@@ -114,8 +114,8 @@ struct Tuple
     typename StoredTupleValue_<TValue>::Type const &
     operator[](TPos k) const
     {
-        SEQAN_ASSERT_GEQ(static_cast<__int64>(k), 0);
-        SEQAN_ASSERT_LT(static_cast<__int64>(k), static_cast<__int64>(SIZE));
+        SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
+        SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
         return i[k];
     }
 
@@ -152,8 +152,8 @@ struct Tuple<TValue, SIZE, Pack>
     inline typename StoredTupleValue_<TValue>::Type &
     operator[](TPos k)
     {
-        SEQAN_ASSERT_GEQ(static_cast<__int64>(k), 0);
-        SEQAN_ASSERT_LT(static_cast<__int64>(k), static_cast<__int64>(SIZE));
+        SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
+        SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
         return i[k];
     }
 
@@ -161,8 +161,8 @@ struct Tuple<TValue, SIZE, Pack>
     inline typename StoredTupleValue_<TValue>::Type const &
     operator[](TPos k) const
     {
-        SEQAN_ASSERT_GEQ(static_cast<__int64>(k), 0);
-        SEQAN_ASSERT_LT(static_cast<__int64>(k), static_cast<__int64>(SIZE));
+        SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
+        SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
         return i[k];
     }
 

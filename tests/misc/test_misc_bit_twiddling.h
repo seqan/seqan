@@ -148,64 +148,64 @@ SEQAN_DEFINE_TEST(test_misc_bit_twiddling_pop_count_unsigned_long_long)
 
 SEQAN_DEFINE_TEST(test_misc_bit_twiddling_pop_count_int8)
 {
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int8>(0)), 0u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int8>(1)), 1u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int8>(19)), 3u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int8_t>(0)), 0u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int8_t>(1)), 1u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int8_t>(19)), 3u);
 }
 
 SEQAN_DEFINE_TEST(test_misc_bit_twiddling_pop_count_uint8)
 {
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint8>(0)), 0u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint8>(1)), 1u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint8>(19)), 3u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint8_t>(0)), 0u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint8_t>(1)), 1u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint8_t>(19)), 3u);
 }
 
 SEQAN_DEFINE_TEST(test_misc_bit_twiddling_pop_count_int16)
 {
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int16>(0)), 0u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int16>(1)), 1u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int16>(19)), 3u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int16_t>(0)), 0u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int16_t>(1)), 1u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int16_t>(19)), 3u);
 }
 
 SEQAN_DEFINE_TEST(test_misc_bit_twiddling_pop_count_uint16)
 {
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint16>(0)), 0u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint16>(1)), 1u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint16>(19)), 3u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint16_t>(0)), 0u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint16_t>(1)), 1u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint16_t>(19)), 3u);
 }
 
 SEQAN_DEFINE_TEST(test_misc_bit_twiddling_pop_count_int32)
 {
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int32>(0)), 0u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int32>(1)), 1u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int32>(19)), 3u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int32_t>(0)), 0u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int32_t>(1)), 1u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int32_t>(19)), 3u);
 }
 
 SEQAN_DEFINE_TEST(test_misc_bit_twiddling_pop_count_uint32)
 {
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint32>(0)), 0u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint32>(1)), 1u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint32>(19)), 3u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint32_t>(0)), 0u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint32_t>(1)), 1u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint32_t>(19)), 3u);
 }
 
 SEQAN_DEFINE_TEST(test_misc_bit_twiddling_pop_count_int64)
 {
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int64>(0)), 0u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int64>(1)), 1u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int64>(19)), 3u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int64>(0x00000000FFFFFFFFll)), 32u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int64>(0xFFFFFFFF00000000ll)), 32u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__int64>(0xFFFFFFFFFFFFFFFFll)), 64u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int64_t>(0)), 0u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int64_t>(1)), 1u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int64_t>(19)), 3u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int64_t>(0x00000000FFFFFFFFll)), 32u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int64_t>(0xFFFFFFFF00000000ll)), 32u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<int64_t>(0xFFFFFFFFFFFFFFFFll)), 64u);
 }
 
 SEQAN_DEFINE_TEST(test_misc_bit_twiddling_pop_count_uint64)
 {
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint64>(0)), 0u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint64>(1)), 1u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint64>(19)), 3u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint64>(0x00000000FFFFFFFFll)), 32u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint64>(0xFFFFFFFF00000000ll)), 32u);
-    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<__uint64>(0xFFFFFFFFFFFFFFFFll)), 64u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint64_t>(0)), 0u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint64_t>(1)), 1u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint64_t>(19)), 3u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint64_t>(0x00000000FFFFFFFFll)), 32u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint64_t>(0xFFFFFFFF00000000ll)), 32u);
+    SEQAN_ASSERT_EQ(seqan::popCount(static_cast<uint64_t>(0xFFFFFFFFFFFFFFFFll)), 64u);
 }
 
 #endif  // SEQAN_TESTS_MISC_TEST_MISC_BIT_TWIDDLING_H_

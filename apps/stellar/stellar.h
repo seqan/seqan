@@ -445,10 +445,10 @@ verifySwiftHit(Segment<TInfix, InfixSegment> const & infH,
     Score<TScore> scoreMatrix(match, mismatchIndel, mismatchIndel);
 
     // diagonals for banded alignment
-    __int64 upperDiag = 0;
-    __int64 lowerDiag = endPosition(infH) - (__int64)endPosition(infV) - beginPosition(infH) + beginPosition(infV);
+    int64_t upperDiag = 0;
+    int64_t lowerDiag = endPosition(infH) - (int64_t)endPosition(infV) - beginPosition(infH) + beginPosition(infV);
     if (beginPosition(infV) == 0) upperDiag = lowerDiag + delta;
-    if (endPosition(infV) == endPosition(host(infV))) lowerDiag = -(__int64)delta;
+    if (endPosition(infV) == endPosition(host(infV))) lowerDiag = -(int64_t)delta;
 
 	// banded alignment on parallelogram
 	Align<TSegment> bandedAlign;
@@ -513,10 +513,10 @@ verifySwiftHit(Segment<TInfix, InfixSegment> const & infH,
     TScore scoreDropOff = (TScore) _max((TScore) xDrop * (-mismatchIndel), minValue<TScore>()+1);
 
     // diagonals for banded alignment
-    __int64 upperDiag = 0;
-    __int64 lowerDiag = endPosition(infH) - (__int64)endPosition(infV) - beginPosition(infH) + beginPosition(infV);
+    int64_t upperDiag = 0;
+    int64_t lowerDiag = endPosition(infH) - (int64_t)endPosition(infV) - beginPosition(infH) + beginPosition(infV);
     if (beginPosition(infV) == 0) upperDiag = lowerDiag + delta;
-    if (endPosition(infV) == endPosition(host(infV))) lowerDiag = -(__int64)delta;
+    if (endPosition(infV) == endPosition(host(infV))) lowerDiag = -(int64_t)delta;
 
 	// banded alignment on parallelogram
 	Align<TSegment> bandedAlign;
@@ -585,17 +585,17 @@ verifySwiftHit(Segment<TInfix, InfixSegment> const & infH,
     TSize minScore = _min((TSize)ceil((minLength-e) / (e+1)), (TSize)ceil((minLength1-e1) / (e1+1)));
 
     // diagonals for banded local alignment
-    __int64 upperDiag = 0;
-    __int64 lowerDiag = endPosition(infH) - (__int64)endPosition(infV) - beginPosition(infH) + beginPosition(infV);
+    int64_t upperDiag = 0;
+    int64_t lowerDiag = endPosition(infH) - (int64_t)endPosition(infV) - beginPosition(infH) + beginPosition(infV);
 	if (beginPosition(infV) == 0) {
 		if (endPosition(infV) == endPosition(host(infV))) {
 			// TODO: is it possible to get a smaller band in this case?
 			upperDiag = delta;
-			lowerDiag = -(__int64)delta;
+			lowerDiag = -(int64_t)delta;
 		} else
 			upperDiag = lowerDiag + delta;
 	} else if (endPosition(infV) == endPosition(host(infV)))
-		lowerDiag = -(__int64)delta;
+		lowerDiag = -(int64_t)delta;
 
 	// banded local alignment
     LocalAlignmentEnumerator<Score<TScore>, Banded> enumerator(scoreMatrix, lowerDiag, upperDiag, minScore);

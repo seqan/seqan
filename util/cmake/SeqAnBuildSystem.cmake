@@ -45,6 +45,7 @@
 # APP:${app_name}
 
 include (SeqAnUsabilityAnalyzer)
+include (CheckCXXCompilerFlag)
 
 # ---------------------------------------------------------------------------
 # Normalize CMAKE_CXX_FLAGS to be a string.
@@ -147,10 +148,23 @@ macro (seqan_register_apps)
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
 
     # enable static linkage for seqan apps
-    if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG AND NOT MINGW)
-      set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-      set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
-    endif ()
+    if (NOT CMAKE_SYSTEM_NAME MATCHES "Windows")
+        set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+        # libstdc++ is being used and needs be explicitly "statified"
+        if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_SYSTEM_NAME MATCHES "Linux")
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
+        endif (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_SYSTEM_NAME MATCHES "Linux")
+        # if not apple make other libs static (apple does not support static builds except for the above)
+        if (NOT APPLE)
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+        endif (NOT APPLE)
+        # on linux cmake adds -rdynamic automatically which clang can't handle in static builds
+        if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+            SET(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+        endif (CMAKE_SYSTEM_NAME MATCHES "Linux")
+        # not that these checks are more than OS, because we have many possible combinations between
+        # OS, compiler and STL used
+    endif (NOT CMAKE_SYSTEM_NAME MATCHES "Windows")
 
     # Enable global exception handler for all seqan apps.
     set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
@@ -199,6 +213,13 @@ macro (seqan_build_system_init)
                        README.rst
                        CHANGELOG.rst
                  DESTINATION share/doc/seqan)
+        # Install pkg-config file, except on Windows.
+        if (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
+            configure_file("util/pkgconfig/seqan.pc.in" "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" @ONLY)
+            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION share/pkgconfig)
+            # Install FindSeqAn TODO(h-2) rename FindSeqAn.cmake to FindSeqAn${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
+            install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/FindSeqAn.cmake" DESTINATION share/cmake/Modules)
+        endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
     endif ()
 
     set (SEQAN_BUILD_SYSTEM "DEVELOP" CACHE STRING "Build/Release mode to select. One of DEVELOP SEQAN_RELEASE, APP:\${APP_NAME}. Defaults to DEVELOP.")
@@ -208,6 +229,22 @@ macro (seqan_build_system_init)
 
     SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
          ${PROJECT_BINARY_DIR}/bin)
+
+    if (NOT MSVC)
+        # find the highest c++ standard and select it
+        check_cxx_compiler_flag("-std=c++11" CXX11_DETECTED)
+        check_cxx_compiler_flag("-std=c++14" CXX14_DETECTED)
+    endif ()
+
+    set (CXX11_FOUND ${CXX11_DETECTED} CACHE INTERNAL "Availability of c++11")
+    set (CXX14_FOUND ${CXX14_DETECTED} CACHE INTERNAL "Availability of c++14")
+
+    if (CXX14_FOUND)
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+    elseif (CXX11_FOUND)
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    endif ()
+
 endmacro (seqan_build_system_init)
 
 # ---------------------------------------------------------------------------
@@ -439,7 +476,8 @@ macro (seqan_setup_cuda_vars)
       # NVCC mistakes /usr/bin/cc as gcc.
       #list (APPEND CUDA_NVCC_FLAGS "-ccbin /usr/bin/clang")
       # NVCC does not support libc++.
-      set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libstdc++")
+#(h-2): deactivated the following line because it affects non-cude, too; also this should work with modern nvcc
+#       set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libstdc++")
     endif ()
   endif ()
 endmacro (seqan_setup_cuda_vars)
@@ -453,27 +491,27 @@ endmacro (seqan_setup_cuda_vars)
 # ---------------------------------------------------------------------------
 
 macro (seqan_get_version)
-  try_run(_SEQAN_RUN_RESULT
-          _SEQAN_COMPILE_RESULT
-          ${CMAKE_BINARY_DIR}/CMakeFiles/SeqAnVersion
-          ${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/SeqAnVersion.cpp
-          CMAKE_FLAGS -DINCLUDE_DIRECTORIES:STRING=${CMAKE_CURRENT_SOURCE_DIR}/include
-          COMPILE_OUTPUT_VARIABLE _COMPILE_OUTPUT
-          RUN_OUTPUT_VARIABLE _RUN_OUTPUT)
-  if (NOT _RUN_OUTPUT)
-    message("")
-    message("ERROR: Could not determine SeqAn version.")
-    message("COMPILE OUTPUT:")
-    message(${_COMPILE_OUTPUT})
-  endif (NOT _RUN_OUTPUT)
-  string(REGEX REPLACE ".*SEQAN_VERSION_MAJOR:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_MAJOR ${_RUN_OUTPUT})
-  string(REGEX REPLACE ".*SEQAN_VERSION_MINOR:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_MINOR ${_RUN_OUTPUT})
-  string(REGEX REPLACE ".*SEQAN_VERSION_PATCH:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_PATCH ${_RUN_OUTPUT})
-  string(REGEX REPLACE ".*SEQAN_VERSION_PRE_RELEASE:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_PRE_RELEASE ${_RUN_OUTPUT})
-  set(SEQAN_VERSION "${SEQAN_VERSION_MAJOR}.${SEQAN_VERSION_MINOR}.${SEQAN_VERSION_PATCH}")
-#  if (SEQAN_VERSION_PRE_RELEASE STREQUAL 1)
-#    set(SEQAN_VERSION "pre${SEQAN_VERSION}")
-#  endif (SEQAN_VERSION_PRE_RELEASE STREQUAL 1)
+  # Read from CMAKE_SOURCE_DIR the /include/seqan/version.h
+  get_filename_component(_SEQAN_VERSION_H "${CMAKE_SOURCE_DIR}/include/seqan/version.h" ABSOLUTE)
+  # If file wasn't found seqan version is set to 0.0.0
+  set (_SEQAN_VERSION_IDS MAJOR MINOR PATCH PRE_RELEASE)
+  foreach (_ID ${_SEQAN_VERSION_IDS})
+    set(_SEQAN_VERSION_${_ID} "0")
+  endforeach(_ID ${_SEQAN_VERSION_IDS})
+
+  # Error log if version.h not found, otherwise read version from
+  # version.h and cache it.
+  if (NOT EXISTS ${_SEQAN_VERSION_H})
+    message ("")
+    message ("ERROR: Could not determine SeqAn version.")
+    message ("Could not find file: ${_SEQAN_VERSION_H}")
+  else ()
+    foreach (_ID ${_SEQAN_VERSION_IDS})
+      file (STRINGS ${_SEQAN_VERSION_H} _VERSION_${_ID} REGEX ".*SEQAN_VERSION_${_ID}.*")
+      string (REGEX REPLACE ".*SEQAN_VERSION_${_ID}[ |\t]+([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_${_ID} ${_VERSION_${_ID}})
+    endforeach(_ID ${_SEQAN_VERSION_IDS})
+  endif ()
+  set (SEQAN_VERSION_STRING "${SEQAN_VERSION_MAJOR}.${SEQAN_VERSION_MINOR}.${SEQAN_VERSION_PATCH}")
 endmacro (seqan_get_version)
 
 # ---------------------------------------------------------------------------
@@ -484,7 +522,7 @@ endmacro (seqan_get_version)
 
 macro (seqan_get_repository_info)
   set (_SEQAN_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
-
+  message (STATUS "  Selected repository dir: ${CMAKE_SOURCE_DIR}")
   # Get Git information.
   if (EXISTS ${_SEQAN_GIT_DIR})
     find_package (GitInfo QUIET)
@@ -498,6 +536,8 @@ macro (seqan_get_repository_info)
   # Set SeqAn date of last commit.
   if (_SEQAN_WC_LAST_CHANGED_DATE)
     set (SEQAN_DATE "${_SEQAN_WC_LAST_CHANGED_DATE}")
+    # icc doesn't cope with spaces..
+    string(REPLACE " " "_" SEQAN_DATE "${SEQAN_DATE}")
     message (STATUS "  Determined repository date is ${SEQAN_DATE}")
   else ()
     message (STATUS "  Repository date not determined.")
@@ -602,9 +642,14 @@ macro (seqan_build_demos_develop PREFIX)
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
 
     # Find SeqAn with all dependencies.
-    set (SEQAN_FIND_DEPENDENCIES ALL)
+    find_package (OpenMP)
+    find_package (ZLIB)
+    find_package (BZip2)
     find_package (SeqAn REQUIRED)
 
+    if (OPENMP_FOUND AND CMAKE_COMPILER_IS_GNUCXX)
+        set(SEQAN_LIBRARIES ${SEQAN_LIBRARIES} -lgomp)
+    endif()
     # Setup include directories and definitions for SeqAn; flags follow below.
     include_directories (${SEQAN_INCLUDE_DIRS})
     add_definitions (${SEQAN_DEFINITIONS})
@@ -619,7 +664,7 @@ macro (seqan_build_demos_develop PREFIX)
 
     # Add SeqAn flags to CXX and NVCC flags.
     # Set to PARENT_SCOPE since this macro is executed from within a function which declares it's own scope.
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" PARENT_SCOPE)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" PARENT_SCOPE)
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
@@ -638,6 +683,10 @@ macro (seqan_build_demos_develop PREFIX)
                 _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
             endif ()
         else ()
+            if ("${FILE_NAME}" MATCHES "queue_example.cpp" AND COMPILER_IS_MSVC)
+                message(STATUS "Not building demo ${FILE_NAME} under visual studio." )
+                continue()
+            endif ()
             add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
             target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
             _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})

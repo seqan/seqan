@@ -6,8 +6,8 @@
 # CMakeLists.txt file for manual.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_manual)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_manual CXX)
 
 # Look for Sphinx and balk out if we cannot find it.
 

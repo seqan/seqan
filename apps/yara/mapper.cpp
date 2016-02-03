@@ -45,6 +45,12 @@ struct Options;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// STL headers
+// ----------------------------------------------------------------------------
+
+#include <random>
+
+// ----------------------------------------------------------------------------
 // SeqAn headers
 // ----------------------------------------------------------------------------
 
@@ -80,7 +86,6 @@ struct Options;
 #include "mapper_filter.h"
 #include "mapper_extender.h"
 #include "mapper_verifier.h"
-#include "mapper_selector.h"
 #include "mapper_aligner.h"
 #include "mapper_writer.h"
 #include "mapper.h"
@@ -157,9 +162,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setDefaultValue(parser, "error-rate", 100.0 * options.errorRate);
 
     addOption(parser, ArgParseOption("s", "strata-rate", "Report suboptimal alignments within this percentual number \
-                                                          of errors from the optimal alignment. Note: Either specify \
-                                                          --strata-rate much smaller than --error-rate, or better use \
-                                                          the option --all to consider all alignments within error-rate.",
+                                                          of errors from the optimal alignment.",
                                                           ArgParseOption::INTEGER));
     setMinValue(parser, "strata-rate", "0");
     setMaxValue(parser, "strata-rate", "10");
@@ -167,26 +170,32 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
 
     addOption(parser, ArgParseOption("a", "all", "Report all alignments within --error-rate. Default: report alignments \
                                                   within --strata-rate."));
+    hideOption(getOption(parser, "all"));
 
     addOption(parser, ArgParseOption("q", "quick", "Be quicker by loosely mapping a few very repetitive reads."));
     hideOption(getOption(parser, "quick"));
 
     // Setup paired-end mapping options.
-    addSection(parser, "Paired-End / Mate-Pair Mapping Options");
+    addSection(parser, "Paired-End Mapping Options");
 
-    addOption(parser, ArgParseOption("ll", "library-length", "Expected library length.", ArgParseOption::INTEGER));
-    setMinValue(parser, "library-length", "1");
-    setDefaultValue(parser, "library-length", options.libraryLength);
-
-    addOption(parser, ArgParseOption("le", "library-error", "Deviation from the expected library length.",
+    addOption(parser, ArgParseOption("ll", "library-length", "Expected library length. Default: autodetected.",
                                      ArgParseOption::INTEGER));
-    setMinValue(parser, "library-error", "0");
-    setDefaultValue(parser, "library-error", options.libraryError);
+    setMinValue(parser, "library-length", "1");
 
-    addOption(parser, ArgParseOption("lo", "library-orientation", "Expected orientation of the segments in the library.",
-                                     ArgParseOption::STRING));
-    setValidValues(parser, "library-orientation", options.libraryOrientationList);
-    setDefaultValue(parser, "library-orientation", options.libraryOrientationList[options.libraryOrientation]);
+    addOption(parser, ArgParseOption("ld", "library-deviation", "Deviation from the expected library length. \
+                                            Default: autodetected.", ArgParseOption::INTEGER));
+    setMinValue(parser, "library-deviation", "0");
+
+    addOption(parser, ArgParseOption("i", "indel-rate", "Ignore rescued alignments above this percentual number of indels.",
+                                     ArgParseOption::INTEGER));
+    setMinValue(parser, "indel-rate", "0");
+    setMaxValue(parser, "indel-rate", "50");
+    setDefaultValue(parser, "indel-rate", 100.0 * options.indelRate);
+
+//    addOption(parser, ArgParseOption("lo", "library-orientation", "Expected orientation of the segments in the library.",
+//                                     ArgParseOption::STRING));
+//    setValidValues(parser, "library-orientation", options.libraryOrientationList);
+//    setDefaultValue(parser, "library-orientation", options.libraryOrientationList[options.libraryOrientation]);
 
 //    addOption(parser, ArgParseOption("la", "anchor", "Anchor one read and verify its mate."));
 
@@ -207,6 +216,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setMinValue(parser, "reads-batch", "1000");
     setMaxValue(parser, "reads-batch", "1000000");
     setDefaultValue(parser, "reads-batch", options.readsCount);
+    hideOption(getOption(parser, "reads-batch"));
 }
 
 // ----------------------------------------------------------------------------
@@ -264,7 +274,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOptionValue(options.rabema, parser, "output-rabema");
 
     // Parse mapping options.
-        unsigned errorRate;
+    unsigned errorRate;
     if (getOptionValue(errorRate, parser, "error-rate"))
         options.errorRate = errorRate / 100.0;
 
@@ -282,8 +292,8 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse paired-end mapping options.
     getOptionValue(options.libraryLength, parser, "library-length");
-    getOptionValue(options.libraryError, parser, "library-error");
-    getOptionValue(options.libraryOrientation, parser, "library-orientation", options.libraryOrientationList);
+    getOptionValue(options.libraryDev, parser, "library-deviation");
+//    getOptionValue(options.libraryOrientation, parser, "library-orientation", options.libraryOrientationList);
 
     getOptionValue(options.threadsCount, parser, "threads");
     getOptionValue(options.readsCount, parser, "reads-batch");
@@ -312,27 +322,27 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 template <typename TContigsSize, typename TContigsLen, typename TThreading, typename TSequencing, typename TStrategy>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (options.contigsSum <= MaxValue<__uint32>::VALUE)
+    if (options.contigsSum <= MaxValue<uint32_t>::VALUE)
     {
-        spawnMapper<TContigsSize, TContigsLen, __uint32>(options, threading, sequencing, strategy);
+        spawnMapper<TContigsSize, TContigsLen, uint32_t>(options, threading, sequencing, strategy);
     }
     else
     {
-        spawnMapper<TContigsSize, TContigsLen, __uint64>(options, threading, sequencing, strategy);
+        spawnMapper<TContigsSize, TContigsLen, uint64_t>(options, threading, sequencing, strategy);
     }
 }
 
 template <typename TContigsSize, typename TThreading, typename TSequencing, typename TStrategy>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (options.contigsMaxLength <= MaxValue<__uint32>::VALUE)
+    if (options.contigsMaxLength <= MaxValue<uint32_t>::VALUE)
     {
-        configureMapper<TContigsSize, __uint32>(options, threading, sequencing, strategy);
+        configureMapper<TContigsSize, uint32_t>(options, threading, sequencing, strategy);
     }
     else
     {
 #ifdef YARA_LARGE_CONTIGS
-        configureMapper<TContigsSize, __uint64>(options, threading, sequencing, strategy);
+        configureMapper<TContigsSize, uint64_t>(options, threading, sequencing, strategy);
 #else
         throw RuntimeError("Maximum contig length exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif
@@ -342,18 +352,18 @@ void configureMapper(Options const & options, TThreading const & threading, TSeq
 template <typename TThreading, typename TSequencing, typename TStrategy>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (options.contigsSize <= MaxValue<__uint8>::VALUE)
+    if (options.contigsSize <= MaxValue<uint8_t>::VALUE)
     {
-        configureMapper<__uint8>(options, threading, sequencing, strategy);
+        configureMapper<uint8_t>(options, threading, sequencing, strategy);
     }
-    else if (options.contigsSize <= MaxValue<__uint16>::VALUE)
+    else if (options.contigsSize <= MaxValue<uint16_t>::VALUE)
     {
-        configureMapper<__uint16>(options, threading, sequencing, strategy);
+        configureMapper<uint16_t>(options, threading, sequencing, strategy);
     }
     else
     {
 #ifdef YARA_LARGE_CONTIGS
-        configureMapper<__uint32>(options, threading, sequencing, strategy);
+        configureMapper<uint32_t>(options, threading, sequencing, strategy);
 #else
         throw RuntimeError("Maximum number of contigs exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif

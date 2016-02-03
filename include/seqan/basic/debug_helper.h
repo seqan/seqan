@@ -202,7 +202,7 @@ _compareTextFilesAlt(const char * file1, const char * file2)
     std::string line1;
     std::string line2;
 
-    for (__uint64 lineNo = 1; !fl1.eof() && !fl2.eof(); ++lineNo)
+    for (uint64_t lineNo = 1; !fl1.eof() && !fl2.eof(); ++lineNo)
     {
         getline(fl1, line1);
         getline(fl2, line2);

@@ -85,7 +85,7 @@ struct BitsPerValue<TValue const> : public BitsPerValue<TValue>
 template <typename T>
 struct ValueSize
 {
-    typedef __uint64  Type;
+    typedef uint64_t  Type;
     static const Type VALUE = (BitsPerValue<T>::VALUE < 64)? 1ull << (BitsPerValue<T>::VALUE & 63) : 0ull;
 };
 
@@ -93,33 +93,33 @@ template <typename T>
 struct ValueSize<T const> : ValueSize<T>
 {};
 
-// TODO(holtgrew): Use static assertion to make sure that ValueSize is never called on floating point numbers? Include assertion for __int64 and __uint64?
+// TODO(holtgrew): Use static assertion to make sure that ValueSize is never called on floating point numbers? Include assertion for int64_t and uint64_t?
 
 template <>
-struct ValueSize<__int64>
+struct ValueSize<int64_t>
 {
-    typedef __uint64  Type;
+    typedef uint64_t  Type;
     static const Type VALUE = 0;
 };
 
 template <>
-struct ValueSize<__uint64>
+struct ValueSize<uint64_t>
 {
-    typedef __uint64  Type;
+    typedef uint64_t  Type;
     static const Type VALUE = 0;
 };
 
 template <>
 struct ValueSize<double>
 {
-    typedef __uint64  Type;
+    typedef uint64_t  Type;
     static const Type VALUE = 0;
 };
 
 template <>
 struct ValueSize<float>
 {
-    typedef __uint64  Type;
+    typedef uint64_t  Type;
     static const Type VALUE = 0;
 };
 
@@ -202,7 +202,7 @@ struct BytesPerValue
  *   </tr>
  *   <tr>
  *     <td>&gt; 4</td>
- *     <td><tt>__int64</tt></td>
+ *     <td><tt>int64_t</tt></td>
  *   </tr>
  * </table>
  *
@@ -217,10 +217,10 @@ struct BytesPerValue
 template <int SIZE>
 struct IntegralForValueImpl_
 {
-    typedef __int64 Type;
+    typedef int64_t Type;
 };
 
-// TODO(holtgrew): Switch to __uint8, __uint16, __uint32?
+// TODO(holtgrew): Switch to uint8_t, uint16_t, uint32_t?
 template <>
 struct IntegralForValueImpl_<1>
 {
