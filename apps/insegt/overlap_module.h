@@ -886,22 +886,22 @@ ngsOverlapper(TOptions &options)
 	readOutput.open(toCString(options.readOutputFileName), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
     if (!readOutput.good())
         std::cerr << "ERROR:  Could not open output file " << options.readOutputFileName << "\n";
-	createReadCountGFF(readOutput, readAnnoStore, fragStore);
-	readOutput.close();
-	
+    createReadCountGFF(readOutput, readAnnoStore, fragStore);
+    readOutput.close();
+
 	std::fstream annoOutput;
 	annoOutput.open(toCString(options.annoOutputFileName), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
     if (!annoOutput.good())
         std::cerr << "ERROR:  Could not open output file " << options.annoOutputFileName << "\n";
-	createAnnoCountGFF(annoOutput, annoCountStore, annoNormStore, fragStore, mapO);
-	annoOutput.close();
-	
+    createAnnoCountGFF(annoOutput, annoCountStore, annoNormStore, fragStore, mapO);
+    annoOutput.close();
+
 	std::fstream tupleOutput;
 	tupleOutput.open(toCString(options.tupleOutputFileName), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
     if (!tupleOutput.good())
         std::cerr << "ERROR:  Could not open output file " << options.tupleOutputFileName << "\n";
-	createTupleCountGFF(tupleOutput, tupleCountStore, fragStore, options.thresholdCount, options.thresholdRPKM);
-	tupleOutput.close();
+    createTupleCountGFF(tupleOutput, tupleCountStore, fragStore, options.thresholdCount, options.thresholdRPKM);
+    tupleOutput.close();
 
 	// additional output, if fusion genes were checked
 	if (options.fusion == 1)

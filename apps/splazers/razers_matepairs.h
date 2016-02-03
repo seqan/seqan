@@ -445,10 +445,10 @@ bool loadReads(
     if (!success)
         return false;
 
-	CharString fastaId[2];
-	String<Dna5Q> seq[2];
-	CharString qual[2];
-	
+    CharString fastaId[2];
+    String<Dna5Q> seq[2];
+    CharString qual[2];
+
 	unsigned kickoutcount = 0;
 	while (!atEnd(leftMates) && !atEnd(rightMates))
 	{
