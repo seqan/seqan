@@ -676,7 +676,7 @@ insert(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journa
        TString const & seq)
 {
     journaledString._length += length(seq);
-    TPos beginPos = length(journaledString._insertionBuffer);
+    TPos beginPos = static_cast<TPos>(length(journaledString._insertionBuffer));
     append(journaledString._insertionBuffer, seq);
     recordInsertion(journaledString._journalEntries, pos, beginPos, length(seq));
 }
