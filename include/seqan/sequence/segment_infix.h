@@ -152,14 +152,14 @@ SEQAN_CHECKPOINT
         assign(*this, source);
         return *this;
     }
-#if defined(SEQAN_CXX11_STANDARD) && (!defined(_MSC_VER) || _MSC_VER >= 1800)
+
     template<typename T> explicit operator T () const
     {
         T temp_copy;
         assign(temp_copy, *this);
         return temp_copy;
     }
-#endif
+
 //____________________________________________________________________________
 
 public:
@@ -684,7 +684,7 @@ SEQAN_CHECKPOINT
 
 template <typename T, typename TPosBegin, typename TSize>
 SEQAN_HOST_DEVICE inline typename Infix<T>::Type
-infixWithLength(T & t, TPosBegin pos_begin, TSize length)
+infixWithLength(T && t, TPosBegin pos_begin, TSize length)
 {
 SEQAN_CHECKPOINT
     return infix(t, pos_begin, pos_begin + length);

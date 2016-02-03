@@ -1,5 +1,7 @@
 # Configure SeqAn, enabling features for libbz2 and zlib.
-set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)
+find_package (OpenMP)
+find_package (ZLIB)
+find_package (BZip2)
 find_package (SeqAn REQUIRED)
 
 # Add include directories, defines, and flags for SeqAn (and its dependencies).

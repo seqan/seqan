@@ -6,18 +6,17 @@
 # CMakeLists.txt file for sam2matrix.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_apps_sam2matrix)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_apps_sam2matrix CXX)
 message (STATUS "Configuring apps/sam2matrix")
 
-set (SEQAN_APP_VERSION "0.2")
+set (SEQAN_APP_VERSION "0.3")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-#set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

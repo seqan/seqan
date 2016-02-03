@@ -121,5 +121,12 @@
           </ol>
         </div>
     </div>
+    <!-- version selection -->
+    {% if development %}
+    <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/version.js"></script>
+    {% endif %}
+    {% if not development %}
+    <script type="text/javascript" charset="utf-8" src="js/version.js"></script>
+    {% endif %}
   </body>
 </html>

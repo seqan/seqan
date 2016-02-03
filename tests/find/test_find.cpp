@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de> 
+// Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
 // ==========================================================================
 // Tests for the SeqAn module find.
 // ==========================================================================
@@ -532,7 +532,7 @@ void Test_OnlineAlgMulti(bool order_by_begin_position) {
         SEQAN_ASSERT_EQ(keywordIndex[8], 1u);
         SEQAN_ASSERT_EQ(finderPos[9], 6u);
         SEQAN_ASSERT_EQ(keywordIndex[9], 0u);
-    } else{                 
+    } else{
         SEQAN_ASSERT_EQ(finderPos[0], 0u);
         SEQAN_ASSERT_EQ(keywordIndex[0], 0u);
         SEQAN_ASSERT_EQ(finderPos[1], 1u);
@@ -588,7 +588,7 @@ void Test_OnlineAlgMulti(bool order_by_begin_position) {
         SEQAN_ASSERT_EQ(keywordIndex[1], 1u);
         SEQAN_ASSERT_EQ(finderPos[2], 6u);
         SEQAN_ASSERT_EQ(keywordIndex[2], 0u);
-    } else {                  
+    } else {
         SEQAN_ASSERT_EQ(finderPos[0], 5u);
         SEQAN_ASSERT_EQ(keywordIndex[0], 0u);
         SEQAN_ASSERT_EQ(finderPos[1], 6u);
@@ -668,7 +668,7 @@ void Test_OnlineAlgWildcards() {
     clear(pos);
     while (find(finder, pattern))
         append(pos,position(finder));
-        
+
     SEQAN_ASSERT_EQ(length(pos), 0u);
 
     //____________________________________________________________________________
@@ -676,7 +676,7 @@ void Test_OnlineAlgWildcards() {
     // to produce two \ in the pattern you need to escape both of them
     needle = "aa+c*[a-z]xx?aa\\\\";
     SEQAN_ASSERT_EQ(_lengthWithoutWildcards(needle), 9u);
-        
+
     //____________________________________________________________________________
     // Test - optional characters (?)
     haystack = "abc__ac";
@@ -689,7 +689,7 @@ void Test_OnlineAlgWildcards() {
     clear(pos);
     while (find(finder, pattern))
         append(pos,position(finder));
-        
+
     SEQAN_ASSERT_EQ(pos[0], 2u);
     SEQAN_ASSERT_EQ(pos[1], 6u);
     SEQAN_ASSERT_EQ(length(pos), 2u);
@@ -706,7 +706,7 @@ void Test_OnlineAlgWildcards() {
     clear(pos);
     while (find(finder, pattern))
         append(pos,position(finder));
-        
+
     SEQAN_ASSERT_EQ(pos[0], 2u);
     SEQAN_ASSERT_EQ(pos[1], 11u);
     SEQAN_ASSERT_EQ(length(pos), 2u);
@@ -723,11 +723,11 @@ void Test_OnlineAlgWildcards() {
     clear(pos);
     while (find(finder, pattern))
         append(pos,position(finder));
-        
+
     SEQAN_ASSERT_EQ(pos[0], 2u);
     SEQAN_ASSERT_EQ(pos[1], 11u);
     SEQAN_ASSERT_EQ(pos[2], 14u);
-        
+
     SEQAN_ASSERT_EQ(length(pos), 3u);
 
     //____________________________________________________________________________
@@ -742,7 +742,7 @@ void Test_OnlineAlgWildcards() {
     clear(pos);
     while (find(finder, pattern))
         append(pos,position(finder));
-        
+
     SEQAN_ASSERT_EQ(pos[0], 12u);
     SEQAN_ASSERT_EQ(length(pos), 1u);
 
@@ -758,7 +758,7 @@ void Test_OnlineAlgWildcards() {
     clear(pos);
     while (find(finder, pattern))
         append(pos,position(finder));
-        
+
     SEQAN_ASSERT_EQ(pos[0], 15u);
     SEQAN_ASSERT_EQ(length(pos), 1u);
 
@@ -769,13 +769,13 @@ void Test_OnlineAlgWildcards() {
     setHost(finder, haystack);
     clear(finder);
 
-    needle = "[a-zA]nnual"; 
+    needle = "[a-zA]nnual";
     setHost(pattern, needle);
 
     clear(pos);
     while (find(finder, pattern))
         append(pos,position(finder));
-        
+
     SEQAN_ASSERT_EQ(pos[0], 5u);
     SEQAN_ASSERT_EQ(pos[1], 12u);
     SEQAN_ASSERT_EQ(pos[2], 19u);
@@ -787,7 +787,7 @@ void Test_OnlineAlgWildcards() {
     setHost(finder, haystack);
     clear(finder);
 
-    needle = "abcdefghijklmnopqrstuvwxyzabcdefg";   
+    needle = "abcdefghijklmnopqrstuvwxyzabcdefg";
     setHost(pattern, needle);
 
     clear(pos);
@@ -806,7 +806,7 @@ void Test_OnlineAlgWildcards() {
     setHost(finder, haystack);
     clear(finder);
 
-    needle = "abcdefghijklmnopqrstu[vz]wxyzabcdefgh[iz]jkl";        
+    needle = "abcdefghijklmnopqrstu[vz]wxyzabcdefgh[iz]jkl";
     setHost(pattern, needle);
 
     clear(pos);
@@ -826,7 +826,7 @@ void Test_OnlineAlgWildcards() {
     setHost(finder, haystack);
     clear(finder);
 
-    needle = "aa*bcdefghijklmnopqrstuvwxyzabcdef?g?hi+jkl"; 
+    needle = "aa*bcdefghijklmnopqrstuvwxyzabcdef?g?hi+jkl";
     setHost(pattern, needle);
 
     clear(pos);
@@ -843,7 +843,7 @@ void Test_OnlineAlgWildcards() {
     setHost(finder, haystack);
     clear(finder);
 
-    needle = ".nnual";      
+    needle = ".nnual";
     setHost(pattern, needle);
     clear(pos);
     while (find(finder, pattern)) {
@@ -855,12 +855,12 @@ void Test_OnlineAlgWildcards() {
     SEQAN_ASSERT_EQ(length(pos), 3u);
 
     //____________________________________________________________________________
-    // Test - handle backslash 
+    // Test - handle backslash
     haystack = "annual_Annual_.nnual";
     setHost(finder, haystack);
     clear(finder);
 
-    needle = "\\.nnual";    
+    needle = "\\.nnual";
     setHost(pattern, needle);
     clear(pos);
     while (find(finder, pattern)){
@@ -877,10 +877,10 @@ void Test_OnlineAlgWildcards() {
     setHost(finder, haystack);
     clear(finder);
 
-    needle = "a{2,5}n{2}ual";       
-        
+    needle = "a{2,5}n{2}ual";
+
     SEQAN_ASSERT_EQ(_lengthWithoutWildcards(needle), 10u);
-        
+
     setHost(pattern, needle);
     clear(pos);
     while (find(finder, pattern)) {
@@ -1222,37 +1222,37 @@ void Test_Approx_Prefix_EditDist() {
 
 
 SEQAN_DEFINE_TEST(test_find_online_Simple) {
-    Test_OnlineAlg<Simple>();   
+    Test_OnlineAlg<Simple>();
 }
 
 
 SEQAN_DEFINE_TEST(test_find_online_Horspool) {
-    Test_OnlineAlg<Horspool>();   
+    Test_OnlineAlg<Horspool>();
 }
 
 
 SEQAN_DEFINE_TEST(test_find_online_ShiftAnd) {
-    Test_OnlineAlg<ShiftAnd>();   
+    Test_OnlineAlg<ShiftAnd>();
 }
 
 
 SEQAN_DEFINE_TEST(test_find_online_ShiftOr) {
-    Test_OnlineAlg<ShiftOr>();   
+    Test_OnlineAlg<ShiftOr>();
 }
 
 
 SEQAN_DEFINE_TEST(test_find_online_BndmAlgo) {
-    Test_OnlineAlg<BndmAlgo>();   
+    Test_OnlineAlg<BndmAlgo>();
 }
 
 
 SEQAN_DEFINE_TEST(test_find_online_BFAM_Oracle) {
-    Test_OnlineAlg<Bfam<Oracle> >();   
+    Test_OnlineAlg<Bfam<Oracle> >();
 }
 
 
 SEQAN_DEFINE_TEST(test_find_online_BFAM_Trie) {
-    Test_OnlineAlg<Bfam<Trie> >();   
+    Test_OnlineAlg<Bfam<Trie> >();
 }
 
 
@@ -1399,7 +1399,7 @@ SEQAN_DEFINE_TEST(test_find_hamming_simple) {
         SEQAN_ASSERT_EQ(-1, score(pattern));
         SEQAN_ASSERT_EQ(-1, getScore(pattern));
     }
-    
+
     // Test for distance 0;
     {
         // TODO(holtgrew): Should be const, but finder does not allow this.
@@ -1583,7 +1583,7 @@ SEQAN_DEFINE_TEST(test_find_on_segments) {
     // TODO(holtgrew): Should be const.
     CharString kHaystack = "CGATCGAT";
     CharString kNeedle = "GATC";
-    
+
     test_find_on_segments_Helper<>(kHaystack, kNeedle);
 
     Segment<CharString, PrefixSegment> myPrefix(prefix(kNeedle, 1));
@@ -1611,7 +1611,7 @@ SEQAN_DEFINE_TEST(test_myers_trigger_bug) {
 //     std::cout << "haystack length = " << length(haystackString) << std::endl
 //               << "needle length = " << length(needleString) << std::endl
 //               << "machine word length = " << sizeof(unsigned) * 8 << std::endl;
-    
+
     for (int maxDistance = 0; maxDistance < 10; ++maxDistance) {
         for (unsigned beginPosition = 0; beginPosition < length(haystackString) - length(needleString); ++beginPosition) {
 //             std::cout << "max distance = " << maxDistance << ", begin position = " << beginPosition << std::endl;
@@ -1619,7 +1619,7 @@ SEQAN_DEFINE_TEST(test_myers_trigger_bug) {
 //             std::cout << "haystack = " << haystackSegment << std::endl;
 //             std::cout << "needle = " << needleString << std::endl;
 //             std::cout << "-----------------------" << std::endl;
-        
+
             String<size_t> positionsMyers;
             {
                 TSegmentRev segment(infix(haystackString, beginPosition, length(haystackString)));
@@ -1629,7 +1629,7 @@ SEQAN_DEFINE_TEST(test_myers_trigger_bug) {
                     appendValue(positionsMyers, endPosition(finder));
                 }
             }
-            
+
             String<size_t> positionsDpSearch;
             {
                 TSegmentRev segment(infix(haystackString, beginPosition, length(haystackString)));
@@ -1639,7 +1639,7 @@ SEQAN_DEFINE_TEST(test_myers_trigger_bug) {
                     appendValue(positionsDpSearch, endPosition(finder));
                 }
             }
-            
+
 //             std::cout << "Myers end positions: " << std::endl;
 //             for (size_t i = 0; i < length(positionsMyers); ++i)
 //                 std::cout << positionsMyers[i] << " ";
@@ -1648,7 +1648,7 @@ SEQAN_DEFINE_TEST(test_myers_trigger_bug) {
 //             for (size_t i = 0; i < length(positionsDpSearch); ++i)
 //                 std::cout << positionsDpSearch[i] << " ";
 //             std::cout << std::endl;
-            
+
             SEQAN_ASSERT_EQ(length(positionsDpSearch), length(positionsMyers));
             for (unsigned i = 0; i < length(positionsMyers); ++i)
                 SEQAN_ASSERT_EQ_MSG(positionsDpSearch[i], positionsMyers[i], "i = %u", i);
@@ -1693,6 +1693,8 @@ void test_pattern_copycon() {
     typedef Pattern<CharString, TPatternSpec> TPattern;
     TPattern p1("Some needle");
     TPattern p2(p1);
+    TPattern const p3(p2);
+    TPattern const p4(p3);
 }
 
 template <typename TPatternSpec>
@@ -1701,7 +1703,112 @@ void test_pattern_assign() {
     typedef Pattern<CharString, TPatternSpec> TPattern;
     TPattern p1("Some needle");
     TPattern p2;
+    TPattern const p3(p1);
+    TPattern p4;
     p2 = p1;
+    p4 = p3;
+}
+
+template <typename TPatternSpec>
+void test_pattern_movecon() {
+    typedef Pattern<CharString, TPatternSpec> TPattern;
+    TPattern p1("Some needle");
+    TPattern p2(std::move(p1));
+    TPattern const p3(std::move(p2));
+    TPattern const p4(std::move(p3));
+}
+
+template <typename TPatternSpec>
+void test_pattern_moveassign() {
+    SEQAN_CHECKPOINT;
+    typedef Pattern<CharString, TPatternSpec> TPattern;
+    TPattern p1("Some needle");
+    TPattern p2;
+    TPattern const p3(p1);
+    TPattern p4;
+    p2 = std::move(p1);
+    p4 = std::move(p3);
+}
+
+template <typename TPatternSpec>
+void test_pattern_set_host()
+{
+    typedef Pattern<DnaString, TPatternSpec> TPattern;
+
+    {  // Set to lvalue reference.
+        TPattern p;
+        DnaString ndl = "AGTGGATAGAGAT";
+        setHost(p, ndl);
+
+        SEQAN_ASSERT(&host(p) == &ndl);
+    }
+
+    {  // Set to lvalue with different alphabet causing the source to be changed.
+        DnaString ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, ndl);
+        SEQAN_ASSERT_EQ(&host(p), &ndl);
+
+        CharString ndl2 = "AT CARLS";
+        setHost(p, ndl2);
+        SEQAN_ASSERT(&host(p) == &ndl);
+        SEQAN_ASSERT_EQ(ndl, "ATACAAAA");
+        SEQAN_ASSERT_EQ(ndl2, "AT CARLS");
+    }
+
+    {  // Set to const lvalue reference with different alphabet causing the source to be changed.
+        DnaString const ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, ndl);
+        SEQAN_ASSERT(&host(p) != &ndl);
+        SEQAN_ASSERT_EQ(host(p), ndl);
+
+        CharString ndl2 = "AT CARLS";
+        setHost(p, ndl2);
+        SEQAN_ASSERT(&host(p) != &ndl);
+        SEQAN_ASSERT_EQ(ndl, "AGTGGATAGAGAT");
+        SEQAN_ASSERT_EQ(ndl2, "AT CARLS");
+        SEQAN_ASSERT_EQ(host(p), "ATACAAAA");
+    }
+
+    {  // Set with rvalue reference.
+        DnaString ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, std::move(ndl));
+        SEQAN_ASSERT(&host(p) != &ndl);
+        SEQAN_ASSERT_EQ(host(p), "AGTGGATAGAGAT");
+    }
+
+    {  // Set to rvalue reference after setting holder dependent.
+        DnaString ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, ndl);
+        SEQAN_ASSERT(&host(p) == &ndl);
+
+        CharString ndl2 = "AT CARLS";
+        setHost(p, std::move(ndl2));
+        SEQAN_ASSERT(&host(p) == &ndl);
+        SEQAN_ASSERT_EQ(ndl, "ATACAAAA");
+        SEQAN_ASSERT_EQ(host(p), "ATACAAAA");
+    }
+
+    {  // Set to rvalue reference before setting holder dependent.
+        DnaString ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, std::move(ndl));
+        SEQAN_ASSERT(&host(p) != &ndl);
+        SEQAN_ASSERT_EQ(host(p), "AGTGGATAGAGAT");
+
+        CharString ndl2 = "AT CARLS";
+        setHost(p, ndl2);
+        SEQAN_ASSERT_EQ(host(p), "ATACAAAA");
+    }
+
+    {  // Set to rvalue with different alphabet.
+        TPattern p;
+        setHost(p, "AT CARLS");
+        SEQAN_ASSERT_EQ(host(p), "ATACAAAA");
+    }
 }
 
 SEQAN_DEFINE_TEST(test_pattern_copycon) {
@@ -1730,6 +1837,47 @@ SEQAN_DEFINE_TEST(test_pattern_assign) {
     test_pattern_assign<Bfam<Trie> >();
 }
 
+SEQAN_DEFINE_TEST(test_pattern_movecon) {
+    test_pattern_movecon<Simple>();
+    test_pattern_movecon<Horspool>();
+    test_pattern_movecon<ShiftAnd>();
+    test_pattern_movecon<ShiftOr>();
+    test_pattern_copycon<HammingSimple>();
+    test_pattern_copycon<WildShiftAnd>();
+    test_pattern_copycon<Bfam<Oracle> >();
+    test_pattern_copycon<Bfam<Trie> >();
+}
+
+SEQAN_DEFINE_TEST(test_pattern_moveassign) {
+    test_pattern_moveassign<Simple>();
+    test_pattern_moveassign<Horspool>();
+    test_pattern_moveassign<ShiftAnd>();
+    test_pattern_moveassign<ShiftOr>();
+    test_pattern_assign<HammingSimple>();
+    test_pattern_assign<WildShiftAnd>();
+    test_pattern_assign<Bfam<Oracle> >();
+    test_pattern_assign<Bfam<Trie> >();
+}
+
+// TODO(rrahn): Should be a typed test for all pattern classes.
+SEQAN_DEFINE_TEST(test_pattern_set_host) {
+    test_pattern_set_host<Simple>();
+    test_pattern_set_host<Horspool>();
+    test_pattern_set_host<ShiftAnd>();
+    test_pattern_set_host<ShiftOr>();
+    test_pattern_set_host<HammingSimple>();
+    test_pattern_set_host<WildShiftAnd>();
+    test_pattern_set_host<Bfam<Oracle> >();
+    test_pattern_set_host<Bfam<Trie> >();
+    test_pattern_set_host<Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, void> >();
+    test_pattern_set_host<Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, Myers<FindPrefix> > >();
+    test_pattern_set_host<Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, void> >();
+    test_pattern_set_host<Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, Myers<FindPrefix> > >();
+    test_pattern_set_host<Myers<FindInfix, void> >();
+    test_pattern_set_host<Myers<FindInfix, Myers<FindPrefix> > >();
+    test_pattern_set_host<Myers<FindPrefix, void> >();
+    test_pattern_set_host<Myers<FindPrefix, Myers<FindPrefix> > >();
+}
 
 SEQAN_BEGIN_TESTSUITE(test_find) {
 //     SEQAN_CALL_TEST(test_myers_trigger_bug);
@@ -1783,6 +1931,10 @@ SEQAN_BEGIN_TESTSUITE(test_find) {
 
     SEQAN_CALL_TEST(test_pattern_copycon);
     SEQAN_CALL_TEST(test_pattern_assign);
+
+    SEQAN_CALL_TEST(test_pattern_movecon);
+    SEQAN_CALL_TEST(test_pattern_moveassign);
+    SEQAN_CALL_TEST(test_pattern_set_host);
 
     // Verify checkpoints in all files in this module.
     SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_hamming_simple.h");

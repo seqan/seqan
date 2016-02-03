@@ -207,7 +207,7 @@ template <typename TValue>
 struct Result<Accumulator<TValue, AccuAverage>, AccuSum>
 {
     typedef typename IfC<Is<IntegerConcept<TValue> >::VALUE,
-                         __int64,
+                         int64_t,
                          double>::Type Type;
 };
 

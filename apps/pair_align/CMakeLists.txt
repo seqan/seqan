@@ -6,18 +6,17 @@
 # CMakeLists.txt file for pair_align.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_apps_pair_align)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_apps_pair_align CXX)
 message (STATUS "Configuring apps/pair_align")
 
-set (SEQAN_APP_VERSION "1.2")
+set (SEQAN_APP_VERSION "1.3")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

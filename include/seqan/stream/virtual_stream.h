@@ -40,15 +40,6 @@
 #ifndef SEQAN_STREAM_VIRTUAL_STREAM_
 #define SEQAN_STREAM_VIRTUAL_STREAM_
 
-#if SEQAN_HAS_ZLIB
-#include "iostream_zip.h"
-#include "iostream_bgzf.h"
-#endif
-
-#if SEQAN_HAS_BZIP2
-#include "iostream_bzip2.h"
-#endif
-
 namespace seqan {
 
 // ============================================================================
@@ -83,28 +74,6 @@ typedef
     >
 #endif
     CompressedFileTypes;  // if TagSelector is set to -1, the file format is auto-detected
-
-// --------------------------------------------------------------------------
-// TagList CompressedFileTypes
-// --------------------------------------------------------------------------
-// NOTE(h-2): this currently lacks BGZF, so that we don't get .fasta.bam, .m8.bam ...
-// in the long term bgzf should just not contain .bam but that would require more changes
-
-typedef
-#if SEQAN_HAS_ZLIB
-    TagList<GZFile,
-#endif
-#if SEQAN_HAS_BZIP2
-    TagList<BZ2File,
-#endif
-    TagList<Nothing>
-#if SEQAN_HAS_BZIP2
-    >
-#endif
-#if SEQAN_HAS_ZLIB
-    >
-#endif
-    CompressedFileTypesWithoutBgzf_;
 
 // ============================================================================
 // Metafunctions
@@ -533,6 +502,9 @@ _getUncompressedBasename(TFilename const & fileName, BgzfFile const &)
 
     if (endsWith(lowcaseFileName, ".bgzf"))
         return prefix(fileName, length(fileName) - 5);
+
+    if (endsWith(lowcaseFileName, ".gz"))
+        return prefix(fileName, length(fileName) - 3);
 
     return prefix(fileName, length(fileName));
 }

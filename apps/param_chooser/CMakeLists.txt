@@ -6,18 +6,17 @@
 # CMakeLists.txt file for param_chooser.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_apps_param_chooser)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_apps_param_chooser CXX)
 message (STATUS "Configuring apps/param_chooser")
 
-set (SEQAN_APP_VERSION "0.0.0")
+set (SEQAN_APP_VERSION "0.0.1")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

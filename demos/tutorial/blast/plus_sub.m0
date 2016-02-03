@@ -1,0 +1,71 @@
+BLASTX 2.2.26+
+
+
+Reference: Stephen F. Altschul, Thomas L. Madden, Alejandro A.
+Schaffer, Jinghui Zhang, Zheng Zhang, Webb Miller, and David J.
+Lipman (1997), "Gapped BLAST and PSI-BLAST: a new generation of
+protein database search programs", Nucleic Acids Res. 25:3389-3402.
+
+
+
+Database: /foo/bar/uniprot_sprot.fasta
+           538,259 sequences; 191,113,170 total letters
+
+[...]
+
+Query= SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853
+
+Length=833
+                                                                      Score     E
+Sequences producing significant alignments:                          (Bits)  Value
+
+  sp|Q0HTA5|META_SHESR Homoserine O-succinyltransferase OS=Shewan...   152    3e-42
+  sp|Q0HGZ8|META_SHESM Homoserine O-succinyltransferase OS=Shewan...   152    3e-42
+
+
+> sp|Q0HTA5|META_SHESR Homoserine O-succinyltransferase OS=Shewanella 
+sp. (strain MR-7) GN=metA PE=3 SV=1
+Length=313
+
+ Score =  152 bits (385),  Expect = 3e-42
+ Identities = 77/77 (100%), Positives = 77/77 (100%), Gaps = 0/77 (0%)
+ Frame = -2
+
+Query  232  MPVKIPDHLPAAGILESENIFVMSETRAANQDIRPMKVLILNLMPNKIETETQLLRLLGN  53
+            MPVKIPDHLPAAGILESENIFVMSETRAANQDIRPMKVLILNLMPNKIETETQLLRLLGN
+Sbjct  1    MPVKIPDHLPAAGILESENIFVMSETRAANQDIRPMKVLILNLMPNKIETETQLLRLLGN  60
+
+Query  52   TPLQVDVDLLRIHDKES  2
+            TPLQVDVDLLRIHDKES
+Sbjct  61   TPLQVDVDLLRIHDKES  77
+
+
+> sp|Q0HGZ8|META_SHESM Homoserine O-succinyltransferase OS=Shewanella 
+sp. (strain MR-4) GN=metA PE=3 SV=1
+Length=313
+
+ Score =  152 bits (385),  Expect = 3e-42
+ Identities = 77/77 (100%), Positives = 77/77 (100%), Gaps = 0/77 (0%)
+ Frame = -2
+
+Query  232  MPVKIPDHLPAAGILESENIFVMSETRAANQDIRPMKVLILNLMPNKIETETQLLRLLGN  53
+            MPVKIPDHLPAAGILESENIFVMSETRAANQDIRPMKVLILNLMPNKIETETQLLRLLGN
+Sbjct  1    MPVKIPDHLPAAGILESENIFVMSETRAANQDIRPMKVLILNLMPNKIETETQLLRLLGN  60
+
+Query  52   TPLQVDVDLLRIHDKES  2
+            TPLQVDVDLLRIHDKES
+Sbjct  61   TPLQVDVDLLRIHDKES  77
+
+
+
+Lambda     K      H
+   0.318    0.134    0.401 
+
+Gapped
+Lambda     K      H
+   0.267   0.0410    0.140 
+
+Effective search space used: 20716695286
+
+
+[...]

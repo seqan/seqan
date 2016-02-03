@@ -35,9 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_MYERS_UKKONEN_H
 #define SEQAN_HEADER_FIND_MYERS_UKKONEN_H
 
-#include <seqan/misc/sse2.h>
-
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -300,6 +298,15 @@ public:
             largeState = new TLargeState(*other.largeState);
     }
 
+    // Add move constructor.
+    PatternState_(PatternState_ && other):
+        TSmallState(std::forward<PatternState_>(other)),
+        largeState(NULL)
+    {
+        largeState = other.largeState;
+        other.largeState = NULL;
+    }
+
     ~PatternState_()
     {
         delete largeState;
@@ -320,6 +327,19 @@ public:
         }
         return *this;
     }
+
+    // Add move assignment.
+    PatternState_&
+    operator=(PatternState_ && other)
+    {
+        TSmallState::operator=(std::forward<PatternState_>(other));
+        delete largeState;
+        largeState = NULL; // *this is now in a valid state in case of self assignment.
+        largeState = other.largeState;
+        other.largeState = NULL;  // We moved the data.
+        return *this;
+    }
+
 };
 
 
@@ -336,6 +356,7 @@ struct MyersSmallPattern_
     typedef unsigned long TWord;
 #endif
 
+    Holder<TNeedle> data_host;   // Hold a reference to the needle
     String<TWord> bitMasks;        // encode the needle with bitmasks for each alphabet character
     unsigned needleSize;        // needle size
 
@@ -413,12 +434,22 @@ public:
             largePattern = new TLargePattern(*other.largePattern);
     }
 
+    // Add move constructor.
+    Pattern(Pattern && other) :
+        TSmallPattern(std::forward<Pattern>(other)),
+        TPatternState(std::forward<Pattern>(other)),
+        largePattern(NULL)
+    {
+        largePattern = other.largePattern;
+        other.largePattern = NULL;
+    }
+
     template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl, int _limit = -1):
+    Pattern(TNeedle2 && ndl, int _limit = -1) :
         largePattern(NULL)
     {
         setScoreLimit(*this, _limit);
-        setHost(*this, ndl);
+        setHost(*this, std::forward<TNeedle2>(ndl));
     }
 
     ~Pattern()
@@ -440,6 +471,19 @@ public:
             delete largePattern;
             largePattern = NULL;
         }
+        return *this;
+    }
+
+    // Add move assignment.
+    Pattern &
+    operator= (Pattern && other)
+    {
+        TSmallPattern::operator=(std::forward<Pattern>(other));
+        TPatternState::operator=(std::forward<Pattern>(other));
+        delete largePattern;  // delete old data.
+        largePattern = NULL;  // *this is now in a valid state in case of self-assignment.
+        largePattern = other.largePattern;  // Move data.
+        other.largePattern = NULL;  // Reset other to default.
         return *this;
     }
 };
@@ -615,110 +659,11 @@ _patternMatchNOfFinder(Pattern<TNeedle, Myers<TSpec, THasState, void> > & patter
     _patternMatchNOfFinderImpl(pattern, match);
 }
 
-
-// data_host is not used anymore, the needle can be reconstructed from the bitmasks
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec, typename TNeedle2>
-inline void
-_myersSetHost(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > &, TNeedle2 const &)
-{
-}
-
-template <typename TNeedle, typename TSpec, typename TFinderCSP, typename TPatternCSP, typename THasState, typename TFindBeginPatternSpec, typename TNeedle2>
-inline void
-_myersSetHost(Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > & pattern, TNeedle2 const & ndl)
-{
-    setValue(pattern.data_host, ndl);
-}
-
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec, typename TNeedle2>
-inline void
-setHost(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > & pattern, TNeedle2 & ndl)
-{
-    _myersSetHost(pattern, ndl);
-    _patternFirstInit(pattern, ndl);
-}
-
-
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec, typename TNeedle2>
-inline void
-setHost(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > & pattern, TNeedle2 const & ndl)
-{
-    _myersSetHost(pattern, ndl);
-    _patternFirstInit(pattern, ndl);
-}
-
-
-//____________________________________________________________________________
-
-
-template <typename TNeedle, typename TSpec, typename TFinderCSP, typename TPatternCSP, typename THasState, typename TFindBeginPatternSpec>
-inline typename Host<Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > >::Type &
-host(Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > & pattern)
-{
-SEQAN_CHECKPOINT
-    return value(pattern.data_host);
-}
-
-
-template <typename TNeedle, typename TSpec, typename TFinderCSP, typename TPatternCSP, typename THasState, typename TFindBeginPatternSpec>
-inline typename Host<Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > const>::Type &
-host(Pattern<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, THasState, TFindBeginPatternSpec> > const & pattern)
-{
-SEQAN_CHECKPOINT
-    return value(pattern.data_host);
-}
-
-
 template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-inline TNeedle
-host(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > const & pattern)
+inline void
+_reinitPattern(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > & pattern)
 {
-SEQAN_CHECKPOINT
-
-    typedef typename Pattern<TNeedle, Myers<TSpec, TFindBeginPatternSpec> >::TWord TWord;
-    typedef typename Value<TNeedle>::Type TValue;
-
-    TNeedle temp;
-    resize(temp, pattern.needleSize, Exact());
-
-    unsigned blockCount = (pattern.needleSize + pattern.MACHINE_WORD_SIZE - 1) / pattern.MACHINE_WORD_SIZE;
-    TValue v = TValue();
-    for (unsigned i = 0; i < length(pattern.bitMasks); i += blockCount)
-    {
-        for (unsigned j = 0; j < pattern.needleSize; j++)
-            if ((pattern.bitMasks[i + j / pattern.MACHINE_WORD_SIZE] & (TWord)1 << (j % pattern.MACHINE_WORD_SIZE)) != (TWord)0)
-                temp[j] = v;
-        ++v;
-    }
-    return temp;
-}
-
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-inline TNeedle
-host(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > & pattern)
-{
-SEQAN_CHECKPOINT
-    typedef Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > TPattern;
-    return host(const_cast<TPattern const &>(pattern));
-}
-
-//____________________________________________________________________________
-
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-inline TNeedle
-needle(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > const & pattern)
-{
-SEQAN_CHECKPOINT
-    return host(pattern);
-}
-
-template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
-inline TNeedle
-needle(Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > & pattern)
-{
-SEQAN_CHECKPOINT
-    typedef Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > TPattern;
-    return host(const_cast<TPattern const &>(pattern));
+    _patternFirstInit(pattern, needle(pattern));
 }
 
 //____________________________________________________________________________
@@ -960,7 +905,7 @@ _myersGetBitmask(PatternState_<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP,
         return 0;
 
     if (IsSameType<TFinderCSP, NMatchesAll_>::VALUE && value == unknownValue<TValue>())
-        return (shift < BitsPerValue<TWord>::VALUE)? -1 << shift: -1;
+        return static_cast<TWord>((shift < BitsPerValue<TWord>::VALUE) ? (~0u << shift) : ~0u);
 
     unsigned ord = ordValue(value);
     TWord res;
@@ -1157,14 +1102,14 @@ _patternInitSmallStateBanded(
         TWord HP = VN | ~(VP | D0);
     //    const int PADDING = sizeof(TWord)*2 + 1;
     //    std::cerr << std::hex;
-    //    std::cerr << "\tD0"<<std::setw(PADDING)<<(__uint64)D0<<"\tHN"<<std::setw(PADDING)<<(__uint64)HN<<"\tHP"<<std::setw(PADDING)<<(__uint64)HP << std::endl;
+    //    std::cerr << "\tD0"<<std::setw(PADDING)<<(uint64_t)D0<<"\tHN"<<std::setw(PADDING)<<(uint64_t)HN<<"\tHP"<<std::setw(PADDING)<<(uint64_t)HP << std::endl;
 
         // moving register down corresponds to shifting HP/HN up (right shift)
         // HP/HN --> shift --> VP/VN (modified Myers)
         X = D0 >> 1;
         VN = X & HP;
         VP = HN | ~(X | HP);
-    //    std::cerr << "\t  "<<std::setw(PADDING)<<' '<<"\tVN"<<std::setw(PADDING)<<(__uint64)VN<<"\tVP"<<std::setw(PADDING)<<(__uint64)VP << std::endl;
+    //    std::cerr << "\t  "<<std::setw(PADDING)<<' '<<"\tVN"<<std::setw(PADDING)<<(uint64_t)VN<<"\tVP"<<std::setw(PADDING)<<(uint64_t)VP << std::endl;
     //    std::cerr << std::dec;
 
 #ifdef SEQAN_DEBUG_MYERSBITVECTOR
@@ -1499,11 +1444,11 @@ _findMyersSmallPatternsBanded(
         TWord HP = VN | ~(VP | D0);
     //    const int PADDING = sizeof(TWord)*2 + 1;
     //    std::cerr << std::hex;
-    //    std::cerr << "\tD0"<<std::setw(PADDING)<<(__uint64)D0<<"\tHN"<<std::setw(PADDING)<<(__uint64)HN<<"\tHP"<<std::setw(PADDING)<<(__uint64)HP<<std::endl;
+    //    std::cerr << "\tD0"<<std::setw(PADDING)<<(uint64_t)D0<<"\tHN"<<std::setw(PADDING)<<(uint64_t)HN<<"\tHP"<<std::setw(PADDING)<<(uint64_t)HP<<std::endl;
         X = (HP << 1) | 1;
         VN = X & D0;
         VP = (HN << 1) | ~(X | D0);
-    //    std::cerr << "\t  "<<std::setw(PADDING)<<' '<<"\tVN"<<std::setw(PADDING)<<(__uint64)VN<<"\tVP"<<std::setw(PADDING)<<(__uint64)VP<<std::endl;
+    //    std::cerr << "\t  "<<std::setw(PADDING)<<' '<<"\tVN"<<std::setw(PADDING)<<(uint64_t)VN<<"\tVP"<<std::setw(PADDING)<<(uint64_t)VP<<std::endl;
     //    std::cerr << std::dec;
         errors += (HP >> (BitsPerValue<TWord>::VALUE - 2)) & 1;
         errors -= (HN >> (BitsPerValue<TWord>::VALUE - 2)) & 1;

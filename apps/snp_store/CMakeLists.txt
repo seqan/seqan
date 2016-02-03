@@ -6,18 +6,18 @@
 # CMakeLists.txt file for SNP Store.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_apps_snp_store)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_apps_snp_store CXX)
 message (STATUS "Configuring apps/snp_store")
 
-set (SEQAN_APP_VERSION "1.2")
+set (SEQAN_APP_VERSION "1.3")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB)
+find_package (ZLIB)
 find_package (SeqAn REQUIRED)
 
 # Search BOOST, snp_store is not built if Boost is not found.

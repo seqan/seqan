@@ -131,7 +131,6 @@ public:
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     String(String && source, Move const &)
         : data_begin(0),
           data_end(0),
@@ -140,7 +139,6 @@ public:
         move(*this, source);
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
-#endif
 
     template <typename TSource, typename TSize>
     String(TSource & source, TSize limit)

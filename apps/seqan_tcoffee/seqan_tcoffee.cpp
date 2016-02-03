@@ -1,6 +1,6 @@
 /*==========================================================================
                SeqAn - The Library for Sequence Analysis
-                         http://www.seqan.de 
+                         http://www.seqan.de
 ============================================================================
 Copyright (C) 2007
 
@@ -14,6 +14,8 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Lesser General Public License for more details.
 ==========================================================================*/
+
+//#define SEQAN_TCOFFEE_DEBUG
 
 #include <seqan/basic.h>
 #include <seqan/graph_msa.h>
@@ -131,7 +133,7 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
     getOptionValue(msaOpt.outfile, parser, "outfile");
 
     String<char> optionVal;
-    
+
  /*   getOptionValue(optionVal, parser, "format");
     if (optionVal == "fasta")
         msaOpt.outputFormat = 0;
@@ -139,7 +141,7 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
         msaOpt.outputFormat = 1;
 */
     // *********************************************
-    
+
     // Set segment match generation options
     ::std::string tmpVal;
     for (unsigned int optNo = 0; optNo < getOptionValueCount(parser, "method"); ++optNo)
@@ -162,7 +164,31 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
             appendValue(msaOpt.method, 3);
         }
     }
-    
+
+    msaOpt.isDefaultPairwiseAlignment = !isSet(parser, "pairwise-alignment");
+    if (!msaOpt.isDefaultPairwiseAlignment)
+    {
+        getOptionValue(tmpVal, parser, "pairwise-alignment");
+        if (tmpVal == "unbanded")
+        {
+            msaOpt.pairwiseAlignmentMethod = 1;
+        }
+        else if (tmpVal == "banded")
+        {
+            msaOpt.pairwiseAlignmentMethod = 2;
+        }
+    }
+    if (isSet(parser, "band-width")) {
+        if (msaOpt.pairwiseAlignmentMethod == 1)
+        {
+            std::cerr << "Ambiguous pairwise alignment method. Band width cannot be specified for an unbanded method" << std::endl;
+            std::exit(0);
+        }
+        msaOpt.isDefaultPairwiseAlignment = false;
+        msaOpt.pairwiseAlignmentMethod = 2;
+    }
+    getOptionValue(msaOpt.bandWidth, parser, "band-width");
+
     for (unsigned int optNo = 0; optNo < getOptionValueCount(parser, "libraries"); ++optNo)
     {
         getOptionValue(tmpVal, parser, "libraries", optNo);
@@ -175,7 +201,7 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
                 else if(endsWith(tmpVal,".aln"))
                         appendValue(msaOpt.alnfiles, tmpVal);
     }
-    
+
 /*
     for (unsigned int optNo = 0; optNo < getOptionValueCount(parser, "blast"); ++optNo)
     {
@@ -201,7 +227,7 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
         appendValue(msaOpt.alnfiles, tmpVal);
     }
 */
-    
+
 // Set scoring options
     msaOpt.sc = scMat;
     getOptionValue(msaOpt.sc.data_gap_open, parser, "gop");
@@ -321,7 +347,7 @@ _setUpArgumentParser(ArgumentParser & parser)
     setDate(parser, SEQAN_DATE);
     setAppName(parser,"seqan_tcoffee");
     setCategory(parser, "Sequence Alignment");
-    
+
     setShortDescription(parser, "Multiple sequence alignment");
 
     addUsageLine(parser, "-s <\\fIFASTA FILE\\fP> [\\fIOPTIONS\\fP]");
@@ -360,8 +386,23 @@ _setUpArgumentParser(ArgumentParser & parser)
               ArgParseOption("l", "libraries", "Name of match file. "
                              "To select multiple files recall this option with different arguments.",
                              ArgParseArgument::INPUT_FILE, "", true));
-    
+
     setValidValues(parser, "l", "blast mums aln lib");  // allow blast, mummer aln and tcoffee lib files
+
+    addOption(parser,
+              ArgParseOption("pa", "pairwise-alignment", "Pairwise alignment method. "
+                             "Default: \\fIunbanded\\fP for usual alignments (< 50 sequences), "
+                             "\\fIbanded\\fP for deep alignments (>= 50 sequences)",
+                             ArgParseArgument::STRING));
+    setValidValues(parser, "pa", "unbanded banded");
+
+    addOption(parser,
+              ArgParseOption("bw", "band-width", "Band width. "
+                             "This option automatically select \\fIbanded\\fP pairwise alignment "
+                             "(see \\fBpa\\fP for details)",
+                             ArgParseArgument::INTEGER));
+    setDefaultValue(parser, "bw", 60);
+    setMinValue(parser, "bw", "2");
 
     // code before KNIME adaption
     /*   addOption(parser,
@@ -426,6 +467,11 @@ _setUpArgumentParser(ArgumentParser & parser)
 
 int main(int argc, const char *argv [])
 {
+#ifdef SEQAN_TCOFFEE_DEBUG
+    double totalStartTime = sysTime();
+    std::cout << std::fixed << std::setprecision(5);
+#endif
+
     // Command line parsing
     ArgumentParser parser("seqan_tcoffee");
     _setUpArgumentParser(parser);
@@ -456,6 +502,10 @@ int main(int argc, const char *argv [])
         _initScoreMatrix(parser, Rna5());
     else
         _initScoreMatrix(parser, AminoAcid());
+
+#ifdef SEQAN_TCOFFEE_DEBUG
+    std::cout << std::setw(30) << std::left << "Total time:" << std::setw(10) << std::right << sysTime() - totalStartTime << "  s" << std::endl;
+#endif
 
     return 0;
 }

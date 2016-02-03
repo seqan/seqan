@@ -434,10 +434,10 @@ _parseOptions(ArgumentParser & parser, TOptions & options)
     getOptionValue(options.disabledQueriesFile, parser, "outDisabled");
     getOptionValue(options.noRT, parser, "no-rt");
 
-    CharString tmp = options.outputFile; 
-    toLower(tmp); 
-    
-    if (endsWith(tmp, ".gff")) 
+    CharString tmp = options.outputFile;
+    toLower(tmp);
+
+    if (endsWith(tmp, ".gff"))
         options.outputFormat = "gff";
     else if (endsWith(tmp, ".txt"))
         options.outputFormat = "txt";
@@ -581,6 +581,8 @@ void _setParser(ArgumentParser & parser)
 
 // TODO(holtgrew): Move this into a SeqAn misc module.
 
+// not supported anymore in vc2015
+// https://msdn.microsoft.com/en-us/library/bb531344.aspx
 class ScientificNotationExponentOutputNormalizer
 {
 public:
@@ -589,20 +591,11 @@ public:
     ScientificNotationExponentOutputNormalizer() :
         _oldExponentFormat(0)
     {
-#ifdef PLATFORM_WINDOWS_VS
-        // Set scientific format to print two places.
-        unsigned _oldExponentFormat = _set_output_format(_TWO_DIGIT_EXPONENT);
-#endif
     }
 
     ~ScientificNotationExponentOutputNormalizer()
     {
-#ifdef PLATFORM_WINDOWS_VS
-        // Enable old exponent format.
-        _set_output_format(_oldExponentFormat);
-#endif
     }
-
 };
 
 ///////////////////////////////////////////////////////////////////////////////

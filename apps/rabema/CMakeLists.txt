@@ -6,18 +6,18 @@
 # CMakeLists.txt file for Rabema.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_apps_rabema)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_apps_rabema CXX)
 message (STATUS "Configuring apps/rabema")
 
-set (SEQAN_APP_VERSION "1.2.1")
+set (SEQAN_APP_VERSION "1.2.2")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB)
+find_package (ZLIB)
 find_package (SeqAn REQUIRED)
 
 if (NOT ZLIB_FOUND)

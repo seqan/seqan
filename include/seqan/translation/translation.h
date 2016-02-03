@@ -195,7 +195,7 @@ _translateString(TOutString & target,
 
 template <typename TOutString, typename TSpec, typename TInString, GeneticCodeSpec CODE_SPEC>
 inline void
-_translateString(Segment<TOutString, TSpec> SEQAN_FORWARD_RETURN target,
+_translateString(Segment<TOutString, TSpec> && target,
                  TInString const & source,
                  GeneticCode<CODE_SPEC> const & /**/)
 {
@@ -494,8 +494,7 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  * the latter is possible).
  *
  * Please note that specifying the GeneticCode at compile time avoids having
- * unrequired conversion tables in memory. The implementation profits slightly
- * from having SEQAN_CXX11_STANDARD defined.
+ * unrequired conversion tables in memory.
  * @section Example
  *
  * @code{.cpp}

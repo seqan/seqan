@@ -48,10 +48,9 @@ Tutorial
    Tutorial/VcfIO
    Tutorial/BedIO
    Tutorial/GffAndGtfIO
+   Tutorial/BlastIO
 
    Tutorial/Modifiers
-
-   Tutorial/Randomness
 
    Tutorial/SeedAndExtend
 
@@ -190,11 +189,6 @@ The article :ref:`build-manual-integration-with-your-own-build-system` contains 
 :ref:`tutorial-modifiers`
   Modifiers Modifiers can be used to change the elements of a container without touching them.
   Here you will see, what modifiers are available in SeqAn.
-
-.. rubric:: :rubric-heading2:`Randomness`
-
-:ref:`tutorial-randomness`
-  This chapter shows module random that provides pseudo random number generation functionality.
 
 .. rubric:: :rubric-heading2:`Seed-And-Extend`
 

@@ -81,7 +81,7 @@ public:
     TRng & rng;
 
     // The length of the contigs.
-    std::vector<__int64> lengthSums;
+    std::vector<int64_t> lengthSums;
     // The number of haplotypes.
     int numHaplotypes;
 

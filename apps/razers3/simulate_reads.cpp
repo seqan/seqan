@@ -1,10 +1,10 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <random>
 
 #include <seqan/arg_parse.h>
 #include <seqan/store.h>
-#include <seqan/random.h>
 #include <seqan/parallel.h>
 
 #ifdef _OPENMP
@@ -16,17 +16,17 @@ using namespace seqan;
 template <typename TReads, typename TErrorDist, typename TStore>
 void simulateReads(TReads & reads, TErrorDist const & errorDist, TStore const & store)
 {
-    String<Rng<MersenneTwister> > rng;
+    String<std::mt19937 > rng;
 #ifdef _OPENMP
     resize(rng, omp_get_max_threads());
 #else
     resize(rng, 1);
 #endif
 
-    Pdf<Uniform<unsigned> > pdfContig(0, length(store.contigStore) - 1);
-    Pdf<Uniform<unsigned> > pdfOrientation(0, 1);
-    Pdf<Uniform<double> >   pdfFrac(0.0, 1.0);
-    Pdf<Uniform<unsigned> > pdfSubstitute(1, 3);
+    std::uniform_int_distribution<unsigned> distContig(0, length(store.contigStore) - 1);
+    std::uniform_int_distribution<unsigned> distOrientation(0, 1);
+    std::uniform_real_distribution<double> distFrac(0.0, 1.0);
+    std::uniform_int_distribution<unsigned> distSubstitute(1, 3);
     unsigned readLen = length(errorDist);
 
     SEQAN_OMP_PRAGMA(parallel for)
@@ -36,14 +36,14 @@ void simulateReads(TReads & reads, TErrorDist const & errorDist, TStore const & 
 #ifdef _OPENMP
         id = omp_get_thread_num();
 #endif
-        unsigned contigId = pickRandomNumber(rng[id], pdfContig);
+        unsigned contigId = distContig(rng[id]);
         unsigned pos;
         bool ok;
 
         do
         {
-            Pdf<Uniform<unsigned> > pdfPos(0, length(store.contigStore[contigId].seq) - readLen);
-            pos = pickRandomNumber(rng[id], pdfPos);
+            std::uniform_int_distribution<unsigned> distPos(0, length(store.contigStore[contigId].seq) - readLen);
+            pos = distPos(rng[id]);
             reads[i] = infix(store.contigStore[contigId].seq, pos, pos + readLen);
 
             ok = true;
@@ -56,14 +56,14 @@ void simulateReads(TReads & reads, TErrorDist const & errorDist, TStore const & 
         }
         while (!ok);
 
-        if (pickRandomNumber(rng[id], pdfOrientation) == 1)
+        if (distOrientation(rng[id]) == 1)
             reverseComplement(reads[i]);
 
         for (unsigned j = 0; j < readLen; ++j)
         {
-            if (pickRandomNumber(rng[id], pdfFrac) < errorDist[j])
+            if (distFrac(rng[id]) < errorDist[j])
             {
-                reads[i][j] = (Dna5)((ordValue(reads[i][j]) + pickRandomNumber(rng[id], pdfSubstitute)) & 3);
+                reads[i][j] = (Dna5)((ordValue(reads[i][j]) + distSubstitute(rng[id])) & 3);
                 assignQualityValue(reads[i][j], 0);
             }
             else

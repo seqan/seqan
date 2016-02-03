@@ -687,31 +687,14 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 // ----------------------------------------------------------------------------
-// Function indexCreate()
+// Function indexCreate(FibreSA, Trie)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TSpec>
 inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
 {
-    typedef Index<TText, TSpec>                     TIndex;
-    typedef typename Fibre<TIndex, FibreSA>::Type   TSA;
-    typedef typename Value<TSA>::Type               TSAValue;
-    typedef typename Size<TText>::Type              TSize;
-    typedef QGramLess_<TSAValue, TText const>       TLess;
-
-    TText const & text = indexText(index);
-    TSA & sa = indexSA(index);
-    TSize textLen = length(text);
-
-    resize(sa, textLen, Exact());
-
-    // Fill the suffix array with (i, 0).
-    for (TSize i = 0; i < textLen; i++)
-        sa[i] = TSAValue(i, 0);
-
-    // Sort the suffix array using quicksort.
-    sort(sa, TLess(text, maxLength(text)));
-
+    resize(indexSA(index), length(indexText(index)), Exact());
+    createSuffixArray(indexSA(index), indexText(index), Trie());
     return true;
 }
 
@@ -840,10 +823,10 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
     template <typename TValue>
     inline bool open(TValue & value, const char *fileName, int openMode)
     {
-        String<TValue, External< ExternalConfigLarge<> > > extString;
-        if (!open(extString, fileName, openMode & ~OPEN_CREATE)) return false;
-        if (!empty(extString)) assign(value, front(extString));
-        return true;
+        File<> f;
+        if (!open(f, fileName, openMode & ~OPEN_CREATE))
+            return false;
+        return read(f, &value, 1);
     }
 
     template <typename TValue>
@@ -963,13 +946,12 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
 // save
 
     template <typename TValue>
-    inline bool save(TValue const &val, const char *fileName, int openMode)
+    inline bool save(TValue const &value, const char *fileName, int openMode)
     {
-        String<TValue, External< ExternalConfigLarge<> > > extString;
-        if (!open(extString, fileName, openMode)) return false;
-        clear(extString);
-        appendValue(extString, val);
-        return true;
+        File<> f;
+        if (!open(f, fileName, openMode))
+            return false;
+        return write(f, &value, 1);
     }
 
     template <typename TValue>

@@ -46,8 +46,8 @@ void testAlignmentDPMatrixDataHostMF()
     typedef DPMatrix_<char, FullDPMatrix> TDPMatrix;
     typedef DPMatrix_<char, FullDPMatrix> const TDPMatrixConst;
 
-    typedef DataHost_<TDPMatrix>::Type TDataHost;
-    typedef DataHost_<TDPMatrixConst>::Type TDataHostConst;
+    typedef Member<TDPMatrix, DPMatrixMember>::Type TDataHost;
+    typedef Member<TDPMatrixConst, DPMatrixMember>::Type TDataHostConst;
 
     bool result1 = IsSameType<Matrix<char, 2>, TDataHost>::VALUE;
     bool result2 = IsSameType<Matrix<char, 2> const, TDataHostConst>::VALUE;
@@ -80,18 +80,18 @@ void testAlignmentDPMatrixDataHost()
     typedef DPMatrix_<char, FullDPMatrix> TDPMatrix;
     typedef DPMatrix_<char, FullDPMatrix> const TDPMatrixConst;
 
-    typedef DataHost_<TDPMatrix>::Type TDataHost;
-    typedef DataHost_<TDPMatrixConst>::Type TDataHostConst;
+    typedef Member<TDPMatrix, DPMatrixMember>::Type TDataHost;
+    typedef Member<TDPMatrixConst, DPMatrixMember>::Type TDataHostConst;
 
     TDPMatrix dpMatrix;
 
-    value(dpMatrix._dataHost).data_lengths[0] = 10;
-    value(dpMatrix._dataHost).data_lengths[1] = 20;
+    value(dpMatrix.data_host).data_lengths[0] = 10;
+    value(dpMatrix.data_host).data_lengths[1] = 20;
 
     TDPMatrixConst dpMatrixConst(dpMatrix);
 
-    TDataHost dataHost = _dataHost(dpMatrix);
-    TDataHostConst dataHostConst = _dataHost(dpMatrixConst);
+    TDataHost dataHost = value(dpMatrix.data_host);
+    TDataHostConst dataHostConst = value(dpMatrixConst.data_host);
 
     SEQAN_ASSERT_EQ(dataHost.data_lengths[0], 10u);
     SEQAN_ASSERT_EQ(dataHost.data_lengths[1], 20u);
@@ -108,8 +108,8 @@ void testAlignmentDPMatrixDataLengths()
 
     TDPMatrix dpMatrix;
 
-    value(dpMatrix._dataHost).data_lengths[0] = 10;
-    value(dpMatrix._dataHost).data_lengths[1] = 20;
+    value(dpMatrix.data_host).data_lengths[0] = 10;
+    value(dpMatrix.data_host).data_lengths[1] = 20;
 
     TDPMatrixConst dpMatrixConst(dpMatrix);
 
@@ -128,8 +128,8 @@ void testAlignmentDPMatrixDataFactors()
 
     TDPMatrix dpMatrix;
 
-    value(dpMatrix._dataHost).data_factors[0] = 10;
-    value(dpMatrix._dataHost).data_factors[1] = 20;
+    value(dpMatrix.data_host).data_factors[0] = 10;
+    value(dpMatrix.data_host).data_factors[1] = 20;
 
     TDPMatrixConst dpMatrixConst(dpMatrix);
 
@@ -173,8 +173,8 @@ void testAlignmentDPMatrixLengthDimension(TSpec const &)
 
     DPMatrix_<char, TSpec> dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
 
     setLength(dpMatrix, DPMatrixDimension_::HORIZONTAL, 4);
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 3);
@@ -212,17 +212,17 @@ void testAlignmentDPMatrixClear()
     resize(dpMatrix);
 
     String<char> str = "Hello World!";
-    setValue(_dataHost(dpMatrix).data_host, str);
-    SEQAN_ASSERT_EQ(dependent(_dataHost(dpMatrix).data_host), true);
+    setValue(value(dpMatrix.data_host).data_host, str);
+    SEQAN_ASSERT_EQ(dependent(value(dpMatrix.data_host).data_host), true);
     SEQAN_ASSERT_EQ(empty(dpMatrix), false);
-    SEQAN_ASSERT_EQ(host(_dataHost(dpMatrix)), "Hello World!");
+    SEQAN_ASSERT_EQ(host(value(dpMatrix.data_host)), "Hello World!");
     clear(dpMatrix);
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::VERTICAL], 1u);
-    SEQAN_ASSERT_EQ(empty(_dataHost(dpMatrix).data_host), false);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::VERTICAL], 1u);
+    SEQAN_ASSERT_EQ(empty(value(dpMatrix.data_host).data_host), false);
     SEQAN_ASSERT_EQ(empty(dpMatrix), true);
 }
 
@@ -443,12 +443,12 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_constructor)
 
     DPMatrix_<int, FullDPMatrix> dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::VERTICAL], 1u);
-    SEQAN_ASSERT_EQ(empty(_dataHost(dpMatrix).data_host), false);
-    SEQAN_ASSERT_EQ(dependent(_dataHost(dpMatrix).data_host), false);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::VERTICAL], 1u);
+    SEQAN_ASSERT_EQ(empty(value(dpMatrix.data_host).data_host), false);
+    SEQAN_ASSERT_EQ(dependent(value(dpMatrix.data_host).data_host), false);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_copy_constructor)
@@ -457,34 +457,34 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_copy_constructor)
 
     DPMatrix_<int, FullDPMatrix> dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::VERTICAL], 1u);
-    SEQAN_ASSERT_EQ(empty(_dataHost(dpMatrix).data_host), false);
-    SEQAN_ASSERT_EQ(dependent(_dataHost(dpMatrix).data_host), false);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::VERTICAL], 1u);
+    SEQAN_ASSERT_EQ(empty(value(dpMatrix.data_host).data_host), false);
+    SEQAN_ASSERT_EQ(dependent(value(dpMatrix.data_host).data_host), false);
 
-    _dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL] = 10;
-    _dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL] = 20;
-    _dataHost(dpMatrix).data_factors[DPMatrixDimension_::HORIZONTAL] = 20;
+    value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL] = 10;
+    value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL] = 20;
+    value(dpMatrix.data_host).data_factors[DPMatrixDimension_::HORIZONTAL] = 20;
 
     DPMatrix_<int, FullDPMatrix> dpMatrixCopy1 = dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_lengths[DPMatrixDimension_::HORIZONTAL], 10u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_lengths[DPMatrixDimension_::VERTICAL], 20u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_factors[DPMatrixDimension_::HORIZONTAL], 20u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_factors[DPMatrixDimension_::VERTICAL], 1u);
-    SEQAN_ASSERT_EQ(empty(_dataHost(dpMatrixCopy1).data_host), false);
-    SEQAN_ASSERT_EQ(dependent(_dataHost(dpMatrixCopy1).data_host), false);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 10u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 20u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_factors[DPMatrixDimension_::HORIZONTAL], 20u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_factors[DPMatrixDimension_::VERTICAL], 1u);
+    SEQAN_ASSERT_EQ(empty(value(dpMatrixCopy1.data_host).data_host), false);
+    SEQAN_ASSERT_EQ(dependent(value(dpMatrixCopy1.data_host).data_host), false);
 
     DPMatrix_<int, FullDPMatrix> const dpMatrixCopy2 = dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy2).data_lengths[DPMatrixDimension_::HORIZONTAL], 10u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy2).data_lengths[DPMatrixDimension_::VERTICAL], 20u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy2).data_factors[DPMatrixDimension_::HORIZONTAL], 20u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy2).data_factors[DPMatrixDimension_::VERTICAL], 1u);
-    SEQAN_ASSERT_EQ(empty(_dataHost(dpMatrixCopy2).data_host), false);
-    SEQAN_ASSERT_EQ(dependent(_dataHost(dpMatrixCopy2).data_host), false);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy2.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 10u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy2.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 20u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy2.data_host).data_factors[DPMatrixDimension_::HORIZONTAL], 20u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy2.data_host).data_factors[DPMatrixDimension_::VERTICAL], 1u);
+    SEQAN_ASSERT_EQ(empty(value(dpMatrixCopy2.data_host).data_host), false);
+    SEQAN_ASSERT_EQ(dependent(value(dpMatrixCopy2.data_host).data_host), false);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_assigment)
@@ -493,26 +493,26 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_assigment)
 
     DPMatrix_<int, FullDPMatrix> dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::VERTICAL], 1u);
-    SEQAN_ASSERT_EQ(empty(_dataHost(dpMatrix).data_host), false);
-    SEQAN_ASSERT_EQ(dependent(_dataHost(dpMatrix).data_host), false);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::VERTICAL], 1u);
+    SEQAN_ASSERT_EQ(empty(value(dpMatrix.data_host).data_host), false);
+    SEQAN_ASSERT_EQ(dependent(value(dpMatrix.data_host).data_host), false);
 
-    _dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL] = 10;
-    _dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL] = 20;
-    _dataHost(dpMatrix).data_factors[DPMatrixDimension_::HORIZONTAL] = 20;
+    value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL] = 10;
+    value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL] = 20;
+    value(dpMatrix.data_host).data_factors[DPMatrixDimension_::HORIZONTAL] = 20;
 
     DPMatrix_<int, FullDPMatrix> dpMatrixCopy1;
     dpMatrixCopy1 = dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_lengths[DPMatrixDimension_::HORIZONTAL], 10u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_lengths[DPMatrixDimension_::VERTICAL], 20u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_factors[DPMatrixDimension_::HORIZONTAL], 20u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_factors[DPMatrixDimension_::VERTICAL], 1u);
-    SEQAN_ASSERT_EQ(empty(_dataHost(dpMatrixCopy1).data_host), false);
-    SEQAN_ASSERT_EQ(dependent(_dataHost(dpMatrixCopy1).data_host), false);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 10u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 20u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_factors[DPMatrixDimension_::HORIZONTAL], 20u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_factors[DPMatrixDimension_::VERTICAL], 1u);
+    SEQAN_ASSERT_EQ(empty(value(dpMatrixCopy1.data_host).data_host), false);
+    SEQAN_ASSERT_EQ(dependent(value(dpMatrixCopy1.data_host).data_host), false);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_constructor)
@@ -521,12 +521,12 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_constructor)
 
     DPMatrix_<int, SparseDPMatrix> dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::VERTICAL], 1u);
-    SEQAN_ASSERT_EQ(empty(_dataHost(dpMatrix).data_host), false);
-    SEQAN_ASSERT_EQ(dependent(_dataHost(dpMatrix).data_host), false);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::VERTICAL], 1u);
+    SEQAN_ASSERT_EQ(empty(value(dpMatrix.data_host).data_host), false);
+    SEQAN_ASSERT_EQ(dependent(value(dpMatrix.data_host).data_host), false);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_copy_constructor)
@@ -535,33 +535,33 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_copy_constructor)
 
     DPMatrix_<int, SparseDPMatrix> dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::VERTICAL], 1u);
-    SEQAN_ASSERT_EQ(empty(_dataHost(dpMatrix).data_host), false);
-    SEQAN_ASSERT_EQ(dependent(_dataHost(dpMatrix).data_host), false);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::VERTICAL], 1u);
+    SEQAN_ASSERT_EQ(empty(value(dpMatrix.data_host).data_host), false);
+    SEQAN_ASSERT_EQ(dependent(value(dpMatrix.data_host).data_host), false);
 
-    _dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL] = 10;
-    _dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL] = 20;
+    value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL] = 10;
+    value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL] = 20;
 
     DPMatrix_<int, SparseDPMatrix> dpMatrixCopy1 = dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_lengths[DPMatrixDimension_::HORIZONTAL], 10u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_lengths[DPMatrixDimension_::VERTICAL], 20u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_factors[DPMatrixDimension_::VERTICAL], 1u);
-    SEQAN_ASSERT_EQ(empty(_dataHost(dpMatrixCopy1).data_host), false);
-    SEQAN_ASSERT_EQ(dependent(_dataHost(dpMatrixCopy1).data_host), false);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 10u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 20u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_factors[DPMatrixDimension_::VERTICAL], 1u);
+    SEQAN_ASSERT_EQ(empty(value(dpMatrixCopy1.data_host).data_host), false);
+    SEQAN_ASSERT_EQ(dependent(value(dpMatrixCopy1.data_host).data_host), false);
 
     DPMatrix_<int, SparseDPMatrix> const dpMatrixCopy2 = dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy2).data_lengths[DPMatrixDimension_::HORIZONTAL], 10u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy2).data_lengths[DPMatrixDimension_::VERTICAL], 20u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy2).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy2).data_factors[DPMatrixDimension_::VERTICAL], 1u);
-    SEQAN_ASSERT_EQ(empty(_dataHost(dpMatrixCopy2).data_host), false);
-    SEQAN_ASSERT_EQ(dependent(_dataHost(dpMatrixCopy2).data_host), false);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy2.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 10u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy2.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 20u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy2.data_host).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy2.data_host).data_factors[DPMatrixDimension_::VERTICAL], 1u);
+    SEQAN_ASSERT_EQ(empty(value(dpMatrixCopy2.data_host).data_host), false);
+    SEQAN_ASSERT_EQ(dependent(value(dpMatrixCopy2.data_host).data_host), false);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_assigment)
@@ -570,25 +570,25 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_assigment)
 
     DPMatrix_<int, SparseDPMatrix> dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_factors[DPMatrixDimension_::VERTICAL], 1u);
-    SEQAN_ASSERT_EQ(empty(_dataHost(dpMatrix).data_host), false);
-    SEQAN_ASSERT_EQ(dependent(_dataHost(dpMatrix).data_host), false);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_factors[DPMatrixDimension_::VERTICAL], 1u);
+    SEQAN_ASSERT_EQ(empty(value(dpMatrix.data_host).data_host), false);
+    SEQAN_ASSERT_EQ(dependent(value(dpMatrix.data_host).data_host), false);
 
-    _dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL] = 10;
-    _dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL] = 20;
+    value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL] = 10;
+    value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL] = 20;
 
     DPMatrix_<int, SparseDPMatrix> dpMatrixCopy1;
     dpMatrixCopy1 = dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_lengths[DPMatrixDimension_::HORIZONTAL], 10u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_lengths[DPMatrixDimension_::VERTICAL], 20u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrixCopy1).data_factors[DPMatrixDimension_::VERTICAL], 1u);
-    SEQAN_ASSERT_EQ(empty(_dataHost(dpMatrixCopy1).data_host), false);
-    SEQAN_ASSERT_EQ(dependent(_dataHost(dpMatrixCopy1).data_host), false);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 10u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 20u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_factors[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrixCopy1.data_host).data_factors[DPMatrixDimension_::VERTICAL], 1u);
+    SEQAN_ASSERT_EQ(empty(value(dpMatrixCopy1.data_host).data_host), false);
+    SEQAN_ASSERT_EQ(dependent(value(dpMatrixCopy1.data_host).data_host), false);
 }
 
 // ----------------------------------------------------------------------------
@@ -781,12 +781,12 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_value)
 
     value(dpMatrix, 1) = 'a';
     SEQAN_ASSERT_EQ(value(dpMatrix, 1), 'a');
-    SEQAN_ASSERT_EQ(value(_dataHost(dpMatrix).data_host), "xaxxxxxxxxxx");
+    SEQAN_ASSERT_EQ(value(value(dpMatrix.data_host).data_host), "xaxxxxxxxxxx");
 
     DPMatrix_<char, FullDPMatrix> const dpMatrixConst(dpMatrix);
 
     SEQAN_ASSERT_EQ(value(dpMatrixConst, 1), 'a');
-    SEQAN_ASSERT_EQ(value(_dataHost(dpMatrixConst).data_host), "xaxxxxxxxxxx");
+    SEQAN_ASSERT_EQ(value(value(dpMatrixConst.data_host).data_host), "xaxxxxxxxxxx");
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_value)
@@ -807,12 +807,12 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_value)
 
     value(dpMatrix, 1) = 'a';
     SEQAN_ASSERT_EQ(value(dpMatrix, 1), 'a');
-    SEQAN_ASSERT_EQ(value(_dataHost(dpMatrix).data_host), "xaxx");
+    SEQAN_ASSERT_EQ(value(value(dpMatrix.data_host).data_host), "xaxx");
 
     DPMatrix_<char, SparseDPMatrix> const dpMatrixConst(dpMatrix);
 
     SEQAN_ASSERT_EQ(value(dpMatrixConst, 1), 'a');
-    SEQAN_ASSERT_EQ(value(_dataHost(dpMatrixConst).data_host), "xaxx");
+    SEQAN_ASSERT_EQ(value(value(dpMatrixConst.data_host).data_host), "xaxx");
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_value_with_coordinates)
@@ -834,13 +834,13 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_value_with_coordinates)
     value(dpMatrix, 3, 2) = 'o';
     SEQAN_ASSERT_EQ(value(dpMatrix, 1, 0), 'a');
     SEQAN_ASSERT_EQ(value(dpMatrix, 3, 2), 'o');
-    SEQAN_ASSERT_EQ(value(_dataHost(dpMatrix).data_host), "xaxxxxxxxxxo");
+    SEQAN_ASSERT_EQ(value(value(dpMatrix.data_host).data_host), "xaxxxxxxxxxo");
 
     DPMatrix_<char, FullDPMatrix> const dpMatrixConst(dpMatrix);
 
     SEQAN_ASSERT_EQ(value(dpMatrixConst, 1, 0), 'a');
     SEQAN_ASSERT_EQ(value(dpMatrixConst, 3, 2), 'o');
-    SEQAN_ASSERT_EQ(value(_dataHost(dpMatrixConst).data_host), "xaxxxxxxxxxo");
+    SEQAN_ASSERT_EQ(value(value(dpMatrixConst.data_host).data_host), "xaxxxxxxxxxo");
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_value_with_coordinates)
@@ -862,13 +862,13 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_value_with_coordinates)
     value(dpMatrix, 3, 2) = 'o';
     SEQAN_ASSERT_EQ(value(dpMatrix, 1, 0), 'a');
     SEQAN_ASSERT_EQ(value(dpMatrix, 3, 2), 'o');
-    SEQAN_ASSERT_EQ(value(_dataHost(dpMatrix).data_host), "xaxo");
+    SEQAN_ASSERT_EQ(value(value(dpMatrix.data_host).data_host), "xaxo");
 
     DPMatrix_<char, SparseDPMatrix> const dpMatrixConst(dpMatrix);
 
     SEQAN_ASSERT_EQ(value(dpMatrixConst, 1, 0), 'a');
     SEQAN_ASSERT_EQ(value(dpMatrixConst, 3, 2), 'o');
-    SEQAN_ASSERT_EQ(value(_dataHost(dpMatrixConst).data_host), "xaxo");
+    SEQAN_ASSERT_EQ(value(value(dpMatrixConst.data_host).data_host), "xaxo");
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_check_dimension)
@@ -902,8 +902,8 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_length)
 
     DPMatrix_<char, FullDPMatrix> dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
 
     setLength(dpMatrix, DPMatrixDimension_::HORIZONTAL, 4);
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 3);
@@ -919,8 +919,8 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_length)
 
     DPMatrix_<char, SparseDPMatrix> dpMatrix;
 
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
-    SEQAN_ASSERT_EQ(_dataHost(dpMatrix).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::HORIZONTAL], 0u);
+    SEQAN_ASSERT_EQ(value(dpMatrix.data_host).data_lengths[DPMatrixDimension_::VERTICAL], 0u);
 
     setLength(dpMatrix, DPMatrixDimension_::HORIZONTAL, 4);
     setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 3);

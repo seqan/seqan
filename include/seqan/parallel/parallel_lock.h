@@ -121,17 +121,12 @@ inline void
 spinCas(TAtomic & x, TValue cmp, TValue y)
 {
     SpinDelay spinDelay;
-#ifdef SEQAN_CXX11_STL
     TValue exp = cmp;
     while (!x.compare_exchange_weak(exp, y))
     {
         exp = cmp;
         waitFor(spinDelay);
     }
-#else
-    while (!atomicCasBool(x, cmp, y))
-        waitFor(spinDelay);
-#endif
 }
 
 // ----------------------------------------------------------------------------

@@ -6,11 +6,11 @@
 # CMakeLists.txt file for ngs_roi.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_apps_ngs_roi)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_apps_ngs_roi CXX)
 message (STATUS "Configuring apps/ngs_roi")
 
-set (SEQAN_APP_VERSION "0.2.3")
+set (SEQAN_APP_VERSION "0.2.4")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -18,7 +18,7 @@ set (SEQAN_APP_VERSION "0.2.3")
 
 # Search SeqAn and select dependencies.
 
-set (SEQAN_FIND_DEPENDENCIES ZLIB)
+find_package (ZLIB)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

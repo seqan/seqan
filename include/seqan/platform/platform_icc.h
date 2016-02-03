@@ -31,8 +31,13 @@
 //
 // ==========================================================================
 
+#ifndef PLATFORM_INTEL
+#define PLATFORM_INTEL
+
+// icc is gcc compatible
 #ifndef PLATFORM_GCC
 #define PLATFORM_GCC
+#endif
 
 // should be set before including anything
 #ifndef _FILE_OFFSET_BITS
@@ -53,37 +58,12 @@
 #define SEQAN_IS_32_BIT 1
 #endif  // #if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
 
-//#include <unistd.h>
-#include <inttypes.h>
 
 #define finline __inline__
 
-// default 64bit type
-#define __int64 int64_t    // nolint
-typedef uint64_t __uint64; // nolint
+typedef uint64_t __uint64;
+typedef uint32_t __uint32;
+typedef uint16_t __uint16;
+typedef uint8_t __uint8;
 
-// default 32bit type
-#define __int32 int32_t    // nolint
-typedef uint32_t __uint32; // nolint
-
-// default 16bit type
-#define __int16 int16_t    // nolint
-typedef uint16_t __uint16; // nolint
-
-// default 8bit type
-#define __int8 int8_t      // nolint
-typedef uint8_t __uint8;   // nolint
-
-// detect gcc C++11 support
-#if defined(__GXX_EXPERIMENTAL_CXX0X__)
-#  define SEQAN_CXX11_STANDARD
-#endif
-
-// detect clang C++11 support
-#ifdef __has_feature
-#  if __has_feature(cxx_static_assert)
-#    define SEQAN_CXX11_STANDARD
-#  endif
-#endif
-
-#endif  // #ifndef PLATFORM_GCC
+#endif  // #ifndef PLATFORM_INTEL

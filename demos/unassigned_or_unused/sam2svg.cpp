@@ -184,8 +184,8 @@ int main(int argc, char const ** argv)
         {
             std::cerr << "Writing contig " << store.contigNameStore[contigs[i]] << " ... ";
 
-            __int64 l = (options.beginPos == -1) ? 0 : options.beginPos;
-            __int64 r = (options.endPos == -1) ? MaxValue<TContigPos>::VALUE : options.endPos;
+            int64_t l = (options.beginPos == -1) ? 0 : options.beginPos;
+            int64_t r = (options.endPos == -1) ? MaxValue<TContigPos>::VALUE : options.endPos;
 
             if (!options.gapSpace)
             {

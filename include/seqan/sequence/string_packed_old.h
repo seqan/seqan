@@ -313,12 +313,12 @@ struct Reference<String<TValue, Packed2<THostspec> > const>
 template <typename TValue, typename THostspec>
 struct Size<String<TValue, Packed2<THostspec> > >
 {
-    typedef __int64 Type;
+    typedef int64_t Type;
 };
 template <typename TValue, typename THostspec>
 struct Size<String<TValue, Packed2<THostspec> > const>
 {
-    typedef __int64 Type;
+    typedef int64_t Type;
 };
 */
 

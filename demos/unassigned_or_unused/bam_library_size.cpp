@@ -126,7 +126,7 @@ bool performEstimation(LibraryInfo & libInfo, BamFileIn & bamFileIn)
     unsigned orientationCounters[4] = {0, 0, 0, 0};
 
     // Running mean.
-    __uint64 runningMean = 0;
+    uint64_t runningMean = 0;
     unsigned pairCount = 0;
 
     // Count.

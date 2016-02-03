@@ -492,7 +492,7 @@ Assignment 5
 
           ref: AC--GTCATTT
           r01: ACGTCTCA---
-          Cigar of r01: 2M2I1S3M3D
+          Cigar of r01: 2M2I1X3M3D
 
     Solution (Step 1)
       .. container:: foldable

@@ -1858,7 +1858,7 @@ html.list body {
 html.list:after {
   content: "";
   background-image: url(../img/list.png);
-  background-position: right bottom;
+  background-position: right 94%;
   background-repeat: no-repeat;
   background-size: 362px;
   background-color: #dad9dc;
