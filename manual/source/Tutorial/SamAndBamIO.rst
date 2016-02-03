@@ -187,34 +187,8 @@ The class gives a in-memory representation that (1) is independent of whether it
 The following definition gives an overview of the available fields, their types, and how they map to the SAM and BAM fields.
 Note that we use the :dox:`CigarElement` class to store entries in the CIGAR string.
 
-.. code-block:: cpp
-
-   namespace seqan {
-
-   class BamAlignmentRecord
-   {
-   public:
-       CharString qName;               // QNAME
-       __uint16 flag;                  // FLAG
-       __int32 rID;                    // REF
-       __int32 beginPos;               // POS
-       __uint8 mapQ;                   // MAPQ mapping quality, 255 for */invalid
-       __uint16 bin;                   // bin for indexing
-       String<CigarElement<> > cigar;  // CIGAR string
-       __int32 rNextId;                // RNEXT (0-based)
-       __int32 pNext;                  // PNEXT (0-based)
-       __int32 tLen;                   // TLEN
-       CharString seq;                 // SEQ, as in SAM/BAM file.
-       CharString qual;                // Quality string as in SAM (Phred).
-       CharString tags;                // Tags, raw as in BAM.
-
-       // Constants for marking pos, reference id and length members invalid (== 0/*).
-       static __int32 const INVALID_POS = -1;
-       static __int32 const INVALID_REFID = -1;
-       static __int32 const INVALID_LEN = 0;
-   };
-
-   }  // namespace seqan
+.. includefrags:: demos/tutorial/sam_and_bam_io/base.cpp
+      :fragment: bamRecord
 
 The static members ``INVALID_POS``, ``INVALID_REFID``, and ``INVALID_LEN`` store sentinel values for marking positions, reference sequence ids, and lengths as invalid or N/A.
 
@@ -258,23 +232,15 @@ This class also performs the necessary casting when reading and writing tag list
 
 :dox:`BamTagsDict` acts as a wrapper around the raw ``tags`` member of a :dox:`BamAlignmentRecord`, which is of type :dox:`CharString`:
 
-.. code-block:: cpp
-
-   seqan::BamAlignmentRecord record;
-   seqan::BamTagsDict tagsDict(record.tags);
+.. includefrags:: demos/tutorial/sam_and_bam_io/base.cpp
+      :fragment: BamTagsDict
 
 We can add a tag using the function :dox:`BamTagsDict#setTagValue`.
 When setting an already existing tag's value, its value will be overwritten.
 Note that in the following, we give the tags value in SAM format because it is easier to read, although they are stored in BAM format internally.
 
-.. code-block:: cpp
-
-   setTagValue(tagsDict, "NM", 2);
-   // => tags: "NM:i:2"
-   setTagValue(tagsDict, "NH", 1);
-   // => tags: "NM:i:2 NH:i:1"
-   setTagValue(tagsDict, "NM", 3);
-   // => tags: "NM:i:3 NH:i:1"
+.. includefrags:: demos/tutorial/sam_and_bam_io/base.cpp
+      :fragment: addTag
 
 The first parameter to :dox:`BamTagsDict#setTagValue` is the :dox:`BamTagsDict`, the second one is a two-character string with the key, and the third one is the value.
 Note that the type of tag entry will be taken automatically from the type of the third parameter.
@@ -282,29 +248,21 @@ Note that the type of tag entry will be taken automatically from the type of the
 Reading values is slightly more complex because we have to handle the case that the value is not present.
 First, we get the index of the tag in the tag list.
 
-.. code-block:: cpp
-
-   unsigned tagIdx = 0;
-   if (!findTagKey(tagIdx, tagsDict, "NH"))
-       std::cerr << "ERROR: Unknown key!\n";
+.. includefrags:: demos/tutorial/sam_and_bam_io/base.cpp
+      :fragment: getIndex
 
 Then, we can read the value from the :dox:`BamTagsDict` using the function :dox:`BamTagsDict#extractTagValue`.
 
-.. code-block:: cpp
-
-   int tagValInt = 0;
-   if (!extractTagValue(tagValInt, tagsDict, tagIdx))
-       std::cerr << "ERROR: There was an error extracting NH from tags!\n";
+.. includefrags:: demos/tutorial/sam_and_bam_io/base.cpp
+      :fragment: extractValue
 
 The function returns a ``bool`` that is ``true`` on success and ``false`` otherwise.
 The extraction can fail if the index is out of bounds or the value in the dictionary cannot be cast to the type of the first parameter.
 
 The value in the tags dictionary will be casted to the type of the first parameter of :dox:`BamTagsDict#extractTagValue`:
 
-.. code-block:: cpp
-
-   short tagValShort = 0;
-   extractTagValue(tagValShort, tagsDict, tagIdx);
+.. includefrags:: demos/tutorial/sam_and_bam_io/base.cpp
+      :fragment: cast
 
 Assignment 3
 """"""""""""
