@@ -70,12 +70,6 @@ struct Host<BamTagsDict const>
 };
 
 template <>
-struct Size<BamTagsDict>
-{
-    typedef unsigned Type;
-};
-
-template <>
 struct Position<BamTagsDict>
 {
     typedef unsigned Type;
@@ -144,6 +138,17 @@ public:
             buildIndex(*this);
         return infix(host(*this), _positions[pos], _positions[pos + 1]);
     }
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction Size
+// ----------------------------------------------------------------------------
+
+// must be defined after class definition
+template <>
+struct Size<BamTagsDict>
+{
+    typedef typename Size<String<BamTagsDict::TPos> >::Type Type;
 };
 
 // ============================================================================

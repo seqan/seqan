@@ -328,7 +328,7 @@ inline setTagValue(TKeyName const & key, CharString const & value, BamHeaderReco
     unsigned idx = 0;
     if (!findTagKey(idx, key, record))
     {
-        idx = length(record.tags);
+        idx = static_cast<unsigned>(length(record.tags));
         resize(record.tags, idx + 1);
         record.tags[idx].i1 = key;
     }
