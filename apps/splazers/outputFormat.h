@@ -794,10 +794,10 @@ void dumpMatches(
     else
         success = open(file, std::cout, Nothing());
 
-	if (!success) {
-		::std::cerr << "Failed to open output file" << ::std::endl;
-		return;
-	}
+    if (!success) {
+        ::std::cerr << "Failed to open output file" << ::std::endl;
+        return;
+    }
 
 	
 	String<short> ambiStates;
