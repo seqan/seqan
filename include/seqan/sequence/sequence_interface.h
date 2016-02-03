@@ -1217,7 +1217,7 @@ erase(T & me,
       TBeginPosition pos,
       TEndPosition pos_end)
 {
-    resizeSpace(me, 0, pos, pos_end);
+    resizeSpace(me, static_cast<size_t>(0), pos, pos_end);
 }
 
 template<typename T, typename TPosition>
@@ -1225,7 +1225,7 @@ inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>:
 erase(T & me,
       TPosition pos)
 {
-    resizeSpace(me, 0, pos, pos + 1);
+    resizeSpace(me, static_cast<size_t>(0), pos, pos + 1);
 }
 
 // For segments, we also have to define the version for const-containers.
@@ -1236,7 +1236,7 @@ erase(T const & me,
       TBeginPosition pos,
       TEndPosition pos_end)
 {
-    resizeSpace(me, 0, pos, pos_end);
+    resizeSpace(me, static_cast<size_t>(0), pos, pos_end);
 }
 
 template<typename T, typename TPosition>
@@ -1244,7 +1244,7 @@ inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>:
 erase(T const & me,
       TPosition pos)
 {
-    resizeSpace(me, 0, pos, pos + 1);
+    resizeSpace(me, static_cast<size_t>(0), pos, pos + 1);
 }
 
 // --------------------------------------------------------------------------
