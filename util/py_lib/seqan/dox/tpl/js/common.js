@@ -27,32 +27,45 @@
                 var redirectTo = null;
                 var p = null;
                 var hash = null;
-
-                // from parameter p 
+ 
+                // from parameter p
                 if($.urlParam('p',window.parent.location))
-                {
                     p = decodeURIComponent($.urlParam('p',window.parent.location).split('/')[0]);
-                    if(window.lookup.hasOwnProperty(p)) { 
-                        var name = window.lookup[p];
-                        var splitPos = name.indexOf('_'); // first '_'
-                        var category = name.substr(0, splitPos);
-                        filename = $.encodeName(name.substr(splitPos+1, name.length-splitPos)); // encoding(just like python)
-                        redirectTo = category + "_" + filename + ".html";
-                    } else {
-                        $(window.parent['main'].document).find('#content').prepend('<div class="open-in-frame alert alert-danger">Could not find page for <strong>' + p + '</strong></div>'); 
-                        // TODO: start search using search form for p
-                    }
-                }
 
                 // from hash (start with #) 
                 if($.urlHash(window.parent.location)) 
-                {
                     hash = decodeURIComponent($.urlHash(window.parent.location));
-                    redirectTo += hash;
+    
+                if(p != null) {
+                    if(window.lookup.hasOwnProperty(p)) { 
+                        var name = window.lookup[p];
+
+                        // find the entitiy (eg. class, global_function, ..)
+                        var entity = null;
+                        for(key in window.langEntities){
+                            if(name.indexOf(key) == 0) {
+                                entity = key;
+                                break;
+                            }
+                        }
+
+                        if(entity != null) {
+                            var splitPos = entity.length; 
+                            filename = $.encodeName(name.substr(splitPos+1, name.length-splitPos)); // encoding(just like we did in python script)
+                            redirectTo = entity + "_" + filename + ".html";
+                            if(hash != null)
+                                redirectTo += hash
+                        } else {
+                            redirectTo = null; // can't specify the entitiy
+                        }
+                     }
+                } else {
+                    $(window.parent['main'].document).find('#content').prepend('<div class="open-in-frame alert alert-danger">Could not find page for <strong>' + p + '</strong></div>'); 
+                    // TODO: start search using search form for p
                 }
 
                 // exception
-                if( p == null && hash.length > 1)
+                if(p == null && hash.length > 1)
                     redirectTo = hash.substr(1) + '.html';
 
                 // move
