@@ -132,18 +132,24 @@ void processN(TSeqs& seqs, TIds& ids, unsigned allowed, TSub substitute, General
     {                                   //integer necessary because unsigned would cause error after last iteration
         if (res[i] == -1)                //Placing all sequences/ids which shall be erased at the end of their container
         {
-            SEQAN_OMP_PRAGMA(parallel default(shared))
+            #if defined(_OPENMP)
+            #pragma omp parallel default(shared)
             {
-                SEQAN_OMP_PRAGMA(sections nowait)
+                #pragma omp sections nowait
                 {
-                    SEQAN_OMP_PRAGMA(section)     //distributing the swapping actions
+                    #pragma omp section     //distributing the swapping actions
                     swap(seqs[i], seqs[limit - ex - 1]);
-                    SEQAN_OMP_PRAGMA(section)
+                    #pragma omp section
                     swap(ids[i], ids[limit - ex - 1]);
-                    SEQAN_OMP_PRAGMA(section)
+                    #pragma omp section
                     ++ex;
                 }
             }
+            #else  // defined(_OPENMP)
+                swap(seqs[i], seqs[limit - ex - 1]);
+                swap(ids[i], ids[limit - ex - 1]);
+                ++ex;            
+            #endif  // defined(_OPENMP)
         }
         else
         {
@@ -152,18 +158,24 @@ void processN(TSeqs& seqs, TIds& ids, unsigned allowed, TSub substitute, General
     }
     if (ex != 0)
     {
-        SEQAN_OMP_PRAGMA(parallel default(shared))
+        #if defined(_OPENMP)
+        #pragma omp parallel default(shared)
         {
-            SEQAN_OMP_PRAGMA(sections nowait)
+            #pragma omp sections nowait
             {   //Resizing the containers to erase all unwanted sequences/ids at once
-                SEQAN_OMP_PRAGMA(section)
+                #pragma omp section
                 resize(seqs, limit - ex);
-                SEQAN_OMP_PRAGMA(section)
+                #pragma omp section
                 resize(ids, limit - ex);
-                SEQAN_OMP_PRAGMA(section)
+                #pragma omp section
                 stats.removedSeqs += ex;
             }
         }
+        #else  // defined(_OPENMP)
+            resize(seqs, limit - ex);
+            resize(ids, limit - ex);
+            stats.removedSeqs += ex;
+        #endif  // defined(_OPENMP)
     }
 }
 
