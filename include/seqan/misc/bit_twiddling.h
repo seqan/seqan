@@ -636,7 +636,7 @@ inline TWord
 _bitScanReverse(TWord word, WordSize_<64>)
 {
     unsigned long index;
-    _BitScanReverse64(&index, static_cast<unsigned int64_t>(word));
+    _BitScanReverse64(&index, static_cast<uint64_t>(word));
     return index;
 }
 
@@ -645,7 +645,7 @@ inline TWord
 _bitScanForward(TWord word, WordSize_<64>)
 {
     unsigned long index;
-    _BitScanForward64(&index, static_cast<unsigned int64_t>(word));
+    _BitScanForward64(&index, static_cast<uint64_t>(word));
     return index;
 }
 #else
