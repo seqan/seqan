@@ -138,7 +138,7 @@ _extendShortestPaths(TMatrix& local,
             if (i==j) continue;
             assignValue(local, i*len+j,infDist);
             TPredVal ind = 0;
-            for(TSize k = 0; k<len;++k) {
+            for(TPredVal k = 0; k<len;++k) {
                 TMatrixVal min1 = getValue(local, i*len+j);
                 TMatrixVal min2 = getValue(oldLocal, i*len+k) + getValue(w, k*len + j);
                 if (min2 < min1) {

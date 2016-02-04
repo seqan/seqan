@@ -79,7 +79,7 @@ namespace seqan {
  * @include demos/dox/graph_algorithms/strongly_connected_components.cpp.stdout
  */
 template <typename TSpec, typename TComponents>
-typename Size<Graph<TSpec> >::Type
+typename Value<TComponents>::Type
 stronglyConnectedComponents(TComponents & components,
                             Graph<TSpec> const & g_source)
 {
@@ -126,7 +126,7 @@ stronglyConnectedComponents(TComponents & components,
     }
 
     TSize time = 0;
-    TSize label = 0;
+    TCompVal label = 0;
     while(!q.empty()) {
         TVertexDescriptor u = q.top().second;
         q.pop();

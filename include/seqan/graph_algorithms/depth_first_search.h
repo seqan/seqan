@@ -117,7 +117,7 @@ void depthFirstSearch(TPredecessorMap & predecessor,
                       Graph<TSpec> const & g)
 {
     typedef Graph<TSpec> TGraph;
-    typedef typename Size<TGraph>::Type TSize;
+    typedef typename Value<TDiscoveryTimeMap>::Type TTime;
     typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Value<TPredecessorMap>::Type TPredVal;
@@ -136,7 +136,7 @@ void depthFirstSearch(TPredecessorMap & predecessor,
         assignProperty(predecessor, getValue(it), nilPred);
     }
 
-    TSize time = 0;
+    TTime time = 0;
 
     goBegin(it);
     for(;!atEnd(it);goNext(it)) {
