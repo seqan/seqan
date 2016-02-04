@@ -25,18 +25,11 @@
         if(window != window.parent && window.name == 'list') {
             try {
                 var redirectTo = null;
-                var p = null;
-                var hash = null;
- 
-                // from parameter p
-                if($.urlParam('p',window.parent.location))
-                    p = decodeURIComponent($.urlParam('p',window.parent.location).split('/')[0]);
+                var p = decodeURIComponent($.urlParam('p',window.parent.location)); // from parameter p
+                var hash = decodeURIComponent($.urlHash(window.parent.location)); // from hash (start with #)
 
-                // from hash (start with #) 
-                if($.urlHash(window.parent.location)) 
-                    hash = decodeURIComponent($.urlHash(window.parent.location));
-    
                 if(p != null) {
+                    p = p.split('/')[0];
                     if(window.lookup.hasOwnProperty(p)) { 
                         var name = window.lookup[p];
 
