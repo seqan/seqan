@@ -69,5 +69,5 @@ int main(int, char const **)
 
     std::cout << " \n Print alignment using Standard Iterators: " << std::endl;
 
-    return 1;
+    return 0;
 }
