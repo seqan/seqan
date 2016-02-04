@@ -573,8 +573,9 @@ _bitScanForward(TWord word, WordSize_<32>)
 {
     return __builtin_ctz(static_cast<unsigned int>(word));
 }
-#else
-#ifdef PLATFORM_WINDOWS
+
+#elif defined(PLATFORM_WINDOWS) // #if !defined(PLATFORM_GCC) && defined(PLATFORM_WINDOWS)
+
 #if (SEQAN_IS_64_BIT)
 
 template <typename TWord>
@@ -644,8 +645,7 @@ _bitScanForward(TWord word, WordSize_<32>)
     _BitScanForward(&index, static_cast<unsigned long>(word));
     return index;
 }
-#endif  // #if defined(PLATFORM_GCC)
-#endif  // #ifdef PLATFORM_GCC
+#endif  // #if !defined(PLATFORM_GCC) && defined(PLATFORM_WINDOWS)
 
 // ----------------------------------------------------------------------------
 // Function bitScanReverse()
