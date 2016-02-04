@@ -64,6 +64,9 @@ void specializedHashAll(Shape< TValue, UngappedShape<q> > & shape, TString & str
     unsigned int hash_value = hash(shape, it);
     /* do some things with the hash value */
 
+//![specializedHashAll]
+    ignoreUnusedVariableWarning(hash_value);
+//![specializedHashAll]
     while (++it != it_end) {
         unsigned int hash_value = hashNext(shape, it, hash_value);
         /* do some things with the hash value */
