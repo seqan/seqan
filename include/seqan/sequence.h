@@ -107,7 +107,8 @@
 #include <seqan/sequence/string_alloc.h>
 #include <seqan/sequence/string_cstyle.h>
 #include <seqan/sequence/string_block.h>
-#include <seqan/sequence/string_packed.h>
+#include <seqan/sequence/string_packed_old.h>
+// #include <seqan/sequence/string_packed.h>
 
 #include <seqan/sequence/sequence_shortcuts.h>
 

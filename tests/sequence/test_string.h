@@ -551,7 +551,7 @@ SEQAN_DEFINE_TEST(String_Packed)
         SEQAN_ASSERT_EQ(str1, str2);
     }
 
-    for (int i = 0; i < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++i)
+    for (int i = 0; i < PackedConsts_<TPackedString>::VALUES_PER_WORD; ++i)
     {
         appendValue(str1, (Dna5)(i % 5), Exact());
         appendValue(str2, (Dna5)(i % 5), Exact());
@@ -566,7 +566,7 @@ SEQAN_DEFINE_TEST(String_Packed)
     insert(str2, 19, "ACGTACGT", Exact());
     SEQAN_ASSERT_EQ(str1, str2);
 
-    for (int i = 0; i < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++i)
+    for (int i = 0; i < PackedConsts_<TPackedString>::VALUES_PER_WORD; ++i)
     {
         Dna5String str1_ = str1;
         TPackedString str2_ = str2;
@@ -576,7 +576,7 @@ SEQAN_DEFINE_TEST(String_Packed)
         SEQAN_ASSERT_EQ(str1_, str2_);
     }
 
-    for (int i = 0; i < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++i)
+    for (int i = 0; i < PackedConsts_<TPackedString>::VALUES_PER_WORD; ++i)
     {
         Dna5String str1_ = str1;
         TPackedString str2_ = str2;
@@ -586,8 +586,8 @@ SEQAN_DEFINE_TEST(String_Packed)
         SEQAN_ASSERT_EQ(str1_, str2_);
     }
 
-    for (int i = 0; i < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++i)
-        for (int j = 0; j < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++j)
+    for (int i = 0; i < PackedConsts_<TPackedString>::VALUES_PER_WORD; ++i)
+        for (int j = 0; j < PackedConsts_<TPackedString>::VALUES_PER_WORD; ++j)
         {
             Dna5String str1_ = str1;
             TPackedString str2_ = str2;
@@ -597,7 +597,7 @@ SEQAN_DEFINE_TEST(String_Packed)
             SEQAN_ASSERT_EQ(str1_, str2_);
         }
 
-    for (int i = 0; i < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++i)
+    for (int i = 0; i < PackedConsts_<TPackedString>::VALUES_PER_WORD; ++i)
     {
         Dna5String str1_ = str1;
         TPackedString str2_ = str2;
@@ -607,8 +607,8 @@ SEQAN_DEFINE_TEST(String_Packed)
         SEQAN_ASSERT_EQ(str1_, str2_);
     }
 
-    for (int i = 0; i < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++i)
-        for (int j = 0; j < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++j)
+    for (int i = 0; i < PackedConsts_<TPackedString>::VALUES_PER_WORD; ++i)
+        for (int j = 0; j < PackedConsts_<TPackedString>::VALUES_PER_WORD; ++j)
         {
             Dna5String str1_ = str1;
             TPackedString str2_ = str2;

@@ -50,6 +50,12 @@ struct HostIterator;
 // Tags, Classes, Enums
 // ============================================================================
 
+template <>
+struct CompareTypeImpl<int, char>
+{
+    typedef int Type;
+};
+
 // --------------------------------------------------------------------------
 // Specialization Packed String
 // --------------------------------------------------------------------------
@@ -61,7 +67,7 @@ struct HostIterator;
  * @brief A string that stores as many values in one machine word as possible.
  *
  * @signature template <typename TValue, typename THostSpec>
- *            class String<TValue, Packed2<THostSpec> >;
+ *            class String<TValue, Packed<THostSpec> >;
  *
  * @tparam TValue The value type, that is the type of the items/characters
  *                stored in the string.Use @link Value @endlink to get the value
@@ -72,7 +78,7 @@ struct HostIterator;
  */
 
 template <typename THostspec = Alloc<> >
-struct Packed2;
+struct Packed;
 
 template <typename TPackedContainer>
 struct PackedConsts_;
@@ -83,7 +89,7 @@ struct PackedConsts_;
 */
 
 template <typename TValue, typename THostspec>
-class String<TValue, Packed2<THostspec> >
+class String<TValue, Packed<THostspec> >
 {
 public:
     typedef typename Host<String>::Type THost;
@@ -159,7 +165,7 @@ public:
 // --------------------------------------------------------------------------
 
 template <typename TContainer, typename THostspec>
-class Iter<TContainer, Packed2<THostspec> >
+class Iter<TContainer, Packed<THostspec> >
 {
 public:
     typedef typename HostIterator<Iter>::Type THostIterator;
@@ -223,13 +229,13 @@ public:
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec>
-struct DefaultOverflowImplicit<String<TValue, Packed2<THostspec> > >
-        : DefaultOverflowImplicit<typename Host<String<TValue, Packed2<THostspec> > >::Type>
+struct DefaultOverflowImplicit<String<TValue, Packed<THostspec> > >
+        : DefaultOverflowImplicit<typename Host<String<TValue, Packed<THostspec> > >::Type>
 {};
 
 template <typename TValue, typename THostspec>
-struct DefaultOverflowImplicit<String<TValue, Packed2<THostspec> > const>
-        : DefaultOverflowImplicit<typename Host<String<TValue, Packed2<THostspec> > const>::Type>
+struct DefaultOverflowImplicit<String<TValue, Packed<THostspec> > const>
+        : DefaultOverflowImplicit<typename Host<String<TValue, Packed<THostspec> > const>::Type>
 {};
 
 // --------------------------------------------------------------------------
@@ -237,13 +243,13 @@ struct DefaultOverflowImplicit<String<TValue, Packed2<THostspec> > const>
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec>
-struct DefaultOverflowExplicit<String<TValue, Packed2<THostspec> > >
-        : DefaultOverflowExplicit<typename Host<String<TValue, Packed2<THostspec> > >::Type>
+struct DefaultOverflowExplicit<String<TValue, Packed<THostspec> > >
+        : DefaultOverflowExplicit<typename Host<String<TValue, Packed<THostspec> > >::Type>
 {};
 
 template <typename TValue, typename THostspec>
-struct DefaultOverflowExplicit<String<TValue, Packed2<THostspec> > const>
-        : DefaultOverflowExplicit<typename Host<String<TValue, Packed2<THostspec> > const>::Type>
+struct DefaultOverflowExplicit<String<TValue, Packed<THostspec> > const>
+        : DefaultOverflowExplicit<typename Host<String<TValue, Packed<THostspec> > const>::Type>
 {};
 
 // --------------------------------------------------------------------------
@@ -251,7 +257,7 @@ struct DefaultOverflowExplicit<String<TValue, Packed2<THostspec> > const>
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec>
-struct IsContiguous<String<TValue, Packed2<THostspec> > >
+struct IsContiguous<String<TValue, Packed<THostspec> > >
 {
     typedef False Type;
     enum { VALUE = false };
@@ -262,13 +268,13 @@ struct IsContiguous<String<TValue, Packed2<THostspec> > >
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec>
-struct Host<String<TValue, Packed2<THostspec> > >
+struct Host<String<TValue, Packed<THostspec> > >
 {
     typedef String<unsigned int, THostspec> Type;
 };
 
 template <typename TValue, typename THostspec>
-struct Host<String<TValue, Packed2<THostspec> > const>
+struct Host<String<TValue, Packed<THostspec> > const>
 {
     typedef String<unsigned int, THostspec> const Type;
 };
@@ -278,13 +284,13 @@ struct Host<String<TValue, Packed2<THostspec> > const>
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec>
-struct GetValue<String<TValue, Packed2<THostspec> > >
-        : Value<String<TValue, Packed2<THostspec> > >
+struct GetValue<String<TValue, Packed<THostspec> > >
+        : Value<String<TValue, Packed<THostspec> > >
 {};
 
 template <typename TValue, typename THostspec>
-struct GetValue<String<TValue, Packed2<THostspec> > const>
-        : Value<String<TValue, Packed2<THostspec> > const>
+struct GetValue<String<TValue, Packed<THostspec> > const>
+        : Value<String<TValue, Packed<THostspec> > const>
 {};
 
 // --------------------------------------------------------------------------
@@ -292,16 +298,16 @@ struct GetValue<String<TValue, Packed2<THostspec> > const>
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec>
-struct Reference<String<TValue, Packed2<THostspec> > >
+struct Reference<String<TValue, Packed<THostspec> > >
 {
-    typedef typename Iterator<String<TValue, Packed2<THostspec> >, Standard>::Type TIterator;
+    typedef typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type TIterator;
     typedef Proxy<IteratorProxy<TIterator> > Type;
 };
 
 template <typename TValue, typename THostspec>
-struct Reference<String<TValue, Packed2<THostspec> > const>
+struct Reference<String<TValue, Packed<THostspec> > const>
 {
-    typedef typename Iterator<String<TValue, Packed2<THostspec> > const, Standard>::Type TIterator;
+    typedef typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type TIterator;
     typedef Proxy<IteratorProxy<TIterator> > Type;
 };
 
@@ -311,12 +317,12 @@ struct Reference<String<TValue, Packed2<THostspec> > const>
 
 /*
 template <typename TValue, typename THostspec>
-struct Size<String<TValue, Packed2<THostspec> > >
+struct Size<String<TValue, Packed<THostspec> > >
 {
     typedef __int64 Type;
 };
 template <typename TValue, typename THostspec>
-struct Size<String<TValue, Packed2<THostspec> > const>
+struct Size<String<TValue, Packed<THostspec> > const>
 {
     typedef __int64 Type;
 };
@@ -327,15 +333,15 @@ struct Size<String<TValue, Packed2<THostspec> > const>
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec, typename TSpec>
-struct Iterator<String<TValue, Packed2<THostspec> >, TSpec>
+struct Iterator<String<TValue, Packed<THostspec> >, TSpec>
 {
-    typedef Iter<String<TValue, Packed2<THostspec> >, Packed2<THostspec> > Type;
+    typedef Iter<String<TValue, Packed<THostspec> >, Packed<THostspec> > Type;
 };
 
 template <typename TValue, typename THostspec, typename TSpec>
-struct Iterator<String<TValue, Packed2<THostspec> > const, TSpec>
+struct Iterator<String<TValue, Packed<THostspec> > const, TSpec>
 {
-    typedef Iter<String<TValue, Packed2<THostspec> > const, Packed2<THostspec> > Type;
+    typedef Iter<String<TValue, Packed<THostspec> > const, Packed<THostspec> > Type;
 };
 
 // --------------------------------------------------------------------------
@@ -347,14 +353,14 @@ template <typename T>
 struct HostIterator;
 
 template <typename TContainer, typename THostspec>
-struct HostIterator<Iter<TContainer, Packed2<THostspec> > >
+struct HostIterator<Iter<TContainer, Packed<THostspec> > >
 {
     typedef typename Host<TContainer>::Type THost_;
     typedef typename Iterator<THost_, Standard>::Type Type;
 };
 
 template <typename TContainer, typename THostspec>
-struct HostIterator<Iter<TContainer, Packed2<THostspec> > const>
+struct HostIterator<Iter<TContainer, Packed<THostspec> > const>
 {
     typedef typename Host<TContainer>::Type THost_;
     typedef typename Iterator<THost_, Standard>::Type const Type;
@@ -376,7 +382,7 @@ struct PackedConsts_
         BITS_PER_VALUE = BitsPerValue<TValue>::VALUE,
         BITS_PER_HOST_VALUE = BitsPerValue<THostValue>::VALUE,
         VALUES_PER_WORD = (BITS_PER_VALUE > BITS_PER_HOST_VALUE) ? 1 : (BITS_PER_HOST_VALUE / BITS_PER_VALUE),
-        VALUE_MASK = (1 << BITS_PER_VALUE) - 1,
+        VALUE_MASK = static_cast<int>(1l << BITS_PER_VALUE) - 1,
         MAX_BIT_POS = (VALUES_PER_WORD - 1) * BITS_PER_VALUE
     };
 
@@ -393,9 +399,9 @@ struct PackedConsts_
 
 // Note: this works only, if the copy assignment is done without using TempCopy_.
 template <typename TValue, typename THostspec>
-struct TempCopy_<String<TValue, Packed2<THostspec> > >
+struct TempCopy_<String<TValue, Packed<THostspec> > >
 {
-    typedef String<TValue, Packed2<THostspec> > Type;
+    typedef String<TValue, Packed<THostspec> > Type;
 };
 
 // ============================================================================
@@ -411,16 +417,16 @@ struct TempCopy_<String<TValue, Packed2<THostspec> > >
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec>
-inline typename Host<String<TValue, Packed2<THostspec> > >::Type &
-host(String<TValue, Packed2<THostspec> > & me)
+inline typename Host<String<TValue, Packed<THostspec> > >::Type &
+host(String<TValue, Packed<THostspec> > & me)
 {
     SEQAN_CHECKPOINT;
     return me.data_host;
 }
 
 template <typename TValue, typename THostspec>
-inline typename Host<String<TValue, Packed2<THostspec> > const>::Type const &
-host(String<TValue, Packed2<THostspec> > const & me)
+inline typename Host<String<TValue, Packed<THostspec> > const>::Type const &
+host(String<TValue, Packed<THostspec> > const & me)
 {
     SEQAN_CHECKPOINT;
     return me.data_host;
@@ -431,16 +437,16 @@ host(String<TValue, Packed2<THostspec> > const & me)
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec>
-inline typename Size<String<TValue, Packed2<THostspec> > >::Type
-length(String<TValue, Packed2<THostspec> > & me)
+inline typename Size<String<TValue, Packed<THostspec> > >::Type
+length(String<TValue, Packed<THostspec> > & me)
 {
     SEQAN_CHECKPOINT;
     return me.data_length;
 }
 
 template <typename TValue, typename THostspec>
-inline typename Size<String<TValue, Packed2<THostspec> > const>::Type
-length(String<TValue, Packed2<THostspec> > const & me)
+inline typename Size<String<TValue, Packed<THostspec> > const>::Type
+length(String<TValue, Packed<THostspec> > const & me)
 {
     SEQAN_CHECKPOINT;
     return me.data_length;
@@ -453,11 +459,11 @@ length(String<TValue, Packed2<THostspec> > const & me)
 template <typename TValue, typename THostspec, typename TSize>
 inline void
 _setLength(
-    String<TValue, Packed2<THostspec> > & me,
+    String<TValue, Packed<THostspec> > & me,
     TSize new_length)
 {
     SEQAN_CHECKPOINT;
-    typedef String<TValue, Packed2<THostspec> > TString;
+    typedef String<TValue, Packed<THostspec> > TString;
     me.data_length = new_length;
     _setLength(host(me), PackedConsts_<TString>::toHostLength(new_length));
 }
@@ -514,8 +520,8 @@ _assignCopyPackedString(TTarget & target,
 
 template <typename TValue, typename THostspec, typename TTag>
 inline void
-assign(String<TValue, Packed2<THostspec> > & target,
-       String<TValue, Packed2<THostspec> > & source,
+assign(String<TValue, Packed<THostspec> > & target,
+       String<TValue, Packed<THostspec> > & source,
        Tag<TTag> const & tag)
 {
     _assignCopyPackedString(target, source, tag);
@@ -523,24 +529,24 @@ assign(String<TValue, Packed2<THostspec> > & target,
 
 template <typename TValue, typename THostspec, typename TTag>
 inline void
-assign(String<TValue, Packed2<THostspec> > & target,
-       String<TValue, Packed2<THostspec> > const & source,
+assign(String<TValue, Packed<THostspec> > & target,
+       String<TValue, Packed<THostspec> > const & source,
        Tag<TTag> const & tag)
 {
     _assignCopyPackedString(target, source, tag);
 }
 
 template <typename TValue, typename THostspec, typename TSize, typename TTag>
-void assign(String<TValue, Packed2<THostspec> > & target,
-            String<TValue, Packed2<THostspec> > & source,
+void assign(String<TValue, Packed<THostspec> > & target,
+            String<TValue, Packed<THostspec> > & source,
             TSize limit,
             Tag<TTag> const & tag)
 {
     _assignCopyPackedString(target, source, limit, tag);
 }
 template <typename TValue, typename THostspec, typename TSize, typename TTag>
-void assign(String<TValue, Packed2<THostspec> > & target,
-            String<TValue, Packed2<THostspec> > const & source,
+void assign(String<TValue, Packed<THostspec> > & target,
+            String<TValue, Packed<THostspec> > const & source,
             TSize limit,
             Tag<TTag> const & tag)
 {
@@ -553,7 +559,7 @@ void assign(String<TValue, Packed2<THostspec> > & target,
 
 template <typename TValue, typename THostspec>
 inline void const *
-getObjectId(String<TValue, Packed2<THostspec> > const & me)
+getObjectId(String<TValue, Packed<THostspec> > const & me)
 {
     SEQAN_CHECKPOINT;
     return getObjectId(host(me));
@@ -564,24 +570,24 @@ getObjectId(String<TValue, Packed2<THostspec> > const & me)
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec, typename TPos, typename TTag>
-inline typename Iterator<String<TValue, Packed2<THostspec> >, Tag<TTag> const>::Type
-iter(String<TValue, Packed2<THostspec> > & me,
+inline typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type
+iter(String<TValue, Packed<THostspec> > & me,
      TPos pos_,
      Tag<TTag> const &)
 {
     SEQAN_CHECKPOINT;
-    typedef typename Iterator<String<TValue, Packed2<THostspec> >, Tag<TTag> const>::Type TIterator;
+    typedef typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type TIterator;
     return TIterator(me, pos_);
 }
 
 template <typename TValue, typename THostspec, typename TPos, typename TTag>
-inline typename Iterator<String<TValue, Packed2<THostspec> > const, Tag<TTag> const>::Type
-iter(String<TValue, Packed2<THostspec> > const & me,
+inline typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type
+iter(String<TValue, Packed<THostspec> > const & me,
      TPos pos_,
      Tag<TTag> const &)
 {
     SEQAN_CHECKPOINT;
-    typedef typename Iterator<String<TValue, Packed2<THostspec> > const, Tag<TTag> const>::Type TIterator;
+    typedef typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type TIterator;
     return TIterator(me, pos_);
 }
 
@@ -590,8 +596,8 @@ iter(String<TValue, Packed2<THostspec> > const & me,
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec, typename TTag>
-inline typename Iterator<String<TValue, Packed2<THostspec> >, Tag<TTag> const>::Type
-begin(String<TValue, Packed2<THostspec> > & me,
+inline typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type
+begin(String<TValue, Packed<THostspec> > & me,
       Tag<TTag> const & tag_)
 {
     SEQAN_CHECKPOINT;
@@ -599,8 +605,8 @@ begin(String<TValue, Packed2<THostspec> > & me,
 }
 
 template <typename TValue, typename THostspec, typename TTag>
-inline typename Iterator<String<TValue, Packed2<THostspec> > const, Tag<TTag> const>::Type
-begin(String<TValue, Packed2<THostspec> > const & me,
+inline typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type
+begin(String<TValue, Packed<THostspec> > const & me,
       Tag<TTag> const & tag_)
 {
     SEQAN_CHECKPOINT;
@@ -612,8 +618,8 @@ begin(String<TValue, Packed2<THostspec> > const & me,
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec, typename TTag>
-inline typename Iterator<String<TValue, Packed2<THostspec> >, Tag<TTag> const>::Type
-end(String<TValue, Packed2<THostspec> > & me,
+inline typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type
+end(String<TValue, Packed<THostspec> > & me,
     Tag<TTag> const & tag_)
 {
     SEQAN_CHECKPOINT;
@@ -621,8 +627,8 @@ end(String<TValue, Packed2<THostspec> > & me,
 }
 
 template <typename TValue, typename THostspec, typename TTag>
-inline typename Iterator<String<TValue, Packed2<THostspec> > const, Tag<TTag> const>::Type
-end(String<TValue, Packed2<THostspec> > const & me,
+inline typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type
+end(String<TValue, Packed<THostspec> > const & me,
     Tag<TTag> const & tag_)
 {
     SEQAN_CHECKPOINT;
@@ -634,8 +640,8 @@ end(String<TValue, Packed2<THostspec> > const & me,
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec, typename TPos>
-inline typename Reference<String<TValue, Packed2<THostspec> > >::Type
-value(String<TValue, Packed2<THostspec> > & me,
+inline typename Reference<String<TValue, Packed<THostspec> > >::Type
+value(String<TValue, Packed<THostspec> > & me,
       TPos pos)
 {
     SEQAN_CHECKPOINT;
@@ -644,8 +650,8 @@ value(String<TValue, Packed2<THostspec> > & me,
 }
 
 template <typename TValue, typename THostspec, typename TPos>
-inline typename Reference<String<TValue, Packed2<THostspec> > const>::Type
-value(String<TValue, Packed2<THostspec> > const & me,
+inline typename Reference<String<TValue, Packed<THostspec> > const>::Type
+value(String<TValue, Packed<THostspec> > const & me,
       TPos pos)
 {
     SEQAN_CHECKPOINT;
@@ -658,13 +664,13 @@ value(String<TValue, Packed2<THostspec> > const & me,
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec>
-inline typename Size<String<TValue, Packed2<THostspec> > const>::Type
-capacity(String<TValue, Packed2<THostspec> > const & me)
+inline typename Size<String<TValue, Packed<THostspec> > const>::Type
+capacity(String<TValue, Packed<THostspec> > const & me)
 {
     SEQAN_CHECKPOINT;
-    typedef typename Size<String<TValue, Packed2<THostspec> > const>::Type TSize;
+    typedef typename Size<String<TValue, Packed<THostspec> > const>::Type TSize;
     TSize len = capacity(host(me));
-    len *= PackedConsts_<String<TValue, Packed2<THostspec> > >::VALUES_PER_WORD;
+    len *= PackedConsts_<String<TValue, Packed<THostspec> > >::VALUES_PER_WORD;
     return len;
 }
 
@@ -674,7 +680,7 @@ capacity(String<TValue, Packed2<THostspec> > const & me)
 
 template <typename TValue, typename THostspec>
 inline void
-clear(String<TValue, Packed2<THostspec> > & me)
+clear(String<TValue, Packed<THostspec> > & me)
 {
     SEQAN_CHECKPOINT;
     clear(host(me));
@@ -684,12 +690,12 @@ clear(String<TValue, Packed2<THostspec> > & me)
 // --------------------------------------------------------------------------
 // Function _clearSpace()
 //
-// Helper struct ClearSpaceStringPacked2_.
+// Helper struct ClearSpaceStringPacked_.
 // --------------------------------------------------------------------------
 
 //implementation for all expand tags other than "limit"
 template <typename TExpand>
-struct ClearSpaceStringPacked2_
+struct ClearSpaceStringPacked_
 {
     template <typename T>
     static inline typename Size<T>::Type
@@ -832,49 +838,49 @@ FINISH:
 };
 
 template<typename TValue, typename THostspec, typename TExpand>
-inline typename Size< String<TValue, Packed2<THostspec> > >::Type
-_clearSpace(String<TValue, Packed2<THostspec> > & me,
-        typename Size< String<TValue, Packed2<THostspec> > >::Type size,
+inline typename Size< String<TValue, Packed<THostspec> > >::Type
+_clearSpace(String<TValue, Packed<THostspec> > & me,
+        typename Size< String<TValue, Packed<THostspec> > >::Type size,
         Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return ClearSpaceStringPacked2_<Tag<TExpand> >::_clearSpace_(me, size);
+    return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size);
 }
 
 template<typename TValue, typename THostspec, typename TExpand>
-inline typename Size< String<TValue, Packed2<THostspec> > >::Type
-_clearSpace(String<TValue, Packed2<THostspec> > & me,
-        typename Size< String<TValue, Packed2<THostspec> > >::Type size,
-        typename Size< String<TValue, Packed2<THostspec> > >::Type limit,
+inline typename Size< String<TValue, Packed<THostspec> > >::Type
+_clearSpace(String<TValue, Packed<THostspec> > & me,
+        typename Size< String<TValue, Packed<THostspec> > >::Type size,
+        typename Size< String<TValue, Packed<THostspec> > >::Type limit,
         Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return ClearSpaceStringPacked2_<Tag<TExpand> >::_clearSpace_(me, size, limit);
+    return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size, limit);
 }
 
 template<typename TValue, typename THostspec, typename TPosition, typename TExpand>
-inline typename Size< String<TValue, Packed2<THostspec> > >::Type
-_clearSpace(String<TValue, Packed2<THostspec> > & me,
-            typename Size< String<TValue, Packed2<THostspec> > >::Type size,
+inline typename Size< String<TValue, Packed<THostspec> > >::Type
+_clearSpace(String<TValue, Packed<THostspec> > & me,
+            typename Size< String<TValue, Packed<THostspec> > >::Type size,
             TPosition pos_begin,
             TPosition pos_end,
             Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return ClearSpaceStringPacked2_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end);
+    return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end);
 }
 
 template<typename TValue, typename THostspec, typename TPosition, typename TExpand>
-inline typename Size< String<TValue, Packed2<THostspec> > >::Type
-_clearSpace(String<TValue, Packed2<THostspec> > & me,
-            typename Size< String<TValue, Packed2<THostspec> > >::Type size,
+inline typename Size< String<TValue, Packed<THostspec> > >::Type
+_clearSpace(String<TValue, Packed<THostspec> > & me,
+            typename Size< String<TValue, Packed<THostspec> > >::Type size,
             TPosition pos_begin,
             TPosition pos_end,
-            typename Size< String<TValue, Packed2<THostspec> > >::Type limit,
+            typename Size< String<TValue, Packed<THostspec> > >::Type limit,
             Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return ClearSpaceStringPacked2_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end, limit);
+    return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end, limit);
 }
 
 // --------------------------------------------------------------------------
@@ -882,15 +888,15 @@ _clearSpace(String<TValue, Packed2<THostspec> > & me,
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TSize_, typename TExpand>
-inline typename Size< String<TValue, Packed2<TSpec> > >::Type
+inline typename Size< String<TValue, Packed<TSpec> > >::Type
 reserve(
-    String<TValue, Packed2<TSpec> > & seq,
+    String<TValue, Packed<TSpec> > & seq,
     TSize_ new_capacity,
     Tag<TExpand> tag)
 {
     SEQAN_CHECKPOINT;
 
-    typedef String<TValue, Packed2<TSpec> > TString;
+    typedef String<TValue, Packed<TSpec> > TString;
     typedef typename Size<TString>::Type TSize;
     TSize ret_value = reserve(host(seq), PackedConsts_<TString>::toHostLength(new_capacity), tag);
     return ret_value * PackedConsts_<TString>::VALUES_PER_WORD;
@@ -906,7 +912,7 @@ reserve(
 
 template <typename TContainer, typename THostspec>
 inline typename Parameter_<TContainer>::Type
-container(Iter<TContainer, Packed2<THostspec> > & me)
+container(Iter<TContainer, Packed<THostspec> > & me)
 {
     SEQAN_CHECKPOINT;
     return _toParameter<TContainer>(me.data_container);
@@ -914,7 +920,7 @@ container(Iter<TContainer, Packed2<THostspec> > & me)
 
 template <typename TContainer, typename THostspec>
 inline typename Parameter_<TContainer>::Type
-container(Iter<TContainer, Packed2<THostspec> > const & me)
+container(Iter<TContainer, Packed<THostspec> > const & me)
 {
     SEQAN_CHECKPOINT;
     return _toParameter<TContainer>(me.data_container);
@@ -926,11 +932,11 @@ container(Iter<TContainer, Packed2<THostspec> > const & me)
 
 template <typename TContainer, typename THostspec, typename TContainer2>
 inline void
-setContainer(Iter<TContainer, Packed2<THostspec> > & me,
+setContainer(Iter<TContainer, Packed<THostspec> > & me,
              TContainer2 container_)
 {
     SEQAN_CHECKPOINT;
-   typedef Iter<TContainer, Packed2<THostspec> > TIter;
+   typedef Iter<TContainer, Packed<THostspec> > TIter;
     typename Position<TIter>::Type pos = position(me);
     me.data_container = _toPointer(container_);
     setPosition(me, pos);
@@ -941,16 +947,16 @@ setContainer(Iter<TContainer, Packed2<THostspec> > & me,
 // --------------------------------------------------------------------------
 
 template <typename TContainer, typename THostspec>
-inline typename HostIterator<Iter<TContainer, Packed2<THostspec> > >::Type &
-hostIterator(Iter<TContainer, Packed2<THostspec> > & me)
+inline typename HostIterator<Iter<TContainer, Packed<THostspec> > >::Type &
+hostIterator(Iter<TContainer, Packed<THostspec> > & me)
 {
     SEQAN_CHECKPOINT;
     return me.data_iterator;
 }
 
 template <typename TContainer, typename THostspec>
-inline typename HostIterator<Iter<TContainer, Packed2<THostspec> > const>::Type  &
-hostIterator(Iter<TContainer, Packed2<THostspec> > const & me)
+inline typename HostIterator<Iter<TContainer, Packed<THostspec> > const>::Type  &
+hostIterator(Iter<TContainer, Packed<THostspec> > const & me)
 {
     SEQAN_CHECKPOINT;
     return me.data_iterator;
@@ -962,14 +968,14 @@ hostIterator(Iter<TContainer, Packed2<THostspec> > const & me)
 
 template <typename TContainer, typename THostspec>
 inline unsigned char &
-_bitpos(Iter<TContainer, Packed2<THostspec> > & me)
+_bitpos(Iter<TContainer, Packed<THostspec> > & me)
 {
     SEQAN_CHECKPOINT;
     return me.data_bitpos;
 }
 template <typename TContainer, typename THostspec>
 inline unsigned char
-_bitpos(Iter<TContainer, Packed2<THostspec> > const & me)
+_bitpos(Iter<TContainer, Packed<THostspec> > const & me)
 {
     SEQAN_CHECKPOINT;
     return me.data_bitpos;
@@ -980,8 +986,8 @@ _bitpos(Iter<TContainer, Packed2<THostspec> > const & me)
 // --------------------------------------------------------------------------
 
 template <typename TContainer, typename THostspec>
-inline typename Position<Iter<TContainer, Packed2<THostspec> > const>::Type
-position(Iter<TContainer, Packed2<THostspec> > const & me)
+inline typename Position<Iter<TContainer, Packed<THostspec> > const>::Type
+position(Iter<TContainer, Packed<THostspec> > const & me)
 {
     SEQAN_CHECKPOINT;
     typedef typename Host<TContainer>::Type THost;
@@ -995,7 +1001,7 @@ position(Iter<TContainer, Packed2<THostspec> > const & me)
 
 template <typename TContainer, typename THostspec, typename TPosition>
 inline void
-setPosition(Iter<TContainer, Packed2<THostspec> > & me,
+setPosition(Iter<TContainer, Packed<THostspec> > & me,
             TPosition pos_)
 {
     SEQAN_CHECKPOINT;
@@ -1008,19 +1014,19 @@ setPosition(Iter<TContainer, Packed2<THostspec> > & me,
 // --------------------------------------------------------------------------
 
 template <typename TContainer, typename THostspec>
-inline typename Reference<Iter<TContainer, Packed2<THostspec> > >::Type
-value(Iter<TContainer, Packed2<THostspec> > & me)
+inline typename Reference<Iter<TContainer, Packed<THostspec> > >::Type
+value(Iter<TContainer, Packed<THostspec> > & me)
 {
     SEQAN_CHECKPOINT;
-    return typename Reference<Iter<TContainer, Packed2<THostspec> > >::Type(me);
+    return typename Reference<Iter<TContainer, Packed<THostspec> > >::Type(me);
 }
 
 template <typename TContainer, typename THostspec>
-inline typename Reference<Iter<TContainer, Packed2<THostspec> > const>::Type
-value(Iter<TContainer, Packed2<THostspec> > const & me)
+inline typename Reference<Iter<TContainer, Packed<THostspec> > const>::Type
+value(Iter<TContainer, Packed<THostspec> > const & me)
 {
     SEQAN_CHECKPOINT;
-    return typename Reference<Iter<TContainer, Packed2<THostspec> > const>::Type(me);
+    return typename Reference<Iter<TContainer, Packed<THostspec> > const>::Type(me);
 }
 
 // --------------------------------------------------------------------------
@@ -1028,16 +1034,16 @@ value(Iter<TContainer, Packed2<THostspec> > const & me)
 // --------------------------------------------------------------------------
 
 template <typename TContainer, typename THostspec>
-inline typename GetValue<Iter<TContainer, Packed2<THostspec> > >::Type
-getValue(Iter<TContainer, Packed2<THostspec> > & me)
+inline typename GetValue<Iter<TContainer, Packed<THostspec> > >::Type
+getValue(Iter<TContainer, Packed<THostspec> > & me)
 {
     SEQAN_CHECKPOINT;
     return (value(hostIterator(me)) >> _bitpos(me)) & PackedConsts_<TContainer>::VALUE_MASK;
 }
 
 template <typename TContainer, typename THostspec>
-inline typename GetValue<Iter<TContainer, Packed2<THostspec> > const>::Type
-getValue(Iter<TContainer, Packed2<THostspec> > const & me)
+inline typename GetValue<Iter<TContainer, Packed<THostspec> > const>::Type
+getValue(Iter<TContainer, Packed<THostspec> > const & me)
 {
     SEQAN_CHECKPOINT;
     return (value(hostIterator(me)) >> _bitpos(me)) & PackedConsts_<TContainer>::VALUE_MASK;
@@ -1065,22 +1071,22 @@ _assignValuePackedStringIterator(TIter & me,
 
 template <typename TContainer, typename THostspec, typename TValue>
 inline void
-assignValue(Iter<TContainer, Packed2<THostspec> > const & me,
+assignValue(Iter<TContainer, Packed<THostspec> > const & me,
             TValue const & _value)
 {
     SEQAN_CHECKPOINT;
-    typedef Iter<TContainer, Packed2<THostspec> > const TIterator;
+    typedef Iter<TContainer, Packed<THostspec> > const TIterator;
     typename Value<TIterator>::Type _temp_value = _value; //conversion
     _assignValuePackedStringIterator(me, _temp_value);
 }
 
 template <typename TContainer, typename THostspec, typename TValue>
 inline void
-assignValue(Iter<TContainer, Packed2<THostspec> > & me,
+assignValue(Iter<TContainer, Packed<THostspec> > & me,
             TValue const & _value)
 {
     SEQAN_CHECKPOINT;
-    typedef Iter<TContainer, Packed2<THostspec> > TIter;
+    typedef Iter<TContainer, Packed<THostspec> > TIter;
     assignValue(static_cast<TIter const &>(me), _value);
 }
 
@@ -1090,7 +1096,7 @@ assignValue(Iter<TContainer, Packed2<THostspec> > & me,
 
 template <typename TContainer, typename THostspec, typename TValue>
 inline void
-moveValue(Iter<TContainer, Packed2<THostspec> > & me,
+moveValue(Iter<TContainer, Packed<THostspec> > & me,
           TValue const & _value)
 {
     SEQAN_CHECKPOINT;
@@ -1099,7 +1105,7 @@ moveValue(Iter<TContainer, Packed2<THostspec> > & me,
 
 template <typename TContainer, typename THostspec, typename TValue>
 inline void
-moveValue(Iter<TContainer, Packed2<THostspec> > const & me,
+moveValue(Iter<TContainer, Packed<THostspec> > const & me,
           TValue const & _value)
 {
     SEQAN_CHECKPOINT;
@@ -1114,14 +1120,14 @@ moveValue(Iter<TContainer, Packed2<THostspec> > const & me,
 
 template <typename TContainer, typename THostspec>
 inline void
-valueConstruct(Iter<TContainer, Packed2<THostspec> > const & /*it*/)
+valueConstruct(Iter<TContainer, Packed<THostspec> > const & /*it*/)
 {
     // TODO(holtgrew): Why not assign default-constructed?
 }
 
 template <typename TContainer, typename THostspec, typename TParam>
 inline void
-valueConstruct(Iter<TContainer, Packed2<THostspec> > const & it,
+valueConstruct(Iter<TContainer, Packed<THostspec> > const & it,
                TParam const & param_)
 {
     assignValue(it, param_);
@@ -1129,7 +1135,7 @@ valueConstruct(Iter<TContainer, Packed2<THostspec> > const & it,
 
 template <typename TContainer, typename THostspec, typename TParam>
 inline void
-valueConstruct(Iter<TContainer, Packed2<THostspec> > const & it,
+valueConstruct(Iter<TContainer, Packed<THostspec> > const & it,
                TParam const & param_,
                Move const & /*tag*/)
 {
@@ -1144,7 +1150,7 @@ valueConstruct(Iter<TContainer, Packed2<THostspec> > const & it,
 
 template <typename TContainer, typename THostspec>
 inline void
-valueDestruct(Iter<TContainer, Packed2<THostspec> > const & /*it*/)
+valueDestruct(Iter<TContainer, Packed<THostspec> > const & /*it*/)
 {
 }
 
@@ -1154,8 +1160,8 @@ valueDestruct(Iter<TContainer, Packed2<THostspec> > const & /*it*/)
 
 template <typename TContainer, typename THostspec>
 inline bool
-operator==(Iter<TContainer, Packed2<THostspec> > const & left,
-           Iter<TContainer, Packed2<THostspec> > const & right)
+operator==(Iter<TContainer, Packed<THostspec> > const & left,
+           Iter<TContainer, Packed<THostspec> > const & right)
 {
     SEQAN_CHECKPOINT;
     return (hostIterator(left) == hostIterator(right)) && (_bitpos(left) == _bitpos(right));
@@ -1167,8 +1173,8 @@ operator==(Iter<TContainer, Packed2<THostspec> > const & left,
 
 template <typename TContainer, typename THostspec>
 inline bool
-operator!=(Iter<TContainer, Packed2<THostspec> > const & left,
-           Iter<TContainer, Packed2<THostspec> > const & right)
+operator!=(Iter<TContainer, Packed<THostspec> > const & left,
+           Iter<TContainer, Packed<THostspec> > const & right)
 {
     SEQAN_CHECKPOINT;
     return (hostIterator(left) != hostIterator(right)) || (_bitpos(left) != _bitpos(right));
@@ -1180,8 +1186,8 @@ operator!=(Iter<TContainer, Packed2<THostspec> > const & left,
 
 template <typename TContainer, typename THostspec>
 inline bool
-operator>(Iter<TContainer, Packed2<THostspec> > const & left,
-          Iter<TContainer, Packed2<THostspec> > const & right)
+operator>(Iter<TContainer, Packed<THostspec> > const & left,
+          Iter<TContainer, Packed<THostspec> > const & right)
 {
     SEQAN_CHECKPOINT;
     return (hostIterator(left) > hostIterator(right)) || ((hostIterator(left) == hostIterator(right)) && (_bitpos(left) > _bitpos(right)));
@@ -1193,8 +1199,8 @@ operator>(Iter<TContainer, Packed2<THostspec> > const & left,
 
 template <typename TContainer, typename THostspec>
 inline bool
-operator>=(Iter<TContainer, Packed2<THostspec> > const & left,
-           Iter<TContainer, Packed2<THostspec> > const & right)
+operator>=(Iter<TContainer, Packed<THostspec> > const & left,
+           Iter<TContainer, Packed<THostspec> > const & right)
 {
     SEQAN_CHECKPOINT;
     return (hostIterator(left) > hostIterator(right)) || ((hostIterator(left) == hostIterator(right)) && (_bitpos(left) >= _bitpos(right)));
@@ -1206,8 +1212,8 @@ operator>=(Iter<TContainer, Packed2<THostspec> > const & left,
 
 template <typename TContainer, typename THostspec>
 inline bool
-operator<(Iter<TContainer, Packed2<THostspec> > const & left,
-          Iter<TContainer, Packed2<THostspec> > const & right)
+operator<(Iter<TContainer, Packed<THostspec> > const & left,
+          Iter<TContainer, Packed<THostspec> > const & right)
 {
     SEQAN_CHECKPOINT;
     return (hostIterator(left) < hostIterator(right)) || ((hostIterator(left) == hostIterator(right)) && (_bitpos(left) < _bitpos(right)));
@@ -1219,8 +1225,8 @@ operator<(Iter<TContainer, Packed2<THostspec> > const & left,
 
 template <typename TContainer, typename THostspec>
 inline bool
-operator <= (Iter<TContainer, Packed2<THostspec> > const & left,
-             Iter<TContainer, Packed2<THostspec> > const & right)
+operator <= (Iter<TContainer, Packed<THostspec> > const & left,
+             Iter<TContainer, Packed<THostspec> > const & right)
 {
     SEQAN_CHECKPOINT;
     return (hostIterator(left) < hostIterator(right)) || ((hostIterator(left) == hostIterator(right)) && (_bitpos(left) <= _bitpos(right)));
@@ -1232,7 +1238,7 @@ operator <= (Iter<TContainer, Packed2<THostspec> > const & left,
 
 template <typename TContainer, typename THostspec>
 inline void
-goNext(Iter<TContainer, Packed2<THostspec> > & me)
+goNext(Iter<TContainer, Packed<THostspec> > & me)
 {
     SEQAN_CHECKPOINT;
     int new_bitpos = _bitpos(me) + PackedConsts_<TContainer>::BITS_PER_VALUE;
@@ -1253,7 +1259,7 @@ goNext(Iter<TContainer, Packed2<THostspec> > & me)
 
 template <typename TContainer, typename THostspec>
 inline void
-goPrevious(Iter<TContainer, Packed2<THostspec> > & me)
+goPrevious(Iter<TContainer, Packed<THostspec> > & me)
 {
     SEQAN_CHECKPOINT;
     int new_bitpos = _bitpos(me) - PackedConsts_<TContainer>::BITS_PER_VALUE;
@@ -1273,21 +1279,21 @@ goPrevious(Iter<TContainer, Packed2<THostspec> > & me)
 // --------------------------------------------------------------------------
 
 template <typename TContainer, typename THostspec, typename TIntegral>
-inline Iter<TContainer, Packed2<THostspec> >
-operator+(Iter<TContainer, Packed2<THostspec> > const & left,
+inline Iter<TContainer, Packed<THostspec> >
+operator+(Iter<TContainer, Packed<THostspec> > const & left,
           TIntegral const & right)
 {
     SEQAN_CHECKPOINT;
-    return Iter<TContainer, Packed2<THostspec> >(container(left), position(left) + right);
+    return Iter<TContainer, Packed<THostspec> >(container(left), position(left) + right);
 }
 
 template <typename TContainer, typename THostspec, typename TIntegral>
-inline Iter<TContainer, Packed2<THostspec> >
+inline Iter<TContainer, Packed<THostspec> >
 operator+(TIntegral const & left,
-          Iter<TContainer, Packed2<THostspec> > const & right)
+          Iter<TContainer, Packed<THostspec> > const & right)
 {
     SEQAN_CHECKPOINT;
-    return Iter<TContainer, Packed2<THostspec> >(container(right), position(right) + left);
+    return Iter<TContainer, Packed<THostspec> >(container(right), position(right) + left);
 }
 
 // --------------------------------------------------------------------------
@@ -1295,8 +1301,8 @@ operator+(TIntegral const & left,
 // --------------------------------------------------------------------------
 
 template <typename TContainer, typename THostspec, typename TIntegral>
-inline Iter<TContainer, Packed2<THostspec> > &
-operator+=(Iter<TContainer, Packed2<THostspec> > & left,
+inline Iter<TContainer, Packed<THostspec> > &
+operator+=(Iter<TContainer, Packed<THostspec> > & left,
            TIntegral const & right)
 {
     SEQAN_CHECKPOINT;
@@ -1309,12 +1315,12 @@ operator+=(Iter<TContainer, Packed2<THostspec> > & left,
 // --------------------------------------------------------------------------
 
 template <typename TContainer, typename THostspec, typename TIntegral>
-inline Iter<TContainer, Packed2<THostspec> >
-operator-(Iter<TContainer, Packed2<THostspec> > const & left,
+inline Iter<TContainer, Packed<THostspec> >
+operator-(Iter<TContainer, Packed<THostspec> > const & left,
           TIntegral const & right)
 {
     SEQAN_CHECKPOINT;
-    return Iter<TContainer, Packed2<THostspec> >(container(left), position(left) - right);
+    return Iter<TContainer, Packed<THostspec> >(container(left), position(left) - right);
 }
 
 // --------------------------------------------------------------------------
@@ -1322,8 +1328,8 @@ operator-(Iter<TContainer, Packed2<THostspec> > const & left,
 // --------------------------------------------------------------------------
 
 template <typename TContainer, typename THostspec, typename TIntegral>
-inline Iter<TContainer, Packed2<THostspec> > &
-operator-=(Iter<TContainer, Packed2<THostspec> > & left,
+inline Iter<TContainer, Packed<THostspec> > &
+operator-=(Iter<TContainer, Packed<THostspec> > & left,
            TIntegral const & right)
 {
     SEQAN_CHECKPOINT;
@@ -1336,12 +1342,25 @@ operator-=(Iter<TContainer, Packed2<THostspec> > & left,
 // --------------------------------------------------------------------------
 
 template <typename TContainer, typename THostspec>
-inline typename Difference<Iter<TContainer, Packed2<THostspec> > >::Type
-operator-(Iter<TContainer, Packed2<THostspec> > const & left,
-          Iter<TContainer, Packed2<THostspec> > const & right)
+inline typename Difference<Iter<TContainer, Packed<THostspec> > >::Type
+operator-(Iter<TContainer, Packed<THostspec> > const & left,
+          Iter<TContainer, Packed<THostspec> > const & right)
 {
     SEQAN_CHECKPOINT;
     return position(left) - position(right);
+}
+
+// ----------------------------------------------------------------------------
+// Function std::swap()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostspec>
+inline void
+swap(String<TValue, Packed<THostspec> > & a,
+     String<TValue, Packed<THostspec> > & b)
+{
+    std::swap(a.data_host, b.data_host);
+    std::swap(a.data_length, b.data_length);
 }
 
 }  // namespace seqan
