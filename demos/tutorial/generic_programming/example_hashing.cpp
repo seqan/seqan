@@ -12,6 +12,9 @@ void hashAll(TShape & shape, TString & str){
     while (it != it_end) {
         unsigned int hash_value = hash(shape, it);
         /* do some things with the hash value */ ++it;
+//![hashAll]
+        ignoreUnusedVariableWarning(hash_value);
+//![hashAll]
     }
 }
 //![hashAll]
