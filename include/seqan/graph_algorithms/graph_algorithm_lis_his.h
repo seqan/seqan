@@ -164,7 +164,7 @@ longestIncreasingSubsequence(TString const& str, TPositions& pos) {
     if (list.rbegin() == list.rend()) return;
     else {
         // Start with the maximal position in the list == Vertex Descriptor
-        TVertexDescriptor v = list.rbegin()->second;
+        TVertexDescriptor v = (TVertexDescriptor) list.rbegin()->second;
         while (true) {
             appendValue(pos, v, Generous());
             if (g.data_vertex[v]) v = (*g.data_vertex[v]).data_target;
@@ -240,7 +240,7 @@ longestCommonSubsequence(TString1 const& str1,
     TPos diff = 0;
     for(; itStr1 != endItStr1; ++itStr1, ++current_pos) {
         TPositions& current_occ = occ[ordValue(*itStr1)];
-        for(int i = length(current_occ)-1; i>=0; --i) {
+        for(int i = static_cast<int>(length(current_occ)-1); i>=0; --i) {
             // Do we have a neighborhood
             diff = (current_pos < current_occ[i]) ? current_occ[i] - current_pos : current_pos - current_occ[i];
             if (diff > (TPos) nSize) continue;
@@ -432,7 +432,7 @@ heaviestIncreasingSubsequence(TString const& str,
     if (list.rbegin() == list.rend()) return 0;
     else {
         // Last vertex is end of heaviest increasing subsequence
-        TVertexDescriptor v = list.rbegin()->second.second;
+        TVertexDescriptor v = (TVertexDescriptor) list.rbegin()->second.second;
         while (true) {
             appendValue(pos, v, Generous());
             w+=weights[v];
