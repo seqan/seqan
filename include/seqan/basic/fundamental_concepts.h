@@ -781,7 +781,7 @@ SEQAN_CONCEPT(IntegerConcept, (TValue)) :
     Comparable<TValue>
 {
     TValue a, b;
-    int c;
+    int64_t c;
 
     SEQAN_CONCEPT_USAGE(IntegerConcept)
     {
@@ -878,7 +878,7 @@ SEQAN_CONCEPT(SignedIntegerConcept, (TValue)) :
     IntegerConcept<TValue>
 {
     TValue a;
-    int b;
+    int64_t b;
 
     SEQAN_CONCEPT_USAGE(SignedIntegerConcept)
     {
@@ -941,7 +941,7 @@ SEQAN_CONCEPT(UnsignedIntegerConcept, (TValue)) :
     IntegerConcept<TValue>
 {
     TValue a;
-    unsigned b;
+    uint64_t b;
 
     SEQAN_CONCEPT_USAGE(UnsignedIntegerConcept)
     {
