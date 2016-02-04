@@ -96,12 +96,12 @@ void deallocate(TestAllocator & me,
     me.data_deallocated[(char *) data_] = count;
 }
 
-int countAllocs(TestAllocator & me)
+size_t countAllocs(TestAllocator & me)
 {
     return me.data_allocated.size();
 }
 
-int countDeallocs(TestAllocator & me)
+size_t countDeallocs(TestAllocator & me)
 {
     return me.data_deallocated.size();
 }
@@ -121,12 +121,12 @@ SEQAN_DEFINE_TEST(test_basic_allocator_simple)
     deallocate(allo1, dat1, 100);
     allocate(allo1, dat2, 201);
 
-    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(allo1)), 3);
-    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(allo1)), 1);
+    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(allo1)), 3u);
+    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(allo1)), 1u);
 
     clear(allo1);
 
-    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(allo1)), 3);
+    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(allo1)), 3u);
 }
 
 SEQAN_DEFINE_TEST(test_basic_allocator_pool)
@@ -143,18 +143,18 @@ SEQAN_DEFINE_TEST(test_basic_allocator_pool)
 
     SEQAN_ASSERT_EQ(dat1, dat2);
 
-    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(parentAllocator(allo1))), 1);
-    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 0);
+    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(parentAllocator(allo1))), 1u);
+    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 0u);
 
     allocate(allo1, dat1, 100);
     deallocate(allo1, dat1, 100);
 
-    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(parentAllocator(allo1))), 2);
-    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 1);
+    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(parentAllocator(allo1))), 2u);
+    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 1u);
 
     clear(allo1);
 
-    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 2);
+    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 2u);
 }
 
 SEQAN_DEFINE_TEST(test_basic_allocator_multi_pool)
@@ -171,18 +171,18 @@ SEQAN_DEFINE_TEST(test_basic_allocator_multi_pool)
 
     SEQAN_ASSERT_EQ(dat1, dat2);
 
-    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(parentAllocator(allo1))), 1);
-    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 0);
+    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(parentAllocator(allo1))), 1u);
+    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 0u);
 
     allocate(allo1, dat1, 30);
     deallocate(allo1, dat1, 30);
 
-    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(parentAllocator(allo1))), 2);
-    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 0);
+    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(parentAllocator(allo1))), 2u);
+    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 0u);
 
     clear(allo1);
 
-    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 2);
+    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 2u);
 }
 
 SEQAN_DEFINE_TEST(test_basic_allocator_chunk_pool)
@@ -199,18 +199,18 @@ SEQAN_DEFINE_TEST(test_basic_allocator_chunk_pool)
 
     SEQAN_ASSERT_EQ(dat1, dat2);
 
-    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(parentAllocator(allo1))), 1);
-    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 0);
+    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(parentAllocator(allo1))), 1u);
+    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 0u);
 
     allocate(allo1, dat1, 30);
     deallocate(allo1, dat1, 30);
 
-    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(parentAllocator(allo1))), 2);
-    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 1);
+    SEQAN_ASSERT_EQ(countAllocs(parentAllocator(parentAllocator(allo1))), 2u);
+    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 1u);
 
     clear(allo1);
 
-    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 2);
+    SEQAN_ASSERT_EQ(countDeallocs(parentAllocator(parentAllocator(allo1))), 2u);
 }
 
 #endif  // #ifndef TESTS_BASIC_TEST_BASIC_ALLOCATOR_H_
