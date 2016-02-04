@@ -298,6 +298,13 @@ capacity(std::list<T> const & list)
     return length(list);
 }
 
+template <typename T, typename TAlloc>
+inline bool
+empty(std::list<T, TAlloc> const & list)
+{
+    return list.empty();
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_SEQUENCE_ADAPT_STD_LIST_H_
