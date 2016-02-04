@@ -215,7 +215,7 @@ void IntersectBed::pushRoi(TRoiRecord const & roiRecord)
 
     // Complete processing all BED records that cannot overlap with roiRecord.  After removing each BED record, remove
     // all ROI records that do not overlap with first BED record any more.
-    while (!empty(bedRecords) && bedRecords.front().endPos <= roiRecord.beginPos)
+    while (!bedRecords.empty() && bedRecords.front().endPos <= roiRecord.beginPos)
     {
         processFirstBedRecord();
         bedRecords.pop_front();
@@ -237,7 +237,7 @@ void IntersectBed::finishContig()
     if (options.verbosity >= 2)
         std::cerr << "finishContig()\n";
 
-    while (!empty(bedRecords))
+    while (!bedRecords.empty())
     {
         processFirstBedRecord();
         bedRecords.pop_front();
