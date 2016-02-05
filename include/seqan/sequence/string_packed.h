@@ -582,7 +582,33 @@ resize(
     TStringSize max_length = (resize(host(me), TTraits::toHostLength(new_length) + 1, tag) - 1) * TTraits::VALUES_PER_HOST_VALUE;
     if ((TStringSize)new_length > max_length)
         new_length = max_length;
-    return front(host(me)).i = new_length;
+    front(host(me)).i = new_length;
+
+    // NOTE(h-2): this fixes valgrind issues and insertion errors, otherwise the string
+    //            is dependent on getting 0 initialized memory; however it is unclear
+    //            whether this fixes all the problems and it does incur a performance
+    //            penalty when explicitly resizing the string
+    _clearUnusedBits(me);
+    return new_length;
+}
+
+template <typename TValue, typename THostspec, typename TSize, typename TExpand, typename TValue2>
+inline typename Size< String<TValue, Packed<THostspec> > >::Type
+resize(String<TValue, Packed<THostspec> > & me,
+       TSize new_length,
+       TValue2 const & newValue,
+       Tag<TExpand> tag)
+{
+//     typedef typename Size< String<TValue, Packed<THostspec> > >::Type             TSize;
+    typedef typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type TIter;
+
+    TSize oldLen = length(me);
+    TSize ret = resize(me, new_length, tag);
+
+    if (ret >= oldLen)
+        for (TIter it = iter(me, oldLen, Standard()), itEnd = end(me, Standard()); it != itEnd; ++it)
+            *it = newValue;
+    return ret;
 }
 
 // --------------------------------------------------------------------------
