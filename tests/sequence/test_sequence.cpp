@@ -40,7 +40,7 @@
 using namespace seqan;
 
 #include "test_string.h"
-#include "test_string_packed_extension.h"
+// #include "test_string_packed_extension.h"
 #include "test_stringset.h"
 #include "test_segment.h"
 #include "test_sequence_std_adaptions.h"
@@ -110,7 +110,7 @@ SEQAN_BEGIN_TESTSUITE(Sequence tests)
     SEQAN_CALL_TEST(ticket901);
     SEQAN_CALL_TEST(ticket1108);
 
-    SEQAN_CALL_TEST(String_Packed_Extension);
+//     SEQAN_CALL_TEST(String_Packed_Extension);
 
     // -----------------------------------------------------------------------
     // Checkpoint Verification
