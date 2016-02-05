@@ -3,6 +3,7 @@
 #include <seqan/sequence.h>
 #include <seqan/align.h>
 
+
 using namespace seqan;
 
 int main()
