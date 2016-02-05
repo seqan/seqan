@@ -25,7 +25,7 @@
         if(window != window.parent && window.name == 'list') {
             try {
                 var redirectTo = null;
-                var p = decodeURIComponent($.urlParam('p',window.parent.location)); // from parameter p
+                var p = $.urlParam('p',window.parent.location); // from parameter p
                 var hash = decodeURIComponent($.urlHash(window.parent.location)); // from hash (start with #)
 
                 if(p != null) {
