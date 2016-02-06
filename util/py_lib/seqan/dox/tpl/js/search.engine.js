@@ -310,6 +310,7 @@ and based on the Tipue Search, http://www.tipue.com
             function search(start, replace) {
                 var out = '';
                 var results = '';
+                var module = false;
 
                 if (settings.queryInput.val() != '') {
                     settings.queryInput.addClass('not-empty');
@@ -363,6 +364,12 @@ and based on the Tipue Search, http://www.tipue.com
                     var cleanedWords = stemmedWords;
                     var query = cleanedWords;
 
+
+                    if (query[0].indexOf("module:") == 0) {
+                        module = true;
+                        query[0] = query[0].substr(7, query[0].length);
+                    }
+
                     var langEntitiesKeys = Object.keys(settings.langEntities);
                     var langEntitiesToKeep = [];
                     $(settings.langEntitiesInput.val()).each(function() {
@@ -399,11 +406,23 @@ and based on the Tipue Search, http://www.tipue.com
                             if(this.subentries.title);
                             subentries.push(this.subentries[i].title);
                         }
-                        var score = findAndScore(query, [this.title, this.text].concat(akas, subentries));
-                        var result = highlightedMatch(score, this, query);
 
-                        if (score != -1 && score < 1000000000) {
-                            found.push(result);
+                        var score, result;
+                        if (module)
+                        {
+                            score = findAndScore(query[0], [this.srcfile]);
+                            result = highlightedMatch(score, this, "");
+                            if (score != -1 && score < 1000000000 && this.srcfile.indexOf(query[0]) == 0) {
+                                found.push(result);
+                            }
+                        }
+                        else
+                        {
+                            score = findAndScore(query, [this.title, this.text].concat(akas, subentries));
+                            result = highlightedMatch(score, this, query);
+                            if (score != -1 && score < 1000000000) {
+                                found.push(result);
+                            }
                         }
                     });
 

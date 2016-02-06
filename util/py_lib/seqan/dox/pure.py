@@ -151,8 +151,7 @@ def doMain(args):
                 parser.parse(lex)
             except dox_parser.ParserError, e:
                 msg_printer.printParserError(e)
-                return 1
-            master_doc.merge(parser.documentation)
+            master_doc.merge(parser.documentation, filename)
     # Generate documentation.
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     logger = logging.getLogger()

@@ -504,7 +504,7 @@ class HtmlWriter(object):
         """Generate the search index."""
         js = ['window.searchData = [']
         for entry in doc.top_level_entries.itervalues():
-            akas, subentries = '', ''
+            akas, subentries, headerfile = '', '', ''
             if hasattr(entry, 'akas'):
                 akas = ','.join(entry.akas)
             if hasattr(entry, 'subentries'):
@@ -514,10 +514,21 @@ class HtmlWriter(object):
                         sID = s.title
                         title = proc_doc.splitSecondLevelEntry(s.title)[1]
                         subentries.append({'type': s.kind, 'name': s.name, 'title': title, 'id': sID})
-            js.append('  {title:%s,name:%s,text:%s,akas:%s,subentries:%s,loc:%s,langEntity:%s},' %
+            if hasattr(entry, 'headerfiles') and len(entry.headerfiles) > 0 :
+                headerfile = entry.headerfiles[0]
+                headerfile = headerfile[headerfile.find("/")+1:-3]
+
+            if entry in self.doc.doc_processor.topLevelEntry_filenames:
+                delimiter = "/include/seqan/"
+                srcfile = self.doc.doc_processor.topLevelEntry_filenames[entry]
+                srcfile = srcfile[srcfile.find(delimiter)+len(delimiter):]
+            else :
+                srcfile = ""
+
+            js.append('  {title:%s,name:%s,text:%s,akas:%s,subentries:%s,loc:%s,langEntity:%s, definedIn:%s, srcfile:%s},' %
                       (repr(entry.title), repr(entry.name), repr(""), repr(akas), repr(subentries),
                        repr(self.path_converter.convert(entry.name)[0]),
-                       repr(entry.kind)))
+                       repr(entry.kind),repr(headerfile),repr(srcfile)))
         js.append('];')
         with open(os.path.join(self.out_dirs['js'], 'search.data.js'), 'wb') as f:
             f.write('\n'.join(js))
