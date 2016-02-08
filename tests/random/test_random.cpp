@@ -38,41 +38,28 @@
 #include <seqan/stream.h>
 #include <seqan/random.h>  // The module under test.
 
-#include "test_random_rng.h"
-#include "test_random_dists.h"
-#include "test_random_shuffle.h"
+#include "test_random_basic.h"
+#include "test_random_beta.h"
+#include "test_random_util.h"
 
 
 SEQAN_BEGIN_TESTSUITE(test_random) {
     // Call Tests.
     SEQAN_CALL_TEST(test_default_rng);
 
-    SEQAN_CALL_TEST(test_random_mt19937_constructors);
-    SEQAN_CALL_TEST(test_random_mt19937_pick);
-    SEQAN_CALL_TEST(test_random_mt19937_metafunctions);
-
-    SEQAN_CALL_TEST(test_random_rng_functor_constructors);
-    SEQAN_CALL_TEST(test_random_rng_functor_pick);
-
-    SEQAN_CALL_TEST(test_random_normal_constructors);
-    SEQAN_CALL_TEST(test_random_normal_pick);
-
-    SEQAN_CALL_TEST(test_random_geometric_fair_coin_constructors);
-    SEQAN_CALL_TEST(test_random_geometric_fair_coin_pick);
-
-    SEQAN_CALL_TEST(test_random_lognormal_constructors);
-    SEQAN_CALL_TEST(test_random_lognormal_pick);
-
     SEQAN_CALL_TEST(test_random_beta_constructors);
-    SEQAN_CALL_TEST(test_random_beta_pick);
-
-    SEQAN_CALL_TEST(test_random_uniform_int_constructors);
-    SEQAN_CALL_TEST(test_random_uniform_int_pick);
-    SEQAN_CALL_TEST(test_random_uniform_bool_pick);
-
-    SEQAN_CALL_TEST(test_random_uniform_double_constructors);
-    SEQAN_CALL_TEST(test_random_uniform_double_pick);
+    SEQAN_CALL_TEST(test_random_beta_alpha);
+    SEQAN_CALL_TEST(test_random_beta_beta);
+    SEQAN_CALL_TEST(test_random_beta_min);
+    SEQAN_CALL_TEST(test_random_beta_max);
+    SEQAN_CALL_TEST(test_random_beta_param);
+    SEQAN_CALL_TEST(test_random_beta_set_param);
+    SEQAN_CALL_TEST(test_random_beta_write);
+    SEQAN_CALL_TEST(test_random_beta_read);
+    SEQAN_CALL_TEST(test_random_beta_functor);
 
     SEQAN_CALL_TEST(test_random_shuffle);
+    SEQAN_CALL_TEST(test_random_cvt_beta_param);
+    SEQAN_CALL_TEST(test_random_cvt_lognormal_param);
 }
 SEQAN_END_TESTSUITE

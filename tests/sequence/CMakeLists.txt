@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the sequence module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_sequence)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_sequence CXX)
 message (STATUS "Configuring tests/sequence")
 
 # ----------------------------------------------------------------------------
@@ -15,9 +15,7 @@ message (STATUS "Configuring tests/sequence")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
-find_package (CXX11)
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------
@@ -48,7 +46,7 @@ add_executable (test_stringset_v2 test_stringset_v2.cpp
 target_link_libraries (test_stringset_v2 ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # ----------------------------------------------------------------------------
 # Register with CTest

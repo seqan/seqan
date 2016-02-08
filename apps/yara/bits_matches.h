@@ -148,13 +148,13 @@ namespace seqan {
 template <typename TSpec>
 struct Member<Match<TSpec>, ReadId>
 {
-    typedef __uint32    Type;
+    typedef uint32_t    Type;
 };
 
 template <typename TSpec>
 struct Member<Match<TSpec>, ContigId>
 {
-    typedef __uint16    Type;
+    typedef uint16_t    Type;
 };
 
 template <typename TContigsLen, typename TContigsSum>
@@ -166,13 +166,13 @@ struct Member<Match<Limits<TContigsLen, TContigsSum> >, ContigSize>
 template <typename TSpec>
 struct Member<Match<TSpec>, ReadSize>
 {
-    typedef __uint16    Type;
+    typedef uint16_t    Type;
 };
 
 template <typename TSpec>
 struct Member<Match<TSpec>, Errors>
 {
-    typedef __uint32    Type;
+    typedef uint32_t    Type;
 };
 }
 
@@ -194,13 +194,13 @@ struct MemberBits<Match<TSpec>, ReadId>
 };
 
 template <typename TContigsLen>
-struct MemberBits<Match<Limits<TContigsLen, __uint8> >, ContigId>
+struct MemberBits<Match<Limits<TContigsLen, uint8_t> >, ContigId>
 {
     static const unsigned VALUE = 8;
 };
 
 template <typename TContigsLen>
-struct MemberBits<Match<Limits<TContigsLen, __uint64> >, ContigSize>
+struct MemberBits<Match<Limits<TContigsLen, uint64_t> >, ContigSize>
 {
     static const unsigned VALUE = 48;
 };
@@ -214,7 +214,7 @@ struct MemberBits<Match<TSpec>, ReadSize>
 template <typename TSpec>
 struct MemberBits<Match<TSpec>, Errors>
 {
-    static const unsigned VALUE = 5;
+    static const unsigned VALUE = 7;
 };
 }
 
@@ -499,14 +499,14 @@ inline float getErrorRate(Match<TSpec> const & me, TReadSeqs const & readSeqs)
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
-inline __uint64 getSortKey(Match<TSpec> const & me, ContigBegin)
+inline uint64_t getSortKey(Match<TSpec> const & me, ContigBegin)
 {
     typedef Match<TSpec>    TMatch;
 
-    return ((__uint64)getMember(me, ContigId())      << (1 + MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE)) |
-           ((__uint64)onReverseStrand(me)            << (MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE))     |
-           ((__uint64)getMember(me, ContigBegin())   <<  MemberBits<TMatch, Errors>::VALUE)                                              |
-           ((__uint64)getMember(me, Errors()));
+    return ((uint64_t)getMember(me, ContigId())      << (1 + MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE)) |
+           ((uint64_t)onReverseStrand(me)            << (MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE))     |
+           ((uint64_t)getMember(me, ContigBegin())   <<  MemberBits<TMatch, Errors>::VALUE)                                              |
+           ((uint64_t)getMember(me, Errors()));
 }
 
 // ----------------------------------------------------------------------------
@@ -514,14 +514,14 @@ inline __uint64 getSortKey(Match<TSpec> const & me, ContigBegin)
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
-inline __uint64 getSortKey(Match<TSpec> const & me, ContigEnd)
+inline uint64_t getSortKey(Match<TSpec> const & me, ContigEnd)
 {
     typedef Match<TSpec>    TMatch;
 
-    return ((__uint64)getMember(me, ContigId())     << (1 + MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE)) |
-           ((__uint64)onReverseStrand(me)           << (MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE))     |
-           ((__uint64)getMember(me, ContigEnd())    <<  MemberBits<TMatch, Errors>::VALUE)                                              |
-           ((__uint64)getMember(me, Errors()));
+    return ((uint64_t)getMember(me, ContigId())     << (1 + MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE)) |
+           ((uint64_t)onReverseStrand(me)           << (MemberBits<TMatch, ContigSize>::VALUE + MemberBits<TMatch, Errors>::VALUE))     |
+           ((uint64_t)getMember(me, ContigEnd())    <<  MemberBits<TMatch, Errors>::VALUE)                                              |
+           ((uint64_t)getMember(me, Errors()));
 }
 
 // ============================================================================
@@ -802,7 +802,7 @@ findMatch(TMatches const & matches, TMatch const & match)
 // ----------------------------------------------------------------------------
 
 template <typename TMatches, typename TKey>
-inline void sortMatches(TMatches SEQAN_FORWARD_ARG matches)
+inline void sortMatches(TMatches && matches)
 {
     typedef typename Value<TMatches>::Type  TMatch;
 
@@ -823,6 +823,7 @@ findProperMates(TMatches const & mates, TMatch const & match,
     typedef typename Size<TReadSeqs>::Type          TReadId;
     typedef typename Value<TReadSeqs const>::Type   TReadSeq;
     typedef typename Size<TReadSeq>::Type           TReadSeqSize;
+    typedef typename MakeSigned<TReadSeqSize>::Type TSignedSize;
 
     TReadId mateId = getMateId(readSeqs, getMember(match, ReadId()));
     TReadSeqSize mateLength = length(readSeqs[mateId]);
@@ -835,21 +836,26 @@ findProperMates(TMatches const & mates, TMatch const & match,
     mateLeq.errors = 0;
     mateGeq.errors = MemberLimits<TMatch, Errors>::VALUE;
 
+    TReadSeqSize deltaMinus = std::max((TSignedSize)0, (TSignedSize)mean - 6 * stdDev - (TSignedSize)mateLength);
+    TReadSeqSize deltaPlus = std::max((TSignedSize)0, (TSignedSize)mean + 6 * stdDev - (TSignedSize)mateLength);
+
     // --> ... mate
     if (onForwardStrand(match))
     {
-        addContigPosition(mateLeq, _max(0u, mean - 6 * stdDev - mateLength), contigSeqs);
-        addContigPosition(mateGeq, _max(0u, mean + 6 * stdDev - mateLength), contigSeqs);
+        addContigPosition(mateLeq, deltaMinus, contigSeqs);
+        addContigPosition(mateGeq, deltaPlus, contigSeqs);
     }
     // mate ... <--
     else
     {
-        subContigPosition(mateLeq, _max(0u, mean + 6 * stdDev - mateLength));
-        subContigPosition(mateGeq, _max(0u, mean - 6 * stdDev - mateLength));
+        subContigPosition(mateLeq, deltaPlus);
+        subContigPosition(mateGeq, deltaMinus);
     }
 
     TIter first = std::lower_bound(begin(mates, Standard()), end(mates, Standard()), mateLeq, MatchSorter<TMatch, ContigBegin>());
     TIter last = std::upper_bound(begin(mates, Standard()), end(mates, Standard()), mateGeq, MatchSorter<TMatch, ContigEnd>());
+
+    SEQAN_ASSERT_LEQ(first, last);
 
     return infix(mates, position(first, mates), position(last, mates));
 }

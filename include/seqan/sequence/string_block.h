@@ -397,7 +397,7 @@ reserve(String<TValue, Block<SPACE> > & /*me*/, TSize new_capacity, Tag<TExpand>
 
 template<typename TTargetValue, size_t SPACE, typename TValue, typename TExpand>
 inline void
-appendValue(String<TTargetValue, Block<SPACE> > & me, TValue SEQAN_FORWARD_CARG value, Tag<TExpand> tag)
+appendValue(String<TTargetValue, Block<SPACE> > & me, TValue && value, Tag<TExpand> tag)
 {
     // TODO(holtgrew): Why does this operate on raw memory instead of using appendValue(me.blocks[last], X)?
     typedef String<TTargetValue, Block<SPACE> > TString;
@@ -418,7 +418,7 @@ appendValue(String<TTargetValue, Block<SPACE> > & me, TValue SEQAN_FORWARD_CARG 
         ++me.lastValue;
         back(me.blocks)->data_length += 1;
     }
-    valueConstruct(me.lastValue, SEQAN_FORWARD(TValue, value));
+    valueConstruct(me.lastValue, std::forward<TValue>(value));
 }
 
 // ----------------------------------------------------------------------------

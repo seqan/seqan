@@ -925,7 +925,6 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
     node.isBase = true;
 
     impl::pushNode(me, std::move(node), observer);  // Push onto stack.
-
     // After we realized this.
     TNode* basePtr = &impl::activeNode(me);
 

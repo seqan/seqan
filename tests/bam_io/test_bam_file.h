@@ -36,10 +36,10 @@
 #define TESTS_BAM_IO_TEST_EASY_BAM_IO_H_
 
 #include <sstream>
+#include <random>
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/random.h>
 
 #include <seqan/bam_io.h>
 
@@ -499,12 +499,12 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
         SEQAN_ASSERT_EQ(record.beginPos, recs[j].i2);
     }
 
-    seqan::Rng<> rng(/*seed=*/1);
-    seqan::Pdf<seqan::Uniform<long> > pdf(0, length(recs) - 1);
+    std::mt19937 rng(/*seed=*/1);
+    std::uniform_int_distribution<long> pdf(0, length(recs) - 1);
 
     for (size_t i = 0; i < 10000; ++i)
     {
-        long j = pickRandomNumber(rng, pdf);
+        long j = pdf(rng);
         setPosition(bamFile, recs[j].i1);
         readRecord(record, bamFile);
         SEQAN_ASSERT_EQ(record.beginPos, recs[j].i2);

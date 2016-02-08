@@ -97,7 +97,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_is_same_type)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_log2)
 {
-    __uint64 x = Log2<1>::VALUE;
+    uint64_t x = Log2<1>::VALUE;
     SEQAN_ASSERT_EQ(x, 0u);
     x = Log2<2>::VALUE;
     SEQAN_ASSERT_EQ(x, 1u);
@@ -117,7 +117,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_log2)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_log2_floor)
 {
-    __uint64 x = Log2Floor<1>::VALUE;
+    uint64_t x = Log2Floor<1>::VALUE;
     SEQAN_ASSERT_EQ(x, 0u);
     x = Log2Floor<2>::VALUE;
     SEQAN_ASSERT_EQ(x, 1u);
@@ -137,7 +137,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_log2_floor)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_power)
 {
-    __uint64 x = Power<2, 2>::VALUE;
+    uint64_t x = Power<2, 2>::VALUE;
     SEQAN_ASSERT_EQ(x, 4u);
     x = Power<3, 2>::VALUE;
     SEQAN_ASSERT_EQ(x, 9u);
@@ -149,7 +149,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_make_unsigned)
 {
     bool b = IsSameType<unsigned int, typename MakeUnsigned_<int>::Type>::Type::VALUE;
     SEQAN_ASSERT(b);
-    b = IsSameType<__uint64, typename MakeUnsigned_<__int64>::Type>::Type::VALUE;
+    b = IsSameType<uint64_t, typename MakeUnsigned_<int64_t>::Type>::Type::VALUE;
     SEQAN_ASSERT(b);
 }
 
@@ -157,7 +157,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_make_signed)
 {
     bool b = IsSameType<int, typename MakeSigned_<unsigned>::Type>::Type::VALUE;
     SEQAN_ASSERT(b);
-    b = IsSameType<__int64, typename MakeSigned_<__uint64>::Type>::Type::VALUE;
+    b = IsSameType<int64_t, typename MakeSigned_<uint64_t>::Type>::Type::VALUE;
     SEQAN_ASSERT(b);
 }
 

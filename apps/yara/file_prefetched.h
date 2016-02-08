@@ -52,9 +52,9 @@ template <typename TFile, typename TRecords, typename TThreading = Serial>
 struct PrefetchedFile
 {
     TFile       file;
-    __uint64    maxRecords;
+    uint64_t    maxRecords;
 
-    PrefetchedFile(__uint64 maxRecords) :
+    PrefetchedFile(uint64_t maxRecords) :
         file(),
         maxRecords(maxRecords)
     {}
@@ -69,10 +69,10 @@ struct PrefetchedFile<TFile, TRecords, Parallel>
 {
     TFile           file;
     TRecords        records;
-    __uint64        maxRecords;
+    uint64_t        maxRecords;
     std::thread     reader;
 
-    PrefetchedFile(__uint64 maxRecords) :
+    PrefetchedFile(uint64_t maxRecords) :
         file(),
         records(),
         maxRecords(maxRecords),

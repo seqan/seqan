@@ -6,8 +6,8 @@
 # CMakeLists.txt file for mason2.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_apps_mason2)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_apps_mason2 CXX)
 message (STATUS "Configuring apps/mason2")
 
 set (SEQAN_APP_VERSION "2.0.1")
@@ -17,7 +17,8 @@ set (SEQAN_APP_VERSION "2.0.1")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB OpenMP)
+find_package (OpenMP)
+find_package (ZLIB)
 find_package (SeqAn REQUIRED)
 
 if (NOT ZLIB_FOUND)

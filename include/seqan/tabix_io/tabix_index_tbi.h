@@ -67,7 +67,7 @@ bool open(TabixIndex & index, char const * filename);
 
 struct TabixIndexBinData_
 {
-    String<Pair<__uint64, __uint64> > chunkBegEnds;
+    String<Pair<uint64_t, uint64_t> > chunkBegEnds;
 };
 
 // ----------------------------------------------------------------------------
@@ -77,8 +77,8 @@ struct TabixIndexBinData_
 struct TabixRecord_
 {
     CharString refName;
-    __int32 posBeg;
-    __int32 posEnd;
+    int32_t posBeg;
+    int32_t posEnd;
 };
 
 // ----------------------------------------------------------------------------
@@ -107,20 +107,20 @@ struct TabixRecord_
 class TabixIndex
 {
 public:
-    typedef std::map<__uint32, TabixIndexBinData_> TBinIndex_;
-    typedef String<__uint64> TLinearIndex_;
+    typedef std::map<uint32_t, TabixIndexBinData_> TBinIndex_;
+    typedef String<uint64_t> TLinearIndex_;
     typedef StringSet<CharString, Owner<ConcatDirect<> > > TNameStore;
 
-    __int32 format;             // Format (0: generic; 1: SAM; 2: VCF)
-    __int32 colSeq;             // Column for the sequence name
-    __int32 colBeg;             // Column for the start of a region
-    __int32 colEnd;             // Column for the end of a region
-    __int32 meta;               // Leading character for comment lines
-    __int32 skip;               // # lines to skip at the beginning
-    __uint64 unalignedCount;    // # unmapped reads without coordinates set
+    int32_t format;             // Format (0: generic; 1: SAM; 2: VCF)
+    int32_t colSeq;             // Column for the sequence name
+    int32_t colBeg;             // Column for the start of a region
+    int32_t colEnd;             // Column for the end of a region
+    int32_t meta;               // Leading character for comment lines
+    int32_t skip;               // # lines to skip at the beginning
+    uint64_t unalignedCount;    // # unmapped reads without coordinates set
 
     // 1<<14 is the size of the minimum bin.
-    static const __int32 BAM_LIDX_SHIFT = 14;
+    static const int32_t BAM_LIDX_SHIFT = 14;
 
     String<TBinIndex_>          _binIndices;
     String<TLinearIndex_>       _linearIndices;
@@ -134,7 +134,7 @@ public:
         colEnd(3),
         meta('#'),
         skip(0),
-        unalignedCount(maxValue<__uint64>()),
+        unalignedCount(maxValue<uint64_t>()),
         _nameStoreCache(_nameStore)
     {}
 
@@ -145,7 +145,7 @@ public:
         colEnd(3),
         meta('#'),
         skip(0),
-        unalignedCount(maxValue<__uint64>()),
+        unalignedCount(maxValue<uint64_t>()),
         _nameStoreCache(_nameStore)
     {
         if (!open(*this, fileName))
@@ -162,7 +162,7 @@ public:
 // ----------------------------------------------------------------------------
 
 static inline void
-_tbiReg2bins(String<__uint16> & list, __uint32 beg, __uint32 end)
+_tbiReg2bins(String<uint16_t> & list, uint32_t beg, uint32_t end)
 {
     unsigned k;
     if (beg >= end) return;
@@ -195,8 +195,8 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
         return false;
     
     // Extract columns.
-    __int32 maxCol = std::max(index.colSeq, std::max(index.colBeg, index.colEnd));
-    for (__int32 col = 1; col <= maxCol; ++col)
+    int32_t maxCol = std::max(index.colSeq, std::max(index.colBeg, index.colEnd));
+    for (int32_t col = 1; col <= maxCol; ++col)
     {
         // Read column.
         clear(buffer);
@@ -213,9 +213,9 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
         if (col == index.colSeq)
             record.refName = buffer;
         else if (col == index.colBeg)
-            record.posBeg = lexicalCast<__int32>(buffer);
+            record.posBeg = lexicalCast<int32_t>(buffer);
         else if (col == index.colEnd)
-            record.posEnd = lexicalCast<__int32>(buffer);
+            record.posEnd = lexicalCast<int32_t>(buffer);
     }
 
     if (index.colEnd == 0 || index.colEnd == index.colBeg)
@@ -247,8 +247,8 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
  * @param[out]    hasEntries    A <tt>bool</tt> that is set true if the region <tt>[posBeg, posEnd)</tt> has any
  *                              entries.
  * @param[in]     refName       The reference name to jump to.
- * @param[in]     posBeg        The begin of the region to jump to (<tt>__int32</tt>).
- * @param[in]     posEnd        The end of the region to jump to (<tt>__int32</tt>).
+ * @param[in]     posBeg        The begin of the region to jump to (<tt>int32_t</tt>).
+ * @param[in]     posEnd        The end of the region to jump to (<tt>int32_t</tt>).
  * @param[in]     index         The @link TabixIndex @endlink to use for the jumping.
  * @param[in]     firstMatch    A <tt>bool</tt>, if <tt>true</tt> (default) this function seeks to the first
  *                              overlapping record. Otherwise, the function potentially stops before the first
@@ -266,8 +266,8 @@ inline bool
 jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
              bool & hasEntries,
              TName const & refName,
-             __int32 posBeg,
-             __int32 posEnd,
+             int32_t posBeg,
+             int32_t posEnd,
              TabixIndex const & index,
              bool firstMatch = true)
 {
@@ -281,15 +281,15 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
     // ------------------------------------------------------------------------
     // Compute offset in BGZF file.
     // ------------------------------------------------------------------------
-    __uint64 offset = MaxValue<__uint64>::VALUE;
+    uint64_t offset = MaxValue<uint64_t>::VALUE;
 
     // Retrieve the candidate bin identifiers for [posBeg, posEnd).
-    String<__uint16> candidateBins;
+    String<uint16_t> candidateBins;
     _tbiReg2bins(candidateBins, posBeg, posEnd);
 
     // Retrieve the smallest required offset from the linear index.
     unsigned windowIdx = posBeg >> 14;  // Linear index consists of 16kb windows.
-    __uint64 linearMinOffset = 0;
+    uint64_t linearMinOffset = 0;
     if (windowIdx >= length(index._linearIndices[refId]))
     {
         // TODO(holtgrew): Can we simply always take case 1?
@@ -331,17 +331,17 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
     }
 
     // Combine candidate bins and smallest required offset from linear index into candidate offset.
-    typedef std::set<__uint64> TOffsetCandidates;
+    typedef std::set<uint64_t> TOffsetCandidates;
     TOffsetCandidates offsetCandidates;
-    typedef typename Iterator<String<__uint16>, Rooted>::Type TCandidateIter;
+    typedef typename Iterator<String<uint16_t>, Rooted>::Type TCandidateIter;
     for (TCandidateIter it = begin(candidateBins, Rooted()); !atEnd(it); goNext(it))
     {
-        typedef typename std::map<__uint32, TabixIndexBinData_>::const_iterator TMapIter;
+        typedef typename std::map<uint32_t, TabixIndexBinData_>::const_iterator TMapIter;
         TMapIter mIt = index._binIndices[refId].find(*it);
         if (mIt == index._binIndices[refId].end())
             continue;  // Candidate is not in index!
 
-        typedef typename Iterator<String<Pair<__uint64, __uint64> > const, Rooted>::Type TBegEndIter;
+        typedef typename Iterator<String<Pair<uint64_t, uint64_t> > const, Rooted>::Type TBegEndIter;
         for (TBegEndIter it2 = begin(mIt->second.chunkBegEnds, Rooted()); !atEnd(it2); goNext(it2))
             if (it2->i2 >= linearMinOffset)
                 offsetCandidates.insert(it2->i1);
@@ -377,7 +377,7 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
             break;  // Cannot find overlapping any more.
     }
 
-    if (offset != MaxValue<__uint64>::VALUE)
+    if (offset != MaxValue<uint64_t>::VALUE)
     {
         setPosition(fileIn, offset);
         
@@ -410,13 +410,13 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
  * @fn TabixIndex#getUnalignedCount
  * @brief Query index for number of unaligned reads.
  *
- * @signature __uint64 getUnalignedCount(index);
+ * @signature uint64_t getUnalignedCount(index);
  *
  * @param[in] index     Index to query.
- * @return    __uint64  The number of unaligned reads.
+ * @return    uint64_t  The number of unaligned reads.
  */
 
-inline __uint64
+inline uint64_t
 getUnalignedCount(TabixIndex const & index)
 {
     return index.unalignedCount;
@@ -455,7 +455,7 @@ open(TabixIndex & index, char const * filename)
         SEQAN_THROW(ParseError("Not in TBI format."));
 
     // Read parameters.
-    __int32 nRef = 0;
+    int32_t nRef = 0;
     readRawPod(nRef, iter);
     readRawPod(index.format, iter);
     readRawPod(index.colSeq, iter);
@@ -465,7 +465,7 @@ open(TabixIndex & index, char const * filename)
     readRawPod(index.skip, iter);
 
     // Read concatenated names.
-    __int32 lNm = 0;
+    int32_t lNm = 0;
     CharString tmp;
     readRawPod(lNm, iter);
     read(tmp, iter, lNm);
@@ -484,13 +484,13 @@ open(TabixIndex & index, char const * filename)
     for (int i = 0; i < nRef; ++i)  // For each reference.
     {
         // Read bin index.
-        __int32 nBin = 0;
+        int32_t nBin = 0;
         readRawPod(nBin, iter);
 
         for (int j = 0; j < nBin; ++j)  // For each bin.
         {
-            __uint32 bin = 0;
-            __int32 nChunk = 0;
+            uint32_t bin = 0;
+            int32_t nChunk = 0;
             readRawPod(bin, iter);
             readRawPod(nChunk, iter);
 
@@ -506,7 +506,7 @@ open(TabixIndex & index, char const * filename)
         }
 
         // Read linear index.
-        __int32 nIntv = 0;
+        int32_t nIntv = 0;
         readRawPod(nIntv, iter);
 
         resize(index._linearIndices[i], nIntv);
@@ -519,7 +519,7 @@ open(TabixIndex & index, char const * filename)
     if (!atEnd(iter))
         readRawPod(index.unalignedCount, iter);
     else
-        index.unalignedCount = maxValue<__uint64>();
+        index.unalignedCount = maxValue<uint64_t>();
 
     return true;
 }

@@ -285,7 +285,7 @@ inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         FormattedFile<Fastq, Input, TSpec> & file)
 {
-    readRecords(meta, seq, file, MaxValue<__uint64>::VALUE);
+    readRecords(meta, seq, file, MaxValue<uint64_t>::VALUE);
 }
 
 // ----------------------------------------------------------------------------
@@ -304,9 +304,9 @@ inline void readRecords(TIdStringSet & meta,
     TSeqBuffer seqBuffer;
 
     // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
-    std::swap(seqBuffer.data_capacity, context(file).buffer[1].data_capacity);
+    swapPtr(seqBuffer.data_begin, context(file).buffer[1].data_begin);
+    swapPtr(seqBuffer.data_end, context(file).buffer[1].data_end);
+    seqBuffer.data_capacity = context(file).buffer[1].data_capacity;
 
     for (; !atEnd(file) && maxRecords > 0; --maxRecords)
     {
@@ -316,9 +316,10 @@ inline void readRecords(TIdStringSet & meta,
         appendValue(qual, context(file).buffer[2]);
     }
 
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
-    std::swap(seqBuffer.data_capacity, context(file).buffer[1].data_capacity);
+    swapPtr(seqBuffer.data_begin, context(file).buffer[1].data_begin);
+    swapPtr(seqBuffer.data_end, context(file).buffer[1].data_end);
+    context(file).buffer[1].data_capacity = seqBuffer.data_capacity;
+    seqBuffer.data_capacity = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -331,7 +332,7 @@ inline void readRecords(TIdStringSet & meta,
                         TQualStringSet & qual,
                         FormattedFile<Fastq, Input, TSpec> & file)
 {
-    readRecords(meta, seq, qual, file, MaxValue<__uint64>::VALUE);
+    readRecords(meta, seq, qual, file, MaxValue<uint64_t>::VALUE);
 }
 
 // ----------------------------------------------------------------------------

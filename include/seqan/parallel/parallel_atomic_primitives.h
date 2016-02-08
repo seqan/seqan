@@ -38,9 +38,9 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_ATOMIC_PRIMITIVES_H_
 #define SEQAN_PARALLEL_PARALLEL_ATOMIC_PRIMITIVES_H_
 
-#if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
+#if defined(PLATFORM_WINDOWS)
 #include <intrin.h>
-#endif  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
+#endif  // #if defined(PLATFORM_WINDOWS)
 
 namespace seqan {
 
@@ -56,23 +56,12 @@ namespace seqan {
 // Metafunctions
 // ============================================================================
 
-#ifdef SEQAN_CXX11_STL
 
 template <typename T>
 struct Atomic
 {
     typedef std::atomic<T> Type;
 };
-
-#else
-
-template <typename T>
-struct Atomic
-{
-    typedef T Type;
-};
-
-#endif
 
 // ============================================================================
 // Functions
@@ -236,7 +225,7 @@ struct Atomic
 #define SEQAN_CACHE_LINE_SIZE 128
 #endif
 
-#if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
+#if defined(PLATFORM_WINDOWS)
 
 // ----------------------------------------------------------------------------
 // Implementation in MSVC
@@ -285,11 +274,11 @@ inline T _atomicDec(T volatile &x, ConstInt<sizeof(LONGLONG)>) { return Interloc
 template <typename T, typename S>
 inline T _atomicAdd(T volatile &x, ConstInt<sizeof(LONGLONG)>, S y) { return InterlockedExchangeAdd64(reinterpret_cast<LONGLONG volatile *>(&x), y); }
 template <typename T, typename S>
-inline T _atomicOr(T volatile &x, ConstInt<sizeof(__int64)>, S y) { return _InterlockedOr64(reinterpret_cast<__int64 volatile *>(&x), y); }
+inline T _atomicOr(T volatile &x, ConstInt<sizeof(int64_t)>, S y) { return _InterlockedOr64(reinterpret_cast<int64_t volatile *>(&x), y); }
 template <typename T, typename S>
-inline T _atomicXor(T volatile &x, ConstInt<sizeof(__int64)>, S y) { return _InterlockedXor64(reinterpret_cast<__int64 volatile *>(&x), y); }
+inline T _atomicXor(T volatile &x, ConstInt<sizeof(int64_t)>, S y) { return _InterlockedXor64(reinterpret_cast<int64_t volatile *>(&x), y); }
 template <typename T, typename S, typename U>
-inline T _atomicCas(T volatile &x, ConstInt<sizeof(__int64)>, S cmp, U y) { return _InterlockedCompareExchange64(reinterpret_cast<__int64 volatile *>(&x), y, cmp); }
+inline T _atomicCas(T volatile &x, ConstInt<sizeof(int64_t)>, S cmp, U y) { return _InterlockedCompareExchange64(reinterpret_cast<int64_t volatile *>(&x), y, cmp); }
 #endif  // #ifdef _WIN64
 
 template <typename T>
@@ -313,7 +302,7 @@ template <typename T>
 inline T atomicPostDec(T volatile & x) { return atomicDec(x) + 1; }
 
 
-#else  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
+#else  // #if defined(PLATFORM_WINDOWS)
 
 // ----------------------------------------------------------------------------
 // Implementation in GCC (LLVM is GCC compatible)
@@ -411,7 +400,7 @@ inline T1 * atomicAdd(T1 * volatile & x, T2 y)
     return (T1 *) __sync_add_and_fetch((size_t volatile *)&x, y * sizeof(T2));
 }
 
-#endif  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
+#endif  // #if defined(PLATFORM_WINDOWS)
 
 
 // ----------------------------------------------------------------------------
@@ -444,7 +433,6 @@ template <typename T1, typename T2>   inline T1 atomicAdd(T1 volatile & x, T2 y,
 
 // C++11 atomic wrappers
 
-#ifdef SEQAN_CXX11_STL
 template <typename T>   inline T atomicInc(std::atomic<T>        & x     )        { return ++x;                    }
 template <typename T>   inline T atomicPostInc(std::atomic<T>    & x     )        { return x++;                    }
 template <typename T>   inline T atomicDec(std::atomic<T>        & x     )        { return --x;                    }
@@ -455,8 +443,7 @@ template <typename T>   inline T atomicCas(std::atomic<T>        & x, T cmp, T y
 template <typename T>   inline T atomicCas(std::atomic<T>        & x, T cmp, T y, Parallel) { x.compare_exchange_weak(cmp, y); return cmp; }
 template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T    , T y, Serial)   { x = y; return true;                          }
 template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T cmp, T y, Parallel) { return x.compare_exchange_weak(cmp, y);      }
-#endif  // #ifdef SEQAN_CXX11_STL
 
 } // namespace seqan
 
-#endif  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
+#endif  // #if defined(PLATFORM_WINDOWS)

@@ -119,7 +119,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_c)
 
     CharString str("XXc\xff");
     BamTagsDict bamTags(str);
-    __uint8 x;
+    uint8_t x;
     SEQAN_ASSERT(extractTagValue(x, bamTags, 0));
     SEQAN_ASSERT_EQ(x, 255u);
 }
@@ -130,7 +130,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_C)
     CharString str("XXC\xff");
     BamTagsDict bamTags(str);
     SEQAN_ASSERT_EQ(length(bamTags), 1u);
-    __int8 x;
+    int8_t x;
     SEQAN_ASSERT(extractTagValue(x, bamTags, 0));
     SEQAN_ASSERT_EQ(x, -1);
 }
@@ -141,7 +141,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_s)
     CharString str("XXs\xff\xff");
     BamTagsDict bamTags(str);
     SEQAN_ASSERT_EQ(length(bamTags), 1u);
-    __uint16 x;
+    uint16_t x;
     SEQAN_ASSERT(extractTagValue(x, bamTags, 0));
     SEQAN_ASSERT_EQ(x, 0xffff);
 }
@@ -152,7 +152,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_S)
     CharString str("XXs\xff\xff");
     BamTagsDict bamTags(str);
     SEQAN_ASSERT_EQ(length(bamTags), 1u);
-    __int16 x;
+    int16_t x;
     SEQAN_ASSERT(extractTagValue(x, bamTags, 0));
     SEQAN_ASSERT_EQ(x, -1);
 }
@@ -163,7 +163,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_i)
     CharString str("XXi\xff\xff\xff\xff");
     BamTagsDict bamTags(str);
     SEQAN_ASSERT_EQ(length(bamTags), 1u);
-    __uint32 x;
+    uint32_t x;
     SEQAN_ASSERT(extractTagValue(x, bamTags, 0));
     SEQAN_ASSERT_EQ(x, 0xffffffff);
 }
@@ -174,7 +174,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_I)
     CharString str("XXI\xff\xff\xff\xff");
     BamTagsDict bamTags(str);
     SEQAN_ASSERT_EQ(length(bamTags), 1u);
-    __int32 x;
+    int32_t x;
     SEQAN_ASSERT(extractTagValue(x, bamTags, 0));
     SEQAN_ASSERT_EQ(x, -1);
 }
@@ -571,6 +571,34 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_erase_tag)
         assignTagsBamToSam(samTags, bamTags);
         SEQAN_ASSERT_EQ(CharString("XX:A:x\tXZ:A:z"), CharString(samTags));
     }
+}
+
+SEQAN_DEFINE_TEST(test_bam_tags_dict_const_bam_tags_sequence)
+{
+    using namespace seqan;
+    CharString bamStr, samStr = "AA:Z:value1\tAB:Z:value2\tAC:i:30";
+    assignTagsSamToBam(bamStr, samStr);
+
+    CharString const bamStrConst = bamStr;
+
+    BamTagsDict tagsNonConst(bamStr);
+    BamTagsDict tagsConst(bamStrConst);
+
+    buildIndex(tagsNonConst);
+    buildIndex(tagsConst);
+
+    SEQAN_ASSERT(host(tagsConst) == host(tagsNonConst));
+    appendTagValue(tagsConst, "AS", 10, 'i');
+    SEQAN_ASSERT(bamStr != host(tagsConst));
+
+    appendTagValue(tagsNonConst, "AS", 10, 'i');
+    SEQAN_ASSERT(bamStr == host(tagsConst));
+
+    unsigned tagId;
+    SEQAN_ASSERT(findTagKey(tagId, tagsConst, "AS"));
+    SEQAN_ASSERT(tagId == 3u);
+    SEQAN_ASSERT(findTagKey(tagId, tagsNonConst, "AS"));
+    SEQAN_ASSERT(tagId == 3u);
 }
 
 #endif  // TESTS_BAM_IO_TEST_BAM_TAGS_DICT_DICT_H_

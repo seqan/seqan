@@ -37,8 +37,9 @@
 #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SIMD_VECTOR_H_
 #define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SIMD_VECTOR_H_
 
+#include <random>
+
 #include <seqan/sequence.h>
-#include <seqan/random.h>
 #include <seqan/misc/bit_twiddling.h>
 #include <seqan/basic/basic_simd_vector.h>
 
@@ -54,10 +55,10 @@ inline void test_matrix_transpose()
     String<TValue> random;
     resize(random, ROWS * COLS);
 
-    Rng<MersenneTwister> rng;
-    Pdf<Uniform<TValue> > pdf(0, MaxValue<TValue>::VALUE);
+    std::mt19937 rng;
+    std::uniform_int_distribution<TValue> pdf(0, MaxValue<TValue>::VALUE);
     for (unsigned i = 0; i < length(random); ++i)
-        random[i] = pickRandomNumber(rng, pdf);
+        random[i] = pdf(rng);
 
     TMatrix tmp;
     for (int i = 0; i < ROWS; ++i)

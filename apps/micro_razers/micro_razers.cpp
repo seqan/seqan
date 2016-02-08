@@ -417,9 +417,9 @@ int main(int argc, const char *argv[])
     if (!success)
         return RAZERS_READS_FAILED;
 
- 	//////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
     // get read length
-	int readLength = estimateReadLength(options.readFile);
+    int readLength = estimateReadLength(options.readFile);
     if (readLength == RAZERS_READS_FAILED)
     {
         ::std::cerr << "Failed to open reads file " << readFileNames[0] << ::std::endl;

@@ -6,14 +6,14 @@
 # Main CMakeLists.txt file.
 # ===========================================================================
 
-project (seqan)
+project (seqan CXX)
 
 # ===========================================================================
-# We require CMake 2.8.2.  Since it is available in the currently stable
+# We require CMake 3.0.0. Since it is available in the currently stable
 # Debian, it should be available everywhere else, too.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 
 # ===========================================================================
 # Warn People About the Perils Of In-Source Builds

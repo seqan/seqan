@@ -176,15 +176,21 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     hideOption(getOption(parser, "quick"));
 
     // Setup paired-end mapping options.
-    addSection(parser, "Paired-End / Mate-Pair Mapping Options");
+    addSection(parser, "Paired-End Mapping Options");
 
     addOption(parser, ArgParseOption("ll", "library-length", "Expected library length. Default: autodetected.",
                                      ArgParseOption::INTEGER));
     setMinValue(parser, "library-length", "1");
 
-    addOption(parser, ArgParseOption("le", "library-error", "Deviation from the expected library length. \
+    addOption(parser, ArgParseOption("ld", "library-deviation", "Deviation from the expected library length. \
                                             Default: autodetected.", ArgParseOption::INTEGER));
-    setMinValue(parser, "library-error", "0");
+    setMinValue(parser, "library-deviation", "0");
+
+    addOption(parser, ArgParseOption("i", "indel-rate", "Ignore rescued alignments above this percentual number of indels.",
+                                     ArgParseOption::INTEGER));
+    setMinValue(parser, "indel-rate", "0");
+    setMaxValue(parser, "indel-rate", "50");
+    setDefaultValue(parser, "indel-rate", 100.0 * options.indelRate);
 
 //    addOption(parser, ArgParseOption("lo", "library-orientation", "Expected orientation of the segments in the library.",
 //                                     ArgParseOption::STRING));
@@ -286,7 +292,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse paired-end mapping options.
     getOptionValue(options.libraryLength, parser, "library-length");
-    getOptionValue(options.libraryError, parser, "library-error");
+    getOptionValue(options.libraryDev, parser, "library-deviation");
 //    getOptionValue(options.libraryOrientation, parser, "library-orientation", options.libraryOrientationList);
 
     getOptionValue(options.threadsCount, parser, "threads");
@@ -316,27 +322,27 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 template <typename TContigsSize, typename TContigsLen, typename TThreading, typename TSequencing, typename TStrategy>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (options.contigsSum <= MaxValue<__uint32>::VALUE)
+    if (options.contigsSum <= MaxValue<uint32_t>::VALUE)
     {
-        spawnMapper<TContigsSize, TContigsLen, __uint32>(options, threading, sequencing, strategy);
+        spawnMapper<TContigsSize, TContigsLen, uint32_t>(options, threading, sequencing, strategy);
     }
     else
     {
-        spawnMapper<TContigsSize, TContigsLen, __uint64>(options, threading, sequencing, strategy);
+        spawnMapper<TContigsSize, TContigsLen, uint64_t>(options, threading, sequencing, strategy);
     }
 }
 
 template <typename TContigsSize, typename TThreading, typename TSequencing, typename TStrategy>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (options.contigsMaxLength <= MaxValue<__uint32>::VALUE)
+    if (options.contigsMaxLength <= MaxValue<uint32_t>::VALUE)
     {
-        configureMapper<TContigsSize, __uint32>(options, threading, sequencing, strategy);
+        configureMapper<TContigsSize, uint32_t>(options, threading, sequencing, strategy);
     }
     else
     {
 #ifdef YARA_LARGE_CONTIGS
-        configureMapper<TContigsSize, __uint64>(options, threading, sequencing, strategy);
+        configureMapper<TContigsSize, uint64_t>(options, threading, sequencing, strategy);
 #else
         throw RuntimeError("Maximum contig length exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif
@@ -346,18 +352,18 @@ void configureMapper(Options const & options, TThreading const & threading, TSeq
 template <typename TThreading, typename TSequencing, typename TStrategy>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (options.contigsSize <= MaxValue<__uint8>::VALUE)
+    if (options.contigsSize <= MaxValue<uint8_t>::VALUE)
     {
-        configureMapper<__uint8>(options, threading, sequencing, strategy);
+        configureMapper<uint8_t>(options, threading, sequencing, strategy);
     }
-    else if (options.contigsSize <= MaxValue<__uint16>::VALUE)
+    else if (options.contigsSize <= MaxValue<uint16_t>::VALUE)
     {
-        configureMapper<__uint16>(options, threading, sequencing, strategy);
+        configureMapper<uint16_t>(options, threading, sequencing, strategy);
     }
     else
     {
 #ifdef YARA_LARGE_CONTIGS
-        configureMapper<__uint32>(options, threading, sequencing, strategy);
+        configureMapper<uint32_t>(options, threading, sequencing, strategy);
 #else
         throw RuntimeError("Maximum number of contigs exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif

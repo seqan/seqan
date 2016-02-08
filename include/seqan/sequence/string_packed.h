@@ -440,12 +440,12 @@ struct Reference<String<TValue, Packed<THostspec> > const> :
 template <typename TValue, typename THostspec>
 struct Size<String<TValue, Packed<THostspec> > >
 {
-    typedef __int64 Type;
+    typedef int64_t Type;
 };
 template <typename TValue, typename THostspec>
 struct Size<String<TValue, Packed<THostspec> > const>
 {
-    typedef __int64 Type;
+    typedef int64_t Type;
 };
 */
 
@@ -1447,21 +1447,10 @@ valueConstruct(Iter<TPackedString, Packed<THostspec> > const & /*it*/)
 template <typename TPackedString, typename THostspec, typename TParam>
 inline void
 valueConstruct(Iter<TPackedString, Packed<THostspec> > const & it,
-               TParam SEQAN_FORWARD_CARG param_)
+               TParam && param_)
 {
-    assignValue(it, SEQAN_FORWARD(TParam, param_));
+    assignValue(it, std::forward<TParam>(param_));
 }
-
-#ifndef SEQAN_CXX11_STANDARD
-template <typename TPackedString, typename THostspec, typename TParam>
-inline void
-valueConstruct(Iter<TPackedString, Packed<THostspec> > const & it,
-               TParam const & param_,
-               Move const & /*tag*/)
-{
-    moveValue(it, param_);
-}
-#endif
 
 // --------------------------------------------------------------------------
 // Function valueDestruct()

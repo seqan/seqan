@@ -54,7 +54,7 @@ namespace seqan {
 /*!
  * @enum BlastProgram
  * @brief Enum with BLAST program spec
- * @signature enum class BlastProgram : __uint8 { ... };
+ * @signature enum class BlastProgram : uint8_t { ... };
  *
  * @headerfile <seqan/blast.h>
  * @see BlastProgramSelector
@@ -81,7 +81,7 @@ namespace seqan {
  * @brief This can only be used when defining a @link BlastProgramSelector @endlink
  *
  */
-enum class BlastProgram : __uint8
+enum class BlastProgram : uint8_t
 {
     BLASTN,         //              NUCL VS             NUCL
     BLASTP,         //              PROT VS             PROT
@@ -214,7 +214,7 @@ qIsTranslated(BlastProgram const p)
 /*!
  * @fn BlastProgramSelector#qNumFrames
  * @brief The number of frames per <b>query</b> sequence implied by the given BlastProgram
- * @signature constexpr __uint8 qNumFrames(BlastProgram const p);
+ * @signature constexpr uint8_t qNumFrames(BlastProgram const p);
  *
  * @return 6 for @link BlastProgram::BLASTX @endlink and @link BlastProgram::TBLASTX @endlink
  * @return 2 for @link BlastProgram::BLASTN @endlink
@@ -222,7 +222,7 @@ qIsTranslated(BlastProgram const p)
  * @headerfile <seqan/blast.h>
  */
 
-constexpr __uint8
+constexpr uint8_t
 qNumFrames(BlastProgram p)
 {
     return (qIsTranslated(p) ? 6 : (qHasRevComp(p) ? 2 : 1));
@@ -275,14 +275,14 @@ sIsTranslated(BlastProgram const p)
 /*!
  * @fn BlastProgramSelector#sNumFrames
  * @brief The number of frames per <b>query</b> sequence implied by the given BlastProgram
- * @signature constexpr __uint8 sNumFrames(BlastProgram const p);
+ * @signature constexpr uint8_t sNumFrames(BlastProgram const p);
  *
  * @return 6 for @link BlastProgram::TBLASTX @endlink and @link BlastProgram::TBLASTN @endlink
  * @return 1 otherwise
  * @headerfile <seqan/blast.h>
  */
 
-constexpr __uint8
+constexpr uint8_t
 sNumFrames(BlastProgram p)
 {
     return (sIsTranslated(p) ? 6 : (sHasRevComp(p) ? 2 : 1));
@@ -312,7 +312,7 @@ constexpr char const * const BlastProgramStrings_<TVoidSpec>::VALUE[6];
 constexpr const char *
 _programTagToString(BlastProgram const _p)
 {
-    return (__uint8(_p) < 5) ? BlastProgramStrings_<>::VALUE[__uint8(_p)] : BlastProgramStrings_<>::VALUE[5];
+    return (uint8_t(_p) < 5) ? BlastProgramStrings_<>::VALUE[uint8_t(_p)] : BlastProgramStrings_<>::VALUE[5];
 }
 
 // ----------------------------------------------------------------------------
@@ -323,7 +323,7 @@ template <typename TString>
 inline BlastProgram
 _programStringToTag(TString const & str)
 {
-    for (__uint8 i = 0; i < 5; ++i)
+    for (uint8_t i = 0; i < 5; ++i)
         if (str == BlastProgramStrings_<>::VALUE[i])
             return BlastProgram(i);
 

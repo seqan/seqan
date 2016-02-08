@@ -162,6 +162,167 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     SEQAN_ASSERT(atEnd(it));
 }
 
+SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes_and_isoforms)
+{
+    // The file contains 13 annotations in total which will be checked line
+    // after line.
+    seqan::CharString ucscGenesPath = SEQAN_PATH_TO_ROOT();
+    append(ucscGenesPath, "/tests/store/example_knownGene.txt");
+    seqan::CharString ucscIsoformsPath = SEQAN_PATH_TO_ROOT();
+    append(ucscIsoformsPath, "/tests/store/example_knownIsoforms.txt");
+
+    UcscFileIn finGenes(toCString(ucscGenesPath));
+    UcscFileIn finIsoforms(toCString(ucscIsoformsPath));
+    seqan::FragmentStore<> store;
+    readRecords(store, finGenes);
+    readRecords(store, finIsoforms);
+
+    Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
+    it = begin(store, AnnotationTree<>());
+
+    SEQAN_ASSERT_EQ(getType(it), "<root>");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, maxValue(getAnnotation(it).beginPos));
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, maxValue(getAnnotation(it).endPos));
+    SEQAN_ASSERT_EQ(value(it), 0u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, maxValue(getAnnotation(it).parentId));
+    SEQAN_ASSERT_EQ(getParentName(it), "<root>");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "mRNA");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33031813);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33026870);
+    SEQAN_ASSERT_EQ(value(it), 1u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 0u);
+    SEQAN_ASSERT_EQ(getParentName(it), "<root>");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "CDS");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33026870);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33026870);
+    SEQAN_ASSERT_EQ(value(it), 2u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1u);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002yoz.1");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33027740);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33026870);
+    SEQAN_ASSERT_EQ(value(it), 3u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1u);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002yoz.1");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33030540);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33030246);
+    SEQAN_ASSERT_EQ(value(it), 4u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1u);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002yoz.1");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33031813);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33031709);
+    SEQAN_ASSERT_EQ(value(it), 5u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1u);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002yoz.1");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "mRNA");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33031934);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33041243);
+    SEQAN_ASSERT_EQ(value(it), 6u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 0u);
+    SEQAN_ASSERT_EQ(getParentName(it), "<root>");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "CDS");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33032082);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33040891);
+    SEQAN_ASSERT_EQ(value(it), 7u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6u);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33031934);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33032154);
+    SEQAN_ASSERT_EQ(value(it), 8u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6u);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33036102);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33036199);
+    SEQAN_ASSERT_EQ(value(it), 9u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6u);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33038761);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33038831);
+    SEQAN_ASSERT_EQ(value(it), 10u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6u);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33039570);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33039688);
+    SEQAN_ASSERT_EQ(value(it), 11u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6u);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33040783);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33041243);
+    SEQAN_ASSERT_EQ(value(it), 12u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6u);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "gene");
+    SEQAN_ASSERT_EQ(value(it), 13u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 0u);
+    SEQAN_ASSERT_EQ(getParentName(it), "<root>");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "mRNA");
+    SEQAN_ASSERT_EQ(value(it), 14u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 13u);
+    SEQAN_ASSERT_EQ(getParentName(it), "GENE1");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "gene");
+    SEQAN_ASSERT_EQ(value(it), 15u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 0u);
+    SEQAN_ASSERT_EQ(getParentName(it), "<root>");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "mRNA");
+    SEQAN_ASSERT_EQ(value(it), 16u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 15u);
+    SEQAN_ASSERT_EQ(getParentName(it), "GENE2");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "gene");
+    SEQAN_ASSERT_EQ(value(it), 17u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 0u);
+    SEQAN_ASSERT_EQ(getParentName(it), "<root>");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "mRNA");
+    SEQAN_ASSERT_EQ(value(it), 18u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 17u);
+    SEQAN_ASSERT_EQ(getParentName(it), "GENE3");
+    goNext(it);
+
+    SEQAN_ASSERT(atEnd(it));
+}
+
 SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
 {
     seqan::CharString ucscPath = SEQAN_PATH_TO_ROOT();

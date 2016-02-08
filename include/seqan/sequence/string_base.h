@@ -1314,7 +1314,7 @@ struct AppendValueToString_
     template <typename T, typename TValue>
     static inline void
     appendValue_(T & me,
-                 TValue SEQAN_FORWARD_CARG _value)
+                 TValue && _value)
     {
         typedef typename Value<T>::Type TTargetValue;
         typedef typename Size<T>::Type TSize;
@@ -1322,19 +1322,19 @@ struct AppendValueToString_
         TSize me_length = length(me);
         if (capacity(me) <= me_length)
         {
-            TTargetValue temp_copy(SEQAN_FORWARD(TValue, _value)); //temp copy because resize could invalidate _value
+            TTargetValue temp_copy(std::forward<TValue>(_value)); //temp copy because resize could invalidate _value
             // TODO(holtgrew): The resize() function will default construct the last element. This is slow. Get rid of this.
             TSize new_length = reserve(me, me_length + 1, TExpand());
             if (me_length < new_length)
             {
                 // *(begin(me) + me_length) = temp_copy;
-                valueConstruct(begin(me, Standard()) + me_length, SEQAN_FORWARD(TTargetValue, temp_copy)); //??? this should be valueMoveConstruct
+                valueConstruct(begin(me, Standard()) + me_length, std::forward<TTargetValue>(temp_copy)); //??? this should be valueMoveConstruct
                 _setLength(me, me_length + 1);
             }
         }
         else
         {
-            valueConstruct(begin(me, Standard()) + me_length, SEQAN_FORWARD(TValue, _value));
+            valueConstruct(begin(me, Standard()) + me_length, std::forward<TValue>(_value));
             _setLength(me, me_length + 1);
         }
     }
@@ -1343,10 +1343,10 @@ struct AppendValueToString_
 template <typename TTargetValue, typename TTargetSpec, typename TValue, typename TExpand>
 inline void
 appendValue(String<TTargetValue, TTargetSpec> & me,
-            TValue SEQAN_FORWARD_CARG _value,
+            TValue && _value,
             Tag<TExpand>)
 {
-    AppendValueToString_<Tag<TExpand> >::appendValue_(me, SEQAN_FORWARD(TValue, _value));
+    AppendValueToString_<Tag<TExpand> >::appendValue_(me, std::forward<TValue>(_value));
 }
 
 // ----------------------------------------------------------------------------
@@ -1356,11 +1356,11 @@ appendValue(String<TTargetValue, TTargetSpec> & me,
 template <typename TTargetValue, typename TTargetSpec, typename TValue, typename TExpand>
 inline void
 appendValue(String<TTargetValue, TTargetSpec> & me,
-            TValue SEQAN_FORWARD_CARG _value,
+            TValue && _value,
             Tag<TExpand> const & expandTag,
             Serial)
 {
-    appendValue(me, SEQAN_FORWARD(TValue, _value), expandTag);
+    appendValue(me, std::forward<TValue>(_value), expandTag);
 }
 
 //////////////////////////////////////////////////////////////////////////////

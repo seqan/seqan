@@ -39,7 +39,7 @@
 #define APP_YARA_STORE_SEQS_H_
 
 #include <seqan/seq_io.h>
-#include <seqan/random.h>
+#include <random>
 
 using namespace seqan;
 
@@ -235,7 +235,7 @@ inline void randomizeNs(TString && str, TRng & rng)
         if (it == itEnd) break;
 
         for (; it != itEnd && value(it) == TAlphabet('N'); ++it)
-            value(it) = pickRandomNumber(rng) % ValueSize<Dna>::VALUE;
+            value(it) = rng() % ValueSize<Dna>::VALUE;
     }
 }
 
@@ -246,7 +246,7 @@ inline void randomizeNs(TString && str, TRng & rng)
 template <typename TSpec, typename TConfig>
 inline void randomizeNs(SeqStore<TSpec, TConfig> & me)
 {
-    Rng<MersenneTwister> rng(0xDEADBEEF);
+    std::mt19937 rng(0xDEADBEEF);
 
     for (unsigned seqId = 0; seqId < length(me.seqs); ++seqId)
         randomizeNs(me.seqs[seqId], rng);

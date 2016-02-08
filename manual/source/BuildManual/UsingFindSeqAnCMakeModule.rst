@@ -49,7 +49,7 @@ The root ``CMakeLists.txt`` file just sets up the project name, defines a minima
 
 This included file calls ``find_package(SeqAn REQUIRED)``.
 If the library could not be found, the ``REQUIRED`` parameter will make the ``find_package()`` call fail.
-Before this, the variable ``SEQAN_FIND_DEPENDENCIES`` is set such that zlib and libbz2 are searched for the in ``find_package()`` call and enabled in the SeqAn library through compiler defines.
+Before this, multiple ``find_package()`` calls detect optional dependencies and enable them in the SeqAn library through compiler defines. Note that it is important that these packages be found **before** the SeqAn package is searched.
 
 .. includefrags:: util/raw_cmake_project/src/CMakeLists.txt
 
@@ -98,26 +98,17 @@ Input
 SeqAn is somewhat special as a library since it has some optional dependencies.
 Certain features in SeqAn can be enabled or disabled, depending on whether the dependencies could be found.
 
-You can set the dependencies to search for with the variable ``SEQAN_FIND_DEPENDENCIES`` (which is a list).
 For example:
 
 .. code-block:: cmake
 
-    set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)
+    find_package (ZLIB)
+    find_package (BZip2)
     find_package (SeqAn)
 
-Note that ``FindSeqAn.cmake`` itself will not search for its dependencies with the argument ``REQUIRED``. Rather, it will set the variables ``SEQAN_HAS_*`` and add corresponding definitions to ``SEQAN_DEFINIONS`` (see below).
+If these packages are found **before** SeqAn is searched certain ``SEQAN_HAS_*`` macros are defined and corresponding features become available.
 
-Currently, you can specify the following dependencies:
-
-``ALL``
-  Enable all dependencies.
-
-``DEFAULT``
-  Enable default dependencies (zlib, OpenMP if available)
-
-``NONE``
-  Disable all dependencies.
+Currently, the following dependencies enable optional features:
 
 ``ZLIB``
   zlib compression library
@@ -127,9 +118,6 @@ Currently, you can specify the following dependencies:
 
 ``OpenMP``
   OpenMP language extensions to C/C++
-
-``CUDA``
-  CUDA language extensions to C/C++
 
 If you want ``FindSeqAn.cmake`` to expect the SeqAn build system layout then set the variable ``SEQAN_USE_SEQAN_BUILD_SYSTEM`` to ``TRUE``.
 In this case, it will try to locate the library parts from root of the SeqAn source files.
@@ -142,7 +130,7 @@ The call to ``find_package(SeqAn)`` will set the following variables:
 ``SEQAN_FOUND``
   Indicate whether SeqAn was found.``
 
-Variables indicating whether dependencies were found:
+Also the following MACROS are passed to the code indicating whether dependencies were (searched and) found:
 
 ``SEQAN_HAS_ZLIB``
   ``TRUE`` `` if zlib was found.``
@@ -152,9 +140,6 @@ Variables indicating whether dependencies were found:
 
 ``SEQAN_HAS_OPENMP``
   ``TRUE`` `` if OpenMP was found.``
-
-``SEQAN_HAS_CUDA``
-  ``TRUE`` `` if CUDA was found.``
 
 Variables to be passed to ``include_directories()``, ``target_link_directories()``, and ``add_definitions()`` in your ``CMakeLists.txt``:
 
@@ -198,7 +183,7 @@ Below you can find a minimal example ``CMakeLists.txt`` file that uses the ``Fin
 
 .. code-block:: cmake
 
-   cmake_minimum_required (VERSION 2.8.2)
+   cmake_minimum_required (VERSION 3.0.0)
    project (apps_dfi)
 
    # ----------------------------------------------------------------------------
@@ -206,7 +191,7 @@ Below you can find a minimal example ``CMakeLists.txt`` file that uses the ``Fin
    # ----------------------------------------------------------------------------
 
    # Only search for zlib as a dependency for SeqAn.
-   set (SEQAN_FIND_DEPENDENCIES ZLIB)
+   find_package (ZLIB)
    find_package (SeqAn REQUIRED)
 
    # ----------------------------------------------------------------------------

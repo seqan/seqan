@@ -559,12 +559,16 @@ namespace SEQAN_NAMESPACE_MAIN
                 *itDir = (index.sentinelBound - index.sentinelOcc) | orMask;    ++itDir;
                 *itDir = index.sentinelBound | index.UNEVALUATED;                ++itDir;
             } else
+            {
                 orMask |= index.LEAF;
-                for (TDirSize d = index.sentinelBound - index.sentinelOcc; d != index.sentinelBound; ++d)
-                {
-                    itPrev = itDir;
-                    *itDir = d | orMask;                                        ++itDir;
-                }
+            }
+            //NOTE(h-2): previosly the following block was indented, as though belonging to
+            //           to the else statement. If something here is unexpected, please investigate.
+            for (TDirSize d = index.sentinelBound - index.sentinelOcc; d != index.sentinelBound; ++d)
+            {
+                itPrev = itDir;
+                *itDir = d | orMask;                                        ++itDir;
+            }
         }
 
         for (; it != itEnd; ++it, ++bit, ++itEntry)

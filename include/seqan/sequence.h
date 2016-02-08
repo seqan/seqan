@@ -64,10 +64,8 @@
 #include <numeric>
 
 #include <seqan/platform.h>
-#ifdef SEQAN_CXX11_STANDARD
 #include <forward_list>
 #include <array>
-#endif
 
 // ----------------------------------------------------------------------------
 // Basic
@@ -127,6 +125,7 @@
 // ===========================================================================
 
 #include <seqan/sequence/container_view.h>
+#include <seqan/sequence/container_view_zip.h>
 
 // ===========================================================================
 // Adaptions.

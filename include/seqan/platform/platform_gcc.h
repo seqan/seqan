@@ -88,8 +88,6 @@
 #define SEQAN_IS_32_BIT 1
 #endif  // #if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
 
-//#include <unistd.h>
-#include <inttypes.h>
 
 #define finline __inline__
 
@@ -102,48 +100,56 @@
  * @typedef StandardIntegers#__int64
  * @headerfile <seqan/platform.h>
  * @brief Signed 64-bit integer type.
+ * @deprecated Use int64_t instead.
  *
  * @signature typedef (...) __int64;
  *
  * @typedef StandardIntegers#__uint64
  * @headerfile <seqan/platform.h>
  * @brief Unsigned 64-bit integer type.
+ * @deprecated Use uint64_t instead.
  *
  * @signature typdef (...) __uint64;
  *
  * @typedef StandardIntegers#__int32
  * @headerfile <seqan/platform.h>
  * @brief Signed 32-bit integer type.
+ * @deprecated Use int32_t instead.
  *
  * @signature typedef (...) __int32;
  *
  * @typedef StandardIntegers#__uint32
  * @headerfile <seqan/platform.h>
  * @brief Unsigned 32-bit integer type.
+ * @deprecated Use uint32_t instead.
  *
  * @signature typdef (...) __uint32;
  *
  * @typedef StandardIntegers#__int16
  * @headerfile <seqan/platform.h>
  * @brief Signed 16-bit integer type.
+ * @deprecated Use int16_t instead.
  *
  * @signature typedef (...) __int16;
  *
  * @typedef StandardIntegers#__uint16
  * @headerfile <seqan/platform.h>
  * @brief Unsigned 16-bit integer type.
+ * @deprecated Use uint16_t instead.
  *
  * @signature typdef (...) __uint16;
  *
  * @typedef StandardIntegers#__int8
  * @headerfile <seqan/platform.h>
  * @brief Signed 8-bit integer type.
+ * @deprecated Use int8_t instead.
  *
  * @signature typedef (...) __int8;
  *
  * @typedef StandardIntegers#__uint8
  * @headerfile <seqan/platform.h>
  * @brief Unsigned 8-bit integer type.
+ * @deprecated Use uint8_t instead.
  *
  * @signature typdef (...) __uint8;
  */
@@ -163,39 +169,6 @@ typedef uint16_t __uint16; // nolint
 // default 8bit type
 typedef int8_t __int8;     // nolint
 typedef uint8_t __uint8;   // nolint
-
-/*!
- * @macro SEQAN_CXX11_STANDARD
- * @headerfile <seqan/platform.h>
- * @brief Defined if the compiler has some C++11 support.
- *
- * @signature #define SEQAN_CXX_STANDARD
- *
- * @note This this auto-detection is not perfect and support differs.
- */
-
-// detect gcc C++11 support
-#if defined(__GXX_EXPERIMENTAL_CXX0X__)
-#  define SEQAN_CXX11_STANDARD
-#endif
-
-// detect clang C++11 support
-#ifdef __has_feature
-#  if __has_feature(cxx_static_assert)
-#    define SEQAN_CXX11_STANDARD
-#  endif
-#endif
-
-// full C++11 support in GCC >= 4.9 and Clang >= 3.4 (unless linked against old glibcxx)
-#if defined(SEQAN_CXX11_STANDARD)
-#   if !defined(__clang__) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 409)
-#       define SEQAN_CXX11_COMPLETE
-#   elif defined(__clang__) && (__clang_major__ * 100 + __clang_minor__ >= 304)
-#       if __has_include(<regex>) && !__has_include(<bits/regex_grep_matcher.h>)
-#           define SEQAN_CXX11_COMPLETE
-#       endif
-#   endif
-#endif
 
 #define SEQAN_LIKELY(expr)    __builtin_expect(!!(expr), 1)
 #define SEQAN_UNLIKELY(expr)  __builtin_expect(!!(expr), 0)

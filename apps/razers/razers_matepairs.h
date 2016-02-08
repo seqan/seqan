@@ -131,14 +131,14 @@ bool loadReads(
     if (!success)
         return false;
 
-	CharString fastaId[2];
-	String<Dna5Q> seq[2];
-	CharString qual[2];
-	
-	unsigned kickoutcount = 0;
-	unsigned maxReadLength = 0;
-	while (!atEnd(leftMates) && !atEnd(rightMates))
-	{
+    CharString fastaId[2];
+    String<Dna5Q> seq[2];
+    CharString qual[2];
+
+    unsigned kickoutcount = 0;
+    unsigned maxReadLength = 0;
+    while (!atEnd(leftMates) && !atEnd(rightMates))
+    {
         readRecord(fastaId[0], seq[0], qual[0], leftMates);         // read Fasta id, sequence and qualities
         readRecord(fastaId[1], seq[1], qual[1], rightMates);        // read Fasta id, sequence and qualities
 
@@ -356,7 +356,7 @@ void mapMatePairReads(
 	//typedef Pattern<TReadIndex, Swift<TSwiftSpec> >			TSwiftPattern;
 
 	// MATE-PAIR FILTRATION
-	typedef Pair<__int64,TMatch>							TDequeueValue;
+	typedef Pair<int64_t,TMatch>							TDequeueValue;
 	typedef Dequeue<TDequeueValue>							TDequeue;
 	typedef typename TDequeue::TIter						TDequeueIterator;
 
@@ -394,12 +394,12 @@ void mapMatePairReads(
 	TSwiftFinderR swiftFinderR(genomeInf, options.repeatLength, 1);
 
 	TDequeue fifo;						// stores left-mate potential matches
-	String<__int64> lastPotMatchNo;		// last number of a left-mate potential
-	__int64 lastNo = 0;					// last number over all left-mate pot. matches in the queue
-	__int64 firstNo = 0;				// first number over all left-mate pot. match in the queue
+	String<int64_t> lastPotMatchNo;		// last number of a left-mate potential
+	int64_t lastNo = 0;					// last number over all left-mate pot. matches in the queue
+	int64_t firstNo = 0;				// first number over all left-mate pot. match in the queue
 	Pair<TGPos> gPair;
 
-	resize(lastPotMatchNo, length(host(swiftPatternL)), (__int64)-2, Exact());
+	resize(lastPotMatchNo, length(host(swiftPatternL)), (int64_t)-2, Exact());
 
 	TSize gLength = length(genome);
 	TMatch mR = {	// to supress uninitialized warnings
@@ -474,9 +474,9 @@ void mapMatePairReads(
 
         bool rightVerified = false;
 		TDequeueIterator it;
-		__int64 last = (__int64)-1;
-		__int64 lastValid = (__int64)-1;
-		__int64 i;
+		int64_t last = (int64_t)-1;
+		int64_t lastValid = (int64_t)-1;
+		int64_t i;
 		for (i = lastPotMatchNo[rseqNo]; firstNo <= i; i = (*it).i1)
 		{
 			it = &value(fifo, i - firstNo);
@@ -510,7 +510,7 @@ void mapMatePairReads(
 				if (last != lastValid)
 				{
 					SEQAN_ASSERT_NEQ(lastValid, i);
-					if (lastValid == (__int64)-1)
+					if (lastValid == (int64_t)-1)
 						lastPotMatchNo[rseqNo] = i;
 					else
 						value(fifo, lastValid - firstNo).i1 = i;
@@ -540,7 +540,7 @@ void mapMatePairReads(
                 {
                     if (bestLeftErrors >= (*it).i2.editDist)
                     {
-                        int libSizeError = options.libraryLength - (int)((__int64)mR.gEnd - (__int64)(*it).i2.gBegin);
+                        int libSizeError = options.libraryLength - (int)((int64_t)mR.gEnd - (int64_t)(*it).i2.gBegin);
                         if (libSizeError < 0) 
                             libSizeError = -libSizeError;
                         if (libSizeError > options.libraryError)
@@ -569,7 +569,7 @@ void mapMatePairReads(
 		if (last != lastValid)
 		{
 			SEQAN_ASSERT_NEQ(lastValid, i);
-			if (lastValid == (__int64)-1)
+			if (lastValid == (int64_t)-1)
 				lastPotMatchNo[rseqNo] = i;
 			else
 				value(fifo, lastValid - firstNo).i1 = i;
@@ -579,7 +579,7 @@ void mapMatePairReads(
 		if (bestLeftErrors != MaxValue<int>::VALUE)
 		{
             // distance between left mate beginning and right mate end
-            __int64 dist = (__int64)mR.gEnd - (__int64)(*bestLeft).i2.gBegin;
+            int64_t dist = (int64_t)mR.gEnd - (int64_t)(*bestLeft).i2.gBegin;
 //            if (dist <= options.libraryLength + options.libraryError &&
 //                options.libraryLength <= dist + options.libraryError)
             {

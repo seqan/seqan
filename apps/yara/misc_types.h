@@ -105,8 +105,8 @@ struct YaraContigsConfig
 {
     typedef Dna5                                    TAlphabet;
     typedef Packed<TSpec>                           TSeqSpec;
-    typedef Owner<ConcatDirect<Limits<__uint64> > > TSeqsSpec;
-    typedef Owner<ConcatDirect<Limits<__uint32> > > TSeqNamesSpec;
+    typedef Owner<ConcatDirect<Limits<uint64_t> > > TSeqsSpec;
+    typedef Owner<ConcatDirect<Limits<uint32_t> > > TSeqNamesSpec;
 };
 
 // ----------------------------------------------------------------------------
@@ -158,7 +158,7 @@ struct YaraFMConfig
 
     // LF's RankDictionary Config.
     typedef Levels<void, TMe>                           Bwt;
-    typedef typename If<IsSameType<TSize, __uint8>,
+    typedef typename If<IsSameType<TSize, uint8_t>,
                         Naive<void, TMe>,
                         Levels<void, TMe> >::Type       Sentinels;
 

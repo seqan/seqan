@@ -47,9 +47,9 @@ using namespace seqan;
 
 struct TestJstPosConfig_
 {
-    typedef __uint16 TDeltaPos;
+    typedef uint16_t TDeltaPos;
     typedef Dna      TSnpValue;
-    typedef __uint16 TDelValue;
+    typedef uint16_t TDelValue;
     typedef String<Dna> TInsValue;
     typedef Pair<TDelValue, TInsValue> TSVValue;
 };

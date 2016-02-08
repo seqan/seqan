@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the modifier_cyclic_shape module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_modifier_cyclic_shape)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_modifier_cyclic_shape CXX)
 message (STATUS "Configuring tests/modifier_cyclic_shape")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,6 @@ message (STATUS "Configuring tests/modifier_cyclic_shape")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

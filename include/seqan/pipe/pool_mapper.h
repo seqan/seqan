@@ -185,11 +185,11 @@ namespace SEQAN_NAMESPACE_MAIN
                 continue;                            // don't move undefined values
 
             #ifdef SEQAN_DEBUG
-                if (!(dstPos >= offset && dstPos < offset + (TSize)capacity(buf))) {
-                    std::cerr << "Mapper assertion failed: " << std::hex << dstPos;
-                    std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
-                    std::cerr << " element is " << std::dec << *cur << std::endl;
-                }
+            if (!(dstPos >= offset && dstPos < offset + (TSize)capacity(buf))) {
+                std::cerr << "Mapper assertion failed: " << std::hex << dstPos;
+                std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
+                std::cerr << " element is " << std::dec << *cur << std::endl;
+            }
             #endif
             SEQAN_ASSERT(dstPos >= offset && dstPos < offset + (TSize)capacity(buf));
 

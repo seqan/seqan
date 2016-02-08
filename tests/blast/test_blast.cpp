@@ -36,7 +36,7 @@
 
 #include <seqan/basic.h>
 
-#if defined(SEQAN_CXX11_COMPLETE)
+#ifndef PLATFORM_WINDOWS_VS
 
 #include <seqan/file.h>
 #include <seqan/sequence.h>
@@ -97,11 +97,6 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
 SEQAN_END_TESTSUITE
 
 #else
-SEQAN_BEGIN_TESTSUITE(test_blast)
-{
-    std::cerr << "BLAST module tests not run, because your compiler is too old. "
-                 "You need *full* C++11 support, i.e. GCC>=4.9, Clang>=3.4, MSVC>=2015."
-              << std::endl;
-}
-SEQAN_END_TESTSUITE
+#pragma message("Due to a bug in Microsoft Visual Studio 2015 the BLAST module is deactivated.")
+int main() {}
 #endif

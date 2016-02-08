@@ -207,21 +207,17 @@ typedef
     seqan::TagList<std::deque<char>,
     seqan::TagList<std::deque<int>,
     seqan::TagList<std::deque<CountingChar>,
-#ifdef SEQAN_CXX11_STANDARD
     seqan::TagList<std::forward_list<seqan::Dna5>,
     seqan::TagList<std::forward_list<char>,
     seqan::TagList<std::forward_list<int>,
     seqan::TagList<std::forward_list<CountingChar>,
-#endif
     seqan::TagList<std::list<seqan::Dna5>,
     seqan::TagList<std::list<char>,
     seqan::TagList<std::list<int>,
     seqan::TagList<std::list<CountingChar>
     > > > > > > > > > > > > > > > > > > > > > > > > >
     > > > > > > > > > > > > > > //> >
-#ifdef SEQAN_CXX11_STANDARD
     > > > >
-#endif
     StringTestCommonTypes;
 
 SEQAN_TYPED_TEST_CASE(StringTestCommon, StringTestCommonTypes);
@@ -876,7 +872,7 @@ SEQAN_TYPED_TEST(StringTestCommon, Swap)
 }
 
 // workaround for weird bug in clang
-#if defined(SEQAN_CXX11_STANDARD) && defined(__clang__)
+#if defined(__clang__)
 template <typename TChar, typename TAlloc>
 void testSequenceReverse(std::deque<TChar, TAlloc> & ) {}
 #endif
@@ -914,10 +910,9 @@ void testSequenceReverse(TString & /*Tag*/)
         SEQAN_ASSERT(string1 == string2);
     }
 }
-#ifdef SEQAN_CXX11_STANDARD
+
 template <typename TChar, typename TAlloc>
 void testSequenceReverse(std::forward_list<TChar, TAlloc> & /*Tag*/) {}
-#endif
 
 SEQAN_TYPED_TEST(StringTestCommon, Reverse)
 {
@@ -1242,11 +1237,9 @@ void testSequenceEnd(TString & /*Tag*/)
 // template <typename TValue>
 // void testSequenceEnd(String<TValue, MMap<> > const & /*Tag*/) {}
 
-#ifdef SEQAN_CXX11_STANDARD
 // cannot decrement fwd'lists iterator
 template <typename TValue, typename TAlloc>
 void testSequenceEnd(std::forward_list<TValue, TAlloc> & /*Tag*/) {}
-#endif
 
 SEQAN_TYPED_TEST(StringTestCommon, End)
 {
@@ -1718,11 +1711,9 @@ void testSequenceReserve(std::list<TValue, TAlloc> & /*Tag*/) {}
 // reserve is NOOP on list
 template <typename TValue, typename TAlloc>
 void testSequenceReserve(std::deque<TValue, TAlloc> & /*Tag*/) {}
-#ifdef SEQAN_CXX11_STANDARD
 // reserve is NOOP on list
 template <typename TValue, typename TAlloc>
 void testSequenceReserve(std::forward_list<TValue, TAlloc> & /*Tag*/) {}
-#endif
 
 SEQAN_TYPED_TEST(StringTestCommon, Reserve)
 {

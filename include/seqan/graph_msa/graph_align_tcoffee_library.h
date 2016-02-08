@@ -517,7 +517,7 @@ selectPairs(StringSet<TString, TSpec> const& str,
 
 //////////////////////////////////////////////////////////////////////////////
 
-// TODO(holtgrew): Hard-code TSize1 as __int64, size_t?
+// TODO(holtgrew): Hard-code TSize1 as int64_t, size_t?
 
 template<typename TFragment, typename TSpec1, typename TStringSet, typename TPos, typename TSize1>
 inline void

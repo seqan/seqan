@@ -64,7 +64,7 @@ length(TContainer const & me);
 
 template <typename TContainer, typename TSource>
 inline void
-appendValue(TContainer SEQAN_FORWARD_ARG me, TSource SEQAN_FORWARD_CARG source);
+appendValue(TContainer && me, TSource && source);
 
 /*!
  * @macro SEQAN_HAS_ZLIB
@@ -624,7 +624,7 @@ template <typename T>
 const char IntegerFormatString_<True, 4, T>::VALUE[] = "%u";
 
 
-// helper for the case: typedef long __int64;
+// helper for the case: typedef long int64_t;
 template <typename TIsUnsigned, typename T>
 struct LongFormatString_;
 
@@ -646,7 +646,7 @@ struct LongFormatString_<True, T>
 template <typename T>
 const char LongFormatString_<True, T>::VALUE[] = "%lu";
 
-// helper for the case: typedef long long __int64;
+// helper for the case: typedef long long int64_t;
 template <typename TIsUnsigned, typename T>
 struct Int64FormatString_;
 
@@ -654,7 +654,7 @@ template <typename T>
 struct Int64FormatString_<False, T>
 {
     static const char VALUE[];
-    typedef __int64 Type;
+    typedef int64_t Type;
 };
 template <typename T>
 const char Int64FormatString_<False, T>::VALUE[] = "%lli";
@@ -663,7 +663,7 @@ template <typename T>
 struct Int64FormatString_<True, T>
 {
     static const char VALUE[];
-    typedef __uint64 Type;
+    typedef uint64_t Type;
 };
 template <typename T>
 const char Int64FormatString_<True, T>::VALUE[] = "%llu";
@@ -671,7 +671,7 @@ const char Int64FormatString_<True, T>::VALUE[] = "%llu";
 
 template <typename TIsUnsigned, typename T>
 struct IntegerFormatString_<TIsUnsigned, 8, T> :
-    If<IsSameType<__uint64, unsigned long>,
+    If<IsSameType<uint64_t, unsigned long>,
        LongFormatString_<TIsUnsigned, T>,
        Int64FormatString_<TIsUnsigned, T> >::Type {};
 

@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the basic module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_basic)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_basic CXX)
 message (STATUS "Configuring tests/basic")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,6 @@ message (STATUS "Configuring tests/basic")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------
@@ -129,7 +128,8 @@ add_executable (
 target_link_libraries (test_basic_simd_vector ${SEQAN_LIBRARIES})
 
 if (MSVC)
-  SET (_FLAGS "/arch:SSE4")
+  # Disable vectorization support on windows for now.
+  # SET (_FLAGS "/arch:AVX")
 else (MSVC)
   SET (_FLAGS "-march=native")
   if (CMAKE_COMPILER_IS_GNUCXX)
@@ -141,9 +141,9 @@ else (MSVC)
       #endif ()
     endif (APPLE)
   endif (CMAKE_COMPILER_IS_GNUCXX)
+  SET_TARGET_PROPERTIES(test_basic_simd_vector PROPERTIES COMPILE_FLAGS ${_FLAGS})
 endif (MSVC)
 
-SET_TARGET_PROPERTIES(test_basic_simd_vector PROPERTIES COMPILE_FLAGS ${_FLAGS})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")

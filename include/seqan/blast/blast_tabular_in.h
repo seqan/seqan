@@ -367,7 +367,7 @@ _readCommentLinesImpl(BlastRecord<TMatch> & r,
                     for (unsigned i = 2; (i < length(context._lineBuffer) && isdigit(context._lineBuffer[i])); ++i)
                         appendValue(context._stringBuffer, context._lineBuffer[i], Generous());
 
-                    __uint64 hits = lexicalCast<__uint64>(context._stringBuffer);
+                    uint64_t hits = lexicalCast<uint64_t>(context._stringBuffer);
 
                     if (hits)
                     {
@@ -959,7 +959,7 @@ readFooter(BlastIOContext<TScore, p, h> & context,
         it += 18; // skip "BLAST processed "
         readUntil(context._stringBuffer, it,  IsBlank());
 
-        __uint64 numRecords = lexicalCast<__uint64>(context._stringBuffer);
+        uint64_t numRecords = lexicalCast<uint64_t>(context._stringBuffer);
 
         clear(context.conformancyErrors);
         if (context._numberOfRecords < numRecords)

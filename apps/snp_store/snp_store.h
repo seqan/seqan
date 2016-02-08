@@ -5538,9 +5538,9 @@ void dumpCopyNumberPolymorphismsBatch(
             guess = "deletion";
         //if(guess != "normal" )
         //{
-            file << genomeID << "\tcoverage\t"<< guess << "\t";
-            file << currBinStart+ startCoord+1  << "\t" << currBinStart + startCoord + options.cnvWindowSize << "\t";
-            file << count << "\t+\t.\t.\n";
+        file << genomeID << "\tcoverage\t"<< guess << "\t";
+        file << currBinStart+ startCoord+1  << "\t" << currBinStart + startCoord + options.cnvWindowSize << "\t";
+        file << count << "\t+\t.\t.\n";
         //}
     }
 

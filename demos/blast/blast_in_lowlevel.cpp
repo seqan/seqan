@@ -1,6 +1,6 @@
 #include <iostream>
 #include <seqan/basic.h>
-#ifdef SEQAN_CXX11_COMPLETE
+#ifndef PLATFORM_WINDOWS_VS
 #include <seqan/blast.h>
 
 using namespace seqan;
@@ -43,7 +43,7 @@ int main()
 #else
 int main()
 {
-    std::cerr << "Demo not run, because you don't have full C++11 support.\n";
+    std::cerr << "Demo not run, because of a bug in Microsoft Visual Studio 2015.\n";
     return 0;
 }
 #endif

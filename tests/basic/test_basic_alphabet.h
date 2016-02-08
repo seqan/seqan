@@ -398,37 +398,37 @@ SEQAN_DEFINE_TEST(test_basic_conversions)
     TestConversion<char, AminoAcid>();
 
     TestConversion<Dna, char>();
-    TestConversion<Dna, __uint8>();
+    TestConversion<Dna, uint8_t>();
     TestConversion<Dna, Unicode>();
     TestConversion<Dna, int>();
     TestConversion<Dna, Dna5>();
     TestConversion<Dna, Iupac>();
 
     TestConversion<Dna5, char>();
-    TestConversion<Dna5, __uint8>();
+    TestConversion<Dna5, uint8_t>();
     TestConversion<Dna5, Unicode>();
     TestConversion<Dna5, Dna>();
     TestConversion<Dna5, Iupac>();
 
     TestConversion<Rna, char>();
-    TestConversion<Rna, __uint8>();
+    TestConversion<Rna, uint8_t>();
     TestConversion<Rna, Unicode>();
     TestConversion<Rna, int>();
     TestConversion<Rna, Rna5>();
 
     TestConversion<Rna5, char>();
-    TestConversion<Rna5, __uint8>();
+    TestConversion<Rna5, uint8_t>();
     TestConversion<Rna5, Unicode>();
     TestConversion<Rna5, Rna>();
 
     TestConversion<Iupac, char>();
-    TestConversion<Iupac, __uint8>();
+    TestConversion<Iupac, uint8_t>();
     TestConversion<Iupac, Unicode>();
     TestConversion<Iupac, Dna>();
     TestConversion<Iupac, Dna5>();
 
     TestConversion<AminoAcid, char>();
-    TestConversion<AminoAcid, __uint8>();
+    TestConversion<AminoAcid, uint8_t>();
     TestConversion<AminoAcid, Unicode>();
 
     typedef SimpleType<int, void> ST;
@@ -512,7 +512,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_extreme_values)
     TestExtremeValuesUnsigned<unsigned short>();
     TestExtremeValuesUnsigned<unsigned int>();
     TestExtremeValuesUnsigned<unsigned long>();
-    TestExtremeValuesSigned<__int64>();
+    TestExtremeValuesSigned<int64_t>();
 /*    TestExtremeValues<float>();
     TestExtremeValues<double>();
     TestExtremeValues<long double>();*/
@@ -574,24 +574,24 @@ SEQAN_DEFINE_TEST(test_basic_suprema_infima)
 SEQAN_DEFINE_TEST(test_basic_alphabet_value_size)
 {
     SEQAN_ASSERT_EQ(+ValueSize<bool>::VALUE, 2u);
-    SEQAN_ASSERT_EQ(+ValueSize<__int8>::VALUE, 256u);
-    SEQAN_ASSERT_EQ(+ValueSize<__uint8>::VALUE, 256u);
-    SEQAN_ASSERT_EQ(+ValueSize<__int16>::VALUE, 65536u);
-    SEQAN_ASSERT_EQ(+ValueSize<__uint16>::VALUE, 65536u);
-    SEQAN_ASSERT_EQ(+ValueSize<__int32>::VALUE, (__uint64)4294967296ll);
-    SEQAN_ASSERT_EQ(+ValueSize<__uint32>::VALUE, (__uint64)4294967296ll);
-    SEQAN_ASSERT_EQ(+ValueSize<__int64>::VALUE, 0u);
-    SEQAN_ASSERT_EQ(+ValueSize<__uint64>::VALUE, 0u);
+    SEQAN_ASSERT_EQ(+ValueSize<int8_t>::VALUE, 256u);
+    SEQAN_ASSERT_EQ(+ValueSize<uint8_t>::VALUE, 256u);
+    SEQAN_ASSERT_EQ(+ValueSize<int16_t>::VALUE, 65536u);
+    SEQAN_ASSERT_EQ(+ValueSize<uint16_t>::VALUE, 65536u);
+    SEQAN_ASSERT_EQ(+ValueSize<int32_t>::VALUE, (uint64_t)4294967296ll);
+    SEQAN_ASSERT_EQ(+ValueSize<uint32_t>::VALUE, (uint64_t)4294967296ll);
+    SEQAN_ASSERT_EQ(+ValueSize<int64_t>::VALUE, 0u);
+    SEQAN_ASSERT_EQ(+ValueSize<uint64_t>::VALUE, 0u);
 
     SEQAN_ASSERT_EQ(valueSize<bool>(), 2u);
-    SEQAN_ASSERT_EQ(valueSize<__int8>(), 256u);
-    SEQAN_ASSERT_EQ(valueSize<__uint8>(), 256u);
-    SEQAN_ASSERT_EQ(valueSize<__int16>(), 65536u);
-    SEQAN_ASSERT_EQ(valueSize<__uint16>(), 65536u);
-    SEQAN_ASSERT_EQ(valueSize<__int32>(), (__uint64)4294967296ll);
-    SEQAN_ASSERT_EQ(valueSize<__uint32>(), (__uint64)4294967296ll);
-    SEQAN_ASSERT_EQ(valueSize<__int64>(), 0u);
-    SEQAN_ASSERT_EQ(valueSize<__uint64>(), 0u);
+    SEQAN_ASSERT_EQ(valueSize<int8_t>(), 256u);
+    SEQAN_ASSERT_EQ(valueSize<uint8_t>(), 256u);
+    SEQAN_ASSERT_EQ(valueSize<int16_t>(), 65536u);
+    SEQAN_ASSERT_EQ(valueSize<uint16_t>(), 65536u);
+    SEQAN_ASSERT_EQ(valueSize<int32_t>(), (uint64_t)4294967296ll);
+    SEQAN_ASSERT_EQ(valueSize<uint32_t>(), (uint64_t)4294967296ll);
+    SEQAN_ASSERT_EQ(valueSize<int64_t>(), 0u);
+    SEQAN_ASSERT_EQ(valueSize<uint64_t>(), 0u);
 }
 
 #endif  // #ifndef TESTS_BASIC_TEST_BASIC_ALPHABET_H_

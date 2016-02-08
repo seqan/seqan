@@ -159,6 +159,9 @@ void resetCDStructStatics()
 // Tests
 // ==========================================================================
 
+// Disable for windows vs as the two-phase template lookup is broken. See the
+// following link http://stackoverflow.com/questions/6273176/what-exactly-is-broken-with-microsoft-visual-cs-two-phase-template-instanti
+#if !defined(PLATFORM_WINDOWS_VS)
 // --------------------------------------------------------------------------
 // Pointer adaptions to test the positional iterator.
 // --------------------------------------------------------------------------
@@ -172,7 +175,7 @@ value(TValue * me,
     return me[pos];
 }
 
-template <typename TValue, typename TValue2, typename TPos>
+template <typename TValue, typename TPos, typename TValue2>
 inline void
 assignValue(TValue * me,
             TPos pos,
@@ -191,7 +194,7 @@ moveValue(TValue * me,
     SEQAN_CHECKPOINT;
     move(value(me, pos), _value);
 }
-
+#endif  // !defined(PLATFORM_WINDOWS_VS) 
 // --------------------------------------------------------------------------
 // Tests for Pointer Adaption to Iterator Concept
 // --------------------------------------------------------------------------
@@ -1029,6 +1032,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_transport_value)
         resetCDStructStatics();
 
         TIterator it(&values[0], 0);
+        
         assignValue(it, values[2]);
 
         SEQAN_ASSERT_EQ(it->copiedFrom, -1);

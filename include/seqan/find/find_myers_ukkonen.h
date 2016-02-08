@@ -298,7 +298,6 @@ public:
             largeState = new TLargeState(*other.largeState);
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     // Add move constructor.
     PatternState_(PatternState_ && other):
         TSmallState(std::forward<PatternState_>(other)),
@@ -307,7 +306,6 @@ public:
         largeState = other.largeState;
         other.largeState = NULL;
     }
-#endif  // SEQAN_CXX11_STANDARD
 
     ~PatternState_()
     {
@@ -330,7 +328,6 @@ public:
         return *this;
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     // Add move assignment.
     PatternState_&
     operator=(PatternState_ && other)
@@ -342,7 +339,7 @@ public:
         other.largeState = NULL;  // We moved the data.
         return *this;
     }
-#endif  // SEQAN_CXX11_STANDARD
+
 };
 
 
@@ -437,15 +434,14 @@ public:
             largePattern = new TLargePattern(*other.largePattern);
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     // Add move constructor.
     Pattern(Pattern && other) :
         TSmallPattern(std::forward<Pattern>(other)),
         TPatternState(std::forward<Pattern>(other)),
         largePattern(NULL)
     {
-		largePattern = other.largePattern;
-		other.largePattern = NULL;
+        largePattern = other.largePattern;
+        other.largePattern = NULL;
     }
 
     template <typename TNeedle2>
@@ -455,15 +451,6 @@ public:
         setScoreLimit(*this, _limit);
         setHost(*this, std::forward<TNeedle2>(ndl));
     }
-#else
-    template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl, int _limit = -1):
-        largePattern(NULL)
-    {
-        setScoreLimit(*this, _limit);
-        setHost(*this, ndl);
-    }
-#endif  // SEQAN_CXX11_STANDARD
 
     ~Pattern()
     {
@@ -487,7 +474,6 @@ public:
         return *this;
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     // Add move assignment.
     Pattern &
     operator= (Pattern && other)
@@ -500,7 +486,6 @@ public:
         other.largePattern = NULL;  // Reset other to default.
         return *this;
     }
-#endif  // SEQAN_CXX11_STANDARD
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -920,7 +905,7 @@ _myersGetBitmask(PatternState_<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP,
         return 0;
 
     if (IsSameType<TFinderCSP, NMatchesAll_>::VALUE && value == unknownValue<TValue>())
-        return (shift < BitsPerValue<TWord>::VALUE)? -1 << shift: -1;
+        return static_cast<TWord>((shift < BitsPerValue<TWord>::VALUE) ? (~0u << shift) : ~0u);
 
     unsigned ord = ordValue(value);
     TWord res;
@@ -1117,14 +1102,14 @@ _patternInitSmallStateBanded(
         TWord HP = VN | ~(VP | D0);
     //    const int PADDING = sizeof(TWord)*2 + 1;
     //    std::cerr << std::hex;
-    //    std::cerr << "\tD0"<<std::setw(PADDING)<<(__uint64)D0<<"\tHN"<<std::setw(PADDING)<<(__uint64)HN<<"\tHP"<<std::setw(PADDING)<<(__uint64)HP << std::endl;
+    //    std::cerr << "\tD0"<<std::setw(PADDING)<<(uint64_t)D0<<"\tHN"<<std::setw(PADDING)<<(uint64_t)HN<<"\tHP"<<std::setw(PADDING)<<(uint64_t)HP << std::endl;
 
         // moving register down corresponds to shifting HP/HN up (right shift)
         // HP/HN --> shift --> VP/VN (modified Myers)
         X = D0 >> 1;
         VN = X & HP;
         VP = HN | ~(X | HP);
-    //    std::cerr << "\t  "<<std::setw(PADDING)<<' '<<"\tVN"<<std::setw(PADDING)<<(__uint64)VN<<"\tVP"<<std::setw(PADDING)<<(__uint64)VP << std::endl;
+    //    std::cerr << "\t  "<<std::setw(PADDING)<<' '<<"\tVN"<<std::setw(PADDING)<<(uint64_t)VN<<"\tVP"<<std::setw(PADDING)<<(uint64_t)VP << std::endl;
     //    std::cerr << std::dec;
 
 #ifdef SEQAN_DEBUG_MYERSBITVECTOR
@@ -1459,11 +1444,11 @@ _findMyersSmallPatternsBanded(
         TWord HP = VN | ~(VP | D0);
     //    const int PADDING = sizeof(TWord)*2 + 1;
     //    std::cerr << std::hex;
-    //    std::cerr << "\tD0"<<std::setw(PADDING)<<(__uint64)D0<<"\tHN"<<std::setw(PADDING)<<(__uint64)HN<<"\tHP"<<std::setw(PADDING)<<(__uint64)HP<<std::endl;
+    //    std::cerr << "\tD0"<<std::setw(PADDING)<<(uint64_t)D0<<"\tHN"<<std::setw(PADDING)<<(uint64_t)HN<<"\tHP"<<std::setw(PADDING)<<(uint64_t)HP<<std::endl;
         X = (HP << 1) | 1;
         VN = X & D0;
         VP = (HN << 1) | ~(X | D0);
-    //    std::cerr << "\t  "<<std::setw(PADDING)<<' '<<"\tVN"<<std::setw(PADDING)<<(__uint64)VN<<"\tVP"<<std::setw(PADDING)<<(__uint64)VP<<std::endl;
+    //    std::cerr << "\t  "<<std::setw(PADDING)<<' '<<"\tVN"<<std::setw(PADDING)<<(uint64_t)VN<<"\tVP"<<std::setw(PADDING)<<(uint64_t)VP<<std::endl;
     //    std::cerr << std::dec;
         errors += (HP >> (BitsPerValue<TWord>::VALUE - 2)) & 1;
         errors -= (HN >> (BitsPerValue<TWord>::VALUE - 2)) & 1;

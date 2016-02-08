@@ -630,28 +630,28 @@ setStepSize(Index<TText, IndexQGram<TShapeSpec, TSpec> > &index, TSize stepSize)
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TValue, typename TSpec>
-inline __int64 _fullDirLength(Shape<TValue, TSpec> const &shape)
+inline int64_t _fullDirLength(Shape<TValue, TSpec> const &shape)
 {
-    return _intPow((__int64)ValueSize<TValue>::VALUE, weight(shape)) + 1;
+    return _intPow((int64_t)ValueSize<TValue>::VALUE, weight(shape)) + 1;
 }
 
 template <typename TValue, typename TSpec>
-inline __int64 _fullDir2Length(Shape<TValue, TSpec> const &shape)
+inline int64_t _fullDir2Length(Shape<TValue, TSpec> const &shape)
 {
     return (_intPow(
-                    (__int64)ValueSize<TValue>::VALUE,
+                    (int64_t)ValueSize<TValue>::VALUE,
                     weight(shape) + 1) - 1)
     / ((unsigned)ValueSize<TValue>::VALUE - 1) + 1;
 }
 
 template <typename TIndex>
-inline __int64 _fullDirLength(TIndex const &index)
+inline int64_t _fullDirLength(TIndex const &index)
 {
     return _fullDirLength(indexShape(index));
 }
 
 template <typename TIndex>
-inline __int64 _fullDir2Length(TIndex const &index)
+inline int64_t _fullDir2Length(TIndex const &index)
 {
     return _fullDir2Length(indexShape(index));
 }
@@ -1429,8 +1429,8 @@ void createQGramIndex(
     _qgramCountQGrams(dir, bucketMap, text, shape, stepSize);
 
     // 3. cumulative sum
-    __int64 res = _qgramCummulativeSum(dir, False());
-    SEQAN_ASSERT_EQ(res, static_cast<__int64>(length(sa)));
+    int64_t res = _qgramCummulativeSum(dir, False());
+    SEQAN_ASSERT_EQ(res, static_cast<int64_t>(length(sa)));
     ignoreUnusedVariableWarning(res);
 
     // 4. fill suffix array
