@@ -172,7 +172,6 @@ pushNode(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
     //    std::cout << "-----> Journal " << container(node.endEdgeIt) << std::endl;
     std::cout << "        PUSH: (" << node << ")" << std::endl;
 #endif //defined(DEBUG_JST_TRAVERSAL)
-//    std::cout << "+ PUSH" << std::endl;
     appendValue(impl::stack(me), std::forward<TTraversalNode>(node));
     notify(observer, PushEvent());
 }
@@ -191,7 +190,6 @@ popNode(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
 #if defined(DEBUG_JST_TRAVERSAL)
     std::cout << "        POP: (" << impl::activeNode(me) << ")" << std::endl;
 #endif //defined(DEBUG_JST_TRAVERSAL)
-//    std::cout << "- POP" << std::endl;
     eraseBack(impl::stack(me));
     notify(observer, PopEvent());
 }
@@ -302,21 +300,7 @@ template <typename TCoverage, typename TNode>
 inline void
 refineCoverageBranch(TCoverage & cov, TNode const & activeNode)
 {
-    // First we go from the head of the base node to the head of the active node.
-    // We only check for right ends, that are between the head of the active node and the head of the base node.
-    // Note, that active node is branched off from base node and that base node might lie within a deleted region.
-    // However, the head of the active node might have passed this delted region, so we need to enable the
-    // sequences that are not affected by the deletion anymore.
-//    auto tmp = baseNode.headDelta;
-//    while (!atEnd(tmp) && tmp != activeNode.headDelta)
-//    {
-//        if (isRightEnd(*tmp))
-//            transform(cov, cov, getDeltaCoverage(*tmp), FunctorBitwiseOr());
-//        ++tmp;
-//    }
-//    SEQAN_ASSERT(tmp == activeNode.headDelta);
-
-    // Second we go from the head of the active node to the branch root.
+    // We go from the head of the active node to the branch root.
     // Now we can simply switch of all sequences that still affect the region between the head of the
     // active node and the root of the branch. Since those candidates have been searched already previously.
     auto tmp = activeNode.headDelta;
@@ -445,7 +429,6 @@ mapBranchPointToVirtual(TIterator & resultIt,
 
     SEQAN_ASSERT_LEQ(getDeltaPosition(*f.iter), static_cast<TDeltaMapPos const>(hostPos));
 
-//    TDeltaMapPos virtualOffset = 0;
     // Now we move to the right until we find the node that we are looking for and reconstruct the offset of the virtual positions.
     while (getDeltaPosition(*f.iter) != static_cast<TDeltaMapPos const>(hostPos) && !atEnd(f.iter))
     {
@@ -578,7 +561,6 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
     // If coming from the base we use the base coverage, i.e. all bits true, to avoid
     // cicumstantial updating of the coverage when the context head passes previously
     // visited branch nodes, who still affect the current base node.
-
     if (parent.isBase)
     {
         child.branchRoot = parent.nextDelta;
@@ -592,10 +574,6 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
                   FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
     }
 
-//#if defined(DEBUG_JST_TRAVERSAL)
-//    std::cout << "Coverage Child: " << _printCoverage(child.coverage) << std::endl;
-//    std::cout << "Coverage Paren: " << _printCoverage(parent.coverage) << std::endl;
-//#endif // defined(DEBUG_JST_TRAVERSAL)
     // Set the current delta of the child to the next delta of the parent.
     child.curDelta = parent.nextDelta;
 
@@ -642,15 +620,12 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
     auto dSize = delSize(child.curDelta);
     if (parent.isBase)
     {
-        // We should keep the mappedSrcEndPos of the base node already in sync.
-        child.mappedSrcEndPos += me._branchLength;
         switch (getDeltaType(*child.curDelta))
         {
             case DELTA_TYPE_DEL:
             {
                 if (child.remainingSize == 0)
                     return false;
-                child.mappedSrcEndPos += dSize;
                 // We need to skip all deleted
                 impl::toNextDeltaBehindDeletion(child, dSize);
                 --child.remainingSize;
@@ -663,7 +638,6 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
             }
             case DELTA_TYPE_SV:
             {
-                child.mappedSrcEndPos += dSize;
                 child.remainingSize += iSize - 1;
                 impl::toNextDeltaBehindDeletion(child, dSize);
                 break;
@@ -678,13 +652,11 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
         {
             case DELTA_TYPE_DEL:
             {
-                child.mappedSrcEndPos += dSize;
                 impl::toNextDeltaBehindDeletion(child, dSize);
                 break;
             }
             case DELTA_TYPE_SV:
             {
-                child.mappedSrcEndPos += dSize;
                 impl::toNextDeltaBehindDeletion(child, dSize);
                 break;
             }
@@ -698,46 +670,8 @@ createBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
     child.curEdgeIt = child.begEdgeIt;
     child.endEdgeIt += (iSize + (getPos(me, child.nextDelta) - getPos(me, child.curDelta)) - dSize);
     child.isBase = false;
-    child.fromBase = false;
     return true;
 }
-
-// ----------------------------------------------------------------------------
-// Function impl::advanceBase()
-// ----------------------------------------------------------------------------
-// TODO(rrahn): Remove!
-//template <typename TJst, typename TSpec,
-//          typename TTraversalNode>
-//inline void
-//advanceBase(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me,
-//            TTraversalNode & base)
-//{
-//    SEQAN_ASSERT(base.curDelta == base.nextDelta);
-//
-//#if defined(DEBUG_JST_TRAVERSAL)
-//    std::cout << "        BASE before --> " << base << std::endl;
-//#endif // defined(DEBUG_JST_TRAVERSAL)
-//
-//    while (!atEnd(base.nextDelta) && impl::getPos(me, base.curDelta) == impl::getPos(me, base.nextDelta))
-//    {
-//        if (isRightEnd(*base.nextDelta))
-//            transform(base.coverage, base.coverage, getDeltaCoverage(*base.nextDelta), FunctorBitwiseOr());
-//        else
-//            impl::updateOnDeletion(base, base.nextDelta);  // Update the coverage of the base node if the current delta represents a deletion.
-//        ++base.nextDelta;
-//    }
-//    // base.nextDelta might point to an merge point.
-//    base.begEdgeIt = base.endEdgeIt;
-//    //getDeltaPosition(*impl::hostIter(base.curDelta)) - position(base.begEdgeIt);
-//    base.curEdgeIt = base.begEdgeIt;
-//    auto posN = impl::getPos(me, base.nextDelta);
-//    auto posC = impl::getPos(me, base.curDelta);
-//    base.endEdgeIt += (posN - posC);
-//    base.mappedSrcEndPos = posN;  // TODO(rrahn): Remove.
-//#if defined(DEBUG_JST_TRAVERSAL)
-//    std::cout << "        BASE after ---> " << base << std::endl;
-//#endif // defined(DEBUG_JST_TRAVERSAL)
-//}
 
 // ----------------------------------------------------------------------------
 // Function updateContextHead();
@@ -777,9 +711,6 @@ updateContextHead(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me,
         }
 
     }
-//    if (parent.isBase && (static_cast<TPos>(impl::getPos(me, parent.headDelta)) == parent.headSrcPos) &&
-//        isRightEnd(*parent.headDelta))
-//        transform(parent.coverage, parent.coverage, getDeltaCoverage(*parent.headDelta), FunctorBitwiseOr());
 }
 
 // ----------------------------------------------------------------------------
@@ -798,8 +729,6 @@ advanceParent(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me,
     std::cout << "        EXPAND Parent before --> " << parent << std::endl;
 #endif // defined(DEBUG_JST_TRAVERSAL)
 
-//    if (testAllZeros(parent.coverage))
-//        return false;
     // Update:
     parent.begEdgeIt = parent.endEdgeIt;
     parent.curEdgeIt = parent.begEdgeIt;
@@ -814,7 +743,6 @@ advanceParent(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me,
     if (parent.isBase)
         parent.branchRoot = parent.nextDelta;
 
-    parent.mappedSrcEndPos += impl::getPos(me, parent.nextDelta) - impl::getPos(me, parent.curDelta);
     auto posC = impl::getPos(me, parent.curDelta);
     parent.endEdgeIt += impl::getPos(me, parent.nextDelta) - posC;
 
@@ -896,15 +824,6 @@ expandNode(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & it,
         return stepSize;
     }
 
-//    if (parentPtr->isBase)  // At a branching point coming from base.
-//    {
-//        SEQAN_ASSERT(length(*it._stackPtr) == 1u);
-////        impl::pushNode(it, *parentPtr, observer);  // Copy the base node and mark it from base. This represents all contexts without the delta at the current position.
-//        appendValue(*it._stackPtr, *parentPtr);
-//        impl::advanceBase(it, *parentPtr);
-//        parentPtr = &back(*it._stackPtr);
-//        parentPtr->fromBase = true;
-//    }
     while (!atEnd(parentPtr->nextDelta) && impl::getPos(it, parentPtr->nextDelta) == impl::getPos(it, parentPtr->curDelta))
     {
         if (SEQAN_LIKELY(!isRightEnd(*parentPtr->nextDelta)))  // Skip points, where we merge a deletion.
@@ -919,7 +838,6 @@ expandNode(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & it,
         }
         ++parentPtr->nextDelta;  // Move to the next branch point.
     }
-//    parentPtr->isBase = false;
     impl::advanceParent(it, *parentPtr);
     return impl::moveWindow(it, parentPtr, stepSize, observer, TProxySelector());  // Recursive call to move as long as stepSize is greater 0.
 }
@@ -1003,12 +921,9 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
     node.begEdgeIt = begin(impl::member(container(me), JstSourceMember()), Standard());  // This points to some value already -> what could this position be?
     node.curEdgeIt = node.begEdgeIt;
     node.endEdgeIt = node.begEdgeIt + (getDeltaPosition(*node.nextDelta) - position(node.begEdgeIt));
-    node.mappedSrcEndPos = position(node.endEdgeIt);
     node.remainingSize = me._branchLength - 1;
     node.isBase = true;
-//    node.fromBase = false;
 
-//    appendValue(*me._stackPtr, SEQAN_MOVE(node));
     impl::pushNode(me, std::move(node), observer);  // Push onto stack.
 
     // After we realized this.

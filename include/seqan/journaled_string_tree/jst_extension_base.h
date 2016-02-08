@@ -42,11 +42,19 @@ namespace seqan
 // Forwards
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Metafunction GetPatternState
+// ----------------------------------------------------------------------------
+
 template <typename TExtension>
 struct GetPatternState
 {
     using Type = Nothing;
 };
+
+    // ----------------------------------------------------------------------------
+    // Metafunction ProxySelectionMethod
+    // ----------------------------------------------------------------------------
 
 template <typename TAlgorithm>
 struct ProxySelectionMethod
@@ -54,11 +62,9 @@ struct ProxySelectionMethod
     using Type = SelectValidProxy;
 };
 
-
 template <typename TAlgorithm>
 struct ProxySelectionMethod<TAlgorithm const> :
     ProxySelectionMethod<TAlgorithm>{};
-
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -101,6 +107,10 @@ public:
 // Metafunctions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Metafunction HasState
+// ----------------------------------------------------------------------------
+
 template <typename TObject>
 struct HasState;
 
@@ -138,6 +148,11 @@ struct ObservedValue<JstExtensionBase<TExtension, TCxtPosition> const> :
 
 namespace impl
 {
+
+// ----------------------------------------------------------------------------
+// Function impl::run()
+// ----------------------------------------------------------------------------
+
 template <typename TExtension, typename TTraverser>
 inline auto
 run(TExtension & extension, TTraverser const & traverser, ContextBegin /*tag*/) ->
@@ -191,7 +206,7 @@ state(JstExtensionBase<TExtension, TCxtPosition> const & extBase)
 template <typename TExtension, typename TCxtPosition>
 inline void
 setState(JstExtensionBase<TExtension, TCxtPosition> & extBase,
-         typename GetPatternState<TExtension>::Type const state)
+         typename GetPatternState<TExtension>::Type && state)
 {
     extBase._state = state;
 }
@@ -204,11 +219,6 @@ template <typename TExtension, typename TCxtPosition>
 inline auto
 getObservedValue(JstExtensionBase<TExtension, TCxtPosition> & extBase) -> decltype(state(extBase))
 {
-//    std::cout << " Get state: " << std::flush;
-//    for (unsigned i = 0; i < extBase._derived._pattern.needleLength; ++i)
-//        std::cout << ((state(extBase).prefSufMatch[0] >> (extBase._derived._pattern.needleLength - (i + 1))) & 1) << std::flush;
-//    // CGAGCGG
-//    std::cout << std::endl;
     return state(extBase);
 }
 
@@ -226,19 +236,13 @@ getObservedValue(JstExtensionBase<TExtension, TCxtPosition> const & extBase) -> 
 template <typename TExtension, typename TCxtPosition, typename TValue>
 inline void
 setObservedValue(JstExtensionBase<TExtension, TCxtPosition> & extBase,
-                 TValue const val)
+                 TValue && val)
 {
-    setState(extBase, val);
-
-//    std::cout << " Set state: " << std::flush;
-//    for (unsigned i = 0; i < extBase._derived._pattern.needleLength; ++i)
-//        std::cout << ((state(extBase).prefSufMatch[0] >> (extBase._derived._pattern.needleLength - (i + 1))) & 1) << std::flush;
-//    // CGAGCGG
-//    std::cout << std::endl;
+    setState(extBase, std::forward<TValue>(val));
 }
 
 // ----------------------------------------------------------------------------
-// Function run
+// Function run()
 // ----------------------------------------------------------------------------
 
 template <typename TExtension, typename TCxtPosition,
@@ -256,7 +260,7 @@ run(JstExtensionBase<TExtension, TCxtPosition> & extension,
 }
 
 // ----------------------------------------------------------------------------
-// Function find
+// Function find()
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec,

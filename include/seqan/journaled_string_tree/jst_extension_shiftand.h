@@ -46,6 +46,9 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class PatternStateShiftAnd_
+// ----------------------------------------------------------------------------
 
 template <typename TPattern>
 struct PatternStateShiftAnd_
@@ -53,9 +56,11 @@ struct PatternStateShiftAnd_
     using TWord = typename TPattern::TWord;
 
     String<TWord> prefSufMatch;        // Set of all the prefixes of needle that match a suffix of haystack (called D in "Navarro")
-
-    
 };
+
+// ----------------------------------------------------------------------------
+// Class JstExtension<ShiftAnd>
+// ----------------------------------------------------------------------------
 
 template <typename TNeedle>
 class JstExtension<Pattern<TNeedle, ShiftAnd> > :
@@ -87,6 +92,10 @@ public:
 // Metafunctions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Metafunction GetPatternState
+// ----------------------------------------------------------------------------
+
 template <typename TNeedle>
 struct GetPatternState<JstExtension<Pattern<TNeedle, ShiftAnd> > >
 {
@@ -116,6 +125,10 @@ struct ProxySelectionMethod<JstExtension<Pattern<TNeedle, ShiftAnd> > >
 namespace impl
 {
 
+// ----------------------------------------------------------------------------
+// Function impl::runLongNeedle()
+// ----------------------------------------------------------------------------
+
 template <typename TNeedle, typename TIterator>
 inline std::pair<size_t, bool>
 runLongNeedle(JstExtension<Pattern<TNeedle, ShiftAnd> > & me,
@@ -136,6 +149,10 @@ runLongNeedle(JstExtension<Pattern<TNeedle, ShiftAnd> > & me,
     return std::pair<size_t, bool>(1, (state(me).prefSufMatch[me._pattern.blockCount-1] & me.mask) != 0);
 }
 
+// ----------------------------------------------------------------------------
+// Function impl::runShortNeedle()
+// ----------------------------------------------------------------------------
+
 template <typename TNeedle, typename TIterator>
 inline std::pair<size_t, bool>
 runShortNeedle(JstExtension<Pattern<TNeedle, ShiftAnd> > & me,
@@ -152,6 +169,10 @@ runShortNeedle(JstExtension<Pattern<TNeedle, ShiftAnd> > & me,
     return std::pair<size_t, bool>(1, (state(me).prefSufMatch[0] & me.mask) != 0);
 }
 }  // namespace impl
+
+// ----------------------------------------------------------------------------
+// Function run()
+// ----------------------------------------------------------------------------
 
 template <typename TNeedle, typename TIterator>
 inline std::pair<size_t, bool>

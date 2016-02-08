@@ -46,6 +46,10 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class JstExtension, MyersUkkonen
+// ----------------------------------------------------------------------------
+
 template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec>
 class JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > > :
     public JstExtensionBase<JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > >, ContextEnd>
@@ -83,6 +87,10 @@ public:
 // Metafunctions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Metafunction GetPatternState
+// ----------------------------------------------------------------------------
+
 template <typename TNeedle, typename TSpec, typename TFindBeginPatternSpec>
 struct GetPatternState<JstExtension<Pattern<TNeedle, Myers<TSpec, True, TFindBeginPatternSpec> > > >
 {
@@ -94,7 +102,6 @@ struct GetPatternState<JstExtension<Pattern<TNeedle, Myers<TSpec, True, TFindBeg
 {
     using Type = PatternState_<TNeedle, Myers<TSpec, True, TFindBeginPatternSpec> > const;
 };
-
 
 // If state is disabled
 template <typename TNeedle, typename TSpec, typename TFindBeginPatternSpec>
@@ -124,16 +131,16 @@ struct ProxySelectionMethod<JstExtension<Pattern<TNeedle, Myers<TSpec, TState, T
 namespace impl
 {
 
+// ----------------------------------------------------------------------------
+// Function runLongNeedle()
+// ----------------------------------------------------------------------------
+
 template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec, typename TIterator>
 inline std::pair<size_t, bool>
 runLongNeedle(JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > > & me,
               TIterator hystkIt)
 {
     using TWord = typename MyersLargeState_<TNeedle, TSpec>::TWord;
-
-//    TWord X, D0, HN, HP, temp;
-//    TWord carryD0, carryHP, carryHN;
-//    unsigned shift, limit, currentBlock;
 
     auto& largePattern = *me._pattern.largePattern;
     auto& s = state(me);
@@ -222,6 +229,10 @@ runLongNeedle(JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPa
     return std::pair<size_t, bool>(1, false);
 }
 
+// ----------------------------------------------------------------------------
+// Function runShortNeedle()
+// ----------------------------------------------------------------------------
+
 template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec, typename TIterator>
 inline std::pair<size_t, bool>
 runShortNeedle(JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec> > > & me,
@@ -249,6 +260,10 @@ runShortNeedle(JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginP
     return std::pair<size_t, bool>(1, s.errors <= s.maxErrors);
 }
 }  // namespace impl
+
+// ----------------------------------------------------------------------------
+// Function run()
+// ----------------------------------------------------------------------------
 
 template <typename TNeedle, typename TSpec, typename THasState, typename TFindBeginPatternSpec, typename TIterator>
 inline std::pair<size_t, bool>

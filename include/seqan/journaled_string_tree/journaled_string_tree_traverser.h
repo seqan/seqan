@@ -83,9 +83,7 @@ public:
         _contPtr(&jst),
         _stackPtr(impl::createStack<TStack>()),
         _bufferPtr(impl::createBuffer<TBuffer>())
-    {
-//        init(*this, jst);
-    }
+    {}
 
     // C'tor with the jst and the context or branch size.
     template <typename TSize>
@@ -95,9 +93,7 @@ public:
         _branchLength(contextSize),
         _stackPtr(impl::createStack<TStack>()),
         _bufferPtr(impl::createBuffer<TBuffer>())
-    {
-//        init(*this, jst, contextSize);
-    }
+    {}
 
     // C'tor with the jst and the context or branch size.
     template <typename TSize>
@@ -107,9 +103,7 @@ public:
         _branchLength(branchLength),
         _stackPtr(impl::createStack<TStack>()),
         _bufferPtr(impl::createBuffer<TBuffer>())
-    {
-//        init(*this, jst, contextSize, branchLength);
-    }
+    {}
 
     // Copy c'tor.
     template <typename TOtherJst>
@@ -404,7 +398,6 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
     me._needInitialization = false;
 }
 
-
 template <typename TJst, typename TSpec,
           typename TObserver>
 inline void
@@ -434,9 +427,6 @@ advance(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
         init(me, observer);
 
     auto nodePtr = &back(*me._stackPtr);
-//    if (nodePtr->mappedSrcEndPos == 21)
-//        std::cout << *nodePtr << std::endl;
-//    else
 
 #if defined (JST_FIND_DEBUG)
     if (nodePtr->isBase && getDeltaPosition(*nodePtr->nextDelta) == 40)
@@ -453,11 +443,8 @@ advance(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
     if ((stepSize > 0 && nodePtr->remainingSize == 0))
     {
         SEQAN_ASSERT_NOT(impl::activeNode(me).isBase);
-//        if (!back(*me._stackPtr).isBase)
-//        {
-            impl::popNode(me, observer);
-            SEQAN_ASSERT(length(impl::stack(me)) >= 1u);
-//        }
+        impl::popNode(me, observer);
+        SEQAN_ASSERT(length(impl::stack(me)) >= 1u);
     }
 
     // Check if the condition changed.
@@ -473,30 +460,7 @@ advance(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
             impl::popNode(me, observer);  // Might not be the parent one.
             nodePtr = &impl::activeNode(me);
         }
-
-//        if (nodePtr->fromBase && atEnd(nodePtr->curDelta))
-//        {
-//            auto remSize = nodePtr->remainingSize;
-//            eraseBack(impl::stack(me));  // Remove
-//            nodePtr = &back(impl::stack(me));
-//            impl::moveWindow(me, nodePtr, nodePtr->remainingSize - remSize, observer);
-//        }
     }
-
-//    else if (atEnd(nodePtr->curDelta))
-//    {
-//        if (!back(*me._stackPtr).fromBase)
-//        {
-//            impl::popNode(me, observer);
-//            SEQAN_ASSERT(length(*me._stackPtr) > 1u);
-//        }
-//        else
-//        {
-//            eraseBack(*me._stackPtr);  // Remove the old base representing fromBase
-////            impl::popNode(me, observer);  // Remove the old base representing fromBase
-//            impl::moveWindow(me, &back(*me._stackPtr), stepSize + back(*me._stackPtr).remainingSize, observer);  // Move the base to the next position coming from fromBase node.
-//        }
-//    }
 }
 
 template <typename TJst, typename TSpec,
@@ -543,24 +507,6 @@ atEnd(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me)
     SEQAN_ASSERT(me._stackPtr != nullptr);
     return length(*me._stackPtr) == 1 && back(*me._stackPtr).curEdgeIt == sourceEnd(impl::buffer(me));
 }
-
-//
-//template <typename TJst, typename TSpec, typename TSize>
-//inline void
-//init(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
-//     TJst & jst,
-//     TSize const contextSize)
-//{
-//    init(me, jst, contextSize, contextSize);
-//}
-//
-//template <typename TJst, typename TSpec>
-//inline void
-//init(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
-//     TJst & jst)
-//{
-//    init(me, jst, 1);
-//}
 
 }  // namespace seqan
 

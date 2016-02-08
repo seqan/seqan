@@ -46,6 +46,9 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class PatternStateShiftOr_
+// ----------------------------------------------------------------------------
 
 template <typename TPattern>
 struct PatternStateShiftOr_
@@ -54,6 +57,10 @@ struct PatternStateShiftOr_
 
     String<TWord> prefSufMatch;        // Set of all the prefixes of needle that match a suffix of haystack (called D in "Navarro")
 };
+
+// ----------------------------------------------------------------------------
+// Class JstExtension; ShiftOr
+// ----------------------------------------------------------------------------
 
 template <typename TNeedle>
 class JstExtension<Pattern<TNeedle, ShiftOr> > :
@@ -85,6 +92,10 @@ public:
 // Metafunctions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Metafunction GetPatternState
+// ----------------------------------------------------------------------------
+
 template <typename TNeedle>
 struct GetPatternState<JstExtension<Pattern<TNeedle, ShiftOr> > >
 {
@@ -114,6 +125,10 @@ struct ProxySelectionMethod<JstExtension<Pattern<TNeedle, ShiftOr> > >
 namespace impl
 {
 
+// ----------------------------------------------------------------------------
+// Function impl::runLongNeedle()
+// ----------------------------------------------------------------------------
+
 template <typename TNeedle, typename TIterator>
 inline std::pair<size_t, bool>
 runLongNeedle(JstExtension<Pattern<TNeedle, ShiftOr> > & me,
@@ -133,6 +148,10 @@ runLongNeedle(JstExtension<Pattern<TNeedle, ShiftOr> > & me,
     }
     return std::pair<size_t, bool>(1, !(state(me).prefSufMatch[me._pattern.blockCount - 1] & me.mask));
 }
+
+// ----------------------------------------------------------------------------
+// Function impl::runShortNeedle()
+// ----------------------------------------------------------------------------
 
 template <typename TNeedle, typename TIterator>
 inline std::pair<size_t, bool>

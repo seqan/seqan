@@ -46,6 +46,10 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class JstExtension; Horspool
+// ----------------------------------------------------------------------------
+
 template <typename TNeedle>
 class JstExtension<Pattern<TNeedle, Horspool> > :
     public JstExtensionBase<JstExtension<Pattern<TNeedle, Horspool> >, ContextRange>
@@ -67,6 +71,10 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function run()
+// ----------------------------------------------------------------------------
 
 template <typename TNeedle, typename TIterator>
 inline std::pair<size_t, bool>

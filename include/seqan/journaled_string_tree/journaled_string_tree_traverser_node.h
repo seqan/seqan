@@ -62,7 +62,6 @@ public:
 
     // __ Mapping Resources ___________________________________________________
 
-    TPosition           mappedSrcEndPos;
     TSignedPos          headSrcPos;     // Head of the context pointing into base sequence. Can be negative in the initialization phase.
     TSize               remainingSize;
     TSize               proxyId;
@@ -79,7 +78,6 @@ public:
     TCoverage           coverage;       // Coverage of this node.
 
     bool                isBase;
-    bool                fromBase;       // TODO(rrahn): Remove if not needed.
 };
 
 // ============================================================================
@@ -95,9 +93,11 @@ inline void
 swap(JstTraversalNode<TJstLhs> & lhs,
      JstTraversalNode<TJstRhs> & rhs)
 {
-    std::swap(lhs.mappedSrcEndPos, rhs.mappedSrcEndPos);
     std::swap(lhs.remainingSize, rhs.remainingSize);
+    std::swap(lhs.headSrcPos, rhs.headSrcPos);
     std::swap(lhs.proxyId, rhs.proxyId);
+    std::swap(lhs.headDelta, rhs.headDelta);
+    std::swap(lhs.branchRoot, rhs.branchRoot);
     std::swap(lhs.curDelta, rhs.curDelta);
     std::swap(lhs.nextDelta, rhs.nextDelta);
     std::swap(lhs.begEdgeIt, rhs.begEdgeIt);
@@ -105,7 +105,6 @@ swap(JstTraversalNode<TJstLhs> & lhs,
     std::swap(lhs.endEdgeIt, rhs.endEdgeIt);
     swap(lhs.coverage, rhs.coverage);
     std::swap(lhs.isBase, rhs.isBase);
-    std::swap(lhs.fromBase, rhs.fromBase);
 }
 
 template <typename TStream, typename TJst>
