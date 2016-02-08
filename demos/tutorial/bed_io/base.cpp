@@ -30,6 +30,8 @@ public:
 };
 //![bedRecord]
 
-int main(){
+int main()
+{
 	return 0;
 }
+
