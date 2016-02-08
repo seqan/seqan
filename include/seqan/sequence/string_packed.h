@@ -612,7 +612,7 @@ resize(String<TValue, Packed<THostspec> > & me,
 
     // create WORD
     String<TValue, Packed<THostspec> > tmp;
-    resize(tmp, TTraits::VALUES_PER_HOST_VALUE, Exact());
+    resize(tmp, static_cast<unsigned>(TTraits::VALUES_PER_HOST_VALUE), Exact());
     for (unsigned i = 0; i < TTraits::VALUES_PER_HOST_VALUE; ++i)
         tmp[i] = newValue;
 
