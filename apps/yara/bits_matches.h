@@ -836,8 +836,8 @@ findProperMates(TMatches const & mates, TMatch const & match,
     mateLeq.errors = 0;
     mateGeq.errors = MemberLimits<TMatch, Errors>::VALUE;
 
-    TReadSeqSize deltaMinus = std::max((TSignedSize)0, (TSignedSize)mean - 6 * stdDev - (TSignedSize)mateLength);
-    TReadSeqSize deltaPlus = std::max((TSignedSize)0, (TSignedSize)mean + 6 * stdDev - (TSignedSize)mateLength);
+    TReadSeqSize deltaMinus = _max((TSignedSize)0, (TSignedSize)mean - 6 * stdDev - (TSignedSize)mateLength);
+    TReadSeqSize deltaPlus = _max((TSignedSize)0, (TSignedSize)mean + 6 * stdDev - (TSignedSize)mateLength);
 
     // --> ... mate
     if (onForwardStrand(match))
