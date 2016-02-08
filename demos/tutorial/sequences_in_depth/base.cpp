@@ -2,8 +2,8 @@
 
 using namespace seqan;
 
-int main(){
-
+int main()
+{
 //![default_type]
     String<Dna>           dnaSeq1; // The default string implementation: Alloc
     String<Dna, Alloc<> > dnaSeq2; // The same as above

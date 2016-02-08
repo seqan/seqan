@@ -5,10 +5,11 @@ using namespace seqan;
 //![func_exchange1]
 void amino_exchangeFirstValues(String<AminoAcid> & str)
 {
-   if (length(str) < 2) return;
-   AminoAcid temp = str[0];
-   str[0] = str[1];
-   str[1] = temp;
+    if (length(str) < 2)
+        return;
+    AminoAcid temp = str[0];
+    str[0] = str[1];
+    str[1] = temp;
 }
 //![func_exchange1]
 
@@ -16,10 +17,11 @@ void amino_exchangeFirstValues(String<AminoAcid> & str)
 template <typename T>
 void general_exchangeFirstValues(T & str)
 {
-   if (length(str) < 2) return;
-   AminoAcid temp = str[0];
-   str[0] = str[1];
-   str[1] = temp;
+    if (length(str) < 2)
+        return;
+    AminoAcid temp = str[0];
+    str[0] = str[1];
+    str[1] = temp;
 }
 //![func_exchange2]
 
@@ -27,13 +29,13 @@ void general_exchangeFirstValues(T & str)
 template <typename T>
 void exchangeFirstValues(T & str)
 {
-   if (length(str) < 2) return;
-   typename Value<T>::Type temp = str[0];
-   str[0] = str[1];
-   str[1] = temp;
+    if (length(str) < 2)
+        return;
+    typename Value<T>::Type temp = str[0];
+    str[0] = str[1];
+    str[1] = temp;
 }
 //![func_exchange3]
-
 
 //![length]
 template <typename T>
@@ -44,9 +46,8 @@ void printLenOfFixedSizeString(T const &)
 
 //![length]
 
-
-
-int main(){
+int main()
+{
 //![amino]
     String<AminoAcid> amino_str = "ARN";
 //![amino]

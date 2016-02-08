@@ -3,14 +3,14 @@
 
 using namespace seqan;
 
-int main(){
-
+int main()
+{
 //![main]
-typedef Dna TAlphabet;
+    typedef Dna TAlphabet;
 
-unsigned alphSize = ValueSize<TAlphabet>::VALUE;
-std::cout << "Alphabet size of Dna: " << alphSize << '\n';
+    unsigned alphSize = ValueSize<TAlphabet>::VALUE;
+    std::cout << "Alphabet size of Dna: " << alphSize << '\n';
 //![main]
 
-	return 0;
+    return 0;
 }

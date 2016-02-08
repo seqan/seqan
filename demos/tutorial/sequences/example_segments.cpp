@@ -6,7 +6,7 @@ using namespace seqan;
 
 int main()
 {
-    //![main]
+//![main]
     String<Dna> dnaSeq = "AGTTGGCATG";
     Prefix<String<Dna> >::Type pre = prefix(dnaSeq, 4);
     std::cout << "Prefix: " << pre << std::endl;
@@ -16,6 +16,6 @@ int main()
 
     Suffix<String<Dna> >::Type suf = suffix(dnaSeq, 4);
     std::cout << "Suffix: " << suf << std::endl;
-    //![main]
+//![main]
     return 0;
 }

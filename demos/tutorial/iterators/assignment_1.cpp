@@ -7,7 +7,8 @@ using namespace seqan;
 int main()
 {
     Dna5String genome = "ANTGGTTNCAACNGTAANTGCTGANNNACATGTNCGCGTGTA";
-    for (unsigned i = 0; i < length(genome); ++i){
+    for (unsigned i = 0; i < length(genome); ++i)
+    {
         if (genome[i] == 'N')
             genome[i] = 'A';
     }

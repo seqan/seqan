@@ -30,7 +30,8 @@ public:
 };
 //![bamRecord]
 
-int main(){
+int main()
+{
 //![BamTagsDict]
     BamAlignmentRecord record;
     BamTagsDict tagsDict(record.tags);

@@ -5,12 +5,12 @@ using namespace seqan;
 
 int main()
 {
-   //![main]
-   String<char> char_source = "acgtgcat";
-   String<Dna> dna_target;
+//![main]
+    String<char> char_source = "acgtgcat";
+    String<Dna> dna_target;
 
-   // The in-place move conversion.
-   move(dna_target, char_source);
-   std::cout << dna_target << std::endl;
-   //![main]
+    // The in-place move conversion.
+    move(dna_target, char_source);
+    std::cout << dna_target << std::endl;
+//![main]
 }

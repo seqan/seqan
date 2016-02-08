@@ -12,7 +12,7 @@ void myFunction(TagB const &){}  // (2)
 
 int main()
 {
-  myFunction(TagA());  // (3)
-  myFunction(TagB());  // (4)
-  return 0;
+    myFunction(TagA());  // (3)
+    myFunction(TagB());  // (4)
+    return 0;
 }

@@ -55,6 +55,7 @@ void _searchAtBorder(String<int> & hitTarget,
 }
 //![assignment4]
 
-int main(){
+int main()
+{
 	return 0;
 }

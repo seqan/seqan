@@ -77,6 +77,7 @@ void specializedHashAll(Shape< TValue, UngappedShape<q> > & shape, TString & str
 }
 //![specializedHashAll]
 
-int main(){
+int main()
+{
     return 0;
 }

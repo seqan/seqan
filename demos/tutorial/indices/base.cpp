@@ -9,14 +9,14 @@ namespace SEQAN_NAMESPACE_MAIN{
 template<>
 struct SAValue<String<Dna> >
 {
-   typedef unsigned Type;
+    typedef unsigned Type;
 };
 //![SAValue]
 //![SAValue2]
 template<>
 struct SAValue<StringSet<String<Dna> > >
 {
-   typedef Pair<unsigned, unsigned> Type;
+    typedef Pair<unsigned, unsigned> Type;
 };
 //![SAValue2]
 //![SAValue3]

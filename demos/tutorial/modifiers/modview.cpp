@@ -11,7 +11,8 @@ struct MyFunctor :
 {
     inline char operator()(char x) const
     {
-        if (('a' <= x) && (x <= 'z')) return x + ('A' - 'a');
+        if (('a' <= x) && (x <= 'z'))
+            return x + ('A' - 'a');
 
         return x;
     }

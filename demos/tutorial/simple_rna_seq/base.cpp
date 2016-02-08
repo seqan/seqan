@@ -2,7 +2,8 @@
 
 using namespace seqan;
 
-int main() {
+int main()
+{
 //![store]
     FragmentStore<> store;
 //![store]
