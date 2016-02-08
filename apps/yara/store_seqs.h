@@ -126,15 +126,15 @@ inline void reserve(SeqStore<TSpec, TConfig> & me, TSize newCapacity)
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TConfig, typename TFileName>
-inline bool open(SeqStore<TSpec, TConfig> & me, TFileName const & fileName)
+inline bool open(SeqStore<TSpec, TConfig> & me, TFileName const & fileName, int openMode)
 {
     CharString name;
 
     name = fileName;    append(name, ".txt");
-    if (!open(me.seqs, toCString(name))) return false;
+    if (!open(me.seqs, toCString(name), openMode)) return false;
 
     name = fileName;    append(name, ".rid");
-    if (!open(me.names, toCString(name))) return false;
+    if (!open(me.names, toCString(name), openMode)) return false;
 
     return true;
 }

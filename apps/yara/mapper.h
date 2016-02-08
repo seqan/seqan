@@ -341,7 +341,7 @@ inline void loadContigs(Mapper<TSpec, TConfig> & me)
     start(me.timer);
     try
     {
-        if (!open(me.contigs, toCString(me.options.contigsIndexFile)))
+        if (!open(me.contigs, toCString(me.options.contigsIndexFile), OPEN_RDONLY))
             throw RuntimeError("Error while opening reference file.");
     }
     catch (BadAlloc const & /* e */)
@@ -365,7 +365,7 @@ inline void loadContigsIndex(Mapper<TSpec, TConfig> & me)
     start(me.timer);
     try
     {
-        if (!open(me.index, toCString(me.options.contigsIndexFile)))
+        if (!open(me.index, toCString(me.options.contigsIndexFile), OPEN_RDONLY))
             throw RuntimeError("Error while opening reference index file.");
     }
     catch (BadAlloc const & /* e */)
