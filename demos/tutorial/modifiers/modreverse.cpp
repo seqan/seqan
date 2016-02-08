@@ -5,7 +5,6 @@
 
 using namespace seqan;
 
-
 int main()
 {
     String<char> myString = "A man, a plan, a canal-Panama";
@@ -29,6 +28,6 @@ std::cout << "//![output2]\n";
 //![output2]
 std::cout << "//![output2]\n";
 //![output2]
-	return 0;
+    return 0;
 }
 //![output2]

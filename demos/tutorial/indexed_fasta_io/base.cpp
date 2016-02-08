@@ -5,8 +5,8 @@
 
 using namespace seqan;
 
-int main(){
-
+int main()
+{
     CharString pathToFile = getAbsolutePath("/demos/tutorial/indexed_fasta_io/example.fasta");
     FaiIndex faiIndex;
 
@@ -24,17 +24,17 @@ int main(){
 
 //![save_index]
     if (!save(faiIndex, toCString(pathToFaiFile)))
-       std::cout << "ERROR: Could not save the index to file!\n";
+        std::cout << "ERROR: Could not save the index to file!\n";
 //![save_index]
 
 //![open_index1]
     if (!open(faiIndex, toCString(pathToFile)))
-       std::cout << "ERROR: Could not load FAI index " << pathToFaiFile << "\n";
+        std::cout << "ERROR: Could not load FAI index " << pathToFaiFile << "\n";
 //![open_index1]
 
 //![open_index2]
     if (!open(faiIndex, toCString(pathToFile), toCString(pathToFaiFile)))
-       std::cout << "ERROR: Could not load FAI index " << pathToFaiFile << "\n";
+        std::cout << "ERROR: Could not load FAI index " << pathToFaiFile << "\n";
 //![open_index2]
 
 //![idx]

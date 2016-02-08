@@ -5,9 +5,9 @@ using namespace seqan;
 
 int main()
 {
-   //![main]
-   String<Dna> dnaSeq = "TATA";
-   dnaSeq += "CGCG";
-   std::cout << dnaSeq << std::endl;
-   //![main]
+//![main]
+    String<Dna> dnaSeq = "TATA";
+    dnaSeq += "CGCG";
+    std::cout << dnaSeq << std::endl;
+//![main]
 }

@@ -37,6 +37,7 @@ void print(TText const & score, MaxOnly const & /*tag*/)
     std::cout << std::endl;
 }
 
-int main(){
+int main()
+{
     return 0;
 }

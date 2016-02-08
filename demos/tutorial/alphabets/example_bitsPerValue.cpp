@@ -3,14 +3,14 @@
 
 using namespace seqan;
 
-int main(){
-
-	typedef Dna TAlphabet;
+int main()
+{
+    typedef Dna TAlphabet;
 
 //![main]
-unsigned bits = BitsPerValue<TAlphabet>::VALUE;
-std::cout << "Number of bits needed to store a value of type Dna: " << bits << '\n';
+    unsigned bits = BitsPerValue<TAlphabet>::VALUE;
+    std::cout << "Number of bits needed to store a value of type Dna: " << bits << '\n';
 //![main]
 
-	return 0;
+    return 0;
 }

@@ -3,7 +3,8 @@
 
 using namespace seqan;
 
-int main() {
+int main()
+{
 //![construction]
     Iterator<DnaString>::Type           it1;  // A standard iterator
     Iterator<DnaString, Standard>::Type it2;  // Same as above

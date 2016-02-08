@@ -3,14 +3,14 @@
 
 using namespace seqan;
 
-int main(){
-    
+int main()
+{
     typedef FragmentStore<> TStore;
     TStore store;
 
 //![iterator]
-Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
-it = begin(store, AnnotationTree<>());
+    Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
+    it = begin(store, AnnotationTree<>());
 //![iterator]
 
     return 0;

@@ -6,10 +6,11 @@ class vector{};
 
 using namespace seqan;
 
-int main(){
+int main()
+{
 //![vector]
-vector<int> my_vector;
+    vector<int> my_vector;
 //![vector]
-	ignoreUnusedVariableWarning(my_vector);
-	return 0;
+    ignoreUnusedVariableWarning(my_vector);
+    return 0;
 }
