@@ -22,7 +22,7 @@ int main()
 //![constructor]
     TMyReverseComplement myReverseComplement(myString);
 //![constructor]
-std::cout << "//![output]" << '\n';
+    std::cout << "//![output]" << '\n';
 //![output]
     std::cout << myString << '\n';
     std::cout << myReverseComplement << '\n';
@@ -32,8 +32,8 @@ std::cout << "//![output]" << '\n';
     std::cout << myString << '\n';
     std::cout << myReverseComplement << '\n';
 //![output]
-std::cout << "//![output]" << '\n';
-std::cout << myString << '\n';
+    std::cout << "//![output]" << '\n';
+    std::cout << myString << '\n';
 //![alternative]
     std::cout << DnaStringReverseComplement(myString) << std::endl;
 //![alternative]

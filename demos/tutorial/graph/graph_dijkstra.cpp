@@ -59,7 +59,7 @@ int main()
     assignProperty(cityNames, vertHannover, "Hannover");
 //![enter-properties]
 
-std::cout << "//![iterate-and-output-properties]\n";
+    std::cout << "//![iterate-and-output-properties]\n";
 //![iterate-and-output-properties]
     typedef Iterator<TGraph, VertexIterator>::Type TVertexIterator;
     TVertexIterator itV(g);

@@ -64,13 +64,13 @@ int main()
     addEdge(hmm, intronState, endState, 0.1);
 //![transitions]
 
-std::cout << "//![print-model]" << std::endl;
+    std::cout << "//![print-model]" << std::endl;
 //![print-model]
     std::cout << hmm << std::endl;
 //![print-model]
-std::cout << "//![print-model]" << std::endl;
+    std::cout << "//![print-model]" << std::endl;
 
-std::cout << "//![viterbi]" << std::endl;
+    std::cout << "//![viterbi]" << std::endl;
 //![viterbi]
     String<Dna> sequence = "CTTCATGTGAAAGCAGACGTAAGTCA";
     String<TVertexDescriptor> path;
@@ -92,9 +92,9 @@ std::cout << "//![viterbi]" << std::endl;
     }
     std::cout << std::endl;
 //![viterbi]
-std::cout << "//![viterbi]" << std::endl;
+    std::cout << "//![viterbi]" << std::endl;
 
-std::cout << "//![forward-backward]" << std::endl;
+    std::cout << "//![forward-backward]" << std::endl;
 //![forward-algorithm]
     std::cout << "Forward algorithm" << std::endl;
     p = forwardAlgorithm(hmm, sequence);
@@ -106,7 +106,7 @@ std::cout << "//![forward-backward]" << std::endl;
     p = backwardAlgorithm(hmm, sequence);
     std::cout << "Probability that the HMM generated the sequence: " << p << std::endl;
 //![backward-algorithm]
-std::cout << "//![forward-backward]" << std::endl;
+    std::cout << "//![forward-backward]" << std::endl;
 //![backward-algorithm]
     return 0;
 }

@@ -12,7 +12,7 @@ int main()
     typedef Size<TGraph>::Type TSize;
 //![typedefs]
 
-std::cout << "//![main-graph-construction]" << std::endl;
+    std::cout << "//![main-graph-construction]" << std::endl;
 //![main-graph-construction]
     TSize numEdges = 14;
     TVertexDescriptor edges[] = {1,0, 0,4, 2,1, 4,1, 5,1, 6,2, 3,2, 2,3, 7,3, 5,4, 6,5, 5,6, 7,6, 7,7};
@@ -20,7 +20,7 @@ std::cout << "//![main-graph-construction]" << std::endl;
     addEdges(g, edges, numEdges);
     std::cout << g << std::endl;
 //![main-graph-construction]
-std::cout << "//![main-graph-construction]" << std::endl;
+    std::cout << "//![main-graph-construction]" << std::endl;
 
 //![vertex-map]
     String<char> nameMap;
@@ -28,7 +28,7 @@ std::cout << "//![main-graph-construction]" << std::endl;
     assignVertexMap(nameMap, g, names);
 //![vertex-map]
 
-std::cout << "//![iterate-dfs]" << std::endl;
+    std::cout << "//![iterate-dfs]" << std::endl;
 //![iterate-dfs]
     TVertexDescriptor start = 0;
     typedef Iterator<TGraph, DfsPreorder>::Type TDfsIterator;
@@ -42,14 +42,14 @@ std::cout << "//![iterate-dfs]" << std::endl;
     }
     std::cout << std::endl;
 //![iterate-dfs]
-std::cout << "//![iterate-dfs]" << std::endl;
+    std::cout << "//![iterate-dfs]" << std::endl;
 
 //![connected-components]
     String<unsigned int> component;
     stronglyConnectedComponents(component, g);
 //![connected-components]
 
-std::cout << "//![output-connected-components]" << std::endl;
+    std::cout << "//![output-connected-components]" << std::endl;
 //![output-connected-components]
     std::cout << "Strongly Connected Components: " << std::endl;
     typedef Iterator<TGraph, VertexIterator>::Type TVertexIterator;
@@ -61,7 +61,7 @@ std::cout << "//![output-connected-components]" << std::endl;
         goNext(it);
     }
 //![output-connected-components]
-std::cout << "//![output-connected-components]" << std::endl;
+    std::cout << "//![output-connected-components]" << std::endl;
 //![output-connected-components]
     return 0;
 }

@@ -5,11 +5,13 @@ using namespace seqan;
 
 //![hashAll]
 template <typename TShape, typename TString> 
-void hashAll(TShape & shape, TString & str){ 
+void hashAll(TShape & shape, TString & str)
+{ 
     typedef typename Iterator<TString>::Type TIterator;
     TIterator it = begin(str);
     TIterator it_end = end(str) - span(shape);
-    while (it != it_end) {
+    while (it != it_end) 
+    {
         unsigned int hash_value = hash(shape, it);
         /* do some things with the hash value */ ++it;
 //![hashAll]
@@ -51,7 +53,8 @@ class Shape< TValue, UngappedShape<q> >
 //![hashNext]
 template <typename TValue, unsigned int q, typename TIterator>
 inline unsigned int
-hashNext(Shape< TValue, UngappedShape<q> > const & shape, TIterator it, unsigned int prev){
+hashNext(Shape< TValue, UngappedShape<q> > const & shape, TIterator it, unsigned int prev)
+{
     unsigned int val = prev * ValueSize<TValue>::VALUE - *it * shape.fac
                             + *(it + shape.span);
     return val;
@@ -61,16 +64,19 @@ hashNext(Shape< TValue, UngappedShape<q> > const & shape, TIterator it, unsigned
 
 //![specializedHashAll]
 template <typename TValue, unsigned int q, typename TString>
-void specializedHashAll(Shape< TValue, UngappedShape<q> > & shape, TString & str){
+void specializedHashAll(Shape< TValue, UngappedShape<q> > & shape, TString & str)
+{
     typedef typename Iterator<TString>::Type TIterator;
-    TIterator it = begin(str); TIterator it_end = end(str) - span(shape);
+    TIterator it = begin(str); 
+    TIterator it_end = end(str) - span(shape);
     unsigned int hash_value = hash(shape, it);
     /* do some things with the hash value */
 
 //![specializedHashAll]
     ignoreUnusedVariableWarning(hash_value);
 //![specializedHashAll]
-    while (++it != it_end) {
+    while (++it != it_end)
+    {
         unsigned int hash_value = hashNext(shape, it, hash_value);
         /* do some things with the hash value */
     }
