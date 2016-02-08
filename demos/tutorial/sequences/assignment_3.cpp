@@ -10,7 +10,8 @@ int main()
     String<Dna5> selected;
     // Append all elements of nucleotides, apart of Gs,
     // to the list selected.
-    for (unsigned i = 0; i < length(nucleotides); ++i){
+    for (unsigned i = 0; i < length(nucleotides); ++i)
+    {
         appendValue(selected, nucleotides[i]);
     }
     std::cout << "Selected nucleotides: " << selected << std::endl;

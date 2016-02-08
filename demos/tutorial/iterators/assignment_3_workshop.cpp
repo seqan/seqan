@@ -7,9 +7,9 @@ using namespace seqan;
 template <typename TText1, typename TText2>
 void printAlign(TText1 const & genomeFragment, TText2 const & read)
 {
-        std::cout <<  "Alignment " << std::endl;
-        std::cout << "  genome : " << genomeFragment << std::endl;
-        std::cout << "  read   : " << read << std::endl;
+    std::cout <<  "Alignment " << std::endl;
+    std::cout << "  genome : " << genomeFragment << std::endl;
+    std::cout << "  read   : " << read << std::endl;
 }
 
 int main(int, char const **)

@@ -14,7 +14,7 @@ int main()
     ignoreUnusedVariableWarning(it2);
     ignoreUnusedVariableWarning(it3);
 
-std::cout << "\n//![use-case]\n";
+    std::cout << "\n//![use-case]\n";
 //![use-case]
     DnaString genome = "ACGTACGTACGT";
     typedef Iterator<DnaString>::Type TIterator;
@@ -23,7 +23,7 @@ std::cout << "\n//![use-case]\n";
         std::cout << value(it);
     }
 //![use-case]
-std::cout << "\n//![use-case]\n";
+    std::cout << "\n//![use-case]\n";
 
     return 0;
 }

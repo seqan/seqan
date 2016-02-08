@@ -14,7 +14,7 @@ int main()
     // Get the corresponding ids
     unsigned id0 = positionToId(stringSet, 0);
     unsigned id1 = positionToId(stringSet, 1);
-std::cout << "//![main]" << '\n';
+    std::cout << "//![main]" << '\n';
 //![main]
     // Let's create a string set of type dependent to represent strings,
     // which are stored in the StringSet of type Owner
@@ -30,14 +30,14 @@ std::cout << "//![main]" << '\n';
     // (2) Access by id
     std::cout << "Id 0:  " << valueById(depSet, id0) << '\n';
 //![main]
-std::cout << "//![main]" << '\n';
+    std::cout << "//![main]" << '\n';
 
-std::cout << "//![difference]" << '\n';
+    std::cout << "//![difference]" << '\n';
 //![difference]
     std::cout << "Position 0: Id " << positionToId(depSet, 0) << '\n';
     std::cout << "Position 1: Id " << positionToId(depSet, 1) << '\n';
 //![difference]
-std::cout << "//![difference]" << '\n';
+    std::cout << "//![difference]" << '\n';
 
     return 0;
 }
