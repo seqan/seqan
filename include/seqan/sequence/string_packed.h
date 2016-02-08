@@ -563,6 +563,10 @@ _setLength(
     front(host(me)).i = new_length;
 }
 
+// --------------------------------------------------------------------------
+// Function resize
+// --------------------------------------------------------------------------
+
 template <typename TValue, typename THostspec, typename TSize, typename TExpand>
 inline typename Size< String<TValue, Packed<THostspec> > >::Type
 resize(
@@ -579,17 +583,14 @@ resize(
         clear(host(me));
         return 0;
     }
-    TStringSize max_length = (resize(host(me), TTraits::toHostLength(new_length) + 1, tag) - 1) * TTraits::VALUES_PER_HOST_VALUE;
-    if ((TStringSize)new_length > max_length)
-        new_length = max_length;
-    front(host(me)).i = new_length;
 
-    // NOTE(h-2): this fixes valgrind issues and insertion errors, otherwise the string
-    //            is dependent on getting 0 initialized memory; however it is unclear
-    //            whether this fixes all the problems and it does incur a performance
-    //            penalty when explicitly resizing the string
-    _clearUnusedBits(me);
-    return new_length;
+    TStringSize _new_length = new_length;
+    TStringSize max_length = (resize(host(me), TTraits::toHostLength(_new_length) + 1, tag) - 1) * TTraits::VALUES_PER_HOST_VALUE;
+    if (_new_length > max_length)
+        _new_length = max_length;
+    front(host(me)).i = _new_length;
+
+    return _new_length;
 }
 
 template <typename TValue, typename THostspec, typename TSize, typename TExpand, typename TValue2>
@@ -599,16 +600,57 @@ resize(String<TValue, Packed<THostspec> > & me,
        TValue2 const & newValue,
        Tag<TExpand> tag)
 {
-//     typedef typename Size< String<TValue, Packed<THostspec> > >::Type             TSize;
-    typedef typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type TIter;
+    typedef String<TValue, Packed<THostspec> > TString;
+    typedef PackedTraits_<TString> TTraits;
+    typedef typename Size<TString>::Type TStringSize;
 
-    TSize oldLen = length(me);
-    TSize ret = resize(me, new_length, tag);
+    TStringSize _new_length = new_length;
+    TStringSize old_length = length(me);
 
-    if (ret >= oldLen)
-        for (TIter it = iter(me, oldLen, Standard()), itEnd = end(me, Standard()); it != itEnd; ++it)
-            *it = newValue;
-    return ret;
+    if (_new_length < length(me))
+        return resize(me, _new_length, tag);
+
+    // create WORD
+    String<TValue, Packed<THostspec> > tmp;
+    resize(tmp, TTraits::VALUES_PER_HOST_VALUE, Exact());
+    for (unsigned i = 0; i < TTraits::VALUES_PER_HOST_VALUE; ++i)
+        tmp[i] = newValue;
+
+    // fill up host string word-wise
+    TStringSize max_length = (resize(host(me),
+                                     TTraits::toHostLength(_new_length) + 1,
+                                     getValue(host(tmp), 1),
+                                     tag) - 1)
+                             * TTraits::VALUES_PER_HOST_VALUE;
+
+    // set values on formerly last word, because not affected by above
+    TStringSize trailing_values = TTraits::VALUES_PER_HOST_VALUE - (old_length % TTraits::VALUES_PER_HOST_VALUE);
+    for (TStringSize i = 0; i < trailing_values; ++i)
+        me[old_length + i] = newValue;
+
+    if (_new_length > max_length)
+        _new_length = max_length;
+    front(host(me)).i = _new_length;
+
+    return _new_length;
+}
+
+// --------------------------------------------------------------------------
+// Function insert
+// --------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TPosition, typename TSeq, typename TExpand>
+inline void
+insert(String<TValue, Packed<THostSpec> > & me,
+       TPosition pos,
+       TSeq const & insertSeq,
+       Tag<TExpand>)
+{
+    // NOTE(h-2): something is wrong (probably in ClearSpaceStringPacked_ below)
+    //            which requires us to _clearUnusedBits on inserts()
+    //            [this has a moderate performance penalty]
+    _clearUnusedBits(me);
+    replace(me, pos, pos, insertSeq, Tag<TExpand>());
 }
 
 // --------------------------------------------------------------------------
