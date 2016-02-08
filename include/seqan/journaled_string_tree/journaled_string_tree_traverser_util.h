@@ -1015,7 +1015,10 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
     TNode* basePtr = &impl::activeNode(me);
 
     SEQAN_ASSERT_GEQ(me._contextSize, 1u);
-    impl::moveWindow(me, basePtr, 0, observer, Tag<TProxySelector>());   // We move the traverser to the first position.
+    if (IsSameType<Tag<TProxySelector>, SelectFirstProxy>::VALUE)
+        impl::moveWindow(me, basePtr, 0, observer, Tag<TProxySelector>());   // We move the traverser to the first position.
+    else
+        impl::moveWindow(me, basePtr, me._contextSize - 1, observer, Tag<TProxySelector>());
 }
 
 // ----------------------------------------------------------------------------

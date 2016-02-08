@@ -277,7 +277,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_init)
         SEQAN_ASSERT(test._contPtr == &jst);
         SEQAN_ASSERT(test._branchLength == 5u);
         SEQAN_ASSERT(test._contextSize == 5u);
-        SEQAN_ASSERT(length(*test._stackPtr) == 3u);
+        SEQAN_ASSERT(length(*test._stackPtr) == 2u);
         SEQAN_ASSERT(*(back(*test._stackPtr).curEdgeIt) == 'G');
     }
 
@@ -289,7 +289,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_init)
         SEQAN_ASSERT(test._branchLength == 10u);
         SEQAN_ASSERT(test._contextSize == 10u);
         SEQAN_ASSERT_EQ(length(*test._stackPtr), 4u);
-        SEQAN_ASSERT(*(back(*test._stackPtr).curEdgeIt) == 'C');
+        SEQAN_ASSERT(*(back(*test._stackPtr).curEdgeIt) == 'G');
     }
 }
 
@@ -418,34 +418,20 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_basic_traversal)
 
     typename Traverser<TJst>::Type sub(jst, 1, 1);
     auto observer = makeObserverList();
-    init(sub, observer);
+    init(sub, observer, SelectFirstProxy());
 
     while (!atEnd(sub))
     {
-        unsigned count = 0;
-        for (auto it = begin(back(*sub._stackPtr).coverage); it != end(back(*sub._stackPtr).coverage); ++it, ++count)
-            if (*it)
-                appendValue(testSeqs[count], *(back(*sub._stackPtr).curEdgeIt));
+        auto pos = position(sub);
+        for (auto p : pos)
+            appendValue(testSeqs[p.i1], *(impl::activeNode(sub).curEdgeIt));
 
-//        std::cout << "Current Sequences: " << std::endl;
-//        count = 0;
-//        for (auto seq : testSeqs)
-//        {
-//            std::cout << "seq ";
-//            std::cout.fill('0');
-//            std::cout.width(2);
-//            std::cout << count << ": ";
-//            std::cout << seq << '\n';
-//            ++count;
-//        }
-        advance(sub, 1);
+        advance(sub, 1, SelectFirstProxy());
         
     }
 
     for (unsigned i = 0; i < length(impl::buffer(sub)._journaledSet); ++i)
     {
-        std::cout << testSeqs[i] << std::endl;
-        std::cout << impl::buffer(sub)._journaledSet[i] << std::endl;
         SEQAN_ASSERT_MSG(testSeqs[i] == impl::buffer(sub)._journaledSet[i], "Sequence %d did not match", i);
     }
 }
