@@ -75,6 +75,7 @@ struct Options
     unsigned            libraryDev;
     LibraryOrientation  libraryOrientation;
     TList               libraryOrientationList;
+    bool                verifyMatches;
 
     unsigned            readsCount;
     unsigned            threadsCount;
@@ -101,7 +102,7 @@ struct Options
         libraryLength(),
         libraryDev(),
         libraryOrientation(FWD_REV),
-//        anchorOne(false),
+        verifyMatches(true),
         readsCount(100000),
         threadsCount(1),
         hitsThreshold(300),
@@ -1234,7 +1235,8 @@ inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, All
     clearHits(me);
     aggregateMatches(me, readSeqs);
     rankMatches(me, readSeqs);
-    verifyMatches(me);
+    if (me.options.verifyMatches)
+        verifyMatches(me);
     alignMatches(me);
     writeMatches(me);
     clearMatches(me);
@@ -1292,7 +1294,8 @@ inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, Str
 
     aggregateMatches(me, readSeqs);
     rankMatches(me, readSeqs);
-    verifyMatches(me);
+    if (me.options.verifyMatches)
+        verifyMatches(me);
     alignMatches(me);
     writeMatches(me);
     clearMatches(me);
