@@ -47,59 +47,6 @@
 
 using namespace seqan;
 
-//template <typename TString, typename TRef, typename TDeltaMap>
-//inline void
-//_createJournaledStrings(StringSet<TString> & set,
-//                        TRef const & source,
-//                        TDeltaMap const & map,
-//                        unsigned const dim)
-//{
-//
-//    for (unsigned seqId = 0; seqId < dim; ++seqId)
-//    {
-//        TString seq = source;
-//        auto it = end(map, Standard());
-//        auto itBegin = begin(map, Standard());
-//
-//        while (it != itBegin)
-//        {
-//            --it;
-//            if (!getDeltaCoverage(*it)[seqId])
-//                continue;
-//            switch (getDeltaType(*it))
-//            {
-//                case DELTA_TYPE_SNP:
-//                {
-//                    erase(seq, getDeltaPosition(*it));
-//                    insertValue(seq, getDeltaPosition(*it), deltaValue(it, DeltaTypeSnp()));
-//                    break;
-//                }
-//                case DELTA_TYPE_DEL:
-//                {
-//                    if((*it).deltaTypeEnd != DeltaEndType::IS_RIGHT)
-//                        erase(seq, getDeltaPosition(*it), getDeltaPosition(*it)+ deltaValue(it, DeltaTypeDel()));
-//                    break;
-//                }
-//                case DELTA_TYPE_INS:
-//                {
-//                    insert(seq, getDeltaPosition(*it), deltaValue(it, DeltaTypeIns()));
-//                    break;
-//                }
-//                case DELTA_TYPE_SV:
-//                {
-//                    if((*it).deltaTypeEnd != DeltaEndType::IS_RIGHT)
-//                    {
-//                        erase(seq, getDeltaPosition(*it), getDeltaPosition(*it) + deltaValue(it, DeltaTypeSV()).i1);
-//                        insert(seq, getDeltaPosition(*it), deltaValue(it, DeltaTypeSV()).i2);
-//                    }
-//                    break;
-//                }
-//            }
-//        }
-//        appendValue(set, seq);
-//    }
-//}
-
 SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_constructor)
 {
     typedef JournaledStringTree<DnaString> TJst;
