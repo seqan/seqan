@@ -27,7 +27,9 @@ String<int> computeScore(String<char> text, String<char> pattern)
     return score;
 }
 
+//![head]
 void print(String<int> text)
+//![head]
 {
     for (unsigned i = 0; i < length(text); ++i)
         std::cout << text[i] << " ";

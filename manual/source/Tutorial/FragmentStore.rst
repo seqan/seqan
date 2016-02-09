@@ -226,10 +226,8 @@ Traversing the Annotation Tree
 The annotation tree can be traversed and accessed with the :dox:`AnnotationTreeIterator AnnotationTree Iterator`.
 A new iterator can be created with :dox:`ContainerConcept#begin` given a reference to the :dox:`FragmentStore` and the tag ``AnnotationTree``:
 
-.. code-block:: cpp
-
-   Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
-   it = begin(store, AnnotationTree<>());
+.. includefrags:: demos/tutorial/fragment_store/base.cpp
+      :fragment: iterator
 
 It starts at the root node and can be moved to adjacent tree nodes with the functions :dox:`AnnotationTreeIterator#goDown`, :dox:`AnnotationTreeIterator#goUp`, and :dox:`AnnotationTreeIterator#goRight`.
 These functions return a boolean value that indicates whether the iterator could be moved.

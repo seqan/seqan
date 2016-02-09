@@ -162,32 +162,8 @@ The class :dox:`VcfRecord` stores one record in a VCF file.
 It is best explained by its definition.
 Note how most fields are represented by :dox:`CharString Strings`:
 
-.. code-block:: cpp
-
-   namespace seqan {
-
-   class VcfRecord
-   {
-   public:
-       int32_t rID;                          // CHROM
-       int32_t beginPos;                     // POS
-       CharString id;                        // ID
-       CharString ref;                       // REF
-       CharString alt;                       // ALT
-       float qual;                           // QUAL
-       CharString filter;                    // FILTER
-       CharString info;                      // INFO
-       CharString format;                    // FORMAT
-       StringSet<CharString> genotypeInfos;  // <individual1> <individual2> ..
-
-       // Constants for marking reference id and position as invalid.
-       static const int32_t INVALID_REFID = -1;
-       static const int32_t INVALID_POS = -1;
-       // This function returns the float value for "invalid quality".
-       static float MISSING_QUAL();
-   };
-
-   }  // namespace seqan
+.. includefrags:: demos/tutorial/vcf_io/base.cpp
+      :fragment: vcfRecord
 
 The static members ``INVALID_POS``, ``INVALID_REFID`` store sentinel values for marking positions and reference sequence ids as invalid.
 The static funtion ``MISSING_QUAL()`` returns the IEEE float "NaN" value.
@@ -221,10 +197,7 @@ Assignment 2
 
         The output is
 
-        .. code-block:: console
-
-           VARIANTS ON CONTIGS
-           20  5
+        .. includefrags:: demos/tutorial/vcf_io/solution2.cpp.stdout
 
 Creating a New File
 -------------------

@@ -19,8 +19,8 @@ Tutorial
    :maxdepth: 2
 
    Tutorial/GettingStarted
-   Tutorial/AFirstExample
    Tutorial/BackgroundAndMotivation
+   Tutorial/AFirstExample
 
    Tutorial/Sequences
    Tutorial/Alphabets
@@ -90,12 +90,13 @@ You should then definitely start your engines and read the :ref:`tutorial-first-
   This tutorial will walk you through the installation of SeqAn and its dependencies.
   Then, you will create your first minimal SeqAn application!
 
+:ref:`tutorial-background-and-motivation`
+  This tutorial gives an overview over the design aims and principles of SeqAn and a motivation for the employed mechanisms.
+
 :ref:`tutorial-first-steps-in-seqan`
   This tutorial gives practical examples and applications of the most important basic techniques.
   You should read this tutorial if you are starting out with SeqAn.
 
-:ref:`tutorial-background-and-motivation`
-  This tutorial gives an overview over the design aims and principles of SeqAn and a motivation for the employed mechanisms.
 
 We highly recommend you to follow the Getting Started instructions if you are starting out with SeqAn.
 Note that it is also possible to use SeqAn strictly as a library with your own build system.

@@ -136,36 +136,8 @@ Note that there are various specializations, each storing a different number of 
 We show the quasi-definition of :dox:`BedRecord` below.
 The other specializations have less fields.
 
-.. code-block:: cpp
-
-   namespace seqan {
-
-   class BedRecord
-   {
-   public:
-       CharString ref;      // reference name
-       int32_t rID;         // index in sequenceNames of BedFile
-       int32_t beginPos;    // begin position of the interval
-       int32_t endPos;      // end position of the interval
-       CharString name;     // name of the interval
-       CharString score;    // score of the interval
-       char strand;         // strand of the interval
-
-       int32_t thickBegin;  // begin position for drawing thickly
-       int32_t thickEnd;    // end position for drawing thickly
-       BedRgb itemRgb;      // color for the item
-       int32_t blockCount;  // number of blocks/exons
-       String<int32_t> blockSizes;   // block sizes
-       String<int32_t> blockBegins;  // block begin positions
-
-       CharString data;    // any data not fitting into other members
-
-       // Constants for marking reference id and position as invalid.
-       static const int32_t INVALID_REFID = -1;
-       static const int32_t INVALID_POS = -1;
-   };
-
-    }  // namespace seqan
+.. includefrags:: demos/tutorial/bed_io/base.cpp
+      :fragment: bedRecord
 
 The static members ``INVALID_POS``, ``INVALID_REFID`` store sentinel values for marking positions and reference sequence ids as invalid.
 
@@ -189,10 +161,7 @@ Assignment 2
 
         The output is
 
-        .. code-block:: console
-
-           RECORDS ON CONTIGS
-           chr1    5
+        .. includefrags:: demos/tutorial/bed_io/solution2.cpp.stdout
 
 Creating a New File
 -------------------
@@ -211,11 +180,7 @@ Assignment 3
      Write a program that prints the following BED file.
      Create ``BedRecord<Bed6>`` objects and write them to a ``BedFileOut`` using ``writeRecord()``.
 
-     .. code-block:: console
-
-        chr7    127471196   127472363   Pos1    0   +
-        chr7    127472363   127473530   Pos2    0   +
-
+     .. includefrags:: demos/tutorial/bed_io/solution3.cpp.stdout
 
    Solution
     .. container:: foldable

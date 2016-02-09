@@ -22,7 +22,7 @@ int main()
                           endPositionV(seed)) << "\n";
 
     // Perform match extension.
-    extendSeed(seed, seqH, seqV, EXTEND_LEFT, MatchExtend());
+    extendSeed(seed, seqH, seqV, EXTEND_BOTH, MatchExtend());
     // Print the resulting seed.
     std::cout << "result\n"
               << "seedH: " << infix(seqH, beginPositionH(seed),

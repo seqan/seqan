@@ -1,0 +1,9 @@
+//![main]
+Dependent: 
+Pos 0: CGCG
+Id 0:  TATA
+//![main]
+//![difference]
+Position 0: Id 1
+Position 1: Id 0
+//![difference]

@@ -1,3 +1,4 @@
+//![main-graph-construction]
 Adjacency list:
 0 -> 4,
 1 -> 0,
@@ -23,7 +24,11 @@ Source: 7,Target: 7 (Id: 13)
 Source: 7,Target: 6 (Id: 12)
 Source: 7,Target: 3 (Id: 8)
 
+//![main-graph-construction]
+//![iterate-dfs]
 Iterate from 'a' in depth-first-search ordering: a, e, b, 
+//![iterate-dfs]
+//![output-connected-components]
 Strongly Connected Components: 
 Vertex a: Component = 3
 Vertex b: Component = 3
@@ -33,3 +38,4 @@ Vertex e: Component = 3
 Vertex f: Component = 1
 Vertex g: Component = 1
 Vertex h: Component = 0
+//![output-connected-components]

@@ -63,20 +63,16 @@ The result is:
 .. includefrags:: demos/tutorial/modifiers/modreverse.cpp
    :fragment: output1
 
-.. code-block:: console
-
-    A man, a plan, a canal-Panama
-    amanaP-lanac a ,nalp a ,nam A
+.. includefrags:: demos/tutorial/modifiers/modreverse.cpp.stdout
+   :fragment: output1
 
 To verify that we didn't copy ``myString``, we replace an infix of the original string and see that, as a side effect, the modified string has also changed:
 
 .. includefrags:: demos/tutorial/modifiers/modreverse.cpp
    :fragment: output2
 
-.. code-block:: console
-
-    A man, a master plan, a canal-Panama
-    amanaP-lanac a ,nalp retsam a ,nam A
+.. includefrags:: demos/tutorial/modifiers/modreverse.cpp.stdout
+   :fragment: output2
 
 ModView
 ^^^^^^^
@@ -85,34 +81,20 @@ Another specialization of the :dox:`ModifiedString` is the :dox:`ModViewModified
 Assume we need all characters of ``myString`` to be in upper case without copying ``myString``.
 In SeqAn you first create a functor (a STL unary function) which converts a character to its upper-case character.
 
-.. code-block:: cpp
-
-   struct MyFunctor : public std::unary_function<char,char>
-   {
-       inline char operator()(char x) const
-       {
-	   if (('a' <= x) && (x <= 'z')) return (x + ('A' - 'a'));
-	   return x;
-       }
-   };
+.. includefrags:: demos/tutorial/modifiers/modview.cpp
+   :fragment: functor
 
 and then create a :dox:`ModifiedString` specialized with ``ModView<MyFunctor>``:
 
-.. code-block:: cpp
-
-   ModifiedString< String<char>, ModView<MyFunctor> > myModifier(myString);
+.. includefrags:: demos/tutorial/modifiers/modview.cpp
+   :fragment: mod_str
 
 The result is:
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/modifiers/modview.cpp
+   :fragment: output
 
-   std::cout << myString << '\n';
-   std::cout << myModifier << '\n';
-
-.. code-block:: console
-
-    A man, a plan, a canal-Panama
-    A MAN, A PLAN, A CANAL-PANAMA
+.. includefrags:: demos/tutorial/modifiers/modview.cpp.stdout
 
 The upper-case functor and some other predefined functors are part of SeqAn (in ``seqan/modifier/modifier_functors.h``) already.
 The following functors can be used as an argument of :dox:`ModViewModifiedString`:
@@ -134,9 +116,8 @@ The following functors can be used as an argument of :dox:`ModViewModifiedString
 
 So instead of defining your own functor we could have used a predefined one:
 
-.. code-block:: cpp
-
-   ModifiedString< String<char>, ModView<FunctorUpcase<char> > > myModifier(myString);
+.. includefrags:: demos/tutorial/modifiers/modview.cpp
+   :fragment: predefined
 
 Assignment 1
 """"""""""""
@@ -164,12 +145,7 @@ Assignment 1
 
          .. includefrags:: demos/tutorial/modifiers/assignment1_solution.cpp
 
-         .. code-block:: console
-
-	    CCCGGCATCATCC
-	    CTTGGCATTATTC
-	    TTTGGTATTATTT
-	    TTTGGTATTATTT
+         .. includefrags:: demos/tutorial/modifiers/assignment1_solution.cpp.stdout
 
 ^^^^^^^^^
 
@@ -212,51 +188,34 @@ As modifiers implement a certain concept and depend on classes of this concept, 
 We have seen how the :dox:`ModifiedString` specialized with :dox:`ModReverseString` and :dox:`ModViewModifiedString` can be used.
 Now we want to combine them to create a modifier for the reverse complement of a :dox:`DnaString` We begin with the original string:
 
-.. code-block:: cpp
-
-   String<Dna> myString = "attacgg";
+.. includefrags:: demos/tutorial/modifiers/nested.cpp
+   :fragment: string
 
 Then we define the modifier that complements a :dox:`DnaString`:
 
-.. code-block:: cpp
-
-   typedef ModifiedString<String<Dna>, ModComplementDna>   TMyComplement;
+.. includefrags:: demos/tutorial/modifiers/nested.cpp
+   :fragment: complement
 
 This modifier now should be reversed from left to right:
 
-.. code-block:: cpp
-
-   typedef ModifiedString<TMyComplement, ModReverse>       TMyReverseComplement;
+.. includefrags:: demos/tutorial/modifiers/nested.cpp
+   :fragment: reverse
 
 The original string can be given to the constructor.
 
-.. code-block:: cpp
-
-   TMyReverseComplement myReverseComplement(myString);
+.. includefrags:: demos/tutorial/modifiers/nested.cpp
+   :fragment: constructor
 
 The result is:
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/modifiers/nested.cpp
+   :fragment: output
 
-   std::cout << myString << '\n';
-   std::cout << myReverseComplement << '\n';
+.. includefrags:: demos/tutorial/modifiers/nested.cpp.stdout
+    :fragment: output
 
-   infix(myString, 1, 1) = "cgt";
-
-   std::cout << myString << '\n';
-   std::cout << myReverseComplement << '\n';
-
-.. code-block:: console
-
-   ATTACGG
-   CCGTAAT
-   ACGTTTACGG
-   CCGTAAACGT
 
 Using a predefined shortcut, the whole example could be reduced to:
 
-.. code-block:: cpp
-
-    String<Dna> myString = "attacgg";
-    std::cout << myString << std::endl;
-    std::cout << DnaStringReverseComplement(myString) << std::endl;
+.. includefrags:: demos/tutorial/modifiers/nested.cpp
+   :fragment: alternative

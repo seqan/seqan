@@ -33,11 +33,8 @@ This way, it is possible to build up index data structures for multiple sequence
 There are two kinds of :dox:`StringSet` specializations in SeqAn: :dox:`OwnerStringSet Owner StringSet`, the default specialisation, and :dox:`DependentStringSet Dependent StringSet`; see the list below for details.
 :dox:`OwnerStringSet Owner StringSets` actually store the sequences, whereas :dox:`DependentStringSet Dependent StringSets` just refer to sequences that are stored outside of the string set.
 
-.. code-block:: cpp
-
-   StringSet<DnaString>               ownerSet;
-   StringSet<DnaString, Owner<> >     ownerSet2;      // same as above
-   StringSet<DnaString, Dependent<> > dependentSet;
+.. includefrags:: demos/tutorial/string_sets/base.cpp
+      :fragment: example_sets
 
 The specialization :dox:`ConcatDirectStringSet ConcatDirecet StringSet` already stores the sequences in a concatenation.
 The concatenators for all other specializations of :dox:`StringSet` are **virtual** sequences, that means their interface **simulates** a concatenation of the sequences, but they do not literally concatenate the sequences into a single sequence.
@@ -74,13 +71,9 @@ Building String Sets
 
 Use the function :dox:`StringConcept#appendValue` to append strings to string sets.
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/string_sets/example_functionality.cpp
+      :fragment: appendValue
 
-   StringSet<DnaString> stringSet;
-   DnaString str0 = "TATA";
-   DnaString str1 = "CGCG";
-   appendValue(stringSet, str0);
-   appendValue(stringSet, str1);
 
 Functionality
 ~~~~~~~~~~~~~
@@ -90,63 +83,29 @@ This section will give you a short overview of the functionality of the class :d
 There are two ways for accessing the sequences in a string set: (1) the function :dox:`RandomAccessContainerConcept#value` returns a reference to the sequence at a specific *position* within the sequence of sequences, and (2) :dox:`StringSet#valueById` accesses a sequence given its *id*.
 We can retrieve the *id* of a sequence in a :dox:`StringSet` with the function :dox:`StringSet#positionToId`.
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/string_sets/example_functionality.cpp
+      :fragment: retrieve_id
 
-   // (1) Access by position
-   std::cout << "Owner: " << '\n';
-   std::cout << "Position 0: " << value(stringSet, 0) << '\n';
-
-   // Get the corresponding ids
-   unsigned id0 = positionToId(stringSet, 0);
-   unsigned id1 = positionToId(stringSet, 1);
-
-   // (2) Access by id
-   std::cout << "Id 0:  " << valueById(stringSet, id0) << '\n';
-
-.. code-block:: console
-
-   Owner:
-   Position 0: TATA
-   Id       0: TATA
+.. includefrags:: demos/tutorial/string_sets/example_functionality.cpp.stdout
 
 In the case of :dox:`OwnerStringSet Owner StringSets`, id and position of a string are always the same, but for :dox:`DependentStringSet Dependent StringSets`, the ids can differ from the positions.
 For example, if a :dox:`DependentStringSet Dependent StringSet` is used to represent subsets of strings that are stored in :dox:`OwnerStringSet Owner StringSets`, one can use the position of the string within the :dox:`OwnerStringSet Owner StringSet` as id of the strings.
 With the function :dox:`StringSet#assignValueById`, we can add the string with a given id from the source string set to the target string set.
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/string_sets/example_functionality_2.cpp
+      :fragment: main
 
-   // Let's create a string set of type dependent to represent strings,
-   // which are stored in the StringSet of type Owner
-   StringSet<DnaString, Dependent<Tight> > depSet;
-   // We assign the first two strings of the owner string set to the dependent StringSet,
-   // but in a reverse order
-   assignValueById(depSet, stringSet, id1);
-   assignValueById(depSet, stringSet, id0);
-
-   std::cout << "Dependent: " << '\n';
-   // (1) Access by position
-   std::cout << "Pos 0: " << value(depSet, 0) << '\n';
-   // (2) Access by id
-   std::cout << "Id 0:  " << valueById(depSet, id0) << '\n';
-
-.. code-block:: console
-
-   Dependent:
-   Position 0: CGCG
-   Id       0: TATA
+.. includefrags:: demos/tutorial/string_sets/example_functionality_2.cpp.stdout
+      :fragment: main
 
 With the function :dox:`StringSet#positionToId` we can show that, in this case, the position and the id of a string are different.
 
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/string_sets/example_functionality_2.cpp
+      :fragment: difference
 
-   std::cout << "Position 0: Id " << positionToId(depSet, 0) << '\n';
-   std::cout << "Position 1: Id " << positionToId(depSet, 1) << '\n';
-
-.. code-block:: console
-
-   Position 0: Id 1
-   Position 1: Id 0
+.. includefrags:: demos/tutorial/string_sets/example_functionality_2.cpp.stdout
+      :fragment: difference
 
 Iterating over String Sets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,39 +114,21 @@ As well as for other containers, SeqAn has implemented iterators for :dox:`Strin
 The generall usage of iterators is described in the tutorial :ref:`tutorial-iterators`.
 The following example illustrates, how to iterate over the :dox:`StringSet`.
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/string_sets/example_iterators.cpp
+      :fragment: simple_example
 
-   typedef Iterator<StringSet<DnaString> >::Type TStringSetIterator;
-   for (TStringSetIterator it = begin(stringSet); it != end(stringSet); ++it)
-   {
-       std::cout << *it << '\n';
-   }
-
-.. code-block:: console
-
-   TATA
-   CGCG
+.. includefrags:: demos/tutorial/string_sets/example_iterators.cpp.stdout
+      :fragment: simple_example
 
 If we want to iterate over the contained :dox:`String Strings` as well, as if the :dox:`StringSet` would be one sequence, we can use the function :dox:`StringSet#concat` to get the concatenation of all sequences.
 Therefore we first use the metafunction :dox:`StringSet#Concatenator` to receive the type of the concatenation.
 Then, we can simply build an iterator for this type and iterate over the concatenation of all strings.
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/string_sets/example_iterators.cpp
+      :fragment: concatenator
 
-    typedef Concatenator<StringSet<DnaString> >::Type TConcat;
-    TConcat concatSet = concat(stringSet);
-
-    Iterator<TConcat>::Type it = begin(concatSet);
-    Iterator<TConcat>::Type itEnd = end(concatSet);
-    for (; it != itEnd; goNext(it))
-    {
-        std::cout << getValue(it) << " ";
-    }
-    std::cout << '\n';
-
-.. code-block:: console
-
-   T A T A C G C G
+.. includefrags:: demos/tutorial/string_sets/example_iterators.cpp.stdout
+      :fragment: concatenator
 
 Assignment 1
 ^^^^^^^^^^^^
@@ -226,28 +167,7 @@ Assignment 2
       #. Write a function ``isElement`` which takes a ``StringSet<Dependent<> >`` and a ``Id`` as arguments and checks whether a string set contains a string with a given id.
       #. Check if the string set contains the string of position ``3`` and ``2`` and print the result.
 
-      .. code-block:: cpp
-
-         #include <iostream>
-         #include <seqan/sequence.h>
-         #include <seqan/file.h>
-
-         using namespace seqan;
-
-
-         int main()
-         {
-             // Build strings
-             DnaString str0 = "TATA";
-             DnaString str1 = "CGCG";
-             DnaString str2 = "TTAAGGCC";
-             DnaString str3 = "ATGC";
-             DnaString str4 = "AGTGTCA";
-
-             // Your code
-
-             return 0;
-         }
+      .. includefrags:: demos/tutorial/string_sets/assignment_2.cpp
 
    Hints
      You can use the SeqAn functions :dox:`StringSet#positionToId` and :dox:`StringSet#assignValueById`.
