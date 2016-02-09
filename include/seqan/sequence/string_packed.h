@@ -37,6 +37,8 @@
 #ifndef SEQAN_SEQUENCE_STRING_PACKED_H_
 #define SEQAN_SEQUENCE_STRING_PACKED_H_
 
+#include <bitset>
+
 namespace seqan {
 
 // ============================================================================
@@ -583,14 +585,10 @@ resize(
         clear(host(me));
         return 0;
     }
-
-    TStringSize _new_length = new_length;
-    TStringSize max_length = (resize(host(me), TTraits::toHostLength(_new_length) + 1, tag) - 1) * TTraits::VALUES_PER_HOST_VALUE;
-    if (_new_length > max_length)
-        _new_length = max_length;
-    front(host(me)).i = _new_length;
-
-    return _new_length;
+    TStringSize max_length = (resize(host(me), TTraits::toHostLength(new_length) + 1, tag) - 1) * TTraits::VALUES_PER_HOST_VALUE;
+    if ((TStringSize)new_length > max_length)
+        new_length = max_length;
+    return front(host(me)).i = new_length;
 }
 
 template <typename TValue, typename THostspec, typename TSize, typename TExpand, typename TValue2>
@@ -603,36 +601,46 @@ resize(String<TValue, Packed<THostspec> > & me,
     typedef String<TValue, Packed<THostspec> > TString;
     typedef PackedTraits_<TString> TTraits;
     typedef typename Size<TString>::Type TStringSize;
+    typedef typename TTraits::THostValue THostValue;
 
-    TStringSize _new_length = new_length;
     TStringSize old_length = length(me);
+    TStringSize old_host_length = length(host(me));
 
-    if (_new_length < length(me))
-        return resize(me, _new_length, tag);
+    if (static_cast<TStringSize>(new_length) < length(me))
+        return resize(me, new_length, tag);
 
     // create WORD
-    String<TValue, Packed<THostspec> > tmp;
-    resize(tmp, static_cast<unsigned>(TTraits::VALUES_PER_HOST_VALUE), Exact());
-    for (unsigned i = 0; i < TTraits::VALUES_PER_HOST_VALUE; ++i)
-        tmp[i] = newValue;
+    THostValue tmp;
+    tmp.i = 0ul;
+    __uint64 ord = ordValue(TValue(newValue));
+    for (unsigned j = 0; j < TTraits::VALUES_PER_HOST_VALUE; ++j)
+        tmp.i |= ord << (j * TTraits::BITS_PER_VALUE);
 
     // fill up host string word-wise
     TStringSize max_length = (resize(host(me),
-                                     TTraits::toHostLength(_new_length) + 1,
-                                     getValue(host(tmp), 1),
+                                     TTraits::toHostLength(new_length) + 1,
+                                     tmp,
                                      tag) - 1)
                              * TTraits::VALUES_PER_HOST_VALUE;
 
     // set values on formerly last word, because not affected by above
-    TStringSize trailing_values = TTraits::VALUES_PER_HOST_VALUE - (old_length % TTraits::VALUES_PER_HOST_VALUE);
-    for (TStringSize i = 0; i < trailing_values; ++i)
-        me[old_length + i] = newValue;
+    if (old_host_length > 1)
+    {
+        TStringSize alreadySet = old_length % TTraits::VALUES_PER_HOST_VALUE;
 
-    if (_new_length > max_length)
-        _new_length = max_length;
-    front(host(me)).i = _new_length;
+        // clear non-set positions (which may be uninitialized ( != 0 )
+        tmp.i = (~0ul << (64 - alreadySet * TTraits::BITS_PER_VALUE)) >> TTraits::WASTED_BITS;
+        host(me)[old_host_length-1].i &= tmp.i;
 
-    return _new_length;
+        for (TStringSize i = alreadySet; i < TTraits::VALUES_PER_HOST_VALUE; ++i)
+            host(me)[old_host_length-1].i |=  ord << ((TTraits::VALUES_PER_HOST_VALUE - i - 1) * TTraits::BITS_PER_VALUE);
+    }
+
+    if (static_cast<TStringSize>(new_length) > max_length)
+        new_length = max_length;
+    front(host(me)).i = new_length;
+
+    return new_length;
 }
 
 // --------------------------------------------------------------------------
