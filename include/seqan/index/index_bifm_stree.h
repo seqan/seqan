@@ -39,11 +39,6 @@
 
 namespace seqan {
 
-struct BidirectionalFwd_;
-struct BidirectionalRev_;
-typedef Tag<BidirectionalFwd_> const         Fwd;
-typedef Tag<BidirectionalRev_> const         Rev;
-
 // ============================================================================
 // Functions
 // ============================================================================
