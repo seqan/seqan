@@ -37,8 +37,6 @@
 #ifndef SEQAN_SEQUENCE_STRING_PACKED_H_
 #define SEQAN_SEQUENCE_STRING_PACKED_H_
 
-#include <bitset>
-
 namespace seqan {
 
 // ============================================================================
