@@ -112,7 +112,6 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_host)
     }
 }
 
-
 SEQAN_DEFINE_TEST(test_journaled_string_tree_set_host)
 {
     Dna5String seq = "CGTATAGGANNAGAT";
@@ -139,7 +138,6 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_insert)
     cov[3] = true;
     cov[9] = true;
     cov[99] = true;
-
 
     insert(jst, 5, 'C', ids, DeltaTypeSnp());
     insert(jst, 2, 3, ids, DeltaTypeDel());
@@ -248,7 +246,6 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_resize)
         }
     }
 }
-
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_empty)
 {

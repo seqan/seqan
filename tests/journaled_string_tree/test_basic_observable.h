@@ -138,5 +138,4 @@ SEQAN_DEFINE_TEST(test_basic_observable_make_observer_list)
     SEQAN_ASSERT(std::get<2>(list).i == 5);
 }
 
-
 #endif // TESTS_JOURNALED_STRING_TREE_TEST_BASIC_OBSERVABLE_H_

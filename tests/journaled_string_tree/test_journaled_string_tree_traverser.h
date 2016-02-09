@@ -315,7 +315,6 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_branch_size)
     SEQAN_ASSERT_EQ(test._needInitialization, true);
 }
 
-
 SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_basic_traversal)
 {
     typedef JournaledStringTree<DnaString> TJst;
