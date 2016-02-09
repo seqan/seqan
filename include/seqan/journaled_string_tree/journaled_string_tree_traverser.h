@@ -107,16 +107,20 @@ public:
 
     // Copy c'tor.
     template <typename TOtherJst>
-    TraverserImpl(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec> > const & other,
-                  SEQAN_CTOR_ENABLE_IF(IsConstructible<TJst, TOtherJst>)) :
-        _contPtr(other._contPtr),
-        _branchLength(other._historySize),
-        _contextSize(other._contextSize),
-        _stackPtr(other._stackPtr),
-        _bufferPtr(other._bufferPtr),
-        _baseCov(other._baseCov),
-        _needInitialization(other._needInitialization)
+    TraverserImpl(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec> > other,
+                  SEQAN_CTOR_ENABLE_IF(IsConstructible<TJst, TOtherJst>))
     {
+        impl::swap(*this, other);
+        ignoreUnusedVariableWarning(dummy);
+    }
+
+    // Move c'tor.
+    template <typename TOtherJst>
+    TraverserImpl(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec> > && other,
+                  SEQAN_CTOR_ENABLE_IF(IsConstructible<TJst, TOtherJst>)) :
+        TraverserImpl()  // Initialize via default construciton.
+    {
+        impl::swap(*this, other);
         ignoreUnusedVariableWarning(dummy);
     }
 
@@ -124,20 +128,14 @@ public:
 
     template <typename TOtherJst>
     inline SEQAN_FUNC_ENABLE_IF(IsConstructible<TJst, TOtherJst>, TraverserImpl &)
-    operator=(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec> > const & other)
+    operator=(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec> > other)
     {
-        if (*this != &other)
-        {
-            _contPtr = other._contPtr;
-            _branchLength =other._historySize;
-            _contextSize = other._contextSize;
-            _stackPtr = other._stackPtr;
-            _bufferPtr = other._bufferPtr;
-            _baseCov = other._baseCov;
-            _needInitialization = other._needInitialization;
-        }
+        impl::swap(*this, other);
         return *this;
     }
+
+    // Destructor
+    ~TraverserImpl() = default;
 };
 
 // ============================================================================
@@ -468,7 +466,7 @@ template <typename TJst, typename TSpec,
           typename TProxySelector>
 inline void
 advance(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
-        TSize stepSize,
+        TSize const stepSize,
         Tag<TProxySelector> const & /*tag*/)
 {
     auto observer = makeObserverList();
@@ -480,7 +478,7 @@ template <typename TJst, typename TSpec,
           typename TObserver>
 inline void
 advance(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
-        TSize stepSize,
+        TSize const stepSize,
         TObserver & observer)
 {
     advance(me, stepSize, observer, SelectValidProxy());
@@ -490,7 +488,7 @@ template <typename TJst, typename TSpec,
           typename TSize>
 inline void
 advance(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
-        TSize stepSize)
+        TSize const stepSize)
 {
     auto observer = makeObserverList();
     advance(me, stepSize, observer, SelectValidProxy());

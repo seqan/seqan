@@ -132,7 +132,7 @@ namespace impl
 template <typename TNeedle, typename TIterator>
 inline std::pair<size_t, bool>
 runLongNeedle(JstExtension<Pattern<TNeedle, ShiftAnd> > & me,
-              TIterator hystkIt)
+              TIterator const hystkIt)
 {
     using TExt   = JstExtension<Pattern<TNeedle, ShiftAnd> >;
     using TWord  = typename TExt::TWord;
@@ -156,12 +156,10 @@ runLongNeedle(JstExtension<Pattern<TNeedle, ShiftAnd> > & me,
 template <typename TNeedle, typename TIterator>
 inline std::pair<size_t, bool>
 runShortNeedle(JstExtension<Pattern<TNeedle, ShiftAnd> > & me,
-               TIterator hystkIt)
+               TIterator const hystkIt)
 {
     using TWord = typename Pattern<TNeedle, ShiftAnd>::TWord;
     using TValue = typename Value<TNeedle>::Type;
-
-//    std::cout <<"     " << getValue(hystkIt)<< std::endl;
 
     state(me).prefSufMatch[0] = ((state(me).prefSufMatch[0] << 1) | static_cast<TWord>(1)) &
                                 me._pattern.bitMasks[ordValue(convert<TValue>(getValue(hystkIt)))];

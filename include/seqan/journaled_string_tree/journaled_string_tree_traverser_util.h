@@ -935,6 +935,25 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
 }
 
 // ----------------------------------------------------------------------------
+// Function impl::swap()
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec,
+          typename TOtherJst>
+inline void
+swap(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
+     TraverserImpl<TOtherJst, JstTraversalSpec<TSpec> > & other)
+{
+    std::swap(me._contPtr, other._contPtr);
+    std::swap(me._branchLength, other._branchLength);
+    std::swap(me._contextSize, other._contextSize);
+    std::swap(me._stackPtr, other._stackPtr);
+    std::swap(me._bufferPtr, other._bufferPtr);
+    swap(me._baseCov, other._baseCov);
+    std::swap(me._needInitialization, other._needInitialization);
+}
+
+// ----------------------------------------------------------------------------
 // Function impl::positionReference();
 // ----------------------------------------------------------------------------
 

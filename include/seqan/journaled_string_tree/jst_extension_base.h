@@ -268,10 +268,10 @@ template <typename TContainer, typename TSpec,
           typename TDelegate,
           typename TObserver>
 inline void
-_find(TraverserImpl<TContainer, JstTraversalSpec<TSpec> > & traverser,
-      TAlgorithm & algorithm,
-      TDelegate && delegate,
-      TObserver & observer)
+find(TraverserImpl<TContainer, JstTraversalSpec<TSpec> > & traverser,
+     TAlgorithm & algorithm,
+     TDelegate && delegate,
+     TObserver & observer)
 {
     using TProxySelector = typename ProxySelectionMethod<TAlgorithm>::Type;
     init(traverser, observer, TProxySelector());
@@ -282,7 +282,6 @@ _find(TraverserImpl<TContainer, JstTraversalSpec<TSpec> > & traverser,
         _fillTestSet(traverser);
 #endif
         auto steps = run(algorithm, traverser, delegate);
-
         advance(traverser, steps, observer, TProxySelector());
     }
 }
@@ -299,12 +298,12 @@ find(TraverserImpl<TContainer, JstTraversalSpec<TSpec> > & traverser,
     {
         StackObserver<TAlgorithm> algoObserver(algorithm);
         auto observer = makeObserverList(algoObserver);
-        _find(traverser, algorithm, delegate, observer);
+        find(traverser, algorithm, delegate, observer);
     }
     else
     {  // Disabled observer.
         auto observer = makeObserverList();
-        _find(traverser, algorithm, delegate, observer);
+        find(traverser, algorithm, delegate, observer);
     }
 }
 

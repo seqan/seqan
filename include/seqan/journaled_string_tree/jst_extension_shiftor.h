@@ -132,7 +132,7 @@ namespace impl
 template <typename TNeedle, typename TIterator>
 inline std::pair<size_t, bool>
 runLongNeedle(JstExtension<Pattern<TNeedle, ShiftOr> > & me,
-              TIterator hystkIt)
+              TIterator const hystkIt)
 {
     using TWord = typename Pattern<TNeedle, ShiftOr>::TWord;
     using TValue = typename Value<TNeedle>::Type;
@@ -156,7 +156,7 @@ runLongNeedle(JstExtension<Pattern<TNeedle, ShiftOr> > & me,
 template <typename TNeedle, typename TIterator>
 inline std::pair<size_t, bool>
 runShortNeedle(JstExtension<Pattern<TNeedle, ShiftOr> > & me,
-               TIterator hystkIt)
+               TIterator const hystkIt)
 {
     using TValue = typename Value<TNeedle>::Type;
     state(me).prefSufMatch[0] = (state(me).prefSufMatch[0] << 1) |

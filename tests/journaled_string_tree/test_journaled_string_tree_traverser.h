@@ -95,7 +95,67 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_constructor)
     }
 
     {  // Copy C'tor
+        TJst jst = JstMockGenerator::_createSimpleJst<TJst>();
 
+        TTraverser traverser(jst, 2, 5);
+        TTraverser travCopy(traverser);
+
+        SEQAN_ASSERT(travCopy._contPtr == &jst);
+        SEQAN_ASSERT(travCopy._branchLength == 5u);
+        SEQAN_ASSERT(travCopy._contextSize == 2u);
+        SEQAN_ASSERT(travCopy._stackPtr.get() != nullptr);
+        SEQAN_ASSERT(empty(*travCopy._stackPtr) == true);
+
+        SEQAN_ASSERT(traverser._contPtr == &jst);
+        SEQAN_ASSERT(traverser._branchLength == 5u);
+        SEQAN_ASSERT(traverser._contextSize == 2u);
+        SEQAN_ASSERT(traverser._stackPtr.get() != nullptr);
+        SEQAN_ASSERT(empty(*traverser._stackPtr) == true);
+    }
+
+    { // Move C'tor
+        TJst jst = JstMockGenerator::_createSimpleJst<TJst>();
+
+        TTraverser travMove(TTraverser(jst, 2, 5));
+
+        SEQAN_ASSERT(travMove._contPtr == &jst);
+        SEQAN_ASSERT(travMove._branchLength == 5u);
+        SEQAN_ASSERT(travMove._contextSize == 2u);
+        SEQAN_ASSERT(travMove._stackPtr.get() != nullptr);
+        SEQAN_ASSERT(empty(*travMove._stackPtr) == true);
+    }
+
+    { // Copy Assignment
+        TJst jst = JstMockGenerator::_createSimpleJst<TJst>();
+
+        TTraverser traverser(jst, 2, 5);
+        TTraverser travCopy;
+        travCopy = traverser;
+
+        SEQAN_ASSERT(travCopy._contPtr == &jst);
+        SEQAN_ASSERT(travCopy._branchLength == 5u);
+        SEQAN_ASSERT(travCopy._contextSize == 2u);
+        SEQAN_ASSERT(travCopy._stackPtr.get() != nullptr);
+        SEQAN_ASSERT(empty(*travCopy._stackPtr) == true);
+
+        SEQAN_ASSERT(traverser._contPtr == &jst);
+        SEQAN_ASSERT(traverser._branchLength == 5u);
+        SEQAN_ASSERT(traverser._contextSize == 2u);
+        SEQAN_ASSERT(traverser._stackPtr.get() != nullptr);
+        SEQAN_ASSERT(empty(*traverser._stackPtr) == true);
+    }
+
+    { // Move Assignment
+        TJst jst = JstMockGenerator::_createSimpleJst<TJst>();
+
+        TTraverser travMove;
+        travMove = TTraverser(jst, 2, 5);
+
+        SEQAN_ASSERT(travMove._contPtr == &jst);
+        SEQAN_ASSERT(travMove._branchLength == 5u);
+        SEQAN_ASSERT(travMove._contextSize == 2u);
+        SEQAN_ASSERT(travMove._stackPtr.get() != nullptr);
+        SEQAN_ASSERT(empty(*travMove._stackPtr) == true);
     }
 }
 

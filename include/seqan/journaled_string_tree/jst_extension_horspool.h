@@ -86,9 +86,6 @@ run(JstExtension<Pattern<TNeedle, Horspool> > const & me,
     SEQAN_ASSERT(!empty(needle(me._pattern)));
 
     // Sanity check: Range must have same size as needle!
-#if defined(JST_FIND_DEBUG)
-    std::cout << "Dist: " << (hystkEnd - hystkBegin) << " val: " << getValue(hystkEnd) << " -> "<< std::flush;
-#endif
     if (hystkEnd - hystkBegin != static_cast<TDiff>(length(needle(me._pattern)) - 1))
         return std::pair<size_t, bool>(me._pattern.data_map[ordValue(getValue(hystkEnd))], false);
 
