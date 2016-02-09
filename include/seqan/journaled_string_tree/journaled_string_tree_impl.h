@@ -76,7 +76,6 @@ namespace seqan
  * once.
  */
 
-
 // This data structure represents a collection of strings.
 // It facilitates an alignment representation of each sequence to a common base sequence.
 template <typename TSequence, typename TConfig = DefaultJstConfig<TSequence>, typename TSpec = Default>
@@ -89,7 +88,6 @@ public:
     typedef typename Member<TJst, JstSourceMember>::Type                            TSource;
     typedef typename Iterator<TSource, Standard>::Type                              TSrcIter;
     typedef typename Size<TJst>::Type                                               TSize;
-
 
     TSize       _dimension = 0;     // Number of sequences represented by the JST.
     TSource     _source;            // A journaled String representing the baseSequence.
@@ -587,7 +585,6 @@ clear(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
  *
  * @see JournaledStringTree#erase
  */
-
 
 template <typename TSequence, typename TConfig, typename TSpec, typename TPos, typename TValue, typename TIds,
           typename TDeltaType>

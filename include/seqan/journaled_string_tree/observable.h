@@ -167,7 +167,6 @@ notify(ObserverList<TObserverTypes...> & subject,
     NotifyObserver<LENGTH<ObserverList<TObserverTypes...> >::VALUE - 1>()(subject, TEventTag());
 }
 
-
 // ----------------------------------------------------------------------------
 // Function makeObserverList
 // ----------------------------------------------------------------------------

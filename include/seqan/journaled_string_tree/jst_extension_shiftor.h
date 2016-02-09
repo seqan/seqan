@@ -166,7 +166,6 @@ runShortNeedle(JstExtension<Pattern<TNeedle, ShiftOr> > & me,
 
 }  // namespace impl
 
-
 template <typename TNeedle, typename TIterator>
 inline std::pair<size_t, bool>
 run(JstExtension<Pattern<TNeedle, ShiftOr> > & me,

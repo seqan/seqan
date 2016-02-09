@@ -320,7 +320,6 @@ struct MapSourceToVirtualHelper_
 {
     typedef typename Size<TDeltaMapIter>::Type TSize;
 
-
     TSize           virtOffset;
     TDeltaMapIter   iter;
 
