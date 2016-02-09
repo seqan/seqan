@@ -542,7 +542,7 @@ operator-(Iter<TContainer, StdIteratorAdaptor> left,
           TIntegral right)
 {
     SEQAN_CHECKPOINT;
-    std::advance(hostIterator(left), -right);
+    std::advance(hostIterator(left), -static_cast<typename MakeSigned<TIntegral>::Type>(right));
     return left;
 }
 
