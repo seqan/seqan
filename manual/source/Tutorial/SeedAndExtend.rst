@@ -54,23 +54,7 @@ The following program gives an example of creating seeds as well as setting and 
 
 The output to the console is as follows.
 
-.. code-block:: console
-
-   seed1
-   beginPositionH == 0
-   endPositionH == 0
-   beginPositionV == 0
-   endPositionV == 0
-   lowerDiagonal == 0
-   upperDiagonal == 0
-
-   seed2
-   beginPositionH == 3
-   endPositionH == 7
-   beginPositionV == 10
-   endPositionV == 14
-   lowerDiagonal == -9
-   upperDiagonal == -7
+.. includefrags:: demos/tutorial/seed_and_extend/example1.cpp.stdout
 
 Assignment 1
 """"""""""""
@@ -98,17 +82,10 @@ However, the match can be longer than just *k* characters. To get longer matches
 In the most simple case we simply look for matching characters in both sequences to the left and right end of the seed.
 This is called **match extension** and available through the :dox:`Seed#extendSeed` function using the ``MatchExtend`` tag.
 
-.. includefrags:: demos/tutorial/seed_and_extend/example3.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example2.cpp
    :fragment: example
 
-.. code-block:: console
-
-   original
-   seedH: ROW
-   seedV: ROW
-   result
-   seedH: ick BROW
-   seedV: ick BROW
+.. includefrags:: demos/tutorial/seed_and_extend/example2.cpp.stdout
 
 Assignment 2
 """"""""""""
@@ -137,17 +114,10 @@ When the sum drops more strongly than a value *x*, the extension is stopped.
 This approach is also available in the gapped case in the SeqAn library.
 Here, creating gaps is also possible but also assigned negative scores.
 
-.. includefrags:: demos/tutorial/seed_and_extend/example2.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example3.cpp
    :fragment: example
 
-.. code-block:: console
-
-   original
-   seedH: ROW
-   seedV: ROW
-   result
-   seedH: ick BROWN fox
-   seedV: ick BROWN box
+.. includefrags:: demos/tutorial/seed_and_extend/example3.cpp.stdout
 
 Assignment 3
 """"""""""""
@@ -172,13 +142,7 @@ This is shown in the following example:
 .. includefrags:: demos/tutorial/seed_and_extend/example4.cpp
    :fragment: example
 
-.. code-block:: console
-
-    Resulting alignment
-          0     .    :
-            ick BROWN fox
-            |||||||||||||
-            ick BROWN box
+.. includefrags:: demos/tutorial/seed_and_extend/example4.cpp.stdout
 
 Assignment 4
 """"""""""""
@@ -215,13 +179,7 @@ The following example creates a :dox:`SeedSet` object ``seeds``, adds four seeds
 
 The output of the program above can be seen below.
 
-.. code-block:: console
-
-   Resulting seeds.
-   (3, 5, 5, 7, -2, -2)
-   (0, 2, 0, 2, 0, 0)
-   (9, 11, 9, 11, 0, 0)
-   (4, 7, 2, 5, 2, 2)
+.. includefrags:: demos/tutorial/seed_and_extend/example5.cpp.stdout
 
 Note that we have used the ``Single()`` tag for adding the seeds.
 This forces the seeds to be added independent of the current seed set contents.
@@ -247,12 +205,7 @@ The following example shows how to use the ``SimpleChain`` strategy.
 
 As we can see, the seed ``TSeed(4, 2, 3)`` has been chained to ``TSeed(0, 0, 2)``.
 
-.. code-block:: console
-
-    Resulting seeds.
-    (3, 5, 5, 7, -2, -2)
-    (0, 7, 0, 5, 0, 2)
-    (9, 11, 9, 11, 0, 0)
+.. includefrags:: demos/tutorial/seed_and_extend/example7.cpp.stdout
 
 Assignment 5
 """"""""""""
@@ -340,13 +293,7 @@ The default value is 15 and conforms the default value in the LAGAN-algorithm :c
 
 The output of the example above.
 
-.. code-block:: console
-
-    Score: 5
-          0     .    :    .    :
-            --CGAAT--CCATCCCACACA
-              || ||   |||||  ||||
-            GGCG-ATNNNCATGG--CACA
+.. includefrags:: demos/tutorial/seed_and_extend/example8.cpp.stdout
 
 
 Assignment 7

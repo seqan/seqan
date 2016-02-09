@@ -68,11 +68,7 @@ We then create :dox:`Finder` and :dox:`Pattern` objects of these strings and cho
 
 Program output:
 
-.. code-block:: console
-
-   [2,4)   mo
-   [12,14) mo
-   [17,19) mo
+.. includefrags:: demos/tutorial/pattern_matching/find_exact.cpp.stdout
 
 Currently the following exact online algorithms for searching a single sequence are implemented in SeqAn:
 
@@ -141,13 +137,7 @@ Assignment 1
 	 We use a :dox:`Pattern` specialized with the :dox:`WuManberPattern WuManber` algorithm for the search and initialize it with our ``needles`` string.
 	 For every match found by :dox:`Finder#find` we output the begin and end position and the match region in the ``haystack`` as well as the index of the found ``needle`` which is returned by ``position(pattern)``.
 
-         .. code-block:: console
-
-	    [2,4)   0   mo
-	    [7,11)  1   send
-	    [12,14) 0   mo
-	    [12,16) 2   more
-	    [17,19) 0   mo
+         .. includefrags:: demos/tutorial/pattern_matching/assignment1_solution.cpp.stdout
 
 Approximate Search
 ^^^^^^^^^^^^^^^^^^
@@ -177,16 +167,8 @@ We then output all begin and end positions and the corresponding ``haystack`` se
 
 Program output:
 
-.. code-block:: console
+.. includefrags:: demos/tutorial/pattern_matching/find_approx.cpp.stdout
 
-   [2,4)   mo
-   [12,14) mo
-   [12,15) mor
-   [12,16) more
-   [12,17) more
-   [12,18) more m
-   [17,19) mo
-   [17,21) mone
 
 The following specializations are available:
 
@@ -228,20 +210,8 @@ Assignment 2
 
 	 The program's output is as follows.
 
-         .. code-block:: console
+         .. includefrags:: demos/tutorial/pattern_matching/assignment2_solution.cpp.stdout
 
-	    [2,4)   mo
-	    [2,5)   mon
-	    [2,6)   mon,
-	    [12,14) mo
-	    [12,15) mor
-	    [12,16) more
-	    [12,17) more
-	    [12,18) more m
-	    [17,19) mo
-	    [17,20) mon
-	    [17,21) mone
-	    [17,22) money
 
 Index Search
 ------------
@@ -272,12 +242,8 @@ Please note that an :dox:`Index` based :dox:`Finder` has to be reset with :dox:`
 
 Program output:
 
-.. code-block:: console
+.. includefrags:: demos/tutorial/pattern_matching/find_index.cpp.stdout
 
-    [11,13) be
-    [2,4)   be
-    [11,13) be
-    [2,4)   be
 
 All indices also support :dox:`StringSet` texts and can therefore be used to search multiple ``haystacks`` as the following example shows.
 We simply exchange the :dox:`CharString` of the haystack with a :dox:`StringSet` of :dox:`CharString` and append some strings to it.
@@ -290,12 +256,8 @@ The rest of the program remains unchanged.
 .. includefrags:: demos/tutorial/pattern_matching/find_index_multiple.cpp
    :fragment: output
 
-.. code-block:: console
+.. includefrags:: demos/tutorial/pattern_matching/find_index_multiple.cpp.stdout
 
-   [< 0 , 11 >,< 0 , 13 >) be
-   [< 1 , 3 >,< 1 , 5 >)   be
-   [< 2 , 0 >,< 2 , 2 >)   be
-   [< 0 , 2 >,< 0 , 4 >)   be
 
 The following index specializations support the :dox:`Finder` interface as described above.
 
@@ -337,10 +299,7 @@ Assignment 3
 
 	 Program output:
 
-         .. code-block:: console
-
-	    [0,4)   tobe
-	    [9,13)  tobe
+         .. includefrags:: demos/tutorial/pattern_matching/assignment3_solution.cpp.stdout
 
 Approximate Filtration
 ^^^^^^^^^^^^^^^^^^^^^^

@@ -33,17 +33,15 @@ Generic data types and algorithms can be implemented in C++ using templates.
 A class template parameterizes a class with a list of types or constants.
 For example, a declaration for the class ``vector`` could be:
 
-.. code-block:: cpp
-
-   template <typename T> class vector;
+.. includefrags:: demos/tutorial/basic_techniques/base.cpp
+    :fragment: class
 
 where ``T`` stands for the *value type*, i.e. the type of the values that will be stored in ``vector``.
 The template is generic, it can be applied to any type ``T``.
 For example, a vector for storing ``int`` values is instantiated by:
 
-.. code-block:: cpp
-
-   vector<int> my_vector;
+.. includefrags:: demos/tutorial/basic_techniques/base.cpp
+    :fragment: vector
 
 That is we use ``int`` as template argument for ``T``, and the result of the instantiation is an object ``my_vector`` of the complete type ``vector<int>``.
 The compiler employs the same template, i.e. the same piece of code, for different template argument types.

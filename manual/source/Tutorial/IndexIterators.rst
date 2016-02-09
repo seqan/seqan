@@ -73,23 +73,14 @@ Thus, the suffixes represented by this node are the occurrences of our pattern a
 
 Program output:
 
-.. code-block:: console
-
-   w
-   wo
-   wood
-   9
-   22
+.. includefrags:: demos/tutorial/index_iterators/index_search.cpp.stdout
 
 Alternatively, we could have used :dox:`TopDownIterator#goDown` to go down the path of a pattern instead single characters:
 
 .. includefrags:: demos/tutorial/index_iterators/index_search2.cpp
    :fragment: output
 
-.. code-block:: console
-
-   9
-   22
+.. includefrags:: demos/tutorial/index_iterators/index_search2.cpp.stdout
 
 Assignment 1
 """"""""""""
@@ -134,25 +125,7 @@ Assignment 2
      * Use a :dox:`TopDownHistoryIterator TopDown History Iterator`.
      * The code skeleton could look like this:
 
-       .. code-block:: cpp
-
-	  #include <iostream>
-	  #include <seqan/index.h>
-
-	  using namespace seqan;
-
-	  int main ()
-	  {
-	      typedef Index<CharString> TIndex;
-	      TIndex index("tobeornottobe");
-	      Iterator< TIndex, TopDown<ParentLinks<> > >::Type it(index);
-
-	      do {
-		  ...
-	      } while (isRoot(it));
-
-	      return 0;
-	  }
+       .. includefrags:: demos/tutorial/index_iterators/iterator_assignment2.cpp
 
    Solution
      .. container:: foldable
@@ -193,20 +166,7 @@ Assignment 3
 	.. includefrags:: demos/tutorial/index_iterators/index_assignment4.cpp
 	   :fragment: iteration
 
-	.. code-block:: console
-
-	   be
-	   e
-	   o
-	   obe
-	   t
-
-
-	   be
-	   e
-	   o
-	   obe
-	   t
+	.. includefrags:: demos/tutorial/index_iterators/index_assignment4.cpp.stdout
 
 Depth-First Search
 ~~~~~~~~~~~~~~~~~~
@@ -250,19 +210,7 @@ As all DFS suffix tree iterators implement the :dox:`VSTreeIterator VSTree Itera
 
 Program output:
 
-.. code-block:: console
-
-   a
-   abra
-   abracadabra
-   acadabra
-   adabra
-   bra
-   bracadabra
-   cadabra
-   dabra
-   ra
-   racadabra
+.. includefrags:: demos/tutorial/index_iterators/index_preorder.cpp.stdout
 
 .. tip::
 
@@ -324,63 +272,7 @@ Assignment 4
 
 	Program output:
 
-	.. code-block:: console
-
-	   alkovich
-	   beeonthecomb
-	   beingjohnmalkovich
-	   beornottobe
-	   be
-	   b
-	   ch
-	   comb
-	   c
-	   ebeeonthecomb
-	   ecomb
-	   eeonthecomb
-	   eingjohnmalkovich
-	   eonthecomb
-	   eornottobe
-	   eo
-	   e
-	   gjohnmalkovich
-	   hebeeonthecomb
-	   hecomb
-	   he
-	   hnmalkovich
-	   h
-	   ich
-	   ingjohnmalkovich
-	   i
-	   johnmalkovich
-	   kovich
-	   lkovich
-	   malkovich
-	   mb
-	   m
-	   ngjohnmalkovich
-	   nmalkovich
-	   nottobe
-	   nthecomb
-	   n
-	   obeornottobe
-	   obe
-	   ohnmalkovich
-	   omb
-	   onthecomb
-	   ornottobe
-	   ottobe
-	   ovich
-	   o
-	   rnottobe
-	   thebeeonthecomb
-	   thecomb
-	   the
-	   tobeornottobe
-	   tobe
-	   ttobe
-	   t
-	   vich
+	.. includefrags:: demos/tutorial/index_iterators/index_assignment1.cpp.stdout
 
 As a last assignment lets try out one of the specialised iterators, which you can find at the bottom of this page.
 Look there for the specialisation which iterates over all maximal unique matches (MUMS).
@@ -415,11 +307,7 @@ Assignment 5
 
 	Program output:
 
-	.. code-block:: console
-
-	   CD
-	   FG
-	   HC
+	.. includefrags:: demos/tutorial/index_iterators/index_assignment2.cpp.stdout
 
 Accessing Suffix Tree Nodes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -482,20 +370,7 @@ At the end we again iterate over all nodes and output the calculated node depth.
 
 Program output:
 
-.. code-block:: console
-
-    0
-    1       a
-    2       abra
-    3       abracadabra
-    2       acadabra
-    2       adabra
-    1       bra
-    2       bracadabra
-    1       cadabra
-    1       dabra
-    1       ra
-    2       racadabra
+.. includefrags:: demos/tutorial/index_iterators/index_property_maps.cpp.stdout
 
 .. tip::
 
