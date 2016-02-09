@@ -39,7 +39,6 @@
 SEQAN_BEGIN_TESTSUITE(test_basic_observable)
 {
     // Tests for basic observable pattern.
-    SEQAN_CALL_TEST(test_basic_observable_constructor);
     SEQAN_CALL_TEST(test_basic_observable_length);
     SEQAN_CALL_TEST(test_basic_observable_set_observer);
     SEQAN_CALL_TEST(test_basic_observable_notify);
