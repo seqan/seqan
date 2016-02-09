@@ -97,7 +97,7 @@ getKmerSimilarityMatrix(StringSet<TString, TSpec> const& strSet,
     typedef typename Value<THitMatrix>::Type TValue;
 
     // Number of sequences
-    TSize nseq = length(strSet);
+    size_t nseq = length(strSet);
     TSize alphabet_size = ValueSize<TAlphabet>::VALUE;
     TWord qIndexSize = (TWord) std::pow((double)alphabet_size, (double)ktup);
 

@@ -92,7 +92,7 @@ testquickAlign__(Graph<Alignment<StringSet<String<AminoAcid>, Dependent<> >, uns
     //std::cout << gOut << std::endl;
     String<char> alignMat;
     convertAlignment(gOut,alignMat);
-    unsigned int len = length(alignMat) / 4;
+    size_t len = length(alignMat) / 4;
     SEQAN_ASSERT(String<char>(infix(alignMat, 0, 8)) == "GARFIELD");
     SEQAN_ASSERT(String<char>(infix(alignMat, 1*len + 0, 1*len+8)) == "GARFIELD");
     SEQAN_ASSERT(String<char>(infix(alignMat, 2*len + 0, 2*len+8)) == "GARFIELD");

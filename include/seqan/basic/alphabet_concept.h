@@ -369,9 +369,9 @@ SEQAN_CONCEPT_REFINE(FiniteOrderedAlphabetConcept, (TValue), (OrderedAlphabetCon
 
         // convert integer to alphabet value
         val = 0;
-        val = size;
+        val = static_cast<TValue>(size);
         TValue val2(0);
-        TValue val3(size);
+        TValue val3(static_cast<TValue>(size));
 
         ignoreUnusedVariableWarning(val2);
         ignoreUnusedVariableWarning(val3);

@@ -430,8 +430,8 @@ TFloat variance(StringSet<String<Dna> > W, StringSet<String<Dna> > &X, MarkovMod
     //compute correction factor
     TFloat correction = 0;
 
-    unsigned int n;
-    unsigned int sizeW= length(W);
+    size_t n;
+    size_t sizeW= length(W);
 
 
    for(unsigned int j=0; j<length(X); j++){

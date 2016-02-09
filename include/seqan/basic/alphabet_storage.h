@@ -263,7 +263,7 @@ template <typename TValue>
 inline typename ValueSize<TValue>::Type
 ordValue(TValue const & c)
 {
-    return convert<unsigned>(static_cast<typename MakeUnsigned_<TValue>::Type const &>(c));
+    return static_cast<typename ValueSize<TValue>::Type>(c);
 }
 
 // The internal ord value is used for alphabets with piggyback qualities.

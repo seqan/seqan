@@ -63,7 +63,7 @@ void _alignmentFreeComparison(Matrix<TValue, 2> & scoreMatrix,
     typedef typename Iterator<StringSet<String<double> > >::Type                TIteratorSetDouble;
     typedef typename Iterator<String<MarkovModel<TUnmaskedAlphabet> > >::Type   TIteratorMarkovModel;
 
-    unsigned seqNumber = length(sequenceSet);
+    size_t seqNumber = length(sequenceSet);
 
     // Resize scoreMatrix
     setLength(scoreMatrix, 0, seqNumber);
@@ -505,7 +505,7 @@ void _alignmentFreeCompareCounts(TValue & result,
     TValueBG sum = 0;
     unsigned len1 = score.kmerSize - 1;
     unsigned len2 = score.kmerSize - 1;
-    unsigned nvals = length(kmerCounts1);
+    size_t nvals = length(kmerCounts1);
 
     for (unsigned l = 0; l < nvals; l++)
     {
@@ -551,7 +551,7 @@ void _alignmentFreeCompareCounts(TValue & result,
                                 MarkovModel<TAlphabet, TValue, TSpec> /*const*/ & bgModel2,
                                 AFScore<D2z> const & score)
 {
-    unsigned nvals = length(kmerCounts1);
+    size_t nvals = length(kmerCounts1);
     int sum = 0;
     int sumCounts1 = score.kmerSize - 1;
     int sumCounts2 = score.kmerSize - 1;
@@ -599,7 +599,7 @@ double _computeWordProb(long const word, MarkovModel<TAlphabet, TValue, TSpec> /
  * see paper referenced on top
  */
 template <typename TAlphabet, typename TValue, typename TSpec>
-double _computeWordProbGivenPrefix(long const prefix, long const suffix, MarkovModel<TAlphabet, TValue, TSpec> /*const*/ & bkg, unsigned const k, unsigned const mo)
+double _computeWordProbGivenPrefix(long const prefix, long const suffix, MarkovModel<TAlphabet, TValue, TSpec> /*const*/ & bkg, unsigned long const k, unsigned const mo)
 {
     // Computes p_ * (prefix suffix)
     // Calculate only if k - mo >= 1; otherwise return 1

@@ -339,15 +339,18 @@ public:
     template <typename TString>
     TFloat emittedProbability(TString const &string)
     {
-        Shape<TAlphabet, SimpleShape> orderShape;
+        typedef Shape<TAlphabet, SimpleShape> TShape;
+        typedef typename Value<TShape>::Type  THashValue;
+
+        TShape orderShape;
         resize(orderShape, order);
 
-        int row = hash(orderShape,begin(string));
+        THashValue row = hash(orderShape,begin(string));
         TFloat p = value(stationaryDistribution,row);
 
         for(unsigned int i=1; i<(length(string)-order+1); i++)
         {
-            int column=hash(orderShape,begin(string)+i);
+            THashValue column = hash(orderShape,begin(string)+i);
             p*=value(transition,row,column);
 
             row = column;
@@ -589,7 +592,7 @@ template <typename TValue>
 Matrix<TValue,2> _computeInverseMatrix(Matrix<TValue,2> &matrix)
 {
     typedef Matrix<TValue,2> TMatrix;
-    unsigned int n = length(matrix,0);
+    size_t n = length(matrix,0);
     TMatrix result;
     //resize the matrix
     setLength(result, 0, n);
@@ -641,8 +644,8 @@ template <typename TValue>
 String<TValue> _ludcmp(Matrix<TValue,2> &result)
 {
     double const TINY = 1.0e-20;
-    int n = length(result,0);
-    int i, imax, j, k,d;
+    size_t n = length(result,0);
+    unsigned i, imax, j, k,d;
     imax = MinValue<int>::VALUE;
     double big,dum,sum,temp;
     String<TValue> vv;
@@ -733,13 +736,13 @@ String<TValue> _ludcmp(Matrix<TValue,2> &result)
 template <typename TValue>
 void _lubksb(Matrix<TValue,2> &a, String<TValue> &indx, String<TValue>  &b)
 {
-    int n =length(a,0);    //Number of columns in matrix a
-    int i, ii=0,ip,j;
+    size_t n =length(a,0);    //Number of columns in matrix a
+    size_t i, ii=0,ip,j;
     double sum;
 
     for (i=1; i<=n; i++)
     {
-        ip = static_cast<int>(value(indx,i-1));
+        ip = value(indx,i-1);
         sum = value(b,ip-1);
         value(b,ip-1) = value(b,i-1);
         if (ii)

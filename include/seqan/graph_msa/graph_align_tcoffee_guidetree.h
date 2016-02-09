@@ -141,7 +141,7 @@ njTree(String<TValue, TStringSpec> const & matIn,
     String<TVertexDescriptor> connector;   // Nodes that need to be connected
     resize(connector, nseq);
 
-    for(TSize i=0;i<nseq;++i)
+    for(TVertexDescriptor i=0;i<nseq;++i)
     {
         addVertex(g);  // Add all the nodes that correspond to sequences
         connector[i] = i;

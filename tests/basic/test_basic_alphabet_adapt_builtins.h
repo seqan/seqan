@@ -276,11 +276,12 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_long)
     // Finite Ordered Alphabet
     {
         long b = 0;
+        typedef decltype(ordValue(long(-1))) TSize;
 
         // TODO(holtgrew): This is most probably wrong.
         SEQAN_ASSERT_EQ(ordValue(0), 0u);
-        SEQAN_ASSERT_EQ(ordValue(long(-1)), 4294967295u);
-        SEQAN_ASSERT_EQ(ordValue(long(1)), 1u);
+        SEQAN_ASSERT_EQ(ordValue(long(-1)), static_cast<TSize>(4294967295u));
+        SEQAN_ASSERT_EQ(ordValue(long(1)), static_cast<TSize>(1u));
 #if SEQAN_IS_32_BIT
         SEQAN_ASSERT_EQ(+ValueSize<long>::VALUE, 4294967296ull);
         SEQAN_ASSERT_EQ(valueSize<long>(), 4294967296ull);
