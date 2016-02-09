@@ -192,6 +192,9 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setMaxValue(parser, "indel-rate", "50");
     setDefaultValue(parser, "indel-rate", 100.0 * options.indelRate);
 
+    addOption(parser, ArgParseOption("ni", "no-indels", "Do not attempt to rescue unaligned ends containing indels."));
+
+
 //    addOption(parser, ArgParseOption("lo", "library-orientation", "Expected orientation of the segments in the library.",
 //                                     ArgParseOption::STRING));
 //    setValidValues(parser, "library-orientation", options.libraryOrientationList);
@@ -295,6 +298,13 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOptionValue(options.libraryDev, parser, "library-deviation");
 //    getOptionValue(options.libraryOrientation, parser, "library-orientation", options.libraryOrientationList);
 
+    unsigned indelRate;
+    if (getOptionValue(indelRate, parser, "indel-rate"))
+    options.indelRate = indelRate / 100.0;
+
+    options.verifyMatches = !isSet(parser, "no-indels");
+
+    // Parse performance options.
     getOptionValue(options.threadsCount, parser, "threads");
     getOptionValue(options.readsCount, parser, "reads-batch");
 

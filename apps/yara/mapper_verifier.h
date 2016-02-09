@@ -231,7 +231,7 @@ inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
     setValueI1(contigEnd, getMember(anchor, ContigId()));
 
     contigBegin.i2 = 0;
-    if (getMember(anchor, ContigBegin()) + me.libraryLength > me.libraryDev)
+    if (getMember(anchor, ContigBegin()) + me.libraryLength > 3 * me.libraryDev)
         contigBegin.i2 = getMember(anchor, ContigBegin()) + me.libraryLength - 3 * me.libraryDev;
     contigBegin.i2 = _min(contigBegin.i2, contigLength);
 
