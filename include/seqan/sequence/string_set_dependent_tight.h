@@ -319,7 +319,7 @@ positionToId(StringSet<TString, Dependent<Tight> > const & me,
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TId>
-inline typename Id<StringSet<TString, Dependent<Tight> > >::Type
+inline typename Position<StringSet<TString, Dependent<Tight> > >::Type
 idToPosition(StringSet<TString, Dependent<Tight> > const & me,
             TId const id)
 {
