@@ -20,4 +20,16 @@
  <mimetype name="NEWICK" binary="true" ext="newick" description="NEWICK Tree Format"/>
  <mimetype name="ALFTSV" binary="true" ext="alf.tsv" description="ALF output format"/>
  <mimetype name="TXT" binary="true" ext="txt" description="Text"/>
+ <mimetype name="YARA" binary="true" ext="lf.drp" description="YARA indexer files"/>
+ <mimetype name="YARA" binary="true" ext="lf.drs" description="YARA indexer files"/>
+ <mimetype name="YARA" binary="true" ext="lf.drv" description="YARA indexer files"/>
+ <mimetype name="YARA" binary="true" ext="lf.pst" description="YARA indexer files"/>
+ <mimetype name="YARA" binary="true" ext="rid.concat" description="YARA indexer files"/>
+ <mimetype name="YARA" binary="true" ext="rid.limits" description="YARA indexer files"/>
+ <mimetype name="YARA" binary="true" ext="sa.ind" description="YARA indexer files"/>
+ <mimetype name="YARA" binary="true" ext="sa.len" description="YARA indexer files"/>
+ <mimetype name="YARA" binary="true" ext="sa.val" description="YARA indexer files"/>
+ <mimetype name="YARA" binary="true" ext="txt.concat" description="YARA indexer files"/>
+ <mimetype name="YARA" binary="true" ext="txt.limits" description="YARA indexer files"/>
+ <mimetype name="YARA" binary="true" ext="txt.size" description="YARA indexer files"/>
 </mimetypes>
