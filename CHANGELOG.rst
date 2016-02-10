@@ -43,7 +43,6 @@ Infrastructure Updates
 - Platform Support:
     - updated prerequisites for GCC to >= 4.7 and Clang to >= 3.3
     - fixed warnings for gcc6
-    - added Intel C++ compiler support
     - clang-3.7.x: deactivated openmp because of bug
     - fixed compiler-warnings in Visual Studio
     - added support for Visual Studio 2014 and 2015
