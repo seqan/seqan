@@ -107,10 +107,17 @@ public:
 
     // Copy c'tor.
     template <typename TOtherJst>
-    TraverserImpl(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec> > other,
-                  SEQAN_CTOR_ENABLE_IF(IsConstructible<TJst, TOtherJst>))
+    TraverserImpl(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec> > const & other,
+                  SEQAN_CTOR_ENABLE_IF(IsConstructible<TJst, TOtherJst>)) :
+        _contPtr(other._contPtr),
+        _contextSize(other._contextSize),
+        _branchLength(other._branchLength),
+        _stackPtr(other._stackPtr),
+        _bufferPtr(other._bufferPtr),
+        _baseCov(other._baseCov),
+        _needInitialization(other._needInitialization)
+
     {
-        impl::swap(*this, other);
         ignoreUnusedVariableWarning(dummy);
     }
 
@@ -118,9 +125,14 @@ public:
     template <typename TOtherJst>
     TraverserImpl(TraverserImpl<TOtherJst, JstTraversalSpec<TSpec> > && other,
                   SEQAN_CTOR_ENABLE_IF(IsConstructible<TJst, TOtherJst>)) :
-        TraverserImpl()  // Initialize via default construciton.
+        _contPtr(std::move(other._contPtr)),
+        _contextSize(std::move(other._contextSize)),
+        _branchLength(std::move(other._branchLength)),
+        _stackPtr(std::move(other._stackPtr)),
+        _bufferPtr(std::move(other._bufferPtr)),
+        _baseCov(std::move(other._baseCov)),
+        _needInitialization(std::move(other._needInitialization))
     {
-        impl::swap(*this, other);
         ignoreUnusedVariableWarning(dummy);
     }
 
