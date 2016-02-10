@@ -64,13 +64,13 @@ _getOtherSequenceAndProject(Fragment<TFragSize,TFragSpec> & segment,
 //given seq and segment, get the sequenceId (seq_i) and its begin and end
 //if seq = 0 get first sequence (that takes part in the segment match)
 //if seq = 1 get second sequence
-template<typename TFragSize, typename TFragSpec, typename TId, typename TPosition, typename TId2>
+template<typename TFragSize, typename TFragSpec, typename TId, typename TId2>
 void
 _getSeqBeginAndEnd(Fragment<TFragSize,TFragSpec> & segment,
                   std::map<const void * ,int> &,
                   TId & seq_i_id,
-                  TPosition & begin_i,
-                  TPosition & end_i,
+                  TFragSize & begin_i,
+                  TFragSize & end_i,
                   TId2 seq)
 {
     seq_i_id = sequenceId(segment,seq);
