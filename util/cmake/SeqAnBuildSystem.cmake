@@ -158,7 +158,7 @@ macro (seqan_register_apps)
         else (APPLE)
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
 
-            # make sure -Wl,-Bdynamic isn't added automatically
+            # make sure -rdynamic isn't added automatically
             set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
             # make sure -fPIC isn't added automatically
             set(CMAKE_SHARED_LIBRARY_CXX_FLAGS)
@@ -168,13 +168,10 @@ macro (seqan_register_apps)
             # .so when building DEVELOP. In the latter case it also encloses the
             # static libs with -Bdynamic which turns static off for system libs.
             # Here we remove these (so statics works), but only for NON-DEVELOP
-            # on non-linux.
-
-            # this one must not be unset on FreeBSD if not building APPs individually
-            if ((CMAKE_SYSTEM_NAME MATCHES "Linux") OR (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP"))
-                # make sure -rdynamic isn't added automatically
+            if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+                # make sure -Wl,-Bdynamic isn't added automatically
                 set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
-            endif ((CMAKE_SYSTEM_NAME MATCHES "Linux") OR (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP"))
+            endif (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
         endif (APPLE)
     endif (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
 
