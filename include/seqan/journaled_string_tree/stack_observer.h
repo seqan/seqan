@@ -31,115 +31,92 @@
 // ==========================================================================
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-// Basic defintions and forwards used globally for this module.
-// ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_BASE_H_
-#define EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_BASE_H_
+#ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_STACK_OBSERVER_H_
+#define INCLUDE_SEQAN_JOURNALED_STRING_TREE_STACK_OBSERVER_H_
 
-namespace seqan {
+namespace seqan
+{
 
 // ============================================================================
 // Forwards
 // ============================================================================
+
+template <typename TObject>
+struct ObservedValue
+{
+    using Type = Nothing;
+};
 
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Tag Traversal Tags
+// Tag PushEvent
 // ----------------------------------------------------------------------------
 
-struct ForwardTraversal_;
-typedef Tag<ForwardTraversal_> ForwardTraversal;
-
-struct BidirectionalTraversal_;
-typedef Tag<BidirectionalTraversal_> BidirectionalTraversal;
+struct PushEvent_;
+typedef Tag<PushEvent_> PushEvent;
 
 // ----------------------------------------------------------------------------
-// Tag JSTree
+// Tag PopEvent
 // ----------------------------------------------------------------------------
 
-template <typename TSpec = ForwardTraversal>
-struct JSTree;
+struct PopEvent_;
+typedef Tag<PopEvent_> PopEvent;
 
 // ----------------------------------------------------------------------------
-// Tag JstBufferMember
+// Class StackObserver
 // ----------------------------------------------------------------------------
 
-struct JstBufferMember_;
-typedef Tag<JstBufferMember_> JstBufferMember;
-
-// ----------------------------------------------------------------------------
-// Tag JstSourceMember
-// ----------------------------------------------------------------------------
-
-struct JstSourceMember_;
-typedef Tag<JstSourceMember_> JstSourceMember;
-
-// ----------------------------------------------------------------------------
-// Tag JstDeltaMapMember
-// ----------------------------------------------------------------------------
-
-struct JstDeltaMapMember_;
-typedef Tag<JstDeltaMapMember_> JstDeltaMapMember;
-
-// ----------------------------------------------------------------------------
-// Class DefaultJstConfig
-// ----------------------------------------------------------------------------
-
-/*!
- * @class DefaultJstConfig
- * @headerfile <seqan/journaled_string_tree.h>
- * @brief The default Journaled-String-Tree configuration object.
- *
- * @signature template <typename TSequence>
- *            class DefaultJstConfig<TDeltaStore>
- *
- * @tparam TSequence Type of the underlying base sequence.
- *
- * Defines the follwoing types used to configure the @link DeltaMap @endlink:
- * @code{.cpp}
- * typedef typename Size<TSequence>::Type  TDeltaPos;
- * typedef typename Value<TSequence>::Type TSnpValue;
- * typedef String<TSnpValue>               TInsValue;
- * typedef typename Size<TSequence>::Type  TDelValue;
- * typedef Pair<TDelValue, TInsValue>      TSVValue;
- * @endcode
- */
-template <typename TSequence>
-struct DefaultJstConfig
+template <typename TObject>
+class StackObserver
 {
-    typedef typename Size<TSequence>::Type  TDeltaPos;  // Position type for delta entry.
-    typedef typename Value<TSequence>::Type TSnpValue;  // Value type of the SNPs.
-    typedef String<TSnpValue>               TInsValue;  // Value type of insertions.
-    typedef typename Size<TSequence>::Type  TDelValue;  // Value type of deletions.
-    typedef Pair<TDelValue, TInsValue>      TSVValue;   // Value type of structural variants (combination of deletion and insertion).
+public:
+    using TValue = typename ObservedValue<TObject>::Type;
+    using TStack = String<TValue, Block<> >;
+
+    TObject & _obj;
+    TStack _data;
+
+    StackObserver(TObject & obj) : _obj(obj)
+    {}
 };
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Metafunction Traverser
-// ----------------------------------------------------------------------------
-
-template <typename TContainer, typename TObserverList = ObserverList<> >
-struct Traverser;
-
-// ----------------------------------------------------------------------------
-// Metafunction ContextIterator
-// ----------------------------------------------------------------------------
-
-template <typename TObj>
-struct ContextIterator;
-
 // ============================================================================
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+// ----------------------------------------------------------------------------
+// Function notify(); PushEvent
+// ----------------------------------------------------------------------------
 
-#endif  // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_BASE_H_
+template <typename TObject>
+inline void
+notify(StackObserver<TObject> & me,
+       PushEvent const & /*tag*/)
+{
+    appendValue(me._data, getObservedValue(me._obj));
+}
+
+// ----------------------------------------------------------------------------
+// Function notify(); PopEvent
+// ----------------------------------------------------------------------------
+
+template <typename TObject>
+inline void
+notify(StackObserver<TObject> & me,
+       PopEvent const & /*tag*/)
+{
+    setObservedValue(me._obj, std::move(back(me._data)));
+    eraseBack(me._data);
+}
+
+}
+
+#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_STACK_OBSERVER_H_

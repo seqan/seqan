@@ -111,7 +111,6 @@ typedef TagList<DeltaTypeSnp,
 
 typedef TagSelector<DeltaTypeTagList> DeltaTypeSelector;
 
-
 // ----------------------------------------------------------------------------
 // Enum DeltaType
 // ----------------------------------------------------------------------------
@@ -141,7 +140,6 @@ enum DeltaType
     DELTA_TYPE_INS = Find<DeltaTypeSelector, DeltaTypeIns>::VALUE,
     DELTA_TYPE_SV = Find<DeltaTypeSelector, DeltaTypeSV>::VALUE
 };
-
 
 namespace impl
 {

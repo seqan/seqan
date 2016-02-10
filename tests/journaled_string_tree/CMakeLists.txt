@@ -53,10 +53,19 @@ target_link_libraries (test_delta_map ${SEQAN_LIBRARIES})
 
 add_executable (test_journaled_string_tree_traverser
                 test_journaled_string_tree_traverser.cpp
-                test_journaled_string_tree_traverser.h)
+                test_journaled_string_tree_traverser.h
+                test_journaled_string_tree_mock.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_journaled_string_tree_traverser ${SEQAN_LIBRARIES})
+
+add_executable (test_journaled_string_tree_find
+                test_journaled_string_tree_find.cpp
+                test_journaled_string_tree_find.h
+                test_journaled_string_tree_mock.h)
+
+# Add dependencies found by find_package (SeqAn).
+target_link_libraries (test_journaled_string_tree_find ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -71,3 +80,4 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 add_test (NAME test_test_journaled_string_tree COMMAND $<TARGET_FILE:test_journaled_string_tree>)
 add_test (NAME test_test_delta_map COMMAND $<TARGET_FILE:test_delta_map>)
 add_test (NAME test_journaled_string_tree_traverser COMMAND $<TARGET_FILE:test_journaled_string_tree_traverser>)
+add_test (NAME test_journaled_string_tree_find COMMAND $<TARGET_FILE:test_journaled_string_tree_find>)

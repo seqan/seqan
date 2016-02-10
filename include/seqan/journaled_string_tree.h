@@ -51,6 +51,7 @@
 
 // TODO(rrahn): Might put this to basic.
 #include <seqan/journaled_string_tree/observable.h>
+#include <seqan/journaled_string_tree/stack_observer.h>
 
 // ===========================================================================
 // Delta Map.
@@ -76,5 +77,17 @@
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser_node.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser_util.h>
 #include <seqan/journaled_string_tree/journaled_string_tree_traverser.h>
+
+// ===========================================================================
+// Journaled String Tree Find.
+// ===========================================================================
+
+#include <seqan/find.h>
+
+#include <seqan/journaled_string_tree/jst_extension_base.h>
+#include <seqan/journaled_string_tree/jst_extension_horspool.h>
+#include <seqan/journaled_string_tree/jst_extension_shiftand.h>
+#include <seqan/journaled_string_tree/jst_extension_shiftor.h>
+#include <seqan/journaled_string_tree/jst_extension_myers_ukkonen.h>
 
 #endif // INCLUDE_SEQAN_JOURNALED_STRING_TREE_H_

@@ -111,7 +111,6 @@ SEQAN_DEFINE_TEST(test_delta_map_insert)
     insert(deltaMap,  3, 1, cov1, DeltaTypeDel());
     insert(deltaMap,  3, 4, cov1, DeltaTypeDel());
 
-
     SEQAN_ASSERT_EQ(deltaMap._entries[0], TEntry(0, TRecord(DELTA_TYPE_SNP, 1), cov1, DeltaEndType::IS_BOTH));
     SEQAN_ASSERT_EQ(deltaMap._entries[1], TEntry(1, TRecord(DELTA_TYPE_DEL, 2), cov2, DeltaEndType::IS_LEFT));
     SEQAN_ASSERT_EQ(deltaMap._entries[2], TEntry(1, TRecord(DELTA_TYPE_DEL, 3), cov2, DeltaEndType::IS_LEFT));
@@ -489,7 +488,6 @@ SEQAN_DEFINE_TEST(test_delta_map_entry_delta_position)
     SEQAN_ASSERT_EQ(getDeltaPosition(*it2++), 3u);
     SEQAN_ASSERT_EQ(getDeltaPosition(*it2++), 4u);
 }
-
 
 SEQAN_DEFINE_TEST(test_delta_map_entry_delta_coverage)
 {
