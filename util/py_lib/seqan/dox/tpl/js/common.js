@@ -51,12 +51,11 @@
                         } else {
                             redirectTo = null; // can't specify the entitiy
                         }
+                     } else {
+                         $(window.parent['main'].document).find('#content').prepend('<div class="open-in-frame alert alert-danger">Could not find page for <strong>' + p + '</strong></div>'); 
+                         // TODO: start search using search form for p
                      }
-                } else {
-                    $(window.parent['main'].document).find('#content').prepend('<div class="open-in-frame alert alert-danger">Could not find page for <strong>' + p + '</strong></div>'); 
-                    // TODO: start search using search form for p
                 }
-
                 // exception
                 if(p == null && hash.length > 1)
                     redirectTo = hash.substr(1) + '.html';
