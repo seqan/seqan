@@ -166,32 +166,43 @@ template<typename TInterval, typename TStringSet, typename TAlignmentString, typ
 void
 _buildIntervalsForAllSequences(TAlignmentString & alis,
                                String<String<TInterval> > & intervals,
-                                  TStringSet & seqs,
+                               TStringSet & seqs,
                                TSeqMap & seq_map)
 {
 
     typedef typename Value<TInterval>::Type TValue;
     typedef typename Cargo<TInterval>::Type TCargo;
     typedef typename Iterator<TAlignmentString,Standard>::Type TAliIterator;
+    typedef typename Size<TAlignmentString>::Type TFragSize;
+    typedef typename Position<TStringSet>::Type TPosition;
+    typedef typename Id<TAlignmentString>::Type TId;
+
     TAliIterator ali_it = begin(alis,Standard());
     TAliIterator ali_end = end(alis,Standard());
     TValue ali_counter = 0;
     //foreach alignment
     while(ali_it != ali_end)
     {
-        TValue seq_i_id,begin_,end_;
+        TId seq_i_id;
+        TFragSize begin_, end_;
+        TPosition seq_i_pos;
+        TInterval interval;
+
         //printMatch(*ali_it);
         //get the first sequence (and its begin and end) that takes part in the alignment (seq_i)
+
         _getSeqBeginAndEnd(*ali_it,seq_map,seq_i_id,begin_,end_,0);
-        TValue seq_i_pos = idToPosition(seqs, seq_i_id);
+        seq_i_pos = idToPosition(seqs, seq_i_id);
+        interval = TInterval(static_cast<TValue>(begin_), static_cast<TValue>(end_), TCargo(ali_counter, 0));
         //and append the interval (ali_begin, ali_end) with cargo ali* to the list of intervals of seq_i
-        appendValue(intervals[seq_i_pos],IntervalAndCargo<TValue,TCargo>(begin_,end_,TCargo(ali_counter,0)));
+        appendValue(intervals[seq_i_pos], interval);
 
         //get the second sequence (and its begin and end) that takes part in the alignment (seq_i)
         _getSeqBeginAndEnd(*ali_it,seq_map,seq_i_id,begin_,end_,1);
         seq_i_pos = idToPosition(seqs, seq_i_id);
+        interval = TInterval(static_cast<TValue>(begin_), static_cast<TValue>(end_), TCargo(ali_counter, 1));
         //and again append the interval (ali_begin, ali_end) with cargo ali* to the list of intervals of seq_i
-        appendValue(intervals[seq_i_pos],IntervalAndCargo<TValue,TCargo>(begin_,end_,TCargo(ali_counter,1)));
+        appendValue(intervals[seq_i_pos], interval);
 
         ++ali_counter;
         ++ali_it;
@@ -210,11 +221,19 @@ _createTreesForAllSequences(String<TGraph> & gs,
                            TSeqMap & seq_map,
                            TValue numSequences)
 {
-    //typedef typename Value<TAlignmentString>::Type TAlignment;
-//    typedef TAlignment* TCargo;
-    typedef Pair<unsigned,unsigned,BitPacked<31,1> > TCargo;
-    typedef IntervalAndCargo<int,TCargo> TInterval;
-    //typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+
+    // extract TInterval from TPropertyMap
+    // TInterval    == IntervalAndCargo<TIntervalValue, TIntervalCargo>
+    // TNode        == IntervalNode<TInterval>
+    // TPropertyMap == String<TNode>
+    // Value<TNode>::Type delivers Value<TInterval<TIntervalValue, _> >::Type = TIntervalValue
+    // Cargo<TNode>::Type delivers Cargo<TInterval<_, TIntervalCargo> >::Type = TIntervalCargo
+    typedef typename Value<TPropertyMap>::Type TNode;
+    typedef typename Value<TNode>::Type TIntervalValue;
+    typedef typename Cargo<TNode>::Type TIntervalCargo;
+    typedef IntervalAndCargo<TIntervalValue, TIntervalCargo> TInterval;
+    typedef String<TInterval> TIntervals;
+    typedef typename Value<typename Value< TIntervals >::Type>::Type TCenter;
 
     //std::cout <<"create interval trees...";
     // clock_t start, finish1;
@@ -225,7 +244,7 @@ _createTreesForAllSequences(String<TGraph> & gs,
     resize(pms,numSequences);
 
     // and one string of intervals for each sequence
-    String<String<TInterval> > intervals;
+    String<TIntervals> intervals;
     resize(intervals,numSequences);
     // fill intervals
     _buildIntervalsForAllSequences(alis,intervals,seqs,seq_map);
@@ -235,7 +254,7 @@ _createTreesForAllSequences(String<TGraph> & gs,
     while(i < numSequences)
     {
         //std::cout << (numSequences-i) <<" more ("<<length(intervals[i])<<" intervals)... "<<std::flush;
-        TValue center = length(seqs[i])/2; // center raus, hat hier nix zu suchen
+        TCenter center = static_cast<TCenter>(length(seqs[i])/2); // center raus, hat hier nix zu suchen
         //create interval tree!
         createIntervalTree(gs[i], pms[i], intervals[i], center);
 
@@ -490,7 +509,7 @@ matchRefinement(TAlignmentString & alis,
 //    typedef TValue TCargo;
 //    typedef Pair<unsigned,unsigned,BitPacked<31,1> > TCargo;
     typedef Pair<unsigned,unsigned,BitPacked<31,1> > TCargo;
-    typedef IntervalAndCargo<int,TCargo> TInterval;
+    typedef IntervalAndCargo<unsigned,TCargo> TInterval;
     typedef Graph<Directed<void,WithoutEdgeId> > TGraph;
     typedef IntervalTreeNode<TInterval> TNode;
     typedef String<TNode> TPropertyMap;

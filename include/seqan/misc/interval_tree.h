@@ -967,7 +967,7 @@ createIntervalTree(TGraph & g,
         if (length(intervals) == 1) // if there is just one interval ->  center = center of this interval
             center = (rightBoundary(intervals[0]) - leftBoundary(intervals[0])) / (TValue)2.0;
 
-        _createIntervalTree(g, pm, interval_pointers, root, (TValue)0.0, center, length(intervals), tag);
+        _createIntervalTree(g, pm, interval_pointers, root, (TValue)0.0, center, length(interval_pointers), tag);
 
         reserve(pm, length(pm), Exact());
         reserve(g.data_vertex, length(g.data_vertex), Exact());
@@ -1007,12 +1007,13 @@ createIntervalTree(IntervalTree<TValue, TCargo> & it,
 //of each node to min+(max-min)/2
 template <typename TGraph, typename TPropertyMap, typename TIntervalPointer, typename TValue>
 inline void
-_createIntervalTree(TGraph & g, TPropertyMap & pm,
+_createIntervalTree(TGraph & g,
+                    TPropertyMap & pm,
                     String<TIntervalPointer *> & intervals,
                     typename VertexDescriptor<TGraph>::Type & knot,
                     TValue,
                     TValue center,
-                    typename VertexDescriptor<TGraph>::Type len,
+                    typename Size<String<TIntervalPointer *> >::Type len,
                     Tag<TagComputeCenter_> const tag)
 {
     //  Rekursionsanker
@@ -1104,11 +1105,13 @@ _createIntervalTree(TGraph & g, TPropertyMap & pm,
 //_calcIntervalTreeNodeCenterRight
 template <typename TGraph, typename TPropertyMap, typename TSpec, typename TInterval, typename TValue>
 inline void
-_createIntervalTree(TGraph & g, TPropertyMap & pm,
+_createIntervalTree(TGraph & g,
+                    TPropertyMap & pm,
                     String<TInterval *> & intervals,
                     typename VertexDescriptor<TGraph>::Type & knot,
-                    TValue last_center, TValue center,
-                    typename VertexDescriptor<TGraph>::Type len,
+                    TValue last_center,
+                    TValue center,
+                    typename Size<String<TInterval *> >::Type len,
                     Tag<TSpec> const tag)
 {
     // Rekursionsanker
