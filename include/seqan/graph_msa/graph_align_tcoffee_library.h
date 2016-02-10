@@ -493,13 +493,14 @@ selectPairs(StringSet<TString, TSpec> const& str,
 {
     typedef StringSet<TString, TSpec> TStringSet;
     typedef typename Size<TStringSet>::Type TSize;
+    typedef typename Value<String<TSize2, TSpec2> >::Type TValue;
     typedef typename Iterator<String<TSize2, TSpec2>, Standard>::Type TPairIter;
 
     TSize nseq = length(str);
     resize(pList, nseq * (nseq - 1));
     TPairIter itPair = begin(pList, Standard());
-    for(TSize i=0; i<nseq-1; ++i) {
-        for(TSize j=i+1; j<nseq; ++j) {
+    for(TValue i=0; i<nseq-1; ++i) {
+        for(TValue j=i+1; j<nseq; ++j) {
             *itPair = i; ++itPair;
             *itPair = j; ++itPair;
         }
