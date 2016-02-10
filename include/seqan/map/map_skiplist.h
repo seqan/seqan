@@ -401,7 +401,7 @@ _skiplistCreateHeight(Map<TValue, Skiplist<TSpec> > & me)
 {
     typedef Map<TValue, Skiplist<TSpec> > TSkiplist;
 
-    unsigned char height = std::geometric_distribution<__uint8>()(me.rng);
+    unsigned char height = static_cast<unsigned char>(std::geometric_distribution<unsigned int>()(me.rng));
     if (height >= TSkiplist::MAX_HEIGHT) height = TSkiplist::MAX_HEIGHT-1;
 
     if (height > me.data_height) me.data_height = height;
@@ -416,7 +416,7 @@ _skiplistCreateHeight(Map<TValue, Skiplist<TSpec> > & me,
 {
     typedef Map<TValue, Skiplist<TSpec> > TSkiplist;
 
-    unsigned char height = std::geometric_distribution<__uint8>()(me.rng);
+    unsigned char height = static_cast<unsigned char>(std::geometric_distribution<unsigned int>()(me.rng));
     if (height >= TSkiplist::MAX_HEIGHT) height = TSkiplist::MAX_HEIGHT-1;
 
     if (height > me.data_height)
