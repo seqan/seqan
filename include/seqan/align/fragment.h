@@ -341,12 +341,20 @@ label(Fragment<TSize, TSpec> const& f,
 
 template<typename TSize, typename TSpec, typename TVal>
 inline typename Id<Fragment<TSize, TSpec> >::Type &
-sequenceId(Fragment<TSize, TSpec> const& f,
+sequenceId(Fragment<TSize, TSpec> & f,
            TVal const seqId)
 {
     SEQAN_CHECKPOINT
-    typedef typename Id<Fragment<TSize, TSpec> >::Type TId;
-    return ((TId) seqId == 0) ? const_cast<TId &>(f.seqId1) : const_cast<TId &>(f.seqId2);
+    return (seqId == (TVal)0) ? f.seqId1 : f.seqId2;
+}
+
+template<typename TSize, typename TSpec, typename TVal>
+inline typename Id<Fragment<TSize, TSpec> >::Type const &
+sequenceId(Fragment<TSize, TSpec> const & f,
+           TVal const seqId)
+{
+    SEQAN_CHECKPOINT
+    return (seqId == (TVal)0) ? f.seqId1 : f.seqId2;
 }
 
 //////////////////////////////////////////////////////////////////////////////
