@@ -126,12 +126,12 @@ endfunction (add_executable)
 # Macro seqan_add_app_subdirectory (APP_NAME)
 # ---------------------------------------------------------------------------
 
-macro (seqan_add_app_subdirectory APP_NAME)
-    if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
-         "${SEQAN_BUILD_SYSTEM}" STREQUAL "APP:${APP_NAME}")
-        add_subdirectory (${APP_NAME})
-    endif ()
-endmacro (seqan_add_app_subdirectory)
+# macro (seqan_add_app_subdirectory APP_NAME)
+#     if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
+#          "${SEQAN_BUILD_SYSTEM}" STREQUAL "APP:${APP_NAME}")
+#         add_subdirectory (${APP_NAME})
+#     endif ()
+# endmacro (seqan_add_app_subdirectory)
 
 # ---------------------------------------------------------------------------
 # Macro seqan_register_apps ()
@@ -148,23 +148,35 @@ macro (seqan_register_apps)
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
 
     # enable static linkage for seqan apps
-    if (NOT CMAKE_SYSTEM_NAME MATCHES "Windows")
+    if (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
         set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-        # libstdc++ is being used and needs be explicitly "statified"
-        if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_SYSTEM_NAME MATCHES "Linux")
-            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
-        endif (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_SYSTEM_NAME MATCHES "Linux")
-        # if not apple make other libs static (apple does not support static builds except for the above)
-        if (NOT APPLE)
+        if (APPLE)
+            # static build not supported on apple, but at least we can include gcc libs
+            if (CMAKE_COMPILER_IS_GNUCXX)
+                set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
+            endif (CMAKE_COMPILER_IS_GNUCXX)
+        else (APPLE)
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
-        endif (NOT APPLE)
-        # on linux cmake adds -rdynamic automatically which clang can't handle in static builds
-        if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-            SET(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
-        endif (CMAKE_SYSTEM_NAME MATCHES "Linux")
-        # not that these checks are more than OS, because we have many possible combinations between
-        # OS, compiler and STL used
-    endif (NOT CMAKE_SYSTEM_NAME MATCHES "Windows")
+
+            # make sure -Wl,-Bdynamic isn't added automatically
+            set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
+            # make sure -fPIC isn't added automatically
+            set(CMAKE_SHARED_LIBRARY_CXX_FLAGS)
+
+            # for ENTIRELY UNKOWN reasons find_package returns libs for static
+            # linking (.a) when building as SEQAN_RELEASE_APPS or APP:*  but
+            # .so when building DEVELOP. In the latter case it also encloses the
+            # static libs with -Bdynamic which turns static off for system libs.
+            # Here we remove these (so statics works), but only for NON-DEVELOP
+            # on non-linux.
+
+            # this one must not be unset on FreeBSD if not building APPs individually
+            if ((CMAKE_SYSTEM_NAME MATCHES "Linux") OR (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP"))
+                # make sure -rdynamic isn't added automatically
+                set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
+            endif ((CMAKE_SYSTEM_NAME MATCHES "Linux") OR (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP"))
+        endif (APPLE)
+    endif (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
 
     # Enable global exception handler for all seqan apps.
     set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
@@ -220,6 +232,11 @@ macro (seqan_build_system_init)
             # Install FindSeqAn TODO(h-2) rename FindSeqAn.cmake to FindSeqAn${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
             install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/FindSeqAn.cmake" DESTINATION share/cmake/Modules)
         endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
+    endif ()
+
+    if (("${SEQAN_BUILD_SYSTEM}" MATCHES "SEQAN_RELEASE") OR
+        ("${SEQAN_BUILD_SYSTEM}" MATCHES "APP"))
+        set (SEQAN_STATIC_APPS TRUE CACHE INTERNAL "Create static app binaries")
     endif ()
 
     set (SEQAN_BUILD_SYSTEM "DEVELOP" CACHE STRING "Build/Release mode to select. One of DEVELOP SEQAN_RELEASE, APP:\${APP_NAME}. Defaults to DEVELOP.")
