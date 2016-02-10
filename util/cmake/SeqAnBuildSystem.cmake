@@ -48,22 +48,6 @@ include (SeqAnUsabilityAnalyzer)
 include (CheckCXXCompilerFlag)
 
 # ---------------------------------------------------------------------------
-# Normalize CMAKE_CXX_FLAGS to be a string.
-#
-# If we do not do this then setting the environment variable CXXFLAGS will
-# cause CMAKE_CXX_FLAGS to become a list and this will generate compiler
-# command lines including the list item separator semicolon ";".  This makes
-# the compiler command fail.
-# ---------------------------------------------------------------------------
-
-#if (CMAKE_CXX_FLAGS)
-#  foreach (_FLAG ${CMAKE_CXX_FLAGS})
-#    set (_FLAGS "${_FLAGS} ${_FLAG}")
-#  endforeach (_FLAG ${CMAKE_CXX_FLAGS})
-#  set (CMAKE_CXX_FLAGS "${_FLAGS}")
-#endif (CMAKE_CXX_FLAGS)
-
-# ---------------------------------------------------------------------------
 # Enable /bigobj flag on Windows.
 # ---------------------------------------------------------------------------
 
@@ -121,17 +105,6 @@ function (add_executable NAME)
     # Add dependency on the SUA target.
     seqan_add_sua_dependency (${NAME})
 endfunction (add_executable)
-
-# ---------------------------------------------------------------------------
-# Macro seqan_add_app_subdirectory (APP_NAME)
-# ---------------------------------------------------------------------------
-
-# macro (seqan_add_app_subdirectory APP_NAME)
-#     if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
-#          "${SEQAN_BUILD_SYSTEM}" STREQUAL "APP:${APP_NAME}")
-#         add_subdirectory (${APP_NAME})
-#     endif ()
-# endmacro (seqan_add_app_subdirectory)
 
 # ---------------------------------------------------------------------------
 # Macro seqan_register_apps ()
