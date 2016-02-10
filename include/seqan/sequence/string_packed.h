@@ -609,7 +609,7 @@ resize(String<TValue, Packed<THostspec> > & me,
 
     // create WORD
     THostValue tmp;
-    tmp.i = 0ul;
+    tmp.i = 0;
     __uint64 ord = ordValue(TValue(newValue));
     for (unsigned j = 0; j < TTraits::VALUES_PER_HOST_VALUE; ++j)
         tmp.i |= ord << (j * TTraits::BITS_PER_VALUE);
@@ -627,7 +627,7 @@ resize(String<TValue, Packed<THostspec> > & me,
         TStringSize alreadySet = old_length % TTraits::VALUES_PER_HOST_VALUE;
 
         // clear non-set positions (which may be uninitialized ( != 0 )
-        tmp.i = (~0ul << (64 - alreadySet * TTraits::BITS_PER_VALUE)) >> TTraits::WASTED_BITS;
+        tmp.i = (~static_cast<__uint64>(0) << (64 - alreadySet * TTraits::BITS_PER_VALUE)) >> TTraits::WASTED_BITS;
         host(me)[old_host_length-1].i &= tmp.i;
 
         for (TStringSize i = alreadySet; i < TTraits::VALUES_PER_HOST_VALUE; ++i)
