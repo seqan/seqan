@@ -177,6 +177,9 @@ _buildIntervalsForAllSequences(TAlignmentString & alis,
     typedef typename Position<TStringSet>::Type TPosition;
     typedef typename Id<TAlignmentString>::Type TId;
 
+    static_assert(std::is_same<typename Id<TStringSet>::Type, TId>::value,
+                  "The Id of TAlignmentString (seq_i_id) will be used to derive the position in `seqs` by using the Id of TStringSet.");
+
     TAliIterator ali_it = begin(alis,Standard());
     TAliIterator ali_end = end(alis,Standard());
     TValue ali_counter = 0;
@@ -280,10 +283,13 @@ _makeRefinedGraphNodes(String<std::set<TValue> > & all_nodes,
                       TAliGraph & ali_g)
 {
     typedef typename std::set<TValue>::iterator TSetIterator;
+    typedef typename Position<decltype(stringSet(ali_g))>::Type TPosition;
+    typedef typename Id<decltype(stringSet(ali_g))>::Type TId;
+
     //for each sequence look at all cut positions and create nodes between them
-    for(unsigned int seq_i_pos = 0; seq_i_pos < length(seqs); ++seq_i_pos)
+    for(TPosition seq_i_pos = 0; seq_i_pos < length(seqs); ++seq_i_pos)
     {
-        TValue seq_i_id = positionToId(stringSet(ali_g), seq_i_pos);
+        TId seq_i_id = positionToId(stringSet(ali_g), seq_i_pos);
         TSetIterator it = all_nodes[seq_i_pos].begin();
         TSetIterator end_it = all_nodes[seq_i_pos].end();
         TSetIterator next_it = it;
@@ -329,6 +335,15 @@ _makeRefinedGraphEdges(TAlignmentString & alis,
     typedef typename VertexDescriptor<TAliGraph>::Type TVertexDescriptor;
     typedef typename EdgeDescriptor<TAliGraph>::Type TEdgeDescriptor;
     typedef typename Cargo<TAliGraph>::Type TCargo;
+
+    typedef typename Size<TAlignmentString>::Type TFragSize;
+    typedef typename Position<TStringSet>::Type TPosition;
+    typedef typename Id<TStringSet>::Type TId;
+
+    // TODO fix comment because it is the other way around
+    static_assert(std::is_same<typename Id<TAlignmentString>::Type, TId>::value,
+                  "The Id of TStringSet (seq_id) will be used to derive the position in `seqs` by using the Id of TStringSet.");
+
     //make edges
     TAliIterator ali_it = begin(alis);
     TAliIterator ali_end = end(alis);
@@ -336,23 +351,28 @@ _makeRefinedGraphEdges(TAlignmentString & alis,
     while(ali_it != ali_end)
     {
         //get sequence, begin position and end position
-        TValue seq_id,begin_pos,end_pos;
+        TId seq_id;
+        TFragSize begin_pos, end_pos;
+
         _getSeqBeginAndEnd(*ali_it,seq_map,seq_id,begin_pos,end_pos,(TValue)0);
+
         SEQAN_ASSERT_LEQ(end_pos, length(seqs[idToPosition(seqs, seq_id)]));
         SEQAN_ASSERT(ali_it.data_container == ali_end.data_container);
         SEQAN_ASSERT(ali_it.data_iterator != ali_end.data_iterator);
 
         //get the node represents the current interval (begin_pos until next_cut_pos or end_pos)
         TVertexDescriptor act_knot = findVertex(ali_g,seq_id,begin_pos);
-        TValue act_pos = begin_pos;
-        TValue seq_j_id_temp,pos_j_begin;
+        TFragSize act_pos = begin_pos;
+        TId seq_j_id_temp;
+        TFragSize pos_j_begin;
         _getOtherSequenceAndProject(*ali_it,(TValue)0,seq_map,seq_id,act_pos,seq_j_id_temp,pos_j_begin);
 
         //for each interval that lies within the current segment/fragement/alignment
         while(act_pos < end_pos)
         {
             //get other sequence and projected position
-            TValue seq_j_id,pos_j;
+            TId seq_j_id;
+            TFragSize pos_j;
             _getOtherSequenceAndProject(*ali_it,(TValue)0,seq_map,seq_id,act_pos,seq_j_id,pos_j);
             SEQAN_ASSERT_NEQ(pos_j, static_cast<TValue>(-1));
             //find node that contains the projected position (pos_j)
@@ -364,7 +384,8 @@ _makeRefinedGraphEdges(TAlignmentString & alis,
                 doAddEdge = false;
             else
             {
-                TValue temp_seq_i_id,temp_act_pos;
+                TId temp_seq_i_id;
+                TFragSize temp_act_pos;
                 _getOtherSequenceAndProject(*ali_it,(TValue)1,seq_map,seq_j_id,static_cast<TValue>(fragmentBegin(ali_g,vd)),temp_seq_i_id,temp_act_pos);
                 if(temp_act_pos == static_cast<TValue>(-1))
                     doAddEdge = false;
@@ -517,6 +538,14 @@ matchRefinement(TAlignmentString & alis,
     typedef typename Cargo<typename Value<TPropertyMap>::Type>::Type TAlignmentPointer;
     typedef typename Iterator<String<TAlignmentPointer>, Rooted>::Type TSegmentIterator;
 
+    typedef StringSet<TSequence, TSetSpec> TStringSet;
+    typedef typename Size<TAlignmentString>::Type TFragSize;
+    typedef typename Position<TStringSet>::Type TPosition;
+    typedef typename Id<TAlignmentString>::Type TId;
+
+    static_assert(std::is_same<typename Id<TStringSet>::Type, TId>::value,
+                  "The Id of TAlignmentString (seq_i_id) will be used to derive the position in `seqs` by using the Id of TStringSet.");
+
 #ifdef SEQAN_TCOFFEE_DEBUG
     double refinementTime = sysTime();
 #endif
@@ -557,9 +586,12 @@ matchRefinement(TAlignmentString & alis,
         //for each of the two sequences
         for(TValue i = 0; i < 2; ++i)
         {
-            TValue seq_i_id,begin_i,end_i;
+            TId seq_i_id;
+            TFragSize begin_i, end_i;
+            TPosition seq_i_pos;
+
             _getSeqBeginAndEnd(*ali_it,seq_map,seq_i_id,begin_i,end_i,i);
-            TValue seq_i_pos = idToPosition(seq,seq_i_id);
+            seq_i_pos = idToPosition(seq,seq_i_id);
 
             all_node_queues[seq_i_pos].insert(begin_i);
             all_node_queues[seq_i_pos].insert(end_i);
@@ -572,7 +604,7 @@ matchRefinement(TAlignmentString & alis,
     bool done = false;
     while(!done)
     {
-        for(unsigned seq_i_pos = 0; seq_i_pos < numSequences; ++seq_i_pos)
+        for(TPosition seq_i_pos = 0; seq_i_pos < numSequences; ++seq_i_pos)
         {
             queueIt = all_node_queues[seq_i_pos].begin();
             while (queueIt != all_node_queues[seq_i_pos].end())
@@ -584,7 +616,7 @@ matchRefinement(TAlignmentString & alis,
                    //&& _cutIsValid(all_node_queues,seq_i_pos,node_i,qiter,min_fragment_len,tag))
 //                if(iter == all_nodes[seq_i_pos].end())
                 {
-                    TValue seq_i_id = positionToId(seq, seq_i_pos);
+                    TId seq_i_id = positionToId(seq, seq_i_pos);
                     all_nodes[seq_i_pos].insert(node_i);
                     String<TAlignmentPointer> relevant_segments;
                     findIntervalsExcludeTouching(relevant_segments, gs[seq_i_pos],pms[seq_i_pos],node_i);
@@ -597,9 +629,10 @@ matchRefinement(TAlignmentString & alis,
                         TValue match_id = (*segment_it).i1;
                         TValue seg_num = (*segment_it).i2;                        //get the sequence that node_i needs to be projected onto (seq_j)
                         //and get the projected position (pos_j)
-                        TValue seq_j_id, node_j;
+                        TId seq_j_id;
+                        TValue node_j;
                         _getOtherSequenceAndProject(alis[match_id],seg_num,seq_map,seq_i_id,node_i,seq_j_id,node_j);
-                        TValue seq_j_pos = idToPosition(seq,seq_j_id);
+                        TPosition seq_j_pos = idToPosition(seq,seq_j_id);
                         _updateCutPosition(alis[match_id],node_j);
 
                         typename std::set<TValue>::iterator iter_j, qiter_j;
