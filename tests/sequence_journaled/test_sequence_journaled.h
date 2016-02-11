@@ -838,7 +838,7 @@ void testJournaledStringSubscriptOperatorRandomized(TStringJournalSpec const &)
     const unsigned SEED = 42;
     std::mt19937 rng(SEED);
 
-#define RAND_CHAR() (std::uniform_int_distribution<char>('A', 'Z')(rng))
+#define RAND_CHAR() (static_cast<char>(std::uniform_int_distribution<int>('A', 'Z')(rng)))
 
     // Build random reference and host string.
     String<char> string;
@@ -901,7 +901,7 @@ void testJournaledStringFuzzying(TStringJournalSpec const &)
     const unsigned SEED = 42;
     std::mt19937 rng(SEED);
 
-#define RAND_CHAR() (std::uniform_int_distribution<char>('A', 'Z')(rng))
+#define RAND_CHAR() (static_cast<char>(std::uniform_int_distribution<int>('A', 'Z')(rng)))
 
     // Build random reference and host string.
     String<char> string;
