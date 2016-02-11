@@ -193,8 +193,8 @@ _adaptTraceSegmentsTo(TFile & file,
         {
             case TraceBitMap_::DIAGONAL:
             {
-                int j = traceSegments[k - 1]._verticalBeginPos;
-                for (int i = traceSegments[k - 1]._horizontalBeginPos; i < (int) (traceSegments[k - 1]._horizontalBeginPos + traceSegments[k - 1]._length); ++i)
+                size_t j = traceSegments[k - 1]._verticalBeginPos;
+                for (size_t i = traceSegments[k - 1]._horizontalBeginPos; i < (size_t) (traceSegments[k - 1]._horizontalBeginPos + traceSegments[k - 1]._length); ++i)
                 {
                     _writeTraceSegmentToFile(file, seqH[i], seqV[j]);
                     ++j;
@@ -204,14 +204,14 @@ _adaptTraceSegmentsTo(TFile & file,
 
             case TraceBitMap_::VERTICAL:
             {
-                for (int i = traceSegments[k - 1]._verticalBeginPos; i < (int) (traceSegments[k - 1]._verticalBeginPos + traceSegments[k - 1]._length); ++i)
+                for (size_t i = traceSegments[k - 1]._verticalBeginPos; i < (size_t) (traceSegments[k - 1]._verticalBeginPos + traceSegments[k - 1]._length); ++i)
                     _writeTraceSegmentToFile(file, gapValue<char>(), seqV[i]);
                 break;
             }
 
             case TraceBitMap_::HORIZONTAL:
             {
-                for (int i = traceSegments[k - 1]._horizontalBeginPos; i < (int) (traceSegments[k - 1]._horizontalBeginPos + traceSegments[k - 1]._length); ++i)
+                for (size_t i = traceSegments[k - 1]._horizontalBeginPos; i < (size_t) (traceSegments[k - 1]._horizontalBeginPos + traceSegments[k - 1]._length); ++i)
                     _writeTraceSegmentToFile(file, seqH[i], gapValue<char>());
             }
         }

@@ -134,7 +134,7 @@ template <typename TSpec> inline void release(File<Async<TSpec> > & me, AiocbWra
 //____________________________________________________________________________
 // _returnValue
 
-inline int _returnValue(AiocbWrapper &request);           // "include/seqan/file/file_async.h"(250)
+inline ssize_t _returnValue(AiocbWrapper &request);           // "include/seqan/file/file_async.h"(250)
 
 //____________________________________________________________________________
 // waitFor
