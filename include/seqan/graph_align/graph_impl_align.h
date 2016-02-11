@@ -1556,7 +1556,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
     // Walk through all sequences and check the component order
     unsigned int compIndex = 0;
-    unsigned int compIndexLen = length(order);
+    size_t compIndexLen = length(order);
     typename TPosToVertexMap::const_iterator it = g.data_pvMap.begin();
     TIdType currentSeq = it->first.first;
     for(; it != g.data_pvMap.end(); ++it) {
@@ -1820,7 +1820,7 @@ _heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g
     TSize posStr1 = 0;
     TSize posStr2 = 0;
     TStringIter pointerStr2 = begin(str2, Standard());
-    int p = length(positions) - 1;
+    int p = static_cast<int>(length(positions)) - 1;
     while(pointerAlign != pointerAlignEnd) {
         TSize i = m;
         TSize j = n;
