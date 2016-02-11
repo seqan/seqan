@@ -193,7 +193,6 @@ namespace SEQAN_NAMESPACE_MAIN
         ManberMyers const &alg,
         TSize maxLCP)
     {
-        SEQAN_CHECKPOINT;
         createSuffixArrayPart(SA, s, alg, maxLCP, ValueSize< typename Value<TText>::Type >::VALUE);
     }
 }

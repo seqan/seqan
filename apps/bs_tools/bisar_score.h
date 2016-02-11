@@ -521,14 +521,12 @@ scoreGapExtendHorizontal(
 template <typename TBsCase, typename TModel, typename TSegment>
 inline int
 scoreGapExtend(Score<int, BsTagList<TBsCase, TModel, TSegment> > const & /*me*/) {
-    SEQAN_CHECKPOINT;
     //std::cout << "This should happen only once: scoreGapExtend()"<< std::endl;
     return (int)-100;
 }
 template <typename TBsCase, typename TModel, typename TSegment>
 inline int
 scoreGapOpen(Score<int, BsTagList<TBsCase, TModel, TSegment> > const & /*me*/) {
-    SEQAN_CHECKPOINT;
     //std::cout << "This should happen only once: scoreGapOpen()" << std::endl;
     return (int)-200;
 }

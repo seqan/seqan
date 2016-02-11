@@ -158,7 +158,6 @@ template <typename T>
 inline T
 unknownValueImpl(T *)
 {
-    SEQAN_CHECKPOINT;
     return 'N';
 }
 

@@ -201,7 +201,6 @@ _createAcTrie(Pattern<TNeedle, AhoCorasick> & me)
 
 template <typename TNeedle>
 void _reinitPattern(Pattern<TNeedle, AhoCorasick> & me) {
-    SEQAN_CHECKPOINT;
     SEQAN_ASSERT_NOT(empty(needle(me)));
     clear(me.data_graph);
     clear(me.data_supplyMap);
@@ -231,7 +230,6 @@ void _reinitPattern(Pattern<TNeedle, AhoCorasick> & me) {
 template <typename TNeedle>
 inline void _patternInit (Pattern<TNeedle, AhoCorasick> & me)
 {
-SEQAN_CHECKPOINT
     clear(me.data_endPositions);
     me.data_keywordIndex = 0;
     me.data_lastState = getRoot(me.data_graph);

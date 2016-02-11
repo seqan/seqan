@@ -1804,7 +1804,6 @@ void mapSingleReads(
 		TValue prefixLen,
 		MicroRNA)
 	{
-	SEQAN_CHECKPOINT
 		typedef typename Value<TStringSet>::Type					TString;
 		typedef typename Iterator<TString const, Standard>::Type	TIterator;
 		typedef typename Value<TDir>::Type				TSize;
@@ -1844,7 +1843,6 @@ void mapSingleReads(
 	inline void
 	_qgramCountQGrams(TDir &dir, TStringSet &stringSet, TShape &shape, TValue prefixLen, MicroRNA)
 	{
-	SEQAN_CHECKPOINT
 		typedef typename Value<TStringSet>::Type					TString;
 		typedef typename Iterator<TString const, Standard>::Type	TIterator;
 		typedef typename Value<TDir>::Type							TSize;
@@ -1869,7 +1867,6 @@ void mapSingleReads(
 	template < typename TIndex, typename TValue>
 	void createQGramIndex(TIndex &index, TValue prefixLen, MicroRNA)
 	{
-	SEQAN_CHECKPOINT
 		typename Fibre<TIndex, QGramText>::Type	   &text  = indexText(index);
 		typename Fibre<TIndex, QGramSA>::Type         &sa    = indexSA(index);
 		typename Fibre<TIndex, QGramDir>::Type        &dir   = indexDir(index);

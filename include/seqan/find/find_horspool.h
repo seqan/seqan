@@ -131,7 +131,6 @@ _findHorspool(TFinder & finder,
               Pattern<TNeedle2, Horspool> & me,
               bool find_first)
 {
-SEQAN_CHECKPOINT
     typedef typename Haystack<TFinder>::Type THaystack;
     typedef typename Parameter_<THaystack>::Type TParamHaystack;
 
@@ -201,7 +200,6 @@ find_horspool_sentinel(TFinder & finder,
                        Pattern<TNeedle2, Horspool> & me,
                        bool find_first)
 {
-SEQAN_CHECKPOINT
     typedef typename Haystack<TFinder>::Type THaystack;
     THaystack & hayst = haystack(finder);
 
@@ -299,7 +297,6 @@ _findHorspool(Finder<String<TValue, FileReader<TFormat, TFile, FileReaderTSpec> 
               Pattern<TNeedle2, Horspool> & me,
               bool find_first)
 {
-SEQAN_CHECKPOINT
     typedef Finder<String<TValue, FileReader<TFormat, TFile, FileReaderTSpec> >, TFinderSpec > TFinder;
     typedef typename Haystack<TFinder>::Type THaystack;
     THaystack & hayst = haystack(finder);
@@ -367,7 +364,6 @@ _findHorspool(TFinder & finder,
     Pattern<TNeedle2, Horspool> & me,
     bool find_first)
 {
-SEQAN_CHECKPOINT
     typedef typename Haystack<TFinder>::Type THaystack;
     THaystack & hayst = haystack(finder);
 
@@ -437,7 +433,6 @@ template <typename TFinder, typename TNeedle2>
 bool
 find(TFinder & finder, Pattern<TNeedle2, Horspool> & me)
 {
-SEQAN_CHECKPOINT
     bool find_first = empty(finder);
     if (find_first)
     {

@@ -77,23 +77,19 @@ class Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >
 
 
         Graph() : data_root(0) {
-            SEQAN_CHECKPOINT
         }
 
 
         ~Graph() {
-            SEQAN_CHECKPOINT
             clear(*this);
         }
 
         Graph(Graph const & _other)
         {
-            SEQAN_CHECKPOINT
             _copyGraph(_other, *this);
         }
 
         Graph const& operator = (Graph const & _other) {
-            SEQAN_CHECKPOINT
             if (this == &_other) return *this;
             _copyGraph(_other, *this);
             return *this;
@@ -110,7 +106,6 @@ addEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& g,
         TVertexDescriptor const target,
         String<TAlphabet> const & label)
 {
-    SEQAN_CHECKPOINT;
     SEQAN_ASSERT(idInUse(g.data_id_managerV, source));
     SEQAN_ASSERT(idInUse(g.data_id_managerV, target));
 
@@ -137,7 +132,6 @@ addEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& g,
         TVertexDescriptor const target,
         TChars const* chars)
 {
-    SEQAN_CHECKPOINT
     return addEdge(g,source,target,String<TAlphabet>(chars));
 }
 
@@ -165,7 +159,6 @@ removeEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& g
         TVertexDescriptor const target,
         String<TAlphabet> const& label)
 {
-    SEQAN_CHECKPOINT;
     (void)target;  // In case it is compiled without assertions.
     SEQAN_ASSERT(idInUse(g.data_id_managerV, source));
     SEQAN_ASSERT(idInUse(g.data_id_managerV, target));
@@ -253,7 +246,6 @@ getSuccessor(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > 
              TVertexDescriptor vertex,
              TCharacters const* chars)
 {
-    SEQAN_CHECKPOINT
     return getSuccessor(g,vertex,String<TAlphabet>(chars));
 }
 
@@ -286,7 +278,6 @@ parseString(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > c
             TIterator beginIt,
             TIterator endIt)
 {
-    SEQAN_CHECKPOINT;
     SEQAN_ASSERT(idInUse(g.data_id_managerV, vertex));
     typedef Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > TGraph;
     typedef typename Size<TGraph>::Type TSize;

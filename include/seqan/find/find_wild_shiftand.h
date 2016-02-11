@@ -174,13 +174,11 @@ bool _validate(TNeedle2 const & needle)
             ++i;
         }
         else if(convert<char>(getValue(needle,i)) == '{'){
-SEQAN_CHECKPOINT
             String <char> number;
             TWord n,m;
             n = m = 0;
             --len;++i; // get to the first number
             while(i < nl && convert<char>(getValue(needle,i)) != '}' && convert<char>(getValue(needle,i)) != ',') {
-SEQAN_CHECKPOINT
                 append(number,convert<char>(getValue(needle,i)));
                 --len;++i;
             }
@@ -193,11 +191,9 @@ SEQAN_CHECKPOINT
 
             // check the second number
             if (convert<char>(getValue(needle,i)) == ','){
-SEQAN_CHECKPOINT
                 --len;++i;
                 clear(number);
                 while(i < nl && convert<char>(getValue(needle,i)) != '}') {
-SEQAN_CHECKPOINT
                     append(number,convert<char>(getValue(needle,i)));
                     --len;++i;
                 }
@@ -216,7 +212,6 @@ SEQAN_CHECKPOINT
             if(m < n && m != 0)    return false;
         }
         else if(convert<char>(getValue(needle,i)) == '\\'){
-SEQAN_CHECKPOINT
             // check if there exists a next character
             if(i == nl - 1)    return false;
             else ++i;
@@ -240,44 +235,35 @@ unsigned _lengthWithoutWildcards(TNeedle const & needle) {
     TWord i = 0;
     while(i < nl) {
         if(convert<char>(getValue(needle,i)) == '+'){
-SEQAN_CHECKPOINT
             --len;
         }
         else if(convert<char>(getValue(needle,i)) == '*'){
-SEQAN_CHECKPOINT
             --len;
         }
         else if(convert<char>(getValue(needle,i)) == '?'){
-SEQAN_CHECKPOINT
             --len;
         }
         else if(convert<char>(getValue(needle,i)) == '['){
-SEQAN_CHECKPOINT
             while(convert<char>(getValue(needle,i)) != ']') {
-SEQAN_CHECKPOINT
                 --len;++i;
             }
         }
         else if(convert<char>(getValue(needle,i)) == '{'){
-SEQAN_CHECKPOINT
             String <char> number;
             TWord n,m;
             n = m = 0;
             --len;++i; // get to the first number
             while(convert<char>(getValue(needle,i)) != '}' && convert<char>(getValue(needle,i)) != ',') {
-SEQAN_CHECKPOINT
                 append(number,convert<char>(getValue(needle,i)));
                 --len;++i;
             }
             // we also have to read the second number
             n = atoi(toCString(number));
             if (convert<char>(getValue(needle,i)) == ','){
-SEQAN_CHECKPOINT
                 --len;++i;
                 //lets get m
                 clear(number);
                 while(convert<char>(getValue(needle,i)) != '}') {
-SEQAN_CHECKPOINT
                     append(number,convert<char>(getValue(needle,i)));
                     --len;++i;
                 }
@@ -290,7 +276,6 @@ SEQAN_CHECKPOINT
             len += (m != 0 ? m : n) - 1;
         }
         else if(convert<char>(getValue(needle,i)) == '\\'){
-SEQAN_CHECKPOINT
             --len;++i; // next character could be a \ too
         }
         ++i;
@@ -308,11 +293,9 @@ String <unsigned> _getCharacterClass(TNeedle2 const & host,unsigned start,unsign
     String <unsigned> ret;
     unsigned pos = start;
     while (pos < end){
-SEQAN_CHECKPOINT
         if(convert<char>(getValue(host,pos)) != '-')
             append(ret,convert<TWord>(convert<TValue>(getValue(host,pos))));
         else{
-SEQAN_CHECKPOINT
             // could be a range
             if (pos > start && pos < end && (convert<TWord>(convert<TValue>(getValue(host,pos-1))) < convert<TWord>(convert<TValue>(getValue(host,pos+1)))) ){
                 unsigned r_s = convert<TWord>(convert<TValue>(getValue(host,pos-1))) + 1;
@@ -334,7 +317,6 @@ template <typename TNeedle, typename TNeedle2>
 void _reinitPattern(Pattern<TNeedle, WildShiftAnd> & me,
                     TNeedle2 const & ndl)
 {
-SEQAN_CHECKPOINT
 
     me._valid = _validate(ndl);
 
@@ -362,26 +344,21 @@ SEQAN_CHECKPOINT
     String <TWord> last_char; // stores the character (or characters) that were read in the last step
     TWord j=0;
     while(j < me.needleLength){
-SEQAN_CHECKPOINT
         if (convert<char>(getValue(ndl,j)) == '+'){
-SEQAN_CHECKPOINT
             TWord len = length(last_char);
             for (unsigned int k = 0; k < len; ++k)
                 me.s_table[me.blockCount*last_char[k] + i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
         }
         else if (convert<char>(getValue(ndl,j)) == '?'){
-SEQAN_CHECKPOINT
             me.a_table[i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
         }
         else if (convert<char>(getValue(ndl,j)) == '*'){
-SEQAN_CHECKPOINT
             TWord len = length(last_char);
             for (unsigned int k = 0; k < len; ++k)
                 me.s_table[me.blockCount*last_char[k] + i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
             me.a_table[i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
         }
         else if(convert<char>(getValue(ndl,j)) == '['){
-SEQAN_CHECKPOINT
             /* find characters in class */
             TWord e = j;
             while(convert<char>(getValue(ndl,e)) != ']') ++e;
@@ -392,13 +369,11 @@ SEQAN_CHECKPOINT
             /* add class to the mask */
             ++i;
             for (unsigned int k = 0; k < len; ++k){
-SEQAN_CHECKPOINT
                 me.table[me.blockCount*last_char[k] + i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
             }
             j = e;
         }
         else if(convert<char>(getValue(ndl,j)) == '.'){ // matches all characters in the current alphabet
-SEQAN_CHECKPOINT
             clear(last_char);
             ++i;
             for(unsigned int l = 0;l < ValueSize<TValue>::VALUE;++l){
@@ -408,7 +383,6 @@ SEQAN_CHECKPOINT
 
         }
         else if(convert<char>(getValue(ndl,j)) == '\\'){ // handle escape characters
-SEQAN_CHECKPOINT
             /* goto next character use this for the bit mask */
             ++i;++j;
             clear(last_char);
@@ -416,24 +390,20 @@ SEQAN_CHECKPOINT
             me.table[me.blockCount*last_char[0] + i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
         }
         else if(convert<char>(getValue(ndl,j)) == '{'){ // handle bounded character repeats
-SEQAN_CHECKPOINT
             String <char> number;
             TWord n,m,r;
             TWord len = length(last_char);
             n = m = 0;
             ++j;
             while(convert<char>(getValue(ndl,j)) != '}' && convert<char>(getValue(ndl,j)) != ',') {
-SEQAN_CHECKPOINT
                 append(number,convert<char>(getValue(ndl,j)));
                 ++j;
             }
             n = atoi(toCString(number));
             if (convert<char>(getValue(ndl,j)) == ','){
-SEQAN_CHECKPOINT
                 ++j;
                 clear(number);
                 while(convert<char>(getValue(ndl,j)) != '}') {
-SEQAN_CHECKPOINT
                     append(number,convert<char>(getValue(ndl,j)));
                     ++j;
                 }
@@ -443,7 +413,6 @@ SEQAN_CHECKPOINT
             n -= 1;
             r = 0;
             while(r < n){ // add n normal characters
-SEQAN_CHECKPOINT
                 ++i;
                 for (unsigned int k = 0; k < len; ++k){
                     me.table[me.blockCount*last_char[k] + i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
@@ -452,11 +421,9 @@ SEQAN_CHECKPOINT
             }
             ++r; // correct the -1 of n to get in the correct relation to m
             while (r < m){ // if there was no m specified this won't be used
-SEQAN_CHECKPOINT
                 // add m - n charaters and make them optional
                 ++i;
                 for (unsigned int k = 0; k < len; ++k){
-SEQAN_CHECKPOINT
                     me.table[me.blockCount*last_char[k] + i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
                 }
                 me.a_table[i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
@@ -466,7 +433,6 @@ SEQAN_CHECKPOINT
 
         else // we have a character here
         {
-SEQAN_CHECKPOINT
             // determine character position in array table
             clear(last_char);
             append(last_char, convert<TWord>(convert<TValue>(getValue(ndl,j))));
@@ -483,11 +449,8 @@ SEQAN_CHECKPOINT
     resize(me.f_table,me.blockCount,0,Exact());
 
     for (unsigned int i = 0; i < me.character_count; ++i){
-SEQAN_CHECKPOINT
         if ((me.a_table[i / BitsPerValue<TWord>::VALUE] & (1 << (i % BitsPerValue<TWord>::VALUE))) != 0){
-SEQAN_CHECKPOINT
             if ((me.f_table[i / BitsPerValue<TWord>::VALUE] & (1 << ((i-1) % BitsPerValue<TWord>::VALUE))) == 0){
-SEQAN_CHECKPOINT
 
                 if(i > 0)
                     me.i_table[(i-1) / BitsPerValue<TWord>::VALUE] |= 1 << ((i-1) % BitsPerValue<TWord>::VALUE);
@@ -501,10 +464,8 @@ SEQAN_CHECKPOINT
 #endif
             }
             else{
-SEQAN_CHECKPOINT
                 TWord curBlock = i / BitsPerValue<TWord>::VALUE;
                 for (unsigned int k = 0; k < me.blockCount; ++k){
-SEQAN_CHECKPOINT
                     if(k != curBlock)
                         me.f_table[i / BitsPerValue<TWord>::VALUE] &= ~0;
                     else
@@ -569,7 +530,6 @@ inline void setHost(Pattern<TNeedle, WildShiftAnd> & me,
 template <typename TNeedle>
 inline void _patternInit (Pattern<TNeedle, WildShiftAnd> & me)
 {
-SEQAN_CHECKPOINT
     clear(me.prefSufMatch);
     resize(me.prefSufMatch, me.blockCount, 0, Exact());
 
@@ -582,7 +542,6 @@ SEQAN_CHECKPOINT
 template <typename TNeedle>
 inline bool valid(Pattern <TNeedle,WildShiftAnd> & me)
 {
-SEQAN_CHECKPOINT
     return me._valid;
 }
 
@@ -590,7 +549,6 @@ SEQAN_CHECKPOINT
 template <typename TNeedle>
 inline bool valid(Pattern <TNeedle,WildShiftAnd> const & me)
 {
-SEQAN_CHECKPOINT
     return me._valid;
 }
 
@@ -599,13 +557,11 @@ SEQAN_CHECKPOINT
 
 template <typename TFinder, typename TNeedle>
 inline bool _findShiftAndSmallNeedle(TFinder & finder, Pattern<TNeedle, WildShiftAnd> & me) {
-SEQAN_CHECKPOINT
     typedef typename Value<TNeedle>::Type TNdlAlphabet;
     typedef unsigned TWord;
 
     TWord compare = (1 << (me.character_count-1));
     while (!atEnd(finder)) {
-SEQAN_CHECKPOINT
         TWord pos = convert<TWord>(convert<TNdlAlphabet>(*finder));
         /* added  | (me.prefSufMatch[0] & me.s_table[me.blockCount*pos]) at the end of the line */
         me.prefSufMatch[0] = (((me.prefSufMatch[0] << 1) | 1) & me.table[me.blockCount*pos]) | (me.prefSufMatch[0] & me.s_table[me.blockCount*pos]) ;
@@ -614,7 +570,6 @@ SEQAN_CHECKPOINT
         me.df[0] = me.prefSufMatch[0] | me.f_table[0];
         me.prefSufMatch[0] |= ((me.a_table[0] & (~(me.df[0] - me.i_table[0]))) ^ me.df[0]);
         if ((me.prefSufMatch[0] & compare) != 0) {
-SEQAN_CHECKPOINT
             return true;
         }
         goNext(finder);
@@ -624,20 +579,17 @@ SEQAN_CHECKPOINT
 
 template <typename TFinder, typename TNeedle>
 inline bool _findShiftAndLargeNeedle(TFinder & finder, Pattern<TNeedle, WildShiftAnd> & me) {
-SEQAN_CHECKPOINT
     typedef typename Value<TNeedle>::Type TNdlAlphabet;
     typedef unsigned TWord;
     const TWord all1 = ~0;
     TWord compare = (1 << ((me.character_count-1) % BitsPerValue<TWord>::VALUE));
 
     while (!atEnd(finder)) {
-SEQAN_CHECKPOINT
         TWord pos = convert<TWord>(convert<TNdlAlphabet>(*finder));
         TWord carry = 1;
         TWord wc_carry = 0;
         // shift of blocks with carry
         for(TWord block=0;block<me.blockCount;++block) {
-SEQAN_CHECKPOINT
             bool newCarry = ((me.prefSufMatch[block] & (1<< (BitsPerValue<TWord>::VALUE - 1)))!=0);
             me.prefSufMatch[block] = (((me.prefSufMatch[block] << 1) | carry) & me.table[me.blockCount*pos+block]) | (me.prefSufMatch[block] & me.s_table[me.blockCount*pos+block]) ;
             carry = newCarry;
@@ -666,7 +618,6 @@ SEQAN_CHECKPOINT
 
 template <typename TFinder, typename TNeedle>
 inline bool find(TFinder & finder, Pattern<TNeedle, WildShiftAnd> & me) {
-SEQAN_CHECKPOINT
 
     if (empty(finder)) {
         _patternInit(me);

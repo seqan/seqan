@@ -283,7 +283,6 @@ namespace SEQAN_NAMESPACE_MAIN
     typename Size< Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > > >::Type
     _sortFirstWotdBucket(Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > > &index)
     {
-    SEQAN_CHECKPOINT
         typedef Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > >    TIndex;
         typedef typename Fibre<TIndex, WotdSA >::Type            TSA;
         typedef typename TIndex::TCounter                        TCounter;
@@ -376,7 +375,6 @@ namespace SEQAN_NAMESPACE_MAIN
         TEndPos right,
         TSize prefixLen)
     {
-    SEQAN_CHECKPOINT
         typedef Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > >    TIndex;
         typedef typename Fibre<TIndex, WotdSA >::Type                TSA;
         typedef typename TIndex::TCounter                            TCounter;
@@ -522,7 +520,6 @@ namespace SEQAN_NAMESPACE_MAIN
         TSize dirOfs,
         TSize lcp)
     {
-    SEQAN_CHECKPOINT
         typedef Index<TText, IndexWotd<Dfi<TPredHull, TPred> > >    TIndex;
 
         typedef typename Fibre<TIndex, WotdDir>::Type        TDir;

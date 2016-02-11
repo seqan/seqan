@@ -49,7 +49,6 @@ _getTupelString(TString const& str,
                 TKTup const ktup,
                 TAlphabet)
 {
-    SEQAN_CHECKPOINT
     typedef typename Value<typename Value<TTupelString>::Type>::Type TWord;
 
     // Alphabet size
@@ -92,7 +91,6 @@ getKmerSimilarityMatrix(StringSet<TString, TSpec> const& strSet,
                         TSize ktup,
                         TAlphabet)
 {
-    SEQAN_CHECKPOINT
     typedef TSize TWord;
     typedef String<TWord> TTupelString;
     typedef String<TTupelString> TTupelStringSet;

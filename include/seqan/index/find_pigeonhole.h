@@ -1047,7 +1047,6 @@ windowFindBegin(
     Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
     double errorRate)
 {
-    SEQAN_CHECKPOINT
 
     pattern.finderLength = pattern.maxSeqLen + length(container(finder));
     _patternInit(pattern, errorRate);
@@ -1092,7 +1091,6 @@ windowFindNext(
     Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
     TSize finderWindowLength)
 {
-    SEQAN_CHECKPOINT
 
     typedef typename Fibre<TIndex, QGramShape>::Type        TShape;
     typedef Finder<THaystack, Pigeonhole<TSpec> >           TFinder;
@@ -1228,7 +1226,6 @@ template <typename THaystack, typename TSpec>
 inline typename Finder<THaystack, Pigeonhole<TSpec> >::THitString &
 getWindowFindHits(Finder<THaystack, Pigeonhole<TSpec> > &finder)
 {
-    SEQAN_CHECKPOINT
 
     return finder.hits;
 }
@@ -1249,7 +1246,6 @@ template <typename TIndex, typename TSpec>
 inline typename Size<TIndex>::Type
 getMaxDeviationOfOrder(Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
 {
-    SEQAN_CHECKPOINT;
 
     return (pattern.maxSeqLen <= length(indexShape(host(pattern))))? 0: pattern.maxSeqLen - length(indexShape(host(pattern)));
 }

@@ -436,14 +436,12 @@ template <typename T>
 SEQAN_HOST_DEVICE inline typename NonConstPointer_<T>::Type
 _toPointer(T & _object)
 {
-SEQAN_CHECKPOINT
     return & _object;
 }
 template <typename T>
 SEQAN_HOST_DEVICE inline typename NonConstPointer_<T const>::Type
 _toPointer(T const & _object)
 {
-SEQAN_CHECKPOINT
     return & _object;
 }
 
@@ -451,7 +449,6 @@ template <typename T>
 SEQAN_HOST_DEVICE inline typename NonConstPointer_<T *>::Type
 _toPointer(T * _object)
 {
-SEQAN_CHECKPOINT
     return _object;
 }
 

@@ -50,7 +50,6 @@ typedef Tag<Lcs_> Lcs;
 template<typename TSortedSequence, typename TKey>
 inline typename TSortedSequence::const_iterator
 _previousInSortedSequence(TSortedSequence const& list, TKey const key) {
-    SEQAN_CHECKPOINT
     typedef typename TSortedSequence::const_iterator TSortedSequenceIter;
 
     TSortedSequenceIter a_k_it = list.lower_bound(key);
@@ -79,7 +78,6 @@ _previousInSortedSequence(TSortedSequence const& list, TKey const key) {
 template<typename TSortedSequence, typename TIterator>
 inline typename TSortedSequence::const_iterator
 _nextInSortedSequence(TSortedSequence const& list, TIterator const& prev) {
-    SEQAN_CHECKPOINT
     typedef typename TSortedSequence::const_iterator TSortedSequenceIter;
 
     TSortedSequenceIter b_l_it;
@@ -123,7 +121,6 @@ _nextInSortedSequence(TSortedSequence const& list, TIterator const& prev) {
 template<typename TString, typename TPositions>
 inline void
 longestIncreasingSubsequence(TString const& str, TPositions& pos) {
-    SEQAN_CHECKPOINT
 
     // The list of decreasing covers, only the smallest number must be remembered
     // See Gusfield
@@ -218,7 +215,6 @@ longestCommonSubsequence(TString1 const& str1,
                          TNeighborhoodSize nSize,
                          TFinalPos& pos)
 {
-    SEQAN_CHECKPOINT
     typedef typename Value<TString1>::Type TValue;
     typedef typename Size<TString1>::Type TSize;
     typedef typename Position<TString1>::Type TPos;
@@ -273,7 +269,6 @@ globalAlignment(TAlign& align,
                 TStringSet const& str,
                 Lcs)
 {
-    SEQAN_CHECKPOINT
     typedef typename Id<TStringSet>::Type TId;
     typedef typename Size<TStringSet>::Type TSize;
     TId id1 = positionToId(str, 0);
@@ -369,7 +364,6 @@ heaviestIncreasingSubsequence(TString const& str,
                               TWeightMap const& weights,
                               TPositions& pos)
 {
-    SEQAN_CHECKPOINT
     typedef typename Size<TString>::Type TSize;
     typedef typename Value<TString>::Type TValue;
     typedef typename Value<TPositions>::Type TPos;

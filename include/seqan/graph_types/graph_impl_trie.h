@@ -183,7 +183,6 @@ createSuffixTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
                  TTerminalStateMap& terminalStateMap,
                  TText const& text)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Position<TText const>::Type TPosition;
@@ -207,7 +206,6 @@ createSetSuffixTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
                     TTerminalStateMap& terminalStateMap,
                     TTexts const& texts)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Position<TTexts const>::Type TTextsPosition;

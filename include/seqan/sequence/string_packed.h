@@ -916,7 +916,6 @@ _arrayConstructCopyDefault(TSource1 source_begin,
                            TSource2 source_end,
                            TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
     while (source_begin != source_end)
     {
         // NOTE(holtgrew): getValue() is used here since value() could return

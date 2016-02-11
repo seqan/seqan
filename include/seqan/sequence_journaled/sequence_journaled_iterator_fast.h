@@ -371,7 +371,6 @@ bool
 operator==(Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > const & a,
            Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > const & b)
 {
-    SEQAN_CHECKPOINT;
     if (a._journalEntriesIterator != b._journalEntriesIterator)
         return false;
     if (a._currentSegmentIt != b._currentSegmentIt)

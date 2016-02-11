@@ -39,7 +39,6 @@ struct DummyClass
 
 SEQAN_DEFINE_TEST(Sequence_Interface)
 {
-    SEQAN_CHECKPOINT;
 //* ???Anti Default Sequences
     DummyClass const c = DummyClass();
     DummyClass d;
@@ -263,7 +262,6 @@ void Test_String_Base_Assignments(TMe & str)
 
 SEQAN_DEFINE_TEST(String_Base)
 {
-    SEQAN_CHECKPOINT;
     String<char> str1("hello");
     String<char> const str2("HELLO");
 
@@ -471,7 +469,6 @@ void TestStringResize()
 
 SEQAN_DEFINE_TEST(String_Alloc)
 {
-    SEQAN_CHECKPOINT;
     TestStringBasics<String<char> >();
     TestStringResize<String<char> >();
 
@@ -498,7 +495,6 @@ SEQAN_DEFINE_TEST(String_Alloc)
 
 SEQAN_DEFINE_TEST(String_Array)
 {
-    SEQAN_CHECKPOINT;
     TestStringBasics<String<char, Array<100> > >();
 
     String<char, Array<100> > str1 = "hello";
@@ -513,7 +509,6 @@ SEQAN_DEFINE_TEST(String_Array)
 
 SEQAN_DEFINE_TEST(String_Stack)
 {
-    SEQAN_CHECKPOINT;
     TestStringBasics<String<char, Block<3> > >();
 
     String<char, Block<3> > str1 = "hello";
@@ -530,7 +525,6 @@ SEQAN_DEFINE_TEST(String_Stack)
 
 SEQAN_DEFINE_TEST(String_Packed)
 {
-    SEQAN_CHECKPOINT;
     TestStringBasics<String<char, Packed<> > >();
     TestStringBasics<String<Dna, Packed<> > >();
     TestStringBasics<String<Dna5, Packed<> > >();
@@ -623,7 +617,6 @@ SEQAN_DEFINE_TEST(String_Packed)
 
 SEQAN_DEFINE_TEST(String_Pointer)
 {
-    SEQAN_CHECKPOINT;
     char str1[200] = "hello";
 
     SEQAN_ASSERT_EQ(getValue(str1, 0), 'h');
@@ -686,7 +679,6 @@ SEQAN_DEFINE_TEST(String_Pointer)
 
 SEQAN_DEFINE_TEST(String_CStyle)
 {
-    SEQAN_CHECKPOINT;
     String<char, CStyle> str1;
     char strq [200] = "hello seqan";
 
@@ -781,7 +773,6 @@ SEQAN_DEFINE_TEST(String_CStyle)
 
 SEQAN_DEFINE_TEST(Segment)
 {
-    SEQAN_CHECKPOINT;
 //____________________________________________________________________________
 // infix
 
@@ -977,7 +968,6 @@ SEQAN_DEFINE_TEST(Segment)
 
 SEQAN_DEFINE_TEST(Std_String)
 {
-    SEQAN_CHECKPOINT;
 //____________________________________________________________________________
 
     std::string str_1("hamster");
@@ -1017,7 +1007,6 @@ SEQAN_DEFINE_TEST(Std_String)
 
 SEQAN_DEFINE_TEST(Lexical)
 {
-    SEQAN_CHECKPOINT;
     Lexical<> lex1;
     compare(lex1, "abc", "abcd");
 
@@ -1166,7 +1155,6 @@ void Test_Assignments_Combinatoric(TTarget & target, TSource source, Tag<TExpand
 
 SEQAN_DEFINE_TEST(Combinatoric)
 {
-    SEQAN_CHECKPOINT;
     String<char> str1("hello");
     String<char> str2("this is test");
     String<char> const str3("this is const string");

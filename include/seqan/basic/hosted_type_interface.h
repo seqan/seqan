@@ -102,7 +102,6 @@ template <typename T>
 inline bool
 emptyHost(T const & me)
 {
-    SEQAN_CHECKPOINT;
     return empty(_dataHost(me));
 }
 
@@ -125,7 +124,6 @@ template <typename T>
 inline bool
 dependentHost(T const & me)
 {
-    SEQAN_CHECKPOINT;
     return dependent(_dataHost(me));
 }
 
@@ -146,7 +144,6 @@ template <typename T>
 inline void
 clearHost(T & me)
 {
-    SEQAN_CHECKPOINT;
     clear(_dataHost(me));
 }
 
@@ -172,7 +169,6 @@ template <typename T>
 inline void
 createHost(T & me)
 {
-    SEQAN_CHECKPOINT;
     create(_dataHost(me));
 }
 
@@ -181,7 +177,6 @@ inline void
 createHost(T & me,
            THost const & host_)
 {
-    SEQAN_CHECKPOINT;
     create(_dataHost(me), host_);
 }
 
@@ -206,7 +201,6 @@ template <typename T>
 inline typename Host<T>::Type &
 host(T & me)
 {
-    SEQAN_CHECKPOINT;
     return value(_dataHost(me));
 }
 
@@ -216,7 +210,6 @@ template <typename T>
 inline typename Host<T const>::Type &
 host(T const & me)
 {
-    SEQAN_CHECKPOINT;
     return value(_dataHost(me));
 }
 
@@ -246,7 +239,6 @@ inline void
 setHost(T & me,
         THost && host_)
 {
-    SEQAN_CHECKPOINT;
     setValue(_dataHost(me), std::forward<THost>(host_));
 }
 
@@ -269,7 +261,6 @@ inline void
 assignHost(T & me,
            THost const & host_)
 {
-    SEQAN_CHECKPOINT;
     assignValue(_dataHost(me), host_);
 }
 
@@ -292,7 +283,6 @@ inline void
 moveHost(T & me,
          THost & host_)
 {
-    SEQAN_CHECKPOINT;
     moveValue(_dataHost(me), host_);
 }
 

@@ -150,7 +150,6 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
     inline void assign(char & c_target,
                        ErrorAlphabet const & source)
     {
-    SEQAN_CHECKPOINT
         c_target = TranslateTableErrorToChar_<>::VALUE[source.value];
     }
 

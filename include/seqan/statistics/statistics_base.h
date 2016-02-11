@@ -99,7 +99,6 @@ TFloat _zscore(TStringSet W,  TStringSet& X, MarkovModel<TAlphabet, TFloat, TSpe
 template <typename TAlgorithm, typename TFloat, typename TAlphabet>
 void _numOccurrences(TFloat &nW, String<TAlphabet> &haystack, StringSet<String<TAlphabet> > &needle, TAlgorithm const &)
 {
-    SEQAN_CHECKPOINT;
     Finder<String<TAlphabet> > finder(haystack);
     Pattern<StringSet<String<TAlphabet> >, TAlgorithm> pattern(needle);
     while (find(finder, pattern))

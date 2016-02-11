@@ -353,7 +353,6 @@ struct WuManberHash_<TNeedle, 3>
 template <typename TNeedle>
 void _reinitPattern(Pattern<TNeedle, WuManber> & me)
 {
-    SEQAN_CHECKPOINT;
 
     typedef typename Iterator<TNeedle, Standard>::Type TNeedleIterator;
     typedef typename Value<TNeedle>::Type TKeyword;
@@ -417,7 +416,6 @@ position(Pattern<TNeedle, WuManber> & me)
 template <typename TNeedle>
 inline void _patternInit (Pattern<TNeedle, WuManber> & me)
 {
-SEQAN_CHECKPOINT
     me.to_verify_begin = 0;
     me.to_verify_end = 0;
 }
@@ -428,7 +426,6 @@ template <typename TFinder, typename TNeedle>
 inline bool find(TFinder & finder,
                  Pattern<TNeedle, WuManber> & me)
 {
-SEQAN_CHECKPOINT
 
     if (me.lmin == 0) return false;
 

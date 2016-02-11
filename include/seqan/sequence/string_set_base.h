@@ -1473,7 +1473,6 @@ inline typename Reference<StringSet<TString, TSpec> >::Type
 valueById(StringSet<TString, TSpec> & me,
         TId const id)
 {
-    SEQAN_CHECKPOINT;
     return getValueById(me, id);
 }
 
@@ -1499,7 +1498,6 @@ inline typename Id<StringSet<TString, TSpec> >::Type
 assignValueById(StringSet<TString, TSpec>& me,
                 TString2& obj)
 {
-    SEQAN_CHECKPOINT;
     appendValue(me, obj);
     SEQAN_ASSERT_EQ(length(me.limits), length(me) + 1);
     return length(me.strings) - 1;
@@ -1511,7 +1509,6 @@ assignValueById(StringSet<TString, TSpec1>& dest,
                 StringSet<TString, TSpec2>& source,
                 TId id)
 {
-    SEQAN_CHECKPOINT;
     return assignValueById(dest, getValueById(source, id), id);
 }
 
@@ -1679,7 +1676,6 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
 //    TIds ids,
 //    TLength len)
 //{
-//SEQAN_CHECKPOINT
 //}
 
 //template <typename TString, typename TIds, typename TLength>
@@ -1689,7 +1685,6 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
 //    TIds ids,
 //    TLength len)
 //{
-//SEQAN_CHECKPOINT
 //    typedef StringSet<TString, Dependent<Generous> > TStringSet;
 //    typedef typename Id<TStringSet>::Type TId;
 //    typedef typename Size<TStringSet>::Type TSize;
@@ -1709,7 +1704,6 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
 //    TIds ids,
 //    TLength len)
 //{
-//SEQAN_CHECKPOINT
 //    typedef StringSet<TString, Dependent<Tight> > TStringSet;
 //    typedef typename Id<TStringSet>::Type TId;
 //    typedef typename Size<TStringSet>::Type TSize;
@@ -1744,7 +1738,6 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
 //    StringSet<TString, TSpec>& dest,
 //    TIds ids)
 //{
-//SEQAN_CHECKPOINT
 //    subset(source, dest, ids, length(ids));
 //}
 

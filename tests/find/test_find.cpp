@@ -1689,7 +1689,6 @@ SEQAN_DEFINE_TEST(test_myers_find_begin) {
 
 template <typename TPatternSpec>
 void test_pattern_copycon() {
-    SEQAN_CHECKPOINT;
     typedef Pattern<CharString, TPatternSpec> TPattern;
     TPattern p1("Some needle");
     TPattern p2(p1);
@@ -1699,7 +1698,6 @@ void test_pattern_copycon() {
 
 template <typename TPatternSpec>
 void test_pattern_assign() {
-    SEQAN_CHECKPOINT;
     typedef Pattern<CharString, TPatternSpec> TPattern;
     TPattern p1("Some needle");
     TPattern p2;
@@ -1720,7 +1718,6 @@ void test_pattern_movecon() {
 
 template <typename TPatternSpec>
 void test_pattern_moveassign() {
-    SEQAN_CHECKPOINT;
     typedef Pattern<CharString, TPatternSpec> TPattern;
     TPattern p1("Some needle");
     TPattern p2;

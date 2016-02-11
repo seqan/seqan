@@ -144,7 +144,6 @@ namespace SEQAN_NAMESPACE_MAIN
         TText &text,
         TSize lcp)
     {
-    SEQAN_CHECKPOINT
         // sort bucket with quicksort
         std::sort(
             begin(sa, Standard()),
@@ -159,7 +158,6 @@ namespace SEQAN_NAMESPACE_MAIN
         TText const &s,
         SAQSort const &)
     {
-    SEQAN_CHECKPOINT
         typedef typename Size<TSA>::Type TSize;
         typedef typename Iterator<TSA, Standard>::Type TIter;
 
@@ -184,7 +182,6 @@ namespace SEQAN_NAMESPACE_MAIN
         StringSet< TString, TSSetSpec > const &s,
         SAQSort const &)
     {
-    SEQAN_CHECKPOINT
         typedef StringSet< TString, TSSetSpec > TText;
         typedef typename Size<TSA>::Type TSize;
         typedef typename Iterator<TSA, Standard>::Type TIter;

@@ -2077,7 +2077,6 @@ windowFindBegin(
     Pattern<TIndex, Swift<TSpec> > &pattern,
     double errorRate)
 {
-    SEQAN_CHECKPOINT
 
     pattern.finderLength = pattern.params.tabooLength + length(container(finder));
     _patternInit(pattern, errorRate, 0);
@@ -2122,7 +2121,6 @@ windowFindNext(
     TSize finderWindowLength
     )
 {
-    SEQAN_CHECKPOINT
 
     typedef typename Fibre<TIndex, QGramShape>::Type    TShape;
 
@@ -2185,7 +2183,6 @@ windowFindEnd(
     Finder<THaystack, Swift<TSpec> > & finder,
     Pattern<TIndex, Swift<TSpec> > &pattern)
 {
-    SEQAN_CHECKPOINT
     _swiftMultiFlushBuckets(finder, pattern);
 }
 
@@ -2206,7 +2203,6 @@ template <typename THaystack, typename TSpec>
 inline typename WindowFindResult<Finder<THaystack, Swift<TSpec> >, void>::Type &
 getWindowFindHits(Finder<THaystack, Swift<TSpec> > &finder)
 {
-    SEQAN_CHECKPOINT
 
     return finder.hits;
 }

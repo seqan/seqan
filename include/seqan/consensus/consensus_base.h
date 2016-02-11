@@ -539,7 +539,6 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
              Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
              TContigId contigId)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
     typedef typename Value<TStringSet>::Type TString;
@@ -1020,7 +1019,6 @@ consensusCalling(FragmentStore<TFragSpec, TConfig>& fragStore,
                  TContigId contigId,
                  Bayesian)
 {
-    SEQAN_CHECKPOINT
 
     typedef FragmentStore<TFragSpec, TConfig> TFragmentStore;
     typedef typename Size<TFragmentStore>::Type TSize;

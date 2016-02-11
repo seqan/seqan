@@ -191,7 +191,6 @@ template <typename TCargo>
 typename Iterator<JournalEntries<TCargo, SortedArray>, Standard>::Type
 begin(JournalEntries<TCargo, SortedArray> & journalTree, Standard const &)
 {
-    SEQAN_CHECKPOINT;
     return begin(journalTree._journalNodes, Standard());
 }
 
@@ -200,7 +199,6 @@ template <typename TCargo>
 typename Iterator<JournalEntries<TCargo, SortedArray> const, Standard>::Type
 begin(JournalEntries<TCargo, SortedArray> const & journalTree, Standard const &)
 {
-    SEQAN_CHECKPOINT;
     return begin(journalTree._journalNodes, Standard());
 }
 
@@ -209,7 +207,6 @@ template <typename TCargo>
 typename Iterator<JournalEntries<TCargo, SortedArray>, Standard>::Type
 end(JournalEntries<TCargo, SortedArray> & journalTree, Standard const &)
 {
-    SEQAN_CHECKPOINT;
     return end(journalTree._journalNodes, Standard());
 }
 
@@ -218,7 +215,6 @@ template <typename TCargo>
 typename Iterator<JournalEntries<TCargo, SortedArray> const, Standard>::Type
 end(JournalEntries<TCargo, SortedArray> const & journalTree, Standard const &)
 {
-    SEQAN_CHECKPOINT;
     return end(journalTree._journalNodes, Standard());
 }
 
@@ -228,7 +224,6 @@ inline
 void reinit(JournalEntries<TCargo, SortedArray> & tree,
             typename Size<TCargo>::Type originalStringLength)
 {
-    SEQAN_CHECKPOINT;
     clear(tree._journalNodes);
     appendValue(tree._journalNodes, TCargo(SOURCE_ORIGINAL, 0, 0, 0, originalStringLength));
     tree._originalStringLength = originalStringLength;
