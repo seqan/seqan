@@ -105,6 +105,8 @@ void Test_Libraries() {
     typedef String<AminoAcid> TString;
     typedef StringSet<TString, Dependent<> > TStringSet;
     typedef Graph<Alignment<TStringSet, unsigned int> > TGraph;
+    typedef Fragment<> TFragment;
+    typedef typename Size<TFragment>::Type TSize;
 
     TString str1 = "GARFIELDTHELASTFATCAT";
     TString str2 = "GARFIELDTHEFASTCAT";
@@ -119,8 +121,8 @@ void Test_Libraries() {
     selectPairs(strSet, pList);
     TGraph g(strSet);
     Blosum62 score_type(-1,-11);
-    String<Fragment<> > matches;
-    String<int> scores;
+    String<TFragment> matches;
+    String<TSize> scores;
     appendSegmentMatches(strSet, pList, matches, scores, LcsLibrary() );
     buildAlignmentGraph(matches, scores, g, FrequencyCounting() );
     testquickAlign__(g);
