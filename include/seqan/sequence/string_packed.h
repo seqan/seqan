@@ -563,6 +563,10 @@ _setLength(
     front(host(me)).i = new_length;
 }
 
+// --------------------------------------------------------------------------
+// Function resize
+// --------------------------------------------------------------------------
+
 template <typename TValue, typename THostspec, typename TSize, typename TExpand>
 inline typename Size< String<TValue, Packed<THostspec> > >::Type
 resize(
@@ -583,6 +587,76 @@ resize(
     if ((TStringSize)new_length > max_length)
         new_length = max_length;
     return front(host(me)).i = new_length;
+}
+
+template <typename TValue, typename THostspec, typename TSize, typename TExpand, typename TValue2>
+inline typename Size< String<TValue, Packed<THostspec> > >::Type
+resize(String<TValue, Packed<THostspec> > & me,
+       TSize new_length,
+       TValue2 const & newValue,
+       Tag<TExpand> tag)
+{
+    typedef String<TValue, Packed<THostspec> > TString;
+    typedef PackedTraits_<TString> TTraits;
+    typedef typename Size<TString>::Type TStringSize;
+    typedef typename TTraits::THostValue THostValue;
+
+    TStringSize old_length = length(me);
+    TStringSize old_host_length = length(host(me));
+
+    if (static_cast<TStringSize>(new_length) < length(me))
+        return resize(me, new_length, tag);
+
+    // create WORD
+    THostValue tmp;
+    tmp.i = 0;
+    __uint64 ord = ordValue(TValue(newValue));
+    for (unsigned j = 0; j < TTraits::VALUES_PER_HOST_VALUE; ++j)
+        tmp.i |= ord << (j * TTraits::BITS_PER_VALUE);
+
+    // fill up host string word-wise
+    TStringSize max_length = (resize(host(me),
+                                     TTraits::toHostLength(new_length) + 1,
+                                     tmp,
+                                     tag) - 1)
+                             * TTraits::VALUES_PER_HOST_VALUE;
+
+    // set values on formerly last word, because not affected by above
+    if (old_host_length > 1)
+    {
+        TStringSize alreadySet = old_length % TTraits::VALUES_PER_HOST_VALUE;
+
+        // clear non-set positions (which may be uninitialized ( != 0 )
+        tmp.i = (~static_cast<__uint64>(0) << (64 - alreadySet * TTraits::BITS_PER_VALUE)) >> TTraits::WASTED_BITS;
+        host(me)[old_host_length-1].i &= tmp.i;
+
+        for (TStringSize i = alreadySet; i < TTraits::VALUES_PER_HOST_VALUE; ++i)
+            host(me)[old_host_length-1].i |=  ord << ((TTraits::VALUES_PER_HOST_VALUE - i - 1) * TTraits::BITS_PER_VALUE);
+    }
+
+    if (static_cast<TStringSize>(new_length) > max_length)
+        new_length = max_length;
+    front(host(me)).i = new_length;
+
+    return new_length;
+}
+
+// --------------------------------------------------------------------------
+// Function insert
+// --------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TPosition, typename TSeq, typename TExpand>
+inline void
+insert(String<TValue, Packed<THostSpec> > & me,
+       TPosition pos,
+       TSeq const & insertSeq,
+       Tag<TExpand>)
+{
+    // NOTE(h-2): something is wrong (probably in ClearSpaceStringPacked_ below)
+    //            which requires us to _clearUnusedBits on inserts()
+    //            [this has a moderate performance penalty]
+    _clearUnusedBits(me);
+    replace(me, pos, pos, insertSeq, Tag<TExpand>());
 }
 
 // --------------------------------------------------------------------------
