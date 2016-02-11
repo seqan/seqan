@@ -189,7 +189,6 @@ Now, go to your build directory and re-run CMake so the Makefiles (or your IDE's
     TEST SUITE test_my_module
     SEQAN_ENABLE_DEBUG == 1
     SEQAN_ENABLE_TESTING == 1
-    SEQAN_ENABLE_CHECKPOINTS == 0
     SEQAN_CXX_FLAGS == "SEQAN_CXX_FLAGS_NOT_SET"
     test_my_module_strings_example1 OK
     **************************************
