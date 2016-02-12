@@ -174,13 +174,11 @@ struct Member<Match<TSpec>, Errors>
 {
     typedef uint32_t    Type;
 };
-}
 
 // ----------------------------------------------------------------------------
 // Member Bits
 // ----------------------------------------------------------------------------
 
-namespace seqan {
 template <typename TObject, typename TSpec>
 struct MemberBits
 {
