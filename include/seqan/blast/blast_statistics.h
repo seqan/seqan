@@ -45,7 +45,7 @@
 #define NCBI_INT2_MAX    32767
 #endif
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 // ============================================================================

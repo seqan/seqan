@@ -30,7 +30,7 @@
 #include <seqan/graph_align.h>
 #include <seqan/seeds.h>
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 

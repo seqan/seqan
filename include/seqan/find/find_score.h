@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_SH
 #define SEQAN_HEADER_FIND_SH
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -462,6 +462,6 @@ find(TFinder & finder,
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

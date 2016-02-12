@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_ALIGN_ITERATOR_BASE_H
 #define SEQAN_HEADER_ALIGN_ITERATOR_BASE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -567,6 +567,6 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

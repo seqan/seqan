@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_PIZZACHILI_FIND_H
 #define SEQAN_HEADER_INDEX_PIZZACHILI_FIND_H
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 struct PizzaChiliFinder_;
 
@@ -160,6 +160,6 @@ SEQAN_CHECKPOINT
     finder.range.i2 = occ + numocc;
 }
 
-} // namespace SEQAN_NAMESPACE_MAIN
+} // namespace seqan
 
 #endif // SEQAN_HEADER_INDEX_PIZZACHILI_FIND_H

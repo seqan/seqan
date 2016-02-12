@@ -22,7 +22,7 @@
 #define SEQAN_HEADER_FUSION_H
 //#define DEBUG_OVERLAP_MODULE
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 { 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -765,6 +765,6 @@ getResults_Fusion(TReadAnnoStore & readAnnoStore,
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

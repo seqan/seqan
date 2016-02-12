@@ -37,7 +37,7 @@
 #include <random>
 
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 /*!

@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_IMPL_TREE_H
 #define SEQAN_HEADER_GRAPH_IMPL_TREE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 //////////////////////////////////////////////////////////////////////////////
 // Graph - Tree
@@ -1112,6 +1112,6 @@ collectLeaves(Graph<Tree<TCargo, TSpec> > const& g,
 }
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

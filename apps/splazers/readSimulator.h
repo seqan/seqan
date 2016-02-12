@@ -33,7 +33,7 @@
 #include <seqan/modifier.h>
 
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 template <typename TOperation, typename TAlphabet>

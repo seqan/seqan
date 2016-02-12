@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_SHIFTAND_H
 #define SEQAN_HEADER_FIND_SHIFTAND_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -239,6 +239,6 @@ inline bool find(TFinder & finder, Pattern<TNeedle, ShiftAnd> & me) {
         return _findShiftAndLargeNeedle(finder, me);
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_FIND_SHIFTAND_H

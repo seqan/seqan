@@ -40,7 +40,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 template < typename TSA, typename TText>
@@ -137,6 +137,6 @@ SEQAN_DEFINE_TEST(testBWTWalk)
 //////////////////////////////////////////////////////////////////////////////
 
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

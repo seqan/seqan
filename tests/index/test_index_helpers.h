@@ -226,7 +226,7 @@ void createText(CharString & text, char)
 // Functions
 // ==========================================================================
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 // Return shared random number generator for this test's helpers.  Note that the helper cannot be called in parallel.
@@ -599,7 +599,7 @@ bool isEqual(TA &_a, TB &_b) {
     return true;
 }
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 
 // ==========================================================================

@@ -38,7 +38,7 @@
 #include <seqan/index/pizzachili_api.h>
 #include <seqan/index/index_pizzachili_string.h>
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 /*!
  * @defgroup PizzaChiliIndexFibres Pizza &amp; Chili Index Fibres
@@ -388,6 +388,6 @@ SEQAN_CHECKPOINT
     return e == 0;
 }
 
-} // namespace SEQAN_NAMESPACE_MAIN
+} // namespace seqan
 
 #endif // SEQAN_HEADER_INDEX_PIZZACHILI_H

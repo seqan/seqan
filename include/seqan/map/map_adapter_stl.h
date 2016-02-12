@@ -35,7 +35,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>

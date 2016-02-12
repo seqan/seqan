@@ -55,7 +55,7 @@
 #include <seqan/graph_types.h>
 
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 //////////////////////////////////////////////////////////////////////////////
 // Graph - Interval Tree Types
 //////////////////////////////////////////////////////////////////////////////
@@ -1925,6 +1925,6 @@ struct Cargo<IntervalTree<TValue, TCargo> >
     typedef TCargo Type;
 };
 
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif  //#ifndef SEQAN_MISC_INTERVAL_TREE_H

@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_IMPL_HMM_H
 #define SEQAN_HEADER_GRAPH_IMPL_HMM_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1008,6 +1008,6 @@ isSilent(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
 }
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

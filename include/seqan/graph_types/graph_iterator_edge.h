@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ITERATOR_EDGE_H
 #define SEQAN_HEADER_GRAPH_ITERATOR_EDGE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 //////////////////////////////////////////////////////////////////////////////
 // Graph EdgeIterator
@@ -482,6 +482,6 @@ label(Iter<Graph<Automaton<TAlphabet, TCargo, TGraphSpec> >, GraphIterator<Inter
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

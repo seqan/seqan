@@ -35,7 +35,7 @@
 
 // TODO(holtgrew): The graph uses linked lists for storing edges. Thus, the graphs are not guaranteed to have good cache locality. We should also have a forward star/adjacency array implementation.
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 //////////////////////////////////////////////////////////////////////////////
 // Graph - Directed
@@ -967,6 +967,6 @@ write(TFile & target,
     }
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

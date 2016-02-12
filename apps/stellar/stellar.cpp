@@ -79,7 +79,7 @@ _stellarOnOne(TSequence & database,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 template <typename TStringSet, typename TShape, typename TSpec>
 struct Cargo<Index<TStringSet, IndexQGram<TShape, TSpec> > >

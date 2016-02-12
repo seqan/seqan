@@ -46,7 +46,7 @@
 // No parallelism for less than MIN_PARALLEL_WORK reads.
 const unsigned MIN_PARALLEL_WORK = 1; //100/*0*/; // TODO(holtgrew): Set to some useful value after development.
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 // Compact representation of a match.
 template <typename TContigPos_>

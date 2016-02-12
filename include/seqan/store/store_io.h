@@ -49,7 +49,7 @@
 
 
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1292,6 +1292,6 @@ bool loadReads(FragmentStore<TSpec, TConfig> & store, TFileName & fileNameL, TFi
     return true;
 }
 
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

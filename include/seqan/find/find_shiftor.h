@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_SHIFTOR_H
 #define SEQAN_HEADER_FIND_SHIFTOR_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -279,6 +279,6 @@ SEQAN_CHECKPOINT
     }
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_FIND_SHIFTOR_H

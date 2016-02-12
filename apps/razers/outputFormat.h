@@ -29,7 +29,7 @@
 #include "razers.h"
 #include <seqan/align.h>
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////

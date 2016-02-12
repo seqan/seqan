@@ -26,7 +26,7 @@
 #include "tbb/spin_mutex.h"
 #include "tbb/task_scheduler_init.h"
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 

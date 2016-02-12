@@ -37,7 +37,7 @@
 #ifndef SEQAN_HEADER_STORE_IO_SAM_H
 #define SEQAN_HEADER_STORE_IO_SAM_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 // ============================================================================
@@ -1118,6 +1118,6 @@ writeRecords(FormattedFile<Bam, Output, TSpec> & bamFile,
     writeRecords(bamFile, store, functor);
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

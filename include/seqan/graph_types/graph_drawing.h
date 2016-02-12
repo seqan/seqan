@@ -34,7 +34,7 @@
 #ifndef SEQAN_HEADER_GRAPH_DRAWING_H
 #define SEQAN_HEADER_GRAPH_DRAWING_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -922,6 +922,6 @@ void readRecords(
 }
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

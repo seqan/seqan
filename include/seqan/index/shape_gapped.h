@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_SHAPE_GAPPED_H
 #define SEQAN_HEADER_SHAPE_GAPPED_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////

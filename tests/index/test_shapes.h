@@ -38,7 +38,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 template <typename TShape1, typename TShape2>
@@ -140,6 +140,6 @@ SEQAN_DEFINE_TEST(testShapes)
 //////////////////////////////////////////////////////////////////////////////
 
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

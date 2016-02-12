@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_BASE_H
 #define SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_BASE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1077,6 +1077,6 @@ convertAlignment(Align<TSource, TSpec2> const& align,
     return true;
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

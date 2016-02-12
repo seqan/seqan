@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_SETHORSPOOL_H
 #define SEQAN_HEADER_FIND_SETHORSPOOL_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -257,6 +257,6 @@ inline bool find(TFinder & finder, Pattern<TNeedle, SetHorspool> & me) {
     return false;
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_FIND_SETHORSPOOL_H

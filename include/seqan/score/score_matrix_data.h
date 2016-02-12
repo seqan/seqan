@@ -949,6 +949,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecVtml200> {
     }
 };
 
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif  // SEQAN_SSCORE_MATRIX_DATA_H_

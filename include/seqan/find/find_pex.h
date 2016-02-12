@@ -38,7 +38,7 @@
 // uncomment this for verbose debug output
 //#define SEQAN_DEBUG_PEX
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 struct Hierarchical;
@@ -739,7 +739,7 @@ SEQAN_CHECKPOINT
 }
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_..
 

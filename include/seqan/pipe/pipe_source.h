@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_PIPE_SOURCE_H
 #define SEQAN_HEADER_PIPE_SOURCE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 /*

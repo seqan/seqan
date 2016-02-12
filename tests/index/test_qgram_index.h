@@ -38,7 +38,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 SEQAN_DEFINE_TEST(testGappedShapes)
@@ -345,6 +345,6 @@ SEQAN_DEFINE_TEST(testQGramFind)
 //////////////////////////////////////////////////////////////////////////////
 
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

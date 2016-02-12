@@ -29,7 +29,7 @@
 #include <seqan/seq_io.h>
 #include <seqan/index.h>
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////

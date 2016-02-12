@@ -38,7 +38,7 @@
 
 //#define SEQAN_TEST_INDEX
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 // ============================================================================

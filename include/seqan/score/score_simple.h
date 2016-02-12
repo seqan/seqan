@@ -301,6 +301,6 @@ setScoreGap(Score<TValue, TSpec> & me, TValue const & value) {
 //        return scoreMismatch(me);
 //}
 
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif  // SEQAN_SSCORE_SIMPLE_H_

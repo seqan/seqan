@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALGORITHM_HEAP_TREE_H
 #define SEQAN_HEADER_GRAPH_ALGORITHM_HEAP_TREE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -511,6 +511,6 @@ clear(HeapTree<Pair<TKey, TValue>, TPredicate, KeyedHeap<TSpec> >& mHeap)
 
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

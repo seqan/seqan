@@ -40,7 +40,7 @@
 namespace seqan {
 
 // TODO(holtgrew): Remove this define.
-#define SEQAN_NAMESPACE_MAIN seqan
+#define seqan seqan
 
 // ============================================================================
 // Forwards

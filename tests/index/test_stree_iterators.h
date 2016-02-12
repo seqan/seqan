@@ -38,7 +38,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 SEQAN_DEFINE_TEST(testEmptyIndex)
@@ -749,6 +749,6 @@ SEQAN_DEFINE_TEST(testRadixTreeIterator)
 //////////////////////////////////////////////////////////////////////////////
 
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

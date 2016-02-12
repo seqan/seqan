@@ -37,7 +37,7 @@
 #ifndef SEQAN_HEADER_SYSTEM_MUTEX_H
 #define SEQAN_HEADER_SYSTEM_MUTEX_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 #ifdef PLATFORM_WINDOWS

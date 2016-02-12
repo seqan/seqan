@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALGORITHM_LIS_HIS_H
 #define SEQAN_HEADER_GRAPH_ALGORITHM_LIS_HIS_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 struct Lcs_;
@@ -450,6 +450,6 @@ heaviestIncreasingSubsequence(TString const& str,
 
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

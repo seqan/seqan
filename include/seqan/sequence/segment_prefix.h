@@ -38,7 +38,7 @@
 #define SEQAN_HEADER_SEGMENT_PREFIX_H
 
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -666,6 +666,6 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

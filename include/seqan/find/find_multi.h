@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_MULTI_H
 #define SEQAN_HEADER_FIND_MULTI_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -155,6 +155,6 @@ SEQAN_CHECKPOINT
     }
     return false;
 }
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...
