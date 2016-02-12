@@ -20,4 +20,16 @@
  <mimetype name="NEWICK" binary="true" ext="newick" description="NEWICK Tree Format"/>
  <mimetype name="ALFTSV" binary="true" ext="alf.tsv" description="ALF output format"/>
  <mimetype name="TXT" binary="true" ext="txt" description="Text"/>
+ <mimetype name="Index" binary="true" ext="lf.drp" description="Index files"/>
+ <mimetype name="Index" binary="true" ext="lf.drs" description="Index files"/>
+ <mimetype name="Index" binary="true" ext="lf.drv" description="Index files"/>
+ <mimetype name="Index" binary="true" ext="lf.pst" description="Index files"/>
+ <mimetype name="Index" binary="true" ext="sa.ind" description="Index files"/>
+ <mimetype name="Index" binary="true" ext="sa.len" description="Index files"/>
+ <mimetype name="Index" binary="true" ext="sa.val" description="Index files"/>
+ <mimetype name="Index" binary="true" ext="txt.concat" description="Index files"/>
+ <mimetype name="Index" binary="true" ext="txt.limits" description="Index files"/>
+ <mimetype name="Index" binary="true" ext="txt.size" description="YARA indexer files"/>
+ <mimetype name="YARA" binary="true" ext="rid.concat" description="YARA indexer files"/>
+ <mimetype name="YARA" binary="true" ext="rid.limits" description="YARA indexer files"/>
 </mimetypes>

@@ -415,6 +415,8 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         // set up supported formats
         std::vector<std::string> supported_formats;
         _getSupportedFormats(supported_formats, opt);
+        if (empty(supported_formats) && (type=="input-prefix" || type=="output-prefix" ))
+            supported_formats.push_back("*.*");
 
         ctdfile << _indent(currentIndent)
                 << "<ITEM" << (isListArgument(opt) ? "LIST" : "") << " name=\"" << xmlEscape(optionName) << "\"";
@@ -497,6 +499,9 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         // set up supported formats
         std::vector<std::string> supported_formats;
         _getSupportedFormats(supported_formats, arg);
+        if (empty(supported_formats) && (type=="input-prefix" || type=="output-prefix" ))
+            supported_formats.push_back("*.*");
+
 
         ctdfile << _indent(currentIndent)
                 << "<ITEM" << (isListArgument(arg) ? "LIST" : "") << " name=\"" << xmlEscape(optionName) << "\" "
