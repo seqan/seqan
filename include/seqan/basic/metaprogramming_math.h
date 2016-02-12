@@ -73,29 +73,29 @@ struct ConstUInt {};
  * @mfn MetaprogrammingMath#Log2
  * @brief Compute ceiled logarithm to base 2 using metaprogramming.
  *
- * @signature __uint64 Log2<NUMERUS>::VALUE;
+ * @signature uint64_t Log2<NUMERUS>::VALUE;
  *
- * @tparam NUMERUS <tt>__int64</tt> value to use for the numerus.
+ * @tparam NUMERUS <tt>int64_t</tt> value to use for the numerus.
  *
- * @return __uint64 <tt>ceil(log2(NUMERUS))</tt>
+ * @return uint64_t <tt>ceil(log2(NUMERUS))</tt>
  *
  * @section Example
  *
  * @snippet demos/dox/basic/metaprogramming_math.cpp log2 call
  */
 
-template <__uint64 numerus, __uint64 base>
+template <uint64_t numerus, uint64_t base>
 struct LogN
 {
-    static const __uint64 VALUE = LogN<(numerus + 1) / base, base>::VALUE + 1; // ceil(log(numerus) / log(base))
+    static const uint64_t VALUE = LogN<(numerus + 1) / base, base>::VALUE + 1; // ceil(log(numerus) / log(base))
 };
 
-template <__uint64 numerus>
+template <uint64_t numerus>
 struct Log2: LogN<numerus, 2> {};
 
 // Base cases.
-template <__uint64 base> struct LogN<1, base> { static const __uint64 VALUE = 0; };
-template <__uint64 base> struct LogN<0, base> { static const __uint64 VALUE = 0; };
+template <uint64_t base> struct LogN<1, base> { static const uint64_t VALUE = 0; };
+template <uint64_t base> struct LogN<0, base> { static const uint64_t VALUE = 0; };
 
 // ----------------------------------------------------------------------------
 // Metafunction Log2Floor
@@ -105,29 +105,29 @@ template <__uint64 base> struct LogN<0, base> { static const __uint64 VALUE = 0;
  * @mfn MetaprogrammingMath#Log2Floor
  * @brief Compute floored logarithm to base 2 using metaprogramming.
  *
- * @signature __uint64 Log2Floor<NUMERUS>::VALUE;
+ * @signature uint64_t Log2Floor<NUMERUS>::VALUE;
  *
- * @tparam NUMERUS <tt>__int64</tt> value to use for the numerus.
+ * @tparam NUMERUS <tt>int64_t</tt> value to use for the numerus.
  *
- * @return __uint64 <tt>floor(log2(NUMERUS))</tt>
+ * @return uint64_t <tt>floor(log2(NUMERUS))</tt>
  *
  * @section Example
  *
  * @snippet demos/dox/basic/metaprogramming_math.cpp log2floor call
  */
 
-template <__uint64 numerus, __uint64 base>
+template <uint64_t numerus, uint64_t base>
 struct LogNFloor
 {
-    static const __uint64 VALUE = LogNFloor<numerus / base, base>::VALUE + 1; // floor(log(numerus) / log(base))
+    static const uint64_t VALUE = LogNFloor<numerus / base, base>::VALUE + 1; // floor(log(numerus) / log(base))
 };
 
-template <__uint64 numerus>
+template <uint64_t numerus>
 struct Log2Floor: LogNFloor<numerus, 2> {};
 
 // Base cases.
-template <__uint64 base> struct LogNFloor<1, base> { static const __uint64 VALUE = 0; };
-template <__uint64 base> struct LogNFloor<0, base> { static const __uint64 VALUE = 0; };
+template <uint64_t base> struct LogNFloor<1, base> { static const uint64_t VALUE = 0; };
+template <uint64_t base> struct LogNFloor<0, base> { static const uint64_t VALUE = 0; };
 
 // ----------------------------------------------------------------------------
 // Metafunction Power
@@ -137,26 +137,26 @@ template <__uint64 base> struct LogNFloor<0, base> { static const __uint64 VALUE
  * @mfn MetaprogrammingMath#Power
  * @brief Compute power of a number.
  *
- * @signature __uint64 Power<BASE, EXPONENT>::VALUE;
+ * @signature uint64_t Power<BASE, EXPONENT>::VALUE;
  *
- * @tparam BASE     The base of the term (<tt>__int64</tt>).
- * @tparam EXPONENT The exponent of the term (<tt>__int64</tt>).
+ * @tparam BASE     The base of the term (<tt>int64_t</tt>).
+ * @tparam EXPONENT The exponent of the term (<tt>int64_t</tt>).
  *
- * @return __uint64 b<sup>e</sup
+ * @return uint64_t b<sup>e</sup
  *
  * @snippet demos/dox/basic/metaprogramming_math.cpp power call
  */
 
-template <__int64 base, __int64 exponent>
+template <int64_t base, int64_t exponent>
 struct Power {
-    static const __uint64 VALUE =
+    static const uint64_t VALUE =
             Power<base, exponent / 2>::VALUE *
             Power<base, exponent - (exponent / 2)>::VALUE;
 };
 
 // Base cases.
-template <__int64 base> struct Power<base, 1> { static const __uint64 VALUE = base; };
-template <__int64 base> struct Power<base, 0> { static const __uint64 VALUE = 1; };
+template <int64_t base> struct Power<base, 1> { static const uint64_t VALUE = base; };
+template <int64_t base> struct Power<base, 0> { static const uint64_t VALUE = 1; };
 
 // ----------------------------------------------------------------------------
 // Metafunction Min

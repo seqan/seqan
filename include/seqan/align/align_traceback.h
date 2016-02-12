@@ -80,13 +80,13 @@ typedef SimpleType<unsigned char, TraceBack_> TraceBack;
 
 template <> struct ValueSize<TraceBack>
 {
-    typedef __uint8 Type;
+    typedef uint8_t Type;
     static const Type VALUE = 3;
 };
 
 template <> struct BitsPerValue<TraceBack>
 {
-    typedef __uint8 Type;
+    typedef uint8_t Type;
     static const Type VALUE = 2;
 };
 

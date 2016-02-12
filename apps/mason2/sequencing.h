@@ -38,12 +38,12 @@
 #define APPS_MASON2_SEQUENCING_H_
 
 #include <stdexcept>
+#include <random>
 
 #include <seqan/bam_io.h>
 #include <seqan/seq_io.h>
 #include <seqan/modifier.h>
 #include <seqan/sequence.h>
-#include <seqan/random.h>
 
 #include "mason_options.h"
 #include "methylation_levels.h"
@@ -61,7 +61,7 @@ class Roche454Model;
 
 typedef seqan::Dna5String TRead;
 typedef seqan::CharString TQualities;
-typedef seqan::Rng<seqan::MersenneTwister> TRng;
+typedef std::mt19937 TRng;
 typedef seqan::Infix<seqan::Dna5String const>::Type TFragment;
 typedef seqan::String<seqan::CigarElement<> > TCigarString;
 
@@ -234,7 +234,7 @@ public:
     IlluminaSequencingOptions illuminaOptions;
 
     // Storage for the Illumina simulation.
-    std::SEQAN_AUTO_PTR_NAME<IlluminaModel> model;
+    std::unique_ptr<IlluminaModel> model;
 
     IlluminaSequencingSimulator(TRng & rng, TRng & methRng, SequencingOptions const & seqOptions,
                                 IlluminaSequencingOptions const & illuminaOptions);
@@ -274,7 +274,7 @@ public:
     Roche454SequencingOptions roche454Options;
 
     // Precomputed model data for 454 Sequencing.
-    std::SEQAN_AUTO_PTR_NAME<Roche454Model> model;
+    std::unique_ptr<Roche454Model> model;
 
     Roche454SequencingSimulator(TRng & rng, TRng & methRng,
                                 SequencingOptions const & seqOptions,
@@ -349,7 +349,7 @@ public:
             roche454Options(roche454Options), sangerOptions(sangerOptions)
     {}
 
-    std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> make();
+    std::unique_ptr<SequencingSimulator> make();
 };
 
 // ============================================================================

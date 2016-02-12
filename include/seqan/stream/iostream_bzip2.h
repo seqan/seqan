@@ -71,14 +71,14 @@ public:
     std::streamsize flush(int flush_mode);
     int get_zerr() const
     {    return m_err;};
-    __uint64 get_in_size() const
+    uint64_t get_in_size() const
     {
-        return ((__uint64)m_bzip2_stream.total_in_hi32 << 32)
+        return ((uint64_t)m_bzip2_stream.total_in_hi32 << 32)
                 + m_bzip2_stream.total_in_lo32;
     }
-    __uint64 get_out_size() const
+    uint64_t get_out_size() const
     {
-        return ((__uint64)m_bzip2_stream.total_out_hi32 << 32)
+        return ((uint64_t)m_bzip2_stream.total_out_hi32 << 32)
                 + m_bzip2_stream.total_out_lo32;
     }
 private:

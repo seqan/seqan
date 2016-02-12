@@ -620,18 +620,18 @@ matchVerify(
 	SwiftSemiGlobal,					// Edit distance
 	TSufPrefSpec)						// Swift specialization
 {
-	typedef Segment<TGenome, InfixSegment>				TGenomeInfix;
-	typedef typename Value<TReadSet>::Type				TRead;
+	typedef Segment<TGenome, InfixSegment>              TGenomeInfix;
+	typedef typename Value<TReadSet>::Type              TRead;
 	
 	// find read match end
-	typedef Finder<TGenomeInfix>					TMyersFinder;
-	typedef typename Value<TMyersPatterns>::Type			TMyersPattern;
+	typedef Finder<TGenomeInfix>                        TMyersFinder;
+	typedef typename Value<TMyersPatterns>::Type        TMyersPattern;
 	
 	// find read match begin
-	typedef ModifiedString<TGenomeInfix, ModReverse>		TGenomeInfixRev;
-	typedef ModifiedString<TRead, ModReverse>			TReadRev;
-	typedef Finder<TGenomeInfixRev>					TMyersFinderRev;
-	typedef Pattern<TReadRev, MyersUkkonenGlobal>			TMyersPatternRev;
+	typedef ModifiedString<TGenomeInfix, ModReverse>    TGenomeInfixRev;
+	typedef ModifiedString<TRead, ModReverse>           TReadRev;
+	typedef Finder<TGenomeInfixRev>                     TMyersFinderRev;
+	typedef Pattern<TReadRev, MyersUkkonenGlobal>       TMyersPatternRev;
 
 	TMyersFinder myersFinder(inf);
 	TMyersPattern &myersPattern = forwardPatterns[rseqNo];  //have to make sure this only contains the prefix
@@ -673,12 +673,14 @@ matchVerify(
 	// find beginning of best semi-global alignment
 	TGenomeInfixRev		infRev(inf);
 	TMyersFinderRev		myersFinderRev(infRev);
-	TReadRev			readRev;
+    TReadRev            readRev;
+    TRead               readInf;  // Needs to be a global variable, since ModifiedString cannot hold a pointer to a temporary.
 	if(IsSameType<TSufPrefSpec,LongestSuffix>::VALUE)
-		setHost(readRev,infix(readSet[rseqNo],length(readSet[rseqNo])-options.minMatchLen,length(readSet[rseqNo])));
-	else
-		setHost(readRev,infix(readSet[rseqNo],0,options.minMatchLen));
-
+        readInf = infix(readSet[rseqNo],length(readSet[rseqNo])-options.minMatchLen,length(readSet[rseqNo]));
+    else
+		readInf = infix(readSet[rseqNo],0,options.minMatchLen);
+    setHost(readRev, readInf);
+    
 	TMyersPatternRev	myersPatternRev(readRev);
 	
 	_patternMatchNOfPattern(myersPatternRev, options.matchN);
@@ -2127,7 +2129,7 @@ int mapSplicedReads(
 
 	if(options._debugLevel > 0)
 	{
-		__int64 genomeLen = static_cast<__int64>(3000000000lu) * 2;					// ufff make that an option
+		int64_t genomeLen = static_cast<int64_t>(3000000000lu) * 2;					// ufff make that an option
 		expNumRandomMatches(readSet, genomeLen, options);
 	}
 	
@@ -2364,7 +2366,7 @@ void mapSplicedReads(
 	//typedef Pattern<TReadIndexL, Swift<TSwiftSpec> >	TSwiftPatternL;
 	//typedef Pattern<TReadIndexR, Swift<TSwiftSpec> >	TSwiftPatternR;
 	
-	typedef Pair<__int64, TMatch>				TDequeueValue;
+	typedef Pair<int64_t, TMatch>				TDequeueValue;
 	typedef Dequeue<TDequeueValue>				TDequeue;
 	typedef typename TDequeue::TIter			TDequeueIterator;
 	
@@ -2420,12 +2422,12 @@ void mapSplicedReads(
 	TSwiftFinderR swiftFinderR(genomeInf, options.repeatLength, 1);
 	
 	TDequeue fifo;						// stores potential prefix matches
-	String<__int64> lastPotMatchNo;		// last number of a potential prefix match
-	__int64 lastNo = 0;					// last number over all potential prefix matches in the queue
-	__int64 firstNo = 0;				// first number over all potential prefix matches in the queue
+	String<int64_t> lastPotMatchNo;		// last number of a potential prefix match
+	int64_t lastNo = 0;					// last number over all potential prefix matches in the queue
+	int64_t firstNo = 0;				// first number over all potential prefix matches in the queue
 	Pair<TGPos> gPair;
 	
-	resize(lastPotMatchNo, length(host(swiftPatternL)), (__int64)-1, Exact());
+	resize(lastPotMatchNo, length(host(swiftPatternL)), (int64_t)-1, Exact());
 	
 	String<Pair<TGPos> > lastRightMatch;		// begin and end of last verified suffix match
 	resize(lastRightMatch, length(host(swiftPatternL)), Pair<TGPos>(0,0), Exact());
@@ -2519,7 +2521,7 @@ void mapSplicedReads(
 		
 		
 		TDequeueIterator it;
-		__int64 lastPositive = (__int64)-1;
+		int64_t lastPositive = (int64_t)-1;
 
 		TSize counter = 0;
 		bool noMatchRight = false;
@@ -2529,7 +2531,7 @@ void mapSplicedReads(
 		
 		// walk through all potential prefix matches
 		// if suffix is positive, verify prefixes (if not verfied already), mark as positive or negative
-		for (__int64 i = lastPotMatchNo[rseqNo]; firstNo <= i; i = (*it).i1)
+		for (int64_t i = lastPotMatchNo[rseqNo]; firstNo <= i; i = (*it).i1)
 		{
 			//CHECK HIER raus do suffix match verification only once 
 			if(notYetVerifiedRight)
@@ -2574,7 +2576,7 @@ void mapSplicedReads(
 			//CHECK HIER raus noMatchRight --> \FCberspringen korrekt?
 			if (noMatchRight || (*it).i2.gBegin + minDistance > (TSignedGPos)rEndPos) 
 			{ 	
-				if (lastPositive == (__int64)-1)
+				if (lastPositive == (int64_t)-1)
 					lastPotMatchNo[rseqNo] = i;
 				else
 					value(fifo, lastPositive - firstNo).i1 = i;
@@ -2604,7 +2606,7 @@ void mapSplicedReads(
 					lastLeftMatch.i1 = (*it).i2.gBegin;
 					lastLeftMatch.i2 = (*it).i2.gEnd;
 					// short-cut negative matches
-					if (lastPositive == (__int64)-1)
+					if (lastPositive == (int64_t)-1)
 						lastPotMatchNo[rseqNo] = i;
 					else
 						value(fifo, lastPositive - firstNo).i1 = i;
@@ -2626,7 +2628,7 @@ void mapSplicedReads(
 				lastLeftMatch.i2 = (*it).i2.gEnd;
 
 				// dont shortcut too much
-				if (lastPositive == (__int64)-1 || i < lastPositive)
+				if (lastPositive == (int64_t)-1 || i < lastPositive)
 					lastPositive = i;
 
 /*				// CHECK HIER rein
@@ -2878,10 +2880,10 @@ void mapSplicedReads(
 		}
 			
 		// short-cut negative matches
-		if (lastPositive == (__int64)-1)
-			lastPotMatchNo[rseqNo] = (__int64)-1;
+		if (lastPositive == (int64_t)-1)
+			lastPotMatchNo[rseqNo] = (int64_t)-1;
 		else
-			value(fifo, lastPositive - firstNo).i1 = (__int64)-1; // the first positive's link to previous is removed
+			value(fifo, lastPositive - firstNo).i1 = (int64_t)-1; // the first positive's link to previous is removed
 
 		
 	}//swiftFinderR

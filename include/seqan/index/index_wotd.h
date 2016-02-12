@@ -2018,6 +2018,16 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         return true;
     }
 
+    template <typename TText, typename TSpec>
+    inline bool indexCreate(Index<TText, IndexWotd<TSpec> > &index, WotdDir const, Trie const)
+    {
+        resize(indexSA(index), length(indexText(index)), Exact());
+        fillSuffixArray(indexSA(index), indexText(index), Trie());
+        _wotdCreateFirstLevel(index);
+        return true;
+    }
+
+
 //////////////////////////////////////////////////////////////////////////////
 // clear
 

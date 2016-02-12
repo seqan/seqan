@@ -241,24 +241,13 @@ host(T const & me)
  * it is possible that begin- and end-position of the segment does not fit into the new host sequence.
  */
 
-/// TODO(holtgrew): Move documentation here?
-
 template <typename T, typename THost>
 inline void
 setHost(T & me,
-        THost & host_)
+        THost && host_)
 {
     SEQAN_CHECKPOINT;
-    setValue(_dataHost(me), host_);
-}
-
-template <typename T, typename THost>
-inline void
-setHost(T & me,
-        THost const & host_)
-{
-    SEQAN_CHECKPOINT;
-    setValue(_dataHost(me), host_);
+    setValue(_dataHost(me), std::forward<THost>(host_));
 }
 
 // ----------------------------------------------------------------------------

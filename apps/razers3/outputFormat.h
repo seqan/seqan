@@ -653,7 +653,7 @@ int dumpMatches(
     char _sep_ = '\t';
     char intBuf[40];
     StringSet<CharString> lines;
-    //String<__int64> fileOffsets;
+    //String<int64_t> fileOffsets;
     TAlignedReadStoreSize fromIdx = 0;
 
     switch (options.outputFormat)

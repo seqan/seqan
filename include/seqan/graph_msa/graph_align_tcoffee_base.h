@@ -136,6 +136,10 @@ buildAlignmentGraph(String<TFragment, TSpec1>& matches,
     // Segment-match refinement
     matchRefinement(matches,strSet,outGraph);
 
+#ifdef SEQAN_TCOFFEE_DEBUG
+    double adaptScoresTime = sysTime();
+#endif
+
     // Clear edge-weights
     typedef typename Iterator<TOutGraph, EdgeIterator>::Type TEdgeIterator;
     TEdgeIterator itE(outGraph);
@@ -161,6 +165,10 @@ buildAlignmentGraph(String<TFragment, TSpec1>& matches,
             pos2 += vertexLen;
         }
     }
+
+#ifdef SEQAN_TCOFFEE_DEBUG
+    std::cout << std::setw(30) << std::left << "Adapt scores:" << std::setw(10) << std::right << sysTime() - adaptScoresTime << "  s" << std::endl;
+#endif
 }
 
 

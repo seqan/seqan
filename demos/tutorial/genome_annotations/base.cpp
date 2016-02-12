@@ -15,7 +15,7 @@ int main()
     FragmentStore<> store;
 //![SIGNATURE]
 //![LOAD]
-    CharString fileName = getAbsolutePath("/demos/tutorial/genome_annotations/example.gtf");
+    CharString fileName = getAbsolutePath("demos/tutorial/genome_annotations/example.gtf");
     GffFileIn file(toCString(fileName));
 
     readRecords(store, file);

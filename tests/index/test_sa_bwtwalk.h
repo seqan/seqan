@@ -125,13 +125,13 @@ SEQAN_DEFINE_TEST(testBWTWalk)
 
     MYASSERT(BwtWalkFast, unsigned, False);
     MYASSERT(BwtWalkFast, unsigned, True);
-    MYASSERT(BwtWalkFast, __uint64, False);
-    MYASSERT(BwtWalkFast, __uint64, True);
+    MYASSERT(BwtWalkFast, uint64_t, False);
+    MYASSERT(BwtWalkFast, uint64_t, True);
 
     MYASSERT(BwtWalkInPlace, unsigned, False);
     MYASSERT(BwtWalkInPlace, unsigned, True);
-    MYASSERT(BwtWalkInPlace, __uint64, False);
-    MYASSERT(BwtWalkInPlace, __uint64, True);
+    MYASSERT(BwtWalkInPlace, uint64_t, False);
+    MYASSERT(BwtWalkInPlace, uint64_t, True);
 }
 
 //////////////////////////////////////////////////////////////////////////////

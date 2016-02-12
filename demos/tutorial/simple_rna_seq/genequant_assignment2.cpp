@@ -67,8 +67,8 @@ int main(int argc, char const * argv[])
 //![main]
 //![main_end]
 
-    std::string annotationFileName = getAbsolutePath("/demos/tutorial/simple_rna_seq/example.gtf");
-    std::string alignmentFileName = getAbsolutePath("/demos/tutorial/simple_rna_seq/example.sam");
+    std::string annotationFileName = getAbsolutePath("demos/tutorial/simple_rna_seq/example.gtf");
+    std::string alignmentFileName = getAbsolutePath("demos/tutorial/simple_rna_seq/example.sam");
 
     if (!loadFiles(store, annotationFileName, alignmentFileName))
         return 1;

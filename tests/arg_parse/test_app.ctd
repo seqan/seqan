@@ -6,8 +6,8 @@
 The second one contains formating &lt;bla&gt;.
 </manual>
 	<cli>
-		<clielement optionIdentifier="--write-ctd-file-ext" isList="false">
-			<mapping referenceName="test_app.write-ctd-file-ext" />
+		<clielement optionIdentifier="--full-help" isList="false">
+			<mapping referenceName="test_app.full-help" />
 		</clielement>
 		<clielement optionIdentifier="--double" isList="false">
 			<mapping referenceName="test_app.double" />
@@ -24,14 +24,8 @@ The second one contains formating &lt;bla&gt;.
 		<clielement optionIdentifier="--in" isList="false">
 			<mapping referenceName="test_app.in" />
 		</clielement>
-		<clielement optionIdentifier="--in-file-ext" isList="false">
-			<mapping referenceName="test_app.in-file-ext" />
-		</clielement>
 		<clielement optionIdentifier="--out" isList="false">
 			<mapping referenceName="test_app.out" />
-		</clielement>
-		<clielement optionIdentifier="--out-file-ext" isList="false">
-			<mapping referenceName="test_app.out-file-ext" />
 		</clielement>
 		<clielement optionIdentifier="--input-prefix-option" isList="false">
 			<mapping referenceName="test_app.input-prefix-option" />
@@ -39,11 +33,8 @@ The second one contains formating &lt;bla&gt;.
 		<clielement optionIdentifier="--output-prefix-option" isList="false">
 			<mapping referenceName="test_app.output-prefix-option" />
 		</clielement>
-		<clielement optionIdentifier="--hidden" isList="false">
-			<mapping referenceName="test_app.hidden" />
-		</clielement>
-		<clielement optionIdentifier="--arg-4-file-ext" isList="false">
-			<mapping referenceName="test_app.arg-4-file-ext" />
+		<clielement optionIdentifier="--advanced" isList="false">
+			<mapping referenceName="test_app.advanced" />
 		</clielement>
 		<!-- Following clielements are arguments. You should consider providing a help text to ease understanding. -->
 		<clielement optionIdentifier="" isList="false">
@@ -61,20 +52,17 @@ The second one contains formating &lt;bla&gt;.
 	</cli>
 	<PARAMETERS version="1.6.2" xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_6_2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<NODE name="test_app" description="This is a test-app.">
-			<ITEM name="write-ctd-file-ext" value="" type="string" description="Override file extension for --write-ctd" required="false" advanced="true" tags="file-ext-override,gkn-ignore" />
+			<ITEM name="full-help" value="false" type="string" description="Display the help message with advanced options." restrictions="true,false" required="false" advanced="false" />
 			<ITEM name="double" value="" type="double" description="set a double option" required="false" advanced="false" />
 			<ITEM name="integer" value="" type="int" description="set an integer option" restrictions="1:10" required="false" advanced="false" />
 			<ITEM name="int64" value="" type="int" description="set a 64 bit integer option" required="false" advanced="false" />
 			<ITEMLIST name="string" type="string" description="set a string option" restrictions="a,b,c" required="false" advanced="false" >
 			</ITEMLIST>
 			<ITEM name="in" value="" type="input-file" description="set an input file" supported_formats="*.fasta" required="false" advanced="false" />
-			<ITEM name="in-file-ext" value="" type="string" description="Override file extension for --in" restrictions="fasta" required="false" advanced="true" tags="file-ext-override,gkn-ignore" />
 			<ITEM name="out" value="" type="output-file" description="set an output file" supported_formats="*.sam" required="false" advanced="false" />
-			<ITEM name="out-file-ext" value="" type="string" description="Override file extension for --out" restrictions="sam" required="false" advanced="true" tags="file-ext-override,gkn-ignore" />
 			<ITEM name="input-prefix-option" value="" type="input-prefix" description="set an input prefix" supported_formats="*.btx" required="false" advanced="false" />
 			<ITEM name="output-prefix-option" value="" type="output-prefix" description="set an output prefix" supported_formats="*.blub" required="false" advanced="false" />
-			<ITEM name="hidden" value="" type="string" description="a hidden option - will be advanced in the ctd" required="false" advanced="true" />
-			<ITEM name="arg-4-file-ext" value="" type="string" description="Override file extension for argument 4" required="false" advanced="true" tags="file-ext-override,gkn-ignore" />
+			<ITEM name="advanced" value="" type="string" description="an advanced option - will appear as advanced in the ctd, too" required="false" advanced="true" />
 			<ITEM name="argument-0" value="" type="double" description="Double Argument" required="true" advanced="false" />
 			<ITEM name="argument-1" value="" type="string" description="String Argument" required="true" advanced="false" />
 			<ITEM name="argument-2" value="" type="string" description="Documentated Argument with formating" required="true" advanced="false" />

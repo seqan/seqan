@@ -94,10 +94,10 @@ template <typename TId>
 struct MatchMateInfo_
 {
     TId     readId;
-    __int32 contigId;
+    int32_t contigId;
     TId     pairMatchId;
     TId     matePairId;//:(sizeof(TId)*8-1);
-    __int32 beginPos;
+    int32_t beginPos;
     bool    reversed;
 };
 
@@ -425,7 +425,7 @@ _readAlignments(
 //        refresh(fragStore.contigNameStoreCache);  // was done for the BamIOContext already
     refresh(fragStore.readNameStoreCache);
 
-    __uint64 recNo = 0;
+    uint64_t recNo = 0;
     while (!atEnd(iter))
     {
         try

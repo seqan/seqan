@@ -102,57 +102,33 @@ struct DefaultOverflowExplicit< TValue const [SIZE] >
 };
 
 template <typename TValue>
-struct IsContiguous;
+struct IsContiguous< TValue * > : public True {};
+
+template <typename TValue, size_t SIZE>
+struct IsContiguous< TValue [SIZE] > : public True {};
+
+template <typename TValue, size_t SIZE>
+struct IsContiguous< TValue const [SIZE] > : public True {};
 
 template <typename TValue>
-struct IsContiguous< TValue * >
-{
-    typedef True Type;
-    enum { VALUE = true };
-};
+struct IsSequence< TValue * > : public True {};
 
 template <typename TValue, size_t SIZE>
-struct IsContiguous< TValue [SIZE] >
-{
-    typedef True Type;
-    enum { VALUE = true };
-};
+struct IsSequence< TValue [SIZE] > : public True {};
 
 template <typename TValue, size_t SIZE>
-struct IsContiguous< TValue const [SIZE] >
-{
-    typedef True Type;
-    enum { VALUE = true };
-};
-
-template <typename TValue>
-struct IsSequence< TValue * >
-{
-    typedef True Type;
-    enum { VALUE = true };
-};
-template <typename TValue, size_t SIZE>
-struct IsSequence< TValue [SIZE] >
-{
-    typedef True Type;
-    enum { VALUE = true };
-};
-template <typename TValue, size_t SIZE>
-struct IsSequence< TValue const [SIZE] >
-{
-    typedef True Type;
-    enum { VALUE = true };
-};
+struct IsSequence< TValue const [SIZE] > : public True {};
 
 // ----------------------------------------------------------------------------
 // Concept Sequence
 // ----------------------------------------------------------------------------
 
-template <typename TValue>
-SEQAN_CONCEPT_IMPL((TValue *), (ContainerConcept));
-
-template <typename TValue>
-SEQAN_CONCEPT_IMPL((TValue * const), (ContainerConcept));
+// NOTE(h-2): removed because we really don't want this
+// template <typename TValue>
+// SEQAN_CONCEPT_IMPL((TValue *), (ContainerConcept));
+//
+// template <typename TValue>
+// SEQAN_CONCEPT_IMPL((TValue * const), (ContainerConcept));
 
 template <typename TValue, size_t SIZE>
 SEQAN_CONCEPT_IMPL((TValue [SIZE]), (ContainerConcept));
@@ -682,7 +658,9 @@ resize(
     Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
-    return _Resize_String<Tag<TExpand> >::resize_(me, new_length);
+    if (static_cast<TSize>(std::strlen(me)) > new_length)
+        me[new_length] = 0;
+    return std::strlen(me);
 }
 
 template <typename TValue, typename TSize, typename TExpand>
@@ -694,7 +672,11 @@ resize(
     Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
-    return _Resize_String<Tag<TExpand> >::resize_(me, new_length, val);
+    TSize old_length = std::strlen(me);
+    if (old_length < new_length)
+        std::memset(me + old_length, int(val), new_length - old_length);
+    me[new_length] = 0;
+    return std::strlen(me);
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -49,123 +49,94 @@ template <typename THaystack, typename TNeedle, typename TSpec>
 struct Verifier
 {
     typedef typename Infix<THaystack const>::Type   THaystackInfix;
-    typedef Finder<THaystackInfix>                  TFinder;
-    typedef Pattern<TNeedle const, TSpec>           TPattern;
+    typedef String<GapAnchor<int> >                 TGapAnchors;
+    typedef AnchorGaps<TGapAnchors>                 TAnchorGaps;
+    typedef typename Size<THaystackInfix>::Type     TSize;
+    typedef typename Position<THaystackInfix>::Type TPosition;
+    typedef TraceSegment_<TPosition, TSize>         TTraceSegment;
+    typedef String<TTraceSegment>                   TTrace;
+    typedef DPScoutState_<Default>                  TDPState;
+    typedef DPContext<int, AffineGaps>              TDPContext;
 
+    // Thread-private data.
+    TGapAnchors     contigAnchors;
+    TGapAnchors     readAnchors;
+    TTrace          traceSegments;
+    TDPState        dpScoutState;
+    TDPContext      dpContext;
+
+    // Shared-memory read-only data.
     THaystack const &   haystack;
-    TFinder             finder;
-    TPattern            pattern;
 
     Verifier(THaystack const & haystack) :
         haystack(haystack)
-    {
-        _patternMatchNOfPattern(pattern, false);
-        _patternMatchNOfFinder(pattern, false);
-    }
+    {}
 };
 
 // ----------------------------------------------------------------------------
-// Class Verifier
+// Function verify<AffineGaps>()
 // ----------------------------------------------------------------------------
 
-template <typename THaystack, typename TNeedle, typename TSpec>
-struct Verifier<THaystack, TNeedle, Filter<TSpec> >
-{
-    typedef typename Infix<THaystack const>::Type           THaystackInfix;
-    typedef Finder<THaystackInfix>                          TFinder;
-    typedef StringSet<TNeedle, Segment<TNeedle> >           TSeedsSet;
-    typedef Pattern<TSeedsSet, TSpec>                       TPattern;
-
-    THaystack const &   haystack;
-    TFinder             finder;
-    TSeedsSet           seeds;
-    TPattern            pattern;
-
-    Verifier(THaystack const & haystack) :
-        haystack(haystack)
-    {
-//        _patternMatchNOfPattern(pattern, false);
-//        _patternMatchNOfFinder(pattern, false);
-    }
-};
-
-// ----------------------------------------------------------------------------
-// Function verify()
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename TNeedle, typename TSpec,
+template <typename THaystack, typename TNeedle,
           typename THaystackPos, typename TErrors, typename TDelegate>
 inline void
-verify(Verifier<THaystack, TNeedle, TSpec> & verifier,
+verify(Verifier<THaystack, TNeedle, AffineGaps> & me,
        TNeedle const & needle,
        THaystackPos haystackBegin,
        THaystackPos haystackEnd,
        TErrors maxErrors,
+       TErrors maxIndels,
        TDelegate & delegate)
 {
-    typedef Verifier<THaystack, TNeedle, TSpec>         TVerifier;
+    typedef Verifier<THaystack, TNeedle, AffineGaps>    TVerifier;
     typedef typename TVerifier::THaystackInfix          THaystackInfix;
+    typedef typename TVerifier::TAnchorGaps             TAnchorGaps;
+    typedef Gaps<THaystackInfix, TAnchorGaps>           TContigGaps;
+    typedef Gaps<TNeedle const, TAnchorGaps>            TReadGaps;
+    typedef typename Size<THaystack>::Type              TCount;
 
-    THaystackInfix haystackInfix = infix(verifier.haystack, haystackBegin, haystackEnd);
+    typedef AlignConfig<true, false, false, true>                       TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type         TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
 
-    clear(verifier.finder);
-    setHost(verifier.finder, haystackInfix);
-    setHost(verifier.pattern, needle);
+    THaystackInfix haystackInfix = infix(me.haystack, haystackBegin, haystackEnd);
 
-    // TODO(esiragusa): Enumerate all minima.
-    bool paired = false;
-    while (find(verifier.finder, verifier.pattern, -static_cast<int>(maxErrors)))
-        paired = true;
+    if (empty(haystackInfix)) return;
 
-//    if (paired) delegate(verifier);
-    if (paired) delegate(haystackBegin, haystackEnd, maxErrors);
-}
+    clear(me.contigAnchors);
+    clear(me.readAnchors);
+    TContigGaps contigGaps(haystackInfix, me.contigAnchors);
+    TReadGaps readGaps(needle, me.readAnchors);
 
-// ----------------------------------------------------------------------------
-// Function verify()
-// ----------------------------------------------------------------------------
+    clear(me.traceSegments);
+    int errors = _setUpAndRunAlignment(me.dpContext,
+                                       me.traceSegments,
+                                       me.dpScoutState,
+                                       source(contigGaps),
+                                       source(readGaps),
+                                       Score<int>(0, -1000, -999, -1001),
+                                       TAlignConfig2()) / -999;
+    _adaptTraceSegmentsTo(contigGaps, readGaps, me.traceSegments);
 
-template <typename THaystack, typename TNeedle, typename TSpec,
-          typename THaystackPos, typename TErrors, typename TDelegate>
-inline void
-verify(Verifier<THaystack, TNeedle, Filter<TSpec> > & verifier,
-       TNeedle & needle,
-       THaystackPos haystackBegin,
-       THaystackPos haystackEnd,
-       TErrors maxErrors,
-       TDelegate & delegate)
-{
-    typedef Verifier<THaystack, TNeedle, TSpec>         TVerifier;
-    typedef typename TVerifier::THaystackInfix          THaystackInfix;
-    typedef typename Size<TNeedle>::Type                TNeedleSize;
-    typedef uint64_t                                    TWord;
+    // PUBLIC INTERFACE
+//    int errors = globalAlignment(contigGaps, readGaps,
+//                                 Score<int>(0, -1000, -999, -1001),           // Match, mismatch, extend, open.
+//                                 AlignConfig<true, false, false, true>(),     // Top, left, right, bottom.
+//                                 Gotoh()) / -999;
 
-    TNeedleSize seedsCount = maxErrors + 1;
-    TNeedleSize seedLength = BitsPerValue<TWord>::VALUE / seedsCount;
-//    TNeedleSize needleLength = length(needle);
-//    TNeedleSize seedLength = needleLength / seedsCount;
+    clipSemiGlobal(contigGaps, readGaps);
 
-    clear(verifier.seeds);
-    reserve(verifier.seeds, seedsCount, Exact());
-    setHost(verifier.seeds, needle);
+    TCount gapOpens = countGapOpens(contigGaps) + countGapOpens(readGaps);
+    TCount gapExtensions = countGapExtensions(contigGaps) + countGapExtensions(readGaps);
+    TCount gaps = gapOpens + gapExtensions;
+    TCount events = errors + gapOpens - gapExtensions;
 
-    for (TNeedleSize seedId = 0; seedId < seedsCount; ++seedId)
-        appendInfixWithLength(verifier.seeds, seedId * seedLength, seedLength, Exact());
-
-    THaystackInfix haystackInfix = infix(verifier.haystack, haystackBegin, haystackEnd);
-
-    clear(verifier.finder);
-    setHost(verifier.finder, haystackInfix);
-    setHost(verifier.pattern, verifier.seeds);
-
-
-    // TODO(esiragusa): Enumerate all minima.
-    bool paired = false;
-    while (find(verifier.finder, verifier.pattern))
-        paired = true;
-
-//    if (paired) delegate(verifier);
-    if (paired) delegate(haystackBegin, haystackEnd, maxErrors);
+    if (events <= maxErrors && gaps <= maxIndels)
+    {
+        THaystackPos matchBegin = posAdd(haystackBegin, clippedBeginPosition(readGaps));
+        THaystackPos matchEnd = posAdd(matchBegin, length(readGaps));
+        delegate(matchBegin, matchEnd, errors);
+    }
 }
 
 #endif  // #ifndef APP_YARA_FIND_VERIFIER_H_

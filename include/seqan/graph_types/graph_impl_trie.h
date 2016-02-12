@@ -63,7 +63,7 @@ _addStringToTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 
     TVertexDescriptor current = getRoot(g);
     TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
-    typename Iterator<TKeyword const, Rooted>::Type sIt = begin(str);
+    typename Iterator<TKeyword const, Rooted>::Type sIt = begin(str, Rooted());
     for(;!atEnd(sIt);goNext(sIt)) {
         if (getSuccessor(g, current, *sIt) == nilVal) break;
         current = getSuccessor(g, current, *sIt);
@@ -117,7 +117,7 @@ createTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
     assignRoot(g,root);
     resize(terminalStateMap, numVertices(g), Generous());
     assignProperty(terminalStateMap,root,String<TPos>());
-    typename Iterator<TKeywords const, Rooted>::Type it = begin(keywords);
+    typename Iterator<TKeywords const, Rooted>::Type it = begin(keywords, Rooted());
     for(;!atEnd(it);goNext(it)) _addStringToTrie(g,terminalStateMap,*it,position(it));
 }
 

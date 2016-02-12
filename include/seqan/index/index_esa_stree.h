@@ -39,35 +39,6 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
-
-/*!
- * @concept StringTreeConcept
- * @brief And index that can be accessed as suffix or prefix tree/trie.
- * @headerfile <seqan/index.h>
- *
- * @signature StringTreeConcept<T>
- */
-
-SEQAN_CONCEPT(StringTreeConcept, (TIndex))
-{
-    typedef typename Iterator<TIndex, TopDown<> >::Type     TTopDownIterator;
-    typedef typename VertexDescriptor<TIndex>::Type         TVertexDescriptor;
-    typedef String<int>                                     TPropertyMap;
-
-    TIndex          index;
-    TPropertyMap    pm;
-
-    SEQAN_CONCEPT_USAGE(StringTreeConcept)
-    {
-        // property map interface
-        resizeVertexMap(pm, index);
-
-        // capacity
-        TTopDownIterator iter = begin(index, TopDown<>());
-    }
-};
-
-
 template <typename TText, typename TSpec>
 SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> >), (StringTreeConcept));
 

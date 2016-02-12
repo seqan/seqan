@@ -234,8 +234,8 @@ struct RazerSCoreOptions
     CharString  mismatchFilename;
 
     String<double> errorDist;           // error distribution
-    __int64     countFiltration;        // matches returned by the filter
-    __int64     countVerification;      // matches returned by the verifier
+    int64_t     countFiltration;        // matches returned by the filter
+    int64_t     countVerification;      // matches returned by the verifier
     double      timeLoadFiles;          // time for loading input files
     double      timeMapReads;           // time for mapping reads
     double      timeDumpResults;        // time for dumping the results
@@ -255,7 +255,7 @@ struct RazerSCoreOptions
     // misc
     double      noCompactFrac;          // If in last noCompactFrac of genome, don't compact.
     double      compactMult;            // Multiplicator for compaction threshold.
-    __int64     compactThresh;          // compact match array if larger than compactThresh
+    int64_t     compactThresh;          // compact match array if larger than compactThresh
 
     // multi-threading
 
@@ -263,7 +263,7 @@ struct RazerSCoreOptions
     unsigned    windowSize;      // Collect SWIFT hits in windows of this length.
     unsigned    verificationPackageSize;      // This number of SWIFT hits per verification.
     unsigned    maxVerificationPackageCount;      // Maximum number of verification packages to create.
-    __int64     availableMatchesMemorySize;      // Memory available for matches.  Used for switching to external memory algorithms. -1 for always external, 0 for never.
+    int64_t     availableMatchesMemorySize;      // Memory available for matches.  Used for switching to external memory algorithms. -1 for always external, 0 for never.
     int         matchHistoStartThreshold;      // Threshold to use for starting histogram. >= 1
 
 #ifdef RAZERS_OPENADDRESSING
@@ -590,7 +590,7 @@ struct MatchVerifier
 //                    std::cout << "begin: "<<m.beginPos <<"\tendPos: "<<m.endPos << "\terrors: "<<m.score <<std::endl;
                 appendValue(*matches, m, Generous());
 
-                if ((__int64)length(*matches) > options->compactThresh)
+                if ((int64_t)length(*matches) > options->compactThresh)
                 {
                     double beginTime = sysTime();
                     typename Size<TMatches>::Type oldSize = length(*matches);
@@ -605,7 +605,7 @@ struct MatchVerifier
                     if (length(*matches) * 4 > oldSize)                 // the threshold should not be raised
                     {       // fprintf(stderr, "[raising threshold]");
                             // options->compactThresh += (options->compactThresh >> 1);	// if too many matches were removed
-                        options->compactThresh = (__int64)(options->compactThresh * options->compactMult);
+                        options->compactThresh = (int64_t)(options->compactThresh * options->compactMult);
                     }
 
 //						if (options._debugLevel >= 2)
@@ -673,7 +673,7 @@ bool loadReads(
 {
     bool countN = !(options.matchN || options.outputFormat == 1);
 
-    String<__uint64> qualSum;
+    String<uint64_t> qualSum;
     String<Dna5Q>    seq;
     CharString       qual;
     CharString       seqId;
@@ -1424,7 +1424,7 @@ void countMatches(TFragmentStore &store, TCounts &cnt, TBinFunctor &binF, TRazer
 
     unsigned readId = TAlignedRead::INVALID_ID;
     int lastBin = -1;
-    __int64 count = 0;
+    int64_t count = 0;
 
     String<TValue> row, empty;
     for (; it != itEnd; ++it)
@@ -1477,8 +1477,8 @@ void countMatches(TFragmentStore & store, TCounts & cnt, TRazerSMode const &)
 
     unsigned readId = TAlignedRead::INVALID_ID;
     short errors = -1;
-    __int64 count = 0;
-    __int64 maxVal = MaxValue<TValue>::VALUE;
+    int64_t count = 0;
+    int64_t maxVal = MaxValue<TValue>::VALUE;
 
 #ifdef RAZERS_PROFILE
     timelineBeginTask(TASK_SORT);

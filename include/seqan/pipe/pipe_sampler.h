@@ -616,10 +616,10 @@ namespace SEQAN_NAMESPACE_MAIN
 
         TSize sum = 0;
         TLimitsString const &limits = me.limits;
-        __int64 seqCountPlusOne = length(me.limits);
+        int64_t seqCountPlusOne = length(me.limits);
 
         SEQAN_OMP_PRAGMA(parallel for reduction(+:sum))
-        for (__int64 i = 1; i < seqCountPlusOne; ++i)
+        for (int64_t i = 1; i < seqCountPlusOne; ++i)
         {
             TSize prev = limits[i - 1];
             TSize cur = limits[i];

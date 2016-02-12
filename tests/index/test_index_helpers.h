@@ -37,10 +37,11 @@
 #ifndef TESTS_INDEX_TEST_INDEX_HELPERS_H
 #define TESTS_INDEX_TEST_INDEX_HELPERS_H
 
+#include <random>
+
 #include <seqan/basic.h>
 #include <seqan/stream.h>
 #include <seqan/index.h>
-#include <seqan/random.h>
 
 using namespace seqan;
 
@@ -62,12 +63,12 @@ void generateText(TText & text, unsigned textLength = 100000)
     int minChar = MinValue<TChar>::VALUE;
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
 
-    Rng<MersenneTwister> rng(SEED);
+    std::mt19937 rng(SEED);
 
     resize(text, textLength);
 
     for (unsigned i = 0; i < textLength; ++i)
-        text[i] = pickRandomNumber(rng) % alphabetSize - minChar;
+        text[i] = rng() % alphabetSize - minChar;
 }
 
 // --------------------------------------------------------------------------
@@ -82,12 +83,12 @@ void generateText(CharString & text, unsigned textLength = 100000)
     int minChar = -128;
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
 
-    Rng<MersenneTwister> rng(SEED);
+    std::mt19937 rng(SEED);
 
     resize(text, textLength);
 
     for (unsigned i = 0; i < textLength; ++i)
-        text[i] = pickRandomNumber(rng) % alphabetSize - minChar;
+        text[i] = rng() % alphabetSize - minChar;
 }
 
 // --------------------------------------------------------------------------
@@ -102,15 +103,15 @@ void generateText(StringSet<TText> & text, unsigned numSeq = 1000, unsigned seqL
     int minChar = MinValue<TChar>::VALUE;
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
 
-    Rng<MersenneTwister> rng(SEED);
+    std::mt19937 rng(SEED);
 
     resize(text, numSeq);
 
     for (unsigned i = 0; i < numSeq; ++i)
     {
-        resize(text[i], pickRandomNumber(rng) % (seqLength-1) + 1);
+        resize(text[i], rng() % (seqLength-1) + 1);
         for (unsigned j = 0; j < length(text[i]); ++j)
-            text[i][j] = pickRandomNumber(rng) % alphabetSize - minChar;
+            text[i][j] = rng() % alphabetSize - minChar;
     }
 }
 
@@ -126,7 +127,7 @@ void generatePattern(StringSet<TText> & pattern, TText const & text, unsigned pa
     int minChar = MinValue<TChar>::VALUE;
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
 
-    Rng<MersenneTwister> rng(SEED);
+    std::mt19937 rng(SEED);
 
     resize(pattern, patternLength);
 
@@ -134,8 +135,8 @@ void generatePattern(StringSet<TText> & pattern, TText const & text, unsigned pa
     {
         TText localPattern;
         for (unsigned j = 0; j <= i; ++j)
-            appendValue(pattern[i], (TChar)(pickRandomNumber(rng) % alphabetSize - minChar));
-        unsigned readPos = pickRandomNumber(rng) % (length(text) - i - 1);
+            appendValue(pattern[i], (TChar)(rng() % alphabetSize - minChar));
+        unsigned readPos = rng() % (length(text) - i - 1);
         pattern[i + 1] = infix(text, readPos, readPos + i + 1);
     }
 }
@@ -143,7 +144,7 @@ void generatePattern(StringSet<TText> & pattern, TText const & text, unsigned pa
 template <typename TText>
 void generatePattern(StringSet<TText> & pattern, StringSet<TText> const & text, unsigned patternLength = 1000)
 {
-    Rng<MersenneTwister> rng(SEED);
+    std::mt19937 rng(SEED);
 
     resize(pattern, patternLength);
 
@@ -152,11 +153,11 @@ void generatePattern(StringSet<TText> & pattern, StringSet<TText> const & text, 
         unsigned readLocation;
         do
         {
-            readLocation = pickRandomNumber(rng) % length(text);
+            readLocation = rng() % length(text);
         } while (length(text[readLocation]) < (i + 10));
 
         TText localPattern;
-        unsigned readPos = pickRandomNumber(rng) % (length(text[readLocation]) - i - 1);
+        unsigned readPos = rng() % (length(text[readLocation]) - i - 1);
         pattern[i] = infix(text[readLocation], readPos, readPos + i + 1);
     }
 }
@@ -229,10 +230,10 @@ namespace SEQAN_NAMESPACE_MAIN
 {
 
 // Return shared random number generator for this test's helpers.  Note that the helper cannot be called in parallel.
-inline seqan::Rng<> & getRng()
+inline std::mt19937 & getRng()
 {
     const int SEED = 0;
-    static seqan::Rng<> result(SEED);
+    static std::mt19937 result(SEED);
     return result;
 }
 
@@ -267,19 +268,19 @@ void randomize(TBuffer &buf)
 {
     typename Size<TBuffer>::Type i, s = length(buf);
 
-    seqan::Pdf<seqan::Uniform<int> > pdf(0, s - 1);
+    std::uniform_int_distribution<int> pdf(0, s - 1);
 
     for(i = 0; i < s; i++)
-        buf[i] = pickRandomNumber(getRng(), pdf);
+        buf[i] = pdf(getRng());
 }
 
 template < typename TBuffer >
 void textRandomize(TBuffer &buf) {
-    seqan::Pdf<seqan::Uniform<int> > pdf(0, 1);
+    std::uniform_int_distribution<int> pdf(0, 1);
 
     typename Size<TBuffer>::Type i, s = length(buf);
     for(i = 0; i < s; i++)
-        buf[i] = '@' + pickRandomNumber(getRng(), pdf);
+        buf[i] = '@' + pdf(getRng());
 }
 
 template < typename TValue >

@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the realign module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (extras_tests_realign)
+cmake_minimum_required (VERSION 3.0.0)
+project (extras_tests_realign CXX)
 message (STATUS "Configuring tests/realign")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,6 @@ message (STATUS "Configuring tests/realign")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------
