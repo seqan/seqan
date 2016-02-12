@@ -1654,7 +1654,7 @@ inline bool find (TFinder & finder,
     return find(finder, pattern, pattern, minScore); //static cast
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...
 

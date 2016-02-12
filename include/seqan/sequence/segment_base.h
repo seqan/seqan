@@ -39,7 +39,7 @@
 #define SEQAN_HEADER_SEGMENT_BASE_H
 
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 /*!
@@ -834,6 +834,6 @@ resize(
 
 // TODO(singer): moveValue still works. Should make the compiler throw an error.
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

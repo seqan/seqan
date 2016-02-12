@@ -194,6 +194,6 @@ setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, D
     arrayFill(sc.data_tab, sc.data_tab + TScore::TAB_SIZE, TValue());
 }
 
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif  // SEQAN_SSCORE_MATRIX_H_

@@ -39,7 +39,7 @@
 
 #include <seqan/index/pizzachili_api.h>
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 /*!
  * @class PizzaChiliString Pizza &amp; Chili String
@@ -743,6 +743,6 @@ suffix(
 
 //////////////////////////////////////////////////////////////////////////////
 
-} // namespace SEQAN_NAMESPACE_MAIN
+} // namespace seqan
 
 #endif // SEQAN_HEADER_INDEX_PIZZACHILI_STRING_H

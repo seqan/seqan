@@ -32,7 +32,7 @@
 
 #include "parallel_store.h"
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 //////////////////////////////////////////////////////////////////////////////
 // Quality-based score

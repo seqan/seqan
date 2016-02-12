@@ -22,7 +22,7 @@
 #ifndef SEQAN_HEADER_RAZERS_MATEPAIRS_H
 #define SEQAN_HEADER_RAZERS_MATEPAIRS_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 // We require mate-pairs to be stored together in one read string.

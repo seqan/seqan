@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_QGRAM_OPENADRESSING_H
 #define SEQAN_HEADER_INDEX_QGRAM_OPENADRESSING_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
     struct OpenAddressing_;

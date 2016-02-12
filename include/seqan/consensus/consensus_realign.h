@@ -35,7 +35,7 @@
 #ifndef SEQAN_CONSENSUS_CONSENSUS_REALIGN_H_
 #define SEQAN_CONSENSUS_CONSENSUS_REALIGN_H_
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////////

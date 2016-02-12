@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ITERATOR_ADJACENCY_H
 #define SEQAN_HEADER_GRAPH_ITERATOR_ADJACENCY_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 //////////////////////////////////////////////////////////////////////////////
 // Graph AdjacencyIterator
@@ -335,6 +335,6 @@ operator !=(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it1
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

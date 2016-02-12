@@ -38,7 +38,7 @@
 #define SEQAN_HEADER_SEGMENT_PREFIX_H
 
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -629,6 +629,6 @@ prefix(Segment<T, SuffixSegment> const & t,
 
 //////////////////////////////////////////////////////////////////////////////
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

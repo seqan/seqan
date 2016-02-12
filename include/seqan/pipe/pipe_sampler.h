@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_PIPE_SAMPLER_H
 #define SEQAN_HEADER_PIPE_SAMPLER_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //namespace SEQAN_NAMESPACE_PIPELINING

@@ -37,7 +37,7 @@
 #ifndef SEQAN_HEADER_MATRIX_BASE_H
 #define SEQAN_HEADER_MATRIX_BASE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1096,6 +1096,6 @@ std::ostream& operator<<(std::ostream &out, const Matrix<TValue,2> &matrix)
 //     }
 // }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

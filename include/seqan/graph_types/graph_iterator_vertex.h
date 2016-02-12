@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ITERATOR_VERTEX_H
 #define SEQAN_HEADER_GRAPH_ITERATOR_VERTEX_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -340,6 +340,6 @@ operator !=(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it1,
     return (it1.data_pos!=it2.data_pos);
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

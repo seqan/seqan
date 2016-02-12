@@ -37,7 +37,7 @@
 #ifndef SEQAN_HEADER_SEGMENT_INFIX_H
 #define SEQAN_HEADER_SEGMENT_INFIX_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -685,6 +685,6 @@ setEnd(TIterator new_end)
 
 //////////////////////////////////////////////////////////////////////////////
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_QUASAR_H
 #define SEQAN_HEADER_FIND_QUASAR_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -109,7 +109,7 @@ find(TFinder & finder, Pattern<TNeedle, Quasar> & me)
     return true;
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_FIND_SHIFTAND_H
 

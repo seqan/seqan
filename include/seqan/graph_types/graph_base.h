@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_BASE_H
 #define SEQAN_HEADER_GRAPH_BASE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -316,6 +316,6 @@ struct VertexIdHandler {
     typedef IdManager<> Type;
 };
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

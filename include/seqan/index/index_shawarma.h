@@ -43,7 +43,7 @@ extern "C" {
 
 }
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 /*    namespace shawarma {
 
@@ -95,6 +95,6 @@ namespace SEQAN_NAMESPACE_MAIN {
     }
 
 
-} // namespace SEQAN_NAMESPACE_MAIN
+} // namespace seqan
 
 #endif // SEQAN_HEADER_INDEX_PIZZACHILI_H

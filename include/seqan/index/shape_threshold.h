@@ -36,7 +36,7 @@
 #ifndef SEQAN_HEADER_SHAPE_THRESHOLD_H
 #define SEQAN_HEADER_SHAPE_THRESHOLD_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 struct ThreshQGramLemma_;

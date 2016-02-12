@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_IMPL_WORDGRAPH_H
 #define SEQAN_HEADER_GRAPH_IMPL_WORDGRAPH_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 template <typename TSpec = Default>
@@ -322,6 +322,6 @@ parseString(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > c
 // TODO(holtgrew): Not implemented yet!
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

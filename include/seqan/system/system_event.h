@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_SYSTEM_EVENT_H
 #define SEQAN_HEADER_SYSTEM_EVENT_H
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 #ifdef PLATFORM_WINDOWS
 

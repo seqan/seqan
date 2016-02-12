@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ITERATOR_DFS_H
 #define SEQAN_HEADER_GRAPH_ITERATOR_DFS_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -297,6 +297,6 @@ operator !=(Iter<TGraph, GraphIterator<InternalDfsIterator<TSpec> > >& it1,
             (it1.data_stack!=it2.data_stack));
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_IMPL_AUTOMATON_H
 #define SEQAN_HEADER_GRAPH_IMPL_AUTOMATON_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 //////////////////////////////////////////////////////////////////////////////
 // Graph - Automaton
@@ -901,6 +901,6 @@ canParseString(Graph<Automaton<TAlphabet, TCargo, TSpec> > & g,
 }
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -128,6 +128,6 @@ scoreGapOpen(Score<TValue, EditDistance> const &) {
     return -1;
 }
 
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif  // SEQAN_SSCORE_EDIT_H_

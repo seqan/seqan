@@ -36,7 +36,7 @@
 #ifndef SEQAN_HEADER_INDEX_SHIMS_H
 #define SEQAN_HEADER_INDEX_SHIMS_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
     //////////////////////////////////////////////////////////////////////////////

@@ -24,7 +24,7 @@
 
 #include <seqan/misc/dequeue.h>
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 // We require mate-pairs to be stored together in one read string.
 // Pair i has mates at positions 2*i and 2*i+1 in the read string.

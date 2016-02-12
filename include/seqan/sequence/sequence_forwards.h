@@ -44,7 +44,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 // ==========================================================================
@@ -241,7 +241,7 @@ template <typename TChar,  typename TAlloc, typename TSize, typename TExpand> in
 template <typename TChar, typename TAlloc, typename TSize, typename TExpand> inline typename Size<thrust::device_vector<TChar, TAlloc> >::Type fill(thrust::device_vector<TChar, TAlloc> & me, TSize new_length, TChar const & val, Tag<TExpand> const &);
 #endif
 
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif  // #if !defined(_MSC_VER)
 

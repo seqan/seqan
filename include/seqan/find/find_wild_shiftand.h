@@ -38,7 +38,7 @@
 // uncomment this for detailed debug output
 //#define SEQAN_WILD_SHIFTAND_DEBUG
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -637,6 +637,6 @@ inline bool find(TFinder & finder, Pattern<TNeedle, WildShiftAnd> & me) {
     }
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_FIND_WILD_SHIFTAND_H

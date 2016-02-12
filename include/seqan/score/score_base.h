@@ -323,6 +323,6 @@ score(Score<TValue, TSpec> const & me, TSeqHVal valH, TSeqVVal valV) {
         return scoreMismatch(me);
 }
 
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif  // SEQAN_SSCORE_BASE_H_

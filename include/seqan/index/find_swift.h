@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_SWIFT_H
 #define SEQAN_HEADER_FIND_SWIFT_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2228,7 +2228,7 @@ getMaxDeviationOfOrder(Pattern<TIndex, Swift<TSpec> > &pattern)
 }
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_FIND_SHIFTAND_H
 

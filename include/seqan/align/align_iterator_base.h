@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_ALIGN_ITERATOR_BASE_H
 #define SEQAN_HEADER_ALIGN_ITERATOR_BASE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -522,6 +522,6 @@ position(Iter<TAlign, AlignColIterator<TSpec> > const & me)
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

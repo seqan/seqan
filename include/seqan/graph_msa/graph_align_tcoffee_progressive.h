@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_PROGRESSIVE_H
 #define SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_PROGRESSIVE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -480,6 +480,6 @@ progressiveMatching(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 }
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

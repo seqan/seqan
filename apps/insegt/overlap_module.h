@@ -25,7 +25,7 @@
 #include <seqan/bam_io.h>
 #include <seqan/store.h>
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 // Assign ContigId of children to parents    
@@ -923,6 +923,6 @@ ngsOverlapper(TOptions &options)
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

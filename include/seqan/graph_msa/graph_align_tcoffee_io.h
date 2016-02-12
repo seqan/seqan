@@ -39,7 +39,7 @@
 
 #include <seqan/stream.h>
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 // ============================================================================
@@ -1135,6 +1135,6 @@ writeRecords(TTarget & target,
     write(target, guideTree, names, false, NewickFormat());
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

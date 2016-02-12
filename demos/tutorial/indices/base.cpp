@@ -4,7 +4,7 @@
 
 //![assignment1]
 
-namespace SEQAN_NAMESPACE_MAIN{
+namespace seqan{
 //![SAValue]
 template<>
 struct SAValue<String<Dna> >

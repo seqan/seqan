@@ -38,7 +38,7 @@
 // uncomment this for verbose output of the ABNDM ALGO
 //#define SEQAN_DEBUG_ABNDM
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 
@@ -644,6 +644,6 @@ inline bool find (TFinder & finder,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_FIND_ABNDMALGO_H

@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_MULTIPLESHIFTAND_H
 #define SEQAN_HEADER_FIND_MULTIPLESHIFTAND_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -422,6 +422,6 @@ inline bool find(TFinder & finder, Pattern<TNeedle, MultipleShiftAnd> & me) {
     }
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_FIND_MULTIPLESHIFTAND_H

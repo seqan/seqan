@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_GRAPH_IDMANAGER_H
 #define SEQAN_HEADER_GRAPH_IDMANAGER_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 //////////////////////////////////////////////////////////////////////////////
 // IdManager
@@ -453,6 +453,6 @@ idInUse(IdManager<void, TSpec> const&,
     return false;
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

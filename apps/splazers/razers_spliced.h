@@ -33,7 +33,7 @@
 #include <seqan/seeds.h>
 #include <seqan/bam_io.h>
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 

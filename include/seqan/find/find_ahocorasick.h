@@ -37,7 +37,7 @@
 
 // TODO(holtgrew): Needles should be a StringSet<CharString>!
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -306,6 +306,6 @@ inline bool find(TFinder & finder, Pattern<TNeedle, AhoCorasick> & me) {
     return false;
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_FIND_AHOCORASICK_H
