@@ -116,28 +116,24 @@ inline void _patternMatchNOfFinder(Pattern<TNeedle, HammingSimple> & pattern, bo
 
 template <typename TNeedle>
 inline void _finderInit(Pattern<TNeedle, HammingSimple> & me) {
-    SEQAN_CHECKPOINT;
     (void) me;  // Suppress unused variable warning.
 }
 
 
 template <typename TNeedle>
 inline int score(const Pattern<TNeedle, HammingSimple> &me) {
-    SEQAN_CHECKPOINT;
     return -me.distance;
 }
 
 
 template <typename TNeedle>
 inline int getScore(const Pattern<TNeedle, HammingSimple> &me) {
-    SEQAN_CHECKPOINT;
     return -me.distance;
 }
 
 
 template <typename TNeedle>
 inline void setScoreLimit(Pattern<TNeedle, HammingSimple> & me, int _limit) {
-    SEQAN_CHECKPOINT;
     SEQAN_ASSERT_LEQ(_limit, 0);
     me.maxDistance = -_limit;
 }
@@ -183,7 +179,6 @@ template <typename TFinder, typename TNeedle>
 inline bool find(TFinder &finder,
                  Pattern<TNeedle, HammingSimple> &me,
                  int minScore) {
-    SEQAN_CHECKPOINT;
 
     typedef typename Haystack<TFinder>::Type THaystack;
     typedef typename Size<THaystack>::Type TSize;

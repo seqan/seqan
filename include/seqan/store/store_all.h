@@ -1161,7 +1161,6 @@ appendAlignedRead(
         TPos const & endPos,
         TPairMatchId const & pairMatchId)
 {
-    SEQAN_CHECKPOINT;
     typedef typename FragmentStore<TSpec, TConfig>::TAlignedReadStore TAlignedReadStore;
     typedef typename Value<TAlignedReadStore>::Type TAlignedReadStoreElement;
 
@@ -1181,7 +1180,6 @@ appendAlignedRead(
         TPos const & beginPos,
         TPos const & endPos)
 {
-    SEQAN_CHECKPOINT;
     typedef typename FragmentStore<TSpec, TConfig>::TAlignedReadStore TAlignedReadStore;
     typedef typename Value<TAlignedReadStore>::Type TAlignedReadStoreElement;
     return appendAlignedRead(store, readId, contigId, beginPos, endPos, TAlignedReadStoreElement::INVALID_ID);

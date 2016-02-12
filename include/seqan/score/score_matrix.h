@@ -106,25 +106,21 @@ public:
     explicit Score(TValue _gap_extend = -1)
         : data_gap_extend(_gap_extend),
           data_gap_open(_gap_extend) {
-        SEQAN_CHECKPOINT;
         setDefaultScoreMatrix(*this, TSpec());
     }
 
     Score(TValue _gap_extend, TValue _gap_open)
         : data_gap_extend(_gap_extend), data_gap_open(_gap_open) {
-        SEQAN_CHECKPOINT;
         setDefaultScoreMatrix(*this, TSpec());
     }
 
     explicit Score(char const * filename, TValue _gap_extend = -1)
         : data_gap_extend(_gap_extend), data_gap_open(_gap_extend) {
-        SEQAN_CHECKPOINT;
         loadScoreMatrix(*this, filename);
     }
 
     Score(char const * filename, TValue _gap_extend, TValue _gap_open)
         : data_gap_extend(_gap_extend), data_gap_open(_gap_open) {
-        SEQAN_CHECKPOINT;
         loadScoreMatrix(*this, filename);
     }
 };
@@ -134,7 +130,6 @@ public:
 template <typename TValue, typename TSequenceValue, typename TSpec, typename TVal1, typename TVal2>
 inline TValue
 score(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc, TVal1 val1, TVal2 val2) {
-    SEQAN_CHECKPOINT;
     typedef Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > TScore;
     // TODO(holtgrew): Why not implicit cast?
     unsigned int i = (TSequenceValue) val1;  // conversion TVal1 => TSequenceValue => integral
@@ -158,7 +153,6 @@ score(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc, TVal1 val1,
 template <typename TValue, typename TSequenceValue, typename TSpec, typename TVal1, typename TVal2, typename T>
 inline void
 setScore(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TVal1 val1, TVal2 val2, T score) {
-    SEQAN_CHECKPOINT;
     typedef Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > TScore;
     // TODO(holtgrew): Why not implicit cast?
     unsigned int i = (TSequenceValue) val1;  // conversion TVal1 => TSequenceValue => integral
@@ -187,7 +181,6 @@ setScore(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TVal1 val1, TV
 template <typename TValue, typename TSequenceValue, typename TSpec, typename TTag>
 inline void
 setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TTag) {
-    SEQAN_CHECKPOINT;
     typedef Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > TScore;
     TValue const * tab = ScoringMatrixData_<TValue, TSequenceValue, TTag>::getData();
     arrayCopy(tab, tab + TScore::TAB_SIZE, sc.data_tab);
@@ -197,7 +190,6 @@ setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, T
 template <typename TValue, typename TSequenceValue, typename TSpec>
 inline void
 setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, Default) {
-    SEQAN_CHECKPOINT;
     typedef Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > TScore;
     arrayFill(sc.data_tab, sc.data_tab + TScore::TAB_SIZE, TValue());
 }

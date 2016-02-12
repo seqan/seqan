@@ -154,7 +154,6 @@ _alignSmithWatermanTrace(TAlign& align,
                             TIndexPair const& indexPair,
                             TForbidden& forbidden)
 {
-    SEQAN_CHECKPOINT
     typedef typename Size<TTrace>::Type TSize;
     typedef typename Value<TTrace>::Type TTraceValue;
     typedef typename Id<TStringSet>::Type TId;
@@ -259,7 +258,6 @@ _alignSmithWaterman(TTrace& trace,
                       TIndexPair& indexPair,
                       TForbidden& forbidden)
 {
-    SEQAN_CHECKPOINT
     typedef typename Size<TTrace>::Type TSize;
     typedef typename Value<TTrace>::Type TTraceValue;
 
@@ -400,7 +398,6 @@ _localAlignment(TAlign& align,
                 TScore const& sc,
                 SmithWatermanClump)
 {
-    SEQAN_CHECKPOINT
     typedef typename Value<TScore>::Type TScoreValue;
     typedef typename Size<TStringSet>::Type TSize;
 
@@ -438,7 +435,6 @@ _localAlignment(StringSet<TString, Dependent<> > const& str,
                 TSize1 numAlignments,
                 SmithWatermanClump)
 {
-    SEQAN_CHECKPOINT
     typedef typename Value<TScore>::Type TScoreValue;
     typedef typename Size<TMatches>::Type TSize;
 
@@ -495,7 +491,6 @@ inline void
 selectPairs(StringSet<TString, TSpec> const& str,
             String<TSize2, TSpec2>& pList)
 {
-    SEQAN_CHECKPOINT
     typedef StringSet<TString, TSpec> TStringSet;
     typedef typename Size<TStringSet>::Type TSize;
     typedef typename Iterator<String<TSize2, TSpec2>, Standard>::Type TPairIter;
@@ -709,7 +704,6 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TSize ktup,
                      KmerLibrary)
 {
-    SEQAN_CHECKPOINT
     appendSegmentMatches(str, matches, scores, ktup,  typename Value<TString>::Type(), KmerLibrary());
 }
 
@@ -722,7 +716,6 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TScores& scores,
                      KmerLibrary)
 {
-    SEQAN_CHECKPOINT
     appendSegmentMatches(str, matches, scores, 3, KmerLibrary());
 }
 
@@ -853,7 +846,6 @@ inline void
 _resizeWithRespectToDistance(String<TValue, TSpec>& dist,
                               TSize nseq)
 {
-    SEQAN_CHECKPOINT;
     resize(dist, nseq * nseq, 0);
 }
 
@@ -863,7 +855,6 @@ template<typename TCargo, typename TSpec, typename TSize>
 inline void
 _resizeWithRespectToDistance(Graph<Undirected<TCargo, TSpec> >& dist, TSize nseq)
 {
-    SEQAN_CHECKPOINT
     clear(dist);
     reserve(_getVertexString(dist), nseq);
     for(TSize i=0;i<nseq; ++i) addVertex(dist);
@@ -875,7 +866,6 @@ template<typename TSize>
 inline void
 _resizeWithRespectToDistance(Nothing&, TSize)
 {
-    SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -890,7 +880,6 @@ _setDistanceValue(String<TFragment, TSpec1>& matches,
                    TSize nseq,
                    TSize from)
 {
-    SEQAN_CHECKPOINT
     typedef typename Position<String<TFragment, TSpec1> >::Type TPos;
 
     // Determine a sequence weight
@@ -919,7 +908,6 @@ _setDistanceValue(String<TFragment, TSpec1>& matches,
                    TSize,
                    TSize from)
 {
-    SEQAN_CHECKPOINT
 
     // Determine a sequence weight
     TCargo matchLen = 0;
@@ -945,7 +933,6 @@ _setDistanceValue(String<TFragment, TSpec>&,
                    TSize,
                    TSize)
 {
-    SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////

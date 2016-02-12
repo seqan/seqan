@@ -1689,7 +1689,6 @@ SEQAN_DEFINE_TEST(test_myers_find_begin) {
 
 template <typename TPatternSpec>
 void test_pattern_copycon() {
-    SEQAN_CHECKPOINT;
     typedef Pattern<CharString, TPatternSpec> TPattern;
     TPattern p1("Some needle");
     TPattern p2(p1);
@@ -1699,7 +1698,6 @@ void test_pattern_copycon() {
 
 template <typename TPatternSpec>
 void test_pattern_assign() {
-    SEQAN_CHECKPOINT;
     typedef Pattern<CharString, TPatternSpec> TPattern;
     TPattern p1("Some needle");
     TPattern p2;
@@ -1720,7 +1718,6 @@ void test_pattern_movecon() {
 
 template <typename TPatternSpec>
 void test_pattern_moveassign() {
-    SEQAN_CHECKPOINT;
     typedef Pattern<CharString, TPatternSpec> TPattern;
     TPattern p1("Some needle");
     TPattern p2;
@@ -1935,22 +1932,5 @@ SEQAN_BEGIN_TESTSUITE(test_find) {
     SEQAN_CALL_TEST(test_pattern_movecon);
     SEQAN_CALL_TEST(test_pattern_moveassign);
     SEQAN_CALL_TEST(test_pattern_set_host);
-
-    // Verify checkpoints in all files in this module.
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_hamming_simple.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_myers_ukkonen.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_wild_shiftand.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_horspool.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_base.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_shiftand.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_shiftor.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_bndm.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_bom.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_ahocorasick.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_multiple_shiftand.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_set_horspool.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_wumanber.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_abndm.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_pex.h");
 }
 SEQAN_END_TESTSUITE

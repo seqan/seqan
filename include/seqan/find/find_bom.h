@@ -138,7 +138,6 @@ template <typename TNeedle>
 inline void
 _reinitPattern(Pattern<TNeedle, Bfam<Oracle> > & me)
 {
-    SEQAN_CHECKPOINT
     me.needleLength = length(needle(me));
     clear(me.automaton);
     createOracleOnReverse(me.automaton,needle(me));
@@ -149,7 +148,6 @@ template <typename TNeedle>
 inline void
 _reinitPattern(Pattern<TNeedle, Bfam<Trie> > & me)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Position<TNeedle>::Type TPosition;
     me.needleLength = length(needle(me));
     clear(me.automaton);
@@ -168,7 +166,6 @@ _reinitPattern(Pattern<TNeedle, Bfam<Trie> > & me)
 template <typename TNeedle, typename TSpec>
 inline void _patternInit (Pattern<TNeedle, Bfam<TSpec> > & me)
 {
-SEQAN_CHECKPOINT
     me.step = 0;
 }
 

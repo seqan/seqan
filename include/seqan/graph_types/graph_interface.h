@@ -677,7 +677,6 @@ template<typename TId>
 inline TId
 _getId(TId const id)
 {
-    SEQAN_CHECKPOINT
     return id;
 }
 

@@ -88,7 +88,6 @@ public:
 template <typename TNeedle>
 inline void _patternInit (Pattern<TNeedle, Quasar> & /*me*/)
 {
-SEQAN_CHECKPOINT
 }
 
 
@@ -99,7 +98,6 @@ template <typename TFinder, typename TNeedle>
 inline bool
 find(TFinder & finder, Pattern<TNeedle, Quasar> & me)
 {
-    SEQAN_CHECKPOINT
 
     if (empty(finder)) {
         _patternInit(me);

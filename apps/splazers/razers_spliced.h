@@ -1169,7 +1169,6 @@ _alignBandedNeedlemanWunschTrace(TAlign& align,
 					   TDiagonal const diagL,
 					   TDiagonal const diagU)
 {
-	SEQAN_CHECKPOINT
 	typedef typename Value<TStringSet>::Type TString;
 	typedef typename Id<TStringSet>::Type TId;
 	typedef typename Size<TTrace>::Type TSize;
@@ -1290,7 +1289,6 @@ _alignBandedNeedlemanWunsch(TTrace& trace,
 			String<Pair<typename Value<TScore>::Type,int> > & maxCols,
 			unsigned minColNum)
 {
-	SEQAN_CHECKPOINT
 	typedef typename Value<TTrace>::Type TTraceValue;
 	typedef typename Value<TScore>::Type TScoreValue;
 	typedef typename Value<TStringSet>::Type TString;

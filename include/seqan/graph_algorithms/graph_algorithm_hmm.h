@@ -255,7 +255,6 @@ _forwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
                    TSequence const& seq,
                    TForwardMatrix& fMat)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -368,7 +367,6 @@ TProbability
 forwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const & hmm,
                  TSequence const & seq)
 {
-    SEQAN_CHECKPOINT
     String<TProbability> fMat;
     return _forwardAlgorithm(hmm, seq, fMat);
 }
@@ -383,7 +381,6 @@ _backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
                     TSequence const& seq,
                     TBackwardMatrix& bMat)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -535,7 +532,6 @@ TProbability
 backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const & hmm,
                   TSequence const & seq)
 {
-    SEQAN_CHECKPOINT
     String<TProbability> bMat;
     return _backwardAlgorithm(hmm, seq, bMat);
 }
@@ -569,7 +565,6 @@ void generateSequence(TSequenceSet & sequences,
                       TSize numSeq,
                       TSize maxLength)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
@@ -644,7 +639,6 @@ generateSequence(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
                  TSize numSeq,
                  TSize maxLength)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     StringSet<String<TVertexDescriptor> > states;
@@ -753,7 +747,6 @@ template<typename TAlphabet, typename TProbability, typename TSpec>
 inline void
 _fillHmmUniform(Graph<Hmm<TAlphabet, TProbability, TSpec> >& hmm)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
     typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
@@ -781,7 +774,6 @@ inline void
 _fillHmmRandom(Graph<Hmm<TAlphabet, TProbability, TSpec> >& hmm,
                 TRNG & rng)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
     typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
@@ -945,7 +937,6 @@ inline TProbability
 baumWelchAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec > >& hmm,
                    StringSet<TSequence> const& seqSet)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
     TSize maxIter = 100;
@@ -969,7 +960,6 @@ _profileHmmCounter(Graph<Hmm<TAlphabet, TProbability, TSpec> >& pHmm,
                     TSize const& numRows,
                     TSize const& numCols)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
@@ -1067,7 +1057,6 @@ inline void
 _createProfileHmm(Graph<Hmm<TAlphabet, TCargo, TSpec> >& pHmm,
                    TConsensus const& consensus)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Hmm<TAlphabet, TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -1158,7 +1147,6 @@ msaToProfileHmm(String<TAlignmentChar> const& matr,
                 Graph<Hmm<TAlphabet, TProbability, TSpec> >& pHmm,
                 TSize nSeq)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > THmm;
 
     // Consensus

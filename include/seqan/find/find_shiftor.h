@@ -103,7 +103,6 @@ template <typename TNeedle>
 inline void
 _reinitPattern(Pattern<TNeedle, ShiftOr> & me)
 {
-    SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     typedef typename Value<TNeedle>::Type TValue;
 
@@ -150,7 +149,6 @@ template <typename TNeedle>
 inline void
 _patternInit (Pattern<TNeedle, ShiftOr> & me)
 {
-SEQAN_CHECKPOINT
     typedef unsigned int TWord;
 
     clear(me.prefSufMatch);
@@ -162,7 +160,6 @@ SEQAN_CHECKPOINT
 /*
 template <typename TFinder, typename TNeedle>
 bool _findShiftOrSmallNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me) {
-    SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     TWord compare= (~(1 << (me.needleLength-1)));
     while (!atEnd(finder)) {
@@ -181,7 +178,6 @@ template <typename TFinder, typename TNeedle>
 inline bool
 _findShiftOrSmallNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me)
 {
-SEQAN_CHECKPOINT
     typedef typename Haystack<TFinder>::Type THaystack;
     typedef typename Parameter_<THaystack>::Type TParamHaystack;
     typedef typename Value<TNeedle>::Type TValue;
@@ -219,7 +215,6 @@ template <typename TFinder, typename TNeedle>
 inline bool
 _findShiftOrLargeNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me)
 {
-SEQAN_CHECKPOINT
     typedef typename Value<TNeedle>::Type TValue;
     typedef unsigned int TWord;
 
@@ -263,7 +258,6 @@ template <typename TFinder, typename TNeedle>
 inline bool
 find(TFinder & finder, Pattern<TNeedle, ShiftOr> & me)
 {
-SEQAN_CHECKPOINT
     if (empty(finder)) {
         _patternInit(me);
         _setFinderLength(finder, me.needleLength);

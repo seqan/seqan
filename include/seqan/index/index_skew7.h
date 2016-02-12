@@ -916,7 +916,6 @@ namespace SEQAN_NAMESPACE_MAIN
         Skew7 const &_dummy,
         TSize maxLCP)
     {
-        SEQAN_CHECKPOINT;
         createSuffixArrayPart(SA, s, _dummy, maxLCP, ValueSize< typename Value<TText>::Type >::VALUE);
     }
 //}

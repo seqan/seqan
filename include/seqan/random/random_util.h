@@ -70,7 +70,6 @@ namespace seqan {
 template <typename TContainer, typename TRNG>
 void shuffle(TContainer & container, TRNG & rng)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Position<TContainer>::Type TPosition;
     typedef typename Value<TContainer>::Type TValue;
 

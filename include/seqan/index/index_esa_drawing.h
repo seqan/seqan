@@ -45,7 +45,6 @@ void writeRecords(
     DotDrawing)
 {
 //IOREV _nodoc_
-    SEQAN_CHECKPOINT
     typedef Index<TText, IndexEsa<TESASpec> > TIndex;
 
     typename DirectionIterator<TFile, Output>::Type iter = directionIterator(file, Output());

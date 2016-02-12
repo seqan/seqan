@@ -107,7 +107,6 @@ inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >)
 assign(TTarget & target,
        TSource & source)
 {
-    SEQAN_CHECKPOINT;
     target = source;
 }
 
@@ -116,7 +115,6 @@ inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >)
 assign(TTarget & target,
        TSource const & source)
 {
-    SEQAN_CHECKPOINT;
     target = source;
 }
 
@@ -129,7 +127,6 @@ inline void
 assign(Proxy<TTargetSpec> & target,
        TSource & source)
 {
-    SEQAN_CHECKPOINT;
     assignValue(iter(target), source);
 }
 
@@ -138,7 +135,6 @@ inline void
 assign(Proxy<TTargetSpec> & target,
        TSource const & source)
 {
-    SEQAN_CHECKPOINT;
     assignValue(iter(target), source);
 }
 
@@ -164,7 +160,6 @@ inline void
 set(TTarget & target,
     TSource & source)
 {
-    SEQAN_CHECKPOINT;
     assign(target, source);
 }
 
@@ -173,7 +168,6 @@ inline void
 set(TTarget const & target,
     TSource & source)
 {
-    SEQAN_CHECKPOINT;
     assign(target, source);
 }
 
@@ -182,7 +176,6 @@ inline void
 set(TTarget & target,
     TSource const & source)
 {
-    SEQAN_CHECKPOINT;
     assign(target, source);
 }
 
@@ -191,7 +184,6 @@ inline void
 set(TTarget const & target,
     TSource const & source)
 {
-    SEQAN_CHECKPOINT;
     assign(target, source);
 }
 
@@ -220,7 +212,6 @@ inline void
 move(TTarget & target,
      TSource & source)
 {
-    SEQAN_CHECKPOINT;
     assign(target, source);
 }
 
@@ -229,7 +220,6 @@ inline void
 move(TTarget const & target,
      TSource & source)
 {
-    SEQAN_CHECKPOINT;
     assign(target, source);
 }
 
@@ -238,7 +228,6 @@ inline void
 move(TTarget & target,
      TSource const & source)
 {
-    SEQAN_CHECKPOINT;
     assign(target, source);
 }
 
@@ -247,7 +236,6 @@ inline void
 move(TTarget const & target,
      TSource const & source)
 {
-    SEQAN_CHECKPOINT;
     assign(target, source);
 }
 

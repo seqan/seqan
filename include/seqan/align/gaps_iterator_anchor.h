@@ -74,7 +74,6 @@ public:
 public:
     Iter()
     {
-SEQAN_CHECKPOINT
         data_container = NULL;
         seqLength = 0;
     }
@@ -86,12 +85,10 @@ SEQAN_CHECKPOINT
         nextAnchor(other_.nextAnchor),
         anchorIdx(other_.anchorIdx)
     {
-SEQAN_CHECKPOINT
     }
 */    Iter(TGaps & container_):
         data_container(&container_)
     {
-SEQAN_CHECKPOINT
         _assignSourceLength(seqLength, container_);
         _goToGapAnchorIterator(*this, data_container->data_viewCutBegin + data_container->data_cutBegin);
         viewBegin = current;
@@ -101,7 +98,6 @@ SEQAN_CHECKPOINT
     Iter(TGaps & container_, TGapPos clippedViewPosition):
         data_container(&container_)
     {
-SEQAN_CHECKPOINT
         _assignSourceLength(seqLength, container_);
         _goToGapAnchorIterator(*this, clippedViewPosition + data_container->data_viewCutBegin + data_container->data_cutBegin);
         viewBegin.gapPos = data_container->data_viewCutBegin + data_container->data_cutBegin;
@@ -111,12 +107,10 @@ SEQAN_CHECKPOINT
     }
     ~Iter()
     {
-SEQAN_CHECKPOINT
     }
 
     Iter const & operator = (Iter const & other_)
     {
-SEQAN_CHECKPOINT
         data_container = other_.data_container;
         seqLength = other_.seqLength;
         current = other_.current;

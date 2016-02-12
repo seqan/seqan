@@ -1216,7 +1216,6 @@ struct CompareTypeImpl<Dna5, Dna5Q>
 
 inline void assign(Dna5 & target, Dna5Q const & source)
 {
-        SEQAN_CHECKPOINT;;
 
     // We perform the conversion from DNA5 to DNA5 with qualities by a simple
     // table lookup.  The lookup below is equivalent to the following line:

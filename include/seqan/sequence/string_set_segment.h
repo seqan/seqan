@@ -93,7 +93,6 @@ public:
     SEQAN_HOST_DEVICE inline typename Reference<StringSet>::Type
     operator[](TPos pos)
     {
-        SEQAN_CHECKPOINT;
         return value(*this, pos);
     }
 
@@ -101,7 +100,6 @@ public:
     SEQAN_HOST_DEVICE inline typename Reference<StringSet const>::Type
     operator[](TPos pos) const
     {
-        SEQAN_CHECKPOINT;
         return value(*this, pos);
     }
 };

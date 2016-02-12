@@ -118,7 +118,6 @@ template < typename TDir, typename TBucketMap, typename TText, typename TShape, 
 inline void
 _qgramCountQGrams(TDir &dir, TBucketMap &bucketMap, TText const &text, TShape shape, TStepSize stepSize, Tag<TParallelTag> parallelTag)
 {
-SEQAN_CHECKPOINT
     typedef typename Iterator<TText const, Standard>::Type  TIterator;
     typedef typename Iterator<TDir, Standard>::Type         TDirIterator;
     typedef typename Value<TDir>::Type                      TSize;
@@ -161,7 +160,6 @@ template < typename TDir, typename TBucketMap, typename TString, typename TSpec,
 inline void
 _qgramCountQGrams(TDir &dir, TBucketMap &bucketMap, StringSet<TString, TSpec> const &stringSet, TShape shape, TStepSize stepSize, Tag<TParallelTag> parallelTag)
 {
-SEQAN_CHECKPOINT
     typedef typename Iterator<TString const, Standard>::Type    TIterator;
     typedef typename Iterator<TDir, Standard>::Type             TDirIterator;
     typedef typename Value<TDir>::Type                          TSize;
@@ -327,7 +325,6 @@ _qgramFillSuffixArray(
     TWithConstraints const,
     Tag<TParallelTag> parallelTag)
 {
-SEQAN_CHECKPOINT
     typedef typename Iterator<TText const, Standard>::Type  TIterator;
     typedef typename Iterator<TDir, Standard>::Type         TDirIterator;
     typedef typename Value<TDir>::Type                      TSize;
@@ -403,7 +400,6 @@ _qgramFillSuffixArray(
     TWithConstraints const,
     Tag<TParallelTag> parallelTag)
 {
-SEQAN_CHECKPOINT
     typedef typename Iterator<TString const, Standard>::Type  TIterator;
     typedef typename Iterator<TDir, Standard>::Type         TDirIterator;
     typedef typename Value<TDir>::Type                      TSize;
@@ -482,7 +478,6 @@ template < typename TDir, typename TParallelTag >
 inline void
 _qgramPostprocessBuckets(TDir &dir, Tag<TParallelTag> parallelTag)
 {
-SEQAN_CHECKPOINT
     typedef typename Iterator<TDir, Standard>::Type TDirIterator;
     typedef typename Size<TDir>::Type               TSize;
     typedef typename Value<TDir>::Type              TValue;

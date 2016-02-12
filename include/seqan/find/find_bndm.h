@@ -97,7 +97,6 @@ public:
 
 template <typename TNeedle>
 void _reinitPattern(Pattern<TNeedle, BndmAlgo> & me) {
-    SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     typedef typename Value<TNeedle>::Type TValue;
 
@@ -138,7 +137,6 @@ void _reinitPattern(Pattern<TNeedle, BndmAlgo> & me) {
 template <typename TNeedle>
 inline void _patternInit (Pattern<TNeedle, BndmAlgo> & me)
 {
-SEQAN_CHECKPOINT
     clear(me.activeFactors);
     resize(me.activeFactors, me.blockCount, 0, Exact());
     me.last = 0;
@@ -151,7 +149,6 @@ SEQAN_CHECKPOINT
 template <typename TFinder, typename TNeedle>
 inline bool _findBndmSmallNeedle(TFinder & finder,
                                   Pattern<TNeedle, BndmAlgo> & me) {
-    SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     typedef typename Value<TNeedle>::Type TNeedleAlphabet;
 
@@ -184,7 +181,6 @@ inline bool _findBndmSmallNeedle(TFinder & finder,
 
 template <typename TFinder, typename TNeedle>
 inline bool _findBndmLargeNeedle(TFinder & finder, Pattern<TNeedle, BndmAlgo> & me) {
-    SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     typedef typename Value<TNeedle>::Type TNeedleAlphabet;
 
@@ -236,7 +232,6 @@ inline bool _findBndmLargeNeedle(TFinder & finder, Pattern<TNeedle, BndmAlgo> & 
 
 template <typename TFinder, typename TNeedle>
 inline bool find(TFinder & finder, Pattern<TNeedle, BndmAlgo> & me) {
-    SEQAN_CHECKPOINT
 
     if (empty(finder)) {
         _patternInit(me);

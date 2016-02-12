@@ -99,7 +99,6 @@ inline void
 createOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
              TText const text)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Size<TText>::Type TSize;
@@ -132,7 +131,6 @@ inline void
 createOracleOnReverse(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
                       TText const text)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Size<TText>::Type TSize;

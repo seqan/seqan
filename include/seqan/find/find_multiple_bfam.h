@@ -209,7 +209,6 @@ position(Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
 template <typename TNeedle, typename TAutomaton>
 inline void _patternInit (Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
 {
-SEQAN_CHECKPOINT
     me.position = 0;
     me.position_end = 0;
 }
@@ -257,7 +256,6 @@ template <typename TFinder, typename TAutomaton, typename TNeedle>
 inline bool find(TFinder & finder,
                  Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
 {
-SEQAN_CHECKPOINT
     typedef typename Haystack<TFinder>::Type THaystack;
     typedef typename Iterator<THaystack, Standard>::Type THaystackIterator;
     typedef typename Value<TNeedle>::Type TKeyword;

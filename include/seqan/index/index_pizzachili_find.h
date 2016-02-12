@@ -85,7 +85,6 @@ public:
     Finder(TIndex const& index) : TBase(index) { }
 
     ~Finder() {
-SEQAN_CHECKPOINT
         if (range.i1 != 0)
             std::free(range.i1);
     }
@@ -96,7 +95,6 @@ SEQAN_CHECKPOINT
 namespace impl {
     template <typename TPattern>
     inline uchar_t* getPizzaChiliString(TPattern const& pattern) {
-SEQAN_CHECKPOINT
         typedef
             typename RemoveConst_<
                 typename Value<TPattern>::Type
@@ -114,7 +112,6 @@ SEQAN_CHECKPOINT
     }
 
     inline uchar_t* getPizzaChiliString(char const* pattern) {
-SEQAN_CHECKPOINT
         return reinterpret_cast<uchar_t*>(const_cast<char*>(pattern));
     }
 } // namespace impl
@@ -127,7 +124,6 @@ inline void _findFirstIndex(
     TPattern const& pattern,
     PizzaChiliFinder const
 ) {
-SEQAN_CHECKPOINT
     typedef Index<TText, PizzaChili<TSpec> > TIndex;
     typedef typename PizzaChiliCodeProvider<TSpec>::Type TCodeProvider;
 

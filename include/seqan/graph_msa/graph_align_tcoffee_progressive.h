@@ -48,7 +48,6 @@ _buildLeafString(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                  TPosition const pos,
                  TSequence& alignSeq)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
     typedef typename Id<TGraph>::Type TId;
@@ -84,7 +83,6 @@ _createAlignmentGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                       TSegmentString& alignSeq,
                       TOutGraph& gOut)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -133,7 +131,6 @@ progressiveAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
                      TGuideTree& tree,
                      TOutGraph& gOut)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
     typedef typename VertexDescriptor<TGuideTree>::Type TVertexDescriptor;
