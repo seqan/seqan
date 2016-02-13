@@ -821,10 +821,10 @@ findProperMates(TMatches const & mates, TMatch const & match,
     typedef typename Size<TReadSeqs>::Type          TReadId;
     typedef typename Value<TReadSeqs const>::Type   TReadSeq;
     typedef typename Size<TReadSeq>::Type           TReadSeqSize;
-    typedef typename MakeSigned<TReadSeqSize>::Type TSignedSize;
+    typedef typename MakeSigned<TReadSeqSize>::Type TReadDelta;
 
     TReadId mateId = getMateId(readSeqs, getMember(match, ReadId()));
-    TReadSeqSize mateLength = length(readSeqs[mateId]);
+    TReadDelta mateLength = length(readSeqs[mateId]);
 
     // Create lower and upper bound for the mate.
     TMatch mateLeq = match;
@@ -834,10 +834,10 @@ findProperMates(TMatches const & mates, TMatch const & match,
     mateLeq.errors = 0;
     mateGeq.errors = MemberLimits<TMatch, Errors>::VALUE;
 
-    TReadSeqSize deltaMinus = std::max(static_cast<TSignedSize>(0),
-                                       static_cast<TSignedSize>(mean - 6 * stdDev - mateLength));
-    TReadSeqSize deltaPlus = std::max(static_cast<TSignedSize>(0),
-                                      static_cast<TSignedSize>(mean + 6 * stdDev - mateLength));
+    TReadSeqSize deltaMinus = std::max(static_cast<TReadDelta>(0),
+                                       static_cast<TReadDelta>(mean) - static_cast<TReadDelta>(6 * stdDev) - mateLength);
+    TReadSeqSize deltaPlus = std::max(static_cast<TReadDelta>(0),
+                                      static_cast<TReadDelta>(mean) + static_cast<TReadDelta>(6 * stdDev) - mateLength);
 
     // --> ... mate
     if (onForwardStrand(match))
