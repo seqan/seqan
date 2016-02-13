@@ -46,7 +46,7 @@ def main(source_base, binary_base):
     path_to_simulator = app_tests.autolocateBinary(
       binary_base, 'bin', 'mason_simulator')
 
-    libcpp = ('gcc' in os.environ["CC"]) or sys.platform == "linux" or sys.platform == "linux2"
+    libcpp = (os.environ.has_key('CC') and 'gcc' in os.environ["CC"]) or sys.platform == "linux" or sys.platform == "linux2"
 
     # ============================================================
     # Built TestConf list.
