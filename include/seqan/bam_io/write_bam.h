@@ -66,27 +66,27 @@ void write(TTarget & target,
     // appendValue(context.buffer, '\0');
 
     // Write text header.
-    appendRawPod(target, (int32_t)length(context.buffer));
+    appendRawPod(target, (__int32)length(context.buffer));
     write(target, context.buffer);
 
     // Write references.
-    int32_t nRef = _max(length(contigNames(context)), length(contigLengths(context)));
+    __int32 nRef = _max(length(contigNames(context)), length(contigLengths(context)));
     appendRawPod(target, nRef);
 
-    for (int32_t i = 0; i < nRef; ++i)
+    for (__int32 i = 0; i < nRef; ++i)
     {
-        if (i < (int32_t)length(contigNames(context)))
+        if (i < (__int32)length(contigNames(context)))
         {
-            appendRawPod(target, (int32_t)(length(contigNames(context)[i]) + 1));
+            appendRawPod(target, (__int32)(length(contigNames(context)[i]) + 1));
             write(target, contigNames(context)[i]);
         }
         else
         {
-            appendRawPod(target, (int32_t)1);
+            appendRawPod(target, (__int32)1);
         }
         writeValue(target, '\0');
-        int32_t lRef = 0;
-        if (i < (int32_t)length(contigLengths(context)))
+        __int32 lRef = 0;
+        if (i < (__int32)length(contigLengths(context)))
             lRef = contigLengths(context)[i];
         appendRawPod(target, lRef);
     }
@@ -117,7 +117,7 @@ static inline int _reg2Bin(uint32_t beg, uint32_t end)
     return 0;
 }
 
-inline uint32_t
+inline __uint32
 updateLengths(BamAlignmentRecord const & record)
 {
     // update internal lengths.
@@ -175,7 +175,7 @@ _writeBamRecord(TTarget & target,
     };
     TCigarIter citEnd = end(record.cigar, Standard());
     for (TCigarIter cit = begin(record.cigar, Standard()); cit != citEnd; ++cit)
-        appendRawPod(target, ((uint32_t)cit->count << 4) | MAP[(unsigned char)cit->operation]);
+        appendRawPod(target, ((__uint32)cit->count << 4) | MAP[(unsigned char)cit->operation]);
 
     // seq
     TSeqIter sit = begin(record.seq, Standard());
@@ -207,7 +207,7 @@ inline void
 _writeBamRecordWrapper(TTarget & target,
                        BamAlignmentRecord const & record,
                        Nothing & /* range */,
-                       uint32_t size,
+                       __uint32 size,
                        Bam const & tag)
 {
     appendRawPod(target, size);
@@ -219,7 +219,7 @@ inline void
 _writeBamRecordWrapper(TTarget & target,
                        BamAlignmentRecord const & record,
                        Range<TOValue*> & range,
-                       uint32_t size,
+                       __uint32 size,
                        Bam const & tag)
 {
     if (SEQAN_LIKELY(size + 4 <= length(range)))
@@ -242,12 +242,12 @@ void write(TTarget & target,
            Bam const & tag)
 {
     // Check for valid IO Context.
-    SEQAN_ASSERT_LT_MSG(record.rID, static_cast<int32_t>(length(contigNames(context))), "BAM IO Assertion: Unknown REF ID!");
-    SEQAN_ASSERT_LT_MSG(record.rNextId, static_cast<int32_t>(length(contigNames(context))), "BAM IO Assertion: Unknown NEXT REF ID!");
+    SEQAN_ASSERT_LT_MSG(record.rID, static_cast<__int32>(length(contigNames(context))), "BAM IO Assertion: Unknown REF ID!");
+    SEQAN_ASSERT_LT_MSG(record.rNextId, static_cast<__int32>(length(contigNames(context))), "BAM IO Assertion: Unknown NEXT REF ID!");
     ignoreUnusedVariableWarning(context);
 
     // Update internal lengths
-    uint32_t size = updateLengths(record);
+    __uint32 size = updateLengths(record);
 
     // Reserve chunk memory
     reserveChunk(target, 4 + size, Output());

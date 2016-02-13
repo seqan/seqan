@@ -35,5 +35,3 @@ application/x-txt txt
 application/x-bam-coverage-tsv bam_coverage_tsv
 application/x-fq-stats-tsv fq_stats_tsv
 application/x-rabema-report-tsv rabema_report_tsv
-application/x-index lf.drp lf.drs lf.drv lf.pst sa.ind sa.len sa.val txt.concat txt.limits txt.size
-application/x-yara rid.concat rid.limits

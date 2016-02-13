@@ -177,6 +177,7 @@ struct EdgeType<Graph<Directed<TCargo, WithoutEdgeId> > const> {
     typedef EdgeStump<TCargo, true, false, false, WithoutEdgeId> const Type;
 };
 
+
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, typename TSpec>
@@ -189,22 +190,6 @@ struct EdgeType<Graph<Tree<TCargo, TSpec> > > {
 template<typename TCargo, typename TSpec>
 struct EdgeType<Graph<Tree<TCargo, TSpec> > const> {
     typedef EdgeStump<TCargo, true, false, false, TreeTag> const Type;
-};
-
-//////////////////////////////////////////////////////////////////////////////
-
-template<typename TCargo>
-struct EdgeType<Graph<Directed<TCargo, WithSourceId> > >
-{
-    typedef EdgeStump<TCargo, true, true, true, WithSourceId> Type;
-};
-
-//////////////////////////////////////////////////////////////////////////////
-
-template<typename TCargo>
-struct EdgeType<Graph<Directed<TCargo, WithSourceId> > const>
-{
-    typedef EdgeStump<TCargo, true, true, true, WithSourceId> const Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -224,8 +209,7 @@ struct EdgeType<Graph<Undirected<TCargo, TSpec> > const> {
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo>
-struct EdgeType<Graph<Undirected<TCargo, WithoutEdgeId> > >
-{
+struct EdgeType<Graph<Undirected<TCargo, WithoutEdgeId> > > {
     typedef EdgeStump<TCargo, true, true, false, WithoutEdgeId> Type;
 };
 
@@ -688,8 +672,8 @@ inline void
 _createVertices(Graph<TSpec>& g,
                 TVertexDescriptor const maxId)
 {
-    // Create missing vertices
-    while (maxId >= getIdUpperBound(g.data_id_managerV)) addVertex(g);
+        // Create missing vertices
+        while (maxId >= getIdUpperBound(g.data_id_managerV)) addVertex(g);
 }
 
 //////////////////////////////////////////////////////////////////////////////

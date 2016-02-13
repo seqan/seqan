@@ -211,10 +211,9 @@ void _simulateSequence(TRead & read, TRng & rng, TFrag const & frag,
         for (unsigned j = 0; j < cigar[i].count; ++j)
         {
             // Pick a value between 0 and 1.
-            std::uniform_real_distribution<double> dist(0, 1);
             double x = 1.0;
             while (x == 1.0)
-                x = dist(rng);
+                x = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<double> >(0, 1));
             int num = static_cast<int>(x / 0.25);
 
             // NOTE: We can only insert CGAT, but we can have a polymorphism to N.
@@ -321,14 +320,14 @@ void IlluminaSequencingSimulator::_simulateQualities(TQualities & quals, TCigarS
             int q = 0;
             if (cigar[i].operation == 'M')
             {
-                std::normal_distribution<double> dist(model->qualityMeans[pos], model->qualityStdDevs[pos]);
-                q = static_cast<int>(dist(rng));
+                seqan::Pdf<seqan::Normal> pdf(model->qualityMeans[pos], model->qualityStdDevs[pos]);
+                q = static_cast<int>(pickRandomNumber(rng, pdf));
                 ++pos;
             }
             else if (cigar[i].operation == 'I' || cigar[i].operation == 'X')
             {
-                std::normal_distribution<double> dist(model->mismatchQualityMeans[pos], model->mismatchQualityStdDevs[pos]);
-                q = static_cast<int>(dist(rng));
+                seqan::Pdf<seqan::Normal> pdf(model->mismatchQualityMeans[pos], model->mismatchQualityStdDevs[pos]);
+                q = static_cast<int>(pickRandomNumber(rng, pdf));
                 ++pos;
             }
             else
@@ -352,11 +351,10 @@ void IlluminaSequencingSimulator::_simulateCigar(TCigarString & cigar)
 {
     clear(cigar);
     unsigned len = this->readLength();
-    std::uniform_real_distribution<double> dist(0, 1);
 
     for (int i = 0; i < (int)len;)
     {
-        double x = dist(rng);
+        double x = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<double> >(0, 1));
         double pMismatch = model->mismatchProbabilities[i];
         double pInsert   = illuminaOptions.probabilityInsert;
         double pDelete   = illuminaOptions.probabilityDelete;
@@ -386,9 +384,9 @@ void IlluminaSequencingSimulator::_simulateCigar(TCigarString & cigar)
 // Function SequencingSimulatorFactory::make()
 // ----------------------------------------------------------------------------
 
-std::unique_ptr<SequencingSimulator> SequencingSimulatorFactory::make()
+std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> SequencingSimulatorFactory::make()
 {
-    std::unique_ptr<SequencingSimulator> res;
+    std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> res;
 
     switch (seqOptions.sequencingTechnology)
     {

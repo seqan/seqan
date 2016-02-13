@@ -67,11 +67,13 @@ struct Event        // this class mustn't exceed the size of HANDLE (needed by w
         other.hEvent = NULL;
     }
 
+#ifdef SEQAN_CXX11_STANDARD
     Event(Event && other) :
         hEvent(other.hEvent)
     {
         other.hEvent = NULL;
     }
+#endif
 
     ~Event()
     {
@@ -205,11 +207,13 @@ struct Event :
         other.hEvent = NULL;
     }
 
+#ifdef SEQAN_CXX11_STANDARD
     Event(Event && other) :
         hEvent(other.hEvent)
     {
         other.hEvent = NULL;
     }
+#endif
 
     ~Event()
     {

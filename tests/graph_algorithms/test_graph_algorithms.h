@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_TEST_GRAPH_ALGORITHMS_H
 #define SEQAN_HEADER_TEST_GRAPH_ALGORITHMS_H
 
-#include <random>
+#include <seqan/random.h>
 #include <seqan/misc/union_find.h>
 
 namespace SEQAN_NAMESPACE_MAIN
@@ -44,22 +44,22 @@ inline void
 _createRandomGraph(TGraph& g)
 {
     int const SEED = 0;
-    std::mt19937 rng(SEED);
-    std::uniform_int_distribution<int> vertexPdf(0, 49);
-    std::uniform_int_distribution<int> edgePdf(0, 99);
+    seqan::Rng<> rng(SEED);
+    seqan::Pdf<Uniform<int> > vertexPdf(0, 49);
+    seqan::Pdf<Uniform<int> > edgePdf(0, 99);
 
     clear(g);
-    unsigned int nVertices = vertexPdf(rng) + 10;
-    std::uniform_int_distribution<int> stPdf(0, nVertices - 1);
+    unsigned int nVertices = pickRandomNumber(rng, vertexPdf) + 10;
+    seqan::Pdf<Uniform<int> > stPdf(0, nVertices - 1);
     for(unsigned int i=0; i<nVertices; ++i) addVertex(g);
-    unsigned int maxEdges = edgePdf(rng) + 2 * nVertices;
+    unsigned int maxEdges = pickRandomNumber(rng, edgePdf) + 2 * nVertices;
     unsigned int nEdges = 0;
     for(unsigned int i=0; i<maxEdges; ++i) {
         unsigned int source = 0;
         unsigned int target = 0;
         do {
-            source = stPdf(rng);
-            target = stPdf(rng);
+            source = pickRandomNumber(rng, stPdf);
+            target = pickRandomNumber(rng, stPdf);
         } while (source == target);
         if (findEdge(g, source, target) == 0) {
             ++nEdges;
@@ -195,12 +195,11 @@ void Test_HeapTree() {
     String<TValue> result2;
 
     int const SEED = 0;
-    std::mt19937 rng(SEED);
-    std::uniform_int_distribution<int> uniformDist(0, 9999);
+    seqan::Rng<> rng(SEED);
 
     for(unsigned int i=0; i<1000; ++i) {
 
-        TValue val = uniformDist(rng) - 5000;
+        TValue val = pickRandomNumber(rng, Pdf<Uniform<int> >(0, 9999)) - 5000;
         appendValue(result1, val);
         appendValue(result2, val);
     }
@@ -221,7 +220,7 @@ void Test_HeapTree() {
     clear(result2);
 
     for(unsigned int i=0; i<1000; ++i) {
-        TValue val = uniformDist(rng) - 5000;
+        TValue val = pickRandomNumber(rng, Pdf<Uniform<int> >(0, 9999)) - 5000;
         appendValue(result1, val);
         appendValue(result2, val);
     }
@@ -518,14 +517,14 @@ void Test_KruskalsAlgorithm() {
 
 void Test_MST_All() {
     int const SEED = 0;
-    std::mt19937 rng(SEED);
+    seqan::Rng<> rng(SEED);
 
     //while (true) {
         Graph<Undirected<> > myGraph;
         _createRandomGraph(myGraph);
         String<unsigned int> initialWeights;
         for(unsigned int i = 0; i<numEdges(myGraph); ++i)
-            appendValue(initialWeights, std::uniform_int_distribution<int>(0, 999)(rng));
+            appendValue(initialWeights, pickRandomNumber(rng, Pdf<Uniform<int> >(0, 999)));
         String<unsigned int> weightMapInput;
         assignEdgeMap(weightMapInput, myGraph, initialWeights);
         clear(initialWeights);

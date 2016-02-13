@@ -238,31 +238,9 @@ position(Iter<TGaps, GapsIterator<ArrayGaps> > const & it)
 // Function countGaps()
 // ----------------------------------------------------------------------------
 
-// Count left.
 template <typename TGaps>
 inline typename Size<TGaps>::Type
-countGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, LeftOfViewPos const & /*tag*/)
-{
-    typedef typename Size<TGaps>::Type TSize;
-    TSize result = 0;
-
-    // Get number of gaps left of current position ignoring any clipping.
-    if (isGap(it) && it._bucketOffset)
-        result = it._bucketOffset;
-    else if (!isGap(it) && !it._bucketOffset && it._bucketIndex)
-        result = it._container->_array[it._bucketIndex - 1];
-
-    // Limit to the clipping begin position.
-    if (it._unclippedViewPosition - result < (TSize)it._container->_clippingBeginPos)
-            result = it._unclippedViewPosition - it._container->_clippingBeginPos;
-
-    return result;
-}
-
-// Count right.
-template <typename TGaps>
-inline typename Size<TGaps>::Type
-countGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, RightOfViewPos const & /*tag*/)
+countGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it)
 {
     if (!isGap(it) || atEnd(it))
         return 0;  // Not on a gap or at end, no gap here.
@@ -281,27 +259,7 @@ countGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, RightOfViewPos const
 
 template <typename TGaps>
 inline typename Size<TGaps>::Type
-countCharacters(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, LeftOfViewPos const & /*dir*/)
-{
-    typedef typename Size<TGaps>::Type TSize;
-    TSize result = 0;
-
-    // Get number of characters left of current position ignoring any clipping.
-    if (!isGap(it) && it._bucketOffset)
-        result = it._bucketOffset;
-    else if (isGap(it) && !it._bucketOffset && it._bucketIndex)
-        result = it._container->_array[it._bucketIndex - 1];
-
-    // Limit to the clipping begin position.
-    if (it._unclippedViewPosition - result < (TSize)it._container->_clippingBeginPos)
-        result = it._unclippedViewPosition - it._container->_clippingBeginPos;
-    
-    return result;
-}
-
-template <typename TGaps>
-inline typename Size<TGaps>::Type
-countCharacters(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, RightOfViewPos const & /*dir*/)
+countCharacters(Iter<TGaps, GapsIterator<ArrayGaps> > const & it)
 {
     if (isGap(it) || atEnd(it))
         return 0;  // On a gap or at end, no characters here.

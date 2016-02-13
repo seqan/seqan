@@ -113,15 +113,15 @@ struct Levels {};
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
-struct RankDictionaryBitMask_<uint32_t, TSpec>
+struct RankDictionaryBitMask_<__uint32, TSpec>
 {
-    static const uint32_t VALUE = 0x55555555;
+    static const __uint32 VALUE = 0x55555555;
 };
 
 template <typename TSpec>
-struct RankDictionaryBitMask_<uint64_t, TSpec>
+struct RankDictionaryBitMask_<__uint64, TSpec>
 {
-    static const uint64_t VALUE = 0x5555555555555555ull;
+    static const __uint64 VALUE = 0x5555555555555555ull;
 };
 
 // ----------------------------------------------------------------------------
@@ -130,12 +130,12 @@ struct RankDictionaryBitMask_<uint64_t, TSpec>
 
 template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> > :
-    BitsPerValue<uint64_t> {};
+    BitsPerValue<__uint64> {};
 
 // NOTE(esiragusa): This is required on CUDA devices.
 //template <typename TValue, typename TSpec, typename TConfig>
 //struct RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> > :
-//    BitsPerValue<uint32_t> {};
+//    BitsPerValue<__uint32> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction RankDictionaryBitsPerBlock_

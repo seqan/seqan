@@ -237,7 +237,7 @@ void SeqConsAppImpl::loadReads(char const * fileName)
                                      e.what());
         }
         trimAfterSpace(id);
-        int64_t readID = appendRead(store, seq, id);
+        __int64 readID = appendRead(store, seq, id);
         appendAlignedRead(store, readID, /*contigID=*/0, /*beginPos=*/0, (int)length(seq));
         maxPos = std::max(maxPos, (int)length(seq));
     }

@@ -128,8 +128,8 @@ namespace SEQAN_NAMESPACE_MAIN
 		TMatches				&matches;
 		TVerificationPatterns	&verificationPatterns;
 		TOptions				&options;
-		int64_t					FP;
-		int64_t					TP;	 
+		__int64					FP;
+		__int64					TP;	 
 
 
 		VerificationPipe(TMatches &_matches, TVerificationPatterns &_verificationPatterns, TOptions &_options):

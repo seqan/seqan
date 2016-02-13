@@ -5,7 +5,7 @@ using namespace seqan;
 int main()
 {
     // Open input file.
-    VcfFileIn vcfIn(toCString(getAbsolutePath("demos/tutorial/vcf_io/example.vcf")));
+    VcfFileIn vcfIn(toCString(getAbsolutePath("/demos/tutorial/vcf_io/example.vcf")));
 
     // Attach to standard output.
     VcfFileOut vcfOut(vcfIn);

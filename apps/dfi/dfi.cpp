@@ -40,7 +40,7 @@ typedef double TFloat;
 #define DFI_PLUS_EPSILON  + 0.0000001
 #define DFI_MINUS_EPSILON - 0.0000001
 
-//typedef Rational<int64_t> TFloat;
+//typedef Rational<__int64> TFloat;
 //#define DFI_PLUS_EPSILON
 //#define DFI_MINUS_EPSILON
 

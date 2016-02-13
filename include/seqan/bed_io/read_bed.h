@@ -106,17 +106,17 @@ _readBedRecordNoData(BedRecord<Bed3> & record,
     skipOne(iter);
 
     // Read START.
-    // TODO(singer): Realy int32_t for a position ???
+    // TODO(singer): Realy __int32 for a position ???
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
     // NB: in contrast to many other text-based formats, UCSC BED uses 0-based and not 1-based coordinates.
-    record.beginPos = lexicalCast<int32_t>(buffer);
+    record.beginPos = lexicalCast<__int32>(buffer);
     skipOne(iter);
 
     // Read END.
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
-    record.endPos = lexicalCast<int32_t>(buffer);
+    record.endPos = lexicalCast<__int32>(buffer);
 
     // Go over tab if any.
     if (!atEnd(iter) && IsTab()(value(iter)))
@@ -196,35 +196,35 @@ _readBedRecordNoData(BedRecord<Bed12> & record,
     // Read THICK BEGIN
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
-    record.thickBegin = lexicalCast<int32_t>(buffer);
+    record.thickBegin = lexicalCast<__int32>(buffer);
     skipOne(iter);
 
     // Read THICK END
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
-    record.thickEnd = lexicalCast<int32_t>(buffer);
+    record.thickEnd = lexicalCast<__int32>(buffer);
     skipOne(iter);
 
     // Read ITEM RGB
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
-    record.itemRgb.red = lexicalCast<int32_t>(buffer);
+    record.itemRgb.red = lexicalCast<__int32>(buffer);
     skipOne(iter);
 
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
-    record.itemRgb.green = lexicalCast<int32_t>(buffer);
+    record.itemRgb.green = lexicalCast<__int32>(buffer);
     skipOne(iter);
 
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
-    record.itemRgb.blue = lexicalCast<int32_t>(buffer);
+    record.itemRgb.blue = lexicalCast<__int32>(buffer);
     skipOne(iter);
 
     // Read BLOCK COUNT
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
-    record.blockCount = lexicalCast<int32_t>(buffer);
+    record.blockCount = lexicalCast<__int32>(buffer);
     skipOne(iter);
 
     // READ BLOCK SIZES

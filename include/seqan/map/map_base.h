@@ -43,13 +43,13 @@ namespace SEQAN_NAMESPACE_MAIN
 // Forwards
 // ==========================================================================
 
-#if !defined(_MSC_VER)
+#if !defined(_MSC_VER) || _MSC_VER <= 1600
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TKey2>
 inline typename Cargo< std::map<TKey,TCargo, TCompare, TAlloc> >::Type &
 cargo(std::map<TKey,TCargo, TCompare, TAlloc> & me, TKey2 const & _key);
 
-#endif  // #if !defined(_MSC_VER)
+#endif  // #if !defined(_MSC_VER) || _MSC_VER <= 1600
 
 //////////////////////////////////////////////////////////////////////////////
 //insertion tags

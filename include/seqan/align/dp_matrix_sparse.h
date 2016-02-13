@@ -54,15 +54,30 @@ class DPMatrix_<TValue, SparseDPMatrix>
 {
 public:
 
-    typedef typename Member<DPMatrix_, DPMatrixMember>::Type THost;
+    typedef Matrix<TValue, 2> THost;
 
-    Holder<THost>   data_host;  // The host containing the actual matrix.
+    Holder<THost>   _dataHost;  // The host containing the actual matrix.
 
     DPMatrix_() :
-        data_host()
+        _dataHost()
     {
-        create(data_host);
+        create(_dataHost);
     }
+
+    DPMatrix_(DPMatrix_ const & other) :
+        _dataHost(other._dataHost) {}
+
+    ~DPMatrix_() {}
+
+    DPMatrix_ & operator=(DPMatrix_ const & other)
+    {
+        if (this != &other)
+        {
+            _dataHost = other._dataHost;
+        }
+        return *this;
+    }
+
 };
 
 // ============================================================================

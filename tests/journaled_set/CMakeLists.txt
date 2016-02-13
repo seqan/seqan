@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the journaled_set module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_journaled_set CXX)
+cmake_minimum_required (VERSION 2.8.2)
+project (seqan_tests_journaled_set)
 message (STATUS "Configuring tests/journaled_set")
 
 # ----------------------------------------------------------------------------
@@ -15,6 +15,7 @@ message (STATUS "Configuring tests/journaled_set")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
+set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

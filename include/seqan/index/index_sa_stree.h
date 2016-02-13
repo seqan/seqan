@@ -60,7 +60,6 @@ struct IndexSa {};
 /*!
  * @class IndexSa
  * @extends Index
- * @implements StringTrieConcept
  * @headerfile <seqan/index.h>
  * @brief An index based on a suffix array.
  * @signature template <typename TText, typename TSpec>
@@ -100,13 +99,6 @@ public:
         text(_text)
     {}
 };
-
-template <typename TText, typename TSpec>
-SEQAN_CONCEPT_IMPL((Index<TText, IndexSa<TSpec> >), (StringTrieConcept));
-
-template <typename TText, typename TSpec>
-SEQAN_CONCEPT_IMPL((Index<TText, IndexSa<TSpec> > const), (StringTrieConcept));
-
 
 template <typename TSize, typename TAlphabet>
 struct VertexSA : public VertexEsa<TSize>

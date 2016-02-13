@@ -89,22 +89,22 @@ typedef Tag<Bed12_> Bed12;
  * @var CharString BedRecord::ref;
  * @brief Name of the interval's reference name.
  *
- * @var int32_t BedRecord::beginPosition;
+ * @var __int32 BedRecord::beginPosition;
  * @brief Begin position on the reference.
  *
- * @var int32_t BedRecord::rID;
- * @brief Numeric id of the interval's reference (<tt>int32_t</tt>, defaults to <tt>INVALID_REFID</tt>).
+ * @var __int32 BedRecord::rID;
+ * @brief Numeric id of the interval's reference (<tt>__int32</tt>, defaults to <tt>INVALID_REFID</tt>).
  *
- * @var int32_t BedRecord::INVALID_REFID;
+ * @var __int32 BedRecord::INVALID_REFID;
  * @brief Constant for invalid references.
- * @signature static const int32_t BedRecord::INVALID_REFID = -1;
+ * @signature static const __int32 BedRecord::INVALID_REFID = -1;
  *
- * @var int32_t BedRecord::endPosition;
+ * @var __int32 BedRecord::endPosition;
  * @brief End position on the reference.
  *
- * @var int32_t BedRecord::INVALID_POS;
+ * @var __int32 BedRecord::INVALID_POS;
  * @brief Constant for invalid positions.
- * @signature static const int32_t BedRecord::INVALID_POS = -1;
+ * @signature static const __int32 BedRecord::INVALID_POS = -1;
  *
  * @var CharString BedRecord::data;
  * @brief Any data after the last position.
@@ -146,11 +146,11 @@ public:
     // The chromosome name.
     CharString ref;
     // The id of the chromosome, -1 if not translated.
-    int32_t rID;
+    __int32 rID;
     // The start position.
-    int32_t beginPos;
+    __int32 beginPos;
     // The end position;
-    int32_t endPos;
+    __int32 endPos;
     // The remaining data from the file, unparsed.
     CharString data;
 
@@ -294,13 +294,13 @@ public:
  *
  * @signature class BedRgb;
  *
- * @var int32_t BedRgb::red;
+ * @var __int32 BedRgb::red;
  * @brief Red value of RGB color (default is <tt>0</tt>).
  *
- * @var int32_t BedRgb::green;
+ * @var __int32 BedRgb::green;
  * @brief Green value of RGB color (default is <tt>0</tt>).
  *
- * @var int32_t BedRgb::blue;
+ * @var __int32 BedRgb::blue;
  * @brief Blue value of RGB color (default is <tt>0</tt>).
  */
 
@@ -311,15 +311,15 @@ public:
  * @signature BedRgb::BedRgb();
  * @signature BedRgb::BedRgb(red, green, blue);
  *
- * @param[in] blue  int32_t blue value <tt>0-255</tt> (defaults to <tt>0</tt>).
- * @param[in] green int32_t green value <tt>0-255</tt> (defaults to <tt>0</tt>).
- * @param[in] red   int32_t red value <tt>0-255</tt> (defaults to <tt>0</tt>).
+ * @param[in] blue  __int32 blue value <tt>0-255</tt> (defaults to <tt>0</tt>).
+ * @param[in] green __int32 green value <tt>0-255</tt> (defaults to <tt>0</tt>).
+ * @param[in] red   __int32 red value <tt>0-255</tt> (defaults to <tt>0</tt>).
  */
 
 class BedRgb
 {
 public:
-    int32_t red, green, blue;
+    __int32 red, green, blue;
 
     BedRgb() : red(0), green(0), blue(0)
     {}
@@ -353,22 +353,22 @@ public:
  *
  * This @link BedRecord @endlink specialization stores all fields of a BED file.
  *
- * @var int32_t Bed12Record::itemRgb;
+ * @var __int32 Bed12Record::itemRgb;
  * @brief RGB color of item (@link BedRgb @endlink).
  *
- * @var int32_t Bed12Record::blockCount;
+ * @var __int32 Bed12Record::blockCount;
  * @brief The number of blocks.
  *
  * @var TIntString Bed12Record::blockBegins;
- * @brief The begin positions of the blocks (@link AllocString @endlink of <tt>int32_t</tt>).
+ * @brief The begin positions of the blocks (@link AllocString @endlink of <tt>__int32</tt>).
  *
  * @var TIntString Bed12Record::blockSizes;
- * @brief The sizes of the blocks (@link AllocString @endlink of <tt>int32_t</tt>).
+ * @brief The sizes of the blocks (@link AllocString @endlink of <tt>__int32</tt>).
  *
- * @var int32_t Bed12Record::thickBegin;
+ * @var __int32 Bed12Record::thickBegin;
  * @brief The begin position of thick drawing.
  *
- * @var int32_t Bed12Record::thickEnd;
+ * @var __int32 Bed12Record::thickEnd;
  * @brief The end position of thick drawing.
  */
 
@@ -377,17 +377,17 @@ class BedRecord<Bed12> : public BedRecord<Bed6>
 {
 public:
     // The starting position of thick line for feature.
-    int32_t thickBegin;
+    __int32 thickBegin;
     // The end position of thick line for feature.
-    int32_t thickEnd;
+    __int32 thickEnd;
     // The color of the item.
     BedRgb itemRgb;
     // The number of blocks/exons for the feature.
-    int32_t blockCount;
+    __int32 blockCount;
     // The list of block size.
-    String<int32_t> blockSizes;
+    String<__int32> blockSizes;
     // List of block starts.
-    String<int32_t> blockBegins;
+    String<__int32> blockBegins;
 
     BedRecord() : BedRecord<Bed6>(), thickBegin(INVALID_POS), thickEnd(INVALID_POS), blockCount(0)
     {}

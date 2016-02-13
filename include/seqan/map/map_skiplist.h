@@ -34,7 +34,7 @@
 #define SEQAN_HEADER_MISC_SKIPLIST_H
 
 
-#include <random>
+#include <seqan/random.h>
 
 
 namespace SEQAN_NAMESPACE_MAIN
@@ -167,7 +167,7 @@ public:
     TSize data_length;
     unsigned char data_height;
 
-    std::mt19937 rng;
+    Rng<> rng;
 
     Map()
         : data_mem_begin(0)
@@ -401,7 +401,7 @@ _skiplistCreateHeight(Map<TValue, Skiplist<TSpec> > & me)
 {
     typedef Map<TValue, Skiplist<TSpec> > TSkiplist;
 
-    unsigned char height = static_cast<unsigned char>(std::geometric_distribution<unsigned int>()(me.rng));
+    unsigned char height = pickRandomNumber(me.rng, Pdf<GeometricFairCoin>());
     if (height >= TSkiplist::MAX_HEIGHT) height = TSkiplist::MAX_HEIGHT-1;
 
     if (height > me.data_height) me.data_height = height;
@@ -416,7 +416,7 @@ _skiplistCreateHeight(Map<TValue, Skiplist<TSpec> > & me,
 {
     typedef Map<TValue, Skiplist<TSpec> > TSkiplist;
 
-    unsigned char height = static_cast<unsigned char>(std::geometric_distribution<unsigned int>()(me.rng));
+    unsigned char height = pickRandomNumber(me.rng, Pdf<GeometricFairCoin>());
     if (height >= TSkiplist::MAX_HEIGHT) height = TSkiplist::MAX_HEIGHT-1;
 
     if (height > me.data_height)

@@ -71,12 +71,11 @@ class Pattern<TNeedle, void>
 public:
     typedef typename Position<TNeedle>::Type TNeedlePosition;
 
-
     Holder<TNeedle> data_host;
     TNeedlePosition data_begin_position;
     TNeedlePosition data_end_position;
 
-    Pattern() : data_host(), data_begin_position(), data_end_position()
+    Pattern() : data_begin_position(), data_end_position()
     {}
 
     template <typename TNeedle_>
@@ -86,6 +85,7 @@ public:
     template <typename TNeedle_>
     Pattern(TNeedle_ const & ndl) : data_host(ndl), data_begin_position(), data_end_position()
     {}
+
 };
 //////////////////////////////////////////////////////////////////////////////
 
@@ -221,40 +221,36 @@ struct ScoringScheme<TNeedle const>:
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TSpec>
-inline void
-_reinitPattern(Pattern<TNeedle, TSpec> &)
-{
-    // no-op.
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle, typename TSpec>
 inline Holder<TNeedle> &
 _dataHost(Pattern<TNeedle, TSpec> & me)
 {
     return me.data_host;
 }
-
 template <typename TNeedle, typename TSpec>
-inline Holder<TNeedle> const &
+inline Holder<TNeedle> &
 _dataHost(Pattern<TNeedle, TSpec> const & me)
 {
-    return me.data_host;
+    return const_cast<Holder<TNeedle> &>(me.data_host);
 }
 
 //host access: see basic_host.h
 
+
+//???TODO: Diese Funktion entfernen! (sobald setHost bei anderen pattern nicht mehr eine Art "assignHost" ist)
 template <typename TNeedle, typename TSpec, typename TNeedle2>
 inline void
 setHost(Pattern<TNeedle, TSpec> & me,
-        TNeedle2 && ndl)
+        TNeedle2 const & ndl)
 {
-    SEQAN_ASSERT(!empty(ndl));
-    setValue(_dataHost(me), std::forward<TNeedle2>(ndl));
-    _reinitPattern(me);
+     me.data_host = ndl; //assign => Pattern haelt eine Kopie => doof!
 }
-
+template <typename TNeedle, typename TSpec, typename TNeedle2>
+inline void
+setHost(Pattern<TNeedle, TSpec> & me,
+        TNeedle2 & ndl)
+{
+     me.data_host = ndl; //assign => Pattern haelt eine Kopie => doof!
+}
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TSpec>
@@ -336,7 +332,7 @@ template <typename TNeedle, typename TSpec>
 inline typename Host<Pattern<TNeedle, TSpec> >::Type &
 host(Pattern<TNeedle, TSpec> & me)
 {
-    SEQAN_CHECKPOINT
+SEQAN_CHECKPOINT
     return value(me.data_host);
 }
 
@@ -344,9 +340,10 @@ template <typename TNeedle, typename TSpec>
 inline typename Host<Pattern<TNeedle, TSpec> const>::Type &
 host(Pattern<TNeedle, TSpec> const & me)
 {
-    SEQAN_CHECKPOINT
+SEQAN_CHECKPOINT
     return value(me.data_host);
 }
+
 
 //////////////////////////////////////////////////////////////////////////////
 

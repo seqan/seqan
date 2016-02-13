@@ -93,8 +93,8 @@ public:
     // ------------------------------------------------------------------------
 
     Iter() :
-        TBase(),
-        data_container(TContainerPointer_())
+        TBase(0),
+        data_container(TContainerPointer_(0))
     {}
 
     Iter(typename Parameter_<TContainer>::Type container_, TPosition position_ = 0) :
@@ -147,19 +147,10 @@ template <typename TContainer>
 struct Position<Iter<TContainer, PositionIterator> > : Position<TContainer> {};
 
 template <typename TContainer>
-struct Difference<Iter<TContainer, PositionIterator> > : Difference<TContainer> {};
-
-template <typename TContainer>
-struct Value<Iter<TContainer, PositionIterator> > : Value<TContainer> {};
-
-template <typename TContainer>
-struct GetValue<Iter<TContainer, PositionIterator> > : GetValue<TContainer> {};
-
-template <typename TContainer>
 struct Reference<Iter<TContainer, PositionIterator> > : Reference<TContainer> {};
 
 template <typename TContainer>
-struct Reference<Iter<TContainer, PositionIterator> const> : Reference<TContainer> {};
+struct Difference<Iter<TContainer, PositionIterator> > : Difference<TContainer> {};
 
 // ============================================================================
 // Functions
@@ -209,7 +200,7 @@ value(Iter<TContainer, PositionIterator> & me)
 }
 
 template <typename TContainer>
-inline typename Reference<Iter<TContainer, PositionIterator> const>::Type
+inline typename Reference<Iter<TContainer, PositionIterator> >::Type
 value(Iter<TContainer, PositionIterator> const & me)
 {
     return value(container(me), position(me));

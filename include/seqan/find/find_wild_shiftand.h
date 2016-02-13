@@ -104,12 +104,9 @@ public:
         {}
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 && ndl,
-            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
-        : _valid(false)
-    {
-        setHost(*this, std::forward<TNeedle2>(ndl));
-        ignoreUnusedVariableWarning(dummy);
+    Pattern(TNeedle2 const & ndl)
+        : _valid(false) {
+        setHost(*this, ndl);
     }
 
 //____________________________________________________________________________
@@ -331,20 +328,17 @@ SEQAN_CHECKPOINT
 
 
 template <typename TNeedle, typename TNeedle2>
-void _reinitPattern(Pattern<TNeedle, WildShiftAnd> & me,
-                    TNeedle2 const & ndl)
-{
+void setHost (Pattern<TNeedle, WildShiftAnd> & me, TNeedle2 const & needle) {
 SEQAN_CHECKPOINT
-
-    me._valid = _validate(ndl);
+    me._valid = _validate(needle);
 
     if(!valid(me)) return;
 
     typedef unsigned TWord;
     typedef typename Value<TNeedle>::Type TValue;
 
-    me.needleLength = length(ndl);
-    me.character_count = _lengthWithoutWildcards(ndl);
+    me.needleLength = length(needle);
+    me.character_count = _lengthWithoutWildcards(needle);
 
     if (me.character_count<1) me.blockCount=1;
     else me.blockCount=((me.character_count-1) / BitsPerValue<TWord>::VALUE)+1;
@@ -363,30 +357,30 @@ SEQAN_CHECKPOINT
     TWord j=0;
     while(j < me.needleLength){
 SEQAN_CHECKPOINT
-        if (convert<char>(getValue(ndl,j)) == '+'){
+        if (convert<char>(getValue(needle,j)) == '+'){
 SEQAN_CHECKPOINT
             TWord len = length(last_char);
             for (unsigned int k = 0; k < len; ++k)
                 me.s_table[me.blockCount*last_char[k] + i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
         }
-        else if (convert<char>(getValue(ndl,j)) == '?'){
+        else if (convert<char>(getValue(needle,j)) == '?'){
 SEQAN_CHECKPOINT
             me.a_table[i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
         }
-        else if (convert<char>(getValue(ndl,j)) == '*'){
+        else if (convert<char>(getValue(needle,j)) == '*'){
 SEQAN_CHECKPOINT
             TWord len = length(last_char);
             for (unsigned int k = 0; k < len; ++k)
                 me.s_table[me.blockCount*last_char[k] + i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
             me.a_table[i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
         }
-        else if(convert<char>(getValue(ndl,j)) == '['){
+        else if(convert<char>(getValue(needle,j)) == '['){
 SEQAN_CHECKPOINT
             /* find characters in class */
             TWord e = j;
-            while(convert<char>(getValue(ndl,e)) != ']') ++e;
+            while(convert<char>(getValue(needle,e)) != ']') ++e;
             /* get character codes of class */
-            last_char = _getCharacterClass<TValue>(ndl,j+1,e);
+            last_char = _getCharacterClass<TValue>(needle,j+1,e);
             TWord len = length(last_char);
 
             /* add class to the mask */
@@ -397,7 +391,7 @@ SEQAN_CHECKPOINT
             }
             j = e;
         }
-        else if(convert<char>(getValue(ndl,j)) == '.'){ // matches all characters in the current alphabet
+        else if(convert<char>(getValue(needle,j)) == '.'){ // matches all characters in the current alphabet
 SEQAN_CHECKPOINT
             clear(last_char);
             ++i;
@@ -407,34 +401,34 @@ SEQAN_CHECKPOINT
             }
 
         }
-        else if(convert<char>(getValue(ndl,j)) == '\\'){ // handle escape characters
+        else if(convert<char>(getValue(needle,j)) == '\\'){ // handle escape characters
 SEQAN_CHECKPOINT
             /* goto next character use this for the bit mask */
             ++i;++j;
             clear(last_char);
-            append(last_char, convert<TWord>(convert<TValue>(getValue(ndl,j))));
+            append(last_char, convert<TWord>(convert<TValue>(getValue(needle,j))));
             me.table[me.blockCount*last_char[0] + i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
         }
-        else if(convert<char>(getValue(ndl,j)) == '{'){ // handle bounded character repeats
+        else if(convert<char>(getValue(needle,j)) == '{'){ // handle bounded character repeats
 SEQAN_CHECKPOINT
             String <char> number;
             TWord n,m,r;
             TWord len = length(last_char);
             n = m = 0;
             ++j;
-            while(convert<char>(getValue(ndl,j)) != '}' && convert<char>(getValue(ndl,j)) != ',') {
+            while(convert<char>(getValue(needle,j)) != '}' && convert<char>(getValue(needle,j)) != ',') {
 SEQAN_CHECKPOINT
-                append(number,convert<char>(getValue(ndl,j)));
+                append(number,convert<char>(getValue(needle,j)));
                 ++j;
             }
             n = atoi(toCString(number));
-            if (convert<char>(getValue(ndl,j)) == ','){
+            if (convert<char>(getValue(needle,j)) == ','){
 SEQAN_CHECKPOINT
                 ++j;
                 clear(number);
-                while(convert<char>(getValue(ndl,j)) != '}') {
+                while(convert<char>(getValue(needle,j)) != '}') {
 SEQAN_CHECKPOINT
-                    append(number,convert<char>(getValue(ndl,j)));
+                    append(number,convert<char>(getValue(needle,j)));
                     ++j;
                 }
                 m = atoi(toCString(number));
@@ -469,7 +463,7 @@ SEQAN_CHECKPOINT
 SEQAN_CHECKPOINT
             // determine character position in array table
             clear(last_char);
-            append(last_char, convert<TWord>(convert<TValue>(getValue(ndl,j))));
+            append(last_char, convert<TWord>(convert<TValue>(getValue(needle,j))));
             ++i;
             me.table[me.blockCount*last_char[0] + i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
         }
@@ -522,6 +516,8 @@ SEQAN_CHECKPOINT
         }
     }
 
+    setValue(me.data_host, needle);
+
 #ifdef SEQAN_WILD_SHIFTAND_DEBUG
     // Debug code
     std::cout << "Alphabet size: " << ValueSize<TValue>::VALUE << std::endl;
@@ -529,7 +525,7 @@ SEQAN_CHECKPOINT
     std::cout << "Needle length (wo wildcards): " << me.character_count << std::endl;
     std::cout << "Block count: " << me.blockCount << std::endl;
 
-    std::cout << "Needle:" << ndl << std::endl;
+    std::cout << "Needle:" << needle << std::endl;
 
     _printMask(me.f_table,0,"F ");
     _printMask(me.i_table,0,"I ");
@@ -550,17 +546,10 @@ SEQAN_CHECKPOINT
 
 }
 
-//____________________________________________________________________________
-
-// Need to overload setHost, since we cannot convert the needle if TNeedle of pattern is a different alphabet,
-// which does not handle wildcard characters.
-
 template <typename TNeedle, typename TNeedle2>
-inline void setHost(Pattern<TNeedle, WildShiftAnd> & me,
-                    TNeedle2 && ndl)
+inline void setHost (Pattern<TNeedle, WildShiftAnd> & me, TNeedle2 & needle)
 {
-    _reinitPattern(me, ndl);
-    setValue(_dataHost(me), std::forward<TNeedle2>(ndl));
+    setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
 }
 
 //____________________________________________________________________________
@@ -597,16 +586,33 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
 
+template <typename TNeedle>
+inline typename Host<Pattern<TNeedle, WildShiftAnd>const>::Type &
+host(Pattern<TNeedle, WildShiftAnd> & me)
+{
+SEQAN_CHECKPOINT
+    return value(me.data_host);
+}
+
+template <typename TNeedle>
+inline typename Host<Pattern<TNeedle, WildShiftAnd>const>::Type &
+host(Pattern<TNeedle, WildShiftAnd> const & me)
+{
+SEQAN_CHECKPOINT
+    return value(me.data_host);
+}
+
+//____________________________________________________________________________
+
+
 template <typename TFinder, typename TNeedle>
 inline bool _findShiftAndSmallNeedle(TFinder & finder, Pattern<TNeedle, WildShiftAnd> & me) {
 SEQAN_CHECKPOINT
-    typedef typename Value<TNeedle>::Type TNdlAlphabet;
     typedef unsigned TWord;
-
     TWord compare = (1 << (me.character_count-1));
     while (!atEnd(finder)) {
 SEQAN_CHECKPOINT
-        TWord pos = convert<TWord>(convert<TNdlAlphabet>(*finder));
+        TWord pos = convert<TWord>(*finder);
         /* added  | (me.prefSufMatch[0] & me.s_table[me.blockCount*pos]) at the end of the line */
         me.prefSufMatch[0] = (((me.prefSufMatch[0] << 1) | 1) & me.table[me.blockCount*pos]) | (me.prefSufMatch[0] & me.s_table[me.blockCount*pos]) ;
 
@@ -625,14 +631,13 @@ SEQAN_CHECKPOINT
 template <typename TFinder, typename TNeedle>
 inline bool _findShiftAndLargeNeedle(TFinder & finder, Pattern<TNeedle, WildShiftAnd> & me) {
 SEQAN_CHECKPOINT
-    typedef typename Value<TNeedle>::Type TNdlAlphabet;
     typedef unsigned TWord;
     const TWord all1 = ~0;
     TWord compare = (1 << ((me.character_count-1) % BitsPerValue<TWord>::VALUE));
 
     while (!atEnd(finder)) {
 SEQAN_CHECKPOINT
-        TWord pos = convert<TWord>(convert<TNdlAlphabet>(*finder));
+        TWord pos = convert<TWord>(*finder);
         TWord carry = 1;
         TWord wc_carry = 0;
         // shift of blocks with carry

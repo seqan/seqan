@@ -73,7 +73,7 @@ typedef Index<DnaStringSet, CudaFMIndexSpec>    DnaStringSetFMIndex;
 template <>
 struct SAValue<DnaStringSet>
 {
-    typedef Pair<uint8_t, uint32_t, Pack> Type;
+    typedef Pair<__uint8, __uint32, Pack> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -83,25 +83,25 @@ struct SAValue<DnaStringSet>
 template <>
 struct Size<DnaStringSetFMIndex>
 {
-    typedef uint32_t Type;
+    typedef __uint32 Type;
 };
 
 template <>
 struct Size<View<DnaStringSetFMIndex>::Type>
 {
-    typedef uint32_t Type;
+    typedef __uint32 Type;
 };
 
 template <>
 struct Size<Device<DnaStringSetFMIndex>::Type>
 {
-    typedef uint32_t Type;
+    typedef __uint32 Type;
 };
 
 template <>
 struct Size<View<Device<DnaStringSetFMIndex>::Type>::Type>
 {
-    typedef uint32_t Type;
+    typedef __uint32 Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -111,7 +111,7 @@ struct Size<View<Device<DnaStringSetFMIndex>::Type>::Type>
 template <>
 struct Size<LF<DnaStringSet, void, CudaFMIndexConfig> >
 {
-    typedef uint32_t Type;
+    typedef __uint32 Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -121,19 +121,19 @@ struct Size<LF<DnaStringSet, void, CudaFMIndexConfig> >
 template <typename TSpec>
 struct Size<RankDictionary<Dna, TwoLevels<TSpec> > >
 {
-    typedef uint32_t Type;
+    typedef __uint32 Type;
 };
 
 template <typename TSpec>
 struct Size<RankDictionary<bool, TwoLevels<TSpec> > >
 {
-    typedef uint32_t Type;
+    typedef __uint32 Type;
 };
 
 template <typename TSpec>
 struct Size<RankDictionary<bool, Naive<TSpec> > >
 {
-    typedef uint32_t Type;
+    typedef __uint32 Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -143,7 +143,7 @@ struct Size<RankDictionary<bool, Naive<TSpec> > >
 template <unsigned q>
 struct Value<Shape<Dna, UngappedShape<q> > >
 {
-    typedef uint32_t    Type;
+    typedef __uint32    Type;
 };
 
 }

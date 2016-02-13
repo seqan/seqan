@@ -1,19 +1,19 @@
 #ifndef APPS_RAZERS_PARALLEL_STORE_H
 #define APPS_RAZERS_PARALLEL_STORE_H
 
-#if defined(PLATFORM_GNU)
+#if defined(PLATFORM_GCC) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
 #include <parallel/algorithm>
 #include <parallel/numeric>
 #else
 #include <algorithm>
 #include <numeric>
-#endif  // #ifdef PLATFORM_GNU
+#endif  // #ifdef PLATFORM_GCC
 
 #include <seqan/parallel.h>
 
 namespace seqan {
 
-#if defined(PLATFORM_GNU)
+#if defined(PLATFORM_GCC) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
 
 // use MCSTL which is part of the GCC since version 4.3
 
@@ -47,7 +47,7 @@ partialSum(TIntString & intString)
         begin(intString, Standard()));
 }
 
-#else  // #ifdef PLATFORM_GNU
+#else  // #ifdef PLATFORM_GCC
 
 // sequential fallback
 
@@ -75,7 +75,7 @@ partialSum(TIntString & intString)
         begin(intString, Standard()));
 }
 
-#endif  // #ifdef PLATFORM_GNU
+#endif  // #ifdef PLATFORM_GCC
 
 }
 

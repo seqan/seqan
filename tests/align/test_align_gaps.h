@@ -909,12 +909,6 @@ void testAlignGapsSourceViewPositionUngapped(TGapsSpec const & /*spec*/)
     SEQAN_ASSERT_EQ(toSourcePosition(gaps, 2), 2u);
     SEQAN_ASSERT_EQ(toSourcePosition(gaps, 3), 3u);
     SEQAN_ASSERT_EQ(toSourcePosition(gaps, 4), 4u);
-
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 0, LeftOfViewPos()), 0u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 1, LeftOfViewPos()), 1u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 2, LeftOfViewPos()), 2u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 3, LeftOfViewPos()), 3u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 4, LeftOfViewPos()), 3u);
 }
 
 // Test source/view position of Array Gaps object; center gaps.
@@ -943,13 +937,6 @@ void testAlignGapsSourceViewPositionGapsCenter(TGapsSpec const & /*spec*/)
     SEQAN_ASSERT_EQ(toSourcePosition(gaps, 3), 2u);
     SEQAN_ASSERT_EQ(toSourcePosition(gaps, 4), 3u);
     SEQAN_ASSERT_EQ(toSourcePosition(gaps, 5), 4u);
-
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 0, LeftOfViewPos()), 0u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 1, LeftOfViewPos()), 1u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 2, LeftOfViewPos()), 1u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 3, LeftOfViewPos()), 2u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 4, LeftOfViewPos()), 3u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 5, LeftOfViewPos()), 3u);
 }
 
 // Test source/view position of Array Gaps object; leading gaps.
@@ -978,13 +965,6 @@ void testAlignGapsSourceViewPositionGapsLeading(TGapsSpec const & /*spec*/)
     SEQAN_ASSERT_EQ(toSourcePosition(gaps, 3), 2u);
     SEQAN_ASSERT_EQ(toSourcePosition(gaps, 4), 3u);
     SEQAN_ASSERT_EQ(toSourcePosition(gaps, 5), 4u);
-
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 0, LeftOfViewPos()), 0u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 1, LeftOfViewPos()), 0u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 2, LeftOfViewPos()), 1u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 3, LeftOfViewPos()), 2u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 4, LeftOfViewPos()), 3u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 5, LeftOfViewPos()), 3u);
 }
 
 // Test source/view position of Array Gaps object; trailing gaps.
@@ -1017,14 +997,6 @@ void testAlignGapsSourceViewPositionGapsTrailing(TGapsSpec const & /*spec*/)
     SEQAN_ASSERT_EQ(toSourcePosition(gaps, 4), 4u);
     SEQAN_ASSERT_EQ(toSourcePosition(gaps, 5), 4u);
     SEQAN_ASSERT_EQ(toSourcePosition(gaps, 6), 4u);
-
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 0, LeftOfViewPos()), 0u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 1, LeftOfViewPos()), 1u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 2, LeftOfViewPos()), 2u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 3, LeftOfViewPos()), 3u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 4, LeftOfViewPos()), 3u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 5, LeftOfViewPos()), 3u);
-    SEQAN_ASSERT_EQ(toSourcePosition(gaps, 6, LeftOfViewPos()), 3u);
 }
 
 // --------------------------------------------------------------------------

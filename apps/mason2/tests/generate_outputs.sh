@@ -13,7 +13,7 @@ function check_result {
 trap check_result EXIT
 
 # Shortcut for binary bas path.
-BINDIR=../../../../build/seqan/make-g++5/release/bin
+BINDIR=../../../../../seqan-git-build/debug/bin
 
 # Shortcuts for binaries.
 GENOME=${BINDIR}/mason_genome

@@ -43,6 +43,7 @@
 
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
+#include <seqan/random.h>
 
 #include "mason_types.h"
 #include "mason_options.h"

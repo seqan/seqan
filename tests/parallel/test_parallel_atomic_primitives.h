@@ -171,8 +171,8 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_inc)
     atomicIncTestImpl(SEQAN_ulong());
     
 #if SEQAN_IS_64_BIT
-    atomicIncTestImpl(int64_t());
-    atomicIncTestImpl(uint64_t());
+    atomicIncTestImpl(__int64());
+    atomicIncTestImpl(__uint64());
 #endif  // #if SEQAN_IS_64_BIT
 }
 
@@ -186,8 +186,8 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_dec)
     atomicDecTestImpl(long());
     atomicDecTestImpl(SEQAN_ulong());
 #if SEQAN_IS_64_BIT
-    atomicDecTestImpl(int64_t());
-    atomicDecTestImpl(uint64_t());
+    atomicDecTestImpl(__int64());
+    atomicDecTestImpl(__uint64());
 #endif  // #if SEQAN_IS_64_BIT
 }
 
@@ -201,8 +201,8 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_add)
     atomicAddTestImpl(long());
     atomicAddTestImpl(SEQAN_ulong());
 #if SEQAN_IS_64_BIT
-    atomicAddTestImpl(int64_t());
-    atomicAddTestImpl(uint64_t());
+    atomicAddTestImpl(__int64());
+    atomicAddTestImpl(__uint64());
 #endif  // #if SEQAN_IS_64_BIT
 }
 
@@ -221,8 +221,8 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_or)
     atomicOrTestImpl(SEQAN_ulong());
     // 64 bit CAS is not available on 32 bit Intel.
 #if SEQAN_IS_64_BIT
-    atomicOrTestImpl(int64_t());
-    atomicOrTestImpl(uint64_t());
+    atomicOrTestImpl(__int64());
+    atomicOrTestImpl(__uint64());
 #endif  // #if SEQAN_IS_64_BIT
 }
 
@@ -241,8 +241,8 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_xor)
     atomicXorTestImpl(SEQAN_ulong());
     // Tests are limited to the types where MSVC allows atomic Xor.
 #if SEQAN_IS_64_BIT
-    atomicXorTestImpl(int64_t());
-    atomicXorTestImpl(uint64_t());
+    atomicXorTestImpl(__int64());
+    atomicXorTestImpl(__uint64());
 #endif  // #if SEQAN_IS_64_BIT
 }
 
@@ -259,8 +259,8 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_cas)
     atomicCasTestImpl(long());
     atomicCasTestImpl(SEQAN_ulong());
 #if SEQAN_IS_64_BIT
-    atomicCasTestImpl(int64_t());
-    atomicCasTestImpl(uint64_t());
+    atomicCasTestImpl(__int64());
+    atomicCasTestImpl(__uint64());
 #endif  // #if SEQAN_IS_64_BIT
 }
 

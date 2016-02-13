@@ -231,7 +231,7 @@ template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 struct Member<BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>,
               LengthStoreMember>
 {
-    typedef String<int32_t> Type;
+    typedef String<__int32> Type;
 };
 
 // ============================================================================

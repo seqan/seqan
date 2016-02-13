@@ -46,12 +46,6 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-template <typename T>
-struct Is;
-
-template <typename T>
-struct StlContainerConcept;
-
 template <typename TDest, typename TSource>
 void assignValue(TDest &, TSource const &);
 
@@ -103,7 +97,7 @@ struct HasMoveConstructor
  */
 
 template <typename TTarget, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >)
+inline void
 assign(TTarget & target,
        TSource & source)
 {
@@ -112,7 +106,7 @@ assign(TTarget & target,
 }
 
 template <typename TTarget, typename TSource>
-inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TTarget> >)
+inline void
 assign(TTarget & target,
        TSource const & source)
 {

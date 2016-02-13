@@ -174,11 +174,9 @@ public:
 
     Pattern() {}
 
-    Pattern(TNeedle && needle,
-            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle>::type const &, Pattern const &>))
+    Pattern(TNeedle const & needle)
     {
-        ignoreUnusedVaraiableWarning(dummy);
-        setHost(*this, std::forward<TNeedle>(needle));
+        setHost(*this, needle);
     }
 
     ~Pattern()
@@ -233,13 +231,20 @@ public:
 
     Pattern() {}
 
-
-    Pattern(TIndex && index, TSize depth) :
-        data_host(std::forward<TIndex>(index)),
+    Pattern(TIndex & index, TSize depth) :
+        data_host(index),
         index_iterator(index),
         depth(depth)
     {
-        setHost(*this, std::forward<TIndex>(index));
+        setHost(*this, index);
+    }
+
+    Pattern(TIndex const & index, TSize depth) :
+        data_host(index),
+        index_iterator(index),
+        depth(depth)
+    {
+        setHost(*this, index);
     }
 
     ~Pattern()
@@ -644,12 +649,15 @@ clear(Finder<Index<TText, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > &
 
 // ============================================================================
 
-template <typename TNeedle, typename TDistance, typename TBacktrackingSpec>
-void _reinitPattern(Pattern<TNeedle, Backtracking<TDistance, TBacktrackingSpec> > & me)
+template <typename TNeedle, typename TDistance, typename TBacktrackingSpec, typename TNewNeedle>
+void setHost(Pattern<TNeedle, Backtracking<TDistance, TBacktrackingSpec> > & me, TNewNeedle const & needle)
 {
     typedef TNeedle                                     TPrefix;
     typedef PrefixAligner_<TPrefix, TDistance>           TPrefixAligner;
     //typedef typename BacktrackingState_<TPrefix, TDistance>::Type    TState;
+
+    SEQAN_ASSERT_NOT(empty(needle));
+    setValue(me.data_host, needle);
 
     // Call PrefixAligner_ constructor
     me.prefix_aligner = TPrefixAligner();
@@ -667,8 +675,9 @@ void _moveIteratorAtRoot(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, 
     me.index_iterator = TIndexIterator(host(me));
 }
 
-template <typename TNeedle, typename TSpec, typename TDistance, typename TBacktrackingSpec>
-void _reinitPattern(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & me)
+template <typename TNeedle, typename TSpec, typename TDistance, typename TBacktrackingSpec, typename TNewNeedle, typename TNewSpec>
+void setHost(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & me,
+             Index<TNewNeedle, TNewSpec> const & index)
 {
     typedef Index<TNeedle, TSpec>                                       TIndex;
     typedef typename Iterator< TIndex, TopDown<> >::Type                TIndexIterator;
@@ -678,6 +687,9 @@ void _reinitPattern(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBack
     typedef typename EdgeLabel<TIndexIterator>::Type                    TPrefix;
     typedef PrefixAligner_<TPrefix, TDistance>                           TPrefixAligner;
     //typedef typename BacktrackingState_<TPrefix, TDistance>::Type                    TState;
+
+    // TODO(esiragusa): Update index holder
+    setValue(me.data_host, index);
 
     // Init backtracking on root node
     _moveIteratorAtRoot(me);
@@ -706,6 +718,12 @@ void _reinitPattern(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBack
 
     // Call PrefixAligner_ constructor
     me.prefix_aligner = TPrefixAligner();
+}
+
+template <typename TNeedle, typename TDistance, typename TBacktrackingSpec, typename TNewNeedle>
+void setHost(Pattern<TNeedle, Backtracking<TDistance, TBacktrackingSpec> > & me, TNewNeedle & needle)
+{
+    setHost(me, reinterpret_cast<TNeedle const &>(needle));
 }
 
 // ============================================================================

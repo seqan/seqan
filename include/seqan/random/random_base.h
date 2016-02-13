@@ -43,13 +43,164 @@ namespace seqan {
 // Forwards, Tags.
 // ===========================================================================
 
+// Forward to MersenneTwister, really defined in random_mt19937.h.
+struct MersenneTwister;
+
+/*!
+ * @class Rng
+ * @headerfile <seqan/random.h>
+ * @brief Random Number Generator
+ *
+ * @signature template <[typename TSpec]>
+ *                     class Rng;
+ *
+ * @tparam TSpec Tag for selecting the specialization.  Defaults to @link MersenneTwisterRng @endlink.
+ *
+ * @section Examples
+ *
+ * The following code shows how to generate random numbers and shuffle a text.
+ *
+ * @include demos/dox/random/random.cpp
+ *
+ * @code{.console}
+ * pickRandomNumber(rng) == 1608637542
+ * pickRandomNumber(rng, uniformDouble) == 0.950714
+ * pickRandomNumber(rng, uniformInt) == 27
+ * pickRandomNumber(rng, normal) == 0.419823
+ * pickRandomNumber(rng, logNormal) == 1.22431
+ * pickRandomNumber(rng, logNormal2) == 2.78004
+ * pickRandomNumber(rng, logNormal3) == 0.00155248
+ * shuffle("Hello World!") ==  o!reWlloHld
+ * @endcode
+ *
+ * @see http://seqan.readthedocs.org/en/develop/Tutorial/Randomness.html
+ */
+
+template <typename TSpec = MersenneTwister>
+class Rng;
+
+
 // ===========================================================================
 // Classes
 // ===========================================================================
 
+/*!
+ * @fn Rng::operator()
+ * @brief Function all operator.
+ *
+ * @signature TValue Rng::operator();
+ *
+ * @return TValue Random number, TValue can be retrieved with Rng#Value.
+ */
+
+/*!
+ * @class Pdf
+ * @headerfile <seqan/random.h>
+ * @brief Probability Density Function
+ *
+ * @signature template <typename TSpec>
+ *            class Pdf;
+ *
+ * @tparam TSpec Tag for selecting the specialization.
+ *
+ * This class is used together with @link Rng @endlink in the function @link Rng#pickRandomNumber @endlink. See the
+ * <a href="http://seqan.readthedocs.org/en/develop/Tutorial/Randomness.html">SeqAn Randomness Tutorial</a> for more
+ * details.
+ */
+
+template <typename TSpec>
+class Pdf;
+
+
 // ===========================================================================
 // Metafunctions
 // ===========================================================================
+
+/*!
+ * @mfn Pdf#Value
+ * @brief Value type of a Pdf.
+ *
+ * @signature Value<TPdf>::Type
+ *
+ * @tparam TPdf The Pdf for the value type.
+ *
+ * @return Type The value type of the Pdf.
+ */
+
+// specification only
+
+/*!
+ * @mfn Rng#Value
+ * @brief Value type of a Rng.
+ *
+ * @signature Value<TRng>::Type
+ *
+ * @tparam TRng the Rng to get the value type for.
+ *
+ * @return Type the value type for the Rng.
+ */
+
+/*!
+ * @mfn Rng#MinValue
+ * @brief Smallest value that a Rng can return.
+ *
+ * @signature MinValue<TRng>::VALUE;
+ *
+ * @tparam TRng The Rng object to get the smallest value for.
+ *
+ * @return VALUE The smallest value a Rng can return.
+ */
+
+/*!
+ * @mfn Rng#MaxValue
+ * @brief Largest value that a Rng can return.
+ *
+ * @signature MaxValue<TRng>::VALUE;
+ *
+ * @tparam TRng The Rng object to get the largest value for.
+ *
+ * @return VALUE The largest value a Rng can return.
+ */
+
+template <typename TSpec>
+struct MaxValue<Rng<TSpec> >
+{
+    typedef typename Value<Rng<TSpec> >::Type TValue_;
+    static const TValue_ VALUE;
+};
+
+template <typename TSpec>
+const typename Value<Rng<TSpec> >::Type MaxValue<Rng<TSpec> >::VALUE = MaxValue<typename Value<Rng<TSpec> >::Type>::VALUE;
+
+template <typename TSpec>
+struct MaxValue<Rng<TSpec> const>
+{
+    typedef typename Value<Rng<TSpec> const>::Type TValue_;
+    static const TValue_ VALUE;
+};
+
+template <typename TSpec>
+const typename Value<Rng<TSpec> const>::Type MaxValue<Rng<TSpec> const>::VALUE = MaxValue<typename Value<Rng<TSpec> const>::Type>::VALUE;
+
+template <typename TSpec>
+struct MinValue<Rng<TSpec> >
+{
+    typedef typename Value<Rng<TSpec> >::Type TValue_;
+    static const TValue_ VALUE;
+};
+
+template <typename TSpec>
+const typename Value<Rng<TSpec> >::Type MinValue<Rng<TSpec> >::VALUE = MinValue<typename Value<Rng<TSpec> >::Type>::VALUE;
+
+template <typename TSpec>
+struct MinValue<Rng<TSpec> const>
+{
+    typedef typename Value<Rng<TSpec> const>::Type TValue_;
+    static const TValue_ VALUE;
+};
+
+template <typename TSpec>
+const typename Value<Rng<TSpec> const>::Type MinValue<Rng<TSpec> const>::VALUE = MinValue<typename Value<Rng<TSpec> const>::Type>::VALUE;
 
 /*!
  * @mfn GetDefaultRng
@@ -60,7 +211,7 @@ namespace seqan {
  *
  * @tparam T The type or tag to get the default Rng for.
  *
- * @return Type The Rng type to use. Defaults to <tt> std::mt19937 </tt>.
+ * @return Type The Rng type to use.
  *
  * @see defaultRng
  */
@@ -68,12 +219,32 @@ namespace seqan {
 template <typename T>
 struct GetDefaultRng
 {
-    typedef std::mt19937 Type;
+    typedef Rng<MersenneTwister> Type;
 };
 
 // ===========================================================================
 // Functions
 // ===========================================================================
+
+/*!
+ * @fn Rng#pickRandomNumber
+ * @brief Pick a random number using a random number generator, possibly using a probability density function.
+ *
+ * @signature TValue pickRandomNumber(rng[, pdf]);
+ *
+ * @param[in,out] rng The Rng to use.
+ * @param[in]     pdf The probability density function to use.
+ *
+ * @return TValue A random number.  TValue is the value type of the rng if pdf is not given.  If pdf is given
+ *                then it is of the value type of pdf.
+ *
+ * @section Remarks
+ *
+ * For more details see the <a href="http://seqan.readthedocs.org/en/develop/Tutorial/Randomness.html">SeqAn
+ * Tutorial on Randomness</a>.
+ */
+
+// specification only
 
 /*!
  * @fn defaultRng

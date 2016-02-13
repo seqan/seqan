@@ -1,0 +1,14 @@
+
+Processing reads...
+
+44
+Read statistics
+===============
+Reads processed:	44
+  Reads dropped:	3	(6.82%)
+File statistics
+===============
+File 1:
+-------
+  Surviving: 41/44 (93.2%)
+

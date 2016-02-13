@@ -38,7 +38,7 @@
 #define APPS_MASON2_MASON_TYPES_H_
 
 #include <stdexcept>
-#include <random>
+#include <seqan/random.h>
 
 // ============================================================================
 // Forwards
@@ -48,9 +48,9 @@
 // Typedef TRng
 // ----------------------------------------------------------------------------
 
-// We use the Mersenne Twister 19937 from the standard library in mason.
+// We use the default random number generator throughout Mason.
 
-typedef std::mt19937 TRng;
+typedef seqan::Rng<> TRng;
 
 // ============================================================================
 // Tags, Classes, Enums

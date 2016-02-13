@@ -97,27 +97,6 @@ public:
      */
     String<unsigned> method;
 
-    /*!
-    * @var unsigned MsaOptions::isDefaultPairwiseAlignment;
-    * @brief Whether or not to use default strategy for choosing pairwise alignment methods.
-    */
-    bool isDefaultPairwiseAlignment;
-
-    /*!
-    * @var unsigned MsaOptions::pairwiseAlignmentMethod;
-    * @brief Methods for computing pairwise alignment.
-    *
-    * 0 unspecified, 1 unbanded, 2 banded
-    * Default: 0
-    */
-    unsigned pairwiseAlignmentMethod;
-
-    /*!
-    * @var unsigned MsaOptions::bandWidth;
-    * @brief Band width for banded alignment. Min value: <tt>2</tt>.
-    */
-    unsigned bandWidth;
-
     // TODO(holtgrew): Document me!
     // Various input and output file names
     String<std::string> alnfiles;       // External alignment files
@@ -134,7 +113,7 @@ public:
      * @brief Default constructor.
      * @signature MsaOptions::MsaOptions();
      */
-    MsaOptions() : rescore(true), outputFormat(0), build(0), pairwiseAlignmentMethod(0)
+    MsaOptions() : rescore(true), outputFormat(0), build(0)
     {}
 };
 
@@ -250,58 +229,27 @@ void evaluateAlignment(MsaOptions<TAlphabet, TScore> const & msaOpt)
 // Function globalMsaAlignment()
 // --------------------------------------------------------------------------
 
-template <typename TStrSpec, typename TSpec, typename TList, typename TScore, typename TSegmentMatches, typename TScores, typename TAlignmentType>
+template <typename TStrSpec, typename TSpec, typename TList, typename TScore, typename TSegmentMatches, typename TScores>
 void _appendSegmentMatches(StringSet<String<AminoAcid, TStrSpec>, Dependent<TSpec> > const & str,
                              TList const & pList,
                              TScore const &,
                              TSegmentMatches & matches,
-                             TScores & scores,
-                             TAlignmentType const & alignType)
+                             TScores & scores)
 {
     Blosum62 local_score(-1, -8);
-    appendSegmentMatches(str, pList, local_score, matches, scores, LocalPairwiseLibrary(), alignType);
+    appendSegmentMatches(str, pList, local_score, matches, scores, LocalPairwiseLibrary());
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TStrSpec, typename TSpec, typename TList, typename TScore, typename TSegmentMatches, typename TScores, typename TSize, typename TAlignmentType>
-void _appendSegmentMatches(StringSet<String<AminoAcid, TStrSpec>, Dependent<TSpec> > const & str,
-                           TList const & pList,
-                           TScore const &,
-                           TSegmentMatches & matches,
-                           TScores & scores,
-                           TSize const & bandWidth,
-                           TAlignmentType const & alignType)
-{
-    Blosum62 local_score(-1, -8);
-    appendSegmentMatches(str, pList, local_score, matches, scores, bandWidth, LocalPairwiseLibrary(), alignType, Banded());
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TValue, typename TStrSpec, typename TSpec, typename TList, typename TScore, typename TSegmentMatches, typename TScores, typename TAlignmentType>
+template <typename TValue, typename TStrSpec, typename TSpec, typename TList, typename TScore, typename TSegmentMatches, typename TScores>
 void _appendSegmentMatches(StringSet<String<TValue, TStrSpec>, Dependent<TSpec> > const & str,
                              TList const & pList,
                              TScore const & score_type,
                              TSegmentMatches & matches,
-                             TScores & scores,
-                             TAlignmentType const & alignType)
+                             TScores & scores)
 {
-    appendSegmentMatches(str, pList, score_type, matches, scores, LocalPairwiseLibrary(), alignType);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TValue, typename TStrSpec, typename TSpec, typename TList, typename TScore, typename TSegmentMatches, typename TScores, typename TSize, typename TAlignmentType>
-void _appendSegmentMatches(StringSet<String<TValue, TStrSpec>, Dependent<TSpec> > const & str,
-                           TList const & pList,
-                           TScore const & score_type,
-                           TSegmentMatches & matches,
-                           TScores & scores,
-                           TSize const & bandWidth,
-                           TAlignmentType const & alignType)
-{
-    appendSegmentMatches(str, pList, score_type, matches, scores, bandWidth, LocalPairwiseLibrary(), alignType, Banded());
+    appendSegmentMatches(str, pList, score_type, matches, scores, LocalPairwiseLibrary());
 }
 
 /*!
@@ -339,18 +287,7 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
     // Some alignment constants
     TStringSet & seqSet = stringSet(gAlign);
     TSize nSeq = length(seqSet);
-    bool isDeepAlignment = (nSeq >= 50);  // threshold for what is a deep alignment
-    TSize threshold = (isDeepAlignment) ? 30 : 10;  // experimentally proved relation
-#ifdef SEQAN_TCOFFEE_DEBUG
-    std::cout << std::setw(30) << std::left << "Number of sequences: " << std::setw(10) << std::right << nSeq << std::endl;
-    int seqTotalLen = 0;
-    for (typename Iterator<TStringSet>::Type it = begin(seqSet); it != end(seqSet); ++it)
-        seqTotalLen += length(*it);
-    std::cout << std::setw(30) << std::left << "Average sequence length: " << std::setw(10) << std::right << seqTotalLen / nSeq << std::endl;
-    std::cout << std::setw(30) << std::left << "Total sequences length: " << std::setw(10) << std::right << seqTotalLen << std::endl;
-
-    double segmentGenerationTime = sysTime();
-#endif
+    TSize threshold = 30;
 
     // Select all possible pairs for global and local alignments
     String<TSize> pList;
@@ -390,32 +327,9 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         for (; begIt != begItEnd; goNext(begIt))
         {
             if (*begIt == 0)
-            {
-                if (msaOpt.pairwiseAlignmentMethod == 1 || (msaOpt.isDefaultPairwiseAlignment && !isDeepAlignment))
-                {
-                    appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, distanceMatrix, GlobalPairwiseLibrary());
-                }
-                else
-                {
-                    appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, distanceMatrix, msaOpt.bandWidth, GlobalPairwiseLibrary(), Banded());
-                }
-            }
-            else if (*begIt == 1) {
-                if (msaOpt.pairwiseAlignmentMethod == 1 || (msaOpt.isDefaultPairwiseAlignment && !isDeepAlignment))
-                {
-                    if (isDeepAlignment)
-                        _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, DeepAlignment());
-                    else
-                        _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, DefaultAlignment());
-                }
-                else
-                {
-                    if (isDeepAlignment)
-                        _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, msaOpt.bandWidth, DeepAlignment());
-                    else
-                        _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, msaOpt.bandWidth, DefaultAlignment());
-                }
-            }
+                appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores, distanceMatrix, GlobalPairwiseLibrary());
+            else if (*begIt == 1)
+                _appendSegmentMatches(seqSet, pList, msaOpt.sc, matches, scores);
             else if (*begIt == 2)
             {
                 Nothing noth;
@@ -471,11 +385,6 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         }
     }
 
-#ifdef SEQAN_TCOFFEE_DEBUG
-    std::cout << std::setw(30) << std::left << "Segment-match generation:" << std::setw(10) << std::right << sysTime() - segmentGenerationTime << "  s" << std::endl;
-    std::cout << std::setw(30) << std::left << "Number of segment-matches:" << std::setw(10) << std::right << length(matches) << std::endl;
-#endif
-
     // Use these segment matches for the initial alignment graph
     TGraph g(seqSet);
     if (!msaOpt.rescore)
@@ -484,13 +393,6 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         buildAlignmentGraph(matches, scores, g, msaOpt.sc, ReScore());
     clear(matches);
     clear(scores);
-
-#ifdef SEQAN_TCOFFEE_DEBUG
-    std::cout << std::setw(30) << std::left << "Number of vertices:" << std::setw(10) << std::right << numVertices(g) << std::endl;
-    std::cout << std::setw(30) << std::left << "Number of edges:" << std::setw(10) << std::right << numEdges(g) << std::endl;
-
-    double guideTreeTime = sysTime();
-#endif
 
     // Guide tree
     Graph<Tree<TDistanceValue> > guideTree;
@@ -508,7 +410,7 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
             getDistanceMatrix(g, distanceMatrix, KmerDistance());
         // Get distance matrix values for a precision of 10 decimal digits.
         for (unsigned i = 0; i < length(distanceMatrix); ++i)
-            distanceMatrix[i] = static_cast<int64_t>(distanceMatrix[i] * 1e10) / 1e10;
+            distanceMatrix[i] = static_cast<__int64>(distanceMatrix[i] * 1e10) / 1e10;
         if (msaOpt.build == 0)
             njTree(distanceMatrix, guideTree);
         else if (msaOpt.build == 1)
@@ -522,24 +424,11 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
     }
     clear(distanceMatrix);
 
-#ifdef SEQAN_TCOFFEE_DEBUG
-    std::cout << std::setw(30) << std::left << "Guide-tree:" << std::setw(10) << std::right << sysTime() - guideTreeTime << "  s" << std::endl;
-
-    double tripletStartTime = sysTime();
-#endif
-
     // Triplet extension
     if (nSeq < threshold)
         tripletLibraryExtension(g);
     else
         tripletLibraryExtension(g, guideTree, threshold / 2);
-
-#ifdef SEQAN_TCOFFEE_DEBUG
-    std::cout << std::setw(30) << std::left << "Triplet extension:" << std::setw(10) << std::right << sysTime() - tripletStartTime << "  s" << std::endl;
-    std::cout << std::setw(30) << std::left << "Number of edges after triplet:" << std::setw(10) << std::right << numEdges(g) << std::endl;
-
-    double progressiveAlignmentTime = sysTime();
-#endif
 
     // Progressive Alignment
     progressiveAlignment(g, guideTree, gAlign);
@@ -547,9 +436,13 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
     clear(guideTree);
     clear(g);
 
-#ifdef SEQAN_TCOFFEE_DEBUG
-    std::cout << std::setw(30) << std::left << "Progressive alignment:" << std::setw(10) << std::right << sysTime() - progressiveAlignmentTime << "  s" << std::endl;
-#endif
+    //TStringSet& str = stringSet(gAlign);
+    //for(TSize i = 0; i<length(str);++i) {
+    //    for(TSize j=0;j<length(str[i]);++j) {
+    //        std::cout << ordValue(str[i][j]) << ',';
+    //    }
+    //    std::cout << std::endl;
+    //}
 }
 
 template <typename TStringSet, typename TCargo, typename TSpec, typename TScore>

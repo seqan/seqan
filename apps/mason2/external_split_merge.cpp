@@ -208,8 +208,8 @@ std::pair<int, int> ContigPicker::pick()
     int rID = 0;
     if (lengthSums.size() > 1u)
     {
-        std::uniform_int_distribution<int64_t> dist(0, lengthSums.back() - 1);
-        int64_t x = dist(rng);
+        seqan::Pdf<seqan::Uniform<__int64> > pdf(0, lengthSums.back() - 1);
+        __int64 x = pickRandomNumber(rng, pdf);
         for (unsigned i = 0; i < lengthSums.size(); ++i)
         {
             if (x >= lengthSums[i])
@@ -220,8 +220,7 @@ std::pair<int, int> ContigPicker::pick()
     }
 
     // Pick haplotype id.
-    std::uniform_int_distribution<int> dist2(0, numHaplotypes - 1);
-    int hID = dist2(rng);
+    int hID = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, numHaplotypes - 1));
 
     return std::make_pair(rID, hID);
 }

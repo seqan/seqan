@@ -369,22 +369,6 @@ SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept)(PropertyMapCon
     }
 };
 
-
-// ----------------------------------------------------------------------------
-// Concept StlContainerConcept
-// ----------------------------------------------------------------------------
-
-// template <typename TContainer>
-// struct StlContainerConcept :
-//     ContainerConcept<TContainer>
-    
-
-SEQAN_CONCEPT_REFINE(StlContainerConcept, (TContainer), (ContainerConcept))
-{
-    SEQAN_CONCEPT_USAGE(StlContainerConcept)
-    {}
-};
-
 // --------------------------------------------------------------------------
 // Metafunction IsContiguous
 // --------------------------------------------------------------------------
@@ -411,17 +395,24 @@ SEQAN_CONCEPT_REFINE(StlContainerConcept, (TContainer), (ContainerConcept))
 
 template <typename T>
 struct IsContiguous
-    : public False
-{};
+{
+    typedef False Type;
+    enum { VALUE = false };
+};
 
-// ----------------------------------------------------------------------------
-// Mfn HasSubscriptOperator (different for e.g. std::deque)
-// ----------------------------------------------------------------------------
+template <typename T>
+struct IsContiguous<T const>
+    : public IsContiguous<T> {};
 
-template <typename TContainer>
-struct HasSubscriptOperator :
-    public IsContiguous<TContainer>
-{};
+
+//void testStringConcepts()
+//{
+//    SEQAN_CONCEPT_ASSERT((StringConcept<String<char, Alloc<> > >));
+//    SEQAN_CONCEPT_ASSERT((StringConcept<String<Pair<int, double>, Alloc<> > >));
+////    SEQAN_CONCEPT_ASSERT((StringConcept<String<bool, Packed<> > >));  // doesn't compile yet
+////    SEQAN_CONCEPT_ASSERT((StringConcept<String<Dna5, Packed<> > >));
+//    SEQAN_CONCEPT_ASSERT((StringConcept<String<int, Array<50> > >));
+//}
 
 /*!
  * @concept ForwardContainerConcept

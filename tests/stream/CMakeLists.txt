@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the stream module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_stream CXX)
+cmake_minimum_required (VERSION 2.8.2)
+project (seqan_tests_stream)
 message (STATUS "Configuring tests/stream")
 
 # ----------------------------------------------------------------------------
@@ -15,8 +15,7 @@ message (STATUS "Configuring tests/stream")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-find_package (ZLIB)
-find_package (BZip2)
+set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

@@ -33,7 +33,6 @@
 // ==========================================================================
 
 #include "simulate_genome.h"
-#include <random>
 
 // ----------------------------------------------------------------------------
 // Function simulateGenome()
@@ -45,10 +44,9 @@
 
 int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const & options)
 {
-    // Initialize std generator and distribution
-    std::mt19937 generator(42); // seed 100
-    std::uniform_real_distribution<double> distribution(0, 1);
-    auto randomNumber = std::bind ( distribution, generator );
+    // Initialize RNG and PDF.
+    seqan::Rng<seqan::MersenneTwister>  rng(options.seed);
+    seqan::Pdf<seqan::Uniform<double> > pdf(0, 1);
 
     seqan::CharString id;
     seqan::Dna5String contig;
@@ -66,7 +64,7 @@ int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const 
 
         for (int j = 0; j < options.contigLengths[i];)
         {
-            double x = randomNumber();
+            double x = pickRandomNumber(rng, pdf);
             if (x < 0.25)
                 appendValue(contig, 'A');
             else if (x < 0.5)

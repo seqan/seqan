@@ -68,7 +68,7 @@ class Pattern<TNeedle, Horspool>
 public:
     typedef typename Size<TNeedle>::Type TSize;
 
-    Holder<TNeedle>      data_host;
+    Holder<TNeedle>        data_host;
     String<TSize>        data_map;
 
 //____________________________________________________________________________
@@ -77,27 +77,25 @@ public:
     Pattern() {}
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 && ndl, SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
+    Pattern(TNeedle2 const & ndl)
     {
-        setHost(*this, std::forward<TNeedle2>(ndl));
-        ignoreUnusedVariableWarning(dummy);
+        setHost(*this, ndl);
     }
-
 //____________________________________________________________________________
 };
 
 
-template <typename TNeedle>
+template <typename TNeedle, typename TNeedle2>
 void
-_reinitPattern(Pattern<TNeedle, Horspool> & me)
+setHost(Pattern<TNeedle, Horspool> & me, TNeedle2 const & ndl)
 {
     typedef typename Value<TNeedle>::Type TValue;
     typedef typename Size<TNeedle>::Type TSize;
 
-    TNeedle& ndl = needle(me);
     SEQAN_ASSERT_NOT(empty(ndl));
 
     TSize value_size = ValueSize<TValue>::VALUE;
+
     //make room for map
     resize(me.data_map, value_size);
 
@@ -105,7 +103,7 @@ _reinitPattern(Pattern<TNeedle, Horspool> & me)
     typename Value<String<TSize> >::Type jump_width = length(ndl); //das ist so umstaendlich wegen VC++ 2003
     arrayFill(begin(me.data_map, Standard()), begin(me.data_map, Standard()) + value_size, jump_width);
 
-    typename Iterator<TNeedle, Standard>::Type it;
+    typename Iterator<TNeedle2 const, Standard>::Type it;
     it = begin(ndl, Standard());
     while (jump_width > 1)
     {
@@ -114,6 +112,15 @@ _reinitPattern(Pattern<TNeedle, Horspool> & me)
         me.data_map[pos_] = jump_width;
         ++it;
     }
+
+    me.data_host = ndl;
+}
+
+template <typename TNeedle, typename TNeedle2>
+void
+setHost(Pattern<TNeedle, Horspool> & horsp, TNeedle2 & ndl)
+{
+    setHost(horsp, reinterpret_cast<TNeedle2 const &>(ndl));
 }
 
 //____________________________________________________________________________
@@ -139,7 +146,6 @@ SEQAN_CHECKPOINT
 
     typedef Pattern<TNeedle2, Horspool> TPattern;
     typedef typename Needle<TPattern>::Type TNeedle;
-    typedef typename Value<TNeedle>::Type   TNeedleAlphabet;
     TNeedle & ndl = needle(me);
 
     typedef typename Size<TNeedle>::Type TNeedleSize;
@@ -165,7 +171,7 @@ SEQAN_CHECKPOINT
 
 MOVE_FURTHER:
     //move to next position
-    char_i = convert<TNeedleAlphabet>(*it); //conversion to unsigned integer -> into needle space.
+    char_i = *it; //conversion to unsigned integer
     it_next = it + me.data_map[char_i];
     if (it_next >= haystack_end)
     {//found nothing
@@ -306,8 +312,6 @@ SEQAN_CHECKPOINT
 
     typedef Pattern<TNeedle2, Horspool> TPattern;
     typedef typename Needle<TPattern>::Type TNeedle;
-    typedef typename Value<TNeedle>::Type   TNeedleAlphabet;
-
     TNeedle & ndl = needle(me);
 
     typedef typename Size<TNeedle>::Type TNeedleSize;
@@ -330,7 +334,7 @@ SEQAN_CHECKPOINT
 
 MOVE_FURTHER:
     //move to next position
-    char_i = convert<TNeedleAlphabet>(*it); //conversion to unsigned integer
+    char_i = *it; //conversion to unsigned integer
     it += me.data_map[char_i];
     if (atEnd(it))
     {//found nothing
@@ -450,6 +454,22 @@ SEQAN_CHECKPOINT
 
     return _findHorspool(finder, me, find_first);
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// Host
+//////////////////////////////////////////////////////////////////////////////
+
+template <typename TNeedle>
+struct Host< Pattern<TNeedle, Horspool> >
+{
+    typedef TNeedle Type;
+};
+
+template <typename TNeedle>
+struct Host< Pattern<TNeedle, Horspool> const>
+{
+    typedef TNeedle const Type;
+};
 
 
 //////////////////////////////////////////////////////////////////////////////

@@ -104,7 +104,7 @@ readHeader(BamHeader & header,
         SEQAN_THROW(ParseError("Not in BAM format."));
 
     // Read header text, including null padding.
-    int32_t lText;
+    __int32 lText;
     readRawPod(lText, iter);
 
     CharString samHeader;
@@ -124,23 +124,23 @@ readHeader(BamHeader & header,
     }
 
     // Read # reference sequences.
-    int32_t nRef;
+    __int32 nRef;
     readRawPod(nRef, iter);
     CharString name;
 
     clear(context.translateFile2GlobalRefId);
     resize(context.translateFile2GlobalRefId, nRef, -1);
 
-    for (int32_t i = 0; i < nRef; ++i)
+    for (__int32 i = 0; i < nRef; ++i)
     {
         // Read length of the reference name.
-        int32_t nName;
+        __int32 nName;
         readRawPod(nName, iter);
         clear(name);
         write(name, iter, nName);
         resize(name, nName - 1);
         // Read length of the reference sequence.
-        int32_t lRef;
+        __int32 lRef;
         readRawPod(lRef, iter);
 
         // Add entry to name store and sequenceInfos if necessary.
@@ -158,10 +158,10 @@ readHeader(BamHeader & header,
 // ----------------------------------------------------------------------------
 
 template <typename TBuffer, typename TForwardIter>
-inline int32_t
+inline __int32
 _readBamRecordWithoutSize(TBuffer & rawRecord, TForwardIter & iter)
 {
-    int32_t recordLen = 0;
+    __int32 recordLen = 0;
     readRawPod(recordLen, iter);
 
     // fail, if we read "BAM\1" (did you miss to call readRecord(header, bamFile) first?)
@@ -177,7 +177,7 @@ template <typename TBuffer, typename TForwardIter>
 inline void
 _readBamRecord(TBuffer & rawRecord, TForwardIter & iter, Bam)
 {
-    int32_t recordLen = 0;
+    __int32 recordLen = 0;
     readRawPod(recordLen, iter);
 
     // fail, if we read "BAM\1" (did you miss to call readRecord(header, bamFile) first?)
@@ -202,7 +202,7 @@ readRecord(BamAlignmentRecord & record,
     typedef typename Iterator<CharString, Standard>::Type SEQAN_RESTRICT              TQualIter;
 
     // Read size and data of the remaining block in one chunk (fastest).
-    int32_t remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
+    __int32 remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
     TCharIter it = begin(context.buffer, Standard());
 
     // BamAlignmentRecordCore.
@@ -217,13 +217,13 @@ readRecord(BamAlignmentRecord & record,
     if (record.rID >= 0 && !empty(context.translateFile2GlobalRefId))
         record.rID = context.translateFile2GlobalRefId[record.rID];
     if (record.rID >= 0)
-        SEQAN_ASSERT_LT(static_cast<uint64_t>(record.rID), length(contigNames(context)));
+        SEQAN_ASSERT_LT(static_cast<__uint64>(record.rID), length(contigNames(context)));
 
     // ... the same for rNextId
     if (record.rNextId >= 0 && !empty(context.translateFile2GlobalRefId))
         record.rNextId = context.translateFile2GlobalRefId[record.rNextId];
     if (record.rNextId >= 0)
-        SEQAN_ASSERT_LT(static_cast<uint64_t>(record.rNextId), length(contigNames(context)));
+        SEQAN_ASSERT_LT(static_cast<__uint64>(record.rNextId), length(contigNames(context)));
 
     // query name.
     resize(record.qName, record._l_qname - 1, Exact());
@@ -257,7 +257,7 @@ readRecord(BamAlignmentRecord & record,
         ++sit;
     }
     if (record._l_qseq & 1)
-        *sit++ = Iupac((uint8_t)*it++ >> 4);
+        *sit++ = Iupac((__uint8)*it++ >> 4);
 
     // phred quality
     resize(record.qual, record._l_qseq, Exact());

@@ -179,7 +179,6 @@ struct DefaultFinder<Index<TText, FMIndex<TSpec, TConfig> > >
 /*!
  * @class FMIndex
  * @extends Index
- * @implements StringTrieConcept
  * @headerfile <seqan/index.h>
  * @brief An index based on the Burrows-Wheeler transform.
  *
@@ -211,12 +210,6 @@ public:
         text(text)
     {}
 };
-
-template <typename TText, typename TSpec, typename TConfig>
-SEQAN_CONCEPT_IMPL((Index<TText, FMIndex<TSpec, TConfig> >), (StringTrieConcept));
-
-template <typename TText, typename TSpec, typename TConfig>
-SEQAN_CONCEPT_IMPL((Index<TText, FMIndex<TSpec, TConfig> > const), (StringTrieConcept));
 
 // ============================================================================
 // Functions

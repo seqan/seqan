@@ -46,14 +46,14 @@ namespace SEQAN_NAMESPACE_MAIN
 
 #else  // #ifdef SEQAN_ENABLE_DEBUG
 
-#if defined(PLATFORM_GCC)
+#if defined(PLATFORM_GCC) || defined(PLATFORM_WINDOWS_MINGW)
 // GCC warns below that the "value computed is not used".  However,
 // MSVC does not like casting void values to void. Thus, this
 // distinction.
 #define SEQAN_DO_SYS(_cond) do { (void) _cond; } while (false)
-#else   // #if defined(PLATFORM_GCC)
+#else   // #if defined(PLATFORM_GCC) || defined(PLATFORM_WINDOWS_MINGW)
 #define SEQAN_DO_SYS(_cond) do { _cond; } while (false)
-#endif  // #if defined(PLATFORM_GCC)
+#endif  // #if defined(PLATFORM_GCC) || defined(PLATFORM_WINDOWS_MINGW)
 
 #define SEQAN_DO_SYS1(_cond) SEQAN_DO_SYS(_cond)
 #define SEQAN_DO_SYS2(_cond, _comment) SEQAN_DO_SYS(_cond)
