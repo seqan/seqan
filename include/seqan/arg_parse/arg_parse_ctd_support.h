@@ -407,6 +407,13 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         std::vector<std::string> supported_formats;
         _getSupportedFormats(supported_formats, opt);
 
+        // add *.* to supported_formats if none is specified AND the type of the argument is a 
+        // prefix type. This is important for the KNIME nodes as they require similar file types
+        // to connect one input node to the other. In this particular case any file is aproprate
+        // since we are talking about prefixes. 
+        if (empty(supported_formats) && (type=="input-prefix" || type=="output-prefix" ))
+            supported_formats.push_back("*.*");
+
         ctdfile << _indent(currentIndent)
                 << "<ITEM" << (isListArgument(opt) ? "LIST" : "") << " name=\"" << xmlEscape(optionName) << "\"";
 
@@ -488,6 +495,13 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         // set up supported formats
         std::vector<std::string> supported_formats;
         _getSupportedFormats(supported_formats, arg);
+
+        // add *.* to supported_formats if none is specified AND the type of the argument is a 
+        // prefix type. This is important for the KNIME nodes as they require similar file types
+        // to connect one input node to the other. In this particular case any file is aproprate
+        // since we are talking about prefixes. 
+        if (empty(supported_formats) && (type=="input-prefix" || type=="output-prefix" ))
+            supported_formats.push_back("*.*");
 
         ctdfile << _indent(currentIndent)
                 << "<ITEM" << (isListArgument(arg) ? "LIST" : "") << " name=\"" << xmlEscape(optionName) << "\" "
