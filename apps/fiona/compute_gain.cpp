@@ -1,7 +1,6 @@
 #include <cctype>
 #include <iostream>
 #include <map>
-#include <random>
 
 #include <seqan/basic.h>
 #include <seqan/align.h>
@@ -12,6 +11,7 @@
 #include <seqan/bam_io.h>
 #include <seqan/arg_parse.h>
 #include <seqan/parallel.h>
+#include <seqan/random.h>
 
 // Data structure for options.
 struct Options
@@ -61,8 +61,8 @@ struct Options
     // Check sorting.
     bool checkSorting;
 
-    // Read only the first maxChunks chunks (default, maxValue<uint64_t>())
-    uint64_t maxChunks;
+    // Read only the first maxChunks chunks (default, maxValue<__uint64>())
+    __uint64 maxChunks;
 
     Options() :
             verbosity(1), numThreads(1), chunkSize(0), logAll(false), minUnclippedBases(0), maxErrorRate(0),
@@ -98,26 +98,26 @@ static inline int strnum_cmp(const char *a, const char *b)
 struct Stats
 {
     // Number of unmapped records before, after, and both before and after correction.
-    uint64_t numUnmappedPre;
-    uint64_t numUnmappedPost;
-    uint64_t numIgnoredPre;
+    __uint64 numUnmappedPre;
+    __uint64 numUnmappedPost;
+    __uint64 numIgnoredPre;
 
     // Number of alignment pairs that were evaluated.
-    uint64_t numTotal;
+    __uint64 numTotal;
 
     // Number of bases aligned pre-correction/post-correction.
-    uint64_t numBasesPre;
-    uint64_t numBasesPost;
+    __uint64 numBasesPre;
+    __uint64 numBasesPost;
     // Number of errors pre-correction/post-correction.
-    uint64_t numErrorsPre;
-    uint64_t numErrorsPost;
+    __uint64 numErrorsPre;
+    __uint64 numErrorsPost;
     // Number of errorneous reads pre-correction/post-correction.
-    uint64_t numErrorReadsPre;
-    uint64_t numErrorReadsPost;
-    uint64_t numReads;
+    __uint64 numErrorReadsPre;
+    __uint64 numErrorReadsPost;
+    __uint64 numReads;
 
     // Usual TP/FP/FN values.
-    uint64_t tp, fp, tn, fn;
+    __uint64 tp, fp, tn, fn;
 
     // Histogram of differences (before/after correction).
     std::map<int, unsigned> histo;
@@ -134,13 +134,13 @@ struct Stats
     // We can later compute the gain from actualErrorSum / diffErrorSum.
     //
     // Summed up edit distance errors in the pre-correction alignment.
-    int64_t actualErrorSum;
+    __int64 actualErrorSum;
     // Summed up difference between pre-correction and post-correction errors.
-    int64_t diffErrorSum;
+    __int64 diffErrorSum;
 
     // Number of introduced and removed errors.
-    uint64_t numErrorsIntroduced;
-    uint64_t numErrorsRemoved;
+    __uint64 numErrorsIntroduced;
+    __uint64 numErrorsRemoved;
 
     // Reusable data structures
     seqan::BamAlignmentRecord _recordPre;
@@ -476,7 +476,7 @@ void updateStats(Stats & stats,
             diffPost = -globalAlignment(postAlign, scoringScheme, alignConfig, NeedlemanWunsch()) / 1000;
         computeErrors(errorsPost, postAlign, beginPosPost);
 
-        uint64_t tp = 0, fp = 0, tn = 0, fn = 0;
+        __uint64 tp = 0, fp = 0, tn = 0, fn = 0;
         errorsTmp.clear();
         std::set_difference(errorsPre.begin(), errorsPre.end(), errorsPost.begin(), errorsPost.end(),
                             std::back_inserter(errorsTmp));
@@ -993,12 +993,12 @@ int main(int argc, char const ** argv)
     // Format recognition tag used for sequence file I/O.
     seqan::AutoSeqFormat seqFormatTag;
 
-    uint64_t chunksLeftToRead = options.maxChunks;
+    __uint64 chunksLeftToRead = options.maxChunks;
     --chunksLeftToRead;
 
     // to reduce the number of threads waiting in front of the critical section
-    std::mt19937 rng(42);
-    std::uniform_real_distribution<double> distChunkSizeNoise(options.chunkSize, 2 * options.chunkSize);
+    Rng<MersenneTwister> rng(42);
+    Pdf<Uniform<double> > chunkSizeNoise(options.chunkSize, 2 * options.chunkSize);
 
     SEQAN_OMP_PRAGMA(parallel num_threads(options.numThreads))
     while (!stop && !error)
@@ -1019,7 +1019,7 @@ int main(int argc, char const ** argv)
         SEQAN_OMP_PRAGMA(critical (read_chunk))
         {
             int const tid = omp_get_thread_num();
-            unsigned myChunkSize = (unsigned)distChunkSizeNoise(rng);
+            unsigned myChunkSize = (unsigned)pickRandomNumber(rng, chunkSizeNoise);
             seqan::CharString prevName;
             seqan::CharString postId;
             clear(recordPre.qName);

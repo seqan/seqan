@@ -7,7 +7,7 @@ int main()
     try
     {
         // Open input file.
-        VcfFileIn vcfIn(toCString(getAbsolutePath("demos/tutorial/vcf_io/example.vcf")));
+        VcfFileIn vcfIn(toCString(getAbsolutePath("/demos/tutorial/vcf_io/example.vcf")));
 
         // Copy over header.
         VcfHeader header;

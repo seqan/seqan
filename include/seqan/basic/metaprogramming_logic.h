@@ -474,18 +474,36 @@ struct If<False, T1, T2>
 
 
 template <typename TArgT, typename TArgF>
-inline TArgT &&
-ifSwitch(True, TArgT && argTrue, TArgF const &)
+inline TArgT SEQAN_FORWARD_ARG
+ifSwitch(True, TArgT SEQAN_FORWARD_ARG argTrue, TArgF const &)
 {
-    return std::forward<TArgT>(argTrue);
+    return SEQAN_FORWARD(TArgT, argTrue);
 }
 
 template <typename TArgT, typename TArgF>
-inline TArgF &&
-ifSwitch(False, TArgT const &, TArgF && argFalse)
+inline TArgF SEQAN_FORWARD_ARG
+ifSwitch(False, TArgT const &, TArgF SEQAN_FORWARD_ARG argFalse)
 {
-    return std::forward<TArgF>(argFalse);
+    return SEQAN_FORWARD(TArgF, argFalse);
 }
+
+#ifndef SEQAN_CXX11_STANDARD
+
+template <typename TArgT, typename TArgF>
+inline TArgT const &
+ifSwitch(True, TArgT const & argTrue, TArgF const &)
+{
+    return SEQAN_FORWARD(TArgT, argTrue);
+}
+
+template <typename TArgT, typename TArgF>
+inline TArgF const &
+ifSwitch(False, TArgT const &, TArgF const & argFalse)
+{
+    return SEQAN_FORWARD(TArgF, argFalse);
+}
+
+#endif
 
 // ----------------------------------------------------------------------------
 // Metafunction IfC

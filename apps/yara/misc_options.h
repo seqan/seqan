@@ -263,18 +263,6 @@ inline TReadSeqSize getReadErrors(TOptions const & options, TReadSeqSize readSeq
 }
 
 // ----------------------------------------------------------------------------
-// Function getReadIndels()
-// ----------------------------------------------------------------------------
-// Returns the absolute number of indels for a given read sequence.
-
-template <typename TMatch, typename TOptions, typename TReadSeqSize>
-inline TReadSeqSize getReadIndels(TOptions const & options, TReadSeqSize readSeqLength)
-{
-    return std::min((TReadSeqSize)(readSeqLength * options.indelRate),
-                    (TReadSeqSize)MemberLimits<TMatch, Errors>::VALUE);
-}
-
-// ----------------------------------------------------------------------------
 // Function getReadStrata()
 // ----------------------------------------------------------------------------
 // Returns the absolute number of strata for a given read sequence.
@@ -293,7 +281,7 @@ inline TReadSeqSize getReadStrata(TOptions const & options, TReadSeqSize readSeq
 template <typename TOptions>
 bool saveContigsLimits(TOptions const & options)
 {
-    String<uint64_t> limits;
+    String<__uint64> limits;
 
     appendValue(limits, options.contigsMaxLength);
     appendValue(limits, options.contigsSize);
@@ -312,7 +300,7 @@ bool saveContigsLimits(TOptions const & options)
 template <typename TOptions>
 bool openContigsLimits(TOptions & options)
 {
-    String<uint64_t> limits;
+    String<__uint64> limits;
 
     CharString contigsLimitFile(options.contigsIndexFile);
     append(contigsLimitFile, ".txt.size");

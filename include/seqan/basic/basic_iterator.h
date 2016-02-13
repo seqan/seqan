@@ -86,7 +86,4 @@
 #include <seqan/basic/proxy_base.h>
 #include <seqan/basic/proxy_iterator.h>
 
-// Zip iterator. Requires C++11
-#include <seqan/basic/iterator_zip.h>
-
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ITERATOR_H_

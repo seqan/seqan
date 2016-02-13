@@ -52,15 +52,15 @@ namespace seqan {
 
 template <typename TValue>
 struct RankDictionaryWordSize_<TValue, TwoLevels<void> > :
-    BitsPerValue<uint32_t> {};
+    BitsPerValue<__uint32> {};
 
 template <typename TValue>
 struct RankDictionaryWordSize_<TValue, TwoLevels<Device<void> > > :
-    BitsPerValue<uint32_t> {};
+    BitsPerValue<__uint32> {};
 
 template <typename TValue, typename TSpec>
 struct RankDictionaryWordSize_<TValue, TwoLevels<View<TSpec> > > :
-    BitsPerValue<uint32_t> {};
+    BitsPerValue<__uint32> {};
 
 }
 

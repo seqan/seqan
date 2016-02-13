@@ -51,7 +51,6 @@ struct MatchesAligner
     typedef typename Traits::TContigSeqs       TContigSeqs;
     typedef typename Traits::TReadSeqs         TReadSeqs;
     typedef typename Traits::TMatches          TMatches;
-    typedef typename Traits::TMatchesViewView  TMatchesView;
     typedef typename Traits::TCigar            TCigar;
     typedef typename Traits::TCigarSet         TCigarSet;
     typedef typename Traits::TCigarLimits      TCigarLimits;
@@ -68,7 +67,7 @@ struct MatchesAligner
     // Shared-memory read-write data.
     TCigarSet &             cigarSet;
     TCigarLimits &          cigarLimits;
-    TMatchesView &          matches;
+    TMatches &              matches;
 
     // Shared-memory read-only data.
     TContigSeqs const &     contigSeqs;
@@ -77,7 +76,7 @@ struct MatchesAligner
 
     MatchesAligner(TCigarSet & cigarSet,
                    TCigarLimits & cigarLimits,
-                   TMatchesView & matches,
+                   TMatches & matches,
                    TContigSeqs const & contigSeqs,
                    TReadSeqs const & readSeqs,
                    Options const & options) :
@@ -202,7 +201,7 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt & match
     {
         int dpErrors = _align(contigGaps, readGaps, errors, TSpec());
 
-        SEQAN_ASSERT_LEQ(dpErrors, (int)errors);
+        SEQAN_ASSERT_GEQ(dpErrors, (int)errors);
         ignoreUnusedVariableWarning(dpErrors);
 
         clipSemiGlobal(contigGaps, readGaps);
@@ -217,7 +216,7 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt & match
 
     // Compute cigar.
     clear(me.cigar);
-    getCigarString(me.cigar, contigGaps, readGaps, length(contigInfix));
+    getCigarString(me.cigar, contigGaps, readGaps);
 
     // Copy cigar to set.
     // TODO(esiragusa): use assign if possible.

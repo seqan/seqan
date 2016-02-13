@@ -253,6 +253,8 @@ struct Reference<Iter<TContainer const, StdIteratorAdaptor> const> :
 // Metafunction StdContainerIterator
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): This is a candidate for not beging publically documented
+
 template <typename TStdContainer>
 struct StdContainerIterator;
 
@@ -467,44 +469,40 @@ goPrevious(Iter<TContainer, StdIteratorAdaptor> & me)
 
 template <typename TContainer, typename TIntegral>
 inline Iter<TContainer, StdIteratorAdaptor>
-operator+(Iter<TContainer, StdIteratorAdaptor> left,
+operator+(Iter<TContainer, StdIteratorAdaptor> const & left,
           TIntegral right)
 {
     SEQAN_CHECKPOINT;
-    std::advance(hostIterator(left), right);
-    return left;
+    return Iter<TContainer, StdIteratorAdaptor>(hostIterator(left) + right);
 }
 
 // for <anonymous enum> types
 template <typename TContainer>
 inline Iter<TContainer, StdIteratorAdaptor>
-operator+(Iter<TContainer, StdIteratorAdaptor> left,
+operator+(Iter<TContainer, StdIteratorAdaptor> const & left,
           int right)
 {
     SEQAN_CHECKPOINT;
-    std::advance(hostIterator(left), right);
-    return left;
+    return Iter<TContainer, StdIteratorAdaptor>(hostIterator(left) + right);
 }
 
 template <typename TContainer, typename TIntegral>
 inline Iter<TContainer, StdIteratorAdaptor>
 operator+(TIntegral left,
-          Iter<TContainer, StdIteratorAdaptor> right)
+          Iter<TContainer, StdIteratorAdaptor> const & right)
 {
     SEQAN_CHECKPOINT;
-    std::advance(hostIterator(right), left);
-    return right;
+    return Iter<TContainer, StdIteratorAdaptor>(hostIterator(right) + left);
 }
 
 // for <anonymous enum> types
 template <typename TContainer>
 inline Iter<TContainer, StdIteratorAdaptor>
 operator+(int left,
-          Iter<TContainer, StdIteratorAdaptor> right)
+          Iter<TContainer, StdIteratorAdaptor> const & right)
 {
     SEQAN_CHECKPOINT;
-    std::advance(hostIterator(right), left);
-    return right;
+    return Iter<TContainer, StdIteratorAdaptor>(hostIterator(right) + left);
 }
 
 // ----------------------------------------------------------------------------
@@ -517,7 +515,7 @@ operator+=(Iter<TContainer, StdIteratorAdaptor> & left,
            TIntegral right)
 {
     SEQAN_CHECKPOINT;
-    std::advance(hostIterator(left), right);
+    hostIterator(left) += right;
     return left;
 }
 
@@ -528,7 +526,7 @@ operator+=(Iter<TContainer, StdIteratorAdaptor> & left,
            int right)
 {
     SEQAN_CHECKPOINT;
-    std::advance(hostIterator(left), right);
+    hostIterator(left) += right;
     return left;
 }
 
@@ -538,23 +536,21 @@ operator+=(Iter<TContainer, StdIteratorAdaptor> & left,
 
 template <typename TContainer, typename TIntegral>
 inline Iter<TContainer, StdIteratorAdaptor>
-operator-(Iter<TContainer, StdIteratorAdaptor> left,
+operator-(Iter<TContainer, StdIteratorAdaptor> const & left,
           TIntegral right)
 {
     SEQAN_CHECKPOINT;
-    std::advance(hostIterator(left), -static_cast<typename MakeSigned<TIntegral>::Type>(right));
-    return left;
+    return Iter<TContainer, StdIteratorAdaptor>(hostIterator(left) - right);
 }
 
 // for <anonymous enum> types
 template <typename TContainer>
 inline Iter<TContainer, StdIteratorAdaptor>
-operator-(Iter<TContainer, StdIteratorAdaptor> left,
+operator-(Iter<TContainer, StdIteratorAdaptor> const & left,
           int right)
 {
-    SEQAN_CHECKPOINT
-    std::advance(hostIterator(left), -right);
-    return left;
+SEQAN_CHECKPOINT
+    return Iter<TContainer, StdIteratorAdaptor>(hostIterator(left) - right);
 }
 
 template <typename TContainer>
@@ -576,7 +572,7 @@ operator-=(Iter<TContainer, StdIteratorAdaptor> & left,
            TIntegral right)
 {
     SEQAN_CHECKPOINT;
-    std::advance(hostIterator(left), -right);
+    hostIterator(left) -= right;
     return left;
 }
 
@@ -587,7 +583,7 @@ operator -= (Iter<TContainer, StdIteratorAdaptor> & left,
              int right)
 {
     SEQAN_CHECKPOINT;
-    std::advance(hostIterator(left), -right);
+    hostIterator(left) -= right;
     return left;
 }
 

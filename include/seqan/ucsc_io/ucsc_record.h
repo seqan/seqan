@@ -80,28 +80,28 @@ public:
     CharString contigName;
 
     /*!
-     * @var int32_t UcscRecord::cdsBegin
+     * @var __int32 UcscRecord::cdsBegin
      * @brief Start of the coding region (<tt>0</tt>-based position, defaults to <tt>-1</tt>).
      */
-    int32_t cdsBegin;
+    __int32 cdsBegin;
 
     /*!
-     * @var int32_t UcscRecord::cdsEnd
+     * @var __int32 UcscRecord::cdsEnd
      * @brief End of the coding region, defaults to <tt>-1</tt>.
      */
-    int32_t cdsEnd;
+    __int32 cdsEnd;
 
     /*!
      * @var CharString UcscRecord::exonBegin
      * @brief Start of the exon (<tt>0</tt>-based position, defaults to <tt>-1</tt>).
      */
-    String<int32_t> exonBegin;
+    String<__int32> exonBegin;
 
     /*!
      * @var CharString UcscRecord::exonEnds
      * @brief End of the exon, defaults to <tt>-1</tt>.
      */
-    String<int32_t> exonEnds;
+    String<__int32> exonEnds;
 
     /*!
      * @var CharString UcscRecord::proteinName
@@ -110,16 +110,16 @@ public:
     CharString proteinName;
 
     /*!
-     * @var uint32_t UcscRecord::annotationBeginPos
+     * @var __uint32 UcscRecord::annotationBeginPos
      * @brief Start of the annotation (<tt>0</tt>-based, defaults to <tt>-1</tt>).
      */
-    uint32_t annotationBeginPos;
+    __uint32 annotationBeginPos;
 
     /*!
      * @var CharString UcscRecord::annotationEndPos
      * @brief End position of the annotation, defaults to <tt>-1</tt>.
      */
-    uint32_t annotationEndPos;
+    __uint32 annotationEndPos;
 
     UcscRecord() : cdsBegin(0), cdsEnd(0), annotationBeginPos(0), annotationEndPos(0)
     {}

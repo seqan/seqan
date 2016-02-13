@@ -67,9 +67,9 @@ public:
     // Name of the sequences.
     CharString name;
     // Length of the sequence.
-    uint64_t sequenceLength;
+    __uint64 sequenceLength;
     // Offset in the file.
-    uint64_t offset;
+    __uint64 offset;
     // Number of sequence characters per line.
     unsigned lineLength;
     // Number of bytes per line, including newline character(s).
@@ -138,7 +138,8 @@ public:
     // A cache for fast access to the sequence name store.
     NameStoreCache<StringSet<CharString> > seqNameStoreCache;
 
-    mutable std::ifstream file;
+    // We use this memory mapped string (opened read-only) to read from the file.
+    String<char, MMap<> > mmapString;
 
     FaiIndex() :
         seqNameStoreCache(seqNameStore)
@@ -176,26 +177,6 @@ inline void clear(FaiIndex & index)
 }
 
 // ----------------------------------------------------------------------------
-// Function empty()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn FaiIndex#empty
- * @brief Returns whether the FaiIndex is empty.
- *
- * @signature void empty(faiIndex);
- *
- * @param[in] faiIndex The FaiIndex to check.
- *
- * @return bool <tt>true</tt> if the index is empty and needs to be built via @link FaiIndex#build @endlink.
- */
-
-inline bool empty(FaiIndex & index)
-{
-    return empty(index.indexEntryStore);
-}
-
-// ----------------------------------------------------------------------------
 // Function getIdByName()
 // ----------------------------------------------------------------------------
 
@@ -226,16 +207,16 @@ inline bool getIdByName(TId & rID, FaiIndex const & index, TName const & name)
  * @fn FaiIndex#sequenceLength
  * @brief Return length of the sequence with the given id in the FaiIndex.
  *
- * @signature uint64_t sequenceLength(faiIndex, rID);
+ * @signature __uint64 sequenceLength(faiIndex, rID);
  *
  * @param[in] faiIndex The FaiIndex to query.
  * @param[in] rID    The id of the sequence to get the length of.
  *
- * @return uint64_t The length of the sequence with index rID in faiIndex.
+ * @return __uint64 The length of the sequence with index rID in faiIndex.
  */
 
 template <typename TSeqId>
-inline uint64_t sequenceLength(FaiIndex const & index, TSeqId rID)
+inline __uint64 sequenceLength(FaiIndex const & index, TSeqId rID)
 {
     return index.indexEntryStore[rID].sequenceLength;
 }
@@ -243,7 +224,7 @@ inline uint64_t sequenceLength(FaiIndex const & index, TSeqId rID)
 // TODO(holtgrew): Wrapper and template only here because sequenceLength in string_set_base.h is weird.
 
 template <typename TSeqId>
-inline uint64_t sequenceLength(FaiIndex & index, TSeqId rID)
+inline __uint64 sequenceLength(FaiIndex & index, TSeqId rID)
 {
     return index.indexEntryStore[rID].sequenceLength;
 }
@@ -277,14 +258,14 @@ inline CharString const & sequenceName(FaiIndex const & index, unsigned rID)
  * @fn FaiIndex#numSeqs
  * @brief Return the number of sequences known to a FaiIndex.
  *
- * @signature uint64_t numSeqs(faiIndex);
+ * @signature __uint64 numSeqs(faiIndex);
  *
  * @param[in] faiIndex The FaiIndex to query.
  *
- * @return uint64_t The number of sequences in the index.
+ * @return __uint64 The number of sequences in the index.
  */
 
-inline uint64_t numSeqs(FaiIndex const & index)
+inline __uint64 numSeqs(FaiIndex const & index)
 {
     return length(index.indexEntryStore);
 }
@@ -315,6 +296,8 @@ inline void readRegion(String<TValue, TSpec> & str,
                        TBeginPos beginPos,
                        TEndPos endPos)
 {
+    typedef String<char, MMap<> > const TFastaFile;
+
     FaiIndexEntry_ const & entry = index.indexEntryStore[rID];
 
     // Limit region to the infix, make sure that beginPos < endPos, compute character to read.
@@ -322,13 +305,9 @@ inline void readRegion(String<TValue, TSpec> & str,
     beginPos = std::min((TEndPos)beginPos, seqLen);
     endPos = std::min(std::max((TEndPos)beginPos, endPos), seqLen);
     TEndPos toRead = endPos - beginPos;
-    
-    clear(str);
-    if (toRead == 0)
-        return;
 
     // seek to start position
-    DirectionIterator<std::ifstream, Input>::Type reader = directionIterator(index.file, Input());
+    DirectionIterator<TFastaFile, Input>::Type reader = directionIterator(index.mmapString, Input());
     setPosition(
         reader,
         index.indexEntryStore[rID].offset +
@@ -340,6 +319,7 @@ inline void readRegion(String<TValue, TSpec> & str,
     IsWhitespace ignWhiteSpace;
 
     // read characters
+    clear(str);
     skipUntil(reader, countDownIgnore);
     readUntil(str, reader, countDownData, ignWhiteSpace);
     if (!countDownData)
@@ -349,7 +329,7 @@ inline void readRegion(String<TValue, TSpec> & str,
 //    typedef typename Iterator<String<char, MMap<> > const, Standard>::Type TSourceIter;
 //    typedef typename Iterator<String<TValue, TSpec>, Standard>::Type TTargetIter;
 //    TSourceIter itSource = begin(index.mmapString, Standard());
-//    uint64_t offset = index.indexEntryStore[rID].offset;
+//    __uint64 offset = index.indexEntryStore[rID].offset;
 //    // First, compute offset of the completely filled lines.
 //    unsigned numLines = beginPos / index.indexEntryStore[rID].lineLength;
 //    unsigned numBytes = numLines * index.indexEntryStore[rID].overallLineLength;
@@ -483,8 +463,9 @@ readRecord(FaiIndexEntry_ & entry, TFwdIterator & reader, CharString & buffer)
  *
  * @param[in] faiIndex      The FaiIndex to write out.
  * @param[in] fastaFilename Path to the FASTA file to build an index for.  Type: <tt>char const *</tt>.
- * @param[in] faiFileName   The name of the FAI file to open.  This parameter is optional.  By default, the FAI
- *                          file name is derived from the FASTA file name.  Type: <tt>char const *</tt>.
+ * @param[in] faiFileName The name of the FAI file to open.  This parameter is optional.  By default, the FAI
+ *                        file name is derived from the FASTA file name.  Type: <tt>char
+ *                        const *</tt>.
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
  */
@@ -495,7 +476,7 @@ inline bool open(FaiIndex & index, char const * fastaFilename, char const * faiF
     index.fastaFilename = fastaFilename;
     index.faiFilename = faiFilename;
 
-    if (!open(index.file, toCString(fastaFilename), OPEN_RDONLY))
+    if (!open(index.mmapString, toCString(fastaFilename), OPEN_RDONLY))
         return false;  // Could not open file.
 
     // Open file.
@@ -581,6 +562,7 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
     clear(entry);
 
     skipUntil(iter, TFastaBegin());     // forward to the next '>'
+    entry.offset = position(iter);      // store file position
     skipOne(iter);                      // skip '>'
 
     readUntil(entry.name, iter, IsWhitespace());    // read Fasta id (up to first whitespace)
@@ -590,12 +572,8 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
     FaiIndexEntry_ temp;
     FaiIndexEntry_ *entryPtr = &entry;
     FaiIndexEntry_ *cmpPtr = &entry;
+    OrFunctor<IsNewline, CountFunctor<NotFunctor<IsWhitespace> > > countCharsPerLine;
 
-    OrFunctor<IsNewline, OrFunctor<
-                            CountFunctor<True>,                             // 1st count functor counts bytes
-                            CountFunctor<NotFunctor<IsWhitespace> >         // 2nd count functor counts non-whitespaces
-                         > > countCharsPerLine;
-    
     while (!atEnd(iter) && !TFastaBegin()(value(iter)))
     {
         // check for consistency
@@ -605,29 +583,21 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
             SEQAN_THROW(ParseError("FastaIndex: Record has inconsistent line lengths or line endings"));
         }
 
-        clear(countCharsPerLine.func2.func1);
-        clear(countCharsPerLine.func2.func2);
+        __uint64 start = position(iter);
 
         // skip to the end of line and count non-whitespace characters
+        clear(countCharsPerLine.func2);
         skipUntil(iter, countCharsPerLine);
-        entry.sequenceLength += value(countCharsPerLine.func2.func2);
+        entry.sequenceLength += value(countCharsPerLine.func2);
 
-        // determine line length in bases and bytes
-        entryPtr->lineLength = value(countCharsPerLine.func2.func2);
-        entryPtr->overallLineLength = value(countCharsPerLine.func2.func1);
+        // determine line length in bases
+        entryPtr->lineLength = value(countCharsPerLine.func2);
 
-        // skip linebreak and count consumed bytes
-        if (!atEnd(iter) && *iter == '\r')
-        {
-            ++iter;
-            entryPtr->overallLineLength++;
-        }
-        if (!atEnd(iter) && *iter == '\n')
-        {
-            ++iter;
-            entryPtr->overallLineLength++;
-        }
+        // skip linebreak
+        skipLine(iter);
 
+        // determine line length in bytes
+        entryPtr->overallLineLength = (__uint64)position(iter) - start;
         cmpPtr = entryPtr;
         entryPtr = &temp;
     }
@@ -641,25 +611,26 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
  * @fn FaiIndex#build
  * @brief Create a FaiIndex from FASTA file.
  *
- * @signature bool build(faiIndex, fastaFilename[, faiFileName]);
+ * @signature bool build(faiIndex, seqFileName[, faiFileName]);
  *
- * @param[out] faiIndex      The FaiIndex to build into.
- * @param[in]  fastaFilename Path to the FASTA file to build an index for.  Type: <tt>char const *</tt>.
- * @param[in]  faiFileName   Path to the FAI file to use as the index file.  Type: <tt>char const *</tt>.
- *                           Default: <tt>"${fastaFilename}.fai"</tt>.
+ * @param[out] faiIndex    The FaiIndex to build into.
+ * @param[in]  seqFileName Path to the FASTA file to build an index for.  Type: <tt>char const *</tt>.
+ * @param[in]  faiFileName Path to the FAI file to use as the index file.  Type: <tt>char const *</tt>.
+ *                         Default: <tt>"${seqFileName}.fai"</tt>.
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
  */
 
-inline bool build(FaiIndex & index, char const * fastaFilename, char const * faiFilename)
+inline bool build(FaiIndex & index, char const * seqFilename, char const * faiFilename)
 {
-    index.fastaFilename = fastaFilename;
+    index.fastaFilename = seqFilename;
     index.faiFilename = faiFilename;
 
-    if (!open(index.file, toCString(fastaFilename), OPEN_RDONLY))
-        return false;  // Could not open file.
+    SeqFileIn seqFile(seqFilename);
+    DirectionIterator<SeqFileIn, Input>::Type iter = directionIterator(seqFile, Input());
 
-    DirectionIterator<std::ifstream, Input>::Type iter = directionIterator(index.file, Input());
+    if (!isEqual(format(seqFile), seqan::Fasta()))
+        return false;  // Invalid format, not FASTA.
 
     // Clear everything.
     clear(index.seqNameStore);

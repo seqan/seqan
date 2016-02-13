@@ -93,33 +93,15 @@ struct Position<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >
 };
 
 template <typename TSpec, typename TIncrementable>
-struct Difference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >
-{
-    typedef typename MakeSigned<TIncrementable>::Type Type;
-};
-
-template <typename TSpec, typename TIncrementable>
-struct Value<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >
-{
-    typedef TIncrementable Type;
-};
-
-template <typename TSpec, typename TIncrementable>
-struct GetValue<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >
-{
-    typedef TIncrementable Type;
-};
-
-template <typename TSpec, typename TIncrementable>
 struct Reference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >
 {
     typedef TIncrementable Type;
 };
 
 template <typename TSpec, typename TIncrementable>
-struct Reference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const>
+struct Difference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >
 {
-    typedef TIncrementable const Type;
+    typedef typename MakeSigned<TIncrementable>::Type Type;
 };
 
 // ============================================================================
@@ -131,14 +113,14 @@ struct Reference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const>
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIncrementable>
-inline typename Position<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >::Type
+inline typename Position<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >::Type &
 position(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & me)
 {
     return me.data_position;
 }
 
 template <typename TSpec, typename TIncrementable>
-inline typename Position<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const>::Type
+inline typename Position<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >::Type const &
 position(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & me)
 {
     return me.data_position;
@@ -167,7 +149,7 @@ value(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & me)
 }
 
 template <typename TSpec, typename TIncrementable>
-inline typename Reference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const>::Type
+inline typename Reference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >::Type
 value(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & me)
 {
     return position(me);

@@ -289,126 +289,6 @@ inline CharString const & getVersion(ArgumentParser const & me)
     return getVersion(me._toolDoc);
 }
 
-// ----------------------------------------------------------------------------
-// Function setShortCopyright()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn ArgumentParser#setShortCopyright
- * @brief Sets short copyright of ArgumentParser.
- *
- * @signature void setShortCopyright(parser, short copyright);
- *
- * @param[in,out] parser  The ArgumentParser to set the short copyright of.
- * @param[in]     short copyright The short copyright string to set, <tt>std::string</tt>.
- */
-
-inline void setShortCopyright(ArgumentParser & me, CharString const & shortCopyrightString)
-{
-    setShortCopyright(me._toolDoc, shortCopyrightString);
-}
-
-// --------------------------------------------------------------------------
-// Function getShortCopyright()
-// --------------------------------------------------------------------------
-
-/*!
- * @fn ArgumentParser#getShortCopyright
- * @brief Returns the short copyright string.
- *
- * @signature TCharStringRef getShortCopyright(parser);
- *
- * @param[in,out] parser The ArgumentParser to get the short copyright string from.
- *
- * @return TCharString A const-ref to a @link CharString @endlink with the short copyright string.
- */
-
-inline CharString const & getShortCopyright(ArgumentParser const & me)
-{
-    return getShortCopyright(me._toolDoc);
-}
-
-// ----------------------------------------------------------------------------
-// Function setLongCopyright()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn ArgumentParser#setLongCopyright
- * @brief Sets long copyright of ArgumentParser.
- *
- * @signature void setLongCopyright(parser, long copyright);
- *
- * @param[in,out] parser  The ArgumentParser to set the long copyright of.
- * @param[in]     long copyright The long copyright string to set, <tt>std::string</tt>.
- */
-
-inline void setLongCopyright(ArgumentParser & me, CharString const & longCopyrightString)
-{
-    setLongCopyright(me._toolDoc, longCopyrightString);
-    if (!hasOption(me, "copyright"))
-        addOption(me, ArgParseOption("", "copyright", "Display long copyright information."));
-}
-
-// --------------------------------------------------------------------------
-// Function getLongCopyright()
-// --------------------------------------------------------------------------
-
-/*!
- * @fn ArgumentParser#getLongCopyright
- * @brief Returns the long copyright string.
- *
- * @signature TCharStringRef getLongCopyright(parser);
- *
- * @param[in,out] parser The ArgumentParser to get the long copyright string from.
- *
- * @return TCharString A const-ref to a @link CharString @endlink with the long copyright string.
- */
-
-inline CharString const & getLongCopyright(ArgumentParser const & me)
-{
-    return getLongCopyright(me._toolDoc);
-}
-
-
-// ----------------------------------------------------------------------------
-// Function setCitation()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn ArgumentParser#setCitation
- * @brief Sets citation of ArgumentParser.
- *
- * @signature void setCitation(parser, citation);
- *
- * @param[in,out] parser  The ArgumentParser to set the citation of.
- * @param[in]     citation The citation string to set, <tt>std::string</tt>.
- */
-
-inline void setCitation(ArgumentParser & me, CharString const & citationString)
-{
-    setCitation(me._toolDoc, citationString);
-}
-
-// --------------------------------------------------------------------------
-// Function getCitation()
-// --------------------------------------------------------------------------
-
-/*!
- * @fn ArgumentParser#getCitation
- * @brief Returns the citation string.
- *
- * @signature TCharStringRef getCitation(parser);
- *
- * @param[in,out] parser The ArgumentParser to get the citation string from.
- *
- * @return TCharString A const-ref to a @link CharString @endlink with the citation string.
- */
-
-inline CharString const & getCitation(ArgumentParser const & me)
-{
-    return getCitation(me._toolDoc);
-}
-
 // --------------------------------------------------------------------------
 // Function setCategory()
 // --------------------------------------------------------------------------
@@ -594,12 +474,7 @@ inline void printShortHelp(ArgumentParser const & me)
 
 inline void printVersion(ArgumentParser const & me, std::ostream & stream)
 {
-    stream << getAppName(me) << " version: " << getVersion(me) << std::endl;
-    stream << "SeqAn version: " << SEQAN_VERSION_MAJOR << '.' <<  SEQAN_VERSION_MINOR << '.'
-           << SEQAN_VERSION_PATCH;
-    if (SEQAN_VERSION_PRE_RELEASE != 0)
-        stream << "-pre" << SEQAN_VERSION_PRE_RELEASE;
-    stream << "\n";
+    stream << getAppName(me) << " version " << getVersion(me) << std::endl;
 }
 
 inline void printVersion(ArgumentParser const & me)
@@ -608,64 +483,9 @@ inline void printVersion(ArgumentParser const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function printLongCopyright()
-// ----------------------------------------------------------------------------
-
-/*!
- * @fn ArgumentParser#printLongCopyright
- * @brief Prints the long copyright information of the parser to a stream.
- *
- * @signature void printLongCopyright(parser, stream);
- *
- * @param[in,out] parser The ArgumenParser to print for.
- * @param[in,out] stream The <tt>std::ostream</tt> to print to.
- */
-
-inline void printLongCopyright(ArgumentParser const & me, std::ostream & stream)
-{
-    stream << "=============================================================================" << std::endl
-           << "Copyright information for " << getAppName(me) << ":" << std::endl
-           << "-----------------------------------------------------------------------------" << std::endl
-           << me._toolDoc._longCopyright << std::endl << std::endl
-           << "=============================================================================" << std::endl
-           << "This program contains SeqAn code licensed under the following terms:" << std::endl
-           << "-----------------------------------------------------------------------------" << std::endl
-           << " Copyright (c) 2006-2015, Knut Reinert, FU Berlin" << std::endl
-           << " All rights reserved." << std::endl
-           << "" << std::endl
-           << " Redistribution and use in source and binary forms, with or without" << std::endl
-           << " modification, are permitted provided that the following conditions are met:" << std::endl
-           << "" << std::endl
-           << "     * Redistributions of source code must retain the above copyright" << std::endl
-           << "       notice, this list of conditions and the following disclaimer." << std::endl
-           << "     * Redistributions in binary form must reproduce the above copyright" << std::endl
-           << "       notice, this list of conditions and the following disclaimer in the" << std::endl
-           << "       documentation and/or other materials provided with the distribution." << std::endl
-           << "     * Neither the name of Knut Reinert or the FU Berlin nor the names of" << std::endl
-           << "       its contributors may be used to endorse or promote products derived" << std::endl
-           << "       from this software without specific prior written permission." << std::endl
-           << "" << std::endl
-           << " THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"" << std::endl
-           << " AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE" << std::endl
-           << " IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE" << std::endl
-           << " ARE DISCLAIMED. IN NO EVENT SHALL KNUT REINERT OR THE FU BERLIN BE LIABLE" << std::endl
-           << " FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL" << std::endl
-           << " DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR" << std::endl
-           << " SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER" << std::endl
-           << " CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT" << std::endl
-           << " LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY" << std::endl
-           << " OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH" << std::endl
-           << " DAMAGE." << std::endl;
-}
-
-inline void printLongCopyright(ArgumentParser const & me)
-{
-    printLongCopyright(me, std::cerr);
-}
-
-// ----------------------------------------------------------------------------
 // Function _addNumericalRestriction()
 // ----------------------------------------------------------------------------
+
 
 inline void _addNumericalRestriction(std::string & text, ArgParseOption const & opt)
 {
@@ -763,20 +583,16 @@ inline void _addValidValuesRestrictions(std::string & text, ArgParseOption const
 
 /*!
  * @fn ArgumentParser#printHelp
- * @brief Prints the help message for the parser.
+ * @brief Prints the complete help message for the parser.
  *
- * @signature void printHelp(parser, out, format, showAdvancedOptions);
+ * @signature void printHelp(parser, out, format);
  *
- * @param[in,out] parser                The ArgumentParser print the help for.
- * @param[out]    out                   The output stream to print to (<tt>std::ostream</tt>).
- * @param[in]     format                The format to print, one of "html", "man", and "txt".
- * @param[in]     showAdvancedOptions   Also show advanced options to user (default = false).
+ * @param[in,out] parser The ArgumentParser print the help for.
+ * @param[out]    out    The output stream to print to (<tt>std::ostream</tt>).
+ * @param[in]     format The format to print, one of "html", "man", and "txt".
  */
 
-inline void printHelp(ArgumentParser const & me,
-                      std::ostream & stream,
-                      CharString const & format,
-                      bool const showAdvancedOptions)
+inline void printHelp(ArgumentParser const & me, std::ostream & stream, CharString const & format)
 {
     ToolDoc toolDoc(me._toolDoc);
     clearEntries(toolDoc);  // We will append me._toolDoc later.
@@ -800,22 +616,11 @@ inline void printHelp(ArgumentParser const & me,
                 continue;  // Skip empty lines.
 
             // Is command line parser section, maps to ToolDoc subsection.
-            for (unsigned j = i + 1; j < length(me.optionMap); ++j)
-            {
-                ArgParseOption const & nextopt = me.optionMap[j];
-                if (empty(nextopt.shortName) && empty(nextopt.longName))
-                    break;
-                // has visible children
-                if (!isHidden(nextopt) && (!isAdvanced(nextopt) || showAdvancedOptions))
-                {
-                    std::string title = opt._helpText;
-                    append(title, ":");
-                    addSubSection(toolDoc, title);
-                    break;
-                }
-            }
+            std::string title = opt._helpText;
+            append(title, ":");
+            addSubSection(toolDoc, title);
         }
-        else if (!isHidden(opt) && (!isAdvanced(opt) || showAdvancedOptions))
+        else if (!isHidden(opt))
         {
             // Build list item term.
             std::string term;
@@ -873,19 +678,14 @@ inline void printHelp(ArgumentParser const & me,
     print(stream, toolDoc, format);
 }
 
-inline void printHelp(ArgumentParser const & me, std::ostream & stream, CharString const & format)
-{
-    printHelp(me, stream, format, false);
-}
-
 inline void printHelp(ArgumentParser const & me, std::ostream & stream)
 {
-    printHelp(me, stream, "txt", false);
+    printHelp(me, stream, "txt");
 }
 
 inline void printHelp(ArgumentParser const & me)
 {
-    printHelp(me, std::cerr, "txt", false);
+    printHelp(me, std::cerr, "txt");
 }
 
 }  // namespace seqan

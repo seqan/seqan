@@ -89,7 +89,6 @@ struct MSplazerOptions
     unsigned libError;              // Library size (mate pairs)
     bool pairedEndMode;             // Whether or not to run Gustaf in paired-end mode
     bool revCompl;                  // Whether or not to rev-compl the second input file
-    bool inferComplexBP;           // Whether or not to inferr complex breakpoints
     unsigned numThreads;            // Number of threads for parallelization
 
     MSplazerOptions() :
@@ -115,7 +114,6 @@ struct MSplazerOptions
         libError(0),
         pairedEndMode(false),
         revCompl(true),
-        inferComplexBP(true),
         numThreads(1)
         {}
 };
@@ -173,7 +171,6 @@ struct Breakpoint
     SVType svtype;
     TSequence insertionSeq;
     bool revStrandDel;
-    bool inferredBP;
     // If both of these flags are true, then we have seen two (pseudo)deletions supporting both start and end position
     // of a translocation.
     bool translSuppStartPos;
@@ -205,7 +202,6 @@ struct Breakpoint
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
-        inferredBP(false),
         translSuppStartPos(false),
         translSuppEndPos(false),
         breakend(false)
@@ -239,7 +235,6 @@ struct Breakpoint
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
-        inferredBP(false),
         translSuppStartPos(false),
         translSuppEndPos(false),
         breakend(false)
@@ -274,7 +269,6 @@ struct Breakpoint
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
-        inferredBP(false),
         translSuppStartPos(false),
         translSuppEndPos(false),
         breakend(false)

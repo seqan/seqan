@@ -101,6 +101,8 @@
 // Lambda interface.
 // ===========================================================================
 
+#ifdef SEQAN_CXX11_STANDARD
 #include <seqan/find/find_lambda.h>
+#endif
 
 #endif //#ifndef SEQAN_HEADER_...

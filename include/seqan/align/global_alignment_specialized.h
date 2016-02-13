@@ -60,27 +60,25 @@ namespace seqan {
 // Function globalAlignment()                                      [Hirschberg]
 // ----------------------------------------------------------------------------
 
-template <typename TSequenceH, typename TGapsSpecH,
-          typename TSequenceV, typename TGapsSpecV,
-          typename TScoreValue>
-TScoreValue globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
-                            Gaps<TSequenceV, TGapsSpecV> & gapsV,
-                            Score<TScoreValue, Simple> const & scoringScheme,
-                            Hirschberg const & /*algorithmTag*/)
-{
-    SEQAN_ASSERT_EQ(scoreGapOpen(scoringScheme), scoreGapExtend(scoringScheme));
-    return _globalAlignment(gapsH, gapsV, scoringScheme, Hirschberg());
-}
-
 template <typename TSequence, typename TAlignSpec,
-typename TScoreValue>
+          typename TScoreValue, typename TScoreSpec>
 TScoreValue globalAlignment(Align<TSequence, TAlignSpec> & align,
-                            Score<TScoreValue, Simple> const & scoringScheme,
-                            Hirschberg const & /*algorithmTag*/)
+                            Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                            Hirschberg const & algorithmTag)
 {
     SEQAN_ASSERT_EQ(length(rows(align)), 2u);
+    return _globalAlignment(row(align, 0), row(align, 1), scoringScheme, algorithmTag);
+}
 
-    return globalAlignment(row(align, 0), row(align, 1), scoringScheme, Hirschberg());
+template <typename TSequenceH, typename TGapsSpecH,
+          typename TSequenceV, typename TGapsSpecV,
+          typename TScoreValue, typename TScoreSpec>
+TScoreValue globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
+                            Gaps<TSequenceV, TGapsSpecV> & gapsV,
+                            Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                            Hirschberg const & algorithmTag)
+{
+    return _globalAlignment(gapsH, gapsV, scoringScheme, algorithmTag);
 }
 
 // ----------------------------------------------------------------------------
@@ -131,10 +129,10 @@ int globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 
 template <typename TAlphabetH, typename TSpecH,
           typename TAlphabetV, typename TSpecV,
-          typename TScoreValue>
+          typename TScoreValue, typename TScoreSpec>
 TScoreValue globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
                                  String<TAlphabetV, TSpecV> const & seqV,
-                                 Score<TScoreValue, Simple> const & scoringScheme,
+                                 Score<TScoreValue, TScoreSpec> const & scoringScheme,
                                  Hirschberg const & algorithmTag)
 {
     Gaps<String<TAlphabetH, TSpecH> const, ArrayGaps> gapsH(seqH);

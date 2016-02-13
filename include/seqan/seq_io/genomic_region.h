@@ -107,16 +107,16 @@ inline void parse(GenomicRegion & region, CharString const & regionString);
 struct GenomicRegion
 {
     /*!
-     * @var int32_t GenomicRegion::INVALID_POS;
+     * @var __int32 GenomicRegion::INVALID_POS;
      * @brief Constant for marking a position as invalid (static-const member).
      */
-    static int32_t const INVALID_POS = -1;
+    static __int32 const INVALID_POS = -1;
 
     /*!
-     * @var int32_t GenomicRegion::INVALID_ID;
+     * @var __int32 GenomicRegion::INVALID_ID;
      * @brief Constant for marking a position as invalid (static-const member).
      */
-    static int32_t const INVALID_ID = -1;
+    static __int32 const INVALID_ID = -1;
 
     /*!
      * @var CharString GenomicRegion::seqName;
@@ -125,22 +125,22 @@ struct GenomicRegion
     CharString seqName;
 
     /*!
-     * @var int32_t GenomicRegion::rID;
+     * @var __int32 GenomicRegion::rID;
      * @brief An optional field storing an integer.  Default is <tt>-1</tt>.
      */
-    int32_t rID;
+    __int32 rID;
 
     /*!
-     * @var int32_t GenomicRegion::beginPos;
+     * @var __int32 GenomicRegion::beginPos;
      * @brief Begin position of the range on the chromosome.  Default is <tt>-1</tt>.
      */
-    int32_t beginPos;
+    __int32 beginPos;
 
     /*!
-     * @var int32_t GenomicRegion::endPos;
+     * @var __int32 GenomicRegion::endPos;
      * @brief End position of the range on the chromosome.  Default is <tt>-1</tt>.
      */
-    int32_t endPos;
+    __int32 endPos;
 
     /*!
      * @fn GenomicRegion::GenomicRegion

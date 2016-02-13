@@ -76,9 +76,9 @@ struct Options
     CharString      contigsFile;
     CharString      contigsIndexFile;
 
-    uint64_t        contigsSize;
-    uint64_t        contigsMaxLength;
-    uint64_t        contigsSum;
+    __uint64        contigsSize;
+    __uint64        contigsMaxLength;
+    __uint64        contigsSum;
 
     bool            verbose;
 
@@ -298,27 +298,27 @@ void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 template <typename TContigsSize, typename TContigsLen, typename TSpec, typename TConfig>
 void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 {
-    if (me.options.contigsSum <= MaxValue<uint32_t>::VALUE)
+    if (me.options.contigsSum <= MaxValue<__uint32>::VALUE)
     {
-        saveIndex<TContigsSize, TContigsLen, uint32_t>(me);
+        saveIndex<TContigsSize, TContigsLen, __uint32>(me);
     }
     else
     {
-        saveIndex<TContigsSize, TContigsLen, uint64_t>(me);
+        saveIndex<TContigsSize, TContigsLen, __uint64>(me);
     }
 }
 
 template <typename TContigsSize, typename TSpec, typename TConfig>
 void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 {
-    if (me.options.contigsMaxLength <= MaxValue<uint32_t>::VALUE)
+    if (me.options.contigsMaxLength <= MaxValue<__uint32>::VALUE)
     {
-        saveIndex<TContigsSize, uint32_t>(me);
+        saveIndex<TContigsSize, __uint32>(me);
     }
     else
     {
 #ifdef YARA_LARGE_CONTIGS
-        saveIndex<TContigsSize, uint64_t>(me);
+        saveIndex<TContigsSize, __uint64>(me);
 #else
         throw RuntimeError("Maximum contig length exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif
@@ -328,18 +328,18 @@ void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 template <typename TSpec, typename TConfig>
 void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 {
-    if (me.options.contigsSize <= MaxValue<uint8_t>::VALUE)
+    if (me.options.contigsSize <= MaxValue<__uint8>::VALUE)
     {
-        saveIndex<uint8_t>(me);
+        saveIndex<__uint8>(me);
     }
-    else if (me.options.contigsSize <= MaxValue<uint16_t>::VALUE)
+    else if (me.options.contigsSize <= MaxValue<__uint16>::VALUE)
     {
-        saveIndex<uint16_t>(me);
+        saveIndex<__uint16>(me);
     }
     else
     {
 #ifdef YARA_LARGE_CONTIGS
-        saveIndex<uint32_t>(me);
+        saveIndex<__uint32>(me);
 #else
         throw RuntimeError("Maximum number of contigs exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif

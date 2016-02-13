@@ -35,12 +35,21 @@
 #ifndef INCLUDE_SEQAN_BAM_IO_BAM_SCANNER_CACHE_H_
 #define INCLUDE_SEQAN_BAM_IO_BAM_SCANNER_CACHE_H_
 
+#ifdef SEQAN_CXX11_STANDARD
 #include <functional>
 #include <unordered_map>
+#else
+#include <tr1/functional>
+#include <tr1/unordered_map>
+#endif
 
 namespace seqan {
 
+#ifdef SEQAN_CXX11_STANDARD
 using namespace std;
+#else
+using namespace std::tr1;
+#endif
 
 // ============================================================================
 // Forwards
@@ -52,9 +61,9 @@ using namespace std;
 
 struct BamScannerCacheKey_
 {
-    int32_t     rID;
-    int32_t     beginPos;
-    uint64_t    qnameHash;
+    __int32     rID;
+    __int32     beginPos;
+    __uint64    qnameHash;
 
     bool operator== (BamScannerCacheKey_ const &other) const
     {
@@ -64,7 +73,7 @@ struct BamScannerCacheKey_
 
 struct BamScannerCacheSearchKey_
 {
-    typedef uint16_t TFlag;
+    typedef __uint16 TFlag;
 
     BamScannerCacheKey_ cacheKey;
     TFlag flags;
@@ -76,7 +85,7 @@ struct BamScannerCacheHash_ :
 {
     size_t operator()(BamScannerCacheKey_ const &v) const
     {
-        return std::hash<int32_t>()(v.rID) ^ std::hash<int32_t>()(v.beginPos) ^ std::hash<uint64_t>()(v.qnameHash);
+        return std::hash<__int32>()(v.rID) ^ std::hash<__int32>()(v.beginPos) ^ std::hash<__uint64>()(v.qnameHash);
     }
 };
 
@@ -110,13 +119,13 @@ public:
 // ============================================================================
 
 template <typename TSequence>
-uint64_t _suffixHash(TSequence const &sequence)
+__uint64 _suffixHash(TSequence const &sequence)
 {
     typedef typename Iterator<TSequence const, Standard>::Type  TIter;
     typedef typename Value<TSequence>::Type                     TValue;
     typedef typename Size<TSequence>::Type                      TSize;
 
-    const uint64_t ALPH_SIZE = ValueSize<TValue>::VALUE;
+    const __uint64 ALPH_SIZE = ValueSize<TValue>::VALUE;
     const unsigned MAX_LEN = LogN<~(ALPH_SIZE - 1) / ALPH_SIZE, ALPH_SIZE>::VALUE + 1;
 
     TSize len = length(sequence);
@@ -133,7 +142,7 @@ uint64_t _suffixHash(TSequence const &sequence)
 
     TIter it = itEnd - len;
 
-    uint64_t hash = 0;
+    __uint64 hash = 0;
     for (; it != itEnd; ++it)
         hash = hash * ALPH_SIZE + ordValue(*it);
     return hash;

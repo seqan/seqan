@@ -46,10 +46,6 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-template <typename TContainer>
-inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, void)
-assign(TContainer && me, typename RemoveReference<TContainer>::Type source);
-
 #if SEQAN_ENABLE_POINTER_HOLDER
 template <typename T> struct IsSimple;
 

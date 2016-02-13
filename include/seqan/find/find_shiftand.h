@@ -64,30 +64,29 @@ typedef Tag<ShiftAnd_> ShiftAnd;
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle>
-class Pattern<TNeedle, ShiftAnd>
-{
+class Pattern<TNeedle, ShiftAnd> {
 //____________________________________________________________________________
 public:
     typedef unsigned int TWord;
     enum { MACHINE_WORD_SIZE = sizeof(TWord) * 8 };
 
-    Holder<TNeedle>  data_host;
+//    Holder<TNeedle> data_host;
     String<TWord> bitMasks;            // Look up table for each character in the alphabet (called B in "Navarro")
     String<TWord> prefSufMatch;        // Set of all the prefixes of needle that match a suffix of haystack (called D in "Navarro")
     TWord needleLength;                // e.g., needleLength=33 --> blockCount=2 (iff w=32 bits)
     TWord blockCount;                // #unsigned ints required to store needle
 
-    Pattern()
-    {}
+//____________________________________________________________________________
 
-    // Custom c'tor setting a needle.
+    Pattern() {}
+
     template <typename TNeedle2>
-    Pattern(TNeedle2 && ndl, SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
+    Pattern(TNeedle2 const & ndl)
     {
-        setHost(*this, std::forward<TNeedle2>(ndl));
-        ignoreUnusedVariableWarning(dummy);
+        setHost(*this, ndl);
     }
 
+//____________________________________________________________________________
 };
 
 
@@ -95,17 +94,15 @@ public:
 // Functions
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TNeedle>
+template <typename TNeedle, typename TNeedle2>
 inline void
-_reinitPattern(Pattern<TNeedle, ShiftAnd> & me)
+setHost(Pattern<TNeedle, ShiftAnd> & me, TNeedle2 const & needle)
 {
     SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     typedef typename Value<TNeedle>::Type TValue;
 
-    TNeedle& ndl = needle(me);
-
-    me.needleLength = length(ndl);
+    me.needleLength = length(needle);
     if (me.needleLength < 1)
         me.blockCount = 1;
     else
@@ -116,7 +113,7 @@ _reinitPattern(Pattern<TNeedle, ShiftAnd> & me)
 
     for (TWord j = 0; j < me.needleLength; ++j)
         me.bitMasks[
-            me.blockCount * ordValue(convert<TValue>(getValue(ndl, j)))
+            me.blockCount * ordValue(convert<TValue>(getValue(needle, j)))
             + j / me.MACHINE_WORD_SIZE
         ] |= (TWord)1 << (j % me.MACHINE_WORD_SIZE);
 
@@ -139,6 +136,64 @@ _reinitPattern(Pattern<TNeedle, ShiftAnd> & me)
         std::cout << std::endl;
     }
     */
+}
+
+template <typename TNeedle, typename TNeedle2>
+inline void
+setHost(Pattern<TNeedle, ShiftAnd> & me, TNeedle2 & needle)
+{
+    setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
+}
+
+//____________________________________________________________________________
+
+template <typename TNeedle>
+inline TNeedle
+host(Pattern<TNeedle, ShiftAnd> const & pattern)
+{
+SEQAN_CHECKPOINT
+
+    typedef typename Pattern<TNeedle, ShiftAnd>::TWord TWord;
+    typedef typename Value<TNeedle>::Type TValue;
+
+    TNeedle temp;
+    resize(temp, pattern.needleLength, Exact());
+
+    TValue v = TValue();
+    for (unsigned i = 0; i < length(pattern.bitMasks); i += pattern.blockCount)
+    {
+        for (unsigned j = 0; j < pattern.needleLength; j++)
+            if ((pattern.bitMasks[i + j / pattern.MACHINE_WORD_SIZE] & (TWord)1 << (j % pattern.MACHINE_WORD_SIZE)) != (TWord)0)
+                temp[j] = v;
+        ++v;
+    }
+    return temp;
+}
+
+template <typename TNeedle>
+inline TNeedle
+host(Pattern<TNeedle, ShiftAnd> & pattern)
+{
+SEQAN_CHECKPOINT
+    return host(const_cast<Pattern<TNeedle, ShiftAnd> const &>(pattern));
+}
+
+//____________________________________________________________________________
+
+template <typename TNeedle>
+inline TNeedle
+needle(Pattern<TNeedle, ShiftAnd> const & pattern)
+{
+SEQAN_CHECKPOINT
+    return host(pattern);
+}
+
+template <typename TNeedle>
+inline TNeedle
+needle(Pattern<TNeedle, ShiftAnd> & pattern)
+{
+SEQAN_CHECKPOINT
+    return host(const_cast<Pattern<TNeedle, ShiftAnd> const &>(pattern));
 }
 
 //____________________________________________________________________________

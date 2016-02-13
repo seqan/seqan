@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the graph_types module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_graph_types CXX)
+cmake_minimum_required (VERSION 2.8.2)
+project (seqan_tests_graph_types)
 
 message (STATUS "Configuring tests/graph_types")
 
@@ -16,6 +16,7 @@ message (STATUS "Configuring tests/graph_types")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
+set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # Clang 3.2.0 has a bug that prevents test_graph_types from compiling.  See

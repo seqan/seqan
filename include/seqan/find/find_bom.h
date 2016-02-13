@@ -120,46 +120,76 @@ public:
     }
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 && ndl,
-            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
+    Pattern(TNeedle2 const & ndl)
     {
-        ignoreUnusedVariableWarning(dummy);
-        setHost(*this, std::forward<TNeedle2>(ndl));
+SEQAN_CHECKPOINT
+        setHost(*this, ndl);
+    }
+
+    ~Pattern() {
+        SEQAN_CHECKPOINT
     }
 //____________________________________________________________________________
 };
+
+//////////////////////////////////////////////////////////////////////////////
+// Host Metafunctions
+//////////////////////////////////////////////////////////////////////////////
+
+template <typename TNeedle>
+struct Host< Pattern<TNeedle, BomAlgo> >
+{
+    typedef TNeedle Type;
+};
+
+template <typename TNeedle>
+struct Host< Pattern<TNeedle, BomAlgo> const>
+{
+    typedef TNeedle const Type;
+};
+
 
 //////////////////////////////////////////////////////////////////////////////
 // Functions
 //////////////////////////////////////////////////////////////////////////////
 
 //Bfam<Oracle>: BOM Algorithm
-template <typename TNeedle>
+template <typename TNeedle, typename TNeedle2>
 inline void
-_reinitPattern(Pattern<TNeedle, Bfam<Oracle> > & me)
+setHost (Pattern<TNeedle, Bfam<Oracle> > & me, TNeedle2 const& needle)
 {
     SEQAN_CHECKPOINT
-    me.needleLength = length(needle(me));
+    me.needleLength = length(needle);
     clear(me.automaton);
-    createOracleOnReverse(me.automaton,needle(me));
+    createOracleOnReverse(me.automaton,needle);
+    setValue(me.data_host, needle);
 }
 
 //Bfam<Trie>: BTM Algorithm (the same as BOM, but with an trie)
-template <typename TNeedle>
+template <typename TNeedle, typename TNeedle2>
 inline void
-_reinitPattern(Pattern<TNeedle, Bfam<Trie> > & me)
+setHost (Pattern<TNeedle, Bfam<Trie> > & me, TNeedle2 const& needle)
 {
     SEQAN_CHECKPOINT;
     typedef typename Position<TNeedle>::Type TPosition;
-    me.needleLength = length(needle(me));
+    me.needleLength = length(needle);
     clear(me.automaton);
 
     String<String<TPosition> > terminal_state_map; //dummy
-    typedef typename Value<TNeedle const>::Type TValue;
-    String<TValue> reverse_string = needle(me);
+    typedef typename Value<TNeedle2 const>::Type TValue;
+    String<TValue> reverse_string = needle;
     reverse(reverse_string);
 
     createSuffixTrie(me.automaton, terminal_state_map, reverse_string);
+
+    setValue(me.data_host, needle);
+}
+
+template <typename TNeedle, typename TNeedle2, typename TSpec>
+inline void
+setHost (Pattern<TNeedle, Bfam<TSpec> > & me, TNeedle2 & needle)
+{
+    setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
 }
 
 //____________________________________________________________________________

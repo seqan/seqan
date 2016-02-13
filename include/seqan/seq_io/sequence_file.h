@@ -285,7 +285,7 @@ inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         FormattedFile<Fastq, Input, TSpec> & file)
 {
-    readRecords(meta, seq, file, MaxValue<uint64_t>::VALUE);
+    readRecords(meta, seq, file, MaxValue<__uint64>::VALUE);
 }
 
 // ----------------------------------------------------------------------------
@@ -332,7 +332,7 @@ inline void readRecords(TIdStringSet & meta,
                         TQualStringSet & qual,
                         FormattedFile<Fastq, Input, TSpec> & file)
 {
-    readRecords(meta, seq, qual, file, MaxValue<uint64_t>::VALUE);
+    readRecords(meta, seq, qual, file, MaxValue<__uint64>::VALUE);
 }
 
 // ----------------------------------------------------------------------------

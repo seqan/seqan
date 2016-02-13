@@ -150,13 +150,6 @@ public:
     }
 };
 
-// Implement concept
-template <typename TJournaledString, typename TJournalSpec>
-SEQAN_CONCEPT_IMPL((Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const), (RootedRandomAccessIteratorConcept));
-
-template <typename TJournaledString, typename TJournalSpec>
-SEQAN_CONCEPT_IMPL((Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> >), (MutableRootedRandomAccessIteratorConcept));
-
 // ============================================================================
 // Metafunctions
 // ============================================================================

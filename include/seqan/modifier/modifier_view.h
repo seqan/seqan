@@ -188,6 +188,8 @@ public:
         cargo(*this).func = functor;
     }
 
+#ifdef SEQAN_CXX11_STANDARD
+
     // Constructor for innermost type; hand down to _host which is a ModifiedString itself.
     template <typename THost_>
     explicit
@@ -213,6 +215,56 @@ public:
         ignoreUnusedVariableWarning(dummy);
         cargo(*this).func = functor;
     }
+
+#else
+
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ & host,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
+            _host(host), tmp_value()
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
+
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ const & host,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
+            _host(host), tmp_value()
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
+
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant with
+    // functor.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ & host,
+                   TFunctor const & functor,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
+            _host(host), tmp_value()
+    {
+        ignoreUnusedVariableWarning(dummy);
+        cargo(*this).func = functor;
+    }
+
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant with
+    // functor.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ const & host,
+                   TFunctor const & functor,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
+            _host(host), tmp_value()
+    {
+        ignoreUnusedVariableWarning(dummy);
+        cargo(*this).func = functor;
+    }
+
+#endif
 
     template <typename TPos>
     inline typename Reference<ModifiedString>::Type

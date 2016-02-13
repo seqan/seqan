@@ -126,10 +126,10 @@ char const * FileExtensions<Gtf, T>::VALUE[1] =
 struct GffRecord
 {
     /*!
-     * @var int32_t GffRecord::INVALID_IDX;
+     * @var __int32 GffRecord::INVALID_IDX;
      * @brief Static member with invalid/sentinel rID value.
      */
-    static int32_t const INVALID_POS = 2147483647;  // TODO(singer): Should be MaxValue<int32_t>::VALUE, but that is not a constant expression :(
+    static __int32 const INVALID_POS = 2147483647;  // TODO(singer): Should be MaxValue<__int32>::VALUE, but that is not a constant expression :(
 
     /*!
      * @var CharString GffRecord::ref;
@@ -174,18 +174,18 @@ struct GffRecord
     StringSet<CharString> tagValues;
 
     /*!
-     * @var int32_t GffRecord::beginPos;
+     * @var __int32 GffRecord::beginPos;
      * @brief The begin position of the record.
      */
-    uint32_t beginPos;
+    __uint32 beginPos;
 
     /*!
-     * @var int32_t GffRecord::endPos;
+     * @var __int32 GffRecord::endPos;
      * @brief The end position of the record.
      *
      * GFF and GTF use 1-based positions in text, but they are stored as 0-based coordinates.
      */
-    uint32_t endPos;
+    __uint32 endPos;
 
     /*!
      * @var float GffRecord::score;
@@ -224,7 +224,7 @@ struct GffRecord
     {
         union
         {
-            uint32_t u;
+            __uint32 u;
             float f;
         } tmp;
         tmp.u = 0x7F800001;
@@ -375,14 +375,14 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
     // read column 4: begin position
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
-    record.beginPos = lexicalCast<uint32_t>(buffer);
+    record.beginPos = lexicalCast<__uint32>(buffer);
     --record.beginPos;  // Translate from 1-based to 0-based.
     skipOne(iter);
 
     // read column 5: end position
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
-    record.endPos = lexicalCast<uint32_t>(buffer);
+    record.endPos = lexicalCast<__uint32>(buffer);
     skipOne(iter);
 
     //check if end < begin

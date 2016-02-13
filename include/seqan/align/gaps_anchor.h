@@ -342,7 +342,7 @@ _getAnchor(TAnchor & anchor, Gaps<TSource, AnchorGaps<TGapAnchors> > const & me,
                     anchor.seqPos = maxValue(anchor.gapPos);
                 // if the sequence has a length > 0, but there is an anchor behind the end
                 // -> elongate sequence
-                else if ((int64_t)anchor.seqPos < (int64_t)back(_dataAnchors(me)).seqPos)
+                else if ((__int64)anchor.seqPos < (__int64)back(_dataAnchors(me)).seqPos)
                     anchor.seqPos = back(_dataAnchors(me)).seqPos;
             }
             anchor.gapPos = maxValue(anchor.gapPos);
@@ -756,13 +756,13 @@ assignSource(Gaps<TSequence, AnchorGaps<TGapAnchor> > & gaps, TSequence2 const &
  * @endcode
  */
 
-template <typename TSource, typename TGapAnchors, typename TPosition, typename TProjectionDir>
+template <typename TSource, typename TGapAnchors, typename TPosition>
 inline TPosition
-positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition const pos, TProjectionDir const & /*dir*/)
+positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition pos)
 {
     typedef typename Position<typename Value<TGapAnchors>::Type>::Type TAnchorPos;
 
-    GapAnchor<int64_t> prevAnchor, nextAnchor;
+    GapAnchor<__int64> prevAnchor, nextAnchor;
     TPosition           seqPos;
     int                 anchorIdx;
 
@@ -786,20 +786,11 @@ positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition c
     _getAnchor(prevAnchor, me, anchorIdx);
     _getAnchor(nextAnchor, me, anchorIdx + 1);
 
-    // View position points to a source.
     if (nextAnchor.seqPos - prevAnchor.seqPos > (int)pos - prevAnchor.gapPos)
         seqPos = prevAnchor.seqPos + (pos - prevAnchor.gapPos);
-    else  // View position points to a gap
-        seqPos = (IsSameType<TProjectionDir, RightOfViewPos>::VALUE) ? nextAnchor.seqPos :
-                    (_max(static_cast<TPosition>(nextAnchor.seqPos) - 1, static_cast<TPosition>(0)));
+    else
+        seqPos = nextAnchor.seqPos;
     return seqPos;
-}
-
-template <typename TSource, typename TGapAnchors, typename TPosition>
-inline TPosition
-positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition pos)
-{
-    return positionGapToSeq(me, pos, RightOfViewPos());
 }
 
 // ----------------------------------------------------------------------------
@@ -852,7 +843,7 @@ positionSeqToGap(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
 {
     typedef typename Position<typename Value<TGapAnchors>::Type>::Type TAnchorPos;
 
-    GapAnchor<int64_t>  prevAnchor, nextAnchor;
+    GapAnchor<__int64>  prevAnchor, nextAnchor;
     TPosition           gapPos;
     int                 anchorIdx;
 
@@ -889,7 +880,7 @@ positionSeqToGap(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
 
 template <typename TSequence, typename TGapAnchors, typename TPosition>
 inline typename Position<Gaps<TSequence, AnchorGaps<TGapAnchors> > >::Type
-toViewPosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps, TPosition const sourcePosition)
+toViewPosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps, TPosition sourcePosition)
 {
     return positionSeqToGap(gaps, sourcePosition) - gaps.data_viewCutBegin - gaps.data_cutBegin;
 }
@@ -898,15 +889,13 @@ toViewPosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps, TPosition
 // Function toSourcePosition()
 // ----------------------------------------------------------------------------
 
-template <typename TSequence, typename TGapAnchors, typename TPosition, typename TProjectionDir>
+template <typename TSequence, typename TGapAnchors, typename TPosition>
 inline typename Position<TSequence>::Type
-toSourcePosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps,
-                 TPosition const clippedViewPos,
-                 TProjectionDir const /*dir*/)
+toSourcePosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps, TPosition clippedViewPos)
 {
     // TODO(weese): possibly change positionGapToSeq interface to consider a different zero
     // shifted by data_cutBegin
-    return positionGapToSeq(gaps, clippedViewPos + gaps.data_viewCutBegin + gaps.data_cutBegin, TProjectionDir());
+    return positionGapToSeq(gaps, clippedViewPos + gaps.data_viewCutBegin + gaps.data_cutBegin);
 }
 
 // ----------------------------------------------------------------------------

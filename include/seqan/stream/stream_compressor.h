@@ -130,7 +130,7 @@ Pager<TOutPager, Compress<TAlgTag> >
         table(DefaultPageSize<TAlgTag>::VALUE)
     {}
 
-    Page & getPage (int64_t position)
+    Page & getPage (__int64 position)
     {
         Page *page;
         {
@@ -157,7 +157,7 @@ Pager<TOutPager, Compress<TAlgTag> >
 
     void putPage (Page &page)
     {
-        int64_t outPosition = 0;                                // compute start position in outbound pager
+        __int64 outPosition = 0;                                // compute start position in outbound pager
         if (page.range.begin != 0)
         {
             PageRange range = getPageRange(beginPosition(page.range) - 1);

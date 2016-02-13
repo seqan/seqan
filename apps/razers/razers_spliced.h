@@ -354,8 +354,8 @@ void countSplitMatches(TMatches &matches, TCounts &cnt)
 	
 	unsigned readNo = -1;
 	short editDist = -1;
-	int64_t count = 0;
-	int64_t maxVal = MaxValue<TValue>::VALUE;
+	__int64 count = 0;
+	__int64 maxVal = MaxValue<TValue>::VALUE;
 
 	for (; it != itEnd; ++it) 
 	{
@@ -507,12 +507,10 @@ matchVerify(
 	TGenomeInfixRev		infRev(inf);
 	TMyersFinderRev		myersFinderRev(infRev);
 	TReadRev			readRev;
-    TRead               readInf;
 	if(IsSameType<TSufPrefSpec,LongestSuffix>::VALUE)
-		readInf = infix(readSet[rseqNo],length(readSet[rseqNo])-options.minMatchLen,length(readSet[rseqNo]));
+		setHost(readRev,infix(readSet[rseqNo],length(readSet[rseqNo])-options.minMatchLen,length(readSet[rseqNo])));
 	else
-		readInf = infix(readSet[rseqNo],0,options.minMatchLen);
-    setHost(readRev, readInf);
+		setHost(readRev,infix(readSet[rseqNo],0,options.minMatchLen));
 
 	TMyersPatternRev	myersPatternRev(readRev);
 	
@@ -1579,7 +1577,7 @@ int mapSplicedReads(
 
 	if(options._debugLevel > 0)
 	{
-		int64_t genomeLen = 3000000000 * 2;					// ufff make that an option
+		__int64 genomeLen = 3000000000 * 2;					// ufff make that an option
 		expNumRandomMatches(readSet, genomeLen, options);
 	}
 	
@@ -1755,7 +1753,7 @@ void mapSplicedReads(
 	typedef Finder<TGenomeInf, Swift<TSwiftSpec> >	TSwiftFinderR;
 	typedef Pattern<TReadIndex, Swift<TSwiftSpec> >	TSwiftPattern;
 	
-	typedef Pair<int64_t, TMatch>				TDequeueValue;
+	typedef Pair<__int64, TMatch>				TDequeueValue;
 	typedef Dequeue<TDequeueValue>				TDequeue;
 	typedef typename TDequeue::TIter			TDequeueIterator;
 	
@@ -1791,12 +1789,12 @@ void mapSplicedReads(
 	TSwiftFinderR swiftFinderR(genomeInf, options.repeatLength, 1);
 	
 	TDequeue fifo;				// stores left-mate potential matches
-	String<int64_t> lastPotMatchNo;		// last number of a left-mate potential
-	int64_t lastNo = 0;			// last number over all left-mate pot. matches in the queue
-	int64_t firstNo = 0;			// first number over all left-mate pot. match in the queue
+	String<__int64> lastPotMatchNo;		// last number of a left-mate potential
+	__int64 lastNo = 0;			// last number over all left-mate pot. matches in the queue
+	__int64 firstNo = 0;			// first number over all left-mate pot. match in the queue
 	Pair<TGPos> gPair;
 	
-	resize(lastPotMatchNo, length(host(swiftPatternL)), (int64_t)-1, Exact());
+	resize(lastPotMatchNo, length(host(swiftPatternL)), (__int64)-1, Exact());
 	
 	String<Pair<TGPos> > lastRightMatch;		// begin and end of last verified right match
 	resize(lastRightMatch, length(host(swiftPatternL)), Pair<TGPos>(0,0), Exact());
@@ -1857,7 +1855,7 @@ void mapSplicedReads(
 		}
 		
 		TDequeueIterator it;
-		int64_t lastPositive = (int64_t)-1;
+		__int64 lastPositive = (__int64)-1;
 
 		TRead const &read = readSet[rseqNo];
 		TSize counter = 0;
@@ -1867,7 +1865,7 @@ void mapSplicedReads(
 		lastLeftMatch.i2 = 0;
 		
 		// walk through all potential left matches, verify if not verfied already, mark as positive or negative
-		for (int64_t i = lastPotMatchNo[rseqNo]; firstNo <= i; i = (*it).i1)
+		for (__int64 i = lastPotMatchNo[rseqNo]; firstNo <= i; i = (*it).i1)
 		{
 			it = &value(fifo, i - firstNo);
 		
@@ -1890,7 +1888,7 @@ void mapSplicedReads(
 					lastLeftMatch.i1 = (*it).i2.gBegin;
 					lastLeftMatch.i2 = (*it).i2.gEnd;
 					// short-cut negative matches
-					if (lastPositive == (int64_t)-1)
+					if (lastPositive == (__int64)-1)
 						lastPotMatchNo[rseqNo] = i;
 					else
 						value(fifo, lastPositive - firstNo).i1 = i;
@@ -1909,7 +1907,7 @@ void mapSplicedReads(
 				lastLeftMatch.i2 = (*it).i2.gEnd;
 
 				// dont want to shortcut too much
-				if (lastPositive == (int64_t)-1 || i < lastPositive)
+				if (lastPositive == (__int64)-1 || i < lastPositive)
 					lastPositive = i;
 
 				// first left match --> do right verification
@@ -2118,10 +2116,10 @@ void mapSplicedReads(
 		}
 			
 		// short-cut negative matches
-		if (lastPositive == (int64_t)-1)
-			lastPotMatchNo[rseqNo] = (int64_t)-1;
+		if (lastPositive == (__int64)-1)
+			lastPotMatchNo[rseqNo] = (__int64)-1;
 		else
-			value(fifo, lastPositive - firstNo).i1 = (int64_t)-1; // the first positive's link to previous is removed
+			value(fifo, lastPositive - firstNo).i1 = (__int64)-1; // the first positive's link to previous is removed
 
 		
 	}//swiftFinderR

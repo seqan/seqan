@@ -193,17 +193,17 @@ public:
     // constructor.
 
     SEQAN_HOST_DEVICE
-    operator int64_t() const
+    operator __int64() const
     {
-        int64_t c;
+        __int64 c;
         assign(c, *this);
         return c;
     }
 
     SEQAN_HOST_DEVICE
-    operator uint64_t() const
+    operator __uint64() const
     {
-        uint64_t c;
+        __uint64 c;
         assign(c, *this);
         return c;
     }
@@ -498,7 +498,7 @@ assign(SimpleType<TTargetValue, TTargetSpec> & target,
 
 template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline void
-assign(int64_t & c_target,
+assign(__int64 & c_target,
        SimpleType<TValue, TSpec> & source)
 {
     c_target = source.value;
@@ -506,7 +506,7 @@ assign(int64_t & c_target,
 
 template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline void
-assign(int64_t & c_target,
+assign(__int64 & c_target,
        SimpleType<TValue, TSpec> const & source)
 {
     c_target = source.value;
@@ -514,7 +514,7 @@ assign(int64_t & c_target,
 
 template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline void
-assign(uint64_t & c_target,
+assign(__uint64 & c_target,
        SimpleType<TValue, TSpec> & source)
 {
     c_target = source.value;
@@ -522,7 +522,7 @@ assign(uint64_t & c_target,
 
 template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline void
-assign(uint64_t & c_target,
+assign(__uint64 & c_target,
        SimpleType<TValue, TSpec> const & source)
 {
     c_target = source.value;

@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.6)
-project (seqan_demos_tutorials CXX)
+project (seqan_demos_tutorials)
 
 # Supress unused parameter warnings for these demos.
 if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)

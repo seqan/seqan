@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the sequence_journaled module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
-project (seqan_tests_sequence_journaled CXX)
+cmake_minimum_required (VERSION 2.8.2)
+project (seqan_tests_sequence_journaled)
 message (STATUS "Configuring tests/sequence_journaled")
 
 # ----------------------------------------------------------------------------
@@ -15,6 +15,7 @@ message (STATUS "Configuring tests/sequence_journaled")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
+set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

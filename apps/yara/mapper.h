@@ -52,9 +52,9 @@ struct Options
     typedef std::vector<TString>            TList;
     typedef FileFormat<BamFileOut>::Type    TOutputFormat;
 
-    uint64_t            contigsSize;
-    uint64_t            contigsMaxLength;
-    uint64_t            contigsSum;
+    __uint64            contigsSize;
+    __uint64            contigsMaxLength;
+    __uint64            contigsSum;
 
     CharString          contigsIndexFile;
     Pair<CharString>    readsFile;
@@ -66,16 +66,14 @@ struct Options
 
     MappingMode         mappingMode;
     float               errorRate;
-    float               indelRate;
     float               strataRate;
     bool                quick;
 
     bool                singleEnd;
     unsigned            libraryLength;
-    unsigned            libraryDev;
+    unsigned            libraryError;
     LibraryOrientation  libraryOrientation;
     TList               libraryOrientationList;
-    bool                verifyMatches;
 
     unsigned            readsCount;
     unsigned            threadsCount;
@@ -95,14 +93,13 @@ struct Options
         readGroup("none"),
         mappingMode(STRATA),
         errorRate(0.05f),
-        indelRate(0.25f),
         strataRate(0.00f),
         quick(false),
         singleEnd(true),
-        libraryLength(),
-        libraryDev(),
+        libraryLength(200),
+        libraryError(200),
         libraryOrientation(FWD_REV),
-        verifyMatches(true),
+//        anchorOne(false),
         readsCount(100000),
         threadsCount(1),
         hitsThreshold(300),
@@ -122,9 +119,9 @@ struct Options
 template <typename TThreading_       = Parallel,
           typename TSequencing_      = SingleEnd,
           typename TStrategy_        = Strata,
-          typename TContigsSize_     = uint8_t,
-          typename TContigsLen_      = uint32_t,
-          typename TContigsSum_      = uint32_t,
+          typename TContigsSize_     = __uint8,
+          typename TContigsLen_      = __uint32,
+          typename TContigsSum_      = __uint32,
           typename TAlloc_           = MMap<>,
           unsigned BUCKETS_          = 3>
 struct ReadMapperConfig
@@ -195,17 +192,8 @@ struct MapperTraits
     typedef Limits<TContigsLen, TContigsSum>                        TMatchSpec;
     typedef Match<TMatchSpec>                                       TMatch;
     typedef String<TMatch>                                          TMatches;
-    typedef ConcurrentAppender<TMatches>                            TMatchesAppender;
     typedef StringSet<TMatches, Segment<TMatches> >                 TMatchesSet;
-    typedef typename Suffix<TMatches>::Type                         TMates;
-    typedef StringSet<TMates, Segment<TMates> >                     TMatesSet;
-
-    typedef typename Position<TMatches>::Type                       TMatchesPos;
-    typedef String<TMatchesPos>                                     TMatchesPositions;
-    typedef ModifiedString<TMatches, ModPos<TMatchesPositions> >    TMatchesView;
-    typedef StringSet<TMatchesView, Segment<TMatchesView> >         TMatchesViewSet;
-    typedef ModifiedString<TMatchesView, ModPos<TMatchesPositions> > TMatchesViewView;
-    typedef String<double>                                          TMatchesProbs;
+    typedef ConcurrentAppender<TMatches>                            TMatchesAppender;
 
     typedef String<CigarElement<> >                                 TCigar;
     typedef StringSet<TCigar, Segment<TCigar> >                     TCigarSet;
@@ -229,14 +217,12 @@ struct Stats
     TValue sortMatches;
     TValue compactMatches;
     TValue selectPairs;
-    TValue verifyMatches;
     TValue alignMatches;
     TValue writeMatches;
 
     unsigned long loadedReads;
     unsigned long mappedReads;
     unsigned long pairedReads;
-    unsigned long rescuedReads;
 
     Stats() :
         loadContigs(0),
@@ -249,13 +235,11 @@ struct Stats
         sortMatches(0),
         compactMatches(0),
         selectPairs(0),
-        verifyMatches(0),
         alignMatches(0),
         writeMatches(0),
         loadedReads(0),
         mappedReads(0),
-        pairedReads(0),
-        rescuedReads(0)
+        pairedReads(0)
     {}
 };
 
@@ -272,9 +256,6 @@ struct Mapper
     Timer<double>                       timer;
     Stats<double>                       stats;
 
-    unsigned                            libraryLength;
-    unsigned                            libraryDev;
-
     typename Traits::TContigs           contigs;
     typename Traits::TIndex             index;
     typename Traits::TReads             reads;
@@ -287,28 +268,17 @@ struct Mapper
     typename Traits::THitsBuckets       hits;
     typename Traits::TRanksBuckets      ranks;
 
-    typename Traits::TMatches           matchesByCoord;
-    typename Traits::TMatchesSet        matchesSetByCoord;
-
-    typename Traits::TMatchesPositions  matchesPositions;
-    typename Traits::TMatchesPositions  primaryMatchesPositions;
-    typename Traits::TMatchesView       matchesByErrors;
-    typename Traits::TMatchesViewSet    matchesSetByErrors;
-    typename Traits::TMatchesViewSet    optimalMatchesSet;
-    typename Traits::TMatchesViewSet    suboptimalMatchesSet;
-    typename Traits::TMatchesViewView   primaryMatches;
-    typename Traits::TMatchesProbs      primaryMatchesProbs;
-
-    typename Traits::TMates             matesByCoord;
-    typename Traits::TMatesSet          matesSetByCoord;
+    typename Traits::TMatches           matches;
+    typename Traits::TMatchesSet        matchesSet;
+    typename Traits::TMatchesSet        bestMatchesSet;
+    typename Traits::TMatchesSet        suboptimalMatchesSet;
+    typename Traits::TMatches           primaryMatches;
 
     typename Traits::TCigar             cigars;
     typename Traits::TCigarSet          cigarSet;
 
     Mapper(Options const & options) :
         options(options),
-        libraryLength(),
-        libraryDev(),
         readsFile(options.readsCount)
     {};
 };
@@ -341,7 +311,7 @@ inline void loadContigs(Mapper<TSpec, TConfig> & me)
     start(me.timer);
     try
     {
-        if (!open(me.contigs, toCString(me.options.contigsIndexFile), OPEN_RDONLY))
+        if (!open(me.contigs, toCString(me.options.contigsIndexFile)))
             throw RuntimeError("Error while opening reference file.");
     }
     catch (BadAlloc const & /* e */)
@@ -365,7 +335,7 @@ inline void loadContigsIndex(Mapper<TSpec, TConfig> & me)
     start(me.timer);
     try
     {
-        if (!open(me.index, toCString(me.options.contigsIndexFile), OPEN_RDONLY))
+        if (!open(me.index, toCString(me.options.contigsIndexFile)))
             throw RuntimeError("Error while opening reference index file.");
     }
     catch (BadAlloc const & /* e */)
@@ -494,7 +464,7 @@ inline void openOutputFile(Mapper<TSpec, TConfig> & me)
 
     // Fill contig lengths.
     resize(contigLengths(context(me.outputFile)), length(me.contigs.seqs));
-    transform(contigLengths(context(me.outputFile)), me.contigs.seqs, [](TContigSeq const & seq) { return length(seq); });
+    transform(contigLengths(context(me.outputFile)), me.contigs.seqs, [&](TContigSeq const & seq) { return length(seq); });
 
     // Write header.
     BamHeader header;
@@ -711,12 +681,12 @@ inline unsigned long countHits(Mapper<TSpec, TConfig> const & me)
 template <unsigned ERRORS, typename TSpec, typename TConfig, typename TBucketId>
 inline void extendHits(Mapper<TSpec, TConfig> & me, TBucketId bucketId)
 {
-    typedef MapperTraits<TSpec, TConfig>        TTraits;
-    typedef HitsExtender<TSpec, TTraits>        THitsExtender;
-    typedef typename TTraits::TMatchesAppender  TMatchesAppender;
+    typedef MapperTraits<TSpec, TConfig>    TTraits;
+    typedef HitsExtender<TSpec, TTraits>    THitsExtender;
+
+    typename TTraits::TMatchesAppender appender(me.matches);
 
     start(me.timer);
-    TMatchesAppender appender(me.matchesByCoord);
     THitsExtender extender(me.ctx, appender, me.contigs.seqs,
                            me.seeds[bucketId], me.hits[bucketId], me.ranks[bucketId], ERRORS,
                            indexSA(me.index), me.options);
@@ -726,7 +696,7 @@ inline void extendHits(Mapper<TSpec, TConfig> & me, TBucketId bucketId)
     if (me.options.verbose > 1)
     {
         std::cerr << "Extension time:\t\t\t" << me.timer << std::endl;
-        std::cerr << "Matches count:\t\t\t" << length(me.matchesByCoord) << std::endl;
+        std::cerr << "Matches count:\t\t\t" << length(me.matches) << std::endl;
     }
 }
 
@@ -738,7 +708,7 @@ template <typename TSpec, typename TConfig>
 inline void reserveMatches(Mapper<TSpec, TConfig> & me)
 {
     // Estimate the number of matches.
-    reserve(me.matchesByCoord, countHits(me) / 3);
+    reserve(me.matches, countHits(me) / 3);
 }
 
 // ----------------------------------------------------------------------------
@@ -752,29 +722,63 @@ inline void aggregateMatches(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs)
     typedef MapperTraits<TSpec, TConfig>    TTraits;
     typedef typename TTraits::TMatch        TMatch;
 
+    // Bucket sort matches by readId.
     start(me.timer);
-    // Sort matches by readId and bucket them.
-    sort(me.matchesByCoord, MatchSorter<TMatch, ReadId>(), typename TConfig::TThreading());
-    setHost(me.matchesSetByCoord, me.matchesByCoord);
-    bucket(me.matchesSetByCoord, Getter<TMatch, ReadId>(), getReadsCount(readSeqs), typename TConfig::TThreading());
+    setHost(me.matchesSet, me.matches);
+    sort(me.matches, MatchSorter<TMatch, ReadId>(), typename TConfig::TThreading());
+    bucket(me.matchesSet, Getter<TMatch, ReadId>(), getReadsCount(readSeqs), typename TConfig::TThreading());
     stop(me.timer);
     me.stats.sortMatches += getValue(me.timer);
 
     if (me.options.verbose > 1)
         std::cerr << "Sorting time:\t\t\t" << me.timer << std::endl;
 
-    // Remove duplicate matches (sorts the matches by genomic coordinate).
     start(me.timer);
-    removeDuplicates(me.matchesSetByCoord, typename TConfig::TThreading());
+    removeDuplicates(me.matchesSet, typename TConfig::TThreading());
     stop(me.timer);
     me.stats.compactMatches += getValue(me.timer);
 
     if (me.options.verbose > 1)
     {
         std::cerr << "Compaction time:\t\t" << me.timer << std::endl;
-        std::cerr << "Matches count:\t\t\t" << lengthSum(me.matchesSetByCoord) << std::endl;
+        std::cerr << "Matches count:\t\t\t" << lengthSum(me.matchesSet) << std::endl;
     }
 }
+
+// ----------------------------------------------------------------------------
+// Function verifyMatches()
+// ----------------------------------------------------------------------------
+// Verifies all mates in within the insert window of their matches.
+
+//template <typename TSpec, typename TConfig, typename TReadSeqs>
+//inline void verifyMatches(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs)
+//{
+//    _verifyMatchesImpl(me, readSeqs, typename TConfig::TAnchoring());
+//}
+//
+//template <typename TSpec, typename TConfig, typename TReadSeqs, typename TAnchoring>
+//inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & /* me */, TReadSeqs & /* readSeqs */, TAnchoring) {}
+//
+//template <typename TSpec, typename TConfig, typename TReadSeqs>
+//inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, AnchorOne)
+//{
+//    typedef MapperTraits<TSpec, TConfig>    TTraits;
+//    typedef AnchorsVerifier<TSpec, TTraits> TMatchesVerifier;
+//
+//    start(me.timer);
+//    TMatchesVerifier verifier(me.ctx, me.pairs,
+//                              me.contigs.seqs, readSeqs,
+//                              me.matchesSet, me.options);
+//    stop(me.timer);
+//
+//    if (me.options.verbose > 1)
+//    {
+//        std::cerr << "Verification time:\t\t" << me.timer << std::endl;
+//        std::cerr << "Mates count:\t\t\t" << length(me.pairs) << std::endl;
+//        std::cerr << "Mapped pairs:\t\t\t" <<
+//                countMappedReads(readSeqs, me.pairs, typename TConfig::TThreading()) << std::endl;
+//    }
+//}
 
 // ----------------------------------------------------------------------------
 // Function clearMatches()
@@ -784,16 +788,14 @@ inline void aggregateMatches(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs)
 template <typename TSpec, typename TConfig>
 inline void clearMatches(Mapper<TSpec, TConfig> & me)
 {
-    clear(me.matchesSetByCoord);
-    clear(me.optimalMatchesSet);
+    clear(me.matchesSet);
+    clear(me.bestMatchesSet);
     clear(me.suboptimalMatchesSet);
 
-    clear(me.matchesByCoord);
-    shrinkToFit(me.matchesByCoord);
+    clear(me.matches);
+    shrinkToFit(me.matches);
     clear(me.primaryMatches);
-//    shrinkToFit(me.primaryMatches);
-
-    clear(me.matesSetByCoord);
+    shrinkToFit(me.primaryMatches);
 }
 
 // ----------------------------------------------------------------------------
@@ -804,42 +806,31 @@ template <typename TSpec, typename TConfig, typename TReadSeqs>
 inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
 {
     typedef MapperTraits<TSpec, TConfig>                    TTraits;
-    typedef typename TTraits::TMatch                        TMatch;
-    typedef typename TTraits::TMatchesPos                   TMatchesPos;
     typedef typename TTraits::TMatchesSet                   TMatchesSet;
-    typedef typename TTraits::TMatchesViewSet               TMatchesViewSet;
-    typedef typename Value<TMatchesSet const>::Type         TMatchesSetValue;
-    typedef typename Iterator<TMatchesSetValue const, Standard>::Type TMatchesSetValueIt;
-    typedef typename Value<TMatchesViewSet const>::Type     TMatchesViewSetValue;
-    typedef typename Iterator<TMatchesViewSet const, Standard>::Type TMatchesViewSetIt;
+    typedef typename Iterator<TMatchesSet, Standard>::Type  TMatchesIt;
+    typedef typename Value<TMatchesSet>::Type               TMatches;
+    typedef typename TTraits::TMatch                        TMatch;
+    typedef PairsSelector<TSpec, TTraits>                   TPairsSelector;
     typedef typename Size<TReadSeqs>::Type                  TReadId;
-    typedef typename Size<TMatchesSetValue>::Type           TMatchesSize;
-    typedef std::uniform_int_distribution<TMatchesSize>     TMatchesRnd;
-    typedef String<unsigned>                                TLibraryLengths;
-
-    start(me.timer);
-    // Create a position modifier of the matches from the identity permutation.
-    assign(me.matchesPositions, seqan::Range<TMatchesSize>(0, length(me.matchesByCoord)), Exact());
-    setHost(me.matchesByErrors, me.matchesByCoord);
-    setCargo(me.matchesByErrors, me.matchesPositions);
-
-    // Bucket matches in the position modifier.
-    setHost(me.matchesSetByErrors, me.matchesByErrors);
-    assign(stringSetLimits(me.matchesSetByErrors), stringSetLimits(me.matchesSetByCoord), Exact());
-    assign(stringSetPositions(me.matchesSetByErrors), stringSetPositions(me.matchesSetByCoord), Exact());
 
     // Sort matches by errors.
-    forEach(me.matchesSetByErrors, sortMatches<TMatchesViewSetValue, Errors>, typename TTraits::TThreading());
+    start(me.timer);
+    iterate(me.matchesSet, sortMatches<TMatchesIt, Errors>, Standard(), typename TTraits::TThreading());
+//    forEach(me.matchesSet, sortMatches<TMatches, Errors>, typename TTraits::TThreading());
+    stop(me.timer);
+    me.stats.sortMatches += getValue(me.timer);
+    if (me.options.verbose > 1)
+        std::cerr << "Sorting time:\t\t\t" << me.timer << std::endl;
 
     // Select all co-optimal matches.
-    assign(me.optimalMatchesSet, me.matchesSetByErrors);
-    clipMatches(me.optimalMatchesSet, countMatchesInBestStratum<TMatchesViewSetValue>, typename TTraits::TThreading());
+    assign(me.bestMatchesSet, me.matchesSet);
+    clipMatches(me.bestMatchesSet, countMatchesInBestStratum<TMatches>, typename TTraits::TThreading());
 
     // Select all sub-optimal matches.
-    assign(me.suboptimalMatchesSet, me.matchesSetByErrors);
-    clipMatches(me.suboptimalMatchesSet, [&](TMatchesViewSetValue const & matches)
+    assign(me.suboptimalMatchesSet, me.matchesSet);
+    clipMatches(me.suboptimalMatchesSet, [&](TMatches const & matches)
     {
-        if (empty(matches)) return TMatchesSize(0);
+        if (empty(matches)) return typename Size<TMatches>::Type(0);
 
         TReadId readId = getMember(front(matches), ReadId());
 
@@ -847,290 +838,69 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     },
     typename TTraits::TThreading());
 
-    // Append an invalid match to matches by coord.
-    resize(me.matchesByCoord, length(me.matchesByCoord) + 1, Exact());
-    setInvalid(back(me.matchesByCoord));
-    // Update matches by errors.
-    resize(me.matchesPositions, length(me.matchesPositions) + 1, Exact());
-    setPosition(me.matchesByErrors, length(me.matchesByErrors) - 1, length(me.matchesByCoord) - 1);
-
     // Initialize primary matches.
-    setHost(me.primaryMatches, me.matchesByErrors);
-    assign(me.primaryMatchesPositions, stringSetPositions(me.matchesSetByErrors), Exact());
-    setCargo(me.primaryMatches, me.primaryMatchesPositions);
+    resize(me.primaryMatches, getReadsCount(readSeqs), Exact());
+    forEach(me.primaryMatches, setInvalid<typename TTraits::TMatchSpec>, typename TTraits::TThreading());
 
-    // Choose primary matches among best matches.
-    iterate(me.optimalMatchesSet, [&](TMatchesViewSetIt const & matchesIt)
+    // Try to pair mates.
+    if (IsSameType<typename TConfig::TSequencing, PairedEnd>::VALUE)
     {
-        // Use one generator per thread.
-        std::default_random_engine generator;
+        start(me.timer);
 
-        TReadId readId = position(matchesIt, me.optimalMatchesSet);
-        TMatchesViewSetValue const & matches = value(matchesIt);
+        // Concordant pairs of first co-optimal match with second sub-optimal match.
+        TPairsSelector selectorOptSubConcordant(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.suboptimalMatchesSet, me.options);
+        // Concordant pairs of first sub-optimal match with second co-optimal match.
+        TPairsSelector selectorSubOptConcordant(me.primaryMatches, me.ctx, readSeqs, me.suboptimalMatchesSet, me.bestMatchesSet, me.options);
 
-        // Set unmapped reads as invalid.
-        if (empty(matches))
+        // Mark paired mates as properly paired.
+        iterate(me.primaryMatches, [&](typename Iterator<TMatches, Standard>::Type & matchesIt)
         {
-            setPosition(me.primaryMatches, readId, length(me.matchesByErrors) - 1);
-        }
-        // Choose match at random.
-        else
-        {
-            TMatchesRnd rnd(0, length(matches) - 1);
-            setPosition(me.primaryMatches, readId, position(me.primaryMatches, readId) + rnd(generator));
-        }
-    },
-    Standard(), typename TTraits::TThreading());
+            if (isValid(*matchesIt)) setPaired(me.ctx, getMember(*matchesIt, ReadId()));
+        },
+        Standard(), typename TTraits::TThreading());
 
-    stop(me.timer);
-    me.stats.sortMatches += getValue(me.timer);
-    if (me.options.verbose > 1)
-        std::cerr << "Sorting time:\t\t\t" << me.timer << std::endl;
+        // Concordant co-optimal matches on the same chromosome outside of the expected insert size.
+        Options pairing = me.options;
+        pairing.libraryError = MaxValue<unsigned>::VALUE;
+        TPairsSelector selectorOptOptConcordant(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, pairing);
 
-    // Update mapped reads.
-    transform(me.ctx.mapped, me.primaryMatches, isValid<typename TTraits::TMatchSpec>, typename TTraits::TThreading());
+        // Any pair of co-optimal matches on the same chromosome.
+        pairing.libraryOrientation = ANY;
+        pairing.libraryError = MaxValue<unsigned>::VALUE;
+        TPairsSelector selectorOptOptAny(me.primaryMatches, me.ctx, readSeqs, me.bestMatchesSet, me.bestMatchesSet, pairing);
 
-    if (me.options.verbose > 0)
-    {
-        unsigned long mappedReads = count(me.ctx.mapped, true, typename TTraits::TThreading());
-        me.stats.mappedReads += mappedReads;
-
-        if (me.options.verbose > 1)
-            std::cerr << "Mapped reads:\t\t\t" << mappedReads << std::endl;
+        stop(me.timer);
+        me.stats.selectPairs += getValue(me.timer);
     }
 
-    if (IsSameType<typename TConfig::TSequencing, SingleEnd>::VALUE) return;
-
-    start(me.timer);
-    // Collect library lengths from unique pairs.
-    TLibraryLengths libraryLengths;
-    reserve(libraryLengths, getPairsCount(readSeqs), Exact());
-    ConcurrentAppender<TLibraryLengths> libraryLengthsAppender(libraryLengths);
-    forAllMatchesPairs(me.matchesSetByCoord, readSeqs, [&](TMatchesSetValue const & firstMatches, TMatchesSetValue const & secondMatches)
+    // Randomly choose primary matches among co-optimal ones.
+    MatchesPicker<TMatches> picker;
+    iterate(me.primaryMatches, [&](typename Iterator<TMatches, Standard>::Type & matchesIt)
     {
-        if (length(firstMatches) == 1 && length(secondMatches) == 1)
-        {
-            TMatch const & firstMatch = front(firstMatches);
-            TMatch const & secondMatch = front(secondMatches);
-
-            if (contigEqual(firstMatch, secondMatch) && orientationProper(firstMatch, secondMatch))
-                appendValue(libraryLengthsAppender, getLibraryLength(firstMatch, secondMatch), Insist(), typename TTraits::TThreading());
-        }
-    },
-    typename TTraits::TThreading());
-
-    // Remove library outliers > 6 * median.
-    if (!empty(libraryLengths))
-    {
-        unsigned libraryMedian = nthElement(libraryLengths, length(libraryLengths) / 2, typename TTraits::TThreading());
-        removeIf(libraryLengths, std::bind2nd(std::greater<unsigned>(), 6.0 * libraryMedian), typename TTraits::TThreading());
-
-        // Compute library mean.
-        unsigned librarySum = accumulate(libraryLengths, 0u, typename TTraits::TThreading());
-        float libraryMean = librarySum / static_cast<float>(length(libraryLengths));
-
-        // Compute library standard deviation.
-        String<float> libraryDiffs;
-        resize(libraryDiffs, length(libraryLengths), Exact());
-        transform(libraryDiffs, libraryLengths, std::bind2nd(std::minus<float>(), libraryMean), typename TTraits::TThreading());
-        float librarySqSum = innerProduct(libraryDiffs, 0.0f, typename TTraits::TThreading());
-        float libraryDev = std::sqrt(librarySqSum / static_cast<float>(length(libraryLengths)));
-
-        if (me.options.verbose > 1)
-        {
-            std::cerr << "Library median:\t\t\t" << libraryMedian << std::endl;
-            std::cerr << "Library mean:\t\t\t" << libraryMean << std::endl;
-            std::cerr << "Library stddev:\t\t\t" << libraryDev << std::endl;
-        }
-
-        // Set library mean and error as just computed.
-        me.libraryLength = libraryMean;
-        me.libraryDev = libraryDev;
-    }
-
-    // Overwrite library mean and error if provided in input.
-    if (me.options.libraryLength)
-        me.libraryLength = me.options.libraryLength;
-    if (me.options.libraryDev)
-        me.libraryDev = me.options.libraryDev;
-
-    resize(me.primaryMatchesProbs, getReadsCount(readSeqs), 0.0, Exact());
-
-    // Enumerate feasible pairs.
-    forAllMatchesPairs(me.matchesSetByCoord, readSeqs, [&](TMatchesSetValue const & firstMatches, TMatchesSetValue const & secondMatches)
-    {
-        TReadId firstId = getMember(front(firstMatches), ReadId());
-        TReadId secondId = getMember(front(secondMatches), ReadId());
-
-        SEQAN_ASSERT(isMapped(me.ctx, firstId));
-        SEQAN_ASSERT(isMapped(me.ctx, secondId));
-
-        double firstMatchOptimalRate = toErrorRate(readSeqs, firstId, getMinErrors(me.ctx, firstId));
-        double secondMatchOptimalRate = toErrorRate(readSeqs, secondId, getMinErrors(me.ctx, secondId));
-
-        auto firstBestCount = countMatchesInBestStratum(me.optimalMatchesSet[firstId]);
-        auto firstSubCount = length(me.suboptimalMatchesSet[firstId]) - firstBestCount;
-
-        auto secondBestCount = countMatchesInBestStratum(me.optimalMatchesSet[secondId]);
-        auto secondSubCount = length(me.suboptimalMatchesSet[secondId]) - secondBestCount;
-
-        // First mate match with all second mate matches.
-        Pair<TMatchesSetValueIt, double> firstPrimary =
-        findPrimaryMatch(firstMatches, secondMatches,
-                         firstMatchOptimalRate, secondMatchOptimalRate,
-                         secondBestCount, secondSubCount,
-                         readSeqs, me.contigs.seqs,
-                         me.libraryLength, me.libraryDev);
-
-        // Second mate match with all first mate matches.
-        Pair<TMatchesSetValueIt, double> secondPrimary =
-        findPrimaryMatch(secondMatches, firstMatches,
-                         secondMatchOptimalRate, firstMatchOptimalRate,
-                         firstBestCount, firstSubCount,
-                         readSeqs, me.contigs.seqs,
-                         me.libraryLength, me.libraryDev);
-
-        // No feasible pair found.
-        if (atEnd(getValueI1(firstPrimary), firstMatches) || atEnd(getValueI1(secondPrimary), secondMatches))
-            return;
-
-        // Get matches by coords positions.
-        TMatchesPos firstPosByCoord = stringSetPositions(me.matchesSetByCoord)[firstId] +
-                                      position(getValueI1(firstPrimary), firstMatches);
-        TMatchesPos secondPosByCoord = stringSetPositions(me.matchesSetByCoord)[secondId] +
-                                       position(getValueI1(secondPrimary), secondMatches);
-
-        // Translate matches by coords positions into in matches by errors positions.
-        auto firstPosBegin = begin(cargo(me.matchesByErrors), Standard()) + stringSetPositions(me.matchesSetByErrors)[firstId];
-        auto firstPosEnd = firstPosBegin + length(me.matchesSetByErrors[firstId]);
-        auto firstPos = std::find(firstPosBegin, firstPosEnd, firstPosByCoord);
-        auto firstPosByErrors = position(firstPos, cargo(me.matchesByErrors));
-
-        auto secondPosBegin = begin(cargo(me.matchesByErrors), Standard()) + stringSetPositions(me.matchesSetByErrors)[secondId];
-        auto secondPosEnd = secondPosBegin + length(me.matchesSetByErrors[secondId]);
-        auto secondPos = std::find(secondPosBegin, secondPosEnd, secondPosByCoord);
-        auto secondPosByErrors = position(secondPos, cargo(me.matchesByErrors));
-
-        // Set primary matches positions.
-        setPosition(me.primaryMatches, firstId, firstPosByErrors);
-        setPosition(me.primaryMatches, secondId, secondPosByErrors);
-        SEQAN_ASSERT(isEqual(value(getValueI1(firstPrimary)), me.primaryMatches[firstId]));
-        SEQAN_ASSERT(isEqual(value(getValueI1(secondPrimary)), me.primaryMatches[secondId]));
-
-        // Set primary matches probabilities.
-        me.primaryMatchesProbs[firstId] = getValueI2(firstPrimary);
-        me.primaryMatchesProbs[secondId] = getValueI2(secondPrimary);
-
-        // Set reads as properly paired.
-//        if (isProper(me.primaryMatches[firstId], me.primaryMatches[secondId], me.libraryLength, me.libraryDev))
-//        {
-            setPaired(me.ctx, firstId);
-            setPaired(me.ctx, secondId);
-//        }
-    },
-    typename TTraits::TThreading());
-
-    stop(me.timer);
-    me.stats.selectPairs += getValue(me.timer);
-
-    // Update paired reads.
-    if (me.options.verbose > 0)
-    {
-        unsigned long pairedReads = count(me.ctx.paired, true, typename TTraits::TThreading());
-        me.stats.pairedReads += pairedReads;
-
-        if (me.options.verbose > 1)
-        {
-            std::cerr << "Pairing time:\t\t\t" << me.timer << std::endl;
-            std::cerr << "Paired reads:\t\t\t" << pairedReads << std::endl;
-        }
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function verifyMatches()
-// ----------------------------------------------------------------------------
-// Verifies all mates in within the insert window of their matches.
-
-template <typename TSpec, typename TConfig>
-inline void verifyMatches(Mapper<TSpec, TConfig> & me)
-{
-    _verifyMatchesImpl(me, typename TConfig::TSequencing());
-}
-
-template <typename TSpec, typename TConfig, typename TSequencing>
-inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & /* me */, TSequencing) {}
-
-template <typename TSpec, typename TConfig>
-inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
-{
-    typedef MapperTraits<TSpec, TConfig>            TTraits;
-    typedef AnchorsVerifier<TSpec, TTraits>         TMatchesVerifier;
-    typedef typename TTraits::TMatchesAppender      TMatchesAppender;
-    typedef typename TTraits::TMatch                TMatch;
-    typedef typename TTraits::TMatesSet             TMatesSet;
-    typedef typename Iterator<TMatesSet>::Type      TMatesSetIt;
-
-    start(me.timer);
-    unsigned long anchorsCount = length(me.matchesByCoord);
-    TMatchesAppender appender(me.matchesByCoord);
-    TMatchesVerifier verifier(me.ctx, appender,
-                              me.contigs.seqs, me.reads.seqs,
-                              me.optimalMatchesSet,
-                              me.libraryLength, me.libraryDev,
-                              me.options);
-
-    // Sort matches by readId and bucket them.
-    me.matesByCoord = suffix(me.matchesByCoord, anchorsCount);
-    sort(me.matesByCoord, MatchSorter<TMatch, ReadId>(), typename TConfig::TThreading());
-    setHost(me.matesSetByCoord, me.matesByCoord);
-    bucket(me.matesSetByCoord, Getter<TMatch, ReadId>(), getReadsCount(me.reads.seqs), typename TConfig::TThreading());
-
-    resize(cargo(me.matchesByErrors), length(host(me.matchesByErrors)), Exact());
-    iota(suffix(cargo(me.matchesByErrors), anchorsCount), anchorsCount);
-
-    // Update primary matches with mates.
-    iterate(me.matesSetByCoord, [&](TMatesSetIt const & matesSetIt)
-    {
-        auto mateId = position(matesSetIt, me.matesSetByCoord);
-        auto anchorId = getMateId(me.reads.seqs, mateId);
-        auto const & mates = value(matesSetIt);
-
-        if (!empty(mates))
-        {
-            SEQAN_ASSERT(isMapped(me.ctx, anchorId));
-            SEQAN_ASSERT_NOT(isPaired(me.ctx, anchorId));
-            SEQAN_ASSERT(isValid(me.primaryMatches[anchorId]));
-
-            SEQAN_ASSERT_NOT(isMapped(me.ctx, mateId));
-            SEQAN_ASSERT_NOT(isPaired(me.ctx, anchorId));
-            SEQAN_ASSERT_NOT(isValid(me.primaryMatches[mateId]));
-
-            setPosition(me.primaryMatches, mateId, stringSetPositions(me.matesSetByCoord)[mateId] + beginPosition(me.matesByCoord));
-            SEQAN_ASSERT(isEqual(me.primaryMatches[mateId], front(mates)));
-
-            setMapped(me.ctx, mateId);
-            setPaired(me.ctx, mateId);
-            setPaired(me.ctx, anchorId);
-
-            SEQAN_ASSERT(isMapped(me.ctx, mateId));
-            SEQAN_ASSERT(isPaired(me.ctx, anchorId));
-            SEQAN_ASSERT(isValid(me.primaryMatches[mateId]));
-        }
+        if (!isValid(*matchesIt)) *matchesIt = picker(me.bestMatchesSet[position(matchesIt, me.primaryMatches)]);
     },
     Standard(), Serial());
 
-    stop(me.timer);
-    me.stats.verifyMatches += getValue(me.timer);
-
+    unsigned long mappedReads = 0;
     if (me.options.verbose > 0)
     {
-        me.stats.rescuedReads += length(me.matchesByCoord) - anchorsCount;
+        transform(me.ctx.mapped, me.primaryMatches, isValid<typename TTraits::TMatchSpec>, typename TTraits::TThreading());
+        mappedReads = count(me.ctx.mapped, true, typename TTraits::TThreading());
+        me.stats.mappedReads += mappedReads;
+    }
+    if (me.options.verbose > 1)
+        std::cerr << "Mapped reads:\t\t\t" << mappedReads << std::endl;
+
+    unsigned long pairedReads = 0;
+    if (me.options.verbose > 0)
+    {
+        pairedReads = count(me.ctx.paired, true, typename TTraits::TThreading());
+        me.stats.pairedReads += pairedReads;
     }
     if (me.options.verbose > 1)
     {
-        std::cerr << "Rescued reads:\t\t\t" << length(me.matchesByCoord) - anchorsCount << std::endl;
-        std::cerr << "Verification time:\t\t" << me.timer << std::endl;
+        std::cerr << "Pairing time:\t\t\t" << me.timer << std::endl;
+        std::cerr << "Paired reads:\t\t\t" << pairedReads << std::endl;
     }
 }
 
@@ -1186,8 +956,7 @@ inline void writeMatches(Mapper<TSpec, TConfig> & me)
 
     start(me.timer);
     TMatchesWriter writer(me.outputFile,
-                          me.suboptimalMatchesSet,
-                          me.primaryMatches, me.primaryMatchesProbs, me.cigarSet,
+                          me.suboptimalMatchesSet, me.primaryMatches, me.cigarSet,
                           me.ctx, me.reads,
                           me.options);
     stop(me.timer);
@@ -1234,9 +1003,8 @@ inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, All
     clearSeeds(me);
     clearHits(me);
     aggregateMatches(me, readSeqs);
+//    verifyMatches(me, readSeqs);
     rankMatches(me, readSeqs);
-    if (me.options.verifyMatches)
-        verifyMatches(me);
     alignMatches(me);
     writeMatches(me);
     clearMatches(me);
@@ -1293,9 +1061,8 @@ inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, Str
     }
 
     aggregateMatches(me, readSeqs);
+//    verifyMatches(me, readSeqs);
     rankMatches(me, readSeqs);
-    if (me.options.verifyMatches)
-        verifyMatches(me);
     alignMatches(me);
     writeMatches(me);
     clearMatches(me);
@@ -1325,10 +1092,7 @@ inline void printStats(Mapper<TSpec, TConfig> const & me, Timer<TValue> const & 
     std::cerr << "Sorting time:\t\t\t" << me.stats.sortMatches << " sec" << "\t\t" << me.stats.sortMatches / total << " %" << std::endl;
     std::cerr << "Compaction time:\t\t" << me.stats.compactMatches << " sec" << "\t\t" << me.stats.compactMatches / total << " %" << std::endl;
     if (IsSameType<typename TConfig::TSequencing, PairedEnd>::VALUE)
-    {
         std::cerr << "Pairing time:\t\t\t" << me.stats.selectPairs << " sec" << "\t\t" << me.stats.selectPairs / total << " %" << std::endl;
-        std::cerr << "Verification time:\t\t" << me.stats.verifyMatches << " sec" << "\t\t" << me.stats.verifyMatches / total << " %" << std::endl;
-    }
     std::cerr << "Alignment time:\t\t\t" << me.stats.alignMatches << " sec" << "\t\t" << me.stats.alignMatches / total << " %" << std::endl;
     std::cerr << "Output time:\t\t\t" << me.stats.writeMatches << " sec" << "\t\t" << me.stats.writeMatches / total << " %" << std::endl;
 
@@ -1338,10 +1102,7 @@ inline void printStats(Mapper<TSpec, TConfig> const & me, Timer<TValue> const & 
     std::cerr << "Total reads:\t\t\t" << me.stats.loadedReads << std::endl;
     std::cerr << "Mapped reads:\t\t\t" << me.stats.mappedReads << "\t\t" << me.stats.mappedReads / totalReads << " %" << std::endl;
     if (IsSameType<typename TConfig::TSequencing, PairedEnd>::VALUE)
-    {
         std::cerr << "Paired reads:\t\t\t" << me.stats.pairedReads << "\t\t" << me.stats.pairedReads / totalReads << " %" << std::endl;
-        std::cerr << "Rescued reads:\t\t\t" << me.stats.rescuedReads << "\t\t" << me.stats.rescuedReads / totalReads << " %" << std::endl;
-    }
 }
 
 // ----------------------------------------------------------------------------

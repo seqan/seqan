@@ -267,7 +267,7 @@ void workVerification(ThreadLocalStorage<MapSingleReads<TMatches, TFragmentStore
 
     TContigSeq & contigSeq = job.globalStore->contigStore[job.contigId].seq;
 #ifdef RAZERS_BANDED_MYERS
-    int64_t contigLength = length(contigSeq);
+    __int64 contigLength = length(contigSeq);
 #endif
 
     std::shared_ptr<TMatches> localMatches(new TMatches());
@@ -1042,8 +1042,8 @@ int _mapSingleReadsParallel(
 
 #ifdef RAZERS_EXTERNAL_MATCHES
     // Compute whether to use slow, sequential sorting or parallel in-memory sorting.
-    uint64_t totalMatchCount = 0;
-    uint64_t maxMatchCount = 0;
+    __uint64 totalMatchCount = 0;
+    __uint64 maxMatchCount = 0;
     for (unsigned i = 0; i < length(threadLocalStorages); ++i)
     {
         totalMatchCount += length(threadLocalStorages[i].matches);
@@ -1058,8 +1058,8 @@ int _mapSingleReadsParallel(
     else if (options.availableMatchesMemorySize != 0)
     {
         typedef typename Value<TMatches>::Type TMatch;
-        int64_t totalMemoryRequired = sizeof(TMatch) * totalMatchCount;
-        int64_t maxMemoryRequired = sizeof(TMatch) * maxMatchCount;
+        __int64 totalMemoryRequired = sizeof(TMatch) * totalMatchCount;
+        __int64 maxMemoryRequired = sizeof(TMatch) * maxMatchCount;
         if (options.availableMatchesMemorySize < totalMemoryRequired)
         {
             if (options.availableMatchesMemorySize < maxMemoryRequired)

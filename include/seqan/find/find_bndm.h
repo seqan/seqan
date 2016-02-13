@@ -80,11 +80,9 @@ public:
     Pattern() {}
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 && ndl,
-            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
+    Pattern(TNeedle2 const & ndl)
     {
-        setHost(*this, std::forward<TNeedle2>(ndl));
-        ignoreUnusedVariableWarning(dummy);
+        setHost(*this, ndl);
     }
 
 //____________________________________________________________________________
@@ -95,13 +93,13 @@ public:
 // Functions
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TNeedle>
-void _reinitPattern(Pattern<TNeedle, BndmAlgo> & me) {
+template <typename TNeedle, typename TNeedle2>
+void setHost (Pattern<TNeedle, BndmAlgo> & me, TNeedle2 const& needle) {
     SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     typedef typename Value<TNeedle>::Type TValue;
 
-    me.needleLength = length(needle(me));
+    me.needleLength = length(needle);
     if (me.needleLength<1) me.blockCount=1;
     else me.blockCount=((me.needleLength-1) / BitsPerValue<TWord>::VALUE)+1;
 
@@ -110,9 +108,11 @@ void _reinitPattern(Pattern<TNeedle, BndmAlgo> & me) {
 
     for (TWord j = 0; j < me.needleLength; ++j) {
         // Determine character position in array table
-        TWord pos = convert<TWord>(getValue(needle(me),j));
+        TWord pos = convert<TWord>(getValue(needle,j));
         me.table[me.blockCount*pos + j / BitsPerValue<TWord>::VALUE] |= (1<<(j%BitsPerValue<TWord>::VALUE));
     }
+
+    setValue(me.data_host, needle);
     /*
     // Debug code
     std::cout << "Alphabet size: " << ValueSize<TValue>::VALUE << std::endl;
@@ -130,6 +130,12 @@ void _reinitPattern(Pattern<TNeedle, BndmAlgo> & me) {
         std::cout << std::endl;
     }
     */
+}
+
+template <typename TNeedle, typename TNeedle2>
+void setHost (Pattern<TNeedle, BndmAlgo> & me, TNeedle2 & needle)
+{
+    setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
 }
 
 //____________________________________________________________________________
@@ -153,8 +159,6 @@ inline bool _findBndmSmallNeedle(TFinder & finder,
                                   Pattern<TNeedle, BndmAlgo> & me) {
     SEQAN_CHECKPOINT
     typedef unsigned int TWord;
-    typedef typename Value<TNeedle>::Type TNeedleAlphabet;
-
     if (me.haystackLength < me.needleLength) return false;
     while (position(finder) <= me.haystackLength - me.needleLength)
     {
@@ -163,7 +167,7 @@ inline bool _findBndmSmallNeedle(TFinder & finder,
         me.activeFactors[0]=~0;
         while (me.activeFactors[0]!=0)
         {
-            TWord pos = convert<TWord>(convert<TNeedleAlphabet>(*(finder+j-1)));
+            TWord pos = convert<TWord>(*(finder+j-1));
             me.activeFactors[0] = (me.activeFactors[0] & me.table[me.blockCount*pos]);
             j--;
             if ((me.activeFactors[0] & 1) != 0)
@@ -186,8 +190,6 @@ template <typename TFinder, typename TNeedle>
 inline bool _findBndmLargeNeedle(TFinder & finder, Pattern<TNeedle, BndmAlgo> & me) {
     SEQAN_CHECKPOINT
     typedef unsigned int TWord;
-    typedef typename Value<TNeedle>::Type TNeedleAlphabet;
-
     TWord carryPattern = ((TWord)1 << (BitsPerValue<TWord>::VALUE - 1));
     while (position(finder) <= me.haystackLength - me.needleLength) {
         me.last=me.needleLength;
@@ -195,7 +197,7 @@ inline bool _findBndmLargeNeedle(TFinder & finder, Pattern<TNeedle, BndmAlgo> & 
         for(TWord block=0;block<me.blockCount;++block) me.activeFactors[block]=~0;
         bool zeroPrefSufMatch = false;
         while (!zeroPrefSufMatch) {
-            TWord pos = convert<TWord>(convert<TNeedleAlphabet>(*(finder+j-1)));
+            TWord pos = convert<TWord>(*(finder+j-1));
 
             /*
             // Debug code

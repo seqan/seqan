@@ -43,7 +43,7 @@
 
 struct LongStruct_
 {
-    int64_t a, b;
+    __int64 a, b;
 };
 
 namespace seqan {
