@@ -11,7 +11,7 @@ Main features
 ~~~~~~~~~~~~~
 
 * Exhaustive enumeration of sub-*optimal* end-to-end alignments under the edit distance;
-* Alignment of single-end, paired-end and mate-pair reads;
+* Alignment of single-end and paired-end reads;
 * Speed of 10-50 Gbp/h on a desktop computer;
 * Fine-grained multi-threading;
 * Low memory footprint via a generalized FM-index;
@@ -25,7 +25,7 @@ Yara has been tested with DNA reads (WGS, Exome and ChIP-seq) produced by the fo
 * Illumina GA II, HiSeq and MiSeq;
 * Life Technologies Ion Torrent Proton and PGM.
 
-Quality trimming is *necessary* for Ion Torrent reads, yet strongly recommended in general.
+Quality trimming is *necessary* for Ion Torrent reads and recommended for Illumina reads.
 Note that Yara cannot map RNA-seq reads spanning splicing sites.
 
 
@@ -76,18 +76,14 @@ The mapper will report all co-optimal mapping locations per read within an error
 he results will be stored in a BAM file called *READS.bam*.
 The tool will use 16 working threads.
 
-Paired-end / mate-pair reads
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Paired-end reads
+^^^^^^^^^^^^^^^^
 
-Map paired-end or mate-pair reads by providing two DNA read files:
+Map paired-end reads by providing two DNA read files:
 
 ::
 
-  $ yara_mapper REF.index READS_1.fastq.gz READS_2.fastq.gz -o READS.bam \
-                --library-length 300 --library-error 200
-
-Be sure to provide the expected insert distribution using *--library-length* and *--library-error*,
-as well as the correct orientation using *--library-orientation*.
+  $ yara_mapper REF.index READS_1.fastq.gz READS_2.fastq.gz -o READS.bam
 
 Output format
 ^^^^^^^^^^^^^

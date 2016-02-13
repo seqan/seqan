@@ -106,7 +106,8 @@
 # ============================================================================
 
 include(FindPackageMessage)
-include(CheckIncludeFiles)
+include(CheckIncludeFileCXX)
+include(CheckCXXSourceCompiles)
 
 # ----------------------------------------------------------------------------
 # Define Constants.
@@ -120,9 +121,6 @@ set(_SEQAN_ALL_LIBRARIES     ZLIB BZip2 OpenMP CUDA)
 # ----------------------------------------------------------------------------
 
 # SEQAN_FIND_DEPENDENCIES
-if (NOT SEQAN_FIND_DEPENDENCIES)
-  set(SEQAN_FIND_DEPENDENCIES "DEFAULT")
-endif ()
 if (SEQAN_FIND_DEPENDENCIES STREQUAL "DEFAULT")
   set(SEQAN_FIND_DEPENDENCIES ${_SEQAN_DEFAULT_LIBRARIES})
 elseif (SEQAN_FIND_DEPENDENCIES STREQUAL "ALL")
@@ -136,8 +134,10 @@ if (NOT SEQAN_FIND_ENABLE_TESTING)
   set(SEQAN_FIND_ENABLE_TESTING "FALSE")
 endif ()
 
+# SEQAN_FIND_DEPENDENCIES IS DEPRECATED, just use find_package!
+
 # ----------------------------------------------------------------------------
-# Compile-specific settings and workarounds around missing CMake features.
+# Determine compiler.
 # ----------------------------------------------------------------------------
 
 # Recognize Clang compiler.
@@ -147,21 +147,85 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set (COMPILER_IS_CLANG TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
-# Fix CMAKE_COMPILER_IS_GNUCXX for MinGW.
-
+set (CMAKE_COMPILER_IS_GNUCXX FALSE)
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   set (CMAKE_COMPILER_IS_GNUCXX TRUE)
 endif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
+# Intel
+set (COMPILER_IS_INTEL FALSE)
+if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  set (COMPILER_IS_INTEL TRUE)
+endif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+
+# Visual Studio
+set (COMPILER_IS_MSVC FALSE)
+if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  set (COMPILER_IS_MSVC TRUE)
+endif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+
+# ----------------------------------------------------------------------------
+# Check required compiler versions.
+# ----------------------------------------------------------------------------
+
+if (CMAKE_COMPILER_IS_GNUCXX)
+
+    # require at least gcc 4.9
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
+        message(AUTHOR_WARNING "GCC version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 4.9! Anything below is untested.")
+    endif ()
+
+elseif (COMPILER_IS_CLANG)
+
+    # require at least clang 3.5
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.5)
+        message(AUTHOR_WARNING "Clang version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 3.5! Anything below is untested.")
+    endif ()
+
+elseif (COMPILER_IS_MSVC)
+
+    # require at least MSVC 19.0
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0")
+        message(FATAL_ERROR "MSVC version (${CMAKE_CXX_COMPILER_VERSION}) must be at least 19.0 (Visual Studio 2015)!")
+    else ()
+        set (CXX11_FOUND TRUE CACHE INTERNAL "Availability of c++11") # always active
+    endif ()
+
+else ()
+    message(WARNING "You are using an unsupported compiler! Compilation has only been tested with >= Clang 3.5, >= GCC 4.9 and >= MSVC 19.0 (VS 2015).")
+endif ()
+
+# ----------------------------------------------------------------------------
+# Require C++11
+# ----------------------------------------------------------------------------
+
+if (NOT CXX11_FOUND)
+    set(CXXSTD_TEST_SOURCE
+    "#if !defined(__cplusplus) || (__cplusplus < 201103L)
+    #error NOCXX11
+    #endif
+    int main() {}")
+    check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX11_DETECTED)
+    set (CXX11_FOUND ${CXX11_DETECTED} CACHE INTERNAL "Availability of c++11")
+    if (NOT CXX11_FOUND)
+        message (FATAL_ERROR "SeqAn requires C++11 since v2.1.0, but your compiler does "
+                "not support it. Make sure that you specify -std=c++11 in your CMAKE_CXX_FLAGS. "
+                "If you absolutely know what you are doing, you can overwrite this check "
+                " by defining CXX11_FOUND.")
+        return ()
+    endif (NOT CXX11_FOUND)
+endif (NOT CXX11_FOUND)
+
+# ----------------------------------------------------------------------------
+# Compile-specific settings and workarounds around missing CMake features.
+# ----------------------------------------------------------------------------
+
 # GCC Setup
 
-if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   # Tune warnings for GCC.
   set (CMAKE_CXX_WARNING_LEVEL 4)
-  # NOTE: First location to set SEQAN_CXX_FLAGS at the moment.  If you write
-  # to the variable for the first time earlier, update this line to append to
-  # the variable instead of overwriting.
-  set (SEQAN_CXX_FLAGS "-W -Wall -Wno-long-long -fstrict-aliasing -Wstrict-aliasing")
+  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -Wno-long-long -fstrict-aliasing -Wstrict-aliasing")
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
 
   # Determine GCC version.
@@ -185,7 +249,7 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
   else (400 GREATER _GCC_VERSION)
     set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -pedantic -Wno-variadic-macros")
   endif (400 GREATER _GCC_VERSION)
-  
+
   # Force GCC to keep the frame pointer when debugging is enabled.  This is
   # mainly important for 64 bit but does not get into the way on 32 bit either
   # at minimal performance impact.
@@ -194,6 +258,11 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
   elseif (CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
     set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_CXX_FLAGS_RELEASE} -g -fno-omit-frame-pointer")
   endif ()
+
+  # disable some warnings on ICC
+  if (COMPILER_IS_INTEL)
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
+  endif (COMPILER_IS_INTEL)
 endif ()
 
 # Windows Setup
@@ -297,73 +366,73 @@ endif ()
 
 # libexecinfo -- implicit
 
-check_include_files(execinfo.h _SEQAN_HAVE_EXECINFO)
+check_include_file_cxx(execinfo.h _SEQAN_HAVE_EXECINFO)
 mark_as_advanced(_SEQAN_HAVE_EXECINFO)
 if (_SEQAN_HAVE_EXECINFO)
   set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-DSEQAN_HAS_EXECINFO=1")
   if (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
-    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} execinfo)
+    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} execinfo elf)
   endif (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 endif (_SEQAN_HAVE_EXECINFO)
 
-
-# libstdc++ -- implicit, Mac only (clang seems not to do this automatically)
-
-if (APPLE)
-  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} stdc++)
-endif (APPLE)
-
 # ZLIB
 
+set (SEQAN_HAS_ZLIB FALSE)
+
+# should SeqAn search for dependency?
 list(FIND SEQAN_FIND_DEPENDENCIES "ZLIB" _SEQAN_FIND_ZLIB)
 mark_as_advanced(_SEQAN_FIND_ZLIB)
-
-set (SEQAN_HAS_ZLIB FALSE)
 if (NOT _SEQAN_FIND_ZLIB EQUAL -1)
-  find_package(ZLIB QUIET)
-  if (ZLIB_FOUND)
-    set (SEQAN_HAS_ZLIB     TRUE)
+    find_package(ZLIB QUIET)
+endif ()
+
+if (ZLIB_FOUND)
+    set (SEQAN_HAS_ZLIB     TRUE) # deprecated: use ZLIB_FOUND instead
     set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${ZLIB_LIBRARIES})
     set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${ZLIB_INCLUDE_DIRS})
     set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_ZLIB=1")
-  endif ()
 endif ()
 
 # BZip2
 
+set (SEQAN_HAS_BZIP2 FALSE)
+
+# should SeqAn search for dependency?
 list(FIND SEQAN_FIND_DEPENDENCIES "BZip2" _SEQAN_FIND_BZIP2)
 mark_as_advanced(_SEQAN_FIND_BZIP2)
-
-set (SEQAN_HAS_BZIP2 FALSE)
 if (NOT _SEQAN_FIND_BZIP2 EQUAL -1)
-  find_package(BZip2 QUIET)
-  if (BZIP2_FOUND)
-    set (SEQAN_HAS_BZIP2    TRUE)
+    find_package(BZip2 QUIET)
+endif ()
+
+if (BZIP2_FOUND)
+    set (SEQAN_HAS_BZIP2    TRUE) # deprecated: use BZIP2_FOUND instead
     set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${BZIP2_LIBRARIES})
     set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${BZIP2_INCLUDE_DIRS})
     set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_BZIP2=1")
-  endif ()
-endif()
+endif ()
 
 # OpenMP
 
+set (SEQAN_HAS_OPENMP FALSE)
+
+# should SeqAn search for dependency?
 list(FIND SEQAN_FIND_DEPENDENCIES "OpenMP" _SEQAN_FIND_OPENMP)
 mark_as_advanced(_SEQAN_FIND_OPENMP)
-
-set (SEQAN_HAS_OPENMP FALSE)
 if (NOT _SEQAN_FIND_OPENMP EQUAL -1)
-  find_package(OpenMP QUIET)
-  # Note that in the following, we do not check for OPENMP_FOUND since this is
-  # only true if both C and C++ compiler support OpenMP.  This is not the case
-  # if the user has a compiler without OpenMP support by default and overrides
-  # only the C++ compiler (e.g. on winter 2013's Mac Os X).
-  if (OpenMP_CXX_FLAGS)
-    set (SEQAN_HAS_OPENMP   TRUE)
-    set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${OpenMP_LIBRARIES})
-    set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${OpenMP_INCLUDE_DIRS})
-    set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_OPENMP=1")
-    set (SEQAN_CXX_FLAGS        "${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-  endif ()
+    find_package(OpenMP QUIET)
+endif ()
+
+if (OPENMP_FOUND)
+    if (COMPILER_IS_CLANG AND (_GCC_VERSION MATCHES "^37[0-9]$"))
+        message (STATUS "Because of a bug in clang-3.7.x OpenMP cannot be used (even if available). Please update your clang!")
+        set (OPENMP_FOUND FALSE)
+    else ()
+        set (SEQAN_HAS_OPENMP TRUE) # deprecated: use OPENMP_FOUND instead
+        set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${OpenMP_LIBRARIES})
+        set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${OpenMP_INCLUDE_DIRS})
+        set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_OPENMP=1")
+        set (SEQAN_CXX_FLAGS        "${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    endif ()
 endif ()
 
 # CUDA
@@ -388,29 +457,40 @@ set (SEQAN_INCLUDE_DIRS ${SEQAN_INCLUDE_DIRS_MAIN} ${SEQAN_INCLUDE_DIRS_DEPS})
 # ----------------------------------------------------------------------------
 
 if (NOT DEFINED SEQAN_VERSION_STRING)
-  if (NOT CMAKE_CURRENT_LIST_DIR)  # CMAKE_CURRENT_LIST_DIR only from cmake 2.8.3.
-    get_filename_component (CMAKE_CURRENT_LIST_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
-  endif (NOT CMAKE_CURRENT_LIST_DIR)
 
-  try_run (_SEQAN_RUN_RESULT
-           _SEQAN_COMPILE_RESULT
-           ${CMAKE_BINARY_DIR}/CMakeFiles/SeqAnVersion
-           ${CMAKE_CURRENT_LIST_DIR}/SeqAnVersion.cpp
-           CMAKE_FLAGS "-DINCLUDE_DIRECTORIES:STRING=${SEQAN_INCLUDE_DIRS_MAIN}"
-           COMPILE_OUTPUT_VARIABLE _COMPILE_OUTPUT
-           RUN_OUTPUT_VARIABLE _RUN_OUTPUT)
-  if (NOT _RUN_OUTPUT)
+  # Scan all include dirs identified by the build system and
+  # check if there is a file version.h in a subdir seqan/
+  # If exists store absolute path to file and break loop.
+
+  set (_SEQAN_VERSION_H "")
+  foreach(_INCLUDE_DIR ${SEQAN_INCLUDE_DIRS_MAIN})
+    get_filename_component(_SEQAN_VERSION_H "${_INCLUDE_DIR}/seqan/version.h" ABSOLUTE)
+    if (EXISTS ${_SEQAN_VERSION_H})
+       break()
+    endif()
+  endforeach()
+
+  set (_SEQAN_VERSION_IDS MAJOR MINOR PATCH PRE_RELEASE)
+
+  # If file wasn't found seqan version is set to 0.0.0
+  foreach (_ID ${_SEQAN_VERSION_IDS})
+    set(_SEQAN_VERSION_${_ID} "0")
+  endforeach()
+
+  # Error log if version.h not found, otherwise read version from
+  # version.h and cache it.
+  if (NOT EXISTS "${_SEQAN_VERSION_H}")
     message ("")
     message ("ERROR: Could not determine SeqAn version.")
-    message ("COMPILE OUTPUT:")
-    message (${_COMPILE_OUTPUT})
-  endif (NOT _RUN_OUTPUT)
+    message ("Could not find file: ${_SEQAN_VERSION_H}")
+  else ()
+    foreach (_ID ${_SEQAN_VERSION_IDS})
+      file (STRINGS ${_SEQAN_VERSION_H} _VERSION_${_ID} REGEX ".*SEQAN_VERSION_${_ID}.*")
+      string (REGEX REPLACE ".*SEQAN_VERSION_${_ID}[ |\t]+([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_${_ID} ${_VERSION_${_ID}})
+    endforeach ()
+  endif ()
 
-  string (REGEX REPLACE ".*SEQAN_VERSION_MAJOR:([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_MAJOR ${_RUN_OUTPUT})
-  string (REGEX REPLACE ".*SEQAN_VERSION_MINOR:([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_MINOR ${_RUN_OUTPUT})
-  string (REGEX REPLACE ".*SEQAN_VERSION_PATCH:([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_PATCH ${_RUN_OUTPUT})
-  string (REGEX REPLACE ".*SEQAN_VERSION_PRE_RELEASE:([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_PRE_RELEASE ${_RUN_OUTPUT})
-
+  # Check for pre release.
   if (SEQAN_VERSION_PRE_RELEASE EQUAL 1)
     set (_SEQAN_VERSION_DEVELOPMENT "TRUE")
   else ()

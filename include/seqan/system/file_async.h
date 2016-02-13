@@ -277,12 +277,10 @@ namespace SEQAN_NAMESPACE_MAIN
             xmitDone(other.xmitDone, Move())
         {}
 
-#ifdef SEQAN_CXX11_STANDARD
         aiocb_win32(aiocb_win32 && other) :
             overlapped(other.overlapped),
             xmitDone(other.xmitDone, Move())
         {}
-#endif
 
     private:
         aiocb_win32(aiocb_win32 const &)
@@ -766,11 +764,9 @@ namespace SEQAN_NAMESPACE_MAIN
             aiocb(other)
         {}
 
-#ifdef SEQAN_CXX11_STANDARD
         AiocbWrapper(AiocbWrapper && other) :
             aiocb(other)
         {}
-#endif
 
     private:
         AiocbWrapper(AiocbWrapper const &)

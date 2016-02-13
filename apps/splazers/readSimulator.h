@@ -26,11 +26,11 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <random>
 
 #include <seqan/sequence.h>
 #include <seqan/find.h>
 #include <seqan/modifier.h>
-#include <seqan/random.h>
 
 
 namespace SEQAN_NAMESPACE_MAIN
@@ -38,18 +38,18 @@ namespace SEQAN_NAMESPACE_MAIN
 
 template <typename TOperation, typename TAlphabet>
 inline TAlphabet
-sample(Rng<> & rng, TOperation m, TAlphabet base)
+sample(std::mt19937 & rng, TOperation m, TAlphabet base)
 {
-    Pdf<Uniform<int> > pdf(0, 2);
+    std::uniform_int_distribution<int> dist(0, 2);
 
-    int ret = Dna(pickRandomNumber(rng, pdf));
+    int ret = Dna(dist(rng));
     if (m == SEQAN_MISMATCH && ret >= ordValue(base))
         ret += 1;
     return Dna(ret);
 }
 
 template < typename TGenome >
-void simulateGenome(Rng<> & rng,
+void simulateGenome(std::mt19937 & rng,
                     TGenome &genome, int size)
 {
 //	mtRandInit(); 
@@ -62,7 +62,7 @@ void simulateGenome(Rng<> & rng,
 template<typename TPosString>
 void
 fillupStartpos(
-    Rng<> & rng,
+    std::mt19937 & rng,
     TPosString & sortedStartPos, 
 	int numReads,
 	int readLength,
@@ -82,15 +82,15 @@ fillupStartpos(
 
 
 	// sample positions
-	Pdf<Uniform<double> > pdf(0, 1);
+	std::uniform_real_distribution<double> dist(0, 1);
 	for (int i = 0; i < numReads; ++i)
-		sortedStartPos[i] = (int)((seqLength - fragmentSize - maxErrors + 1.0) * pickRandomNumber(rng, pdf));
+		sortedStartPos[i] = (int)((seqLength - fragmentSize - maxErrors + 1.0) * dist(rng));
 
 	std::sort(begin(sortedStartPos),end(sortedStartPos));
 
 	// sample orientations
 	for (int i = 0; i < numReads; ++i)
-	    if (pickRandomNumber(rng, pdf) >= forwardProb)
+	    if (dist(rng) >= forwardProb)
 			sortedStartPos[i] |= REVCOMP;
 
 	if (libSize > 0)
@@ -100,7 +100,7 @@ fillupStartpos(
 		for(int i=0;i<numReads;++i)
 		{
 			int leftPos = sortedStartPos[i] & ~REVCOMP;
-			int lSize = fragmentSize - (int)((2.0 * libError + 1.0) * pickRandomNumber(rng, pdf));
+			int lSize = fragmentSize - (int)((2.0 * libError + 1.0) * dist(rng));
 			int rightPos = leftPos + lSize - readLength;
 			if ((sortedStartPos[i] & REVCOMP) == 0)
 			{
@@ -127,7 +127,7 @@ template <
 	typename TGenomeSet,
 	typename TDistr >
 void simulateReads(
-            Rng<> & rng,
+            std::mt19937 & rng,
 	TReadSet &readSet,		// generated read sequences
 	TReadIDs &readIDs,		// corresponding Fasta ids
 	TGenomeSet &genomeSet,	// source genome sequences
@@ -239,11 +239,11 @@ void simulateReads(
 		int trueLength = 0;
 		bool successful = false;
 
-		Pdf<Uniform<double> > pdf(0, 1);
+		std::uniform_real_distribution<double> dist(0, 1);
 
 		while(pos < maxEnd) {
 			// lastOp = currOp;
-			double prob = pickRandomNumber(rng, pdf);
+			double prob = dist(rng);
 			//	std::cout << "prob = " << prob << "\t";
 			int m;
 			for(m = 0; m < 4; ++m)

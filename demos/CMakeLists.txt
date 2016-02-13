@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the core demos.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_demos)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_demos CXX)
 message (STATUS "Configuring demos")
 
 # Recursively register all demos in core and prefix their target/binary names

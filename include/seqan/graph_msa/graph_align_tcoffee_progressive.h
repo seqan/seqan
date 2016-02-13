@@ -243,7 +243,7 @@ heaviestMatching(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                  TOutString& align)
 {
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
-    typedef __int64 TLargeSize;
+    typedef int64_t TLargeSize;
     typedef typename Size<TStringSet>::Type TSize;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;

@@ -53,8 +53,8 @@ namespace seqan {
 /*
 struct Arch
 {
-    static const __uint32 LOG_WARP_SIZE = 5;
-    static const __uint32 WARP_SIZE     = 1u << LOG_WARP_SIZE;
+    static const uint32_t LOG_WARP_SIZE = 5;
+    static const uint32_t WARP_SIZE     = 1u << LOG_WARP_SIZE;
 };
 */
 
@@ -280,7 +280,7 @@ inline bool is_tcc_enabled()
 /// a generic syncthreads() implementation to synchronize contiguous
 /// blocks of N threads at a time
 ///
-template <__uint32 N>
+template <uint32_t N>
 SEQAN_HOST_DEVICE inline
 void syncThreads()
 {

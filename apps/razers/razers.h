@@ -108,8 +108,8 @@ namespace SEQAN_NAMESPACE_MAIN
 		unsigned char compMask[5];
 
 	// statistics
-		__int64		FP;					// false positives (threshold reached, no match)
-		__int64		TP;					// true positives (threshold reached, match)
+		int64_t		FP;					// false positives (threshold reached, no match)
+		int64_t		TP;					// true positives (threshold reached, match)
         double      timeCompactMatches;     // time for compacting reads
         double      timeMaskDuplicates; // time spent masking duplicates
 		double		timeLoadFiles;		// time for loading input files
@@ -944,8 +944,8 @@ void countMatches(TMatches &matches, TCounts &cnt)
 	
 	unsigned readNo = -1;
 	short editDist = -1;
-	__int64 count = 0;
-	__int64 maxVal = MaxValue<TValue>::VALUE;
+	int64_t count = 0;
+	int64_t maxVal = MaxValue<TValue>::VALUE;
 
 	for (; it != itEnd; ++it) 
 	{
@@ -1026,7 +1026,7 @@ void compactMatches(TMatches &matches, TCounts &
 	unsigned readNo = -1;
 	unsigned hitCount = 0;
 	unsigned hitCountCutOff = options.maxHits;
-	__int64 disabled = 0;
+	int64_t disabled = 0;
 #ifdef RAZERS_MICRO_RNA
 	if(options.microRNA && options.purgeAmbiguous)
 		++hitCountCutOff;	// we keep one more match than we actually want, so we can later decide
@@ -1685,8 +1685,8 @@ void mapSingleReads(
 
 	// iterate all verification regions returned by SWIFT
 	TSize gLength = length(genome);
-	__int64 localTP = 0;
-	__int64 localFP = 0;
+	int64_t localTP = 0;
+	int64_t localFP = 0;
 
     double beginTime = sysTime();
     // Build q-gram index separately, so we can better compute the time for it.

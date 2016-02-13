@@ -426,7 +426,49 @@ assignSource(Gaps<TSequence, ArrayGaps> & gaps, TSequence2 const & source)
 
 template <typename TSequence, typename TPosition>
 inline typename Position<TSequence>::Type
-toSourcePosition(Gaps<TSequence, ArrayGaps> const & gaps, TPosition clippedViewPos)
+toSourcePosition(Gaps<TSequence, ArrayGaps> const & gaps, TPosition const clippedViewPos, LeftOfViewPos const & /*tag*/)
+{
+    typedef Gaps<TSequence, ArrayGaps>         TGaps;
+    typedef typename Position<TGaps>::Type     TGapsPos;
+    typedef typename TGaps::TArrayPos_         TArrayPos;
+    typedef typename Position<TSequence>::Type TSourcePos;
+
+    // Translate from clipped view position to unclipped view position.
+    TGapsPos unclippedViewPos = clippedViewPos + clippedBeginPosition(gaps);
+
+    // Get index i of the according bucket and offset within bucket.
+    TSourcePos result = 0;
+    TArrayPos i = 1;
+    TSourcePos const iEnd = length(gaps._array);
+
+    if (unclippedViewPos < static_cast<TGapsPos>(gaps._array[0]))
+        return 0;
+
+    TSourcePos counter = unclippedViewPos - gaps._array[0];
+    for (; counter > TGapsPos(0) && i < iEnd; ++i)
+    {
+        if (counter < gaps._array[i])
+            break;
+
+        if (i % 2)  // character bucket
+            result += gaps._array[i];
+        counter -= gaps._array[i];
+    }
+    if (i % 2)  // character bucket.
+    {
+        if (i == length(gaps._array))  // We pointing behind the last bucket.
+            return --result;
+        result += counter;  // If maps into char bucket.
+        if (counter == gaps._array[i])
+            --result;
+        return result;
+    }
+    return --result;
+}
+
+template <typename TSequence, typename TPosition>
+inline typename Position<TSequence>::Type
+toSourcePosition(Gaps<TSequence, ArrayGaps> const & gaps, TPosition const clippedViewPos, RightOfViewPos const & /*tag*/)
 {
     typedef Gaps<TSequence, ArrayGaps>         TGaps;
     typedef typename Position<TGaps>::Type     TGapsPos;
@@ -440,6 +482,7 @@ toSourcePosition(Gaps<TSequence, ArrayGaps> const & gaps, TPosition clippedViewP
     TSourcePos result = 0;
     TArrayPos i = 0;
     TSourcePos const iEnd = length(gaps._array);
+
     for (TSourcePos counter = unclippedViewPos; counter > TGapsPos(0) && i < iEnd;)
     {
         if (counter > gaps._array[i])
@@ -452,9 +495,7 @@ toSourcePosition(Gaps<TSequence, ArrayGaps> const & gaps, TPosition clippedViewP
         else if (counter <= gaps._array[i])
         {
             if (i % 2)  // character bucket
-            {
                 result += counter;
-            }
             counter = 0;
         }
     }

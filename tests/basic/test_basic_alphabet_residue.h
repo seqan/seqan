@@ -97,7 +97,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna)
 
     // Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<Dna>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<Dna>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+(BitsPerValue<Dna>::VALUE), 2);
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
@@ -117,7 +117,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna)
     SEQAN_ASSERT_EQ(ordValue(Dna('G')), 2);
     SEQAN_ASSERT_EQ(ordValue(Dna('T')), 3);
 
-    SEQAN_ASSERT(+(SameType_<typename ValueSize<Dna>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename ValueSize<Dna>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+ValueSize<Dna>::VALUE, 4);
     SEQAN_ASSERT_EQ(valueSize<Dna>(), 4u);
 }
@@ -128,7 +128,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5)
 
     // Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<Dna5>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<Dna5>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+(BitsPerValue<Dna5>::VALUE), 3);
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
@@ -149,7 +149,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5)
     SEQAN_ASSERT_EQ(ordValue(Dna5('T')), 3);
     SEQAN_ASSERT_EQ(ordValue(Dna5('N')), 4);
 
-    SEQAN_ASSERT(+(SameType_<typename ValueSize<Dna5>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename ValueSize<Dna5>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+ValueSize<Dna5>::VALUE, 5);
     SEQAN_ASSERT_EQ(valueSize<Dna5>(), 5u);
 
@@ -164,7 +164,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna_q)
 
     // Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<DnaQ>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<DnaQ>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+(BitsPerValue<DnaQ>::VALUE), 8);
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
@@ -184,7 +184,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna_q)
     SEQAN_ASSERT_EQ(ordValue(DnaQ('G')), 2);
     SEQAN_ASSERT_EQ(ordValue(DnaQ('T')), 3);
 
-    SEQAN_ASSERT(+(SameType_<typename ValueSize<DnaQ>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename ValueSize<DnaQ>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+ValueSize<DnaQ>::VALUE, 4);
     SEQAN_ASSERT_EQ(valueSize<DnaQ>(), 4u);
 
@@ -200,7 +200,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5_q)
 
     // Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<Dna5Q>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<Dna5Q>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+(BitsPerValue<Dna5Q>::VALUE), 8);
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
@@ -221,7 +221,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5_q)
     SEQAN_ASSERT_EQ(ordValue(Dna5Q('T')), 3);
     SEQAN_ASSERT_EQ(ordValue(Dna5Q('N')), 4);
 
-    SEQAN_ASSERT(+(SameType_<typename ValueSize<Dna5Q>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename ValueSize<Dna5Q>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+ValueSize<Dna5Q>::VALUE, 5);
     SEQAN_ASSERT_EQ(valueSize<Dna5Q>(), 5u);
 
@@ -241,7 +241,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_rna)
 
     // Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<Rna>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<Rna>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+(BitsPerValue<Rna>::VALUE), 2);
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
@@ -261,7 +261,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_rna)
     SEQAN_ASSERT_EQ(ordValue(Rna('G')), 2);
     SEQAN_ASSERT_EQ(ordValue(Rna('U')), 3);
 
-    SEQAN_ASSERT(+(SameType_<typename ValueSize<Rna>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename ValueSize<Rna>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+ValueSize<Rna>::VALUE, 4);
     SEQAN_ASSERT_EQ(valueSize<Rna>(), 4u);
 }
@@ -272,7 +272,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_rna5)
 
     // Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<Rna5>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<Rna5>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+(BitsPerValue<Rna5>::VALUE), 3);
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
@@ -293,7 +293,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_rna5)
     SEQAN_ASSERT_EQ(ordValue(Rna5('U')), 3);
     SEQAN_ASSERT_EQ(ordValue(Rna5('N')), 4);
 
-    SEQAN_ASSERT(+(SameType_<typename ValueSize<Rna5>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename ValueSize<Rna5>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+ValueSize<Rna5>::VALUE, 5);
     SEQAN_ASSERT_EQ(valueSize<Rna5>(), 5u);
 
@@ -308,7 +308,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_iupac)
 
     // Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<Iupac>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<Iupac>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+(BitsPerValue<Iupac>::VALUE), 4);
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
@@ -336,7 +336,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_iupac)
     for (unsigned i = 0; i < 16; ++i)
         SEQAN_ASSERT_EQ(ordValue((Iupac)(char)(Iupac(i))), i);
 
-    SEQAN_ASSERT(+(SameType_<typename ValueSize<Iupac>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename ValueSize<Iupac>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+ValueSize<Iupac>::VALUE, 16);
     SEQAN_ASSERT_EQ(valueSize<Iupac>(), 16u);
 
@@ -351,7 +351,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_amino_acid)
 
     // Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<AminoAcid>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename BitsPerValue<AminoAcid>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+(BitsPerValue<AminoAcid>::VALUE), 5);
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
@@ -394,7 +394,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_amino_acid)
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('X')), 25);
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('*')), 26);
 
-    SEQAN_ASSERT(+(SameType_<typename ValueSize<AminoAcid>::Type, __uint8>::VALUE));
+    SEQAN_ASSERT(+(SameType_<typename ValueSize<AminoAcid>::Type, uint8_t>::VALUE));
     SEQAN_ASSERT_EQ(+ValueSize<AminoAcid>::VALUE, 27);
     SEQAN_ASSERT_EQ(valueSize<AminoAcid>(), 27u);
 
@@ -787,12 +787,12 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_iupac)
     {
         std::stringstream ss;
         ss << Iupac('A') << Iupac('C') << Iupac('G') << Iupac('U') << Iupac('N');
-        SEQAN_ASSERT_EQ(ss.str(), "ACG=N");
+        SEQAN_ASSERT_EQ(ss.str(), "ACGUN");
     }
     {
         std::stringstream ss;
         ss << Iupac('A') << Iupac('C') << Iupac('G') << Iupac('=') << Iupac('N');
-        SEQAN_ASSERT_EQ(ss.str(), "ACG=N");
+        SEQAN_ASSERT_EQ(ss.str(), "ACGUN");
     }
 }
 

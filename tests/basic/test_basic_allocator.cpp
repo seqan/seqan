@@ -34,8 +34,7 @@
 // Tests for the sub module basic_fundamental.
 // ==========================================================================
 
-#include <seqan/basic/basic_debug.h>
-#include <seqan/basic/basic_allocator.h>
+#include <seqan/basic.h>
 
 #include "test_basic_allocator.h"
 

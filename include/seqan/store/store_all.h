@@ -1929,8 +1929,8 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
 //            setBeginPosition(contigGaps, (*theIt).endPos);
 //            setEndPosition(contigGaps, (*theIt).beginPos);
 //        }
-////              __int64 pos = positionGapToSeq(contigGaps, _min(theIt->beginPos, theIt->endPos)) + 1;
-////        __int64 mpos = 0;
+////              int64_t pos = positionGapToSeq(contigGaps, _min(theIt->beginPos, theIt->endPos)) + 1;
+////        int64_t mpos = 0;
 ////        std::cout << "it->id == " << it->id << std::endl;
 ////        std::cout << "cBegin == " << cBegin << std::endl;
 ////        std::cout << contigGaps << std::endl;
@@ -2223,7 +2223,7 @@ void _alignedReadsInsertGaps(
     typedef typename Value<TReadSeqStore>::Type                             TReadSeq;
     typedef typename Value<TAlignedReadIter>::Type                          TAlignedRead;
     typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> > TReadGaps;
-    typedef __int64                                                         TContigPos;
+    typedef int64_t                                                         TContigPos;
 
     for (TAlignedReadIter j = alignedReadsBegin; j != alignedReadsEnd; ++j)
     {
@@ -2280,7 +2280,7 @@ void _twoWayMergeAlignments(
     typedef typename Iterator<TContigGapsGlobal>::Type  TContigGlobalIter;
     typedef typename Iterator<TContigGapsPW>::Type      TContigPWIter;
     typedef typename Iterator<TReadGaps>::Type          TReadIter;
-    typedef __int64                                     TContigPos;
+    typedef int64_t                                     TContigPos;
 
     TContigGlobalIter cIt = begin(contigGapsGlobal);
     TContigPWIter pIt = begin(contigGapsPW);
@@ -2292,7 +2292,7 @@ void _twoWayMergeAlignments(
     std::cout << "readPW      \t" << readGaps << std::endl;
     */
 
-    __int64 blkLen = 0;
+    int64_t blkLen = 0;
     for (; !atEnd(rIt); goFurther(rIt, blkLen), goFurther(cIt, blkLen))
     {
         bool isGapContig = isGap(cIt);

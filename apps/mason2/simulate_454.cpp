@@ -67,13 +67,6 @@ public:
             : _k(k), _useSqrt(useSqrt), _noiseMu(noiseMu), _noiseSigma(noiseSigma), _size(0)
     {}
 
-    ThresholdMatrix(double k, bool useSqrt, double noiseMean, double noiseStdDev, seqan::MeanStdDev const & /*tag*/)
-            : _k(k), _useSqrt(useSqrt),
-              _noiseMu(::std::log(noiseMean) - 0.5 * ::std::log(1.0 + noiseStdDev * noiseStdDev / noiseMean / noiseMean)),
-              _noiseSigma(::std::sqrt(::std::log(1.0 + noiseStdDev * noiseStdDev / noiseMean / noiseMean))),
-              _size(0)
-    {}
-
     inline double
     computeThreshold(unsigned r1, unsigned r2) const
     {
@@ -176,8 +169,9 @@ public:
     inline void
     setNoiseMeanStdDev(double mean, double stdDev)
     {
-        _noiseMu = ::std::log(mean) - 0.5 * ::std::log(1.0 + stdDev * stdDev / mean / mean);
-        _noiseSigma = ::std::sqrt(::std::log(1.0 + stdDev * stdDev / mean / mean));
+        auto tmp = seqan::cvtLogNormalDistParam(mean, stdDev);
+        _noiseMu = tmp.m();
+        _noiseSigma = tmp.s();
     }
 
     inline double
@@ -264,14 +258,16 @@ unsigned Roche454SequencingSimulator::readLength()
         // Pick uniformly.
         double minLen = roche454Options.minReadLength;
         double maxLen = roche454Options.maxReadLength;
-        double len = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<double> >(minLen, maxLen));
+        std::uniform_real_distribution<double> dist(minLen, maxLen);
+        double len = dist(rng);
         return static_cast<unsigned>(round(len));
     }
     else
     {
         // Pick normally distributed.
-        double len = pickRandomNumber(rng, seqan::Pdf<seqan::Normal>(roche454Options.meanReadLength,
-                                                                     roche454Options.stdDevReadLength));
+        std::normal_distribution<double> dist(roche454Options.meanReadLength,
+                                              roche454Options.stdDevReadLength);
+        double len = dist(rng);
         return static_cast<unsigned>(round(len));
     }
 }
@@ -311,8 +307,8 @@ void Roche454SequencingSimulator::simulateRead(
     seqan::String<unsigned> realBaseCount;
 
     // Probability density function to use for the background noise.
-    seqan::Pdf<seqan::LogNormal> noisePdf(roche454Options.backgroundNoiseMean,
-                                          roche454Options.backgroundNoiseStdDev, seqan::MeanStdDev());
+    std::lognormal_distribution<double> distNoise(seqan::cvtLogNormalDistParam(roche454Options.backgroundNoiseMean,
+                                                                               roche454Options.backgroundNoiseStdDev));
 
     // Initialize information about the current homopolymer length.
     unsigned homopolymerLength = 0;
@@ -328,8 +324,9 @@ void Roche454SequencingSimulator::simulateRead(
             // Simulate positive flow observation.
             double l = homopolymerLength;
             double sigma = roche454Options.k * (roche454Options.sqrtInStdDev ? sqrt(l) : l);
-            double intensity = pickRandomNumber(rng, seqan::Pdf<seqan::Normal>(homopolymerLength, sigma));
-            intensity += pickRandomNumber(rng, noisePdf);  // Add noise.
+            std::normal_distribution<double> distIntensity(homopolymerLength, sigma);
+            double intensity = distIntensity(rng);
+            intensity += distNoise(rng);  // Add noise.
             appendValue(observedIntensities, intensity);
             appendValue(realBaseCount, homopolymerLength);
             // Get begin pos and length of next homopolymer.
@@ -348,7 +345,7 @@ void Roche454SequencingSimulator::simulateRead(
             //
             // Constants taken from MetaSim paper which have it from the
             // original 454 publication.
-            double intensity = std::max(0.0, pickRandomNumber(rng, noisePdf));
+            double intensity = std::max(0.0, distNoise(rng));
             appendValue(observedIntensities, intensity);
             appendValue(realBaseCount, 0);
         }

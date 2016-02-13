@@ -6,8 +6,8 @@
 # CMakeLists.txt file for SplazerS.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_apps_splazers)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_apps_splazers CXX)
 message (STATUS "Configuring apps/splazers")
 
 set (SEQAN_APP_VERSION "1.3")
@@ -17,7 +17,6 @@ set (SEQAN_APP_VERSION "1.3")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)

@@ -39,9 +39,7 @@
 
 #include <cstdlib>
 
-#ifdef SEQAN_CXX11_STANDARD
 #include <type_traits>
-#endif
 
 #include <seqan/platform.h>
 

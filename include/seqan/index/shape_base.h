@@ -86,7 +86,7 @@ namespace SEQAN_NAMESPACE_MAIN
     template <typename TValue, typename TSpec>
     struct Value<Shape<TValue,TSpec> >
     {
-        typedef __uint64 Type;
+        typedef uint64_t Type;
     };
 
 /*!

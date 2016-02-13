@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the bam_io module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_bam_io)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_bam_io CXX)
 message (STATUS "Configuring tests/bam_io")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,7 @@ message (STATUS "Configuring tests/bam_io")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB)
+find_package (ZLIB)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

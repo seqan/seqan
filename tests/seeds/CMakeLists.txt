@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the seeds module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_seeds)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_seeds CXX)
 message (STATUS "Configuring tests/seeds")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,6 @@ message (STATUS "Configuring tests/seeds")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------
