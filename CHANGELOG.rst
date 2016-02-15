@@ -34,7 +34,6 @@ Library Updates and Selected Bugfixes
     - support for reading and writing BLAST Tabular files (with and without comments)
     - support for writing BLAST Report files
 
-
 - Indices:
     - added public function for trie and radix tree construction
     - Q-gram Index: allows sorting the hash-table according to the number of occurrences to reduce cache misses
@@ -58,9 +57,12 @@ Library Updates and Selected Bugfixes
     - overload save() of ModifiedStrings for const strings
     - fixed Modified Iterators and ModView
 
-- Sequences:
-    - Journaled String Tree: added new data structure, find interface and online search algorithms
-    - STL containers: added a completely new adaptation to SeqAn interfaces that supports all STL containers, also ``std::array`` and ``std::forward_list``
+- Journaled String Tree (new module):
+    - reference compressed string set structure
+    - for more details see the `publication <http://bioinformatics.oxfordjournals.org/content/30/24/3499.short>`_
+
+- STL containers:
+    - added a completely new adaptation to SeqAn interfaces that supports all STL containers, also ``std::array`` and ``std::forward_list``
     - greatly improved compatibility of SeqAn algorithms with STL containers so these can be used instead of SeqAn Strings
 
 - Streams:
