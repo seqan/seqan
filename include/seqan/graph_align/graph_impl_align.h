@@ -248,14 +248,17 @@ class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> >
 
         template <typename TDefault>
         Graph(StringSet<TString, Owner<TDefault> > const& sSet) {
+            typedef StringSet<TString, Owner<TDefault> > TStringSet;
+            typedef typename Position<TStringSet>::Type TPosition;
+
             StringSet<TString, Dependent<> > depStr(sSet);
             data_sequence = depStr;
 
             // Cover all sequences with nil vertices
             TVertexDescriptor_ nilVertex = getNil<TVertexDescriptor_>();
             TSize_ lenSet = length(sSet);
-            for(TSize_ k=0; k<lenSet;++k)
-                data_pvMap.insert(std::make_pair(TKey_(positionToId(const_cast<StringSet<TString, Owner<TDefault> >&>(sSet),k), length(sSet[k])), nilVertex));
+            for(TPosition k=0; k<lenSet;++k)
+                data_pvMap.insert(std::make_pair(TKey_(positionToId(sSet,k), length(sSet[k])), nilVertex));
         }
 
 
