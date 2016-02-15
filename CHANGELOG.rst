@@ -18,7 +18,7 @@ Library Updates and Selected Bugfixes
     - Yara: fixed warnings, build errors and bugs, updated test files
     - Yara: new features (compute mapping qualities, estimate distribution of paired-end insert sizes)
     - Yara: follow SAM recommended practices for paired-end reads
-    - T-Coffee: new feature ``deep coffee`` (alignining several hundred sequences)
+    - T-Coffee: new feature ``deep coffee`` (aligning several hundred sequences)
     - Gustaf: introduced two phase breakpoint combination; updated readme and help messages
     - Removed old apps: Razers2, Flexbar and SeqCons in favor of newer releases
 
@@ -67,7 +67,6 @@ Library Updates and Selected Bugfixes
     - improved ZipStream
 
 - Compatibility to previous versions
-
     - the random module was removed, please use the STL's random module instead
     - the ``StringSet<T, Dependent<Tight> >`` has been deprecated and will likely be removed for the next release
     - some SeqAn Macros have been deprecated since C++11 is now required, e.g. there is no ``SEQAN_AUTO_PTR_NAME``, only ``unique_ptr<>``
