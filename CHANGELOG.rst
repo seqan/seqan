@@ -35,16 +35,17 @@ Documentation Updates
 - Dox:
     - fixed page redirection
     - minor bugs
-    - moved cpp code blocks into seperate files
+    - code snippets in the documentation now undergo build tests and continuous integration to avoid outdated documentation
 
 Infrastructure Updates
 ^^^^^^^^^^^^^^^^^^^^^^
 
 - Platform Support:
+    - FreeBSD support
     - updated prerequisites for GCC to >= 4.7 and Clang to >= 3.3
     - fixed warnings for gcc6
     - clang-3.7.x: deactivated openmp because of bug
-    - fixed compiler-warnings in Visual Studio
+    - fixed compiler-warnings in Visual Studio (/W2 produces no warnings anymore)
     - added support for Visual Studio 2014 and 2015
 
 - Build System:
