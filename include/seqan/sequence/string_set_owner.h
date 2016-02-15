@@ -389,7 +389,8 @@ inline typename Id<StringSet<TString, Owner<TSpec> > >::Type
 positionToId(StringSet<TString, Owner<TSpec> > &,
             TPos const pos)
 {
-    return pos;
+    typedef typename Id<StringSet<TString, Owner<TSpec> > >::Type TId;
+    return static_cast<TId>(pos);
 }
 
 // --------------------------------------------------------------------------
@@ -401,7 +402,8 @@ inline typename Id<StringSet<TString, Owner<TSpec> > >::Type
 positionToId(StringSet<TString, Owner<TSpec> > const &,
             TPos const pos)
 {
-    return pos;
+    typedef typename Id<StringSet<TString, Owner<TSpec> > >::Type TId;
+    return static_cast<TId>(pos);
 }
 
 // --------------------------------------------------------------------------
