@@ -4,6 +4,58 @@ SeqAn Changelog
 This file summarizes the changes to the SeqAn library and apps.
 
 
+Release 2.0.2
+~~~~~~~~~~~~~
+
+Minor release including several library bug-fixes as well as better documentation and infrastructure.
+All library modules are backward compatible with 2.0.1.
+For a complete list of changes visit `GitHub <https://github.com/seqan/seqan/pulls?q=is%3Apr+is%3Amerged++milestone%3A%22Release+2.0.2%22+>`_.
+
+Selected Bug Fixes
+^^^^^^^^^^^^^^^^^^
+
+- Sequences:
+    - fixed insert() for packed_string
+    - fixed segfault bug for upac assignment in Dna5 StringSet
+    - added insertValue(), insert() and replace() for StringSets
+    - added empty() for std::list
+
+- IO:
+    - BAM I/O: adding spport for custom tags with floats
+    - BAM I/O: BamTagsDict allows wrapping a const object
+    - FastQ: fixed readRecord() for malformed fastq files (avoid skipping records)
+    - FaiIndex: fixed readSequence/readRegion allocation
+
+- Apps:
+    - Gustaf: loading Fasta files with Iupac characters
+
+Documentation Updates
+^^^^^^^^^^^^^^^^^^^^^
+
+- Dox:
+    - fixed page redirection
+    - minor bugs
+    - code snippets in the documentation now undergo build tests and continuous integration to avoid outdated documentation
+
+Infrastructure Updates
+^^^^^^^^^^^^^^^^^^^^^^
+
+- Platform Support:
+    - FreeBSD support
+    - updated prerequisites for GCC to >= 4.7 and Clang to >= 3.3
+    - fixed warnings for gcc6
+    - clang-3.7.x: deactivated openmp because of bug
+    - fixed compiler-warnings in Visual Studio (/W2 produces no warnings anymore)
+    - added support for Visual Studio 2014 and 2015
+
+- Build System:
+    - added pkg-config support
+    - changed includes search priorities for CMake's FindSeqAn
+
+- Continuous Integration:
+    - added more platforms on TravisCI
+
+
 Release 2.0.1
 ~~~~~~~~~~~~~
 
