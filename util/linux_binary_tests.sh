@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #                  SeqAn - The Library for Sequence Analysis
 # ----------------------------------------------------------------------------
-# Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+# Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 # All rights reserved.
 #
 # License: BSD 3-clause
