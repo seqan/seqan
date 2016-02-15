@@ -573,9 +573,9 @@ read(TFile & file,
 template<typename TSizeSpec, typename TSpec1, typename TSpec2, typename TSize>
 inline void
 _appendFragment(String<Fragment<TSizeSpec, ExactReversableFragment<TSpec1> >, TSpec2>& matches,
-                  TSize seq1Id,
+                  typename Id<Fragment<TSizeSpec, ExactReversableFragment<TSpec1> > >::Type seq1Id,
                   TSize beg1,
-                  TSize seq2Id,
+                  typename Id<Fragment<TSizeSpec, ExactReversableFragment<TSpec1> > >::Type seq2Id,
                   TSize beg2,
                   TSize len,
                   bool reversed)
@@ -589,9 +589,9 @@ _appendFragment(String<Fragment<TSizeSpec, ExactReversableFragment<TSpec1> >, TS
 template<typename TSizeSpec, typename TSpec1, typename TSpec2, typename TSize>
 inline void
 _appendFragment(String<Fragment<TSizeSpec, ExactFragment<TSpec1> >, TSpec2>& matches,
-                  TSize seq1Id,
+                  typename Id<Fragment<TSizeSpec, ExactFragment<TSpec1> > >::Type seq1Id,
                   TSize beg1,
-                  TSize seq2Id,
+                  typename Id<Fragment<TSizeSpec, ExactFragment<TSpec1> > >::Type seq2Id,
                   TSize beg2,
                   TSize len,
                   bool reversed)
@@ -614,11 +614,12 @@ read(TFile & file,
     typedef typename Size<TNames>::Type TSize;
     //typedef typename Value<TFile>::Type TValue;
     typedef typename Value<TNames>::Type TName;
+    typedef typename Id<TFragment>::Type TId;
 
     // Map the names to slots
-    typedef std::map<TName, TSize> TNameToPosition;
+    typedef std::map<TName, TId> TNameToPosition;
     TNameToPosition namePosMap;
-    for(TSize i = 0;i<length(names);++i) namePosMap.insert(std::make_pair(names[i], i));
+    for(TId i = 0;i<length(names);++i) namePosMap.insert(std::make_pair(names[i], i));
 
     CharString buffer;
     typename DirectionIterator<TFile, Input>::Type reader = directionIterator(file, Input());
@@ -641,8 +642,8 @@ read(TFile & file,
             skipLine(reader);
             continue;
         }
-        TSize seq1Id = namePosMap[seq1];
-        TSize seq2Id = namePosMap[seq2];
+        TId seq1Id = namePosMap[seq1];
+        TId seq2Id = namePosMap[seq2];
         skipUntil(reader, NotFunctor<IsWhitespace>());
 
         // We skip the data from the file, buffer is only rarely used.

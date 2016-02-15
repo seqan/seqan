@@ -638,16 +638,17 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TString, typename TSpec, typename TSegmentMatches, typename TScores, typename TAlphabet, typename TSize>
+template<typename TString, typename TSpec, typename TSegmentMatches, typename TScores, typename TAlphabet, typename TKtup>
 inline void
 appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TSegmentMatches& matches,
                      TScores& scores,
-                     TSize ktup,
+                     TKtup ktup,
                      TAlphabet,
                      KmerLibrary)
 {
-    //typedef StringSet<TString, Dependent<TSpec> > TStringSet;
+    typedef StringSet<TString, Dependent<TSpec> > TStringSet;
+    typedef typename Size<TStringSet>::Type TSize;
     typedef typename Value<TScores>::Type TScoreValue;
     typedef typename Value<TSegmentMatches>::Type TFragment;
     //typedef typename Id<TStringSet>::Type TId;
@@ -717,7 +718,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TScores& scores,
                      KmerLibrary)
 {
-    appendSegmentMatches(str, matches, scores, 3, KmerLibrary());
+    appendSegmentMatches(str, matches, scores, 3u, KmerLibrary());
 }
 
 //////////////////////////////////////////////////////////////////////////////

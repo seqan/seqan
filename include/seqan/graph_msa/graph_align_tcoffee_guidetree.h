@@ -709,7 +709,7 @@ upgmaTree(String<TStringValue, TStringSpec>& mat,
         }
         --m;
     }
-    g.data_root = numVertices(g) - 1;
+    g.data_root = static_cast<decltype(g.data_root)>(numVertices(g)) - 1;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -864,7 +864,7 @@ upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph,
         } else best = findEdge(pairGraph, sourceBest, targetBest);
         --m;
     }
-    g.data_root = numVertices(g) - 1;
+    g.data_root = static_cast<decltype(g.data_root)>(numVertices(g)) - 1;
 }
 
 //////////////////////////////////////////////////////////////////////////////
