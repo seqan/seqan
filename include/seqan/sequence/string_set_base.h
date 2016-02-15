@@ -1443,6 +1443,7 @@ return iter(me, length(me), tag);
  * @brief Get the value from a string set by its id.
  *
  * @signature TString getValueById(s, id);
+ * @deprecated Use the subscript operator (<tt>operator[]</tt>) instead.
  *
  * @param[in] s  The string set to get string from.
  * @param[in] id The id of the string to get.
@@ -1461,6 +1462,7 @@ return iter(me, length(me), tag);
  * @brief Get the value from a string set by its id.
  *
  * @signature TString valueById(s, id);
+ * @deprecated Use the subscript operator (<tt>operator[]</tt>) instead.
  *
  * @param[in] s  The string set to get string from.
  * @param[in] id The id of the string to get.
@@ -1481,12 +1483,24 @@ valueById(StringSet<TString, TSpec> & me,
 // --------------------------------------------------------------------------
 
 /*!
+ * @fn StringSet#assignValue
+ * @brief Set the member of a string set by the position.
+ *
+ * @signature void assignValue(set, pos, s);
+ *
+ * @param[in,out] set The string set to assign value in.
+ * @param[in]     pos The position to modify value at.
+ * @param[in]     s   The string to assign to the given position.
+ */
+
+/*!
  * @fn StringSet#assignValueById
  * @brief Set the member of a string set by its id.
  *
- * @signature TId getValueById(set, s[, id]);
+ * @signature TId assignValueById(set, s[, id]);
+ * @deprecated Use @link StringSet#assignValue @endlink instead.
  *
- * @param[in] set The string to assign value in.
+ * @param[in] set The string set to assign value in.
  * @param[in] s   The string set to assign.
  * @param[in] id  The id of the string to set.  If omitted, <tt>s</tt> will be appended to <tt>set</tt>.
  *
@@ -1521,6 +1535,7 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  * @brief Remove a value from a string set by its id.
  *
  * @signature void removeValueById(set, id);
+ * @deprecated Use @link StringConcept#erase @endlink.
  *
  * @param[in,out] set The string to remove value in.
  * @param[in]     id  The id of the string to remove.
@@ -1537,6 +1552,7 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  * @brief Convert a position/index in the string set to a string id.
  *
  * @signature Id positionToId(set, pos);
+ * @deprecated ID is the same as the position
  *
  * @param[in] set The string to convert positions for.
  * @param[in] pos The position to convert.
@@ -1657,6 +1673,7 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
  * @brief Convert a string id to a position/index in the string set.
  *
  * @signature TPos idToPosition(set, id);
+ * @deprecated ID is the same as the position
  *
  * @param[in] set The string to convert positions for.
  * @param[in] id  The id to convert.
