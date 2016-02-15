@@ -4,7 +4,7 @@ using namespace seqan;
 
 int main()
 {
-    CharString seqFileName = getAbsolutePath("/demos/tutorial/sequence_io/example.fa");
+    CharString seqFileName = getAbsolutePath("demos/tutorial/sequence_io/example.fa");
     CharString id;
     Dna5String seq;
 

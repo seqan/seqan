@@ -77,9 +77,10 @@ void _simulateSequence(TRead & read, TRng & rng, TFrag const & frag,
         for (unsigned j = 0; j < cigar[i].count; ++j)
         {
             // Pick a value between 0 and 1.
+            std::uniform_real_distribution<double> dist(0, 1);
             double x = 1.0;
             while (x == 1.0)
-                x = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<double> >(0, 1));
+                x = dist(rng);
             int num = static_cast<int>(x / 0.25);
 
             // NOTE: We can only insert CGAT, but we can have a polymorphism to N.
@@ -105,13 +106,15 @@ unsigned SangerSequencingSimulator::readLength()
         // Pick uniformly.
         double minLen = sangerOptions.readLengthMin;
         double maxLen = sangerOptions.readLengthMax;
-        double len = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<double> >(minLen, maxLen));
+        std::uniform_real_distribution<double> dist(minLen, maxLen);
+        double len = dist(rng);
         return static_cast<unsigned>(round(len));
     }
     else
     {
         // Pick normally distributed.
-        double len = pickRandomNumber(rng, seqan::Pdf<seqan::Normal>(sangerOptions.readLengthMean, sangerOptions.readLengthError));
+        std::normal_distribution<double> dist(sangerOptions.readLengthMean, sangerOptions.readLengthError);
+        double len = dist(rng);
         return static_cast<unsigned>(round(len));
     }
 }
@@ -191,10 +194,11 @@ void SangerSequencingSimulator::simulateRead(
 void SangerSequencingSimulator::_simulateCigar(TCigarString & cigar, unsigned sampleLength)
 {
     clear(cigar);
+    std::uniform_real_distribution<double> dist(0, 1);
 
     for (unsigned i = 0; i < sampleLength;)
     {
-        double x = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<double> >(0, 1));
+        double x = dist(rng);
         double pos = 1.0 * i / (sampleLength - 1);
         double pMismatch = sangerOptions.probabilityMismatchBegin + pos * (sangerOptions.probabilityMismatchEnd - sangerOptions.probabilityMismatchBegin);
         double pInsert   = sangerOptions.probabilityInsertBegin + pos * (sangerOptions.probabilityInsertEnd - sangerOptions.probabilityInsertBegin);
@@ -263,8 +267,8 @@ void SangerSequencingSimulator::_simulateQualities(
                 stdDev = sangerOptions.qualityErrorStartStdDev + relPos * (sangerOptions.qualityErrorEndStdDev - sangerOptions.qualityErrorStartStdDev);
             }
 
-            seqan::Pdf<seqan::Normal> pdf(mean, stdDev);
-            int q = static_cast<int>(pickRandomNumber(rng, pdf));
+            std::normal_distribution<double> dist(mean, stdDev);
+            int q = static_cast<int>(dist(rng));
             q = std::max(0, std::min(40, q));
             appendValue(quals, (char)('!' + q));
         }

@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_SYSTEM_EVENT_H
 #define SEQAN_HEADER_SYSTEM_EVENT_H
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 #ifdef PLATFORM_WINDOWS
 
@@ -67,13 +67,11 @@ struct Event        // this class mustn't exceed the size of HANDLE (needed by w
         other.hEvent = NULL;
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     Event(Event && other) :
         hEvent(other.hEvent)
     {
         other.hEvent = NULL;
     }
-#endif
 
     ~Event()
     {
@@ -207,13 +205,11 @@ struct Event :
         other.hEvent = NULL;
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     Event(Event && other) :
         hEvent(other.hEvent)
     {
         other.hEvent = NULL;
     }
-#endif
 
     ~Event()
     {

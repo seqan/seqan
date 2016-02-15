@@ -21,7 +21,7 @@
 #ifndef SEQAN_HEADER_CREATE_GFF_H
 #define SEQAN_HEADER_CREATE_GFF_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 //////////////////////////////////////////////////////////////////////////////
 //create readCountGFF
@@ -391,6 +391,6 @@ createTupleCountGFF(TFile & tupleOutput, TTupleCountStore & tupleCountStore, Fra
 //////////////////////////////////////////////////////////////////////////////
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

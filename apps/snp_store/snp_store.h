@@ -36,7 +36,7 @@
 #include <boost/math/distributions.hpp>
 #endif
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////

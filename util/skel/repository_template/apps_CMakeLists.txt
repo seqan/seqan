@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the %(CMAKE_PROJECT_PATH)s apps.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 project (seqan_%(CMAKE_PROJECT_NAME)s)
 
 # Register all apps in core.  The apps will be built in SEQAN_RELEASE mode or

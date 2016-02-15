@@ -258,37 +258,30 @@ void Test_StringSet_Id()
 }
 
 SEQAN_DEFINE_TEST(StringSet_Owner_Default) {
-    SEQAN_CHECKPOINT;
     Test_StringSet< Owner<Default> >();
 }
 
 SEQAN_DEFINE_TEST(StringSet_Concat_Owner_Default) {
-    SEQAN_CHECKPOINT;
     Test_StringSet_Concat< Owner<Default> >();
 }
 
 SEQAN_DEFINE_TEST(StringSet_Concat_Owner_ConcatDirect) {
-    SEQAN_CHECKPOINT;
     Test_StringSet_Concat< Owner<ConcatDirect<> > >();
 }
 
 SEQAN_DEFINE_TEST(StringSet_Id_Dependent_Tight) {
-    SEQAN_CHECKPOINT;
     Test_StringSet_Id< Dependent<Tight> >();
 }
 
 SEQAN_DEFINE_TEST(StringSet_Id_Dependent_Generous) {
-    SEQAN_CHECKPOINT;
     Test_StringSet_Id< Dependent<Generous> >();
 }
 
 SEQAN_DEFINE_TEST(StringSetIdHolder_Char_Dependent_Tight) {
-    SEQAN_CHECKPOINT;
     Test_StringSetIdHolder<StringSet<String<char>, Dependent<Tight> > >();
 }
 
 SEQAN_DEFINE_TEST(StringSetIdHolder_Char_Dependent_Generous) {
-    SEQAN_CHECKPOINT;
     Test_StringSetIdHolder<StringSet<String<char>, Dependent<Generous> > >();
 }
 

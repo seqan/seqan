@@ -253,8 +253,6 @@ struct Reference<Iter<TContainer const, StdIteratorAdaptor> const> :
 // Metafunction StdContainerIterator
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): This is a candidate for not beging publically documented
-
 template <typename TStdContainer>
 struct StdContainerIterator;
 
@@ -447,7 +445,6 @@ template <typename TContainer>
 inline void
 goNext(Iter<TContainer, StdIteratorAdaptor> & me)
 {
-    SEQAN_CHECKPOINT;
     goNext(hostIterator(me));
 }
 
@@ -459,7 +456,6 @@ template <typename TContainer>
 inline void
 goPrevious(Iter<TContainer, StdIteratorAdaptor> & me)
 {
-    SEQAN_CHECKPOINT;
     goPrevious(hostIterator(me));
 }
 
@@ -469,40 +465,40 @@ goPrevious(Iter<TContainer, StdIteratorAdaptor> & me)
 
 template <typename TContainer, typename TIntegral>
 inline Iter<TContainer, StdIteratorAdaptor>
-operator+(Iter<TContainer, StdIteratorAdaptor> const & left,
+operator+(Iter<TContainer, StdIteratorAdaptor> left,
           TIntegral right)
 {
-    SEQAN_CHECKPOINT;
-    return Iter<TContainer, StdIteratorAdaptor>(hostIterator(left) + right);
+    std::advance(hostIterator(left), right);
+    return left;
 }
 
 // for <anonymous enum> types
 template <typename TContainer>
 inline Iter<TContainer, StdIteratorAdaptor>
-operator+(Iter<TContainer, StdIteratorAdaptor> const & left,
+operator+(Iter<TContainer, StdIteratorAdaptor> left,
           int right)
 {
-    SEQAN_CHECKPOINT;
-    return Iter<TContainer, StdIteratorAdaptor>(hostIterator(left) + right);
+    std::advance(hostIterator(left), right);
+    return left;
 }
 
 template <typename TContainer, typename TIntegral>
 inline Iter<TContainer, StdIteratorAdaptor>
 operator+(TIntegral left,
-          Iter<TContainer, StdIteratorAdaptor> const & right)
+          Iter<TContainer, StdIteratorAdaptor> right)
 {
-    SEQAN_CHECKPOINT;
-    return Iter<TContainer, StdIteratorAdaptor>(hostIterator(right) + left);
+    std::advance(hostIterator(right), left);
+    return right;
 }
 
 // for <anonymous enum> types
 template <typename TContainer>
 inline Iter<TContainer, StdIteratorAdaptor>
 operator+(int left,
-          Iter<TContainer, StdIteratorAdaptor> const & right)
+          Iter<TContainer, StdIteratorAdaptor> right)
 {
-    SEQAN_CHECKPOINT;
-    return Iter<TContainer, StdIteratorAdaptor>(hostIterator(right) + left);
+    std::advance(hostIterator(right), left);
+    return right;
 }
 
 // ----------------------------------------------------------------------------
@@ -514,8 +510,7 @@ inline Iter<TContainer, StdIteratorAdaptor> &
 operator+=(Iter<TContainer, StdIteratorAdaptor> & left,
            TIntegral right)
 {
-    SEQAN_CHECKPOINT;
-    hostIterator(left) += right;
+    std::advance(hostIterator(left), right);
     return left;
 }
 
@@ -525,8 +520,7 @@ inline Iter<TContainer, StdIteratorAdaptor> &
 operator+=(Iter<TContainer, StdIteratorAdaptor> & left,
            int right)
 {
-    SEQAN_CHECKPOINT;
-    hostIterator(left) += right;
+    std::advance(hostIterator(left), right);
     return left;
 }
 
@@ -536,21 +530,21 @@ operator+=(Iter<TContainer, StdIteratorAdaptor> & left,
 
 template <typename TContainer, typename TIntegral>
 inline Iter<TContainer, StdIteratorAdaptor>
-operator-(Iter<TContainer, StdIteratorAdaptor> const & left,
+operator-(Iter<TContainer, StdIteratorAdaptor> left,
           TIntegral right)
 {
-    SEQAN_CHECKPOINT;
-    return Iter<TContainer, StdIteratorAdaptor>(hostIterator(left) - right);
+    std::advance(hostIterator(left), -static_cast<typename MakeSigned<TIntegral>::Type>(right));
+    return left;
 }
 
 // for <anonymous enum> types
 template <typename TContainer>
 inline Iter<TContainer, StdIteratorAdaptor>
-operator-(Iter<TContainer, StdIteratorAdaptor> const & left,
+operator-(Iter<TContainer, StdIteratorAdaptor> left,
           int right)
 {
-SEQAN_CHECKPOINT
-    return Iter<TContainer, StdIteratorAdaptor>(hostIterator(left) - right);
+    std::advance(hostIterator(left), -right);
+    return left;
 }
 
 template <typename TContainer>
@@ -558,7 +552,6 @@ inline typename Difference<Iter<TContainer, StdIteratorAdaptor> >::Type
 operator-(Iter<TContainer, StdIteratorAdaptor> const & left,
           Iter<TContainer, StdIteratorAdaptor> const & right)
 {
-    SEQAN_CHECKPOINT;
     return hostIterator(left) - hostIterator(right);
 }
 
@@ -571,8 +564,7 @@ inline Iter<TContainer, StdIteratorAdaptor> &
 operator-=(Iter<TContainer, StdIteratorAdaptor> & left,
            TIntegral right)
 {
-    SEQAN_CHECKPOINT;
-    hostIterator(left) -= right;
+    std::advance(hostIterator(left), -right);
     return left;
 }
 
@@ -582,8 +574,7 @@ inline Iter<TContainer, StdIteratorAdaptor> &
 operator -= (Iter<TContainer, StdIteratorAdaptor> & left,
              int right)
 {
-    SEQAN_CHECKPOINT;
-    hostIterator(left) -= right;
+    std::advance(hostIterator(left), -right);
     return left;
 }
 
@@ -597,7 +588,6 @@ inline void
 assign(Iter<TTargetContainer, StdIteratorAdaptor> & target,
        TSource const & source)
 {
-    SEQAN_CHECKPOINT;
     target.data_iterator = begin(container(source)) + position(source);
 }
 

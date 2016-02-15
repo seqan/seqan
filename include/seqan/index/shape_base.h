@@ -37,7 +37,7 @@
 #ifndef SEQAN_HEADER_SHAPE_BASE_H
 #define SEQAN_HEADER_SHAPE_BASE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
     template <unsigned q>
@@ -86,7 +86,7 @@ namespace SEQAN_NAMESPACE_MAIN
     template <typename TValue, typename TSpec>
     struct Value<Shape<TValue,TSpec> >
     {
-        typedef __uint64 Type;
+        typedef uint64_t Type;
     };
 
 /*!
@@ -361,7 +361,6 @@ namespace SEQAN_NAMESPACE_MAIN
     typename Size< Shape<TValue, TSpec> >::Type
     length(Shape<TValue, TSpec> const &me)
     {
-    SEQAN_CHECKPOINT
         return me.span;
     }
 
@@ -385,7 +384,6 @@ namespace SEQAN_NAMESPACE_MAIN
     typename Size< Shape<TValue, TSpec> >::Type
     weight(Shape<TValue, TSpec> const &me)
     {
-    SEQAN_CHECKPOINT
         return length(me);
     }
 
@@ -406,7 +404,6 @@ namespace SEQAN_NAMESPACE_MAIN
     inline typename Size< Shape<TValue, SimpleShape> >::Type
     resize(Shape<TValue, SimpleShape> & me, TSize new_length)
     {
-    SEQAN_CHECKPOINT
         typedef typename Value< Shape<TValue, SimpleShape> >::Type    THValue;
         me.leftFactor = _intPow((THValue)ValueSize<TValue>::VALUE, new_length - 1);
         me.leftFactor2 = (_intPow((THValue)ValueSize<TValue>::VALUE, new_length) - 1) / (ValueSize<TValue>::VALUE - 1);
@@ -607,7 +604,6 @@ namespace SEQAN_NAMESPACE_MAIN
         Shape<TValue, UngappedShape<q> > &me,
         Tuple<TTValue, SIZE, BitPacked<> > /*const &*/tuple)
     {
-    SEQAN_CHECKPOINT
         if (ValueSize<TValue>::VALUE == (1 << BitsPerValue<TTValue>::VALUE))
             if (q == SIZE)
                 return tuple.i;
@@ -628,7 +624,6 @@ namespace SEQAN_NAMESPACE_MAIN
         Shape<TValue, UngappedShape<q> > &me,
         Tuple<TTValue, SIZE, TPack> /*const &*/tuple)
     {
-    SEQAN_CHECKPOINT
         return me.hValue = _hashTuple2FixedShape(me.hValue, tuple, TValue(), UngappedShape<q>());
     }
 
@@ -705,7 +700,6 @@ namespace SEQAN_NAMESPACE_MAIN
     inline typename Value< Shape<TValue, TSpec> >::Type
     hashNext(Shape<TValue, TSpec> &me, TIter const &it)
     {
-    SEQAN_CHECKPOINT
         // remove first, shift left, and add next character
         typedef typename Value< Shape<TValue, TSpec> >::Type    THValue;
         typedef typename Size< Shape<TValue, TSpec> >::Type        TSize;
@@ -795,7 +789,6 @@ namespace SEQAN_NAMESPACE_MAIN
     inline typename Value< Shape<TValue, TSpec> >::Type
     hash2Upper(Shape<TValue, TSpec> &me, TIter it, TSize charsLeft)
     {
-    SEQAN_CHECKPOINT
         typedef typename Value< Shape<TValue, TSpec> >::Type    THValue;
 
         SEQAN_ASSERT_GT((unsigned)me.span, 0u);
@@ -851,7 +844,6 @@ namespace SEQAN_NAMESPACE_MAIN
     inline typename Value< Shape<TValue, TSpec> >::Type
     hash2Next(Shape<TValue, TSpec> &me, TIter &it, TSize charsLeft)
     {
-    SEQAN_CHECKPOINT
         // remove first, shift left, and add next character
         typedef typename Value< Shape<TValue, TSpec> >::Type    THValue;
 
@@ -892,7 +884,6 @@ namespace SEQAN_NAMESPACE_MAIN
     template <typename TString, typename THash>
     inline void unhash(TString &result, THash hash, unsigned q)
     {
-    SEQAN_CHECKPOINT
         typedef typename Value<TString>::Type    TValue;
 
         resize(result, q);
@@ -930,7 +921,6 @@ namespace SEQAN_NAMESPACE_MAIN
         Shape<TValue, SimpleShape> &me,
         TShapeString const &bitmap)
     {
-    SEQAN_CHECKPOINT
         typedef typename Iterator<TShapeString const>::Type        TIter;
         typedef typename Size<TShapeString const>::Type            TSize;
 
@@ -967,7 +957,6 @@ namespace SEQAN_NAMESPACE_MAIN
         TShapeString &bitmap,
         Shape<TValue, UngappedShape<q> > const &me)
     {
-    SEQAN_CHECKPOINT
 
         clear(bitmap);
         resize(bitmap, length(me), '1');

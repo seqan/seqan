@@ -46,7 +46,7 @@ typedef Value<TReadSeqStore>::Type TReadSeq;
 typedef FragmentStore<>::TContigStore TContigStore;
 typedef Value<TContigStore>::Type TContigStoreElement;
 typedef TContigStoreElement::TContigSeq TContigSeq;
-typedef Index<TReadSeqStore, IndexQGram<Shape<Dna, UngappedShape<11> >, OpenAddressing> > TIndex;
+typedef Index<TReadSeqStore, IndexQGram<UngappedShape<11>, OpenAddressing> > TIndex;
 typedef Pattern<TIndex, Swift<SwiftSemiGlobal> > TPattern;
 typedef Finder<TContigSeq, Swift<SwiftSemiGlobal> > TFinder;
 typedef FragmentStore<>::TAlignedReadStore TAlignedReadStore;

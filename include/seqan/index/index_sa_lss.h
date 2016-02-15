@@ -56,7 +56,7 @@
 #ifndef SEQAN_HEADER_INDEX_SA_LSS_H
 #define SEQAN_HEADER_INDEX_SA_LSS_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 template <typename TValue>

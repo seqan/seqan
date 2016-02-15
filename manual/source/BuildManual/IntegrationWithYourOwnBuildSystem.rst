@@ -109,7 +109,6 @@ default
   0
 
 meaning
- If set to 1, checkpoints are enabled.
  This makes the code very slow, however, and should only be used when running the tests.
  Has to be set to 1 for tests to work.
 

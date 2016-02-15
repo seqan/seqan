@@ -109,7 +109,6 @@ public:
         : data_container(_toPointer(container_)),
           data_iterator(begin(container_))
     {
-        SEQAN_CHECKPOINT;
     }
     */
 
@@ -118,7 +117,6 @@ public:
             : data_container(_toPointer(container_)),
               data_iterator(it_)
     {
-        SEQAN_CHECKPOINT;
     }
 
     SEQAN_HOST_DEVICE
@@ -126,7 +124,6 @@ public:
             : data_container(other_.data_container),
               data_iterator(other_.data_iterator)
     {
-        SEQAN_CHECKPOINT;
     }
 
     // TODO(holtgrew): Use this technique to the other Iter specializations.
@@ -189,7 +186,6 @@ public:
     SEQAN_HOST_DEVICE
     operator TIterator() const
     {
-        SEQAN_CHECKPOINT;
         return data_iterator;
     }
 };
@@ -256,7 +252,6 @@ struct Chunk<Iter<TContainer, AdaptorIterator<TValue*, TSpec> > >
 //inline SEQAN_HOST_DEVICE typename Parameter_<TContainer>::Type
 //container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 //{
-//    SEQAN_CHECKPOINT;
 //    return _toParameter<TContainer>(me.data_container);
 //}
 //
@@ -264,7 +259,6 @@ struct Chunk<Iter<TContainer, AdaptorIterator<TValue*, TSpec> > >
 //inline SEQAN_HOST_DEVICE typename Parameter_<TContainer>::Type
 //container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 //{
-//    SEQAN_CHECKPOINT;
 //    return _toParameter<TContainer>(me.data_container);
 //}
 
@@ -325,7 +319,6 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE TIterator &
 hostIterator(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
-    SEQAN_CHECKPOINT;
     return me.data_iterator;
 }
 
@@ -333,7 +326,6 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE TIterator const &
 hostIterator(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
-    SEQAN_CHECKPOINT;
     return me.data_iterator;
 }
 
@@ -345,7 +337,6 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE typename Position<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
 position(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
-    SEQAN_CHECKPOINT;
     return hostIterator(me) - begin(container(me), Standard());
 }
 
@@ -354,7 +345,6 @@ inline SEQAN_HOST_DEVICE typename Position<Iter<TContainer, AdaptorIterator<TIte
 position(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me,
          TContainer2 const &)
 {
-    SEQAN_CHECKPOINT;
     return hostIterator(me) - begin(container(me), Standard());
 }
 
@@ -377,7 +367,6 @@ inline SEQAN_HOST_DEVICE void
 setPosition(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
             TPosition pos_)
 {
-    SEQAN_CHECKPOINT;
     hostIterator(me) = begin(container(me), Standard()) + pos_;
 }
 
@@ -389,7 +378,6 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE typename Reference<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > >::Type
 value(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
-    SEQAN_CHECKPOINT;
     return value(hostIterator(me));
 }
 
@@ -397,7 +385,6 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE typename Reference<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
 value(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
-    SEQAN_CHECKPOINT;
     return value(hostIterator(me));
 }
 
@@ -409,7 +396,6 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > >::Type
 getValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
-    SEQAN_CHECKPOINT;
     return getValue(hostIterator(me));
 }
 
@@ -417,7 +403,6 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
 getValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
-    SEQAN_CHECKPOINT;
     return getValue(hostIterator(me));
 }
 
@@ -430,7 +415,6 @@ inline SEQAN_HOST_DEVICE void
 assignValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
             TValue const & _value)
 {
-    SEQAN_CHECKPOINT;
     assignValue(hostIterator(me), _value);
 }
 
@@ -439,7 +423,6 @@ inline SEQAN_HOST_DEVICE void
 assignValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me,
             TValue const & _value)
 {
-    SEQAN_CHECKPOINT;
     assignValue(hostIterator(me), _value);
 }
 
@@ -452,7 +435,6 @@ inline SEQAN_HOST_DEVICE void
 moveValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
           TValue const & _value)
 {
-    SEQAN_CHECKPOINT;
     moveValue(hostIterator(me), _value);
 }
 template <typename TContainer, typename TIterator, typename TSpec, typename TValue>
@@ -460,7 +442,6 @@ inline SEQAN_HOST_DEVICE void
 moveValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me,
           TValue const & _value)
 {
-    SEQAN_CHECKPOINT;
     moveValue(hostIterator(me), _value);
 }
 
@@ -473,7 +454,6 @@ inline SEQAN_HOST_DEVICE bool
 operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
            Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 {
-    SEQAN_CHECKPOINT;
     return hostIterator(left) == hostIterator(right);
 }
 
@@ -484,7 +464,6 @@ operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 //operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 //           typename IterComplementConst<TIterator>::Type const & right)
 //{
-//    SEQAN_CHECKPOINT;
 //    return hostIterator(left) == right;
 //}
 
@@ -493,7 +472,6 @@ inline SEQAN_HOST_DEVICE bool
 operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
            TIterator const & right)
 {
-    SEQAN_CHECKPOINT;
     return hostIterator(left) == right;
 }
 
@@ -504,7 +482,6 @@ operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 //operator==(typename IterComplementConst<TIterator>::Type const & left,
 //             Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 //{
-//    SEQAN_CHECKPOINT;
 //    return left == hostIterator(right);
 //}
 
@@ -513,7 +490,6 @@ inline SEQAN_HOST_DEVICE bool
 operator==(TIterator const & left,
            Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 {
-    SEQAN_CHECKPOINT;
     return left == hostIterator(right);
 }
 
@@ -526,7 +502,6 @@ inline SEQAN_HOST_DEVICE bool
 operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
            Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 {
-    SEQAN_CHECKPOINT;
     return hostIterator(left) != hostIterator(right);
 }
 
@@ -537,7 +512,6 @@ operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 //operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 //           typename IterComplementConst<TIterator>::Type const & right)
 //{
-//    SEQAN_CHECKPOINT;
 //    return hostIterator(left) != right;
 //}
 
@@ -546,7 +520,6 @@ inline SEQAN_HOST_DEVICE bool
 operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
            TIterator const & right)
 {
-    SEQAN_CHECKPOINT;
     return hostIterator(left) != right;
 }
 
@@ -557,7 +530,6 @@ operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 //operator!=(typename IterComplementConst<TIterator>::Type const & left,
 //           Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 //{
-//    SEQAN_CHECKPOINT;
 //    return left != hostIterator(right);
 //}
 
@@ -566,7 +538,6 @@ inline SEQAN_HOST_DEVICE bool
 operator!=(TIterator const & left,
            Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 {
-    SEQAN_CHECKPOINT;
     return left != hostIterator(right);
 }
 
@@ -578,7 +549,6 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE void
 goNext(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
-    SEQAN_CHECKPOINT;
     goNext(hostIterator(me));
 }
 
@@ -590,7 +560,6 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE void
 goPrevious(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
-    SEQAN_CHECKPOINT;
     goPrevious(hostIterator(me));
 }
 
@@ -605,7 +574,6 @@ inline Iter<TContainer, AdaptorIterator<TIterator, TSpec> >
 operator+(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
           TIntegral right)
 {
-    SEQAN_CHECKPOINT;
     return Iter<TContainer, AdaptorIterator<TIterator, TSpec> >(container(left), hostIterator(left) + right);
 }
 
@@ -615,7 +583,6 @@ inline Iter<TContainer, AdaptorIterator<TIterator, TSpec> >
 operator+(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
           int right)
 {
-    SEQAN_CHECKPOINT;
     return Iter<TContainer, AdaptorIterator<TIterator, TSpec> >(container(left), hostIterator(left) + right);
 }
 
@@ -624,7 +591,6 @@ inline Iter<TContainer, AdaptorIterator<TIterator, TSpec> >
 operator+(TIntegral left,
           Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 {
-    SEQAN_CHECKPOINT;
     return Iter<TContainer, AdaptorIterator<TIterator, TSpec> >(container(right), hostIterator(right) + left);
 }
 
@@ -634,7 +600,6 @@ inline Iter<TContainer, AdaptorIterator<TIterator, TSpec> >
 operator+(int left,
           Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 {
-    SEQAN_CHECKPOINT;
     return Iter<TContainer, AdaptorIterator<TIterator, TSpec> >(container(right), hostIterator(right) + left);
 }
 
@@ -647,7 +612,6 @@ inline Iter<TContainer, AdaptorIterator<TIterator, TSpec> > &
 operator+=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & left,
            TIntegral right)
 {
-    SEQAN_CHECKPOINT;
     hostIterator(left) += right;
     return left;
 }
@@ -658,7 +622,6 @@ inline Iter<TContainer, AdaptorIterator<TIterator, TSpec> > &
 operator+=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & left,
            int right)
 {
-    SEQAN_CHECKPOINT;
     hostIterator(left) += right;
     return left;
 }
@@ -672,7 +635,6 @@ inline Iter<TContainer, AdaptorIterator<TIterator, TSpec> >
 operator-(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
           TIntegral right)
 {
-    SEQAN_CHECKPOINT;
     return Iter<TContainer, AdaptorIterator<TIterator, TSpec> >(container(left), hostIterator(left) - right);
 }
 
@@ -682,7 +644,6 @@ inline Iter<TContainer, AdaptorIterator<TIterator, TSpec> >
 operator-(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
           int right)
 {
-    SEQAN_CHECKPOINT;
     return Iter<TContainer, AdaptorIterator<TIterator, TSpec> >(container(left), hostIterator(left) - right);
 }
 
@@ -692,7 +653,6 @@ inline typename Difference<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > 
 operator-(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
           Iter<TContainer2, AdaptorIterator<TIterator2, TSpec2> > const & right)
 {
-    SEQAN_CHECKPOINT;
     return hostIterator(left) - hostIterator(right);
 }
 
@@ -705,7 +665,6 @@ inline Iter<TContainer, AdaptorIterator<TIterator, TSpec> > &
 operator-=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & left,
            TIntegral right)
 {
-    SEQAN_CHECKPOINT;
     hostIterator(left) -= right;
     return left;
 }
@@ -716,7 +675,6 @@ inline Iter<TContainer, AdaptorIterator<TIterator, TSpec> > &
 operator-=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & left,
            int right)
 {
-    SEQAN_CHECKPOINT;
     hostIterator(left) -= right;
     return left;
 }
@@ -729,7 +687,6 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE bool
 atEnd(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
-    SEQAN_CHECKPOINT;
     return atEnd(hostIterator(me), container(me));
 }
 
@@ -745,7 +702,6 @@ inline SEQAN_HOST_DEVICE void
 assign(Iter<TTargetContainer, AdaptorIterator<TIterator, TSpec> > & target,
        TSource const & source)
 {
-    SEQAN_CHECKPOINT;
     target.data_container = container(source);
     target.data_iterator = begin(container(source)) + position(source);
 }

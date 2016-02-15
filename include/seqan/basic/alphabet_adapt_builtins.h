@@ -32,7 +32,7 @@
 // Author: Andreas Gogol-Döring <andreas.doering@mdc-berlin.de>
 // ==========================================================================
 // Adaptions of builting types such as bool, int, but also "builtin-level"
-// user defined types such as wchar_t, __int64, __uint64 to the alphabet
+// user defined types such as wchar_t, int64_t, uint64_t to the alphabet
 // concepts they are in.
 // ==========================================================================
 

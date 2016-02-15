@@ -542,8 +542,8 @@ inline void setMinValue(ArgParseArgument & me, const std::string minValue)
     }
     else if (isInt64Argument(me))
     {
-        SEQAN_CHECK(_isCastable<__int64>(minValue), "The maximal value for a 64 integer argument must be a 64 bit integer");
-        _intervalAssert<__int64>(minValue, me.maxValue);
+        SEQAN_CHECK(_isCastable<int64_t>(minValue), "The maximal value for a 64 integer argument must be a 64 bit integer");
+        _intervalAssert<int64_t>(minValue, me.maxValue);
         me.minValue = minValue;
     }
     else
@@ -827,7 +827,7 @@ inline void _checkValue(ArgParseArgument const & me, std::string val, unsigned i
         _checkNumericArgument<int>(me, val);
 
     if (isInt64Argument(me))
-        _checkNumericArgument<__int64>(me, val);
+        _checkNumericArgument<int64_t>(me, val);
 
     if (isDoubleArgument(me))
         _checkNumericArgument<double>(me, val);

@@ -36,7 +36,7 @@
 #ifndef SEQAN_HEADER_MODIFIER_ITERATOR_H
 #define SEQAN_HEADER_MODIFIER_ITERATOR_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 // ==========================================================================

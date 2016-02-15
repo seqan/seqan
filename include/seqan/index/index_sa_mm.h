@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_SA_MM_H
 #define SEQAN_HEADER_INDEX_SA_MM_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
     struct ManberMyers {};
@@ -193,7 +193,6 @@ namespace SEQAN_NAMESPACE_MAIN
         ManberMyers const &alg,
         TSize maxLCP)
     {
-        SEQAN_CHECKPOINT;
         createSuffixArrayPart(SA, s, alg, maxLCP, ValueSize< typename Value<TText>::Type >::VALUE);
     }
 }

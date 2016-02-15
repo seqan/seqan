@@ -95,7 +95,6 @@ public:
     inline typename Reference<ConcatenatorManyToOne>::Type
     operator[] (TPos pos)
     {
-        SEQAN_CHECKPOINT;
         return value(*this, pos);
     }
 
@@ -103,7 +102,6 @@ public:
     inline typename Reference<ConcatenatorManyToOne const>::Type
     operator[] (TPos pos) const
     {
-        SEQAN_CHECKPOINT;
         return value(*this, pos);
     }
 };

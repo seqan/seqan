@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_POOL_BASE_H
 #define SEQAN_HEADER_POOL_BASE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 /*!
@@ -1238,7 +1238,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
         template < typename TValue, typename TSpec >
         inline bool beginWrite(Pool< TValue, TSpec > &me) {
-SEQAN_CHECKPOINT
             return me.beginWrite();
         }
 
@@ -1275,7 +1274,6 @@ SEQAN_CHECKPOINT
 
         template < typename TValue, typename TSpec >
         inline bool eof(Pool< TValue, TSpec > &me) {
-SEQAN_CHECKPOINT
             return control(me, ControlEof());
         }
 
@@ -1296,7 +1294,6 @@ SEQAN_CHECKPOINT
  */
         template < typename TValue, typename TSpec >
         inline bool beginRead(Pool< TValue, TSpec > &me) {
-SEQAN_CHECKPOINT
             return control(me, ControlBeginRead());
         }
 /*!
@@ -1314,7 +1311,6 @@ SEQAN_CHECKPOINT
  */
         template < typename TValue, typename TSpec >
         inline bool endRead(Pool< TValue, TSpec > &me) {
-SEQAN_CHECKPOINT
             return control(me, ControlEndRead());
         }
 

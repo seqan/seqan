@@ -440,12 +440,12 @@ struct Reference<String<TValue, Packed<THostspec> > const> :
 template <typename TValue, typename THostspec>
 struct Size<String<TValue, Packed<THostspec> > >
 {
-    typedef __int64 Type;
+    typedef int64_t Type;
 };
 template <typename TValue, typename THostspec>
 struct Size<String<TValue, Packed<THostspec> > const>
 {
-    typedef __int64 Type;
+    typedef int64_t Type;
 };
 */
 
@@ -752,8 +752,8 @@ getObjectId(String<TValue, Packed<THostspec> > const & me)
 template <typename TValue, typename THostspec, typename TPos>
 inline typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type
 iter(String<TValue, Packed<THostspec> > & me,
-     TPos pos,
-     Standard)
+     TPos const pos,
+     Standard const &)
 {
     typedef typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type TIterator;
     return TIterator(me, pos);
@@ -762,8 +762,8 @@ iter(String<TValue, Packed<THostspec> > & me,
 template <typename TValue, typename THostspec, typename TPos>
 inline typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type
 iter(String<TValue, Packed<THostspec> > const & me,
-     TPos pos,
-     Standard)
+     TPos const pos,
+     Standard const &)
 {
     typedef typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type TIterator;
     return TIterator(me, pos);
@@ -776,7 +776,7 @@ iter(String<TValue, Packed<THostspec> > const & me,
 template <typename TValue, typename THostspec>
 inline typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type
 begin(String<TValue, Packed<THostspec> > & me,
-      Standard)
+     Standard const &)
 {
     typedef typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type TIterator;
     return TIterator(me);
@@ -785,7 +785,7 @@ begin(String<TValue, Packed<THostspec> > & me,
 template <typename TValue, typename THostspec>
 inline typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type
 begin(String<TValue, Packed<THostspec> > const & me,
-      Standard)
+     Standard const &)
 {
     typedef typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type TIterator;
     return TIterator(me);
@@ -798,7 +798,7 @@ begin(String<TValue, Packed<THostspec> > const & me,
 template <typename TValue, typename THostspec>
 inline typename Iterator<String<TValue, Packed<THostspec> >, Standard>::Type
 end(String<TValue, Packed<THostspec> > & me,
-    Standard)
+     Standard const &)
 {
     return iter(me, length(me), Standard());
 }
@@ -806,7 +806,7 @@ end(String<TValue, Packed<THostspec> > & me,
 template <typename TValue, typename THostspec>
 inline typename Iterator<String<TValue, Packed<THostspec> > const, Standard>::Type
 end(String<TValue, Packed<THostspec> > const & me,
-    Standard)
+     Standard const &)
 {
     return iter(me, length(me), Standard());
 }
@@ -818,7 +818,7 @@ end(String<TValue, Packed<THostspec> > const & me,
 template <typename TValue, typename THostspec, typename TPos>
 inline typename Reference<String<TValue, Packed<THostspec> > >::Type
 value(String<TValue, Packed<THostspec> > & me,
-      TPos const & pos)
+      TPos const pos)
 {
     return *iter(me, pos, Standard());
 }
@@ -826,7 +826,7 @@ value(String<TValue, Packed<THostspec> > & me,
 template <typename TValue, typename THostspec, typename TPos>
 inline typename Reference<String<TValue, Packed<THostspec> > const>::Type
 value(String<TValue, Packed<THostspec> > const & me,
-      TPos const & pos)
+      TPos const pos)
 {
     typedef String<TValue, Packed<THostspec> > TPackedString;
     typedef PackedTraits_<TPackedString> TTraits;
@@ -916,7 +916,6 @@ _arrayConstructCopyDefault(TSource1 source_begin,
                            TSource2 source_end,
                            TTarget target_begin)
 {
-    SEQAN_CHECKPOINT;
     while (source_begin != source_end)
     {
         // NOTE(holtgrew): getValue() is used here since value() could return
@@ -1521,21 +1520,10 @@ valueConstruct(Iter<TPackedString, Packed<THostspec> > const & /*it*/)
 template <typename TPackedString, typename THostspec, typename TParam>
 inline void
 valueConstruct(Iter<TPackedString, Packed<THostspec> > const & it,
-               TParam SEQAN_FORWARD_CARG param_)
+               TParam && param_)
 {
-    assignValue(it, SEQAN_FORWARD(TParam, param_));
+    assignValue(it, std::forward<TParam>(param_));
 }
-
-#ifndef SEQAN_CXX11_STANDARD
-template <typename TPackedString, typename THostspec, typename TParam>
-inline void
-valueConstruct(Iter<TPackedString, Packed<THostspec> > const & it,
-               TParam const & param_,
-               Move const & /*tag*/)
-{
-    moveValue(it, param_);
-}
-#endif
 
 // --------------------------------------------------------------------------
 // Function valueDestruct()

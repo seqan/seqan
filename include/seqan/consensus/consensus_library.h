@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_CONSENSUS_LIBRARY_H
 #define SEQAN_HEADER_CONSENSUS_LIBRARY_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,6 @@ _getAlignmentStatistics(Nothing&,
                          TCargo1,
                          TCargo2)
 {
-    SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -63,7 +62,6 @@ _getAlignmentStatistics(String<TValue, TSpec>& dist,
                          TCargo1,
                          TCargo2 quality)
 {
-    SEQAN_CHECKPOINT
     dist[i*nseq + j] = (TValue) (100 - quality);
 }
 
@@ -78,7 +76,6 @@ _getAlignmentStatistics(Graph<Undirected<TCargo, TSpec> >& dist,
                          TCargo1,
                          TCargo2 quality)
 {
-    SEQAN_CHECKPOINT
     addEdge(dist, i, j, (TCargo) (100 - quality));
 }
 
@@ -572,6 +569,6 @@ appendSegmentMatches(StringSet<TString, TSpec> const & str,
     }
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

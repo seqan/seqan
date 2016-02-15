@@ -36,7 +36,6 @@
 #include <typeinfo>
 
 #define SEQAN_DEBUG
-#define SEQAN_ENABLE_CHECKPOINTS 0
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>

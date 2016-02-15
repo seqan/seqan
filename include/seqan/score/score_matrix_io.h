@@ -227,7 +227,7 @@ write(TTarget & target,
     TValue const * tab = sc.data_tab;
 
     TSeqValueSize const VALUE_SIZE = ValueSize<TSequenceValue>::VALUE;
-    __uint32 const TAB_SIZE = VALUE_SIZE * VALUE_SIZE;
+    uint32_t const TAB_SIZE = VALUE_SIZE * VALUE_SIZE;
 
     // -----------------------------------------------------------------------
     // Write meta data.

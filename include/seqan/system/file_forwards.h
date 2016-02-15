@@ -41,7 +41,7 @@
 // CLASSES
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 //____________________________________________________________________________
 // TagAllocateAligned_
@@ -153,7 +153,7 @@ template <typename TSize > inline TSize waitForAny(AiocbWrapper const * const co
 
 template <typename TSpec, typename TValue, typename TSize > inline bool write(File<Sync<TSpec> > & me, TValue const *memPtr, TSize const count);           // "include/seqan/file/file_sync.h"(231)
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -157,8 +157,8 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        For generating random numbers we use the :dox:`MersenneTwisterRng` which is a specialization of the random number generator class :dox:`Rng`.
-        The random numbers returned by :dox:`Rng#pickRandomNumber` are arbitrary ``unsigned int`` values which we downscale to values between 0 and 3 and convert into :dox:`Dna` characters.
+        For generating random numbers we use the `std::mt19937 <http://www.cplusplus.com/reference/random/mt19937/>`_.
+        The random numbers returned by the random number engine are arbitrary ``unsigned int`` values which we downscale to values between 0 and 3 and convert into :dox:`Dna` characters.
         The 3 generated strings are of random length and appended to a :dox:`StringSet`.
         The main algorithmus is encapsulated in a template function ``qgramCounting`` to easily switch between the two :dox:`IndexQGram` specializations.
 

@@ -21,7 +21,7 @@
 #ifndef SEQAN_HEADER_BASE_H
 #define SEQAN_HEADER_BASE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -258,6 +258,6 @@ isElement_unsorted(TValue const & value, String<TValue> const & string)
 //////////////////////////////////////////////////////////////////////////////
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

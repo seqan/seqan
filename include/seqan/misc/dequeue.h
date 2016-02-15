@@ -38,7 +38,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 /*!
@@ -86,7 +86,6 @@ public:
     inline typename Reference<Dequeue>::Type
     operator[] (TPos pos)
     {
-        SEQAN_CHECKPOINT;
         return value(*this, pos);
     }
 
@@ -94,7 +93,6 @@ public:
     inline typename Reference<Dequeue const>::Type
     operator[] (TPos pos) const
     {
-        SEQAN_CHECKPOINT;
         return value(*this, pos);
     }
 };

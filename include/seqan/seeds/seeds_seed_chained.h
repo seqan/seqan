@@ -470,7 +470,6 @@ template <typename TConfig>
 inline typename Reference<Seed<ChainedSeed, TConfig> >::Type
 back(Seed<ChainedSeed, TConfig> & seed)
 {
-    SEQAN_CHECKPOINT;
     return back(seed._seedDiagonals);
 }
 
@@ -478,7 +477,6 @@ template <typename TConfig>
 inline typename Reference<Seed<ChainedSeed, TConfig> const>::Type
 back(Seed<ChainedSeed, TConfig> const & seed)
 {
-    SEQAN_CHECKPOINT;
     return back(seed._seedDiagonals);
 }
 

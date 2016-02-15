@@ -57,111 +57,15 @@ namespace seqan {
 
 //  See http://www.boost.org/libs/static_assert for documentation.
 
-#ifdef SEQAN_CXX11_STANDARD
-#  define SEQAN_STATIC_ASSERT_MSG( B, Msg ) static_assert(B, Msg)
-#else
-#  define SEQAN_STATIC_ASSERT_MSG( B, Msg ) SEQAN_STATIC_ASSERT( B )
-#endif
+#define SEQAN_STATIC_ASSERT_MSG( B, Msg ) static_assert(B, Msg)
 
 //
 // If the compiler issues warnings about old C style casts,
 // then enable this:
 //
-//#if defined(__GNUC__) && ((__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 4)))
-//#  define BOOST_STATIC_ASSERT_BOOL_CAST( x ) ((x) == 0 ? false : true)
-//#else
-#  define SEQAN_STATIC_ASSERT_BOOL_CAST(x) (bool)(x)
-//#endif
+#define SEQAN_STATIC_ASSERT_BOOL_CAST(x) (bool)(x)
 
-#ifdef SEQAN_CXX11_STANDARD
-#  define SEQAN_STATIC_ASSERT( B ) static_assert(B, #B)
-#else
-
-// HP aCC cannot deal with missing names for template value parameters
-template <bool x> struct STATIC_ASSERTION_FAILURE;
-
-template <> struct STATIC_ASSERTION_FAILURE<true> { enum { value = 1 }; };
-
-// HP aCC cannot deal with missing names for template value parameters
-template<int x> struct static_assert_test{};
-
-//
-// Implicit instantiation requires that all member declarations be
-// instantiated, but that the definitions are *not* instantiated.
-//
-// It's not particularly clear how this applies to enum's or typedefs;
-// both are described as declarations [7.1.3] and [7.2] in the standard,
-// however some compilers use "delayed evaluation" of one or more of
-// these when implicitly instantiating templates.  We use typedef declarations
-// by default, but try defining SEQAN_USE_ENUM_STATIC_ASSERT if the enum
-// version gets better results from your compiler...
-//
-// Implementation:
-// Both of these versions rely on sizeof(incomplete_type) generating an error
-// message containing the name of the incomplete type.  We use
-// "STATIC_ASSERTION_FAILURE" as the type name here to generate
-// an eye catching error message.  The result of the sizeof expression is either
-// used as an enum initialiser, or as a template argument depending which version
-// is in use...
-// Note that the argument to the assert is explicitly cast to bool using old-
-// style casts: too many compilers currently have problems with static_cast
-// when used inside integral constant expressions.
-//
-//#if !defined(SEQAN_BUGGY_INTEGRAL_CONSTANT_EXPRESSIONS)
-/*
-#if defined(SEQAN_MSVC) && (SEQAN_MSVC < 1300)
-// __LINE__ macro broken when -ZI is used see Q199057
-// fortunately MSVC ignores duplicate typedef's.
-#define SEQAN_STATIC_ASSERT( B ) \
-   typedef static_assert_test<\
-      sizeof(STATIC_ASSERTION_FAILURE< (bool)( B ) >)\
-      > seqan_static_assert_typedef_
-#elif defined(SEQAN_MSVC)
-*/
-#if defined(PLATFORM_WINDOWS_VS)
-#define SEQAN_STATIC_ASSERT( B ) \
-   typedef static_assert_test<\
-      sizeof(STATIC_ASSERTION_FAILURE< SEQAN_STATIC_ASSERT_BOOL_CAST ( B ) >)>\
-         SEQAN_JOIN(seqan_static_assert_typedef_, __COUNTER__)
-/*
-#elif defined(SEQAN_INTEL_CXX_VERSION) || defined(SEQAN_SA_GCC_WORKAROUND)
-// agurt 15/sep/02: a special care is needed to force Intel C++ issue an error
-// instead of warning in case of failure
-# define SEQAN_STATIC_ASSERT( B ) \
-    typedef char SEQAN_JOIN(seqan_static_assert_typedef_, __LINE__) \
-        [ STATIC_ASSERTION_FAILURE< SEQAN_STATIC_ASSERT_BOOL_CAST( B ) >::value ]
-#elif defined(__sgi)
-// special version for SGI MIPSpro compiler
-#define SEQAN_STATIC_ASSERT( B ) \
-   SEQAN_STATIC_CONSTANT(bool, \
-     SEQAN_JOIN(boost_static_assert_test_, __LINE__) = ( B )); \
-   typedef static_assert_test<\
-     sizeof(STATIC_ASSERTION_FAILURE< \
-       SEQAN_JOIN(boost_static_assert_test_, __LINE__) >)>\
-         SEQAN_JOIN(seqan_static_assert_typedef_, __LINE__)
-#elif SEQAN_WORKAROUND(__MWERKS__, <= 0x3003)
-// special version for CodeWarrior <= 8.x
-#define SEQAN_STATIC_ASSERT( B ) \
-   SEQAN_STATIC_CONSTANT(int, \
-     SEQAN_JOIN(boost_static_assert_test_, __LINE__) = \
-       sizeof(STATIC_ASSERTION_FAILURE< SEQAN_STATIC_ASSERT_BOOL_CAST( B ) >) )
-*/
-#else
-// generic version
-#define SEQAN_STATIC_ASSERT( B ) \
-   typedef static_assert_test<\
-      sizeof(STATIC_ASSERTION_FAILURE< SEQAN_STATIC_ASSERT_BOOL_CAST( B ) >)>\
-         SEQAN_JOIN(seqan_static_assert_typedef_, __LINE__) SEQAN_UNUSED
-#endif
-/*
-#else
-// alternative enum based implementation:
-#define SEQAN_STATIC_ASSERT( B ) \
-   enum { SEQAN_JOIN(boost_static_assert_enum_, __LINE__) \
-      = sizeof(STATIC_ASSERTION_FAILURE< (bool)( B ) >) }
-#endif
-*/
-#endif
+#define SEQAN_STATIC_ASSERT( B ) static_assert(B, #B)
 
 // ---------------------------------------------------------------------------
 // ==> boost/parameter/aux_/paranthesized_type.hpp <==
@@ -584,7 +488,7 @@ template <class T> SEQAN_HOST_DEVICE inline void ignoreUnusedVariableWarning(T c
  *
  * @signature SEQAN_CONCEPT_REFINE(name, params, refinedConcepts)
  *
- * @param params Template paramter list in parantheses, e.g. (T) or (T1)(T2).
+ * @param params Template parameter list in parantheses, e.g. (T) or (T1)(T2).
  *               Typically, template parameters are models, i.e. one or multiple
  *               classes that should be checked for fulfilling a concept.This is
  *               a sequence of the Boost Preprocessor Library, read <a
