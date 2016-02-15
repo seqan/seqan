@@ -355,7 +355,7 @@ macro (seqan_configure_cpack_app APP_NAME APP_DIR)
   if (CMAKE_SYSTEM_NAME MATCHES "Windows")
     set (CPACK_GENERATOR "ZIP")
   else ()
-    set (CPACK_GENERATOR "ZIP;TBZ2")
+    set (CPACK_GENERATOR "ZIP;TXZ")
   endif ()
 
   # Set defaults for CPACK_PACKAGE_DESCRIPTION_FILE and CPACK_RESOURCE_FILE_LICENSE
