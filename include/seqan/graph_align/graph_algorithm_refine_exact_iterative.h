@@ -551,7 +551,7 @@ matchRefinement(TAlignmentString & alis,
 #endif
 
     ////////////////////////////////////////////////////////////////
-    TValue numSequences = length(seq);
+    size_t numSequences = length(seq);
     //weird ID --> good ID map
     std::map<const void * ,int> seq_map;
     for(int i = 0; i < (int) numSequences; ++i)
@@ -593,8 +593,8 @@ matchRefinement(TAlignmentString & alis,
             _getSeqBeginAndEnd(*ali_it,seq_map,seq_i_id,begin_i,end_i,i);
             seq_i_pos = idToPosition(seq,seq_i_id);
 
-            all_node_queues[seq_i_pos].insert(begin_i);
-            all_node_queues[seq_i_pos].insert(end_i);
+            all_node_queues[seq_i_pos].insert(static_cast<TValue>(begin_i));
+            all_node_queues[seq_i_pos].insert(static_cast<TValue>(end_i));
         }
         ++ali_it;
     }
