@@ -4,6 +4,86 @@ SeqAn Changelog
 This file summarizes the changes to the SeqAn library and apps.
 
 
+Release 2.1.0
+~~~~~~~~~~~~~
+
+Major release with many new features and applications. 
+Note, the majority of the modules are backward compatible to the previous version.
+For a complete list of changes visit `GitHub <https://github.com/seqan/seqan/pulls?q=is%3Apr+is%3Amerged++milestone%3A%22Release+2.1.0%22+>`_.
+
+Library Updates and Selected Bugfixes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Apps:
+    - Yara: fixed warnings, build errors and bugs, updated test files
+    - Yara: new features (compute mapping qualities, estimate distribution of paired-end insert sizes)
+    - Yara: follow SAM recommended practices for paired-end reads
+    - T-Coffee: new feature ``deep coffee`` (alignining several hundred sequences)
+    - Lambda: simplified find interface
+    - Gustaf: introduced two phase breakpoint combination; updated readme and help messages
+    - Removed old apps: Razers1, Razers2, Flexbar and SeqCons in favor of newer releases
+
+- Alignments:
+    - added feature to count gaps to the left a of a position/iterator
+    - disallow wrong use of scoring scheme for Hirschberg algorithm
+    - extended AlignmentStats by number of gaps and length of the alignment
+    - fixed evaluation of alignment
+    - using gaps for integrateAlign and align_extend
+
+- BLAST:
+    - BLAST module with e-values, supporting BLAST tabular (with and without comments) and BLAST reports (pairwise)
+
+- Indices:
+    - added public function for trie and radix tree construction
+    - Q-gram Index: allows sorting the hash-table according to the number of occurrences to reduce cache misses
+
+- IO:
+    - Tabix index: allowing range queries on chromosomal file formats such as VCF
+    - Fai Index: optimized fasta index construction
+    - BAM: added function to write tags from BamTagsDict to the tags field of a bam record
+    - BAM: allowed BamTagsDict to take const CharStrings
+
+- Misc:
+    - fixed Iupac alphabet by replacing ``=`` by ``U``
+    - added missing ``O`` character to amino acid alphabet
+    - SIMD Vector parallelization
+    - Argument Parser: a few new features such as help string for advanced options
+    - removed random number engine and replaced it by the STL one
+    - ZipIterator & ZipContainerView: iterating simultaneously over multiple containers
+    - extended edges in graphs to store a reference to its source
+
+- Modifier:
+    - ModifiedString ModPos: iterating over a sequence in a predefined order
+    - overload save() of ModifiedStrings for const strings
+    - fixed Modified Iterators and ModView
+
+- Sequences:
+    - Journaled String Tree: added new data structure, find interface and online search algorithms
+
+- Streams:
+    - improved ZipStream
+
+Documentation Updates
+^^^^^^^^^^^^^^^^^^^^^
+
+- Dox:
+    - added version selector in API dox
+
+
+Infrastructure Updates
+^^^^^^^^^^^^^^^^^^^^^^
+
+- Build System:
+    - Major improvements to build system
+    - C++11 required
+    - fixed GCC 5 warnings
+    - fixed Visual Studio compiler warnings and bugs
+    - fixed build errors and compiler warnings on windows platforms
+
+- Continuous Integration:
+    - dropped GCC 4.8 and Clang 3.4 builds
+
+
 Release 2.0.2
 ~~~~~~~~~~~~~
 
