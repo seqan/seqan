@@ -286,7 +286,7 @@ globalAlignment(TAlign& align,
     TSize totalLen = 0;
     if (length(pos1)) {
         TSize lenMatch = 1;
-        int last = length(pos1)-1;
+        int last = static_cast<int>(length(pos1)) - 1;
         TSize iBegin = pos1[last].first;
         TSize jBegin = pos1[last].second;
         for(int z = last - 1; z>=0; --z) {
