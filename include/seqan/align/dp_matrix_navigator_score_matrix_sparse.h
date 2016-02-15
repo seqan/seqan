@@ -106,7 +106,7 @@ _init(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix, Navig
     navigator._ptrDataContainer = &dpMatrix;
     navigator._activeColIterator = begin(dpMatrix, Standard());
     navigator._prevColIterator = navigator._activeColIterator;
-    navigator._laneLeap = 1 - _dataLengths(dpMatrix)[DPMatrixDimension_::VERTICAL];
+    navigator._laneLeap = 1 - static_cast<int>(_dataLengths(dpMatrix)[DPMatrixDimension_::VERTICAL]);
     assignValue(navigator._activeColIterator, TValue());
 }
 

@@ -434,7 +434,7 @@ value(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> 
 // Returns the coordinate of the given dimension for the current position of the
 // navigator within the matrix.
 template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec>
-inline typename DPMatrixDimension_::TValue
+inline typename Position<TDPMatrix>::Type
 coordinate(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const & dpNavigator,
            typename DPMatrixDimension_::TValue const & dimension)
 {

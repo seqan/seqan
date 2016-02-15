@@ -540,28 +540,28 @@ _computeBandedAlignment(TDPScout & scout,
     // PREPROCESSING
     // ============================================================================
     TSignedSizeSeqH seqHlength = static_cast<TSignedSizeSeqH>(length(seqH));
-    TSignedSizeSeqH seqVlength = static_cast<TSignedSizeSeqV>(length(seqV));
+    TSignedSizeSeqV seqVlength = static_cast<TSignedSizeSeqV>(length(seqV));
 
-    TConstSeqVIterator seqVBegin = begin(seqV, Rooted()) - _min(0, 1 + upperDiagonal(band));
-    TConstSeqVIterator seqVEnd = begin(seqV, Rooted()) - _min(0, _max(-seqVlength, lowerDiagonal(band)));
+    TConstSeqVIterator seqVBegin = begin(seqV, Rooted()) - _min((TSignedSizeSeqV)0, 1 + upperDiagonal(band));
+    TConstSeqVIterator seqVEnd = begin(seqV, Rooted()) - _min((TSignedSizeSeqV)0, _max(-seqVlength, lowerDiagonal(band)));
 
     // We have to distinguish two band sizes. Some which spans the whole matrix in between and thus who not.
     // This can be distinguished, if UpperDiagonal > length(seqV) + LowerDiagonal
 
     // We start at least at the first position of the horizontal sequence or wherever the lower diagonal begins first.
-    TConstSeqHIterator seqHIterBegin = begin(seqH, Rooted()) + _max(0, _min(seqHlength - 1, lowerDiagonal(band)));
+    TConstSeqHIterator seqHIterBegin = begin(seqH, Rooted()) + _max((TSignedSizeSeqH)0, _min(seqHlength - 1, lowerDiagonal(band)));
 
     // The horizontal initial phase ends after the upper diagonal but at most after the horizontal sequence, or there is no horizontal initialization phase.
-    TConstSeqHIterator seqHIterEndColumnTop = begin(seqH, Rooted()) + _min(seqHlength - 1, _max(0, upperDiagonal(band)));
+    TConstSeqHIterator seqHIterEndColumnTop = begin(seqH, Rooted()) + _min(seqHlength - 1, _max((TSignedSizeSeqH)0, upperDiagonal(band)));
 
     // The middle band phase ends after the lower diagonal crosses the bottom of the alignment matrix or after the horizontal sequence if it is smaller.
-    TConstSeqHIterator seqHIterEndColumnMiddle = begin(seqH, Rooted()) + _min(seqHlength - 1, _max(0, seqVlength + lowerDiagonal(band)));
+    TConstSeqHIterator seqHIterEndColumnMiddle = begin(seqH, Rooted()) + _min(seqHlength - 1, _max((TSignedSizeSeqV)0, seqVlength + lowerDiagonal(band)));
     // Swap the two iterators if we are in a band that spans over the full column.
     if (upperDiagonal(band) > seqVlength + lowerDiagonal(band))
         std::swap(seqHIterEndColumnTop, seqHIterEndColumnMiddle);
 
     // The bottom band phase ends after the upper diagonal of the band crosses the bottom of the matrix or after the horizontal sequence if it is smaller.
-    TConstSeqHIterator seqHIterEndColumnBottom = begin(seqH, Rooted()) + _max(0, _min(seqHlength,
+    TConstSeqHIterator seqHIterEndColumnBottom = begin(seqH, Rooted()) + _max((TSignedSizeSeqH)0, _min(seqHlength,
                                                                                       upperDiagonal(band) + seqVlength) - 1);
 
     // The Initial column can be PartialColumnTop which is given if the upper diagonal is >= 0,
@@ -1199,12 +1199,12 @@ _computeHammingDistance(TDPScout & scout,
     // ============================================================================
 
     TSignedSizeSeqH seqHlength = static_cast<TSignedSizeSeqH>(length(seqH));
-    TSignedSizeSeqH seqVlength = static_cast<TSignedSizeSeqV>(length(seqV));
+    TSignedSizeSeqV seqVlength = static_cast<TSignedSizeSeqV>(length(seqV));
 
-    TConstSeqHIterator itH = begin(seqH, Rooted()) + _max(0, _min(seqHlength - 1, upperDiagonal(band)));
+    TConstSeqHIterator itH = begin(seqH, Rooted()) + _max((TSignedSizeSeqH)0, _min(seqHlength - 1, upperDiagonal(band)));
     TConstSeqHIterator itHEnd = begin(seqH, Rooted()) + _min(seqHlength - 1, upperDiagonal(band) + seqVlength);
 
-    TConstSeqVIterator itV = begin(seqV, Rooted()) + _max(0, _min(seqVlength - 1, -lowerDiagonal(band)));
+    TConstSeqVIterator itV = begin(seqV, Rooted()) + _max((TSignedSizeSeqV)0, _min(seqVlength - 1, -lowerDiagonal(band)));
     TConstSeqVIterator itVEnd = begin(seqV, Rooted()) + _min(seqVlength - 1, lowerDiagonal(band) + seqHlength);
 
     assignValue(dpTraceMatrixNavigator,

@@ -490,7 +490,7 @@ template <typename TTarget, typename TDPTraceMatrixNavigator, typename TSequence
           typename TBandFlag, typename TAlgorithm, typename TGapCosts, typename TTracebackSpec>
 void _computeTraceback(TTarget & target,
                        TDPTraceMatrixNavigator & matrixNavigator,
-                       unsigned  maxHostPosition,
+                       size_t maxHostPosition,
                        TSequenceH const & seqH,
                        TSequenceV const & seqV,
                        DPBandConfig<TBandFlag> const & band,
