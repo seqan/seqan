@@ -1531,21 +1531,11 @@ assignValueById(StringSet<TString, TSpec1>& dest,
 // --------------------------------------------------------------------------
 
 /*!
- * @fn StringSet#removeValue
- * @brief Remove a value from a string set by the position.
- *
- * @signature void removeValue(set, pos);
- *
- * @param[in,out] set The string set to remove value in.
- * @param[in]     pos The position of the string to remove.
- */
-
-/*!
  * @fn StringSet#removeValueById
  * @brief Remove a value from a string set by its id.
  *
  * @signature void removeValueById(set, id);
- * @deprecated Use @link StringSet#removeValue @endlink instead.
+ * @deprecated Use @link StringConcept#erase @endlink.
  *
  * @param[in,out] set The string to remove value in.
  * @param[in]     id  The id of the string to remove.
@@ -1562,6 +1552,7 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  * @brief Convert a position/index in the string set to a string id.
  *
  * @signature Id positionToId(set, pos);
+ * @deprecated ID is the same as the position
  *
  * @param[in] set The string to convert positions for.
  * @param[in] pos The position to convert.
@@ -1682,6 +1673,7 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
  * @brief Convert a string id to a position/index in the string set.
  *
  * @signature TPos idToPosition(set, id);
+ * @deprecated ID is the same as the position
  *
  * @param[in] set The string to convert positions for.
  * @param[in] id  The id to convert.
