@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_razers CXX)
 message (STATUS "Configuring apps/razers")
 
-set (SEQAN_APP_VERSION "1.5.1")
+set (SEQAN_APP_VERSION "1.5.2")
 
 # ----------------------------------------------------------------------------
 # Dependencies
