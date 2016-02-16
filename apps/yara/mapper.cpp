@@ -137,20 +137,22 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setDefaultValue(parser, "output-format", "sam");
 
 #if SEQAN_HAS_ZLIB
-    addOption(parser, ArgParseOption("u", "uncompressed-bam", "Turn off the compression of BAM written to standard output."));
+    addOption(parser, ArgParseOption("u", "uncompressed-bam", "Turn off compression of BAM written to standard output."));
 #endif
 
     addOption(parser, ArgParseOption("rg", "read-group", "Specify a read group for all reads in the SAM/BAM file.",
                                      ArgParseOption::STRING));
     setDefaultValue(parser, "read-group", options.readGroup);
 
-    addOption(parser, ArgParseOption("os", "output-secondary", "Output secondary alignments as separate SAM/BAM records. \
-                                                                Default: output secondary alignments inside the XA tag \
-                                                                of the primary alignment."));
+    addOption(parser, ArgParseOption("sa", "secondary-alignments", "Specify whether to output secondary alignments in \
+                                                                    the XA tag of the primary alignment, as separate \
+                                                                    secondary records, or to omit them.",
+                                                                ArgParseOption::STRING));
+    setValidValues(parser, "secondary-alignments", options.secondaryAlignmentsList);
+    setDefaultValue(parser, "secondary-alignments", options.secondaryAlignmentsList[options.secondaryAlignments]);
 
     addOption(parser, ArgParseOption("or", "output-rabema", "Output a SAM/BAM file usable as a gold standard for the \
                                                              Read Alignment BEnchMArk (RABEMA)."));
-
 
     // Setup mapping options.
     addSection(parser, "Mapping Options");
@@ -161,14 +163,14 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setMaxValue(parser, "error-rate", "10");
     setDefaultValue(parser, "error-rate", 100.0 * options.errorRate);
 
-    addOption(parser, ArgParseOption("s", "strata-rate", "Report suboptimal alignments within this percentual number \
+    addOption(parser, ArgParseOption("s", "strata-rate", "Consider suboptimal alignments within this percentual number \
                                                           of errors from the optimal alignment.",
                                                           ArgParseOption::INTEGER));
     setMinValue(parser, "strata-rate", "0");
     setMaxValue(parser, "strata-rate", "10");
     setDefaultValue(parser, "strata-rate", 100.0 * options.strataRate);
 
-    addOption(parser, ArgParseOption("a", "all", "Report all alignments within --error-rate. Default: report alignments \
+    addOption(parser, ArgParseOption("a", "all", "Consider all alignments within --error-rate. Default: consider alignments \
                                                   within --strata-rate."));
     hideOption(getOption(parser, "all"));
 
@@ -186,7 +188,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
                                             Default: autodetected.", ArgParseOption::INTEGER));
     setMinValue(parser, "library-deviation", "0");
 
-    addOption(parser, ArgParseOption("i", "indel-rate", "Ignore rescued alignments above this percentual number of indels.",
+    addOption(parser, ArgParseOption("i", "indel-rate", "Do not rescue alignments above this percentual number of indels.",
                                      ArgParseOption::INTEGER));
     setMinValue(parser, "indel-rate", "0");
     setMaxValue(parser, "indel-rate", "50");
@@ -273,7 +275,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse output options.
     getOptionValue(options.readGroup, parser, "read-group");
-    getOptionValue(options.outputSecondary, parser, "output-secondary");
+    getOptionValue(options.secondaryAlignments, parser, "secondary-alignments", options.secondaryAlignmentsList);
     getOptionValue(options.rabema, parser, "output-rabema");
 
     // Parse mapping options.

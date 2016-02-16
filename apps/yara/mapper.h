@@ -60,7 +60,8 @@ struct Options
     Pair<CharString>    readsFile;
     CharString          outputFile;
     TOutputFormat       outputFormat;
-    bool                outputSecondary;
+    SecondaryAlignments secondaryAlignments;
+    TList               secondaryAlignmentsList;
     bool                uncompressedBam;
     CharString          readGroup;
 
@@ -73,8 +74,8 @@ struct Options
     bool                singleEnd;
     unsigned            libraryLength;
     unsigned            libraryDev;
-    LibraryOrientation  libraryOrientation;
-    TList               libraryOrientationList;
+//    LibraryOrientation  libraryOrientation;
+//    TList               libraryOrientationList;
     bool                verifyMatches;
 
     unsigned            readsCount;
@@ -90,7 +91,7 @@ struct Options
         contigsSize(),
         contigsMaxLength(),
         contigsSum(),
-        outputSecondary(false),
+        secondaryAlignments(TAG),
         uncompressedBam(false),
         readGroup("none"),
         mappingMode(STRATA),
@@ -101,7 +102,7 @@ struct Options
         singleEnd(true),
         libraryLength(),
         libraryDev(),
-        libraryOrientation(FWD_REV),
+//        libraryOrientation(FWD_REV),
         verifyMatches(true),
         readsCount(100000),
         threadsCount(1),
@@ -109,9 +110,13 @@ struct Options
         rabema(false),
         verbose(0)
     {
-        appendValue(libraryOrientationList, "fwd-rev");
-        appendValue(libraryOrientationList, "fwd-fwd");
-        appendValue(libraryOrientationList, "rev-rev");
+        appendValue(secondaryAlignmentsList, "tag");
+        appendValue(secondaryAlignmentsList, "record");
+        appendValue(secondaryAlignmentsList, "omit");
+
+//        appendValue(libraryOrientationList, "fwd-rev");
+//        appendValue(libraryOrientationList, "fwd-fwd");
+//        appendValue(libraryOrientationList, "rev-rev");
     }
 };
 

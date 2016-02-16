@@ -322,12 +322,12 @@ inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, 
     TSize primaryPos = position(it, matches);
     SEQAN_ASSERT_LT(primaryPos, length(matches));
 
-    if (!me.options.outputSecondary)
+    if (me.options.secondaryAlignments == TAG)
         _fillXa(me, matches, primaryPos);
 
     _writeRecord(me);
 
-    if (me.options.outputSecondary)
+    if (me.options.secondaryAlignments == RECORD)
         _writeSecondary(me, matches, primaryPos);
 }
 
@@ -383,12 +383,12 @@ inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, 
     TIter it = findMatch(matches, primary);
     TSize primaryPos = position(it, matches);
 
-    if (!me.options.outputSecondary)
+    if (me.options.secondaryAlignments == TAG)
         _fillXa(me, matches, primaryPos);
 
     _writeRecord(me);
 
-    if (me.options.outputSecondary)
+    if (me.options.secondaryAlignments == RECORD)
         _writeSecondary(me, matches, primaryPos);
 }
 

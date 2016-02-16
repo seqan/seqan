@@ -55,6 +55,11 @@ enum LibraryOrientation
     FWD_REV, FWD_FWD, REV_REV, ANY
 };
 
+enum SecondaryAlignments
+{
+    TAG, RECORD, OMIT
+};
+
 // ============================================================================
 // Tags
 // ============================================================================
