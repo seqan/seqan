@@ -187,10 +187,10 @@ inline void appendSuboptimalCount(BamAlignmentRecord & record, TCount count)
     appendTagValue(record.tags, "X1", count, 'i');
 }
 
-inline void appendType(BamAlignmentRecord & record, bool unique)
-{
-    appendTagValue(record.tags, "XT", unique ? 'U' : 'R', 'A');
-}
+//inline void appendType(BamAlignmentRecord & record, bool unique)
+//{
+//    appendTagValue(record.tags, "XT", unique ? 'U' : 'R', 'A');
+//}
 
 template <typename TPos>
 inline void appendExtraPosition(BamAlignmentRecord & record, TPos pos)
@@ -548,7 +548,7 @@ inline void _fillReadInfo(MatchesWriter<TSpec, Traits> & me, TCount bestCount, T
 {
     appendCooptimalCount(me.record, bestCount);
     appendSuboptimalCount(me.record, subCount);
-    appendType(me.record, bestCount == 1);
+//    appendType(me.record, bestCount == 1);
     appendReadGroup(me.record, me.options.readGroup);
     // Set number of secondary alignments and hit index.
 //    appendTagValue(me.record.tags, "NH", 1, 'i');
