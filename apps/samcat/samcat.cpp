@@ -110,7 +110,7 @@ void catBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions con
     // Step 3: Read and output alignment records
     BamAlignmentRecord record;
     String<BamAlignmentRecord> records;
-    __uint64 numRecords = 0;
+    uint64_t numRecords = 0;
     double start = sysTime();
     for (unsigned i = 0; i != length(inFiles); ++i)
     {
@@ -197,7 +197,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addListItem(parser, "\\fBsamcat\\fP \\fBmapped1.sam\\fP \\fBmapped2.sam\\fP \\fB-o\\fP \\fBmerged.sam\\fP",
                 "Merge two SAM files.");
 #if SEQAN_HAS_ZLIB
-    addListItem(parser, "\\fBsamcat\\fP \\fBinput.sam\\fP \\fB-o\\fP \\fBouput.bam\\fP",
+    addListItem(parser, "\\fBsamcat\\fP \\fBinput.sam\\fP \\fB-o\\fP \\fBoutput.bam\\fP",
                 "Convert a SAM file into BAM format.");
 #endif
 

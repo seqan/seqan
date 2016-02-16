@@ -220,10 +220,8 @@ struct AsyncDummyRequest
     AsyncDummyRequest(AsyncDummyRequest &, Move)
     {}
 
-#ifdef SEQAN_CXX11_STANDARD
     AsyncDummyRequest(AsyncDummyRequest &&)
     {}
-#endif
 
 private:
     AsyncDummyRequest(AsyncDummyRequest const &)

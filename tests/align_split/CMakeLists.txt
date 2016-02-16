@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the align_split module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_align_split)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_align_split CXX)
 message (STATUS "Configuring tests/align_split")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,6 @@ message (STATUS "Configuring tests/align_split")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

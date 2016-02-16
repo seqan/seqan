@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_INDEX_APPROX_H
 #define SEQAN_HEADER_FIND_INDEX_APPROX_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 template <typename TSAValue1, typename TSAValue2>

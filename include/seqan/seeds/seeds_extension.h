@@ -847,7 +847,6 @@ extendSeed(Seed<ChainedSeed, TConfig> & /*seed*/,
     // For ungapped X-drop extension of Chained Seeds, we have to append
     // diagonals to the front and end of the list of seed diagonals and modify
     // the first and last one of the current set of seed diagonals.
-    SEQAN_CHECKPOINT;
 
     SEQAN_ASSERT_FAIL("Write me! Look into the function where this assertion fails for instructions on how to do this.");
     // TODO(holtgrew): Implement gapped X-drop extension with Chained seeds. As follows:

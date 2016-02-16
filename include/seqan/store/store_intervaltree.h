@@ -36,7 +36,7 @@
 #define SEQAN_HEADER_STORE_INTERVALTREE_H
 //#define DEBUG_TREE
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 
@@ -191,6 +191,6 @@ findIntervalsForInterval(String<TCargo> & result, TIntervalTree & intervalTree, 
 //////////////////////////////////////////////////////////////////////////////
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -76,5 +76,6 @@
 #include <seqan/modifier/modifier_reverse.h>
 #include <seqan/modifier/modifier_shortcuts.h>
 #include <seqan/modifier/modifier_cyclic_shape.h>
+#include <seqan/modifier/modifier_position.h>
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_MODIFIER_H_

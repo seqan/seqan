@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_STORE_MATEPAIR_H
 #define SEQAN_HEADER_STORE_MATEPAIR_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -119,6 +119,6 @@ MatePairStoreElement<TSpec>::INVALID_ID = MaxValue<typename Id<MatePairStoreElem
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

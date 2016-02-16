@@ -149,13 +149,13 @@ inline void bucket(StringSet<TString, Owner<ConcatDirect<TSpec > > > & me, TKeyG
     TNextKey nextKey(key);
 
     // Resize the limits string to count all keys.
-    resize(me.limits, maxKey, 0, Exact());
+    resize(stringSetLimits(me), maxKey, 0, Exact());
 
     // Count the number of keys present in the concat string.
-    forEach(concat(me), TCounter(me.limits, nextKey), tag);
+    forEach(concat(me), TCounter(stringSetLimits(me), nextKey), tag);
 
     // Build the limits string from the key counts.
-    partialSum(me.limits, tag);
+    partialSum(stringSetLimits(me), tag);
 }
 
 // --------------------------------------------------------------------------
@@ -176,16 +176,16 @@ inline void bucket(StringSet<THost, Segment<TSpec> > & me, TKeyGetter const & ke
     TNextKey nextKey(key);
 
     // Resize the limits string to accomodate counts for all keys.
-    resize(me.limits, maxKey + 1, 0, Exact());
+    resize(stringSetLimits(me), maxKey + 1, 0, Exact());
 
     // Count the number of keys present in the host string.
-    forEach(host(me), TCounter(me.limits, nextKey), tag);
+    forEach(host(me), TCounter(stringSetLimits(me), nextKey), tag);
 
     // Limits are the cumulated key counts.
-    partialSum(me.limits, tag);
+    partialSum(stringSetLimits(me), tag);
 
     // Positions are the shifted limits.
-    assign(me.positions, prefix(me.limits, length(me.limits) - 1));
+    assign(stringSetPositions(me), prefix(stringSetLimits(me), length(stringSetLimits(me)) - 1), Exact());
 }
 
 }

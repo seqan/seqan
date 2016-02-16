@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_SUMLIST_MINI_H
 #define SEQAN_HEADER_SUMLIST_MINI_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -971,6 +971,6 @@ operator != (Iter<TSumList, MiniSumListIterator> const & left,
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

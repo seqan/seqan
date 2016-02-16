@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_POOL_SORTER_H
 #define SEQAN_HEADER_POOL_SORTER_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
     template < typename TValue, typename Compare >

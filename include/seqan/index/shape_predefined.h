@@ -37,7 +37,7 @@
 
 //SEQAN_NO_GENERATED_FORWARDS: no forwards are generated for this file
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
     //////////////////////////////////////////////////////////////////////////////

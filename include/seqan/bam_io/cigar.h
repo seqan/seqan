@@ -145,7 +145,7 @@ inline bool operator==(CigarElement<TOperation, TCount> const & lhs,
 // ----------------------------------------------------------------------------
 
 template <typename TOperation, typename TCount>
-__uint32 toBamCigarElement(CigarElement<TOperation, TCount> const & cigarElement)
+uint32_t toBamCigarElement(CigarElement<TOperation, TCount> const & cigarElement)
 {
     char operation = 0;
     switch (cigarElement.operation) {

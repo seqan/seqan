@@ -108,8 +108,8 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_min)
     atomicMinTestImpl(long());
     atomicMinTestImpl(SEQAN_ulong());
 #if SEQAN_IS_64_BIT
-    atomicMinTestImpl(__int64());
-    atomicMinTestImpl(__uint64());
+    atomicMinTestImpl(int64_t());
+    atomicMinTestImpl(uint64_t());
 #endif  // #if SEQAN_IS_64_BIT
 }
 
@@ -126,8 +126,8 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_max)
     atomicMaxTestImpl(long());
     atomicMaxTestImpl(SEQAN_ulong());
 #if SEQAN_IS_64_BIT
-    atomicMaxTestImpl(__int64());
-    atomicMaxTestImpl(__uint64());
+    atomicMaxTestImpl(int64_t());
+    atomicMaxTestImpl(uint64_t());
 #endif  // #if SEQAN_IS_64_BIT
 }
 

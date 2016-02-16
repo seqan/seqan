@@ -51,15 +51,15 @@ struct Pair<T1, T2, Tag<void> > {};
 
 template <typename TValue>
 struct RankDictionaryWordSize_<TValue, TwoLevels<void> > :
-    BitsPerValue<__uint32> {};
+    BitsPerValue<uint32_t> {};
 
 template <typename TValue>
 struct RankDictionaryWordSize_<TValue, TwoLevels<Device<void> > > :
-    BitsPerValue<__uint32> {};
+    BitsPerValue<uint32_t> {};
 
 template <typename TValue, typename TSpec>
 struct RankDictionaryWordSize_<TValue, TwoLevels<View<TSpec> > > :
-    BitsPerValue<__uint32> {};
+    BitsPerValue<uint32_t> {};
 
 }
 

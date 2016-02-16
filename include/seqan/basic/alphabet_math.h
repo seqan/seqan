@@ -228,7 +228,6 @@ template <typename T>
 inline T const &
 maxValue()
 {
-    SEQAN_CHECKPOINT;
     T * _tag = 0;
     return supremumValueImpl(_tag);
 }
@@ -237,7 +236,6 @@ template <typename T>
 inline T const &
 maxValue(T /*tag*/)
 {
-    SEQAN_CHECKPOINT;
     T * _tag = 0;
     return supremumValueImpl(_tag);
 }
@@ -258,7 +256,6 @@ template <typename T>
 inline T const &
 minValue()
 {
-    SEQAN_CHECKPOINT;
     T * _tag = 0;
     return infimumValueImpl(_tag);
 }
@@ -267,7 +264,6 @@ template <typename T>
 inline T const &
 minValue(T /*tag*/)
 {
-    SEQAN_CHECKPOINT;
     T * _tag = 0;
     return infimumValueImpl(_tag);
 }

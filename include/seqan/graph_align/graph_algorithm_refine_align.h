@@ -52,7 +52,6 @@ _getOtherSequenceAndProject(Align<TSource,TSpec> & segment,
                            TId2 & seq_j_id,
                            TPos2 & node_j)
 {
-SEQAN_CHECKPOINT
 
     if(seg_num == 0)
     {
@@ -82,7 +81,6 @@ SEQAN_CHECKPOINT
 //            Align<TSource,TSpec> & segment,
 //            TValue seq_i)
 //{
-//SEQAN_CHECKPOINT
 //    return seq_map[getObjectId(source(row(segment,seq_i)))];
 //}
 //
@@ -127,7 +125,6 @@ _getRefinedMatchScore(Score<TScoreValue,TScoreSpec> & score_type,
          TValue len,
          TValue)
 {
-SEQAN_CHECKPOINT
     typedef Align<TAliSource,TAliSpec> TAlign;
     typedef typename Row<TAlign>::Type TRow;
 //    typedef typename Iterator<TRow,GapsIterator<ArrayGaps> >::Type TIterator;
@@ -165,7 +162,6 @@ SEQAN_CHECKPOINT
 //         TValue len1,
 //         TValue len2)
 //{
-//SEQAN_CHECKPOINT
 //    typedef Align<TAliSource,TAliSpec> TAlign;
 //    typedef typename Row<TAlign>::Type TRow;
 //    typedef typename Iterator<TRow>::Type TIterator;

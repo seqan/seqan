@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the random module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_random)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_random CXX)
 message (STATUS "Configuring tests/random")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,6 @@ message (STATUS "Configuring tests/random")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------
@@ -31,9 +30,9 @@ add_definitions (${SEQAN_DEFINITIONS})
 # Update the list of file names below if you add source files to your test.
 add_executable (test_random
                test_random.cpp
-               test_random_dists.h
-               test_random_rng.h
-               test_random_shuffle.h)
+               test_random_beta.h
+               test_random_basic.h
+               test_random_util.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_random ${SEQAN_LIBRARIES})

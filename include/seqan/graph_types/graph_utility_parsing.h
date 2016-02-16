@@ -36,7 +36,7 @@
 
 #include <fstream>
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -89,6 +89,6 @@ _loadSequences(TPath const& in_path,
 }
 */
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

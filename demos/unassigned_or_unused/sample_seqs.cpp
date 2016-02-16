@@ -36,10 +36,10 @@
 
 #include <iostream>
 #include <set>
+#include <random>
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/random.h>
 #include <seqan/stream.h>
 #include <seqan/seq_io.h>
 
@@ -87,13 +87,13 @@ int main(int argc, char const ** argv)
     }
 
     // Now, sample reads to pick.
-    Rng<MersenneTwister> rng(SEED);
-    Pdf<Uniform<unsigned> > pdf(0, length(seqs) - 1);
+    std::mt19937 rng(SEED);
+    std::uniform_int_distribution<unsigned> pdf(0, length(seqs) - 1);
     std::cerr << "Sampling ids..." << std::endl;
     std::set<unsigned> sampledIds;
     while (sampledIds.size() < num)
     {
-        unsigned x = pickRandomNumber(rng, pdf);
+        unsigned x = pdf(rng);
         sampledIds.insert(x);
     }
 

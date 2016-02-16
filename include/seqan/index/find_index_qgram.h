@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_QGRAM_FIND_H
 #define SEQAN_HEADER_INDEX_QGRAM_FIND_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_
 

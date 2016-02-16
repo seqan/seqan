@@ -40,7 +40,7 @@
 using namespace std;
 using namespace seqan;
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////

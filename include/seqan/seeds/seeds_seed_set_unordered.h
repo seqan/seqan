@@ -315,7 +315,6 @@ addSeed(SeedSet<TSeed, Unordered> & seedSet,
         TSequence1 const & sequence1,
         TCombination const & tag)
 {
-    SEQAN_CHECKPOINT;
 
     typedef SeedSet<TSeed, Unordered> TSeedSet;
     typedef typename TSeedSet::TSet_ TSet;

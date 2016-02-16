@@ -278,7 +278,6 @@ replace(StringSet<TString, Owner<TSpec> > & target,
 template <typename TString >
 inline void clear(StringSet<TString, Owner<Default> > & me)
 {
-    SEQAN_CHECKPOINT;
     clear(me.strings);
     resize(me.limits, 1, Exact());
     me.limitsValid = true;
@@ -333,7 +332,6 @@ inline typename Reference<StringSet<TString, Owner<TSpec> > >::Type
 getValueById(StringSet<TString, Owner<TSpec> >& me,
             TId const id)
 {
-    SEQAN_CHECKPOINT;
     if (id < (TId) length(me)) return value(me, id);
     static TString tmp = TString();
     return tmp;
@@ -359,7 +357,6 @@ assignValueById(StringSet<TString, Owner<TSpec> > & me,
                 TString& obj,
                 TId id)
 {
-    SEQAN_CHECKPOINT;
     if (id >= (TId) length(me.strings))
     {
         resize(me.strings, id+1, TString());
@@ -378,7 +375,6 @@ template<typename TString, typename TSpec, typename TId>
 inline void
 removeValueById(StringSet<TString, Owner<TSpec> > & me, TId const id)
 {
-    SEQAN_CHECKPOINT;
     erase(me.strings, id);
     resize(me.limits, length(me.limits) - 1, Generous());
     me.limitsValid = empty(me);
@@ -393,7 +389,6 @@ inline typename Id<StringSet<TString, Owner<TSpec> > >::Type
 positionToId(StringSet<TString, Owner<TSpec> > &,
             TPos const pos)
 {
-    SEQAN_CHECKPOINT;
     return pos;
 }
 
@@ -406,7 +401,6 @@ inline typename Id<StringSet<TString, Owner<TSpec> > >::Type
 positionToId(StringSet<TString, Owner<TSpec> > const &,
             TPos const pos)
 {
-    SEQAN_CHECKPOINT;
     return pos;
 }
 
@@ -419,7 +413,6 @@ inline typename Id<StringSet<TString, Owner<TSpec> > >::Type
 idToPosition(StringSet<TString, Owner<TSpec> > const&,
             TId const id)
 {
-    SEQAN_CHECKPOINT;
     return id;
 }
 

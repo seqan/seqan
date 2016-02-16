@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_KMER_H
 #define SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_KMER_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,6 @@ _getTupelString(TString const& str,
                 TKTup const ktup,
                 TAlphabet)
 {
-    SEQAN_CHECKPOINT
     typedef typename Value<typename Value<TTupelString>::Type>::Type TWord;
 
     // Alphabet size
@@ -92,7 +91,6 @@ getKmerSimilarityMatrix(StringSet<TString, TSpec> const& strSet,
                         TSize ktup,
                         TAlphabet)
 {
-    SEQAN_CHECKPOINT
     typedef TSize TWord;
     typedef String<TWord> TTupelString;
     typedef String<TTupelString> TTupelStringSet;
@@ -150,6 +148,6 @@ getKmerSimilarityMatrix(StringSet<TString, TSpec> const& strSet,
 
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

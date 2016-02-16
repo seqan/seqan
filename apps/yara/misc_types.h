@@ -68,7 +68,6 @@ struct Value<Limits<T1, T2>, 2>
 {
     typedef T2 Type;
 };
-}
 
 // ============================================================================
 // StringSet
@@ -78,7 +77,6 @@ struct Value<Limits<T1, T2>, 2>
 // Metafunction LengthSum
 // ----------------------------------------------------------------------------
 
-namespace seqan {
 template <typename TString, typename TSum>
 struct LengthSum<StringSet<TString, Owner<ConcatDirect<Limits<TSum> > > > >
 {
@@ -105,8 +103,8 @@ struct YaraContigsConfig
 {
     typedef Dna5                                    TAlphabet;
     typedef Packed<TSpec>                           TSeqSpec;
-    typedef Owner<ConcatDirect<Limits<__uint64> > > TSeqsSpec;
-    typedef Owner<ConcatDirect<Limits<__uint32> > > TSeqNamesSpec;
+    typedef Owner<ConcatDirect<Limits<uint64_t> > > TSeqsSpec;
+    typedef Owner<ConcatDirect<Limits<uint32_t> > > TSeqNamesSpec;
 };
 
 // ----------------------------------------------------------------------------
@@ -121,14 +119,12 @@ struct FormattedFileContext<FormattedFile<Bam, Output, StringSet<TString, Owner<
     typedef NameStoreCache<TNameStore>                              TNameStoreCache;
     typedef BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> Type;
 };
-}
 
 // ----------------------------------------------------------------------------
 // Metafunction SeqFileBuffer_
 // ----------------------------------------------------------------------------
 // Overloaded to load FastQ files with Iupac symbols.
 
-namespace seqan {
 template <typename TString, typename TSSetSpec, typename TSpec>
 struct SeqFileBuffer_<StringSet<TString, TSSetSpec>, TSpec>
 {
@@ -158,7 +154,7 @@ struct YaraFMConfig
 
     // LF's RankDictionary Config.
     typedef Levels<void, TMe>                           Bwt;
-    typedef typename If<IsSameType<TSize, __uint8>,
+    typedef typename If<IsSameType<TSize, uint8_t>,
                         Naive<void, TMe>,
                         Levels<void, TMe> >::Type       Sentinels;
 
@@ -180,7 +176,6 @@ struct SAValue<StringSet<String<TValue, TSpec>, Owner<ConcatDirect<YaraFMConfig<
 {
     typedef Pair<TSize, TLen, Pack>   Type;
 };
-}
 
 // ----------------------------------------------------------------------------
 // SparseString FibreIndicators
@@ -188,20 +183,17 @@ struct SAValue<StringSet<String<TValue, TSpec>, Owner<ConcatDirect<YaraFMConfig<
 // NOTE(esiragusa): CompressedSA propagates down TConfig as TSpec.
 // TODO(esiragusa): remove this crap once the CSA gets refactored.
 
-namespace seqan {
 template <typename TValue, typename TAlloc, typename TSpec>
 struct Fibre<SparseString<String<TValue, TAlloc>, TSpec>, FibreIndicators>
 {
     typedef RankDictionary<bool, Levels<void, TSpec> > Type;
 };
-}
 
 // ----------------------------------------------------------------------------
 // SparseString Size
 // ----------------------------------------------------------------------------
 // TODO(esiragusa): remove this crap once the CSA gets refactored.
 
-namespace seqan {
 template <typename TString, typename TSize, typename TLen, typename TSum, typename TAlloc>
 struct Size<SparseString<TString, YaraFMConfig<TSize, TLen, TSum, TAlloc> > >
 {

@@ -364,7 +364,7 @@ popBack(TValue & result, ConcurrentQueue<TValue, Suspendable<Limit> > & me)
 template <typename TValue, typename TValue2, typename TSpec, typename TExpand>
 inline bool
 appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
-            TValue2 SEQAN_FORWARD_CARG val,
+            TValue2 && val,
             Tag<TExpand> expandTag)
 {
     typedef ConcurrentQueue<TValue, Suspendable<TSpec> >    TQueue;
@@ -407,13 +407,13 @@ appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
 template <typename TValue, typename TValue2, typename TSpec, typename TExpand>
 inline bool
 appendValue(ConcurrentQueue<TValue, Suspendable<Limit> > & me,
-            TValue2 SEQAN_FORWARD_CARG val,
+            TValue2 && val,
             Tag<TExpand> expandTag);
 
 template <typename TValue, typename TValue2>
 inline bool
 appendValue(ConcurrentQueue<TValue, Suspendable<Limit> > & me,
-            TValue2 SEQAN_FORWARD_CARG val,
+            TValue2 && val,
             Limit)
 {
     typedef ConcurrentQueue<TValue, Suspendable<Limit> >    TQueue;
@@ -448,7 +448,7 @@ appendValue(ConcurrentQueue<TValue, Suspendable<Limit> > & me,
 template <typename TValue, typename TValue2, typename TSpec>
 inline bool
 appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
-            TValue2 SEQAN_FORWARD_CARG val)
+            TValue2 && val)
 {
     return appendValue(me, val, typename DefaultOverflowImplicit<ConcurrentQueue<TValue, Suspendable<TSpec> > >::Type());
 }

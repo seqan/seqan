@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_STORE_STORE_IO_UCSC_H
 #define SEQAN_INCLUDE_STORE_STORE_IO_UCSC_H
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 //////////////////////////////////////////////////////////////////////////////
 // add a UCSC record to FragmentStore
@@ -303,6 +303,6 @@ writeRecords(FormattedFile<Ucsc, Output, TSpec> & ucscFile,
     writeRecords(ucscFile, store, format(ucscFile));
 }
 
-} // namespace SEQAN_NAMESPACE_MAIN
+} // namespace seqan
 
 #endif //#ifndef SEQAN_INCLUDE_STORE_STORE_IO_UCSC_H

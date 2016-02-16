@@ -274,7 +274,7 @@ readRecord(BamAlignmentRecord & record,
     // TODO(holtgrew): Interpret hex and char as c-samtools -X does?
     clear(buffer);
     readUntil(buffer, iter, nextEntry);
-    record.flag = lexicalCast<__uint16>(buffer);
+    record.flag = lexicalCast<uint16_t>(buffer);
     skipOne(iter, IsTab());
 
     // RNAME
@@ -288,9 +288,9 @@ readRecord(BamAlignmentRecord & record,
 
     // POS
     clear(buffer);
-    SEQAN_ASSERT_EQ((__int32)0 - 1, (__int32)BamAlignmentRecord::INVALID_POS);
+    SEQAN_ASSERT_EQ((int32_t)0 - 1, (int32_t)BamAlignmentRecord::INVALID_POS);
     readUntil(buffer, iter, nextEntry);
-    record.beginPos = (__int32)lexicalCast<__uint32>(buffer) - 1;
+    record.beginPos = (int32_t)lexicalCast<uint32_t>(buffer) - 1;
     skipOne(iter, IsTab());
 
     // MAPQ
@@ -303,7 +303,7 @@ readRecord(BamAlignmentRecord & record,
     else
     {
         readUntil(buffer, iter, nextEntry);
-        record.mapQ = lexicalCast<__uint16>(buffer);
+        record.mapQ = lexicalCast<uint16_t>(buffer);
     }
     skipOne(iter, IsTab());
 
@@ -317,7 +317,7 @@ readRecord(BamAlignmentRecord & record,
         {
             clear(buffer);
             readUntil(buffer, iter, OrFunctor<IsAlpha, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
-            element.count = lexicalCast<__uint32>(buffer);
+            element.count = lexicalCast<uint32_t>(buffer);
             element.operation = value(iter);
             skipOne(iter);
             appendValue(record.cigar, element);
@@ -346,21 +346,21 @@ readRecord(BamAlignmentRecord & record,
     {
         clear(buffer);
         readUntil(buffer, iter, nextEntry);
-        record.pNext = (__int32)lexicalCast<__uint32>(buffer) - 1;
+        record.pNext = (int32_t)lexicalCast<uint32_t>(buffer) - 1;
     }
     skipOne(iter, IsTab());
 
     // TLEN
     if (value(iter) == '*')
     {
-        record.tLen = MaxValue<__int32>::VALUE;
+        record.tLen = MaxValue<int32_t>::VALUE;
         skipOne(iter);
     }
     else
     {
         clear(buffer);
         readUntil(buffer, iter, nextEntry);
-        record.tLen = lexicalCast<__int32>(buffer);
+        record.tLen = lexicalCast<int32_t>(buffer);
     }
     skipOne(iter, IsTab());
 

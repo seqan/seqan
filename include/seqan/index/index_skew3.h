@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_SKEW3_H
 #define SEQAN_HEADER_INDEX_SKEW3_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //namespace SEQAN_NAMESPACE_PIPELINING
@@ -584,7 +584,6 @@ namespace SEQAN_NAMESPACE_MAIN
         Skew3 const &_dummy,
         TSize maxLCP)
     {
-        SEQAN_CHECKPOINT;
         createSuffixArrayPart(SA, s, _dummy, maxLCP, ValueSize< typename Value<TText>::Type >::VALUE);
     }
 

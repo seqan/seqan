@@ -64,7 +64,6 @@ namespace seqan {
 template <typename TValue, typename TExponent>
 inline TValue _intPow(TValue a, TExponent b)
 {
-    SEQAN_CHECKPOINT;
     TValue ret = 1;
     while (b != 0) {
         if (b & 1) ret *= a;

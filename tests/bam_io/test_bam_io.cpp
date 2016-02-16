@@ -143,6 +143,7 @@ SEQAN_BEGIN_TESTSUITE(test_bam_io)
     SEQAN_CALL_TEST(test_bam_tags_dict_erase_tag);
     SEQAN_CALL_TEST(test_bam_tags_dict_set_tag_value);
     SEQAN_CALL_TEST(test_bam_tags_dict_append_tag_value);
+    SEQAN_CALL_TEST(test_bam_tags_dict_const_bam_tags_sequence);
     
     // Test SAM I/O.
     SEQAN_CALL_TEST(test_bam_io_sam_read_header);

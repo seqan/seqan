@@ -32,7 +32,6 @@
 
 SEQAN_DEFINE_TEST(Infix)
 {
-    SEQAN_CHECKPOINT;
 //____________________________________________________________________________
 // infix
 
@@ -148,7 +147,6 @@ SEQAN_DEFINE_TEST(Infix)
 
 SEQAN_DEFINE_TEST(Suffix)
 {
-    SEQAN_CHECKPOINT;
 //____________________________________________________________________________
 // suffix
 
@@ -232,7 +230,6 @@ SEQAN_DEFINE_TEST(Suffix)
 
 SEQAN_DEFINE_TEST(ticket317)
 {
-    SEQAN_CHECKPOINT;
     // http://trac.mi.fu-berlin.de/seqan/ticket/317
 
     CharString text = "thisisatext";

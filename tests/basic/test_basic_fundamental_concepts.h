@@ -84,12 +84,12 @@ inline void testIntegers()
     testSignedInteger<signed short>();
     testSignedInteger<signed int>();
     testSignedInteger<signed long>();
-    testSignedInteger<__int64>();
+    testSignedInteger<int64_t>();
     testUnsignedInteger<unsigned char>();
     testUnsignedInteger<unsigned short>();
     testUnsignedInteger<unsigned int>();
     testUnsignedInteger<unsigned long>();
-    testUnsignedInteger<__uint64>();
+    testUnsignedInteger<uint64_t>();
 //  testSignedInteger<unsigned long>();   // <== this should fail
 }
 

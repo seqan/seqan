@@ -58,6 +58,10 @@ Specialization ``Dependent<Tight>``
   Another array stores an id value for each sequence.
   That means that accessing given an id needs a search through the id array.
 
+    .. warning::
+        The Dependent-Tight StringSet is deprecated and will likely be removed
+        within the SeqAn-2.x lifecycle.
+
 Specialization ``Dependent<Generous>``
   The sequence pointers are stored in an array at the position of their ids.
   If a specific id is not present, the array stores a zero at this position.

@@ -39,7 +39,7 @@
 
 #include <seqan/basic.h>
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 namespace impl {
     typedef unsigned char uchar_t;
@@ -205,6 +205,6 @@ SEQAN_MAKE_PIZZACHILI_PROVIDER(Test)
 
 #undef SEQAN_MAKE_PIZZACHILI_PROVIDER
 
-} // namespace SEQAN_NAMESPACE_MAIN
+} // namespace seqan
 
 #endif // SEQAN_HEADER_PIZZACHILI_API_H

@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_BWT_H
 #define SEQAN_HEADER_INDEX_BWT_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //namespace SEQAN_NAMESPACE_PIPELINING

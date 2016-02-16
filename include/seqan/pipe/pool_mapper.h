@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_POOL_MAPPER_H
 #define SEQAN_HEADER_POOL_MAPPER_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
     // external synchronous permutation mapping

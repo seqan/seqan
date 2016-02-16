@@ -35,8 +35,6 @@
 // Tests for the Graph MSA module.
 // ===========================================================================
 
-#define SEQAN_ENABLE_CHECKPOINTS 0
-
 // External / STL
 #include <iostream>
 #include <fstream>

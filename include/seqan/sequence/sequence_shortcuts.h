@@ -37,7 +37,7 @@
 #ifndef SEQAN_HEADER_SEQUENCE_SHORTCUTS_H
 #define SEQAN_HEADER_SEQUENCE_SHORTCUTS_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -252,6 +252,6 @@ typedef Iterator<Peptide, Rooted>::Type PeptideIterator;
 
 //////////////////////////////////////////////////////////////////////////////
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

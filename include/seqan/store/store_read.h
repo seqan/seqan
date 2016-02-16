@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_STORE_READ_H
 #define SEQAN_HEADER_STORE_READ_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -96,6 +96,6 @@ ReadStoreElement<TSpec>::INVALID_ID = MaxValue<typename Id<ReadStoreElement<TSpe
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

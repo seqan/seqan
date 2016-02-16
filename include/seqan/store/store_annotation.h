@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_STORE_ANNOTATION_H
 #define SEQAN_HEADER_STORE_ANNOTATION_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1213,6 +1213,6 @@ operator << (std::ostream & out, AnnotationStoreElement<TPos, TSpec> const & ann
     return out;
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

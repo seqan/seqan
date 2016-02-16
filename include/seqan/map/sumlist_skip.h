@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_SUMLIST_SKIP_H
 #define SEQAN_HEADER_SUMLIST_SKIP_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1119,6 +1119,6 @@ operator != (Iter<TSumList, SkipSumListIterator> const & left,
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

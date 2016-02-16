@@ -225,13 +225,9 @@ struct PatternIterator_<TDbGeoSaHuge, TDbGeoSaHuge, Backtracking<TDistance, TSpe
     typedef typename Iterator<TDbGeoSaHuge, TopDown<Truncated<Preorder> > >::Type  Type;
 };
 
-} // namespace seqan
-
 // ============================================================================
 // Functions
 // ============================================================================
-
-namespace seqan {
 
 // ----------------------------------------------------------------------------
 // Function _inTerminalState()                          [Finder_<Backtracking>]

@@ -45,7 +45,7 @@
 
 #include <seqan/basic.h>
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 
 
@@ -723,6 +723,6 @@ SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_FindIntervalsIntervals__int_Co
     IntervalTreeTest_FindIntervalsIntervals<int, ComputeCenter>();
 }
 
-}  // SEQAN_NAMESPACE_MAIN
+}  // seqan
 
 #endif

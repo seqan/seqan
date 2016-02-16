@@ -425,7 +425,9 @@ SEQAN_HOST_DEVICE inline typename Reference< String<TValue, TSpec> >::Type
 value(String<TValue, TSpec> & me,
       TPos const & pos)
 {
+#if SEQAN_ENABLE_DEBUG
     typedef typename Position< String<TValue, TSpec> >::Type TStringPos SEQAN_TYPEDEF_FOR_DEBUG;
+#endif
     SEQAN_ASSERT_LT_MSG(static_cast<TStringPos>(pos), static_cast<TStringPos>(length(me)), "Trying to access an element behind the last one!");
     return *(begin(me, Standard()) + pos);
 }
@@ -435,7 +437,9 @@ SEQAN_HOST_DEVICE inline typename Reference< String<TValue, TSpec> const >::Type
 value(String<TValue, TSpec> const & me,
       TPos const & pos)
 {
+#if SEQAN_ENABLE_DEBUG
     typedef typename Position< String<TValue, TSpec> const >::Type TStringPos SEQAN_TYPEDEF_FOR_DEBUG;
+#endif
     SEQAN_ASSERT_LT_MSG(static_cast<TStringPos>(pos), static_cast<TStringPos>(length(me)), "Trying to access an element behind the last one!");
     return *(begin(me, Standard()) + pos);
 }
@@ -1279,36 +1283,38 @@ append(String<TTargetValue, TTargetSpec> & target,
 // TODO(holtgrew): Still required with dropped VC++ 2003 support?
 //this variant is a workaround for the "const array"-bug of VC++
 
-template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
-inline void
-append(String<TTargetValue, TTargetSpec> & target,
-       TSourceValue * source,
-       Tag<TExpand>)
-{
-    AppendString_<Tag<TExpand> >::append_(target, source);
-}
-
-template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
-inline void
-append(String<TTargetValue, TTargetSpec> & target,
-       TSourceValue * source,
-       typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
-       Tag<TExpand>)
-{
-    AppendString_<Tag<TExpand> >::append_(target, source, limit);
-}
+// template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
+// inline void
+// append(String<TTargetValue, TTargetSpec> & target,
+//        TSourceValue * source,
+//        Tag<TExpand>)
+// {
+//     AppendString_<Tag<TExpand> >::append_(target, source);
+// }
+//
+// template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
+// inline void
+// append(String<TTargetValue, TTargetSpec> & target,
+//        TSourceValue * source,
+//        typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
+//        Tag<TExpand>)
+// {
+//     AppendString_<Tag<TExpand> >::append_(target, source, limit);
+// }
 
 // ----------------------------------------------------------------------------
 // Function appendValue()
 // ----------------------------------------------------------------------------
 
+//TODO(h4nn3): why do we have these weird extra class? the function inside
+// is only ever used in the function below and could reside directly there
 template <typename TExpand>
 struct AppendValueToString_
 {
     template <typename T, typename TValue>
     static inline void
     appendValue_(T & me,
-                 TValue SEQAN_FORWARD_CARG _value)
+                 TValue && _value)
     {
         typedef typename Value<T>::Type TTargetValue;
         typedef typename Size<T>::Type TSize;
@@ -1316,19 +1322,19 @@ struct AppendValueToString_
         TSize me_length = length(me);
         if (capacity(me) <= me_length)
         {
-            TTargetValue temp_copy(SEQAN_FORWARD(TValue, _value)); //temp copy because resize could invalidate _value
+            TTargetValue temp_copy(std::forward<TValue>(_value)); //temp copy because resize could invalidate _value
             // TODO(holtgrew): The resize() function will default construct the last element. This is slow. Get rid of this.
             TSize new_length = reserve(me, me_length + 1, TExpand());
             if (me_length < new_length)
             {
                 // *(begin(me) + me_length) = temp_copy;
-                valueConstruct(begin(me, Standard()) + me_length, SEQAN_FORWARD(TTargetValue, temp_copy)); //??? this should be valueMoveConstruct
+                valueConstruct(begin(me, Standard()) + me_length, std::forward<TTargetValue>(temp_copy)); //??? this should be valueMoveConstruct
                 _setLength(me, me_length + 1);
             }
         }
         else
         {
-            valueConstruct(begin(me, Standard()) + me_length, SEQAN_FORWARD(TValue, _value));
+            valueConstruct(begin(me, Standard()) + me_length, std::forward<TValue>(_value));
             _setLength(me, me_length + 1);
         }
     }
@@ -1337,10 +1343,10 @@ struct AppendValueToString_
 template <typename TTargetValue, typename TTargetSpec, typename TValue, typename TExpand>
 inline void
 appendValue(String<TTargetValue, TTargetSpec> & me,
-            TValue SEQAN_FORWARD_CARG _value,
+            TValue && _value,
             Tag<TExpand>)
 {
-    AppendValueToString_<Tag<TExpand> >::appendValue_(me, SEQAN_FORWARD(TValue, _value));
+    AppendValueToString_<Tag<TExpand> >::appendValue_(me, std::forward<TValue>(_value));
 }
 
 // ----------------------------------------------------------------------------
@@ -1350,11 +1356,11 @@ appendValue(String<TTargetValue, TTargetSpec> & me,
 template <typename TTargetValue, typename TTargetSpec, typename TValue, typename TExpand>
 inline void
 appendValue(String<TTargetValue, TTargetSpec> & me,
-            TValue SEQAN_FORWARD_CARG _value,
+            TValue && _value,
             Tag<TExpand> const & expandTag,
             Serial)
 {
-    appendValue(me, SEQAN_FORWARD(TValue, _value), expandTag);
+    appendValue(me, std::forward<TValue>(_value), expandTag);
 }
 
 //////////////////////////////////////////////////////////////////////////////

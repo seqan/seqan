@@ -34,8 +34,6 @@
 // Tests for the SeqAn module store.
 // ==========================================================================
 
-#define SEQAN_ENABLE_CHECKPOINTS 0
-
 #include <seqan/basic.h>
 #include "test_store_io.h"
 

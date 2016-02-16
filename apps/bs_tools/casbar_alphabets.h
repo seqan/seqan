@@ -26,14 +26,14 @@ typedef SimpleType<unsigned char, DnaM_> DnaM;
 template <>
 struct ValueSize<DnaM>
 {
-    typedef __uint8 Type;
+    typedef uint8_t Type;
     static const Type VALUE = 6;
 };
 
 template <>
 struct BitsPerValue<DnaM>
 {
-    typedef __uint8 Type;
+    typedef uint8_t Type;
     static const Type VALUE = 3;
 };
 
@@ -139,12 +139,12 @@ inline void assign(char & c_target,
 }
 
 template <>
-struct CompareType<DnaM, __uint8>
+struct CompareType<DnaM, uint8_t>
 {
     typedef DnaM Type;
 };
 
-inline void assign(DnaM & target, __uint8 c_source)
+inline void assign(DnaM & target, uint8_t c_source)
 {
     target.value = TranslateTableByteToDnaM_<>::VALUE[c_source];
 }
@@ -194,14 +194,14 @@ typedef SimpleType<unsigned char, DnaMR_> DnaMR;
 template <>
 struct ValueSize<DnaMR>
 {
-    typedef __uint8 Type;
+    typedef uint8_t Type;
     static const Type VALUE = 11;
 };
 
 template <>
 struct BitsPerValue<DnaMR>
 {
-    typedef __uint8 Type;
+    typedef uint8_t Type;
     static const Type VALUE = 4;
 };
 

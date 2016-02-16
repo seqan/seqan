@@ -53,6 +53,26 @@ struct Resizable;
 // Class ContainerView
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class ContainerView
+ * @implements ContainerConcept
+ * @headerfile <seqan/sequence.h>
+ *
+ * @brief Generates a non-resizable view over a container.
+ *
+ * @signature template <TContainer, typename TSpec>
+ *            class ContainerView<TContainer, TSpec>
+ *
+ * @tparam TContainer The container type to create the view for.
+ * @tparam TSpec The specialization type. Defaults to void.
+ *
+ * A @link ContainerView @endlink is a lightweight data structure storing only a begin and end 
+ * pointer to an underlying container. The view can represent any range between the 
+ * global begin and end of the contaniner. The view itself implements the @link ContainerConcept @endlink.
+ * The default implementation however is not resizable. The @link ResizableContainerView @endlink supports 
+ * resizing of the view, but must not change the capacity of the underlying container.
+ */
+
 template <typename TContainer, typename TSpec = void>
 class ContainerView
 {
@@ -65,6 +85,20 @@ public:
     // ------------------------------------------------------------------------
     // ContainerView Constructors
     // ------------------------------------------------------------------------
+
+    /*!
+     * @fn ContainerView#ContainerView
+     * @brief The constructor.
+     * 
+     * @signature ContainerView();
+     *            ContainerView(TOtherContainer & cont);
+     *            ContainerView(TOtherContainer const & cont);
+     *            ContainerView(TIterator const & begin, TIterator const & end);
+     *
+     * @param cont Another container to copy from.
+     * @param begin An iterator pointing to the beginning of the view.
+     * @param end An iterator pointing to the end of the view.
+     */
 
     SEQAN_HOST_DEVICE inline
     ContainerView() :
@@ -129,6 +163,20 @@ public:
 // ----------------------------------------------------------------------------
 // Class Resizable ContainerView
 // ----------------------------------------------------------------------------
+
+/*!
+ * @class ResizableContainerView
+ * @extends ContainerView
+ * @headerfile <seqan/sequence.h>
+ *
+ * @brief Generates a resizable view over a container.
+ *
+ * @signature template <TContainer, typename TSpec>
+ *            class ContainerView<TContainer, Resizable<TSpec> >
+ *
+ * @tparam TContainer The container type to create the view for.
+ * @tparam TSpec The specialization type.
+ */
 
 template <typename TContainer, typename TSpec>
 class ContainerView<TContainer, Resizable<TSpec> > :

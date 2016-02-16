@@ -58,7 +58,7 @@ int main(int argc, char ** argv)
     typedef int TScoreValue;
 
     Score<TScoreValue, ScoreMatrix<Dna5, Default> > scoreMatrix;
-    loadScoreMatrix(scoreMatrix, toCString(getAbsolutePath("/demos/howto/scores/dna_example.txt")));
+    loadScoreMatrix(scoreMatrix, toCString(getAbsolutePath("demos/howto/scores/dna_example.txt")));
     showScoringMatrix(scoreMatrix);
 
     return 0;

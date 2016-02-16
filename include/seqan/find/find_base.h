@@ -349,14 +349,12 @@ public:
     inline typename Reference<TIterator>::Type
     operator* ()
     {
-SEQAN_CHECKPOINT
         return value(hostIterator(*this));
     }
 
     inline typename Reference<TIterator const>::Type
     operator* () const
     {
-SEQAN_CHECKPOINT
         return value(hostIterator(*this));
     }
 
@@ -364,7 +362,6 @@ SEQAN_CHECKPOINT
 
     operator TIterator () const
     {
-SEQAN_CHECKPOINT
         return data_iterator;
     }
 
@@ -429,7 +426,6 @@ template <typename THaystack, typename TSpec>
 inline typename Position<THaystack>::Type
 beginPosition(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
     return me.data_endPos - me.data_length;
 }
 
@@ -437,7 +433,6 @@ template <typename THaystack, typename TSpec>
 inline typename Position<THaystack const>::Type
 beginPosition(Finder<THaystack, TSpec> const & me)
 {
-SEQAN_CHECKPOINT
     return me.data_endPos - me.data_length;
 }
 
@@ -460,7 +455,6 @@ inline typename Iterator<THaystack, Tag<TTag> const>::Type
 begin(Finder<THaystack, TSpec> & me,
       Tag<TTag> const tag)
 {
-SEQAN_CHECKPOINT
     return iter(haystack(me), beginPosition(me), tag);
 }
 
@@ -469,7 +463,6 @@ inline typename Iterator<THaystack const, Tag<TTag> const>::Type
 begin(Finder<THaystack, TSpec> const & me,
       Tag<TTag> const tag)
 {
-SEQAN_CHECKPOINT
     return iter(haystack(me), beginPosition(me), tag);
 }
 
@@ -489,7 +482,6 @@ template <typename THaystack, typename TSpec>
 inline typename Position<THaystack>::Type
 endPosition(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
     return me.data_endPos;
 }
 
@@ -497,7 +489,6 @@ template <typename THaystack, typename TSpec>
 inline typename Position<THaystack const>::Type
 endPosition(Finder<THaystack, TSpec> const & me)
 {
-SEQAN_CHECKPOINT
     return me.data_endPos;
 }
 
@@ -520,7 +511,6 @@ inline typename Iterator<THaystack, Tag<TTag> const>::Type
 end(Finder<THaystack, TSpec> & me,
     Tag<TTag> const tag)
 {
-SEQAN_CHECKPOINT
     return iter(haystack(me), endPosition(me), tag);
 }
 
@@ -529,7 +519,6 @@ inline typename Iterator<THaystack const, Tag<TTag> const>::Type
 end(Finder<THaystack, TSpec> const & me,
     Tag<TTag> const tag)
 {
-SEQAN_CHECKPOINT
     return iter(haystack(me), endPosition(me), tag);
 }
 
@@ -547,14 +536,12 @@ template <typename THaystack, typename TSpec>
 inline typename Size<THaystack>::Type
 length(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
     return me.data_length;
 }
 template <typename THaystack, typename TSpec>
 inline typename Size<THaystack const>::Type
 length(Finder<THaystack, TSpec> const & me)
 {
-SEQAN_CHECKPOINT
     return me.data_length;
 }
 
@@ -595,7 +582,6 @@ template <typename THaystack, typename TSpec>
 inline typename Parameter_<THaystack>::Type
 host(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
     return container(hostIterator(me));
 }
 
@@ -603,7 +589,6 @@ template <typename THaystack, typename TSpec>
 inline typename Parameter_<THaystack>::Type
 host(Finder<THaystack, TSpec> const & me)
 {
-SEQAN_CHECKPOINT
     return container(hostIterator(me));
 }
 
@@ -618,7 +603,6 @@ template <typename THaystack, typename TSpec>
 inline typename Parameter_<THaystack>::Type
 container(Finder<THaystack, TSpec> const & me)
 {
-SEQAN_CHECKPOINT
     return container(hostIterator(me));
 }
 
@@ -629,7 +613,6 @@ inline void
 setHost(Finder<THaystack, TSpec> & me,
         typename Parameter_<THaystack>::Type container_)
 {
-SEQAN_CHECKPOINT
     setContainer(hostIterator(me), container_);
     goBegin(me);
 }
@@ -639,7 +622,6 @@ inline void
 setContainer(Finder<THaystack, TSpec> & me,
              typename Parameter_<THaystack>::Type container_)
 {
-SEQAN_CHECKPOINT
     setContainer(hostIterator(me), container_);
     goBegin(me);
 }
@@ -650,7 +632,6 @@ template <typename THaystack, typename TSpec>
 inline typename Iterator<THaystack, Rooted>::Type &
 hostIterator(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
     return me.data_iterator;
 }
 
@@ -658,7 +639,6 @@ template <typename THaystack, typename TSpec>
 inline typename Iterator<THaystack, Rooted>::Type const &
 hostIterator(Finder<THaystack, TSpec> const & me)
 {
-SEQAN_CHECKPOINT
     return me.data_iterator;
 }
 
@@ -668,7 +648,6 @@ template <typename THaystack, typename TSpec>
 inline bool
 empty(Finder<THaystack, TSpec> const & me)
 {
-SEQAN_CHECKPOINT
     return me._needReinit;
 }
 
@@ -686,7 +665,6 @@ template <typename THaystack, typename TSpec>
 inline void
 clear(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
     me._needReinit = true;
 }
 
@@ -696,7 +674,6 @@ template <typename T>
 inline void
 _finderSetNonEmpty(T & me)
 {
-SEQAN_CHECKPOINT
     goBegin(me);
 }
 
@@ -705,7 +682,6 @@ template <typename THaystack, typename TSpec>
 inline void
 _finderSetNonEmpty(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
     me._needReinit = false;
 }
 
@@ -715,7 +691,6 @@ template <typename THaystack, typename TSpec>
 inline bool
 atBegin(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
     return (!empty(me) && atBegin(hostIterator(me)));
 }
 
@@ -723,7 +698,6 @@ template <typename THaystack, typename TSpec>
 inline bool
 atEnd(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
     return (!empty(me) && atEnd(hostIterator(me)));
 }
 
@@ -742,7 +716,6 @@ template <typename THaystack, typename TSpec>
 inline void
 goBegin(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
     //_finderSetNonEmpty(me);
     goBegin(hostIterator(me));
 }
@@ -760,7 +733,6 @@ template <typename THaystack, typename TSpec>
 inline void
 goEnd(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
     //_finderSetNonEmpty(me);
     goEnd(hostIterator(me));
 }
@@ -782,7 +754,6 @@ template <typename THaystack, typename TSpec>
 inline typename Position<Finder<THaystack, TSpec> >::Type
 position(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
     if (empty(me)) return 0;
     return position(hostIterator(me));
 }
@@ -791,7 +762,6 @@ template <typename THaystack, typename TSpec>
 inline typename Position<Finder<THaystack, TSpec> >::Type
 position(Finder<THaystack, TSpec> const & me)
 {
-SEQAN_CHECKPOINT
     if (empty(me)) return 0;
     return position(hostIterator(me));
 }
@@ -812,7 +782,6 @@ template <typename THaystack, typename TSpec, typename TPosition>
 inline void
 setPosition(Finder<THaystack, TSpec> & me, TPosition pos_)
 {
-SEQAN_CHECKPOINT
     setPosition(hostIterator(me), pos_);
 }
 
@@ -822,7 +791,6 @@ template <typename THaystack, typename TSpec>
 inline Finder<THaystack, TSpec> &
 operator--(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
     --hostIterator(me);
     return me;
 }
@@ -831,7 +799,6 @@ template <typename THaystack, typename TSpec>
 inline Finder<THaystack, TSpec> &
 operator++(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
 /*            if (beforeBegin()) {
         goBegin(hostIterator(me));
     } else*/
@@ -847,7 +814,6 @@ template <typename THaystack, typename TSpec, typename TIntegral>
 inline Finder<THaystack, TSpec> const
 operator + (Finder<THaystack, TSpec> const & left, TIntegral right)
 {
-SEQAN_CHECKPOINT
     return Finder<THaystack, TSpec>(hostIterator(left) + right);
 }
 
@@ -860,7 +826,6 @@ inline Finder<THaystack, TSpec> &
 operator += (Finder<THaystack, TSpec> & left,
                 TIntegral right)
 {
-SEQAN_CHECKPOINT
     hostIterator(left) += right;
     return left;
 }
@@ -873,7 +838,6 @@ template <typename THaystack, typename TSpec, typename TIntegral>
 inline Finder<THaystack, TSpec> const
 operator - (Finder<THaystack, TSpec> const & left, TIntegral right)
 {
-SEQAN_CHECKPOINT
     return Finder<THaystack, TSpec>(hostIterator(left) - right);
 }
 
@@ -881,7 +845,6 @@ template <typename THaystack, typename TSpec, typename TIntegral>
 inline typename Difference<Finder<THaystack, TSpec> const>::Type
 operator - (Finder<THaystack, TSpec> const & left, Finder<THaystack, TSpec> const & right)
 {
-SEQAN_CHECKPOINT
     return hostIterator(left) - hostIterator(right);
 }
 
@@ -894,7 +857,6 @@ inline Finder<THaystack, TSpec> &
 operator -= (Finder<THaystack, TSpec> & left,
                 TIntegral right)
 {
-SEQAN_CHECKPOINT
     hostIterator(left) -= right;
     return left;
 }
