@@ -130,6 +130,7 @@
           <th>Version</th>
           <th>Linux</th>
           <th>Mac</th>
+          <th>FreeBSD</th>
           <th>Windows</th>
         </tr>
         <!--(for version in sorted(software.versions.values(), key=lambda x:x.version, reverse=True))-->
@@ -137,6 +138,7 @@
             <td>@!version.version!@</td>
             @!packages_cell(prefix=software.name, packages=version.packages['Linux'])!@
             @!packages_cell(prefix=software.name, packages=version.packages['Mac'])!@
+            @!packages_cell(prefix=software.name, packages=version.packages['FreeBSD'])!@
             @!packages_cell(prefix=software.name, packages=version.packages['Windows'])!@
           </tr>
         <!--(end)-->
