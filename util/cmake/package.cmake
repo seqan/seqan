@@ -46,18 +46,16 @@ if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
     ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_APPS"))
     include (SetCPackSystemName)
 
-    # NOTE that you have to run "make dox" before running cpack.  The reason
-    # is that we cannot add dependencies to the install target at the moment.
-    # See: http://public.kitware.com/Bug/view.php?id=8438
-
     # ===========================================================================
     # Archive Packages (.tar & .tar.bz2)
     # ===========================================================================
 
-    if (WIN32)
-        SET (CPACK_GENERATOR "ZIP")
+    if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+        set (CPACK_GENERATOR "ZIP")
+    elseif (CMAKE_VERSION VERSION_LESS "3.1") # TXZ support since 3.1
+        set (CPACK_GENERATOR "ZIP;TBZ2")
     else ()
-        SET (CPACK_GENERATOR "ZIP;TXZ")
+        set (CPACK_GENERATOR "ZIP;TXZ")
     endif ()
     if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE")
       SET(CPACK_PACKAGE_NAME "seqan")
