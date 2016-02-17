@@ -226,6 +226,14 @@ struct LF
     {
         return _getBwtRank(*this, pos, val);
     }
+
+    template <typename TPos, typename TValue>
+    SEQAN_HOST_DEVICE typename Size<LF const>::Type
+    operator() (TPos pos, TValue val, TPos & smaller) const
+    {
+        smaller = 0; // in case it was not initialized before
+        return _getCumulativeBwtRank(*this, pos, val, smaller);
+    }
 };
 
 // ============================================================================
@@ -433,6 +441,43 @@ _getPrefixSum(LF<TText, TSpec, TConfig> const & lf, TValue val)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TValue>
+SEQAN_HOST_DEVICE inline typename Size<LF<TText, TSpec, TConfig> >::Type
+_getCumulativeBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val, TPos & smaller)
+{
+    typedef LF<TText, TSpec, TConfig> const                TLF;
+    typedef typename Size<TLF>::Type                       TSize;
+
+    TSize ret = _getPrefixSum(lf, val);
+
+    if (pos > 0)
+    {
+        ret += getCumulativeRank(lf.bwt, pos - 1, val, smaller);
+
+        if (!ordLess(lf.sentinelSubstitute, val)) // lf.sentinelSubstitute >= val
+        {
+            TPos senti = _getSentinelsRank(lf, pos - 1);
+            smaller += senti;
+            if (ordEqual(lf.sentinelSubstitute, val))
+                ret -= senti;
+        }
+    }
+
+    return ret;
+}
+
+// ----------------------------------------------------------------------------
+// Function _getBwtRank(pos)
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TSpec, typename TConfig, typename TPos>
+SEQAN_HOST_DEVICE inline
+typename Size<LF<TText, TSpec, TConfig> const>::Type
+_getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos)
+{
+    return _getBwtRank(lf, pos, getValue(lf.bwt, pos));
+}
+
+template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TValue>
 SEQAN_HOST_DEVICE inline
 typename Size<LF<TText, TSpec, TConfig> >::Type
 _getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val)
@@ -451,18 +496,6 @@ _getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val)
     }
 
     return rank;
-}
-
-// ----------------------------------------------------------------------------
-// Function _getBwtRank(pos)
-// ----------------------------------------------------------------------------
-
-template <typename TText, typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline
-typename Size<LF<TText, TSpec, TConfig> const>::Type
-_getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos)
-{
-    return _getBwtRank(lf, pos, getValue(lf.bwt, pos));
 }
 
 // ----------------------------------------------------------------------------
@@ -558,8 +591,11 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
     // Fill the sentinel positions (they are all at the beginning of the bwt).
     for (TSize i = 1; i <= seqNum; ++i, ++bwtIt)
     {
-        assignValue(bwtIt, back(text[seqNum - i]));
-        setValue(lf.sentinels, bwtIt - bwtItBeg, false);
+        if (length(text[seqNum - i]) > 0)
+        {
+            assignValue(bwtIt, back(text[seqNum - i]));
+            setValue(lf.sentinels, bwtIt - bwtItBeg, false);
+        }
     }
 
     // Compute the rest of the bwt.
