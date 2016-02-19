@@ -151,16 +151,17 @@ struct Member<Match<TSpec>, ReadId>
     typedef uint32_t    Type;
 };
 
-template <typename TSpec>
-struct Member<Match<TSpec>, ContigId>
+template <typename TContigsSize, typename TContigsLen, typename TContigsSum>
+struct Member<Match<Limits<TContigsSize, TContigsLen, TContigsSum> >, ContigId>
 {
-    typedef uint16_t    Type;
+    // To remove GCC packed-bitfield-compat warning. See MemberBits below.
+    typedef uint32_t  Type;
 };
 
-template <typename TContigsLen, typename TContigsSum>
-struct Member<Match<Limits<TContigsLen, TContigsSum> >, ContigSize>
+template <typename TContigsSize, typename TContigsLen, typename TContigsSum>
+struct Member<Match<Limits<TContigsSize, TContigsLen, TContigsSum> >, ContigSize>
 {
-    typedef TContigsSum  Type;
+    typedef TContigsLen  Type;
 };
 
 template <typename TSpec>
@@ -191,14 +192,28 @@ struct MemberBits<Match<TSpec>, ReadId>
     static const unsigned VALUE = 21;
 };
 
-template <typename TContigsLen>
-struct MemberBits<Match<Limits<TContigsLen, uint8_t> >, ContigId>
+template <typename TContigsLen, typename TContigsSum>
+struct MemberBits<Match<Limits<uint8_t, TContigsLen, TContigsSum> >, ContigId>
 {
+    // To remove GCC packed-bitfield-compat warning.
     static const unsigned VALUE = 8;
 };
 
-template <typename TContigsLen>
-struct MemberBits<Match<Limits<TContigsLen, uint64_t> >, ContigSize>
+template <typename TContigsLen, typename TContigsSum>
+struct MemberBits<Match<Limits<uint16_t, TContigsLen, TContigsSum> >, ContigId>
+{
+    // To remove GCC packed-bitfield-compat warning.
+    static const unsigned VALUE = 16;
+};
+
+template <typename TContigsLen, typename TContigsSum>
+struct MemberBits<Match<Limits<uint32_t, TContigsLen, TContigsSum> >, ContigId>
+{
+    static const unsigned VALUE = 30;
+};
+
+template <typename TContigsSize, typename TContigsSum>
+struct MemberBits<Match<Limits<TContigsSize, uint64_t, TContigsSum> >, ContigSize>
 {
     static const unsigned VALUE = 48;
 };

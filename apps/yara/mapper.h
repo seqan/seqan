@@ -197,7 +197,7 @@ struct MapperTraits
     typedef StringSet<TSeedsCount, Owner<ConcatDirect<> > >         TRanks;
     typedef Tuple<TRanks, TConfig::BUCKETS>                         TRanksBuckets;
 
-    typedef Limits<TContigsLen, TContigsSum>                        TMatchSpec;
+    typedef Limits<TContigsSize, TContigsLen, TContigsSum>          TMatchSpec;
     typedef Match<TMatchSpec>                                       TMatch;
     typedef String<TMatch>                                          TMatches;
     typedef ConcurrentAppender<TMatches>                            TMatchesAppender;
