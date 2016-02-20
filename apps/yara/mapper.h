@@ -110,6 +110,9 @@ struct Options
         rabema(false),
         verbose(0)
     {
+#ifdef _OPENMP
+        threadsCount = std::thread::hardware_concurrency();
+#endif
         appendValue(secondaryAlignmentsList, "tag");
         appendValue(secondaryAlignmentsList, "record");
         appendValue(secondaryAlignmentsList, "omit");
