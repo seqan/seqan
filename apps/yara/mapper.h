@@ -69,7 +69,8 @@ struct Options
     float               errorRate;
     float               indelRate;
     float               strataRate;
-    bool                quick;
+    Sensitivity         sensitivity;
+    TList               sensitivityList;
 
     bool                singleEnd;
     unsigned            libraryLength;
@@ -98,7 +99,7 @@ struct Options
         errorRate(0.05f),
         indelRate(0.25f),
         strataRate(0.00f),
-        quick(false),
+        sensitivity(HIGH),
         singleEnd(true),
         libraryLength(),
         libraryDev(),
@@ -116,6 +117,10 @@ struct Options
         appendValue(secondaryAlignmentsList, "tag");
         appendValue(secondaryAlignmentsList, "record");
         appendValue(secondaryAlignmentsList, "omit");
+
+        appendValue(sensitivityList, "low");
+        appendValue(sensitivityList, "high");
+        appendValue(sensitivityList, "full");
 
 //        appendValue(libraryOrientationList, "fwd-rev");
 //        appendValue(libraryOrientationList, "fwd-fwd");
@@ -597,7 +602,10 @@ inline void findSeeds(Mapper<TSpec, TConfig> & me, TBucketId bucketId)
     {
         // Estimate the number of hits.
         reserve(me.hits[bucketId], lengthSum(me.seeds[bucketId]) * Power<ERRORS, 2>::VALUE, Exact());
-        _findSeedsImpl(me, me.hits[bucketId], me.seeds[bucketId], ERRORS, HammingDistance());
+        if (me.options.sensitivity == FULL)
+            _findSeedsImpl(me, me.hits[bucketId], me.seeds[bucketId], ERRORS, EditDistance());
+        else
+            _findSeedsImpl(me, me.hits[bucketId], me.seeds[bucketId], ERRORS, HammingDistance());
     }
     else
     {
@@ -1231,7 +1239,7 @@ inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, All
     collectSeeds<1>(me, readSeqs);
     collectSeeds<2>(me, readSeqs);
     findSeeds<1>(me, 1);
-    if (me.options.quick)
+    if (me.options.sensitivity == LOW)
         findSeeds<1>(me, 2);
     else
         findSeeds<2>(me, 2);
@@ -1288,7 +1296,7 @@ inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, Str
     clearSeeds(me);
     clearHits(me);
 
-    if (!me.options.quick)
+    if (me.options.sensitivity > LOW)
     {
         initSeeds(me, readSeqs);
         collectSeeds<2>(me, readSeqs);

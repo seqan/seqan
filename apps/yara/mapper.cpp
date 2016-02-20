@@ -174,12 +174,17 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setMaxValue(parser, "strata-rate", "10");
     setDefaultValue(parser, "strata-rate", 100.0 * options.strataRate);
 
-    addOption(parser, ArgParseOption("a", "all", "Consider all alignments within --error-rate. Default: consider alignments \
-                                                  within --strata-rate."));
+    addOption(parser, ArgParseOption("a", "all", "Consider all alignments within --error-rate. Default: consider only \
+                                                  alignments within --strata-rate."));
     hideOption(getOption(parser, "all"));
 
-    addOption(parser, ArgParseOption("q", "quick", "Be quicker by loosely mapping a few very repetitive reads."));
-    hideOption(getOption(parser, "quick"));
+    addOption(parser, ArgParseOption("y", "sensitivity", "Sensitivity with respect to edit distance. \
+                                                          Full sensitivity guarantees to find all considered alignments \
+                                                          but increases runtime, low sensitivity decreases runtime by \
+                                                          breaking such guarantee.",
+                                     ArgParseOption::STRING));
+    setValidValues(parser, "sensitivity", options.sensitivityList);
+    setDefaultValue(parser, "sensitivity", options.sensitivityList[options.sensitivity]);
 
     // Setup paired-end mapping options.
     addSection(parser, "Paired-End Mapping Options");
@@ -296,7 +301,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
         options.strataRate = options.errorRate;
     }
 
-    getOptionValue(options.quick, parser, "quick");
+    getOptionValue(options.sensitivity, parser, "sensitivity", options.sensitivityList);
 
     // Parse paired-end mapping options.
     getOptionValue(options.libraryLength, parser, "library-length");
