@@ -49,18 +49,18 @@ endif (NOT BZIP2_FOUND)
 # App-Level Configuration
 # ----------------------------------------------------------------------------
 
-set (SEQAN_APP_VERSION "0.9.5")
+set (SEQAN_APP_VERSION "0.9.6")
 
-option (YARA_LARGE_CONTIGS "Set to ON to enable support for more than 32k contigs or contigs longer than 4Gbp." OFF)
-if (YARA_LARGE_CONTIGS)
+option (YARA_LARGE_CONTIGS "Set to OFF to disable support for more than 32k contigs or contigs longer than 4Gbp." ON)
+if (YARA_LARGE_CONTIGS AND NOT SEQAN_TRAVIS_BUILD)
   add_definitions (-DYARA_LARGE_CONTIGS=1)
-endif (YARA_LARGE_CONTIGS)
-
-option (YARA_ARCH_NATIVE "Set to OFF to disable architecture-specific optimizations, e.g. g++ -march=native." ON)
+endif (YARA_LARGE_CONTIGS AND NOT SEQAN_TRAVIS_BUILD)
 
 # ----------------------------------------------------------------------------
 # Arch Setup
 # ----------------------------------------------------------------------------
+
+option (YARA_ARCH_NATIVE "Set to OFF to disable architecture-specific optimizations, e.g. g++ -march=native." ON)
 
 if (YARA_ARCH_NATIVE)
   if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
