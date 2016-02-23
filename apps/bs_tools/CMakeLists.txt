@@ -12,6 +12,11 @@ message (STATUS "Configuring apps/bs_tools")
 
 set (SEQAN_APP_VERSION "0.1.4")
 
+if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND ("$ENV{MODEL}" STREQUAL "Nightly"))
+    message (STATUS "bs_tools skipped on FreeBSD because math.h rounding errors.")
+    return ()
+endif ()
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
