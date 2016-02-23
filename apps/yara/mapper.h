@@ -60,7 +60,8 @@ struct Options
     Pair<CharString>    readsFile;
     CharString          outputFile;
     TOutputFormat       outputFormat;
-    bool                outputSecondary;
+    SecondaryAlignments secondaryAlignments;
+    TList               secondaryAlignmentsList;
     bool                uncompressedBam;
     CharString          readGroup;
 
@@ -68,13 +69,14 @@ struct Options
     float               errorRate;
     float               indelRate;
     float               strataRate;
-    bool                quick;
+    Sensitivity         sensitivity;
+    TList               sensitivityList;
 
     bool                singleEnd;
     unsigned            libraryLength;
     unsigned            libraryDev;
-    LibraryOrientation  libraryOrientation;
-    TList               libraryOrientationList;
+//    LibraryOrientation  libraryOrientation;
+//    TList               libraryOrientationList;
     bool                verifyMatches;
 
     unsigned            readsCount;
@@ -90,18 +92,18 @@ struct Options
         contigsSize(),
         contigsMaxLength(),
         contigsSum(),
-        outputSecondary(false),
+        secondaryAlignments(TAG),
         uncompressedBam(false),
         readGroup("none"),
         mappingMode(STRATA),
         errorRate(0.05f),
         indelRate(0.25f),
         strataRate(0.00f),
-        quick(false),
+        sensitivity(HIGH),
         singleEnd(true),
         libraryLength(),
         libraryDev(),
-        libraryOrientation(FWD_REV),
+//        libraryOrientation(FWD_REV),
         verifyMatches(true),
         readsCount(100000),
         threadsCount(1),
@@ -109,9 +111,20 @@ struct Options
         rabema(false),
         verbose(0)
     {
-        appendValue(libraryOrientationList, "fwd-rev");
-        appendValue(libraryOrientationList, "fwd-fwd");
-        appendValue(libraryOrientationList, "rev-rev");
+#ifdef _OPENMP
+        threadsCount = std::thread::hardware_concurrency();
+#endif
+        appendValue(secondaryAlignmentsList, "tag");
+        appendValue(secondaryAlignmentsList, "record");
+        appendValue(secondaryAlignmentsList, "omit");
+
+        appendValue(sensitivityList, "low");
+        appendValue(sensitivityList, "high");
+        appendValue(sensitivityList, "full");
+
+//        appendValue(libraryOrientationList, "fwd-rev");
+//        appendValue(libraryOrientationList, "fwd-fwd");
+//        appendValue(libraryOrientationList, "rev-rev");
     }
 };
 
@@ -192,7 +205,7 @@ struct MapperTraits
     typedef StringSet<TSeedsCount, Owner<ConcatDirect<> > >         TRanks;
     typedef Tuple<TRanks, TConfig::BUCKETS>                         TRanksBuckets;
 
-    typedef Limits<TContigsLen, TContigsSum>                        TMatchSpec;
+    typedef Limits<TContigsSize, TContigsLen, TContigsSum>          TMatchSpec;
     typedef Match<TMatchSpec>                                       TMatch;
     typedef String<TMatch>                                          TMatches;
     typedef ConcurrentAppender<TMatches>                            TMatchesAppender;
@@ -589,7 +602,10 @@ inline void findSeeds(Mapper<TSpec, TConfig> & me, TBucketId bucketId)
     {
         // Estimate the number of hits.
         reserve(me.hits[bucketId], lengthSum(me.seeds[bucketId]) * Power<ERRORS, 2>::VALUE, Exact());
-        _findSeedsImpl(me, me.hits[bucketId], me.seeds[bucketId], ERRORS, HammingDistance());
+        if (me.options.sensitivity == FULL)
+            _findSeedsImpl(me, me.hits[bucketId], me.seeds[bucketId], ERRORS, EditDistance());
+        else
+            _findSeedsImpl(me, me.hits[bucketId], me.seeds[bucketId], ERRORS, HammingDistance());
     }
     else
     {
@@ -1223,7 +1239,7 @@ inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, All
     collectSeeds<1>(me, readSeqs);
     collectSeeds<2>(me, readSeqs);
     findSeeds<1>(me, 1);
-    if (me.options.quick)
+    if (me.options.sensitivity == LOW)
         findSeeds<1>(me, 2);
     else
         findSeeds<2>(me, 2);
@@ -1280,7 +1296,7 @@ inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, Str
     clearSeeds(me);
     clearHits(me);
 
-    if (!me.options.quick)
+    if (me.options.sensitivity > LOW)
     {
         initSeeds(me, readSeqs);
         collectSeeds<2>(me, readSeqs);

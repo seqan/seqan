@@ -87,7 +87,7 @@ def main(source_base, binary_base):
 #                  ]
 #    mapper_suffix = ['t1', 't8']
 
-    mapper_args = [[]]
+    mapper_args = [['--threads', '1']]
     mapper_suffix = ['t1']
 
     for organism in ['adeno']:

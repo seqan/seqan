@@ -48,7 +48,7 @@ using namespace seqan;
 // Tag Limits
 // ----------------------------------------------------------------------------
 
-template <typename T1 = void, typename T2 = void>
+template <typename T1 = void, typename T2 = void, typename T3 = void>
 struct Limits {};
 
 // ----------------------------------------------------------------------------
@@ -57,16 +57,22 @@ struct Limits {};
 
 namespace seqan
 {
-template <typename T1, typename T2>
-struct Value<Limits<T1, T2>, 1>
+template <typename T1, typename T2, typename T3>
+struct Value<Limits<T1, T2, T3>, 1>
 {
     typedef T1 Type;
 };
 
-template <typename T1, typename T2>
-struct Value<Limits<T1, T2>, 2>
+template <typename T1, typename T2, typename T3>
+struct Value<Limits<T1, T2, T3>, 2>
 {
     typedef T2 Type;
+};
+
+template <typename T1, typename T2, typename T3>
+struct Value<Limits<T1, T2, T3>, 3>
+{
+    typedef T3 Type;
 };
 
 // ============================================================================

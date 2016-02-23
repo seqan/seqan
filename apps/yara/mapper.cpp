@@ -121,7 +121,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setHelpText(parser, 1, "Either one single-end or two paired-end / mate-pair read files.");
 
     addOption(parser, ArgParseOption("v", "verbose", "Displays global statistics."));
-    addOption(parser, ArgParseOption("vv", "vverbose", "Displays extensive statistics for each batch of reads."));
+    addOption(parser, ArgParseOption("vv", "very-verbose", "Displays extensive statistics for each batch of reads."));
 
     // Setup output options.
     addSection(parser, "Output Options");
@@ -137,43 +137,54 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setDefaultValue(parser, "output-format", "sam");
 
 #if SEQAN_HAS_ZLIB
-    addOption(parser, ArgParseOption("u", "uncompressed-bam", "Turn off the compression of BAM written to standard output."));
+    addOption(parser, ArgParseOption("u", "uncompressed-bam", "Turn off compression of BAM written to standard output."));
+    hideOption(getOption(parser, "uncompressed-bam"));
 #endif
 
-    addOption(parser, ArgParseOption("rg", "read-group", "Specify a read group for all reads in the SAM/BAM file.",
+    addOption(parser, ArgParseOption("rg", "read-group", "Specify a read group for all records in the SAM/BAM file.",
                                      ArgParseOption::STRING));
     setDefaultValue(parser, "read-group", options.readGroup);
 
-    addOption(parser, ArgParseOption("os", "output-secondary", "Output secondary alignments as separate SAM/BAM records. \
-                                                                Default: output secondary alignments inside the XA tag \
-                                                                of the primary alignment."));
+    addOption(parser, ArgParseOption("sa", "secondary-alignments", "Specify whether to output secondary alignments in \
+                                                                    the XA tag of the primary alignment, as separate \
+                                                                    secondary records, or to omit them.",
+                                                                ArgParseOption::STRING));
+    setValidValues(parser, "secondary-alignments", options.secondaryAlignmentsList);
+    setDefaultValue(parser, "secondary-alignments", options.secondaryAlignmentsList[options.secondaryAlignments]);
 
-    addOption(parser, ArgParseOption("or", "output-rabema", "Output a SAM/BAM file usable as a gold standard for the \
-                                                             Read Alignment BEnchMArk (RABEMA)."));
-
+    addOption(parser, ArgParseOption("ra", "rabema-alignments", "Output alignments compatible with the \
+                                                                 Read Alignment BEnchMArk (RABEMA)."));
 
     // Setup mapping options.
     addSection(parser, "Mapping Options");
 
-    addOption(parser, ArgParseOption("e", "error-rate", "Ignore alignments above this percentual number of errors.",
+    addOption(parser, ArgParseOption("e", "error-rate", "Consider alignments within this percentual number of errors. \
+                                         Increase this threshold to increase the number of mapped reads. \
+                                         Decrease this threshold to decrease the runtime.",
                                      ArgParseOption::INTEGER));
     setMinValue(parser, "error-rate", "0");
     setMaxValue(parser, "error-rate", "10");
     setDefaultValue(parser, "error-rate", 100.0 * options.errorRate);
 
-    addOption(parser, ArgParseOption("s", "strata-rate", "Report suboptimal alignments within this percentual number \
-                                                          of errors from the optimal alignment.",
+    addOption(parser, ArgParseOption("s", "strata-rate", "Consider suboptimal alignments within this percentual number \
+                                      of errors from the optimal alignment. Increase this threshold to increase \
+                                      the number of alternative alignments at the expense of runtime.",
                                                           ArgParseOption::INTEGER));
     setMinValue(parser, "strata-rate", "0");
     setMaxValue(parser, "strata-rate", "10");
     setDefaultValue(parser, "strata-rate", 100.0 * options.strataRate);
 
-    addOption(parser, ArgParseOption("a", "all", "Report all alignments within --error-rate. Default: report alignments \
-                                                  within --strata-rate."));
+    addOption(parser, ArgParseOption("a", "all", "Consider all alignments within --error-rate. Default: consider only \
+                                                  alignments within --strata-rate."));
     hideOption(getOption(parser, "all"));
 
-    addOption(parser, ArgParseOption("q", "quick", "Be quicker by loosely mapping a few very repetitive reads."));
-    hideOption(getOption(parser, "quick"));
+    addOption(parser, ArgParseOption("y", "sensitivity", "Sensitivity with respect to edit distance. \
+                                                          Full sensitivity guarantees to find all considered alignments \
+                                                          but increases runtime, low sensitivity decreases runtime by \
+                                                          breaking such guarantee.",
+                                     ArgParseOption::STRING));
+    setValidValues(parser, "sensitivity", options.sensitivityList);
+    setDefaultValue(parser, "sensitivity", options.sensitivityList[options.sensitivity]);
 
     // Setup paired-end mapping options.
     addSection(parser, "Paired-End Mapping Options");
@@ -186,14 +197,13 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
                                             Default: autodetected.", ArgParseOption::INTEGER));
     setMinValue(parser, "library-deviation", "0");
 
-    addOption(parser, ArgParseOption("i", "indel-rate", "Ignore rescued alignments above this percentual number of indels.",
+    addOption(parser, ArgParseOption("i", "indel-rate", "Rescue unaligned ends within this percentual number of indels.",
                                      ArgParseOption::INTEGER));
     setMinValue(parser, "indel-rate", "0");
     setMaxValue(parser, "indel-rate", "50");
     setDefaultValue(parser, "indel-rate", 100.0 * options.indelRate);
 
-    addOption(parser, ArgParseOption("ni", "no-indels", "Do not attempt to rescue unaligned ends containing indels."));
-
+    addOption(parser, ArgParseOption("ni", "no-indels", "Turn off the rescue of unaligned ends containing indels."));
 
 //    addOption(parser, ArgParseOption("lo", "library-orientation", "Expected orientation of the segments in the library.",
 //                                     ArgParseOption::STRING));
@@ -273,8 +283,8 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse output options.
     getOptionValue(options.readGroup, parser, "read-group");
-    getOptionValue(options.outputSecondary, parser, "output-secondary");
-    getOptionValue(options.rabema, parser, "output-rabema");
+    getOptionValue(options.secondaryAlignments, parser, "secondary-alignments", options.secondaryAlignmentsList);
+    getOptionValue(options.rabema, parser, "rabema-alignments");
 
     // Parse mapping options.
     unsigned errorRate;
@@ -291,7 +301,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
         options.strataRate = options.errorRate;
     }
 
-    getOptionValue(options.quick, parser, "quick");
+    getOptionValue(options.sensitivity, parser, "sensitivity", options.sensitivityList);
 
     // Parse paired-end mapping options.
     getOptionValue(options.libraryLength, parser, "library-length");
@@ -309,7 +319,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOptionValue(options.readsCount, parser, "reads-batch");
 
     if (isSet(parser, "verbose")) options.verbose = 1;
-    if (isSet(parser, "vverbose")) options.verbose = 2;
+    if (isSet(parser, "very-verbose")) options.verbose = 2;
 
     // Get version.
     options.version = getVersion(parser);
