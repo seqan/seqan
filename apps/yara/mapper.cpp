@@ -195,7 +195,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
 
     addOption(parser, ArgParseOption("ld", "library-deviation", "Deviation from the expected library length. \
                                             Default: autodetected.", ArgParseOption::INTEGER));
-    setMinValue(parser, "library-deviation", "0");
+    setMinValue(parser, "library-deviation", "1");
 
     addOption(parser, ArgParseOption("i", "indel-rate", "Rescue unaligned ends within this percentual number of indels.",
                                      ArgParseOption::INTEGER));
