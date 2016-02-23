@@ -921,11 +921,11 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     // Estimate library mean length and deviation if one of them was not provided.
     if (!me.options.libraryLength || !me.options.libraryDev)
     {
-        // Collect library lengths from unique pairs.
+        // Collect library lengths from unique optimal pairs.
         TLibraryLengths libraryLengths;
         reserve(libraryLengths, getPairsCount(readSeqs), Exact());
         ConcurrentAppender<TLibraryLengths> libraryLengthsAppender(libraryLengths);
-        forAllMatchesPairs(me.matchesSetByCoord, readSeqs, [&](TMatchesSetValue const & firstMatches, TMatchesSetValue const & secondMatches)
+        forAllMatchesPairs(me.optimalMatchesSet, readSeqs, [&](TMatchesViewSetValue const & firstMatches, TMatchesViewSetValue const & secondMatches)
         {
             if (length(firstMatches) == 1 && length(secondMatches) == 1)
             {
