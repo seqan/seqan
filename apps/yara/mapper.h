@@ -945,6 +945,9 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
         unsigned libraryMedian = nthElement(libraryLengths, length(libraryLengths) / 2, typename TTraits::TThreading());
         removeIf(libraryLengths, std::bind2nd(std::greater<unsigned>(), 6.0 * libraryMedian), typename TTraits::TThreading());
 
+        // If library mean length and deviation cannot be estimated proceed as single-ended.
+        if (empty(libraryLengths)) return;
+
         // Compute library mean.
         unsigned librarySum = accumulate(libraryLengths, 0u, typename TTraits::TThreading());
         float libraryMean = librarySum / static_cast<float>(length(libraryLengths));
