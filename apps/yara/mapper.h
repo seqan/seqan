@@ -918,26 +918,30 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     if (IsSameType<typename TConfig::TSequencing, SingleEnd>::VALUE) return;
 
     start(me.timer);
-    // Collect library lengths from unique pairs.
-    TLibraryLengths libraryLengths;
-    reserve(libraryLengths, getPairsCount(readSeqs), Exact());
-    ConcurrentAppender<TLibraryLengths> libraryLengthsAppender(libraryLengths);
-    forAllMatchesPairs(me.matchesSetByCoord, readSeqs, [&](TMatchesSetValue const & firstMatches, TMatchesSetValue const & secondMatches)
+    // Estimate library mean length and deviation if one of them was not provided.
+    if (!me.options.libraryLength || !me.options.libraryDev)
     {
-        if (length(firstMatches) == 1 && length(secondMatches) == 1)
+        // Collect library lengths from unique pairs.
+        TLibraryLengths libraryLengths;
+        reserve(libraryLengths, getPairsCount(readSeqs), Exact());
+        ConcurrentAppender<TLibraryLengths> libraryLengthsAppender(libraryLengths);
+        forAllMatchesPairs(me.matchesSetByCoord, readSeqs, [&](TMatchesSetValue const & firstMatches, TMatchesSetValue const & secondMatches)
         {
-            TMatch const & firstMatch = front(firstMatches);
-            TMatch const & secondMatch = front(secondMatches);
+            if (length(firstMatches) == 1 && length(secondMatches) == 1)
+            {
+                TMatch const & firstMatch = front(firstMatches);
+                TMatch const & secondMatch = front(secondMatches);
 
-            if (contigEqual(firstMatch, secondMatch) && orientationProper(firstMatch, secondMatch))
-                appendValue(libraryLengthsAppender, getLibraryLength(firstMatch, secondMatch), Insist(), typename TTraits::TThreading());
-        }
-    },
-    typename TTraits::TThreading());
+                if (contigEqual(firstMatch, secondMatch) && orientationProper(firstMatch, secondMatch))
+                    appendValue(libraryLengthsAppender, getLibraryLength(firstMatch, secondMatch), Insist(), typename TTraits::TThreading());
+            }
+        },
+        typename TTraits::TThreading());
 
-    // Remove library outliers > 6 * median.
-    if (!empty(libraryLengths))
-    {
+        // If library mean length and deviation cannot be estimated proceed as single-ended.
+        if (empty(libraryLengths)) return;
+
+        // Remove library outliers > 6 * median.
         unsigned libraryMedian = nthElement(libraryLengths, length(libraryLengths) / 2, typename TTraits::TThreading());
         removeIf(libraryLengths, std::bind2nd(std::greater<unsigned>(), 6.0 * libraryMedian), typename TTraits::TThreading());
 
