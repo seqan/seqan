@@ -145,9 +145,7 @@ inline const char * toCString(Demangler<T> const & me)
  * @brief The assertion and check macros provided by SeqAn.
  *
  * Assertions are checks performed at runtime when debugging is enabled.  Debugging is enabled by defining the
- * preprocessor symbol <tt>SEQAN_ENABLE_DEBUG</tt> as <tt>1</tt> (the default is to set it to <tt>0</tt> if the common C
- * macro <tt>NDEBUG</tt> is defined and to set it to <tt>1</tt> otherwise.  When using the SeqAn build system or the
- * CMake FindSeqAn.cmake module, this is automatically set appropriately.
+ * preprocessor symbol <tt>SEQAN_ENABLE_DEBUG</tt> as <tt>1</tt>.
  *
  * The SEQAN_CHECK and SEQAN_FAIL macro always lead to an exit of the program with a non-0 return value.
  */
@@ -263,9 +261,6 @@ inline const char * toCString(Demangler<T> const & me)
 // SeqAn's has three global debug/testing levels: testing, debug and
 // release.  Depending on the level, the SEQAN_ASSERT_* macros will be enabled.
 //
-// Note that this is independent of the <cassert> assertions and
-// NDEBUG being defined.
-//
 // The levels are enabled by the values of the macros
 // SEQAN_ENABLE_TESTING and SEQAN_ENABLE_DEBUG.  By setting a macro to
 // 0, one disables the level and by setting the macro to 1, one
@@ -276,7 +271,7 @@ inline const char * toCString(Demangler<T> const & me)
 // 0), the assertions will be disabled.  If the level is debug then
 // the assertions will be enabled.
 //
-// The default is to enable debugging but disable testing.
+// The default is to disable debugging and testing.
 //
 // You can print the current level using the function seqan::printDebugLevel().
 
@@ -315,7 +310,8 @@ inline const char * toCString(Demangler<T> const & me)
  * When enabled (set to 1) then debugging is enabled.  This means the assertion macros are expanded to actual test code.
  * If debugging (and testing) is disabled then the SeqAn assertion macros expand to no instructions.
  *
- * By default, thi sis set to 0 if <tt>NDEBUG</tt> is defined and set to 1 if <tt>NDEBUG</tt> is not defined.
+ * Note that <tt>NDEBUG</tt> is set undefined if <tt>SEQAN_ENABLE_DEBUG</tt> = 1
+ * and <tt>NDEBUG</tt> is set to 1 if <tt>SEQAN_ENABLE_DEBUG</tt> = 0.
  *
  * If you want to change this value then you have to define this value before including any SeqAn header.
  *
@@ -326,12 +322,14 @@ inline const char * toCString(Demangler<T> const & me)
 
 // Set default for SEQAN_ENABLE_DEBUG.
 #ifndef SEQAN_ENABLE_DEBUG
-  #ifdef NDEBUG
-    #define SEQAN_ENABLE_DEBUG 0
-  #else  // #ifdef NDEBUG
-    #define SEQAN_ENABLE_DEBUG 1
-  #endif  // #ifdef NDEBUG
+#define SEQAN_ENABLE_DEBUG 0
 #endif  // #ifndef SEQAN_ENABLE_DEBUG
+
+#if !SEQAN_ENABLE_DEBUG
+#define NDEBUG 1
+#else
+#undefine NDEBUG
+#endif // #if !SEQAN_ENABLE_DEBUG
 
 // Force-enable debugging if testing is enabled.
 #if SEQAN_ENABLE_TESTING

@@ -116,8 +116,6 @@ endfunction (add_executable)
 macro (seqan_register_apps)
     # Set SeqAn flags.
     set (SEQAN_FIND_ENABLE_TESTING 0)
-    set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DSEQAN_ENABLE_DEBUG=0")
-    set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DSEQAN_ENABLE_DEBUG=0")
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
 
     # enable static linkage for seqan apps
@@ -603,8 +601,6 @@ endmacro (_seqan_setup_demo_test CPP_FILE)
 macro (seqan_install_demos_release)
     # Set flags for SeqAn. Use PARENT_SCOPE since it is called from within a function.
     set (SEQAN_FIND_ENABLE_TESTING 0 PARENT_SCOPE)
-    set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DSEQAN_ENABLE_DEBUG=0" PARENT_SCOPE)
-    set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DSEQAN_ENABLE_DEBUG=0" PARENT_SCOPE)
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1" PARENT_SCOPE)
 
     # Get a list of all .cpp and .cu files in the current directory.
