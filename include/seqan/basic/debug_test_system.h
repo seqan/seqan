@@ -328,7 +328,7 @@ inline const char * toCString(Demangler<T> const & me)
 #if !SEQAN_ENABLE_DEBUG
 #define NDEBUG 1
 #else
-#undefine NDEBUG
+#undef NDEBUG
 #endif // #if !SEQAN_ENABLE_DEBUG
 
 // Force-enable debugging if testing is enabled.
