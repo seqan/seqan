@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """Implementation of the SeqAn Doxygen dialect.
 """
 
