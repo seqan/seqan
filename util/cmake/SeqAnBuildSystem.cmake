@@ -657,29 +657,43 @@ macro (seqan_build_demos_develop PREFIX)
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
-        string (REPLACE "/" "_" BIN_NAME "${ENTRY}")
-        string (REPLACE "\\" "_" BIN_NAME "${BIN_NAME}")
-        get_filename_component (BIN_NAME "${BIN_NAME}" NAME_WE)
+        set (SKIP FALSE)
+        # workaround a bug in llvm35 on FreeBSD
+        if ((ENTRY MATCHES "zip") AND
+            (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND
+            (COMPILER_IS_CLANG) AND
+            (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.5.0) AND
+            (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6.0))
+            set (SKIP TRUE)
+        # bug in visual studio
+        elseif ((ENTRY MATCHES "queue_example.cpp") AND
+                COMPILER_IS_MSVC)
+            set (SKIP TRUE)
+        endif ()
 
-        get_filename_component (FILE_NAME "${ENTRY}" NAME)
-        if ("${FILE_NAME}" MATCHES "\\.cu$")
-            if (SEQAN_HAS_CUDA)
-                cuda_add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
-                target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
-                if (APPLE AND COMPILER_IS_CLANG)
-                    set_target_properties (${PREFIX}${BIN_NAME} PROPERTIES LINK_FLAGS -stdlib=libstdc++)
+        if (SKIP)
+            message(STATUS "${ENTRY} skipped on this platform." )
+        else (SKIP)
+            string (REPLACE "/" "_" BIN_NAME "${ENTRY}")
+            string (REPLACE "\\" "_" BIN_NAME "${BIN_NAME}")
+            get_filename_component (BIN_NAME "${BIN_NAME}" NAME_WE)
+
+            get_filename_component (FILE_NAME "${ENTRY}" NAME)
+            if ("${FILE_NAME}" MATCHES "\\.cu$")
+                if (SEQAN_HAS_CUDA)
+                    cuda_add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
+                    target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
+                    if (APPLE AND COMPILER_IS_CLANG)
+                        set_target_properties (${PREFIX}${BIN_NAME} PROPERTIES LINK_FLAGS -stdlib=libstdc++)
+                    endif ()
+                    _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
                 endif ()
+            else ()
+                add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
+                target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
                 _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
             endif ()
-        else ()
-            if ("${FILE_NAME}" MATCHES "queue_example.cpp" AND COMPILER_IS_MSVC)
-                message(STATUS "Not building demo ${FILE_NAME} under visual studio." )
-                continue()
-            endif ()
-            add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
-            target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
-            _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
-        endif ()
+        endif (SKIP)
     endforeach (ENTRY ${ENTRIES})
 endmacro (seqan_build_demos_develop)
 
