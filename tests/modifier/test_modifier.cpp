@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -111,6 +111,8 @@ SEQAN_BEGIN_TESTSUITE(test_modifier)
 
     SEQAN_CALL_TEST(test_modifier_modified_string_mod_view);
     SEQAN_CALL_TEST(test_modifier_modified_string_mod_view_segment);
+
+    SEQAN_CALL_TEST(test_modifier_modified_string_mod_pos);
 
 //    SEQAN_CALL_TEST(test_modifier_modified_string_literal);
     SEQAN_CALL_TEST(test_modifier_modified_string_const_literal);

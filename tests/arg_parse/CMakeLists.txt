@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the arg_parse module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_arg_parse)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_arg_parse CXX)
 message (STATUS "Configuring tests/arg_parse")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,6 @@ message (STATUS "Configuring tests/arg_parse")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

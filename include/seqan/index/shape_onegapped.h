@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_SHAPE_ONEGAPPED_H
 #define SEQAN_HEADER_SHAPE_ONEGAPPED_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 
@@ -99,7 +99,6 @@ namespace SEQAN_NAMESPACE_MAIN
             hValue(0),
             leftChar(0)
         {
-        SEQAN_CHECKPOINT
             typedef typename Value< Shape<TValue, OneGappedShape> >::Type    THValue;
             factor1 = _intPow((THValue)ValueSize<TValue>::VALUE, weight(*this) - 1);
             factor2 = _intPow((THValue)ValueSize<TValue>::VALUE, blockLen2);
@@ -153,7 +152,6 @@ namespace SEQAN_NAMESPACE_MAIN
     inline typename Size< Shape<TValue, OneGappedShape> >::Type
     length(Shape<TValue, OneGappedShape> const &me)
     {
-    SEQAN_CHECKPOINT
         return me.blockLen1 + me.gapLen + me.blockLen2;
     }
 
@@ -163,7 +161,6 @@ namespace SEQAN_NAMESPACE_MAIN
     inline typename Size< Shape<TValue, OneGappedShape> >::Type
     weight(Shape<TValue, OneGappedShape> const & me)
     {
-    SEQAN_CHECKPOINT
         return me.blockLen1 + me.blockLen2;
     }
 
@@ -337,7 +334,6 @@ namespace SEQAN_NAMESPACE_MAIN
         Shape<TValue, OneGappedShape> &me,
         TShapeString const &bitmap)
     {
-    SEQAN_CHECKPOINT
         typedef typename Iterator<TShapeString const>::Type                TIter;
         typedef typename Value< Shape<TValue, OneGappedShape> >::Type    THValue;
 
@@ -375,7 +371,6 @@ namespace SEQAN_NAMESPACE_MAIN
         TShapeString &bitmap,
         Shape<TValue, OneGappedShape> const &me)
     {
-    SEQAN_CHECKPOINT
 
         clear(bitmap);
         resize(bitmap, me.blockLen1, '1');
@@ -388,7 +383,6 @@ namespace SEQAN_NAMESPACE_MAIN
     inline void
     reverse(Shape<TValue, OneGappedShape> &me)
     {
-    SEQAN_CHECKPOINT
         typedef typename Value< Shape<TValue, OneGappedShape> >::Type    THValue;
 
         unsigned temp = me.blockLen1;

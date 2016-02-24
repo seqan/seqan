@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_FIND_H
 #define SEQAN_HEADER_INDEX_FIND_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,6 @@ namespace SEQAN_NAMESPACE_MAIN
     inline typename Parameter_< Index<TText, TSpec> >::Type
     host(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
-SEQAN_CHECKPOINT
         return value(me.index);
     }
 
@@ -106,7 +105,6 @@ SEQAN_CHECKPOINT
     inline typename Parameter_< Index<TText, TSpec> >::Type
     host(Finder< Index<TText, TSpec>, TSpecFinder > const & me)
     {
-SEQAN_CHECKPOINT
         return value(me.index);
     }
 
@@ -114,7 +112,6 @@ SEQAN_CHECKPOINT
     inline typename Parameter_< Index<TText, TSpec> >::Type
     container(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
-SEQAN_CHECKPOINT
         return value(me.index);
     }
 
@@ -122,7 +119,6 @@ SEQAN_CHECKPOINT
     inline typename Parameter_< Index<TText, TSpec> >::Type
     container(Finder< Index<TText, TSpec>, TSpecFinder > const & me)
     {
-SEQAN_CHECKPOINT
         return value(me.index);
     }
 
@@ -152,7 +148,6 @@ SEQAN_CHECKPOINT
     inline typename Iterator< typename Fibre<Index<TText, TSpec>, FibreSA>::Type const, Standard>::Type &
     hostIterator(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
-SEQAN_CHECKPOINT
         return me.data_iterator;
     }
 
@@ -160,7 +155,6 @@ SEQAN_CHECKPOINT
     inline typename Iterator< typename Fibre<Index<TText, TSpec>, FibreSA>::Type const, Standard>::Type const &
     hostIterator(Finder< Index<TText, TSpec>, TSpecFinder > const & me)
     {
-SEQAN_CHECKPOINT
         return me.data_iterator;
     }
 
@@ -171,7 +165,6 @@ SEQAN_CHECKPOINT
     inline bool
     empty(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
-SEQAN_CHECKPOINT
         return me.range.i1 == me.range.i2;
     }
 
@@ -179,7 +172,6 @@ SEQAN_CHECKPOINT
     inline void
     clear(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
-SEQAN_CHECKPOINT
         typedef Index<TText, TSpec>                                TIndex;
         typedef typename Fibre<TIndex, FibreSA>::Type            TSA;
         typedef typename Iterator<TSA const, Standard>::Type    TIterator;
@@ -193,7 +185,6 @@ SEQAN_CHECKPOINT
     inline bool
     atBegin(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
-SEQAN_CHECKPOINT
         return (empty(me) || hostIterator(me) == me.range.i1);
     }
 
@@ -201,7 +192,6 @@ SEQAN_CHECKPOINT
     inline bool
     atEnd(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
-SEQAN_CHECKPOINT
         return (empty(me) || hostIterator(me) == me.range.i2);
     }
 
@@ -211,7 +201,6 @@ SEQAN_CHECKPOINT
     inline void
     goBegin(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
-SEQAN_CHECKPOINT
         hostIterator(me) = me.range.i1;
     }
 
@@ -219,7 +208,6 @@ SEQAN_CHECKPOINT
     inline void
     goEnd(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
-SEQAN_CHECKPOINT
         hostIterator(me) = me.range.i2;
     }
 
@@ -229,7 +217,6 @@ SEQAN_CHECKPOINT
     inline typename Position< Finder< Index<TText, TSpec>, TSpecFinder > >::Type
     beginPosition(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
-        SEQAN_CHECKPOINT;
         SEQAN_ASSERT_NOT(empty(me));
         return *me.data_iterator;
     }
@@ -238,7 +225,6 @@ SEQAN_CHECKPOINT
     inline typename Position< Finder< Index<TText, TSpec>, TSpecFinder > >::Type
     beginPosition(Finder< Index<TText, TSpec>, TSpecFinder > const & me)
     {
-        SEQAN_CHECKPOINT;
         SEQAN_ASSERT_NOT(empty(me));
         return *me.data_iterator;
     }
@@ -249,7 +235,6 @@ SEQAN_CHECKPOINT
     inline typename Position< Finder< Index<TText, TSpec>, TSpecFinder > >::Type
     endPosition(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
-SEQAN_CHECKPOINT
         return posAdd(beginPosition(me), me.data_length);
     }
 
@@ -257,7 +242,6 @@ SEQAN_CHECKPOINT
     inline typename Position< Finder< Index<TText, TSpec>, TSpecFinder > >::Type
     endPosition(Finder< Index<TText, TSpec>, TSpecFinder > const & me)
     {
-SEQAN_CHECKPOINT
         return posAdd(beginPosition(me), me.data_length);
     }
 
@@ -267,7 +251,6 @@ SEQAN_CHECKPOINT
     inline typename Position< Finder< Index<TText, TSpec>, TSpecFinder > >::Type
     position(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
-SEQAN_CHECKPOINT
         return beginPosition(me);
     }
 
@@ -275,7 +258,6 @@ SEQAN_CHECKPOINT
     inline typename Position< Finder< Index<TText, TSpec>, TSpecFinder > >::Type
     position(Finder< Index<TText, TSpec>, TSpecFinder > const & me)
     {
-SEQAN_CHECKPOINT
         return beginPosition(me);
     }
 

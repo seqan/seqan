@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -126,7 +126,7 @@ bool performEstimation(LibraryInfo & libInfo, BamFileIn & bamFileIn)
     unsigned orientationCounters[4] = {0, 0, 0, 0};
 
     // Running mean.
-    __uint64 runningMean = 0;
+    uint64_t runningMean = 0;
     unsigned pairCount = 0;
 
     // Count.

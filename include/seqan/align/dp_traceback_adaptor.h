@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -277,7 +277,7 @@ _adaptTraceSegmentsTo(String<Fragment<TSize, TFragmentSpec>, TStringSpec> & matc
 //    if (tv == Horizontal) {
 //        for (int i = pos1 + segLen - 1; i>= (int) pos1;--i) {
 //            resize(value(nodeString, index), len1 + len2, nilVertex);
-//            TStringIter it = beSEQAN_CHECKPOINTgin(value(nodeString, index));
+//            TStringIter it = begin(value(nodeString, index));
 //            for(TPos all = 0;all<len1;++all) {
 //                *it = getValue(getValue(getValue(str,0),i), all);
 //                goNext(it);

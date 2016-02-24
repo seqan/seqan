@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@
 #define APPS_MASON2_MASON_TYPES_H_
 
 #include <stdexcept>
-#include <seqan/random.h>
+#include <random>
 
 // ============================================================================
 // Forwards
@@ -48,9 +48,9 @@
 // Typedef TRng
 // ----------------------------------------------------------------------------
 
-// We use the default random number generator throughout Mason.
+// We use the Mersenne Twister 19937 from the standard library in mason.
 
-typedef seqan::Rng<> TRng;
+typedef std::mt19937 TRng;
 
 // ============================================================================
 // Tags, Classes, Enums

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -295,7 +295,7 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
  * @return Type  The type of the result <tt>VALUE</tt>.
  *
  * This function is only defined for integral types like <tt>unsigned</tt>, <tt>int</tt>, or Dna.  For floating point
- * numbers and the 64 bit types <tt>__int64</tt> and <tt>__uint64</tt>, it returns 0 since there is no standard
+ * numbers and the 64 bit types <tt>int64_t</tt> and <tt>uint64_t</tt>, it returns 0 since there is no standard
  * compliant way to return the number of values for these types.
  *
  * Note that you cannot get pointers or references to <tt>ValueSize&lt;T&gt;::VALUE</tt> in your program.  You can use

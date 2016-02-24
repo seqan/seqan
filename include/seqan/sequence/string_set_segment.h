@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,8 +44,6 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-struct HostMember_;
-
 template <typename THost>
 struct StringSetPositions;
 
@@ -61,13 +59,13 @@ template <typename THost, typename TSpec>
 class StringSet<THost, Segment<TSpec> >
 {
 public:
-    typedef typename Member<StringSet, HostMember_>::Type   THostMember;
+    typedef typename Pointer_<THost>::Type                  THostPointer;
     typedef typename StringSetPositions<THost>::Type        TPositions;
     typedef typename StringSetLimits<StringSet>::Type       TLimits;
     typedef typename Concatenator<StringSet>::Type          TConcatenator;
 
 
-    THostMember     data_host;
+    THostPointer    data_host;
     TPositions      positions;
     TLimits         limits;
     bool            limitsValid;
@@ -95,7 +93,6 @@ public:
     SEQAN_HOST_DEVICE inline typename Reference<StringSet>::Type
     operator[](TPos pos)
     {
-        SEQAN_CHECKPOINT;
         return value(*this, pos);
     }
 
@@ -103,23 +100,8 @@ public:
     SEQAN_HOST_DEVICE inline typename Reference<StringSet const>::Type
     operator[](TPos pos) const
     {
-        SEQAN_CHECKPOINT;
         return value(*this, pos);
     }
-};
-
-// ============================================================================
-// Members
-// ============================================================================
-
-// --------------------------------------------------------------------------
-// Member HostMember_
-// --------------------------------------------------------------------------
-
-template <typename THost, typename TSpec>
-struct Member<StringSet<THost, Segment<TSpec> >, HostMember_>
-{
-    typedef typename IfView<THost, THost, THost *>::Type Type;
 };
 
 // ============================================================================
@@ -268,6 +250,24 @@ _refreshStringSetLimits(StringSet<THost, Segment<TSpec> > & me)
     _refreshStringSetLimits(me, Serial());
 }
 
+// --------------------------------------------------------------------------
+// Function stringSetPositions()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline typename StringSetPositions<THost>::Type &
+stringSetPositions(StringSet<THost, Segment<TSpec> > & me)
+{
+    return me.positions;
+}
+
+template <typename THost, typename TSpec>
+inline typename StringSetPositions<THost const>::Type &
+stringSetPositions(StringSet<THost, Segment<TSpec> > const & me)
+{
+    return me.positions;
+}
+
 // ----------------------------------------------------------------------------
 // Function host()
 // ----------------------------------------------------------------------------
@@ -291,10 +291,9 @@ host(StringSet<THost, Segment<TSpec> > const & me)
 // ----------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-inline void
-setHost(StringSet<THost, Segment<TSpec> > & me, typename Parameter_<THost>::Type _host)
+inline void setHost(StringSet<THost, Segment<TSpec> > & me, typename Parameter_<THost>::Type host)
 {
-    me.data_host = _toPointer(_host);
+    me.data_host = _toPointer(host);
 }
 
 // ----------------------------------------------------------------------------
@@ -327,7 +326,7 @@ void assign(StringSet<THost, Segment<TSpec> > & me,
             StringSet<TString2, Segment<TSpec2> > const & other)
 {
     setHost(me, host(other));
-    assign(me.positions, other.positions);
+    assign(stringSetPositions(me), stringSetPositions(other));
     assign(stringSetLimits(me), stringSetLimits(other));
     assign(me.limitsValid, other.limitsValid);
     assign(concat(me), concat(other));
@@ -337,7 +336,11 @@ template <typename THost, typename TSpec, typename TString2, typename TSpec2>
 void assign(StringSet<THost, Segment<TSpec> > & me,
             StringSet<TString2, Segment<TSpec2> > & other)
 {
-    assign(me, reinterpret_cast<StringSet<TString2, Segment<TSpec2> > const &> (other));
+    setHost(me, host(other));
+    assign(stringSetPositions(me), stringSetPositions(other));
+    assign(stringSetLimits(me), stringSetLimits(other));
+    assign(me.limitsValid, other.limitsValid);
+    assign(concat(me), concat(other));
 }
 
 // --------------------------------------------------------------------------

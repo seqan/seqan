@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -193,17 +193,17 @@ public:
     // constructor.
 
     SEQAN_HOST_DEVICE
-    operator __int64() const
+    operator int64_t() const
     {
-        __int64 c;
+        int64_t c;
         assign(c, *this);
         return c;
     }
 
     SEQAN_HOST_DEVICE
-    operator __uint64() const
+    operator uint64_t() const
     {
-        __uint64 c;
+        uint64_t c;
         assign(c, *this);
         return c;
     }
@@ -498,7 +498,7 @@ assign(SimpleType<TTargetValue, TTargetSpec> & target,
 
 template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline void
-assign(__int64 & c_target,
+assign(int64_t & c_target,
        SimpleType<TValue, TSpec> & source)
 {
     c_target = source.value;
@@ -506,7 +506,7 @@ assign(__int64 & c_target,
 
 template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline void
-assign(__int64 & c_target,
+assign(int64_t & c_target,
        SimpleType<TValue, TSpec> const & source)
 {
     c_target = source.value;
@@ -514,7 +514,7 @@ assign(__int64 & c_target,
 
 template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline void
-assign(__uint64 & c_target,
+assign(uint64_t & c_target,
        SimpleType<TValue, TSpec> & source)
 {
     c_target = source.value;
@@ -522,7 +522,7 @@ assign(__uint64 & c_target,
 
 template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline void
-assign(__uint64 & c_target,
+assign(uint64_t & c_target,
        SimpleType<TValue, TSpec> const & source)
 {
     c_target = source.value;

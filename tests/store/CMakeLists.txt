@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the store module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_store)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_store CXX)
 message (STATUS "Configuring tests/store")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,7 @@ message (STATUS "Configuring tests/store")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB)
+find_package (ZLIB)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

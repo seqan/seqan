@@ -1,8 +1,8 @@
 //![includes]
 #include <iostream>
+#include <random>
 #include <seqan/align.h>
 #include <seqan/index.h>
-#include <seqan/random.h>
 
 using namespace seqan;
 //![includes]
@@ -62,7 +62,7 @@ void qgramCounting(TStringSet & set, TIndexSpec)
 int main()
 {
     //  for the sake of reproducibility
-    Rng<MersenneTwister> rng;
+    std::mt19937 rng;
 
     // create StringSet of 3 random sequences
     StringSet<DnaString> stringSet;
@@ -70,9 +70,9 @@ int main()
     for (int seqNo = 0; seqNo < 3; ++seqNo)
     {
         DnaString tmp;
-        int len = pickRandomNumber(rng) % 100 + 10;
+        int len = rng() % 100 + 10;
         for (int i = 0; i < len; ++i)
-            appendValue(tmp, Dna(pickRandomNumber(rng) % 4));
+            appendValue(tmp, Dna(rng() % 4));
         appendValue(stringSet, tmp);
         std::cout << ">Seq" << seqNo << std::endl << tmp << std::endl;
     }

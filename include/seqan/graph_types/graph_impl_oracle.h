@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_GRAPH_IMPL_ORACLE_H
 #define SEQAN_HEADER_GRAPH_IMPL_ORACLE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -99,7 +99,6 @@ inline void
 createOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
              TText const text)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Size<TText>::Type TSize;
@@ -132,7 +131,6 @@ inline void
 createOracleOnReverse(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
                       TText const text)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Size<TText>::Type TSize;
@@ -230,6 +228,6 @@ createSetOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

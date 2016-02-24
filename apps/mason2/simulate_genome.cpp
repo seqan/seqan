@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@
 // ==========================================================================
 
 #include "simulate_genome.h"
+#include <random>
 
 // ----------------------------------------------------------------------------
 // Function simulateGenome()
@@ -44,9 +45,10 @@
 
 int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const & options)
 {
-    // Initialize RNG and PDF.
-    seqan::Rng<seqan::MersenneTwister>  rng(options.seed);
-    seqan::Pdf<seqan::Uniform<double> > pdf(0, 1);
+    // Initialize std generator and distribution
+    std::mt19937 generator(42); // seed 100
+    std::uniform_real_distribution<double> distribution(0, 1);
+    auto randomNumber = std::bind ( distribution, generator );
 
     seqan::CharString id;
     seqan::Dna5String contig;
@@ -64,7 +66,7 @@ int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const 
 
         for (int j = 0; j < options.contigLengths[i];)
         {
-            double x = pickRandomNumber(rng, pdf);
+            double x = randomNumber();
             if (x < 0.25)
                 appendValue(contig, 'A');
             else if (x < 0.5)

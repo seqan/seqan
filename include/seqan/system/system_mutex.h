@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@
 #ifndef SEQAN_HEADER_SYSTEM_MUTEX_H
 #define SEQAN_HEADER_SYSTEM_MUTEX_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 #ifdef PLATFORM_WINDOWS
@@ -68,13 +68,11 @@ namespace SEQAN_NAMESPACE_MAIN
             other.hMutex = NULL;
         }
 
-#ifdef SEQAN_CXX11_STANDARD
         Mutex(Mutex && other) :
             hMutex(other.hMutex)
         {
             other.hMutex = NULL;
         }
-#endif
 
         ~Mutex() {
             if (*this)
@@ -136,13 +134,11 @@ namespace SEQAN_NAMESPACE_MAIN
             other.hMutex = NULL;
         }
 
-#ifdef SEQAN_CXX11_STANDARD
         Mutex(Mutex && other) :
             hMutex(other.hMutex)
         {
             other.hMutex = NULL;
         }
-#endif
 
         ~Mutex() {
             if (*this)

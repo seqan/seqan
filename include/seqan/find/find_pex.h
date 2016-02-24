@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@
 // uncomment this for verbose debug output
 //#define SEQAN_DEBUG_PEX
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 struct Hierarchical;
@@ -187,56 +187,41 @@ class Pattern<TNeedle, Pex<TVerification, TMultiFinder > >:
        limit(1), lastFPos(0), lastFNdl(0), findNext(false), patternNeedsInit(true)
    {}
 
-   template <typename TNeedle2>
-   Pattern(TNeedle2 const & ndl) :
-       limit(1), lastFPos(0), lastFNdl(0), findNext(false), patternNeedsInit(true)
-   {
-     setHost(*this, ndl);
-   }
+    template <typename TNeedle2>
+    Pattern(TNeedle2 && ndl,
+            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>)) :
+        limit(1),
+        lastFPos(0),
+        lastFNdl(0),
+        findNext(false),
+        patternNeedsInit(true)
+    {
+        setHost(*this, std::forward<TNeedle2>(ndl));
+        ignoreUnusedVariableWarning(dummy);
+    }
 
-   template <typename TNeedle2>
-   Pattern(TNeedle2 const & ndl, int _limit = -1) :
-       limit(-_limit), lastFPos(0), lastFNdl(0), findNext(false), patternNeedsInit(true)
-   {
-     setHost(*this, ndl);
-   }
+    template <typename TNeedle2>
+    Pattern(TNeedle2 && ndl, int _limit = -1) :
+        limit(-_limit),
+        lastFPos(0),
+        lastFNdl(0),
+        findNext(false),
+        patternNeedsInit(true)
+    {
+        setHost(*this, std::forward<TNeedle2>(ndl));
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TNeedle, typename TNeedle2, typename TVerification, typename TMultiFinder>
-void setHost (Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me, TNeedle2 const & needle)
+template <typename TNeedle, typename TVerification, typename TMultiFinder>
+void _reinitPattern(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me)
 {
   // initialisation of the find-tree etc. will be done when patternInit
   // is called to assure that we already know the scoreLimit
-  me.data_host = needle;
-  me.needleLength = length(needle);
+  me.needleLength = length(needle(me));
   me.findNext = false;
   me.patternNeedsInit = true;
-}
-
-template <typename TNeedle, typename TNeedle2, typename TVerification, typename TMultiFinder>
-void setHost (Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me, TNeedle2 & needle)
-{
-  setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle, typename TVerification, typename TMultiFinder>
-inline typename Host<Pattern<TNeedle, Pex<TVerification,TMultiFinder > > >::Type &
-host(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me)
-{
-SEQAN_CHECKPOINT
-  return value(me.data_host);
-}
-
-template <typename TNeedle, typename TVerification, typename TMultiFinder>
-inline typename Host<Pattern<TNeedle, Pex<TVerification,TMultiFinder > > const>::Type &
-host(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > const & me)
-{
-SEQAN_CHECKPOINT
-  return value(me.data_host);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -244,14 +229,12 @@ SEQAN_CHECKPOINT
 template <typename TNeedle, typename TMultiFinder>
 int _getRoot(Pattern<TNeedle, Pex<NonHierarchical, TMultiFinder > > & me)
 {
-SEQAN_CHECKPOINT
   return length(me.splitted_needles);
 }
 
 template <typename TNeedle, typename TMultiFinder>
 int _getRoot(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &)
 {
-SEQAN_CHECKPOINT
   return 1;
 }
 
@@ -271,7 +254,6 @@ SEQAN_CHECKPOINT
 template <typename TNeedle, typename TVerification, typename TMultiFinder>
 int getScore(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me)
 {
-SEQAN_CHECKPOINT
   return getScore(me.range_table[_getRoot(me)].verifier);
 }
 
@@ -291,7 +273,6 @@ template <typename TNeedle, typename TVerification, typename TMultiFinder>
 inline int
 scoreLimit(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > const & me)
 {
-SEQAN_CHECKPOINT
   return - (int) me.limit;
 }
 
@@ -316,7 +297,6 @@ inline void
 setScoreLimit(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me,
               TScoreValue _limit)
 {
-SEQAN_CHECKPOINT
   me.patternNeedsInit = true;
   me.limit = (- _limit);
 }
@@ -328,7 +308,6 @@ SEQAN_CHECKPOINT
 template <typename TNeedle, typename TFinder, typename TMultiFinder>
 void _patternInit(Pattern<TNeedle, Pex<NonHierarchical, TMultiFinder > > &me, TFinder &)
 {
-SEQAN_CHECKPOINT
   typedef typename Position<TNeedle>::Type TPosition;
   typedef unsigned TScore;
   typedef Pattern<TNeedle,MyersUkkonen> TVerifier;
@@ -417,7 +396,6 @@ SEQAN_CHECKPOINT
 template <typename TFinder, typename TNeedle, typename TMultiFinder>
 inline bool find (TFinder & finder, Pattern<TNeedle, Pex<NonHierarchical, TMultiFinder > > & me)
 {
-SEQAN_CHECKPOINT
 
   typedef typename Host<TFinder>::Type    THost;
   typedef Segment<THost>                  THostSegment;
@@ -645,7 +623,6 @@ void _patternInit(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, TFind
 template <typename TFinder, typename TNeedle, typename TMultiFinder>
 inline bool find (TFinder & finder, Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > & me)
 {
-SEQAN_CHECKPOINT
 
   typedef typename Host<TFinder>::Type    THost;
   typedef Segment<THost>                  THostSegment;
@@ -754,7 +731,7 @@ SEQAN_CHECKPOINT
 }
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_..
 

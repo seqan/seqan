@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ITERATOR_ADJACENCY_H
 #define SEQAN_HEADER_GRAPH_ITERATOR_ADJACENCY_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 //////////////////////////////////////////////////////////////////////////////
 // Graph AdjacencyIterator
@@ -80,26 +80,21 @@ public:
 
     Iter()
     {
-        SEQAN_CHECKPOINT
     }
 
     Iter(TGraph const& _graph, TVertexDescriptor_ const v) :
         data_edge_it(_graph, v)
     {
-        SEQAN_CHECKPOINT
     }
 
     ~Iter() {
-        SEQAN_CHECKPOINT
     }
 
     Iter(Iter const& _iter) : data_edge_it(_iter.data_edge_it)
     {
-        SEQAN_CHECKPOINT
     }
 
     Iter const&    operator = (Iter const & _other) {
-        SEQAN_CHECKPOINT
         if (this == &_other) return *this;
         data_edge_it = _other.data_edge_it;
         return *this;
@@ -192,7 +187,6 @@ template<typename TGraph, typename TSpec>
 inline typename GetValue<Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > > >::Type
 getValue(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     return targetVertex(it.data_edge_it);
 }
 
@@ -202,7 +196,6 @@ template<typename TGraph, typename TSpec>
 inline typename GetValue<Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > > >::Type
 value(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     return getValue(it);
 }
 
@@ -212,7 +205,6 @@ template<typename TGraph, typename TSpec>
 inline typename GetValue<Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > > >::Type
 operator * (Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     return value(it);
 }
 
@@ -222,7 +214,6 @@ template<typename TGraph, typename TSpec>
 inline typename Host<Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > > >::Type const&
 hostGraph(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     return hostGraph(it.data_edge_it);
 }
 
@@ -232,7 +223,6 @@ template<typename TGraph, typename TSpec>
 inline bool
 atBegin(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     return atBegin(it.data_edge_it);
 }
 
@@ -242,7 +232,6 @@ template<typename TGraph, typename TSpec>
 inline void
 goBegin(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     goBegin(it.data_edge_it);
 }
 
@@ -252,7 +241,6 @@ template<typename TGraph, typename TSpec>
 inline bool
 atEnd(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     return (atEnd(it.data_edge_it));
 }
 
@@ -262,7 +250,6 @@ template<typename TGraph, typename TSpec>
 inline void
 goEnd(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     goEnd(it.data_edge_it);
 }
 
@@ -272,7 +259,6 @@ template<typename TGraph, typename TSpec>
 inline void
 goNext(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     goNext(it.data_edge_it);
 }
 
@@ -282,7 +268,6 @@ template<typename TGraph, typename TSpec>
 inline Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >&
 operator ++(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it)
 {
-SEQAN_CHECKPOINT
     goNext(it);
     return it;
 }
@@ -293,7 +278,6 @@ template<typename TGraph, typename TSpec>
 inline Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >
 operator ++(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it, int)
 {
-    SEQAN_CHECKPOINT
     Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > > ret = it;
     goNext(it);
     return ret;
@@ -305,7 +289,6 @@ template<typename TGraph, typename TSpec>
 inline void
 goPrevious(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     goPrevious(it.data_edge_it);
 }
 
@@ -315,7 +298,6 @@ template<typename TGraph, typename TSpec>
 inline Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >&
 operator --(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     goPrevious(it);
     return it;
 }
@@ -326,7 +308,6 @@ template<typename TGraph, typename TSpec>
 inline Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >
 operator --(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it, int)
 {
-    SEQAN_CHECKPOINT
     Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > > ret = it;
     goPrevious(it);
     return ret;
@@ -339,7 +320,6 @@ inline bool
 operator ==(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it1,
             Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it2)
 {
-SEQAN_CHECKPOINT
     return (it1.data_edge_it==it2.data_edge_it);
 }
 
@@ -350,12 +330,11 @@ inline bool
 operator !=(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it1,
             Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it2)
 {
-SEQAN_CHECKPOINT
     return (it1.data_edge_it!=it2.data_edge_it);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

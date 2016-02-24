@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_ESA_DRAWING_H
 #define SEQAN_HEADER_INDEX_ESA_DRAWING_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 template <typename TFile, typename TText, typename TESASpec>
@@ -45,7 +45,6 @@ void writeRecords(
     DotDrawing)
 {
 //IOREV _nodoc_
-    SEQAN_CHECKPOINT
     typedef Index<TText, IndexEsa<TESASpec> > TIndex;
 
     typename DirectionIterator<TFile, Output>::Type iter = directionIterator(file, Output());
@@ -108,6 +107,6 @@ void writeRecords(
     write(iter, "}\n");
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 template < typename TSA, typename TText>
@@ -125,18 +125,18 @@ SEQAN_DEFINE_TEST(testBWTWalk)
 
     MYASSERT(BwtWalkFast, unsigned, False);
     MYASSERT(BwtWalkFast, unsigned, True);
-    MYASSERT(BwtWalkFast, __uint64, False);
-    MYASSERT(BwtWalkFast, __uint64, True);
+    MYASSERT(BwtWalkFast, uint64_t, False);
+    MYASSERT(BwtWalkFast, uint64_t, True);
 
     MYASSERT(BwtWalkInPlace, unsigned, False);
     MYASSERT(BwtWalkInPlace, unsigned, True);
-    MYASSERT(BwtWalkInPlace, __uint64, False);
-    MYASSERT(BwtWalkInPlace, __uint64, True);
+    MYASSERT(BwtWalkInPlace, uint64_t, False);
+    MYASSERT(BwtWalkInPlace, uint64_t, True);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

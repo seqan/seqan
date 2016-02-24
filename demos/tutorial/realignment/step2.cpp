@@ -6,8 +6,8 @@ using namespace seqan;
 int main()
 {
     // Build paths to reference and to alignment.
-    std::string refPath = getAbsolutePath("/demos/tutorial/realignment/ref.fa");
-    std::string samPath = getAbsolutePath("/demos/tutorial/realignment/reads.sam");
+    std::string refPath = getAbsolutePath("demos/tutorial/realignment/ref.fa");
+    std::string samPath = getAbsolutePath("demos/tutorial/realignment/reads.sam");
 
     // Declare fragment store.
     FragmentStore<> store;

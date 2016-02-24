@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_SH
 #define SEQAN_HEADER_FIND_SH
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -81,16 +81,21 @@ public:
     Pattern() : data_limit(0), data_maxscore(0)
     {}
 
-    Pattern(TNeedle & _needle, TScore const & _score_func, TScoreValue _limit = 0) :
-        data_score(_score_func), data_limit(_limit), data_maxscore(0)
+    template <typename TNeedle2>
+    Pattern(TNeedle2 && ndl, TScore const & _score_func, TScoreValue _limit = 0) :
+        data_score(_score_func),
+        data_limit(_limit),
+        data_maxscore(0)
     {
-        setHost(*this, _needle);
+        setHost(*this, std::forward<TNeedle2>(ndl));
     }
 
-    Pattern(TNeedle & _needle, TScoreValue _limit = 0):
-        data_limit(_limit), data_maxscore(0)
+    template <typename TNeedle2>
+    Pattern(TNeedle2 && ndl, TScoreValue _limit = 0) :
+        data_limit(_limit),
+        data_maxscore(0)
     {
-        setHost(*this, _needle);
+        setHost(*this, std::forward<TNeedle2>(ndl));
     }
 
     Pattern(TScoreValue _limit) : data_limit(_limit), data_maxscore(0)
@@ -107,6 +112,9 @@ public:
         data_maxscore( other.data_maxscore)
     {}
 
+    Pattern(Pattern && other) = default;
+    Pattern& operator = (Pattern && other) = default;
+
     inline Pattern &
     operator = (Pattern const & other)
     {
@@ -118,6 +126,9 @@ public:
 
         return *this;
     }
+
+    ~Pattern()
+    {}
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -151,43 +162,15 @@ struct FindBeginPatternSpec <Pattern<TNeedle, DPSearch<TScore, FindPrefix, TFind
     typedef void Type;
 };
 
-//////////////////////////////////////////////////////////////////////////////
-
-
-template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
-inline typename Host<Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > >::Type &
-host(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > & me)
-{
-    return value(me.data_host);
-}
-
-template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
-inline typename Host<Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > const>::Type &
-host(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> >  const & me)
-{
-    return value(me.data_host);
-}
-
 
 //____________________________________________________________________________
 
-template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec, typename TNeedle2>
-void
-setHost(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > & me,
-        TNeedle2 & ndl)
+template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
+inline void
+_reinitPattern(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > & me)
 {
-    me.data_host = ndl;
     clear(me.data_tab);
 }
-template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec, typename TNeedle2>
-void
-setHost(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > & me,
-        TNeedle2 const & ndl)
-{
-    me.data_host = ndl;
-    clear(me.data_tab);
-}
-
 
 //____________________________________________________________________________
 
@@ -479,6 +462,6 @@ find(TFinder & finder,
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

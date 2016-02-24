@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -354,14 +354,12 @@ namespace seqan {
     template < typename TInput, typename TSpec >
     inline TInput const &
     source(Pipe<TInput, TSpec> const &me) {
-SEQAN_CHECKPOINT
         return me.in;
     }
 
     template < typename TInput, typename TSpec >
     inline TInput &
     source(Pipe<TInput, TSpec> &me) {
-SEQAN_CHECKPOINT
         return me.in;
     }
 
@@ -380,28 +378,24 @@ SEQAN_CHECKPOINT
     template < typename TInput, typename TSpec >
     inline typename Size< Pipe<TInput, TSpec> >::Type
     length(Pipe<TInput, TSpec> const &me) {
-SEQAN_CHECKPOINT
         return length(me.in);
     }
 
     template < typename TInput1, typename TInput2 >
     inline typename Size< Bundle2<TInput1, TInput2> >::Type
     length(Bundle2<TInput1, TInput2> const &me) {
-SEQAN_CHECKPOINT
         return length(me.in1);
     }
 
     template < typename TInput1, typename TInput2, typename TInput3 >
     inline typename Size< Bundle3<TInput1, TInput2, TInput3> >::Type
     length(Bundle3<TInput1, TInput2, TInput3> const &me) {
-SEQAN_CHECKPOINT
         return length(me.in1);
     }
 
     template < typename TIn1, typename TIn2, typename TIn3, typename TIn4, typename TIn5 >
     inline typename Size< Bundle5<TIn1, TIn2, TIn3, TIn4, TIn5> >::Type
     length(Bundle5<TIn1, TIn2, TIn3, TIn4, TIn5> const &me) {
-SEQAN_CHECKPOINT
         return length(me.in1);
     }
 
@@ -411,28 +405,24 @@ SEQAN_CHECKPOINT
     template < typename TInput, typename TSpec >
     inline typename Size< Pipe<TInput, TSpec> >::Type
     countSequences(Pipe<TInput, TSpec> const &me) {
-SEQAN_CHECKPOINT
         return countSequences(me.in);
     }
 
     template < typename TInput1, typename TInput2 >
     inline typename Size< Bundle2<TInput1, TInput2> >::Type
     countSequences(Bundle2<TInput1, TInput2> const &me) {
-SEQAN_CHECKPOINT
         return countSequences(me.in1);
     }
 
     template < typename TInput1, typename TInput2, typename TInput3 >
     inline typename Size< Bundle3<TInput1, TInput2, TInput3> >::Type
     countSequences(Bundle3<TInput1, TInput2, TInput3> const &me) {
-SEQAN_CHECKPOINT
         return countSequences(me.in1);
     }
 
     template < typename TIn1, typename TIn2, typename TIn3, typename TIn4, typename TIn5 >
     inline typename Size< Bundle5<TIn1, TIn2, TIn3, TIn4, TIn5> >::Type
     countSequences(Bundle5<TIn1, TIn2, TIn3, TIn4, TIn5> const &me) {
-SEQAN_CHECKPOINT
         return countSequences(me.in1);
     }
 
@@ -456,7 +446,6 @@ SEQAN_CHECKPOINT
     template < typename TInput, typename TSpec, typename TValue >
     inline typename Value< Pipe<TInput, TSpec> >::Type const &
     front(Pipe<TInput, TSpec> &me) {
-SEQAN_CHECKPOINT
         return *me;
     }
 
@@ -478,14 +467,12 @@ SEQAN_CHECKPOINT
 
     template < typename TInput, typename TSpec, typename TValue >
     inline void pop(Pipe<TInput, TSpec> &me, TValue &Ref_) {
-SEQAN_CHECKPOINT
         Ref_ = *me;
         ++me;
     }
 
     template < typename TInput, typename TSpec >
     inline void pop(Pipe<TInput, TSpec> &me) {
-SEQAN_CHECKPOINT
         ++me;
     }
 
@@ -517,25 +504,21 @@ SEQAN_CHECKPOINT
 
     template < typename TInput, typename TSpec, typename TCommand >
     inline bool control(Pipe<TInput, TSpec> &me, TCommand const &command) {
-SEQAN_CHECKPOINT
         return control(me.in, command);
     }
 
     template < typename TInput, typename TSpec >
     inline bool eof(Pipe<TInput, TSpec> &me) {
-SEQAN_CHECKPOINT
         return control(me, ControlEof());
     }
 
     template < typename TInput, typename TSpec >
     inline bool eos(Pipe<TInput, TSpec> &me) {
-SEQAN_CHECKPOINT
         return control(me, ControlEos());
     }
 
     template < typename TInput, typename TSpec >
     inline bool clear(Pipe<TInput, TSpec> &me) {
-SEQAN_CHECKPOINT
         return control(me, ControlClear());
     }
 

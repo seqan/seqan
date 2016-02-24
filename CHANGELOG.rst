@@ -4,6 +4,93 @@ SeqAn Changelog
 This file summarizes the changes to the SeqAn library and apps.
 
 
+Release 2.1.0
+~~~~~~~~~~~~~
+
+Major release with many new features and applications. 
+Except where noted below, this release is compatible to previous 2.x releases.
+For a complete list of changes visit `GitHub <https://github.com/seqan/seqan/pulls?q=is%3Apr+is%3Amerged++milestone%3A%22Release+2.1.0%22+>`_.
+
+Library Updates and Selected Bugfixes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Apps:
+    - Yara: fixed warnings, build errors and bugs, updated test files
+    - Yara: new features (compute mapping qualities, estimate distribution of paired-end insert sizes)
+    - Yara: follow SAM recommended practices for paired-end reads
+    - T-Coffee: new feature ``deep coffee`` (aligning several hundred sequences)
+    - Gustaf: introduced two phase breakpoint combination; updated readme and help messages
+    - Removed old apps: Razers2, Flexbar and SeqCons in favor of newer releases
+
+- Alignments:
+    - added feature to count gaps to the left a of a position/iterator
+    - disallow wrong use of scoring scheme for Hirschberg algorithm
+    - extended AlignmentStats by number of gaps and length of the alignment
+    - fixed evaluation of alignment
+    - using gaps for integrateAlign and align_extend
+
+- BLAST (new module):
+    - E-Value statistics, including precomputed constants, bit-score and e-value calculation for alignments
+    - support for reading and writing BLAST Tabular files (with and without comments)
+    - support for writing BLAST Report files
+
+- Indices:
+    - added public function for trie and radix tree construction
+    - Q-gram Index: allows sorting the hash-table according to the number of occurrences to reduce cache misses
+
+- IO:
+    - Tabix index: allowing range queries on chromosomal file formats such as VCF
+    - Fai Index: optimized fasta index construction
+    - BAM: added function to write tags from BamTagsDict to the tags field of a bam record
+    - BAM: allowed BamTagsDict to take const CharStrings
+
+- Misc:
+    - fixed Iupac alphabet by replacing ``=`` by ``U``
+    - added missing ``O`` character to amino acid alphabet
+    - Argument Parser: a few new features such as help string for advanced options
+    - removed random number engine and replaced it by the STL one
+    - ZipIterator & ZipContainerView: iterating simultaneously over multiple containers
+    - extended edges in graphs to store a reference to its source
+
+- Modifier:
+    - ModifiedString ModPos: iterating over a sequence in a predefined order
+    - overload save() of ModifiedStrings for const strings
+    - fixed Modified Iterators and ModView
+
+- Journaled String Tree (new module):
+    - reference compressed string set structure
+    - for more details see the `publication <http://bioinformatics.oxfordjournals.org/content/30/24/3499.short>`_
+
+- STL containers:
+    - added a completely new adaptation to SeqAn interfaces that supports all STL containers, also ``std::array`` and ``std::forward_list``
+    - greatly improved compatibility of SeqAn algorithms with STL containers so these can be used instead of SeqAn Strings
+
+- Streams:
+    - improved ZipStream
+
+- Compatibility to previous versions
+    - the random module was removed, please use the STL's random module instead
+    - the ``StringSet<T, Dependent<Tight> >`` has been deprecated and will likely be removed for the next release
+    - some SeqAn Macros have been deprecated since C++11 is now required, e.g. there is no ``SEQAN_AUTO_PTR_NAME``, only ``unique_ptr<>``
+    - ``SEQAN_NAMESPACE_MAIN`` has been moved into the ``seqan`` namespace, so some of your Metafunction overrides may need to be adapted
+
+Documentation Updates
+^^^^^^^^^^^^^^^^^^^^^
+
+- Dox:
+    - added version selector in API dox
+
+
+Infrastructure Updates
+^^^^^^^^^^^^^^^^^^^^^^
+
+- Build System:
+    - Major improvements to build system resulting in cleanup and dropped dependencies
+    - C++11 is now required and many datatypes now have move cosntructors and -assignment operators
+    - added support for new compiler versions, but dropped support for older compilers
+    - requirements are now GCC ≥ 4.8 or LLVM / Clang ≥ 3.4 (for Linux, Mac OSX, FreeBSD) and Visual C++ ≥ 10.0 / Visual Studio ≥ 2010 (for Windows)
+
+
 Release 2.0.2
 ~~~~~~~~~~~~~
 

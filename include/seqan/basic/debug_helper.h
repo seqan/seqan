@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -202,7 +202,7 @@ _compareTextFilesAlt(const char * file1, const char * file2)
     std::string line1;
     std::string line2;
 
-    for (__uint64 lineNo = 1; !fl1.eof() && !fl2.eof(); ++lineNo)
+    for (uint64_t lineNo = 1; !fl1.eof() && !fl2.eof(); ++lineNo)
     {
         getline(fl1, line1);
         getline(fl2, line2);

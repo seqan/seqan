@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
 
 #include <seqan/basic.h>
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 namespace impl {
     typedef unsigned char uchar_t;
@@ -205,6 +205,6 @@ SEQAN_MAKE_PIZZACHILI_PROVIDER(Test)
 
 #undef SEQAN_MAKE_PIZZACHILI_PROVIDER
 
-} // namespace SEQAN_NAMESPACE_MAIN
+} // namespace seqan
 
 #endif // SEQAN_HEADER_PIZZACHILI_API_H

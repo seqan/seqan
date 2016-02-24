@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -85,13 +85,11 @@ struct Allocator<SimpleAlloc<TParentAllocator> >
     Allocator()
         : data_storages(0)
     {
-        SEQAN_CHECKPOINT;
     }
 
     Allocator(TParentAllocator & parent_alloc)
         : data_storages(0)
     {
-        SEQAN_CHECKPOINT;
         setValue(data_parent_allocator, parent_alloc);
     }
 
@@ -110,7 +108,6 @@ struct Allocator<SimpleAlloc<TParentAllocator> >
 
     ~Allocator()
     {
-        SEQAN_CHECKPOINT;
         clear(*this);
     }
 };
@@ -131,7 +128,6 @@ template <typename TParentAllocator>
 inline TParentAllocator &
 parentAllocator(Allocator<SimpleAlloc<TParentAllocator> > & me)
 {
-    SEQAN_CHECKPOINT;
     return value(me.data_parent_allocator);
 }
 
@@ -158,7 +154,6 @@ template <typename TParentAllocator>
 void
 clear(Allocator<SimpleAlloc<TParentAllocator> > & me)
 {
-    SEQAN_CHECKPOINT;
     typedef Allocator<SimpleAlloc<TParentAllocator> > TAllocator;
 
     while (me.data_storages)
@@ -180,7 +175,6 @@ allocate(Allocator<SimpleAlloc<TParentAllocator> > & me,
          TSize count,
          Tag<TUsage> const &)
 {
-    SEQAN_CHECKPOINT;
     typedef Allocator<SimpleAlloc<TParentAllocator> > TAllocator;
     typedef typename TAllocator::Header THeader;
 
@@ -217,7 +211,6 @@ deallocate(Allocator<SimpleAlloc<TParentAllocator> > & me,
            TSize,
            Tag<TUsage> const &)
 {
-    SEQAN_CHECKPOINT;
     typedef Allocator<SimpleAlloc<TParentAllocator> > TAllocator;
     typedef typename TAllocator::Header THeader;
 

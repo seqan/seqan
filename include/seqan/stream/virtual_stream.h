@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -502,6 +502,9 @@ _getUncompressedBasename(TFilename const & fileName, BgzfFile const &)
 
     if (endsWith(lowcaseFileName, ".bgzf"))
         return prefix(fileName, length(fileName) - 5);
+
+    if (endsWith(lowcaseFileName, ".gz"))
+        return prefix(fileName, length(fileName) - 3);
 
     return prefix(fileName, length(fileName));
 }

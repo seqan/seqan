@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the statistics module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_statistics)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_statistics CXX)
 message (STATUS "Configuring tests/statistics")
 
 # ----------------------------------------------------------------------------
@@ -15,7 +15,6 @@ message (STATUS "Configuring tests/statistics")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

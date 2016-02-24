@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                 arg_parse
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -263,7 +263,7 @@ SEQAN_DEFINE_TEST(test_int64_short_argument)
     SEQAN_ASSERT_EQ(error_stream.str(), "");
     SEQAN_ASSERT_EQ(outputStream.str(), "");
 
-    __int64 integerValue = 0;
+    int64_t integerValue = 0;
     SEQAN_ASSERT(getOptionValue(integerValue, parser, "int64"));
     SEQAN_ASSERT_EQ(integerValue, 3000000000ll);
 }
@@ -284,7 +284,7 @@ SEQAN_DEFINE_TEST(test_int64_long_argument)
     SEQAN_ASSERT_EQ(error_stream.str(), "");
     SEQAN_ASSERT_EQ(outputStream.str(), "");
 
-    __int64 integerValue = 0;
+    int64_t integerValue = 0;
     SEQAN_ASSERT(getOptionValue(integerValue, parser, "int64"));
     SEQAN_ASSERT_EQ(integerValue, 3000000000ll);
 }

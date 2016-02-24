@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@ inline void assign(char & c_target, SimpleType<unsigned char,
 template <typename TRedSpec>
 inline void assign(SimpleType<unsigned char,
                    ReducedAminoAcid_<TRedSpec> > & target,
-                   __uint8 c_source)
+                   uint8_t c_source)
 {
     target.value = TranslateTableByteToRedAA_<TRedSpec>::VALUE[c_source];
 }

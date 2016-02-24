@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_ALIGN_ITERATOR_BASE_H
 #define SEQAN_HEADER_ALIGN_ITERATOR_BASE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -72,19 +72,16 @@ public:
 public:
     Iter()
     {
-SEQAN_CHECKPOINT
     }
     Iter(TAlign & _align):
         data_host(& _align)
     {
-SEQAN_CHECKPOINT
         typename Position<TRows>::Type _i = length(rows(_align));
         resize(data_iterators, _i, Exact());
     }
     Iter(TAlign & _align, TRowPosition _pos):
         data_host(& _align)
     {
-SEQAN_CHECKPOINT
         typename Position<TRows>::Type _i = length(rows(_align));
         resize(data_iterators, _i, Exact());
 
@@ -101,13 +98,11 @@ SEQAN_CHECKPOINT
     }
     ~Iter()
     {
-SEQAN_CHECKPOINT
     }
 
     Iter const &
     operator = (Iter const & _other)
     {
-SEQAN_CHECKPOINT
         data_host = _other.data_host;
         data_iterators = _other.data_iterators;
         return *this;
@@ -123,14 +118,12 @@ template <typename TAlign, typename TSpec>
 inline TAlign &
 host(Iter<TAlign, AlignColIterator<TSpec> > & me)
 {
-SEQAN_CHECKPOINT
     return *me.data_host;
 }
 template <typename TAlign, typename TSpec>
 inline TAlign &
 host(Iter<TAlign, AlignColIterator<TSpec> > const & me)
 {
-SEQAN_CHECKPOINT
     return *me.data_host;
 }
 
@@ -140,7 +133,6 @@ template <typename TAlign, typename TSpec>
 inline void
 setHost(Iter<TAlign, AlignColIterator<TSpec> > & me, TAlign & _host)
 {
-SEQAN_CHECKPOINT
     me.data_host = & _host;
 }
 
@@ -150,14 +142,12 @@ template <typename TAlign, typename TSpec>
 inline typename Cols<TAlign>::Type
 container(Iter<TAlign, AlignColIterator<TSpec> > & me)
 {
-SEQAN_CHECKPOINT
     return cols(*me.data_host);
 }
 template <typename TAlign, typename TSpec>
 inline typename Cols<TAlign>::Type
 container(Iter<TAlign, AlignColIterator<TSpec> > const & me)
 {
-SEQAN_CHECKPOINT
     return cols(*me.data_host);
 }
 
@@ -167,7 +157,6 @@ template <typename TAlign, typename TSpec>
 inline void
 goNext(Iter<TAlign, AlignColIterator<TSpec> > & me)
 {
-SEQAN_CHECKPOINT
     typedef typename Row<TAlign>::Type TRow;
     typedef typename Iterator<TRow, Standard>::Type TRowIterator;
     typedef String<TRowIterator> TIterators;
@@ -188,7 +177,6 @@ template <typename TAlign, typename TSpec>
 inline Iter<TAlign, AlignColIterator<TSpec> > &
 operator ++(Iter<TAlign, AlignColIterator<TSpec> > & me)
 {
-SEQAN_CHECKPOINT
     goNext(me);
     return me;
 }
@@ -198,7 +186,6 @@ template <typename TAlign, typename TSpec>
 inline Iter<TAlign, AlignColIterator<TSpec> >
 operator ++(Iter<TAlign, AlignColIterator<TSpec> > & me, int)
 {
-SEQAN_CHECKPOINT
     Iter<TAlign, AlignColIterator<TSpec> > ret = me;
     goNext(me);
     return ret;
@@ -210,7 +197,6 @@ template <typename TAlign, typename TSpec>
 inline void
 goPrevious(Iter<TAlign, AlignColIterator<TSpec> > & me)
 {
-SEQAN_CHECKPOINT
     typedef typename Row<TAlign>::Type TRow;
     typedef typename Iterator<TRow, Standard>::Type TRowIterator;
     typedef String<TRowIterator> TIterators;
@@ -231,7 +217,6 @@ template <typename TAlign, typename TSpec>
 inline Iter<TAlign, AlignColIterator<TSpec> > &
 operator --(Iter<TAlign, AlignColIterator<TSpec> > & me)
 {
-SEQAN_CHECKPOINT
     goPrevious(me);
     return me;
 }
@@ -241,7 +226,6 @@ template <typename TAlign, typename TSpec>
 inline Iter<TAlign, AlignColIterator<TSpec> >
 operator --(Iter<TAlign, AlignColIterator<TSpec> > & me, int)
 {
-SEQAN_CHECKPOINT
     Iter<TAlign, AlignColIterator<TSpec> > ret = me;
     goPrevious(me);
     return ret;
@@ -254,7 +238,6 @@ inline bool
 operator ==(Iter<TAlign1, AlignColIterator<TSpec> > & _left,
             Iter<TAlign2, AlignColIterator<TSpec> > & _right)
 {
-SEQAN_CHECKPOINT
     return getValue(_left.data_iterators, 0) == getValue(_right.data_iterators, 0);
 }
 template <typename TAlign1, typename TAlign2, typename TSpec>
@@ -262,7 +245,6 @@ inline bool
 operator ==(Iter<TAlign1, AlignColIterator<TSpec> > const & _left,
             Iter<TAlign2, AlignColIterator<TSpec> > & _right)
 {
-SEQAN_CHECKPOINT
     return value(_left.data_iterators, 0) == value(_right.data_iterators, 0);
 }
 template <typename TAlign1, typename TAlign2, typename TSpec>
@@ -270,7 +252,6 @@ inline bool
 operator ==(Iter<TAlign1, AlignColIterator<TSpec> > & _left,
             Iter<TAlign2, AlignColIterator<TSpec> > const & _right)
 {
-SEQAN_CHECKPOINT
     return value(_left.data_iterators, 0) == value(_right.data_iterators, 0);
 }
 template <typename TAlign1, typename TAlign2, typename TSpec>
@@ -278,7 +259,6 @@ inline bool
 operator ==(Iter<TAlign1, AlignColIterator<TSpec> > const & _left,
             Iter<TAlign2, AlignColIterator<TSpec> > const & _right)
 {
-SEQAN_CHECKPOINT
     return value(_left.data_iterators, 0) == value(_right.data_iterators, 0);
 }
 
@@ -289,7 +269,6 @@ inline bool
 operator !=(Iter<TAlign1, AlignColIterator<TSpec> > & _left,
             Iter<TAlign2, AlignColIterator<TSpec> > & _right)
 {
-SEQAN_CHECKPOINT
     return value(_left.data_iterators, 0) != value(_right.data_iterators, 0);
 }
 template <typename TAlign1, typename TAlign2, typename TSpec>
@@ -297,7 +276,6 @@ inline bool
 operator !=(Iter<TAlign1, AlignColIterator<TSpec> > const & _left,
             Iter<TAlign2, AlignColIterator<TSpec> > & _right)
 {
-SEQAN_CHECKPOINT
     return value(_left.data_iterators, 0) != value(_right.data_iterators, 0);
 }
 template <typename TAlign1, typename TAlign2, typename TSpec>
@@ -305,7 +283,6 @@ inline bool
 operator !=(Iter<TAlign1, AlignColIterator<TSpec> > & _left,
             Iter<TAlign2, AlignColIterator<TSpec> > const & _right)
 {
-SEQAN_CHECKPOINT
     return value(_left.data_iterators, 0) != value(_right.data_iterators, 0);
 }
 template <typename TAlign1, typename TAlign2, typename TSpec>
@@ -313,7 +290,6 @@ inline bool
 operator !=(Iter<TAlign1, AlignColIterator<TSpec> > const & _left,
             Iter<TAlign2, AlignColIterator<TSpec> > const & _right)
 {
-SEQAN_CHECKPOINT
     return value(_left.data_iterators, 0) != value(_right.data_iterators, 0);
 }
 
@@ -324,7 +300,6 @@ inline typename Reference<TAlign>::Type
 value(Iter<TAlign, AlignColIterator<TSpec> > & me,
       TPosition pos_)
 {
-SEQAN_CHECKPOINT
     return value(me.data_iterators[pos_]);
 }
 template <typename TAlign, typename TSpec, typename TPosition>
@@ -332,7 +307,6 @@ inline typename Reference<TAlign>::Type
 value(Iter<TAlign, AlignColIterator<TSpec> > const & me,
       TPosition pos_)
 {
-SEQAN_CHECKPOINT
     return value(me.data_iterators[pos_]);
 }
 //////////////////////////////////////////////////////////////////////////////
@@ -342,7 +316,6 @@ inline typename GetValue<TAlign>::Type
 getValue(Iter<TAlign, AlignColIterator<TSpec> > & me,
          TPosition pos_)
 {
-SEQAN_CHECKPOINT
     return getValue(me.data_iterators[pos_]);
 }
 template <typename TAlign, typename TSpec, typename TPosition>
@@ -350,7 +323,6 @@ inline typename GetValue<TAlign>::Type
 getValue(Iter<TAlign, AlignColIterator<TSpec> > const & me,
          TPosition pos_)
 {
-SEQAN_CHECKPOINT
     return getValue(me.data_iterators[pos_]);
 }
 
@@ -362,7 +334,6 @@ assignValue(Iter<TAlign, AlignColIterator<TSpec> > & me,
             TPosition pos_,
             TValue & val)
 {
-SEQAN_CHECKPOINT
     return assignValue(me.data_iterators[pos_], val);
 }
 template <typename TAlign, typename TSpec, typename TPosition, typename TValue>
@@ -371,7 +342,6 @@ assignValue(Iter<TAlign, AlignColIterator<TSpec> > & me,
             TPosition pos_,
             TValue const & val)
 {
-SEQAN_CHECKPOINT
     return assignValue(me.data_iterators[pos_], val);
 }
 template <typename TAlign, typename TSpec, typename TPosition, typename TValue>
@@ -380,7 +350,6 @@ assignValue(Iter<TAlign, AlignColIterator<TSpec> > const & me,
             TPosition pos_,
             TValue & val)
 {
-SEQAN_CHECKPOINT
     return assignValue(me.data_iterators[pos_], val);
 }
 template <typename TAlign, typename TSpec, typename TPosition, typename TValue>
@@ -389,7 +358,6 @@ assignValue(Iter<TAlign, AlignColIterator<TSpec> > const & me,
             TPosition pos_,
             TValue const & val)
 {
-SEQAN_CHECKPOINT
     return assignValue(me.data_iterators[pos_], val);
 }
 
@@ -401,7 +369,6 @@ moveValue(Iter<TAlign, AlignColIterator<TSpec> > & me,
           TPosition pos_,
           TValue & val)
 {
-SEQAN_CHECKPOINT
     return moveValue(me.data_iterators[pos_], val);
 }
 template <typename TAlign, typename TSpec, typename TPosition, typename TValue>
@@ -410,7 +377,6 @@ moveValue(Iter<TAlign, AlignColIterator<TSpec> > & me,
           TPosition pos_,
           TValue const & val)
 {
-SEQAN_CHECKPOINT
     return moveValue(me.data_iterators[pos_], val);
 }
 template <typename TAlign, typename TSpec, typename TPosition, typename TValue>
@@ -419,7 +385,6 @@ moveValue(Iter<TAlign, AlignColIterator<TSpec> > const & me,
           TPosition pos_,
           TValue & val)
 {
-SEQAN_CHECKPOINT
     return moveValue(me.data_iterators[pos_], val);
 }
 template <typename TAlign, typename TSpec, typename TPosition, typename TValue>
@@ -428,7 +393,6 @@ moveValue(Iter<TAlign, AlignColIterator<TSpec> > const & me,
           TPosition pos_,
           TValue const & val)
 {
-SEQAN_CHECKPOINT
     return moveValue(me.data_iterators[pos_], val);
 }
 
@@ -442,7 +406,6 @@ inline Iter<TAlign, AlignColIterator<TSpec> > &
 operator +=(Iter<TAlign, AlignColIterator<TSpec> > & me,
             TSize size)
 {
-SEQAN_CHECKPOINT
     typedef typename Row<TAlign>::Type TRow;
     typedef typename Iterator<TRow>::Type TRowIterator;
     typedef String<TRowIterator> TIterators;
@@ -467,7 +430,6 @@ inline Iter<TAlign, AlignColIterator<TSpec> >
 operator +(Iter<TAlign, AlignColIterator<TSpec> > & me,
            TSize size)
 {
-SEQAN_CHECKPOINT
     Iter<TAlign, AlignColIterator<TSpec> > ret = me;
     me += size;
     return me;
@@ -477,7 +439,6 @@ inline Iter<TAlign, AlignColIterator<TSpec> >
 operator +(Iter<TAlign, AlignColIterator<TSpec> > const & me,
            TSize size)
 {
-SEQAN_CHECKPOINT
     Iter<TAlign, AlignColIterator<TSpec> > ret = me;
     me += size;
     return me;
@@ -490,7 +451,6 @@ inline Iter<TAlign, AlignColIterator<TSpec> > &
 operator -=(Iter<TAlign, AlignColIterator<TSpec> > & me,
             TSize size)
 {
-SEQAN_CHECKPOINT
     typedef typename Row<TAlign>::Type TRow;
     typedef typename Iterator<TRow>::Type TRowIterator;
     typedef String<TRowIterator> TIterators;
@@ -514,7 +474,6 @@ inline Iter<TAlign, AlignColIterator<TSpec> >
 operator -(Iter<TAlign, AlignColIterator<TSpec> > & me,
            TSize size)
 {
-SEQAN_CHECKPOINT
     Iter<TAlign, AlignColIterator<TSpec> > ret = me;
     me -= size;
     return me;
@@ -524,7 +483,6 @@ inline Iter<TAlign, AlignColIterator<TSpec> >
 operator -(Iter<TAlign, AlignColIterator<TSpec> > const & me,
            TSize size)
 {
-SEQAN_CHECKPOINT
     Iter<TAlign, AlignColIterator<TSpec> > ret = me;
     me -= size;
     return me;
@@ -537,7 +495,6 @@ inline typename Difference<TAlign>::Type
 operator -(Iter<TAlign, AlignColIterator<TSpec> > const & left,
            Iter<TAlign, AlignColIterator<TSpec> > const & right)
 {
-SEQAN_CHECKPOINT
     SEQAN_ASSERT_GT(length(left.data_iterators), 0u);
     SEQAN_ASSERT_GT(length(right.data_iterators), 0u);
 
@@ -550,14 +507,12 @@ template <typename TAlign, typename TSpec>
 inline typename Position<TAlign>::Type
 position(Iter<TAlign, AlignColIterator<TSpec> > & me)
 {
-SEQAN_CHECKPOINT
     return position(me.data_iterators[0], row(host(me), 0));
 }
 template <typename TAlign, typename TSpec>
 inline typename Position<TAlign>::Type
 position(Iter<TAlign, AlignColIterator<TSpec> > const & me)
 {
-SEQAN_CHECKPOINT
     return position(me.data_iterators[0], row(host(me), 0));
 }
 */
@@ -567,6 +522,6 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

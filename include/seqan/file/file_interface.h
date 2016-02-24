@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -220,10 +220,8 @@ struct AsyncDummyRequest
     AsyncDummyRequest(AsyncDummyRequest &, Move)
     {}
 
-#ifdef SEQAN_CXX11_STANDARD
     AsyncDummyRequest(AsyncDummyRequest &&)
     {}
-#endif
 
 private:
     AsyncDummyRequest(AsyncDummyRequest const &)

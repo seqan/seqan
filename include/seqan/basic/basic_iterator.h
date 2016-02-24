@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -85,5 +85,8 @@
 // TODO(holtgrew): Does proxy really belong here?
 #include <seqan/basic/proxy_base.h>
 #include <seqan/basic/proxy_iterator.h>
+
+// Zip iterator. Requires C++11
+#include <seqan/basic/iterator_zip.h>
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ITERATOR_H_

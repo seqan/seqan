@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -163,13 +163,13 @@ typedef TagList<int,
  */
 
 /*!
- * @var __uint32 BamAlignmentRecord::INVALID_POS
+ * @var uint32_t BamAlignmentRecord::INVALID_POS
  * @brief Static member with invalid sentinel/position value (-1).
  *
- * @var __uint32 BamAlignmentRecord::INVALID_REFID
+ * @var uint32_t BamAlignmentRecord::INVALID_REFID
  * @brief Static member with invalid sentinel/position value (-1).
  *
- * @var __uint32 BamAlignmentRecord::INVALID_LEN
+ * @var uint32_t BamAlignmentRecord::INVALID_LEN
  * @brief Static member with invalid/sentinel reference ids (0 as in BAM/SAM).
  *
  * @var CharString BamAlignmentRecord::qName;
@@ -178,37 +178,37 @@ typedef TagList<int,
  * Note that the reads of a template all of the same query name and are differentiated by their position
  * and the <tt>BAM_FLAG_FIRST</tt>/<tt>BAM_FLAG_LAST</tt> flag values.
  *
- * @var __uint16 BamAlignmentRecord::flag;
+ * @var uint16_t BamAlignmentRecord::flag;
  * @brief The flag of this mapping.
  *
  * See @link BamFlags @endlink for flag constants and also see the <tt>hasFlag*()</tt> functions.
  *
- * @var __int32 BamAlignmentRecord::rID
+ * @var int32_t BamAlignmentRecord::rID
  * @brief ID of reference for this fragment mapping (0-based, <tt>INVALID_REFID</tt> for '*' in SAM).
  *
- * @var __int32 BamAlignmentRecord::beginPos
+ * @var int32_t BamAlignmentRecord::beginPos
  * @brief Begin position of the alignment (0-based, <tt>INVALID_POS</tt> for '0' in SAM).
  *
- * @var __uint8 BamAlignmentRecord::mapQ;
+ * @var uint8_t BamAlignmentRecord::mapQ;
  * @brief Mapping quality (255 for '*').
  *
- * @var __uint16 BamAlignmentRecord::bin;
+ * @var uint16_t BamAlignmentRecord::bin;
  * @brief The bin of the alignment, automatically computed when writing BAM.
  *
  * @var TCigarString BamAlignmentRecord::cigar;
  * @brief The CIGAR string for the BAM alignment (of type String<CigarElement<> >).
  *
- * @var __int32 BamAlignmentRecord::rNextId;
+ * @var int32_t BamAlignmentRecord::rNextId;
  * @brief The ID of the reference where the next fragment in this template aligns.
  *
  * <tt>INVALID_REFID</tt> for '*'.
  *
- * @var __int32 BamAlignmentRecord::pNext;
+ * @var int32_t BamAlignmentRecord::pNext;
  * @brief Position on the reference where the next fragment in this template aligns.
  *
  * <tt>INVALID_POS</tt> for '*'.
  *
- * @var __int32 BamAlignmentRecord::tLen;
+ * @var int32_t BamAlignmentRecord::tLen;
  * @brief The inferred template size.
  *
  * <tt>INVALID_LEN</tt> for '*'.
@@ -225,23 +225,23 @@ typedef TagList<int,
 
 struct BamAlignmentRecordCore
 {
-            __int32 rID;
-            __int32 beginPos;
-    mutable __uint32 _l_qname:8;
-            __uint32 mapQ:8;
-    mutable __uint32 bin:16;
-    mutable __uint32 _n_cigar:16;
-            __uint32 flag:16;
-    mutable __int32 _l_qseq;  // _l_qname, _n_cigar and _l_qseq for internal usage
-            __int32 rNextId;
-            __int32 pNext;
-            __int32 tLen;
+            int32_t rID;
+            int32_t beginPos;
+    mutable uint32_t _l_qname:8;
+            uint32_t mapQ:8;
+    mutable uint32_t bin:16;
+    mutable uint32_t _n_cigar:16;
+            uint32_t flag:16;
+    mutable int32_t _l_qseq;  // _l_qname, _n_cigar and _l_qseq for internal usage
+            int32_t rNextId;
+            int32_t pNext;
+            int32_t tLen;
 };
 
 class BamAlignmentRecord : public BamAlignmentRecordCore
 {
 public:
-    __uint32 _qID;  // TODO(holtgrew): Undocumented as of yet.
+    uint32_t _qID;  // TODO(holtgrew): Undocumented as of yet.
     String<CigarElement<> > cigar;
     CharString qName;
     IupacString seq;
@@ -249,10 +249,10 @@ public:
     CharString tags;  // raw tags in BAM format
     CharString _buffer; // reusable internal buffer (used for I/O)
 
-    static __int32 const INVALID_POS = -1;
-    static __int32 const INVALID_REFID = -1;  // TODO(holtgrew): Rename to ...REF_ID.
-    static __int32 const INVALID_LEN = 0;
-    static __uint32 const INVALID_QID = 4294967295u;  // TODO(holtgrew): Undocumented as of yet.
+    static int32_t const INVALID_POS = -1;
+    static int32_t const INVALID_REFID = -1;  // TODO(holtgrew): Rename to ...REF_ID.
+    static int32_t const INVALID_LEN = 0;
+    static uint32_t const INVALID_QID = 4294967295u;  // TODO(holtgrew): Undocumented as of yet.
 
     BamAlignmentRecord() : _qID(MaxValue<unsigned>::VALUE) { clear(*this); }
 };
@@ -281,7 +281,7 @@ clear(BamAlignmentRecord & record)
 {
     clear(record.qName);
     record.flag = 0;
-    record._qID = MaxValue<__uint32>::VALUE;
+    record._qID = MaxValue<uint32_t>::VALUE;
     record.rID = BamAlignmentRecord::INVALID_REFID;
     record.beginPos = BamAlignmentRecord::INVALID_POS;
     record.mapQ = 255;

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,6 @@
 #include <typeinfo>
 
 #define SEQAN_DEBUG
-#define SEQAN_ENABLE_CHECKPOINTS 0
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>

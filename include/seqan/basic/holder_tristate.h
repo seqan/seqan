@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -45,6 +45,10 @@ namespace seqan {
 // ============================================================================
 // Forwards
 // ============================================================================
+
+template <typename TContainer>
+inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<typename RemoveReference<TContainer>::Type> >, void)
+assign(TContainer && me, typename RemoveReference<TContainer>::Type source);
 
 #if SEQAN_ENABLE_POINTER_HOLDER
 template <typename T> struct IsSimple;
@@ -112,32 +116,27 @@ struct Holder<TValue, Tristate>
 
     Holder() : data_value(NULL), data_state(EMPTY)
     {
-        SEQAN_CHECKPOINT;
     }
 
     Holder(Holder const & source_) : data_value(NULL), data_state(EMPTY)
     {
-        SEQAN_CHECKPOINT;
         assign(*this, source_);
     }
 
     explicit
     Holder(THostValue & value_) : data_value(NULL), data_state(EMPTY)
     {
-        SEQAN_CHECKPOINT;
         setValue(*this, value_);
     }
 
     explicit
     Holder(THostValue const & value_) : data_value(NULL), data_state(EMPTY)
     {
-        SEQAN_CHECKPOINT;
         assignValue(*this, value_);
     }
 
     ~Holder()
     {
-        SEQAN_CHECKPOINT;
         clear(*this);
     }
 
@@ -148,7 +147,6 @@ struct Holder<TValue, Tristate>
     inline Holder const &
     operator=(Holder const & source_)
     {
-        SEQAN_CHECKPOINT;
         assign(*this, source_);
         return *this;
     }
@@ -156,7 +154,6 @@ struct Holder<TValue, Tristate>
     inline Holder const &
     operator=(THostValue const & value_)
     {
-        SEQAN_CHECKPOINT;
         assignValue(*this, value_);
         return *this;
     }
@@ -167,7 +164,6 @@ struct Holder<TValue, Tristate>
 
     inline operator THostValue()
     {
-        SEQAN_CHECKPOINT;
         return _dataValue(*this);
     }
 };
@@ -226,7 +222,6 @@ struct Holder<TValue const, Tristate>
     inline Holder &
     operator=(Holder const & source_)
     {
-        SEQAN_CHECKPOINT;
         assign(*this, source_);
         return *this;
     }
@@ -234,7 +229,6 @@ struct Holder<TValue const, Tristate>
     inline Holder &
     operator=(THostValue const & value_)
     {
-        SEQAN_CHECKPOINT;
         assignValue(*this, value_);
         return *this;
     }
@@ -245,7 +239,6 @@ struct Holder<TValue const, Tristate>
 
     inline operator THostValue()
     {
-        SEQAN_CHECKPOINT;
         return _dataValue(*this);
     }
 };
@@ -277,24 +270,20 @@ struct Holder<TValue *, Tristate>
 
     Holder() : data_state(EMPTY)
     {
-        SEQAN_CHECKPOINT;
     }
 
     Holder(Holder const & source_) : data_state(EMPTY)
     {
-        SEQAN_CHECKPOINT;
         assign(*this, source_);
     }
 
     Holder(TValue * value_) : data_state(EMPTY)
     {
-        SEQAN_CHECKPOINT;
         setValue(*this, value_);
     }
 
     ~Holder()
     {
-        SEQAN_CHECKPOINT;
         clear(*this);
     }
 
@@ -305,7 +294,6 @@ struct Holder<TValue *, Tristate>
     inline Holder const &
     operator = (Holder const & source_)
     {
-        SEQAN_CHECKPOINT;
         assign(*this, source_);
         return *this;
     }
@@ -313,7 +301,6 @@ struct Holder<TValue *, Tristate>
     inline Holder const &
     operator = (THostValue value_)
     {
-        SEQAN_CHECKPOINT;
         setValue(*this, value_);
         return *this;
     }
@@ -324,7 +311,6 @@ struct Holder<TValue *, Tristate>
 
     inline operator THostValue()
     {
-        SEQAN_CHECKPOINT;
         return _dataValue(*this);
     }
 };
@@ -354,24 +340,20 @@ struct Holder<TValue * const, Tristate>
 
     Holder() : data_state(EMPTY)
     {
-        SEQAN_CHECKPOINT;
     }
 
     Holder(Holder const & source_) : data_state(EMPTY)
     {
-        SEQAN_CHECKPOINT;
         assign(*this, source_);
     }
 
     Holder(TValue * value_) : data_state(EMPTY)
     {
-        SEQAN_CHECKPOINT;
         setValue(*this, value_);
     }
 
     ~Holder()
     {
-        SEQAN_CHECKPOINT;
         clear(*this);
     }
 
@@ -382,7 +364,6 @@ struct Holder<TValue * const, Tristate>
     inline Holder &
     operator=(Holder const & source_)
     {
-        SEQAN_CHECKPOINT;
         assign(*this, source_);
         return *this;
     }
@@ -390,7 +371,6 @@ struct Holder<TValue * const, Tristate>
     inline Holder &
     operator=(THostValue value_)
     {
-        SEQAN_CHECKPOINT;
         setValue(*this, value_);
         return *this;
     }
@@ -401,7 +381,6 @@ struct Holder<TValue * const, Tristate>
 
     inline operator THostValue()
     {
-        SEQAN_CHECKPOINT;
         return _dataValue(*this);
     }
 };
@@ -489,7 +468,6 @@ template <typename TValue>
 inline bool
 empty(Holder<TValue, Tristate> const & me)
 {
-SEQAN_CHECKPOINT
     return (me.data_state == Holder<TValue, Tristate>::EMPTY);
 }
 
@@ -501,7 +479,6 @@ template <typename TValue>
 inline bool
 dependent(Holder<TValue, Tristate> const & me)
 {
-    SEQAN_CHECKPOINT;
     return me.data_state == Holder<TValue, Tristate>::DEPENDENT;
 }
 
@@ -549,11 +526,9 @@ clear(Holder<TValue, Tristate> & me)
         case Holder<TValue, Tristate>::EMPTY:
             break;
         case Holder<TValue, Tristate>::DEPENDENT:
-            SEQAN_CHECKPOINT;
             me.data_state = Holder<TValue, Tristate>::EMPTY;
             break;
         default:  // case Holder<TValue, TSpec>::OWNER
-            SEQAN_CHECKPOINT;
             _holderDeallocate(me, _dataValue(me));
             me.data_state = Holder<TValue, Tristate>::EMPTY;
             break;
@@ -610,14 +585,12 @@ create(Holder<TValue, Tristate> & me)
     switch (me.data_state)
     {
         case Holder<TValue, Tristate>::EMPTY:
-            SEQAN_CHECKPOINT;
             allocate(me, me.data_value, 1);
             valueConstruct(me.data_value);
             me.data_state = THolder::OWNER;
             break;
 
         case THolder::DEPENDENT:
-            SEQAN_CHECKPOINT;
             create(me, _dataValue(me));
             break;
         default:;
@@ -633,12 +606,10 @@ create(Holder<TValue *, Tristate> & me)
 
     switch (me.data_state) {
         case Holder<TValue *, Tristate>::EMPTY:
-            SEQAN_CHECKPOINT;
             valueConstruct(& me.data_value);
             me.data_state = THolder::OWNER;
             break;
         case THolder::DEPENDENT:
-            SEQAN_CHECKPOINT;
             create(me, _dataValue(me));
             break;
         default:;
@@ -653,12 +624,10 @@ create(Holder<TValue * const, Tristate> & me)
 
     switch (me.data_state) {
         case Holder<TValue *, Tristate>::EMPTY:
-            SEQAN_CHECKPOINT;
             valueConstruct(& me.data_value);
             me.data_state = THolder::OWNER;
             break;
         case THolder::DEPENDENT:
-            SEQAN_CHECKPOINT;
             create(me, _dataValue(me));
             break;
         default:;
@@ -671,7 +640,6 @@ inline void
 create(Holder<TValue, Tristate> & me,
        TValue2 & value_)
 {
-    SEQAN_CHECKPOINT;
 
     if (me.data_state == Holder<TValue, Tristate>::OWNER) {
         assign(_dataValue(me), value_);
@@ -688,7 +656,6 @@ inline void
 create(Holder<TValue const, Tristate> & me,
        TValue2 & value_)
 {
-    SEQAN_CHECKPOINT;
 
     clear(me);
     me.data_value = _holderAllocateObject(me, value_);
@@ -701,7 +668,6 @@ inline void
 create(Holder<TValue *, Tristate> & me,
        TValue2 & value_)
 {
-SEQAN_CHECKPOINT
 
     clear(me);
     me.data_value = _holderAllocatePointer(me, value_);
@@ -713,7 +679,6 @@ inline void
 create(Holder<TValue * const, Tristate> & me,
        TValue2 & value_)
 {
-SEQAN_CHECKPOINT
 
     clear(me);
     me.data_value = _holderAllocatePointer(me, value_);
@@ -727,7 +692,6 @@ create(Holder<TValue const, Tristate> & me,
        TValue2 & value_,
        Move const &)
 {
-    SEQAN_CHECKPOINT;
     // TODO(holtgrew): Real implementation once HasMoveConstructor metafunction is in place.
     me.data_value = value_;
 }
@@ -738,7 +702,6 @@ create(Holder<TValue, Tristate> & me,
        TValue2 & value_,
        Move const &)
 {
-    SEQAN_CHECKPOINT;
     // TODO(holtgrew): Real implementation once HasMoveConstructor metafunction is in place.
     me.data_value = value_;
 }
@@ -748,7 +711,6 @@ template <typename TValue>
 inline void
 detach(Holder<TValue, Tristate> & me)
 {
-    SEQAN_CHECKPOINT;
     create(me);
 }
 
@@ -761,7 +723,6 @@ inline void
 setValue(Holder<TValue, Tristate> & me,
          TValue & value_)
 {
-    SEQAN_CHECKPOINT;
     clear(me);
     me.data_value = & value_;
     me.data_state = Holder<TValue, Tristate>::DEPENDENT;
@@ -772,7 +733,6 @@ inline void
 setValue(Holder<TValue const, Tristate> & me,
          TValue & value_)
 {
-    SEQAN_CHECKPOINT;
     clear(me);
     me.data_value = & value_;
     me.data_state = Holder<TValue const, Tristate>::DEPENDENT;
@@ -788,7 +748,6 @@ inline void
 setValue(Holder<TValue *, Tristate> & me,
          TValue * & value_)
 {
-    SEQAN_CHECKPOINT;
     clear(me);
     me.data_value = value_;
     me.data_state = Holder<TValue *, Tristate>::DEPENDENT;
@@ -799,7 +758,6 @@ inline void
 setValue(Holder<TValue *, Tristate> & me,
          TValue * const & value_)
 {
-    SEQAN_CHECKPOINT;
     clear(me);
     me.data_value = value_;
     me.data_state = Holder<TValue *, Tristate>::DEPENDENT;
@@ -810,7 +768,6 @@ inline void
 setValue(Holder<TValue * const, Tristate> & me,
          TValue * & value_)
 {
-    SEQAN_CHECKPOINT;
     clear(me);
     me.data_value = value_;
     me.data_state = Holder<TValue *, Tristate>::DEPENDENT;
@@ -821,7 +778,6 @@ inline void
 setValue(Holder<TValue * const, Tristate> & me,
          TValue * const & value_)
 {
-    SEQAN_CHECKPOINT;
     clear(me);
     me.data_value = value_;
     me.data_state = Holder<TValue *, Tristate>::DEPENDENT;
@@ -832,7 +788,6 @@ inline void
 setValue(Holder<TValue *, Tristate> & me,
          TValue (& value_)[I])
 {
-    SEQAN_CHECKPOINT;
     clear(me);
     me.data_value = value_;
     me.data_state = Holder<TValue *, Tristate>::DEPENDENT;
@@ -843,7 +798,6 @@ inline void
 setValue(Holder<TValue *, Tristate> & me,
          TValue const (& value_)[I])
 {
-    SEQAN_CHECKPOINT;
     clear(me);
     me.data_value = value_;
     me.data_state = Holder<TValue *, Tristate>::DEPENDENT;
@@ -854,7 +808,6 @@ inline void
 setValue(Holder<TValue * const, Tristate> & me,
          TValue (& value_)[I])
 {
-    SEQAN_CHECKPOINT;
     clear(me);
     me.data_value = value_;
     me.data_state = Holder<TValue *, Tristate>::DEPENDENT;
@@ -865,7 +818,6 @@ inline void
 setValue(Holder<TValue * const, Tristate> & me,
          TValue const (& value_)[I])
 {
-    SEQAN_CHECKPOINT;
     clear(me);
     me.data_value = value_;
     me.data_state = Holder<TValue *, Tristate>::DEPENDENT;
@@ -877,7 +829,6 @@ inline void
 setValue(Holder<TValue, Tristate> & me,
          TValue2 & value_)
 {
-    SEQAN_CHECKPOINT;
     set(value(me), value_);
 }
 
@@ -886,7 +837,6 @@ inline void
 setValue(Holder<TValue, Tristate> & me,
          TValue2 const & value_)
 {
-    SEQAN_CHECKPOINT;
     set(value(me), value_);
 }
 
@@ -919,7 +869,6 @@ template <typename TValue>
 inline typename Reference<Holder<TValue, Tristate> const>::Type
 value(Holder<TValue, Tristate> const & me)
 {
-    SEQAN_CHECKPOINT;
     SEQAN_ASSERT_NOT(empty(me));
 
     return _dataValue(me);
@@ -950,7 +899,6 @@ inline void
 moveValue(Holder<TValue, Tristate> & me,
           TSource const & value_)
 {
-    SEQAN_CHECKPOINT;
     if (empty(me)) {
         create(me, value_);
     } else {
@@ -967,7 +915,6 @@ inline void
 assign(Holder<TValue, Tristate> & target_,
        Holder<TValue, Tristate> const & source_)
 {
-    SEQAN_CHECKPOINT;
     switch(source_.data_state) {
         case Holder<TValue, Tristate>::EMPTY:
             clear(target_);
@@ -988,7 +935,6 @@ inline void
 assign(Holder<TValue const, Tristate> & target_,
        Holder<TValue const, Tristate> const & source_)
 {
-    SEQAN_CHECKPOINT;
     switch(source_.data_state) {
         case Holder<TValue, Tristate>::EMPTY:
             clear(target_);

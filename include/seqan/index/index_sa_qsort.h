@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_SA_QSORT_H
 #define SEQAN_HEADER_INDEX_SA_QSORT_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
     struct SAQSort {};
@@ -144,7 +144,6 @@ namespace SEQAN_NAMESPACE_MAIN
         TText &text,
         TSize lcp)
     {
-    SEQAN_CHECKPOINT
         // sort bucket with quicksort
         std::sort(
             begin(sa, Standard()),
@@ -159,7 +158,6 @@ namespace SEQAN_NAMESPACE_MAIN
         TText const &s,
         SAQSort const &)
     {
-    SEQAN_CHECKPOINT
         typedef typename Size<TSA>::Type TSize;
         typedef typename Iterator<TSA, Standard>::Type TIter;
 
@@ -184,7 +182,6 @@ namespace SEQAN_NAMESPACE_MAIN
         StringSet< TString, TSSetSpec > const &s,
         SAQSort const &)
     {
-    SEQAN_CHECKPOINT
         typedef StringSet< TString, TSSetSpec > TText;
         typedef typename Size<TSA>::Type TSize;
         typedef typename Iterator<TSA, Standard>::Type TIter;
@@ -203,6 +200,34 @@ namespace SEQAN_NAMESPACE_MAIN
             begin(SA, Standard()),
             end(SA, Standard()),
             SuffixLess_<typename Value<TSA>::Type, TText const>(s));
+    }
+
+    // Fill suffix array with permutation (i, 0)
+    template <typename TSA, typename TString, typename TSSetSpec>
+    inline void
+    fillSuffixArray(TSA &sa, StringSet<TString, TSSetSpec> const & /* s */, Trie const &)
+    {
+        typedef typename Iterator<TSA, Standard>::Type  TIter;
+        typedef typename Value<TSA>::Type               TSAValue;
+
+        TIter it = begin(sa, Standard());
+        TIter itEnd = end(sa, Standard());
+        for (; it != itEnd; ++it)
+            *it = TSAValue(position(it, sa), 0);
+    }
+
+    template <typename TSA, typename TString, typename TSSetSpec>
+    inline void
+    createSuffixArray(TSA &sa, StringSet<TString, TSSetSpec> const &s, Trie const &)
+    {
+        typedef StringSet<TString, TSSetSpec>           TText;
+        typedef typename Value<TSA>::Type               TSAValue;
+
+        // 1. Fill suffix array with permutation (i, 0)
+        fillSuffixArray(sa, s, Trie());
+
+        // 2. Sort suffix array with quicksort
+        sort(sa, SuffixLess_<TSAValue, TText const>(s));
     }
 
     //////////////////////////////////////////////////////////////////////////////

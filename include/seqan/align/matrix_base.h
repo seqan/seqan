@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@
 #ifndef SEQAN_HEADER_MATRIX_BASE_H
 #define SEQAN_HEADER_MATRIX_BASE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -65,6 +65,12 @@ template <typename TValue, unsigned DIMENSION>
 struct Host<Matrix<TValue, DIMENSION> >
 {
     typedef String<TValue> Type;
+};
+
+template <typename TValue, unsigned DIMENSION>
+struct Host<Matrix<TValue, DIMENSION> const>
+{
+    typedef String<TValue> const Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -312,28 +318,18 @@ dependent(Matrix<TValue, DIMENSION> & me)
 
 //____________________________________________________________________________
 
-template <typename TValue, unsigned DIMENSION, typename THost>
-inline void
-setHost(Matrix<TValue, DIMENSION> & me, THost & host_)
-{
-    setValue(me.data_host, host_);
-}
-
-//____________________________________________________________________________
-
-
 template <typename TValue, unsigned DIMENSION>
-inline typename Host<Matrix<TValue, DIMENSION> >::Type &
-host(Matrix<TValue, DIMENSION> & me)
+inline Holder<typename Host<Matrix<TValue, DIMENSION> >::Type> &
+_dataHost(Matrix<TValue, DIMENSION> & matrix)
 {
-    return value(me.data_host);
+    return matrix.data_host;
 }
 
 template <typename TValue, unsigned DIMENSION>
-inline typename Host<Matrix<TValue, DIMENSION> >::Type const &
-host(Matrix<TValue, DIMENSION> const & me)
+inline Holder<typename Host<Matrix<TValue, DIMENSION> >::Type> const &
+_dataHost(Matrix<TValue, DIMENSION> const & matrix)
 {
-    return value(me.data_host);
+    return matrix.data_host;
 }
 
 //____________________________________________________________________________
@@ -380,7 +376,7 @@ struct Iterator< Matrix<TValue, DIMENSION> const, TIteratorSpec >
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TValue, unsigned DIMENSION>
-inline unsigned int
+inline typename Size<Matrix<TValue, DIMENSION> const>::Type
 dimension(Matrix<TValue, DIMENSION> const & me)
 {
     return length(_dataLengths(me));
@@ -1100,6 +1096,6 @@ std::ostream& operator<<(std::ostream &out, const Matrix<TValue,2> &matrix)
 //     }
 // }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

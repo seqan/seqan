@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -179,6 +179,7 @@ struct DefaultFinder<Index<TText, FMIndex<TSpec, TConfig> > >
 /*!
  * @class FMIndex
  * @extends Index
+ * @implements StringTrieConcept
  * @headerfile <seqan/index.h>
  * @brief An index based on the Burrows-Wheeler transform.
  *
@@ -210,6 +211,12 @@ public:
         text(text)
     {}
 };
+
+template <typename TText, typename TSpec, typename TConfig>
+SEQAN_CONCEPT_IMPL((Index<TText, FMIndex<TSpec, TConfig> >), (StringTrieConcept));
+
+template <typename TText, typename TSpec, typename TConfig>
+SEQAN_CONCEPT_IMPL((Index<TText, FMIndex<TSpec, TConfig> > const), (StringTrieConcept));
 
 // ============================================================================
 // Functions

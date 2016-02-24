@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,6 @@
 
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
-#include <seqan/random.h>
 
 #include "mason_types.h"
 #include "mason_options.h"

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -285,7 +285,7 @@ inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         FormattedFile<Fastq, Input, TSpec> & file)
 {
-    readRecords(meta, seq, file, MaxValue<__uint64>::VALUE);
+    readRecords(meta, seq, file, MaxValue<uint64_t>::VALUE);
 }
 
 // ----------------------------------------------------------------------------
@@ -332,7 +332,7 @@ inline void readRecords(TIdStringSet & meta,
                         TQualStringSet & qual,
                         FormattedFile<Fastq, Input, TSpec> & file)
 {
-    readRecords(meta, seq, qual, file, MaxValue<__uint64>::VALUE);
+    readRecords(meta, seq, qual, file, MaxValue<uint64_t>::VALUE);
 }
 
 // ----------------------------------------------------------------------------

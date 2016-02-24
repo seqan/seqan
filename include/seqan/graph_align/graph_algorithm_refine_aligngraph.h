@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,6 @@ _getSeqBeginAndEnd(Graph<TAlign> & segment,
                   TPosition & end_i,
                   TId2 seq)
 {
-SEQAN_CHECKPOINT
     //walk through edges, take first edge, target, source,
     //define: seq == 0   ==> seq_i_id = id of source of first edge
     //        seq == 1   ==> seq_i_id = id of target of first edge
@@ -114,7 +113,6 @@ SEQAN_CHECKPOINT
 //         TValue pos_j,
 //         TValue len)
 //{
-//SEQAN_CHECKPOINT
 //    int pseudo_map = 0;
 //    TValue pos_j_check,seq_j_id;
 //    _getOtherSequenceAndProject(segment,pseudo_map,seq_i_id,pos_i,seq_j_id,pos_j_check);
@@ -188,7 +186,6 @@ _getRefinedMatchScore(Score<TScoreValue,TScoreSpec> & score_type,
          TValue len,
          TValue len_j)
 {
-SEQAN_CHECKPOINT
 
     typedef Graph<TAlignment> TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;

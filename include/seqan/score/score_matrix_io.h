@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -227,7 +227,7 @@ write(TTarget & target,
     TValue const * tab = sc.data_tab;
 
     TSeqValueSize const VALUE_SIZE = ValueSize<TSequenceValue>::VALUE;
-    __uint32 const TAB_SIZE = VALUE_SIZE * VALUE_SIZE;
+    uint32_t const TAB_SIZE = VALUE_SIZE * VALUE_SIZE;
 
     // -----------------------------------------------------------------------
     // Write meta data.

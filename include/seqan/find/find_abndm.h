@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@
 // uncomment this for verbose output of the ABNDM ALGO
 //#define SEQAN_DEBUG_ABNDM
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 
@@ -132,19 +132,35 @@ public:
     {}
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl) :
-        blockCount(0), last(0), needleLength(0), haystackLength(0), limit(1), cP(0), findNext(false),
-        verifier(ndl,-1)
+    Pattern(TNeedle2 && ndl,
+            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>)) :
+        blockCount(0),
+        last(0),
+        needleLength(0),
+        haystackLength(0),
+        limit(1),
+        cP(0),
+        findNext(false),
+        verifier(std::forward<TNeedle2>(ndl), -1)
     {
-        setHost(*this, ndl);
+        setHost(*this, std::forward<TNeedle2>(ndl));
+        ignoreUnusedVariableWarning(dummy);
     }
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl, int _limit = -1) :
-        limit(- _limit), cP(0), verifier(ndl,_limit)
+    Pattern(TNeedle2 && ndl, int _limit = -1) :
+        blockCount(0),
+        last(0),
+        needleLength(0),
+        haystackLength(0),
+        limit(- _limit),
+        cP(0),
+        findNext(false),
+        verifier(std::forward<TNeedle2>(ndl), _limit)
     {
-        setHost(*this, ndl);
+        setHost(*this, std::forward<TNeedle2>(ndl));
     }
+
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -162,17 +178,16 @@ void _printR(Pattern<TNeedle, AbndmAlgo> & me)
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, AbndmAlgo> & me, TNeedle2 const& needle)
+template <typename TNeedle>
+void _reinitPattern(Pattern<TNeedle, AbndmAlgo> & me)
 {
-SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     typedef typename Value<TNeedle>::Type TValue;
 
     me.cP = 0;
     me.findNext = false;
 
-    me.needleLength = length(needle);
+    me.needleLength = length(needle(me));
     if (me.needleLength<1)
         me.blockCount = 1;
     else
@@ -183,13 +198,13 @@ SEQAN_CHECKPOINT
 
     for (TWord j = 0; j < me.needleLength; ++j) {
         // Determine character position in array table
-        TWord pos = convert<TWord>(getValue(needle,j));
+        TWord pos = convert<TWord>(getValue(needle(me),j));
         me.b_table[me.blockCount*pos + j / BitsPerValue<TWord>::VALUE] |= (1<<(j%BitsPerValue<TWord>::VALUE));
     }
 
 #ifdef SEQAN_DEBUG_ABNDM
-    std::cout << "Needle:   " << needle << std::endl;
-    std::cout << "|Needle|: " << length(needle) << std::endl;
+    std::cout << "Needle:   " << needle(me) << std::endl;
+    std::cout << "|Needle|: " << length(needle(me)) << std::endl;
     std::cout << "Alphabet size: " << ValueSize<TValue>::VALUE << std::endl;
 
     for(unsigned i=0;i<ValueSize<TValue>::VALUE;++i) {
@@ -206,14 +221,7 @@ SEQAN_CHECKPOINT
 #endif
     clear(me.r_table); // init is only possible if we know the the error count
 
-    me.data_host = needle;
-    setHost(me.verifier,needle);
-}
-
-template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, AbndmAlgo> & me, TNeedle2 & needle)
-{
-    setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
+    setHost(me.verifier, needle(me));  // Set the same host to the verifier.
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -221,30 +229,11 @@ void setHost (Pattern<TNeedle, AbndmAlgo> & me, TNeedle2 & needle)
 template <typename TNeedle>
 inline void _patternInit (Pattern<TNeedle, AbndmAlgo> & me)
 {
-    SEQAN_CHECKPOINT
     clear(me.r_table);
     resize(me.r_table, me.blockCount * (me.limit + 1), 0, Exact());
     me.findNext = false;
     me.last = 0;
     _findBeginInit(me, needle(me));
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, AbndmAlgo> >::Type &
-host(Pattern<TNeedle, AbndmAlgo> & me)
-{
-    SEQAN_CHECKPOINT
-    return value(me.data_host);
-}
-
-template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, AbndmAlgo> const>::Type &
-host(Pattern<TNeedle, AbndmAlgo> const & me)
-{
-    SEQAN_CHECKPOINT
-    return value(me.data_host);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -265,7 +254,6 @@ host(Pattern<TNeedle, AbndmAlgo> const & me)
 template <typename TNeedle>
 int getScore(Pattern<TNeedle, AbndmAlgo > & me)
 {
-    SEQAN_CHECKPOINT
     return getScore(me.verifier);
 }
 
@@ -274,7 +262,6 @@ int getScore(Pattern<TNeedle, AbndmAlgo > & me)
 template <typename TFinder, typename TNeedle>
 inline bool _findAbndmSmallNeedle(TFinder & finder, Pattern<TNeedle, AbndmAlgo> & me)
 {
-    SEQAN_CHECKPOINT
     typedef unsigned int TWord;
 
     typedef typename Host<TFinder>::Type    THost;
@@ -324,7 +311,6 @@ inline bool _findAbndmSmallNeedle(TFinder & finder, Pattern<TNeedle, AbndmAlgo> 
     // walk on
     while (position(finder) <= me.haystackLength - me.needleLength)
     {
-        SEQAN_CHECKPOINT
             j = me.needleLength - me.limit - 1;
         me.last = j;
 
@@ -408,7 +394,6 @@ inline bool _findAbndmSmallNeedle(TFinder & finder, Pattern<TNeedle, AbndmAlgo> 
 template <typename TFinder, typename TNeedle>
 inline bool _findAbndmLargeNeedle(TFinder & finder, Pattern<TNeedle, AbndmAlgo> & me)
 {
-    SEQAN_CHECKPOINT
         typedef unsigned int TWord;
     TWord carryPattern = ((TWord)1 << (BitsPerValue<TWord>::VALUE - 1));
     typedef typename Host<TFinder>::Type    THost;
@@ -458,7 +443,6 @@ inline bool _findAbndmLargeNeedle(TFinder & finder, Pattern<TNeedle, AbndmAlgo> 
     // walk on
     while (position(finder) <= me.haystackLength - me.needleLength)
     {
-        SEQAN_CHECKPOINT
             j = me.needleLength - me.limit - 1;
         me.last = j;
 
@@ -597,7 +581,6 @@ template <typename TNeedle>
 inline int
 scoreLimit(Pattern<TNeedle, AbndmAlgo > const & me)
 {
-    SEQAN_CHECKPOINT
     return - (int) me.limit;
 }
 
@@ -621,7 +604,6 @@ inline void
 setScoreLimit(Pattern<TNeedle, AbndmAlgo > & me,
               TScoreValue _limit)
 {
-    SEQAN_CHECKPOINT
         setScoreLimit(me.verifier,_limit);
     me.limit = (- _limit);
 }
@@ -632,7 +614,6 @@ template <typename TFinder, typename TNeedle>
 inline bool find (TFinder & finder,
                   Pattern<TNeedle, AbndmAlgo > & me)
 {
-    SEQAN_CHECKPOINT
     if (empty(finder)) {
             _patternInit(me);
             _finderSetNonEmpty(finder);
@@ -658,12 +639,11 @@ inline bool find (TFinder & finder,
                   Pattern<TNeedle, AbndmAlgo > & me,
                   int const k)
 {
-    SEQAN_CHECKPOINT
     setScoreLimit(me, k);
     return find(finder, me);
 }
 
 //////////////////////////////////////////////////////////////////////////////
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_FIND_ABNDMALGO_H

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -111,7 +111,6 @@ SEQAN_BEGIN_TESTSUITE(test_basic)
     SEQAN_CALL_TEST(seqan_basic_type_metafunction_source);
     SEQAN_CALL_TEST(seqan_basic_type_metafunction_parameter);
     SEQAN_CALL_TEST(seqan_basic_type_to_parameter);
-    SEQAN_CALL_TEST(seqan_basic_type_metafunction_const_parameter);
     SEQAN_CALL_TEST(seqan_basic_type_metafunction_length);
     SEQAN_CALL_TEST(seqan_basic_type_metafunction_is_integral);
 

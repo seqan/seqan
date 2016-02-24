@@ -1,7 +1,7 @@
 // ==========================================================================
 //                               basic_tangle.h
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@
 namespace seqan {
 
 // TODO(holtgrew): Remove this define.
-#define SEQAN_NAMESPACE_MAIN seqan
+#define seqan seqan
 
 // ============================================================================
 // Forwards
@@ -158,7 +158,6 @@ template <typename T>
 inline T
 unknownValueImpl(T *)
 {
-    SEQAN_CHECKPOINT;
     return 'N';
 }
 

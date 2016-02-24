@@ -20,7 +20,6 @@ struct SeqErrorFreqsN<TValue, BsNonSimple> {    // TODO -> BsNonSimple
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
 
                         // Column sum must be 1   (in the current model)
         static TValue const _data[TAB_SIZE] = {
@@ -45,7 +44,6 @@ struct SeqErrorFreqsN<TValue, BsSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
 
         TValue fE = 1.0/3.0;                        // Column sum must be 1
         static TValue const _data[TAB_SIZE] = {
@@ -73,7 +71,6 @@ struct ReadBaseFreqs<TValue, BsNonSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
 
         TValue f = 0.9/4.0;
         static TValue const _data[TAB_SIZE] = {f,    f,    f,    f,   0.4/4.0};    // TODO bs case
@@ -89,7 +86,6 @@ struct ReadBaseFreqs<TValue, BsSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
 
         TValue f = 0.9/4.0;
         static TValue const _data[TAB_SIZE] = {f,    f,    f,    f,   0.4/4.0};    // TODO bs case
@@ -109,7 +105,6 @@ struct RefBaseFreqs<TValue, BsNonSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
 
         TValue f = 0.9/4.0;
         static TValue const _data[TAB_SIZE] = {f,    f,    f,    f,   0.4/4.0};
@@ -125,7 +120,6 @@ struct RefBaseFreqs<TValue, BsSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
 
         TValue f = 0.9/4.0;
         static TValue const _data[TAB_SIZE] = {f,    f,    f,    f,   0.4/4.0};

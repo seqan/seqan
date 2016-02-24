@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -80,28 +80,28 @@ public:
     CharString contigName;
 
     /*!
-     * @var __int32 UcscRecord::cdsBegin
+     * @var int32_t UcscRecord::cdsBegin
      * @brief Start of the coding region (<tt>0</tt>-based position, defaults to <tt>-1</tt>).
      */
-    __int32 cdsBegin;
+    int32_t cdsBegin;
 
     /*!
-     * @var __int32 UcscRecord::cdsEnd
+     * @var int32_t UcscRecord::cdsEnd
      * @brief End of the coding region, defaults to <tt>-1</tt>.
      */
-    __int32 cdsEnd;
+    int32_t cdsEnd;
 
     /*!
      * @var CharString UcscRecord::exonBegin
      * @brief Start of the exon (<tt>0</tt>-based position, defaults to <tt>-1</tt>).
      */
-    String<__int32> exonBegin;
+    String<int32_t> exonBegin;
 
     /*!
      * @var CharString UcscRecord::exonEnds
      * @brief End of the exon, defaults to <tt>-1</tt>.
      */
-    String<__int32> exonEnds;
+    String<int32_t> exonEnds;
 
     /*!
      * @var CharString UcscRecord::proteinName
@@ -110,16 +110,16 @@ public:
     CharString proteinName;
 
     /*!
-     * @var __uint32 UcscRecord::annotationBeginPos
+     * @var uint32_t UcscRecord::annotationBeginPos
      * @brief Start of the annotation (<tt>0</tt>-based, defaults to <tt>-1</tt>).
      */
-    __uint32 annotationBeginPos;
+    uint32_t annotationBeginPos;
 
     /*!
      * @var CharString UcscRecord::annotationEndPos
      * @brief End position of the annotation, defaults to <tt>-1</tt>.
      */
-    __uint32 annotationEndPos;
+    uint32_t annotationEndPos;
 
     UcscRecord() : cdsBegin(0), cdsEnd(0), annotationBeginPos(0), annotationEndPos(0)
     {}

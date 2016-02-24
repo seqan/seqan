@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -431,57 +431,81 @@ void testAlignGapsIteratorCountGapsCountCharactersIsGap(TGapsSpec const & /*spec
 
     SEQAN_ASSERT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 2u);
+    SEQAN_ASSERT_EQ(countGaps(it, RightOfViewPos()), 2u);
+    SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 0u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, RightOfViewPos()), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 0u);
     ++it;
 
     SEQAN_ASSERT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 1u);
+    SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 1u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 0u);
     ++it;
 
     SEQAN_ASSERT_NOT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 0u);
+    SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 2u);
     SEQAN_ASSERT_EQ(countCharacters(it), 2u);
+    SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 0u);
     ++it;
 
     SEQAN_ASSERT_NOT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 0u);
+    SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 0u);
     SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+    SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 1u);
     ++it;
 
     SEQAN_ASSERT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 2u);
+    SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 0u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 2u);
     ++it;
 
     SEQAN_ASSERT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 1u);
+    SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 1u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 0u);
     ++it;
 
     SEQAN_ASSERT_NOT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 0u);
+    SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 2u);
     SEQAN_ASSERT_EQ(countCharacters(it), 2u);
+    SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 0u);
     ++it;
 
     SEQAN_ASSERT_NOT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 0u);
+    SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 0u);
     SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+    SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 1u);
     ++it;
 
     SEQAN_ASSERT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 2u);
+    SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 0u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 2u);
     ++it;
 
     SEQAN_ASSERT(isGap(it));
     SEQAN_ASSERT_EQ(countGaps(it), 1u);
+    SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 1u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 0u);
     ++it;
 
     SEQAN_ASSERT(atEnd(it));
     SEQAN_ASSERT_EQ(countGaps(it), 0u);
+    SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 2u);
     SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 0u);
 }
 
 template <typename TGapsSpec>
@@ -517,47 +541,65 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
 
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 1u);
+        SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 0u);
         ++it;
 
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 1u);
         SEQAN_ASSERT_EQ(countCharacters(it), 2u);
+        SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 0u);
         ++it;
 
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+        SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 1u);
         ++it;
 
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 2u);
+        SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 2u);
         ++it;
 
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 1u);
+        SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 1u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 0u);
         ++it;
 
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 2u);
         SEQAN_ASSERT_EQ(countCharacters(it), 2u);
+        SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 0u);
         ++it;
 
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+        SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 1u);
         ++it;
 
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 1u);
+        SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 2u);
         ++it;
 
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countGaps(it, LeftOfViewPos()), 1u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it, LeftOfViewPos()), 0u);
     }
 
     // Clip into leading/trailing characters.

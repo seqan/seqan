@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_MISC_SVG_H
 #define SEQAN_HEADER_MISC_SVG_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -241,7 +241,7 @@ inline void _printContig(
 
     TContigIterator cit = begin(contigGaps, Standard());
     TContigIterator citEnd = end(contigGaps, Standard());
-    for (__int64 ofs = 0; cit != citEnd; ++cit, ++ofs)
+    for (int64_t ofs = 0; cit != citEnd; ++cit, ++ofs)
     {
         if (!isGap(cit))
         {
@@ -251,7 +251,7 @@ inline void _printContig(
                 svg.file << contigName << "</text></g>" << std::endl;
             }
 
-            __int64 seqPos = cit.current.seqPos + 1;
+            int64_t seqPos = cit.current.seqPos + 1;
             if (seqPos % 5 == 0)
             {
                 if (seqPos % 10 == 0)
@@ -292,13 +292,13 @@ inline void _printRead(
     typedef typename Iterator<TContigGaps, Standard>::Type TContigIterator;
     typedef typename Iterator<TReadGaps, Standard>::Type TIterator;
 
-    __int64 xEnd = svg.cursor.i1 * 20;
-    __int64 x = 0;
+    int64_t xEnd = svg.cursor.i1 * 20;
+    int64_t x = 0;
 
     int style, arrow = 0;
     const char *first;
     const char *second;
-    __int64 ofs;
+    int64_t ofs;
 
     if (alignedRead.beginPos < alignedRead.endPos)
     {
@@ -330,16 +330,16 @@ inline void _printRead(
     {
         if (layout.mateCoords[alignedRead.pairMatchId].i2 != -1)
         {
-            Pair<__int64> a((alignedRead.beginPos - ofs) * 20, line);
-            Pair<__int64> b(layout.mateCoords[alignedRead.pairMatchId]);
+            Pair<int64_t> a((alignedRead.beginPos - ofs) * 20, line);
+            Pair<int64_t> b(layout.mateCoords[alignedRead.pairMatchId]);
             if (a.i1 < b.i1)
             {
-                Pair<__int64> tmp = a;
+                Pair<int64_t> tmp = a;
                 a = b;
                 b = tmp;
             }
-            __int64 dx = (b.i1 - a.i1);
-            __int64 dy = (b.i2 - a.i2);
+            int64_t dx = (b.i1 - a.i1);
+            int64_t dy = (b.i2 - a.i2);
 
             svg.file << "<path d=\"M " << a.i1 << ',' << a.i2;
             svg.file << " C " << a.i1+dy/10 << ',' << a.i2-dx/10;
@@ -440,7 +440,6 @@ _alignNeedlemanWunschMatrix(SVGFile& svg,
                               TTrace const& trace,
                               TIndexPair const&)
 {
-SEQAN_CHECKPOINT
     typedef typename Size<TStringSet>::Type TSize;
     //typedef typename Value<TTrace>::Type TTraceValue;
 
@@ -508,6 +507,6 @@ _alignTracePrint(SVGFile& svg,
 
 
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

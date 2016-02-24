@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -313,6 +313,11 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
         printVersion(me, outputStream);
         return ArgumentParser::PARSE_VERSION;
     }
+    else if (hasOption(me, "copyright") && isSet(me, "copyright"))
+    {
+        printLongCopyright(me, outputStream);
+        return ArgumentParser::PARSE_COPYRIGHT;
+    }
     else if (hasOption(me, "write-ctd") && isSet(me, "write-ctd"))
     {
         if (writeCTD(me))
@@ -325,11 +330,16 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
         printHelp(me, outputStream);
         return ArgumentParser::PARSE_HELP;
     }
+    else if (isSet(me, "full-help"))
+    {
+        printHelp(me, outputStream, "txt", true);
+        return ArgumentParser::PARSE_HELP;
+    }
     else if (isSet(me, "export-help"))
     {
         std::string format;
         getOptionValue(format, me, "export-help");
-        printHelp(me, outputStream, format);
+        printHelp(me, outputStream, format, true);
         return ArgumentParser::PARSE_EXPORT_HELP;
     }
     else if (argc == 1 && !(_allRequiredSet(me) && _allArgumentsSet(me)))

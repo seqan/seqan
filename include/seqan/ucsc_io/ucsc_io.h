@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -264,25 +264,25 @@ void readRecord(UcscRecord & record,
     // read column 4: transcript begin position
     clear(buffer);
     readUntil(buffer, iter, nextRecord);
-    record.annotationBeginPos = lexicalCast<__uint32>(buffer);
+    record.annotationBeginPos = lexicalCast<uint32_t>(buffer);
     skipOne(iter, IsTab());
 
     // read column 5: transcript end position
     clear(buffer);
     readUntil(buffer, iter, nextRecord);
-    record.annotationEndPos = lexicalCast<__uint32>(buffer);
+    record.annotationEndPos = lexicalCast<uint32_t>(buffer);
     skipOne(iter, IsTab());
 
     // read column 6: CDS begin position
     clear(buffer);
     readUntil(buffer, iter, nextRecord);
-    record.cdsBegin = lexicalCast<__uint32>(buffer);
+    record.cdsBegin = lexicalCast<uint32_t>(buffer);
     skipOne(iter, IsTab());
 
     // read column 7: CDS end position
     clear(buffer);
     readUntil(buffer, iter, nextRecord);
-    record.cdsEnd = lexicalCast<__uint32>(buffer);
+    record.cdsEnd = lexicalCast<uint32_t>(buffer);
     skipOne(iter, IsTab());
 
     // read column 8: exon count
@@ -298,7 +298,7 @@ void readRecord(UcscRecord & record,
         clear(buffer);
         readUntil(buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, UcscKnownGene> >());
 
-        __int32 tempBegin;
+        int32_t tempBegin;
         lexicalCastWithException(tempBegin, buffer);
         appendValue(record.exonBegin, tempBegin);
         skipOne(iter);
@@ -311,7 +311,7 @@ void readRecord(UcscRecord & record,
         clear(buffer);
         readUntil(buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, UcscKnownGene> >());
 
-        __int32 tempEnd;
+        int32_t tempEnd;
         lexicalCastWithException(tempEnd, buffer);
         appendValue(record.exonEnds, tempEnd);
         skipOne(iter);
@@ -376,8 +376,8 @@ void writeRecord(TTarget & target,
     writeValue(target, '\t');
 
     // write column 3: orientation
-    __uint32 transBeginPos, transEndPos;
-    __uint32 cdsBeginPos, cdsEndPos;
+    uint32_t transBeginPos, transEndPos;
+    uint32_t cdsBeginPos, cdsEndPos;
     if (record.annotationBeginPos < record.annotationEndPos)
     {
         writeValue(target, '+');

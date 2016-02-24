@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_MULTIPLESHIFTAND_H
 #define SEQAN_HEADER_FIND_MULTIPLESHIFTAND_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,6 @@ public:
     }
 
     ~Pattern() {
-        SEQAN_CHECKPOINT
         if (table != 0) {
             deallocate(this, table, alphabetSize * blockCount);
             deallocate(this, prefSufMatch, blockCount);
@@ -139,7 +138,6 @@ struct Host< Pattern<TNeedle, MultipleShiftAnd> const>
 
 template <typename TNeedle, typename TNeedle2>
 void setHost (Pattern<TNeedle, MultipleShiftAnd> & me, TNeedle2 const & needle) {
-    SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     typedef typename Value<TNeedle>::Type TKeyword;
     typedef typename Value<TKeyword>::Type TAlphabet;
@@ -247,7 +245,6 @@ template <typename TNeedle>
 inline typename Host<Pattern<TNeedle, MultipleShiftAnd>const>::Type &
 host(Pattern<TNeedle, MultipleShiftAnd> & me)
 {
-SEQAN_CHECKPOINT
     return value(me.data_host);
 }
 
@@ -255,7 +252,6 @@ template <typename TNeedle>
 inline typename Host<Pattern<TNeedle, MultipleShiftAnd>const>::Type &
 host(Pattern<TNeedle, MultipleShiftAnd> const & me)
 {
-SEQAN_CHECKPOINT
     return value(me.data_host);
 }
 
@@ -272,7 +268,6 @@ position(Pattern<TNeedle, MultipleShiftAnd> & me)
 
 template <typename TFinder, typename TNeedle>
 bool _findShiftAndSmallNeedle(TFinder & finder, Pattern<TNeedle, MultipleShiftAnd> & me) {
-    SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     typedef typename Size<TNeedle>::Type TSize;
     while (!atEnd(finder)) {
@@ -326,7 +321,6 @@ bool _findShiftAndSmallNeedle(TFinder & finder, Pattern<TNeedle, MultipleShiftAn
 
 template <typename TFinder, typename TNeedle>
 bool _findShiftAndLargeNeedle(TFinder & finder, Pattern<TNeedle, MultipleShiftAnd> & me) {
-    SEQAN_CHECKPOINT
     typedef typename Size<TNeedle>::Type TSize;
     typedef unsigned int TWord;
     while (!atEnd(finder)) {
@@ -401,7 +395,6 @@ bool _findShiftAndLargeNeedle(TFinder & finder, Pattern<TNeedle, MultipleShiftAn
 
 template <typename TFinder, typename TNeedle>
 inline bool find(TFinder & finder, Pattern<TNeedle, MultipleShiftAnd> & me) {
-    SEQAN_CHECKPOINT
 
     // Check for left-over keywords
     if ((!empty(finder)) &&
@@ -429,6 +422,6 @@ inline bool find(TFinder & finder, Pattern<TNeedle, MultipleShiftAnd> & me) {
     }
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_FIND_MULTIPLESHIFTAND_H

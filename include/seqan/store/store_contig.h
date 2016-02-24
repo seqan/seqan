@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_STORE_CONTIG_H
 #define SEQAN_HEADER_STORE_CONTIG_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@ struct ContigStoreElement
     typedef TContigSeq_            TContigSeq;
     typedef TGapAnchor_            TGapAnchor;
     typedef TSpec_                TSpec;
-    typedef __int64                TPos;
+    typedef int64_t                TPos;
     typedef String<TGapAnchor>    TGapAnchors;
 
     static const TId INVALID_ID;
@@ -211,7 +211,7 @@ ContigFile<TSpec_>::INVALID_ID = MaxValue<typename Id<ContigFile<TSpec_> >::Type
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...
 

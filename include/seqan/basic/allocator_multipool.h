@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -91,7 +91,6 @@ struct Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT_> >
 
     Allocator()
     {
-        SEQAN_CHECKPOINT;
         // TODO(holtrew): Why not SeqAn's memset? or use using?
         std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
         std::memset(data_current_begin, 0, sizeof(data_current_begin));
@@ -100,7 +99,6 @@ struct Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT_> >
 
     Allocator(TParentAllocator & parent_alloc)
     {
-        SEQAN_CHECKPOINT;
         // TODO(holtrew): Why not SeqAn's memset? or use using?
         std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
         std::memset(data_current_begin, 0, sizeof(data_current_begin));
@@ -127,7 +125,6 @@ struct Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT_> >
 
     ~Allocator()
     {
-        SEQAN_CHECKPOINT;
         clear(*this);
     }
 };
@@ -148,7 +145,6 @@ template <typename TParentAllocator, unsigned int BLOCKING_LIMIT>
 inline TParentAllocator &
 parentAllocator(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me)
 {
-    SEQAN_CHECKPOINT;
     return value(me.data_parent_allocator);
 }
 
@@ -160,7 +156,6 @@ template <typename TParentAllocator, unsigned int BLOCKING_LIMIT>
 void
 clear(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me)
 {
-    SEQAN_CHECKPOINT;
     std::memset(me.data_recycled_blocks, 0, sizeof(me.data_recycled_blocks));
     std::memset(me.data_current_begin, 0, sizeof(me.data_current_begin));
     std::memset(me.data_current_free, 0, sizeof(me.data_current_free));
@@ -177,7 +172,6 @@ inline unsigned int
 _allocatorBlockNumber(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > &,
                       size_t size_)
 {
-    SEQAN_CHECKPOINT;
     typedef Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > TAllocator;
 
     SEQAN_ASSERT_GT(size_, 0u);
@@ -203,7 +197,6 @@ allocate(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me,
          TSize count,
          Tag<TUsage> const & tag_)
 {
-    SEQAN_CHECKPOINT;
     typedef Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > TAllocator;
 
     size_t bytes_needed = count * sizeof(TValue);
@@ -247,7 +240,6 @@ deallocate(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me,
            TSize count,
            Tag<TUsage> const tag_)
 {
-    SEQAN_CHECKPOINT;
     typedef Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > TAllocator;
 
     size_t bytes_needed = count * sizeof(TValue);

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@
 #include <seqan/graph_types.h>
 
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 //////////////////////////////////////////////////////////////////////////////
 // Graph - Interval Tree Types
 //////////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,6 @@ public:
     IntervalAndCargo(TValue i1, TValue i2, TCargo cargo) :
         i1(i1), i2(i2), cargo(cargo)
     {
-        SEQAN_CHECKPOINT
     }
 
 };
@@ -284,7 +283,6 @@ public:
     IntervalTreeNode() :
         center()
     {
-        SEQAN_CHECKPOINT
     }
 
     IntervalTreeNode(IntervalTreeNode const & other) :
@@ -292,7 +290,6 @@ public:
         list1(other.list1),
         list2(other.list2)
     {
-        SEQAN_CHECKPOINT
     }
 
 };
@@ -372,7 +369,6 @@ public:
 
     IntervalTree()
     {
-        SEQAN_CHECKPOINT
             interval_counter = 0;
     }
 
@@ -382,7 +378,6 @@ public:
                  TCargoIterator interval_cargos,
                  size_t len)
     {
-        SEQAN_CHECKPOINT
         String<TInterval> intervals;
         resize(intervals, len);
         size_t i = 0;
@@ -404,7 +399,6 @@ public:
                  TIterator interval_ends,
                  size_t len)
     {
-        SEQAN_CHECKPOINT
         String<TInterval> intervals;
         resize(intervals, len);
         size_t i = 0;
@@ -422,21 +416,18 @@ public:
 
     IntervalTree(String<TInterval> intervals)
     {
-        SEQAN_CHECKPOINT
             createIntervalTree(*this, intervals);
     }
 
     template <typename TTagSpec>
     IntervalTree(String<TInterval> intervals, Tag<TTagSpec> const tag)
     {
-        SEQAN_CHECKPOINT
             interval_counter = length(intervals);
         createIntervalTree(g, pm, intervals, tag);
     }
 
     IntervalTree(String<TInterval> intervals, TValue center)
     {
-        SEQAN_CHECKPOINT
             interval_counter = length(intervals);
         createIntervalTree(g, pm, intervals, center);
     }
@@ -1120,7 +1111,6 @@ _createIntervalTree(TGraph & g, TPropertyMap & pm,
                     typename VertexDescriptor<TGraph>::Type len,
                     Tag<TSpec> const tag)
 {
-    SEQAN_CHECKPOINT
     // Rekursionsanker
     if (len == 1)
     {
@@ -1213,7 +1203,6 @@ template <typename TIntervals>
 typename Value<typename Value<TIntervals>::Type>::Type
 _calcIntervalTreeRootCenter(TIntervals & intervals)
 {
-    SEQAN_CHECKPOINT;
 
     SEQAN_ASSERT_GT(length(intervals), 0u);
 
@@ -1269,7 +1258,6 @@ template <typename TGraph, typename TPropertyMap, typename TInterval>
 void
 addInterval(TGraph & g, TPropertyMap & pm, TInterval interval)
 {
-    SEQAN_CHECKPOINT
 
     typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -1370,7 +1358,6 @@ template <typename TValue, typename TCargo, typename TInterval>
 void
 addInterval(IntervalTree<TValue, TCargo> & itree, TInterval interval)
 {
-    SEQAN_CHECKPOINT
 
     ++ itree.interval_counter;
     addInterval(itree.g, itree.pm, interval);
@@ -1381,7 +1368,6 @@ template <typename TValue, typename TCargo>
 void
 addInterval(IntervalTree<TValue, TCargo> & itree, TValue begin, TValue end, TCargo cargo)
 {
-    SEQAN_CHECKPOINT
 
     IntervalAndCargo<TValue, TCargo> interval;
     interval.i1 = begin;
@@ -1396,7 +1382,6 @@ template <typename TValue, typename TCargo>
 void
 addInterval(IntervalTree<TValue, TCargo> & itree, TValue begin, TValue end)
 {
-    SEQAN_CHECKPOINT
 
     IntervalAndCargo<TValue, TCargo> interval;
     interval.i1 = begin;
@@ -1776,7 +1761,6 @@ removeInterval(
     TValue i_end,
     TCargo i_id)
 {
-    SEQAN_CHECKPOINT
 
     typedef typename Value<TPropertyMap>::Type TProperty;
     typedef typename ListType<TProperty>::Type TList;
@@ -1925,6 +1909,6 @@ struct Cargo<IntervalTree<TValue, TCargo> >
     typedef TCargo Type;
 };
 
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif  //#ifndef SEQAN_MISC_INTERVAL_TREE_H

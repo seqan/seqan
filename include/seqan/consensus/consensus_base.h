@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_CONSENSUS_BASE_H
 #define SEQAN_HEADER_CONSENSUS_BASE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 
@@ -539,7 +539,6 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
              Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
              TContigId contigId)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
     typedef typename Value<TStringSet>::Type TString;
@@ -1020,7 +1019,6 @@ consensusCalling(FragmentStore<TFragSpec, TConfig>& fragStore,
                  TContigId contigId,
                  Bayesian)
 {
-    SEQAN_CHECKPOINT
 
     typedef FragmentStore<TFragSpec, TConfig> TFragmentStore;
     typedef typename Size<TFragmentStore>::Type TSize;

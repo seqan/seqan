@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 /*!
@@ -86,7 +86,6 @@ public:
     inline typename Reference<Dequeue>::Type
     operator[] (TPos pos)
     {
-        SEQAN_CHECKPOINT;
         return value(*this, pos);
     }
 
@@ -94,7 +93,6 @@ public:
     inline typename Reference<Dequeue const>::Type
     operator[] (TPos pos) const
     {
-        SEQAN_CHECKPOINT;
         return value(*this, pos);
     }
 };

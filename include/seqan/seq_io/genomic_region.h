@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -107,16 +107,16 @@ inline void parse(GenomicRegion & region, CharString const & regionString);
 struct GenomicRegion
 {
     /*!
-     * @var __int32 GenomicRegion::INVALID_POS;
+     * @var int32_t GenomicRegion::INVALID_POS;
      * @brief Constant for marking a position as invalid (static-const member).
      */
-    static __int32 const INVALID_POS = -1;
+    static int32_t const INVALID_POS = -1;
 
     /*!
-     * @var __int32 GenomicRegion::INVALID_ID;
+     * @var int32_t GenomicRegion::INVALID_ID;
      * @brief Constant for marking a position as invalid (static-const member).
      */
-    static __int32 const INVALID_ID = -1;
+    static int32_t const INVALID_ID = -1;
 
     /*!
      * @var CharString GenomicRegion::seqName;
@@ -125,22 +125,22 @@ struct GenomicRegion
     CharString seqName;
 
     /*!
-     * @var __int32 GenomicRegion::rID;
+     * @var int32_t GenomicRegion::rID;
      * @brief An optional field storing an integer.  Default is <tt>-1</tt>.
      */
-    __int32 rID;
+    int32_t rID;
 
     /*!
-     * @var __int32 GenomicRegion::beginPos;
+     * @var int32_t GenomicRegion::beginPos;
      * @brief Begin position of the range on the chromosome.  Default is <tt>-1</tt>.
      */
-    __int32 beginPos;
+    int32_t beginPos;
 
     /*!
-     * @var __int32 GenomicRegion::endPos;
+     * @var int32_t GenomicRegion::endPos;
      * @brief End position of the range on the chromosome.  Default is <tt>-1</tt>.
      */
-    __int32 endPos;
+    int32_t endPos;
 
     /*!
      * @fn GenomicRegion::GenomicRegion

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -384,8 +384,8 @@ inline void OverlapInfoComputation_<TFragmentStore>::buildAllToAllOverlapInfos(
             if (seq1 == seq0)
                 continue;  // Skip hits with self.
             // TODO(holtgrew): bands not tight...
-            __int64 lDiag = beginPosition(filterFinder);//.curHit->hstkPos;
-            __int64 uDiag = endPosition(filterFinder);//filterFinder.curHit->hstkPos + filterFinder.curHit->bucketWidth - length(subSet[seq1]);
+            int64_t lDiag = beginPosition(filterFinder);//.curHit->hstkPos;
+            int64_t uDiag = endPosition(filterFinder);//filterFinder.curHit->hstkPos + filterFinder.curHit->bucketWidth - length(subSet[seq1]);
             SEQAN_ASSERT_GEQ(uDiag, lDiag);
 
             OverlapInfo_ info(computeOverlapInfo(positionToId(subSet, seq0), positionToId(subSet, seq1),

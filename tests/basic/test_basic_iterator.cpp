@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,7 @@
 #include <seqan/basic.h>
 
 #include "test_basic_iterator.h"
+#include "test_basic_iterator_zip.h"
 
 SEQAN_BEGIN_TESTSUITE(test_basic_iterator)
 {
@@ -69,6 +70,14 @@ SEQAN_BEGIN_TESTSUITE(test_basic_iterator)
     SEQAN_CALL_TEST(test_basic_iterator_position_movement);
     SEQAN_CALL_TEST(test_basic_iterator_position_arithmetics);
     SEQAN_CALL_TEST(test_basic_iterator_position_rooted_functions);
+
+    SEQAN_CALL_TEST(test_basic_iterator_zip_metafunctions);
+    SEQAN_CALL_TEST(test_basic_iterator_zip_constructors);
+    SEQAN_CALL_TEST(test_basic_iterator_zip_make_zip_iterator);
+    SEQAN_CALL_TEST(test_basic_iterator_zip_transport);
+    SEQAN_CALL_TEST(test_basic_iterator_zip_transport_value);
+    SEQAN_CALL_TEST(test_basic_iterator_zip_movement);
+    SEQAN_CALL_TEST(test_basic_iterator_zip_arithmetics);
 }
 SEQAN_END_TESTSUITE
 

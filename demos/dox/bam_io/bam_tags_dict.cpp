@@ -16,7 +16,7 @@ int main()
 
         if (getTagType(tags, id) == 'i')  // is 32 bit integer
         {
-            __int32 x = 0;
+            int32_t x = 0;
             if (!extractTagValue(x, tags, id))
                 SEQAN_ASSERT_FAIL("Not a valid integer at pos %u!", id);
             std::cout << x;

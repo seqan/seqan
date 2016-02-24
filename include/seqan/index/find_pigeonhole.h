@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -84,7 +84,7 @@ namespace seqan
     template <typename THaystack, typename TPattern, typename TPigeonholeSpec>
     struct FindResult<Finder<THaystack, Pigeonhole<TPigeonholeSpec> >, TPattern>
     {
-        typedef SwiftHitSemiGlobal_<__int64> Type;
+        typedef SwiftHitSemiGlobal_<int64_t> Type;
     };
 
 /*!
@@ -201,7 +201,7 @@ namespace seqan
     public:
         typedef typename Iterator<THaystack, Rooted>::Type            TIterator;
         typedef typename Position<THaystack>::Type                    THstkPos;
-//        typedef PigeonholeHit_<TSpec, __int64>                        TPigeonholeHit;
+//        typedef PigeonholeHit_<TSpec, int64_t>                        TPigeonholeHit;
         typedef typename FindResult<Finder>::Type                   TPigeonholeHit;
         typedef typename WindowFindResult<Finder>::Type                THitString;
         typedef typename Iterator<THitString, Standard>::Type        THitIterator;
@@ -325,14 +325,14 @@ namespace seqan
         typedef typename Iterator<TSA const, Standard>::Type            TIterator;
 
         TShape                    shape;
-        __int64                 curBeginPos, curEndPos;
-        __int64                    finderLength;
-        __int64                    seqDisabled;
+        int64_t                 curBeginPos, curEndPos;
+        int64_t                    finderLength;
+        int64_t                    seqDisabled;
         TSize                    finderPosOffset;                        // these must be of
         TSize                    finderPosNextOffset;                    // type TSize of TBucket
         TSize                   maxSeqLen;
         unsigned                curSeqNo;
-        String<__int64>         lastSeedDiag;
+        String<int64_t>         lastSeedDiag;
         PigeonholeParameters    params;
         double                    _currentErrorRate;
 
@@ -449,7 +449,7 @@ maskPatternSequence(Pattern<TIndex, Pigeonhole<TSpec> > & pattern, TSeqNo seqNo,
                          "Disabling sequences in the pigeonhole filter requires the ONE_PER_DIAGONAL heuristic.");
 
     if (enable)
-        pattern.lastSeedDiag[seqNo] = -(__int64)pattern.maxSeqLen;
+        pattern.lastSeedDiag[seqNo] = -(int64_t)pattern.maxSeqLen;
     else
         pattern.lastSeedDiag[seqNo] = pattern.seqDisabled;
 }
@@ -523,8 +523,8 @@ inline void _patternInit(Pattern<TIndex, Pigeonhole<TSpec> > &pattern, TFloat er
 
         clear(pattern.lastSeedDiag);
         if (Pigeonhole<TSpec>::ONE_PER_DIAGONAL)
-            resize(pattern.lastSeedDiag, seqCount, -(__int64)maxSeqLen);
-        pattern.seqDisabled = -(__int64)maxSeqLen - 1;
+            resize(pattern.lastSeedDiag, seqCount, -(int64_t)maxSeqLen);
+        pattern.seqDisabled = -(int64_t)maxSeqLen - 1;
     }
     else
     {
@@ -575,7 +575,7 @@ inline bool _pigeonholeProcessQGram(
         hit.ndlSeqNo = getSeqNo(ndlPos);                        // needle seq. number
         if (Pigeonhole<TSpec>::ONE_PER_DIAGONAL)
         {
-            __int64 diag = hit.hstkPos + (__int64)pattern.finderPosOffset;
+            int64_t diag = hit.hstkPos + (int64_t)pattern.finderPosOffset;
             if (pattern.lastSeedDiag[hit.ndlSeqNo] == diag)
                 continue;
             pattern.lastSeedDiag[hit.ndlSeqNo] = diag;
@@ -659,14 +659,14 @@ position(Pattern<TIndex, Pigeonhole<TSpec> > & pattern)
 //____________________________________________________________________________
 
 template <typename THaystack, typename TSpec>
-inline __int64
+inline int64_t
 beginPosition(Finder<THaystack, Pigeonhole<TSpec> > const & finder)
 {
     return (*finder.curHit).hstkPos;
 }
 
 template <typename THaystack, typename TSpec>
-inline __int64
+inline int64_t
 beginPosition(Finder<THaystack, Pigeonhole<TSpec> > & finder)
 {
     return beginPosition(const_cast<Finder<THaystack, Pigeonhole<TSpec> > const &>(finder));
@@ -751,9 +751,9 @@ positionRange(Finder<THaystack, Pigeonhole<TSpec> > const & finder)
     typedef Pair<TPosition> TPair;
     typename Finder<THaystack, Pigeonhole<TSpec> >::TPigeonholeHit &hit = *finder.curHit;
 
-    __int64 hitBegin = hit.hstkPos;
-    __int64 hitEnd = hit.hstkPos + hit.bucketWidth;
-    __int64 textEnd = length(haystack(finder));
+    int64_t hitBegin = hit.hstkPos;
+    int64_t hitEnd = hit.hstkPos + hit.bucketWidth;
+    int64_t textEnd = length(haystack(finder));
 
     if (hitBegin < 0) hitBegin = 0;
     if (hitEnd > textEnd) hitEnd = textEnd;
@@ -789,9 +789,9 @@ template <typename TPigeonholeHit, typename TText>
 inline typename Infix<TText>::Type
 pigeonholeInfix(TPigeonholeHit const &hit, TText &text)
 {
-    __int64 hitBegin = hit.hstkPos;
-    __int64 hitEnd = hit.hstkPos + hit.bucketWidth;
-    __int64 textEnd = length(text);
+    int64_t hitBegin = hit.hstkPos;
+    int64_t hitEnd = hit.hstkPos + hit.bucketWidth;
+    int64_t textEnd = length(text);
 
     if (hitBegin < 0) hitBegin = 0;
     if (hitEnd > textEnd) hitEnd = textEnd;
@@ -838,9 +838,9 @@ template <typename TIndex, typename TSpec, typename TText>
 inline typename Infix<TText>::Type
 infix(Pattern<TIndex, Pigeonhole<TSpec> > const & pattern, TText &text)
 {
-    __int64 hitBegin = pattern.curBeginPos;
-    __int64 hitEnd = pattern.curEndPos;
-    __int64 textLength = sequenceLength(pattern.curSeqNo, needle(pattern));
+    int64_t hitBegin = pattern.curBeginPos;
+    int64_t hitEnd = pattern.curEndPos;
+    int64_t textLength = sequenceLength(pattern.curSeqNo, needle(pattern));
 
     if (hitEnd > textLength) hitEnd = textLength;
     if (hitBegin < 0) hitBegin = 0;
@@ -1047,7 +1047,6 @@ windowFindBegin(
     Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
     double errorRate)
 {
-    SEQAN_CHECKPOINT
 
     pattern.finderLength = pattern.maxSeqLen + length(container(finder));
     _patternInit(pattern, errorRate);
@@ -1092,7 +1091,6 @@ windowFindNext(
     Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
     TSize finderWindowLength)
 {
-    SEQAN_CHECKPOINT
 
     typedef typename Fibre<TIndex, QGramShape>::Type        TShape;
     typedef Finder<THaystack, Pigeonhole<TSpec> >           TFinder;
@@ -1112,7 +1110,7 @@ windowFindNext(
     Pair<unsigned> ndlPos;
     THit hit;
     double errorRate = pattern._currentErrorRate;
-    __int64 seqDisabled = pattern.seqDisabled;
+    int64_t seqDisabled = pattern.seqDisabled;
 
     // iterate over all non-repeat regions within the window
     for (; finder.curPos < windowEnd; )
@@ -1143,10 +1141,10 @@ windowFindNext(
 
                     if (Pigeonhole<TSpec>::ONE_PER_DIAGONAL)
                     {
-                        __int64 lastDiag = pattern.lastSeedDiag[hit.ndlSeqNo];
+                        int64_t lastDiag = pattern.lastSeedDiag[hit.ndlSeqNo];
                         if (lastDiag == seqDisabled) continue;
 
-                        __int64 diag = hit.hstkPos + (__int64)pattern.finderPosOffset;
+                        int64_t diag = hit.hstkPos + (int64_t)pattern.finderPosOffset;
                         if (lastDiag == diag)
                         {
 //                            std::cout<<"double hit"<<std::endl;
@@ -1228,7 +1226,6 @@ template <typename THaystack, typename TSpec>
 inline typename Finder<THaystack, Pigeonhole<TSpec> >::THitString &
 getWindowFindHits(Finder<THaystack, Pigeonhole<TSpec> > &finder)
 {
-    SEQAN_CHECKPOINT
 
     return finder.hits;
 }
@@ -1249,7 +1246,6 @@ template <typename TIndex, typename TSpec>
 inline typename Size<TIndex>::Type
 getMaxDeviationOfOrder(Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
 {
-    SEQAN_CHECKPOINT;
 
     return (pattern.maxSeqLen <= length(indexShape(host(pattern))))? 0: pattern.maxSeqLen - length(indexShape(host(pattern)));
 }

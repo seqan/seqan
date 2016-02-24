@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -145,7 +145,7 @@ inline bool operator==(CigarElement<TOperation, TCount> const & lhs,
 // ----------------------------------------------------------------------------
 
 template <typename TOperation, typename TCount>
-__uint32 toBamCigarElement(CigarElement<TOperation, TCount> const & cigarElement)
+uint32_t toBamCigarElement(CigarElement<TOperation, TCount> const & cigarElement)
 {
     char operation = 0;
     switch (cigarElement.operation) {

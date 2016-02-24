@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ITERATOR_EDGE_H
 #define SEQAN_HEADER_GRAPH_ITERATOR_EDGE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 //////////////////////////////////////////////////////////////////////////////
 // Graph EdgeIterator
@@ -104,11 +104,9 @@ public:
         data_edge_it(_iter.data_edge_it),
         data_first_slot(_iter.data_first_slot)
     {
-        SEQAN_CHECKPOINT
     }
 
     Iter const&    operator = (Iter const & _other) {
-        SEQAN_CHECKPOINT
         if (this == &_other) return *this;
         data_vertex_it = _other.data_vertex_it;
         data_edge_it = _other.data_edge_it;
@@ -202,7 +200,6 @@ template<typename TGraph, typename TSpec>
 inline typename GetValue<Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > > >::Type
 getValue(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-SEQAN_CHECKPOINT
     return getValue(it.data_edge_it);
 }
 
@@ -212,7 +209,6 @@ template<typename TGraph, typename TSpec>
 inline typename Reference<Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > > >::Type
 value(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-SEQAN_CHECKPOINT
     return value(it.data_edge_it);
 }
 
@@ -222,7 +218,6 @@ template<typename TGraph, typename TSpec>
 inline typename Reference<Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > > >::Type
 operator * (Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     return value(it);
 }
 
@@ -232,7 +227,6 @@ template<typename TGraph, typename TSpec>
 inline typename Host<Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > > >::Type const&
 hostGraph(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     return hostGraph(it.data_vertex_it);
 }
 
@@ -242,7 +236,6 @@ template<typename TGraph, typename TSpec>
 inline bool
 atBegin(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     return ((it.data_first_slot == getValue(it.data_vertex_it)) &&
             atBegin(it.data_edge_it));
 }
@@ -253,7 +246,6 @@ template<typename TGraph, typename TSpec>
 inline void
 goBegin(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
     goBegin(it.data_vertex_it);
     while (it.data_first_slot != getValue(it.data_vertex_it)) ++it.data_vertex_it;
@@ -266,7 +258,6 @@ template<typename TGraph, typename TSpec>
 inline bool
 atEnd(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     return atEnd(it.data_vertex_it);
 }
 
@@ -276,7 +267,6 @@ template<typename TGraph, typename TSpec>
 inline void
 goEnd(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     goEnd(it.data_edge_it);
     goEnd(it.data_vertex_it);
 }
@@ -287,7 +277,6 @@ template<typename TGraph, typename TSpec>
 inline void
 _goNextInternal(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     if (!atEnd(it)) {
         goNext(it.data_edge_it);
         if(!atEnd(it.data_edge_it)) return;
@@ -309,7 +298,6 @@ template<typename TGraph, typename TSpec>
 inline void
 goNext(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     _goNextInternal(it);
 }
 
@@ -335,7 +323,6 @@ template<typename TGraph, typename TSpec>
 inline Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >&
 operator ++(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     goNext(it);
     return it;
 }
@@ -346,7 +333,6 @@ template<typename TGraph, typename TSpec>
 inline Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >
 operator ++(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it, int)
 {
-    SEQAN_CHECKPOINT
     Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > > ret = it;
     goNext(it);
     return ret;
@@ -358,7 +344,6 @@ template<typename TGraph, typename TSpec>
 inline void
 _goPreviousInternal(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     if (!atBegin(it)) {
         if ((atEnd(it)) ||
             (atBegin(it.data_edge_it)))
@@ -384,7 +369,6 @@ template<typename TGraph, typename TSpec>
 inline void
 goPrevious(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     _goPreviousInternal(it);
 }
 
@@ -410,7 +394,6 @@ template<typename TGraph, typename TSpec>
 inline Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >&
 operator --(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-SEQAN_CHECKPOINT
     goPrevious(it);
     return it;
 }
@@ -421,7 +404,6 @@ template<typename TGraph, typename TSpec>
 inline Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >
 operator --(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it, int)
 {
-    SEQAN_CHECKPOINT
     Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > > ret = it;
     goPrevious(it);
     return ret;
@@ -434,7 +416,6 @@ inline bool
 operator ==(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it1,
             Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it2)
 {
-SEQAN_CHECKPOINT
     return ((it1.data_vertex_it==it2.data_vertex_it) &&
             (it1.data_edge_it==it2.data_edge_it));
 }
@@ -446,7 +427,6 @@ inline bool
 operator !=(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it1,
             Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it2)
 {
-SEQAN_CHECKPOINT
     return ((it1.data_vertex_it!=it2.data_vertex_it) ||
             (it1.data_edge_it!=it2.data_edge_it));
 }
@@ -457,7 +437,6 @@ template<typename TGraph, typename TSpec>
 inline typename VertexDescriptor<TGraph>::Type
 sourceVertex(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     return sourceVertex(it.data_edge_it);
 }
 
@@ -467,7 +446,6 @@ template<typename TGraph, typename TSpec>
 inline typename VertexDescriptor<TGraph>::Type
 targetVertex(Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > >& it)
 {
-    SEQAN_CHECKPOINT
     return targetVertex(it.data_edge_it);
 }
 
@@ -482,6 +460,6 @@ label(Iter<Graph<Automaton<TAlphabet, TCargo, TGraphSpec> >, GraphIterator<Inter
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

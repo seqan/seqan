@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -237,7 +237,6 @@ class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> >
 
         template <typename TDefault>
         Graph(StringSet<TString, Dependent<TDefault> > const& sSet) {
-            SEQAN_CHECKPOINT
             data_sequence = sSet;
 
             // Cover all sequences with nil vertices
@@ -249,7 +248,6 @@ class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> >
 
         template <typename TDefault>
         Graph(StringSet<TString, Owner<TDefault> > const& sSet) {
-            SEQAN_CHECKPOINT
             StringSet<TString, Dependent<> > depStr(sSet);
             data_sequence = depStr;
 
@@ -262,18 +260,15 @@ class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> >
 
 
         ~Graph() {
-            SEQAN_CHECKPOINT
             clear(*this);
         }
 
         Graph(Graph const & _other)
         {
-            SEQAN_CHECKPOINT
             _copyGraph(_other, *this);
         }
 
         Graph const& operator = (Graph const & _other) {
-            SEQAN_CHECKPOINT
             if (this == &_other) return *this;
             clear(*this);
             _copyGraph(_other, *this);
@@ -290,7 +285,6 @@ class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> >
 template<typename TStringSet, typename TCargo, typename TSpec>
 inline String<typename EdgeType<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type*>&
 _getVertexString(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g) {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
     return const_cast<String<TEdgeStump*>&>(g.data_align.data_vertex);
@@ -301,7 +295,6 @@ _getVertexString(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g) {
 template<typename TStringSet, typename TCargo, typename TSpec>
 inline typename VertexIdHandler<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
 _getVertexIdManager(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g) {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename VertexIdHandler<TGraph>::Type TVertexIdManager;
     return const_cast<TVertexIdManager&>(g.data_align.data_id_managerV);
@@ -312,7 +305,6 @@ _getVertexIdManager(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g) {
 template<typename TStringSet, typename TCargo, typename TSpec>
 inline typename EdgeIdHandler<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
 _getEdgeIdManager(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g) {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename EdgeIdHandler<TGraph>::Type TEdgeIdManager;
     return const_cast<TEdgeIdManager&>(g.data_align.data_id_managerE);
@@ -326,7 +318,6 @@ _copyGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& source,
            Graph<Alignment<TStringSet, TCargo, TSpec> >& dest,
            bool)
 {
-    SEQAN_CHECKPOINT
     clear(dest);
     dest.data_align = source.data_align;
     dest.data_sequence = source.data_sequence;
@@ -357,7 +348,6 @@ inline void
 transpose(Graph<Alignment<TStringSet, TCargo, TSpec> > const& source,
           Graph<Alignment<TStringSet, TCargo, TSpec> >& dest)
 {
-    SEQAN_CHECKPOINT
     // Alignment graph, no transpose just copy
     _copyGraph(source, dest, false);
 }
@@ -368,7 +358,6 @@ template<typename TStringSet, typename TCargo, typename TSpec>
 inline void
 transpose(Graph<Alignment<TStringSet, TCargo, TSpec> >&)
 {
-    SEQAN_CHECKPOINT
     // Nothing to do in an alignment graph
 }
 
@@ -378,7 +367,6 @@ template<typename TStringSet, typename TCargo, typename TSpec>
 inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 numEdges(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 {
-    SEQAN_CHECKPOINT
     return numEdges(g.data_align);
 }
 
@@ -388,7 +376,6 @@ template<typename TStringSet, typename TCargo, typename TSpec>
 inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 numVertices(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 {
-    SEQAN_CHECKPOINT
     return numVertices(g.data_align);
 }
 
@@ -398,7 +385,6 @@ template<typename TStringSet, typename TCargo, typename TSpec>
 inline bool
 empty(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 {
-    SEQAN_CHECKPOINT
     return empty(g.data_align);
 }
 
@@ -408,7 +394,6 @@ template<typename TStringSet, typename TCargo, typename TSpec>
 inline void
 clearEdges(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 {
-    SEQAN_CHECKPOINT
     clearEdges(g.data_align);
 }
 
@@ -418,7 +403,6 @@ template<typename TStringSet, typename TCargo, typename TSpec>
 inline void
 clearVertices(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename Size<TStringSet>::Type TSize;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -444,7 +428,6 @@ template<typename TStringSet, typename TCargo, typename TSpec>
 inline void
 clear(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 {
-    SEQAN_CHECKPOINT
     // Only clear also removes the sequences
     clear(value(g.data_sequence));
     clearVertices(g);
@@ -457,7 +440,6 @@ inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 outDegree(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
           TVertexDescriptor const vertex)
 {
-    SEQAN_CHECKPOINT
     return outDegree(g.data_align, vertex);
 }
 
@@ -468,7 +450,6 @@ inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 inDegree(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
          TVertexDescriptor const vertex)
 {
-    SEQAN_CHECKPOINT
     return inDegree(g.data_align, vertex);
 }
 
@@ -479,7 +460,6 @@ inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 degree(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
        TVertexDescriptor const vertex)
 {
-    SEQAN_CHECKPOINT
     return degree(g.data_align, vertex);
 }
 
@@ -492,7 +472,6 @@ addVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
           TPos begin,
           TLength len)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Id<TGraph>::Type TIdType;
@@ -599,7 +578,6 @@ addEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
         TVertexDescriptor const source,
         TVertexDescriptor const target)
 {
-    SEQAN_CHECKPOINT
     return addEdge(g.data_align, source, target);
 }
 
@@ -612,7 +590,6 @@ addEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
         TVertexDescriptor const target,
         TCargo2 const cargo)
 {
-    SEQAN_CHECKPOINT
     return addEdge(g.data_align, source, target, cargo);
 }
 
@@ -624,7 +601,6 @@ removeEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
            TVertexDescriptor const source,
            TVertexDescriptor const target)
 {
-    SEQAN_CHECKPOINT
     removeEdge(g.data_align, source, target);
 }
 
@@ -635,7 +611,6 @@ inline void
 removeEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
            TEdgeDescriptor const edge)
 {
-    SEQAN_CHECKPOINT
     removeEdge(g.data_align, sourceVertex(g.data_align,edge), targetVertex(g.data_align,edge));
 }
 
@@ -646,7 +621,6 @@ inline void
 removeOutEdges(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
                TVertexDescriptor const v)
 {
-    SEQAN_CHECKPOINT
     removeOutEdges(g.data_align, v);
 }
 
@@ -657,7 +631,6 @@ inline void
 removeInEdges(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
               TVertexDescriptor const v)
 {
-    SEQAN_CHECKPOINT
     removeInEdges(g.data_align,v);
 }
 
@@ -668,7 +641,6 @@ inline typename VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >:
 targetVertex(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
              TEdgeDescriptor const edge)
 {
-    SEQAN_CHECKPOINT
     return targetVertex(g.data_align, edge);
 }
 
@@ -679,7 +651,6 @@ inline typename VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >:
 sourceVertex(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
              TEdgeDescriptor const edge)
 {
-    SEQAN_CHECKPOINT
     return sourceVertex(g.data_align, edge);
 }
 
@@ -690,7 +661,6 @@ inline void
 getAdjacencyMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                    TMatrix& mat)
 {
-    SEQAN_CHECKPOINT
     getAdjacencyMatrix(g.data_align, mat);
 }
 
@@ -702,7 +672,6 @@ findEdge(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
          TVertexDescriptor const v,
          TVertexDescriptor const w)
 {
-    SEQAN_CHECKPOINT
     return findEdge(g.data_align, v, w);
 }
 
@@ -840,7 +809,6 @@ write(TFile & file,
       FastaFormat)
 {
 //IOREV _nodoc_ specialization not documented
-    SEQAN_CHECKPOINT
     typedef Graph<TSpec> TGraph;
     typedef typename Size<TGraph>::Type TSize;
 
@@ -879,7 +847,6 @@ write(TFile & file,
       MsfFormat)
 {
 //IOREV _nodoc_ specialization not documented
-    SEQAN_CHECKPOINT
     typedef Graph<TSpec> TGraph;
     typedef typename Size<TGraph>::Type TSize;
 
@@ -1089,7 +1056,6 @@ inline void
 assignStringSet(Graph<Alignment<StringSet<TString, Dependent<TDefault> >, TCargo, TSpec> >& g,
                 StringSet<TString, Dependent<TDefault2> > const& sStr)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<StringSet<TString, Dependent<TDefault> >, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename TGraph::TKey_ TKey;
@@ -1110,7 +1076,6 @@ inline void
 assignStringSet(Graph<Alignment<StringSet<TString, Dependent<TDefault> >, TCargo, TSpec> >& g,
                 StringSet<TString, Owner<TDefault2> > const& sStr)
 {
-    SEQAN_CHECKPOINT
     StringSet<TString, Dependent<> > depStr(sStr);
     assignStringSet(g, depStr);
 }
@@ -1136,7 +1101,6 @@ template<typename TStringSet, typename TCargo, typename TSpec>
 inline typename Host<Graph<Alignment<TStringSet, TCargo, TSpec> > const>::Type&
 getStringSet(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 {
-    SEQAN_CHECKPOINT
     return value(g.data_sequence);
 }
 
@@ -1171,7 +1135,6 @@ template<typename TStringSet, typename TCargo, typename TSpec>
 inline typename StringSetType<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 stringSet(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 {
-    SEQAN_CHECKPOINT
     return const_cast<TStringSet&>(value(g.data_sequence));
 }
 
@@ -1194,7 +1157,6 @@ inline typename Infix<typename Value<TStringSet>::Type>::Type
 label(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
       TVertexDescriptor const v)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename TGraph::TFragmentInfo_ TSegment;
     TSegment seg = getProperty(g.data_fragment, v);
@@ -1225,7 +1187,6 @@ inline typename Id<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
 sequenceId(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
            TVertexDescriptor const v)
 {
-    SEQAN_CHECKPOINT
     return const_cast<typename Id<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&>(g.data_fragment[v].data_seq_id);
 }
 
@@ -1248,7 +1209,6 @@ inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
 fragmentBegin(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
               TVertexDescriptor const v)
 {
-    SEQAN_CHECKPOINT
     return const_cast<typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&>(g.data_fragment[v].data_begin);
 }
 
@@ -1271,7 +1231,6 @@ inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
 fragmentLength(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                TVertexDescriptor const v)
 {
-    SEQAN_CHECKPOINT
     return const_cast<typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&>(g.data_fragment[v].data_length);
 }
 
@@ -1297,7 +1256,6 @@ findVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
            TSeqId id,
            TPos pos)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename TGraph::TKey_ TKey;
     typedef typename Size<TGraph>::Type TSize;
@@ -1526,7 +1484,6 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                  TOrderMap& order,
                  TComponentLength& compLength)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Id<TGraph>::Type TIdType;
@@ -1629,7 +1586,6 @@ inline bool
 convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                  TMatrix& mat)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename Value<TMatrix>::Type TValue;
     typedef typename Size<TGraph>::Type TSize;
@@ -1832,7 +1788,6 @@ _heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const&,
                             TString const&,
                             Nothing&)
 {
-    SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1848,7 +1803,6 @@ _heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g
                             TString const& str2,
                             TOutString& align)
 {
-    SEQAN_CHECKPOINT
     typedef typename Value<TString>::Type TVertexSet;
     typedef typename Iterator<TString const, Standard>::Type TStringIter;
     typedef typename Iterator<TString, Standard>::Type TSIter;
@@ -1966,7 +1920,6 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                           TString const& str2,
                           TOutString& align)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
     typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
@@ -2087,7 +2040,6 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                           TString const& str1,
                           TString const& str2)
 {
-    SEQAN_CHECKPOINT
     Nothing noth;
     return heaviestCommonSubsequence(g, str1, str2, noth);
 }

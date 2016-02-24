@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,6 @@ _getOtherSequenceAndProject(Fragment<TFragSize,TFragSpec> & segment,
                            TId2 & seq_j_id,
                            TPos2 & pos_j)
 {
-SEQAN_CHECKPOINT
     getProjectedPosition(segment,seg_num, seq_i_id, pos_i,seq_j_id,pos_j);
 
     //if(seq_i_id == sequenceId(segment,0))
@@ -74,7 +73,6 @@ _getSeqBeginAndEnd(Fragment<TFragSize,TFragSpec> & segment,
                   TPosition & end_i,
                   TId2 seq)
 {
-SEQAN_CHECKPOINT
     seq_i_id = sequenceId(segment,seq);
     if(seq==0)
         begin_i = segment.begin1; // fragmentBegin(segment,seq_i_id);
@@ -100,7 +98,6 @@ SEQAN_CHECKPOINT
 //         TValue len1,
 //         TValue len2)
 //{
-//SEQAN_CHECKPOINT
 //    typename Infix<typename Value<TStringSet>::Type>::Type label0 = label(segment,seqs,sequenceId(segment,0));
 //    typename Infix<typename Value<TStringSet>::Type>::Type label1 = label(segment,seqs,sequenceId(segment,1));
 //    int i = 0;
@@ -134,7 +131,6 @@ SEQAN_CHECKPOINT
 //         TFragSize len1,
 //         TFragSize len2)
 //{
-//SEQAN_CHECKPOINT
 //    typename Infix<typename Value<TStringSet>::Type>::Type label0 = label(segment,seqs,sequenceId(segment,0));
 //    typename Infix<typename Value<TStringSet>::Type>::Type label1 = label(segment,seqs,sequenceId(segment,1));
 //    TScoreValue ret_score = 0;
@@ -166,7 +162,6 @@ _getRefinedMatchScore(Score<TScoreValue,TScoreSpec> & score_type,
          TFragSize len,
          TFragSize)
 {
-SEQAN_CHECKPOINT
     typedef typename Infix<typename Value<TStringSet>::Type>::Type TSegmentLabel;
     TSegmentLabel label0 = label(segment,seqs, sequenceId(segment, 0));
     TSegmentLabel label1 = label(segment,seqs, sequenceId(segment, 1));
@@ -197,7 +192,6 @@ _getRefinedMatchScore(Score<TScoreValue, Simple> & score_type,
          TFragSize len,
          TFragSize)
 {
-SEQAN_CHECKPOINT
     return len*scoreMatch(score_type);
 }
 

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_MULTIPLE_BFAM_H
 #define SEQAN_HEADER_FIND_MULTIPLE_BFAM_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ public:
             //note: if to_verify_begin == to_verify_end then searching in Haystack must go on
 
     //preprocessed data: these members are initialized in setHost
-    Holder<TNeedle> needle;
+    Holder<TNeedle> data_host;
     TGraph automaton; //automaton of the reverse lmin-prefixes of the keywords
     String<String<TNeedlePosition> > terminals; //map of terminal states in automaton
 
@@ -111,21 +111,22 @@ public:
     }
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl)
+    Pattern(TNeedle2 && ndl,
+            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
     {
-        SEQAN_CHECKPOINT
-        setHost(*this, ndl);
+        setHost(*this, std::forward<TNeedle2>(ndl));
+        ignoreUnusedVariableWarning(dummy);
     }
 
     ~Pattern()
-    {
-    }
+    {}
 //____________________________________________________________________________
 
 private:
     Pattern(Pattern const& other);
     Pattern const & operator=(Pattern const & other);
-
+    Pattern(Pattern && other);
+    Pattern & operator=(Pattern && other);
 //____________________________________________________________________________
 };
 
@@ -150,16 +151,14 @@ _buildAutomatonMultiBfam(Pattern<TNeedle, MultiBfam<Trie> > & me,
 
 //____________________________________________________________________________
 
-template <typename TNeedle, typename TAutomaton, typename TNeedle2>
-void _setHostMultiBfam(Pattern<TNeedle, MultiBfam<TAutomaton> > & me,
-                        TNeedle2 const & needle_)
+template <typename TNeedle, typename TAutomaton>
+void _reinitPattern(Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
 {
     typedef typename Value<TNeedle>::Type TKeyword;
     typedef typename Value<TKeyword>::Type TValue;
     typedef typename Size<TKeyword>::Type TSize;
 
     //me.needle
-    setValue(me.needle, needle_);
     TNeedle & ndl = needle(me);
 
     //determine lmin
@@ -195,39 +194,6 @@ void _setHostMultiBfam(Pattern<TNeedle, MultiBfam<TAutomaton> > & me,
     _buildAutomatonMultiBfam(me, strs);
 }
 
-template <typename TNeedle, typename TAutomaton, typename TNeedle2>
-void setHost (Pattern<TNeedle, MultiBfam<TAutomaton> > & me,
-              TNeedle2 const & needle)
-{
-    _setHostMultiBfam(me, needle);
-}
-
-template <typename TNeedle, typename TAutomaton, typename TNeedle2>
-inline void
-setHost(Pattern<TNeedle, MultiBfam<TAutomaton> > & me,
-        TNeedle2 & needle)
-{
-    _setHostMultiBfam(me, needle);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle, typename TAutomaton>
-inline typename Host<Pattern<TNeedle, MultiBfam<TAutomaton> > >::Type &
-host(Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
-{
-SEQAN_CHECKPOINT
-    return value(me.needle);
-}
-
-template <typename TNeedle, typename TAutomaton>
-inline typename Host<Pattern<TNeedle, MultiBfam<TAutomaton> > const>::Type &
-host(Pattern<TNeedle, MultiBfam<TAutomaton> > const & me)
-{
-SEQAN_CHECKPOINT
-    return value(me.needle);
-}
-
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TAutomaton>
@@ -243,7 +209,6 @@ position(Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
 template <typename TNeedle, typename TAutomaton>
 inline void _patternInit (Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
 {
-SEQAN_CHECKPOINT
     me.position = 0;
     me.position_end = 0;
 }
@@ -291,7 +256,6 @@ template <typename TFinder, typename TAutomaton, typename TNeedle>
 inline bool find(TFinder & finder,
                  Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
 {
-SEQAN_CHECKPOINT
     typedef typename Haystack<TFinder>::Type THaystack;
     typedef typename Iterator<THaystack, Standard>::Type THaystackIterator;
     typedef typename Value<TNeedle>::Type TKeyword;
@@ -396,6 +360,6 @@ VERIFY_NEXT:
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

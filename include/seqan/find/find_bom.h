@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_BOM_H
 #define SEQAN_HEADER_FIND_BOM_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -120,76 +120,44 @@ public:
     }
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl)
+    Pattern(TNeedle2 && ndl,
+            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
     {
-SEQAN_CHECKPOINT
-        setHost(*this, ndl);
-    }
-
-    ~Pattern() {
-        SEQAN_CHECKPOINT
+        ignoreUnusedVariableWarning(dummy);
+        setHost(*this, std::forward<TNeedle2>(ndl));
     }
 //____________________________________________________________________________
 };
-
-//////////////////////////////////////////////////////////////////////////////
-// Host Metafunctions
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle>
-struct Host< Pattern<TNeedle, BomAlgo> >
-{
-    typedef TNeedle Type;
-};
-
-template <typename TNeedle>
-struct Host< Pattern<TNeedle, BomAlgo> const>
-{
-    typedef TNeedle const Type;
-};
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Functions
 //////////////////////////////////////////////////////////////////////////////
 
 //Bfam<Oracle>: BOM Algorithm
-template <typename TNeedle, typename TNeedle2>
+template <typename TNeedle>
 inline void
-setHost (Pattern<TNeedle, Bfam<Oracle> > & me, TNeedle2 const& needle)
+_reinitPattern(Pattern<TNeedle, Bfam<Oracle> > & me)
 {
-    SEQAN_CHECKPOINT
-    me.needleLength = length(needle);
+    me.needleLength = length(needle(me));
     clear(me.automaton);
-    createOracleOnReverse(me.automaton,needle);
-    setValue(me.data_host, needle);
+    createOracleOnReverse(me.automaton,needle(me));
 }
 
 //Bfam<Trie>: BTM Algorithm (the same as BOM, but with an trie)
-template <typename TNeedle, typename TNeedle2>
+template <typename TNeedle>
 inline void
-setHost (Pattern<TNeedle, Bfam<Trie> > & me, TNeedle2 const& needle)
+_reinitPattern(Pattern<TNeedle, Bfam<Trie> > & me)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Position<TNeedle>::Type TPosition;
-    me.needleLength = length(needle);
+    me.needleLength = length(needle(me));
     clear(me.automaton);
 
     String<String<TPosition> > terminal_state_map; //dummy
-    typedef typename Value<TNeedle2 const>::Type TValue;
-    String<TValue> reverse_string = needle;
+    typedef typename Value<TNeedle const>::Type TValue;
+    String<TValue> reverse_string = needle(me);
     reverse(reverse_string);
 
     createSuffixTrie(me.automaton, terminal_state_map, reverse_string);
-
-    setValue(me.data_host, needle);
-}
-
-template <typename TNeedle, typename TNeedle2, typename TSpec>
-inline void
-setHost (Pattern<TNeedle, Bfam<TSpec> > & me, TNeedle2 & needle)
-{
-    setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
 }
 
 //____________________________________________________________________________
@@ -198,7 +166,6 @@ setHost (Pattern<TNeedle, Bfam<TSpec> > & me, TNeedle2 & needle)
 template <typename TNeedle, typename TSpec>
 inline void _patternInit (Pattern<TNeedle, Bfam<TSpec> > & me)
 {
-SEQAN_CHECKPOINT
     me.step = 0;
 }
 
@@ -243,6 +210,6 @@ find(TFinder & finder, Pattern<TNeedle, Bfam<TSpec> > & me)
     return false;
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_FIND_SHIFTAND_H

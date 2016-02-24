@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@
  */
 
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 
@@ -277,12 +277,10 @@ namespace SEQAN_NAMESPACE_MAIN
             xmitDone(other.xmitDone, Move())
         {}
 
-#ifdef SEQAN_CXX11_STANDARD
         aiocb_win32(aiocb_win32 && other) :
             overlapped(other.overlapped),
             xmitDone(other.xmitDone, Move())
         {}
-#endif
 
     private:
         aiocb_win32(aiocb_win32 const &)
@@ -766,11 +764,9 @@ namespace SEQAN_NAMESPACE_MAIN
             aiocb(other)
         {}
 
-#ifdef SEQAN_CXX11_STANDARD
         AiocbWrapper(AiocbWrapper && other) :
             aiocb(other)
         {}
-#endif
 
     private:
         AiocbWrapper(AiocbWrapper const &)

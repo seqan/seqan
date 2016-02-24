@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -562,7 +562,7 @@ reverse(TSequence & sequence, Tag<TParallelTag> parallelTag)
     Splitter<TPos> splitter(0, length(sequence) / 2, parallelTag);
 
     // disable multi-threading if sequence is too small
-    // __uint64 cast is for 8bit size types for which comparison would be always true
+    // uint64_t cast is for 8bit size types for which comparison would be always true
     if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE && _reverseDoSequential(length(sequence)))
         resize(splitter, 1);
 
@@ -591,22 +591,15 @@ reverse(StringSet<TSequence, TSpec> & stringSet, Tag<TParallelTag>)
         reverse(stringSet[seqNo], Serial());
 }
 
-template <typename TValue>
-inline void
-reverse(std::list<TValue> & list)
-{
-    list.reverse();
-}
-
 template < typename TText >
-inline void
+inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<TText> >)
 reverse(TText & text)
 {
     reverse(text, Parallel());
 }
 
 // const variants for segments/modifiers
-
+//NOTE(h-2): why do we remove constnes??
 template < typename TText >
 inline void
 reverse(TText const & text)
@@ -620,7 +613,6 @@ reverse(TText const & text, Tag<TParallelTag> parallelTag)
 {
     reverse(const_cast<TText &>(text), parallelTag);
 }
-
 
 // --------------------------------------------------------------------------
 // Function reverseString()

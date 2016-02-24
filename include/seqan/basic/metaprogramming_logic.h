@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -474,36 +474,18 @@ struct If<False, T1, T2>
 
 
 template <typename TArgT, typename TArgF>
-inline TArgT SEQAN_FORWARD_ARG
-ifSwitch(True, TArgT SEQAN_FORWARD_ARG argTrue, TArgF const &)
+inline TArgT &&
+ifSwitch(True, TArgT && argTrue, TArgF const &)
 {
-    return SEQAN_FORWARD(TArgT, argTrue);
+    return std::forward<TArgT>(argTrue);
 }
 
 template <typename TArgT, typename TArgF>
-inline TArgF SEQAN_FORWARD_ARG
-ifSwitch(False, TArgT const &, TArgF SEQAN_FORWARD_ARG argFalse)
+inline TArgF &&
+ifSwitch(False, TArgT const &, TArgF && argFalse)
 {
-    return SEQAN_FORWARD(TArgF, argFalse);
+    return std::forward<TArgF>(argFalse);
 }
-
-#ifndef SEQAN_CXX11_STANDARD
-
-template <typename TArgT, typename TArgF>
-inline TArgT const &
-ifSwitch(True, TArgT const & argTrue, TArgF const &)
-{
-    return SEQAN_FORWARD(TArgT, argTrue);
-}
-
-template <typename TArgT, typename TArgF>
-inline TArgF const &
-ifSwitch(False, TArgT const &, TArgF const & argFalse)
-{
-    return SEQAN_FORWARD(TArgF, argFalse);
-}
-
-#endif
 
 // ----------------------------------------------------------------------------
 // Metafunction IfC

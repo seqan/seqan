@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -80,13 +80,13 @@ typedef SimpleType<unsigned char, TraceBack_> TraceBack;
 
 template <> struct ValueSize<TraceBack>
 {
-    typedef __uint8 Type;
+    typedef uint8_t Type;
     static const Type VALUE = 3;
 };
 
 template <> struct BitsPerValue<TraceBack>
 {
-    typedef __uint8 Type;
+    typedef uint8_t Type;
     static const Type VALUE = 2;
 };
 

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@
 #ifndef SEQAN_HEADER_STORE_IO_SAM_H
 #define SEQAN_HEADER_STORE_IO_SAM_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 // ============================================================================
@@ -94,10 +94,10 @@ template <typename TId>
 struct MatchMateInfo_
 {
     TId     readId;
-    __int32 contigId;
+    int32_t contigId;
     TId     pairMatchId;
     TId     matePairId;//:(sizeof(TId)*8-1);
-    __int32 beginPos;
+    int32_t beginPos;
     bool    reversed;
 };
 
@@ -425,7 +425,7 @@ _readAlignments(
 //        refresh(fragStore.contigNameStoreCache);  // was done for the BamIOContext already
     refresh(fragStore.readNameStoreCache);
 
-    __uint64 recNo = 0;
+    uint64_t recNo = 0;
     while (!atEnd(iter))
     {
         try
@@ -1118,6 +1118,6 @@ writeRecords(FormattedFile<Bam, Output, TSpec> & bamFile,
     writeRecords(bamFile, store, functor);
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

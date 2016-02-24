@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_SIMPLE_H
 #define SEQAN_HEADER_FIND_SIMPLE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -68,24 +68,11 @@ public:
 
     Pattern() {}
 
-    Pattern(Pattern const & other):
-        data_host(other.data_host)
-    {
-    }
-
     template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl)
+    Pattern(TNeedle2 && ndl, SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
     {
         setHost(*this, ndl);
-    }
-
-    ~Pattern(){}
-
-    Pattern const &
-    operator = (Pattern const & other)
-    {
-        data_host = other.data_host;
-        return *this;
+        ignoreUnusedVariableWarning(dummy);
     }
 
 //____________________________________________________________________________
@@ -95,19 +82,6 @@ public:
 //////////////////////////////////////////////////////////////////////////////
 // Functions
 //////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, Simple> & me,
-              TNeedle2 & needle)
-{
-    setValue(me.data_host, needle);
-}
-template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, Simple> & me,
-              TNeedle2 const & needle)
-{
-    setValue(me.data_host, needle);
-}
 
 //____________________________________________________________________________
 
@@ -156,6 +130,6 @@ inline bool find(TFinder & finder,
 
 //____________________________________________________________________________
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

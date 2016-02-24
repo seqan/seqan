@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -93,8 +93,8 @@ public:
     // ------------------------------------------------------------------------
 
     Iter() :
-        TBase(0),
-        data_container(TContainerPointer_(0))
+        TBase(),
+        data_container(TContainerPointer_())
     {}
 
     Iter(typename Parameter_<TContainer>::Type container_, TPosition position_ = 0) :
@@ -147,10 +147,19 @@ template <typename TContainer>
 struct Position<Iter<TContainer, PositionIterator> > : Position<TContainer> {};
 
 template <typename TContainer>
+struct Difference<Iter<TContainer, PositionIterator> > : Difference<TContainer> {};
+
+template <typename TContainer>
+struct Value<Iter<TContainer, PositionIterator> > : Value<TContainer> {};
+
+template <typename TContainer>
+struct GetValue<Iter<TContainer, PositionIterator> > : GetValue<TContainer> {};
+
+template <typename TContainer>
 struct Reference<Iter<TContainer, PositionIterator> > : Reference<TContainer> {};
 
 template <typename TContainer>
-struct Difference<Iter<TContainer, PositionIterator> > : Difference<TContainer> {};
+struct Reference<Iter<TContainer, PositionIterator> const> : Reference<TContainer> {};
 
 // ============================================================================
 // Functions
@@ -200,7 +209,7 @@ value(Iter<TContainer, PositionIterator> & me)
 }
 
 template <typename TContainer>
-inline typename Reference<Iter<TContainer, PositionIterator> >::Type
+inline typename Reference<Iter<TContainer, PositionIterator> const>::Type
 value(Iter<TContainer, PositionIterator> const & me)
 {
     return value(container(me), position(me));

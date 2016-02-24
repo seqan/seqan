@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_PIPE_SAMPLER_H
 #define SEQAN_HEADER_PIPE_SAMPLER_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //namespace SEQAN_NAMESPACE_PIPELINING
@@ -616,10 +616,10 @@ namespace SEQAN_NAMESPACE_MAIN
 
         TSize sum = 0;
         TLimitsString const &limits = me.limits;
-        __int64 seqCountPlusOne = length(me.limits);
+        int64_t seqCountPlusOne = length(me.limits);
 
         SEQAN_OMP_PRAGMA(parallel for reduction(+:sum))
-        for (__int64 i = 1; i < seqCountPlusOne; ++i)
+        for (int64_t i = 1; i < seqCountPlusOne; ++i)
         {
             TSize prev = limits[i - 1];
             TSize cur = limits[i];

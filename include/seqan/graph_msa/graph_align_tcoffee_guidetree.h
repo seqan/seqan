@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_GUIDETREE_H
 #define SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_GUIDETREE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -129,13 +129,13 @@ njTree(String<TValue, TStringSpec> const & matIn,
     // does not break.
     if (!normFactor)
         normFactor = 1;
-    String<__int64> mat;
+    String<int64_t> mat;
     resize(mat, length(matIn));
     for (unsigned i = 0; i < length(mat); ++i)
-        mat[i] = static_cast<__int64>(10000000.0 * ((double)(matIn[i]) / (double)(normFactor)));
+        mat[i] = static_cast<int64_t>(10000000.0 * ((double)(matIn[i]) / (double)(normFactor)));
 
     // First initialization
-    String<__int64> av;    // Average branch length to a combined node
+    String<int64_t> av;    // Average branch length to a combined node
     resize(av,nseq,0);
 
     String<TVertexDescriptor> connector;   // Nodes that need to be connected
@@ -149,9 +149,9 @@ njTree(String<TValue, TStringSpec> const & matIn,
     }
 
     // Main cycle
-    __int64 fnseqs = static_cast<__int64>(nseq);
+    int64_t fnseqs = static_cast<int64_t>(nseq);
     for(TSize nc=0; nc<(nseq-3); ++nc) {
-        __int64 sumOfBranches = 0;
+        int64_t sumOfBranches = 0;
 
         // Determine the sum of all branches and
         // copy upper triangle matrix to lower triangle
@@ -161,12 +161,12 @@ njTree(String<TValue, TStringSpec> const & matIn,
 
         // Compute the sum of branch lengths for all possible pairs
         bool notFound = true;
-        __int64 tmin = 0;
+        int64_t tmin = 0;
         TSize mini = 0;  // Next pair of seq i and j to join
         TSize minj = 0;
-        __int64 diToAllOthers = 0;
-        __int64 djToAllOthers = 0;
-        __int64 total = 0;
+        int64_t diToAllOthers = 0;
+        int64_t djToAllOthers = 0;
+        int64_t total = 0;
         for(TSize col=1; col<nseq; ++col)  {
             if (connector[col] != nilVertex) {
                 for(TSize row=0; row<col; ++row) {
@@ -200,17 +200,17 @@ njTree(String<TValue, TStringSpec> const & matIn,
         //std::cout << std::endl;
 
         // Compute branch lengths
-        __int64 dMinIToOthers = 0;
-        __int64 dMinJToOthers = 0;
+        int64_t dMinIToOthers = 0;
+        int64_t dMinJToOthers = 0;
         for(TSize i=0; i<nseq; ++i) {
             dMinIToOthers += mat[i*nseq + mini];
             dMinJToOthers += mat[i*nseq + minj];
         }
-        __int64 dmin = mat[mini*nseq + minj];
+        int64_t dmin = mat[mini*nseq + minj];
         dMinIToOthers = dMinIToOthers / (fnseqs - 2);
         dMinJToOthers = dMinJToOthers / (fnseqs - 2);
-        __int64 iBranch = (dmin + dMinIToOthers - dMinJToOthers) / 2;
-        __int64 jBranch = dmin - iBranch;
+        int64_t iBranch = (dmin + dMinIToOthers - dMinJToOthers) / 2;
+        int64_t jBranch = dmin - iBranch;
         iBranch -= av[mini];
         jBranch -= av[minj];
 
@@ -270,7 +270,7 @@ njTree(String<TValue, TStringSpec> const & matIn,
     //std::cout << l[2] << std::endl;
     //std::cout << std::endl;
 
-    String<__int64> branch;
+    String<int64_t> branch;
     resize(branch, 3);
     branch[0] = (mat[l[0]*nseq+l[1]] + mat[l[0]*nseq+l[2]] - mat[l[1]*nseq+l[2]]) / 2;
     branch[1] = (mat[l[1]*nseq+l[2]] + mat[l[0]*nseq+l[1]] - mat[l[0]*nseq+l[2]]) / 2;
@@ -372,7 +372,6 @@ _upgmaTreeMerge(TMatrix& mat,
                 TSize nseq,
                 UpgmaWeightAvg)
 {
-    SEQAN_CHECKPOINT
     typedef typename Value<TMatrix>::Type TValue;
     // Average
     for(TSize i=0;i<nseq;++i) {
@@ -402,7 +401,6 @@ _upgmaTreeMerge(TMatrix& mat,
                 TSize nseq,
                 UpgmaAvg)
 {
-    SEQAN_CHECKPOINT
     typedef typename Value<TMatrix>::Type TValue;
 
     // Minimum
@@ -428,7 +426,6 @@ _upgmaTreeMerge(TMatrix& mat,
                 TSize nseq,
                 UpgmaMin)
 {
-    SEQAN_CHECKPOINT
     typedef typename Value<TMatrix>::Type TValue;
 
     // Minimum
@@ -453,7 +450,6 @@ _upgmaTreeMerge(TMatrix& mat,
                 TSize nseq,
                 UpgmaMax)
 {
-    SEQAN_CHECKPOINT
     typedef typename Value<TMatrix>::Type TValue;
 
     // Maximum
@@ -610,7 +606,6 @@ upgmaTree(String<TStringValue, TStringSpec>& mat,
           Graph<Tree<TCargo, TSpec> >& g,
           TTag)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Tree<TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Size<TGraph>::Type TSize;
@@ -725,7 +720,6 @@ upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph,
           Graph<Tree<TCargo, TSpec2> >& g,
           TTag)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Undirected<TValue, TSpec1> > TPairGraph;
     typedef Graph<Tree<TCargo, TSpec2> > TGuideTree;
     typedef typename VertexDescriptor<TGuideTree>::Type TVertexDescriptor;
@@ -895,11 +889,10 @@ inline void
 upgmaTree(TDistance& dist,
           Graph<Tree<TCargo, TSpec> >& g)
 {
-    SEQAN_CHECKPOINT
     upgmaTree(dist, g, UpgmaWeightAvg());
 }
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

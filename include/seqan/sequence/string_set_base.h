@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1443,6 +1443,7 @@ return iter(me, length(me), tag);
  * @brief Get the value from a string set by its id.
  *
  * @signature TString getValueById(s, id);
+ * @deprecated Use the subscript operator (<tt>operator[]</tt>) instead.
  *
  * @param[in] s  The string set to get string from.
  * @param[in] id The id of the string to get.
@@ -1461,6 +1462,7 @@ return iter(me, length(me), tag);
  * @brief Get the value from a string set by its id.
  *
  * @signature TString valueById(s, id);
+ * @deprecated Use the subscript operator (<tt>operator[]</tt>) instead.
  *
  * @param[in] s  The string set to get string from.
  * @param[in] id The id of the string to get.
@@ -1473,7 +1475,6 @@ inline typename Reference<StringSet<TString, TSpec> >::Type
 valueById(StringSet<TString, TSpec> & me,
         TId const id)
 {
-    SEQAN_CHECKPOINT;
     return getValueById(me, id);
 }
 
@@ -1482,12 +1483,24 @@ valueById(StringSet<TString, TSpec> & me,
 // --------------------------------------------------------------------------
 
 /*!
+ * @fn StringSet#assignValue
+ * @brief Set the member of a string set by the position.
+ *
+ * @signature void assignValue(set, pos, s);
+ *
+ * @param[in,out] set The string set to assign value in.
+ * @param[in]     pos The position to modify value at.
+ * @param[in]     s   The string to assign to the given position.
+ */
+
+/*!
  * @fn StringSet#assignValueById
  * @brief Set the member of a string set by its id.
  *
- * @signature TId getValueById(set, s[, id]);
+ * @signature TId assignValueById(set, s[, id]);
+ * @deprecated Use @link StringSet#assignValue @endlink instead.
  *
- * @param[in] set The string to assign value in.
+ * @param[in] set The string set to assign value in.
  * @param[in] s   The string set to assign.
  * @param[in] id  The id of the string to set.  If omitted, <tt>s</tt> will be appended to <tt>set</tt>.
  *
@@ -1499,7 +1512,6 @@ inline typename Id<StringSet<TString, TSpec> >::Type
 assignValueById(StringSet<TString, TSpec>& me,
                 TString2& obj)
 {
-    SEQAN_CHECKPOINT;
     appendValue(me, obj);
     SEQAN_ASSERT_EQ(length(me.limits), length(me) + 1);
     return length(me.strings) - 1;
@@ -1511,7 +1523,6 @@ assignValueById(StringSet<TString, TSpec1>& dest,
                 StringSet<TString, TSpec2>& source,
                 TId id)
 {
-    SEQAN_CHECKPOINT;
     return assignValueById(dest, getValueById(source, id), id);
 }
 
@@ -1524,6 +1535,7 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  * @brief Remove a value from a string set by its id.
  *
  * @signature void removeValueById(set, id);
+ * @deprecated Use @link StringConcept#erase @endlink.
  *
  * @param[in,out] set The string to remove value in.
  * @param[in]     id  The id of the string to remove.
@@ -1540,6 +1552,7 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  * @brief Convert a position/index in the string set to a string id.
  *
  * @signature Id positionToId(set, pos);
+ * @deprecated ID is the same as the position
  *
  * @param[in] set The string to convert positions for.
  * @param[in] pos The position to convert.
@@ -1660,6 +1673,7 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
  * @brief Convert a string id to a position/index in the string set.
  *
  * @signature TPos idToPosition(set, id);
+ * @deprecated ID is the same as the position
  *
  * @param[in] set The string to convert positions for.
  * @param[in] id  The id to convert.
@@ -1679,7 +1693,6 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
 //    TIds ids,
 //    TLength len)
 //{
-//SEQAN_CHECKPOINT
 //}
 
 //template <typename TString, typename TIds, typename TLength>
@@ -1689,7 +1702,6 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
 //    TIds ids,
 //    TLength len)
 //{
-//SEQAN_CHECKPOINT
 //    typedef StringSet<TString, Dependent<Generous> > TStringSet;
 //    typedef typename Id<TStringSet>::Type TId;
 //    typedef typename Size<TStringSet>::Type TSize;
@@ -1709,7 +1721,6 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
 //    TIds ids,
 //    TLength len)
 //{
-//SEQAN_CHECKPOINT
 //    typedef StringSet<TString, Dependent<Tight> > TStringSet;
 //    typedef typename Id<TStringSet>::Type TId;
 //    typedef typename Size<TStringSet>::Type TSize;
@@ -1744,7 +1755,6 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
 //    StringSet<TString, TSpec>& dest,
 //    TIds ids)
 //{
-//SEQAN_CHECKPOINT
 //    subset(source, dest, ids, length(ids));
 //}
 

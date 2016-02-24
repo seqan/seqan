@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -79,14 +79,14 @@
 
 #include <omp.h>
 
-#if defined(PLATFORM_WINDOWS_MINGW) || defined(PLATFORM_GCC)
+#if defined(PLATFORM_GCC)
   // GCC _Pragma operator
   #define SEQAN_DO_PRAGMA(x) _Pragma(# x)
   #define SEQAN_OMP_PRAGMA(x) SEQAN_DO_PRAGMA(omp x)
-#else  // #if defined(PLATFORM_WINDOWS_MINGW) || defined(PLATFORM_GCC)
+#else  // #if defined(PLATFORM_GCC)
   // MSVC __pragma-operator
   #define SEQAN_OMP_PRAGMA(x) __pragma(omp x)
-#endif // #if defined(PLATFORM_WINDOWS_MINGW) || defined(PLATFORM_GCC)
+#endif // #if defined(PLATFORM_GCC)
 
 #else  // #ifdef _OPENMP
 

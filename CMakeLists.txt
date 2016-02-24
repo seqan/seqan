@@ -6,14 +6,14 @@
 # Main CMakeLists.txt file.
 # ===========================================================================
 
-project (seqan)
+project (seqan CXX)
 
 # ===========================================================================
-# We require CMake 2.8.2.  Since it is available in the currently stable
+# We require CMake 3.0.0. Since it is available in the currently stable
 # Debian, it should be available everywhere else, too.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 3.0.0)
 
 # ===========================================================================
 # Warn People About the Perils Of In-Source Builds
@@ -110,6 +110,7 @@ set (SEQAN_USE_SEQAN_BUILD_SYSTEM TRUE CACHE INTERNAL "Use SeqAn build system." 
 #set (SEQAN_PREFIX_SHARE .)
 include (SeqAnBuildSystem)
 set (SEQAN_ROOT_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE INTERNAL "Root source directory." FORCE)
+seqan_get_version ()
 seqan_build_system_init ()
 seqan_get_repository_info ()
 

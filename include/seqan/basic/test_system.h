@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -91,7 +91,7 @@ public:
     std::string testCaseName;
     std::string testName;
     std::string typeName;
-    std::SEQAN_AUTO_PTR_NAME<Test> instance;
+    std::unique_ptr<Test> instance;
 
     TestDescription_(char const * testCaseName, char const * testName,
                      char const * typeName, Test * instance) :

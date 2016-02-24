@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -121,17 +121,12 @@ inline void
 spinCas(TAtomic & x, TValue cmp, TValue y)
 {
     SpinDelay spinDelay;
-#ifdef SEQAN_CXX11_STL
     TValue exp = cmp;
     while (!x.compare_exchange_weak(exp, y))
     {
         exp = cmp;
         waitFor(spinDelay);
     }
-#else
-    while (!atomicCasBool(x, cmp, y))
-        waitFor(spinDelay);
-#endif
 }
 
 // ----------------------------------------------------------------------------

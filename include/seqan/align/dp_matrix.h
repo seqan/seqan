@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -60,6 +60,13 @@ struct DefaultScoreMatrixSpec_;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Tag MatrixMember
+// ----------------------------------------------------------------------------
+
+struct DPMatrixMember_;
+typedef Tag<DPMatrixMember_> DPMatrixMember;
+
+// ----------------------------------------------------------------------------
 // Tag SparseDPMatrix
 // ----------------------------------------------------------------------------
 
@@ -72,7 +79,6 @@ typedef Tag<SparseDPMatrix_> SparseDPMatrix;
 
 struct FullDPMatrix_;
 typedef Tag<FullDPMatrix_> FullDPMatrix;
-
 
 // ----------------------------------------------------------------------------
 // Enum DPMatrixDimension
@@ -106,30 +112,15 @@ class DPMatrix_<TValue, FullDPMatrix>
 {
 public:
 
-    typedef Matrix<TValue, 2> THost;
+    typedef typename Member<DPMatrix_, DPMatrixMember>::Type THost;
 
-    Holder<THost>   _dataHost;  // The host containing the actual matrix.
+    Holder<THost>   data_host;  // The host containing the actual matrix.
 
     DPMatrix_() :
-        _dataHost()
+        data_host()
     {
-        create(_dataHost);
+        create(data_host);
     }
-
-    DPMatrix_(DPMatrix_ const & other) :
-        _dataHost(other._dataHost) {}
-
-    ~DPMatrix_() {}
-
-    DPMatrix_ & operator=(DPMatrix_ const & other)
-    {
-        if (this != &other)
-        {
-            _dataHost = other._dataHost;
-        }
-        return *this;
-    }
-
 };
 
 // ============================================================================
@@ -160,21 +151,16 @@ struct DefaultScoreMatrixSpec_<LocalAlignment_<WatermanEggert> >
 // ----------------------------------------------------------------------------
 
 // Returns the type of the underlying matrix.
-template <typename TDPMatrix>
-struct DataHost_ {};
-
 template <typename TValue, typename TMatrixSpec>
-struct DataHost_<DPMatrix_<TValue, TMatrixSpec> >
+struct Member<DPMatrix_<TValue, TMatrixSpec>, DPMatrixMember>
 {
-    typedef DPMatrix_<TValue, TMatrixSpec> TDPMatrix_;
-    typedef typename TDPMatrix_::THost Type;
+    typedef Matrix<TValue, 2> Type;
 };
 
 template <typename TValue, typename TMatrixSpec>
-struct DataHost_<DPMatrix_<TValue, TMatrixSpec> const>
+struct Member<DPMatrix_<TValue, TMatrixSpec> const, DPMatrixMember>
 {
-    typedef DPMatrix_<TValue, TMatrixSpec> TDPMatrix_;
-    typedef typename TDPMatrix_::THost const Type;
+    typedef Matrix<TValue, 2> const Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -190,7 +176,7 @@ template <typename TValue, typename TMatrixSpec>
 struct SizeArr_<DPMatrix_<TValue, TMatrixSpec> >
 {
     typedef DPMatrix_<TValue, TMatrixSpec> TDPMatrix_;
-    typedef typename DataHost_<TDPMatrix_>::Type TDataHost_;
+    typedef typename Member<TDPMatrix_, DPMatrixMember>::Type TDataHost_;
     typedef typename SizeArr_<TDataHost_>::Type Type;
 };
 
@@ -198,7 +184,7 @@ template <typename TValue, typename TMatrixSpec>
 struct SizeArr_<DPMatrix_<TValue, TMatrixSpec> const>
 {
     typedef DPMatrix_<TValue, TMatrixSpec> TDPMatrix_;
-    typedef typename DataHost_<TDPMatrix_>::Type TDataHost_;
+    typedef typename Member<TDPMatrix_, DPMatrixMember>::Type TDataHost_;
     typedef typename SizeArr_<TDataHost_>::Type const Type;
 };
 
@@ -299,7 +285,7 @@ template <typename TValue, typename TMatrixSpec>
 struct Host<DPMatrix_<TValue, TMatrixSpec> >
 {
     typedef DPMatrix_<TValue, TMatrixSpec> TDPMatrix_;
-    typedef typename DataHost_<TDPMatrix_>::Type TDataMatrix_;
+    typedef typename Member<TDPMatrix_, DPMatrixMember>::Type TDataMatrix_;
     typedef typename Host<TDataMatrix_>::Type Type;
 };
 
@@ -307,7 +293,7 @@ template <typename TValue, typename TMatrixSpec>
 struct Host<DPMatrix_<TValue, TMatrixSpec> const>
 {
     typedef DPMatrix_<TValue, TMatrixSpec> TDPMatrix_;
-    typedef typename DataHost_<TDPMatrix_>::Type TDataMatrix_;
+    typedef typename Member<TDPMatrix_, DPMatrixMember>::Type TDataMatrix_;
     typedef typename Host<TDataMatrix_>::Type const Type;
 };
 
@@ -339,7 +325,7 @@ template <typename TValue, typename TMatrixSpec>
 struct Iterator<DPMatrix_<TValue, TMatrixSpec>, Rooted const>
 {
     typedef DPMatrix_<TValue, TMatrixSpec> TDPMatrix_;
-    typedef typename  DataHost_<TDPMatrix_>::Type TDataMatrix_;
+    typedef typename Member<TDPMatrix_, DPMatrixMember>::Type TDataMatrix_;
     typedef typename Iterator<TDataMatrix_, Rooted>::Type Type;
 };
 
@@ -347,7 +333,7 @@ template <typename TValue, typename TMatrixSpec>
 struct Iterator<DPMatrix_<TValue, TMatrixSpec> const, Rooted const>
 {
     typedef DPMatrix_<TValue, TMatrixSpec> TDPMatrix_;
-    typedef typename  DataHost_<TDPMatrix_>::Type TDataMatrix_;
+    typedef typename Member<TDPMatrix_, DPMatrixMember>::Type TDataMatrix_;
     typedef typename Iterator<TDataMatrix_ const, Rooted>::Type Type;
 };
 
@@ -371,17 +357,17 @@ inline bool _checkCorrectDimension(DPMatrixDimension_::TValue dim)
 
 // Returns a reference to the hosted matrix.
 template <typename TValue, typename TMatrixSpec>
-inline typename DataHost_<DPMatrix_<TValue, TMatrixSpec> >::Type &
-_dataHost(DPMatrix_<TValue, TMatrixSpec>&dpMatrix)
+inline Holder<typename Host<DPMatrix_<TValue, TMatrixSpec> >::Type> &
+_dataHost(DPMatrix_<TValue, TMatrixSpec>& dpMatrix)
 {
-    return value(dpMatrix._dataHost);
+    return _dataHost(value(dpMatrix.data_host));
 }
 
 template <typename TValue, typename TMatrixSpec>
-inline typename DataHost_<DPMatrix_<TValue, TMatrixSpec> const>::Type &
+inline Holder<typename Host<DPMatrix_<TValue, TMatrixSpec> >::Type> const &
 _dataHost(DPMatrix_<TValue, TMatrixSpec> const & dpMatrix)
 {
-    return value(dpMatrix._dataHost);
+    return _dataHost(value(dpMatrix.data_host));
 }
 
 // ----------------------------------------------------------------------------
@@ -393,14 +379,14 @@ template <typename TValue, typename TMatrixSpec>
 inline typename SizeArr_<DPMatrix_<TValue, TMatrixSpec> >::Type &
 _dataLengths(DPMatrix_<TValue, TMatrixSpec>&dpMatrix)
 {
-    return _dataLengths(_dataHost(dpMatrix));
+    return _dataLengths(value(dpMatrix.data_host));
 }
 
 template <typename TValue, typename TMatrixSpec>
 inline typename SizeArr_<DPMatrix_<TValue, TMatrixSpec> const>::Type &
 _dataLengths(DPMatrix_<TValue, TMatrixSpec> const & dpMatrix)
 {
-    return _dataLengths(_dataHost(dpMatrix));
+    return _dataLengths(value(dpMatrix.data_host));
 }
 
 // ----------------------------------------------------------------------------
@@ -412,54 +398,14 @@ template <typename TValue, typename TMatrixSpec>
 inline typename SizeArr_<DPMatrix_<TValue, TMatrixSpec> >::Type &
 _dataFactors(DPMatrix_<TValue, TMatrixSpec>&dpMatrix)
 {
-    return _dataFactors(_dataHost(dpMatrix));
+    return _dataFactors(value(dpMatrix.data_host));
 }
 
 template <typename TValue, typename TMatrixSpec>
 inline typename SizeArr_<DPMatrix_<TValue, TMatrixSpec> const>::Type &
 _dataFactors(DPMatrix_<TValue, TMatrixSpec> const & dpMatrix)
 {
-    return _dataFactors(_dataHost(dpMatrix));
-}
-
-// ----------------------------------------------------------------------------
-// Function host()
-// ----------------------------------------------------------------------------
-
-// Returns a reference to the underlying vector of the hosted matrix.
-template <typename TValue, typename TMatrixSpec>
-inline typename Host<DPMatrix_<TValue, TMatrixSpec> >::Type &
-host(DPMatrix_<TValue, TMatrixSpec>&dpMatrix)
-{
-    return host(_dataHost(dpMatrix));
-}
-
-template <typename TValue, typename TMatrixSpec>
-inline typename Host<DPMatrix_<TValue, TMatrixSpec> const>::Type &
-host(DPMatrix_<TValue, TMatrixSpec> const & dpMatrix)
-{
-    return host(_dataHost(dpMatrix));
-}
-
-// ----------------------------------------------------------------------------
-// Function setHost()
-// ----------------------------------------------------------------------------
-
-// Sets a new value to the underlying vector of the hosted matrix.
-template <typename TValue, typename TMatrixSpec, typename THost>
-inline void
-setHost(DPMatrix_<TValue, TMatrixSpec> & dpMatrix,
-        THost & newHost)
-{
-    setHost(_dataHost(dpMatrix), newHost);
-}
-
-template <typename TValue, typename TMatrixSpec, typename THost>
-inline void
-setHost(DPMatrix_<TValue, TMatrixSpec> & dpMatrix,
-        THost const & newHost)
-{
-    setHost(_dataHost(dpMatrix), newHost);
+    return _dataFactors(value(dpMatrix.data_host));
 }
 
 // ----------------------------------------------------------------------------
@@ -472,7 +418,7 @@ inline typename Reference<DPMatrix_<TValue, TMatrixSpec> >::Type
 value(DPMatrix_<TValue, TMatrixSpec> & dpMatrix,
       TPosition const & pos)
 {
-    return value(_dataHost(dpMatrix), pos);
+    return value(value(dpMatrix.data_host), pos);
 }
 
 template <typename TValue, typename TMatrixSpec, typename TPosition>
@@ -480,7 +426,7 @@ inline typename Reference<DPMatrix_<TValue, TMatrixSpec> const>::Type
 value(DPMatrix_<TValue, TMatrixSpec> const & dpMatrix,
       TPosition const & pos)
 {
-    return value(_dataHost(dpMatrix), pos);
+    return value(value(dpMatrix.data_host), pos);
 }
 
 // Returns the value of the matrix at the two given coordinates.
@@ -490,7 +436,7 @@ value(DPMatrix_<TValue, TMatrixSpec> & dpMatrix,
       TPositionV const & posDimV,
       TPositionH const & posDimH)
 {
-    return value(_dataHost(dpMatrix), posDimV, posDimH);
+    return value(value(dpMatrix.data_host), posDimV, posDimH);
 }
 
 template <typename TValue, typename TMatrixSpec, typename TPositionV, typename TPositionH>
@@ -499,7 +445,7 @@ value(DPMatrix_<TValue, TMatrixSpec> const & dpMatrix,
       TPositionV const & posDimV,
       TPositionH const & posDimH)
 {
-    return value(_dataHost(dpMatrix), posDimV, posDimH);
+    return value(value(dpMatrix.data_host), posDimV, posDimH);
 }
 
 // ----------------------------------------------------------------------------
@@ -514,7 +460,7 @@ length(DPMatrix_<TValue, TMatrixSpec> const & dpMatrix,
 {
     SEQAN_ASSERT(_checkCorrectDimension(dimension));
 
-    return length(_dataHost(dpMatrix), dimension);
+    return length(value(dpMatrix.data_host), dimension);
 }
 
 // Returns the overall length of the underlying vector of the hosted matrix.
@@ -522,7 +468,7 @@ template <typename TValue, typename TMatrixSpec>
 inline typename Size<DPMatrix_<TValue, TMatrixSpec> const>::Type
 length(DPMatrix_<TValue, TMatrixSpec> const & dpMatrix)
 {
-    return length(_dataHost(dpMatrix));  // Note that even if the dimensional lengths are set but the matrix was not resized
+    return length(value(dpMatrix.data_host));  // Note that even if the dimensional lengths are set but the matrix was not resized
     // this function returns 0 or the previous length of the host before the resize.
 }
 
@@ -565,7 +511,7 @@ setLength(DPMatrix_<TValue, TMatrixSpec> & dpMatrix,
           TSize const & newLength)
 {
     SEQAN_ASSERT(_checkCorrectDimension(dimension));
-    setLength(_dataHost(dpMatrix), dimension, newLength);
+    setLength(value(dpMatrix.data_host), dimension, newLength);
 }
 
 // ----------------------------------------------------------------------------
@@ -579,7 +525,7 @@ updateFactors(DPMatrix_<TValue, TMatrixSpec> & dpMatrix)
     typedef typename Size<DPMatrix_<TValue, TMatrixSpec> >::Type TSize;
 
     TSize factor_ = _dataFactors(dpMatrix)[0] * length(dpMatrix, 0);
-    for (unsigned int i = 1; (factor_ > 0) && (i < dimension(_dataHost(dpMatrix))); ++i)
+    for (unsigned int i = 1; (factor_ > 0) && (i < dimension(value(dpMatrix.data_host))); ++i)
     {
         _dataFactors(dpMatrix)[i] = factor_;
         factor_ *= length(dpMatrix, i);
@@ -637,14 +583,14 @@ template <typename TValue, typename TMatrixSpec>
 inline typename Iterator<DPMatrix_<TValue, TMatrixSpec>, Rooted const>::Type
 begin(DPMatrix_<TValue, TMatrixSpec> & dpMatrix, Rooted const)
 {
-    return begin(_dataHost(dpMatrix));
+    return begin(value(dpMatrix.data_host));
 }
 
 template <typename TValue, typename TMatrixSpec>
 inline typename Iterator<DPMatrix_<TValue, TMatrixSpec> const, Rooted const>::Type
 begin(DPMatrix_<TValue, TMatrixSpec> const & dpMatrix, Rooted const)
 {
-    return begin(_dataHost(dpMatrix));
+    return begin(value(dpMatrix.data_host));
 }
 
 // ----------------------------------------------------------------------------
@@ -669,14 +615,14 @@ template <typename TValue, typename TMatrixSpec>
 inline typename Iterator<DPMatrix_<TValue, TMatrixSpec>, Rooted const>::Type
 end(DPMatrix_<TValue, TMatrixSpec> & dpMatrix, Rooted const)
 {
-    return end(_dataHost(dpMatrix));
+    return end(value(dpMatrix.data_host));
 }
 
 template <typename TValue, typename TMatrixSpec>
 inline typename Iterator<DPMatrix_<TValue, TMatrixSpec> const, Rooted const>::Type
 end(DPMatrix_<TValue, TMatrixSpec> const & dpMatrix, Rooted const)
 {
-    return end(_dataHost(dpMatrix));
+    return end(value(dpMatrix.data_host));
 }
 
 // ----------------------------------------------------------------------------
@@ -690,7 +636,7 @@ coordinate(DPMatrix_<TValue, FullDPMatrix> const & dpMatrix,
            TPosition hostPos,
            typename DPMatrixDimension_::TValue dimension)
 {
-    return coordinate(_dataHost(dpMatrix), hostPos, dimension);
+    return coordinate(value(dpMatrix.data_host), hostPos, dimension);
 }
 
 } // namespace seqan

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -88,13 +88,11 @@ public:
     Proxy(TIterator const _it)
             : data_iterator(_it)
     {
-        SEQAN_CHECKPOINT;
     }
 
     Proxy(Proxy const & _other)
             : data_iterator(_other.data_iterator)
     {
-        SEQAN_CHECKPOINT;
     }
 
     // ------------------------------------------------------------------------
@@ -104,7 +102,6 @@ public:
     Proxy const &
     operator=(Proxy const & _other) const
     {
-        SEQAN_CHECKPOINT;
         assignValue(data_iterator, getValue(_other.data_iterator));
         return *this;
     }
@@ -112,7 +109,6 @@ public:
     Proxy const &
     operator=(TValue_ const & _value) const
     {
-        SEQAN_CHECKPOINT;
         assignValue(data_iterator, _value);
         return *this;
     }
@@ -123,7 +119,6 @@ public:
 
     operator TAccessorNotConst_() const
     {
-        SEQAN_CHECKPOINT;
         return getValue(data_iterator);
     }
 

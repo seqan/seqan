@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_DFI_H
 #define SEQAN_HEADER_INDEX_DFI_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 
@@ -283,7 +283,6 @@ namespace SEQAN_NAMESPACE_MAIN
     typename Size< Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > > >::Type
     _sortFirstWotdBucket(Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > > &index)
     {
-    SEQAN_CHECKPOINT
         typedef Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > >    TIndex;
         typedef typename Fibre<TIndex, WotdSA >::Type            TSA;
         typedef typename TIndex::TCounter                        TCounter;
@@ -376,7 +375,6 @@ namespace SEQAN_NAMESPACE_MAIN
         TEndPos right,
         TSize prefixLen)
     {
-    SEQAN_CHECKPOINT
         typedef Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > >    TIndex;
         typedef typename Fibre<TIndex, WotdSA >::Type                TSA;
         typedef typename TIndex::TCounter                            TCounter;
@@ -522,7 +520,6 @@ namespace SEQAN_NAMESPACE_MAIN
         TSize dirOfs,
         TSize lcp)
     {
-    SEQAN_CHECKPOINT
         typedef Index<TText, IndexWotd<Dfi<TPredHull, TPred> > >    TIndex;
 
         typedef typename Fibre<TIndex, WotdDir>::Type        TDir;

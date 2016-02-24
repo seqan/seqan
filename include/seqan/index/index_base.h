@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -38,11 +38,12 @@
 
 //#define SEQAN_TEST_INDEX
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
-//////////////////////////////////////////////////////////////////////////////
-// needful forward declarations
+// ============================================================================
+// Forwards
+// ============================================================================
 
     // suffix array construction specs
     struct Skew3;
@@ -63,6 +64,58 @@ namespace SEQAN_NAMESPACE_MAIN
     // enhanced suffix array construction algorithms
     struct Childtab;
     struct Bwt;
+
+// ============================================================================
+// Concepts
+// ============================================================================
+
+/*!
+ * @concept StringIndexConcept
+ * @brief An index that can be traversed top-down.
+ * @headerfile <seqan/index.h>
+ *
+ * @signature StringIndexConcept<T>
+ */
+
+SEQAN_CONCEPT(StringIndexConcept, (TIndex))
+{
+//    typedef typename Iterator<TIndex, TopDown<> >::Type     TTopDownIterator;
+    typedef typename VertexDescriptor<TIndex>::Type         TVertexDescriptor;
+    typedef String<int>                                     TPropertyMap;
+
+    TIndex          index;
+    TPropertyMap    pm;
+
+    SEQAN_CONCEPT_USAGE(StringIndexConcept)
+    {
+        // property map interface
+        resizeVertexMap(pm, index);
+
+        // iteration
+//        TTopDownIterator iter = begin(index, TopDown<>());
+    }
+};
+
+/*!
+ * @concept StringTreeConcept
+ * @brief An index that can be traversed top-down as a tree.
+ * @headerfile <seqan/index.h>
+ *
+ * @signature StringTreeConcept<T>
+ */
+
+SEQAN_CONCEPT_REFINE(StringTreeConcept, (TIndex), (StringIndexConcept)) {};
+
+/*!
+ * @concept StringTrieConcept
+ * @brief An index that can be traversed top-down as a trie.
+ * @headerfile <seqan/index.h>
+ *
+ * @signature StringTrieConcept<T>
+ */
+
+SEQAN_CONCEPT_REFINE(StringTrieConcept, (TIndex), (StringIndexConcept)) {};
+
 
 /*!
  * @defgroup IndexFindAlgorithm Index Find Algorithm

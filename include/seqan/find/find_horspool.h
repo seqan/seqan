@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_HORSPOOL_H
 #define SEQAN_HEADER_FIND_HORSPOOL_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ class Pattern<TNeedle, Horspool>
 public:
     typedef typename Size<TNeedle>::Type TSize;
 
-    Holder<TNeedle>        data_host;
+    Holder<TNeedle>      data_host;
     String<TSize>        data_map;
 
 //____________________________________________________________________________
@@ -77,25 +77,27 @@ public:
     Pattern() {}
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl)
+    Pattern(TNeedle2 && ndl, SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
     {
-        setHost(*this, ndl);
+        setHost(*this, std::forward<TNeedle2>(ndl));
+        ignoreUnusedVariableWarning(dummy);
     }
+
 //____________________________________________________________________________
 };
 
 
-template <typename TNeedle, typename TNeedle2>
+template <typename TNeedle>
 void
-setHost(Pattern<TNeedle, Horspool> & me, TNeedle2 const & ndl)
+_reinitPattern(Pattern<TNeedle, Horspool> & me)
 {
     typedef typename Value<TNeedle>::Type TValue;
     typedef typename Size<TNeedle>::Type TSize;
 
+    TNeedle& ndl = needle(me);
     SEQAN_ASSERT_NOT(empty(ndl));
 
     TSize value_size = ValueSize<TValue>::VALUE;
-
     //make room for map
     resize(me.data_map, value_size);
 
@@ -103,7 +105,7 @@ setHost(Pattern<TNeedle, Horspool> & me, TNeedle2 const & ndl)
     typename Value<String<TSize> >::Type jump_width = length(ndl); //das ist so umstaendlich wegen VC++ 2003
     arrayFill(begin(me.data_map, Standard()), begin(me.data_map, Standard()) + value_size, jump_width);
 
-    typename Iterator<TNeedle2 const, Standard>::Type it;
+    typename Iterator<TNeedle, Standard>::Type it;
     it = begin(ndl, Standard());
     while (jump_width > 1)
     {
@@ -112,15 +114,6 @@ setHost(Pattern<TNeedle, Horspool> & me, TNeedle2 const & ndl)
         me.data_map[pos_] = jump_width;
         ++it;
     }
-
-    me.data_host = ndl;
-}
-
-template <typename TNeedle, typename TNeedle2>
-void
-setHost(Pattern<TNeedle, Horspool> & horsp, TNeedle2 & ndl)
-{
-    setHost(horsp, reinterpret_cast<TNeedle2 const &>(ndl));
 }
 
 //____________________________________________________________________________
@@ -138,7 +131,6 @@ _findHorspool(TFinder & finder,
               Pattern<TNeedle2, Horspool> & me,
               bool find_first)
 {
-SEQAN_CHECKPOINT
     typedef typename Haystack<TFinder>::Type THaystack;
     typedef typename Parameter_<THaystack>::Type TParamHaystack;
 
@@ -146,6 +138,7 @@ SEQAN_CHECKPOINT
 
     typedef Pattern<TNeedle2, Horspool> TPattern;
     typedef typename Needle<TPattern>::Type TNeedle;
+    typedef typename Value<TNeedle>::Type   TNeedleAlphabet;
     TNeedle & ndl = needle(me);
 
     typedef typename Size<TNeedle>::Type TNeedleSize;
@@ -171,7 +164,7 @@ SEQAN_CHECKPOINT
 
 MOVE_FURTHER:
     //move to next position
-    char_i = *it; //conversion to unsigned integer
+    char_i = convert<TNeedleAlphabet>(*it); //conversion to unsigned integer -> into needle space.
     it_next = it + me.data_map[char_i];
     if (it_next >= haystack_end)
     {//found nothing
@@ -207,7 +200,6 @@ find_horspool_sentinel(TFinder & finder,
                        Pattern<TNeedle2, Horspool> & me,
                        bool find_first)
 {
-SEQAN_CHECKPOINT
     typedef typename Haystack<TFinder>::Type THaystack;
     THaystack & hayst = haystack(finder);
 
@@ -305,13 +297,14 @@ _findHorspool(Finder<String<TValue, FileReader<TFormat, TFile, FileReaderTSpec> 
               Pattern<TNeedle2, Horspool> & me,
               bool find_first)
 {
-SEQAN_CHECKPOINT
     typedef Finder<String<TValue, FileReader<TFormat, TFile, FileReaderTSpec> >, TFinderSpec > TFinder;
     typedef typename Haystack<TFinder>::Type THaystack;
     THaystack & hayst = haystack(finder);
 
     typedef Pattern<TNeedle2, Horspool> TPattern;
     typedef typename Needle<TPattern>::Type TNeedle;
+    typedef typename Value<TNeedle>::Type   TNeedleAlphabet;
+
     TNeedle & ndl = needle(me);
 
     typedef typename Size<TNeedle>::Type TNeedleSize;
@@ -334,7 +327,7 @@ SEQAN_CHECKPOINT
 
 MOVE_FURTHER:
     //move to next position
-    char_i = *it; //conversion to unsigned integer
+    char_i = convert<TNeedleAlphabet>(*it); //conversion to unsigned integer
     it += me.data_map[char_i];
     if (atEnd(it))
     {//found nothing
@@ -371,7 +364,6 @@ _findHorspool(TFinder & finder,
     Pattern<TNeedle2, Horspool> & me,
     bool find_first)
 {
-SEQAN_CHECKPOINT
     typedef typename Haystack<TFinder>::Type THaystack;
     THaystack & hayst = haystack(finder);
 
@@ -441,7 +433,6 @@ template <typename TFinder, typename TNeedle2>
 bool
 find(TFinder & finder, Pattern<TNeedle2, Horspool> & me)
 {
-SEQAN_CHECKPOINT
     bool find_first = empty(finder);
     if (find_first)
     {
@@ -455,25 +446,9 @@ SEQAN_CHECKPOINT
     return _findHorspool(finder, me, find_first);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// Host
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TNeedle>
-struct Host< Pattern<TNeedle, Horspool> >
-{
-    typedef TNeedle Type;
-};
-
-template <typename TNeedle>
-struct Host< Pattern<TNeedle, Horspool> const>
-{
-    typedef TNeedle const Type;
-};
-
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

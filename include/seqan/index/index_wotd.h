@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_WOTD_H
 #define SEQAN_HEADER_INDEX_WOTD_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 
@@ -2017,6 +2017,16 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         _wotdCreateFirstLevel(index);
         return true;
     }
+
+    template <typename TText, typename TSpec>
+    inline bool indexCreate(Index<TText, IndexWotd<TSpec> > &index, WotdDir const, Trie const)
+    {
+        resize(indexSA(index), length(indexText(index)), Exact());
+        fillSuffixArray(indexSA(index), indexText(index), Trie());
+        _wotdCreateFirstLevel(index);
+        return true;
+    }
+
 
 //////////////////////////////////////////////////////////////////////////////
 // clear
