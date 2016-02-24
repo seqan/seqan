@@ -870,7 +870,8 @@ findProperMates(TMatches const & mates, TMatch const & match,
     TIter first = std::lower_bound(begin(mates, Standard()), end(mates, Standard()), mateLeq, MatchSorter<TMatch, ContigBegin>());
     TIter last = std::upper_bound(begin(mates, Standard()), end(mates, Standard()), mateGeq, MatchSorter<TMatch, ContigEnd>());
 
-    SEQAN_ASSERT_LEQ(first, last);
+    // Return empty infix if no proper mates were found.
+    if (first > last) return infix(mates, 0, 0);
 
     return infix(mates, position(first, mates), position(last, mates));
 }

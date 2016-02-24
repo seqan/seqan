@@ -950,14 +950,14 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
 
         // Compute library mean.
         unsigned librarySum = accumulate(libraryLengths, 0u, typename TTraits::TThreading());
-        float libraryMean = librarySum / static_cast<float>(length(libraryLengths));
+        float libraryMean = std::max(librarySum / static_cast<float>(length(libraryLengths)), 1.0f);
 
         // Compute library standard deviation.
         String<float> libraryDiffs;
         resize(libraryDiffs, length(libraryLengths), Exact());
         transform(libraryDiffs, libraryLengths, std::bind2nd(std::minus<float>(), libraryMean), typename TTraits::TThreading());
         float librarySqSum = innerProduct(libraryDiffs, 0.0f, typename TTraits::TThreading());
-        float libraryDev = std::sqrt(librarySqSum / static_cast<float>(length(libraryLengths)));
+        float libraryDev = std::max(std::sqrt(librarySqSum / static_cast<float>(length(libraryLengths))), 1.0f);
 
         if (me.options.verbose > 1)
         {
