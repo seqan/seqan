@@ -300,6 +300,12 @@ inline const char * toCString(Demangler<T> const & me)
 #define SEQAN_ENABLE_TESTING 0
 #endif  // #ifndef SEQAN_ENABLE_TESTING
 
+// Force-enable debugging if testing is enabled.
+#if SEQAN_ENABLE_TESTING
+#undef SEQAN_ENABLE_DEBUG
+#define SEQAN_ENABLE_DEBUG 1
+#endif  // #if SEQAN_ENABLE_TESTING
+
 /*!
  * @macro TestSystemMacros#SEQAN_ENABLE_DEBUG
  * @headerfile <seqan/basic.h>
@@ -330,12 +336,6 @@ inline const char * toCString(Demangler<T> const & me)
 #else
 #undef NDEBUG
 #endif // #if !SEQAN_ENABLE_DEBUG
-
-// Force-enable debugging if testing is enabled.
-#if SEQAN_ENABLE_TESTING
-#undef SEQAN_ENABLE_DEBUG
-#define SEQAN_ENABLE_DEBUG 1
-#endif  // #if SEQAN_ENABLE_TESTING
 
 /*!
  * @macro TestSystemMacros#SEQAN_TYPEDEF_FOR_DEBUG
