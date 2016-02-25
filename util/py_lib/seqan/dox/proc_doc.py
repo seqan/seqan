@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Processed version of the documentation.
 
 The documentation from the objects of raw_doc is further processed into

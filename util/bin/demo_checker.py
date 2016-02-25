@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Demo checker script.
 
 Given a demo .cpp file PATH.cpp we can make it a small test if there is a file

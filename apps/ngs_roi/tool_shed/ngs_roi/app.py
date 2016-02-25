@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Support code for writing the NGS ROI report generation apps."""
 
 __author__    = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
