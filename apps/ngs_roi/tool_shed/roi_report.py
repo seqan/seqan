@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Create ROI overview report.
 
 This report consists of plots of all metrics (y: metric, x: rank of value).

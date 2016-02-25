@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Generation of detailed ROI reports with larger plots.
 
 This report generation works for hundred of ROIs.

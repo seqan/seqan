@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Code related to violations and suppressions."""
 
 from __future__ import with_statement

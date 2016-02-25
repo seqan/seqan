@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Representation of inheritance diagrams for using with dot/graphviz."""
 
 

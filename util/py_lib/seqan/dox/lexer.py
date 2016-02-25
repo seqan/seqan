@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Simple regex-based lexer.
 
 Taken from Eli Bendersky [1].

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """SeqAn doxygen-style documentation system."""
 
 import os.path

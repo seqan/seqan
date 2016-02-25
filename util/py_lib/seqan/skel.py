@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """SeqAn code generation from templates / skeletons.
 
 This module contains code to help the creation of modules, tests, apps etc.

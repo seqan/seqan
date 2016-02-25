@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Convert RazerS gapped params .dat file to C++ fragment."""
 
 USAGE = 'dat2cpp.py INPUT.dat'

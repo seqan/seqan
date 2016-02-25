@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Build SeqAn Release Page."""
 
 import os.path

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """SeqAn Documentation System DDDoc."""
 
 import os.path

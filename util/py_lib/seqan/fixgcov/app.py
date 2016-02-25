@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Small libclang based app to fix gcov output.
 
 Fix gcov output with templates.  This is done by first parsing in the .cpp files
