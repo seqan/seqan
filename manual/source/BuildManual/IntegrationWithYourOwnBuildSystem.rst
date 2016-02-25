@@ -92,12 +92,12 @@ possible value
   0, 1
 
 default
-  1
+  0
 
 meaning
   If set to 1, assertions within SeqAn (``SEQAN_ASSERT...``) are enabled, they are disabled otherwise.
   Is forced to 1 if ``SEQAN_ENABLE_TESTING`` is true.
-  If not set, is set to 0 if ``NDEBUG`` is defined and set to 1 if undefind and ``NDEBUG`` is not defined.
+  If set to 1, will undefine ``NDEBUG`` and if set to 0, will define ``NDEBUG``.
 
 SEQAN_ENABLE_TESTING
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -152,14 +152,13 @@ following SeqAn specific settings to be applied.
 
 - Add the path to the directory ``seqan`` to your include path.
 - Define ``SEQAN_ENABLE_DEBUG`` to be ``1``.
-  Alternatively, you can leave ``SEQAN_ENABLE_DEBUG`` undefined and not define ``NDEBUG``.
 - Define ``SEQAN_ENABLE_TESTING`` to be ``0``.
 
 This translates into the following GCC flags:
 
 ::
 
-    -g -O0 -DSEQAN_ENABLE_TESTING=0 -I${PATH_TO_CORE}/include \
+    -g -O0 -DSEQAN_ENABLE_TESTING=0 -DSEQAN_ENABLE_DEBUG=1 -I${PATH_TO_CORE}/include \
       -I${PATH_TO_EXTRAS}/include
 
 Release/Optimized Builds
@@ -168,15 +167,12 @@ Release/Optimized Builds
 Besides disabling debug symbols, enabling optimization and disabling assertions in the standard library, there are the following SeqAn specific settings to be applied.
 
 * Add the path to the directory ``seqan`` to your include path.
-* Define ``NDEBUG``.
-  This will make ``SEQAN_ENABLE_DEBUG`` be defined as ``0`` if you don't defined ``SEQAN_ENABLE_DEBUG`` otherwise.
-* Define ``SEQAN_ENABLE_TESTING`` to be ``0``.
 
 This translates into the following GCC flags:
 
 ::
 
-    -O3 -DNDEBUG -DSEQAN_ENABLE_TESTING=0 -I${PATH_TO_CORE}/include \
+    -O3 -I${PATH_TO_CORE}/include \
       -I${PATH_TO_EXTRAS}/include
 
 An Example Project Based On Makefiles
@@ -249,7 +245,7 @@ The file ``release/Makefile`` looks as follows.
 These Makefiles include the file ``Makefile.rules``.
 They add build type specific arguments to the variables ``$(CXXFLAGS)``.
 For debug builds, debug symbols are enabled, optimization level 0 is chosen, testing is enabled in SeqAn and debugging is disabled.
-For release builds, debug symbols are not, optimization level 3 is chosen, testing and debugging are both disabled in SeqAn.
+For release builds, debug symbols are disabled, optimization level 3 is chosen, testing and debugging are both disabled in SeqAn.
 For good measure, we also disable assertions in the C library with ``-DNDEBUG``.
 
 Notes
@@ -265,4 +261,3 @@ Short Version
 * Add both ``include`` and ``include`` to your include path (``-I``).
 * Linux/GCC flags: ``-lrt`` (required) ``-W -Wall -Wno-long-long -pedantic -Wno-variadic-macros`` (optional).
 * Windows/MSVC flags: ``/W2 /wd4996 -D_CRT_SECURE_NO_WARNINGS`` (optional).
-* Defines: ``NDEBUG`` to also disable SeqAn assertions in release mode.
