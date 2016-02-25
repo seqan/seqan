@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Tests for the dox_parser module.
 
 The parser results are very complex.  We rely on parsing Doxygen-style

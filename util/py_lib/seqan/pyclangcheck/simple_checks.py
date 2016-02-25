@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Simple source code checks, e.g. trailing whitespace."""
 
 from __future__ import with_statement

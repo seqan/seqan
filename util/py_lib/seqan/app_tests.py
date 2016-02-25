@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Helper code for app tests.
 
 This module contains helper functions and classes for making app tests easy.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Input / Output Routines for ROI files.
 
 You can load the records sequentially one by one by iterating over a

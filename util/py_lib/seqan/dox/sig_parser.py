@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Parser for the signature supported by the SeqAn Doxygen-style documentation.
 """
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 """Code for translating a DDDoc tree and its node into raw_doc objects.
 """
 
