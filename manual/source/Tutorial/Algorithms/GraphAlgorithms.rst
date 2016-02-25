@@ -92,9 +92,8 @@ The ``distMap`` indicates the length of the shortest path to each vertex.
 
 Having defined all these property maps, we can then call the function :dox:`dijkstra`:
 
-.. code-block:: cpp
-
-   dijkstra(g,vertHannover,cargoMap,predMap,distMap);
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
+   :fragment: dijkstra
 
 Finally, we have to output the result.
 Therefore, we define a second vertex iterator ``itV2`` and access the distances just like the city names with the function :dox:`PropertyMapConcept#property` on the corresponding property map.
@@ -102,8 +101,8 @@ Therefore, we define a second vertex iterator ``itV2`` and access the distances 
 .. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: dijkstra-output
 
-Assignments 1
-^^^^^^^^^^^^^
+Assignment 1
+^^^^^^^^^^^^
 
 .. container:: assignment
 
@@ -117,37 +116,31 @@ Assignments 1
    Solution
      .. container:: foldable
 
-	SeqAn provides the function :dox:`stronglyConnectedComponents` to compute the connected components of a directed graph.
-	The first parameter of this function is of course the graph.
-	The second parameter is an output parameter.
-	It is a vertex map that will map a component id to each vertex. Vertices that share the same id are in the same component.
+        SeqAn provides the function :dox:`stronglyConnectedComponents` to compute the connected components of a directed graph.
+        The first parameter of this function is of course the graph.
+        The second parameter is an output parameter.
+        It is a vertex map that will map a component id to each vertex. Vertices that share the same id are in the same component.
 
-	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
-	   :fragment: connected-components
+        .. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
+            :fragment: connected-components
 
-	Now, the only thing left to do is to walk through our graph and ouput each vertex and the corresponding component using the function :dox:`PropertyMapConcept#getProperty`.
-	One way of doing so is to define a :dox:`VertexIterator`.
+        Now, the only thing left to do is to walk through our graph and ouput each vertex and the corresponding component using the function :dox:`PropertyMapConcept#getProperty`.
+        One way of doing so is to define a :dox:`VertexIterator`.
 
-	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
-	   :fragment: output-connected-components
+        .. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
+            :fragment: output-connected-components
 
-	The output for the graph defined in the `Assignment 1` looks as follows:
+        .. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
+            :fragment: return
 
-	.. code-block:: console
+        The output for the graph defined in the `Assignment 1`_ looks as follows:
 
-	   Strongly Connected Components:
-	   Vertex a: Component = 3
-	   Vertex b: Component = 3
-	   Vertex c: Component = 2
-	   Vertex d: Component = 2
-	   Vertex e: Component = 3
-	   Vertex f: Component = 1
-	   Vertex g: Component = 1
-	   Vertex h: Component = 0
+        .. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp.stdout
+            :fragment: output-connected-components
 
-	The graph consists of four components.
-	The first contains vertex ``a``, ``b``, and ``e``, the second contains vertex ``c`` and ``d``, the third
-	contains vertex ``f`` and ``g`` and the last contains only vertex ``h``.
+        The graph consists of four components.
+        The first contains vertex ``a``, ``b``, and ``e``, the second contains vertex ``c`` and ``d``, the third
+        contains vertex ``f`` and ``g`` and the last contains only vertex ``h``.
 
 
 Assignment 2
@@ -168,53 +161,43 @@ Assignment 2
    Solution
      .. container:: foldable
 
-	In `Assignment 3` we defined an HMM with three states: exon, splice, and intron.
+        In `Assignment 3` we defined an HMM with three states: exon, splice, and intron.
 
-	The Viterbi path is the sequence of states that is most likely to produce a given output.
-	In SeqAn, it can be calculated with the function :dox:`HmmAlgorithms#viterbiAlgorithm`.
-	The produced output for this assignment is the DNA sequence ``s``.
+        The Viterbi path is the sequence of states that is most likely to produce a given output.
+        In SeqAn, it can be calculated with the function :dox:`HmmAlgorithms#viterbiAlgorithm`.
+        The produced output for this assignment is the DNA sequence ``s``.
 
-	The first parameter of the function :dox:`HmmAlgorithms#viterbiAlgorithm` is of course the HMM, and the second parameter is the sequence ``s``.
-	The third parameter is an output parameter that will be filled by the function.
-	Since we want to compute a sequence of states, this third parameter is a :dox:`String` of :dox:`VertexDescriptor VertexDescriptors` which assigns a state to each character of the sequence ``s``.
+        The first parameter of the function :dox:`HmmAlgorithms#viterbiAlgorithm` is of course the HMM, and the second parameter is the sequence ``s``.
+        The third parameter is an output parameter that will be filled by the function.
+        Since we want to compute a sequence of states, this third parameter is a :dox:`String` of :dox:`VertexDescriptor VertexDescriptors` which assigns a state to each character of the sequence ``s``.
 
-	The return value of the function :dox:`HmmAlgorithms#viterbiAlgorithm` is the overall probability of this sequence of states, the Viterbi path.
+        The return value of the function :dox:`HmmAlgorithms#viterbiAlgorithm` is the overall probability of this sequence of states, the Viterbi path.
 
-	The only thing left is to output the path.
-	The path is usually longer than the given sequence.
-	This is because the HMM may have silent states, e.g. the begin and end state.
-	To check if a state is silent SeqAn provides the function :dox:`HmmGraph#isSilent`.
+        The only thing left is to output the path.
+        The path is usually longer than the given sequence.
+        This is because the HMM may have silent states, e.g. the begin and end state.
+        To check if a state is silent SeqAn provides the function :dox:`HmmGraph#isSilent`.
 
-	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
-	   :fragment: viterbi
+        .. includefrags:: demos/tutorial/graph/graph_hmm.cpp
+            :fragment: viterbi
 
-	The output of the above piece of code is:
+        The output of the above piece of code is:
 
-	.. code-block:: console
+        .. includefrags:: demos/tutorial/graph/graph_hmm.cpp.stdout
+            :fragment: viterbi
 
-	   Viterbi algorithm
-	   Probability of best path: 1.25465e-18
-	   Sequence:
-	   C,T,T,C,A,T,G,T,G,A,A,A,G,C,A,G,A,C,G,T,A,A,G,T,C,A,
-	   State path:
-	   0 (Silent),1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,3,3,3,3,3,3,3,4 (Silent)
+        It is even simpler to use the forward algorithm in SeqAn since it needs only the HMM and the sequence as parameters and returns a single probability.
+        This is the probability of the HMM to generate the given sequence. The corresponding function is named :dox:`HmmAlgorithms#forwardAlgorithm`.
 
-	It is even simpler to use the forward algorithm in SeqAn since it needs only the HMM and the sequence as parameters and returns a single probability.
-	This is the probability of the HMM to generate the given sequence. The corresponding function is named :dox:`HmmAlgorithms#forwardAlgorithm`.
+        .. includefrags:: demos/tutorial/graph/graph_hmm.cpp
+            :fragment: forward-algorithm
 
-	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
-	   :fragment: forward-algorithm
+        Analogously, the function :dox:`HmmAlgorithms#backwardAlgorithm` implements the backward algorithm in SeqAn.
 
-	Analogously, the function :dox:`HmmAlgorithms#backwardAlgorithm` implements the backward algorithm in SeqAn.
+        .. includefrags:: demos/tutorial/graph/graph_hmm.cpp
+            :fragment: backward-algorithm
 
-	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
-	   :fragment: backward-algorithm
+        The output of these two code fragments is:
 
-	The output of these two code fragments is:
-
-	.. code-block:: console
-
-	    Forward algorithm
-	    Probability that the HMM generated the sequence: 2.71585e-18
-	    Backward algorithm
-	    Probability that the HMM generated the sequence: 2.71585e-18
+        .. includefrags:: demos/tutorial/graph/graph_hmm.cpp.stdout
+            :fragment: forward-backward
