@@ -331,25 +331,25 @@ Assignment 4
    Solution
      .. container:: foldable
 
-	Our aim is not to assign all properties at once to the vertices.
-	Therefore, we create an array containing all the properties, the letters `'a'` through `'h'`.
+        Our aim is not to assign all properties at once to the vertices.
+        Therefore, we create an array containing all the properties, the letters `'a'` through `'h'`.
 
-	The function :dox:`Graph#assignVertexMap` does not only resize the vertex map (as :dox:`Graph#resizeVertexMap` does) but also initializes it.
-	If we specify the optional parameter ``prop``, the values from the array ``prop`` are assigned to the items in the property map.
+        The function :dox:`Graph#assignVertexMap` does not only resize the vertex map (as :dox:`Graph#resizeVertexMap` does) but also initializes it.
+        If we specify the optional parameter ``prop``, the values from the array ``prop`` are assigned to the items in the property map.
 
-	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
-	   :fragment: vertex-map
+        .. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
+            :fragment: vertex-map
 
-	To iterate through the graph in depth-first-search ordering we have to define an :dox:`ContainerConcept#Iterator` with the specialization :dox:`DfsPreorderIterator`.
+        To iterate through the graph in depth-first-search ordering we have to define an :dox:`ContainerConcept#Iterator` with the specialization :dox:`DfsPreorderIterator`.
 
-	The vertex descriptor of the first vertex is ``0`` and we choose this vertex as a starting point for the depth-first-search through our graph ``g`` with the iterator ``dfsIt``:
+        The vertex descriptor of the first vertex is ``0`` and we choose this vertex as a starting point for the depth-first-search through our graph ``g`` with the iterator ``dfsIt``:
 
-	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
-	   :fragment: iterate-dfs
+        .. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
+            :fragment: iterate-dfs
 
-	For the chosen starting point, only two other vertices can be reached:
+        For the chosen starting point, only two other vertices can be reached:
 
-	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp.stdout
-	   :fragment: iterate-dfs
-
-	   :fragment: return
+        .. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp.stdout
+            :fragment: iterate-dfs
+        .. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp.stdout
+            :fragment: return

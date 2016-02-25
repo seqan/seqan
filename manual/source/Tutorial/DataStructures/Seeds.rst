@@ -53,23 +53,7 @@ The following program gives an example of creating seeds as well as setting and 
 
 The output to the console is as follows.
 
-.. code-block:: console
-
-   seed1
-   beginPositionH == 0
-   endPositionH == 0
-   beginPositionV == 0
-   endPositionV == 0
-   lowerDiagonal == 0
-   upperDiagonal == 0
-
-   seed2
-   beginPositionH == 3
-   endPositionH == 7
-   beginPositionV == 10
-   endPositionV == 14
-   lowerDiagonal == -9
-   upperDiagonal == -7
+.. includefrags:: demos/tutorial/seed_and_extend/example1.cpp.stdout
 
 Assignment 1
 ^^^^^^^^^^^^
