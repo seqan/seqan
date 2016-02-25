@@ -43,6 +43,106 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_DEBUG_TEST_SYSTEM_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_DEBUG_TEST_SYSTEM_H_
 
+
+// SeqAn's has three global debug/testing levels: testing, debug and
+// release.  Depending on the level, the SEQAN_ASSERT_* macros will be enabled.
+//
+// The levels are enabled by the values of the macros
+// SEQAN_ENABLE_TESTING and SEQAN_ENABLE_DEBUG.  By setting a macro to
+// 0, one disables the level and by setting the macro to 1, one
+// enables a level.  Enabling testing also enables debug, overriding a
+// value of 0 for SEQAN_ENABLE_DEBUG.
+//
+// If the level is release (both the macros for debug and testing are
+// 0), the assertions will be disabled.  If the level is debug then
+// the assertions will be enabled.
+//
+// The default is to disable debugging and testing.
+//
+// You can print the current level using the function seqan::printDebugLevel().
+
+/*!
+ * @macro TestSystemMacros#SEQAN_ENABLE_TESTING
+ * @headerfile <seqan/basic.h>
+ * @brief Indicates whether testing is enabled.
+ *
+ * @signature SEQAN_ENABLE_TESTING
+ *
+ * When set to 1, testing is enabled.  If it is undefined or set to 0, testing is disabled.  This means the macros for
+ * the tests (SEQAN_BEGIN_TESTSUITE, SEQAN_DEFINE_TEST, SEQAN_CALL_TEST, and SEQAN_END_TESTSUITE) will be enabled.  This
+ * makes failing assertions raise exceptions instead of calling <tt>abort()</tt> (which terminates the program).
+ *
+ * By default, this is set to 0.
+ *
+ * If you want to change this value in your C++ program code you have to define this value before including any SeqAn header!
+ *
+ * If set to 1 then @link TestSystemMacros#SEQAN_ENABLE_DEBUG @endlink is forced to 1 as well.
+ *
+ * @see TestSystemMacros#SEQAN_ENABLE_DEBUG
+ */
+
+// Set default for SEQAN_ENABLE_TESTING.
+#ifndef SEQAN_ENABLE_TESTING
+#define SEQAN_ENABLE_TESTING 0
+#endif  // #ifndef SEQAN_ENABLE_TESTING
+
+// Force-enable debugging if testing is enabled.
+#if SEQAN_ENABLE_TESTING
+#undef SEQAN_ENABLE_DEBUG
+#define SEQAN_ENABLE_DEBUG 1
+#endif  // #if SEQAN_ENABLE_TESTING
+
+/*!
+ * @macro TestSystemMacros#SEQAN_ENABLE_DEBUG
+ * @headerfile <seqan/basic.h>
+ * @brief Indicates whether debugging is enabled.
+ *
+ * @signature SEQAN_ENABLE_DEBUG
+ *
+ * When enabled (set to 1) then debugging is enabled.  This means the assertion macros are expanded to actual test code.
+ * If debugging (and testing) is disabled then the SeqAn assertion macros expand to no instructions.
+ *
+ * Note that <tt>NDEBUG</tt> is set undefined if <tt>SEQAN_ENABLE_DEBUG</tt> = 1
+ * and <tt>NDEBUG</tt> is set to 1 if <tt>SEQAN_ENABLE_DEBUG</tt> = 0.
+ *
+ * If you want to change this value then you have to define this value before including any SeqAn header.
+ *
+ * Force-enabled if SEQAN_ENABLE_TESTING is set to 1.
+ *
+ * @see TestSystemMacros#SEQAN_ENABLE_TESTING
+ */
+
+// Set default for SEQAN_ENABLE_DEBUG.
+#ifndef SEQAN_ENABLE_DEBUG
+#define SEQAN_ENABLE_DEBUG 0
+#endif  // #ifndef SEQAN_ENABLE_DEBUG
+
+#if !SEQAN_ENABLE_DEBUG
+#define NDEBUG 1
+#else
+#undef NDEBUG
+#endif // #if !SEQAN_ENABLE_DEBUG
+
+/*!
+ * @macro TestSystemMacros#SEQAN_TYPEDEF_FOR_DEBUG
+ * @headerfile <seqan/basic.h>
+ * @brief When using typedefs that are only used in debug mode then they have to be marked with macro.
+ *
+ * @signature SEQAN_TYPEDE_FOR_DEBUG
+ *
+ * @section Examples
+ *
+ * @code{.cpp}
+ * typedef int TInt SEQAN_TYPEDEF_FOR_DEBUG;
+ * @endcode
+ */
+
+#if !SEQAN_ENABLE_DEBUG
+#define SEQAN_TYPEDEF_FOR_DEBUG SEQAN_UNUSED
+#else
+#define SEQAN_TYPEDEF_FOR_DEBUG
+#endif
+
 #include <iostream>  // stdout, stderr
 #include <iomanip>
 #include <cstring>   // strrpos
@@ -145,9 +245,7 @@ inline const char * toCString(Demangler<T> const & me)
  * @brief The assertion and check macros provided by SeqAn.
  *
  * Assertions are checks performed at runtime when debugging is enabled.  Debugging is enabled by defining the
- * preprocessor symbol <tt>SEQAN_ENABLE_DEBUG</tt> as <tt>1</tt> (the default is to set it to <tt>0</tt> if the common C
- * macro <tt>NDEBUG</tt> is defined and to set it to <tt>1</tt> otherwise.  When using the SeqAn build system or the
- * CMake FindSeqAn.cmake module, this is automatically set appropriately.
+ * preprocessor symbol <tt>SEQAN_ENABLE_DEBUG</tt> as <tt>1</tt>.
  *
  * The SEQAN_CHECK and SEQAN_FAIL macro always lead to an exit of the program with a non-0 return value.
  */
@@ -259,105 +357,6 @@ inline const char * toCString(Demangler<T> const & me)
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
-
-// SeqAn's has three global debug/testing levels: testing, debug and
-// release.  Depending on the level, the SEQAN_ASSERT_* macros will be enabled.
-//
-// Note that this is independent of the <cassert> assertions and
-// NDEBUG being defined.
-//
-// The levels are enabled by the values of the macros
-// SEQAN_ENABLE_TESTING and SEQAN_ENABLE_DEBUG.  By setting a macro to
-// 0, one disables the level and by setting the macro to 1, one
-// enables a level.  Enabling testing also enables debug, overriding a
-// value of 0 for SEQAN_ENABLE_DEBUG.
-//
-// If the level is release (both the macros for debug and testing are
-// 0), the assertions will be disabled.  If the level is debug then
-// the assertions will be enabled.
-//
-// The default is to enable debugging but disable testing.
-//
-// You can print the current level using the function seqan::printDebugLevel().
-
-/*!
- * @macro TestSystemMacros#SEQAN_ENABLE_TESTING
- * @headerfile <seqan/basic.h>
- * @brief Indicates whether testing is enabled.
- *
- * @signature SEQAN_ENABLE_TESTING
- *
- * When set to 1, testing is enabled.  If it is undefined or set to 0, testing is disabled.  This means the macros for
- * the tests (SEQAN_BEGIN_TESTSUITE, SEQAN_DEFINE_TEST, SEQAN_CALL_TEST, and SEQAN_END_TESTSUITE) will be enabled.  This
- * makes failing assertions raise exceptions instead of calling <tt>abort()</tt> (which terminates the program).
- *
- * By default, this is set to 0.
- *
- * If you want to change this value in your C++ program code you have to define this value before including any SeqAn header!
- *
- * If set to 1 then @link TestSystemMacros#SEQAN_ENABLE_DEBUG @endlink is forced to 1 as well.
- *
- * @see TestSystemMacros#SEQAN_ENABLE_DEBUG
- */
-
-// Set default for SEQAN_ENABLE_TESTING.
-#ifndef SEQAN_ENABLE_TESTING
-#define SEQAN_ENABLE_TESTING 0
-#endif  // #ifndef SEQAN_ENABLE_TESTING
-
-/*!
- * @macro TestSystemMacros#SEQAN_ENABLE_DEBUG
- * @headerfile <seqan/basic.h>
- * @brief Indicates whether debugging is enabled.
- *
- * @signature SEQAN_ENABLE_DEBUG
- *
- * When enabled (set to 1) then debugging is enabled.  This means the assertion macros are expanded to actual test code.
- * If debugging (and testing) is disabled then the SeqAn assertion macros expand to no instructions.
- *
- * By default, thi sis set to 0 if <tt>NDEBUG</tt> is defined and set to 1 if <tt>NDEBUG</tt> is not defined.
- *
- * If you want to change this value then you have to define this value before including any SeqAn header.
- *
- * Force-enabled if SEQAN_ENABLE_TESTING is set to 1.
- *
- * @see TestSystemMacros#SEQAN_ENABLE_TESTING
- */
-
-// Set default for SEQAN_ENABLE_DEBUG.
-#ifndef SEQAN_ENABLE_DEBUG
-  #ifdef NDEBUG
-    #define SEQAN_ENABLE_DEBUG 0
-  #else  // #ifdef NDEBUG
-    #define SEQAN_ENABLE_DEBUG 1
-  #endif  // #ifdef NDEBUG
-#endif  // #ifndef SEQAN_ENABLE_DEBUG
-
-// Force-enable debugging if testing is enabled.
-#if SEQAN_ENABLE_TESTING
-#undef SEQAN_ENABLE_DEBUG
-#define SEQAN_ENABLE_DEBUG 1
-#endif  // #if SEQAN_ENABLE_TESTING
-
-/*!
- * @macro TestSystemMacros#SEQAN_TYPEDEF_FOR_DEBUG
- * @headerfile <seqan/basic.h>
- * @brief When using typedefs that are only used in debug mode then they have to be marked with macro.
- *
- * @signature SEQAN_TYPEDE_FOR_DEBUG
- *
- * @section Examples
- *
- * @code{.cpp}
- * typedef int TInt SEQAN_TYPEDEF_FOR_DEBUG;
- * @endcode
- */
-
-#if !SEQAN_ENABLE_DEBUG
-#define SEQAN_TYPEDEF_FOR_DEBUG SEQAN_UNUSED
-#else
-#define SEQAN_TYPEDEF_FOR_DEBUG
-#endif
 
 namespace seqan {
 
