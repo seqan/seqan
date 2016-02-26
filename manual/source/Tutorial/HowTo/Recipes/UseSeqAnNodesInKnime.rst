@@ -50,7 +50,7 @@ A variant calling workflow (An example)
 -----------------------------------------
 In this example we will use a read mapper (yara) to map short reads against a reference genome. Then we will use SnpStore to call variants and store the variants as ``vcf`` and ``gff`` files. We will also do error correction of Illumina reads before we map them to the reference. In this way we will we can identify SNP's more clearly.
 
-1. Download this zipped example data and extract it somewhere appropriate. It contains three files. The file ``NC_008253_1K.fa`` is a small toy reference genome. Files ``sim_reads_l.fq`` and ``sim_reads_r.fq`` are short sequencing paired reads. For each read in one file its mate is contained in the other file. 
+1. Download this zipped :download:`example data<example_data.zip>` and extract it somewhere appropriate. It contains three files. The file ``NC_008253_1K.fa`` is a small toy reference genome. Files ``sim_reads_l.fq`` and ``sim_reads_r.fq`` are short sequencing paired reads. For each read in one file its mate is contained in the other file. 
 
 2. On the left side of the opened KNIME window under KNIME Explorer right click on ``LOCAL (Local Workspace)`` and chose the menu item ``New KNIME Workflow``. You will be presented with a dialog to enter the name and location of the workflow to be created. Give your workflow an approprate name, perhaps something like 'Variant Calling Workflow', and click finish.
 
@@ -88,6 +88,7 @@ You can do it as follows:
 - Simply clone the workflow git repository into your own github repository and add a new folder ``WORKFLOWNAME_workflow``.
 - In KNIME export your workflow without the data files as a ``.zip`` file into that folder.
 - Provide a README, a screenshot and some example input data as well.
+
 To get a more clear idea just take a look at the existing workflow folders.
 
 After everything is ready, add...commit and push the new folder into your github repository and make a github pull request to the original workflow repository (https://github.com/seqan/knime\_seqan\_workflows) and - voila - it will be shared with the community.
