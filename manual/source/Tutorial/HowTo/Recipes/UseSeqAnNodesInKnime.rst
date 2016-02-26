@@ -4,18 +4,18 @@
 
 .. _how-to-recipes-use-seqan-nodes-in-knime:
 
-Creating Workflows with KNIME
-=============================
+Creating Workflows with SeqAn Nodes in KNIME
+============================================
 
 `KNIME <http://www.knime.org>`_ is a well established data analysis framework which supports the generation of workflows for data analysis.
-In the following, we describe how to use SeqAn applications in KNIME.
+In this tutorial, we describe how to use SeqAn applications in KNIME.
 
 Install SeqAn in KNIME
 ----------------------
 
 The Installation of the SeqAn NGS Toolbox in KNIME is very easy.
-Download the latest KNIME release from the KNIME website.
-In KNIME click on ``Help > Install new Software``.
+Download the latest KNIME release from the KNIME website `download <https://www.knime.org/downloads/overview>`_ page. You might be asked for registration but that is optional.
+In the KNIME window click on the menu ``Help > Install new Software``.
 
 .. figure:: install-knime-1.png
 
@@ -23,12 +23,14 @@ In the opening dialog choose ``Add...``.
 
 .. figure:: install-knime-2.png
 
-In the opening dialog fill in the following Information:
+In the opening dialog fill-in the following Information:
 
 ``Name``
-  ``KNIME Nightly Unstable``
+  ``Trusted Community Contributions (3.1)``
 ``Location``
-  ``http://update.knime.org/community-contributions/trunk/``
+  ``http://update.knime.org/community-contributions/trusted/3.1``
+
+If you are, by chance, still using an  older KNIME version and you do not want to update to the latest version you can find the corresponding update site location at the `community-contributions <https://tech.knime.org/community>`_ page of the KNIME website.
 
 .. figure:: install-knime-3.png
 
@@ -38,55 +40,54 @@ After pressing OK, KNIME will show you all the contents of the added Update Site
 
 Select the SeqAn NGS Toolbox and click Next.
 Follow the instructions.
-After a restart of KNIME the SeqAn nodes will be available under ``Community Nodes``.
+After the installation is don KNIME will prompt you to restart. Click OK and KNIME will restart with the newly installed SeqAn nodes will be available under ``Community Nodes`` category. The installation also include GenericKnimeNodes which are very useful for using SeqAn nodes in KNIME. This includes file input/output nodes.
 
-Add your own application to KNIME
----------------------------------
+.. figure:: install-knime-5.png
 
-Using the CTD and a node generator program, all SeqAn applications that use the :dox:`ArgumentParser` can be made available to run in KNIME.
-This is done automatically and nightly for all applications in the master branch on `github <https://github.com/seqan/seqan/tree/master>`_ that are listed in the CMAKE variable ``SEQAN_CTD_EXECUTABLES``.
-The auto-generated KNIME nodes of these apps are then uploaded to the KNIME community node server and can easily be used by all KNIME users.
+Now you can drag and drop the installed SeqAn nodes to make your desired workflow together with the other KNIME nodes. 
 
-The following two steps are required to make your application KNIME-ready.
-
-Adapt your applications to use the argument parser
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Follow the :ref:`tutorial-getting-started-parsing-command-line-arguments` tutorial and adapt your application to use only the :dox:`ArgumentParser` to parse command line arguments.
-Especially, take care to:
-
-#. Declare your input and output file names as such via ``ArgParseArgument::INPUT_FILE`` and ``ArgParseArgument::OUTPUT_FILE``.
-#. Detect the file format from the file extension (and not from a dedicated file format option).
-   This can be done, for example, with :dox:`guessFormatFromFilename guessFormatFromFilename()` on an :dox:`AutoSeqFormat` object to detect a particular sequence format (e.g. FASTA) in a predefined set of formats.
-#. For input/output files define a list of possible extensions via :dox:`ArgumentParser#setValidValues setValidValues()` (e.g. "fa fasta"). This list of possible extensions can be generated with :dox:`ArgumentParser#getFileExtensions getFileExtensions()` for a :dox:`TagSelector` of predefined file formats (e.g. AutoSeqFormat).
-#. Avoid mutual exclusive options or other constraints that cannot be not represented by the ArgumentParser, simply ignore one of them (depending on a behavioral option).
-   See the ArgumentParser tutorial if you need to define a numerical interval of possible values or a finite set of argument options.
-#. Give default values.
-
-Register your application to be considered by the node generator
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Add the following section to the ``CMakeLists.txt`` file in your application folder (replace ``razers`` by your executable name):
-
-.. code-block:: cmake
-
-    # ----------------------------------------------------------------------------
-    # Setup Common Tool Description for Generic Workflow Nodes
-    # ----------------------------------------------------------------------------
-
-    # Include executable razers in CTD structure.
-    set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} razers CACHE INTERNAL "")
-
-Use existing and contribute new workflows
+A variant calling workflow (An example)
 -----------------------------------------
+In this example we will use a read mapper (yara) to map short reads against a reference genome. Then we will use SnpStore to call variants and store the variants as ``vcf`` and ``gff`` files. We will also do error correction of Illumina reads before we map them to the reference. In this way we will we can identify SNP's more clearly.
+
+1. Download this zipped example data and extract it somewhere appropriate. It contains three files. The file ``NC_008253_1K.fa`` is a small toy reference genome. Files ``sim_reads_l.fq`` and ``sim_reads_r.fq`` are short sequencing paired reads. For each read in one file its mate is contained in the other file. 
+
+2. On the left side of the opened KNIME window under KNIME Explorer right click on ``LOCAL (Local Workspace)`` and chose the menu item ``New KNIME Workflow``. You will be presented with a dialog to enter the name and location of the workflow to be created. Give your workflow an approprate name, perhaps something like 'Variant Calling Workflow', and click finish.
+
+3. Drag and drop the nodes shown in the following picture from the ``Node Repository`` panel on the left bottom side of the KNIME window and arrange/connect them as they are shown in the picture bellow. You can also rename the node from nodeXX to a meaningful name like ``INPUT: Reference``. The node name it the text bellow the node. The Node type which is displayed above the node can not be edited.
+
+.. figure:: install-knime-6.png
+
+4. Now it's time to configure our nodes. To configure a node just double-click on it. A configuration dialog will pop up. Let us configure our nodes on our workflow one by one.
+
+|  **a. InputFile Node** (``INPUT: Reference``): 
+|      - browse and select the file ``NC_008253_1K.fa`` under Selected file field.
+|      - click OK.
+|  **b. InputFiles Node** (``READS L&R``):
+|      - click ``add`` and select both ``sim_reads_l.fq`` and ``sim_reads_r.fq`` files.
+|      - click OK.
+|  **c. FionaIllumina Node** (``Error Correction``):
+|      - set genome-length to 1000
+|  **d. SnpStore Node** (``Variant Calling``):
+|      - set only-successful-candidates to true.
+
+5. Run the workflow. Right-click on the File Viewer (``OUTPUT: SNP's``) node at the right end of our configured workflow and choose Execute from the menu. As the preceding nodes execute they change their indicator color from yellow to green. When the last node finishes executing do the same to execute the File Viewer (``OUTPUT: indels``)
+
+6. See the results. You can take a look at the results (SNPs/IndDels) by  Right-clicking on the corresponding File Viewer node and choose ``View: (data view)`` from the menu.
+
+Congratulations you have just created a working KNIME workflow using SeqAn nodes!
+
+Use existing workflows and contribute new ones
+----------------------------------------------
+The git repository https://github.com/seqan/knime_seqan_workflows has quite few workflows ready to run. each workflow is contained in a directory. The directory for a workflow contains an example data and a README file in it. This makes it easier to download and execute the workflow. You can either clone the repository or download individual workflows an execute them with the data provided or with your own data.
 
 With the steps described above you will be able to set up your own workflows in KNIME.
-If you want to contribute a workflow to the SeqAn community or use workflows from others you can do that on
-https://github.com/seqan/knime_seqan_workflows
+If you want to contribute a workflow to the SeqAn community  you are encouraged to do so.
+You can do it as follows: 
 
-To contribute your own workflow, simply clone the workflow git repository into your own github repository and add a new folder ``WORKFLOWNAME_workflow``.
-In KNIME export your workflow without the data files as a ``.zip`` file into that folder.
-Provide a README, a screenshot and some examples as well.
-Just have a look into existing workflow folders to get a notion.
+- Simply clone the workflow git repository into your own github repository and add a new folder ``WORKFLOWNAME_workflow``.
+- In KNIME export your workflow without the data files as a ``.zip`` file into that folder.
+- Provide a README, a screenshot and some example input data as well.
+To get a more clear idea just take a look at the existing workflow folders.
 
-After everything is ready, add and commit the new folder into your github repository and make a github pull request to the original workflow repository (https://github.com/seqan/knime\_seqan\_workflows) and - voila - it will be shared with the community.
+After everything is ready, add...commit and push the new folder into your github repository and make a github pull request to the original workflow repository (https://github.com/seqan/knime\_seqan\_workflows) and - voila - it will be shared with the community.
