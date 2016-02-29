@@ -67,13 +67,13 @@ typedef Tag<TagAllocateAligned_> const TagAllocateAligned;           // "include
 //////////////////////////////////////////////////////////////////////////////
 // FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
-
+#if SEQAN_ASYNC_IO
 //____________________________________________________________________________
 // allocate
-#if SEQAN_ASYNC_IO
+
 template <typename T, typename TValue, typename TSize> inline void allocate(T const & me, TValue * & data, TSize count, TagAllocateAligned const);           // "include/seqan/file/file_async.h"(292)
 template <typename TSpec, typename TValue, typename TSize> inline void allocate( File<Async<TSpec> > const & me, TValue * & data, TSize count);           // "include/seqan/file/file_async.h"(351)
-#endif
+
 //____________________________________________________________________________
 // asyncReadAt
 
@@ -91,24 +91,14 @@ template <typename TSpec> inline bool cancel(File<Async<TSpec> > & me, AiocbWrap
 
 //____________________________________________________________________________
 // deallocate
-#if SEQAN_ASYNC_IO
+
 template <typename T, typename TValue, typename TSize> inline void deallocate( T const & me, TValue * data, TSize count, TagAllocateAligned const);           // "include/seqan/file/file_async.h"(310)
 template <typename TSpec, typename TValue, typename TSize> inline void deallocate( File<Async<TSpec> > const & me, TValue * data, TSize count);           // "include/seqan/file/file_async.h"(360)
-#endif
+
 //____________________________________________________________________________
 // error
 
 inline int error(AiocbWrapper const &request);           // "include/seqan/file/file_async.h"(246)
-
-//____________________________________________________________________________
-// fileExists
-
-inline bool fileExists(const char *fileName);           // "include/seqan/file/file_sync.h"(189)
-
-//____________________________________________________________________________
-// fileUnlink
-
-inline bool fileUnlink(const char *fileName);           // "include/seqan/file/file_sync.h"(194)
 
 //____________________________________________________________________________
 // flush
@@ -120,11 +110,6 @@ template <typename TSpec> inline bool flush(File<Async<TSpec> > & me);          
 
 inline void printRequest(AiocbWrapper &request, const char *_hint);           // "include/seqan/file/file_async.h"(125)
 inline void printRequest(AiocbWrapper &request);           // "include/seqan/file/file_async.h"(125)
-
-//____________________________________________________________________________
-// read
-
-template <typename TSpec, typename TValue, typename TSize > inline bool read(File<Sync<TSpec> > & me, TValue *memPtr, TSize const count);           // "include/seqan/file/file_sync.h"(226)
 
 //____________________________________________________________________________
 // release
@@ -147,11 +132,27 @@ inline bool waitFor(AiocbWrapper &request, long timeoutMilliSec, bool &inProgres
 
 template <typename TSize > inline TSize waitForAny(AiocbWrapper const * const contexts[], TSize count);           // "include/seqan/file/file_async.h"(223)
 template <typename TSize > inline TSize waitForAny(AiocbWrapper const * const contexts[], TSize count, long timeoutMilliSec);           // "include/seqan/file/file_async.h"(231)
+#endif
+
+//____________________________________________________________________________
+// read
+
+template <typename TSpec, typename TValue, typename TSize > inline bool read(File<Sync<TSpec> > & me, TValue *memPtr, TSize const count);           // "include/seqan/file/file_sync.h"(226)
 
 //____________________________________________________________________________
 // write
 
 template <typename TSpec, typename TValue, typename TSize > inline bool write(File<Sync<TSpec> > & me, TValue const *memPtr, TSize const count);           // "include/seqan/file/file_sync.h"(231)
+
+//____________________________________________________________________________
+// fileExists
+
+inline bool fileExists(const char *fileName);           // "include/seqan/file/file_sync.h"(189)
+
+//____________________________________________________________________________
+// fileUnlink
+
+inline bool fileUnlink(const char *fileName);           // "include/seqan/file/file_sync.h"(194)
 
 } //namespace seqan
 
