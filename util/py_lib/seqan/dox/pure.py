@@ -199,6 +199,7 @@ def main():
     parser.add_argument('--development', help='Use if you are changing/extending the '
                         'dox system itself or its templates.', default=False,
                         action='store_true', dest='development')
+    parser.add_argument('--out-dir', dest='out_dir', help='output directory', default=os.path.abspath('html'), nargs='?')
     args = parser.parse_args()
 
     # defer actual work to doMain()
