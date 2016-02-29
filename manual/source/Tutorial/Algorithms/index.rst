@@ -28,9 +28,11 @@ SeqAn contains many efficient implementations of core bioinformatics algorithms.
 Global alignment, local alignment, banded and unbanded, for proteins or DNA, using seeds or not, needing a traceback or not. Check out nearly 200 combinations of this module which incidentally will soon be fully multithreaded and SIMD accelerated.
 
 .. image:: ./stellarextension-150x150.png
+
 A depiction of the extension phase of the Stellar algorithm.
 
 .. image:: ./fionaalg-150x150.png
+
 A depiction of the error correcting algorithm in the Fiona algorithm.
 
 SeqAn contains algorithms for read mapping based on q-gram or string indices, multiple alignment algorithms, filter algorithms for string search as well es error correction methods.
