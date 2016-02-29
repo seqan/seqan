@@ -36,7 +36,7 @@ The mirror modifier is already part of SeqAn and implements the class interface 
 The Modified String
 -------------------
 
-The :dox:`ModifiedString ModidiedString` is a modifier that implements the :dox:`String` interface and thus can be used like a :dox:`String`.
+The :dox:`ModifiedString ModifiedString` is a modifier that implements the :dox:`String` interface and thus can be used like a :dox:`String`.
 It has two template parameters.
 The first one specifies a sequence type (e.g. :dox:`String`, :dox:`Segment`, ...) and the second one specifies the modifiers behavior.
 That can be :dox:`ModReverseString` for mirroring a string left to right or :dox:`ModViewModifiedString` for applying a function to every single character (like 'C'->'G', 'A'->'T', ...).
