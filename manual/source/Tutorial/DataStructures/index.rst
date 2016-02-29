@@ -26,5 +26,30 @@ Data Structures
     Modifiers
     JournalStringTree
 
+SeqAn has numerous data structures that are helpful for analyzing biological sequences. Those range from simple containers for strings that can be saved in different ways, to collection of strings or compressed strings.
+
+The Journaled string tree, for example allows the user to traverse all sequence contexts, given a window of a certain size, that are present in a set of sequences.
+Similar sequences are hence only traversed once, and the coordinate bookkeeping is all within the data  structure. This allows for example speedup of up to a 100x given sequences from the 1000 Genome project and compared to traversing the sequences one after another.
+
+Another strong side of SeqAn are its generic string indices. You can think “suffix tree” but the implementations range from an enhanced suffix array to (bidirectional) FM-indices.
+
+In this section you find tutorials addressing the most common of SeqAn's data structures.
+
+The tutorials under :ref:`tutorial-datastructures-sequences` will introduce you to alphabets, sequence containers, iterators and various kinds of string sets.
+
+The tutorials under :ref:`tutorial-datastructures-indices` will introduce you to the interfaces and implementations of SeqAn's string and q-gram indices.
+
+The tutorials under :ref:`tutorial-datastructures-alignment-alignment-representation` will introduce you to how SeqAn implements alignment objects (e.g. gaps in sequences).
+
+The tutorials under :ref:`tutorial-datastructures-store` will introduce you to 
+
+The tutorials under :ref:`tutorial-graphs` will introduce you to 
+
+The tutorials under :ref:`tutorial-datastructure-seeds` will introduce you to t
+
+The tutorials under :ref:`tutorial-datastructures-modifiers` will introduce you 
+
+The tutorials under :ref:`tutorial-datastructures-journaledstringtree` will introduce you 
+
 
 .. image:: ../../under_construction.jpg
