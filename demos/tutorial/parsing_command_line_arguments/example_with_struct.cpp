@@ -1,7 +1,9 @@
+//![full]
 #include <iostream>
 
 #include <seqan/arg_parse.h>
 
+//![struct]
 struct ModifyStringOptions
 {
     unsigned period;
@@ -13,6 +15,7 @@ struct ModifyStringOptions
     period(1), toUppercase(false), toLowercase(false)
     {}
 };
+//![struct]
 
 int main(int argc, char const ** argv)
 {
@@ -53,3 +56,4 @@ int main(int argc, char const ** argv)
 
     return 0;
 }
+//![full]
