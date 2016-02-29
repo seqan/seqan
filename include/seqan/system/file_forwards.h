@@ -70,10 +70,10 @@ typedef Tag<TagAllocateAligned_> const TagAllocateAligned;           // "include
 
 //____________________________________________________________________________
 // allocate
-
+#if SEQAN_ASYNC_IO
 template <typename T, typename TValue, typename TSize> inline void allocate(T const & me, TValue * & data, TSize count, TagAllocateAligned const);           // "include/seqan/file/file_async.h"(292)
 template <typename TSpec, typename TValue, typename TSize> inline void allocate( File<Async<TSpec> > const & me, TValue * & data, TSize count);           // "include/seqan/file/file_async.h"(351)
-
+#endif
 //____________________________________________________________________________
 // asyncReadAt
 
@@ -91,10 +91,10 @@ template <typename TSpec> inline bool cancel(File<Async<TSpec> > & me, AiocbWrap
 
 //____________________________________________________________________________
 // deallocate
-
+#if SEQAN_ASYNC_IO
 template <typename T, typename TValue, typename TSize> inline void deallocate( T const & me, TValue * data, TSize count, TagAllocateAligned const);           // "include/seqan/file/file_async.h"(310)
 template <typename TSpec, typename TValue, typename TSize> inline void deallocate( File<Async<TSpec> > const & me, TValue * data, TSize count);           // "include/seqan/file/file_async.h"(360)
-
+#endif
 //____________________________________________________________________________
 // error
 
