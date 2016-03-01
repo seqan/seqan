@@ -340,13 +340,13 @@ class ImagePathUpdater(proc_doc.TextNodeVisitor):
 
 
 class HtmlWriter(object):
-    def __init__(self, doc, args, config, out_dir='html'):
+    def __init__(self, doc, args, config):
         self.doc = doc
         self.out_dirs = {}
         self.args = args
         self.config = config
         # Normalize path.
-        out_dir = os.path.abspath(out_dir)
+        out_dir = args.out_dir
         # Generate path names.
         self.out_dirs['root'] = out_dir
         self.out_dirs['css'] = os.path.join(out_dir, 'css')
