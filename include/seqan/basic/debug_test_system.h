@@ -387,6 +387,7 @@ void printDebugLevel(TStream & stream)
     stream << "SEQAN_ENABLE_DEBUG == " << SEQAN_ENABLE_DEBUG << std::endl;
     stream << "SEQAN_ENABLE_TESTING == " << SEQAN_ENABLE_TESTING << std::endl;
     stream << "SEQAN_CXX_FLAGS == \"" << SEQAN_CXX_FLAGS << "\"" << std::endl;
+    stream << "SEQAN_ASYNC_IO == " << SEQAN_ASYNC_IO << std::endl;
 }
 
 #if defined(PLATFORM_WINDOWS) || !SEQAN_HAS_EXECINFO

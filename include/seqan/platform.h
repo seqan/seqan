@@ -100,4 +100,29 @@
 // backwards compatibility
 #define SEQAN_UNUSED_TYPEDEF SEQAN_UNUSED
 
+// ASYNCHRONOUS I/O
+#ifndef SEQAN_ASYNC_IO
+// FreeBSD only has proper support on 64Bit
+#if defined(__FreeBSD__)
+    #if defined(__x86_64__) || defined(__aarch64__) || defined(__ia64__) || defined(__ppc64__)
+        #define SEQAN_ASYNC_IO 1
+    #else
+        #define SEQAN_ASYNC_IO 0
+    #endif
+// Clang (and future gcc) can detect it
+#elif defined(__has_include) && defined(__unix__)
+    #if __has_include(<aio.h>)
+        #define SEQAN_ASYNC_IO 1
+    #else
+        #define SEQAN_ASYNC_IO 0
+    #endif
+// OpenBSD doesn't have it
+#elif defined(__OpenBSD__)
+    #define SEQAN_ASYNC_IO 0
+// we assume the rest have it (Linux, OSX, Win)
+#else
+    #define SEQAN_ASYNC_IO 1
+#endif
+#endif //ndef SEQAN_ASYNC_IO
+
 #endif

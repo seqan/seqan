@@ -69,8 +69,14 @@ struct Sync;
  * @tparam TSpec Further specializing type.  Default: <tt>void</tt>.
  */
 
+#if SEQAN_ASYNC_IO
 template <typename TSpec = void>
 struct Async;
+#else
+// define async as sync
+template <typename TSpec = void>
+using Async = Sync<TSpec>;
+#endif
 
 /*!
  * @class File
