@@ -24,10 +24,10 @@ This means creating e.g. a build directory in ``~/devel/seqan-build/release`` an
 
 In addition to ``CMAKE_BUILD_TYPE`` there is also the ``SEQAN_BUILD_SYSTEM`` parameter which can be one of
 
- 1. ``DEVELOP`` -- all build targets (apps, demos, tests) and documentation (dox, manual) are created (the default).
- 1. ``SEQAN_RELEASE_LIBRARY`` -- only dox and libraray target created.
- 1. ``SEQAN_RELEASE_APPS`` -- all app targets are created, but nothing else.
- 1. ``APP:$APPNAME`` -- only a single app target is created for the chosen app.
+#. ``DEVELOP`` -- all build targets (apps, demos, tests) and documentation (dox, manual) are created (the default).
+#. ``SEQAN_RELEASE_LIBRARY`` -- only dox and libraray target created.
+#. ``SEQAN_RELEASE_APPS`` -- all app targets are created, but nothing else.
+#. ``APP:$APPNAME`` -- only a single app target is created for the chosen app.
 
 All build systems other than ``DEVELOP`` are only relevant to packaging releases.
 As usual, calling ``make $TARGET`` will build a single target and just ``make`` will build all targets.
@@ -108,11 +108,12 @@ dox
 ---
 
 The SeqAn API documentation is created using a customly-written system called *dox*.
-It is very similar to doxygen, you can find out more about the syntax in :ref:`internal-style-guide-dox-api-docs`.
+It is very similar to doxygen, you can find out more about the syntax in :ref:`infra-contribute-dox`.
 
 You can build the documentation in the `dox` subfolder of the *source folder*:
 
 .. code-block:: console
+
    ~   # cd ~/devel/seqan/dox
    dox # ./dox_only.sh
 

@@ -35,19 +35,17 @@ Tutorials
     :ref:`tutorial-how-to`
         Use these short and target-oriented articles to solve common, specific problems.
 
-Contributing to SeqAn
+Infrastructure
 ---------------------
 
-    :ref:`internal-build-manual`
-        These articles describe how to use the SeqAn build system and integrate into your **Makefiles**, for example.
+    :ref:`infra-build-manual`
+        These articles describe how to use SeqAn in your application and explain things you need to consider when building.
 
-    :ref:`internal-infrastructure`
-        These pages describe the SeqAn infrastructure and are mostly interesting to SeqAn developers.
+    :ref:`infra-contribute`
+        Please read these pages if you want to contribute to SeqAn or learn about the conventions and style-guides used.
 
-    :ref:`internal-style-guide`
-        Please follow these style guides for SeqAn library and application code.
-
-
+    :ref:`infra-maintain`
+        These pages cover the structure of the SeqAn repository, the git workflow and explain release procedures for SeqAn team members. They also include instructions for downstream package maintainers.
 
 
 API Documentation
@@ -71,16 +69,15 @@ The API documentation can be found on :dox:`mainpage here`.
     Tutorial/Applications/index
 
 .. toctree::
-    :caption: Get Involved
-    :name: internal
+    :caption: Infrastructure
+    :name: infra
     :hidden:
     :maxdepth: 1
     :titlesonly:
 
-    GetInvolved/Contributors/index
-    GetInvolved/Infrastructure/index
-    GetInvolved/BuildManual/index
-    GetInvolved/StyleGuide/index
+    Infrastructure/BuildManual/index
+    Infrastructure/Contributors/index
+    Infrastructure/Maintenance/index
 
 .. toctree::
     :caption: Follow Us

@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _internal-style-guide-dox-api-docs:
+.. _infra-contribute-dox:
 
 Dox API Docs
 ============

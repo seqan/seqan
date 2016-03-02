@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _internal-style-guide-cpp:
+.. _infra-contribute-style-cpp:
 
 SeqAn C++ Code Style
 ====================
@@ -894,7 +894,7 @@ Each file should begin with a file header.
 Class, Function, Metafunction, Enum, Macro DDDoc Comments
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Each public class, function, metafunction, enum, and macro should be documented using :ref:`dox API docs<internal-style-guide-dox-api-docs>`.
+Each public class, function, metafunction, enum, and macro should be documented using :ref:`dox API docs<infra-contribute-dox>`.
 Internal code should be documented, too.
 
 .. container:: foldable

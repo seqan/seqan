@@ -1,4 +1,4 @@
-.. _internal-contributors:
+.. _infra-build-contribute:
 
 Contribute to SeqAn
 ===================
@@ -17,7 +17,8 @@ Available here: http://github.com/seqan/seqan/issues
 
 
 .. toctree::
-    :hidden:
-    :titlesonly:
+   :glob:
+   :titlesonly:
 
-    WritingTests
+   *
+

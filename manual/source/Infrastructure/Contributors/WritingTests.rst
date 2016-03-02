@@ -1,4 +1,4 @@
-.. _internal-contributors-writing-tests:
+.. _infra-contribute-writing-tests:
 
 .. |br| raw:: html
 
