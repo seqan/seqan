@@ -1,4 +1,4 @@
-.. _internal-infrastructure:
+.. _infra-maintain:
 
 Infrastructure
 ==============
