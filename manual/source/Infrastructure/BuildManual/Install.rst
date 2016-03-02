@@ -3,7 +3,7 @@
    .. contents::
 
 
-.. _infra-build-manual-install:
+.. _infra-use-install:
 
 TODO
 

@@ -38,14 +38,14 @@ Tutorials
 Infrastructure
 ---------------------
 
-    :ref:`infra-build-manual`
-        These articles describe how to use SeqAn in your application and explain things you need to consider when building.
+    :ref:`infra-use`
+        These articles describe how to use SeqAn in your application and explain things you need to consider when building. Everyone should read it.
 
     :ref:`infra-contribute`
-        Please read these pages if you want to contribute to SeqAn or learn about the conventions and style-guides used.
+        Anyone who wants to contribute code or documentation to SeqAn should read this. You will learn about the conventions and coding style.
 
-    :ref:`infra-maintain`
-        These pages cover the structure of the SeqAn repository, the git workflow and explain release procedures for SeqAn team members. They also include instructions for downstream package maintainers.
+    :ref:`infra-manage`
+        These pages cover the structure of the SeqAn repository, the git workflow and explain release procedures. All SeqAn team members should read this; and also downstream package maintainers.
 
 
 API Documentation
@@ -75,9 +75,9 @@ The API documentation can be found on :dox:`mainpage here`.
     :maxdepth: 1
     :titlesonly:
 
-    Infrastructure/BuildManual/index
-    Infrastructure/Contributors/index
-    Infrastructure/Maintenance/index
+    Infrastructure/Use/index
+    Infrastructure/Contribute/index
+    Infrastructure/Manage/index
 
 .. toctree::
     :caption: Follow Us

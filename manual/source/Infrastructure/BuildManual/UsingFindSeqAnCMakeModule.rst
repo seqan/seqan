@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _infra-build-manual-cmake:
+.. _infra-use-cmake:
 
 Using the FindSeqAn CMake Module
 ================================
