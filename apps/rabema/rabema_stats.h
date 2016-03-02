@@ -151,7 +151,7 @@ void write(TStream & stream, RabemaStats const & stats, /*int maxError,*/ seqan:
     stream << "Found Intervals By Error Rate\n"
            << "\n";
     char buffer[1000];
-    sprintf(buffer, "  ERR\t%8s\t%8s\t%8s\t%8s\t%10s\t%10s\n", "#max", "#found", "%found", "norm max", "norm found", "norm found [%]");
+    snprintf(buffer, 1000, "  ERR\t%8s\t%8s\t%8s\t%8s\t%10s\t%10s\n", "#max", "#found", "%found", "norm max", "norm found", "norm found [%]");
     stream << buffer
            << "------------------------------------------------------------------------------------------------------\n";
     for (unsigned i = 0; i < length(stats.intervalsToFindForErrorRate); ++i)
@@ -164,7 +164,7 @@ void write(TStream & stream, RabemaStats const & stats, /*int maxError,*/ seqan:
         double percFoundNormalizedIntervals = 100.0 * stats.normalizedIntervalsFoundForErrorRate[i] / stats.normalizedIntervalsToFindForErrorRate[i];
         if (stats.normalizedIntervalsToFindForErrorRate[i] == 0)
             percFoundNormalizedIntervals = 0;
-        sprintf(buffer, "%5u\t%8d\t%8d\t%8.2f\t%8.2f\t%10.2f\t%10.2f\n", i, stats.intervalsToFindForErrorRate[i], stats.intervalsFoundForErrorRate[i],
+        snprintf(buffer, 1000,"%5u\t%8d\t%8d\t%8.2f\t%8.2f\t%10.2f\t%10.2f\n", i, stats.intervalsToFindForErrorRate[i], stats.intervalsFoundForErrorRate[i],
                 percFoundIntervals, stats.normalizedIntervalsToFindForErrorRate[i], stats.normalizedIntervalsFoundForErrorRate[i],
                 percFoundNormalizedIntervals);
         stream << buffer;
@@ -217,7 +217,7 @@ int write(TStream & stream, RabemaStats const & stats, int maxError, CharString 
         double percFoundNormalizedIntervals = 100.0 * stats.normalizedIntervalsFoundForErrorRate[i] / stats.normalizedIntervalsToFindForErrorRate[i];
         if (stats.normalizedIntervalsToFindForErrorRate[i] == 0)
             percFoundNormalizedIntervals = 0;
-        sprintf(buffer, "%u\t%d\t%d\t%.2f\t%.2f\t%1.2f\t%.2f\n", i, stats.intervalsToFindForErrorRate[i], stats.intervalsFoundForErrorRate[i],
+        snprintf(buffer, 1000, "%u\t%d\t%d\t%.2f\t%.2f\t%1.2f\t%.2f\n", i, stats.intervalsToFindForErrorRate[i], stats.intervalsFoundForErrorRate[i],
                 percFoundIntervals, stats.normalizedIntervalsToFindForErrorRate[i], stats.normalizedIntervalsFoundForErrorRate[i],
                 percFoundNormalizedIntervals);
         stream << buffer;

@@ -449,7 +449,7 @@ _writeAlignmentBlock(TStream & stream,
     while (aPos < m.alignStats.alignmentLength)
     {
         // Query line
-        sprintf(buffer, "Query  %-*d  ", numberWidth, qPos + effQStart);
+        snprintf(buffer, 40, "Query  %-*d  ", numberWidth, qPos + effQStart);
         write(stream, buffer);
 
         TPos const end = std::min(static_cast<TPos>(aPos + windowSize), m.alignStats.alignmentLength);
@@ -459,7 +459,7 @@ _writeAlignmentBlock(TStream & stream,
                 qPos += qStep;
             write(stream, value(m.alignRow0, i));
         }
-        sprintf(buffer, "  %-*d", numberWidth, (qPos + effQStart) - qStepOne);
+        snprintf(buffer, 40, "  %-*d", numberWidth, (qPos + effQStart) - qStepOne);
         write(stream, buffer);
 
         // intermediate line
@@ -471,7 +471,7 @@ _writeAlignmentBlock(TStream & stream,
             _writeAlignmentBlockIntermediateChar(stream, context, value(m.alignRow0,i), value(m.alignRow1,i), BlastReport());
 
         // Subject line
-        sprintf(buffer, "\nSbjct  %-*d  ", numberWidth, sPos + effSStart);
+        snprintf(buffer, 40, "\nSbjct  %-*d  ", numberWidth, sPos + effSStart);
         write(stream, buffer);
 
         for (TPos i = aPos; i < end; ++i)
@@ -480,7 +480,7 @@ _writeAlignmentBlock(TStream & stream,
                 sPos += sStep;
             write(stream, value(m.alignRow1, i));
         }
-        sprintf(buffer, "  %-*d\n\n", numberWidth, (sPos + effSStart) - sStepOne);
+        snprintf(buffer, 40, "  %-*d\n\n", numberWidth, (sPos + effSStart) - sStepOne);
         write(stream, buffer);
 
         aPos = end;

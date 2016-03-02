@@ -176,7 +176,7 @@ dumpTimeline(char const * path, bool appendPid)
         int pid = getpid();
 #endif // #ifdef PLATFORM_WINDOWS
         char buffer[30];
-        sprintf(buffer, "%d", pid);
+        snprintf(buffer, 30, "%d", pid);
         strcat(pathBuffer, ".");
         strcat(pathBuffer, buffer);
     }
