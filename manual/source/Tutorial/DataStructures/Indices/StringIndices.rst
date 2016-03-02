@@ -24,7 +24,7 @@ Indices in SeqAn
 Indices in SeqAn are substring indices, meaning that they allow efficient pattern queries in strings or sets of strings.
 In contrast to, e.g., online-search algorithms that search through the text in :math:`\mathcal{O}(n)`, substring indices find a pattern in sublinear time :math:`o(n)`.
 
-You can find the following indices in SeqAn.
+You can find the following indices in SeqAn:
 
 :dox:`IndexSa`
   Suffix Array :cite:`Manber1993`
@@ -35,9 +35,7 @@ You can find the following indices in SeqAn.
 :dox:`IndexDfi`
   Deferred Frequency Index :cite:`Weese2008`
 :dox:`IndexQGram`
-  Q-gram index
-:dox:`PizzaChiliIndex`
-  An adapter for the `Pizza & Chili <http://pizzachili.dcc.uchile.cl/>`_ index API
+  Q-gram index (see `here <QgramIndex.html>`_)
 :dox:`FMIndex`
   Full-text minute index :cite:`Ferragina2001`
 
@@ -80,6 +78,17 @@ Assignment 1
      .. container:: foldable
 
         .. includefrags:: demos/tutorial/indices/assignment_1.cpp
+
+Bidirectional Indices
+---------------------
+
+SeqAn also supports bidirectional string indices. So far we only support the bidirectional :dox:`FMIndex`.
+For creating a bidirectional index, the generic Index class is used as before. The only difference is that
+the second template parameter naming the index specialization is wrapped by the :dox:`BidirectionalIndex`
+class.
+
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: bifm
 
 Index Based Pattern Search (Strings)
 ------------------------------------
@@ -143,7 +152,7 @@ Assignment 2
         .. includefrags:: demos/tutorial/indices/assignment_2.cpp
 
 You might have noticed that we only applied the :dox:`FMIndex` and :dox:`IndexEsa` in the examples.
-The reason for this is that even though everything stated so far is true for the other indices as well, :dox:`IndexWotd` and :dox:`IndexDfi` are more usefull when used with iterators as explained in the tutorial :ref:`tutorial-datastructures-indices-index-iterators` and the :dox:`IndexQGram` uses :dox:`Shape Shapes` which is also explained in another tutorial.
+The reason for this is that even though everything stated so far is true for the other indices as well, :dox:`IndexWotd` and :dox:`IndexDfi` are more useful when used with iterators as explained in the tutorial :ref:`tutorial-datastructures-indices-index-iterators` and the :dox:`IndexQGram` uses :dox:`Shape Shapes` which is also explained in another tutorial.
 
 One last remark is necessary.
 
@@ -247,3 +256,12 @@ Other Index Fibres
 ^^^^^^^^^^^^^^^^^^
 
 See :ref:`how-to-recipes-access-index-fibres` for more information.
+
+Pizza & Chili API
+-----------------
+
+`Pizza & Chili <http://pizzachili.dcc.uchile.cl/>`_
+
+
+.. :dox:`PizzaChiliIndex`
+..   An adapter for the `Pizza & Chili <http://pizzachili.dcc.uchile.cl/>`_ index API

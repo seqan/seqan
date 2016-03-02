@@ -21,6 +21,15 @@ Indices
     StringIndices
     IndexIterators
 
+Indices in SeqAn allow efficient pattern queries in strings or sets of
+strings. In contrast to, e.g., online-search algorithms that search
+through the text in :math:`\mathcal{O}(n)`, substring indices find a
+pattern in sublinear time :math:`o(n)`.
+
+Indices store additional data structures that allow searching the text
+using an iterator. Using the iterator can be thought of as traversing
+a suffix tree. The following section gives you an introduction how
+the suffix tree is built.
 
 We consider an alphabet Σ and a sentinel character $ that is smaller
 than every character of Σ. A suffix tree of a given non-empty string s
