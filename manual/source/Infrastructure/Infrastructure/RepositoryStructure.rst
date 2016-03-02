@@ -2,15 +2,36 @@
 
     .. contents::
 
-.. _internal-infrastructure-repository-structure:
+.. _infra-maintain-repo:
 
-SeqAn Repository Structure
-==========================
+The SeqAn Repository
+====================
 
-This article describes the SeqAn repository structure.
-After reading it, you will have knowledge about the repository structure and the reasons for the design decisions.
+This article describes the SeqAn repository structure and how to use it.
 
-Note that this article describes the structure of the Git repository and the "full sources", not the "library package" available from our downloads.
+Getting Started
+---------------
+
+We assume that you have read :ref:`infra-build-manual-install`, are using Linux/Mac/Unix and have cloned or unzipped the full SeqAn sources to ``~/devel/seqan`` (not the "library sources" described in other places).
+
+SeqAn supports the usual CMake build types and we recommend leaving room for different setups, as described `here in the CMake wiki <http://www.vtk.org/Wiki/CMake_FAQ#How_can_I_build_multiple_modes_without_switching_.3F>`_.
+This means creating e.g. a build directory in ``~/devel/seqan-build/release`` and running
+
+.. code-block:: console
+
+   ~/devel/seqan-build/release # cmake ../../seqan -DCMAKE_BUILD_TYPE=Release
+
+
+In addition to ``CMAKE_BUILD_TYPE`` there is also the ``SEQAN_BUILD_SYSTEM`` parameter which can be one of
+
+ 1. ``DEVELOP`` -- all build targets (apps, demos, tests) and documentation (dox, manual) are created (the default).
+ 1. ``SEQAN_RELEASE_LIBRARY`` -- only dox and libraray target created.
+ 1. ``SEQAN_RELEASE_APPS`` -- all app targets are created, but nothing else.
+ 1. ``APP:$APPNAME`` -- only a single app target is created for the chosen app.
+
+All build systems other than ``DEVELOP`` are only relevant to packaging releases.
+As usual, calling ``make $TARGET`` will build a single target and just ``make`` will build all targets.
+The purpose of the different build systems is explained
 
 Overview
 --------
@@ -20,46 +41,33 @@ The main repository structure is shown in the following picture.
 ::
 
     seqan
-      |-- CMakeLists.txt      CMake script file.
+      |-- CMakeLists.txt    CMake script file.
       |
-      |-- LICENSE             Top-Level Information Files
+      |-- LICENSE           Top-Level Information Files
       |-- README.rst
       |
-      |-- apps              Apps area
+      |-- apps              Applications
       |
-      |-- demos             Demos area
+      |-- demos             Demos
       |
-      |-- dox               Documentation System
+      |-- dox               API documentation system
       |
-      |-- include/seqan     Core Library
+      |-- include/seqan     SeqAn header ("the library")
       |
       |-- manual            Manuals
       |
-      |-- tests             Unit Tests for Library Modules
+      |-- tests             Unit tests for library modules
       |
       `-- util              Miscellaneous and Utility Code
 
-* The repository root contains some **information files** such as the ``LICENSE`` and ``README.rst``.
-  The file names should speak for themselves.
-* The folder ``apps`` contains the applications that are shipped together with the library.
-  Each application directory contains the source files for one or more binaries, documentation, example files, and app tests.
-  More information is available in the section `Application Structure`_.
-* The folder ``demos`` contains **demo programs**.
-* The folder ``dox`` contains the documentation building system, which builds the API documentation from the source code, see also section `API Documentation`_.
-* The folders ``include/seqan`` contains main library code, with all modules.
-  This is described in more detail in the section `Library Modules`_.
-* The folders ``manual`` contains the tutorials and manuals you are reading right now, see section `Manual`_.
-* The folder ``tests`` contains the unit tests for the library modules. 
-  For each library module, there is a directory below ``tests`` with the same name that contains the tests for this module.
-  Simpler modules have one tests executable, whereas there might be multiple tests executables for larger modules.
-  For example, the module ``index`` has multiple test programs ``test_index_qgram``, ``test_index_shapes`` etc.
-  Writing tests is explained in detail in the article :ref:`how-to-recipes-write-tests`.
-* The folder ``util`` contains **miscellaneous files** and **utility code**.  
+The repository root contains some **information files** such as the ``LICENSE`` and ``README.rst``.
+The other folders are as follows:
 
-Application Structure
----------------------
+apps
+----
 
-Each application directory contains one ``CMakeLists.txt`` file and the files for compiling one binary.
+The apps folder contains many applications, and
+each application directory contains one ``CMakeLists.txt`` file and the files for compiling at least one binary.
 Usually, apps have tests, too.
 In this case, there is a subdirectory ``tests``.
 Writing application tests is covered in detail in the article :ref:`how-to-recipes-write-app-tests`.
@@ -85,10 +93,36 @@ The general structure of an app is as follows:
       |
       `-- tests               App Tests Files
 
-Library Modules
+
+Note that some applications have binary names (make targets) that are not identical to the app-name, e.g. yara has ``yara_mapper`` and ``yara_indexer``.
+
+
+demos
+-----
+
+The demos are short programs and code snippets that are used in the dox or the manual.
+They serve as small examples and also functions as additional unit tests.
+
+
+dox
+---
+
+The SeqAn API documentation is created using a customly-written system called *dox*.
+It is very similar to doxygen, you can find out more about the syntax in :ref:`internal-style-guide-dox-api-docs`.
+
+You can build the documentation in the `dox` subfolder of the *source folder*:
+
+.. code-block:: console
+   ~   # cd ~/devel/seqan/dox
+   dox # ./dox_only.sh
+
+This will build the documentation into the sub directory ``html``.
+
+
+include/seqan
 ---------------
 
-The library modules area looks as follows:
+This is the actual library consisting of multiple modules:
 
 ::
 
@@ -113,23 +147,12 @@ The folder ``<module-name>`` contains the headers for the module module-name.
 The header ``<module-name>.h`` includes the headers from the module module-name.
 Including the header makes the code in the module available.
 
+.. note:: Header only library
 
-API Documentation
------------------
+   Remember that SeqAn is a templat library that consists entirely of headers.
+   No build steps are required for building the library and no shared objects will be created.
 
-The SeqAn API documentation is created using a customly-written system called *dox*.
-You can find out more about the syntax in :ref:`internal-style-guide-dox-api-docs`.
-
-You can build the documentation in the `dox` folder:
-
-.. code-block:: console
-
-   dox # ./dox_only.sh
-
-This will build the documentation into the sub directory ``html``.
-
-
-Manual
+manual
 ------
 
 The SeqAn manual is created using the `Sphinx <http://sphinx-doc.org/>`_ documentation system.
@@ -155,3 +178,13 @@ But if you are working on another branch, for example ``master``, you can set th
 
 before you call ``make html`` as described in the previous step.
 This will generate the correct links to the master's version of the dox, i.e., ``http://docs.seqan.de/seqan/master/``
+
+tests
+-----
+
+The folder ``tests`` contains the unit tests for the library modules.
+  For each library module, there is a directory below ``tests`` with the same name that contains the tests for this module.
+  Simpler modules have one tests executable, whereas there might be multiple tests executables for larger modules.
+  For example, the module ``index`` has multiple test programs ``test_index_qgram``, ``test_index_shapes`` etc.
+  Writing tests is explained in detail in the article :ref:`how-to-recipes-write-tests`.
+

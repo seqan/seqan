@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _internal-internal-internal-infrastructure-seqan-git-workflow:
+.. _infra-maintain-git:
 
 SeqAn Git Workflow
 ==================
