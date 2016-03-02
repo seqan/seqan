@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _internal-build-manual-using-the-find-seqan-cmake-module:
+.. _infra-build-manual-cmake:
 
 Using the FindSeqAn CMake Module
 ================================
@@ -183,7 +183,7 @@ Below you can find a minimal example ``CMakeLists.txt`` file that uses the ``Fin
 .. code-block:: cmake
 
    cmake_minimum_required (VERSION 3.0.0)
-   project (apps_dfi)
+   project (my_project CXX)
 
    # ----------------------------------------------------------------------------
    # Dependencies
@@ -208,4 +208,4 @@ Below you can find a minimal example ``CMakeLists.txt`` file that uses the ``Fin
 
    # Add executable and link against SeqAn dependencies.
    add_executable (app app.cpp)
-   target_link_libraries (dfi ${SEQAN_LIBRARIES})
+   target_link_libraries (app ${SEQAN_LIBRARIES})

@@ -3,7 +3,7 @@
    .. contents::
 
 
-.. _internal-build-manual-integration-with-your-own-build-system:
+.. _infra-build-manual-custom:
 
 Integration with your own Build System
 ======================================

@@ -8,9 +8,10 @@ Library and App releases
 ========================
 
 There are three different "packaging targets":
- 1. a source package of the SeqAn library (``-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY``)
- 1. a package containing all apps (``-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS``)
- 1. a package containing single SeqAn app (``-DSEQAN_BUILD_SYSTEM=APP:$appname``)
+
+#. a source package of the SeqAn library (``-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY``)
+#. a package containing all apps (``-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS``)
+#. a package containing single SeqAn app (``-DSEQAN_BUILD_SYSTEM=APP:$appname``)
 
 We assume that you have read :ref:`infra-build-manual-install`, are using Linux/Mac/Unix and have cloned or unzipped the full SeqAn sources to ``~/devel/seqan`` (not the "library sources" described in other places).
 
