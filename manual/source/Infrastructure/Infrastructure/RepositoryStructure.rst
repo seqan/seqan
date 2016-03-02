@@ -10,7 +10,7 @@ SeqAn Repository Structure
 This article describes the SeqAn repository structure.
 After reading it, you will have knowledge about the repository structure and the reasons for the design decisions.
 
-Note that this article describes the structure of the Subversion repository, not the structure of the release version of SeqAn which you can download as a ZIP archive.
+Note that this article describes the structure of the Git repository and the "full sources", not the "library package" available from our downloads.
 
 Overview
 --------
@@ -33,11 +33,11 @@ The main repository structure is shown in the following picture.
       |
       |-- include/seqan     Core Library
       |
-      |-- manual            Tutorials
+      |-- manual            Manuals
       |
       |-- tests             Unit Tests for Library Modules
-      |                
-      `-- util				Miscellaneous and Utility Code	
+      |
+      `-- util              Miscellaneous and Utility Code
 
 * The repository root contains some **information files** such as the ``LICENSE`` and ``README.rst``.
   The file names should speak for themselves.
@@ -45,10 +45,10 @@ The main repository structure is shown in the following picture.
   Each application directory contains the source files for one or more binaries, documentation, example files, and app tests.
   More information is available in the section `Application Structure`_.
 * The folder ``demos`` contains **demo programs**.
-* The folder ``dox`` contains the documentation building system, which builds the documentation from the API documentation.
+* The folder ``dox`` contains the documentation building system, which builds the API documentation from the source code, see also section `API Documentation`_.
 * The folders ``include/seqan`` contains main library code, with all modules.
   This is described in more detail in the section `Library Modules`_.
-* The folders ``manual`` contains the tutorials and the building system to build the tutorials.
+* The folders ``manual`` contains the tutorials and manuals you are reading right now, see section `Manual`_.
 * The folder ``tests`` contains the unit tests for the library modules. 
   For each library module, there is a directory below ``tests`` with the same name that contains the tests for this module.
   Simpler modules have one tests executable, whereas there might be multiple tests executables for larger modules.
@@ -113,15 +113,45 @@ The folder ``<module-name>`` contains the headers for the module module-name.
 The header ``<module-name>.h`` includes the headers from the module module-name.
 Including the header makes the code in the module available.
 
-Documentation System
---------------------
 
-The folder ``dox`` is used for building the documentation with the old and the new documentation system.
-You can build them by going into the directory and then calling ``./dox_only.sh``.
-This will build the documentation into the sub directory ``html``:
+API Documentation
+-----------------
+
+The SeqAn API documentation is created using a customly-written system called *dox*.
+You can find out more about the syntax in :ref:`internal-style-guide-dox-api-docs`.
+
+You can build the documentation in the `dox` folder:
 
 .. code-block:: console
 
-   seqan # cd dox
    dox # ./dox_only.sh
-   ...
+
+This will build the documentation into the sub directory ``html``.
+
+
+Manual
+------
+
+The SeqAn manual is created using the `Sphinx <http://sphinx-doc.org/>`_ documentation system.
+
+Follow these instructions to setup a local sphinx environment and build the manual:
+
+.. code-block:: console
+
+    $ virtualenv ~/seqan-manual-env
+    $ source ~/seqan-manual-env/bin/activate
+    (seqan-manual-env) $ cd ~/seqan/manual
+    (seqan-manual-env) $ pip install -r requirements.txt
+    (seqan-manual-env) $ make html
+
+Note that you have to first build the dox documentation since plugins for generating the ``:dox:`` links rely on the generated search index for checks.
+In order to get correct dox-links within the generated manuals, you have to specify the correct branch version.
+If you are working on the develop branch there is nothing to do, since ``'develop'`` is set by default.
+But if you are working on another branch, for example ``master``, you can set the correct branch by calling
+
+.. code-block:: console
+
+    (seqan-manual-env) $ export READTHEDOCS_VERSION='master'
+
+before you call ``make html`` as described in the previous step.
+This will generate the correct links to the master's version of the dox, i.e., ``http://docs.seqan.de/seqan/master/``
