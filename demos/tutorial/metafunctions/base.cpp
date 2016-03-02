@@ -41,17 +41,18 @@ void exchangeFirstValues(T & str)
 template <typename T>
 void printLenOfFixedSizeString(T const &)
 {
-    std::cout << LENGTH<T>::VALUE;
+    std::cout << LENGTH<T>::VALUE << std::endl;
 }
 
 //![length]
-
+//![length]
 int main()
 {
+//![length]
 //![amino]
     String<AminoAcid> amino_str = "ARN";
 //![amino]
-
+    std::cout << "//![iterator]" << std::endl;
 //![iterator]
     String<char> str = "I am a string";
     Iterator<String<char> >::Type it = begin(str);
@@ -60,11 +61,16 @@ int main()
         std::cout << *it;
         ++it;
     }
+    std::cout << std::endl;
 //![iterator]
-
+    std::cout << "//![iterator]" << std::endl;
+    std::cout << "//![length]" << std::endl;
 //![length]
     String<char, Array<100> > my_str;
     printLenOfFixedSizeString(my_str);
 //![length]
+    std::cout << "//![length]" << std::endl;
+//![length]
     return 0;
 }
+//![length]

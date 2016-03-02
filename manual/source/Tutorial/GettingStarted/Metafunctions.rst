@@ -7,6 +7,18 @@
 Metafunctions
 =============
 
+Learning Objective
+  You will be introduced to the concept of metafunctions and get to know some useful SeqAn metafunctions on the way.
+
+Difficulty
+  Medium.
+
+Duration
+  30 min
+
+Prerequisites
+  Basic C or C++ knowledge
+
 Generic algorithms usually have to know certain types that correspond to their arguments.
 An algorithm on containers may need to know which type of values are stored in the string, or what kind of iterator we need to access it.
 The usual way in the STL is to define the value type of a class like ``vector`` as a *member typedef* of this class, so it can be retrieved by ``vector::value_type``.
@@ -20,7 +32,12 @@ The name metafunction comes from fact that they can be regarded as part of a met
 
 In SeqAn we use class templates to implement metafunctions in C++.
 Generic algorithms usually have to know certain types that correspond to their arguments: An algorithm on strings may need to know which type of characters are stored in the string, or what kind of iterator can be used to browse it.
-SeqAn uses Metafunctions (also known as "traits") for that purpose. For example: Assuming that we define a string of amino acids:
+SeqAn uses Metafunctions (also known as "traits") for that purpose. 
+
+Looking at an Example
+---------------------
+
+Assuming that we define a string of amino acids:
 
 .. includefrags:: demos/tutorial/metafunctions/base.cpp
     :fragment: amino
@@ -50,12 +67,15 @@ We can view ``Value`` as a kind of "function" that takes ``T`` as an argument (i
 In fact, ``Value`` is not implemented as a C++ function, but as a class template.
 This class template is specialized for each sequence type ``T`` in a way that the ``typedef Type`` provides the value type of ``T``.
 Unfortunately, the current C++ language standard does not allow to write simply "``Value<T> temp``;", so we must select the return value by appending "``::Type``".
-The leading "``typename``" becomes necessary since ``Value<T>::Type`` is a type that depends on a template parameter of the surrounding function template.
+The leading "``typename``" becomes necessary since ``Value<T>::Type`` is a type that depends on a template parameter of the surrounding function template. 
+
+.. tip::
+    If you want to search our online documentation for metafunctions only, you can do so by selecting the metafunction category to the left of the search window.
 
 Type Metafunctions
 ------------------
 
-The metafunction :dox:`ContainerConcept#Value` is a type metafunction, i.e. it is used to determine a type.
+For example, the metafunction :dox:`ContainerConcept#Iterator` is a type metafunction, i.e. it is used to determine a type.
 Type metafunctions have the form:
 
 ``typename TypeMetaFunc<T1, T2, ..., TN>::Type``
@@ -73,6 +93,9 @@ The keyword ``typename`` must be stated if one of the arguments ``T1, T2, ..., T
 For example the following piece of code uses the metafunction ``Iterator`` to determine an iterator type for a string class:
 
 .. includefrags:: demos/tutorial/metafunctions/base.cpp
+    :fragment: iterator
+
+.. includefrags:: demos/tutorial/metafunctions/base.cpp.stdout
     :fragment: iterator
 
 Value Metafunctions
@@ -97,10 +120,13 @@ For example the following function prints the length of a fixed sized string usi
 .. includefrags:: demos/tutorial/metafunctions/base.cpp
     :fragment: length
 
-SeqAn Metafunctions
--------------------
+.. includefrags:: demos/tutorial/metafunctions/base.cpp.stdout
+    :fragment: length
 
-If you want to search for metafunctions only you can do so by only selecting the metafunction category to the left of the search window at the online documentation.
+.. important::
+      Redundant use of "*Value*":
+
+      There is a **Type Metafunction** called :dox:`ContainerConcept#Value` (``Value<TSomeType>::Type``), which has nothing to do with the **Value Metafunctions** described above.
 
 Assignment 1
 """"""""""""
@@ -108,61 +134,22 @@ Assignment 1
 .. container:: assignment
 
    Objective
-     Write a generic program that swaps the value ranges ``[i,i+k)`` and ``[j,j+k)`` of a container ``str``.
-     The container should be specified as a template argument ``T``.
+     Write a generic function ``checkContainerForDna(T & container)`` that prints out a message if the value inside the container is of the type :dox:`Dna`. The type ``T`` of the container should be specified as a template argument. Test you function with some examples.
 
    Hint
-     Use the Metafunctions :dox:`ContainerConcept#Value` to access the type of the elements in the container.
-     Use the function :dox:`RandomAccessContainerConcept#value` to assign the values.``
+      * Use the **Type Metafunction** :dox:`ContainerConcept#Value` to access the (alphabet-)type of the elements in the container.
+      * Use the **Value Metafunction** :dox:`IsSameType` to check for type equality.
 
    Solution
      .. container:: foldable
 
-        We want to have a generic version, similar to the function ``ExchangeFirstValues`` on the previous page.
+        Your program should look something like this:
 
-        Hence we could define the function as follows:
+        .. includefrags:: demos/tutorial/metafunctions/assignment1_solution.cpp
 
-        .. includefrags:: demos/tutorial/metafunctions/swap.cpp
-           :fragment: swap-declaration
+        Note: Because the Value Metafunction ``IsSameType<>` is evaluated at compile time, the part of the if-statement code that does not apply won't even appear in the compiled code. This can be an improvement to the runtime of your code.
 
-        The function is now quite generic allowing any container of type ``T``.
-        In addition we specify two positions that should be swapped (as integers which is not really generic, but it suffices for the demo) an the length of the swapped region.
-        Now we can define a helper variable ``help``, which can be of type ``T``.
+        The output is the following:
 
-        .. includefrags:: demos/tutorial/metafunctions/swap.cpp
-           :fragment: swap-metafunction
-
-        and do the swapping
-
-        .. includefrags:: demos/tutorial/metafunctions/swap.cpp
-           :fragment: swap-work
-
-        Thats it.
-        We can now test our generic swap function using for example a `String` of characters or a `String` of integers.
-
-        .. includefrags:: demos/tutorial/metafunctions/swap.cpp
-           :fragment: swap-apply
-
-
-        The whole program taken together looks as follows:
-
-        .. includefrags:: demos/tutorial/metafunctions/swap.cpp
-           :fragment: swap-headers
-
-        .. includefrags:: demos/tutorial/metafunctions/swap.cpp
-           :fragment: swap-declaration
-
-        .. includefrags:: demos/tutorial/metafunctions/swap.cpp
-           :fragment: swap-metafunction
-
-        .. includefrags:: demos/tutorial/metafunctions/swap.cpp
-           :fragment: swap-work
-
-        .. includefrags:: demos/tutorial/metafunctions/swap.cpp
-           :fragment: swap-main
-
-        .. includefrags:: demos/tutorial/metafunctions/swap.cpp
-           :fragment: swap-apply
-
-        .. includefrags:: demos/tutorial/metafunctions/swap.cpp.stdout
+        .. includefrags:: demos/tutorial/metafunctions/assignment1_solution.cpp.stdout
 
