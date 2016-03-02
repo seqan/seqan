@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _infra-maintain-repo:
+.. _infra-manage-repo:
 
 The SeqAn Repository
 ====================
@@ -12,7 +12,7 @@ This article describes the SeqAn repository structure and how to use it.
 Getting Started
 ---------------
 
-We assume that you have read :ref:`infra-build-manual-install`, are using Linux/Mac/Unix and have cloned or unzipped the full SeqAn sources to ``~/devel/seqan`` (not the "library sources" described in other places).
+We assume that you have read :ref:`infra-use-install`, are using Linux/Mac/Unix and have cloned or unzipped the full SeqAn sources to ``~/devel/seqan`` (not the "library sources" described in other places).
 
 SeqAn supports the usual CMake build types and we recommend leaving room for different setups, as described `here in the CMake wiki <http://www.vtk.org/Wiki/CMake_FAQ#How_can_I_build_multiple_modes_without_switching_.3F>`_.
 This means creating e.g. a build directory in ``~/devel/seqan-build/release`` and running

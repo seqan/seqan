@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _infra-maintain-deploy:
+.. _infra-manage-deploy:
 
 Library and App releases
 ========================
@@ -13,7 +13,7 @@ There are three different "packaging targets":
 #. a package containing all apps (``-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS``)
 #. a package containing single SeqAn app (``-DSEQAN_BUILD_SYSTEM=APP:$appname``)
 
-We assume that you have read :ref:`infra-build-manual-install`, are using Linux/Mac/Unix and have cloned or unzipped the full SeqAn sources to ``~/devel/seqan`` (not the "library sources" described in other places).
+We assume that you have read :ref:`infra-use-install`, are using Linux/Mac/Unix and have cloned or unzipped the full SeqAn sources to ``~/devel/seqan`` (not the "library sources" described in other places).
 
 The instructions for all packaging targets are the same (replace ``$pack_target`` with the above string):
 

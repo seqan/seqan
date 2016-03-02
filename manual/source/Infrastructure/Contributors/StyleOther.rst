@@ -5,7 +5,7 @@
 .. _infra-contribute-style-other:
 
 SeqAn Python Style Guide
-========================
+------------------------
 
 Some very few points:
 
@@ -14,6 +14,6 @@ Some very few points:
 * Name functions, classes, constants as in SeqAn, variables and member variables are named ``lower_case_with_underscores``.
 
 SeqAn JavaScript Style Guide
-============================
+----------------------------
 
 Follow the :ref:`SeqAn C++ Style Guide <infra-contribute-style-cpp>` in spirit.

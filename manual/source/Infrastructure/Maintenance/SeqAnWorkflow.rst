@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _infra-maintain-git:
+.. _infra-manage-git:
 
 SeqAn Git Workflow
 ==================
