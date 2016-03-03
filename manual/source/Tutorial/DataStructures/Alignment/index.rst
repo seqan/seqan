@@ -8,5 +8,5 @@ Alignment
     :titlesonly:
 
     ScoringSchemes
-    AlignmentRepresentation
-
+    AlignmentGaps
+    AlignmentGraph
