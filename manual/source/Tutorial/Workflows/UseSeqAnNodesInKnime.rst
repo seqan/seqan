@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _how-to-recipes-use-seqan-nodes-in-knime:
+.. _tutorial-workflows-use-seqan-nodes-in-knime :
 
 Creating Workflows with SeqAn Nodes in KNIME
 ============================================
