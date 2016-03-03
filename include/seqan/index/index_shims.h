@@ -850,7 +850,7 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
         CharString name;
         while (true)
         {
-            sprintf(id, ".%u", i);
+            snprintf(id, 12, ".%u", i);
             name = fileName;
             append(name, id);
             {
@@ -949,7 +949,7 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
         CharString name;
         for(unsigned i = 0; i < length(multi); ++i)
         {
-            sprintf(id, ".%u", i);
+            snprintf(id, 12, ".%u", i);
             name = fileName;
             append(name, &(id[0]));
             if (!save(multi[i], toCString(name), openMode))

@@ -498,7 +498,7 @@ write(TFile & target,
 
         // Print header line
         char buffer[20];
-        int len = sprintf(buffer, "%7u", (unsigned)baseCount);
+        int len = snprintf(buffer, 20, "%7u", (unsigned)baseCount);
         write(target, buffer, len);
         baseCount += windowSize_;
         writeValue(target, ' ');
