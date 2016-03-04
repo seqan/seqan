@@ -147,7 +147,7 @@ Assignment 1
 
         .. includefrags:: demos/tutorial/metafunctions/assignment1_solution.cpp
 
-        Note: Because the Value Metafunction ``IsSameType<>` is evaluated at compile time, the part of the if-statement code that does not apply won't even appear in the compiled code. This can be an improvement to the runtime of your code.
+        Note: Because the Value Metafunction ``IsSameType<>`` is evaluated at compile time, the part of the if-statement code that does not apply won't even appear in the compiled code. This can be an improvement to the runtime of your code.
 
         The output is the following:
 
