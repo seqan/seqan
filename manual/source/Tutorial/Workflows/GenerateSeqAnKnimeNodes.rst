@@ -147,6 +147,8 @@ Clicking finish will import (1) the GKN classes themselves and (2) your generate
 Now, the packages of the GKN classes and your plugin show up in the left ``Package Explorer`` pane of Eclipse.
 
 .. figure:: gkn-import-done.png
+   :align: center
+   :width: 75%
 
 .. tip::
 

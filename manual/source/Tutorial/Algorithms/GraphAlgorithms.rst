@@ -8,7 +8,7 @@ Graph Algorithms
 ================
 
 Learning Objective
-  This tutorial shows how to use graphs in SeqAn and their functionality.
+  This tutorial shows how to use some graph algorithms in SeqAn. In particular we will use the dijkstra algorithm to find shortest path and viterbi Algorithm to compute Viterbi path of a sequence.
 
 Difficulty
   Average
@@ -17,13 +17,12 @@ Duration
   1 h
 
 Prerequisites
-  :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-alignment`, :ref:`tutorial-algorithms-alignment-pairwise-sequence-alignment`
+  :ref:`tutorial-datastructures-graphs`
 
 Overview
 --------
 
-Now that we completed creating the graph we can address the graph algorithms.
-Here is an overview of some graph algorithms currently available in SeqAn:
+The following graph graph algorithms are currently available in SeqAn:
 
 Elementary Graph Algorithms
   * Breadth-First Search (:dox:`breadthFirstSearch`)
@@ -110,8 +109,7 @@ Assignment 1
      Application
 
    Objective
-     Write a program which calculates the connected components of the graph defined in task 1.
-     Output the component for each vertex.
+     Write a program which calculates the connected components of the graph defined in :ref:`tutorial-datastructures-graphs-assignment-2` of the Graphs tutorial and Output the connected component for each vertex.
 
    Solution
      .. container:: foldable
@@ -152,7 +150,7 @@ Assignment 2
      Application
 
    Objective
-      Extend the program from the `Assignment 1`.
+      Extend the program from the :ref:`tutorial-datastructures-graphs-assignment-3` of the Graphs tutorial.
       Given the sequence ``s = "CTTCATGTGAAAGCAGACGTAAGTCA"``.
 
       #. calculate the Viterbi path of ``s`` and output the path as well as the probability of the path and
@@ -161,7 +159,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        In `Assignment 3` we defined an HMM with three states: exon, splice, and intron.
+        In :ref:`tutorial-datastructures-graphs-assignment-3` of the Graphs tutorial we defined an HMM with three states: exon, splice, and intron.
 
         The Viterbi path is the sequence of states that is most likely to produce a given output.
         In SeqAn, it can be calculated with the function :dox:`HmmAlgorithms#viterbiAlgorithm`.
