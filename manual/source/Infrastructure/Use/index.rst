@@ -5,7 +5,7 @@ Use
 
 Before you can start using the SeqAn library you have to make sure that it is installed and setup correctly:
 
-  * :ref:`Setting Up SeqAn <infra-use-install>`
+  * :ref:`Setting up SeqAn <infra-use-install>`
 
 Once this is done you have two choices for using SeqAn:
 
