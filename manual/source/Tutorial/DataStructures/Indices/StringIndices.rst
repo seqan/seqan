@@ -79,15 +79,15 @@ Assignment 1
 
         .. includefrags:: demos/tutorial/indices/assignment_1.cpp
 
-Bidirectional Indices
----------------------
+.. Bidirectional Indices
+   ---------------------
 
-SeqAn also supports bidirectional string indices. So far we only support the bidirectional :dox:`FMIndex`.
-For creating a bidirectional index, the generic Index class is used as before. The only difference is that
-the second template parameter naming the index specialization is wrapped by the :dox:`BidirectionalIndex`
-class.
+.. SeqAn also supports bidirectional string indices. So far we only support the bidirectional :dox:`FMIndex`.
+   For creating a bidirectional index, the generic Index class is used as before. The only difference is that
+   the second template parameter naming the index specialization is wrapped by the :dox:`BidirectionalIndex`
+   class.
 
-.. includefrags:: demos/tutorial/indices/base.cpp
+.. .. includefrags:: demos/tutorial/indices/base.cpp
       :fragment: bifm
 
 Index Based Pattern Search (Strings)
@@ -260,8 +260,23 @@ See :ref:`how-to-recipes-access-index-fibres` for more information.
 Pizza & Chili API
 -----------------
 
-`Pizza & Chili <http://pizzachili.dcc.uchile.cl/>`_
+The :dox:`PizzaChiliIndex` is an adapter for the `Pizza & Chili <http://pizzachili.dcc.uchile.cl/>`_ API.
+We currently support the following indices
 
+PizzaChili_RSA
+  The repair suffix array index
+PizzaChiliAF
+  The alphabet-friendly FM index
+PizzaChiliCcsa
+  The compressed compact suffix array index
+PizzaChiliFM
+  The FM (full-text in minute space) index
+PizzaChiliSA
+  The simple suffix array index
+PizzaChiliSada
+  the compressed suffix array index
+
+The adapter allows you to quickly use specific configurations of indices in SeqAn.
 
 .. :dox:`PizzaChiliIndex`
 ..   An adapter for the `Pizza & Chili <http://pizzachili.dcc.uchile.cl/>`_ index API
