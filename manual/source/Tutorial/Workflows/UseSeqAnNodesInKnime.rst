@@ -18,6 +18,8 @@ Download the latest KNIME release from the KNIME website `download <https://www.
 In the KNIME window click on the menu ``Help > Install new Software``.
 
 .. figure:: install-knime-1.png
+   :align: center
+   :width: 75%
 
 In the opening dialog choose ``Add...``.
 
@@ -43,6 +45,9 @@ Follow the instructions.
 After the installation is don KNIME will prompt you to restart. Click OK and KNIME will restart with the newly installed SeqAn nodes will be available under ``Community Nodes`` category. The installation also include GenericKnimeNodes which are very useful for using SeqAn nodes in KNIME. This includes file input/output nodes.
 
 .. figure:: install-knime-5.png
+   :align: center
+   :width: 75%
+
 
 Now you can drag and drop the installed SeqAn nodes to make your desired workflow together with the other KNIME nodes. 
 

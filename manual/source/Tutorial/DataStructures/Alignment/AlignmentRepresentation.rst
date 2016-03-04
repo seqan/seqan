@@ -238,7 +238,7 @@ The second output prints our desired alignment.
 
 .. includefrags:: demos/tutorial/alignment_representation/graph.cpp.stdout
 
-The general usage of graphs is explained in the :ref:`tutorial-graphs` tutorial.
+The general usage of graphs is explained in the :ref:`tutorial-datastructures-graphs` tutorial.
 
 Assignment 2
 ^^^^^^^^^^^^

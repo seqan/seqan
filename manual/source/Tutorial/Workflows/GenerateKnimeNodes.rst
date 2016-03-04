@@ -293,7 +293,6 @@ The files DESCRIPTION, LICENSE, COPYRIGHT
 - **COPYRIGHT**:
   A file with copyright information for the project.
 
-
 |br|
 
 
@@ -369,6 +368,8 @@ We need to install support for file handling nodes in KNIME. In order to do that
 - Open the window for installing Eclipse plugins; in the program's main menu: ``Help > Install New Software...``.
 
 .. figure:: install-knime-1.png
+   :align: center
+   :width: 75%
 
 - On the install window enter ``http://www.knime.org/update/3.1`` into the ``Work with:`` field, enter ``file`` into the search box, and finally select ``KNIME File Handling Nodes`` in the list.
 
@@ -424,7 +425,10 @@ Clicking finish will import (1) the GKN classes themselves and (2) your generate
 
 Now, the packages of the GKN classes and your plugin show up in the left ``Package Explorer`` pane of Eclipse.
 
+
 .. figure:: gkn-import-done.png
+   :align: center
+   :width: 75%
 
 .. hint::
 
@@ -449,6 +453,8 @@ Finally, click ``Run``.
 Your tool will show up in the tool selector in ``community/SAM and BAM``.
 
 .. figure:: sam-plugins.png
+   :align: left
+   :width: 75%
 
 Here is an example KNIME workflow with the nodes that we just created.
 
