@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _tutorial-datastrucures-indeices-q-gram-index:
+.. _tutorial-datastrucures-indices-q-gram-index:
 
 Q-gram Index
 ============
@@ -66,14 +66,14 @@ As a remedy, the :dox:`Shape#hashInit` function can be used first and then :dox:
    :fragment: hash_loop2
 
 The q-gram index offers different functions to search or count occurrences of q-grams in an indexed text, see :dox:`IndexQGram#getOccurrences`, :dox:`IndexQGram#countOccurrences`.
-A q-gram index over a :dox:`StringSet` stores occurrence positions in the same way as the ESA index and in the same fibre (FibreSA).
+A q-gram index over a :dox:`StringSet` stores occurrence positions in the same way and in the same fibre (FibreSA) as the ESA index.
 If only the number of q-grams per sequence are needed the QGramCounts and QGramCountsDir fibres can be used.
 They store pairs ``(seqNo, count)``, ``count``>0, for each q-gram that occurs ``counts`` times in sequence number ``seqNo``.
 
 To efficiently retrieve all occurrence positions or all pairs ``(seqNo, count)`` for a given q-gram, these positions or pairs are stored in contiguous blocks (in QGramSA, QGramCounts fibres), called buckets.
 The begin position of bucket i is stored in directory fibres (QGramDir, QGramCountsDir) at position i, the end position is the begin positions of the bucket i+1.
 The default implementation of the :dox:`IndexQGram` index maps q-gram hash values 1-to-1 to bucket numbers.
-For large q or large alphabets the :dox:`OpenAddressingQGramIndex Open Adressing QGram Index` can be more appropriate as its directories are additionally bound by the text length.
+For large q or large alphabets the :dox:`OpenAddressingQGramIndex Open Addressing QGram Index` can be more appropriate as its directories are additionally bound by the text length.
 This is realized by a non-trivial mapping from q-gram hashes to bucket numbers that requires an additional fibre (QGramBucketMap).
 
 For more details on q-gram index fibres see :ref:`how-to-recipes-access-index-fibres` or :dox:`QGramIndexFibres QGram Index Fibres`.
@@ -82,7 +82,7 @@ Example
 -------
 
 We want to construct the q-gram index of the string ``"CATGATTACATA"`` and output the occurrences of the ungapped 3-gram ``"CAT"``.
-As 3 is fixed at compile-time and the shape has no gaps we can use a :dox:`UngappedShape` which is the first template argument of :dox:`IndexQGram`, the second template argument of :dox:`Index`.
+As 3 is fixed at compile-time and the shape has no gaps we can use an :dox:`UngappedShape` which is the first template argument of :dox:`IndexQGram`, the second template argument of :dox:`Index`.
 Next we create the string ``"CATGATTACATA"`` and specialize the first index template argument with the type of this string.
 The string can be given to the index constructor.
 
@@ -148,7 +148,7 @@ Assignment 2
 
    Objective
      Create and output a matrix M where M(i,j) is the number of common ungapped 5-grams between sequence i and sequence j for 3 random :dox:`Dna` sequences, each not longer than 200 characters.
-     Optional: Run the matrix calculation twice, once for an :dox:`IndexQGram` and once for an :dox:`OpenAddressingQGramIndex Open Adressing QGram Index` and output the directory sizes (QGram_Dir, QGram_CountsDir fibre).
+     Optional: Run the matrix calculation twice, once for an :dox:`IndexQGram` and once for an :dox:`OpenAddressingQGramIndex Open Addressing QGram Index` and output the directory sizes (QGram_Dir, QGram_CountsDir fibre).
 
    Hint
      A common q-gram that occurs :math:`a` times in one and :math:`b` times in the other sequence counts for :math:`\min(a,b)`.
@@ -159,7 +159,7 @@ Assignment 2
         For generating random numbers we use the `std::mt19937 <http://www.cplusplus.com/reference/random/mt19937/>`_.
         The random numbers returned by the random number engine are arbitrary ``unsigned int`` values which we downscale to values between 0 and 3 and convert into :dox:`Dna` characters.
         The 3 generated strings are of random length and appended to a :dox:`StringSet`.
-        The main algorithmus is encapsulated in a template function ``qgramCounting`` to easily switch between the two :dox:`IndexQGram` specializations.
+        The main algorithm is encapsulated in a template function ``qgramCounting`` to easily switch between the two :dox:`IndexQGram` specializations.
 
         .. includefrags:: demos/tutorial/q_gram_index/index_assignment6.cpp
            :fragment: initialization
