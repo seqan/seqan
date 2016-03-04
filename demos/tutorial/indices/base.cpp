@@ -36,9 +36,7 @@ int main()
 
 //![esa]
 //![finder]
-//![bifm]
     String<Dna5> genome = "ACGTACGTACGTN";
-//![bifm]
     Index<String<Dna5>, IndexEsa<> > esaIndex(genome);
 //![esa]
 //![finder]
@@ -50,9 +48,6 @@ int main()
 
     Index<StringSet<String<AminoAcid> >, FMIndex<> > fmIndex(protein);
 //![fm]
-//![bifm]
-    Index<String<Dna5>, BidirectionalIndex<FMIndex<> > > biFMIndex(genome);
-//![bifm]
 //![finder]
     Finder<Index<String<Dna5>, IndexEsa<> > > esaFinder(esaIndex);
 //![finder]
