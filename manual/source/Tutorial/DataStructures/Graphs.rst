@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _tutorial-graphs:
+.. _tutorial-datastructures-graphs:
 
 Graphs
 ======
@@ -129,6 +129,8 @@ Assignment 1
 
 		.. includefrags:: demos/tutorial/graph/solution_1.cpp.stdout
 
+.. _tutorial-datastructures-graphs-assignment-2:
+
 Assignment 2
 ^^^^^^^^^^^^
 
@@ -169,6 +171,8 @@ Assignment 2
 
 		.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp.stdout
 		   :fragment: main-graph-construction
+
+.. _tutorial-datastructures-graphs-assignment-3:
 
 Assignment 3
 ^^^^^^^^^^^^
