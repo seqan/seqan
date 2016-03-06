@@ -9,7 +9,7 @@ Generating SeqAn KNIME Nodes
 
 Learning Objective
   You will learn how to import applications written in SeqAn into the KNIME Eclipse plugin.
-  After completing this tutorial, you will be able to use self made applications in KNIME workflows.
+  After completing this tutorial, you will be able to use self-made applications in KNIME workflows.
 
 Difficulty
   Very basic
@@ -21,7 +21,7 @@ Prerequisites
   Eclipse KNIME SDK
     You can download it from the `KNIME Download Site <http://www.knime.org/downloads/overview>`_ (at the end of the page). We will use Version 3.1.
   git
-    For Downloading the latest GenericKnimeNodes.
+    For downloading the latest GenericKnimeNodes.
   Apache Ant
    The Generic KNIME Plugins project uses `Apache Ant <http://ant.apache.org/>`_ as the build system.
    On Linux and Mac, you should be able to install it through your package manager.
