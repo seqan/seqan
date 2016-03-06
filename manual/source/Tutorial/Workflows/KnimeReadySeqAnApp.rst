@@ -8,7 +8,7 @@ Make Your SeqAn App KNIME Ready
 ===============================
 
 Learning Objective
-  You will learn how to use the the seqan:::dox:`ArgumentParser` and the seqan build system 
+  You will learn how to use the the seqan:::dox:`ArgumentParser` and the SeqAn build system 
   so that, at the end, a new SeqAn application can be integrated in KNIME easily. 
   After completing this tutorial, you will be able write a new SeqAn application 
   that can be imported into a KNIME Eclipse plugin with a couple of commands.
@@ -22,16 +22,15 @@ Duration
 Prerequisites
   :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-getting-started-parsing-command-line-arguments`
 
-In this tutorial you will learn how to write a seqan app which can be easly converted into a KNIME node.
+In this tutorial you will learn how to write a SeqAn app, which can be, easly converted into a KNIME node.
 
 The first part consists of preparing a dummy app such that it can be used in a KNIME workflow and in the second part you are asked to adapt the app such that it becomes a simple quality control tool.
 
 Using the seqan::ArgumentParser
 -------------------------------
 
-When we add options to the parser using :dox:`ArgumentParser#addOption`.
-We pass the parser and an :dox:`ArgParseOption` object. The :dox:`ArgParseArgument::ArgumentType` of this :dox:`ArgParseOption` object is 
-highly correlated to how the node generated from our application looks like.
+When we add options to the parser using :dox:`ArgumentParser#addOption`, 
+we pass an :dox:`ArgParseOption` object together with the parser. The :dox:`ArgParseArgument::ArgumentType` of this :dox:`ArgParseOption` object is highly correlated to how the node generated from our application will look like.
 
 The ArgumentType can be one of the following 
 
@@ -79,6 +78,7 @@ to the end of the *CMakeList.txt* file of your application. All applications wit
 
   *If You are not using the SeqAn build system for some reason*, but you used the seqan::ArgumentParser as recommended above, you still can generate a CTD file of your application.
   After building your application and go to the directory containing the executable of your application and run the following.
+  
   .. code-block:: console
 
     ./seqan_app_name -write-ctd seqan_app_name.ctd
