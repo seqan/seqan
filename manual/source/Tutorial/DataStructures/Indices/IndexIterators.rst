@@ -273,8 +273,8 @@ Assignment 4
 
 	.. includefrags:: demos/tutorial/index_iterators/index_assignment1.cpp.stdout
 
-As a last assignment lets try out one of the specialised iterators, which you can find at the bottom of this page.
-Look there for the specialisation which iterates over all maximal unique matches (MUMS).
+As a last assignment lets try out one of the specialized iterators, which you can find at the bottom of this page.
+Look there for the specialization which iterates over all maximal unique matches (MUMS).
 
 Assignment 5
 ^^^^^^^^^^^^
@@ -411,7 +411,8 @@ Given a string s a repeat is a substring r that occurs at 2 different positions 
 The repeat can also be identified by the triple (i,j,\|r\|).
 A maximal repeat is a repeat that cannot be extended to the left or to the right, i.e. s[i-1]≠s[j-1] and s[i+\|r\|]≠s[j+\|r\|].
 A supermaximal repeat r is a maximal repeat that is not part of another repeat.
-Given a set of strings s1, ..., sm a MultiMEM (multiple maximal exact match) is a substring r that occurs in each sequence si at least once and cannot be extended to the left or to the right.
+Given a set of strings :math:`s_1, \dots, s_m` a MultiMEM (multiple maximal exact match) is a substring r that occurs in
+each sequence :math:`s_i` at least once and cannot be extended to the left or to the right.
 A MUM (maximal unique match) is a MultiMEM that occurs exactly once in each sequence.
 The following examples demonstrate the usage of these iterators:
 
