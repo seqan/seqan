@@ -7,6 +7,8 @@
 Writing Tests
 =============
 
+TODO: move to infra/manage
+
 This page describes how to write tests for the SeqAn library.
 Each test program defines a *Test Suite*, a collection of related *Tests*.
 

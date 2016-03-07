@@ -7,6 +7,8 @@
 Installing Contribs On Windows
 ==============================
 
+TODO move to infra/use, update
+
 Download Contribs
 -----------------
 
