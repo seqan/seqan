@@ -153,7 +153,7 @@ The read sequence is neither stored in the readStore or alignedReadStore as many
 We copy the read sequence into a local variable (defined outside the loop to save allocations/deallocations) as we need to compute the reverse-complement for reads that align to the reverse strand.
 Then we create a :dox:`Gaps gaps` object that represent the alignment rows of the contig and the aligned read in the multiple sequence alignment.
 The :dox:`Gaps` object requires references of the sequence and the gap-anchor string stored in the contigStore and the alignedReadStore.
-We need to limit the view of the contig alignment row to the interval the read aligns to, i.e. the gap position interval [beginPos,endPos).
+We need to limit the view of the contig alignment row to the interval the read aligns to, i.e. the gap position interval [beginPos,endPos[.
 After that we output both alignment rows.
 
 .. tip::
