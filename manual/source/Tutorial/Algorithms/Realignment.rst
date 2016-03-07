@@ -41,7 +41,7 @@ Getting Started
 ---------------
 
 Consider the following program.
-It creates a fragment store and then reads a small reference (with a length of 2kb) from a FASTA file and also a SAM file with reads spanning a complex indel region.
+It creates a fragment store and then reads a small reference (with a length of 2kb) from a FASTA file and also a SAM file with reads spanning a complex indel region at 1060 ~ 1140. 
 Finally, it prints the multi-read alignment around this position using :dox:`AlignedReadLayout`.
 
 .. includefrags:: demos/tutorial/realignment/step1.cpp
