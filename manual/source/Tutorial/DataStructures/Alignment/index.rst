@@ -1,11 +1,12 @@
 .. _tutorial-datastructures-alignment:
 
-Alignment Representation
+Alignment
 ========================
 
 ..  toctree::
     :hidden:
     :titlesonly:
 
+    ScoringSchemes
     AlignmentRepresentation
 
