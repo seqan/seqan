@@ -124,9 +124,9 @@ For example the following function prints the length of a fixed sized string usi
     :fragment: length
 
 .. important::
-      Redundant use of "*Value*":
+      Different uses of "*Value*":
 
-      There is a **Type Metafunction** called :dox:`ContainerConcept#Value` (``Value<TSomeType>::Type``), which has nothing to do with the **Value Metafunctions** described above.
+      Please note that :dox:`ContainerConcept#Value` (``Value<TSomeType>::Type``) is a **Type Metafunction**, because it returns a Type (e.g. of values in a container) and not a value.
 
 Assignment 1
 """"""""""""
