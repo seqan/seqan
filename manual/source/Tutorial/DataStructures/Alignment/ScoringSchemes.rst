@@ -37,7 +37,7 @@ In SeqAn are available several :dox:`Score#standard scoring schemes` to evaluate
 We will first introduce you to the scoring schemes used to evaluate match and substitution. Subsequent, you will learn how to chose the gap model to be implemented in the chosen scoring scheme.
 
 Match/Substitution Evaluation
--------------------------
+-----------------------------
 
 :dox:`SimpleScore Simple Score`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -115,7 +115,7 @@ The output of a global alignment implementing the Blosum62 scoring function is a
    As can be noted the output of this scoring scheme is completely different with respect to the output generated with the simple scoring scheme confirming that the scoring scheme choice is one of the most important step to achieve high quality alignments.
 
 Insertion/Deletion Evaluation
---------------
+-----------------------------
 In the previous sections we proposed two simple code examples useful to highlight the differences between two scoring schemes capable to evaluate the match and the substitution events. In this section we will see the three gap models implemented in the SeqAn library to evaluate the insertion and deletion events.
 
 Linear Gap Model
