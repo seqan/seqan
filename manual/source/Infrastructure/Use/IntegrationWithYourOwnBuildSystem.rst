@@ -8,28 +8,38 @@
 Integration with your own Build System
 ======================================
 
-The CMake build system that SeqAn ships with is meant for people who want to build the applications, tests, and demos that SeqAn ships with.
-It has the advantage that new such programs have only to be added by a certain convention and they get added to the Makefiles/project files on the next ``cmake`` call.
-If you just want to use SeqAn in your own project, it might not be a good fit.
-One of the disadvantages is that CMake will overwrite your project files on every call.
-Another disadvantage is that the generated project files are huge and might take a long while to load.
-
 This page gives an example of how to use SeqAn in your application based on your own Makefiles.
 You should be able to adapt the descriptions to configuring your build system and/or IDE.
 
 .. tip::
 
-   SeqAn is a header library only.
-   Simply add ``include`` and ``include`` to your include path and you can use SeqAn, as seen in the `Short Version`_.
-   See below how to enable using zlib for BAM access, for example.
+   **SeqAn is a header-only library.**
 
-Libraries on Linux
-------------------
+   Simply adding its include folder to your include path or installing it globally makes it available to your program.
 
-On Linux, you have to link against ``librt``.
-For GCC, add the flag ``-lrt`` to the ``g++`` compiler call.
+Operating System specifics
+--------------------------
 
-Compiler Flags
+GNU/Linux
+^^^^^^^^^
+
+**Libraries**
+
+Add the flag ``-lrt -lpthread`` to the ``g++`` compiler call.
+
+BSD
+^^^
+
+**Libraries**
+
+Add the flag ``-lpthread -lexecinfo -lelf`` to the ``g++`` compiler call.
+
+**Misc**
+
+Also define ``-D_GLIBCXX_USE_C99=1``.
+
+
+Warning levels
 --------------
 
 It is recommended to compile your programs with as many warnings enabled as possible.
@@ -42,7 +52,7 @@ For GCC, the following flags are recommended:
 
 ::
 
-    -W -Wall -Wno-long-long -pedantic -Wno-variadic-macros
+    -W -Wall -pedantic -Wno-variadic-macros
 
 Explanation:
 
@@ -54,9 +64,6 @@ Explanation:
   Variadic macros were standardized in C99 but are not part of C++98 so GCC warns against their usage.
   Disable these warnings.
 
-``-Wno-long-long``
-  64 bit integers (``long long``) are not supported in C++98, but GCC implements them nevertheless but warns against their usage in pedantic mode.
-  We really want 64 bit integers, though.
 
 Visual Studio
 ^^^^^^^^^^^^^
@@ -92,15 +99,15 @@ possible value
   0, 1
 
 default
-  1
+  0
 
 meaning
   If set to 1, assertions within SeqAn (``SEQAN_ASSERT...``) are enabled, they are disabled otherwise.
   Is forced to 1 if ``SEQAN_ENABLE_TESTING`` is true.
-  If not set, is set to 0 if ``NDEBUG`` is defined and set to 1 if undefind and ``NDEBUG`` is not defined.
+  This flag will internally always correspond to the inverse of ``NDEBUG``, i.e. setting it to 1 will forace ``NDEBUG`` to undefined and setting it to 0 will forcefully set ``NDEBUG``.
 
 SEQAN_ENABLE_TESTING
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 possible value
   0, 1
@@ -109,8 +116,32 @@ default
   0
 
 meaning
- This makes the code very slow, however, and should only be used when running the tests.
+ This makes the code very slow, and should only be used when running the SeqAn unit tests.
  Has to be set to 1 for tests to work.
+
+SEQAN_ASYNC_IO
+^^^^^^^^^^^^^^
+
+possible value
+  0, 1
+
+default
+  0 on ``FreeBSD/32Bit`` and ``OpenBSD/*``; 1 otherwise
+
+meaning
+ Whether asynchronous input/output is available.
+
+SEQAN_HAS_EXECINFO
+^^^^^^^^^^^^^^^^^^
+
+possible value
+  0, 1
+
+default
+  depends on platform / existance of ``<execinfo.h>``
+
+meaning
+ This should almost always be set to 1 on non-Windows platforms!
 
 SEQAN_HAS_BZIP2
 ^^^^^^^^^^^^^^^
@@ -122,7 +153,7 @@ default
   0
 
 meaning
- If set to 1 then libbzip2 is available.``
+ If set to 1 then libbzip2 is expected to be available.
  You have to link against the library (e.g. add ``-lbz2`` to your linke rflags) and ``bzlib.h`` must be in your include path.
 
 SEQAN_HAS_ZLIB
@@ -135,8 +166,22 @@ default
   0
 
 meaning
- If set to 1 then zlib is available.
+ If set to 1 then zlib is expected to be available.
  You have to link against the library (e.g. add ``-lz`` to your linker flags) and ``zlib.h`` must be in your include path.
+
+SEQAN_HAS_OPENMP
+^^^^^^^^^^^^^^^^
+
+possible value
+  0, 1
+
+default
+  0
+
+meaning
+ If set to 1 then OpenMP is expected to be available.
+ You might have to add ``-fopenmp`` and possibly ``-lgomp`` to your build. And OpenMP needs to be supported by your compiler.
+
 
 Settings Projects Using Seqan
 -----------------------------
@@ -150,34 +195,33 @@ Debug Builds
 Besides enabling debug symbols and disabling optimization, there are the
 following SeqAn specific settings to be applied.
 
-- Add the path to the directory ``seqan`` to your include path.
+- Add SeqAn to your include path
 - Define ``SEQAN_ENABLE_DEBUG`` to be ``1``.
-  Alternatively, you can leave ``SEQAN_ENABLE_DEBUG`` undefined and not define ``NDEBUG``.
-- Define ``SEQAN_ENABLE_TESTING`` to be ``0``.
 
 This translates into the following GCC flags:
 
 ::
 
-    -g -O0 -DSEQAN_ENABLE_TESTING=0 -I${PATH_TO_CORE}/include \
-      -I${PATH_TO_EXTRAS}/include
+    -g -O0 -DSEQAN_ENABLE_DEBUG=1 -I${PATH_TO_SEQAN_INSTALL}/include
 
 Release/Optimized Builds
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 Besides disabling debug symbols, enabling optimization and disabling assertions in the standard library, there are the following SeqAn specific settings to be applied.
 
-* Add the path to the directory ``seqan`` to your include path.
-* Define ``NDEBUG``.
-  This will make ``SEQAN_ENABLE_DEBUG`` be defined as ``0`` if you don't defined ``SEQAN_ENABLE_DEBUG`` otherwise.
-* Define ``SEQAN_ENABLE_TESTING`` to be ``0``.
+- Add SeqAn to your include path
+- Define ``NDEBUG``. This will make sure that ``SEQAN_ENABLE_DEBUG`` is 0 and also other STL includes of your program are not slowed down.
 
 This translates into the following GCC flags:
 
 ::
 
-    -O3 -DNDEBUG -DSEQAN_ENABLE_TESTING=0 -I${PATH_TO_CORE}/include \
-      -I${PATH_TO_EXTRAS}/include
+    -O3 -DNDEBUG -I${PATH_TO_SEQAN_INSTALL}/include
+
+.. caution::
+
+    While some guides tell you to not use ``-O3`` this is absolutely crucial for SeqAn based applications to perform well. Unoptimized builds are slower by multiple factors!
+
 
 An Example Project Based On Makefiles
 -------------------------------------

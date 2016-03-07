@@ -69,28 +69,6 @@ Create a folder somewhere, e.g. ``~/devel/my_project`` and in it the following t
    add_executable (my_project my_project.cpp)
    target_link_libraries (my_project ${SEQAN_LIBRARIES})
 
-
-.. The Project's Contents
-.. ^^^^^^^^^^^^^^^^^^^^^^
-..
-.. The file ``src/main.cpp`` contains a minimal SeqAn program.
-..
-.. .. includefrags:: util/raw_cmake_project/src/main.cpp
-..
-.. The root ``CMakeLists.txt`` file just sets up the project name, defines a minimal CMake version, makes all binaries go to the ``bin`` subdirectory, and then includes ``src/CMakeLists.txt``.
-..
-.. .. includefrags:: util/raw_cmake_project/CMakeLists.txt
-..
-.. This included file calls ``find_package(SeqAn REQUIRED)``.
-.. If the library could not be found, the ``REQUIRED`` parameter will make the ``find_package()`` call fail.
-.. Before this, multiple ``find_package()`` calls detect optional dependencies and enable them in the SeqAn library through compiler defines. Note that it is important that these packages be found **before** the SeqAn package is searched.
-..
-.. .. includefrags:: util/raw_cmake_project/src/CMakeLists.txt
-..
-.. This is followed by adding the include directory, definitions, and compiler flags required for compiling a program against the SeqAn library,
-.. Finally, the source file ``main.cpp`` is compiled into a program called ``main`` and the libraries that SeqAn was configured with are linked to ``main``.
-.. Note that SeqAn itself does not require a linking step but when using compression (e.g. for the BAM format), we have to link to ``zlib``.
-
 Building The Project
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -107,19 +85,37 @@ Depending on how you :ref:`installed SeqAn <infra-use-install>` it will be found
 
 Also, CMake will look for the SeqAn include files in central locations such as ``/usr/local/include``. Again, depending on your install  this will *just work*, but if not, you needto  specify the location via the ``SEQAN_INCLUDE_PATH`` argument.
 
-When using operating system packages of SeqAn it might look like this:
+When using operating system packages of SeqAn and the default compiler it might look like this:
 
 .. code-block:: console
 
    # cmake ../../my_project
 
-Or, if you did a full git checkout instead, it will look like this:
+.. note::
+
+    **Changing compilers on Linux/Mac/BSD**
+
+    By default CMake will use ``g++`` to build your software which will be a different compiler and version depending on your setup. To use e.g. ``g++-5`` instead of the default ``g++``, add ``-DCMAKE_CXX_COMPILER=g++-5`` to your cmake call.
+
+    **Using different Visual Studio versions**
+
+    To change the version of Visual Studio you are building against, add ``-G "Visual Studio 10 2010"`` to your cmake call. TODO double-checl that this creates 64bit
+
+.. caution::
+
+    **SeqAn requires C++11**
+
+    Depending on your setup you might get an error related to C++11 support. In this case you need to tell the compiler explicitly to use modern C++ standards by adding ``-DCMAKE_CXX_FLAGS=-std=c++11`` or ``-DCMAKE_CXX_FLAGS=-std=c++14``.
+
+Or, if you did a full git checkout to your home-directory instead, and you are using a non-default compiler, it might look like this:
 
 .. code-block:: console
 
    # cmake ../../my_project \
        -DCMAKE_MODULE_PATH=~/devel/seqan/util/cmake \
-       -DSEQAN_INCLUDE_PATH=~/devel/seqan/include
+       -DSEQAN_INCLUDE_PATH=~/devel/seqan/include \
+       -DCMAKE_CXX_COMPILER=g++-5 \
+       -DCMAKE_CXX_FLAGS=-std=c++14
 
 Finally you can then build the application by calling
 
@@ -135,7 +131,9 @@ Finally you can then build the application by calling
 
         # cmake-build (TODO double-check)
 
-You can then run the application in the usual way
+**The above step is the only step you need to repeat when changing your source code.** CMake only has to be re-run if you change the ``CMakeLists.txt``.
+
+You can then execute the application in the usual way
 
 * on Makefile-based builds (Linux/Mac/BSD):
 
@@ -149,46 +147,50 @@ You can then run the application in the usual way
 
         # my_project
 
-.. note:: Changing compilers (Makefile-based builds)
+Using IDEs
+^^^^^^^^^^
 
-    To use e.g. ``g++-5`` instead of the default ``g++``, add ``-DCMAKE_CXX_COMPILER=g++5`` to your cmake call.
+On Linux and BSD many IDEs directly support cmake, just open/import the ``CMakeLists.txt`` with e.g. `KDevelop <https://www.kdevelop.org>`_ or `QtCreator <http://www.qt.io/ide/>`_.
 
-.. note:: Using XCode on Mac
+To use XCode on Mac with your CMake-based project, add ``-G Xcode`` to the cmake call above and then run ``open TODO``.
 
-    To use XCode on mac instead of a Makefile-based build, add ``-G Xcode`` to your cmake call.
-    TODO explain how to open project file with xcode.
-
-.. note:: Using different Visual Studio versions
-
-    To change the version of Visual Studio you are building against, add ``-G "Visual Studio 10 2010"`` to your cmake call. TODO double-checl that this creates 64bit TODO explain how to open project file with visual studio.
+On Windows a Visual Studio generator is used by default and you will find a ``.vcxproj`` in the source directory that you can open with Visual Studio.
 
 
-Input / Output of the FindSeqAn Module
---------------------------------------
+Details of the FindSeqAn Module
+-------------------------------
 
-As with all other modules, you have to make the file ``FindSeqAn.cmake`` available as a CMake module, either by putting it into the same directory as the ``CMakeLists.txt`` that you are using it from or by adding the path to the file ``FindSeqAn.cmake`` to the variable ``CMAKE_MODULE_PATH``.
-
-Then, you can use it as follows (the argument ``REQUIRED`` is optional):
+As mentioneed above this line is the important line for including SeqAn:
 
 .. code-block:: cmake
 
     find_package (SeqAn REQUIRED)
 
-Input
-^^^^^
+If SeqAn is only an optional dependency of your program, you can omit the ``REQUIRED`` keyword. In this case you should check the contents of the ``SEQAN_FOUND`` CMake-variable and depending on that configure your build, e.g. with custom Macros.
 
-SeqAn is somewhat special as a library since it has some optional dependencies.
-Certain features in SeqAn can be enabled or disabled, depending on whether the dependencies could be found.
+You can also check for the definition of SeqAn's version macros from within your code:
 
-For example:
+``SEQAN_VERSION_STRING``
+  Concatenated version string, ``${SEQAN_VERSION_MAJOR}.${SEQAN_VERSION_MINOR}.${SEQAN_VERSION_PATCH}``
 
-.. code-block:: cmake
+``SEQAN_VERSION_MAJOR``
+  Major version.
 
-    find_package (ZLIB)
-    find_package (BZip2)
-    find_package (SeqAn)
+``SEQAN_VERSION_MINOR``
+  Minor version.
 
-If these packages are found **before** SeqAn is searched certain ``SEQAN_HAS_*`` macros are defined and corresponding features become available.
+``SEQAN_VERSION_PATCH``
+  Patch-level version.
+
+Dependencies
+^^^^^^^^^^^^
+
+SeqAn itself has some optional dependencies.
+Certain features in SeqAn will be enabled or disabled, depending on whether the dependencies could be found.
+
+.. caution::
+
+    Optional dependencies of SeqAn have to be searched **before** the SeqAn module is searched!
 
 Currently, the following dependencies enable optional features:
 
@@ -201,18 +203,15 @@ Currently, the following dependencies enable optional features:
 ``OpenMP``
   OpenMP language extensions to C/C++
 
-If you want ``FindSeqAn.cmake`` to expect the SeqAn build system layout then set the variable ``SEQAN_USE_SEQAN_BUILD_SYSTEM`` to ``TRUE``.
-In this case, it will try to locate the library parts from root of the SeqAn source files.
+An example of where you only want ZLIB and OpenMP support, but not BZip2, would look like this:
 
-Output
-------
+.. code-block:: cmake
 
-The call to ``find_package(SeqAn)`` will set the following variables:
+    find_package (ZLIB)
+    find_package (OpenMP)
+    find_package (SeqAn)
 
-``SEQAN_FOUND``
-  Indicate whether SeqAn was found.``
-
-Also the following MACROS are passed to the code indicating whether dependencies were (searched and) found:
+From within CMake you can check the variables ``ZLIB_FOUND`` or ``OpenMP_FOUND`` to see the results of these dependency searches, but you can also use the following macros from within your source code to escape certain optional code paths:
 
 ``SEQAN_HAS_ZLIB``
   ``TRUE`` `` if zlib was found.``
@@ -223,7 +222,10 @@ Also the following MACROS are passed to the code indicating whether dependencies
 ``SEQAN_HAS_OPENMP``
   ``TRUE`` `` if OpenMP was found.``
 
-Variables to be passed to ``include_directories()``, ``target_link_directories()``, and ``add_definitions()`` in your ``CMakeLists.txt``:
+CMake build variables
+^^^^^^^^^^^^^^^^^^^^^
+
+As can be seen from the example above, the following variables need to be passed to ``include_directories()``, ``target_link_directories()``, and ``add_definitions()`` in your ``CMakeLists.txt``:
 
 ``SEQAN_INCLUDE_DIRS``
   A list of include directories.
@@ -238,24 +240,3 @@ Required additions to C++ compiler flags are in the following variable:
 
 ``SEQAN_CXX_FLAGS``
   C++ Compiler flags to add.
-
-The following variables give the version of the SeqAn library, its major, minor, and the patch version part of the version string.
-
-``SEQAN_VERSION_STRING``
-  Concatenated version string, `` ``${SEQAN_VERSION_MAJOR}.${SEQAN_VERSION_MINOR}.${SEQAN_VERSION_PATCH}`` ``.``
-
-``SEQAN_VERSION_MAJOR``
-  Major version.
-
-``SEQAN_VERSION_MINOR``
-  Minor version.
-
-``SEQAN_VERSION_PATCH``
-  Patch-level version.
-
-The following flag defines whether this is a trunk version and the version given by the variables above is meant to be used as the previously released version.
-
-``SEQAN_VERSION_DEVELOPMENT``
-  Whether or not this is a pre-release version.
-
-
