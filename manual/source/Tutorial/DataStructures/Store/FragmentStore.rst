@@ -49,7 +49,7 @@ Multiple Read Alignment
 
 The Fragment Store can represent a multiple read alignment, i.e. is an alignment between the contigs and the set of reads, where one read can be aligned at zero, one or multiple positions of a contig.
 In the multiple alignment the contig is represented by one line with gaps (``-``) and the remaining lines are to reads or read segments with gaps aligned to the contig.
-The following figure shows one contig (line at the top) and multiple reads aligned to it arranged as stairs (reads in lower-case align to the reverse strand):
+The following figure shows one contig (the line at the top) and multiple reads aligned to it arranged as stairs (reads in lower-case align to the reverse strand):
 
 ::
 
@@ -83,7 +83,7 @@ The following figure shows which tables represent the multiple read alignment:
 
    ***Figure 2:*** Stores used to represent a multiple read alignment
 
-The main table is the :dox:`FragmentStora#FragmentStore::alignedReadStore` which stores :dox:`AlignedReadStoreElement AlignedReadStoreElements`.
+The main table is the :dox:`FragmentStore::alignedReadStore` which stores :dox:`AlignedReadStoreElement AlignedReadStoreElements`.
 Each entry is an alignment of a read (``readId``) and a contig (``contigId``).
 Introduced gaps are stored as a string of gap anchors in the ``gaps`` member of the alignedReadStore entry and the contigStore entry.
 The begin and end positions of the alignment are given by the ``beginPos`` and ``endPos`` members which are 0-based positions on the forward strand in gap space, i.e. positions in the gapped contig sequence.
@@ -102,7 +102,7 @@ For orphaned read alignments holds ``pairMatchId == INVALID_ID``.
      read2     ACGGTT-G     [4-12[
 
 The :dox:`FragmentStore::alignedReadStore` is the only store where the id (alignId in the figure) of an element is not implicitly given by its position.
-The reason for this is that it is necessary in many cases to rearrange the elements of the alignedReadStore, e.g. increasingly by (contigId,beginPos), by readId or pairMatchId.
+The reason for this is that it is necessary in many cases to rearrange the elements of the alignedReadStore, e.g. increasingly by (contigId,beginPos[, by readId or pairMatchId.
 This can be done by :dox:`sortAlignedReads`.
 If it is necessary to address an element by its id, the elements must be sorted by id first.
 In the case that ids are not contiguously increasing, e.g. because some elements where removed, they must be renamed by a prior call of :dox:`FragmentStore#compactAlignedReads`.
@@ -126,7 +126,7 @@ Then we create a stairs layout of the aligned reads and output a window from gap
 
 .. includefrags:: demos/tutorial/fragment_store/display_aligned_reads.cpp.stdout
 
-The same window can also be exported as a scalable vector graphic in SVG format (supported by Browsers, Inkscape; see :download:`original file <ReadLayout.svg>`]):
+The same window can also be exported as a scalable vector graphic in SVG format. 
 
 .. includefrags:: demos/tutorial/fragment_store/display_aligned_reads.cpp
    :fragment: svg
@@ -153,7 +153,7 @@ The read sequence is neither stored in the readStore or alignedReadStore as many
 We copy the read sequence into a local variable (defined outside the loop to save allocations/deallocations) as we need to compute the reverse-complement for reads that align to the reverse strand.
 Then we create a :dox:`Gaps gaps` object that represent the alignment rows of the contig and the aligned read in the multiple sequence alignment.
 The :dox:`Gaps` object requires references of the sequence and the gap-anchor string stored in the contigStore and the alignedReadStore.
-We need to limit the view of the contig alignment row to the interval the read aligns to, i.e. the gap position interval [beginPos,endPos[.
+We need to limit the view of the contig alignment row to the interval the read aligns to, i.e. the gap position interval [beginPos,endPos).
 After that we output both alignment rows.
 
 .. tip::
