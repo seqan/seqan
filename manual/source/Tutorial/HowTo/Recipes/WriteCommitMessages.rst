@@ -7,6 +7,8 @@
 Writing Commit Messages
 =======================
 
+TODO: move to infra/contribute
+
 Format
 ------
 

@@ -7,6 +7,8 @@
 Writing App Tests
 =================
 
+TODO: move to infra/manage
+
 This HowTo describes the basics of writing your own app tests.
 
 Overview

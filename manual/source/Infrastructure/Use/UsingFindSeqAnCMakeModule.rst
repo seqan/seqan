@@ -99,7 +99,9 @@ When using operating system packages of SeqAn and the default compiler it might 
 
     **Using different Visual Studio versions**
 
-    To change the version of Visual Studio you are building against, add ``-G "Visual Studio 10 2010"`` to your cmake call. TODO double-checl that this creates 64bit
+    To change the version of Visual Studio you are building against, add ``-G "Visual Studio 14 2015 Win64"`` to your cmake call. ``Win64`` at the end enables a 64bit build -- which you most definetely want when building a SeqAn-based app! TODO double-check generators
+
+    See :ref:`this page <how-to-recipes-use-parallel-build-directories>` for more information on using multiple different build setups at the same time.
 
 .. caution::
 
@@ -129,7 +131,7 @@ Finally you can then build the application by calling
 
     .. code-block:: console
 
-        # cmake-build (TODO double-check)
+        # cmake --build . --config Release
 
 **The above step is the only step you need to repeat when changing your source code.** CMake only has to be re-run if you change the ``CMakeLists.txt``.
 

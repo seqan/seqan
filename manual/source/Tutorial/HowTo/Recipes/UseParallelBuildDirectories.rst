@@ -7,6 +7,8 @@
 Using Parallel Build Directories
 ================================
 
+TODO: move to Infra/Use; update examples and shorten the whole thing
+
 Motivation
 ----------
 

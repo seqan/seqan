@@ -52,17 +52,13 @@ For GCC, the following flags are recommended:
 
 ::
 
-    -W -Wall -pedantic -Wno-variadic-macros
+    -W -Wall -pedantic
 
 Explanation:
 
 ``-W -Wall -pedantic``
   Maximal sensitivity of compiler against possible problems.
 
-``-Wno-variadic-macros``
-  The assertion macros are variadic.
-  Variadic macros were standardized in C99 but are not part of C++98 so GCC warns against their usage.
-  Disable these warnings.
 
 
 Visual Studio
@@ -306,7 +302,7 @@ For example, we could create a directory ``include`` parallel to ``src``, copy t
 Short Version
 -------------
 
-* Add both ``include`` and ``include`` to your include path (``-I``).
-* Linux/GCC flags: ``-lrt`` (required) ``-W -Wall -Wno-long-long -pedantic -Wno-variadic-macros`` (optional).
+* Add both ``include`` to your include path (``-I``).
+* Linux/GCC flags: ``-lrt`` (required) ``-W -Wall -pedantic`` (optional).
 * Windows/MSVC flags: ``/W2 /wd4996 -D_CRT_SECURE_NO_WARNINGS`` (optional).
 * Defines: ``NDEBUG`` to also disable SeqAn assertions in release mode.

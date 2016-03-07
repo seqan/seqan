@@ -29,7 +29,7 @@ In addition to ``CMAKE_BUILD_TYPE`` there is also the ``SEQAN_BUILD_SYSTEM`` par
 #. ``SEQAN_RELEASE_APPS`` -- all app targets are created, but nothing else.
 #. ``APP:$APPNAME`` -- only a single app target is created for the chosen app.
 
-All build systems other than ``DEVELOP`` are only relevant to packaging releases.
+All build systems other than ``DEVELOP`` are only relevant to `packaging releases <infra-manage-deploy>`_.
 As usual, calling ``make $TARGET`` will build a single target and just ``make`` will build all targets.
 The purpose of the different build systems is explained
 
