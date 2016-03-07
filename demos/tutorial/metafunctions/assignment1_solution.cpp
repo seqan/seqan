@@ -23,7 +23,6 @@ int main()
     TDnaString dna = "AAAATTTT";
 
     typedef String<int> TIntString;
-    typedef Iterator<String<int>, Rooted>::Type TIntIterator;
 
     TIntString numbers;
     appendValue(numbers, 1);
