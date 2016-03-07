@@ -19,7 +19,7 @@ Duration
   1 h
 
 Prerequisites
-  The basic tutorials.
+  :ref:`tutorial-getting-started-basics`
 
 Overview
 --------
@@ -34,7 +34,7 @@ These tasks typically require lots of data structures that are related to each o
 The Fragment Store subsumes all these data structures in an easy to use interface.
 It represents a multiple alignment of millions of reads or mate-pairs against a reference genome consisting of multiple contigs.
 Additionally, regions of the reference genome can be annotated with features like 'gene', 'mRNA', 'exon', 'intron' or custom features.
-The Fragment Store supports I/O functions to read/write a read alignment in `SAM/BAM <http://samtools.sourceforge.net/>`_ or `AMOS <http://www.cbcb.umd.edu/research/contig_representation.shtml>`_ format and to read/write annotations in `GFF <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <http://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ format.
+The Fragment Store supports I/O functions to read/write a read alignment in `SAM/BAM <http://samtools.sourceforge.net/>`_ or `AMOS <http://amos.sourceforge.net/wiki/index.php/AMOS>`_ format and to read/write annotations in `GFF <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <http://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ format.
 
 The Fragment Store can be compared with a database where each table (called "store") is implemented as a :dox:`String` member of the :dox:`FragmentStore` class.
 The rows of each table (implemented as structs) are referred by their ids which are their positions in the string and not stored explicitly (marked with ``*`` in the Figures 2 and 5).
@@ -49,7 +49,7 @@ Multiple Read Alignment
 
 The Fragment Store can represent a multiple read alignment, i.e. is an alignment between the contigs and the set of reads, where one read can be aligned at zero, one or multiple positions of a contig.
 In the multiple alignment the contig is represented by one line with gaps (``-``) and the remaining lines are to reads or read segments with gaps aligned to the contig.
-The following figure shows one contig (blue line at the top) and multiple reads aligned to it arranged as stairs (reads in lower-case align to the reverse strand):
+The following figure shows one contig (line at the top) and multiple reads aligned to it arranged as stairs (reads in lower-case align to the reverse strand):
 
 ::
 
@@ -83,8 +83,7 @@ The following figure shows which tables represent the multiple read alignment:
 
    ***Figure 2:*** Stores used to represent a multiple read alignment
 
-
-The main table is the :dox:`FragmentStore::alignedReadStore` which stores :dox:`AlignedReadStoreElement AlignedReadStoreElements`.
+The main table is the :dox:`FragmentStora#FragmentStore::alignedReadStore` which stores :dox:`AlignedReadStoreElement AlignedReadStoreElements`.
 Each entry is an alignment of a read (``readId``) and a contig (``contigId``).
 Introduced gaps are stored as a string of gap anchors in the ``gaps`` member of the alignedReadStore entry and the contigStore entry.
 The begin and end positions of the alignment are given by the ``beginPos`` and ``endPos`` members which are 0-based positions on the forward strand in gap space, i.e. positions in the gapped contig sequence.
