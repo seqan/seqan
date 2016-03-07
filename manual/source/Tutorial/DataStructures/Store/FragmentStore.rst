@@ -102,7 +102,7 @@ For orphaned read alignments holds ``pairMatchId == INVALID_ID``.
      read2     ACGGTT-G     [4-12[
 
 The :dox:`FragmentStore::alignedReadStore` is the only store where the id (alignId in the figure) of an element is not implicitly given by its position.
-The reason for this is that it is necessary in many cases to rearrange the elements of the alignedReadStore, e.g. increasingly by (contigId,beginPos[, by readId or pairMatchId.
+The reason for this is that it is necessary in many cases to rearrange the elements of the alignedReadStore, e.g. increasingly by (contigId,beginPos), by readId or pairMatchId.
 This can be done by :dox:`sortAlignedReads`.
 If it is necessary to address an element by its id, the elements must be sorted by id first.
 In the case that ids are not contiguously increasing, e.g. because some elements where removed, they must be renamed by a prior call of :dox:`FragmentStore#compactAlignedReads`.
