@@ -320,7 +320,7 @@ We will adapt some functions from the `samtools <http://samtools.sf.net>`_ packa
 Preparation: Building samtools and Downloading GenericKnimeNodes
 ----------------------------------------------------------------
 
-We will work in a new directory *knime\_samtools* (we will assume that the directory is directly in your *$HOME*  for the rest of the tutorial.
+We will work in a new directory *knime\_samtools* (we will assume that the directory is directly in your *$HOME* for the rest of the tutorial.
 First we need to download samtools-1.3 from http://www.htslib.org/download/. Alternatively you can also use this `direct link <https://github.com/samtools/samtools/releases/download/1.3/samtools-1.3.tar.bz2>`_ or use either of `wget` or `curl` utilities from your command line as follows.
 
 wget
@@ -392,7 +392,7 @@ Creating an Exclipse Plugin from the Plugin Directory
 
 The next step is to use GKN to create an Eclipse plugin from the workflow plugin directory.
 For this, change to the directory GenericKnimeNodes that we cloned using git earlier.
-We then execute ant and pass the variables *knime.sdk* with the path to the KNIME SDK that you downloaded earlier and *plugin.dir* with the path of our  extracted ``workflow_plugin_dir`` directory.
+We then execute ant and pass the variables *knime.sdk* with the path to the KNIME SDK that you downloaded earlier and *plugin.dir* with the path of our extracted ``workflow_plugin_dir`` directory.
 
   .. tip::
 
