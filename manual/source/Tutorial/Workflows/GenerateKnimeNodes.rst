@@ -99,11 +99,11 @@ When creating your own plugin directory, you only have to update the first three
 The Directory descriptors 
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The descriptors directory contains two types of files i.e. the *CTD files* for each applications in our plugin and a *mime.types* file.
+The descriptors directory contains two types of files i.e. the *CTD files* for each application in our plugin and a *mime.types* file.
     
 MIME Types
 ^^^^^^^^^^
-*mime.types*  file is a text file that contains a mapping between MIME types and file extensions. Every file extensions to be either used or produced by the applications in the plugin has to be registered here. Each line contains the definition of a `MIME type <http://en.wikipedia.org/wiki/Internet_media_type>`_.
+*mime.types*  file is a text file that contains a mapping between MIME types and file extensions. Every file extension, to be either used or produced by the applications in the plugin, has to be registered here. Each line contains the definition of a `MIME type <http://en.wikipedia.org/wiki/Internet_media_type>`_.
 The name of the mime type is followed (separated by a space) by the file extensions associated with the file type.  The following example shows how the content of a *mime.types* file looks like.
 
 ::
@@ -179,7 +179,7 @@ Below is an example of a CTD file for SortBam tool for sorting BAM files.
 
 .. hint::
 
-    If a ``<clielement>`` does provides an empty <tt>optionIdentifier</tt> then it is a positional argument without a flag (examples for parameters with flags are ``-n 1``, ``--number 1``).
+    If a ``<clielement>`` does provides an empty ``optionIdentifier`` then it is a positional argument without a flag (examples for parameters with flags are ``-n 1``, ``--number 1``).
 
     If a ``<clielement>`` does not provide a ``<mapping>`` then it is passed regardless of whether has been configured or not.
 
@@ -270,7 +270,7 @@ Click **more...** to see the description of the tags and the attributes in the C
 The Directory payload 
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The directory ``payload`` contains ZIP files with the executable tool binaries. Usually there is one ZIP file for each platform (Linux, Windows, and Mac Os X) and each architecture (32 bit and 64 bit). The names of the files are ``binaries_${plat}_${arch}.zip`` where ``${plat}`` is one of ``lnx``, ``win``, or ``mac``, and ``${arch}`` is one of ``32`` and ``64``. In this way the approprate binaries will be used based on the system that KNIME is running on. Some, even all, of the zip files representing different architectures can be missing. That means the node will not be functional on a KNIME instance installed on the architecture(s) corresponding to missing zip file(s). Nevertheless the payload directory has to be present even if it is empty.
+The directory ``payload`` contains ZIP files with the executable tool binaries. Usually there is one ZIP file for each platform ``(Linux, Windows, and Mac Os X)`` architecture ``(32Bit or 64Bit)``combination. The names of the files are ``binaries_${plat}_${arch}.zip`` where ``${plat}`` is one of ``lnx``, ``win``, or ``mac``, and ``${arch}`` is one of ``32`` and ``64``. In this way the appropriate binaries will be used based on the system that KNIME is running on. Some, even all, of the zip files representing different architectures can be missing. That means the node will not be functional on a KNIME instance installed on the architecture(s) corresponding to missing zip file(s). Nevertheless the payload directory has to be present even if it is empty.
 
 Each ZIP file contains a directory ``/bin`` which is used as the search path for the binary given by ``<executableName>`` and an INI file ``/binaries.ini`` which can be used to set environment variables before executing any of tools.
 
@@ -281,7 +281,7 @@ Here we put icons for different purposes.
 
   - An image file with a name *category.png* (15x15 px): an icon for categories in the KNIME node explorer tree.
   - An image file with a name *splash.png* (50x50 px):  an icon to be displayed in the KNIME splash screen.
-  - An image file with a name *app_name.png* (15x15 px):  an icon to be displayed with the coresponding node of the application ``app_name``. This is done once for each app but it's optional.
+  - An image file with a name *app_name.png* (15x15 px):  an icon to be displayed with the corresponding node of the application ``app_name``. This is done once for each app but it's optional.
 
 The files DESCRIPTION, LICENSE, COPYRIGHT 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -315,11 +315,13 @@ We will adapt some functions from the `samtools <http://samtools.sf.net>`_ packa
 | **SortBam**
 |   This tool will execute ``samtools sort -o ${OUT} ${IN}``.
 
+|br|
+
 Preparation: Building samtools and Downloading GenericKnimeNodes
 ----------------------------------------------------------------
 
 We will work in a new directory *knime\_samtools* (we will assume that the directory is directly in your *$HOME* for the rest of the tutorial.
-First we need to download samtools-1.3 from http://www.htslib.org/download/. Alternatively you can also use this `direct link <https://github.com/samtools/samtools/releases/download/1.3/samtools-1.3.tar.bz2`>_ or use the `wget` or `curl` from your command line as follows.
+First we need to download samtools-1.3 from http://www.htslib.org/download/. Alternatively you can also use this `direct link <https://github.com/samtools/samtools/releases/download/1.3/samtools-1.3.tar.bz2>`_ or use either of `wget` or `curl` utilities from your command line as follows.
 
 wget
 
@@ -328,6 +330,7 @@ wget
     knime_samtools # wget https://github.com/samtools/samtools/releases/download/1.3/samtools-1.3.tar.bz2
     
 curl 
+
 .. code-block:: console
 
     knime_samtools # curl -OL https://github.com/samtools/samtools/releases/download/1.3/samtools-1.3.tar.bz2
@@ -389,7 +392,7 @@ Creating an Exclipse Plugin from the Plugin Directory
 
 The next step is to use GKN to create an Eclipse plugin from the workflow plugin directory.
 For this, change to the directory GenericKnimeNodes that we cloned using git earlier.
-We then execute ant and pass the variables *knime.sdk* with the path to the KNIME SDK that you downloaded earlier and *plugin.dir* with the path of our plugin directory which is the extracted ``workflow_plugin_dir`` directory .
+We then execute ant and pass the variables *knime.sdk* with the path to the KNIME SDK that you downloaded earlier and *plugin.dir* with the path of our extracted ``workflow_plugin_dir`` directory.
 
   .. tip::
 
@@ -434,7 +437,7 @@ Now, the packages of the GKN classes and your plugin show up in the left ``Packa
 
     **Information:** Synchronizing ``ant`` build result with Eclipse.
 
-    Since the code generation happens outside of Eclipse, there are often problems caused by Eclipse not recognizing updates in generated *.java* files.
+    Since the code generation happens outside of Eclipse, there are often problems caused by Eclipse not recognizing updates in generated *java* files.
     After each call to ``ant``, you should clean all built files in all projects by selecting the menu entries ``Project > Clean...``, selecting ``Clean all projects``, and then clicking ``OK``.
 
     Then, select all projects in the ``Package Explorer``, right-click and select ``Refresh``.
