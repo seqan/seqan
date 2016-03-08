@@ -13,7 +13,9 @@ Depending on your operating system you may need to install extra packages of the
 GNU/Linux
 ---------
 
-It depends on your distribution whether these packages are installed by default or not. On Debian and similar systems you need to
+It depends on your distribution whether these packages are installed by default or not.
+
+On Debian, Ubuntu, Mint and similar distributions:
 
 .. code-block:: console
 

@@ -2,10 +2,10 @@
 
     .. contents::
 
-.. _infra-manage-git:
+.. _infra-contribute-git:
 
-SeqAn Git Workflow
-==================
+Git Workflow
+============
 
 Getting Started
 ---------------

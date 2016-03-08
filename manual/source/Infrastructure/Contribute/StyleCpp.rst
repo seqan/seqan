@@ -4,8 +4,8 @@
 
 .. _infra-contribute-style-cpp:
 
-SeqAn C++ Code Style
-====================
+C++ Code Style
+==============
 
 The aim of this style guide is to enforce a certain level of canonicality on all SeqAn code.
 Besides good comments, having a common style guide is the key to being able to understand and change code written by others easily.

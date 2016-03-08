@@ -4,8 +4,8 @@
 
 .. _infra-contribute-dox:
 
-Dox API Docs
-============
+API Documentation System (dox)
+==============================
 
 Since the 1.4.1 release, SeqAn uses a new documentation system. The
 syntax is similar to `Doxygen <http://doxygen.sf.net>`_ but slightly
