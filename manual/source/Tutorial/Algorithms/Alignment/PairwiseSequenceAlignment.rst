@@ -22,7 +22,7 @@ Prerequisites
 Alignments are one of the most basic and important ways to measure similarity between two or more sequences.
 In general, a pairwise sequence alignment is an optimization problem which determines the best transcript of how one sequence was derived from the other.
 In order to give an optimal solution to this problem, all possible alignments between two sequences are computed using a **Dynamic Programming** approach.
-:dox:`Score#standard Scoring schemes` allow the comparison of the alignments such that the one with the best score can be picked.
+:dox:`Score Scoring schemes` allow the comparison of the alignments such that the one with the best score can be picked.
 Despite of the common strategy to compute an alignment, there are different variations of the standard DP algorithm laid out for special purposes.
 
 We will first introduce you to the global alignments.
