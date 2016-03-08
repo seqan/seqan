@@ -13,7 +13,7 @@ There are three different "packaging targets":
 #. a package containing all apps (``-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS``)
 #. a package containing single SeqAn app (``-DSEQAN_BUILD_SYSTEM=APP:$appname``)
 
-We assume that you have read :ref:`infra-use-install` and have cloned or unzipped the full SeqAn sources to ``~/devel/seqan`` (not the "library sources" described in other places).
+We assume that you have read :ref:`infra-use-install` and have cloned or unzipped the **full SeqAn sources** to ``~/devel/seqan`` (not the "library sources" described in other places).
 
 The instructions for all packaging targets are the same (replace ``$pack_target`` with the above string):
 
@@ -36,17 +36,23 @@ This will create a ZIP-file and on unix also a tarball (`.tar.xz`) of the packag
 
 .. note::
 
-    Especially when creating packages, be sure that the cmake generator and/or compiler are the one you want!
+    Especially when creating packages, make sure that the cmake generator and/or compiler are the one you want!
 
 Downstream Packaging
 --------------------
 
-These are some guidelines for creating SeqAn packages for operating system specific paackaging
-systems, like *apt* (Debian/Ubuntu) or *rpm* (Fedora/RedHat/CentOS/*SUSE).
+These are some guidelines for creating SeqAn packages for operating system specific packaging
+systems, like *apt* (Debian/Ubuntu) or *rpm* (Fedora/RedHat/CentOS/SUSE).
+
+Library Package
+^^^^^^^^^^^^^^^
 
 We recommend that downstream package maintainers provide one package named **seqan** that contains only the header-library and the api-docs and that is built from our *library packages* available here: http://packages.seqan.de
 
-They have the advantage of not requiring any build steps, simply copy the include and share directories to the desired locations.
+They have the advantage of not requiring any build steps, simply copy the ``include`` and ``share`` directories to the desired locations.
 
-Beyond that package maintainers have the choice to create a single package called **seqan-apps** that contains all the applications *or* a single package for every application (with the respective name of that app). Based on the above instructions this should be fairly easy.
+Application Package(s)
+^^^^^^^^^^^^^^^^^^^^^^
+
+Beyond that package maintainers have the choice to create either a single package called **seqan-apps** that contains all the applications *or* a seperate package per application (with the respective name of that app). Based on the above instructions this should be fairly easy to accomplish.
 
