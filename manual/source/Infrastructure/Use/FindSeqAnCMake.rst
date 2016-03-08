@@ -90,33 +90,17 @@ When using operating system packages of SeqAn and the default compiler it might 
 
    # cmake ../../my_project
 
-.. note::
-
-    **Changing compilers on Linux/Mac/BSD**
-
-    By default CMake will use ``g++`` to build your software which will be a different compiler and version depending on your setup. To use e.g. ``g++-5`` instead of the default ``g++``, add ``-DCMAKE_CXX_COMPILER=g++-5`` to your cmake call.
-
-    **Using different Visual Studio versions**
-
-    To change the version of Visual Studio you are building against, add ``-G "Visual Studio 14 2015 Win64"`` to your cmake call. ``Win64`` at the end enables a 64bit build -- which you most definetely want when building a SeqAn-based app! TODO double-check generators
-
-    See :ref:`this page <how-to-recipes-use-parallel-build-directories>` for more information on using multiple different build setups at the same time.
-
-.. caution::
-
-    **SeqAn requires C++11**
-
-    Depending on your setup you might get an error related to C++11 support. In this case you need to tell the compiler explicitly to use modern C++ standards by adding ``-DCMAKE_CXX_FLAGS=-std=c++11`` or ``-DCMAKE_CXX_FLAGS=-std=c++14``.
-
-So instead of doing the last cmake call, if you instead did a full git checkout to your home-directory, and you are using a non-default compiler, it might look like this:
+If you instead did a full git checkout to your home-directory in the previous step, it might look like this:
 
 .. code-block:: console
 
    # cmake ../../my_project \
        -DCMAKE_MODULE_PATH=~/devel/seqan/util/cmake \
-       -DSEQAN_INCLUDE_PATH=~/devel/seqan/include \
-       -DCMAKE_CXX_COMPILER=g++-5 \
-       -DCMAKE_CXX_FLAGS=-std=c++14
+       -DSEQAN_INCLUDE_PATH=~/devel/seqan/include
+
+.. tip::
+
+    Depending on your setup you might need to manually chose a more modern compiler and/or activate C++11 support! Please read :ref:`this page <infra-use-cmake-build-dirs>` for more information on configuring CMake builds.
 
 Finally you can then build the application by calling
 
@@ -156,6 +140,8 @@ On Linux and BSD many IDEs directly support cmake, just open/import the ``CMakeL
 To use XCode on Mac with your CMake-based project, add ``-G Xcode`` to the cmake call above and then run ``open TODO``.
 
 On Windows a Visual Studio generator is used by default and you will find a ``.vcxproj`` in the source directory that you can open with Visual Studio.
+
+See :ref:`this page <infra-use-cmake-build-dirs>` for more details.
 
 
 Details of the FindSeqAn Module

@@ -2,12 +2,10 @@
 
     .. contents::
 
-.. _how-to-recipes-write-tests:
+.. _infra-manage-write-unit-tests:
 
-Writing Tests
-=============
-
-TODO: move to infra/manage
+Writing Unit Tests
+==================
 
 This page describes how to write tests for the SeqAn library.
 Each test program defines a *Test Suite*, a collection of related *Tests*.
