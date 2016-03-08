@@ -689,6 +689,57 @@ getAdjacencyMatrix(Graph<Undirected<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+template<typename TCargo, typename TSpec, typename TVertex, typename TVector>
+inline void
+getVertexAdjacencyVector(Graph<Undirected<TCargo, TSpec> > const& g,
+          TVertex const & vertex, TVector& vectOut)
+{
+    SEQAN_CHECKPOINT
+    SEQAN_ASSERT(idInUse(g.data_id_managerV, vertex));
+
+    typedef Graph<Undirected<TCargo, TSpec> > TGraph;
+    typedef typename Size<TGraph>::Type TGraphSize;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename EdgeType<TGraph>::Type TEdgeStump;
+    typedef typename Size<TVector>::Type TSize;
+    typedef typename Value<TVector>::Type TMatValue;
+    TSize lenVectOut = outDegree(g, vertex);
+    clear(vectOut);
+    resize(vectOut, lenVectOut, (TMatValue) 0);
+    TSize count=0;
+    TEdgeStump* currentOut = g.data_vertex[vertex];
+   	while(currentOut!=0) {
+        TVertexDescriptor target = targetVertex(g,currentOut);
+        if (target==vertex)
+        {
+            currentOut = getNextT(currentOut);
+        } else {
+            vectOut[count] = static_cast<TMatValue>(static_cast<TGraphSize>(vectOut[count]) + target);
+            currentOut = getNextS(currentOut);
+        }
+        ++count;
+    }
+
+}
+
+template<typename TCargo, typename TSpec, typename TVertex, typename TVector>
+inline void
+getVertexAdjacencyVector(Graph<Undirected<TCargo, TSpec> > const& g,
+         TVertex const & vertex, TVector& vectIn, TVector& vectOut)
+{
+    SEQAN_CHECKPOINT
+    // vectIn and vectOut are equal for undirected graphs
+    typedef typename Value<TVector>::Type TMatValue;
+    clear(vectIn);
+    getVertexAdjacencyVector(g, vertex, vectOut);
+    resize(vectIn, length(vectOut), (TMatValue) 0);
+    for(unsigned i=0; i<length(vectOut);++i)
+        vectIn[i]=vectOut[i];
+    return;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename EdgeDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type
 findEdge(Graph<Undirected<TCargo, TSpec> > const& g,

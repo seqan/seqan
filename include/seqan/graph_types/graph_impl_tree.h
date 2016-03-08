@@ -639,6 +639,54 @@ getAdjacencyMatrix(Graph<Tree<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+template<typename TCargo, typename TSpec, typename TVertex, typename TVector>
+inline void
+getVertexAdjacencyVector(Graph<Tree<TCargo, TSpec> > const& g,
+	      TVertex const & vertex, TVector& vectIn, TVector& vectOut)
+{
+    SEQAN_CHECKPOINT
+    SEQAN_ASSERT(idInUse(g.data_id_managerV, vertex));
+
+    typedef Graph<Tree<TCargo, TSpec> > TGraph;
+    typedef typename Size<TGraph>::Type TGraphSize;
+    typedef typename EdgeType<TGraph>::Type TEdgeStump;
+    typedef typename Size<TVector>::Type TSize;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename Iterator<String<TEdgeStump*> const, Standard>::Type TIterConst;
+    typedef typename Value<TVector>::Type TMatValue;
+    TSize lenVectIn = inDegree(g, vertex);
+    TSize lenVectOut = outDegree(g, vertex);
+    clear(vectIn);
+    clear(vectOut);
+    resize(vectIn, lenVectIn, (TMatValue) 0);
+    resize(vectOut, lenVectOut, (TMatValue) 0);
+    TIterConst itIn = begin(g.data_vertex, Standard());
+    TIterConst itEndIn = end(g.data_vertex, Standard());
+    TSize count=0;
+    for(;itIn!=itEndIn;++itIn) {
+        TEdgeStump* currentIn = *itIn;
+        while(currentIn!=0) {
+            if ( (TVertexDescriptor) getTarget(currentIn) == vertex)
+            {
+                TVertexDescriptor source = sourceVertex(g,currentIn);
+                vectIn[count] = static_cast<TMatValue>(static_cast<TGraphSize>(vectIn[count]) + source);
+                ++count;
+            }
+            currentIn = getNextT(currentIn);
+        }
+    }
+    count = 0;
+    TEdgeStump* currentOut = getValue(g.data_vertex, vertex);
+    while(currentOut!=0) {
+        TVertexDescriptor target = targetVertex(g,currentOut);
+        vectOut[count] = static_cast<TMatValue>(static_cast<TGraphSize>(vectOut[count]) + target);
+        currentOut = getNextT(currentOut);
+        ++count;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename EdgeDescriptor<Graph<Tree<TCargo, TSpec> > >::Type
 findEdge(Graph<Tree<TCargo, TSpec> >& g,

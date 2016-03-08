@@ -201,6 +201,18 @@ SEQAN_DEFINE_TEST(test_graph_types_types_directed)
     SEQAN_ASSERT(getValue(mat, 2 * len + 4) == 1);
     SEQAN_ASSERT(getValue(mat, 2 * len + 2) == 0);
 
+    // Vertex Adjacency vectors
+    String<unsigned int> vectIn, vectOut;
+    getVertexAdjacencyVector(g, 1, vectIn, vectOut);
+    SEQAN_ASSERT(length(vectIn) == 0);
+    SEQAN_ASSERT(vectOut[0] == 4);
+    SEQAN_ASSERT(length(vectOut4) == 1);
+    getVertexAdjacencyVector(g, 4, vectIn, vectOut);
+    SEQAN_ASSERT(length(vectIn) == 2);
+    SEQAN_ASSERT(vectIn[0] == 1);
+    SEQAN_ASSERT(vectIn[1] == 2);
+    SEQAN_ASSERT(length(vectOut) == 0);
+
 //____________________________________________________________________________
 //Graph with edge cargo and edge ids
     typedef Pair<char, int> TPair;
@@ -459,6 +471,18 @@ SEQAN_DEFINE_TEST(test_graph_types_types_directed)
     SEQAN_ASSERT(getValue(mat4, 1 * len4 + 4) == 1);
     SEQAN_ASSERT(getValue(mat4, 2 * len4 + 4) == 1);
     SEQAN_ASSERT(getValue(mat4, 2 * len4 + 2) == 0);
+
+    // Vertex Adjacency vectors
+    String<unsigned int> vectIn4, vectOut4;
+    getVertexAdjacencyVector(g4, 1, vectIn4, vectOut4);
+    SEQAN_ASSERT(length(vectIn4) == 0);
+    SEQAN_ASSERT(vectOut4[0] == 4);
+    SEQAN_ASSERT(length(vectOut4) == 1);
+    getVertexAdjacencyVector(g4, 4, vectIn4, vectOut4);
+    SEQAN_ASSERT(length(vectIn4) == 2);
+    SEQAN_ASSERT(vectIn4[0] == 1);
+    SEQAN_ASSERT(vectIn4[1] == 2);
+    SEQAN_ASSERT(length(vectOut4) == 0);
 }
 
 SEQAN_DEFINE_TEST(test_graph_types_types_undirected)
@@ -616,6 +640,16 @@ SEQAN_DEFINE_TEST(test_graph_types_types_undirected)
     SEQAN_ASSERT(getValue(mat, 0 * len + 2) == getValue(mat, 2 * len + 0));
     SEQAN_ASSERT(getValue(mat, 1 * len + 4) == getValue(mat, 4 * len + 1));
     SEQAN_ASSERT(getValue(mat, 2 * len + 4) == getValue(mat, 4 * len + 2));
+
+    // Vertex Adjacency vectors
+    String<unsigned int> vectIn, vectOut;
+    getVertexAdjacencyVector(g, 2, vectIn, vectOut);
+    SEQAN_ASSERT(length(vectIn) == 2);
+    SEQAN_ASSERT(vectIn[0] == 4);
+    SEQAN_ASSERT(vectIn[1] == 0);
+    SEQAN_ASSERT(vectOut[0] == 4);
+    SEQAN_ASSERT(vectOut[1] == 0);
+    SEQAN_ASSERT(length(vectOut) == 2);
 
 //____________________________________________________________________________
 //Graph with edge cargo and edge ids
@@ -974,6 +1008,18 @@ SEQAN_DEFINE_TEST(test_graph_types_types_automaton)
     SEQAN_ASSERT(getValue(mat, 1 * len + 4) == 1);
     SEQAN_ASSERT(getValue(mat, 2 * len + 4) == 1);
     SEQAN_ASSERT(getValue(mat, 0 * len + 2) == 0);
+
+    // Vertex Adjacency vectors
+    String<unsigned int> vectIn, vectOut;
+    getVertexAdjacencyVector(g, 1, vectIn, vectOut);
+    SEQAN_ASSERT(length(vectIn) == 0);
+    SEQAN_ASSERT(length(vectOut) == 1);
+    SEQAN_ASSERT(vectOut[0] == 4);
+    getVertexAdjacencyVector(g, 4, vectIn, vectOut);
+    SEQAN_ASSERT(length(vectIn) == 2);
+    SEQAN_ASSERT(length(vectOut) == 0);
+    SEQAN_ASSERT(vectIn[0] == 1);
+    SEQAN_ASSERT(vectIn[1] == 2);
 
     // Test iterators
     typedef Iterator<StandardAutomaton, VertexIterator>::Type TVertexIterator;
@@ -1479,7 +1525,8 @@ SEQAN_DEFINE_TEST(test_graph_types_types_word_tree)
     childC2C1C1C1 = addChild(g, childC2C1C1);
     childC2C1C1C2 = addChild(g, childC2C1C1);
     childC4 = addChild(g, rootV);
-    String<unsigned int> mat;   // Adjacency matrix
+    String<unsigned int> mat;   
+    // Adjacency matrix
     getAdjacencyMatrix(g, mat);
     unsigned int len = (unsigned int) std::sqrt((double) length(mat));
     SEQAN_ASSERT(getValue(mat, 0 * len + 8) == 1);
@@ -1489,6 +1536,15 @@ SEQAN_DEFINE_TEST(test_graph_types_types_word_tree)
     SEQAN_ASSERT(getValue(mat, 0 * len + 4) == 0);
     SEQAN_ASSERT(numEdges(g) == 8);
     SEQAN_ASSERT(numVertices(g) == 9);
+    // Vertex Adjacency vectors
+    String<unsigned int> vectIn, vectOut;
+    getVertexAdjacencyVector(g, 5, vectIn, vectOut);
+    SEQAN_ASSERT(length(vectIn) == 1);
+    SEQAN_ASSERT(length(vectOut) == 2);
+    SEQAN_ASSERT(vectIn[0] == 4);
+    SEQAN_ASSERT(vectOut[0] == 7);
+    SEQAN_ASSERT(vectOut[1] == 6);
+    // Transpose the graph
     transpose(g);
     SEQAN_ASSERT(numEdges(g) == 8);
     SEQAN_ASSERT(numVertices(g) == 9);

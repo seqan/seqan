@@ -462,6 +462,16 @@ getAdjacencyMatrix(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertex, typename TVector>
+inline void
+getVertexAdjacencyVector(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
+            TVertex const & vertex, TVector& vectIn, TVector& vectOut)
+{
+    getVertexAdjacencyVector(g.data_model, vertex, vectIn, vectOut);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename EdgeDescriptor<Graph<Hmm<TAlphabet, TCargo, TSpec> > >::Type
 findEdge(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,

@@ -568,6 +568,20 @@ struct Alphabet<Graph<Hmm<TAlphabet, TCargo, TSpec> > const> {
  */
 
 /*!
+ * @fn Graph#getVertexAdjacencyVector
+ * @brief Build an adjacency vector representation of a vertex of the graph.
+ *
+ * @signature void getVertexAdjacencyVector(g, vertex, vectIn, vectOut);
+ *
+ * @param[in]  g      The Graph under exploration.
+ * @param[in]  vertex The vertex to compute ajacency vector for.
+ * @param[out] vectIn A @link String @endlink filled with <tt>n</tt> elements of @link IntegerConcept @endlink
+ *                    where <tt>vectIn[i]</tt> gives the id number of the source vertex
+ * @param[out] vectOut A @link String @endlink filled with <tt>n</tt> elements of @link IntegerConcept @endlink
+ *                    where <tt>vectOut[i]</tt> gives the id number of the target vertex
+ */
+
+/*!
  * @fn Graph#findEdge
  * @brief Finds an edge.
  *
