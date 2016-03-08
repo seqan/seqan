@@ -144,7 +144,7 @@ The Affine Gap model implemented in the DP alignment algorithms is however quite
 Dynamic Gap Model
 ^^^^^^^^^^^^^^^^^
 
-An optimised version of the Affine Gap model called Dynamic Gap Selector (DGS) can be used to reduce the computational time and the memory requirement while keeping the alignment scores close to those computed with the Affine Gap model.
+An optimised version of the Affine Gap model called Dynamic Gap Selector (DGS) designed by Urgese et al. :cite:`Urgese2014`. This new gap model can be used to reduce the computational time and the memory requirement while keeping the alignment scores close to those computed with the Affine Gap model.
 
 Example Affine vs Dynamic
 ^^^^^^^^^^^^^^^^^^^^^^^^^

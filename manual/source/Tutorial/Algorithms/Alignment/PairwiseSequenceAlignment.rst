@@ -83,7 +83,7 @@ Assignment 1
      .. container:: foldable
 
         The Gotoh algorithm uses the Affine Gap function. In SeqAn you can switch between Linear, Affine and Dynamic gap functions using the scoring scheme by setting one of the three tags ``LinearGaps()``, ``AffineGaps()`` or ``DynamicGaps()`` and by setting the ``gapOpen`` and ``gapExtend`` parameters.
-        If the two gap value are equal the Linear Gap model will be selected as default while the Affine Gap model is chosen as standard when the gap costs are different. If the Dynamic Gap model is required the relative tag must be supplied.  
+        If the two gap value are equal the Linear Gap model will be selected as default while the Affine Gap model is chosen as standard when the gap costs are different. If the Dynamic Gap model :cite:`Urgese2014` is required the relative tag must be supplied.  
         Note, the order of the scoring parameters is important.
         Have a look on the :ref:`tutorial-datastructures-alignment-scoringschemes` section if you are not sure about the correct ordering.
 
