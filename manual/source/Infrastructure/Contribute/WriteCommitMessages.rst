@@ -2,12 +2,10 @@
 
     .. contents::
 
-.. _how-to-recipes-write-commit-messages:
+.. _infra-contribute-git-commits:
 
 Writing Commit Messages
 =======================
-
-TODO: move to infra/contribute
 
 Format
 ------
@@ -21,11 +19,10 @@ On every commit to our revision control system (currently SVN) please provide a 
     Optional long description
 
 *  The first line starts with an arbitrary number of tags in square brackets, e.g. ``[CLASS1]`` or ``[CLASS1,CLASS2]``.
-   See below for a possible :ref:`list of classes <how-to-recipes-write-commit-messages-possible-classes>`.
+   See below for a possible list of classes.
 *  These tags are followed by a short description, try to keep the first line below 120 characters, 80 if possible.
 *  You can add an optional long description after an empty line.
 
-.. _how-to-recipes-write-commit-messages-possible-classes:
 
 Possible Classes
 ----------------
