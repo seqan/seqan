@@ -8,7 +8,7 @@ Installing Dependencies
 =======================
 
 SeqAn can optionally make use of ZLIB and BZip2. This is relevant mostly for Input/Output.
-Depending on your operating system you may need to install extra packages of these libraries their headers.
+Depending on your operating system you may need to install extra packages of these libraries or their headers.
 
 GNU/Linux
 ---------
@@ -27,9 +27,6 @@ Nothing needs to be done, the libraries and their headers are pre-installed.
 Windows
 -------
 
-Download Contribs
-^^^^^^^^^^^^^^^^^
-
 The downloadable contribs contain precompiled library binaries (zlib, libbz2) for Windows by the supported compilers.
 The contribs come in 32 bit and 64 bit variants.
 
@@ -37,9 +34,6 @@ The contribs come in 32 bit and 64 bit variants.
 * `Download contribs for 64 bit builds <http://ftp.seqan.de/contribs/seqan-contrib-D20130710-x64.zip>`_.
 
 You can install both variants in parallel if you want to do both 32 bit and 64 bit builds.
-
-Extract Contribs
-^^^^^^^^^^^^^^^^
 
 Now, extract the downloaded ZIP file either to ``C:\Program Files`` or ``C:\``.
 

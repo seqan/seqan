@@ -11,11 +11,16 @@
 Getting Started
 ===============
 
+These Tutorials will help you with your first steps in SeqAn.
+
+.. important::
+
+    Before you start, make sure that you have installed SeqAn correctly by following the :ref:`User Guide <infra-use>`!
+
+
 .. toctree::
-    :hidden:
     :titlesonly:
 
-    SetupSeqAn/index
     BackgroundAndMotivation
     ParsingCommandLineArguments
 
@@ -25,6 +30,3 @@ Getting Started
     GenericProgramming
     GlobalFunctionInterface
     Metafunctions
-
-.. image:: ../../under_construction.jpg
-

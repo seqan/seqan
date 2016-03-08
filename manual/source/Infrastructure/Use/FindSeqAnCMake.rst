@@ -71,7 +71,7 @@ Create a folder somewhere, e.g. ``~/devel/my_project`` and in it the following t
 Building The Project
 ^^^^^^^^^^^^^^^^^^^^
 
-First you should create a build directory, i.e. for cmake-builds everything happens in a different directory, than in the source. In our case create ``~/devel/my_project-build`` and then in that the ``release`` directory. More on why we use two levels :ref:`here <how-to-recipes-use-parallel-build-directories>`.
+First you should create a build directory, i.e. for cmake-builds everything happens in a different directory, than in the source. In our case create ``~/devel/my_project-build`` and then in that the ``release`` directory. More on why we use two levels :ref:`here <infra-use-cmake-build-dirs>`.
 
 .. code-block:: console
 
