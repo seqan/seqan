@@ -19,40 +19,12 @@ Duration
 Prerequisites
   :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-indices`
 
-Pattern matching is about searching a known string or :dox:`StringSet` (``needle``) in another string or :dox:`StringSet` (``haystack``).
-This tutorial will introduce you into the SeqAn classes finder and pattern.
-It will demonstrate how to use the spezializations of the class finder to perform either an online search or an index based seach.
-And you will learn how to specify the search algorithm, which can be exact or approximate.
-
-Overview
---------
-
-In the case of approximate searching errors are allowed, which are either only mismatches or also indels.
-Additionally there are filtration algorithms which return potential matches, i.e. ``haystack`` segments possibly containing a pattern match.
-All searching is done by calling the function :dox:`Finder#find`, which takes at least two arguments:
-
-#. A :dox:`Finder` that stores all necessary information about the ``haystack`` and the last found position of the ``needle`` within the haystack.
-#. A :dox:`Pattern` that stores all information about the ``needle``.
-   Some variants of :dox:`Finder#find` support further arguments.
-   The :dox:`Finder` and :dox:`Pattern` classes expect the underlying ``haystack`` and ``needle`` types as first template arguments.
-   In addition, a second template argument specifies the search algorithm.
-
-Each call of :dox:`Finder#find` finds only one match (or potential match) of the ``needle`` within the haystack.
-The :dox:`Finder` can be asked for the begin and end position of the last found match.
-The :dox:`Pattern` can be asked for the number of the found sequence if the ``needle`` is a :dox:`StringSet`.
-Subsequent calls of find can be used to find more occurrences of the ``needle``, until no more occurrences can be found and find returns ``false``.
-
-In general, search algorithms can be divided into algorithms that preprocess the ``needle`` (online search) or preprocess the ``haystack`` (index search).
-
-Online Search
--------------
-
 For all online search algorithms, the :dox:`Finder` is an iterator that scans over the ``haystack``.
 The :dox:`Pattern` is a search algorithm dependent data structure preprocessed from the ``needle``.
 The second template argument of the :dox:`Pattern` selects the search algorithm.
 
 Exact Search
-^^^^^^^^^^^^
+------------
 
 The following code snippet illustrates the usage of online search algorithms in SeqAn using the example of the Hoorspool algorithm :cite:`Horspool1980`.
 We begin by creating two strings of type ``char`` containing the ``haystack`` and the ``needle``.
@@ -107,7 +79,7 @@ Currently the following exact online algorithms for searching a single sequence 
   Extension of :dox:`ShiftAndPattern ShiftAnd`, should only be used if the sum of needle lengths doesn't exceed the machine word size.
 
 Assignment 1
-""""""""""""
+^^^^^^^^^^^^
 
 .. container:: assignment
 
@@ -139,7 +111,7 @@ Assignment 1
          .. includefrags:: demos/tutorial/pattern_matching/assignment1_solution.cpp.stdout
 
 Approximate Search
-^^^^^^^^^^^^^^^^^^
+------------------
 
 The approximate search can be used to find segments in the ``haystack`` that are similar to a ``needle`` allowing errors, such as mismatches or indels.
 Note that if only mismatches are allowed, the difference of the end and begin position of a match is the length of the found ``needle``.
@@ -184,7 +156,7 @@ Specialization :dox:`AbndmAlgoPattern AbndmAlgo`
   Approximate Backward Nondeterministic DAWG Matching, adaption of :dox:`AbndmAlgoPattern AbndmAlgo`
 
 Assignment 2
-""""""""""""
+^^^^^^^^^^^^
 
 .. container:: assignment
 
@@ -210,101 +182,3 @@ Assignment 2
 	 The program's output is as follows.
 
          .. includefrags:: demos/tutorial/pattern_matching/assignment2_solution.cpp.stdout
-
-
-Index Search
-------------
-
-Exact Search
-^^^^^^^^^^^^
-
-For the index based search the :dox:`Finder` needs to be specialized with an :dox:`Index` of the ``haystack`` in the first template argument.
-The index itself requires two template arguments, the ``haystack`` type and a index specialization.
-In contrast, since the ``needle`` is not preprocessed the second template argument of the :dox:`Pattern` has to be omitted.
-The following source illustrates the usage of an index based search in SeqAn using the example of the :dox:`IndexEsa` index (an enhanced suffix array index).
-This is the default index specialization if no second template argument for the index is given.
-We begin to create an index object of our ``haystack`` ``"tobeornottobe"`` and a ``needle`` ``"be"``.
-
-.. includefrags:: demos/tutorial/pattern_matching/find_index.cpp
-   :fragment: initialization
-
-We proceed to create a :dox:`Pattern` of the needle and conduct the search in the usual way.
-
-.. includefrags:: demos/tutorial/pattern_matching/find_index.cpp
-   :fragment: output
-
-Instead of creating and using a pattern solely storing the ``needle`` we can pass the needle directly to :dox:`Finder#find`.
-Please note that an :dox:`Index` based :dox:`Finder` has to be reset with :dox:`Finder#clear` before conducting another search.
-
-.. includefrags:: demos/tutorial/pattern_matching/find_index.cpp
-   :fragment: output_short
-
-Program output:
-
-.. includefrags:: demos/tutorial/pattern_matching/find_index.cpp.stdout
-
-
-All indices also support :dox:`StringSet` texts and can therefore be used to search multiple ``haystacks`` as the following example shows.
-We simply exchange the :dox:`CharString` of the haystack with a :dox:`StringSet` of :dox:`CharString` and append some strings to it.
-
-.. includefrags:: demos/tutorial/pattern_matching/find_index_multiple.cpp
-   :fragment: initialization
-
-The rest of the program remains unchanged.
-
-.. includefrags:: demos/tutorial/pattern_matching/find_index_multiple.cpp
-   :fragment: output
-
-.. includefrags:: demos/tutorial/pattern_matching/find_index_multiple.cpp.stdout
-
-
-The following index specializations support the :dox:`Finder` interface as described above.
-
-Specialization :dox:`IndexEsa`
-  Enhanced suffix array based index.
-  Supports arbitrary needles.
-
-Specialization :dox:`IndexQGram`
-  Q-gram index.
-  Needle mustn't exceed the size of the q-gram.
-
-Specialization :dox:`OpenAddressingQGramIndex Open Adressing QGram Index`
-  Q-gram index with open addressing.
-  Supports larger q-grams.
-  Needle and q-gram must have the same size.
-
-Besides the :dox:`Finder#find` interface there is another interface for indices using suffix tree iterators to search exact ``needle`` occurrences described in the tutorial :ref:`tutorial-datastructures-indices`.
-
-Assignment 3
-""""""""""""
-
-.. container:: assignment
-
-     Type
-       Application
-
-     Objective
-       Modify the example above to search with a :dox:`OpenAddressingQGramIndex Open Adressing QGram Index` q-gram index for matches of "tobe" in "tobeornottobe".
-
-     Solution
-      Click **more...** to see the solution.
-
-      .. container:: foldable
-
-         .. includefrags:: demos/tutorial/pattern_matching/assignment3_solution.cpp
-
-	 We simply add a second template argument to the definition of the :dox:`Index` as described in the documentation of the :dox:`OpenAddressingQGramIndex Open Adressing QGram Index`.
-	 As shape we can use an :dox:`UngappedShape` of length 4.
-
-	 Program output:
-
-         .. includefrags:: demos/tutorial/pattern_matching/assignment3_solution.cpp.stdout
-
-Approximate Filtration
-^^^^^^^^^^^^^^^^^^^^^^
-
-Currently there are no indices directly supporting an approximate search.
-But nevertheless, there are approximate search filters available that can be used to filter out regions of the ``haystack`` that do not contain an approximate match, see :dox:`SwiftFinder` and :dox:`SwiftPattern`.
-The regions found by these filters potentially contain a match and must be verified afterwards.
-:dox:`Finder#beginPosition`, :dox:`Finder#endPosition` and :dox:`Finder#infix` can be used to return the boundaries or sequence of such a potential match.
-For more details on using filters, see the article :ref:`how-to-recipes-filter-similar-sequences`.
