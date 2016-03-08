@@ -2,14 +2,16 @@
 
     .. contents::
 
-.. _how-to-recipes-write-app-tests:
+.. _infra-manage-write-app-tests:
 
 Writing App Tests
 =================
 
-TODO: move to infra/manage
-
 This HowTo describes the basics of writing your own app tests.
+
+.. caution::
+
+    SeqAn does not accept new apps into the repository so this document is less relevant for the future.
 
 Overview
 --------

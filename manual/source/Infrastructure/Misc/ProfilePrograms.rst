@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _how-to-recipes-profile-programs:
+.. _infra-misc-profile-programs:
 
 Profiling Programs
 ==================

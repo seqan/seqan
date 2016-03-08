@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _how-to-recipes-rite-nice-unix-programs:
+.. _infra-misc-write-nice-unix-programs:
 
 Writing Nice Unix Programs
 ==========================

@@ -2,12 +2,11 @@
 
     .. contents::
 
-.. _how-to-recipes-write-tutorials:
+.. _infra-manage-write-tutorials:
 
 Writing Tutorials
 =================
 
-TODO: move to infra/manage
 
 At the bottom, you can find a `Tutorial Template`_ for starting a new tutorial.
 

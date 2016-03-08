@@ -78,6 +78,7 @@ The API documentation can be found on :dox:`mainpage here`.
     Infrastructure/Use/index
     Infrastructure/Contribute/index
     Infrastructure/Manage/index
+    Infrastructure/Misc/index
 
 .. toctree::
     :caption: Follow Us

@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _how-to-recipes-fix-whitespace-automatically:
+.. _infra-misc-fix-whitespace-automatically:
 
 Fixing Whitespace Automatically
 ===============================

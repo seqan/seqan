@@ -7,19 +7,20 @@
 The SeqAn Repository
 ====================
 
-This article describes the SeqAn repository structure and how to use it.
+This article describes the SeqAn repository structure and how to work with full SeqAn sources.
 
 Getting Started
 ---------------
 
-We assume that you have read :ref:`infra-use-install`, are using Linux/Mac/Unix and have cloned or unzipped the full SeqAn sources to ``~/devel/seqan`` (not the "library sources" described in other places).
+We assume that you have read :ref:`infra-use-install` and have cloned or unzipped the **full SeqAn sources** to ``~/devel/seqan`` (not the "library sources" described in other places).
 
-SeqAn supports the usual CMake build types and we recommend leaving room for different setups, as described `here in the CMake wiki <http://www.vtk.org/Wiki/CMake_FAQ#How_can_I_build_multiple_modes_without_switching_.3F>`_.
-This means creating e.g. a build directory in ``~/devel/seqan-build/release`` and running
+SeqAn supports the usual CMake build types and we recommend :ref:`using multiple build directories <infra-use-cmake-build-dirs>`. Start like this:
 
 .. code-block:: console
 
-   ~/devel/seqan-build/release # cmake ../../seqan -DCMAKE_BUILD_TYPE=Release
+    # mkdir -p ~/devel/seqan-build/release
+    # cd ~/devel/seqan-build/release
+    # cmake ../../seqan -DCMAKE_BUILD_TYPE=Release
 
 
 In addition to ``CMAKE_BUILD_TYPE`` there is also the ``SEQAN_BUILD_SYSTEM`` parameter which can be one of
@@ -29,9 +30,10 @@ In addition to ``CMAKE_BUILD_TYPE`` there is also the ``SEQAN_BUILD_SYSTEM`` par
 #. ``SEQAN_RELEASE_APPS`` -- all app targets are created, but nothing else.
 #. ``APP:$APPNAME`` -- only a single app target is created for the chosen app.
 
-All build systems other than ``DEVELOP`` are only relevant to `packaging releases <infra-manage-deploy>`_.
-As usual, calling ``make $TARGET`` will build a single target and just ``make`` will build all targets.
-The purpose of the different build systems is explained
+All build systems other than ``DEVELOP`` are only relevant to :ref:`packaging releases <infra-manage-deploy>`.
+
+As usual, calling ``make $TARGET`` will build a single target and just ``make`` will build all targets. On Windows, run ``cmake --build . --target $TARGET`` or just ``cmake --build`` instead.
+
 
 Overview
 --------
@@ -70,7 +72,7 @@ The apps folder contains many applications, and
 each application directory contains one ``CMakeLists.txt`` file and the files for compiling at least one binary.
 Usually, apps have tests, too.
 In this case, there is a subdirectory ``tests``.
-Writing application tests is covered in detail in the article :ref:`how-to-recipes-write-app-tests`.
+Writing application tests is covered in detail in the article :ref:`infra-manage-write-app-tests`.
 
 The general structure of an app is as follows:
 
@@ -184,8 +186,9 @@ tests
 -----
 
 The folder ``tests`` contains the unit tests for the library modules.
-  For each library module, there is a directory below ``tests`` with the same name that contains the tests for this module.
-  Simpler modules have one tests executable, whereas there might be multiple tests executables for larger modules.
-  For example, the module ``index`` has multiple test programs ``test_index_qgram``, ``test_index_shapes`` etc.
-  Writing tests is explained in detail in the article :ref:`how-to-recipes-write-tests`.
+
+For each library module, there is a directory below ``tests`` with the same name that contains the tests for this module.
+Simpler modules have one tests executable, whereas there might be multiple tests executables for larger modules.
+For example, the module ``index`` has multiple test programs ``test_index_qgram``, ``test_index_shapes`` etc.
+Writing tests is explained in detail in the article :ref:`infra-manage-write-unit-tests`.
 
