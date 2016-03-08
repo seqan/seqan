@@ -12,9 +12,8 @@ Overview
 
 `CMake <http://cmake.org/>`_ is a cross-platform build system generator.
 That is, you describe the different executables and binaries and their dependencies ``CMakeLists.txt`` files.
-Then, CMake generates build systems from this, for example in the form of Makefiles or Visual Studio projects.
+Then, CMake generates build systems from this, for example in the form of Makefiles or Visual Studio projects. This article will only describe the most basic things about CMake in general and focus on how to use SeqAn easily from within CMake projects.
 
-This article will only describe the most basic things about CMake in general and instead focus on how to use SeqAn easily from within CMake projects.
 In CMake projects, one uses `modules to find libraries <http://www.vtk.org/Wiki/CMake:How_To_Find_Libraries>`_ such as SeqAn.
 SeqAn ships with such a module.
 
@@ -109,7 +108,7 @@ When using operating system packages of SeqAn and the default compiler it might 
 
     Depending on your setup you might get an error related to C++11 support. In this case you need to tell the compiler explicitly to use modern C++ standards by adding ``-DCMAKE_CXX_FLAGS=-std=c++11`` or ``-DCMAKE_CXX_FLAGS=-std=c++14``.
 
-Or, if you did a full git checkout to your home-directory instead, and you are using a non-default compiler, it might look like this:
+So instead of doing the last cmake call, if you instead did a full git checkout to your home-directory, and you are using a non-default compiler, it might look like this:
 
 .. code-block:: console
 
@@ -131,7 +130,7 @@ Finally you can then build the application by calling
 
     .. code-block:: console
 
-        # cmake --build . --config Release
+        # cmake --build .
 
 **The above step is the only step you need to repeat when changing your source code.** CMake only has to be re-run if you change the ``CMakeLists.txt``.
 
@@ -162,7 +161,7 @@ On Windows a Visual Studio generator is used by default and you will find a ``.v
 Details of the FindSeqAn Module
 -------------------------------
 
-As mentioneed above this line is the important line for including SeqAn:
+As mentioneed above, this line is the important line for including SeqAn:
 
 .. code-block:: cmake
 
@@ -216,13 +215,13 @@ An example of where you only want ZLIB and OpenMP support, but not BZip2, would 
 From within CMake you can check the variables ``ZLIB_FOUND`` or ``OpenMP_FOUND`` to see the results of these dependency searches, but you can also use the following macros from within your source code to escape certain optional code paths:
 
 ``SEQAN_HAS_ZLIB``
-  ``TRUE`` `` if zlib was found.``
+  ``TRUE`` if zlib was found.
 
 ``SEQAN_HAS_BZIP2``
-  ``TRUE`` `` if libbz2 was found.``
+  ``TRUE`` if libbz2 was found.
 
 ``SEQAN_HAS_OPENMP``
-  ``TRUE`` `` if OpenMP was found.``
+  ``TRUE`` if OpenMP was found.
 
 CMake build variables
 ^^^^^^^^^^^^^^^^^^^^^

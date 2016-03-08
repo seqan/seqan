@@ -1,7 +1,7 @@
 .. _infra-contribute:
 
-Contribute
-==========
+Contributer Cuide
+=================
 
 .. todo:: Explain all necessary things to contribute to SeqAn.
 

@@ -1,7 +1,7 @@
 .. _infra-use:
 
-Use
-===
+User Guide
+==========
 
 Before you can start using the SeqAn library you have to make sure that it is installed and setup correctly:
 
