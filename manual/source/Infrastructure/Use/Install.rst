@@ -18,9 +18,6 @@ If possible, use the first option. If SeqAn is not available for your operating 
 
 Use the third option if you want to use the master or develop branch which might contain bug-fixes and new features.
 
-There are also some optional dependencies of SeqAn, the last section on this page explains how to install them.
-
-
 Native package management
 -------------------------
 
@@ -65,8 +62,3 @@ Next create the required folders and clone our master branch:
 
 
 You can update this branch at a later point by running ``git pull`` in ``~/devel/seqan`` .
-
-Dependencies
-------------
-
-TODO
