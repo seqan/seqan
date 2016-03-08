@@ -23,5 +23,9 @@ int main()
     TIndex openIndex;
     std::cout << open(openIndex, tempFileName) << std::endl;
 
+    // clean up tmp directory (internal function)
+    // only important when running seqan unit tests
+    ClassTest::_deleteTempFile(ClassTest::_stripFileName(tempFileName));
+
     return 0;
 }
