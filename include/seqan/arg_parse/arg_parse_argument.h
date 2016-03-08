@@ -101,6 +101,12 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  *
  * @val ArgParseArgument::ArgumentType ArgParseArgument::OUTPUT_FILE;
  * @brief Argument is an output file.
+ *
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::INPUT_PREFIX;
+ * @brief Argument is a prefix to input file(s).
+ *
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::OUTPUT_PREFIX;
+ * @brief Argument is a prefix to output file(s).
  */
 
 /*!
@@ -128,7 +134,7 @@ public:
         DOUBLE,      // .. a float
         INPUT_FILE,   // .. an inputfile (implicitly also a string)
         OUTPUT_FILE,  // .. an outputfile (implicitly also a string)
-        INPUTPREFIX, // .. an inputprefix (implicitly also a string)
+        INPUT_PREFIX, // .. an inputprefix (implicitly also a string)
         OUTPUT_PREFIX // .. an outoutprefix (implicitly also a string)
     };
 
@@ -229,7 +235,7 @@ inline std::string _typeToString(ArgParseArgument const & me)
         typeName = "outputfile";
         break;
 
-    case ArgParseArgument::INPUTPREFIX:
+    case ArgParseArgument::INPUT_PREFIX:
         typeName = "inputprefix";
         break;
 
@@ -289,7 +295,7 @@ inline bool isStringArgument(ArgParseArgument const & me)
     return (me._argumentType == ArgParseArgument::STRING) ||
            (me._argumentType == ArgParseArgument::INPUT_FILE) ||
            (me._argumentType == ArgParseArgument::OUTPUT_FILE) ||
-           (me._argumentType == ArgParseArgument::INPUTPREFIX) ||
+           (me._argumentType == ArgParseArgument::INPUT_PREFIX) ||
            (me._argumentType == ArgParseArgument::OUTPUT_PREFIX) ;
 }
 
@@ -437,7 +443,7 @@ inline bool isOutputPrefixArgument(ArgParseArgument const & me)
 
 inline bool isInputPrefixArgument(ArgParseArgument const & me)
 {
-    return me._argumentType == ArgParseArgument::INPUTPREFIX;
+    return me._argumentType == ArgParseArgument::INPUT_PREFIX;
 }
 
 // ----------------------------------------------------------------------------
