@@ -50,7 +50,7 @@ The output of the program is as follows:
 
 .. includefrags:: demos/tutorial/realignment/step1.cpp.stdout
 
-**Figure 1** An example of a multi-read alignment from pairwise alignments
+**Figure 1:** An example of a multi-read alignment from pairwise alignments
 
 Performing the Realignment
 --------------------------
