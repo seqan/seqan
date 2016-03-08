@@ -33,7 +33,7 @@ Given an alignment structure that store the two sequences and a scoring scheme, 
 
 With refer to the alignment procedure a Scoring Scheme can be defined as the set of rules used to assess the possible biological events that must be considered during the alignment procedure. 
 
-In SeqAn are available several :dox:`Score#standard scoring schemes` to evaluate matches and substitutions, while three different gap models can be applied to consider insertions and deletions events.
+In SeqAn are available several :dox:`Score scoring schemes` to evaluate matches and substitutions, while three different gap models can be applied to consider insertions and deletions events.
 We will first introduce you to the scoring schemes used to evaluate match and substitution. Subsequent, you will learn how to chose the gap model to be implemented in the chosen scoring scheme.
 
 Match/Substitution Evaluation
