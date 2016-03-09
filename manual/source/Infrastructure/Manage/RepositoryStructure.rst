@@ -160,7 +160,7 @@ manual
 
 The SeqAn manual is created using the `Sphinx <http://sphinx-doc.org/>`_ documentation system.
 
-Follow these instructions to setup a local sphinx environment and build the manual:
+Follow these instructions to set up a local sphinx environment and build the manual:
 
 .. code-block:: console
 
