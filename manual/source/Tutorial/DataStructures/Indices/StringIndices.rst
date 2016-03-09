@@ -203,26 +203,3 @@ Other Index Fibres
 ^^^^^^^^^^^^^^^^^^
 
 See :ref:`how-to-recipes-access-index-fibres` for more information.
-
-Pizza & Chili API
------------------
-
-The :dox:`PizzaChiliIndex` is an adapter for the `Pizza & Chili <http://pizzachili.dcc.uchile.cl/>`_ API.
-We currently support the following indices
-
-PizzaChili_RSA
-  The repair suffix array index
-PizzaChiliAF
-  The alphabet-friendly FM index
-PizzaChiliCcsa
-  The compressed compact suffix array index
-PizzaChiliFM
-  The FM (full-text in minute space) index
-PizzaChiliSA
-  The simple suffix array index
-PizzaChiliSada
-  the compressed suffix array index
-
-The adapter allows you to quickly use specific configurations of indices in SeqAn such as the
-alphabet-friendly FM-index.
-
