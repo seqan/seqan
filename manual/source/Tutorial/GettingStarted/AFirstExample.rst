@@ -79,7 +79,7 @@ However, during this tutorial we will not do this, such that SeqAn classes and f
    The code compiles nevertheless.
    The compiler automatically looks for a function ``length`` in the namespace of its arguments.
 
-Note that we follow the rules for variable, function, and class names as outlined in the :ref:`SeqAn style guide <internal-style-guide-cpp>`.
+Note that we follow the rules for variable, function, and class names as outlined in the :ref:`SeqAn style guide <infra-contribute-style-cpp>`.
 For example: 
 1. variables and functions use lower case,
 2. struct, enum and classes use CamelCase,
@@ -303,7 +303,7 @@ Now the function signature is better in terms of memory consumption, time effici
 
    The SeqAn Style Guide
 
-   The :ref:`SeqAn style guide <internal-style-guide-cpp>` gives rules for formatting and structuring C++ code as well as naming conventions.
+   The :ref:`SeqAn style guide <infra-contribute-style-cpp>` gives rules for formatting and structuring C++ code as well as naming conventions.
    Such rules make the code more consistent, easier to read, and also easier to use.
 
    #. **Naming Scheme**.

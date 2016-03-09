@@ -48,7 +48,7 @@ These types of classes provide the following I/O operations on formatted files:
     Access to compressed files relies on external libraries.
     For instance, you need to have zlib installed for reading ``.gz`` files and libbz2 for reading ``.bz2`` files.
     If you are using Linux or OS X and you followed the :ref:`tutorial-getting-started` tutorial closely, then you should have already installed the necessary libraries.
-    On Windows, you will need to follow :ref:`how-to-recipes-install-contribs-on-windows` to get the necessary libraries.
+    On Windows, you will need to follow :ref:`infra-use-install-dependencies` to get the necessary libraries.
 
     You can check whether you have installed these libraries by running CMake again.
     Simply call ``cmake .`` in your build directory.

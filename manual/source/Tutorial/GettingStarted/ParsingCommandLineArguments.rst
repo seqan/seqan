@@ -278,7 +278,7 @@ Best Practice: Wrapping Parsing In Its Own Function
 ---------------------------------------------------
 
 As a next step towards a cleaner program, we should extract the argument parsing into its own function, e.g. call it ``parseCommandLine()``.
-Following the style guide (:ref:`internal-style-guide-cpp`), we first pass the output parameter, then the input parameters.
+Following the style guide (:ref:`infra-contribute-style-cpp`), we first pass the output parameter, then the input parameters.
 The return value of our function is a ``seqan::ArgumentParser::ParseResult`` such that we can differentiate whether the program can go on, the help was printed and the program is to exit with success, or there was a problem with the passed argument and the program is to exit with an error code.
 
 Also, note that we should check that the user cannot specify both to-lowercase and to-uppercase.
