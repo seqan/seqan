@@ -13,7 +13,7 @@ Motivation
 Why would you need more than one build directory or more than one IDE project file?
 This is very useful
 
-* if you want use the same set of source files from multiple version of the same IDE (e.g. two Visual Studio versions),
+* if you want to use the same set of source files from multiple version of the same IDE (e.g. two Visual Studio versions),
 * if you want to have both debug builds (for debugging) and release builds (for performance tests) in paralell,
 * if you have your source files stored on a shared network location and want to have build files on two computer and/or operating systems, or
 * if you want to build the sources with two different compilers or compiler versions at the same time (e.g. to see whether you can figure out compiler errors better from the messages by another compiler).
@@ -22,7 +22,7 @@ The overall idea is very simple: you create one build directory for each variant
 
 .. tip::
 
-    A nice side-effect of seperating source and build directories is also that you can just delete you build directory and recreate it if you feel that something went wrong configuring your build.
+    A nice side-effect of separating source and build directories is also that you can just delete you build directory and recreate it if you feel that something went wrong configuring your build.
 
 CMake Parameters
 ----------------
@@ -110,7 +110,7 @@ Different versions (please note that versions older than 2015 are not supported 
 
     **64Bit builds on Windows**
 
-    You almost always want 64Bit builds when using SeqAn so don't forget to specify a generator that ends in "64Bit", because it is not the default, even on 64Bit Windows installs.
+    You almost always want 64Bit builds when using SeqAn, so don't forget to specify a generator that ends in "64Bit". It is not the default, even on 64Bit Windows installations.
 
 XCode
 ^^^^^

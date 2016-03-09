@@ -9,7 +9,7 @@ Integration with your own Build System
 ======================================
 
 This page gives an example of how to use SeqAn in your application based on your own Makefiles.
-You should be able to adapt the descriptions to configuring your build system and/or IDE.
+You should be able to adapt the descriptions to configure your build system and/or IDE.
 
 .. tip::
 
@@ -100,7 +100,7 @@ default
 meaning
   If set to 1, assertions within SeqAn (``SEQAN_ASSERT...``) are enabled, they are disabled otherwise.
   Is forced to 1 if ``SEQAN_ENABLE_TESTING`` is true.
-  This flag will internally always correspond to the inverse of ``NDEBUG``, i.e. setting it to 1 will forace ``NDEBUG`` to undefined and setting it to 0 will forcefully set ``NDEBUG``.
+  This flag will internally always correspond to the inverse of ``NDEBUG``, i.e. setting it to 1 will force ``NDEBUG`` to be undefined and setting it to 0 will forcefully set ``NDEBUG``.
 
 SEQAN_ENABLE_TESTING
 ^^^^^^^^^^^^^^^^^^^^
@@ -295,7 +295,7 @@ For good measure, we also disable assertions in the C library with ``-DNDEBUG``.
 Notes
 ^^^^^
 
-Note we that added include path to the directory ``include`` that contains the directory ``seqan``.
+Note that we added the include path to the directory ``include`` that contains the directory ``seqan``.
 By changing the include path, we can install the SeqAn library anywhere.
 For example, we could create a directory ``include`` parallel to ``src``, copy the release version of SeqAn into it and then change the include path of the compiler to point to this directory (value ``../include``).
 
