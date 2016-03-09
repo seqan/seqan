@@ -691,12 +691,10 @@ getAdjacencyMatrix(Graph<Undirected<TCargo, TSpec> > const& g,
 
 template<typename TCargo, typename TSpec, typename TVertex, typename TVector>
 inline void
-getVertexAdjacencyVector(Graph<Undirected<TCargo, TSpec> > const& g,
-          TVertex const & vertex, TVector& vectOut)
+getVertexAdjacencyVector(Graph<Undirected<TCargo, TSpec> > const & g,
+                         TVertex const & vertex,
+						 TVector & vectOut)
 {
-    SEQAN_CHECKPOINT
-    SEQAN_ASSERT(idInUse(g.data_id_managerV, vertex));
-
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TGraphSize;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -708,33 +706,36 @@ getVertexAdjacencyVector(Graph<Undirected<TCargo, TSpec> > const& g,
     resize(vectOut, lenVectOut, (TMatValue) 0);
     TSize count=0;
     TEdgeStump* currentOut = g.data_vertex[vertex];
-   	while(currentOut!=0) {
+   	while(currentOut!=0)
+   	{
         TVertexDescriptor target = targetVertex(g,currentOut);
         if (target==vertex)
         {
             currentOut = getNextT(currentOut);
-        } else {
+        } else
+        {
             vectOut[count] = static_cast<TMatValue>(static_cast<TGraphSize>(vectOut[count]) + target);
             currentOut = getNextS(currentOut);
         }
         ++count;
     }
-
+    return;
 }
 
 template<typename TCargo, typename TSpec, typename TVertex, typename TVector>
 inline void
-getVertexAdjacencyVector(Graph<Undirected<TCargo, TSpec> > const& g,
-         TVertex const & vertex, TVector& vectIn, TVector& vectOut)
+getVertexAdjacencyVector(Graph<Undirected<TCargo, TSpec> > const & g,
+                         TVertex const & vertex,
+						 TVector & vectIn,
+						 TVector & vectOut)
 {
-    SEQAN_CHECKPOINT
     // vectIn and vectOut are equal for undirected graphs
     typedef typename Value<TVector>::Type TMatValue;
-    clear(vectIn);
     getVertexAdjacencyVector(g, vertex, vectOut);
+    clear(vectIn);
     resize(vectIn, length(vectOut), (TMatValue) 0);
-    for(unsigned i=0; i<length(vectOut);++i)
-        vectIn[i]=vectOut[i];
+    for(unsigned i = 0; i < length(vectOut); ++i)
+        vectIn[i] = vectOut[i];
     return;
 }
 

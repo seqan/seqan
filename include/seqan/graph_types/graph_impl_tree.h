@@ -641,12 +641,11 @@ getAdjacencyMatrix(Graph<Tree<TCargo, TSpec> > const& g,
 
 template<typename TCargo, typename TSpec, typename TVertex, typename TVector>
 inline void
-getVertexAdjacencyVector(Graph<Tree<TCargo, TSpec> > const& g,
-	      TVertex const & vertex, TVector& vectIn, TVector& vectOut)
+getVertexAdjacencyVector(Graph<Tree<TCargo, TSpec> > const & g,
+	                     TVertex const & vertex,
+						 TVector & vectIn,
+						 TVector & vectOut)
 {
-    SEQAN_CHECKPOINT
-    SEQAN_ASSERT(idInUse(g.data_id_managerV, vertex));
-
     typedef Graph<Tree<TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TGraphSize;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
@@ -662,11 +661,13 @@ getVertexAdjacencyVector(Graph<Tree<TCargo, TSpec> > const& g,
     resize(vectOut, lenVectOut, (TMatValue) 0);
     TIterConst itIn = begin(g.data_vertex, Standard());
     TIterConst itEndIn = end(g.data_vertex, Standard());
-    TSize count=0;
-    for(;itIn!=itEndIn;++itIn) {
-        TEdgeStump* currentIn = *itIn;
-        while(currentIn!=0) {
-            if ( (TVertexDescriptor) getTarget(currentIn) == vertex)
+    TSize count = 0;
+    for(; itIn != itEndIn; ++itIn)
+    {
+        TEdgeStump * currentIn = *itIn;
+        while(currentIn!=0)
+        {
+            if ((TVertexDescriptor) getTarget(currentIn) == vertex)
             {
                 TVertexDescriptor source = sourceVertex(g,currentIn);
                 vectIn[count] = static_cast<TMatValue>(static_cast<TGraphSize>(vectIn[count]) + source);
@@ -677,12 +678,13 @@ getVertexAdjacencyVector(Graph<Tree<TCargo, TSpec> > const& g,
     }
     count = 0;
     TEdgeStump* currentOut = getValue(g.data_vertex, vertex);
-    while(currentOut!=0) {
+    while(currentOut != 0) {
         TVertexDescriptor target = targetVertex(g,currentOut);
         vectOut[count] = static_cast<TMatValue>(static_cast<TGraphSize>(vectOut[count]) + target);
         currentOut = getNextT(currentOut);
         ++count;
     }
+    return;
 }
 
 //////////////////////////////////////////////////////////////////////////////
