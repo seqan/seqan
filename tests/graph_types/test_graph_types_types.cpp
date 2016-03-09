@@ -206,7 +206,7 @@ SEQAN_DEFINE_TEST(test_graph_types_types_directed)
     getVertexAdjacencyVector(g, 1, vectIn, vectOut);
     SEQAN_ASSERT(length(vectIn) == 0);
     SEQAN_ASSERT(vectOut[0] == 4);
-    SEQAN_ASSERT(length(vectOut4) == 1);
+    SEQAN_ASSERT(length(vectOut) == 1);
     getVertexAdjacencyVector(g, 4, vectIn, vectOut);
     SEQAN_ASSERT(length(vectIn) == 2);
     SEQAN_ASSERT(vectIn[0] == 1);
