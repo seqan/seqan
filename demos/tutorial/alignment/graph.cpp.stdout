@@ -1,6 +1,9 @@
+//![output_init]
 Adjacency list:
 Edge list:
 
+//![output_init]
+//![output_construct]
 Alignment matrix:
       0     . 
         TT-GT
@@ -9,3 +12,4 @@ Alignment matrix:
 
 
 
+//![output_construct]
