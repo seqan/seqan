@@ -52,13 +52,20 @@ We first create our two input sequences ``TTGT`` and ``TTAGT`` append them to th
 .. includefrags:: demos/tutorial/alignment/graph.cpp
    :fragment: init
 
+Before adding nodes to the graph ``align`` prints the empty adjacency and edge
+list.
+
+.. includefrags:: demos/tutorial/alignment/graph.cpp.stdout
+   :fragment: output_init
+
 Before we construct the alignment we print the unmodified AlignmentGraph.
 Then we add some alignment information to the graph.
 In order to add an ungapped alignment segment we have to add an edge connecting two nodes of different input sequences.
 To do so we can use the function :dox:`Graph#addEdge` and specify the two vertices that should be connected.
-Since we do not have any vertices yet, we create them on the fly using the function :dox:`Graph#addVertex`.
+Since we do not have any vertices yet, we create them on the fly using the function :dox:`Graph#addVertex addVertex()`.
 The function addVertex gets as second parameter the id which points to the the correct input sequence within the ``strings`` object.
 We can use the function :dox:`StringSet#positionToId positionToId()` to receive the id that corresponds to a certain position within the underlying Dependent StringSet of the AlignmentGraph.
+
 We can access the Dependent StringSet using the function :dox:`Align#stringSet stringSet()`.
 The third parameter of addVertex specifies the begin position of the segment within the respective input sequence and the fourth parameter specifies its length.
 Now, we add an edge between the two vertices of each input sequence which covers the first two positions.
@@ -66,18 +73,21 @@ In the next step we have to add a gap.
 We can do this simply by just adding a vertex that covers the inserted string.
 Finally we have to add the second edge to represent the last ungapped sequence and then we print the constructed alignment.
 
+Note that we use :dox:`AlignmentGraph#findVertex findVertex()` to find the the
+last two inserted vertices. The syntax is the same as :dox:`Graph#addVertex
+addVertex()`, but omits the length parameter.
+
 .. includefrags:: demos/tutorial/alignment/graph.cpp
    :fragment: construct
 
-Here the output of the program.
-The first output prints the empty adjacency and edge list.
-The second output prints our desired alignment.
+Now ``align`` prints the desired alignment.
 
 .. includefrags:: demos/tutorial/alignment/graph.cpp.stdout
+   :fragment: output_construct
 
 The general usage of graphs is explained in the :ref:`tutorial-datastructures-graphs` tutorial.
 
-Assignment 2
+Assignment 1
 ^^^^^^^^^^^^
 
 .. container:: assignment
@@ -91,6 +101,8 @@ Assignment 2
 
    Hints
      .. container :: foldable
+
+        ``TSequence`` should be ``String<char>`` instead of ``String<Dna>``.
 
         The function :dox:`AlignmentGraph#findVertex` returns the vertex of an AlignmentGraph that covers the given position in the given sequence.
 

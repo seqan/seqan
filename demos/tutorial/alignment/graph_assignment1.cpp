@@ -11,6 +11,7 @@ int main()
     typedef StringSet<TSequence> TStringSet;
     typedef StringSet<TSequence, Dependent<> > TDepStringSet;
     typedef Graph<Alignment<TDepStringSet> > TAlignGraph;
+    typedef typename VertexDescriptor<TAlignGraph>::Type TVertexDescriptor;
 
     // Initializing the sequences and the string set.
     TSequence seq1 = "GARFIELDTHECAT";
@@ -24,38 +25,47 @@ int main()
 
     // Load the string set into the Alignment Graph.
     TAlignGraph alignG(strings);
+    TVertexDescriptor u,v;
 
     // Add two vertices covering "GARFIELD" in the first and the second sequence and connect them with an edge.
-    addEdge(alignG, addVertex(alignG, positionToId(stringSet(alignG), 0), 0, 8),
-            addVertex(alignG, positionToId(stringSet(alignG), 1), 0, 8));
+    u = addVertex(alignG, positionToId(stringSet(alignG), 0), 0, 8);
+    v = addVertex(alignG, positionToId(stringSet(alignG), 1), 0, 8);
+    addEdge(alignG, u, v);
 
     // Add two vertices covering "THE" in the first and the second sequence and connect them with an edge.
-    addEdge(alignG, addVertex(alignG, positionToId(stringSet(alignG), 0), 8, 3),
-            addVertex(alignG, positionToId(stringSet(alignG), 1), 8, 3));
+    u = addVertex(alignG, positionToId(stringSet(alignG), 0), 8, 3);
+    v = addVertex(alignG, positionToId(stringSet(alignG), 1), 8, 3);
+    addEdge(alignG, u, v);
 
     // Find the vertex covering "THE" in the first sequence and add the vertex covering "THE" in the third sequence and connect them with an edge.
-    addEdge(alignG, findVertex(alignG, positionToId(stringSet(alignG), 0), 8),
-            addVertex(alignG, positionToId(stringSet(alignG), 2), 0, 3));
+    u = findVertex(alignG, positionToId(stringSet(alignG), 0), 8);
+    v = addVertex(alignG, positionToId(stringSet(alignG), 2), 0, 3);
+    addEdge(alignG, u, v);
 
     // Find the vertices covering "THE" in the second and the third sequence and connect them with an edge.
-    addEdge(alignG, findVertex(alignG, positionToId(stringSet(alignG), 1), 8),
-            findVertex(alignG, positionToId(stringSet(alignG), 2), 0));
+    u = findVertex(alignG, positionToId(stringSet(alignG), 1), 8);
+    v = findVertex(alignG, positionToId(stringSet(alignG), 2), 0);
+    addEdge(alignG, u, v);
 
     // Add two vertices covering "FAT" in the second and the third sequence and connect them with an edge.
-    addEdge(alignG, addVertex(alignG, positionToId(stringSet(alignG), 1), 11, 3),
-            addVertex(alignG, positionToId(stringSet(alignG), 2), 3, 3));
+    u = addVertex(alignG, positionToId(stringSet(alignG), 1), 11, 3);
+    v = addVertex(alignG, positionToId(stringSet(alignG), 2), 3, 3);
+    addEdge(alignG, u, v);
 
     // Add two vertices covering "CAT" in the first and the second sequence and connect them with an edge.
-    addEdge(alignG, addVertex(alignG, positionToId(stringSet(alignG), 0), 11, 3),
-            addVertex(alignG, positionToId(stringSet(alignG), 1), 14, 3));
+    u = addVertex(alignG, positionToId(stringSet(alignG), 0), 11, 3);
+    v = addVertex(alignG, positionToId(stringSet(alignG), 1), 14, 3);
+    addEdge(alignG, u, v);
 
     // Find the vertex covering "CAT" in the first sequence and add the vertex covering "CAT" in the third sequence and connect them with an edge.
-    addEdge(alignG, findVertex(alignG, positionToId(stringSet(alignG), 0), 11),
-            addVertex(alignG, positionToId(stringSet(alignG), 2), 6, 3));
+    u = findVertex(alignG, positionToId(stringSet(alignG), 0), 11);
+    v = addVertex(alignG, positionToId(stringSet(alignG), 2), 6, 3);
+    addEdge(alignG, u, v);
 
     // Find the vertices covering "CAT" in the second and the third sequence and connect them with an edge.
-    addEdge(alignG, findVertex(alignG, positionToId(stringSet(alignG), 1), 14),
-            findVertex(alignG, positionToId(stringSet(alignG), 2), 6));
+    u = findVertex(alignG, positionToId(stringSet(alignG), 1), 14);
+    v = findVertex(alignG, positionToId(stringSet(alignG), 2), 6);
+    addEdge(alignG, u, v);
 
     std::cout << alignG << std::endl;
 
