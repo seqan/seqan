@@ -100,6 +100,23 @@
 // backwards compatibility
 #define SEQAN_UNUSED_TYPEDEF SEQAN_UNUSED
 
+// HAS_EXECINFO
+// note that this is always set by FindSeqAn.cmake
+// this is a fallback for non cmake environments
+#ifndef SEQAN_HAS_EXECINFO
+#ifdef PLATFORM_WINDOWS
+    #define SEQAN_HAS_EXECINFO 0
+#elif defined(__has_include)
+    #if __has_include(<execinfo.h>)
+        #define SEQAN_HAS_EXECINFO 1
+    #else
+        #define SEQAN_HAS_EXECINFO 0
+    #endif
+#else // assume that it is there
+    #define SEQAN_HAS_EXECINFO 1
+#endif
+#endif
+
 // ASYNCHRONOUS I/O
 #ifndef SEQAN_ASYNC_IO
 // FreeBSD only has proper support on 64Bit
