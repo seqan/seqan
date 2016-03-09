@@ -11,9 +11,9 @@ Pattern Matching
     IndexedPatternMatching
 
 Pattern matching is about searching a known string or :dox:`StringSet` (``needle``) in another string or :dox:`StringSet` (``haystack``).
-This tutorial will introduce you into the SeqAn classes finder and pattern.
+This tutorial will introduce you into the SeqAn classes :dox:`Finder` and :dox:`Pattern`.
 It will demonstrate how to use the spezializations of the class finder to perform either an online search or an index based seach.
-And you will learn how to specify the search algorithm, which can be exact or approximate.
+And you will learn how to specify the search algorithm, which can be either exact or approximate.
 
 Overview
 --------

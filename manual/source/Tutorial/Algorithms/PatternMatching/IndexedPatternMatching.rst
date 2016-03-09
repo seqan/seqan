@@ -14,7 +14,7 @@ Difficulty
   Average
 
 Duration
-  40 min
+  30 min
 
 Prerequisites
   :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-indices`
@@ -58,7 +58,7 @@ The function :dox:`Finder#position` will help here.
 
 .. tip::
 
-   Indices in SeqAn are build on demand.
+   Indices in SeqAn are built on demand.
    That means that the index tables are not build when the constructor is called, but when we search for a pattern for the first time.
 
 Exact Search
