@@ -574,12 +574,12 @@ getAdjacencyMatrix(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertex, typename TVector>
+template<typename TVector, typename TAlphabet, typename TCargo, typename TSpec, typename TVertex>
 inline void
-getVertexAdjacencyVector(Graph<Automaton<TAlphabet, TCargo, TSpec> > const & g,
-                         TVertex const & vertex,
-						 TVector & vectIn,
-						 TVector & vectOut)
+getVertexAdjacencyVector(TVector & vectIn,
+                         TVector & vectOut,
+                         Graph<Automaton<TAlphabet, TCargo, TSpec> > const & g,
+                         TVertex const & vertex)
 {
     typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -588,24 +588,25 @@ getVertexAdjacencyVector(Graph<Automaton<TAlphabet, TCargo, TSpec> > const & g,
     typedef typename Size<TVector>::Type TSize;
     typedef typename Iterator<String<AutomatonEdgeArray<TEdgeStump, TAlphabet> > const, Standard>::Type TIterConst;
     typedef typename Value<TVector>::Type TMatValue;
+
     TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
     TSize lenVectIn = inDegree(g, vertex);
     TSize lenVectOut = outDegree(g, vertex);
     clear(vectIn);
     clear(vectOut);
-    resize(vectIn, lenVectIn, (TMatValue) 0);
-    resize(vectOut, lenVectOut, (TMatValue) 0);
+    resize(vectIn, lenVectIn, static_cast<TMatValue>0);
+    resize(vectOut, lenVectOut, static_cast<TMatValue>0);
     TIterConst itIn = begin(g.data_vertex, Standard());
     TIterConst itEndIn = end(g.data_vertex, Standard());
     TSize count = 0;
     TVertexDescriptor pos = 0;
-    for(;itIn!=itEndIn; ++itIn, ++pos)
+    for(; itIn != itEndIn; ++itIn, ++pos)
     {
         if (idInUse(g.data_id_managerV, pos))
         {
-            for(TSize i = 0; i < (TSize) ValueSize<TAlphabet>::VALUE; ++i)
+            for(TSize i = 0; i < static_cast<TSize>ValueSize<TAlphabet>::VALUE; ++i)
             {
-                if ( (*itIn).data_edge[i].data_target == vertex)
+                if ((*itIn).data_edge[i].data_target == vertex)
                 {
                     TVertexDescriptor source = pos;
                     vectIn[count] = static_cast<TMatValue>(static_cast<TGraphSize>(vectIn[count]) + source);
@@ -615,16 +616,15 @@ getVertexAdjacencyVector(Graph<Automaton<TAlphabet, TCargo, TSpec> > const & g,
         }
     }
     count = 0;
-    for(TSize i = 0; i < (TSize) ValueSize<TAlphabet>::VALUE; ++i)
+    for(TSize i = 0; i < static_cast<TSize>ValueSize<TAlphabet>::VALUE; ++i)
     {
-        TVertexDescriptor target = (TVertexDescriptor) getTarget(&g.data_vertex[vertex].data_edge[i]);
+        TVertexDescriptor target = static_cast<TVertexDescriptor>getTarget(& g.data_vertex[vertex].data_edge[i]);
         if ( target != nilVal)
         {
             vectOut[count] = static_cast<TMatValue>(static_cast<TGraphSize>(vectOut[count]) + target);
             ++count;
         }
     }
-    return;
 }
 
 //////////////////////////////////////////////////////////////////////////////

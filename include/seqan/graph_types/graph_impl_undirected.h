@@ -689,11 +689,11 @@ getAdjacencyMatrix(Graph<Undirected<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TCargo, typename TSpec, typename TVertex, typename TVector>
+template<typename TVector, typename TCargo, typename TSpec, typename TVertex>
 inline void
-getVertexAdjacencyVector(Graph<Undirected<TCargo, TSpec> > const & g,
-                         TVertex const & vertex,
-						 TVector & vectOut)
+getVertexAdjacencyVector(TVector & vectOut,
+                         Graph<Undirected<TCargo, TSpec> > const & g,
+                         TVertex const & vertex)
 {
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TGraphSize;
@@ -701,15 +701,16 @@ getVertexAdjacencyVector(Graph<Undirected<TCargo, TSpec> > const & g,
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
     typedef typename Size<TVector>::Type TSize;
     typedef typename Value<TVector>::Type TMatValue;
+
     TSize lenVectOut = outDegree(g, vertex);
     clear(vectOut);
-    resize(vectOut, lenVectOut, (TMatValue) 0);
+    resize(vectOut, lenVectOut, static_cast<TMatValue>0);
     TSize count=0;
-    TEdgeStump* currentOut = g.data_vertex[vertex];
+    TEdgeStump * currentOut = g.data_vertex[vertex];
    	while(currentOut!=0)
    	{
-        TVertexDescriptor target = targetVertex(g,currentOut);
-        if (target==vertex)
+        TVertexDescriptor target = targetVertex(g, currentOut);
+        if (target == vertex)
         {
             currentOut = getNextT(currentOut);
         } else
@@ -719,24 +720,23 @@ getVertexAdjacencyVector(Graph<Undirected<TCargo, TSpec> > const & g,
         }
         ++count;
     }
-    return;
 }
 
-template<typename TCargo, typename TSpec, typename TVertex, typename TVector>
+template<typename TVector, typename TCargo, typename TSpec, typename TVertex>
 inline void
-getVertexAdjacencyVector(Graph<Undirected<TCargo, TSpec> > const & g,
-                         TVertex const & vertex,
-						 TVector & vectIn,
-						 TVector & vectOut)
+getVertexAdjacencyVector(TVector & vectIn,
+                         TVector & vectOut,
+                         Graph<Undirected<TCargo, TSpec> > const & g,
+                         TVertex const & vertex)
 {
     // vectIn and vectOut are equal for undirected graphs
     typedef typename Value<TVector>::Type TMatValue;
-    getVertexAdjacencyVector(g, vertex, vectOut);
+
+    getVertexAdjacencyVector(vectOut, g, vertex);
     clear(vectIn);
-    resize(vectIn, length(vectOut), (TMatValue) 0);
+    resize(vectIn, length(vectOut), static_cast<TMatValue>0);
     for(unsigned i = 0; i < length(vectOut); ++i)
         vectIn[i] = vectOut[i];
-    return;
 }
 
 //////////////////////////////////////////////////////////////////////////////

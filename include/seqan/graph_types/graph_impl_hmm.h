@@ -462,15 +462,14 @@ getAdjacencyMatrix(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertex, typename TVector>
+template<typename TVector, typename TAlphabet, typename TCargo, typename TSpec, typename TVertex>
 inline void
-getVertexAdjacencyVector(Graph<Hmm<TAlphabet, TCargo, TSpec> > const & g,
-                         TVertex const & vertex,
-						 TVector & vectIn,
-						 TVector & vectOut)
+getVertexAdjacencyVector(TVector & vectIn,
+                         TVector & vectOut,
+                         Graph<Hmm<TAlphabet, TCargo, TSpec> > const & g,
+                         TVertex const & vertex)
 {
-    getVertexAdjacencyVector(g.data_model, vertex, vectIn, vectOut);
-    return;
+    getVertexAdjacencyVector(vectIn, vectOut, g.data_model, vertex);
 }
 
 //////////////////////////////////////////////////////////////////////////////

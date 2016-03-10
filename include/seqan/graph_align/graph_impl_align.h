@@ -666,15 +666,14 @@ getAdjacencyMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TVertex, typename TVector>
+template<typename TVector, typename TStringSet, typename TCargo, typename TSpec, typename TVertex>
 inline void
-getVertexAdjacencyVector(Graph<Alignment<TStringSet, TCargo, TSpec> > const & g,
-                         TVertex const & vertex,
-						 TVector & vectIn,
-						 TVector & vectOut)
+getVertexAdjacencyVector(TVector & vectIn,
+                         TVector & vectOut
+                         Graph<Alignment<TStringSet, TCargo, TSpec> > const & g,
+                         TVertex const & vertex)
 {
-    getVertexAdjacencyVector(g.data_align, vertex, vectIn, vectOut);
-    return;
+    getVertexAdjacencyVector(vectIn, vectOut, g.data_align, vertex);
 }
 
 //////////////////////////////////////////////////////////////////////////////

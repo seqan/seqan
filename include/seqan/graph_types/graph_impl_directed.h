@@ -892,12 +892,12 @@ getAdjacencyMatrix(Graph<Directed<TCargo, TSpec> > const & g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TCargo, typename TSpec, typename TVertex, typename TVector>
+template<typename TVector, typename TCargo, typename TSpec, typename TVertex>
 inline void
-getVertexAdjacencyVector(Graph<Directed<TCargo, TSpec> > const & g,
-                         TVertex const & vertex,
-						 TVector & vectIn,
-						 TVector & vectOut)
+getVertexAdjacencyVector(TVector & vectIn,
+                         TVector & vectOut,
+                         Graph<Directed<TCargo, TSpec> > const & g,
+                         TVertex const & vertex)
 {
     typedef Graph<Directed<TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TGraphSize;
@@ -906,23 +906,24 @@ getVertexAdjacencyVector(Graph<Directed<TCargo, TSpec> > const & g,
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Iterator<String<TEdgeStump*> const, Standard>::Type TIterConst;
     typedef typename Value<TVector>::Type TMatValue;
+
     TSize lenVectIn = inDegree(g, vertex);
     TSize lenVectOut = outDegree(g, vertex);
     clear(vectIn);
     clear(vectOut);
-    resize(vectIn, lenVectIn, (TMatValue) 0);
-    resize(vectOut, lenVectOut, (TMatValue) 0);
+    resize(vectIn, lenVectIn, static_cast<TMatValue>0);
+    resize(vectOut, lenVectOut, static_cast<TMatValue>0);
     TIterConst itIn = begin(g.data_vertex, Standard());
     TIterConst itEndIn = end(g.data_vertex, Standard());
     TSize count = 0;
-    for(;itIn!=itEndIn;++itIn)
+    for(; itIn != itEndIn; ++itIn)
     {
         TEdgeStump * currentIn = *itIn;
         while(currentIn != 0)
         {
             if ((TVertexDescriptor) getTarget(currentIn) == vertex)
             {
-                TVertexDescriptor source = sourceVertex(g,currentIn);
+                TVertexDescriptor source = sourceVertex(g, currentIn);
                 vectIn[count] = static_cast<TMatValue>(static_cast<TGraphSize>(vectIn[count]) + source);
                 ++count;
             }
@@ -930,7 +931,7 @@ getVertexAdjacencyVector(Graph<Directed<TCargo, TSpec> > const & g,
         }
     }
     count = 0;
-    TEdgeStump* currentOut = getValue(g.data_vertex, vertex);
+    TEdgeStump * currentOut = getValue(g.data_vertex, vertex);
     while(currentOut != 0)
     {
         TVertexDescriptor target = targetVertex(g, currentOut);
@@ -938,7 +939,6 @@ getVertexAdjacencyVector(Graph<Directed<TCargo, TSpec> > const & g,
         currentOut = getNextT(currentOut);
         ++count;
     }
-    return;
 }
 
 //////////////////////////////////////////////////////////////////////////////
