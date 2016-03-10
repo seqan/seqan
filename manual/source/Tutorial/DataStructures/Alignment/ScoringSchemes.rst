@@ -23,7 +23,8 @@ Prerequisites
 The alignment procedures are usually based on the sequences similarity computation described by an alignment scoring system that gives countable information used to determine which sequences are related and which are not. 
 
 Four main biological events must be considered during the sequence alignment: 
-Match when the two compared letters are the same, substitution when a letter is aligned with another, insertion and deletion when in one of the two aligned sequences a letter is aligned with a gap.
+Conservation, substitution, insertion and deletion.
+We have a Conservation when the two compared letters are the same and a Match is detected, a Substitution when we detect a Mismatch where a letter is aligned with another, and Insertion and Deletion when in one of the two aligned sequences a letter is aligned with a Gap.
 
 .. image:: alig_ins_del.png
    :width: 500px
@@ -33,16 +34,17 @@ Given an alignment structure that store the two sequences and a scoring scheme, 
 
 With refer to the alignment procedure a Scoring Scheme can be defined as the set of rules used to assess the possible biological events that must be considered during the alignment procedure. 
 
-In SeqAn are available several :dox:`Score scoring schemes` to evaluate matches and substitutions, while three different gap models can be applied to consider insertions and deletions events.
-We will first introduce you to the scoring schemes used to evaluate match and substitution. Subsequent, you will learn how to chose the gap model to be implemented in the chosen scoring scheme.
+In SeqAn are available several :dox:`Score scoring schemes` to evaluate matches and mismatches, while three different gap models can be applied to consider insertions and deletions events.
+We will first introduce you to the scoring schemes used to evaluate match and mismatch. Subsequently, you will learn how to chose the gap model to be implemented in the chosen scoring scheme.
 
-Match/Substitution Evaluation
+Match/Mismatch Evaluation
 -----------------------------
 
 :dox:`SimpleScore Simple Score`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The simplest example of Scoring Scheme, usually applied to score the similarity among nucleotide sequences, is the Levenshtein distance model that assigns a score of 0 and -1 respectively if a match or a mismatch occurs, whereas a penalty value equal to -1 in case of gaps representing insertions or deletions (this scoring scheme is the default for :dox:`SimpleScore`).
+Alternatively, also the Hamming distance model can be used for some simple tasks that do not require the gap evaluations.
 
 Now, let's start by constructing our first scoring function for the global alignment algorithm called with the function :dox:`globalAlignment`.
 As first step we need to include the header file ``<seqan/align.h>`` which contains the necessary data structures and functions associated with the alignments.
@@ -60,9 +62,9 @@ As last we create the 'align' object and resize it to manage two :dox:`Gaps` obj
 .. includefrags:: demos/tutorial/alignment/scoring_scheme_simple.cpp
    :fragment: init
 
-Now, we can compute the global alignment that make use of the simple scoring function.
+Now, we can compute the global alignment that makes use of the simple scoring function.
 To do so, we simply call the function :dox:`globalAlignment` and give as input parameters the ``align`` object and the scoring scheme representing the Levenshtein distance.
-The globalAlignment function fill the ``align`` object with the best computed alignment and returns the maximum score, which we store in the ``score`` variable.
+The globalAlignment function fills the ``align`` object with the best computed alignment and returns the maximum score which we store in the ``score`` variable.
 Afterwards, we print the computed score and the corresponding alignment.
 
 .. includefrags:: demos/tutorial/alignment/scoring_scheme_simple.cpp
@@ -74,7 +76,7 @@ You have created your global alignment implementing the simple scoring function,
 .. includefrags:: demos/tutorial/alignment/scoring_scheme_simple.cpp.stdout
 
 However, in the evaluation of protein similarity or for advanced nucleotide alignments a more complex scoring model is generally applied. 
-It is based on the usage of a Substitution Matrix, proven to better describe from a biological point of view, events such as matches and substitutions.
+It is based on the usage of a Substitution Matrix, proven to better describe from a biological point of view, events such as matches and mismatches.
 
 Substitutional Matrices Score
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -116,7 +118,7 @@ The output of a global alignment implementing the Blosum62 scoring function is a
 
 Insertion/Deletion Evaluation
 -----------------------------
-In the previous sections we proposed two simple code examples useful to highlight the differences between two scoring schemes capable to evaluate the match and the substitution events. In this section we will see the three gap models implemented in the SeqAn library to evaluate the insertion and deletion events.
+In the previous sections we proposed two simple code examples useful to highlight the differences between two scoring schemes capable to evaluate match and mismatch events. In this section we will see the three gap models, implemented in the SeqAn library, to evaluate the insertion and deletion events.
 
 Linear Gap Model
 ^^^^^^^^^^^^^^^^
