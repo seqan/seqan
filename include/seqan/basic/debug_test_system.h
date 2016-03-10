@@ -761,8 +761,8 @@ void beginTestSuite(const char * testSuiteName, const char * argv0)
 inline
 std::string _stripFileName(const char * tempFilename)
 {
-    std::string s(tempFilename, 0, 31);
-    return s;
+    std::string s(tempFilename);
+    return s.substr(0, s.find_last_of("\\/"));
 }
 
 // delete temporary file from /tmp/ directory
