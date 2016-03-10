@@ -52,7 +52,7 @@ Using The Command Line
 Uncrustify can also be used via the command line.
 This is best done after a rough visual verification that the uncrustify.cfg yields works for your sources using the Universal Indenter UI.
 
-Work on single file:
+Work on a single file:
 
 .. code-block:: console
 
@@ -70,11 +70,11 @@ Automatically fix whitespaces in Xcode
 
 Uncrustify can also be used directly from Xcode.
 With Xcode 4 Apple introduced so called "Behaviors" that can be executed using for instance keyboard shortcuts.
-To use uncrustify you can add a new behavior in the Xcode Preferences (tab Behaviors) and select "*Run*".
+To use Uncrustify you can add a new behavior in the Xcode Preferences (tab Behaviors) and select "*Run*".
 Here you add the attached ruby script.
 
 .. figure:: Xcode - Behavior.png
 
-**Note:** The script does **not** uncrustify the currently opened source file but all source files that were changed in your current branch.
-Xcode does not provide the information which source file is currently opened.
-
+.. note::
+   The script does **not** uncrustify the currently opened source file but all source files that were changed in your current branch.
+   Xcode does not provide the information which source file is currently opened.

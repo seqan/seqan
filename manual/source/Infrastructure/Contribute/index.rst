@@ -8,7 +8,7 @@ SeqAn is on GitHub: http://github.com/seqan/seqan
 Use the GitHub page to fork SeqAn, create tickets and/or pull requests.
 You can also follow and like the project there!
 
-Contributing Code or documentation
+Contributing Code or Documentation
 ----------------------------------
 
 If you are unfamiliar with git, you need to learn about it first. TODO link
@@ -31,6 +31,7 @@ SeqAn's documentation system, called **dox**, is similar to doxygen, but not ide
 .. toctree::
    :glob:
    :titlesonly:
+   :hidden:
 
    GitWorkflow
    WriteCommitMessages

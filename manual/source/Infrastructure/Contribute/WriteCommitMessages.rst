@@ -123,7 +123,7 @@ An internal change, reordering of code without changing the public API.
 
     [INTERNAL] Reordering code in module sequence so no more generated forwards are needed.
 
-An internal change might include test and improved comments.
+An internal change might include tests and improved comments.
 
 ::
 
