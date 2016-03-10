@@ -26,7 +26,7 @@ SeqAn supports the usual CMake build types and we recommend :ref:`using multiple
 In addition to ``CMAKE_BUILD_TYPE`` there is also the ``SEQAN_BUILD_SYSTEM`` parameter which can be one of
 
 #. ``DEVELOP`` -- all build targets (apps, demos, tests) and documentation (dox, manual) are created (the default).
-#. ``SEQAN_RELEASE_LIBRARY`` -- only dox and libraray target created.
+#. ``SEQAN_RELEASE_LIBRARY`` -- only dox and library targets are created.
 #. ``SEQAN_RELEASE_APPS`` -- all app targets are created, but nothing else.
 #. ``APP:$APPNAME`` -- only a single app target is created for the chosen app.
 
@@ -152,7 +152,7 @@ Including the header makes the code in the module available.
 
 .. note:: Header only library
 
-   Remember that SeqAn is a templat library that consists entirely of headers.
+   Remember that SeqAn is a template library that consists entirely of headers.
    No build steps are required for building the library and no shared objects will be created.
 
 manual

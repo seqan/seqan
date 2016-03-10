@@ -187,7 +187,7 @@ Rationale
 
 The standard stream ``stdout`` is for the program's output while ``stderr`` is for logging and error messages.
 It should be possible to redired ``stdout`` to an output file and ``stderr`` to a log file.
-Use ``-`` as shorcuts for ``stdout`` and ``stderr``.
+Use ``-`` as shortcuts for ``stdout`` and ``stderr``.
 
 Explanation
 ^^^^^^^^^^^
