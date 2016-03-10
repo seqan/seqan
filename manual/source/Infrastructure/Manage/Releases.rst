@@ -11,7 +11,7 @@ There are three different "packaging targets":
 
 #. a source package of the SeqAn library (``-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY``)
 #. a package containing all apps (``-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS``)
-#. a package containing single SeqAn app (``-DSEQAN_BUILD_SYSTEM=APP:$appname``)
+#. a package containing a single SeqAn app (``-DSEQAN_BUILD_SYSTEM=APP:$appname``)
 
 We assume that you have read :ref:`infra-use-install` and have cloned or unzipped the **full SeqAn sources** to ``~/devel/seqan`` (not the "library sources" described in other places).
 
@@ -36,7 +36,7 @@ This will create a ZIP-file and on unix also a tarball (`.tar.xz`) of the packag
 
 .. note::
 
-    Especially when creating packages, make sure that the cmake generator and/or compiler are the one you want!
+    Especially when creating packages, make sure that the cmake generator and/or compiler are the ones you want!
 
 Downstream Packaging
 --------------------
