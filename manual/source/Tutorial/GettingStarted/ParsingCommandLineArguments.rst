@@ -45,8 +45,8 @@ The program has three types of command line options/arguments:
 
 * Two **flag options** ``--uppercase`` and ``--lowercase`` that select the operation.
 * One **(value) option** ``-i`` that selects the period of the characters that the operation is to be applied to and is given a
-  value (``2`` in the first call, ``1`` in the second).
-* One **(positional) argument** with the text to modify (above ``"This is some text!"``.
+  value (``2`` in the first call above, ``1`` in the second).
+* One **(positional) argument** with the text to modify (``"This is some text!"`` in both calls above.
   In contrast to options, arguments are not identified by their names but by their position.
 
 Command line options can have a **long name** (e.g. ``--lowercase``)
@@ -131,6 +131,31 @@ The :dox:`ArgParseOption` constructor is called in two different variants.
 Within the first :dox:`ArgumentParser#addOption` call, we construct an integer option with a short and long name, a documentation string, and give it the label "INT".
 The second option is a flag (indicated by not giving a type) with a short and a long name and a description.
 
+Next, we parse the command line using :dox:`ArgumentParser#parse`.
+
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/example1_detailed.cpp
+   :fragment: parse
+
+We then check the result of the parsing operation.
+The result is ``seqan::ArgumentParser::PARSE_ERROR`` if there was a problem with the parsing.
+Otherwise, it is ``seqan::ArgumentParser::PARSE_OK`` if there was no problem and no special functionality of the argument parser was triggered.
+The command line parser automatically adds some arguments, such as ``--help``.
+If such built-in functionality is triggered, it will return a value that is neither ``PARSE_ERROR`` nor ``PARSE_OK``.
+
+The following two lines have the following behaviour.
+If the parsing went through and no special functionality was triggered then the branch is not taken.
+Otherwise, the method ``main()`` is left with ``1`` in case of errors and with ``0`` in case special behaviour was triggered (e.g. the help was printed).
+
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/example1_detailed.cpp
+   :fragment: check
+
+Finally, we access the values from the command line using the :dox:`ArgumentParser`.
+The function :dox:`ArgumentParser#getOptionValue` allows us to access the values from the command line after casting into C++ types.
+The function :dox:`ArgumentParser#isSet` allows us to query whether a given argument was set on the command line.
+
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/example1_detailed.cpp
+   :fragment: print
+
 .. tip::
 
     List Arguments and Options.
@@ -157,31 +182,6 @@ Consider this program call:
 
 For example, if the program has three arguments and the first one is a list then ``arg0`` and ``arg1`` would be the content of the first argument.
 If it has two arguments and the last one is a list then ``arg1``, ``arg2``, and ``arg3`` would be the content of the last argument.
-
-Next, we parse the command line using :dox:`ArgumentParser#parse`.
-
-.. includefrags:: demos/tutorial/parsing_command_line_arguments/example1_detailed.cpp
-   :fragment: parse
-
-We then check the result of the parsing operation.
-The result is ``seqan::ArgumentParser::PARSE_ERROR`` if there was a problem with the parsing.
-Otherwise, it is ``seqan::ArgumentParser::PARSE_OK`` if there was no problem and no special functionality of the argument parser was triggered.
-The command line parser automatically adds some arguments, such as ``--help``.
-If such built-in functionality is triggered, it will return a value that is neither ``PARSE_ERROR`` nor ``PARSE_OK``.
-
-The following two lines have the following behaviour.
-If the parsing went through and no special functionality was triggered then the branch is not taken.
-Otherwise, the method ``main()`` is left with ``1`` in case of errors and with ``0`` in case special behaviour was triggered (e.g. the help was printed).
-
-.. includefrags:: demos/tutorial/parsing_command_line_arguments/example1_detailed.cpp
-   :fragment: check
-
-Finally, we access the values from the command line using the :dox:`ArgumentParser`.
-The function :dox:`ArgumentParser#getOptionValue` allows us to access the values from the command line after casting into C++ types.
-The function :dox:`ArgumentParser#isSet` allows us to query whether a given argument was set on the command line.
-
-.. includefrags:: demos/tutorial/parsing_command_line_arguments/example1_detailed.cpp
-   :fragment: print
 
 Assignment 1
 """"""""""""
@@ -222,7 +222,7 @@ Assignment 2
         .. includefrags:: demos/tutorial/parsing_command_line_arguments/assignment2_solution.cpp
 
 Using Default Values
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 
 Would it not be nice if we could specify a default value for ``--period``, so it is ``1`` if not specified and simply each character is modified?
 We can do this by using the function :dox:`ArgumentParser#setDefaultValue`:
@@ -254,7 +254,7 @@ Assignment 3
           .. includefrags:: demos/tutorial/parsing_command_line_arguments/assignment3_solution.cpp
 
 Best Practice: Using Option Structs
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------
 
 Instead of just printing the options back to the user, we should actually store them.
 To follow best practice, we should not use global variables for this but instead pass them as parameters.
@@ -262,32 +262,23 @@ To follow best practice, we should not use global variables for this but instead
 We will thus create a ``ModifyStringOptions`` struct that encapsulates the settings the user can give to the ``modify_string`` program.
 Note that we initialize the variables of the struct with initializer lists, as it is best practice in modern C++.
 
-The <tt>ModifyStringOptions</tt> struct's definition is shown below.
-Click ''more...'' to see the whole updated program.
+The ``ModifyStringOptions`` struct's looks as follows:
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/example_with_struct.cpp
+      :fragment: struct
 
-   struct ModifyStringOptions
-   {
-       unsigned period;
-       bool toUppercase;
-       bool toLowercase;
-       seqan::CharString text;
-
-       ModifyStringOptions() :
-	   period(1), toUppercase(false), toLowercase(false)
-       {}
-   };
+Click **more...** to see the whole updated program.
 
 .. container:: foldable
 
    .. includefrags:: demos/tutorial/parsing_command_line_arguments/example_with_struct.cpp
+          :fragment: full
 
 Best Practice: Wrapping Parsing In Its Own Function
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------------------------
 
 As a next step towards a cleaner program, we should extract the argument parsing into its own function, e.g. call it ``parseCommandLine()``.
-Following the style guide (:ref:`internal-style-guide-cpp`), we first pass the output parameter, then the input parameters.
+Following the style guide (:ref:`infra-contribute-style-cpp`), we first pass the output parameter, then the input parameters.
 The return value of our function is a ``seqan::ArgumentParser::ParseResult`` such that we can differentiate whether the program can go on, the help was printed and the program is to exit with success, or there was a problem with the passed argument and the program is to exit with an error code.
 
 Also, note that we should check that the user cannot specify both to-lowercase and to-uppercase.
@@ -302,7 +293,7 @@ Click **more...** to see the updated program.
 
 
 Feature-Complete Example Program
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------
 
 The command line parsing part of our program is done now.
 Let us now add a function ``modifyText()`` that is given a ``ModifyStringOptions`` object and text and modifies the text.
@@ -312,7 +303,7 @@ We simply use the C standard library functios ``toupper()`` and ``tolower()`` fr
 
 
 Setting Restrictions
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 
 One nice feature of the :dox:`ArgumentParser` is that it is able to perform some simple checks on the parameters.
 We can:
@@ -324,7 +315,7 @@ We can:
 In this section, we will give some examples.
 
 Setting Minimum and Maximum Values
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""""
 
 The functions :dox:`ArgParseArgument#setMinValue` and :dox:`ArgParseArgument#setMaxValue` allow to give a smallest and/or largest value for a given option.
 Of course, this only works with integer- and double-typed command line options.
@@ -360,9 +351,8 @@ Assignment 4
 
          .. includefrags:: demos/tutorial/parsing_command_line_arguments/assignment4_solution.cpp
 
-
 Marking Options as Required
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""
 
 We can mark options as being required using the function :dox:`ArgumentParser#setRequired`:
 
@@ -376,7 +366,7 @@ We can mark options as being required using the function :dox:`ArgumentParser#se
    setRequired(parser, "i");
 
 Setting List of Valid Values
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""
 
 Sometimes, it is useful to give a list of valid values for a command line option.
 You can give it as a space-separated list in a string to :dox:`ArgumentParser#setValidValues`.
@@ -392,12 +382,12 @@ The check whether the value from the command line is valid is case sensitive.
     setValidValues(parser, "distance-model", "HAMMING EDIT");
 
 More Option and Argument Types
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------
 
 There are two slightly more special option and argument types: paths to input/output files and tuple values.
 
 Input/Output File Names
-^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""
 
 We could use ``ArgParseArgument::STRING`` to specify input and output files.
 However, there are two special argument/option types ``ArgParseArgument::INPUT_FILE`` and ``ArgParseArgument::OUTPUT_FILE`` that are more suitable:
@@ -460,7 +450,7 @@ Assignment 5
          .. includefrags:: demos/tutorial/parsing_command_line_arguments/assignment5_solution.cpp
 
 Tuples
-^^^^^^
+""""""
 
 We can define an :dox:`ArgParseArgument` and :dox:`ArgParseOption` to be a tuple with a fixed number of arguments.
 For example, an integer pair (tuple with two entries) could describe a range:
@@ -511,9 +501,8 @@ Assignment 6
 
          .. includefrags:: demos/tutorial/parsing_command_line_arguments/assignment6_solution.cpp
 
-
 Embedding Rich Documentation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------
 
 Another very useful feature of :dox:`ArgumentParser` is that you can embed rich documentation into your programs.
 You can set the short description, the version string, date, synopsis and add text documentation settings.

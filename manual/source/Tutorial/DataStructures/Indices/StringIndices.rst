@@ -24,7 +24,7 @@ Indices in SeqAn
 Indices in SeqAn are substring indices, meaning that they allow efficient pattern queries in strings or sets of strings.
 In contrast to, e.g., online-search algorithms that search through the text in :math:`\mathcal{O}(n)`, substring indices find a pattern in sublinear time :math:`o(n)`.
 
-You can find the following indices in SeqAn.
+You can find the following indices in SeqAn:
 
 :dox:`IndexSa`
   Suffix Array :cite:`Manber1993`
@@ -35,9 +35,7 @@ You can find the following indices in SeqAn.
 :dox:`IndexDfi`
   Deferred Frequency Index :cite:`Weese2008`
 :dox:`IndexQGram`
-  Q-gram index
-:dox:`PizzaChiliIndex`
-  An adapter for the `Pizza & Chili <http://pizzachili.dcc.uchile.cl/>`_ index API
+  Q-gram index (see `here <QgramIndex.html>`_)
 :dox:`FMIndex`
   Full-text minute index :cite:`Ferragina2001`
 
@@ -81,48 +79,6 @@ Assignment 1
 
         .. includefrags:: demos/tutorial/indices/assignment_1.cpp
 
-Index Based Pattern Search (Strings)
-------------------------------------
-
-SeqAn provides two methods for searching for a pattern in index structures.
-One method uses iterators and is similar to traversing search trees or tries.
-The tutorial :ref:`tutorial-datastructures-indices-index-iterators` explains this method in more detail.
-In this section you will learn how to find a pattern with the :dox:`Finder` interface.
-
-The :dox:`Finder` is an object that stores all necessary information for searching for a pattern using an index.
-The following line of code shows how the :dox:`Finder` is initialized.
-
-.. includefrags:: demos/tutorial/indices/base.cpp
-      :fragment: finder
-
-After initialization it is possible to use the :dox:`Finder#find` function in order to trigger a search for all occurrences of a given pattern in the underlying :dox:`String` or :dox:`StringSet`.
-In this example, we search for the pattern ``ACGT``:
-
-.. includefrags:: demos/tutorial/indices/base.cpp
-      :fragment: finder2
-
-Calling the function :dox:`Finder#find` invokes the localization of all occurrences of a given pattern.
-It works by modifying pointers of the ``Finder`` to tables of the index.
-For example, the :dox:`Finder` of ``esaIndex`` stores two pointers, pointing to the first and last suffix array entry that stores an occurrence of the pattern.
-
-The return value of the :dox:`Finder#find` function tells us whether or not a given pattern occurs in the text.
-Furthermore, if there are several instances of a pattern, consecutive calls of :dox:`Finder#find` will modify the :dox:`Finder` such that it points to the next occurrence after each call:
-
-.. includefrags:: demos/tutorial/indices/base.cpp
-      :fragment: finder_multiple
-
-The above code is not very useful, since we do not know the locations of the first, second or third pattern occurrence.
-The function :dox:`Finder#position` will help here.
-:dox:`Finder#position` called on a finder returns the location of the ``x``\ th pattern, where ``x`` can be the first, second, or any other occurrence of the pattern.
-
-.. includefrags:: demos/tutorial/indices/base.cpp
-      :fragment: finder_position
-
-.. tip::
-
-   Indices in SeqAn are build on demand.
-   That means that the index tables are not build when the constructor is called, but when we search for a pattern for the first time.
-
 Assignment 2
 ^^^^^^^^^^^^
 
@@ -143,7 +99,7 @@ Assignment 2
         .. includefrags:: demos/tutorial/indices/assignment_2.cpp
 
 You might have noticed that we only applied the :dox:`FMIndex` and :dox:`IndexEsa` in the examples.
-The reason for this is that even though everything stated so far is true for the other indices as well, :dox:`IndexWotd` and :dox:`IndexDfi` are more usefull when used with iterators as explained in the tutorial :ref:`tutorial-datastructures-indices-index-iterators` and the :dox:`IndexQGram` uses :dox:`Shape Shapes` which is also explained in another tutorial.
+The reason for this is that even though everything stated so far is true for the other indices as well, :dox:`IndexWotd` and :dox:`IndexDfi` are more useful when used with iterators as explained in the tutorial :ref:`tutorial-datastructures-indices-index-iterators` and the :dox:`IndexQGram` uses :dox:`Shape Shapes` which is also explained in another tutorial.
 
 One last remark is necessary.
 

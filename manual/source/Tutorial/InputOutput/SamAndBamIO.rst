@@ -29,7 +29,7 @@ Overview
     Also have a look at :ref:`tutorial-io-input-output-overview-formatted-files` to read more about support of compressed file I/O.
     If the macro ``SEQAN_HAS_ZLIB`` is set to ``0`` then reading/writing BAM file format is disabled. 
     It is set to ``1`` if the zlib could be found and reading/writing of compressed files is enabled automatically.
-    You can read :ref:`internal-build-manual-integration-with-your-own-build-system`, :ref:`internal-build-manual-using-the-find-seqan-cmake-module` and for windows users :ref:`how-to-recipes-install-contribs-on-windows` for further notes about using the zlib and libbz2 in your build infrastructure.
+    You can read :ref:`infra-use-cmake`, :ref:`infra-use-custom` and :ref:`infra-use-install-dependencies` for further notes about using the zlib and libbz2 in your build infrastructure.
 
 This tutorial shows how to read and write SAM and BAM files using the :dox:`BamFileIn` and :dox:`BamFileOut` classes.
 It starts out with a quick reminder on the structure of SAM (and also BAM) files and continues with how to read and write SAM/BAM files and access the tags of a record.
