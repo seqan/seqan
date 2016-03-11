@@ -730,8 +730,6 @@ getVertexAdjacencyVector(TVector & vectIn,
                          TVertex const & vertex)
 {
     // vectIn and vectOut are equal for undirected graphs
-    typedef typename Value<TVector>::Type TMatValue;
-
     getVertexAdjacencyVector(vectOut, g, vertex);
     clear(vectIn);
     resize(vectIn, length(vectOut), 0);
