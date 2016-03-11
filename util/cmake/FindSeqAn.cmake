@@ -225,7 +225,7 @@ endif (NOT CXX11_FOUND)
 if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   # Tune warnings for GCC.
   set (CMAKE_CXX_WARNING_LEVEL 4)
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -Wno-long-long -fstrict-aliasing -Wstrict-aliasing")
+  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing")
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
 
   # Determine GCC version.
@@ -239,16 +239,6 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
          __GCC_VERSION ${__GCC_VERSION})
   STRING(REGEX REPLACE ".*([0-9])\\.([0-9]).*" "\\1\\20"
          _GCC_VERSION ${__GCC_VERSION})
-
-  # Add -Wno-longlong if the GCC version is < 4.0.0.  Add -pedantic flag but
-  # disable warnings for variadic macros with GCC >= 4.0.0.  Earlier versions
-  # warn because of anonymous variadic macros in pedantic mode but do not have
-  # a flag to disable these warnings.
-  if (400 GREATER _GCC_VERSION)
-    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-long-long")
-  else (400 GREATER _GCC_VERSION)
-    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -pedantic -Wno-variadic-macros")
-  endif (400 GREATER _GCC_VERSION)
 
   # Force GCC to keep the frame pointer when debugging is enabled.  This is
   # mainly important for 64 bit but does not get into the way on 32 bit either
@@ -373,6 +363,8 @@ if (_SEQAN_HAVE_EXECINFO)
   if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") OR (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD"))
     set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} execinfo elf)
   endif ()
+else (_SEQAN_HAVE_EXECINFO)
+  set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-DSEQAN_HAS_EXECINFO=0")
 endif (_SEQAN_HAVE_EXECINFO)
 
 # ZLIB
