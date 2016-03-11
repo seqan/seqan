@@ -110,7 +110,7 @@ Different versions (please note that versions older than 2015 are not supported 
 
     **64Bit builds on Windows**
 
-    You almost always want 64Bit builds when using SeqAn, so don't forget to specify a generator that ends in "64Bit". It is not the default, even on 64Bit Windows installations.
+    You almost always want 64Bit builds when using SeqAn, so don't forget to specify a generator that ends in "Win64". It is not the default, even on 64Bit Windows installations.
 
 XCode
 ^^^^^

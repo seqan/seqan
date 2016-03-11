@@ -295,7 +295,7 @@ For good measure, we also disable assertions in the C library with ``-DNDEBUG``.
 Notes
 ^^^^^
 
-Note that we added the include path to the directory ``include`` that contains the directory ``seqan``.
+Above we added the include path to SeqAn's include directory manually.
 By changing the include path, we can install the SeqAn library anywhere.
 For example, we could create a directory ``include`` parallel to ``src``, copy the release version of SeqAn into it and then change the include path of the compiler to point to this directory (value ``../include``).
 

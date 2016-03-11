@@ -140,7 +140,7 @@ You can fix this by changing the type of the number literal:
 Break Your Tests Down
 ^^^^^^^^^^^^^^^^^^^^^
 
-Each test should isolate target an as small as possible and/or feasible unit of your code.
+Each test should verify a part of the library as small as possible while still being meaningful.
 Having short test functions makes them easier to read and maintain.
 
 Another advantage is that bogus state does not leak into other tests: imagine, you have a test that tests a function ``assign_if_positive(a, b)`` that assigns b to a if b is positive.
