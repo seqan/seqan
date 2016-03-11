@@ -704,11 +704,11 @@ getVertexAdjacencyVector(TVector & vectOut,
 
     TSize lenVectOut = outDegree(g, vertex);
     clear(vectOut);
-    resize(vectOut, lenVectOut, static_cast<TMatValue>0);
+    resize(vectOut, lenVectOut, 0);
     TSize count=0;
     TEdgeStump * currentOut = g.data_vertex[vertex];
-   	while(currentOut!=0)
-   	{
+    while(currentOut!=0)
+    {
         TVertexDescriptor target = targetVertex(g, currentOut);
         if (target == vertex)
         {
@@ -734,7 +734,7 @@ getVertexAdjacencyVector(TVector & vectIn,
 
     getVertexAdjacencyVector(vectOut, g, vertex);
     clear(vectIn);
-    resize(vectIn, length(vectOut), static_cast<TMatValue>0);
+    resize(vectIn, length(vectOut), 0);
     for(unsigned i = 0; i < length(vectOut); ++i)
         vectIn[i] = vectOut[i];
 }

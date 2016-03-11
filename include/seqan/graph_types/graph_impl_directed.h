@@ -892,14 +892,13 @@ getAdjacencyMatrix(Graph<Directed<TCargo, TSpec> > const & g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TVector, typename TCargo, typename TSpec, typename TVertex>
+template<typename TVector, typename TGraph, typename TVertex>
 inline void
-getVertexAdjacencyVector(TVector & vectIn,
+_getVertexAdjacencyVector(TVector & vectIn,
                          TVector & vectOut,
-                         Graph<Directed<TCargo, TSpec> > const & g,
+                         TGraph const & g,
                          TVertex const & vertex)
 {
-    typedef Graph<Directed<TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TGraphSize;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
     typedef typename Size<TVector>::Type TSize;
@@ -911,8 +910,8 @@ getVertexAdjacencyVector(TVector & vectIn,
     TSize lenVectOut = outDegree(g, vertex);
     clear(vectIn);
     clear(vectOut);
-    resize(vectIn, lenVectIn, static_cast<TMatValue>0);
-    resize(vectOut, lenVectOut, static_cast<TMatValue>0);
+    resize(vectIn, lenVectIn, 0);
+    resize(vectOut, lenVectOut, 0);
     TIterConst itIn = begin(g.data_vertex, Standard());
     TIterConst itEndIn = end(g.data_vertex, Standard());
     TSize count = 0;
@@ -939,6 +938,18 @@ getVertexAdjacencyVector(TVector & vectIn,
         currentOut = getNextT(currentOut);
         ++count;
     }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+template<typename TVector, typename TCargo, typename TSpec, typename TVertex>
+inline void
+getVertexAdjacencyVector(TVector & vectIn,
+                         TVector & vectOut,
+                         Graph<Directed<TCargo, TSpec> > const & g,
+                         TVertex const & vertex)
+{
+    _getVertexAdjacencyVector(vectIn, vectOut, g, vertex);
 }
 
 //////////////////////////////////////////////////////////////////////////////

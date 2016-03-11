@@ -594,8 +594,8 @@ getVertexAdjacencyVector(TVector & vectIn,
     TSize lenVectOut = outDegree(g, vertex);
     clear(vectIn);
     clear(vectOut);
-    resize(vectIn, lenVectIn, static_cast<TMatValue>0);
-    resize(vectOut, lenVectOut, static_cast<TMatValue>0);
+    resize(vectIn, lenVectIn, 0);
+    resize(vectOut, lenVectOut, 0);
     TIterConst itIn = begin(g.data_vertex, Standard());
     TIterConst itEndIn = end(g.data_vertex, Standard());
     TSize count = 0;
@@ -604,7 +604,7 @@ getVertexAdjacencyVector(TVector & vectIn,
     {
         if (idInUse(g.data_id_managerV, pos))
         {
-            for(TSize i = 0; i < static_cast<TSize>ValueSize<TAlphabet>::VALUE; ++i)
+            for(TSize i = 0; i < static_cast<TSize>(ValueSize<TAlphabet>::VALUE); ++i)
             {
                 if ((*itIn).data_edge[i].data_target == vertex)
                 {
@@ -616,9 +616,9 @@ getVertexAdjacencyVector(TVector & vectIn,
         }
     }
     count = 0;
-    for(TSize i = 0; i < static_cast<TSize>ValueSize<TAlphabet>::VALUE; ++i)
+    for(TSize i = 0; i < static_cast<TSize>(ValueSize<TAlphabet>::VALUE); ++i)
     {
-        TVertexDescriptor target = static_cast<TVertexDescriptor>getTarget(& g.data_vertex[vertex].data_edge[i]);
+        TVertexDescriptor target = static_cast<TVertexDescriptor>(getTarget(& g.data_vertex[vertex].data_edge[i]));
         if ( target != nilVal)
         {
             vectOut[count] = static_cast<TMatValue>(static_cast<TGraphSize>(vectOut[count]) + target);
