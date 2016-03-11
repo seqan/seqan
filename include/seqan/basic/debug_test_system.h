@@ -390,7 +390,7 @@ void printDebugLevel(TStream & stream)
     stream << "SEQAN_ASYNC_IO == " << SEQAN_ASYNC_IO << std::endl;
 }
 
-#if defined(PLATFORM_WINDOWS) || !SEQAN_HAS_EXECINFO
+#if !SEQAN_HAS_EXECINFO
 
 template <typename TSize>
 void printStackTrace(TSize /*maxFrames*/)
@@ -523,7 +523,7 @@ volatile int signalHandlersDummy_ = SignalHandlersDummy_<void>::i;
 }
 
 #endif  // #if SEQAN_ENABLE_DEBUG
-#endif  // defined(PLATFORM_WINDOWS) || !SEQAN_HAS_EXECINFO
+#endif  // !SEQAN_HAS_EXECINFO
 
 
 // Namespace for the testing infrastructure.
@@ -761,8 +761,8 @@ void beginTestSuite(const char * testSuiteName, const char * argv0)
 inline
 std::string _stripFileName(const char * tempFilename)
 {
-    std::string s(tempFilename, 0, 31);
-    return s;
+    std::string s(tempFilename);
+    return s.substr(0, s.find_last_of("\\/"));
 }
 
 // delete temporary file from /tmp/ directory
