@@ -136,7 +136,7 @@ public:
         OUTPUT_FILE,  // .. an outputfile (implicitly also a string)
         INPUT_PREFIX, // .. an inputprefix (implicitly also a string)
         ///@deprecated use INPUT_PREFIX instead
-        INPUTPREFIX __attribute__((deprecated)) = INPUT_PREFIX,
+        INPUTPREFIX = INPUT_PREFIX,
         OUTPUT_PREFIX // .. an outoutprefix (implicitly also a string)
     };
 
