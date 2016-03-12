@@ -221,6 +221,9 @@ add_custom_command (OUTPUT ${WORKFLOW_PLUGIN_DIR}/plugin.properties
                                              "-DWORKFLOW_PLUGIN_DIR=${WORKFLOW_PLUGIN_DIR}"
                                              "-DSEQAN_VERSION_STRING=${SEQAN_VERSION_STRING}"
                                              "-DSEQAN_DATE=${SEQAN_DATE}"
+                                             "-DCTD_PLUGIN_PACKAGE=${CTD_PLUGIN_PACKAGE}"
+                                             "-DCTD_PLUGIN_NAME=${CTD_PLUGIN_NAME}"
+                                             "-DCTD_REPO_SUB_FOLDER=${CTD_REPO_SUB_FOLDER}"
                                              -P "${CMAKE_SOURCE_DIR}/util/cmake/ctd/configure_profile_properties.cmake"
                     DEPENDS ${WORKFLOW_PLUGIN_DIR}
                             ${CMAKE_SOURCE_DIR}/util/cmake/ctd/plugin.properties.in)

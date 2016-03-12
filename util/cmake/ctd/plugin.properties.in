@@ -1,14 +1,14 @@
 # the package of the plugin
-pluginPackage=de.seqan
+pluginPackage=@CTD_PLUGIN_PACKAGE@
 
 # the name of the plugin
-pluginName=SeqAn
+pluginName=@CTD_PLUGIN_NAME@
 
 # the version of the plugin
 pluginVersion=@CF_SEQAN_VERSION@
 
 # the path (starting from KNIMEs Community Nodes node)
-nodeRepositoyRoot=community
+nodeRepositoyRoot=community/@CTD_REPO_SUB_FOLDER@
 
 
 executor=com.genericworkflownodes.knime.execution.impl.LocalToolExecutor
