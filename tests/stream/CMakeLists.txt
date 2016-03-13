@@ -15,9 +15,11 @@ message (STATUS "Configuring tests/stream")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-find_package (ZLIB)
-find_package (BZip2)
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (ZLIB)
+    find_package (BZip2)
+    find_package (SeqAn REQUIRED)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Build Setup
