@@ -136,16 +136,17 @@ if ((("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP") OR
 
     message (STATUS "Configuring dox")
     add_subdirectory (dox)
-endif ()
 
+    if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+        message (STATUS "Configuring util/py_lib")
+        add_subdirectory (util/py_lib)
+    endif ()
+endif ()
 
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY")
     message (STATUS "Configuring apps")
     add_subdirectory (apps)
 endif ()
-
-message (STATUS "Configuring util/py_lib")
-add_subdirectory (util/py_lib)
 
 # ===========================================================================
 # Register Libraries (for GUI project generators)

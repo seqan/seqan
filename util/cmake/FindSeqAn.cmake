@@ -34,46 +34,29 @@
 #
 #   find_package(SeqAn [REQUIRED] ...)
 #
-# You can control the exact behaviour by setting the following variables.  The
-# defaults are given after the variable name.
-#
-#   SEQAN_FIND_DEPENDENCIES   -- DEFAULT
-#   SEQAN_FIND_ENABLE_TESTING -- TRUE if ${CMAKE_BUILD_TYPE} == "Debug", FALSE
-#                                otherwise.
-#
-# For example:
-#
-#   set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)
-#   find_package (SeqAn)
-#
-# The first variable is either "ALL", "DEFAULT" or a list of dependency names
-# and gives the names of the dependencies to search for.  The other two
-# variables can be used to forcibly enabling/disabling the debug and testing
-# mode.
-#
-# Valid dependencies are:
-#
-#   ALL     -- Forcibly enable all dependencies.
-#   DEFAULT -- Enable default dependencies (zlib, OpenMP if available)
-#   NONE    -- Disable all dependencies.
+# SeqAn has some optional dependencies that you must search for **before**
+# you search for SeqAn:
 #
 #   ZLIB    -- zlib compression library
 #   BZip2   -- libbz2 compression library
 #   OpenMP  -- OpenMP language extensions to C/C++
-#   CUDA    -- CUDA language extensions to C/C++
 #
+# E.g.
+#   find_package (ZLIB)
+#   find_package (BZip2)
+#   find_package (SeqAn [REQUIRED] ...)
 #
 # Once the search has been performed, the following variables will be set.
 #
 #  SEQAN_FOUND           -- Indicate whether SeqAn was found.
 #
-# These variables are flags that indicate whether the various dependencies
+# (the dependencies have their own *_FOUND  variables, but inside the code we
+# also define the following macros to indicate whether dependencies were found:
 # of the SeqAn library were found.
 #
 #  SEQAN_HAS_ZLIB
 #  SEQAN_HAS_BZIP2
 #  SEQAN_HAS_OPENMP
-#  SEQAN_HAS_CUDA
 #
 # These variables give lists that are to be passed to the
 # include_directories(), target_link_libraries(), and add_definitions()
@@ -82,14 +65,6 @@
 #  SEQAN_INCLUDE_DIRS
 #  SEQAN_LIBRARIES
 #  SEQAN_DEFINITIONS
-#
-# Additionally, the following two variables are set.  The first contains
-# the include paths for SeqAn, the second for dependencies.  This allows to
-# include the dependency headers using include_directories (SYSTEM ...),
-# such that warnings from these headers do not appear in the nightly builds.
-#
-#  SEQAN_INCLUDE_DIRS_MAIN
-#  SEQAN_INCLUDE_DIRS_DEPS
 #
 # The C++ compiler flags to set.
 #
@@ -127,11 +102,6 @@ elseif (SEQAN_FIND_DEPENDENCIES STREQUAL "ALL")
   set(SEQAN_FIND_DEPENDENCIES ${_SEQAN_ALL_LIBRARIES})
 elseif (SEQAN_FIND_DEPENDENCIES STREQUAL "NONE")
   set(SEQAN_FIND_DEPENDENCIES)
-endif ()
-
-# SEQAN_FIND_ENABLE_TESTING
-if (NOT SEQAN_FIND_ENABLE_TESTING)
-  set(SEQAN_FIND_ENABLE_TESTING "FALSE")
 endif ()
 
 # SEQAN_FIND_DEPENDENCIES IS DEPRECATED, just use find_package!
@@ -221,7 +191,7 @@ endif (NOT CXX11_FOUND)
 # ----------------------------------------------------------------------------
 
 # GCC Setup
-
+# TODO(h-2): move to buildsystem
 if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   # Tune warnings for GCC.
   set (CMAKE_CXX_WARNING_LEVEL 4)
@@ -330,16 +300,6 @@ else (SEQAN_USE_SEQAN_BUILD_SYSTEM)
     set(SEQAN_FOUND        FALSE)
   endif ()
 endif (SEQAN_USE_SEQAN_BUILD_SYSTEM)
-
-# ----------------------------------------------------------------------------
-# Set defines for debug and testing.
-# ----------------------------------------------------------------------------
-
-if (SEQAN_FIND_ENABLE_TESTING)
-  set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_TESTING=1)
-else ()
-  set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_TESTING=0)
-endif ()
 
 # ----------------------------------------------------------------------------
 # Search for dependencies.
