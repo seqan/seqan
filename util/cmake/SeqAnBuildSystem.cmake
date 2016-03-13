@@ -181,7 +181,7 @@ macro (seqan_build_system_init)
     enable_testing ()
 
     if (NOT SEQAN_BUILD_SYSTEM)
-        set (SEQAN_BUILD_SYSTEM "DEVELOP")
+        set (SEQAN_BUILD_SYSTEM "DEVELOP" CACHE STRING "Build/Release mode to select. One of DEVELOP SEQAN_RELEASE, APP:\${APP_NAME}. Defaults to DEVELOP.")
     endif (NOT SEQAN_BUILD_SYSTEM)
     set (SEQAN_APP_VERSION "0.0.0" CACHE STRING "Version of the application.")
     set (SEQAN_NIGHTLY_RELEASE FALSE CACHE BOOL "Set to TRUE to enable nightly app releases.")
@@ -197,39 +197,40 @@ macro (seqan_build_system_init)
         if (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
             configure_file("util/pkgconfig/seqan.pc.in" "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" @ONLY)
             install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION share/pkgconfig)
-            # Install FindSeqAn TODO(h-2) rename FindSeqAn.cmake to FindSeqAn${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
-            install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/FindSeqAn.cmake" DESTINATION share/cmake/Modules)
         endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
+        # Install FindSeqAn TODO(h-2) rename FindSeqAn.cmake to FindSeqAn${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
+        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/FindSeqAn.cmake" DESTINATION share/cmake/Modules)
     endif ()
 
-    if ((CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64") OR (CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64"))
-        set (SEQAN_64BIT_PROCESSOR 1)
-    endif()
+    if (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
+        set (SEQAN_NO_NATIVE TRUE)
+    endif ()
 
     if ((SEQAN_OFFICIAL_PKGS) AND
         (NOT MSVC) AND
-        ((SEQAN_BUILD_SYSTEM MATCHES "SEQAN_RELEASE") OR
-        (SEQAN_BUILD_SYSTEM MATCHES "APP")))
+        (SEQAN_BUILD_SYSTEM MATCHES "APP")) # either APP:$app or SEQAN_RELEASE_APPS
 
         set (SEQAN_STATIC_APPS TRUE CACHE INTERNAL "Create static app binaries")
-        message (STATUS "Building static binaries")
+        message (STATUS "Building static binaries.")
 
-        if (SEQAN_64BIT_PROCESSOR)
-            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3")
-            message (STATUS "Static binaries require SSE3.")
+        if ((CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64") OR (CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64"))
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3 -mpopcnt")
+            message (STATUS "Release binaries built with optimizations for SSE3 and POPCNT.")
         endif ()
 
     endif ()
 
     if ((SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP") AND
         (NOT MSVC) AND
-        (SEQAN_64BIT_PROCESSOR))
+        (NOT SEQAN_NO_NATIVE))
 
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -march=native")
-        message (WARNING "Building CPU-optimized binaries that may not work elsewhere.")
-    endif ()
+        if (COMPILER_IS_INTEL)
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -xHOST -ipo -no-prec-div -fp-model fast=2")
+        endif (COMPILER_IS_INTEL)
 
-    set (SEQAN_BUILD_SYSTEM "DEVELOP" CACHE STRING "Build/Release mode to select. One of DEVELOP SEQAN_RELEASE, APP:\${APP_NAME}. Defaults to DEVELOP.")
+        message (STATUS "CPU-optimized binaries that may not work on other computers. If you plan to distribute binaries, call cmake with -DSEQAN_BUILD_SYTEM=SEQAN_RELEASE_APPS or with -DSEQAN_NO_NATIVE=1.")
+    endif ()
 
     set (_CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/include")
     set (CMAKE_INCLUDE_PATH ${_CMAKE_INCLUDE_PATH} CACHE STRING "")

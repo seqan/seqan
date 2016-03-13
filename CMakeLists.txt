@@ -118,31 +118,32 @@ seqan_get_repository_info ()
 # Include Subdirectories
 # ===========================================================================
 
-# Tests are only built when building in DEVELOP mode.
+# Tests, demos and manual are only built when building in DEVELOP mode.
 if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     message (STATUS "Configuring tests")
     add_subdirectory (tests)
-endif ()
 
-# Demos are required when doing a whole SeqAn release (copy demos) or when
-# developing (build demos).
-if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
-    ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP"))
     message (STATUS "Configuring demos")
     add_subdirectory (demos)
+
+    message (STATUS "Configuring manual")
+    add_subdirectory (manual)
 endif ()
+
+if ((("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP") OR
+     ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY")) AND
+     (NOT SEQAN_NO_DOX))
+
+    message (STATUS "Configuring dox")
+    add_subdirectory (dox)
+endif ()
+
 
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY")
     message (STATUS "Configuring apps")
     add_subdirectory (apps)
 endif ()
-message (STATUS "Configuring dox")
-add_subdirectory (dox)
-if ((NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY") AND
-    (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_APPS"))
-    message (STATUS "Configuring manual")
-    add_subdirectory (manual)
-endif ()
+
 message (STATUS "Configuring util/py_lib")
 add_subdirectory (util/py_lib)
 
