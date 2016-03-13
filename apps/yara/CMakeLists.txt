@@ -15,10 +15,12 @@ message (STATUS "Configuring apps/yara")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-find_package (OpenMP)
-find_package (ZLIB)
-find_package (BZip2)
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (OpenMP)
+    find_package (ZLIB)
+    find_package (BZip2)
+    find_package (SeqAn REQUIRED)
+endif ()
 
 # Warn if OpenMP was not found.
 if (NOT OPENMP_FOUND)
