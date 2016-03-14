@@ -190,12 +190,9 @@ endif (NOT CXX11_FOUND)
 # Compile-specific settings and workarounds around missing CMake features.
 # ----------------------------------------------------------------------------
 
-# GCC Setup
-# TODO(h-2): move to buildsystem
+# GCC/CLANG/ICC
 if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   # Tune warnings for GCC.
-  set (CMAKE_CXX_WARNING_LEVEL 4)
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing")
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
 
   # Determine GCC version.
@@ -218,15 +215,9 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   elseif (CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
     set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_CXX_FLAGS_RELEASE} -g -fno-omit-frame-pointer")
   endif ()
-
-  # disable some warnings on ICC
-  if (COMPILER_IS_INTEL)
-    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
-  endif (COMPILER_IS_INTEL)
 endif ()
 
 # Windows Setup
-
 if (WIN32)
   # Always set NOMINMAX such that <Windows.h> does not define min/max as
   # macros.
@@ -237,23 +228,6 @@ endif (WIN32)
 if (MSVC)
   # Enable intrinics (e.g. _interlockedIncrease)
   set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /EHsc /Oi")
-  # Warning level 3 for MSVC is disabled for now to see how much really bad warnings there are.
-  #set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W3)
-
-  # TODO(holtgrew): This rather belongs into the SeqAn build system and notso much into FindSeqAn.cmake.
-
-  # Force to always compile with W2.
-  # Use the /W2 warning level for visual studio.
-  SET(CMAKE_CXX_WARNING_LEVEL 2)
-  if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-    STRING (REGEX REPLACE "/W[0-4]"
-            "/W2" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-  else (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W2")
-  endif (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-
-  # Disable warnings about unsecure (although standard) functions.
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /D_SCL_SECURE_NO_WARNINGS")
 endif (MSVC)
 
 # ----------------------------------------------------------------------------
