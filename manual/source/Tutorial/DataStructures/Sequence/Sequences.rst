@@ -310,7 +310,7 @@ Assignment 4
      Reuse the code from above. Instead of a ``String<Dna5>`` we will now deal with a ``String<Dna5String>``.
      Build a string which contains the Dna5Strings "ATATANGCGT", "AAGCATGANT" and "TGAAANTGAC".
      Now check for all elements of the container, if they are lexicographically smaller or bigger than the  given subject sequence "GATGCATGAT" and append them to a appropriate list.
-     Print out the final list.
+     Print out the final lists.
 
    Hints
      Try to avoid unnecessary sequence scans.
