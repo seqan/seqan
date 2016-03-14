@@ -202,9 +202,31 @@ macro (seqan_build_system_init)
         endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
     endif ()
 
-    if (("${SEQAN_BUILD_SYSTEM}" MATCHES "SEQAN_RELEASE") OR
-        ("${SEQAN_BUILD_SYSTEM}" MATCHES "APP"))
+    if ((CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64") OR (CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64"))
+        set (SEQAN_64BIT_PROCESSOR 1)
+    endif()
+
+    if ((SEQAN_OFFICIAL_PKGS) AND
+        (NOT MSVC) AND
+        ((SEQAN_BUILD_SYSTEM MATCHES "SEQAN_RELEASE") OR
+        (SEQAN_BUILD_SYSTEM MATCHES "APP")))
+
         set (SEQAN_STATIC_APPS TRUE CACHE INTERNAL "Create static app binaries")
+        message (STATUS "Building static binaries")
+
+        if (SEQAN_64BIT_PROCESSOR)
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3")
+            message (STATUS "Static binaries require SSE3.")
+        endif ()
+
+    endif ()
+
+    if ((SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP") AND
+        (NOT MSVC) AND
+        (SEQAN_64BIT_PROCESSOR))
+
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -march=native")
+        message (WARNING "Building CPU-optimized binaries that may not work elsewhere.")
     endif ()
 
     set (SEQAN_BUILD_SYSTEM "DEVELOP" CACHE STRING "Build/Release mode to select. One of DEVELOP SEQAN_RELEASE, APP:\${APP_NAME}. Defaults to DEVELOP.")
