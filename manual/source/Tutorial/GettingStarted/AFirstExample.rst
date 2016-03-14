@@ -38,7 +38,7 @@ This tutorial will walk you through a simple example program that highlights the
 Running Example
 ---------------
 
-Let's start with a simple example programm. The program will do a pattern search of a short query sequence (pattern) in a long database sequence (text).
+Let's start with a simple example programm. The program will do a pattern search of a short query sequence (pattern) in a long subject sequence (text).
 We define the score for each position of the database sequence as the sum of matching characters between the pattern and the text.
 
 The following figure shows an expected result:

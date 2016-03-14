@@ -503,8 +503,8 @@ Assignment 5
          .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
             :fragment: main
 
-         In the first part of the algorithm we implement am alignment based verification process to identify positions in the `database` at which we can find our pattern with at most `2` errors.
-         We slide the `5*5` alignment matrix position by position over the `database` and use the `MeyersBitVector` to verify the hits.
+         In the first part of the algorithm we implement am alignment based verification process to identify positions in the `subject sequence` at which we can find our pattern with at most `2` errors.
+         We slide the `5*5` alignment matrix position by position over the `subject sequence` and use the `MeyersBitVector` to verify the hits.
          If the score is greater or equal than `-2`, then we have found a hit.
          We store the begin position of the hit in `locations`.
 
