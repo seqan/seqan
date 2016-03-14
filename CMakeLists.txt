@@ -132,12 +132,17 @@ if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
     add_subdirectory (demos)
 endif ()
 
-message (STATUS "Configuring apps")
-add_subdirectory (apps)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY")
+    message (STATUS "Configuring apps")
+    add_subdirectory (apps)
+endif ()
 message (STATUS "Configuring dox")
 add_subdirectory (dox)
-message (STATUS "Configuring manual")
-add_subdirectory (manual)
+if ((NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY") AND
+    (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_APPS"))
+    message (STATUS "Configuring manual")
+    add_subdirectory (manual)
+endif ()
 message (STATUS "Configuring util/py_lib")
 add_subdirectory (util/py_lib)
 
