@@ -79,59 +79,6 @@ Assignment 1
 
         .. includefrags:: demos/tutorial/indices/assignment_1.cpp
 
-.. Bidirectional Indices
-   ---------------------
-
-.. SeqAn also supports bidirectional string indices. So far we only support the bidirectional :dox:`FMIndex`.
-   For creating a bidirectional index, the generic Index class is used as before. The only difference is that
-   the second template parameter naming the index specialization is wrapped by the :dox:`BidirectionalIndex`
-   class.
-
-.. .. includefrags:: demos/tutorial/indices/base.cpp
-      :fragment: bifm
-
-Index Based Pattern Search (Strings)
-------------------------------------
-
-SeqAn provides two methods for searching for a pattern in index structures.
-One method uses iterators and is similar to traversing search trees or tries.
-The tutorial :ref:`tutorial-datastructures-indices-index-iterators` explains this method in more detail.
-In this section you will learn how to find a pattern with the :dox:`Finder` interface.
-
-The :dox:`Finder` is an object that stores all necessary information for searching for a pattern using an index.
-The following line of code shows how the :dox:`Finder` is initialized.
-
-.. includefrags:: demos/tutorial/indices/base.cpp
-      :fragment: finder
-
-After initialization it is possible to use the :dox:`Finder#find` function in order to trigger a search for all occurrences of a given pattern in the underlying :dox:`String` or :dox:`StringSet`.
-In this example, we search for the pattern ``ACGT``:
-
-.. includefrags:: demos/tutorial/indices/base.cpp
-      :fragment: finder2
-
-Calling the function :dox:`Finder#find` invokes the localization of all occurrences of a given pattern.
-It works by modifying pointers of the ``Finder`` to tables of the index.
-For example, the :dox:`Finder` of ``esaIndex`` stores two pointers, pointing to the first and last suffix array entry that stores an occurrence of the pattern.
-
-The return value of the :dox:`Finder#find` function tells us whether or not a given pattern occurs in the text.
-Furthermore, if there are several instances of a pattern, consecutive calls of :dox:`Finder#find` will modify the :dox:`Finder` such that it points to the next occurrence after each call:
-
-.. includefrags:: demos/tutorial/indices/base.cpp
-      :fragment: finder_multiple
-
-The above code is not very useful, since we do not know the locations of the first, second or third pattern occurrence.
-The function :dox:`Finder#position` will help here.
-:dox:`Finder#position` called on a finder returns the location of the ``x``\ th pattern, where ``x`` can be the first, second, or any other occurrence of the pattern.
-
-.. includefrags:: demos/tutorial/indices/base.cpp
-      :fragment: finder_position
-
-.. tip::
-
-   Indices in SeqAn are build on demand.
-   That means that the index tables are not build when the constructor is called, but when we search for a pattern for the first time.
-
 Assignment 2
 ^^^^^^^^^^^^
 
@@ -256,27 +203,3 @@ Other Index Fibres
 ^^^^^^^^^^^^^^^^^^
 
 See :ref:`how-to-recipes-access-index-fibres` for more information.
-
-Pizza & Chili API
------------------
-
-The :dox:`PizzaChiliIndex` is an adapter for the `Pizza & Chili <http://pizzachili.dcc.uchile.cl/>`_ API.
-We currently support the following indices
-
-PizzaChili_RSA
-  The repair suffix array index
-PizzaChiliAF
-  The alphabet-friendly FM index
-PizzaChiliCcsa
-  The compressed compact suffix array index
-PizzaChiliFM
-  The FM (full-text in minute space) index
-PizzaChiliSA
-  The simple suffix array index
-PizzaChiliSada
-  the compressed suffix array index
-
-The adapter allows you to quickly use specific configurations of indices in SeqAn.
-
-.. :dox:`PizzaChiliIndex`
-..   An adapter for the `Pizza & Chili <http://pizzachili.dcc.uchile.cl/>`_ index API

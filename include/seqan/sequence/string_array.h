@@ -178,6 +178,16 @@ struct IsContiguous<String<TValue, Array<CAPACITY> > >
     enum { VALUE = true };
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction LENGTH
+// ----------------------------------------------------------------------------
+
+template <typename TValue, size_t CAPACITY>
+struct LENGTH<String<TValue, Array<CAPACITY> > >
+{
+    enum { VALUE = CAPACITY };
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
