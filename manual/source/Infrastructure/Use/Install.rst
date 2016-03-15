@@ -37,9 +37,9 @@ You should execute the above commands in a terminal as the ``root`` user or pref
 Library Package
 ---------------
 
-First you need to download the most recent "library package" from http://packages.seqan.de and extract its contents. Now copy the `include` and `share` folders to their target location. This could be one the following:
+First you need to download the most recent "library package" from http://packages.seqan.de and extract its contents. Now copy the `include` and `share` folders to their target location. This could be one of the following:
 
-* ``/usr/local`` so they are available system-wide and automatically foundby your program [requires root or sudo]
+* ``/usr/local`` so they are available system-wide and automatically found by your program [requires root or sudo]
 * ``/opt/seqan`` available system-wide and easy to remove again [requires root or sudo]
 * ``~/devel/seqan`` some place in your home directory [does not require root or sudo]
 

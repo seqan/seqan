@@ -11,13 +11,13 @@ Overview
 --------
 
 `CMake <http://cmake.org/>`_ is a cross-platform build system generator.
-That is, you describe the different executables and binaries and their dependencies ``CMakeLists.txt`` files.
+That is, you describe the different executables and binaries and their dependencies in ``CMakeLists.txt`` files.
 Then, CMake generates build systems from this, for example in the form of Makefiles or Visual Studio projects. This article will only describe the most basic things about CMake in general and focus on how to use SeqAn easily from within CMake projects.
 
 In CMake projects, one uses `modules to find libraries <http://www.vtk.org/Wiki/CMake:How_To_Find_Libraries>`_ such as SeqAn.
 SeqAn ships with such a module.
 
-In the following we assume that you have installed CMake on your operating system, if you have not, yet, install it via the operating systems mechanisms (see also :ref:`Setting up SeqAn <infra-use-install>`) and/or `download from the CMake homepage <https://cmake.org/download/>`_.
+In the following we assume that you have installed CMake on your operating system. If you have not yet, install it via the operating systems mechanisms (see also :ref:`Setting up SeqAn <infra-use-install>`) and/or `download from the CMake homepage <https://cmake.org/download/>`_.
 
 You should also have a valid C++-Compiler installed, refer to the `GitHub-README <https://github.com/seqan/seqan>`_ to see which compilers are currently supported.
 
@@ -71,7 +71,7 @@ Create a folder somewhere, e.g. ``~/devel/my_project`` and in it the following t
 Building The Project
 ^^^^^^^^^^^^^^^^^^^^
 
-First you should create a build directory, i.e. for cmake-builds everything happens in a different directory, than in the source. In our case create ``~/devel/my_project-build`` and then in that the ``release`` directory. More on why we use two levels :ref:`here <infra-use-cmake-build-dirs>`.
+First you should create a build directory, i.e. for cmake-builds everything happens in a different directory, than in the source directory. In our case create the directory ``~/devel/my_project-build`` and in there a folder ``release``. More on why we use two levels :ref:`here <infra-use-cmake-build-dirs>`.
 
 .. code-block:: console
 
@@ -80,9 +80,9 @@ First you should create a build directory, i.e. for cmake-builds everything happ
 
 By default, the ``cmake`` program will look for ``FindSeqAn.cmake`` in its module directory.
 Usually, this is located in ``/usr/share/cmake/Modules`` or a similar location that is available system-wide.
-Depending on how you :ref:`installed SeqAn <infra-use-install>` it will be found by cmake automatically, or not. If not, you have to give the path to cmake via the ``CMAKE_MODULE_PATH`` argument on the command line.
+Depending on how you :ref:`installed SeqAn <infra-use-install>` it might be found by cmake automatically. If not, you have to give the path to cmake via the ``CMAKE_MODULE_PATH`` argument on the command line.
 
-Also, CMake will look for the SeqAn include files in central locations such as ``/usr/local/include``. Again, depending on your install  this will *just work*, but if not, you needto  specify the location via the ``SEQAN_INCLUDE_PATH`` argument.
+Also, CMake will look for the SeqAn include files in central locations such as ``/usr/local/include``. Again, depending on your installation this might *just work*. If not, you need to specify the location via the ``SEQAN_INCLUDE_PATH`` argument.
 
 When using operating system packages of SeqAn and the default compiler it might look like this:
 
@@ -100,7 +100,7 @@ If you instead did a full git checkout to your home-directory in the previous st
 
 .. tip::
 
-    Depending on your setup you might need to manually chose a more modern compiler and/or activate C++11 support! Please read :ref:`this page <infra-use-cmake-build-dirs>` for more information on configuring CMake builds.
+    Depending on your setup you might need to manually choose a more modern compiler and/or activate C++11 support! Please read :ref:`this page <infra-use-cmake-build-dirs>` for more information on configuring CMake builds.
 
 Finally you can then build the application by calling
 
@@ -147,7 +147,7 @@ See :ref:`this page <infra-use-cmake-build-dirs>` for more details.
 Details of the FindSeqAn Module
 -------------------------------
 
-As mentioneed above, this line is the important line for including SeqAn:
+As mentioned above, this line is the important line for including SeqAn:
 
 .. code-block:: cmake
 

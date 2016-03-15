@@ -10,10 +10,10 @@ Writing Unit Tests
 This page describes how to write tests for the SeqAn library.
 Each test program defines a *Test Suite*, a collection of related *Tests*.
 
-Test Suite Skelleton / Example
+Test Suite Skeleton / Example
 ------------------------------
 
-A skeleton and example for a test suite program look as follows:
+A skeleton and example for a test suite program looks as follows:
 
 .. code-block:: cpp
 
@@ -41,7 +41,7 @@ A skeleton and example for a test suite program look as follows:
 Getting Started With Our Test Template
 --------------------------------------
 
-To make creating tests easier the code generator ``util/bin/skel.py`` has a command to generate test skelletons for you.
+To make creating tests easier the code generator ``util/bin/skel.py`` has a command to generate test skeletons for you.
 As parameters, you give it the name of the module you want to test and the path to the repository.
 For example, use ``skel.py tests my_module .`` to create tests for the module *my_module* in the directory ``tests``:
 
@@ -65,7 +65,9 @@ Afterwards, you can compile and run the tests:
    $ ./tests/my_module/test_my_module
    ...
 
-Note that when adding new tests then you have to add them to the dependencies of the test target in *tests/my_module/CMakeLists.txt*.
+.. note::
+
+   When adding new tests you have to add them to the dependencies of the test target in *tests/my_module/CMakeLists.txt*.
 
 Test Macros
 -----------
@@ -73,7 +75,7 @@ Test Macros
 Inside your tests, you can use the ``SEQAN_ASSERT*`` and ``SEQAN_ASSERT_*_MSG`` macros to check for assertions.
 Other useful macros are :dox:`SEQAN_PATH_TO_ROOT` and :dox:`SEQAN_TEMP_FILENAME`.
 
-The macros themselves are documented in the dox:``SeqAn API documentation AssertMacros``.
+The macros themselves are documented in the dox: ``SeqAn API documentation AssertMacros``.
 
 Assertion Caveats
 -----------------
@@ -138,7 +140,7 @@ You can fix this by changing the type of the number literal:
 Break Your Tests Down
 ^^^^^^^^^^^^^^^^^^^^^
 
-Each test should isolate target an as small as possible and/or feasible unit of your code.
+Each test should verify a part of the library as small as possible while still being meaningful.
 Having short test functions makes them easier to read and maintain.
 
 Another advantage is that bogus state does not leak into other tests: imagine, you have a test that tests a function ``assign_if_positive(a, b)`` that assigns b to a if b is positive.
@@ -160,7 +162,7 @@ Now, what happens if ``assign_if_positive(...)`` has a bug and *never* assigns a
 Both of your assertions will fail.
 This means you do not really know in which case the function works well and in which case it does not work well.
 
-Splitting the test make it more robust:
+Splitting the test makes it more robust:
 
 .. code-block:: cpp
 
@@ -254,7 +256,7 @@ Thus, make sure that your tests are well-documented.
 Not only for users who look up how to use your code but also for the next maintainer.
 
 There should be a documentation of the test itself and also inline comments.
-In your comments, you should focus on the maintainer and not so much the user.
+In your comments, you should focus on the maintainer and not so much on the user.
 Even if some things are obvious, you might want to illustrate why you call a function with the given parameters, e.g. describe the corner cases.
 
 Example:
