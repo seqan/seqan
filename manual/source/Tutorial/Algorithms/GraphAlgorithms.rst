@@ -22,7 +22,7 @@ Prerequisites
 Overview
 --------
 
-The following graph graph algorithms are currently available in SeqAn:
+The following graph algorithms are currently available in SeqAn:
 
 Elementary Graph Algorithms
   * Breadth-First Search (:dox:`breadthFirstSearch`)
