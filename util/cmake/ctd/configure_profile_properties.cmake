@@ -9,5 +9,13 @@ else ()
   set (CF_SEQAN_VERSION "${SEQAN_VERSION_STRING}")
 endif ()
 
+if (NOT CTD_PLUGIN_PACKAGE)
+  set (CTD_PLUGIN_PACKAGE "de.seqan")
+endif ()
+
+if (NOT CTD_PLUGIN_NAME)
+  set (CTD_PLUGIN_NAME  "SeqAn")
+endif ()
+
 # Actually configure the file.
 configure_file (${SEQAN_SOURCE_DIR}/util/cmake/ctd/plugin.properties.in ${WORKFLOW_PLUGIN_DIR}/plugin.properties)
