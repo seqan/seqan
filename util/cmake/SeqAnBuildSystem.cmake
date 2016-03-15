@@ -226,8 +226,8 @@ macro (seqan_build_system_init)
 
         # machine specific optimizations
         if ((CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64") OR (CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64"))
-            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3 -mpopcnt")
-            message (STATUS "Release binaries built with optimizations for SSE3 and POPCNT.")
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -mpopcnt")
+            message (STATUS "Release binaries built with optimizations for SSE3, SSE4 and POPCNT.")
         endif ()
     endif ()
 
