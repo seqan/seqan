@@ -8,7 +8,7 @@ pluginName=@CTD_PLUGIN_NAME@
 pluginVersion=@CF_SEQAN_VERSION@
 
 # the path (starting from KNIMEs Community Nodes node)
-nodeRepositoyRoot=community/@CTD_REPO_SUB_FOLDER@
+nodeRepositoyRoot=community
 
 
 executor=com.genericworkflownodes.knime.execution.impl.LocalToolExecutor
