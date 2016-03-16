@@ -29,7 +29,7 @@ CMake Parameters
 
 A central question with CMake is the choice of the so called generator. Enter ``cmake -G`` to get a list of the supported ones. The most common generators are the **Unix Makefiles** which are default on Linux/Mac/BSD. But there are also specific generators for IDEs, such as Visual Studio, XCode or CodeBlocks.
 
-For most of the IDEs further choices like "Release or Debug" are available from the graphical user interface of the IDE, where as, for the Unix Makefile generator, we can specify the *build types* using a command line option.
+For most of the IDEs further choices like "Release or Debug" are available from the graphical user interface of the IDE, whereas, for the Unix Makefile generator, we can specify the *build types* using a command line option.
 Also, the compiler program (and version) can be switched using a command line option.
 
 Examples
