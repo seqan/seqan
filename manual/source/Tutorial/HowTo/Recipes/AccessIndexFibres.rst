@@ -74,14 +74,6 @@ The set of available fibres of an index ``Index<TText, TSpec>`` depends on the i
 | QGramRawText            | Virtually concatenates all strings of the QGramText fibre.                                                 | :dox:`ContainerConcept` over the alphabet of the text.                                       |
 +-------------------------+------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------+
 
-+---------------------------------------------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------+
-| :dox:`PizzaChiliIndexFibres Pizza & Chili Index Fibres` | Description                                                            | Type                                                                                               |
-+=========================================================+========================================================================+====================================================================================================+
-| PizzaChiliText                                          | The original text the index should be based on.                        | First template argument of the :dox:`Index`. Must be a sequence (no support for :dox:`StringSet`). |
-+---------------------------------------------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------+
-| PizzaChiliCompressed                                    | Specialization dependent data structure to store the compressed index. | Depends on the compressed index.                                                                   |
-+---------------------------------------------------------+------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------+
-
 The first column in each table above contains the tags to select the corresponding fibre.
 Most of these tags are aliases for the same tag, e.g. ``EsaSA``, ``QGramSA``, ... are aliases for ``FibreSA``.
 If you write an algorithm that is generic in the type of index can use ``FibreText`` to specify the fibre that stores the index text.
