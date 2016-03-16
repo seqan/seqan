@@ -275,7 +275,7 @@ Example:
        SEQAN_ASSERT_EQ(abs(0), 0);
    }
 
-   // Test abs() function with -1, a Representative for negative values.
+   // Test abs() function with -1, a representative for negative values.
    SEQAN_DEFINE_TEST(test_abs_with_minus_one)
    {
        SEQAN_ASSERT_EQ(abs(-1), 1);
