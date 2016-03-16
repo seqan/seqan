@@ -51,7 +51,7 @@ Running Tests
 ^^^^^^^^^^^^^
 
 The app tests are then run in the nightly CMake builds and their results are submitted to CDash.
-There are two steps involed here: (1) Executing the programs and (2) comparing their result with the expected ones.
+There are two steps involved here: (1) Executing the programs and (2) comparing their result with the expected ones.
 There is a Python test driver program (called *run_tests.py* by convention) for each collection of app tests.
 
 These programs us the Python module *seqan.app_tests* for running and usually mirror the corresponding *generate_outputs.sh* file.

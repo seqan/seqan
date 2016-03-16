@@ -112,7 +112,7 @@ A fix that does not have a ticket:
     [FIX] Fixed reading of CIGAR string in module bam_io.
 
     There was a bug when reading the operation "F", which was translated to
-    FLABBERGASTED.  Fixed this to the documented behaviour.
+    FLABBERGASTED.  Fixed this to the documented behavior.
 
 Example: Internal Changes
 ^^^^^^^^^^^^^^^^^^^^^^^^^

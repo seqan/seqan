@@ -173,7 +173,7 @@ For paired-end read mapping, the program *bwa* consists of multiple calls.
 
 #. Call bwa to build an index on your genome.
 #. Map the left-end reads, yielding a position file.
-#. Map the right-end reads, yielding a positon file.
+#. Map the right-end reads, yielding a position file.
 #. Combine the two position files previously created.
 
 While it is OK to first create an index file (this file can be used for many reads files), the last three steps could be combine into one umbrella command.

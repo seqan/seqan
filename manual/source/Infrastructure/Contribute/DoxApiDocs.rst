@@ -17,7 +17,7 @@ extension to SeqAn-specific things like documenting concepts.
 General Documentation Structure
 -------------------------------
 
-Dox comments are placed in C-style comments with an exclamation mark, see below.
+Dox comments are placed in C-style comments with an exclamation mark (see below).
 The first dox tag should be placed on the next line, each line should begin with a correctly indented star.
 The first line only contains the slash-star-exclamation-mark and the last line only contains the star-slash.
 
@@ -30,7 +30,7 @@ The first line only contains the slash-star-exclamation-mark and the last line o
 
 The documentation and the code are independent. Each item to be documented (adaption, class, concept, enum, function, group, macro, metafunction, page, tag, typedef, variable) has to be epxlicitely given (see tags below). The available top level tags are [#adaption @adaption], [#class @class], [#concept @concept], [#defgroup @defgroup], [#enum @enum], [#fn @fn], [#macro @macro], [#metafunction @mfn], [#page @page], [#tag @tag], [#typedef @typedef], and [#variable @var].
 
-Each top level tag creates a documentation entry. For example, the
+Each top-level tag creates a documentation entry. For example, the
 following defines a class ``Klass`` with two global interface functions
 ``f1`` and ``f2`` for this class:
 
@@ -107,10 +107,10 @@ Tag Documentation
 Below, we differentiate between **names** and **labels**.
 
 **Names** are used to identify documentation items and must follow
-extended C++ identifier rules. An sub name consists of only alphanumeric
+extended C++ identifier rules. A sub name consists of only alphanumeric
 characters and the underscore is allowed, must not start with a number.
 Sub names can be glued together with ``::`` for class members and ``#``
-for interface functions. In contracts, **labels** are used for the
+for interface functions. In contrast, **labels** are used for the
 display to the user. For example, the alloc string has the name
 ``AllocString`` but the label "Alloc String", the constructor of
 ``AllocString`` has name ``AllocString::String``, and its length
@@ -123,7 +123,7 @@ function has name ``AllocString#length``.
 
 Top-level tag.
 
-Definition of an adaption with the given name and an optional label.
+Defines an adaption with the given name and an optional label.
 
 An adaption is a collection of global interface functions and
 metafunctions that adapt a type outside the SeqAn library to a concept
@@ -144,7 +144,7 @@ adapted to the interface of the ``StringConcept`` concept.
 
 Second-level entry.
 
-Assign an alias name for a function, metafunction, class, concept, or
+Assigns an alias name for a function, metafunction, class, concept, or
 enum. The list of aliases will be printed for each code entry. Also, the
 aliases will be incorporated into search results.
 
@@ -187,7 +187,7 @@ can use HTML in the description.
 
 Top-level tag.
 
-Define a class with the given name ``ClassName`` and an optional label.
+Defines a class with the given name ``ClassName`` and an optional label.
 
 .. code-block:: cpp
 
@@ -263,7 +263,7 @@ Note that you can use the extension value ``.console`` to see console output.
 
 Top-level tag.
 
-Create a documentation entry for a concept with the given name and an
+Creates a documentation entry for a concept with the given name and an
 optional label. All concept names should have the suffix ``Concept``.
 Use the fake keyword ``concept`` in the ``@signature``.
 
@@ -287,7 +287,7 @@ construct used in the documentation.
 
 Top-level tag.
 
-Create a documentation entry for a group with a given name and an
+Creates a documentation entry for a group with a given name and an
 optional label. Groups are for rough grouping of global functions and/or
 tags.
 
@@ -327,7 +327,7 @@ or concept.
 
 Second-level entry.
 
-Mark a given function, metafunction, class, concept, or enum as
+Marks a given function, metafunction, class, concept, or enum as
 deprecated. A deprecation message will be generated in the API
 documentation.
 
@@ -348,7 +348,7 @@ documentation.
 
 Top-level entry.
 
-Documentation for an enum with given name and optional label.
+Provides documentation for an enum with given name and optional label.
 
 .. code-block:: cpp
 
@@ -398,7 +398,7 @@ concept.
 
 Top-level entry.
 
-Document a function (global, global interface, or member) with given
+Documents a function (global, global interface, or member) with given
 name and label. The type of the function is given by its name.
 
 .. code-block:: cpp
@@ -415,7 +415,7 @@ name and label. The type of the function is given by its name.
 
 Second-level entry.
 
-Give the required ``#include`` path for a code entry.
+Gives the required ``#include`` path for a code entry.
 
 **Note:** Use angular brackets as below for SeqAn includes.
 
@@ -452,7 +452,7 @@ Marks a class to implement a given concept.
 
 Second-level entry.
 
-Include a C++ source file as an example. See [#snippet @snippet] for
+Includes a C++ source file as an example. See [#snippet @snippet] for
 including fragments.
 
 .. code-block:: cpp
@@ -472,7 +472,7 @@ including fragments.
 
 Second-level entry.
 
-Mark a given function, metafunction, class, concept, or enum as
+Marks a given function, metafunction, class, concept, or enum as
 internal. You can also provide a comment that is ignored/not used in the
 output.
 
@@ -493,7 +493,7 @@ output.
 
 In-text tag.
 
-Tag to link to a documentation entry with a given label.
+Provides tag to link to a documentation entry with a given label.
 
 The difference to [#see @see] is that ``@link .. @endlink`` is used
 inline in text whereas ``@see`` is a second-level tag and adds a ``see``
@@ -517,7 +517,7 @@ external resources.
 
 Top-level tag.
 
-Document a macro.
+Documents a macro.
 
 .. code-block:: cpp
 
@@ -540,7 +540,7 @@ Document a macro.
 
 Top-level tag.
 
-Document a metafunction.
+Documents a metafunction.
 
 .. code-block:: cpp
 
@@ -566,7 +566,7 @@ Document a metafunction.
 
 Second-level entry.
 
-Add an informative note to a function, metafunction, class, concept,
+Adds an informative note to a function, metafunction, class, concept,
 enum, or group.
 
 .. code-block:: cpp
@@ -586,7 +586,7 @@ enum, or group.
 
 Top-level entry.
 
-Create a documentation page.
+Creates a documentation page.
 
 .. code-block:: cpp
 
@@ -611,7 +611,7 @@ Create a documentation page.
 
 Second-level entry.
 
-Document a value (and non-type) parameter from a function or member
+Documents a value (and non-type) parameter from a function or member
 function.
 
 .. code-block:: cpp
@@ -632,7 +632,7 @@ function.
 
 **Signature** ``@return Type Label``
 
-Define the return value for a function or metafunction.
+Defines the return value for a function or metafunction.
 
 Also see the example for [#param @param].
 
@@ -660,7 +660,7 @@ metafunction then use a ``TXyz`` return type in ``@return`` and document
 
 **Signature** ``@return Exception Label``
 
-Add note on a function or macro throwing an exception.
+Adds a note on a function or macro throwing an exception.
 
 .. code-block:: cpp
 
@@ -680,7 +680,7 @@ Add note on a function or macro throwing an exception.
 
 **Signature** ``@datarace Description``
 
-Describe possible data races for functions and macros.
+Describes possible data races for functions and macros.
 If this value is not specified it defaults to ``Thread safety unknown!``
 
 .. code-block:: cpp
@@ -715,7 +715,7 @@ See the example for [#page @page].
 
 Second-level entry.
 
-Add "see also" link to a documentation entry.
+Adds "see also" link to a documentation entry.
 
 .. code-block:: cpp
 
@@ -750,7 +750,7 @@ And here is the file with the snippet.
 
 Top-level entry.
 
-Document a tag. Mostly, you would group tags in a group using [#defgroup
+Documents a tag. Mostly, you would group tags in a group using [#defgroup
 @defgroup].
 
 .. code-block:: cpp
@@ -769,7 +769,7 @@ Document a tag. Mostly, you would group tags in a group using [#defgroup
 
 Second-level entry.
 
-Document a template parameter of a metafunction or class template.
+Documents a template parameter of a metafunction or class template.
 
 .. code-block:: cpp
 
@@ -788,7 +788,7 @@ Document a template parameter of a metafunction or class template.
 
 Top-level entry.
 
-Document a typedef.
+Documents a typedef.
 
 .. code-block:: cpp
 
@@ -826,7 +826,7 @@ Top-level entry. Document a global variable or member variable.
 **Signature** ``@val EnumType EnumValueName``
 
 Top-level entry.
-Document an enum value.
+Documents an enum value.
 
 .. code-block:: cpp
 
@@ -855,7 +855,7 @@ Document an enum value.
 
 Second-level entry.
 
-Add a warning to a function, metafunction, class, concept, enum, or group.
+Adds a warning to a function, metafunction, class, concept, enum, or group.
 
 .. code-block:: cpp
 
@@ -1086,11 +1086,11 @@ Documenting Enums
 Difference to Doxygen
 ---------------------
 
-If you already know Doxygen, the following major difference apply.
+If you already know Doxygen, the following major differences apply.
 
 * The documentation is more independent of the actual code.
   Doxygen creates a documentation entry for all functions that are present in the code and allows the additional documentation, e.g. using ``@fn`` for adding functions.
-  With the SeqAn dox system, you have to explicitely use a top level tag for adding documentationitems.
+  With the SeqAn dox system, you have to explicitely use a top level tag for adding documentation items.
 * Documentation entries are not identified by their signature but by their name.
 * We allow the definition of interface functions and metafunctions (e.g. ``@fn Klass#func`` and ``@mfn Klass#Func``) in addition to member functions (``@fn Klass::func``).
 * We do not allow tags with backslashes but consistently use at signs (``@``).

@@ -263,7 +263,7 @@ Example:
 
 .. code-block:: cpp
 
-   // Test abs() function with 1, a representant for positive values.
+   // Test abs() function with 1, a representative for positive values.
    SEQAN_DEFINE_TEST(test_abs_with_one)
    {
        SEQAN_ASSERT_EQ(abs(1), 1);
@@ -275,7 +275,7 @@ Example:
        SEQAN_ASSERT_EQ(abs(0), 0);
    }
 
-   // Test abs() function with -1, a representant for negative values.
+   // Test abs() function with -1, a representative for negative values.
    SEQAN_DEFINE_TEST(test_abs_with_minus_one)
    {
        SEQAN_ASSERT_EQ(abs(-1), 1);
