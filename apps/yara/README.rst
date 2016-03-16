@@ -53,7 +53,7 @@ Yara sources are hosted on GitHub within the SeqAn library. Download the sources
 
 ::
 
-  $ git clone https://github.com/seqan/seqan.git -b yara-v0.9.6
+  $ git clone https://github.com/seqan/seqan.git
 
 Configuration
 ~~~~~~~~~~~~~
@@ -62,16 +62,9 @@ Create a build project by executing CMake as follows:
 
 ::
 
-  $ mkdir seqan-build
-  $ cd seqan-build
-  $ cmake ../seqan -DCMAKE_CXX_COMPILER=/usr/bin/g++-4.9
-
-Disable architecture-specific optimizations if the binaries are going to be executed on a different machine (e.g. an heterogeneous cluster).
-Note that this will have an impact on Yara's performance.
-
-::
-
-  $ cmake . -DYARA_ARCH_NATIVE=OFF
+  $ mkdir yara-build
+  $ cd yara-build
+  $ cmake ../seqan -DSEQAN_BUILD_SYSTEM=APP:yara -DCMAKE_CXX_COMPILER=/usr/bin/g++-4.9
 
 Build
 ~~~~~
@@ -80,7 +73,7 @@ Invoke make as follows:
 
 ::
 
-  $ make yara_indexer yara_mapper
+  $ make all
 
 Installation
 ~~~~~~~~~~~~
@@ -89,7 +82,7 @@ Copy the binaries to a folder in your *PATH*, e.g.:
 
 ::
 
-  sudo cp bin/yara_* /usr/local/bin
+  # cp bin/yara* /usr/local/bin
 
 
 Usage
