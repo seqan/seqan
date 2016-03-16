@@ -23,7 +23,7 @@ Tutorials
 ---------
 
     :ref:`tutorial-getting-started`
-        Start here to setup a working development environment for SeqAn for your specific system.
+        Start here to set up a working development environment for SeqAn for your specific system.
 
     :ref:`tutorial`
         Tutorials are a nice way to get a first

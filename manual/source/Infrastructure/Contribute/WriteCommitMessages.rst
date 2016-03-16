@@ -112,7 +112,7 @@ A fix that does not have a ticket:
     [FIX] Fixed reading of CIGAR string in module bam_io.
 
     There was a bug when reading the operation "F", which was translated to
-    FLABBERGASTED.  Fixed this to the documented behaviour.
+    FLABBERGASTED.  Fixed this to the documented behavior.
 
 Example: Internal Changes
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -123,7 +123,7 @@ An internal change, reordering of code without changing the public API.
 
     [INTERNAL] Reordering code in module sequence so no more generated forwards are needed.
 
-An internal change might include test and improved comments.
+An internal change might include tests and improved comments.
 
 ::
 

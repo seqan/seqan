@@ -3,7 +3,7 @@
 User Guide
 ==========
 
-Before you can start using the SeqAn library you have to make sure that it is installed and setup correctly. Optionally also install the dependencies:
+Before you can start using the SeqAn library you have to make sure that it is installed and set up correctly. Optionally also install the dependencies:
 
   * :ref:`Installing SeqAn <infra-use-install>`
   * :ref:`Installing Dependencies <infra-use-install-dependencies>`
@@ -29,9 +29,9 @@ You will often see something like this in the manual:
 
    # mkdir -p /tmp/mytempdir
 
-This is called a terminal and you can find it on all major operating systems, sometimes also called "Konsole" and sometimes also "Shell" (although that is something different strictly speaking).
+This is called a terminal and you can find it on all major operating systems, sometimes also called "Konsole" or "Shell" (although that is something different strictly speaking).
 
-You are expected to enter whatever comes right of the ``#`` (sometimes also the ``$``) and then press ``RETURN``. Knowing your way around the Terminal will make things easier, but it should be possible to to just copy'n'paste.
+You are expected to enter whatever comes right of the ``#`` (sometimes also the ``$``) and then press ``RETURN``. Knowing your way around the Terminal will make things easier, but it should be possible to just copy'n'paste.
 
 .. important::
 
@@ -47,5 +47,3 @@ You are expected to enter whatever comes right of the ``#`` (sometimes also the 
     FindSeqAnCMake.rst
     CustomBuildSystem.rst
     CMakeBuildDirs.rst
-
-

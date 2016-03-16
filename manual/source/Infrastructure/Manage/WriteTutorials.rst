@@ -182,7 +182,7 @@ Assignments
 The assignments' purpose in general is to support the reader's understanding of the topic in question.
 For this each assignment is of a special type (Review, Application and Transfer), has an objective, hints and a link to the complete solution.
 
-Depending on the assignment‘s type the reader is guided through the assignment solving by providing him with partial solutions.
+Depending on the type of assignment the reader is guided through the assignment solving by providing him with partial solutions.
 
 There must always be an assignments of type Review.
 Assignments must always appear in an ascending order concerning their types and no "type gap" must occur.
@@ -235,7 +235,7 @@ Language
 
 Make use of a simple language.
 This is neither about academic decadence nor about increasing the learning barrier.
-You are not forced to over-simplify your subject but still try to use a language that is also appropriate for those who don‘t fully meet the tutorials prerequisites.
+You are not forced to over-simplify your subject but still try to use a language that is also appropriate for those who don't fully meet the tutorials prerequisites.
 
 Mental Model
 ^^^^^^^^^^^^
@@ -327,7 +327,7 @@ Tutorial Template
 
     .. important::
 
-       What are importants for?
+       What are important blocks for?
 
        These boxes contain information that **should be kept in mind** since the described phenomenon is very likely to be encountered by the reader again and again when working with SeqAn.
 
