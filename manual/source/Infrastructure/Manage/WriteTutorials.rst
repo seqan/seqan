@@ -182,7 +182,7 @@ Assignments
 The assignments' purpose in general is to support the reader's understanding of the topic in question.
 For this each assignment is of a special type (Review, Application and Transfer), has an objective, hints and a link to the complete solution.
 
-Depending on the type of assignment type the reader is guided through the assignment solving by providing him with partial solutions.
+Depending on the type of assignment the reader is guided through the assignment solving by providing him with partial solutions.
 
 There must always be an assignments of type Review.
 Assignments must always appear in an ascending order concerning their types and no "type gap" must occur.
