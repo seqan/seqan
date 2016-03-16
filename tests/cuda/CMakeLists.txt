@@ -16,7 +16,9 @@ message (STATUS "Configuring tests/cuda")
 
 # Search SeqAn and select dependencies.
 set (SEQAN_FIND_DEPENDENCIES CUDA)
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (SeqAn REQUIRED)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Build Setup

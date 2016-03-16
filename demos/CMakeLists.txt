@@ -8,7 +8,6 @@
 
 cmake_minimum_required (VERSION 3.0.0)
 project (seqan_demos CXX)
-message (STATUS "Configuring demos")
 
 # Recursively register all demos in core and prefix their target/binary names
 # with "demo_".  The demos will be built in DEVELOP mode, copied in
