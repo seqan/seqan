@@ -10,16 +10,15 @@ Using SeqAn in CMake-based projects
 Overview
 --------
 
-`CMake <http://cmake.org/>`_ is a cross-platform build system generator.
-That is, you describe the different executables and binaries and their dependencies in ``CMakeLists.txt`` files.
-Then, CMake generates build systems from this, for example in the form of Makefiles or Visual Studio projects. This article will only describe the most basic things about CMake in general and focus on how to use SeqAn easily from within CMake projects.
+`CMake <http://cmake.org/>`_ is a cross-platform build system generator where you describe different executables, binaries and their dependencies in ``CMakeLists.txt`` files.
+Then, CMake generates build systems such as Makefiles or Visual Studio projects from these files. This article describes only the most basic things about CMake in general and focuses on how to use SeqAn easily from within CMake projects.
 
 In CMake projects, one uses `modules to find libraries <http://www.vtk.org/Wiki/CMake:How_To_Find_Libraries>`_ such as SeqAn.
 SeqAn ships with such a module.
 
 In the following we assume that you have installed CMake on your operating system. If you have not yet, install it via the operating systems mechanisms (see also :ref:`Setting up SeqAn <infra-use-install>`) and/or `download from the CMake homepage <https://cmake.org/download/>`_.
 
-You should also have a valid C++-Compiler installed, refer to the `GitHub-README <https://github.com/seqan/seqan>`_ to see which compilers are currently supported.
+You should also have a valid C++-Compiler installed. Refer to the `GitHub-README <https://github.com/seqan/seqan>`_ to see which compilers are currently supported.
 
 A Running Example
 -----------------
@@ -116,7 +115,7 @@ Finally you can then build the application by calling
 
         # cmake --build .
 
-**The above step is the only step you need to repeat when changing your source code.** CMake only has to be re-run if you change the ``CMakeLists.txt``.
+**The above step is the only step you need to repeat when changing your source code.** You only have to run CMake again, if you have changed the ``CMakeLists.txt``.
 
 You can then execute the application in the usual way
 
@@ -221,7 +220,7 @@ As can be seen from the example above, the following variables need to be passed
   A list of libraries to link against.
 
 ``SEQAN_DEFINITIONS``
-  A list of definitions to be passted to the compiler.
+  A list of definitions to be passed to the compiler.
 
 Required additions to C++ compiler flags are in the following variable:
 

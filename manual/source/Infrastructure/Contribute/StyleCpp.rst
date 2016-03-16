@@ -7,7 +7,7 @@
 C++ Code Style
 ==============
 
-The aim of this style guide is to enforce a certain level of canonicality on all SeqAn code.
+The aim of this style guide is to enforce a certain level of canonicity on all SeqAn code.
 Besides good comments, having a common style guide is the key to being able to understand and change code written by others easily.
 
 (The style guide partially follows the `Google C++ Code Style Guide <http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml>`_.)
@@ -18,7 +18,7 @@ C++ Features
 Reference Arguments
 ^^^^^^^^^^^^^^^^^^^
 
-We prefer reference arguments over pointer arguments.
+We prefer reference arguments to pointer arguments.
 Use ``const`` where possible.
 
 Use C-Style Logical Operators
@@ -35,7 +35,7 @@ Default Arguments
 ^^^^^^^^^^^^^^^^^
 
 Default arguments to global functions are problematic with generated forwards.
-They can be replaced with function overloading, so do not use them.
+They can be replaced with function overloading. So do not use them!
 
 .. container:: foldable
 
@@ -84,12 +84,12 @@ Virtual member functions cannot be inlined and are thus slow when used in tight 
 ``static_cast<>``
 ^^^^^^^^^^^^^^^^^
 
-Prefer ``static_cast<>`` over C-style casts.
+Prefer ``static_cast<>`` to C-style casts.
 
 ``const_cast<>``
 ^^^^^^^^^^^^^^^^
 
-Use const-casts only to make an object const, do not remove consts.
+Use const-casts only to make an object const. Do not remove consts.
 Rather, use the ``mutable`` keyword on selected members.
 ``const_cast<>`` is allowed for interfacing with external (C) APIs where the ``const`` keyword is missing but which do not modify the variable.
 
@@ -171,10 +171,10 @@ Style Conformance
 ^^^^^^^^^^^^^^^^^
 
 Follow this code style whenever possible.
-However, prefer consistency over conformance.
+However, prefer consistency to conformance.
 
 If you are editing code that is non-conforming consider whether you could/should adapt the whole file to the new style.
-If this is not feasible, prefer consistency over conformance.
+If this is not feasible, prefer consistency to conformance.
 
 Semantics
 ---------
@@ -342,14 +342,14 @@ All files should be UTF-8, non-ASCII characters should not occur in them neverth
 Spaces VS Tabs
 ^^^^^^^^^^^^^^
 
-Do not use tabs, use spaces.
+Do not use tabs! Use spaces.
 Use ``"\t"`` in strings instead of plain tabs.
 
 .. container:: foldablej
 
     After some discussion, we settled on this.
     All programmer's editors can be configured to use spaces instead of tabs.
-    We use a four spaces to a tab.
+    We use four spaces instead of a tab.
 
     There can be problems when indenting in for loops with tabs, for example.
     Consider the following (``-->|`` is a tab, ``_`` is a space):

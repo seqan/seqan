@@ -80,7 +80,7 @@ Develop new modules and apps
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Create a new module or app `branch <https://www.atlassian.com/git/tutorial/git-branches#branch>`_ where to develop your new module or application.
-The branch should be based on master if your module or application doesn’t rely on any recently developed features.
+The branch should be based on master if your module or application doesn't rely on any recently developed features.
 If a new feature becomes necessary later on, the branch can be `rebased <https://www.atlassian.com/git/tutorial/rewriting-git-history#rebase>`_ onto develop.
 When the development is complete, the branch can be merged back into the corresponding base branch - either master or develop.
 
@@ -88,5 +88,5 @@ Rules
 -----
 
 * Never push feature branches to the SeqAn repository.
-* Sumit code reviews through GitHub.
+* Submit code reviews through GitHub.
 
