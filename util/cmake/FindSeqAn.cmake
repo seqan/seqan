@@ -34,46 +34,29 @@
 #
 #   find_package(SeqAn [REQUIRED] ...)
 #
-# You can control the exact behaviour by setting the following variables.  The
-# defaults are given after the variable name.
-#
-#   SEQAN_FIND_DEPENDENCIES   -- DEFAULT
-#   SEQAN_FIND_ENABLE_TESTING -- TRUE if ${CMAKE_BUILD_TYPE} == "Debug", FALSE
-#                                otherwise.
-#
-# For example:
-#
-#   set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)
-#   find_package (SeqAn)
-#
-# The first variable is either "ALL", "DEFAULT" or a list of dependency names
-# and gives the names of the dependencies to search for.  The other two
-# variables can be used to forcibly enabling/disabling the debug and testing
-# mode.
-#
-# Valid dependencies are:
-#
-#   ALL     -- Forcibly enable all dependencies.
-#   DEFAULT -- Enable default dependencies (zlib, OpenMP if available)
-#   NONE    -- Disable all dependencies.
+# SeqAn has some optional dependencies that you must search for **before**
+# you search for SeqAn:
 #
 #   ZLIB    -- zlib compression library
 #   BZip2   -- libbz2 compression library
 #   OpenMP  -- OpenMP language extensions to C/C++
-#   CUDA    -- CUDA language extensions to C/C++
 #
+# E.g.
+#   find_package (ZLIB)
+#   find_package (BZip2)
+#   find_package (SeqAn [REQUIRED] ...)
 #
 # Once the search has been performed, the following variables will be set.
 #
 #  SEQAN_FOUND           -- Indicate whether SeqAn was found.
 #
-# These variables are flags that indicate whether the various dependencies
+# (the dependencies have their own *_FOUND  variables, but inside the code we
+# also define the following macros to indicate whether dependencies were found:
 # of the SeqAn library were found.
 #
 #  SEQAN_HAS_ZLIB
 #  SEQAN_HAS_BZIP2
 #  SEQAN_HAS_OPENMP
-#  SEQAN_HAS_CUDA
 #
 # These variables give lists that are to be passed to the
 # include_directories(), target_link_libraries(), and add_definitions()
@@ -82,14 +65,6 @@
 #  SEQAN_INCLUDE_DIRS
 #  SEQAN_LIBRARIES
 #  SEQAN_DEFINITIONS
-#
-# Additionally, the following two variables are set.  The first contains
-# the include paths for SeqAn, the second for dependencies.  This allows to
-# include the dependency headers using include_directories (SYSTEM ...),
-# such that warnings from these headers do not appear in the nightly builds.
-#
-#  SEQAN_INCLUDE_DIRS_MAIN
-#  SEQAN_INCLUDE_DIRS_DEPS
 #
 # The C++ compiler flags to set.
 #
@@ -127,11 +102,6 @@ elseif (SEQAN_FIND_DEPENDENCIES STREQUAL "ALL")
   set(SEQAN_FIND_DEPENDENCIES ${_SEQAN_ALL_LIBRARIES})
 elseif (SEQAN_FIND_DEPENDENCIES STREQUAL "NONE")
   set(SEQAN_FIND_DEPENDENCIES)
-endif ()
-
-# SEQAN_FIND_ENABLE_TESTING
-if (NOT SEQAN_FIND_ENABLE_TESTING)
-  set(SEQAN_FIND_ENABLE_TESTING "FALSE")
 endif ()
 
 # SEQAN_FIND_DEPENDENCIES IS DEPRECATED, just use find_package!
@@ -220,12 +190,9 @@ endif (NOT CXX11_FOUND)
 # Compile-specific settings and workarounds around missing CMake features.
 # ----------------------------------------------------------------------------
 
-# GCC Setup
-
+# GCC/CLANG/ICC
 if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   # Tune warnings for GCC.
-  set (CMAKE_CXX_WARNING_LEVEL 4)
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing")
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
 
   # Determine GCC version.
@@ -248,15 +215,9 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
   elseif (CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
     set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_CXX_FLAGS_RELEASE} -g -fno-omit-frame-pointer")
   endif ()
-
-  # disable some warnings on ICC
-  if (COMPILER_IS_INTEL)
-    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
-  endif (COMPILER_IS_INTEL)
 endif ()
 
 # Windows Setup
-
 if (WIN32)
   # Always set NOMINMAX such that <Windows.h> does not define min/max as
   # macros.
@@ -267,23 +228,6 @@ endif (WIN32)
 if (MSVC)
   # Enable intrinics (e.g. _interlockedIncrease)
   set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /EHsc /Oi")
-  # Warning level 3 for MSVC is disabled for now to see how much really bad warnings there are.
-  #set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W3)
-
-  # TODO(holtgrew): This rather belongs into the SeqAn build system and notso much into FindSeqAn.cmake.
-
-  # Force to always compile with W2.
-  # Use the /W2 warning level for visual studio.
-  SET(CMAKE_CXX_WARNING_LEVEL 2)
-  if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-    STRING (REGEX REPLACE "/W[0-4]"
-            "/W2" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-  else (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W2")
-  endif (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-
-  # Disable warnings about unsecure (although standard) functions.
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /D_SCL_SECURE_NO_WARNINGS")
 endif (MSVC)
 
 # ----------------------------------------------------------------------------
@@ -330,16 +274,6 @@ else (SEQAN_USE_SEQAN_BUILD_SYSTEM)
     set(SEQAN_FOUND        FALSE)
   endif ()
 endif (SEQAN_USE_SEQAN_BUILD_SYSTEM)
-
-# ----------------------------------------------------------------------------
-# Set defines for debug and testing.
-# ----------------------------------------------------------------------------
-
-if (SEQAN_FIND_ENABLE_TESTING)
-  set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_TESTING=1)
-else ()
-  set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_TESTING=0)
-endif ()
 
 # ----------------------------------------------------------------------------
 # Search for dependencies.

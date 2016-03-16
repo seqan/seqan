@@ -22,8 +22,10 @@ endif ()
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-find_package (ZLIB)
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (ZLIB)
+    find_package (SeqAn REQUIRED)
+endif ()
 find_package (Boost)
 
 if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
