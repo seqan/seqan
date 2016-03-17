@@ -85,7 +85,7 @@ def main():
     else:
         print >>sys.stderr, 'Standard error was as expected.'
 
-    return not (expected_out == expected_out and expected_err == actual_err)
+    return not (expected_out == actual_out and expected_err == actual_err)
 
 
 if __name__ == '__main__':
