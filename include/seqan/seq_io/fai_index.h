@@ -173,6 +173,8 @@ inline void clear(FaiIndex & index)
     clear(index.indexEntryStore);
     clear(index.seqNameStore);
     clear(index.seqNameStoreCache);
+    index.file.clear();
+    index.file.seekg(0, index.file.beg);
 }
 
 // ----------------------------------------------------------------------------
@@ -678,9 +680,6 @@ inline bool build(FaiIndex & index, char const * fastaFilename, char const * fai
     // Recreate name store cache.
     refresh(index.seqNameStoreCache);
 
-    //close the fasta file
-    close(index.file);
-          
     return true;
 }
 
