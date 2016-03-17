@@ -677,7 +677,7 @@ inline bool build(FaiIndex & index, char const * fastaFilename, char const * fai
 
     // Recreate name store cache.
     refresh(index.seqNameStoreCache);
-    
+
     //close the fasta file
     close(index.file);
           
