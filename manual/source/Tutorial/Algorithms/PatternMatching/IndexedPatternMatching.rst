@@ -121,7 +121,7 @@ Specialization :dox:`OpenAddressingQGramIndex Open Adressing QGram Index`
 
 Besides the :dox:`Finder#find` interface there is another interface for indices using suffix tree iterators to search exact ``needle`` occurrences described in the tutorial :ref:`tutorial-datastructures-indices`.
 
-Assignment 3
+Assignment 1
 ^^^^^^^^^^^^
 
 .. container:: assignment
