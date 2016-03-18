@@ -29,8 +29,6 @@
                 var hash = decodeURIComponent($.urlHash(window.parent.location)); // from hash (start with #)
 
                 if(p != null) {
-                    console.log("p: " + p);
- 
                     // TODO : the exceptional cases should be regarded as typos. 
                     var p1 = p.split('/')[0];
                     var p2 = p.split("::")[0];
