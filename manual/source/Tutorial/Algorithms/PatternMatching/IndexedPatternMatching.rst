@@ -31,7 +31,7 @@ The following line of code shows how the :dox:`Finder` is initialized with an in
 
 Calling the function :dox:`Finder#find` invokes the localization of all occurrences of a given pattern.
 It works by modifying pointers of the ``Finder`` to tables of the index.
-For example, the :dox:`Finder` of ``esaIndex`` stores two pointers, pointing to the first and last suffix array entry that stores an occurrence of the pattern. The return value of the :dox:`Finder#find` function tells us whether or not a given pattern occurs in the text.
+For example, the :dox:`Finder` of ``esaIndex`` stores two pointers, pointing to the first and last suffix array entry that stores an occurrence of the pattern. The return value of the :dox:`Finder#find` function tells us whether or not a given pattern occurs in the text. Furthermore, if there are several instances of a pattern, consecutive calls of :dox:`Finder#find` will modify the :dox:`Finder` such that it points to the next occurrence after each call:
 
 .. includefrags:: demos/tutorial/indices/base.cpp
       :fragment: finder_multiple
