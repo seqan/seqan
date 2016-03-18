@@ -31,6 +31,8 @@ def fuzzyEqual(pattern, text):
     """checks if the expected output is eqal to the actualoutput using a reqex
         use the literal [VAR] if the part of the output is not expected to be the same all the time.
     """
+    if len(pattern) != len(text):
+        return False
     for i in range(len(pattern)):
         T = text[i]
         P = pattern[i]
@@ -57,14 +59,14 @@ def loadExpected(args):
     if args.stderr_path:
         with open(args.stderr_path, 'rb') as f:
             err = f.read()
-    return t(out).split('\n'), t(err).split('\n')
+    return t(out.strip()).split('\n'), t(err.strip()).split('\n')
 
 
 def runDemo(args):
     cmd = [args.binary_path]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdoutbuff, stderrbuff = p.communicate()
-    return t(stdoutbuff).split('\n'), t(stderrbuff).split('\n'), p.returncode
+    return t(stdoutbuff.strip()).split('\n'), t(stderrbuff.strip()).split('\n'), p.returncode
 
 
 def main():
