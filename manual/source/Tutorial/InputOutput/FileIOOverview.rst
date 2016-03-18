@@ -51,7 +51,7 @@ SeqAn provides the following file formats:
 * :dox:`VcfFileIn`, :dox:`VcfFileOut` (see Tutorial :ref:`tutorial-io-vcf-io`)
 * :dox:`GffFileIn`, :dox:`GffFileOut` (see Tutorial :ref:`tutorial-io-gff-and-gtf-io`)
 * :dox:`RoiFileIn`, :dox:`RoiFileOut`
-* :dox:`SimpleIntervalsFileIn`, :dox:`SimpleIntervalsFileOut`
+* :dox:`SimpleIntervalsFileIn`, :dox:`SimpleIntervalsFileInOut`
 * :dox:`UcscFileIn`, :dox:`UcscFileOut`
 
 
