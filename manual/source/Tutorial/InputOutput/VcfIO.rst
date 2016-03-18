@@ -31,7 +31,11 @@ It starts out with a quick reminder on the structure of VCF files and will then 
    If you do not know about the VCF format yet, then this tutorial will be harder for your to understand.
 
 The VCF format allows storing genomic variants of individuals with respect to a reference.
-The general file structure starts with (1) meta-information lines starting with ``##``, one (2) header line giving the names of the individuals, and (3) an arbitrary number of records.
+The general file structure starts with 
+
+#. several meta-information lines starting with ``##``,
+#. one header line giving the names of the individuals, and
+#. an arbitrary number of records.
 
 The information of (1) and (2) will be read and written together as the "header" of the file.
 For simple variants such as SNPs and small indels, each record corresponds to a variant.
@@ -100,7 +104,7 @@ INFO
 FORMAT
   Colon-separated list of entries that are found for each variant.
 
-The 9 mandatory columns are followed by as many columns as there are individual.
+The 9 mandatory columns are followed by as many columns as there are individuals.
 For each individual, there is a colon-separated list of values in the order given in the FORMAT cell.
 
 .. tip::
@@ -110,18 +114,18 @@ For each individual, there is a colon-separated list of values in the order give
     There are two common ways of specifying intervals.
 
      #. Start counting positions at 1 and give intervals by the first and last position that are part of the interval (closed intervals).
-        For example, the interval ``[1,000; 2,000]`` starts at character 1,000 and ends at character 2,000 and includes it.
+        For example, the interval ``[1000; 2000]`` starts at character 1000 and ends at character 2000 and includes it.
         This way is natural to non-programmers and used when giving coordinates in GFF files or genome browsers such as UCSC Genome Browser and IGV.
      #. Start counting positions at 0 and give intervals by the first position that is part of the interval and giving the position behind the last position that is part of the interval.
-        The interval from above would be ``[999; 2,000)`` in this case.
+        The interval from above would be ``[999; 2000)`` in this case.
 
     In text representations, such as VCF, 1-based closed intervals are used whereas in the internal binary data structures, SeqAn uses 0-based half-open intervals.
-    When fields are reads as text, numbers are not translated, of course.
+    When fields are read as text, numbers are not translated, of course.
 
 A First Working Example
 -----------------------
 
-The following example shows an example of a program that reads the file with the path ``example.vcf`` and prints its contents back to the user on standard output.
+The following example shows a program that reads the file ``example.vcf`` and prints its contents back to the user on standard output.
 
 .. includefrags:: demos/tutorial/vcf_io/example1.cpp
 
@@ -129,6 +133,10 @@ The program first opens a :dox:`VcfFileIn` for reading the file, then a :dox:`Vc
 First, the header is copied by means of a :dox:`VcfHeader` object that we will see below.
 Then, the input file is read record by record and written out to standard output.
 The alignment records are read into :dox:`VcfRecord` objects which we will focus on below.
+
+The output of the example program looks as follows:
+
+.. includefrags:: demos/tutorial/vcf_io/example1.cpp.stdout
 
 Assignment 1
 """"""""""""
@@ -164,7 +172,7 @@ Note how most fields are represented by :dox:`CharString Strings`:
 .. includefrags:: demos/tutorial/vcf_io/base.cpp
       :fragment: vcfRecord
 
-The static members ``INVALID_POS``, ``INVALID_REFID`` store sentinel values for marking positions and reference sequence ids as invalid.
+The static members ``INVALID_POS`` and ``INVALID_REFID`` store sentinel values for marking positions and reference sequence ids as invalid.
 The static funtion ``MISSING_QUAL()`` returns the IEEE float "NaN" value.
 
 .. tip::
@@ -213,7 +221,12 @@ Assignment 3
      Application
 
    Objective
-     Write a program that prints the VCF file from above.
+     Write a program that manually creates the VCF file from above and than prints it back on standard output.
+
+   Hint
+     * use :dox:`VcfHeaderRecord` to create a header record that can be appended to the :dox:`VcfHeader`
+     * use :dox:`appendValue` to append information to the :dox:`VcfIOContext` or the :dox:`VcfHeader`
+     * use the direct member access operator ``.`` if you want to access the information of a :dox:`VcfRecord`
 
    Solution
      .. container:: foldable
