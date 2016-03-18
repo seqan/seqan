@@ -140,9 +140,8 @@ Assignment 2
 
    Objective
       Write a program which creates a directed graph with the following edges:
-      ``(1,0), (0,4), (2,1), (4,1), (5,1), (6,2), (3,2), (2,3), (7,3), (5,4),``
 
-      ``(6,5), (5,6), (7,6), (7,7)``
+      **(1,0), (0,4), (2,1), (4,1), (5,1), (6,2), (3,2), (2,3), (7,3), (5,4), (6,5), (5,6), (7,6), (7,7)**
 
       Use the function :dox:`Graph#addEdges` instead of adding each edge separately.
       Output the graph to the screen.
@@ -286,7 +285,7 @@ Be aware that the word external is a hint that the information is stored indepen
 Property maps are simply :dox:`String Strings` of a property type and are indexed via the already well-known vertex and edge descriptors.
 
 Lets see how we can define a vertex property map for the city names.
-Our property type is a :dox:`String` of a city name, more explicitly a char string (``TCityName``). The vertex property map should hold several names so we define a String of Strings (``TProperties``).
+Our property type is a :dox:`String` of a city name, more explicitly a char string. The vertex property map should hold several names so we define a String of Strings.
 Now, we only have to create and :dox:`Graph#resizeVertexMap resize` this map so that it can hold information on all vertices.
 
 .. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
@@ -305,7 +304,7 @@ Graph Iterators
 
 Let us have a quick look at iterators for graph types.
 SeqAn provides six different specializations for graph iterators: :dox:`VertexIterator Vertex Iterator`, :dox:`AdjacencyIterator Adjacency Iterator`, :dox:`DfsPreorderIterator Dfs Preorder Iterator`, and :dox:`BfsIterator Bfs Iterator` for traversing vertices, and :dox:`EdgeIterator Edge Iterator` and :dox:`OutEdgeIterator Out-edge Iterator` for traversing edges.
-Except for the :dox:`VertexIterator Vertex Iterator` and the :dox:`EdgeIterator Edge Iterator`, who only depend on the graph, all other graph iterators depend additionally on a specified edge or vertex.
+Except for the :dox:`VertexIterator Vertex Iterator` and the :dox:`EdgeIterator Edge Iterator` who only depend on the graph, all other graph iterators depend additionally on a specified edge or vertex.
 
 To output all vertices of our graph in an arbitrary order, we can define an iterator of the specialization :dox:`VertexIterator Vertex Iterator` and determine its type with the metafunction :dox:`ContainerConcept#Iterator`.
 The functions :dox:`RootedIteratorConcept#atEnd` and :dox:`InputIteratorConcept#goNext` also work for graph iterators as for all other iterators in SeqAn.
