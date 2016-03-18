@@ -73,6 +73,19 @@ if (MINGW)
 endif (MINGW)
 
 # ---------------------------------------------------------------------------
+# Is it a 32 bit platform?
+# ---------------------------------------------------------------------------
+if (CMAKE_SIZEOF_VOID_P EQUAL 4)
+    set(SEQAN_32BIT_TARGET_PLATFORM 1)
+    set(SEQAN_64BIT_TARGET_PLATFORM 0)
+else()
+    set(SEQAN_32BIT_TARGET_PLATFORM 0)
+    set(SEQAN_64BIT_TARGET_PLATFORM 1)
+endif()
+
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
 # Disable false positive terminal detection in Xcode
 # ---------------------------------------------------------------------------
 
@@ -225,7 +238,7 @@ macro (seqan_build_system_init)
         message (STATUS "Building static binaries.")
 
         # machine specific optimizations
-        if ((CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64") OR (CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64"))
+        if (SEQAN_64BIT_TARGET_PLATFORM)
             set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -mpopcnt")
             message (STATUS "Release binaries built with optimizations for SSE3, SSE4 and POPCNT.")
         endif ()
@@ -234,8 +247,11 @@ macro (seqan_build_system_init)
     # settings for development mode
     if ((SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP") AND
         (NOT MSVC) AND
-        (NOT SEQAN_NO_NATIVE))
+        (NOT SEQAN_NO_NATIVE) AND
+        (NOT SEQAN_32BIT_TARGET_PLATFORM))
 
+        # SeqAn has conflicts with -march=native and -m32 build on 64 bit source
+        # platforms, thus disabling -march=native for 32bit target platforms
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -march=native")
         if (COMPILER_IS_INTEL)
             set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -xHOST -ipo -no-prec-div -fp-model fast=2")
