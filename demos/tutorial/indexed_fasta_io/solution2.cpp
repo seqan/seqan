@@ -10,7 +10,6 @@ int main(int argc, char const ** argv)
     if (argc != 5)
     {
         std::cerr << "USAGE: build_fai FILE.fa SEQ BEGIN END\n";
-        return 1;
     }
 
     // Try to load index and create on the fly if necessary.
@@ -20,12 +19,10 @@ int main(int argc, char const ** argv)
         if (!build(faiIndex, argv[1]))
         {
             std::cerr << "ERROR: Index could not be loaded or built.\n";
-            return 1;
         }
         if (!save(faiIndex))    // Name is stored from when reading.
         {
             std::cerr << "ERROR: Index could not be written do disk.\n";
-            return 1;
         }
     }
 
@@ -34,7 +31,6 @@ int main(int argc, char const ** argv)
     if (!getIdByName(idx, faiIndex, argv[2]))
     {
         std::cerr << "ERROR: Index does not know about sequence " << argv[2] << "\n";
-        return 1;
     }
 
     // Convert positions into integers.
@@ -42,12 +38,10 @@ int main(int argc, char const ** argv)
     if (!lexicalCast(beginPos, argv[3]))
     {
         std::cerr << "ERROR: Cannot cast " << argv[3] << " into an unsigned.\n";
-        return 1;
     }
     if (!lexicalCast(endPos, argv[4]))
     {
         std::cerr << "ERROR: Cannot cast " << argv[4] << " into an unsigned.\n";
-        return 1;
     }
 
     // Make sure begin and end pos are on the sequence and begin <= end.
