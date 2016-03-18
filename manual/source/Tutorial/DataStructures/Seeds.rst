@@ -40,7 +40,7 @@ In most cases, the :dox:`SimpleSeed Simple Seed` class is sufficient since the b
 
 You can get/set the begin and end position in the horizontal/vertical sequences using the functions :dox:`Seed#beginPositionH`, :dox:`Seed#beginPositionV`, :dox:`Seed#setBeginPositionH`, and :dox:`Seed#setBeginPositionV`.
 The band information can be queried and updated using :dox:`Seed#lowerDiagonal`, :dox:`Seed#upperDiagonal`, :dox:`Seed#setLowerDiagonal`, and :dox:`Seed#setUpperDiagonal`.
-Note, we use the capital letters 'H' and 'V' to indicate horizontal direction and vertical direction, respectively, while the **database** is always considered as the **horizontal sequence** and the **query** as the **vertical sequence** in the context of sequence alignments.
+Note, we use the capital letters 'H' and 'V' to indicate horizontal direction and vertical direction, respectively, while the **subject sequence** is always considered as the **horizontal sequence** and the **query** as the **vertical sequence** in the context of sequence alignments.
 
 The following program gives an example of creating seeds as well as setting and reading properties.
 
