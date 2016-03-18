@@ -51,9 +51,6 @@ int main()
 //![finder]
     Finder<Index<String<Dna5>, IndexEsa<> > > esaFinder(esaIndex);
 //![finder]
-//![finder2]
-    find(esaFinder, "ACGT");
-//![finder2]
 //![finder_multiple]
     find(esaFinder, "ACGT");  // first occurrence of "ACGT"
     find(esaFinder, "ACGT");  // second occurrence of "ACGT"
