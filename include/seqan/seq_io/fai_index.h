@@ -173,6 +173,8 @@ inline void clear(FaiIndex & index)
     clear(index.indexEntryStore);
     clear(index.seqNameStore);
     clear(index.seqNameStoreCache);
+    index.file.clear();
+    index.file.seekg(0, index.file.beg);
 }
 
 // ----------------------------------------------------------------------------
