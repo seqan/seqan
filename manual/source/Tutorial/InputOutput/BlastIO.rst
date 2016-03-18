@@ -23,7 +23,8 @@ Other recommended reading
   `Basics of Blast Statistics <http://www.ncbi.nlm.nih.gov/BLAST/tutorial/Altschul-1.html>`_
 
 Technical requirements
-  Full C++11 support required in compiler (GCC>=4.9, Clang>=3.4 or MSVC>=2015)
+  Full C++11 support required in compiler
+  (GCC :math:`\ge` 4.9, Clang :math:`\ge` 3.4 or MSVC :math:`\ge` 2015)
 
 
 The Basic local alignment search tool (BLAST) by the NCBI is one of the most widely used tools in Bioinformatics.
@@ -33,8 +34,8 @@ dealing with Blast IO is more difficult than with other file formats.
 
 Furthermore it is important to distinguish between the Blast version written in C (known by its `blastall` executable)
 and the C++ version (individual `blastn`, `blastp`... executables), also known as BLAST+.
-The formats and their identifiers changed
-between versions, the following table gives an overview:
+The formats and their identifiers changed between versions.
+The following table gives an overview:
 
 +---------------------------------------------------+------------------+-------------+
 | Description                                       | `blastall`       |  `blast*`   |
@@ -167,11 +168,11 @@ in the **tabular with comment lines (legacy)** format:
 Pairwise format
 ---------------
 
-The pairwise format is the default format in Blast, it is more verbose than the tabular formats and very human readable.
+The pairwise format is the default format in Blast. It is more verbose than the tabular formats and very human readable.
 
 This is what the last record from above would look like (the other queries are omitted):
 
-.. literalinclude:: ../../../../demos/tutorial/blast/plus_sub.m0
+.. literalinclude:: ../../../../demos/tutorial/blast_io/plus_sub.m0
 
 
 Blast formats in SeqAn
@@ -209,7 +210,7 @@ Only tabular formats are covered in this example, because no input support is av
 Copy the contents of the **tabular with comment lines** example above into a file and give it to the following
 program as the only parameter. Please use ``.m9`` as file type extension.
 
-.. literalinclude:: ../../../../demos/tutorial/blast/read_assignment.cpp
+.. literalinclude:: ../../../../demos/tutorial/blast_io/read_assignment.cpp
     :language: c++
     :lines: 1-18, 74-84
 
@@ -226,21 +227,21 @@ Assignment 1
       Top
         .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/read_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/read_assignment.cpp
                 :language: c++
                 :lines: 1-18
 
       New code
         .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/read_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/read_assignment.cpp
                 :language: c++
                 :lines: 19-34, 57-60
 
       Bottom
           .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/read_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/read_assignment.cpp
                 :language: c++
                 :lines: 74-84
 
@@ -258,14 +259,14 @@ Assignment 2
       Top
         .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/read_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/read_assignment.cpp
                 :language: c++
                 :lines: 1-34
 
       New code
         .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/read_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/read_assignment.cpp
                 :language: c++
                 :lines: 41-60
 
@@ -275,7 +276,7 @@ Assignment 2
       Bottom
           .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/read_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/read_assignment.cpp
                 :language: c++
                 :lines: 74-84
 
@@ -299,21 +300,21 @@ Assignment 3
       Top
         .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/read_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/read_assignment.cpp
                 :language: c++
                 :lines: 1-34, 41-60
 
       New code
         .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/read_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/read_assignment.cpp
                 :language: c++
                 :lines: 61-73
 
       Bottom
           .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/read_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/read_assignment.cpp
                 :language: c++
                 :lines: 74-84
 
@@ -327,7 +328,7 @@ without further configuration in SeqAn.
 
 .. tip::
     Don't believe it? Look at ``tests/blast/customfields.m9``, as as you can see the bit score is in the 13th column
-    (instead of the twelfth). If you run your program on this file, it should still print the corrent bit-scores!
+    (instead of the twelfth). If you run your program on this file, it should still print the correct bit-scores!
 
 .. container:: assignment
 
@@ -342,21 +343,21 @@ without further configuration in SeqAn.
       Top
         .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/read_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/read_assignment.cpp
                 :language: c++
                 :lines: 1-34
 
       New code
         .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/read_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/read_assignment.cpp
                 :language: c++
                 :lines: 35-40
 
       Bottom
           .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/read_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/read_assignment.cpp
                 :language: c++
                 :lines: 41-84
 
@@ -368,9 +369,9 @@ File writing example
 The following program stub creates three query sequences and two subject sequences in amino acid alphabet.
 We will later generate records with matches and print these to disk.
 
-.. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.cpp
+.. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.cpp
     :language: c++
-    :lines: 1-49, 109-119
+    :lines: 1-49, 105-114
 
 Assignment 5
 """"""""""""
@@ -391,21 +392,21 @@ Assignment 5
       Top
         .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.cpp
                 :language: c++
                 :lines: 1-49
 
       New code
         .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.cpp
                 :language: c++
                 :lines: 50-64
 
       Bottom
           .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.cpp
                 :language: c++
                 :lines: 106-116
 
@@ -422,21 +423,21 @@ Assignment 6
       Top
         .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.cpp
                 :language: c++
                 :lines: 1-64
 
       New Code
        .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.cpp
                 :language: c++
-                :lines: 65-82, 98-99, 103
+                :lines: 65-82, 97-99, 103
 
       Bottom
        .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.cpp
                 :language: c++
                 :lines: 106-116
 
@@ -454,23 +455,23 @@ Assignment 7
       Top
         .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.cpp
                 :language: c++
                 :lines: 1-82
 
       New Code
        .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.cpp
                 :language: c++
                 :lines: 83-92
 
       Bottom
        .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.cpp
                 :language: c++
-                :lines: 98-99, 103, 106-116
+                :lines: 97-99, 103, 106-116
 
 Assignment 8
 """"""""""""
@@ -489,28 +490,28 @@ Assignment 8
       Top
        .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.cpp
                 :language: c++
                 :lines: 1-92
 
       New Code
        .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.cpp
                 :language: c++
-                :lines: 93-105
+                :lines: 93-96
 
       Bottom
        .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.cpp
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.cpp
                 :language: c++
-                :lines: 106-116
+                :lines: 97-116
 
       Your output file should look like this:
         .. container:: foldable
 
-            .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.m9
+            .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.m9
 
 Assignment 9
 """"""""""""
@@ -530,7 +531,7 @@ Assignment 9
 
         The result should look like this:
 
-        .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.m8
+        .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.m8
 
     Tabular without comment lines (legacy)
       .. container:: foldable
@@ -539,7 +540,7 @@ Assignment 9
 
         The result should look like this(legacy and NO_COMMENTS):
 
-        .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment_legacy.m8
+        .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment_legacy.m8
 
     Pairwise format
       .. container:: foldable
@@ -550,4 +551,4 @@ Assignment 9
 
         The result should look like this:
 
-        .. literalinclude:: ../../../../demos/tutorial/blast/write_assignment.m0
+        .. literalinclude:: ../../../../demos/tutorial/blast_io/write_assignment.m0
