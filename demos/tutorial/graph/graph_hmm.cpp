@@ -1,7 +1,6 @@
 //![includes]
 #include <iostream>
 #include <seqan/graph_algorithms.h>
-#include <seqan/basic/basic_math.h>
 
 using namespace seqan;
 //![includes]

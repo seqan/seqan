@@ -23,7 +23,7 @@ Overview
 --------
 
 A graph in computer science is an ordered pair :math:`G = (V, E)` of a set of vertices V and a set of edges E.
-SeqAn provides different :dox:`Graph Graph types of graphs` and the most well-known graph algorithms as well as some specialized alignment graph algorithms.
+SeqAn provides different :dox:`Graph types of graphs` and the most well-known graph algorithms as well as some specialized alignment graph algorithms.
 In this part of the tutorial, we demonstrate how to construct a graph in SeqAn and show the usage of some algorithms.
 Alignment graphs are described in the tutorial :ref:`tutorial-datastructures-alignment`.
 
@@ -35,16 +35,15 @@ We have given the following network of five cities and in this network we want t
    :width: 240px
 
 In the section `Graph Basics`_, we will create the network and write the graph to a `.dot` file.
-The section `Property Maps and Iterators`_ assigns city names to the vertices and demonstrates the usage of a vertex iterator.
-Finally, in :ref:`tutorial-algorithms-graph-algorithms` we will compute the shortest path by calling a single function.
+The section `Property Maps`_ assigns city names to the vertices and `Graph Iterators`_ demonstrates the usage of a vertex iterator.
 
-After having worked through these sections you should be familiar with the general usage of graphs in SeqAn.
+After having worked through these sections you should be familiar with the general usage of graphs in SeqAn. You are then prepared to proceed with :ref:`tutorial-algorithms-graph-algorithms`, where we will compute the shortest path by calling a single function.
 
 Graph Basics
 ------------
 
 The general header file for all types of graphs is ``<seqan/graph_types.h>``.
-It comprises the class :dox:`Graph` and its specializations, all functions for basic graph operations, and different iterators.
+It comprises the :dox:`Graph` class, its specializations, every function for basic graph operations and different iterators.
 Later, for computing the shortest path we will also need ``<seqan/graph_algorithms.h>`` which includes the implementations of most of SeqAn's graph algorithms.
 
 .. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
@@ -53,7 +52,7 @@ Later, for computing the shortest path we will also need ``<seqan/graph_algorith
 We want to model the network of cities as an undirected graph and label the edges with distances.
 Before we start creating edges and vertices, we need some typedefs to specify the graph type.
 
-SeqAn offers different specializations of the class :dox:`Graph`:, :dox:`UndirectedGraph Undirected Graph`, :dox:`DirectedGraph`, :dox:`Tree`, :dox:`Automaton`, :dox:`HmmGraph`, and :dox:`AlignmentGraph Alignment Graph`.
+SeqAn offers different specializations of the class :dox:`Graph`: :dox:`UndirectedGraph Undirected Graph`, :dox:`DirectedGraph`, :dox:`Tree`, :dox:`WordGraph Word Graph`, :dox:`Automaton`, :dox:`HmmGraph`, and :dox:`AlignmentGraph Alignment Graph`.
 For our example, an undirected graph will be sufficient, so we define our own graph type ``TGraph`` with the specialization :dox:`UndirectedGraph Undirected Graph` of the class :dox:`Graph`.
 Luckily, this specialization has an optional cargo template argument, which attaches any kind of object to the edges of the graph.
 This enables us to store the distances between the cities, our edge labels, using the cargo type ``TCargo`` defined as ``unsigned int``.
@@ -141,7 +140,9 @@ Assignment 2
 
    Objective
       Write a program which creates a directed graph with the following edges:
-      ``(1,0), (0,4), (2,1), (4,1), (5,1), (6,2), (3,2), (2,3), (7,3), (5,4), (6,5), (5,6), (7,6), (7,7)``
+
+      **(1,0), (0,4), (2,1), (4,1), (5,1), (6,2), (3,2), (2,3), (7,3), (5,4), (6,5), (5,6), (7,6), (7,7)**
+
       Use the function :dox:`Graph#addEdges` instead of adding each edge separately.
       Output the graph to the screen.
 
@@ -185,13 +186,13 @@ Assignment 3
    Objective
      Write a program which defines an HMM for DNA sequences:
 
-     * Define an exon, splice, and intron state.
-     * Consider to use the type ``LogProb<>`` from ``<seqan/basic/basic_logvalue.h>`` for the transition probabilities.
-       Sequences always start in the exon state.
-       The probability to stay in an exon or intron state is 0.9.
+     * Define an **exon**, **splice**, and **intron** state.
+     * Sequences always start in the exon state.
+       The probability to stay in an exon or intron state is **0.9**.
        There is exactly one switch from exon to intron.
        Between the switch from exon to intron state, the HMM generates exactly one letter in the splice state.
-       The sequence ends in the intron state with a probability of 0.1.
+       The sequence ends in the intron state with a probability of **0.1**.
+     * Consider to use the type :dox:`LogProb` for the transition probabilities.
      * Output the HMM to the screen.
      * Use the follwing emission probabilities.
 
@@ -208,7 +209,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-	The program starts with the inclusion of ``<seqan/graph_algorithms.h>`` and ``<seqan/basic/basic_logvalue.h>``.
+	The program starts with the inclusion of ``<seqan/graph_algorithms.h>``.
 	In this example you could include ``<seqan/graph_types.h>`` instead of the algorithms header file.
 	However, it is likely that if you define a graph, you will call a graph algorithm as well.
 
@@ -220,7 +221,7 @@ Assignment 3
 	It is a :dox:`Graph` with the specialization :dox:`HmmGraph`.
 	The specialization takes itself three template arguments: the alphabet of the sequence that the HMM generates, the type of the transitions, and again a specialization.
 	In our case, we define the transitions to be the logarithm of the probilities (:dox:`LogProb`) and hereby simplify multiplications to summations.
-	For the specialization we explicitly use the ``Default`` tag.
+	For the specialization we explicitly use the ``Default`` tag. The default tag can always be omitted but it shows the possibility of further specialization.
 
 	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
 	   :fragment: typedefs
@@ -271,8 +272,8 @@ Assignment 3
 	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp.stdout
 	   :fragment: print-model
 
-Property Maps And Iterators
----------------------------
+Property Maps
+-------------
 
 So far, the vertices in our graph can only be distinguished by their vertex descriptor.
 We will now see how to associate the city names with the vertices.
@@ -284,8 +285,8 @@ Be aware that the word external is a hint that the information is stored indepen
 Property maps are simply :dox:`String Strings` of a property type and are indexed via the already well-known vertex and edge descriptors.
 
 Lets see how we can define a vertex property map for the city names.
-Our property type is a :dox:`String` of a city name type, a char string.
-We only have to create and :dox:`Graph#resizeVertexMap resize` this map so that it can hold information on all vertices.
+Our property type is a :dox:`String` of a city name, more explicitly a char string. The vertex property map should hold several names so we define a String of Strings.
+Now, we only have to create and :dox:`Graph#resizeVertexMap resize` this map so that it can hold information on all vertices.
 
 .. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: definition-property-map
@@ -298,9 +299,12 @@ Note that this is completely independent from our graph object ``g``.
 
 If we now want to output all vertices including their associated information we can iterate through the graph and use the iterators value to access the information in the property map.
 
-But let us first have a quick look at iterators for graph types.
+Graph Iterators
+---------------
+
+Let us have a quick look at iterators for graph types.
 SeqAn provides six different specializations for graph iterators: :dox:`VertexIterator Vertex Iterator`, :dox:`AdjacencyIterator Adjacency Iterator`, :dox:`DfsPreorderIterator Dfs Preorder Iterator`, and :dox:`BfsIterator Bfs Iterator` for traversing vertices, and :dox:`EdgeIterator Edge Iterator` and :dox:`OutEdgeIterator Out-edge Iterator` for traversing edges.
-Except for the :dox:`VertexIterator Vertex Iterator` and the :dox:`EdgeIterator Edge Iterator` they depend additionally to the graph on a specified edge or vertex.
+Except for the :dox:`VertexIterator Vertex Iterator` and the :dox:`EdgeIterator Edge Iterator` who only depend on the graph, all other graph iterators depend additionally on a specified edge or vertex.
 
 To output all vertices of our graph in an arbitrary order, we can define an iterator of the specialization :dox:`VertexIterator Vertex Iterator` and determine its type with the metafunction :dox:`ContainerConcept#Iterator`.
 The functions :dox:`RootedIteratorConcept#atEnd` and :dox:`InputIteratorConcept#goNext` also work for graph iterators as for all other iterators in SeqAn.
@@ -325,17 +329,23 @@ Assignment 4
      Application
 
    Objective
-     Add a vertex map to the program from task 2:
+     Add a vertex map to the program from assignment 2:
 
      #. The map shall assign a lower-case letter to each of the seven vertices.
         Find a way to assign the properties to all vertices at once in a single function call (*without* using the function :dox:`PropertyMapConcept#assignProperty` for each vertex separately).
      #. Show that the graph is not connected by iterating through the graph in depth-first-search ordering.
         Output the properties of the reached vertices.
 
+   Hint
+     .. container:: foldable
+
+        * Use an array and the function :dox:`Graph#assignVertexMap` to assign all properties at once.
+        * Use the :dox:`DfsPreorderIterator DFS Iterator` for depth-first-search ordering.
+
    Solution
      .. container:: foldable
 
-        Our aim is not to assign all properties at once to the vertices.
+        Our aim is to assign all properties at once to the vertices.
         Therefore, we create an array containing all the properties, the letters `'a'` through `'h'`.
 
         The function :dox:`Graph#assignVertexMap` does not only resize the vertex map (as :dox:`Graph#resizeVertexMap` does) but also initializes it.
@@ -355,5 +365,3 @@ Assignment 4
 
         .. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp.stdout
             :fragment: iterate-dfs
-        .. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp.stdout
-            :fragment: return

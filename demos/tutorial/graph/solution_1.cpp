@@ -25,9 +25,6 @@ int main()
 
     dotFile.close();
 
-    typedef Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-    TVertexIterator itV(g);
-
     std::cout << g << std::endl;
 
     return 0;
