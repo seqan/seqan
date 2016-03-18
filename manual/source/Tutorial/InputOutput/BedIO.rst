@@ -27,12 +27,12 @@ Such an annotation track consists of multiple annotation records.
 Each annotation adds some meta information to a genomic interval (an interval with begin/end position on a contig/chromosome) The original specification of the format can be found in the `UCSC Genome Browser FAQ <https://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_.
 
 The BED format is a TSV format and contains 12 columns.
-The first three column specify a genomic region (contig/chromsome name, begin, and end position) and the remaining columns contain additional information.
+The first three columns specify a genomic region (contig/chromsome name, begin, and end position) and the remaining columns contain additional information.
 The full format will be described below.
 
 Since genomic intervals are very useful and because there were many tools for manipulating BED files (sorting, intersecting intervals etc.), many other authors and projects created variants of the BED format.
 Usually, three or more columns have the same meaning as in BED and are followed by other, arbitrary tab-separated columns with additional annotation information.
-The "full" BED format is then called BED12, and BED3, BED4, BED5, and BED6 use the first 3-6 columns and keep the remaining information as data.
+The "full" BED format is then called BED12. BED3, BED4, BED5, and BED6 use the first 3-6 columns and keep the remaining information as data.
 
 BED files can be manipuluated using standard Unix tools such as ``sed``, ``awk``, and ``sort``.
 There also is the `bedtools <https://code.google.com/p/bedtools/>`_ suite with additional functionality.
@@ -91,10 +91,10 @@ blockSizes (12)
    There are two common ways of specifying intervals.
 
    #. Start counting positions at 1 and give intervals by the first and last position that are part of the interval (closed intervals).
-      For example, the interval ``[1,000; 2,000]`` starts at character 1,000 and ends at character 2,000 and includes it.
+      For example, the interval ``[1000; 2000]`` starts at character 1000 and ends at character 2000 and includes it.
       This way is natural to non-programmers and used when giving coordinates in GFF files or genome browsers such as UCSC Genome Browser and IGV.
    #. Start counting positions at 0 and give intervals by the first position that is part of the interval and giving the position behind the last position that is part of the interval.
-      The interval from above would be ``[999; 2,000)`` in this case.
+      The interval from above would be ``[999; 2000)`` in this case.
 
    In text representations, such as GFF and GTF, 1-based closed intervals are used whereas in the internal binary data structures, SeqAn uses 0-based half-open intervals.
    BED is a text format using 0-based positions.
@@ -102,13 +102,17 @@ blockSizes (12)
 A First Working Example
 -----------------------
 
-The following example shows an example of a program that reads the file with the path ``example.bed`` and prints its contents back to the user on standard output.
+The following example shows an example of a program that reads the file ``example.bed`` and prints its contents back to the user on standard output.
 
 .. includefrags:: demos/tutorial/bed_io/example1.cpp
 
 The program first opens a :dox:`BedFileIn` for reading and a :dox:`BedFileOut` for writing.
 The BED records are read into :dox:`BedRecord` objects which we will focus on below.
 In this case, we use the :dox:`Bed3Record` specialization of the :dox:`BedRecord` class.
+
+The output of the example program looks as follows:
+
+.. includefrags:: demos/tutorial/bed_io/example1.cpp.stdout
 
 Assignment 1
 """"""""""""
@@ -138,7 +142,7 @@ The other specializations have less fields.
 .. includefrags:: demos/tutorial/bed_io/base.cpp
       :fragment: bedRecord
 
-The static members ``INVALID_POS``, ``INVALID_REFID`` store sentinel values for marking positions and reference sequence ids as invalid.
+The static members ``INVALID_POS`` and ``INVALID_REFID`` store sentinel values for marking positions and reference sequence ids as invalid.
 
 Assignment 2
 """"""""""""
