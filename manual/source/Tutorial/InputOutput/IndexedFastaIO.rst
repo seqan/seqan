@@ -45,11 +45,11 @@ The module ``<seqan/seq_io.h>`` allows to create and read such ``.fai`` index fi
 How Does It Work?
 -----------------
 
-There are two requirements that a FASTA file has to fulfill to work with the FAI scheme.
-For each sequence in the FASTA file, the number of characters stored per line has to be the same and the number of bytes per line has to be the same.
+There are two requirements that a FASTA file has to fulfill to work with the FAI scheme:
+For each sequence in the FASTA file, **the number of characters and the number of bytes per line has to be the same**.
 The first restriction speaks for itself, the second restriction means that the same line ending character has to be used and no line should contain any additional spaces.
 
-The index file then stores records of sequence identifier, length, the offset of the first sequence character in the file, the number of characters per line, and the number of bytes per line.
+The index file then stores records of the sequence identifier, the length, the offset of the first sequence character in the file, the number of characters per line, and the number of bytes per line.
 With this information, we can easily compute the byte offset of the i-th character of a sequence in a file by looking at its index record.
 We skip to this byte offset in the file and from there, we can read the necessary sequence characters.
 
@@ -57,7 +57,7 @@ Building the Index
 ------------------
 
 The class :dox:`FaiIndex` allows for building and loading FAI indices.
-fo build such an index, we use the function :dox:`FaiIndex#build` of the class :dox:`FaiIndex`.
+To build such an index, we use the function :dox:`FaiIndex#build` of the class :dox:`FaiIndex`.
 The first parameter is the :dox:`FaiIndex` object, the second is the path to the FASTA file.
 The function returns a ``bool`` indicating whether the mapping was successful (``true`` on success, ``false`` on failure).
 
@@ -92,7 +92,7 @@ Assignment 1
    Hints
      .. container:: foldable
 
-	Using the two-parameter variant of :dox:`FaiIndex#build` is good enough.
+       Using the two-parameter variant of :dox:`FaiIndex#build` is good enough.
 
    Solution
      .. container:: foldable
@@ -108,7 +108,7 @@ The function returns a ``bool`` indicating whether the mapping was successful (`
 .. includefrags:: demos/tutorial/indexed_fasta_io/base.cpp
     :fragment: open_index1
 
-In the example above, the FAI file ``"path/to/file.fasta.fai"`` would be
+In the example above, the FAI file ``"/demos/tutorial/indexed_fasta_io/example.fasta.fai"`` would be
 loaded. Optionally, we can specify an extra path to the FAI file:
 
 .. includefrags:: demos/tutorial/indexed_fasta_io/base.cpp
@@ -145,13 +145,13 @@ Assignment 2
      A path to a FASTA file, the id of the sequence, a begin and an end position.
      The program should then read the given infix of the given sequence from the file and print it to stdout.
 
-  Hint
-    .. container:: foldable
+   Hint
+     .. container:: foldable
 
        Use the function :dox:`lexicalCast` to convert strings of numbers into integers.
 
-  Solution
-    .. container:: foldable
+   Solution
+     .. container:: foldable
 
        The program appears to be very long, but most is error handling, as usual with robust I/O code.
 
