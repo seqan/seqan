@@ -32,6 +32,7 @@ def fuzzyEqual(pattern, text):
         use the literal [VAR] if the part of the output is not expected to be the same all the time.
     """
     if len(pattern) != len(text):
+        print >> sys.stderr, 'Number of lines differ. Expected output has %s lines whereas actual has %s lines.' % (len(pattern), len(text))
         return False
     for i in range(len(pattern)):
         T = text[i]
@@ -40,13 +41,13 @@ def fuzzyEqual(pattern, text):
             continue
         else :
             if '[VAR]' not in P:
-                print "Hello P = ", P, " T = ", T, " Case 1"
+                print >> sys.stderr, 'Line %s is different between expected and actual outputs.' % (i)
                 return False
             else:
                 P = (re.escape(P)).replace('\\[VAR\\]', "[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?")
                 r = re.compile(P)
                 if re.match(r, T) == None:
-                    print "Hello P = ", P, " T = ", T, " Case 2"
+                    print >> sys.stderr, 'Line %s is different (REGEX) between expected and actual outputs.' % (i)
                     return False
     return True
 
