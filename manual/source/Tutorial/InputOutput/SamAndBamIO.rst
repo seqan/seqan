@@ -39,7 +39,7 @@ It starts out with a quick reminder on the structure of SAM (and also BAM) files
     Note that this tutorial is targeted at readers that already know about the SAM format.
     If you do not know about the SAM format yet, then this tutorial will be harder for your to understand.
 
-Both SAM and BAM file store multi-read alignments.
+Both SAM and BAM files store multi-read alignments.
 Storing alignments of longer sequences such as contigs from assemblies is also possible, but less common.
 Here, we will focus on multi-read alignments.
 
@@ -59,7 +59,7 @@ The :ref:`tutorial-datastructures-store-fragment-store` Tutorial shows how to ge
     However, storing the whole alignment of a 120GB BAM file obviously is not a good idea.
 
     The SAM/BAM I/O functionaliy in SeqAn is meant for sequentially reading through SAM and BAM files.
-    Jumping within BAM files using BAI indices is described in the `Using BAM Indices`_.
+    Jumping within BAM files using BAI indices is described in the `Using BAM Indices`_ section of this tutorial.
 
 
 SAM / BAM Format
@@ -74,7 +74,7 @@ The header consists of multiple lines, starting with an ``'@'`` character, each 
 Each record starts with its identifier and is followed by tab-separated tags.
 Each tag in the header consists of a two-character identifier, followed by ``':'``, followed by the value.
 
-If present, the ``@HD`` record must be the first record and specifies the SAM version (tag ``VN``) used in this file and the sort order (``SO``).
+If present, the ``@HD`` record must be the first record which specifies the SAM version (tag ``VN``) used in this file and the sort order (``SO``).
 The optional ``@SQ`` header records give the reference sequence names (tag ``SN``) and lengths (tag ``LN``).
 There also are other header record types.
 
@@ -140,11 +140,13 @@ A First Working Example
 
 The following program reads a file named ``example.sam`` and prints its contents back to the user on standard output.
 
-.. includefrags:: demos/tutorial/sam_and_bam_io/example1.cpp
+.. includefrags:: demos/tutorial/sam_and_bam_io/solution1.cpp
+
+.. includefrags:: demos/tutorial/sam_and_bam_io/solution1.cpp.stdout
 
 We instantiate a :dox:`BamFileIn` object for reading and a :dox:`BamFileOut` object for writing.
 First, we read the BAM header with :dox:`FormattedFileIn#readRecord` and we write it with :dox:`FormattedFileOut#writeRecord`.
-Then, we read each record from the input file and write it to the output file.
+Then, we read each record from the input file and print it back on standard ouput.
 The alignment records are read into :dox:`BamAlignmentRecord` objects, which we will focus on below.
 
 Assignment 1
@@ -177,11 +179,20 @@ The following program accesses the :dox:`BamIOContext` of its :dox:`BamFileIn` a
 
 .. includefrags:: demos/tutorial/sam_and_bam_io/example2.cpp
 
+The output looks like this:
+
+.. includefrags:: demos/tutorial/sam_and_bam_io/example2.cpp.stdout
+
 Accessing the Records
 ---------------------
 
 The class :dox:`BamAlignmentRecord` stores one alignment record of a SAM or BAM file.
-The class gives a in-memory representation that (1) is independent of whether it comes from/goes to a SAM or BAM file, (2) at the same time follows both formats closely, (3) allows for efficient storage and usage in C++, and (4) integrates well with the rest of the SeqAn library.
+The class gives an in-memory representation that
+
+#. is independent of whether it comes from/goes to a SAM or BAM file,
+#. at the same time follows both formats closely,
+#. allows for efficient storage and usage in C++ and
+#. integrates well with the rest of the SeqAn library.
 
 The following definition gives an overview of the available fields, their types, and how they map to the SAM and BAM fields.
 Note that we use the :dox:`CigarElement` class to store entries in the CIGAR string.
@@ -221,6 +232,8 @@ Assignment 2
      .. container:: foldable
 
         .. includefrags:: demos/tutorial/sam_and_bam_io/solution2.cpp
+
+        .. includefrags:: demos/tutorial/sam_and_bam_io/solution2.cpp.stdout
 
 
 Accessing the Records' Tags
@@ -281,6 +294,7 @@ Assignment 3
 
         .. includefrags:: demos/tutorial/sam_and_bam_io/solution3.cpp
 
+        .. includefrags:: demos/tutorial/sam_and_bam_io/solution3.cpp.stdout
 
 Using BAM Indices
 -----------------
@@ -291,6 +305,7 @@ You can read indices into a :dox:`BaiBamIndex` object with the function :dox:`Ba
 
 .. includefrags:: demos/tutorial/sam_and_bam_io/example7.cpp
 
+.. includefrags:: demos/tutorial/sam_and_bam_io/example7.cpp.stdout
 
 Next Steps
 ----------
