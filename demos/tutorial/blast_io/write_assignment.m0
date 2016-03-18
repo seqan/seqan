@@ -1,0 +1,134 @@
+BLASTP 2.2.26+ [I/O Module of SeqAn-2.0.0, http://www.seqan.de]
+
+
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),
+"Gapped BLAST and PSI-BLAST: a new generation of protein database search
+programs",  Nucleic Acids Res. 25:3389-3402.
+
+
+
+Reference for SeqAn: Doering, A., D. Weese, T. Rausch, K. Reinert (2008): SeqAn --
+An efficient, generic C++ library for sequence analysis. BMC Bioinformatics,
+9(1), 11. BioMed Central Ltd. doi:10.1186/1471-2105-9-11
+
+
+
+Database: The Foo Database
+           2 sequences; 400 total letters
+
+
+Query= Query_Numero_Uno with args
+
+Length=12
+                                                                   Score     E
+Sequences producing significant alignments:                       (Bits)  Value
+
+Subject_Numero_Uno                                                   23  0.0005
+Subject_Numero_Dos                                                   22  0.0009
+
+ALIGNMENTS
+> Subject_Numero_Uno
+Length=200
+
+ Score =  23.1 bits (48), Expect =  0.0005
+ Identities = 10/14 (71%), Positives = 12/14 (86%), Gaps = 2/14 (14%)
+
+Query  1   VAYAQ--PRKLCYP  12
+           VAYAQ  PR+LC+P
+Sbjct  79  VAYAQTKPRRLCFP  92
+
+
+> Subject_Numero_Dos
+Length=200
+
+ Score =  22.3 bits (46), Expect =  0.0009
+ Identities = 8/8 (100%), Positives = 8/8 (100%), Gaps = 0/8 (0%)
+
+Query  3    YAQPRKLC  10 
+            YAQPRKLC
+Sbjct  157  YAQPRKLC  164
+
+
+
+Lambda     K      H
+   0.267   0.0410   0.1400
+
+Gapped
+Lambda     K      H
+   0.267   0.0410   0.1400
+
+Effective search space used: 4800
+
+
+Query= Query_Numero_Dos with args
+
+Length=10
+
+
+***** No hits found *****
+
+
+
+Lambda     K      H
+   0.267   0.0410   0.1400
+
+Gapped
+Lambda     K      H
+   0.267   0.0410   0.1400
+
+Effective search space used: 4000
+
+
+Query= Query_Numero_Tres with args
+
+Length=8
+                                                                   Score     E
+Sequences producing significant alignments:                       (Bits)  Value
+
+Subject_Numero_Dos                                                   18  0.007
+Subject_Numero_Uno                                                   16  0.03
+
+ALIGNMENTS
+> Subject_Numero_Dos
+Length=200
+
+ Score =  18.9 bits (37), Expect =  0.007
+ Identities = 8/8 (100%), Positives = 8/8 (100%), Gaps = 0/8 (0%)
+
+Query  1   AVITSFTQ  8 
+           AVITSFTQ
+Sbjct  10  AVITSFTQ  17
+
+
+> Subject_Numero_Uno
+Length=200
+
+ Score =  16.9 bits (32), Expect =  0.03
+ Identities = 7/8 (88%), Positives = 8/8 (100%), Gaps = 0/8 (0%)
+
+Query  1    AVITSFTQ  8  
+            AVITS+TQ
+Sbjct  184  AVITSWTQ  191
+
+
+
+Lambda     K      H
+   0.267   0.0410   0.1400
+
+Gapped
+Lambda     K      H
+   0.267   0.0410   0.1400
+
+Effective search space used: 3200
+
+
+  Database: The Foo Database
+  Number of letters in database: 400
+  Number of sequences in database:  2
+
+
+
+Matrix:BLOSUM62
+Gap Penalties: Existence: 11, Extension: 1
+
