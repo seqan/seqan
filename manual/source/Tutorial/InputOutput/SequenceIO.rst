@@ -46,8 +46,18 @@ We can read sequence files with the :dox:`SeqFileIn` class and write them with t
 These classes support files in FASTA, FASTQ, EMBL or GenBank format.
 
 Note that :dox:`SeqFileOut` will guess the format from the file name.
-A file ending in ``.fa`` and ``.fasta`` mean FASTA, ``.fq`` and ``.fastq`` means FASTQ.
 
++--------------+----------------------+
+| File Format  | File Extension       |
++==============+======================+
+| FASTA        | ``.fa``, ``.fasta``  |
++--------------+----------------------+
+| FASTQ        | ``.fq``, ``.fastq``  |
++--------------+----------------------+
+| EMBL         | ``.embl``            |
++--------------+----------------------+
+| GenBank      | ``.gbk``             |
++--------------+----------------------+
 
 A First Working Example
 -----------------------
@@ -70,7 +80,7 @@ Assignment 1
      Reproduction
 
    Objective
-     Copy the above example of FASTA file in a new file ``example.fa`` in a directory of your choice.
+     Copy the above example of a FASTA file in a new file ``example.fa`` in a directory of your choice.
 
      Copy the program above into a new application ``basic_seq_io_example``, adjust the path ``"example.fa"`` to the just created FASTA file, compile the program, and run it.
 
@@ -101,6 +111,9 @@ Assignment 2
    Objective
      Improve the above program to handle errors.
 
+   Hint
+     You can use the generic class :dox:`Exception` to catch both low-level and high-level I/O errors.
+
    Solution
      .. container:: foldable
 
@@ -123,7 +136,7 @@ The class :dox:`SeqFileIn` provides the functions :dox:`SeqFileIn#readRecord` an
     Reading records in batches is more efficient than reading single records.
 
 
-Note that the function :dox:`SeqFileIn#readRecords` use :dox:`StringSet` instead of :dox:`String`.
+Note that the function :dox:`SeqFileIn#readRecords` uses :dox:`StringSet` instead of :dox:`String`.
 By default, :dox:`SeqFileIn#readRecords` reads **all** remaining records.
 Optionally, one can specify a batch of records to be read.
 
