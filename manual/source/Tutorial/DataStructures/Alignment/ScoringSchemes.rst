@@ -5,7 +5,7 @@
 .. _tutorial-datastructures-alignment-scoringschemes:
 
 Scoring Schemes
-========================
+===============
 
 Learning Objective
   This tutorial introduces you to the scoring systems that can be used in SeqAn to quantify the sequence similarity.
@@ -15,7 +15,7 @@ Difficulty
   Basic
 
 Duration
-  0:45h
+  45 min
 
 Prerequisites
   :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-datastructures-sequences-alphabets`, :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-sequences-string-sets`, :ref:`tutorial-datastructures-sequences-iterators`, :ref:`tutorial-datastructures-alignment-alignment-representation`
@@ -136,7 +136,7 @@ This gap model is chosen as standard when only a gap value is provided in the sc
 Affine Gap Model
 ^^^^^^^^^^^^^^^^
 
-It has been proven that the first amino acid or nucleotide inserted/deleted (identified as gap open) found during the alignment operations is more significant, from a biological point of view, than the subsequent ones (called gap extension), making the so called Affine Gap model a viable solution for the alignment of biomolecules.
+It has been proven that the first amino acid or nucleotide inserted/deleted (identified as gap open) found during the alignment operations is more significant, from a biological point of view, than the subsequent ones (called gap extension), making the so called Affine Gap model a viable solution for the alignment of biomolecules :cite:`cartwright2006logarithmic`.
 Affine gap model that attribute different costs to the gap open (d) and the gap extension (e) events, is able to assign an higher penalty to the gap presence with respect to its relative length (g).
 
 .. image:: affine.png
@@ -148,7 +148,8 @@ The Affine Gap model implemented in the DP alignment algorithms is however quite
 Dynamic Gap Model
 ^^^^^^^^^^^^^^^^^
 
-An optimised version of the Affine Gap model called Dynamic Gap Selector (DGS) designed by Urgese et al. :cite:`Urgese2014`. This new gap model can be used to reduce the computational time and the memory requirement while keeping the alignment scores close to those computed with the Affine Gap model.
+In SeqAn is provided an optimised version of the Affine Gap model called Dynamic Gap Selector (DGS) designed by Urgese et al. :cite:`Urgese2014`. This new gap model can be used to reduce the computational time and the memory requirement while keeping the alignment scores close to those computed with the Affine Gap model.
+The usage of Dynamic Gap model in the Global alignment computation of long strings can give results slightly different from those computed using Affine Gap model since the alignment matrix became bigger and different alignment paths can be chosen during the alignment procedure. Score variation are rare when Dynamic Gap model is used in the Local alignments.
 
 Example Affine vs Dynamic
 ^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -7,7 +7,7 @@ using namespace seqan;
 int main()
 {
     typedef String<Dna> TSequence;                 // sequence type
-    typedef Align<TSequence, ArrayGaps> TAlign;      // align type
+    typedef Align<TSequence, ArrayGaps> TAlign;    // align type
 //![main]
 
 //![init]

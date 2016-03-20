@@ -76,15 +76,13 @@ Assignment 1
    Objective
 
      Compute two global alignments between the DNA sequences ``"AAATGACGGATTG"``.
-     ``"AGTCGGATCTACTG"`` using the Gotoh algorithm (Affine Gap model) with the following scoring parameters: ``match = 4``, ``mismatch = -2``, ``gapOpen = -4`` and ``gapExtend = -2``.
+     ``"AGTCGGATCTACTG"`` using the Gotoh algorithm :cite:`gotoh1982improved`, implementing the Affine Gap model, with the following scoring parameters: ``match = 4``, ``mismatch = -2``, ``gapOpen = -4`` and ``gapExtend = -2``.
      Store the alignments in two Align objects and print them together with the scores.
 
    Hints
      .. container:: foldable
 
-        The Gotoh algorithm uses the Affine Gap function. In SeqAn you can switch between Linear, Affine and Dynamic gap functions using the scoring scheme by setting one of the three tags ``LinearGaps()``, ``AffineGaps()`` or ``DynamicGaps()`` and by setting the ``gapOpen`` and ``gapExtend`` parameters.
-        If the two gap value are equal the Linear Gap model will be selected as default while the Affine Gap model is chosen as standard when the gap costs are different. If the Dynamic Gap model :cite:`Urgese2014` is required the relative tag must be supplied.  
-        Note, the order of the scoring parameters is important.
+        The Gotoh algorithm uses the Affine Gap function. In SeqAn you can switch between Linear, Affine and Dynamic gap functions by customizing your scoring scheme with one of the three tags ``LinearGaps()``, ``AffineGaps()`` or ``DynamicGaps()`` and relative penalty values ``gapOpen`` and ``gapExtend``. When a single gap value is provided the Linear Gap model is selected as default while the Affine Gap model is chosen as standard when two different gap costs are set. If the Dynamic Gap model :cite:`Urgese2014` is required the relative tag must be supplied.  
         Have a look on the :ref:`tutorial-datastructures-alignment-scoringschemes` section if you are not sure about the correct ordering.
 
    Solution
