@@ -959,6 +959,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
                 appendName(contigNamesCache(context(vcfFileOut)), fragmentStore1.contigNameStore[i]);
             writeRecord(vcfFileOut, vcfRecord);
         }
+        ClassTest::_deleteTempFile(ClassTest::_stripFileName(toCString(contigTempFileNamesVcf[i])));
         remove(toCString(contigTempFileNamesVcf[i]));  // Delete temp. files
 
         // BED
@@ -975,6 +976,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
             readRecord(bedRecord, bedFileIn);
             writeRecord(bedFileOut, bedRecord);
         }
+        ClassTest::_deleteTempFile(ClassTest::_stripFileName(toCString(contigTempFileNamesBed[i])));
         remove(toCString(contigTempFileNamesBed[i]));
     }
 
