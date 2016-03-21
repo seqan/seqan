@@ -71,6 +71,19 @@ for(var i=0; i < window.searchData.length; ++i) {
     srcfileList.push(srcfile.replace("|",DELIMITER).replace(".h","").split("/"));
 }
 
+function hideMT() {
+   document.getElementById("module_tree").style.display = "none";
+   document.getElementById("module_tree_toggle").style.display = "block";
+}
+
+
+function showMT() {
+    $("#search").find("input[type=text],input[type=search]").val("");
+    $("#search").find("input[type=text],input[type=search]").trigger("change");
+    document.getElementById("module_tree").style.display = "block";
+    document.getElementById("module_tree_toggle").style.display = "none";
+}
+
 // sorting
 srcfileList.sort(compare);
 
@@ -82,6 +95,17 @@ for(var i=0; i < srcfileList.length; ++i) {
 updateTags(treeData);
 
 // add HTML 
+var mt_toggle_div = document.createElement("div");
+mt_toggle_div.setAttribute("id", "module_tree_toggle");
+mt_toggle_div.setAttribute("style", "text-align:center;display:none");
+var hidelink = document.createElement('a');
+hidelink.setAttribute("href","javascript:showMT()");
+hidelink.appendChild(document.createTextNode("← back to Module list"));
+mt_toggle_div.appendChild(hidelink);
+
+document.body.insertBefore(mt_toggle_div, document.getElementById("Results"));
+//document.body.insertBefore(hidelink, document.getElementById("Results"));
+
 var mt_div = document.createElement("div");
 mt_div.setAttribute("id", "module_tree");
 document.body.insertBefore(mt_div, document.getElementById("Results"));
@@ -103,8 +127,9 @@ $('#module_tree').on('nodeSelected', function(event, data) {
     if(pNodes.hasOwnProperty("href")) {
        query = pNodes.href + "/" + query;
     }
+    hideMT();
+
     //console.log(query);
-    //
     $("#search").find("input[type=text],input[type=search]").val("module:"+query);
     $("#search").find("input[type=text],input[type=search]").trigger("change");
 });
