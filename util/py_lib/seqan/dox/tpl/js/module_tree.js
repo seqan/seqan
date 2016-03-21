@@ -102,9 +102,7 @@ var hidelink = document.createElement('a');
 hidelink.setAttribute("href","javascript:showMT()");
 hidelink.appendChild(document.createTextNode("← back to Module list"));
 mt_toggle_div.appendChild(hidelink);
-
 document.body.insertBefore(mt_toggle_div, document.getElementById("Results"));
-//document.body.insertBefore(hidelink, document.getElementById("Results"));
 
 var mt_div = document.createElement("div");
 mt_div.setAttribute("id", "module_tree");
@@ -129,7 +127,6 @@ $('#module_tree').on('nodeSelected', function(event, data) {
     }
     hideMT();
 
-    //console.log(query);
     $("#search").find("input[type=text],input[type=search]").val("module:"+query);
     $("#search").find("input[type=text],input[type=search]").trigger("change");
 });
