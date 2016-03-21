@@ -29,13 +29,42 @@
                 var hash = decodeURIComponent($.urlHash(window.parent.location)); // from hash (start with #)
 
                 if(p != null) {
-                    p = p.split('/')[0];
-                    if(window.lookup.hasOwnProperty(p)) { 
+                    // TODO : the exceptional cases should be regarded as typos. 
+                    var p1 = p.split('/')[0];
+                    var p2 = p.split("::")[0];
+                    var hasProperty = false;
+
+                    if(window.lookup.hasOwnProperty(p1)) {
+                        p = p1;
+                        hasProperty = true;
+
+                        // TODO : exceptional case #1 
+                        // eg. FragmentStore#compactAlignedReads ==> p : FragmentStore, hash : #FragmentStore#compactAlignedReads
+                        for(var i = 0; i < window.searchData.length; ++i) {
+                            var entry = window.searchData[i];
+                            if(entry.title == p1) { // eg. FragmentStore
+                                for(var j = 0; j < entry.subentries.length; ++j) {
+                                    if(entry.subentries[j].id == p1 + hash) { 
+                                        hash = "#" + p1 + hash
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // TODO : exceptional case #2 
+                    // eg. FragmentStore::alignedReadStore ==> p : FragmentStore, hash : #FragmentStore::alignedReadStore
+                    else if(window.lookup.hasOwnProperty(p2)) {
+                        hash = "#" + p;
+                        p = p2;
+                        hasProperty = true;
+                    }
+                
+                    if(hasProperty == true) { 
                         var name = window.lookup[p];
 
                         // find the entitiy (eg. class, global_function, ..)
                         var entity = null;
-                        for(key in window.langEntities){
+                        for(key in window.langEntities) {
                             if(name.indexOf(key) == 0) {
                                 entity = key;
                                 break;
