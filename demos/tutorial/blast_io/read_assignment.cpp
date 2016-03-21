@@ -8,7 +8,10 @@ using namespace seqan;
 int main(int argc, char **argv)
 {
     if (argc != 2)
-        std::cerr << "USAGE: FILE_IN\n";
+    {
+      std::cout << "USAGE: FILE_IN\n";
+      return 0;
+    }
 
     typedef Gaps<String<AminoAcid>, ArrayGaps> TGaps;
     typedef BlastMatch<TGaps, TGaps> TBlastMatch;
@@ -77,7 +80,7 @@ int main(int argc, char **argv)
 #else
 int main()
 {
-    std::cerr << "Demo not run, because of a bug in Microsoft Visual Studio 2015.\n";
+    std::cout << "Demo not run, because of a bug in Microsoft Visual Studio 2015.\n";
     return 0;
 }
 #endif
