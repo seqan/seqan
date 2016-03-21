@@ -225,7 +225,7 @@ Assignment 3
 
    Hint
      * use :dox:`VcfHeaderRecord` to create a header record that can be appended to the :dox:`VcfHeader`
-     * use :dox:`appendValue` to append information to the :dox:`VcfIOContext` or the :dox:`VcfHeader`
+     * use ``appendValue()`` to append information to the :dox:`VcfIOContext` or the :dox:`VcfHeader`
      * use the direct member access operator ``.`` if you want to access the information of a :dox:`VcfRecord`
 
    Solution
