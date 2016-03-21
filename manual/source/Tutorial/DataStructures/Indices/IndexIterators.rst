@@ -22,7 +22,7 @@ Prerequisites
 Virtual String Tree Iterator
 ----------------------------
 
-SeqAn provides a common interface, called the Virtual String Tree Iterator (:dox:`VSTreeIterator VSTree Iterator`), which lets you traverse the :dox:`IndexEsa`, :dox:`IndexWotd` and :dox:`IndexDfi` as a suffix tree (:ref:`tutorial-datastructures-indices` definition), the :dox:`IndexQGram` as a suffix trie, and the :dox:`FMIndex` as a prefix trie.
+SeqAn provides a common interface, called the Virtual String Tree Iterator (:dox:`VSTreeIterator VSTree Iterator`), which lets you traverse the :dox:`IndexSa`, :dox:`IndexEsa`, :dox:`IndexWotd` and :dox:`IndexDfi` as a suffix tree (:ref:`tutorial-datastructures-indices` definition), the :dox:`IndexQGram` as a suffix trie, and the :dox:`FMIndex` as a prefix trie.
 In the first part of this tutorial we will concentrate on the :dox:`TopDownIterator TopDown Iterator` which is one of the two index iterator specializations (besides the :dox:`BottomUpIterator BottomUp Iterator`).
 The second part will then deal with the DFS.
 
@@ -40,7 +40,7 @@ We therefore want to use :dox:`TopDownIterator#goDown` which has an overload to 
 
 .. important::
 
-   The following examples show how to iterate :dox:`IndexEsa`, :dox:`IndexWotd` or :dox:`IndexDfi`, i.e. :dox:`Index` specializations representing suffix trees.
+   The following examples show how to iterate :dox:`IndexSa`, :dox:`IndexEsa`, :dox:`IndexWotd` or :dox:`IndexDfi`, i.e. :dox:`Index` specializations representing suffix trees.
    The result of the iteration will look different on :dox:`Index` specializations representing tries, e.g. :dox:`FMIndex` or :dox:`IndexQGram`.
    Indeed, the topology of an :dox:`Index` changes depending on the chosen tree or trie specialization.
    Note that any suffix tree edge can be labeled by more than one character, whereas any trie edge is always labeled by exactly one character.
