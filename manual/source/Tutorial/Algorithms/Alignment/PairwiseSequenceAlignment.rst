@@ -17,52 +17,17 @@ Duration
   1h
 
 Prerequisites
-  :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-datastructures-sequences-iterators`, :ref:`tutorial-datastructures-sequences-alphabets`, :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-alignment`
+  :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-datastructures-sequences-iterators`, :ref:`tutorial-datastructures-sequences-alphabets`, :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-alignment-scoringschemes`, :ref:`tutorial-datastructures-graphs`
 
 Alignments are one of the most basic and important ways to measure similarity between two or more sequences.
 In general, a pairwise sequence alignment is an optimization problem which determines the best transcript of how one sequence was derived from the other.
 In order to give an optimal solution to this problem, all possible alignments between two sequences are computed using a **Dynamic Programming** approach.
-Scoring schemes allow the comparison of the alignments such that the one with the best score can be picked.
+:dox:`Score Scoring schemes` allow the comparison of the alignments such that the one with the best score can be picked.
 Despite of the common strategy to compute an alignment, there are different variations of the standard DP algorithm laid out for special purposes.
 
-We will first introduce you to the scoring schemes followed by the global alignments.
+We will first introduce you to the global alignments.
 Subsequent, you will learn how to compute local alignments.
 Finally, we will demonstrate how you can reduce the search space using a band.
-
-Scoring Schemes
----------------
-
-Scoring schemes define the score for aligning two characters of a given alphabet and the score for gaps within alignments.
-Given an alignment between two sequences and a scoring scheme, the score of the alignment can be computed as the sum of the scores for aligned character pairs plus the sum of the scores for all gaps.
-
-An example for a scoring scheme is the Levenshtein distance, for which each mismatch between two aligned characters costs 1 and each character that is aligned with a gap costs 1.
-Translated into scores instead of costs, misalignments get a score of -1 and gaps a score of -1 per character, while matches costs nothing.
-This scoring scheme is the default for :dox:`SimpleScore`.
-
-SeqAn offers two kinds of scoring scheme:
-
-:dox:`SimpleScore Simple Score`
-  This scoring scheme differentiates between "match" (the two aligned characters are the same), "mismatch" (the two aligned characters are different), and gaps.
-
-  The score for a gap of length :math:`k` is :math:`gapOpen + (k - 1) \cdot gapExtend`.
-  If :math:`gapOpen` equals :math:`gapExtend` the score scheme uses linear gap costs, otherwise it uses affine gap costs.
-
-  The functions :dox:`SimpleScore#scoreMatch` and :dox:`SimpleScore#scoreMismatch` access values for match and mismatch.
-  The function :dox:`SimpleScore#scoreGap`, or :dox:`SimpleScore#scoreGapExtend` and :dox:`SimpleScore#scoreGapOpen` access values for gaps.
-
-Scoring Matrices
-^^^^^^^^^^^^^^^^
-
-  These scoring schemes store a score value for each pair of characters.
-  This value can be accessed using :dox:`Score#score`.
-  Examples for this kind of scoring scheme are :dox:`Pam120` and :dox:`Blosum62`.
-  The class :dox:`MatrixScore` can be used to store arbitrary scoring matrices.
-  Also see the :ref:`how-to-recipes-work-with-custom-score-matrices` on custom scoring matrices.
-
-.. tip::
-
-   The order of the different costs in the scoring scheme is ``match``, ``mismatch``, ``gapExtend`` and ``gapOpen``.
-   If you want to use linear gap costs you could also omit the last parameter ``gapOpen`` and the scoring scheme would automatically choose the linear gap cost function.
 
 Global Alignments
 -----------------
@@ -76,7 +41,7 @@ We tell the program that it has to use the ``seqan`` namespace and write the ``m
 
 A good programming practice is to define all types that shall be used by the function at the beginning of the function body.
 In our case, we define a ``TSequence`` type for our input sequences and an :dox:`Align` object (``TAlign``) type to store the alignment.
-For more information on the Align datastructure, please read the tutorial :ref:`tutorial-datastructures-alignment`.
+For more information on the Align datastructure, please read the tutorial :ref:`tutorial-datastructures-alignment-alignment-representation`.
 
 .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_standard.cpp
    :fragment: main
@@ -110,17 +75,15 @@ Assignment 1
 
    Objective
 
-     Compute a global alignment between the DNA sequences ``"AAATGACGGATTG"``.
-     ``"AGTCGGATCTACTG"`` using the Gotoh algorithm with the following scoring parameters: ``match = 4``, ``mismatch = -2``, ``gapOpen = -4`` and ``gapExtend = -2``.
-     Store the alignment in an Align object and and print it together with the score.
+     Compute two global alignments between the DNA sequences ``"AAATGACGGATTG"``.
+     ``"AGTCGGATCTACTG"`` using the Gotoh algorithm :cite:`gotoh1982improved`, implementing the Affine Gap model, with the following scoring parameters: ``match = 4``, ``mismatch = -2``, ``gapOpen = -4`` and ``gapExtend = -2``.
+     Store the alignments in two Align objects and print them together with the scores.
 
    Hints
      .. container:: foldable
 
-        The Gotoh algorithm uses an affine gap function.
-        In SeqAn you can switch between linear and affine gap functions using the scoring scheme by setting different parameters for ``gapOpen`` and ``gapExtend``.
-        Note, the order of the scoring parameters is important.
-        Have a look on the scoring scheme section above if you are not sure about the correct ordering.
+        The Gotoh algorithm uses the Affine Gap function. In SeqAn you can switch between Linear, Affine and Dynamic gap functions by customizing your scoring scheme with one of the three tags ``LinearGaps()``, ``AffineGaps()`` or ``DynamicGaps()`` and relative penalty values ``gapOpen`` and ``gapExtend``. When a single gap value is provided the Linear Gap model is selected as default while the Affine Gap model is chosen as standard when two different gap costs are set. If the Dynamic Gap model :cite:`Urgese2014` is required the relative tag must be supplied.  
+        Have a look on the :ref:`tutorial-datastructures-alignment-scoringschemes` section if you are not sure about the correct ordering.
 
    Solution
      .. container:: foldable
@@ -160,7 +123,7 @@ Assignment 1
 
 
 Overlap Alignments
-^^^^^^^^^^^^^^^^^^
+------------------
 
 .. image:: alignment_AlignConfig.png
    :width: 300px
@@ -194,7 +157,7 @@ Then we simply pass ``strings`` as an argument to the constructor of the Alignme
 
 Now we are ready to compute the alignment.
 This time we change two things when calling the ``globalAlignment`` function.
-First, we use an :dox:`AlignmentGraph` to store the computed alignment and second we use the :dox:`AlignConfig` object to compute the overlap alignment.
+First, we use an :dox:`AlignmentGraph` to store the computed alignment and second we use the :dox:`AlignConfig` object to compute the overlap alignment. The gap model tag can be provided as last argument.
 
 .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_overlap.cpp
    :fragment: alignment
@@ -204,7 +167,7 @@ The output is as follows.
 .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_overlap.cpp.stdout
 
 Assignment 2
-""""""""""""
+^^^^^^^^^^^^
 
 .. container:: assignment
 
@@ -255,7 +218,7 @@ Assignment 2
         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment2.cpp.stdout
 
 Specialized Alignments
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 SeqAn offers specialized algorithms that can be selected using a tag.
 Note that often these specializations are restricted in some manner.
@@ -298,7 +261,7 @@ The output is as follows.
 .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_specialised.cpp.stdout
 
 Assignment 3
-""""""""""""
+^^^^^^^^^^^^
 
 .. container:: assignment
 
@@ -319,7 +282,7 @@ Assignment 3
      .. container:: foldable
 
         As usual, first the necessary includes and typedefs.
-        Our sequence type is ``String<Dna>``.
+        Our sequence type is ``String<Rna>``.
         ``TAlign`` and ``TRow`` are defined as in the previous example program.
         The type ``Iterator<TRow>::Type`` will be used to iterate over the rows of the alignment.
 
@@ -363,7 +326,7 @@ Let's start with initializing the :dox:`Align` object to contain the two sequenc
 .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local.cpp
    :fragment: init1
 
-Now the best alignment given the scoring parameters is computed by the function :dox:`localAlignment`.
+Now the best alignment given the scoring parameters is computed using the Dynamic Gap model by the function :dox:`localAlignment`.
 The returned score value is printed directly, and the alignment itself in the next line.
 The functions :dox:`Gaps#clippedBeginPosition` and :dox:`Gaps#clippedEndPosition` can be used to retrieve the begin and end position of the matching subsequences within the original sequences.
 
@@ -400,7 +363,7 @@ Assignment 4
      Write a program which computes the 3 best local alignments of the two :dox:`AminoAcid` sequences "``PNCFDAKQRTASRPL``" and "``CFDKQKNNRTATRDTA``" using the following scoring parameters: ``match = 3``, ``mismatch = -2``, ``gap open = -5``, ``gap extension = -1``.
 
    Hint
-     Use an extra variable to enumerate the <tt>k</tt> best alignments.
+     Use an extra variable to enumerate the k best alignments.
 
    Solution
      .. container:: foldable
@@ -438,7 +401,7 @@ To define a band we have to pass two additional parameters to the alignment func
 The first one specifies the position where the lower diagonal of the band crosses the vertical axis.
 The second one specifies the position where the upper diagonal of the band crosses the horizontal axis.
 You can imagine the matrix as the fourth quadrant of the Cartesian coordinate system.
-Then the main diagonal of an alignment matrix is described by the function ``f(x) = -x`` and all diagonals that crosses the vertical axis below this point are specified with negative values and all diagonals that crosses the horizontal axis right of it are specified with positive values (see image).
+Then the main diagonal of an alignment matrix is described by the function ``f(x) = -x``, all diagonals that crosses the vertical axis below this point are specified with negative values while all diagonals that crosses the horizontal axis are specified with positive values (see image).
 A given band is valid as long as the relation ``lower diagonal <= upper diagonal`` holds.
 In case of equality, the alignment is equivalent to the hamming distance problem, where only substitutions are considered.
 

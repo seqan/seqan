@@ -6,13 +6,14 @@ using namespace seqan;
 
 int main()
 {
-    typedef String<Dna> TSequence;                 // sequence type
-    typedef Align<TSequence, ArrayGaps> TAlign;    // align type
+    typedef String<AminoAcid> TSequence;             // sequence type
+    typedef Align<TSequence, ArrayGaps> TAlign;      // align type
 //![main]
 
 //![init]
-    TSequence seq1 = "AAATGACGGATTG";
-    TSequence seq2 = "AGTCGGATCTACTG";
+    TSequence seq1 = "TELKDD";
+    TSequence seq2 = "LKTEL";
+    int gap = -1;
 
     TAlign align;
     resize(rows(align), 2);
@@ -21,7 +22,7 @@ int main()
 //![init]
 
 //![alignment]
-    int score = globalAlignment(align, Score<int, Simple>(4, -2, -2, -4), AffineGaps());
+    int score = globalAlignment(align, seqan::Blosum62(gap, gap));
     std::cout << "Score: " << score << std::endl;
     std::cout << align << std::endl;
 
