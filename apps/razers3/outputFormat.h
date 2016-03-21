@@ -32,7 +32,7 @@
 
 #include "parallel_store.h"
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 //////////////////////////////////////////////////////////////////////////////
 // Quality-based score
@@ -653,7 +653,7 @@ int dumpMatches(
     char _sep_ = '\t';
     char intBuf[40];
     StringSet<CharString> lines;
-    //String<__int64> fileOffsets;
+    //String<int64_t> fileOffsets;
     TAlignedReadStoreSize fromIdx = 0;
 
     switch (options.outputFormat)
@@ -693,7 +693,7 @@ int dumpMatches(
                 case 1:
                     append(line, readName);
                     appendValue(line, '#');
-                    sprintf(intBuf, "%09u", ar.readId + 1);
+                    snprintf(intBuf, 40, "%09u", ar.readId + 1);
                     append(line, intBuf);
                     //file.fill('0');
                     //file << readName << '#' << std::setw(pzeros) << ar.readId + 1;
@@ -728,7 +728,7 @@ int dumpMatches(
                     TContigFile & contigFile = store.contigFileStore[contig.fileId];
                     append(line, contigFile.fileName);
                     appendValue(line, '#');
-                    sprintf(intBuf, "%09u", ar.contigId - contigFile.firstContigId + 1);
+                    snprintf(intBuf, 40, "%09u", ar.contigId - contigFile.firstContigId + 1);
                     append(line, intBuf);
                     //strstrm.fill('0');
                     //strstrm << contigFile.fileName << '#' << std::setw(gzeros) << (ar.contigId - contigFile.firstContigId + 1);
@@ -745,7 +745,7 @@ int dumpMatches(
                 else
                     appendNumber(line, ar.beginPos);
                 appendValue(line, _sep_);
-                sprintf(intBuf, "%.5g", percId);
+                snprintf(intBuf, 40, "%.5g", percId);
                 append(line, intBuf);
                 //if (ar.beginPos < ar.endPos)
                 //	file << _sep_ << (ar.beginPos + options.positionFormat) << _sep_ << ar.endPos << _sep_ << std::setprecision(5) << percId;

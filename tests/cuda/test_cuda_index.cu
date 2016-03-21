@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -51,15 +51,15 @@ struct Pair<T1, T2, Tag<void> > {};
 
 template <typename TValue>
 struct RankDictionaryWordSize_<TValue, TwoLevels<void> > :
-    BitsPerValue<__uint32> {};
+    BitsPerValue<uint32_t> {};
 
 template <typename TValue>
 struct RankDictionaryWordSize_<TValue, TwoLevels<Device<void> > > :
-    BitsPerValue<__uint32> {};
+    BitsPerValue<uint32_t> {};
 
 template <typename TValue, typename TSpec>
 struct RankDictionaryWordSize_<TValue, TwoLevels<View<TSpec> > > :
-    BitsPerValue<__uint32> {};
+    BitsPerValue<uint32_t> {};
 
 }
 

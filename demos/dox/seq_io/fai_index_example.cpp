@@ -6,7 +6,7 @@ using namespace seqan;
 
 int main()
 {
-    CharString path = getAbsolutePath("/demos/dox/seq_io/example.fa");
+    CharString path = getAbsolutePath("demos/dox/seq_io/example.fa");
 
     FaiIndex faiIndex;
 

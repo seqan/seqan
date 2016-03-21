@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -176,7 +176,7 @@ dumpTimeline(char const * path, bool appendPid)
         int pid = getpid();
 #endif // #ifdef PLATFORM_WINDOWS
         char buffer[30];
-        sprintf(buffer, "%d", pid);
+        snprintf(buffer, 30, "%d", pid);
         strcat(pathBuffer, ".");
         strcat(pathBuffer, buffer);
     }

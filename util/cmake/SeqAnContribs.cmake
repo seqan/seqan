@@ -1,7 +1,7 @@
 # ============================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ============================================================================
-# Copyright (c) 2006-2012, Knut Reinert, FU Berlin
+# Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@
 
 if (WIN32)
   # For all contrib versions...
-  foreach (_SEQAN_CONTRIB_VERSION D20111031 D20130710 D20131121)
+  foreach (_SEQAN_CONTRIB_VERSION D20160115)
     set (_SEQAN_CONTRIB_DIR "seqan-contrib-${_SEQAN_CONTRIB_VERSION}")
 
 	  # Determine architecture for the precompiled contribs.

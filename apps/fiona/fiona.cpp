@@ -270,7 +270,7 @@ struct FionaOptions
     // Verbosity:  0 - quiet, 1 - normal, 2 - verbose, 3 - very verbose.
     int verbosity;
 
-	__int64 genomeLength;
+	int64_t genomeLength;
 	double strictness;
 	unsigned acceptedMismatches;
 	int maxIndelLength;
@@ -642,7 +642,7 @@ namespace seqan
             std::cerr << "Purge repetitive k-mers ........... " << std::flush;
 
         // extract bucket numbers
-        __uint64 suffixCount = 0;
+        uint64_t suffixCount = 0;
         String<unsigned> bktIdx;
 
 //        #pragma omp parallel for reduction(+:suffixCount)
@@ -661,7 +661,7 @@ namespace seqan
         // contain overall at most 2% of all suffixes
         if (options.verbosity >= 1)
             std::cerr << " suffixes: " << suffixCount << std::endl;
-        __uint64 threshN1 = (__uint64)(suffixCount * options.kmerAbundanceCutoff);
+        uint64_t threshN1 = (uint64_t)(suffixCount * options.kmerAbundanceCutoff);
         Dna5String kmer;
         suffixCount = 0;
         for (unsigned i = 0; i < length(bktIdx); ++i)
@@ -696,7 +696,7 @@ namespace seqan
             std::cerr << "Purge repetitive k-mers ........... " << std::flush;
 
         // extract bucket numbers
-        __uint64 suffixCount = 0;
+        uint64_t suffixCount = 0;
         String<unsigned> bktIdx;
 
 //        #pragma omp parallel for reduction(+:suffixCount)
@@ -2797,7 +2797,7 @@ void DestructibleExpectedBases(
 
         for (unsigned readLen = 1; readLen < length(readLenHist); ++readLen)
         {
-            __uint64 numReads = readLenHist[readLen];
+            uint64_t numReads = readLenHist[readLen];
             if (numReads == 0)
                 continue;
 
@@ -4163,12 +4163,12 @@ unsigned correctReads(
     if (options.verbosity >= 2)
         std::cerr << "Add reverse complements: " << std::flush;
 
-	Dna5String tmp;
-	//if (options.genomeLength != 1)
-	//(Hugues) we need to get the reads and their reverse complements 
-	//when estimating the error rates (but the letter substitutions should be reversed).
+    Dna5String tmp;
+    //if (options.genomeLength != 1)
+    //(Hugues) we need to get the reads and their reverse complements 
+    //when estimating the error rates (but the letter substitutions should be reversed).
     SEQAN_PROTIMESTART(timeRevComp);
-	for (unsigned i = 0; i < readCount; ++i)
+    for (unsigned i = 0; i < readCount; ++i)
     {
         tmp = store.readSeqStore[i];
         reverseComplement(tmp, Serial());
@@ -4178,48 +4178,48 @@ unsigned correctReads(
     if (options.verbosity >= 2)
         std::cerr << SEQAN_PROTIMEDIFF(timeRevComp) << " seconds." << std::endl;
 
-	/*table with the theoretical values*/
+    /*table with the theoretical values*/
 
-    String<__uint64> readLengthHist;
+    String<uint64_t> readLengthHist;
     computeReadLengthHistogram(readLengthHist, store.readSeqStore);
     unsigned maxReadLength = length(readLengthHist) - 1;
     if (options.verbosity >= 2)
         std::cerr << "Maximal read length:" << maxReadLength << std::endl;
 
-	double experrreads = expectedValueTheoretical(options.expectedTheoretical, readLengthHist, options.genomeLength, options.errorrate);
+    double experrreads = expectedValueTheoretical(options.expectedTheoretical, readLengthHist, options.genomeLength, options.errorrate);
 
-	if (IsSameType<TAlgorithm, FionaExpected_>::VALUE)
-	{
-		String<double> sd;
-		standardDeviation(sd, store.readSeqStore, options.genomeLength);
+    if (IsSameType<TAlgorithm, FionaExpected_>::VALUE)
+    {
+        String<double> sd;
+        standardDeviation(sd, store.readSeqStore, options.genomeLength);
 
-		/*The strictness value allows to estimate the confidence intervall*/
-		for (unsigned i = 0; i < length(options.expectedTheoretical); ++i)
-		{
-			double expectedTemporary = options.expectedTheoretical[i] - options.strictness * sd[i];
-			
-			/*If the connfidential intervall take value less than 1 ??? not sure for that*/
-			/*if(expectedTemporary < 1){
-				options.expectedTheoretical[i] = 1.1;
-			}else{*/
-				options.expectedTheoretical[i] = expectedTemporary;
-			//}
-		}
-	}
-	
-	if (IsSameType<TAlgorithm, FionaCount_>::VALUE)
-		for (unsigned i = 0; i < length(options.expectedTheoretical); ++i)
-			options.expectedTheoretical[i] = options.strictness;
-	
-	// std::cerr << " run the multiple-Correction-per-Round Fiona method " <<std::endl;
-	// the linked list for read corrections
-	String<CorrectionIndelPos> correctionList;
-	// the first correction occurrence (if any) for a read
-	// if no occurrence exists set the enrty to maxINt Value
-	String<unsigned int> firstCorrectionForRead; // should this really be always created anew for different cycles, could be created outside correctReads?
-	// we assume we work with three reads here
-	resize(firstCorrectionForRead, readCount, maxValue<unsigned>(), Exact());
-   
+        /*The strictness value allows to estimate the confidence intervall*/
+        for (unsigned i = 0; i < length(options.expectedTheoretical); ++i)
+        {
+            double expectedTemporary = options.expectedTheoretical[i] - options.strictness * sd[i];
+
+            /*If the connfidential intervall take value less than 1 ??? not sure for that*/
+            /*if(expectedTemporary < 1){
+                options.expectedTheoretical[i] = 1.1;
+            }else{*/
+                options.expectedTheoretical[i] = expectedTemporary;
+            //}
+        }
+    }
+
+    if (IsSameType<TAlgorithm, FionaCount_>::VALUE)
+        for (unsigned i = 0; i < length(options.expectedTheoretical); ++i)
+            options.expectedTheoretical[i] = options.strictness;
+
+    // std::cerr << " run the multiple-Correction-per-Round Fiona method " <<std::endl;
+    // the linked list for read corrections
+    String<CorrectionIndelPos> correctionList;
+    // the first correction occurrence (if any) for a read
+    // if no occurrence exists set the enrty to maxINt Value
+    String<unsigned int> firstCorrectionForRead; // should this really be always created anew for different cycles, could be created outside correctReads?
+    // we assume we work with three reads here
+    resize(firstCorrectionForRead, readCount, maxValue<unsigned>(), Exact());
+
     // Determine the number of allowed corrections per round per read, depending on the read length and the
     // configuration in options.relativeErrorsToCorrect.  We set a hard lower limit of 2.
     unsigned const MIN_ALLOWED_CORRECTIONS = 2;
@@ -4364,10 +4364,10 @@ unsigned correctReads(
     if (options.verbosity >= 2)
         std::cerr << std::endl;
 
-	if (options.errorrate != 0 && options.wovsum != 0)
+    if (options.errorrate != 0 && options.wovsum != 0)
     {
         SEQAN_PROTIMESTART(timeCutoffComp);
-		ComputeCutoffOverlapSum(options.overlapSumCutoffs, options.fromLevel, readLengthHist, options.genomeLength, options);
+        ComputeCutoffOverlapSum(options.overlapSumCutoffs, options.fromLevel, readLengthHist, options.genomeLength, options);
         /*int hack[100] = {  876, 876, 873, 870, 866, 863, 859, 856, 852, 848, 843, 839, 834, 830, 842, 855, 867, 878, 890, 901, 911, 922, 932, 941, 950, 959, 968, 976, 984, 991, 998, 1005, 1011, 1017, 1023, 1028, 1033, 1038, 1042, 1046, 1049, 1053, 1055, 1058, 1060, 1062, 1063, 1064, 1065, 1065, 1065, 1065, 1064, 1063, 1062, 1060, 1058, 1055, 1053, 1049, 1046, 1042, 1038, 1033, 1028, 1023, 1017, 1011, 1005, 998, 991, 984, 976, 968, 959, 950, 941, 932, 922, 911, 901, 890, 878, 867, 855, 842, 830, 834, 839, 843, 848, 852, 856, 859, 863, 866, 870, 873, 876, 8763 };
         for (unsigned i=0;i<100;++i)
             options.overlapSumCutoffs(100, i) = hack[i];
@@ -4592,7 +4592,7 @@ unsigned correctReads(
         // Compute mean read length as an estimate.  This will be the read length for Illumina data and for now
         // a good enough value for 454 data.
         // TODO: Think of something more clever in the future.
-		__uint64 readLengthSum = 0;
+		uint64_t readLengthSum = 0;
 		for (unsigned i = 0; i < readCount; ++i)
 		    readLengthSum += length(store.readSeqStore[i]);
 		unsigned readLength = readLengthSum / readCount;
@@ -4602,7 +4602,7 @@ unsigned correctReads(
 		/* a = readLength - path_label + 1 */
 		/*here plus 1 also because the level is between fromLevel and toLevel*/
 		double a = readLength - options.fromLevel + 2;
-		options.genomeLength = static_cast<__int64>(readCount * a / expectedValueGivenLevel);
+		options.genomeLength = static_cast<int64_t>(readCount * a / expectedValueGivenLevel);
         if (options.verbosity >= 1)
         {
             std::cerr << "Expected median coverage :" << expectedValueGivenLevel << " for k-mer of length:" << options.fromLevel << std::endl; 
@@ -4637,11 +4637,11 @@ unsigned correctReads(
             appendValue(prefixes, infix(store.readSeqStore[i], 0, length(store.readSeqStore[i]) - cutLength));
         else
             appendValue(prefixes, infix(store.readSeqStore[i], 0, 1));  // to short suffixes don't need to appear in the q-gram index
-	TFionaQgramIndex qgramIndex(prefixes);
+    TFionaQgramIndex qgramIndex(prefixes);
     cargo(qgramIndex).optionsPtr = &options;
 
-	String<__uint64> packages;
-	SEQAN_PROTIMESTART(constructQgramExt);
+	String<uint64_t> packages;
+    SEQAN_PROTIMESTART(constructQgramExt);
     if (options.verbosity >= 1)
         std::cerr << "Construct external q-gram index ... " << std::flush;
 
@@ -4664,21 +4664,21 @@ unsigned correctReads(
 
     // 2. create super packages for multiple q-gram index creations
     unsigned dirLen = length(origDir);
-    __uint64 numSuffixes = 0;
+    uint64_t numSuffixes = 0;
     SEQAN_OMP_PRAGMA(parallel for reduction(+ : numSuffixes))
     for (int i = 0; i < (int)dirLen; ++i)
         if (origDir[i] != (TQGramDirValue)-1)
             numSuffixes += origDir[i];
 
-	String<__uint64> superPackages;
-    __uint64 sumSuffixes = 0;
-    __uint64 nextThresh = 0;
+	String<uint64_t> superPackages;
+    uint64_t sumSuffixes = 0;
+    uint64_t nextThresh = 0;
     for (unsigned i = 0; i < dirLen; ++i)
     {
         if (nextThresh <= sumSuffixes)
         {
             appendValue(superPackages, i);
-            nextThresh = (length(superPackages) * numSuffixes) / (__uint64)options.numSuperPackages;
+            nextThresh = (length(superPackages) * numSuffixes) / (uint64_t)options.numSuperPackages;
         }
         if (origDir[i] != (TQGramDirValue)-1)
             sumSuffixes += origDir[i];
@@ -4758,7 +4758,7 @@ unsigned correctReads(
 //	std::cerr << "Purge repetitive k-mers ........... " << std::flush;
 //    for (i = 0; i < dirLen - 1; ++i)
 //    {
-//        __uint64 bucketLen = indexDir(qgramIndex)[i + 1] - indexDir(qgramIndex)[i];
+//        uint64_t bucketLen = indexDir(qgramIndex)[i + 1] - indexDir(qgramIndex)[i];
 //        indexDir(qgramIndex)[i] = dstIt - beginSA;
 //        // copy bucket unless it is marked for removal
 //        if (!maskedBuckets[i])
@@ -4778,9 +4778,9 @@ unsigned correctReads(
     packages = indexDir(qgramIndex);
 #else
     unsigned dirLen = length(indexDir(qgramIndex));
-    __uint64 numPacks = options.packagesPerThread * omp_get_max_threads();
-    __uint64 numSuffixes = back(indexDir(qgramIndex));
-    __uint64 nextThresh = numSuffixes / numPacks;
+    uint64_t numPacks = options.packagesPerThread * omp_get_max_threads();
+    uint64_t numSuffixes = back(indexDir(qgramIndex));
+    uint64_t nextThresh = numSuffixes / numPacks;
 	appendValue(packages, 0);
     for (unsigned i = 1; i < dirLen; ++i)
     {
@@ -4795,20 +4795,20 @@ unsigned correctReads(
         std::cerr << length(packages) << " packages)" << std::endl;
 
     // don't need the q-gram dir any more, from now we use packages (multiple q-gram buckets)
-	clear(indexDir(qgramIndex));
+    clear(indexDir(qgramIndex));
     shrinkToFit(indexDir(qgramIndex));
-	unsigned finished = 0;
-	bool inTerm = isatty(fileno(stdout));
+    unsigned finished = 0;
+    bool inTerm = isatty(fileno(stdout));
 
     if (options.verbosity >= 1)
         std::cerr << "Parallel suffix tree traversal .... ";
-	if (inTerm && options.verbosity >= 2)
+    if (inTerm && options.verbosity >= 2)
         std::cerr << "  0%";
     if (options.verbosity >= 2)
         std::cerr << std::flush;
 
-	//investigatedNodes=0;
-	//putCorrections=0;
+    //investigatedNodes=0;
+    //putCorrections=0;
 
     String<FionaResources> resourcesPerPackage;
     resize(resourcesPerPackage, length(packages) - 1, Exact());
@@ -4828,7 +4828,7 @@ unsigned correctReads(
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic,1))
 	for (int i = 1; i < (int)length(packages); ++i)
 	{
-        typedef __uint64                            TFileSize;
+        typedef uint64_t                            TFileSize;
 
         SEQAN_OMP_PRAGMA(atomic)
         ++finished;
@@ -4979,9 +4979,9 @@ unsigned correctReads(
         std::cerr << "Total corrected reads number is "<< readCorrections << std::endl
                   << "Number of total corrections is "<< totalCorrections << std::endl;
 
-	// remove reverse complements
-	resize(store.readSeqStore, readCount);
-	return totalCorrections;
+    // remove reverse complements
+    resize(store.readSeqStore, readCount);
+    return totalCorrections;
 }
 
 // Write output and return 0 on success, a different value on errors.  Update numCorrected to reflect the number of
@@ -5423,26 +5423,26 @@ int main(int argc, const char* argv[])
         std::cerr << "FIONA - Read Correction\n"
                   << "=======================\n\n";
 
-	bool autoCycles = (options.cycles == 0 || options.cycles == 1000);
+    bool autoCycles = (options.cycles == 0 || options.cycles == 1000);
     bool bestExpFit = (options.cycles == 0);
-	if (autoCycles) options.cycles = MAX_NUM_ROUND;
+    if (autoCycles) options.cycles = MAX_NUM_ROUND;
     if (options.verbosity >= 1)
         printOptions(std::cerr, options);
 
-	SEQAN_PROTIMESTART(correction);
+    SEQAN_PROTIMESTART(correction);
 
-	// Load original set of reads without read names.  When collecting correction information for debugging, we will
-	// collect the correction string in the readNameStore and allocate space for this below.  When writing out, we will
-	// stream through the input file again and get the read ids from there.
-	TFionaFragStore store;
+    // Load original set of reads without read names.  When collecting correction information for debugging, we will
+    // collect the correction string in the readNameStore and allocate space for this below.  When writing out, we will
+    // stream through the input file again and get the read ids from there.
+    TFionaFragStore store;
     if (options.verbosity >= 1)
         std::cerr << "Loading reads from " << options.inputFilename << "\n";
-	if (!loadReadsNoNames(store, options.inputFilename, options))
-	{
-		std::cerr << "Failed to open reads file " << options.inputFilename << "\n"
-		          << "Exiting ...\n";
-		return 1;
-	}
+    if (!loadReadsNoNames(store, options.inputFilename, options))
+    {
+        std::cerr << "Failed to open reads file " << options.inputFilename << "\n"
+                    << "Exiting ...\n";
+        return 1;
+    }
     else
     {
         if (options.verbosity >= 1)
@@ -5503,13 +5503,13 @@ int main(int argc, const char* argv[])
 #endif
     if (options.verbosity >= 1)
         std::cerr << "Building external index with Qgram length " << QGRAM_LENGTH << std::endl;
-	options.autolevel = (options.fromLevel <= 1);
-	
-	//if (autoCycles) options.cycles = 20;
-	String<double> logCorrections;
-	String<double> roundsDone;
-	double lastAdjRSquare = 0;
-	unsigned nfamprev = 0;
+    options.autolevel = (options.fromLevel <= 1);
+
+    //if (autoCycles) options.cycles = 20;
+    String<double> logCorrections;
+    String<double> roundsDone;
+    double lastAdjRSquare = 0;
+    unsigned nfamprev = 0;
     if (options.verbosity >= 1)
     {
         std::cerr << "number iters: " << options.cycles << std::endl;
@@ -5613,9 +5613,9 @@ int main(int argc, const char* argv[])
     int res = writeOutput(numCorrected, store, options);
     if (res != 0)
         return res;
-    
-	if (options.verbosity >= 1 && options.cycles > 1)
-		std::cerr << "Total number reads corrected for " << options.cycle-1 << " cycles is " << numCorrected << std::endl;
+
+    if (options.verbosity >= 1 && options.cycles > 1)
+        std::cerr << "Total number reads corrected for " << options.cycle-1 << " cycles is " << numCorrected << std::endl;
 
 //	struct rusage usage;
 //	getrusage(RUSAGE_SELF, &usage);

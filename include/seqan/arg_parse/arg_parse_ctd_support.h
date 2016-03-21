@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -339,6 +339,11 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
          ++optionMapIterator)
     {
         ArgParseOption const & opt = *optionMapIterator;
+
+        // exclude hidden
+        if (isHidden(opt))
+            continue;
+
         std::string optionIdentifier = _getPrefixedOptionName(opt);
         std::string refName = toolname + "." + _getOptionName(opt);
 
@@ -379,6 +384,10 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         if (!_includeInCTD(opt))
             continue;
 
+        // exclude hidden
+        if (isHidden(opt))
+            continue;
+
         // prefer short name for options
         std::string optionName = _getOptionName(opt);
 
@@ -404,8 +413,14 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         _getRestrictions(restrictions, opt);
 
         // set up supported formats
+        // add *.* to supported_formats if none is specified AND the type of the argument is a
+        // prefix type. This is important for KNIME nodes as they require similar file types
+        // to connect one node to the other. In this particular case any file is aproprate
+        // since we are talking about prefixes.
         std::vector<std::string> supported_formats;
         _getSupportedFormats(supported_formats, opt);
+        if (empty(supported_formats) && (type=="input-prefix" || type=="output-prefix" ))
+            supported_formats.push_back("*.*");
 
         ctdfile << _indent(currentIndent)
                 << "<ITEM" << (isListArgument(opt) ? "LIST" : "") << " name=\"" << xmlEscape(optionName) << "\"";
@@ -425,7 +440,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
             ctdfile << "supported_formats=\"" << xmlEscape(_join(supported_formats, ",")) << "\" ";
 
         ctdfile << "required=\"" << (isRequired(opt) ? "true" : "false") << "\" ";
-        ctdfile << "advanced=\"" << (isHidden(opt) ? "true" : "false") << "\" ";
+        ctdfile << "advanced=\"" << (isAdvanced(opt) ? "true" : "false") << "\" ";
 
         // Write out tags attribute.
         if (!opt.tags.empty())
@@ -486,8 +501,15 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         _getRestrictions(restrictions, arg);
 
         // set up supported formats
+        // add *.* to supported_formats if none is specified AND the type of the argument is a
+        // prefix type. This is important for KNIME nodes as they require similar file types
+        // to connect one node to the other. In this particular case any file is aproprate
+        // since we are talking about prefixes.
         std::vector<std::string> supported_formats;
         _getSupportedFormats(supported_formats, arg);
+        if (empty(supported_formats) && (type=="input-prefix" || type=="output-prefix" ))
+            supported_formats.push_back("*.*");
+
 
         ctdfile << _indent(currentIndent)
                 << "<ITEM" << (isListArgument(arg) ? "LIST" : "") << " name=\"" << xmlEscape(optionName) << "\" "

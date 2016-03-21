@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -318,7 +318,6 @@ label(Fragment<TSize, TSpec> const& f,
       TStringSet& str,
       TVal const seqId)
 {
-    SEQAN_CHECKPOINT
     typedef typename Id<Fragment<TSize, TSpec> >::Type TId;
     return ((TId) seqId == (f.seqId1)) ? infix(getValueById(str, (TId) seqId), f.begin1, f.begin1 + f.len) : infix(getValueById(str, (TId) seqId), f.begin2, f.begin2 + f.len);
 }
@@ -341,12 +340,18 @@ label(Fragment<TSize, TSpec> const& f,
 
 template<typename TSize, typename TSpec, typename TVal>
 inline typename Id<Fragment<TSize, TSpec> >::Type &
-sequenceId(Fragment<TSize, TSpec> const& f,
+sequenceId(Fragment<TSize, TSpec> & f,
            TVal const seqId)
 {
-    SEQAN_CHECKPOINT
-    typedef typename Id<Fragment<TSize, TSpec> >::Type TId;
-    return ((TId) seqId == 0) ? const_cast<TId &>(f.seqId1) : const_cast<TId &>(f.seqId2);
+    return (seqId == (TVal)0) ? f.seqId1 : f.seqId2;
+}
+
+template<typename TSize, typename TSpec, typename TVal>
+inline typename Id<Fragment<TSize, TSpec> >::Type const &
+sequenceId(Fragment<TSize, TSpec> const & f,
+           TVal const seqId)
+{
+    return (seqId == (TVal)0) ? f.seqId1 : f.seqId2;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -368,7 +373,6 @@ inline TSize&
 fragmentBegin(Fragment<TSize, TSpec> const& f,
               TVal const seqId)
 {
-    SEQAN_CHECKPOINT
     typedef typename Id<Fragment<TSize, TSpec> >::Type TId;
     return ((TId) seqId == f.seqId1) ? const_cast<TSize&>(f.begin1) : const_cast<TSize&>(f.begin2);
 }
@@ -380,7 +384,6 @@ inline TSize&
 fragmentLength(Fragment<TSize, TSpec> const& f,
                TVal const)
 {
-    SEQAN_CHECKPOINT
     return const_cast<TSize&>(f.len);
 }
 
@@ -401,7 +404,6 @@ template<typename TSize, typename TSpec>
 inline TSize&
 fragmentLength(Fragment<TSize, TSpec> const& f)
 {
-    SEQAN_CHECKPOINT
     return const_cast<TSize&>(f.len);
 }
 
@@ -415,7 +417,6 @@ getProjectedPosition(Fragment<TSize, ExactFragment<TSpec> > const& f,
                      TId2& seqId2,
                      TPosition2& pos2)
 {
-    SEQAN_CHECKPOINT
     typedef typename Id<Fragment<TSize, TSpec> >::Type TId;
 
     if ((TId) seqId == f.seqId1) {
@@ -475,7 +476,6 @@ getProjectedPosition(Fragment<TSize, ExactReversableFragment<TSpec> > const& f,
                      TId2& seqId2,
                      TPosition2& pos2)
 {
-    SEQAN_CHECKPOINT
     typedef typename Id<Fragment<TSize, TSpec> >::Type TId;
 
     if ((TId) seqId == f.seqId1) {
@@ -507,7 +507,6 @@ getProjectedPosition(Fragment<TSize, ExactReversableFragment<TSpec> > const& f,
                      TId2& seqId2,
                      TPosition2& pos2)
 {
-    SEQAN_CHECKPOINT
     (void) seqId;  // When compiled without assertions.
     SEQAN_ASSERT((seg_num == 0 && seqId==f.seqId1) || (seg_num == 1 && seqId==f.seqId2));
 
@@ -545,7 +544,6 @@ template<typename TSize, typename TSpec>
 inline bool
 isReversed(Fragment<TSize, ExactReversableFragment<TSpec> > const& f)
 {
-    SEQAN_CHECKPOINT
     return f.reversed;
 }
 

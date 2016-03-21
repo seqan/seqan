@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1689,19 +1689,123 @@ SEQAN_DEFINE_TEST(test_myers_find_begin) {
 
 template <typename TPatternSpec>
 void test_pattern_copycon() {
-    SEQAN_CHECKPOINT;
     typedef Pattern<CharString, TPatternSpec> TPattern;
     TPattern p1("Some needle");
     TPattern p2(p1);
+    TPattern const p3(p2);
+    TPattern const p4(p3);
 }
 
 template <typename TPatternSpec>
 void test_pattern_assign() {
-    SEQAN_CHECKPOINT;
     typedef Pattern<CharString, TPatternSpec> TPattern;
     TPattern p1("Some needle");
     TPattern p2;
+    TPattern const p3(p1);
+    TPattern p4;
     p2 = p1;
+    p4 = p3;
+}
+
+template <typename TPatternSpec>
+void test_pattern_movecon() {
+    typedef Pattern<CharString, TPatternSpec> TPattern;
+    TPattern p1("Some needle");
+    TPattern p2(std::move(p1));
+    TPattern const p3(std::move(p2));
+    TPattern const p4(std::move(p3));
+}
+
+template <typename TPatternSpec>
+void test_pattern_moveassign() {
+    typedef Pattern<CharString, TPatternSpec> TPattern;
+    TPattern p1("Some needle");
+    TPattern p2;
+    TPattern const p3(p1);
+    TPattern p4;
+    p2 = std::move(p1);
+    p4 = std::move(p3);
+}
+
+template <typename TPatternSpec>
+void test_pattern_set_host()
+{
+    typedef Pattern<DnaString, TPatternSpec> TPattern;
+
+    {  // Set to lvalue reference.
+        TPattern p;
+        DnaString ndl = "AGTGGATAGAGAT";
+        setHost(p, ndl);
+
+        SEQAN_ASSERT(&host(p) == &ndl);
+    }
+
+    {  // Set to lvalue with different alphabet causing the source to be changed.
+        DnaString ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, ndl);
+        SEQAN_ASSERT_EQ(&host(p), &ndl);
+
+        CharString ndl2 = "AT CARLS";
+        setHost(p, ndl2);
+        SEQAN_ASSERT(&host(p) == &ndl);
+        SEQAN_ASSERT_EQ(ndl, "ATACAAAA");
+        SEQAN_ASSERT_EQ(ndl2, "AT CARLS");
+    }
+
+    {  // Set to const lvalue reference with different alphabet causing the source to be changed.
+        DnaString const ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, ndl);
+        SEQAN_ASSERT(&host(p) != &ndl);
+        SEQAN_ASSERT_EQ(host(p), ndl);
+
+        CharString ndl2 = "AT CARLS";
+        setHost(p, ndl2);
+        SEQAN_ASSERT(&host(p) != &ndl);
+        SEQAN_ASSERT_EQ(ndl, "AGTGGATAGAGAT");
+        SEQAN_ASSERT_EQ(ndl2, "AT CARLS");
+        SEQAN_ASSERT_EQ(host(p), "ATACAAAA");
+    }
+
+    {  // Set with rvalue reference.
+        DnaString ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, std::move(ndl));
+        SEQAN_ASSERT(&host(p) != &ndl);
+        SEQAN_ASSERT_EQ(host(p), "AGTGGATAGAGAT");
+    }
+
+    {  // Set to rvalue reference after setting holder dependent.
+        DnaString ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, ndl);
+        SEQAN_ASSERT(&host(p) == &ndl);
+
+        CharString ndl2 = "AT CARLS";
+        setHost(p, std::move(ndl2));
+        SEQAN_ASSERT(&host(p) == &ndl);
+        SEQAN_ASSERT_EQ(ndl, "ATACAAAA");
+        SEQAN_ASSERT_EQ(host(p), "ATACAAAA");
+    }
+
+    {  // Set to rvalue reference before setting holder dependent.
+        DnaString ndl = "AGTGGATAGAGAT";
+        TPattern p;
+        setHost(p, std::move(ndl));
+        SEQAN_ASSERT(&host(p) != &ndl);
+        SEQAN_ASSERT_EQ(host(p), "AGTGGATAGAGAT");
+
+        CharString ndl2 = "AT CARLS";
+        setHost(p, ndl2);
+        SEQAN_ASSERT_EQ(host(p), "ATACAAAA");
+    }
+
+    {  // Set to rvalue with different alphabet.
+        TPattern p;
+        setHost(p, "AT CARLS");
+        SEQAN_ASSERT_EQ(host(p), "ATACAAAA");
+    }
 }
 
 SEQAN_DEFINE_TEST(test_pattern_copycon) {
@@ -1730,6 +1834,47 @@ SEQAN_DEFINE_TEST(test_pattern_assign) {
     test_pattern_assign<Bfam<Trie> >();
 }
 
+SEQAN_DEFINE_TEST(test_pattern_movecon) {
+    test_pattern_movecon<Simple>();
+    test_pattern_movecon<Horspool>();
+    test_pattern_movecon<ShiftAnd>();
+    test_pattern_movecon<ShiftOr>();
+    test_pattern_copycon<HammingSimple>();
+    test_pattern_copycon<WildShiftAnd>();
+    test_pattern_copycon<Bfam<Oracle> >();
+    test_pattern_copycon<Bfam<Trie> >();
+}
+
+SEQAN_DEFINE_TEST(test_pattern_moveassign) {
+    test_pattern_moveassign<Simple>();
+    test_pattern_moveassign<Horspool>();
+    test_pattern_moveassign<ShiftAnd>();
+    test_pattern_moveassign<ShiftOr>();
+    test_pattern_assign<HammingSimple>();
+    test_pattern_assign<WildShiftAnd>();
+    test_pattern_assign<Bfam<Oracle> >();
+    test_pattern_assign<Bfam<Trie> >();
+}
+
+// TODO(rrahn): Should be a typed test for all pattern classes.
+SEQAN_DEFINE_TEST(test_pattern_set_host) {
+    test_pattern_set_host<Simple>();
+    test_pattern_set_host<Horspool>();
+    test_pattern_set_host<ShiftAnd>();
+    test_pattern_set_host<ShiftOr>();
+    test_pattern_set_host<HammingSimple>();
+    test_pattern_set_host<WildShiftAnd>();
+    test_pattern_set_host<Bfam<Oracle> >();
+    test_pattern_set_host<Bfam<Trie> >();
+    test_pattern_set_host<Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, void> >();
+    test_pattern_set_host<Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, Myers<FindPrefix> > >();
+    test_pattern_set_host<Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, void> >();
+    test_pattern_set_host<Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, Myers<FindPrefix> > >();
+    test_pattern_set_host<Myers<FindInfix, void> >();
+    test_pattern_set_host<Myers<FindInfix, Myers<FindPrefix> > >();
+    test_pattern_set_host<Myers<FindPrefix, void> >();
+    test_pattern_set_host<Myers<FindPrefix, Myers<FindPrefix> > >();
+}
 
 SEQAN_BEGIN_TESTSUITE(test_find) {
 //     SEQAN_CALL_TEST(test_myers_trigger_bug);
@@ -1784,21 +1929,8 @@ SEQAN_BEGIN_TESTSUITE(test_find) {
     SEQAN_CALL_TEST(test_pattern_copycon);
     SEQAN_CALL_TEST(test_pattern_assign);
 
-    // Verify checkpoints in all files in this module.
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_hamming_simple.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_myers_ukkonen.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_wild_shiftand.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_horspool.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_base.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_shiftand.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_shiftor.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_bndm.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_bom.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_ahocorasick.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_multiple_shiftand.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_set_horspool.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_wumanber.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_abndm.h");
-    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_pex.h");
+    SEQAN_CALL_TEST(test_pattern_movecon);
+    SEQAN_CALL_TEST(test_pattern_moveassign);
+    SEQAN_CALL_TEST(test_pattern_set_host);
 }
 SEQAN_END_TESTSUITE

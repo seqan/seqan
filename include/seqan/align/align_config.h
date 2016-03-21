@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -109,7 +109,6 @@ _initFirstColumn(AlignConfig<TTop, false, TRight, TBottom, TSpec> const,
                  TElement& element,
                  TCost const cost)
 {
-    SEQAN_CHECKPOINT
     element = cost;
 }
 
@@ -121,7 +120,6 @@ _initFirstColumn(AlignConfig<TTop, true, TRight, TBottom, TSpec> const,
                  TElement& element,
                  TCost const)
 {
-    SEQAN_CHECKPOINT
     element = 0;
 }
 
@@ -133,7 +131,6 @@ _initFirstRow(AlignConfig<false, TLeft, TRight, TBottom, TSpec> const,
               TElement& element,
               TCost const cost)
 {
-    SEQAN_CHECKPOINT
     element = cost;
 }
 
@@ -145,7 +142,6 @@ _initFirstRow(AlignConfig<true, TLeft, TRight, TBottom, TSpec> const,
               TElement& element,
               TCost const)
 {
-    SEQAN_CHECKPOINT
     element = 0;
 }
 
@@ -162,7 +158,6 @@ _lastRow(AlignConfig<TTop, TLeft, TRight, false, TSpec> const,
          TValue2 const,
          TIndex2 const)
 {
-    SEQAN_CHECKPOINT
     // Nop
 }
 
@@ -176,7 +171,6 @@ _lastRow(AlignConfig<TTop, TLeft, TRight, true, TSpec> const,
          TValue2 const val,
          TIndex2 const index)
 {
-    SEQAN_CHECKPOINT
     if (val > maxValue[0]) {
         maxValue[0] = val;
         maxIndex[0] = index;
@@ -192,7 +186,6 @@ _lastColumn(AlignConfig<TTop, TLeft, false, TBottom, TSpec> const,
             TIndex1&,
             TColumn const& column)
 {
-    SEQAN_CHECKPOINT
     maxValue[1] = column[length(column) - 1];
 }
 
@@ -205,7 +198,6 @@ _lastColumn(AlignConfig<TTop, TLeft, true, TBottom, TSpec> const,
             TIndex1& maxIndex,
             TColumn const& column)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Size<TColumn>::Type TSize;
     typedef typename Iterator<TColumn, Standard>::Type TColIter;
     TSize limit = length(column) - 1;
@@ -230,7 +222,6 @@ _maxOfAlignment(AlignConfig<TTop, TLeft, false, false, TSpec> const,
                 TSize const,
                 TSize const)
 {
-    SEQAN_CHECKPOINT
     return maxValue[1];
 }
 
@@ -244,7 +235,6 @@ _maxOfAlignment(AlignConfig<TTop, TLeft, true, false, TSpec> const,
                 TSize const len1,
                 TSize const)
 {
-    SEQAN_CHECKPOINT
     maxIndex[0] = len1;
     return maxValue[1];
 }
@@ -259,7 +249,6 @@ _maxOfAlignment(AlignConfig<TTop, TLeft, false, true, TSpec> const,
                 TSize const,
                 TSize const len2)
 {
-    SEQAN_CHECKPOINT
     maxIndex[1] = len2;
     return maxValue[0];
 }
@@ -274,7 +263,6 @@ _maxOfAlignment(AlignConfig<TTop, TLeft, true, true, TSpec> const,
                 TSize const len1,
                 TSize const len2)
 {
-    SEQAN_CHECKPOINT
     // Find the maximum
     if (maxValue[1] > maxValue[0]) maxIndex[0] = len1;
     else maxIndex[1] = len2;
@@ -292,7 +280,6 @@ _lastColumn(AlignConfig<TTop, TLeft, false, TBottom, TSpec> const,
             TIndex2 const row,
             TIndex2 const col)
 {
-    SEQAN_CHECKPOINT
     maxValue[1] = val; maxIndex[2] = row; maxIndex[3] = col;
 }
 
@@ -307,7 +294,6 @@ _lastColumn(AlignConfig<TTop, TLeft, true, TBottom, TSpec> const,
             TIndex2 const row,
             TIndex2 const col)
 {
-    SEQAN_CHECKPOINT
     if (val > maxValue[1]) {maxValue[1] = val; maxIndex[2] = row; maxIndex[3] = col; }
 }
 
@@ -322,7 +308,6 @@ _lastRow(AlignConfig<TTop, TLeft, TRight, false, TSpec> const,
          TIndex2 const row,
          TIndex2 const col)
 {
-    SEQAN_CHECKPOINT
     maxValue[0] = val; maxIndex[0] = row; maxIndex[1] = col;
 }
 
@@ -337,7 +322,6 @@ _lastRow(AlignConfig<TTop, TLeft, TRight, true, TSpec> const,
          TIndex2 const row,
          TIndex2 const col)
 {
-    SEQAN_CHECKPOINT
     if (val > maxValue[0]) {maxValue[0] = val; maxIndex[0] = row; maxIndex[1] = col; }
 }
 

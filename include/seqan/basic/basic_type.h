@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -313,15 +313,33 @@ struct Parameter_
 };
 
 template <typename T>
+struct Parameter_<T const>
+{
+    typedef T const & Type;
+};
+
+template <typename T>
 struct Parameter_<T *>
 {
     typedef T * Type;
+};
+
+template <typename T>
+struct Parameter_<T const *>
+{
+    typedef T const * Type;
 };
 
 template <typename T, size_t I>
 struct Parameter_<T [I]>
 {
     typedef T * Type;
+};
+
+template <typename T, size_t I>
+struct Parameter_<T const [I]>
+{
+    typedef T const * Type;
 };
 
 // TODO(holtgrew): Really required?
@@ -346,44 +364,6 @@ SEQAN_HOST_DEVICE inline _toParameter(T const & _object)
 {
     return _object;
 }
-
-//____________________________________________________________________________
-
-// TODO(holtgrew): Really required?
-
-template <typename T>
-struct ConstParameter_
-{
-    typedef T const & Type;
-};
-
-template <typename T>
-struct ConstParameter_<T const>:
-    public ConstParameter_<T> {};
-
-template <typename T>
-struct ConstParameter_<T *>
-{
-    typedef T const * Type;
-};
-
-template <typename T>
-struct ConstParameter_<T const *>
-{
-    typedef T const * Type;
-};
-
-template <typename T, size_t I>
-struct ConstParameter_<T [I]>
-{
-    typedef T const * Type;
-};
-
-template <typename T, size_t I>
-struct ConstParameter_<T const [I]>
-{
-    typedef T const * Type;
-};
 
 //____________________________________________________________________________
 
@@ -456,14 +436,12 @@ template <typename T>
 SEQAN_HOST_DEVICE inline typename NonConstPointer_<T>::Type
 _toPointer(T & _object)
 {
-SEQAN_CHECKPOINT
     return & _object;
 }
 template <typename T>
 SEQAN_HOST_DEVICE inline typename NonConstPointer_<T const>::Type
 _toPointer(T const & _object)
 {
-SEQAN_CHECKPOINT
     return & _object;
 }
 
@@ -471,7 +449,6 @@ template <typename T>
 SEQAN_HOST_DEVICE inline typename NonConstPointer_<T *>::Type
 _toPointer(T * _object)
 {
-SEQAN_CHECKPOINT
     return _object;
 }
 

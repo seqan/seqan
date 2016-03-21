@@ -1,7 +1,7 @@
 // ==========================================================================
 //                               FX Tools
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ struct FxBamCoverageOptions
     seqan::CharString outPath;
 
     // Window size to use for computation.
-    __int32 windowSize;
+    int32_t windowSize;
 
     FxBamCoverageOptions() : verbosity(1), windowSize(10*1000)
     {}

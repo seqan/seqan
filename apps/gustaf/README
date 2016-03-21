@@ -33,6 +33,11 @@ breakpoint locations at single-nucleotide level. We use a DAG shortest path
 algorithm to determine the best combination of refined alignments, and report
 those breakpoints supported by multiple reads.
 
+Usage note: STELLAR is not a read mapper, and hence, GUSTAF is not designed to
+replace any read mapper pipeline with SV detection on top. We recommend doing
+read mapping with your favourit read mapper and then first run STELLAR and then
+GUSTAF on the remaining unmappable reads.
+
 ---------------------------------------------------------------------------
 2. Installation
 ---------------------------------------------------------------------------
@@ -58,6 +63,11 @@ description is dumped.
 3. Usage
 ---------------------------------------------------------------------------
 
+STELLAR is not a read mapper, and hence, GUSTAF is not designed to
+replace any read mapper pipeline with SV detection on top. We recommend doing
+read mapping with your favourit read mapper and then first run STELLAR and then
+GUSTAF on the remaining unmappable reads.
+
 To get a short usage description of Gustaf, you can execute gustaf -h or
 gustaf --help.
 
@@ -70,7 +80,7 @@ Usage: gustaf <GENOME FASTA FILE> <READ FASTA FILE> [Options]
   values for match length, error rate, etc.
   Using the --matchfile (-m) option, Gustaf skips running Stellar and
   directly uses the matches, preferable precalculated using Stellar, from
-  the given GFF file.
+  the given GFF file. We recommend using this option for larger data sets.
   Given two read pair input files, Gustaf is run in paired-end mode.
   Note that option -m is mandatory in this case.
   Remarks: There are different versions paired-end (or mate pair) data can
@@ -204,9 +214,13 @@ Usage: gustaf <GENOME FASTA FILE> <READ FASTA FILE> [Options]
   database sequence(s). By default, both strands are scanned.
 
 ---------------------------------------------------------------------------
-3.3 Output Options
+3.3 Input and Output Options
 ---------------------------------------------------------------------------
 
+  [ -nth ],  [ --numThreads ]
+
+  Specify number of threads for parallelization of I/O.
+  
   [ -gff ],  [ --gffOut ]
 
   Option to set name of GFF output file.

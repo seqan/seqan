@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,6 @@ _cutIsValid(String<std::set<TValue> > & all_nodes,
         TSize min_len,
         Tag<TagInexactRefinement_> const)
 {
-SEQAN_CHECKPOINT
 
     //cut already exists
     if(iter != all_nodes[seq_i_pos].end())
@@ -83,7 +82,6 @@ _getClosestRefinedNeighbor(TAliGraph & ali_g,
                            TId /*seq*/,
                            TPosition pos)
 {
-SEQAN_CHECKPOINT
     if(pos-fragmentBegin(ali_g,vd) < fragmentBegin(ali_g,vd)+fragmentLength(ali_g,vd)-pos)
         return fragmentBegin(ali_g,vd);
     else
@@ -102,7 +100,6 @@ _getCutEndPos(TAliGraph & ali_g,
               TPosition end_pos,
               TPosition & cut_end_pos)
 {
-SEQAN_CHECKPOINT
     end_knot = findVertex(ali_g,seq,end_pos-1);//end_pos1 is the first position of the next node
     if(end_pos == fragmentBegin(ali_g,end_knot) + fragmentBegin(ali_g,end_knot))
         cut_end_pos = end_pos;
@@ -130,7 +127,6 @@ _getCutBeginPos(TAliGraph & ali_g,
               TPosition act_pos,
               TPosition & cut_act_pos)
 {
-SEQAN_CHECKPOINT
 
     act_knot = findVertex(ali_g,seq,act_pos);
     //if completely refined
@@ -163,7 +159,6 @@ _makeRefinedGraphEdges(TAlignmentString & alis,
                       TAliGraph & ali_g,
                       Tag<TagInexactRefinement_> const)
 {
-SEQAN_CHECKPOINT
     typedef typename Value<TAlignmentString>::Type TAlign;
     typedef typename Position<TAlign>::Type TPosition;
     typedef typename Id<TAlign>::Type TId;
@@ -306,7 +301,6 @@ matchRefinement(TAlignmentString & alis,
                 TOutGraph & ali_graph,
                 unsigned int min_frag_len)
 {
-SEQAN_CHECKPOINT
     bool anno = false;
     if(min_frag_len > 1)
         matchRefinement(alis,seq,score_type,ali_graph,min_frag_len,anno,InexactRefinement());
@@ -323,7 +317,6 @@ matchRefinement(TAlignmentString & alis,
                 TOutGraph & ali_graph,
                 unsigned int min_frag_len)
 {
-SEQAN_CHECKPOINT
 //    Score<int,FakeScore > fake_score;
     typename Cargo<TOutGraph>::Type fake_score = 1;
     bool anno = false;

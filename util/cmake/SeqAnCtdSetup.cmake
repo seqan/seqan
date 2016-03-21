@@ -1,7 +1,7 @@
 # ============================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ============================================================================
-# Copyright (c) 2006-2012, Knut Reinert, FU Berlin
+# Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -45,13 +45,8 @@
 # Dependency Check
 # ============================================================================
 
-# If Java cannot be found, we disable CTD support.
-
-find_package (Java)
-if (NOT Java_JAR_EXECUTABLE)
-  message (STATUS "jar binary not found, disabling CTD support.")
-  return ()
-endif ()
+# Optionally find java for zip support
+find_package (Java QUIET)
 
 # Create the payload binary ZIP file.
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -151,11 +146,35 @@ endif ()
 
 set (_ZIP_NAME "binaries_${SEQAN_PLATFORM}_${SEQAN_SYSTEM_WORDSIZE}.zip")
 set (_ZIP_PATH "${PAYLOAD_PATH}")
-add_custom_command (OUTPUT ${_ZIP_PATH}/${_ZIP_NAME}
-                    COMMAND ${Java_JAR_EXECUTABLE} cfvM ${_ZIP_PATH}/${_ZIP_NAME} -C ${PAYLOAD_TMP_PATH} .
-                    DEPENDS ${PAYLOAD_PATH}
-                            ${TMP_PAYLOAD_FILES}
-                            ${PAYLOAD_TMP_PATH}/binaries.ini)
+
+# ----------------------------------------------------------------------------
+# different ways to zip
+# ----------------------------------------------------------------------------
+
+if (NOT CMAKE_VERSION VERSION_LESS "3.3") # internal since 3.3
+    add_custom_command (OUTPUT ${_ZIP_PATH}/${_ZIP_NAME}
+                        COMMAND  ${CMAKE_COMMAND} -E tar "cfv" ${_ZIP_PATH}/${_ZIP_NAME} --format=zip .
+                        WORKING_DIRECTORY ${PAYLOAD_TMP_PATH}
+                        DEPENDS ${PAYLOAD_PATH}
+                                ${TMP_PAYLOAD_FILES}
+                                ${PAYLOAD_TMP_PATH}/binaries.ini)
+elseif (Java_JAR_EXECUTABLE) # use java
+    add_custom_command (OUTPUT ${_ZIP_PATH}/${_ZIP_NAME}
+                        COMMAND ${Java_JAR_EXECUTABLE} cfvM ${_ZIP_PATH}/${_ZIP_NAME} -C ${PAYLOAD_TMP_PATH} .
+                        DEPENDS ${PAYLOAD_PATH}
+                                ${TMP_PAYLOAD_FILES}
+                                ${PAYLOAD_TMP_PATH}/binaries.ini)
+elseif (NOT CMAKE_SYSTEM_NAME STREQUAL "Windows") # use unix zip
+    add_custom_command (OUTPUT ${_ZIP_PATH}/${_ZIP_NAME}
+                        COMMAND zip -r ${_ZIP_PATH}/${_ZIP_NAME} .
+                        WORKING_DIRECTORY ${PAYLOAD_TMP_PATH}
+                        DEPENDS ${PAYLOAD_PATH}
+                                ${TMP_PAYLOAD_FILES}
+                                ${PAYLOAD_TMP_PATH}/binaries.ini)
+else ()
+    message (STATUS "Either update cmake to >= 3.3 or install java to create CTDs!")
+    return ()
+endif ()
 
 # ============================================================================
 # CTDs and other descriptors contents.
@@ -202,6 +221,8 @@ add_custom_command (OUTPUT ${WORKFLOW_PLUGIN_DIR}/plugin.properties
                                              "-DWORKFLOW_PLUGIN_DIR=${WORKFLOW_PLUGIN_DIR}"
                                              "-DSEQAN_VERSION_STRING=${SEQAN_VERSION_STRING}"
                                              "-DSEQAN_DATE=${SEQAN_DATE}"
+                                             "-DCTD_PLUGIN_PACKAGE=${CTD_PLUGIN_PACKAGE}"
+                                             "-DCTD_PLUGIN_NAME=${CTD_PLUGIN_NAME}"
                                              -P "${CMAKE_SOURCE_DIR}/util/cmake/ctd/configure_profile_properties.cmake"
                     DEPENDS ${WORKFLOW_PLUGIN_DIR}
                             ${CMAKE_SOURCE_DIR}/util/cmake/ctd/plugin.properties.in)

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@
 // CLASSES
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 //____________________________________________________________________________
 // TagAllocateAligned_
@@ -67,7 +67,7 @@ typedef Tag<TagAllocateAligned_> const TagAllocateAligned;           // "include
 //////////////////////////////////////////////////////////////////////////////
 // FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
-
+#if SEQAN_ASYNC_IO
 //____________________________________________________________________________
 // allocate
 
@@ -101,16 +101,6 @@ template <typename TSpec, typename TValue, typename TSize> inline void deallocat
 inline int error(AiocbWrapper const &request);           // "include/seqan/file/file_async.h"(246)
 
 //____________________________________________________________________________
-// fileExists
-
-inline bool fileExists(const char *fileName);           // "include/seqan/file/file_sync.h"(189)
-
-//____________________________________________________________________________
-// fileUnlink
-
-inline bool fileUnlink(const char *fileName);           // "include/seqan/file/file_sync.h"(194)
-
-//____________________________________________________________________________
 // flush
 
 template <typename TSpec> inline bool flush(File<Async<TSpec> > & me);           // "include/seqan/file/file_async.h"(182)
@@ -120,11 +110,6 @@ template <typename TSpec> inline bool flush(File<Async<TSpec> > & me);          
 
 inline void printRequest(AiocbWrapper &request, const char *_hint);           // "include/seqan/file/file_async.h"(125)
 inline void printRequest(AiocbWrapper &request);           // "include/seqan/file/file_async.h"(125)
-
-//____________________________________________________________________________
-// read
-
-template <typename TSpec, typename TValue, typename TSize > inline bool read(File<Sync<TSpec> > & me, TValue *memPtr, TSize const count);           // "include/seqan/file/file_sync.h"(226)
 
 //____________________________________________________________________________
 // release
@@ -147,13 +132,29 @@ inline bool waitFor(AiocbWrapper &request, long timeoutMilliSec, bool &inProgres
 
 template <typename TSize > inline TSize waitForAny(AiocbWrapper const * const contexts[], TSize count);           // "include/seqan/file/file_async.h"(223)
 template <typename TSize > inline TSize waitForAny(AiocbWrapper const * const contexts[], TSize count, long timeoutMilliSec);           // "include/seqan/file/file_async.h"(231)
+#endif
+
+//____________________________________________________________________________
+// read
+
+template <typename TSpec, typename TValue, typename TSize > inline bool read(File<Sync<TSpec> > & me, TValue *memPtr, TSize const count);           // "include/seqan/file/file_sync.h"(226)
 
 //____________________________________________________________________________
 // write
 
 template <typename TSpec, typename TValue, typename TSize > inline bool write(File<Sync<TSpec> > & me, TValue const *memPtr, TSize const count);           // "include/seqan/file/file_sync.h"(231)
 
-} //namespace SEQAN_NAMESPACE_MAIN
+//____________________________________________________________________________
+// fileExists
+
+inline bool fileExists(const char *fileName);           // "include/seqan/file/file_sync.h"(189)
+
+//____________________________________________________________________________
+// fileUnlink
+
+inline bool fileUnlink(const char *fileName);           // "include/seqan/file/file_sync.h"(194)
+
+} //namespace seqan
 
 //////////////////////////////////////////////////////////////////////////////
 

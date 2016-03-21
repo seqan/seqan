@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -127,7 +127,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum30> {
     };
 
     static inline int const * getData() {
-        SEQAN_CHECKPOINT;
         // The matrix data, ordered by letter.
         // Matrix made by matblas from blosum30.iij
         // * column uses minimum score
@@ -223,7 +222,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum45> {
     };
 
     static inline int const * getData() {
-        SEQAN_CHECKPOINT;
         // Matrix made by matblas from blosum45.iij
         // * column uses minimum score
         // BLOSUM Clustered Scoring Matrix in 1/3 Bit Units
@@ -317,7 +315,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum62> {
     };
 
     static inline int const * getData() {
-        SEQAN_CHECKPOINT;
         // Matrix made by matblas from blosum62.iij
         // * column uses minimum score
         // BLOSUM Clustered Scoring Matrix in 1/2 Bit Units
@@ -411,7 +408,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum80> {
     };
 
     static inline int const * getData() {
-        SEQAN_CHECKPOINT;
         // Matrix made by matblas from blosum80_3.iij
         // * column uses minimum score
         // BLOSUM Clustered Scoring Matrix in 1/3 Bit Units
@@ -505,7 +501,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam40> {
     };
 
     static inline int const * getData() {
-        SEQAN_CHECKPOINT;
         //
         // This matrix was produced by "pam" Version 1.0.6 [28-Jul-93]
         //
@@ -602,7 +597,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam120> {
     };
 
     static inline int const * getData() {
-        SEQAN_CHECKPOINT;
         // This matrix was produced by "pam" Version 1.0.6 [28-Jul-93]
         //
         // PAM 120 substitution matrix, scale = ln(2)/2 = 0.346574
@@ -698,7 +692,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam200> {
     };
 
     static inline int const * getData() {
-        SEQAN_CHECKPOINT;
         // This matrix was produced by "pam" Version 1.0.6 [28-Jul-93]
         //
         // PAM 200 substitution matrix, scale = ln(2)/3 = 0.231049
@@ -794,7 +787,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam250> {
     };
 
     static inline int const * getData() {
-        SEQAN_CHECKPOINT;
         // This matrix was produced by "pam" Version 1.0.6 [28-Jul-93]
         //
         // PAM 250 substitution matrix, scale = ln(2)/3 = 0.231049
@@ -890,7 +882,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecVtml200> {
     };
 
     static inline int const * getData() {
-        SEQAN_CHECKPOINT;
         // VTML200
         //
         // This matrix was produced by scripts written by
@@ -949,6 +940,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecVtml200> {
     }
 };
 
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif  // SEQAN_SSCORE_MATRIX_DATA_H_

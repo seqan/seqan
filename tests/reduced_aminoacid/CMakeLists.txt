@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the reduced_aminoacid module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_reduced_aminoacid)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_reduced_aminoacid CXX)
 message (STATUS "Configuring tests/reduced_aminoacid")
 
 # ----------------------------------------------------------------------------
@@ -15,9 +15,9 @@ message (STATUS "Configuring tests/reduced_aminoacid")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
-find_package (SeqAn REQUIRED)
-find_package(CXX11)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (SeqAn REQUIRED)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Build Setup
@@ -37,9 +37,6 @@ target_link_libraries (test_reduced_aminoacid ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
-if (CXX11_FOUND)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
-endif (CXX11_FOUND)
 
 # ----------------------------------------------------------------------------
 # Register with CTest

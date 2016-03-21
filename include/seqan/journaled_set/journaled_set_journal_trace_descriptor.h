@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -199,7 +199,6 @@ template <typename TString>
 inline typename Iterator<JournalTraceBuffer<TString>, Standard >::Type
 begin(JournalTraceBuffer<TString> & me)
 {
-    SEQAN_CHECKPOINT;
 
     return begin(getTrace(me));
 }
@@ -282,7 +281,6 @@ inline typename Reference<JournalTraceBuffer<TJournalString> >::Type
 value(JournalTraceBuffer<TJournalString> & me,
       typename Position<JournalTraceBuffer<TJournalString> >::Type const pos)
 {
-    SEQAN_CHECKPOINT;
     return me.revSortedOperation_[pos];
 }
 
@@ -333,7 +331,6 @@ template <typename TValue, typename THostSpec, typename TJournalSpec, typename T
 inline String <typename Value<JournalTraceBuffer<String< TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >::Type>
 getTraceReverse(JournalTraceBuffer<String< TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > & me)
 {
-    SEQAN_CHECKPOINT;
 
     typedef String< TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournal;
     typedef typename Value<JournalTraceBuffer<TJournal> >::Type  TEntry;
@@ -348,7 +345,6 @@ template <typename TString>
 inline String <typename Value<JournalTraceBuffer<TString> const>::Type> const
 getTraceReverse(JournalTraceBuffer<TString> const & me)
 {
-    SEQAN_CHECKPOINT;
     return getTraceReverse(const_cast<JournalTraceBuffer<TString> &>(me));
 }
 
@@ -360,7 +356,6 @@ template <typename TValue, typename THostSpec, typename TJournalSpec, typename T
 inline String<TValue, TBuffSpec> &
 getInsertionBuffer(JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > & me)
 {
-    SEQAN_CHECKPOINT;
     return me.insertionBuffer_;
 }
 
@@ -369,7 +364,6 @@ inline String<TValue, TBuffSpec> const &
 getInsertionBuffer(JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const & me)
 
 {
-    SEQAN_CHECKPOINT;
     return me.insertionBuffer_;
 }
 

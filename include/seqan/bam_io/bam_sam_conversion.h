@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -122,13 +122,13 @@ void _appendTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString
             size_t len = length(buffer);
 
             // Count number of entries (== number of commas after type character).
-            __uint32 nEntries = 0;
+            uint32_t nEntries = 0;
             for (size_t i = 0; i != len; ++i)
                 if (buffer[i] == ',')
                     ++nEntries;
 
             // Write out array length.
-            appendRawPod(target, (__uint32)nEntries);
+            appendRawPod(target, (uint32_t)nEntries);
 
             // Write out array values.
             size_t startPos = 1;

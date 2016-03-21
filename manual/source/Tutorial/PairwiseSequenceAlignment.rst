@@ -98,13 +98,7 @@ Afterwards, we print the computed score and the corresponding alignment.
 
 The output is as follows:
 
-.. code-block:: console
-
-    Score: -2
-          0     .
-            CD-FG-HC
-            || || ||
-            CDEFGAHC
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_standard.cpp.stdout
 
 Assignment 1
 ^^^^^^^^^^^^
@@ -162,13 +156,7 @@ Assignment 1
         You have computed an alignment using affine gap costs.
         Here the result of the program:
 
-        .. code-block:: console
-
-           Score: 16
-                 0     .    :    .
-                   AAATGACGGAT----TG
-                   |   | |||||    ||
-                   A---GTCGGATCTACTG
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment1.cpp.stdout
 
 
 Overlap Alignments
@@ -213,14 +201,7 @@ First, we use an :dox:`AlignmentGraph` to store the computed alignment and secon
 
 The output is as follows.
 
-.. code-block:: console
-
-   Score: 2
-   Alignment matrix:
-         0     .    :
-           blablubalu
-             ||  ||
-           --ab--ba--
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_overlap.cpp.stdout
 
 Assignment 2
 ^^^^^^^^^^^^
@@ -271,14 +252,7 @@ Assignment 2
 
         Here the result of the program.
 
-        .. code-block:: console
-
-           Score: 3
-           Alignment matrix:
-                 0     .    :
-                   AAATGACGGATTG
-                      ||  |||
-                   ---TG--GGA---
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment2.cpp.stdout
 
 Specialized Alignments
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -321,13 +295,7 @@ The resulting alignment and score are then printed.
 
 The output is as follows.
 
-.. code-block:: console
-
-    Score: 11
-          0     .    :    .
-            GARFIELDTHE---CAT
-            |||||||||||   |||
-            GARFIELDTHEBIGCAT
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_specialised.cpp.stdout
 
 Assignment 3
 ^^^^^^^^^^^^
@@ -375,23 +343,8 @@ Assignment 3
 
         The output of the program is as follows.
 
-        .. code-block:: console
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_global_assignment3.cpp.stdout
 
-           Score: -6
-                 0     .    :    .
-                   AAGU--GA-CUUAUUG
-                   | ||  || || | ||
-                   A-GUCGGAUCU-ACUG
-
-
-
-           Row 0 contains gaps at positions:
-           4
-           5
-           8
-           Row 1 contains gaps at positions:
-           1
-           11
 
 Local Alignments
 ~~~~~~~~~~~~~~~~
@@ -430,40 +383,10 @@ While the score of the local alignment satisfies the minimal score cutoff, the a
 .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local.cpp
    :fragment: ali2
 
-Here is the output of the first part of our example program:
+Here is the output of our example program. The first part outputs one alignment. The second part outputs two alignments:
 
-.. code-block:: console
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local.cpp.stdout
 
-   Score = 19
-         0     .    :
-           a-philolog
-           | ||||||||
-           amphibolog
-
-
-   Aligns Seq1[0:9] and Seq2[7:16]
-
-The second part outputs two alignments:
-
-.. code-block:: console
-
-   Score = 9
-         0     .
-           ATAAGCGT
-           ||| ||||
-           ATA-GAGT
-
-
-   Aligns Seq1[0:7] and Seq2[2:9]
-
-   Score = 5
-         0     .
-           TC-TCG
-           || | |
-           TCATAG
-
-
-   Aligns Seq1[7:12] and Seq2[0:5]
 
 Assignment 4
 ^^^^^^^^^^^^
@@ -499,27 +422,8 @@ Assignment 4
 
         The resulting output is as follows.
 
-        .. code-block:: console
+        .. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_local_assignment1.cpp.stdout
 
-           Score = 21
-                 0     .    :
-                   CFDAKQ---RTASR
-                   ||| ||   ||| |
-                   CFD-KQKNNRTATR
-
-
-           Score = 8
-                 0     .
-                   AKQR-TA
-                   |  | ||
-                   AT-RDTA
-
-
-           Score = 5
-                 0
-                   D-A
-                   | |
-                   DTA
 
 Banded Alignments
 ~~~~~~~~~~~~~~~~~
@@ -558,13 +462,8 @@ We pass the values ``-2`` for the lower diagonal and ``2`` for the upper diagona
 
 And here is the output:
 
-.. code-block:: console
+.. includefrags:: demos/tutorial/pairwise_sequence_alignment/alignment_banded.cpp.stdout
 
-   Score: -2
-         0     .
-           CD-FG-HC
-           || || ||
-           CDEFGAHC
 
 Assignment 5
 ^^^^^^^^^^^^
@@ -685,13 +584,4 @@ Assignment 5
 
          Here is the output of this program.
 
-         .. code-block:: console
-
-            Text: MISSISSIPPIANDMISSOURI	Pattern: SISSI
-            Hit at position  0	total edits: 1	cigar: 1S4M
-            Hit at position  1	total edits: 1	cigar: 1I4M
-            Hit at position  2	total edits: 1	cigar: 4M1I
-            Hit at position  3	total edits: 0	cigar: 5M
-            Hit at position  4	total edits: 1	cigar: 1I4M
-            Hit at position  6	total edits: 2	cigar: 2M2S1M
-            Hit at position  14	total edits: 2	cigar: 1S3M1S
+         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp.stdout

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_SHAPE_GAPPED_H
 #define SEQAN_HEADER_SHAPE_GAPPED_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -270,7 +270,6 @@ namespace SEQAN_NAMESPACE_MAIN
             weight(_span),
             hValue(0)
         {
-        SEQAN_CHECKPOINT
             if (_span > 0)
             {
                 resize(diffs, _span - 1);
@@ -418,7 +417,6 @@ namespace SEQAN_NAMESPACE_MAIN
     inline typename Size< Shape<TValue, GappedShape<TSpec> > >::Type
     weight(Shape<TValue, GappedShape<TSpec> > const & me)
     {
-    SEQAN_CHECKPOINT
         return me.weight;
     }
 
@@ -586,7 +584,6 @@ namespace SEQAN_NAMESPACE_MAIN
         P15,P16,P17,P18,P19
     > > > &me, TIter it)
     {
-    SEQAN_CHECKPOINT
         typedef HardwiredShape<
             P00,P01,P02,P03,P04,
             P05,P06,P07,P08,P09,
@@ -611,7 +608,6 @@ namespace SEQAN_NAMESPACE_MAIN
     inline typename Value< Shape<TValue, GappedShape<TSpec> > >::Type
     hashNext(Shape<TValue, GappedShape<TSpec> > &me, TIter &it)
     {
-    SEQAN_CHECKPOINT
         return hash(me, it);
     }
 
@@ -623,7 +619,6 @@ namespace SEQAN_NAMESPACE_MAIN
         Shape<TValue, GappedShape<TSpec> > &me,
         TShapeString const &bitmap)
     {
-    SEQAN_CHECKPOINT
         typedef typename Iterator<TShapeString const>::Type        TIter;
         typedef typename Iterator<String<int> >::Type            TShapeIter;
 
@@ -676,7 +671,6 @@ namespace SEQAN_NAMESPACE_MAIN
         TShapeString &bitmap,
         Shape<TValue, GappedShape<TSpec> > const &me)
     {
-    SEQAN_CHECKPOINT
 
         clear(bitmap);
         if (weight(me) == 0) return;
@@ -696,7 +690,6 @@ namespace SEQAN_NAMESPACE_MAIN
     inline void
     reverse(Shape<TValue, GappedShape<TSpec> > &me)
     {
-    SEQAN_CHECKPOINT
         reverse(me.diffs);
     }
 

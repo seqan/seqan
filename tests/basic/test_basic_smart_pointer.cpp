@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,8 +34,7 @@
 // Tests for the sub module basic_smart_pointer.
 // ==========================================================================
 
-#include <seqan/basic/basic_debug.h>
-#include <seqan/basic/basic_smart_pointer.h>
+#include <seqan/basic.h>
 
 #include "test_basic_smart_pointer_holder.h"
 

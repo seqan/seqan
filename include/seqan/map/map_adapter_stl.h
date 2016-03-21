@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
@@ -166,7 +166,6 @@ template <typename TValue, typename TCompare, typename TAlloc, typename TKey2>
 inline bool
 hasKey(std::set<TValue,TCompare,TAlloc> & me, TKey2 const & _key)
 {
-SEQAN_CHECKPOINT
     return (me.count(_key) != 0);
 }
 
@@ -174,7 +173,6 @@ template <typename TValue, typename TCompare, typename TAlloc, typename TKey2>
 inline bool
 hasKey(std::set<TValue,TCompare,TAlloc> const & me, TKey2 const & _key)
 {
-SEQAN_CHECKPOINT
     return (me.count(_key) != 0);
 }
 
@@ -183,7 +181,6 @@ template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, ty
 inline bool
 hasKey(std::map<TKey, TCargo, TCompare, TAlloc> & me, TKey2 const & _key)
 {
-SEQAN_CHECKPOINT
     return (me.count(_key) != 0);
 }
 
@@ -191,7 +188,6 @@ template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, ty
 inline bool
 hasKey(std::map<TKey, TCargo, TCompare, TAlloc> const & me, TKey2 const & _key)
 {
-SEQAN_CHECKPOINT
     return (me.count(_key) != 0);
 }
 
@@ -201,7 +197,6 @@ template <typename TValue, typename TCompare, typename TAlloc>
 inline typename Size< std::set<TValue, TCompare, TAlloc> >::Type
 length(std::set<TValue, TCompare, TAlloc> const & me)
 {
-SEQAN_CHECKPOINT
     return me.size();
 }
 
@@ -209,7 +204,6 @@ template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
 inline typename Size< std::map<TKey,TCargo, TCompare, TAlloc> >::Type
 length(std::map<TKey,TCargo, TCompare, TAlloc> const & me)
 {
-SEQAN_CHECKPOINT
     return me.size();
 }
 
@@ -219,7 +213,6 @@ template <typename TValue, typename TCompare, typename TAlloc, typename TValue2>
 inline void
 insert(std::set<TValue, TCompare, TAlloc> & me,TValue2 const & _value)
 {
-SEQAN_CHECKPOINT
     me.insert(_value);
 }
 
@@ -229,7 +222,6 @@ insert(std::map<TKey,TCargo, TCompare, TAlloc> & me,
        TKey2 const & _key,
        TCargo2 const & _cargo)
 {
-SEQAN_CHECKPOINT
 
     me[_key] = _cargo;
 }
@@ -237,7 +229,6 @@ template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, ty
 inline void
 insert(std::map<TKey,TCargo, TCompare, TAlloc> & me,TKey2 const & _key)
 {
-SEQAN_CHECKPOINT
 
     insert(me, _key, TCargo());
 }
@@ -245,7 +236,6 @@ template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, ty
 inline void
 insert(std::map<TKey,TCargo, TCompare, TAlloc> & me, Pair<TKey2,TCargo2,TSpec> const & _value)
 {
-SEQAN_CHECKPOINT
     insert(me, _value.i1, _value.i2);
 }
 
@@ -256,7 +246,6 @@ template <typename TValue, typename TCompare, typename TAlloc>
 inline void
 clear(std::set<TValue, TCompare, TAlloc> & me)
 {
-SEQAN_CHECKPOINT
     me.clear();
 }
 
@@ -264,7 +253,6 @@ template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
 inline void
 clear(std::map<TKey,TCargo, TCompare, TAlloc> & me)
 {
-SEQAN_CHECKPOINT
     me.clear();
 }
 
@@ -285,7 +273,6 @@ inline typename Cargo< std::map<TKey,TCargo, TCompare, TAlloc> >::Type &
 cargo(std::map<TKey,TCargo, TCompare, TAlloc> & me,
       TKey2 const & _key)
 {
-SEQAN_CHECKPOINT
     return me[_key];
 }
 
@@ -321,39 +308,33 @@ public:
 
     Iter()
     {
-SEQAN_CHECKPOINT
     }
 
     Iter(Iter const & other)
         : _iter(other._iter)
     {
-SEQAN_CHECKPOINT
         host_map_holder = other.host_map_holder;
     }
 
     Iter(TStlMap & map)
         : _iter(map.begin())
     {
-SEQAN_CHECKPOINT
         setValue(host_map_holder,map);
     }
 
     ~Iter()
     {
-SEQAN_CHECKPOINT
     }
 
     Iter const &
     operator = (Iter const & other)
     {
-SEQAN_CHECKPOINT
         host_map_holder = other.host_map_holder;
         _iter = other._iter;
         return *this;
     }
     operator bool () const
     {
-SEQAN_CHECKPOINT
         return (_iter != value(host_map_holder).end());
     }
 
@@ -366,7 +347,6 @@ inline bool
 operator == (Iter<TStlMap, StlMapIterator> const & left,
              Iter<TStlMap, StlMapIterator> const & right)
 {
-SEQAN_CHECKPOINT
     return left._iter == right._iter;
 }
 
@@ -375,7 +355,6 @@ inline bool
 operator != (Iter<TStlMap, StlMapIterator> const & left,
              Iter<TStlMap, StlMapIterator> const & right)
 {
-SEQAN_CHECKPOINT
     return left._iter != right._iter;
 }
 
@@ -430,7 +409,6 @@ template <typename TStlMap>
 inline bool
 atEnd(Iter<TStlMap, StlMapIterator> & it)
 {
-SEQAN_CHECKPOINT
     return (it._iter == value(it.host_map_holder).end());
 }
 
@@ -440,7 +418,6 @@ template <typename TStlMap>
 inline void
 goNext(Iter<TStlMap, StlMapIterator> & it)
 {
-SEQAN_CHECKPOINT
     it._iter++;
 }
 
@@ -450,14 +427,12 @@ template <typename TStlMap>
 inline typename Value<TStlMap>::Type &
 value(Iter<TStlMap, StlMapIterator> & it)
 {
-SEQAN_CHECKPOINT
     return it._iter->second;
 }
 template <typename TStlMap>
 inline typename Value<TStlMap>::Type &
 value(Iter<TStlMap, StlMapIterator> const & it)
 {
-SEQAN_CHECKPOINT
     return it._iter->second;
 }
 
@@ -467,14 +442,12 @@ template <typename TStlMap>
 inline typename Key<TStlMap>::Type const &
 key(Iter<TStlMap, StlMapIterator> & it)
 {
-SEQAN_CHECKPOINT
     return it._iter->first;
 }
 template <typename TStlMap>
 inline typename Key<TStlMap>::Type const &
 key(Iter<TStlMap, StlMapIterator> const & it)
 {
-SEQAN_CHECKPOINT
     return it._iter->first;
 }
 
@@ -484,14 +457,12 @@ template <typename TStlMap>
 inline typename Cargo<TStlMap>::Type &
 cargo(Iter<TStlMap, StlMapIterator> & it)
 {
-SEQAN_CHECKPOINT
     return it._iter->second;
 }
 template <typename TStlMap>
 inline typename Cargo<TStlMap>::Type &
 cargo(Iter<TStlMap, StlMapIterator> const & it)
 {
-SEQAN_CHECKPOINT
     return it._iter->second;
 }
 
@@ -519,39 +490,33 @@ public:
 
     Iter()
     {
-SEQAN_CHECKPOINT
     }
 
     Iter(Iter const & other)
         : _iter(other._iter)
     {
-SEQAN_CHECKPOINT
         host_map_holder = other.host_map_holder;
     }
 
     Iter(TStlMap & map)
         : _iter(map.begin())
     {
-SEQAN_CHECKPOINT
         setValue(host_map_holder,map);
     }
 
     ~Iter()
     {
-SEQAN_CHECKPOINT
     }
 
     Iter const &
     operator = (Iter const & other)
     {
-SEQAN_CHECKPOINT
         host_map_holder = other.host_map_holder;
         _iter = other._iter;
         return *this;
     }
     operator bool () const
     {
-SEQAN_CHECKPOINT
         return (_iter != value(host_map_holder).end());
     }
 
@@ -564,7 +529,6 @@ inline bool
 operator == (Iter<TStlMap, StlSetIterator> const & left,
              Iter<TStlMap, StlSetIterator> const & right)
 {
-SEQAN_CHECKPOINT
     return left._iter == right._iter;
 }
 
@@ -573,7 +537,6 @@ inline bool
 operator != (Iter<TStlMap, StlSetIterator> const & left,
              Iter<TStlMap, StlSetIterator> const & right)
 {
-SEQAN_CHECKPOINT
     return left._iter != right._iter;
 }
 
@@ -628,7 +591,6 @@ template <typename TStlMap>
 inline bool
 atEnd(Iter<TStlMap, StlSetIterator> & it)
 {
-SEQAN_CHECKPOINT
     return (it._iter == value(it.host_map_holder).end());
 }
 
@@ -638,7 +600,6 @@ template <typename TStlMap>
 inline void
 goNext(Iter<TStlMap, StlSetIterator> & it)
 {
-SEQAN_CHECKPOINT
     it._iter++;
 }
 
@@ -663,14 +624,12 @@ template <typename TStlMap>
 inline typename Key<TStlMap>::Type const &
 key(Iter<TStlMap, StlSetIterator> & it)
 {
-SEQAN_CHECKPOINT
     return (*it._iter);
 }
 template <typename TStlMap>
 inline typename Key<TStlMap>::Type const &
 key(Iter<TStlMap, StlSetIterator> const & it)
 {
-SEQAN_CHECKPOINT
     return (*it._iter);
 }
 
@@ -682,7 +641,6 @@ inline typename Iterator< std::set<TValue, TCompare, TAlloc> >::Type
 find(std::set<TValue, TCompare, TAlloc> & me,
      TFind const & _find)
 {
-SEQAN_CHECKPOINT
     typedef std::set<TValue, TCompare, TAlloc> TMap;
     typedef typename Iterator< TMap >::Type TMapIterator;
 
@@ -699,7 +657,6 @@ inline typename Iterator< std::map<TKey,TCargo, TCompare, TAlloc> >::Type
 find(std::map<TKey,TCargo, TCompare, TAlloc> & me,
      TFind const & _find)
 {
-SEQAN_CHECKPOINT
     typedef std::map<TKey,TCargo, TCompare, TAlloc> TMap;
     typedef typename Iterator< TMap >::Type TMapIterator;
 
@@ -719,7 +676,6 @@ inline void
 erase(std::set<TValue, TCompare, TAlloc> & me,
       Iter<TMap2, StlSetIterator> const & it)
 {
-SEQAN_CHECKPOINT
     me.erase(it._iter);
 }
 
@@ -728,7 +684,6 @@ inline void
 erase(std::map<TKey,TCargo> & me,
       Iter<TMap2, StlMapIterator> const & it)
 {
-SEQAN_CHECKPOINT
     me.erase(it._iter);
 }
 
@@ -740,7 +695,6 @@ inline void
 erase(std::set<TValue, TCompare, TAlloc> & me,
       TToRemove const & to_remove)
 {
-SEQAN_CHECKPOINT
     me.erase(to_remove);
 }
 
@@ -749,7 +703,6 @@ inline void
 erase(std::map<TKey,TCargo, TCompare, TAlloc> & me,
       TToRemove const & to_remove)
 {
-SEQAN_CHECKPOINT
     me.erase(to_remove);
 }
 

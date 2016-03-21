@@ -32,10 +32,8 @@ In this section you will learn about the different string specializations and wh
 
 The user can specify the kind of string that should be used in an optional second template argument of :dox:`String`.
 
-.. code-block:: cpp
-
-   String<Dna>           dnaSeq1; // The default string implementation: Alloc
-   String<Dna, Alloc<> > dnaSeq2; // The same as above
+.. includefrags:: demos/tutorial/sequences_in_depth/base.cpp
+      :fragment: default_type
 
 In most cases, the implementation :dox:`AllocString Alloc String` (the default when using a ``String<T>``) is the best choice.
 Exceptions are when you want to process extremely large strings that are a bit larger than the available memory (consider :dox:`AllocString Alloc String`) or much larger so most of them are stored on the hard disk and only parts of them are loaded in main memory (consider :dox:`ExternalString External String`).
@@ -88,12 +86,8 @@ Specialization :dox:`CStyleString CStyle String`
   * **Limitations**
     Only sensible if value type is ``char`` or ``wchar_t``.
 
-.. code-block:: cpp
-
-   // String with maximum length 100.
-   String<char, Array<100> > myArrayString;
-   // String that takes only 2 bits per nucleotide.
-   String<Dna, Packed<> > myPackedString;
+.. includefrags:: demos/tutorial/sequences_in_depth/base.cpp
+      :fragment: type_examples
 
 Overflow Strategies
 ~~~~~~~~~~~~~~~~~~~

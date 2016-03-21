@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
 
 #include <seqan/stream.h>
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 // ============================================================================
@@ -307,7 +307,6 @@ void write(TFile & file,
            TCoffeeLib)
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     //typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
@@ -392,7 +391,6 @@ read(TFile & file,
      FastaAlign)
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
-    SEQAN_CHECKPOINT
     //typedef typename Size<TNames>::Type TSize;
     //typedef TSize TWord;
     //typedef typename Value<TFile>::Type TValue;
@@ -445,7 +443,6 @@ _collectSegmentMatches(String<TValue, TSpec2> const& mat,
                        TScores& scores,
                        TSize nseq)
 {
-    SEQAN_CHECKPOINT
     TSize len = length(mat) / nseq;
     TValue gapChar = gapValue<TValue>();
 
@@ -510,7 +507,6 @@ read(TFile & file,
      FastaAlign)
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
-    SEQAN_CHECKPOINT
     typedef typename Size<TNames>::Type TSize;
     typedef typename Value<TFile>::Type TValue;
     typedef typename Value<TNames>::Type TName;
@@ -584,7 +580,6 @@ _appendFragment(String<Fragment<TSizeSpec, ExactReversableFragment<TSpec1> >, TS
                   TSize len,
                   bool reversed)
 {
-    SEQAN_CHECKPOINT
     typedef Fragment<TSizeSpec, ExactReversableFragment<TSpec1> > TFragment;
     appendValue(matches, TFragment(seq1Id, beg1, seq2Id, beg2, len, reversed));
 }
@@ -601,7 +596,6 @@ _appendFragment(String<Fragment<TSizeSpec, ExactFragment<TSpec1> >, TSpec2>& mat
                   TSize len,
                   bool reversed)
 {
-    SEQAN_CHECKPOINT
     typedef Fragment<TSizeSpec, ExactFragment<TSpec1> > TFragment;
     if (!reversed) appendValue(matches, TFragment(seq1Id, beg1, seq2Id, beg2, len));
 }
@@ -617,7 +611,6 @@ read(TFile & file,
      BlastLib)
 {
 //IOREV _nodoc_ specialization not documented
-    SEQAN_CHECKPOINT
     typedef typename Size<TNames>::Type TSize;
     //typedef typename Value<TFile>::Type TValue;
     typedef typename Value<TNames>::Type TName;
@@ -710,7 +703,6 @@ void write(TFile & file,
            BlastLib)
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
-    SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     //typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
@@ -771,7 +763,6 @@ void write(TFile & file,
            BlastLib)
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
-    SEQAN_CHECKPOINT
     String<bool> edgeMap;
     resize(edgeMap, getIdUpperBound(_getEdgeIdManager(g)), false);
     write(file, g, names, edgeMap, BlastLib());
@@ -834,7 +825,6 @@ read(TFile & file,
      MummerLib)
 {
 //IOREV _nodoc_ specialization not documented
-    SEQAN_CHECKPOINT
     typedef typename Size<TNames>::Type TSize;
     //typedef typename Value<TFile>::Type TValue;
     typedef typename Value<TNames>::Type TName;
@@ -1145,6 +1135,6 @@ writeRecords(TTarget & target,
     write(target, guideTree, names, false, NewickFormat());
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

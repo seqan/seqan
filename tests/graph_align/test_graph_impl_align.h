@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@
 #define SEQAN_HEADER_TEST_GRAPH_IMPL_ALIGN_H
 
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -830,7 +830,7 @@ SEQAN_DEFINE_TEST(Test_Refinement_OutEdgeIteratorAlignment)
     SEQAN_ASSERT_EQ(&g,  &hostGraph(it));
 }
 
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif
 

@@ -52,21 +52,13 @@ A SeqAn index needs two pieces of information: the type of the :dox:`String` or 
 
 The following code snippet creates an enhanced suffix array index of a string of type :dox:`Dna5`.
 
-.. code-block:: cpp
-
-   String<Dna5> genome = "ACGTACGTACGTN";
-   Index<String<Dna5>, IndexEsa<> > esaIndex(genome);
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: esa
 
 In contrast, the next code snipped creates a FM index over a set of amino acid sequences:
 
-.. code-block:: cpp
-
-   StringSet<String<AminoAcid> > protein;
-   appendValue(protein, "VXLAGZ");
-   appendValue(protein, "GKTVXL");
-   appendValue(protein, "XLZ");
-
-   Index<StringSet<String<AminoAcid> >, FMIndex<> > fmIndex(protein);
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: fm
 
 Assignment 1
 """"""""""""
@@ -82,20 +74,8 @@ Assignment 1
      #. change it to build an :dox:`IndexEsa` over a string of type :dox:`Dna`,
      #. add an :dox:`IndexEsa` over a :dox:`StringSet` of :dox:`String Strings` of type :dox:`Dna`.
 
-     .. code-block:: cpp
-
-	#include <seqan/sequence.h>
-	#include <seqan/index.h>
-
-	using namespace seqan;
-
-	int main()
-	{
-	    String<char> text = "This is the first example";
-	    Index<String<char>, FMIndex<> > index(text);
-
-	    return 0;
-	}
+     .. includefrags:: demos/tutorial/indices/base.cpp
+            :fragment: assignment1
 
    Solution
      .. container:: foldable
@@ -113,22 +93,14 @@ In this section you will learn how to find a pattern with the :dox:`Finder` inte
 The :dox:`Finder` is an object that stores all necessary information for searching for a pattern using an index.
 The following line of code shows how the :dox:`Finder` is initialized.
 
-.. code-block:: cpp
-
-   String<Dna5> genome = "ACGTACGTACGTN";
-   Index<String<Dna5>, IndexEsa<> > esaIndex(genome);
-   Finder<Index<String<Dna5>, IndexEsa<> > > esaFinder(esaIndex);
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: finder
 
 After initialization it is possible to use the :dox:`Finder#find` function in order to trigger a search for all occurrences of a given pattern in the underlying :dox:`String` or :dox:`StringSet`.
 In this example, we search for the pattern ``ACGT``:
 
-.. code-block:: cpp
-
-   String<Dna5> genome = "ACGTACGTACGTN";
-   Index<String<Dna5>, IndexEsa<> > esaIndex(genome);
-   Finder<Index<String<Dna5>, IndexEsa<> > > esaFinder(esaIndex);
-
-   find(esaFinder, "ACGT");
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: finder2
 
 Calling the function :dox:`Finder#find` invokes the localization of all occurrences of a given pattern.
 It works by modifying pointers of the ``Finder`` to tables of the index.
@@ -137,48 +109,15 @@ For example, the :dox:`Finder` of ``esaIndex`` stores two pointers, pointing to 
 The return value of the :dox:`Finder#find` function tells us whether or not a given pattern occurs in the text.
 Furthermore, if there are several instances of a pattern, consecutive calls of :dox:`Finder#find` will modify the :dox:`Finder` such that it points to the next occurrence after each call:
 
-.. code-block:: cpp
-
-   #include <seqan/sequence.h>
-   #include <seqan/index.h>
-
-   using namespace seqan;
-
-   int main()
-   {
-       String<Dna5> genome = "ACGTACGTACGTN";
-       Index<String<Dna5>, IndexEsa<> > esaIndex(genome);
-       Finder<Index<String<Dna5>, IndexEsa<> > > esaFinder(esaIndex);
-
-       find(esaFinder, "ACGT");  // first occurrence of "ACGT"
-       find(esaFinder, "ACGT");  // second occurrence of "ACGT"
-       find(esaFinder, "ACGT");  // third occurrence of "ACGT"
-   }
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: finder_multiple
 
 The above code is not very useful, since we do not know the locations of the first, second or third pattern occurrence.
 The function :dox:`Finder#position` will help here.
 :dox:`Finder#position` called on a finder returns the location of the ``x``\ th pattern, where ``x`` can be the first, second, or any other occurrence of the pattern.
 
-.. code-block:: cpp
-
-   #include <seqan/sequence.h>
-   #include <seqan/index.h>
-
-   using namespace seqan;
-
-   int main()
-   {
-       String<Dna5> genome = "ACGTACGTACGTN";
-       Index<String<Dna5>, IndexEsa<> > esaIndex(genome);
-       Finder<Index<String<Dna5>, IndexEsa<> > > esaFinder(esaIndex);
-
-       find(esaFinder, "ACGT"); // first occurrence of "ACGT"
-       position(esaFinder); // -> 0
-       find(esaFinder, "ACGT"); // second occurrence of "ACGT"
-       position(esaFinder); // -> 4
-       find(esaFinder, "ACGT"); // third occurrence of "ACGT"
-       position(esaFinder); // -> 8
-   }
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: finder_position
 
 .. tip::
 
@@ -233,17 +172,13 @@ Storing and Loading
 
 Storing and loading an index can be done with:
 
-.. code-block:: cpp
-
-   const char *fileName = "/home/user/myindex";
-   save(index, fileName);
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: save
 
 or
 
-.. code-block:: cpp
-
-   const char *fileName = "/home/user/myindex";
-   open(index, fileName);
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: open
 
 If you have built your q-gram index with variable shapes (i.e. :dox:`SimpleShape` :dox:`GenericShape`), you have to keep in mind that q or the shape is not stored or loaded.
 This must be done manually directly before or after loading with :dox:`Shape#resize` oder :dox:`Shape#stringToShape`.
@@ -254,31 +189,19 @@ All other fibres are empty and created on demand.
 Normally, a full created index should be saved to disk.
 Therefore, you have to create the required fibres explicitly by hand.
 
-.. code-block:: cpp
-
-   const char *fileName = "/home/user/myindex";
-   indexRequire(index, QGramSADir());
-   save(index, fileName);
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: require
 
 For the :dox:`IndexEsa` index you could do:
 
-.. code-block:: cpp
-
-   const char *fileName = "/home/user/myindex";
-   indexRequire(index, EsaSA());
-   indexRequire(index, EsaLcp());
-   indexRequire(index, EsaChildtab());  // for TopDown iterators
-   indexRequire(index, EsaBwt());       // for (Super-)MaxRepeats iterators
-   save(index, fileName);
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: require2
 
 Indexes based on external strings, e.g.  ``Index<String<Dna,External<> >,IndexEsa<> >`` or ``Index<String<Dna,MMap<> >,IndexEsa<> >`` cannot be saved, as they are persistent implicitly.
 The first thing after instantiating such an index should be associating it to a file with:
 
-.. code-block:: cpp
-
-   Index<String<Dna, External<> >, IndexEsa<> > index;
-   const char *fileName = "/home/user/myindex";
-   open(index, fileName);
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: external
 
 The file association implies that any change on the index, e.g. fibre construction, is synchronized to disk.
 When instantiating and associating the index the next time, the index contains its previous state and all yet constructed fibres.
@@ -298,35 +221,19 @@ All :dox:`Index Indices` in SeqAn internally use the :dox:`Fibre FibreSA`, i.e. 
 For :dox:`String Strings`, each suffix array entry consumes 64 bit of memory per default, where 32 bit would be sufficient if the text size is appropriate.
 In order to change the size type of the suffix array entry we simply have to overload the metafunction :dox:`SAValue`.
 
-.. code-block:: cpp
-
-   template<>
-   struct SAValue<String<Dna> >
-   {
-       typedef unsigned Type;
-   };
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: SAValue
 
 If your text is a :dox:`StringSet`, then :dox:`SAValue` will return a :dox:`Pair` that can be overloaded in the same way.
 
-.. code-block:: cpp
-
-   template<>
-   struct SAValue<StringSet<String<Dna> > >
-   {
-       typedef Pair<unsigned, unsigned> Type;
-   };
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: SAValue2
 
 The first type of the pair is used as the type for the index of a string in the string set.
 So if you only have a few strings you could save even more memory like this.
 
-.. code-block:: cpp
-
-    template<>
-    struct SAValue<StringSet<String<Dna> > >
-    {
-        typedef Pair<unsigned char, unsigned> Type;
-    };
-
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: SAValue3
 
 FMIndex Fibres
 """"""""""""""
@@ -334,10 +241,8 @@ FMIndex Fibres
 The size of a generalized :dox:`FMIndex` depends also on the total number of characters in a :dox:`StringSet` (see :dox:`StringSet#lengthSum`).
 This trait can be configured via the :dox:`FMIndexConfig` object.
 
-.. code-block:: cpp
-
-        typedef FMIndexConfig<void, unsigned> TConfig;
-        Index<StringSet<String<Dna> >, FMIndex<void, TConfig> > index(text);
+.. includefrags:: demos/tutorial/indices/base.cpp
+      :fragment: config
 
 Other Index Fibres
 """"""""""""""""""

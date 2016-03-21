@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                 SeqCons
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -237,7 +237,7 @@ void SeqConsAppImpl::loadReads(char const * fileName)
                                      e.what());
         }
         trimAfterSpace(id);
-        __int64 readID = appendRead(store, seq, id);
+        int64_t readID = appendRead(store, seq, id);
         appendAlignedRead(store, readID, /*contigID=*/0, /*beginPos=*/0, (int)length(seq));
         maxPos = std::max(maxPos, (int)length(seq));
     }

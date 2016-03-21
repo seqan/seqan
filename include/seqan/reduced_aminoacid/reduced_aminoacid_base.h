@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -64,10 +64,9 @@ namespace seqan {
  *
  * @section Remarks
  *
- * The alias template is only available when SEQAN_CXX11_STANDARD is defined
- * and your compiler supports alias templates (Visual Studio >= 2006-2014, any fairly
- * recent Clang, GCC). Otherwise you have to use the underscored type and
- * the full definition, i.e.
+ * The alias template is only available when your compiler supports alias
+ * templates (Visual Studio >= 2006-2014, any fairly recent Clang, GCC).
+ * Otherwise you have to use the underscored type and the full definition, i.e.
  * <tt>SimpleType&lt;unsigned char, ReducedAminoAcid_&lt;TReductionSpec&gt; &gt;</tt>.
  *
  * @see Murphy10
@@ -76,10 +75,8 @@ namespace seqan {
 template <typename TRedSpec>
 struct ReducedAminoAcid_ {};
 
-#if defined (SEQAN_CXX11_STANDARD) && ( !defined (_MSC_VER) || _MSC_VER >= 1800 )
 template <typename TRedSpec>
 using ReducedAminoAcid = SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >;
-#endif
 
 // ============================================================================
 // Metafunctions
@@ -91,7 +88,7 @@ using ReducedAminoAcid = SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >
 
 template <typename TRedSpec>
 struct CompareType<SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >,
-                   __uint8>
+                   uint8_t>
 {
     typedef SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> > Type;
 };

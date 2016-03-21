@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -78,6 +78,9 @@ namespace seqan {
  *
  * @tparam TString The type of the string to store in the string set.
  *
+ * @deprecated The Dependent-Tight StringSet is deprecated and will likely be
+ *     removed within the SeqAn-2.x lifecycle.
+ *
  * See @link GenerousDependentStringSet @endlink for a Dependent StringSet implementation that allows for more
  * efficient access to strings in the container via ids at the cost of higher memory usage.
  */
@@ -132,7 +135,6 @@ public:
     inline typename Reference<StringSet>::Type
     operator[] (TPos pos)
     {
-        SEQAN_CHECKPOINT;
         return value(*this, pos);
     }
 
@@ -162,7 +164,6 @@ inline void appendValue(
     TString const & obj,
     Tag<TExpand> tag)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Position<StringSet<TString, Dependent<Tight> > >::Type TPos;
     appendValue(me.limits, lengthSum(me) + length(obj), tag);
     typedef typename StringSet<TString, Dependent<Tight> >::TIdType TIdType;
@@ -179,7 +180,6 @@ inline void appendValue(
 template <typename TString >
 inline void clear(StringSet<TString, Dependent<Tight> >& me)
 {
-    SEQAN_CHECKPOINT;
     clear(me.strings);
     me.id_pos_map.clear();
     resize(me.limits, 1, Exact());
@@ -197,7 +197,6 @@ template <typename TString, typename TPos >
 inline typename Reference<StringSet<TString, Dependent<Tight> > >::Type
 value(StringSet<TString, Dependent<Tight> >& me, TPos pos)
 {
-    SEQAN_CHECKPOINT;
     return *me.strings[pos];
 }
 
@@ -230,7 +229,6 @@ inline typename Id<StringSet<TString, Dependent<Tight> > >::Type
 assignValueById(StringSet<TString, Dependent<Tight> >& me,
                 TString2& obj)
 {
-    SEQAN_CHECKPOINT;
     appendValue(me, obj);
     SEQAN_ASSERT_EQ(length(me.limits), length(me) + 1);
     return positionToId(me, length(me.strings) - 1);
@@ -243,7 +241,6 @@ assignValueById(StringSet<TString, Dependent<Tight> >& me,
                 TString& obj,
                 TId1 id)
 {
-    SEQAN_CHECKPOINT;
     typedef StringSet<TString, Dependent<Tight> > TStringSet;
     typedef typename TStringSet::TIdPosMap::const_iterator TIter;
     typedef typename Id<TStringSet>::Type TId;
@@ -271,7 +268,6 @@ template<typename TString, typename TId>
 inline void
 removeValueById(StringSet<TString, Dependent<Tight> >& me, TId const id)
 {
-    SEQAN_CHECKPOINT;
     typedef StringSet<TString, Dependent<Tight> > TStringSet;
     typedef typename Size<TStringSet>::Type TSize;
     typedef typename TStringSet::TIdPosMap::iterator TIter;
@@ -301,7 +297,6 @@ inline typename Id<StringSet<TString, Dependent<Tight> > >::Type
 positionToId(StringSet<TString, Dependent<Tight> > & me,
             TPos const pos)
 {
-    SEQAN_CHECKPOINT;
     return me.ids[pos];
 }
 
@@ -310,7 +305,6 @@ inline typename Id<StringSet<TString, Dependent<Tight> > >::Type
 positionToId(StringSet<TString, Dependent<Tight> > const & me,
             TPos const pos)
 {
-    SEQAN_CHECKPOINT;
     return me.ids[pos];
 }
 
@@ -319,11 +313,10 @@ positionToId(StringSet<TString, Dependent<Tight> > const & me,
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TId>
-inline typename Id<StringSet<TString, Dependent<Tight> > >::Type
+inline typename Position<StringSet<TString, Dependent<Tight> > >::Type
 idToPosition(StringSet<TString, Dependent<Tight> > const & me,
             TId const id)
 {
-    SEQAN_CHECKPOINT;
     return me.id_pos_map.find(id)->second;
 /*
     for(unsigned i = 0; i < length(me.ids); ++i)

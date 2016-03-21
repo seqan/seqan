@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -369,6 +369,22 @@ SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept)(PropertyMapCon
     }
 };
 
+
+// ----------------------------------------------------------------------------
+// Concept StlContainerConcept
+// ----------------------------------------------------------------------------
+
+// template <typename TContainer>
+// struct StlContainerConcept :
+//     ContainerConcept<TContainer>
+    
+
+SEQAN_CONCEPT_REFINE(StlContainerConcept, (TContainer), (ContainerConcept))
+{
+    SEQAN_CONCEPT_USAGE(StlContainerConcept)
+    {}
+};
+
 // --------------------------------------------------------------------------
 // Metafunction IsContiguous
 // --------------------------------------------------------------------------
@@ -395,24 +411,17 @@ SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept)(PropertyMapCon
 
 template <typename T>
 struct IsContiguous
-{
-    typedef False Type;
-    enum { VALUE = false };
-};
+    : public False
+{};
 
-template <typename T>
-struct IsContiguous<T const>
-    : public IsContiguous<T> {};
+// ----------------------------------------------------------------------------
+// Mfn HasSubscriptOperator (different for e.g. std::deque)
+// ----------------------------------------------------------------------------
 
-
-//void testStringConcepts()
-//{
-//    SEQAN_CONCEPT_ASSERT((StringConcept<String<char, Alloc<> > >));
-//    SEQAN_CONCEPT_ASSERT((StringConcept<String<Pair<int, double>, Alloc<> > >));
-////    SEQAN_CONCEPT_ASSERT((StringConcept<String<bool, Packed<> > >));  // doesn't compile yet
-////    SEQAN_CONCEPT_ASSERT((StringConcept<String<Dna5, Packed<> > >));
-//    SEQAN_CONCEPT_ASSERT((StringConcept<String<int, Array<50> > >));
-//}
+template <typename TContainer>
+struct HasSubscriptOperator :
+    public IsContiguous<TContainer>
+{};
 
 /*!
  * @concept ForwardContainerConcept

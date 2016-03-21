@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """SeqAn documentation raw object representation.
 
 This is the direct representation as it can be determined from the embedded

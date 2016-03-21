@@ -1,4 +1,4 @@
-#!/usr/env/bin python
+#!/usr/bin/env python2
 """Some validation for proc_doc.Proc*"""
 
 __author__ = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'

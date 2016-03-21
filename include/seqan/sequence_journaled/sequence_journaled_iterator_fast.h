@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -74,49 +74,28 @@ public:
         _currentSegmentIt()
     {}
 
-    Iter(TIterator const & other)
+    template <typename TStringOther>
+    Iter(Iter<TStringOther, JournaledStringIterSpec<CommonSegmentIterator> > const & other,
+         SEQAN_CTOR_ENABLE_IF(IsConstructible<TJournaledString, TStringOther>))
             : _journalStringPtr(other._journalStringPtr),
               _journalEntriesIterator(other._journalEntriesIterator),
               _segmentBegin(other._segmentBegin),
               _segmentEnd(other._segmentEnd),
               _currentSegmentIt(other._currentSegmentIt)
     {
-        SEQAN_CHECKPOINT;
+        ignoreUnusedVariableWarning(dummy);
     }
 
-    Iter(typename IterComplementConst<TIterator>::Type const & other)
-            : _journalStringPtr(other._journalStringPtr),
-              _journalEntriesIterator(other._journalEntriesIterator),
-              _segmentBegin(other._segmentBegin),
-              _segmentEnd(other._segmentEnd),
-              _currentSegmentIt(other._currentSegmentIt)
-    {
-        SEQAN_CHECKPOINT;
-    }
 
-    Iter & operator=(TIterator const & other)
+    template <typename TStringOther>
+    SEQAN_FUNC_ENABLE_IF(IsConstructible<TJournaledString, TStringOther>, TIterator &)
+    operator=(Iter<TStringOther, JournaledStringIterSpec<CommonSegmentIterator> > const & other)
     {
-        if (this != &other)
-        {
-            _journalStringPtr = other._journalStringPtr;
-            _journalEntriesIterator = other._journalEntriesIterator;
-            _segmentBegin = other._segmentBegin;
-            _segmentEnd = other._segmentEnd;
-            _currentSegmentIt = other._currentSegmentIt;
-        }
-        return *this;
-    }
-
-    Iter & operator=(typename IterComplementConst<TIterator>::Type const & other)
-    {
-        if (this != &other)
-        {
-            _journalStringPtr = other._journalStringPtr;
-            _journalEntriesIterator = other._journalEntriesIterator;
-            _segmentBegin = other._segmentBegin;
-            _segmentEnd = other._segmentEnd;
-            _currentSegmentIt = other._currentSegmentIt;
-        }
+        _journalStringPtr = other._journalStringPtr;
+        _journalEntriesIterator = other._journalEntriesIterator;
+        _segmentBegin = other._segmentBegin;
+        _segmentEnd = other._segmentEnd;
+        _currentSegmentIt = other._currentSegmentIt;
         return *this;
     }
 };
@@ -392,7 +371,6 @@ bool
 operator==(Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > const & a,
            Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator> > const & b)
 {
-    SEQAN_CHECKPOINT;
     if (a._journalEntriesIterator != b._journalEntriesIterator)
         return false;
     if (a._currentSegmentIt != b._currentSegmentIt)

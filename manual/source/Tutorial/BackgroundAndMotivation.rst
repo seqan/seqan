@@ -23,7 +23,7 @@ Prerequisites
 
 This tutorial is meant to be the first chapter you read in the SeqAn Tutorial.
 It will give you an overview about the design goals, design decisions, and explain the motivation for these decisions.
-The next chapter :ref:`First Examples <tutorial-first-steps-in-seqan>` will flesh out the most important points of this chapter with code examples of everyday SeqAn use.
+The next chapter :ref:`A First Example <tutorial-first-steps-in-seqan>` will flesh out the most important points of this chapter with code examples of everyday SeqAn use.
 
 Library Design Aims
 ~~~~~~~~~~~~~~~~~~~
@@ -73,21 +73,7 @@ The objects are constructed when the code execution enters the scope/block they 
 Allocation of resources (e.g. memory) happens on construction and deallocation happens when the current block is left.
 This is best explained in an example.
 
-.. code-block:: cpp
-
-   #include <seqan/sequence.h>
-
-   int main(int argc, char const ** argv)
-   {
-       seqan::String<char> programName = argv[0];
-       if (argc > 1)
-       {
-           seqan::String<char> firstArg = argv[1];
-           if (argc > 2)
-               return 1;
-       }
-       return 0;
-   };
+.. includefrags:: demos/tutorial/background_and_motivation/example.cpp
 
 ``seqan::String<char>`` is a class (actually an instantiation of the class template :dox:`String`) that allows to store strings of ``char`` values, similar to ``std::vector<char>`` or ``std::string``.
 

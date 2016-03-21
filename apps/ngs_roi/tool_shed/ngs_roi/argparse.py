@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Helper for ROI tools when using argparse module.
 
 This module contains helper functions for setup of argparse.ArgumentParser

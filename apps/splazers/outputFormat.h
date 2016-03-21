@@ -29,7 +29,7 @@
 #include "razers.h"
 #include <seqan/align.h>
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -794,10 +794,10 @@ void dumpMatches(
     else
         success = open(file, std::cout, Nothing());
 
-	if (!success) {
-		::std::cerr << "Failed to open output file" << ::std::endl;
-		return;
-	}
+    if (!success) {
+        ::std::cerr << "Failed to open output file" << ::std::endl;
+        return;
+    }
 
 	
 	String<short> ambiStates;

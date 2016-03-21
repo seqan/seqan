@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_POOL_MAPPER_H
 #define SEQAN_HEADER_POOL_MAPPER_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
     // external synchronous permutation mapping
@@ -185,11 +185,11 @@ namespace SEQAN_NAMESPACE_MAIN
                 continue;                            // don't move undefined values
 
             #ifdef SEQAN_DEBUG
-                if (!(dstPos >= offset && dstPos < offset + (TSize)capacity(buf))) {
-                    std::cerr << "Mapper assertion failed: " << std::hex << dstPos;
-                    std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
-                    std::cerr << " element is " << std::dec << *cur << std::endl;
-                }
+            if (!(dstPos >= offset && dstPos < offset + (TSize)capacity(buf))) {
+                std::cerr << "Mapper assertion failed: " << std::hex << dstPos;
+                std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
+                std::cerr << " element is " << std::dec << *cur << std::endl;
+            }
             #endif
             SEQAN_ASSERT(dstPos >= offset && dstPos < offset + (TSize)capacity(buf));
 

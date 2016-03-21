@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
@@ -60,6 +60,7 @@ struct IndexSa {};
 /*!
  * @class IndexSa
  * @extends Index
+ * @implements StringTrieConcept
  * @headerfile <seqan/index.h>
  * @brief An index based on a suffix array.
  * @signature template <typename TText, typename TSpec>
@@ -99,6 +100,13 @@ public:
         text(_text)
     {}
 };
+
+template <typename TText, typename TSpec>
+SEQAN_CONCEPT_IMPL((Index<TText, IndexSa<TSpec> >), (StringTrieConcept));
+
+template <typename TText, typename TSpec>
+SEQAN_CONCEPT_IMPL((Index<TText, IndexSa<TSpec> > const), (StringTrieConcept));
+
 
 template <typename TSize, typename TAlphabet>
 struct VertexSA : public VertexEsa<TSize>

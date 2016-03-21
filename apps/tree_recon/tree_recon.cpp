@@ -98,11 +98,11 @@ int main(int argc, const char *argv[])
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-m\\fP \\fIIN.DIST\\fP");
     addDescription(parser, "Reconstruct phylogenetic tree from Phylip matrix \\fIIN.DIST\\fP.");
 
-	addSection(parser, "Input / Output");
+    addSection(parser, "Input / Output");
     addOption(parser, seqan::ArgParseOption("m", "matrix", "Name Phylip distance matrix file.  Must contain at least three species.", seqan::ArgParseArgument::INPUT_FILE, "FILE"));
     setRequired(parser, "matrix");
     setValidValues(parser, "matrix", "dist");
-	addOption(parser, seqan::ArgParseOption("o", "out-file", "Path to write output to.", seqan::ArgParseArgument::OUTPUT_FILE, "FILE"));
+    addOption(parser, seqan::ArgParseOption("o", "out-file", "Path to write output to.", seqan::ArgParseArgument::OUTPUT_FILE, "FILE"));
     setDefaultValue(parser, "out-file", "tree.dot");
     setValidValues(parser, "out-file", "dot newick");
 
@@ -121,41 +121,41 @@ int main(int argc, const char *argv[])
     if (res != seqan::ArgumentParser::PARSE_OK)
         return res == seqan::ArgumentParser::PARSE_ERROR;
 
-	// Tree reconstruction
-	typedef double TDistanceValue;
-	typedef String<char> TName;
-	typedef Size<TName>::Type TSize;
+    // Tree reconstruction
+    typedef double TDistanceValue;
+    typedef String<char> TName;
+    typedef Size<TName>::Type TSize;
 
-	// Read the options	
-	::std::string infile;
+    // Read the options
+    ::std::string infile;
     getOptionValue(infile, parser, "matrix");
-	::std::string outfile;
+    ::std::string outfile;
     getOptionValue(outfile, parser, "out-file");
-	TSize build = 0;
-	String<char> meth;
+    TSize build = 0;
+    String<char> meth;
     getOptionValue(meth, parser, "build");
-	if (meth == "nj") build = 0;
-	else if (meth == "min") build = 1;
-	else if (meth == "max") build = 2;
-	else if (meth == "avg") build = 3;
-	else if (meth == "wavg") build = 4;
-	String<char> format;
-	String<char> tmp = outfile;
+    if (meth == "nj") build = 0;
+    else if (meth == "min") build = 1;
+    else if (meth == "max") build = 2;
+    else if (meth == "avg") build = 3;
+    else if (meth == "wavg") build = 4;
+    String<char> format;
+    String<char> tmp = outfile;
     toLower(tmp);
     if (endsWith(tmp, ".dot"))
         format = "dot";
     else
         format = "newick";
 
-	// Read the distance matrix
-	String<TName> names;
-	String<TDistanceValue> matrix;
+    // Read the distance matrix
+    String<TName> names;
+    String<TDistanceValue> matrix;
     VirtualStream<char, Input> inPhylip(infile.c_str());
     DirectionIterator<VirtualStream<char, Input>, Input>::Type iter(directionIterator(inPhylip, Input()));
-	readPhylipMatrix(matrix, names, iter);
+    readPhylipMatrix(matrix, names, iter);
 
-	// Create the tree
-	Graph<Tree<TDistanceValue> > tree;
+    // Create the tree
+    Graph<Tree<TDistanceValue> > tree;
     switch (build)
     {
         case 0:
@@ -179,34 +179,34 @@ int main(int argc, const char *argv[])
 
     VirtualStream<char, Output> oStream(outfile.c_str());
 
-	if (format == "dot")
+    if (format == "dot")
     {
-		TSize nameLen = length(names);
-		resize(names, numVertices(tree));
-		// Add the label prefix for leaves
-		for (TSize i = 0;i < nameLen; ++i)
+        TSize nameLen = length(names);
+        resize(names, numVertices(tree));
+        // Add the label prefix for leaves
+        for (TSize i = 0;i < nameLen; ++i)
         {
-			TName tmpName = "label = \"";
-			append(tmpName, names[i], Generous());
-			appendValue(tmpName, '"');
-			names[i] = tmpName;
-		}
+            TName tmpName = "label = \"";
+            append(tmpName, names[i], Generous());
+            appendValue(tmpName, '"');
+            names[i] = tmpName;
+        }
 
-		// Append emty names for internal vertices
-		for (; nameLen < length(names); ++nameLen)
-			names[nameLen] = "label = \"\"";
+        // Append emty names for internal vertices
+        for (; nameLen < length(names); ++nameLen)
+            names[nameLen] = "label = \"\"";
 
-		// Write the result
+        // Write the result
         writeRecords(oStream, tree, names, DotDrawing());
-	}
+    }
     else if (format == "newick")
     {
-		// If nj tree collapse the root
-		if (build == 0)
+        // If nj tree collapse the root
+        if (build == 0)
             writeRecords(oStream, tree, names, true, NewickFormat());
-		else
+        else
             writeRecords(oStream, tree, names, false, NewickFormat());
-	}
+    }
 
-	return 0;
+    return 0;
 }

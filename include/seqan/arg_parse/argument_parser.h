@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -130,10 +130,13 @@ inline ArgParseArgument & getArgument(ArgumentParser & me, unsigned position);
  * @brief There were errors parsing the arguments.
  *
  * @val ArgumentParser::ParseResult ArgumentParser::PARSE_HELP;
- * @brief Parsing was successful, built-in <tt>--help</tt> option was used.
+ * @brief Parsing was successful, built-in <tt>--help</tt> or <tt>--full-help</tt> option was used.
  *
  * @val ArgumentParser::ParseResult ArgumentParser::PARSE_VERSION;
  * @brief Parsing was successful, built-in <tt>--version</tt> option was used.
+ *
+ * @val ArgumentParser::ParseResult ArgumentParser::PARSE_COPYRIGHT;
+ * @brief Parsing was successful, built-in <tt>--copyright</tt> option was used.
  *
  * @val ArgumentParser::ParseResult ArgumentParser::PARSE_WRITE_CTD;
  * @brief Parsing was successful, built-in <tt>--write-ctd</tt> option was used.
@@ -157,6 +160,7 @@ public:
         PARSE_ERROR,
         PARSE_HELP,
         PARSE_VERSION,
+        PARSE_COPYRIGHT,
         PARSE_WRITE_CTD,
         PARSE_EXPORT_HELP
     };
@@ -199,7 +203,9 @@ public:
 
     void init()
     {
-        addOption(*this, ArgParseOption("h", "help", "Displays this help message."));
+        addOption(*this, ArgParseOption("h", "help", "Display the help message."));
+        addOption(*this, ArgParseOption("hh", "full-help", "Display the help message with advanced options."));
+        hideOption(*this, "full-help", true); // hidden by default
 
         // hidden flags used for export of man pages and ctd formats
         addOption(*this, ArgParseOption("",
@@ -491,6 +497,31 @@ inline void hideOption(ArgumentParser & me, std::string const & name, bool hide)
 {
     SEQAN_CHECK(hasOption(me, name), "Unknown option: %s", toCString(name));
     hideOption(getOption(me, name), hide);
+}
+
+// ----------------------------------------------------------------------------
+// Function setAdvanced()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#setAdvanced
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Sets whether or not the option with the givne name is advanced.
+ *
+ * @signature void setAdvanced(parser, name[, required]).
+ *
+ * @param[in,out] parser   The ArgumentParser to set the flag of.
+ * @param[in]     name     The short or long name of the option (<tt>std::string</tt>).
+ * @param[in]     required Whether or not the option is required (<tt>bool</tt>, default to <tt>true</tt>).
+ */
+
+inline void setAdvanced(ArgumentParser & me, std::string const & name, bool advanced = true)
+{
+    SEQAN_CHECK(hasOption(me, name), "Unknown option: %s", toCString(name));
+    setAdvanced(getOption(me, name), advanced);
+    // make sure the full-help options is visible so advanced options can be shown
+    if (advanced)
+        hideOption(me, "full-help", false);
 }
 
 // ----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -470,7 +470,6 @@ template <typename TConfig>
 inline typename Reference<Seed<ChainedSeed, TConfig> >::Type
 back(Seed<ChainedSeed, TConfig> & seed)
 {
-    SEQAN_CHECKPOINT;
     return back(seed._seedDiagonals);
 }
 
@@ -478,7 +477,6 @@ template <typename TConfig>
 inline typename Reference<Seed<ChainedSeed, TConfig> const>::Type
 back(Seed<ChainedSeed, TConfig> const & seed)
 {
-    SEQAN_CHECKPOINT;
     return back(seed._seedDiagonals);
 }
 

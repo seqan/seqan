@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -95,7 +95,6 @@ public:
         blockLast(TBlockIter()),
         lastValue(TBlockIter())
     {
-    SEQAN_CHECKPOINT
         assign(*this, source);
     }
 
@@ -104,21 +103,18 @@ public:
         blockLast(TBlockIter()),
         lastValue(TBlockIter())
     {
-    SEQAN_CHECKPOINT
         assign(*this, source);
     }
 
     template<typename TSource>
     String & operator =(TSource const& source)
     {
-    SEQAN_CHECKPOINT
         assign(*this, source);
         return *this;
     }
 
     String & operator =(String const& _other)
     {
-    SEQAN_CHECKPOINT
         if (this == &_other) return *this;
         assign(*this, _other);
         return *this;
@@ -137,7 +133,6 @@ public:
     inline typename Reference<String>::Type
     operator[] (TPos pos)
     {
-    SEQAN_CHECKPOINT
         return value(*this, pos);
     }
 
@@ -145,7 +140,6 @@ public:
     inline typename Reference<String const>::Type
     operator[] (TPos pos) const
     {
-    SEQAN_CHECKPOINT
         return value(*this, pos);
     }
 };
@@ -204,7 +198,6 @@ template<typename TValue, size_t SPACE, typename TSpec>
 inline typename Iterator<String<TValue, Block<SPACE> >, Tag<TSpec> const >::Type
 begin(String<TValue, Block<SPACE> > & me, Tag<TSpec> const)
 {
-    SEQAN_CHECKPOINT;
     return Iter<String<TValue, Block<SPACE> >, PositionIterator>(me, 0);
 }
 
@@ -212,7 +205,6 @@ template<typename TValue, size_t SPACE, typename TSpec>
 inline typename Iterator<String<TValue, Block<SPACE> > const, Tag<TSpec> const>::Type
 begin(String<TValue, Block<SPACE> > const & me, Tag<TSpec> const)
 {
-    SEQAN_CHECKPOINT;
     return Iter<String<TValue, Block<SPACE> > const, PositionIterator>(me, 0);
 }
 
@@ -224,7 +216,6 @@ template<typename TValue, size_t SPACE, typename TSpec>
 inline typename Iterator<String<TValue, Block<SPACE> >, Tag<TSpec> const >::Type
 end(String<TValue, Block<SPACE> > & me, Tag<TSpec> const)
 {
-    SEQAN_CHECKPOINT;
     return Iter<String<TValue, Block<SPACE> >, PositionIterator>(me, length(me));
 }
 
@@ -232,7 +223,6 @@ template<typename TValue, size_t SPACE, typename TSpec>
 inline typename Iterator<String<TValue, Block<SPACE> > const, Tag<TSpec> const>::Type
 end(String<TValue, Block<SPACE> > const & me, Tag<TSpec> const)
 {
-    SEQAN_CHECKPOINT;
     return Iter<String<TValue, Block<SPACE> > const, PositionIterator>(me, length(me));
 }
 
@@ -244,11 +234,17 @@ template<typename TValue, size_t SPACE, typename TSource>
 inline void
 assign(String<TValue, Block<SPACE> >& target, TSource const& source)
 {
-    SEQAN_CHECKPOINT;
     clear(target);
     typedef typename Iterator<TSource const, Standard>::Type TIter;
     for(TIter it = begin(source, Standard()); !atEnd(it, source); goNext(it))
         appendValue(target, *it);
+}
+
+template<typename TValue, size_t SPACE, typename TSource, typename TExpand>
+inline void
+assign(String<TValue, Block<SPACE> >& target, TSource const& source, Tag<TExpand> const &)
+{
+    assign(target, source);
 }
 
 // ----------------------------------------------------------------------------
@@ -259,7 +255,6 @@ template<typename TValue, size_t SPACE, typename TPos>
 inline typename Reference<String<TValue, Block<SPACE> > >::Type
 value(String<TValue, Block<SPACE> >& stack, TPos const pos)
 {
-    SEQAN_CHECKPOINT;
     return value(*(stack.blocks[pos / SPACE]), pos % SPACE);
 }
 
@@ -267,7 +262,6 @@ template<typename TValue, size_t SPACE, typename TPos>
 inline typename Reference<String<TValue, Block<SPACE> > >::Type
 value(String<TValue, Block<SPACE> > const& stack, TPos const pos)
 {
-    SEQAN_CHECKPOINT;
     return value(*(stack.blocks[pos / SPACE]), pos % SPACE);
 }
 
@@ -280,7 +274,6 @@ template<typename TValue, size_t SPACE, typename TIteratorSpec>
 inline bool
 atEnd(Iter<String<TValue, Block<SPACE> >, TIteratorSpec>& it, String<TValue, Block<SPACE> >& container)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Iterator<String<TValue, Block<SPACE> >, Standard>::Type TIter;
     TIter endIt = end(container, Standard());
     return (it == endIt);
@@ -294,7 +287,6 @@ template<typename TValue, size_t SPACE>
 inline void
 clear(String<TValue, Block<SPACE> >& me)
 {
-    SEQAN_CHECKPOINT;
     typedef String<TValue, Block<SPACE> >           TBlockString;
     typedef typename TBlockString::TBlockTable      TBlockTable;
     typedef typename Iterator<TBlockTable, Standard>::Type  TIter;
@@ -317,7 +309,6 @@ template<typename TValue, size_t SPACE, typename TSize2, typename TExpand>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
 resize(String<TValue, Block<SPACE> > & me, TSize2 new_length, Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
     typedef String<TValue, Block<SPACE> >           TBlockString;
     typedef typename Size<TBlockString>::Type       TSize;
     TSize len = length(me);
@@ -337,7 +328,6 @@ template<typename TValue, size_t SPACE, typename TSize2>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
 resize(String<TValue, Block<SPACE> > & me, TSize2 new_length, Limit)
 {
-    SEQAN_CHECKPOINT;
     typedef String<TValue, Block<SPACE> >           TBlockString;
     typedef typename Size<TBlockString>::Type       TSize;
     TSize len = length(me);
@@ -369,7 +359,6 @@ reserve(
     TSize new_capacity,
     Tag<TExpand> tag)
 {
-SEQAN_CHECKPOINT
     reserve(me.blocks, (new_capacity + SPACE - 1) / SPACE, tag);
     return capacity(me.blocks) * SPACE;
 }
@@ -380,7 +369,6 @@ template<typename TValue, size_t SPACE, typename TSize, typename TExpand>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
 reserve(String<TValue, Block<SPACE> > & /*me*/, TSize new_capacity, Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
     return new_capacity;
 }
 
@@ -390,7 +378,7 @@ reserve(String<TValue, Block<SPACE> > & /*me*/, TSize new_capacity, Tag<TExpand>
 
 template<typename TTargetValue, size_t SPACE, typename TValue, typename TExpand>
 inline void
-appendValue(String<TTargetValue, Block<SPACE> > & me, TValue SEQAN_FORWARD_CARG value, Tag<TExpand> tag)
+appendValue(String<TTargetValue, Block<SPACE> > & me, TValue && value, Tag<TExpand> tag)
 {
     // TODO(holtgrew): Why does this operate on raw memory instead of using appendValue(me.blocks[last], X)?
     typedef String<TTargetValue, Block<SPACE> > TString;
@@ -411,7 +399,7 @@ appendValue(String<TTargetValue, Block<SPACE> > & me, TValue SEQAN_FORWARD_CARG 
         ++me.lastValue;
         back(me.blocks)->data_length += 1;
     }
-    valueConstruct(me.lastValue, SEQAN_FORWARD(TValue, value));
+    valueConstruct(me.lastValue, std::forward<TValue>(value));
 }
 
 // ----------------------------------------------------------------------------
@@ -422,7 +410,6 @@ template<typename TValue, size_t SPACE, typename TSource, typename TExpand>
 inline void
 append(String<TValue, Block<SPACE> >& me, TSource const& source, Tag<TExpand> /*tag*/)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Iterator<TSource const, Standard>::Type TIter;
     for(TIter it = begin(source, Standard()); !atEnd(it, source); goNext(it))
         appendValue(me, *it);
@@ -436,7 +423,6 @@ template<typename TValue, size_t SPACE>
 inline TValue &
 back(String<TValue, Block<SPACE> > & me)
 {
-    SEQAN_CHECKPOINT;
     SEQAN_ASSERT_NOT_MSG(empty(me), "back() called on an empty string.");
 
     return *me.lastValue;
@@ -446,7 +432,6 @@ template<typename TValue, size_t SPACE>
 inline TValue const &
 back(String<TValue, Block<SPACE> > const & me)
 {
-    SEQAN_CHECKPOINT;
     SEQAN_ASSERT_NOT_MSG(empty(me), "back() called on an empty string.");
 
     return *me.lastValue;
@@ -460,7 +445,6 @@ template<typename TValue, size_t SPACE>
 inline TValue &
 backPrev(String<TValue, Block<SPACE> > & me)
 {
-    SEQAN_CHECKPOINT;
     SEQAN_ASSERT_GEQ_MSG(length(me), 2u, "backPrev() called on a string with less than 2 elements.");
 
     if (me.lastValue != me.blockFirst)
@@ -473,7 +457,6 @@ template<typename TValue, size_t SPACE>
 inline TValue const &
 backPrev(String<TValue, Block<SPACE> > const& me)
 {
-    SEQAN_CHECKPOINT;
     SEQAN_ASSERT_GEQ_MSG(length(me), 2u, "backPrev() called on a string with less than 2 elements.");
 
    if (me.lastValue != me.blockFirst)
@@ -492,7 +475,6 @@ eraseBack(String<TValue, Block<SPACE> >& me)
 {
     typedef typename String<TValue, Block<SPACE> >::TBlockIter TBlockIter;
 
-    SEQAN_CHECKPOINT;
     SEQAN_ASSERT_NOT_MSG(empty(me), "eraseBack() called on an empty string.");
 
     if (me.lastValue == me.blockFirst) {
@@ -527,7 +509,6 @@ template<typename TValue, size_t SPACE>
 inline bool
 empty(String<TValue, Block<SPACE> > const& me)
 {
-    SEQAN_CHECKPOINT;
     return length(me.blocks) == 0;
 }
 
@@ -539,7 +520,6 @@ template<typename TValue, size_t SPACE>
 inline typename Size<String<TValue, Block<SPACE> > >::Type
 length(String<TValue, Block<SPACE> > const & me)
 {
-    SEQAN_CHECKPOINT;
     if (length(me.blocks))
         return (length(me.blocks) - 1) * SPACE + (me.lastValue - me.blockFirst) + 1;
     else
@@ -554,7 +534,6 @@ template<typename TValue, size_t SPACE>
 inline typename Size<String<TValue, Block<SPACE> > >::Type
 capacity(String<TValue, Block<SPACE> > const & me)
 {
-    SEQAN_CHECKPOINT;
     if (length(me.blocks))
         return length(me.blocks) * SPACE;
     else

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_DISTANCE_H
 #define SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_DISTANCE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -165,7 +165,6 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
                   TSize ktup,
                   KmerDistance)
 {
-    SEQAN_CHECKPOINT
     getDistanceMatrix(g, distanceMatrix, ktup, typename Value<typename Value<TStringSet>::Type>::Type(), KmerDistance() );
 }
 
@@ -177,7 +176,6 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
                   TMatrix& distanceMatrix,
                   KmerDistance)
 {
-    SEQAN_CHECKPOINT
     getDistanceMatrix(g, distanceMatrix, 3, KmerDistance() );
 }
 
@@ -205,12 +203,11 @@ inline void
 getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
                   TMatrix& distanceMatrix)
 {
-    SEQAN_CHECKPOINT
     getDistanceMatrix(g, distanceMatrix, KmerDistance() );
 }
 
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

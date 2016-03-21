@@ -1,7 +1,7 @@
 # ============================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ============================================================================
-# Copyright (c) 2006-2012, Knut Reinert, FU Berlin
+# Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,11 @@
 # set it here.  We need this to make the naming of the package file automatic.
 if (SEQAN_SYSTEM_PROCESSOR)
   set(CMAKE_SYSTEM_PROCESSOR "${SEQAN_SYSTEM_PROCESSOR}")
+endif ()
+
+# some platforms (e.g. FreeBSD) use different names here
+if (CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64")
+  set(CMAKE_SYSTEM_PROCESSOR "x86_64")
 endif ()
 
 if (NOT DEFINED CPACK_SYSTEM_NAME)

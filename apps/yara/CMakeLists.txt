@@ -6,74 +6,52 @@
 # CMakeLists.txt file for yara.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_apps_yara)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_apps_yara CXX)
 message (STATUS "Configuring apps/yara")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
-# Search C++11.
-find_package(CXX11 REQUIRED)
-
-# Stop here if there is no C++11 with STL.
-if (NOT (CXX11_FOUND AND CXX11_STL_FOUND))
-    message (STATUS "  C++11 compiler required to build yara.")
-    return ()
-endif (NOT (CXX11_FOUND AND CXX11_STL_FOUND))
-
-# Disable parallelism in MSVC as it supports only OpenMP 2.0.
 if (MSVC)
-  set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)
-else ()
-  set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB BZip2)
+    message (STATUS "Yara is currently not build on Microsoft Visual because it requires OpenMP 3.0.")
+    return ()
 endif ()
 
 # Search SeqAn and select dependencies.
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (OpenMP)
+    find_package (ZLIB)
+    find_package (BZip2)
+    find_package (SeqAn REQUIRED)
+endif ()
 
 # Warn if OpenMP was not found.
-if (NOT SEQAN_HAS_OPENMP)
+if (NOT OPENMP_FOUND)
   message (STATUS "  OpenMP 3.0 not found: building yara without multi-threading.")
-endif (NOT SEQAN_HAS_OPENMP)
+endif (NOT OPENMP_FOUND)
 
 # Warn if Zlib was not found.
-if (NOT SEQAN_HAS_ZLIB)
+if (NOT ZLIB_FOUND)
   message (STATUS "  Zlib not found: building yara without gzipped input and BAM output.")
-endif (NOT SEQAN_HAS_ZLIB)
+endif (NOT ZLIB_FOUND)
 
 # Warn if BZip2 was not found.
-if (NOT SEQAN_HAS_BZIP2)
+if (NOT BZIP2_FOUND)
   message (STATUS "  BZip2 not found: building yara without bzipped input.")
-endif (NOT SEQAN_HAS_BZIP2)
+endif (NOT BZIP2_FOUND)
 
 # ----------------------------------------------------------------------------
 # App-Level Configuration
 # ----------------------------------------------------------------------------
 
-set (SEQAN_APP_VERSION "0.9.3")
+set (SEQAN_APP_VERSION "0.9.6")
 
-option (YARA_LARGE_CONTIGS "Set to ON to enable support for more than 32k contigs or contigs longer than 4Gbp." OFF)
-if (YARA_LARGE_CONTIGS)
+option (YARA_LARGE_CONTIGS "Set to OFF to disable support for more than 32k contigs or contigs longer than 4Gbp." ON)
+if (YARA_LARGE_CONTIGS AND NOT SEQAN_TRAVIS_BUILD)
   add_definitions (-DYARA_LARGE_CONTIGS=1)
-endif (YARA_LARGE_CONTIGS)
-
-option (YARA_ARCH_NATIVE "Set to OFF to disable architecture-specific optimizations, e.g. g++ -march=native." ON)
-
-# ----------------------------------------------------------------------------
-# Arch Setup
-# ----------------------------------------------------------------------------
-
-if (YARA_ARCH_NATIVE)
-  if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
-    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -march=native")
-  endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
-
-  if (CMAKE_COMPILER_IS_GNUCXX AND APPLE)
-    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mno-avx")
-  endif (CMAKE_COMPILER_IS_GNUCXX AND APPLE)
-endif (YARA_ARCH_NATIVE)
+endif (YARA_LARGE_CONTIGS AND NOT SEQAN_TRAVIS_BUILD)
 
 # ----------------------------------------------------------------------------
 # Disable Compiler Warnings
@@ -103,7 +81,7 @@ add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # Update the list of file names below if you add source files to your application.
 add_executable(yara_indexer indexer.cpp
@@ -123,7 +101,6 @@ add_executable(yara_mapper    mapper.cpp
                               mapper_filter.h
                               mapper_extender.h
                               mapper_verifier.h
-                              mapper_selector.h
                               mapper_aligner.h
                               mapper_writer.h
                               basic_alphabet.h

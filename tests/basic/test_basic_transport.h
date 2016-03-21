@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -72,14 +72,12 @@ struct TransportObj_
         SEQAN_ASSERT(b);
     }
 
-#ifdef SEQAN_CXX11_STANDARD
     TransportObj_(TransportObj_ && other)
             : id(nextId++), assignedFrom(-1), setFrom(-1), movedFrom(other.id)
     {
         bool b = IsSameType<TSpec, MoveYes>::Type::VALUE;
         SEQAN_ASSERT(b);
     }
-#endif
 
     TransportObj_ &
     operator=(TransportObj_ const & other)

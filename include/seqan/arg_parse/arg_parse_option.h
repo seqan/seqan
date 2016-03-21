@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -108,6 +108,8 @@ public:
     bool                _isRequired;  // true if this ArgParseOption must be set
     bool                _isHidden;    // true if this ArgParseOption should not be
                                       // shown on the command line
+    bool                _isAdvanced;  // true if this ArgParseOption should only
+                                      // be shown in the full help
 
     // ----------------------------------------------------------------------------
     // Constructors
@@ -124,7 +126,8 @@ public:
         longName(_longName),
         _isFlag(false),
         _isRequired(false),
-        _isHidden(false)
+        _isHidden(false),
+        _isAdvanced(false)
     {
         _helpText = _help;
     }
@@ -137,7 +140,8 @@ public:
         longName(_longName),
         _isFlag(true),
         _isRequired(false),
-        _isHidden(false)
+        _isHidden(false),
+        _isAdvanced(false)
     {
         defaultValue.push_back("false");
         setValidValues(*this, "true false");
@@ -219,6 +223,49 @@ inline bool isHidden(ArgParseOption const & me)
 inline void hideOption(ArgParseOption & me, bool hide = true)
 {
     me._isHidden = hide;
+}
+
+// ----------------------------------------------------------------------------
+// Function isHidden()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseOption#isAdvanced
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Return whether an option is only shown in the full help screen.
+ *
+ * @signature bool isAdvanced(option);
+ *
+ * @param[in] option The ArgParseOption object to query.
+ *
+ * @return bool <tt>true</tt> if it is hidden, <tt>false</tt> otherwise.
+ *
+ * By default, options are not marked as advanced.
+ */
+
+inline bool isAdvanced(ArgParseOption const & me)
+{
+    return me._isAdvanced;
+}
+
+// ----------------------------------------------------------------------------
+// Function hideOption()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseOption#setAdvanced
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Shows the ArgParseOption only on the full help screen.
+ *
+ * @signature void setAdvanced(option[, advanced]);
+ *
+ * @param[in,out] option The ArgParseOption object to set the advanced flag of.
+ * @param[in]     advanced   <tt>bool</tt> that indicates whether to hide the flag (default: <tt>true</tt>)
+ */
+
+inline void setAdvanced(ArgParseOption & me, bool advanced = true)
+{
+    me._isAdvanced = advanced;
 }
 
 // ----------------------------------------------------------------------------

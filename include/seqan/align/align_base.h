@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -498,7 +498,7 @@ write(TFile & target,
 
         // Print header line
         char buffer[20];
-        int len = sprintf(buffer, "%7u", (unsigned)baseCount);
+        int len = snprintf(buffer, 20, "%7u", (unsigned)baseCount);
         write(target, buffer, len);
         baseCount += windowSize_;
         writeValue(target, ' ');

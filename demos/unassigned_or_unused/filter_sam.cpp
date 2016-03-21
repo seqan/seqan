@@ -12,11 +12,11 @@
 
 #include <iostream>
 #include <fstream>
+#include <random>
 
 #include <seqan/basic.h>
 #include <seqan/stream.h>
 #include <seqan/store.h>
-#include <seqan/random.h>
 #include <seqan/arg_parse.h>
 
 using namespace seqan;
@@ -102,7 +102,7 @@ void performWork(Options const & options)
 
     // Sort reads, ties are broken randomly.
     std::cerr << "Sorting alignments..." << std::endl;
-    Rng<> rng;
+    std::mt19937 rng;
     if (options.randomTieBreak)
         shuffle(fragmentStore.alignedReadStore, rng);
     if (options.sortDistance)

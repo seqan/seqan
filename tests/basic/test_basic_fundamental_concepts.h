@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -84,12 +84,12 @@ inline void testIntegers()
     testSignedInteger<signed short>();
     testSignedInteger<signed int>();
     testSignedInteger<signed long>();
-    testSignedInteger<__int64>();
+    testSignedInteger<int64_t>();
     testUnsignedInteger<unsigned char>();
     testUnsignedInteger<unsigned short>();
     testUnsignedInteger<unsigned int>();
     testUnsignedInteger<unsigned long>();
-    testUnsignedInteger<__uint64>();
+    testUnsignedInteger<uint64_t>();
 //  testSignedInteger<unsigned long>();   // <== this should fail
 }
 

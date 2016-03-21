@@ -762,7 +762,7 @@ _bestExtension(TInfix const & infH,
 template <typename TSource, typename TSpec1, typename TSpec2>
 void
 integrateAlign(Align<TSource, TSpec1> & align,
-			   Align<Segment<typename Infix<TSource>::Type, InfixSegment>, TSpec2> const & infixAlign) {
+			   Align<Segment<Segment<TSource, InfixSegment>, InfixSegment>, TSpec2> const & infixAlign) {
 	typedef typename Size<TSource>::Type TSize;
 	typedef typename Position<typename Row<Align<TSource, TSpec1> >::Type>::Type TPos;
 
@@ -826,7 +826,7 @@ _extendAndExtract(Align<Segment<Segment<TSequence, InfixSegment>, InfixSegment> 
 		TSeed seedOld(seed);
 		extendSeed(seed, host(infH), host(infV), direction, scoreMatrix, scoreDropOff, GappedXDrop());
 
-		if (static_cast<__int64>(seedSize(seed)) < minLength - (int)floor(minLength*eps))
+		if (static_cast<int64_t>(seedSize(seed)) < minLength - (int)floor(minLength*eps))
 			return false;
 
 		// determine length and number of error columns of local alignment (seed)

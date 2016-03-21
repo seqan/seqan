@@ -6,20 +6,26 @@
 # CMakeLists.txt file for bs_tools.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_apps_bs_tools)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_apps_bs_tools CXX)
 message (STATUS "Configuring apps/bs_tools")
 
-set (SEQAN_APP_VERSION "0.1.2")
+set (SEQAN_APP_VERSION "0.1.4")
+
+if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND ("$ENV{MODEL}" STREQUAL "Nightly"))
+    message (STATUS "bs_tools skipped on FreeBSD because math.h rounding errors.")
+    return ()
+endif ()
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB)
-
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (ZLIB)
+    find_package (SeqAn REQUIRED)
+endif ()
 find_package (Boost)
 
 if (NOT Boost_FOUND OR NOT ZLIB_FOUND)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Parser for SeqAn Doxygen dialect.
 
 The Doxygen documentation has a regular grammar and thus can be parsed quite

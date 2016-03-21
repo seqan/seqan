@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Conversion of the CTD format into Galaxy XML.
 
 The CTD parser should be reusable but is not in its own module since it is

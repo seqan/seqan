@@ -23,34 +23,18 @@ In SeqAn we use class templates to implement metafunctions in C++.
 Generic algorithms usually have to know certain types that correspond to their arguments: An algorithm on strings may need to know which type of characters are stored in the string, or what kind of iterator can be used to browse it.
 SeqAn uses Metafunctions (also known as "traits") for that purpose. For example: Assuming that we define a string of amino acids:
 
-.. code-block:: cpp
-
-   String<AminoAcid> str = "ARN";
+.. includefrags:: demos/tutorial/metafunctions/base.cpp
+    :fragment: amino
 
 Now lets define a function that exchanges the first two values in a string:
 
-.. code-block:: cpp
-
-   void exchangeFirstValues(String<AminoAcid> & str)
-   {
-       if (length(str) < 2) return;
-       AminoAcid temp = str[0];
-       str[0] = str[1];
-       str[1] = temp;
-   }
+.. includefrags:: demos/tutorial/metafunctions/base.cpp
+    :fragment: func_exchange1
 
 Since this function only works for instances of :dox:`String String<`:dox:`AminoAcid AminoAcid>`, we could try to make it more general by making a template out of it.
 
-.. code-block:: cpp
-
-   template <typename T>
-   void exchangeFirstValues(T & str)
-   {
-       if (length(str) < 2) return;
-       AminoAcid temp = str[0];
-       str[0] = str[1];
-       str[1] = temp;
-   }
+.. includefrags:: demos/tutorial/metafunctions/base.cpp
+    :fragment: func_exchange2
 
 Now the function works for all sequence types ``T`` that store ``AminoAcid`` objects, but it will fail for other value types as soon as the variable temp cannot store ``str[0]`` anymore.
 To overcome this problem, we must redefine ``temp`` in a way that it can store a value of the correct type.
@@ -60,16 +44,8 @@ The metafunction :dox:`ContainerConcept#Value` anwers this question: "The value 
 
 Hence, the final version of our function ``exchangeFirstValues`` reads as follows:
 
-.. code-block:: cpp
-
-   template <typename T>
-   void exchangeFirstValues(T & str)
-   {
-       if (length(str) < 2) return;
-       typename Value<T>::Type temp = str[0];
-       str[0] = str[1];
-       str[1] = temp;
-   }
+.. includefrags:: demos/tutorial/metafunctions/base.cpp
+    :fragment: func_exchange3
 
 We can view ``Value`` as a kind of "function" that takes ``T`` as an argument (in angle brackets) and returns the required value type of ``T``.
 In fact, ``Value`` is not implemented as a C++ function, but as a class template.
@@ -97,15 +73,8 @@ Type metafunctions have the form:
 The keyword ``typename`` must be stated if one of the arguments ``T1, T2, ..., TN`` is or uses a template parameter.
 For example the following piece of code uses the metafunction ``Iterator`` to determine an iterator type for a string class:
 
-.. code-block:: cpp
-
-   String<char> str = "I am a string";
-   Iterator<String<char> >::Type it = begin(str);
-   while (! atEnd(it, str))
-   {
-       std::cout << *it;
-       ++it;
-   }
+.. includefrags:: demos/tutorial/metafunctions/base.cpp
+    :fragment: iterator
 
 Value Metafunctions
 -------------------
@@ -126,16 +95,8 @@ The general form of value metafunctions is:
 
 For example the following function prints the length of a fixed sized string using the value metafunction :dox:`LENGTH`:
 
-.. code-block:: cpp
-
-   template <typename T>
-   void printLenOfFixedSizeString(T const &)
-   {
-       std::cout << LENGTH<T>::VALUE;
-   }
-
-   String<char, Array<100> > my_str;
-   printLenOfFixedSizeString(my_str);
+.. includefrags:: demos/tutorial/metafunctions/base.cpp
+    :fragment: length
 
 SeqAn Metafunctions
 -------------------
@@ -204,10 +165,5 @@ Assignment 1
         .. includefrags:: demos/tutorial/metafunctions/swap.cpp
            :fragment: swap-apply
 
-
-        .. code-block:: console
-
-           # ./demos/tutorial_swap
-           ATTAAATT
-           133111311333
+        .. includefrags:: demos/tutorial/metafunctions/swap.cpp.stdout
 

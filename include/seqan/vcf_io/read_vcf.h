@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -170,7 +170,7 @@ readRecord(VcfRecord & record,
     readUntil(buffer, iter, NextEntry());
     if (empty(buffer))
         SEQAN_THROW(EmptyFieldError("POS"));
-    record.beginPos = lexicalCast<__int32>(buffer) - 1; // Translate from 1-based to 0-based.
+    record.beginPos = lexicalCast<int32_t>(buffer) - 1; // Translate from 1-based to 0-based.
     skipOne(iter);
 
     // ID
@@ -247,7 +247,7 @@ readRecord(VcfRecord & record,
         if (empty(buffer))
         {
             char buffer[30];    // == 9 (GENOTYPE_) + 20 (#digits in MIN_INT64) + 1 (trailing zero)
-            sprintf(buffer, "GENOTYPE_%u", i + 1);
+            snprintf(buffer, 30, "GENOTYPE_%u", i + 1);
             SEQAN_THROW(EmptyFieldError(buffer));
         }
         appendValue(record.genotypeInfos, buffer);

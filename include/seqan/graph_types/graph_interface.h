@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 
 // TODO(holtgrew): The documentation needs some improvements, possibly together with a refactoring of the module.
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 // Default directed graph
@@ -177,7 +177,6 @@ struct EdgeType<Graph<Directed<TCargo, WithoutEdgeId> > const> {
     typedef EdgeStump<TCargo, true, false, false, WithoutEdgeId> const Type;
 };
 
-
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, typename TSpec>
@@ -190,6 +189,22 @@ struct EdgeType<Graph<Tree<TCargo, TSpec> > > {
 template<typename TCargo, typename TSpec>
 struct EdgeType<Graph<Tree<TCargo, TSpec> > const> {
     typedef EdgeStump<TCargo, true, false, false, TreeTag> const Type;
+};
+
+//////////////////////////////////////////////////////////////////////////////
+
+template<typename TCargo>
+struct EdgeType<Graph<Directed<TCargo, WithSourceId> > >
+{
+    typedef EdgeStump<TCargo, true, true, true, WithSourceId> Type;
+};
+
+//////////////////////////////////////////////////////////////////////////////
+
+template<typename TCargo>
+struct EdgeType<Graph<Directed<TCargo, WithSourceId> > const>
+{
+    typedef EdgeStump<TCargo, true, true, true, WithSourceId> const Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -209,7 +224,8 @@ struct EdgeType<Graph<Undirected<TCargo, TSpec> > const> {
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo>
-struct EdgeType<Graph<Undirected<TCargo, WithoutEdgeId> > > {
+struct EdgeType<Graph<Undirected<TCargo, WithoutEdgeId> > >
+{
     typedef EdgeStump<TCargo, true, true, false, WithoutEdgeId> Type;
 };
 
@@ -661,7 +677,6 @@ template<typename TId>
 inline TId
 _getId(TId const id)
 {
-    SEQAN_CHECKPOINT
     return id;
 }
 
@@ -672,8 +687,8 @@ inline void
 _createVertices(Graph<TSpec>& g,
                 TVertexDescriptor const maxId)
 {
-        // Create missing vertices
-        while (maxId >= getIdUpperBound(g.data_id_managerV)) addVertex(g);
+    // Create missing vertices
+    while (maxId >= getIdUpperBound(g.data_id_managerV)) addVertex(g);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -726,6 +741,6 @@ operator << (TStream & target,
     return target;
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -221,7 +221,7 @@ struct TranslateTableIupacToChar_
 template <typename T>
 char const TranslateTableIupacToChar_<T>::VALUE[16] =
 {        //TGCA
-    '=', //0000=0 = or U
+    'U', //0000=0 = or U
     'A', //0001=1
     'C', //0010=2
     'M', //0011=3 AC
@@ -248,7 +248,7 @@ struct TranslateTableIupacToDna_
 template <typename T>
 char const TranslateTableIupacToDna_<T>::VALUE[16] =
 {      //TGCA
-    0, //0000=0 = or U
+    3, //0000=0 = or U
     0, //0001=1
     1, //0010=2
     0, //0011=3 AC

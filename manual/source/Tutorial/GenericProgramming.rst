@@ -41,81 +41,39 @@ The number of integers in the list is called the ``size`` of a shape whereas the
 The following code sniplet shows a generic algorithm for computing all hash values for a shape.
 The function ``span`` applied to the shape s = ⟨s1, . . . , sq⟩ returns sq − 1.
 
-.. code-block:: cpp
-
-   template <typename TShape, typename TString> void hashAll(TShape & shape, TString & str)
-      typedef typename Iterator<TString>::Type TIterator;
-      TIterator it = begin(str);
-      TIterator it_end = end(str) - span(shape);
-      while (it != it_end) {
-         unsigned int hash_value = hash(shape, it);
-        /* do some things with the hash value */ ++it;
-      }
+.. includefrags:: demos/tutorial/generic_programming/example_hashing.cpp
+      :fragment: hashAll
 
 Each shape has to know the alphabet :math:`\Sum`, so we specify this value type in the first template parameter of ``Shape``.
 The actual specialization is selected in the second template parameter ``TSpec``.
 
-.. code-block:: cpp
-
-    template <typename TValue, typename TSpec = SimpleShape> class Shape;
+.. includefrags:: demos/tutorial/generic_programming/example_hashing.cpp
+      :fragment: classShape
 
 the default is :dox:`SimpleShape` which is simply an ungapped shape storing merely the length of the shape from which it can deduce its span and size.
 
-.. code-block:: cpp
-
-   template <typename TValue> class Shape< TValue, SimpleShape >
-   {
-      public:
-         unsigned int span;
-   };
+.. includefrags:: demos/tutorial/generic_programming/example_hashing.cpp
+      :fragment: classSimpleShape
 
 If we know q at compile time, then we can specify it in a template parameter and define span as a static member:
 
-.. code-block:: cpp
-
-   template <unsigned int q = 0> struct UngappedShape<q>;
-
-   template <typename TValue, unsigned int q> class Shape< TValue, UngappedShape<q> >
-   {
-      public:
-         static unsigned int const span = q;
-   };
+.. includefrags:: demos/tutorial/generic_programming/example_hashing.cpp
+      :fragment: classUngappedShape
 
 The question is now, whether we can speed up the above ``hashAll`` functions for specializations of the class ``shape`` like ungapped shapes.
 A little thinking yields a positive answer to that question.
 Indeed, for ungapped shapes, we can incrementally compute the next hash value form a given hashvalue in constant time using the formula ``hash(a_{i+1}...a{_i+q})=hash(a_{i}...a_{i+q−1})|Σ|−a_{i}|Σ|^q +a_{i+q``}, that means when shifting the shape along the sequence, we have to subtract the effect of the leftmost letter and add the effect of the rightmost letter, all scaled with the corresponding factor. All digits in between are *shifted* by multiplying them with the alphabet size.
 Obviously this allows for a much more efficient implementation of the ``hashAll`` function. This functionality can be encoded in the following function :dox:`Shape#hashNext`.
 
-.. code-block:: cpp
-
-   template <typename TValue, unsigned int q, typename TIterator>
-   inline unsigned int
-   hashNext(Shape< TValue, UngappedShape<q> > const & shape, TIterator it, unsigned int prev)
-   {
-      unsigned int val = prev * ValueSize<TValue>::VALUE - *it * shape.fac
-                                  + *(it + shape.span);
-      return val;
-    // shape.fac stores |Σ|^q
-   }
+.. includefrags:: demos/tutorial/generic_programming/example_hashing.cpp
+      :fragment: hashNext
 
 SeqAn aims at not using virtual functions for introducing polymorphism.
 Instead the concept is called ``template subclassing``.
 Hence we can now define a specialized ``hashAll`` function for all ungapped shapes as follows.
 
-.. code-block:: cpp
-
-   template <typename TValue, unsigned int q, typename TString>
-   void hashAll(Shape< TValue, UngappedShape<q> > & shape, TString & str)
-      typedef typename Iterator<TString>::Type TIterator;
-      TIterator it = begin(str); TIterator it_end = end(str) - span(shape);
-      unsigned int hash_value = hash(shape, it);
-      /* do some things with the hash value */
-
-      while (++it != it_end) {
-         unsigned int hash_value = hashNext(shape, it, hash_value);
-         /* do some things with the hash value */
-      }
-   }
+.. includefrags:: demos/tutorial/generic_programming/example_hashing.cpp
+      :fragment: specializedHashAll
 
 Thats pretty much it.
 The C++ resolution mechanisms will ensure that whenever you use an ungapped shape in your code, the more efficient ``hashAll`` function above will be compiled.

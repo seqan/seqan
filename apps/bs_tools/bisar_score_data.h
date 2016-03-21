@@ -142,7 +142,6 @@ struct SeqErrorFreqs<TValue, BsNonSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
 
                         // Column sum must be 1   (in the current model)
         static TValue const _data[TAB_SIZE] = {
@@ -167,7 +166,6 @@ struct SeqErrorFreqs<TValue, BsSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
 
         TValue fE = 1.0/3.0;                        // Column sum must be 1
         static TValue const _data[TAB_SIZE] = {
@@ -192,7 +190,6 @@ struct SeqErrorFreqsTo<TValue, BsSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
         TValue f = 1.0/5.0;
                                                 // A,    C,     G,     T,    N
         static TValue const _data[VALUE_SIZE] = {f, f, f, f, f};      // siehe Dohm et.al. 2011
@@ -209,7 +206,6 @@ struct SeqErrorFreqsTo<TValue, BsNonSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
                                                 // A,    C,     G,     T,    N
         static TValue const _data[VALUE_SIZE] = {0.25, 0.38, 0.16, 0.21, 0.2};      // siehe Dohm et.al. 2011 // TODO N?
 
@@ -227,7 +223,6 @@ struct BaseErrorFreqsFrom<TValue, BsNonSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
                                                 // A,  C,    G,    T     N
         static TValue const _data[VALUE_SIZE] =  {0.25, 0.19, 0.24, 0.33, 0.0};      // siehe Dohm et.al. 2008
         return _data;                                                                // N  stays N
@@ -241,7 +236,6 @@ struct BaseErrorFreqsFrom<TValue, BsSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
         TValue f = 1.0/5.0;
                                                 // A,  C,    G,    T     N
         static TValue const _data[VALUE_SIZE] = {f, f, f, f, f};      // siehe Dohm et.al. 2008
@@ -262,7 +256,6 @@ struct InsErrorFreqs<TValue, BsNonSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
                                                 // A,    C,     G,     T,    N
         static TValue const _data[VALUE_SIZE] = {0.43, 0.065, 0.065, 0.43, 0.01};      // siehe Dohm et.al. 2011 // TODO N?
 
@@ -277,7 +270,6 @@ struct InsErrorFreqs<TValue, BsSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
         TValue f = 1.0/5.0;
         static TValue const _data[VALUE_SIZE] = {f, f, f, f, f};
         return _data;
@@ -295,7 +287,6 @@ struct DelErrorFreqs<TValue, BsNonSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
                                                 // A,    C,     G,     T,    N
         static TValue const _data[VALUE_SIZE] = {0.42, 0.075, 0.075, 0.42, 0.00};      // siehe Dohm et.al. 2011
 
@@ -310,7 +301,6 @@ struct DelErrorFreqs<TValue, BsSimple> {
     };
 
     static inline TValue const * getData() {
-        SEQAN_CHECKPOINT;
         TValue f = 1.0/5.0;
         static TValue const _data[VALUE_SIZE] = {f, f, f, f, f};
         return _data;

@@ -1,5 +1,5 @@
-application/x-fasta fasta fa
-application/x-fastq fastq fq
+application/x-fasta fa fa.bgzf fa.gz fa.bz2 fasta fasta.bgzf fasta.gz fasta.bz2 faa faa.bgzf faa.gz faa.bz2 ffn ffn.bgzf ffn.gz ffn.bz2 fna fna.bgzf fna.gz fna.bz2 frn frn.bgzf frn.gz frn.bz2 embl embl.bgzf embl.gz embl.bz2 gbk gbk.bgzf gbk.gz gbk.bz2 raw raw.bgzf raw.gz raw.bz2
+application/x-fastq fq fq.bgzf fq.gz fq.bz2 fastq fastq.bgzf fastq.gz fastq.bz2 
 application/x-masic masic mas
 application/x-gsi gsi
 application/x-z-gsi gsi.gz
@@ -7,31 +7,19 @@ application/x-gff gff
 application/x-gtf gtf
 application/x-razers razers
 application/x-eland eland
-application/x-masai raw
-application/x-sam sam
+application/x-sam sam sam.bgzf sam.gz sam.bz2
 application/x-bam bam
 application/x-afg afg
 application/x-dist dist
 application/x-dot dot
 application/x-newick newick
 application/x-alftsv alf.tsv
-application/x-txt txt
-application/x-fasta fasta fa
-application/x-fastq fastq fq
-application/x-masic masic mas
-application/x-gsi gsi
-application/x-z-gsi gsi.gz
-application/x-razers razers
-application/x-eland eland
-application/x-masai raw
-application/x-sam sam
-application/x-bam bam
-application/x-afg afg
-application/x-dist dist
-application/x-dot dot
-application/x-newick newick
-application/x-alftsv alf.tsv
-application/x-txt txt
+application/x-txt txt csv tsv tab log
 application/x-bam-coverage-tsv bam_coverage_tsv
 application/x-fq-stats-tsv fq_stats_tsv
 application/x-rabema-report-tsv rabema_report_tsv
+application/x-index lf.drp lf.drs lf.drv lf.pst sa.ind sa.len sa.val txt.concat txt.limits txt.size
+application/x-yara rid.concat rid.limits
+application/x-vcf vcf
+application/x-bed bed bigbed bedgraph
+application/x-misc R

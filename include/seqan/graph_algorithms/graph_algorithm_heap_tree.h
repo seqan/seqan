@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALGORITHM_HEAP_TREE_H
 #define SEQAN_HEADER_GRAPH_ALGORITHM_HEAP_TREE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -75,13 +75,11 @@ public:
     //////////////////////////////////////////////////////////////////////////////
 
     HeapTree() : data_heap_size(0) {
-        SEQAN_CHECKPOINT
     }
 
     //////////////////////////////////////////////////////////////////////////////
 
     HeapTree(HeapTree const& _other) {
-        SEQAN_CHECKPOINT
         data_value = _other.data_value;
         data_heap_size = _other.data_heap_size;
         data_predicate = _other.data_predicate;
@@ -90,14 +88,12 @@ public:
     //////////////////////////////////////////////////////////////////////////////
 
     ~HeapTree() {
-        SEQAN_CHECKPOINT
     }
 
 
     //////////////////////////////////////////////////////////////////////////////
 
     HeapTree& operator=(HeapTree const& _other) {
-        SEQAN_CHECKPOINT
         if (this == &_other) return *this;
         data_value = _other.data_value;
         data_heap_size = _other.data_heap_size;
@@ -128,7 +124,6 @@ struct Value<HeapTree<TValue, TPredicate, TSpec> const>
 
 template<typename TSize>
 inline TSize _left(TSize i) {
-    SEQAN_CHECKPOINT
     return i << 1;
 }
 
@@ -136,7 +131,6 @@ inline TSize _left(TSize i) {
 
 template<typename TSize>
 inline TSize _right(TSize i) {
-    SEQAN_CHECKPOINT
     return ((i << 1) + 1);
 }
 
@@ -144,7 +138,6 @@ inline TSize _right(TSize i) {
 
 template<typename TSize>
 inline TSize _parent(TSize i) {
-    SEQAN_CHECKPOINT
     return (i >> 1);
 }
 
@@ -154,7 +147,6 @@ template<typename TValue, typename TPredicate, typename TSpec>
 inline bool
 empty(HeapTree<TValue, TPredicate, TSpec> const& mHeap)
 {
-    SEQAN_CHECKPOINT
     return (mHeap.data_heap_size == 0);
 }
 
@@ -164,7 +156,6 @@ template<typename TValue, typename TPredicate, typename TSpec>
 inline typename Size<HeapTree<TValue, TPredicate, TSpec> >::Type
 length(HeapTree<TValue, TPredicate, TSpec> const& mHeap)
 {
-    SEQAN_CHECKPOINT
     return mHeap.data_heap_size;
 }
 
@@ -193,7 +184,6 @@ inline void
 heapInsert(HeapTree<TValue, TPredicate, TSpec>& mHeap,
            TObject object)
 {
-    SEQAN_CHECKPOINT
     typedef HeapTree<TValue, TPredicate, TSpec> THeapTree;
     typedef typename Size<THeapTree>::Type TSize;
 
@@ -214,7 +204,6 @@ inline void
 heapify(HeapTree<TValue, TPredicate, TSpec>& mHeap,
         TSize i)
 {
-    SEQAN_CHECKPOINT
     TSize l = _left(i);
     TSize r = _right(i);
     TSize largest = i;
@@ -234,7 +223,6 @@ buildHeap(HeapTree<TValue, TPredicate, TSpec>& mHeap,
           TITBegin itBeg,
           TITEnd itEnd)
 {
-    SEQAN_CHECKPOINT
     typedef HeapTree<TValue, TPredicate, TSpec> THeapTree;
     typedef typename Size<THeapTree>::Type TSize;
 
@@ -256,7 +244,6 @@ _swapObjects(HeapTree<TValue, TPredicate, KeylessHeap<TSpec> >& mHeap,
              TIndex1 i,
              TIndex2 j)
 {
-    SEQAN_CHECKPOINT
     TValue tmp = value(mHeap.data_value, i);
     value(mHeap.data_value, i) = value(mHeap.data_value, j);
     value(mHeap.data_value, j) = tmp;
@@ -270,7 +257,6 @@ _insertObject(HeapTree<TValue, TPredicate, KeylessHeap<TSpec> >& mHeap,
               TIndex i,
               TObject obj)
 {
-    SEQAN_CHECKPOINT
     value(mHeap.data_value, i) = obj;
 }
 
@@ -280,7 +266,6 @@ template<typename TValue, typename TPredicate, typename TSpec>
 inline TValue
 heapExtractRoot(HeapTree<TValue, TPredicate, KeylessHeap<TSpec> >& mHeap)
 {
-    SEQAN_CHECKPOINT
     TValue rootVal = value(mHeap.data_value, 1);
     value(mHeap.data_value, 1) = value(mHeap.data_value, mHeap.data_heap_size);
     --mHeap.data_heap_size;
@@ -306,7 +291,6 @@ heapSort(TITBegin itBeg,
          TITEnd itEnd,
          TPredicate)
 {
-    SEQAN_CHECKPOINT
     typedef typename Value<TITBegin>::Type TValue;
     typedef typename Size<TITBegin>::Type TSize;
     HeapTree<TValue, TPredicate> mHeap;
@@ -329,7 +313,6 @@ inline void
 heapSort(TITBegin itBeg,
          TITEnd itEnd)
 {
-    SEQAN_CHECKPOINT
     typedef typename Value<TITBegin>::Type TValue;
     heapSort(itBeg, itEnd, std::less<TValue>());
 }
@@ -365,13 +348,11 @@ public:
     //////////////////////////////////////////////////////////////////////////////
 
     HeapTree() : data_heap_size(0) {
-        SEQAN_CHECKPOINT
     }
 
     //////////////////////////////////////////////////////////////////////////////
 
     HeapTree(HeapTree const& _other) {
-        SEQAN_CHECKPOINT
         data_value = _other.data_value;
         data_map = _other.data_map;
         data_heap_size = _other.data_heap_size;
@@ -381,14 +362,12 @@ public:
     //////////////////////////////////////////////////////////////////////////////
 
     ~HeapTree() {
-        SEQAN_CHECKPOINT
     }
 
 
     //////////////////////////////////////////////////////////////////////////////
 
     HeapTree& operator=(HeapTree const& _other) {
-        SEQAN_CHECKPOINT
         data_value = _other.data_value;
         data_map = _other.data_map;
         data_heap_size = _other.data_heap_size;
@@ -406,7 +385,6 @@ _swapObjects(HeapTree<Pair<TKey, TValue>, TPredicate, KeyedHeap<TSpec> >& mHeap,
              TIndex1 i,
              TIndex2 j)
 {
-    SEQAN_CHECKPOINT
     typedef HeapTree<Pair<TKey, TValue>, TPredicate, TSpec> THeapTree;
     typedef typename Size<THeapTree>::Type TSize;
     typedef std::map<TKey, TSize> TMap;
@@ -432,7 +410,6 @@ _insertObject(HeapTree<Pair<TKey, TValue>, TPredicate, KeyedHeap<TSpec> >& mHeap
               TIndex i,
               TObject obj)
 {
-    SEQAN_CHECKPOINT
     typedef HeapTree<Pair<TKey, TValue>, TPredicate, TSpec> THeapTree;
     typedef typename Size<THeapTree>::Type TSize;
     value(mHeap.data_value, i) = obj;
@@ -447,7 +424,6 @@ template<typename TKey, typename TValue, typename TPredicate, typename TSpec>
 inline Pair<TKey, TValue>
 heapExtractRoot(HeapTree<Pair<TKey, TValue>, TPredicate, KeyedHeap<TSpec> >& mHeap)
 {
-    SEQAN_CHECKPOINT
     Pair<TKey, TValue> rootVal = value(mHeap.data_value, 1);
     mHeap.data_map.erase(mHeap.data_map.find(rootVal.i1));
     if (mHeap.data_heap_size != 1) {
@@ -467,7 +443,6 @@ heapChangeValue(HeapTree<Pair<TKey, TValue>, TPredicate, KeyedHeap<TSpec> >& mHe
                 TKey1 key,
                 TValue2 val)
 {
-    SEQAN_CHECKPOINT
     typedef HeapTree<Pair<TKey, TValue>, TPredicate, TSpec> THeapTree;
     typedef typename Size<THeapTree>::Type TSize;
     TSize i = mHeap.data_map.find(key)->second;
@@ -491,7 +466,6 @@ inline TValue
 heapGetValue(HeapTree<Pair<TKey, TValue>, TPredicate, KeyedHeap<TSpec> >& mHeap,
              TKey1 key)
 {
-    SEQAN_CHECKPOINT
     typedef HeapTree<Pair<TKey, TValue>, TPredicate, TSpec> THeapTree;
     typedef typename Size<THeapTree>::Type TSize;
     TSize i = mHeap.data_map.find(key)->second;
@@ -511,6 +485,6 @@ clear(HeapTree<Pair<TKey, TValue>, TPredicate, KeyedHeap<TSpec> >& mHeap)
 
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

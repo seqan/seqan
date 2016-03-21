@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -107,13 +107,13 @@ template <typename T>
 struct MakeUnsigned
 {
     typedef
-        typename If<typename IsSameType<T, __int8>::Type,       __uint8,
+        typename If<typename IsSameType<T, int8_t>::Type,       uint8_t,
         typename If<typename IsSameType<T, char>::Type,         unsigned char,
         typename If<typename IsSameType<T, signed char>::Type,  unsigned char,
         typename If<typename IsSameType<T, signed short>::Type, unsigned short,
         typename If<typename IsSameType<T, signed int>::Type,   unsigned int,
         typename If<typename IsSameType<T, signed long>::Type,  unsigned long,
-        typename If<typename IsSameType<T, __int64>::Type,      __uint64, T
+        typename If<typename IsSameType<T, int64_t>::Type,      uint64_t, T
         >::Type>::Type>::Type>::Type>::Type>::Type>::Type Type;
 };
 
@@ -156,12 +156,12 @@ struct MakeSigned
 {
     typedef
         typename If<typename IsSameType<T, char>::Type,           signed char,
-        typename If<typename IsSameType<T, __int8>::Type,         __int8,
+        typename If<typename IsSameType<T, int8_t>::Type,         int8_t,
         typename If<typename IsSameType<T, unsigned char>::Type,  signed char,
         typename If<typename IsSameType<T, unsigned short>::Type, signed short,
         typename If<typename IsSameType<T, unsigned int>::Type,   signed int,
         typename If<typename IsSameType<T, unsigned long>::Type,  signed long,
-        typename If<typename IsSameType<T, __uint64>::Type,       __int64, T
+        typename If<typename IsSameType<T, uint64_t>::Type,       int64_t, T
         >::Type>::Type>::Type>::Type>::Type>::Type>::Type Type;
 };
 
@@ -192,26 +192,11 @@ struct MakeSigned_ : MakeSigned<T> {};
  * @return Type A corresponding non-reference type, e.g. <tt>int</tt> for <tt>T = &amp; int</tt>.
  */
 
-#ifdef SEQAN_CXX11_STANDARD
-
 template <typename T>
 struct RemoveReference
 {
     typedef typename std::remove_reference<T>::type Type;
 };
-
-#else
-
-template <typename T>
-struct RemoveReference
-{
-    typedef T Type;
-};
-
-template <typename T>
-struct RemoveReference<T &> : RemoveReference<T> {};
-
-#endif
 
 // ----------------------------------------------------------------------------
 // Metafunction RemoveReference
@@ -229,35 +214,11 @@ struct RemoveReference<T &> : RemoveReference<T> {};
  * @return Type A corresponding non-pointer type, e.g. <tt>int</tt> for <tt>T = *int</tt>.
  */
 
-#ifdef SEQAN_CXX11_STANDARD
-
 template <typename T>
 struct RemovePointer
 {
     typedef typename std::remove_pointer<T>::type Type;
 };
-
-#else
-
-template <typename T>
-struct RemovePointer
-{
-    typedef T Type;
-};
-
-template <typename T>
-struct RemovePointer<T *>
-{
-    typedef T Type;
-};
-
-template <typename T>
-struct RemovePointer<T * const>
-{
-    typedef T Type;
-};
-
-#endif
 
 template <typename T>
 struct IsPointer : False {};

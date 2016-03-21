@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -187,7 +187,7 @@ int main(int argc, char const ** argv)
     // Create sequencing simulator.
     SequencingSimulatorFactory simFactory(rng, ignoredMethRng, options.seqOptions, options.illuminaOptions,
                                           options.rocheOptions, options.sangerOptions);
-    std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> sim = simFactory.make();
+    std::unique_ptr<SequencingSimulator> sim = simFactory.make();
 
     // Buffers for reading in fragments.
     seqan::CharString fragId;

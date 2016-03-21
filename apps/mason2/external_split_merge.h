@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -81,7 +81,7 @@ public:
     TRng & rng;
 
     // The length of the contigs.
-    std::vector<__int64> lengthSums;
+    std::vector<int64_t> lengthSums;
     // The number of haplotypes.
     int numHaplotypes;
 

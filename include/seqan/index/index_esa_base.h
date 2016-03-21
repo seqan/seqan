@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -36,7 +36,7 @@
 #ifndef SEQAN_HEADER_INDEX_ESA_BASE_H
 #define SEQAN_HEADER_INDEX_ESA_BASE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
     // dfs order

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_SHIFTAND_H
 #define SEQAN_HEADER_FIND_SHIFTAND_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -64,29 +64,30 @@ typedef Tag<ShiftAnd_> ShiftAnd;
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle>
-class Pattern<TNeedle, ShiftAnd> {
+class Pattern<TNeedle, ShiftAnd>
+{
 //____________________________________________________________________________
 public:
     typedef unsigned int TWord;
     enum { MACHINE_WORD_SIZE = sizeof(TWord) * 8 };
 
-//    Holder<TNeedle> data_host;
+    Holder<TNeedle>  data_host;
     String<TWord> bitMasks;            // Look up table for each character in the alphabet (called B in "Navarro")
     String<TWord> prefSufMatch;        // Set of all the prefixes of needle that match a suffix of haystack (called D in "Navarro")
     TWord needleLength;                // e.g., needleLength=33 --> blockCount=2 (iff w=32 bits)
     TWord blockCount;                // #unsigned ints required to store needle
 
-//____________________________________________________________________________
+    Pattern()
+    {}
 
-    Pattern() {}
-
+    // Custom c'tor setting a needle.
     template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl)
+    Pattern(TNeedle2 && ndl, SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
     {
-        setHost(*this, ndl);
+        setHost(*this, std::forward<TNeedle2>(ndl));
+        ignoreUnusedVariableWarning(dummy);
     }
 
-//____________________________________________________________________________
 };
 
 
@@ -94,15 +95,16 @@ public:
 // Functions
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TNeedle, typename TNeedle2>
+template <typename TNeedle>
 inline void
-setHost(Pattern<TNeedle, ShiftAnd> & me, TNeedle2 const & needle)
+_reinitPattern(Pattern<TNeedle, ShiftAnd> & me)
 {
-    SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     typedef typename Value<TNeedle>::Type TValue;
 
-    me.needleLength = length(needle);
+    TNeedle& ndl = needle(me);
+
+    me.needleLength = length(ndl);
     if (me.needleLength < 1)
         me.blockCount = 1;
     else
@@ -113,7 +115,7 @@ setHost(Pattern<TNeedle, ShiftAnd> & me, TNeedle2 const & needle)
 
     for (TWord j = 0; j < me.needleLength; ++j)
         me.bitMasks[
-            me.blockCount * ordValue(convert<TValue>(getValue(needle, j)))
+            me.blockCount * ordValue(convert<TValue>(getValue(ndl, j)))
             + j / me.MACHINE_WORD_SIZE
         ] |= (TWord)1 << (j % me.MACHINE_WORD_SIZE);
 
@@ -138,71 +140,12 @@ setHost(Pattern<TNeedle, ShiftAnd> & me, TNeedle2 const & needle)
     */
 }
 
-template <typename TNeedle, typename TNeedle2>
-inline void
-setHost(Pattern<TNeedle, ShiftAnd> & me, TNeedle2 & needle)
-{
-    setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
-}
-
-//____________________________________________________________________________
-
-template <typename TNeedle>
-inline TNeedle
-host(Pattern<TNeedle, ShiftAnd> const & pattern)
-{
-SEQAN_CHECKPOINT
-
-    typedef typename Pattern<TNeedle, ShiftAnd>::TWord TWord;
-    typedef typename Value<TNeedle>::Type TValue;
-
-    TNeedle temp;
-    resize(temp, pattern.needleLength, Exact());
-
-    TValue v = TValue();
-    for (unsigned i = 0; i < length(pattern.bitMasks); i += pattern.blockCount)
-    {
-        for (unsigned j = 0; j < pattern.needleLength; j++)
-            if ((pattern.bitMasks[i + j / pattern.MACHINE_WORD_SIZE] & (TWord)1 << (j % pattern.MACHINE_WORD_SIZE)) != (TWord)0)
-                temp[j] = v;
-        ++v;
-    }
-    return temp;
-}
-
-template <typename TNeedle>
-inline TNeedle
-host(Pattern<TNeedle, ShiftAnd> & pattern)
-{
-SEQAN_CHECKPOINT
-    return host(const_cast<Pattern<TNeedle, ShiftAnd> const &>(pattern));
-}
-
-//____________________________________________________________________________
-
-template <typename TNeedle>
-inline TNeedle
-needle(Pattern<TNeedle, ShiftAnd> const & pattern)
-{
-SEQAN_CHECKPOINT
-    return host(pattern);
-}
-
-template <typename TNeedle>
-inline TNeedle
-needle(Pattern<TNeedle, ShiftAnd> & pattern)
-{
-SEQAN_CHECKPOINT
-    return host(const_cast<Pattern<TNeedle, ShiftAnd> const &>(pattern));
-}
-
 //____________________________________________________________________________
 
 template <typename TNeedle>
 inline void
 _patternInit (Pattern<TNeedle, ShiftAnd> & me)
 {
-SEQAN_CHECKPOINT
     clear(me.prefSufMatch);
     resize(me.prefSufMatch, me.blockCount, 0, Exact());
 }
@@ -213,7 +156,6 @@ template <typename TFinder, typename TNeedle>
 inline bool
 _findShiftAndSmallNeedle(TFinder & finder, Pattern<TNeedle, ShiftAnd> & me)
 {
-SEQAN_CHECKPOINT
     typedef typename Value<TNeedle>::Type TValue;
     typedef unsigned int TWord;
     TWord compare = (TWord)1 << (me.needleLength - 1);
@@ -236,7 +178,6 @@ template <typename TFinder, typename TNeedle>
 inline bool
 _findShiftAndLargeNeedle(TFinder & finder, Pattern<TNeedle, ShiftAnd> & me)
 {
-SEQAN_CHECKPOINT
     typedef typename Value<TNeedle>::Type TValue;
     typedef unsigned int TWord;
 
@@ -278,7 +219,6 @@ SEQAN_CHECKPOINT
 
 template <typename TFinder, typename TNeedle>
 inline bool find(TFinder & finder, Pattern<TNeedle, ShiftAnd> & me) {
-    SEQAN_CHECKPOINT
 
     if (empty(finder)) {
         _patternInit(me);
@@ -294,6 +234,6 @@ inline bool find(TFinder & finder, Pattern<TNeedle, ShiftAnd> & me) {
         return _findShiftAndLargeNeedle(finder, me);
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_FIND_SHIFTAND_H

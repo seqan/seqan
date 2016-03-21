@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,6 @@ _cutIsValid(String<std::set<TValue> > & all_nodes,
         TSize,
         Tag<TagExactRefinement_> const)
 {
-SEQAN_CHECKPOINT
     //cut already exists
     if(iter != all_nodes[seq_i_pos].end())
         return false;
@@ -98,7 +97,6 @@ _refine(TValue node_i,
      TValue min_len,
      Tag<TTagSpec> tag)
 {
-SEQAN_CHECKPOINT
     typedef typename Cargo<typename Value<TPropertyMap>::Type>::Type TAlignmentPointer;
     typedef typename Iterator<String<TAlignmentPointer>, Rooted>::Type TSegmentIterator;
     //find all segment matches that contain the current position (node_i)
@@ -150,7 +148,6 @@ _buildIntervalsForAllSequences(TAlignmentString & alis,
                                   TStringSet & seqs,
                                TSeqMap & seq_map)
 {
-SEQAN_CHECKPOINT
 
     typedef typename Value<TInterval>::Type TValue;
     typedef typename Cargo<TInterval>::Type TCargo;
@@ -191,7 +188,6 @@ _createTreesForAllSequences(String<TGraph> & gs,
                            TSeqMap & seq_map,
                            TValue numSequences)
 {
-SEQAN_CHECKPOINT
     typedef typename Value<TAlignmentString>::Type TAlignment;
 //    typedef TValue TCargo;
     typedef Pair<unsigned,unsigned,BitPacked<31,1> > TCargo;
@@ -240,7 +236,6 @@ _makeRefinedGraphNodes(String<std::set<TValue> > & all_nodes,
                       TStringSet & seqs,
                       TAliGraph & ali_g)
 {
-SEQAN_CHECKPOINT
     typedef typename std::set<TValue>::iterator TSetIterator;
     //for each sequence look at all cut positions and create nodes between them
     for(unsigned int seq_i_pos = 0; seq_i_pos < length(seqs); ++seq_i_pos)
@@ -285,7 +280,6 @@ _makeRefinedGraphEdges(TAlignmentString & alis,
                       TAliGraph & ali_g,
                       Tag<TagExactRefinement_> const)
 {
-SEQAN_CHECKPOINT
     typedef typename Value<TAlignmentString>::Type TAlign;
     typedef typename Size<TAlign>::Type TValue;
     typedef typename Iterator<TAlignmentString, Rooted>::Type TAliIterator;
@@ -362,7 +356,6 @@ _makeAlignmentGraphFromRefinedSegments(String<std::set<TValue> > & all_nodes,
                       Tag<TTagSpec> const tag,
                    bool)
 {
-SEQAN_CHECKPOINT
     //std::cout << "making refined alignment graph...";
     //clock_t start, finish1;
     //double duration;
@@ -394,7 +387,6 @@ _makeAlignmentGraphFromRefinedSegments(String<std::set<TValue> > & all_nodes,
                       Tag<TTagSpec> const tag,
                    TAnnoString & annotation)
 {
-SEQAN_CHECKPOINT
     //std::cout << "making refined alignment graph...";
     //clock_t start, finish1;
     //double duration;
@@ -437,7 +429,6 @@ matchRefinement(TAlignmentString & alis,
                 TAnnotation & annotation,
                 Tag<TTagSpec> const tag)
 {
-SEQAN_CHECKPOINT
     ////////////////////////////////////////////////////////////////
     //typedefs
     typedef typename Value<TAlignmentString>::Type TAlign;
@@ -541,7 +532,6 @@ matchRefinement(TAlignmentString & alis,
                 Score<TScoreValue,TScoreSpec> & score_type,
                 TOutGraph & ali_graph)
 {
-SEQAN_CHECKPOINT
     //min_fragment_len = 1   ==> Exact cutting
     bool anno = false;
     matchRefinement(alis,seq,score_type,ali_graph,1,anno,ExactRefinement());
@@ -555,7 +545,6 @@ matchRefinement(TFragmentString & matches,
                 StringSet<TSequence, TSetSpec> & strSet,
                 TOutGraph & ali_graph)
 {
-    SEQAN_CHECKPOINT
     typename Cargo<TOutGraph>::Type fake_score = 1;
     bool anno = false;
     matchRefinement(matches,strSet,fake_score,ali_graph,1,anno,ExactRefinement());

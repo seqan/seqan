@@ -190,13 +190,13 @@ int main( int argc, const char *argv[] )
     if (res != ArgumentParser::PARSE_OK)
         return res == ArgumentParser::PARSE_ERROR;
 
-	if (options.maxTuple) 
-	{
-		options.nTuple = 0;		// sign for maxTuple
-		options.exact_nTuple = 0;	// not both possible: maxTuple is prefered over exact_nTuple and n
-	}
+    if (options.maxTuple)
+    {
+        options.nTuple = 0;         // sign for maxTuple
+        options.exact_nTuple = 0;   // not both possible: maxTuple is prefered over exact_nTuple and n
+    }
 
-	ngsOverlapper(options);
-	return 0;
+    ngsOverlapper(options);
+    return 0;
 }
 

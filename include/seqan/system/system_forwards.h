@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@
 // CLASSES
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 //____________________________________________________________________________
 // Event
@@ -113,7 +113,7 @@ inline bool waitFor(Event &e);           // "include/seqan/system/system_event.h
 template <typename TTime > inline bool waitFor(Event &e, TTime timeoutMilliSec, bool &inProgress);           // "include/seqan/system/system_event.h"(118)
 template <typename TWorker> inline bool waitFor(Thread<TWorker> &m);           // "include/seqan/system/system_thread.h"(107)
 
-} //namespace SEQAN_NAMESPACE_MAIN
+} //namespace seqan
 
 
 #endif

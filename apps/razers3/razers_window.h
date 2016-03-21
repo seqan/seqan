@@ -24,7 +24,7 @@
 
 #include <iostream>
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 //////////////////////////////////////////////////////////////////////////////
 // Find read matches in a single genome sequence

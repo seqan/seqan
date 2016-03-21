@@ -150,13 +150,13 @@ public:
     typedef typename TFragmentStore::TAlignQualityStore     TAlignQualityStore;
     typedef typename Value<TAlignedReadStore>::Type         TAlignedRead;
     typedef typename Value<TAlignQualityStore>::Type        TAlignQuality;
-    typedef Pair<__int64, TMatch>   TDequeueValue;
+    typedef Pair<int64_t, TMatch>   TDequeueValue;
     typedef Dequeue<TDequeueValue>                          TDequeue;
     typedef typename TDequeue::TIter                        TDequeueIterator;
     TDequeue fifo;                      // stores left-mate potential matches
-    String<__int64> fifoLastPotMatchNo; // last number of a left-mate potential
-    __int64 fifoLastNo;                 // last number over all left-mate pot. matches in the queue
-    __int64 fifoFirstNo;                // first number over all left-mate pot. match in the queue
+    String<int64_t> fifoLastPotMatchNo; // last number of a left-mate potential
+    int64_t fifoLastNo;                 // last number over all left-mate pot. matches in the queue
+    int64_t fifoFirstNo;                // first number over all left-mate pot. match in the queue
 
     ThreadLocalStorage() :
         fifoLastNo(0), fifoFirstNo(0) {}
@@ -258,14 +258,14 @@ public:
     size_t hitsLBegin, hitsLEnd;
     THitStringPtr hitsPtrR;
     size_t hitsRBegin, hitsREnd;
-    __int64 rightWindowBegin;
+    int64_t rightWindowBegin;
     TOptions * options;
     TFilterPattern * filterPatternL;
     TFilterPattern * filterPatternR;
 
     Job() {}
 
-    Job(int threadId_, TVerificationResults & verificationResults_, TFragmentStore & globalStore_, unsigned contigId_, char orientation_, THitStringPtr & prevHitsPtrL_, size_t prevHitsLBegin_, size_t prevHitsLEnd_, THitStringPtr & hitsPtrL_, size_t hitsLBegin_, size_t hitsLEnd_, THitStringPtr & hitsPtrR_, size_t hitsRBegin_, size_t hitsREnd_, __int64 rightWindowBegin_, TOptions & options_, TFilterPattern & filterPatternL_, TFilterPattern & filterPatternR_) :
+    Job(int threadId_, TVerificationResults & verificationResults_, TFragmentStore & globalStore_, unsigned contigId_, char orientation_, THitStringPtr & prevHitsPtrL_, size_t prevHitsLBegin_, size_t prevHitsLEnd_, THitStringPtr & hitsPtrL_, size_t hitsLBegin_, size_t hitsLEnd_, THitStringPtr & hitsPtrR_, size_t hitsRBegin_, size_t hitsREnd_, int64_t rightWindowBegin_, TOptions & options_, TFilterPattern & filterPatternL_, TFilterPattern & filterPatternR_) :
         threadId(threadId_), verificationResults(&verificationResults_), globalStore(&globalStore_), contigId(contigId_), orientation(orientation_), prevHitsPtrL(prevHitsPtrL_), prevHitsLBegin(prevHitsLBegin_), prevHitsLEnd(prevHitsLEnd_), hitsPtrL(hitsPtrL_), hitsLBegin(hitsLBegin_), hitsLEnd(hitsLEnd_), hitsPtrR(hitsPtrR_), hitsRBegin(hitsRBegin_), hitsREnd(hitsREnd_), rightWindowBegin(rightWindowBegin_), options(&options_), filterPatternL(&filterPatternL_), filterPatternR(&filterPatternR_)
     {
         SEQAN_ASSERT_LEQ(hitsLBegin, length(*hitsPtrL));
@@ -467,7 +467,7 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
         TCounts>                                            TVerifier;
 
     // MATE-PAIR FILTRATION
-    typedef Pair<__int64, TMatch>   TDequeueValue;
+    typedef Pair<int64_t, TMatch>   TDequeueValue;
     typedef Dequeue<TDequeueValue>                          TDequeue;
     typedef typename TDequeue::TIter                        TDequeueIterator;
 
@@ -534,7 +534,7 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
     // TODO(holtgrew): Could do length(...)/job.stride but would have to do so everywhere else below, too.
     // TODO(holtgrew): Get around the clear() and resize-with-fill somehow.
     clear(tls.fifoLastPotMatchNo);
-    resize(tls.fifoLastPotMatchNo, length(indexText(host(filterPatternL))), (__int64) - 2, Exact());
+    resize(tls.fifoLastPotMatchNo, length(indexText(host(filterPatternL))), (int64_t) - 2, Exact());
 
     TGenome & genome = tls.globalStore->contigStore[job.contigId].seq;
 
@@ -670,9 +670,9 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
         bool rightVerified = false;
         TDequeueIterator it;
         unsigned leftReadId = tls.globalStore->matePairStore[(threadIdOffset + matePairId)].readId[0];
-        __int64 last = (__int64) - 1;
-        __int64 lastValid = (__int64) - 1;
-        __int64 i;
+        int64_t last = (int64_t) - 1;
+        int64_t lastValid = (int64_t) - 1;
+        int64_t i;
         for (i = tls.fifoLastPotMatchNo[matePairId]; tls.fifoFirstNo <= i; last = i, i = (*it).i1)
         {
             it = &value(tls.fifo, i - tls.fifoFirstNo);
@@ -731,7 +731,7 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
                 if (last != lastValid)
                 {
                     SEQAN_ASSERT_NEQ(lastValid, i);
-                    if (lastValid == (__int64) - 1)
+                    if (lastValid == (int64_t) - 1)
                         tls.fifoLastPotMatchNo[matePairId] = i;
                     else
                         value(tls.fifo, lastValid - tls.fifoFirstNo).i1 = i;
@@ -782,7 +782,7 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
                     if (bestLeftScore <= score)
                     {
                         // distance between left mate beginning and right mate end
-                        __int64 dist = (__int64)verifierR.m.endPos - (__int64)(*it).i2.beginPos;
+                        int64_t dist = (int64_t)verifierR.m.endPos - (int64_t)(*it).i2.beginPos;
                         int libSizeError = options.libraryLength - dist;
 #ifdef RAZERS_DEBUG_MATEPAIRS
                         std::cerr << "    libSizeError = " << libSizeError << std::endl;
@@ -815,7 +815,7 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
         if (last != lastValid)
         {
             SEQAN_ASSERT_NEQ(lastValid, i);
-            if (lastValid == (__int64) - 1)
+            if (lastValid == (int64_t) - 1)
                 tls.fifoLastPotMatchNo[matePairId] = i;
             else
                 value(tls.fifo, lastValid - tls.fifoFirstNo).i1 = i;
@@ -1056,7 +1056,7 @@ void _mapMatePairReadsParallel(
     typedef typename TThreadLocalStorage::TFilterPattern    TFilterPattern;
 
     // MATE-PAIR FILTRATION
-    //typedef Pair<__int64, TMatch>   TDequeueValue;
+    //typedef Pair<int64_t, TMatch>   TDequeueValue;
     //typedef Dequeue<TDequeueValue>                          TDequeue;
     //typedef typename TDequeue::TIter                        TDequeueIterator;
 
@@ -1223,12 +1223,12 @@ void _mapMatePairReadsParallel(
             double filterStart = sysTime();
 
             // TDequeue fifo;						// stores left-mate potential matches  // XXX
-            // String<__int64> lastPotMatchNo;		// last number of a left-mate potential // XXX
-            // __int64 lastNo = 0;					// last number over all left-mate pot. matches in the queue // XXX
-            // __int64 firstNo = 0;				// first number over all left-mate pot. match in the queue // XXX
+            // String<int64_t> lastPotMatchNo;		// last number of a left-mate potential // XXX
+            // int64_t lastNo = 0;					// last number over all left-mate pot. matches in the queue // XXX
+            // int64_t firstNo = 0;				// first number over all left-mate pot. match in the queue // XXX
             // Pair<TGPos> gPair;
 
-            // resize(lastPotMatchNo, length(host(filterPatternL)), (__int64)-1, Exact());  // XXX
+            // resize(lastPotMatchNo, length(host(filterPatternL)), (int64_t)-1, Exact());  // XXX
 
             // TSize gLength = length(genome);  // XXX
 
@@ -1498,8 +1498,8 @@ int _mapMatePairReadsParallel(
 
 #ifdef RAZERS_EXTERNAL_MATCHES
     // Compute whether to use slow, sequential sorting or parallel in-memory sorting.
-    __uint64 totalMatchCount = 0;
-    __uint64 maxMatchCount = 0;
+    uint64_t totalMatchCount = 0;
+    uint64_t maxMatchCount = 0;
     for (unsigned i = 0; i < length(threadLocalStorages); ++i)
     {
         totalMatchCount += length(threadLocalStorages[i].matches);
@@ -1514,8 +1514,8 @@ int _mapMatePairReadsParallel(
     else if (options.availableMatchesMemorySize != 0)
     {
         typedef typename Value<TMatches>::Type TMatch;
-        __int64 totalMemoryRequired = sizeof(TMatch) * totalMatchCount;
-        __int64 maxMemoryRequired = sizeof(TMatch) * maxMatchCount;
+        int64_t totalMemoryRequired = sizeof(TMatch) * totalMatchCount;
+        int64_t maxMemoryRequired = sizeof(TMatch) * maxMatchCount;
         if (options.availableMatchesMemorySize < totalMemoryRequired)
         {
             if (options.availableMatchesMemorySize < maxMemoryRequired)

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -69,13 +69,11 @@ public:
     Score()
         : data_match(0), data_mismatch(-1), data_gap_extend(-1),
           data_gap_open(-1) {
-        SEQAN_CHECKPOINT;
     }
 
     Score(TValue _match, TValue _mismatch, TValue _gap)
         : data_match(_match), data_mismatch(_mismatch),
           data_gap_extend(_gap), data_gap_open(_gap) {
-        SEQAN_CHECKPOINT;
     }
 
 /*!
@@ -96,7 +94,6 @@ public:
     Score(TValue _match, TValue _mismatch, TValue _gap_extend, TValue _gap_open)
         : data_match(_match), data_mismatch(_mismatch),
           data_gap_extend(_gap_extend), data_gap_open(_gap_open) {
-        SEQAN_CHECKPOINT;
     }
 };
 
@@ -124,7 +121,6 @@ typedef Score<int, Simple> SimpleScore;
 template <typename TValue, typename TSpec>
 inline TValue
 scoreMatch(Score<TValue, TSpec> const & me) {
-    SEQAN_CHECKPOINT;
     return me.data_match;
 }
 
@@ -141,7 +137,6 @@ scoreMatch(Score<TValue, TSpec> const & me) {
 template <typename TValue, typename TSpec>
 inline void
 setScoreMatch(Score<TValue, TSpec> & me, TValue const & value) {
-    SEQAN_CHECKPOINT;
     me.data_match = value;
 }
 
@@ -159,7 +154,6 @@ setScoreMatch(Score<TValue, TSpec> & me, TValue const & value) {
 template <typename TValue, typename TSpec>
 inline TValue
 scoreMismatch(Score<TValue, TSpec> const & me) {
-    SEQAN_CHECKPOINT;
     return me.data_mismatch;
 }
 
@@ -176,7 +170,6 @@ scoreMismatch(Score<TValue, TSpec> const & me) {
 template <typename TValue, typename TSpec>
 inline void
 setScoreMismatch(Score<TValue, TSpec> & me, TValue const & value) {
-    SEQAN_CHECKPOINT;
     me.data_mismatch = value;
 }
 
@@ -194,7 +187,6 @@ setScoreMismatch(Score<TValue, TSpec> & me, TValue const & value) {
 template <typename TValue, typename TSpec>
 inline TValue
 scoreGapExtend(Score<TValue, TSpec> const & me) {
-    SEQAN_CHECKPOINT;
     return me.data_gap_extend;
 }
 
@@ -211,7 +203,6 @@ scoreGapExtend(Score<TValue, TSpec> const & me) {
 template <typename TValue, typename TSpec>
 inline void
 setScoreGapExtend(Score<TValue, TSpec> & me, TValue const & value) {
-    SEQAN_CHECKPOINT;
     me.data_gap_extend = value;
 }
 
@@ -229,7 +220,6 @@ setScoreGapExtend(Score<TValue, TSpec> & me, TValue const & value) {
 template <typename TValue, typename TSpec>
 inline TValue
 scoreGapOpen(Score<TValue, TSpec> const & me) {
-    SEQAN_CHECKPOINT;
     return me.data_gap_open;
 }
 
@@ -247,7 +237,6 @@ scoreGapOpen(Score<TValue, TSpec> const & me) {
 template <typename TValue, typename TSpec>
 inline void
 setScoreGapOpen(Score<TValue, TSpec> & me, TValue const & value) {
-    SEQAN_CHECKPOINT;
     me.data_gap_open = value;
 }
 
@@ -267,7 +256,6 @@ setScoreGapOpen(Score<TValue, TSpec> & me, TValue const & value) {
 template <typename TValue, typename TSpec>
 inline TValue
 scoreGap(Score<TValue, TSpec> const & me) {
-    SEQAN_CHECKPOINT;
     return scoreGapExtend(me);
 }
 
@@ -284,7 +272,6 @@ scoreGap(Score<TValue, TSpec> const & me) {
 template <typename TValue, typename TSpec>
 inline void
 setScoreGap(Score<TValue, TSpec> & me, TValue const & value) {
-    SEQAN_CHECKPOINT;
     me.data_gap_open = value;
     me.data_gap_extend = value;
 }
@@ -294,13 +281,12 @@ setScoreGap(Score<TValue, TSpec> & me, TValue const & value) {
 //template <typename TValue, typename TSpec, typename TVal1, typename TVal2>
 //inline TValue
 //score(Score<TValue, TSpec> const & me, TVal1 left, TVal2 right) {
-//    SEQAN_CHECKPOINT;
 //    if (left == right)
 //        return scoreMatch(me);
 //    else
 //        return scoreMismatch(me);
 //}
 
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif  // SEQAN_SSCORE_SIMPLE_H_

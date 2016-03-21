@@ -6,8 +6,8 @@
 # CMakeLists.txt file for the cuda module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 2.8.2)
-project (seqan_tests_cuda)
+cmake_minimum_required (VERSION 3.0.0)
+project (seqan_tests_cuda CXX)
 message (STATUS "Configuring tests/cuda")
 
 # ----------------------------------------------------------------------------
@@ -16,7 +16,9 @@ message (STATUS "Configuring tests/cuda")
 
 # Search SeqAn and select dependencies.
 set (SEQAN_FIND_DEPENDENCIES CUDA)
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (SeqAn REQUIRED)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Build Setup

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,10 +40,11 @@
 //____________________________________________________________________________
 // Prerequisites
 
-#include <cmath>
-#include <cstdlib>
+#include <sstream>
+#include <random>
 
 #include <seqan/basic.h>
+#include <seqan/stream.h>
 
 //____________________________________________________________________________
 // Module Headers
@@ -51,19 +52,11 @@
 // Basic Definitions
 #include <seqan/random/random_base.h>
 
-// Random Number Generation
-#include <seqan/random/random_mt19937.h>
-
-// Rng With Special Distributions.
-#include <seqan/random/random_uniform.h>
-#include <seqan/random/random_normal.h>
-#include <seqan/random/random_lognormal.h>  // uses normal.h, uniform.h
-#include <seqan/random/random_geometric.h>
+// Rng With Special Distributions not contained in the STL.
 #include <seqan/random/random_beta.h>
-#include <seqan/random/random_rng_functor.h>
 
 // Functions with randomness.
-#include <seqan/random/random_shuffle.h>
+#include <seqan/random/random_util.h>
 
 //____________________________________________________________________________
 

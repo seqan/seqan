@@ -128,18 +128,8 @@ Note that the function :dox:`SeqFileIn#readRecords` use :dox:`StringSet` instead
 By default, :dox:`SeqFileIn#readRecords` reads **all** remaining records.
 Optionally, one can specify a batch of records to be read.
 
-.. code-block:: cpp
-
-   seqan::StringSet<seqan::CharString> ids;
-   seqan::StringSet<seqan::Dna5String> seqs;
-
-   seqan::SeqFileIn seqFileIn("example.fq");
-
-   // Reads up to 10 records.
-   readRecords(ids, seqs, seqFileIn, 10);
-
-   // Reads all remaining records.
-   readRecords(ids, seqs, seqFileIn);
+.. includefrags:: demos/tutorial/sequence_io/base.cpp
+      :fragment: batch
 
 
 Assignment 3
@@ -179,15 +169,8 @@ If the second variant is used on an input file containing no qualities, e.g. a F
 
 Here is an example for the second variant of :dox:`SeqFileIn#readRecord`:
 
-.. code-block:: cpp
-
-   seqan::CharString id;
-   seqan::Dna5String seq;
-   seqan::CharString qual;
-
-   seqan::SeqFileIn seqFileIn("in.fq");
-
-   readRecord(id, seq, qual, seqFileIn);
+.. includefrags:: demos/tutorial/sequence_io/base.cpp
+      :fragment: qual
 
 .. tip::
 

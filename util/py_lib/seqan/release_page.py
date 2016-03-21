@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Build the SeqAn Releases Website."""
 
 import operator
@@ -15,22 +15,22 @@ import pyratemp
 
 # Patterns matching seqan srcs, apps and library.
 SRC_PATTERN = (r'seqan-src-([0-9])\.([0-9])(?:\.([0-9]))?\.'
-                   '(tar\.gz|tar\.bz2|zip)')
+                   '(tar\.gz|tar\.bz2|tar\.xz|zip)')
 LIBRARY_PATTERN = (r'seqan-library-([0-9])\.([0-9])(?:\.([0-9]))?\.'
-                   '(tar\.gz|tar\.bz2|zip)')
+                   '(tar\.gz|tar\.bz2|tar\.xz|zip)')
 APPS_PATTERN = (r'seqan-apps-([0-9])\.([0-9])(?:\.([0-9]))?-'
-                '(Linux|Mac|Windows)-(x86_64|i686)?'
-                '\.(tar\.gz|tar\.bz2|zip|exe)')
+                '(Linux|Mac|FreeBSD|Windows)-(x86_64|i686)?'
+                '\.(tar\.gz|tar\.bz2|tar\.xz|zip|exe)')
 # The regular expression to use for matching patterns.
 PACKAGE_PATTERN = (r'(.*)-([0-9]+)\.([0-9]+)(?:\.([0-9]+))?-'
-                   '(Linux|Mac|Windows)-(x86_64|i686)?'
-                   '\.(tar\.gz|tar\.bz2|zip|exe)')
+                   '(Linux|Mac|FreeBSD|Windows)-(x86_64|i686)?'
+                   '\.(tar\.gz|tar\.bz2|tar\.xz|zip|exe)')
 # The operating systems that we expect.
-OPERATING_SYSTEMS = ['Linux', 'Mac', 'Windows', 'src']
+OPERATING_SYSTEMS = ['Linux', 'Mac', 'FreeBSD', 'Windows', 'src']
 # The architectures that we expect.
 ARCHITECTURES = ['x86_64', 'i686', 'src']
 # The file formats.
-FORMATS = ['tar.gz', 'tar.bz2', 'zip', 'exe']
+FORMATS = ['tar.gz', 'tar.bz2', 'tar.xz', 'zip', 'exe']
 # Path to template.
 TPL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                         'release_page.html')

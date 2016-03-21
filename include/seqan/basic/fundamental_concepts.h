@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -555,8 +555,8 @@ struct Is< SignedIntegerConcept<T> >
         typename IfC< IsSameType<T, short>::VALUE,              True,
         typename IfC< IsSameType<T, int>::VALUE,                True,
         typename IfC< IsSameType<T, long>::VALUE,               True,
-        typename IfC< IsSameType<T, long long>::VALUE,          True,   // for the __int64 != long long
-        typename IfC< IsSameType<T, __int64>::VALUE,            True,
+        typename IfC< IsSameType<T, long long>::VALUE,          True,   // for the int64_t != long long
+        typename IfC< IsSameType<T, int64_t>::VALUE,            True,
         False
         >::Type>::Type>::Type>::Type>::Type>::Type Type;
         enum { VALUE = Type::VALUE };
@@ -571,8 +571,8 @@ struct Is< UnsignedIntegerConcept<T> >
         typename IfC< IsSameType<T, unsigned short>::VALUE,     True,
         typename IfC< IsSameType<T, unsigned int>::VALUE,       True,
         typename IfC< IsSameType<T, unsigned long>::VALUE,      True,
-        typename IfC< IsSameType<T, unsigned long long>::VALUE, True,   // for the __uint64 != unsigned long long
-        typename IfC< IsSameType<T, __uint64>::VALUE,           True,
+        typename IfC< IsSameType<T, unsigned long long>::VALUE, True,   // for the uint64_t != unsigned long long
+        typename IfC< IsSameType<T, uint64_t>::VALUE,           True,
         False
         >::Type>::Type>::Type>::Type>::Type>::Type Type;
         enum { VALUE = Type::VALUE };
@@ -975,8 +975,8 @@ template <> struct IntegerConcept<int> {};
 template <> struct IntegerConcept<unsigned int> {};
 template <> struct IntegerConcept<long> {};
 template <> struct IntegerConcept<unsigned long> {};
-//template <> struct IntegerConcept<__int64> {};
-//template <> struct IntegerConcept<__uint64> {};
+//template <> struct IntegerConcept<int64_t> {};
+//template <> struct IntegerConcept<uint64_t> {};
 
 SEQAN_CONCEPT(SignedIntegerConcept, (TValue))
 {
@@ -993,7 +993,7 @@ template <> struct SignedIntegerConcept<char> {};
 template <> struct SignedIntegerConcept<short> {};
 template <> struct SignedIntegerConcept<int> {};
 template <> struct SignedIntegerConcept<long> {};
-//template <> struct SignedIntegerConcept<__int64> {};
+//template <> struct SignedIntegerConcept<int64_t> {};
 
 SEQAN_CONCEPT(UnsignedIntegerConcept, (TValue))
 {
@@ -1010,7 +1010,7 @@ template <> struct UnignedIntegerConcept<unsigned char> {};
 template <> struct UnignedIntegerConcept<unsigned short> {};
 template <> struct UnignedIntegerConcept<unsigned int> {};
 template <> struct UnignedIntegerConcept<unsigned long> {};
-//template <> struct UnignedIntegerConcept<__uint64> {};
+//template <> struct UnignedIntegerConcept<uint64_t> {};
 */
 
 }  // namespace seqan

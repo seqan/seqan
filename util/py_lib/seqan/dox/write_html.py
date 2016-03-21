@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Writing for HTML pages."""
 
 import distutils.dir_util
@@ -26,7 +26,7 @@ def escapeName(name):
     escape = '_'
     xs = []
     for c in name:
-        if c.isalnum() or c in "-:":
+        if c.isalnum() or c in "-":
             xs.append(c)
         else:
             xs += [escape, str(ord(c))]
@@ -340,13 +340,13 @@ class ImagePathUpdater(proc_doc.TextNodeVisitor):
 
 
 class HtmlWriter(object):
-    def __init__(self, doc, args, config, out_dir='html'):
+    def __init__(self, doc, args, config):
         self.doc = doc
         self.out_dirs = {}
         self.args = args
         self.config = config
         # Normalize path.
-        out_dir = os.path.abspath(out_dir)
+        out_dir = args.out_dir
         # Generate path names.
         self.out_dirs['root'] = out_dir
         self.out_dirs['css'] = os.path.join(out_dir, 'css')

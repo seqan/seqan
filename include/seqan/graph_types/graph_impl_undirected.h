@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_IMPL_UNDIRECTED_H
 #define SEQAN_HEADER_GRAPH_IMPL_UNDIRECTED_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 //////////////////////////////////////////////////////////////////////////////
 // Graph - Undirected
@@ -75,24 +75,20 @@ class Graph<Undirected<TCargo, TSpec> >
 
 
         Graph() {
-            SEQAN_CHECKPOINT
         }
 
 
         ~Graph() {
-            SEQAN_CHECKPOINT
             clear(*this);
         }
 
         Graph(Graph const & _other) :
             data_allocator(_other.data_allocator)
         {
-            SEQAN_CHECKPOINT
             _copyGraph(_other, *this);
         }
 
         Graph const& operator = (Graph const & _other) {
-            SEQAN_CHECKPOINT
             if (this == &_other) return *this;
             clear(*this);
             data_allocator = _other.data_allocator;
@@ -110,7 +106,6 @@ class Graph<Undirected<TCargo, TSpec> >
 template<typename TCargo, typename TSpec>
 inline String<typename EdgeType<Graph<Undirected<TCargo, TSpec> > >::Type*>&
 _getVertexString(Graph<Undirected<TCargo, TSpec> > const& g) {
-    SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
     return const_cast<String<TEdgeStump*>&>(g.data_vertex);
@@ -121,7 +116,6 @@ _getVertexString(Graph<Undirected<TCargo, TSpec> > const& g) {
 template<typename TCargo, typename TSpec>
 inline typename VertexIdHandler<Graph<Undirected<TCargo, TSpec> > >::Type&
 _getVertexIdManager(Graph<Undirected<TCargo, TSpec> > const& g) {
-    SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename VertexIdHandler<TGraph>::Type TVertexIdManager;
     return const_cast<TVertexIdManager&>(g.data_id_managerV);
@@ -132,7 +126,6 @@ _getVertexIdManager(Graph<Undirected<TCargo, TSpec> > const& g) {
 template<typename TCargo, typename TSpec>
 inline typename EdgeIdHandler<Graph<Undirected<TCargo, TSpec> > >::Type&
 _getEdgeIdManager(Graph<Undirected<TCargo, TSpec> > const& g) {
-    SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename EdgeIdHandler<TGraph>::Type TEdgeIdManager;
     return const_cast<TEdgeIdManager&>(g.data_id_managerE);
@@ -146,7 +139,6 @@ _copyGraph(Graph<Undirected<TCargo, TSpec> > const& source,
            Graph<Undirected<TCargo, TSpec> >& dest,
            bool)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
@@ -206,7 +198,6 @@ inline void
 transpose(Graph<Undirected<TCargo, TSpec> > const& source,
           Graph<Undirected<TCargo, TSpec> >& dest)
 {
-    SEQAN_CHECKPOINT
     // Undirected graph, no transpose just copy
     _copyGraph(source, dest, false);
 
@@ -227,7 +218,6 @@ template<typename TCargo, typename TSpec>
 inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type
 numEdges(Graph<Undirected<TCargo, TSpec> > const& g)
 {
-    SEQAN_CHECKPOINT
     return idCount(g.data_id_managerE);
 }
 
@@ -237,7 +227,6 @@ template<typename TCargo, typename TSpec>
 inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type
 numVertices(Graph<Undirected<TCargo, TSpec> > const& g)
 {
-    SEQAN_CHECKPOINT
     return idCount(g.data_id_managerV);
 }
 
@@ -247,7 +236,6 @@ template<typename TCargo, typename TSpec>
 inline bool
 empty(Graph<Undirected<TCargo, TSpec> > const& g)
 {
-    SEQAN_CHECKPOINT
     return (!(idCount(g.data_id_managerV)));
 }
 
@@ -257,7 +245,6 @@ template<typename TCargo, typename TSpec>
 inline void
 clearEdges(Graph<Undirected<TCargo, TSpec> >& g)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
@@ -301,7 +288,6 @@ template<typename TCargo, typename TSpec>
 inline void
 clearVertices(Graph<Undirected<TCargo, TSpec> >& g)
 {
-    SEQAN_CHECKPOINT
     clearEdges(g);
     releaseAll(g.data_id_managerV);
     clear(g.data_vertex);
@@ -313,7 +299,6 @@ template<typename TCargo, typename TSpec>
 inline void
 clear(Graph<Undirected<TCargo, TSpec> >& g)
 {
-    SEQAN_CHECKPOINT
     clearVertices(g);
 }
 
@@ -324,7 +309,6 @@ inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type
 outDegree(Graph<Undirected<TCargo, TSpec> > const& g,
           TVertexDescriptor const vertex)
 {
-    SEQAN_CHECKPOINT
     SEQAN_ASSERT(idInUse(g.data_id_managerV, vertex));
 
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
@@ -347,7 +331,6 @@ inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type
 inDegree(Graph<Undirected<TCargo, TSpec> > const& g,
          TVertexDescriptor const vertex)
 {
-    SEQAN_CHECKPOINT
     // In-degree and out-degree are equal for undirected graphs
     return outDegree(g,vertex);
 }
@@ -368,7 +351,6 @@ template<typename TCargo, typename TSpec>
 inline typename VertexDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type
 addVertex(Graph<Undirected<TCargo, TSpec> >& g)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
@@ -385,7 +367,6 @@ inline void
 removeVertex(Graph<Undirected<TCargo, TSpec> >& g,
              TVertexDescriptor const v)
 {
-    SEQAN_CHECKPOINT
     SEQAN_ASSERT(idInUse(g.data_id_managerV, v));
 
     removeOutEdges(g,v); // Remove all outgoing edges
@@ -400,7 +381,6 @@ addEdge(Graph<Undirected<TCargo, TSpec> >& g,
         TVertexDescriptor source,
         TVertexDescriptor target)
 {
-    SEQAN_CHECKPOINT
     SEQAN_ASSERT_NEQ(source, target);
     SEQAN_ASSERT(idInUse(g.data_id_managerV, source));
     SEQAN_ASSERT(idInUse(g.data_id_managerV, target));
@@ -437,7 +417,6 @@ addEdge(Graph<Undirected<TCargo, TSpec> >& g,
         TVertexDescriptor const target,
         TCargo2 const cargo)
 {
-    SEQAN_CHECKPOINT
     SEQAN_ASSERT_NEQ(source, target);
 
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
@@ -455,7 +434,6 @@ removeEdge(Graph<Undirected<TCargo, TSpec> >& g,
            TVertexDescriptor const source,
            TVertexDescriptor const target)
 {
-    SEQAN_CHECKPOINT;
     SEQAN_ASSERT(idInUse(g.data_id_managerV, source));
     SEQAN_ASSERT(idInUse(g.data_id_managerV, target));
 
@@ -544,7 +522,6 @@ removeEdge(Graph<Undirected<TCargo, TSpec> >& g,
            TEdgeDescriptor const edge)
 {
 
-    SEQAN_CHECKPOINT
     SEQAN_ASSERT(idInUse(g.data_id_managerV, sourceVertex(g,edge)));
     SEQAN_ASSERT(idInUse(g.data_id_managerV, targetVertex(g,edge)));
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
@@ -634,7 +611,6 @@ inline void
 removeOutEdges(Graph<Undirected<TCargo, TSpec> >& g,
                TVertexDescriptor const v)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
@@ -652,7 +628,6 @@ inline void
 removeInEdges(Graph<Undirected<TCargo, TSpec> >& g,
                TVertexDescriptor const v)
 {
-    SEQAN_CHECKPOINT
     removeOutEdges(g,v);
 }
 
@@ -663,7 +638,6 @@ inline typename VertexDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type
 targetVertex(Graph<Undirected<TCargo, TSpec> > const&,
              TEdgeDescriptor const edge)
 {
-    SEQAN_CHECKPOINT
     return getTarget(edge);
 }
 
@@ -674,7 +648,6 @@ inline typename VertexDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type
 sourceVertex(Graph<Undirected<TCargo, TSpec> > const&,
              TEdgeDescriptor const edge)
 {
-    SEQAN_CHECKPOINT
     return getSource(edge);
 }
 
@@ -686,7 +659,6 @@ inline void
 getAdjacencyMatrix(Graph<Undirected<TCargo, TSpec> > const& g,
                    TMatrix& mat)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
@@ -723,7 +695,6 @@ findEdge(Graph<Undirected<TCargo, TSpec> > const& g,
          TVertexDescriptor const v,
          TVertexDescriptor const w)
 {
-    SEQAN_CHECKPOINT;
     SEQAN_ASSERT(idInUse(g.data_id_managerV, v));
     SEQAN_ASSERT(idInUse(g.data_id_managerV, w));
 
@@ -753,7 +724,6 @@ write(TFile & target,
       Graph<Undirected<TCargo, TSpec> > const& g)
 {
 //IOREV _nodoc_
-    SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
@@ -810,6 +780,6 @@ write(TFile & target,
 }
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

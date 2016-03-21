@@ -37,12 +37,7 @@ In the main program we simply call the above function using a number of alphabet
 
 This program produces the following output:
 
-.. code-block:: console
-
-     darwin10.0 : ./show_alphabets
-    0,A  1,R  2,N  3,D  4,C  5,Q  6,E  7,G  8,H  9,I  10,L  11,K  12,M  13,F  14,P  15,S  16,T  17,W  18,Y  19,V  20,B  21,Z  22,X  23,*
-    0,A  1,C  2,G  3,T
-    0,A  1,C  2,G  3,T  4,N
+.. includefrags:: demos/tutorial/basics/show_alphabets.cpp.stdout
 
 Iterators
 ~~~~~~~~~
@@ -64,13 +59,8 @@ The following code piece shows examples for creating Iterators for :dox:`Contain
 If no iterator kind is specified, the metafunction :dox:`ContainerConcept#Iterator` assumes :dox:`ContainerIteratorTags#Standard` and the function :dox:`ContainerConcept#begin` assumes :dox:`ContainerIteratorTags#Rooted`.
 Both ``it1`` and ``it2`` are standard iterators, whereas ``it3`` and ``it4`` are rooted iterators.
 
-.. code-block:: cpp
-
-    String<char> str = "ACME";
-    Iterator<String<char> >::Type it1 = begin(str); //a standard iterator
-    Iterator<String<char>, Standard>::Type it2 = begin(str);  //same as above
-    Iterator<String<char>, Rooted>::Type it3 = begin(str);  //a rooted iterator
-    Iterator<String<char>, Rooted>::Type it4 = begin(str, Rooted());  //same as above
+.. includefrags:: demos/tutorial/basics/base.cpp
+   :fragment: iterators
 
 .. comment
 
@@ -143,34 +133,7 @@ Assignment 1
 
          The result looks like this:
 
-         .. code-block:: console
-
-             $darwin10.0 : basics//strings
-             M,Q,D,A,V,K,A,P,M,N,A,F,I,V,W,S,A,D,Q,A,A,K,M,A,L,E,N,
-             A:7
-             R:0
-             N:2
-             D:2
-             C:0
-             Q:2
-             E:1
-             G:0
-             H:0
-             I:1
-             L:1
-             K:2
-             M:3
-             F:1
-             P:1
-             S:1
-             T:0
-             W:1
-             Y:0
-             V:2
-             B:0
-             Z:0
-             X:0
-             *:0
+         .. includefrags:: demos/tutorial/basics/strings.cpp.stdout
 
 
 Memory Allocation
@@ -246,13 +209,4 @@ Assignment 2
 
          Running this program results in the following output which shows the advantage of the :dox:`MultiPoolAllocator Multi Pool Allocator`:
 
-         .. code-block:: console
-
-            $ darwin10.0 : cd ~/seqan/projects/library/demos/tutorial
-            $ darwin10.0 : ./basics/allocator
-            Allocating and clearing 100000 times blocks of size 10 with MultiPool Allocator took 0.00200295
-            Allocating and clearing 100000 times blocks of size 10 with Standard Allocator took 0.0451179
-            Allocating and clearing 100000 times blocks of size 100 with MultiPool Allocator took 0.0599239
-            Allocating and clearing 100000 times blocks of size 100 with Standard Allocator took 0.127033
-            Allocating and clearing 100000 times blocks of size 1000 with MultiPool Allocator took 0.368732
-            Allocating and clearing 100000 times blocks of size 1000 with Standard Allocator took 0.560434
+         .. includefrags:: demos/tutorial/basics/allocator.cpp.stdout

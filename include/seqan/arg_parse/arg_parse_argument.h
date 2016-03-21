@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -101,6 +101,12 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  *
  * @val ArgParseArgument::ArgumentType ArgParseArgument::OUTPUT_FILE;
  * @brief Argument is an output file.
+ *
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::INPUT_PREFIX;
+ * @brief Argument is a prefix to input file(s).
+ *
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::OUTPUT_PREFIX;
+ * @brief Argument is a prefix to output file(s).
  */
 
 /*!
@@ -128,7 +134,7 @@ public:
         DOUBLE,      // .. a float
         INPUT_FILE,   // .. an inputfile (implicitly also a string)
         OUTPUT_FILE,  // .. an outputfile (implicitly also a string)
-        INPUTPREFIX, // .. an inputprefix (implicitly also a string)
+        INPUT_PREFIX, // .. an inputprefix (implicitly also a string)
         OUTPUT_PREFIX // .. an outoutprefix (implicitly also a string)
     };
 
@@ -229,7 +235,7 @@ inline std::string _typeToString(ArgParseArgument const & me)
         typeName = "outputfile";
         break;
 
-    case ArgParseArgument::INPUTPREFIX:
+    case ArgParseArgument::INPUT_PREFIX:
         typeName = "inputprefix";
         break;
 
@@ -289,7 +295,7 @@ inline bool isStringArgument(ArgParseArgument const & me)
     return (me._argumentType == ArgParseArgument::STRING) ||
            (me._argumentType == ArgParseArgument::INPUT_FILE) ||
            (me._argumentType == ArgParseArgument::OUTPUT_FILE) ||
-           (me._argumentType == ArgParseArgument::INPUTPREFIX) ||
+           (me._argumentType == ArgParseArgument::INPUT_PREFIX) ||
            (me._argumentType == ArgParseArgument::OUTPUT_PREFIX) ;
 }
 
@@ -437,7 +443,7 @@ inline bool isOutputPrefixArgument(ArgParseArgument const & me)
 
 inline bool isInputPrefixArgument(ArgParseArgument const & me)
 {
-    return me._argumentType == ArgParseArgument::INPUTPREFIX;
+    return me._argumentType == ArgParseArgument::INPUT_PREFIX;
 }
 
 // ----------------------------------------------------------------------------
@@ -542,8 +548,8 @@ inline void setMinValue(ArgParseArgument & me, const std::string minValue)
     }
     else if (isInt64Argument(me))
     {
-        SEQAN_CHECK(_isCastable<__int64>(minValue), "The maximal value for a 64 integer argument must be a 64 bit integer");
-        _intervalAssert<__int64>(minValue, me.maxValue);
+        SEQAN_CHECK(_isCastable<int64_t>(minValue), "The maximal value for a 64 integer argument must be a 64 bit integer");
+        _intervalAssert<int64_t>(minValue, me.maxValue);
         me.minValue = minValue;
     }
     else
@@ -827,7 +833,7 @@ inline void _checkValue(ArgParseArgument const & me, std::string val, unsigned i
         _checkNumericArgument<int>(me, val);
 
     if (isInt64Argument(me))
-        _checkNumericArgument<__int64>(me, val);
+        _checkNumericArgument<int64_t>(me, val);
 
     if (isDoubleArgument(me))
         _checkNumericArgument<double>(me, val);

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """pyclangcheck driver code
 
 This code is the driver code for the pyclangcheck tool.

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -102,7 +102,6 @@ template <typename T>
 inline bool
 emptyHost(T const & me)
 {
-    SEQAN_CHECKPOINT;
     return empty(_dataHost(me));
 }
 
@@ -125,7 +124,6 @@ template <typename T>
 inline bool
 dependentHost(T const & me)
 {
-    SEQAN_CHECKPOINT;
     return dependent(_dataHost(me));
 }
 
@@ -146,7 +144,6 @@ template <typename T>
 inline void
 clearHost(T & me)
 {
-    SEQAN_CHECKPOINT;
     clear(_dataHost(me));
 }
 
@@ -172,7 +169,6 @@ template <typename T>
 inline void
 createHost(T & me)
 {
-    SEQAN_CHECKPOINT;
     create(_dataHost(me));
 }
 
@@ -181,7 +177,6 @@ inline void
 createHost(T & me,
            THost const & host_)
 {
-    SEQAN_CHECKPOINT;
     create(_dataHost(me), host_);
 }
 
@@ -206,7 +201,6 @@ template <typename T>
 inline typename Host<T>::Type &
 host(T & me)
 {
-    SEQAN_CHECKPOINT;
     return value(_dataHost(me));
 }
 
@@ -216,7 +210,6 @@ template <typename T>
 inline typename Host<T const>::Type &
 host(T const & me)
 {
-    SEQAN_CHECKPOINT;
     return value(_dataHost(me));
 }
 
@@ -241,24 +234,12 @@ host(T const & me)
  * it is possible that begin- and end-position of the segment does not fit into the new host sequence.
  */
 
-/// TODO(holtgrew): Move documentation here?
-
 template <typename T, typename THost>
 inline void
 setHost(T & me,
-        THost & host_)
+        THost && host_)
 {
-    SEQAN_CHECKPOINT;
-    setValue(_dataHost(me), host_);
-}
-
-template <typename T, typename THost>
-inline void
-setHost(T & me,
-        THost const & host_)
-{
-    SEQAN_CHECKPOINT;
-    setValue(_dataHost(me), host_);
+    setValue(_dataHost(me), std::forward<THost>(host_));
 }
 
 // ----------------------------------------------------------------------------
@@ -280,7 +261,6 @@ inline void
 assignHost(T & me,
            THost const & host_)
 {
-    SEQAN_CHECKPOINT;
     assignValue(_dataHost(me), host_);
 }
 
@@ -303,7 +283,6 @@ inline void
 moveHost(T & me,
          THost & host_)
 {
-    SEQAN_CHECKPOINT;
     moveValue(_dataHost(me), host_);
 }
 

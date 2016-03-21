@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -97,7 +97,7 @@ namespace seqan {
  * @brief Value of the INFO field, empty if "." in VCF file (@link CharString @endlink).
  *
  * @var VariableType VcfRecord::INVALID_REFID
- * @brief Static member as marker for invalid reference (<tt>__int32</tt>)
+ * @brief Static member as marker for invalid reference (<tt>int32_t</tt>)
  *
  * @var VariableType VcfRecord::format
  * @brief Value of the VCF FORMAT field, empty if "." in VCF file (@link CharString @endlink).
@@ -112,13 +112,13 @@ namespace seqan {
  * @brief Value of FILTER field, empty if "." in VCF file (@link CharString @endlink).
  *
  * @var VariableType VcfRecord::rID
- * @brief Static member as marker for invalid reference (<tt>__int32</tt>)
+ * @brief Static member as marker for invalid reference (<tt>int32_t</tt>)
  *
  * @var VariableType VcfRecord::beginPos
- * @brief Position of the VCF record (<tt>__int32</tt>).
+ * @brief Position of the VCF record (<tt>int32_t</tt>).
  *
  * @var VariableType VcfRecord::INVALID_POS
- * @brief Static member as marker for invalid position (<tt>__int32</tt>)
+ * @brief Static member as marker for invalid position (<tt>int32_t</tt>)
  *
  * @var VariableType VcfRecord::id
  * @brief Textual identifier of the variant (@link CharString @endlink).
@@ -128,14 +128,14 @@ class VcfRecord
 {
 public:
     // Constant for invalid reference id.
-    static const __int32 INVALID_REFID = -1;
+    static const int32_t INVALID_REFID = -1;
     // Constant for invalid position.
-    static const __int32 INVALID_POS = -1;
+    static const int32_t INVALID_POS = -1;
 
     // Numeric id of the reference sequence.
-    __int32 rID;
+    int32_t rID;
     // Position on the reference.
-    __int32 beginPos;
+    int32_t beginPos;
     // Textual identifier of the variant.
     CharString id;
     // Bases in the reference.
@@ -161,7 +161,7 @@ public:
     static float MISSING_QUAL()
     {
         union {
-            __uint32 u;
+            uint32_t u;
             float f;
         } tmp;
         tmp.u = 0x7F800001;

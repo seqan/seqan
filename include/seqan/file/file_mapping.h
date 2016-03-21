@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -730,7 +730,7 @@ unmapFileSegment(FileMapping<TSpec> &, void *addr, TSize size)
 
 #endif
     if (!result)
-        SEQAN_FAIL("unmapFileSegment(%x,%i) failed: \"%s\"", (unsigned long)addr, size, strerror(errno));
+        SEQAN_FAIL("unmapFileSegment(%x,%i) failed: \"%s\"", (uint64_t)addr, size, strerror(errno));
     return result;
 }
 

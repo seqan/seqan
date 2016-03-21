@@ -98,10 +98,7 @@ The hash value returned by :dox:`Shape#hash` or :dox:`Shape#hashNext` is also st
 
 Program output:
 
-.. code-block:: console
-
-   0
-   8
+.. includefrags:: demos/tutorial/q_gram_index/index_qgram.cpp.stdout
 
 Assignment 1
 """"""""""""
@@ -140,10 +137,7 @@ Assignment 1
 
 	Program output:
 
-	.. code-block:: console
-
-	   1
-	   4
+	.. includefrags:: demos/tutorial/q_gram_index/index_assignment5.cpp.stdout
 
 Assignment 2
 """"""""""""
@@ -163,8 +157,8 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        For generating random numbers we use the :dox:`MersenneTwisterRng` which is a specialization of the random number generator class :dox:`Rng`.
-        The random numbers returned by :dox:`Rng#pickRandomNumber` are arbitrary ``unsigned int`` values which we downscale to values between 0 and 3 and convert into :dox:`Dna` characters.
+        For generating random numbers we use the `std::mt19937 <http://www.cplusplus.com/reference/random/mt19937/>`_.
+        The random numbers returned by the random number engine are arbitrary ``unsigned int`` values which we downscale to values between 0 and 3 and convert into :dox:`Dna` characters.
         The 3 generated strings are of random length and appended to a :dox:`StringSet`.
         The main algorithmus is encapsulated in a template function ``qgramCounting`` to easily switch between the two :dox:`IndexQGram` specializations.
 
@@ -193,25 +187,4 @@ Assignment 2
 
         Program output:
 
-        .. code-block:: console
-
-           >Seq0
-           TCATTTTCTCGATGAAAGCGTTGACCCCACATATCGTTAGTACTCTTGTACCCT
-           >Seq1
-           TGATTGTGTAGAAACCGAACTACGGTACCTCCTGTTGGTAGTCACGATAGATTATAAAAGTATGTTCCCACCCTATCGACGAGACTGGCA
-           >Seq2
-           CCTAGGTGTTTGCGGTGTTGGTACGTGCG
-
-           Length of the CountsDir fibre: 1025
-
-           Common 5-mers for Seq_i, Seq_j
-           50	4	0
-           0	86	5
-           0	0	25
-
-           Length of the CountsDir fibre: 259
-
-           Common 5-mers for Seq_i, Seq_j
-           50	4	0
-           0	86	5
-           0	0	25
+        .. includefrags:: demos/tutorial/q_gram_index/index_assignment6.cpp.stdout

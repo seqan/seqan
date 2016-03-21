@@ -90,9 +90,8 @@ Import Alignments and Gene Annotations from File
 At first, our application should create an empty ``FragmentStore`` object into which we import a gene annotation file and a file with RNA-Seq alignments.
 An empty ``FragmentStore`` can simply be created with:
 
-.. code-block:: cpp
-
-   FragmentStore<> store;
+.. includefrags:: demos/tutorial/simple_rna_seq/base.cpp
+      :fragment: store
 
 Files can be read from disk with the function :dox:`File#read` that expects an open stream (e.g. a STL `ifstream <http://www.cplusplus.com/reference/iostream/ifstream>`_), a ``FragmentStore`` object, and a :dox:`FileFormats File Format` tag.
 The contents of different files can be loaded with subsequent calls of ``read``.
@@ -145,19 +144,13 @@ All annotations are stored in the :dox:`FragmentStore::annotationStore` which is
 The value type of the annotation store is the class :dox:`AnnotationStoreElement`.
 Its member typedefs :dox:`AnnotationStoreElement::TPos` and :dox:`AnnotationStoreElement::TId` define the types it uses to represent a genomic position or the annotation or contig id:
 
-.. code-block:: cpp
-
-   typedef FragmentStore<> TStore;
-   typedef Value<TStore::TAnnotationStore>::Type TAnnotation;
-   typedef TAnnotation::TId TId;
-   typedef TAnnotation::TId TPos;
-   typedef IntervalAndCargo<TPos, TId> TInterval;
+.. includefrags:: demos/tutorial/simple_rna_seq/base.cpp
+      :fragment: typedefs
 
 The string of strings of intervals can now be defined as:
 
-.. code-block:: cpp
-
-   String<String<TInterval> > intervals;
+.. includefrags:: demos/tutorial/simple_rna_seq/base.cpp
+      :fragment: interval
 
 In your second assignment you should use an :dox:`AnnotationTreeIterator AnnotationTree Iterator` annotation tree iterator] to traverse all genes in the annotation tree.
 For each gene, determine its genomic range (projected to the forward strand) and add a new ``TInterval`` object to the ``intervals[contigId]`` string, where ``contigId`` is the id of the contig containing that gene.
@@ -207,9 +200,8 @@ Assignment 2
         Make sure that you append :dox:`IntervalAndCargo` objects, where ``i1`` < ``i2`` holds, as opposed to annotations where ``beginPos`` > ``endPos`` is possible.
         Remember to ensure that ``intervals`` is of appropriate size, e.g. with
 
-        .. code-block:: cpp
-
-           resize(intervals, length(store.contigStore));
+        .. includefrags:: demos/tutorial/simple_rna_seq/base.cpp
+              :fragment: resize
 
         Use :dox:`StringConcept#appendValue` to add a new ``TInverval`` object to the inner string, see :dox:`IntervalAndCargo::IntervalAndCargo IntervalAndCargo constructor` for the constructor.
 
@@ -226,10 +218,8 @@ With the strings of gene intervals - one for each contig - we now can construct 
 Therefore, we specialize an :dox:`IntervalTree` with the same position and cargo types as used for the :dox:`IntervalAndCargo` objects.
 As we need an interval tree for each contig, we instantiate a string of interval trees:
 
-.. code-block:: cpp
-
-   typedef IntervalTree<TPos, TId> TIntervalTree;
-   String<TIntervalTree> intervalTrees;
+.. includefrags:: demos/tutorial/simple_rna_seq/base.cpp
+      :fragment: tree
 
 Your third assignment is to implement a function that constructs the interval trees for all contigs given the string of interval strings.
 
@@ -274,9 +264,8 @@ Assignment 3
 
         First, resize the string of interval trees accordingly:
 
-        .. code-block:: cpp
-
-           resize(intervalTrees, length(intervals));
+        .. includefrags:: demos/tutorial/simple_rna_seq/base.cpp
+              :fragment: resize_tree
 
    Hint
      .. container:: foldable
@@ -297,9 +286,8 @@ Compute Gene Coverage
 To determine gene expression levels, we first need to compute the read coverage, i.e. the total number of reads overlapping a gene.
 Therefore we use a string of counters addressed by the annotation id.
 
-.. code-block:: cpp
-
-   String<unsigned> readsPerGene;
+.. includefrags:: demos/tutorial/simple_rna_seq/base.cpp
+      :fragment: reads
 
 For each read alignment we want to determine the overlapping genes by conducting a range query via :dox:`IntervalTree#findIntervals` and then increment their counters by 1.
 To address the counter of a gene, we use its annotation id stored as cargo in the interval tree.
@@ -307,9 +295,8 @@ To address the counter of a gene, we use its annotation id stored as cargo in th
 Read alignments are stored in the :dox:`FragmentStore::alignedReadStore`, a string of :dox:`AlignedReadStoreElement AlignedReadStoreElements` objects.
 Their actual type can simply be determined as follows:
 
-.. code-block:: cpp
-
-   typedef Value<TStore::TAlignedReadStore>::Type TAlignedRead;
+.. includefrags:: demos/tutorial/simple_rna_seq/base.cpp
+      :fragment: read_alignment_type
 
 Given the :dox:`AlignedReadStoreElement::contigId`, :dox:`AlignedReadStoreElement::beginPos`, and :dox:`AlignedReadStoreElement::endPos` we will retrieve the annotation ids of overlapping genes from the corresponding interval tree.
 
@@ -357,9 +344,8 @@ Assignment 4
      .. container:: foldable
         First, resize and zero the string of counters accordingly:
 
-        .. code-block:: cpp
-
-           resize(readsPerGene, length(store.annotationStore), 0);
+        .. includefrags:: demos/tutorial/simple_rna_seq/base.cpp
+              :fragment: resize_reads
 
         Make sure that you search with :dox:`IntervalTree#findIntervals` where ``query_begin < query_end`` holds, as opposed to read alignments where ``beginPos`` > ``endPos`` is possible.
 
@@ -368,9 +354,8 @@ Assignment 4
 
         The result of a range query is a string of annotation ids given to :dox:`IntervalTree#findIntervals` by-reference:
 
-        .. code-block:: cpp
-
-           String<TId> result;
+        .. includefrags:: demos/tutorial/simple_rna_seq/base.cpp
+              :fragment: result
 
         Reuse the result string for multiple queries (of the same thread, use ``private(result)`` for OpenMP).
 

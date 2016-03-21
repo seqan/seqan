@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -231,7 +231,7 @@ template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 struct Member<BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>,
               LengthStoreMember>
 {
-    typedef String<__int32> Type;
+    typedef String<int32_t> Type;
 };
 
 // ============================================================================

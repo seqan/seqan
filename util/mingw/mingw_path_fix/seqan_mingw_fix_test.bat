@@ -3,7 +3,7 @@
 REM ==========================================================================
 REM                     SeqAn MinGW Fix Test Batch 
 REM ==========================================================================
-REM Copyright (c) 2006-2011, Knut Reinert, FU Berlin
+REM Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 REM All rights reserved.
 REM
 REM Redistribution and use in source and binary forms, with or without

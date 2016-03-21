@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -54,30 +54,15 @@ class DPMatrix_<TValue, SparseDPMatrix>
 {
 public:
 
-    typedef Matrix<TValue, 2> THost;
+    typedef typename Member<DPMatrix_, DPMatrixMember>::Type THost;
 
-    Holder<THost>   _dataHost;  // The host containing the actual matrix.
+    Holder<THost>   data_host;  // The host containing the actual matrix.
 
     DPMatrix_() :
-        _dataHost()
+        data_host()
     {
-        create(_dataHost);
+        create(data_host);
     }
-
-    DPMatrix_(DPMatrix_ const & other) :
-        _dataHost(other._dataHost) {}
-
-    ~DPMatrix_() {}
-
-    DPMatrix_ & operator=(DPMatrix_ const & other)
-    {
-        if (this != &other)
-        {
-            _dataHost = other._dataHost;
-        }
-        return *this;
-    }
-
 };
 
 // ============================================================================

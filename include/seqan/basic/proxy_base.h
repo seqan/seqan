@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -160,7 +160,6 @@ inline bool
 operator==(Proxy<TSpec> const & left_,
            TRight const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TSpec> TLeft;
     typedef typename CompareType<TLeft, TRight>::Type TCompareType;
     return convert<TCompareType>(left_) == convert<TCompareType>(right_);
@@ -171,7 +170,6 @@ inline bool
 operator==(TLeft const & left_,
            Proxy<TSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TSpec> TRight;
     typedef typename CompareType<TRight, TLeft>::Type TCompareType;
     return convert<TCompareType>(left_) == convert<TCompareType>(right_);
@@ -182,7 +180,6 @@ inline bool
 operator==(Proxy<TLeftSpec> const & left_,
            Proxy<TRightSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TLeftSpec> TLeft;
     typedef Proxy<TRightSpec> TRight;
     typedef typename CompareType<TLeft, TRight>::Type TCompareType;
@@ -194,7 +191,6 @@ inline bool
 operator==(Proxy<TSpec> const & left_,
            Proxy<TSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef typename GetValue<Proxy<TSpec> >::Type TAccessor;
     return convert<TAccessor>(left_) == convert<TAccessor>(right_);
 }
@@ -208,7 +204,6 @@ inline bool
 operator!=(Proxy<TSpec> const & left_,
            TRight const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TSpec> TLeft;
     typedef typename CompareType<TLeft, TRight>::Type TCompareType;
     return convert<TCompareType>(left_) != convert<TCompareType>(right_);
@@ -219,7 +214,6 @@ inline bool
 operator!=(TLeft const & left_,
            Proxy<TSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TSpec> TRight;
     typedef typename CompareType<TRight, TLeft>::Type TCompareType;
     return convert<TCompareType>(left_) != convert<TCompareType>(right_);
@@ -230,7 +224,6 @@ inline bool
 operator!=(Proxy<TLeftSpec> const & left_,
            Proxy<TRightSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TLeftSpec> TLeft;
     typedef Proxy<TRightSpec> TRight;
     typedef typename CompareType<TLeft, TRight>::Type TCompareType;
@@ -242,7 +235,6 @@ inline bool
 operator!=(Proxy<TSpec> const & left_,
            Proxy<TSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef typename GetValue<Proxy<TSpec> >::Type TAccessor;
     return convert<TAccessor>(left_) != convert<TAccessor>(right_);
 }
@@ -256,7 +248,6 @@ inline bool
 operator<(Proxy<TSpec> const & left_,
           TRight const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TSpec> TLeft;
     typedef typename CompareType<TLeft, TRight>::Type TCompareType;
     return convert<TCompareType>(left_) < convert<TCompareType>(right_);
@@ -267,7 +258,6 @@ inline bool
 operator<(TLeft const & left_,
           Proxy<TSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TSpec> TRight;
     typedef typename CompareType<TRight, TLeft>::Type TCompareType;
     return convert<TCompareType>(left_) < convert<TCompareType>(right_);
@@ -278,7 +268,6 @@ inline bool
 operator<(Proxy<TLeftSpec> const & left_,
           Proxy<TRightSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TLeftSpec> TLeft;
     typedef Proxy<TRightSpec> TRight;
     typedef typename CompareType<TLeft, TRight>::Type TCompareType;
@@ -290,7 +279,6 @@ inline bool
 operator<(Proxy<TSpec> const & left_,
           Proxy<TSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef typename GetValue<Proxy<TSpec> >::Type TAccessor;
     return convert<TAccessor>(left_) < convert<TAccessor>(right_);
 }
@@ -304,7 +292,6 @@ inline bool
 operator<=(Proxy<TSpec> const & left_,
            TRight const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TSpec> TLeft;
     typedef typename CompareType<TLeft, TRight>::Type TCompareType;
     return convert<TCompareType>(left_) <= convert<TCompareType>(right_);
@@ -315,7 +302,6 @@ inline bool
 operator<=(TLeft const & left_,
            Proxy<TSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TSpec> TRight;
     typedef typename CompareType<TRight, TLeft>::Type TCompareType;
     return convert<TCompareType>(left_) <= convert<TCompareType>(right_);
@@ -326,7 +312,6 @@ inline bool
 operator<=(Proxy<TLeftSpec> const & left_,
            Proxy<TRightSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TLeftSpec> TLeft;
     typedef Proxy<TRightSpec> TRight;
     typedef typename CompareType<TLeft, TRight>::Type TCompareType;
@@ -338,7 +323,6 @@ inline bool
 operator<=(Proxy<TSpec> const & left_,
            Proxy<TSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef typename GetValue<Proxy<TSpec> >::Type TAccessor;
     return convert<TAccessor>(left_) <= convert<TAccessor>(right_);
 }
@@ -353,7 +337,6 @@ inline bool
 operator>(Proxy<TSpec> const & left_,
           TRight const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TSpec> TLeft;
     typedef typename CompareType<TLeft, TRight>::Type TCompareType;
     return convert<TCompareType>(left_) > convert<TCompareType>(right_);
@@ -364,7 +347,6 @@ inline bool
 operator>(TLeft const & left_,
           Proxy<TSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TSpec> TRight;
     typedef typename CompareType<TRight, TLeft>::Type TCompareType;
     return convert<TCompareType>(left_) > convert<TCompareType>(right_);
@@ -375,7 +357,6 @@ inline bool
 operator>(Proxy<TLeftSpec> const & left_,
           Proxy<TRightSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TLeftSpec> TLeft;
     typedef Proxy<TRightSpec> TRight;
     typedef typename CompareType<TLeft, TRight>::Type TCompareType;
@@ -387,7 +368,6 @@ inline bool
 operator>(Proxy<TSpec> const & left_,
           Proxy<TSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef typename GetValue<Proxy<TSpec> >::Type TAccessor;
     return convert<TAccessor>(left_) > convert<TAccessor>(right_);
 }
@@ -401,7 +381,6 @@ inline bool
 operator>=(Proxy<TSpec> const & left_,
            TRight const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TSpec> TLeft;
     typedef typename CompareType<TLeft, TRight>::Type TCompareType;
     return convert<TCompareType>(left_) >= convert<TCompareType>(right_);
@@ -412,7 +391,6 @@ inline bool
 operator>=(TLeft const & left_,
            Proxy<TSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TSpec> TRight;
     typedef typename CompareType<TRight, TLeft>::Type TCompareType;
     return convert<TCompareType>(left_) >= convert<TCompareType>(right_);
@@ -423,7 +401,6 @@ inline bool
 operator>=(Proxy<TLeftSpec> const & left_,
            Proxy<TRightSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef Proxy<TLeftSpec> TLeft;
     typedef Proxy<TRightSpec> TRight;
     typedef typename CompareType<TLeft, TRight>::Type TCompareType;
@@ -435,7 +412,6 @@ inline bool
 operator>=(Proxy<TSpec> const & left_,
            Proxy<TSpec> const & right_)
 {
-    SEQAN_CHECKPOINT;
     typedef typename GetValue<Proxy<TSpec> >::Type TAccessor;
     return convert<TAccessor>(left_) >= convert<TAccessor>(right_);
 }

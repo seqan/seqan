@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -316,7 +316,7 @@ namespace detail
 #ifdef BOOST_HAS_LONG_LONG
     BOOST_PRIVATE_GCD_UF( boost::ulong_longType );
 #elif defined(BOOST_HAS_MS_INT64)
-    BOOST_PRIVATE_GCD_UF( unsigned __int64 );
+    BOOST_PRIVATE_GCD_UF( unsigned int64_t );
 #endif
 
 #if CHAR_MIN == 0
@@ -344,7 +344,7 @@ namespace detail
 #ifdef BOOST_HAS_LONG_LONG
     BOOST_PRIVATE_GCD_SF( boost::long_longType, boost::ulong_longType );
 #elif defined(BOOST_HAS_MS_INT64)
-    BOOST_PRIVATE_GCD_SF( __int64, unsigned __int64 );
+    BOOST_PRIVATE_GCD_SF( int64_t, unsigned int64_t );
 #endif
 
 #undef BOOST_PRIVATE_GCD_SF

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -64,6 +64,11 @@ SEQAN_BEGIN_TESTSUITE(Sequence tests)
     SEQAN_CALL_TEST(test_sequence_adaptions_sequence_interface_std_vector);
     SEQAN_CALL_TEST(test_sequence_adaptions_sequence_memory_std_vector);
 
+    // Test adaptions for std::array.
+    SEQAN_CALL_TEST(test_sequence_adaptions_metafunctions_std_array);
+    SEQAN_CALL_TEST(test_sequence_adaptions_iterators_std_array);
+    SEQAN_CALL_TEST(test_sequence_adaptions_sequence_interface_std_array);
+
     // Test adaptions for std::list.
     SEQAN_CALL_TEST(test_sequence_adaptions_metafunctions_std_list);
     SEQAN_CALL_TEST(test_sequence_adaptions_iterators_std_list);
@@ -95,24 +100,16 @@ SEQAN_BEGIN_TESTSUITE(Sequence tests)
     SEQAN_CALL_TEST(StringSetIdHolder_Char_Dependent_Tight);
     SEQAN_CALL_TEST(StringSetIdHolder_Char_Dependent_Generous);
 
-//	debug::verifyCheckpoints("include/seqan/sequence/sequence_multiple.h");
-
     SEQAN_CALL_TEST(Infix);
     SEQAN_CALL_TEST(Suffix);
     SEQAN_CALL_TEST(ticket317);
     SEQAN_CALL_TEST(ticket848);
     SEQAN_CALL_TEST(test_find_motif_memory_leak_ticket_364);
     SEQAN_CALL_TEST(ticket901);
+    #ifndef __OpenBSD__
+    // TODO(h-2): fix this test on OpenBSD (some problem with mmap)
     SEQAN_CALL_TEST(ticket1108);
-
+    #endif
     SEQAN_CALL_TEST(String_Packed_Extension);
-
-    // -----------------------------------------------------------------------
-    // Checkpoint Verification
-    // -----------------------------------------------------------------------
-    // SEQAN_VERIFY_CHECKPOINTS("include/seqan/sequence/adapt_std_string.h");
-    // SEQAN_VERIFY_CHECKPOINTS("include/seqan/sequence/adapt_std_vector.h");
-    // SEQAN_VERIFY_CHECKPOINTS("include/seqan/sequence/adapt_std_list.h");
-    // TODO(holtgrew): Add more checkpoints.
 }
 SEQAN_END_TESTSUITE

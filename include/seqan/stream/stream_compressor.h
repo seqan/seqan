@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -130,7 +130,7 @@ Pager<TOutPager, Compress<TAlgTag> >
         table(DefaultPageSize<TAlgTag>::VALUE)
     {}
 
-    Page & getPage (__int64 position)
+    Page & getPage (int64_t position)
     {
         Page *page;
         {
@@ -157,7 +157,7 @@ Pager<TOutPager, Compress<TAlgTag> >
 
     void putPage (Page &page)
     {
-        __int64 outPosition = 0;                                // compute start position in outbound pager
+        int64_t outPosition = 0;                                // compute start position in outbound pager
         if (page.range.begin != 0)
         {
             PageRange range = getPageRange(beginPosition(page.range) - 1);

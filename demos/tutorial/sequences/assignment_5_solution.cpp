@@ -31,11 +31,11 @@ int main()
 //![top]
 
     // Create Infix of type Dna5String and get the corresponding infix sequence of genome
-    Infix<Dna5String>::Type inf = infix(genome, beginPosition, beginPosition + length(read));
+    Infix<Dna5String>::Type genomeFragment = infix(genome, beginPosition, beginPosition + length(read));
 
 //![bottom]
     // Call of our function to print the simple alignment
-    printAlign(inf, read);
+    printAlign(genomeFragment, read);
     return 0;
 }
 //![bottom]

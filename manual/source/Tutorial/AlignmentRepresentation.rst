@@ -103,25 +103,8 @@ Vice versa, we can determine where our current source position maps into the gap
 
 And here is the output of this short example program so far:
 
-.. code-block :: console
-
-          0     .
-            CDFGDC
-            ||
-            CDEFGA
-
-
-          0     .
-            CD-FG--DC
-            || ||   |
-            CDEFGAHGC
-
-
-    ViewToSource1: 0,1,2,2,3,4,4,4,5,
-    ViewToSource2: 0,1,2,3,4,5,6,7,8,
-
-    SourceToView1: 0,1,3,4,7,8,
-    SourceToView2: 0,1,2,3,4,5,6,7,8,
+.. includefrags:: demos/tutorial/alignment_representation/align.cpp.stdout
+   :fragment: output_manipulation
 
 In the first alignment, it seems that the end of the second row is cropped off to match the size of the first one.
 This effect takes place only in the visualization but is not explicitly applied to the gapped sequence.
@@ -137,27 +120,8 @@ The mapping of the view positions to the source space does not change.
 
 Here the output of the clipping procedure.
 
-.. code-block :: console
-
-    Before clipping:
-          0     .
-            CD-FG--DC
-            || ||   |
-            CDEFGAHGC
-
-
-     After clipping:
-          0     .
-            D-FG--
-            | ||
-            DEFGAH
-
-
-    ViewToSource1: 1,2,2,3,4,4,
-    ViewToSource2: 1,2,3,4,5,6,
-
-    SourceToView1: -1,0,2,3,6,7,
-    SourceToView2: -1,0,1,2,3,4,5,6,7,
+.. includefrags:: demos/tutorial/alignment_representation/align.cpp.stdout
+   :fragment: output_clipping
 
 .. note::
    It is important to understand the nature of the clipping information.
@@ -186,10 +150,11 @@ We will now reset the clipping of ``row1`` using :dox:`Gaps#clearClipping` and i
 .. includefrags:: demos/tutorial/alignment_representation/align.cpp
    :fragment: iteratingRowClipped2
 
-::
+.. includefrags:: demos/tutorial/alignment_representation/align.cpp
+   :fragment: return
 
-    D-FG--
-    CD-FG--DC
+.. includefrags:: demos/tutorial/alignment_representation/align.cpp.stdout
+   :fragment: output_gaps
 
 Here you can see how resetting the clipping positions brings back our complete row.
 
@@ -272,16 +237,7 @@ Here the output of the program.
 The first output prints the empty adjacency and edge list.
 The second output prints our desired alignment.
 
-.. code-block :: console
-
-    Adjacency list:
-    Edge list:
-
-    Alignment matrix:
-          0     .
-            TT-GT
-            || ||
-            TTAGT
+.. includefrags:: demos/tutorial/alignment_representation/graph.cpp.stdout
 
 The general usage of graphs is explained in the :ref:`tutorial-graphs` tutorial.
 
@@ -308,11 +264,4 @@ Assignment 2
         .. includefrags :: demos/tutorial/alignment_representation/graph_assignment1.cpp
            :fragment: main
 
-        .. code-block :: console
-
-            0     .    :    .
-            GARFIELDTHE---CAT
-            |||||||||||   |||
-            GARFIELDTHEBIGCAT
-                    |||||||||
-            --------THEBIGCAT
+        .. includefrags :: demos/tutorial/alignment_representation/graph_assignment1.cpp.stdout

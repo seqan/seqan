@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@
 
 #include <algorithm>
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 /*!
  * @class HammingSimplePattern
@@ -79,10 +79,17 @@ public:
     Pattern() : maxDistance(-1), distance(0), matchNFlags(0) {}
 
     template <typename TNeedle2>
-    Pattern(const TNeedle2 &ndl, int k = -1) : maxDistance(-1), distance(0), matchNFlags(0) {
-        SEQAN_CHECKPOINT;
-        setHost(*this, ndl, k);
+    Pattern(TNeedle2 && ndl,
+            int k = -1,
+            SEQAN_CTOR_DISABLE_IF(IsSameType<typename std::remove_reference<TNeedle2>::type const &, Pattern const &>))
+                :   maxDistance(-k),
+                    distance(0),
+                    matchNFlags(0)
+    {
+        setHost(*this, std::forward<TNeedle2>(ndl));
+        ignoreUnusedVariableWarning(dummy);
     }
+
 };
 
 
@@ -107,52 +114,26 @@ inline void _patternMatchNOfFinder(Pattern<TNeedle, HammingSimple> & pattern, bo
     pattern.matchNFlags |= 4;
 }
 
-
-template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, HammingSimple> & me,
-              const TNeedle2 & needle, int k) {
-    SEQAN_CHECKPOINT;
-
-    SEQAN_ASSERT_NOT(empty(needle));
-    SEQAN_ASSERT_LEQ_MSG(k, 0, "Are you confusing distances and scores?");
-
-    setValue(me.data_host, needle);
-    me.maxDistance = -k;
-}
-
-
-template <typename TNeedle, typename TNeedle2>
-void
-setHost(Pattern<TNeedle, HammingSimple> &horsp, TNeedle2 &ndl, int k) {
-    SEQAN_CHECKPOINT;
-    setHost(horsp, reinterpret_cast<const TNeedle2&>(ndl), k);
-}
-
-
 template <typename TNeedle>
 inline void _finderInit(Pattern<TNeedle, HammingSimple> & me) {
-    SEQAN_CHECKPOINT;
     (void) me;  // Suppress unused variable warning.
 }
 
 
 template <typename TNeedle>
 inline int score(const Pattern<TNeedle, HammingSimple> &me) {
-    SEQAN_CHECKPOINT;
     return -me.distance;
 }
 
 
 template <typename TNeedle>
 inline int getScore(const Pattern<TNeedle, HammingSimple> &me) {
-    SEQAN_CHECKPOINT;
     return -me.distance;
 }
 
 
 template <typename TNeedle>
 inline void setScoreLimit(Pattern<TNeedle, HammingSimple> & me, int _limit) {
-    SEQAN_CHECKPOINT;
     SEQAN_ASSERT_LEQ(_limit, 0);
     me.maxDistance = -_limit;
 }
@@ -198,7 +179,6 @@ template <typename TFinder, typename TNeedle>
 inline bool find(TFinder &finder,
                  Pattern<TNeedle, HammingSimple> &me,
                  int minScore) {
-    SEQAN_CHECKPOINT;
 
     typedef typename Haystack<TFinder>::Type THaystack;
     typedef typename Size<THaystack>::Type TSize;
@@ -274,6 +254,6 @@ inline bool find(TFinder &finder,
 {
     return find(finder, me, -me.maxDistance);
 }
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif  // SEQAN_FIND_FIND_SIMPLE_H_

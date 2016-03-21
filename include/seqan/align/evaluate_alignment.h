@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -67,6 +67,9 @@ namespace seqan {
  *
  * All members are initialized to <tt>0</tt>.
  *
+ * @var unsigned AlignmentStats::numGaps;
+ * @brief Number of gap characters (sum of numGapOpens and numGapExtensions)
+ *
  * @var unsigned AlignmentStats::numGapOpens;
  * @brief Number of gap open events.
  *
@@ -91,6 +94,9 @@ namespace seqan {
  * @var unsigned AlignmentStats::numNegativeScores;
  * @brief Number of residues aligned with negative score.
  *
+ * @var unsigned AlignmentStats::alignmentLength;
+ * @brief Length of the aligned region
+ *
  * @var float AlignmentStats::alignmentSimilarity;
  * @brief The resulting alignment percent similarity (positive).
  *
@@ -103,7 +109,8 @@ namespace seqan {
 
 struct AlignmentStats
 {
-    // Number of gap opens/gap extensions.
+    // Number of gap characters/opens/gap extensions.
+    unsigned numGaps;
     unsigned numGapOpens;
     unsigned numGapExtensions;
     // Number of insertions and deletions.
@@ -116,6 +123,9 @@ struct AlignmentStats
     unsigned numPositiveScores;
     unsigned numNegativeScores;
 
+    // length of the alignment
+    unsigned alignmentLength;
+
     // the alignment identity and similarity scores
     float alignmentSimilarity;
     float alignmentIdentity;
@@ -123,9 +133,9 @@ struct AlignmentStats
     // The alignment score.
     int alignmentScore;
 
-    AlignmentStats() : numGapOpens(0), numGapExtensions(0), numInsertions(0), numDeletions(0),
+    AlignmentStats() : numGaps(0), numGapOpens(0), numGapExtensions(0), numInsertions(0), numDeletions(0),
                        numMatches(0), numMismatches(0), numPositiveScores(0), numNegativeScores(0),
-                       alignmentSimilarity(0.0), alignmentIdentity(0.0), alignmentScore(0)
+                       alignmentLength(0), alignmentSimilarity(0.0), alignmentIdentity(0.0), alignmentScore(0)
     {}
 };
 
@@ -153,6 +163,7 @@ struct AlignmentStats
 inline
 void clear(AlignmentStats & stats)
 {
+    stats.numGaps = 0;
     stats.numGapOpens = 0;
     stats.numGapExtensions = 0;
     stats.numInsertions = 0;
@@ -161,6 +172,7 @@ void clear(AlignmentStats & stats)
     stats.numMismatches = 0;
     stats.numPositiveScores = 0;
     stats.numNegativeScores = 0;
+    stats.alignmentLength = 0;
     stats.alignmentSimilarity = 0.0;
     stats.alignmentIdentity = 0.0;
     stats.alignmentScore = 0;
@@ -175,10 +187,13 @@ void clear(AlignmentStats & stats)
  * @headerfile <seqan/align.h>
  * @brief Compute alignment statistics.
  *
- * @signature TScoreVal computeAlignmentStats([stats, ]align, scoringScheme);
+ * @signature TScoreVal computeAlignmentStats(stats, align, scoringScheme);
+ * @signature TScoreVal computeAlignmentStats(stats, row0, row1, scoringScheme);
  *
  * @param[out] stats The @link AlignmentStats @endlink object to store alignment statistics in.
  * @param[in]  align The @link Align @endlink object to score.
+ * @param[in]  row0  The first row (@link Gaps @endlink object).
+ * @param[in]  row1  The second row (@link Gaps @endlink object).
  * @param[in]  score The @link Score @endlink object to use for the scoring scheme.
  *
  * @return TScoreVal The score value of the alignment, of the same type as the value type of <tt>scoringScheme</tt>
@@ -194,25 +209,25 @@ void clear(AlignmentStats & stats)
  * @include demos/dox/align/compute_alignment_stats.cpp.stdout
  */
 
-template <typename TSource, typename TAlignSpec, typename TScoreVal, typename TScoreSpec>
+template <typename TSource0, typename TGapsSpec0,
+          typename TSource1, typename TGapsSpec1,
+          typename TScoreVal, typename TScoreSpec>
 TScoreVal computeAlignmentStats(AlignmentStats & stats,
-                                Align<TSource, TAlignSpec> const & align,
+                                Gaps<TSource0, TGapsSpec0> const & row0,
+                                Gaps<TSource1, TGapsSpec1> const & row1,
                                 Score<TScoreVal, TScoreSpec> const & scoringScheme)
 {
-    SEQAN_ASSERT_EQ_MSG(length(rows(align)), 2u, "Only works with pairwise alignments.");
-    SEQAN_ASSERT_EQ_MSG(length(row(align, 0)), length(row(align, 1)), "Invalid alignment!");
     clear(stats);
 
-    typedef Align<TSource, TAlignSpec> const TAlign;
-    typedef typename Row<TAlign>::Type TGaps;
-    typedef typename Iterator<TGaps, Standard>::Type TGapsIter;
-    typedef typename Value<typename Source<TGaps>::Type>::Type TAlphabet;
+    typedef typename Iterator<Gaps<TSource0, TGapsSpec0> const, Standard>::Type TGapsIter0;
+    typedef typename Iterator<Gaps<TSource1, TGapsSpec1> const, Standard>::Type TGapsIter1;
+    typedef typename Value<TSource0>::Type TAlphabet;
 
     // Get iterators.
-    TGapsIter it0 = begin(row(align, 0));
-    TGapsIter itEnd0 = end(row(align, 0));
-    TGapsIter it1 = begin(row(align, 1));
-    TGapsIter itEnd1 = end(row(align, 1));
+    TGapsIter0 it0      = begin(row0);
+    TGapsIter0 itEnd0   = end(row0);
+    TGapsIter1 it1      = begin(row1);
+    TGapsIter1 itEnd1   = end(row1);
 
     // State whether we have already opened a gap.
     bool isGapOpen0 = false, isGapOpen1 = false;
@@ -262,7 +277,8 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
         if (!isGap(it0) && !isGap(it1))
         {
             // Compute the alignment score and register in stats.
-            TAlphabet c0 = *it0, c1 = *it1;
+            TAlphabet c0 = *it0;
+            TAlphabet c1 = static_cast<TAlphabet>(*it1);
             TScoreVal scoreVal = score(scoringScheme, c0, c1);
             stats.alignmentScore += scoreVal;
             // Register other statistics.
@@ -277,14 +293,30 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
     SEQAN_ASSERT(it0 == itEnd0);
     SEQAN_ASSERT(it1 == itEnd1);
 
+    stats.numGaps = stats.numGapOpens + stats.numGapExtensions;
+
     // Finally, compute the alignment similarity from the various counts
-    float alignmentLength = static_cast<float>(length(row(align, 0)));
-    stats.alignmentSimilarity = 100.0 * static_cast<float>(stats.numPositiveScores) / alignmentLength;
-    stats.alignmentIdentity = 100.0 * static_cast<float>(stats.numMatches) / alignmentLength;
+    stats.alignmentLength = length(row0);
+    stats.alignmentSimilarity = 100.0 * static_cast<float>(stats.numPositiveScores)
+                                / static_cast<float>(stats.alignmentLength);
+    stats.alignmentIdentity = 100.0 * static_cast<float>(stats.numMatches)
+                              / static_cast<float>(stats.alignmentLength);
 
     return stats.alignmentScore;
 }
 
+template <typename TSource, typename TAlignSpec, typename TScoreVal, typename TScoreSpec>
+TScoreVal computeAlignmentStats(AlignmentStats & stats,
+                                Align<TSource, TAlignSpec> const & align,
+                                Score<TScoreVal, TScoreSpec> const & scoringScheme)
+{
+    SEQAN_ASSERT_EQ_MSG(length(rows(align)), 2u, "Only works with pairwise alignments.");
+    SEQAN_ASSERT_EQ_MSG(length(row(align, 0)), length(row(align, 1)), "Invalid alignment!");
+
+    return computeAlignmentStats(stats, row(align, 0), row(align, 1), scoringScheme);
+}
+
+// NOTE(h-2): this interface is deprecated. Don't use it.
 template <typename TGaps, typename TAlignSpec, typename TScoreVal, typename TScoreSpec>
 TScoreVal computeAlignmentStats(Align<TGaps, TAlignSpec> const & align,
                                 Score<TScoreVal, TScoreSpec> const & scoringScheme)

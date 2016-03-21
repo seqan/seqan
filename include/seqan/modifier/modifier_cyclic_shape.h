@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -235,8 +235,6 @@ public:
         ignoreUnusedVariableWarning(dummy);
     }
 
-#ifdef SEQAN_CXX11_STANDARD
-
     // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant.
     template<typename THost_>
     explicit
@@ -262,54 +260,6 @@ public:
     {
         ignoreUnusedVariableWarning(dummy);
     }
-
-#else // SEQAN_CXX11_STANDARD
-
-    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant.
-    template<typename THost_>
-    explicit
-    ModifiedString(THost_ & host,
-                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
-        _host(host)
-    {
-        ignoreUnusedVariableWarning(dummy);
-    }
-
-    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Const variant.
-    template<typename THost_>
-    explicit
-    ModifiedString(THost_ const & host,
-                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
-        _host(host)
-    {
-        ignoreUnusedVariableWarning(dummy);
-    }
-
-    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant with
-    // shape.
-    template<typename THost_>
-    explicit
-    ModifiedString(THost_ & host,
-                   TCyclicShape const & shape,
-                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
-        _host(host), _cargo(shape)
-    {
-        ignoreUnusedVariableWarning(dummy);
-    }
-
-    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.
-    // Const variant with shape.
-    template<typename THost_>
-    explicit
-    ModifiedString(THost_ const & host,
-                   TCyclicShape const & shape,
-                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
-        _host(host), _cargo(shape)
-    {
-        ignoreUnusedVariableWarning(dummy);
-    }
-
-#endif // SEQAN_CXX11_STANDARD
 
     template<typename TPos>
     inline typename Reference<ModifiedString>::Type

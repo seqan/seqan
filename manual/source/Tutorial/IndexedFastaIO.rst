@@ -62,36 +62,19 @@ fo build such an index, we use the function :dox:`FaiIndex#build` of the class :
 The first parameter is the :dox:`FaiIndex` object, the second is the path to the FASTA file.
 The function returns a ``bool`` indicating whether the mapping was successful (``true`` on success, ``false`` on failure).
 
-.. code-block:: cpp
-
-   #include <seqan/seq_io.h>
-
-   seqan::FaiIndex faiIndex;
-   if (!build(faiIndex, "path/to/file.fasta"))
-       std::cerr << "ERROR: Could not build the index!\n";
+.. includefrags:: demos/tutorial/indexed_fasta_io/base.cpp
+    :fragment: build_index1
 
 There is an alternative variant of this function where you can pass the path to the FAI file that is to be built as third parameter.
 The FAI file name will be stored in the :dox:`FaiIndex`.
 
-.. code-block:: cpp
-
-   #include <seqan/seq_io.h>
-
-   seqan::FaiIndex faiIndex;
-   if (!build(faiIndex, "path/to/file.fasta", "another/path/file.fasta.fai"))
-       std::cerr << "ERROR: Could not build the index!\n";
+.. includefrags:: demos/tutorial/indexed_fasta_io/base.cpp
+    :fragment: build_index2
 
 We can write out the index after building it using the function :dox:`FaiIndex#save`:
 
-.. code-block:: cpp
-
-   #include <seqan/seq_io.h>
-
-   seqan::FaiIndex faiIndex;
-   // ... index building here ...
-
-   if (!save(faiIndex, "path/to/file.fasta.fai"))
-       std::cerr << "ERROR: Could not save the index to file!\n";
+.. includefrags:: demos/tutorial/indexed_fasta_io/base.cpp
+    :fragment: save_index
 
 Assignment 1
 """"""""""""
@@ -123,48 +106,26 @@ Using the Index
 To load a FAI file, we use the function :dox:`FaiIndex#open`: We pass the :dox:`FaiIndex` object as the first and the path to the FASTA file as the second parameter.
 The function returns a ``bool`` indicating whether the mapping was successful (``true`` on success, ``false`` on failure).
 
-.. code-block:: cpp
-
-   #include <seqan/seq_io.h>
-
-   seqan::FaiIndex faiIndex;
-   if (!open(faiIndex, "path/to/file.fasta"))
-       std::cerr << "ERROR: Could not open FAI index path/to/file.fasta.fai\n";
+.. includefrags:: demos/tutorial/indexed_fasta_io/base.cpp
+    :fragment: open_index1
 
 In the example above, the FAI file ``"path/to/file.fasta.fai"`` would be
 loaded. Optionally, we can specify an extra path to the FAI file:
 
-.. code-block:: cpp
-
-   #include <seqan/seq_io.h>
-
-   seqan::FaiIndex faiIndex;
-   if (!open(faiIndex, "path/to/file.fasta", "path/to/index.fai"))
-       std::cerr << "ERROR: Could not load FAI index path/to/index.fai\n";
+.. includefrags:: demos/tutorial/indexed_fasta_io/base.cpp
+    :fragment: open_index2
 
 After loading the index, we can then use the index to map a sequence id to its (zero-based) position (a position *i* meaning that it is the *i*-th sequence) in the FASTA file using :dox:`FaiIndex#getIdByName`.
 The function gets the :dox:`FaiIndex` to use, the id of the sequence, and an ``unsigned`` position as parameters.
 It returns a ``bool`` indicating whether the mapping was successful (``true`` on success, ``false`` on failure).
 
-.. code-block:: cpp
-
-   unsigned idx = 0;
-   if (!getIdByName(faiIndex, "chr1", idx))
-       std::cerr << "ERROR: FAI index has no entry for chr1.\n";
+.. includefrags:: demos/tutorial/indexed_fasta_io/base.cpp
+    :fragment: idx
 
 Once we have the index for the sequence in the FASTA file, we can then query the :dox:`FaiIndex` for the length of the sequence using :dox:`FaiIndex#sequenceLength`, get the whole sequence using :dox:`FaiIndex#readSequence`, or get just a part of the sequence using :dox:`FaiIndex#readRegion`.
 
-.. code-block:: cpp
-
-   unsigned seqLength = sequenceLength(faiIndex, idx);
-
-   // Load first 1000 characters of chr1.
-   seqan::CharString seqChr1Prefix;
-   readRegion(seqChr1Prefix, faiIndex, idx, 0, 1000);
-
-   // Load all of chr1.
-   seqan::CharString seqChr1;
-   readSequence(seqChr1, faiIndex, idx);
+.. includefrags:: demos/tutorial/indexed_fasta_io/base.cpp
+    :fragment: example_functions
 
 The sequence length can be determined by only looking at the index.
 When loading the sequence or a sequence infix, only the relevant part of the file will be touched.

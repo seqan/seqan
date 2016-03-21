@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -320,9 +320,6 @@ SEQAN_BEGIN_TESTSUITE(test_find_swift) {
     SEQAN_CALL_TEST(test_find_swift);
     SEQAN_CALL_TEST(test_longest_epsMatch);
     SEQAN_CALL_TEST(test_split_xDrop_align);
-
-    //SEQAN_VERIFY_CHECKPOINTS("include/seqan/index/find_swift.h");
-    // SEQAN_VERIFY_CHECKPOINTS("projects/library/apps/stellar/stellar.h");
 }
 SEQAN_END_TESTSUITE
 

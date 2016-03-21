@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_GRAPH_IMPL_TRIE_H
 #define SEQAN_HEADER_GRAPH_IMPL_TRIE_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ _addStringToTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 
     TVertexDescriptor current = getRoot(g);
     TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
-    typename Iterator<TKeyword const, Rooted>::Type sIt = begin(str);
+    typename Iterator<TKeyword const, Rooted>::Type sIt = begin(str, Rooted());
     for(;!atEnd(sIt);goNext(sIt)) {
         if (getSuccessor(g, current, *sIt) == nilVal) break;
         current = getSuccessor(g, current, *sIt);
@@ -117,7 +117,7 @@ createTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
     assignRoot(g,root);
     resize(terminalStateMap, numVertices(g), Generous());
     assignProperty(terminalStateMap,root,String<TPos>());
-    typename Iterator<TKeywords const, Rooted>::Type it = begin(keywords);
+    typename Iterator<TKeywords const, Rooted>::Type it = begin(keywords, Rooted());
     for(;!atEnd(it);goNext(it)) _addStringToTrie(g,terminalStateMap,*it,position(it));
 }
 
@@ -183,7 +183,6 @@ createSuffixTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
                  TTerminalStateMap& terminalStateMap,
                  TText const& text)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Position<TText const>::Type TPosition;
@@ -207,7 +206,6 @@ createSetSuffixTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
                     TTerminalStateMap& terminalStateMap,
                     TTexts const& texts)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Position<TTexts const>::Type TTextsPosition;
@@ -229,6 +227,6 @@ createSetSuffixTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
     }
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}// namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

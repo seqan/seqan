@@ -61,50 +61,25 @@ Functionality
 In SeqAn, alphabets are value types that can take a limited number of values and which hence can be mapped to a range of natural numbers.
 We can retrieve the number of different values of an alphabet, the alphabet size, by the metafunction :dox:`FiniteOrderedAlphabetConcept#ValueSize`.
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/alphabets/example_size.cpp
+    :fragment: main
 
-   typedef Dna TAlphabet;
-
-   unsigned alphSize = ValueSize<TAlphabet>::VALUE;
-   std::cout << "Alphabet size of Dna: " << alphSize << '\n';
-
-.. code-block:: console
-
-   Alphabet size of Dna: 4
+.. includefrags:: demos/tutorial/alphabets/example_size.cpp.stdout
 
 Another useful metafunction called :dox:`AlphabetConcept#BitsPerValue` can be used to determine the number of bits needed to store a value of a given alphabet.
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/alphabets/example_bitsPerValue.cpp
+    :fragment: main
 
-   unsigned bits = BitsPerValue<TAlphabet>::VALUE;
-   std::cout << "Number of bits needed to store a value of type Dna: " << bits << '\n';
-
-
-.. code-block:: console
-
-   Number of bits needed to store a value of type Dna: 2
+.. includefrags:: demos/tutorial/alphabets/example_bitsPerValue.cpp.stdout
 
 The order of a character in the alphabet (i.e. its corresponding natural number) can be retrieved by calling the function :dox:`FiniteOrderedAlphabetConcept#ordValue`.
 See each specialization's documentation for the ordering of the alphabet's values.
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/alphabets/example_ordValue.cpp
+    :fragment: main
 
-   Dna a = 'A';
-   Dna c = 'C';
-   Dna g = 'G';
-   Dna t = 'T';
-
-   std::cout <<"A: " << (unsigned)ordValue(a) << '\n';
-   std::cout <<"C: " << (unsigned)ordValue(c) << '\n';
-   std::cout <<"G: " << (unsigned)ordValue(g) << '\n';
-   std::cout <<"T: " << (unsigned)ordValue(t) << '\n';
-
-.. code-block:: console
-
-   A: 0
-   C: 1
-   G: 2
-   T: 3
+.. includefrags:: demos/tutorial/alphabets/example_ordValue.cpp.stdout
 
 .. tip::
 
@@ -125,29 +100,7 @@ Assignment 1
      In this task you will learn how to access all the letters of an alphabet.
      Use the piece of code from below and adjust the function ``showAllLettersOfMyAlphabet()`` to go through all the characters of the current alphabet and print them.
 
-     .. code-block:: cpp
-
-        #include <seqan/sequence.h>
-        #include <seqan/basic.h>
-        #include <iostream>
-
-        using namespace seqan;
-
-        // We want to define a function, which takes
-        // the alphabet type as an argument
-        template <typename TAlphabet>
-        void showAllLettersOfMyAlphabet(TAlphabet const &)
-        {
-            // ...
-        }
-
-        int main()
-        {
-            showAllLettersOfMyAlphabet(AminoAcid());
-            showAllLettersOfMyAlphabet(Dna());
-            showAllLettersOfMyAlphabet(Dna5());
-            return 0;
-        }
+     .. includefrags:: demos/tutorial/alphabets/assignment_1.cpp
 
    Hints
      You will need the Metafunction :dox:`FiniteOrderedAlphabetConcept#ValueSize`.
@@ -157,4 +110,4 @@ Assignment 1
 
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/alphabets/alphabet_assignment_1_solution.cpp
+        .. includefrags:: demos/tutorial/alphabets/assignment_1_solution.cpp

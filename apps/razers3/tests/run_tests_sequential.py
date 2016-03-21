@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """Sequential tests (num_threads == 0) for RazerS 3.
 
 See run_tests.py for the actual tests.  We only call the code from there.

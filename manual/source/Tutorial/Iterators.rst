@@ -36,11 +36,8 @@ For example, the tag :dox:`ContainerIteratorTags#Standard` can be used to get an
 The more elaborated :dox:`ContainerIteratorTags#Rooted` iterator, i.e., an iterator that knows its container, can be selected by specifying the :dox:`ContainerIteratorTags#Rooted` tag.
 The construction of an iterator in SeqAn, e.g. for a :dox:`DnaString Dna String`, could look like the following:
 
-.. code-block:: cpp
-
-   Iterator<DnaString>::Type           it1;  // A standard iterator
-   Iterator<DnaString, Standard>::Type it2;  // Same as above
-   Iterator<DnaString, Rooted>::Type   it3;  // A rooted iterator
+.. includefrags:: demos/tutorial/iterators/base.cpp
+    :fragment: construction
 
 .. tip::
 
@@ -69,18 +66,11 @@ If the container is empty then ``end() == begin()``.
 
 The following code prints out a sequence and demonstrates how to iterate over a string.
 
-.. code-block:: cpp
+.. includefrags:: demos/tutorial/iterators/base.cpp
+    :fragment: use-case
 
-   DnaString genome = "ACGTACGTACGT";
-   typedef Iterator<DnaString>::Type TIterator;
-   for (TIterator it = begin(genome); it != end(genome); goNext(it))
-   {
-       std::cout << value(it);
-   }
-
-.. code-block:: console
-
-    ACGTACGTACGT
+.. includefrags:: demos/tutorial/iterators/base.cpp.stdout
+    :fragment: use-case
 
 A Working Example
 ~~~~~~~~~~~~~~~~~
@@ -128,13 +118,7 @@ Remember that the end position of a container is always the position behind the 
 
 The output of the program is as follows.
 
-.. code-block:: console
-
-   TATANNNGCGCG
-   TATANNNGCGCG
-   ATATNNNCGCGC
-   GCGCGNNNATAT
-   NATANNNGCGCG
+.. includefrags:: demos/tutorial/iterators/sequence_iterator_demo.cpp.stdout
 
 Assignment 1
 ^^^^^^^^^^^^
@@ -149,24 +133,7 @@ Assignment 1
      Adjust the code to use iterators to traverse the container.
      Use the :dox:`ContainerIteratorTags#Standard` iterator.
 
-     .. code-block:: cpp
-
-        #include <iostream>
-        #include <seqan/sequence.h>
-        #include <seqan/file.h>
-
-        using namespace seqan;
-
-        int main()
-        {
-            Dna5String genome = "ANTGGTTNCAACNGTAANTGCTGANNNACATGTNCGCGTGTA";
-            for (unsigned i = 0; i < length(genome); ++i){
-                if (genome[i] == 'N')
-                    genome[i] = 'A';
-            }
-            std::cout << "Modified genome: " << genome << std::endl;
-            return 0;
-        }
+     .. includefrags:: demos/tutorial/iterators/assignment_1.cpp
 
     Solution
 
@@ -208,81 +175,7 @@ Workshop Assignment 3
      Take the last solution and change the code to use Iterators.
      First, use Standard Iterators to do this.
 
-     .. code-block:: cpp
-
-        #include <iostream>
-        #include <seqan/sequence.h>
-        #include <seqan/file.h>
-
-        using namespace seqan;
-        // Function to print simple alignment between two sequences with the same length
-        template <typename TText1, typename TText2>
-        void printAlign(TText1 const & genomeFragment, TText2 const & read)
-        {
-                std::cout <<  "Alignment " << std::endl;
-                std::cout << "  genome : " << genomeFragment << std::endl;
-                std::cout << "  read   : " << read << std::endl;
-        }
-
-        int main(int, char const **)
-        {
-            // Build reads and genomes
-            DnaString chr1 = "TATAATATTGCTATCGCGATATCGCTAGCTAGCTACGGATTATGCGC"
-                             "TCTGCGATATATCGCGCTAGATGTGCAGCTCGATCGAATGCACGTGT"
-                             "GTGCGATCGATTAGCGTCGATCATCGATCTATATTAGCGCGCGGTAT"
-                             "CGGACGATCATATTAGCGGTCTAGCATTTAG";
-
-            // Build List containing all reads
-            typedef String<DnaString> DnaList;
-            DnaList readList;
-            resize(readList, 4);
-            readList[0] = "TTGCTATCGCGATATCGCTAGCTAGCTACGGATTATGCGCTCTGCGATATATCGCGCT";
-            readList[1] = "TCGATTAGCGTCGATCATCGATCTATATTAGCGCGCGGTATCGGACGATCATATTAGCGGTCTAGCATT";
-            readList[2] = "AGCCTGCGTACGTTGCAGTGCGTGCGTAGACTGTTGCAAGCCGGGGGTTCATGTGCGCTGAAGCACACATGCACA";
-            readList[3] = "CGTGCACTGCTGACGTCGTGGTTGTCACATCGTCGTGCGTGCGTACTGCTGCTGACA";
-
-            // Append a second chromosome sequence fragment to chr1
-            DnaString chr2 = "AGCCTGCGTACGTTGCAGTGCGTGCGTAGACTGTTGCAAGCCGGGGGT"
-                             "TCATGTGCGCTGAAGCACACATGCACACGTCTCTGTGTTCCGACGTGT"
-                             "GTCACGTGCACTGCTGACGTCGTGGTTGTCACATCGTCGTGCGTGCGT"
-                             "ACTGCTGCTGACACATGCTGCTG";
-            append(chr1, chr2);
-
-            // Print readlist
-            std::cout << " \n Read list: " << std::endl;
-            for(unsigned i = 0; i < length(readList); ++i)
-                std::cout << readList[i] << std::endl;
-
-            // Assume we have mapped the 4 reads to chr1 (and chr2) and now have the mapping start positions (no gaps).
-            // Store the start position in a String: 7, 100, 172, 272
-            String<unsigned> alignPosList;
-            resize(alignPosList, 4);
-            alignPosList[0] = 7;
-            alignPosList[1] = 100;
-            alignPosList[2] = 172;
-            alignPosList[3] = 272;
-
-            // Print alignments using Segment
-            std::cout << " \n Print alignment using Segment: " << std::endl;
-            for(unsigned i = 0; i < length(readList); ++i)
-            {
-                // Begin and end position of a given alignment between the read and the genome
-                unsigned beginPosition = alignPosList[i];
-                unsigned endPosition = beginPosition + length(readList[i]);
-                // Build infix
-                Infix<DnaString>::Type genomeFragment = infix(chr1, beginPosition, endPosition);
-                // Call of our function to print the simple alignment
-                printAlign(genomeFragment, readList[i]);
-            }
-
-            // Iterators :)
-            // Print alignments using Iterators: Do the same as above, but use Iterators to iterate over the read list.
-            // First, use Standard Iterators: Build two iterators it and itEnd to traverse readList.
-
-            std::cout << " \n Print alignment using Standard Iterators: " << std::endl;
-
-            return 1;
-        }
+     .. includefrags:: demos/tutorial/iterators/assignment_3_workshop.cpp
 
    Solution
      Click **more...** to see the solution
