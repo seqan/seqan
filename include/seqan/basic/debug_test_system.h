@@ -794,7 +794,8 @@ int _deleteTempFile(std::string tempFilename)
 
     if (!RemoveDirectory(tempFilename.c_str()))
     {
-        //std::cerr << "WARNING: Could not delete directory " << tempFilename << "\n";
+        std::cerr << "ERROR: Could not delete directory " << tempFilename << "\n";
+        return 1;
     }
 #else  // #ifdef PLATFORM_WINDOWS
     DIR * dpdf;
@@ -812,7 +813,10 @@ int _deleteTempFile(std::string tempFilename)
 
     rmdir(tempFilename.c_str());
     if (closedir(dpdf) != 0)
-        std::cerr << "WARNING: Could not delete directory " << tempFilename << "\n";
+    {
+        std::cerr << "ERROR: Could not delete directory " << tempFilename << "\n";
+        return 1;
+    }
 #endif  // #ifdef PLATFORM_WINDOWS
 
     return 0;
@@ -829,15 +833,16 @@ int endTestSuite()
 {
     delete[] StaticData::basePath();
 
+    // Delete all temporary files that still exist.
+    for (unsigned i = 0; i < StaticData::tempFileNames().size(); ++i)
+        if (_deleteTempFile(StaticData::tempFileNames()[i]))
+            ++StaticData::errorCount();
+
     std::cout << "**************************************" << std::endl;
     std::cout << " Total Tests: " << StaticData::testCount() << std::endl;
     std::cout << " Skipped:     " << StaticData::skippedCount() << std::endl;
     std::cout << " Errors:      " << StaticData::errorCount() << std::endl;
     std::cout << "**************************************" << std::endl;
-
-    // Delete all temporary files that still exist.
-    for (unsigned i = 0; i < StaticData::tempFileNames().size(); ++i)
-        _deleteTempFile(StaticData::tempFileNames()[i]);
 
     if (StaticData::errorCount() != 0)
         return 1;
