@@ -18,7 +18,7 @@ Duration
   45 min
 
 Prerequisites
-  :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-datastructures-sequences-alphabets`, :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-sequences-string-sets`, :ref:`tutorial-datastructures-sequences-iterators`, :ref:`tutorial-datastructures-alignment-alignment-representation`
+  :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-datastructures-sequences-alphabets`, :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-sequences-string-sets`, :ref:`tutorial-datastructures-sequences-iterators`, :ref:`tutorial-datastructures-alignment-alignment-gaps`
 
 The alignment procedures are usually based on the sequences similarity computation described by an alignment scoring system that gives countable information used to determine which sequences are related and which are not. 
 
@@ -55,7 +55,7 @@ The next steps would be to implement the main function of our program and to def
    :fragment: main
 
 We first define the type of the input sequences (``TSequence``) and an :dox:`Align` object (``TAlign``) type to store the alignment.
-For more information on the Align datastructure, please read the tutorial :ref:`tutorial-datastructures-alignment-alignment-representation`.
+For more information on the Align datastructure, please read the tutorial :ref:`tutorial-datastructures-alignment-alignment-gaps`.
 After defining the types, we can continue to construct our own Align object.
 First, we create two input sequences ``seq1 = "TELKDD"`` and ``seq2 = "LKTEL"``, then we define the scoring values for match, mismatch, gap. 
 As last we create the 'align' object and resize it to manage two :dox:`Gaps` objects, at this point we filled it with the sequences to be aligned.
