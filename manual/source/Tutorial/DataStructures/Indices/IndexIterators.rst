@@ -56,7 +56,7 @@ Afterwards we create the :dox:`TopDownIterator TopDown Iterator` using the metaf
    :fragment: iterator
 
 The main search can then be implemented using the functions :dox:`VSTreeIterator#repLength` and :dox:`VSTreeIterator#representative`.
-Since :dox:`TopDownIterator#goDown` might cover more than one character it is necessary to compare parts of the pattern against the representative of the iterator.
+Since :dox:`TopDownIterator#goDown` might cover more than one character (when traversing trees) it is necessary to compare parts of the pattern against the representative of the iterator.
 The search can now be implemented as follows.
 The algorithm descends the suffix tree along edges beginning with the corresponding pattern character.
 In each step the ``unseen`` edge characters have to be verified.
@@ -74,12 +74,20 @@ Program output:
 
 .. includefrags:: demos/tutorial/index_iterators/index_search.cpp.stdout
 
-Alternatively, we could have used :dox:`TopDownIterator#goDown` to go down the path of a pattern instead single characters:
+Alternatively, we could have used :dox:`TopDownIterator#goDown` to go down the path of the entire pattern instead of a single characters:
 
 .. includefrags:: demos/tutorial/index_iterators/index_search2.cpp
    :fragment: output
 
 .. includefrags:: demos/tutorial/index_iterators/index_search2.cpp.stdout
+
+Recursive Top-Down Iteration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Even though the :dox:`TopDownIterator` does not support :dox:`TopDownIterator#goUp` (as the
+:dox:`TopDownHistoryIterator` does) it can be still used for algorithms that not only need to go down in the suffix tree
+but also go up, such as backtracking. The following example shows how to search for a pattern allowing a certain number
+of errors (i.e. mismatches) by using recursion and copying the iterator (and thus the position in the suffix tree).
 
 Assignment 1
 ^^^^^^^^^^^^
