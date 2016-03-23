@@ -22,7 +22,7 @@ Prerequisites
 Virtual String Tree Iterator
 ----------------------------
 
-SeqAn provides a common interface, called the Virtual String Tree Iterator (:dox:`VSTreeIterator VSTree Iterator`), which lets you traverse the :dox:`IndexEsa`, :dox:`IndexWotd` and :dox:`IndexDfi` as a suffix tree (:ref:`tutorial-datastructures-indices` definition), the :dox:`IndexQGram` as a suffix trie, and the :dox:`FMIndex` as a prefix trie.
+SeqAn provides a common interface, called the Virtual String Tree Iterator (:dox:`VSTreeIterator VSTree Iterator`), which lets you traverse the :dox:`IndexSa`, :dox:`IndexEsa`, :dox:`IndexWotd` and :dox:`IndexDfi` as a suffix tree (:ref:`tutorial-datastructures-indices` definition), the :dox:`IndexQGram` as a suffix trie, and the :dox:`FMIndex` as a prefix trie.
 In the first part of this tutorial we will concentrate on the :dox:`TopDownIterator TopDown Iterator` which is one of the two index iterator specializations (besides the :dox:`BottomUpIterator BottomUp Iterator`).
 The second part will then deal with the DFS.
 
@@ -40,7 +40,7 @@ We therefore want to use :dox:`TopDownIterator#goDown` which has an overload to 
 
 .. important::
 
-   The following examples show how to iterate :dox:`IndexEsa`, :dox:`IndexWotd` or :dox:`IndexDfi`, i.e. :dox:`Index` specializations representing suffix trees.
+   The following examples show how to iterate :dox:`IndexSa`, :dox:`IndexEsa`, :dox:`IndexWotd` or :dox:`IndexDfi`, i.e. :dox:`Index` specializations representing suffix trees.
    The result of the iteration will look different on :dox:`Index` specializations representing tries, e.g. :dox:`FMIndex` or :dox:`IndexQGram`.
    Indeed, the topology of an :dox:`Index` changes depending on the chosen tree or trie specialization.
    Note that any suffix tree edge can be labeled by more than one character, whereas any trie edge is always labeled by exactly one character.
@@ -56,7 +56,7 @@ Afterwards we create the :dox:`TopDownIterator TopDown Iterator` using the metaf
    :fragment: iterator
 
 The main search can then be implemented using the functions :dox:`VSTreeIterator#repLength` and :dox:`VSTreeIterator#representative`.
-Since :dox:`TopDownIterator#goDown` might cover more than one character it is necessary to compare parts of the pattern against the representative of the iterator.
+Since :dox:`TopDownIterator#goDown` might cover more than one character (when traversing trees) it is necessary to compare parts of the pattern against the representative of the iterator.
 The search can now be implemented as follows.
 The algorithm descends the suffix tree along edges beginning with the corresponding pattern character.
 In each step the ``unseen`` edge characters have to be verified.
@@ -74,12 +74,18 @@ Program output:
 
 .. includefrags:: demos/tutorial/index_iterators/index_search.cpp.stdout
 
-Alternatively, we could have used :dox:`TopDownIterator#goDown` to go down the path of a pattern instead single characters:
+Alternatively, we could have used :dox:`TopDownIterator#goDown` to go down the path of the entire pattern instead of a single characters:
 
 .. includefrags:: demos/tutorial/index_iterators/index_search2.cpp
    :fragment: output
 
 .. includefrags:: demos/tutorial/index_iterators/index_search2.cpp.stdout
+
+.. tip::
+
+   When implementing recursive algorithms such as an approximate search using backtracking, we recommend
+   the use of the :dox:`TopDownIterator` without history. By passing the iterator by value, the history
+   is stored implicitly on the call stack.
 
 Assignment 1
 ^^^^^^^^^^^^
