@@ -17,10 +17,8 @@ set (SEQAN_APP_VERSION "0.5.2")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (OpenMP)
-    find_package (SeqAn REQUIRED)
-endif ()
+find_package (OpenMP)
+find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------
 # Build Setup
