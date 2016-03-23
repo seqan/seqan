@@ -60,7 +60,7 @@ Assignment 1
 
 A more complex case is the standard bioinformatics approach of **x-drop extension**.
 
-In the ungapped case, we extend the seed by comparing the *i*-th character to the left/right of the seed of the horizontal sequence(subject sequence) with the *j*-th character to the left/right of the seed in the vertical sequence(query sequence).
+In the ungapped case, we extend the seed by comparing the *i*-th character to the left/right of the seed of the horizontal sequence (subject sequence) with the *j*-th character to the left/right of the seed in the vertical sequence (query sequence).
 Matches and mismatches are assigned with scores (usually matches are assigned with positive scores and mismatches are assigned with negative scores).
 The scores are summed up.
 When one or more mismatches occur, the running total will drop.
