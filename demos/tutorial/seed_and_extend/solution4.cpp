@@ -1,4 +1,3 @@
-#include <seqan/align.h>
 #include <seqan/stream.h>
 #include <seqan/score.h>
 #include <seqan/seeds.h>
@@ -8,28 +7,35 @@ using namespace seqan;
 
 int main()
 {
-    // The horizontal and vertical sequence (database and query).
-    CharString seqH = "The quick BROWN fox jumped again!";
-    CharString seqV =     "thick BROWN boxes of brownies!";
-    //  ^^^
-    // Create seed and print the seeed sequence.
-    Seed<Simple> seed(11, 7, 14, 10);
+    typedef Seed<Simple>    TSeed;
+    typedef SeedSet<TSeed> TSeedSet;
 
-    // Perform match extension.
-    Score<int, Simple> scoringScheme(1, -1, -1, -2);
-    extendSeed(seed, seqH, seqV, EXTEND_BOTH, scoringScheme, 3,
-               GappedXDrop());
+    Dna5String seqH;
+    Dna5String seqV;
+    Score<int, Simple> scoringScheme(1, -1, -1);
 
-    // Perform a banded alignment.
-    Align<CharString> align;
-    resize(rows(align), 2);
-    assignSource(row(align, 0), infix(seqH, beginPositionH(seed),
-                                      endPositionH(seed)));
-    assignSource(row(align, 1), infix(seqV, beginPositionV(seed),
-                                      endPositionV(seed)));
+    String<TSeed> seeds;
+    appendValue(seeds, TSeed(0, 0, 2));
+    appendValue(seeds, TSeed(3, 5, 2));
+    appendValue(seeds, TSeed(4, 2, 3));
+    appendValue(seeds, TSeed(9, 9, 2));
 
-    globalAlignment(align, scoringScheme);
-    std::cout << "Resulting alignment\n" << align << "\n";
+    TSeedSet seedSet;
+    for (unsigned i = 0; i < length(seeds); ++i)
+    {
+        if (!addSeed(seedSet, seeds[i], 2, 2, scoringScheme,
+                     seqH, seqV, Chaos()))
+            addSeed(seedSet, seeds[i], Single());
+    }
+
+    std::cout << "Resulting seeds.\n";
+    typedef Iterator<TSeedSet>::Type TIter;
+    for (TIter it = begin(seedSet, Standard());
+         it != end(seedSet, Standard()); ++it)
+        std::cout << "(" << beginPositionH(*it) << ", " << endPositionH(*it)
+                  << ", " << beginPositionV(*it) << ", " << endPositionV(*it)
+                  << ", " << lowerDiagonal(*it) << ", " << upperDiagonal(*it)
+                  << ")\n";
 
     return 0;
 }

@@ -1,8 +1,4 @@
-Resulting alignment
-      0     .    :    .    :  
-         quick BROWN fox-- ju
-           |||||||||| ||  |  
-        -thick BROWN boxes of
-
-
-
+Resulting seeds.
+(3, 5, 5, 7, -2, -2)
+(0, 7, 0, 5, 0, 2)
+(9, 11, 9, 11, 0, 0)

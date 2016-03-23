@@ -8,9 +8,8 @@ Seed Extension
 ==============
 
 Learning Objective
-  In this tutorial, you will learn about the seeds-related SeqAn functionality.
   You will learn how to do seed-and-extend with SeqAn, how to do local and global chaining of seeds.
-  Finally, we will show how to create a banded alignment around a seed chain.
+  Finally, you will learn how to create a banded alignment around a seed chain.
 
 Difficulty
   Average
@@ -19,7 +18,7 @@ Duration
   2 h
 
 Prerequisites
-  :ref:`tutorial-datastructures-sequences`
+  :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-seeds`
 
 Overview
 --------
@@ -36,17 +35,17 @@ Seeds are often created quickly using a *k*-mer index: When a *k*-mer of a given
 However, the match can be longer than just *k* characters. To get longer matches, we use **seed extension**.
 
 In the most simple case we simply look for matching characters in both sequences to the left and right end of the seed.
-This is called **match extension** and available through the :dox:`Seed#extendSeed` function using the ``MatchExtend`` tag.
+This is called **match extension** and available through the :dox:`Seed#extendSeed` function using the ``MatchExtend`` tag. Below example shows how to extend seeds to the right end.
 
-.. includefrags:: demos/tutorial/seed_and_extend/example2.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example1.cpp
    :fragment: example
 
-.. includefrags:: demos/tutorial/seed_and_extend/example2.cpp.stdout
+.. includefrags:: demos/tutorial/seed_and_extend/example1.cpp.stdout
 
-Assignment 2
+Assignment 1
 """"""""""""
 
-.. container:: console
+.. container:: assignment
 
    Type
      Review
@@ -57,18 +56,43 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/seed_and_extend/solution2.cpp
+        .. includefrags:: demos/tutorial/seed_and_extend/solution1.cpp
 
-A more complex case is the standard bioinformatics approach of **x-drop extension**:
+A more complex case is the standard bioinformatics approach of **x-drop extension**.
 
-In the ungapped case, we extend the seed by comparing the *i*-th character to the left/right of the seed of the horizontal sequence with the *j*-th character to the left/right of the seed in the vertical sequence.
+In the ungapped case, we extend the seed by comparing the *i*-th character to the left/right of the seed of the horizontal sequence (subject sequence) with the *j*-th character to the left/right of the seed in the vertical sequence (query sequence).
 Matches and mismatches are assigned with scores (usually matches are assigned with positive scores and mismatches are assigned with negative scores).
 The scores are summed up.
 When one or more mismatches occur, the running total will drop.
-When the sum drops more strongly than a value *x*, the extension is stopped.
+When the sum drops more than a value *x*, the extension is stopped.
 
 This approach is also available in the gapped case in the SeqAn library.
 Here, creating gaps is also possible but also assigned negative scores.
+
+.. includefrags:: demos/tutorial/seed_and_extend/example2.cpp
+   :fragment: example
+
+.. includefrags:: demos/tutorial/seed_and_extend/example2.cpp.stdout
+
+Assignment 2
+""""""""""""
+
+.. container:: assignment
+
+   Type
+     Review
+
+   Objective
+     Change the example from above to use gapped instead of ungapped x-drop extension.
+
+   Solution
+     .. container:: foldable
+
+        .. includefrags:: demos/tutorial/seed_and_extend/solution2.cpp
+
+After extending a seed, we might wish to actually get the resulting alignment.
+When using gapped x-drop extension, we need to perform a banded global alignment of the two sequence infixes that correspond to the seed.
+This is shown in the following example:
 
 .. includefrags:: demos/tutorial/seed_and_extend/example3.cpp
    :fragment: example
@@ -84,33 +108,7 @@ Assignment 3
      Review
 
    Objective
-     Change the example from above to use gapped instead of ungapped x-drop extension.
-
-   Solution
-     .. container:: foldable
-
-        .. includefrags:: demos/tutorial/seed_and_extend/solution3.cpp
-
-After extending a seed, we might wish to actually get the resulting alignment.
-When using gapped x-drop extension, we need to perform a banded global alignment of the two sequence infixes that correspond to the seed.
-This is shown in the following example:
-
-.. includefrags:: demos/tutorial/seed_and_extend/example4.cpp
-   :fragment: example
-
-.. includefrags:: demos/tutorial/seed_and_extend/example4.cpp.stdout
-
-Assignment 4
-""""""""""""
-
-.. container:: assignment
-
-   Type
-     Review
-
-   Objective
      Change the example from above to a gap open score of ``-2`` and a gap extension score of ``-2``.
-     Use this scoring scheme for the global alignment as well and thus Gotoh's algorithm.
 
    Solution
      .. container:: foldable
@@ -118,7 +116,7 @@ Assignment 4
 	Note that we do not have to explicitely call Gotoh's algorithm in ``globalAlignment()``.
 	The fact that the gap extension score is different from the gap opening score is enough.
 
-        .. includefrags:: demos/tutorial/seed_and_extend/solution4.cpp
+        .. includefrags:: demos/tutorial/seed_and_extend/solution3.cpp
 
 Local Chaining using Seed Sets
 ------------------------------
@@ -130,12 +128,12 @@ This combination is called **local chaining**. This approach has been pioneered 
 SeqAn provides the :dox:`SeedSet` class as a data structure to efficiently store seeds and combine new seeds with existing ones.
 The following example creates a :dox:`SeedSet` object ``seeds``, adds four seeds to it and then prints its contents.
 
-.. includefrags:: demos/tutorial/seed_and_extend/example5.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example4.cpp
    :fragment: example
 
 The output of the program above can be seen below.
 
-.. includefrags:: demos/tutorial/seed_and_extend/example5.cpp.stdout
+.. includefrags:: demos/tutorial/seed_and_extend/example4.cpp.stdout
 
 Note that we have used the ``Single()`` tag for adding the seeds.
 This forces the seeds to be added independent of the current seed set contents.
@@ -149,21 +147,21 @@ By using different overloads of the :dox:`SeedSet#addSeed`, we can use various l
   If there is a seed ``B`` whose distance in both sequences is smaller than a given threshold then ``A`` can be chained to ``B``.
 
 ``Chaos``
-  Following the strategy of Chaos :cite:`Brudno2003b`, if ``A`` is within a certain distance to ``B`` in both sequences and the distance in diagonals is smaller than a given threshold then ``A`` can be chained to ``B``.
+  Following the strategy of CHAOS :cite:`Brudno2003b`, if ``A`` is within a certain distance to ``B`` in both sequences and the distance in diagonals is smaller than a given threshold then ``A`` can be chained to ``B``.
 
 The :dox:`SeedSet#addSeed` function returns a boolean value indicating success in finding a suitable partner for chaining.
 A call using the ``Single`` strategy always yields ``true``.
 
 The following example shows how to use the ``SimpleChain`` strategy.
 
-.. includefrags:: demos/tutorial/seed_and_extend/example7.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example5.cpp
    :fragment: example
 
 As we can see, the seed ``TSeed(4, 2, 3)`` has been chained to ``TSeed(0, 0, 2)``.
 
-.. includefrags:: demos/tutorial/seed_and_extend/example7.cpp.stdout
+.. includefrags:: demos/tutorial/seed_and_extend/example5.cpp.stdout
 
-Assignment 5
+Assignment 4
 """"""""""""
 
 .. container:: assignment
@@ -177,7 +175,7 @@ Assignment 5
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/seed_and_extend/solution5.cpp
+        .. includefrags:: demos/tutorial/seed_and_extend/solution4.cpp
 
 Global Chaining
 ---------------
@@ -203,7 +201,7 @@ The following shows a simple example.
 .. includefrags:: demos/tutorial/seed_and_extend/example6.cpp
    :fragment: example
 
-Assignment 6
+Assignment 5
 """"""""""""
 
 .. container:: assignment
@@ -218,13 +216,13 @@ Assignment 6
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/seed_and_extend/solution6.cpp
+        .. includefrags:: demos/tutorial/seed_and_extend/solution5.cpp
 
 Banded Chain Alignment
 ----------------------
 
 After obtaining such a valid seed chain, we would like to obtain an alignment along the chain.
-For this, we can use the so-called banded chain alignment algorithm (introduced by Brudno's LAGAN).
+For this, we can use the so-called banded chain alignment algorithm :cite:`Brudno2003`.
 Around seeds, we can use banded DP alignment and the spaces between seeds can be aligned using standard DP programming alignment.
 
 In SeqAn you can compute the banded chain alignment by calling the function :dox:`bandedChainAlignment`.
@@ -244,15 +242,15 @@ The default value is 15 and conforms the default value in the LAGAN-algorithm :c
 
     At the moment the specified value for the band extension must be at least one.
 
-.. includefrags:: demos/tutorial/seed_and_extend/example8.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example7.cpp
    :fragment: example
 
 The output of the example above.
 
-.. includefrags:: demos/tutorial/seed_and_extend/example8.cpp.stdout
+.. includefrags:: demos/tutorial/seed_and_extend/example7.cpp.stdout
 
 
-Assignment 7
+Assignment 6
 """"""""""""
 
 .. container:: assignment
@@ -269,7 +267,7 @@ Assignment 7
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/seed_and_extend/solution7.cpp
+        .. includefrags:: demos/tutorial/seed_and_extend/solution6.cpp
 
 
 .. TODO: LAGAN demo should be refered to from here when it's done.

@@ -2,7 +2,7 @@
 
     .. contents::
 
-.. _tutorial-datastructure-seeds:
+.. _tutorial-datastructures-seeds:
 
 Seeds
 =====

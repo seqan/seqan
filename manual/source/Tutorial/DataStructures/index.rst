@@ -42,7 +42,7 @@ The tutorials under :ref:`tutorial-datastructures-alignment-alignment-representa
 The tutorials under :ref:`tutorial-datastructures-store` will introduce you to SeqAn's store data structures for NGS read mapping and annotation
 
 The tutorials under :ref:`tutorial-datastructures-graphs` will introduce you to SeqAn's graph type. Its simple and we provide in the algorithms section various standard graph algorithms for the datatype.
-The tutorials under :ref:`tutorial-datastructure-seeds` will introduce you to seeds in SeqAn.
+The tutorials under :ref:`tutorial-datastructures-seeds` will introduce you to seeds in SeqAn.
 Its what you need if you think 'seed-and-extend'.
 
 The tutorials under :ref:`tutorial-datastructures-modifiers` will introduce you SeqAn's modifier concept. If you want the reverse complement of a string, there is no need to explicitely allocate memory for it. Modifiers leave the sequence as it is but provide a different access to it.
