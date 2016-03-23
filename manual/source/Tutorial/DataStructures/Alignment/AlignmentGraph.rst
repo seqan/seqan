@@ -15,7 +15,7 @@ Difficulty
   Basic
 
 Duration
-  0:15h
+  15 min
 
 Prerequisites
   :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-datastructures-sequences-alphabets`, :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-sequences-string-sets`, :ref:`tutorial-datastructures-sequences-iterators`
@@ -52,7 +52,7 @@ We first create our two input sequences ``TTGT`` and ``TTAGT`` append them to th
 .. includefrags:: demos/tutorial/alignment/graph.cpp
    :fragment: init
 
-Before adding nodes to the graph ``align`` prints the empty adjacency and edge
+Before adding vertices to the graph ``align`` prints the empty adjacency and edge
 list.
 
 .. includefrags:: demos/tutorial/alignment/graph.cpp.stdout
@@ -60,7 +60,7 @@ list.
 
 Before we construct the alignment we print the unmodified AlignmentGraph.
 Then we add some alignment information to the graph.
-In order to add an ungapped alignment segment we have to add an edge connecting two nodes of different input sequences.
+In order to add an ungapped alignment segment we have to add an edge connecting two vertices of different input sequences.
 To do so we can use the function :dox:`Graph#addEdge` and specify the two vertices that should be connected.
 Since we do not have any vertices yet, we create them on the fly using the function :dox:`Graph#addVertex addVertex()`.
 The function addVertex gets as second parameter the id which points to the the correct input sequence within the ``strings`` object.

@@ -15,7 +15,7 @@ Difficulty
   Basic
 
 Duration
-  0:15h
+  15 min
 
 Prerequisites
   :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-datastructures-sequences-alphabets`, :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-sequences-string-sets`, :ref:`tutorial-datastructures-sequences-iterators`
