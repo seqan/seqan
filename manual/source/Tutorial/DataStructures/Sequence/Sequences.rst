@@ -73,7 +73,7 @@ For commonly used string parameterizations, SeqAn has a range of shortcuts imple
 
 The user can specify the kind of string that should be used in an optional second template argument of :dox:`String`.
 This is also known as selecting the specialization of a class in SeqAn.
-The default string implementation is :dox:`AllocString Alloc String`, which the best choice for most cases.
+The default string implementation is :dox:`AllocString Alloc String`, which is the best choice for most cases.
 
 .. includefrags:: demos/tutorial/sequences/base.cpp
     :fragment: specification_example
@@ -113,7 +113,7 @@ While some sequence types have a fixed capacity, the capacity of other sequence 
 The capacity can be set explicitly by functions such as :dox:`String#reserve` or :dox:`StringConcept#resize`.
 It can also be set implicitly by functions like :dox:`StringConcept#append` or :dox:`StringConcept#replace`, if the operation's result exceeds the length of the target string.
 
-In the following example, a :dox:`String` of :dox:`Dna5String`, we first set the new length of the container with :dox:`StringConcept#resize` to two elements.
+In the following example we create a :dox:`String` of :dox:`Dna5String`. We first set the new length of the container with :dox:`StringConcept#resize` to two elements.
 After assigning two elements we append one more element with :dox:`StringConcept#appendValue`.
 In the last step the capacity is implicitly changed.
 
@@ -173,6 +173,9 @@ Assignment 1
         .. includefrags:: demos/tutorial/sequences/assignment_1_solution.cpp
             :fragment: full
 
+        Your output should look like this:
+
+        .. includefrags:: demos/tutorial/sequences/assignment_1_solution.cpp.stdout
 
 Assignment 2
 """"""""""""
@@ -225,6 +228,8 @@ Assignment 2
 
         .. includefrags:: demos/tutorial/sequences/assignment_2_solution.cpp
           :fragment: full
+
+        .. includefrags:: demos/tutorial/sequences/assignment_2_solution.cpp.stdout
 
 Comparisons
 ^^^^^^^^^^^
@@ -297,6 +302,8 @@ Assignment 3
 
         .. includefrags:: demos/tutorial/sequences/assignment_3_solution.cpp
 
+        .. includefrags:: demos/tutorial/sequences/assignment_3_solution.cpp.stdout
+
 Assignment 4
 """"""""""""
 
@@ -321,6 +328,8 @@ Assignment 4
      .. container:: foldable
 
         .. includefrags:: demos/tutorial/sequences/assignment_4_solution.cpp
+
+        .. includefrags:: demos/tutorial/sequences/assignment_4_solution.cpp.stdout
 
 Segments
 --------
@@ -361,21 +370,20 @@ Assignment 5
      Application
 
    Objective
-
      In this task you will use a segment to pass over an infix of a given sequence to a function without copying the corresponding fragment.
      Use the code given below.
      Lets assume that we have given a ``genome`` and a ``read`` sequence as well as the begin position of a given alignment.
      In the main function a fragment of the Dna5String ``genome`` is copied and passed together with the Dna5String ``read`` to a ``print`` function.
      Adjust the code to use an infix of the genome, instead of copying the corresponding fragment.
 
-    .. includefrags:: demos/tutorial/sequences/assignment_5_solution.cpp
+     .. includefrags:: demos/tutorial/sequences/assignment_5_solution.cpp
           :fragment: top
 
 
-    .. includefrags:: demos/tutorial/sequences/base.cpp
+     .. includefrags:: demos/tutorial/sequences/base.cpp
           :fragment: assignment5_code_to_change
 
-    .. includefrags:: demos/tutorial/sequences/assignment_5_solution.cpp
+     .. includefrags:: demos/tutorial/sequences/assignment_5_solution.cpp
           :fragment: bottom
 
    Solution
@@ -385,6 +393,8 @@ Assignment 5
 
         .. includefrags:: demos/tutorial/sequences/assignment_5_solution.cpp
             :fragment: full
+
+        .. includefrags:: demos/tutorial/sequences/assignment_5_solution.cpp.stdout
 
 Assignment 6
 ^^^^^^^^^^^^
@@ -406,3 +416,5 @@ Assignment 6
     .. container:: foldable
 
        .. includefrags:: demos/tutorial/sequences/assignment_6_solution.cpp
+
+       .. includefrags:: demos/tutorial/sequences/assignment_6_solution.cpp.stdout
