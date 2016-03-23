@@ -29,7 +29,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/stream.h>   // For printing strings.
-#include <seqan/score.h>  // The module score.
+#include <seqan/score.h>    // The module score.
 
 using namespace seqan;
 //![includes]
