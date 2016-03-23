@@ -84,7 +84,7 @@ The set of available fibres of an index ``Index<TText, TSpec>`` depends on the i
 
 The first column in each table above contains the tags to select the corresponding fibre.
 Most of these tags are aliases for the same tag, e.g. ``EsaSA``, ``QGramSA``, ... are aliases for ``FibreSA``.
-If you write an algorithm that is generic in the type of index can use ``FibreText`` to specify the fibre that stores the index text.
+If you write an algorithm that is generic in the type of index, you can use ``FibreText`` to specify the fibre that stores the index text.
 
 Creation
 --------
@@ -129,7 +129,7 @@ For the ease of use, there exist shortcuts to access frequently used fibres:
 | :dox:`Index#indexText indexText(index)`                | :dox:`Index#getFibre getFibre(index, FibreText())`      |
 +--------------------------------------------------------+---------------------------------------------------------+
 
-and to access a single values:
+and to access a single value:
 
 +----------------------------------------------+---------------------------------------------------------+
 | Shortcut                                     | Expands To ...                                          |
