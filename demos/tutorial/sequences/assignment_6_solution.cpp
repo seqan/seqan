@@ -62,5 +62,5 @@ int main(int, char const **)
         // Call of our function to print the simple alignment
         printAlign(genomeFragment, readList[i]);
     }
-    return 1;
+    return 0;
 }

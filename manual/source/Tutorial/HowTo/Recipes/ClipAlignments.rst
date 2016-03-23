@@ -32,3 +32,6 @@ The following extensive example shows how to practically translate between the c
 
 .. includefrags:: demos/howto/align_gaps_clipping.cpp
 
+The output looks as follows:
+
+.. includefrags:: demos/howto/align_gaps_clipping.cpp.stdout

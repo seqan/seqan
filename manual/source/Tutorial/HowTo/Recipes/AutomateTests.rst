@@ -87,16 +87,15 @@ Now, test the setup by running:
 
 Add ``run_nightly.bat`` to nightly Scheduled Tasks of Windows (analogously to the `CTest Tutorial <http://www.vtk.org/Wiki/CMake_Scripting_Of_CTest#On_Windows_.2F_Cygwin_.2F_MinGW>`_):
 
-   #.   Open "Scheduled Tasks" from Control Panel.
-   #.   Select Add Scheduled Task``
-   #.   Select Next to select command.``
-   #.   Click Browse... and select ``\ ``run_nightly.bat``\ ``.``
-   #.   Click Next and select name and repetition date. Repetition date for Nightly dashboards should be Daily.``
-   #.   Click Next and select time to start the dashboard.``
-   #.   Click Next and select Open advanced properties... to fine tune the scheduled task.``
-   #.   Select Next and type password of the user.``
-   #.   Task is created. The Advanced Properties dialog should open.``
-   #.   In advanced properties, specify full command name. This is very important that you use double quotes in case you have space in your path.``
-   #.   Select 'Ok, which will ask for password again.``
-   #.   The new task should be created.``
-
+   #.   Open ``Scheduled Tasks`` from Control Panel.
+   #.   Select ``Add Scheduled Task``.
+   #.   Select ``Next`` to select command.
+   #.   Click **Browse...** and select ``run_nightly.bat``.
+   #.   Click **Next** and select name and repetition date. Repetition date for Nightly dashboards should be ``Daily``.
+   #.   Click **Next** and select time to start the dashboard.
+   #.   Click **Next** and select ``Open advanced properties...`` to fine tune the scheduled task.
+   #.   Select **Next** and type password of the user.``
+   #.   Task is created. The Advanced Properties dialog should open.
+   #.   In advanced properties, specify full command name. It is very important that you use double quotes in case you have spaces in your path.
+   #.   Select ``Ok``, which will ask for password again.
+   #.   The new task should be created.
