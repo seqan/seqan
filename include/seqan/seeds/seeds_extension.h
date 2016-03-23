@@ -796,7 +796,7 @@ extendSeed(Seed<Simple, TConfig> & seed,
     // SEQAN_ASSERT_LT(scoreMismatch(scoringScheme), 0);
     SEQAN_ASSERT_LT(scoreGapOpen(scoringScheme), 0);
     SEQAN_ASSERT_LT(scoreGapExtend(scoringScheme), 0);
-    //SEQAN_ASSERT_EQ(scoreGapExtend(scoringScheme), scoreGapOpen(scoringScheme));
+    SEQAN_ASSERT_EQ(scoreGapExtend(scoringScheme), scoreGapOpen(scoringScheme));
 
     if (direction == EXTEND_LEFT || direction == EXTEND_BOTH)
     {

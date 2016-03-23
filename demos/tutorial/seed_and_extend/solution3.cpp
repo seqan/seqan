@@ -15,7 +15,7 @@ int main()
     Seed<Simple> seed(11, 7, 14, 10);
 
     // Perform match extension.
-    Score<int, Simple> scoringScheme(1, -1, -1, -2);
+    Score<int, Simple> scoringScheme(1, -1, -2, -2);
     extendSeed(seed, seqH, seqV, EXTEND_BOTH, scoringScheme, 3,
                GappedXDrop());
 
