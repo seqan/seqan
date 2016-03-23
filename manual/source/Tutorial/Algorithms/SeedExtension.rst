@@ -108,8 +108,7 @@ Assignment 3
      Review
 
    Objective
-     Change the example from above to a gap open score of ``-2`` and a gap extension score of ``-1``.
-     Use this scoring scheme for the global alignment as well and thus Gotoh's algorithm.
+     Change the example from above to a gap open score of ``-2`` and a gap extension score of ``-2``.
 
    Solution
      .. container:: foldable
