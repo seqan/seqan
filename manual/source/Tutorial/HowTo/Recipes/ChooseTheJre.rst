@@ -26,7 +26,7 @@ In order to do so go to ``Project`` and select ``Properties``.
 
 .. figure:: ProjectProperties.png
 
-No select ``Java Compiler`` and select the correct JRE at the ``Compiler compliance level:``
+Now select ``Java Compiler`` and select the correct JRE at the ``Compiler compliance level:``
 
 .. figure:: JavaCompiler.png
 
