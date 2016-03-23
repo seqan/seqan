@@ -23,7 +23,7 @@ RNA-Seq refers to high-throughput sequencing of cDNA in order to get information
 Knowing the sequence and abundance of mRNA allows to determine the (differential) expression of genes, to detect alternative splicing variants, or to annotate yet unknown genes.
 
 In the following tutorial you will develop a simple gene quantification tool.
-It will load a file containing gene annotations and a file with RNA-Seq read alignments, computes abundances, and outputs RPKM values for each expressed gene.
+It will load a file containing gene annotations and a file with RNA-Seq read alignments, compute abundances, and output RPKM values for each expressed gene.
 
 Albeit its simplicity, this example can be seen as a starting point for more complex applications, e.g. to extend the tool from quantification of genes to the quantification of (alternatively spliced) isoforms, or to de-novo detect yet unannotated isoforms/genes.
 
@@ -47,8 +47,8 @@ These tasks typically require lots of data structures that are related to each o
 
 The Fragment Store subsumes all these data structures in an easy to use interface.
 It represents a multiple alignment of millions of reads or mate-pairs against a reference genome consisting of multiple contigs.
-Additionally, regions of the reference genome can be annotated with features like 'gene', 'mRNA', 'exon', 'intro' or custom features.
-The Fragment Store supports I/O functionality to read/write a read alignment in `SAM <http://samtools.sourceforge.net/>`_ or `AMOS <http://www.cbcb.umd.edu/research/contig_representation.shtml>`_ format and to read/write annotations in `GFF <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <http://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ format.
+Additionally, regions of the reference genome can be annotated with features like 'gene', 'mRNA', 'exon', 'intron' (see :dox:`FragmentStore::PredefinedAnnotationTypes`) or custom features.
+The Fragment Store supports I/O functionality to read/write a read alignment in `SAM <http://samtools.sourceforge.net/>`_ or `AMOS <http://amos.sourceforge.net/wiki/index.php/AMOS>`_ format and to read/write annotations in `GFF <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <http://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ format.
 
 The Fragment Store can be compared with a database where each table (called "store") is implemented as a :dox:`String` member of the :dox:`FragmentStore` class.
 The rows of each table (implemented as structs) are referred by their ids which are their positions in the string and not stored explicitly.
@@ -151,7 +151,7 @@ The string of strings of intervals can now be defined as:
 .. includefrags:: demos/tutorial/simple_rna_seq/base.cpp
       :fragment: interval
 
-In your second assignment you should use an :dox:`AnnotationTreeIterator AnnotationTree Iterator` annotation tree iterator] to traverse all genes in the annotation tree.
+In your second assignment you should use an :dox:`AnnotationTreeIterator AnnotationTree Iterator` to traverse all genes in the annotation tree.
 For each gene, determine its genomic range (projected to the forward strand) and add a new ``TInterval`` object to the ``intervals[contigId]`` string, where ``contigId`` is the id of the contig containing that gene.
 
 Assignment 2
@@ -191,7 +191,7 @@ Assignment 2
    Hint
      .. container:: foldable
 
-        You can assume that all genes are children of the root node, i.e. create an :dox:`AnnotationTreeIterator AnnotationTree Iterator`, [:dox:`AnnotationTreeIterator#goDown go down` to the first gene and :dox:`AnnotationTreeIterator#goRight go right` to visit all other genes.
+        You can assume that all genes are children of the root node, i.e. create an :dox:`AnnotationTreeIterator AnnotationTree Iterator`, :dox:`AnnotationTreeIterator#goDown go down` to the first gene and :dox:`AnnotationTreeIterator#goRight go right` to visit all other genes.
         Use :dox:`AnnotationTreeIterator#getAnnotation` to access the gene annotation and :dox:`IteratorAssociatedTypesConcept#value` to get the annotation id.
 
      .. container:: foldable
