@@ -15,10 +15,8 @@ message (STATUS "Configuring tests/bam_io")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (ZLIB)
-    find_package (SeqAn REQUIRED)
-endif ()
+find_package (ZLIB)
+find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------
 # Build Setup
