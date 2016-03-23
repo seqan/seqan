@@ -38,7 +38,7 @@ In this section you find tutorials addressing the most common of SeqAn's data st
 The tutorials under :ref:`tutorial-datastructures-sequences` will introduce you to alphabets, sequence containers, iterators and various kinds of string sets, among them also comrpessed, reference based representations.
 The tutorials under :ref:`tutorial-datastructures-indices` will introduce you to the interfaces and implementations of SeqAn's string and q-gram indices and the corresponding interators.
 
-The tutorials under :ref:`tutorial-datastructures-alignment-alignment-representation` will introduce you to how SeqAn implements alignment objects (e.g. gaps in sequences).
+The tutorials under :ref:`tutorial-datastructures-alignment-alignment-gaps` will introduce you to how SeqAn implements alignment objects (e.g. gaps in sequences).
 The tutorials under :ref:`tutorial-datastructures-store` will introduce you to SeqAn's store data structures for NGS read mapping and annotation
 
 The tutorials under :ref:`tutorial-datastructures-graphs` will introduce you to SeqAn's graph type. Its simple and we provide in the algorithms section various standard graph algorithms for the datatype.
