@@ -8,14 +8,14 @@ int main(int argc, char const ** argv)
 {
     if (argc != 2)
     {
-        std::cout << "USAGE: build_fai FILE.fa\n";
+        std::cerr << "USAGE: build_fai FILE.fa\n";
         return 0;
     }
 
     FaiIndex faiIndex;
     if (!build(faiIndex, argv[1]))
     {
-        std::cout << "ERROR: Could not build FAI index for file " << argv[1] << ".\n";
+        std::cerr << "ERROR: Could not build FAI index for file " << argv[1] << ".\n";
         return 0;
     }
 
@@ -24,7 +24,7 @@ int main(int argc, char const ** argv)
 
     if (!save(faiIndex, toCString(faiFilename)))
     {
-        std::cout << "ERROR: Could not write the index to file!\n";
+        std::cerr << "ERROR: Could not write the index to file!\n";
         return 0;
     }
 

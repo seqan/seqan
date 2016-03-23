@@ -9,7 +9,7 @@ int main(int argc, char const ** argv)
 {
     if (argc != 5)
     {
-        std::cout << "USAGE: build_fai FILE.fa SEQ BEGIN END\n";
+        std::cerr << "USAGE: build_fai FILE.fa SEQ BEGIN END\n";
         return 0;
     }
 
@@ -19,12 +19,12 @@ int main(int argc, char const ** argv)
     {
         if (!build(faiIndex, argv[1]))
         {
-            std::cout << "ERROR: Index could not be loaded or built.\n";
+            std::cerr << "ERROR: Index could not be loaded or built.\n";
             return 0;
         }
         if (!save(faiIndex))    // Name is stored from when reading.
         {
-            std::cout << "ERROR: Index could not be written do disk.\n";
+            std::cerr << "ERROR: Index could not be written do disk.\n";
             return 0;
         }
     }
@@ -33,7 +33,7 @@ int main(int argc, char const ** argv)
     unsigned idx = 0;
     if (!getIdByName(idx, faiIndex, argv[2]))
     {
-        std::cout << "ERROR: Index does not know about sequence " << argv[2] << "\n";
+        std::cerr << "ERROR: Index does not know about sequence " << argv[2] << "\n";
         return 0;
     }
 
@@ -41,12 +41,12 @@ int main(int argc, char const ** argv)
     unsigned beginPos = 0, endPos = 0;
     if (!lexicalCast(beginPos, argv[3]))
     {
-        std::cout << "ERROR: Cannot cast " << argv[3] << " into an unsigned.\n";
+        std::cerr << "ERROR: Cannot cast " << argv[3] << " into an unsigned.\n";
         return 0;
     }
     if (!lexicalCast(endPos, argv[4]))
     {
-        std::cout << "ERROR: Cannot cast " << argv[4] << " into an unsigned.\n";
+        std::cerr << "ERROR: Cannot cast " << argv[4] << " into an unsigned.\n";
         return 0;
     }
 
