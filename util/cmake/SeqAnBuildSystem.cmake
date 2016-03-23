@@ -275,15 +275,6 @@ macro (seqan_build_system_init)
     elseif (CXX11_FOUND)
         set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
     endif ()
-
-    # search dependencies once, globally, if in DEVELOP
-    if (SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP")
-        message (STATUS "Scanning dependencies once in DEVELOP mode...")
-        find_package(OpenMP)
-        find_package(ZLIB)
-        find_package(BZip2)
-        find_package(SeqAn REQUIRED)
-    endif ()
 endmacro (seqan_build_system_init)
 
 # ---------------------------------------------------------------------------
@@ -670,8 +661,11 @@ function (seqan_register_demos PREFIX)
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cpp
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
 
-    # NOTE(h-2): we do not need to search for dependencies, because this is
-    # done globally for DEVELOP (and demos are only built with DEVELOP)
+    # Find SeqAn with all dependencies.
+    find_package (OpenMP)
+    find_package (ZLIB)
+    find_package (BZip2)
+    find_package (SeqAn REQUIRED)
 
     # Supress unused parameter warnings for demos.
     if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)

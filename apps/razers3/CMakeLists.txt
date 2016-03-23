@@ -23,12 +23,10 @@ if (SEQAN_TRAVIS_BUILD)
 endif ()
 
 # Search SeqAn and select dependencies.
-if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (OpenMP)
-    find_package (ZLIB)
-    find_package (BZip2)
-    find_package (SeqAn REQUIRED)
-endif ()
+find_package (OpenMP)
+find_package (ZLIB)
+find_package (BZip2)
+find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------
 # Build Setup

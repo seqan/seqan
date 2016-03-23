@@ -17,11 +17,9 @@ set (SEQAN_APP_VERSION "0.2.4")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (OpenMP)
-    find_package (ZLIB)
-    find_package (SeqAn REQUIRED)
-endif ()
+find_package (OpenMP)
+find_package (ZLIB)
+find_package (SeqAn REQUIRED)
 find_package (Boost)
 
 # Stop here if we cannot find Boost or OpenMP.
