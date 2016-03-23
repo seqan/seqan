@@ -27,8 +27,6 @@ A Gaps data structure is a container storing gap information for a given source 
 The gap information is put on top of the source sequence (coordinates of the gapped sequence refer to the **gap space**) without directly applying them to the source (coordinates of the ungapped sequence refer to the **source space**).
 This way operating with gaps sustains very flexible.
 
-.. image:: ../../../../../dox/html/img/gaps_illustration.png
-
 Gaps data structures
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -102,7 +100,7 @@ Without the reference, we would only modify copies of rows and the changes would
 Gap Space vs. Source Space
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../../../../../dox/html/img/gaps_illustration.png
+.. image:: ../../../../../dox/images/docs2/gaps_illustration.png
 
 In the next steps, we want to dig a little deeper to get a feeling for the gap space and the source space.
 As mentioned above, the gaps are not inserted into the source but put on top of it in a separate space, the gap space.

@@ -26,7 +26,7 @@ Another very useful representation of alignments is given by the :dox:`Alignment
 It is a graph in which each vertex corresponds to a sequence segment, and each edge indicates an ungapped alignment between the connected vertices, or more precisely between the sequences stored in those vertices.
 Here is an example of such a graph:
 
-.. image:: ../../../../../dox/html/img/alignmentExample.png
+.. image:: ../../../../../dox/images/docs2/alignmentExample.png
 
 In the following we will actually construct this example step by step.
 First we include the ``iostream`` header from the STL and the ``<seqan/align.h>`` header to include all necessary functions and data structures we want to use.
