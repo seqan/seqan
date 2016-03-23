@@ -53,7 +53,7 @@ Specialization ``Owner<ConcatDirect>``
   Inserting new strings into the set or removing strings from the set is more expensive than for the default :dox:`OwnerStringSet` specialization, since this involves moving all subsequent sequences in memory.
 
 Specialization ``Owner<JournaledSet>``
-  The sequences are stored as :dox:`JournaledSring Journaled Strings` to a common reference sequence,
+  The sequences are stored as :dox:`JournaledString Journaled Strings` to a common reference sequence,
   that is also stored within the container.
   When adding a new String to the set, it needs to be joined to this set of sequences which are all based on the
   common reference sequence.
