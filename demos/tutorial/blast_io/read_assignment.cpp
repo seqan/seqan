@@ -8,7 +8,10 @@ using namespace seqan;
 int main(int argc, char **argv)
 {
     if (argc != 2)
-        return 1;
+    {
+      std::cerr << "USAGE: FILE_IN\n";
+      return 0;
+    }
 
     typedef Gaps<String<AminoAcid>, ArrayGaps> TGaps;
     typedef BlastMatch<TGaps, TGaps> TBlastMatch;

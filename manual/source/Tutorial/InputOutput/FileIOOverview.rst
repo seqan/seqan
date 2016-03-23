@@ -39,9 +39,21 @@ Note how these types of classes **do not allow to read and write the same file a
 
 These types of classes provide the following I/O operations on formatted files:
 
-#. open a file given its filename or attach to an existing stream like `std::cin` or `std::cout`;
-#. guess the file format from the file content or filename extension;
-#. access compressed or uncompressed files transparently.
+#. Open a file given its filename or attach to an existing stream like `std::cin` or `std::cout`.
+#. Guess the file format from the file content or filename extension.
+#. Access compressed or uncompressed files transparently.
+
+SeqAn provides the following file formats:
+
+* :dox:`SeqFileIn`, :dox:`SeqFileOut` (see Tutorial :ref:`tutorial-io-sequence-io`)
+* :dox:`BamFileIn`, :dox:`BamFileOut` (see Tutorial :ref:`tutorial-io-sam-bam-io`)
+* :dox:`BedFileIn`, :dox:`BedFileOut` (see Tutorial :ref:`tutorial-io-bed-io`)
+* :dox:`VcfFileIn`, :dox:`VcfFileOut` (see Tutorial :ref:`tutorial-io-vcf-io`)
+* :dox:`GffFileIn`, :dox:`GffFileOut` (see Tutorial :ref:`tutorial-io-gff-and-gtf-io`)
+* :dox:`RoiFileIn`, :dox:`RoiFileOut`
+* :dox:`SimpleIntervalsFileIn`, :dox:`SimpleIntervalsFileInOut`
+* :dox:`UcscFileIn`, :dox:`UcscFileOut`
+
 
 .. warning::
 
@@ -66,7 +78,6 @@ Nonetheless, **these functionalities are independent from the particular file fo
 
 The demo application shown here is a simple BAM to SAM converter.
 
-
 Includes
 ^^^^^^^^
 
@@ -75,7 +86,6 @@ In this case, we include the BAM header file:
 
 .. includefrags:: demos/tutorial/file_io_overview/example1.cpp
    :fragment: include
-
 
 Opening and Closing Files
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -92,7 +102,7 @@ Alternatively, a file can be opened after construction by calling :dox:`Formatte
 .. includefrags:: demos/tutorial/file_io_overview/example1.cpp
    :fragment: open
 
-Noe that any file is closed *automatically* whenever the :dox:`FormattedFileIn` or :dox:`FormattedFileOut` object goes out of scope.
+Note that any file is closed *automatically* whenever the :dox:`FormattedFileIn` or :dox:`FormattedFileOut` object goes out of scope.
 Eventually, a file can be closed *manually* by calling :dox:`FormattedFile#close`.
 
 Accessing the Header
@@ -105,21 +115,21 @@ The content of this object can be ignored for now, it will be covered in the :re
 .. includefrags:: demos/tutorial/file_io_overview/example1.cpp
    :fragment: header
 
-Function :dox:`FormattedFileIn#readHeader` reads the header from the input SAM file and :dox:`FormattedFileOut#writeHeader` writes it to the BAM output file.
+The function :dox:`FormattedFileIn#readHeader` reads the header from the input BAM file and :dox:`FormattedFileOut#writeHeader` writes it to the SAM output file.
 
 Accessing the Records
 ^^^^^^^^^^^^^^^^^^^^^
 
 Again, to access records, we need an object representing format-specific information.
 In this case, we use an object of type :dox:`BamAlignmentRecord`.
-Each call to :dox:`FormattedFileIn#readRecord` reads one record from the SAM input file and moves the :dox:`BamFileIn` forward.
-Each call to :dox:`FormattedFileOut#writeRecord` writes the record just read to the BAM output files.
+Each call to :dox:`FormattedFileIn#readRecord` reads one record from the BAM input file and moves the :dox:`BamFileIn` forward.
+Each call to :dox:`FormattedFileOut#writeRecord` writes the record just read to the SAM output files.
 We check the end of the input file by calling :dox:`FormattedFile#atEnd`.
 
 .. includefrags:: demos/tutorial/file_io_overview/example1.cpp
    :fragment: records
 
-Our small SAM to BAM conversion demo is ready.
+Our small BAM to SAM conversion demo is ready.
 The tool still lacks error handling, reading from standard input and writing to standard output.
 You are now going to add these features.
 
@@ -128,7 +138,7 @@ Error Handling
 
 We distinguish between two types of errors: *low-level* file I/O errors and *high-level* file format errors.
 Possible file I/O errors can affect both input and output files.
-Example of errors are: the file permissions forbid a certain operations, the file does not exist, there is a disk reading error, a file being read gets deleted while we are reading from it, or there is a physical error in the hard disk.
+Example of errors are: the file permissions forbid a certain operation, the file does not exist, there is a disk reading error, a file being read gets deleted while we are reading from it, or there is a physical error in the hard disk.
 Conversely, file format errors can only affect input files: such errors arise whenever the content of the input file is incorrect or damaged.
 Error handling in SeqAn is implemented by means of exceptions.
 
@@ -152,6 +162,9 @@ Assignment 1
 
    Objective
      Improve the program above to detect file I/O errors.
+
+   Hint
+     Use the :dox:`IOError` class.
 
    Solution
      .. container:: foldable

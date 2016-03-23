@@ -23,7 +23,7 @@ This tutorial shows how to read and write GFF and GTF files using the :dox:`GffF
 It starts out with a quick reminder on the structure of GFF and GTF files and will then continue with how to read and write GFF and GTF files.
 
 The GFF and GTF formats are used for annotating genomic intervals (an interval with begin/end position on a contig/chromosome).
-GFF exist in versions 2 and 3 and GTF is sometimes called "GFF 2.5".
+GFF exists in versions 2 and 3 and GTF is sometimes called "GFF 2.5".
 There are specifications for `GFF 2 <http://www.sanger.ac.uk/resources/software/gff/spec.html>`_, `GFF 3 <http://www.sequenceontology.org/gff3.shtml>`_, and `GTF <http://mblab.wustl.edu/GTF22.html>`_ available elsewhere.
 GFF and GTF are TSV-based formats and in general have the same structure.
 The main difference is the underlying system/ontology for the annotation but also smaller differences in the format.
@@ -87,17 +87,17 @@ attributes (9)
    There are two common ways of specifying intervals.
 
    #. Start counting positions at 1 and give intervals by the first and last position that are part of the interval (closed intervals).
-      For example, the interval ``[1,000; 2,000]`` starts at character 1,000 and ends at character 2,000 and includes it.
+      For example, the interval ``[1000; 2000]`` starts at character 1,000 and ends at character 2000 and includes it.
       This way is natural to non-programmers and used when giving coordinates in GFF files or genome browsers such as UCSC Genome Browser and IGV.
    #. Start counting positions at 0 and give intervals by the first position that is part of the interval and giving the position behind the last position that is part of the interval.
-      The interval from above would be ``[999; 2,000)`` in this case.
+      The interval from above would be ``[999; 2000)`` in this case.
 
    In text representations, such as GFF and GTF, 1-based closed intervals are used whereas in the internal binary data structures, SeqAn uses 0-based half-open intervals.
 
 A First Working Example
 -----------------------
 
-The following example shows an example of a program that reads the file with the path ``example.gff`` and prints its contents back to the user on standard output.
+The following example shows an example of a program that reads the file ``example.gff`` and prints its contents back to the user on standard output.
 
 .. includefrags:: demos/tutorial/gff_and_gtf_io/example1.cpp
 
@@ -120,6 +120,7 @@ Assignment 1
 
          .. includefrags:: demos/tutorial/gff_and_gtf_io/solution1.cpp
 
+         .. includefrags:: demos/tutorial/gff_and_gtf_io/solution1.cpp.stdout
 
 Accessing the Records
 ---------------------
@@ -129,7 +130,7 @@ The class :dox:`GffRecord` stores one record in a Gff file.
 .. includefrags:: demos/tutorial/gff_and_gtf_io/base.cpp
       :fragment: GffRecord
 
-The static members ``INVALID_POS``, ``INVALID_REFID`` store sentinel values for marking positions and reference sequence ids as invalid.
+The static members ``INVALID_POS`` and ``INVALID_REFID`` store sentinel values for marking positions and reference sequence ids as invalid.
 The static funtion ``INVALID_SCORE()`` returns the IEEE float "NaN" value.
 
 Assignment 2
