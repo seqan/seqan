@@ -81,13 +81,11 @@ Alternatively, we could have used :dox:`TopDownIterator#goDown` to go down the p
 
 .. includefrags:: demos/tutorial/index_iterators/index_search2.cpp.stdout
 
-Recursive Top-Down Iteration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. tip::
 
-Even though the :dox:`TopDownIterator` does not support :dox:`TopDownIterator#goUp` (as the
-:dox:`TopDownHistoryIterator` does) it can be still used for algorithms that not only need to go down in the suffix tree
-but also go up, such as backtracking. The following example shows how to search for a pattern allowing a certain number
-of errors (i.e. mismatches) by using recursion and copying the iterator (and thus the position in the suffix tree).
+   When implementing recursive algorithms such as an approximate search using backtracking, we recommend
+   the use of the :dox:`TopDownIterator` without history. By passing the iterator by value, the history
+   is stored implicitly on the call stack.
 
 Assignment 1
 ^^^^^^^^^^^^
