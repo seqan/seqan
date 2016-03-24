@@ -15,14 +15,15 @@ Difficulty
   Very basic
 
 Duration
-  1h
+  Take the time you need!
 
 Prerequisites
   Basic C or C++ knowledge
 
-This tutorial is meant to be the first chapter you read in the SeqAn Tutorial.
-It will give you an overview about the design goals, design decisions, and explain the motivation for these decisions.
-The next chapter :ref:`First Examples <tutorial-getting-started-first-steps-in-seqan>` will flesh out the most important points of this chapter with code examples of everyday SeqAn use.
+Hi, we are glad you made it here.
+You being here, and reading these lines means you are eager to learn more about SeqAn and this is the right place to start.
+In this tutorial, we will give you an overview about the design goals, design decisions of the SeqAn library, and explain the motivation for these decisions.
+The next chapter :ref:`First Steps <tutorial-getting-started-first-steps-in-seqan>` will flesh out the most important points of this chapter with code examples of everyday SeqAn use.
 
 Library Design Aims
 -------------------
@@ -41,13 +42,13 @@ The focus is on efficiency but small trade-offs are allowed to improve consisten
 #. **Reuseability and Generosity**.
    The algorithms in SeqAn should be reuseable and generic, even at small costs of efficiency.
 
-Modern C++ (C++98)
-------------------
+Modern C++
+----------
 
 C++ is sometimes described as a language that most people know only 20% of but everyone knows a different 20%.
-This section gives an overview over some C++98 idioms we use.
+This section gives an overview over some C++ idioms we use.
 This might be no news if you are a seasoned C++ programmer who is apt at using the STL and Boost libraries.
-However, programmers coming from C and Java might find them interesting.
+However, programmers coming from C and Java might find them interesting (We still encourage to read the `C++ FAQ <https://isocpp.org/faq>`_ if you are new to C++).
 
 References
   References are alternatives to pointers in C++ to construct value aliases.
@@ -61,7 +62,8 @@ Templates
   Using an incompatible type leads to compiler errors because some operator or function could not be found.
 
 Memory Management / No Pointers
-  Instead of using raw pointers and memory, memory management should be done using containers.
+  Object oriented programming is another key programming paradigm made available with C++ (Compared to C).
+  This means, that instead of using raw pointers to allocated chunks of memory, memory management should be done using containers.
   The STL provides containers such as `std::vector <http://www.cplusplus.com/reference/stl/vector/>`_ and SeqAn offers :dox:`String`.
 
 Memory Management in SeqAn
@@ -111,7 +113,7 @@ Given that in the last 10-15 years, Java and C# have gained popularity, one coul
 Using polymorphism (e.g. overwriting of functions in subclasses), one could then write generic and reuseable algorithms.
 For example, the Java 2 platform defines the sort function for all objects implementing a ``Comparable`` interface.
 Note that such an implementation would have to rely on `virtual functions <http://en.wikipedia.org/wiki/Virtual_function>`_ of some sort.
-However, as we will see in the section OOP vs. Template Subclassing, **this comes at a high performance cost, being in conflict with efficiency**.
+However, as we will see in the section OOP vs. Generic Progamming, **this comes at a high performance cost, being in conflict with efficiency**.
 For a sequence library, we could implement functions that map values from an alphabet to an ordinal value between ``0`` and ``S - 1`` where ``S`` is the number of elements in the alphabet.
 
 Generic programming offers one way out: C++ templates allow to define template classes, e.g. the STL's ``std::vector<T>`` or SeqAn's :dox:`String`.
@@ -139,4 +141,102 @@ Such static polymorphism is different from **runtime polymorphism** which is sup
 It comes at the cost of some additional typing but has the advantage that the compiler can inline all function calls and thus achieve better performance.
 An example will be given in `the section "From OOP to SeqAn" in the First Steps Tutorial <tutorial-getting-started-first-steps-in-seqan>`_.
 
-The important point is that in contrast to runtime polymorphism such static polymorphism allows the compiler to inline functions.
+.. todo::
+    We need a little code example here.
+
+The important point is that in contrast to runtime polymorphism such static polymorphism allows the compiler to inline functions, which has huge effect on the overall performance of the program.
+Which as you recall correctly from above, is the main objective of the SeqAn library :)!
+
+Global Function Interface
+-------------------------
+
+As we already stated, using template subclassing to achieve OOP like behavior in a more efficient way comes with a certain drawback.
+Subclassed objects are seen by the compiler as singular instances of a specific type.
+That means a subclassed object does not inherit the member or member functions of the alleged base class.
+In order to reduce the overhead of reimplementing the same member functions for every subclassed object, we use global interface functions.
+
+You might already have get in touch with global function interfaces while working with the STL.
+With the new C++11 standard the STL now provides some global interface functions, e.g., the `begin <http://en.cppreference.com/w/cpp/iterator/begin>`_ or `end <http://en.cppreference.com/w/cpp/iterator/end>`_ interface.
+
+The rationale behind is the following observation.
+Global interface functions allow us to implement a general functionality that is used for all subclassed objects of this template class (assuming the accessed member variables exists in all subclassed objects as in the base template class, otherwise the compiler will complain).
+If the behavior for any subclassed object changes, the corresponding global function will be reimplemented for this special type covering the desired functionality.
+Due to template deduction the compiler already chooses the correct function and inlines the kernel if possible, which very likely improves the performance of the program.
+By this design, we can avoid code duplication, and by that increasing maintainability and reducing subtle errors due to less copy-and-paste code.
+
+So, while most C++ developers, who are familiar with the STL and have a strong background in OO programming, are used to the typical dot notation, in SeqAn you have to get used to global function interfaces instead.
+But, cheer up! You will adapt to this very quickly. Promised!
+
+Meta-Programming
+----------------
+
+Generic algorithms usually have to know certain types that correspond to their arguments.
+An algorithm on containers may need to know which type of values are stored in the string, or what kind of iterator we need to access it.
+The usual way in the STL is to define the value type of a class like ``vector`` as a *member typedef* of this class, so it can be retrieved by ``vector::value_type``.
+
+Unfortunately member typedef declarations have the same disadvantages as any members: Since they are specified by the class definition, they cannot be changed or added to the class without changing the code of the class, and it is not possible in C++ to define members for built-in types.
+What we need therefore is a mechanism that returns an output type (e.g. the value type) given an input type (e.g. the string) and doing so does not rely on members of the input type, but instead uses some kind of global interface.
+
+Such task can be performed by **metafunctions**, also known as **type traits**.
+A metafunction is a construct to map some types or constants to other entities like types, constants, functions, or objects at compile time.
+The name metafunction comes from fact that they can be regarded as part of a meta-programming language that is evaluated during compilation.
+
+In SeqAn we use class templates to implement metafunctions in C++.
+Generic algorithms usually have to know certain types that correspond to their arguments: An algorithm on strings may need to know which type of characters are stored in the string, or what kind of iterator can be used to browse it.
+SeqAn uses Metafunctions (also known as "traits") for that purpose.
+
+Looking at an Example
+^^^^^^^^^^^^^^^^^^^^^
+
+Assuming that we define a string of amino acids:
+
+.. includefrags:: demos/tutorial/metafunctions/base.cpp
+    :fragment: amino
+
+Now lets define a function that exchanges the first two values in a string:
+
+.. includefrags:: demos/tutorial/metafunctions/base.cpp
+    :fragment: func_exchange1
+
+Since this function only works for instances of :dox:`String String<`:dox:`AminoAcid AminoAcid>`, we could try to make it more general by making a template out of it.
+
+.. includefrags:: demos/tutorial/metafunctions/base.cpp
+    :fragment: func_exchange2
+
+Now the function works for all sequence types ``T`` that store ``AminoAcid`` objects, but it will fail for other value types as soon as the variable temp cannot store ``str[0]`` anymore.
+To overcome this problem, we must redefine ``temp`` in a way that it can store a value of the correct type.
+The question is: "Given a arbitrary type ``T``, what is the value type of ``T``?"
+
+The metafunction :dox:`ContainerConcept#Value` anwers this question: "The value type of ``T`` is given by ``Value<T>::Type``."
+
+Hence, the final version of our function ``exchangeFirstValues`` reads as follows:
+
+.. includefrags:: demos/tutorial/metafunctions/base.cpp
+    :fragment: func_exchange3
+
+We can view ``Value`` as a kind of "function" that takes ``T`` as an argument (in angle brackets) and returns the required value type of ``T``.
+In fact, ``Value`` is not implemented as a C++ function, but as a class template.
+This class template is specialized for each sequence type ``T`` in a way that the ``typedef Type`` provides the value type of ``T``.
+Unfortunately, the current C++ language standard does not allow to write simply "``Value<T> temp``;", so we must select the return value by appending "``::Type``".
+The leading "``typename``" becomes necessary since ``Value<T>::Type`` is a type that depends on a template parameter of the surrounding function template.
+
+And now?
+--------
+
+Wow, this was quite some information to digest, wasn't it?
+We suggest you take a break!
+Get some fresh air!
+Grab something to drink or to eat!
+Let the information settle down.
+
+Do you think you've got everything?
+Well, if not don't worry!
+Follow the :ref:`First Steps <tutorial-getting-started-first-steps-in-seqan>` tutorial which will cover the topics discussed above.
+This gives you the chance to apply the recently discussed paradigms to an actual (uhm, simplisitc) use case.
+But it will help you to better understand the way data structures and algorithms are implemented in SeqAn.
+
+We recommend you to also read the :ref:`Argument Parser Tutorial <tutorial-getting-started-parsing-command-line-arguments>`.
+This tutorial will teach you how to easily add command line arguments for your program and how to generate a help page for the options.
+Or you go back to the :ref:`main page <manual-main-tutorials>` and stroll through the other tutorials.
+You are know ready to dive deeper into SeqAn.
+Enjoy!

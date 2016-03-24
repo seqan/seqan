@@ -80,10 +80,10 @@ However, during this tutorial we will not do this, such that SeqAn classes and f
    The compiler automatically looks for a function ``length`` in the namespace of its arguments.
 
 Note that we follow the rules for variable, function, and class names as outlined in the :ref:`SeqAn style guide <infra-contribute-style-cpp>`.
-For example: 
+For example:
 1. variables and functions use lower case,
 2. struct, enum and classes use CamelCase,
-3. metafunctions start with a capital letter, and 
+3. metafunctions start with a capital letter, and
 4. metafunction values are UPPERCASE.
 
 Assignment 1
@@ -183,8 +183,8 @@ This gives the similarity of the pattern to the string at each position.
 .. includefrags:: demos/tutorial/a_first_example/basic_code_detailed.cpp
    :fragment: print
 
-Code Encapsulation
-------------------
+Refactoring
+-----------
 
 At this point, we have already created a working solution!
 However, in order to make it easier to maintain and reuse parts of the code we need to export them into functions.
@@ -273,7 +273,7 @@ Assignment 3
 
         .. includefrags:: demos/tutorial/a_first_example/solution_3.cpp
            :fragment: head_local
-        
+
 
    Solution
      .. container:: foldable
