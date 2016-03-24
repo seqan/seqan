@@ -95,6 +95,10 @@ int main()
     typedef FMIndexConfig<void, unsigned> TConfig;
     Index<StringSet<String<Dna> >, FMIndex<void, TConfig> > configIndex(set);
 //![config]
+
+    // clean up tmp directory
+    ClassTest::_deleteTempFile(ClassTest::_stripFileName(tempFileName));
+
 //![assignment1]
     return 0;
 }

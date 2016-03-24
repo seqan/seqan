@@ -40,7 +40,7 @@
 # Valid values for SEQAN_BUILD_SYSTEM:
 #
 # DEVELOP
-# SEQAN_RELEASE
+# SEQAN_RELEASE_APPS
 # SEQAN_RELEASE_LIBRARY
 # APP:${app_name}
 
@@ -71,6 +71,19 @@ if (MINGW)
 	    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i586")
 	endif ("${CMAKE_SIZEOF_VOID_P}" EQUAL "4")
 endif (MINGW)
+
+# ---------------------------------------------------------------------------
+# Is it a 32 bit platform?
+# ---------------------------------------------------------------------------
+if (CMAKE_SIZEOF_VOID_P EQUAL 4)
+    set(SEQAN_32BIT_TARGET_PLATFORM 1)
+    set(SEQAN_64BIT_TARGET_PLATFORM 0)
+else()
+    set(SEQAN_32BIT_TARGET_PLATFORM 0)
+    set(SEQAN_64BIT_TARGET_PLATFORM 1)
+endif()
+
+# ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
 # Disable false positive terminal detection in Xcode
@@ -114,9 +127,6 @@ endfunction (add_executable)
 # ---------------------------------------------------------------------------
 
 macro (seqan_register_apps)
-    # Set SeqAn flags.
-    set (SEQAN_FIND_ENABLE_TESTING 0)
-    set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
 
     # enable static linkage for seqan apps
     if (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
@@ -146,9 +156,6 @@ macro (seqan_register_apps)
         endif (APPLE)
     endif (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
 
-    # Enable global exception handler for all seqan apps.
-    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
-
     # Get all direct entries of the current source directory into ENTRIES.
     file (GLOB ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -159,8 +166,7 @@ macro (seqan_register_apps)
     foreach (ENTRY ${ENTRIES})
         if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY})
             if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY}/CMakeLists.txt)
-                if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
-                    ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP") OR
+                if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP") OR
                     ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_APPS") OR
                     ("${SEQAN_BUILD_SYSTEM}" STREQUAL "APP:${ENTRY}"))
                     add_subdirectory(${ENTRY})
@@ -180,41 +186,81 @@ macro (seqan_build_system_init)
     # Enable CTest and command add_test().
     enable_testing ()
 
+    # GENERAL SETUP
+    set (_CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    set (CMAKE_INCLUDE_PATH ${_CMAKE_INCLUDE_PATH} CACHE STRING "")
+    set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
+#     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1" PARENT_SCOPE)
+    # Enable global exception handler for all "official" stuff
+    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER=1")
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
+         ${PROJECT_BINARY_DIR}/bin)
+
+    # Set Warnings
+    if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
+        set (CMAKE_CXX_WARNING_LEVEL 4)
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing")
+        set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
+    endif ()
+    if (COMPILER_IS_INTEL)
+        # disable some warnings on ICC
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
+    endif (COMPILER_IS_INTEL)
+    if (MSVC)
+        # Use the /W2 warning level for visual studio.
+        set (CMAKE_CXX_WARNING_LEVEL 2) # TODO(h-2): raise this to W4
+        # Disable warnings about unsecure (although standard) functions.
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /D_SCL_SECURE_NO_WARNINGS")
+    endif ()
+
+    # DEFFAULT BUILD SYSTEM
     if (NOT SEQAN_BUILD_SYSTEM)
-        set (SEQAN_BUILD_SYSTEM "DEVELOP")
+        set (SEQAN_BUILD_SYSTEM "DEVELOP" CACHE STRING "Build/Release mode to select. One of DEVELOP SEQAN_RELEASE, APP:\${APP_NAME}. Defaults to DEVELOP.")
     endif (NOT SEQAN_BUILD_SYSTEM)
     set (SEQAN_APP_VERSION "0.0.0" CACHE STRING "Version of the application.")
     set (SEQAN_NIGHTLY_RELEASE FALSE CACHE BOOL "Set to TRUE to enable nightly app releases.")
 
-    if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
-        ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY"))
-        # Install SeqAn LICENSE, README.rst, CHANGELOG.rst files.
-        install (FILES LICENSE
-                       README.rst
-                       CHANGELOG.rst
-                 DESTINATION share/doc/seqan)
-        # Install pkg-config file, except on Windows.
-        if (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
-            configure_file("util/pkgconfig/seqan.pc.in" "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" @ONLY)
-            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION share/pkgconfig)
-            # Install FindSeqAn TODO(h-2) rename FindSeqAn.cmake to FindSeqAn${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
-            install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/FindSeqAn.cmake" DESTINATION share/cmake/Modules)
-        endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
+    # STANDARD BUILD FLAGS
+
+    # OpenBSD just can't handle it
+    if (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
+        set (SEQAN_NO_NATIVE TRUE)
+        set (SEQAN_OFFICIAL_PKGS FALSE)
     endif ()
 
-    if (("${SEQAN_BUILD_SYSTEM}" MATCHES "SEQAN_RELEASE") OR
-        ("${SEQAN_BUILD_SYSTEM}" MATCHES "APP"))
+    # packages for distribution
+    if ((SEQAN_OFFICIAL_PKGS) AND
+        (NOT MSVC) AND
+        (SEQAN_BUILD_SYSTEM MATCHES "APP")) # either APP:$app or SEQAN_RELEASE_APPS
+
+        # static linkage
         set (SEQAN_STATIC_APPS TRUE CACHE INTERNAL "Create static app binaries")
+        message (STATUS "Building static binaries.")
+
+        # machine specific optimizations
+        if (SEQAN_64BIT_TARGET_PLATFORM)
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -mpopcnt")
+            message (STATUS "Release binaries built with optimizations for SSE3, SSE4 and POPCNT.")
+        endif ()
     endif ()
 
-    set (SEQAN_BUILD_SYSTEM "DEVELOP" CACHE STRING "Build/Release mode to select. One of DEVELOP SEQAN_RELEASE, APP:\${APP_NAME}. Defaults to DEVELOP.")
+    # settings for development mode
+    if ((SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP") AND
+        (NOT MSVC) AND
+        (NOT SEQAN_NO_NATIVE) AND
+        (NOT SEQAN_32BIT_TARGET_PLATFORM))
 
-    set (_CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/include")
-    set (CMAKE_INCLUDE_PATH ${_CMAKE_INCLUDE_PATH} CACHE STRING "")
+        # SeqAn has conflicts with -march=native and -m32 build on 64 bit source
+        # platforms, thus disabling -march=native for 32bit target platforms
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -march=native")
+        if (COMPILER_IS_INTEL)
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -xHOST -ipo -no-prec-div -fp-model fast=2")
+        endif (COMPILER_IS_INTEL)
 
-    SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
-         ${PROJECT_BINARY_DIR}/bin)
+        message (STATUS "CPU-optimized binaries that may not work on other computers. If you plan to distribute binaries, call cmake with -DSEQAN_BUILD_SYTEM=SEQAN_RELEASE_APPS or with -DSEQAN_NO_NATIVE=1.")
+    endif ()
 
+    # automatic c++ standard detection/selection
     if (NOT MSVC)
         # find the highest c++ standard and select it
         check_cxx_compiler_flag("-std=c++11" CXX11_DETECTED)
@@ -229,7 +275,6 @@ macro (seqan_build_system_init)
     elseif (CXX11_FOUND)
         set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
     endif ()
-
 endmacro (seqan_build_system_init)
 
 # ---------------------------------------------------------------------------
@@ -267,8 +312,22 @@ endmacro (seqan_add_app_test APP_NAME)
 macro (seqan_setup_library)
     # Only install the library if the virtual build packages "SEQAN_RELEASE"
     # or "SEQAN_LIBRARY_ONLY" are chosen.
-    if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
-        ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY"))
+    if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY"))
+
+        # Install SeqAn LICENSE, README.rst, CHANGELOG.rst files.
+        install (FILES LICENSE
+                       README.rst
+                       CHANGELOG.rst
+                 DESTINATION share/doc/seqan)
+        # Install pkg-config file, except on Windows.
+        if (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
+            configure_file("util/pkgconfig/seqan.pc.in" "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" @ONLY)
+            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION share/pkgconfig)
+        endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
+        # Install FindSeqAn TODO(h-2) rename FindSeqAn.cmake to FindSeqAn${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
+        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/FindSeqAn.cmake" DESTINATION share/cmake/Modules)
+
+        # Install headers
         file (GLOB HEADERS
               RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
               include/seqan/[A-z]*/[A-z]/[A-z]*.h
@@ -595,31 +654,7 @@ endmacro (_seqan_setup_demo_test CPP_FILE)
 # them.
 # ---------------------------------------------------------------------------
 
-# NOTE that we look with default SeqAn dependencies and also build if some are not found. The demos themselves must contain the appropriate #if preprocessor statements.
-
-# Install all demo source files.
-macro (seqan_install_demos_release)
-    # Set flags for SeqAn. Use PARENT_SCOPE since it is called from within a function.
-    set (SEQAN_FIND_ENABLE_TESTING 0 PARENT_SCOPE)
-    set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1" PARENT_SCOPE)
-
-    # Get a list of all .cpp and .cu files in the current directory.
-    file (GLOB_RECURSE ENTRIES
-          RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-          ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cpp
-          ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
-
-    # Set global definitions set for demos.
-    add_definitions (${SEQAN_DEFINITIONS})
-
-    # Get path to current source directory, relative from root.  Will be used to install demos in.
-    file (RELATIVE_PATH INSTALL_DIR "${SEQAN_ROOT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
-
-    # Install all demo files into "share/doc/seqan/demos" (demos comes from INSTALL_DIR).
-    install (FILES ${ENTRIES} DESTINATION "share/doc/seqan/${INSTALL_DIR}")
-endmacro (seqan_install_demos_release)
-
-macro (seqan_build_demos_develop PREFIX)
+function (seqan_register_demos PREFIX)
     # Get a list of all .cpp and .cu files in the current directory.
     file (GLOB_RECURSE ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -632,24 +667,17 @@ macro (seqan_build_demos_develop PREFIX)
     find_package (BZip2)
     find_package (SeqAn REQUIRED)
 
-    if (OPENMP_FOUND AND CMAKE_COMPILER_IS_GNUCXX)
-        set(SEQAN_LIBRARIES ${SEQAN_LIBRARIES} -lgomp)
-    endif()
-    # Setup include directories and definitions for SeqAn; flags follow below.
-    include_directories (${SEQAN_INCLUDE_DIRS})
-    add_definitions (${SEQAN_DEFINITIONS})
-
     # Supress unused parameter warnings for demos.
     if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-unused-parameter")
     endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
 
-    # Setup flags for CUDA demos.
-    seqan_setup_cuda_vars(ARCH sm_20 DEBUG_DEVICE DISABLE_WARNINGS)
-
     # Add SeqAn flags to CXX and NVCC flags.
     # Set to PARENT_SCOPE since this macro is executed from within a function which declares it's own scope.
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" PARENT_SCOPE)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}" PARENT_SCOPE)
+    # Setup include directories and definitions for SeqAn; flags follow below.
+    include_directories (${SEQAN_INCLUDE_DIRS})
+    add_definitions (${SEQAN_DEFINITIONS})
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
@@ -691,25 +719,6 @@ macro (seqan_build_demos_develop PREFIX)
             endif ()
         endif (SKIP)
     endforeach (ENTRY ${ENTRIES})
-endmacro (seqan_build_demos_develop)
-
-function (seqan_register_demos)
-    # Set optional parameter with index 0 into variable PREFIX.
-    if (${ARGC} GREATER 0)
-        set (PREFIX ${ARGV0})
-    else (${ARGC} GREATER 0)
-        set (PREFIX "")
-    endif (${ARGC} GREATER 0)
-
-    # Enable global exception handler for demos.
-    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
-
-    # Install demo source files when releasing and build demos when developing.
-    if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE")
-        seqan_install_demos_release ()
-    elseif ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-        seqan_build_demos_develop ("${PREFIX}")
-    endif ()
 endfunction (seqan_register_demos)
 
 # ---------------------------------------------------------------------------
@@ -729,18 +738,13 @@ endfunction (seqan_register_demos)
 
 macro (seqan_register_tests)
     # Setup flags for tests.
-    set (SEQAN_FIND_ENABLE_DEBUG TRUE)
-    set (SEQAN_FIND_ENABLE_TESTING TRUE)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_TESTING=1)
 
     # Remove NDEBUG definition for tests.
     string (REGEX REPLACE "-DNDEBUG" ""
             CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
     string (REGEX REPLACE "-DNDEBUG" ""
             CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
-
-    # Add global exception handler
-    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER")
 
     # Conditionally enable coverage mode by setting the appropriate flags.
     if (MODEL STREQUAL "NightlyCoverage")

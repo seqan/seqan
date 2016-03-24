@@ -74,7 +74,7 @@ namespace seqan
 
 
     template <typename TSpec /* = void */>
-    struct Sync;
+    struct Sync {};
 
 
 #ifdef PLATFORM_WINDOWS

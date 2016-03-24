@@ -12,19 +12,44 @@ if the exit code is 0 and the standard/error output is the same as in the
 a failure as well.
 """
 
-__author__ = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
+__author__ = """Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+                Temesgen H. Dadi <temesgen.dadi@fu-berlin.de>
+            """
 
 
 import argparse
 import difflib
 import subprocess
 import sys
-
+import re
 
 def t(s):
     """Force Windows line endings to Unix line endings."""
     return s.replace("\r\n", "\n")
 
+def fuzzyEqual(pattern, text):
+    """checks if the expected output is eqal to the actualoutput using a reqex
+        use the literal [VAR] if the part of the output is not expected to be the same all the time.
+    """
+    if len(pattern) != len(text):
+        print >> sys.stderr, 'Number of lines differ. Expected output has %s lines whereas actual has %s lines.' % (len(pattern), len(text))
+        return False
+    for i in range(len(pattern)):
+        T = text[i]
+        P = pattern[i]
+        if T == P :
+            continue
+        else :
+            if '[VAR]' not in P:
+                print >> sys.stderr, 'Line %s is different between expected and actual outputs.' % (i)
+                return False
+            else:
+                P = (re.escape(P)).replace('\\[VAR\\]', "[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?")
+                r = re.compile(P)
+                if re.match(r, T) == None:
+                    print >> sys.stderr, 'Line %s is different (REGEX) between expected and actual outputs.' % (i)
+                    return False
+    return True
 
 def loadExpected(args):
     """Load the expected file contents."""
@@ -35,14 +60,14 @@ def loadExpected(args):
     if args.stderr_path:
         with open(args.stderr_path, 'rb') as f:
             err = f.read()
-    return t(out).split('\n'), t(err).split('\n')
+    return t(out.strip()).split('\n'), t(err.strip()).split('\n')
 
 
 def runDemo(args):
     cmd = [args.binary_path]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdoutbuff, stderrbuff = p.communicate()
-    return t(stdoutbuff).split('\n'), t(stderrbuff).split('\n'), p.returncode
+    return t(stdoutbuff.strip()).split('\n'), t(stderrbuff.strip()).split('\n'), p.returncode
 
 
 def main():
@@ -58,8 +83,6 @@ def main():
                         default=None)
     args = parser.parse_args()
 
-    print >>sys.stderr, 'Loading files "%s", "%s".' % (args.stdout_path, args.stderr_path)
-    expected_out, expected_err = loadExpected(args)
     print >>sys.stderr, 'Running %s.' % args.binary_path
     actual_out, actual_err, ret = runDemo(args)
 
@@ -69,7 +92,12 @@ def main():
     else:
         print >>sys.stderr, 'Return code was %s.' % ret
 
-    if expected_out != actual_out:
+    print >>sys.stderr, 'Loading files "%s", "%s".' % (args.stdout_path, args.stderr_path)
+    expected_out, expected_err = loadExpected(args)
+    is_stdout_as_expected = fuzzyEqual(expected_out, actual_out)
+    is_stderr_as_expected = fuzzyEqual(expected_err, actual_err)
+
+    if not is_stdout_as_expected:
         print >>sys.stderr, 'The standard output was not as expected!'
         l = difflib.context_diff(expected_out, actual_out,
                                  fromfile='expected', tofile='actual')
@@ -77,7 +105,7 @@ def main():
     else:
         print >>sys.stderr, 'Standard output was as expected.'
 
-    if expected_err != actual_err:
+    if not is_stderr_as_expected:
         print >>sys.stderr, 'The standard error was not as expected!'
         l = difflib.context_diff(expected_err, actual_err,
                                  fromfile='expected', tofile='actual')
@@ -85,7 +113,8 @@ def main():
     else:
         print >>sys.stderr, 'Standard error was as expected.'
 
-    return not (expected_out == expected_out and expected_err == actual_err)
+    # here we used not because we need return-code 0 (False) if test is successful 
+    return not (is_stdout_as_expected and is_stderr_as_expected)
 
 
 if __name__ == '__main__':
