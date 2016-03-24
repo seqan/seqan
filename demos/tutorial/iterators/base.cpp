@@ -18,9 +18,9 @@ int main()
 //![use-case]
     DnaString genome = "ACGTACGTACGT";
     typedef Iterator<DnaString>::Type TIterator;
-    for (TIterator it = begin(genome); it != end(genome); goNext(it))
+    for (TIterator it = begin(genome); it != end(genome); ++it)
     {
-        std::cout << value(it);
+        std::cout << *it;
     }
 //![use-case]
     std::cout << "\n//![use-case]\n";

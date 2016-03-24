@@ -1,0 +1,27 @@
+gaps	AB--CD-EFG-HIJ
+seq 	ABCDEFGHIJ
+
+beginPosition(gaps)        == 0
+endPosition(gaps)          == 10
+clippedBeginPosition(gaps) == 0
+clippedEndPosition(gaps)   == 14
+
+gaps	-CD-EFG
+seq 	CDEFG
+
+beginPosition(gaps)        == 2
+endPosition(gaps)          == 7
+clippedBeginPosition(gaps) == 3
+clippedEndPosition(gaps)   == 10
+
+4 view position => 4 source position
+2 source position => 1 view position
+
+3 clipped gapped => 6 unclipped gapped
+6 unclipped gapped => 2 clipped gapped
+
+3 clipped ungapped => 5 unclipped ungapped
+5 unclipped ungapped => 3 clipped ungapped
+
+3 clipped gapped => 2 clipped ungapped
+4 unclipped ungapped => 7 unclipped gapped

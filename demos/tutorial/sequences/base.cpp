@@ -10,6 +10,10 @@ int main()
     String<int>   myNumbers;  // A string of integers.
 //![string_example]
 
+//![simple_string_construction]
+    myText = "Hello SeqAn!";
+//![simple_string_construction]
+
 //![string_of_strings_example]
     String<String<char> >   myStringList;   // A string of character strings.
 //![string_of_strings_example]
@@ -26,13 +30,13 @@ int main()
 
 //![specification_example]
     String<Dna>              myGenome1;   // A default string of nucleotides.
-    String<Dna, Alloc<> >    myGenome2;    // The same as above. 
+    String<Dna, Alloc<> >    myGenome2;    // The same type as above.
 //![specification_example]
 
-//![specification2_example]
+//![external_string_spec]
     // Most of the string is stored on the disk.
     String<Dna, External<> > myLargeGenome;
-//![specification2_example]
+//![external_string_spec]
 
 //![initialization_example]
     String<Dna> myDnaGenome = "TATACGCG";

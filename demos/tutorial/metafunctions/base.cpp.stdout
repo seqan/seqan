@@ -1,1 +1,6 @@
-I am a string1
+//![iterator]
+I am a string
+//![iterator]
+//![length]
+100
+//![length]

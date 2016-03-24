@@ -1,0 +1,15 @@
+//![output_init]
+Adjacency list:
+Edge list:
+
+//![output_init]
+//![output_construct]
+Alignment matrix:
+      0     . 
+        TT-GT
+        || ||
+        TTAGT
+
+
+
+//![output_construct]

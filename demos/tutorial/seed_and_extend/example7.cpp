@@ -1,8 +1,8 @@
 //![header]
-#include <seqan/stream.h>
+#include <seqan/sequence.h>
+#include <seqan/align.h>
 #include <seqan/score.h>
 #include <seqan/seeds.h>
-#include <seqan/sequence.h>
 
 using namespace seqan;
 
@@ -10,35 +10,27 @@ int main()
 {
 //![header]
 //![example]
-    typedef Seed<Simple>    TSeed;
-    typedef SeedSet<TSeed> TSeedSet;
+    typedef Seed<Simple> TSeed;
 
-    Dna5String seqH;
-    Dna5String seqV;
-    Score<int, Simple> scoringScheme(1, -1, -1);
+    Dna5String sequenceH = "CGAATCCATCCCACACA";
+    Dna5String sequenceV = "GGCGATNNNCATGGCACA";
 
-    String<TSeed> seeds;
-    appendValue(seeds, TSeed(0, 0, 2));
-    appendValue(seeds, TSeed(3, 5, 2));
-    appendValue(seeds, TSeed(4, 2, 3));
-    appendValue(seeds, TSeed(9, 9, 2));
+    String<TSeed> seedChain;
+    appendValue(seedChain, TSeed(0, 2, 5, 6));
+    appendValue(seedChain, TSeed(6, 9, 9, 12));
+    appendValue(seedChain, TSeed(11, 14, 17, 16));
 
-    TSeedSet seedSet;
-    for (unsigned i = 0; i < length(seeds); ++i)
-    {
-        if (!addSeed(seedSet, seeds[i], 2, 2, scoringScheme,
-                     seqH, seqV, SimpleChain()))
-            addSeed(seedSet, seeds[i], Single());
-    }
+    Align<Dna5String, ArrayGaps> alignment;
+    resize(rows(alignment), 2);
+    assignSource(row(alignment, 0), sequenceH);
+    assignSource(row(alignment, 1), sequenceV);
 
-    std::cout << "Resulting seeds.\n";
-    typedef Iterator<TSeedSet>::Type TIter;
-    for (TIter it = begin(seedSet, Standard());
-         it != end(seedSet, Standard()); ++it)
-        std::cout << "(" << beginPositionH(*it) << ", " << endPositionH(*it)
-                  << ", " << beginPositionV(*it) << ", " << endPositionV(*it)
-                  << ", " << lowerDiagonal(*it) << ", " << upperDiagonal(*it)
-                  << ")\n";
+    Score<int, Simple> scoringScheme(2, -1, -2);
+
+    int result = bandedChainAlignment(alignment, seedChain, scoringScheme, 2);
+
+    std::cout << "Score: " << result << std::endl;
+    std::cout << alignment << std::endl;
 //![example]
 
 //![footer]

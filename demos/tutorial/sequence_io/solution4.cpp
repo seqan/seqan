@@ -28,7 +28,7 @@ int main()
     }
 
     for (unsigned i = 0; i < length(ids); ++i)
-        std::cout << ids[i] << '\t' << seqs[i] << quals[i] << '\n';
+        std::cout << ids[i] << '\t' << seqs[i] << "\n+qual:\t" << quals[i] << '\n';
 
     return 0;
 }

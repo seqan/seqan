@@ -27,7 +27,7 @@ int main()
     typedef Gaps<TContig::TContigSeq, AnchorGaps<TContig::TGapAnchors> >    TContigGaps;
     typedef Gaps<TStore::TReadSeq, AnchorGaps<TAlignedRead::TGapAnchors> >  TReadGaps;
 
-    TStore::TReadSeq readSeq;
+    CharString readSeq;
 //![typedefs]
 
 //![output]
