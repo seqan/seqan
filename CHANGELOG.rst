@@ -4,11 +4,11 @@ SeqAn Changelog
 This file summarizes the changes to the SeqAn library and apps.
 
 
-Release 2.1.2
+Release 2.1.1
 ~~~~~~~~~~~~~
 
 Minor release including major improvements of the manual, several library bug-fixes and changes in the build system. All library modules are backward compatible
-with 2.1.1. For a complete list of changes visit `GitHub <https://github.com/seqan/seqan/pulls?q=is%3Apr+is%3Amerged++milestone%3A%22Release+2.1.2%22+>`_.
+with 2.1.0. For a complete list of changes visit `GitHub <https://github.com/seqan/seqan/pulls?q=is%3Apr+is%3Amerged++milestone%3A%22Release+2.1.1%22+>`_.
 
 Selected Bug Fixes
 ^^^^^^^^^^^^^^^^^^
