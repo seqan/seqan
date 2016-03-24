@@ -52,9 +52,12 @@
 namespace seqan {
 
 #ifdef PLATFORM_INTEL
-#define SEQAN_VECTOR_CAST_(T, v) static_cast<T>(v)
+#include <type_traits>
+#define SEQAN_VECTOR_CAST_(T, v) static_cast<typename std::decay<T>::type>(v)
+#define SEQAN_VECTOR_CAST_LVALUE_(T, v) static_cast<T>(v)
 #else
 #define SEQAN_VECTOR_CAST_(T, v) reinterpret_cast<T>(v)
+#define SEQAN_VECTOR_CAST_LVALUE_(T, v) reinterpret_cast<T>(v)
 #endif
 
 // ============================================================================
@@ -191,24 +194,24 @@ SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Double,    double,         16)
 #ifdef __AVX__
 
 template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<32, 32>) { SEQAN_VECTOR_CAST_(__m256i&, vector) = _mm256_set1_epi8(x); }
+inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<32, 32>) { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi8(x); }
 template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<32, 16>) { SEQAN_VECTOR_CAST_(__m256i&, vector) = _mm256_set1_epi16(x); }
+inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<32, 16>) { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi16(x); }
 template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<32, 8>)  { SEQAN_VECTOR_CAST_(__m256i&, vector) = _mm256_set1_epi32(x); }
+inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<32, 8>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi32(x); }
 template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<32, 4>)  { SEQAN_VECTOR_CAST_(__m256i&, vector) = _mm256_set1_epi64x(x); }
+inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<32, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi64x(x); }
 template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, float x,  SimdParams_<32, 8>)  { SEQAN_VECTOR_CAST_(__m256i&, vector) = _mm256_set1_ps(x); }
+inline void _fillVector(TSimdVector &vector, float x,  SimdParams_<32, 8>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_ps(x); }
 template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, double x, SimdParams_<32, 4>)  { SEQAN_VECTOR_CAST_(__m256i&, vector) = _mm256_set1_pd(x); }
+inline void _fillVector(TSimdVector &vector, double x, SimdParams_<32, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_pd(x); }
 
 template <typename TSimdVector, int L>
-inline void _clearVector(TSimdVector &vector, SimdParams_<32, L>) { SEQAN_VECTOR_CAST_(__m256i&, vector) = _mm256_setzero_si256(); }
+inline void _clearVector(TSimdVector &vector, SimdParams_<32, L>) { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_setzero_si256(); }
 template <typename TSimdVector>
-inline void _clearVector(TSimdVector &vector, SimdParams_<32, 8>) { SEQAN_VECTOR_CAST_(__m256&, vector) = _mm256_setzero_ps(); }
+inline void _clearVector(TSimdVector &vector, SimdParams_<32, 8>) { SEQAN_VECTOR_CAST_LVALUE_(__m256&, vector) = _mm256_setzero_ps(); }
 template <typename TSimdVector>
-inline void _clearVector(TSimdVector &vector, SimdParams_<32, 4>) { SEQAN_VECTOR_CAST_(__m256d&, vector) = _mm256_setzero_pd(); }
+inline void _clearVector(TSimdVector &vector, SimdParams_<32, 4>) { SEQAN_VECTOR_CAST_LVALUE_(__m256d&, vector) = _mm256_setzero_pd(); }
 
 #ifdef __AVX2__
 
@@ -383,24 +386,24 @@ inline int _testAllOnes(TSimdVector const &vector, SimdParams_<32>)
 #ifdef __SSE3__
 
 template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<16, 16>) { SEQAN_VECTOR_CAST_(__m128i&, vector) = _mm_set1_epi8(x); }
+inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<16, 16>) { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_epi8(x); }
 template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<16, 8>)  { SEQAN_VECTOR_CAST_(__m128i&, vector) = _mm_set1_epi16(x); }
+inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<16, 8>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_epi16(x); }
 template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<16, 4>)  { SEQAN_VECTOR_CAST_(__m128i&, vector) = _mm_set1_epi32(x); }
+inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<16, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_epi32(x); }
 template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<16, 2>)  { SEQAN_VECTOR_CAST_(__m128i&, vector) = _mm_set1_epi64x(x); }
+inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<16, 2>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_epi64x(x); }
 template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, float x,  SimdParams_<16, 4>)   { SEQAN_VECTOR_CAST_(__m128i&, vector) = _mm_set1_ps(x); }
+inline void _fillVector(TSimdVector &vector, float x,  SimdParams_<16, 4>)   { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_ps(x); }
 template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, double x, SimdParams_<16, 2>)  { SEQAN_VECTOR_CAST_(__m128i&, vector) = _mm_set1_pd(x); }
+inline void _fillVector(TSimdVector &vector, double x, SimdParams_<16, 2>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_pd(x); }
 
 template <typename TSimdVector, int L>
-inline void _clearVector(TSimdVector &vector, SimdParams_<16, L>) { SEQAN_VECTOR_CAST_(__m128i&, vector) = _mm_setzero_si128(); }
+inline void _clearVector(TSimdVector &vector, SimdParams_<16, L>) { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_setzero_si128(); }
 template <typename TSimdVector>
-inline void _clearVector(TSimdVector &vector, SimdParams_<16, 4>)  { SEQAN_VECTOR_CAST_(__m128&, vector) = _mm_setzero_ps(); }
+inline void _clearVector(TSimdVector &vector, SimdParams_<16, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128&, vector) = _mm_setzero_ps(); }
 template <typename TSimdVector>
-inline void _clearVector(TSimdVector &vector, SimdParams_<16, 2>)  { SEQAN_VECTOR_CAST_(__m128d&, vector) = _mm_setzero_pd(); }
+inline void _clearVector(TSimdVector &vector, SimdParams_<16, 2>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128d&, vector) = _mm_setzero_pd(); }
 
 
 template <typename TSimdVector, int L>
