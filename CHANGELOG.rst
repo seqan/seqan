@@ -15,7 +15,7 @@ Selected Bug Fixes
 
 - Tests:
     - delete automatically created temp directories in unit and app tests
-    - demo tests: std::cout was not considered in tests
+    - demo tests: ``std::cout`` was not considered in tests
 
 App Updates
 ^^^^^^^^^^^
@@ -23,9 +23,9 @@ App Updates
 - Yara:
     - fall back to single-end mapping when paired-end library length distribution is neither given nor estimable
     - fixed handling of reference metagenomes (references larger than 16k sequences)
-    - enabled support for reference metagenomes by default (-DYARA_LARGE_CONTIGS=ON)
-    - added option --sensitivity (low, high, full)
-    - replaced option --output-secondary with --secondary-alignments (tag, record, omit)
+    - enabled support for reference metagenomes by default (``-DYARA_LARGE_CONTIGS=ON``)
+    - added option ``--sensitivity`` (low, high, full)
+    - replaced option --output-secondary with ``--secondary-alignments`` (tag, record, omit)
     - renamed several options
 
 Documentation Updates
@@ -42,9 +42,9 @@ Infrastructure Updates
 - Build System:
     - more sensible execinfo detection
     - don't ship apps and the manual on library releases
-    - introduce cmake -DSEQAN_OFFICIAL_PKGS=1 to build upstream releases with static binaries
-    - cache dependency detection on DEVELOP
-    - make it possible to do RELEASE_LIBRARY without dox
+    - introduce cmake ``-DSEQAN_OFFICIAL_PKGS=1`` to build upstream releases with static binaries
+    - cache dependency detection on ``DEVELOP``
+    - make it possible to do ``RELEASE_LIBRARY`` without dox
 
 - Platforms:
     - basic BSD support
