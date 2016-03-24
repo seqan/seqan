@@ -2,14 +2,14 @@
 
     .. contents::
 
-.. _tutorial-datastructures-squences-sequences:
+.. _tutorial-datastructures-sequences-strings-and-segments:
 
-Sequences
-=========
+Stgrings and Segments
+=====================
 
 Learning Objective
   You will learn about the SeqAn sequence concept and its main class :dox:`String` as well as the class :dox:`Segment`.
-  After completing this tutorial, you will be able to use important functionalities of sequences in SeqAn and you will be ready to continue with the more specific tutorials, e.g. :ref:`tutorial-datastructures-sequences-iterators`, :ref:`tutorial-datastructures-alignment`, or :ref:`tutorial-algorithms-alignment-pairwise-sequence-alignment`.
+  After completing this tutorial, you will be able to use important functionalities of sequences in SeqAn and you will be ready to continue with the more specific tutorials, e.g. :ref:`tutorial-datastructures-alignment`, or :ref:`tutorial-algorithms-alignment-pairwise-sequence-alignment`.
 
 Difficulty
   Very basic
@@ -38,17 +38,22 @@ Strings
 In this section, we will have a detailed look at the SeqAn class :dox:`String`.
 You will learn how to build and expand strings as well as how to compare and convert them.
 
-Building Strings
+Defining Strings
 ^^^^^^^^^^^^^^^^
 
-Let's first have a look at an example on how to define a :dox:`String`.
+Let's first have a look at a simple example on how to define a :dox:`String`.
 The type of the contained value is specified by the first template argument, e.g. ``char`` or ``int``.
 
 .. includefrags:: demos/tutorial/sequences/base.cpp
     :fragment: string_example
 
+To fill the string with contents, we can simply assign a string literal to the created variable:
+
+.. includefrags:: demos/tutorial/sequences/base.cpp
+    :fragment: simple_string_construction
+
 Any type that provides a default constructor, a copy constructor and an assignment operator can be used as the alphabet / contained type of a :dox:`String`.
-This includes the C++ `POD types <http://www.parashift.com/c++-faq-lite/intrinsic-types.html#faq-26.7>`_, e.g. ``char``, ``int``, ``double`` etc., but you can use more complex types, e.g. :dox:`String Strings`, too.
+This includes the C++ `POD types <https://isocpp.org/wiki/faq/intrinsic-types#pod-types>`_, e.g. ``char``, ``int``, ``double`` etc., or even more complex types complex types, such as :dox:`String Strings`.
 
 .. includefrags:: demos/tutorial/sequences/base.cpp
     :fragment: string_of_strings_example
@@ -57,8 +62,9 @@ This includes the C++ `POD types <http://www.parashift.com/c++-faq-lite/intrinsi
 
    Nested Sequences (aka "Strings of Strings")
 
-   A set of sequences can either be stored in a sequence of sequences, for example in a ``String< String<char> >``, or in :dox:`StringSet`.
-   See the tutorial :ref:`tutorial-datastructures-sequences-string-sets` for more information about the class :dox:`StringSet`.
+   A collection of sequences can either be stored in a sequence of sequences, for example in a ``String< String<char> >``, or in a :dox:`StringSet`.
+   The latter one allows for more auxiliary functionalities to improve the efficiency of working with large sequence collections.
+   You can learn more about it in the tutorial :ref:`tutorial-datastructures-sequences-string-sets`.
 
 SeqAn also provides the following types that are useful in bioinformatics: :dox:`AminoAcid`, :dox:`Dna`, :dox:`Dna5`, :dox:`DnaQ`, :dox:`Dna5Q`, :dox:`Finite`, :dox:`Iupac`, :dox:`Rna`, :dox:`Rna5`.
 You can find detailed information in the tutorial :ref:`tutorial-datastructures-sequences-alphabets`.
@@ -71,37 +77,11 @@ For commonly used string parameterizations, SeqAn has a range of shortcuts imple
 .. includefrags:: demos/tutorial/sequences/base.cpp
     :fragment: shortcuts_example
 
-The user can specify the kind of string that should be used in an optional second template argument of :dox:`String`.
-This is also known as selecting the specialization of a class in SeqAn.
-The default string implementation is :dox:`AllocString Alloc String`, which is the best choice for most cases.
+Working with Strings
+^^^^^^^^^^^^^^^^^^^^
 
-.. includefrags:: demos/tutorial/sequences/base.cpp
-    :fragment: specification_example
-
-For some scenarios though, there might be other types more suitable.
-One such example is when processing extremely large strings that are much larger than the available main memory.
-In this case, using :dox:`ExternalString External Strings` is a good choice.
-
-.. includefrags:: demos/tutorial/sequences/base.cpp
-    :fragment: specification2_example
-
-More details about the different specializations you can find in the tutorial :ref:`tutorial-datastructures-sequences-sequences-in-depth`.
-
-.. tip::
-
-   String Simplify Memory Management
-
-   One advantage of using Strings is that the user does not need to reserve memory manually with **new** and does not need **delete** to free memory.
-   Instead, those operations are automatically handeld by the :dox:`String` class.
-
-   .. includefrags:: demos/tutorial/sequences/base.cpp
-        :fragment: initialization_example
-
-Functionality
-^^^^^^^^^^^^^
-
-SeqAn also provides the common C++ operators for strings. You can use
-them like STL strings, for example:
+The SeqAn String implementation provides the common C++ operators that you know already from the `vector <http://en.cppreference.com/w/cpp/container/vector>`_ class of the STL.
+For example:
 
 .. includefrags:: demos/tutorial/sequences/example_functionality1.cpp
     :fragment: main
@@ -331,6 +311,236 @@ Assignment 4
 
         .. includefrags:: demos/tutorial/sequences/assignment_4_solution.cpp.stdout
 
+.. _tutorial-datastructures-sequences-strings-and-segments-iterators:
+
+Iteration
+^^^^^^^^^
+
+Very often you will be required to iterate over your string to either retrieve what's stored in the string or to write something at a specific position.
+For this purpose SeqAn provides Iterators for all container types.
+The metafunction :dox:`ContainerConcept#Iterator` can be used to determine the appropriate iterator type for a given a container.
+
+An iterator always points to one value of the container.
+The operator :dox:`IteratorAssociatedTypesConcept#operator*` can be used to access this value by reference.
+Functions like :dox:`InputIteratorConcept#operator++(prefix)` or :dox:`BidirectionalIteratorConcept#operator--(prefix)` can be used to move the iterator to other values within the container.
+
+The functions :dox:`ContainerConcept#begin` and :dox:`ContainerConcept#end`, applied to a container, return iterators to the begin and to the end of the container.
+Note that similar to C++ standard library iterators, the iterator returned by :dox:`ContainerConcept#end` does not point to the last value of the container but to the position behind the last one.
+If the container is empty then ``end() == begin()``.
+
+The following code prints out a sequence and demonstrates how to iterate over a string.
+
+.. includefrags:: demos/tutorial/iterators/base.cpp
+    :fragment: use-case
+
+.. includefrags:: demos/tutorial/iterators/base.cpp.stdout
+    :fragment: use-case
+
+
+Different Iterator Types
+""""""""""""""""""""""""
+
+Some containers offer several kinds of iterators, which can be selected by an optional template parameter of the Iterator class.
+For example, the tag :dox:`ContainerIteratorTags#Standard` can be used to get an iterator type that resembles the C++ standard random access iterator.
+For containers there is also a second variant available, the so called :dox:`ContainerIteratorTags#Rooted` iterator.
+The rooted iterator knows its container by pointing back to it.
+This gives us a nice interface to access member functions of the underlying container while operating on a rooted iterator.
+The construction of an iterator in SeqAn, e.g. for a :dox:`DnaString Dna String`, could look like the following:
+
+.. includefrags:: demos/tutorial/iterators/base.cpp
+    :fragment: construction
+
+.. tip::
+
+   The default iterator implementation is :dox:`ContainerIteratorTags#Standard`.
+   Rooted iterators offer some convenience interfaces for the user.
+   They offer additional functions like :dox:`RootedIteratorConcept#container` for determining the container on which the iterator works, and they simplify the interface for other functions like :dox:`RootedIteratorConcept#atEnd`.
+   Moreover, rooted iterators may change the container’s length or capacity, which makes it possible to implement a more intuitive variant of a remove algorithm.
+
+   While rooted iterators can usually be converted into standard iterators, it is not always possible to convert standard iterators back into rooted iterators, since standard iterators may lack the information about the container they work on.
+   Therefore, many functions that return iterators like :dox:`ContainerConcept#begin` or :dox:`ContainerConcept#end` return rooted iterators instead of standard iterators; this way, they can be used to set both rooted and standard iterator variables.
+   Alternatively it is possible to specify the returned iterator type explicitly by passing the iterator kind as a tag argument, e.g. ``begin(str, Standard())``.
+
+Assignment 5
+""""""""""""
+
+.. container:: assignment
+
+   Type
+     Review
+
+   Objective
+     Copy the code below, which replaces all N's of a given :dox:`String` with A's.
+     Adjust the code to use iterators to traverse the container.
+     Use the :dox:`ContainerIteratorTags#Standard` iterator.
+
+     .. includefrags:: demos/tutorial/iterators/assignment_1.cpp
+
+    Solution
+
+      Click **more...** to see the solution.
+
+      .. container:: foldable
+
+         .. includefrags:: demos/tutorial/iterators/assignment_1_solution.cpp
+
+Assignment 6
+""""""""""""
+
+.. container:: assignment
+
+   Type
+     Application
+
+   Objective
+     Use the code from above and change the :dox:`ContainerIteratorTags#Standard` to a :dox:`ContainerIteratorTags#Rooted` iterator.
+     Try to shorten the code wherever possible.
+
+   Solution
+     Click **more...** to see the solution.
+
+     .. container:: foldable
+
+        .. includefrags:: demos/tutorial/iterators/assignment_2_solution.cpp
+
+String Allocation Strategies
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Each sequence object has a capacity, i.e. the reserved space for this object.
+The capacity can be set explicitly by functions such as :dox:`String#reserve` or :dox:`StringConcept#resize`.
+It can also bet set implicitly by functions like :dox:`ContainerConcept#append`, :dox:`AssignableConcept#assign`, :dox:`StringConcept#insert` or :dox:`StringConcept#replace`, if the operation's result exceeds the length of the target sequence.
+
+If the current capacity of a sequence is exceeded by chaining the length, we say that the sequence overflows.
+There are several overflow strategies that determine what actually happens when a string should be expanded beyond its capacity.
+The user can specify this for a function call by additionally handing over a tag.
+If no overflow strategy is specified, a default overflow strategy is selected depending on the type of the sequence.
+
+The following overflow strategies exist:
+
+:dox:`OverflowStrategyTags#Exact`
+  Expand the sequence exactly as far as needed. The capacity is only changed if the current capacity is not large enough.
+
+:dox:`OverflowStrategyTags#Generous`
+  Whenever the capacity is exceeded, the new capacity is chosen somewhat larger than currently needed.
+  This way, the number of capacity changes is limited in a way that resizing the sequence only takes amortized constant time.
+
+:dox:`OverflowStrategyTags#Limit`
+  Instead of changing the capacity, the contents are limited to current capacity.
+  All values that exceed the capacity are lost.
+
+:dox:`OverflowStrategyTags#Insist`
+  No capacity check is performed, so the user has to ensure that the container's capacity is large enough.
+
+The next example illustrates how the different strategies could be used:
+
+.. includefrags:: demos/tutorial/sequences_in_depth/example_overflow.cpp
+   :fragment: example
+
+.. includefrags:: demos/tutorial/sequences_in_depth/example_overflow.cpp.stdout
+
+Assignment 7
+""""""""""""
+
+.. container:: assignment
+
+   Type
+     Review
+
+   Objective
+     Build a string of Dna (default specialization) and use the function ``appendValue`` to append a million times the nucleotide 'A'.
+     Do it both using the overflow strategy ``Exact`` and ``Generous``.
+     Measure the time for the two different strategies.
+
+   Solution
+      Click **more...** to see the solution.
+
+      .. container:: foldable
+
+         .. includefrags:: demos/tutorial/sequences_in_depth/assignment_exact_generous_solution.cpp
+
+String Specializations
+^^^^^^^^^^^^^^^^^^^^^^
+
+The user can specify the kind of string that should be used in an optional second template argument of :dox:`String`.
+The default string implementation is :dox:`AllocString Alloc String`.
+
+.. includefrags:: demos/tutorial/sequences/base.cpp
+    :fragment: sdefault_type
+
+In most cases, the implementation :dox:`AllocString Alloc String` (the default when using a ``String<T>``) is the best choice.
+Exceptions are when you want to process extremely large strings that are a bit larger than the available memory (consider :dox:`AllocString Alloc String`) or much larger so most of them are stored on the hard disk and only parts of them are loaded in main memory (consider :dox:`ExternalString External String`).
+The following list describes in detail the different specializations:
+
+Specialization :dox:`AllocString Alloc String`
+  * **Description**
+    Expandable string that is stored on the heap.
+  * **Applications**
+    The default string implementation that can be used for general purposes.
+  * **Limitations**
+    Changing the :dox:`StringConcept#capacity` can be very costly since all values must be copied.
+
+Specialization :dox:`ArrayString Array String`
+  * **Description**
+    Fast but non-expandable string. Fast storing of fixed-size sequences.
+  * **Limitations**
+    :dox:`StringConcept#capacity Capacity` must already be known at compile time. Not suitable for storing large sequences.
+
+Specialization :dox:`BlockString Block String`
+  * **Description**
+    String that stores its sequence characters in blocks.
+  * **Applications**
+    The :dox:`StringConcept#capacity` of the string can quickly be increased. Good choice for growing strings or stacks.
+  * **Limitations**
+    Iteration and random access to values is slightly slower than for :dox:`AllocString Alloc String`.
+
+Specialization :dox:`PackedString Packed String`
+  * **Description**
+    A string that stores as many values in one machine word as possible.
+  * **Applications**
+    Suitable for storing large strings in memory.
+  * **Limitations**
+    Slower than other in-memory strings.
+
+Specialization :dox:`ExternalString External String`
+  * **Description**
+    String that is stored in secondary memory.
+  * **Applications**
+    Suitable for storing very large strings (>2GB). Parts of the string are automatically loaded from secondary memory on demand.
+  * **LimitationsApplications**
+    Slower than other string classes.
+
+Specialization :dox:`JournaledString Journaled String`
+  * **Description**
+    String that stores differences to an underlying text rather than applying them directly.
+  * **Applications**
+    Suitable for efficiently storing similar strings, if their differences to an underlying reference sequence are known.
+  * **LimitationsApplications**
+    Slower than other string classes, due to logarithmic penalty for random accesses.
+
+Specialization :dox:`CStyleString CStyle String`
+  * **Description**
+    Allows adaption of strings to C-style strings.
+  * **Applications**
+    Used for transforming other String classes into C-style strings (i.e. null terminated char arrays). Useful for calling functions of C-libraries.
+  * **Limitations**
+    Only sensible if value type is ``char`` or ``wchar_t``.
+
+.. includefrags:: demos/tutorial/sequences_in_depth/base.cpp
+      :fragment: type_examples
+
+.. includefrags:: demos/tutorial/sequences/base.cpp
+    :fragment: external_string_spec
+
+.. tip::
+
+   String Simplify Memory Management
+
+   One advantage of using Strings is that the user does not need to reserve memory manually with **new** and does not need **delete** to free memory.
+   Instead, those operations are automatically handled by the :dox:`String` class.
+
+   .. includefrags:: demos/tutorial/sequences/base.cpp
+        :fragment: initialization_example
+
 Segments
 --------
 
@@ -358,10 +568,10 @@ The segment is *not* a copy of the sequence segment.
 .. warning::
 
    Please note that it is not possible anymore to change the underlying sequence by changing the segment.
-   If you want to change the host sequence, you have to explicilty modify this.
+   If you want to change the host sequence, you have to explicitly modify this.
    If you want to modify only the segment, you have to explicitly make a copy of the string.
 
-Assignment 5
+Assignment 8
 ^^^^^^^^^^^^
 
 .. container:: assignment
@@ -396,7 +606,7 @@ Assignment 5
 
         .. includefrags:: demos/tutorial/sequences/assignment_5_solution.cpp.stdout
 
-Assignment 6
+Assignment 9
 ^^^^^^^^^^^^
 
 .. container:: assignment

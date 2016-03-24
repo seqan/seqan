@@ -17,7 +17,7 @@ Duration
   1.5 h
 
 Prerequisites
-  :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-sequences-iterators`
+  :ref:`tutorial-datastructures-sequences`
 
 Virtual String Tree Iterator
 ----------------------------
@@ -50,7 +50,7 @@ First we create an index of the text ``"How much wood would a woodchuck chuck?"`
 .. includefrags:: demos/tutorial/index_iterators/index_search.cpp
    :fragment: initialization
 
-Afterwards we create the :dox:`TopDownIterator TopDown Iterator` using the metafunction Iterator, which expects two arguments, the type of the container to be iterated and a specialization tag (see the VSTree Iterator hierarchy and the :ref:`tutorial-datastructures-sequences-iterators` Tutorial for more details).
+Afterwards we create the :dox:`TopDownIterator TopDown Iterator` using the metafunction Iterator, which expects two arguments, the type of the container to be iterated and a specialization tag (see the VSTree Iterator hierarchy and the :ref:`tutorial-datastructures-sequences-strings-and-segments-iterators` Tutorial for more details).
 
 .. includefrags:: demos/tutorial/index_iterators/index_search.cpp
    :fragment: iterator

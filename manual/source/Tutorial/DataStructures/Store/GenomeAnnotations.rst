@@ -19,7 +19,7 @@ Duration
   1 h
 
 Prerequisites
-  :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-sequences-iterators`
+  :ref:`tutorial-datastructures-sequences`
 
 This tutorial will present SeqAn's efficient and easy-to-use data structures to work with annotations.
 They allow to annotate genome regions with features like 'gene', 'mRNA', 'exon', 'intron' and if required with custom features.

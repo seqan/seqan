@@ -17,7 +17,7 @@ Duration
   1h
 
 Prerequisites
-  :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-datastructures-sequences-iterators`, :ref:`tutorial-datastructures-sequences-alphabets`, :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-alignment-scoringschemes`, :ref:`tutorial-datastructures-graphs`
+  :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-alignment-scoringschemes`, :ref:`tutorial-datastructures-graphs`
 
 Alignments are one of the most basic and important ways to measure similarity between two or more sequences.
 In general, a pairwise sequence alignment is an optimization problem which determines the best transcript of how one sequence was derived from the other.
@@ -82,7 +82,7 @@ Assignment 1
    Hints
      .. container:: foldable
 
-        The Gotoh algorithm uses the Affine Gap function. In SeqAn you can switch between Linear, Affine and Dynamic gap functions by customizing your scoring scheme with one of the three tags ``LinearGaps()``, ``AffineGaps()`` or ``DynamicGaps()`` and relative penalty values ``gapOpen`` and ``gapExtend``. When a single gap value is provided the Linear Gap model is selected as default while the Affine Gap model is chosen as standard when two different gap costs are set. If the Dynamic Gap model :cite:`Urgese2014` is required the relative tag must be supplied.  
+        The Gotoh algorithm uses the Affine Gap function. In SeqAn you can switch between Linear, Affine and Dynamic gap functions by customizing your scoring scheme with one of the three tags ``LinearGaps()``, ``AffineGaps()`` or ``DynamicGaps()`` and relative penalty values ``gapOpen`` and ``gapExtend``. When a single gap value is provided the Linear Gap model is selected as default while the Affine Gap model is chosen as standard when two different gap costs are set. If the Dynamic Gap model :cite:`Urgese2014` is required the relative tag must be supplied.
         Have a look on the :ref:`tutorial-datastructures-alignment-scoringschemes` section if you are not sure about the correct ordering.
 
    Solution

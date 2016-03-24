@@ -52,6 +52,13 @@ Specialization ``Owner<ConcatDirect>``
   The string set also stores lengths and starting positions of the strings.
   Inserting new strings into the set or removing strings from the set is more expensive than for the default :dox:`OwnerStringSet` specialization, since this involves moving all subsequent sequences in memory.
 
+Specialization ``Owner<JournaledSet>``
+  The sequences are stored as :dox:`JournaledString Journaled Strings` to a common reference sequence,
+  that is also stored within the container.
+  When adding a new String to the set, it needs to be joined to this set of sequences which are all based on the
+  common reference sequence.
+  This way one can hold a large collection of similar sequences efficiently in memory.
+
 Specialization ``Dependent<Tight>``
   This specialization stores sequence pointers consecutively in an array.
   Another array stores an id value for each sequence.
@@ -78,12 +85,12 @@ Use the function :dox:`StringConcept#appendValue` to append strings to string se
       :fragment: appendValue
 
 
-Functionality
--------------
+Working with StringSets
+-----------------------
 
 This section will give you a short overview of the functionality of the class :dox:`StringSet`.
 
-There are two ways for accessing the sequences in a string set: (1) the function :dox:`RandomAccessContainerConcept#value` returns a reference to the sequence at a specific *position* within the sequence of sequences, and (2) :dox:`StringSet#valueById` accesses a sequence given its *id*.
+There are two ways for accessing the sequences in a string set: (1) the function :dox:`RandomAccessContainerConcept::operator[]` returns a reference to the sequence at a specific *position* within the sequence of sequences, and (2) :dox:`StringSet#valueById` accesses a sequence given its *id*.
 We can retrieve the *id* of a sequence in a :dox:`StringSet` with the function :dox:`StringSet#positionToId`.
 
 .. includefrags:: demos/tutorial/string_sets/example_functionality.cpp
@@ -114,7 +121,6 @@ Iterating over String Sets
 --------------------------
 
 As well as for other containers, SeqAn has implemented iterators for :dox:`StringSet StringSets`.
-The generall usage of iterators is described in the tutorial :ref:`tutorial-datastructures-sequences-iterators`.
 The following example illustrates, how to iterate over the :dox:`StringSet`.
 
 .. includefrags:: demos/tutorial/string_sets/example_iterators.cpp
@@ -181,27 +187,3 @@ Assignment 2
      .. container:: foldable
 
         .. includefrags:: demos/tutorial/string_sets/assignment_2_solution.cpp
-
-Workshop Assignment 4
-^^^^^^^^^^^^^^^^^^^^^
-
-.. container:: assignment
-
-   Type
-     Review
-
-   Objective
-     In this assignment, we pick up the example from the workshop assignments from the sequences and iterators tutorials.
-     Take the last solution and change the code to build and use StringSets.
-
-     #. Build a StringSet of readList. Reuse the Rooted iterator above.
-     #. Iterate over the StringSet and print out the values.
-
-     .. includefrags:: demos/tutorial/string_sets/assignment_3_workshop_solution.cpp
-
-   Solution
-     Click **more...** to see the solution.
-
-     .. container:: foldable
-
-        .. includefrags:: demos/tutorial/string_sets/assignment_4_workshop_solution.cpp
