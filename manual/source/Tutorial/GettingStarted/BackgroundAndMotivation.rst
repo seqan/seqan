@@ -9,7 +9,7 @@ Background and Motivation
 
 Learning Objective
   You will learn about the design goals and fundamental ideas used in the SeqAn library.
-  Also, you will see how the SeqAn library obtains genericity while still retaining high performance.
+  Also, you will see how the SeqAn library can be generic while still retaining high performance.
 
 Difficulty
   Very basic
@@ -39,8 +39,8 @@ The focus is on efficiency but small trade-offs are allowed to improve consisten
    Be consistent wherever possible, even at slight costs of efficiency.
 #. **Ease of use**.
    The library should be easily usable wherever possible, even at slight costs of efficiency.
-#. **Reuseability and Generosity**.
-   The algorithms in SeqAn should be reuseable and generic, even at small costs of efficiency.
+#. **Reusability and Generosity**.
+   The algorithms in SeqAn should be reusable and generic, even at small costs of efficiency.
 
 Modern C++
 ----------

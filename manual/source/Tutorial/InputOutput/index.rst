@@ -27,5 +27,7 @@ Input/Output
     GffAndGtfIO
 
 
-.. image:: ../../under_construction.jpg
-
+SeqAn supports many standard file formats used in bioinformatics applications.
+The :ref:`first tutorial <tutorial-io-input-output-overview>` shows you the basic concepts and data structures for handling file I/O.
+So this would be a good starting point to learn more about it.
+Otherwise, feel free to look into the tutorials for your desired file format and start reading and writing your files.

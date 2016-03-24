@@ -568,7 +568,7 @@ The segment is *not* a copy of the sequence segment.
 .. warning::
 
    Please note that it is not possible anymore to change the underlying sequence by changing the segment.
-   If you want to change the host sequence, you have to explicilty modify this.
+   If you want to change the host sequence, you have to explicitly modify this.
    If you want to modify only the segment, you have to explicitly make a copy of the string.
 
 Assignment 8
