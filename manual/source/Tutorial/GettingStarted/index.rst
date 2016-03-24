@@ -22,11 +22,5 @@ These Tutorials will help you with your first steps in SeqAn.
     :titlesonly:
 
     BackgroundAndMotivation
-    ParsingCommandLineArguments
-
     AFirstExample
-    Basics
-    BasicTechniques
-    GenericProgramming
-    GlobalFunctionInterface
-    Metafunctions
+    ParsingCommandLineArguments

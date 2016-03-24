@@ -1,3 +1,4 @@
+.. _manual-main:
 
 SeqAn Manual
 ============
@@ -39,6 +40,8 @@ After that you should continue with the tutorials.
     Please note, that although we try hard to provide a very comprehensive list of topics, it is not always possible to cover every angle of the library and its features.
     The tutorials are thought as a first place to start.
     If you are more experienced with SeqAn you can use the :ref:`API documentation <api-documentation>` in addition to search for specific functions or classes.
+
+.. _manual-main-tutorials:
 
 Tutorials
 ---------
