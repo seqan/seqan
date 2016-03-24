@@ -7,10 +7,9 @@ Sequences
     :hidden:
     :titlesonly:
 
-    Alphabets
     StringsAndSegments
     StringSets
-    JournaledSet
+    Alphabets
 
 Tasks, such as computing an alignment, searching for patterns online or indexing a genome or protein database are required in many bioinformatics applications.
 For these tasks, SeqAn provides fundamental data structures to work efficiently with biological sequences.
