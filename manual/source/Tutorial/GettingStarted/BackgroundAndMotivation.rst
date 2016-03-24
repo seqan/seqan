@@ -207,7 +207,7 @@ Now the function works for all sequence types ``T`` that store ``AminoAcid`` obj
 To overcome this problem, we must redefine ``temp`` in a way that it can store a value of the correct type.
 The question is: "Given a arbitrary type ``T``, what is the value type of ``T``?"
 
-The metafunction :dox:`ContainerConcept#Value` anwers this question: "The value type of ``T`` is given by ``Value<T>::Type``."
+The metafunction :dox:`ContainerConcept#Value` answers this question: "The value type of ``T`` is given by ``Value<T>::Type``."
 
 Hence, the final version of our function ``exchangeFirstValues`` reads as follows:
 
@@ -232,11 +232,11 @@ Let the information settle down.
 Do you think you've got everything?
 Well, if not don't worry!
 Follow the :ref:`First Steps <tutorial-getting-started-first-steps-in-seqan>` tutorial which will cover the topics discussed above.
-This gives you the chance to apply the recently discussed paradigms to an actual (uhm, simplisitc) use case.
+This gives you the chance to apply the recently discussed paradigms to an actual (uhm, simplistic) use case.
 But it will help you to better understand the way data structures and algorithms are implemented in SeqAn.
 
 We recommend you to also read the :ref:`Argument Parser Tutorial <tutorial-getting-started-parsing-command-line-arguments>`.
 This tutorial will teach you how to easily add command line arguments for your program and how to generate a help page for the options.
 Or you go back to the :ref:`main page <manual-main-tutorials>` and stroll through the other tutorials.
-You are know ready to dive deeper into SeqAn.
+You are now ready to dive deeper into SeqAn.
 Enjoy!

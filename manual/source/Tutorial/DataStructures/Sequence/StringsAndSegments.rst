@@ -422,7 +422,7 @@ The following overflow strategies exist:
 
 :dox:`OverflowStrategyTags#Generous`
   Whenever the capacity is exceeded, the new capacity is chosen somewhat larger than currently needed.
-  This way, the number of capacity changes islimited in a way that resizing the sequence only takes amortized constant time.
+  This way, the number of capacity changes is limited in a way that resizing the sequence only takes amortized constant time.
 
 :dox:`OverflowStrategyTags#Limit`
   Instead of changing the capacity, the contents are limited to current capacity.
@@ -536,7 +536,7 @@ Specialization :dox:`CStyleString CStyle String`
    String Simplify Memory Management
 
    One advantage of using Strings is that the user does not need to reserve memory manually with **new** and does not need **delete** to free memory.
-   Instead, those operations are automatically handeld by the :dox:`String` class.
+   Instead, those operations are automatically handled by the :dox:`String` class.
 
    .. includefrags:: demos/tutorial/sequences/base.cpp
         :fragment: initialization_example

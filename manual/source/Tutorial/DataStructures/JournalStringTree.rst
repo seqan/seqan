@@ -42,11 +42,10 @@ The :dox:`JournaledString` data structure behaves like a normal :dox:`String` in
 The advantage of this data structure lies in representing a String as a "patch" to another String.
 The journaled data structure can be modified without loosing the original context.
 We want to show you how to work with these data structures so you can build your own algorithms based on this.
-For this reason we keep the applicational background simple and implement an native online-search algorithm by which we examine different properties of the data structures.
 
-Before we start implementing our online search algorithm, we show you how to work with the Journaled String to learn the basic principles.
+First, we show you how to work with the Journaled String so you can learn the basic principles.
 To get access to the Journaled String implementation you have to include the ``<seqan/sequence_journaled.h>`` header file.
-Note that you will need the ``<seqan/file.h>`` too in order to print the sequences.
+Note that you will need the ``<seqan/stream.h>`` too in order to print the sequences.
 
 .. includefrags:: demos/tutorial/journaled_set/example_journal_string_basic.cpp
    :fragment: main
