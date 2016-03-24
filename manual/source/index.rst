@@ -80,7 +80,7 @@ So buckle up and jump right into using SeqAn using our tutorials!
     :ref:`tutorial-workflows-index`
         These tutorials teach you how to integrate your application into workflow engines like KNIME or Galaxy.
 
-    :ref:`tutorial-apps`
+..    :ref:`tutorial-apps`
         A brief overview of some of our own applications developed with the SeqAn library.
 
 Infrastructure
@@ -118,7 +118,7 @@ The API documentation can be found :dox:`mainpage here`.
     Tutorial/InputOutput/index
     Tutorial/HowTo/index
     Tutorial/Workflows/index
-    Tutorial/Applications/index
+..    Tutorial/Applications/index
 
 .. toctree::
     :caption: Infrastructure
