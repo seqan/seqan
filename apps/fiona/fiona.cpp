@@ -83,7 +83,6 @@
     #endif  // #if !defined(__MINGW32__) || defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
 #else
     #warning "Please enable OpenMP."
-    #define omp_get_wtime() 0
 #endif  // #ifdef _OPENMP
 
 // The q-gram length used for the q-gram index.  This has to be hard-coded as a precompiler definition since it is part
