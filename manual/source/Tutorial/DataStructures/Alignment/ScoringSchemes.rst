@@ -18,11 +18,11 @@ Duration
   45 min
 
 Prerequisites
-  :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-datastructures-sequences-alphabets`, :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-sequences-string-sets`, :ref:`tutorial-datastructures-sequences-iterators`, :ref:`tutorial-datastructures-alignment-alignment-gaps`
+  :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-alignment-alignment-gaps`
 
-The alignment procedures are usually based on the sequences similarity computation described by an alignment scoring system that gives countable information used to determine which sequences are related and which are not. 
+The alignment procedures are usually based on the sequences similarity computation described by an alignment scoring system that gives countable information used to determine which sequences are related and which are not.
 
-Four main biological events must be considered during the sequence alignment: 
+Four main biological events must be considered during the sequence alignment:
 Conservation, substitution, insertion and deletion.
 We could have a Conservation when the two compared letters are the same and a Match is detected, a Substitution when we detect a Mismatch where a letter is aligned with another, and Insertion or Deletion when in one of the two aligned sequences a letter is aligned with a Gap.
 Matches, mismatches and gaps detected during the alignment do not guarantee to be the most representative biological truth since their dispositions is dependent of the chosen scoring schemes and the selected alignment algorithm. In order to improve the correlation between computed sequence alignment and biological similarity, specific combinations of scoring schemes and alignment algorithms have been developed during the years and are usually adopted for the alignment of different types of biological sequences. For example, as we will see in the following, the small RNA sequences are usually aligned with a Global Alignment algorithm implementing a Simple Score scheme, differently from the protein sequences that are mostly aligned with the Local Alignment algorithm that uses a Substitution Matrix Score scheme.
@@ -33,7 +33,7 @@ Matches, mismatches and gaps detected during the alignment do not guarantee to b
 
 Given an alignment structure that store the two sequences and a scoring scheme, the score of the alignment can be computed as the sum of the scores for aligned character pairs plus the sum of the scores for all gaps.
 
-With refer to the alignment procedure a Scoring Scheme can be defined as the set of rules used to assess the possible biological events that must be considered during the alignment procedure. 
+With refer to the alignment procedure a Scoring Scheme can be defined as the set of rules used to assess the possible biological events that must be considered during the alignment procedure.
 
 In SeqAn are available several :dox:`Score scoring schemes` to evaluate matches and mismatches, while three different gap models can be applied to consider insertions and deletions events.
 We will first introduce you to the scoring schemes used to evaluate match and mismatch. Subsequently, you will learn how to chose the gap model to be implemented in the chosen scoring scheme.
@@ -57,7 +57,7 @@ The next steps would be to implement the main function of our program and to def
 We first define the type of the input sequences (``TSequence``) and an :dox:`Align` object (``TAlign``) type to store the alignment.
 For more information on the Align datastructure, please read the tutorial :ref:`tutorial-datastructures-alignment-alignment-gaps`.
 After defining the types, we can continue to construct our own Align object.
-First, we create two input sequences ``seq1 = "TELKDD"`` and ``seq2 = "LKTEL"``, then we define the scoring values for match, mismatch, gap. 
+First, we create two input sequences ``seq1 = "TELKDD"`` and ``seq2 = "LKTEL"``, then we define the scoring values for match, mismatch, gap.
 As last we create the 'align' object and resize it to manage two :dox:`Gaps` objects, at this point we filled it with the sequences to be aligned.
 
 .. includefrags:: demos/tutorial/alignment/scoring_scheme_simple.cpp
@@ -76,14 +76,14 @@ You have created your global alignment implementing the simple scoring function,
 
 .. includefrags:: demos/tutorial/alignment/scoring_scheme_simple.cpp.stdout
 
-However, in the evaluation of protein similarity or for advanced nucleotide alignments a more complex scoring model is generally applied. 
+However, in the evaluation of protein similarity or for advanced nucleotide alignments a more complex scoring model is generally applied.
 It is based on the usage of a Substitution Matrix, proven to better describe from a biological point of view, events such as matches and mismatches.
 
 Substitutional Matrices Score
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Substitutional Matrices are built on the basis of the probability that a particular amino acid or nucleotide is replaced with another during the evolution process. 
-They assign to each pair a value that indicates their degree of similarities, obtained thanks to statistical methods reflecting the frequency of a particular substitution in homologous protein or RNA families. A positive value in the Substitutional Matrix means that the two letters share identical or similar properties. 
+Substitutional Matrices are built on the basis of the probability that a particular amino acid or nucleotide is replaced with another during the evolution process.
+They assign to each pair a value that indicates their degree of similarities, obtained thanks to statistical methods reflecting the frequency of a particular substitution in homologous protein or RNA families. A positive value in the Substitutional Matrix means that the two letters share identical or similar properties.
 
 These scoring schemes store a score value for each pair of characters. This value can be accessed using :dox:`Score#score`.
 Examples for this kind of scoring scheme are :dox:`Pam120` and :dox:`Blosum62`.
@@ -158,7 +158,7 @@ Example Affine vs Dynamic
 
    The order of the different costs in the scoring scheme is ``match``, ``mismatch``, ``gapExtend`` and ``gapOpen``.
    The gap model selection can be done providing one of the three specific tags (``LinearGaps()``, ``AffineGaps()`` or ``DynamicGaps()``) as last parameter in the scoring function creation. If you want to use Linear Gap costs you could also omit the last parameter ``gapOpen`` and the scoring scheme would automatically choose the Linear Gap cost function.
-   The Affine Gap model is chosen as standard when the gap costs are different and the gap model tag is not provided. If the Dynamic Gap model is required the relative tag must be supplied. 
+   The Affine Gap model is chosen as standard when the gap costs are different and the gap model tag is not provided. If the Dynamic Gap model is required the relative tag must be supplied.
 
 In the following we propose an example where two different scoring functions have been created to show how to call a global alignment algorithm that uses the Blosum62 plus the ``AffineGaps()`` and ``DynamicGaps()`` specializations.
 The inclusion of the header and the type definition is identical to the previous examples.
