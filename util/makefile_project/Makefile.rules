@@ -1,6 +1,5 @@
 SRC=../src
 CXXFLAGS+=-I../../../include
-CXXFLAGS+=-I../../../include
 
 default: all
 all: main

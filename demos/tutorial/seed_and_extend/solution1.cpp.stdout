@@ -1,8 +1,6 @@
-seed1
-beginPositionH == 6
-endPositionH == 14
-beginPositionV == 20
-endPositionV == 28
-lowerDiagonal == -18
-upperDiagonal == -14
-
+original
+seedH: ROW
+seedV: ROW
+result
+seedH: ick BROWN
+seedV: ick BROWN
