@@ -128,7 +128,7 @@ namespace seqan
     struct PoolParameters
     {
 
-#ifdef SEQAN_IS_32_BIT
+#if SEQAN_IS_32_BIT
         // in 32bit mode at most 4GB are addressable
         enum { DefaultMemBufferSize     = 384 * 1024,      // low memory config [kB]
                DefaultPageSize          = 32 * 1024,            // [kB]
