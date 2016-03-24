@@ -33,7 +33,7 @@ Note that they are contradicting.
 The focus is on efficiency but small trade-offs are allowed to improve consistency and ease of use.
 
 #. **Efficiency**.
-   The focus of SeqAn is to provide a library of efficient and reuseable algorithmic components for biological sequence analysis.
+   The focus of SeqAn is to provide a library of efficient and reusable algorithmic components for biological sequence analysis.
    Algorithms should have good practical implementations with low overhead, even at the cost of being harder to use.
 #. **Consistency**.
    Be consistent wherever possible, even at slight costs of efficiency.
@@ -110,7 +110,7 @@ However, there are some implementation tricks that can lead to great reduction o
 Thus, simply using a ``std::string`` would come at high costs to efficiency.
 
 Given that in the last 10-15 years, Java and C# have gained popularity, one could think about an object oriented solution: strings could simply be arrays of ``Character`` objects.
-Using polymorphism (e.g. overwriting of functions in subclasses), one could then write generic and reuseable algorithms.
+Using polymorphism (e.g. overwriting of functions in subclasses), one could then write generic and reusable algorithms.
 For example, the Java 2 platform defines the sort function for all objects implementing a ``Comparable`` interface.
 Note that such an implementation would have to rely on `virtual functions <http://en.wikipedia.org/wiki/Virtual_function>`_ of some sort.
 However, as we will see in the section OOP vs. Generic Progamming, **this comes at a high performance cost, being in conflict with efficiency**.
@@ -120,11 +120,11 @@ Generic programming offers one way out: C++ templates allow to define template c
 Here, instead of creating a string class around an array of ``char`` values (or objects), we can leave the type of the array's elements open.
 We can then introduce different types, e.g. ``Dna`` or ``Dna5`` for 4- and 5-character DNA alphabets.
 
-Algorithms can be implemented using templated functions and the template types are fixed at compile time.
+Algorithms can be implemented using template functions and the template types are fixed at compile time.
 Thus, the compiler does not have to use virtual function tables and other "crutches", less indirection is involved, and more code can be inlined and aggressively optimized.
 When written appropriately, such algorithms can also work on different string implementations! Also, when defining our own alphabet types, we can directly influence how their abstractions (and APIs) work.
 
-Thus, C++ allows us to implement (1) a generic and reuseable library with (2) high level abstractions (and thus ease of use) that still allows the compiler to employ aggressive optimization and thus achieves (3) efficiency.
+Thus, C++ allows us to implement (1) a generic and reusable library with (2) high level abstractions (and thus ease of use) that still allows the compiler to employ aggressive optimization and thus achieves (3) efficiency.
 With the words of the C++ inventor `Bjarne Stroustrup <http://www.artima.com/intv/abstreffi.html>`_:
 
    A high level of abstraction is good, not just in C++, but in general.
