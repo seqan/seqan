@@ -18,7 +18,7 @@ Duration
   15 min
 
 Prerequisites
-  :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-datastructures-sequences-alphabets`, :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-sequences-string-sets`, :ref:`tutorial-datastructures-sequences-iterators`
+  :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-datastructures-sequences`
 
 ------------------------------------------
 
@@ -161,7 +161,7 @@ This can be quite useful if one needs to parse the alignment rows to access posi
 First, we have to define the type of the ``Iterator``, which can be easily done by using the metafunction :dox:`ContainerConcept#Iterator`.
 Remember that we iterate over an ``TRow`` object.
 Then we have to construct the iterators ``it`` which points to the begin of ``row1`` using the :dox:`ContainerConcept#begin begin()` function and ``itEnd`` which points behind the last value of ``row1`` using the :dox:`ContainerConcept#end end()` function.
-If you need to refresh the **Iterator Concept** you can read the Tutorial :ref:`tutorial-datastructures-sequences-iterators`.
+If you need to refresh the **Iterator Concept** you can read the iterator section :ref:`tutorial-datastructures-sequences-strings-and-segments-iterators`.
 While we iterate over the gapped sequence, we can ask if the current value, at which the iterator ``it`` points to, is a gap or not by using the function :dox:`Gaps#isGap isGap()`.
 Use :dox:`AlphabetWithGapsConcept#gapValue` to print the correct gap symbol.
 

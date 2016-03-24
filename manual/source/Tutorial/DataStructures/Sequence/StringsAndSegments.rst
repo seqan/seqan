@@ -311,6 +311,8 @@ Assignment 4
 
         .. includefrags:: demos/tutorial/sequences/assignment_4_solution.cpp.stdout
 
+.. _tutorial-datastructures-sequences-strings-and-segments-iterators:
+
 Iteration
 ^^^^^^^^^
 

@@ -17,7 +17,7 @@ Duration
   1 h
 
 Prerequisites
-  :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-sequences-iterators`
+  :ref:`tutorial-datastructures-sequences`
 
 The Q-gram Index
 ----------------

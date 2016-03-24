@@ -19,7 +19,7 @@ Duration
   1 h
 
 Prerequisites
-  :ref:`tutorial-getting-started-basics`
+  :ref:`tutorial-getting-started`, :ref:`tutorial-datastructures-sequences`
 
 Overview
 --------
@@ -126,7 +126,7 @@ Then we create a stairs layout of the aligned reads and output a window from gap
 
 .. includefrags:: demos/tutorial/fragment_store/display_aligned_reads.cpp.stdout
 
-The same window can also be exported as a scalable vector graphic in SVG format. 
+The same window can also be exported as a scalable vector graphic in SVG format.
 
 .. includefrags:: demos/tutorial/fragment_store/display_aligned_reads.cpp
    :fragment: svg
