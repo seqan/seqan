@@ -129,7 +129,6 @@ SeqAn uses **template functions** and **template classes** to implement the diff
 Template functions/classes are normal functions/classes with the additional feature that one passes the type of a variable as well as its value (see also: `templates in cpp <http://www.cplusplus.com/doc/tutorial/templates/>`_).
 This means that SeqAn algorithms and data structures are implemented in such a way that they work on all types implementing an informal interface (see information box below for more details).
 This is similar to the philosophy employed in the C++ STL (Standard Template Library).
-Even though we provide further tutorials on templates in SeqAn (:ref:`tutorial-getting-started-basic-techniques`, :ref:`tutorial-getting-started-metafunctions`, :ref:`tutorial-getting-started-template-subclassing`, :ref:`tutorial-getting-started-global-function-interface`), they are more advanced and not required to follow this tutorial.
 
 The following two lines make use of template programming to define two strings of type char, a text and a pattern.
 
@@ -367,8 +366,6 @@ Other shortcuts are ``DnaString`` for ``String<Dna>`` (:ref:`sequence tutorial <
    For example, in the following code, the function calls (1) and (3) will call the function ``myFunction()`` in variant (A) while the function call (2) will call variant (B).
 
    .. includefrags:: demos/tutorial/a_first_example/example_tempSubclassing.cpp
-
-For a detailed description and more examples see the tutorial :ref:`Template Subclassing <tutorial-getting-started-template-subclassing>`.
 
 Assignment 5
 """"""""""""
