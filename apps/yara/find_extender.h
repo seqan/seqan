@@ -389,6 +389,13 @@ extend(Extender<THaystack, TNeedle, TDistance, TSpec> & extender,
     THaystackSize haystackLength = length(extender.haystack[haystackId]);
     TNeedlePos needleLength = length(needle);
 
+    // Check seed due to Ns randomization in the index.
+    TErrors needleErrorsCheck = 0;
+    THaystackInfix haystackSeed = infix(extender.haystack, haystackBegin, haystackEnd);
+    TNeedleInfix needleSeed = infix(needle, needleBegin, needleEnd);
+    if (!checkHammingDistance(haystackSeed, needleSeed, needleErrorsCheck, needleErrors)) return;
+    SEQAN_ASSERT_EQ(needleErrors, needleErrorsCheck);
+
     // Extend left.
     THaystackPos matchBegin = haystackBegin;
 
