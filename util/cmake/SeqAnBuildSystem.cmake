@@ -213,51 +213,31 @@ macro (seqan_build_system_init)
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /D_SCL_SECURE_NO_WARNINGS")
     endif ()
 
-    # DEFFAULT BUILD SYSTEM
     if (NOT SEQAN_BUILD_SYSTEM)
         set (SEQAN_BUILD_SYSTEM "DEVELOP" CACHE STRING "Build/Release mode to select. One of DEVELOP SEQAN_RELEASE, APP:\${APP_NAME}. Defaults to DEVELOP.")
     endif (NOT SEQAN_BUILD_SYSTEM)
     set (SEQAN_APP_VERSION "0.0.0" CACHE STRING "Version of the application.")
     set (SEQAN_NIGHTLY_RELEASE FALSE CACHE BOOL "Set to TRUE to enable nightly app releases.")
 
-    # STANDARD BUILD FLAGS
-
     # OpenBSD just can't handle it
     if (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
-        set (SEQAN_NO_NATIVE TRUE)
-        set (SEQAN_OFFICIAL_PKGS FALSE)
+        set (SEQAN_STATIC_APPS FALSE)
+        set (SEQAN_OPTIMIZED_BUILDS FALSE)
     endif ()
 
-    # packages for distribution
-    if ((SEQAN_OFFICIAL_PKGS) AND
-        (NOT MSVC) AND
-        (SEQAN_BUILD_SYSTEM MATCHES "APP")) # either APP:$app or SEQAN_RELEASE_APPS
+    if (SEQAN_STATIC_APPS)
+        message (STATUS "Building static apps.")
+    endif ()
 
-        # static linkage
-        set (SEQAN_STATIC_APPS TRUE CACHE INTERNAL "Create static app binaries")
-        message (STATUS "Building static binaries.")
-
-        # machine specific optimizations
-        if (SEQAN_64BIT_TARGET_PLATFORM)
+    # machine specific optimizations
+    if (SEQAN_OPTIMIZED_BUILDS AND SEQAN_64BIT_TARGET_PLATFORM)
+        if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
             set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -mpopcnt")
-            message (STATUS "Release binaries built with optimizations for SSE3, SSE4 and POPCNT.")
+            message (STATUS "Building optimized binaries up to SSE4 and POPCNT.")
         endif ()
-    endif ()
-
-    # settings for development mode
-    if ((SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP") AND
-        (NOT MSVC) AND
-        (NOT SEQAN_NO_NATIVE) AND
-        (NOT SEQAN_32BIT_TARGET_PLATFORM))
-
-        # SeqAn has conflicts with -march=native and -m32 build on 64 bit source
-        # platforms, thus disabling -march=native for 32bit target platforms
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -march=native")
         if (COMPILER_IS_INTEL)
-            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -xHOST -ipo -no-prec-div -fp-model fast=2")
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -ipo -no-prec-div -fp-model fast=2")
         endif (COMPILER_IS_INTEL)
-
-        message (STATUS "CPU-optimized binaries that may not work on other computers. If you plan to distribute binaries, call cmake with -DSEQAN_BUILD_SYTEM=SEQAN_RELEASE_APPS or with -DSEQAN_NO_NATIVE=1.")
     endif ()
 
     # automatic c++ standard detection/selection
