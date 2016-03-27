@@ -40,56 +40,60 @@
 
 void IdSplitter::open()
 {
-    close();
-    for (unsigned i = 0; i < numContigs; ++i)
-    {
+	close();
+	for (unsigned i = 0; i < numContigs; ++i)
+	{
 #if defined(PLATFORM_WINDOWS)
-        char fileNameBuffer[1000];
-        char filePathBuffer[1000];
-        //  Gets the temp path env string (no guarantee it's a valid path).
-        DWORD dwRetVal = 0;
-        dwRetVal = GetTempPath(1000,            // length of the buffer
-                               filePathBuffer); // buffer for path
-        if (dwRetVal > 1000 || (dwRetVal == 0))
-        {
-            std::cerr << "GetTempPath failed" << std::endl;
-            exit(1);
-        }
+		char fileNameBuffer[MAX_PATH];
+		char filePathBuffer[MAX_PATH];
+		//  Gets the temp path env string (no guarantee it's a valid path).
+		DWORD dwRetVal = 0;
+		dwRetVal = GetTempPath(MAX_PATH,            // length of the buffer
+			filePathBuffer); // buffer for path
+		if (dwRetVal > MAX_PATH || (dwRetVal == 0))
+		{
+			std::cerr << "GetTempPath failed" << std::endl;
+			exit(1);
+		}
 
-        UINT uRetVal   = 0;
-        uRetVal = GetTempFileName(filePathBuffer,   // directory for tmp files
-                                  TEXT("MASON_"),   // temp file name prefix
-                                  0,                // create unique name
-                                  fileNameBuffer);  // buffer for name
+		UINT uRetVal = 0;
+		uRetVal = GetTempFileName(filePathBuffer,   // directory for tmp files
+			TEXT("MASON_"),   // temp file name prefix
+			0,                // create unique name
+			fileNameBuffer);  // buffer for name
 
-        if (uRetVal == 0)
-        {
-            std::cerr << "GetTempFileName failed" << std::endl;
-            exit(1);
-        }
+		if (uRetVal == 0)
+		{
+			std::cerr << "GetTempFileName failed" << std::endl;
+			exit(1);
+		}
 
-        // The file exists now and is already closed.
-        DeleteFile(fileNameBuffer);
-        files.push_back(new std::fstream(&fileNameBuffer[0], std::ios::binary | std::ios::in | std::ios::out));
-        // TODO: Deleting the file here will not actually remove it on windows.
-        fileNames.push_back(fileNameBuffer);
+		// The file exists now and is already closed.
+		DeleteFile(fileNameBuffer);
+		char * fname = &fileNameBuffer[0];
+		std::fstream * ptr = new std::fstream(fname, std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
+		SEQAN_ASSERT(ptr->good());
+		files.push_back(ptr);
+
+		// TODO: Deleting the file here will not actually remove it on windows.
+		fileNames.push_back(fileNameBuffer);
 #else  // POSIX (Linux/Mac)
-        // Create temporary file using POSIX API, open with <cstdio>, delete, close POSIX.
-        char const * tmpdir = 0;
-        if ((tmpdir = getenv("TMPDIR")) == NULL)
-            tmpdir = "/tmp";
-        std::string pathTpl = tmpdir;
-        pathTpl += "/MASON_XXXXXX";
+		// Create temporary file using POSIX API, open with <cstdio>, delete, close POSIX.
+		char const * tmpdir = 0;
+		if ((tmpdir = getenv("TMPDIR")) == NULL)
+			tmpdir = "/tmp";
+		std::string pathTpl = tmpdir;
+		pathTpl += "/MASON_XXXXXX";
 
-        mode_t cur_umask = umask(S_IRWXO | S_IRWXG);  // to silence Coverity warning
-        int fd = mkstemp(&pathTpl[0]);
-        files.push_back(new std::fstream(pathTpl.c_str(), std::ios::binary | std::ios::in | std::ios::out));
-        umask(cur_umask);
-        remove(pathTpl.c_str());
-        ::close(fd);
+		mode_t cur_umask = umask(S_IRWXO | S_IRWXG);  // to silence Coverity warning
+		int fd = mkstemp(&pathTpl[0]);
+		files.push_back(new std::fstream(pathTpl.c_str(), std::ios::binary | std::ios::in | std::ios::out));
+		umask(cur_umask);
+		remove(pathTpl.c_str());
+		::close(fd);
 #endif
 
-        if (!files.back())
+		if (!files.back() || !files.back()->good())
         {
             std::cerr << "ERROR: Could not open temporary file!\n";
             exit(1);

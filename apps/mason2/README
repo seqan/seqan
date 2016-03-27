@@ -2,8 +2,8 @@
                    Tools for Biological Sequence Simulation
 
                       http://www.seqan.de/projects/mason
-                              Version 2.0.0-beta1
-                                February, 2014
+                              Version 2.0.5
+                                March, 2016
 
                                Manuel Holtgrewe
 
@@ -14,6 +14,7 @@ Table of Contents
   1. Overview
   2. Examples
   3. Reference and Contact
+  4. Changelog
 
 ------------------------------------------------------------------------------
 1. Overview
@@ -95,3 +96,11 @@ or file a bug at
   http://trac.seqan.de/newticket
 
 
+------------------------------------------------------------------------------
+4. Changelog
+------------------------------------------------------------------------------
+
+2.0.5
+
+  - Fixing temporary file handling on windows and re-enabling build if
+    MSVC >= 10.
