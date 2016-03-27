@@ -363,20 +363,22 @@ inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, 
         _fillMateOrientation(me, mate);
 
         if (isPaired(me.ctx, readId))
-        {
             _fillMateInsert(me, primary, mate);
-            me.record.mapQ = getMapq(me.primaryMatchesProbs[readId]);
-        }
-        else
-        {
-            double errorRate = getErrorRate(primary, me.reads.seqs);
-            double prob = getMatchProb(errorRate, errorRate, bestCount, subCount);
-            me.record.mapQ = getMapq(prob);
-        }
     }
     else
     {
         _fillMatePosition(me, primary);
+    }
+
+    if (isPaired(me.ctx, readId))
+    {
+        me.record.mapQ = getMapq(me.primaryMatchesProbs[readId]);
+    }
+    else
+    {
+        double errorRate = getErrorRate(primary, me.reads.seqs);
+        double prob = getMatchProb(errorRate, errorRate, bestCount, subCount);
+        me.record.mapQ = getMapq(prob);
     }
 
     // Find the primary match in the list of matches.
