@@ -133,8 +133,8 @@ verify(Verifier<THaystack, TNeedle, AffineGaps> & me,
 
     if (events <= maxErrors && gaps <= maxIndels)
     {
-        THaystackPos matchBegin = posAdd(haystackBegin, clippedBeginPosition(readGaps));
-        THaystackPos matchEnd = posAdd(matchBegin, length(readGaps));
+        THaystackPos matchBegin = posAdd(haystackBegin, beginPosition(contigGaps));
+        THaystackPos matchEnd = posAdd(haystackBegin, endPosition(contigGaps));
         delegate(matchBegin, matchEnd, errors);
     }
 }
