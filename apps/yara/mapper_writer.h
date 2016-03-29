@@ -306,6 +306,7 @@ inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, 
     _fillReadPosition(me, primary);
     _fillReadOrientation(me, primary);
     _fillReadAlignment(me, primary);
+    _fillReadDistance(me, primary);
 //    _fillMateInfo(me, readId);
 
     TMatches const & matches = me.matchesSet[readId];
@@ -347,6 +348,7 @@ inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, 
     _fillReadPosition(me, primary);
     _fillReadOrientation(me, primary);
     _fillReadAlignment(me, primary);
+    _fillReadDistance(me, primary);
     _fillMateInfo(me, readId);
 
     TMatches const & matches = me.matchesSet[readId];
@@ -414,6 +416,7 @@ inline void _writeSecondary(MatchesWriter<TSpec, Traits> & me, TMatches const & 
         _fillReadName(me, getReadSeqId(match, me.reads.seqs));
         _fillReadPosition(me, match);
         _fillReadOrientation(me, match);
+        _fillReadDistance(me, match);
         if (IsSameType<TSequencing, PairedEnd>::VALUE)
             _fillMateInfo(me, getMember(match, ReadId()));
         appendExtraPosition(me.record, getMember(match, ContigEnd()));
@@ -482,6 +485,15 @@ template <typename TSpec, typename Traits, typename TMatch>
 inline void _fillReadAlignment(MatchesWriter<TSpec, Traits> & me, TMatch const & match)
 {
     me.record.cigar = me.cigarSet[getMember(match, ReadId())];
+}
+
+// ----------------------------------------------------------------------------
+// Function _fillReadDistance()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename Traits, typename TMatch>
+inline void _fillReadDistance(MatchesWriter<TSpec, Traits> & me, TMatch const & match)
+{
     appendErrors(me.record, getMember(match, Errors()));
 }
 
