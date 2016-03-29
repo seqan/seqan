@@ -209,9 +209,9 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt & match
 
         // Shrink the match after realigning and clipping.
         TContigPos contigBegin(getMember(match, ContigId()), getMember(match, ContigBegin()));
-        contigBegin = posAdd(contigBegin, clippedBeginPosition(readGaps));
+        contigBegin = posAdd(contigBegin, beginPosition(contigGaps));
         TContigPos contigEnd = contigBegin;
-        contigEnd = posAdd(contigEnd, length(readGaps));
+        contigEnd = posAdd(contigEnd, endPosition(contigGaps));
         setContigPosition(match, contigBegin, contigEnd);
     }
 
