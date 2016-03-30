@@ -37,12 +37,11 @@ Some of the official applications might have additional requirements or work onl
 Documentation Resources
 -----------------------
 
-* `Getting Started <http://seqan.readthedocs.org/en/master/Tutorial/GettingStarted.html>`_
+* `Getting Started <http://seqan.readthedocs.org/en/master/Tutorial/GettingStarted>`_
 * `Manual <http://seqan.readthedocs.org/en/master>`_
-* `Tutorial <http://seqan.readthedocs.org/en/master/Tutorial.html>`_
-* `How-Tos <http://seqan.readthedocs.org/en/master/HowTo.html>`_
+* `Tutorial <http://seqan.readthedocs.org/en/master/index.html#tutorials>`_
+* `How-Tos <http://seqan.readthedocs.org/en/master/Tutorial/HowTo>`_
 * `API Documentation (stable) <http://docs.seqan.de/seqan/master/>`_
-
 
 Contact
 =======
