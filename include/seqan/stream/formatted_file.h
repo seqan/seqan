@@ -609,10 +609,11 @@ _checkThatStreamOutputFormatIsSet(FormattedFile<TFileFormat, Output, TSpec> cons
  * @fn FormattedFile#open
  * @brief Open a FormattedFile.
  *
- * @signature bool open(file, fileName);
+ * @signature bool open(file, fileName, mode);
  *
  * @param[in,out] file The FormattedFile to open.
  * @param[in]     fileName The name of the file open.
+ * @param[in]     mode The open mode: @link FileOpenMode @endlink.
  * @return bool <tt>true</tt> in the case of success, <tt>false</tt> otherwise.
  */
 
