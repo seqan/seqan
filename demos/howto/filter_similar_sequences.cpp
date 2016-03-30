@@ -12,7 +12,10 @@ int main(int argc, char const * argv[])
 {
     FragmentStore<> fragStore;
     if (argc < 2 || !loadReads(fragStore, argv[1]))
-        return 1;
+    {
+        std::cerr << "ERROR: Coud not load reads." << std::endl;
+        return 0;
+    }
 //![load_reads]
 
 //![filter]

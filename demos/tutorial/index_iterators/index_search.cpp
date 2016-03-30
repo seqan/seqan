@@ -9,7 +9,7 @@ using namespace seqan;
 int main()
 {
     typedef Index<CharString> TIndex;
-    TIndex index("How many wood would a woodchuck chuck?");
+    TIndex index("How much wood would a woodchuck chuck?");
 //![initialization]
 //![initialization]
 

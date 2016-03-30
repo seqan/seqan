@@ -1,7 +1,6 @@
-#include <seqan/stream.h>
-#include <seqan/score.h>
-#include <seqan/seeds.h>
 #include <seqan/sequence.h>
+#include <seqan/stream.h>
+#include <seqan/seeds.h>
 
 using namespace seqan;
 
@@ -10,32 +9,14 @@ int main()
     typedef Seed<Simple>    TSeed;
     typedef SeedSet<TSeed> TSeedSet;
 
-    Dna5String seqH;
-    Dna5String seqV;
-    Score<int, Simple> scoringScheme(1, -1, -1);
-
-    String<TSeed> seeds;
-    appendValue(seeds, TSeed(0, 0, 2));
-    appendValue(seeds, TSeed(3, 5, 2));
-    appendValue(seeds, TSeed(4, 2, 3));
-    appendValue(seeds, TSeed(9, 9, 2));
-
     TSeedSet seedSet;
-    for (unsigned i = 0; i < length(seeds); ++i)
-    {
-        if (!addSeed(seedSet, seeds[i], 2, 2, scoringScheme,
-                     seqH, seqV, Chaos()))
-            addSeed(seedSet, seeds[i], Single());
-    }
+    addSeed(seedSet, TSeed(1, 1, 3), Single());
+    addSeed(seedSet, TSeed(6, 9, 2), Single());
+    addSeed(seedSet, TSeed(10, 13, 3), Single());
+    addSeed(seedSet, TSeed(20, 22, 5), Single());
 
-    std::cout << "Resulting seeds.\n";
-    typedef Iterator<TSeedSet>::Type TIter;
-    for (TIter it = begin(seedSet, Standard());
-         it != end(seedSet, Standard()); ++it)
-        std::cout << "(" << beginPositionH(*it) << ", " << endPositionH(*it)
-                  << ", " << beginPositionV(*it) << ", " << endPositionV(*it)
-                  << ", " << lowerDiagonal(*it) << ", " << upperDiagonal(*it)
-                  << ")\n";
+    String<TSeed> result;
+    chainSeedsGlobally(result, seedSet, SparseChaining());
 
     return 0;
 }

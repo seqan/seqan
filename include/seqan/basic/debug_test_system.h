@@ -390,7 +390,7 @@ void printDebugLevel(TStream & stream)
     stream << "SEQAN_ASYNC_IO == " << SEQAN_ASYNC_IO << std::endl;
 }
 
-#if defined(PLATFORM_WINDOWS) || !SEQAN_HAS_EXECINFO
+#if !SEQAN_HAS_EXECINFO
 
 template <typename TSize>
 void printStackTrace(TSize /*maxFrames*/)
@@ -523,7 +523,7 @@ volatile int signalHandlersDummy_ = SignalHandlersDummy_<void>::i;
 }
 
 #endif  // #if SEQAN_ENABLE_DEBUG
-#endif  // defined(PLATFORM_WINDOWS) || !SEQAN_HAS_EXECINFO
+#endif  // !SEQAN_HAS_EXECINFO
 
 
 // Namespace for the testing infrastructure.
@@ -756,6 +756,68 @@ void beginTestSuite(const char * testSuiteName, const char * argv0)
 #endif  // PLATFORM_WINDOWS_VS
 }
 
+// cut off '/test_file' from tempFilename
+// returns fileNameBuffer
+inline
+std::string _stripFileName(const char * tempFilename)
+{
+    std::string s(tempFilename);
+    return s.substr(0, s.find_last_of("\\/"));
+}
+
+// delete temporary file from /tmp/ directory
+// needs only the directory name (fileNameBuffer)
+inline
+int _deleteTempFile(std::string tempFilename)
+{
+#ifdef PLATFORM_WINDOWS
+    HANDLE hFind;
+    WIN32_FIND_DATA data;
+
+    std::string temp = tempFilename.c_str() + std::string("\\*");
+    hFind = FindFirstFile(temp.c_str(), &data);
+    if (hFind != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            std::string tempp = tempFilename.c_str() + std::string("\\") + data.cFileName;
+            if (strcmp(data.cFileName, ".") == 0 || strcmp(data.cFileName, "..") == 0)
+                continue;  // Skip these.
+            if (!DeleteFile(tempp.c_str()))
+            {
+                //std::cerr << "WARNING: Could not delete file " << tempp << "\n";
+            }
+        }
+        while (FindNextFile(hFind, &data));
+        FindClose(hFind);
+    }
+
+    if (!RemoveDirectory(tempFilename.c_str()))
+    {
+        //std::cerr << "WARNING: Could not delete directory " << tempFilename << "\n";
+    }
+#else  // #ifdef PLATFORM_WINDOWS
+    DIR * dpdf;
+    struct dirent * epdf;
+
+    dpdf = opendir(tempFilename.c_str());
+    if (dpdf != NULL)
+    {
+        while ((epdf = readdir(dpdf)) != NULL)
+        {
+            std::string temp = tempFilename.c_str() + std::string("/") + std::string(epdf->d_name);
+            unlink(temp.c_str());
+        }
+    }
+
+    rmdir(tempFilename.c_str());
+    if (closedir(dpdf) != 0)
+        std::cerr << "WARNING: Could not delete directory " << tempFilename << "\n";
+#endif  // #ifdef PLATFORM_WINDOWS
+
+    return 0;
+}
+
 // Run test suite finalization.
 //
 // Used through SEQAN_END_TESTSUITE
@@ -775,48 +837,7 @@ int endTestSuite()
 
     // Delete all temporary files that still exist.
     for (unsigned i = 0; i < StaticData::tempFileNames().size(); ++i)
-    {
-#ifdef PLATFORM_WINDOWS
-        HANDLE hFind;
-        WIN32_FIND_DATA data;
-
-        std::string temp = StaticData::tempFileNames()[i].c_str() + std::string("\\*");
-        hFind = FindFirstFile(temp.c_str(), &data);
-        if (hFind != INVALID_HANDLE_VALUE)
-        {
-            do
-            {
-                std::string tempp = StaticData::tempFileNames()[i].c_str() + std::string("\\") + data.cFileName;
-                if (strcmp(data.cFileName, ".") == 0 || strcmp(data.cFileName, "..") == 0)
-                    continue;  // Skip these.
-                if (!DeleteFile(tempp.c_str()))
-                    std::cerr << "WARNING: Could not delete file " << tempp << "\n";
-            }
-            while (FindNextFile(hFind, &data));
-            FindClose(hFind);
-        }
-
-        if (!RemoveDirectory(StaticData::tempFileNames()[i].c_str()))
-            std::cerr << "WARNING: Could not delete directory " << StaticData::tempFileNames()[i] << "\n";
-#else  // #ifdef PLATFORM_WINDOWS
-        DIR * dpdf;
-        struct dirent * epdf;
-
-        dpdf = opendir(StaticData::tempFileNames()[i].c_str());
-        if (dpdf != NULL)
-        {
-            while ((epdf = readdir(dpdf)) != NULL)
-            {
-                std::string temp = StaticData::tempFileNames()[i].c_str() + std::string("/") + std::string(epdf->d_name);
-                unlink(temp.c_str());
-            }
-        }
-
-        rmdir(StaticData::tempFileNames()[i].c_str());
-        if (closedir(dpdf) != 0)
-            std::cerr << "WARNING: Could not delete directory " << StaticData::tempFileNames()[i] << "\n";
-#endif  // #ifdef PLATFORM_WINDOWS
-    }
+        _deleteTempFile(StaticData::tempFileNames()[i]);
 
     if (StaticData::errorCount() != 0)
         return 1;

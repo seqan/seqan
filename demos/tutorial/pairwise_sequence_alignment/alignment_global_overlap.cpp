@@ -24,7 +24,7 @@ int main()
 //![init]
 
 //![alignment]
-    int score = globalAlignment(alignG, Score<int, Simple>(1, -1, -1), AlignConfig<true, true, true, true>());
+    int score = globalAlignment(alignG, Score<int, Simple>(1, -1, -1), AlignConfig<true, true, true, true>(), LinearGaps());
     std::cout << "Score: " << score << std::endl;
     std::cout << alignG << std::endl;
 

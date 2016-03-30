@@ -51,9 +51,6 @@ int main()
 //![finder]
     Finder<Index<String<Dna5>, IndexEsa<> > > esaFinder(esaIndex);
 //![finder]
-//![finder2]
-    find(esaFinder, "ACGT");
-//![finder2]
 //![finder_multiple]
     find(esaFinder, "ACGT");  // first occurrence of "ACGT"
     find(esaFinder, "ACGT");  // second occurrence of "ACGT"
@@ -98,6 +95,10 @@ int main()
     typedef FMIndexConfig<void, unsigned> TConfig;
     Index<StringSet<String<Dna> >, FMIndex<void, TConfig> > configIndex(set);
 //![config]
+
+    // clean up tmp directory
+    ClassTest::_deleteTempFile(ClassTest::_stripFileName(tempFileName));
+
 //![assignment1]
     return 0;
 }

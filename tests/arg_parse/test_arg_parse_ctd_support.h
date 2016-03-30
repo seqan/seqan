@@ -66,7 +66,7 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     setValidValues(parser, "f", "fasta");
     addOption(parser, seqan::ArgParseOption("o", "out", "set an output file", seqan::ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "o", "sam");
-    addOption(parser, seqan::ArgParseOption("ip", "input-prefix-option", "set an input prefix", seqan::ArgParseArgument::INPUTPREFIX));
+    addOption(parser, seqan::ArgParseOption("ip", "input-prefix-option", "set an input prefix", seqan::ArgParseArgument::INPUT_PREFIX));
     setValidValues(parser, "ip", "btx");
     addOption(parser, seqan::ArgParseOption("op", "output-prefix-option", "set an output prefix", seqan::ArgParseArgument::OUTPUT_PREFIX));
     setValidValues(parser, "output-prefix-option", "blub");

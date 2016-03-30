@@ -7,7 +7,7 @@ using namespace seqan;
 int main()
 {
     typedef String<Dna> TSequence;                 // sequence type
-    typedef Align<TSequence, ArrayGaps> TAlign;      // align type
+    typedef Align<TSequence, ArrayGaps> TAlign;    // align type
 //![main]
 
 //![init]
@@ -21,7 +21,7 @@ int main()
 //![init]
 
 //![alignment]
-    int score = globalAlignment(align, Score<int, Simple>(4, -2, -2, -4));
+    int score = globalAlignment(align, Score<int, Simple>(4, -2, -2, -4), AffineGaps());
     std::cout << "Score: " << score << std::endl;
     std::cout << align << std::endl;
 

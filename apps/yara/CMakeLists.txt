@@ -14,18 +14,13 @@ message (STATUS "Configuring apps/yara")
 # Dependencies
 # ----------------------------------------------------------------------------
 
-# Disable older MSVC.
-if (MSVC AND MSVC_VERSION LESS 1800)
-    message (STATUS "  Visual Studio 2012 or newer required to build yara.")
+if (MSVC)
+    message (STATUS "Yara is currently not build on Microsoft Visual because it requires OpenMP 3.0.")
     return ()
 endif ()
 
-# Disable parallelism in MSVC as it supports only OpenMP 2.0.
-if (NOT MSVC)
-    find_package (OpenMP)
-endif ()
-
 # Search SeqAn and select dependencies.
+find_package (OpenMP)
 find_package (ZLIB)
 find_package (BZip2)
 find_package (SeqAn REQUIRED)
@@ -55,26 +50,6 @@ option (YARA_LARGE_CONTIGS "Set to OFF to disable support for more than 32k cont
 if (YARA_LARGE_CONTIGS AND NOT SEQAN_TRAVIS_BUILD)
   add_definitions (-DYARA_LARGE_CONTIGS=1)
 endif (YARA_LARGE_CONTIGS AND NOT SEQAN_TRAVIS_BUILD)
-
-# ----------------------------------------------------------------------------
-# Arch Setup
-# ----------------------------------------------------------------------------
-
-option (YARA_ARCH_NATIVE "Set to OFF to disable architecture-specific optimizations, e.g. g++ -march=native." ON)
-
-if (YARA_ARCH_NATIVE)
-  if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
-    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -march=native")
-  endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
-
-  if (CMAKE_COMPILER_IS_GNUCXX AND APPLE)
-    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mno-avx")
-  endif (CMAKE_COMPILER_IS_GNUCXX AND APPLE)
-
-  if (COMPILER_IS_INTEL)
-    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -xHOST -ipo -no-prec-div -fp-model fast=2")
-  endif (COMPILER_IS_INTEL)
-endif (YARA_ARCH_NATIVE)
 
 # ----------------------------------------------------------------------------
 # Disable Compiler Warnings
