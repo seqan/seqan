@@ -784,18 +784,14 @@ int _deleteTempFile(std::string tempFilename)
             if (strcmp(data.cFileName, ".") == 0 || strcmp(data.cFileName, "..") == 0)
                 continue;  // Skip these.
             if (!DeleteFile(tempp.c_str()))
-            {
-                //std::cerr << "WARNING: Could not delete file " << tempp << "\n";
-            }
+                std::cerr << "WARNING: Could not delete file " << tempp << "\n";
         }
         while (FindNextFile(hFind, &data));
         FindClose(hFind);
     }
 
     if (!RemoveDirectory(tempFilename.c_str()))
-    {
-        //std::cerr << "WARNING: Could not delete directory " << tempFilename << "\n";
-    }
+        std::cerr << "WARNING: Could not delete directory " << tempFilename << "\n";
 #else  // #ifdef PLATFORM_WINDOWS
     DIR * dpdf;
     struct dirent * epdf;
