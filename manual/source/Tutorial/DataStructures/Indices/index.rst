@@ -71,8 +71,6 @@ node as you can see in the next figure (suffix "i"):
 
 **Figure 2:** Relaxed suffix tree of "mississippi"
 
-.. image:: ../../../under_construction.jpg
-
 .. raw:: mediawiki
 
     {{TracNotice|{{PAGENAME}}}}
