@@ -183,6 +183,14 @@ typedef Tag<TracebackOff_> TracebackOff;
 // Tag LinearGaps
 // ----------------------------------------------------------------------------
 
+/*!
+ * @tag AlignmentAlgorithmTags#LinearGaps
+ * @headerfile <seqan/align.h>
+ * @brief Tag for selecting linear gap cost model. This tag can be used for all standard DP algorithms.
+ *
+ * @signature struct LinearGaps_;
+ * @signature typedef Tag<LinearGaps_> LinearGaps;
+ */
 struct LinearGaps_;
 typedef Tag<LinearGaps_> LinearGaps;
 
@@ -190,6 +198,14 @@ typedef Tag<LinearGaps_> LinearGaps;
 // Tag AffineGaps
 // ----------------------------------------------------------------------------
 
+/*!
+ * @tag AlignmentAlgorithmTags#AffineGaps
+ * @headerfile <seqan/align.h>
+ * @brief Tag for selecting affine gap cost model. This tag can be used for all standard DP algorithms.
+ *
+ * @signature struct AffineGaps_;
+ * @signature typedef Tag<AffineGaps_> AffineGaps;
+ */
 struct AffineGaps_;
 typedef Tag<AffineGaps_> AffineGaps;
 
