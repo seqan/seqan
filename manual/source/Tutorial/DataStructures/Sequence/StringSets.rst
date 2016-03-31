@@ -35,7 +35,7 @@ There are two kinds of :dox:`StringSet` specializations in SeqAn: :dox:`OwnerStr
 .. includefrags:: demos/tutorial/string_sets/base.cpp
       :fragment: example_sets
 
-The specialization :dox:`ConcatDirectStringSet ConcatDirecet StringSet` already stores the sequences in a concatenation.
+The specialization :dox:`ConcatDirectStringSet ConcatDirect StringSet` already stores the sequences in a concatenation.
 The concatenators for all other specializations of :dox:`StringSet` are **virtual** sequences, that means their interface **simulates** a concatenation of the sequences, but they do not literally concatenate the sequences into a single sequence.
 Hence, the sequences do not need to be copied when a concatenator is created.
 
