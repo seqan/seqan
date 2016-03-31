@@ -693,7 +693,7 @@ template<typename TVector, typename TCargo, typename TSpec>
 inline void
 getVertexAdjacencyVector(TVector & vectOut,
                          Graph<Undirected<TCargo, TSpec> > const & g,
-                         VertexDescriptor<TGraph>::Type const & vertex)
+                         VertexDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type const & vertex)
 {
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TGraphSize;

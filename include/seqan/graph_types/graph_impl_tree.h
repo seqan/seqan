@@ -639,12 +639,12 @@ getAdjacencyMatrix(Graph<Tree<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TVector, typename TCargo, typename TSpec, typename TVertex>
+template<typename TVector, typename TCargo, typename TSpec>
 inline void
 getVertexAdjacencyVector(TVector & vectIn,
                          TVector & vectOut,
                          Graph<Tree<TCargo, TSpec> > const & g,
-                         TVertex const & vertex)
+                         VertexDescriptor<Graph<Tree<TCargo, TSpec> > >::Type const & vertex)
 {
     _getVertexAdjacencyVector(vectIn, vectOut, g, vertex);
 }
