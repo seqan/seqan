@@ -203,11 +203,11 @@ SEQAN_DEFINE_TEST(test_graph_types_types_directed)
 
     // Vertex Adjacency vectors
     String<unsigned int> vectIn, vectOut;
-    getVertexAdjacencyVector(vectIn, vectOut, g, 1);
+    getVertexAdjacencyVector(vectIn, vectOut, g, 1u);
     SEQAN_ASSERT(length(vectIn) == 0);
     SEQAN_ASSERT(vectOut[0] == 4);
     SEQAN_ASSERT(length(vectOut) == 1);
-    getVertexAdjacencyVector(vectIn, vectOut, g, 4);
+    getVertexAdjacencyVector(vectIn, vectOut, g, 4u);
     SEQAN_ASSERT(length(vectIn) == 2);
     SEQAN_ASSERT(vectIn[0] == 1);
     SEQAN_ASSERT(vectIn[1] == 2);
@@ -474,11 +474,11 @@ SEQAN_DEFINE_TEST(test_graph_types_types_directed)
 
     // Vertex Adjacency vectors
     String<unsigned int> vectIn4, vectOut4;
-    getVertexAdjacencyVector(vectIn4, vectOut4, g4, 1);
+    getVertexAdjacencyVector(vectIn4, vectOut4, g4, 1u);
     SEQAN_ASSERT(length(vectIn4) == 0);
     SEQAN_ASSERT(vectOut4[0] == 4);
     SEQAN_ASSERT(length(vectOut4) == 1);
-    getVertexAdjacencyVector(vectIn4, vectOut4, g4, 4);
+    getVertexAdjacencyVector(vectIn4, vectOut4, g4, 4u);
     SEQAN_ASSERT(length(vectIn4) == 2);
     SEQAN_ASSERT(vectIn4[0] == 1);
     SEQAN_ASSERT(vectIn4[1] == 2);
@@ -643,7 +643,7 @@ SEQAN_DEFINE_TEST(test_graph_types_types_undirected)
 
     // Vertex Adjacency vectors
     String<unsigned int> vectIn, vectOut;
-    getVertexAdjacencyVector(vectIn, vectOut, g, 2);
+    getVertexAdjacencyVector(vectIn, vectOut, g, 2u);
     SEQAN_ASSERT(length(vectIn) == 2);
     SEQAN_ASSERT(vectIn[0] == 4);
     SEQAN_ASSERT(vectIn[1] == 0);
@@ -1011,11 +1011,11 @@ SEQAN_DEFINE_TEST(test_graph_types_types_automaton)
 
     // Vertex Adjacency vectors
     String<unsigned int> vectIn, vectOut;
-    getVertexAdjacencyVector(vectIn, vectOut, g, 1);
+    getVertexAdjacencyVector(vectIn, vectOut, g, 1u);
     SEQAN_ASSERT(length(vectIn) == 0);
     SEQAN_ASSERT(length(vectOut) == 1);
     SEQAN_ASSERT(vectOut[0] == 4);
-    getVertexAdjacencyVector(vectIn, vectOut, g, 4);
+    getVertexAdjacencyVector(vectIn, vectOut, g, 4u);
     SEQAN_ASSERT(length(vectIn) == 2);
     SEQAN_ASSERT(length(vectOut) == 0);
     SEQAN_ASSERT(vectIn[0] == 1);
@@ -1538,7 +1538,7 @@ SEQAN_DEFINE_TEST(test_graph_types_types_word_tree)
     SEQAN_ASSERT(numVertices(g) == 9);
     // Vertex Adjacency vectors
     String<unsigned int> vectIn, vectOut;
-    getVertexAdjacencyVector(vectIn, vectOut, g, 5);
+    getVertexAdjacencyVector(vectIn, vectOut, g, 5u);
     SEQAN_ASSERT(length(vectIn) == 1);
     SEQAN_ASSERT(length(vectOut) == 2);
     SEQAN_ASSERT(vectIn[0] == 4);

@@ -233,7 +233,7 @@ SEQAN_DEFINE_TEST(Test_Refinement_AlignmentGraphNoEdgeWeights)
 
     // Vertex Adjacency vectors
     String<unsigned int> vectIn, vectOut;
-    getVertexAdjacencyVector(vectIn, vectOut, g, 2);
+    getVertexAdjacencyVector(vectIn, vectOut, g, 2u);
     SEQAN_ASSERT(length(vectIn) == 2);
     SEQAN_ASSERT(length(vectOut) == 2);
     SEQAN_ASSERT(vectIn[0] == 4);
