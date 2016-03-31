@@ -28,7 +28,7 @@ Using this class will give you the following functionality:
 * Simple verification of arguments (e.g. within a range, one of a list of allowed values).
 * Automatically generated and nicely formatted help screens when called with ``--help``.
   You can also export this help to HTML and man pages.
-* In the future, you will be able to automatically generate nodes for
+* You are able to automatically generate nodes for
   workflow engines such as `KNIME <http://knime.org/>`_ or
   `Galaxy <http://en.wikipedia.org/wiki/Galaxy_(computational_biology)>`_.
 
@@ -116,7 +116,7 @@ After inclusion, we can create an :dox:`ArgumentParser` object:
 
 Then, we define a positional argument using the function :dox:`ArgumentParser#addArgument`.
 The function accepts the parser and an :dox:`ArgParseArgument` object.
-We call the :dox:`ArgParseArgument` constructor with three parameters: the type of the argument (a string), and a label for the documentation.
+We call the :dox:`ArgParseArgument` constructor with two parameters: the type of the argument (a string), and a label for the documentation.
 
 .. includefrags:: demos/tutorial/parsing_command_line_arguments/example1_detailed.cpp
    :fragment: argument
@@ -214,7 +214,7 @@ Assignment 2
      As for the ``--uppercase`` option, the program should print whether the flag was set or not.
 
    Hint
-     Copy the two lines for defining the <tt>--uppercase</tt> option and replace the strings appropriately.
+     Copy the two lines for defining the ``--uppercase`` option and replace the strings appropriately.
 
    Solution
      .. container:: foldable
@@ -438,7 +438,7 @@ Assignment 5
     Type
       Reproduction
     Objective
-      Replace the argument ``TEXT`` by a a command line option ``-I``/``--input-file`` in the program above.
+      Replace the argument ``TEXT`` by a command line option ``-I``/``--input-file`` in the program above.
       The program should then read in the text instead of using the command line argument.
 
     Hint
@@ -538,7 +538,7 @@ This information will go to the Synopsis section of the program help.
     ``I`` selects italic text (underlined on the shell), ``B`` selects bold and ``P`` resets the formatting to normal text.
     These font operators are legacies of man pages from Unix and offered a simple-to-implement solution to text formatting.
 
-    For example, ``"Words \\fBwere\\fP made for \\fIbeing\\fP written!"`` would result in the formatted string "Words **were** made for ''being'' written!".
+    For example, ``"Words \\fBwere\\fP made for \\fIbeing\\fP written!"`` would result in the formatted string "Words **were** made for *being* written!".
 
     Note that formatting the command line relies on `ANSI escape codes <http://en.wikipedia.org/wiki/ANSI_escape_code>`_ which is not supported by modern Windows versions.
     If you are using Windows, you will not see bold or underlined text.
