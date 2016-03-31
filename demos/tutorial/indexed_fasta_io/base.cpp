@@ -29,7 +29,7 @@ int main()
 
 //![open_index1]
     if (!open(faiIndex, toCString(pathToFile)))
-        std::cout << "ERROR: Could not load FAI index " << pathToFaiFile << "\n";
+        std::cout << "ERROR: Could not load FAI index " << pathToFile << ".fai\n";
 //![open_index1]
 
 //![open_index2]
