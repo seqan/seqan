@@ -79,6 +79,9 @@ option (SEQAN_ENABLE_CUDA
         "Enable CUDA, if the toolkit is available."
 	OFF)
 
+option (SEQAN_STATIC_APPS "Build static apps." OFF)
+option (SEQAN_OPTIMIZED_BUILDS "Build optimized binaries." OFF)
+
 # ===========================================================================
 # Setup Modules and Find Packages.
 # ===========================================================================
