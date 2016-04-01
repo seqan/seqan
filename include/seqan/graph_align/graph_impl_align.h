@@ -671,7 +671,7 @@ inline void
 getVertexAdjacencyVector(TVector & vectIn,
                          TVector & vectOut,
                          Graph<Alignment<TStringSet, TCargo, TSpec> > const & g,
-                         VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type const & vertex)
+                         VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > > const & vertex)
 {
     getVertexAdjacencyVector(vectIn, vectOut, g.data_align, vertex);
 }

@@ -644,7 +644,7 @@ inline void
 getVertexAdjacencyVector(TVector & vectIn,
                          TVector & vectOut,
                          Graph<Tree<TCargo, TSpec> > const & g,
-                         VertexDescriptor<Graph<Tree<TCargo, TSpec> > >::Type const & vertex)
+                         VertexDescriptor<Graph<Tree<TCargo, TSpec> > > const & vertex)
 {
     _getVertexAdjacencyVector(vectIn, vectOut, g, vertex);
 }

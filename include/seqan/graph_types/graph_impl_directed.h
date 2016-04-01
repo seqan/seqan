@@ -947,7 +947,7 @@ inline void
 getVertexAdjacencyVector(TVector & vectIn,
                          TVector & vectOut,
                          Graph<Directed<TCargo, TSpec> > const & g,
-                         VertexDescriptor<Graph<Directed<TCargo, TSpec> > >::Type const & vertex)
+                         VertexDescriptor<Graph<Directed<TCargo, TSpec> > > const & vertex)
 {
     _getVertexAdjacencyVector(vectIn, vectOut, g, vertex);
 }

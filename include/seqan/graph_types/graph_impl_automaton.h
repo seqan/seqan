@@ -579,7 +579,7 @@ inline void
 getVertexAdjacencyVector(TVector & vectIn,
                          TVector & vectOut,
                          Graph<Automaton<TAlphabet, TCargo, TSpec> > const & g,
-                         VertexDescriptor<Graph<Automaton<TAlphabet, TCargo, TSpec> > >::Type const & vertex)
+                         VertexDescriptor<Graph<Automaton<TAlphabet, TCargo, TSpec> > > const & vertex)
 {
     typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
