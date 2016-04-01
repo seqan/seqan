@@ -689,11 +689,11 @@ getAdjacencyMatrix(Graph<Undirected<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TVector, typename TCargo, typename TSpec>
+template<typename TVector, typename TCargo, typename TSpec, typename TVertex>
 inline void
 getVertexAdjacencyVector(TVector & vectOut,
                          Graph<Undirected<TCargo, TSpec> > const & g,
-                         VertexDescriptor<Graph<Undirected<TCargo, TSpec> > > const & vertex)
+                         TVertex const & vertex)
 {
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TGraphSize;

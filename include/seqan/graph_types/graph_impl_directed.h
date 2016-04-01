@@ -942,12 +942,12 @@ _getVertexAdjacencyVector(TVector & vectIn,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TVector, typename TCargo, typename TSpec>
+template<typename TVector, typename TCargo, typename TSpec, typename TVertex>
 inline void
 getVertexAdjacencyVector(TVector & vectIn,
                          TVector & vectOut,
                          Graph<Directed<TCargo, TSpec> > const & g,
-                         VertexDescriptor<Graph<Directed<TCargo, TSpec> > > const & vertex)
+                         TVertex const & vertex)
 {
     _getVertexAdjacencyVector(vectIn, vectOut, g, vertex);
 }

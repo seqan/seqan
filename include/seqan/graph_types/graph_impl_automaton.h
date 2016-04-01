@@ -574,12 +574,12 @@ getAdjacencyMatrix(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TVector, typename TAlphabet, typename TCargo, typename TSpec>
+template<typename TVector, typename TAlphabet, typename TCargo, typename TSpec, typename TVertex>
 inline void
 getVertexAdjacencyVector(TVector & vectIn,
                          TVector & vectOut,
                          Graph<Automaton<TAlphabet, TCargo, TSpec> > const & g,
-                         VertexDescriptor<Graph<Automaton<TAlphabet, TCargo, TSpec> > > const & vertex)
+                         TVertex const & vertex)
 {
     typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
