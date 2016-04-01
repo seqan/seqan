@@ -93,14 +93,17 @@ In case of questions and problems please contact the mailing list
 
 or file a bug at
 
-  http://trac.seqan.de/newticket
-
+  https://github.com/seqan/seqan/issues
 
 ------------------------------------------------------------------------------
 4. Changelog
 ------------------------------------------------------------------------------
 
-2.0.5
+2.1.0
 
-  - Fixing temporary file handling on windows and re-enabling build if
-    MSVC >= 10.
+  - Fixing problem with transcripts on reverse-strand, sorting of BEd
+    and VCF files.
+  - Adding option --filter-out-bed to mason_materializer for limiting
+    materialized output to a BED file.
+  - Fixing temporary file handling on windows and re-enabling build on
+    MSVC.

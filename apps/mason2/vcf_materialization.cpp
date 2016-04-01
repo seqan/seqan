@@ -565,6 +565,11 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
                 appendValue(variants.smallIndels, smallIndel);
         }
     }
+
+    std::sort(begin(variants.snps, seqan::Standard()),
+              end(variants.snps, seqan::Standard()));
+    std::sort(begin(variants.smallIndels, seqan::Standard()),
+              end(variants.smallIndels, seqan::Standard()));
 }
 
 // ----------------------------------------------------------------------------

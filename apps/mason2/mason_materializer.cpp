@@ -45,6 +45,7 @@
 #include <seqan/arg_parse.h>
 #include <seqan/basic.h>
 #include <seqan/seq_io.h>
+#include <seqan/bed_io.h>
 #include <seqan/sequence.h>
 #include <seqan/vcf_io.h>
 
@@ -71,6 +72,9 @@ public:
 
     // Materialization of VCF.
     VcfMaterializer vcfMat;
+
+    // Genomic regions to read in, one list for each contig.
+    std::map<std::string, std::vector<seqan::GenomicRegion>> regions;
 
     // Output sequence stream.
     seqan::SeqFileOut outStream;
@@ -125,6 +129,11 @@ public:
         }
         std::cerr << " OK\n";
 
+        // Load output filter regions
+        std::cerr << "Loading filter regions...";
+        loadFilterRegions();
+        std::cerr << " OK\n";
+
         // Perform genome simulation.
         std::cerr << "\n__MATERIALIZING______________________________________________________________\n"
                   << "\n";
@@ -160,16 +169,53 @@ public:
         else  // NO methylation level simulation
             while (vcfMat.materializeNext(seq, varInfos, breakpoints, rID, hID))
             {
-                std::stringstream ssName;
-                ssName << contigNames(context(vcfMat.vcfFileIn))[rID] << options.haplotypeNameSep << (hID + 1);
-                std::cerr << " " << ssName.str();
+                if (regions.empty())
+                {
+                    // No regions given, write out full FASTA
+                    std::stringstream ssName;
+                    ssName << contigNames(context(vcfMat.vcfFileIn))[rID] << options.haplotypeNameSep << (hID + 1);
+                    std::cerr << " " << ssName.str();
 
-                writeRecord(outStream, ssName.str(), seq);
+                    if (!empty(options.outputBreakpointFile))
+                        for (std::vector<std::pair<int, int> >::const_iterator it = breakpoints.begin(); it != breakpoints.end(); ++it)
+                            breakpointsOut << ssName.str() << "\t" << vcfMat.contigVariants.getVariantName(it->second)
+                                           << "\t" << (it->first + 1) << "\n";
+                }
+                else
+                {
+                    // Regions not empty, write out only the selected regions for the contigs.
+                    //
+                    // Breakpoints and methylation output are not supported.
 
-                if (!empty(options.outputBreakpointFile))
-                    for (std::vector<std::pair<int, int> >::const_iterator it = breakpoints.begin(); it != breakpoints.end(); ++it)
-                        breakpointsOut << ssName.str() << "\t" << vcfMat.contigVariants.getVariantName(it->second)
-                                       << "\t" << (it->first + 1) << "\n";
+                    std::vector<seqan::GenomicRegion> const & contigRegions = regions[
+                        toCString(contigNames(context(vcfMat.vcfFileIn))[rID])];
+
+                    for (seqan::GenomicRegion const & region : contigRegions)
+                    {
+                        // Generate region name
+                        std::string regionName;
+                        region.toString(regionName);
+                        std::stringstream ssName;
+                        ssName << regionName << options.haplotypeNameSep << (hID + 1);
+
+                        std::pair<int, int> svInterval = vcfMat.posMap.originalToSmallVarInterval(
+                                region.beginPos, region.endPos);
+                        if (vcfMat.posMap.overlapsWithBreakpoint(svInterval.first, svInterval.second))
+                        {
+                            std::cerr << "Interval overlaps with breakpoint, skipping " << regionName << "\n";
+                            continue;
+                        }
+                        std::pair<int, int> lvInterval = vcfMat.posMap.smallVarToLargeVarInterval(
+                                svInterval.first, svInterval.second);
+                        writeRecord(outStream, ssName.str(), infix(seq, lvInterval.first, lvInterval.second));
+
+                        // Part of the sequence to read in
+                        seqan::Dna5String seqPart = infix(seq, lvInterval.first, lvInterval.second);
+
+                        // Finally, write out the sequence
+                        writeRecord(outStream, ssName.str(), seqPart);
+                    }
+                }
             }
         std::cerr << " DONE\n";
 
@@ -177,11 +223,36 @@ public:
 
         return 0;
     }
+
+    void loadFilterRegions();
 };
 
 // ==========================================================================
 // Functions
 // ==========================================================================
+
+// --------------------------------------------------------------------------
+// Function loadFilterRegions()
+// --------------------------------------------------------------------------
+
+void MasonMaterializerApp::loadFilterRegions()
+{
+    if (empty(options.outFilterBedFileName))
+        return;
+
+    seqan::BedFileIn bedIn(toCString(options.outFilterBedFileName));
+
+    seqan::BedRecord<seqan::Bed3> record;
+
+    while (!atEnd(bedIn)) {
+        readRecord(record, bedIn);
+        seqan::GenomicRegion region;
+        region.seqName = record.ref;
+        region.beginPos = record.beginPos;
+        region.endPos = record.endPos;
+        regions[toCString(region.seqName)].push_back(region);
+    }
+}
 
 // --------------------------------------------------------------------------
 // Function parseCommandLine()
