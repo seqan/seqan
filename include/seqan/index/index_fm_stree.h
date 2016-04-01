@@ -86,12 +86,14 @@ template <typename TSize, typename TAlphabet>
 struct VertexFM
 {
     Pair<TSize> range;
+    TSize       smaller;
     TSize       repLen;
     TAlphabet   lastChar;
 
     SEQAN_HOST_DEVICE
     VertexFM() :
         range(0, 0),
+        smaller(0),
         repLen(0),
         lastChar(0)
     {}
@@ -99,13 +101,15 @@ struct VertexFM
     SEQAN_HOST_DEVICE
     VertexFM(MinimalCtor) :
         range(0, 0),
+        smaller(0),
         repLen(0),
         lastChar(0)
     {}
 
     SEQAN_HOST_DEVICE
-    VertexFM(Pair<TSize> newCurrentRange, TSize newRepLen, TAlphabet newChar) :
+    VertexFM(Pair<TSize> newCurrentRange, TSize newSmallerValue, TSize newRepLen, TAlphabet newChar) :
         range(newCurrentRange),
+        smaller(newSmallerValue),
         repLen(newRepLen),
         lastChar(newChar)
     {}
@@ -113,6 +117,7 @@ struct VertexFM
     SEQAN_HOST_DEVICE
     VertexFM(VertexFM const & other) :
         range(other.range),
+        smaller(other.smaller),
         repLen(other.repLen),
         lastChar(other.lastChar)
     {}
@@ -122,6 +127,7 @@ struct VertexFM
     operator = (VertexFM const & _origin)
     {
         range = _origin.range;
+        smaller = _origin.smaller;
         repLen = _origin.repLen;
         lastChar = _origin.lastChar;
         return *this;
@@ -242,14 +248,24 @@ _isLeaf(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TSpec> > const
 // Function _getNodeByChar()                                         [Iterator]
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TChar>
+// Index<TText, FMIndex<TSpec,  > >
+
+/*template <typename TText, typename TOccSpec, typename TLengthSum, typename TSpec, typename TSize, typename TChar>
+SEQAN_HOST_DEVICE inline bool
+_getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum> > >, VSTree<TopDown<TSpec> > > const & it,
+               typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum> > > >::Type const & vDesc,
+               Pair<typename Size<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum> > > >::Type> & _range,
+               TSize & smaller,
+               TChar c)*/
+template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TSize, typename TChar>
 SEQAN_HOST_DEVICE inline bool
 _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it,
                typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type const & vDesc,
                Pair<typename Size<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type> & _range,
+               TSize & smaller,
                TChar c)
 {
-    typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
+    typedef Index<TText, FMIndex<TOccSpec, TIndexSpec/*FMIndexConfig<TOccSpec, TLengthSum> */> >        TIndex;
     typedef typename Fibre<TIndex, FibreLF>::Type               TLF;
 
     TIndex const & index = container(it);
@@ -257,8 +273,10 @@ _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown
 
     _range = range(index, vDesc);
 
-    _range.i1 = lf(_range.i1, c);
-    _range.i2 = lf(_range.i2, c);
+    TSize _smaller;
+    _range.i1 = lf(_range.i1, c, _smaller);
+    _range.i2 = lf(_range.i2, c, smaller);
+    smaller -= _smaller;
 
     return _range.i1 < _range.i2;
 }
@@ -271,16 +289,19 @@ template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec
 SEQAN_HOST_DEVICE inline bool
 _goDownChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > & it, TChar c)
 {
-    typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
-    typedef Pair<typename Size<TIndex>::Type>                   TRange;
+    typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >    TIndex;
+    typedef typename Size<TIndex>::Type                     TSize;
+    typedef Pair<TSize>                                     TRange;
 
     TRange _range;
+    TSize _smaller = 0;
 
-    if (_getNodeByChar(it, value(it), _range, c))
+    if (_getNodeByChar(it, value(it), _range, _smaller, c))
     {
         _historyPush(it);
 
         value(it).range = _range;
+        value(it).smaller = _smaller;
         value(it).lastChar = c;
         value(it).repLen++;
 
@@ -337,7 +358,8 @@ _goDownString(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<
               TSize & lcp)
 {
     typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
-    typedef Pair<typename Size<TIndex>::Type>                   TRange;
+    typedef typename Size<TIndex>::Type                         TSize2;
+    typedef Pair<TSize2>                                        TRange;
     typedef typename Iterator<TString const, Standard>::Type    TStringIter;
 
     _historyPush(it);
@@ -348,16 +370,18 @@ _goDownString(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<
     for (lcp = 0; stringIt != stringEnd; ++stringIt, ++lcp)
     {
         TRange _range;
+        TSize2 _smaller = 0;
 
         // NOTE(esiragusa): isLeaf() early exit is slower on CUDA.
         // NOTE(esiragusa): this should be faster only for texts over small alphabets consisting of few/long sequences.
 #ifdef __CUDA_ARCH__
-        if (!_getNodeByChar(it, value(it), _range, value(stringIt))) break;
+        if (!_getNodeByChar(it, value(it), _range, _smaller, value(stringIt))) break;
 #else
-        if (isLeaf(it) || !_getNodeByChar(it, value(it), _range, value(stringIt))) break;
+        if (isLeaf(it) || !_getNodeByChar(it, value(it), _range, _smaller, value(stringIt))) break;
 #endif
 
         value(it).range = _range;
+        value(it).smaller = _smaller;
     }
 
     value(it).repLen += lcp;
@@ -385,24 +409,27 @@ SEQAN_HOST_DEVICE inline bool
 _goRight(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > & it,
          VSTreeIteratorTraits<TDfsOrder, True> const)
 {
-    typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
-    typedef typename Value<TIndex>::Type                        TAlphabet;
-    typedef Pair<typename Size<TIndex>::Type>                   TRange;
+    typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >    TIndex;
+    typedef typename Value<TIndex>::Type                    TAlphabet;
+    typedef typename Size<TIndex>::Type                     TSize;
+    typedef Pair<TSize>                                     TRange;
 
-    typedef typename VertexDescriptor<TIndex>::Type             TVertexDescriptor;
+    typedef typename VertexDescriptor<TIndex>::Type         TVertexDescriptor;
 
     if (isRoot(it)) return false;
 
     TVertexDescriptor parentDesc = nodeUp(it);
     TRange _range;
+    TSize _smaller = 0;
 
     // TODO(esiragusa): Fix increment for alphabets with qualities.
 //    for (TAlphabetSize c = ordValue(value(it).lastChar) + 1; c < ValueSize<TAlphabet>::VALUE; ++c)
     for (value(it).lastChar++; ordValue(value(it).lastChar) < ValueSize<TAlphabet>::VALUE; value(it).lastChar++)
     {
-        if (_getNodeByChar(it, parentDesc, _range, value(it).lastChar))
+        if (_getNodeByChar(it, parentDesc, _range, _smaller, value(it).lastChar))
         {
             value(it).range = _range;
+            value(it).smaller = _smaller;
 
             return true;
         }
