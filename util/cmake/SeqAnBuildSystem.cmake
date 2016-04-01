@@ -197,20 +197,16 @@ macro (seqan_build_system_init)
          ${PROJECT_BINARY_DIR}/bin)
 
     # Set Warnings
-    if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
-        set (CMAKE_CXX_WARNING_LEVEL 4)
+    if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        # Disable warnings about unsecure (although standard) functions.
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W2 /D_SCL_SECURE_NO_WARNINGS") # TODO(h-2): raise this to W4
+    else ()
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing")
         set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
-    endif ()
-    if (COMPILER_IS_INTEL)
-        # disable some warnings on ICC
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
-    endif (COMPILER_IS_INTEL)
-    if (MSVC)
-        # Use the /W2 warning level for visual studio.
-        set (CMAKE_CXX_WARNING_LEVEL 2) # TODO(h-2): raise this to W4
-        # Disable warnings about unsecure (although standard) functions.
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /D_SCL_SECURE_NO_WARNINGS")
+        if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+            # disable some warnings on ICC
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
+        endif ()
     endif ()
 
     if (NOT SEQAN_BUILD_SYSTEM)
@@ -261,6 +257,8 @@ macro (seqan_build_system_init)
             set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -ipo -no-prec-div -fp-model fast=2")
         endif ()
     endif ()
+    # TODO(h-2): for icc on windows, replace the " -" in SEQAN_CXX_FLAGS with " /"
+    #            find out whether clang/c2 takes - or / options
 
     # automatic c++ standard detection/selection
     if (NOT MSVC)
