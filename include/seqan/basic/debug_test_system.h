@@ -783,8 +783,7 @@ int _deleteTempFile(std::string tempFilename)
             std::string tempp = tempFilename.c_str() + std::string("\\") + data.cFileName;
             if (strcmp(data.cFileName, ".") == 0 || strcmp(data.cFileName, "..") == 0)
                 continue;  // Skip these.
-            if (!DeleteFile(tempp.c_str()))
-                std::cerr << "WARNING: Could not delete file " << tempp << "\n";
+            DeleteFile(tempp.c_str());
         }
         while (FindNextFile(hFind, &data));
         FindClose(hFind);
@@ -793,7 +792,7 @@ int _deleteTempFile(std::string tempFilename)
     if (!RemoveDirectory(tempFilename.c_str()))
     {
         std::cerr << "ERROR: Could not delete directory " << tempFilename << "\n";
-        return 1;
+        return 0;
     }
 #else  // #ifdef PLATFORM_WINDOWS
     DIR * dpdf;
@@ -813,11 +812,11 @@ int _deleteTempFile(std::string tempFilename)
     if (closedir(dpdf) != 0)
     {
         std::cerr << "ERROR: Could not delete directory " << tempFilename << "\n";
-        return 1;
+        return 0;
     }
 #endif  // #ifdef PLATFORM_WINDOWS
 
-    return 0;
+    return 1;
 }
 
 // Run test suite finalization.
@@ -833,7 +832,7 @@ int endTestSuite()
 
     // Delete all temporary files that still exist.
     for (unsigned i = 0; i < StaticData::tempFileNames().size(); ++i)
-        if (_deleteTempFile(StaticData::tempFileNames()[i]))
+        if (!_deleteTempFile(StaticData::tempFileNames()[i]))
             ++StaticData::errorCount();
 
     std::cout << "**************************************" << std::endl;
