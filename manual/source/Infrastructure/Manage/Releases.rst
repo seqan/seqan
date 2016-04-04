@@ -21,7 +21,7 @@ The instructions for all packaging targets are the same (replace ``$pack_target`
 
     ~ # mkdir -p ~/devel/seqan-build/deploy
     ~ # cd ~/devel/seqan-build/deploy
-    deploy # cmake ../../seqan -DSEQAN_BUILD_SYSTEM=$pack_target -DSEQAN_STATIC_APPS=1 -DSEQAN_CPUOPT_SSE4=1
+    deploy # cmake ../../seqan -DSEQAN_BUILD_SYSTEM=$pack_target -DSEQAN_STATIC_APPS=1 -DSEQAN_ARCH_SSE4=1
     deploy # make package
 
 On Windows, replace the last command with
@@ -32,7 +32,7 @@ On Windows, replace the last command with
 
 
 This will create a ZIP-file and on unix also a tarball (``.tar.xz``) of the package.
-For the official packages distributed by us we also set ``-DSEQAN_STATIC_APPS=1 -DSEQAN_CPUOPT_SSE4=1`` which means that  binaries contain optimizations and are built statically, i.e. they will not depend on external libraries (OpenMP, Zlib...). For downstream packages you will likely not want to set these options.
+For the official packages distributed by us we also set ``-DSEQAN_STATIC_APPS=1 -DSEQAN_ARCH_SSE4=1`` which means that  binaries contain optimizations and are built statically, i.e. they will not depend on external libraries (OpenMP, Zlib...). For downstream packages you will likely not want to set these options.
 
 .. note::
 
