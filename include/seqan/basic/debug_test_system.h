@@ -783,15 +783,17 @@ int _deleteTempFile(std::string tempFilename)
             std::string tempp = tempFilename.c_str() + std::string("\\") + data.cFileName;
             if (strcmp(data.cFileName, ".") == 0 || strcmp(data.cFileName, "..") == 0)
                 continue;  // Skip these.
-            if (!DeleteFile(tempp.c_str()))
-                std::cerr << "WARNING: Could not delete file " << tempp << "\n";
+            DeleteFile(tempp.c_str());
         }
         while (FindNextFile(hFind, &data));
         FindClose(hFind);
     }
 
     if (!RemoveDirectory(tempFilename.c_str()))
-        std::cerr << "WARNING: Could not delete directory " << tempFilename << "\n";
+    {
+        std::cerr << "ERROR: Could not delete directory " << tempFilename << "\n";
+        return 0;
+    }
 #else  // #ifdef PLATFORM_WINDOWS
     DIR * dpdf;
     struct dirent * epdf;
@@ -808,10 +810,13 @@ int _deleteTempFile(std::string tempFilename)
 
     rmdir(tempFilename.c_str());
     if (closedir(dpdf) != 0)
-        std::cerr << "WARNING: Could not delete directory " << tempFilename << "\n";
+    {
+        std::cerr << "ERROR: Could not delete directory " << tempFilename << "\n";
+        return 0;
+    }
 #endif  // #ifdef PLATFORM_WINDOWS
 
-    return 0;
+    return 1;
 }
 
 // Run test suite finalization.
@@ -825,15 +830,16 @@ int endTestSuite()
 {
     delete[] StaticData::basePath();
 
+    // Delete all temporary files that still exist.
+    for (unsigned i = 0; i < StaticData::tempFileNames().size(); ++i)
+        if (!_deleteTempFile(StaticData::tempFileNames()[i]))
+            ++StaticData::errorCount();
+
     std::cout << "**************************************" << std::endl;
     std::cout << " Total Tests: " << StaticData::testCount() << std::endl;
     std::cout << " Skipped:     " << StaticData::skippedCount() << std::endl;
     std::cout << " Errors:      " << StaticData::errorCount() << std::endl;
     std::cout << "**************************************" << std::endl;
-
-    // Delete all temporary files that still exist.
-    for (unsigned i = 0; i < StaticData::tempFileNames().size(); ++i)
-        _deleteTempFile(StaticData::tempFileNames()[i]);
 
     if (StaticData::errorCount() != 0)
         return 1;
