@@ -9,7 +9,7 @@ int main(int argc, char const ** argv)
 {
     if (argc != 5)
     {
-        std::cerr << "USAGE: build_fai FILE.fa SEQ BEGIN END\n";
+        std::cerr << "USAGE: query_fai FILE.fa SEQ BEGIN END\n";
         return 0;
     }
 
