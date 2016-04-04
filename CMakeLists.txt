@@ -79,6 +79,10 @@ option (SEQAN_ENABLE_CUDA
         "Enable CUDA, if the toolkit is available."
 	OFF)
 
+option (SEQAN_STATIC_APPS "Build static apps." OFF)
+option (SEQAN_ARCH_SSE4 "Build SSE optimized binaries." OFF)
+option (SEQAN_ARCH_NATIVE "Build natively optimized binaries." OFF)
+
 # ===========================================================================
 # Setup Modules and Find Packages.
 # ===========================================================================
