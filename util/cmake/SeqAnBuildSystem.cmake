@@ -197,68 +197,68 @@ macro (seqan_build_system_init)
          ${PROJECT_BINARY_DIR}/bin)
 
     # Set Warnings
-    if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
-        set (CMAKE_CXX_WARNING_LEVEL 4)
+    if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        # Disable warnings about unsecure (although standard) functions.
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W2 /D_SCL_SECURE_NO_WARNINGS") # TODO(h-2): raise this to W4
+    else ()
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing")
         set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
-    endif ()
-    if (COMPILER_IS_INTEL)
-        # disable some warnings on ICC
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
-    endif (COMPILER_IS_INTEL)
-    if (MSVC)
-        # Use the /W2 warning level for visual studio.
-        set (CMAKE_CXX_WARNING_LEVEL 2) # TODO(h-2): raise this to W4
-        # Disable warnings about unsecure (although standard) functions.
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /D_SCL_SECURE_NO_WARNINGS")
+        if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+            # disable some warnings on ICC
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
+        endif ()
     endif ()
 
-    # DEFFAULT BUILD SYSTEM
     if (NOT SEQAN_BUILD_SYSTEM)
         set (SEQAN_BUILD_SYSTEM "DEVELOP" CACHE STRING "Build/Release mode to select. One of DEVELOP SEQAN_RELEASE, APP:\${APP_NAME}. Defaults to DEVELOP.")
     endif (NOT SEQAN_BUILD_SYSTEM)
     set (SEQAN_APP_VERSION "0.0.0" CACHE STRING "Version of the application.")
     set (SEQAN_NIGHTLY_RELEASE FALSE CACHE BOOL "Set to TRUE to enable nightly app releases.")
 
-    # STANDARD BUILD FLAGS
-
-    # OpenBSD just can't handle it
-    if (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
-        set (SEQAN_NO_NATIVE TRUE)
-        set (SEQAN_OFFICIAL_PKGS FALSE)
+    ## options
+    if (NOT SEQAN_64BIT_TARGET_PLATFORM)
+        set (SEQAN_ARCH_SSE4 FALSE)
     endif ()
 
-    # packages for distribution
-    if ((SEQAN_OFFICIAL_PKGS) AND
-        (NOT MSVC) AND
-        (SEQAN_BUILD_SYSTEM MATCHES "APP")) # either APP:$app or SEQAN_RELEASE_APPS
+    if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        set (SEQAN_STATIC_APPS FALSE)
+        set (SEQAN_ARCH_SSE4 FALSE)
+        set (SEQAN_ARCH_NATIVE FALSE)
+    endif ()
 
-        # static linkage
-        set (SEQAN_STATIC_APPS TRUE CACHE INTERNAL "Create static app binaries")
-        message (STATUS "Building static binaries.")
-
-        # machine specific optimizations
-        if (SEQAN_64BIT_TARGET_PLATFORM)
-            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -mpopcnt")
-            message (STATUS "Release binaries built with optimizations for SSE3, SSE4 and POPCNT.")
+    if (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
+        set (SEQAN_STATIC_APPS FALSE)
+        if (SEQAN_ARCH_NATIVE)
+            set (SEQAN_ARCH_NATIVE FALSE)
+            set (SEQAN_ARCH_SSE4 TRUE)
+            message (STATUS "OpenBSD does not support native, but SSE4 was activated instead.")
         endif ()
     endif ()
 
-    # settings for development mode
-    if ((SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP") AND
-        (NOT MSVC) AND
-        (NOT SEQAN_NO_NATIVE) AND
-        (NOT SEQAN_32BIT_TARGET_PLATFORM))
-
-        # SeqAn has conflicts with -march=native and -m32 build on 64 bit source
-        # platforms, thus disabling -march=native for 32bit target platforms
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -march=native")
-        if (COMPILER_IS_INTEL)
-            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -xHOST -ipo -no-prec-div -fp-model fast=2")
-        endif (COMPILER_IS_INTEL)
-
-        message (STATUS "CPU-optimized binaries that may not work on other computers. If you plan to distribute binaries, call cmake with -DSEQAN_BUILD_SYTEM=SEQAN_RELEASE_APPS or with -DSEQAN_NO_NATIVE=1.")
+    if (SEQAN_STATIC_APPS)
+        message (STATUS "Building static apps.")
+        # implementation in seqan_register_apps()
     endif ()
+
+    # machine specific optimizations
+    if (SEQAN_ARCH_NATIVE)
+        message (STATUS "Building binaries optimized for this specific CPU. They might not work elsewhere.")
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -march=native")
+        if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -ipo -no-prec-div -fp-model fast=2 -xHOST")
+        endif ()
+    elseif (SEQAN_ARCH_SSE4)
+        message (STATUS "Building optimized binaries up to SSE4 and POPCNT.")
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3 -msse4")
+        if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mpopcnt")
+        endif ()
+        if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -ipo -no-prec-div -fp-model fast=2")
+        endif ()
+    endif ()
+    # TODO(h-2): for icc on windows, replace the " -" in SEQAN_CXX_FLAGS with " /"
+    #            find out whether clang/c2 takes - or / options
 
     # automatic c++ standard detection/selection
     if (NOT MSVC)
