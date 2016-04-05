@@ -54,9 +54,11 @@ namespace seqan {
  * @see PizzaChiliIndex
  *
  * @tag PizzaChiliIndexFibres#PizzaChiliText
+ * @deprecated Module is outdated and is not maintained anymore. Will presumably be removed in the next major release.
  * @brief The original text the index is based on.
  *
  * @tag PizzaChiliIndexFibres#PizzaChiliCompressed
+ * @deprecated Module is outdated and is not maintained anymore. Will presumably be removed in the next major release.
  * @brief The compressed suffix array.
  */
 
@@ -70,6 +72,8 @@ typedef FibrePizzaChiliCompressed PizzaChiliCompressed;
 
 /*!
  * @class PizzaChiliIndex Pizza & Chili Index
+ *
+ * @deprecated Module is outdated and is not maintained anymore. Will presumably be removed in the next major release.
  *
  * @extends Index
  *
