@@ -69,6 +69,8 @@ struct PizzaChiliCodeProvider {
  *
  * @tag PizzaChiliIndexTags#PizzaChiliSada
  *
+ * @deprecated Module is outdated and is not maintained anymore. Will presumably be removed in the next major release.
+ *
  * @brief the compressed suffix array index.
  *
  * @section Remarks
@@ -77,9 +79,13 @@ struct PizzaChiliCodeProvider {
  *
  * @tag PizzaChiliIndexTags#PizzaChiliAF
  *
+ * @deprecated Module is outdated and is not maintained anymore. Will presumably be removed in the next major release.
+ *
  * @brief The alphabet-friendly FM index.
  *
  * @tag PizzaChiliIndexTags#PizzaChiili_RSA
+ *
+ * @deprecated Module is outdated and is not maintained anymore. Will presumably be removed in the next major release.
  *
  * @brief The repair suffix array index.
  *
@@ -89,6 +95,8 @@ struct PizzaChiliCodeProvider {
  *
  * @tag PizzaChiliIndexTags#PizzaChiliSA
  *
+ * @deprecated Module is outdated and is not maintained anymore. Will presumably be removed in the next major release.
+ *
  * @brief The simple suffix array index.
  *
  * @section Remarks
@@ -97,9 +105,13 @@ struct PizzaChiliCodeProvider {
  *
  * @tag PizzaChiliIndexTags#PizzaChiliFM
  *
+ * @deprecated Module is outdated and is not maintained anymore. Will presumably be removed in the next major release.
+ *
  * @brief The FM (full-text in minute space) index.
  *
  * @tag PizzaChiliIndexTags#PizzaChiliCcsa
+ *
+ * @deprecated Module is outdated and is not maintained anymore. Will presumably be removed in the next major release.
  *
  * @brief The compressed compact suffix array index.
  */
