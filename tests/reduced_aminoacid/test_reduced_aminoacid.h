@@ -223,8 +223,10 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10_modview_fmindex)
     std::vector<std::pair<uint64_t, uint64_t>> hits;
     auto callback = [&] (TIndexIt & indexIt, int)
     {
-        for (auto subjOcc : getOccurrences(indexIt))
+        auto const & occurrences = getOccurrences(indexIt);
+        for (auto it = begin(occurrences), itEnd = end(occurrences); it != itEnd; ++it)
         {
+            auto subjOcc = *it;
             // reverse positions again
             setSeqOffset(subjOcc,
                          length(origSet[getSeqNo(subjOcc)])
