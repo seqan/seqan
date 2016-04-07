@@ -152,6 +152,13 @@ elseif (COMPILER_IS_CLANG)
         message(AUTHOR_WARNING "Clang version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 3.5! Anything below is untested.")
     endif ()
 
+elseif (COMPILER_IS_INTEL)
+
+    # require at least icpc 16.0.2
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16.0.2)
+        message(AUTHOR_WARNING "Intel Compiler version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 16.0.2! Anything below is untested.")
+    endif ()
+
 elseif (COMPILER_IS_MSVC)
 
     # require at least MSVC 19.0

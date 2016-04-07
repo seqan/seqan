@@ -295,7 +295,7 @@ sNumFrames(BlastProgram p)
 template <typename TVoidSpec = void>
 struct BlastProgramStrings_
 {
-    static constexpr char const * const VALUE [] =
+    static constexpr char const * const VALUE [6] =
     {
         "BLASTN",
         "BLASTP",
