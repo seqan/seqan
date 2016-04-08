@@ -640,25 +640,145 @@ int getGenomeFileNameList(StringSet<CharString> & genomeFileNames, TOptions cons
         // If file starts with a fasta header --> regular one-genome-file input.
         appendValue(genomeFileNames,options.genomeFName,Generous());
     }
-
     return 0;
 }
 
+//Parsing the CIGAR string (and incrementing all sorts of counters accordingly)
+//TODO(serosko): Check if the ammount of required arguments can be reduced,
+template <typename TTmpCigarStr,
+          typename TTemp_str,
+          typename TTemp_read,
+          typename TFileIter,
+          typename TReadTemplate,
+          typename TRLen,
+          typename TEditDist,
+          typename TAlignLength,
+          typename TGAliPos,
+          typename TGPos,
+          typename TOptions>
+inline int parseCigar(TTmpCigarStr & tmpCigarStr,
+                      TTemp_str & temp_str,
+                      TTemp_read & temp_read,
+                      TFileIter & fileIter,
+                      TReadTemplate & readTemplate,
+                      TRLen & rLen,
+                      bool & hasIndel,
+                      TEditDist & editDist,
+                      int & softClippedLeft,
+                      int & softClippedRight,
+                      bool & first,
+                      TAlignLength & alignLength,
+                      TGAliPos & gAliPos,
+                      unsigned & pos,
+                      unsigned & pos2,
+                      TGPos & gPos,
+                      TOptions & options)
+{
+    typedef typename Value<TTmpCigarStr>::Type TCigar;
+    while (*fileIter != ';' && *fileIter != '\r' && *fileIter != '\n')
+    {
+        if (*fileIter == '=')
+        {
+            ++fileIter;
+            if (atEnd(fileIter))
+                return CALLSNPS_GFF_FAILED;
+        }
+        clear(temp_str);
+        readUntil(temp_str, fileIter, NotFunctor<IsDigit>());
+        lexicalCastWithException(pos2, temp_str);
+        if (*fileIter == 'M')
+        {
+            unsigned k = 0;
+            while (k < pos2)
+            {
+                appendValue(gAliPos, gPos, Generous());
+                ++gPos;
+                ++k;
+            }
+            appendValue(tmpCigarStr, TCigar('M', pos2));
+            alignLength += pos2;
+            pos2 += pos;
+            append(temp_read, infix(readTemplate, pos, pos2));
+            pos = pos2;
+            skipOne(fileIter);
+            first = false;
+            continue;
+        }
+        else if (*fileIter == 'I') //insertion in the read
+        {
+            unsigned k = 0;
+            while (k < pos2)
+            {
+                appendValue(gAliPos, -gPos, Generous()); //no genome positions are used up
+                ++k;
+            }
+            appendValue(tmpCigarStr, TCigar('I',pos2));
+            for(unsigned f = 0; f < pos2; ++f)
+                appendValue(temp_read, 'A');  // will be replaced with correct base in "mutations" loop
+            skipOne(fileIter);
+            rLen += pos2;
+            hasIndel = true;
+            first = false;
+            continue;
+        }
+        else if (*fileIter == 'D') //there is a deletion in the read
+        {
+            unsigned k= 0;
+            while (k<pos2)
+            {
+                ++gPos;
+                ++k;
+            }
+            editDist += pos2;
+            appendValue(tmpCigarStr, TCigar('D', pos2));
+            alignLength += pos2;
+            pos += pos2;
+            rLen -= pos2;
+            skipOne(fileIter);
+            hasIndel = true;
+            first = false;
+            continue;
+        }
+        else if (*fileIter == 'S')
+        {
+            if (first)
+                softClippedLeft = pos2;
+            else
+                softClippedRight = pos2;
+            unsigned k = 0;
+            while (k < pos2)
+            {
+                appendValue(gAliPos, gPos, Generous());
+                ++gPos;
+                ++k;
+            }
+            appendValue(tmpCigarStr, TCigar('S', pos2));
+            alignLength += pos2;
+            pos2 += pos;
+            //                            if (first)
+            append(temp_read, infix(readTemplate, pos, pos2));
+            pos = pos2;
+            skipOne(fileIter);
+            first = false;
+            options.softClipTagsInFile = true;
+            continue;
+        }
+    }
+    return 0;
+}
 
 /////////////////////////////////////////////////////////////
 // read sorted(!) Gff input file containing mapped reads
-template <
-typename TFile,
-typename TFragmentStore,
-typename TReadCounts,
-typename TCigarStr,
-typename TGenome,
-typename TGenomeIdMap,
-typename TContigPos,
-typename TSize,
-typename TValue,
-typename TOptions
->
+template <typename TFile,
+          typename TFragmentStore,
+          typename TReadCounts,
+          typename TCigarStr,
+          typename TGenome,
+          typename TGenomeIdMap,
+          typename TContigPos,
+          typename TSize,
+          typename TValue,
+          typename TOptions>
 int readMatchesFromGFF_Batch(
                              TFile                  &file,
                              // forward/reverse fragmentStore.alignedReadStore
@@ -675,8 +795,6 @@ int readMatchesFromGFF_Batch(
                              TOptions               &options,
                              bool setZero = true)
 {
-
-
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
     typedef typename Value<TMatches>::Type          TMatch;
     typedef typename TFragmentStore::TAlignQualityStore     TMatchQualities;
@@ -685,16 +803,16 @@ int readMatchesFromGFF_Batch(
     //typedef typename Value<TReads>::Type            TRead;
     typedef typename TFragmentStore::TReadStore     TReadStore;
     typedef typename Value<TReadStore>::Type        TReadStoreElement;
-    typedef typename Value<TCigarStr>::Type         TCigar;
+    //typedef typename Value<TCigarStr>::Type         TCigar; //Dealt with in parseCigar()
     //typedef typename Value<TReads>::Type            TRead;
     //typedef typename TFragmentStore::TContigStore       TGenomeSet;
     typedef typename Id<TFragmentStore>::Type       TId;
     //typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
 
-
+    // check for equal length of read store and quality store
     if (length(fragmentStore.readSeqStore)!=length(fragmentStore.alignQualityStore))
     {
-        ::std::cerr << "Lengths need to be equal!!\n";
+        ::std::cerr << "Lengths of readSeqStore and alignQualityStore must be equal!!\n";
         return 10;
     }
     int readCount = length(fragmentStore.readSeqStore);
@@ -1053,98 +1171,22 @@ int readMatchesFromGFF_Batch(
                     pos = 0; pos2 = 0;
                     int gPos = 0;
                     readFound = true;
-                    while (*fileIter != ';' && *fileIter != '\r' && *fileIter != '\n')
-                    {
-                        if (*fileIter == '=')
-                        {
-                            ++fileIter;
-                            if (atEnd(fileIter))
-                                return CALLSNPS_GFF_FAILED;
-                        }
-                        clear(temp_str);
-                        readUntil(temp_str, fileIter, NotFunctor<IsDigit>());
-                        lexicalCastWithException(pos2, temp_str);
-                        if (*fileIter == 'M')
-                        {
-                            unsigned k= 0;
-                            while (k<pos2)
-                            {
-                                appendValue(gAliPos,gPos,Generous());
-                                ++gPos;
-                                ++k;
-                            }
-                            appendValue(tmpCigarStr,TCigar('M',pos2));
-                            alignLength += pos2;
-                            pos2 += pos;
-                            append(temp_read,infix(readTemplate,pos,pos2));
-                            pos = pos2;
-                            skipOne(fileIter);
-                            first = false;
-                            continue;
-                        }
-                        else if (*fileIter == 'I')
-                        {   //insertion in the read
-                            //(*mIt).editDist += pos2; will be increased in mutations loop
-                            unsigned k= 0;
-                            while (k<pos2)
-                            {
-                                appendValue(gAliPos,-gPos,Generous());//no genome positions are used up
-                                ++k;
-                            }
-                            appendValue(tmpCigarStr,TCigar('I',pos2));
-                            for(unsigned f = 0; f < pos2; ++f)
-                                appendValue(temp_read, 'A');  // will be replaced with correct base in "mutations" loop
-                            skipOne(fileIter);
-                            rLen += pos2;
-                            hasIndel = true;
-                            first = false;
-//                            if (maxIndelLen < pos2) maxIndelLen = pos2;
-                            continue;
-                        }
-                        else if (*fileIter == 'D')
-                        {   //there is a deletion in the read
-                            unsigned k= 0;
-                            while (k<pos2)
-                            {
-                                ++gPos;
-                                ++k;
-                            }
-                            editDist += pos2;
-                            appendValue(tmpCigarStr,TCigar('D',pos2));
-                            alignLength += pos2;
-                            pos += pos2;
-                            rLen -= pos2;
-                            skipOne(fileIter);
-                            hasIndel = true;
-                            first = false;
-//                            if (maxIndelLen < pos2) maxIndelLen = pos2;
-                            continue;
-                        }
-                        else if (*fileIter == 'S')
-                        {
-                            if (first)
-                                softClippedLeft = pos2;
-                            else
-                                softClippedRight = pos2;
-                            unsigned k= 0;
-                            while (k<pos2)
-                            {
-                                appendValue(gAliPos,gPos,Generous());
-                                ++gPos;
-                                ++k;
-                            }
-                            appendValue(tmpCigarStr,TCigar('S',pos2));
-                            alignLength += pos2;
-                            pos2 += pos;
-//                            if (first)
-                                append(temp_read,infix(readTemplate,pos,pos2));
-                            pos = pos2;
-                            skipOne(fileIter);
-                            first = false;
-                            options.softClipTagsInFile = true;
-                            continue;
-                        }
-                    }
+                    parseCigar(tmpCigarStr,
+                               temp_str,
+                               temp_read,
+                               fileIter,
+                               readTemplate,
+                               rLen,
+                               hasIndel,
+                               editDist,
+                               softClippedLeft,
+                               softClippedRight,
+                               first,alignLength,
+                               gAliPos,
+                               pos,
+                               pos2,
+                               gPos,
+                               options);
                     if (alignLength != endPos - beginPos)
                     {
                         std::cerr << "WARNING! Read " << readName
