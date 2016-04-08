@@ -23,6 +23,7 @@
 #define SEQAN_HEADER_CALLSNPS_H
 
 // TODO(holtgrew): Using a gff_io module would increase simplicity below.
+// TODO(serosko): Switch to GffFileIn and GffFileOut
 
 #include <iostream>
 #include <fstream>
@@ -69,7 +70,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
     {
         typedef typename MakeSigned_<TGPos_>::Type TGPos;
 
-        TGPos           gBegin;         // begin position in the genome
+        TGPos           gBegin;                 // begin position in the genome
         unsigned        gseqNo;
 
 
@@ -78,7 +79,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
     template < bool _HAMMING_ONLY = true >
     struct SNPCallingSpec
     {
-        enum { HAMMING_ONLY = _HAMMING_ONLY };              // omit verifying potential matches
+        enum { HAMMING_ONLY = _HAMMING_ONLY };  // omit verifying potential matches
     };
 
 
@@ -123,7 +124,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
 
         // general parameters/options
         unsigned    maxPile;                    // keep at most maxPile many reads mapped to exact same position
-        bool        laneSpecificMaxPile;        // do pile up correction on file by file basis (instead of on merged read set)
+        bool        laneSpecificMaxPile;        // do pile up corr. on file by file basis(instead of on merged read set)
         bool        orientationAware;           // do pile up correction orientation aware
 
         bool        storeReadNames;             // store read names
@@ -136,7 +137,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
 
         bool        realign;                    // do realignment
         int         realignAddBorder;           // add flanking bases to reference in realignment (0 seems to work best)
-        int         minClippedLength;           // discard read if it is not at least minClippedLength bases long after clipping
+        int         minClippedLength;           // discard read if it is < minClippedLength bases long after clipping
         bool        clipTagsInFile;             // helper to remember whether there were clip tags in file
         bool        softClipTagsInFile;         // helper to remember whether there was soft clipping in file
 
@@ -147,20 +148,24 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
 
          // SNP calling related
         unsigned    method;                     // 0 = threshold method, 1 = Maq method
-        bool        useBaseQuality;             // use base quality instead of min{base quality,mapping,avg read quality}
+        bool        useBaseQuality;             // use base qual. instead of min{base quality,mapping,avg read quality}
         unsigned    minCoverage;                // min depth at variant calling positions
-        int         forceCallCount;             // force variant call if there are at least this many mutationas observed at the candidate site
-        double      newQualityCalibrationFactor;  // experimental.. downweighting read quality if mapped with many errors..
-        double      minExplainedColumn;         // if two most frequent bases don't make up at least this fraction of the alignment column --> discard snp, most likely noise
-        unsigned    minDifferentReadPos;        // number of different read positions that need to support the variant call
-        unsigned    excludeBorderPos;           // exclude this many read positions at read borders when looking at minDifferentReadPos
+        int         forceCallCount;             // force variant call if there are at least this many mutationas
+                                                //     observed at the candidate site
+        double      newQualityCalibrationFactor;// experimental. downweighting read quality if mapped with many errors.
+        double      minExplainedColumn;         // if two most frequent bases don't make up at least this fraction
+                                                //     of the alignment column --> discard snp, most likely noise
+        unsigned    minDifferentReadPos;        // number of different read positions that need to support the call
+        unsigned    excludeBorderPos;           // exclude this many read positions at read borders
+                                                //     when looking at minDifferentReadPos
 
 
         // threshold method related
         float       avgQualT;                   // min. average quality value of variant read base
         float       percentageT;                // min. percentage of variant read base in alignment column
         unsigned    minMutT;                    // min. count of variant read base
-        float       snpHetMax;                  // SNP is called as homozygote if variant percentage in alignment column is greater than snpHetMax
+        float       snpHetMax;                  // SNP is called as homozygote if variant percentage
+                                                //     in alignment column is greater than snpHetMax
 
         // Maq-method related
         double      hetRate;                    // heterozygote rate
@@ -190,7 +195,8 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         float       indelPercentageT;           // min. percentage of indel in alignment columns
         unsigned    indelCountThreshold;        // min. count of indels
         unsigned    indelWindow;                // heuristic to merge neighboring indels in non-realigned data
-        float       indelHetMax;                // max percentage of indel-supporting reads for indel to be called heterozygous
+        float       indelHetMax;                // max. percentage of indel-supporting reads
+                                                //     for indel to be called heterozygous
 
         // misc/helpers
         unsigned    maxHitLength;               // helper to remember max. alignment length
@@ -198,7 +204,8 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         unsigned    maxCoord;                   // current max. read mapping coordinate observed
 
         unsigned    windowSize;                 // genomic window size for read parsing
-        unsigned    windowBuff;                 // reads within windowBuff base pairs of current window are also kept (-> overlapping windows)
+        unsigned    windowBuff;                 // reads within windowBuff base pairs of current window are also kept
+                                                //     (-> overlapping windows)
 
         // cnv calling related // not in use
         unsigned    expectedReadsPerBin;
@@ -312,7 +319,6 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
 
 
 
-
 //////////////////////////////////////////////////////////////////////////////
 // Typedefs
 
@@ -322,7 +328,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
     {
         typedef typename MakeSigned_<TGPos_>::Type TGPos;
 
-//      TGPos       Batch   gBegin;         // begin position of the match in the genome            --> beginPos
+//      TGPos       Batch   gBegin;         // begin position of the match in the genome        --> beginPos
         TGPos           gEnd;           // end position of the match in the genome              --> endPos
         unsigned        rseqNo;         // read seqNo                                           --> readId
 
@@ -330,13 +336,12 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         unsigned        hasIndel:1;     // is 1 if read match contains indels, 0 else           --> gaps
 
         unsigned        editDist:3;     // Levenshtein distance <8                              --> errors
-        unsigned        mScore:7;       // mapping quality  <128                                --> currently not in use anyway
+        unsigned        mScore:7;       // mapping quality  <128                                --> currently not in use
         unsigned        avgQuality:6;   // avg read quality <64                                 --> score
 
         char            orientation;        // 'F'..forward strand, 'R'..reverse comp. strand   --> endPos > beginPos ?
 
     };
-
 
 
     enum CALLSNPS_ERROR {
@@ -368,32 +373,44 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
 
 
             // contig number
-            if (a.contigId < b.contigId) return true;
-            if (a.contigId > b.contigId) return false;
+            if (a.contigId < b.contigId)
+                return true;
+            if (a.contigId > b.contigId)
+                return false;
 
             // begin position
             typename TMatch::TPos ba = _min(a.beginPos, a.endPos);
             typename TMatch::TPos bb = _min(b.beginPos, b.endPos);
 
-            if (ba < bb) return true;
-            if (ba > bb) return false;
+            if (ba < bb)
+                return true;
+            if (ba > bb)
+                return false;
 
             // end position
             typename TMatch::TPos ea = _max(a.beginPos, a.endPos);
             typename TMatch::TPos eb = _max(b.beginPos, b.endPos);
 
-            if (ea < eb) return true;
-            if (ea > eb) return false;
+            if (ea < eb)
+                return true;
+            if (ea > eb)
+                return false;
 
             // quality
-            if (a.id == TMatch::INVALID_ID) return false;
-            if (b.id == TMatch::INVALID_ID) return true;
+            if (a.id == TMatch::INVALID_ID)
+                return false;
+            if (b.id == TMatch::INVALID_ID)
+                return true;
 
-            if (qualStore[a.id].score > qualStore[b.id].score) return true;
-            if (!(qualStore[a.id].score >= qualStore[b.id].score)) return false;
+            if (qualStore[a.id].score > qualStore[b.id].score)
+                return true;
+            if (!(qualStore[a.id].score >= qualStore[b.id].score))
+                return false;
 
-            if (qualStore[a.id].errors < qualStore[b.id].errors) return true;
-            if (qualStore[a.id].errors > qualStore[b.id].errors) return false;
+            if (qualStore[a.id].errors < qualStore[b.id].errors)
+                return true;
+            if (qualStore[a.id].errors > qualStore[b.id].errors)
+                return false;
 
             return a.id < b.id;
         }
@@ -407,11 +424,11 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         inline bool operator() (TPosLen const &a, TPosLen const &b) const
         {
             // read number
-            if (a.i1 < b.i1) return true;
-            if (a.i1 > b.i1) return false;
-
+            if (a.i1 < b.i1)
+                return true;
+            if (a.i1 > b.i1)
+                return false;
             return (a.i2 < b.i2);
-
         }
     };
 
@@ -431,33 +448,46 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
             typedef typename Value<TMatches>::Type TMatch;
 
             // contig number
-            if (a.contigId < b.contigId) return true;
-            if (a.contigId > b.contigId) return false;
+            if (a.contigId < b.contigId)
+                return true;
+            if (a.contigId > b.contigId)
+                return false;
 
             // begin position
             typename TMatch::TPos ba = _min(a.beginPos, a.endPos);
             typename TMatch::TPos bb = _min(b.beginPos, b.endPos);
-            if (ba < bb) return true;
-            if (ba > bb) return false;
+            if (ba < bb)
+                return true;
+            if (ba > bb)
+                return false;
 
             // end position
             typename TMatch::TPos ea = _max(a.beginPos, a.endPos);
             typename TMatch::TPos eb = _max(b.beginPos, b.endPos);
-            if (ea < eb) return true;
-            if (ea > eb) return false;
+            if (ea < eb)
+                return true;
+            if (ea > eb)
+                return false;
 
             // orientation
             bool oa = a.beginPos < a.endPos;
             bool ob = b.beginPos < b.endPos;
-            if (oa != ob) return oa;
+            if (oa != ob)
+                return oa;
 
             // quality
-            if (a.id == TMatch::INVALID_ID) return false;
-            if (b.id == TMatch::INVALID_ID) return true;
-            if (qualStore[a.id].score > qualStore[b.id].score) return true;
-            if (!(qualStore[a.id].score >= qualStore[b.id].score)) return false;
-            if (qualStore[a.id].errors < qualStore[b.id].errors) return true;
-            if (qualStore[a.id].errors > qualStore[b.id].errors) return false;
+            if (a.id == TMatch::INVALID_ID)
+                return false;
+            if (b.id == TMatch::INVALID_ID)
+                return true;
+            if (qualStore[a.id].score > qualStore[b.id].score)
+                return true;
+            if (!(qualStore[a.id].score >= qualStore[b.id].score))
+                return false;
+            if (qualStore[a.id].errors < qualStore[b.id].errors)
+                return true;
+            if (qualStore[a.id].errors > qualStore[b.id].errors)
+                return false;
             return a.id < b.id;
         }
     };
@@ -483,8 +513,10 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         inline bool operator() (TReadMatch const &a, TReadMatch const &b) const
         {
             // genome sequence
-            if (a.contigId < b.contigId) return true;
-            if (a.contigId > b.contigId) return false;
+            if (a.contigId < b.contigId)
+                return true;
+            if (a.contigId > b.contigId)
+                return false;
 
             // begin position
             if (std::min(a.beginPos, a.endPos) < std::min(b.beginPos, b.endPos))
@@ -506,12 +538,16 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         inline bool operator() (TReadMatch const &a, TReadMatch const &b) const
         {
             // genome sequence
-            if (a.contigId < b.contigId) return true;
-            if (a.contigId > b.contigId) return false;
+            if (a.contigId < b.contigId)
+                return true;
+            if (a.contigId > b.contigId)
+                return false;
 
             // end position
-            if (std::max(a.endPos,a.beginPos) < std::max(b.endPos,b.beginPos)) return true;
-            if (std::max(a.endPos,a.beginPos) > std::max(b.endPos,b.beginPos)) return false;
+            if (std::max(a.endPos,a.beginPos) < std::max(b.endPos,b.beginPos))
+                return true;
+            if (std::max(a.endPos,a.beginPos) > std::max(b.endPos,b.beginPos))
+                return false;
 
             return a.readId < b.readId;
         }
@@ -525,12 +561,16 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         inline bool operator() (TReadMatch const &a, TReadMatch const &b) const
         {
             // genome sequence
-            if (a.contigId < b.contigId) return true;
-            if (a.contigId > b.contigId) return false;
+            if (a.contigId < b.contigId)
+                return true;
+            if (a.contigId > b.contigId)
+                return false;
 
             // end position
-            if (_max(a.endPos,a.beginPos) < _max(b.endPos,b.beginPos)) return true;
-            if (_max(a.endPos,a.beginPos) > _max(b.endPos,b.beginPos)) return false;
+            if (_max(a.endPos,a.beginPos) < _max(b.endPos,b.beginPos))
+                return true;
+            if (_max(a.endPos,a.beginPos) > _max(b.endPos,b.beginPos))
+                return false;
 
             // orientation
             bool oa = a.beginPos < a.endPos;
@@ -562,7 +602,7 @@ int getGenomeFileNameList(StringSet<CharString> & genomeFileNames, TOptions cons
 {
     std::ifstream file;
     file.open(toCString(options.genomeFName), std::ios_base::in | std::ios_base::binary);
-    if(!file.is_open())
+    if (!file.is_open())
         return CALLSNPS_GENOME_FAILED;
 
     typename DirectionIterator<std::ifstream, Input>::Type fileIter = directionIterator(file, Input());
@@ -571,7 +611,7 @@ int getGenomeFileNameList(StringSet<CharString> & genomeFileNames, TOptions cons
     if (*fileIter != '>' && *fileIter != '@')
     {
         // If file does not start with a fasta header --> list of multiple reference genome files.
-        if(options._debugLevel >=1)
+        if (options._debugLevel >=1)
             std::cout << std::endl << "Reading multiple genome files:" << std::endl;
         /*      //locations of genome files are relative to list file's location
         ::std::string tempGenomeFile(filename);
@@ -588,10 +628,11 @@ int getGenomeFileNameList(StringSet<CharString> & genomeFileNames, TOptions cons
             skipUntil(fileIter, NotFunctor<IsWhitespace>());
             readUntil(nameStr, fileIter, NotFunctor<IsGraph>());
             appendValue(genomeFileNames,nameStr,Generous());
-            if(options._debugLevel >= 2)
-                std::cout << "Genome file #" << (i + 1) << ": " << genomeFileNames[length(genomeFileNames) - 1] << std::endl;
+            if (options._debugLevel >= 2)
+                std::cout << "Genome file #" << (i + 1) << ": " << genomeFileNames[length(genomeFileNames) - 1]
+                          << std::endl;
         }
-        if(options._debugLevel >=1)
+        if (options._debugLevel >=1)
             std::cout << i << " genome files total." << std::endl;
     }
     else
@@ -620,7 +661,8 @@ typename TOptions
 >
 int readMatchesFromGFF_Batch(
                              TFile                  &file,
-                             TFragmentStore                 &fragmentStore,             // forward/reverse fragmentStore.alignedReadStore
+                             // forward/reverse fragmentStore.alignedReadStore
+                             TFragmentStore                 &fragmentStore,
                              TReadCounts                &readCounts,
                              String<Pair<int,int> >         &readClips,
                              StringSet<TCigarStr>           &readCigars,
@@ -650,7 +692,7 @@ int readMatchesFromGFF_Batch(
     //typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
 
 
-    if(length(fragmentStore.readSeqStore)!=length(fragmentStore.alignQualityStore))
+    if (length(fragmentStore.readSeqStore)!=length(fragmentStore.alignQualityStore))
     {
         ::std::cerr << "Lengths need to be equal!!\n";
         return 10;
@@ -675,7 +717,8 @@ int readMatchesFromGFF_Batch(
     while (!atEnd(fileIter))
     {
         // our razers gff output looks like this:
-        //X       razers      read            100919085       100919120       2       +       .       ID=s_3_1_3;unique;mutations=34A;quality=I)IEIIII-7IA>IIIIII07,-%I>)&#029.2-.
+        //X       razers      read            100919085       100919120       2       +        .
+        //        D=s_3_1_3;unique;mutations=34A;quality=I)IEIIII-7IA>IIIIII07,-%I>)&#029.2-.
 
         typename std::ifstream::pos_type lineStart = position(fileIter);
 
@@ -704,47 +747,51 @@ int readMatchesFromGFF_Batch(
 
         //check if the genomeID is in our map of relevant genomeIDs, otherwise skip match
         it = gIdStringToIdNumMap.find(temp_str);
-        if(options._debugLevel > 1)
+        if (options._debugLevel > 1)
             ::std::cout << temp_str << "\t";
-        if(it != gIdStringToIdNumMap.end()) contigId = it->second;
+        if (it != gIdStringToIdNumMap.end())
+        {
+            contigId = it->second;
+        }
         else
         {
             skipLine(fileIter);
             continue;
         }
-        if((int)contigId < (int)highestChrId)
+        if ((int)contigId < (int)highestChrId)
         {
             std::cerr << "Read files need to be sorted according to chromosomes in genome file.\n";
             return CALLSNPS_GFF_FAILED;
         }
 
         highestChrId = contigId;
-        if(contigId < currSeqNo)    // havent reached the sequence of interest yet
+        if (contigId < currSeqNo)    // havent reached the sequence of interest yet
         {
             skipLine(fileIter);
             continue;
         }
 
-        if(contigId > currSeqNo)    // have passed the seq of interest
+        if (contigId > currSeqNo)    // have passed the seq of interest
         {
             setPosition(fileIter, lineStart);
             break;
         }
-        if(setZero) contigId = 0; // if we only store one chromosome at a time
+        if (setZero)
+            contigId = 0; // if we only store one chromosome at a time
 
         // skip whitespaces and read entry in column 2
         skipUntil(fileIter, NotFunctor<IsWhitespace>());
         clear(temp_str);
         readUntil(temp_str, fileIter, NotFunctor<IsGraph>());
 
-        if(options._debugLevel > 1)
+        if (options._debugLevel > 1)
             ::std::cout << temp_str << "\t";
 
         // skip whitespaces and read entry in column 3
         skipUntil(fileIter, NotFunctor<IsWhitespace>());
         clear(temp_str);
         readUntil(temp_str, fileIter, NotFunctor<IsGraph>());
-        if(options._debugLevel > 1)
+        if (options._debugLevel > 1)
             ::std::cout << temp_str << "\t";
 
         // skip whitespaces and read entry in column 4  --> genomic begin position
@@ -754,14 +801,14 @@ int readMatchesFromGFF_Batch(
         TContigPos beginPos = 0;
         lexicalCastWithException(beginPos, temp_str);
         beginPos -= options.positionFormat;
-        if(beginPos > currentEnd + (TContigPos)options.windowBuff)  // we have passed the relevant match positions
+        if (beginPos > currentEnd + (TContigPos)options.windowBuff)  // we have passed the relevant match positions
         {
-            if(options._debugLevel > 1)
+            if (options._debugLevel > 1)
                 std::cout  << "gBegin "<< beginPos<<"  of match is too large, seeking "<<lineStart<<"\n";
             setPosition(fileIter, lineStart);
             break;
         }
-        if(options._debugLevel > 1)
+        if (options._debugLevel > 1)
             ::std::cout << beginPos << "\t";
 
         // skip whitespaces and read entry in column 5  --> genomic end position
@@ -771,9 +818,9 @@ int readMatchesFromGFF_Batch(
         TContigPos endPos = 0;
         lexicalCastWithException(endPos, temp_str);
 
-        if(options._debugLevel > 1)
+        if (options._debugLevel > 1)
             ::std::cout << endPos << "\t";
-        if(endPos + (TContigPos)options.windowBuff < currentBegin)  //we havent reached a relevant read yet
+        if (endPos + (TContigPos)options.windowBuff < currentBegin)  //we havent reached a relevant read yet
         {
             skipLine(fileIter);
             continue;
@@ -781,7 +828,7 @@ int readMatchesFromGFF_Batch(
 
         int gMatchLen = endPos - beginPos;
         int rLen = gMatchLen;
-        if(endPos > genomeLen)
+        if (endPos > genomeLen)
         {
             setPosition(fileIter, lineStart);
             break;
@@ -789,7 +836,7 @@ int readMatchesFromGFF_Batch(
 
         // skip whitespaces and read entry in column 6  --> score (percent identity or mapping quality) or a '.'
         skipUntil(fileIter, NotFunctor<IsWhitespace>());
-        if(*fileIter == '.')
+        if (*fileIter == '.')
         {
             mScore = 100;  //not used, but needs to be >= options.minMapQual (default 1)
             ++fileIter;
@@ -804,7 +851,7 @@ int readMatchesFromGFF_Batch(
             lexicalCastWithException(tmp, temp_str);
             mScore = (int)tmp;
         }
-        if(options._debugLevel > 1)
+        if (options._debugLevel > 1)
             ::std::cout << mScore << "\t";
 
         // skip whitespaces and read entry in column 7  --> strand information: '+' or '-'
@@ -823,14 +870,16 @@ int readMatchesFromGFF_Batch(
         if (atEnd(fileIter))
             return CALLSNPS_GFF_FAILED;
 
-        // skip whitespaces and read entry in column 9  --> tags, extra information. in razers output first tag is always "ID"
+        // skip whitespaces and read entry in column 9 -> tags, extra info. In razers output first tag is always "ID"
         skipUntil(fileIter, NotFunctor<IsWhitespace>());
         clear(temp_str);
-        readUntil(temp_str, fileIter, NotFunctor<OrFunctor<IsAlphaNum, OrFunctor<EqualsChar<'-'>, EqualsChar<'_'> > > >());
-        if(options._debugLevel > 1)
+        readUntil(temp_str,
+                  fileIter,
+                  NotFunctor<OrFunctor<IsAlphaNum, OrFunctor<EqualsChar<'-'>, EqualsChar<'_'> > > >());
+        if (options._debugLevel > 1)
             ::std::cout << temp_str << "\n";
-        if(temp_str!="ID")
-            ::std::cout << "first feature field should be 'ID'"<<::std::endl;
+        if (temp_str!="ID")
+            ::std::cout << "first feature field should be 'ID'" << ::std::endl;
 
         // skip the "="
         goNext(fileIter);
@@ -840,8 +889,8 @@ int readMatchesFromGFF_Batch(
         // read the readID
         CharString readName;
         readUntil(readName, fileIter, OrFunctor<EqualsChar<';'>, IsNewline>());
-        if(options._debugLevel > 1)
-            ::std::cout << "myID = "<<readName << "\n";
+        if (options._debugLevel > 1)
+            ::std::cout << "myID = " << readName << "\n";
 #ifdef SNPSTORE_DEBUG
         bool extraV = true;
 #endif
@@ -850,7 +899,8 @@ int readMatchesFromGFF_Batch(
         if (orientation == 'R')
             reverseComplement(gInf);
         readTemplate = gInf;
-        if(options._debugLevel > 1) std::cout << readTemplate << "\n";
+        if (options._debugLevel > 1)
+            std::cout << readTemplate << "\n";
 
         // process tags in a loop
         CharString current_tag;
@@ -867,7 +917,8 @@ int readMatchesFromGFF_Batch(
         clear(tmpCigarStr);
         while (!atEnd(fileIter) && *fileIter != '\r' && *fileIter != '\n') // while in same line
         {
-            // different tags are separated by ';'  ATTENTION: ascii qualities can contain ';', therefore the tag "quality" MUST be the last tag in a line!!!!!!!!
+            // different tags are separated by ';'
+            //ATTENTION: ascii qualities can contain ';', therefore the tag "quality" MUST be the last tag in a line!!!
             while (*fileIter != ';')
             {
                 if (*fileIter == '\r')
@@ -885,16 +936,17 @@ int readMatchesFromGFF_Batch(
             }
             // get the current tag
             clear(current_tag);
-            readUntil(current_tag, fileIter, NotFunctor<OrFunctor<IsAlphaNum, OrFunctor<EqualsChar<'-'>, EqualsChar<'_'> > > >());
+            readUntil(current_tag, fileIter,
+                      NotFunctor<OrFunctor<IsAlphaNum, OrFunctor<EqualsChar<'-'>, EqualsChar<'_'> > > >());
 #ifdef SNPSTORE_DEBUG
-            if(options._debugLevel > 1)
+            if (options._debugLevel > 1)
                 ::std::cout << current_tag << " in features\n";
 #endif
-            if(current_tag=="quality")
+            if (current_tag=="quality")
             {
                 // add the quality to the read
                 qualityFound = true;
-                if(!readFound)  //read fragmentStore.alignedReadStore with 0 errors --> read == genomeInfix
+                if (!readFound)  //read fragmentStore.alignedReadStore with 0 errors --> read == genomeInfix
                 {
                     temp_read = infix(readTemplate,0,gMatchLen);  // without quality values
                     curr_read = temp_read;              // initialized with q40
@@ -908,13 +960,15 @@ int readMatchesFromGFF_Batch(
                         int tempQual = _max(0, (int)ordValue(*fileIter)-options.asciiQualOffset);
                         assignQualityValue(curr_read[i],tempQual);
 #ifdef SNPSTORE_DEBUG
-                        if(extraV) ::std::cout << (char)(getQualityValue(curr_read[i]) );
+                        if (extraV)
+                            ::std::cout << (char)(getQualityValue(curr_read[i]) );
 #endif
                     }
                     else
                     {
                         // shouldnt happen
-                        if(i != rLen-1 && options._debugLevel > 1) std::cout << curr_read << " gives problems\n";
+                        if (i != rLen-1 && options._debugLevel > 1)
+                            std::cout << curr_read << " gives problems\n";
                         break;
                     }
                 }
@@ -924,10 +978,22 @@ int readMatchesFromGFF_Batch(
                 // parse other tags
                 pos = 0;
                 pos2 = 0;
-                if (current_tag == "unique") {/*unique = true;*/}
-                else if (current_tag == "multi") {multi = true;}
-                else if (current_tag == "suboptimal") {suboptimal = true;}
-                else if (current_tag == "split") {splitRead = true;}
+                if (current_tag == "unique")
+                {
+                    /*unique = true;*/
+                }
+                else if (current_tag == "multi")
+                {
+                    multi = true;
+                }
+                else if (current_tag == "suboptimal")
+                {
+                    suboptimal = true;
+                }
+                else if (current_tag == "split")
+                {
+                    splitRead = true;
+                }
                 else if (current_tag == "clip")
                 {
                     options.clipTagsInFile = true;
@@ -967,7 +1033,8 @@ int readMatchesFromGFF_Batch(
                         curr_read = temp_read;
                         readFound = true;
                     }
-                    while (*fileIter == ',' || *fileIter == '=') // and add the mutated positions (misfragmentStore.alignedReadStore and insertions in read)
+                    // and add the mutated positions (misfragmentStore.alignedReadStore and insertions in read)
+                    while (*fileIter == ',' || *fileIter == '=')
                     {
                         goNext(fileIter);
                         if (atEnd(fileIter))
@@ -1000,7 +1067,7 @@ int readMatchesFromGFF_Batch(
                         if (*fileIter == 'M')
                         {
                             unsigned k= 0;
-                            while(k<pos2)
+                            while (k<pos2)
                             {
                                 appendValue(gAliPos,gPos,Generous());
                                 ++gPos;
@@ -1016,10 +1083,10 @@ int readMatchesFromGFF_Batch(
                             continue;
                         }
                         else if (*fileIter == 'I')
-                        { //insertion in the read
+                        {   //insertion in the read
                             //(*mIt).editDist += pos2; will be increased in mutations loop
                             unsigned k= 0;
-                            while(k<pos2)
+                            while (k<pos2)
                             {
                                 appendValue(gAliPos,-gPos,Generous());//no genome positions are used up
                                 ++k;
@@ -1031,13 +1098,13 @@ int readMatchesFromGFF_Batch(
                             rLen += pos2;
                             hasIndel = true;
                             first = false;
-                //            if(maxIndelLen < pos2) maxIndelLen = pos2;
+//                            if (maxIndelLen < pos2) maxIndelLen = pos2;
                             continue;
                         }
                         else if (*fileIter == 'D')
-                        { //there is a deletion in the read
+                        {   //there is a deletion in the read
                             unsigned k= 0;
-                            while(k<pos2)
+                            while (k<pos2)
                             {
                                 ++gPos;
                                 ++k;
@@ -1050,7 +1117,7 @@ int readMatchesFromGFF_Batch(
                             skipOne(fileIter);
                             hasIndel = true;
                             first = false;
-               //             if(maxIndelLen < pos2) maxIndelLen = pos2;
+//                            if (maxIndelLen < pos2) maxIndelLen = pos2;
                             continue;
                         }
                         else if (*fileIter == 'S')
@@ -1060,7 +1127,7 @@ int readMatchesFromGFF_Batch(
                             else
                                 softClippedRight = pos2;
                             unsigned k= 0;
-                            while(k<pos2)
+                            while (k<pos2)
                             {
                                 appendValue(gAliPos,gPos,Generous());
                                 ++gPos;
@@ -1069,7 +1136,7 @@ int readMatchesFromGFF_Batch(
                             appendValue(tmpCigarStr,TCigar('S',pos2));
                             alignLength += pos2;
                             pos2 += pos;
-//                            if(first)
+//                            if (first)
                                 append(temp_read,infix(readTemplate,pos,pos2));
                             pos = pos2;
                             skipOne(fileIter);
@@ -1078,10 +1145,13 @@ int readMatchesFromGFF_Batch(
                             continue;
                         }
                     }
-                    if(alignLength != endPos - beginPos)
+                    if (alignLength != endPos - beginPos)
                     {
-                        std::cerr << "WARNING! Read "<<readName<<": cigar alignment length does not match genome coordinates. Discarding read.."<<std::endl;
-                        //std::cout << "align length = " << alignLength << " endPos=" << endPos << " beginPos=" << beginPos << std::endl;
+                        std::cerr << "WARNING! Read " << readName
+                                  << ": cigar alignment length does not match genome coordinates. Discarding read.."
+                                  <<std::endl;
+                        //std::cout << "align length = " << alignLength << " endPos=" << endPos << " beginPos="
+                        //          << beginPos << std::endl;
                         discardRead = true;
                     }
                     curr_read = temp_read;
@@ -1093,17 +1163,22 @@ int readMatchesFromGFF_Batch(
                 break;
             }
         }
-        if (options._debugLevel>0&&(rSeq%1000000)==0) std::cout <<rSeq<<".."<<std::flush;
-        if(!discardRead && (mScore >= options.minMapQual && (!multi || options.keepMultiReads) && (!suboptimal || options.keepSuboptimalReads)))// && (!((*mIt).hasIndel==1 && options.hammingOnly)))
+        if (options._debugLevel>0 && (rSeq%1000000)==0)
+            std::cout <<rSeq<<".."<<std::flush;
+        if (!discardRead
+                && (mScore >= options.minMapQual && (!multi || options.keepMultiReads)
+                    && (!suboptimal || options.keepSuboptimalReads)))
+                // && (!((*mIt).hasIndel==1 && options.hammingOnly)))
         {
-            if(!readFound)
+            if (!readFound)
             {   //neither quality nor read sequence found
-                if(options._debugLevel>1)::std::cout << "neither quality nor read sequence found editDist = " << editDist <<"\n";
+                if (options._debugLevel>1)
+                    ::std::cout << "neither quality nor read sequence found editDist = " << editDist << "\n";
                 temp_read = infix(readTemplate,0,gMatchLen);
                 curr_read = temp_read;
             }
             // make sure softClipping is taken into account in clip tags
-            if(options.dontClip) // only soft clipping if other clipping is switched off
+            if (options.dontClip) // only soft clipping if other clipping is switched off
             {
                     clipRight = softClippedRight;
                     clipLeft = softClippedLeft;
@@ -1114,60 +1189,65 @@ int readMatchesFromGFF_Batch(
                 clipLeft = _max(clipLeft,softClippedLeft);
             }
 
-            if(clipLeft + clipRight > (int)length(curr_read) - (int)options.minClippedLength)
+            if (clipLeft + clipRight > (int)length(curr_read) - (int)options.minClippedLength)
             {
-                if (options._debugLevel>1) std::cout <<"Discarding read "<<readName<<", too short after clipping.."<<std::endl;
+                if (options._debugLevel>1)
+                    std::cout <<"Discarding read " <<readName << ", too short after clipping.." << std::endl;
                 skipUntil(fileIter, NotFunctor<IsWhitespace>());
                 continue;
             }
-            if(options.realign && splitRead)
+            if (options.realign && splitRead)
             {
-                if(endPos-beginPos > (int)((float)length(curr_read)*1.5))
+                if (endPos-beginPos > (int)((float)length(curr_read)*1.5))
                 {
-                    if (options._debugLevel>1) std::cout <<"Discarding split read "<<readName<<", deletion too large.."<<std::endl;
+                    if (options._debugLevel>1)
+                        std::cout <<"Discarding split read " << readName << ", deletion too large.." << std::endl;
                     skipUntil(fileIter, NotFunctor<IsWhitespace>());
                     continue;
                 }
             }
 #ifdef READ_NAME_AWARE
-            if(!options.storeReadNames) clear(readName);
+            if (!options.storeReadNames) clear(readName);
             TId readId;
-            if(options.storeReadNames && !getIdByName(fragmentStore.readNameStore, readName, readId, fragmentStore.readNameStoreCache))
+            if (options.storeReadNames &&
+                    !getIdByName(fragmentStore.readNameStore, readName, readId, fragmentStore.readNameStoreCache))
             {
                 readId = length(fragmentStore.readSeqStore);
                 appendValue(fragmentStore.readSeqStore,curr_read,Generous());
                 appendValue(fragmentStore.readNameStore, readName, Generous());
             }
-            else
-            {
-
-            }
+            else    //TODO(serosko): Check if something was supposed to happen here.
+            {}
 #else
             TId readId = length(fragmentStore.readSeqStore);
             appendValue(fragmentStore.readSeqStore,curr_read,Generous());
-            if(!options.storeReadNames) clear(readName);
+            if (!options.storeReadNames)
+                clear(readName);
             appendValue(fragmentStore.readNameStore, readName, Generous());
 #endif
 
 #ifdef SNPSTORE_DEBUG
-            if(clipLeft + clipRight > 76 )
+            if (clipLeft + clipRight > 76 )
                 ::std::cerr << "clipLeft = " << clipLeft << " clipRight = "<<clipRight << "\n";
 #endif
 
-            if(options._debugLevel > 1)
-                ::std::cout<<fragmentStore.readSeqStore[rSeq]<<" with edit="<<editDist<<" at position "<< beginPos <<"\n";
+            if (options._debugLevel > 1)
+                ::std::cout<<fragmentStore.readSeqStore[rSeq] << " with edit="
+                          << editDist << " at position " << beginPos << "\n";
 
-            if(endPos - beginPos > (TContigPos)options.maxHitLength)
+            if (endPos - beginPos > (TContigPos)options.maxHitLength)
                 options.maxHitLength = endPos - beginPos;
 
             // remember min and max positions seen
-            if(beginPos < (TContigPos)options.minCoord || options.minCoord == maxValue<unsigned>()) options.minCoord = (unsigned)beginPos;
-            if(endPos > (TContigPos)options.maxCoord) options.maxCoord =  (unsigned)endPos;
+            if (beginPos < (TContigPos)options.minCoord || options.minCoord == maxValue<unsigned>())
+                options.minCoord = (unsigned)beginPos;
+            if (endPos > (TContigPos)options.maxCoord)
+                options.maxCoord =  (unsigned)endPos;
 
             // create match m
             TMatch m;
             m.id = readId; //length(fragmentStore.alignedReadStore);
-            if(orientation == 'F')
+            if (orientation == 'F')
             {
                 m.beginPos = beginPos;
                 m.endPos = endPos;
@@ -1184,44 +1264,51 @@ int readMatchesFromGFF_Batch(
             TMatchQuality q;
             q.errors = (char)editDist;
             q.score = (char) 0;
-            if(options._debugLevel > 1)
+            if (options._debugLevel > 1)
             {
-                if(splitRead && hasIndel)
+                if (splitRead && hasIndel)
                     std::cout << "has indel!\n"; //TODO: how should split reads be treated in realignment?
             }
-            if(!options.realign && splitRead && length(tmpCigarStr)<=3) hasIndel = false;
-            if(splitRead) clipLeft = clipRight = 0;
-            if(hasIndel)
+            if (!options.realign && splitRead && length(tmpCigarStr)<=3)
+                hasIndel = false;
+            if (splitRead)
+                clipLeft = clipRight = 0;
+            if (hasIndel)
                 q.pairScore = 1;
             else
                 q.pairScore = 0;
 
             typename Value<TReadStore>::Type r;
             r.matePairId = TReadStoreElement::INVALID_ID;
-            if(readCount > 0) appendValue(readCounts, readCount, Generous());
+            if (readCount > 0)
+                appendValue(readCounts, readCount, Generous());
 
             appendValue(fragmentStore.readStore, r, Generous());
             appendValue(fragmentStore.alignedReadStore, m, Generous());
             appendValue(fragmentStore.alignQualityStore, q, Generous());
             appendValue(readClips,Pair<int,int>(clipLeft,clipRight));
 
-            if(!splitRead)
+            if (!splitRead)
                 clear(tmpCigarStr); // split reads store their cigar string explicitly
 
             appendValue(readCigars,tmpCigarStr);
             ++rSeq;
-            if(options._debugLevel > 1)
+            if (options._debugLevel > 1)
             {
-                ::std::cout<<"Parsed: id= " <<m.readId<<" name="<<readName<<"="<<curr_read<<" with edit="<<editDist<<" at position "<< beginPos<<"\n";
-                ::std::cout << "mScore=" << mScore << " m.beginPos=" << m.beginPos << " m.endPos=" << m.endPos << std::endl;
-                if(q.pairScore==1) ::std::cout << "indel! pairScore=" << q.pairScore <<std::endl;
-                if(q.pairScore==0) ::std::cout << "no indel! pairScore=" << q.pairScore <<std::endl;
+                ::std::cout<<"Parsed: id= " << m.readId << " name=" << readName << "=" << curr_read
+                          << " with edit=" << editDist << " at position " << beginPos<<"\n";
+                ::std::cout << "mScore=" << mScore << " m.beginPos=" << m.beginPos
+                            << " m.endPos=" << m.endPos << std::endl;
+                if (q.pairScore==1)
+                    ::std::cout << "indel! pairScore=" << q.pairScore <<std::endl;
+                if (q.pairScore==0)
+                    ::std::cout << "no indel! pairScore=" << q.pairScore <<std::endl;
 
             }
         }
         else
         {
-            if(options._debugLevel > 1 )
+            if (options._debugLevel > 1 )
             {
                 ::std::cout<<"Discarded: "<<curr_read<<" with edit="<<editDist<<" at position "<< beginPos<<"\n";
                 ::std::cout << "mScore = " << mScore << std::endl;
@@ -1230,10 +1317,9 @@ int readMatchesFromGFF_Batch(
 
         skipUntil(fileIter, NotFunctor<IsWhitespace>());
     }
-    if(options._debugLevel > 0)
-        ::std::cout << ::std::endl << "Parsed "<<length(fragmentStore.alignedReadStore)<<" matches of "<<length(fragmentStore.readSeqStore)<<" reads." << ::std::endl;
-
-
+    if (options._debugLevel > 0)
+        ::std::cout << ::std::endl << "Parsed " << length(fragmentStore.alignedReadStore)
+                    << " matches of " << length(fragmentStore.readSeqStore) << " reads." << ::std::endl;
     return 0;
 }
 
@@ -1266,29 +1352,31 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
     BamTagsDict bamTags(tags);
     unsigned editDistIndex = 0;
     bool res1 = findTagKey(editDistIndex, bamTags, "NM");
-    if(res1)
+    if (res1)
     {
         SEQAN_ASSERT_EQ('i', getTagType(bamTags, editDistIndex));
         extractTagValue(editDist, bamTags, editDistIndex);
     }
-    else editDist = 1; // we dont know whether there are errors in the alignment, we assume there are..
+    else
+        editDist = 1; // we dont know whether there are errors in the alignment, we assume there are..
 
     int numBest = 0;
     unsigned numBestIndex = 0;
     res1 = findTagKey(numBestIndex, bamTags, "X0");
-    if(res1)
+    if (res1)
     {
         SEQAN_ASSERT_EQ('i', getTagType(bamTags, numBestIndex));
         extractTagValue(numBest, bamTags, numBestIndex);
-        if(numBest > 1) multi = true;
+        if (numBest > 1)
+            multi = true;
     }
 
     unsigned clipIndex = 0;
     res1 = findTagKey(clipIndex, bamTags, "XC");
-    if(res1)
-    {
-//      SEQAN_ASSERT_EQ('Z', getTagType(bamTags, clipIndex));  // XC is also used by BWA, also for clipping, but different fron ours
-        if('Z' == getTagType(bamTags, clipIndex))
+    if (res1)
+    {   // XC is also used by BWA, also for clipping, but different fron ours
+//      SEQAN_ASSERT_EQ('Z', getTagType(bamTags, clipIndex));
+        if ('Z' == getTagType(bamTags, clipIndex))
         {
             CharString clipLeftRight;
             extractTagValue(clipLeftRight, bamTags, clipIndex);
@@ -1333,7 +1421,7 @@ typename TOptions
 int readMatchesFromSamBam_Batch(
                          BamFileIn                  & bamFileIn,
                          BamAlignmentRecord         &record,
-                         TFragmentStore             &fragmentStore,             // forward/reverse fragmentStore.alignedReadStore
+                         TFragmentStore             &fragmentStore,    // forward/reverse fragmentStore.alignedReadStore
                          TReadCounts                &readCounts,
                          String<Pair<int,int> >     &readClips,
                          StringSet<TCigarStr>       &readCigars,
@@ -1364,7 +1452,7 @@ int readMatchesFromSamBam_Batch(
     //typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
 
 
-    if(length(fragmentStore.readSeqStore)!=length(fragmentStore.alignQualityStore))
+    if (length(fragmentStore.readSeqStore)!=length(fragmentStore.alignQualityStore))
     {
         ::std::cerr << "Lengths need to be equal!!\n";
         return 10;
@@ -1398,13 +1486,15 @@ int readMatchesFromSamBam_Batch(
         if (empty(record.qName))
             readRecord(record, bamFileIn);
         //_printRecord(std::cout, record);
-        if(res != 0)
+        if (res != 0)
         {
             ::std::cerr << "Something wrong with SAM/BAM file?" << std::endl;
             return 2;
         }
 
-        if ( hasFlagUnmapped(record) || empty(record.cigar) || (!options.keepSuboptimalReads && hasFlagSecondary(record)))
+        if (hasFlagUnmapped(record) ||
+                empty(record.cigar) ||
+                (!options.keepSuboptimalReads && hasFlagSecondary(record)))
         {
             //std::cout << "Read " << record.qName << " has Flag=" << record.flag << std::endl;
             clear(record); continue;
@@ -1428,25 +1518,26 @@ int readMatchesFromSamBam_Batch(
         int editDist = 0;
         int mScore = 100;
 
-        // problem: contigNameStore is not filled --> what is rID set to? can i get the original string?? -> extra BamAlignmentRecord spec?
+        // problem: contigNameStore is not filled
+        // --> what is rID set to? can i get the original string?? -> extra BamAlignmentRecord spec?
         //check if the genomeID is in our map of relevant genomeIDs, otherwise skip match
         it = gIdStringToIdNumMap.find(contigNames(context(bamFileIn))[record.rID]);
-        if(options._debugLevel > 1)
+        if (options._debugLevel > 1)
             ::std::cout << record.rID << "\t";
-        if(it != gIdStringToIdNumMap.end())
+        if (it != gIdStringToIdNumMap.end())
             contigId = it->second;
         else // check if there is "chr"
         {
-            if(prefix(contigNames(context(bamFileIn))[record.rID],3) == "chr")
+            if (prefix(contigNames(context(bamFileIn))[record.rID],3) == "chr")
                 it = gIdStringToIdNumMap.find(suffix(contigNames(context(bamFileIn))[record.rID],3));
-            if(it != gIdStringToIdNumMap.end())
+            if (it != gIdStringToIdNumMap.end())
                 contigId = it->second;
             else
             {
                 CharString temp = "chr";
                 append(temp,contigNames(context(bamFileIn))[record.rID]);
                 it = gIdStringToIdNumMap.find(temp);
-                if(it != gIdStringToIdNumMap.end())
+                if (it != gIdStringToIdNumMap.end())
                     contigId = it->second;
                 else
                 {
@@ -1456,39 +1547,40 @@ int readMatchesFromSamBam_Batch(
             }
         }
 
-        if((int)contigId < (int)highestChrId)
+        if ((int)contigId < (int)highestChrId)
         {
             std::cerr << "Read files need to be sorted according to chromosomes in genome file.\n";
             return CALLSNPS_GFF_FAILED;
         }
 
         highestChrId = contigId;
-        if(contigId < currSeqNo)    // havent reached the sequence of interest yet
+        if (contigId < currSeqNo)    // havent reached the sequence of interest yet
         {
             clear(record);
             continue;
         }
 
-        if(contigId > currSeqNo)    // have passed the seq of interest
+        if (contigId > currSeqNo)    // have passed the seq of interest
         {
 //          streamSeek(reader,lineStart);
 //            (reader._file).seekp(lineStart);
             break;
         }
-        if(setZero) contigId = 0; // if we only store one chromosome at a time
+        if (setZero)
+            contigId = 0; // if we only store one chromosome at a time
 
         // skip whitespaces and read entry in column 2
 
         TContigPos beginPos = record.beginPos;
-        if(beginPos > currentEnd + (TContigPos)options.windowBuff)  // we have passed the relevant match positions
+        if (beginPos > currentEnd + (TContigPos)options.windowBuff)  // we have passed the relevant match positions
         {
-            if(options._debugLevel > 1)
+            if (options._debugLevel > 1)
                 std::cout  << "gBegin "<< beginPos<<"  of match is too large\n";//, seeking "<<lineStart<<"\n";
 //          streamSeek(reader,lineStart);
 //            (reader._file).seekp(lineStart);
             break;
         }
-        if(options._debugLevel > 1)
+        if (options._debugLevel > 1)
             ::std::cout << beginPos << "\t";
 
         //_printRecord(std::cout, record);
@@ -1501,76 +1593,80 @@ int readMatchesFromSamBam_Batch(
         int softClippedLeft = 0, softClippedRight = 0;
         for(unsigned j=0; j < length(record.cigar); ++j)
         {
-            if(record.cigar[j].operation == 'M')
+            if (record.cigar[j].operation == 'M')
             {
                 first = false;
                 endPos += (TContigPos) record.cigar[j].count;
             }
-            if(record.cigar[j].operation == 'D' || record.cigar[j].operation == 'N')
+            if (record.cigar[j].operation == 'D' || record.cigar[j].operation == 'N')
             {
                 first = false;
                 endPos += (TContigPos) record.cigar[j].count;
                 hasIndel = true;
             }
-            if(record.cigar[j].operation == 'I')
+            if (record.cigar[j].operation == 'I')
             {
                 first = false;
                 hasIndel = true;
             }
-            if(record.cigar[j].operation == 'S')
+            if (record.cigar[j].operation == 'S')
             {
                 softClipped = true;
-                if(first)
+                if (first)
                 {
                     softClippedLeft = record.cigar[j].count;
                  // dont apply tags yet, wait until after pile up correction
-                 // instead act as if clipped positions were matched characters --> change mapping cooridnates (will be adjusted again in clipReads function)
+                 // instead act as if clipped positions were matched characters
+                 // --> change mapping cooridnates (will be adjusted again in clipReads function)
                     beginPos = _max(0,beginPos-softClippedLeft);
                 }
                 else
                 {
                     softClippedRight = record.cigar[j].count;
                  // dont apply tags yet, wait until after pile up correction
-                 // instead act as if clipped positions were matched characters --> change mapping cooridnates (will be adjusted again in clipReads function)
+                 // instead act as if clipped positions were matched characters
+                 // --> change mapping cooridnates (will be adjusted again in clipReads function)
                     endPos += (TContigPos) record.cigar[j].count;
                 }
                 first = false;
                 options.softClipTagsInFile = true;
             }
-
         }
 
-        if(options._debugLevel > 1)
+        if (options._debugLevel > 1)
             ::std::cout << endPos << "\t";
-        if(endPos + (TContigPos)options.windowBuff < currentBegin)  //we havent reached a relevant read yet
+        if (endPos + (TContigPos)options.windowBuff < currentBegin)  //we havent reached a relevant read yet
         {
             clear(record);
             continue;
         }
 
-        if(endPos > genomeLen)
+        if (endPos > genomeLen)
             break;
 
         // must be parsed from tag
         mScore = (int)record.mapQ;
-        if(options._debugLevel > 1)
+        if (options._debugLevel > 1)
             ::std::cout << mScore << "\t";
 
-        if (hasFlagRC(record)) orientation = 'R';
-        else orientation = 'F';
-
+        if (hasFlagRC(record))
+            orientation = 'R';
+        else
+            orientation = 'F';
 
         CharString readName = record.qName;
-        if(options._debugLevel > 1)
+        if (options._debugLevel > 1)
             ::std::cout << "myID = "<<readName << "\n";
 #ifdef SNPSTORE_DEBUG
         bool extraV = true;
 #endif
 
-        bool multi = false, splitRead = false;
+        bool multi = false;
+        bool splitRead = false;
         bool suboptimal = hasFlagSecondary(record);
 
-        clipLeft = 0; clipRight = 0;
+        clipLeft = 0;
+        clipRight = 0;
         TRead curr_read = record.seq;
         for(unsigned j = 0; j < length(record.qual); ++j)
         {
@@ -1584,7 +1680,7 @@ int readMatchesFromSamBam_Batch(
         interpretBamTags(record.tags,editDist,multi,clipLeft,clipRight,options);
 
         // make sure softClipping is taken into account in clip tags
-        if(options.dontClip) // only soft clipping if other clipping is switched off
+        if (options.dontClip) // only soft clipping if other clipping is switched off
         {
                 clipRight = softClippedRight;
                 clipLeft = softClippedLeft;
@@ -1603,68 +1699,80 @@ int readMatchesFromSamBam_Batch(
 
 
 
-        if (options._debugLevel>0&&(rSeq%1000000)==0) std::cout <<rSeq<<".."<<std::flush;
-        if( /*length(curr_read)> 30 && */ mScore >= options.minMapQual && (!multi || options.keepMultiReads) && (!suboptimal || options.keepSuboptimalReads))// && (!((*mIt).hasIndel==1 && options.hammingOnly)))
+        if (options._debugLevel>0 && (rSeq%1000000)==0)
+            std::cout <<rSeq<<".."<<std::flush;
+        if (/*length(curr_read)> 30 && */
+                mScore >= options.minMapQual &&
+                (!multi || options.keepMultiReads)&&
+                (!suboptimal || options.keepSuboptimalReads))
+//              && (!((*mIt).hasIndel==1 && options.hammingOnly)))
         {
-            if(empty(curr_read))
+            if (empty(curr_read))
             {   //read sequence not found
-                if(options._debugLevel>1)::std::cout << "neither quality nor read sequence found editDist = " << editDist <<"\n";
+                if (options._debugLevel>1)::std::cout << "neither quality nor read sequence found editDist = "
+                                                      << editDist << "\n";
                 return 1;
             }
-            if(clipLeft + clipRight > (int)length(curr_read) - (int)options.minClippedLength)
+            if (clipLeft + clipRight > (int)length(curr_read) - (int)options.minClippedLength)
             {
-                if (options._debugLevel>1) std::cout <<"Discarding read "<<readName<<", too short after clipping.."<<std::endl;
+                if (options._debugLevel>1)
+                    std::cout << "Discarding read "<< readName << ", too short after clipping.." << std::endl;
                 clear(record);
                 continue;
             }
-            if(options.realign && splitRead)
+            if (options.realign && splitRead)
             {
-                if(endPos-beginPos > (int)((float)length(curr_read)*1.5))
+                if (endPos-beginPos > (int)((float)length(curr_read)*1.5))
                 {
 
-                    if (options._debugLevel>1) std::cout <<"Discarding split read "<<readName<<", deletion too large.."<<std::endl;
+                    if (options._debugLevel>1)
+                        std::cout << "Discarding split read " << readName << ", deletion too large.." << std::endl;
                     // should just not consider these reads for realignment instead of kicking them out entirely
                 }
             }
 #ifdef READ_NAME_AWARE
-            if(!options.storeReadNames) clear(readName);
+            if (!options.storeReadNames)
+                clear(readName);
             TId readId;
-            if(options.storeReadNames && !getIdByName(fragmentStore.readNameStore, readName, readId, fragmentStore.readNameStoreCache))
+            if (options.storeReadNames &&
+                    !getIdByName(fragmentStore.readNameStore, readName, readId, fragmentStore.readNameStoreCache))
             {
                 readId = length(fragmentStore.readSeqStore);
                 appendValue(fragmentStore.readSeqStore,curr_read,Generous());
                 appendValue(fragmentStore.readNameStore, readName, Generous());
             }
-            else
-            {
-
-            }
+            else //TODO(serosko): Check if something was suposed to happen here
+            {}
 #else
             TId readId = length(fragmentStore.readSeqStore);
             appendValue(fragmentStore.readSeqStore,curr_read,Generous());
-            if(!options.storeReadNames) clear(readName);
+            if (!options.storeReadNames)
+                clear(readName);
             appendValue(fragmentStore.readNameStore, readName, Generous());
 #endif
 
 #ifdef SNPSTORE_DEBUG
-            if(clipLeft + clipRight > 76 )
+            if (clipLeft + clipRight > 76 )
                 ::std::cerr << "clipLeft = " << clipLeft << " clipRight = "<<clipRight << "\n";
 #endif
 
-            if(options._debugLevel > 1)
-                ::std::cout<<fragmentStore.readSeqStore[rSeq]<<" with edit="<<editDist<<" at position "<< beginPos <<"\n";
+            if (options._debugLevel > 1)
+                ::std::cout<<fragmentStore.readSeqStore[rSeq] << " with edit="
+                          << editDist << " at position " << beginPos << "\n";
 
-            if(endPos - beginPos > (TContigPos)options.maxHitLength)
+            if (endPos - beginPos > (TContigPos)options.maxHitLength)
                 options.maxHitLength = endPos - beginPos;
 
             // remember min and max positions seen
-            if(beginPos < (TContigPos)options.minCoord || options.minCoord == maxValue<unsigned>()) options.minCoord = (unsigned)beginPos;
-            if(endPos > (TContigPos)options.maxCoord) options.maxCoord =  (unsigned)endPos;
+            if (beginPos < (TContigPos)options.minCoord || options.minCoord == maxValue<unsigned>())
+                options.minCoord = (unsigned)beginPos;
+            if (endPos > (TContigPos)options.maxCoord)
+                options.maxCoord =  (unsigned)endPos;
 
             // create match m
             TMatch m;
             m.id = readId; //length(fragmentStore.alignedReadStore);
-            if(orientation == 'F')
+            if (orientation == 'F')
             {
                 m.beginPos = beginPos;
                 m.endPos = endPos;
@@ -1681,45 +1789,53 @@ int readMatchesFromSamBam_Batch(
             TMatchQuality q;
             q.errors = (char)editDist;
             q.score = (char) mScore;
-            if(options._debugLevel > 1)
+            if (options._debugLevel > 1)
             {
-                if(splitRead && hasIndel)
+                if (splitRead && hasIndel)
                     std::cout << "has indel!\n"; //TODO: how should split reads be treated in realignment?
             }
-            if(!options.realign && splitRead && length(tmpCigarStr)<=3) hasIndel = false;
-            if(splitRead) clipLeft = clipRight = 0;
-            if(hasIndel)
+            if (!options.realign && splitRead && length(tmpCigarStr)<=3)
+                hasIndel = false;
+            if (splitRead)
+                clipLeft = clipRight = 0;
+            if (hasIndel)
                 q.pairScore = 1;
             else
                 q.pairScore = 0;
 
             typename Value<TReadStore>::Type r;
             r.matePairId = TReadStoreElement::INVALID_ID;
-            if(readCount > 0) appendValue(readCounts, readCount, Generous());
+            if (readCount > 0)
+                appendValue(readCounts, readCount, Generous());
 
             appendValue(fragmentStore.readStore, r, Generous());
             appendValue(fragmentStore.alignedReadStore, m, Generous());
             appendValue(fragmentStore.alignQualityStore, q, Generous());
             appendValue(readClips,Pair<int,int>(clipLeft,clipRight));
 
-            if(!splitRead)
+            if (!splitRead)
                 clear(tmpCigarStr); // split reads store their cigar string explicitly
 
             appendValue(readCigars,tmpCigarStr);
             ++rSeq;
-            if(options._debugLevel > 1)
+            if (options._debugLevel > 1)
             {
-                ::std::cout<<"Parsed: id= " <<m.readId<<" name="<<readName<<"="<<curr_read<<" with edit="<<editDist<<" at position "<< beginPos<<"\n";
+                ::std::cout<<"Parsed: id= " << m.readId << " name=" << readName << "="
+                          << curr_read << " with edit=" << editDist << " at position " << beginPos << "\n";
                 ::std::cout << "mScore=" << mScore << " m.beginPos=" << m.beginPos << "m.endPos="<<m.endPos<<std::endl;
-                if(q.pairScore==1) ::std::cout << "indel! pairScore=" << q.pairScore <<std::endl;
-                if(q.pairScore==0) ::std::cout << "no indel! pairScore=" << q.pairScore <<std::endl;
-                if(softClipped) ::std::cout << "SoftClipped!" << std::endl;
-                if(orientation == 'R') ::std::cout << "reversed!" << std::endl;
+                if (q.pairScore==1)
+                    ::std::cout << "indel! pairScore=" << q.pairScore <<std::endl;
+                if (q.pairScore==0)
+                    ::std::cout << "no indel! pairScore=" << q.pairScore <<std::endl;
+                if (softClipped)
+                    ::std::cout << "SoftClipped!" << std::endl;
+                if (orientation == 'R')
+                    ::std::cout << "reversed!" << std::endl;
             }
         }
         else
         {
-            if(options._debugLevel > 1 )
+            if (options._debugLevel > 1 )
             {
                 ::std::cout<<"Discarded: "<<curr_read<<" with edit="<<editDist<<" at position "<< beginPos<<"\n";
                 ::std::cout << "mScore = " << mScore << std::endl;
@@ -1727,10 +1843,10 @@ int readMatchesFromSamBam_Batch(
         }
         clear(record);
     }
-    if(options._debugLevel > 0)
-//  if(length(fragmentStore.alignedReadStore) > 0)
-        ::std::cout << ::std::endl << "Parsed "<<length(fragmentStore.alignedReadStore)<<" matches of "<<length(fragmentStore.readSeqStore)<<" reads." << ::std::endl;
-
+    if (options._debugLevel > 0)
+//  if (length(fragmentStore.alignedReadStore) > 0)
+        ::std::cout << ::std::endl << "Parsed " << length(fragmentStore.alignedReadStore)
+                    << " matches of " << length(fragmentStore.readSeqStore) << " reads." << ::std::endl;
 
     return 0;
 }
@@ -1747,7 +1863,7 @@ bool loadPositions(TPositions & positions,
 {
     ::std::ifstream file;
     file.open(filename,::std::ios_base::in | ::std::ios_base::binary);
-    if(!file.is_open())
+    if (!file.is_open())
         return 1;
 
     CharString chrId;
@@ -1795,30 +1911,32 @@ bool loadPositions(TPositions & positions,
     return 1;
 }
 
+<<<<<<< 1c86e03f210ba09c558fd61c1e6b2f8ee643b51e
 
 
 
 
 #ifdef STDLIB_VS
+=======
+#ifdef PLATFORM_WINDOWS
+>>>>>>> Reformated snp_store.cpp and snp_store.h for better compliance with SeqAn style guide. No functional changes.
 
 template<typename TVal>
 double
 lgamma(TVal x)
 {
-    // TODO: replace
+    // TODO: replace //TODO(serosko): Find out with what and why...
     x -= 1;
-    if(x < 2) return log((double)1);
+    if (x < 2) return log((double)1);
     else
     {
         double f = log((double)2);
         for(int s = 3; s <= x;++s) f += log((double)s);
         return f;
     }
-
 }
 
 #endif
-
 
 // function taken from keith b. hall, computation of probs in log-space
 template<typename TValue>
@@ -1858,8 +1976,6 @@ void computeCnks(THomoTable & cnks, TDependencies & fks, TOptions & options)
     resize(lC, 256*256);
     resize(fks,256);
     resize(cnks, 256*256*64,0.0); // n<256, k<256, q<64
-
-
 
     fks[0] = lFks[0] = 1.0;
     for (int n = 1; n < 256; ++n)
@@ -1901,13 +2017,12 @@ void computeCnks(THomoTable & cnks, TDependencies & fks, TOptions & options)
                 cnks[q<<16|n<<8|k] = (k > 0 ? q_c[k-1] : 0);// + temp[k];
                 cnks[q<<16|n<<8|k] += (boost::math::isnan(temp[k]) ? 0 : temp[k]);
             }
-
         }
     }
 
 //  std::fstream testf;
 //  testf.open("cnks", std::ios_base::out);
-//  if(testf.is_open())
+//  if (testf.is_open())
 //  {
 //      for(unsigned f = 0; f < length(cnks); ++f)
 //              testf << cnks[f] << " ";
@@ -1917,7 +2032,7 @@ void computeCnks(THomoTable & cnks, TDependencies & fks, TOptions & options)
 
 }
 
-#ifdef CORRECTED_HET
+//#ifdef CORRECTED_HET
 using boost::math::normal;
 
 // amplification bias corrected heterozygote probabilities, for diploid only
@@ -1951,15 +2066,18 @@ double computeHetTable(THeteroTable & hetTable, TOptions & options)
     {
         double mean = options.meanAlleleFrequency * n;
         double standardDev = (double) sqrt((1.0-options.meanAlleleFrequency) * mean);
-        long double correction = (long double) sqrt((long double) n*(2.0*(1.0/(1.0+options.amplificationEfficiency))-2.0*pow(1.0+options.amplificationEfficiency,-options.amplificationCycles-1.0)+pow(1.0+options.amplificationEfficiency,-options.amplificationCycles)-1)/(8*options.initialN));
-  //      std::cout << n << ": " << correction << "  ";
+        long double correction = (long double) sqrt(
+                    (long double) n * (2.0 * (1.0 / (1.0 + options.amplificationEfficiency)) - 2.0
+                                       * pow(1.0 + options.amplificationEfficiency,-options.amplificationCycles - 1.0)
+                                       + pow(1.0 + options.amplificationEfficiency,-options.amplificationCycles) - 1)
+                    / (8*options.initialN));
+//        std::cout << n << ": " << correction << "  ";
 
         // get normal distribution
         normal distribution(mean, standardDev + correction);
         appendValue(distributions,distribution);
     }
     //std::cout << std::endl;
-
 
       //  P(1:i+1,i+1)=poisscdf(0.5:(i+1),lambda)-poisscdf(-0.5:(i),lambda);
       //  N(1:i+1,i+1) = normcdf(0.5:(i+1),mu,sigma)-normcdf(-0.5:(i),mu,sigma);
@@ -1968,14 +2086,12 @@ double computeHetTable(THeteroTable & hetTable, TOptions & options)
        // compute values of normal distribution with corrected variance
     for (int n1 = 0; n1 < 256; ++n1)
     {
-
         for (int n2 = 0; n2 < 256; ++n2)
         {
             double corrected = 0.0;
-            if(n1+n2 != 0)
+            if (n1+n2 != 0)
                 corrected = cdf(distributions[n1+n2],n2+0.5) - cdf(distributions[n1+n2],n2-0.5);
             hetTable[n1<<8|n2] = logl(corrected);
-
         }
     }
 
@@ -1983,15 +2099,11 @@ double computeHetTable(THeteroTable & hetTable, TOptions & options)
    // std::cout << "n1=10 , n2=20" << hetTable[10<<8|20] << std::endl;
    // std::cout << "n1=20 , n2=10" << hetTable[20<<8|10] << std::endl;
 
-
     poly_rate = options.hetRate * sum_harmo;
     double hetPriorQ = -4.343 * log(2.0 * poly_rate / (1.0 - poly_rate));
-
     return hetPriorQ;
 }
-#endif
-
-
+//#endif
 
 // maqs heterozygote probabilites
 // fills hetTable structure
@@ -2018,7 +2130,7 @@ double computeHetTable(THeteroTable & hetTable, TOptions & options, MaqMethod & 
                 double pk = 1.0 / k / sum_harmo;
                 double log1 = log((double)k/numHaplotypes);
                 double log2 = log(1.0 - (double)k/numHaplotypes);
-                sum += pk * 0.5 * (expl(log1*n2) * expl(log2*n1) + expl(log1*n1) * expl(log2*n2));
+                sum += pk * 0.5 * (expl(log1*n2) * expl(log2*n1) + expl(log1*n1) * expl(log2 * n2));
             }
             hetTable[n1<<8|n2] = lC + logl(sum);
         }
@@ -2028,8 +2140,6 @@ double computeHetTable(THeteroTable & hetTable, TOptions & options, MaqMethod & 
 
     return hetPriorQ;
 }
-
-
 
 template<typename THomoTable, typename TDependencies, typename TQStrings,typename TVal>
 void
@@ -2052,7 +2162,7 @@ getHomoProbs(THomoTable & cnks,
 
 #ifdef SNPSTORE_DEBUG_CANDPOS
     bool extraV = false; //|| candidatePos < 9335310
-    if(candidatePos==118487871) extraV = true;
+    if (candidatePos==118487871) extraV = true;
 #endif
 
     String<double> sumE, sumF;
@@ -2067,19 +2177,23 @@ getHomoProbs(THomoTable & cnks,
         double fk = 0.0;
         double qual = 0.0;
 #ifdef SNPSTORE_DEBUG_CANDPOS
-        if(extraV) std::cout << "F base"<<i<<": " << std::flush;
+        if (extraV)
+            std::cout << "F base"<<i<<": " << std::flush;
 #endif
         for(unsigned j = 0; j < length(qualitiesForward[i]); ++j)
         {
             qual = static_cast<double>(ordValue(qualitiesForward[i][j])-33);
-            if(qual > 30.0) qual = 30.0; /// snp rate 1 in a 1000
+            if (qual > 30.0)
+                qual = 30.0; // snp rate 1 in a 1000
             //qual = rescale into regular log
-            if(j>=256) fk = fks[255];
-            else fk = fks[j];
+            if (j >= 256)
+                fk = fks[255];
+            else
+                fk = fks[j];
             sumE[i] += fk * qual;
             sumF[i] += fk;
 #ifdef SNPSTORE_DEBUG_CANDPOS
-            if(extraV)
+            if (extraV)
             {
                 std::cout << sumE[i] << " " << std::flush;
                 std::cout << sumF[i] << " " << std::flush;
@@ -2087,19 +2201,24 @@ getHomoProbs(THomoTable & cnks,
 #endif
         }
 #ifdef SNPSTORE_DEBUG_CANDPOS
-        if(extraV) std::cout << std::endl;
-        if(extraV) std::cout << "R base"<<i<<": " << std::flush;
+        if (extraV)
+            std::cout << std::endl;
+        if (extraV)
+            std::cout << "R base"<<i<<": " << std::flush;
 #endif
         for(unsigned j = 0; j < length(qualitiesReverse[i]); ++j)
         {
             qual = static_cast<double>(ordValue(qualitiesReverse[i][j])-33);
-            if(qual > 30.0) qual = 30.0;
-            if(j>=256) fk = fks[255];
-            else fk = fks[j];
+            if (qual > 30.0)
+                qual = 30.0;
+            if (j>=256)
+                fk = fks[255];
+            else
+                fk = fks[j];
             sumE[i] += fk * qual;
             sumF[i] += fk;
 #ifdef SNPSTORE_DEBUG_CANDPOS
-            if(extraV)
+            if (extraV)
             {
                 std::cout << sumE[i] << " " << std::flush;
                 std::cout << sumF[i] << " " << std::flush;
@@ -2109,7 +2228,7 @@ getHomoProbs(THomoTable & cnks,
 
     }
 #ifdef SNPSTORE_DEBUG_CANDPOS
-    if(extraV)
+    if (extraV)
     {
         for(unsigned j = 0; j < 256; ++j)
             std::cout << fks[j] << " " << std::flush;
@@ -2141,19 +2260,19 @@ getHomoProbs(THomoTable & cnks,
         }
     }
 #ifdef SNPSTORE_DEBUG_CANDPOS
-    if(extraV) std::cout <<"best="<<best <<" secondbest="<<secondBest << std::flush << std::endl;
+    if (extraV) std::cout <<"best="<<best <<" secondbest="<<secondBest << std::flush << std::endl;
 #endif
 
     int qAvgBest = 0, qAvgSecondBest = 0;
     int countBest = 0, countSecondBest = 0;
-    if(best != -1)
+    if (best != -1)
     {
         // normalized quality of the base with the best weighted sum of qualities
         qAvgBest = (int)(sumE[best]/sumF[best] + 0.5);
         countBest = length(qualitiesForward[best]) + length(qualitiesReverse[best]);
     }
     else countBest = 0;
-    if(secondBest != -1)
+    if (secondBest != -1)
     {
         qAvgSecondBest = (int)(sumE[secondBest]/sumF[secondBest] + 0.5);
         countSecondBest = length(qualitiesForward[secondBest]) + length(qualitiesReverse[secondBest]);
@@ -2166,26 +2285,38 @@ getHomoProbs(THomoTable & cnks,
     {
         countBest = int(255.0 * countBest / countTotal + 0.5);
         countSecondBest = int(255.0 * countSecondBest / countTotal + 0.5);
-    //  if(extraV) ::std::cout <<  "countBest = " << countBest << "\tcountSecondBest = " << countSecondBest << ::std::endl;
+    //  if (extraV) ::std::cout <<  "countBest = " << countBest << "\tcountSecondBest = " << countSecondBest << ::std::endl;
         countTotal = 255;
     }
 #ifdef SNPSTORE_DEBUG_CANDPOS
-    if(extraV)std::cout << "qAvgBest" <<  qAvgBest << " qAvgSecond"<< qAvgSecondBest << "\n";
-    if(extraV)std::cout << "totalCount" <<  countTotal << " countBest"<< countBest << " countSecondBest"<< countSecondBest << "\n";
+    if (extraV)
+        std::cout << "qAvgBest" <<  qAvgBest << " qAvgSecond"<< qAvgSecondBest << "\n";
+    if (extraV)
+        std::cout << "totalCount" <<  countTotal << " countBest"
+                  << countBest << " countSecondBest" << countSecondBest << "\n";
 #endif
     probQ1 = ((countSecondBest > 0) ? sumE[secondBest] : 0);
-    probQ1 += (boost::math::isnan(cnks[qAvgSecondBest<<16|countTotal<<8|countSecondBest])) ? 0 : cnks[qAvgSecondBest<<16|countTotal<<8|countSecondBest];
+    probQ1 += (boost::math::isnan(cnks[qAvgSecondBest<<16|countTotal<<8|countSecondBest]))
+            ? 0 : cnks[qAvgSecondBest<<16|countTotal<<8|countSecondBest];
     probQ2 = ((countBest > 0) ? sumE[best] : 0);
-    probQ2 += (boost::math::isnan(cnks[qAvgBest<<16|countTotal<<8|countBest])) ? 0 : cnks[qAvgBest<<16|countTotal<<8|countBest];
+    probQ2 += (boost::math::isnan(cnks[qAvgBest<<16|countTotal<<8|countBest]))
+            ? 0 : cnks[qAvgBest<<16|countTotal<<8|countBest];
 
 #ifdef SNPSTORE_DEBUG_CANDPOS
-    if(extraV)std::cout << "cnkBest" <<  cnks[qAvgBest<<16|countTotal<<8|countBest] << "  bei cnkindex " <<(qAvgBest<<16|countTotal<<8|countBest)<<"\n";
-    if(extraV)std::cout << "cnkSecondBest" <<  cnks[qAvgSecondBest<<16|countTotal<<8|countSecondBest] <<  "  bei cnkindex " <<(qAvgSecondBest<<16|countTotal<<8|countSecondBest)<< "\n";
-    if(extraV)std::cout << "probQ1" <<  probQ1 << "\n";
-    if(extraV)std::cout << "probQ2" <<  probQ2 << "\n";
+    if (extraV)
+        std::cout << "cnkBest" <<  cnks[qAvgBest<<16|countTotal<<8|countBest]
+                                               << "  bei cnkindex " << (qAvgBest << 16 | countTotal << 8 | countBest)
+                                               << "\n";
+    if (extraV)
+        std::cout << "cnkSecondBest" <<  cnks[qAvgSecondBest << 16 | countTotal << 8 | countSecondBest]
+                  <<  "  bei cnkindex " << (qAvgSecondBest << 16 | countTotal << 8 | countSecondBest)<< "\n";
+    if (extraV)
+        std::cout << "probQ1" <<  probQ1 << "\n";
+    if (extraV)
+        std::cout << "probQ2" <<  probQ2 << "\n";
 #endif
 
-//  if(extraV)
+//  if (extraV)
  // {
  //     for(unsigned f = 0; f < length(cnks); ++f)
  //         std::cout << cnks[f] << " ";
@@ -2197,8 +2328,6 @@ getHomoProbs(THomoTable & cnks,
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
 
 //looks for mismatches in alignemnt and returns positions with respect to 2nd row (read sequence)
@@ -2213,34 +2342,32 @@ getMismatchMutations(TAlign & align, TString & mutations)
     typedef typename Row<TAlign>::Type TRow;
     typedef typename Iterator<TRow, Rooted>::Type TAlignIterator;
 
-
     TAlignIterator ali_it0_stop = iter(row(align,0),endPosition(cols(align)));
     TAlignIterator ali_it1_stop = iter(row(align,1),endPosition(cols(align)));
     TAlignIterator ali_it0 = iter(row(align,0),beginPosition(cols(align)));
     TAlignIterator ali_it1 = iter(row(align,1),beginPosition(cols(align)));
 
-
     //std::cout << "getting cigar line\n";//ali0 len = " <<ali_it0_stop-ali_it0 << " \t ali1 len = "<<ali_it1_stop-ali_it1<<"\n";
     int refPos = 0;
     //int readPos = 0;
 
-    while(ali_it0 != ali_it0_stop && ali_it1 != ali_it1_stop)
+    while (ali_it0 != ali_it0_stop && ali_it1 != ali_it1_stop)
     {
-        while(ali_it0!=ali_it0_stop && ali_it1!=ali_it1_stop && !isGap(ali_it0)&& !isGap(ali_it1))
+        while (ali_it0!=ali_it0_stop && ali_it1!=ali_it1_stop && !isGap(ali_it0)&& !isGap(ali_it1))
         {
-            if(*ali_it1 != *ali_it0)
+            if (*ali_it1 != *ali_it0)
                 appendValue(mutations,refPos);
             ++refPos;
             ++ali_it0;
             ++ali_it1;
         }
-        while(ali_it0!=ali_it0_stop && isGap(ali_it0))
+        while (ali_it0!=ali_it0_stop && isGap(ali_it0))
         {
             ++refPos;
             ++ali_it0;
             ++ali_it1;
         }
-        while(isGap(ali_it1)&& ali_it1!=ali_it1_stop)
+        while (isGap(ali_it1) && ali_it1!=ali_it1_stop)
         {
             ++ali_it0;
             ++ali_it1;
@@ -2248,7 +2375,6 @@ getMismatchMutations(TAlign & align, TString & mutations)
     }
 
 }
-
 
 
 //looks for position in source sequence of row1 and returns aligned position in row0
@@ -2265,30 +2391,34 @@ getReadPos(TAlign & align, TPosition pos_row1, bool extraV = false)
 
     int refPos = 0;
     int readPos = 0;
-    if(extraV) std::cout << align ;
-    while(ali_it0 != ali_it0_stop && ali_it1 != ali_it1_stop && refPos < pos_row1)
+    if (extraV) std::cout << align ;
+    while (ali_it0 != ali_it0_stop && ali_it1 != ali_it1_stop && refPos < pos_row1)
     {
-        while(ali_it0!=ali_it0_stop && ali_it1!=ali_it1_stop && !isGap(ali_it0)&& !isGap(ali_it1) &&  refPos < pos_row1)
+        while (ali_it0 != ali_it0_stop &&
+               ali_it1 != ali_it1_stop &&
+               !isGap(ali_it0) &&
+               !isGap(ali_it1) &&
+               refPos < pos_row1)
         {
             ++refPos;
             ++readPos;
             ++ali_it0;
             ++ali_it1;
         }
-        while(ali_it0!=ali_it0_stop && isGap(ali_it0) &&  refPos < pos_row1)
+        while (ali_it0!=ali_it0_stop && isGap(ali_it0) &&  refPos < pos_row1)
         {
             ++refPos;
             ++ali_it0;
             ++ali_it1;
         }
-        while(isGap(ali_it1)&& ali_it1!=ali_it1_stop &&  refPos <= pos_row1)
+        while (isGap(ali_it1)&& ali_it1!=ali_it1_stop &&  refPos <= pos_row1)
         {
             ++readPos;
             ++ali_it0;
             ++ali_it1;
         }
     }
-    if(isGap(ali_it0)) return -1;
+    if (isGap(ali_it0)) return -1;
     else return readPos;
 }
 
@@ -2318,10 +2448,6 @@ struct IndelVariant{
 */
 
 
-
-
-
-
 template<typename TFragmentStore, typename TGroupStore, typename TMatchIterator>
 void
 copyFragmentStore(TGroupStore &fragStoreGroup,
@@ -2331,7 +2457,11 @@ copyFragmentStore(TGroupStore &fragStoreGroup,
                   typename TFragmentStore::TContigPos   groupStartPos,
                   typename TFragmentStore::TContigPos   groupEndPos)
 {
-    //TFragmentStore fragStoreGroup = fragmentStore; //clear(fragStoreGroup.alignedReadStore); resize; arrayCopy(matchItBatchBegin,matchItBatchEnd,begin(fragStoreGroup.alignedReadStore,Standard())); // reads wont be needed anymore
+//    TFragmentStore fragStoreGroup = fragmentStore;
+//    clear(fragStoreGroup.alignedReadStore);
+//    resize;
+//     // reads wont be needed anymore
+//    arrayCopy(matchItBatchBegin,matchItBatchEnd,begin(fragStoreGroup.alignedReadStore,Standard()));
 
     // pointers are enough
     fragStoreGroup.readSeqStore = fragmentStore.readSeqStore;
@@ -2339,11 +2469,12 @@ copyFragmentStore(TGroupStore &fragStoreGroup,
     fragStoreGroup.readNameStore = fragmentStore.readNameStore;
     fragStoreGroup.alignQualityStore = fragmentStore.alignQualityStore;
 
-
-    // need to be copied / moved
+    // need to be copied/moved
     resize(fragStoreGroup.alignedReadStore,matchItBatchEnd-matchItBatchBegin,Exact());
-    arrayCopy(matchItBatchBegin,matchItBatchEnd,begin(fragStoreGroup.alignedReadStore,Standard())); // reads wont be needed anymore
-    //arrayMoveForward(matchItBatchBegin,matchItBatchEnd,begin(fragStoreGroup.alignedReadStore,Standard())); // reads wont be needed anymore
+    // reads wont be needed anymore
+    arrayCopy(matchItBatchBegin,matchItBatchEnd,begin(fragStoreGroup.alignedReadStore,Standard()));
+    // reads wont be needed anymore
+    //arrayMoveForward(matchItBatchBegin,matchItBatchEnd,begin(fragStoreGroup.alignedReadStore,Standard()));
 
     // shorten reference sequence to the current region (groupStartPos to groupEndPos)
     // has to be copied because it will be overwritten
@@ -2355,44 +2486,43 @@ copyFragmentStore(TGroupStore &fragStoreGroup,
     conti.seq = infix(fragmentStore.contigStore[0].seq,groupStartPos,groupEndPos);
     appendValue(fragStoreGroup.contigStore, conti, Generous() );
     appendValue(fragStoreGroup.contigNameStore, fragmentStore.contigNameStore[0], Generous() );
-
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // Output SNPs, do realignment if a certain number of indels is observed in the reads
-template <
-    typename TFragmentStore,
-    typename TReadCigars,
-    typename TReadCounts,
-    typename TGenomeName,
-    typename TFile,
-    typename TOptions
->
+template <typename TFragmentStore,
+          typename TReadCigars,
+          typename TReadCounts,
+          typename TGenomeName,
+          typename TFile,
+          typename TOptions>
+
 void dumpVariantsRealignBatchWrap(
-    TFragmentStore              &fragmentStore,         // forward/reverse matches
-    TReadCigars             &readCigars,
-    TReadCounts const           &readCounts,
-    TGenomeName const           genomeID,           // genome name
-    typename TFragmentStore::TContigPos startCoord,         // startCoordinate + posOnGenomeInfix = real coordinate on whole chromosome
+    TFragmentStore                      &fragmentStore,     // forward/reverse matches
+    TReadCigars                         &readCigars,
+    TReadCounts const                   &readCounts,
+    TGenomeName const                   genomeID,           // genome name
+    typename TFragmentStore::TContigPos startCoord,         // startCoordinate + posOnGenomeInfix =
+                                                            //      real coordinate on whole chromosome
     typename TFragmentStore::TContigPos currWindowBegin,
     typename TFragmentStore::TContigPos currWindowEnd,
-    TFile                   &fileSNPs,
-    TFile                   &fileIndels,
-    TOptions                &options)
+    TFile                               &fileSNPs,
+    TFile                               &fileIndels,
+    TOptions                            &options)
 {
 
-    typedef typename TFragmentStore::TAlignedReadStore  TMatches;
-    typedef typename Value<TMatches>::Type          TMatch;
-    typedef typename TFragmentStore::TAlignQualityStore     TMatchQualities;
-    //typedef typename Value<TMatchQualities>::Type       TMatchQuality;
-    //typedef typename TFragmentStore::TReadSeqStore      TReads;
-    //typedef typename Value<TReads>::Type            TRead;
-    //typedef typename TFragmentStore::TContigStore       TContigStore;
-    typedef typename TFragmentStore::TContigPos         TContigPos;
-    //typedef typename Value<TContigStore>::Type      TContig;
-    //typedef typename TFragmentStore::TContigSeq         TContigSeq;
-    typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
+    typedef typename TFragmentStore::TAlignedReadStore       TMatches;
+    typedef typename Value<TMatches>::Type                   TMatch;
+    typedef typename TFragmentStore::TAlignQualityStore      TMatchQualities;
+    //typedef typename Value<TMatchQualities>::Type          TMatchQuality;
+    //typedef typename TFragmentStore::TReadSeqStore         TReads;
+    //typedef typename Value<TReads>::Type                   TRead;
+    //typedef typename TFragmentStore::TContigStore          TContigStore;
+    typedef typename TFragmentStore::TContigPos              TContigPos;
+    //typedef typename Value<TContigStore>::Type             TContig;
+    //typedef typename TFragmentStore::TContigSeq            TContigSeq;
+    typedef typename Iterator<TMatches,Standard>::Type       TMatchIterator;
 
 
     TMatches &matches       = fragmentStore.alignedReadStore;
@@ -2419,7 +2549,7 @@ void dumpVariantsRealignBatchWrap(
 
     // now find connected subsets, i.e. groups of reads that overlap
     // dont realign regions unworthy of realignment (no indel reads)
-    while(matchIt != matchItEnd)
+    while (matchIt != matchItEnd)
     {
         TMatchIterator matchItBatchBegin = matchIt;
         TContigPos groupEndPos = _max((*matchIt).endPos,(*matchIt).beginPos);
@@ -2429,40 +2559,45 @@ void dumpVariantsRealignBatchWrap(
         TContigPos groupStartCoordLocal = _max(0,(int)groupStartPos-options.realignAddBorder);
 
         int indelReadCount = 0; // how many reads have indels in the current group
-        while(matchIt != matchItEnd && _min((*matchIt).beginPos,(*matchIt).endPos) < groupEndPos)
+        while (matchIt != matchItEnd && _min((*matchIt).beginPos,(*matchIt).endPos) < groupEndPos)
         {
-            groupEndPos = (_max((*matchIt).beginPos,(*matchIt).endPos) > groupEndPos) ? _max((*matchIt).beginPos,(*matchIt).endPos) : groupEndPos;
+            groupEndPos = (_max((*matchIt).beginPos,(*matchIt).endPos) > groupEndPos)
+                    ? _max((*matchIt).beginPos,(*matchIt).endPos) : groupEndPos;
             // reads wont be needed anymore! (make sure this is the case!!!)
             (*matchIt).beginPos -= groupStartCoordLocal;
             (*matchIt).endPos -= groupStartCoordLocal;
-            if(matchQualities[(*matchIt).id].pairScore == 1 ) ++indelReadCount;
+            if (matchQualities[(*matchIt).id].pairScore == 1 )
+                ++indelReadCount;
             ++matchIt;
         }
         TMatchIterator matchItBatchEnd = matchIt;
         unsigned numMatches = matchItBatchEnd -matchItBatchBegin;
 
-        TContigPos groupEndCoordLocal = _min(groupEndPos+(TContigPos)options.realignAddBorder,(TContigPos)length(fragmentStore.contigStore[0].seq));
+        TContigPos groupEndCoordLocal = _min(groupEndPos+(TContigPos)options.realignAddBorder,
+                                             (TContigPos)length(fragmentStore.contigStore[0].seq));
 
-        if(numMatches >= options.minCoverage)
+        if (numMatches >= options.minCoverage)
         {
-            //make temporary fragstore for group
-            // shorten reference sequence to the current region (groupStartPos to groupEndPos)
+          //make temporary fragstore for group
+          // shorten reference sequence to the current region (groupStartPos to groupEndPos)
 
-            //FragmentStore<SnpStoreGroupSpec_> fragStoreGroup;
-            //copyFragmentStore(fragStoreGroup,fragmentStore,matchItBatchBegin,matchItBatchEnd,groupStartPos,groupEndPos);
+          //FragmentStore<SnpStoreGroupSpec_> fragStoreGroup;
+          //copyFragmentStore(fragStoreGroup,fragmentStore,matchItBatchBegin,matchItBatchEnd,groupStartPos,groupEndPos);
 
             TFragmentStore fragStoreGroup = fragmentStore;
-            arrayMoveForward(matchItBatchBegin,matchItBatchEnd,begin(fragStoreGroup.alignedReadStore,Standard())); // reads wont be needed anymore
+            // reads wont be needed anymore
+            arrayMoveForward(matchItBatchBegin,matchItBatchEnd,begin(fragStoreGroup.alignedReadStore,Standard()));
             resize(fragStoreGroup.alignedReadStore,numMatches,Exact());
-            fragStoreGroup.contigStore[0].seq = infix(fragmentStore.contigStore[0].seq,groupStartCoordLocal,groupEndCoordLocal);
+            fragStoreGroup.contigStore[0].seq = infix(fragmentStore.contigStore[0].seq,
+                                                      groupStartCoordLocal,groupEndCoordLocal);
 
 #ifdef SNPSTORE_DEBUG
-            std::cout << "in realign wrap: groupEndPos = " <<  groupEndPos << " groupStartPos=" <<  groupStartPos << std::endl;
+            std::cout << "in realign wrap: groupEndPos = " <<  groupEndPos
+                      << " groupStartPos=" <<  groupStartPos << std::endl;
             std::cout << "genomeLength= " <<  length(fragmentStore.contigStore[0].seq) << std::endl;
 
             CharString strstre = "testgroup";
             _dumpMatches(fragStoreGroup,strstre);
-
 #endif
             groupStartPos += startCoord;
             groupEndPos += startCoord;
@@ -2471,7 +2606,7 @@ void dumpVariantsRealignBatchWrap(
             groupEndPos = _min(groupEndPos,currWindowEnd);
 
             //the current group is formed by all reads from matchItBatchBegin until matchItBatchEnd
-            if(indelReadCount >= (int)minNumIndels && options.realign)
+            if (indelReadCount >= (int)minNumIndels && options.realign)
             {
                 //do realignment
                 dumpVariantsRealignBatch(fragStoreGroup,readCigars,
@@ -2481,7 +2616,7 @@ void dumpVariantsRealignBatchWrap(
             }
             else
             {
-                // todo: switch between with or without realignment in dumpVariantsRealignBatch.. problem: split reads
+                // TODO: switch between with or without realignment in dumpVariantsRealignBatch.. problem: split reads
 /*              dumpVariantsRealignBatch(fragStoreGroup,readCigars,
                     readCounts,genomeID,
                     groupStartCoord,groupStartPos,groupEndPos,
@@ -2511,23 +2646,22 @@ _doSnpCall(TCounts & countF,
           SingleBaseVariant &snp,
           MaqMethod&
 #ifdef SNPSTORE_DEBUG_CANDPOS
-            , int candPos
+          , int candPos
 #endif
           )
 {
-
-
         // the diploid reference genotype
         int genotypeRef = (refAllele<<2) | refAllele;
-        int genotypeCalled = genotypeRef, qCall1 = 0;  // genotype call quality
-        int qSnp = 0; // SNP call quality
-        // int genotypeCalled2 = genotypeRef, qCall2 = 0;
+        int genotypeCalled = genotypeRef, qCall1 = 0;   // genotype call quality
+        int qSnp = 0;                                   // SNP call quality
+                                                        // int genotypeCalled2 = genotypeRef, qCall2 = 0;
 
 
 #ifdef SNPSTORE_DEBUG_CANDPOS
         bool extraV = false;
-        if(candPos == 118487871) extraV = true;
-        if(extraV)
+        if (candPos == 118487871)
+            extraV = true;
+        if (extraV)
         {
             ::std::cout << "Forward qualities:\n" << std::flush;
             for(unsigned x = 0; x < length(qualF); ++x)
@@ -2555,9 +2689,9 @@ _doSnpCall(TCounts & countF,
             0
 #endif
             );
-        if(secondBest == -1)
+        if (secondBest == -1)
         {
-            if(best==refAllele) // shouldnt happen
+            if (best==refAllele) // shouldnt happen
                 return false;
             secondBest = refAllele;
         }
@@ -2565,15 +2699,16 @@ _doSnpCall(TCounts & countF,
         //get pHet
         int n = countF[best] + countR[best] + countF[secondBest] + countR[secondBest];
 #ifdef SNPSTORE_DEBUG_CANDPOS
-        if(extraV)
+        if (extraV)
         {
             std::cout << " n = " <<n << std::endl;
-            std::cout << "(countF[secondBest] + countR[secondBest]) = " << (countF[secondBest] + countR[secondBest]) << std::endl;
+            std::cout << "(countF[secondBest] + countR[secondBest]) = "
+                      << (countF[secondBest] + countR[secondBest]) << std::endl;
         }
 #endif
 
         // should always access hetTable with n,refAllele (unless neither best nor second best is ref)
-        //if(secondBest==refAllele && ) // switch best and secondBest
+        //if (secondBest==refAllele && ) // switch best and secondBest
         //{
         //    int temp = secondBest;
         //    secondBest = best;
@@ -2585,22 +2720,24 @@ _doSnpCall(TCounts & countF,
             int temp2 = (int)((countF[secondBest] + countR[secondBest])*255.0/n + 0.5);
             int temp1 = (int)((countF[best] + countR[best])*255.0/n + 0.5);
 #ifdef SNPSTORE_DEBUG_CANDPOS
-        if(extraV)
+        if (extraV)
             std::cout << "temp1 = " << temp1 << std::endl;
 #endif
-            pHet = options.priorHetQ - 4.343 * options.hetTable[temp2<<8|temp1];
-//          pHet = options.priorHetQ - 4.343 * options.hetTable[255<<8|temp];
+            pHet = options.priorHetQ - 4.343 * options.hetTable[temp2 << 8 | temp1];
+//          pHet = options.priorHetQ - 4.343 * options.hetTable[255 << 8 | temp];
         }
         else
-            pHet = options.priorHetQ - 4.343 * options.hetTable[(countF[secondBest] + countR[secondBest])<<8|(countF[best] + countR[best])];
-//          pHet = options.priorHetQ - 4.343 * options.hetTable[n<<8|(countF[secondBest] + countR[secondBest])];
+            pHet = options.priorHetQ - 4.343
+                    * options.hetTable[(countF[secondBest] + countR[secondBest]) << 8 | (countF[best] + countR[best])];
+//          pHet = options.priorHetQ - 4.343
+//                  * options.hetTable[n << 8 | (countF[secondBest] + countR[secondBest])];
 
 #ifdef SNPSTORE_DEBUG_CANDPOS
-        if(extraV)
+        if (extraV)
         {
             std::cout << "refAllele = " << refAllele << std::endl;
         	std::cout << "best = " << best << " with " << countF[best]+countR[best] << std::endl;
-        	std::cout << "secondbest = " << secondBest << " with " << countF[secondBest]+countR[secondBest] << std::endl;
+            std::cout << "secondbest = " << secondBest <<" with " <<countF[secondBest] + countR[secondBest] <<std::endl;
         	std::cout << "pHet = " << pHet << std::endl;
         	std::cout << "pHomo1 = " << pHomo1 << std::endl;
         	std::cout << "pHomo2 = " << pHomo2 << std::endl;
@@ -2612,30 +2749,30 @@ _doSnpCall(TCounts & countF,
         pHomo2 = (pHomo2 > 0.0) ? pHomo2 : 0.0;
 
         double pRef = pHomo1;
-        if(best != refAllele)
+        if (best != refAllele)
             pRef = pHomo2;
-        if(best != refAllele && secondBest != refAllele)
+        if (best != refAllele && secondBest != refAllele)
             qSnp = 255;
 
         int het,/*homo1,*/homo2; //0,1,2
 
         //rank them and create the genotype
-        if(pHet < pHomo1)
+        if (pHet < pHomo1)
         {
-            if(pHet < pHomo2)
+            if (pHet < pHomo2)
             {
                 het = 0; //het is best
-                if(best==refAllele)
-                    genotypeCalled = (best<<2) | secondBest;
+                if (best == refAllele)
+                    genotypeCalled = (best << 2) | secondBest;
                 else
                     genotypeCalled = (secondBest<<2) | best;
 
-                if(pHomo1<=pHomo2)    //(1)
+                if (pHomo1 <= pHomo2)    //(1)
                 {
                     qCall1 = (int)(pHomo1 - pHet  + 0.5);
                     qSnp = (int)(pRef - pHet  + 0.5);
                     // homo1 = 1; //second best
-                    // genotypeCalled2 = (best<<2)| best;
+                    // genotypeCalled2 = (best << 2) | best;
                     // qCall2 = (int)(pHomo2 - pHomo1 + 0.5);
                     homo2 = 2; // last
                 }
@@ -2655,10 +2792,10 @@ _doSnpCall(TCounts & countF,
                 homo2 = 0;
                 qCall1 = (int)(pHet - pHomo2 + 0.5);
                 qSnp = (int)(pRef - pHomo2  + 0.5);
-                genotypeCalled = (secondBest<<2)| secondBest;
+                genotypeCalled = (secondBest << 2) | secondBest;
                 het = 1;
                 // qCall2 = (int)(pHomo1 - pHet + 0.5);
-                // if(best==refAllele)
+                // if (best==refAllele)
                 //  genotypeCalled2 = (best<<2)| secondBest;
                 // else
                 //  genotypeCalled2 = (secondBest<<2) | best;
@@ -2667,14 +2804,14 @@ _doSnpCall(TCounts & countF,
         }
         else
         {
-            if(pHomo2 < pHomo1) //(4)
+            if (pHomo2 < pHomo1) //(4)
             {
                 //this case shouldnt happen
                 // std::cout << "Weird case 4" << std::endl;
                 homo2 = 0;
                 qCall1 = (int)(pHomo1 - pHomo2 + 0.5);
                 qSnp = (int)(pRef - pHomo2  + 0.5);
-                genotypeCalled = (secondBest<<2)| secondBest;
+                genotypeCalled = (secondBest << 2) | secondBest;
                 // homo1 = 1;
                 // qCall2 = (int)(pHet - pHomo1 + 0.5);
                 // genotypeCalled2 = (best<<2)| best;
@@ -2683,26 +2820,26 @@ _doSnpCall(TCounts & countF,
             else
             {
                 // homo1 = 0;
-                genotypeCalled = (best<<2)| best;
-                if(pHet<pHomo2)     //(5)
+                genotypeCalled = (best << 2) | best;
+                if (pHet < pHomo2)     //(5)
                 {
                     qCall1 = (int)(pHet - pHomo1 + 0.5);
                     qSnp = (int)(pRef - pHomo1  + 0.5);
                     het = 1;
-                    // if(best==refAllele)
-                    //  genotypeCalled2 = (best<<2)| secondBest;
+                    // if (best==refAllele)
+                    //  genotypeCalled2 = (best << 2)| secondBest;
                     // else
-                    //  genotypeCalled2 = (secondBest<<2) | best;
+                    //  genotypeCalled2 = (secondBest << 2 ) | best;
                     // qCall2 = (int)(pHomo2 - pHet + 0.5);
                     homo2 = 2;
                 }
                 else        // (6)
                 {
-                    qCall1 = (int)(pHomo2 - pHomo1+ 0.5);
+                    qCall1 = (int)(pHomo2 - pHomo1 + 0.5);
                     qSnp = (int)(pRef - pHomo1  + 0.5);
                     homo2 = 1;
                     // qCall2 = (int)(pHet - pHomo2 + 0.5);
-                    // genotypeCalled2 = (secondBest<<2)| secondBest;
+                    // genotypeCalled2 = (secondBest << 2) | secondBest;
                     het = 2;
                 }
             }
@@ -2713,7 +2850,7 @@ _doSnpCall(TCounts & countF,
 #ifdef SNPSTORE_DEBUG_CANDPOS
             std::cout << "Second best is best homozygote?!" << std::endl;
 #endif
-            //return false;
+            // return false;
             // genotypeCalled2 = genotypeCalled;
             genotypeCalled = genotypeRef;   // disable call
             homo2 = 1;
@@ -2723,26 +2860,25 @@ _doSnpCall(TCounts & countF,
         }
 
     //}
-//    if(best != refAllele && secondBest != refAllele)
+//    if (best != refAllele && secondBest != refAllele)
 //        qSnp = 255;
 
 
     unsigned totalCoverage = countF[0] + countF[1] +countF[2] +countF[3] +countF[4]
                            + countR[0] + countR[1] +countR[2] +countR[3] +countR[4];
 
-    snp.genotype   = genotypeCalled;
-    snp.count      = countF[best] + countR[best];
-    snp.quality    = qCall1;
-    snp.snpQuality = qSnp;
-    snp.coverage   = totalCoverage;
+    snp.genotype        = genotypeCalled;
+    snp.count           = countF[best] + countR[best];
+    snp.quality         = qCall1;
+    snp.snpQuality      = qSnp;
+    snp.coverage        = totalCoverage;
     int consideredCount = countF[secondBest] + countR[secondBest] + countF[best] + countR[best];
-    if (genotypeCalled == genotypeRef) snp.called = false;
-    else snp.called = true;
-    if((double)consideredCount/totalCoverage < options.minExplainedColumn)
-    {
+    if(genotypeCalled == genotypeRef)
         snp.called = false;
-    }
-
+    else
+        snp.called = true;
+    if ((double)consideredCount / totalCoverage < options.minExplainedColumn)
+        snp.called = false;
     return true;
 }
 
@@ -2753,9 +2889,9 @@ _doSnpCall(TCounts & countF,
           TCounts & countR,
           TQualities & qualF,       // columnQualityF
           TQualities & qualR,       // columnQualityR
-          int &refAllele,
+          int & refAllele,
           TOptions & options,
-          SingleBaseVariant &snp,
+          SingleBaseVariant & snp,
           ThresholdMethod&)
 {
 
@@ -2766,60 +2902,63 @@ _doSnpCall(TCounts & countF,
     unsigned maxCount=0;
     for(int k=0; k < 5; ++k)
     {
-        if(countF[k]+countR[k] > maxCount)
+        if (countF[k] + countR[k] > maxCount)
         {
-            maxCount = countF[k]+countR[k];
+            maxCount = countF[k] + countR[k];
             allele1 = k;
         }
     }
     maxCount = 0;
     for(int k=0; k < 5; ++k)
     {
-        if(k != allele1 && countF[k]+countR[k] >= maxCount)
+        if (k != allele1 && countF[k] + countR[k] >= maxCount)
         {
-            maxCount = countF[k]+countR[k];
+            maxCount = countF[k] + countR[k];
             allele2 = k;
         }
     }
 
     // No evidence of non-ref bases left... (used to happen with onthefly-pileupcorrection
     // cannot happen anymore as these positions would never be inspected)
-    if(allele1==refAllele && allele2==refAllele)
+    if (allele1 == refAllele && allele2 == refAllele)
     {
         ::std::cout << "No non-ref base observed. Correct??\n";
         return false;
     }
 
     // get the mutational allele
-    int mutAllele=allele1;
-    if(allele1==refAllele) mutAllele=allele2;
+    int mutAllele = allele1;
+    if (allele1 == refAllele)
+        mutAllele=allele2;
 
     unsigned mutCoverage   = countF[mutAllele] + countR[mutAllele];
     unsigned totalCoverage = countF[0] + countF[1] +countF[2] +countF[3] +countF[4]
                            + countR[0] + countR[1] +countR[2] +countR[3] +countR[4];
 
     // the diploid reference genotype
-    int genotypeRef = (refAllele<<2) | refAllele;
+    int genotypeRef = (refAllele << 2 ) | refAllele;
     int genotypeCalled = genotypeRef;
 
     // threshold method
-    if( mutCoverage >= options.minMutT
-        && (float)mutCoverage/totalCoverage >= options.percentageT
-        && (float)(qualF[mutAllele]+qualR[mutAllele])/mutCoverage >= options.avgQualT)
+    if ( mutCoverage >= options.minMutT &&
+        (float)mutCoverage/totalCoverage >= options.percentageT &&
+        (float)(qualF[mutAllele] + qualR[mutAllele]) / mutCoverage >= options.avgQualT)
     {
-        if((float)mutCoverage/totalCoverage <= options.snpHetMax)
-            genotypeCalled = (mutAllele<<2)|refAllele; // we dont attempt real genotype calling here
+        if ((float)mutCoverage/totalCoverage <= options.snpHetMax)
+            genotypeCalled = (mutAllele << 2)|refAllele; // we dont attempt real genotype calling here
         else
-            genotypeCalled = (mutAllele<<2)|mutAllele; // we dont attempt real genotype calling here
+            genotypeCalled = (mutAllele << 2)|mutAllele; // we dont attempt real genotype calling here
     }
 
 
     snp.genotype = genotypeCalled;
     snp.count    = mutCoverage;
-    snp.quality  = (qualF[mutAllele]+qualR[mutAllele])/ mutCoverage;
+    snp.quality  = (qualF[mutAllele] + qualR[mutAllele]) / mutCoverage;
     snp.coverage = totalCoverage;
-    if (genotypeCalled == genotypeRef) snp.called = false;
-    else snp.called = true;
+    if (genotypeCalled == genotypeRef)
+        snp.called = false;
+    else
+        snp.called = true;
 
     return true;
 }
@@ -2828,15 +2967,15 @@ _doSnpCall(TCounts & countF,
 // write to file
 template<typename TFile, typename TString, typename TQualities, typename TPos, typename TOptions>
 inline bool
-_writeSnp(TFile &file,
-       SingleBaseVariant &snp,
-       TQualities &qualityStringF,
-       TQualities &qualityStringR,
+_writeSnp(TFile & file,
+       SingleBaseVariant & snp,
+       TQualities & qualityStringF,
+       TQualities & qualityStringR,
        int refAllele,
-       TString &genomeID,
+       TString & genomeID,
        TPos candPos,
        unsigned realCoverage,
-       TOptions &options)
+       TOptions & options)
 {
 //IOREV _nodoc_ what kind of format is this?
     if (!file.is_open())
@@ -2849,9 +2988,9 @@ _writeSnp(TFile &file,
     file << genomeID << '\t';
     file << candPos + options.positionFormat<< '\t';
     file << (Dna5)refAllele <<'\t';
-    if(options.orientationAware)
+    if (options.orientationAware)
     {
-        if(options.showQualityStrings)
+        if (options.showQualityStrings)
         {
             file << "["<<qualityStringF[0] <<"]\t";
             file << "["<<qualityStringF[1] <<"]\t";
@@ -2876,7 +3015,7 @@ _writeSnp(TFile &file,
     }
     else
     {
-        if(options.showQualityStrings)
+        if (options.showQualityStrings)
         {
             file << "["<<qualityStringF[0]<<qualityStringR[0] <<"]\t";
             file << "["<<qualityStringF[1]<<qualityStringR[1] <<"]\t";
@@ -2893,20 +3032,23 @@ _writeSnp(TFile &file,
     }
     file << realCoverage;
 
-    if(options.method == 1)
+    if (options.method == 1)
     {
         //genotypeCalled to string
-        if(snp.called)//genotypeCalled != genotypeRef)
-            file << '\t' << (char)options.toIupac[(unsigned)(snp.genotype&15)]<< '\t' << snp.quality << '\t' << snp.snpQuality;
+        if (snp.called) //genotypeCalled != genotypeRef)
+            file << '\t' << (char)options.toIupac[(unsigned)(snp.genotype&15)]
+                 << '\t' << snp.quality << '\t' << snp.snpQuality;
         else
             file << "\t\t";
     }
     else
     {
-        if(snp.called)
-            file  << '\t' << (char)options.toIupac[(unsigned)(snp.genotype)&15] << '\t' << snp.quality;// mutAllele;// << "/" << (Dna)mutAllele;
+        if (snp.called)
+            file  << '\t' << (char)options.toIupac[(unsigned)(snp.genotype)&15]
+                  << '\t' << snp.quality;// mutAllele;// << "/" << (Dna)mutAllele;
 //            file  << '\t' << (Dna)(snp.genotype & 3) << '\t' << snp.quality;// mutAllele;// << "/" << (Dna)mutAllele;
-        else file << "\t\t";
+        else
+            file << "\t\t";
     }
     file << std::endl;
     return true;
@@ -2916,15 +3058,15 @@ _writeSnp(TFile &file,
 // write to file
 template<typename TFile, typename TString, typename TQualities, typename TPos, typename TOptions>
 inline bool
-_writePos(TFile &file,
-       TQualities &qualityStringF,
-       TQualities &qualityStringR,
+_writePos(TFile & file,
+       TQualities & qualityStringF,
+       TQualities & qualityStringR,
        unsigned delPlus,
        unsigned delMinus,
-       TString &genomeID,
+       TString & genomeID,
        TPos candPos,
        unsigned /*coverage*/,
-       TOptions &options)
+       TOptions & options)
 {
 //IOREV _nodoc_ what kind of format is this?
     if (!file.is_open())
@@ -2936,7 +3078,7 @@ _writePos(TFile &file,
     //chromosome
     file << genomeID << '\t';
     file << candPos + options.positionFormat<< '\t';
-    if(options.orientationAware)
+    if (options.orientationAware)
     {
         file << length(qualityStringF[0]) <<"\t";
         file << length(qualityStringF[1]) <<"\t";
@@ -2957,21 +3099,23 @@ _writePos(TFile &file,
         file << length(qualityStringF[3])+length(qualityStringR[3]) <<"\t";
         file << delPlus+delMinus ; // << std::endl;
     }
-    unsigned coverage = length(qualityStringF[0])+length(qualityStringF[1])+length(qualityStringF[2])+length(qualityStringF[3])+delPlus;
-             coverage+= length(qualityStringR[0])+length(qualityStringR[1])+length(qualityStringR[2])+length(qualityStringR[3])+delMinus;
+    unsigned coverage = length(qualityStringF[0]) + length(qualityStringF[1])
+            + length(qualityStringF[2]) + length(qualityStringF[3]) + delPlus;
+    coverage += length(qualityStringR[0]) + length(qualityStringR[1])
+                     + length(qualityStringR[2]) + length(qualityStringR[3]) + delMinus;
     file << '\t' << coverage << std::endl;
 
-    //if(options.method == 1)
+    //if (options.method == 1)
     //{
     //  //genotypeCalled to string
-    //  if(snp.called)//genotypeCalled != genotypeRef)
+    //  if (snp.called)//genotypeCalled != genotypeRef)
     //      file << '\t' << (char)options.toIupac[(unsigned)(snp.genotype&15)]<< '\t' << snp.quality;
     //  else
     //      file << "\t\t";
     //}
     //else
     //{
-    //  if(snp.called)
+    //  if (snp.called)
     //      file  << '\t' << (Dna)(snp.genotype & 3) << '\t' << snp.quality;// mutAllele;// << "/" << (Dna)mutAllele;
     //  else file << "\t\t";
     //}
@@ -2980,10 +3124,9 @@ _writePos(TFile &file,
 }
 
 
-
 template<typename TFragmentStore, typename TStr>
 void
-_dumpMatches(TFragmentStore &fragmentStore, TStr str)
+_dumpMatches(TFragmentStore & fragmentStore, TStr str)
 {
     //typedef typename TFragmentStore::TAlignedReadStore          TMatches;
     //typedef typename Value<TMatches>::Type                      TMatch;
@@ -3002,29 +3145,30 @@ _dumpMatches(TFragmentStore &fragmentStore, TStr str)
     for(unsigned i = 0 ; i < length(fragmentStore.alignedReadStore); ++i)
     {
         char ori = (fragmentStore.alignedReadStore[i].beginPos < fragmentStore.alignedReadStore[i].endPos) ? 'F' : 'R';
-        std::cout << "--"<<str<<"Match number " << i << ":\n";
-        std::cout << "--"<<str<<"MatchId  = " << fragmentStore.alignedReadStore[i].id << "\n";
-        std::cout << "--"<<str<<"ReadId   = " << fragmentStore.alignedReadStore[i].readId << "\n";
-        std::cout << "--"<<str<<"ContigId = " << fragmentStore.alignedReadStore[i].contigId << std::flush << "\n";
-        std::cout << "--"<<str<<"gBegin   = " << _min(fragmentStore.alignedReadStore[i].beginPos, fragmentStore.alignedReadStore[i].endPos) << "\n";
-        std::cout << "--"<<str<<"gEnd     = " << _max(fragmentStore.alignedReadStore[i].beginPos, fragmentStore.alignedReadStore[i].endPos) << "\n";
-        std::cout << "--"<<str<<"orient   = " << ori << std::flush << std::endl;
-        if(length(fragmentStore.alignQualityStore) > fragmentStore.alignedReadStore[i].id)
+        std::cout << "--" << str << "Match number " << i << ":\n";
+        std::cout << "--" << str << "MatchId  = " << fragmentStore.alignedReadStore[i].id << "\n";
+        std::cout << "--" << str << "ReadId   = " << fragmentStore.alignedReadStore[i].readId << "\n";
+        std::cout << "--" << str << "ContigId = " << fragmentStore.alignedReadStore[i].contigId << std::flush << "\n";
+        std::cout << "--" << str << "gBegin   = "
+                  << _min(fragmentStore.alignedReadStore[i].beginPos, fragmentStore.alignedReadStore[i].endPos) << "\n";
+        std::cout << "--" << str << "gEnd     = "
+                  << _max(fragmentStore.alignedReadStore[i].beginPos, fragmentStore.alignedReadStore[i].endPos) << "\n";
+        std::cout << "--" << str << "orient   = " << ori << std::flush << std::endl;
+        if (length(fragmentStore.alignQualityStore) > fragmentStore.alignedReadStore[i].id)
         {
-            std::cout << "--"<<str<<"EditDist = " << (int) fragmentStore.alignQualityStore[fragmentStore.alignedReadStore[i].id].errors << "\n";
-            std::cout << "--"<<str<<"AvgQ     = " << (int)fragmentStore.alignQualityStore[fragmentStore.alignedReadStore[i].id].score << "\n";
+            std::cout << "--"<< str << "EditDist = "
+                      << (int) fragmentStore.alignQualityStore[fragmentStore.alignedReadStore[i].id].errors << "\n";
+            std::cout << "--"<< str << "AvgQ     = "
+                      << (int)fragmentStore.alignQualityStore[fragmentStore.alignedReadStore[i].id].score << "\n";
         }
-        std::cout << "--"<<str<<"Readseq  = " << fragmentStore.readSeqStore[fragmentStore.alignedReadStore[i].readId] << std::flush << "\n";
-
+        std::cout << "--"<<str<<"Readseq  = "
+                  << fragmentStore.readSeqStore[fragmentStore.alignedReadStore[i].readId] << std::flush << "\n";
     }
 }
 
 
 template<typename TFragmentStore, typename TId, typename TOptions>
-void
-realignReferenceToReadProfile(TFragmentStore & fragmentStore,
-                              TId refId,
-                              TOptions & options)
+void realignReferenceToReadProfile(TFragmentStore & fragmentStore, TId refId, TOptions & options)
 {
 // fragment store types
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
@@ -3070,45 +3214,49 @@ realignReferenceToReadProfile(TFragmentStore & fragmentStore,
     TSize gapChar = ValueSize<TAlphabet>::VALUE;
     TReadPos minPos = 0; // TODO: check if correct
     TContigGaps contigGaps(fragmentStore.contigStore[0].seq, fragmentStore.contigStore[0].gaps);
-    TReadPos maxPos = (TReadPos)positionSeqToGap(contigGaps,length(fragmentStore.contigStore[0].seq)-1)+1;
+    TReadPos maxPos = (TReadPos)positionSeqToGap(contigGaps,length(fragmentStore.contigStore[0].seq)-1) + 1;
     TProfileString multiReadProfile;
     resize(multiReadProfile, maxPos - minPos, TProfile()); // get maxPos minPos
 
-    TProfIter it = begin(multiReadProfile, Standard() );
+    TProfIter it = begin(multiReadProfile, Standard());
     TProfIter itEnd = end(multiReadProfile, Standard());
-    TMatchIterator matchIt = begin(matches, Standard() );
-    TMatchIterator matchItEnd = end(matches, Standard() );
-    for(;matchIt != matchItEnd; ++matchIt) {
+    TMatchIterator matchIt = begin(matches, Standard());
+    TMatchIterator matchItEnd = end(matches, Standard());
+    for(;matchIt != matchItEnd; ++matchIt)
+    {
         matchIt->beginPos -= minPos;
         matchIt->endPos -= minPos;
         it = begin(multiReadProfile, Standard());
         it += _min(matchIt->beginPos,matchIt->endPos);
 
-        if(matchIt->beginPos > matchIt->endPos)
+        if (matchIt->beginPos > matchIt->endPos)
             reverseComplement(fragmentStore.readSeqStore[matchIt->readId]);
-        TRead& readSeq = fragmentStore.readSeqStore[matchIt->readId];
+        TRead & readSeq = fragmentStore.readSeqStore[matchIt->readId];
 
-        TReadIter itRead = begin(readSeq, Standard() );
-        TReadIter itReadEnd = end(readSeq, Standard() );
+        TReadIter itRead = begin(readSeq, Standard());
+        TReadIter itReadEnd = end(readSeq, Standard());
 
-        TReadGapsIter gitRead = begin(matchIt->gaps, Standard() );
-        TReadGapsIter gitReadEnd = end(matchIt->gaps, Standard() );
+        TReadGapsIter gitRead = begin(matchIt->gaps, Standard());
+        TReadGapsIter gitReadEnd = end(matchIt->gaps, Standard());
 
         TReadPos old = 0;
         int diff = 0;
         bool clippedEnd = false;
-        if ((gitRead != gitReadEnd) && (gitRead->gapPos == 0)) {
+        if ((gitRead != gitReadEnd) && (gitRead->gapPos == 0))
+        {
       //      std::cout << "does this happen? shouldnt for semiglobal matches\n";
             old = gitRead->seqPos;
             itRead += old;
             diff -= old;
             ++gitRead;
         }
-        for(;gitRead != gitReadEnd; ++gitRead) {
+        for(;gitRead != gitReadEnd; ++gitRead)
+        {
             TReadPos limit = gitRead->seqPos;
             int newDiff = (gitRead->gapPos - limit);
             SEQAN_ASSERT_LT(gitRead->gapPos, (int)length(multiReadProfile));
-            if (diff > newDiff) {
+            if (diff > newDiff)
+            {
                 limit -= (diff - newDiff);
                 clippedEnd = true;
             }
@@ -3122,13 +3270,13 @@ realignReferenceToReadProfile(TFragmentStore & fragmentStore,
             for(;diff < newDiff; ++diff)
                 ++(value(it++)).count[gapChar];
         }
-        if (!clippedEnd) {
+        if (!clippedEnd)
+        {
             for( ; itRead!=itReadEnd && it != itEnd;++itRead)
                 ++(value(it++)).count[ordValue(*itRead)];
         }
-        if(matchIt->beginPos > matchIt->endPos)
+        if (matchIt->beginPos > matchIt->endPos)
             reverseComplement(fragmentStore.readSeqStore[matchIt->readId]);
-
     }
 
     // put reference sequence into ProfileString
@@ -3159,9 +3307,10 @@ realignReferenceToReadProfile(TFragmentStore & fragmentStore,
     //Score<int, WeightedConsensusScore<Score<int, FractionalScore>, Score<int, ConsensusScore> > > consScore;
     Score<int, ConsensusScore>  consScore;
 
-    // TODO: Score<int, WeightedConsensusScore<Score<int, AffineFractionalScore>, Score<int, AffineConsensusScore> > > consScore;
+    // TODO: Score<int, WeightedConsensusScore<Score<int, AffineFractionalScore>,
+    //             Score<int, AffineConsensusScore> > > consScore;
     // or: quality fractional score! x/n where n=sum(q(read)) and x = sum(q(reads with base x))
-    // consScore.verticalGapOpen = 10; bzw dependent on read depth? or read quality? --> higher quality --> higher penalty?
+    // consScore.verticalGapOpen = 10; or dependent on read depth? or read quality? -> higher quality -> higher penalty?
     // consScore.horizontalGapOpen = 10;
     assignProfile(consScore, multiReadProfile);
 
@@ -3172,8 +3321,10 @@ realignReferenceToReadProfile(TFragmentStore & fragmentStore,
     TReadPos leftDiag = -bandWidth;
     TReadPos rightDiag = bandWidth;
     //make sure the band contains the first and last position of both refProfile and multiReadProfile
-    if(length(refProfile) < length(multiReadProfile)) rightDiag +=  length(multiReadProfile) - length(refProfile);
-    if(length(refProfile) > length(multiReadProfile)) leftDiag -=  length(refProfile) - length(multiReadProfile);
+    if (length(refProfile) < length(multiReadProfile))
+        rightDiag +=  length(multiReadProfile) - length(refProfile);
+    if (length(refProfile) > length(multiReadProfile))
+        leftDiag -=  length(refProfile) - length(multiReadProfile);
 
 
     //// Debug code
@@ -3205,50 +3356,55 @@ realignReferenceToReadProfile(TFragmentStore & fragmentStore,
     resize(diploidConsensus,length(multiReadProfile),TProfile());
     TProfIter dipIt = begin(diploidConsensus, Standard() );
    // std::cout << "length before removing low freq gaps: " << length(diploidConsensus) << std::endl;
-    for(; it != itEnd; ++it, ++sit)
+    for (; it != itEnd; ++it, ++sit)
     {
         TSize getMax1 = 0;
         TSize countMax1 = 0;
-        for(TSize i = 0; i < ValueSize<TProfile>::VALUE; ++i)
-            if((*it).count[i] >= (*it).count[getMax1])
+        for (TSize i = 0; i < ValueSize<TProfile>::VALUE; ++i)
+        {
+            if ((*it).count[i] >= (*it).count[getMax1])
             {
                 getMax1 = i;
                 countMax1 = (*it).count[getMax1];
             }
+        }
         int getMax2 = 0;
         int countMax2 = -1;
-        for(TSize i = 0; i < ValueSize<TProfile>::VALUE; ++i)
-            if(i != getMax1 && (*it).count[i] >= (*it).count[getMax2])
+        for (TSize i = 0; i < ValueSize<TProfile>::VALUE; ++i)
+        {
+            if (i != getMax1 && (*it).count[i] >= (*it).count[getMax2])
             {
                 getMax2 = i;
                 countMax2 = (*it).count[getMax2];
             }
+        }
         bool remove = true;
-        if(getMax1 != gapChar)
+        if (getMax1 != gapChar)
         {
             (*dipIt).count[getMax1] = (*it).count[getMax1];
             remove = false;
         }
-        if(getMax1 != gapChar && countMax2 > 0 && getMax2 != gapChar)
+        if (getMax1 != gapChar && countMax2 > 0 && getMax2 != gapChar)
         {
             (*dipIt).count[getMax2] = (*it).count[getMax2];
             remove = false;
         }
-        if(getMax1 == gapChar && countMax2 > 0 && (float)countMax2/countMax1 > options.indelCountThreshold)
+        if (getMax1 == gapChar && countMax2 > 0 && (float)countMax2 / countMax1 > options.indelCountThreshold)
         {
             (*dipIt).count[getMax1] = (*it).count[getMax1];
             (*dipIt).count[getMax2] = (*it).count[getMax2];
             remove = false;
         }
-        if(getMax2 == gapChar && countMax2 > 0 && (float)countMax2/countMax1 > options.indelCountThreshold)
+        if (getMax2 == gapChar && countMax2 > 0 && (float)countMax2 / countMax1 > options.indelCountThreshold)
         {
             (*dipIt).count[getMax2] = (*it).count[getMax2];
             remove = false;
         }
         *sit = remove;
-        if(!remove)++dipIt;
+        if (!remove)
+            ++dipIt;
     }
-    resize(diploidConsensus,dipIt - begin(diploidConsensus),Exact());
+    resize(diploidConsensus,dipIt - begin(diploidConsensus), Exact());
     //std::cout << "length after removing low freq gaps: " << length(diploidConsensus) << std::endl;
 
     typedef StringSet<TProfileString, Dependent<> > TStringSet;
@@ -3256,11 +3412,13 @@ realignReferenceToReadProfile(TFragmentStore & fragmentStore,
     appendValue(pairSet3, diploidConsensus);
     appendValue(pairSet3, refProfile);
 
-    //for(TSize i = 0; i<length( pairSet[0]); ++i) {
+    //for(TSize i = 0; i<length( pairSet[0]); ++i)
+    //{
     //  std::cout <<  pairSet[0][i] << std::endl;
     //}
     //std::cout << "_______________" << std::endl;
-    //for(TSize i = 0; i<length( pairSet[1]); ++i) {
+    //for(TSize i = 0; i<length( pairSet[1]); ++i)
+    //{
     //  std::cout <<   pairSet[1][i] << std::endl;
     //}
     //std::cout << "..............." << std::endl;
@@ -3272,8 +3430,10 @@ realignReferenceToReadProfile(TFragmentStore & fragmentStore,
     leftDiag = -bandWidth;
     rightDiag = bandWidth;
     //make sure the band contains the first and last position of both refProfile and multiReadProfile
-    if(length(refProfile) < length(diploidConsensus)) rightDiag +=  length(diploidConsensus) - length(refProfile);
-    if(length(refProfile) > length(diploidConsensus)) leftDiag -=  length(refProfile) - length(diploidConsensus);
+    if (length(refProfile) < length(diploidConsensus))
+        rightDiag +=  length(diploidConsensus) - length(refProfile);
+    if (length(refProfile) > length(diploidConsensus))
+        leftDiag -=  length(refProfile) - length(diploidConsensus);
 
     TFragmentString fragments2;
     //// Debug code
@@ -3283,18 +3443,13 @@ realignReferenceToReadProfile(TFragmentStore & fragmentStore,
     //std::cout << sc3 << std::endl;
     //std::cout << g3 << std::endl;
 
-
     SEQAN_CONSENSUS_OPEN_PENALTY_FACTOR = tmp;
-
 }
 
-
-
+//TODO(serosko): Check why this is a huge copy-paste version of line 3162+, what is different and  how to
+// reduce redundancy
 template<typename TFragmentStore, typename TId, typename TOptions>
-void
-realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
-                              TId refReadId,
-                              TOptions & options)
+void realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore, TId refReadId, TOptions & options)
 {
 // fragment store types
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
@@ -3329,27 +3484,27 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
     extern int SEQAN_CONSENSUS_OPEN_PENALTY_FACTOR;
     int tmp = SEQAN_CONSENSUS_OPEN_PENALTY_FACTOR;
 
-    TReads &reads                   = fragmentStore.readSeqStore;
-    TMatches &matches               = fragmentStore.alignedReadStore;
-    TMatchQualities &matchQualities = fragmentStore.alignQualityStore;
-
+    TReads & reads                   = fragmentStore.readSeqStore;
+    TMatches & matches               = fragmentStore.alignedReadStore;
+    TMatchQualities & matchQualities = fragmentStore.alignQualityStore;
 
     // make profile of multi-read-alignment
     TSize gapChar = ValueSize<TAlphabet>::VALUE;
     TReadPos minPos = 0; // TODO: check if correct
     TContigGaps contigGaps(fragmentStore.contigStore[0].seq, fragmentStore.contigStore[0].gaps);
-    TReadPos maxPos = (TReadPos)positionSeqToGap(contigGaps,length(fragmentStore.contigStore[0].seq)-1)+1;
+    TReadPos maxPos = (TReadPos)positionSeqToGap(contigGaps,length(fragmentStore.contigStore[0].seq) - 1) + 1;
     TProfileString multiReadProfile;
     resize(multiReadProfile, maxPos - minPos, TProfile()); // get maxPos minPos
 
     TId refMatchPosId = 0;
     bool refFound = false;
-    TProfIter it = begin(multiReadProfile, Standard() );
+    TProfIter it = begin(multiReadProfile, Standard());
     TProfIter itEnd = end(multiReadProfile, Standard());
-    TMatchIterator matchIt = begin(matches, Standard() );
-    TMatchIterator matchItEnd = end(matches, Standard() );
+    TMatchIterator matchIt = begin(matches, Standard());
+    TMatchIterator matchItEnd = end(matches, Standard());
     int counter = 0;
-    for(;matchIt != matchItEnd; ++matchIt) {
+    for(;matchIt != matchItEnd; ++matchIt)
+    {
         if (matchIt->readId == refReadId)
         {
             refFound = true;
@@ -3362,31 +3517,34 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
         it = begin(multiReadProfile, Standard());
         it += _min(matchIt->beginPos,matchIt->endPos);
 
-        if(matchIt->beginPos > matchIt->endPos)
+        if (matchIt->beginPos > matchIt->endPos)
             reverseComplement(fragmentStore.readSeqStore[matchIt->readId]);
         TRead& readSeq = fragmentStore.readSeqStore[matchIt->readId];
 
-        TReadIter itRead = begin(readSeq, Standard() );
-        TReadIter itReadEnd = end(readSeq, Standard() );
+        TReadIter itRead = begin(readSeq, Standard());
+        TReadIter itReadEnd = end(readSeq, Standard());
 
-        TReadGapsIter gitRead = begin(matchIt->gaps, Standard() );
-        TReadGapsIter gitReadEnd = end(matchIt->gaps, Standard() );
+        TReadGapsIter gitRead = begin(matchIt->gaps, Standard());
+        TReadGapsIter gitReadEnd = end(matchIt->gaps, Standard());
 
         TReadPos old = 0;
         int diff = 0;
         bool clippedEnd = false;
-        if ((gitRead != gitReadEnd) && (gitRead->gapPos == 0)) {
+        if ((gitRead != gitReadEnd) && (gitRead->gapPos == 0))
+        {
             std::cout << "does this happen? shouldnt for semiglobal matches\n";
             old = gitRead->seqPos;
             itRead += old;
             diff -= old;
             ++gitRead;
         }
-        for(;gitRead != gitReadEnd; ++gitRead) {
+        for(;gitRead != gitReadEnd; ++gitRead)
+        {
             TReadPos limit = gitRead->seqPos;
             int newDiff = (gitRead->gapPos - limit);
             SEQAN_ASSERT_LT(gitRead->gapPos, (int)length(multiReadProfile));
-            if (diff > newDiff) {
+            if (diff > newDiff)
+            {
                 limit -= (diff - newDiff);
                 clippedEnd = true;
             }
@@ -3400,11 +3558,12 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
             for(;diff < newDiff; ++diff)
                 ++(value(it++)).count[gapChar];
         }
-        if (!clippedEnd) {
+        if (!clippedEnd)
+        {
             for( ; itRead!=itReadEnd && it != itEnd;++itRead)
                 ++(value(it++)).count[ordValue(*itRead)];
         }
-        if(matchIt->beginPos > matchIt->endPos)
+        if (matchIt->beginPos > matchIt->endPos)
             reverseComplement(fragmentStore.readSeqStore[matchIt->readId]);
 
     }
@@ -3445,13 +3604,14 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
     // and remove resulting gap-only columns
     it = begin(multiReadProfile, Standard() );
     itEnd = end(multiReadProfile, Standard());
-    if(options._debugLevel > 1) std::cout << "length before removing low freq gaps: " << length(diploidConsensus) << std::endl;
+    if (options._debugLevel > 1)
+        std::cout << "length before removing low freq gaps: " << length(diploidConsensus) << std::endl;
     for(; it != itEnd; ++it)
     {
         TSize getMax1 = 0;
         TSize countMax1 = 0;
         for(TSize i = 0; i < ValueSize<TProfile>::VALUE; ++i)
-            if((*it).count[i] >= (*it).count[getMax1])
+            if ((*it).count[i] >= (*it).count[getMax1])
             {
                 getMax1 = i;
                 countMax1 = (*it).count[getMax1];
@@ -3459,38 +3619,40 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
         int getMax2 = 0;
         int countMax2 = -1;
         for(TSize i = 0; i < ValueSize<TProfile>::VALUE; ++i)
-            if(i != getMax1 && (*it).count[i] >= (*it).count[getMax2])
+            if (i != getMax1 && (*it).count[i] >= (*it).count[getMax2])
             {
                 getMax2 = i;
                 countMax2 = (*it).count[getMax2];
             }
         bool remove = true;
-        if(getMax1 != gapChar)
+        if (getMax1 != gapChar)
         {
             (*dipIt).count[getMax1] = (*it).count[getMax1];
             remove = false;
         }
-        if(getMax1 != gapChar && countMax2 > 0 && getMax2 != gapChar)
+        if (getMax1 != gapChar && countMax2 > 0 && getMax2 != gapChar)
         {
             (*dipIt).count[getMax2] = (*it).count[getMax2];
             remove = false;
         }
-//        if(getMax1 == gapChar && countMax2 > options.indelCountThreshold && (float)countMax2/countMax1 > options.indelPercentageT)
-        if(getMax1 == gapChar && countMax2 > 0 && (float)countMax2/countMax1 > options.indelCountThreshold)
+//        if (getMax1 == gapChar && countMax2 > options.indelCountThreshold &&
+//            (float)countMax2/countMax1 > options.indelPercentageT)
+        if (getMax1 == gapChar && countMax2 > 0 && (float)countMax2/countMax1 > options.indelCountThreshold)
         {
             (*dipIt).count[getMax1] = (*it).count[getMax1];
             (*dipIt).count[getMax2] = (*it).count[getMax2];
             remove = false;
         }
-//        if(getMax2 == gapChar && countMax2 > options.indelCountThreshold && (float)countMax2/countMax1 > options.indelPercentageT)
-        if(getMax2 == gapChar && countMax2 > 0 && (float)countMax2/countMax1 > options.indelCountThreshold)
+//        if (getMax2 == gapChar && countMax2 > options.indelCountThreshold &&
+//            (float)countMax2/countMax1 > options.indelPercentageT)
+        if (getMax2 == gapChar && countMax2 > 0 && (float)countMax2/countMax1 > options.indelCountThreshold)
         {
             (*dipIt).count[getMax2] = (*it).count[getMax2];
             remove = false;
         }
 //        *sit = remove;
         remove= false;
-        if(!remove){
+        if (!remove){
             *posIt = pos;
             ++posIt;
             ++dipIt;
@@ -3504,9 +3666,11 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
     }
     resize(diploidConsensus,dipIt - begin(diploidConsensus),Exact());
     resize(toFullProfile,posIt - begin(toFullProfile),Exact());
-    *sit = length(multiReadProfile); ++sit;
+    *sit = length(multiReadProfile);
+    ++sit;
     resize(removeState,sit - begin(removeState),Exact());
-    if(options._debugLevel > 1) std::cout << "length after removing low freq gaps: " << length(diploidConsensus) << std::endl;
+    if (options._debugLevel > 1)
+        std::cout << "length after removing low freq gaps: " << length(diploidConsensus) << std::endl;
 
     typedef StringSet<TProfileString, Dependent<> > TStringSet;
     TStringSet pairSet;
@@ -3530,8 +3694,10 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
     TReadPos leftDiag = -bandWidth;
     TReadPos rightDiag = bandWidth;
     //make sure the band contains the first and last position of both refProfile and multiReadProfile
-    if(length(refProfile) < length(diploidConsensus)) rightDiag +=  length(diploidConsensus) - length(refProfile);
-    if(length(refProfile) > length(diploidConsensus)) leftDiag -=  length(refProfile) - length(diploidConsensus);
+    if (length(refProfile) < length(diploidConsensus))
+        rightDiag +=  length(diploidConsensus) - length(refProfile);
+    if (length(refProfile) > length(diploidConsensus))
+        leftDiag -=  length(refProfile) - length(diploidConsensus);
 
     typedef String<Fragment<> > TFragmentString;
     TFragmentString fragments;
@@ -3544,7 +3710,15 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
 //    std::cout << "leftDiag="<< leftDiag << std::endl;
 //    std::cout << "rightDiag="<< rightDiag << std::endl;
     // reference can be aligned to gaps at the ends, diploidConsensus needs to be fully aligned
-    globalAlignment(fragments, pairSet, consScore, AlignConfig<false,false,false,false>(), _max(leftDiag, -1 * (int) length(refProfile)), _min(rightDiag, (int) length(diploidConsensus)), Gotoh());
+    globalAlignment(fragments,
+                    pairSet,
+                    consScore,
+                    AlignConfig<false,false,false,false>(),
+                    _max(leftDiag,
+                    -1 * (int)length(refProfile)),
+                    _min(rightDiag,
+                    (int)length(diploidConsensus)),
+                    Gotoh());
 
     // now use removeState string to retrieve reference<->multiReadProfile alignment
     // use oldPosLimits string to retrieve positions wrt multiReadProfile
@@ -3560,22 +3734,22 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
     typedef typename Iterator<TFragmentString, Standard>::Type TFragIter;
     TFragIter fragIt = end(fragments, Standard());
     TFragIter fragItEnd = begin(fragments, Standard());
-    if(fragIt != fragItEnd)
+    if (fragIt != fragItEnd)
     {
         --fragIt;
         while (sit != sitEnd)
         {
-            if(fragIt >= fragItEnd && toFullProfile[fragIt->begin1] > *sit) // removed column is before beginPos of fragment
-            {
+            if (fragIt >= fragItEnd && toFullProfile[fragIt->begin1] > *sit)
+            { // removed column is before beginPos of fragment
                 ++sit;
             }
             else
             {
-                if(toFullProfile[fragIt->begin1+fragIt->len-1]+1 <= *sit) // removed column is after endPos of fragment
-                {
+                if (toFullProfile[fragIt->begin1+fragIt->len-1]+1 <= *sit)
+                { // removed column is after endPos of fragment
                     // copy fragment to new fragments with transformed coordinate
                     appendValue(fragments2,Fragment<>(0,toFullProfile[fragIt->begin1],1,fragIt->begin2,fragIt->len));
-                    if(fragIt == fragItEnd)
+                    if (fragIt == fragItEnd)
                         break;
                     --fragIt;
                 }
@@ -3583,8 +3757,9 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
                 {
                     SEQAN_ASSERT_GT(*sit,toFullProfile[fragIt->begin1]);
                     int len = *sit-toFullProfile[fragIt->begin1];
-                    // append new fragment: begin1, begin2 with len=removedCol-begin1 relative to whole profile coordinates
-                    appendValue(fragments2,Fragment<>(0,toFullProfile[fragIt->begin1],1,fragIt->begin2,len));
+                    // append new fragment:
+                    //     begin1, begin2 with len=removedCol-begin1 relative to whole profile coordinates
+                    appendValue(fragments2, Fragment<>(0,toFullProfile[fragIt->begin1], 1, fragIt->begin2, len));
                     // adapt old fragment accordingly (cut off beginning)
                     fragIt->begin2 += len;
                     fragIt->begin1 += len;
@@ -3592,17 +3767,16 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
                     SEQAN_ASSERT_GT(fragIt->len,0);
                     ++sit;
                 }
-
             }
-
         }
     }
     fragIt = begin(fragments2, Standard());
     fragItEnd = end(fragments2, Standard());
 
 
-    TMatch& refAli = fragmentStore.alignedReadStore[refMatchPosId];
-    fragmentStore.alignedReadStore[refMatchPosId].beginPos = fragmentStore.alignedReadStore[refMatchPosId].endPos = 0;    // "disable read"
+    TMatch & refAli = fragmentStore.alignedReadStore[refMatchPosId];
+    // "disable read"
+    fragmentStore.alignedReadStore[refMatchPosId].beginPos = fragmentStore.alignedReadStore[refMatchPosId].endPos = 0;
     clear(fragmentStore.alignedReadStore[refMatchPosId].gaps);    // -> reference gaps are handled separately
 
     // add reference back to multi-read-alignment according to new alignment
@@ -3616,23 +3790,31 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
 
     TReadPos diff = 0;
     bool firstMatch = true;
-    if (fragIt != fragItEnd) { // walk through segment matches (last one is leftmost one)
-        do {
+    if (fragIt != fragItEnd)
+    { // walk through segment matches (last one is leftmost one)
+        do
+        {
     //      --fragIt;
             int gapLen = fragIt->begin1 - profilePos;
-            if (firstMatch) gapLen = 0; // gap between two adjacent segment matches
+            if (firstMatch)
+                gapLen = 0; // gap between two adjacent segment matches
             // equivalent to profilePos + fraglen < nextProfilePos
-            while (profilePos < (TReadPos)fragIt->begin1) { // cons stretch before newCons start
+            while (profilePos < (TReadPos)fragIt->begin1)
+            { // cons stretch before newCons start
                 ++profilePos;
                 ++alignPos;
             }
             // equivalent to refPos + fraglen < nextRefPos
-            while (referencePos < (TReadPos)fragIt->begin2) { // read stretch before matching fragment starts
+            while (referencePos < (TReadPos)fragIt->begin2)
+            { // read stretch before matching fragment starts
                 SEQAN_ASSERT_LT(referencePos, (TReadPos)length(fragmentStore.readSeqStore[refReadId]));
                 // equivalent to profileDel
-                if (gapLen) {
+                if (gapLen)
+                {
                     diff += gapLen; // add gap of length gaplen to readGaps
-                    appendValue(fragmentStore.alignedReadStore[refMatchPosId].gaps, TGapAnchor(referencePos,referencePos + diff), Generous() );
+                    appendValue(fragmentStore.alignedReadStore[refMatchPosId].gaps,
+                                TGapAnchor(referencePos, referencePos + diff),
+                                Generous() );
                     gapLen = 0; // do this only once
                 }
                 //int numGaps =
@@ -3640,14 +3822,20 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
                 ++referencePos;
                 ++alignPos;
             }
-            for (TSize i = 0; i<fragIt->len; ++i, ++profilePos, ++referencePos, ++alignPos) {
+            for (TSize i = 0; i<fragIt->len; ++i, ++profilePos, ++referencePos, ++alignPos)
+            {
                 SEQAN_ASSERT_LT(referencePos, (TReadPos)length(fragmentStore.readSeqStore[refReadId]));
-                if (firstMatch) {
+                if (firstMatch)
+                {
                     firstMatch = false;
                     fragmentStore.alignedReadStore[refMatchPosId].beginPos = bandOffset + profilePos;
-                } else if (gapLen) {
+                }
+                else if (gapLen)
+                {
                     diff += gapLen;
-                    appendValue(fragmentStore.alignedReadStore[refMatchPosId].gaps, TGapAnchor(referencePos,referencePos + diff), Generous() );
+                    appendValue(fragmentStore.alignedReadStore[refMatchPosId].gaps,
+                                TGapAnchor(referencePos,referencePos + diff),
+                                Generous() );
                     gapLen = 0;
                 }
             }
@@ -3655,22 +3843,22 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
         } while (fragIt != fragItEnd);
     }
 
-    for (; referencePos < (TReadPos)length(fragmentStore.readSeqStore[refReadId]); ++referencePos) {
+    for (; referencePos < (TReadPos)length(fragmentStore.readSeqStore[refReadId]); ++referencePos)
+    {
         //int numGaps =
         insertGap(matches, bandOffset + alignPos);
         ++alignPos;
     }
-    fragmentStore.alignedReadStore[refMatchPosId].endPos = fragmentStore.alignedReadStore[refMatchPosId].beginPos + referencePos + diff;
+    fragmentStore.alignedReadStore[refMatchPosId].endPos = fragmentStore.alignedReadStore[refMatchPosId].beginPos
+                                                           + referencePos + diff;
 
     SEQAN_CONSENSUS_OPEN_PENALTY_FACTOR = tmp;
-
 }
-
 
 // check for the longest adjacent run of homopolymers
 template<typename TSequence, typename TPosition>
 inline typename Size<TSequence>::Type
-checkSequenceContext(TSequence &reference,
+checkSequenceContext(TSequence & reference,
                      TPosition candidatePos,
                      int indelSize)
 {
@@ -3678,23 +3866,29 @@ checkSequenceContext(TSequence &reference,
 
     TPosition extendPos1, extendPos2;
 
-    if(indelSize > 0) // deletion
+    if (indelSize > 0) // deletion
     {
 #ifdef SNPSTORE_DEBUG
         std::cout << "indelSize=" << indelSize << std::endl;
-        std::cout << infix(reference,_max((int)0,(int)candidatePos-6),_min((int)candidatePos+indelSize+6,(int)length(reference)));
+        std::cout << infix(reference,
+                           _max((int)0, (int)candidatePos-6),
+                           _min((int)candidatePos+indelSize+6, (int)length(reference)));
 #endif
 
         // left candidate position
         extendPos1 = candidatePos > 0 ? candidatePos - 1 : 0;
         // right candidate position
-        extendPos2 = candidatePos + (TPosition)indelSize < (TPosition)length(reference) ? candidatePos + (TPosition)indelSize : (TPosition)length(reference)-1;
+        extendPos2 = candidatePos
+                + (TPosition)indelSize < (TPosition)length(reference)
+                    ? candidatePos + (TPosition)indelSize : (TPosition)length(reference) - 1;
     }
     else
     {
 #ifdef SNPSTORE_DEBUG
         std::cout << "indelSize=" << indelSize << std::endl;
-        std::cout << infix(reference,_max((int)0,(int)candidatePos-6),_min((int)candidatePos+6,(int)length(reference)));
+        std::cout << infix(reference,
+                           _max((int)0, (int)candidatePos-6),
+                           _min((int)candidatePos+6, (int)length(reference)));
 #endif
 
         // left candidate position
@@ -3710,11 +3904,11 @@ checkSequenceContext(TSequence &reference,
 
     //check to the left
     TSignedPos i = extendPos1;
-    while(i >= 0 && reference[i]==candBase)
+    while (i >= 0 && reference[i] == candBase)
         --i;
     //check to the right
     TSignedPos j = extendPos1;
-    while(j < (TSignedPos)length(reference) && reference[j]==candBase)
+    while (j < (TSignedPos)length(reference) && reference[j] == candBase)
         ++j;
     count = j - i - 1;
 
@@ -3724,11 +3918,11 @@ checkSequenceContext(TSequence &reference,
 
     //check to the left
     i = extendPos2;
-    while(i >= 0 && reference[i]==candBase)
+    while (i >= 0 && reference[i] == candBase)
         --i;
     //check to the right
     j = extendPos2;
-    while(j < (TSignedPos)length(reference) && reference[j]==candBase)
+    while (j < (TSignedPos)length(reference) && reference[j]==candBase)
         ++j;
     count = j - i - 1 > (TSignedPos)count ? j - i - 1 : (TSignedPos)count;
 
@@ -3737,7 +3931,6 @@ checkSequenceContext(TSequence &reference,
 #endif
 
     return count;
-
 }
 
 template<typename TMatchQuality, typename TRead, typename TOptions>
@@ -3745,8 +3938,13 @@ inline int
 calibrateQuality(TRead & read, TMatchQuality & matchQuality, int originalQuality,TOptions & options)
 {
     double epsilon = (double)(matchQuality.errors)/length(read);
-    //return ( (int)((double) (epsilon*100.0) * (int) matchQuality.score / pow(2.0,(100.0*epsilon - 1.0)) + (double)originalQuality ) / (double)(100.0* epsilon + 1.0));
-    return (int)( (int)((double) (epsilon*options.newQualityCalibrationFactor) * (int) matchQuality.score / pow(2.0,(20.0*options.newQualityCalibrationFactor - 1.0)) + (double)originalQuality ) / (double)(20.0* options.newQualityCalibrationFactor+ 1.0));
+    //return ((int)((double)(epsilon*100.0) * (int)matchQuality.score / pow(2.0,(100.0 * epsilon - 1.0))
+    //        + (double)originalQuality) / (double)(100.0 * epsilon + 1.0));
+    return (int)((int)((double)(epsilon * options.newQualityCalibrationFactor)
+                       * (int)matchQuality.score
+                       / pow(2.0,(20.0 * options.newQualityCalibrationFactor - 1.0))
+                       + (double)originalQuality)
+                 / (double)(20.0 * options.newQualityCalibrationFactor + 1.0));
 
 }
 
@@ -3762,16 +3960,16 @@ template <
     typename TOptions
 >
 void dumpVariantsRealignBatch(
-    TFragmentStore              &fragmentStore,             // forward/reverse matches
+    TFragmentStore              & fragmentStore,            // forward/reverse matches
     TReadCigars                 &,
     TReadCounts const           &,
     TGenomeName const           genomeID,                   // genome name
     typename TFragmentStore::TContigPos startCoord,         // startCoordinate + posOnGenomeInfix = real coordinate on whole chromosome
     typename TFragmentStore::TContigPos currStart,
     typename TFragmentStore::TContigPos currEnd,
-    TFile                   &file,
-    TFile                   &indelfile,
-    TOptions                &options)
+    TFile                   & file,
+    TFile                   & indelfile,
+    TOptions                & options)
 {
 
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
@@ -3813,7 +4011,7 @@ void dumpVariantsRealignBatch(
 
     // log file business
     ::std::ofstream logfile;
-    if(options.outputLog != "")
+    if (options.outputLog != "")
     {
         logfile.open(toCString(options.outputLog), ::std::ios_base::out | ::std::ios_base::app);
         if (!logfile.is_open())
@@ -3821,7 +4019,9 @@ void dumpVariantsRealignBatch(
         logfile << "#stats for window " << currStart << " " << currEnd << " of " << genomeID << std::endl;
     }
 
-    if(options._debugLevel > 1) ::std::cout << "Scanning chromosome " << genomeID << " window (" << currStart<<","<< currEnd << ") for SNPs..." << ::std::endl;
+    if (options._debugLevel > 1)
+        ::std::cout << "Scanning chromosome " << genomeID << " window ("
+                    << currStart<<","<< currEnd << ") for SNPs..." << ::std::endl;
 
 #ifdef SNPSTORE_DEBUG
     bool extraV = true;
@@ -3840,7 +4040,8 @@ void dumpVariantsRealignBatch(
 //      tmpfile.close()
 ;
     // convert matches in fragmentstore into a globally consistent alignment
-    //Score<int> scoreType = Score<int>(0, -999, -1001, -1000); // levenshtein-score (match, mismatch, gapOpen, gapExtend)
+    // levenshtein-score (match, mismatch, gapOpen, gapExtend)
+    //Score<int> scoreType = Score<int>(0, -999, -1001, -1000);
 
 #ifdef READS_454
     Score<int> scoreType = Score<int>(0, -3, -2, -2);   // (match, mismatch,gapExtend,gapOpen)
@@ -3856,10 +4057,10 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
 //  tmpfile2.close();
 
 #ifdef SNPSTORE_DEBUG
-    if(extraV)
+    if (extraV)
     {
         TContigGaps contigGaps(fragmentStore.contigStore[0].seq, fragmentStore.contigStore[0].gaps);
-        TContigPos maxPos = positionSeqToGap(contigGaps,length(fragmentStore.contigStore[0].seq)-1)+1;
+        TContigPos maxPos = positionSeqToGap(contigGaps,length(fragmentStore.contigStore[0].seq) - 1) + 1;
         maxPos = _max(maxPos,(TContigPos)length(fragmentStore.contigStore[0].seq));
         std::cout << "maxPos visual = " << maxPos;
         std::cout << " genomeLen = " << genomeLen << std::endl;
@@ -3869,21 +4070,21 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
         printAlignment(std::cout, Raw(), layout, fragmentStore, 0, (TContigPos)0, (TContigPos)maxPos, 0, 150);
     }
     ::std::cout << "done.\n" << std::flush;
-    if(extraV)
+    if (extraV)
     {
         CharString strstr = "befReal";
         _dumpMatches(fragmentStore,strstr);
     }
 #endif
 
-    //todo: do realignment here if options.realign, else work on global alignment
-//  if(options.realign)
+    //TODO: do realignment here if options.realign, else work on global alignment
+//  if (options.realign)
 //  {
     // TODO: check out if a different scoring scheme makes more sense
     Score<int, WeightedConsensusScore<Score<int, FractionalScore>, Score<int, ConsensusScore> > > consScore;
     int bandWidth = 10; // ad hoc
 
-    if(options._debugLevel > 1)
+    if (options._debugLevel > 1)
     {
         ::std::cout << "Realigning "<< length(matches)<<" reads to genome of length " <<genomeLen << std::flush;
 //      ::std::cout << " StartCoord="<< startCoord << std::endl;
@@ -3891,19 +4092,19 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
 
 
 #ifdef READS_454
-    reAlign(fragmentStore,consScore,0,1,bandWidth,true);
+    reAlign(fragmentStore, consScore, 0, 1, bandWidth, true);
 #else
-    reAlign(fragmentStore,consScore,0,1,bandWidth,true);
+    reAlign(fragmentStore, consScore, 0, 1, bandWidth, true);
 #endif
 
 #ifdef SNPSTORE_DEBUG
-    if(extraV)
+    if (extraV)
     {
         CharString strstr = "befRefRal";
         _dumpMatches(fragmentStore,strstr);
         TContigGaps contigGaps(fragmentStore.contigStore[0].seq, fragmentStore.contigStore[0].gaps);
-        TContigPos maxPos = positionSeqToGap(contigGaps,length(fragmentStore.contigStore[0].seq)-1)+1;
-        maxPos = _max(maxPos,(TContigPos)length(fragmentStore.contigStore[0].seq));
+        TContigPos maxPos = positionSeqToGap(contigGaps, length(fragmentStore.contigStore[0].seq) - 1) + 1;
+        maxPos = _max(maxPos, (TContigPos)length(fragmentStore.contigStore[0].seq));
         std::cout << "maxPos visual = " << maxPos;
         std::cout << " genomeLen = " << genomeLen << std::endl;
             AlignedReadLayout layout;
@@ -3914,35 +4115,34 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
 #endif
 
 
-    if(options._debugLevel > 1)::std::cout << "Realigning reads including reference..." << std::flush;
+    if (options._debugLevel > 1)
+        ::std::cout << "Realigning reads including reference..." << std::flush;
 
-
-    unsigned numReads = length(matches)-1; // exclude reference sequence
+    unsigned numReads = length(matches) - 1; // exclude reference sequence
     unsigned refId = length(matchQualities); // reference id (there may be more matchQs than matches due to pile up correction)
 
 
 //
 #ifndef  READS_454
-    reAlign(fragmentStore,consScore,0,1,/*bandWidth*/5,false);
+    reAlign(fragmentStore, consScore, 0, 1, /*bandWidth*/5, false);
 #else
-//  reAlign(fragmentStore,consScore,0,1,/*bandWidth*/5,false);
-//  realignReferenceToDiploidConsensusProfileDeleteSeqErrors(fragmentStore,refId,options);
-    realignReferenceToDiploidConsensusProfile(fragmentStore,refId,options);
-//    realignReferenceToDiploidConsensusProfileDeleteSeqErrors(fragmentStore,refId,options);
+//  reAlign(fragmentStore, consScore, 0, 1, /*bandWidth*/5, false);
+//  realignReferenceToDiploidConsensusProfileDeleteSeqErrors(fragmentStore, refId, options);
+    realignReferenceToDiploidConsensusProfile(fragmentStore, refId, options);
+//    realignReferenceToDiploidConsensusProfileDeleteSeqErrors(fragmentStore, refId, options);
 #endif
 
-    if(options._debugLevel > 1) ::std::cout << "Finished realigning." << std::endl;
-
-
+    if (options._debugLevel > 1)
+        ::std::cout << "Finished realigning." << std::endl;
 
 #ifdef SNPSTORE_DEBUG
     ::std::cout << "Realignment done.\n";
-    if(extraV)
+    if (extraV)
     {
         CharString strstr = "aftRefReal";
         _dumpMatches(fragmentStore,strstr);
         TContigGaps contigGaps(fragmentStore.contigStore[0].seq, fragmentStore.contigStore[0].gaps);
-        TContigPos maxPos = positionSeqToGap(contigGaps,length(fragmentStore.contigStore[0].seq)-1)+1;
+        TContigPos maxPos = positionSeqToGap(contigGaps,length(fragmentStore.contigStore[0].seq) - 1) + 1;
         maxPos = _max(maxPos,(TContigPos)length(fragmentStore.contigStore[0].seq));
         std::cout << "maxPos visual = " << maxPos;
         std::cout << " genomeLen = " << genomeLen << std::endl;
@@ -3967,14 +4167,20 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
 
     // forward match qualities
 
-    String<int> columnQualityF;         resize(columnQualityF,5);
-    String<unsigned> countF;            resize(countF,5);
-    String<CharString> qualityStringF;  resize(qualityStringF,5);
+    String<int> columnQualityF;
+    resize(columnQualityF,5);
+    String<unsigned> countF;
+    resize(countF,5);
+    String<CharString> qualityStringF;
+    resize(qualityStringF,5);
 
     // reverse match qualities
-    String<int> columnQualityR;         resize(columnQualityR,5);
-    String<unsigned> countR;            resize(countR,5);
-    String<CharString> qualityStringR;  resize(qualityStringR,5);
+    String<int> columnQualityR;
+    resize(columnQualityR,5);
+    String<unsigned> countR;
+    resize(countR,5);
+    String<CharString> qualityStringR;
+    resize(qualityStringR,5);
 
     FunctorComplement<Dna5> f;
 
@@ -3984,47 +4190,51 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
     TMatchIterator matchItEnd   = end(matches, Standard());
 
     // look for reference sequence and move it to the end of alignedreads
-    // todo: only do this when realignment was done
+    // TODO: only do this when realignment was done
     bool refFound = false;
     TMatchIterator matchItKeep = matchIt;
     TMatch tempRef;
-    while(matchIt != matchItEnd)
+    while (matchIt != matchItEnd)
     {
-        if((*matchIt).readId == refId) // this is the reference
+        if ((*matchIt).readId == refId) // this is the reference
         {
             refFound = true;
-            tempRef = *matchIt;
+            tempRef = * matchIt;
             matchItKeep = matchIt;
             ++matchIt;
             continue;
         }
-        if(refFound)
+        if (refFound)
         {
             *matchItKeep = *matchIt; // matchItKeep lags behind by one match
             ++matchIt;++matchItKeep;
         }
-        else ++matchIt;
+        else
+        {
+            ++matchIt;
+        }
     }
     *matchItKeep = tempRef;
     SEQAN_ASSERT(refFound);
 
 #ifdef SNPSTORE_DEBUG
-    if(!refFound) ::std::cout << "ref not Found!\n";
+    if (!refFound)
+        ::std::cout << "ref not Found!\n";
     ::std::cout << "done looking for ref." << std::flush << std::endl;
 #endif
 
     matchIt     = begin(matches, Standard());
     matchItEnd  = end(matches, Standard());
     matchItEnd--; // exclude reference sequence
-
-    TRead       &reference = fragmentStore.readSeqStore[fragmentStore.alignedReadStore[numReads].readId]; // last read is reference sequence
+    // last read is reference sequence
+    TRead       & reference = fragmentStore.readSeqStore[fragmentStore.alignedReadStore[numReads].readId];
     TReadGaps   referenceGaps(reference, fragmentStore.alignedReadStore[numReads].gaps);
     TContigPos      refStart = (TContigPos)fragmentStore.alignedReadStore[numReads].beginPos;
     TContigGaps contigGaps(fragmentStore.contigStore[0].seq, fragmentStore.contigStore[0].gaps);
     SingleBaseVariant snp = {0,0,0,0,0,0};
 
 #ifdef SNPSTORE_DEBUG
-    if(extraV)
+    if (extraV)
     {
         ::std::cout << "lengthrefgaps=" << length(referenceGaps)<< std::endl;
         ::std::cout << "length(genome) = " << genomeLen << " length(ref)=" << length(reference) << std::endl;
@@ -4043,7 +4253,8 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
         indelConsens[i].i2 = 0;
     }
 
-    if(options._debugLevel>1) std::cout << "Start inspecting alignment..." << std::endl;
+    if (options._debugLevel > 1)
+        std::cout << "Start inspecting alignment..." << std::endl;
     // now walk through the reference sequence in gaps view space,
     // i.e. position may be a gap
     // example:
@@ -4051,48 +4262,57 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
     // Reads    ACCGTACA--AGCATCAT
     //              TACA--AGCATCATT--ACT
     //                          ATTTTACTAGCATCATA
-    for(TContigPos candidateViewPos = refStart; candidateViewPos < refStart + (TContigPos)length(referenceGaps); ++candidateViewPos)
+    for(TContigPos candidateViewPos = refStart;
+        candidateViewPos < refStart + (TContigPos)length(referenceGaps);
+        ++candidateViewPos)
     {
         // first check if reference has a gap (potential insertion in reads) at this position
         TContigGapIter refIt = iter(referenceGaps,candidateViewPos-refStart);
         bool refGap = false;
-        if(isGap(refIt)) refGap = true;
+        if (isGap(refIt))
+            refGap = true;
 
         //get position in sequence space
-        TContigPos candidatePos = positionGapToSeq(referenceGaps, candidateViewPos-refStart);
+        TContigPos candidatePos = positionGapToSeq(referenceGaps, candidateViewPos - refStart);
 
         // not in the current window yet
-        if(candidatePos + startCoord < currStart) continue;
+        if (candidatePos + startCoord < currStart)
+            continue;
         // not in the current window anymore
-        if(candidatePos + startCoord >= currEnd) break;
+        if (candidatePos + startCoord >= currEnd)
+            break;
 
         Dna5 refBase = reference[candidatePos]; // what happens if refGap==true, esp. for leading gaps?
-        if(refBase=='N') continue;
+        if (refBase=='N')
+            continue;
 
 #ifdef SNPSTORE_DEBUG
         std::cout << "candidateViewPos = " << candidateViewPos << std::endl;
         std::cout << "candidatePos = " << candidatePos << std::endl;
         std::cout << "candidatePosMitStart = " << candidatePos + startCoord << " refBase = " << refBase << std::endl;
-        if(refGap) std::cout << "refGap!" << std::endl;
+        if (refGap)
+            std::cout << "refGap!" << std::endl;
         bool extraVVVV = false;
-        if(candidatePos + startCoord == 19388258) extraVVVV=true;
+        if (candidatePos + startCoord == 19388258)
+            extraVVVV=true;
 #endif
 
         //find range of relevant read matches
-        // CHECK: remove unnecessarily walking through same matches multiple times
-        while(matchIt != matchItEnd &&  _max((*matchIt).endPos,(*matchIt).beginPos) <= candidateViewPos)
+        // TODO: CHECK: remove unnecessarily walking through same matches multiple times
+        while (matchIt != matchItEnd &&  _max((*matchIt).endPos,(*matchIt).beginPos) <= candidateViewPos)
             ++matchIt;
         TMatchIterator matchRangeBegin = matchIt;
-        while(matchIt != matchItEnd &&  _min((*matchIt).endPos,(*matchIt).beginPos)  <= candidateViewPos)
+        while (matchIt != matchItEnd &&  _min((*matchIt).endPos, (*matchIt).beginPos) <= candidateViewPos)
             ++matchIt;
         TMatchIterator matchRangeEnd = matchIt; // could remember this for next round
         matchIt = matchRangeBegin;
 
-        int coverage = matchRangeEnd-matchRangeBegin;
+        int coverage = matchRangeEnd - matchRangeBegin;
 #ifdef SNPSTORE_DEBUG
-        if(extraVVVV) std::cout <<"cov=" << coverage << std::endl;
+        if (extraVVVV)
+            std::cout <<"cov=" << coverage << std::endl;
 #endif
-        if(coverage<(int)options.minCoverage)
+        if (coverage < (int)options.minCoverage)
             continue; // coverage too low
 
         // start checking reads for this position, prepare some helpers
@@ -4102,7 +4322,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
         std::set<int> indelReadPosMap;
 
 
-        for(unsigned t=0;t<5;++t)
+        for(unsigned t = 0; t < 5; ++t)
         {
             countF[t] = 0;
             columnQualityF[t] = 0;
@@ -4123,13 +4343,13 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
         int positionCoverage = 0;   // how many reads actually span the position?
 
         // now check reads
-        while(matchIt != matchRangeEnd)
+        while (matchIt != matchRangeEnd)
         {
-            TContigPos currViewBegin = _min((*matchIt).beginPos,(*matchIt).endPos);
-            TContigPos currViewEnd = _max((*matchIt).beginPos,(*matchIt).endPos);
+            TContigPos currViewBegin = _min((*matchIt).beginPos, (*matchIt).endPos);
+            TContigPos currViewEnd = _max((*matchIt).beginPos, (*matchIt).endPos);
 
             // make sure this match is really spanning the position
-            if(!(currViewBegin <= candidateViewPos && candidateViewPos < currViewEnd))
+            if (!(currViewBegin <= candidateViewPos && candidateViewPos < currViewEnd))
             {
                 ++matchIt;
                 continue;
@@ -4138,16 +4358,16 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
 
             char orientation = ((*matchIt).beginPos > (*matchIt).endPos) ? 'R' : 'F';
 
-            TReadGaps readGaps(reads[(*matchIt).readId],(*matchIt).gaps);
-            TReadGapIter rgIt = iter(readGaps,candidateViewPos - currViewBegin);
+            TReadGaps readGaps(reads[(*matchIt).readId], (*matchIt).gaps);
+            TReadGapIter rgIt = iter(readGaps, candidateViewPos - currViewBegin);
 
             // check out which position is hit in this read
             int readPos;
-            if(isGap(rgIt)) readPos = -1; //potential deletion in reads (insertion in reference)
+            if (isGap(rgIt)) readPos = -1; //potential deletion in reads (insertion in reference)
             else
             {
                 readPos = positionGapToSeq(readGaps,candidateViewPos - currViewBegin);
-                if(orientation == 'R')
+                if (orientation == 'R')
                     readPos = length(reads[(*matchIt).readId]) - readPos - 1;
             }
 
@@ -4156,69 +4376,79 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
             std::cout << "ReadPos = " << readPos << std::endl;
 #endif
 
-            if(readPos != -1) //-1 indicates gap in read
+            if (readPos != -1) //-1 indicates gap in read
             {
 
-                if(orientation == 'R') candidateBase = f((Dna5)reads[(*matchIt).readId][readPos]);
-                else candidateBase = (Dna5)reads[(*matchIt).readId][readPos];
+                if (orientation == 'R')
+                    candidateBase = f((Dna5)reads[(*matchIt).readId][readPos]);
+                else
+                    candidateBase = (Dna5)reads[(*matchIt).readId][readPos];
 
-                if(refGap)
+                if (refGap)
                 {
-                    if(orientation == 'F')
+                    if (orientation == 'F')
                         ++numIndelsObservedF; // count insertions
-                    else ++numIndelsObservedR;
-                    if(options.minDifferentReadPos > 0)
-                        if((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
-                            (unsigned) readPos >= options.excludeBorderPos )
+                    else
+                        ++numIndelsObservedR;
+                    if (options.minDifferentReadPos > 0)
+                        if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos &&
+                             (unsigned) readPos >= options.excludeBorderPos )
                         indelReadPosMap.insert(readPos);
                 }
-                else if(candidateBase != refBase)
+                else if (candidateBase != refBase)
                 {
                     observedAtLeastOneMut = true;
-                    if(options.minDifferentReadPos > 0)
-                        if((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
+                    if (options.minDifferentReadPos > 0)
+                        if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos &&
                             (unsigned) readPos >= options.excludeBorderPos )
                         readPosMap.insert(readPos);
                 }
                 quality = getQualityValue(reads[(*matchIt).readId][readPos]) ;
-                if(options.newQualityCalibrationFactor > 0.0001 ) quality = calibrateQuality(reads[(*matchIt).readId], matchQualities[(*matchIt).id],quality,options);
+                if (options.newQualityCalibrationFactor > 0.0001 )
+                    quality = calibrateQuality(reads[(*matchIt).readId], matchQualities[(*matchIt).id],quality,options);
 
-                if(!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score)
+                if (!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score)
                 {   // dont trust the quality of this position more
                     // than the average quality of this read
-                    quality = (int) matchQualities[(*matchIt).id].score;
+                    quality = (int)matchQualities[(*matchIt).id].score;
                 }
 
 
-                if(orientation == 'F')
+                if (orientation == 'F')
                 {
                     columnQualityF[ordValue(candidateBase)] += quality;
                     ++countF[ordValue(candidateBase)];
-                    appendValue(qualityStringF[ordValue(candidateBase)],(char)(quality+33),Generous());
+                    appendValue(qualityStringF[ordValue(candidateBase)], (char)(quality+33), Generous());
                 }
                 else
                 {
                     columnQualityR[ordValue(candidateBase)] += quality;
                     ++countR[ordValue(candidateBase)];
-                    appendValue(qualityStringR[ordValue(candidateBase)],(char)(quality+33),Generous());
+                    appendValue(qualityStringR[ordValue(candidateBase)], (char)(quality+33), Generous());
                 }
             }
             else
             {   //potential deletions
 
-                if(!refGap)
+                if (!refGap)
                 {
                     readPos = positionGapToSeq(readGaps,candidateViewPos - currViewBegin);
 #ifdef SNPSTORE_DEBUG
-                    if(extraVVVV) std::cout <<"del readPos = " << readPos  << "readlength=" << length(reads[(*matchIt).readId]) << std::endl;
+                    if (extraVVVV)
+                        std::cout <<"del readPos = " << readPos  << "readlength="
+                                 << length(reads[(*matchIt).readId]) << std::endl;
 #endif
-                    if(orientation == 'R')
+                    if (orientation == 'R')
                         readPos = length(reads[(*matchIt).readId]) - readPos;
 #ifdef SNPSTORE_DEBUG
-                    if(extraVVVV) std::cout <<"del readPos = " << readPos  << "readlength=" << length(reads[(*matchIt).readId]) << std::endl;
+                    if (extraVVVV)
+                        std::cout <<"del readPos = " << readPos  << "readlength="
+                                 << length(reads[(*matchIt).readId]) << std::endl;
 #endif
-                    quality = (getQualityValue(reads[(*matchIt).readId][readPos-1])  + getQualityValue(reads[(*matchIt).readId][readPos]) ) / 2;
-                    if(orientation == 'F')
+                    quality = (getQualityValue(reads[(*matchIt).readId][readPos-1])
+                            + getQualityValue(reads[(*matchIt).readId][readPos]))
+                            / 2;
+                    if (orientation == 'F')
                     {
                         indelQualF += quality;
                         ++numIndelsObservedF;
@@ -4228,39 +4458,37 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                         ++numIndelsObservedR;
                         indelQualR += quality;
                     }
-                    if(options.minDifferentReadPos > 0)
+                    if (options.minDifferentReadPos > 0)
                     {
-                        if((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
-                            (unsigned) readPos >= options.excludeBorderPos )
+                        if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos &&
+                             (unsigned)readPos >= options.excludeBorderPos)
                         indelReadPosMap.insert(readPos);
                     }
                 }
-
             }
-
             ++matchIt;
         }
-        matchIt = matchRangeBegin; //set iterator back to where we started from, same matches might be involved in next cand pos
+        matchIt = matchRangeBegin; //set iter back to where we started, same matches might be involved in next cand pos
         int numIndelsObserved = numIndelsObservedF + numIndelsObservedR;
 #ifdef SNPSTORE_DEBUG
-        if(extraVVVV)
+        if (extraVVVV)
         {
             std::cout << "posCov=" << positionCoverage << "numIndels = " << numIndelsObserved << std::endl;
-            if(observedAtLeastOneMut) std::cout << "observed at least one mut " << std::endl;
+            if (observedAtLeastOneMut)
+                std::cout << "observed at least one mut " << std::endl;
         }
 #endif
-
         // too few reads actually cover the position
-        if(positionCoverage < (int)options.minCoverage)
+        if (positionCoverage < (int)options.minCoverage)
             continue;
 
         //all observed bases match the reference allele or there were too few indels
-        //if(!observedAtLeastOneMut && numIndelsObserved< options.indelCountThreshold)
+        //if (!observedAtLeastOneMut && numIndelsObserved< options.indelCountThreshold)
         //  continue;
 
 
         // do SNP calling
-        if(file.is_open() && observedAtLeastOneMut)
+        if (file.is_open() && observedAtLeastOneMut)
         {
             bool isSnp = true;
 
@@ -4271,110 +4499,132 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
             unsigned realCoverage  = realCoverageF + realCoverageR;
 
             // Coverage too low after discarding Ns and gaps from alignment column
-            if(realCoverage<options.minCoverage) isSnp = false;
+            if (realCoverage<options.minCoverage)
+                isSnp = false;
 
             // is the min. number of different read positions supporting the mutation met?
-            if(isSnp && options.minDifferentReadPos > 0 && readPosMap.size() < options.minDifferentReadPos)
+            if (isSnp && options.minDifferentReadPos > 0 && readPosMap.size() < options.minDifferentReadPos)
                 isSnp = false;
 
             // do genotype calling
-            if(isSnp && options.method == 1)
+            if (isSnp && options.method == 1)
                 isSnp = _doSnpCall(countF,countR,qualityStringF,qualityStringR,refAllele,options,snp,MaqMethod()
 #ifdef SNPSTORE_DEBUG_CANDPOS
                 ,(int) candidatePos + startCoord
 #endif
                 );
-            else if(isSnp && options.method == 0)
-                isSnp = _doSnpCall(countF,countR,columnQualityF,columnQualityR,refAllele,options,snp,ThresholdMethod() );
-
+            else if (isSnp && options.method == 0)
+                isSnp = _doSnpCall(countF,
+                                   countR,
+                                   columnQualityF,
+                                   columnQualityR,
+                                   refAllele,
+                                   options,
+                                   snp,
+                                   ThresholdMethod());
             // write SNP to file
-            if(isSnp && (snp.called || options.outputFormat == 0))
-                _writeSnp(file,snp,qualityStringF,qualityStringR,refAllele,genomeID,candidatePos+startCoord,realCoverage,options);
+            if (isSnp && (snp.called || options.outputFormat == 0))
+                _writeSnp(file,
+                          snp,
+                          qualityStringF,
+                          qualityStringR,
+                          refAllele,
+                          genomeID,
+                          candidatePos + startCoord,
+                          realCoverage,
+                          options);
         }
-
         bool isIndel = true;
         if (!indelfile.is_open() || numIndelsObserved < (int)options.indelCountThreshold) // count threshold
             isIndel = false;
-
-        if(isIndel && ((float)numIndelsObserved/(float)positionCoverage) < options.indelPercentageT)
+        if (isIndel && ((float)numIndelsObserved / (float)positionCoverage) < options.indelPercentageT)
             isIndel = false;
-
-        if (isIndel && options.minDifferentReadPos > 0 && indelReadPosMap.size() < options.minDifferentReadPos) // minDiffReadPos criterium
+        if (isIndel && options.minDifferentReadPos > 0 && indelReadPosMap.size() < options.minDifferentReadPos)
+            isIndel = false; // minDiffReadPos criterium
+        if (isIndel && options.bothIndelStrands && ((float)numIndelsObservedF==0 || numIndelsObservedR==0))
             isIndel = false;
-
-        if(isIndel && options.bothIndelStrands && ((float)numIndelsObservedF==0 || numIndelsObservedR==0))
-            isIndel = false;
-
           // possible deletion, insertion quality will be handled later
         int avgIndelQuality = 0;
-        if(isIndel && numIndelsObserved > 0) avgIndelQuality = (int)((double)indelQualF+indelQualR)/numIndelsObserved;
-        if(isIndel && !refGap && (float)avgIndelQuality < options.indelQualityThreshold)
+        if (isIndel && numIndelsObserved > 0) avgIndelQuality = (int)((double)indelQualF
+                                                                      + indelQualR) / numIndelsObserved;
+        if (isIndel && !refGap && (float)avgIndelQuality < options.indelQualityThreshold)
             isIndel = false;
 
 
-        // do indel calling  //TODO: for 454 data look at sequence content! for >=6bp homopolymer runs needs to be more strict
-        //if (indelfile.is_open() && numIndelsObserved >= (int)options.indelCountThreshold // count threshold
-        //    && ((float)numIndelsObserved/(float)positionCoverage) >= options.indelPercentageT // percentage threshold
-        //    && (options.minDifferentReadPos == 0 || indelReadPosMap.size() >= options.minDifferentReadPos)) // minDiffReadPos criterium
-        if(isIndel)
+        // do indel calling. TODO: for 454 look at sequence content! for >= 6bp homopolymer runs needs to be more strict
+        //if (indelfile.is_open() && numIndelsObserved >= (int)options.indelCountThreshold // count threshold &&
+        //    ((float)numIndelsObserved/(float)positionCoverage) >= options.indelPercentageT // percentage threshold &&
+        // minDiffReadPos criterium
+        //    (options.minDifferentReadPos == 0 || indelReadPosMap.size() >= options.minDifferentReadPos))
+        if (isIndel)
         {
             bool indelCalled = true;
             char mostCommonBase = 5; // 5 represents gap char "-", potential deletion
-            if(refGap) // potential insertion
+            if (refGap) // potential insertion
             {
 #ifdef SNPSTORE_DEBUG
-                if(extraVVVV) std::cout << "potential insertion" << std::endl;
+                if (extraVVVV)
+                    std::cout << "potential insertion" << std::endl;
 #endif
                 SEQAN_ASSERT(!observedAtLeastOneMut);
                 mostCommonBase = 0;
                 unsigned maxCount = countF[0] + countR[0];
                 for(unsigned j = 0; j < length(countF); ++j)
-                    if(countF[j] + countR[j] > maxCount)
+                    if (countF[j] + countR[j] > maxCount)
                     {
                         maxCount = countF[j] + countR[j];
                         mostCommonBase = j;
                     }
                 // number of ref reads + insertion reads
-                if(maxCount < options.indelCountThreshold) indelCalled = false;
-               // if(!indelCalled) std::cout << "verloren1\n";
-                if(((double)maxCount/positionCoverage) < options.indelPercentageT) indelCalled = false;
-               // if(!indelCalled) std::cout << "verloren2\n";
-                if((double)(maxCount+positionCoverage-numIndelsObserved)/positionCoverage < options.minExplainedColumn) indelCalled = false;
-               // if(!indelCalled) std::cout << "maxCount = " << maxCount << " positionCoverage = "<< positionCoverage << "numIndelsObserved = " << numIndelsObserved <<" verloren3\n";
+                if (maxCount < options.indelCountThreshold)
+                    indelCalled = false;
+               // if (!indelCalled) std::cout << "verloren1\n";
+                if (((double)maxCount / positionCoverage) < options.indelPercentageT)
+                    indelCalled = false;
+               // if (!indelCalled) std::cout << "verloren2\n";
+                if ((double)(maxCount + positionCoverage - numIndelsObserved) / positionCoverage
+                        < options.minExplainedColumn)
+                    indelCalled = false;
+               // if (!indelCalled)
+                //      std::cout << "maxCount = " << maxCount << " positionCoverage = "
+                //                << positionCoverage << "numIndelsObserved = " << numIndelsObserved <<" verloren3\n";
 
                 // check quality
-                //avgIndelQuality = (int) ((double)columnQualityR[mostCommonBase] +columnQualityF[mostCommonBase])/numIndelsObserved; // divide by all observed insertions?
-                avgIndelQuality = (int) ((double)columnQualityR[mostCommonBase] +columnQualityF[mostCommonBase])/maxCount;  // or just candidate insertions?
-                if ((float)avgIndelQuality < options.indelQualityThreshold) indelCalled = false;
-               // if(!indelCalled) std::cout << "verloren4\n";
+                //avgIndelQuality = (int) ((double)columnQualityR[mostCommonBase]
+                //      + columnQualityF[mostCommonBase])/numIndelsObserved; // divide by all observed insertions?
+                avgIndelQuality = (int)((double)columnQualityR[mostCommonBase]
+                                        + columnQualityF[mostCommonBase]) / maxCount;  // or just candidate insertions?
+                if ((float)avgIndelQuality < options.indelQualityThreshold)
+                    indelCalled = false;
+               // if (!indelCalled)
+               //     std::cout << "verloren4\n";
                 numIndelsObserved = maxCount;
             }
-            if(indelCalled)
+            if (indelCalled)
             {
                 int bothStrandsObserved = 0;
-                if(numIndelsObservedF>0 && numIndelsObservedR>0) // remember that both strands were observed --> increase quality of call later
-                    bothStrandsObserved = 1;
+                if (numIndelsObservedF>0 && numIndelsObservedR>0)
+                    bothStrandsObserved = 1;// remember that both strands were observed-> increase quality of call later
                 indelConsens[candidateViewPos].i1 = avgIndelQuality << 8 | bothStrandsObserved << 4 | mostCommonBase;
 #ifdef SNPSTORE_DEBUG
-                if(extraVVVV) std::cout << "mosCommonBase = " << (int)mostCommonBase << std::endl;
+                if (extraVVVV)
+                    std::cout << "mosCommonBase = " << (int)mostCommonBase << std::endl;
 #endif
-                if(positionCoverage > 255) //downscaling if numbers get too large
+                if (positionCoverage > 255) //downscaling if numbers get too large
                 {
                     numIndelsObserved *= (int)((float)255.0/(float)positionCoverage);
                     positionCoverage = 255;
 #ifdef SNPSTORE_DEBUG
-                    if(extraVVVV) std::cout << "downscaled to " << numIndelsObserved << std::endl;
+                    if (extraVVVV)
+                        std::cout << "downscaled to " << numIndelsObserved << std::endl;
 #endif
                 }
                 indelConsens[candidateViewPos].i2 = numIndelsObserved << 8 | positionCoverage;
             }
         }
     }
-
     //CharString chrPrefix = "";
     CharString chrPrefix = "chr"; // should check if "chr" is already part of chromosome names (usually not)
-
-
     ::std::string runID = options.runID;
 
 #ifdef SNPSTORE_DEBUG
@@ -4384,16 +4634,17 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
     std::cout << std::endl;
 #endif
 
-    if(indelfile.is_open()) //indelcalling
+    if (indelfile.is_open()) //indelcalling
     {
-        if(options._debugLevel > 1) std::cout << "Calling indels..." << std::endl;
+        if (options._debugLevel > 1)
+            std::cout << "Calling indels..." << std::endl;
         TContigPos candidateViewPos = refStart;
         Dna5String insertionSeq;
-        while(candidateViewPos < refStart + (TContigPos)length(referenceGaps))
+        while (candidateViewPos < refStart + (TContigPos)length(referenceGaps))
         {
 
             bool bsi = true;
-            if(candidateViewPos < refStart + (TContigPos)length(referenceGaps) &&
+            if (candidateViewPos < refStart + (TContigPos)length(referenceGaps) &&
                 (indelConsens[candidateViewPos].i1 & 7) == 6) // not a relevant position
             {
 #ifdef SNPSTORE_DEBUG
@@ -4413,15 +4664,15 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
 #ifdef SNPSTORE_DEBUG
             ::std::cout << candidateViewPos << " indel?" <<  std::endl;
 #endif
-            while(candidateViewPos < refStart + (TContigPos)length(referenceGaps) && // shouldnt happen actually
-                ((indelConsens[candidateViewPos].i1 & 7) == 5  ||        // deletion in consens
-                ((indelConsens[candidateViewPos].i1 & 7) == 6  && isGap(referenceGaps, candidateViewPos-refStart)))  // position in consensus is the same as in reference
-                )                                                   // and reference is a gap (same candidatePosition as before)
+            while (candidateViewPos < refStart + (TContigPos)length(referenceGaps) &&   // shouldnt happen actually
+                ((indelConsens[candidateViewPos].i1 & 7) == 5  ||                       // deletion in consens
+                ((indelConsens[candidateViewPos].i1 & 7) == 6  && isGap(referenceGaps, candidateViewPos-refStart)))
+                ) // position in consensus is the same as in ref and ref is a gap (same candidatePosition as before)
             {
 #ifdef SNPSTORE_DEBUG
                 ::std::cout << startCoord + candidateViewPos << " del!!" <<  std::endl;
 #endif
-                if((indelConsens[candidateViewPos].i1 & 7) == 5)
+                if ((indelConsens[candidateViewPos].i1 & 7) == 5)
                 {
                     ++indelSize;
                     depth += (indelConsens[candidateViewPos].i2 & 255);
@@ -4430,20 +4681,18 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                     bsi = bsi && (((indelConsens[candidateViewPos].i1 >> 4) & 1) == 1 );
                 }
                 ++candidateViewPos;
-
             }
-            if(indelSize>0)
+            if (indelSize>0)
             {
                 // check for the longest adjacent stretch of homopolymers
-                int homoLength = checkSequenceContext(reference,candidatePos,indelSize);
-                if(homoLength <= options.maxPolymerRun)
+                int homoLength = checkSequenceContext(reference, candidatePos, indelSize);
+                if (homoLength <= options.maxPolymerRun)
                 {
                     percentage /= depth;                                // low coverage positions get a lower weight
                     depth = (depth + (indelSize >> 1)) / indelSize;     // coverage is spread over all positions
                     quality = (quality + (indelSize >> 1)) / indelSize; // quality is spread over all positions
                     int indelQ = (int)(quality * percentage);
                     if (!bsi) indelQ /= 2;
-
                     //print deletion
                     indelfile << chrPrefix << genomeID << '\t' << runID << "\tdeletion\t";
                     indelfile << candidatePos + startCoord + options.positionFormat  << '\t';
@@ -4455,18 +4704,19 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                     indelfile << ";depth=" << depth;
                     indelfile << ";quality=" << indelQ;
                     indelfile << ";homorun=" << homoLength;
-                    if(bsi)indelfile << ";bsi";
-                    indelfile << ";seqContext=" << infix(reference,_max((int)0,(int)candidatePos-6),_min((int)candidatePos+indelSize+6,(int)length(reference)));
-                    if(percentage <= options.indelHetMax) indelfile << ";geno=het";
-                    else indelfile << ";geno=hom";
+                    if (bsi)indelfile << ";bsi";
+                    indelfile << ";seqContext=" << infix(reference,_max((int)0,(int)candidatePos-6),
+                                                         _min((int)candidatePos+indelSize+6,(int)length(reference)));
+                    if (percentage <= options.indelHetMax)
+                        indelfile << ";geno=het";
+                    else
+                        indelfile << ";geno=hom";
 
-                    //if(splitSupport>0) indelfile << ";splitSupport=" << splitSupport;
+                    //if (splitSupport>0) indelfile << ";splitSupport=" << splitSupport;
                     indelfile << std::endl;
                 }
-
-
                 //reset
-                candidatePos = positionGapToSeq(referenceGaps, candidateViewPos-refStart);
+                candidatePos = positionGapToSeq(referenceGaps, candidateViewPos - refStart);
                 indelSize = 0;
                 depth = 0;
                 percentage = 0.0;
@@ -4474,15 +4724,16 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                 bsi = true;
             }
             clear(insertionSeq);
-            while(candidateViewPos < refStart + (TContigPos)length(referenceGaps) && // shouldnt happen actually
+            while (candidateViewPos < refStart + (TContigPos)length(referenceGaps) && // shouldnt happen actually
                 ((indelConsens[candidateViewPos].i1 & 7) < 5 ||          // insertion in consensus
-                ((indelConsens[candidateViewPos].i1 & 7) == 6  && candidatePos == positionGapToSeq(referenceGaps, candidateViewPos-refStart)))   // position in consensus is the same as in reference
-                )                                                   // and reference is a gap (same candidatePosition as before)
+                ((indelConsens[candidateViewPos].i1 & 7) == 6  &&
+                 candidatePos == positionGapToSeq(referenceGaps, candidateViewPos-refStart)))
+                ) //position in consensus is the same as in ref and ref is a gap (same candidatePosition as before)
             {
 #ifdef SNPSTORE_DEBUG
                 ::std::cout << candidateViewPos << " ins!!!" <<  std::endl;
 #endif
-                if((indelConsens[candidateViewPos].i1 & 7) < 5)
+                if ((indelConsens[candidateViewPos].i1 & 7) < 5)
                 {
                     --indelSize;
                     depth += (indelConsens[candidateViewPos].i2 & 255);
@@ -4493,20 +4744,20 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                 }
                 ++candidateViewPos;
             }
-            if(indelSize<0)
+            if (indelSize<0)
             {
                 int homoLength = checkSequenceContext(reference,candidatePos,indelSize);
-                if(homoLength <= options.maxPolymerRun)
+                if (homoLength <= options.maxPolymerRun)
                 {
                     unsigned absIndelSize = -indelSize;
-                    percentage /= depth;                                        // low coverage positions get a lower weight
-                    depth = (depth + (absIndelSize >> 1)) / absIndelSize;       // coverage is spread over all positions
-                    quality = (quality + (absIndelSize >> 1)) / absIndelSize;   // quality is spread over all positions
+                    percentage /= depth;                                    // low coverage positions get a lower weight
+                    depth = (depth + (absIndelSize >> 1)) / absIndelSize;     // coverage is spread over all positions
+                    quality = (quality + (absIndelSize >> 1)) / absIndelSize; // quality is spread over all positions
                     int indelQ = (int)(quality * percentage);
                     if (!bsi) indelQ /= 2;
 
                     //print insertion
-                    indelfile << chrPrefix <<genomeID << '\t' << runID << "\tinsertion\t";
+                    indelfile << chrPrefix << genomeID << '\t' << runID << "\tinsertion\t";
                     indelfile << candidatePos + startCoord + options.positionFormat - 1 << '\t';
                     indelfile << candidatePos + startCoord;// + options.positionFormat; //VORSICHT!!!
                     indelfile << "\t" << percentage;
@@ -4517,33 +4768,29 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                     indelfile << ";depth=" << depth;
                     indelfile << ";quality=" << indelQ;
                     indelfile << ";homorun=" << homoLength;
-                    if(bsi)indelfile << ";bsi";
-                    indelfile << ";seqContext=" << infix(reference,_max((int)0,(int)candidatePos-6),_min((int)candidatePos+6,(int)length(reference)));
-                    if(percentage <= options.indelHetMax) indelfile << ";geno=het";
-                    else indelfile << ";geno=hom";
-
-                    //if(splitSupport>0) indelfile << ";splitSupport=" << splitSupport;
+                    if (bsi)indelfile << ";bsi";
+                    indelfile << ";seqContext=" << infix(reference,
+                                                         _max((int)0,(int)candidatePos-6),
+                                                         _min((int)candidatePos+6,(int)length(reference)));
+                    if (percentage <= options.indelHetMax)
+                        indelfile << ";geno=het";
+                    else
+                        indelfile << ";geno=hom";
+                    //if (splitSupport>0) indelfile << ";splitSupport=" << splitSupport;
                     indelfile << std::endl;
                 }
                 //resetting will be done in next round
             }
-
         }
-        if(options._debugLevel > 1) std::cout << "Finished calling indels..." << std::endl;
-
+        if (options._debugLevel > 1)
+            std::cout << "Finished calling indels..." << std::endl;
     }
+    if (options._debugLevel>1)
+        std::cout <<"Finished scanning window.\n"<<std::flush;
 
-    if(options._debugLevel>1) std::cout <<"Finished scanning window.\n"<<std::flush;
-
-    if((options.outputLog != "") && logfile.is_open())
+    if ((options.outputLog != "") && logfile.is_open())
         logfile.close();
-
-
 }
-
-
-
-
 //////////////////////////////////////////////////////////////////////////////
 // Output SNPs
 template <
@@ -4555,17 +4802,16 @@ template <
     typename TOptions
 >
 void dumpSNPsBatch(
-    TFragmentStore              &fragmentStore,             // forward/reverse matches
+    TFragmentStore              &fragmentStore,     // forward/reverse matches
     TReadCigars             &,
     TReadCounts const           &readCounts,
-    TGenomeName const           genomeID,                   // genome name
-    typename TFragmentStore::TContigPos startCoord,         // startCoordinate + posOnGenomeInfix = real coordinate on whole chromosome
+    TGenomeName const           genomeID,           // genome name
+    typename TFragmentStore::TContigPos startCoord, // startCoordinate + posOnGenomeInfix = real coordinate on whole chr
     typename TFragmentStore::TContigPos currStart,
     typename TFragmentStore::TContigPos currEnd,
     TFile               &file,
     TOptions            &options)
 {
-
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
     typedef typename Value<TMatches>::Type              TMatch;
     typedef typename TFragmentStore::TAlignQualityStore TMatchQualities;
@@ -4589,44 +4835,42 @@ void dumpSNPsBatch(
     ::std::sort(begin(matches, Standard()), end(matches, Standard()), LessGPos<TMatch>());
 
     Align<String<Dna5>, ArrayGaps> align;
-    Score<int> scoreType = Score<int>(0, -999, -1001, -1000);   // levenshtein-score (match, mismatch, gapOpen, gapExtend)
+    // levenshtein-score (match, mismatch, gapOpen, gapExtend)
+    Score<int> scoreType = Score<int>(0, -999, -1001, -1000);
     resize(rows(align), 2);
-
     if (!file.is_open())
     {
         ::std::cerr << "Output file is not open" << ::std::endl;
         return;
     }
-
     ::std::ofstream logfile;
-    if(options.outputLog != "")
+    if (options.outputLog != "")
     {
         logfile.open(toCString(options.outputLog), ::std::ios_base::out | ::std::ios_base::app);
         if (!logfile.is_open())
             ::std::cerr << "Failed to write to log file" << ::std::endl;
         logfile << "#stats for window " << currStart << " " << currEnd << " of " << genomeID << std::endl;
     }
-
     TMatchIterator matchIt  = begin(matches, Standard());
     TMatchIterator matchItEnd   = end(matches, Standard());
     //matchItEnd--;
     unsigned countLowerMQ = 0, countHigherMQ = 0;
-
-    if(options._debugLevel > 1) ::std::cout << "Scanning chromosome " << genomeID << " window (" << currStart<<","<< currEnd << ") for SNPs..." << ::std::endl;
-
+    if (options._debugLevel > 1)
+        ::std::cout << "Scanning chromosome " << genomeID << " window ("
+                    << currStart<<","<< currEnd << ") for SNPs..." << ::std::endl;
     // forward match qualities
-    String<int> columnQualityF;         resize(columnQualityF,5);
-    String<unsigned> countF;            resize(countF,5);
-    String<CharString> qualityStringF;  resize(qualityStringF,5);
+    String<int> columnQualityF;         resize(columnQualityF, 5);
+    String<unsigned> countF;            resize(countF, 5);
+    String<CharString> qualityStringF;  resize(qualityStringF, 5);
 
     // reverse match qualities
-    String<int> columnQualityR;         resize(columnQualityR,5);
-    String<unsigned> countR;            resize(countR,5);
-    String<CharString> qualityStringR;  resize(qualityStringR,5);
+    String<int> columnQualityR;         resize(columnQualityR, 5);
+    String<unsigned> countR;            resize(countR, 5);
+    String<CharString> qualityStringR;  resize(qualityStringR, 5);
 
     // both
-    String<unsigned> count;             resize(count,5);
-    String<unsigned> columnQuality;     resize(columnQuality,5);
+    String<unsigned> count;             resize(count, 5);
+    String<unsigned> columnQuality;     resize(columnQuality, 5);
 
 #ifdef SNPSTORE_DEBUG
     bool extraV = false;
@@ -4635,27 +4879,27 @@ void dumpSNPsBatch(
 
     for(TContigPos candidatePos = 0; candidatePos < (TContigPos)length(genome); ++candidatePos)
     {
-//      if(options._debugLevel > 1) ::std::cout << "Next pos\n";
+//      if (options._debugLevel > 1) ::std::cout << "Next pos\n";
 
-        if(candidatePos + startCoord < currStart) continue;
+        if (candidatePos + startCoord < currStart) continue;
 
         // not in the current window anymore
-        if(candidatePos + startCoord >= currEnd)
+        if (candidatePos + startCoord >= currEnd)
             break;
 
         Dna5 refBase = genome[candidatePos];
-        if(refBase=='N') continue;
+        if (refBase=='N') continue;
 
 #ifdef SNPSTORE_DEBUG
         ::std::cout << "candPos=" << candidatePos + startCoord << ::std::endl;
-        if(candidatePos + startCoord == 861196)
+        if (candidatePos + startCoord == 861196)
             ::std::cout << "ab jetzt.." << ::std::flush;
 #endif
 
         Dna5 candidateBase;
         int quality;
 
-//      if(options._debugLevel > 1)std::cout << candidatePos+startCoord << "<-candidatePos\n";
+//      if (options._debugLevel > 1)std::cout << candidatePos+startCoord << "<-candidatePos\n";
         for(unsigned t=0;t<5;++t)
         {
             countF[t] = 0;
@@ -4668,20 +4912,22 @@ void dumpSNPsBatch(
         }
 
         //find range of relevant read matches
-        while(matchIt != matchItEnd &&  _max((*matchIt).endPos,(*matchIt).beginPos) <= candidatePos)
+        while (matchIt != matchItEnd &&  _max((*matchIt).endPos, (*matchIt).beginPos) <= candidatePos)
             ++matchIt;
         TMatchIterator matchRangeBegin = matchIt;
-        while(matchIt != matchItEnd &&  _min((*matchIt).endPos,(*matchIt).beginPos)  <= candidatePos)
+        while (matchIt != matchItEnd &&  _min((*matchIt).endPos, (*matchIt).beginPos)  <= candidatePos)
             ++matchIt;
         TMatchIterator matchRangeEnd = matchIt;
         matchIt = matchRangeBegin;
 
         int coverage = matchRangeEnd-matchRangeBegin;
-        if(coverage<(int)options.minCoverage) continue; // coverage too low
+        if (coverage<(int)options.minCoverage)
+            continue; // coverage too low
 
-        if(options._debugLevel > 1)::std::cout << "Match range:" << matchRangeEnd - matchRangeBegin << ::std::endl;
+        if (options._debugLevel > 1)
+            ::std::cout << "Match range:" << matchRangeEnd - matchRangeBegin << ::std::endl;
 #ifdef SNPSTORE_DEBUG
-        if(extraV)
+        if (extraV)
         {
             for (TMatchIterator tempIt = matchRangeBegin; tempIt != matchRangeEnd; ++tempIt)
                 ::std::cout << reads[(*tempIt).readId]<<"\n";
@@ -4690,35 +4936,34 @@ void dumpSNPsBatch(
         std::set<unsigned> readPosMap;
         bool observedAtLeastOneMut = false;
 
-        while(matchIt != matchRangeEnd)
+        while (matchIt != matchRangeEnd)
         {
-            TContigPos currentBegin = _min((*matchIt).beginPos,(*matchIt).endPos);
-            TContigPos currentEnd   = _max((*matchIt).beginPos,(*matchIt).endPos);
+            TContigPos currentBegin = _min((*matchIt).beginPos, (*matchIt).endPos);
+            TContigPos currentEnd   = _max((*matchIt).beginPos, (*matchIt).endPos);
             char orientation = ((*matchIt).beginPos > (*matchIt).endPos) ? 'R' : 'F';
-
 #ifdef SNPSTORE_DEBUG
-            if(extraV)
+            if (extraV)
             {
                 ::std::cout <<"currentBegin = "<<currentBegin << "\n";
                 ::std::cout <<"currentEnd = "<<currentEnd << "\n";
             }
 #endif
-            if(!(currentBegin <= candidatePos && candidatePos < currentEnd))// this match is not really spanning the position
-            {                                                               // (can happen because of indels or variable-length reads)
+            if (!(currentBegin <= candidatePos && candidatePos < currentEnd))
+            {// this match is not really spanning the position (can happen because of indels or variable-length reads)
                 ++matchIt;
                 continue;
             }
-            /*if(!empty(readCigars[(*matchIt).readId]))//splitRead, dont use for snp calling for now
+            /*if (!empty(readCigars[(*matchIt).readId]))//splitRead, dont use for snp calling for now
             {
                 ++matchIt;
                 continue;
             }*/
             // or do use and only :
-            // if(candidatePos lies in split gap) continue;
+            // if (candidatePos lies in split gap) continue;
 
             // do edit alignment
-            if((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/) // splitReads: hamming: pairScore=0
-            {
+            if ((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
+            {   // splitReads: hamming: pairScore=0
                 Dna5String gInf = infix(genome, currentBegin, currentEnd);
                 if (orientation == 'R')
                     reverseComplement(gInf);
@@ -4737,40 +4982,51 @@ void dumpSNPsBatch(
                     readPos = getReadPos(align,readPos,false); //
 
 #ifdef SNPSTORE_DEBUG
-                if(extraV) std::cout << "readPosNacher = " << readPos << std::endl;
+                if (extraV)
+                    std::cout << "readPosNacher = " << readPos << std::endl;
 #endif
-                if(readPos != -1) //-1 indicates gap
+                if (readPos != -1) //-1 indicates gap
                 {
                     candidateBase = f((Dna5)reads[(*matchIt).readId][readPos]);
 #ifdef SNPSTORE_DEBUG
-                    if(extraV) std::cout << candidateBase << "candBase\n";
+                    if (extraV) std::cout << candidateBase << "candBase\n";
 #endif
                     quality = getQualityValue(reads[(*matchIt).readId][readPos]) ;
-                    if(candidateBase != refBase)
+                    if (candidateBase != refBase)
                     {
                         observedAtLeastOneMut = true;
-                        if(options.minDifferentReadPos > 0)
-                            if((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  && (unsigned) readPos >= options.excludeBorderPos )
+                        if (options.minDifferentReadPos > 0)
+                            if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
+                                    (unsigned) readPos >= options.excludeBorderPos)
                                 readPosMap.insert(readPos);
 
                     }
-                    if(options.newQualityCalibrationFactor > 0.0001) quality = calibrateQuality(reads[(*matchIt).readId], matchQualities[(*matchIt).id],quality,options);
+                    if (options.newQualityCalibrationFactor > 0.0001)
+                        quality = calibrateQuality(reads[(*matchIt).readId],
+                                matchQualities[(*matchIt).id],
+                                quality,
+                                options);
 
-                    if(!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score)   // dont trust the quality of this position more
-                    {                                                                               // than the average quality of this read
+                    if (!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score)
+                    { // dont trust the quality of this position more than the average quality of this read
                         quality = (int) matchQualities[(*matchIt).id].score;
                         ++countLowerMQ;
                     }
-                    else ++countHigherMQ;
-                    //if(quality < 0 || quality > 40)::std::cout << "falschQ candPos = " << candidatePos + startCoord << std::endl;
+                    else
+                    {
+                        ++countHigherMQ;
+                    }
+                    //if (quality < 0 || quality > 40)
+                    //    ::std::cout << "falschQ candPos = " << candidatePos + startCoord << std::endl;
 
                     unsigned tmpCount = 1;
-                    if(!empty(readCounts)) tmpCount = readCounts[(*matchIt).readId];
+                    if (!empty(readCounts))
+                        tmpCount = readCounts[(*matchIt).readId];
                     for (unsigned k = 0; k < tmpCount; ++k)
                     {
                         columnQualityR[ordValue(candidateBase)] += quality;
                         ++countR[ordValue(candidateBase)];
-                        appendValue(qualityStringR[ordValue(candidateBase)],(char)(quality+33),Generous());
+                        appendValue(qualityStringR[ordValue(candidateBase)], (char)(quality+33), Generous());
                     }
                 }
             }
@@ -4778,93 +5034,110 @@ void dumpSNPsBatch(
             {
                 int readPos = candidatePos - currentBegin;
 
-                if((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
+                if ((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
                     readPos = getReadPos(align,readPos);
 
-                if(readPos != -1) //-1 indicates gap
+                if (readPos != -1) //-1 indicates gap
                 {
                     candidateBase = (Dna5)reads[(*matchIt).readId][readPos];
                     quality = getQualityValue(reads[(*matchIt).readId][readPos]) ;
-                    if(candidateBase != refBase)
+                    if (candidateBase != refBase)
                     {
                         observedAtLeastOneMut = true;
-                        if(options.minDifferentReadPos > 0)
-                            if((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  && (unsigned) readPos >= options.excludeBorderPos )
+                        if (options.minDifferentReadPos > 0)
+                            if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
+                                    (unsigned) readPos >= options.excludeBorderPos )
                                 readPosMap.insert(readPos);
                     }
-                    if(options.newQualityCalibrationFactor > 0.0001) quality = calibrateQuality(reads[(*matchIt).readId], matchQualities[(*matchIt).id],quality,options);
+                    if (options.newQualityCalibrationFactor > 0.0001)
+                        quality = calibrateQuality(reads[(*matchIt).readId],
+                                matchQualities[(*matchIt).id],
+                                quality,
+                                options);
 
-                    if(!options.useBaseQuality && quality > (int) matchQualities[(*matchIt).id].score)
+                    if (!options.useBaseQuality && quality > (int) matchQualities[(*matchIt).id].score)
                     {
                         quality = (int) matchQualities[(*matchIt).id].score;
                         ++countLowerMQ;
                     }
-                    else ++countHigherMQ;
-                    //if(quality < 0 || quality > 40)::std::cout << "falschQ candPos = " << candidatePos + startCoord << std::endl;
+                    else
+                        ++countHigherMQ;
+                    //if (quality < 0 || quality > 40)
+                    //    ::std::cout << "falschQ candPos = " << candidatePos + startCoord << std::endl;
 
                     unsigned tmpCount = 1;
-                    if(!empty(readCounts)) tmpCount = readCounts[(*matchIt).readId];
+                    if (!empty(readCounts)) tmpCount = readCounts[(*matchIt).readId];
                     for (unsigned k = 0; k < tmpCount; ++k)
                     {
                         ++countF[ordValue(candidateBase)];
                         columnQualityF[ordValue(candidateBase)] += quality;
-                        appendValue(qualityStringF[ordValue(candidateBase)],(char)(quality+33),Generous());
+                        appendValue(qualityStringF[ordValue(candidateBase)], (char)(quality+33), Generous());
                     }
                 }
             }
             ++matchIt;
         }
-        matchIt = matchRangeBegin; //set iterator back to where we started from, same matches might be involved in next cand pos
-
-        if(!observedAtLeastOneMut) continue; //all observed bases match the reference allele
-
+        matchIt = matchRangeBegin; //set iter back to where we started, same matches might be involved in next cand pos
+        if (!observedAtLeastOneMut)
+            continue; //all observed bases match the reference allele
         // do SNP calling
         bool isSnp = true;
-
         // coverage depth
         int refAllele = ordValue(genome[candidatePos]);
         unsigned realCoverageF = countF[0] + countF[1] +countF[2] +countF[3] +countF[4];
         unsigned realCoverageR = countR[0] + countR[1] +countR[2] +countR[3] +countR[4];
         unsigned realCoverage  = realCoverageF + realCoverageR;
-
         // Coverage too low after discarding Ns and gaps from alignment column
-        if(realCoverage<options.minCoverage) isSnp = false;
-
-        // is the min. number of different read positions supporting the mutation met?
-        if(isSnp && options.minDifferentReadPos > 0 && readPosMap.size() < options.minDifferentReadPos)
+        if (realCoverage<options.minCoverage)
             isSnp = false;
-
+        // is the min. number of different read positions supporting the mutation met?
+        if (isSnp && options.minDifferentReadPos > 0 && readPosMap.size() < options.minDifferentReadPos)
+            isSnp = false;
         // do genotype calling
-        if(isSnp && options.method == 1)
-            isSnp = _doSnpCall(countF,countR,qualityStringF,qualityStringR,refAllele,options,snp,MaqMethod()
+        if (isSnp && options.method == 1)
+            isSnp = _doSnpCall(countF,
+                               countR,
+                               qualityStringF,
+                               qualityStringR,
+                               refAllele,
+                               options,
+                               snp,
+                               MaqMethod()
 #ifdef SNPSTORE_DEBUG_CANDPOS
-                ,(int) candidatePos + startCoord
+                , (int) candidatePos + startCoord
 #endif
             );
-        else if(isSnp && options.method == 0)
-            isSnp = _doSnpCall(countF,countR,columnQualityF,columnQualityR,refAllele,options,snp,ThresholdMethod() );
-
+        else if (isSnp && options.method == 0)
+            isSnp = _doSnpCall(countF,
+                               countR,
+                               columnQualityF,
+                               columnQualityR,
+                               refAllele,
+                               options,
+                               snp,
+                               ThresholdMethod());
         // write SNP to file
-        if(isSnp && (snp.called || options.outputFormat == 0))
-            _writeSnp(file,snp,qualityStringF,qualityStringR,refAllele,genomeID,candidatePos+startCoord,realCoverage,options);
+        if (isSnp && (snp.called || options.outputFormat == 0))
+            _writeSnp(file,
+                      snp,
+                      qualityStringF,
+                      qualityStringR,
+                      refAllele,
+                      genomeID,
+                      candidatePos + startCoord,
+                      realCoverage,
+                      options);
     }
-
-    if(options._debugLevel>1) std::cout <<"Finished scanning window.\n"<<std::flush;
-
-    if((options.outputLog != "") && logfile.is_open())
+    if (options._debugLevel>1)
+        std::cout <<"Finished scanning window.\n"<<std::flush;
+    if ((options.outputLog != "") && logfile.is_open())
         logfile.close();
-
-
     return;
-
 }
-
-
-
 
 template<typename TAlign, typename TString, typename TPosition>
 void
-getIndels(TAlign & align,TString &insertions, TString &deletions, TPosition begin_, TPosition end_)
+getIndels(TAlign & align,TString & insertions, TString & deletions, TPosition begin_, TPosition end_)
 {
 
     //typedef typename Source<TAlign>::Type TSource;
@@ -4873,53 +5146,51 @@ getIndels(TAlign & align,TString &insertions, TString &deletions, TPosition begi
     typedef typename Row<TAlign>::Type TRow;
     typedef typename Iterator<TRow, Rooted>::Type TAlignIterator;
 
-    TAlignIterator ali_it0 = iter(row(align,0),begin_);
-    TAlignIterator ali_it1 = iter(row(align,1),begin_);
-    TAlignIterator ali_it0_stop = iter(row(align,0),end_);
-    TAlignIterator ali_it1_stop = iter(row(align,1),end_);
+    TAlignIterator ali_it0 = iter(row(align,0), begin_);
+    TAlignIterator ali_it1 = iter(row(align,1), begin_);
+    TAlignIterator ali_it0_stop = iter(row(align, 0), end_);
+    TAlignIterator ali_it1_stop = iter(row(align, 1), end_);
     // TStringIterator readBase = begin(source(row(align,0)));
-    //std::cout << "getting cigar line\n";//ali0 len = " <<ali_it0_stop-ali_it0 << " \t ali1 len = "<<ali_it1_stop-ali_it1<<"\n";
+    //std::cout << "getting cigar line\n";//ali0 len = "
+    //          <<ali_it0_stop-ali_it0 << " \t ali1 len = "<<ali_it1_stop-ali_it1<<"\n";
     int readPos = 0;
     int refPos = 0;
-    while(ali_it0 != ali_it0_stop && ali_it1 != ali_it1_stop)
+    while (ali_it0 != ali_it0_stop && ali_it1 != ali_it1_stop)
     {
         int inserted = 0;
         int deleted = 0;
-        while(ali_it0!=ali_it0_stop && ali_it1!=ali_it1_stop && !isGap(ali_it0)&& !isGap(ali_it1))
+        while (ali_it0!=ali_it0_stop && ali_it1!=ali_it1_stop && !isGap(ali_it0) && !isGap(ali_it1))
         {
             ++readPos;
             ++refPos;
             ++ali_it0;
             ++ali_it1;
         }
-        while(ali_it0!=ali_it0_stop && isGap(ali_it0))
+        while (ali_it0!=ali_it0_stop && isGap(ali_it0))
         {
             ++refPos;
             ++ali_it0;
             ++ali_it1;
             ++deleted;
         }
-        if(deleted>0)
+        if (deleted>0)
         {
-            appendValue(deletions,Pair<int,Pair<int,int> >(refPos-deleted,Pair<int,int>(readPos,deleted)));
-//          appendValue(deletions,Pair<int,Pair<int,int> >(refPos,Pair<int,int>(readPos,deleted)));
+            appendValue(deletions, Pair<int, Pair<int, int> >(refPos-deleted, Pair<int, int>(readPos, deleted)));
+//          appendValue(deletions, Pair<int, Pair<int, int> >(refPos, Pair<int, int>(readPos, deleted)));
         }
-        while(isGap(ali_it1)&& ali_it1!=ali_it1_stop)
+        while (isGap(ali_it1) && ali_it1!=ali_it1_stop)
         {
             ++ali_it0;
             ++ali_it1;
             ++readPos;
             ++inserted;
         }
-        if(inserted>0)
+        if (inserted>0)
         {
-            appendValue(insertions,Pair<int,Pair<int,int> >(refPos,Pair<int,int>(readPos-inserted,inserted)));
+            appendValue(insertions, Pair<int, Pair<int, int> >(refPos, Pair<int, int>(readPos-inserted, inserted)));
         }
     }
-
 }
-
-
 // TODO: get rid of this function, integrate indel calling into snp calling procedure as for realigned reads
 template <
     typename TFragmentStore,
@@ -4930,15 +5201,15 @@ template <
     typename TOptions
 >
 void dumpShortIndelPolymorphismsBatch(
-    TFragmentStore              &fragmentStore,             // forward/reverse matches
-    TReadCigars             &readCigars,
-    TGenome                 &genome,                // genome sequence
-    TGenomeName const           genomeID,               // genome name
-    typename TFragmentStore::TContigPos startCoord,         // startCoordinate + posOnGenomeInfix = real coordinate on whole chromosome
+    TFragmentStore              & fragmentStore,     // forward/reverse matches
+    TReadCigars             & readCigars,
+    TGenome                 & genome,                // genome sequence
+    TGenomeName const           genomeID,           // genome name
+    typename TFragmentStore::TContigPos startCoord, // startCoordinate + posOnGenomeInfix = real coordinate on whole chr
     typename TFragmentStore::TContigPos currStart,
     typename TFragmentStore::TContigPos currEnd,
-    TFile                   &indelfile,
-    TOptions                &options)
+    TFile                   & indelfile,
+    TOptions                & options)
 {
 
     typedef typename TFragmentStore::TAlignedReadStore      TMatches;
@@ -4966,24 +5237,21 @@ void dumpShortIndelPolymorphismsBatch(
 
     Align<Dna5String, ArrayGaps> align;
 //  Score<int> scoreType = Score<int>(1, -3, -11, -1);  //
-    Score<int> scoreType = Score<int>(0, -999, -1001, -1000);   // levenshtein-score (match, mismatch, gapOpen, gapExtend)
+    // levenshtein-score (match, mismatch, gapOpen, gapExtend)
+    Score<int> scoreType = Score<int>(0, -999, -1001, -1000);
     resize(rows(align), 2);
-
     ::std::string runID = options.runID;
-
-    typedef Pair<unsigned,int> TPosLen;
-    typedef typename std::map<TPosLen,Pair<unsigned,TReadInf>, LessPosLen<TPosLen> > TIndelMap;
+    typedef Pair<unsigned, int> TPosLen;
+    typedef typename std::map<TPosLen, Pair<unsigned, TReadInf>, LessPosLen<TPosLen> > TIndelMap;
     typedef typename TIndelMap::iterator TIndelIt;
-    typedef typename std::map<TPosLen,unsigned,LessPosLen<TPosLen> >  TSplitMap;
+    typedef typename std::map<TPosLen, unsigned,LessPosLen<TPosLen> >  TSplitMap;
     typedef typename TSplitMap::iterator TSplitIt;
-    typedef typename std::map<TPosLen,Pair<bool,bool>, LessPosLen<TPosLen> > THelperStrandMap;
-    typedef typename THelperStrandMap::iterator TStrandIt; // for each indel candidate, store whether both strinds were seen
-
+    typedef typename std::map<TPosLen, Pair<bool, bool>, LessPosLen<TPosLen> > THelperStrandMap;
+    typedef typename THelperStrandMap::iterator TStrandIt; // for each indel candidate, store if both strands were seen
 
     // position,length and count,sequence
     TIndelMap indels; //readinf empty for deletions
     THelperStrandMap indelStrandHelper;
-
 
     //remember how many split reads supported the indel
     TSplitMap splitCounts;
@@ -4994,7 +5262,6 @@ void dumpShortIndelPolymorphismsBatch(
     //CharString chrPrefix = "";
     CharString chrPrefix = "chr"; // should check if "chr" is already part of chromosome names (usually not)
 
-
     TReadInf dummyInf;
 
 #ifdef SNPSTORE_DEBUG
@@ -5004,68 +5271,83 @@ void dumpShortIndelPolymorphismsBatch(
     // collect potential indels
     for(;matchIt != matchItEnd; ++matchIt)
     {
-        if(matchQualities[(*matchIt).id].pairScore == 0 && empty(readCigars[(*matchIt).readId])) //if(length(cigar)>0)  dont skip!
-            continue;
+        if (matchQualities[(*matchIt).id].pairScore == 0 && empty(readCigars[(*matchIt).readId]))
+            continue;  //if (length(cigar)>0) dont skip!
 
-        String<Pair<int,Pair<int,int> > > readInserts;
-        String<Pair<int,Pair<int,int> > > readDeletes;
+        String<Pair<int, Pair<int, int> > > readInserts;
+        String<Pair<int, Pair<int, int> > > readDeletes;
 
         TRead& read = reads[(*matchIt).readId];
         int readLen = length(read);
-        if(empty(readCigars[(*matchIt).readId]))// if this is not a split read --> do edit alignment
+        if (empty(readCigars[(*matchIt).readId]))// if this is not a split read --> do edit alignment
         {
 #ifdef SNPSTORE_DEBUG
-            if(extraV) ::std::cout << "read is edit indel mapped" << std::endl;
-            if(extraV) ::std::cout << "read=" << read << " beg,end="<<(*matchIt).beginPos << ","<<(*matchIt).endPos <<::std::endl;
+            if (extraV)
+                ::std::cout << "read is edit indel mapped" << std::endl;
+            if (extraV)
+                ::std::cout << "read=" << read << " beg,end="<<(*matchIt).beginPos
+                            << ","<<(*matchIt).endPos <<::std::endl;
 #endif
             assignSource(row(align, 0), reads[(*matchIt).readId]);
-            assignSource(row(align, 1), infix(genome, _min((*matchIt).beginPos,(*matchIt).endPos), _max((*matchIt).beginPos,(*matchIt).endPos)));
+            assignSource(row(align, 1), infix(genome,
+                                              _min((*matchIt).beginPos, (*matchIt).endPos),
+                                              _max((*matchIt).beginPos,(*matchIt).endPos)));
             if ((*matchIt).beginPos > (*matchIt).endPos)
                 reverseComplement(source(row(align, 0))); // check if reversing read is better for gap placement
 
             globalAlignment(align, scoreType, AlignConfig<false,true,true,false>(), Gotoh());
 //          globalAlignment(align, scoreType, AlignConfig<false,false,false,false>(), Gotoh());
 #ifdef SNPSTORE_DEBUG
-            if(extraV) ::std::cout << align << std::endl;
+            if (extraV)
+                ::std::cout << align << std::endl;
 #endif
             // transform first and last read character to genomic positions
             unsigned viewPosReadFirst  = toViewPosition(row(align, 0), 0);
             unsigned viewPosReadLast   = toViewPosition(row(align, 0), length(reads[(*matchIt).readId]) - 1);
-
             getIndels(align,readInserts,readDeletes, viewPosReadFirst,viewPosReadLast+1);
 
 #ifdef SNPSTORE_DEBUG
             for (unsigned i = 0; i < length(readInserts); ++i)
-                if(extraV) ::std::cout <<"ins: "<< readInserts[i].i1 << ","<<readInserts[i].i2.i1 <<","<< readInserts[i].i2.i2 << ::std::endl;
+            {
+                if (extraV)
+                    ::std::cout <<"ins: "<< readInserts[i].i1 << ","
+                                << readInserts[i].i2.i1 << ","< < readInserts[i].i2.i2 << ::std::endl;
+            }
             for (unsigned i = 0; i < length(readDeletes); ++i)
-                if(extraV) ::std::cout <<"del: "<<  readDeletes[i].i1 << ","<<readDeletes[i].i2.i1 <<","<< readDeletes[i].i2.i2 << ::std::endl;
+            {
+                if (extraV)
+                    ::std::cout <<"del: "<<  readDeletes[i].i1 << ","
+                                << readDeletes[i].i2.i1 << ","<< readDeletes[i].i2.i2 << ::std::endl;
+            }
 #endif
         }
         else
         {
-
-    //      if(extraV) ::std::cout << "read is split mapped" << std::endl;
+    //      if (extraV)
+    //          ::std::cout << "read is split mapped" << std::endl;
             //this is where i have to get rid of adjacent insertions/deletions in edit-split-mapped reads
-            typename Value<TReadCigars>::Type &cigar = readCigars[(*matchIt).readId];
+            typename Value<TReadCigars>::Type & cigar = readCigars[(*matchIt).readId];
             int readPos = 0;
             int refPos = 0;
-            if((*matchIt).endPos > (*matchIt).beginPos)
+            if ((*matchIt).endPos > (*matchIt).beginPos)
             {
                 for(unsigned i = 0; i < length(cigar); ++i)
                 {
-                    if(cigar[i].i1 == 'D') //deletion
+                    if (cigar[i].i1 == 'D') //deletion
                     {
-                        appendValue(readDeletes,Pair<int,Pair<int,int> >(refPos,Pair<int,int>(readPos,cigar[i].i2)));
+                        appendValue(readDeletes,
+                                    Pair<int, Pair<int, int> >(refPos, Pair<int, int>(readPos, cigar[i].i2)));
                         //::std::cout << " "<<cigar[i].i2 << " d at refPos " << refPos ;
                         refPos += cigar[i].i2;
                     }
-                    if(cigar[i].i1 == 'I') //deletion
+                    if (cigar[i].i1 == 'I') //deletion
                     {
-                        appendValue(readInserts,Pair<int,Pair<int,int> >(refPos,Pair<int,int>(readPos,cigar[i].i2)));
+                        appendValue(readInserts,
+                                    Pair<int, Pair<int, int> >(refPos, Pair<int, int>(readPos, cigar[i].i2)));
                         readPos += cigar[i].i2;
                         //::std::cout << " "<<cigar[i].i2<< " i at refPos " << refPos ;
                     }
-                    if(cigar[i].i1 == 'M') //matches
+                    if (cigar[i].i1 == 'M') //matches
                     {
                         refPos += cigar[i].i2;
                         readPos += cigar[i].i2;
@@ -5077,19 +5359,21 @@ void dumpShortIndelPolymorphismsBatch(
             else{
                 for(int i = length(cigar)-1; i >= 0; --i)
                 {
-                    if(cigar[i].i1 == 'D') //deletion
+                    if (cigar[i].i1 == 'D') //deletion
                     {
-                        appendValue(readDeletes,Pair<int,Pair<int,int> >(refPos,Pair<int,int>(readPos,cigar[i].i2)));
+                        appendValue(readDeletes,
+                                    Pair<int, Pair<int, int> >(refPos, Pair<int, int>(readPos, cigar[i].i2)));
 //                      ::std::cout << " "<<cigar[i].i2 << " d at refPos " << refPos ;
                         refPos += cigar[i].i2;
                     }
-                    if(cigar[i].i1 == 'I') //deletion
+                    if (cigar[i].i1 == 'I') //deletion
                     {
-                        appendValue(readInserts,Pair<int,Pair<int,int> >(refPos,Pair<int,int>(readPos,cigar[i].i2)));
-//                      ::std::cout << " "<<cigar[i].i2<< " i at refPos " << refPos << " readPos" << readPos << std::endl;
+                        appendValue(readInserts,
+                                    Pair<int, Pair<int, int> >(refPos, Pair<int, int>(readPos, cigar[i].i2)));
+//                    ::std::cout << " "<<cigar[i].i2<< " i at refPos " << refPos << " readPos" << readPos << std::endl;
                         readPos += cigar[i].i2;
                     }
-                    if(cigar[i].i1 == 'M') //matches
+                    if (cigar[i].i1 == 'M') //matches
                     {
                         refPos += cigar[i].i2;
                         readPos += cigar[i].i2;
@@ -5107,67 +5391,66 @@ void dumpShortIndelPolymorphismsBatch(
         {
             // go to genomic indel position
             unsigned indelCandPos;//
-            if((*matchIt).beginPos > (*matchIt).endPos)
+            if ((*matchIt).beginPos > (*matchIt).endPos)
                 indelCandPos = (*matchIt).endPos + readInserts[i].i1;
 
             else indelCandPos = (*matchIt).beginPos + readInserts[i].i1;
 #ifdef SNPSTORE_DEBUG
-            if(extraV)  //62
+            if (extraV)  //62
                 std::cout << "Pos=" << indelCandPos  + startCoord << " len=" <<  (readInserts[i].i2).i2 << std::endl;
 #endif
 
             //TODO: make use of i2
             //TODO: remember strand of indel-supporting read
-            indelIt = indels.find(TPosLen((unsigned)indelCandPos,-(int)(readInserts[i].i2).i2));
-            if(indelIt == indels.end())
+            indelIt = indels.find(TPosLen((unsigned)indelCandPos, -(int)(readInserts[i].i2).i2));
+            if (indelIt == indels.end())
             {
                 // this is the first insertion with this length found at this genomic position
                 // --> remember with count 1 and also store indelsize and readInf
-    //          if(extraV) ::std::cout << "new inds pos" << std::endl;
+    //          if (extraV) ::std::cout << "new inds pos" << std::endl;
 
                 TReadInf rInf;
-                if((*matchIt).beginPos < (*matchIt).endPos)
+                if ((*matchIt).beginPos < (*matchIt).endPos)
                 {
                     rInf = infix(read,
                     (readInserts[i].i2).i1,
                     (readInserts[i].i2).i1+(readInserts[i].i2).i2);
-                    indelStrandHelper.insert(std::make_pair(Pair<unsigned,int>(indelCandPos,-(int)(readInserts[i].i2).i2),
-                         Pair<bool,bool>(true,false)));
+                    indelStrandHelper.insert(std::make_pair(
+                                                 Pair<unsigned, int>(indelCandPos, -(int)(readInserts[i].i2).i2),
+                                                 Pair<bool, bool>(true, false)));
                 }
                 else
                 {
                     rInf = infix(read,
-                    readLen - (readInserts[i].i2).i1-(readInserts[i].i2).i2,
+                    readLen - (readInserts[i].i2).i1 - (readInserts[i].i2).i2,
                     readLen - (readInserts[i].i2).i1);
                     reverseComplement(rInf);
-                    indelStrandHelper.insert(std::make_pair(Pair<unsigned,int>(indelCandPos,-(int)(readInserts[i].i2).i2),
-                         Pair<bool,bool>(false,true)));
+                    indelStrandHelper.insert(std::make_pair(Pair<unsigned, int>(indelCandPos,-(int)(readInserts[i].i2).i2),
+                         Pair<bool, bool>(false, true)));
                 }
 
-                indels.insert(std::make_pair(Pair<unsigned,int>(indelCandPos,-(int)(readInserts[i].i2).i2),
-                                             Pair<unsigned,TReadInf>(1,rInf)));
+                indels.insert(std::make_pair(Pair<unsigned, int>(indelCandPos, -(int)(readInserts[i].i2).i2),
+                                             Pair<unsigned, TReadInf>(1, rInf)));
 
-    //          if(extraV)std::cout << rInf << " <-" << (*matchIt).id<<std::endl;
+    //          if (extraV)std::cout << rInf << " <-" << (*matchIt).id<<std::endl;
             }
             else
             {
-    //          if(extraV) ::std::cout << "increase counter ins pos" << std::endl;
+    //          if (extraV) ::std::cout << "increase counter ins pos" << std::endl;
                 ++(indelIt->second.i1);
-                strandIt = indelStrandHelper.find(TPosLen((unsigned)indelCandPos,-(int)(readInserts[i].i2).i2));
+                strandIt = indelStrandHelper.find(TPosLen((unsigned)indelCandPos, -(int)(readInserts[i].i2).i2));
                 //                SEQAN_ASSERT_NEQ(strandIt, indelStrandHelper.end());
 
-                if((*matchIt).beginPos < (*matchIt).endPos)
+                if ((*matchIt).beginPos < (*matchIt).endPos)
                     strandIt->second.i1 = true;
                 else
                     strandIt->second.i2 = true;
-
-
 
 /*              if (storeall insertion sequences)
                 {
 
                     TReadInf rInf;
-                    if((*matchIt).beginPos < (*matchIt).endPos)
+                    if ((*matchIt).beginPos < (*matchIt).endPos)
                         rInf = infix(read,
                         (readInserts[i].i2).i1,
                         (readInserts[i].i2).i1+(readInserts[i].i2).i2);
@@ -5175,77 +5458,77 @@ void dumpShortIndelPolymorphismsBatch(
                         rInf = infix(read,
                         readLen - (readInserts[i].i2).i1-(readInserts[i].i2).i2,
                         readLen - (readInserts[i].i2).i1);
-                    if((*matchIt).beginPos > (*matchIt).endPos)
+                    if ((*matchIt).beginPos > (*matchIt).endPos)
                         reverseComplement(rInf);
-                    if(extraV)std::cout << rInf << " <-" << (*matchIt).id<<std::endl;
+                    if (extraV)std::cout << rInf << " <-" << (*matchIt).id<<std::endl;
                     indelIt->second.i2 = rInf;
                 }*/
 
             }
-            if(!empty(readCigars[(*matchIt).readId]))// if this is a split read --> increase counter
+            if (!empty(readCigars[(*matchIt).readId]))// if this is a split read --> increase counter
             {
-                splitCountIt = splitCounts.find(Pair<unsigned,int>(indelCandPos,-(int)(readInserts[i].i2).i2));
-                if(splitCountIt == splitCounts.end())
+                splitCountIt = splitCounts.find(Pair<unsigned, int>(indelCandPos, -(int)(readInserts[i].i2).i2));
+                if (splitCountIt == splitCounts.end())
                 {
-                    splitCounts.insert(std::make_pair(Pair<unsigned,int>(indelCandPos,-(int)(readInserts[i].i2).i2),1));
-
+                    splitCounts.insert(std::make_pair(Pair<unsigned, int>(indelCandPos,
+                                                      -(int)(readInserts[i].i2).i2),1));
                 }
                 else
                     ++(splitCountIt->second);
             }
-
         }
         for (unsigned i = 0; i < length(readDeletes); ++i)
         {
             unsigned indelCandPos;// = refStart + readDeletes[i].i1;
-            if((*matchIt).beginPos > (*matchIt).endPos)
+            if ((*matchIt).beginPos > (*matchIt).endPos)
             //  indelCandPos = (*matchIt).beginPos - readDeletes[i].i1 - (readDeletes[i].i2).i2;
                 indelCandPos = (*matchIt).endPos + readDeletes[i].i1;
-            else indelCandPos = (*matchIt).beginPos + readDeletes[i].i1;
+            else
+                indelCandPos = (*matchIt).beginPos + readDeletes[i].i1;
 #ifdef SNPSTORE_DEBUG
-            if(extraV)
+            if (extraV)
                 std::cout << "Pos=" << indelCandPos  + startCoord << " len=" <<  (readDeletes[i].i2).i2;
 #endif
 
             //TODO: make use of i2
-            indelIt = indels.find(Pair<unsigned,int>(indelCandPos,(int)(readDeletes[i].i2).i2));
-            if(indelIt == indels.end())
+            indelIt = indels.find(Pair<unsigned, int>(indelCandPos, (int)(readDeletes[i].i2).i2));
+            if (indelIt == indels.end())
             {
-                indels.insert(std::make_pair(Pair<unsigned,int>(indelCandPos,(int)(readDeletes[i].i2).i2),
+                indels.insert(std::make_pair(Pair<unsigned, int>(indelCandPos, (int)(readDeletes[i].i2).i2),
                      Pair<unsigned,TReadInf>(1,dummyInf)));
 
-                if((*matchIt).beginPos < (*matchIt).endPos)
+                if ((*matchIt).beginPos < (*matchIt).endPos)
                 {
-                    indelStrandHelper.insert(std::make_pair(Pair<unsigned,int>(indelCandPos,(int)(readDeletes[i].i2).i2),
-                         Pair<bool,bool>(true,false)));
+                    indelStrandHelper.insert(std::make_pair(
+                                                 Pair<unsigned, int>(indelCandPos, (int)(readDeletes[i].i2).i2),
+                                                 Pair<bool,bool>(true,false)));
                 }
                 else
                 {
-                    indelStrandHelper.insert(std::make_pair(Pair<unsigned,int>(indelCandPos,(int)(readDeletes[i].i2).i2),
-                         Pair<bool,bool>(false,true)));
+                    indelStrandHelper.insert(std::make_pair(
+                                                 Pair<unsigned, int>(indelCandPos, (int)(readDeletes[i].i2).i2),
+                                                 Pair<bool, bool>(false, true)));
                 }
-
-
             }
             else
             {
                 ++(indelIt->second.i1);
-                strandIt = indelStrandHelper.find(Pair<unsigned,int>(indelCandPos,(int)(readDeletes[i].i2).i2));
+                strandIt = indelStrandHelper.find(Pair<unsigned, int>(indelCandPos,(int)(readDeletes[i].i2).i2));
                 //                SEQAN_ASSERT_NEQ(strandIt,indelStrandHelper.end());
 
-                if((*matchIt).beginPos < (*matchIt).endPos)
+                if ((*matchIt).beginPos < (*matchIt).endPos)
                    strandIt->second.i1 = true;
                 else
                     strandIt->second.i2 = true;
 
             }
-            if(!empty(readCigars[(*matchIt).readId]))// if this is a split read --> increase counter
+            if (!empty(readCigars[(*matchIt).readId]))// if this is a split read --> increase counter
             {
-                splitCountIt = splitCounts.find(Pair<unsigned,int>(indelCandPos,(readDeletes[i].i2).i2));
-                if(splitCountIt == splitCounts.end())
+                splitCountIt = splitCounts.find(Pair<unsigned,int>(indelCandPos, (readDeletes[i].i2).i2));
+                if (splitCountIt == splitCounts.end())
                 {
-                    splitCounts.insert(std::make_pair<Pair<unsigned,int>,unsigned>
-                    (Pair<unsigned,int>(indelCandPos,(int)(readDeletes[i].i2).i2),1));
+                    splitCounts.insert(std::make_pair<Pair<unsigned, int>, unsigned>
+                    (Pair<unsigned, int>(indelCandPos, (int)(readDeletes[i].i2).i2), 1));
 
                 }
                 else
@@ -5257,11 +5540,11 @@ void dumpShortIndelPolymorphismsBatch(
 
     // now output all indels that meet the filter criteria
     matchIt = begin(matches, Standard());
-    while(matchIt != matchItEnd)
+    while (matchIt != matchItEnd)
     {
         unsigned currSeqNo = (*matchIt).contigId;
         TMatchIterator currSeqMatchItBegin = matchIt;
-        while(matchIt != matchItEnd)
+        while (matchIt != matchItEnd)
         {
             if ((*matchIt).contigId != currSeqNo) break;
             ++matchIt;
@@ -5276,23 +5559,29 @@ void dumpShortIndelPolymorphismsBatch(
         TSplitIt splitEndIt = splitCounts.end();
 
         //indel-merging, possibly suboptimal
-        if(options.indelWindow > 0)
+        if (options.indelWindow > 0)
         {
-            while(indelIt != endIt)
+            while (indelIt != endIt)
             {
                 unsigned currPos = indelIt->first.i1;
                 unsigned oriCurrPos = currPos;
-                if(indelIt->second.i1 == 0) {++indelIt;continue;}
+                if (indelIt->second.i1 == 0)
+                {
+                    ++indelIt;
+                    continue;
+                }
                 TIndelIt nextIt = indelIt;
                 ++nextIt;
                 //for all positions that are
-                while(nextIt != endIt && currPos + options.indelWindow > nextIt->first.i1 && oriCurrPos + 2*options.indelWindow > nextIt->first.i1 )
+                while (nextIt != endIt
+                       && currPos + options.indelWindow > nextIt->first.i1
+                       && oriCurrPos + 2*options.indelWindow > nextIt->first.i1)
                 {
                     //add the number of found indel-reads to it
-                    if(indelIt->first.i2 == nextIt->first.i2)
+                    if (indelIt->first.i2 == nextIt->first.i2)
                     {
-                        if(indelIt->second.i1 < nextIt->second.i1 ) //nextIT has a higher count for that position --> add counts of indelIT to nextIT
-                        {
+                        if (indelIt->second.i1 < nextIt->second.i1)
+                        {//nextIT has a higher count for that position --> add counts of indelIT to nextIT
                             nextIt->second.i1 += indelIt->second.i1;
                             indelIt->second.i1 = 0;
                             currPos = indelIt->first.i1;
@@ -5310,10 +5599,10 @@ void dumpShortIndelPolymorphismsBatch(
             indelIt = indels.begin();
         }
 
-
 /*      for(splitCountIt = splitCounts.begin(); splitCountIt != splitEndIt; ++splitCountIt)
         {
-            std::cout << splitCountIt->first.i1 << ","  << splitCountIt->first.i2 << "," << splitCountIt->second << std::endl;
+            std::cout << splitCountIt->first.i1 << ","
+                      << splitCountIt->first.i2 << "," << splitCountIt->second << std::endl;
         }
         splitCountIt = splitCounts.begin();*/
         for(; indelIt != endIt; ++indelIt, ++strandIt)
@@ -5323,133 +5612,145 @@ void dumpShortIndelPolymorphismsBatch(
             debug=true;
 #endif
             int splitSupport = 0;
-            if(splitCountIt != splitEndIt &&
+            if (splitCountIt != splitEndIt &&
                 (splitCountIt->first.i1 == indelIt->first.i1) && (splitCountIt->first.i2 == indelIt->first.i2))
             {
                 splitSupport = splitCountIt->second;
                 ++splitCountIt;
             }
 
-            if(indelIt->second.i1 < options.indelCountThreshold)
+            if (indelIt->second.i1 < options.indelCountThreshold)
             {
-                if(debug)::std::cout << "indel: count too low "<<indelIt->second.i1<<"\n";
+                if (debug)
+                    ::std::cout << "indel: count too low "<<indelIt->second.i1<<"\n";
                 continue;
             }
-            if((TContigPos)indelIt->first.i1 + startCoord < currStart || (TContigPos)indelIt->first.i1 + startCoord >= currEnd)
+            if ((TContigPos)indelIt->first.i1 + startCoord < currStart ||
+                    (TContigPos)indelIt->first.i1 + startCoord >= currEnd)
             {
-                if(debug)::std::cout << "indel: pos outside range "<<indelIt->first.i1<<"\n";
+                if (debug)
+                    ::std::cout << "indel: pos outside range "<<indelIt->first.i1<<"\n";
                 continue;
             }
             bool bsi = false;
-            if(strandIt->second.i1 == true && strandIt->second.i2 == true)
+            if (strandIt->second.i1 == true && strandIt->second.i2 == true)
                 bsi = true;
-            if(options.bothIndelStrands && !bsi)
+            if (options.bothIndelStrands && !bsi)
             {
-                if(debug)::std::cout << "indel: not supported by both strands \n";
+                if (debug)
+                    ::std::cout << "indel: not supported by both strands \n";
                 continue;
             }
             SEQAN_ASSERT_EQ(strandIt->first.i1,indelIt->first.i1);
             SEQAN_ASSERT_EQ(strandIt->first.i2,indelIt->first.i2);
 
             unsigned candidatePos = indelIt->first.i1;
-            while(matchIt != currSeqMatchItEnd && _max((*matchIt).endPos,(*matchIt).beginPos) <= (TContigPos) candidatePos)
+            while (matchIt != currSeqMatchItEnd &&
+                   _max((*matchIt).endPos, (*matchIt).beginPos) <= (TContigPos) candidatePos)
                 ++matchIt;
 
             TMatchIterator matchRangeBegin = matchIt;
-            while(matchIt != currSeqMatchItEnd && _min((*matchIt).endPos,(*matchIt).beginPos) <= (TContigPos) candidatePos)
+            while (matchIt != currSeqMatchItEnd &&
+                   _min((*matchIt).endPos,(*matchIt).beginPos) <= (TContigPos) candidatePos)
                 ++matchIt;
             TMatchIterator matchRangeEnd = matchIt;
 
             int minOverlapDepth = 0;
-            if(options.indelDepthMinOverlap != 0)
+            if (options.indelDepthMinOverlap != 0)
             {
                 for(TMatchIterator tmpIt = matchRangeBegin; tmpIt != matchRangeEnd; ++tmpIt)
                 {
-                    if(((TContigPos)candidatePos - options.indelDepthMinOverlap >= _min((*tmpIt).endPos,(*tmpIt).beginPos))
-                        && ((TContigPos)candidatePos + options.indelDepthMinOverlap < _max((*tmpIt).endPos,(*tmpIt).beginPos)))
+                    if (((TContigPos)candidatePos - options.indelDepthMinOverlap >= _min((*tmpIt).endPos,
+                                                                                         (*tmpIt).beginPos))
+                        && ((TContigPos)candidatePos + options.indelDepthMinOverlap < _max((*tmpIt).endPos,
+                                                                                           (*tmpIt).beginPos))
+                       )
                         ++minOverlapDepth;
                 }
             }
-
             int coverage = matchRangeEnd-matchRangeBegin;
-            if(coverage<(int)options.minCoverage)
+            if (coverage<(int)options.minCoverage)
             {
                 matchIt = matchRangeBegin;
                 continue;
-
             }
             matchIt = matchRangeBegin;
-
             Dna5 refBase = genome[candidatePos];
-            if(refBase=='N') continue;
-
+            if (refBase=='N') continue;
             unsigned covF = 0;
             unsigned covR = 0;
-
-            while(matchIt != matchRangeEnd)
+            while (matchIt != matchRangeEnd)
             {
-
-                if(!(_min((*matchIt).beginPos,(*matchIt).endPos) <= (TContigPos)candidatePos
+                if (!(_min((*matchIt).beginPos,(*matchIt).endPos) <= (TContigPos)candidatePos
                     && (TContigPos)candidatePos < _max((*matchIt).beginPos,(*matchIt).endPos)))
                 {
                     ++matchIt;
-//                  if(options._debugLevel > 1) std::cout << "How can this happen?\n";
+//                  if (options._debugLevel > 1) std::cout << "How can this happen?\n";
                     continue;
                 }
-
-                if((*matchIt).beginPos < (*matchIt).endPos) ++covF;
-                else ++covR;
+                if ((*matchIt).beginPos < (*matchIt).endPos)
+                    ++covF;
+                else
+                    ++covR;
                 ++matchIt;
             }
             int depth = covF + covR;
-            if(options.indelDepthMinOverlap != 0)
+            if (options.indelDepthMinOverlap != 0)
                 depth = minOverlapDepth;
-            if(depth < (int)options.minCoverage)
+            if (depth < (int)options.minCoverage)
             {
-                if(options._debugLevel > 1)
-                    ::std::cout << "Coverage " << covF+covR << " after applying max pile filter and discarding Ns" << ::std::endl;
+                if (options._debugLevel > 1)
+                    ::std::cout << "Coverage " << covF+covR
+                                << " after applying max pile filter and discarding Ns" << ::std::endl;
                 matchIt = matchRangeBegin;
                 continue;
             }
-
-            if((float)indelIt->second.i1/depth < options.indelPercentageT)
+            if ((float)indelIt->second.i1/depth < options.indelPercentageT)
             {
                 matchIt = matchRangeBegin;
                 continue;
             }
-
             int indelSize=indelIt->first.i2;
-
-
-            if(options.outputFormat < 2) //
+            if (options.outputFormat < 2) //
             {
                 int homoLength = checkSequenceContext(genome,candidatePos,indelSize);
-                if(indelSize > 0 ) indelfile << chrPrefix << genomeID << '\t' << runID << "\tdeletion\t";
-                else indelfile << chrPrefix <<genomeID << '\t' << runID << "\tinsertion\t";
-                if(indelSize > 0 ) indelfile << candidatePos + startCoord + options.positionFormat << '\t';
-                else indelfile << candidatePos + startCoord + options.positionFormat - 1 << '\t';
-                if(indelSize > 0 ) indelfile << candidatePos + startCoord + options.positionFormat  + indelSize - 1;
-                else indelfile << candidatePos + startCoord;// + options.positionFormat; //VORSICHT!!!
+                if (indelSize > 0 )
+                    indelfile << chrPrefix << genomeID << '\t' << runID << "\tdeletion\t";
+                else
+                    indelfile << chrPrefix <<genomeID << '\t' << runID << "\tinsertion\t";
+                if (indelSize > 0 )
+                    indelfile << candidatePos + startCoord + options.positionFormat << '\t';
+                else
+                    indelfile << candidatePos + startCoord + options.positionFormat - 1 << '\t';
+                if (indelSize > 0 )
+                    indelfile << candidatePos + startCoord + options.positionFormat  + indelSize - 1;
+                else
+                    indelfile << candidatePos + startCoord;// + options.positionFormat; //VORSICHT!!!
                 indelfile << "\t" << (float)indelIt->second.i1/depth;
                 indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat;
                 indelfile << ";size=" << indelSize;
                 indelfile << ";count=" << indelIt->second.i1;
-                if(indelSize < 0)indelfile << ";seq="<<indelIt->second.i2;
+                if (indelSize < 0)
+                    indelfile << ";seq=" << indelIt->second.i2;
                 indelfile << ";ebiDepth=" << depth << ";depth=" << covF+covR;
-                if(splitSupport>0) indelfile << ";splitSupport=" << splitSupport;
-                if(homoLength > 1) indelfile << ";homorun=" << homoLength;
-                if(bsi) indelfile << ";bsi";
-                if( (float)indelIt->second.i1/depth <= options.indelHetMax) indelfile << ";geno=het";
-                else indelfile << ";geno=hom";
+                if (splitSupport>0)
+                    indelfile << ";splitSupport=" << splitSupport;
+                if (homoLength > 1)
+                    indelfile << ";homorun=" << homoLength;
+                if (bsi)
+                    indelfile << ";bsi";
+                if ((float)indelIt->second.i1/depth <= options.indelHetMax)
+                    indelfile << ";geno=het";
+                else
+                    indelfile << ";geno=hom";
                 indelfile << std::endl;
             }
             else
             {
-
                 //chromosome
                 indelfile << genomeID << '\t';
                 indelfile <<  candidatePos + startCoord + options.positionFormat << '\t';
-                if(options.orientationAware)
+                if (options.orientationAware)
                 {
                     indelfile << covF  <<'\t';
                     indelfile << covR  <<'\t';
@@ -5463,20 +5764,13 @@ void dumpShortIndelPolymorphismsBatch(
 
             matchIt = matchRangeBegin;
         }
-
         matchIt = currSeqMatchItEnd;
-        if(options._debugLevel>1) std::cout <<"Finished scanning window for deletions.\n"<<std::flush;
+        if (options._debugLevel>1)
+            std::cout <<"Finished scanning window for deletions.\n"<<std::flush;
     }
-
-
     return;
 
 }
-
-
-
-
-
 //do indel calling based on pronounced drops in coverage
 template <
     typename TFragmentStore,
@@ -5485,13 +5779,13 @@ template <
     typename TOptions
 >
 void dumpCopyNumberPolymorphismsBatch(
-    TFragmentStore              &fragmentStore,             // forward/reverse matches
+    TFragmentStore              & fragmentStore,             // forward/reverse matches
     TGenomeName const           genomeID,               // genome name
     typename TFragmentStore::TContigPos startCoord,
     typename TFragmentStore::TContigPos currStart,
     typename TFragmentStore::TContigPos currEnd,
-    TFile           &file,
-    TOptions        &options)
+    TFile           & file,
+    TOptions        & options)
 {
     typedef typename TFragmentStore::TAlignedReadStore      TMatches;
     typedef typename Value<TMatches>::Type              TMatch;
@@ -5516,37 +5810,33 @@ void dumpCopyNumberPolymorphismsBatch(
 
     ::std::string runID = options.runID;
 
-
     //VORSICHT!! windowsize must be a multiple of cnvwindowsize !!!!!
     // bin matches according to their start! positions
     for(unsigned currBinStart = currStart;  currBinStart < currEnd; currBinStart += options.cnvWindowSize)
     {
-
-        while(matchIt != matchItEnd && _min((*matchIt).beginPos,(*matchIt).endPos) < currBinStart ) // havent reached bin begin yet
-            ++matchIt;
+        while (matchIt != matchItEnd && _min((*matchIt).beginPos,(*matchIt).endPos) < currBinStart )
+            ++matchIt;  // havent reached bin begin yet
 
         unsigned count = 0;
-        while(matchIt != matchItEnd && _min((*matchIt).beginPos,(*matchIt).endPos) < currBinStart + options.cnvWindowSize ) //count reads
+        while (matchIt != matchItEnd &&
+               _min((*matchIt).beginPos, (*matchIt).endPos) < currBinStart + options.cnvWindowSize ) //count reads
         {
             ++count;
             ++matchIt;
         }
         CharString guess = "normal";
-        if (count > options.expectedReadsPerBin + 3 *options.expectedReadsSD)
+        if (count > options.expectedReadsPerBin + 3 * options.expectedReadsSD)
             guess = "insertion";
-        else if (count < options.expectedReadsPerBin - 3 *options.expectedReadsSD)
+        else if (count < options.expectedReadsPerBin - 3 * options.expectedReadsSD)
             guess = "deletion";
-        //if(guess != "normal" )
+        //if (guess != "normal" )
         //{
         file << genomeID << "\tcoverage\t"<< guess << "\t";
         file << currBinStart+ startCoord+1  << "\t" << currBinStart + startCoord + options.cnvWindowSize << "\t";
         file << count << "\t+\t.\t.\n";
         //}
     }
-
-
     return;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -5567,13 +5857,12 @@ void dumpPositionsRealignBatchWrap(
     TReadCigars             &readCigars,
     TReadCounts const           &readCounts,
     TGenomeName const           genomeID,           // genome name
-    typename TFragmentStore::TContigPos startCoord,         // startCoordinate + posOnGenomeInfix = real coordinate on whole chromosome
+    typename TFragmentStore::TContigPos startCoord, // startCoordinate + posOnGenomeInfix = real coordinate on whole chr
     typename TFragmentStore::TContigPos currWindowBegin,
     typename TFragmentStore::TContigPos currWindowEnd,
     TFile                   &posFile,
     TOptions                &options)
 {
-
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
     typedef typename Value<TMatches>::Type          TMatch;
     typedef typename TFragmentStore::TAlignQualityStore     TMatchQualities;
@@ -5586,14 +5875,13 @@ void dumpPositionsRealignBatchWrap(
     //typedef typename TFragmentStore::TContigSeq         TContigSeq;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
 
-
     TMatches &matches       = fragmentStore.alignedReadStore;
     TMatchQualities &matchQualities = fragmentStore.alignQualityStore;
 
     ::std::sort(begin(matches, Standard()), end(matches, Standard()), LessGPos<TMatch>());
 
-    TMatchIterator matchIt = begin(matches,Standard());
-    TMatchIterator matchItEnd = end(matches,Standard());
+    TMatchIterator matchIt = begin(matches, Standard());
+    TMatchIterator matchItEnd = end(matches, Standard());
 
     unsigned minNumIndels = options.indelCountThreshold;
 
@@ -5609,38 +5897,43 @@ void dumpPositionsRealignBatchWrap(
 
     // now find connected subsets, i.e. groups of reads that overlap
     // dont realign regions unworthy of realignment (no indel reads)
-    while(matchIt != matchItEnd)
+    while (matchIt != matchItEnd)
     {
         TMatchIterator matchItBatchBegin = matchIt;
         TContigPos groupEndPos = _max((*matchIt).endPos,(*matchIt).beginPos);
         TContigPos groupStartPos = _min((*matchIt).endPos,(*matchIt).beginPos);
 
         TContigPos groupStartCoordLocal = _max(0,(int)groupStartPos-options.realignAddBorder);
-        while(inspectPosIt != inspectPosItEnd && *inspectPosIt < groupStartPos + startCoord)
+        while (inspectPosIt != inspectPosItEnd && *inspectPosIt < groupStartPos + startCoord)
         {
-            if(options.orientationAware)
-                posFile << genomeID << '\t' << *inspectPosIt + options.positionFormat<< "\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0" << std::endl;
+            if (options.orientationAware)
+                posFile << genomeID << '\t' << *inspectPosIt + options.positionFormat
+                        << "\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0" << std::endl;
             else
-                posFile << genomeID << '\t' << *inspectPosIt  + options.positionFormat<< "\t0\t0\t0\t0\t0\t0" << std::endl;
+                posFile << genomeID << '\t' << *inspectPosIt  + options.positionFormat
+                        << "\t0\t0\t0\t0\t0\t0" << std::endl;
              ++inspectPosIt;
         }
 
         int indelReadCount = 0; // how many reads have indels in the current group
-        while(matchIt != matchItEnd && _min((*matchIt).beginPos,(*matchIt).endPos) < groupEndPos)
+        while (matchIt != matchItEnd && _min((*matchIt).beginPos,(*matchIt).endPos) < groupEndPos)
         {
-            groupEndPos = (_max((*matchIt).beginPos,(*matchIt).endPos) > groupEndPos) ? _max((*matchIt).beginPos,(*matchIt).endPos) : groupEndPos;
+            groupEndPos = (_max((*matchIt).beginPos,(*matchIt).endPos) > groupEndPos) ?
+                        _max((*matchIt).beginPos,(*matchIt).endPos) : groupEndPos;
             // reads wont be needed anymore! (make sure this is the case!!!)
             (*matchIt).beginPos -= groupStartCoordLocal;
             (*matchIt).endPos -= groupStartCoordLocal;
-            if(matchQualities[(*matchIt).id].pairScore == 1 ) ++indelReadCount;
+            if (matchQualities[(*matchIt).id].pairScore == 1 )
+                ++indelReadCount;
             ++matchIt;
         }
         TMatchIterator matchItBatchEnd = matchIt;
         unsigned numMatches = matchItBatchEnd -matchItBatchBegin;
 
-        TContigPos groupEndCoordLocal = _min(groupEndPos+(TContigPos)options.realignAddBorder,(TContigPos)length(fragmentStore.contigStore[0].seq));
+        TContigPos groupEndCoordLocal = _min(groupEndPos+(TContigPos)options.realignAddBorder,
+                                             (TContigPos)length(fragmentStore.contigStore[0].seq));
 
-        if(numMatches > 0 && inspectPosIt != inspectPosItEnd &&
+        if (numMatches > 0 && inspectPosIt != inspectPosItEnd &&
             groupStartPos + startCoord <= *inspectPosIt && *inspectPosIt < groupEndPos + startCoord)
         {
             //make temporary fragstore for group
@@ -5650,12 +5943,14 @@ void dumpPositionsRealignBatchWrap(
             //copyFragmentStore(fragStoreGroup,fragmentStore,matchItBatchBegin,matchItBatchEnd,groupStartPos,groupEndPos);
 
             TFragmentStore fragStoreGroup = fragmentStore;
-            arrayMoveForward(matchItBatchBegin,matchItBatchEnd,begin(fragStoreGroup.alignedReadStore,Standard())); // reads wont be needed anymore
-            resize(fragStoreGroup.alignedReadStore,numMatches,Exact());
-            fragStoreGroup.contigStore[0].seq = infix(fragmentStore.contigStore[0].seq,groupStartCoordLocal,groupEndCoordLocal);
+            arrayMoveForward(matchItBatchBegin,matchItBatchEnd,begin(fragStoreGroup.alignedReadStore,Standard()));
+            resize(fragStoreGroup.alignedReadStore,numMatches,Exact());  // reads wont be needed anymore
+            fragStoreGroup.contigStore[0].seq = infix(fragmentStore.contigStore[0].seq,
+                                                      groupStartCoordLocal,groupEndCoordLocal);
 
 #ifdef SNPSTORE_DEBUG
-            std::cout << "in realign wrap: groupEndPos = " <<  groupEndPos << " groupStartPos=" <<  groupStartPos << std::endl;
+            std::cout << "in realign wrap: groupEndPos = " <<  groupEndPos
+                      << " groupStartPos=" <<  groupStartPos << std::endl;
             std::cout << "genomeLength= " <<  length(fragmentStore.contigStore[0].seq) << std::endl;
 
             CharString strstre = "testgroup";
@@ -5670,7 +5965,7 @@ void dumpPositionsRealignBatchWrap(
             groupEndPos = _min(groupEndPos,currWindowEnd);
 
             //the current group is formed by all reads from matchItBatchBegin until matchItBatchEnd
-            if(indelReadCount >= (int)minNumIndels && options.realign)
+            if (indelReadCount >= (int)minNumIndels && options.realign)
             {
                 //do realignment
                 dumpPositionsRealignBatch(fragStoreGroup,inspectPosIt,inspectPosItEnd,
@@ -5687,12 +5982,8 @@ void dumpPositionsRealignBatchWrap(
                     posFile,options);
             }
         }
-
     }
-
-
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Output SNPs
@@ -5712,7 +6003,7 @@ void dumpPositionsRealignBatch(
     TReadCigars                 &,
     TReadCounts const           &,
     TGenomeName const           genomeID,                   // genome name
-    typename TFragmentStore::TContigPos startCoord,         // startCoordinate + posOnGenomeInfix = real coordinate on whole chromosome
+    typename TFragmentStore::TContigPos startCoord, // startCoordinate + posOnGenomeInfix = real coordinate on whole chr
     typename TFragmentStore::TContigPos currStart,
     typename TFragmentStore::TContigPos currEnd,
     TFile                   &posFile,
@@ -5757,7 +6048,9 @@ void dumpPositionsRealignBatch(
     }
 
 
-    if(options._debugLevel > 1) ::std::cout << "Scanning chromosome " << genomeID << " window (" << currStart<<","<< currEnd << ") for SNPs..." << ::std::endl;
+    if (options._debugLevel > 1)
+        ::std::cout << "Scanning chromosome " << genomeID << " window ("
+                    << currStart<<","<< currEnd << ") for SNPs..." << ::std::endl;
 
 #ifdef READS_454
     Score<int> scoreType = Score<int>(0, -3, -2, -2);   // (match, mismatch,gapExtend,gapOpen)
@@ -5771,7 +6064,7 @@ void dumpPositionsRealignBatch(
     Score<int, WeightedConsensusScore<Score<int, FractionalScore>, Score<int, ConsensusScore> > > consScore;
     int bandWidth = 10; // ad hoc, but seems good, increasing is not necessarily better
 
-    if(options._debugLevel > 1)
+    if (options._debugLevel > 1)
         ::std::cout << "Realigning "<< length(matches)<<" reads to genome of length " <<genomeLen << std::flush;
 
 
@@ -5782,15 +6075,12 @@ void dumpPositionsRealignBatch(
     reAlign(fragmentStore,consScore,0,1,bandWidth,true);
 #endif
 
-
-    if(options._debugLevel > 1)::std::cout << "Realigning reads including reference..." << std::flush;
-
-
+    if (options._debugLevel > 1)
+        ::std::cout << "Realigning reads including reference..." << std::flush;
     unsigned numReads = length(matches)-1; // exclude reference sequence
-    unsigned refId = length(matchQualities); // reference id (there may be more matchQs than matches due to pile up correction)
+    // reference id (there may be more matchQs than matches due to pile up correction)
+    unsigned refId = length(matchQualities);
 
-
-//
 #ifndef  READS_454
     reAlign(fragmentStore,consScore,0,1,/*bandWidth*/5,false);
     //realignReferenceToReadProfile(fragmentStore,refId,options);
@@ -5801,7 +6091,8 @@ void dumpPositionsRealignBatch(
 //    realignReferenceToDiploidConsensusProfileDeleteSeqErrors(fragmentStore,refId,options);
 #endif
 
-    if(options._debugLevel > 1) ::std::cout << "Finished realigning." << std::endl;
+    if (options._debugLevel > 1)
+        ::std::cout << "Finished realigning." << std::endl;
 
 
     // forward match qualities
@@ -5826,9 +6117,9 @@ void dumpPositionsRealignBatch(
     bool refFound = false;
     TMatchIterator matchItKeep = matchIt;
     TMatch tempRef;
-    while(matchIt != matchItEnd)
+    while (matchIt != matchItEnd)
     {
-        if((*matchIt).readId == refId) // this is the reference
+        if ((*matchIt).readId == refId) // this is the reference
         {
             refFound = true;
             tempRef = *matchIt;
@@ -5836,7 +6127,7 @@ void dumpPositionsRealignBatch(
             ++matchIt;
             continue;
         }
-        if(refFound)
+        if (refFound)
         {
             *matchItKeep = *matchIt; // matchItKeep lags behind by one match
             ++matchIt;++matchItKeep;
@@ -5849,13 +6140,14 @@ void dumpPositionsRealignBatch(
     matchIt     = begin(matches, Standard());
     matchItEnd  = end(matches, Standard());
     matchItEnd--; // exclude reference sequence
-
-    TRead       &reference = fragmentStore.readSeqStore[fragmentStore.alignedReadStore[numReads].readId]; // last read is reference sequence
+    // last read is reference sequence
+    TRead     & reference = fragmentStore.readSeqStore[fragmentStore.alignedReadStore[numReads].readId];
     TReadGaps   referenceGaps(reference, fragmentStore.alignedReadStore[numReads].gaps);
 //  TContigPos      refStart = (TContigPos)fragmentStore.alignedReadStore[numReads].beginPos;
 //  TContigGaps contigGaps(fragmentStore.contigStore[0].seq, fragmentStore.contigStore[0].gaps);
 
-    if(options._debugLevel>1) std::cout << "Start inspecting alignment..." << std::endl;
+    if (options._debugLevel>1)
+        std::cout << "Start inspecting alignment..." << std::endl;
     // now walk through the reference sequence in gaps view space,
     // i.e. position may be a gap
     // example:
@@ -5863,35 +6155,37 @@ void dumpPositionsRealignBatch(
     // Reads    ACCGTACA--AGCATCAT
     //              TACA--AGCATCATT--ACT
     //                          ATTTTACTAGCATCATA
-    for( ;inspectPosIt != inspectPosItEnd && *inspectPosIt < currEnd; ++inspectPosIt)
+    for(;inspectPosIt != inspectPosItEnd && *inspectPosIt < currEnd; ++inspectPosIt)
     //for(TContigPos candidateViewPos = refStart; candidateViewPos < refStart + (TContigPos)length(referenceGaps); ++candidateViewPos)
     {
-
         //get position in sequence space
         TContigPos candidatePos = *inspectPosIt;
         // not in the current window yet
-        if(candidatePos < currStart)
+        if (candidatePos < currStart)
         {
-            if(options.orientationAware)
-                posFile << genomeID << '\t' << *inspectPosIt + options.positionFormat<< "\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0" << std::endl;
+            if (options.orientationAware)
+                posFile << genomeID << '\t' << *inspectPosIt + options.positionFormat
+                        << "\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0" << std::endl;
             else
-                posFile << genomeID << '\t' << *inspectPosIt + options.positionFormat<< "\t0\t0\t0\t0\t0\t0" << std::endl;
+                posFile << genomeID << '\t' << *inspectPosIt + options.positionFormat
+                        << "\t0\t0\t0\t0\t0\t0" << std::endl;
             continue;
         }
         candidatePos -= startCoord;
 
         TContigPos candidateViewPos = positionSeqToGap(referenceGaps, candidatePos);
         // not in the current window anymore
-        if(candidatePos + startCoord >= currEnd) break;
+        if (candidatePos + startCoord >= currEnd)
+            break;
 
         //Dna5 refBase = reference[candidatePos];   // what happens if refGap==true, esp. for leading gaps?
 
         //find range of relevant read matches
-        // CHECK: remove unnecessarily walking through same matches multiple times
-        while(matchIt != matchItEnd &&  _max((*matchIt).endPos,(*matchIt).beginPos) <= candidateViewPos)
+        // TODO: CHECK: remove unnecessarily walking through same matches multiple times
+        while (matchIt != matchItEnd &&  _max((*matchIt).endPos,(*matchIt).beginPos) <= candidateViewPos)
             ++matchIt;
         TMatchIterator matchRangeBegin = matchIt;
-        while(matchIt != matchItEnd &&  _min((*matchIt).endPos,(*matchIt).beginPos)  <= candidateViewPos)
+        while (matchIt != matchItEnd &&  _min((*matchIt).endPos,(*matchIt).beginPos)  <= candidateViewPos)
             ++matchIt;
         TMatchIterator matchRangeEnd = matchIt; // could remember this for next round
         matchIt = matchRangeBegin;
@@ -5918,13 +6212,13 @@ void dumpPositionsRealignBatch(
         unsigned delMinus = 0;
 
         // now check reads
-        while(matchIt != matchRangeEnd)
+        while (matchIt != matchRangeEnd)
         {
             TContigPos currViewBegin = _min((*matchIt).beginPos,(*matchIt).endPos);
             TContigPos currViewEnd = _max((*matchIt).beginPos,(*matchIt).endPos);
 
             // make sure this match is really spanning the position
-            if(!(currViewBegin <= candidateViewPos && candidateViewPos < currViewEnd))
+            if (!(currViewBegin <= candidateViewPos && candidateViewPos < currViewEnd))
             {
                 ++matchIt;
                 continue;
@@ -5937,11 +6231,11 @@ void dumpPositionsRealignBatch(
 
             // check out which position is hit in this read
             int readPos;
-            if(isGap(rgIt)) readPos = -1; //potential deletion in reads (insertion in reference)
+            if (isGap(rgIt)) readPos = -1; //potential deletion in reads (insertion in reference)
             else
             {
                 readPos = positionGapToSeq(readGaps,candidateViewPos - currViewBegin);
-                if(orientation == 'R')
+                if (orientation == 'R')
                     readPos = length(reads[(*matchIt).readId]) - readPos - 1;
             }
 
@@ -5949,25 +6243,25 @@ void dumpPositionsRealignBatch(
             std::cout << "ReadPos = " << readPos << std::endl;
 #endif
 
-            if(readPos != -1) //-1 indicates gap in read
+            if (readPos != -1) //-1 indicates gap in read
             {
-                //if(options.minDifferentReadPos > 0)
-                //    if((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
+                //if (options.minDifferentReadPos > 0)
+                //    if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
                 //            (unsigned) readPos >= options.excludeBorderPos )
                 //        readPosMap.insert(readPos);
 
-                if(orientation == 'R') candidateBase = f((Dna5)reads[(*matchIt).readId][readPos]);
-                else candidateBase = (Dna5)reads[(*matchIt).readId][readPos];
+                if (orientation == 'R')
+                    candidateBase = f((Dna5)reads[(*matchIt).readId][readPos]);
+                else
+                    candidateBase = (Dna5)reads[(*matchIt).readId][readPos];
 
                 quality = getQualityValue(reads[(*matchIt).readId][readPos]) ;
 
-                if(!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score)
-                {   // dont trust the quality of this position more
-                    // than the average quality of this read
+                if (!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score)
+                {   // dont trust the quality of this position more than the average quality of this read
                     quality = (int) matchQualities[(*matchIt).id].score;
                 }
-
-                if(orientation == 'F')
+                if (orientation == 'F')
                 {
                     columnQualityF[ordValue(candidateBase)] += quality;
                     ++countF[ordValue(candidateBase)];
@@ -5982,28 +6276,31 @@ void dumpPositionsRealignBatch(
             }
             else
             {
-                if(orientation == 'R') ++delMinus;
+                if (orientation == 'R')
+                    ++delMinus;
                 else ++delPlus;
             }
             ++matchIt;
         }
-        matchIt = matchRangeBegin; //set iterator back to where we started from, same matches might be involved in next cand pos
+        matchIt = matchRangeBegin; //set iter back to where we started, same matches might be involved in next cand pos
 
         //all observed bases match the reference allele or there were too few indels
-        //if(!observedAtLeastOneMut && numIndelsObserved< options.indelCountThreshold)
+        //if (!observedAtLeastOneMut && numIndelsObserved< options.indelCountThreshold)
         //  continue;
 
-
         // write out coverage info
-        _writePos(posFile,qualityStringF,qualityStringR,delPlus,delMinus,genomeID,candidatePos+startCoord,coverage,options);
-
+        _writePos(posFile,
+                  qualityStringF,
+                  qualityStringR,
+                  delPlus,delMinus,
+                  genomeID,
+                  candidatePos+startCoord,
+                  coverage,
+                  options);
     }
-
-    if(options._debugLevel>1) std::cout <<"Finished scanning window.\n"<<std::flush;
-
-
+    if (options._debugLevel>1)
+        std::cout <<"Finished scanning window.\n"<<std::flush;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Output SNPs
@@ -6017,17 +6314,17 @@ template <
     typename TOptions
 >
 void dumpPosBatch(
-    TFragmentStore              &fragmentStore,             // forward/reverse matches
-    TPosIterator                &inspectPosIt,
-    TPosIterator                &inspectPosItEnd,
+    TFragmentStore              & fragmentStore,             // forward/reverse matches
+    TPosIterator                & inspectPosIt,
+    TPosIterator                & inspectPosItEnd,
     TReadCigars             &,
-    TReadCounts const           &readCounts,
+    TReadCounts const           & readCounts,
     TGenomeName const           genomeID,                   // genome name
-    typename TFragmentStore::TContigPos startCoord,         // startCoordinate + posOnGenomeInfix = real coordinate on whole chromosome
+    typename TFragmentStore::TContigPos startCoord, // startCoordinate + posOnGenomeInfix = real coordinate on whole chr
     typename TFragmentStore::TContigPos currStart,
     typename TFragmentStore::TContigPos currEnd,
-    TFile               &posFile,
-    TOptions            &options)
+    TFile               & posFile,
+    TOptions            & options)
 {
 
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
@@ -6053,7 +6350,7 @@ void dumpPosBatch(
     ::std::sort(begin(matches, Standard()), end(matches, Standard()), LessGPos<TMatch>());
 
     Align<String<Dna5>, ArrayGaps> align;
-    Score<int> scoreType = Score<int>(0, -999, -1001, -1000);   // levenshtein-score (match, mismatch, gapOpen, gapExtend)
+    Score<int> scoreType = Score<int>(0, -999, -1001, -1000); // levenshtein-score (match, mismatch, gapOpen, gapExtend)
     resize(rows(align), 2);
 
     if (!posFile.is_open())
@@ -6061,13 +6358,14 @@ void dumpPosBatch(
         ::std::cerr << "Output file is not open" << ::std::endl;
         return;
     }
-
     TMatchIterator matchIt  = begin(matches, Standard());
     TMatchIterator matchItEnd   = end(matches, Standard());
     //matchItEnd--;
     unsigned countLowerMQ = 0, countHigherMQ = 0;
 
-    if(options._debugLevel > 1) ::std::cout << "Scanning chromosome " << genomeID << " window (" << currStart<<","<< currEnd << ") for SNPs..." << ::std::endl;
+    if (options._debugLevel > 1)
+        ::std::cout << "Scanning chromosome " << genomeID
+                    << " window (" << currStart<<","<< currEnd << ") for SNPs..." << ::std::endl;
 
     // forward match qualities
     String<int> columnQualityF;         resize(columnQualityF,5);
@@ -6087,15 +6385,17 @@ void dumpPosBatch(
     bool extraV = false;
 #endif
 
-    for(TContigPos candidatePos = *inspectPosIt; inspectPosIt !=  inspectPosItEnd && *inspectPosIt < currEnd; ++inspectPosIt)
+    for(TContigPos candidatePos = *inspectPosIt; inspectPosIt !=  inspectPosItEnd &&
+        *inspectPosIt < currEnd; ++inspectPosIt)
     {
-
-        if(candidatePos < currStart)
+        if (candidatePos < currStart)
         {
-            if(options.orientationAware)
-                posFile << genomeID << '\t' << *inspectPosIt + options.positionFormat << "\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0" << std::endl;
+            if (options.orientationAware)
+                posFile << genomeID << '\t' << *inspectPosIt + options.positionFormat
+                        << "\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0" << std::endl;
             else
-                posFile << genomeID << '\t' << *inspectPosIt + options.positionFormat << "\t0\t0\t0\t0\t0\t0" << std::endl;
+                posFile << genomeID << '\t' << *inspectPosIt + options.positionFormat
+                        << "\t0\t0\t0\t0\t0\t0" << std::endl;
             continue;
         }
         candidatePos -= startCoord;
@@ -6104,14 +6404,14 @@ void dumpPosBatch(
 
 #ifdef SNPSTORE_DEBUG
         ::std::cout << "candPos=" << candidatePos + startCoord << ::std::endl;
-        if(candidatePos + startCoord == 861196)
+        if (candidatePos + startCoord == 861196)
             ::std::cout << "ab jetzt.." << ::std::flush;
 #endif
 
         Dna5 candidateBase;
         int quality;
 
-//      if(options._debugLevel > 1)std::cout << candidatePos+startCoord << "<-candidatePos\n";
+//      if (options._debugLevel > 1)std::cout << candidatePos+startCoord << "<-candidatePos\n";
         for(unsigned t=0;t<5;++t)
         {
             countF[t] = 0;
@@ -6124,19 +6424,19 @@ void dumpPosBatch(
         }
 
         //find range of relevant read matches
-        while(matchIt != matchItEnd &&  _max((*matchIt).endPos,(*matchIt).beginPos) <= candidatePos)
+        while (matchIt != matchItEnd &&  _max((*matchIt).endPos,(*matchIt).beginPos) <= candidatePos)
             ++matchIt;
         TMatchIterator matchRangeBegin = matchIt;
-        while(matchIt != matchItEnd &&  _min((*matchIt).endPos,(*matchIt).beginPos)  <= candidatePos)
+        while (matchIt != matchItEnd &&  _min((*matchIt).endPos,(*matchIt).beginPos)  <= candidatePos)
             ++matchIt;
         TMatchIterator matchRangeEnd = matchIt;
         matchIt = matchRangeBegin;
-
         int coverage = matchRangeEnd-matchRangeBegin;
+        if (options._debugLevel > 1)
+            ::std::cout << "Match range:" << matchRangeEnd - matchRangeBegin << ::std::endl;
 
-        if(options._debugLevel > 1)::std::cout << "Match range:" << matchRangeEnd - matchRangeBegin << ::std::endl;
 #ifdef SNPSTORE_DEBUG
-        if(extraV)
+        if (extraV)
         {
             for (TMatchIterator tempIt = matchRangeBegin; tempIt != matchRangeEnd; ++tempIt)
                 ::std::cout << reads[(*tempIt).readId]<<"\n";
@@ -6147,74 +6447,75 @@ void dumpPosBatch(
         unsigned delPlus = 0;
         unsigned delMinus = 0;
 
-        while(matchIt != matchRangeEnd)
+        while (matchIt != matchRangeEnd)
         {
             TContigPos currentBegin = _min((*matchIt).beginPos,(*matchIt).endPos);
             TContigPos currentEnd   = _max((*matchIt).beginPos,(*matchIt).endPos);
             char orientation = ((*matchIt).beginPos > (*matchIt).endPos) ? 'R' : 'F';
 
 #ifdef SNPSTORE_DEBUG
-            if(extraV)
+            if (extraV)
             {
                 ::std::cout <<"currentBegin = "<<currentBegin << "\n";
                 ::std::cout <<"currentEnd = "<<currentEnd << "\n";
             }
 #endif
-            if(!(currentBegin <= candidatePos && candidatePos < currentEnd))// this match is not really spanning the position
-            {                                                               // (can happen because of indels or variable-length reads)
+            if (!(currentBegin <= candidatePos && candidatePos < currentEnd))
+            { // this match is not really spanning the position (can happen because of indels or variable-length reads)
                 ++matchIt;
                 continue;
             }
             // do edit alignment
-            if((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/) // splitReads: hamming: pairScore=0
-            {
+            if ((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
+            {   // splitReads: hamming: pairScore=0
                 Dna5String gInf = infix(genome, currentBegin, currentEnd);
                 if (orientation == 'R')
                     reverseComplement(gInf);
-
                 assignSource(row(align, 0), reads[(*matchIt).readId]);
                 assignSource(row(align, 1), gInf);
                 globalAlignment(align, scoreType);  //splitReads: get alignment from cigar string
             }
-
             if (orientation == 'R')
             {
                 FunctorComplement<Dna5> f;
-
                 int readPos = currentEnd - candidatePos - 1;
                 if ((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
                     readPos = getReadPos(align,readPos,false); //
 
 #ifdef SNPSTORE_DEBUG
-                if(extraV) std::cout << "readPosNacher = " << readPos << std::endl;
+                if (extraV)
+                    std::cout << "readPosNacher = " << readPos << std::endl;
 #endif
-                if(readPos != -1) //-1 indicates gap
+                if (readPos != -1) //-1 indicates gap
                 {
-                    //if(options.minDifferentReadPos > 0)
-                    //    if((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
+                    //if (options.minDifferentReadPos > 0)
+                    //    if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
                     //        (unsigned) readPos >= options.excludeBorderPos )
                     //        readPosMap.insert(readPos);
                     candidateBase = f((Dna5)reads[(*matchIt).readId][readPos]);
 #ifdef SNPSTORE_DEBUG
-                    if(extraV) std::cout << candidateBase << "candBase\n";
+                    if (extraV) std::cout << candidateBase << "candBase\n";
 #endif
                     quality = getQualityValue(reads[(*matchIt).readId][readPos]) ;
 
-                    if(!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score)   // dont trust the quality of this position more
-                    {                                                                               // than the average quality of this read
+                    if (!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score)
+                    {  // dont trust the quality of this position more than the average quality of this read
                         quality = (int) matchQualities[(*matchIt).id].score;
                         ++countLowerMQ;
                     }
-                    else ++countHigherMQ;
-                    //if(quality < 0 || quality > 40)::std::cout << "falschQ candPos = " << candidatePos + startCoord << std::endl;
+                    else
+                        ++countHigherMQ;
+                    //if (quality < 0 || quality > 40)::std::cout << "falschQ candPos =
+                    //    << candidatePos + startCoord << std::endl;
 
                     unsigned tmpCount = 1;
-                    if(!empty(readCounts)) tmpCount = readCounts[(*matchIt).readId];
+                    if (!empty(readCounts))
+                        tmpCount = readCounts[(*matchIt).readId];
                     for (unsigned k = 0; k < tmpCount; ++k)
                     {
                         columnQualityR[ordValue(candidateBase)] += quality;
                         ++countR[ordValue(candidateBase)];
-                        appendValue(qualityStringR[ordValue(candidateBase)],(char)(quality+33),Generous());
+                        appendValue(qualityStringR[ordValue(candidateBase)], (char)(quality+33), Generous());
                     }
                 }
                 else
@@ -6223,35 +6524,34 @@ void dumpPosBatch(
             else
             {
                 int readPos = candidatePos - currentBegin;
-
-                if((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
+                if ((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
                     readPos = getReadPos(align,readPos);
-
-                if(readPos != -1) //-1 indicates gap
+                if (readPos != -1) //-1 indicates gap
                 {
-                    //if(options.minDifferentReadPos > 0)
-                    //    if((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
+                    //if (options.minDifferentReadPos > 0)
+                    //    if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
                     //        (unsigned) readPos >= options.excludeBorderPos )
                     //        readPosMap.insert(readPos);
 
                     candidateBase = (Dna5)reads[(*matchIt).readId][readPos];
                     quality = getQualityValue(reads[(*matchIt).readId][readPos]) ;
 
-                    if(!options.useBaseQuality && quality > (int) matchQualities[(*matchIt).id].score)
+                    if (!options.useBaseQuality && quality > (int) matchQualities[(*matchIt).id].score)
                     {
                         quality = (int) matchQualities[(*matchIt).id].score;
                         ++countLowerMQ;
                     }
                     else ++countHigherMQ;
-                    //if(quality < 0 || quality > 40)::std::cout << "falschQ candPos = " << candidatePos + startCoord << std::endl;
+                    //if (quality < 0 || quality > 40)::std::cout << "falschQ candPos = "
+                    //    << candidatePos + startCoord << std::endl;
 
                     unsigned tmpCount = 1;
-                    if(!empty(readCounts)) tmpCount = readCounts[(*matchIt).readId];
+                    if (!empty(readCounts)) tmpCount = readCounts[(*matchIt).readId];
                     for (unsigned k = 0; k < tmpCount; ++k)
                     {
                         ++countF[ordValue(candidateBase)];
                         columnQualityF[ordValue(candidateBase)] += quality;
-                        appendValue(qualityStringF[ordValue(candidateBase)],(char)(quality+33),Generous());
+                        appendValue(qualityStringF[ordValue(candidateBase)], (char)(quality+33), Generous());
                     }
                 }
                 else
@@ -6259,21 +6559,22 @@ void dumpPosBatch(
             }
             ++matchIt;
         }
-        matchIt = matchRangeBegin; //set iterator back to where we started from, same matches might be involved in next cand pos
+        matchIt = matchRangeBegin; //set iter back to where we started, same matches might be involved in next cand pos
 
         // write info to file
-        _writePos(posFile,qualityStringF,qualityStringR,delPlus,delMinus,genomeID,candidatePos+startCoord,coverage,options);
-
+        _writePos(posFile,
+                  qualityStringF,
+                  qualityStringR,
+                  delPlus,
+                  delMinus,
+                  genomeID,
+                  candidatePos+startCoord,
+                  coverage,
+                  options);
     }
-
-    if(options._debugLevel>1) std::cout <<"Finished scanning window.\n"<<std::flush;
-
+    if (options._debugLevel>1)
+        std::cout <<"Finished scanning window.\n"<<std::flush;
     return;
-
 }
-
-
-
 }
-
 #endif
