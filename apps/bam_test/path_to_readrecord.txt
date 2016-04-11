@@ -1,0 +1,4 @@
+-> main 
+-> readRecord /seqan/include/seqan/bam_io/bam_file.h:241
+-> readRecord /seqan/include/seqan/bam_io/read_sam.h:261
+(speculation, need bam file to check) -> readRecord /seqan/include/seqan/bam_io/read_bam.h:194
