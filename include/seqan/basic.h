@@ -106,7 +106,7 @@
 // Basic device metafunctions.
 #include <seqan/basic/basic_device.h>
 
-// Basic SIMD vector (not included by default on purpose)
-//#include <seqan/basic/basic_simd_vector.h>
+// Basic SIMD vector
+#include <seqan/basic/basic_simd_vector.h>
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_H_

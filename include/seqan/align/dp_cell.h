@@ -160,6 +160,13 @@ _setScoreOfCell(DPCell_<TScoreValue, TGapCosts> & dpCell, TScoreValue const & ne
     dpCell._score = newScore;
 }
 
+template <typename TScoreValue, typename TGapCosts>
+inline void
+_setScoreOfCell(DPCell_<TScoreValue, TGapCosts> & dpCell, TScoreValue const & newScore, TScoreValue const & mask)
+{
+    dpCell._score = blend(dpCell._score, newScore, mask);
+}
+
 // ----------------------------------------------------------------------------
 // Function _verticalScoreOfCell()
 // ----------------------------------------------------------------------------
@@ -187,6 +194,13 @@ _verticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> const & dpCell)
 template <typename TScoreValue, typename TGapSpec>
 inline void
 _setVerticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue const & /*newVerticalScore*/)
+{
+    // no-op
+}
+
+template <typename TScoreValue, typename TGapSpec>
+inline void
+_setVerticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue const & /*newVerticalScore*/, TScoreValue const & /*mask*/)
 {
     // no-op
 }
@@ -222,6 +236,13 @@ _setHorizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreVal
     // no-op
 }
 
+template <typename TScoreValue, typename TGapSpec>
+inline void
+_setHorizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue const & /*newHorizontalScore*/, TScoreValue const & /*mask*/)
+{
+    // no-op
+}
+
 // ----------------------------------------------------------------------------
 // Function setGapExtension()
 // ----------------------------------------------------------------------------
@@ -229,6 +250,13 @@ _setHorizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreVal
 template <typename TScoreValue, typename TGapSpec, typename TF1, typename TF2>
 inline void
 setGapExtension(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TF1 , TF2)
+{
+    // no-op
+}
+
+template <typename TScoreValue, typename TGapSpec, typename TF1, typename TF2>
+inline void
+setGapExtension(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TF1 , TF2, TScoreValue)
 {
     // no-op
 }

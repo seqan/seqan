@@ -94,14 +94,13 @@ class DPScout_
 {
 public:
     typedef typename Value<TDPCell>::Type TScoreValue;
-//    TScoreValue _maxScore;          // The maximal score.
     TDPCell _maxScore;
-    unsigned int _maxHostPosition;  // The corresponding host position within the underlying dp-matrix.
 
-    DPScout_() : _maxScore(), _maxHostPosition(0) {}
+    // The corresponding host position within the underlying dp-matrix.
+    uint32_t _maxHostPosition;
 
-    DPScout_(DPScoutState_<Default> const & /*state*/) :
-        _maxScore(), _maxHostPosition(0) {}
+    DPScout_() {}
+    DPScout_(DPScoutState_<Default> const & /*state*/) {}
 
     DPScout_(DPScout_ const & other) :
         _maxScore(other._maxScore), _maxHostPosition(other._maxHostPosition) {}
@@ -115,7 +114,6 @@ public:
         }
         return *this;
     }
-
 };
 
 // Terminator_ Specialization
@@ -207,7 +205,6 @@ _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
                 TIsLastColumn const & /**/,
                 TIsLastRow const & /**/)
 {
-
     if (_scoreOfCell(activeCell) > _scoreOfCell(dpScout._maxScore))
     {
         dpScout._maxScore = activeCell;
@@ -223,8 +220,7 @@ _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
                 TTraceMatrixNavigator const & navigator,
                 TIsLastColumn const & /**/)
 {
-    return _scoutBestScore(dpScout, activeCell, navigator, TIsLastColumn(),
-                           False());
+    _scoutBestScore(dpScout, activeCell, navigator, TIsLastColumn(), False());
 }
 
 // TODO(rmaerker): Why is this needed?
@@ -234,7 +230,7 @@ _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
                 TDPCell const & activeCell,
                 TTraceMatrixNavigator const & navigator)
 {
-    return _scoutBestScore(dpScout, activeCell, navigator, False(), False());
+    _scoutBestScore(dpScout, activeCell, navigator, False(), False());
 }
 
 // ----------------------------------------------------------------------------

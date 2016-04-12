@@ -90,6 +90,10 @@ public:
     }
 };
 
+SEQAN_CONCEPT(LinearGapCosts, (T)) {};
+template <typename TScoreValue>
+SEQAN_CONCEPT_IMPL((DPCell_<TScoreValue, LinearGaps>), (LinearGapCosts));
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
