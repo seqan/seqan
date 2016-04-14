@@ -801,13 +801,13 @@ template <typename TTarget, typename TDPTraceMatrixNavigator, typename TDPCell, 
           typename TSequenceH, typename TSequenceV, typename TBandFlag, typename TAlgorithm, typename TGapCosts,
           typename TTracebackSpec>
 SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<typename Value<TSequenceH>::Type> >, void)
-_computeTraceback(TTarget & target,
-                       TDPTraceMatrixNavigator & matrixNavigator,
-                       DPScout_<TDPCell, TScoutSpec> const & dpScout,
-                       TSequenceH const & seqH,
-                       TSequenceV const & seqV,
-                       DPBandConfig<TBandFlag> const & band,
-                       DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const & dpProfile)
+_computeTraceback(TTarget & /*target*/,
+                       TDPTraceMatrixNavigator & /*matrixNavigator*/,
+                       DPScout_<TDPCell, TScoutSpec> const & /*dpScout*/,
+                       TSequenceH const & /*seqH*/,
+                       TSequenceV const & /*seqV*/,
+                       DPBandConfig<TBandFlag> const & /*band*/,
+                       DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const & /*dpProfile*/)
 {
     //no-op
 }
