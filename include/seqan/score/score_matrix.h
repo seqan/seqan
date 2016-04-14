@@ -146,9 +146,9 @@ public:
 
     int16_t pos[LENGTH<TSimdAlign>::VALUE] __attribute__((aligned(SEQAN_SIZEOF_MAX_VECTOR)));
 
-    Score(TSimdAlign _gap_extend, TSimdAlign _gap_open)
-        : data_gap_extend(_gap_extend), data_gap_open(_gap_open) {
-        SEQAN_CHECKPOINT;
+    Score(TSimdAlign _gap_extend, TSimdAlign _gap_open) :
+        data_gap_extend(_gap_extend), data_gap_open(_gap_open)
+    {
         setDefaultScoreMatrix(*this, TSpec());
     }
 };
@@ -241,7 +241,6 @@ setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, T
 template <typename TValue, typename TSequenceValue, typename TSpec, typename TTag>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, void)
 setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TTag) {
-    SEQAN_CHECKPOINT;
     typedef Score<int, ScoreMatrix<TSequenceValue, TSpec> > TScore;
     int const * tab = ScoringMatrixData_<int, TSequenceValue, TTag>::getData();
     arrayCopy(tab, tab + TScore::TAB_SIZE, sc.data_tab);

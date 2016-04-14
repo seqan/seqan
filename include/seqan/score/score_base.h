@@ -316,8 +316,8 @@ scoreGapVertical(
 
 template <typename TValue, typename TSpec, typename TSeqHVal, typename TSeqVVal>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >,TValue)
-score(Score<TValue, TSpec> const & me, TSeqHVal valH, TSeqVVal valV) {
-    SEQAN_CHECKPOINT;
+score(Score<TValue, TSpec> const & me, TSeqHVal valH, TSeqVVal valV)
+{
     return blend(scoreMismatch(me), scoreMatch(me), cmpEq(valH, valV));
 }
 

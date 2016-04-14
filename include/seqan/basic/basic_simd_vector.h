@@ -72,7 +72,7 @@ namespace seqan {
 
 #define SEQAN_DEFINE_SIMD_VECTOR_GETVALUE_(TSimdVector)                                                 \
 template <typename TPosition>                                                                           \
-inline typename InnerValue<TSimdVector>::Type                                                                \
+inline typename InnerValue<TSimdVector>::Type                                                           \
 getValue(TSimdVector &vector, TPosition pos)                                                            \
 {                                                                                                       \
 /*                                                                                                      \
@@ -83,13 +83,12 @@ getValue(TSimdVector &vector, TPosition pos)                                    
     return vector[pos];                                                                                 \
 }
 
-
 #define SEQAN_DEFINE_SIMD_VECTOR_VALUE_(TSimdVector)                                                    \
 template <typename TPosition>                                                                           \
-inline typename InnerValue<TSimdVector>::Type                                                                \
+inline typename InnerValue<TSimdVector>::Type                                                           \
 value(TSimdVector &vector, TPosition pos)                                                               \
 {                                                                                                       \
-    return getValue(vector, pos);                                                                       \
+    return getValue(vector, pos);                                                                                 \
 }
 
 #define SEQAN_DEFINE_SIMD_VECTOR_ASSIGNVALUE_(TSimdVector)                                              \
@@ -146,6 +145,8 @@ struct InnerValue;
         template <> struct Value<TSimdVector const>:  public Value<TSimdVector> {};                             \
         template <> struct LENGTH<TSimdVector>          { enum { VALUE = SIZEOF_VECTOR / sizeof(TValue) }; };   \
         template <> struct LENGTH<TSimdVector const>: public LENGTH<TSimdVector> {};                            \
+        SEQAN_DEFINE_SIMD_VECTOR_GETVALUE_(TSimdVector)                                                         \
+        SEQAN_DEFINE_SIMD_VECTOR_GETVALUE_(TSimdVector const)                                                   \
         SEQAN_DEFINE_SIMD_VECTOR_VALUE_(TSimdVector)                                                            \
         SEQAN_DEFINE_SIMD_VECTOR_VALUE_(TSimdVector const)                                                      \
         SEQAN_DEFINE_SIMD_VECTOR_ASSIGNVALUE_(TSimdVector)                                                      \
@@ -1413,6 +1414,13 @@ createVector(TValue x)
     return _createVector<TSimdVector>(x, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TIVal)>());
 }
 
+template <typename TSimdVector, typename TValue>
+inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TValue)
+createVector(TValue x)
+{
+    return x;
+}
+
 // --------------------------------------------------------------------------
 // Function fillVector()
 // --------------------------------------------------------------------------
@@ -1602,6 +1610,18 @@ operator * (TSimdVector const &a, TSimdVector const &b)
 {
     typedef typename InnerValue<TSimdVector>::Type TValue;
     return _mult(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
+}
+
+// --------------------------------------------------------------------------
+// Function operator/()
+// --------------------------------------------------------------------------
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+operator/ (TSimdVector const &a, TSimdVector const &b)
+{
+    typedef typename InnerValue<TSimdVector>::Type TValue;
+    return _div(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
 }
 
 // --------------------------------------------------------------------------
