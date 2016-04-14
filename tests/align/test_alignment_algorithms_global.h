@@ -94,7 +94,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_global_linear)
         Score<int, Simple> scoringScheme(2, -1, -1);
         String<int> scores = globalAlignment(alignments, scoringScheme, alignConfig, NeedlemanWunsch());
     
-        SEQAN_ASSERT_EQ(length(scores), 34u);
+        SEQAN_ASSERT_EQ(length(scores), static_cast<decltype(length(scores))>(34));
 
         for(size_t i = 0; i < 34; ++i)
         {

@@ -54,9 +54,6 @@ add_executable (test_align
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_align ${SEQAN_LIBRARIES})
 
-# Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
-
 if (MSVC)
   # Disable vectorization support on windows for now.
   # SET (_FLAGS "/arch:AVX")
@@ -73,6 +70,9 @@ else (MSVC)
   endif (CMAKE_COMPILER_IS_GNUCXX)
   SET_TARGET_PROPERTIES(test_align PROPERTIES COMPILE_FLAGS ${_FLAGS})
 endif (MSVC)
+
+# Add CXX flags found by find_package (SeqAn).
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # ----------------------------------------------------------------------------
 # Register with CTest
