@@ -394,6 +394,141 @@ readRecord(BamAlignmentRecord & record,
     appendTagsSamToBam(record.tags, buffer);
 }
 
+// ----------------------------------------------------------------------------
+// Function readRecord()                             read sequence with quality
+// ----------------------------------------------------------------------------
+
+template <typename TIdString, typename TSeqString, typename TQualString,
+        typename TNameStore, typename  TNameStoreCache, typename TStorageSpec,
+        typename TForwardIter>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           Sam const & /*tag*/)
+
+{
+    // fail, if we read "@" (did you miss to call readRecord(header, bamFile) first?)
+    if (nextIs(iter, SamHeader()))
+        SEQAN_THROW(ParseError("Unexpected SAM header encountered."));
+
+    OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> > nextEntry;
+
+
+    TIdString prevQName = meta;
+
+    clear(meta);
+    clear(seq);
+    clear(qual);
+    CharString &buffer = context.buffer;
+
+    // QNAME
+    readUntil(meta, iter, nextEntry);
+    skipOne(iter, IsTab());
+
+    while (prevQName == meta) {
+        skipLine(iter);
+        clear(meta);
+        readUntil(meta, iter, nextEntry);
+        skipOne(iter, IsTab());
+    }
+
+    // Skip FLAG, RNAME, POS, MAPQ, CIGAR, RNEXT, PNEXT, TLEN
+    for (unsigned i = 0; i < 8; ++i) {
+        skipUntil(iter, IsTab());
+        skipOne(iter, IsTab());
+    }
+
+    // SEQ
+    clear(buffer);
+    readUntil(seq, iter, nextEntry);
+    // Handle case of missing sequence:  Clear seq string as documented.
+    if (seq == "*")
+        clear(seq);
+    skipOne(iter, IsTab());
+
+    // QUAL
+    readUntil(qual, iter, OrFunctor<IsTab, IsNewline>());
+
+    // Handle case of missing quality:  stop the program if there is no quality.
+    // there is another version of readRecord that doesn't use quality
+    assert (qual != "*");
+
+    // The following list of tags is optional.  A line break or EOF could also follow.
+    if (atEnd(iter))
+        return;
+    if (value(iter) != '\t')
+    {
+        skipLine(iter);
+        return;
+    }
+    skipOne(iter, IsTab());
+
+    // skip TAGS
+    clear(buffer);
+    readLine(buffer, iter);
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecord()                          read sequence without quality
+// ----------------------------------------------------------------------------
+
+template <typename TIdString, typename TSeqString,
+        typename TNameStore, typename  TNameStoreCache, typename TStorageSpec,
+        typename TForwardIter>
+inline void
+readRecord(TIdString & meta, TSeqString & seq,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           Sam const & /*tag*/)
+
+{
+    // fail, if we read "@" (did you miss to call readRecord(header, bamFile) first?)
+    if (nextIs(iter, SamHeader()))
+        SEQAN_THROW(ParseError("Unexpected SAM header encountered."));
+
+    OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> > nextEntry;
+
+
+    CharString prevQName = meta;
+
+    clear(meta);
+    clear(seq);
+    CharString &buffer = context.buffer;
+
+    // QNAME
+    readUntil(meta, iter, nextEntry);
+    skipOne(iter, IsTab());
+
+    while (prevQName == meta) {
+        skipLine(iter);
+        clear(meta);
+        readUntil(meta, iter, nextEntry);
+        skipOne(iter, IsTab());
+    }
+
+    // Skip FLAG, RNAME, POS, MAPQ, CIGAR, RNEXT, PNEXT, TLEN
+    for (unsigned i = 0; i < 8; ++i) {
+        skipUntil(iter, IsTab());
+        skipOne(iter, IsTab());
+    }
+
+    // SEQ
+    clear(buffer);
+    readUntil(seq, iter, nextEntry);
+    // Handle case of missing sequence:  Clear seq string as documented.
+    if (seq == "*")
+        clear(seq);
+    skipOne(iter, IsTab());
+
+
+    // skip QUAL & TAGS
+    if (atEnd(iter))
+        return;
+    skipLine(iter);
+    return;
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_READ_SAM_H_

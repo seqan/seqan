@@ -233,12 +233,28 @@ readRecord(BamAlignmentRecord & record,
         readRecord(record, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
-// convient BamFile variant
+// convenient BamFile variant
 template <typename TSpec>
 inline void
 readRecord(BamAlignmentRecord & record, FormattedFile<Bam, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
+}
+
+// convenient BamFile variant to read sequence as string with quality
+template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Bam, Input, TSpec> & file)
+{
+    readRecord(meta, seq, qual, context(file), file.iter, file.format);
+}
+
+// convenient BamFile variant to read sequence as string without quality
+template <typename TIdString, typename TSeqString, typename TSpec>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Bam, Input, TSpec> & file)
+{
+    readRecord(meta, seq, context(file), file.iter, file.format);
 }
 
 template <typename TRecords, typename TSpec, typename TSize>
