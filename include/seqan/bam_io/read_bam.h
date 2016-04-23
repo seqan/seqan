@@ -274,6 +274,237 @@ readRecord(BamAlignmentRecord & record,
     arrayCopyForward(it, it + remainingBytes, begin(record.tags, Standard()));
 }
 
+// ----------------------------------------------------------------------------
+// Function readRecord()                               Sequence without quality
+// ----------------------------------------------------------------------------
+
+template <typename TIdString, typename TSeqString,
+        typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline void
+readRecord(TIdString & meta, TSeqString & seq,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           Bam const & /* tag */)
+{
+    typedef typename Iterator<TIdString, Standard>::Type                             TCharIter;
+    typedef typename Iterator<TSeqString, Standard>::Type SEQAN_RESTRICT             TSeqIter;
+
+    TIdString prevQName = meta;
+    clear(meta);
+    clear(seq);
+
+    BamAlignmentRecordCore recordCore;
+
+    // Read size and data of the remaining block in one chunk (fastest).
+    int32_t remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
+    TCharIter it = begin(context.buffer, Standard());
+
+    // BamAlignmentRecordCore.
+    arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char*>(&recordCore));
+    it += sizeof(BamAlignmentRecordCore);
+
+    remainingBytes -= sizeof(BamAlignmentRecordCore) + recordCore._l_qname +
+                      recordCore._n_cigar * 4 + (recordCore._l_qseq + 1) / 2 + recordCore._l_qseq;
+    SEQAN_ASSERT_GEQ(remainingBytes, 0);
+
+    // Translate file local rID into a global rID that is compatible with the context contigNames.
+    if (recordCore.rID >= 0 && !empty(context.translateFile2GlobalRefId))
+        recordCore.rID = context.translateFile2GlobalRefId[recordCore.rID];
+    if (recordCore.rID >= 0)
+        SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rID), length(contigNames(context)));
+
+    // ... the same for rNextId
+    if (recordCore.rNextId >= 0 && !empty(context.translateFile2GlobalRefId))
+        recordCore.rNextId = context.translateFile2GlobalRefId[recordCore.rNextId];
+    if (recordCore.rNextId >= 0)
+        SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rNextId), length(contigNames(context)));
+
+    // query name.
+    resize(meta, recordCore._l_qname - 1, Exact());
+    arrayCopyForward(it, it + recordCore._l_qname - 1, begin(meta, Standard()));
+    it += recordCore._l_qname;
+
+    // skip entry if query name of it is equal to query name of previous entry
+    while ( prevQName == meta ) {
+
+        // jump to next entry
+        it += remainingBytes;
+
+        // Read size and data of the remaining block in one chunk (fastest).
+        remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
+        it = begin(context.buffer, Standard());
+
+        // BamAlignmentRecordCore.
+        arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char*>(&recordCore));
+        it += sizeof(BamAlignmentRecordCore);
+
+        remainingBytes -= sizeof(BamAlignmentRecordCore) + recordCore._l_qname +
+                          recordCore._n_cigar * 4 + (recordCore._l_qseq + 1) / 2 + recordCore._l_qseq;
+        SEQAN_ASSERT_GEQ(remainingBytes, 0);
+
+        // Translate file local rID into a global rID that is compatible with the context contigNames.
+        if (recordCore.rID >= 0 && !empty(context.translateFile2GlobalRefId))
+            recordCore.rID = context.translateFile2GlobalRefId[recordCore.rID];
+        if (recordCore.rID >= 0)
+            SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rID), length(contigNames(context)));
+
+        // ... the same for rNextId
+        if (recordCore.rNextId >= 0 && !empty(context.translateFile2GlobalRefId))
+            recordCore.rNextId = context.translateFile2GlobalRefId[recordCore.rNextId];
+        if (recordCore.rNextId >= 0)
+            SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rNextId), length(contigNames(context)));
+
+        // query name.
+        resize(meta, recordCore._l_qname - 1, Exact());
+        arrayCopyForward(it, it + recordCore._l_qname - 1, begin(meta, Standard()));
+        it += recordCore._l_qname;
+
+    }
+
+    // skip cigar string.
+    it += sizeof(uint32_t)*recordCore._n_cigar;
+
+    // query sequence.
+    resize(seq, recordCore._l_qseq, Exact());
+    TSeqIter sit = begin(seq, Standard());
+    TSeqIter sitEnd = sit + (recordCore._l_qseq & ~1);
+    while (sit != sitEnd)
+    {
+        unsigned char ui = getValue(it);
+        ++it;
+        assignValue(sit, Iupac(ui >> 4));
+        ++sit;
+        assignValue(sit, Iupac(ui & 0x0f));
+        ++sit;
+    }
+    if (recordCore._l_qseq & 1)
+        *sit++ = Iupac((uint8_t)*it++ >> 4);
+
+    // skip phred quality and tags
+    it += remainingBytes;
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecord()                                  Sequence with quality
+// ----------------------------------------------------------------------------
+
+template <typename TIdString, typename TSeqString, typename TQualString,
+        typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           Bam const & /* tag */)
+{
+    typedef typename Iterator<TIdString, Standard>::Type                              TCharIter;
+    typedef typename Iterator<TSeqString, Standard>::Type SEQAN_RESTRICT              TSeqIter;
+    typedef typename Iterator<TQualString, Standard>::Type SEQAN_RESTRICT             TQualIter;
+
+
+    TIdString prevQName = meta;
+    clear(meta);
+    clear(seq);
+
+    BamAlignmentRecordCore recordCore;
+
+    // Read size and data of the remaining block in one chunk (fastest).
+    int32_t remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
+    TCharIter it = begin(context.buffer, Standard());
+
+    // BamAlignmentRecordCore.
+    arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char*>(&recordCore));
+    it += sizeof(BamAlignmentRecordCore);
+
+    remainingBytes -= sizeof(BamAlignmentRecordCore) + recordCore._l_qname +
+                      recordCore._n_cigar * 4 + (recordCore._l_qseq + 1) / 2 + recordCore._l_qseq;
+    SEQAN_ASSERT_GEQ(remainingBytes, 0);
+
+    // Translate file local rID into a global rID that is compatible with the context contigNames.
+    if (recordCore.rID >= 0 && !empty(context.translateFile2GlobalRefId))
+        recordCore.rID = context.translateFile2GlobalRefId[recordCore.rID];
+    if (recordCore.rID >= 0)
+        SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rID), length(contigNames(context)));
+
+    // ... the same for rNextId
+    if (recordCore.rNextId >= 0 && !empty(context.translateFile2GlobalRefId))
+        recordCore.rNextId = context.translateFile2GlobalRefId[recordCore.rNextId];
+    if (recordCore.rNextId >= 0)
+        SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rNextId), length(contigNames(context)));
+
+
+    // query name.
+    resize(meta, recordCore._l_qname - 1, Exact());
+    arrayCopyForward(it, it + recordCore._l_qname - 1, begin(meta, Standard()));
+    it += recordCore._l_qname;
+
+    // skip entry if query name of it is equal to query name of previous entry
+    while ( prevQName == meta ) {
+        // jump to next entry
+        it += remainingBytes;
+
+        // Read size and data of the remaining block in one chunk (fastest).
+        remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
+        it = begin(context.buffer, Standard());
+
+        // BamAlignmentRecordCore.
+        arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char*>(&recordCore));
+        it += sizeof(BamAlignmentRecordCore);
+
+        remainingBytes -= sizeof(BamAlignmentRecordCore) + recordCore._l_qname +
+                          recordCore._n_cigar * 4 + (recordCore._l_qseq + 1) / 2 + recordCore._l_qseq;
+        SEQAN_ASSERT_GEQ(remainingBytes, 0);
+
+        // Translate file local rID into a global rID that is compatible with the context contigNames.
+        if (recordCore.rID >= 0 && !empty(context.translateFile2GlobalRefId))
+            recordCore.rID = context.translateFile2GlobalRefId[recordCore.rID];
+        if (recordCore.rID >= 0)
+            SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rID), length(contigNames(context)));
+
+        // ... the same for rNextId
+        if (recordCore.rNextId >= 0 && !empty(context.translateFile2GlobalRefId))
+            recordCore.rNextId = context.translateFile2GlobalRefId[recordCore.rNextId];
+        if (recordCore.rNextId >= 0)
+            SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rNextId), length(contigNames(context)));
+
+        // query name.
+        resize(meta, recordCore._l_qname - 1, Exact());
+        arrayCopyForward(it, it + recordCore._l_qname - 1, begin(meta, Standard()));
+        it += recordCore._l_qname;
+
+    }
+
+    // skip cigar string.
+    it += 4 * recordCore._n_cigar;
+
+    // query sequence.
+    resize(seq, recordCore._l_qseq, Exact());
+    TSeqIter sit = begin(seq, Standard());
+    TSeqIter sitEnd = sit + (recordCore._l_qseq & ~1);
+    while (sit != sitEnd)
+    {
+        unsigned char ui = getValue(it);
+        ++it;
+        assignValue(sit, Iupac(ui >> 4));
+        ++sit;
+        assignValue(sit, Iupac(ui & 0x0f));
+        ++sit;
+    }
+    if (recordCore._l_qseq & 1)
+        *sit++ = Iupac((uint8_t)*it++ >> 4);
+
+    // phred quality
+    resize(qual, recordCore._l_qseq, Exact());
+    // If qual is a sequence of 0xff (heuristic same as samtools: Only look at first byte) then we clear it, to get the
+    // representation of '*';
+    TQualIter qitEnd = end(qual, Standard());
+    for (TQualIter qit = begin(qual, Standard()); qit != qitEnd;)
+        *qit++ = '!' + *it++;
+    assert (empty(qual) || qual[0] != '\xff');
+
+    // skip tags
+    it += remainingBytes;
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_READ_BAM_H_

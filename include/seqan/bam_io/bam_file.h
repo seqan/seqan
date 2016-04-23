@@ -241,7 +241,7 @@ readRecord(BamAlignmentRecord & record, FormattedFile<Bam, Input, TSpec> & file)
     readRecord(record, context(file), file.iter, file.format);
 }
 
-// convenient BamFile variant to read sequence as string with quality
+// convenient BamFile variant to read sequence as string with phred quality
 template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec>
 inline void
 readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Bam, Input, TSpec> & file)
@@ -249,7 +249,7 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile
     readRecord(meta, seq, qual, context(file), file.iter, file.format);
 }
 
-// convenient BamFile variant to read sequence as string without quality
+// convenient BamFile variant to read sequence as string without phred quality
 template <typename TIdString, typename TSeqString, typename TSpec>
 inline void
 readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Bam, Input, TSpec> & file)
