@@ -233,6 +233,46 @@ readRecord(BamAlignmentRecord & record,
         readRecord(record, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
+// when you compile with ZLIB, format is TaglistSelector instead of BAM. This function tells if it is BAM or SAM
+// this is for readRecord without quality
+template <typename TIdString, typename TSeqString, typename TForwardIter,
+        typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
+inline void
+readRecord(TIdString & meta, TSeqString & seq,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           TagSelector<TTagList> const & format)
+{
+    //typedef typename TTagList::Type TFormat;
+    //std::cout<< "format.tid " << format.tagId << std::endl;
+    //if (isEqual(format, TFormat()))
+    // Some dark SeqAn magic I don't understand. Did it the easy way by tagId. 0 is sam, 1 is bam.
+    if ( format.tagId == 0 )
+        readRecord( meta, seq, context, iter, Sam() );
+    else
+        readRecord( meta, seq, context, iter, Bam() );//static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
+// when you compile with ZLIB, format is TaglistSelector instead of BAM. This function tells if it is BAM or SAM
+// this is for readRecord with quality
+template <typename TIdString, typename TSeqString, typename TQualString, typename TForwardIter,
+        typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           TagSelector<TTagList> const & format)
+{
+    //typedef typename TTagList::Type TFormat;
+    //std::cout<< "format.tid " << format.tagId << std::endl;
+    //if (isEqual(format, TFormat()))
+    // Some dark SeqAn magic I don't understand. Did it the easy way by tagId. 0 is sam, 1 is bam.
+    if ( format.tagId == 0 )
+        readRecord( meta, seq, qual, context, iter, Sam() );
+    else
+        readRecord( meta, seq, qual, context, iter, Bam() );//static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
 // convenient BamFile variant
 template <typename TSpec>
 inline void

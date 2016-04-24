@@ -499,7 +499,11 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
     TQualIter qitEnd = end(qual, Standard());
     for (TQualIter qit = begin(qual, Standard()); qit != qitEnd;)
         *qit++ = '!' + *it++;
-    assert (empty(qual) || qual[0] != '\xff');
+
+    // Handle case of missing quality:  stop the program if there is no quality.
+    // there is another version of readRecord that doesn't use quality
+    SEQAN_ASSERT_EQ_MSG( qual[0], '\xff', "This BAM file doesn't provide PHRED qulity string. Consider using another version of readRecord without quality" );
+    SEQAN_ASSERT_MSG( empty(qual), "This BAM file doesn't provide PHRED qulity string. Consider using another version of readRecord without quality" );
 
     // skip tags
     it += remainingBytes;
