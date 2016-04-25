@@ -30,6 +30,8 @@
 //
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
+//         René Rahn <rene.rahn@fu-berlin.de>
+//         Stefan Budach <stefan.budach@fu-berlin.de>
 // ==========================================================================
 // generic SIMD interface for SSE3 / AVX2
 // ==========================================================================
@@ -37,22 +39,15 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
 
-#if defined(__SSE4_1__) || defined(__AVX__)
- #include <immintrin.h>
-#else
-// SSE4.1 or greater required
-#ifdef _MSC_VER
- #pragma message("SSE4.1 instruction set not enabled")
-#else
- #warning "SSE4.1 instruction set not enabled"
-#endif  // _MSC_VER
-#endif
-//=======
-//#include <x86intrin.h>
-//>>>>>>> 2892c05f3f7ea7e73db1c42e34fc024593527ed9
 
-#ifndef __SSE3__
- #warning "At least SSE3 instruction set must be available"
+#if defined(PLATFORM_WINDOWS_VS)
+  /* Microsoft C/C++-compatible compiler */
+  #include <intrin.h>
+#elif defined(PLATFORM_GCC) && (defined(__x86_64__) || defined(__i386__))
+  /* GCC-compatible compiler, targeting x86/x86-64 */
+  #include <x86intrin.h>
+#else
+ #warning "No supported platform for SIMD vectorization!"
 #endif
 
 namespace seqan {
@@ -1123,6 +1118,7 @@ inline TSimdVector _mult(TSimdVector &a, TSimdVector &b, SimdParams_<16, 8>)
                                               SEQAN_VECTOR_CAST_(const __m128i&, b)));
 }
 
+#if defined(__SSE4_1__)
 template <typename TSimdVector>
 inline TSimdVector _mult(TSimdVector &a, TSimdVector &b, SimdParams_<16, 4>)
 {
@@ -1130,6 +1126,14 @@ inline TSimdVector _mult(TSimdVector &a, TSimdVector &b, SimdParams_<16, 4>)
                               _mm_mullo_epi32(SEQAN_VECTOR_CAST_(const __m128i&, a),
                                               SEQAN_VECTOR_CAST_(const __m128i&, b)));
 }
+#else
+template <typename TSimdVector>
+inline TSimdVector _mult(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<16, 4>)
+{
+    SEQAN_ASSERT_FAIL("Write me!");
+    return a;
+}
+#endif  // defined(__SSE4_1__)
 
 template <typename TSimdVector>
 inline TSimdVector _mult(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<16, 2>)
