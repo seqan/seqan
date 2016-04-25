@@ -404,6 +404,7 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
     TIdString prevQName = meta;
     clear(meta);
     clear(seq);
+    clear(qual);
 
     BamAlignmentRecordCore recordCore;
 
