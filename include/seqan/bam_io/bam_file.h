@@ -233,6 +233,19 @@ readRecord(BamAlignmentRecord & record,
         readRecord(record, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
+
+template <typename TIdString, typename TSeqString, typename TForwardIter,
+        typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline void
+        readRecord(TIdString & /*meta*/, TSeqString & /*seq*/,
+                   BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /*context*/,
+                   TForwardIter & /*iter*/,
+                   TagSelector<> const & /*format*/)
+
+{
+    SEQAN_FAIL("BamFileIn: File format not specified.");
+};
+
 // when you compile with ZLIB, format is TaglistSelector instead of BAM. This function tells if it is BAM or SAM
 // this is for readRecord without quality
 template <typename TIdString, typename TSeqString, typename TForwardIter,
@@ -243,15 +256,23 @@ readRecord(TIdString & meta, TSeqString & seq,
            TForwardIter & iter,
            TagSelector<TTagList> const & format)
 {
-    //typedef typename TTagList::Type TFormat;
-    //std::cout<< "format.tid " << format.tagId << std::endl;
-    //if (isEqual(format, TFormat()))
-    // Some dark SeqAn magic I don't understand. Did it the easy way by tagId. 0 is sam, 1 is bam.
-    if ( format.tagId == 0 )
-        readRecord( meta, seq, context, iter, Sam() );
+    typedef typename TTagList::Type TFormat;
+    if (isEqual(format, TFormat()))
+        readRecord( meta, seq, context, iter, TFormat() );
     else
-        readRecord( meta, seq, context, iter, Bam() );//static_cast<typename TagSelector<TTagList>::Base const &>(format));
+        readRecord( meta, seq, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
+
+template <typename TIdString, typename TSeqString, typename TQualString, typename TForwardIter,
+        typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline void
+readRecord(TIdString & /*meta*/, TSeqString & /*seq*/, TQualString & /*qual*/,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /*context*/,
+           TForwardIter & /*iter*/,
+           TagSelector<void> const & /*format*/)
+{
+    SEQAN_FAIL("BamFileIn: File format not specified.");
+};
 
 // when you compile with ZLIB, format is TaglistSelector instead of BAM. This function tells if it is BAM or SAM
 // this is for readRecord with quality
@@ -263,14 +284,11 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
            TForwardIter & iter,
            TagSelector<TTagList> const & format)
 {
-    //typedef typename TTagList::Type TFormat;
-    //std::cout<< "format.tid " << format.tagId << std::endl;
-    //if (isEqual(format, TFormat()))
-    // Some dark SeqAn magic I don't understand. Did it the easy way by tagId. 0 is sam, 1 is bam.
-    if ( format.tagId == 0 )
-        readRecord( meta, seq, qual, context, iter, Sam() );
+    typedef typename TTagList::Type TFormat;
+    if (isEqual(format, TFormat()))
+        readRecord( meta, seq, qual, context, iter, TFormat() );
     else
-        readRecord( meta, seq, qual, context, iter, Bam() );//static_cast<typename TagSelector<TTagList>::Base const &>(format));
+        readRecord( meta, seq, qual, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 // convenient BamFile variant
@@ -281,15 +299,38 @@ readRecord(BamAlignmentRecord & record, FormattedFile<Bam, Input, TSpec> & file)
     readRecord(record, context(file), file.iter, file.format);
 }
 
-// convenient BamFile variant to read sequence as string with phred quality
+/*!
+ * @fn BamFileIn#readRecord
+ * @brief read one @link FormattedFileRecordConcept @endlink from a @link BamFileIn @endlink object.
+ *
+ * @signature void writeRecord(meta, seq, qual, file);
+ *
+ * @param[out] meta          The @link StringConcept @endlink object where to write the meta information from.
+ * @param[out] seq           The @link StringConcept @endlink object where to write the sequence information from.
+ * @param[out] qual          The @link StringConcept @endlink object where to write the quality information from.
+ * @param[in]  file          The @link BamFileIn @endlink object to read from.
+ *
+ * @throw ParseError On high-level file format errors.
+ *
+ */
 template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec>
 inline void
-readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Bam, Input, TSpec> & file)
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Bam, Input, TSpec> & fileIn)
 {
-    readRecord(meta, seq, qual, context(file), file.iter, file.format);
+    readRecord(meta, seq, qual, context(fileIn), fileIn.iter, fileIn.format);
 }
 
-// convenient BamFile variant to read sequence as string without phred quality
+/*!
+ * @fn BamFileIn#readRecord
+ * @brief read one @link FormattedFileRecordConcept @endlink from a @link BamFileIn @endlink object.
+ *
+ * @signature void writeRecord(meta, seq, file);
+ *
+ * @param[out] meta          The @link StringConcept @endlink object where to write the meta information from.
+ * @param[out] seq           The @link StringConcept @endlink object where to write the sequence information from.
+ * @param[in]  file          The @link BamFileIn @endlink object to read from.
+ *
+ */
 template <typename TIdString, typename TSeqString, typename TSpec>
 inline void
 readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Bam, Input, TSpec> & file)

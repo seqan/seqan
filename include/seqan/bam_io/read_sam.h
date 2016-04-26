@@ -450,9 +450,12 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
     // QUAL
     readUntil(qual, iter, OrFunctor<IsTab, IsNewline>());
 
-    // Handle case of missing quality:  stop the program if there is no quality.
+    // Handle case of missing quality: throw parse exception if there is no quality.
     // there is another version of readRecord that doesn't use quality
-    SEQAN_ASSERT_NEQ_MSG( qual, '*', "This SAM file doesn't provide PHRED qulity string Consider using another version of readRecord without quality" );
+    if ( qual == '*' ) {
+        throw ParseError("This SAM file doesn't provide PHRED quality string. "
+                                 "Consider using another version of readRecord without quality");
+    }
 
     // The following list of tags is optional.  A line break or EOF could also follow.
     if (atEnd(iter))

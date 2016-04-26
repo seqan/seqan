@@ -495,17 +495,17 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
 
     // phred quality
     resize(qual, recordCore._l_qseq, Exact());
-    // If qual is a sequence of 0xff (heuristic same as samtools: Only look at first byte) then we clear it, to get the
-    // representation of '*';
     TQualIter qitEnd = end(qual, Standard());
     for (TQualIter qit = begin(qual, Standard()); qit != qitEnd;)
         *qit++ = '!' + *it++;
 
-    // Handle case of missing quality:  stop the program if there is no quality.
+    // Handle case of missing quality: throw parse exception if there is no quality.
     // there is another version of readRecord that doesn't use quality
-    SEQAN_ASSERT_EQ_MSG( qual[0], '\xff', "This BAM file doesn't provide PHRED qulity string. Consider using another version of readRecord without quality" );
-    SEQAN_ASSERT_MSG( !empty(qual), "This BAM file doesn't provide PHRED qulity string. Consider using another version of readRecord without quality" );
+    // If qual is a sequence of 0xff (heuristic same as samtools: Only look at first byte) then we stop the program
 
+    if (!empty(qual) && qual[0] == '\xff')
+        throw ParseError("This BAM file doesn't provide PHRED quality string. "
+                                 "Consider using another version of readRecord without quality");
     // skip tags
     it += remainingBytes;
 }
