@@ -48,15 +48,15 @@ using namespace seqan;
 template <typename THaystack, typename TNeedle, typename TSpec>
 struct Verifier
 {
-    typedef typename Infix<THaystack const>::Type   THaystackInfix;
-    typedef String<GapAnchor<int> >                 TGapAnchors;
-    typedef AnchorGaps<TGapAnchors>                 TAnchorGaps;
-    typedef typename Size<THaystackInfix>::Type     TSize;
-    typedef typename Position<THaystackInfix>::Type TPosition;
-    typedef TraceSegment_<TPosition, TSize>         TTraceSegment;
-    typedef String<TTraceSegment>                   TTrace;
-    typedef DPScoutState_<Default>                  TDPState;
-    typedef DPContext<int, AffineGaps>              TDPContext;
+    typedef typename StringInfix<THaystack const>::Type THaystackInfix;
+    typedef String<GapAnchor<int> >                     TGapAnchors;
+    typedef AnchorGaps<TGapAnchors>                     TAnchorGaps;
+    typedef typename Size<THaystackInfix>::Type         TSize;
+    typedef typename Position<THaystackInfix>::Type     TPosition;
+    typedef TraceSegment_<TPosition, TSize>             TTraceSegment;
+    typedef String<TTraceSegment>                       TTrace;
+    typedef DPScoutState_<Default>                  	TDPState;
+    typedef DPContext<int, AffineGaps>                  TDPContext;
 
     // Thread-private data.
     TGapAnchors     contigAnchors;
@@ -99,7 +99,7 @@ verify(Verifier<THaystack, TNeedle, AffineGaps> & me,
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type         TFreeEndGaps;
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
 
-    THaystackInfix haystackInfix = infix(me.haystack, haystackBegin, haystackEnd);
+    THaystackInfix haystackInfix = stringInfix(me.haystack, haystackBegin, haystackEnd);
 
     if (empty(haystackInfix)) return;
 

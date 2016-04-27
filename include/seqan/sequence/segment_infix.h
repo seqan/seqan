@@ -356,6 +356,14 @@ template <typename THost>
 struct Infix<THost &>:
     Infix<THost> {};
 
+// ----------------------------------------------------------------------------
+// Metafunction StringInfix
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct StringInfix :
+    Infix<T>{};
+
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename THost, typename TPosition1, typename TPosition2>
@@ -659,6 +667,42 @@ SEQAN_HOST_DEVICE inline typename Infix<Segment<T, TSpec> const>::Type
 infixWithLength(Segment<T, TSpec> const & t, TPosBegin pos_begin, TSize length)
 {
     return infix(host(t), beginPosition(t) + pos_begin, beginPosition(t) + pos_begin + length);
+}
+
+// ----------------------------------------------------------------------------
+// Function stringInfix()
+// ----------------------------------------------------------------------------
+
+template <typename T, typename TPosBegin, typename TPosEnd>
+inline typename Infix<T>::Type
+stringInfix(T && t, TPosBegin const posBegin, TPosEnd const posEnd)
+{
+    return infix(t, posBegin, posEnd);
+}
+
+template <typename T, typename TPosBegin, typename TPosEnd>
+inline typename Infix<T *>::Type
+stringInfix(T * t, TPosBegin const posBegin, TPosEnd const posEnd)
+{
+    return infix(*t, posBegin, posEnd);
+}
+
+// ----------------------------------------------------------------------------
+// Function stringInfixWithLength()
+// ----------------------------------------------------------------------------
+
+template <typename T, typename TPosBegin, typename TSize>
+inline typename Infix<T>::Type
+stringInfixWithLength(T && t, TPosBegin const posBegin, TSize const length)
+{
+    return infixWithLength(t, posBegin, length);
+}
+
+template <typename T, typename TPosBegin, typename TSize>
+inline typename Infix<T *>::Type
+stringInfixWithLength(T * t, TPosBegin const posBegin, TSize const length)
+{
+    return infixWithLength(*t, posBegin, length);
 }
 
 //////////////////////////////////////////////////////////////////////////////

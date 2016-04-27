@@ -144,7 +144,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     template < typename TIndex, typename TSpec >
     struct EdgeLabel< Iter< TIndex, VSTree<TSpec> > > {
-        typedef typename Infix< typename Fibre<TIndex, FibreText>::Type const >::Type Type;
+        typedef typename StringInfix< typename Fibre<TIndex, FibreText>::Type const >::Type Type;
     };
 
 /*!
@@ -1260,10 +1260,10 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  */
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline typename Infix< typename Fibre<TIndex, FibreText>::Type const >::Type
+    SEQAN_HOST_DEVICE inline typename StringInfix< typename Fibre<TIndex, FibreText>::Type const >::Type
     representative(Iter< TIndex, VSTree<TSpec> > const &it)
     {
-        return infixWithLength(indexText(container(it)), getOccurrence(it), repLength(it));
+        return stringInfixWithLength(indexText(container(it)), getOccurrence(it), repLength(it));
     }
 
 
@@ -1911,7 +1911,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
         TSize &lcp)
     {
         typedef typename Fibre<TIndex, FibreText>::Type const        TText;
-        typedef typename Infix<TText>::Type                            TInfix;
+        typedef typename StringInfix<TText>::Type                    TInfix;
         typedef typename Iterator<TInfix, Standard>::Type            IText;
         typedef typename Iterator<TString const, Standard>::Type    IPattern;
 
@@ -2194,7 +2194,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     SEQAN_HOST_DEVICE inline typename EdgeLabel< Iter< TIndex, VSTree<TSpec> > >::Type
     parentEdgeLabel(Iter< TIndex, VSTree< TopDown<TSpec> > > const &it)
     {
-        return infixWithLength(
+        return stringInfixWithLength(
             indexText(container(it)),
             posAdd(getOccurrence(it), parentRepLength(it)),
             parentEdgeLength(it));

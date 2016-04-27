@@ -300,41 +300,39 @@ struct Size< StringSet< TString, TSpec > >
 // Default Size<T const> redirects to non-const.
 
 // --------------------------------------------------------------------------
-// Metafunction Prefix
+// Metafunction StringPrefix
 // --------------------------------------------------------------------------
-// TODO(holtgrew): Do Prefix, Suffix, Infix make sense if defined in this way for all StringSet classes?
-// TODO(holtgrew): However, if this works nicely then it shows that implementing segments as Strings would not be advantageous since they now work for arbitrary sequential-access containers.
 
 template <typename TString, typename TSpec>
-struct Prefix< StringSet< TString, TSpec > >
+struct StringPrefix< StringSet< TString, TSpec > >
     : Prefix<TString > {};
 
 template <typename TString, typename TSpec>
-struct Prefix<StringSet< TString, TSpec > const>
+struct StringPrefix<StringSet< TString, TSpec > const>
     : Prefix<TString const > {};
 
 // --------------------------------------------------------------------------
-// Metafunction Suffix
+// Metafunction StringSuffix
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec>
-struct Suffix<StringSet< TString, TSpec> >
+struct StringSuffix<StringSet< TString, TSpec> >
     : Suffix<TString> {};
 
 template <typename TString, typename TSpec>
-struct Suffix<StringSet< TString, TSpec> const>
+struct StringSuffix<StringSet< TString, TSpec> const>
     : Suffix<TString const> {};
 
 // --------------------------------------------------------------------------
-// Metafunction Infix
+// Metafunction StringInfix
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec>
-struct Infix<StringSet< TString, TSpec> >
+struct StringInfix<StringSet< TString, TSpec> >
     : Infix<TString> {};
 
 template <typename TString, typename TSpec>
-struct Infix<StringSet< TString, TSpec > const>
+struct StringInfix<StringSet< TString, TSpec > const>
     : Infix< TString const > {};
 
 // --------------------------------------------------------------------------
@@ -598,12 +596,12 @@ inline void posLocalize(TResult & result, Pair<T1, T2, TPack> const & pos, Strin
 }
 
 // --------------------------------------------------------------------------
-// Function prefix()
+// Function stringPrefix()
 // --------------------------------------------------------------------------
 
 template < typename TString, typename TSpec, typename TPosition >
-inline typename Prefix<TString>::Type
-prefix(StringSet< TString, TSpec > & me, TPosition const & pos)
+inline typename StringPrefix<StringSet< TString, TSpec > >::Type
+stringPrefix(StringSet< TString, TSpec > & me, TPosition const & pos)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;
@@ -612,12 +610,12 @@ prefix(StringSet< TString, TSpec > & me, TPosition const & pos)
 
     TPair lPos;
     posLocalize(lPos, pos, stringSetLimits(me));
-    return prefix(me[getSeqNo(lPos)], getSeqOffset(lPos));
+    return stringPrefix(me[getSeqNo(lPos)], getSeqOffset(lPos));
 }
 
 template < typename TString, typename TSpec, typename TPosition >
-inline typename Prefix<TString const>::Type
-prefix(StringSet< TString, TSpec > const & me, TPosition const & pos)
+inline typename StringPrefix<StringSet< TString, TSpec > const>::Type
+stringPrefix(StringSet< TString, TSpec > const & me, TPosition const & pos)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;
@@ -626,16 +624,16 @@ prefix(StringSet< TString, TSpec > const & me, TPosition const & pos)
 
     TPair lPos;
     posLocalize(lPos, pos, stringSetLimits(me));
-    return prefix(me[getSeqNo(lPos)], getSeqOffset(lPos));
+    return stringPrefix(me[getSeqNo(lPos)], getSeqOffset(lPos));
 }
 
 // --------------------------------------------------------------------------
-// Function suffix()
+// Function stringSuffix()
 // --------------------------------------------------------------------------
 
 template < typename TString, typename TSpec, typename TPosition >
-inline typename Suffix<TString>::Type
-suffix(StringSet< TString, TSpec > & me, TPosition const & pos)
+inline typename StringSuffix<StringSet< TString, TSpec > >::Type
+stringSuffix(StringSet< TString, TSpec > & me, TPosition const & pos)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;
@@ -644,12 +642,12 @@ suffix(StringSet< TString, TSpec > & me, TPosition const & pos)
 
     TPair lPos;
     posLocalize(lPos, pos, stringSetLimits(me));
-    return suffix(me[getSeqNo(lPos)], getSeqOffset(lPos));
+    return stringSuffix(me[getSeqNo(lPos)], getSeqOffset(lPos));
 }
 
 template < typename TString, typename TSpec, typename TPosition >
-inline typename Suffix<TString const>::Type
-suffix(StringSet< TString, TSpec > const & me, TPosition const & pos)
+inline typename StringSuffix<StringSet< TString, TSpec > const>::Type
+stringSuffix(StringSet< TString, TSpec > const & me, TPosition const & pos)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;
@@ -658,16 +656,16 @@ suffix(StringSet< TString, TSpec > const & me, TPosition const & pos)
 
     TPair lPos;
     posLocalize(lPos, pos, stringSetLimits(me));
-    return suffix(me[getSeqNo(lPos)], getSeqOffset(lPos));
+    return stringSuffix(me[getSeqNo(lPos)], getSeqOffset(lPos));
 }
 
 // --------------------------------------------------------------------------
-// Function infixWithLength()
+// Function stringInfixWithLength()
 // --------------------------------------------------------------------------
 
 template < typename TString, typename TSpec, typename TPosition, typename TSize >
-inline typename Infix<TString>::Type
-infixWithLength(StringSet< TString, TSpec > & me, TPosition const & pos, TSize length)
+inline typename StringInfix<StringSet< TString, TSpec > >::Type
+stringInfixWithLength(StringSet< TString, TSpec > & me, TPosition const & pos, TSize const length)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;
@@ -676,12 +674,12 @@ infixWithLength(StringSet< TString, TSpec > & me, TPosition const & pos, TSize l
 
     TPair lPos;
     posLocalize(lPos, pos, stringSetLimits(me));
-    return infixWithLength(me[getSeqNo(lPos)], getSeqOffset(lPos), length);
+    return stringInfixWithLength(me[getSeqNo(lPos)], getSeqOffset(lPos), length);
 }
 
 template < typename TString, typename TSpec, typename TPosition, typename TSize >
-inline typename Infix<TString const>::Type
-infixWithLength(StringSet< TString, TSpec > const & me, TPosition const & pos, TSize length)
+inline typename StringInfix<StringSet< TString, TSpec > const>::Type
+stringInfixWithLength(StringSet< TString, TSpec > const & me, TPosition const & pos, TSize const length)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;
@@ -690,16 +688,16 @@ infixWithLength(StringSet< TString, TSpec > const & me, TPosition const & pos, T
 
     TPair lPos;
     posLocalize(lPos, pos, stringSetLimits(me));
-    return infixWithLength(me[getSeqNo(lPos)], getSeqOffset(lPos), length);
+    return stringInfixWithLength(me[getSeqNo(lPos)], getSeqOffset(lPos), length);
 }
 
 // --------------------------------------------------------------------------
-// Function infix()
+// Function stringInfix()
 // --------------------------------------------------------------------------
 
-template < typename TString, typename TSpec, typename TPosBegin, typename TPosEnd >
-inline typename Infix<TString>::Type
-infix(StringSet< TString, TSpec > & me, TPosBegin const & posBegin, TPosEnd const & posEnd)
+template < typename TString, typename TSpec, typename TPosBeg, typename TPosEnd>
+inline typename StringInfix<StringSet< TString, TSpec > >::Type
+stringInfix(StringSet<TString, TSpec > & me, TPosBeg const & posBeg, TPosEnd const & posEnd)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;
@@ -707,14 +705,14 @@ infix(StringSet< TString, TSpec > & me, TPosBegin const & posBegin, TPosEnd cons
     typedef Pair<TSetSize, TStringSize, Pack> TPair;
 
     TPair localPosBegin, localPosEnd;
-    posLocalize(localPosBegin, posBegin, stringSetLimits(me));
+    posLocalize(localPosBegin, posBeg, stringSetLimits(me));
     posLocalize(localPosEnd, posEnd, stringSetLimits(me));
-    return infix(me[getSeqNo(localPosBegin)], getSeqOffset(localPosBegin), getSeqOffset(localPosEnd));
+    return stringInfix(me[getSeqNo(localPosBegin)], getSeqOffset(localPosBegin), getSeqOffset(localPosEnd));
 }
 
-template < typename TString, typename TSpec, typename TPosBegin, typename TPosEnd >
-inline typename Infix<TString const>::Type
-infix(StringSet< TString, TSpec > const & me, TPosBegin const & posBegin, TPosEnd const & posEnd)
+template < typename TString, typename TSpec, typename TPosBeg, typename TPosEnd>
+inline typename StringInfix<StringSet< TString, TSpec > const>::Type
+stringInfix(StringSet<TString, TSpec > const & me, TPosBeg const & posBeg, TPosEnd const & posEnd)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;
@@ -722,9 +720,9 @@ infix(StringSet< TString, TSpec > const & me, TPosBegin const & posBegin, TPosEn
     typedef Pair<TSetSize, TStringSize, Pack> TPair;
 
     TPair localPosBegin, localPosEnd;
-    posLocalize(localPosBegin, posBegin, stringSetLimits(me));
+    posLocalize(localPosBegin, posBeg, stringSetLimits(me));
     posLocalize(localPosEnd, posEnd, stringSetLimits(me));
-    return infix(me[getSeqNo(localPosBegin)], getSeqOffset(localPosBegin), getSeqOffset(localPosEnd));
+    return stringInfix(me[getSeqNo(localPosBegin)], getSeqOffset(localPosBegin), getSeqOffset(localPosEnd));
 }
 
 // --------------------------------------------------------------------------

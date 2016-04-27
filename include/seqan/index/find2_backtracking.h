@@ -776,7 +776,7 @@ _updateScore(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndex
 {
     typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
     typedef typename Fibre<TPatternIndex, FibreText>::Type const            TPatternFibreText;
-    typedef typename Infix<TPatternFibreText>::Type                         TPatternRepr;
+    typedef typename StringInfix<TPatternFibreText>::Type                   TPatternRepr;
     typedef typename Iterator<TPatternRepr, Standard>::Type                 TPatternReprIterator;
 
     // Get pattern read so far.
@@ -797,7 +797,7 @@ _updateScore(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndex
 {
     typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
     typedef typename Fibre<TPatternIndex, FibreText>::Type const            TPatternFibreText;
-    typedef typename Infix<TPatternFibreText>::Type                         TPatternRepr;
+    typedef typename StringInfix<TPatternFibreText>::Type                   TPatternRepr;
     typedef typename Iterator<TPatternRepr, Standard>::Type                 TPatternReprIterator;
 
     // Get last 2k + 1 pattern symbols.
@@ -818,7 +818,7 @@ _updateScore(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndex
 {
     typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
     typedef typename Fibre<TPatternIndex, FibreText>::Type const            TPatternFibreText;
-    typedef typename Infix<TPatternFibreText>::Type                         TPatternRepr;
+    typedef typename StringInfix<TPatternFibreText>::Type                   TPatternRepr;
     typedef typename Iterator<TPatternRepr, Standard>::Type                 TPatternReprIterator;
 
     // Get last pattern symbols.

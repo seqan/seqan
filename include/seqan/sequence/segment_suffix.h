@@ -341,6 +341,14 @@ template <typename THost>
 struct Suffix<THost &>:
     Suffix<THost> {};
 
+// ----------------------------------------------------------------------------
+// Metafunction StringSuffix
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct StringSuffix :
+    Suffix<T>{};
+
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename THost, typename TPosition>
@@ -632,6 +640,24 @@ suffix(Segment<T, SuffixSegment> const & t,
     return typename Suffix<Segment<T, SuffixSegment> const>::Type (
         host(t),
         iterBegin);
+}
+
+// ----------------------------------------------------------------------------
+// Function stringSuffix()
+// ----------------------------------------------------------------------------
+
+template <typename T, typename TPos>
+inline typename StringSuffix<T>::Type
+stringSuffix(T && text, TPos const pos)
+{
+    return suffix(text, pos);
+}
+
+template <typename T, typename TPos>
+inline typename StringSuffix<T *>::Type
+stringSuffix(T * text, TPos const pos)
+{
+    return suffix(*text, pos);
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -557,7 +557,7 @@ namespace seqan
         typename Difference<TText>::Type parentRepLen = 0)
     {    // find first element not before query, using operator<
         typedef typename Difference<TText>::Type            TDiff;
-        typedef typename Suffix<TText>::Type                TSuffix;
+        typedef typename StringSuffix<TText>::Type          TSuffix;
         typedef typename Iterator<TSuffix, Standard>::Type    TTextIter;
         typedef typename Iterator<TQuery, Standard>::Type    TQueryIter;
         typedef typename Value<TSuffix>::Type               TTextAlphabet;
@@ -571,7 +571,7 @@ namespace seqan
         for (; !treeIter.atEnd(); )
         {    // divide and conquer, find half that contains answer
 
-            TSuffix        suf = suffix(text, *treeIter);
+            TSuffix        suf = stringSuffix(text, *treeIter);
             TTextIter    t = begin(suf, Standard());
             TTextIter    tEnd = end(suf, Standard());
             TQueryIter    q = qBegin;
@@ -659,9 +659,9 @@ namespace seqan
         typename Difference<TText>::Type parentRepLen = 0)
     {    // find first element that query is before, using operator<
         typedef typename Difference<TText>::Type            TDiff;
-        typedef typename Suffix<TText>::Type                TSuffix;
-        typedef typename Iterator<TSuffix, Standard>::Type    TTextIter;
-        typedef typename Iterator<TQuery, Standard>::Type    TQueryIter;
+        typedef typename StringSuffix<TText>::Type          TSuffix;
+        typedef typename Iterator<TSuffix, Standard>::Type  TTextIter;
+        typedef typename Iterator<TQuery, Standard>::Type   TQueryIter;
         typedef typename Value<TSuffix>::Type               TTextAlphabet;
 
         TDiff lcpLower = 0;
@@ -673,7 +673,7 @@ namespace seqan
         for (; !treeIter.atEnd(); )
         {    // divide and conquer, find half that contains answer
 
-            TSuffix        suf = suffix(text, *treeIter);
+            TSuffix        suf = stringSuffix(text, *treeIter);
             TTextIter    t = begin(suf, Standard());
             TTextIter    tEnd = end(suf, Standard());
             TQueryIter    q = qBegin;
@@ -715,7 +715,7 @@ namespace seqan
         typename Difference<TText>::Type parentRepLen = 0)
     {    // find range equivalent to query, using operator<
         //typedef typename Difference<TText>::Type            TDiff;
-        typedef typename Suffix<TText>::Type                TSuffix;
+        typedef typename StringSuffix<TText>::Type            TSuffix;
         typedef typename Iterator<TSuffix, Standard>::Type    TTextIter;
         typedef typename Iterator<TQuery, Standard>::Type    TQueryIter;
         typedef typename Iterator<TSA, Standard>::Type        TSAIter;
@@ -727,7 +727,7 @@ namespace seqan
         for (; !treeIter.atEnd(); )
         {    // divide and conquer, check midpoint
 
-            TSuffix        suf = suffix(text, *treeIter);
+            TSuffix        suf = stringSuffix(text, *treeIter);
             TTextIter    t = begin(suf, Standard());
             TTextIter    tEnd = end(suf, Standard());
             TQueryIter    q = qBegin;
@@ -775,7 +775,7 @@ namespace seqan
         typename Difference<TText>::Type parentRepLen = 0)
     {    // find range equivalent to query, using operator<
         typedef typename Difference<TText>::Type            TDiff;
-        typedef typename Suffix<TText>::Type                TSuffix;
+        typedef typename StringSuffix<TText>::Type            TSuffix;
         typedef typename Iterator<TSuffix, Standard>::Type    TTextIter;
         typedef typename Iterator<TQuery, Standard>::Type    TQueryIter;
         typedef typename Iterator<TSA, Standard>::Type        TSAIter;
@@ -790,7 +790,7 @@ namespace seqan
         for (; !treeIter.atEnd(); )
         {    // divide and conquer, check midpoint
 
-            TSuffix        suf = suffix(text, *treeIter);
+            TSuffix        suf = stringSuffix(text, *treeIter);
             TTextIter    t = begin(suf, Standard());
             TTextIter    tEnd = end(suf, Standard());
             TQueryIter    q = qBegin;
