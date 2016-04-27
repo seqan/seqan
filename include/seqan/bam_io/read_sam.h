@@ -395,6 +395,35 @@ readRecord(BamAlignmentRecord & record,
 }
 
 // ----------------------------------------------------------------------------
+// Class SamIgnoreFunctor_
+// ----------------------------------------------------------------------------
+
+template <typename TAlphabet>
+struct SamIgnoreFunctor_
+{
+    typedef typename If< Or< IsSameType<TAlphabet, char>,
+    Or< IsSameType<TAlphabet, signed char>,
+    IsSameType<TAlphabet, unsigned char> > >,
+    IsNewline,                     // ignore only newline if the target alphabet is a char
+    IsWhitespace                   // ignore whitespace as well for all other alphabets
+    >::Type Type;
+};
+
+template <typename TAlphabet>
+struct SamIgnoreOrAssertFunctor_
+{
+    typedef typename SamIgnoreFunctor_<TAlphabet>::Type               TIgnore;
+    typedef AssertFunctor<IsInAlphabet<TAlphabet>, ParseError, Sam>   TAsserter;
+
+    typedef typename If< Or< IsSameType<TAlphabet, char>,
+    Or< IsSameType<TAlphabet, signed char>,
+    IsSameType<TAlphabet, unsigned char> > >,
+    TIgnore,                       // don't assert in case of char alphabets
+    OrFunctor<TIgnore, TAsserter>  // assert being part of the alphabet for other alphabets
+    >::Type Type;
+};
+
+// ----------------------------------------------------------------------------
 // Function readRecord()                             read sequence with quality
 // ----------------------------------------------------------------------------
 
@@ -408,6 +437,13 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
            Sam const & /*tag*/)
 
 {
+
+    typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
+    typedef typename Value<TQualString>::Type                               TQualAlphabet;
+    typedef typename SamIgnoreOrAssertFunctor_<TSeqAlphabet>::Type          TSeqIgnoreOrAssert;
+    typedef typename SamIgnoreFunctor_<TQualAlphabet>::Type                 TQualIgnore;
+    typedef typename SamIgnoreOrAssertFunctor_<TQualAlphabet>::Type         TQualIgnoreOrAssert;
+
     // fail, if we read "@" (did you miss to call readRecord(header, bamFile) first?)
     if (nextIs(iter, SamHeader()))
         SEQAN_THROW(ParseError("Unexpected SAM header encountered."));
@@ -427,7 +463,12 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
     skipOne(iter, IsTab());
 
     while (prevQName == meta) {
+
         skipLine(iter);
+        if ( atEnd( iter ) ) {
+            clear(meta);
+            return;
+        }
         clear(meta);
         readUntil(meta, iter, nextEntry);
         skipOne(iter, IsTab());
@@ -441,14 +482,14 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
 
     // SEQ
     clear(buffer);
-    readUntil(seq, iter, nextEntry);
+    readUntil(seq, iter, nextEntry, TSeqIgnoreOrAssert());
     // Handle case of missing sequence:  Clear seq string as documented.
     if (seq == "*")
         clear(seq);
     skipOne(iter, IsTab());
 
     // QUAL
-    readUntil(qual, iter, OrFunctor<IsTab, IsNewline>());
+    readUntil( qual, iter, OrFunctor<IsTab, IsNewline>(), TQualIgnoreOrAssert() );
 
     // Handle case of missing quality: throw parse exception if there is no quality.
     // there is another version of readRecord that doesn't use quality
@@ -486,6 +527,10 @@ readRecord(TIdString & meta, TSeqString & seq,
            Sam const & /*tag*/)
 
 {
+
+    typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
+    typedef typename SamIgnoreOrAssertFunctor_<TSeqAlphabet>::Type          TSeqIgnoreOrAssert;
+
     // fail, if we read "@" (did you miss to call readRecord(header, bamFile) first?)
     if (nextIs(iter, SamHeader()))
         SEQAN_THROW(ParseError("Unexpected SAM header encountered."));
@@ -504,7 +549,12 @@ readRecord(TIdString & meta, TSeqString & seq,
     skipOne(iter, IsTab());
 
     while (prevQName == meta) {
+
         skipLine(iter);
+        if ( atEnd( iter ) ) {
+            clear(meta);
+            return;
+        }
         clear(meta);
         readUntil(meta, iter, nextEntry);
         skipOne(iter, IsTab());
@@ -518,7 +568,7 @@ readRecord(TIdString & meta, TSeqString & seq,
 
     // SEQ
     clear(buffer);
-    readUntil(seq, iter, nextEntry);
+    readUntil(seq, iter, nextEntry, TSeqIgnoreOrAssert());
     // Handle case of missing sequence:  Clear seq string as documented.
     if (seq == "*")
         clear(seq);

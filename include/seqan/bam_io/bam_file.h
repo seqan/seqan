@@ -244,7 +244,7 @@ inline void
 
 {
     SEQAN_FAIL("BamFileIn: File format not specified.");
-};
+}
 
 // when you compile with ZLIB, format is TaglistSelector instead of BAM. This function tells if it is BAM or SAM
 // this is for readRecord without quality
@@ -272,7 +272,7 @@ readRecord(TIdString & /*meta*/, TSeqString & /*seq*/, TQualString & /*qual*/,
            TagSelector<void> const & /*format*/)
 {
     SEQAN_FAIL("BamFileIn: File format not specified.");
-};
+}
 
 // when you compile with ZLIB, format is TaglistSelector instead of BAM. This function tells if it is BAM or SAM
 // this is for readRecord with quality

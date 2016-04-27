@@ -330,6 +330,10 @@ readRecord(TIdString & meta, TSeqString & seq,
         // jump to next entry
         it += remainingBytes;
 
+        if ( atEnd( iter ) ) {
+            clear(meta);
+            return;
+        }
         // Read size and data of the remaining block in one chunk (fastest).
         remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
         it = begin(context.buffer, Standard());
@@ -440,8 +444,13 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
 
     // skip entry if query name of it is equal to query name of previous entry
     while ( prevQName == meta ) {
+
         // jump to next entry
         it += remainingBytes;
+        if ( atEnd( iter ) ) {
+            clear(meta);
+            return;
+        }
 
         // Read size and data of the remaining block in one chunk (fastest).
         remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
