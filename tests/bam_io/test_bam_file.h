@@ -208,6 +208,108 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_records)
     testBamIOBamFileReadRecords("/tests/bam_io/small.bam");
 }
 
+
+// ---------------------------------------------------------------------------
+// Read Sequences without qualities from BamFileIn
+// ---------------------------------------------------------------------------
+
+void testBamIOBamFileReadSequences(char const * pathFragment)
+{
+    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    append(filePath, pathFragment);
+
+    seqan::BamFileIn bamIO(toCString(filePath));
+    seqan::BamHeader header;
+
+    readHeader(header, bamIO);
+
+    seqan::String<seqan::CharString> metas;
+    seqan::String<seqan::Dna5String> seqs;
+    while (!atEnd(bamIO))
+    {
+        resize(metas, length(metas) + 1);
+        resize(seqs, length(seqs) + 1);
+        readRecord(back(metas), back(seqs), bamIO);
+    }
+    SEQAN_ASSERT_EQ(length(metas), 3u);
+    SEQAN_ASSERT_EQ(length(seqs), 3u);
+
+    SEQAN_ASSERT_EQ(metas[0], "READ0");
+    SEQAN_ASSERT_EQ(seqs[0], "AAAAAAAAAA");
+
+    SEQAN_ASSERT_EQ(metas[1], "READ0");
+    SEQAN_ASSERT_EQ(seqs[1], "AAAAAAAAAA");
+
+    SEQAN_ASSERT_EQ(metas[2], "READ0");
+    SEQAN_ASSERT_EQ(seqs[2], "AAAAAAAAAA");
+}
+
+
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_sequences)
+{
+    testBamIOBamFileReadSequences("/tests/bam_io/small.sam");
+}
+
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_sequences)
+{
+    testBamIOBamFileReadSequences("/tests/bam_io/small.bam");
+}
+
+
+// ---------------------------------------------------------------------------
+// Read Sequences with qualities from BamFileIn
+// ---------------------------------------------------------------------------
+
+void testBamIOBamFileReadSequencesAndQualities(char const * pathFragment)
+{
+    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    append(filePath, pathFragment);
+
+    seqan::BamFileIn bamIO(toCString(filePath));
+    seqan::BamHeader header;
+
+    readHeader(header, bamIO);
+
+    seqan::String<seqan::CharString> metas;
+    seqan::String<seqan::Dna5String> seqs;
+    seqan::String<seqan::CharString> quals;
+
+    while (!atEnd(bamIO))
+    {
+        resize(metas, length(metas) + 1);
+        resize(seqs, length(seqs) + 1);
+        resize(quals, length(quals) + 1);
+        readRecord(back(metas), back(seqs), back(quals), bamIO);
+    }
+    SEQAN_ASSERT_EQ(length(metas), 3u);
+    SEQAN_ASSERT_EQ(length(seqs), 3u);
+    SEQAN_ASSERT_EQ(length(quals), 3u);
+
+    SEQAN_ASSERT_EQ(metas[0], "READ0");
+    SEQAN_ASSERT_EQ(seqs[0], "AAAAAAAAAA");
+    SEQAN_ASSERT_EQ(quals[0], "!!!!!!!!!!");
+
+    SEQAN_ASSERT_EQ(metas[1], "READ0");
+    SEQAN_ASSERT_EQ(seqs[1], "AAAAAAAAAA");
+    SEQAN_ASSERT_EQ(quals[1], "!!!!!!!!!!");
+
+    SEQAN_ASSERT_EQ(metas[2], "READ0");
+    SEQAN_ASSERT_EQ(seqs[2], "AAAAAAAAAA");
+    SEQAN_ASSERT_EQ(quals[2], "!!!!!!!!!!");
+}
+
+
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_sequences_and_qualities)
+{
+    testBamIOBamFileReadSequencesAndQualities("/tests/bam_io/small.sam");
+}
+
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_sequences_and_qualities)
+{
+    testBamIOBamFileReadSequencesAndQualities("/tests/bam_io/small.bam");
+}
+
+
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_ex1)
 {
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
