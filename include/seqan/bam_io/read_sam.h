@@ -441,7 +441,6 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
     typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
     typedef typename Value<TQualString>::Type                               TQualAlphabet;
     typedef typename SamIgnoreOrAssertFunctor_<TSeqAlphabet>::Type          TSeqIgnoreOrAssert;
-    typedef typename SamIgnoreFunctor_<TQualAlphabet>::Type                 TQualIgnore;
     typedef typename SamIgnoreOrAssertFunctor_<TQualAlphabet>::Type         TQualIgnoreOrAssert;
 
     // fail, if we read "@" (did you miss to call readRecord(header, bamFile) first?)
