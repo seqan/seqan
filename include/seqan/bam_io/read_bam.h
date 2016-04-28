@@ -324,47 +324,6 @@ readRecord(TIdString & meta, TSeqString & seq,
     arrayCopyForward(it, it + recordCore._l_qname - 1, begin(meta, Standard()));
     it += recordCore._l_qname;
 
-    // skip entry if query name of it is equal to query name of previous entry
-    while ( prevQName == meta ) {
-
-        // jump to next entry
-        it += remainingBytes;
-
-        if ( atEnd( iter ) ) {
-            clear(meta);
-            return;
-        }
-        // Read size and data of the remaining block in one chunk (fastest).
-        remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
-        it = begin(context.buffer, Standard());
-
-        // BamAlignmentRecordCore.
-        arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char*>(&recordCore));
-        it += sizeof(BamAlignmentRecordCore);
-
-        remainingBytes -= sizeof(BamAlignmentRecordCore) + recordCore._l_qname +
-                          recordCore._n_cigar * 4 + (recordCore._l_qseq + 1) / 2 + recordCore._l_qseq;
-        SEQAN_ASSERT_GEQ(remainingBytes, 0);
-
-        // Translate file local rID into a global rID that is compatible with the context contigNames.
-        if (recordCore.rID >= 0 && !empty(context.translateFile2GlobalRefId))
-            recordCore.rID = context.translateFile2GlobalRefId[recordCore.rID];
-        if (recordCore.rID >= 0)
-            SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rID), length(contigNames(context)));
-
-        // ... the same for rNextId
-        if (recordCore.rNextId >= 0 && !empty(context.translateFile2GlobalRefId))
-            recordCore.rNextId = context.translateFile2GlobalRefId[recordCore.rNextId];
-        if (recordCore.rNextId >= 0)
-            SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rNextId), length(contigNames(context)));
-
-        // query name.
-        resize(meta, recordCore._l_qname - 1, Exact());
-        arrayCopyForward(it, it + recordCore._l_qname - 1, begin(meta, Standard()));
-        it += recordCore._l_qname;
-
-    }
-
     // skip cigar string.
     it += sizeof(uint32_t)*recordCore._n_cigar;
 
@@ -386,6 +345,13 @@ readRecord(TIdString & meta, TSeqString & seq,
 
     // skip phred quality and tags
     it += remainingBytes;
+
+    // delete entry if query name of it is equal to query name of previous entry
+    if ( prevQName == meta ) {
+        clear(meta);
+        clear(seq);
+    }
+
 }
 
 // ----------------------------------------------------------------------------
@@ -442,47 +408,6 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
     arrayCopyForward(it, it + recordCore._l_qname - 1, begin(meta, Standard()));
     it += recordCore._l_qname;
 
-    // skip entry if query name of it is equal to query name of previous entry
-    while ( prevQName == meta ) {
-
-        // jump to next entry
-        it += remainingBytes;
-        if ( atEnd( iter ) ) {
-            clear(meta);
-            return;
-        }
-
-        // Read size and data of the remaining block in one chunk (fastest).
-        remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
-        it = begin(context.buffer, Standard());
-
-        // BamAlignmentRecordCore.
-        arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char*>(&recordCore));
-        it += sizeof(BamAlignmentRecordCore);
-
-        remainingBytes -= sizeof(BamAlignmentRecordCore) + recordCore._l_qname +
-                          recordCore._n_cigar * 4 + (recordCore._l_qseq + 1) / 2 + recordCore._l_qseq;
-        SEQAN_ASSERT_GEQ(remainingBytes, 0);
-
-        // Translate file local rID into a global rID that is compatible with the context contigNames.
-        if (recordCore.rID >= 0 && !empty(context.translateFile2GlobalRefId))
-            recordCore.rID = context.translateFile2GlobalRefId[recordCore.rID];
-        if (recordCore.rID >= 0)
-            SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rID), length(contigNames(context)));
-
-        // ... the same for rNextId
-        if (recordCore.rNextId >= 0 && !empty(context.translateFile2GlobalRefId))
-            recordCore.rNextId = context.translateFile2GlobalRefId[recordCore.rNextId];
-        if (recordCore.rNextId >= 0)
-            SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rNextId), length(contigNames(context)));
-
-        // query name.
-        resize(meta, recordCore._l_qname - 1, Exact());
-        arrayCopyForward(it, it + recordCore._l_qname - 1, begin(meta, Standard()));
-        it += recordCore._l_qname;
-
-    }
-
     // skip cigar string.
     it += 4 * recordCore._n_cigar;
 
@@ -517,6 +442,13 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
                                  "Consider using another version of readRecord without quality");
     // skip tags
     it += remainingBytes;
+
+    // delete entry if query name of it is equal to query name of previous entry
+    if ( prevQName == meta ) {
+        clear(meta);
+        clear(seq);
+        clear(qual);
+    }
 }
 
 }  // namespace seqan

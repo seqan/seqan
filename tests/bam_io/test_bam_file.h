@@ -237,22 +237,22 @@ void testBamIOBamFileReadSequences(char const * pathFragment)
     SEQAN_ASSERT_EQ(metas[0], "READ0");
     SEQAN_ASSERT_EQ(seqs[0], "AAAAAAAAAA");
 
-    SEQAN_ASSERT_EQ(metas[1], "READ0");
+    SEQAN_ASSERT_EQ(metas[1], "READ1");
     SEQAN_ASSERT_EQ(seqs[1], "AAAAAAAAAA");
 
-    SEQAN_ASSERT_EQ(metas[2], "READ0");
+    SEQAN_ASSERT_EQ(metas[2], "READ1");
     SEQAN_ASSERT_EQ(seqs[2], "AAAAAAAAAA");
 }
 
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_sequences)
 {
-    testBamIOBamFileReadSequences("/tests/bam_io/small.sam");
+    testBamIOBamFileReadSequences("/tests/bam_io/small_sequences.sam");
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_sequences)
 {
-    testBamIOBamFileReadSequences("/tests/bam_io/small.bam");
+    testBamIOBamFileReadSequences("/tests/bam_io/small_sequences.bam");
 }
 
 
@@ -289,11 +289,11 @@ void testBamIOBamFileReadSequencesAndQualities(char const * pathFragment)
     SEQAN_ASSERT_EQ(seqs[0], "AAAAAAAAAA");
     SEQAN_ASSERT_EQ(quals[0], "!!!!!!!!!!");
 
-    SEQAN_ASSERT_EQ(metas[1], "READ0");
+    SEQAN_ASSERT_EQ(metas[1], "READ1");
     SEQAN_ASSERT_EQ(seqs[1], "AAAAAAAAAA");
     SEQAN_ASSERT_EQ(quals[1], "!!!!!!!!!!");
 
-    SEQAN_ASSERT_EQ(metas[2], "READ0");
+    SEQAN_ASSERT_EQ(metas[2], "READ1");
     SEQAN_ASSERT_EQ(seqs[2], "AAAAAAAAAA");
     SEQAN_ASSERT_EQ(quals[2], "!!!!!!!!!!");
 }
@@ -301,12 +301,12 @@ void testBamIOBamFileReadSequencesAndQualities(char const * pathFragment)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_sequences_and_qualities)
 {
-    testBamIOBamFileReadSequencesAndQualities("/tests/bam_io/small.sam");
+    testBamIOBamFileReadSequencesAndQualities("/tests/bam_io/small_sequences.sam");
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_sequences_and_qualities)
 {
-    testBamIOBamFileReadSequencesAndQualities("/tests/bam_io/small.bam");
+    testBamIOBamFileReadSequencesAndQualities("/tests/bam_io/small_sequences.bam");
 }
 
 

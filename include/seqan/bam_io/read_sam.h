@@ -423,6 +423,71 @@ struct SamIgnoreOrAssertFunctor_
     >::Type Type;
 };
 
+
+// ----------------------------------------------------------------------------
+// Function readRecord()                          read sequence without quality
+// ----------------------------------------------------------------------------
+
+template <typename TIdString, typename TSeqString,
+        typename TNameStore, typename  TNameStoreCache, typename TStorageSpec,
+        typename TForwardIter>
+inline void
+readRecord(TIdString & meta, TSeqString & seq,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           Sam const & /*tag*/)
+
+{
+
+    typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
+    typedef typename SamIgnoreOrAssertFunctor_<TSeqAlphabet>::Type          TSeqIgnoreOrAssert;
+
+    // fail, if we read "@" (did you miss to call readRecord(header, bamFile) first?)
+    if (nextIs(iter, SamHeader()))
+        SEQAN_THROW(ParseError("Unexpected SAM header encountered."));
+
+    OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> > nextEntry;
+
+
+    CharString prevQName = meta;
+
+    clear(meta);
+    clear(seq);
+    CharString &buffer = context.buffer;
+
+    // QNAME
+    readUntil(meta, iter, nextEntry);
+    skipOne(iter, IsTab());
+
+    // check if previous sequence had the same id and return nothing
+    if (prevQName == meta) {
+        clear(meta);
+        skipLine(iter);
+        return;
+    }
+
+    // Skip FLAG, RNAME, POS, MAPQ, CIGAR, RNEXT, PNEXT, TLEN
+    for (unsigned i = 0; i < 8; ++i) {
+        skipUntil(iter, IsTab());
+        skipOne(iter, IsTab());
+    }
+
+    // SEQ
+    clear(buffer);
+    readUntil(seq, iter, nextEntry, TSeqIgnoreOrAssert());
+    // Handle case of missing sequence:  Clear seq string as documented.
+    if (seq == "*")
+        clear(seq);
+    skipOne(iter, IsTab());
+
+
+    // skip QUAL & TAGS
+    if (atEnd(iter))
+        return;
+    skipLine(iter);
+    return;
+}
+
 // ----------------------------------------------------------------------------
 // Function readRecord()                             read sequence with quality
 // ----------------------------------------------------------------------------
@@ -461,16 +526,11 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
     readUntil(meta, iter, nextEntry);
     skipOne(iter, IsTab());
 
-    while (prevQName == meta) {
-
-        skipLine(iter);
-        if ( atEnd( iter ) ) {
-            clear(meta);
-            return;
-        }
+    // check if previous sequence had the same id and return nothing
+    if (prevQName == meta) {
         clear(meta);
-        readUntil(meta, iter, nextEntry);
-        skipOne(iter, IsTab());
+        skipLine(iter);
+        return;
     }
 
     // Skip FLAG, RNAME, POS, MAPQ, CIGAR, RNEXT, PNEXT, TLEN
@@ -510,75 +570,6 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
     // skip TAGS
     clear(buffer);
     readLine(buffer, iter);
-}
-
-// ----------------------------------------------------------------------------
-// Function readRecord()                          read sequence without quality
-// ----------------------------------------------------------------------------
-
-template <typename TIdString, typename TSeqString,
-        typename TNameStore, typename  TNameStoreCache, typename TStorageSpec,
-        typename TForwardIter>
-inline void
-readRecord(TIdString & meta, TSeqString & seq,
-           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-           TForwardIter & iter,
-           Sam const & /*tag*/)
-
-{
-
-    typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
-    typedef typename SamIgnoreOrAssertFunctor_<TSeqAlphabet>::Type          TSeqIgnoreOrAssert;
-
-    // fail, if we read "@" (did you miss to call readRecord(header, bamFile) first?)
-    if (nextIs(iter, SamHeader()))
-        SEQAN_THROW(ParseError("Unexpected SAM header encountered."));
-
-    OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> > nextEntry;
-
-
-    CharString prevQName = meta;
-
-    clear(meta);
-    clear(seq);
-    CharString &buffer = context.buffer;
-
-    // QNAME
-    readUntil(meta, iter, nextEntry);
-    skipOne(iter, IsTab());
-
-    while (prevQName == meta) {
-
-        skipLine(iter);
-        if ( atEnd( iter ) ) {
-            clear(meta);
-            return;
-        }
-        clear(meta);
-        readUntil(meta, iter, nextEntry);
-        skipOne(iter, IsTab());
-    }
-
-    // Skip FLAG, RNAME, POS, MAPQ, CIGAR, RNEXT, PNEXT, TLEN
-    for (unsigned i = 0; i < 8; ++i) {
-        skipUntil(iter, IsTab());
-        skipOne(iter, IsTab());
-    }
-
-    // SEQ
-    clear(buffer);
-    readUntil(seq, iter, nextEntry, TSeqIgnoreOrAssert());
-    // Handle case of missing sequence:  Clear seq string as documented.
-    if (seq == "*")
-        clear(seq);
-    skipOne(iter, IsTab());
-
-
-    // skip QUAL & TAGS
-    if (atEnd(iter))
-        return;
-    skipLine(iter);
-    return;
 }
 
 }  // namespace seqan
