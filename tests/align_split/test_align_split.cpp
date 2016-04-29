@@ -56,5 +56,7 @@ SEQAN_BEGIN_TESTSUITE(test_align_split)
     SEQAN_CALL_TEST(test_align_split_overlapping_reads_in_reference_gaps_banded);
     SEQAN_CALL_TEST(test_align_split_overlapping_contigs_in_reference_gaps_banded);
     SEQAN_CALL_TEST(test_align_split_insertion_in_reference_gaps_banded);
+
+    SEQAN_CALL_TEST(test_align_split_issue_1679);
 }
 SEQAN_END_TESTSUITE
