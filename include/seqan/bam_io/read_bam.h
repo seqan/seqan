@@ -370,7 +370,6 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
     typedef typename Iterator<TSeqString, Standard>::Type SEQAN_RESTRICT              TSeqIter;
     typedef typename Iterator<TQualString, Standard>::Type SEQAN_RESTRICT             TQualIter;
 
-
     TIdString prevQName = meta;
     clear(meta);
     clear(seq);
