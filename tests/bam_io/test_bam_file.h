@@ -240,8 +240,8 @@ void testBamIOBamFileReadSequences(char const * pathFragment)
     SEQAN_ASSERT_EQ(metas[1], "READ1");
     SEQAN_ASSERT_EQ(seqs[1], "AAAAAAAAAA");
 
-    SEQAN_ASSERT_EQ(metas[2], "READ1");
-    SEQAN_ASSERT_EQ(seqs[2], "AAAAAAAAAA");
+    SEQAN_ASSERT_EQ(metas[2], "");
+    SEQAN_ASSERT_EQ(seqs[2], "");
 }
 
 
@@ -293,9 +293,9 @@ void testBamIOBamFileReadSequencesAndQualities(char const * pathFragment)
     SEQAN_ASSERT_EQ(seqs[1], "AAAAAAAAAA");
     SEQAN_ASSERT_EQ(quals[1], "!!!!!!!!!!");
 
-    SEQAN_ASSERT_EQ(metas[2], "READ1");
-    SEQAN_ASSERT_EQ(seqs[2], "AAAAAAAAAA");
-    SEQAN_ASSERT_EQ(quals[2], "!!!!!!!!!!");
+    SEQAN_ASSERT_EQ(metas[2], "");
+    SEQAN_ASSERT_EQ(seqs[2], "");
+    SEQAN_ASSERT_EQ(quals[2], "");
 }
 
 

@@ -304,9 +304,11 @@ readRecord(BamAlignmentRecord & record, FormattedFile<Bam, Input, TSpec> & file)
  * @brief read one @link FormattedFileRecordConcept @endlink from a @link BamFileIn @endlink object.
  *
  * @signature void readRecord(meta, seq, file);
+ * @signature void readRecord(meta, seq, qual, file);
  *
  * @param[out] meta          The @link StringConcept @endlink object where to write the meta information into.
  * @param[out] seq           The @link StringConcept @endlink object where to write the sequence information into.
+ * @param[out] qual          The @link StringConcept @endlink object where to write the quality information into.
  * @param[in]  file          The @link BamFileIn @endlink object to read from.
  *
  */
@@ -317,20 +319,6 @@ readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Bam, Input, TSpec> 
     readRecord(meta, seq, context(file), file.iter, file.format);
 }
 
-/*!
- * @fn BamFileIn#readRecordWithQuality
- * @brief read one @link FormattedFileRecordConcept @endlink from a @link BamFileIn @endlink object.
- *
- * @signature void readRecord(meta, seq, qual, file);
- *
- * @param[out] meta          The @link StringConcept @endlink object where to write the meta information into.
- * @param[out] seq           The @link StringConcept @endlink object where to write the sequence information into.
- * @param[out] qual          The @link StringConcept @endlink object where to write the quality information into.
- * @param[in]  file          The @link BamFileIn @endlink object to read from.
- *
- * @throw ParseError On high-level file format errors.
- *
- */
 template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec>
 inline void
 readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Bam, Input, TSpec> & fileIn)

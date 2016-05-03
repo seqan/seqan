@@ -429,148 +429,107 @@ struct SamIgnoreOrAssertFunctor_
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString,
+        typename TForwardIter>
+inline void
+reacord(TIdString & meta, TSeqString & seq,
+            TForwardIter & iter,
+            Sam const & /*tag*/)
+{
+
+    typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
+    typedef typename SamIgnoreOrAssertFunctor_<TSeqAlphabet>::Type          TSeqIgnoreOrAssert;
+
+    // fail, if we read "@" (did you miss to call readRecord(header, bamFile) first?)
+    if (nextIs(iter, SamHeader()))
+        SEQAN_THROW(ParseError("Unexpected SAM header encountered."));
+
+    OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> > nextEntry;
+
+    clear(meta);
+    clear(seq);
+
+    // QNAME
+    readUntil(meta, iter, nextEntry);
+    skipOne(iter, IsTab());
+
+    // Skip FLAG, RNAME, POS, MAPQ, CIGAR, RNEXT, PNEXT, TLEN
+    for (unsigned i = 0; i < 8; ++i) {
+        skipUntil(iter, IsTab());
+        skipOne(iter, IsTab());
+    }
+
+    // SEQ
+    readUntil(seq, iter, nextEntry, TSeqIgnoreOrAssert());
+    // Handle case of missing sequence:  Clear seq string as documented.
+    if (seq == "*")
+        clear(seq);
+    skipOne(iter, IsTab());
+}
+
+template <typename TIdString, typename TSeqString,
         typename TNameStore, typename  TNameStoreCache, typename TStorageSpec,
         typename TForwardIter>
 inline void
 readRecord(TIdString & meta, TSeqString & seq,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
-           Sam const & /*tag*/)
-
+           Sam const & tag )
 {
+    CharString prevQName = context.buffer;
+    clear( context.buffer );
 
-    typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
-    typedef typename SamIgnoreOrAssertFunctor_<TSeqAlphabet>::Type          TSeqIgnoreOrAssert;
+    reacord(meta, seq, iter, tag);
+    context.buffer = meta;
 
-    // fail, if we read "@" (did you miss to call readRecord(header, bamFile) first?)
-    if (nextIs(iter, SamHeader()))
-        SEQAN_THROW(ParseError("Unexpected SAM header encountered."));
-
-    OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> > nextEntry;
-
-
-    CharString prevQName = meta;
-
-    clear(meta);
-    clear(seq);
-    CharString &buffer = context.buffer;
-
-    // QNAME
-    readUntil(meta, iter, nextEntry);
-    skipOne(iter, IsTab());
-
-    // check if previous sequence had the same id and return nothing
-    if (prevQName == meta) {
+    //check if previous sequence had the same id and return nothing
+    if (prevQName==meta) {
         clear(meta);
-        skipLine(iter);
-        return;
-    }
-
-    // Skip FLAG, RNAME, POS, MAPQ, CIGAR, RNEXT, PNEXT, TLEN
-    for (unsigned i = 0; i < 8; ++i) {
-        skipUntil(iter, IsTab());
-        skipOne(iter, IsTab());
-    }
-
-    // SEQ
-    clear(buffer);
-    readUntil(seq, iter, nextEntry, TSeqIgnoreOrAssert());
-    // Handle case of missing sequence:  Clear seq string as documented.
-    if (seq == "*")
         clear(seq);
-    skipOne(iter, IsTab());
-
-
-    // skip QUAL & TAGS
-    if (atEnd(iter))
-        return;
+    }
     skipLine(iter);
-    return;
 }
 
 // ----------------------------------------------------------------------------
 // Function readRecord()                             read sequence with quality
 // ----------------------------------------------------------------------------
 
-template <typename TIdString, typename TSeqString, typename TQualString,
-        typename TNameStore, typename  TNameStoreCache, typename TStorageSpec,
-        typename TForwardIter>
-inline void
-readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
-           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-           TForwardIter & iter,
-           Sam const & /*tag*/)
-
-{
-
-    typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
-    typedef typename Value<TQualString>::Type                               TQualAlphabet;
-    typedef typename SamIgnoreOrAssertFunctor_<TSeqAlphabet>::Type          TSeqIgnoreOrAssert;
-    typedef typename SamIgnoreOrAssertFunctor_<TQualAlphabet>::Type         TQualIgnoreOrAssert;
-
-    // fail, if we read "@" (did you miss to call readRecord(header, bamFile) first?)
-    if (nextIs(iter, SamHeader()))
-        SEQAN_THROW(ParseError("Unexpected SAM header encountered."));
-
-    OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> > nextEntry;
-
-
-    TIdString prevQName = meta;
-
-    clear(meta);
-    clear(seq);
-    clear(qual);
-    CharString &buffer = context.buffer;
-
-    // QNAME
-    readUntil(meta, iter, nextEntry);
-    skipOne(iter, IsTab());
-
-    // check if previous sequence had the same id and return nothing
-    if (prevQName == meta) {
-        clear(meta);
-        skipLine(iter);
-        return;
-    }
-
-    // Skip FLAG, RNAME, POS, MAPQ, CIGAR, RNEXT, PNEXT, TLEN
-    for (unsigned i = 0; i < 8; ++i) {
-        skipUntil(iter, IsTab());
-        skipOne(iter, IsTab());
-    }
-
-    // SEQ
-    clear(buffer);
-    readUntil(seq, iter, nextEntry, TSeqIgnoreOrAssert());
-    // Handle case of missing sequence:  Clear seq string as documented.
-    if (seq == "*")
-        clear(seq);
-    skipOne(iter, IsTab());
-
-    // QUAL
-    readUntil( qual, iter, OrFunctor<IsTab, IsNewline>(), TQualIgnoreOrAssert() );
-
-    // Handle case of missing quality: throw parse exception if there is no quality.
-    // there is another version of readRecord that doesn't use quality
-    if ( qual == '*' ) {
-        throw ParseError("This SAM file doesn't provide PHRED quality string. "
-                                 "Consider using another version of readRecord without quality");
-    }
-
-    // The following list of tags is optional.  A line break or EOF could also follow.
-    if (atEnd(iter))
-        return;
-    if (value(iter) != '\t')
+    template <typename TIdString, typename TSeqString, typename TQualString,
+            typename TNameStore, typename  TNameStoreCache, typename TStorageSpec,
+            typename TForwardIter>
+    inline void
+    readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
+               BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+               TForwardIter & iter,
+               Sam const & tag)
     {
-        skipLine(iter);
-        return;
-    }
-    skipOne(iter, IsTab());
+        typedef typename Value<TQualString>::Type TQualAlphabet;
+        typedef typename SamIgnoreOrAssertFunctor_<TQualAlphabet>::Type TQualIgnoreOrAssert;
 
-    // skip TAGS
-    clear(buffer);
-    readLine(buffer, iter);
-}
+        clear(qual);
+        CharString prevQName = context.buffer;
+        clear( context.buffer );
+
+        reacord( meta, seq, iter, tag);
+
+        // QUAL
+        readUntil(qual, iter, OrFunctor<IsTab, IsNewline>(), TQualIgnoreOrAssert());
+
+        // Handle case of missing quality: throw parse exception if there is no quality.
+        // there is another version of readRecord that doesn't use quality
+        if (qual == '*') {
+            throw ParseError("This SAM file doesn't provide PHRED quality string. "
+                                     "Consider using another version of readRecord without quality");
+        }
+
+        context.buffer = meta;
+        // check if previous sequence had the same id and return nothing
+        if (prevQName==meta) {
+            clear(meta);
+            clear(seq);
+            clear(qual);
+        }
+        skipLine(iter);
+    }
 
 }  // namespace seqan
 
