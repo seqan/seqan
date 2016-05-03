@@ -521,6 +521,7 @@ readRecord(TIdString & meta, TSeqString & seq,
                                      "Consider using another version of readRecord without quality");
         }
 
+        //TODO SHOW THIS TO RENE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         context.buffer = meta;
         // check if previous sequence had the same id and return nothing
         if (prevQName==meta) {

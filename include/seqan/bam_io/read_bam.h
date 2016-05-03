@@ -289,7 +289,10 @@ readRecord(TIdString & meta, TSeqString & seq,
     typedef typename Iterator<TIdString, Standard>::Type                             TCharIter;
     typedef typename Iterator<TSeqString, Standard>::Type SEQAN_RESTRICT             TSeqIter;
 
-    TIdString prevQName = meta;
+    //save previous sequence name
+    CharString prevQName = context.buffer;
+
+    clear(context.buffer);
     clear(meta);
     clear(seq);
 
@@ -346,6 +349,9 @@ readRecord(TIdString & meta, TSeqString & seq,
     // skip phred quality and tags
     it += remainingBytes;
 
+    clear(context.buffer);
+    context.buffer=meta;
+
     // delete entry if query name of it is equal to query name of previous entry
     if ( prevQName == meta ) {
         clear(meta);
@@ -370,7 +376,9 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
     typedef typename Iterator<TSeqString, Standard>::Type SEQAN_RESTRICT              TSeqIter;
     typedef typename Iterator<TQualString, Standard>::Type SEQAN_RESTRICT             TQualIter;
 
-    TIdString prevQName = meta;
+    CharString prevQName = context.buffer;
+
+    clear(context.buffer);
     clear(meta);
     clear(seq);
     clear(qual);
@@ -441,6 +449,9 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
                                  "Consider using another version of readRecord without quality");
     // skip tags
     it += remainingBytes;
+
+    clear(context.buffer);
+    context.buffer=meta;
 
     // delete entry if query name of it is equal to query name of previous entry
     if ( prevQName == meta ) {
