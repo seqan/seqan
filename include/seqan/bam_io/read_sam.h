@@ -431,7 +431,7 @@ struct SamIgnoreOrAssertFunctor_
 template <typename TIdString, typename TSeqString,
         typename TForwardIter>
 inline void
-reacord(TIdString & meta, TSeqString & seq,
+_readRecord(TIdString & meta, TSeqString & seq,
             TForwardIter & iter,
             Sam const & /*tag*/)
 {
@@ -478,7 +478,7 @@ readRecord(TIdString & meta, TSeqString & seq,
     CharString prevQName = context.buffer;
     clear( context.buffer );
 
-    reacord(meta, seq, iter, tag);
+    _readRecord(meta, seq, iter, tag);
     context.buffer = meta;
 
     //check if previous sequence had the same id and return nothing
@@ -509,7 +509,7 @@ readRecord(TIdString & meta, TSeqString & seq,
         CharString prevQName = context.buffer;
         clear( context.buffer );
 
-        reacord( meta, seq, iter, tag);
+        _readRecord( meta, seq, iter, tag);
 
         // QUAL
         readUntil(qual, iter, OrFunctor<IsTab, IsNewline>(), TQualIgnoreOrAssert());
