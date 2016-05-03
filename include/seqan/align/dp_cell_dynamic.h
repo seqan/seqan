@@ -189,16 +189,18 @@ isGapExtension(DPCell_<TScoreValue, DynamicGaps> const & cell,
 }
 
 template <typename TScoreValue, typename TFlagV, typename TFlagH>
-inline void setGapExtension(DPCell_<TScoreValue, DynamicGaps> & cell,
-                            TFlagV const & /*vert*/, TFlagH const & /*hori*/)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, void)
+setGapExtension(DPCell_<TScoreValue, DynamicGaps> & cell,
+                TFlagV const & /*vert*/, TFlagH const & /*hori*/)
 {
     cell._flagMask = SetGapExtension<DPCell_<TScoreValue, DynamicGaps>, TFlagV, TFlagH>::VALUE;
 }
 
 template <typename TScoreValue, typename TFlagV, typename TFlagH>
-inline void setGapExtension(DPCell_<TScoreValue, DynamicGaps> & cell,
-                            TFlagV const & /*vert*/, TFlagH const & /*hori*/,
-                            TScoreValue const & cmp)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, void)
+setGapExtension(DPCell_<TScoreValue, DynamicGaps> & cell,
+                TFlagV const & /*vert*/, TFlagH const & /*hori*/,
+                TScoreValue const & cmp)
 {
     cell._flagMask = blend(cell._flagMask, createVector<TScoreValue>(SetGapExtension<DPCell_<TScoreValue, DynamicGaps>, TFlagV, TFlagH>::VALUE), cmp);
 }

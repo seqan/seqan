@@ -100,11 +100,11 @@ _adaptTraceSegmentsTo(Gaps<TSourceHorizontal, TGapsSpecHorizontal> & gapsHorizon
         TSize segmentSize = value(srcIter)._length;
         switch (value(srcIter)._traceValue)
         {
-        case TraceBitMap_::HORIZONTAL:
+        case TraceBitMap_<>::HORIZONTAL:
             insertGaps(it1, segmentSize);
             break;
 
-        case TraceBitMap_::VERTICAL:
+        case TraceBitMap_<>::VERTICAL:
             insertGaps(it0, segmentSize);
             break;
         }
@@ -149,16 +149,16 @@ _adaptTraceSegmentsTo(Graph<Alignment<TStringSet, TCargo, TSpec> > & g,
 
         switch (traceSegments[i]._traceValue)
         {
-        case TraceBitMap_::DIAGONAL:
+        case TraceBitMap_<>::DIAGONAL:
             addEdge(g, addVertex(g, seqHId, traceSegments[i]._horizontalBeginPos, traceSegments[i]._length),
                     addVertex(g, seqVId, traceSegments[i]._verticalBeginPos, traceSegments[i]._length));
             break;
 
-        case TraceBitMap_::VERTICAL:
+        case TraceBitMap_<>::VERTICAL:
             addVertex(g, seqVId, traceSegments[i]._verticalBeginPos, traceSegments[i]._length);
             break;
 
-        case TraceBitMap_::HORIZONTAL:
+        case TraceBitMap_<>::HORIZONTAL:
             addVertex(g, seqHId, traceSegments[i]._horizontalBeginPos, traceSegments[i]._length);
         }
     }
@@ -191,7 +191,7 @@ _adaptTraceSegmentsTo(TFile & file,
     {
         switch (traceSegments[k - 1]._traceValue)
         {
-            case TraceBitMap_::DIAGONAL:
+            case TraceBitMap_<>::DIAGONAL:
             {
                 int j = traceSegments[k - 1]._verticalBeginPos;
                 for (int i = traceSegments[k - 1]._horizontalBeginPos; i < (int) (traceSegments[k - 1]._horizontalBeginPos + traceSegments[k - 1]._length); ++i)
@@ -202,14 +202,14 @@ _adaptTraceSegmentsTo(TFile & file,
                 break;
             }
 
-            case TraceBitMap_::VERTICAL:
+            case TraceBitMap_<>::VERTICAL:
             {
                 for (int i = traceSegments[k - 1]._verticalBeginPos; i < (int) (traceSegments[k - 1]._verticalBeginPos + traceSegments[k - 1]._length); ++i)
                     _writeTraceSegmentToFile(file, gapValue<char>(), seqV[i]);
                 break;
             }
 
-            case TraceBitMap_::HORIZONTAL:
+            case TraceBitMap_<>::HORIZONTAL:
             {
                 for (int i = traceSegments[k - 1]._horizontalBeginPos; i < (int) (traceSegments[k - 1]._horizontalBeginPos + traceSegments[k - 1]._length); ++i)
                     _writeTraceSegmentToFile(file, seqH[i], gapValue<char>());
@@ -233,7 +233,7 @@ _adaptTraceSegmentsTo(String<Fragment<TSize, TFragmentSpec>, TStringSpec> & matc
     typedef Fragment<TSize, TFragmentSpec> TFragment;
 
     for (TSize2 i = 0; i < length(traceSegments); ++i)
-        if (traceSegments[i]._traceValue == TraceBitMap_::DIAGONAL)
+        if (traceSegments[i]._traceValue == TraceBitMap_<>::DIAGONAL)
             appendValue(
                 matches,
                 TFragment(seqHId, traceSegments[i]._horizontalBeginPos, seqVId,

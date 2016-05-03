@@ -108,27 +108,6 @@ struct LocalAlignment_;
 typedef LocalAlignment_<> DPLocal;
 typedef LocalAlignment_<SuboptimalAlignment> DPLocalEnumerate;
 
-// ----------------------------------------------------------------------------
-// Class TraceBitMap_
-// ----------------------------------------------------------------------------
-
-// Used to globally distinguish different traceback directions and the underlying
-// type to store the values.
-struct TraceBitMap_
-{
-    typedef __uint8 TTraceValue;
-    static const TTraceValue NONE = 0u;                         //0000000
-    static const TTraceValue DIAGONAL = 1u;                     //0000001
-    static const TTraceValue HORIZONTAL = 2u;                   //0000010
-    static const TTraceValue VERTICAL = 4u;                     //0000100
-    static const TTraceValue HORIZONTAL_OPEN = 8u;              //0001000
-    static const TTraceValue VERTICAL_OPEN = 16u;               //0010000
-    static const TTraceValue MAX_FROM_HORIZONTAL_MATRIX = 32u;  //0100000
-    static const TTraceValue MAX_FROM_VERTICAL_MATRIX = 64u;    //1000000
-    static const TTraceValue NO_VERTICAL_TRACEBACK = ~(VERTICAL | VERTICAL_OPEN);
-    static const TTraceValue NO_HORIZONTAL_TRACEBACK = ~(HORIZONTAL | HORIZONTAL_OPEN);
-};
-
 // Use macro expansion to define all possible SIMD initialization types.
 
 template <typename TVector, __uint8 FILL_VALUE, unsigned SIZE>
@@ -159,28 +138,45 @@ SEQAN_SIMD_TRACE_SETUP_(8)
 SEQAN_SIMD_TRACE_SETUP_(16)
 SEQAN_SIMD_TRACE_SETUP_(32)
 
+// Scalar version.
+template <typename TValue, typename TIsSimdVector>
+struct TraceValue_
+{
+    typedef uint8_t Type;
+    static const Type NONE = 0u;                         //0000000
+    static const Type DIAGONAL = 1u;                     //0000001
+    static const Type HORIZONTAL = 2u;                   //0000010
+    static const Type VERTICAL = 4u;                     //0000100
+    static const Type HORIZONTAL_OPEN = 8u;              //0001000
+    static const Type VERTICAL_OPEN = 16u;               //0010000
+    static const Type MAX_FROM_HORIZONTAL_MATRIX = 32u;  //0100000
+    static const Type MAX_FROM_VERTICAL_MATRIX = 64u;    //1000000
+    static const Type NO_VERTICAL_TRACEBACK = ~(VERTICAL | VERTICAL_OPEN);
+    static const Type NO_HORIZONTAL_TRACEBACK = ~(HORIZONTAL | HORIZONTAL_OPEN);
+};
+
 // SIMD Vector version.
 template <typename TVector>
-struct TraceValue
+struct TraceValue_<TVector, True>
 {
-    typedef TVector TValue;
-    static const TValue NONE;
-    static const TValue DIAGONAL;
-    static const TValue HORIZONTAL;
-    static const TValue VERTICAL;
-    static const TValue HORIZONTAL_OPEN;
-    static const TValue VERTICAL_OPEN;
-    static const TValue MAX_FROM_HORIZONTAL_MATRIX;
-    static const TValue MAX_FROM_VERTICAL_MATRIX;
-    static const TValue NO_HORIZONTAL_TRACEBACK;
-    static const TValue NO_VERTICAL_TRACEBACK;
+    typedef TVector Type;
+    static const Type NONE;
+    static const Type DIAGONAL;
+    static const Type HORIZONTAL;
+    static const Type VERTICAL;
+    static const Type HORIZONTAL_OPEN;
+    static const Type VERTICAL_OPEN;
+    static const Type MAX_FROM_HORIZONTAL_MATRIX;
+    static const Type MAX_FROM_VERTICAL_MATRIX;
+    static const Type NO_HORIZONTAL_TRACEBACK;
+    static const Type NO_VERTICAL_TRACEBACK;
 };
 
 // Macro expansion to define out-of-class initialization of static members.
 
 #define SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(TRACE_VALUE)                             \
     template <typename TVector>                                                      \
-    const TVector TraceValue<TVector>::TRACE_VALUE = InitSimdTrace_<TVector, TraceBitMap_::TRACE_VALUE, LENGTH<TVector>::VALUE>::VALUE;
+    const TVector TraceValue_<TVector, True>::TRACE_VALUE = InitSimdTrace_<TVector, TraceValue_<__uint8, False>::TRACE_VALUE, LENGTH<TVector>::VALUE>::VALUE;
 
 SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(NONE)
 SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(DIAGONAL)
@@ -193,22 +189,9 @@ SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(MAX_FROM_VERTICAL_MATRIX)
 SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(NO_HORIZONTAL_TRACEBACK)
 SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(NO_VERTICAL_TRACEBACK)
 
-// Scalar version.
-template <>
-struct TraceValue<__uint8>
-{
-    typedef uint8_t TValue;
-    static const TValue NONE                       = TraceBitMap_::NONE;
-    static const TValue DIAGONAL                   = TraceBitMap_::DIAGONAL;
-    static const TValue HORIZONTAL                 = TraceBitMap_::HORIZONTAL;
-    static const TValue VERTICAL                   = TraceBitMap_::VERTICAL;
-    static const TValue HORIZONTAL_OPEN            = TraceBitMap_::HORIZONTAL_OPEN;
-    static const TValue VERTICAL_OPEN              = TraceBitMap_::VERTICAL_OPEN;
-    static const TValue MAX_FROM_HORIZONTAL_MATRIX = TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
-    static const TValue MAX_FROM_VERTICAL_MATRIX   = TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
-    static const TValue NO_HORIZONTAL_TRACEBACK    = TraceBitMap_::NO_HORIZONTAL_TRACEBACK;
-    static const TValue NO_VERTICAL_TRACEBACK      = TraceBitMap_::NO_VERTICAL_TRACEBACK;
-};
+// Type alias to choose between scalar and simd version of trace value.
+template <typename TValue = __uint8>
+using TraceBitMap_ = TraceValue_<TValue, typename Is<SimdVectorConcept<TValue> >::Type >;
 
 // ----------------------------------------------------------------------------
 // Tag GapsLeft
@@ -392,18 +375,6 @@ struct IsGlobalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> >:
 template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
 struct IsGlobalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> const>:
     IsGlobalAlignment_<TAlgoSpec>{};
-
-// ----------------------------------------------------------------------------
-// Metafunction SelectTraceValueType_
-// ----------------------------------------------------------------------------
-
-template <typename TValue>
-struct SelectTraceValueType_
-{
-    typedef typename If<Is<SimdVectorConcept<TValue> >,
-                        TValue,
-                        typename TraceBitMap_::TTraceValue>::Type Type;
-};
 
 // ----------------------------------------------------------------------------
 // Metafunction TraceTail_

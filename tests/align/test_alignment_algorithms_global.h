@@ -744,26 +744,16 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_global_affine)
         DnaString strH = "ATGT";
         Dna5String strV = "ATAGAT";
 
-        TStringSet strings, stringsSimdH, stringsSimdV;
+        TStringSet strings;
         appendValue(strings, strH);
         appendValue(strings, strV);
-        for(unsigned i = 0; i < 34; ++i)
-        {
-            appendValue(stringsSimdH, strH);
-            appendValue(stringsSimdV, strV);
-        }
 
         Score<int, Simple> scoringScheme(2, -1, -1, -3);
         int score1 = globalAlignmentScore(strings, scoringScheme, alignConfig, Gotoh());
         int score2 = globalAlignmentScore(strH, strV, scoringScheme, alignConfig, Gotoh());
-        String<int> scores = globalAlignmentScore(stringsSimdH, stringsSimdV, scoringScheme, alignConfig, Gotoh());
 
         SEQAN_ASSERT_EQ(score1, 2);
         SEQAN_ASSERT_EQ(score2, 2);
-
-        SEQAN_ASSERT_EQ(length(scores), 34);
-        for(size_t i = 0; i < 34; ++i)
-            SEQAN_ASSERT_EQ(scores[i], 2);
     }
 
     // Alignment with both leading and trailing gaps in one row.
@@ -771,26 +761,16 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_global_affine)
         Dna5String strH = "AAAAAGGGGTTTT";
         Dna5String strV = "AAAGTT";
 
-        TStringSet strings, stringsSimdH, stringsSimdV;
+        TStringSet strings;
         appendValue(strings, strH);
         appendValue(strings, strV);
-        for(unsigned i = 0; i < 34; ++i)
-        {
-            appendValue(stringsSimdH, strH);
-            appendValue(stringsSimdV, strV);
-        }
 
         Score<int, Simple> scoringScheme(2, -1, -1, -3);
         int score1 = globalAlignmentScore(strings, scoringScheme, alignConfig, Gotoh());
         int score2 = globalAlignmentScore(strH, strV, scoringScheme, alignConfig, Gotoh());
-        String<int> scores = globalAlignmentScore(stringsSimdH, stringsSimdV, scoringScheme, alignConfig, Gotoh());
 
         SEQAN_ASSERT_EQ(score1, 1);
         SEQAN_ASSERT_EQ(score2, 1);
-
-        SEQAN_ASSERT_EQ(length(scores), 34);
-        for(size_t i = 0; i < 34; ++i)
-            SEQAN_ASSERT_EQ(scores[i], 1);
     }
 
     // Alignment with both leading and trailing gaps in different rows.
@@ -798,26 +778,16 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_global_affine)
         Dna5String strH = "AAAAAATTTTTGGG";
         Dna5String strV = "TTTTTTTTGGGGGGGG";
 
-        TStringSet strings, stringsSimdH, stringsSimdV;
+        TStringSet strings;
         appendValue(strings, strH);
         appendValue(strings, strV);
-        for(unsigned i = 0; i < 34; ++i)
-        {
-            appendValue(stringsSimdH, strH);
-            appendValue(stringsSimdV, strV);
-        }
 
         Score<int, Simple> scoringScheme(2, -1, -1, -3);
         int score1 = globalAlignmentScore(strings, scoringScheme, alignConfig, Gotoh());
         int score2 = globalAlignmentScore(strH, strV, scoringScheme, alignConfig, Gotoh());
-        String<int> scores = globalAlignmentScore(stringsSimdH, stringsSimdV, scoringScheme, alignConfig, Gotoh());
 
         SEQAN_ASSERT_EQ(score1, 1);
         SEQAN_ASSERT_EQ(score2, 1);
-
-        SEQAN_ASSERT_EQ(length(scores), 34);
-        for(size_t i = 0; i < 34; ++i)
-            SEQAN_ASSERT_EQ(scores[i], 1);
     }
 }
 
@@ -2360,25 +2330,16 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_semi_global_affine)
         DnaString strH = "ATGT";
         Dna5String strV = "ATAGAT";
 
-        TStringSet strings, stringsSimdH, stringsSimdV;
+        TStringSet strings;
         appendValue(strings, strH);
         appendValue(strings, strV);
-        for(unsigned i = 0; i < 34; ++i)
-        {
-            appendValue(stringsSimdH, strH);
-            appendValue(stringsSimdV, strV);
-        }
 
         Score<int, Simple> scoringScheme(2, -1, -1, -3);
         int score1 = globalAlignmentScore(strings, scoringScheme, alignConfig, Gotoh());
         int score2 = globalAlignmentScore(strH, strV, scoringScheme, alignConfig, Gotoh());
-        String<int> scores = globalAlignmentScore(stringsSimdH, stringsSimdV, scoringScheme, alignConfig, Gotoh());
 
         SEQAN_ASSERT_EQ(score1, 2);
         SEQAN_ASSERT_EQ(score2, 2);
-        SEQAN_ASSERT_EQ(length(scores), 34);
-        for(size_t i = 0; i < 34; ++i)
-            SEQAN_ASSERT_EQ(scores[i], 2);
     }
 
     // Alignment with both leading and trailing gaps in one row.
@@ -2386,25 +2347,16 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_semi_global_affine)
         DnaString strH = "AAAAAGGGGTTTT";
         Dna5String strV = "AAAGTT";
 
-        TStringSet strings, stringsSimdH, stringsSimdV;
+        TStringSet strings;
         appendValue(strings, strH);
         appendValue(strings, strV);
-        for(unsigned i = 0; i < 34; ++i)
-        {
-            appendValue(stringsSimdH, strH);
-            appendValue(stringsSimdV, strV);
-        }
 
         Score<int, Simple> scoringScheme(2, -1, -1, -3);
         int score1 = globalAlignmentScore(strings, scoringScheme, alignConfig, Gotoh());
         int score2 = globalAlignmentScore(strH, strV, scoringScheme, alignConfig, Gotoh());
-        String<int> scores = globalAlignmentScore(stringsSimdH, stringsSimdV, scoringScheme, alignConfig, Gotoh());
 
         SEQAN_ASSERT_EQ(score1, 7);
         SEQAN_ASSERT_EQ(score2, 7);
-        SEQAN_ASSERT_EQ(length(scores), 34);
-        for(size_t i = 0; i < 34; ++i)
-            SEQAN_ASSERT_EQ(scores[i], 7);
     }
 
     // Alignment with both leading and trailing gaps in different rows.

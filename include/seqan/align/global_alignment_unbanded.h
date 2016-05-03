@@ -632,7 +632,7 @@ template <typename TString1, typename TString2, typename TSpec,
 String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stringsH,
                                          StringSet<TString2, TSpec> const & stringsV,
                                          Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
                                          TAlgoTag const & /*algoTag*/)
 {
     SEQAN_ASSERT_EQ(length(stringsH), length(stringsV));
@@ -693,10 +693,8 @@ String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stri
     }
 
     //call the normal non-simd function for remaining alignments
-    DPScoutState_<Default> dpScoutState;
     for(size_t pos = (numAlignments/sizeBatch)*sizeBatch; pos < numAlignments; ++pos)
-        results[pos] = _setUpAndRunAlignment(traceSegments, dpScoutState, stringsH[pos], stringsV[pos],
-                                             scoringScheme, TAlignConfig2(), TGapModel());
+        results[pos] = globalAlignmentScore(stringsH[pos], stringsV[pos], scoringScheme, alignConfig, TAlgoTag());
     return results;
 }
 
@@ -749,7 +747,7 @@ template <typename TString1, typename TString2, typename TSpec,
 String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
                                          StringSet<TString2, TSpec> const & stringsV,
                                          Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
                                          TAlgoTag const & /*algoTag*/)
 {
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
@@ -815,10 +813,8 @@ String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
     }
 
     //call the normal non-simd function for remaining alignments
-    DPScoutState_<Default> dpScoutState;
     for(size_t pos = (numAlignments/sizeBatch)*sizeBatch; pos < numAlignments; ++pos)
-        results[pos] = _setUpAndRunAlignment(traceSegments, dpScoutState, stringsH[pos], stringsV[pos],
-                                             scoringScheme, TAlignConfig2(), TGapModel());
+        results[pos] = globalAlignmentScore(stringH, stringsV[pos], scoringScheme, alignConfig, TAlgoTag());
     return results;
 }
 

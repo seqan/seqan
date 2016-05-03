@@ -62,7 +62,7 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue, typename TTraceValueL, typename TTraceValueGap>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & diagCompare,
                       TTraceValueL,
@@ -74,13 +74,13 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     {
         activeCell._score = diagCompare;
         setGapExtension(activeCell, False(), False());
-        return TraceBitMap_::NONE;
+        return TraceBitMap_<TScoreValue>::NONE;
     }
-    return TraceBitMap_::NONE;
+    return TraceBitMap_<TScoreValue>::NONE;
 }
 
 template <typename TScoreValue, typename TTraceValueL, typename TTraceValueGap>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & diagCompare,
                       TTraceValueL,
@@ -91,11 +91,11 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     TScoreValue cmp = cmpGt(diagCompare, _scoreOfCell(activeCell));
     activeCell._score = blend(activeCell._score, diagCompare, cmp);
     setGapExtension(activeCell, False(), False(), cmp);
-    return TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE;
+    return TraceBitMap_<TScoreValue>::NONE;
 }
 
 template <typename TScoreValue, typename TTraceValueL, typename TTraceValueGap, typename TGapsPlacement>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & diagCompare,
                       TTraceValueL leftTrace,
@@ -107,13 +107,13 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     {
         activeCell._score = diagCompare;
         setGapExtension(activeCell, False(), False());
-        return TraceBitMap_::DIAGONAL | leftTrace;
+        return TraceBitMap_<TScoreValue>::DIAGONAL | leftTrace;
     }
     return leftTrace | gapTrace;
 }
 
 template <typename TScoreValue, typename TTraceValueL, typename TTraceValueGap, typename TGapsPlacement>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & diagCompare,
                       TTraceValueL const & leftTrace,
@@ -124,13 +124,13 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     TScoreValue cmp = cmpGt(_scoreOfCell(activeCell), diagCompare);
     blend(diagCompare, activeCell._score, cmp);
     setGapExtension(activeCell, False(), False(), cmp);
-    return blend(TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::DIAGONAL | leftTrace,
+    return blend(TraceBitMap_<TScoreValue>::DIAGONAL | leftTrace,
                  leftTrace | gapTrace,
                  cmp);
 }
 
 template <typename TScoreValue, typename TTraceValueL, typename TTraceValueGap, typename TGapsPlacement>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & diagCompare,
                       TTraceValueL leftTrace,
@@ -142,16 +142,16 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     {
         activeCell._score = diagCompare;  // Maximal score comes from diagonal.
         setGapExtension(activeCell, False(), False());
-        return TraceBitMap_::DIAGONAL | leftTrace;  // Return trace for Diagonal.
+        return TraceBitMap_<TScoreValue>::DIAGONAL | leftTrace;  // Return trace for Diagonal.
     }
     if (_scoreOfCell(activeCell) == diagCompare)  // Maximal score comes from previous computed directions and diagonal.
-        return leftTrace | TraceBitMap_::DIAGONAL | gapTrace;  // Return all directions inclusively the flag indicating max from gap.
+        return leftTrace | TraceBitMap_<TScoreValue>::DIAGONAL | gapTrace;  // Return all directions inclusively the flag indicating max from gap.
 
     return leftTrace | gapTrace;  // Maximum comes from gap. Return gap value inclusively the flag indicating max from gap.
 }
 
 template <typename TScoreValue, typename TTraceValueL, typename TTraceValueGap, typename TGapsPlacement>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & diagCompare,
                       TTraceValueL const & leftTrace,
@@ -164,10 +164,10 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     setGapExtension(activeCell, False(), False(), cmp);
     TScoreValue result = leftTrace | gapTrace;
     result = blend(result,
-                   TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::DIAGONAL | leftTrace,
+                   TraceBitMap_<TScoreValue>::DIAGONAL | leftTrace,
                    cmp);
     return blend(result,
-                 leftTrace | TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::DIAGONAL | gapTrace,
+                 leftTrace | TraceBitMap_<TScoreValue>::DIAGONAL | gapTrace,
                  cmpEq(_scoreOfCell(activeCell), diagCompare));
 }
 
@@ -176,7 +176,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue, typename TValueH, typename TValueV, typename TScore>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       DPCell_<TScoreValue, DynamicGaps> const & prevCell,
                       TValueH const & valH,
@@ -187,11 +187,11 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 {
     if(!isGapExtension(prevCell, DynamicGapExtensionHorizontal()))
         activeCell._score = _scoreOfCell(prevCell) + scoreGapOpenHorizontal(score, valH, valV);
-    return TraceBitMap_::NONE;
+    return TraceBitMap_<TScoreValue>::NONE;
 }
 
 template <typename TScoreValue, typename TValueH, typename TValueV, typename TScore>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       DPCell_<TScoreValue, DynamicGaps> const & prevCell,
                       TValueH const & valH,
@@ -202,11 +202,11 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 {
     activeCell._score = blend(_scoreOfCell(prevCell) + scoreGapOpenHorizontal(score, valH, valV), activeCell._score,
                               isGapExtension(prevCell, DynamicGapExtensionHorizontal()));
-    return TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE;
+    return TraceBitMap_<TScoreValue>::NONE;
 }
 
 template <typename TScoreValue, typename TValueH, typename TValueV, typename TScore, typename TTraceConfig>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       DPCell_<TScoreValue, DynamicGaps> const & prevCell,
                       TValueH const & valH,
@@ -218,13 +218,13 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     if (!isGapExtension(prevCell, DynamicGapExtensionHorizontal()))
     {
         activeCell._score = _scoreOfCell(prevCell) + scoreGapOpenHorizontal(score, valH, valV);
-        return TraceBitMap_::HORIZONTAL_OPEN;
+        return TraceBitMap_<TScoreValue>::HORIZONTAL_OPEN;
     }
-    return TraceBitMap_::HORIZONTAL;
+    return TraceBitMap_<TScoreValue>::HORIZONTAL;
 }
 
 template <typename TScoreValue, typename TValueH, typename TValueV, typename TScore, typename TTraceConfig>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       DPCell_<TScoreValue, DynamicGaps> const & prevCell,
                       TValueH const & valH,
@@ -235,7 +235,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 {
     activeCell._score = blend(_scoreOfCell(prevCell) + scoreGapOpenHorizontal(score, valH, valV), activeCell._score,
                               isGapExtension(prevCell, DynamicGapExtensionHorizontal()));
-    return TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::HORIZONTAL;
+    return TraceBitMap_<TScoreValue>::HORIZONTAL;
 }
 
 // ----------------------------------------------------------------------------
@@ -243,7 +243,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue, typename TValueH, typename TValueV, typename TScore>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       DPCell_<TScoreValue, DynamicGaps> const & prevCell,
                       TValueH const & valH,
@@ -254,11 +254,11 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 {
     if(!isGapExtension(prevCell, DynamicGapExtensionVertical()))
         activeCell._score = _scoreOfCell(prevCell) + scoreGapOpenVertical(score, valH, valV);
-    return TraceBitMap_::NONE;
+    return TraceBitMap_<TScoreValue>::NONE;
 }
 
 template <typename TScoreValue, typename TValueH, typename TValueV, typename TScore>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       DPCell_<TScoreValue, DynamicGaps> const & prevCell,
                       TValueH const & valH,
@@ -269,11 +269,11 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 {
     activeCell._score = blend(_scoreOfCell(prevCell) + scoreGapOpenVertical(score, valH, valV), activeCell._score,
                               isGapExtension(prevCell, DynamicGapExtensionVertical()));
-    return TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE;
+    return TraceBitMap_<TScoreValue>::NONE;
 }
 
 template <typename TScoreValue, typename TValueH, typename TValueV, typename TScore, typename TTraceConfig>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       DPCell_<TScoreValue, DynamicGaps> const & prevCell,
                       TValueH const & valH,
@@ -285,13 +285,13 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     if (!isGapExtension(prevCell, DynamicGapExtensionVertical()))
     {
         activeCell._score = _scoreOfCell(prevCell) + scoreGapOpenVertical(score, valH, valV);
-        return TraceBitMap_::VERTICAL_OPEN;
+        return TraceBitMap_<TScoreValue>::VERTICAL_OPEN;
     }
-    return TraceBitMap_::VERTICAL;
+    return TraceBitMap_<TScoreValue>::VERTICAL;
 }
 
 template <typename TScoreValue, typename TValueH, typename TValueV, typename TScore, typename TTraceConfig>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       DPCell_<TScoreValue, DynamicGaps> const & prevCell,
                       TValueH const & valH,
@@ -302,8 +302,8 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 {
     TScoreValue cmp = isGapExtension(prevCell, DynamicGapExtensionVertical());
     activeCell._score = blend(_scoreOfCell(prevCell) + scoreGapOpenVertical(score, valH, valV), activeCell._score, cmp);
-    return blend(TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::VERTICAL_OPEN,
-                 TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::VERTICAL,
+    return blend(TraceBitMap_<TScoreValue>::VERTICAL_OPEN,
+                 TraceBitMap_<TScoreValue>::VERTICAL,
                  cmp);
 }
 
@@ -312,7 +312,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & horizontalComp,
                       TracebackOff const &)
@@ -321,14 +321,14 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     {
         activeCell._score = horizontalComp;
         setGapExtension(activeCell, False(), True());
-        return TraceBitMap_::NONE;
+        return TraceBitMap_<TScoreValue>::NONE;
     }
     setGapExtension(activeCell, True(), False());
-    return TraceBitMap_::NONE;
+    return TraceBitMap_<TScoreValue>::NONE;
 }
 
 template <typename TScoreValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & horizontalComp,
                       TracebackOff const &)
@@ -336,12 +336,12 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     TScoreValue cmp = cmpGt(horizontalComp, _scoreOfCell(activeCell));
     activeCell._score = blend(activeCell._score, horizontalComp, cmp);
     setGapExtension(activeCell, False(), True(), cmp);
-    setGapExtension(activeCell, True(), False(), cmpEq(cmp, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE));
-    return TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE;
+    setGapExtension(activeCell, True(), False(), cmpEq(cmp, TraceBitMap_<TScoreValue>::NONE));
+    return TraceBitMap_<TScoreValue>::NONE;
 }
 
 template <typename TScoreValue, typename TGapsPlacement>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & horizontalComp,
                       TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> >  const &)
@@ -350,14 +350,14 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     {
         activeCell._score = horizontalComp;
         setGapExtension(activeCell, False(), True());
-        return TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+        return TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX;
     }
     setGapExtension(activeCell, True(), False());
-    return TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    return TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX;
 }
 
 template <typename TScoreValue, typename TGapsPlacement>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & horizontalComp,
                       TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> >  const &)
@@ -365,14 +365,14 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     TScoreValue cmp = cmpGt(horizontalComp, _scoreOfCell(activeCell));
     activeCell._score = blend(activeCell._score, horizontalComp, cmp);
     setGapExtension(activeCell, False(), True(), cmp);
-    setGapExtension(activeCell, True(), False(), cmpEq(cmp, TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::NONE));
-    return blend(TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX,
-                 TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX,
+    setGapExtension(activeCell, True(), False(), cmpEq(cmp, TraceBitMap_<TScoreValue>::NONE));
+    return blend(TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX,
+                 TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
                  cmp);
 }
 
 template <typename TScoreValue, typename TGapsPlacement>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & horizontalComp,
                       TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> >  const &)
@@ -381,19 +381,19 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     {
         setGapExtension(activeCell, False(), True());
         activeCell._score = horizontalComp;
-        return TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+        return TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX;
     }
     if (_scoreOfCell(activeCell) == horizontalComp)
     {
         setGapExtension(activeCell, True(), True());
-        return TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+        return TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX;
     }
     setGapExtension(activeCell, True(), False());
-    return TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    return TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX;
 }
 
 template <typename TScoreValue, typename TGapsPlacement>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & horizontalComp,
                       TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> >  const &)
@@ -404,13 +404,13 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     setGapExtension(activeCell, False(), True(), cmpG);
     setGapExtension(activeCell, True(), True(), cmpE);
 
-    TScoreValue result = TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX;
+    TScoreValue result = TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX;
     result = blend(result,
-                   TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX,
+                   TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
                    cmpG);
     return blend(result,
-                 TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX
-                    | TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX,
+                 TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX
+                    | TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
                  cmpE);
 }
 
@@ -420,7 +420,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPCell_<TScoreValue, DynamicGaps> const & previousDiagonal,
                 DPCell_<TScoreValue, DynamicGaps> const & previousHorizontal,
@@ -431,7 +431,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 RecursionDirectionAll const &,
                 DPProfile_<TAlgorithm, DynamicGaps, TTracebackConfig> const &)
 {
-    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
 
     // Compute best alignment from either horizontal open or extension.
     DPCell_<TScoreValue, DynamicGaps> tmpScore = _scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
@@ -451,7 +451,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPCell_<TScoreValue, DynamicGaps> const & previousDiagonal,
                 DPCell_<TScoreValue, DynamicGaps> const & previousHorizontal,
@@ -462,7 +462,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 RecursionDirectionAll const &,
                 DPProfile_<TAlgorithm, DynamicGaps, TTracebackConfig> const &)
 {
-    typedef TScoreValue TTraceValue;
+    typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
 
     // Compute best alignment from either horizontal open or extension.
     DPCell_<TScoreValue, DynamicGaps> tmpScore = _scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
@@ -486,7 +486,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPCell_<TScoreValue, DynamicGaps> const & previousDiagonal,
                 DPCell_<TScoreValue, DynamicGaps> const & previousHorizontal,
@@ -497,7 +497,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 RecursionDirectionUpperDiagonal const &,
                 DPProfile_<TAlgorithm, DynamicGaps, TTracebackConfig> const &)
 {
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
 
     // This computes the difference between the horizontal extend and horizontal open.
     activeCell._score = _scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
@@ -506,14 +506,14 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 
     setGapExtension(activeCell, False(), True());
     TScoreValue tmpScore = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
-    return _internalComputeScore(activeCell, tmpScore, tv, TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX,
+    return _internalComputeScore(activeCell, tmpScore, tv, TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
                                  TTracebackConfig(),RecursionDirectionDiagonal());
 }
 
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPCell_<TScoreValue, DynamicGaps> const & previousDiagonal,
                 DPCell_<TScoreValue, DynamicGaps> const & previousHorizontal,
@@ -524,7 +524,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 RecursionDirectionUpperDiagonal const &,
                 DPProfile_<TAlgorithm, DynamicGaps, TTracebackConfig> const &)
 {
-    typedef typename SelectTraceValueType_<TScoreValue>::Type TTraceValue;
+    typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
 
     // This computes the difference between the horizontal extend and horizontal open.
     activeCell._score = _scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
@@ -536,7 +536,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     return _internalComputeScore(activeCell,
                                  tmpScore,
                                  tv,
-                                 TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX,
+                                 TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
                                  TTracebackConfig(),
                                  RecursionDirectionDiagonal());
 }
@@ -547,7 +547,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPCell_<TScoreValue, DynamicGaps> const & previousDiagonal,
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousHorizontal*/,
@@ -558,7 +558,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 RecursionDirectionLowerDiagonal const &,
                 DPProfile_<TAlgorithm, DynamicGaps, TTracebackConfig> const &)
 {
-    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
 
     // This computes the difference between the vertical extend and vertical open.
     activeCell._score = _scoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
@@ -566,13 +566,13 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                                            TTracebackConfig(), RecursionDirectionVertical());
     setGapExtension(activeCell, True(), False());
     TScoreValue tmpScore = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
-    return _internalComputeScore(activeCell, tmpScore, tv, TraceBitMap_::MAX_FROM_VERTICAL_MATRIX,
+    return _internalComputeScore(activeCell, tmpScore, tv, TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX,
                                  TTracebackConfig(), RecursionDirectionDiagonal());
 }
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPCell_<TScoreValue, DynamicGaps> const & previousDiagonal,
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousHorizontal*/,
@@ -583,7 +583,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 RecursionDirectionLowerDiagonal const &,
                 DPProfile_<TAlgorithm, DynamicGaps, TTracebackConfig> const &)
 {
-    typedef typename SelectTraceValueType_<TScoreValue>::Type TTraceValue;
+    typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
 
     // This computes the difference between the vertical extend and vertical open.
     activeCell._score = _scoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
@@ -594,7 +594,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     return _internalComputeScore(activeCell,
                                  tmpScore,
                                  tv,
-                                 TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX,
+                                 TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX,
                                  TTracebackConfig(),
                                  RecursionDirectionDiagonal());
 }
@@ -605,7 +605,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousDiagonal*/,
                 DPCell_<TScoreValue, DynamicGaps> const & previousHorizontal,
@@ -619,12 +619,12 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     activeCell._score = _scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
     setGapExtension(activeCell, False(), True());
     return _internalComputeScore(activeCell, previousHorizontal, seqHVal, seqVVal, scoringScheme,
-                                 TTracebackConfig(), tag) | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+                                 TTracebackConfig(), tag) | TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX;
 }
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousDiagonal*/,
                 DPCell_<TScoreValue, DynamicGaps> const & previousHorizontal,
@@ -638,9 +638,8 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     activeCell._score = _scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
     setGapExtension(activeCell, False(), True(), createVector<TScoreValue>(-1));
     return _internalComputeScore(activeCell, previousHorizontal, seqHVal, seqVVal, scoringScheme,
-                                 TTracebackConfig(), tag) | TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_HORIZONTAL_MATRIX;
+                                 TTracebackConfig(), tag) | TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX;
 }
-
 
 // ----------------------------------------------------------------------------
 // Function _doComputeScore                        [RecursionVerticalDirection]
@@ -648,7 +647,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,typename TraceBitMap_::TTraceValue)
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousDiagonal*/,
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousHorizontal*/,
@@ -662,12 +661,12 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     activeCell._score = _scoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
     setGapExtension(activeCell, True(), False());
     return _internalComputeScore(activeCell, previousVertical, seqHVal, seqVVal, scoringScheme,
-                                 TTracebackConfig(), tag) | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+                                 TTracebackConfig(), tag) | TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX;
 }
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,TScoreValue)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousDiagonal*/,
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousHorizontal*/,
@@ -681,7 +680,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     activeCell._score = _scoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
     setGapExtension(activeCell, True(), False(), createVector<TScoreValue>(-1));
     return _internalComputeScore(activeCell, previousVertical, seqHVal, seqVVal, scoringScheme,
-                                 TTracebackConfig(), tag) | TraceValue<typename SelectTraceValueType_<TScoreValue>::Type>::MAX_FROM_VERTICAL_MATRIX;
+                                 TTracebackConfig(), tag) | TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX;
 }
 
 }  // namespace seqan
