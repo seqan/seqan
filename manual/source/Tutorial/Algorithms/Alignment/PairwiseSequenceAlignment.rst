@@ -182,7 +182,7 @@ Assignment 2
    Hint
      .. container:: foldable
 
-        A semi-global alignment is a special form of an overlap alignment often used when aligning short sequences again a long sequence.
+        A semi-global alignment is a special form of an overlap alignment often used when aligning short sequences against a long sequence.
         Here we only allow free end-gaps at the beginning and the end of the shorter sequence.
 
    Solution
@@ -448,7 +448,7 @@ Assignment 5
     * A CIGAR string is a different representation of an alignment.
       It consists of a number followed by an operation.
       The number indicates how many consecutive operations of the same type are executed.
-      Operations can be <tt>M</tt> for match, <tt>S</tt> for mismatch, <tt>I</tt> for insertion and <tt>D</tt> for deletion.
+      Operations can be **M** for match, **S** for mismatch, **I** for insertion and **D** for deletion.
       Here is an example:
 
       ::
