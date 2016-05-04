@@ -68,7 +68,7 @@ int main()
 
         // Use a stringstream to construct the cigar string.
         std::stringstream cigar;
-        int numChar = 0;
+        int numMatchAndMismatches = 0;
         while (itGapsPattern != itGapsEnd)
         {
             // Count insertions.
@@ -89,30 +89,20 @@ int main()
                 itGapsPattern += numGaps;
                 continue;
             }
-            // Count matches.
-            while (*itGapsText == *itGapsPattern && itGapsPattern != itGapsEnd)
-            {
-                ++numChar;
-                ++itGapsText;
-                ++itGapsPattern;
-            }
-            if (numChar != 0)
-            {
-                cigar << numChar << "M";
-                numChar = 0;
-                continue;
-            }
 
-            // Count mismatches.
-            while (*itGapsText != *itGapsPattern && itGapsPattern != itGapsEnd)
+            // Count matches and  mismatches.
+            while (itGapsPattern != itGapsEnd)
             {
-                ++numChar;
+                if (isGap(itGapsPattern) || isGap(itGapsText))
+                   break;
+
+                ++numMatchAndMismatches;
                 ++itGapsText;
                 ++itGapsPattern;
             }
-            if (numChar != 0)
-                cigar << numChar << "S";
-            numChar = 0;
+            if (numMatchAndMismatches != 0)
+                cigar << numMatchAndMismatches << "M";
+            numMatchAndMismatches = 0;
         }
         // Output the hit position in the text, the total number of edits and the corresponding cigar string.
         std::cout << "Hit at position  " << *it << "\ttotal edits: " << abs(score) << "\tcigar: " << cigar.str() << std::endl;
