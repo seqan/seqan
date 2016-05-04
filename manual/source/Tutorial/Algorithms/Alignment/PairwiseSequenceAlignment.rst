@@ -447,15 +447,15 @@ Assignment 5
     * Use the :dox:`SegmentableConcept#infix` function to return a subsequence of a string.
     * A CIGAR string is a different representation of an alignment.
       It consists of a number followed by an operation.
-      The number indicates how many consecutive operations of the same type are executed.
-      Operations can be **M** for match, **S** for mismatch, **I** for insertion and **D** for deletion.
+      The number indicates how many operations are executed.
+      Operations can be **M** for match or mismatch, **I** for insertion and **D** for deletion.
       Here is an example:
 
       ::
 
           ref: AC--GTCATTT
           r01: ACGTCTCA---
-          Cigar of r01: 2M2I1X3M3D
+          Cigar of r01: 2M2I4M3D
 
     Solution (Step 1)
       .. container:: foldable
