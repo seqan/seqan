@@ -191,56 +191,6 @@ template <typename TValue, typename TSize, typename TExpand> inline size_t resiz
 template <typename TValue, typename TPos> inline TValue & value(TValue * me, TPos pos);
 template <typename TValue, typename TPos> inline TValue const & value(TValue const * me, TPos pos);
 
-// --------------------------------------------------------------------------
-// Forwards For thrust::device_vector
-// --------------------------------------------------------------------------
-
-#ifdef PLATFORM_CUDA
-template <typename TChar,  typename TAlloc> inline void const * getObjectId(thrust::device_vector<TChar, TAlloc> const & me);
-template <typename TChar,  typename TAlloc> inline typename Iterator<thrust::device_vector<TChar, TAlloc>, Standard>::Type begin(thrust::device_vector<TChar, TAlloc> & me, Standard);
-template <typename TChar,  typename TAlloc> inline typename Iterator<thrust::device_vector<TChar, TAlloc> const, Standard>::Type begin(thrust::device_vector<TChar, TAlloc> const & me, Standard);
-template <typename TChar, typename TAlloc> inline typename Iterator<thrust::device_vector<TChar, TAlloc>, Standard>::Type end(thrust::device_vector<TChar, TAlloc> & me, Standard);
-template <typename TChar,  typename TAlloc> inline typename Iterator<thrust::device_vector<TChar, TAlloc> const, Standard>::Type end(thrust::device_vector<TChar, TAlloc> const & me, Standard);
-template <typename TChar,  typename TAlloc, typename TPos> inline typename GetValue<thrust::device_vector<TChar, TAlloc> >::Type value(thrust::device_vector<TChar, TAlloc> & me, TPos pos);
-template <typename TChar,  typename TAlloc, typename TPos> inline typename GetValue<thrust::device_vector<TChar, TAlloc> const>::Type value(thrust::device_vector<TChar, TAlloc> const & me, TPos pos);
-template <typename TChar, typename TAlloc> inline typename Size<thrust::device_vector<TChar, TAlloc> >::Type length(thrust::device_vector<TChar, TAlloc> const & me);
-template <typename TChar, typename TAlloc> inline typename Size<thrust::device_vector<TChar, TAlloc> >::Type capacity(thrust::device_vector<TChar, TAlloc> const & me);
-template <typename TChar, typename TAlloc> inline bool empty(thrust::device_vector<TChar, TAlloc> const & me);
-template <typename TChar,  typename TAlloc> inline void clear(thrust::device_vector<TChar, TAlloc> & me);
-template <typename TChar, typename TAlloc> inline typename Reference<thrust::device_vector<TChar, TAlloc> >::Type back(thrust::device_vector<TChar, TAlloc> & list);
-template <typename TChar, typename TAlloc> inline typename Reference<thrust::device_vector<TChar, TAlloc> const>::Type back(thrust::device_vector<TChar, TAlloc> const & list);
-template <typename TChar,  typename TAlloc, typename TSource> inline void assign(thrust::device_vector<TChar, TAlloc> & target, TSource & source);
-template <typename TChar,  typename TAlloc, typename TSource> inline void assign(thrust::device_vector<TChar, TAlloc> & target, TSource const & source);
-template <typename TChar,  typename TAlloc, typename TSource, typename TSize> inline void assign(thrust::device_vector<TChar, TAlloc> & target, TSource & source, TSize limit);
-template <typename TChar,  typename TAlloc, typename TSource, typename TSize>
-inline void assign(thrust::device_vector<TChar, TAlloc> & target, TSource const & source, TSize limit);
-template <typename TChar,  typename TAlloc, typename TSource> inline void assign(thrust::device_vector<TChar, TAlloc> & target, TSource & source, Generous);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(thrust::device_vector<TChar, TAlloc> & target, TSource const & source, Generous);
-template <typename TChar,  typename TAlloc, typename TSource> inline void assign_std_vector_Generous_impl(thrust::device_vector<TChar, TAlloc> & target, TSource & source, typename Size<thrust::device_vector<TChar, TAlloc> >::Type limit);
-template <typename TChar,  typename TAlloc, typename TSource> inline void assign(thrust::device_vector<TChar, TAlloc> & target, TSource & source, typename Size<thrust::device_vector<TChar, TAlloc> >::Type limit, Generous);
-template <typename TChar,  typename TAlloc, typename TSource> inline void assign(thrust::device_vector<TChar, TAlloc> & target, TSource const & source, typename Size<thrust::device_vector<TChar, TAlloc> >::Type limit, Generous);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(thrust::device_vector<TChar, TAlloc> & target, TSource & source, Limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(thrust::device_vector<TChar, TAlloc> & target, TSource const & source, Limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(thrust::device_vector<TChar, TAlloc> & target, TSource & source, typename Size<thrust::device_vector<TChar, TAlloc> >::Type limit, Limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void assign(thrust::device_vector<TChar, TAlloc> & target, TSource const & source, typename Size<thrust::device_vector<TChar, TAlloc> >::Type limit, Limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void append(thrust::device_vector<TChar, TAlloc> & target, TSource const & source, Generous);
-template <typename TChar,  typename TAlloc, typename TSource> inline void append(thrust::device_vector<TChar, TAlloc> & target, TSource const & source, typename Size<thrust::device_vector<TChar, TAlloc> >::Type limit, Generous);
-template <typename TChar, typename TAlloc, typename TSource> inline void append(thrust::device_vector<TChar, TAlloc> & target, TSource const & source, Limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void append(thrust::device_vector<TChar, TAlloc> & target, TSource const & source, typename Size<thrust::device_vector<TChar, TAlloc> >::Type limit, Limit);
-template <typename TChar, typename TAlloc, typename TValue, typename TTag> inline void appendValue(thrust::device_vector<TChar, TAlloc> & me, TValue const & _value, TTag);
-template <typename TChar, typename TAlloc, typename TValue> inline void appendValue(thrust::device_vector<TChar, TAlloc> & me, TValue const & _value, Limit);
-template <typename TChar,  typename TAlloc, typename TSource> inline void replace(thrust::device_vector<TChar, TAlloc> & target, typename Position<thrust::device_vector<TChar, TAlloc> >::Type pos_begin, typename Position<thrust::device_vector<TChar, TAlloc> >::Type pos_end, TSource const & source, Generous);
-template <typename TChar, typename TAlloc, typename TSource> inline void replace(thrust::device_vector<TChar, TAlloc> & target, typename Position<thrust::device_vector<TChar, TAlloc> >::Type pos_begin, typename Position<thrust::device_vector<TChar, TAlloc> >::Type pos_end, TSource const & source, typename Size<thrust::device_vector<TChar, TAlloc> >::Type limit, Generous);
-template <typename TChar,  typename TAlloc, typename TSource> inline void replace(thrust::device_vector<TChar, TAlloc> & target, typename Position<thrust::device_vector<TChar, TAlloc> >::Type pos_begin, typename Position<thrust::device_vector<TChar, TAlloc> >::Type pos_end, TSource const & source, Limit);
-template <typename TChar, typename TAlloc, typename TSource> inline void replace(thrust::device_vector<TChar, TAlloc> & target, typename Position<thrust::device_vector<TChar, TAlloc> >::Type pos_begin, typename Position<thrust::device_vector<TChar, TAlloc> >::Type pos_end, TSource const & source, typename Size<thrust::device_vector<TChar, TAlloc> >::Type limit, Limit);
-template<typename TChar, typename TCharTraits, typename TAlloc, typename TSource, typename TExpand> inline void replace(thrust::device_vector<TChar, TAlloc> & target, typename Iterator<thrust::device_vector<TChar, TAlloc>, Rooted>::Type pos_begin, typename Iterator<thrust::device_vector<TChar, TAlloc>, Rooted>::Type pos_end, TSource & source, Tag<TExpand> const tag);
-template <typename TChar,  typename TAlloc, typename TSize, typename TExpand> inline typename Size<thrust::device_vector<TChar, TAlloc> >::Type reserve(thrust::device_vector<TChar, TAlloc> & seq, TSize new_capacity, Tag<TExpand> const & tag);
-template <typename TChar, typename TAlloc, typename TSize> inline typename Size<thrust::device_vector<TChar, TAlloc> >::Type reserve(thrust::device_vector<TChar, TAlloc> & seq, TSize new_capacity, Insist const &);
-template <typename TChar,  typename TAlloc, typename TSize> inline typename Size<thrust::device_vector<TChar, TAlloc> >::Type reserve(thrust::device_vector<TChar, TAlloc> & seq, TSize new_capacity, Limit const &);
-template <typename TChar,  typename TAlloc, typename TSize, typename TExpand> inline typename Size<thrust::device_vector<TChar, TAlloc> >::Type resize(thrust::device_vector<TChar, TAlloc> & me, TSize new_length, Tag<TExpand> const &);
-template <typename TChar, typename TAlloc, typename TSize, typename TExpand> inline typename Size<thrust::device_vector<TChar, TAlloc> >::Type fill(thrust::device_vector<TChar, TAlloc> & me, TSize new_length, TChar const & val, Tag<TExpand> const &);
-#endif
-
 }  // namespace seqan
 
 #endif  // #if !defined(_MSC_VER)

@@ -89,14 +89,6 @@ struct Member<OccurrencesCounter_<TIndex, TSpec>, Counts_>
     typedef String<typename Size<TIndex>::Type> Type;
 };
 
-#ifdef PLATFORM_CUDA
-template <typename TIndex, typename TSpec>
-struct Member<OccurrencesCounter_<TIndex, Device<TSpec> >, Counts_>
-{
-    typedef thrust::device_vector<typename Size<TIndex>::Type>  Type;
-};
-#endif
-
 template <typename TIndex, typename TSpec>
 struct Member<OccurrencesCounter_<TIndex, View<Device<TSpec> > >, Counts_>
 {
@@ -170,15 +162,6 @@ _getCount(OccurrencesCounter_<TIndex, TSpec> & counter)
 {
     return sum(counter.counts);
 }
-
-#ifdef PLATFORM_CUDA
-template <typename TIndex, typename TSpec>
-inline typename Size<TIndex>::Type
-_getCount(OccurrencesCounter_<TIndex, Device<TSpec> > & counter)
-{
-    return thrust::reduce(begin(counter.counts, Standard()), end(counter.counts, Standard()));
-}
-#endif
 
 // --------------------------------------------------------------------------
 // Function countOccurrences()

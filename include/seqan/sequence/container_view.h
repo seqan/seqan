@@ -307,22 +307,6 @@ template <typename TContainer, typename TSpec>
 struct Iterator<ContainerView<TContainer, TSpec> const, Standard>:
     public Iterator<TContainer const, Standard> {};
 
-#ifdef PLATFORM_CUDA
-template <typename TContainer, typename TAlloc, typename TSpec>
-struct Iterator<ContainerView<thrust::device_vector<TContainer, TAlloc>, TSpec>, Standard>
-{
-    typedef typename thrust::device_vector<TContainer, TAlloc>::pointer         TIterator_;
-    typedef typename thrust::detail::pointer_traits<TIterator_>::raw_pointer    Type;
-};
-
-template <typename TContainer, typename TAlloc, typename TSpec>
-struct Iterator<ContainerView<thrust::device_vector<TContainer, TAlloc>, TSpec> const, Standard>
-{
-    typedef typename thrust::device_vector<TContainer const, TAlloc>::pointer   TIterator_;
-    typedef typename thrust::detail::pointer_traits<TIterator_>::raw_pointer    Type;
-};
-#endif
-
 // ----------------------------------------------------------------------------
 // Metafunction Difference
 // ----------------------------------------------------------------------------
