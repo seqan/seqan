@@ -86,7 +86,21 @@ namespace seqan
 
 /// GENERIC
 template <typename TScore, typename TSpec = void>
-struct KarlinAltschulValues;
+struct KarlinAltschulValues
+{
+    typedef uint8_t TSize;
+
+    /* statics */
+    static constexpr TSize nParams = 0;
+    static constexpr TSize nParamSets = 0;
+    static double const VALUE[1][8]; // size 8 to silence warnings
+};
+
+template <typename TScore, typename TSpec>
+double const KarlinAltschulValues<TScore, TSpec>::VALUE[1][8] =
+{
+    {0,0,0,0,0,0,0,0}
+};
 
 /// BLOSUM30
 // not implemented in BLAST
@@ -528,19 +542,17 @@ inline bool
 isValid(BlastScoringScheme<TScore> const & scheme)
 {
     typedef KarlinAltschulValues<TScore> TKAValues;
-    return scheme.parameterIndex < TKAValues::nParamSets;
+    return scheme.parameterIndex != std::numeric_limits<typename TKAValues::TSize>::max();
 }
 
 // ----------------------------------------------------------------------------
 // Function _selectSet
 // ----------------------------------------------------------------------------
 
-template <typename TScore>
+template <typename TScore, typename TKAValues>
 inline bool
 _selectSet(BlastScoringScheme<TScore> & scheme)
 {
-    typedef KarlinAltschulValues<TScore> TKAValues;
-
     for (typename TKAValues::TSize i = 0; i < TKAValues::nParamSets; ++i)
     {
         if ((TKAValues::VALUE[i][0] == -scoreGapOpenBlast(scheme)) &&
@@ -553,6 +565,32 @@ _selectSet(BlastScoringScheme<TScore> & scheme)
     // no suitable adapter
     scheme.parameterIndex = std::numeric_limits<typename TKAValues::TSize>::max();
     return false;
+}
+
+template <typename TValue, typename TSpec>
+inline bool
+_selectSet(BlastScoringScheme<Score<TValue, ScoreMatrix<AminoAcid, TSpec>>> & scheme)
+{
+    using TScore = Score<TValue, ScoreMatrix<AminoAcid, TSpec>>;
+    using TKAValues = KarlinAltschulValues<TScore>;
+    return _selectSet<TScore, TKAValues>(scheme);
+}
+
+template <typename TValue>
+inline bool
+_selectSet(BlastScoringScheme<Score<TValue, ScoreMatrix<AminoAcid, ScoreSpecSelectable>>> & scheme)
+{
+    using TScoreOrig = Score<TValue, ScoreMatrix<AminoAcid, ScoreSpecSelectable>>;
+    bool ret = false;
+    impl::score::matrixTagDispatch(impl::score::MatrixTags(),
+                                   getScoreMatrixId(seqanScheme(scheme)),
+                                   [&] (auto const & tag)
+    {
+        using TScoreMod = Score<TValue, ScoreMatrix<AminoAcid, std::decay_t<decltype(tag)>>>;
+        using TKAValues = KarlinAltschulValues<TScoreMod>;
+        ret =  _selectSet<TScoreOrig, TKAValues>(scheme);
+    });
+    return ret;
 }
 
 inline bool

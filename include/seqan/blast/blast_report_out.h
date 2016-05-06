@@ -247,6 +247,27 @@ _matrixName(Pam250 const & /**/)
     return "PAM250";
 }
 
+template <typename TCurTag,
+          typename TRestList,
+          typename TRunnable>
+constexpr const char *
+_matrixNameTagDispatch(TagList<TCurTag, TRestList> const &,
+                       AminoAcidScoreMatrixID const m)
+{
+    using TCurList = TagList<TCurTag, TRestList>;
+    if (LENGTH<impl::score::MatrixTags>::VALUE  - LENGTH<TCurList>::VALUE == static_cast<uint8_t>(m))
+        return _matrixName(TCurTag());
+    else
+        return _matrixNameTagDispatch(TRestList(), m);
+}
+
+template <typename TValue>
+constexpr const char *
+_matrixName(Score<TValue, ScoreMatrix<AminoAcid, ScoreSpecSelectable> > & sc)
+{
+    return matrixTagDispatch_(impl::score::MatrixTags(), getScoreMatrixId(sc));
+}
+
 // ----------------------------------------------------------------------------
 // Function _writeStatsBlock
 // ----------------------------------------------------------------------------
