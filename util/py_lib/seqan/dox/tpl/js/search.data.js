@@ -218,7 +218,6 @@ window.searchData = [
   {title:'MultipleShiftAndPattern',text:'',akas:'',subentries:'',loc:'class_MultipleShiftAndPattern.html',langEntity:'class'},
   {title:'SEQAN_HOST_DEVICE',text:'',akas:'',subentries:'',loc:'macro_SEQAN_95HOST_95DEVICE.html',langEntity:'macro'},
   {title:'Bottom',text:'',akas:'',subentries:'',loc:'global_function_Bottom.html',langEntity:'global_function'},
-  {title:'PLATFORM_CUDA',text:'',akas:'',subentries:'',loc:'macro_PLATFORM_95CUDA.html',langEntity:'macro'},
   {title:'PrefixSegment',text:'',akas:'substring',subentries:'',loc:'class_PrefixSegment.html',langEntity:'class'},
   {title:'move',text:'',akas:'',subentries:'',loc:'global_function_move.html',langEntity:'global_function'},
   {title:'PriorityType',text:'',akas:'',subentries:'interface_function top,interface_function adjustTop,interface_function push,interface_function pop',loc:'class_PriorityType.html',langEntity:'class'},

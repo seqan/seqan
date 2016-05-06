@@ -149,13 +149,7 @@ struct Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreTempSA>
 {
     typedef Index<TText, FMIndex<TSpec, TConfig> >          TIndex_;
     typedef typename SAValue<TIndex_>::Type                 TSAValue_;
-
-    // NOTE(esiragusa): External causes problems on device code.
-#ifndef PLATFORM_CUDA
     typedef String<TSAValue_, External<ExternalConfigLarge<> > >                Type;
-#else
-    typedef String<TSAValue_, typename DefaultIndexStringSpec<TText>::Type>     Type;
-#endif
 };
 
 // ----------------------------------------------------------------------------

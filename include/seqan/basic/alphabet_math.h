@@ -61,16 +61,11 @@ namespace seqan {
 // Metafunction MaxValue
 // ----------------------------------------------------------------------------
 
-#ifdef PLATFORM_CUDA
-template <typename T>
-struct MaximumValueUnsigned_ { static const T VALUE = ~(T)0; };
-#else
 template <typename T>
 struct MaximumValueUnsigned_ { static const T VALUE; };
 
 template <typename T>
 const T MaximumValueUnsigned_<T>::VALUE = ~(T)0;
-#endif
 
 template <typename T>
 struct MaximumValueSigned_ { static const T VALUE; };

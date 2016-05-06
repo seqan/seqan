@@ -312,11 +312,8 @@ _goDown(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec>
     typedef typename Value<TIndex>::Type                    TAlphabet;
 //    typedef typename ValueSize<TAlphabet>::Type             TAlphabetSize;
 
-    // NOTE(esiragusa): isLeaf() early exit is slower on CUDA.
     // NOTE(esiragusa): this should be faster only for texts over small alphabets consisting of few/long sequences.
-#ifndef __CUDA_ARCH__
     if (isLeaf(it)) return false;
-#endif
 
     // TODO(esiragusa): Fix increment for alphabets with qualities.
 //    for (TAlphabetSize c = 0; c < ValueSize<TAlphabet>::VALUE; ++c)
@@ -349,13 +346,8 @@ _goDownString(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<
     {
         TRange _range;
 
-        // NOTE(esiragusa): isLeaf() early exit is slower on CUDA.
         // NOTE(esiragusa): this should be faster only for texts over small alphabets consisting of few/long sequences.
-#ifdef __CUDA_ARCH__
-        if (!_getNodeByChar(it, value(it), _range, value(stringIt))) break;
-#else
         if (isLeaf(it) || !_getNodeByChar(it, value(it), _range, value(stringIt))) break;
-#endif
 
         value(it).range = _range;
     }
