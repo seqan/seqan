@@ -88,13 +88,8 @@ _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec>
         TRange _range;
         TSize2 _smaller = 0;
 
-        // NOTE(esiragusa): isLeaf() early exit is slower on CUDA.
         // NOTE(esiragusa): this should be faster only for texts over small alphabets consisting of few/long sequences.
-#ifdef __CUDA_ARCH__
-        if (!_getNodeByChar(getIter(it, TDirection()), value(getIter(it, TDirection())), _range, _smaller, value(stringIt))) break;
-#else
         if (isLeaf(_iter(it, TDirection())) || !_getNodeByChar(_iter(it, TDirection()), value(_iter(it, TDirection())), _range, _smaller, value(stringIt))) break;
-#endif
 
         value(_iter(it, TDirection())).range = _range;
         value(_iter(it, TDirection())).smaller = _smaller;
