@@ -183,25 +183,25 @@ struct MinValue : MinValue_<T> {};
 // --------------------------------------------------------------------------
 
 template <typename TValue>
-inline SEQAN_HOST_DEVICE
+inline
 TValue toUpperValue(TValue c)
 {
     return c;
 }
 
-inline SEQAN_HOST_DEVICE
+inline
 char toUpperValue(char c)
 {
     return c >= 'a' && c <= 'z' ? c + 'A' - 'a' : c;
 }
 
-inline SEQAN_HOST_DEVICE
+inline
 signed char toUpperValue(signed char c)
 {
     return toUpperValue(static_cast<char>(c));
 }
 
-inline SEQAN_HOST_DEVICE
+inline
 unsigned char toUpperValue(unsigned char c)
 {
     return toUpperValue(static_cast<char>(c));

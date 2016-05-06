@@ -687,7 +687,7 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
  * @return bool <tt>true</tt>, iff the fibre is present.
  */
     template <typename TText, typename TSpec, typename TFibre>
-    SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, TSpec> &index, Tag<TFibre> const fibre) {
+    inline bool indexSupplied(Index<TText, TSpec> &index, Tag<TFibre> const fibre) {
         return !empty(getFibre(index, fibre));
     }
 

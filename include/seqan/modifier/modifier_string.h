@@ -483,14 +483,14 @@ _toPointer(ModifiedString<THost, TSpec> const & me)
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Parameter_<ModifiedString<THost, TSpec> >::Type
+inline typename Parameter_<ModifiedString<THost, TSpec> >::Type
 _toParameter(ModifiedString<THost, TSpec> & me)
 {
     return me;
 }
 
 template <typename THost, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Parameter_<ModifiedString<THost, TSpec> const >::Type
+inline typename Parameter_<ModifiedString<THost, TSpec> const >::Type
 _toParameter(ModifiedString<THost, TSpec> const & me)
 {
     return me;

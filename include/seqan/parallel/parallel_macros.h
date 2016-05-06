@@ -122,7 +122,7 @@ inline double omp_get_wtime()
 // Function getThreadId()
 // ----------------------------------------------------------------------------
 
-SEQAN_HOST_DEVICE inline unsigned getThreadId()
+inline unsigned getThreadId()
 {
 #if defined(_OPENMP)
     return omp_get_thread_num();

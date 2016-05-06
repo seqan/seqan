@@ -232,7 +232,7 @@ isBitSet(TWord word, TIndex index)
 // ----------------------------------------------------------------------------
 
 template <typename TWord, typename TPos>
-SEQAN_HOST_DEVICE inline TWord
+inline TWord
 hiBits(TWord word, TPos index)
 {
     return word & ~((TWord(1) << (BitsPerValue<TWord>::VALUE - index)) - TWord(1));
@@ -256,7 +256,6 @@ hiBits(TWord word, TPos index)
  */
 
 template <typename TWord>
-SEQAN_HOST_DEVICE
 inline unsigned
 popCount(TWord word)
 {

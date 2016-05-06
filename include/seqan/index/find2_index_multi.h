@@ -152,7 +152,7 @@ struct FinderContext_<TText, TPattern, Multiple<TSpec>, TDelegate>
 //    TPatternIterator _patternIt;
     unsigned        _patternIt;
 
-    explicit SEQAN_HOST_DEVICE
+    explicit
     FinderContext_(TFinder & finder, TDelegate & delegate) :
         finder(finder),
         delegate(delegate),
@@ -167,7 +167,7 @@ struct FinderContext_<TText, TPattern, Multiple<TSpec>, TDelegate>
     {}
 
     template <typename TOther>
-    SEQAN_HOST_DEVICE inline void
+    inline void
     operator()(TOther & /* other */)
     {
         delegate(*this);
@@ -308,7 +308,7 @@ _preprocess(Pattern<TNeedles, Multiple<TSpec> > & pattern)
 // ----------------------------------------------------------------------------
 
 //template <typename TNeedles, typename TSpec, typename TOtherNeedles>
-//SEQAN_HOST_DEVICE inline void
+//inline void
 //setHost(Pattern<TNeedles, Multiple<TSpec> > & pattern, TOtherNeedles const & needles)
 //{
 //}
@@ -426,14 +426,14 @@ view(Finder_<TText, TPattern, Multiple<TSpec> > & finder)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec, typename TDelegate>
-inline SEQAN_HOST_DEVICE typename TextIterator_<TText, TPattern, Multiple<TSpec> >::Type &
+inline typename TextIterator_<TText, TPattern, Multiple<TSpec> >::Type &
 _textIterator(FinderContext_<TText, TPattern, Multiple<TSpec>, TDelegate> & ctx)
 {
     return _textIterator(ctx.baseFinder);
 }
 
 template <typename TText, typename TPattern, typename TSpec, typename TDelegate>
-inline SEQAN_HOST_DEVICE typename TextIterator_<TText, TPattern, Multiple<TSpec> >::Type const &
+inline typename TextIterator_<TText, TPattern, Multiple<TSpec> >::Type const &
 _textIterator(FinderContext_<TText, TPattern, Multiple<TSpec>, TDelegate> const & ctx)
 {
     return _textIterator(ctx.baseFinder);
@@ -444,7 +444,7 @@ _textIterator(FinderContext_<TText, TPattern, Multiple<TSpec>, TDelegate> const 
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec, typename TDelegate>
-SEQAN_HOST_DEVICE inline typename Score_<TSpec>::Type
+inline typename Score_<TSpec>::Type
 _getScore(FinderContext_<TText, TPattern, Multiple<TSpec>, TDelegate> const & ctx)
 {
     return _getScore(ctx.baseFinder);

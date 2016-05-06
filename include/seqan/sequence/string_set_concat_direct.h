@@ -128,14 +128,14 @@ public:
     // ----------------------------------------------------------------------
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline typename Reference<StringSet>::Type
+    inline typename Reference<StringSet>::Type
     operator[](TPos pos)
     {
         return value(*this, pos);
     }
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline typename Reference<StringSet const>::Type
+    inline typename Reference<StringSet const>::Type
     operator[](TPos pos) const
     {
         return value(*this, pos);
@@ -530,7 +530,7 @@ inline void clear(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me)
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Size<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
+inline typename Size<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
 length(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me)
 {
     return length(me.limits) - 1;
@@ -643,14 +643,14 @@ infixWithLength(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPo
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec, typename TPos >
-SEQAN_HOST_DEVICE inline typename Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
+inline typename Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
 value(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPos pos)
 {
     return infix(me.concat, me.limits[pos], me.limits[pos + 1]);
 }
 
 template <typename TString, typename TSpec, typename TPos >
-SEQAN_HOST_DEVICE inline typename Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type
+inline typename Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type
 value(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPos pos)
 {
     return infix(me.concat, me.limits[pos], me.limits[pos + 1]);

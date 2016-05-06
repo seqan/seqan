@@ -271,14 +271,14 @@ inline void clear(SparseString<TFibreValues, TSpec> & string)
  */
 
 template <typename TFibreValues, typename TSpec>
-SEQAN_HOST_DEVICE inline bool empty(SparseString<TFibreValues, TSpec> const & string)
+inline bool empty(SparseString<TFibreValues, TSpec> const & string)
 {
 //    return empty(getFibre(string, FibreIndicators()));
     return length(string) == 0;
 }
 
 template <typename TFibreValues, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline bool _isContained(SparseString<TFibreValues, TSpec> const & string, TPos const & pos)
+inline bool _isContained(SparseString<TFibreValues, TSpec> const & string, TPos const & pos)
 {
     return getValue(getFibre(string, FibreIndicators()), pos);
 }
@@ -315,7 +315,7 @@ assignValue(SparseString<TFibreValues, TSpec> & string, TPos pos, TValue value)
  */
 
 template <typename TFibreValues, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline typename GetValue<SparseString<TFibreValues, TSpec> >::Type
+inline typename GetValue<SparseString<TFibreValues, TSpec> >::Type
 getValue(SparseString<TFibreValues, TSpec> & string, TPos pos)
 {
     if (_isContained(string, pos))
@@ -325,7 +325,7 @@ getValue(SparseString<TFibreValues, TSpec> & string, TPos pos)
 }
 
 template <typename TFibreValues, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline typename GetValue<SparseString<TFibreValues, TSpec> const>::Type
+inline typename GetValue<SparseString<TFibreValues, TSpec> const>::Type
 getValue(SparseString<TFibreValues, TSpec> const & string, TPos pos)
 {
     if (_isContained(string, pos))
@@ -352,14 +352,14 @@ getValue(SparseString<TFibreValues, TSpec> const & string, TPos pos)
  */
 
 template <typename TFibreValues, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline typename Reference<SparseString<TFibreValues, TSpec> >::Type
+inline typename Reference<SparseString<TFibreValues, TSpec> >::Type
 value(SparseString<TFibreValues, TSpec> & string, TPos pos)
 {
     return getValue(string, pos);
 }
 
 template <typename TFibreValues, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline typename Reference<SparseString<TFibreValues, TSpec> >::Type
+inline typename Reference<SparseString<TFibreValues, TSpec> >::Type
 value(SparseString<TFibreValues, TSpec> const & string, TPos pos)
 {
     return getValue(string, pos);
@@ -383,28 +383,28 @@ value(SparseString<TFibreValues, TSpec> const & string, TPos pos)
  */
 
 template <typename TFibreValues, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Fibre<SparseString<TFibreValues, TSpec>, FibreValues>::Type const &
+inline typename Fibre<SparseString<TFibreValues, TSpec>, FibreValues>::Type const &
 getFibre(SparseString<TFibreValues, TSpec> const & sparseString, FibreValues)
 {
     return sparseString.values;
 }
 
 template <typename TFibreValues, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Fibre<SparseString<TFibreValues, TSpec>, FibreValues>::Type &
+inline typename Fibre<SparseString<TFibreValues, TSpec>, FibreValues>::Type &
 getFibre(SparseString<TFibreValues, TSpec> & sparseString, FibreValues)
 {
     return sparseString.values;
 }
 
 template <typename TFibreValues, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Fibre<SparseString<TFibreValues, TSpec>, FibreIndicators>::Type const &
+inline typename Fibre<SparseString<TFibreValues, TSpec>, FibreIndicators>::Type const &
 getFibre(SparseString<TFibreValues, TSpec> const & sparseString, FibreIndicators)
 {
     return sparseString.indicators;
 }
 
 template <typename TFibreValues, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Fibre<SparseString<TFibreValues, TSpec>, FibreIndicators>::Type &
+inline typename Fibre<SparseString<TFibreValues, TSpec>, FibreIndicators>::Type &
 getFibre(SparseString<TFibreValues, TSpec> & sparseString, FibreIndicators)
 {
     return sparseString.indicators;
@@ -429,7 +429,7 @@ getFibre(SparseString<TFibreValues, TSpec> & sparseString, FibreIndicators)
 
 
 template <typename TFibreValues, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Size<SparseString<TFibreValues, TSpec> const>::Type
+inline typename Size<SparseString<TFibreValues, TSpec> const>::Type
 length(SparseString<TFibreValues, TSpec> const & string)
 {
     return string._length;

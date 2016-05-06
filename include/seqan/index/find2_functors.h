@@ -72,7 +72,7 @@ struct OccurrencesCounter_
     }
 
     template <typename TFinder>
-    inline SEQAN_HOST_DEVICE void
+    inline void
     operator() (TFinder const & finder)
     {
         counts[getThreadId()] += countOccurrences(_textIterator(finder));

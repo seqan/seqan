@@ -216,7 +216,6 @@ window.searchData = [
   {title:'AlignmentGraphFormatTags',text:'',akas:'',subentries:'grouped_tag MsfFormat,grouped_tag FastaFormat,grouped_tag CgVizFormat,grouped_tag TCoffeLib,grouped_tag BlastLib,grouped_tag MummerLib,grouped_tag NewickFormat',loc:'group_AlignmentGraphFormatTags.html',langEntity:'group'},
   {title:'Rna5StringReverse',text:'',akas:'',subentries:'',loc:'global_typedef_Rna_53StringReverse.html',langEntity:'global_typedef'},
   {title:'MultipleShiftAndPattern',text:'',akas:'',subentries:'',loc:'class_MultipleShiftAndPattern.html',langEntity:'class'},
-  {title:'SEQAN_HOST_DEVICE',text:'',akas:'',subentries:'',loc:'macro_SEQAN_95HOST_95DEVICE.html',langEntity:'macro'},
   {title:'Bottom',text:'',akas:'',subentries:'',loc:'global_function_Bottom.html',langEntity:'global_function'},
   {title:'PrefixSegment',text:'',akas:'substring',subentries:'',loc:'class_PrefixSegment.html',langEntity:'class'},
   {title:'move',text:'',akas:'',subentries:'',loc:'global_function_move.html',langEntity:'global_function'},

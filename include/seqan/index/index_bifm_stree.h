@@ -67,7 +67,7 @@ inline void update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndex
 
 
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TString, typename TSize, typename TDirection>
-SEQAN_HOST_DEVICE inline bool
+inline bool
 _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > &it,
               TString const & string,
               TSize & lcp,
