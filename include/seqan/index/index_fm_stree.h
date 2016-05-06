@@ -370,7 +370,7 @@ _goDownString(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<
         TSize2 _smaller = 0;
 
         // NOTE(esiragusa): this should be faster only for texts over small alphabets consisting of few/long sequences.
-        if (isLeaf(it) || !_getNodeByChar(it, value(it), _range, value(stringIt))) break;
+        if (isLeaf(it) || !_getNodeByChar(it, value(it), _range, _smaller, value(stringIt))) break;
 
         value(it).range = _range;
         value(it).smaller = _smaller;
