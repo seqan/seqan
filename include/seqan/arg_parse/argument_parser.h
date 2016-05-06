@@ -221,6 +221,9 @@ public:
                                         "FORMAT"));
         hideOption(*this, "export-help", true);
         setValidValues(*this, "export-help", "html man txt");
+
+        //TODO:: if compiler flag do not track is set don't show this option
+        addOption(*this, ArgParseOption("","do-not-check-version", "Do not check for a newer version of the application"));
     }
 
     // ----------------------------------------------------------------------------
