@@ -1739,7 +1739,7 @@ inline void fail()
 #endif  // #if SEQAN_ENABLE_TESTING
 
 
-#if SEQAN_ENABLE_DEBUG && !defined(__CUDA_ARCH__)
+#if SEQAN_ENABLE_DEBUG
 
 /*!
  * @macro AssertMacros#SEQAN_ASSERT
@@ -2257,27 +2257,6 @@ inline void fail()
         }                                                             \
     } while (false)
 
-
-#elif SEQAN_ENABLE_DEBUG && defined(__CUDA_ARCH__)
-
-#define SEQAN_ASSERT_EQ(_arg1, _arg2) do { assert(_arg1 == _arg2); } while (false)
-#define SEQAN_ASSERT_EQ_MSG(_arg1, _arg2, ...) do { assert(_arg1 == _arg2); } while (false)
-#define SEQAN_ASSERT_NEQ(_arg1, _arg2) do { assert(_arg1 != _arg2); } while (false)
-#define SEQAN_ASSERT_NEQ_MSG(_arg1, _arg2, ...) do { assert(_arg1 != _arg2); } while (false)
-#define SEQAN_ASSERT_LEQ(_arg1, _arg2) do { assert(_arg1 <= _arg2); } while (false)
-#define SEQAN_ASSERT_LEQ_MSG(_arg1, _arg2, ...) do { assert(_arg1 <= _arg2); } while (false)
-#define SEQAN_ASSERT_LT(_arg1, _arg2) do { assert(_arg1 < _arg2); } while (false)
-#define SEQAN_ASSERT_LT_MSG(_arg1, _arg2, ...) do { assert(_arg1 < _arg2); } while (false)
-#define SEQAN_ASSERT_GEQ(_arg1, _arg2) do { assert(_arg1 >= _arg2); } while (false)
-#define SEQAN_ASSERT_GEQ_MSG(_arg1, _arg2, ...) do { assert(_arg1 >= _arg2); } while (false)
-#define SEQAN_ASSERT_GT(_arg1, _arg2) do { assert(_arg1 > _arg2); } while (false)
-#define SEQAN_ASSERT_GT_MSG(_arg1, _arg2, ...) do { assert(_arg1 > _arg2); } while (false)
-#define SEQAN_ASSERT(_arg1) do { assert(_arg1); } while (false)
-#define SEQAN_ASSERT_MSG(_arg1, ...) do { assert(_arg1); } while (false)
-#define SEQAN_ASSERT_NOT(_arg1) do { assert(!_arg1); } while (false)
-#define SEQAN_ASSERT_NOT_MSG(_arg1, ...) do { assert(!_arg1); } while (false)
-#define SEQAN_ASSERT_FAIL(...) do { assert(false); } while (false)
-
 #else
 
 #define SEQAN_ASSERT_EQ(_arg1, _arg2) do {} while (false)
@@ -2298,7 +2277,7 @@ inline void fail()
 #define SEQAN_ASSERT_NOT_MSG(_arg1, ...) do {} while (false)
 #define SEQAN_ASSERT_FAIL(...) do {} while (false)
 
-#endif  // #if defined(SEQAN_ENABLE_DEBUG) && !defined(__CUDA_ARCH__)
+#endif  // #if defined(SEQAN_ENABLE_DEBUG)
 
 // Returns a string (of type char*) with the path to the called binary.
 //

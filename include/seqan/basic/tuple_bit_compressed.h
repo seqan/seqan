@@ -110,7 +110,7 @@ struct Tuple<TValue, SIZE, BitPacked<> >
 
     // TODO(holtgrew): There is the unresolved issue whether the initialize costs critical performance. Since Tuples are PODs, it should be able to initialize Strings/arrays of them with memset().
     // TODO(weese): Use static a assertion outside of the constructor here, see SEQAN_CONCEPT_ASSERT
-//    SEQAN_HOST_DEVICE Tuple() : i(0)
+//    Tuple() : i(0)
 //    {
 //        SEQAN_ASSERT_LEQ(static_cast<uint64_t>(BitsPerValue<TValue>::VALUE * SIZE), static_cast<uint64_t>(sizeof(TBitVector) * 8));
 //    }
@@ -120,7 +120,7 @@ struct Tuple<TValue, SIZE, BitPacked<> >
     // -----------------------------------------------------------------------
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline const TValue
+    inline const TValue
     operator[](TPos k) const
     {
         SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
