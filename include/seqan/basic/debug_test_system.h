@@ -2257,6 +2257,8 @@ inline void fail()
         }                                                             \
     } while (false)
 
+#else
+
 #define SEQAN_ASSERT_EQ(_arg1, _arg2) do {} while (false)
 #define SEQAN_ASSERT_EQ_MSG(_arg1, _arg2, ...) do {} while (false)
 #define SEQAN_ASSERT_NEQ(_arg1, _arg2) do {} while (false)
