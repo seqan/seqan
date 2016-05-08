@@ -430,8 +430,8 @@ struct SamIgnoreOrAssertFunctor_
 
 template <typename TIdString, typename TSeqString,
         typename TForwardIter>
-inline void
-_readRecord(TIdString & meta, TSeqString & seq,
+inline bool
+_readRecord(TIdString & meta, TSeqString & seq, CharString & prevQName,
             TForwardIter & iter,
             Sam const & /*tag*/)
 {
@@ -452,6 +452,10 @@ _readRecord(TIdString & meta, TSeqString & seq,
     readUntil(meta, iter, nextEntry);
     skipOne(iter, IsTab());
 
+    // if we have seen this sequence before, return
+    if ( meta == prevQName )
+        return false;
+
     // Skip FLAG, RNAME, POS, MAPQ, CIGAR, RNEXT, PNEXT, TLEN
     for (unsigned i = 0; i < 8; ++i) {
         skipUntil(iter, IsTab());
@@ -464,6 +468,7 @@ _readRecord(TIdString & meta, TSeqString & seq,
     if (seq == "*")
         clear(seq);
     skipOne(iter, IsTab());
+    return true;
 }
 
 template <typename TIdString, typename TSeqString,
@@ -478,13 +483,13 @@ readRecord(TIdString & meta, TSeqString & seq,
     CharString prevQName = context.buffer;
     clear( context.buffer );
 
-    _readRecord(meta, seq, iter, tag);
-    context.buffer = meta;
-
-    //check if previous sequence had the same id and return nothing
-    if (prevQName==meta) {
+    if ( _readRecord(meta, seq, prevQName, iter, tag) )
+    {
+        context.buffer = meta;
+    } else
+    {
+        context.buffer = meta;
         clear(meta);
-        clear(seq);
     }
     skipLine(iter);
 }
@@ -509,25 +514,24 @@ readRecord(TIdString & meta, TSeqString & seq,
         CharString prevQName = context.buffer;
         clear( context.buffer );
 
-        _readRecord( meta, seq, iter, tag);
+        if ( _readRecord( meta, seq, prevQName, iter, tag) )
+        {
+            // QUAL
+            readUntil(qual, iter, OrFunctor<IsTab, IsNewline>(), TQualIgnoreOrAssert());
 
-        // QUAL
-        readUntil(qual, iter, OrFunctor<IsTab, IsNewline>(), TQualIgnoreOrAssert());
-
-        // Handle case of missing quality: throw parse exception if there is no quality.
-        // there is another version of readRecord that doesn't use quality
-        if (qual == '*') {
-            throw ParseError("This SAM file doesn't provide PHRED quality string. "
-                                     "Consider using another version of readRecord without quality");
-        }
-
-        //TODO SHOW THIS TO RENE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        context.buffer = meta;
-        // check if previous sequence had the same id and return nothing
-        if (prevQName==meta) {
+            // Handle case of missing quality: throw parse exception if there is no quality.
+            // there is another version of readRecord that doesn't use quality
+            if (qual == '*') {
+                throw ParseError("This SAM file doesn't provide PHRED quality string. "
+                                         "Consider using another version of readRecord without quality");
+            }
+            //TODO SHOW THIS TO RENE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            context.buffer = meta;
+        } else
+        {
+            //TODO SHOW THIS TO RENE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            context.buffer = meta;
             clear(meta);
-            clear(seq);
-            clear(qual);
         }
         skipLine(iter);
     }

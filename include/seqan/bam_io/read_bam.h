@@ -279,32 +279,24 @@ readRecord(BamAlignmentRecord & record,
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString,
-        typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-inline void
-readRecord(TIdString & meta, TSeqString & seq,
-           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-           TForwardIter & iter,
-           Bam const & /* tag */)
+        typename TCharIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline int32_t
+_readRecord(TIdString & meta, TSeqString & seq, CharString & prevQName,
+            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+            int32_t & remainingBytes,
+            TCharIter & it,
+            Bam const & /* tag */)
 {
-    typedef typename Iterator<TIdString, Standard>::Type                             TCharIter;
+
     typedef typename Iterator<TSeqString, Standard>::Type SEQAN_RESTRICT             TSeqIter;
 
-    //save previous sequence name
-    CharString prevQName = context.buffer;
-
-    clear(context.buffer);
-    clear(meta);
-    clear(seq);
-
-    BamAlignmentRecordCore recordCore;
-
-    // Read size and data of the remaining block in one chunk (fastest).
-    int32_t remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
-    TCharIter it = begin(context.buffer, Standard());
-
     // BamAlignmentRecordCore.
+    BamAlignmentRecordCore recordCore;
     arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char*>(&recordCore));
     it += sizeof(BamAlignmentRecordCore);
+
+    clear(meta);
+    clear(seq);
 
     remainingBytes -= sizeof(BamAlignmentRecordCore) + recordCore._l_qname +
                       recordCore._n_cigar * 4 + (recordCore._l_qseq + 1) / 2 + recordCore._l_qseq;
@@ -326,6 +318,9 @@ readRecord(TIdString & meta, TSeqString & seq,
     resize(meta, recordCore._l_qname - 1, Exact());
     arrayCopyForward(it, it + recordCore._l_qname - 1, begin(meta, Standard()));
     it += recordCore._l_qname;
+
+    if (prevQName == meta)
+        return 0;
 
     // skip cigar string.
     it += sizeof(uint32_t)*recordCore._n_cigar;
@@ -345,19 +340,41 @@ readRecord(TIdString & meta, TSeqString & seq,
     }
     if (recordCore._l_qseq & 1)
         *sit++ = Iupac((uint8_t)*it++ >> 4);
+    return recordCore._l_qseq; // returns length of query sequence. Needed for reading quality
+}
+
+template <typename TIdString, typename TSeqString,
+        typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline void
+readRecord(TIdString & meta, TSeqString & seq,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           Bam const & tag)
+{
+    typedef typename Iterator<TIdString, Standard>::Type                             TCharIter;
+
+    //save previous sequence name
+    CharString prevQName = context.buffer;
+
+    clear(context.buffer);
+
+    // Read size and data of the remaining block in one chunk (fastest).
+    int32_t remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
+    TCharIter it = begin(context.buffer, Standard());
+
+    if ( _readRecord( meta, seq, prevQName, context, remainingBytes, it, tag ) )
+    {
+        clear(context.buffer);
+        context.buffer=meta;
+    } else
+    {
+        clear(context.buffer);
+        context.buffer=meta;
+        clear(meta);
+    }
 
     // skip phred quality and tags
     it += remainingBytes;
-
-    clear(context.buffer);
-    context.buffer=meta;
-
-    // delete entry if query name of it is equal to query name of previous entry
-    if ( prevQName == meta ) {
-        clear(meta);
-        clear(seq);
-    }
-
 }
 
 // ----------------------------------------------------------------------------
@@ -370,7 +387,7 @@ inline void
 readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
-           Bam const & /* tag */)
+           Bam const & tag )
 {
     typedef typename Iterator<TIdString, Standard>::Type                              TCharIter;
     typedef typename Iterator<TSeqString, Standard>::Type SEQAN_RESTRICT              TSeqIter;
@@ -379,86 +396,38 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
     CharString prevQName = context.buffer;
 
     clear(context.buffer);
-    clear(meta);
-    clear(seq);
     clear(qual);
-
-    BamAlignmentRecordCore recordCore;
 
     // Read size and data of the remaining block in one chunk (fastest).
     int32_t remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
     TCharIter it = begin(context.buffer, Standard());
 
-    // BamAlignmentRecordCore.
-    arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char*>(&recordCore));
-    it += sizeof(BamAlignmentRecordCore);
-
-    remainingBytes -= sizeof(BamAlignmentRecordCore) + recordCore._l_qname +
-                      recordCore._n_cigar * 4 + (recordCore._l_qseq + 1) / 2 + recordCore._l_qseq;
-    SEQAN_ASSERT_GEQ(remainingBytes, 0);
-
-    // Translate file local rID into a global rID that is compatible with the context contigNames.
-    if (recordCore.rID >= 0 && !empty(context.translateFile2GlobalRefId))
-        recordCore.rID = context.translateFile2GlobalRefId[recordCore.rID];
-    if (recordCore.rID >= 0)
-        SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rID), length(contigNames(context)));
-
-    // ... the same for rNextId
-    if (recordCore.rNextId >= 0 && !empty(context.translateFile2GlobalRefId))
-        recordCore.rNextId = context.translateFile2GlobalRefId[recordCore.rNextId];
-    if (recordCore.rNextId >= 0)
-        SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rNextId), length(contigNames(context)));
-
-
-    // query name.
-    resize(meta, recordCore._l_qname - 1, Exact());
-    arrayCopyForward(it, it + recordCore._l_qname - 1, begin(meta, Standard()));
-    it += recordCore._l_qname;
-
-    // skip cigar string.
-    it += 4 * recordCore._n_cigar;
-
-    // query sequence.
-    resize(seq, recordCore._l_qseq, Exact());
-    TSeqIter sit = begin(seq, Standard());
-    TSeqIter sitEnd = sit + (recordCore._l_qseq & ~1);
-    while (sit != sitEnd)
+    if ( int32_t l_qseq = _readRecord( meta, seq, prevQName, context, remainingBytes, it, tag ) )
     {
-        unsigned char ui = getValue(it);
-        ++it;
-        assignValue(sit, Iupac(ui >> 4));
-        ++sit;
-        assignValue(sit, Iupac(ui & 0x0f));
-        ++sit;
+        // phred quality
+        resize(qual, l_qseq, Exact());
+        TQualIter qitEnd = end(qual, Standard());
+        for (TQualIter qit = begin(qual, Standard()); qit != qitEnd;)
+            *qit++ = '!' + *it++;
+
+        // Handle case of missing quality: throw parse exception if there is no quality.
+        // there is another version of readRecord that doesn't use quality
+        // If qual is a sequence of 0xff (heuristic same as samtools: Only look at first byte) then we stop the program
+
+        if (!empty(qual) && qual[0] == '\xff')
+            throw ParseError("This BAM file doesn't provide PHRED quality string. "
+                                     "Consider using another version of readRecord without quality");
+        clear(context.buffer);
+        context.buffer=meta;
+    } else
+    {
+        clear(context.buffer);
+        context.buffer=meta;
+        clear(meta);
     }
-    if (recordCore._l_qseq & 1)
-        *sit++ = Iupac((uint8_t)*it++ >> 4);
 
-    // phred quality
-    resize(qual, recordCore._l_qseq, Exact());
-    TQualIter qitEnd = end(qual, Standard());
-    for (TQualIter qit = begin(qual, Standard()); qit != qitEnd;)
-        *qit++ = '!' + *it++;
-
-    // Handle case of missing quality: throw parse exception if there is no quality.
-    // there is another version of readRecord that doesn't use quality
-    // If qual is a sequence of 0xff (heuristic same as samtools: Only look at first byte) then we stop the program
-
-    if (!empty(qual) && qual[0] == '\xff')
-        throw ParseError("This BAM file doesn't provide PHRED quality string. "
-                                 "Consider using another version of readRecord without quality");
     // skip tags
     it += remainingBytes;
-
-    clear(context.buffer);
-    context.buffer=meta;
-
-    // delete entry if query name of it is equal to query name of previous entry
-    if ( prevQName == meta ) {
-        clear(meta);
-        clear(seq);
-        clear(qual);
-    }
 }
 
 }  // namespace seqan
