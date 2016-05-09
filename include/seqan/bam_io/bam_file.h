@@ -299,19 +299,6 @@ readRecord(BamAlignmentRecord & record, FormattedFile<Bam, Input, TSpec> & file)
     readRecord(record, context(file), file.iter, file.format);
 }
 
-/*!
- * @fn BamFileIn#readRecord
- * @brief read one @link FormattedFileRecordConcept @endlink from a @link BamFileIn @endlink object.
- *
- * @signature void readRecord(meta, seq, file);
- * @signature void readRecord(meta, seq, qual, file);
- *
- * @param[out] meta          The @link StringConcept @endlink object where to write the meta information into.
- * @param[out] seq           The @link StringConcept @endlink object where to write the sequence information into.
- * @param[out] qual          The @link StringConcept @endlink object where to write the quality information into.
- * @param[in]  file          The @link BamFileIn @endlink object to read from.
- *
- */
 template <typename TIdString, typename TSeqString, typename TSpec>
 inline void
 readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Bam, Input, TSpec> & file)
