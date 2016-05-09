@@ -36,14 +36,6 @@
 
 #include <cinttypes>
 
-#ifdef _MSC_VER
-    #include "platform/platform_windows.h"
-#elif __ICC
-    #include "platform/platform_icc.h"
-#else
-    #include "platform/platform_gcc.h"
-#endif
-
 // ==========================================================================
 // Define Used STD Library (e.g. the STL of the GNU compiler)
 // ==========================================================================
@@ -62,6 +54,40 @@
 #define COMPILER_GCC   defined(__GNUC__) && !defined(__ICC) && !defined(__clang__)
 #define COMPILER_INTEL defined(__ICC)
 #define COMPILER_CLANG defined(__clang__)
+
+// ==========================================================================
+// Platform Macros (Backwards Compatibility)
+// ==========================================================================
+/*!
+ * @macro PLATFORM_GCC
+ * @headerfile <seqan/platform.h>
+ * @brief Defined if the compiler is GCC (or compatible).
+ * @deprecated Use STD_LIB_VS, STD_LIB_GNU or STD_LIB_LLVM to know which
+ *     standard lib is currently used. Or use COMPILER_MSVC, COMPILER_GCC,
+ *     COMPILER_INTEL or COMPILER_CLANG to know which compiler is currently
+ *     used.
+ *
+ * @signature #define PLATFORM_GCC
+ */
+
+#if STD_LIB_VS
+#define PLATFORM_WINDOWS
+#define PLATFORM_WINDOWS_VS
+#else
+#define PLATFORM_GCC
+#endif
+
+#if PLATFORM_GCC && COMPILER_CLANG
+#define PLATFORM_CLANG
+#endif
+
+#if PLATFORM_GCC && COMPILER_INTEL
+#define PLATFORM_INTEL
+#endif
+
+#if PLATFORM_GCC && COMPILER_INTEL
+#define PLATFORM_GNU
+#endif
 
 // ==========================================================================
 // Define Integers
