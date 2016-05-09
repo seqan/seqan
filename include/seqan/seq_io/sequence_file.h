@@ -178,14 +178,14 @@ struct FileFormat<FormattedFile<Fastq, Output, TSpec> >
 
 /*!
  * @fn SeqFileIn#readRecord
- * @brief Read one @link FormattedFileRecordConcept @endlink from a @link SeqFileIn @endlink object.
+ * @brief Read one @link FormattedFileRecordConcept @endlink from a @link SeqFileIn @endlink or @link BamFileIn @endlink object.
  *
- * @signature void readRecord(meta, seq, qual, fileIn);
+ * @signature void readRecord(meta, seq[, qual], fileIn);
  *
  * @param[out] meta         The @link StringConcept @endlink object where to read the meta information into.
  * @param[out] seq          The @link StringConcept @endlink object where to read the sequence information into.
  * @param[out] qual         The @link StringConcept @endlink object where to read the quality information into.
- * @param[in,out] fileIn    The @link SeqFileIn @endlink object to read from.
+ * @param[in,out] fileIn    The @link SeqFileIn @endlink or @link BamFileIn @endlink object to read from.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
