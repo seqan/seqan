@@ -45,7 +45,7 @@
 #include <exception>
 #include <stdexcept>
 
-#ifdef PLATFORM_GCC
+#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
 #include <cxxabi.h>
 #endif
 

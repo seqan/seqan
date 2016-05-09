@@ -87,7 +87,7 @@ inline bool isTerminal()
 
 #endif  // #if defined(STDLIB_VS)
 
-#if defined(PLATFORM_GCC)
+#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
 
 #include <unistd.h>
 
@@ -100,7 +100,7 @@ inline bool isTerminal()
 #endif
 }
 
-#endif  // #if defined(PLATFORM_GCC)
+#endif  // #if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
 
 // ----------------------------------------------------------------------------
 // Function isAnsiColorTerminal()
@@ -189,7 +189,7 @@ inline bool getTerminalSize(unsigned & cols, unsigned & rows)
 
 #endif  // #if defined(STDLIB_VS)
 
-#if defined(PLATFORM_GCC)
+#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
 
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -208,7 +208,7 @@ inline bool getTerminalSize(unsigned & cols, unsigned & rows)
     return true;
 }
 
-#endif  // #if defined(PLATFORM_GCC)
+#endif  // #if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
 
 }  // namespace seqan
 

@@ -53,9 +53,9 @@
 #include <memory>
 #include <string>
 
-#ifdef PLATFORM_GCC
+#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
 #include <cxxabi.h>
-#endif  // #ifdef PLATFORM_GCC
+#endif  // #if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
 
 namespace seqan {
 
@@ -225,15 +225,15 @@ public:
     static std::string getTypeName()
     {
         const char* const name = typeid(T).name();
-#ifdef PLATFORM_GCC
+#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
         int status = 0;
         char* const readableName = abi::__cxa_demangle(name, 0, 0, &status);
         std::string nameString(status == 0 ? readableName : name);
         free(readableName);
         return nameString;
-#else  // #ifdef PLATFORM_GCC
+#else  // #if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
         return name;
-#endif  // #ifdef PLATFORM_GCC
+#endif  // #if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
     }
 
     static bool make(char const * testCaseName, char const * testName)

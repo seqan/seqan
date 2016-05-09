@@ -514,7 +514,7 @@ _bitScanForward(TWord word, WordSize_<NUM_BITS>)
     return _bitScanForwardGeneric(word, WordSize_<NUM_BITS>());
 }
 
-#if defined(PLATFORM_GCC)
+#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
 
 template <typename TWord>
 inline TWord
@@ -545,7 +545,7 @@ _bitScanForward(TWord word, WordSize_<32>)
     return __builtin_ctz(static_cast<unsigned int>(word));
 }
 
-#elif defined(STDLIB_VS) // #if !defined(PLATFORM_GCC) && defined(STDLIB_VS)
+#elif defined(STDLIB_VS) // #if !(defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)) && defined(STDLIB_VS)
 
 #if (SEQAN_IS_64_BIT)
 
@@ -616,7 +616,7 @@ _bitScanForward(TWord word, WordSize_<32>)
     _BitScanForward(&index, static_cast<unsigned long>(word));
     return index;
 }
-#endif  // #if !defined(PLATFORM_GCC) && defined(STDLIB_VS)
+#endif  // #if !(defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)) && defined(STDLIB_VS)
 
 // ----------------------------------------------------------------------------
 // Function bitScanReverse()
