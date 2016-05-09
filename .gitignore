@@ -5,3 +5,4 @@ sandbox
 !sandbox/CMakeLists.txt
 *.pyc
 *~
+.idea
