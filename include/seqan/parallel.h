@@ -60,13 +60,13 @@
 // ----------------------------------------------------------------------------
 // Use MCSTL which is part of the GCC since version 4.3
 
-#if defined(_OPENMP) && defined(PLATFORM_GNU)
+#if defined(_OPENMP) && defined(COMPILER_GCC)
 #include <parallel/algorithm>
 #include <parallel/numeric>
 #else
 #include <algorithm>
 #include <numeric>
-#endif // PLATFORM_GCC
+#endif // COMPILER_GCC
 
 #include <atomic>
 #include <thread>
