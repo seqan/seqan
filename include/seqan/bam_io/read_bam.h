@@ -390,7 +390,6 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual,
            Bam const & tag )
 {
     typedef typename Iterator<TIdString, Standard>::Type                              TCharIter;
-    typedef typename Iterator<TSeqString, Standard>::Type SEQAN_RESTRICT              TSeqIter;
     typedef typename Iterator<TQualString, Standard>::Type SEQAN_RESTRICT             TQualIter;
 
     CharString prevQName = context.buffer;
