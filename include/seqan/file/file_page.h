@@ -638,7 +638,7 @@ struct MMap;
     {
         if (pf.begin)
         {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #else
             munmap(pf.begin, length(pf) * sizeof(TValue));
 #endif
@@ -655,7 +655,7 @@ struct MMap;
         pf.status = READY;
         SEQAN_ASSERT_GT(size, 0);
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #if 0
         DWORD prot = 0;
         DWORD access = 0;
@@ -718,7 +718,7 @@ struct MMap;
         pf.status = READY;
         SEQAN_ASSERT_GT(size, 0u);
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #else
         pf.begin = (TValue*)mmap(NULL, size * sizeof(TValue), PROT_READ | PROT_WRITE, MAP_SHARED, file.handle, (TPos)pf.pageNo * (TPos)capacity(pf) * (TPos)sizeof(TValue));
 

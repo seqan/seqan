@@ -81,11 +81,11 @@ namespace seqan
  * @var double OpenAddressingQGramIndex::alpha
  * @brief Load factor.  Controls space/time-tradeoff and must be greater 1.  Default value is 1.6.
  */
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
 #pragma warning( push )
 // Disable warning C4521 locally (multiple copy constructors).
 #pragma warning( disable: 4521 )
-#endif  // PLATFORM_WINDOWS_VS
+#endif  // STDLIB_VS
 
     template < typename TObject, typename TShapeSpec >
     class Index<TObject, IndexQGram<TShapeSpec, OpenAddressing> >
@@ -170,10 +170,10 @@ namespace seqan
             stepSize(1),
             alpha(defaultAlpha) {}
     };
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
 // Enable warning C4521 again (multiple copy operators).
 #pragma warning( pop )
-#endif  // PLATFORM_WINDOWS_VS
+#endif  // STDLIB_VS
 
 
     template < typename TObject, typename TShapeSpec >

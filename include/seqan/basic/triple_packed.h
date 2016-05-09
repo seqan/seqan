@@ -61,7 +61,7 @@ namespace seqan {
  * @tparam T3 The third type of the Triple.
  */
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     #pragma pack(push,1)
 #endif
 template <typename T1, typename T2, typename T3>
@@ -91,11 +91,11 @@ struct Triple<T1, T2, T3, Pack>
     inline Triple(Triple<T1_, T2_, T3_, TSpec__> const & _p)
             : i1(getValueI1(_p)), i2(getValueI2(_p)), i3(getValueI3(_p)) {}
 }
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
     __attribute__((packed))
 #endif
     ;
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     #pragma pack(pop)
 #endif
 

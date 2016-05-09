@@ -44,9 +44,9 @@
 #ifndef INCLUDE_SEQAN_BASIC_TEST_SYSTEM_H_
 #define INCLUDE_SEQAN_BASIC_TEST_SYSTEM_H_
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #include <typeinfo>
-#endif  // #ifdef PLATFORM_WINDOWS
+#endif  // #ifdef STDLIB_VS
 
 #include <seqan/basic/fundamental_tags.h>
 

@@ -181,7 +181,7 @@ supremumValueImpl(T *)
 inline long double const &
 supremumValueImpl(long double *)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     static long double const _value = std::numeric_limits<long double>::infinity( );
 #else
     static long double const _value = 1.7976931348623157e+308;
@@ -192,7 +192,7 @@ supremumValueImpl(long double *)
 inline double const &
 supremumValueImpl(double *)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     static double const _value = std::numeric_limits<double>::infinity( );
 #else
     static double const _value = 1.7976931348623157e+308;
@@ -202,7 +202,7 @@ supremumValueImpl(double *)
 inline float const &
 supremumValueImpl(float *)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     static float const _value = std::numeric_limits<float>::infinity( );
 #else
     static float const _value = 3.40282347e+38F;
@@ -225,7 +225,7 @@ infimumValueImpl(T *)
 inline float const &
 infimumValueImpl(float *)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     static float const _value = -std::numeric_limits<float>::infinity( );
 #else
     static float const _value = -3.40282347e+38F;
@@ -236,7 +236,7 @@ infimumValueImpl(float *)
 inline double const &
 infimumValueImpl(double *)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     static double const _value = -std::numeric_limits<double>::infinity( );
 #else
     static double const _value = -1.7976931348623157e+308;
@@ -247,7 +247,7 @@ infimumValueImpl(double *)
 inline long double const &
 infimumValueImpl(long double *)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     static long double const _value = -std::numeric_limits<long double>::infinity( );
 #else
     static long double const _value = -1.7976931348623157e+308;

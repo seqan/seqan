@@ -40,7 +40,7 @@
 
 namespace seqan {
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 
 struct CriticalSection
 {
@@ -83,7 +83,7 @@ struct CriticalSection
 inline void
 lock(CriticalSection &cs)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     EnterCriticalSection(&cs.data_cs);
 #else
     int result = pthread_mutex_lock(&cs.data_cs);
@@ -95,7 +95,7 @@ lock(CriticalSection &cs)
 inline void
 unlock(CriticalSection &cs)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     LeaveCriticalSection(&cs.data_cs);
 #else
     int result = pthread_mutex_unlock(&cs.data_cs);

@@ -47,11 +47,11 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
 // Disable warning C4521 locally (multiple copy constructors).
 #pragma warning( push )
 #pragma warning( disable: 4521 )
-#endif  // PLATFORM_WINDOWS_VS
+#endif  // STDLIB_VS
 
 /*!
  * @class SimpleHolder
@@ -135,10 +135,10 @@ struct Holder<TValue, Simple>
     }
 };
 
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
 // Set old warning C4521 state again (multiple copy constructors).
 #pragma warning( pop )
-#endif  // PLATFORM_WINDOWS_VS
+#endif  // STDLIB_VS
 
 // ============================================================================
 // Metafunctions

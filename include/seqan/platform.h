@@ -44,15 +44,15 @@
 #include <ciso646> // makes _LIBCPP_VERSION available
 
 #ifdef _MSC_VER
-#define STD_LIB_VS
+#define STDLIB_VS
 #endif
 
 #ifdef __GLIBCXX__
-#define STD_LIB_GNU
+#define STDLIB_GNU
 #endif
 
 #ifdef _LIBCPP_VERSION
-#define STD_LIB_LLVM
+#define STDLIB_LLVM
 #endif
 
 // ==========================================================================
@@ -82,7 +82,7 @@
  * @macro PLATFORM_GCC
  * @headerfile <seqan/platform.h>
  * @brief Defined if the compiler is GCC (or compatible).
- * @deprecated Use STD_LIB_VS, STD_LIB_GNU or STD_LIB_LLVM to know which
+ * @deprecated Use STDLIB_VS, STDLIB_GNU or STDLIB_LLVM to know which
  *     standard lib is currently used. Or use COMPILER_MSVC, COMPILER_GCC,
  *     COMPILER_INTEL or COMPILER_CLANG to know which compiler is currently
  *     used.
@@ -90,7 +90,7 @@
  * @signature #define PLATFORM_GCC
  */
 
-#ifdef STD_LIB_VS
+#ifdef STDLIB_VS
 #define PLATFORM_WINDOWS
 #define PLATFORM_WINDOWS_VS
 #else
@@ -301,7 +301,7 @@ typedef int8_t __int8;     // nolint
 // note that this is always set by FindSeqAn.cmake
 // this is a fallback for non cmake environments
 #ifndef SEQAN_HAS_EXECINFO
-    #ifdef PLATFORM_WINDOWS
+    #ifdef STDLIB_VS
     #define SEQAN_HAS_EXECINFO 0
     #elif defined(__has_include)
     #define SEQAN_HAS_EXECINFO !!__has_include(<execinfo.h>)

@@ -36,7 +36,7 @@
 
 #include <seqan/basic.h>
 
-#ifndef PLATFORM_WINDOWS_VS
+#ifndef STDLIB_VS
 
 #include <seqan/file.h>
 #include <seqan/sequence.h>

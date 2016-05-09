@@ -87,7 +87,7 @@ template <> struct BitVector_<255>;
 // TODO(holtgrew): There is a lot of stuff defined within the class itself. A lot of it could be moved into global functions.
 
 // bit-packed storage (space efficient)
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     #pragma pack(push,1)
 #endif
 template <typename TValue, unsigned SIZE>
@@ -195,11 +195,11 @@ struct Tuple<TValue, SIZE, BitPacked<> >
         return source;
     }
 }
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
     __attribute__((packed))
 #endif
     ;
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     #pragma pack(pop)
 #endif
 

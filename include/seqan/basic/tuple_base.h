@@ -130,7 +130,7 @@ struct Tuple
 };
 
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     #pragma pack(push,1)
 #endif
 template <typename TValue, unsigned SIZE>
@@ -175,11 +175,11 @@ struct Tuple<TValue, SIZE, Pack>
         return i[k] = source;
     }
 }
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
     __attribute__((packed))
 #endif
     ;
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
       #pragma pack(pop)
 #endif
 

@@ -150,12 +150,12 @@
 #
 // # if SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MWCC()
 // #    define SEQAN_PP_TUPLE_ELEM_I(s, i, t) SEQAN_PP_TUPLE_ELEM_ ## s ## _ ## i ## t
-#ifdef PLATFORM_WINDOWS_VS  // # elif SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
+#ifdef STDLIB_VS  // # elif SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
 #    define SEQAN_PP_TUPLE_ELEM_I(s, i, t) SEQAN_PP_TUPLE_ELEM_II(SEQAN_PP_TUPLE_ELEM_ ## s ## _ ## i t)
 #    define SEQAN_PP_TUPLE_ELEM_II(res) res
-#else  // #ifdef PLATFORM_WINDOWS_VS
+#else  // #ifdef STDLIB_VS
 #    define SEQAN_PP_TUPLE_ELEM_I(s, i, t) SEQAN_PP_TUPLE_ELEM_ ## s ## _ ## i t
-#endif  // #ifdef PLATFORM_WINDOWS_VS
+#endif  // #ifdef STDLIB_VS
 #
 # define SEQAN_PP_TUPLE_ELEM_1_0(a) a
 #
@@ -533,15 +533,15 @@
 // #    define SEQAN_PP_SEQ_SIZE_I(par) SEQAN_PP_SEQ_SIZE_II ## par
 // #    define SEQAN_PP_SEQ_SIZE_II(seq) SEQAN_PP_CAT(SEQAN_PP_SEQ_SIZE_, SEQAN_PP_SEQ_SIZE_0 ## seq)
 // # elif SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_EDG() || SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
 #    define SEQAN_PP_SEQ_SIZE(seq) SEQAN_PP_SEQ_SIZE_I(seq)
 #    define SEQAN_PP_SEQ_SIZE_I(seq) SEQAN_PP_CAT(SEQAN_PP_SEQ_SIZE_, SEQAN_PP_SEQ_SIZE_0 seq)
-#else  // #ifdef PLATFORM_WINDOWS_VS
+#else  // #ifdef STDLIB_VS
 // # elif defined(__IBMC__) || defined(__IBMCPP__)
 // #    define SEQAN_PP_SEQ_SIZE(seq) SEQAN_PP_CAT(SEQAN_PP_SEQ_SIZE_, SEQAN_PP_CAT(SEQAN_PP_SEQ_SIZE_0, seq))
 // # else
 #    define SEQAN_PP_SEQ_SIZE(seq) SEQAN_PP_CAT(SEQAN_PP_SEQ_SIZE_, SEQAN_PP_SEQ_SIZE_0 seq)
-#endif  // #ifdef PLATFORM_WINDOWS_VS
+#endif  // #ifdef STDLIB_VS
 
 # define SEQAN_PP_SEQ_SIZE_0(_) SEQAN_PP_SEQ_SIZE_1
 # define SEQAN_PP_SEQ_SIZE_1(_) SEQAN_PP_SEQ_SIZE_2
@@ -1091,12 +1091,12 @@
 // # endif
 #
 // # if ~SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
-#ifndef PLATFORM_WINDOWS_VS
+#ifndef STDLIB_VS
 #    define SEQAN_PP_CAT_I(a, b) a ## b
-#else  // #ifndef PLATFORM_WINDOWS_VS
+#else  // #ifndef STDLIB_VS
 #    define SEQAN_PP_CAT_I(a, b) SEQAN_PP_CAT_II(a ## b)
 #    define SEQAN_PP_CAT_II(res) res
-#endif  // #ifndef PLATFORM_WINDOWS_VS
+#endif  // #ifndef STDLIB_VS
 #
 // # endif
 
@@ -1455,7 +1455,7 @@
 #
 // # endif
 
-#ifdef SEQAN_PLATFORM_WINDOWS_VS
+#ifdef SEQAN_STDLIB_VS
 
 // --------------------------------------------------------------------------
 // ==> boost/preprocessor/repetition/detail/msvc/for.hpp <==
@@ -1739,7 +1739,7 @@
 #
 // # endif
 
-#else  // #ifdef SEQAN_PLATFORM_WINDOWS_VS
+#else  // #ifdef SEQAN_STDLIB_VS
 
 // --------------------------------------------------------------------------
 // ==> boost/preprocessor/repetition/detail/for.hpp <==
@@ -2280,7 +2280,7 @@
 # define SEQAN_PP_FOR_255_C(c, s, p, o, m) SEQAN_PP_IIF(c, m, SEQAN_PP_TUPLE_EAT_2)(256, s) SEQAN_PP_IIF(c, SEQAN_PP_FOR_256, SEQAN_PP_TUPLE_EAT_4)(SEQAN_PP_EXPR_IIF(c, o)(256, s), p, o, m)
 # define SEQAN_PP_FOR_256_C(c, s, p, o, m) SEQAN_PP_IIF(c, m, SEQAN_PP_TUPLE_EAT_2)(257, s) SEQAN_PP_IIF(c, SEQAN_PP_FOR_257, SEQAN_PP_TUPLE_EAT_4)(SEQAN_PP_EXPR_IIF(c, o)(257, s), p, o, m)
 
-#endif  // #ifdef SEQAN_PLATFORM_WINDOWS_VS
+#endif  // #ifdef SEQAN_STDLIB_VS
 
 // --------------------------------------------------------------------------
 // ==> boost/preprocessor/detail/auto_rec.hpp <==
@@ -2932,12 +2932,12 @@
 // # endif
 #
 // # if ~SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
-#ifndef PLATFORM_WINDOWS_VS
+#ifndef STDLIB_VS
 #    define SEQAN_PP_IIF_I(bit, t, f) SEQAN_PP_IIF_ ## bit(t, f)
-# else // #ifndef PLATFORM_WINDOWS_VS
+# else // #ifndef STDLIB_VS
 #    define SEQAN_PP_IIF_I(bit, t, f) SEQAN_PP_IIF_II(SEQAN_PP_IIF_ ## bit(t, f))
 #    define SEQAN_PP_IIF_II(id) id
-# endif // #ifndef PLATFORM_WINDOWS_VS
+# endif // #ifndef STDLIB_VS
 #
 # define SEQAN_PP_IIF_0(t, f) f
 # define SEQAN_PP_IIF_1(t, f) t
@@ -4263,7 +4263,7 @@
 // # endif
 #
 // # if SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
 #    define SEQAN_PP_SEQ_ELEM_I(i, seq) SEQAN_PP_SEQ_ELEM_II((SEQAN_PP_SEQ_ELEM_ ## i seq))
 #    define SEQAN_PP_SEQ_ELEM_II(res) SEQAN_PP_SEQ_ELEM_IV(SEQAN_PP_SEQ_ELEM_III res)
 #    define SEQAN_PP_SEQ_ELEM_III(x, _) x SEQAN_PP_EMPTY()
@@ -4273,7 +4273,7 @@
 // #    define SEQAN_PP_SEQ_ELEM_II(i, seq) SEQAN_PP_SEQ_ELEM_III(SEQAN_PP_SEQ_ELEM_ ## i ## seq)
 // #    define SEQAN_PP_SEQ_ELEM_III(im) SEQAN_PP_SEQ_ELEM_IV(im)
 // #    define SEQAN_PP_SEQ_ELEM_IV(x, _) x
-# else  // #ifdef PLATFORM_WINDOWS_VS
+# else  // #ifdef STDLIB_VS
 // #    if defined(__IBMC__) || defined(__IBMCPP__)
 // #        define SEQAN_PP_SEQ_ELEM_I(i, seq) SEQAN_PP_SEQ_ELEM_II(SEQAN_PP_CAT(SEQAN_PP_SEQ_ELEM_ ## i, seq))
 // #    else
@@ -4281,7 +4281,7 @@
 // #    endif
 #    define SEQAN_PP_SEQ_ELEM_II(im) SEQAN_PP_SEQ_ELEM_III(im)
 #    define SEQAN_PP_SEQ_ELEM_III(x, _) x
-# endif  // #ifdef PLATFORM_WINDOWS_VS
+# endif  // #ifdef STDLIB_VS
 #
 # define SEQAN_PP_SEQ_ELEM_0(x) x, SEQAN_PP_NIL
 # define SEQAN_PP_SEQ_ELEM_1(_) SEQAN_PP_SEQ_ELEM_0
@@ -4370,15 +4370,15 @@
 // #    define SEQAN_PP_SEQ_TAIL_1(par) SEQAN_PP_SEQ_TAIL_2 ## par
 // #    define SEQAN_PP_SEQ_TAIL_2(seq) SEQAN_PP_SEQ_TAIL_I ## seq
 // # elif SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
 #    define SEQAN_PP_SEQ_TAIL(seq) SEQAN_PP_SEQ_TAIL_ID(SEQAN_PP_SEQ_TAIL_I seq)
 #    define SEQAN_PP_SEQ_TAIL_ID(id) id
 // # elif SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_EDG()
 // #    define SEQAN_PP_SEQ_TAIL(seq) SEQAN_PP_SEQ_TAIL_D(seq)
 // #    define SEQAN_PP_SEQ_TAIL_D(seq) SEQAN_PP_SEQ_TAIL_I seq
-# else  // #ifdef PLATFORM_WINDOWS_VS
+# else  // #ifdef STDLIB_VS
 #    define SEQAN_PP_SEQ_TAIL(seq) SEQAN_PP_SEQ_TAIL_I seq
-# endif  // #ifdef PLATFORM_WINDOWS_VS
+# endif  // #ifdef STDLIB_VS
 #
 # define SEQAN_PP_SEQ_TAIL_I(x)
 #
@@ -5010,21 +5010,21 @@
 # define SEQAN_PP_SEQ_FOR_EACH_P(r, x) SEQAN_PP_DEC(SEQAN_PP_SEQ_SIZE(SEQAN_PP_TUPLE_ELEM(3, 2, x)))
 #
 // # if SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_STRICT()
-#ifndef PLATFORM_WINDOWS_VS
+#ifndef STDLIB_VS
 #    define SEQAN_PP_SEQ_FOR_EACH_O(r, x) SEQAN_PP_SEQ_FOR_EACH_O_I x
-# else  // #ifndef PLATFORM_WINDOWS_VS
+# else  // #ifndef STDLIB_VS
 #    define SEQAN_PP_SEQ_FOR_EACH_O(r, x) SEQAN_PP_SEQ_FOR_EACH_O_I(SEQAN_PP_TUPLE_ELEM(3, 0, x), SEQAN_PP_TUPLE_ELEM(3, 1, x), SEQAN_PP_TUPLE_ELEM(3, 2, x))
-# endif  // #ifndef PLATFORM_WINDOWS_VS
+# endif  // #ifndef STDLIB_VS
 #
 # define SEQAN_PP_SEQ_FOR_EACH_O_I(macro, data, seq) (macro, data, SEQAN_PP_SEQ_TAIL(seq))
 #
 // # if SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_STRICT()
-#ifndef PLATFORM_WINDOWS_VS
+#ifndef STDLIB_VS
 #    define SEQAN_PP_SEQ_FOR_EACH_M(r, x) SEQAN_PP_SEQ_FOR_EACH_M_IM(r, SEQAN_PP_TUPLE_REM_3 x)
 #    define SEQAN_PP_SEQ_FOR_EACH_M_IM(r, im) SEQAN_PP_SEQ_FOR_EACH_M_I(r, im)
-# else  // #ifndef PLATFORM_WINDOWS_VS
+# else  // #ifndef STDLIB_VS
 #    define SEQAN_PP_SEQ_FOR_EACH_M(r, x) SEQAN_PP_SEQ_FOR_EACH_M_I(r, SEQAN_PP_TUPLE_ELEM(3, 0, x), SEQAN_PP_TUPLE_ELEM(3, 1, x), SEQAN_PP_TUPLE_ELEM(3, 2, x))
-# endif  // #ifndef PLATFORM_WINDOWS_VS
+# endif  // #ifndef STDLIB_VS
 #
 # define SEQAN_PP_SEQ_FOR_EACH_M_I(r, macro, data, seq) macro(r, data, SEQAN_PP_SEQ_HEAD(seq))
 #

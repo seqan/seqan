@@ -45,7 +45,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #include <windows.h>
 #else
 #include <pthread.h>

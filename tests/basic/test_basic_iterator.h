@@ -161,7 +161,7 @@ void resetCDStructStatics()
 
 // Disable for windows vs as the two-phase template lookup is broken. See the
 // following link http://stackoverflow.com/questions/6273176/what-exactly-is-broken-with-microsoft-visual-cs-two-phase-template-instanti
-#if !defined(PLATFORM_WINDOWS_VS)
+#if !defined(STDLIB_VS)
 // --------------------------------------------------------------------------
 // Pointer adaptions to test the positional iterator.
 // --------------------------------------------------------------------------
@@ -191,7 +191,7 @@ moveValue(TValue * me,
 {
     move(value(me, pos), _value);
 }
-#endif  // !defined(PLATFORM_WINDOWS_VS) 
+#endif  // !defined(STDLIB_VS) 
 // --------------------------------------------------------------------------
 // Tests for Pointer Adaption to Iterator Concept
 // --------------------------------------------------------------------------

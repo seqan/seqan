@@ -155,9 +155,9 @@
 #include <string>
 #include <typeinfo>
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #include <Windows.h>    // DeleteFile()
-#else  // #ifdef PLATFORM_WINDOWS
+#else  // #ifdef STDLIB_VS
 #include <unistd.h>     // unlink()
 #include <sys/stat.h>   // mkdir()
 #include <dirent.h>     // DIR
@@ -166,7 +166,7 @@
 #endif  // #if SEQAN_HAS_EXECINFO
 #include <cxxabi.h>     // __cxa_demangle()
 #include <signal.h>
-#endif  // #ifdef PLATFORM_WINDOWS
+#endif  // #ifdef STDLIB_VS
 
 // ============================================================================
 // Classes
@@ -640,7 +640,7 @@ struct StaticData
 /*
 inline
 int openTempFile() {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     char * fileName = _tempnam(NULL, "SQN");
     if (!fileName) {
         ::std::cerr << "Cannot create a unique temporary filename" << ::std::endl;
@@ -655,7 +655,7 @@ int openTempFile() {
     int result = mkstemp(filenameBuffer);
     unlink(filenameBuffer);
     return result;
-#endif  // ifdef PLATFORM_WINDOWS
+#endif  // ifdef STDLIB_VS
 }
 */
 
@@ -665,7 +665,7 @@ inline
 const char * tempFileName()
 {
     static char fileNameBuffer[1000];
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     static char filePathBuffer[1000];
     //  Gets the temp path env string (no guarantee it's a valid path).
     DWORD dwRetVal = 0;
@@ -695,7 +695,7 @@ const char * tempFileName()
     strcat(fileNameBuffer, "\\test_file");
     return fileNameBuffer;
 
-#else  // ifdef PLATFORM_WINDOWS_VS
+#else  // ifdef STDLIB_VS
     strcpy(fileNameBuffer, "/tmp/SEQAN.XXXXXXXXXXXXXXXXXXXX");
     mode_t cur_umask = umask(S_IRWXO | S_IRWXG);  // to silence Coverity warning
     int _tmp = mkstemp(fileNameBuffer);
@@ -709,7 +709,7 @@ const char * tempFileName()
     strcat(fileNameBuffer, "/test_file");
     return fileNameBuffer;
 
-#endif  // ifdef PLATFORM_WINDOWS
+#endif  // ifdef STDLIB_VS
 }
 
 // Initialize the testing infrastructure.
@@ -743,7 +743,7 @@ void beginTestSuite(const char * testSuiteName, const char * argv0)
         strncpy(StaticData::basePath(), argv0, len);
     }
 
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
     // Set CRT reporting such that everything goes to stderr and there are
     // no popups causing timeouts.
     _set_error_mode(_OUT_TO_STDERR);
@@ -753,7 +753,7 @@ void beginTestSuite(const char * testSuiteName, const char * argv0)
     _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
     _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
-#endif  // PLATFORM_WINDOWS_VS
+#endif  // STDLIB_VS
 }
 
 // cut off '/test_file' from tempFilename
@@ -770,7 +770,7 @@ std::string _stripFileName(const char * tempFilename)
 inline
 int _deleteTempFile(std::string tempFilename)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     HANDLE hFind;
     WIN32_FIND_DATA data;
 
@@ -794,7 +794,7 @@ int _deleteTempFile(std::string tempFilename)
         std::cerr << "ERROR: Could not delete directory " << tempFilename << "\n";
         return 0;
     }
-#else  // #ifdef PLATFORM_WINDOWS
+#else  // #ifdef STDLIB_VS
     DIR * dpdf;
     struct dirent * epdf;
 
@@ -814,7 +814,7 @@ int _deleteTempFile(std::string tempFilename)
         std::cerr << "ERROR: Could not delete directory " << tempFilename << "\n";
         return 0;
     }
-#endif  // #ifdef PLATFORM_WINDOWS
+#endif  // #ifdef STDLIB_VS
 
     return 1;
 }

@@ -126,7 +126,7 @@ namespace seqan {
  * @snippet demos/dox/basic/simple_type_construction.cpp simple type construction and assignment
  */
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     #pragma pack(push,1)
 #endif
 template <typename TValue, typename TSpec>
@@ -264,11 +264,11 @@ public:
         return c;
     }
 }
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
     __attribute__((packed))
 #endif
     ;
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
       #pragma pack(pop)
 #endif
 

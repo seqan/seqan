@@ -207,7 +207,7 @@ SEQAN_DEFINE_TEST(GraphMatchRefine)
     //typedef String<Fragment<>, External<> > TFragmentString;
 
     // Windows
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     String<char> in_path("Z:\\matches\\");
     String<char> out_path("Z:\\matches\\out\\");
     return;

@@ -113,7 +113,7 @@ typedef ReadSize        ContigEnd;
 // Class Match
 // ----------------------------------------------------------------------------
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     #pragma pack(push,1)
 #endif
 
@@ -127,12 +127,12 @@ struct Match
     typename Member<Match, ContigEnd>::Type     contigEnd    : MemberBits<Match, ReadSize>::VALUE;
     typename Member<Match, Errors>::Type        errors       : MemberBits<Match, Errors>::VALUE;
 }
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
     __attribute__((packed))
 #endif
 ;
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
       #pragma pack(pop)
 #endif
 
