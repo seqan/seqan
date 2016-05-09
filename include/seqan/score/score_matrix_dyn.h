@@ -98,7 +98,10 @@ using MatrixTags = TagList<ScoreSpecBlosum30,
  * @brief Pam120, see also @link Pam120 @endlink
  *
  * @val AminoAcidScoreMatrixID AminoAcidScoreMatrixID::PAM200
- * @brief Pam200, see also @link Pam200 @endlink
+ * @brief Pam200, see also @link Pam200 @endl  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9.1)
+    message (FATAL_ERROR "Your GCC version is too old. Minimum version is GCC-4.9.1!")
+    return ()
+  endif ()ink
  *
  * @val AminoAcidScoreMatrixID AminoAcidScoreMatrixID::PAM250
  * @brief Pam250, see also @link Pam250 @endlink
@@ -107,17 +110,17 @@ using MatrixTags = TagList<ScoreSpecBlosum30,
  * @brief Vtml200, see also @link Vtml200 @endlink
  */
 
-enum class AminoAcidScoreMatrixID : uint8_t
+enum class AminoAcidScoreMatrixID : std::underlying_type_t<decltype(Find<impl::score::MatrixTags, ScoreSpecBlosum30>::VALUE)>
 {
-    BLOSUM30,
-    BLOSUM45,
-    BLOSUM62,
-    BLOSUM80,
-    PAM40,
-    PAM120,
-    PAM200,
-    PAM250,
-    VTML200
+    BLOSUM30 = Find<impl::score::MatrixTags, ScoreSpecBlosum30>::VALUE,
+    BLOSUM45 = Find<impl::score::MatrixTags, ScoreSpecBlosum45>::VALUE,
+    BLOSUM62 = Find<impl::score::MatrixTags, ScoreSpecBlosum62>::VALUE,
+    BLOSUM80 = Find<impl::score::MatrixTags, ScoreSpecBlosum80>::VALUE,
+    PAM40    = Find<impl::score::MatrixTags, ScoreSpecPam40>::VALUE,
+    PAM120   = Find<impl::score::MatrixTags, ScoreSpecPam120>::VALUE,
+    PAM200   = Find<impl::score::MatrixTags, ScoreSpecPam200>::VALUE,
+    PAM250   = Find<impl::score::MatrixTags, ScoreSpecPam250>::VALUE,
+    VTML200  = Find<impl::score::MatrixTags, ScoreSpecVtml200>::VALUE
 };
 
 // ----------------------------------------------------------------------------
@@ -162,7 +165,8 @@ matrixTagDispatch(TagList<TCurTag, void> const &,
                   AminoAcidScoreMatrixID const m,
                   TRunnable const & runnable)
 {
-    if (LENGTH<MatrixTags>::VALUE == static_cast<uint8_t>(m))
+    using TUndType = std::underlying_type_t<AminoAcidScoreMatrixID>;
+    if (Find<impl::score::MatrixTags, TCurTag>::VALUE == static_cast<TUndType>(m))
         runnable(TCurTag());
     else
         SEQAN_FAIL("ERROR: Recursing the ScoreMatrixTags failed, please report this as a BUG!");
@@ -176,8 +180,8 @@ matrixTagDispatch(TagList<TCurTag, TRestList> const &,
                   AminoAcidScoreMatrixID const m,
                   TRunnable const & runnable)
 {
-    using TCurList = TagList<TCurTag, TRestList>;
-    if (LENGTH<MatrixTags>::VALUE  - LENGTH<TCurList>::VALUE == static_cast<uint8_t>(m))
+    using TUndType = std::underlying_type_t<AminoAcidScoreMatrixID>;
+    if (Find<impl::score::MatrixTags, TCurTag>::VALUE == static_cast<TUndType>(m))
         runnable(TCurTag());
     else
         matrixTagDispatch(TRestList(), m, runnable);

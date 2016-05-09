@@ -247,25 +247,41 @@ _matrixName(Pam250 const & /**/)
     return "PAM250";
 }
 
+template <typename TCurTag>
+constexpr const char *
+_matrixNameTagDispatch(TagList<TCurTag, void> const &,
+                       AminoAcidScoreMatrixID const m)
+{
+    using TUndType = std::underlying_type_t<AminoAcidScoreMatrixID>;
+    if (Find<impl::score::MatrixTags, TCurTag>::VALUE == static_cast<TUndType>(m))
+    {
+        return _matrixName(Score<int, ScoreMatrix<AminoAcid, TCurTag>>());
+    }
+    else
+    {
+        SEQAN_FAIL("ERROR: Recursing the ScoreMatrixTags failed, please report this as a BUG!");
+        return _matrixName(False()); // eliminate warnings in regard to SEQAN_FAIL and return type
+    }
+}
+
 template <typename TCurTag,
-          typename TRestList,
-          typename TRunnable>
+          typename TRestList>
 constexpr const char *
 _matrixNameTagDispatch(TagList<TCurTag, TRestList> const &,
                        AminoAcidScoreMatrixID const m)
 {
-    using TCurList = TagList<TCurTag, TRestList>;
-    if (LENGTH<impl::score::MatrixTags>::VALUE  - LENGTH<TCurList>::VALUE == static_cast<uint8_t>(m))
-        return _matrixName(TCurTag());
+    using TUndType = std::underlying_type_t<AminoAcidScoreMatrixID>;
+    if (Find<impl::score::MatrixTags, TCurTag>::VALUE == static_cast<TUndType>(m))
+        return _matrixName(Score<int, ScoreMatrix<AminoAcid, TCurTag>>());
     else
         return _matrixNameTagDispatch(TRestList(), m);
 }
 
 template <typename TValue>
 constexpr const char *
-_matrixName(Score<TValue, ScoreMatrix<AminoAcid, ScoreSpecSelectable> > & sc)
+_matrixName(Score<TValue, ScoreMatrix<AminoAcid, ScoreSpecSelectable> > const & sc)
 {
-    return matrixTagDispatch_(impl::score::MatrixTags(), getScoreMatrixId(sc));
+    return _matrixNameTagDispatch(impl::score::MatrixTags(), getScoreMatrixId(sc));
 }
 
 // ----------------------------------------------------------------------------
@@ -811,10 +827,10 @@ writeMatrixName(TStream & stream, SimpleScore const & scheme)
 
 template <typename TStream, typename TScheme>
 inline void
-writeMatrixName(TStream & stream, TScheme const &)
+writeMatrixName(TStream & stream, TScheme const & scheme)
 {
     // see top of file
-    write(stream, _matrixName(TScheme()));
+    write(stream, _matrixName(scheme));
 }
 
 template <typename TStream,
