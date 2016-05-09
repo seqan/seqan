@@ -687,7 +687,7 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
  * @return bool <tt>true</tt>, iff the fibre is present.
  */
     template <typename TText, typename TSpec, typename TFibre>
-    SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, TSpec> &index, Tag<TFibre> const fibre) {
+    inline bool indexSupplied(Index<TText, TSpec> &index, Tag<TFibre> const fibre) {
         return !empty(getFibre(index, fibre));
     }
 
@@ -821,23 +821,6 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
     inline bool open(Segment<THost, TSpec> &string, const char *fileName) {
         return open(string, fileName, OPEN_RDONLY);
     }
-
-#ifdef PLATFORM_CUDA
-    template <typename TChar, typename TAlloc>
-    inline bool open(thrust::device_vector<TChar, TAlloc> & me, const char *fileName, int openMode)
-    {
-        String<TChar> str;
-        if (!open(str, fileName, openMode)) return false;
-        assign(me, str);
-        return true;
-    }
-
-    template <typename TChar, typename TAlloc>
-    inline bool open(thrust::device_vector<TChar, TAlloc> & me, const char *fileName)
-    {
-        return open(me, fileName, OPEN_RDONLY);
-    }
-#endif
 
     // ATTENTION:
     // This implementation of open doesn't work with external memory StringSets (External<>, MMap<>)

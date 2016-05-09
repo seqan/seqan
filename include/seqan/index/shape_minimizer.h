@@ -91,7 +91,7 @@ struct WEIGHT<Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec> > >
 // ----------------------------------------------------------------------------
 
 template <typename TValue, unsigned TSPAN, unsigned TWEIGHT, typename TSpec>
-inline SEQAN_HOST_DEVICE
+inline
 typename Size< Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec> > >::Type
 weight(Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec> > const &me)
 {

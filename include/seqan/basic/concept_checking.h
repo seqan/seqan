@@ -406,7 +406,7 @@ inline void functionRequires(Model* = 0)
  * operators.  Use this functions to remove a compile warning that otherwise would be raised in this case.
  */
 
-template <class T> SEQAN_HOST_DEVICE inline void ignoreUnusedVariableWarning(T const&) {}
+template <class T> inline void ignoreUnusedVariableWarning(T const&) {}
 
 // ---------------------------------------------------------------------------
 // ==> boost/concept/detail/concept_def.hpp <==
