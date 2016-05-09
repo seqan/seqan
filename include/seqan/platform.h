@@ -42,18 +42,38 @@
 
 #include <cstddef> // makes __GLIBCXX__ available
 #include <ciso646> // makes _LIBCPP_VERSION available
-#define STD_LIB_VS   defined(_MSC_VER)
-#define STD_LIB_GNU  defined(__GLIBCXX__)
-#define STD_LIB_LLVM defined(_LIBCPP_VERSION)
+
+#ifdef _MSC_VER
+#define STD_LIB_VS
+#endif
+
+#ifdef __GLIBCXX__
+#define STD_LIB_GNU
+#endif
+
+#ifdef _LIBCPP_VERSION
+#define STD_LIB_LLVM
+#endif
 
 // ==========================================================================
 // Define Compilers
 // ==========================================================================
 
-#define COMPILER_MSVC  defined(_MSC_VER) && !defined(__ICC) && !defined(__clang__)
-#define COMPILER_GCC   defined(__GNUC__) && !defined(__ICC) && !defined(__clang__)
-#define COMPILER_INTEL defined(__ICC)
-#define COMPILER_CLANG defined(__clang__)
+#if defined(_MSC_VER) && !defined(__ICC) && !defined(__clang__)
+#define COMPILER_MSVC
+#endif
+
+#if defined(__GNUC__) && !defined(__ICC) && !defined(__clang__)
+#define COMPILER_GCC
+#endif
+
+#if defined(__ICC)
+#define COMPILER_INTEL
+#endif
+
+#if defined(__clang__)
+#define COMPILER_CLANG
+#endif
 
 // ==========================================================================
 // Platform Macros (Backwards Compatibility)
@@ -70,22 +90,22 @@
  * @signature #define PLATFORM_GCC
  */
 
-#if STD_LIB_VS
+#ifdef STD_LIB_VS
 #define PLATFORM_WINDOWS
 #define PLATFORM_WINDOWS_VS
 #else
 #define PLATFORM_GCC
 #endif
 
-#if PLATFORM_GCC && COMPILER_CLANG
+#if defined(PLATFORM_GCC) && defined(COMPILER_CLANG)
 #define PLATFORM_CLANG
 #endif
 
-#if PLATFORM_GCC && COMPILER_INTEL
+#if defined(PLATFORM_GCC) && defined(COMPILER_INTEL)
 #define PLATFORM_INTEL
 #endif
 
-#if PLATFORM_GCC && COMPILER_INTEL
+#if defined(PLATFORM_GCC) && defined(COMPILER_GCC)
 #define PLATFORM_GNU
 #endif
 
@@ -161,22 +181,22 @@ typedef uint32_t __uint32; // nolint
 typedef uint16_t __uint16; // nolint
 typedef uint8_t __uint8;   // nolint
 
-#if !(COMPILER_INTEL || COMPILER_MSVC)
+#if !(defined(COMPILER_INTEL) || defined(COMPILER_MSVC))
 typedef int64_t __int64;   // nolint
 typedef int32_t __int32;   // nolint
 typedef int16_t __int16;   // nolint
 typedef int8_t __int8;     // nolint
 #endif
 
-#if !COMPILER_MSVC
+#if !defined(COMPILER_MSVC)
 #define finline __inline__
-#else // !COMPILER_MSVC
+#else // !defined(COMPILER_MSVC)
 #define finline __forceinline
 #endif
 
 // TODO(marehr): always define _FILE_OFFSET_BITS and _LARGEFILE_SOURCE
 // if msvc doesn't supprt those flags, why not define them anyway.
-#if !COMPILER_MSVC
+#if !defined(COMPILER_MSVC)
     #ifndef _FILE_OFFSET_BITS
     #define _FILE_OFFSET_BITS 64
     #endif
@@ -184,7 +204,7 @@ typedef int8_t __int8;     // nolint
     #ifndef _LARGEFILE_SOURCE
     #define _LARGEFILE_SOURCE
     #endif
-#endif // !COMPILER_MSVC
+#endif // !defined(COMPILER_MSVC)
 
 /*!
  * @macro SEQAN_IS_64_BIT
@@ -247,7 +267,7 @@ typedef int8_t __int8;     // nolint
 // ==========================================================================
 // C++ restrict keyword
 // ==========================================================================
-#if COMPILER_GCC || COMPILER_CLANG
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG)
 #define SEQAN_RESTRICT  __restrict__
 #else
 #define SEQAN_RESTRICT
@@ -256,20 +276,20 @@ typedef int8_t __int8;     // nolint
 // ==========================================================================
 // C++ branch hints
 // ==========================================================================
-#if COMPILER_GCC || COMPILER_CLANG || COMPILER_INTEL
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
 #define SEQAN_LIKELY(expr) __builtin_expect(!!(expr), 1)
 #else
 #define SEQAN_LIKELY(x)    (x)
 #endif
 
-#if COMPILER_GCC || COMPILER_CLANG || COMPILER_INTEL
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
 #define SEQAN_UNLIKELY(expr) __builtin_expect(!!(expr), 1)
 #else
 #define SEQAN_UNLIKELY(x)    (x)
 #endif
 
 // A macro to eliminate warnings on GCC and Clang
-#if COMPILER_GCC || COMPILER_CLANG || COMPILER_INTEL
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
 #define SEQAN_UNUSED __attribute__((unused))
 #else
 #define SEQAN_UNUSED
