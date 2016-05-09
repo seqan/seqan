@@ -45,8 +45,6 @@
 #define NOMINMAX
 #endif  // #ifndef NOMINMAX
 
-#define finline __forceinline
-
 // ==========================================================================
 // Disable Warnings
 // ==========================================================================
@@ -77,33 +75,6 @@
 #pragma warning( disable : 4355 )
 
 // ==========================================================================
-// Define Integers
-// ==========================================================================
-
-
-// TODO(holtgrew): It would probably be better to define these in namespace seqan only.
-
-typedef uint64_t __uint64;
-typedef uint32_t __uint32;
-typedef uint16_t __uint16;
-typedef uint8_t __uint8;
-
-// ==========================================================================
-// Define SeqAn Specific Macros.
-// ==========================================================================
-
-// The symbols SEQAN_IS_64_BIT and SEQAN_IS_32_BIT can be used to check
-// whether we are on a 32 bit or on a 64 bit machine.
-
-#if defined(_WIN64)
-#define SEQAN_IS_64_BIT 1
-#define SEQAN_IS_32_BIT 0
-#else
-#define SEQAN_IS_64_BIT 0
-#define SEQAN_IS_32_BIT 1
-#endif  // #if defined(_WIN64)
-
-// ==========================================================================
 // Visual Studio Specific Workarounds.
 // ==========================================================================
 
@@ -113,13 +84,5 @@ inline T round(T const & x)
 {
     return static_cast<T>(floor(x + 0.5));
 }
-
-// Define ftello
-#ifndef ftello
-#define ftello(fp) ftell(fp)
-#endif  // #ifndef ftello
-
-//#define SEQAN_RESTRICT  __restrict
-//#define SEQAN_RESTRICT  __declspec(restrict)
 
 #endif  // #ifndef PLATFORM_WINDOWS

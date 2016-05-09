@@ -39,31 +39,5 @@
 #define PLATFORM_GCC
 #endif
 
-// should be set before including anything
-#ifndef _FILE_OFFSET_BITS
-  #define _FILE_OFFSET_BITS 64
-#endif
-
-#ifndef _LARGEFILE_SOURCE
-  #define _LARGEFILE_SOURCE
-#endif
-
-// The symbols SEQAN_IS_64_BIT and SEQAN_IS_32_BIT can be used to check
-// whether we are on a 32 bit or on a 64 bit machine.
-#if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
-#define SEQAN_IS_64_BIT 1
-#define SEQAN_IS_32_BIT 0
-#else  // #if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
-#define SEQAN_IS_64_BIT 0
-#define SEQAN_IS_32_BIT 1
-#endif  // #if defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
-
-
-#define finline __inline__
-
-typedef uint64_t __uint64;
-typedef uint32_t __uint32;
-typedef uint16_t __uint16;
-typedef uint8_t __uint8;
 
 #endif  // #ifndef PLATFORM_INTEL
