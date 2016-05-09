@@ -525,11 +525,9 @@ readRecord(TIdString & meta, TSeqString & seq,
                 throw ParseError("This SAM file doesn't provide PHRED quality string. "
                                          "Consider using another version of readRecord without quality");
             }
-            //TODO SHOW THIS TO RENE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             context.buffer = meta;
         } else
         {
-            //TODO SHOW THIS TO RENE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             context.buffer = meta;
             clear(meta);
         }
