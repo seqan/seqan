@@ -65,8 +65,8 @@ using MatrixTags = TagList<ScoreSpecBlosum30,
                    TagList<ScoreSpecPam250,
                    TagList<ScoreSpecVtml200
                    > > > > > > > > >;
-}
-}
+} // namespace impl::score
+} // namespace impl
 
 // ----------------------------------------------------------------------------
 // Enum AminoAcidScoreMatrixID
@@ -183,8 +183,8 @@ matrixTagDispatch(TagList<TCurTag, TRestList> const &,
         matrixTagDispatch(TRestList(), m, runnable);
 }
 
-}
-}
+} // namespace impl::score
+} // namespace impl
 
 // ----------------------------------------------------------------------------
 // Function setScoreMatrixById()
