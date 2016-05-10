@@ -253,15 +253,9 @@ _matrixNameTagDispatch(TagList<TCurTag, void> const &,
                        AminoAcidScoreMatrixID const m)
 {
     using TUndType = std::underlying_type_t<AminoAcidScoreMatrixID>;
-    if (Find<impl::score::MatrixTags, TCurTag>::VALUE == static_cast<TUndType>(m))
-    {
-        return _matrixName(Score<int, ScoreMatrix<AminoAcid, TCurTag>>());
-    }
-    else
-    {
-        SEQAN_FAIL("ERROR: Recursing the ScoreMatrixTags failed, please report this as a BUG!");
-        return _matrixName(False()); // eliminate warnings in regard to SEQAN_FAIL and return type
-    }
+    return (Find<impl::score::MatrixTags, TCurTag>::VALUE == static_cast<TUndType>(m))
+            ? _matrixName(Score<int, ScoreMatrix<AminoAcid, TCurTag>>())
+            : "ERROR: Matrix name deduction failed, report this as a bug!";
 }
 
 template <typename TCurTag,
@@ -271,10 +265,9 @@ _matrixNameTagDispatch(TagList<TCurTag, TRestList> const &,
                        AminoAcidScoreMatrixID const m)
 {
     using TUndType = std::underlying_type_t<AminoAcidScoreMatrixID>;
-    if (Find<impl::score::MatrixTags, TCurTag>::VALUE == static_cast<TUndType>(m))
-        return _matrixName(Score<int, ScoreMatrix<AminoAcid, TCurTag>>());
-    else
-        return _matrixNameTagDispatch(TRestList(), m);
+    return (Find<impl::score::MatrixTags, TCurTag>::VALUE == static_cast<TUndType>(m))
+            ? _matrixName(Score<int, ScoreMatrix<AminoAcid, TCurTag>>())
+            : _matrixNameTagDispatch(TRestList(), m);
 }
 
 template <typename TValue>
