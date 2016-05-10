@@ -179,7 +179,7 @@ host(Factory<Iter<TIndex, VSTree<TSpec> > > & factory)
 }
 
 template <typename TIndex, typename TSpec>
-inline SEQAN_HOST_DEVICE typename Host<Factory<Iter<TIndex, VSTree<TSpec> > > >::Type &
+inline typename Host<Factory<Iter<TIndex, VSTree<TSpec> > > >::Type &
 _host(Factory<Iter<TIndex, VSTree<TSpec> > > & factory, True const & /* isView */)
 {
     return factory._index;
@@ -200,7 +200,7 @@ host(Factory<Iter<TIndex, VSTree<TSpec> > > const & factory)
 }
 
 template <typename TIndex, typename TSpec>
-inline SEQAN_HOST_DEVICE typename Host<Factory<Iter<TIndex, VSTree<TSpec> > > const>::Type &
+inline typename Host<Factory<Iter<TIndex, VSTree<TSpec> > > const>::Type &
 _host(Factory<Iter<TIndex, VSTree<TSpec> > > const & factory, True const & /* isView */)
 {
     return factory._index;
@@ -295,7 +295,7 @@ build(Factory<Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > > > & factory)
 // ----------------------------------------------------------------------------
 
 template <typename TIndex, typename TSpec, typename TId>
-inline SEQAN_HOST_DEVICE Iter<TIndex, VSTree<TSpec> >
+inline Iter<TIndex, VSTree<TSpec> >
 getObject(Factory<Iter<TIndex, VSTree<TSpec> > > & factory, TId /* objectId */)
 {
     return Iter<TIndex, VSTree<TSpec> >(_host(factory, typename IsView<TIndex>::Type()));
@@ -306,7 +306,7 @@ getObject(Factory<Iter<TIndex, VSTree<TSpec> > > & factory, TId /* objectId */)
 // ----------------------------------------------------------------------------
 
 template <typename TIndex, typename TSpec, typename TId>
-inline SEQAN_HOST_DEVICE Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > >
+inline Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > >
 getObject(Factory<Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > > > & factory, TId objectId)
 {
     SEQAN_ASSERT_LT(objectId, factory._maxObjects);

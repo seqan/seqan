@@ -413,7 +413,7 @@ stringSetLimits(StringSet<TString, TSpec> const & stringSet)
 
 // TODO(holtgrew): Auto-sequences should go away!
 template <typename TPosition>
-SEQAN_HOST_DEVICE inline TPosition
+inline TPosition
 getSeqNo(TPosition const &, Nothing const &)
 {
     return 0;
@@ -421,7 +421,7 @@ getSeqNo(TPosition const &, Nothing const &)
 
 // TODO(holtgrew): Auto-sequences should go away!
 template <typename TPosition>
-SEQAN_HOST_DEVICE inline TPosition
+inline TPosition
 getSeqNo(TPosition const &)
 {
     return 0;
@@ -429,14 +429,14 @@ getSeqNo(TPosition const &)
 
 // n sequences (position type is Pair)
 template <typename T1, typename T2, typename TPack, typename TLimitsString>
-SEQAN_HOST_DEVICE inline T1 getSeqNo(Pair<T1, T2, TPack> const & pos, TLimitsString const &)
+inline T1 getSeqNo(Pair<T1, T2, TPack> const & pos, TLimitsString const &)
 {
     return getValueI1(pos);
 }
 
 // n sequences (position type is Pair)
 template <typename T1, typename T2, typename TPack>
-SEQAN_HOST_DEVICE inline T1 getSeqNo(Pair<T1, T2, TPack> const & pos)
+inline T1 getSeqNo(Pair<T1, T2, TPack> const & pos)
 {
     return getValueI1(pos);
 }
@@ -458,7 +458,7 @@ inline TPos getSeqNo(TPos const & pos, TLimitsString const & limits)
 
 // TODO(holtgrew): Auto-sequences should go away!
 template <typename TPosition>
-SEQAN_HOST_DEVICE inline TPosition
+inline TPosition
 getSeqOffset(TPosition const & pos, Nothing const &)
 {
     return pos;
@@ -466,7 +466,7 @@ getSeqOffset(TPosition const & pos, Nothing const &)
 
 // TODO(holtgrew): Auto-sequences should go away!
 template <typename TPosition>
-SEQAN_HOST_DEVICE inline TPosition
+inline TPosition
 getSeqOffset(TPosition const & pos)
 {
     return pos;
@@ -474,13 +474,13 @@ getSeqOffset(TPosition const & pos)
 
 // n sequences (position type is Pair)
 template <typename T1, typename T2, typename TPack, typename TLimitsString>
-SEQAN_HOST_DEVICE inline T2 getSeqOffset(Pair<T1, T2, TPack> const & pos, TLimitsString const &) {
+inline T2 getSeqOffset(Pair<T1, T2, TPack> const & pos, TLimitsString const &) {
     return getValueI2(pos);
 }
 
 // n sequences (position type is Pair)
 template <typename T1, typename T2, typename TPack>
-SEQAN_HOST_DEVICE inline T2 getSeqOffset(Pair<T1, T2, TPack> const & pos) {
+inline T2 getSeqOffset(Pair<T1, T2, TPack> const & pos) {
     return getValueI2(pos);
 }
 
@@ -884,12 +884,12 @@ posNext(Pair<T1, T2, TPack> const & pos) {
  */
 
 template <typename TPos, typename TDelta>
-SEQAN_HOST_DEVICE inline TPos posAdd(TPos pos, TDelta delta) {
+inline TPos posAdd(TPos pos, TDelta delta) {
     return pos + delta;
 }
 
 template <typename T1, typename T2, typename TPack, typename TDelta>
-SEQAN_HOST_DEVICE inline Pair<T1, T2, TPack>
+inline Pair<T1, T2, TPack>
 posAdd(Pair<T1, T2, TPack> const & pos, TDelta delta) {
     return Pair<T1, T2, TPack>(getValueI1(pos), getValueI2(pos) + delta);
 }
@@ -1049,21 +1049,21 @@ countSequences(StringSet<TString, TSpec> const & stringSet) {
 // --------------------------------------------------------------------------
 
 template <typename TSeqNo, typename TString>
-SEQAN_HOST_DEVICE inline typename GetSequenceByNo<TString>::Type
+inline typename GetSequenceByNo<TString>::Type
 getSequenceByNo(TSeqNo /*seqNo*/, TString & string)
 {
     return string;
 }
 
 template <typename TSeqNo, typename TString, typename TSpec>
-SEQAN_HOST_DEVICE inline typename GetSequenceByNo< StringSet<TString, TSpec> >::Type
+inline typename GetSequenceByNo< StringSet<TString, TSpec> >::Type
 getSequenceByNo(TSeqNo seqNo, StringSet<TString, TSpec> & stringSet)
 {
     return stringSet[seqNo];
 }
 
 template <typename TSeqNo, typename TString, typename TSpec>
-SEQAN_HOST_DEVICE inline typename GetSequenceByNo< StringSet<TString, TSpec> const>::Type
+inline typename GetSequenceByNo< StringSet<TString, TSpec> const>::Type
 getSequenceByNo(TSeqNo seqNo, StringSet<TString, TSpec> const & stringSet)
 {
     return stringSet[seqNo];
@@ -1074,7 +1074,7 @@ getSequenceByNo(TSeqNo seqNo, StringSet<TString, TSpec> const & stringSet)
 // --------------------------------------------------------------------------
 
 template <typename TSeqNo, typename TText>
-SEQAN_HOST_DEVICE inline typename Size< typename GetSequenceByNo<TText const>::Type>::Type
+inline typename Size< typename GetSequenceByNo<TText const>::Type>::Type
 sequenceLength(TSeqNo seqNo, TText const & text)
 {
     return length(getSequenceByNo(seqNo, text));
@@ -1579,7 +1579,7 @@ assignValueById(StringSet<TString, TSpec1>& dest,
 
 // TODO(holtgrew): Why default concat() for any class?
 template <typename TString>
-SEQAN_HOST_DEVICE inline typename Concatenator<TString>::Type &
+inline typename Concatenator<TString>::Type &
 concat(TString & string)
 {
     return string;
@@ -1587,7 +1587,7 @@ concat(TString & string)
 
 // TODO(holtgrew): Why default concat() for any class?
 template <typename TString>
-SEQAN_HOST_DEVICE inline typename Concatenator<TString const>::Type &
+inline typename Concatenator<TString const>::Type &
 concat(TString const & string)
 {
     return string;

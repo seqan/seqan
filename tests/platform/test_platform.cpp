@@ -29,28 +29,16 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+// Author: Marcel Ehrhardt <marcel.ehrhardt@fu-berlin.de>
 // ==========================================================================
 
-#ifndef TEST_CUDA_COMMON_H_
-#define TEST_CUDA_COMMON_H_
+#include <seqan/basic.h>
 
-namespace seqan {
+#include "test_platform_range_based_for_loops.h"
 
-// ============================================================================
-// Kernels
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Kernel testGetValue()
-// ----------------------------------------------------------------------------
-
-template <typename TString, typename TPos, typename TValue>
-SEQAN_GLOBAL void testGetValue(TString str, TPos pos, TValue value)
+SEQAN_BEGIN_TESTSUITE(test_platform)
 {
-    SEQAN_ASSERT_EQ(str[pos], value);
+    SEQAN_CALL_TEST(test_platform_range_based_for_loops1);
+    SEQAN_CALL_TEST(test_platform_range_based_for_loops2);
 }
-
-}
-
-#endif // TEST_CUDA_COMMON_H_
+SEQAN_END_TESTSUITE

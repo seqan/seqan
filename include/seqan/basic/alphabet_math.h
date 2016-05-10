@@ -61,16 +61,11 @@ namespace seqan {
 // Metafunction MaxValue
 // ----------------------------------------------------------------------------
 
-#ifdef PLATFORM_CUDA
-template <typename T>
-struct MaximumValueUnsigned_ { static const T VALUE = ~(T)0; };
-#else
 template <typename T>
 struct MaximumValueUnsigned_ { static const T VALUE; };
 
 template <typename T>
 const T MaximumValueUnsigned_<T>::VALUE = ~(T)0;
-#endif
 
 template <typename T>
 struct MaximumValueSigned_ { static const T VALUE; };
@@ -188,25 +183,25 @@ struct MinValue : MinValue_<T> {};
 // --------------------------------------------------------------------------
 
 template <typename TValue>
-inline SEQAN_HOST_DEVICE
+inline
 TValue toUpperValue(TValue c)
 {
     return c;
 }
 
-inline SEQAN_HOST_DEVICE
+inline
 char toUpperValue(char c)
 {
     return c >= 'a' && c <= 'z' ? c + 'A' - 'a' : c;
 }
 
-inline SEQAN_HOST_DEVICE
+inline
 signed char toUpperValue(signed char c)
 {
     return toUpperValue(static_cast<char>(c));
 }
 
-inline SEQAN_HOST_DEVICE
+inline
 unsigned char toUpperValue(unsigned char c)
 {
     return toUpperValue(static_cast<char>(c));

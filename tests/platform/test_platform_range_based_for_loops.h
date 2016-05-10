@@ -29,39 +29,83 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+// Author: Marcel Ehrhardt <marcel.ehrhardt@fu-berlin.de>
 // ==========================================================================
 
-#include <seqan/basic.h>
-#include <seqan/sequence.h>
-#include <seqan/stream.h>
+#ifndef TESTS_PLATFORM_TEST_PLATFORM_RANGE_BASED_FOR_LOOPS_H_
+#define TESTS_PLATFORM_TEST_PLATFORM_RANGE_BASED_FOR_LOOPS_H_
 
-#include <thrust/count.h>
+#include <string>
+#include <vector>
 
-using namespace seqan;
-
-int main(int argc, char const ** argv)
+struct String
 {
-    typedef String<char, MMap<> >               TMMapString;
-    typedef typename Device<TMMapString>::Type  TDeviceString;
+    std::string me;
+};
 
-    if (argc != 3)
+inline char *
+begin(String & str)
+{
+    return &str.me[0];
+}
+
+inline char *
+end(String & str)
+{
+    return &str.me[0] + str.me.length();
+}
+
+void foobar1()
+{
+    String hello{"world"};
+
+    std::vector<char> hits;
+    for (auto c: hello)
     {
-        std::cerr << "USAGE: " << argv[0] << " <FILENAME> <CHAR>" << std::endl;
-        return 1;
+        hits.emplace_back(c);
     }
 
-    TMMapString str;
-
-    if (!open(str, argv[1], OPEN_RDWR | OPEN_APPEND))
-        return 1;
-
-    TDeviceString deviceStr;
-    assign(deviceStr, str);
-
-    close(str);
-
-    std::cout << thrust::count(begin(deviceStr, Standard()), end(deviceStr, Standard()), argv[2][0]) << std::endl;
-
-    return 0;
+    SEQAN_ASSERT_EQ(hits.size(), 5u);
+    SEQAN_ASSERT_EQ(hits[0], 'w');
+    SEQAN_ASSERT_EQ(hits[1], 'o');
+    SEQAN_ASSERT_EQ(hits[2], 'r');
+    SEQAN_ASSERT_EQ(hits[3], 'l');
+    SEQAN_ASSERT_EQ(hits[4], 'd');
 }
+
+template <bool speed_up>
+void foobar2()
+{
+    String hello{"world"};
+
+    std::vector<char> hits;
+    for (auto c: hello)
+    {
+        hits.emplace_back(c);
+    }
+
+    SEQAN_ASSERT_EQ(hits.size(), 5u);
+    SEQAN_ASSERT_EQ(hits[0], 'w');
+    SEQAN_ASSERT_EQ(hits[1], 'o');
+    SEQAN_ASSERT_EQ(hits[2], 'r');
+    SEQAN_ASSERT_EQ(hits[3], 'l');
+    SEQAN_ASSERT_EQ(hits[4], 'd');
+}
+
+SEQAN_DEFINE_TEST(test_platform_range_based_for_loops1) {
+    foobar1();
+}
+
+SEQAN_DEFINE_TEST(test_platform_range_based_for_loops2) {
+    #if defined(__INTEL_COMPILER)
+        #if __INTEL_COMPILER < 1600 || (__INTEL_COMPILER == 1600 && __INTEL_COMPILER_UPDATE <= 2)
+            SEQAN_SKIP_TEST;
+        #else
+            #warning "The Intel Compiler has a bug for this type of range-based for loop (at least until v16.0.2). Please reevaluate this issue for newer versions."
+        #endif
+    #endif
+
+    foobar2<true>();
+}
+
+#endif

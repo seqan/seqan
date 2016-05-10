@@ -81,9 +81,15 @@
     // Thus, we do not enable it in this case.
         #define _GLIBCXX_PARALLEL
     #endif  // #if !defined(__MINGW32__) || defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
+
+    #if defined(__INTEL_COMPILER)
+        #pragma message("The Intel Compiler crashes with _GLIBCXX_PARALLEL defined (at least until v16.0.2). Therefore, the feature will be disabled.")
+        #if __INTEL_COMPILER < 1600 || (__INTEL_COMPILER == 1600 && __INTEL_COMPILER_UPDATE <= 2)
+            #undef _GLIBCXX_PARALLEL
+        #endif
+    #endif // #if defined(__INTEL_COMPILER)
 #else
     #warning "Please enable OpenMP."
-    #define omp_get_wtime() 0
 #endif  // #ifdef _OPENMP
 
 // The q-gram length used for the q-gram index.  This has to be hard-coded as a precompiler definition since it is part
