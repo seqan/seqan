@@ -133,8 +133,8 @@ enum class AminoAcidScoreMatrixID : std::underlying_type_t<decltype(Find<impl::s
  */
 
 template <typename TValue>
-class Score<TValue, ScoreMatrix<AminoAcid, ScoreSpecSelectable> >
- : public Score<TValue, ScoreMatrix<AminoAcid, Default> >
+class Score<TValue, ScoreMatrix<AminoAcid, ScoreSpecSelectable> > :
+    public Score<TValue, ScoreMatrix<AminoAcid, Default> >
 {
 public:
     AminoAcidScoreMatrixID _ident = static_cast<AminoAcidScoreMatrixID>(0u);

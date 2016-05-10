@@ -767,7 +767,6 @@ getKappa(BlastScoringScheme<Score<int, ScoreMatrix<AminoAcid, ScoreSpecSelectabl
     return *(scoringScheme._m + scoringScheme.parameterIndex * scoringScheme._nParams + 4);
 }
 
-
 template <typename TMatrixSpec>
 inline double
 getKappa(BlastScoringScheme<Score<int, ScoreMatrix<AminoAcid, TMatrixSpec>>> const & scoringScheme)
