@@ -329,7 +329,6 @@ readRecords(TRecords & records, FormattedFile<Bam, Input, TSpec> & file, TSize m
     if (static_cast<TSize>(length(records)) < maxRecords)
         resize(records, maxRecords, Exact());
 
-
     TSize numRecords = 0;
     for (; numRecords < maxRecords && !atEnd(file.iter); ++numRecords)
         _readBamRecord(buffers[numRecords], file.iter, file.format);

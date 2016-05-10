@@ -112,7 +112,6 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_file_issue_489)
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(inFilePath)));
 }
 
-
 // ---------------------------------------------------------------------------
 // Read Records
 // ---------------------------------------------------------------------------
@@ -208,7 +207,6 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_records)
     testBamIOBamFileReadRecords("/tests/bam_io/small.bam");
 }
 
-
 // ---------------------------------------------------------------------------
 // Read Sequences without qualities from BamFileIn
 // ---------------------------------------------------------------------------
@@ -244,7 +242,6 @@ void testBamIOBamFileReadSequences(char const * pathFragment)
     SEQAN_ASSERT_EQ(seqs[2], "");
 }
 
-
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_sequences)
 {
     testBamIOBamFileReadSequences("/tests/bam_io/small_sequences.sam");
@@ -254,7 +251,6 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_sequences)
 {
     testBamIOBamFileReadSequences("/tests/bam_io/small_sequences.bam");
 }
-
 
 // ---------------------------------------------------------------------------
 // Read Sequences with qualities from BamFileIn
@@ -298,7 +294,6 @@ void testBamIOBamFileReadSequencesAndQualities(char const * pathFragment)
     SEQAN_ASSERT_EQ(quals[2], "");
 }
 
-
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_sequences_and_qualities)
 {
     testBamIOBamFileReadSequencesAndQualities("/tests/bam_io/small_sequences.sam");
@@ -308,7 +303,6 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_sequences_and_qualities)
 {
     testBamIOBamFileReadSequencesAndQualities("/tests/bam_io/small_sequences.bam");
 }
-
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_ex1)
 {
