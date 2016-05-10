@@ -98,10 +98,7 @@ using MatrixTags = TagList<ScoreSpecBlosum30,
  * @brief Pam120, see also @link Pam120 @endlink
  *
  * @val AminoAcidScoreMatrixID AminoAcidScoreMatrixID::PAM200
- * @brief Pam200, see also @link Pam200 @endl  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9.1)
-    message (FATAL_ERROR "Your GCC version is too old. Minimum version is GCC-4.9.1!")
-    return ()
-  endif ()ink
+ * @brief Pam200, see also @link Pam200 @endlink
  *
  * @val AminoAcidScoreMatrixID AminoAcidScoreMatrixID::PAM250
  * @brief Pam250, see also @link Pam250 @endlink
