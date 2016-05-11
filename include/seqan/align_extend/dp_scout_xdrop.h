@@ -89,14 +89,14 @@ public:
 template <typename TScoreValue>
 struct HasTerminationCriterium_<AlignExtend_<XDrop_<TScoreValue> > > : True {};
 
-template <typename TScoreValue>
-struct ScoutSpecForAlignmentAlgorithm_<AlignExtend_<XDrop_<TScoreValue> > >
+template <typename TScoreValue, typename TSpec>
+struct ScoutSpecForAlignmentAlgorithm_<AlignExtend_<XDrop_<TScoreValue> >, DPScoutState_<TSpec> >
 {
     typedef Terminator_<XDrop_<TScoreValue> > Type;
 };
 
-template <typename TScoreValue>
-struct ScoutSpecForAlignmentAlgorithm_<AlignExtend_<XDrop_<TScoreValue> > const>
+template <typename TScoreValue, typename TSpec>
+struct ScoutSpecForAlignmentAlgorithm_<AlignExtend_<XDrop_<TScoreValue> > const, DPScoutState_<TSpec> >
 {
     typedef Terminator_<XDrop_<TScoreValue> > Type;
 };

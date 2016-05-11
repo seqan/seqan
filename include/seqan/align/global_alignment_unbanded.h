@@ -646,7 +646,7 @@ String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stri
 
     size_t const numAlignments = length(stringsH);
     size_t const sizeBatch = LENGTH<TSimdAlign>::VALUE;
-    String<TraceSegment_<unsigned, unsigned> > traceSegments;
+    StringSet<String<TraceSegment_<unsigned, unsigned> > > traceSegments;
 
     String<TScoreValue> results;
     resize(results, numAlignments);
@@ -667,14 +667,14 @@ String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stri
         // if alignments have equal dimensions do nothing
         if(endsH.size() == 0)
         {
-            DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
+            DPScoutState_<SimdAlignmentScout<SimdAlignEqualLength> > dpScoutState;
             resultsBatch = _setUpAndRunAlignment(traceSegments, dpScoutState, stringSimdH, stringSimdV,
                                                  scoringSchemeSimd, TAlignConfig2(), TGapModel());
         }
         // otherwise prepare the special DPScoutState
         else
         {
-            DPScoutState_<SimdAlignmentScoutVariable> dpScoutState;
+            DPScoutState_<SimdAlignmentScout<SimdAlignVariableLength> > dpScoutState;
             dpScoutState.dimV = length(stringSimdV);
             dpScoutState.isLocalAlignment = false;
             dpScoutState.RIGHT = RIGHT;
@@ -787,14 +787,14 @@ String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
         // if alignments have equal dimensions do nothing
         if(endsH.size() == 0)
         {
-            DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
+            DPScoutState_<SimdAlignmentScout<SimdAlignEqualLength> > dpScoutState;
             resultsBatch = _setUpAndRunAlignment(traceSegments, dpScoutState, stringSimdH, stringSimdV,
                                                  scoringSchemeSimd, TAlignConfig2(), TGapModel());
         }
         // otherwise prepare the special DPScoutState
         else
         {
-            DPScoutState_<SimdAlignmentScoutVariable> dpScoutState;
+            DPScoutState_<SimdAlignmentScout<SimdAlignVariableLength> > dpScoutState;
             dpScoutState.dimV = length(stringSimdV);
             dpScoutState.isLocalAlignment = false;
             dpScoutState.RIGHT = RIGHT;
@@ -905,14 +905,14 @@ String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & a
         // if alignments have equal dimensions do nothing
         if(endsH.size() == 0)
         {
-            DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
+            DPScoutState_<SimdAlignmentScout<SimdAlignEqualLength> > dpScoutState;
             resultsBatch = _setUpAndRunAlignment(trace, dpScoutState, stringSimdH, stringSimdV,
                                                  scoringSchemeSimd, TAlignConfig2(), TGapModel());
         }
         // otherwise prepare the special DPScoutState
         else
         {
-            DPScoutState_<SimdAlignmentScoutVariable> dpScoutState;
+            DPScoutState_<SimdAlignmentScout<SimdAlignVariableLength> > dpScoutState;
             dpScoutState.dimV = length(stringSimdV);
             dpScoutState.isLocalAlignment = false;
             dpScoutState.RIGHT = RIGHT;

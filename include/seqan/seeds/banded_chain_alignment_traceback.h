@@ -355,16 +355,21 @@ void _computeTraceback(TTarget & target,
 // Function _computeTraceback()        [BandedChainAlignment, global interface]
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TDPTraceMatrixNavigator, typename TDPScout, typename TSequenceH, typename TSequenceV,
-typename TBandFlag, typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackSpec>
+template <typename TTarget,
+          typename TDPTraceMatrixNavigator,
+          typename TDPCell, typename TScoutSpec,
+          typename TSequenceH, typename TSequenceV,
+          typename TBandFlag,
+          typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackSpec>
 void _computeTraceback(StringSet<TTarget> & targetSet,
                        TDPTraceMatrixNavigator & matrixNavigator,
-                       TDPScout & dpScout,
+                       DPScout_<TDPCell, TScoutSpec> & dpScout,
                        TSequenceH const & seqH,
                        TSequenceV const & seqV,
                        DPBandConfig<TBandFlag> const & band,
                        DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTracebackSpec> const & dpProfile)
 {
+    typedef DPScout_<TDPCell, TScoutSpec> TDPScout;
     typedef typename TDPScout::TMaxHostPositionString TMaxHostPositions;
     typedef typename Iterator<TMaxHostPositions, Standard>::Type TMaxHostPositionsIterator;
 

@@ -129,7 +129,10 @@ struct SimdMatrixParams_ {};
 
 // struct to get the type that is in the vector
 template <typename T, const int I = 0>
-struct InnerValue;
+struct InnerValue
+{
+    typedef T Type;  // Use the identity type in the most generic form.
+};
 
 #define SEQAN_DEFINE_SIMD_VECTOR_(TSimdVector, TValue, SIZEOF_VECTOR)                                           \
         typedef TValue TSimdVector __attribute__ ((__vector_size__(SIZEOF_VECTOR)));                            \
@@ -611,6 +614,16 @@ template <typename T, typename TSimdVector, int L>
 inline void _storeu(T * memAddr, TSimdVector &vec, SimdParams_<32, L>)
 {
     _mm256_storeu_si256((__m256i*)memAddr, SEQAN_VECTOR_CAST_(const __m256i&, vec));
+}
+
+// ----------------------------------------------------------------------------
+// Function _load() 256bit
+// ----------------------------------------------------------------------------
+
+template <typename TSimdVector, typename T, int L>
+inline TSimdVector _load(T const * memAddr, SimdParams_<32, L>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_load_si256((__m256i const *) memAddr));
 }
 
 // --------------------------------------------------------------------------
@@ -1202,6 +1215,16 @@ inline void _storeu(T * memAddr, TSimdVector &vec, SimdParams_<16, L>)
     _mm_storeu_si128((__m128i*)memAddr, reinterpret_cast<const __m128i &>(vec));
 }
 
+// ----------------------------------------------------------------------------
+// Function _load() 128bit
+// ----------------------------------------------------------------------------
+
+template <typename TSimdVector, typename T, int L>
+inline TSimdVector _load(T const * memAddr, SimdParams_<16, L>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_load_si128((__m128i const *) memAddr));
+}
+
 // --------------------------------------------------------------------------
 // _shuffleVector (128bit)
 // --------------------------------------------------------------------------
@@ -1691,6 +1714,18 @@ storeu(T * memAddr, TSimdVector const &vec)
 {
     typedef typename InnerValue<TSimdVector>::Type TValue;
     _storeu(memAddr, vec, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
+}
+
+// --------------------------------------------------------------------------
+// Function load()
+// --------------------------------------------------------------------------
+
+template <typename TSimdVector, typename T>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+load(T const * memAddr)
+{
+    typedef typename InnerValue<TSimdVector>::Type TValue;
+    return _load<TSimdVector>(memAddr, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
 }
 
 // --------------------------------------------------------------------------

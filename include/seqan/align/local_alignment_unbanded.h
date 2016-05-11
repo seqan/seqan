@@ -354,14 +354,14 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
         // if alignments have equal dimensions do nothing
         if(endsH.size() == 0)
         {
-            DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
+            DPScoutState_<SimdAlignmentScout<SimdAlignEqualLength> > dpScoutState;
             resultsBatch = _setUpAndRunAlignment(trace, dpScoutState, stringSimdH, stringSimdV,
                                                  scoringSchemeSimd, TAlignConfig2(), tag);
         }
         // otherwise prepare the special DPScoutState
         else
         {
-            DPScoutState_<SimdAlignmentScoutVariable> dpScoutState;
+            DPScoutState_<SimdAlignmentScout<SimdAlignVariableLength> > dpScoutState;
             dpScoutState.dimV = length(stringSimdV);
             dpScoutState.isLocalAlignment = true;
             dpScoutState.RIGHT = false;

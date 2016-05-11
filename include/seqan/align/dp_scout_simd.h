@@ -47,28 +47,25 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TSpec = Default>
-struct SimdAlignmentDefault_ {};
+struct SimdAlignEqualLength_;
+typedef Tag<SimdAlignEqualLength_> SimdAlignEqualLength;
 
-template <typename TSpec = Default>
-struct SimdAlignmentVariable_ {};
+struct SimdAlignVariableLength_;
+typedef Tag<SimdAlignVariableLength_> SimdAlignVariableLength;
 
-struct SimdAlignmentScoutDefault_;
-typedef Tag<SimdAlignmentScoutDefault_> SimdAlignmentScoutDefault;
-
-struct SimdAlignmentScoutVariable_;
-typedef Tag<SimdAlignmentScoutVariable_> SimdAlignmentScoutVariable;
+template <typename TSpec = SimdAlignEqualLength>
+struct SimdAlignmentScout {};
 
 // ----------------------------------------------------------------------------
 // Class DPScoutState_
 // ----------------------------------------------------------------------------
 
 template <>
-class DPScoutState_<SimdAlignmentScoutDefault> : public Nothing
+class DPScoutState_<SimdAlignmentScout<SimdAlignEqualLength> > : public Nothing
 {};
 
 template <>
-class DPScoutState_<SimdAlignmentScoutVariable>
+class DPScoutState_<SimdAlignmentScout<SimdAlignVariableLength> >
 {
 public:
     String<TSimdAlign> masksH, masksV, masks;
@@ -119,7 +116,8 @@ public:
 // ----------------------------------------------------------------------------
 
 template <typename TDPCell>
-class DPScout_<TDPCell, SimdAlignmentScoutDefault> : public DPScout_<TDPCell, Default>
+class DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > :
+    public DPScout_<TDPCell, Default>
 {
 public:
     //used in the SIMD version to keep track of all host positions
@@ -127,35 +125,29 @@ public:
     //so we need two vectors of type 32bit to save the host for all alignments
     SimdVector<int32_t>::Type _maxHostLow; //first half of alignments
     SimdVector<int32_t>::Type _maxHostHigh; //other half
+    unsigned _simdLane;
 
-    DPScout_(DPScoutState_<SimdAlignmentScoutDefault> const & /*state*/) {}
+    DPScout_(DPScoutState_<SimdAlignmentScout<SimdAlignEqualLength> > const & /*state*/) : _simdLane(0)
+    {}
 };
 
 template <typename TDPCell>
-class DPScout_<TDPCell, SimdAlignmentScoutVariable> : public DPScout_<TDPCell, Default>
+class DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength> > :
+    public DPScout_<TDPCell, Default>
 {
 public:
     //as above in DPScout_<TDPCell, SimdAlignmentScoutDefault
     SimdVector<int32_t>::Type _maxHostLow;
     SimdVector<int32_t>::Type _maxHostHigh;
+    DPScoutState_<SimdAlignmentScout<SimdAlignVariableLength> > * state;
+    unsigned _simdLane;
 
-    DPScoutState_<SimdAlignmentScoutVariable> * state;
 
     DPScout_() : state(nullptr) {}
-    DPScout_(DPScoutState_<SimdAlignmentScoutVariable> & state) : state(&state) {}
+
+    DPScout_(DPScoutState_<SimdAlignmentScout<SimdAlignVariableLength> > & _state) : state(&_state), _simdLane(0)
+    {}
 };
-
-// ----------------------------------------------------------------------------
-// Concepts
-// ----------------------------------------------------------------------------
-
-SEQAN_CONCEPT(SimdVariableConcept, (T)) {};
-template <typename TDPCell>
-SEQAN_CONCEPT_IMPL((DPScout_<TDPCell, SimdAlignmentScoutVariable>), (SimdVariableConcept));
-
-SEQAN_CONCEPT(SimdDefaultConcept, (T)) {};
-template <typename TDPCell>
-SEQAN_CONCEPT_IMPL((DPScout_<TDPCell, SimdAlignmentScoutDefault>), (SimdDefaultConcept));
 
 // ============================================================================
 // Metafunctions
@@ -165,31 +157,10 @@ SEQAN_CONCEPT_IMPL((DPScout_<TDPCell, SimdAlignmentScoutDefault>), (SimdDefaultC
 // Metafunction ScoutSpecForSimdAlignment_
 // ----------------------------------------------------------------------------
 
-template<typename TSpec>
-struct ScoutSpecForSimdAlignment_ {};
-
-template<>
-struct ScoutSpecForSimdAlignment_<DPScoutState_<SimdAlignmentScoutDefault> >
+template<typename TAlignmentAlgorithm, typename TSpec>
+struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, DPScoutState_<SimdAlignmentScout<TSpec> > >
 {
-    typedef SimdAlignmentScoutDefault Type;
-};
-
-template<>
-struct ScoutSpecForSimdAlignment_<DPScoutState_<SimdAlignmentScoutDefault> const>
-{
-    typedef SimdAlignmentScoutDefault Type;
-};
-
-template<>
-struct ScoutSpecForSimdAlignment_<DPScoutState_<SimdAlignmentScoutVariable> >
-{
-    typedef SimdAlignmentScoutVariable Type;
-};
-
-template<>
-struct ScoutSpecForSimdAlignment_<DPScoutState_<SimdAlignmentScoutVariable_> const>
-{
-    typedef SimdAlignmentScoutVariable Type;
+    typedef SimdAlignmentScout<TSpec> Type;
 };
 
 // ============================================================================
@@ -244,12 +215,12 @@ _updateHostPositions(DPScout_<TDPCell, TScoutSpec> & dpScout,
     dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
                                 _mm256_cvtepi16_epi32(_mm256_castsi256_si128(reinterpret_cast<__m256i&>(cmp))));
     dpScout._maxHostHigh = blend(dpScout._maxHostHigh, positionNavigator,
-                                _mm256_cvtepi16_epi32(_mm256_extractf128_si256(reinterpret_cast<__m256i&>(cmp),1)));
+                                 _mm256_cvtepi16_epi32(_mm256_extractf128_si256(reinterpret_cast<__m256i&>(cmp),1)));
 #elif defined(__SSE3__)
     dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
                                 _mm_unpacklo_epi16(reinterpret_cast<__m128i&>(cmp), reinterpret_cast<__m128i&>(cmp)));
     dpScout._maxHostHigh = blend(dpScout._maxHostHigh, positionNavigator,
-                                _mm_unpackhi_epi16(reinterpret_cast<__m128i&>(cmp), reinterpret_cast<__m128i&>(cmp)));
+                                 _mm_unpackhi_epi16(reinterpret_cast<__m128i&>(cmp), reinterpret_cast<__m128i&>(cmp)));
 #endif
 }
 
@@ -259,7 +230,7 @@ _updateHostPositions(DPScout_<TDPCell, TScoutSpec> & dpScout,
 
 template <typename TDPCell, typename TTraceMatrixNavigator, typename TIsLastColumn, typename TIsLastRow>
 inline void
-_scoutBestScore(DPScout_<TDPCell, SimdAlignmentScoutDefault> & dpScout,
+_scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > & dpScout,
                 TDPCell const & activeCell,
                 TTraceMatrixNavigator const & navigator,
                 TIsLastColumn const & /**/,
@@ -272,7 +243,7 @@ _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScoutDefault> & dpScout,
 
 template <typename TDPCell, typename TTraceMatrixNavigator, typename TIsLastColumn, typename TIsLastRow>
 inline void
-_scoutBestScore(DPScout_<TDPCell, SimdAlignmentScoutVariable> & dpScout,
+_scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength> > & dpScout,
                 TDPCell const & activeCell,
                 TTraceMatrixNavigator const & navigator,
                 TIsLastColumn const & /**/,
@@ -290,12 +261,116 @@ _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScoutVariable> & dpScout,
 
 template <typename TDPCell, typename TScoutSpec>
 inline unsigned int
-maxHostPosition(DPScout_<TDPCell, TScoutSpec> const & dpScout, size_t pos)
+maxHostPosition(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & dpScout)
 {
-    if(pos < LENGTH<SimdVector<int32_t>::Type>::VALUE)
-        return value(dpScout._maxHostLow, pos);
+    if(dpScout._simdLane < LENGTH<SimdVector<int32_t>::Type>::VALUE)
+        return value(dpScout._maxHostLow, dpScout._simdLane);
     else
-        return value(dpScout._maxHostHigh, pos - LENGTH<SimdVector<int32_t>::Type>::VALUE);
+        return value(dpScout._maxHostHigh, dpScout._simdLane - LENGTH<SimdVector<int32_t>::Type>::VALUE);
+}
+
+// ----------------------------------------------------------------------------
+// Function _setSimdLane()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TScoutSpec, typename TPosition>
+inline void
+_setSimdLane(DPScout_<TDPCell, TScoutSpec> & dpScout, TPosition const pos)
+{
+    dpScout._simdLane = pos;
+}
+
+// ----------------------------------------------------------------------------
+// Function _preInitScoutHorizontal()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell>
+inline void
+_preInitScoutHorizontal(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength> > & scout)
+{
+    scout.state->nextEndsH = scout.state->endsH.begin();
+    scout.state->posH = 0;
+}
+
+// ----------------------------------------------------------------------------
+// Function _preInitScoutVertical()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell>
+inline void
+_preInitScoutVertical(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength> > & scout)
+{
+    scout.state->updateMasks();
+    scout.state->nextEndsV = scout.state->endsV.begin();
+    scout.state->posV = 0;
+}
+
+// ----------------------------------------------------------------------------
+// Function _reachedHorizontalEndPoint()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TIter>
+inline bool
+_reachedHorizontalEndPoint(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength> > & scout,
+                           TIter const & hIt)
+{
+    return *(scout.state->nextEndsH) == position(hIt);
+}
+
+// ----------------------------------------------------------------------------
+// Function _reachedVerticalEndPoint()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TIter>
+inline bool
+_reachedVerticalEndPoint(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength> > & scout,
+                         TIter const & vIt)
+{
+    return *(scout.state->nextEndsV) == position(vIt);
+}
+
+// ----------------------------------------------------------------------------
+// Function _nextHorizontalEndPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell>
+inline void
+_nextHorizontalEndPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength> > & scout)
+{
+    ++scout.state->nextEndsH;
+}
+
+// ----------------------------------------------------------------------------
+// Function _nextVerticalEndPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell>
+inline void
+_nextVerticalEndPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength> > & scout)
+{
+    ++scout.state->nextEndsV;
+}
+
+// ----------------------------------------------------------------------------
+// Function _incHorizontalPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell>
+inline void
+_incHorizontalPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength> > & scout)
+{
+    ++scout.state->posH;
+}
+
+// ----------------------------------------------------------------------------
+// Function _incVerticalPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell>
+inline void
+_incVerticalPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength> > & scout)
+{
+    ++scout.state->posV;
 }
 
 }  // namespace seqan

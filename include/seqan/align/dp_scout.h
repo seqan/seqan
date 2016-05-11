@@ -167,7 +167,7 @@ public:
 // Given an alignment algorithm tag such as GlobalAlignment_ or LocalAlignment_, returns the specialization tag for the
 // corresponding DPScout_ specialization.
 
-template <typename TAlignmentAlgorithm>
+template <typename TAlignmentAlgorithm, typename TScoutState>
 struct ScoutSpecForAlignmentAlgorithm_
 {
     typedef If<HasTerminationCriterium_<TAlignmentAlgorithm>,
@@ -279,7 +279,95 @@ terminateScout(DPScout_<TDPCell, Terminator_<TSpec> > & scout)
     scout.terminationCriteriumMet = true;
 }
 
+// ----------------------------------------------------------------------------
+// Function _preInitScoutHorizontal()
+// ----------------------------------------------------------------------------
 
+template <typename TDPCell, typename TSpec>
+inline void
+_preInitScoutHorizontal(DPScout_<TDPCell, TSpec> const & /*scout*/)
+{
+    // no-op.
+}
+
+// ----------------------------------------------------------------------------
+// Function _reachedHorizontalEndPoint()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec, typename TIter>
+inline bool
+_reachedHorizontalEndPoint(DPScout_<TDPCell, TSpec> const & /*scout*/,
+                           TIter const & /*hIt*/)
+{
+    return false;
+}
+
+// ----------------------------------------------------------------------------
+// Function _preInitScoutVertical()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec>
+inline void
+_preInitScoutVertical(DPScout_<TDPCell, TSpec> const & /*scout*/)
+{
+    // no-op.
+}
+
+// ----------------------------------------------------------------------------
+// Function _reachedVerticalEndPoint()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec, typename TIter>
+inline bool
+_reachedVerticalEndPoint(DPScout_<TDPCell, TSpec> const & /*scout*/,
+                         TIter const & /*iter*/)
+{
+    return false;
+}
+
+// ----------------------------------------------------------------------------
+// Function _nextHorizontalEndPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec>
+inline void
+_nextHorizontalEndPos(DPScout_<TDPCell, TSpec> const & /*scout*/)
+{
+    // no-op.
+}
+
+// ----------------------------------------------------------------------------
+// Function _nextVerticalEndPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec>
+inline void
+_nextVerticalEndPos(DPScout_<TDPCell, TSpec> const & /*scout*/)
+{
+    // no-op.
+}
+
+// ----------------------------------------------------------------------------
+// Function _incHorizontalPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec>
+inline void
+_incHorizontalPos(DPScout_<TDPCell, TSpec> const & /*scout*/)
+{
+    // no-op.
+}
+
+// ----------------------------------------------------------------------------
+// Function _incVerticalPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec>
+inline void
+_incVerticalPos(DPScout_<TDPCell, TSpec> const & /*scout*/)
+{
+    // no-op.
+}
 
 }  // namespace seqan
 

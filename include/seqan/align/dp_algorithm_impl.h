@@ -259,7 +259,6 @@ void _checkAndCreateSimdRepresentation(StringSet<TStringH> const & stringsH,
     _createSimdRepresentation(simdV, paddedV, 0, maxV);
 }
 
-
 template<typename TSequence, typename TAlignSpec, typename TSimdVector>
 void _checkAndCreateSimdRepresentation(StringSet<Align<TSequence, TAlignSpec> > & align,
                                        size_t pos,
@@ -410,16 +409,7 @@ inline void _createSimdRepresentation(String<TSimdVector> & simdRepr,
 // ----------------------------------------------------------------------------
 
 template <typename TSimdVec, typename TScoreValue, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<ScoreMatrixConcept<Score<TScoreValue, TSpec> > >, Score<TSimdVec, TSpec>)
-_setSimdScoringScheme(Score<TScoreValue, TSpec> const & scoringScheme,
-                      TSimdVec /*x*/)
-{
-    return Score<TSimdVec, TSpec>(createVector<TSimdVec>(scoreGap(scoringScheme)),
-                                  createVector<TSimdVec>(scoreGapOpen(scoringScheme)));
-}
-
-template <typename TSimdVec, typename TScoreValue, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<ScoreMatrixConcept<Score<TScoreValue, TSpec> > > >, Score<TSimdVec, TSpec>)
+inline Score<TSimdVec, TSpec>
 _setSimdScoringScheme(Score<TScoreValue, TSpec> const & scoringScheme,
                       TSimdVec /*x*/)
 {
@@ -427,6 +417,15 @@ _setSimdScoringScheme(Score<TScoreValue, TSpec> const & scoringScheme,
                                   createVector<TSimdVec>(scoreMismatch(scoringScheme)),
                                   createVector<TSimdVec>(scoreGap(scoringScheme)),
                                   createVector<TSimdVec>(scoreGapOpen(scoringScheme)));
+}
+
+template <typename TSimdVec, typename TScoreValue, typename TAlphabet, typename TSpec>
+inline Score<TSimdVec, ScoreMatrix<TAlphabet, TSpec> >
+_setSimdScoringScheme(Score<TScoreValue, ScoreMatrix<TAlphabet, TSpec> > const & scoringScheme,
+                      TSimdVec /*x*/)
+{
+    return Score<TSimdVec, ScoreMatrix<TAlphabet, TSpec> >(createVector<TSimdVec>(scoreGap(scoringScheme)),
+                                                           createVector<TSimdVec>(scoreGapOpen(scoringScheme)));
 }
 
 // ----------------------------------------------------------------------------
@@ -564,15 +563,50 @@ _computeCell(TDPScout & scout,
 }
 
 // ----------------------------------------------------------------------------
+// Function _precomputeScoreMatrixOffset()
+// ----------------------------------------------------------------------------
+
+// Default fallback if scoring scheme is not a matrix.
+template <typename TSeqValue,
+          typename TScoringScheme>
+inline TSeqValue
+_precomputeScoreMatrixOffset(TSeqValue const & seqVal,
+                             TScoringScheme const & /*score*/)
+{
+    return seqVal;
+}
+
+// Fallback if scoring scheme a matrix but non-simd.
+template <typename TSeqValue,
+          typename TScoreValue, typename TAlphabet, typename TScoreSpec>
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TSeqValue> > >, TSeqValue)
+_precomputeScoreMatrixOffset(TSeqValue const & seqVal,
+                             Score<TScoreValue, ScoreMatrix<TAlphabet, TScoreSpec> > const & /*score*/)
+{
+    return seqVal;
+}
+
+// Actually precompute value if scoring scheme is score matrix and simd version.
+template <typename TSeqValue,
+          typename TScoreValue, typename TAlphabet, typename TScoreSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSeqValue> >, TSeqValue)
+_precomputeScoreMatrixOffset(TSeqValue const & seqVal,
+                             Score<TScoreValue, ScoreMatrix<TAlphabet, TScoreSpec> > const & /*score*/)
+{
+    typedef Score<TScoreValue, ScoreMatrix<TAlphabet, TScoreSpec> > TScoringScheme;
+    return createVector<TSeqValue>(TScoringScheme::VALUE_SIZE) * seqVal;
+}
+
+// ----------------------------------------------------------------------------
 // Function _computeTrack()
 // ----------------------------------------------------------------------------
 
 // Computes one track of the dp algorithm. A track is defined as the area that is filled by the inner loop and
 // iterated by the outer loop. For the column-wise navigation the track is equivalent with the column.
+
 template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSeqHValue,
           typename TSeqVValue, typename TSeqVIterator, typename TScoringScheme, typename TColumnDescriptor, typename TDPProfile>
-inline SEQAN_FUNC_ENABLE_IF(And<Is<ScoreMatrixConcept<TScoringScheme> >,
-                                Is<SimdDefaultConcept<TDPScout> > >, void)
+inline void
 _computeTrack(TDPScout & scout,
               TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
               TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
@@ -588,13 +622,16 @@ _computeTrack(TDPScout & scout,
     _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), FirstCell());
     _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), FirstCell());
 
-    // precompute the row of the scoring matrix for future look-ups
-    TSeqHValue matrix_row = createVector<TSeqHValue>(TScoringScheme::VALUE_SIZE) * seqHValue;
+    // Precompute the row of the scoring matrix for future look-ups.
+    TSeqHValue tmpSeqH = _precomputeScoreMatrixOffset(seqHValue, scoringScheme);
+
+    // Initilaize SIMD version with multiple end points.
+    _preInitScoutVertical(scout);
 
     // Compute the first cell.
     _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
                  previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                 previousCellVertical(dpScoreMatrixNavigator), matrix_row, seqVValue, scoringScheme,
+                 previousCellVertical(dpScoreMatrixNavigator), tmpSeqH, seqVValue, scoringScheme,
                  TColumnDescriptor(), FirstCell(), TDPProfile());
 
     TSeqVIterator iter = seqBegin;
@@ -608,212 +645,30 @@ _computeTrack(TDPScout & scout,
         // Compute the inner cell.
         _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
                      previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                     previousCellVertical(dpScoreMatrixNavigator), matrix_row,
+                     previousCellVertical(dpScoreMatrixNavigator), tmpSeqH,
                      sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
                      TColumnDescriptor(), InnerCell(), TDPProfile());
-    }
-    // Set the iterator to the last cell of the track.
-    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
-    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
-    // Compute the last cell.
-    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                 previousCellVertical(dpScoreMatrixNavigator), matrix_row,
-                 sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
-                 TColumnDescriptor(), LastCell(), TDPProfile());
-}
 
-template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSeqHValue,
-          typename TSeqVValue, typename TSeqVIterator, typename TScoringScheme, typename TColumnDescriptor, typename TDPProfile>
-inline SEQAN_FUNC_ENABLE_IF(And<Is<ScoreMatrixConcept<TScoringScheme> >,
-                                Is<SimdVariableConcept<TDPScout> > >, void)
-_computeTrack(TDPScout & scout,
-              TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
-              TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
-              TSeqHValue const & seqHValue,
-              TSeqVValue const & seqVValue,
-              TSeqVIterator const & seqBegin,
-              TSeqVIterator const & seqEnd,
-              TScoringScheme const & scoringScheme,
-              TColumnDescriptor const &,
-              TDPProfile const &)
-{
-    // Set the iterator to the begin of the track.
-    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), FirstCell());
-    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), FirstCell());
-
-    // precompute the row of the scoring matrix for future look-ups
-    TSeqHValue matrix_row = createVector<TSeqHValue>(TScoringScheme::VALUE_SIZE) * seqHValue;
-
-    // Initilaize SIMD version with multiple end points.
-    scout.state->updateMasks();
-    scout.state->nextEndsV = scout.state->endsV.begin();
-    scout.state->posV = 0;
-
-    // Compute the first cell.
-    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                 previousCellVertical(dpScoreMatrixNavigator), matrix_row, seqVValue, scoringScheme,
-                 TColumnDescriptor(), FirstCell(), TDPProfile());
-
-    TSeqVIterator iter = seqBegin;
-    TSeqVIterator itEnd = (seqEnd - 1);
-    // Compute the inner cells of the current track.
-    for (; iter != itEnd; ++iter)
-    {
-        // Set the iterator to the next cell within the track.
-        _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
-        _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
-        // Compute the inner cell.
-        if (SEQAN_UNLIKELY( position(iter) == *(scout.state->nextEndsV) ))
+        // If we have variable length simd, we need to check if we reached the end of one of the sequences.
+        // For all other cases, the function returns always false.
+        if (SEQAN_UNLIKELY(_reachedVerticalEndPoint(scout, iter)))
         {
             _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
                          previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                         previousCellVertical(dpScoreMatrixNavigator), matrix_row,
+                         previousCellVertical(dpScoreMatrixNavigator), tmpSeqH,
                          sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
                          TColumnDescriptor(), LastCell(), TDPProfile());
-            ++scout.state->nextEndsV;
+            _nextVerticalEndPos(scout);
         }
         else
         {
             _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
                          previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                         previousCellVertical(dpScoreMatrixNavigator), matrix_row,
+                         previousCellVertical(dpScoreMatrixNavigator), tmpSeqH,
                          sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
                          TColumnDescriptor(), InnerCell(), TDPProfile());
         }
-        ++scout.state->posV;
-    }
-    // Set the iterator to the last cell of the track.
-    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
-    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
-
-    // Compute the last cell.
-    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                 previousCellVertical(dpScoreMatrixNavigator), matrix_row,
-                 sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
-                 TColumnDescriptor(), LastCell(), TDPProfile());
-}
-
-template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSeqHValue,
-          typename TSeqVValue, typename TSeqVIterator, typename TScoringScheme, typename TColumnDescriptor, typename TDPProfile>
-inline SEQAN_FUNC_ENABLE_IF(And<Not<Is<ScoreMatrixConcept<TScoringScheme> > >,
-                                Is<SimdVariableConcept<TDPScout> > >, void)
-_computeTrack(TDPScout & scout,
-              TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
-              TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
-              TSeqHValue const & seqHValue,
-              TSeqVValue const & seqVValue,
-              TSeqVIterator const & seqBegin,
-              TSeqVIterator const & seqEnd,
-              TScoringScheme const & scoringScheme,
-              TColumnDescriptor const &,
-              TDPProfile const &)
-{
-    // Set the iterator to the begin of the track.
-    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), FirstCell());
-    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), FirstCell());
-
-    // Initilaize SIMD version with multiple end points.
-    scout.state->updateMasks();
-    scout.state->nextEndsV = scout.state->endsV.begin();
-    scout.state->posV = 0;
-
-    // Compute the first cell.
-    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                 previousCellVertical(dpScoreMatrixNavigator), seqHValue, seqVValue, scoringScheme,
-                 TColumnDescriptor(), FirstCell(), TDPProfile());
-
-    TSeqVIterator iter = seqBegin;
-    TSeqVIterator itEnd = (seqEnd - 1);
-    // Compute the inner cells of the current track.
-    for (; iter != itEnd; ++iter)
-    {
-        // Set the iterator to the next cell within the track.
-        _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
-        _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
-
-        // Compute the inner cell.
-        if (SEQAN_UNLIKELY( position(iter) == *(scout.state->nextEndsV) ))
-        {
-            _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-                         previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                         previousCellVertical(dpScoreMatrixNavigator), seqHValue,
-                         sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
-                         TColumnDescriptor(), LastCell(), TDPProfile());
-            ++scout.state->nextEndsV;
-        }
-        else
-        {
-            _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-                         previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                         previousCellVertical(dpScoreMatrixNavigator), seqHValue,
-                         sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
-                         TColumnDescriptor(), InnerCell(), TDPProfile());
-        }
-        ++scout.state->posV;
-    }
-    // Set the iterator to the last cell of the track.
-    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
-    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
-
-    // Compute the last cell.
-    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                 previousCellVertical(dpScoreMatrixNavigator), seqHValue,
-                 sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
-                 TColumnDescriptor(), LastCell(), TDPProfile());
-}
-
-template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSeqHValue,
-          typename TSeqVValue, typename TSeqVIterator, typename TScoringScheme, typename TColumnDescriptor, typename TDPProfile>
-inline SEQAN_FUNC_ENABLE_IF(And<And<Not<And<Is<ScoreMatrixConcept<TScoringScheme> >,
-                                            Is<SimdDefaultConcept<TDPScout> > > >,
-                                    Not<And<Is<ScoreMatrixConcept<TScoringScheme> >,
-                                        Is<SimdVariableConcept<TDPScout> > > > >,
-                                Not<And<Not<Is<ScoreMatrixConcept<TScoringScheme> > >,
-                                        Is<SimdVariableConcept<TDPScout> > > > >, void)
-_computeTrack(TDPScout & scout,
-              TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
-              TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
-              TSeqHValue const & seqHValue,
-              TSeqVValue const & seqVValue,
-              TSeqVIterator const & seqBegin,
-              TSeqVIterator const & seqEnd,
-              TScoringScheme const & scoringScheme,
-              TColumnDescriptor const &,
-              TDPProfile const &)
-{
-    // Set the iterator to the begin of the track.
-    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), FirstCell());
-    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), FirstCell());
-
-    // Compute the first cell.
-    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-                 previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                 previousCellVertical(dpScoreMatrixNavigator), seqHValue, seqVValue, scoringScheme,
-                 TColumnDescriptor(), FirstCell(), TDPProfile());
-//    std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << " \t";
-//    std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << "(" << _horizontalScoreOfCell(value(dpScoreMatrixNavigator)) << "," << _verticalScoreOfCell(value(dpScoreMatrixNavigator)) << ")" << " \t";
-
-    TSeqVIterator iter = seqBegin;
-    TSeqVIterator itEnd = (seqEnd - 1);
-    // Compute the inner cells of the current track.
-    for (; iter != itEnd; ++iter)
-    {
-        // Set the iterator to the next cell within the track.
-        _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
-        _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
-        // Compute the inner cell.
-        _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-                     previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                     previousCellVertical(dpScoreMatrixNavigator), seqHValue,
-                     sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
-                     TColumnDescriptor(), InnerCell(), TDPProfile());
-//        std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << " \t";
-//        std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << "(" << _horizontalScoreOfCell(value(dpScoreMatrixNavigator)) << "," << _verticalScoreOfCell(value(dpScoreMatrixNavigator)) << ")" << " \t";
+        _incVerticalPos(scout);
     }
     // Set the iterator to the last cell of the track.
     _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
@@ -821,85 +676,10 @@ _computeTrack(TDPScout & scout,
     // Compute the last cell.
     _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
                  previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                 previousCellVertical(dpScoreMatrixNavigator), seqHValue,
+                 previousCellVertical(dpScoreMatrixNavigator), tmpSeqH,
                  sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
                  TColumnDescriptor(), LastCell(), TDPProfile());
-
-//    std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << std::endl;
-//    std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << "(" << _horizontalScoreOfCell(value(dpScoreMatrixNavigator)) << "," << _verticalScoreOfCell(value(dpScoreMatrixNavigator)) << ")" << std::endl;
 }
-
-// TODO(rmaerker): Debug code!
-//template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSeqHValue,
-//            typename TSeqVValue, typename TSeqVIterator, typename TScoringScheme, typename TDPProfile,
-//            typename TColumnDescriptor>
-//inline void
-//_computeTrack(TDPScout & scout,
-//              TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
-//              TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
-//              TSeqHValue const & seqHValue,
-//              TSeqVValue const & seqVValue,
-//              TSeqVIterator const & seqBegin,
-//              TSeqVIterator const & seqEnd,
-//              TScoringScheme const & scoringScheme,
-//              TColumnDescriptor const &,
-//              TDPProfile const &,
-//              unsigned col,
-//              unsigned row,
-//              String<std::string> & testMatrix)
-//{
-//    // Set the iterator to the begin of the track.
-//    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), FirstCell());
-//    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), FirstCell());
-//
-//    // Compute the first cell.
-//    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-//            previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-//            previousCellVertical(dpScoreMatrixNavigator), seqHValue, seqVValue, scoringScheme,
-//            TColumnDescriptor(), FirstCell(), TDPProfile());
-//    // TODO(rmaerker): remove debug code
-////    std::cout << _scoreOfCell(value(dpScoreMatrixNavigator)) << "\t";
-//    std::stringstream stream;
-//    stream << _scoreOfCell(value(dpScoreMatrixNavigator));
-////    stream << col + row;
-//    testMatrix[col + row] = stream.str();
-//    ++row;
-//
-//    TSeqVIterator iter = seqBegin;
-//    TSeqVIterator itEnd = (seqEnd - 1);
-//    // Compute the inner cells of the current track.
-//    for (; iter != itEnd; ++iter, ++row)  // He will out of scope....
-//    {
-//      // Set the iterator to the next cell within the track.
-//      _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
-//      _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
-//      // Compute the inner cell.
-//        _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-//                previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-//                previousCellVertical(dpScoreMatrixNavigator), seqHValue, value(iter), scoringScheme,
-//                TColumnDescriptor(), InnerCell(), TDPProfile());
-//        // TODO(rmaerker): remove debug code
-////        std::cout << _scoreOfCell(value(dpScoreMatrixNavigator)) << "\t";
-//        stream.str("");
-//        stream << _scoreOfCell(value(dpScoreMatrixNavigator));
-////        stream << col + row;
-//        testMatrix[col + row] = stream.str();
-//    }
-//    // Set the iterator to the last cell of the track.
-//    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
-//    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
-//    // Compute the last cell.
-//    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-//            previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-//            previousCellVertical(dpScoreMatrixNavigator), seqHValue, value(iter), scoringScheme,
-//            TColumnDescriptor(), LastCell(), TDPProfile());
-//    // TODO(rmaerker): remove debug code
-////    std::cout << _scoreOfCell(value(dpScoreMatrixNavigator)) << "\n";
-//    stream.str("");
-//        stream << _scoreOfCell(value(dpScoreMatrixNavigator));
-////        stream << col + row;
-//    testMatrix[col + row] = stream.str();
-//}
 
 // ----------------------------------------------------------------------------
 // Function _computeUnbandedAlignmentHelperTerminate()
@@ -919,7 +699,6 @@ _computeAlignmentHelperCheckTerminate(DPScout_<TDPCell,Terminator_<TSpec> > cons
     return _terminationCriteriumIsMet(s);
 }
 
-
 // ----------------------------------------------------------------------------
 // Function _computeUnbandedAlignment()
 // ----------------------------------------------------------------------------
@@ -927,7 +706,7 @@ _computeAlignmentHelperCheckTerminate(DPScout_<TDPCell,Terminator_<TSpec> > cons
 // Computes the standard DP-algorithm.
 template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSequenceH,
           typename TSequenceV, typename TScoringScheme, typename TAlignmentAlgo, typename TGapCosts, typename TTraceFlag>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVariableConcept<TDPScout> >, void)
+inline void
 _computeUnbandedAlignment(TDPScout & scout,
                           TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
                           TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
@@ -940,8 +719,7 @@ _computeUnbandedAlignment(TDPScout & scout,
     typedef typename Iterator<TSequenceV const, Rooted>::Type TConstSeqVIterator;
 
     // Initilaize SIMD version with multiple end points.
-    scout.state->nextEndsH = scout.state->endsH.begin();
-    scout.state->posH = 0;
+    _preInitScoutHorizontal(scout);
 
     // ============================================================================
     // PREPROCESSING
@@ -967,14 +745,14 @@ _computeUnbandedAlignment(TDPScout & scout,
     for (; seqHIter != seqHIterEnd; ++seqHIter)
     {
         // We might only select it if SIMD version is available.
-        if (SEQAN_UNLIKELY(position(seqHIter) ==  *(scout.state->nextEndsH)))
+        if (SEQAN_UNLIKELY(_reachedHorizontalEndPoint(scout, seqHIter)))
         {
             _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                           sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
                           sequenceEntryForScore(scoringScheme, seqV, 0),
                           seqVBegin, seqVEnd, scoringScheme,
                           MetaColumnDescriptor<DPFinalColumn, FullColumn>(), dpProfile);
-            ++scout.state->nextEndsH;
+            _nextHorizontalEndPos(scout);
         }
         else
         {
@@ -988,7 +766,7 @@ _computeUnbandedAlignment(TDPScout & scout,
         {
             return;
         }
-        ++scout.state->posH;
+        _incHorizontalPos(scout);
     }
 
     // ============================================================================
@@ -1009,69 +787,6 @@ _computeUnbandedAlignment(TDPScout & scout,
 //        std::cout << recMatrix[i]._score << "\t";
 //    }
 //    std::cout << std::endl;
-}
-
-
-// Computes the standard DP-algorithm.
-template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSequenceH,
-          typename TSequenceV, typename TScoringScheme, typename TAlignmentAlgo, typename TGapCosts, typename TTraceFlag>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVariableConcept<TDPScout> > >, void)
-_computeUnbandedAlignment(TDPScout & scout,
-                          TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
-                          TDPTraceMatrixNavigator & dpTraceMatrixNavigator,
-                          TSequenceH const & seqH,
-                          TSequenceV const & seqV,
-                          TScoringScheme const & scoringScheme,
-                          DPProfile_<TAlignmentAlgo, TGapCosts, TTraceFlag> const & dpProfile)
-{
-    typedef typename Iterator<TSequenceH const, Rooted>::Type TConstSeqHIterator;
-    typedef typename Iterator<TSequenceV const, Rooted>::Type TConstSeqVIterator;
-
-    // ============================================================================
-    // PREPROCESSING
-    // ============================================================================
-
-    TConstSeqVIterator seqVBegin = begin(seqV, Rooted());
-    TConstSeqVIterator seqVEnd = end(seqV, Rooted());
-
-    SEQAN_ASSERT_GT(length(seqH), 0u);
-    SEQAN_ASSERT_GT(length(seqV), 0u);
-    _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
-                  sequenceEntryForScore(scoringScheme, seqH, 0),
-                  sequenceEntryForScore(scoringScheme, seqV, 0),
-                  seqVBegin, seqVEnd, scoringScheme,
-                  MetaColumnDescriptor<DPInitialColumn, FullColumn>(), dpProfile);
-
-    // ============================================================================
-    // MAIN DP
-    // ============================================================================
-
-    TConstSeqHIterator seqHIter = begin(seqH, Rooted());
-    TConstSeqHIterator seqHIterEnd = end(seqH, Rooted()) - 1;
-
-    for (; seqHIter != seqHIterEnd; ++seqHIter)
-    {
-        _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
-                      sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
-                      sequenceEntryForScore(scoringScheme, seqV, 0),
-                      seqVBegin, seqVEnd, scoringScheme,
-                      MetaColumnDescriptor<DPInnerColumn, FullColumn>(), dpProfile);
-
-        if (_computeAlignmentHelperCheckTerminate(scout))
-        {
-            return;
-        }
-    }
-
-    // ============================================================================
-    // POSTPROCESSING
-    // ============================================================================
-
-    _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
-                  sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
-                  sequenceEntryForScore(scoringScheme, seqV, 0),
-                  seqVBegin, seqVEnd, scoringScheme,
-                  MetaColumnDescriptor<DPFinalColumn, FullColumn>(), dpProfile);
 }
 
 // ----------------------------------------------------------------------------
@@ -1887,6 +1602,10 @@ void _printTracebackMatrix(TTraceMatrix & dpTraceMatrix)
     std::cout << std::endl;
 }
 
+// ----------------------------------------------------------------------------
+// Function _correctTraceValue()
+// ----------------------------------------------------------------------------
+
 template <typename TTraceNavigator, typename TScoreValue, typename TDPScoutSpec>
 inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, void)
 _correctTraceValue(TTraceNavigator &,
@@ -1898,7 +1617,7 @@ _correctTraceValue(TTraceNavigator &,
 template <typename TTraceNavigator, typename TScoreValue, typename TDPScoutSpec>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, void)
 _correctTraceValue(TTraceNavigator &,
-                   DPScout_<DPCell_<TScoreValue, LinearGaps>, TDPScoutSpec> const &, size_t &)
+                   DPScout_<DPCell_<TScoreValue, LinearGaps>, TDPScoutSpec> const &)
 {
     // Nothing to do.
 }
@@ -1925,9 +1644,9 @@ _correctTraceValue(TTraceNavigator & traceNavigator,
 template <typename TTraceNavigator, typename TScoreValue, typename TDPScoutSpec>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, void)
 _correctTraceValue(TTraceNavigator & traceNavigator,
-                   DPScout_<DPCell_<TScoreValue, AffineGaps>, TDPScoutSpec>  const & dpScout, size_t pos)
+                   DPScout_<DPCell_<TScoreValue, AffineGaps>, TDPScoutSpec>  const & dpScout)
 {
-    _setToPosition(traceNavigator, maxHostPosition(dpScout, pos));
+    _setToPosition(traceNavigator, maxHostPosition(dpScout));
     TScoreValue cmpV = cmpEq(_verticalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore));
     TScoreValue cmpH = cmpEq(_horizontalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore));
     value(traceNavigator) = blend(value(traceNavigator),
@@ -1962,9 +1681,9 @@ _correctTraceValue(TTraceNavigator & traceNavigator,
 template <typename TTraceNavigator, typename TScoreValue, typename TDPScoutSpec>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, void)
 _correctTraceValue(TTraceNavigator & traceNavigator,
-                   DPScout_<DPCell_<TScoreValue, DynamicGaps>, TDPScoutSpec>  const & dpScout, size_t pos)
+                   DPScout_<DPCell_<TScoreValue, DynamicGaps>, TDPScoutSpec>  const & dpScout)
 {
-    _setToPosition(traceNavigator, maxHostPosition(dpScout, pos));
+    _setToPosition(traceNavigator, maxHostPosition(dpScout));
     TScoreValue cmpV = isGapExtension(dpScout._maxScore, DynamicGapExtensionVertical());
     TScoreValue cmpH = isGapExtension(dpScout._maxScore, DynamicGapExtensionHorizontal());
     value(traceNavigator) = blend(value(traceNavigator),
@@ -1979,12 +1698,90 @@ _correctTraceValue(TTraceNavigator & traceNavigator,
 }
 
 // ----------------------------------------------------------------------------
+// Function _finishAlignment()
+// ----------------------------------------------------------------------------
+
+template <typename TTraceTarget,
+          typename TTraceMatNavigator,
+          typename TScoreValue, typename TGapsModel, typename TDPScoutSpec,
+          typename TSeqH,
+          typename TSeqV,
+          typename TBandSwitch,
+          typename TAlignmentAlgorithm, typename TGapScheme, typename TTraceFlag>
+inline SEQAN_FUNC_ENABLE_IF(Not<IsTracebackEnabled_<TTraceFlag> >, TScoreValue)
+_finishAlignment(TTraceTarget & /*traceSegments*/,
+                 TTraceMatNavigator & /*dpTraceMatrixNavigator*/,
+                 DPScout_<DPCell_<TScoreValue, TGapsModel>, TDPScoutSpec> & dpScout,
+                 TSeqH const & /*seqH*/,
+                 TSeqV const & /*seqV*/,
+                 DPBandConfig<TBandSwitch> const & /*band*/,
+                 DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & /*dpProfile*/)
+{
+    return maxScore(dpScout);
+}
+
+template <typename TTraceTarget,
+          typename TTraceMatNavigator,
+          typename TScoreValue, typename TGapsModel, typename TDPScoutSpec,
+          typename TSeqH,
+          typename TSeqV,
+          typename TBandSwitch,
+          typename TAlignmentAlgorithm, typename TGapScheme, typename TTraceFlag>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<SimdVectorConcept<TScoreValue> >, IsTracebackEnabled_<TTraceFlag> >, TScoreValue)
+_finishAlignment(TTraceTarget & traceSegments,
+                 TTraceMatNavigator & dpTraceMatrixNavigator,
+                 DPScout_<DPCell_<TScoreValue, TGapsModel>, TDPScoutSpec> & dpScout,
+                 TSeqH const & seqH,
+                 TSeqV const & seqV,
+                 DPBandConfig<TBandSwitch> const & band,
+                 DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & dpProfile)
+{
+    typedef typename Size<TTraceTarget>::Type TSize;
+
+    for(TSize i = 0; i < length(traceSegments); ++i)
+    {
+        _setSimdLane(dpTraceMatrixNavigator, i);
+        _setSimdLane(dpScout, i);
+
+        if (IsSingleTrace_<TTraceFlag>::VALUE)
+            _correctTraceValue(dpTraceMatrixNavigator, dpScout);
+
+        _computeTraceback(traceSegments[i], dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile);
+    }
+    return maxScore(dpScout);
+}
+
+template <typename TTraceTarget,
+          typename TTraceMatNavigator,
+          typename TScoreValue, typename TGapsModel, typename TDPScoutSpec,
+          typename TSeqH,
+          typename TSeqV,
+          typename TBandSwitch,
+          typename TAlignmentAlgorithm, typename TGapScheme, typename TTraceFlag>
+inline SEQAN_FUNC_ENABLE_IF(And<Not<Is<SimdVectorConcept<TScoreValue> > >, IsTracebackEnabled_<TTraceFlag> >, TScoreValue)
+_finishAlignment(TTraceTarget & traceSegments,
+                 TTraceMatNavigator & dpTraceMatrixNavigator,
+                 DPScout_<DPCell_<TScoreValue, TGapsModel>, TDPScoutSpec> & dpScout,
+                 TSeqH const & seqH,
+                 TSeqV const & seqV,
+                 DPBandConfig<TBandSwitch> const & band,
+                 DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & dpProfile)
+{
+
+    if (IsSingleTrace_<TTraceFlag>::VALUE)
+        _correctTraceValue(dpTraceMatrixNavigator, dpScout);
+
+    _computeTraceback(traceSegments, dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile);
+    return maxScore(dpScout);
+}
+
+// ----------------------------------------------------------------------------
 // Function _computeAligmnment()
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue, typename TGapScheme, typename TTraceTarget, typename TScoutState, typename TSequenceH, typename TSequenceV,
           typename TScoreScheme, typename TBandSwitch, typename TAlignmentAlgorithm, typename TTraceFlag>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<typename Value<TScoreScheme>::Type > >, typename Value<TScoreScheme>::Type)
+inline typename Value<TScoreScheme>::Type  //SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<typename Value<TScoreScheme>::Type > >, typename Value<TScoreScheme>::Type)
 _computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
                   TTraceTarget & traceSegments,
                   TScoutState & scoutState,
@@ -2008,7 +1805,7 @@ _computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
     typedef DPMatrixNavigator_<TDPScoreMatrix, DPScoreMatrix, NavigateColumnWise> TDPScoreMatrixNavigator;
     typedef DPMatrixNavigator_<TDPTraceMatrix, DPTraceMatrix<TTraceFlag>, NavigateColumnWise> TDPTraceMatrixNavigator;
 
-    typedef typename ScoutSpecForSimdAlignment_<TScoutState>::Type TDPScoutSpec;
+    typedef typename ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, TScoutState>::Type TDPScoutSpec;
     typedef DPScout_<TDPScoreValue, TDPScoutSpec> TDPScout;
 
     // Check if current dp settings are valid. If not return infinity value for dp score value.
@@ -2060,117 +1857,7 @@ _computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
         _computeBandedAlignment(dpScout, dpScoreMatrixNavigator, dpTraceMatrixNavigator, seqH, seqV, scoreScheme,
                                 band, dpProfile);
 
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
-        return maxScore(dpScout);
-
-    //storeu(&dpScout._maxHostPosition[0], dpScout._maxHostLow);
-    //storeu(&dpScout._maxHostPosition[LENGTH<typename Value<TScoreScheme>::Type>::VALUE / 2], dpScout._maxHostHigh);
-    size_t numAlignments = length(traceSegments);
-    for(size_t i = 0; i < numAlignments; ++i)
-    {
-        if (IsSingleTrace_<TTraceFlag>::VALUE) _correctTraceValue(dpTraceMatrixNavigator, dpScout, i);
-        //_printTracebackMatrix(dpTraceMatrix);
-        _computeTraceback(traceSegments[i], dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile, i);
-    }
-
-    return maxScore(dpScout);
-}
-
-template <typename TScoreValue, typename TGapScheme, typename TTraceTarget, typename TScoutState, typename TSequenceH, typename TSequenceV,
-          typename TScoreScheme, typename TBandSwitch, typename TAlignmentAlgorithm, typename TTraceFlag>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<typename Value<TScoreScheme>::Type > > >, typename Value<TScoreScheme>::Type)
-_computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
-                  TTraceTarget & traceSegments,
-                  TScoutState & scoutState,
-                  TSequenceH const & seqH,
-                  TSequenceV const & seqV,
-                  TScoreScheme const & scoreScheme,
-                  DPBandConfig<TBandSwitch> const & band,
-                  DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & dpProfile)
-{
-    typedef typename GetDPScoreMatrix<DPContext<TScoreValue, TGapScheme> >::Type TDPScoreMatrixHost;
-    typedef typename Value<TDPScoreMatrixHost>::Type TDPScoreValue;
-
-    typedef typename GetDPTraceMatrix<DPContext<TScoreValue, TGapScheme> >::Type TDPTraceMatrixHost;
-    typedef typename Value<TDPTraceMatrixHost>::Type TTraceValue;
-
-    typedef typename DefaultScoreMatrixSpec_<TAlignmentAlgorithm>::Type TScoreMatrixSpec;
-
-    typedef DPMatrix_<TDPScoreValue, TScoreMatrixSpec> TDPScoreMatrix;
-    typedef DPMatrix_<TTraceValue, FullDPMatrix> TDPTraceMatrix;
-
-    typedef DPMatrixNavigator_<TDPScoreMatrix, DPScoreMatrix, NavigateColumnWise> TDPScoreMatrixNavigator;
-    typedef DPMatrixNavigator_<TDPTraceMatrix, DPTraceMatrix<TTraceFlag>, NavigateColumnWise> TDPTraceMatrixNavigator;
-
-    typedef typename ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm>::Type TDPScoutSpec;
-    typedef DPScout_<TDPScoreValue, TDPScoutSpec> TDPScout;
-
-    // Check if current dp settings are valid. If not return infinity value for dp score value.
-    if (!_isValidDPSettings(seqH, seqV, band, dpProfile))
-        return MinValue<TScoreValue>::VALUE;
-
-    TDPScoreMatrix dpScoreMatrix;
-    TDPTraceMatrix dpTraceMatrix;
-
-    // TODO(rmaerker): Check whether the matrix allocation can be reduced if upperDiagonal < 0?
-    setLength(dpScoreMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1 - std::max(0, lowerDiagonal(band)));
-    setLength(dpTraceMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1 - std::max(0, lowerDiagonal(band)));
-
-    if (IsSameType<TBandSwitch, BandOff>::VALUE)
-    {
-        setLength(dpScoreMatrix, +DPMatrixDimension_::VERTICAL, length(seqV) + 1);
-        setLength(dpTraceMatrix, +DPMatrixDimension_::VERTICAL, length(seqV) + 1);
-    }
-    else
-    {
-        int bandSize = _min(static_cast<int>(length(seqH)), upperDiagonal(band)) - _max(lowerDiagonal(band), -static_cast<int>(length(seqV))) + 1;
-        setLength(dpScoreMatrix, +DPMatrixDimension_::VERTICAL, _min(static_cast<int>(length(seqV)) + 1, bandSize));
-        setLength(dpTraceMatrix, +DPMatrixDimension_::VERTICAL, _min(static_cast<int>(length(seqV)) + 1, bandSize));
-    }
-
-    // We set the host to the score matrix and the dp matrix.
-    setHost(dpScoreMatrix, getDpScoreMatrix(dpContext));
-    setHost(dpTraceMatrix, getDpTraceMatrix(dpContext));
-
-    resize(dpScoreMatrix);
-    // We do not need to allocate the memory for the trace matrix if the traceback is disabled.
-    if (IsTracebackEnabled_<TTraceFlag>::VALUE)
-        resize(dpTraceMatrix);
-
-    TDPScoreMatrixNavigator dpScoreMatrixNavigator;
-    TDPTraceMatrixNavigator dpTraceMatrixNavigator;
-
-    _init(dpScoreMatrixNavigator, dpScoreMatrix, band);
-    _init(dpTraceMatrixNavigator, dpTraceMatrix, band);
-
-    TDPScout dpScout(scoutState);
-
-    // Execute the alignment.
-    if (!_isBandEnabled(band))
-        _computeUnbandedAlignment(dpScout, dpScoreMatrixNavigator, dpTraceMatrixNavigator, seqH, seqV, scoreScheme, dpProfile);
-    else if (upperDiagonal(band) == lowerDiagonal(band))
-        _computeHammingDistance(dpScout, dpScoreMatrixNavigator, dpTraceMatrixNavigator, seqH, seqV, scoreScheme, band, dpProfile);
-    else
-        _computeBandedAlignment(dpScout, dpScoreMatrixNavigator, dpTraceMatrixNavigator, seqH, seqV, scoreScheme,
-                                band, dpProfile);
-
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
-        return maxScore(dpScout);
-
-    if (IsSingleTrace_<TTraceFlag>::VALUE)
-    {
-        // Check if max was found at the bottom right corner of the matrix.
-        // This is also true if in last row, and last column
-//        if ((maxHostPosition(dpScout) + 1) == (end(dpTraceMatrix) - begin(dpTraceMatrix)))
-
-//            maxHostPosition(dpScout); // We only have the trace value not the score value.
-            _correctTraceValue(dpTraceMatrixNavigator, dpScout);
-    }
-
-//    _printTracebackMatrix(dpTraceMatrix);
-    _computeTraceback(traceSegments, dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile);
-
-    return maxScore(dpScout);
+    return _finishAlignment(traceSegments, dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile);
 }
 
 }  // namespace seqan

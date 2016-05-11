@@ -564,7 +564,7 @@ String<TScoreValue> globalAlignmentScore(StringSet<TString, TSpec> const & strin
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOff> TAlignConfig2;
     typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
 
-    DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
+    DPScoutState_<SimdAlignmentScout<SimdAlignEqualLength> > dpScoutState;
     String<TraceSegment_<unsigned, unsigned> > traceSegments;
 
     //create a SIMD scoring scheme
@@ -664,7 +664,7 @@ String<TScoreValue> globalAlignmentScore(TString const & stringH,
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOff> TAlignConfig2;
     typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
 
-    DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
+    DPScoutState_<SimdAlignmentScout<SimdAlignEqualLength> > dpScoutState;
     String<TraceSegment_<unsigned, unsigned> > traceSegments;
 
     //create a SIMD scoring scheme
@@ -793,14 +793,14 @@ String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & a
         // if alignments have equal dimensions do nothing
         if(endsH.size() == 0)
         {
-            DPScoutState_<SimdAlignmentScoutDefault> dpScoutState;
+            DPScoutState_<SimdAlignmentScout<SimdAlignEqualLength> > dpScoutState;
             resultsBatch = _setUpAndRunAlignment(trace, dpScoutState, stringSimdH, stringSimdV,
                                                  scoringSchemeSimd, TAlignConfig2(lowerDiag, upperDiag), TGapModel());
         }
         // otherwise prepare the special DPScoutState
         else
         {
-            DPScoutState_<SimdAlignmentScoutVariable> dpScoutState;
+            DPScoutState_<SimdAlignmentScout<SimdAlignVariableLength> > dpScoutState;
             dpScoutState.dimV = length(stringSimdV);
             dpScoutState.isLocalAlignment = false;
             dpScoutState.RIGHT = RIGHT;
