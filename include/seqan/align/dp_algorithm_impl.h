@@ -643,12 +643,6 @@ _computeTrack(TDPScout & scout,
         _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
         _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
         // Compute the inner cell.
-        _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-                     previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-                     previousCellVertical(dpScoreMatrixNavigator), tmpSeqH,
-                     sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
-                     TColumnDescriptor(), InnerCell(), TDPProfile());
-
         // If we have variable length simd, we need to check if we reached the end of one of the sequences.
         // For all other cases, the function returns always false.
         if (SEQAN_UNLIKELY(_reachedVerticalEndPoint(scout, iter)))
