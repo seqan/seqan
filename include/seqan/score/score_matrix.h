@@ -149,6 +149,8 @@ public:
     // The gap open score.
     TSimdAlign data_gap_open;
 
+    int16_t pos[LENGTH<TSimdAlign>::VALUE] __attribute__((aligned(SEQAN_SIZEOF_MAX_VECTOR)));
+
     Score(TSimdAlign _gap_extend, TSimdAlign _gap_open) :
         data_gap_extend(_gap_extend), data_gap_open(_gap_open)
     {
@@ -167,20 +169,44 @@ score(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc, TVal1 val1,
     return sc.data_tab[i * TScore::VALUE_SIZE + j];
 }
 
+template <unsigned LENGTH>
+struct VectorLength_
+{};
+
+#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_2(t, d, pos)     d[t[pos]], d[t[pos + 1]]
+#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_4(t, d, pos)     SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_2(t, d, pos), SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_2(t, d, pos + 2)
+#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_8(t, d, pos)     SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_4(t, d, pos), SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_4(t, d, pos + 4)
+#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_16(t, d, pos)    SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_8(t, d, pos), SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_8(t, d, pos + 8)
+#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_32(t, d, pos)    SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_16(t, d, pos), SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_16(t, d, pos + 16)
+
+#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_DELEGATE(MACRO, t, d) MACRO(t, d, 0)
+#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL(t, d, SIZE) SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_DELEGATE(SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_##SIZE, t, d)
+
+#define SEQAN_FIXED_VECTOR_FILL_IMPL(SIZE)                                            \
+    template <typename TTarget, typename TData>                                       \
+    inline void                                                                       \
+    _fixedSizeVectorFill(TTarget & target,                                            \
+                         TData const & data,                                          \
+                         VectorLength_<SIZE> const & /*scope*/)                       \
+{                                                                                     \
+    fillVector(target, SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL(target, data, SIZE));       \
+}                                                           
+
+SEQAN_FIXED_VECTOR_FILL_IMPL(2)
+SEQAN_FIXED_VECTOR_FILL_IMPL(4)
+SEQAN_FIXED_VECTOR_FILL_IMPL(8)
+SEQAN_FIXED_VECTOR_FILL_IMPL(16)
+SEQAN_FIXED_VECTOR_FILL_IMPL(32)
+
 template <typename TValue, typename TSequenceValue, typename TSpec, typename TVal1, typename TVal2>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, TValue)
 score(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc, TVal1 val1, TVal2 val2)
 {
     typedef typename InnerValue<TValue>::Type TInnerValue;
     auto res = val1 + val2;
-
-    // NOTE(rrahn): Can the compiler roll out the for loop, as the iteration space is static at compile time?
-    for (auto i = 0; i < LENGTH<TVal1>::VALUE; ++i)
-        res[i] = static_cast<TInnerValue>(sc.data_tab[res[i]]);
-
+    _fixedSizeVectorFill(res, sc.data_tab, VectorLength_<LENGTH<TVal1>::VALUE>());
     return res;
 }
-
 
 /*!
  * @fn MatrixScore#setScore
