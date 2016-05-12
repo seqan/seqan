@@ -1804,7 +1804,7 @@ _computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
 
     // Check if current dp settings are valid. If not return infinity value for dp score value.
     if (!_isValidDPSettings(seqH, seqV, band, dpProfile))
-        return createVector<TScoreValue>(MinValue<typename InnerValue<TScoreValue>::Type>::VALUE);  // NOTE(rrahn): In case of non-simd version, createVector returns just a scalar.
+        return createVector<TScoreValue>(MinValue<typename Value<TScoreValue>::Type>::VALUE);  // NOTE(rrahn): In case of non-simd version, createVector returns just a scalar.
 
     TDPScoreMatrix dpScoreMatrix;
     TDPTraceMatrix dpTraceMatrix;

@@ -94,7 +94,7 @@ public:
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
     };
 
-    typedef typename InnerValue<TValue>::Type TInnerValue;
+    typedef typename Value<TValue>::Type TInnerValue;
 
     // The data table.
     TInnerValue data_tab[TAB_SIZE];
@@ -267,7 +267,7 @@ setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, T
 template <typename TValue, typename TSequenceValue, typename TSpec>
 inline void
 setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, Default) {
-    typedef typename InnerValue<TValue>::Type TInnerValue;
+    typedef typename Value<TValue>::Type TInnerValue;
     typedef Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > TScore;
     arrayFill(sc.data_tab, sc.data_tab + TScore::TAB_SIZE, TInnerValue());
 }

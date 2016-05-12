@@ -392,7 +392,7 @@ assignValue(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigation
 
 // SIMD Version. Returns always a copy and never a reference.
 template <typename TValue, typename TPos>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, typename InnerValue<TValue>::Type)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, typename Value<TValue>::Type)
 _scalarValue(TValue const & vec,
              TPos const pos)
 {
