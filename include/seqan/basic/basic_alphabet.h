@@ -57,9 +57,6 @@
 // The alphabet concepts.
 #include <seqan/basic/alphabet_concept.h>
 
-// Basic SIMD vector
-#include <seqan/basic/basic_simd_vector.h>
-
 // Alphabet math functions / metafunctions forwards and default
 // implementations.
 #include <seqan/basic/alphabet_math.h>

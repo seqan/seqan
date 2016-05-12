@@ -74,8 +74,6 @@ const T MaximumValueUnsigned_<T>::VALUE = ~(T)0;
 
 template <typename T>
 struct MaximumValueSigned_ { static const T VALUE; };
-template <typename T>
-struct MaximumValueSimdVector_ { static const T VALUE; };
 template <typename T = void>
 struct MaximumValueFloat_ { static const float VALUE; };
 template <typename T = void>
@@ -83,8 +81,7 @@ struct MaximumValueDouble_ { static const double VALUE; };
 
 template <typename T>
 const T MaximumValueSigned_<T>::VALUE = ((((T)1 << (BitsPerValue<T>::VALUE - 2)) - 1) << 1) + 1;
-template <typename T>
-const T MaximumValueSimdVector_<T>::VALUE = createVector<T>( MaxValue< typename InnerValue<T>::Type >::VALUE );
+
 template <typename T>
 const float MaximumValueFloat_<T>::VALUE = FLT_MAX;
 template <typename T>
@@ -107,16 +104,12 @@ template <
       IsSameType<double, T>::VALUE,
       MaximumValueDouble_<>,
       typename IfC<
-      IsSameType<float, T>::VALUE,
-      MaximumValueFloat_<>,
-      typename IfC<
-        Is<SimdVectorConcept<T> >::VALUE,
-        MaximumValueSimdVector_<T>,
+        IsSameType<float, T>::VALUE,
+        MaximumValueFloat_<>,
         typename IfC<
           IsSameType<typename MakeSigned_<T>::Type, T>::VALUE,
           MaximumValueSigned_<T>,
           MaximumValueUnsigned_<T>
-          >::Type
         >::Type
       >::Type
     >::Type
@@ -137,8 +130,6 @@ template <typename T>
 struct MinimumValueUnsigned_ { static const T VALUE; };
 template <typename T>
 struct MinimumValueSigned_ { static const T VALUE; };
-template <typename T>
-struct MinimumValueSimdVector_ { static const T VALUE; };
 
 template <typename T = void>
 struct MinimumValueFloat_ { static const float VALUE; };
@@ -149,8 +140,7 @@ template <typename T>
 const T MinimumValueUnsigned_<T>::VALUE = T(0);
 template <typename T>
 const T MinimumValueSigned_<T>::VALUE = ~(T)MaximumValueSigned_<T>::VALUE;
-template <typename T>
-const T MinimumValueSimdVector_<T>::VALUE = createVector<T>( MinValue< typename InnerValue<T>::Type >::VALUE );
+
 template <typename T>
 const float MinimumValueFloat_<T>::VALUE = -FLT_MAX;
 template <typename T>
@@ -173,16 +163,12 @@ template <
       IsSameType<double, T>::VALUE,
       MinimumValueDouble_<>,
       typename IfC<
-      IsSameType<float, T>::VALUE,
-      MinimumValueFloat_<>,
-      typename IfC<
-        Is<SimdVectorConcept<T> >::VALUE,
-        MinimumValueSimdVector_<T>,
+        IsSameType<float, T>::VALUE,
+        MinimumValueFloat_<>,
         typename IfC<
           IsSameType<typename MakeSigned_<T>::Type, T>::VALUE,
           MinimumValueSigned_<T>,
           MinimumValueUnsigned_<T>
-          >::Type
         >::Type
       >::Type
     >::Type

@@ -202,7 +202,6 @@ template <typename TValue, typename TSequenceValue, typename TSpec, typename TVa
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, TValue)
 score(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc, TVal1 val1, TVal2 val2)
 {
-    typedef typename InnerValue<TValue>::Type TInnerValue;
     auto res = val1 + val2;
     _fixedSizeVectorFill(res, sc.data_tab, VectorLength_<LENGTH<TVal1>::VALUE>());
     return res;

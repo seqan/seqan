@@ -39,7 +39,6 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
 
-
 #if defined(PLATFORM_WINDOWS_VS)
   /* Microsoft C/C++-compatible compiler */
   #include <intrin.h>
@@ -83,7 +82,7 @@ template <typename TPosition>                                                   
 inline typename InnerValue<TSimdVector>::Type                                                           \
 value(TSimdVector &vector, TPosition pos)                                                               \
 {                                                                                                       \
-    return getValue(vector, pos);                                                                                 \
+    return getValue(vector, pos);                                                                       \
 }
 
 #define SEQAN_DEFINE_SIMD_VECTOR_ASSIGNVALUE_(TSimdVector)                                              \
@@ -98,6 +97,22 @@ assignValue(TSimdVector &vector, TPosition pos, TValue2 value)                  
     vector[pos] = value;                                                                                \
 }
 
+// Define global macro to check if simd instructions are enabled.
+#define SEQAN_SIMD_ENABLED 1
+
+// Define maximal size of vector in byte.
+#if defined(__AVX2__)
+    #define SEQAN_SIZEOF_MAX_VECTOR 32
+#elif defined(__SSE3__)
+    #define SEQAN_SIZEOF_MAX_VECTOR 16
+#else
+    #warning "SIMD instructions not enabled!"
+    #undef SEQAN_SIMD_ENABLED  // Disable simd instructions.
+#endif
+
+// Only include following code if simd instructions are enabled.
+#if SEQAN_SIMD_ENABLED
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -106,12 +121,6 @@ assignValue(TSimdVector &vector, TPosition pos, TValue2 value)                  
 // they allow us to define generic vector functions
 SEQAN_CONCEPT(SimdVectorConcept, (T)) {};
 
-// size of vector in byte
-#if defined(__AVX2__)
- #define SEQAN_SIZEOF_MAX_VECTOR 32
-#elif defined(__SSE3__)
- #define SEQAN_SIZEOF_MAX_VECTOR 16
-#endif
 
 // a metafunction returning the biggest supported SIMD vector
 template <typename TValue, int LENGTH = SEQAN_SIZEOF_MAX_VECTOR / sizeof(TValue)>
@@ -1460,7 +1469,7 @@ fillVector(TSimdVector &vector, TValue x)
     _fillVector(vector, x, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TIVal)>());
 }
 
-// TODO(rrahn): Check if we need this function?
+// TODO(rrahn): Make this workable with variable number of values.
 template <typename TSimdVector, typename TValue>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
 fillVector(TSimdVector &vector, TValue x1, TValue x2, TValue x3, TValue x4,
@@ -1742,6 +1751,8 @@ print(std::ostream &stream, TSimdVector const &vector)
     stream << "\t>\n";
     return stream;
 }
+
+#endif  // SEQAN_SIMD_ENABLED
 
 } // namespace seqan
 
