@@ -38,7 +38,7 @@
 #include <seqan/arg_parse/arg_parse_option.h>
 #include <seqan/arg_parse/argument_parser.h>
 #include <seqan/arg_parse/arg_parse_ctd_support.h>
-#include <seqan/arg_parse/arg_parse_calling_home.h>
+#include <seqan/arg_parse/arg_parse_version_check.h>
 
 namespace seqan {
 
@@ -308,17 +308,18 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
         return ArgumentParser::PARSE_ERROR;
     }
 
-    if (!isSet(me, "do-not-check-version"))
+    // do version check if not turned off by the user
+    std::string check = "DEV"; // default
+    if(isSet(me, "version-check"))
+        getOptionValue(check, me, "version-check");
+    if (!(check=="OFF"))
     {
-        // check for version update
-        std::cout << "perfoming version check and calling home\n";
-        CallingHome ch(toCString(me._toolDoc._name), toCString(me._toolDoc._version));
-        checkForNewerVersion(ch);   // no error handling to not bother the user
-        callHome(ch);               // no error handling to not bother the user
-    }
-    else
-    {
-        std::cout << "disabled version check..\n";
+        VersionCheck app_version(me);            // check app version
+        checkForNewerVersion(app_version);      // no error handling to not bother the user
+        if (!(check=="APP_ONLY")){
+            VersionCheck seqan_version;        // check seqan_version
+            checkForNewerVersion(seqan_version);
+        }
     }
 
     // Handle the special options.

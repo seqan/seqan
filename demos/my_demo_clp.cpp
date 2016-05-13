@@ -17,6 +17,8 @@ parseCommandLine(ModifyStringOptions & options, int argc, char const ** argv)
     // Setup ArgumentParser.
     //seqan::ArgumentParser parser("FeatureFinderCentroided");
     seqan::ArgumentParser parser("FeatureFinderCentroided");
+    setVersion(parser, "1.2.3");
+    setUrl(parser, "http://open-ms.sourceforge.net/downloads/");
 
     // Define Options
     addOption(parser, seqan::ArgParseOption(

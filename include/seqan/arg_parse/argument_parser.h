@@ -223,7 +223,14 @@ public:
         setValidValues(*this, "export-help", "html man txt");
 
         //TODO:: if compiler flag do not track is set don't show this option
-        addOption(*this, ArgParseOption("","do-not-check-version", "Do not check for a newer version of the application"));
+        addOption(*this, ArgParseOption("",
+                                        "version-check",
+                                        "Choose 'OFF' if you don't want any notifications. "
+                                        "Choose 'APP_ONLY' if you don't want any notification about a new SeqAn version. "
+                                        "DEV(eloper) is the default value and will check for both versions.",
+                                        ArgParseArgument::STRING,
+                                        "OPTION"));
+        setValidValues(*this, "version-check", "DEV APP_ONLY OFF");
     }
 
     // ----------------------------------------------------------------------------

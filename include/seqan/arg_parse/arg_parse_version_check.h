@@ -46,15 +46,15 @@
 // Tags, Classes, Enums
 // ==========================================================================
 
-struct CallingHome
+struct VersionCheck
 {
     std::string _url = "http://openms-update.informatik.uni-tuebingen.de/check/OpenMS_KNIME_";
-    std::string _homeDir = getenv("HOME");
-    std::string _path = _homeDir + "/.config/seqan";
-    std::string _appName;
+    std::string _path = std::string(getenv("HOME")) + "/.config/seqan";
+    std::string _name;
     std::string _version;
     std::string _program;
     std::string _command;
+    std::string _website;
 
         //get system information
 #ifdef __linux
@@ -107,17 +107,31 @@ struct CallingHome
     void _updateCommand()
     {
         if (!_program.empty())
-            _command = _program + " " + _path + "/" + _appName + "_version " + _url + _os + "_64_"+ _appName + "_" + _version;
+            _command = _program + " " + _path + "/" + _name + "_version " + _url + _os + "_64_"+ _name + "_" + _version;
     }
 
-    CallingHome(std::string const & name, std::string const & version)
+    VersionCheck(seqan::ArgumentParser const & arg)
     {
-        _appName = name;
-        if (version.empty())
+        _name = toCString(arg._toolDoc._name);
+        if (seqan::empty(arg._toolDoc._version))
             _version = "0.0.0";
         else
-            _version = version;
+            _version = toCString(arg._toolDoc._version);
+        if(seqan::empty(arg._toolDoc._url))
+            _website = "www.seqan.de/applications";
+        else
+            _website = toCString(arg._toolDoc._url);
+        _getProgram();
+        _updateCommand();
+    }
 
+    VersionCheck()
+    {
+        _name = "seqan";
+        _version = std::to_string(SEQAN_VERSION_MAJOR) + "." + 
+                   std::to_string(SEQAN_VERSION_MINOR) + "." +
+                   std::to_string(SEQAN_VERSION_PATCH);
+        _website = "www.seqan.de";
         _getProgram();
         _updateCommand();
     }
@@ -134,7 +148,7 @@ struct CallingHome
 // ----------------------------------------------------------------------------
 // Function setURL()
 // ----------------------------------------------------------------------------
-inline void setURL(CallingHome & me, std::string url)
+inline void setURL(VersionCheck & me, std::string url)
 {
     std::swap(me._url, url);
     me._updateCommand();
@@ -143,17 +157,17 @@ inline void setURL(CallingHome & me, std::string url)
 // ----------------------------------------------------------------------------
 // Function _checkWritability()
 // ----------------------------------------------------------------------------
-inline bool _checkWritability(CallingHome const & me)
+inline bool _checkWritability(std::string path)
 {
     struct stat d_stat;
-    if (stat(me._path.c_str(), &d_stat) < 0)
+    if (stat(path.c_str(), &d_stat) < 0)
     {
         // try to make dir
-        std::string makeDir = "mkdir -p " + me._path;
+        std::string makeDir = "mkdir -p " + path;
         if (system(makeDir.c_str()))
             return false; // could not create home dir
 
-        if (stat(me._path.c_str(), &d_stat) < 0) // repeat stat
+        if (stat(path.c_str(), &d_stat) < 0) // repeat stat
             return false;
     }
 
@@ -166,7 +180,7 @@ inline bool _checkWritability(CallingHome const & me)
 // ----------------------------------------------------------------------------
 // Function _checkDate()
 // ----------------------------------------------------------------------------
-inline bool _checkDate(CallingHome const & me)
+inline bool _checkDate(VersionCheck const & me)
 {
     unsigned min_time_diff = 86400; // (seconds) minimum time difference before next call home
 
@@ -174,13 +188,13 @@ inline bool _checkDate(CallingHome const & me)
     time(&curr); // get current time
 
     struct stat t_stat; // get last modified time of version file (if existing)
-    std::string version_file = me._path + "/" + me._appName + "_version";
+    std::string version_file = me._path + "/" + me._name + "_version";
     if (stat(version_file.c_str(), &t_stat) < 0)
         return true; // no file found so calling home shall be performed
 
     if (difftime(curr, t_stat.st_mtime) < min_time_diff)
     {
-        std::cout << "Version file " + me._appName + "_version is up to date.";
+        //std::cout << "Version file " + me._name + "_version is up to date.";
         return false;
     }
 
@@ -223,7 +237,6 @@ inline bool _readVersionNumbers(seqan::String<int> & version_numbers, std::strin
         else
         {
             myfile.close();
-            //std::cout << "found UNABLE TO CALL HOME" << std::endl;
             return false;
         }
     }
@@ -231,7 +244,7 @@ inline bool _readVersionNumbers(seqan::String<int> & version_numbers, std::strin
     {
         return false;
     }
-    //std::cout << "length " << length(version_numbers) << std::endl;
+
     if (length(version_numbers) != 3)
         return false;
 
@@ -256,51 +269,54 @@ inline bool _isSmaller(seqan::String<int> & left, seqan::String<int> & right)
 // ----------------------------------------------------------------------------
 // Function checkForNewerVersion()
 // ----------------------------------------------------------------------------
-inline bool checkForNewerVersion(CallingHome const & me)
+inline bool checkForNewerVersion(VersionCheck & me)
 {
+    // Frist check: Does a version file already exist
     struct stat t_stat;
-    std::string version_file = me._path + "/" + me._appName + "_version";
-    if (stat(version_file.c_str(), &t_stat) < 0) // check if file exists
-        return false;
+    std::string version_file = me._path + "/" + me._name + "_version";
 
-    seqan::String<int> new_ver;
-    if (!_readVersionNumbers(new_ver, version_file))
-        return false;
+    if (stat(version_file.c_str(), &t_stat) == 0) // check if file exists
+    {
+        seqan::String<int> new_ver;
+        if (_readVersionNumbers(new_ver, version_file))
+        {
+            seqan::String<int> old_ver;
+            _getNumbersFromString(old_ver, me._version);
 
-    seqan::String<int> old_ver;
-    _getNumbersFromString(old_ver, me._version);
+            if (_isSmaller(old_ver, new_ver))
+            {
+                if(me._name == "seqan")
+                {
+                    std::cerr << "SEQAN INFO :: There is a newer SeqAn version available : SeqAn "
+                              << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << "\n"
+                              << "SEQAN INFO :: If you are the developer of this app you might want to upgrade your app." << me._website << "\n\n";
+                }
+                else if (_isSmaller(old_ver, new_ver))
+                {
+                    std::cerr << "APP INFO :: There is a newer version available: " << me._name << " " 
+                              << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << "\n"
+                              << "APP INFO :: Check out " << me._website << "\n\n";
+                }
+            }
+        }
+    }
 
-    if (_isSmaller(old_ver, new_ver))
-        std::cerr << "There is a newer version of " << me._appName << " available!\n";
-    // TODO:: supply webiste adress for newer version
-    // default : www.seqan.de/applications
+    // Second check: ask server for newer version
+    if (me._program.empty())
+    return false;
 
-    return true;
-}
-
-// ----------------------------------------------------------------------------
-// Function callHome()
-// ----------------------------------------------------------------------------
-inline bool callHome(CallingHome const & me)
-{
-    if (!_checkWritability(me))
-        return false;
+    if (!_checkWritability(me._path))
+        me._path = "/tmp"; // if home dir is not writable, write to tmp
 
     if (!_checkDate(me))
         return false;
 
-    if (me._program.empty())
-        return false;
-
-    if (me._command.empty())
-        return false;
-
     // system call
-    // http response is stored in a file '.{app_name}_version'
+    // http response is stored in a file '.config/seqan/{app_name}_version'
     std::cout << "I will perform the following command:\n" << me._command << std::endl;
     if (system(seqan::toCString(me._command)))
     {
-        std::ofstream version_file (seqan::toCString(me._path + "/" + me._appName + "_version"));
+        std::ofstream version_file (seqan::toCString(me._path + "/" + me._name + "_version"));
         if (version_file.is_open())
         {
             version_file << "UNABLE TO CALL HOME.\n";
