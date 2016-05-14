@@ -1096,7 +1096,7 @@ int readMatchesFromGFF_Batch(
                 // parse other tags
                 pos = 0;
                 pos2 = 0;
-                if (current_tag == "unique")
+                if (current_tag == "unique")    //TODO(serosko): Check why this is disabled
                 {
                     /*unique = true;*/
                 }
@@ -1191,9 +1191,7 @@ int readMatchesFromGFF_Batch(
                     {
                         std::cerr << "WARNING! Read " << readName
                                   << ": cigar alignment length does not match genome coordinates. Discarding read.."
-                                  <<std::endl;
-                        //std::cout << "align length = " << alignLength << " endPos=" << endPos << " beginPos="
-                        //          << beginPos << std::endl;
+                                  << std::endl;
                         discardRead = true;
                     }
                     curr_read = temp_read;
@@ -1230,7 +1228,6 @@ int readMatchesFromGFF_Batch(
                 clipRight = _max(clipRight,softClippedRight);
                 clipLeft = _max(clipLeft,softClippedLeft);
             }
-
             if (clipLeft + clipRight > (int)length(curr_read) - (int)options.minClippedLength)
             {
                 if (options._debugLevel>1)
@@ -1328,7 +1325,7 @@ int readMatchesFromGFF_Batch(
             appendValue(fragmentStore.readStore, r, Generous());
             appendValue(fragmentStore.alignedReadStore, m, Generous());
             appendValue(fragmentStore.alignQualityStore, q, Generous());
-            appendValue(readClips,Pair<int,int>(clipLeft,clipRight));
+            appendValue(readClips, Pair<int, int>(clipLeft, clipRight));
 
             if (!splitRead)
                 clear(tmpCigarStr); // split reads store their cigar string explicitly
@@ -1448,7 +1445,7 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
 
 
 /////////////////////////////////////////////////////////////
-// read sorted(!) Gff input file containing mapped reads
+// read SAM/BAM input file containing mapped reads
 template <
 typename TFragmentStore,
 typename TReadCounts,
@@ -1947,7 +1944,6 @@ bool loadPositions(TPositions & positions,
         ++numPos;
         skipLine(fileIter);
     }
-
     if (numPos > 0)
         return 0;
     return 1;
@@ -1964,16 +1960,20 @@ bool loadPositions(TPositions & positions,
 >>>>>>> Reformated snp_store.cpp and snp_store.h for better compliance with SeqAn style guide. No functional changes.
 
 template<typename TVal>
-double
-lgamma(TVal x)
+double lgamma(TVal x)
 {
     // TODO: replace //TODO(serosko): Find out with what and why...
     x -= 1;
-    if (x < 2) return log((double)1);
+    if (x < 2)
+    {
+        return 0.0;
+        //return log((double)1); //WHY?! log (1) = 0!
+    }
     else
     {
         double f = log((double)2);
-        for(int s = 3; s <= x;++s) f += log((double)s);
+        for(int s = 3; s <= x; ++s)
+            f += log((double)s);
         return f;
     }
 }
@@ -1999,7 +1999,6 @@ logSum(TValue x, TValue y)
     return retVal;
 }
 
-
 // this is basically maq's source code translated into seqan
 // see Li, H., Ruan, J. & Durbin, R. Mapping short DNA sequencing reads and calling variants
 // using mapping quality scores. Genome Res. 2008.
@@ -2015,9 +2014,9 @@ void computeCnks(THomoTable & cnks, TDependencies & fks, TOptions & options)
     resize(q_c,256);
     resize(temp,256);
     resize(lFks,256);
-    resize(lC, 256*256);
+    resize(lC, 256 * 256);
     resize(fks,256);
-    resize(cnks, 256*256*64,0.0); // n<256, k<256, q<64
+    resize(cnks, 256 * 256 * 64, 0.0); // n<256, k<256, q<64
 
     fks[0] = lFks[0] = 1.0;
     for (int n = 1; n < 256; ++n)
@@ -2093,31 +2092,31 @@ double computeHetTable(THeteroTable & hetTable, TOptions & options)
 //    options.initialN = 10;
 //    options.meanAlleleFraction = 0.54;
 
-    resize(hetTable,256*256); // for n,k < 256
+    resize(hetTable,256 * 256); // for n, k < 256
     TValue sum_harmo = 0.0;
     for (int k = 1; k <= numHaplotypes - 1; ++k)
         sum_harmo += 1.0 / k;
 
-    // prepare normal distribution with mean n*meanAlleleFraction
+    // prepare normal distribution with mean n * meanAlleleFraction
     String<normal> distributions;
-//    resize(distributions,512);
+//    resize(distributions, 512);
 //    std::cout << "corrections:";
     normal distribution(options.meanAlleleFrequency, 0.2); // dummy
-    appendValue(distributions,distribution);
+    appendValue(distributions, distribution);
     for (int n = 1; n < 512 ; ++n)
     {
         double mean = options.meanAlleleFrequency * n;
-        double standardDev = (double) sqrt((1.0-options.meanAlleleFrequency) * mean);
+        double standardDev = (double)sqrt((1.0 - options.meanAlleleFrequency) * mean);
         long double correction = (long double) sqrt(
-                    (long double) n * (2.0 * (1.0 / (1.0 + options.amplificationEfficiency)) - 2.0
-                                       * pow(1.0 + options.amplificationEfficiency,-options.amplificationCycles - 1.0)
-                                       + pow(1.0 + options.amplificationEfficiency,-options.amplificationCycles) - 1)
-                    / (8*options.initialN));
+                    (long double)n * (2.0 * (1.0 / (1.0 + options.amplificationEfficiency)) - 2.0 *
+                                       pow(1.0 + options.amplificationEfficiency, -options.amplificationCycles - 1.0) +
+                                       pow(1.0 + options.amplificationEfficiency, -options.amplificationCycles) - 1) /
+                    (8 * options.initialN));
 //        std::cout << n << ": " << correction << "  ";
 
         // get normal distribution
         normal distribution(mean, standardDev + correction);
-        appendValue(distributions,distribution);
+        appendValue(distributions, distribution);
     }
     //std::cout << std::endl;
 
@@ -2151,11 +2150,11 @@ double computeHetTable(THeteroTable & hetTable, TOptions & options)
 // fills hetTable structure
 // returns het prior in phred scale
 template<typename THeteroTable, typename TOptions>
-double computeHetTable(THeteroTable & hetTable, TOptions & options, MaqMethod & )
+double computeHetTable(THeteroTable & hetTable, TOptions & options, MaqMethod &)
 {
     typedef typename Value<THeteroTable>::Type TValue;
     double poly_rate;
-    int numHaplotypes = 2;//options.numHaplotypes;
+    int numHaplotypes = 2; //options.numHaplotypes;
 
     resize(hetTable,256*256); // for n,k < 256
     TValue sum_harmo = 0.0;
@@ -2166,26 +2165,24 @@ double computeHetTable(THeteroTable & hetTable, TOptions & options, MaqMethod & 
         for (int n2 = 0; n2 < 256; ++n2)
         {
             long double sum = 0.0;
-            double lC = lgamma(n1+n2+1) - lgamma(n1+1) - lgamma(n2+1); // \binom{n1+n2}{n1}
+            double lC = lgamma(n1 + n2 + 1) - lgamma(n1 + 1) - lgamma(n2+1); // \binom{n1+n2}{n1}
             for (int k = 1; k <= numHaplotypes - 1; ++k)
             {
                 double pk = 1.0 / k / sum_harmo;
-                double log1 = log((double)k/numHaplotypes);
-                double log2 = log(1.0 - (double)k/numHaplotypes);
-                sum += pk * 0.5 * (expl(log1*n2) * expl(log2*n1) + expl(log1*n1) * expl(log2 * n2));
+                double log1 = log((double)k / numHaplotypes);
+                double log2 = log(1.0 - (double)k / numHaplotypes);
+                sum += pk * 0.5 * (expl(log1 * n2) * expl(log2 * n1) + expl(log1 * n1) * expl(log2 * n2));
             }
-            hetTable[n1<<8|n2] = lC + logl(sum);
+            hetTable[n1 << 8 | n2] = lC + logl(sum);
         }
     }
     poly_rate = options.hetRate * sum_harmo;
     double hetPriorQ = -4.343 * log(2.0 * poly_rate / (1.0 - poly_rate));
-
     return hetPriorQ;
 }
 
 template<typename THomoTable, typename TDependencies, typename TQStrings,typename TVal>
-void
-getHomoProbs(THomoTable & cnks,
+void getHomoProbs(THomoTable & cnks,
             TDependencies & fks,
             TQStrings & qualitiesForward,
             TQStrings & qualitiesReverse,
@@ -2208,19 +2205,18 @@ getHomoProbs(THomoTable & cnks,
 #endif
 
     String<double> sumE, sumF;
-    resize(sumE,4,0.0);
-    resize(sumF,4,0.0);
-
+    resize(sumE, 4, 0.0);
+    resize(sumF, 4, 0.0);
     for(unsigned i = 0; i < 4; ++i)
     {
-        sort(begin(qualitiesForward[i],Standard()),end(qualitiesForward[i],Standard()),HigherQ<TQuality>());
-        sort(begin(qualitiesReverse[i],Standard()),end(qualitiesReverse[i],Standard()),HigherQ<TQuality>());
+        sort(begin(qualitiesForward[i], Standard()), end(qualitiesForward[i], Standard()), HigherQ<TQuality>());
+        sort(begin(qualitiesReverse[i], Standard()), end(qualitiesReverse[i], Standard()), HigherQ<TQuality>());
         //compute average q
         double fk = 0.0;
         double qual = 0.0;
 #ifdef SNPSTORE_DEBUG_CANDPOS
         if (extraV)
-            std::cout << "F base"<<i<<": " << std::flush;
+            std::cout << "F base" << i << ": " << std::flush;
 #endif
         for(unsigned j = 0; j < length(qualitiesForward[i]); ++j)
         {
@@ -2246,14 +2242,14 @@ getHomoProbs(THomoTable & cnks,
         if (extraV)
             std::cout << std::endl;
         if (extraV)
-            std::cout << "R base"<<i<<": " << std::flush;
+            std::cout << "R base" << i << ": " << std::flush;
 #endif
         for(unsigned j = 0; j < length(qualitiesReverse[i]); ++j)
         {
-            qual = static_cast<double>(ordValue(qualitiesReverse[i][j])-33);
+            qual = static_cast<double>(ordValue(qualitiesReverse[i][j]) - 33);
             if (qual > 30.0)
                 qual = 30.0;
-            if (j>=256)
+            if (j >= 256)
                 fk = fks[255];
             else
                 fk = fks[j];
@@ -2267,7 +2263,6 @@ getHomoProbs(THomoTable & cnks,
             }
 #endif
         }
-
     }
 #ifdef SNPSTORE_DEBUG_CANDPOS
     if (extraV)
@@ -2275,7 +2270,6 @@ getHomoProbs(THomoTable & cnks,
         for(unsigned j = 0; j < 256; ++j)
             std::cout << fks[j] << " " << std::flush;
         std::cout << std::endl;
-
     }
 #endif
 
@@ -2302,7 +2296,7 @@ getHomoProbs(THomoTable & cnks,
         }
     }
 #ifdef SNPSTORE_DEBUG_CANDPOS
-    if (extraV) std::cout <<"best="<<best <<" secondbest="<<secondBest << std::flush << std::endl;
+    if (extraV) std::cout << "best=" << best << " secondbest=" << secondBest << std::flush << std::endl;
 #endif
 
     int qAvgBest = 0, qAvgSecondBest = 0;
@@ -2327,7 +2321,8 @@ getHomoProbs(THomoTable & cnks,
     {
         countBest = int(255.0 * countBest / countTotal + 0.5);
         countSecondBest = int(255.0 * countSecondBest / countTotal + 0.5);
-    //  if (extraV) ::std::cout <<  "countBest = " << countBest << "\tcountSecondBest = " << countSecondBest << ::std::endl;
+    //  if (extraV)
+    //      ::std::cout <<  "countBest = " << countBest << "\tcountSecondBest = " << countSecondBest << ::std::endl;
         countTotal = 255;
     }
 #ifdef SNPSTORE_DEBUG_CANDPOS
@@ -2364,8 +2359,6 @@ getHomoProbs(THomoTable & cnks,
  //         std::cout << cnks[f] << " ";
  //     std::cout <<std::endl;
  // }
-
-
 }
 
 

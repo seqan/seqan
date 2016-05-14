@@ -87,7 +87,14 @@ bool loadGenomes(
         Dna5String seq;
         for (; !atEnd(seqFileIn); ++seqCount)
         {
-            readRecord(temp, seq, seqFileIn);
+            try
+            {
+                readRecord(temp, seq, seqFileIn);
+            }
+            catch (ParseError const & e)
+            {
+                //std::cout << e.what() << "Base will be considered as 'N'." << std::endl;
+            }
             // Trim sequence ID and insert into mapping.
             cropAfterFirst(temp, NotFunctor<IsGraph>());
             // keeps the whole fasta ID including white spaces
@@ -96,17 +103,12 @@ bool loadGenomes(
             // Register genome sequence.
             appendValue(genomes, seq);
         }
-
         gSeqNo += seqCount;
         ++filecount;
     }
     resize(genomes, gSeqNo);
     return (gSeqNo > 0);
 }
-
-
-
-
 
 // transform global cooridnates to coordinates relative to chromosomal segment
 template<typename TFragmentStore, typename TContigPos, typename TOptions>
@@ -1573,10 +1575,8 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
         options._debugLevel = max(options._debugLevel, 1);
     if (isSet(parser, "very-verbose"))
         options._debugLevel = max(options._debugLevel, 2);
-
     getArgumentValue(options.genomeFName, parser, 0);
     unsigned countFiles = getArgumentValueCount(parser, 1);
-
     if (countFiles == 0)
     {
         cerr << "No mapping files specified." << endl;
@@ -1586,7 +1586,6 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     for (unsigned i = 0; i < countFiles; ++i)
     {
         getArgumentValue(options.readFNames[i], parser, 1, i);
-
         // Get lower case of the output file name.  File endings are accepted in both upper and lower case.
         CharString tmp = options.readFNames[i];
         toLower(tmp);
@@ -1597,7 +1596,6 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
             format = 1;
         else if (endsWith(tmp, ".bam"))
             format = 2;
-
         if (i == 0)
         {
             options.inputFormat = format;
@@ -1609,7 +1607,6 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
         }
 
     }
-
     // some additional option checking:
 
     //if (options.inputFormat == 1 && (!options.qualityFile || (length(qualityFNames)!=length(options.readFNames))))
