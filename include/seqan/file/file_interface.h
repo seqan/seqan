@@ -95,7 +95,7 @@ class File;
 /*!
  * @enum FileOpenMode
  * @headerfile <seqan/file.h>
- * @brief Flags to select th eopen mode of a @link File @endlink or external string.
+ * @brief Flags to select the open mode of a @link File @endlink or external string.
  *
  * These flags can be combined via the <tt>|</tt> operator (bitwise OR).  The defualt open mode is <tt>OPEN_RDWR |
  * OPEN_CREATE | OPEN_APPEND</tt>.
@@ -174,7 +174,7 @@ typedef Tag<Bidirectional_> Bidirectional;
 // Metafunction DefaultOpenMode
 // --------------------------------------------------------------------------
 
-// helper metafunction to avoid ambigous partial specializations of the 1st/2nd argument
+// helper metafunction to avoid ambiguous partial specializations of the 1st/2nd argument
 template <typename TDirection>
 struct DefaultFileOpenMode_
 {

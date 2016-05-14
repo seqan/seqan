@@ -94,7 +94,7 @@ namespace seqan
  *
  * @section Remarks
  *
- * When using this configuration ,th eSize type o fthe ExternalString is Size type of <tt>TFile</tt>.  Normally, this is
+ * When using this configuration ,the Size type of the ExternalString is Size type of <tt>TFile</tt>.  Normally, this is
  * a 64 bit integer.  For a smaller size type use ExternalConfig.
  *
  * Some data structures store size types values (e.g. suffix arrays in indices).  To save memory, you should think o
@@ -127,7 +127,7 @@ namespace seqan
  *            class String<TValue, External<TConfig> >;
  *
  * @tparam TValue  The type that is used for the items/characters stored in the string.
- * @tparam TConfig A structure to confgure the external string.  Defaults to <tt>ExternalConfigLarge&lt;&gt;.  See
+ * @tparam TConfig A structure to configure the external string.  Defaults to <tt>ExternalConfigLarge&lt;&gt;.  See
  *                 ExternalConfig, ExternalConfigLarge, and ExternalConfigSize.
  *
  * The External String enables to access sequences larger than the available internal memory (RAM) by using external
@@ -1146,7 +1146,7 @@ namespace seqan
  * @signature String::String(file);
  * @signature String::String(fileName[, openMode]);
  *
- * @param[in]     file     The @link File @endlink to use for reading and writing.  You must ensture that
+ * @param[in]     file     The @link File @endlink to use for reading and writing.  You must ensure that
  *                         <tt>file</tt> is open as the string will not call <tt>open</tt> and <tt>close</tt>
  *                         on the file.
  * @param[in]     fileName The path to open. Type: <tt>char const *</tt>
