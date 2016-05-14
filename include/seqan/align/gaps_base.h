@@ -1067,9 +1067,9 @@ assignSource(Gaps<TSequence, TSpec> & gaps, TValue const & value)
 
 /*!
  * @fn Gaps#copyGaps
- * @brief Copy gaps from one Gaps object to another (in the clipped view of both argumetns).
+ * @brief Copy gaps from one Gaps object to another (in the clipped view of both arguments).
  *
- * The user is resposible for ensuring that the gaps are over sequences of same length and appropriate clipping.
+ * The user is responsible for ensuring that the gaps are over sequences of same length and appropriate clipping.
  *
  * @signature void copyGaps(dest, source);
  *
