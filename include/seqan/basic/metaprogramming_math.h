@@ -142,7 +142,7 @@ template <uint64_t base> struct LogNFloor<0, base> { static const uint64_t VALUE
  * @tparam BASE     The base of the term (<tt>int64_t</tt>).
  * @tparam EXPONENT The exponent of the term (<tt>int64_t</tt>).
  *
- * @return uint64_t b<sup>e</sup
+ * @return uint64_t BASE<sup>EXPONENT</sup>
  *
  * @snippet demos/dox/basic/metaprogramming_math.cpp power call
  */
