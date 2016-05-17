@@ -23,11 +23,11 @@ Overview
 --------
 
 .. warning::
-    
+
     Before you can read/write BAM files (bgzf compressed SAM files) you need to make sure that your program is linked against the zlib library.
     When you build your application within the SeqAn build infrastructure, the zlib library is automatically located by looking at the standard places for the library.
     Also have a look at :ref:`tutorial-io-input-output-overview-formatted-files` to read more about support of compressed file I/O.
-    If the macro ``SEQAN_HAS_ZLIB`` is set to ``0`` then reading/writing BAM file format is disabled. 
+    If the macro ``SEQAN_HAS_ZLIB`` is set to ``0`` then reading/writing BAM file format is disabled.
     It is set to ``1`` if the zlib could be found and reading/writing of compressed files is enabled automatically.
     You can read :ref:`infra-use-cmake`, :ref:`infra-use-custom` and :ref:`infra-use-install-dependencies` for further notes about using the zlib and libbz2 in your build infrastructure.
 
@@ -44,7 +44,7 @@ Storing alignments of longer sequences such as contigs from assemblies is also p
 Here, we will focus on multi-read alignments.
 
 SAM files are text files, having one record per line.
-BAM files are just binary, compressed versions of SAM files that have a stricter organization and aim to be more efficiently useable by programs and computers.
+BAM files are just binary, compressed versions of SAM files that have a stricter organization and aim to be more efficiently usable by programs and computers.
 The nuts and bolts of the formats are described in the `SAM Format Specification <http://samtools.sourceforge.net/SAM1.pdf>`_.
 
 The SAM and BAM related I/O functionality in SeqAn focuses on allowing access to these formats in SeqAn with thin abstractions.
@@ -58,7 +58,7 @@ The :ref:`tutorial-datastructures-store-fragment-store` Tutorial shows how to ge
     This is very useful if you want to do SNP or small indel detection because you need to access the alignment of the reads around your candidate regions.
     However, storing the whole alignment of a 120GB BAM file obviously is not a good idea.
 
-    The SAM/BAM I/O functionaliy in SeqAn is meant for sequentially reading through SAM and BAM files.
+    The SAM/BAM I/O functionality in SeqAn is meant for sequentially reading through SAM and BAM files.
     Jumping within BAM files using BAI indices is described in the `Using BAM Indices`_ section of this tutorial.
 
 
@@ -146,7 +146,7 @@ The following program reads a file named ``example.sam`` and prints its contents
 
 We instantiate a :dox:`BamFileIn` object for reading and a :dox:`BamFileOut` object for writing.
 First, we read the BAM header with :dox:`FormattedFileIn#readRecord` and we write it with :dox:`FormattedFileOut#writeRecord`.
-Then, we read each record from the input file and print it back on standard ouput.
+Then, we read each record from the input file and print it back on standard output.
 The alignment records are read into :dox:`BamAlignmentRecord` objects, which we will focus on below.
 
 Assignment 1
@@ -299,7 +299,7 @@ Assignment 3
 Using BAM Indices
 -----------------
 
-SeqAn also contains features for reading BAM indices with the format ``.bai``. These indices can be built using the ``samtools index`` command. In the near future we plan to support building the bam index with SeqAn as well.   
+SeqAn also contains features for reading BAM indices with the format ``.bai``. These indices can be built using the ``samtools index`` command. In the near future we plan to support building the bam index with SeqAn as well.
 
 You can read indices into a :dox:`BaiBamIndex` object with the function :dox:`BamIndex#open`. Then, you can use the function :dox:`BamFileIn#jumpToRegion` to jump to a specific position within BAM files. After jumping, the next record to be read is before the given region. Therefore, you have to skip records until you access the one you are looking for.
 
