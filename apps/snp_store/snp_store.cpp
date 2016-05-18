@@ -27,6 +27,8 @@
 //#define SNPSTORE_DEBUG
 //#define SNPSTORE_DEBUG_CANDPOS
 
+#include <iomanip>
+#include <ctime>
 
 #include <seqan/platform.h>
 #include <seqan/sequence.h>
@@ -60,8 +62,6 @@
 
 using namespace std;
 using namespace seqan;
-
-
 
 // load entire genome into memory
 template <typename TGenomeSet, typename TGenomeSetSize, typename TGenomeNames>
@@ -743,31 +743,70 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
             computeCnks(options.cnks,options.fks,options);
 #ifdef CORRECTED_HET // corrected het table computed with normal distribution
             if (options.correctedHetTable)
-                options.priorHetQ = computeHetTable(options.hetTable,options);
+                options.priorHetQ = computeHetTable(options.hetTable, options);
             else
 #endif
-                options.priorHetQ = computeHetTable(options.hetTable,options,MaqMethod()); // original Maq method
+                options.priorHetQ = computeHetTable(options.hetTable, options, MaqMethod()); // original Maq method
             //printHetTable(options.hetTable);
             //printHetTable(options.hetTable2);
         }
-
         snpFileStream.open(toCString(options.outputSNP),::std::ios_base::out);
         if (!snpFileStream.is_open())
             return CALLSNPS_OUT_FAILED;
 
-        snpFileStream << "#" << (options.programCall).str() << "\n";
-        if (options.outputFormat < 2)
+        //Prepare header of vcf output
+        snpFileStream << "##fileformat=VCFv4.2\n";
+        std::time_t t = std::time(nullptr);                                                 //Get time and date
+        std::tm now = *std::localtime(&t);
+        snpFileStream << "##fileDate=" << std::put_time(&now, "%Y%m%d") << "\n";
+        snpFileStream << "##source=Seqan-SnpStoreV" << SEQAN_APP_VERSION << "\n";
+        snpFileStream << "##reference=" << genomeFileNameList[0];
+        for (unsigned i = 1; i < length(genomeFileNameList); ++i)
         {
-            if ( options.orientationAware)
-                snpFileStream << "#chr\tpos\tref\t[A+]\t[C+]\t[G+]\t[T+]\t[A-]\t[C-]\t[G-]\t[T-]\tcov\tcall";
-            else
-                snpFileStream << "#chr\tpos\tref\tA\tC\tG\tT\tcov\tcall";
-
-            //if (options.method==1)
-            snpFileStream << "\tquality\tsnpQ\n";
-            //else
-            //  file <<"\n";
+            snpFileStream << ", "<< genomeFileNameList[i];
         }
+        snpFileStream << '\n';
+        //snpFileStream << "##" << (options.programCall).str() << '\n';
+        snpFileStream << "##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">\n";
+        if (options.showQualityStrings)
+        {
+            snpFileStream << "##INFO=<ID=A+,Number=1,Type=String,Description=\"String of Phred-qualities for base 'A'"
+                             " on forward strand\">\n";
+            snpFileStream << "##INFO=<ID=C+,Number=1,Type=String,Description=\"String of Phred-qualities for base 'C'"
+                             " on forward strand\">\n";
+            snpFileStream << "##INFO=<ID=G+,Number=1,Type=String,Description=\"String of Phred-qualities for base 'G'"
+                             " on forward strand\">\n";
+            snpFileStream << "##INFO=<ID=T+,Number=1,Type=String,Description=\"String of Phred-qualities for base 'T'"
+                             " on forward strand\">\n";
+            snpFileStream << "##INFO=<ID=A-,Number=1,Type=String,Description=\"String of Phred-qualities for base 'A'"
+                             " on reverse strand\">\n";
+            snpFileStream << "##INFO=<ID=C-,Number=1,Type=String,Description=\"String of Phred-qualities for base 'C'"
+                             " on reverse strand\">\n";
+            snpFileStream << "##INFO=<ID=G-,Number=1,Type=String,Description=\"String of Phred-qualities for base 'G'"
+                             " on reverse strand\">\n";
+            snpFileStream << "##INFO=<ID=T-,Number=1,Type=String,Description=\"String of Phred-qualities for base 'T'"
+                             " on reverse strand\">\n";
+        }
+        else
+        {
+            snpFileStream << "##INFO=<ID=A+,Number=1,Type=Integer,Description=\"Number of base 'A' observations"
+                             " on forward strand\">\n";
+            snpFileStream << "##INFO=<ID=C+,Number=1,Type=Integer,Description=\"Number of base 'C' observations"
+                             " on forward strand\">\n";
+            snpFileStream << "##INFO=<ID=G+,Number=1,Type=Integer,Description=\"Number of base 'G' observations"
+                             " on forward strand\">\n";
+            snpFileStream << "##INFO=<ID=T+,Number=1,Type=Integer,Description=\"Number of base 'T' observations"
+                             " on forward strand\">\n";
+            snpFileStream << "##INFO=<ID=A-,Number=1,Type=Integer,Description=\"Number of base 'A' observations"
+                             " on reverse strand\">\n";
+            snpFileStream << "##INFO=<ID=C-,Number=1,Type=Integer,Description=\"Number of base 'C' observations"
+                             " on reverse strand\">\n";
+            snpFileStream << "##INFO=<ID=G-,Number=1,Type=Integer,Description=\"Number of base 'G' observations"
+                             " on reverse strand\">\n";
+            snpFileStream << "##INFO=<ID=T-,Number=1,Type=Integer,Description=\"Number of base 'T' observations"
+                             " on reverse strand\">\n";
+        }
+        snpFileStream << "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\n";
     }
     ::std::ofstream indelFileStream;
     if (options.outputIndel != "")
@@ -1289,9 +1328,12 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     addOption(parser, ArgParseOption("dc", "dont-clip", "Ignore clip tags in gff. Default: off."));
 
     addOption(parser, ArgParseOption("mu", "multi", "Keep non-unique fragmentStore.alignedReadStore. Default: off."));
-    addOption(parser, ArgParseOption("hq",
-                                     "hide-qualities",
-                                     "Only show coverage (no qualities) in SNP output file. Default: off."));
+    addOption(parser, ArgParseOption("sq",
+                                     "show-qualities",
+                                     "Show qualities instead of individual coverage in SNP output. Default: off."
+                                     "Warning: Since the Phred-string can contain ';' which happens also to be the "
+                                     "delimiter of the info field, this is likely to cause trouble when parsing from "
+                                     "the resulting VCF file."));
     addOption(parser, ArgParseOption("sqo",
                                      "solexa-qual-offset",
                                      "Base qualities are encoded as char value - 64 (instead of char - 33)."));
@@ -1524,7 +1566,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
         options.outputFormat = 1;
     options.dontClip = isSet(parser, "dont-clip");
     options.keepMultiReads = isSet(parser, "multi");
-    options.showQualityStrings = !isSet(parser, "hide-qualities");
+    options.showQualityStrings = isSet(parser, "show-qualities");
     if (isSet(parser, "solexa-qual-offset"))
         options.asciiQualOffset = 64;
     getOptionValue(options.outputIndel, parser, "indel-file");

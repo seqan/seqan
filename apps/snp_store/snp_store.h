@@ -2671,22 +2671,21 @@ void dumpVariantsRealignBatchWrap(
 ///////////////////////////////////////////////////////////////////////
 // SNP calling Maq style
 template<typename TCounts, typename TQualities, typename TOptions>
-inline bool
-_doSnpCall(TCounts & countF,
-          TCounts & countR,
-          TQualities & qualF,
-          TQualities & qualR,
-          int &refAllele,
-          TOptions & options,
-          SingleBaseVariant &snp,
-          MaqMethod&
+inline bool _doSnpCall(TCounts & countF,
+                       TCounts & countR,
+                       TQualities & qualF,
+                       TQualities & qualR,
+                       int &refAllele,
+                       TOptions & options,
+                       SingleBaseVariant &snp,
+                       MaqMethod&
 #ifdef SNPSTORE_DEBUG_CANDPOS
-          , int candPos
+                     , int candPos
 #endif
-          )
+                       )
 {
         // the diploid reference genotype
-        int genotypeRef = (refAllele<<2) | refAllele;
+        int genotypeRef = (refAllele << 2) | refAllele;
         int genotypeCalled = genotypeRef, qCall1 = 0;   // genotype call quality
         int qSnp = 0;                                   // SNP call quality
                                                         // int genotypeCalled2 = genotypeRef, qCall2 = 0;
@@ -2717,13 +2716,13 @@ _doSnpCall(TCounts & countF,
         // get pHomo for best and second best nucleotide
         int best, secondBest;
         long double pHet = 0, pHomo1 = 0, pHomo2 = 0;
-        getHomoProbs(options.cnks,options.fks,qualF,qualR,best,secondBest,pHomo1,pHomo2,
+        getHomoProbs(options.cnks, options.fks, qualF, qualR, best, secondBest, pHomo1, pHomo2,
 #ifdef SNPSTORE_DEBUG_CANDPOS
-            candPos
+                    candPos
 #else
-            0
+                    0
 #endif
-            );
+                    );
         if (secondBest == -1)
         {
             if (best==refAllele) // shouldnt happen
@@ -2785,12 +2784,14 @@ _doSnpCall(TCounts & countF,
 
         double pRef = pHomo1;
         if (best != refAllele)
+        {
             pRef = pHomo2;
-        if (best != refAllele && secondBest != refAllele)
-            qSnp = 255;
-
+            if (secondBest != refAllele)
+            {
+                qSnp = 255;
+            }
+        }
         int het,/*homo1,*/homo2; //0,1,2
-
         //rank them and create the genotype
         if (pHet < pHomo1)
         {
@@ -2800,7 +2801,7 @@ _doSnpCall(TCounts & countF,
                 if (best == refAllele)
                     genotypeCalled = (best << 2) | secondBest;
                 else
-                    genotypeCalled = (secondBest<<2) | best;
+                    genotypeCalled = (secondBest << 2) | best;
 
                 if (pHomo1 <= pHomo2)    //(1)
                 {
@@ -2998,8 +2999,48 @@ _doSnpCall(TCounts & countF,
     return true;
 }
 
+CharString getGenotypeList(int genotype) //converts the int genotype (0 - 15) to list of alleles
+{
+    switch (genotype)
+    {
+    case 0:
+        return "A";
+    case 1:
+        return "A,C";
+    case 2:
+        return "A,G";
+    case 3:
+        return "A,T";
+    case 4:                     //redundancy due to original toUIPAC table. TODO (serosko): change this.
+        return "A,C";
+    case 5:
+        return "C";
+    case 6:
+        return "C,G";
+    case 7:
+        return "C,T";
+    case 8:
+        return "A,G";
+    case 9:
+        return "C,G";
+    case 10:
+        return "G";
+    case 11:
+        return "G,T";
+    case 12:
+        return "A,T";
+    case 13:
+        return "C,T";
+    case 14:
+        return "G,T";
+    case 15:
+        return "T";
+    default:
+        return ".";
+    }
+}
 
-// write to file
+// write to file in VCFv4.2 format
 template<typename TFile, typename TString, typename TQualities, typename TPos, typename TOptions>
 inline bool
 _writeSnp(TFile & file,
@@ -3012,85 +3053,59 @@ _writeSnp(TFile & file,
        unsigned realCoverage,
        TOptions & options)
 {
-//IOREV _nodoc_ what kind of format is this?
     if (!file.is_open())
     {
         ::std::cerr << "SNP output file is not open" << ::std::endl;
         return false;
     }
-
-    //chromosome
-    file << genomeID << '\t';
-    file << candPos + options.positionFormat<< '\t';
-    file << (Dna5)refAllele <<'\t';
-    if (options.orientationAware)
+    CharString dbsnp = ".";                           //TODO (serosko): should later contain the dbsnp id (if known)
+    file << genomeID << '\t';                           //chromosome
+    file << candPos + options.positionFormat<< '\t';    //position
+    file << dbsnp << '\t';                              //dbsnp id (only '.' at the moment
+    file << (Dna5)refAllele <<'\t';                     //Reference Base
+    if (options.method == 1)                    //MAQ
     {
-        if (options.showQualityStrings)
-        {
-            file << "["<<qualityStringF[0] <<"]\t";
-            file << "["<<qualityStringF[1] <<"]\t";
-            file << "["<<qualityStringF[2] <<"]\t";
-            file << "["<<qualityStringF[3] <<"]\t";
-            file << "["<<qualityStringR[0] <<"]\t";
-            file << "["<<qualityStringR[1] <<"]\t";
-            file << "["<<qualityStringR[2] <<"]\t";
-            file << "["<<qualityStringR[3] <<"]\t";
-        }
+        if (snp.called)                         //genotypeCalled != genotypeRef)
+            file << getGenotypeList(snp.genotype) << '\t' << snp.snpQuality << '\t';
         else
-        {
-            file << length(qualityStringF[0]) <<"\t";
-            file << length(qualityStringF[1]) <<"\t";
-            file << length(qualityStringF[2]) <<"\t";
-            file << length(qualityStringF[3]) <<"\t";
-            file << length(qualityStringR[0]) <<"\t";
-            file << length(qualityStringR[1]) <<"\t";
-            file << length(qualityStringR[2]) <<"\t";
-            file << length(qualityStringR[3]) <<"\t";
-        }
+            file << ".\t0\t";                   //TODO (serosko): Insert correct quality for no snp-call instead of 0.
     }
-    else
-    {
-        if (options.showQualityStrings)
-        {
-            file << "["<<qualityStringF[0]<<qualityStringR[0] <<"]\t";
-            file << "["<<qualityStringF[1]<<qualityStringR[1] <<"]\t";
-            file << "["<<qualityStringF[2]<<qualityStringR[2] <<"]\t";
-            file << "["<<qualityStringF[3]<<qualityStringR[3] <<"]\t";
-        }
-        else
-        {
-            file << length(qualityStringF[0])+length(qualityStringR[0]) <<"\t";
-            file << length(qualityStringF[1])+length(qualityStringR[1]) <<"\t";
-            file << length(qualityStringF[2])+length(qualityStringR[2]) <<"\t";
-            file << length(qualityStringF[3])+length(qualityStringR[3]) <<"\t";
-        }
-    }
-    file << realCoverage;
-
-    if (options.method == 1)
-    {
-        //genotypeCalled to string
-        if (snp.called) //genotypeCalled != genotypeRef)
-            file << '\t' << (char)options.toIupac[(unsigned)(snp.genotype&15)]
-                 << '\t' << snp.quality << '\t' << snp.snpQuality;
-        else
-            file << "\t\t";
-    }
-    else
+    else                                        //threshold method
     {
         if (snp.called)
-            file  << '\t' << (char)options.toIupac[(unsigned)(snp.genotype)&15]
-                  << '\t' << snp.quality;// mutAllele;// << "/" << (Dna)mutAllele;
-//            file  << '\t' << (Dna)(snp.genotype & 3) << '\t' << snp.quality;// mutAllele;// << "/" << (Dna)mutAllele;
+            file  << getGenotypeList(snp.genotype) << '\t' << snp.quality;
         else
-            file << "\t\t";
+            file << "\t.\t0\t";                 //TODO (serosko): Insert correct quality for no snp-call instead of 0.
+    }
+    file << ".\t";                              //TODO (serosko): Insert Filter field here.
+    file << "DP=" << realCoverage;              //Info field: Coverage
+    if (options.showQualityStrings)             //Info field: Quality strings for each observed base.
+    {
+        file << ";A+=" << qualityStringF[0];
+        file << ";C+=" << qualityStringF[1];
+        file << ";G+=" << qualityStringF[2];
+        file << ";T+=" << qualityStringF[3];
+        file << ";A-=" << qualityStringR[0];
+        file << ";C-=" << qualityStringR[1];
+        file << ";G-=" << qualityStringR[2];
+        file << ";T-=" << qualityStringR[3] <<"]\t";
+    }
+    else                                        //Info field: Count of each observed base.
+    {
+        file << ";A+=" << length(qualityStringF[0]);
+        file << ";C+=" << length(qualityStringF[1]);
+        file << ";G+=" << length(qualityStringF[2]);
+        file << ";T+=" << length(qualityStringF[3]);
+        file << ";A-=" << length(qualityStringR[0]);
+        file << ";C-=" << length(qualityStringR[1]);
+        file << ";G-=" << length(qualityStringR[2]);
+        file << ";T-=" << length(qualityStringR[3]) <<"\t";
     }
     file << std::endl;
     return true;
 }
 
-
-// write to file
+// write to file (TODO (serosko): Probably for indels. Check this and put in same file as snps.)
 template<typename TFile, typename TString, typename TQualities, typename TPos, typename TOptions>
 inline bool
 _writePos(TFile & file,
@@ -3106,7 +3121,7 @@ _writePos(TFile & file,
 //IOREV _nodoc_ what kind of format is this?
     if (!file.is_open())
     {
-        ::std::cerr << "SNP output file is not open" << ::std::endl;
+        ::std::cerr << "SNP output file is not open" << ::std::endl;//TODO (serosko):Why SNP and not Indel?! Check this.
         return false;
     }
 
@@ -3124,7 +3139,7 @@ _writePos(TFile & file,
         file << length(qualityStringR[1]) <<"\t";
         file << length(qualityStringR[2]) <<"\t";
         file << length(qualityStringR[3]) <<"\t";
-        file << delMinus ; //<< std::endl;
+        file << delMinus;
     }
     else
     {
@@ -3132,29 +3147,13 @@ _writePos(TFile & file,
         file << length(qualityStringF[1])+length(qualityStringR[1]) <<"\t";
         file << length(qualityStringF[2])+length(qualityStringR[2]) <<"\t";
         file << length(qualityStringF[3])+length(qualityStringR[3]) <<"\t";
-        file << delPlus+delMinus ; // << std::endl;
+        file << delPlus+delMinus;
     }
     unsigned coverage = length(qualityStringF[0]) + length(qualityStringF[1])
             + length(qualityStringF[2]) + length(qualityStringF[3]) + delPlus;
     coverage += length(qualityStringR[0]) + length(qualityStringR[1])
                      + length(qualityStringR[2]) + length(qualityStringR[3]) + delMinus;
     file << '\t' << coverage << std::endl;
-
-    //if (options.method == 1)
-    //{
-    //  //genotypeCalled to string
-    //  if (snp.called)//genotypeCalled != genotypeRef)
-    //      file << '\t' << (char)options.toIupac[(unsigned)(snp.genotype&15)]<< '\t' << snp.quality;
-    //  else
-    //      file << "\t\t";
-    //}
-    //else
-    //{
-    //  if (snp.called)
-    //      file  << '\t' << (Dna)(snp.genotype & 3) << '\t' << snp.quality;// mutAllele;// << "/" << (Dna)mutAllele;
-    //  else file << "\t\t";
-    //}
-    //file << std::endl;
     return true;
 }
 
