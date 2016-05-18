@@ -68,7 +68,7 @@ namespace seqan
  * @tparam FRAMES    The number of pages that should reside in internal memory. To enable prefetching and automatic
  *                   swap-out, <tt>frames</tt> should be greater than 1. Default: 2.
  *
- * When using this configuration, the Size type of the ExternalString is <tt>unsigned</tt>. Thus, with this configuration at
+ * When using this configuration, the <tt>Size</tt> type of the ExternalString is <tt>unsigned</tt>. Thus, with this configuration at
  * most 4.294.967.296 values can be stored in an ExternalString on a 32 bit system.
  *
  * For a larger size type use @link ExternalConfigLarge @endlink.
@@ -94,7 +94,7 @@ namespace seqan
  *
  * @section Remarks
  *
- * When using this configuration ,the Size type of the ExternalString is Size type of <tt>TFile</tt>. Normally, this is
+ * When using this configuration ,the <tt>Size</tt> type of the ExternalString is <tt>Size</tt> type of <tt>TFile</tt>. Normally, this is
  * a 64 bit integer. For a smaller size type use ExternalConfig.
  *
  * Some data structures store size types values (e.g. suffix arrays in indices). To save memory, you should think o
