@@ -45,6 +45,24 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Metafunction GetFlagMaskType
+// ----------------------------------------------------------------------------
+
+namespace impl
+{
+namespace dp_cell
+{
+template <typename TScoreValue>
+struct FlagMaskType
+{
+    using Type = typename If<Is<SimdVectorConcept<TScoreValue> >,
+                             TScoreValue,
+                             uint8_t>::Type;
+};
+}  // namespace dp_cell
+}  // namespace impl
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -71,8 +89,10 @@ template <typename TScoreValue>
 class DPCell_<TScoreValue, DynamicGaps>
 {
 public:
-    TScoreValue _score;
-    TScoreValue _flagMask; //char _flagMask;
+    using TFlagMaskType = typename impl::dp_cell::FlagMaskType<TScoreValue>::Type;
+
+    TScoreValue     _score;
+    TFlagMaskType   _flagMask;
 
     // The default c'tor.
     DPCell_() : _score(DPCellDefaultInfinity<DPCell_>::VALUE), _flagMask()
