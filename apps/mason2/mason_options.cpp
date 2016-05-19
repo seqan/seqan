@@ -1317,6 +1317,13 @@ void MasonMaterializerOptions::addOptions(seqan::ArgumentParser & parser) const
     setRequired(parser, "out");
     setValidValues(parser, "out", "fa fasta");
 
+    addOption(parser, seqan::ArgParseOption("", "filter-out-bed",
+                                            "Path to BED file with reference coordinates to filter "
+                                            "--out FASTA file to (only in mason_materializer).",
+                                            seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
+    setRequired(parser, "filter-out-bed");
+    setValidValues(parser, "filter-out-bed", "bed");
+
     addOption(parser, seqan::ArgParseOption("", "out-breakpoints", "TSV file to write breakpoints in variants to.",
                                             seqan::ArgParseOption::OUTPUT_FILE, "TSV"));
     setValidValues(parser, "out-breakpoints", "tsv txt");
@@ -1367,6 +1374,7 @@ void MasonMaterializerOptions::getOptionValues(seqan::ArgumentParser const & par
     getOptionValue(methSeed, parser, "meth-seed");
     getOptionValue(outputFileName, parser, "out");
     getOptionValue(outputBreakpointFile, parser, "out-breakpoints");
+    getOptionValue(outFilterBedFileName, parser, "filter-out-bed");
     getOptionValue(haplotypeNameSep, parser, "haplotype-name-sep");
     getOptionValue(methFastaInFile, parser, "meth-fasta-in");
     getOptionValue(methFastaOutFile, parser, "meth-fasta-out");
@@ -1398,6 +1406,7 @@ void MasonMaterializerOptions::print(std::ostream & out) const
         << "METHYLATION SEED        \t" << methSeed << "\n"
         << "\n"
         << "OUTPUT FILE             \t" << outputFileName << "\n"
+        << "OUTPUT FILTER BED       \t" << outFilterBedFileName << "\n"
         << "BREAKPOINT TSV OUT      \t" << outputBreakpointFile << "\n"
         << "METHYLATION LEVEL INPUT \t" << methFastaInFile << "\n"
         << "METHYLATION LEVEL OUTPUT\t" << methFastaOutFile << "\n"

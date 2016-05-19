@@ -238,6 +238,7 @@ public:
             rID = idx;
 
             vcfMat.currRID = rID - 1;
+            vcfMat.nextHaplotype = vcfMat.numHaplotypes;
             std::vector<SmallVarInfo> varInfos;  // small variants for counting in read alignments
             std::vector<std::pair<int, int> > breakpoints;  // unused/ignored
             while (vcfMat.materializeNext(seq, varInfos, breakpoints, rID, hID))
@@ -288,6 +289,8 @@ public:
         {
             clear(transcript);
 
+            bool isRC = (it->strand == '-');
+
             bool onBreakpoint = false;
             int tID = it->transcriptID;
             for (; it != itEnd; ++it)
@@ -313,7 +316,10 @@ public:
                 buffer = infix(seq, largeVarInt.first, largeVarInt.second);
                 if (it->strand != gi.strand)
                     reverseComplement(buffer);
-                append(transcript, buffer);
+                if (isRC)
+                    insert(transcript, 0, buffer);
+                else
+                    append(transcript, buffer);
             }
 
             if (onBreakpoint)
