@@ -83,6 +83,22 @@ struct Value<Score<TValue, TSpec> > {
     typedef TValue Type;
 };
 
+/*!
+ * @mfn Score#Spec
+ * @brief Return the specialization type of the scoring scheme.
+ *
+ * @signature Spec<TScore>::Type;
+ *
+ * @tparam TScore The Score specialization.
+ *
+ * @return Type The score specialization type of the scoring scheme.
+ */
+
+template <typename TValue, typename TSpec>
+struct Spec<Score<TValue, TSpec> > {
+    typedef TSpec Type;
+};
+
 // --------------------------------------------------------------------------
 // Metafunction ConsensusScoreSequenceEntry
 // --------------------------------------------------------------------------
@@ -315,14 +331,7 @@ scoreGapVertical(
  */
 
 template <typename TValue, typename TSpec, typename TSeqHVal, typename TSeqVVal>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >,TValue)
-score(Score<TValue, TSpec> const & me, TSeqHVal valH, TSeqVVal valV)
-{
-    return blend(scoreMismatch(me), scoreMatch(me), cmpEq(valH, valV));
-}
-
-template <typename TValue, typename TSpec, typename TSeqHVal, typename TSeqVVal>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TValue> > >,TValue)
+inline TValue
 score(Score<TValue, TSpec> const & me, TSeqHVal valH, TSeqVVal valV) {
     if (valH == valV)
         return scoreMatch(me);

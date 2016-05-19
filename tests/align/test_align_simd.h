@@ -232,7 +232,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_global_linear)
     // Alignment with both leading and trailing gaps in one row.
     testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1), alignConfig);
     // Alignment with both leading and trailing gaps in different rows.
-    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Blosum30(-1), alignConfig);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_global_affine)

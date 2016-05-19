@@ -94,10 +94,8 @@ public:
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
     };
 
-    typedef typename Value<TValue>::Type TInnerValue;
-
     // The data table.
-    TInnerValue data_tab[TAB_SIZE];
+    TValue data_tab[TAB_SIZE];
 
     // The gap extension score.
     TValue data_gap_extend;
@@ -127,84 +125,63 @@ public:
     }
 };
 
+
+// ----------------------------------------------------------------------------
+// Metafunction IsScoreMatrix_
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+struct IsScoreMatrix_ : False
+{};
+
+template <typename TAlphabet, typename TSpec>
+struct IsScoreMatrix_<ScoreMatrix<TAlphabet, TSpec> > : True
+{};
+
+template <typename TValue, typename  TSpec>
+struct IsScoreMatrix_<Score<TValue, TSpec> > : IsScoreMatrix_<TSpec>
+{};
+
 // TODO(rrahn): This copy and paste code works for now, but should be refactored.
 // Some how, we should use a SimdScoreWrapper class to add functionality to existing score classes.
 // But we need to also think about the simple score which might be refactored as well, since it could
 // be represented as a scoring matrix, replacing the overhead to compare each character by an array look up.
-template <typename TSequenceValue, typename TSpec>
-class Score<TSimdAlign, ScoreMatrix<TSequenceValue, TSpec> > {
-public:
-    // Static computation of the required array size.
-    enum {
-        VALUE_SIZE = ValueSize<TSequenceValue>::VALUE,
-        TAB_SIZE = VALUE_SIZE * VALUE_SIZE
-    };
-
-    // The data table.
-    int data_tab[TAB_SIZE];
-
-    // The gap extension score.
-    TSimdAlign data_gap_extend;
-
-    // The gap open score.
-    TSimdAlign data_gap_open;
-
-    int16_t pos[LENGTH<TSimdAlign>::VALUE] __attribute__((aligned(SEQAN_SIZEOF_MAX_VECTOR)));
-
-    Score(TSimdAlign _gap_extend, TSimdAlign _gap_open) :
-        data_gap_extend(_gap_extend), data_gap_open(_gap_open)
-    {
-        setDefaultScoreMatrix(*this, TSpec());
-    }
-};
+//#if SEQAN_SIMD_ENABLED
+//template <typename TSequenceValue, typename TSpec>
+//class Score<TSimdAlign, ScoreMatrix<TSequenceValue, TSpec> > {
+//public:
+//    // Static computation of the required array size.
+//    enum {
+//        VALUE_SIZE = ValueSize<TSequenceValue>::VALUE,
+//        TAB_SIZE = VALUE_SIZE * VALUE_SIZE
+//    };
+//
+//    // The data table.
+//    int data_tab[TAB_SIZE];
+//
+//    // The gap extension score.
+//    TSimdAlign data_gap_extend;
+//
+//    // The gap open score.
+//    TSimdAlign data_gap_open;
+//
+//    Score(TSimdAlign _gap_extend, TSimdAlign _gap_open) :
+//        data_gap_extend(_gap_extend), data_gap_open(_gap_open)
+//    {
+//        setDefaultScoreMatrix(*this, TSpec());
+//    }
+//};
+//#endif  // SEQAN_SIMD_ENABLED
 
 // TODO(holtgrew): Does it make sense to document each Score specialization?  Should dddoc show a list of all specializations of a class?
 template <typename TValue, typename TSequenceValue, typename TSpec, typename TVal1, typename TVal2>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TValue> > >, TValue)
+inline TValue
 score(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc, TVal1 val1, TVal2 val2) {
     typedef Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > TScore;
     // TODO(holtgrew): Why not implicit cast?
     unsigned int i = (TSequenceValue) val1;  // conversion TVal1 => TSequenceValue => integral
     unsigned int j = (TSequenceValue) val2;  // conversion TVal2 => TSequenceValue => integral
     return sc.data_tab[i * TScore::VALUE_SIZE + j];
-}
-
-template <unsigned LENGTH>
-struct VectorLength_
-{};
-
-#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_2(t, d, pos)     d[t[pos]], d[t[pos + 1]]
-#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_4(t, d, pos)     SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_2(t, d, pos), SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_2(t, d, pos + 2)
-#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_8(t, d, pos)     SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_4(t, d, pos), SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_4(t, d, pos + 4)
-#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_16(t, d, pos)    SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_8(t, d, pos), SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_8(t, d, pos + 8)
-#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_32(t, d, pos)    SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_16(t, d, pos), SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_16(t, d, pos + 16)
-
-#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_DELEGATE(MACRO, t, d) MACRO(t, d, 0)
-#define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL(t, d, SIZE) SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_DELEGATE(SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_##SIZE, t, d)
-
-#define SEQAN_FIXED_VECTOR_FILL_IMPL(SIZE)                                            \
-    template <typename TTarget, typename TData>                                       \
-    inline void                                                                       \
-    _fixedSizeVectorFill(TTarget & target,                                            \
-                         TData const & data,                                          \
-                         VectorLength_<SIZE> const & /*scope*/)                       \
-{                                                                                     \
-    fillVector(target, SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL(target, data, SIZE));       \
-}                                                           
-
-SEQAN_FIXED_VECTOR_FILL_IMPL(2)
-SEQAN_FIXED_VECTOR_FILL_IMPL(4)
-SEQAN_FIXED_VECTOR_FILL_IMPL(8)
-SEQAN_FIXED_VECTOR_FILL_IMPL(16)
-SEQAN_FIXED_VECTOR_FILL_IMPL(32)
-
-template <typename TValue, typename TSequenceValue, typename TSpec, typename TVal1, typename TVal2>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, TValue)
-score(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc, TVal1 val1, TVal2 val2)
-{
-    auto res = val1 + val2;
-    _fixedSizeVectorFill(res, sc.data_tab, VectorLength_<LENGTH<TVal1>::VALUE>());
-    return res;
 }
 
 /*!
@@ -248,28 +225,18 @@ setScore(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TVal1 val1, TV
  */
 
 template <typename TValue, typename TSequenceValue, typename TSpec, typename TTag>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TValue> > >, void)
+inline void
 setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TTag) {
     typedef Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > TScore;
     TValue const * tab = ScoringMatrixData_<TValue, TSequenceValue, TTag>::getData();
     arrayCopy(tab, tab + TScore::TAB_SIZE, sc.data_tab);
 }
 
-template <typename TValue, typename TSequenceValue, typename TSpec, typename TTag>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, void)
-setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TTag)
-{
-    typedef Score<int, ScoreMatrix<TSequenceValue, TSpec> > TScore;
-    int const * tab = ScoringMatrixData_<int, TSequenceValue, TTag>::getData();
-    arrayCopy(tab, tab + TScore::TAB_SIZE, sc.data_tab);
-}
-
 template <typename TValue, typename TSequenceValue, typename TSpec>
 inline void
 setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, Default) {
-    typedef typename Value<TValue>::Type TInnerValue;
     typedef Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > TScore;
-    arrayFill(sc.data_tab, sc.data_tab + TScore::TAB_SIZE, TInnerValue());
+    arrayFill(sc.data_tab, sc.data_tab + TScore::TAB_SIZE, TValue());
 }
 
 }  // namespace seqan

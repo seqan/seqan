@@ -48,7 +48,7 @@ namespace seqan {
 template <int ROWS, typename TVector>
 inline void test_matrix_transpose()
 {
-    typedef typename InnerValue<TVector>::Type TValue;
+    typedef typename Value<TVector>::Type TValue;
     typedef TVector TMatrix[LENGTH<TVector>::VALUE];
     const int COLS = LENGTH<TVector>::VALUE;
     
