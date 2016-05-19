@@ -224,6 +224,7 @@ TScoreValue localAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> &
         return localAlignment(fragmentString, strings, scoringScheme, lowerDiag, upperDiag, LinearGaps());
 }
 
+#if SEQAN_SIMD_ENABLED
 // ----------------------------------------------------------------------------
 // Function localAlignment()         [banded, SIMD version, StringSet<Align>]
 // ----------------------------------------------------------------------------
@@ -240,12 +241,13 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
     typedef AlignConfig2<DPLocal, DPBandConfig<BandOn>, FreeEndGaps_<> > TAlignConfig2;
     typedef AlignConfig2<DPLocal, DPBandConfig<BandOff>, FreeEndGaps_<> > TAlignConfig3;
+    typedef typename SimdVector<int16_t>::Type TSimdAlign;
 
     // create a SIMD scoring scheme
-    Score<TSimdAlign, TScoreSpec> scoringSchemeSimd = _setSimdScoringScheme(scoringScheme, TSimdAlign());
+    Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > scoringSchemeSimd(scoringScheme);
 
-    size_t const numAlignments = length(align);
-    size_t const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+    auto const numAlignments = length(align);
+    auto const sizeBatch = LENGTH<TSimdAlign>::VALUE;
 
     String<TScoreValue> results;
     resize(results, numAlignments);
@@ -257,25 +259,25 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
         StringSet<String<TTraceSegment> > trace;
         resize(trace, sizeBatch);
         String<TSimdAlign> stringSimdH, stringSimdV, masksH, masksV, masks;
-        std::vector<size_t> endsH, endsV;
+        std::vector<TSize> endsH, endsV;
 
+        auto infSet = infixWithLength(align.strings, pos * sizeBatch, sizeBatch);
         // create the SIMD representation of the alignments
         // in case of a variable length alignment the variables masks, endsH, endsV will be filled
-        _checkAndCreateSimdRepresentation(align, pos*sizeBatch,
-                                          stringSimdH, stringSimdV,
+        _checkAndCreateSimdRepresentation(infSet, stringSimdH, stringSimdV,
                                           masksH, masksV, masks, endsH, endsV);
 
         // if alignments have equal dimensions do nothing
         if(endsH.size() == 0)
         {
-            DPScoutState_<SimdAlignmentScout<SimdAlignEqualLength> > dpScoutState;
+            DPScoutState_<SimdAlignEqualLength> dpScoutState;
             resultsBatch = _setUpAndRunAlignment(trace, dpScoutState, stringSimdH, stringSimdV,
                                                  scoringSchemeSimd, TAlignConfig2(lowerDiag, upperDiag), tag);
         }
         // otherwise prepare the special DPScoutState
         else
         {
-            DPScoutState_<SimdAlignmentScout<SimdAlignVariableLength> > dpScoutState;
+            DPScoutState_<SimdAlignVariableLength<TSimdAlign> > dpScoutState;
             dpScoutState.dimV = length(stringSimdV);
             dpScoutState.isLocalAlignment = true;
             dpScoutState.RIGHT = false;
@@ -291,15 +293,15 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
         }
 
         // copy results and finish traceback
-        for(size_t x = pos*sizeBatch; x < (pos+1)*sizeBatch; ++x)
+        for(size_t x = pos * sizeBatch; x < (pos + 1) * sizeBatch; ++x)
         {
-            results[x] = resultsBatch[x-pos*sizeBatch];
-            _adaptTraceSegmentsTo(row(align[x], 0), row(align[x], 1), trace[x-pos*sizeBatch]);
+            results[x] = resultsBatch[x - pos * sizeBatch];
+            _adaptTraceSegmentsTo(row(align[x], 0), row(align[x], 1), trace[x - pos * sizeBatch]);
         }
     }
 
     //call the normal non-simd function for remaining alignments
-    for(size_t pos = (numAlignments/sizeBatch)*sizeBatch; pos < numAlignments; ++pos)
+    for(size_t pos = (numAlignments / sizeBatch) * sizeBatch; pos < numAlignments; ++pos)
         results[pos] = localAlignment(align[pos], scoringScheme, lowerDiag, upperDiag);
 
     return results;
@@ -316,6 +318,7 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
    else
         return localAlignment(align, scoringScheme, lowerDiag, upperDiag, LinearGaps());
 }
+#endif  // SEQAN_SIMD_ENABLED
 
 }  // namespace seqan
 

@@ -106,9 +106,12 @@ assignValue(TSimdVector &vector, TPosition pos, TValue2 value)                  
 #elif defined(__SSE3__)
     #define SEQAN_SIZEOF_MAX_VECTOR 16
 #else
-    #warning "SIMD instructions not enabled!"
     #undef SEQAN_SIMD_ENABLED  // Disable simd instructions.
 #endif
+
+// define a concept and its models
+// they allow us to define generic vector functions
+SEQAN_CONCEPT(SimdVectorConcept, (T)) {};
 
 // Only include following code if simd instructions are enabled.
 #if SEQAN_SIMD_ENABLED
@@ -116,11 +119,6 @@ assignValue(TSimdVector &vector, TPosition pos, TValue2 value)                  
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
-
-// define a concept and its models
-// they allow us to define generic vector functions
-SEQAN_CONCEPT(SimdVectorConcept, (T)) {};
-
 
 // a metafunction returning the biggest supported SIMD vector
 template <typename TValue, int LENGTH = SEQAN_SIZEOF_MAX_VECTOR / sizeof(TValue)>
@@ -188,14 +186,6 @@ SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Int64,     int64_t,        16)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2UInt64,    uint64_t,       16)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Float,     float,          16)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Double,    double,         16)
-#endif
-
-// TODO(rrahn): Check where we need this.
-// vector type for DP alignments
-#if defined(__AVX2__)
- typedef typename SimdVector<int16_t, 16>::Type TSimdAlign;
-#elif defined(__SSE3__)
- typedef typename SimdVector<int16_t, 8>::Type TSimdAlign;
 #endif
 
 // ============================================================================
@@ -1442,13 +1432,6 @@ createVector(TValue x)
     return _createVector<TSimdVector>(x, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TIVal)>());
 }
 
-template <typename TSimdVector, typename TValue>
-inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TValue)
-createVector(TValue x)
-{
-    return x;
-}
-
 // --------------------------------------------------------------------------
 // Function fillVector()
 // --------------------------------------------------------------------------
@@ -1729,6 +1712,16 @@ load(T const * memAddr)
     return _load<TSimdVector>(memAddr, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
 }
 
+#endif  // SEQAN_SIMD_ENABLED
+
+// NOTE(rmaerker): Make this function available, also if SIMD is not enabled.
+template <typename TSimdVector, typename TValue>
+inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+createVector(TValue x)
+{
+    return x;
+}
+
 // --------------------------------------------------------------------------
 // Function print()
 // --------------------------------------------------------------------------
@@ -1739,12 +1732,10 @@ print(std::ostream &stream, TSimdVector const &vector)
 {
     stream << '<';
     for (int i = 0; i < LENGTH<TSimdVector>::VALUE; ++i)
-        stream << '\t' << vector[i];
+    stream << '\t' << vector[i];
     stream << "\t>\n";
     return stream;
 }
-
-#endif  // SEQAN_SIMD_ENABLED
 
 } // namespace seqan
 

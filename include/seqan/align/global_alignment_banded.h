@@ -542,6 +542,7 @@ TScoreValue globalAlignmentScore(StringSet<TString, TSpec> const & strings,
     return globalAlignmentScore(strings[0], strings[1], scoringScheme, alignConfig, lowerDiag, upperDiag);
 }
 
+#if SEQAN_SIMD_ENABLED
 // ----------------------------------------------------------------------------
 // Function globalAlignmentScore()         [banded, SIMD version, 2x StringSet]
 // ----------------------------------------------------------------------------
@@ -563,36 +564,41 @@ String<TScoreValue> globalAlignmentScore(StringSet<TString, TSpec> const & strin
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOff> TAlignConfig2;
     typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
+    typedef typename SimdVector<int16_t>::Type TSimdAlign;
 
-    DPScoutState_<SimdAlignmentScout<SimdAlignEqualLength> > dpScoutState;
+    DPScoutState_<SimdAlignEqualLength> dpScoutState;
     String<TraceSegment_<unsigned, unsigned> > traceSegments;
 
     //create a SIMD scoring scheme
-    Score<TSimdAlign, TScoreSpec> scoringSchemeSimd = _setSimdScoringScheme(scoringScheme, TSimdAlign());
+    Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > scoringSchemeSimd(scoringScheme);
 
-    size_t const numAlignments = length(stringsH);
-    size_t const lenH = length(stringsH[0]);
-    size_t const lenV = length(stringsV[0]);
-    size_t const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+    auto const numAlignments = length(stringsH);
+    auto const lenH = length(stringsH[0]);
+    auto const lenV = length(stringsV[0]);
+    auto const sizeBatch = LENGTH<TSimdAlign>::VALUE;
 
     String<TScoreValue> results;
     resize(results, numAlignments);
-    __attribute__ ((aligned (SEQAN_SIZEOF_MAX_VECTOR))) String<TSimdAlign> stringSimdH, stringSimdV;
-    resize(stringSimdH, lenH); resize(stringSimdV, lenV);
+    String<TSimdAlign> stringSimdH, stringSimdV;
+    resize(stringSimdH, lenH);
+    resize(stringSimdV, lenV);
 
     //iterate over alignments with a batch size of sizeBatch
     for(size_t pos = 0; pos < numAlignments/sizeBatch; ++pos)
     {
-        _createSimdRepresentation(stringSimdH, stringsH, pos*sizeBatch, lenH);
-        _createSimdRepresentation(stringSimdV, stringsV, pos*sizeBatch, lenV);
+        auto infSetH = infixWithLength(stringsH.strings, pos * sizeBatch, sizeBatch);
+        auto infSetV = infixWithLength(stringsV.strings, pos * sizeBatch, sizeBatch);
+
+        _createSimdRepresentation(stringSimdH, infSetH, lenH);
+        _createSimdRepresentation(stringSimdV, infSetV, lenV);
         TSimdAlign resultsBatch = _setUpAndRunAlignment(traceSegments, dpScoutState, stringSimdH, stringSimdV,
                                                       scoringSchemeSimd, TAlignConfig2(lowerDiag, upperDiag), TGapModel());
-        for(size_t x = pos*sizeBatch; x < (pos+1)*sizeBatch; ++x)
-            results[x] = resultsBatch[x-pos*sizeBatch];
+        for(size_t x = pos * sizeBatch; x < (pos + 1) * sizeBatch; ++x)
+            results[x] = resultsBatch[x - pos * sizeBatch];
     }
 
     //call the normal non-simd function for remaining alignments
-    for(size_t pos = (numAlignments/sizeBatch)*sizeBatch; pos < numAlignments; ++pos)
+    for(size_t pos = (numAlignments / sizeBatch) * sizeBatch; pos < numAlignments; ++pos)
         results[pos] = globalAlignmentScore(stringsH[pos], stringsV[pos], scoringScheme, alignConfig, lowerDiag,
                                             upperDiag, TAlgoTag());
     return results;
@@ -663,36 +669,40 @@ String<TScoreValue> globalAlignmentScore(TString const & stringH,
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOn>, TFreeEndGaps, TracebackOff> TAlignConfig2;
     typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
+    typedef typename SimdVector<int16_t>::Type TSimdAlign;
 
-    DPScoutState_<SimdAlignmentScout<SimdAlignEqualLength> > dpScoutState;
+    DPScoutState_<SimdAlignEqualLength> dpScoutState;
     String<TraceSegment_<unsigned, unsigned> > traceSegments;
 
     //create a SIMD scoring scheme
-    Score<TSimdAlign, TScoreSpec> scoringSchemeSimd = _setSimdScoringScheme(scoringScheme, TSimdAlign());
+    Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > scoringSchemeSimd(scoringScheme);
 
-    size_t const numAlignments = length(stringsV);
-    size_t const lenH = length(stringH);
-    size_t const lenV = length(stringsV[0]);
-    size_t const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+    auto const numAlignments = length(stringsV);
+    auto const lenH = length(stringH);
+    auto const lenV = length(stringsV[0]);
+    auto const sizeBatch = LENGTH<TSimdAlign>::VALUE;
 
     String<TScoreValue> results;
     resize(results, numAlignments);
-    __attribute__ ((aligned (SEQAN_SIZEOF_MAX_VECTOR))) String<TSimdAlign> stringSimdH, stringSimdV;
-    resize(stringSimdH, lenH); resize(stringSimdV, lenV);
+
+    String<TSimdAlign> stringSimdH, stringSimdV;
+    resize(stringSimdH, lenH);
+    resize(stringSimdV, lenV);
     _createSimdRepresentation(stringSimdH, stringH, lenH);
 
     //iterate over alignments with a batch size of sizeBatch
-    for(size_t pos = 0; pos < numAlignments/sizeBatch; ++pos)
+    for(size_t pos = 0; pos < numAlignments / sizeBatch; ++pos)
     {
-        _createSimdRepresentation(stringSimdV, stringsV, pos*sizeBatch, lenV);
+        auto infSetV = infixWithLength(stringsV.strings, pos * sizeBatch, sizeBatch);
+        _createSimdRepresentation(stringSimdV, infSetV, lenV);
         TSimdAlign resultsBatch = _setUpAndRunAlignment(traceSegments, dpScoutState, stringSimdH, stringSimdV,
                                                       scoringSchemeSimd, TAlignConfig2(lowerDiag, upperDiag), TGapModel());
-        for(size_t x = pos*sizeBatch; x < (pos+1)*sizeBatch; ++x)
-            results[x] = resultsBatch[x-pos*sizeBatch];
+        for(size_t x = pos * sizeBatch; x < (pos + 1) * sizeBatch; ++x)
+            results[x] = resultsBatch[x - pos * sizeBatch];
     }
 
     //call the normal non-simd function for remaining alignments
-    for(size_t pos = (numAlignments/sizeBatch)*sizeBatch; pos < numAlignments; ++pos)
+    for(size_t pos = (numAlignments / sizeBatch) * sizeBatch; pos < numAlignments; ++pos)
         results[pos] = globalAlignmentScore(stringH, stringsV[pos], scoringScheme, alignConfig, lowerDiag, upperDiag,
                                             TAlgoTag());
     return results;
@@ -765,12 +775,13 @@ String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & a
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOn>, TFreeEndGaps> TAlignConfig2;
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig3;
     typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
+    typedef typename SimdVector<int16_t>::Type TSimdAlign;
 
     // create a SIMD scoring scheme
-    Score<TSimdAlign, TScoreSpec> scoringSchemeSimd = _setSimdScoringScheme(scoringScheme, TSimdAlign());
+    Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > scoringSchemeSimd(scoringScheme);
 
-    size_t const numAlignments = length(align);
-    size_t const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+    auto const numAlignments = length(align);
+    auto const sizeBatch = LENGTH<TSimdAlign>::VALUE;
 
     String<TScoreValue> results;
     resize(results, numAlignments);
@@ -782,25 +793,25 @@ String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & a
         StringSet<String<TTraceSegment> > trace;
         resize(trace, sizeBatch);
         String<TSimdAlign> stringSimdH, stringSimdV, masksH, masksV, masks;
-        std::vector<size_t> endsH, endsV;
+        std::vector<decltype(length(align))> endsH, endsV;
 
+        auto infSet = infixWithLength(align.strings, pos * sizeBatch, sizeBatch);
         // create the SIMD representation of the alignments
         // in case of a variable length alignment the variables masks, endsH, endsV will be filled
-        _checkAndCreateSimdRepresentation(align, pos*sizeBatch,
-                                          stringSimdH, stringSimdV,
+        _checkAndCreateSimdRepresentation(infSet, stringSimdH, stringSimdV,
                                           masksH, masksV, masks, endsH, endsV);
 
         // if alignments have equal dimensions do nothing
         if(endsH.size() == 0)
         {
-            DPScoutState_<SimdAlignmentScout<SimdAlignEqualLength> > dpScoutState;
+            DPScoutState_<SimdAlignEqualLength> dpScoutState;
             resultsBatch = _setUpAndRunAlignment(trace, dpScoutState, stringSimdH, stringSimdV,
                                                  scoringSchemeSimd, TAlignConfig2(lowerDiag, upperDiag), TGapModel());
         }
         // otherwise prepare the special DPScoutState
         else
         {
-            DPScoutState_<SimdAlignmentScout<SimdAlignVariableLength> > dpScoutState;
+            DPScoutState_<SimdAlignVariableLength<TSimdAlign> > dpScoutState;
             dpScoutState.dimV = length(stringSimdV);
             dpScoutState.isLocalAlignment = false;
             dpScoutState.RIGHT = RIGHT;
@@ -816,15 +827,15 @@ String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & a
         }
 
         // copy results and finish traceback
-        for(size_t x = pos*sizeBatch; x < (pos+1)*sizeBatch; ++x)
+        for(size_t x = pos * sizeBatch; x < (pos + 1) * sizeBatch; ++x)
         {
-            results[x] = resultsBatch[x-pos*sizeBatch];
-            _adaptTraceSegmentsTo(row(align[x], 0), row(align[x], 1), trace[x-pos*sizeBatch]);
+            results[x] = resultsBatch[x - pos * sizeBatch];
+            _adaptTraceSegmentsTo(row(align[x], 0), row(align[x], 1), trace[x - pos * sizeBatch]);
         }
     }
 
     //call the normal non-simd function for remaining alignments
-    for(size_t pos = (numAlignments/sizeBatch)*sizeBatch; pos < numAlignments; ++pos)
+    for(size_t pos = (numAlignments / sizeBatch) * sizeBatch; pos < numAlignments; ++pos)
         results[pos] = globalAlignment(align[pos], scoringScheme, alignConfig, lowerDiag, upperDiag, algoTag);
 
     return results;
@@ -868,6 +879,7 @@ String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & a
     AlignConfig<> alignConfig;
     return globalAlignment(align, scoringScheme, alignConfig, lowerDiag, upperDiag);
 }
+#endif  // SEQAN_SIMD_ENABLED
 
 }  // namespace seqan
 

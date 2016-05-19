@@ -48,4 +48,8 @@
 #include <seqan/score/score_matrix_data.h>
 #include <seqan/score/score_simple.h>
 
+#if SEQAN_SIMD_ENABLED
+#include <seqan/score/score_simd_wrapper.h>
+#endif  // SEQAN_SIMD_ENABLED
+
 #endif  // SEQAN_SH_
