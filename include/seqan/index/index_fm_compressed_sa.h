@@ -197,14 +197,14 @@ struct CompressedSA
     }
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline typename Value<CompressedSA>::Type const
+    inline typename Value<CompressedSA>::Type const
     operator[](TPos pos)
     {
         return value(*this, pos);
     }
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline typename Value<CompressedSA>::Type
+    inline typename Value<CompressedSA>::Type
     operator[](TPos pos) const
     {
         return value(*this, pos);
@@ -252,7 +252,7 @@ inline void clear(CompressedSA<TText, TSpec, TConfig> & compressedSA)
  * @return bool Returns true if the compressed suffix array is empty and false otherwise.
  */
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline bool empty(CompressedSA<TText, TSpec, TConfig> & compressedSA)
+inline bool empty(CompressedSA<TText, TSpec, TConfig> & compressedSA)
 {
     return empty(getFibre(compressedSA, FibreSparseString()));
     //    && empty(getFibre(compressedSA, FibreLF()));
@@ -351,14 +351,14 @@ void createCompressedSa(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSA 
  */
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>::Type const &
+inline typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>::Type const &
 getFibre(CompressedSA<TText, TSpec, TConfig> const & compressedSA, FibreSparseString)
 {
     return compressedSA.sparseString;
 }
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>::Type &
+inline typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>::Type &
 getFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, FibreSparseString)
 {
     return compressedSA.sparseString;
@@ -421,7 +421,7 @@ void setFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, TLF & lf, Fibr
  */
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Size<typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>::Type>::Type
+inline typename Size<typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>::Type>::Type
 length(CompressedSA<TText, TSpec, TConfig> const & compressedSA)
 {
     return length(getFibre(compressedSA, FibreSparseString()));
@@ -476,7 +476,7 @@ resize(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSize size, Tag<TExpa
  */
 
 template <typename TText, typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename Value<CompressedSA<TText, TSpec, TConfig> >::Type
+inline typename Value<CompressedSA<TText, TSpec, TConfig> >::Type
 value(CompressedSA<TText, TSpec, TConfig> & compressedSA, TPos pos)
 {
     typedef typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>::Type     TSparseString;
@@ -494,7 +494,7 @@ value(CompressedSA<TText, TSpec, TConfig> & compressedSA, TPos pos)
 }
 
 template <typename TText, typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename Value<CompressedSA<TText, TSpec, TConfig> >::Type const
+inline typename Value<CompressedSA<TText, TSpec, TConfig> >::Type const
 value(CompressedSA<TText, TSpec, TConfig> const & compressedSA, TPos pos)
 {
     typedef typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>::Type     TSparseString;

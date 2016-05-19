@@ -89,7 +89,7 @@ include(CheckCXXSourceCompiles)
 # ----------------------------------------------------------------------------
 
 set(_SEQAN_DEFAULT_LIBRARIES ZLIB OpenMP)
-set(_SEQAN_ALL_LIBRARIES     ZLIB BZip2 OpenMP CUDA)
+set(_SEQAN_ALL_LIBRARIES     ZLIB BZip2 OpenMP)
 
 # ----------------------------------------------------------------------------
 # Set variables SEQAN_FIND_* to their default unless they have been set.
@@ -368,19 +368,6 @@ if (OPENMP_FOUND)
     endif ()
 endif ()
 
-# CUDA
-
-list(FIND SEQAN_FIND_DEPENDENCIES "CUDA" _SEQAN_FIND_CUDA)
-mark_as_advanced(_SEQAN_FIND_CUDA)
-
-set (SEQAN_HAS_CUDA FALSE)
-if (SEQAN_ENABLE_CUDA AND NOT _SEQAN_FIND_CUDA EQUAL -1)
-  find_package(CUDA QUIET)
-  if (CUDA_FOUND)
-    set (SEQAN_HAS_CUDA TRUE)
-  endif ()
-endif (SEQAN_ENABLE_CUDA AND NOT _SEQAN_FIND_CUDA EQUAL -1)
-
 # Build SEQAN_INCLUDE_DIRS from SEQAN_INCLUDE_DIRS_MAIN and SEQAN_INCLUDE_DIRS_DEPS
 
 set (SEQAN_INCLUDE_DIRS ${SEQAN_INCLUDE_DIRS_MAIN} ${SEQAN_INCLUDE_DIRS_DEPS})
@@ -461,7 +448,6 @@ if (SEQAN_FIND_DEBUG)
   message("  SEQAN_HAS_ZLIB             ${SEQAN_HAS_ZLIB}")
   message("  SEQAN_HAS_BZIP2            ${SEQAN_HAS_BZIP2}")
   message("  SEQAN_HAS_OPENMP           ${SEQAN_HAS_OPENMP}")
-  message("  SEQAN_HAS_CUDA             ${SEQAN_HAS_CUDA}")
   message("")
   message("  SEQAN_INCLUDE_DIRS         ${SEQAN_INCLUDE_DIRS}")
   message("  SEQAN_INCLUDE_DIRS_DEPS    ${SEQAN_INCLUDE_DIRS_DEPS}")

@@ -150,13 +150,7 @@ struct Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreTempSA>
 {
     typedef Index<TText, FMIndex<TSpec, TConfig> >          TIndex_;
     typedef typename SAValue<TIndex_>::Type                 TSAValue_;
-
-    // NOTE(esiragusa): External causes problems on device code.
-#ifndef PLATFORM_CUDA
     typedef String<TSAValue_, External<ExternalConfigLarge<> > >                Type;
-#else
-    typedef String<TSAValue_, typename DefaultIndexStringSpec<TText>::Type>     Type;
-#endif
 };
 
 // ----------------------------------------------------------------------------
@@ -254,14 +248,14 @@ inline bool empty(Index<TText, FMIndex<TSpec, TConfig> > const & index)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type &
+inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type &
 getFibre(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreLF /*tag*/)
 {
     return index.lf;
 }
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type const &
+inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type const &
 getFibre(Index<TText, FMIndex<TSpec, TConfig> > const & index, FibreLF /*tag*/)
 {
     return index.lf;
@@ -283,14 +277,14 @@ getFibre(Index<TText, FMIndex<TSpec, TConfig> > const & index, FibreLF /*tag*/)
  */
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type &
+inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type &
 indexLF(Index<TText, FMIndex<TSpec, TConfig> > & index)
 {
     return getFibre(index, FibreLF());
 }
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type const &
+inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type const &
 indexLF(Index<TText, FMIndex<TSpec, TConfig> > const & index)
 {
     return getFibre(index, FibreLF());
@@ -420,13 +414,13 @@ inline bool indexCreate(Index<TText, FMIndex<TSpec, TConfig> > & index)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSALF const)
+inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSALF const)
 {
     return !(empty(getFibre(index, FibreSA())) || empty(getFibre(index, FibreLF())));
 }
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig> > const & index, FibreSALF const)
+inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig> > const & index, FibreSALF const)
 {
     return !(empty(getFibre(index, FibreSA())) || empty(getFibre(index, FibreLF())));
 }

@@ -383,22 +383,6 @@ struct Host<String<TValue, Packed<THostspec> > >
     typedef String<TInternalValue, THostspec> Type;
 };
 
-
-#ifdef PLATFORM_CUDA
-template <typename TValue, typename TSpec>
-struct Host<String<TValue, Packed<Device<TSpec> > > >
-{
-    typedef typename PackedHostValue_<String<TValue, Packed<Device<TSpec> > > >::Type TInternalValue;
-    typedef thrust::device_vector<TInternalValue> Type;
-};
-
-template <typename TValue, typename TSpec>
-struct PackedHostValue_<String<TValue, Packed<Device<TSpec> > > >
-{
-    typedef Tuple<TValue, 32 / BitsPerValue<TValue>::VALUE, BitPacked<> > Type;
-};
-#endif
-
 template <typename TValue, typename THostspec>
 struct Host<String<TValue, Packed<THostspec> > const>
 {
