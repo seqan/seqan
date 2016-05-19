@@ -65,7 +65,7 @@ struct ExactFragment;
  * @headerfile <seqan/align.h>
  * @brief A type for ungapped, pairwise segment matches that maybe in reverse orientation.
  *
- * Compared to the @link ExactFragment @endlink <tt>ExactReverseable</tt> is a specialized type of @link Fragment @endlink. A @link
+ * Compared to the @link ExactFragment @endlink <tt>ExactReversableFragment</tt> is a specialized type of @link Fragment @endlink. A @link
  * ExactReversableFragment @endlink stores an additional bool value to indicate whether a match is in reverse
  * orientation or not.
  *
