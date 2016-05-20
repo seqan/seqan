@@ -194,7 +194,7 @@ The following two figures give an example in which order the tree nodes are visi
 
    Postorder DFS
 
-Since these traversals are frequently needed SeqAn provides special iterators which will we describe next.
+Since these traversals are frequently needed SeqAn provides special iterators which we will describe next.
 
 We want to construct the suffix tree of the string "abracadabra" and output the substrings represented by tree nodes in preorder dfs.
 In order to do so, we create the string "abracadabra" and an index specialized with the type of this string.
@@ -262,14 +262,14 @@ Assignment 4
 	.. includefrags:: demos/tutorial/index_iterators/index_assignment1.cpp
 	   :fragment: initialization
 
-	To switch to postorder DFS we have two change the specialization tag of ``ParentLinks`` from ``Preorder`` to ``Postorder``.
+	To switch to postorder DFS we have to change the specialization tag of ``ParentLinks`` from ``Preorder`` to ``Postorder``.
 	Please note that the :dox:`TopDownHistoryIterator` always starts in the root node, which is the last postorder DFS node.
 	Therefore, the iterator has to be set explicitly to the first DFS node via :dox:`VSTreeIterator#goBegin`.
 
 	.. includefrags:: demos/tutorial/index_iterators/index_assignment1.cpp
 	   :fragment: iteration1
 
-	Alternatively to a :dox:`TopDownHistoryIterator` you also could have used a :dox:`BottomUpIterator` with the same result.
+	Alternatively with a :dox:`TopDownHistoryIterator` you also could have used a :dox:`BottomUpIterator` with the same result.
 	The BottomUp Iterator automatically starts in the first DFS node as it supports no random access.
 
 	.. includefrags:: demos/tutorial/index_iterators/index_assignment1.cpp
@@ -279,7 +279,7 @@ Assignment 4
 
 	.. includefrags:: demos/tutorial/index_iterators/index_assignment1.cpp.stdout
 
-As a last assignment lets try out one of the specialized iterators, which you can find at the bottom of this page.
+As the last assignment lets try out one of the specialized iterators, which you can find at the bottom of this page.
 Look there for the specialization which iterates over all maximal unique matches (MUMS).
 
 Assignment 5

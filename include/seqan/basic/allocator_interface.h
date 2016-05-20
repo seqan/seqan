@@ -180,7 +180,7 @@ allocate(T & me,
 }
 
 template <typename T, typename TValue, typename TSize, typename TUsage>
-inline void
+inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TValue> >, void)
 allocate(T const &,
          TValue * & data,
          TSize count,
@@ -190,14 +190,14 @@ allocate(T const &,
 #ifdef PLATFORM_WINDOWS_VS
     data = (TValue *) _aligned_malloc(count * sizeof(TValue), __alignof(TValue));
 #else
-  #if _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600
+  /*#if _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600
     const size_t align = (__alignof__(TValue) < sizeof(void*)) ? sizeof(void*): __alignof__(TValue);
     if (posix_memalign(&(void* &)data, align, count * sizeof(TValue)))
       data = NULL;
   #else
     data = (TValue *) malloc(count * sizeof(TValue));
-  #endif
-  //data = (TValue *) operator new(count * sizeof(TValue));
+  #endif*/
+  data = (TValue *) operator new(count * sizeof(TValue));
 #endif
 
 #ifdef SEQAN_PROFILE
@@ -207,7 +207,7 @@ allocate(T const &,
 }
 
 template <typename T, typename TValue, typename TSize, typename TUsage>
-inline void
+inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TValue> >, void)
 allocate(T &,
          TValue * & data,
          TSize count,
@@ -217,19 +217,64 @@ allocate(T &,
 #ifdef PLATFORM_WINDOWS_VS
   data = (TValue *) _aligned_malloc(count * sizeof(TValue), __alignof(TValue));
 #else
-  #if _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600
+  /*#if _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600
     const size_t align = (__alignof__(TValue) < sizeof(void*)) ? sizeof(void*) : __alignof__(TValue);
     if (posix_memalign(&(void* &)data, align, count * sizeof(TValue)))
       data = NULL;
   #else
     data = (TValue *) malloc(count * sizeof(TValue));
-  #endif
-  //data = (TValue *) operator new(count * sizeof(TValue));
+  #endif*/
+  data = (TValue *) operator new(count * sizeof(TValue));
 #endif
 
 #ifdef SEQAN_PROFILE
     if (data)
         SEQAN_PROADD(SEQAN_PROMEMORY, count * sizeof(TValue));
+#endif
+}
+
+// NOTE(rrahn): Currently *new* does not support aligned memory, but we need it for dynamically
+// allocated SimdVector class, so we overload the allocation to use mem_alloc for simd vector types.
+// See following discussion: http://stackoverflow.com/questions/6973995/dynamic-aligned-memory-allocation-in-c11
+template <typename T, typename TValue, typename TSize, typename TUsage>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, void)
+allocate(T const &,
+         TValue * & data,
+         TSize count,
+         Tag<TUsage> const &)
+{
+#ifdef PLATFORM_WINDOWS_VS
+    data = (TValue *) _aligned_malloc(count * sizeof(TValue), __alignof(TValue));
+#else
+    #if _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600
+        const size_t align = (__alignof__(TValue) < sizeof(void*)) ? sizeof(void*): __alignof__(TValue);
+        if (posix_memalign(&(void* &)data, align, count * sizeof(TValue)))
+            data = NULL;
+    #else
+        data = (TValue *) malloc(count * sizeof(TValue));
+    #endif
+        data = (TValue *) operator new(count * sizeof(TValue));
+#endif
+}
+
+template <typename T, typename TValue, typename TSize, typename TUsage>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, void)
+allocate(T &,
+         TValue * & data,
+         TSize count,
+         Tag<TUsage> const &)
+{
+    //  data = (TValue *) operator new(count * sizeof(TValue));
+#ifdef PLATFORM_WINDOWS_VS
+    data = (TValue *) _aligned_malloc(count * sizeof(TValue), __alignof(TValue));
+#else
+    #if _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600
+        const size_t align = (__alignof__(TValue) < sizeof(void*)) ? sizeof(void*) : __alignof__(TValue);
+        if (posix_memalign(&(void* &)data, align, count * sizeof(TValue)))
+        data = NULL;
+    #else
+        data = (TValue *) malloc(count * sizeof(TValue));
+    #endif
 #endif
 }
 
@@ -282,7 +327,7 @@ deallocate(T & me,
 }
 
 template <typename T, typename TValue, typename TSize, typename TUsage>
-inline void
+inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TValue> >, void)
 deallocate(
     T const & /*me*/,
     TValue * data,
@@ -301,13 +346,13 @@ deallocate(
 #ifdef PLATFORM_WINDOWS_VS
     _aligned_free((void *) data);
 #else
-    free((void *) data);
-    //operator delete ((void *) data);
+    //free((void *) data);
+    operator delete ((void *) data);
 #endif
 }
 
 template <typename T, typename TValue, typename TSize, typename TUsage>
-inline void
+inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TValue> >, void)
 deallocate(
     T & /*me*/,
     TValue * data,
@@ -326,8 +371,59 @@ deallocate(
 #ifdef PLATFORM_WINDOWS_VS
     _aligned_free((void *) data);
 #else
+    //free((void *) data);
+    operator delete ((void *) data);
+#endif
+}
+
+// NOTE(rrahn): Currently *new* does not support aligned memory, but we need it for dynamically
+// allocated SimdVector class, so we overload the allocation to use mem_alloc for simd vector types.
+// See following discussion: http://stackoverflow.com/questions/6973995/dynamic-aligned-memory-allocation-in-c11
+template <typename T, typename TValue, typename TSize, typename TUsage>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, void)
+deallocate(
+           T const & /*me*/,
+           TValue * data,
+#ifdef SEQAN_PROFILE
+           TSize count,
+#else
+           TSize,
+#endif
+           Tag<TUsage> const)
+{
+#ifdef SEQAN_PROFILE
+    if (data && count)  // .. to use count if SEQAN_PROFILE is not defined
+        SEQAN_PROSUB(SEQAN_PROMEMORY, count * sizeof(TValue));
+#endif
+    //  operator delete ((void *) data);
+#ifdef PLATFORM_WINDOWS_VS
+    _aligned_free((void *) data);
+#else
     free((void *) data);
-    //operator delete ((void *) data);
+#endif
+}
+
+template <typename T, typename TValue, typename TSize, typename TUsage>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, void)
+deallocate(
+           T & /*me*/,
+           TValue * data,
+#ifdef SEQAN_PROFILE
+           TSize count,
+#else
+           TSize,
+#endif
+           Tag<TUsage> const)
+{
+#ifdef SEQAN_PROFILE
+    if (data && count)  // .. to use count if SEQAN_PROFILE is not defined
+        SEQAN_PROSUB(SEQAN_PROMEMORY, count * sizeof(TValue));
+#endif
+    //  operator delete ((void *) data);
+#ifdef PLATFORM_WINDOWS_VS
+    _aligned_free((void *) data);
+#else
+    free((void *) data);
 #endif
 }
 

@@ -100,7 +100,7 @@ struct Tuple
     // TODO(holtgrew): Return Value<>::Type?
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline
+    inline
     typename StoredTupleValue_<TValue>::Type &
     operator[](TPos k)
     {
@@ -110,7 +110,7 @@ struct Tuple
     }
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline
+    inline
     typename StoredTupleValue_<TValue>::Type const &
     operator[](TPos k) const
     {
