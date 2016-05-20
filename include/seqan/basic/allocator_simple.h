@@ -38,8 +38,6 @@
 #define SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_SIMPLE_H_
 
 #include <seqan/basic/allocator_interface.h>
-//#include <stdlib.h>
-//#include <malloc.h>
 
 namespace seqan {
 
