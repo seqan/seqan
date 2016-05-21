@@ -66,19 +66,20 @@ struct IsAlignObject_<Align<TSeq, TSpec> > : True
 // Function _checkAndCreateSimdRepresentation()
 // ----------------------------------------------------------------------------
 
-template<typename TStringSetH, typename TStringSetV, typename TSimdVector>
+template<typename TStringSetH, typename TStringSetV, typename TSimdString>
 void _checkAndCreateSimdRepresentation(TStringSetH const & stringsH,
                                        TStringSetV const & stringsV,
-                                       String<TSimdVector> & simdH,
-                                       String<TSimdVector> & simdV,
-                                       String<TSimdVector> & masksH,
-                                       String<TSimdVector> & masksV,
-                                       String<TSimdVector> & masks,
+                                       TSimdString & simdH,
+                                       TSimdString & simdV,
+                                       TSimdString & masksH,
+                                       TSimdString & masksV,
+                                       TSimdString & masks,
                                        std::vector<size_t> & endsH,
                                        std::vector<size_t> & endsV)
 {
     using TStringH = typename Value<TStringSetH>::Type;
     using TStringV = typename Value<TStringSetV>::Type;
+    using TSimdVector = typename Value<TSimdString>::Type;
     // check if all sequences have the same length
     unsigned int numAlignments = LENGTH<TSimdVector>::VALUE;
     bool allEqualH = true, allEqualV = true;
@@ -150,19 +151,20 @@ void _checkAndCreateSimdRepresentation(TStringSetH const & stringsH,
     _createSimdRepresentation(simdV, paddedV, maxV);
 }
 
-template<typename TContainer, typename TSimdVector, typename TSize>
+template<typename TContainer, typename TSimdString, typename TSize>
 inline SEQAN_FUNC_ENABLE_IF(IsAlignObject_<typename Value<TContainer>::Type>, void)
 _checkAndCreateSimdRepresentation(TContainer & align,
-                                  String<TSimdVector> & simdH,
-                                  String<TSimdVector> & simdV,
-                                  String<TSimdVector> & masksH,
-                                  String<TSimdVector> & masksV,
-                                  String<TSimdVector> & masks,
+                                  TSimdString & simdH,
+                                  TSimdString & simdV,
+                                  TSimdString & masksH,
+                                  TSimdString & masksV,
+                                  TSimdString & masks,
                                   std::vector<TSize> & endsH,
                                   std::vector<TSize> & endsV)
 {
     using TAlign    = typename Value<TContainer>::Type;
     using TSequence = typename Source<TAlign>::Type;
+    using TSimdVector = typename Value<TSimdString>::Type;
 
     // check if all sequences have the same length
     unsigned numAlignments = LENGTH<TSimdVector>::VALUE;
@@ -184,9 +186,9 @@ _checkAndCreateSimdRepresentation(TContainer & align,
 // Function _createSimdRepresentation()
 // ----------------------------------------------------------------------------
 
-template<typename TSimdVector, typename TContainer>
+template<typename TSimdVector, typename TSpec, typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<typename Value<TContainer>::Type> >, void)
-_createSimdRepresentation(String<TSimdVector> & simdRepr,
+_createSimdRepresentation(String<TSimdVector, TSpec> & simdRepr,
                           TContainer const & strings,
                           size_t stringLength)
 {
@@ -208,9 +210,9 @@ _createSimdRepresentation(String<TSimdVector> & simdRepr,
     }
 }
 
-template<typename TSimdVector, typename TString>
+template<typename TSimdVector, typename TSpec, typename TString>
 inline SEQAN_FUNC_DISABLE_IF(Is<ContainerConcept<typename Value<TString>::Type> >, void)
-_createSimdRepresentation(String<TSimdVector> & simdRepr,
+_createSimdRepresentation(String<TSimdVector, TSpec> & simdRepr,
                           TString const & seq,
                           size_t stringLength)
 {
