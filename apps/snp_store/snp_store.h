@@ -3998,7 +3998,7 @@ void dumpVariantsRealignBatch(
     TReadCigars                 &,
     TReadCounts const           &,
     TGenomeName const           genomeID,                   // genome name
-    typename TFragmentStore::TContigPos startCoord,         // startCoordinate + posOnGenomeInfix = real coordinate on whole chromosome
+    typename TFragmentStore::TContigPos startCoord,// startCoordinate + posOnGenomeInfix = real coordinate on whole chr.
     typename TFragmentStore::TContigPos currStart,
     typename TFragmentStore::TContigPos currEnd,
     TFile                   & file,
@@ -4716,39 +4716,21 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                 }
                 ++candidateViewPos;
             }
-            if (indelSize>0)
+            if (indelSize>0) //Deletion
             {
-                // check for the longest adjacent stretch of homopolymers
-                int homoLength = checkSequenceContext(reference, candidatePos, indelSize);
-                if (homoLength <= options.maxPolymerRun)
-                {
-                    percentage /= depth;                                // low coverage positions get a lower weight
-                    depth = (depth + (indelSize >> 1)) / indelSize;     // coverage is spread over all positions
-                    quality = (quality + (indelSize >> 1)) / indelSize; // quality is spread over all positions
-                    int indelQ = (int)(quality * percentage);
-                    if (!bsi) indelQ /= 2;
-                    //print deletion
-                    indelfile << chrPrefix << genomeID << '\t' << runID << "\tdeletion\t";
-                    indelfile << candidatePos + startCoord + options.positionFormat  << '\t';
-                    indelfile << candidatePos + startCoord + options.positionFormat + indelSize - 1;
-                    indelfile << "\t" << percentage;
-                    indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat ;
-                    indelfile << ";size=" << indelSize;
-                    indelfile << ";count=" << (int)(percentage * depth + 0.00001);
-                    indelfile << ";depth=" << depth;
-                    indelfile << ";quality=" << indelQ;
-                    indelfile << ";homorun=" << homoLength;
-                    if (bsi)indelfile << ";bsi";
-                    indelfile << ";seqContext=" << infix(reference,_max((int)0,(int)candidatePos-6),
-                                                         _min((int)candidatePos+indelSize+6,(int)length(reference)));
-                    if (percentage <= options.indelHetMax)
-                        indelfile << ";geno=het";
-                    else
-                        indelfile << ";geno=hom";
-
-                    //if (splitSupport>0) indelfile << ";splitSupport=" << splitSupport;
-                    indelfile << std::endl;
-                }
+                writeDeletion(indelfile,
+                              reference,
+                              options,
+                              indelSize,
+                              quality,
+                              depth,
+                              percentage,
+                              chrPrefix,
+                              bsi,
+                              candidatePos,
+                              startCoord,
+                              genomeID,
+                              runID);
                 //reset
                 candidatePos = positionGapToSeq(referenceGaps, candidateViewPos - refStart);
                 indelSize = 0;
@@ -4779,42 +4761,20 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                 ++candidateViewPos;
             }
             if (indelSize<0)
-            {
-                int homoLength = checkSequenceContext(reference,candidatePos,indelSize);
-                if (homoLength <= options.maxPolymerRun)
-                {
-                    unsigned absIndelSize = -indelSize;
-                    percentage /= depth;                                    // low coverage positions get a lower weight
-                    depth = (depth + (absIndelSize >> 1)) / absIndelSize;     // coverage is spread over all positions
-                    quality = (quality + (absIndelSize >> 1)) / absIndelSize; // quality is spread over all positions
-                    int indelQ = (int)(quality * percentage);
-                    if (!bsi) indelQ /= 2;
-
-                    //print insertion
-                    indelfile << chrPrefix << genomeID << '\t' << runID << "\tinsertion\t";
-                    indelfile << candidatePos + startCoord + options.positionFormat - 1 << '\t';
-                    indelfile << candidatePos + startCoord;// + options.positionFormat; //VORSICHT!!!
-                    indelfile << "\t" << percentage;
-                    indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat;
-                    indelfile << ";size=" << indelSize;
-                    indelfile << ";count=" << (int)(percentage * depth + 0.00001);
-                    indelfile << ";seq="<< insertionSeq;
-                    indelfile << ";depth=" << depth;
-                    indelfile << ";quality=" << indelQ;
-                    indelfile << ";homorun=" << homoLength;
-                    if (bsi)indelfile << ";bsi";
-                    indelfile << ";seqContext=" << infix(reference,
-                                                         _max((int)0,(int)candidatePos-6),
-                                                         _min((int)candidatePos+6,(int)length(reference)));
-                    if (percentage <= options.indelHetMax)
-                        indelfile << ";geno=het";
-                    else
-                        indelfile << ";geno=hom";
-                    //if (splitSupport>0) indelfile << ";splitSupport=" << splitSupport;
-                    indelfile << std::endl;
-                }
-                //resetting will be done in next round
-            }
+                writeInsertion(indelfile,
+                               reference,
+                               options,
+                               indelSize,
+                               quality,
+                               depth,
+                               percentage,
+                               chrPrefix,
+                               bsi,
+                               candidatePos,
+                               insertionSeq,
+                               startCoord,
+                               genomeID,
+                               runID);
         }
         if (options._debugLevel > 1)
             std::cout << "Finished calling indels..." << std::endl;
@@ -4825,6 +4785,133 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
     if ((options.outputLog != "") && logfile.is_open())
         logfile.close();
 }
+//Writes a deletion to the output file
+template <typename TFile,
+          typename TRef,
+          typename TOpt,
+          typename TPos,
+          typename TSize,
+          typename Tqual,
+          typename TDpth,
+          typename TPerc,
+          typename TCoord,
+          typename TPref,
+          typename TGenoID,
+          typename TRunID,
+          typename TBsi>
+int writeDeletion(TFile& indelfile,
+                  TRef& reference,
+                  TOpt& options,
+                  TSize& indelSize,
+                  Tqual& quality,
+                  TDpth& depth,
+                  TPerc& percentage,
+                  TPref& chrPrefix,
+                  TBsi& bsi,
+                  TPos&  candidatePos,
+                  TCoord startCoord,
+                  TGenoID genomeID,
+                  TRunID runID)
+{
+    // check for the longest adjacent stretch of homopolymers
+    int homoLength = checkSequenceContext(reference, candidatePos, indelSize);
+    if (homoLength <= options.maxPolymerRun)
+    {
+        percentage /= depth;                                // low coverage positions get a lower weight
+        depth = (depth + (indelSize >> 1)) / indelSize;     // coverage is spread over all positions
+        quality = (quality + (indelSize >> 1)) / indelSize; // quality is spread over all positions
+        int indelQ = (int)(quality * percentage);
+        if (!bsi) indelQ /= 2;
+        //print deletion
+        indelfile << chrPrefix << genomeID << '\t' << runID << "\tdeletion\t";
+        indelfile << candidatePos + startCoord + options.positionFormat  << '\t';
+        indelfile << candidatePos + startCoord + options.positionFormat + indelSize - 1;
+        indelfile << "\t" << percentage;
+        indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat ;
+        indelfile << ";size=" << indelSize;
+        indelfile << ";count=" << (int)(percentage * depth + 0.00001);
+        indelfile << ";depth=" << depth;
+        indelfile << ";quality=" << indelQ;
+        indelfile << ";homorun=" << homoLength;
+        if (bsi)
+            indelfile << ";bsi";
+        indelfile << ";seqContext=" << infix(reference,_max((int)0,(int)candidatePos - 6),
+                                             _min((int)candidatePos + indelSize + 6,(int)length(reference)));
+        if (percentage <= options.indelHetMax)
+            indelfile << ";geno=het";
+        else
+            indelfile << ";geno=hom";
+        indelfile << std::endl;
+    }
+    return 0;
+}
+template <typename TFile,
+          typename TRef,
+          typename TOpt,
+          typename TPos,
+          typename TSize,
+          typename Tqual,
+          typename TDpth,
+          typename TPerc,
+          typename TCoord,
+          typename TPref,
+          typename TGenoID,
+          typename TRunID,
+          typename TBsi,
+          typename TInsert>
+int writeInsertion(TFile& indelfile,
+                   TRef& reference,
+                   TOpt& options,
+                   TSize& indelSize,
+                   Tqual& quality,
+                   TDpth& depth,
+                   TPerc& percentage,
+                   TPref& chrPrefix,
+                   TBsi& bsi,
+                   TPos&  candidatePos,
+                   TInsert& insertionSeq,
+                   TCoord startCoord,
+                   TGenoID genomeID,
+                   TRunID runID)
+{
+    int homoLength = checkSequenceContext(reference,candidatePos,indelSize);
+    if (homoLength <= options.maxPolymerRun)
+    {
+        unsigned absIndelSize = abs(indelSize);
+        percentage /= depth;                                    // low coverage positions get a lower weight
+        depth = (depth + (absIndelSize >> 1)) / absIndelSize;     // coverage is spread over all positions
+        quality = (quality + (absIndelSize >> 1)) / absIndelSize; // quality is spread over all positions
+        int indelQ = (int)(quality * percentage);
+        if (!bsi) indelQ /= 2;
+
+        //print insertion
+        indelfile << chrPrefix << genomeID << '\t' << runID << "\tinsertion\t";
+        indelfile << candidatePos + startCoord + options.positionFormat - 1 << '\t';
+        indelfile << candidatePos + startCoord;// + options.positionFormat; //VORSICHT!!!
+        indelfile << "\t" << percentage;
+        indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat;
+        indelfile << ";size=" << indelSize;
+        indelfile << ";count=" << (int)(percentage * depth + 0.00001);
+        indelfile << ";seq="<< insertionSeq;
+        indelfile << ";depth=" << depth;
+        indelfile << ";quality=" << indelQ;
+        indelfile << ";homorun=" << homoLength;
+        if (bsi)
+            indelfile << ";bsi";
+        indelfile << ";seqContext=" << infix(reference,
+                                             _max((int)0,(int)candidatePos-6),
+                                             _min((int)candidatePos+6, (int)length(reference)));
+        if (percentage <= options.indelHetMax)
+            indelfile << ";geno=het";
+        else
+            indelfile << ";geno=hom";
+        //if (splitSupport>0) indelfile << ";splitSupport=" << splitSupport;
+        indelfile << std::endl;
+    }
+    //resetting will be done in writeDeletion() in next round
+    return 0;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // Output SNPs
 template <
@@ -5060,7 +5147,7 @@ void dumpSNPsBatch(
                     {
                         columnQualityR[ordValue(candidateBase)] += quality;
                         ++countR[ordValue(candidateBase)];
-                        appendValue(qualityStringR[ordValue(candidateBase)], (char)(quality+33), Generous());
+                        appendValue(qualityStringR[ordValue(candidateBase)], (char)(quality + 33), Generous());
                     }
                 }
             }
@@ -5235,9 +5322,9 @@ template <
     typename TOptions
 >
 void dumpShortIndelPolymorphismsBatch(
-    TFragmentStore              & fragmentStore,     // forward/reverse matches
+    TFragmentStore              & fragmentStore,    // forward/reverse matches
     TReadCigars             & readCigars,
-    TGenome                 & genome,                // genome sequence
+    TGenome                 & genome,               // genome sequence
     TGenomeName const           genomeID,           // genome name
     typename TFragmentStore::TContigPos startCoord, // startCoordinate + posOnGenomeInfix = real coordinate on whole chr
     typename TFragmentStore::TContigPos currStart,
@@ -6007,7 +6094,8 @@ void dumpPositionsRealignBatchWrap(
                     groupStartCoord,groupStartPos,groupEndPos,
                     posFile,options);
             }
-            else
+            else    //options.realign check redundant. Since dumpPositionsRealignBatchWrap only gets executed if
+                    // options.realign is true. TODO (serosko) remove this check.
             {
                 // todo: switch between with or without realignment in dumpSNPsBatch.. make global in any case
                 dumpPosBatch(fragStoreGroup,inspectPosIt,inspectPosItEnd,
@@ -6347,8 +6435,8 @@ template <
     typename TFile,
     typename TOptions
 >
-void dumpPosBatch(
-    TFragmentStore              & fragmentStore,             // forward/reverse matches
+void dumpPosBatch(                                          // Witout realignment
+    TFragmentStore              & fragmentStore,            // forward/reverse matches
     TPosIterator                & inspectPosIt,
     TPosIterator                & inspectPosItEnd,
     TReadCigars             &,
