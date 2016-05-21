@@ -82,6 +82,9 @@ typedef Tag<AllocateTemp_> TagAllocateTemp;
 struct AllocateStorage_;
 typedef Tag<AllocateStorage_> TagAllocateStorage;
 
+struct AllocateAlignedMalloc_;
+typedef Tag<AllocateAlignedMalloc_> TagAllocateAlignedMalloc;
+
 /*!
  * @class Allocator
  * @headerfile <seqan/basic.h>
@@ -180,7 +183,7 @@ allocate(T & me,
 }
 
 template <typename T, typename TValue, typename TSize, typename TUsage>
-inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TValue> >, void)
+inline void
 allocate(T const &,
          TValue * & data,
          TSize count,
@@ -207,7 +210,7 @@ allocate(T const &,
 }
 
 template <typename T, typename TValue, typename TSize, typename TUsage>
-inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TValue> >, void)
+inline void
 allocate(T &,
          TValue * & data,
          TSize count,
@@ -236,12 +239,12 @@ allocate(T &,
 // NOTE(rrahn): Currently *new* does not support aligned memory, but we need it for dynamically
 // allocated SimdVector class, so we overload the allocation to use mem_alloc for simd vector types.
 // See following discussion: http://stackoverflow.com/questions/6973995/dynamic-aligned-memory-allocation-in-c11
-template <typename T, typename TValue, typename TSize, typename TUsage>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, void)
+template <typename T, typename TValue, typename TSize>
+inline void
 allocate(T const &,
          TValue * & data,
          TSize count,
-         Tag<TUsage> const &)
+         TagAllocateAlignedMalloc const &)
 {
 #ifdef PLATFORM_WINDOWS_VS
     data = (TValue *) _aligned_malloc(count * sizeof(TValue), __alignof(TValue));
@@ -253,18 +256,16 @@ allocate(T const &,
     #else
         data = (TValue *) malloc(count * sizeof(TValue));
     #endif
-        data = (TValue *) operator new(count * sizeof(TValue));
 #endif
 }
 
-template <typename T, typename TValue, typename TSize, typename TUsage>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, void)
+template <typename T, typename TValue, typename TSize>
+inline void
 allocate(T &,
          TValue * & data,
          TSize count,
-         Tag<TUsage> const &)
+         TagAllocateAlignedMalloc const &)
 {
-    //  data = (TValue *) operator new(count * sizeof(TValue));
 #ifdef PLATFORM_WINDOWS_VS
     data = (TValue *) _aligned_malloc(count * sizeof(TValue), __alignof(TValue));
 #else
@@ -327,7 +328,7 @@ deallocate(T & me,
 }
 
 template <typename T, typename TValue, typename TSize, typename TUsage>
-inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TValue> >, void)
+inline void
 deallocate(
     T const & /*me*/,
     TValue * data,
@@ -352,7 +353,7 @@ deallocate(
 }
 
 template <typename T, typename TValue, typename TSize, typename TUsage>
-inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TValue> >, void)
+inline void
 deallocate(
     T & /*me*/,
     TValue * data,
@@ -379,8 +380,8 @@ deallocate(
 // NOTE(rrahn): Currently *new* does not support aligned memory, but we need it for dynamically
 // allocated SimdVector class, so we overload the allocation to use mem_alloc for simd vector types.
 // See following discussion: http://stackoverflow.com/questions/6973995/dynamic-aligned-memory-allocation-in-c11
-template <typename T, typename TValue, typename TSize, typename TUsage>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, void)
+template <typename T, typename TValue, typename TSize>
+inline void
 deallocate(
            T const & /*me*/,
            TValue * data,
@@ -389,13 +390,12 @@ deallocate(
 #else
            TSize,
 #endif
-           Tag<TUsage> const)
+           TagAllocateAlignedMalloc const)
 {
 #ifdef SEQAN_PROFILE
     if (data && count)  // .. to use count if SEQAN_PROFILE is not defined
         SEQAN_PROSUB(SEQAN_PROMEMORY, count * sizeof(TValue));
 #endif
-    //  operator delete ((void *) data);
 #ifdef PLATFORM_WINDOWS_VS
     _aligned_free((void *) data);
 #else
@@ -403,8 +403,8 @@ deallocate(
 #endif
 }
 
-template <typename T, typename TValue, typename TSize, typename TUsage>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, void)
+template <typename T, typename TValue, typename TSize>
+inline void
 deallocate(
            T & /*me*/,
            TValue * data,
@@ -413,7 +413,7 @@ deallocate(
 #else
            TSize,
 #endif
-           Tag<TUsage> const)
+           TagAllocateAlignedMalloc const)
 {
 #ifdef SEQAN_PROFILE
     if (data && count)  // .. to use count if SEQAN_PROFILE is not defined

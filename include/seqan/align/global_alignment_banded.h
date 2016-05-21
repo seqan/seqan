@@ -579,7 +579,7 @@ String<TScoreValue> globalAlignmentScore(StringSet<TString, TSpec> const & strin
 
     String<TScoreValue> results;
     resize(results, numAlignments);
-    String<TSimdAlign> stringSimdH, stringSimdV;
+    String<TSimdAlign, Alloc<OverAligned> > stringSimdH, stringSimdV;
     resize(stringSimdH, lenH);
     resize(stringSimdV, lenV);
 
@@ -685,7 +685,7 @@ String<TScoreValue> globalAlignmentScore(TString const & stringH,
     String<TScoreValue> results;
     resize(results, numAlignments);
 
-    String<TSimdAlign> stringSimdH, stringSimdV;
+    String<TSimdAlign, Alloc<OverAligned> > stringSimdH, stringSimdV;
     resize(stringSimdH, lenH);
     resize(stringSimdV, lenV);
     _createSimdRepresentation(stringSimdH, stringH, lenH);
@@ -792,7 +792,7 @@ String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & a
     {
         StringSet<String<TTraceSegment> > trace;
         resize(trace, sizeBatch);
-        String<TSimdAlign> stringSimdH, stringSimdV, masksH, masksV, masks;
+        String<TSimdAlign, Alloc<OverAligned> > stringSimdH, stringSimdV, masksH, masksV, masks;
         std::vector<decltype(length(align))> endsH, endsV;
 
         auto infSet = infixWithLength(align.strings, pos * sizeBatch, sizeBatch);

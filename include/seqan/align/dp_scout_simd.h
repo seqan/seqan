@@ -68,7 +68,7 @@ template <typename TSimdVector>
 class DPScoutState_<SimdAlignVariableLength<TSimdVector> >
 {
 public:
-    String<TSimdVector> masksH, masksV, masks;
+    String<TSimdVector, Alloc<OverAligned> > masksH, masksV, masks;
     std::vector<size_t> endsH, endsV;
     decltype(endsH.begin()) nextEndsH, nextEndsV;
 

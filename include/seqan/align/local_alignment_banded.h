@@ -258,7 +258,7 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
     {
         StringSet<String<TTraceSegment> > trace;
         resize(trace, sizeBatch);
-        String<TSimdAlign> stringSimdH, stringSimdV, masksH, masksV, masks;
+        String<TSimdAlign, Alloc<OverAligned> > stringSimdH, stringSimdV, masksH, masksV, masks;
         std::vector<TSize> endsH, endsV;
 
         auto infSet = infixWithLength(align.strings, pos * sizeBatch, sizeBatch);
