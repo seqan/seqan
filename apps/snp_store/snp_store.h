@@ -3984,7 +3984,89 @@ calibrateQuality(TRead & read, TMatchQuality & matchQuality, int originalQuality
 
 
 //////////////////////////////////////////////////////////////////////////////
-// Output SNPs
+//Writes a deletion to the output file
+template <typename TFile,
+          typename TRef,
+          typename TOpt,
+          typename TPos,
+          typename TSize,
+          typename Tqual,
+          typename TDpth,
+          typename TPerc,
+          typename TCoord,
+          typename TPref,
+          typename TGenoID,
+          typename TRunID,
+          typename TBsi,
+          typename TInsert>
+int writeIndel(TFile& indelfile,
+               TRef& reference,
+               TOpt& options,
+               TSize& indelSize,
+               Tqual& quality,
+               TDpth& depth,
+               TPerc& percentage,
+               TPref& chrPrefix,
+               TBsi& bsi,
+               TPos&  candidatePos,
+               TInsert& insertionSeq,
+               TCoord startCoord,
+               TGenoID genomeID,
+               TRunID runID)
+{
+    int homoLength = checkSequenceContext(reference, candidatePos, indelSize);
+    if (homoLength <= options.maxPolymerRun)
+    {
+        bool insertion = false;
+        if (indelSize < 0) //insertion
+            insertion = true;
+        unsigned absIndelSize = abs(indelSize);
+        percentage /= depth;                                    // low coverage positions get a lower weight
+        depth = (depth + (absIndelSize >> 1)) / absIndelSize;     // coverage is spread over all positions
+        quality = (quality + (absIndelSize >> 1)) / absIndelSize; // quality is spread over all positions
+        int indelQ = (int)(quality * percentage);
+        if (!bsi)
+            indelQ /= 2;
+        if (insertion)
+            indelfile << chrPrefix << genomeID << '\t' << runID << "\tinsertion\t";
+        else
+            indelfile << chrPrefix << genomeID << '\t' << runID << "\tdeletion\t";
+        unsigned pos = candidatePos + startCoord + options.positionFormat;
+        if (insertion)
+            pos -= 1;
+        indelfile << pos << '\t';
+        if (insertion)
+            indelfile << candidatePos + startCoord;
+        else
+            indelfile << pos + indelSize - 1;
+        indelfile << "\t" << percentage;
+        indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat;
+        indelfile << ";size=" << indelSize;
+        indelfile << ";count=" << (int)(percentage * depth + 0.00001);
+        int insSize = 0;
+        if (insertion)
+            indelfile << ";seq="<< insertionSeq;
+        else
+            insSize = indelSize;
+        indelfile << ";depth=" << depth;
+        indelfile << ";quality=" << indelQ;
+        indelfile << ";homorun=" << homoLength;
+        if (bsi)
+            indelfile << ";bsi";
+        indelfile << ";seqContext=" << infix(reference,
+                                             _max((int)0,(int)candidatePos - 6),
+                                             _min((int)candidatePos + insSize + 6, (int)length(reference)));
+        if (percentage <= options.indelHetMax)
+            indelfile << ";geno=het";
+        else
+            indelfile << ";geno=hom";
+        //if (splitSupport>0) indelfile << ";splitSupport=" << splitSupport;
+        indelfile << std::endl;
+    }
+    return 0;
+}
+
+// Output SNPs/Indels
 template <
     typename TFragmentStore,
     typename TReadCounts,
@@ -4716,21 +4798,22 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                 }
                 ++candidateViewPos;
             }
-            if (indelSize>0) //Deletion
+            if (indelSize > 0) //Deletion
             {
-                writeDeletion(indelfile,
-                              reference,
-                              options,
-                              indelSize,
-                              quality,
-                              depth,
-                              percentage,
-                              chrPrefix,
-                              bsi,
-                              candidatePos,
-                              startCoord,
-                              genomeID,
-                              runID);
+                writeIndel(indelfile,
+                           reference,
+                           options,
+                           indelSize,
+                           quality,
+                           depth,
+                           percentage,
+                           chrPrefix,
+                           bsi,
+                           candidatePos,
+                           insertionSeq,
+                           startCoord,
+                           genomeID,
+                           runID);
                 //reset
                 candidatePos = positionGapToSeq(referenceGaps, candidateViewPos - refStart);
                 indelSize = 0;
@@ -4760,8 +4843,8 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                 }
                 ++candidateViewPos;
             }
-            if (indelSize<0)
-                writeInsertion(indelfile,
+            if (indelSize < 0)
+                writeIndel(indelfile,
                                reference,
                                options,
                                indelSize,
@@ -4785,132 +4868,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
     if ((options.outputLog != "") && logfile.is_open())
         logfile.close();
 }
-//Writes a deletion to the output file
-template <typename TFile,
-          typename TRef,
-          typename TOpt,
-          typename TPos,
-          typename TSize,
-          typename Tqual,
-          typename TDpth,
-          typename TPerc,
-          typename TCoord,
-          typename TPref,
-          typename TGenoID,
-          typename TRunID,
-          typename TBsi>
-int writeDeletion(TFile& indelfile,
-                  TRef& reference,
-                  TOpt& options,
-                  TSize& indelSize,
-                  Tqual& quality,
-                  TDpth& depth,
-                  TPerc& percentage,
-                  TPref& chrPrefix,
-                  TBsi& bsi,
-                  TPos&  candidatePos,
-                  TCoord startCoord,
-                  TGenoID genomeID,
-                  TRunID runID)
-{
-    // check for the longest adjacent stretch of homopolymers
-    int homoLength = checkSequenceContext(reference, candidatePos, indelSize);
-    if (homoLength <= options.maxPolymerRun)
-    {
-        percentage /= depth;                                // low coverage positions get a lower weight
-        depth = (depth + (indelSize >> 1)) / indelSize;     // coverage is spread over all positions
-        quality = (quality + (indelSize >> 1)) / indelSize; // quality is spread over all positions
-        int indelQ = (int)(quality * percentage);
-        if (!bsi) indelQ /= 2;
-        //print deletion
-        indelfile << chrPrefix << genomeID << '\t' << runID << "\tdeletion\t";
-        indelfile << candidatePos + startCoord + options.positionFormat  << '\t';
-        indelfile << candidatePos + startCoord + options.positionFormat + indelSize - 1;
-        indelfile << "\t" << percentage;
-        indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat ;
-        indelfile << ";size=" << indelSize;
-        indelfile << ";count=" << (int)(percentage * depth + 0.00001);
-        indelfile << ";depth=" << depth;
-        indelfile << ";quality=" << indelQ;
-        indelfile << ";homorun=" << homoLength;
-        if (bsi)
-            indelfile << ";bsi";
-        indelfile << ";seqContext=" << infix(reference,_max((int)0,(int)candidatePos - 6),
-                                             _min((int)candidatePos + indelSize + 6,(int)length(reference)));
-        if (percentage <= options.indelHetMax)
-            indelfile << ";geno=het";
-        else
-            indelfile << ";geno=hom";
-        indelfile << std::endl;
-    }
-    return 0;
-}
-template <typename TFile,
-          typename TRef,
-          typename TOpt,
-          typename TPos,
-          typename TSize,
-          typename Tqual,
-          typename TDpth,
-          typename TPerc,
-          typename TCoord,
-          typename TPref,
-          typename TGenoID,
-          typename TRunID,
-          typename TBsi,
-          typename TInsert>
-int writeInsertion(TFile& indelfile,
-                   TRef& reference,
-                   TOpt& options,
-                   TSize& indelSize,
-                   Tqual& quality,
-                   TDpth& depth,
-                   TPerc& percentage,
-                   TPref& chrPrefix,
-                   TBsi& bsi,
-                   TPos&  candidatePos,
-                   TInsert& insertionSeq,
-                   TCoord startCoord,
-                   TGenoID genomeID,
-                   TRunID runID)
-{
-    int homoLength = checkSequenceContext(reference,candidatePos,indelSize);
-    if (homoLength <= options.maxPolymerRun)
-    {
-        unsigned absIndelSize = abs(indelSize);
-        percentage /= depth;                                    // low coverage positions get a lower weight
-        depth = (depth + (absIndelSize >> 1)) / absIndelSize;     // coverage is spread over all positions
-        quality = (quality + (absIndelSize >> 1)) / absIndelSize; // quality is spread over all positions
-        int indelQ = (int)(quality * percentage);
-        if (!bsi) indelQ /= 2;
 
-        //print insertion
-        indelfile << chrPrefix << genomeID << '\t' << runID << "\tinsertion\t";
-        indelfile << candidatePos + startCoord + options.positionFormat - 1 << '\t';
-        indelfile << candidatePos + startCoord;// + options.positionFormat; //VORSICHT!!!
-        indelfile << "\t" << percentage;
-        indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat;
-        indelfile << ";size=" << indelSize;
-        indelfile << ";count=" << (int)(percentage * depth + 0.00001);
-        indelfile << ";seq="<< insertionSeq;
-        indelfile << ";depth=" << depth;
-        indelfile << ";quality=" << indelQ;
-        indelfile << ";homorun=" << homoLength;
-        if (bsi)
-            indelfile << ";bsi";
-        indelfile << ";seqContext=" << infix(reference,
-                                             _max((int)0,(int)candidatePos-6),
-                                             _min((int)candidatePos+6, (int)length(reference)));
-        if (percentage <= options.indelHetMax)
-            indelfile << ";geno=het";
-        else
-            indelfile << ";geno=hom";
-        //if (splitSupport>0) indelfile << ";splitSupport=" << splitSupport;
-        indelfile << std::endl;
-    }
-    //resetting will be done in writeDeletion() in next round
-    return 0;
-}
 
 //////////////////////////////////////////////////////////////////////////////
 // Output SNPs
