@@ -3042,23 +3042,22 @@ CharString getGenotypeList(int genotype) //converts the int genotype (0 - 15) to
 
 // write to file in VCFv4.2 format
 template<typename TFile, typename TString, typename TQualities, typename TPos, typename TOptions>
-inline bool
-_writeSnp(TFile & file,
-       SingleBaseVariant & snp,
-       TQualities & qualityStringF,
-       TQualities & qualityStringR,
-       int refAllele,
-       TString & genomeID,
-       TPos candPos,
-       unsigned realCoverage,
-       TOptions & options)
+inline bool _writeSnp(TFile & file,
+                      SingleBaseVariant & snp,
+                      TQualities & qualityStringF,
+                      TQualities & qualityStringR,
+                      int refAllele,
+                      TString & genomeID,
+                      TPos candPos,
+                      unsigned realCoverage,
+                      TOptions & options)
 {
     if (!file.is_open())
     {
         ::std::cerr << "SNP output file is not open" << ::std::endl;
         return false;
     }
-    CharString dbsnp = ".";                           //TODO (serosko): should later contain the dbsnp id (if known)
+    CharString dbsnp = ".";                           //TODO(serosko): should later contain the dbsnp id (if known)
     file << genomeID << '\t';                           //chromosome
     file << candPos + options.positionFormat<< '\t';    //position
     file << dbsnp << '\t';                              //dbsnp id (only '.' at the moment
@@ -3068,16 +3067,16 @@ _writeSnp(TFile & file,
         if (snp.called)                         //genotypeCalled != genotypeRef)
             file << getGenotypeList(snp.genotype) << '\t' << snp.snpQuality << '\t';
         else
-            file << ".\t0\t";                   //TODO (serosko): Insert correct quality for no snp-call instead of 0.
+            file << ".\t0\t";                   //TODO(serosko): Insert correct quality for no snp-call instead of 0.
     }
     else                                        //threshold method
     {
         if (snp.called)
             file  << getGenotypeList(snp.genotype) << '\t' << snp.quality;
         else
-            file << "\t.\t0\t";                 //TODO (serosko): Insert correct quality for no snp-call instead of 0.
+            file << "\t.\t0\t";                 //TODO(serosko): Insert correct quality for no snp-call instead of 0.
     }
-    file << ".\t";                              //TODO (serosko): Insert Filter field here.
+    file << ".\t";                              //TODO(serosko): Insert Filter field here.
     file << "DP=" << realCoverage;              //Info field: Coverage
     if (options.showQualityStrings)             //Info field: Quality strings for each observed base.
     {
@@ -3107,16 +3106,15 @@ _writeSnp(TFile & file,
 
 // write to file (TODO (serosko): Probably for indels. Check this and put in same file as snps.)
 template<typename TFile, typename TString, typename TQualities, typename TPos, typename TOptions>
-inline bool
-_writePos(TFile & file,
-       TQualities & qualityStringF,
-       TQualities & qualityStringR,
-       unsigned delPlus,
-       unsigned delMinus,
-       TString & genomeID,
-       TPos candPos,
-       unsigned /*coverage*/,
-       TOptions & options)
+inline bool _writePos(TFile & file,
+                      TQualities & qualityStringF,
+                      TQualities & qualityStringR,
+                      unsigned delPlus,
+                      unsigned delMinus,
+                      TString & genomeID,
+                      TPos candPos,
+                      unsigned /*coverage*/,
+                      TOptions & options)
 {
 //IOREV _nodoc_ what kind of format is this?
     if (!file.is_open())
@@ -3159,8 +3157,7 @@ _writePos(TFile & file,
 
 
 template<typename TFragmentStore, typename TStr>
-void
-_dumpMatches(TFragmentStore & fragmentStore, TStr str)
+void _dumpMatches(TFragmentStore & fragmentStore, TStr str)
 {
     //typedef typename TFragmentStore::TAlignedReadStore          TMatches;
     //typedef typename Value<TMatches>::Type                      TMatch;
@@ -3984,7 +3981,7 @@ calibrateQuality(TRead & read, TMatchQuality & matchQuality, int originalQuality
 
 
 //////////////////////////////////////////////////////////////////////////////
-//Writes a deletion to the output file
+//Writes a deletion or insertion to the output file
 template <typename TFile,
           typename TRef,
           typename TOpt,
@@ -3994,76 +3991,70 @@ template <typename TFile,
           typename TDpth,
           typename TPerc,
           typename TCoord,
-          typename TPref,
           typename TGenoID,
-          typename TRunID,
           typename TBsi,
           typename TInsert>
-int writeIndel(TFile& indelfile,
+inline void writeIndel(TFile& indelfile,
                TRef& reference,
                TOpt& options,
                TSize& indelSize,
                Tqual& quality,
                TDpth& depth,
                TPerc& percentage,
-               TPref& chrPrefix,
                TBsi& bsi,
                TPos&  candidatePos,
                TInsert& insertionSeq,
                TCoord startCoord,
-               TGenoID genomeID,
-               TRunID runID)
+               TGenoID genomeID)
 {
     int homoLength = checkSequenceContext(reference, candidatePos, indelSize);
-    if (homoLength <= options.maxPolymerRun)
+    if (homoLength <= options.maxPolymerRun)                       //TODO(serosko): put filter option in vcf output.
     {
+        bool noQual = false;
+        bool het = true;
         bool insertion = false;
-        if (indelSize < 0) //insertion
-            insertion = true;
+        int delSize = 0;
+        if (quality < 0)
+            noQual = true;
         unsigned absIndelSize = abs(indelSize);
-        percentage /= depth;                                    // low coverage positions get a lower weight
-        depth = (depth + (absIndelSize >> 1)) / absIndelSize;     // coverage is spread over all positions
-        quality = (quality + (absIndelSize >> 1)) / absIndelSize; // quality is spread over all positions
+        unsigned pos = candidatePos + startCoord + options.positionFormat - 1;
+        if (indelSize < 0)                                         //insertion
+            insertion = true;
+        else
+            delSize = indelSize;
+        percentage /= depth;                                       // low coverage positions get a lower weight
+        depth = (depth + (absIndelSize >> 1)) / absIndelSize;      // coverage is spread over all positions
+        if (!noQual)
+            quality = (quality + (absIndelSize >> 1)) / absIndelSize;  // quality is spread over all positions
         int indelQ = (int)(quality * percentage);
         if (!bsi)
             indelQ /= 2;
+        if (percentage > options.indelHetMax)                      //determine zygocity
+            het = false;
+        auto upstreamSeq = infix(reference,                            //reference seq
+                                  _max((int)0, (int)candidatePos - 1),
+                                  _min((int)(candidatePos + delSize), (int)length(reference)));
+
+        indelfile << genomeID << '\t'                                  //chromosome
+                  << pos  << '\t'                                      //position
+                  << upstreamSeq << '\t';                              //reference
+        if (het)                                                       //Unchanged allele in case of het
+            indelfile << upstreamSeq << ',';              //TODO(serosko): Case for two different indels on two alleles.
         if (insertion)
-            indelfile << chrPrefix << genomeID << '\t' << runID << "\tinsertion\t";
+            indelfile << upstreamSeq << insertionSeq << '\t';          //Alternative (ref+insertion)
         else
-            indelfile << chrPrefix << genomeID << '\t' << runID << "\tdeletion\t";
-        unsigned pos = candidatePos + startCoord + options.positionFormat;
-        if (insertion)
-            pos -= 1;
-        indelfile << pos << '\t';
-        if (insertion)
-            indelfile << candidatePos + startCoord;
+            indelfile << infix(reference,                              //Alternative (deletion)
+                               _max((int)0,(int)candidatePos - 1),     //TODO(serosko): remove _min().
+                               _min((int)(candidatePos), (int)length(reference))) << '\t';
+        if (noQual)
+            indelfile << ".\t";
         else
-            indelfile << pos + indelSize - 1;
-        indelfile << "\t" << percentage;
-        indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat;
-        indelfile << ";size=" << indelSize;
-        indelfile << ";count=" << (int)(percentage * depth + 0.00001);
-        int insSize = 0;
-        if (insertion)
-            indelfile << ";seq="<< insertionSeq;
-        else
-            insSize = indelSize;
-        indelfile << ";depth=" << depth;
-        indelfile << ";quality=" << indelQ;
-        indelfile << ";homorun=" << homoLength;
-        if (bsi)
-            indelfile << ";bsi";
-        indelfile << ";seqContext=" << infix(reference,
-                                             _max((int)0,(int)candidatePos - 6),
-                                             _min((int)candidatePos + insSize + 6, (int)length(reference)));
-        if (percentage <= options.indelHetMax)
-            indelfile << ";geno=het";
-        else
-            indelfile << ";geno=hom";
-        //if (splitSupport>0) indelfile << ";splitSupport=" << splitSupport;
+            indelfile << indelQ << '\t';                               //quality
+        indelfile << ".\t"                                             //filter \\TODO(serosko):Add actual filter.
+                  << "DP="  << depth
+                  << ";FR=" << percentage;
         indelfile << std::endl;
     }
-    return 0;
 }
 
 // Output SNPs/Indels
@@ -4807,13 +4798,11 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                            quality,
                            depth,
                            percentage,
-                           chrPrefix,
                            bsi,
                            candidatePos,
                            insertionSeq,
                            startCoord,
-                           genomeID,
-                           runID);
+                           genomeID);
                 //reset
                 candidatePos = positionGapToSeq(referenceGaps, candidateViewPos - refStart);
                 indelSize = 0;
@@ -4851,13 +4840,11 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                                quality,
                                depth,
                                percentage,
-                               chrPrefix,
                                bsi,
                                candidatePos,
                                insertionSeq,
                                startCoord,
-                               genomeID,
-                               runID);
+                               genomeID);
         }
         if (options._debugLevel > 1)
             std::cout << "Finished calling indels..." << std::endl;
@@ -5637,8 +5624,8 @@ void dumpShortIndelPolymorphismsBatch(
         TIndelIt endIt = indels.end();
         TSplitIt splitEndIt = splitCounts.end();
 
-        //indel-merging, possibly suboptimal
-        if (options.indelWindow > 0)
+        //indel-merging, possibly suboptimal //TODO(serosko): Not only possibly. Plainly wrong in even simple cases.
+        if (options.indelWindow > 0)        // Change this.
         {
             while (indelIt != endIt)
             {
@@ -5690,11 +5677,11 @@ void dumpShortIndelPolymorphismsBatch(
 #ifdef SNPSTORE_DEBUG
             debug=true;
 #endif
-            int splitSupport = 0;
+            //int splitSupport = 0;
             if (splitCountIt != splitEndIt &&
                 (splitCountIt->first.i1 == indelIt->first.i1) && (splitCountIt->first.i2 == indelIt->first.i2))
             {
-                splitSupport = splitCountIt->second;
+                //splitSupport = splitCountIt->second;
                 ++splitCountIt;
             }
 
@@ -5784,63 +5771,27 @@ void dumpShortIndelPolymorphismsBatch(
                 matchIt = matchRangeBegin;
                 continue;
             }
-            if ((float)indelIt->second.i1/depth < options.indelPercentageT)
+            float percentage = indelIt -> second.i1;
+            if (percentage / depth < options.indelPercentageT)
             {
                 matchIt = matchRangeBegin;
                 continue;
             }
-            int indelSize=indelIt->first.i2;
-            if (options.outputFormat < 2) //
-            {
-                int homoLength = checkSequenceContext(genome,candidatePos,indelSize);
-                if (indelSize > 0 )
-                    indelfile << chrPrefix << genomeID << '\t' << runID << "\tdeletion\t";
-                else
-                    indelfile << chrPrefix <<genomeID << '\t' << runID << "\tinsertion\t";
-                if (indelSize > 0 )
-                    indelfile << candidatePos + startCoord + options.positionFormat << '\t';
-                else
-                    indelfile << candidatePos + startCoord + options.positionFormat - 1 << '\t';
-                if (indelSize > 0 )
-                    indelfile << candidatePos + startCoord + options.positionFormat  + indelSize - 1;
-                else
-                    indelfile << candidatePos + startCoord;// + options.positionFormat; //VORSICHT!!!
-                indelfile << "\t" << (float)indelIt->second.i1/depth;
-                indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat;
-                indelfile << ";size=" << indelSize;
-                indelfile << ";count=" << indelIt->second.i1;
-                if (indelSize < 0)
-                    indelfile << ";seq=" << indelIt->second.i2;
-                indelfile << ";ebiDepth=" << depth << ";depth=" << covF+covR;
-                if (splitSupport>0)
-                    indelfile << ";splitSupport=" << splitSupport;
-                if (homoLength > 1)
-                    indelfile << ";homorun=" << homoLength;
-                if (bsi)
-                    indelfile << ";bsi";
-                if ((float)indelIt->second.i1/depth <= options.indelHetMax)
-                    indelfile << ";geno=het";
-                else
-                    indelfile << ";geno=hom";
-                indelfile << std::endl;
-            }
-            else
-            {
-                //chromosome
-                indelfile << genomeID << '\t';
-                indelfile <<  candidatePos + startCoord + options.positionFormat << '\t';
-                if (options.orientationAware)
-                {
-                    indelfile << covF  <<'\t';
-                    indelfile << covR  <<'\t';
-                }
-                else
-                {
-                    indelfile << covF+covR  <<'\t';
-                }
-                indelfile << indelIt->second.i1 << std::endl;
-            }
-
+            int indelSize = indelIt -> first.i2;
+            TReadInf insertionSeq = indelIt -> second.i2;
+            int quality = -1;                       //quality TODO(serosko): Add real value.
+            writeIndel(indelfile,
+                       genome,
+                       options,
+                       indelSize,
+                       quality,
+                       depth,
+                       percentage,
+                       bsi,
+                       candidatePos,
+                       insertionSeq,
+                       startCoord,
+                       genomeID);
             matchIt = matchRangeBegin;
         }
         matchIt = currSeqMatchItEnd;
