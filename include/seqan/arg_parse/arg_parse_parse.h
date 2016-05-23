@@ -308,19 +308,36 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
         return ArgumentParser::PARSE_ERROR;
     }
 
+#if _SEQAN_VERSION_CHECK == 1
+    #pragma message "Is Enabled"
+#else
+    #pragma message "Is Disabled"
+#endif
+
+//#if _SEQAN_VERSION_CHECK == 1
     // do version check if not turned off by the user
     std::string check = "DEV"; // default
     if(isSet(me, "version-check"))
         getOptionValue(check, me, "version-check");
+
     if (!(check=="OFF"))
     {
-        VersionCheck app_version(me);            // check app version
-        checkForNewerVersion(app_version);      // no error handling to not bother the user
-        if (!(check=="APP_ONLY")){
-            VersionCheck seqan_version;        // check seqan_version
+        VersionCheck app_version(&me.appVersionCheckFuture,
+                                 toCString(me._toolDoc._name),
+                                 toCString(me._toolDoc._version),
+                                 toCString(me._toolDoc._url));
+        checkForNewerVersion(app_version);
+
+        if (!(check=="APP_ONLY"))
+        {
+            std::string seqan_ver_string = std::to_string(SEQAN_VERSION_MAJOR) + "." + 
+                                           std::to_string(SEQAN_VERSION_MINOR) + "." +
+                                           std::to_string(SEQAN_VERSION_PATCH);
+            VersionCheck seqan_version(&me.seqanVersionCheckFuture, "seqan", seqan_ver_string, "http//www.seqan.de");
             checkForNewerVersion(seqan_version);
         }
     }
+//#endif
 
     // Handle the special options.
     if (hasOption(me, "version") && isSet(me, "version"))

@@ -32,8 +32,8 @@
 // Author: Svenja Mehringer <svenja.mehringer@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_INCLUDE_ARG_PARSE_CALLING_HOME_H_
-#define SEQAN_INCLUDE_ARG_PARSE_CALLING_HOME_H_
+#ifndef SEQAN_INCLUDE_ARG_PARSE_VERSION_CHECK_H_
+#define SEQAN_INCLUDE_ARG_PARSE_VERSION_CHECK_H_
 
 #include <iostream>
 #include <fstream>
@@ -41,6 +41,8 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <stdio.h>
+#include <regex>
+#include <future>
 
 // ==========================================================================
 // Tags, Classes, Enums
@@ -48,13 +50,18 @@
 
 struct VersionCheck
 {
+    // ----------------------------------------------------------------------------
+    // Member Variables
+    // ----------------------------------------------------------------------------
+
     std::string _url = "http://openms-update.informatik.uni-tuebingen.de/check/OpenMS_KNIME_";
     std::string _path = std::string(getenv("HOME")) + "/.config/seqan";
     std::string _name;
-    std::string _version;
+    std::string _version = "0.0.0";
     std::string _program;
     std::string _command;
-    std::string _website;
+    std::string _website = "www.seqan.de/applications";
+    std::future<bool> * _fut;
 
         //get system information
 #ifdef __linux
@@ -71,6 +78,59 @@ struct VersionCheck
     std::string _os = "unknown";
 #endif
 
+    // ----------------------------------------------------------------------------
+    // Constructors
+    // ----------------------------------------------------------------------------
+
+    VersionCheck(std::future<bool> * fut,
+                 std::string const & name,
+                 std::string const & version,
+                 std::string const & website)
+    {
+        _fut = fut;
+        _name = name;
+        if (!version.empty())
+            _version = version;
+        if(!website.empty())
+            _website = website;
+        _getProgram();
+        _updateCommand();
+    }
+
+    VersionCheck(VersionCheck const & rhs)
+    {
+        _name    = rhs._name;
+        _version = rhs._version;
+        _website = rhs._website;
+        _program = rhs._program;
+        _command = rhs._command;
+        _fut     = rhs._fut;
+    }
+
+    VersionCheck(VersionCheck && rhs)
+    {
+        swap(rhs);
+    }
+
+    VersionCheck & operator=(VersionCheck rhs)
+    {
+        swap(rhs);
+        return *this;
+    }
+
+    // ----------------------------------------------------------------------------
+    // Member Variables
+    // ----------------------------------------------------------------------------
+
+    inline void swap(VersionCheck & rhs)
+    {
+        std::swap(_name,    rhs._name);
+        std::swap(_version, rhs._version);
+        std::swap(_website, rhs._website);
+        std::swap(_program, rhs._program);
+        std::swap(_command, rhs._command);
+        std::swap(_fut,     rhs._fut);
+    }
 
 #ifdef __unix
     void _getProgram()
@@ -103,37 +163,10 @@ struct VersionCheck
     }
 #endif
 
-    //TODO::(smehringer) make void
     void _updateCommand()
     {
         if (!_program.empty())
             _command = _program + " " + _path + "/" + _name + "_version " + _url + _os + "_64_"+ _name + "_" + _version;
-    }
-
-    VersionCheck(seqan::ArgumentParser const & arg)
-    {
-        _name = toCString(arg._toolDoc._name);
-        if (seqan::empty(arg._toolDoc._version))
-            _version = "0.0.0";
-        else
-            _version = toCString(arg._toolDoc._version);
-        if(seqan::empty(arg._toolDoc._url))
-            _website = "www.seqan.de/applications";
-        else
-            _website = toCString(arg._toolDoc._url);
-        _getProgram();
-        _updateCommand();
-    }
-
-    VersionCheck()
-    {
-        _name = "seqan";
-        _version = std::to_string(SEQAN_VERSION_MAJOR) + "." + 
-                   std::to_string(SEQAN_VERSION_MINOR) + "." +
-                   std::to_string(SEQAN_VERSION_PATCH);
-        _website = "www.seqan.de";
-        _getProgram();
-        _updateCommand();
     }
 };
 
@@ -180,9 +213,9 @@ inline bool _checkWritability(std::string path)
 // ----------------------------------------------------------------------------
 // Function _checkDate()
 // ----------------------------------------------------------------------------
-inline bool _checkDate(VersionCheck const & me)
+inline bool _checkDate(VersionCheck const & me, unsigned min_time_diff)
 {
-    unsigned min_time_diff = 86400; // (seconds) minimum time difference before next call home
+    // min_time_diff (seconds) = minimum time difference before next call home
 
     time_t curr;
     time(&curr); // get current time
@@ -228,11 +261,19 @@ inline bool _readVersionNumbers(seqan::String<int> & version_numbers, std::strin
     if (myfile.is_open())
     {
         std::getline(myfile,line); // get first line which should only contain the version number
-        if (line != "UNABLE TO CALL HOME.")
+        if (std::regex_match(line, std::regex("^[[:digit:]]\\.[[:digit:]]\\.[[:digit:]]$")))
         {
-            // TODO:: try catch just in case ?
             _getNumbersFromString(version_numbers, line);
             myfile.close();
+        }
+        else if (line == "UNREGISTERED APP")
+        {
+            std::cerr << "[SEQAN INFO] :: Thank you for using SeqAn!\n"
+                      << "[SEQAN INFO] :: You might want to regsiter you app for support and version check features?!\n"
+                      << "[SEQAN INFO] :: Just send us an email to seqan@team.fu-berlin.de with your app name and version number.\n"
+                      << "[SEQAN INFO] :: If you don't want to recieve this message anymore set --version_check OFF\n\n";
+            myfile.close();
+            return false;
         }
         else
         {
@@ -244,10 +285,6 @@ inline bool _readVersionNumbers(seqan::String<int> & version_numbers, std::strin
     {
         return false;
     }
-
-    if (length(version_numbers) != 3)
-        return false;
-
     return true;
 }
 
@@ -267,53 +304,13 @@ inline bool _isSmaller(seqan::String<int> & left, seqan::String<int> & right)
 }
 
 // ----------------------------------------------------------------------------
-// Function checkForNewerVersion()
+// Function _callServer()
 // ----------------------------------------------------------------------------
-inline bool checkForNewerVersion(VersionCheck & me)
+inline bool _callServer(VersionCheck me)
 {
-    // Frist check: Does a version file already exist
-    struct stat t_stat;
-    std::string version_file = me._path + "/" + me._name + "_version";
-
-    if (stat(version_file.c_str(), &t_stat) == 0) // check if file exists
-    {
-        seqan::String<int> new_ver;
-        if (_readVersionNumbers(new_ver, version_file))
-        {
-            seqan::String<int> old_ver;
-            _getNumbersFromString(old_ver, me._version);
-
-            if (_isSmaller(old_ver, new_ver))
-            {
-                if(me._name == "seqan")
-                {
-                    std::cerr << "SEQAN INFO :: There is a newer SeqAn version available : SeqAn "
-                              << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << "\n"
-                              << "SEQAN INFO :: If you are the developer of this app you might want to upgrade your app." << me._website << "\n\n";
-                }
-                else if (_isSmaller(old_ver, new_ver))
-                {
-                    std::cerr << "APP INFO :: There is a newer version available: " << me._name << " " 
-                              << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << "\n"
-                              << "APP INFO :: Check out " << me._website << "\n\n";
-                }
-            }
-        }
-    }
-
-    // Second check: ask server for newer version
-    if (me._program.empty())
-    return false;
-
-    if (!_checkWritability(me._path))
-        me._path = "/tmp"; // if home dir is not writable, write to tmp
-
-    if (!_checkDate(me))
-        return false;
-
     // system call
     // http response is stored in a file '.config/seqan/{app_name}_version'
-    std::cout << "I will perform the following command:\n" << me._command << std::endl;
+    //std::cout << "I will perform the following command:\n" << me._command << std::endl;
     if (system(seqan::toCString(me._command)))
     {
         std::ofstream version_file (seqan::toCString(me._path + "/" + me._name + "_version"));
@@ -327,4 +324,67 @@ inline bool checkForNewerVersion(VersionCheck & me)
     return true;
 }
 
-#endif //SEQAN_INCLUDE_ARG_PARSE_CALLING_HOME_H_
+// ----------------------------------------------------------------------------
+// Function checkForNewerVersion()
+// ----------------------------------------------------------------------------
+inline bool checkForNewerVersion(VersionCheck & me)
+{
+    // Frist check: Does a version file already exist?
+    struct stat t_stat;
+    std::string version_file = me._path + "/" + me._name + "_version";
+    unsigned min_time_diff = 86400;
+
+    // if (!_checkDate(me, min_time_diff))
+    //     return false;
+
+    if (stat(version_file.c_str(), &t_stat) == 0) // check if file exists
+    {
+        seqan::String<int> new_ver;
+        if (_readVersionNumbers(new_ver, version_file))
+        {
+            seqan::String<int> old_ver;
+            _getNumbersFromString(old_ver, me._version);
+
+            if (_isSmaller(old_ver, new_ver))
+            {
+                if(me._name == "seqan")
+                {
+                    std::cerr << "[SEQAN INFO] :: There is a newer SeqAn version available : SeqAn "
+                              << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << " Go to "
+                              << me._website << "\n"
+                              << "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check APP_ONLY" << "\n\n";
+                }
+                else
+                {
+                    std::cerr << "[APP INFO] :: There is a newer version available: " << me._name << " " 
+                              << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << "\n"
+                              << "[APP INFO] :: Check out " << me._website << "\n"
+                              << "[APP INFO] :: If you don't want to recieve this message again set --version_check OFF" << "\n\n";
+                }
+            }
+            else if (_isSmaller(new_ver, old_ver)) // can only happen for registered app that is developed further
+            {
+                std::cerr << "[APP INFO] :: Thank you for registering " << me._name << ".\n" 
+                          << "[APP INFO] :: We noticed you developed a newer version of your app (" << me._version << ")\n"
+                          << "[APP INFO] :: Please send us an email to update your version info (seqan@team.fu-berlin.de)" << "\n\n";
+            }
+        }
+    }
+
+    // Second check: ask server for newer version
+    if (me._program.empty())
+        return false;
+//TODO:: need to check date again?
+//    if (!_checkDate(me, min_time_diff))
+//        return false;
+
+    if (!_checkWritability(me._path))
+        me._path = "/tmp"; // if home dir is not writable, write to tmp
+
+std::cout << "I'm arriving here!\n";
+    // launch a seperate thread to not defer runtime
+    *me._fut = std::async(std::launch::async, _callServer, me);
+    return true;
+}
+
+#endif //SEQAN_INCLUDE_ARG_PARSE_VERSION_CHECK_H_

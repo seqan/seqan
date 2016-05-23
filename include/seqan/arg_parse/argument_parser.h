@@ -47,6 +47,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <future>
 
 namespace seqan {
 
@@ -197,6 +198,8 @@ public:
     std::vector<std::string> _usageText;    // the usage lines as strings, to avoid
                                             // interference with the rest of the doc
 
+    std::future<bool> appVersionCheckFuture;
+    std::future<void> seqanVersionCheckFuture;
     // ----------------------------------------------------------------------------
     // Function init()
     // ----------------------------------------------------------------------------
@@ -248,6 +251,12 @@ public:
         init();
     }
 
+    ~ArgumentParser()
+    {
+        // wait for another 3 seconds
+        appVersionCheckFuture.wait_for(std::chrono::seconds(3));
+    }
+    
 };
 
 // ==========================================================================
