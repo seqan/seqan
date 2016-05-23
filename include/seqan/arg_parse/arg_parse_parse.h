@@ -322,7 +322,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
 
     if (!(check=="OFF"))
     {
-        VersionCheck app_version(&me.appVersionCheckFuture,
+        VersionCheck app_version(me.appVersionCheckFuture,
                                  toCString(me._toolDoc._name),
                                  toCString(me._toolDoc._version),
                                  toCString(me._toolDoc._url));
@@ -333,7 +333,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
             std::string seqan_ver_string = std::to_string(SEQAN_VERSION_MAJOR) + "." + 
                                            std::to_string(SEQAN_VERSION_MINOR) + "." +
                                            std::to_string(SEQAN_VERSION_PATCH);
-            VersionCheck seqan_version(&me.seqanVersionCheckFuture, "seqan", seqan_ver_string, "http//www.seqan.de");
+            VersionCheck seqan_version(me.seqanVersionCheckFuture, "seqan", seqan_ver_string, "http//www.seqan.de");
             checkForNewerVersion(seqan_version);
         }
     }

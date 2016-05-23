@@ -61,7 +61,7 @@ struct VersionCheck
     std::string _program;
     std::string _command;
     std::string _website = "www.seqan.de/applications";
-    std::future<bool> * _fut;
+    std::future<bool> & _fut;
 
     //get system information
 #ifdef __linux
@@ -82,12 +82,13 @@ struct VersionCheck
     // Constructors
     // ----------------------------------------------------------------------------
 
-    VersionCheck(std::future<bool> * fut,
+    VersionCheck(std::future<bool> & fut,
                  std::string const & name,
                  std::string const & version,
-                 std::string const & website)
+                 std::string const & website):
+    _fut(fut)
     {
-        _fut = fut;
+        //_fut = &fut;
         _name = name;
         if (!version.empty())
             _version = version;
@@ -97,17 +98,18 @@ struct VersionCheck
         _updateCommand();
     }
 
-    VersionCheck(VersionCheck const & rhs)
+    VersionCheck(VersionCheck const & rhs):
+    _fut(rhs._fut)
     {
         _name    = rhs._name;
         _version = rhs._version;
         _website = rhs._website;
         _program = rhs._program;
         _command = rhs._command;
-        _fut     = rhs._fut;
     }
 
-    VersionCheck(VersionCheck && rhs)
+    VersionCheck(VersionCheck && rhs) :
+        _fut(rhs._fut)
     {
         swap(rhs);
     }
@@ -353,14 +355,14 @@ inline bool checkForNewerVersion(VersionCheck & me)
     if (me._program.empty())
         return false;
 
-   if (file_time_diff < min_time_diff && file_time_diff > -1)
-       return false;
+    if (file_time_diff < min_time_diff && file_time_diff > -1)
+        return false;
 
     if (!_checkWritability(me._path))
         me._path = "/tmp";
 
     // launch a seperate thread to not defer runtime
-    *me._fut = std::async(std::launch::async, _callServer, me);
+    me._fut = std::async(std::launch::async, _callServer, me);
     return true;
 }
 
