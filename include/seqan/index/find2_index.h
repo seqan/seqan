@@ -106,20 +106,20 @@ struct Finder_<Index<TText, TIndexSpec>, TPattern, TSpec>
     TScore              _scoreThreshold;
     TScore              _score;
 
-    SEQAN_HOST_DEVICE
+   
     Finder_() :
         _scoreThreshold(),
         _score()
     {}
 
-    SEQAN_HOST_DEVICE
+   
     Finder_(TIndex /* const */ & index) :
         _textIt(index),
         _scoreThreshold(),
         _score()
     {}
 
-    SEQAN_HOST_DEVICE
+   
     Finder_(TTextIterator const & textIt) :
         _textIt(textIt),
         _scoreThreshold(),
@@ -136,7 +136,7 @@ struct Finder_<Index<TText, TIndexSpec>, TPattern, TSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec, typename TPattern, typename TSpec>
-SEQAN_HOST_DEVICE inline void
+inline void
 clear(Finder_<Index<TText, TIndexSpec>, TPattern, TSpec> & finder)
 {
     // NOTE(esiragusa): should clear() be called on text/patternIt?
@@ -151,7 +151,7 @@ clear(Finder_<Index<TText, TIndexSpec>, TPattern, TSpec> & finder)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec, typename TPattern, typename TDelegate>
-SEQAN_HOST_DEVICE inline void
+inline void
 _find(Finder_<Index<TText, TIndexSpec>, TPattern, FinderSTree> & finder,
       TPattern const & pattern,
       TDelegate & delegate)
@@ -168,7 +168,7 @@ _find(Finder_<Index<TText, TIndexSpec>, TPattern, FinderSTree> & finder,
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Score_<Backtracking<HammingDistance, TSpec> >::Type
+inline typename Score_<Backtracking<HammingDistance, TSpec> >::Type
 _getVertexScore(Finder_<TText, TPattern, Backtracking<HammingDistance, TSpec> > const & finder)
 {
     return !ordEqual(parentEdgeLabel(_textIterator(finder)), value(_patternIterator(finder)));
@@ -179,7 +179,7 @@ _getVertexScore(Finder_<TText, TPattern, Backtracking<HammingDistance, TSpec> > 
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec, typename TPattern, typename TSpec>
-SEQAN_HOST_DEVICE inline void
+inline void
 _printState(Finder_<Index<TText, TIndexSpec>, TPattern, Backtracking<HammingDistance, TSpec> > & finder)
 {
     std::cout << "Text:        " << parentEdgeLabel(_textIterator(finder)) << std::endl;
@@ -195,7 +195,7 @@ _printState(Finder_<Index<TText, TIndexSpec>, TPattern, Backtracking<HammingDist
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec, typename TPattern, typename TSpec, typename TDelegate>
-SEQAN_HOST_DEVICE inline void
+inline void
 _find(Finder_<Index<TText, TIndexSpec>, TPattern, Backtracking<HammingDistance, TSpec> > & finder,
       TPattern const & pattern,
       TDelegate & delegate)

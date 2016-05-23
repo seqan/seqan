@@ -77,6 +77,7 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     // WRITING (report tag)
     SEQAN_CALL_TEST(test_blast_write_report);
     SEQAN_CALL_TEST(test_blast_write_report_constexpr);
+    SEQAN_CALL_TEST(test_blast_write_report_constexpr_dynmatrix);
 
     // READING (lowlevel tag)
     SEQAN_CALL_TEST(test_blast_read_lowlevel);

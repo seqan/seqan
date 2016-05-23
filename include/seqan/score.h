@@ -46,6 +46,7 @@
 #include <seqan/score/score_matrix.h>
 #include <seqan/score/score_matrix_io.h>
 #include <seqan/score/score_matrix_data.h>
+#include <seqan/score/score_matrix_dyn.h>
 #include <seqan/score/score_simple.h>
 
 #endif  // SEQAN_SH_

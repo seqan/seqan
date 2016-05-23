@@ -44,9 +44,6 @@
     #include "platform/platform_gcc.h"
 #endif
 
-// NOTE(esiragusa): nvcc header must be included even if __CUDACC__ is not defined.
-#include "platform/platform_nvcc.h"
-
 /**
  * SEQAN_AUTO_PTR_NAME .... alias for the auto_ptr class template deprecated in C++11.
  *                          @deprecated use the RHS

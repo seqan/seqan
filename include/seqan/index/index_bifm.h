@@ -64,13 +64,13 @@ inline bool indexCreate(Index<TText, BidirectionalIndex<FMIndex<TSpec, TConfig> 
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec>
-SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, BidirectionalIndex<TIndexSpec> > & index, FibreSALF const)
+inline bool indexSupplied(Index<TText, BidirectionalIndex<TIndexSpec> > & index, FibreSALF const)
 {
     return indexSupplied(index.fwd, FibreSALF()) && indexSupplied(index.rev, FibreSALF());
 }
 
 template <typename TText, typename TIndexSpec>
-SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, BidirectionalIndex<TIndexSpec> > const & index, FibreSALF const)
+inline bool indexSupplied(Index<TText, BidirectionalIndex<TIndexSpec> > const & index, FibreSALF const)
 {
     return indexSupplied(index.fwd, FibreSALF()) && indexSupplied(index.rev, FibreSALF());
 }
