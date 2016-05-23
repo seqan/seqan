@@ -199,7 +199,7 @@ public:
                                             // interference with the rest of the doc
 
     std::future<bool> appVersionCheckFuture;
-    std::future<void> seqanVersionCheckFuture;
+    std::future<bool> seqanVersionCheckFuture;
     // ----------------------------------------------------------------------------
     // Function init()
     // ----------------------------------------------------------------------------
@@ -254,7 +254,8 @@ public:
     ~ArgumentParser()
     {
         // wait for another 3 seconds
-        appVersionCheckFuture.wait_for(std::chrono::seconds(3));
+        if(appVersionCheckFuture.valid())
+            appVersionCheckFuture.wait_for(std::chrono::seconds(3));
     }
     
 };

@@ -119,7 +119,7 @@ struct VersionCheck
     }
 
     // ----------------------------------------------------------------------------
-    // Member Variables
+    // Member Functions
     // ----------------------------------------------------------------------------
 
     inline void swap(VersionCheck & rhs)
@@ -211,27 +211,18 @@ inline bool _checkWritability(std::string path)
 }
 
 // ----------------------------------------------------------------------------
-// Function _checkDate()
+// Function _getFileTimeDiff()
 // ----------------------------------------------------------------------------
-inline bool _checkDate(VersionCheck const & me, unsigned min_time_diff)
+inline double _getFileTimeDiff(std::string version_file)
 {
-    // min_time_diff (seconds) = minimum time difference before next call home
-
     time_t curr;
     time(&curr); // get current time
 
-    struct stat t_stat; // get last modified time of version file (if existing)
-    std::string version_file = me._path + "/" + me._name + "_version";
-    if (stat(version_file.c_str(), &t_stat) < 0)
-        return true; // no file found so calling home shall be performed
-
-    if (difftime(curr, t_stat.st_mtime) < min_time_diff)
-    {
-        //std::cout << "Version file " + me._name + "_version is up to date.";
-        return false;
-    }
-
-    return true;
+    struct stat t_stat;
+    if (stat(version_file.c_str(), &t_stat) < 0)  // file does not exist
+        return -1;
+    else
+        return (difftime(curr, t_stat.st_mtime)); // returns time in seconds
 }
 
 // ----------------------------------------------------------------------------
@@ -329,15 +320,11 @@ inline bool _callServer(VersionCheck me)
 // ----------------------------------------------------------------------------
 inline bool checkForNewerVersion(VersionCheck & me)
 {
-    // Frist check: Does a version file already exist?
-    struct stat t_stat;
     std::string version_file = me._path + "/" + me._name + "_version";
-    unsigned min_time_diff = 86400;
+    double min_time_diff = 86400;                           // one day = 86400 seonds
+    double file_time_diff = _getFileTimeDiff(version_file); // check for time the version file was last updated
 
-    // if (!_checkDate(me, min_time_diff))
-    //     return false;
-
-    if (stat(version_file.c_str(), &t_stat) == 0) // check if file exists
+    if (file_time_diff > -1) // file exists. TODO:: ask if there should be a time limit here too
     {
         seqan::String<int> new_ver;
         if (_readVersionNumbers(new_ver, version_file))
@@ -371,17 +358,15 @@ inline bool checkForNewerVersion(VersionCheck & me)
         }
     }
 
-    // Second check: ask server for newer version
     if (me._program.empty())
         return false;
-//TODO:: need to check date again?
-//    if (!_checkDate(me, min_time_diff))
-//        return false;
+
+   if (file_time_diff < min_time_diff && file_time_diff > -1)
+       return false;
 
     if (!_checkWritability(me._path))
-        me._path = "/tmp"; // if home dir is not writable, write to tmp
+        me._path = "/tmp";
 
-std::cout << "I'm arriving here!\n";
     // launch a seperate thread to not defer runtime
     *me._fut = std::async(std::launch::async, _callServer, me);
     return true;
