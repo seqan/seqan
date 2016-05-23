@@ -161,6 +161,9 @@ macro (seqan_register_apps)
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*)
 
+    # Set the version check to the user defined parameter
+    set (SEQAN_VERSION_CHECK_INTERNAL_ ${SEQAN_VERSION_CHECK} CACHE BOOL "Internal SeqAn version check option." FORCE)
+
     # Add all values from ${ENTRIES} that are subdirectories and have a file
     # CMakeListst.txt.
     foreach (ENTRY ${ENTRIES})
@@ -679,6 +682,9 @@ function (seqan_register_demos PREFIX)
     include_directories (${SEQAN_INCLUDE_DIRS})
     add_definitions (${SEQAN_DEFINITIONS})
 
+    # Disable the version check for all demos.
+    set (SEQAN_VERSION_CHECK_INTERNAL_ OFF CACHE BOOL "Internal SeqAn version check option." FORCE)
+
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
         set (SKIP FALSE)
@@ -739,6 +745,9 @@ endfunction (seqan_register_demos)
 macro (seqan_register_tests)
     # Setup flags for tests.
     set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_TESTING=1)
+
+    # Disable the version check for all demos.
+    set (SEQAN_VERSION_CHECK_INTERNAL_ OFF CACHE BOOL "Internal SeqAn version check option." FORCE)
 
     # Remove NDEBUG definition for tests.
     string (REGEX REPLACE "-DNDEBUG" ""

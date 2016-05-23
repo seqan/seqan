@@ -446,6 +446,19 @@ if (NOT DEFINED SEQAN_VERSION_STRING)
 endif (NOT DEFINED SEQAN_VERSION_STRING)
 
 # ----------------------------------------------------------------------------
+# SeqAn Version Check
+# ----------------------------------------------------------------------------
+
+option (SEQAN_VERSION_CHECK "SeqAn version check." ON)
+option (SEQAN_VERSION_CHECK_INTERNAL_ "Internal SeqAn version check option." ON)
+
+if (SEQAN_VERSION_CHECK_INTERNAL_)
+  set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS};-D_SEQAN_VERSION_CHECK=1")
+else ()
+  set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS};-D_SEQAN_VERSION_CHECK=0")
+endif ()
+
+# ----------------------------------------------------------------------------
 # Print Variables
 # ----------------------------------------------------------------------------
 
