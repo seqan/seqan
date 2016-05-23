@@ -4,7 +4,7 @@ Building the SeqAn Manual
 It is best to install the dependencies in a virtualenv environment.  You can
 find out more here:
 
-* http://virtualenv.readthedocs.org/en/latest/
+* http://virtualenv.readthedocs.io/en/latest/
 
 Installing Prerequisites
 ------------------------

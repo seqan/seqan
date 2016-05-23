@@ -85,7 +85,7 @@ namespace seqan {
  * </ul>
  *
  * For a detailed example have a look at the
- * <a href="http://seqan.readthedocs.org/en/develop/Tutorial/BlastIO.html">Blast IO tutorial</a>.
+ * <a href="http://seqan.readthedocs.io/en/develop/Tutorial/BlastIO.html">Blast IO tutorial</a>.
  *
  * Strictly speaking the <tt>writeHeader()</tt> call is not required for BlastTabular, but for consistency with
  * other (blast) formats and the read interface it is recommended.
