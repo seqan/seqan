@@ -63,7 +63,7 @@ struct VersionCheck
     std::string _website = "www.seqan.de/applications";
     std::future<bool> * _fut;
 
-        //get system information
+    //get system information
 #ifdef __linux
     std::string _os = "Linux";
 #elif __APPLE__
@@ -137,24 +137,16 @@ struct VersionCheck
     {
         // ask if system call for version or help is successfull
         if (!system("wget --version > /dev/null 2>&1"))
-        {
             _program = "wget -q -O";
-        }
         else if (!system("curl --version > /dev/null 2>&1"))
-        {
             _program =  "curl -o";
-        }
 #ifndef __linux
         // ftp call does not work on linux
         else if (!system("which ftp > /dev/null 2>&1"))
-        {
             _program =  "ftp -Vo";
-        }
 #endif
         else
-        {
             _program.clear();
-        }
     }
 #else // windows
     void _getProgramm()
