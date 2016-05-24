@@ -79,6 +79,9 @@ public:
     TScoreVec data_mismatch     = createVector<TScoreVec>(-1);
     TScoreVec data_gap_extend   = createVector<TScoreVec>(-1);
     TScoreVec data_gap_open     = createVector<TScoreVec>(-1);
+    alignas(sizeof(TScoreVec)) mutable TScoreVec tmp;
+    
+    alignas (sizeof(TScoreVec)) int16_t pos[LENGTH<TScoreVec>::VALUE]; // __attribute__((aligned(SEQAN_SIZEOF_MAX_VECTOR)));
 
     TScore const * _baseScorePtr;   // Only needed for the ScoreMatrix data table.
 
@@ -147,13 +150,14 @@ struct VectorLength_
 #define SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL(t, d, SIZE) SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_DELEGATE(SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL_##SIZE, t, d)
 
 #define SEQAN_FIXED_VECTOR_FILL_IMPL(SIZE)                                        \
-template <typename TTarget, typename TData>                                       \
+template <typename TTarget, typename TPos, typename TData>                                       \
 inline void                                                                       \
 _fixedSizeVectorFill(TTarget & target,                                            \
+                     TPos const & pos,                                            \
                      TData const & data,                                          \
                      VectorLength_<SIZE> const & /*scope*/)                       \
 {                                                                                 \
-    fillVector(target, SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL(target, data, SIZE));   \
+    fillVector(target, SEQAN_FIXED_VECTOR_FILL_VALUE_IMPL(pos, data, SIZE));   \
 }
 
 SEQAN_FIXED_VECTOR_FILL_IMPL(2)
@@ -162,15 +166,20 @@ SEQAN_FIXED_VECTOR_FILL_IMPL(8)
 SEQAN_FIXED_VECTOR_FILL_IMPL(16)
 SEQAN_FIXED_VECTOR_FILL_IMPL(32)
 
+// TODO(rrahn): We should make the fixedSizeVectorFill the fall back gather interface, if gather is not implemented.
 template <typename TValue, typename TScore, typename TVal1, typename TVal2>
 inline SEQAN_FUNC_ENABLE_IF(IsScoreMatrix_<TScore>, TValue)
-score(Score<TValue, ScoreSimdWrapper<TScore> > const & sc, TVal1 val1, TVal2 val2)
+score(Score<TValue, ScoreSimdWrapper<TScore> > const & sc, TVal1 const & val1, TVal2 const & val2)
 {
     SEQAN_ASSERT(sc._baseScorePtr != nullptr);
-
-    auto res = val1 + val2;
-    _fixedSizeVectorFill(res, sc._baseScorePtr->data_tab, VectorLength_<LENGTH<TVal1>::VALUE>());
-    return res;
+#ifdef __AVX2__
+    return gather(&sc._baseScorePtr->data_tab[0], val1 + val2);
+#else
+    TValue results;
+    storeu(&sc.pos[0], val1 + val2);
+    _fixedSizeVectorFill(results, sc.pos, sc._baseScorePtr->data_tab, VectorLength_<LENGTH<TVal1>::VALUE>());
+    return results;
+#endif
 }
 
 }

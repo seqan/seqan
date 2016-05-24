@@ -130,6 +130,10 @@ struct SimdVector;
 template <int VEC_SIZE, int LENGTH = 0>
 struct SimdParams_ {};
 
+template <int SCALE>
+struct ScaleParam_
+{};
+
 // internal struct to specialize for matrix parameters
 template <int ROWS, int COLS, int BITS_PER_VALUE>
 struct SimdMatrixParams_ {};
@@ -664,6 +668,21 @@ template <typename TSimdVector>
 inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, SimdParams_<32, 4>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_srli_epi64(SEQAN_VECTOR_CAST_(const __m256i &, vector), imm));
+}
+
+// --------------------------------------------------------------------------
+// _gather (256bit)
+// --------------------------------------------------------------------------
+
+template <typename TValue, typename TSimdVector, int SCALE>
+inline TSimdVector _gather(TValue const * memAddr, TSimdVector const & idx, ScaleParam_<SCALE> const & /*scale*/, SimdParams_<32, 16>)
+{
+    // Unpack low idx values and interleave with 0 and gather from memAddr.
+    auto tmpLo = _mm256_i32gather_epi32(static_cast<int32_t const *>(memAddr), _mm256_unpacklo_epi16(SEQAN_VECTOR_CAST_(__m256i const &, idx), _mm256_set1_epi16(0)), SCALE);
+    // Unpack high idx values and interleave with 0, than gather from memAddr.
+    auto tmpHi = _mm256_i32gather_epi32(static_cast<int32_t const *>(memAddr), _mm256_unpackhi_epi16(SEQAN_VECTOR_CAST_(__m256i const &, idx), _mm256_set1_epi16(0)), SCALE);
+    // Merge 2 8x32 vectors into 1x16 vector by signed saturation. This operation reverts the interleave by the unpack operations above.
+    return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_packs_epi32(tmpLo, tmpHi));
 }
 
 // --------------------------------------------------------------------------
@@ -1710,6 +1729,18 @@ load(T const * memAddr)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _load<TSimdVector>(memAddr, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
+}
+
+// --------------------------------------------------------------------------
+// Function gather()
+// --------------------------------------------------------------------------
+
+template <typename TValue, typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+gather(TValue const * memAddr, TSimdVector const & idx)
+{
+    typedef typename Value<TSimdVector>::Type TInnerValue;
+    return _gather(memAddr, idx, ScaleParam_<sizeof(TValue)>(), SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TInnerValue)>());
 }
 
 #endif  // SEQAN_SIMD_ENABLED
