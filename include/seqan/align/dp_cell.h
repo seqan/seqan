@@ -127,6 +127,22 @@ template <typename TScoreValue, typename TGapCostFunction>
 struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> const> :
     public DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >{};
 
+// ----------------------------------------------------------------------------
+// Metafunction StringSpecForValue_
+// ----------------------------------------------------------------------------
+
+// Defines the default infinity value for a DPCell.
+template <typename TValue, typename TSpec>
+struct StringSpecForValue_<DPCell_<TValue, TSpec> >
+{
+    typedef typename If<Is<SimdVectorConcept<TValue> >, Alloc<OverAligned>, Alloc<> >::Type Type;
+};
+
+template <typename TValue, typename TSpec>
+struct StringSpecForValue_<DPCell_<TValue, TSpec> const> :
+    StringSpecForValue_<DPCell_<TValue, TSpec> >
+{};
+
 // ============================================================================
 // Functions
 // ============================================================================

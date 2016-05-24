@@ -343,6 +343,16 @@ struct StringSpec<String<TValue, TSpec> >
 };
 
 // ----------------------------------------------------------------------------
+// Metafunction StringSpecForValue_
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+struct StringSpecForValue_
+{
+    typedef typename If<Is<SimdVectorConcept<TValue> >, Alloc<OverAligned>, Alloc<> >::Type Type;
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction Chunk
 // ----------------------------------------------------------------------------
 
