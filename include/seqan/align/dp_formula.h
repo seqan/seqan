@@ -153,7 +153,7 @@ _computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
               TDPProfile const & dpProfile)
 {
     typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
-//    static_cast<Nothing>(TScoreValue());
+
     TTraceValue traceDir = _doComputeScore(activeCell, previousDiagonal, previousHorizontal, previousVertical, seqHVal,
                                            seqVVal, scoringScheme, recDir, dpProfile);
     if (IsLocalAlignment_<TDPProfile>::VALUE)
@@ -174,7 +174,7 @@ _computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
 
 template <typename TScoreValue, typename TGapCosts, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TDPProfile>
-inline typename TraceBitMap_<TScoreValue>::Type //SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, TScoreValue)
+inline typename TraceBitMap_<TScoreValue>::Type
 _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                 DPCell_<TScoreValue, TGapCosts> const & previousDiagonal,
                 DPCell_<TScoreValue, TGapCosts> const & /*previousHorizontal*/,
@@ -185,7 +185,6 @@ _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                 RecursionDirectionDiagonal const &,
                 TDPProfile const &)
 {
-
     activeCell._score = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
     setGapExtension(activeCell, False(), False(), createVector<TScoreValue>(-1));
 

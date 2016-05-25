@@ -122,7 +122,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       RecursionDirectionDiagonal const &)
 {
     TScoreValue cmp = cmpGt(_scoreOfCell(activeCell), diagCompare);
-    blend(diagCompare, activeCell._score, cmp);
+    activeCell._score = blend(diagCompare, activeCell._score, cmp);
     setGapExtension(activeCell, False(), False(), cmp);
     return blend(TraceBitMap_<TScoreValue>::DIAGONAL | leftTrace,
                  leftTrace | gapTrace,
@@ -162,11 +162,9 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     TScoreValue cmp = cmpGt(diagCompare, _scoreOfCell(activeCell));
     activeCell._score = blend(activeCell._score, diagCompare, cmp);
     setGapExtension(activeCell, False(), False(), cmp);
-    TScoreValue result = leftTrace | gapTrace;
-    result = blend(result,
-                   TraceBitMap_<TScoreValue>::DIAGONAL | leftTrace,
-                   cmp);
-    return blend(result,
+    return blend(blend(leftTrace | gapTrace,
+                       TraceBitMap_<TScoreValue>::DIAGONAL | leftTrace,
+                       cmp),
                  leftTrace | TraceBitMap_<TScoreValue>::DIAGONAL | gapTrace,
                  cmpEq(_scoreOfCell(activeCell), diagCompare));
 }
@@ -432,9 +430,11 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPProfile_<TAlgorithm, DynamicGaps, TTracebackConfig> const &)
 {
     typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
+    typedef typename std::decay<decltype(activeCell)>::type TCell;
 
     // Compute best alignment from either horizontal open or extension.
-    DPCell_<TScoreValue, DynamicGaps> tmpScore = _scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
+    TCell tmpScore = {_scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal),
+                      typename TCell::TFlagMaskType()};
     TTraceValue tvGap = _internalComputeScore(tmpScore, previousHorizontal, seqHVal, seqVVal, scoringScheme,
                                               TTracebackConfig(), RecursionDirectionHorizontal());
 
@@ -463,9 +463,11 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPProfile_<TAlgorithm, DynamicGaps, TTracebackConfig> const &)
 {
     typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
+    typedef typename std::decay<decltype(activeCell)>::type TCell;
 
     // Compute best alignment from either horizontal open or extension.
-    DPCell_<TScoreValue, DynamicGaps> tmpScore = _scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
+    TCell tmpScore = {_scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal),
+                      typename TCell::TFlagMaskType()};
     TTraceValue tvGap = _internalComputeScore(tmpScore, previousHorizontal, seqHVal, seqVVal, scoringScheme,
                                               TTracebackConfig(), RecursionDirectionHorizontal());
 

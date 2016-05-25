@@ -140,9 +140,9 @@ void _checkAndCreateSimdRepresentation(TStringSetH const & stringsH,
 
     // sort the end positions, remove duplicates
     std::sort(endsH.begin(), endsH.end());
-    endsH.erase( std::unique( endsH.begin(), endsH.end() ), endsH.end() );
+    std::unique(endsH.begin(), endsH.end());
     std::sort(endsV.begin(), endsV.end());
-    endsV.erase( std::unique( endsV.begin(), endsV.end() ), endsV.end() );
+    std::unique(endsV.begin(), endsV.end());
 
     // now create SIMD representation
     resize(simdH, maxH);
@@ -169,8 +169,8 @@ _checkAndCreateSimdRepresentation(TContainer & align,
     // check if all sequences have the same length
     unsigned numAlignments = LENGTH<TSimdVector>::VALUE;
 
-    StringSet<TSequence, Dependent<Tight> > depSet1;
-    StringSet<TSequence, Dependent<Tight> > depSet2;
+    StringSet<TSequence, Dependent<> > depSet1;
+    StringSet<TSequence, Dependent<> > depSet2;
     reserve(depSet1, numAlignments);
     reserve(depSet2, numAlignments);
     for (auto& obj : align)
@@ -230,5 +230,62 @@ _precomputeScoreMatrixOffset(TSeqValue const & seqVal,
     return createVector<TSeqValue>(TScore::VALUE_SIZE) * seqVal;
 }
 
+// ----------------------------------------------------------------------------
+// Function _prepareAndRunSimdAlignment()
+// ----------------------------------------------------------------------------
+
+template <typename TResult,
+          typename TTraces,
+          typename TSequencesH,
+          typename TSequencesV,
+          typename TScore,
+          typename TAlgo, typename TBand, typename TFreeEndGaps, typename TTraceback,
+          typename TGapModel>
+inline void
+_prepareAndRunSimdAlignment(TResult & results,
+                            TTraces & traces,
+                            TSequencesH const & seqH,
+                            TSequencesV const & seqV,
+                            TScore const & scoringScheme,
+                            AlignConfig2<TAlgo, TBand, TFreeEndGaps, TTraceback> const & alignConfig,
+                            TGapModel const & /*gapModel*/)
+{
+    String<TResult, Alloc<OverAligned> > stringSimdH;
+    String<TResult, Alloc<OverAligned> > stringSimdV;
+    String<TResult, Alloc<OverAligned> > masksH;
+    String<TResult, Alloc<OverAligned> > masksV;
+    String<TResult, Alloc<OverAligned> > masks;
+
+    std::vector<decltype(length(seqH))> endsH;
+    std::vector<decltype(length(seqV))> endsV;
+
+    // create the SIMD representation of the alignments
+    // in case of a variable length alignment the variables masks, endsH, endsV will be filled
+    _checkAndCreateSimdRepresentation(seqH, seqV, stringSimdH, stringSimdV, masksH, masksV, masks, endsH, endsV);
+
+    // if alignments have equal dimensions do nothing
+    if(endsH.size() == 0)
+    {
+        DPScoutState_<SimdAlignEqualLength> dpScoutState;
+        results = _setUpAndRunAlignment(traces, dpScoutState, stringSimdH, stringSimdV,
+                                        scoringScheme, alignConfig, TGapModel());
+    }
+    else  // otherwise prepare the special DPScoutState
+    {
+        DPScoutState_<SimdAlignVariableLength<TResult> > dpScoutState;
+        dpScoutState.dimV = length(stringSimdV);
+        dpScoutState.isLocalAlignment = IsLocalAlignment_<TAlgo>::VALUE;
+        dpScoutState.right = IsFreeEndGap_<TFreeEndGaps, DPLastColumn>::VALUE;
+        dpScoutState.bottom = IsFreeEndGap_<TFreeEndGaps, DPLastRow>::VALUE;
+        swap(dpScoutState.masksH, masksH);
+        swap(dpScoutState.masksV, masksV);
+        swap(dpScoutState.masks, masks);
+        std::swap(dpScoutState.endsH, endsH);
+        std::swap(dpScoutState.endsV, endsV);
+        results = _setUpAndRunAlignment(traces, dpScoutState, stringSimdH, stringSimdV,
+                                        scoringScheme, alignConfig, TGapModel());
+    }
 }
+
+}  // namespace seqan
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_DP_ALIGN_SIMD_HELPER_H_

@@ -59,37 +59,11 @@ template <typename TScoreValue>
 class DPCell_<TScoreValue, AffineGaps>
 {
 public:
-    TScoreValue _score;
-    TScoreValue _horizontalScore;
-    TScoreValue _verticalScore;
+    TScoreValue _score = DPCellDefaultInfinity<DPCell_>::VALUE;
+    TScoreValue _horizontalScore = DPCellDefaultInfinity<DPCell_>::VALUE;
+    TScoreValue _verticalScore = DPCellDefaultInfinity<DPCell_>::VALUE;
 
-    // The default c'tor.
-    DPCell_() :
-        _score(DPCellDefaultInfinity<DPCell_>::VALUE),
-        _horizontalScore(DPCellDefaultInfinity<DPCell_>::VALUE),
-        _verticalScore(DPCellDefaultInfinity<DPCell_>::VALUE)
-    {}
-
-    // The copy c'tor.
-    DPCell_(DPCell_<TScoreValue, AffineGaps> const & other) :
-        _score(other._score),
-        _horizontalScore(other._horizontalScore),
-        _verticalScore(other._verticalScore)
-    {}
-
-    // The assignment operator.
-    DPCell_ &
-    operator=(DPCell_ const & other)
-    {
-        if (this != &other)
-        {
-            _score = other._score;
-            _horizontalScore = other._horizontalScore;
-            _verticalScore = other._verticalScore;
-        }
-        return *this;
-    }
-
+    // Assign score to cell.
     DPCell_ &
     operator=(TScoreValue const & score)
     {
@@ -97,10 +71,6 @@ public:
         return *this;
     }
 };
-
-SEQAN_CONCEPT(AffineGapCosts, (T)) {};
-template <typename TScoreValue>
-SEQAN_CONCEPT_IMPL((DPCell_<TScoreValue, AffineGaps>), (AffineGapCosts));
 
 // ============================================================================
 // Metafunctions

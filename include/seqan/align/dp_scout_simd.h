@@ -68,14 +68,26 @@ template <typename TSimdVector>
 class DPScoutState_<SimdAlignVariableLength<TSimdVector> >
 {
 public:
-    String<TSimdVector, Alloc<OverAligned> > masksH, masksV, masks;
-    std::vector<size_t> endsH, endsV;
-    decltype(endsH.begin()) nextEndsH, nextEndsV;
+    String<TSimdVector, Alloc<OverAligned> > masksH;
+    String<TSimdVector, Alloc<OverAligned> > masksV;
+    String<TSimdVector, Alloc<OverAligned> > masks;
 
-    size_t dimV, posH, posV;
-    bool RIGHT, BOTTOM, isLocalAlignment;
+    std::vector<size_t> endsH;
+    std::vector<size_t> endsV;
 
-    DPScoutState_() {}
+    decltype(endsH.begin()) nextEndsH;
+    decltype(endsH.begin()) nextEndsV;
+
+    size_t dimV;
+    size_t posH;
+    size_t posV;
+    bool right;
+    bool bottom;
+    bool isLocalAlignment;
+
+    // ----------------------------------------------------------------------------
+    // Function DPScout_#updateMasksRight()
+    // ----------------------------------------------------------------------------
 
     inline void updateMasksRight()
     {
@@ -83,12 +95,20 @@ public:
             masks[pos] |= masks[pos + 1];
     }
 
+    // ----------------------------------------------------------------------------
+    // Function DPScout_#updateMasksBottom()
+    // ----------------------------------------------------------------------------
+
     inline void updateMasksBottom()
     {
         for(auto pos : endsV)
             for(auto it = nextEndsH; it != endsH.end(); ++it)
                 masks[pos] |= (masksH[*it] & masksV[pos]);
     }
+
+    // ----------------------------------------------------------------------------
+    // Function DPScout_#updateMasks()
+    // ----------------------------------------------------------------------------
 
     inline void updateMasks()
     {
@@ -102,9 +122,9 @@ public:
         }
         else
         {
-            if(RIGHT && posH == *nextEndsH)
+            if(right && posH == *nextEndsH)
                 updateMasksRight();
-            if(BOTTOM)
+            if(bottom)
                 updateMasksBottom();
         }
     }
@@ -128,14 +148,8 @@ public:
     // TODO(rrahn): Abstract into a struct, so we can model different configurations.
     SimdVector<int32_t>::Type _maxHostLow; //first half of alignments
     SimdVector<int32_t>::Type _maxHostHigh; //other half
-    TScoutState * state;
-    unsigned _simdLane;
-
-    DPScout_() : state(nullptr), _simdLane(0)
-    {}
-
-    DPScout_(TScoutState & pState) : state(&pState), _simdLane(0)
-    {}
+    TScoutState * state = nullptr;
+    unsigned _simdLane = 0;
 };
 
 // ============================================================================

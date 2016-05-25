@@ -91,33 +91,10 @@ class DPCell_<TScoreValue, DynamicGaps>
 public:
     using TFlagMaskType = typename impl::dp_cell::FlagMaskType<TScoreValue>::Type;
 
-    TScoreValue     _score;
-    TFlagMaskType   _flagMask;
+    TScoreValue     _score = DPCellDefaultInfinity<DPCell_>::VALUE;
+    TFlagMaskType   _flagMask = TFlagMaskType();
 
-    // The default c'tor.
-    DPCell_() : _score(DPCellDefaultInfinity<DPCell_>::VALUE), _flagMask()
-    {}
-
-    // The copy c'tor.
-    DPCell_(DPCell_<TScoreValue, DynamicGaps> const & other) : _score(other._score), _flagMask(other._flagMask)
-    {}
-
-    // Implicit c'tor.
-    DPCell_(TScoreValue const & score) : _score(score), _flagMask()
-    {}
-
-    // The assignment operator.
-    DPCell_ &
-    operator=(DPCell_<TScoreValue, DynamicGaps> const & other)
-    {
-        if (this != &other)
-        {
-            _score = other._score;
-            _flagMask = other._flagMask;
-        }
-        return *this;
-    }
-
+    // Assignment of score.
     DPCell_ &
     operator=(TScoreValue const & score)
     {
@@ -125,10 +102,6 @@ public:
         return *this;
     }
 };
-
-SEQAN_CONCEPT(DynamicGapCosts, (T)) {};
-template <typename TScoreValue>
-SEQAN_CONCEPT_IMPL((DPCell_<TScoreValue, DynamicGaps>), (DynamicGapCosts));
 
 // ============================================================================
 // Metafunctions

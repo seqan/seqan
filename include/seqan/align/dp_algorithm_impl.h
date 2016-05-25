@@ -156,9 +156,10 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 template<typename TSequence, typename TAlignSpec>
-void prepareAlign(StringSet<Align<TSequence, TAlignSpec> > & align,
-                  TSequence const & strH,
-                  StringSet<TSequence> const & setV)
+inline void
+prepareAlign(StringSet<Align<TSequence, TAlignSpec> > & align,
+             TSequence const & strH,
+             StringSet<TSequence> const & setV)
 {
     size_t numAlignments = length(setV);
 
@@ -173,8 +174,6 @@ void prepareAlign(StringSet<Align<TSequence, TAlignSpec> > & align,
         assignSource(row(align[i], 1), setV[i]);
     }
 }
-
-
 
 // ----------------------------------------------------------------------------
 // Function _checkBandProperties()
@@ -330,7 +329,6 @@ _precomputeScoreMatrixOffset(TSeqValue const & seqVal,
 
 // Computes one track of the dp algorithm. A track is defined as the area that is filled by the inner loop and
 // iterated by the outer loop. For the column-wise navigation the track is equivalent with the column.
-
 template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSeqHValue,
           typename TSeqVValue, typename TSeqVIterator, typename TScoringScheme, typename TColumnDescriptor, typename TDPProfile>
 inline void
@@ -1314,10 +1312,7 @@ void _printTracebackMatrix(TTraceMatrix & dpTraceMatrix)
     for (unsigned row = 0; row < dimV; ++row)
     {
         for (unsigned column = 0; column < dimH; ++column)
-        {
             std::cout << _translateTraceValue(value(dpTraceMatrix, row + column * dimV)) << "\t";
-            //std::cout << _translateTraceValue(value(value(dpTraceMatrix, row + column * dimV),0)) << "\t";
-        }
         std::cout << std::endl;
     }
     std::cout << std::endl;
@@ -1502,7 +1497,7 @@ _finishAlignment(TTraceTarget & traceSegments,
 
 template <typename TScoreValue, typename TGapScheme, typename TTraceTarget, typename TScoutState, typename TSequenceH, typename TSequenceV,
           typename TScoreScheme, typename TBandSwitch, typename TAlignmentAlgorithm, typename TTraceFlag>
-inline typename Value<TScoreScheme>::Type  //SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<typename Value<TScoreScheme>::Type > >, typename Value<TScoreScheme>::Type)
+inline typename Value<TScoreScheme>::Type
 _computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
                   TTraceTarget & traceSegments,
                   TScoutState & scoutState,

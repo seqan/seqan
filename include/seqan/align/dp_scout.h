@@ -93,27 +93,11 @@ template <typename TDPCell, typename TSpec>
 class DPScout_
 {
 public:
-    typedef typename Value<TDPCell>::Type TScoreValue;
+
     TDPCell _maxScore;
+    uint32_t _maxHostPosition; // The corresponding host position within the underlying dp-matrix.
 
-    // The corresponding host position within the underlying dp-matrix.
-    uint32_t _maxHostPosition;
-
-    DPScout_() {}
     DPScout_(DPScoutState_<Default> const & /*state*/) {}
-
-    DPScout_(DPScout_ const & other) :
-        _maxScore(other._maxScore), _maxHostPosition(other._maxHostPosition) {}
-
-    DPScout_ & operator=(DPScout_ const & other)
-    {
-        if (this != &other)
-        {
-            _maxScore = other._maxScore;
-            _maxHostPosition = other._maxHostPosition;
-        }
-        return *this;
-    }
 };
 
 // Terminator_ Specialization
@@ -123,37 +107,9 @@ class DPScout_<TDPCell, Terminator_<TSpec> >
 {
 public:
     typedef DPScout_<TDPCell, Default>  TParent;
-    bool terminationCriteriumMet;
-    DPScoutState_<Terminator_<TSpec> > * state;
 
-    DPScout_()
-        : TParent(),
-          terminationCriteriumMet(false),
-          state(0)
-    {}
-
-    DPScout_(DPScoutState_<Terminator_<TSpec> > & state)
-        : TParent(),
-          terminationCriteriumMet(false),
-          state(&state)
-    {}
-
-    DPScout_(DPScout_ const & other)
-        : TParent(static_cast<TParent const &>(other)),
-          terminationCriteriumMet(other.terminationCriteriumMet),
-          state(other.state)
-    {}
-
-    DPScout_ & operator=(DPScout_ const & other)
-    {
-        if (this != &other)
-        {
-            *static_cast<TParent*>(this) = other;
-            terminationCriteriumMet = other.terminationCriteriumMet;
-            state = other.state;
-        }
-        return *this;
-    }
+    DPScoutState_<Terminator_<TSpec> > * state = nullptr;
+    bool terminationCriteriumMet = false;
 };
 
 // ============================================================================
@@ -295,7 +251,7 @@ _preInitScoutHorizontal(DPScout_<TDPCell, TSpec> const & /*scout*/)
 // ----------------------------------------------------------------------------
 
 template <typename TDPCell, typename TSpec, typename TIter>
-inline bool
+constexpr inline bool
 _reachedHorizontalEndPoint(DPScout_<TDPCell, TSpec> const & /*scout*/,
                            TIter const & /*hIt*/)
 {
@@ -318,7 +274,7 @@ _preInitScoutVertical(DPScout_<TDPCell, TSpec> const & /*scout*/)
 // ----------------------------------------------------------------------------
 
 template <typename TDPCell, typename TSpec, typename TIter>
-inline bool
+constexpr inline bool
 _reachedVerticalEndPoint(DPScout_<TDPCell, TSpec> const & /*scout*/,
                          TIter const & /*iter*/)
 {

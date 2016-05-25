@@ -61,27 +61,9 @@ class DPCell_<TScoreValue, LinearGaps>
 {
 public:
 
-    TScoreValue _score;
+    TScoreValue _score = DPCellDefaultInfinity<DPCell_>::VALUE;
 
-    // The default c'tor.
-    DPCell_() :
-        _score(DPCellDefaultInfinity<DPCell_>::VALUE)
-    {}
-
-    // The copy c'tor.
-    DPCell_(DPCell_<TScoreValue, LinearGaps> const & other) :
-        _score(other._score)
-    {}
-
-    // The assignment operator.
-    DPCell_ &
-    operator=(DPCell_<TScoreValue, LinearGaps> const & other)
-    {
-        if (this != &other)
-            _score = other._score;
-        return *this;
-    }
-
+    // Assignment of score.
     DPCell_ &
     operator=(TScoreValue const & score)
     {
@@ -89,10 +71,6 @@ public:
         return *this;
     }
 };
-
-SEQAN_CONCEPT(LinearGapCosts, (T)) {};
-template <typename TScoreValue>
-SEQAN_CONCEPT_IMPL((DPCell_<TScoreValue, LinearGaps>), (LinearGapCosts));
 
 // ============================================================================
 // Metafunctions

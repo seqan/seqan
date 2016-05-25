@@ -442,13 +442,10 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     TScoreValue cmpE = cmpEq(activeCell._horizontalScore, activeCell._score);
     activeCell._score = blend(activeCell._score, activeCell._horizontalScore, cmpG);
 
-    TScoreValue result = TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX;
-    result = blend(result,
-                   TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
-                   cmpG);
-    return blend(result,
-                 TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX |
-                 TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
+    return blend(blend(TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX,
+                       TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
+                       cmpG),
+                 TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
                  cmpE);
 }
 

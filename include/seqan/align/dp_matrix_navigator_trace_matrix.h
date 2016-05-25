@@ -73,17 +73,10 @@ public:
     typedef typename Pointer_<TDPMatrix_>::Type TDPMatrixPointer_;
     typedef typename Iterator<TDPMatrix_, Standard>::Type TDPMatrixIterator;
 
-    TDPMatrixPointer_   _ptrDataContainer;        // The pointer to the underlying Matrix.
-    int                 _laneLeap;                // Keeps track of the jump size from one column to another.
-    unsigned            _simdLane;                // Used for tracing the correct cell in case of simd vectors.
-    TDPMatrixIterator   _activeColIterator;       // The current column iterator.
-
-    DPMatrixNavigator_() :
-        _ptrDataContainer(TDPMatrixPointer_(0)),
-        _laneLeap(0),
-        _simdLane(0),
-        _activeColIterator()
-    {}
+    TDPMatrixPointer_   _ptrDataContainer  = nullptr;  // The pointer to the underlying Matrix.
+    int                 _laneLeap          = 0;  // Keeps track of the jump size from one column to another.
+    unsigned            _simdLane          = 0;  // Used for tracing the correct cell in case of simd vectors.
+    TDPMatrixIterator   _activeColIterator = TDPMatrixIterator();  // The current column iterator.
 };
 
 // ============================================================================
@@ -412,7 +405,6 @@ _scalarValue(TValue & val,
 template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec>
 inline auto
 scalarValue(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const & dpNavigator)
-    -> decltype(_scalarValue(*dpNavigator._activeColIterator, dpNavigator._simdLane))
 {
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
