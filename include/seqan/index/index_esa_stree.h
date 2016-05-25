@@ -1911,7 +1911,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
         TSize &lcp)
     {
         typedef typename Fibre<TIndex, FibreText>::Type const        TText;
-        typedef typename InfixOnValue<TText>::Type                    TInfix;
+        typedef typename InfixOnValue<TText>::Type                   TInfix;
         typedef typename Iterator<TInfix, Standard>::Type            IText;
         typedef typename Iterator<TString const, Standard>::Type    IPattern;
 

@@ -704,7 +704,7 @@ infixWithLength(StringSet< TString, TSpec > const & me, TPosition const & pos, T
 template < typename TString, typename TSpec, typename TPosBeg, typename TPosEnd>
 inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosBeg> >,
                              typename InfixOnValue<StringSet< TString, TSpec > >::Type)
-infix(StringSet<TString, TSpec > & me, TPosBeg const & posBeg, TPosEnd const & posEnd)
+infix(StringSet<TString, TSpec > & me, TPosBeg const & posBegin, TPosEnd const & posEnd)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;
@@ -712,7 +712,7 @@ infix(StringSet<TString, TSpec > & me, TPosBeg const & posBeg, TPosEnd const & p
     typedef Pair<TSetSize, TStringSize, Pack> TPair;
 
     TPair localPosBegin, localPosEnd;
-    posLocalize(localPosBegin, posBeg, stringSetLimits(me));
+    posLocalize(localPosBegin, posBegin, stringSetLimits(me));
     posLocalize(localPosEnd, posEnd, stringSetLimits(me));
     return infix(me[getSeqNo(localPosBegin)], getSeqOffset(localPosBegin), getSeqOffset(localPosEnd));
 }
@@ -720,7 +720,7 @@ infix(StringSet<TString, TSpec > & me, TPosBeg const & posBeg, TPosEnd const & p
 template < typename TString, typename TSpec, typename TPosBeg, typename TPosEnd>
 inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosBeg> >,
                              typename InfixOnValue<StringSet< TString, TSpec > const>::Type)
-infix(StringSet<TString, TSpec > const & me, TPosBeg const & posBeg, TPosEnd const & posEnd)
+infix(StringSet<TString, TSpec > const & me, TPosBeg const & posBegin, TPosEnd const & posEnd)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;
@@ -728,7 +728,7 @@ infix(StringSet<TString, TSpec > const & me, TPosBeg const & posBeg, TPosEnd con
     typedef Pair<TSetSize, TStringSize, Pack> TPair;
 
     TPair localPosBegin, localPosEnd;
-    posLocalize(localPosBegin, posBeg, stringSetLimits(me));
+    posLocalize(localPosBegin, posBegin, stringSetLimits(me));
     posLocalize(localPosEnd, posEnd, stringSetLimits(me));
     return infix(me[getSeqNo(localPosBegin)], getSeqOffset(localPosBegin), getSeqOffset(localPosEnd));
 }
