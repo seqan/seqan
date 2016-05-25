@@ -128,14 +128,14 @@ public:
     // ----------------------------------------------------------------------
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline typename Reference<StringSet>::Type
+    inline typename Reference<StringSet>::Type
     operator[](TPos pos)
     {
         return value(*this, pos);
     }
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline typename Reference<StringSet const>::Type
+    inline typename Reference<StringSet const>::Type
     operator[](TPos pos) const
     {
         return value(*this, pos);
@@ -531,7 +531,7 @@ inline void clear(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me)
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Size<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
+inline typename Size<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
 length(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me)
 {
     return length(me.limits) - 1;
@@ -644,14 +644,14 @@ stringInfixWithLength(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & m
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec, typename TPos >
-SEQAN_HOST_DEVICE inline typename Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
+inline typename Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
 value(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPos pos)
 {
     return infix(me.concat, me.limits[pos], me.limits[pos + 1]);
 }
 
 template <typename TString, typename TSpec, typename TPos >
-SEQAN_HOST_DEVICE inline typename Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type
+inline typename Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type
 value(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPos pos)
 {
     return infix(me.concat, me.limits[pos], me.limits[pos + 1]);
@@ -686,62 +686,6 @@ void swap(StringSet<TString, Owner<ConcatDirect<TSpec> > > & lhs,
     swap(lhs.limits, rhs.limits);
     swap(lhs.concat, rhs.concat);
 }
-
-// ============================================================================
-// Device Functions
-// ============================================================================
-// NOTE(esiragusa): All functions are equivalent to the originals - overloaded to remove SEQAN_HOST_DEVICE :(
-
-#ifdef PLATFORM_CUDA
-
-// --------------------------------------------------------------------------
-// Function value()
-// --------------------------------------------------------------------------
-
-template <typename TValue, typename TAlloc, typename TSpec, typename TPos >
-inline typename Value<StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > >::Type
-value(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > & me, TPos pos)
-{
-    return infix(me.concat, me.limits[pos], me.limits[pos + 1]);
-}
-
-template <typename TValue, typename TAlloc, typename TSpec, typename TPos >
-inline typename Value<StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > const>::Type
-value(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > const & me, TPos pos)
-{
-    return infix(me.concat, me.limits[pos], me.limits[pos + 1]);
-}
-
-// --------------------------------------------------------------------------
-// Function length()
-// --------------------------------------------------------------------------
-
-template <typename TValue, typename TAlloc, typename TSpec>
-inline typename Size<StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > >::Type
-length(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > const & me)
-{
-    return length(me.limits) - 1;
-}
-
-// --------------------------------------------------------------------------
-// Function back()
-// --------------------------------------------------------------------------
-
-template <typename TValue, typename TAlloc, typename TSpec>
-inline typename Reference<StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > const>::Type
-back(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > const & me)
-{
-    return value(me, length(me) - 1);
-}
-
-template <typename TValue, typename TAlloc, typename TSpec>
-inline typename Reference<StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > >::Type
-back(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > & me)
-{
-    return value(me, length(me) - 1);
-}
-
-#endif // PLATFORM_CUDA
 
 }  // namespace seqan
 

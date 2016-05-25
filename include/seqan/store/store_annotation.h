@@ -186,7 +186,7 @@ struct AnnotationTree {};
  * the functions @link RootedRandomAccessIteratorConcept#goBegin @endlink, @link InputIteratorConcept#goNext @endlink,
  * and @link RootedIteratorConcept#atEnd @endlink.
  *
- * Preorder means that the iterator visits the node befor it visits its children.
+ * Preorder means that the iterator visits the node before it visits its children.
  *
  * To obtain the type of the AnnotationTreeIterator for a FragmentStore specializiation <tt>TFragmentStore</tt>, you can
  * use the metafunction @link ContainerConcept#Iterator Iterator @endlink as follows:

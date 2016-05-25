@@ -905,7 +905,7 @@ _getScore(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpe
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
-SEQAN_HOST_DEVICE inline
+inline
 typename TextIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >::Type &
 _textIterator(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder)
 {
@@ -913,7 +913,7 @@ _textIterator(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternInde
 }
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
-SEQAN_HOST_DEVICE inline
+inline
 typename TextIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >::Type const &
 _textIterator(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & finder)
 {
@@ -925,7 +925,7 @@ _textIterator(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternInde
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
-SEQAN_HOST_DEVICE inline
+inline
 typename PatternIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >::Type &
 _patternIterator(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder)
 {
@@ -933,7 +933,7 @@ _patternIterator(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternI
 }
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
-SEQAN_HOST_DEVICE inline
+inline
 typename PatternIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >::Type const &
 _patternIterator(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & finder)
 {

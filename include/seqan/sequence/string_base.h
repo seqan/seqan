@@ -421,7 +421,7 @@ shareResources(TValue const & obj1,
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline typename Reference< String<TValue, TSpec> >::Type
+inline typename Reference< String<TValue, TSpec> >::Type
 value(String<TValue, TSpec> & me,
       TPos const & pos)
 {
@@ -433,7 +433,7 @@ value(String<TValue, TSpec> & me,
 }
 
 template <typename TValue, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline typename Reference< String<TValue, TSpec> const >::Type
+inline typename Reference< String<TValue, TSpec> const >::Type
 value(String<TValue, TSpec> const & me,
       TPos const & pos)
 {
@@ -449,7 +449,7 @@ value(String<TValue, TSpec> const & me,
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Size< String<TValue, TSpec> const>::Type
+inline typename Size< String<TValue, TSpec> const>::Type
 length(String<TValue, TSpec> const & me)
 {
     return end(me, Standard()) - begin(me, Standard());
@@ -460,7 +460,7 @@ length(String<TValue, TSpec> const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec>
-SEQAN_HOST_DEVICE inline bool
+inline bool
 empty(String<TValue, TSpec> const & me)
 {
     return end(me, Standard()) == begin(me, Standard());

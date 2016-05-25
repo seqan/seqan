@@ -307,7 +307,7 @@ namespace seqan
         TValue        leftChar;    // leftmost character
 //____________________________________________________________________________
 
-        SEQAN_HOST_DEVICE
+       
         Shape():
             hValue(0),
             XValue(0),
@@ -357,7 +357,7 @@ namespace seqan
  * @return TSize The number of elements of the shape (span) (Metafunction: @link Shape#Size @endlink).
  */
     template <typename TValue, typename TSpec>
-    inline SEQAN_HOST_DEVICE
+    inline
     typename Size< Shape<TValue, TSpec> >::Type
     length(Shape<TValue, TSpec> const &me)
     {
@@ -380,7 +380,7 @@ namespace seqan
  * @endlink function.  For gapped shapes this is the number of '1's.
  */
     template <typename TValue, typename TSpec>
-    inline SEQAN_HOST_DEVICE
+    inline
     typename Size< Shape<TValue, TSpec> >::Type
     weight(Shape<TValue, TSpec> const &me)
     {
@@ -498,13 +498,13 @@ namespace seqan
 
     // loop unrolling ...
     template <typename THValue, typename TValue, typename TIter>
-    SEQAN_HOST_DEVICE inline THValue
+    inline THValue
     _hashFixedShape(THValue hash, TIter &, TValue const, UngappedShape<1> const) {
         return hash;
     }
 
     template <typename THValue, typename TValue, typename TIter, unsigned q>
-    SEQAN_HOST_DEVICE inline THValue
+    inline THValue
     _hashFixedShape(THValue hash, TIter &it, TValue const, UngappedShape<q> const) {
         ++it;
         return _hashFixedShape(
@@ -514,7 +514,7 @@ namespace seqan
 
     // ... for fixed ungapped shapes
     template <typename TValue, unsigned q, typename TIter>
-    SEQAN_HOST_DEVICE inline typename Value< Shape<TValue, UngappedShape<q> > >::Type
+    inline typename Value< Shape<TValue, UngappedShape<q> > >::Type
     hash(Shape<TValue, UngappedShape<q> > &me, TIter it)
     {
         //typedef typename Value< Shape<TValue, UngappedShape<q> > >::Type    THValue;

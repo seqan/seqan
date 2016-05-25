@@ -37,7 +37,7 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_LOCK_H_
 #define SEQAN_PARALLEL_PARALLEL_LOCK_H_
 
-#if defined(__SSE2__) && !defined(__CUDACC__)
+#if defined(__SSE2__)
 #include <xmmintrin.h>  // _mm_pause()
 #endif
 
@@ -253,9 +253,7 @@ struct ScopedWriteLock<TLock, Serial>
 inline void
 yieldProcessor()
 {
-#if defined( __CUDACC__)
-    // don't wait on the GPU
-#elif defined(PLATFORM_WINDOWS_VS)
+#if defined(PLATFORM_WINDOWS_VS)
     YieldProcessor();
 #elif defined(__SSE2__)
     _mm_pause();
