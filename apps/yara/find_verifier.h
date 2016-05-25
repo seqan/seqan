@@ -55,7 +55,7 @@ struct Verifier
     typedef typename Position<THaystackInfix>::Type      TPosition;
     typedef TraceSegment_<TPosition, TSize>              TTraceSegment;
     typedef String<TTraceSegment>                        TTrace;
-    typedef DPScoutState_<Default>                  	 TDPState;
+    typedef DPScoutState_<Default>                       TDPState;
     typedef DPContext<int, AffineGaps>                   TDPContext;
 
     // Thread-private data.

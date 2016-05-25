@@ -659,7 +659,7 @@ namespace seqan
         typename Difference<TText>::Type parentRepLen = 0)
     {    // find first element that query is before, using operator<
         typedef typename Difference<TText>::Type            TDiff;
-        typedef typename SuffixOnValue<TText>::Type          TSuffix;
+        typedef typename SuffixOnValue<TText>::Type         TSuffix;
         typedef typename Iterator<TSuffix, Standard>::Type  TTextIter;
         typedef typename Iterator<TQuery, Standard>::Type   TQueryIter;
         typedef typename Value<TSuffix>::Type               TTextAlphabet;
