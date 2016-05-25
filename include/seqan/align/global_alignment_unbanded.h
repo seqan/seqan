@@ -656,8 +656,8 @@ String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stri
 
     for (auto pos = 0u; pos < numAlignments / sizeBatch; ++pos)
     {
-        auto infSetH = infixWithLength(stringsH.strings, pos * sizeBatch, sizeBatch);
-        auto infSetV = infixWithLength(stringsV.strings, pos * sizeBatch, sizeBatch);
+        auto infSetH = infixWithLength(stringsH, pos * sizeBatch, sizeBatch);
+        auto infSetV = infixWithLength(stringsV, pos * sizeBatch, sizeBatch);
 
         TSimdAlign resultsBatch;
         _prepareAndRunSimdAlignment(trace, resultsBatch, infSetH, infSetV, simdScoringScheme, TAlignConfig2(), TGapModel());
@@ -748,7 +748,7 @@ String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
 
     for (auto pos = 0u; pos < numAlignments / sizeBatch; ++pos)
     {
-        auto infSetV = infixWithLength(stringsV.strings, pos * sizeBatch, sizeBatch);
+        auto infSetV = infixWithLength(stringsV, pos * sizeBatch, sizeBatch);
 
         TSimdAlign resultsBatch;
         _prepareAndRunSimdAlignment(trace, resultsBatch, setH, infSetV, simdScoringScheme, TAlignConfig2(), TGapModel());
@@ -841,11 +841,25 @@ globalAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
     // Create a SIMD scoring scheme.
     Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);
 
+    // Prepare string sets with sequences.
+    StringSet<typename Source<TGapSequenceH>::Type, Dependent<> > depSetH;
+    StringSet<typename Source<TGapSequenceV>::Type, Dependent<> > depSetV;
+    reserve(depSetH, numAlignments);
+    reserve(depSetV, numAlignments);
+    auto zipCont = makeZipView(gapSeqSetH, gapSeqSetV);
+    for (auto obj : zipCont)
+    {
+        appendValue(depSetH, source(std::get<0>(obj)));
+        appendValue(depSetV, source(std::get<1>(obj)));
+    }
+
+    // Run alignments in batches.
     for (auto pos = 0u; pos < numAlignments / sizeBatch; ++pos)
     {
-        auto infSetH = infixWithLength(gapSeqSetH.strings, pos * sizeBatch, sizeBatch);
-        auto infSetV = infixWithLength(gapSeqSetV.strings, pos * sizeBatch, sizeBatch);
+        auto infSetH = infixWithLength(depSetH, pos * sizeBatch, sizeBatch);
+        auto infSetV = infixWithLength(depSetV, pos * sizeBatch, sizeBatch);
 
+        auto val = infSetH[0];
         TSimdAlign resultsBatch;
         _prepareAndRunSimdAlignment(resultsBatch, trace, infSetH, infSetV, simdScoringScheme, TAlignConfig2(), TGapModel());
 

@@ -139,6 +139,7 @@ class DPScout_<TDPCell, SimdAlignmentScout<TSpec> > :
     public DPScout_<TDPCell, Default>
 {
 public:
+    using TBase       = DPScout_<TDPCell, Default>;
     using TScoutState = DPScoutState_<TSpec>;
 
     //used in the SIMD version to keep track of all host positions
@@ -150,6 +151,9 @@ public:
     SimdVector<int32_t>::Type _maxHostHigh; //other half
     TScoutState * state = nullptr;
     unsigned _simdLane = 0;
+
+    DPScout_(TScoutState & pState) : TBase(), state(&pState)
+    {}
 };
 
 // ============================================================================

@@ -263,10 +263,22 @@ localAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
     // Create a SIMD scoring scheme.
     Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);
 
+    // Prepare string sets with sequences.
+    StringSet<typename Source<TGapSequenceH>::Type, Dependent<> > depSetH;
+    StringSet<typename Source<TGapSequenceV>::Type, Dependent<> > depSetV;
+    reserve(depSetH, numAlignments);
+    reserve(depSetV, numAlignments);
+    auto zipCont = makeZipView(gapSeqSetH, gapSeqSetV);
+    for (auto obj : zipCont)
+    {
+        appendValue(depSetH, source(std::get<0>(obj)));
+        appendValue(depSetV, source(std::get<1>(obj)));
+    }
+
     for (auto pos = 0u; pos < numAlignments / sizeBatch; ++pos)
     {
-        auto infSetH = infixWithLength(gapSeqSetH.strings, pos * sizeBatch, sizeBatch);
-        auto infSetV = infixWithLength(gapSeqSetV.strings, pos * sizeBatch, sizeBatch);
+        auto infSetH = infixWithLength(depSetH, pos * sizeBatch, sizeBatch);
+        auto infSetV = infixWithLength(depSetV, pos * sizeBatch, sizeBatch);
 
         TSimdAlign resultsBatch;
         _prepareAndRunSimdAlignment(resultsBatch, trace, infSetH, infSetV, simdScoringScheme,
