@@ -644,7 +644,7 @@ String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stri
     typedef typename SimdVector<int16_t>::Type TSimdAlign;
 
     auto const numAlignments = length(stringsV);
-    auto const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+    unsigned const sizeBatch = LENGTH<TSimdAlign>::VALUE;
 
     String<TScoreValue> results;
     resize(results, numAlignments);
@@ -660,7 +660,7 @@ String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stri
         auto infSetV = infixWithLength(stringsV, pos * sizeBatch, sizeBatch);
 
         TSimdAlign resultsBatch;
-        _prepareAndRunSimdAlignment(trace, resultsBatch, infSetH, infSetV, simdScoringScheme, TAlignConfig2(), TGapModel());
+        _prepareAndRunSimdAlignment(resultsBatch, trace, infSetH, infSetV, simdScoringScheme, TAlignConfig2(), TGapModel());
 
         // TODO(rrahn): Could be parallelized!
         for(auto x = pos * sizeBatch; x < (pos + 1) * sizeBatch; ++x)
@@ -732,7 +732,7 @@ String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
     typedef typename SimdVector<int16_t>::Type TSimdAlign;
 
     auto const numAlignments = length(stringsV);
-    auto const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+    unsigned const sizeBatch = LENGTH<TSimdAlign>::VALUE;
 
     String<TScoreValue> results;
     resize(results, numAlignments);
@@ -751,7 +751,7 @@ String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
         auto infSetV = infixWithLength(stringsV, pos * sizeBatch, sizeBatch);
 
         TSimdAlign resultsBatch;
-        _prepareAndRunSimdAlignment(trace, resultsBatch, setH, infSetV, simdScoringScheme, TAlignConfig2(), TGapModel());
+        _prepareAndRunSimdAlignment(resultsBatch, trace, setH, infSetV, simdScoringScheme, TAlignConfig2(), TGapModel());
 
         // TODO(rrahn): Could be parallelized!
         for(auto x = pos * sizeBatch; x < (pos + 1) * sizeBatch; ++x)
@@ -830,13 +830,13 @@ globalAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
     typedef typename SimdVector<int16_t>::Type                          TSimdAlign;
 
     auto const numAlignments = length(gapSeqSetH);
-    auto const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+    unsigned const sizeBatch = LENGTH<TSimdAlign>::VALUE;
 
     String<TScoreValue> results;
     resize(results, numAlignments);
 
     StringSet<String<TTraceSegment> > trace;
-    resize(trace, LENGTH<TSimdAlign>::VALUE);
+    resize(trace, sizeBatch, Exact());
 
     // Create a SIMD scoring scheme.
     Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);
@@ -861,6 +861,7 @@ globalAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
 
         auto val = infSetH[0];
         TSimdAlign resultsBatch;
+
         _prepareAndRunSimdAlignment(resultsBatch, trace, infSetH, infSetV, simdScoringScheme, TAlignConfig2(), TGapModel());
 
         // copy results and finish traceback
@@ -869,7 +870,7 @@ globalAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
         for(auto x = pos * sizeBatch; x < (pos + 1) * sizeBatch; ++x)
         {
             results[x] = resultsBatch[x - pos * sizeBatch];
-            _adaptTraceSegmentsTo(gapSeqSetH[x], gapSeqSetV[x], trace[x - pos * sizeBatch]);
+            _adaptTraceSegmentsTo(gapSeqSetH[x], gapSeqSetV[x], trace[x- pos * sizeBatch]);
         }
     }
     //call the normal non-simd function for remaining alignments

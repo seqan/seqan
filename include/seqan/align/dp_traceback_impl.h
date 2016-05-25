@@ -506,6 +506,8 @@ void _computeTraceback(TTarget & target,
     if (IsSameType<TTracebackSpec, TracebackOff>::VALUE)
         return;
 
+    clear(target);  // Make sure we have an empty target.
+    
     // Determine whether or not we place gaps to the left.
     typedef typename IsGapsLeft_<TTracebackSpec>::Type TIsGapsLeft;
 

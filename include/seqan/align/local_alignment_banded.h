@@ -252,13 +252,13 @@ localAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
     typedef typename SimdVector<int16_t>::Type                              TSimdAlign;
 
     auto const numAlignments = length(gapSeqSetH);
-    auto const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+    unsigned const sizeBatch = LENGTH<TSimdAlign>::VALUE;
 
     String<TScoreValue> results;
     resize(results, numAlignments);
 
     StringSet<String<TTraceSegment> > trace;
-    resize(trace, LENGTH<TSimdAlign>::VALUE);
+    resize(trace, sizeBatch);
 
     // Create a SIMD scoring scheme.
     Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);

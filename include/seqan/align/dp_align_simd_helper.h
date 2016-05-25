@@ -50,14 +50,6 @@ namespace seqan
 // Metafunctions
 // ============================================================================
 
-template <typename T>
-struct IsGapsObject_ : False
-{};
-
-template <typename TSeq, typename TSpec>
-struct IsGapsObject_<Gaps<TSeq, TSpec> > : True
-{};
-
 // ============================================================================
 // Functions
 // ============================================================================
@@ -77,13 +69,15 @@ void _checkAndCreateSimdRepresentation(TStringSetH const & stringsH,
                                        std::vector<size_t> & endsH,
                                        std::vector<size_t> & endsV)
 {
-    using TStringH = typename Source<typename Value<TStringSetH>::Type>::Type;
-    using TStringV = typename Source<typename Value<TStringSetV>::Type>::Type;
+    using TStringH = typename std::decay<typename Value<TStringSetH>::Type>::type;
+    using TStringV = typename std::decay<typename Value<TStringSetV>::Type>::type;
     using TSimdVector = typename Value<TSimdString>::Type;
     // check if all sequences have the same length
     unsigned int numAlignments = LENGTH<TSimdVector>::VALUE;
-    bool allEqualH = true, allEqualV = true;
-    std::vector<size_t> seqLengthsH(numAlignments), seqLengthsV(numAlignments);
+    bool allEqualH = true;
+    bool allEqualV = true;
+    std::vector<size_t> seqLengthsH(numAlignments);
+    std::vector<size_t> seqLengthsV(numAlignments);
     seqLengthsH[0] = length(stringsH[0]);
     seqLengthsV[0] = length(stringsV[0]);
 
@@ -95,8 +89,17 @@ void _checkAndCreateSimdRepresentation(TStringSetH const & stringsH,
         allEqualV &= (seqLengthsV[i] == seqLengthsV[i-1]);
     }
 
+    auto seqLength = length(stringsH[0]);
+    auto zipView = makeZipView(stringsH, stringsV);
+    bool allSameLength = std::all_of(begin(zipView, Standard()), end(zipView, Standard()),
+                                     [seqLength](auto param)
+                                     {
+                                         return (length(std::get<0>(param)) == seqLength) &&
+                                                (length(std::get<1>(param)) == seqLength);
+                                     });
+
     // if yes, create SIMD representation without doing anything else
-    if(allEqualH && allEqualV)
+    if(allSameLength)
     {
         resize(simdH, seqLengthsH[0]);
         resize(simdV, seqLengthsV[0]);
@@ -151,39 +154,6 @@ void _checkAndCreateSimdRepresentation(TStringSetH const & stringsH,
     _createSimdRepresentation(simdV, paddedV, maxV);
 }
 
-template<typename TContainerH, typename TContainerV, typename TSimdString, typename TSize>
-inline SEQAN_FUNC_ENABLE_IF(IsGapsObject_<typename Value<TContainerH>::Type>, void)
-_checkAndCreateSimdRepresentation(TContainerH & gapsH,
-                                  TContainerV & gapsV,
-                                  TSimdString & simdH,
-                                  TSimdString & simdV,
-                                  TSimdString & masksH,
-                                  TSimdString & masksV,
-                                  TSimdString & masks,
-                                  std::vector<TSize> & endsH,
-                                  std::vector<TSize> & endsV)
-{
-    using TGapsH    = typename Value<TContainerH>::Type;
-    using TGapsV    = typename Value<TContainerV>::Type;
-    using TSimdVector = typename Value<TSimdString>::Type;
-
-    // check if all sequences have the same length
-    unsigned numAlignments = LENGTH<TSimdVector>::VALUE;
-
-    StringSet<typename Source<TGapsH>::Type, Dependent<> > depSet1;
-    StringSet<typename Source<TGapsV>::Type, Dependent<> > depSet2;
-    reserve(depSet1, numAlignments);
-    reserve(depSet2, numAlignments);
-    auto zipCont = makeZipView(gapsH, gapsV);
-    for (auto obj : zipCont)
-    {
-        appendValue(depSet1, source(std::get<0>(obj)));
-        appendValue(depSet2, source(std::get<1>(obj)));
-    }
-
-    _checkAndCreateSimdRepresentation(depSet1, depSet2, simdH, simdV, masksH, masksV, masks, endsH, endsV);
-}
-
 // ----------------------------------------------------------------------------
 // Function _createSimdRepresentation()
 // ----------------------------------------------------------------------------
@@ -211,16 +181,6 @@ _createSimdRepresentation(String<TSimdVector, TSpec> & simdRepr,
                 break;
     }
 }
-
-//template<typename TSimdVector, typename TSpec, typename TString>
-//inline SEQAN_FUNC_DISABLE_IF(Is<ContainerConcept<typename Value<TString>::Type> >, void)
-//_createSimdRepresentation(String<TSimdVector, TSpec> & simdRepr,
-//                          TString const & seq,
-//                          size_t stringLength)
-//{
-//    for(size_t x = 0; x < stringLength; ++x)
-//        fillVector(simdRepr[x], seq[x]);
-//}
 
 // Actually precompute value if scoring scheme is score matrix and simd version.
 template <typename TSeqValue,

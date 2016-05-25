@@ -338,13 +338,13 @@ localAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
     typedef typename SimdVector<int16_t>::Type                              TSimdAlign;
 
     auto const numAlignments = length(gapSeqSetH);
-    auto const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+    unsigned const sizeBatch = LENGTH<TSimdAlign>::VALUE;
 
     String<TScoreValue> results;
     resize(results, numAlignments);
 
     StringSet<String<TTraceSegment> > trace;
-    resize(trace, LENGTH<TSimdAlign>::VALUE);
+    resize(trace, sizeBatch);
 
     // Create a SIMD scoring scheme.
     Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);
@@ -391,13 +391,11 @@ localAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
 // ----------------------------------------------------------------------------
 
 template <typename TSequence, typename TAlignSpec,
-typename TScoreValue, typename TScoreSpec,
-typename TAlgoTag>
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
 inline String<TScoreValue>
 localAlignment(StringSet<Align<TSequence, TAlignSpec> > & alignSet,
                Score<TScoreValue, TScoreSpec> const & scoringScheme,
-               int const lowerDiag,
-               int const upperDiag,
                TAlgoTag const & algoTag)
 {
     typedef Align<TSequence, TAlignSpec>    TAlign;
@@ -414,7 +412,7 @@ localAlignment(StringSet<Align<TSequence, TAlignSpec> > & alignSet,
         appendValue(gapSetV, row(align, 1));
     }
     
-    return localAlignment(gapSetH, gapSetV, scoringScheme, lowerDiag, upperDiag, algoTag);
+    return localAlignment(gapSetH, gapSetV, scoringScheme, algoTag);
 }
 
 // ----------------------------------------------------------------------------

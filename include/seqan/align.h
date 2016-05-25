@@ -50,6 +50,7 @@
 // ============================================================================
 
 #include <type_traits>
+#include <algorithm>
 
 #include <seqan/basic.h>
 #include <seqan/modifier.h>  // ModifiedAlphabet<>.

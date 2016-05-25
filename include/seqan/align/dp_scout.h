@@ -97,6 +97,8 @@ public:
     TDPCell _maxScore;
     uint32_t _maxHostPosition; // The corresponding host position within the underlying dp-matrix.
 
+    DPScout_() = default;
+    
     DPScout_(DPScoutState_<Default> const & /*state*/) {}
 };
 
