@@ -58,9 +58,9 @@ struct Extender
 template <typename THaystack, typename TNeedle, typename TSpec>
 struct Extender<THaystack, TNeedle, HammingDistance, TSpec>
 {
-    typedef typename Infix<THaystack const>::Type       THaystackInfix;
+    typedef typename InfixOnValue<THaystack const>::Type THaystackInfix;
     typedef ModifiedString<THaystackInfix, ModReverse>  THaystackInfixRev;
-    typedef typename Infix<TNeedle const>::Type         TNeedleInfix;
+    typedef typename InfixOnValue<TNeedle const>::Type   TNeedleInfix;
     typedef ModifiedString<TNeedleInfix, ModReverse>    TNeedleInfixRev;
 
     THaystack const &   haystack;
@@ -77,9 +77,9 @@ struct Extender<THaystack, TNeedle, HammingDistance, TSpec>
 template <typename THaystack, typename TNeedle, typename TSpec>
 struct Extender<THaystack, TNeedle, EditDistance, TSpec>
 {
-    typedef typename Infix<THaystack const>::Type       THaystackInfix;
+    typedef typename InfixOnValue<THaystack const>::Type THaystackInfix;
     typedef ModifiedString<THaystackInfix, ModReverse>  THaystackInfixRev;
-    typedef typename Infix<TNeedle const>::Type         TNeedleInfix;
+    typedef typename InfixOnValue<TNeedle const>::Type   TNeedleInfix;
     typedef ModifiedString<TNeedleInfix, ModReverse>    TNeedleInfixRev;
 
     typedef AlignTextBanded<FindPrefix,
