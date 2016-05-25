@@ -192,13 +192,13 @@ struct GetValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > const >:
 template <typename TString, typename TSpec >
 struct GetValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > >
 {
-    typedef typename StringInfix<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const Type;
+    typedef typename InfixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const Type;
 };
 
 template <typename TString, typename TSpec >
 struct GetValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>
 {
-    typedef typename StringInfix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type const Type;
+    typedef typename InfixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type const Type;
 };
 
 // --------------------------------------------------------------------------
@@ -214,40 +214,40 @@ struct Reference<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>
     : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const> {};
 
 // --------------------------------------------------------------------------
-// Metafunction StringPrefix
+// Metafunction PrefixOnValue
 // --------------------------------------------------------------------------
 
 // TODO(rrahn): Why does a prefix of the StringSet is an Infix of the concatenated string set.
 template <typename TString, typename TSpec >
-struct StringPrefix<StringSet<TString, Owner<ConcatDirect<TSpec> > > >
+struct PrefixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > >
     : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type> {};
 
 template <typename TString, typename TSpec >
-struct StringPrefix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>
+struct PrefixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>
     : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const> {};
 
 // --------------------------------------------------------------------------
-// Metafunction StringSuffix
+// Metafunction SuffixOnValue
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec>
-struct StringSuffix<StringSet<TString, Owner<ConcatDirect<TSpec> > > >
+struct SuffixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > >
     : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type> {};
 
 template <typename TString, typename TSpec>
-struct StringSuffix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>
+struct SuffixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>
     : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const> {};
 
 // --------------------------------------------------------------------------
-// Metafunction StringInfix
+// Metafunction InfixOnValue
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec >
-struct StringInfix<StringSet<TString, Owner<ConcatDirect<TSpec> > > >
+struct InfixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > >
     : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type> {};
 
 template <typename TString, typename TSpec >
-struct StringInfix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const >
+struct InfixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > const >
     : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const> {};
 
 // ============================================================================
@@ -568,75 +568,83 @@ reserve(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me,
 }
 
 // --------------------------------------------------------------------------
-// Function stringPrefix()
+// Function prefix(); For local string set position
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec, typename TPosition >
-inline typename StringPrefix<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
-stringPrefix(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPosition pos)
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosition> >,
+                             typename PrefixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type)
+prefix(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPosition pos)
 {
-    return stringInfix(me.concat, stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me))], posGlobalize(pos, stringSetLimits(me)));
+    return infix(me.concat, stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me))], posGlobalize(pos, stringSetLimits(me)));
 }
 
 template <typename TString, typename TSpec, typename TPosition >
-inline typename StringPrefix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type
-stringPrefix(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPosition pos)
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosition> >,
+                             typename PrefixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type)
+prefix(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPosition pos)
 {
-    return stringInfix(me.concat, stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me))], posGlobalize(pos, stringSetLimits(me)));
+    return infix(me.concat, stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me))], posGlobalize(pos, stringSetLimits(me)));
 }
 
 // --------------------------------------------------------------------------
-// Function stringSuffix()
+// Function suffix(); For local string set position
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec, typename TPosition >
-inline typename StringSuffix<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
-stringSuffix(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPosition pos)
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosition> >,
+                             typename SuffixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type)
+suffix(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPosition pos)
 {
-    return stringInfix(me.concat, posGlobalize(pos, stringSetLimits(me)), stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me)) + 1]);
+    return infix(me.concat, posGlobalize(pos, stringSetLimits(me)), stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me)) + 1]);
 }
 
 template <typename TString, typename TSpec, typename TPosition >
-inline typename StringSuffix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type
-stringSuffix(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPosition pos)
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosition> >,
+                             typename SuffixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type)
+suffix(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPosition pos)
 {
-    return stringInfix(me.concat, posGlobalize(pos, stringSetLimits(me)), stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me)) + 1]);
+    return infix(me.concat, posGlobalize(pos, stringSetLimits(me)), stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me)) + 1]);
 }
 
 // --------------------------------------------------------------------------
-// Function stringInfix()
+// Function infix(); For local string set position
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec, typename TPosBegin, typename TPosEnd >
-inline typename StringInfix<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
-stringInfix(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPosBegin const & posBegin, TPosEnd const & posEnd)
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosBegin> >,
+                             typename InfixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type)
+infix(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPosBegin const & posBegin, TPosEnd const & posEnd)
 {
-    return stringInfix(me.concat, posGlobalize(posBegin, stringSetLimits(me)), posGlobalize(posEnd, stringSetLimits(me)));
+    return infix(me.concat, posGlobalize(posBegin, stringSetLimits(me)), posGlobalize(posEnd, stringSetLimits(me)));
 }
 
 template <typename TString, typename TSpec, typename TPosBegin, typename TPosEnd >
-inline typename StringInfix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type
-stringInfix(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPosBegin const & posBegin, TPosEnd const & posEnd)
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosBegin> >,
+                             typename InfixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type)
+infix(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPosBegin const & posBegin, TPosEnd const & posEnd)
 {
-    return stringInfix(me.concat, posGlobalize(posBegin, stringSetLimits(me)), posGlobalize(posEnd, stringSetLimits(me)));
+    return infix(me.concat, posGlobalize(posBegin, stringSetLimits(me)), posGlobalize(posEnd, stringSetLimits(me)));
 }
 
 // --------------------------------------------------------------------------
-// Function stringInfix()
+// Function infix(); For local string set position
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec, typename TPosition, typename TSize >
-inline typename StringInfix<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
-stringInfixWithLength(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPosition const & pos, TSize const length)
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosition> >,
+                             typename InfixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type)
+infixWithLength(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPosition const & pos, TSize const length)
 {
-    return stringInfixWithLength(me.concat, posGlobalize(pos, stringSetLimits(me)), length);
+    return infixWithLength(me.concat, posGlobalize(pos, stringSetLimits(me)), length);
 }
 
 template <typename TString, typename TSpec, typename TPosition, typename TSize >
-inline typename StringInfix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type
-stringInfixWithLength(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPosition const & pos, TSize const length)
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosition> >,
+                             typename InfixOnValue<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type)
+infixWithLength(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPosition const & pos, TSize const length)
 {
-    return stringInfixWithLength(me.concat, posGlobalize(pos, stringSetLimits(me)), length);
+    return infixWithLength(me.concat, posGlobalize(pos, stringSetLimits(me)), length);
 }
 
 // --------------------------------------------------------------------------

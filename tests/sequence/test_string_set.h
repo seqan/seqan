@@ -2153,7 +2153,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Suffix)
 }
 
 // ----------------------------------------------------------------------------
-// Tests StringInfix, StringSuffix, StringPrefix
+// Tests InfixOnValue, SuffixOnValue, PrefixOnValue
 // ----------------------------------------------------------------------------
 
 template <typename TString, typename TSpec>
@@ -2175,66 +2175,66 @@ constexpr bool _isAlwaysInfix(TStringSet const &)
 }
 
 template <typename TStringSet>
-void testStringSetStringInfix(TStringSet & set)
+void testStringSetInfixOnValue(TStringSet & set)
 {
     typedef typename Value<TStringSet>::Type                TSetValue;
-    typedef typename StringInfix<TStringSet>::Type          TSetStringInfix;
+    typedef typename InfixOnValue<TStringSet>::Type          TSetInfixOnValue;
     typedef typename StringSetPosition<TStringSet>::Type    TSetPosition;
 
-    bool res = IsSameType<TSetStringInfix, typename Infix<TSetValue>::Type>::VALUE;
+    bool res = IsSameType<TSetInfixOnValue, typename Infix<TSetValue>::Type>::VALUE;
     SEQAN_ASSERT(res);
 
-    TSetStringInfix inf = stringInfix(set, TSetPosition(1, 1), TSetPosition(1, 3));
+    TSetInfixOnValue inf = infix(set, TSetPosition(1, 1), TSetPosition(1, 3));
 
     SEQAN_ASSERT(length(inf) == 2u);
     SEQAN_ASSERT(inf == infix(set[1], 1, 3));
 }
 
 template <typename TStringSet>
-void testStringSetStringSuffix(TStringSet & set)
+void testStringSetSuffixOnValue(TStringSet & set)
 {
     typedef typename Value<TStringSet>::Type                TSetValue;
-    typedef typename StringSuffix<TStringSet>::Type         TSetStringSuffix;
+    typedef typename SuffixOnValue<TStringSet>::Type         TSetSuffixOnValue;
     typedef typename StringSetPosition<TStringSet>::Type    TSetPosition;
 
     bool res = false;
 
     if (_isAlwaysInfix(set))
-        res = IsSameType<TSetStringSuffix, typename Infix<TSetValue>::Type>::VALUE;
+        res = IsSameType<TSetSuffixOnValue, typename Infix<TSetValue>::Type>::VALUE;
     else
-        res = IsSameType<TSetStringSuffix, typename Suffix<TSetValue>::Type>::VALUE;
+        res = IsSameType<TSetSuffixOnValue, typename Suffix<TSetValue>::Type>::VALUE;
 
     SEQAN_ASSERT(res);
 
-    TSetStringSuffix suf = stringSuffix(set, TSetPosition(2, 1));
+    TSetSuffixOnValue suf = suffix(set, TSetPosition(2, 1));
 
     SEQAN_ASSERT(length(suf) == 3u);
     SEQAN_ASSERT(suf == suffix(set[2], 1));
 }
 
 template <typename TStringSet>
-void testStringSetStringPrefix(TStringSet & set)
+void testStringSetPrefixOnValue(TStringSet & set)
 {
     typedef typename Value<TStringSet>::Type                TSetValue;
-    typedef typename StringPrefix<TStringSet>::Type         TSetStringPrefix;
+    typedef typename PrefixOnValue<TStringSet>::Type         TSetPrefixOnValue;
     typedef typename StringSetPosition<TStringSet>::Type    TSetPosition;
 
     bool res = false;
 
     if (_isAlwaysInfix(set))
-        res = IsSameType<TSetStringPrefix, typename Infix<TSetValue>::Type>::VALUE;
+        res = IsSameType<TSetPrefixOnValue, typename Infix<TSetValue>::Type>::VALUE;
     else
-        res = IsSameType<TSetStringPrefix, typename Prefix<TSetValue>::Type>::VALUE;
+        res = IsSameType<TSetPrefixOnValue, typename Prefix<TSetValue>::Type>::VALUE;
 
     SEQAN_ASSERT(res);
 
-    TSetStringPrefix pref = stringPrefix(set, TSetPosition(0, 3));
+    TSetPrefixOnValue pref = prefix(set, TSetPosition(0, 3));
 
     SEQAN_ASSERT(length(pref) == 3u);
     SEQAN_ASSERT(pref == prefix(set[0], 3));
 }
 
-SEQAN_TYPED_TEST(StringSetTestCommon, StringInfix)
+SEQAN_TYPED_TEST(StringSetTestCommon, InfixOnValue)
 {
     CountingChar::clear();
     typedef typename TestFixture::TStringSet TSet;
@@ -2252,11 +2252,11 @@ SEQAN_TYPED_TEST(StringSetTestCommon, StringInfix)
 
     TSet const constStrSet(strSet);
 
-    testStringSetStringInfix(strSet);
-    testStringSetStringInfix(constStrSet);
+    testStringSetInfixOnValue(strSet);
+    testStringSetInfixOnValue(constStrSet);
 }
 
-SEQAN_TYPED_TEST(StringSetTestCommon, StringPrefix)
+SEQAN_TYPED_TEST(StringSetTestCommon, PrefixOnValue)
 {
     CountingChar::clear();
 
@@ -2271,13 +2271,13 @@ SEQAN_TYPED_TEST(StringSetTestCommon, StringPrefix)
     appendValue(strSet, raw3);
     appendValue(strSet, raw4);
 
-    testStringSetStringPrefix(strSet);
+    testStringSetPrefixOnValue(strSet);
 
     typename TestFixture::TStringSet const constStrSet(strSet);
-    testStringSetStringPrefix(constStrSet);
+    testStringSetPrefixOnValue(constStrSet);
 }
 
-SEQAN_TYPED_TEST(StringSetTestCommon, StringSuffix)
+SEQAN_TYPED_TEST(StringSetTestCommon, SuffixOnValue)
 {
     CountingChar::clear();
 
@@ -2292,10 +2292,10 @@ SEQAN_TYPED_TEST(StringSetTestCommon, StringSuffix)
     appendValue(strSet, raw3);
     appendValue(strSet, raw4);
 
-    testStringSetStringSuffix(strSet);
+    testStringSetSuffixOnValue(strSet);
 
     typename TestFixture::TStringSet const constStrSet(strSet);
-    testStringSetStringSuffix(constStrSet);
+    testStringSetSuffixOnValue(constStrSet);
 }
 
 #endif // TESTS_SEQUENCE_TEST_STRINGSET_H_

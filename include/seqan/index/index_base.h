@@ -573,11 +573,11 @@ template <
 
     template < typename TText, typename TSpec >
     struct Infix< Index<TText, TSpec> >:
-        public StringInfix<TText> {};
+        InfixOnValue<TText> {};
 
     template < typename TText, typename TSpec >
     struct Infix< Index<TText, TSpec> const >:
-        public StringInfix<TText> {};
+        InfixOnValue<TText> {};
 
 //////////////////////////////////////////////////////////////////////////////
 // default table type
@@ -1101,17 +1101,17 @@ template <
 // infix
 
     template <typename TText, typename TSpec, typename TPosBegin, typename TPosEnd>
-    inline typename StringInfix<TText>::Type
+    inline typename InfixOnValue<TText>::Type
     infix(Index<TText, TSpec> &index, TPosBegin pos_begin, TPosEnd pos_end)
     {
-        return stringInfix(indexText(index), pos_begin, pos_end);
+        return infix(indexText(index), pos_begin, pos_end);
     }
 
     template <typename TText, typename TSpec, typename TPosBegin, typename TPosEnd>
-    inline typename StringInfix<TText>::Type
+    inline typename InfixOnValue<TText>::Type
     infix(Index<TText, TSpec> const &index, TPosBegin pos_begin, TPosEnd pos_end)
     {
-        return stringInfix(indexText(index), pos_begin, pos_end);
+        return infix(indexText(index), pos_begin, pos_end);
     }
 
 //////////////////////////////////////////////////////////////////////////////

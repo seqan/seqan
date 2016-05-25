@@ -144,7 +144,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     template < typename TIndex, typename TSpec >
     struct EdgeLabel< Iter< TIndex, VSTree<TSpec> > > {
-        typedef typename StringInfix< typename Fibre<TIndex, FibreText>::Type const >::Type Type;
+        typedef typename InfixOnValue< typename Fibre<TIndex, FibreText>::Type const >::Type Type;
     };
 
 /*!
@@ -1260,14 +1260,10 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  */
 
     template < typename TIndex, class TSpec >
-<<<<<<< HEAD
-    SEQAN_HOST_DEVICE inline typename StringInfix< typename Fibre<TIndex, FibreText>::Type const >::Type
-=======
-    inline typename Infix< typename Fibre<TIndex, FibreText>::Type const >::Type
->>>>>>> upstream/develop
+    inline typename InfixOnValue< typename Fibre<TIndex, FibreText>::Type const >::Type
     representative(Iter< TIndex, VSTree<TSpec> > const &it)
     {
-        return stringInfixWithLength(indexText(container(it)), getOccurrence(it), repLength(it));
+        return infixWithLength(indexText(container(it)), getOccurrence(it), repLength(it));
     }
 
 
@@ -1915,7 +1911,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
         TSize &lcp)
     {
         typedef typename Fibre<TIndex, FibreText>::Type const        TText;
-        typedef typename StringInfix<TText>::Type                    TInfix;
+        typedef typename InfixOnValue<TText>::Type                    TInfix;
         typedef typename Iterator<TInfix, Standard>::Type            IText;
         typedef typename Iterator<TString const, Standard>::Type    IPattern;
 
@@ -2198,7 +2194,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     inline typename EdgeLabel< Iter< TIndex, VSTree<TSpec> > >::Type
     parentEdgeLabel(Iter< TIndex, VSTree< TopDown<TSpec> > > const &it)
     {
-        return stringInfixWithLength(
+        return infixWithLength(
             indexText(container(it)),
             posAdd(getOccurrence(it), parentRepLength(it)),
             parentEdgeLength(it));

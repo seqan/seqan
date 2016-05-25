@@ -48,7 +48,7 @@ using namespace seqan;
 template <typename THaystack, typename TNeedle, typename TSpec>
 struct Verifier
 {
-    typedef typename StringInfix<THaystack const>::Type THaystackInfix;
+    typedef typename InfixOnValue<THaystack const>::Type THaystackInfix;
     typedef String<GapAnchor<int> >                     TGapAnchors;
     typedef AnchorGaps<TGapAnchors>                     TAnchorGaps;
     typedef typename Size<THaystackInfix>::Type         TSize;
@@ -99,7 +99,7 @@ verify(Verifier<THaystack, TNeedle, AffineGaps> & me,
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type         TFreeEndGaps;
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
 
-    THaystackInfix haystackInfix = stringInfix(me.haystack, haystackBegin, haystackEnd);
+    THaystackInfix haystackInfix = infix(me.haystack, haystackBegin, haystackEnd);
 
     if (empty(haystackInfix)) return;
 

@@ -357,12 +357,13 @@ struct Infix<THost &>:
     Infix<THost> {};
 
 // ----------------------------------------------------------------------------
-// Metafunction StringInfix
+// Metafunction InfixOnValue
 // ----------------------------------------------------------------------------
 
+// The default implementation returns Infix<T>::Type.
 template <typename T>
-struct StringInfix :
-    Infix<T>{};
+struct InfixOnValue :
+    Infix<T> {};
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -667,42 +668,6 @@ inline typename Infix<Segment<T, TSpec> const>::Type
 infixWithLength(Segment<T, TSpec> const & t, TPosBegin pos_begin, TSize length)
 {
     return infix(host(t), beginPosition(t) + pos_begin, beginPosition(t) + pos_begin + length);
-}
-
-// ----------------------------------------------------------------------------
-// Function stringInfix()
-// ----------------------------------------------------------------------------
-
-template <typename T, typename TPosBegin, typename TPosEnd>
-inline typename Infix<T>::Type
-stringInfix(T && t, TPosBegin const posBegin, TPosEnd const posEnd)
-{
-    return infix(t, posBegin, posEnd);
-}
-
-template <typename T, typename TPosBegin, typename TPosEnd>
-inline typename Infix<T *>::Type
-stringInfix(T * t, TPosBegin const posBegin, TPosEnd const posEnd)
-{
-    return infix(*t, posBegin, posEnd);
-}
-
-// ----------------------------------------------------------------------------
-// Function stringInfixWithLength()
-// ----------------------------------------------------------------------------
-
-template <typename T, typename TPosBegin, typename TSize>
-inline typename Infix<T>::Type
-stringInfixWithLength(T && t, TPosBegin const posBegin, TSize const length)
-{
-    return infixWithLength(t, posBegin, length);
-}
-
-template <typename T, typename TPosBegin, typename TSize>
-inline typename Infix<T *>::Type
-stringInfixWithLength(T * t, TPosBegin const posBegin, TSize const length)
-{
-    return infixWithLength(*t, posBegin, length);
 }
 
 //////////////////////////////////////////////////////////////////////////////

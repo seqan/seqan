@@ -157,11 +157,11 @@ struct Host<StringSet<THost, Segment<TSpec> > const> :
 
 template <typename THost, typename TSpec>
 struct Value<StringSet<THost, Segment<TSpec> > >
-    : StringInfix<THost> {};
+    : InfixOnValue<THost> {};
 
 template <typename THost, typename TSpec>
 struct Value<StringSet<THost, Segment<TSpec> > const>
-    : StringInfix<THost const> {};
+    : InfixOnValue<THost const> {};
 
 // --------------------------------------------------------------------------
 // Metafunction GetValue
@@ -170,13 +170,13 @@ struct Value<StringSet<THost, Segment<TSpec> > const>
 template <typename THost, typename TSpec>
 struct GetValue<StringSet<THost, Segment<TSpec> > >
 {
-    typedef typename StringInfix<THost>::Type const Type;
+    typedef typename InfixOnValue<THost>::Type const Type;
 };
 
 template <typename THost, typename TSpec>
 struct GetValue<StringSet<THost, Segment<TSpec> > const>
 {
-    typedef typename StringInfix<THost const>::Type const Type;
+    typedef typename InfixOnValue<THost const>::Type const Type;
 };
 
 // --------------------------------------------------------------------------
@@ -185,47 +185,47 @@ struct GetValue<StringSet<THost, Segment<TSpec> > const>
 
 template <typename THost, typename TSpec>
 struct Reference<StringSet<THost, Segment<TSpec> > >
-    : StringInfix<THost> {};
+    : InfixOnValue<THost> {};
 
 template <typename THost, typename TSpec>
 struct Reference<StringSet<THost, Segment<TSpec> > const>
-    : StringInfix<THost const> {};
+    : InfixOnValue<THost const> {};
 
 // --------------------------------------------------------------------------
 // Metafunction Prefix
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-struct StringPrefix<StringSet<THost, Segment<TSpec> > >
-    : StringInfix<THost> {};
+struct PrefixOnValue<StringSet<THost, Segment<TSpec> > >
+    : InfixOnValue<THost> {};
 
 template <typename THost, typename TSpec>
-struct StringPrefix<StringSet<THost, Segment<TSpec> > const>
-    : StringInfix<THost const> {};
+struct PrefixOnValue<StringSet<THost, Segment<TSpec> > const>
+    : InfixOnValue<THost const> {};
 
 // --------------------------------------------------------------------------
 // Metafunction Suffix
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-struct StringSuffix<StringSet<THost, Segment<TSpec> > >
-    : StringInfix<THost> {};
+struct SuffixOnValue<StringSet<THost, Segment<TSpec> > >
+    : InfixOnValue<THost> {};
 
 template <typename THost, typename TSpec>
-struct StringSuffix<StringSet<THost, Segment<TSpec> > const>
-    : StringInfix<THost const> {};
+struct SuffixOnValue<StringSet<THost, Segment<TSpec> > const>
+    : InfixOnValue<THost const> {};
 
 // --------------------------------------------------------------------------
 // Metafunction Infix
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-struct StringInfix<StringSet<THost, Segment<TSpec> > >
-    : StringInfix<THost> {};
+struct InfixOnValue<StringSet<THost, Segment<TSpec> > >
+    : InfixOnValue<THost> {};
 
 template <typename THost, typename TSpec>
-struct StringInfix<StringSet<THost, Segment<TSpec> > const >
-    : StringInfix<THost const> {};
+struct InfixOnValue<StringSet<THost, Segment<TSpec> > const >
+    : InfixOnValue<THost const> {};
 
 // ============================================================================
 // Functions
@@ -474,19 +474,19 @@ reserve(StringSet<THost, Segment<TSpec> > & me,
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec, typename TPos >
-inline typename StringInfix<THost>::Type
+inline typename InfixOnValue<THost>::Type
 value(StringSet<THost, Segment<TSpec> > & me, TPos pos)
 {
     SEQAN_ASSERT_NOT(empty(me));
-    return stringInfixWithLength(host(me), me.positions[pos], me.limits[pos + 1] - me.limits[pos]);
+    return infixWithLength(host(me), me.positions[pos], me.limits[pos + 1] - me.limits[pos]);
 }
 
 template <typename THost, typename TSpec, typename TPos >
-inline typename StringInfix<THost const>::Type
+inline typename InfixOnValue<THost const>::Type
 value(StringSet<THost, Segment<TSpec> > const & me, TPos pos)
 {
     SEQAN_ASSERT_NOT(empty(me));
-    return stringInfixWithLength(host(me), me.positions[pos], me.limits[pos + 1] - me.limits[pos]);
+    return infixWithLength(host(me), me.positions[pos], me.limits[pos + 1] - me.limits[pos]);
 }
 
 // --------------------------------------------------------------------------

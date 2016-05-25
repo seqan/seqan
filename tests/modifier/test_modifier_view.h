@@ -385,7 +385,7 @@ SEQAN_DEFINE_TEST(test_modifier_convert_in_place)
     // Non-const variant on segment.
     {
         CharString strCopy = originalStr;
-        Segment<CharString, InfixSegment> stringInfix(strCopy);
+        Segment<CharString, InfixSegment> infix(strCopy);
         convert(strCopy, CaesarChiffre<char>(1));
         SEQAN_ASSERT_EQ(expectedResult, strCopy);
     }
@@ -393,7 +393,7 @@ SEQAN_DEFINE_TEST(test_modifier_convert_in_place)
     // Const variant on segment.
     {
         CharString strCopy = originalStr;
-        Segment<CharString, InfixSegment> const stringInfix(strCopy);
+        Segment<CharString, InfixSegment> const infix(strCopy);
         convert(strCopy, CaesarChiffre<char>(1));
         SEQAN_ASSERT_EQ(expectedResult, strCopy);
     }

@@ -334,11 +334,11 @@ struct Prefix<THost &>:
     Prefix<THost> {};
 
 // ----------------------------------------------------------------------------
-// Metafunction StringPrefix
+// Metafunction PrefixOnValue
 // ----------------------------------------------------------------------------
 
 template <typename T>
-struct StringPrefix :
+struct PrefixOnValue :
     Prefix<T>{};
 
 //////////////////////////////////////////////////////////////////////////////
@@ -633,24 +633,6 @@ prefix(Segment<T, SuffixSegment> const & t,
         host(t),
         begin(t),
         iterEnd);
-}
-
-// ----------------------------------------------------------------------------
-// Function stringPrefix()
-// ----------------------------------------------------------------------------
-
-template <typename T, typename TPosEnd>
-inline typename StringPrefix<T>::Type
-stringPrefix(T && text, TPosEnd const pos)
-{
-    return prefix(text, pos);
-}
-
-template <typename T, typename TPosEnd>
-inline typename StringPrefix<T *>::Type
-stringPrefix(T * text, TPosEnd const pos)
-{
-    return prefix(*text, pos);
 }
 
 //////////////////////////////////////////////////////////////////////////////

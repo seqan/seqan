@@ -563,17 +563,17 @@ length(Finder<THaystack, TSpec> const & me)
  */
 
 template <typename THaystack, typename TSpec>
-inline typename StringInfix<THaystack>::Type
+inline typename InfixOnValue<THaystack>::Type
 infix(Finder<THaystack, TSpec> & me)
 {
-    return stringInfix(haystack(me), beginPosition(me), endPosition(me));
+    return infix(haystack(me), beginPosition(me), endPosition(me));
 }
 
 template <typename THaystack, typename TSpec>
-inline typename StringInfix<THaystack const>::Type
+inline typename InfixOnValue<THaystack const>::Type
 infix(Finder<THaystack, TSpec> const & me)
 {
-    return stringInfix(haystack(me), beginPosition(me), endPosition(me));
+    return infix(haystack(me), beginPosition(me), endPosition(me));
 }
 
 //////////////////////////////////////////////////////////////////////////////

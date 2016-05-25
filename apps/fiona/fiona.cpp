@@ -3514,7 +3514,7 @@ void traverseAndSearchCorrections(
         {
             if (/*countOccurrences(iter) >= options.repeatCutoffs[repLength(iter)] &&*/
 //                isSelfRepetitive(representative(iter)))
-                isSelfRepetitive(stringInfixWithLength(indexText(index), getOccurrence(iter), commonPrefix + 1)))
+                isSelfRepetitive(infixWithLength(indexText(index), getOccurrence(iter), commonPrefix + 1)))
             {
                 // anchor plus first edge char is repetitive -> skip the whole parent
                 skipNode = true;
@@ -4872,8 +4872,8 @@ unsigned correctReads(
                 for (int u = 0; u <= omp_get_thread_num(); ++u)
                     std::cerr << '\n';
                 std::cerr << "thread " << omp_get_thread_num() << "\t: ";
-                std::cerr << prefix(stringSuffix(store.readSeqStore, front(indexSA(myIndex))), QGRAM_LENGTH) << " - ";
-                std::cerr << prefix(stringSuffix(store.readSeqStore, back(indexSA(myIndex))), QGRAM_LENGTH);
+                std::cerr << prefix(suffix(store.readSeqStore, front(indexSA(myIndex))), QGRAM_LENGTH) << " - ";
+                std::cerr << prefix(suffix(store.readSeqStore, back(indexSA(myIndex))), QGRAM_LENGTH);
                 std::cerr << '\t' << (bktEnd - bktBegin) << "          ";
                 std::cerr << (char)27 << '[' << (omp_get_thread_num() + 1) << 'F' << std::flush;
             }
@@ -4893,7 +4893,7 @@ unsigned correctReads(
         _setSizeInval(value(myConstrainedIterator).range.i2);
         value(myConstrainedIterator).parentRight = value(myConstrainedIterator).range.i2;
         value(myConstrainedIterator).repLen = QGRAM_LENGTH;
-        value(myConstrainedIterator).lastChar = stringSuffix(store.readSeqStore, front(indexSA(myIndex)))[QGRAM_LENGTH - 1];
+        value(myConstrainedIterator).lastChar = suffix(store.readSeqStore, front(indexSA(myIndex)))[QGRAM_LENGTH - 1];
 #endif
         FionaResources &resources = resourcesPerPackage[i - 1];
         resources.bucketBegin = bktBegin;
@@ -4955,8 +4955,8 @@ unsigned correctReads(
         for (unsigned i = 0; i < 30; ++i)
         {
             FionaResources &resources = resourcesPerPackage[i];
-            std::cerr << prefix(stringSuffix(store.readSeqStore, indexSA(qgramIndex)[resources.bucketBegin]), QGRAM_LENGTH) << '\t';
-            std::cerr << prefix(stringSuffix(store.readSeqStore, indexSA(qgramIndex)[resources.bucketEnd - 1]), QGRAM_LENGTH) << '\t';
+            std::cerr << prefix(suffix(store.readSeqStore, indexSA(qgramIndex)[resources.bucketBegin]), QGRAM_LENGTH) << '\t';
+            std::cerr << prefix(suffix(store.readSeqStore, indexSA(qgramIndex)[resources.bucketEnd - 1]), QGRAM_LENGTH) << '\t';
             std::cerr << resources.cpuTime << '\t' << resources.investigatedNodes << '\t' << resources.putCorrections << '\t' << (resources.bucketEnd - resources.bucketBegin) << std::endl;
 //          std::cerr << investigatedNodes << " many error nodes have been investigated" <<std::endl;
 //          std::cerr << putCorrections << " many Corrections where found and potentially saved "<< std::endl;

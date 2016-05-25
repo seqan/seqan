@@ -58,9 +58,9 @@ struct Extender
 template <typename THaystack, typename TNeedle, typename TSpec>
 struct Extender<THaystack, TNeedle, HammingDistance, TSpec>
 {
-    typedef typename StringInfix<THaystack const>::Type THaystackInfix;
+    typedef typename InfixOnValue<THaystack const>::Type THaystackInfix;
     typedef ModifiedString<THaystackInfix, ModReverse>  THaystackInfixRev;
-    typedef typename StringInfix<TNeedle const>::Type   TNeedleInfix;
+    typedef typename InfixOnValue<TNeedle const>::Type   TNeedleInfix;
     typedef ModifiedString<TNeedleInfix, ModReverse>    TNeedleInfixRev;
 
     THaystack const &   haystack;
@@ -77,9 +77,9 @@ struct Extender<THaystack, TNeedle, HammingDistance, TSpec>
 template <typename THaystack, typename TNeedle, typename TSpec>
 struct Extender<THaystack, TNeedle, EditDistance, TSpec>
 {
-    typedef typename StringInfix<THaystack const>::Type THaystackInfix;
+    typedef typename InfixOnValue<THaystack const>::Type THaystackInfix;
     typedef ModifiedString<THaystackInfix, ModReverse>  THaystackInfixRev;
-    typedef typename StringInfix<TNeedle const>::Type   TNeedleInfix;
+    typedef typename InfixOnValue<TNeedle const>::Type   TNeedleInfix;
     typedef ModifiedString<TNeedleInfix, ModReverse>    TNeedleInfixRev;
 
     typedef AlignTextBanded<FindPrefix,
@@ -391,7 +391,7 @@ extend(Extender<THaystack, TNeedle, TDistance, TSpec> & extender,
 
     // Check seed due to Ns randomization in the index.
     TErrors needleErrorsCheck = 0;
-    THaystackInfix haystackSeed = stringInfix(extender.haystack, haystackBegin, haystackEnd);
+    THaystackInfix haystackSeed = infix(extender.haystack, haystackBegin, haystackEnd);
     TNeedleInfix needleSeed = infix(needle, needleBegin, needleEnd);
     if (!checkHammingDistance(haystackSeed, needleSeed, needleErrorsCheck, needleErrors)) return;
     SEQAN_ASSERT_EQ(needleErrors, needleErrorsCheck);
@@ -407,8 +407,8 @@ extend(Extender<THaystack, TNeedle, TDistance, TSpec> & extender,
         if (getSeqOffset(haystackBegin) > haystackLeftOffset)
             setSeqOffset(haystackLeftBegin, getSeqOffset(haystackBegin) - haystackLeftOffset);
 
-        THaystackInfix haystackLeft = stringInfix(extender.haystack, haystackLeftBegin, haystackBegin);
-        TNeedleInfix needleLeft = stringInfix(needle, 0, needleBegin);
+        THaystackInfix haystackLeft = infix(extender.haystack, haystackLeftBegin, haystackBegin);
+        TNeedleInfix needleLeft = infix(needle, 0, needleBegin);
 
         if (!_extendLeft(extender, haystackLeft, needleLeft, matchBegin, needleErrors, maxErrors)) return;
     }
@@ -423,8 +423,8 @@ extend(Extender<THaystack, TNeedle, TDistance, TSpec> & extender,
         if (getSeqOffset(haystackRightEnd) > getSeqOffset(haystackBegin) + haystackRightOffset)
             setSeqOffset(haystackRightEnd, getSeqOffset(haystackBegin) + haystackRightOffset);
 
-        THaystackInfix haystackRight = stringInfix(extender.haystack, haystackEnd, haystackRightEnd);
-        TNeedleInfix needleRight = stringInfix(needle, needleEnd, needleLength);
+        THaystackInfix haystackRight = infix(extender.haystack, haystackEnd, haystackRightEnd);
+        TNeedleInfix needleRight = infix(needle, needleEnd, needleLength);
 
         if (!_extendRight(extender, haystackRight, needleRight, matchEnd, needleErrors, maxErrors)) return;
     }
