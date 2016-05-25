@@ -1331,7 +1331,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     addOption(parser, ArgParseOption("sq",
                                      "show-qualities",
                                      "Show qualities instead of individual coverage in SNP output. Default: off."
-                                     "Warning: Since the Phred-string can contain ';' which happens also to be the "
+                                     "Warning: Since the Phred-string can contain ';' which also happens to be the "
                                      "delimiter of the info field, this is likely to cause trouble when parsing from "
                                      "the resulting VCF file."));
     addOption(parser, ArgParseOption("sqo",
@@ -1339,9 +1339,9 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
                                      "Base qualities are encoded as char value - 64 (instead of char - 33)."));
     addOption(parser, ArgParseOption("id",
                                      "indel-file",
-                                     "Output file for called indels in gff format. Default: off.",
+                                     "Output file for called indels in VCF format. Default: off.",
                                      ArgParseArgument::OUTPUT_FILE));
-    setValidValues(parser, "indel-file", ".gff");
+    setValidValues(parser, "indel-file", ".vcf");
     addOption(parser, ArgParseOption("m", "method",
                                      "Set method used for SNP calling either threshold based or Maq method.",
                                      ArgParseArgument::STRING));
