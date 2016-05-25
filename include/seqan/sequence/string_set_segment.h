@@ -157,11 +157,11 @@ struct Host<StringSet<THost, Segment<TSpec> > const> :
 
 template <typename THost, typename TSpec>
 struct Value<StringSet<THost, Segment<TSpec> > >
-    : Infix<THost> {};
+    : InfixOnValue<THost> {};
 
 template <typename THost, typename TSpec>
 struct Value<StringSet<THost, Segment<TSpec> > const>
-    : Infix<THost const> {};
+    : InfixOnValue<THost const> {};
 
 // --------------------------------------------------------------------------
 // Metafunction GetValue
@@ -170,13 +170,13 @@ struct Value<StringSet<THost, Segment<TSpec> > const>
 template <typename THost, typename TSpec>
 struct GetValue<StringSet<THost, Segment<TSpec> > >
 {
-    typedef typename Infix<THost>::Type const Type;
+    typedef typename InfixOnValue<THost>::Type const Type;
 };
 
 template <typename THost, typename TSpec>
 struct GetValue<StringSet<THost, Segment<TSpec> > const>
 {
-    typedef typename Infix<THost const>::Type const Type;
+    typedef typename InfixOnValue<THost const>::Type const Type;
 };
 
 // --------------------------------------------------------------------------
@@ -185,47 +185,47 @@ struct GetValue<StringSet<THost, Segment<TSpec> > const>
 
 template <typename THost, typename TSpec>
 struct Reference<StringSet<THost, Segment<TSpec> > >
-    : Infix<THost> {};
+    : InfixOnValue<THost> {};
 
 template <typename THost, typename TSpec>
 struct Reference<StringSet<THost, Segment<TSpec> > const>
-    : Infix<THost const> {};
+    : InfixOnValue<THost const> {};
 
 // --------------------------------------------------------------------------
 // Metafunction Prefix
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-struct Prefix<StringSet<THost, Segment<TSpec> > >
-    : Infix<THost> {};
+struct PrefixOnValue<StringSet<THost, Segment<TSpec> > >
+    : InfixOnValue<THost> {};
 
 template <typename THost, typename TSpec>
-struct Prefix<StringSet<THost, Segment<TSpec> > const>
-    : Infix<THost const> {};
+struct PrefixOnValue<StringSet<THost, Segment<TSpec> > const>
+    : InfixOnValue<THost const> {};
 
 // --------------------------------------------------------------------------
 // Metafunction Suffix
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-struct Suffix<StringSet<THost, Segment<TSpec> > >
-    : Infix<THost> {};
+struct SuffixOnValue<StringSet<THost, Segment<TSpec> > >
+    : InfixOnValue<THost> {};
 
 template <typename THost, typename TSpec>
-struct Suffix<StringSet<THost, Segment<TSpec> > const>
-    : Infix<THost const> {};
+struct SuffixOnValue<StringSet<THost, Segment<TSpec> > const>
+    : InfixOnValue<THost const> {};
 
 // --------------------------------------------------------------------------
 // Metafunction Infix
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-struct Infix<StringSet<THost, Segment<TSpec> > >
-    : Infix<THost> {};
+struct InfixOnValue<StringSet<THost, Segment<TSpec> > >
+    : InfixOnValue<THost> {};
 
 template <typename THost, typename TSpec>
-struct Infix<StringSet<THost, Segment<TSpec> > const >
-    : Infix<THost const> {};
+struct InfixOnValue<StringSet<THost, Segment<TSpec> > const >
+    : InfixOnValue<THost const> {};
 
 // ============================================================================
 // Functions
@@ -474,7 +474,7 @@ reserve(StringSet<THost, Segment<TSpec> > & me,
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec, typename TPos >
-inline typename Infix<THost>::Type
+inline typename InfixOnValue<THost>::Type
 value(StringSet<THost, Segment<TSpec> > & me, TPos pos)
 {
     SEQAN_ASSERT_NOT(empty(me));
@@ -482,7 +482,7 @@ value(StringSet<THost, Segment<TSpec> > & me, TPos pos)
 }
 
 template <typename THost, typename TSpec, typename TPos >
-inline typename Infix<THost const>::Type
+inline typename InfixOnValue<THost const>::Type
 value(StringSet<THost, Segment<TSpec> > const & me, TPos pos)
 {
     SEQAN_ASSERT_NOT(empty(me));
