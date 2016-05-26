@@ -524,7 +524,7 @@ _getWordRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */,
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                TRankDictionary;
 
-    // TODO: remove the bitshift for values2 by adjusting the bitmasks
+    // TODO: remove the bitshift for word2 by adjusting the bitmasks
     TWord word2 = word << (TRankDictionary::_BITS_PER_WORD % TRankDictionary::_BITS_PER_VALUE);
     TWord mask = word2 ^ TRankDictionary::_BITMASKS[ordValue(c)];
 
@@ -617,28 +617,14 @@ _getWordRank(RankDictionary<bool, Levels<bool, TConfig> > const & /* dict */,
 }
 
 // TODO: optimized version for DNA (no for-loop). test performance and remove if not needed
-template <typename TSpec, typename TConfig, typename TWord, typename TPosInWord>
-inline typename Size<RankDictionary<Dna, Levels<TSpec, TConfig> > const>::Type
-_getWordRank(RankDictionary<Dna, Levels<TSpec, TConfig> > const & /*dict*/,
-             TWord const & values,
-             TPosInWord posInWord,
-             Dna c)
-{
-    typedef RankDictionary<Dna, Levels<TSpec, TConfig> >                TRankDictionary;
-
-    TWord mask = values ^ TRankDictionary::_BITMASKS[ordValue(c)];
-    return popCount(TRankDictionary::_NEWBITMASKS[posInWord] & mask & (mask >> 1));
-}
-
-// TODO: optimized version for DNA (no for-loop). test performance and remove if not needed
-template <typename TSpec, typename TConfig, typename TWord, typename TPosInWord>
-inline typename Size<RankDictionary<bool, Levels<TSpec, TConfig> > const>::Type
-_getWordRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & /* dict */,
+template <typename TConfig, typename TWord, typename TPosInWord>
+inline typename Size<RankDictionary<bool, Levels<char, TConfig> > const>::Type
+_getWordRank(RankDictionary<bool, Levels<char, TConfig> > const & /* dict */,
              TWord const & values,
              TPosInWord posInWord,
              bool c)
 {
-    typedef RankDictionary<bool, Levels<TSpec, TConfig> >                TRankDictionary;
+    typedef RankDictionary<bool, Levels<char, TConfig> >                TRankDictionary;
 
     TWord mask = values ^ TRankDictionary::_BITMASKS[c];
     return popCount(TRankDictionary::_NEWBITMASKS[posInWord] & mask);
@@ -686,15 +672,15 @@ _getValueRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict,
     return valueRank;
 }
 
-template <typename TValue, typename TSpec, typename TConfig, typename TValues, typename TPosInBlock, typename TSmaller>
-inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
-_getValueRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict,
+template <typename TValue, typename TConfig, typename TValues, typename TPosInBlock, typename TSmaller>
+inline typename Size<RankDictionary<TValue, Levels<int, TConfig> > const>::Type
+_getValueRank(RankDictionary<TValue, Levels<int, TConfig> > const & dict,
               TValues const & values,
               TPosInBlock posInBlock,
               TValue c,
               TSmaller & smaller)
 {
-    typedef RankDictionary<TValue, Levels<TSpec, TConfig> > TRankDictionary;
+    typedef RankDictionary<TValue, Levels<int, TConfig> > TRankDictionary;
     typedef typename Size<TRankDictionary>::Type            TSize;
 
     TSize wordPos    = _toWordPos(dict, posInBlock);
@@ -707,7 +693,7 @@ _getValueRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict,
     //      valueRank += _getWordRank(dict, values[wordPrevPos].i, c);
 
     for (TSize wordPrevPos = 0; wordPrevPos < TRankDictionary::_WORDS_PER_BLOCK; ++wordPrevPos)
-        if (wordPrevPos < wordPos) valueRank += _getWordRank(dict, values[wordPrevPos].i, c, smaller);
+        if (wordPrevPos < wordPos) valueRank += _getWordRank(dict, values[wordPrevPos].i, RankDictionary<TValue, Levels<int, TConfig> >::_VALUES_PER_WORD - 1, c, smaller);
 
     valueRank += _getWordRank(dict, values[wordPos].i, posInWord, c);
 
