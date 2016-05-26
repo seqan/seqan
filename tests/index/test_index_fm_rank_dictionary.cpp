@@ -34,6 +34,7 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
+#include <seqan/reduced_aminoacid.h>
 #include <seqan/index.h>
 
 #include "test_index_helpers.h"
@@ -42,7 +43,7 @@ using namespace seqan;
 
 // ==========================================================================
 // Metafunctions
-// ========================================================================== 
+// ==========================================================================
 
 // ----------------------------------------------------------------------------
 // Metafunction Size
@@ -58,7 +59,7 @@ using namespace seqan;
 
 // ==========================================================================
 // Types
-// ========================================================================== 
+// ==========================================================================
 
 // --------------------------------------------------------------------------
 // RankDictionary Types
@@ -67,7 +68,13 @@ using namespace seqan;
 typedef
     TagList<RankDictionary<bool,            Naive<> >,
     TagList<RankDictionary<bool,            Levels<> >,
+    //TagList<RankDictionary<Dna,             Levels<int> >
     TagList<RankDictionary<Dna,             Levels<> >,
+    TagList<RankDictionary<Rna,             Levels<> >,
+    TagList<RankDictionary<Dna5,            Levels<> >,
+    TagList<RankDictionary<Rna5,            Levels<> >,
+    TagList<RankDictionary<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >,            Levels<> >,
+    TagList<RankDictionary<AminoAcid,       Levels<> >,
     TagList<RankDictionary<char,            Levels<> >,
     TagList<RankDictionary<Dna,             WaveletTree<> >,
     TagList<RankDictionary<Dna5,            WaveletTree<> >,
@@ -76,16 +83,17 @@ typedef
     TagList<RankDictionary<AminoAcid,       WaveletTree<> >,
     TagList<RankDictionary<char,            WaveletTree<> >,
     TagList<RankDictionary<unsigned char,   WaveletTree<> >
-    > > > > > > > > > > >
+    > > > > > > > > > > > > > > > >
     RankDictionaryTypes;
 
-// ========================================================================== 
+// ==========================================================================
 // Test Classes
-// ========================================================================== 
+// ==========================================================================
 
 // --------------------------------------------------------------------------
 // Class RankDictionaryTest
 // --------------------------------------------------------------------------
+
 
 template <typename TRankDictionary>
 class RankDictionaryTest : public Test
@@ -108,7 +116,8 @@ public:
 
     void setUp()
     {
-        createText(text, TValue());
+        //createText(text, TValue());
+        generateText(text, 50000);
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
     }
@@ -116,9 +125,9 @@ public:
 
 SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryTypes);
 
-// ========================================================================== 
+// ==========================================================================
 // Tests
-// ========================================================================== 
+// ==========================================================================
 
 // ----------------------------------------------------------------------------
 // Test RankDictionary()
@@ -184,6 +193,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
 
     // The prefix sum is built while scanning the text.
     TPrefixSum prefixSum;
+
     resize(prefixSum, this->alphabetSize, 0);
 
     // Scan the text.
@@ -197,6 +207,49 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
             SEQAN_ASSERT_EQ(getRank(dict, (unsigned long)(textIt - this->textBegin), c), prefixSum[c]);
     }
 }
+
+/*SEQAN_TYPED_TEST(RankDictionaryTest, GetRankWithPrefix)
+{
+    typedef typename TestFixture::TValueSize            TValueSize;
+    typedef typename TestFixture::TText                 TText;
+    typedef typename TestFixture::TTextIterator         TTextIterator;
+    typedef typename Size<TText>::Type                  TTextSize;
+    typedef String<TTextSize>                           TPrefixSum;
+
+    typename TestFixture::TRankDict dict(this->text);
+
+    // The prefix sum is built while scanning the text.
+    TPrefixSum prefixSum;
+
+    resize(prefixSum, this->alphabetSize, 0);
+
+    // Scan the text.
+    for (TTextIterator textIt = this->textBegin; textIt != this->textEnd; ++textIt)
+    {
+        // Update the prefix sum.
+        prefixSum[ordValue(value(textIt))]++;
+
+        // Check the rank for all alphabet symbols.
+        unsigned long smallerNaive = 0;
+        for (TValueSize c = 0; c < this->alphabetSize; ++c)
+        {
+            //std::cout << "prefixSum: " << prefixSum[c] << std::endl;
+            //std::cout << "unsigned long: " << (unsigned long)(textIt - this->textBegin) << std::endl;
+            unsigned long pos = textIt - this->textBegin;
+            //if (pos == 128)
+            //    std::cout << "xxx" << std::endl;
+            unsigned long smaller = 0;
+            //std::cout << prefixSum[c] << std::endl;
+            //unsigned long rank = getRank(dict, pos, c);
+
+            unsigned long rank = getRank(dict, pos, c, smaller);
+            SEQAN_ASSERT_EQ(rank, prefixSum[c]);
+            SEQAN_ASSERT_EQ(smaller, smallerNaive);
+            smallerNaive += prefixSum[c];
+        }
+        //std::cout << prefixSum[0] << " " << prefixSum[1] << " " << prefixSum[2] << " " << prefixSum[3] << std::endl;
+    }
+}*/
 
 // ----------------------------------------------------------------------------
 // Test setValue()
