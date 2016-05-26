@@ -39,6 +39,7 @@
 #include "test_modifier_shortcuts.h"
 #include "test_modifier_string.h"
 #include "test_modifier_view.h"
+#include "test_modifier_string_padding.h"
 
 
 SEQAN_BEGIN_TESTSUITE(test_modifier) 
@@ -120,5 +121,14 @@ SEQAN_BEGIN_TESTSUITE(test_modifier)
 
     SEQAN_CALL_TEST(test_modifier_minimal);
     SEQAN_CALL_TEST(test_modifier_reverse_back_front);
+
+    // Test modified string with padding.
+    SEQAN_CALL_TEST(test_modified_string_padding_construction);
+    SEQAN_CALL_TEST(test_modified_string_padding_expand);
+    SEQAN_CALL_TEST(test_modified_string_padding_length);
+    SEQAN_CALL_TEST(test_modified_string_padding_begin);
+    SEQAN_CALL_TEST(test_modified_string_padding_end);
+    SEQAN_CALL_TEST(test_modified_string_padding_difference);
+    SEQAN_CALL_TEST(test_modified_string_padding_iterate);
 }
 SEQAN_END_TESTSUITE
