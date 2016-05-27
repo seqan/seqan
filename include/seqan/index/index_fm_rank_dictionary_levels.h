@@ -34,6 +34,7 @@
 
 #ifndef INDEX_FM_RANK_DICTIONARY_LEVELS_H_
 #define INDEX_FM_RANK_DICTIONARY_LEVELS_H_
+#include <bitset>
 
 namespace seqan {
 
@@ -107,22 +108,14 @@ struct Levels {};
 
 // TODO: merge into one method. clean-up! constBlocks
 template <typename TWord>
-constexpr TWord _bitmask(unsigned const bitsTotal, unsigned blocks, unsigned const blocksize, TWord const value)
-{
-    return (blocks == 1) ?
-           (value << (bitsTotal % blocksize)) :
-           _bitmask<TWord>(bitsTotal, blocks - 1, blocksize, value | value << blocksize);
-}
-
-template <typename TWord>
 constexpr TWord _bitmask2(unsigned const bitsTotal, unsigned blocks, unsigned const constBlocks, unsigned const blocksize, TWord const value)
 {
     return (blocks == constBlocks) ?
            _bitmask2<TWord>(bitsTotal, blocks - 1, constBlocks, blocksize, value << (bitsTotal - blocksize)) :
            (
-                   (blocks == 0) ?
-                   value :
-                   _bitmask2<TWord>(bitsTotal, blocks - 1, constBlocks, blocksize, value | (value >> blocksize))
+               (blocks == 0) ?
+               value >> (bitsTotal % blocksize) :
+               _bitmask2<TWord>(bitsTotal, blocks - 1, constBlocks, blocksize, value | (value >> blocksize))
            );
 }
 
@@ -299,7 +292,7 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
         // TODO: no code duplication. make it a const-expr?
         auto maxValue = (1 << _BITS_PER_VALUE) - 1;
         for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
-            _BITMASKS[i] = _bitmask<TWordType>(_BITS_PER_WORD, _VALUES_PER_WORD, _BITS_PER_VALUE, maxValue-i);
+            _BITMASKS[i] = _bitmask2<TWordType>(_BITS_PER_WORD, _VALUES_PER_WORD, _VALUES_PER_WORD, _BITS_PER_VALUE, maxValue-i);
 
         for (unsigned i = 0; i < _VALUES_PER_WORD; ++i)
             _NEWBITMASKS[i] = _bitmask2<TWordType>(_BITS_PER_WORD, i+1, i+1, _BITS_PER_VALUE, 1);
@@ -311,10 +304,9 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
     {
         auto maxValue = (1 << _BITS_PER_VALUE) - 1;
         for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
-        _BITMASKS[i] = _bitmask<TWordType>(_BITS_PER_WORD, _VALUES_PER_WORD, _BITS_PER_VALUE, maxValue-i);
-
+            _BITMASKS[i] = _bitmask2<TWordType>(_BITS_PER_WORD, _VALUES_PER_WORD, _VALUES_PER_WORD, _BITS_PER_VALUE, maxValue-i);
         for (unsigned i = 0; i < _VALUES_PER_WORD; ++i)
-        _NEWBITMASKS[i] = _bitmask2<TWordType>(_BITS_PER_WORD, i+1, i+1, _BITS_PER_VALUE, 1);
+            _NEWBITMASKS[i] = _bitmask2<TWordType>(_BITS_PER_WORD, i+1, i+1, _BITS_PER_VALUE, 1);
 
         createRankDictionary(*this, text);
     }
@@ -524,9 +516,7 @@ _getWordRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */,
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                TRankDictionary;
 
-    // TODO: remove the bitshift for word2 by adjusting the bitmasks
-    TWord word2 = word << (TRankDictionary::_BITS_PER_WORD % TRankDictionary::_BITS_PER_VALUE);
-    TWord mask = word2 ^ TRankDictionary::_BITMASKS[ordValue(c)];
+    TWord mask = word ^ TRankDictionary::_BITMASKS[ordValue(c)];
 
     // NOTE: actually it should be: mask & mask >> 1 & mask >> 2 & ... but this is easier and equivalent
     for (TWord i = 1; i < TRankDictionary::_BITS_PER_VALUE; ++i)
