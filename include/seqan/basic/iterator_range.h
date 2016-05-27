@@ -102,7 +102,6 @@ public:
     // Operator =
     // ------------------------------------------------------------------------
 
-    SEQAN_HOST_DEVICE
     Range &
     operator=(Range const &other)
     {
@@ -331,7 +330,7 @@ assign(Range<TIterator> &range, TContainer &cont)
 }
 
 template <typename TIterator, typename TContainer>
-SEQAN_HOST_DEVICE inline void
+inline void
 assign(Range<TIterator> &range, TContainer const &cont)
 {
     range.begin = begin(cont, Standard());
