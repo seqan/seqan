@@ -616,20 +616,6 @@ _getWordRank(RankDictionary<bool, Levels<bool, TConfig> > const & /* dict */,
     return popCount(mask);
 }
 
-// TODO: optimized version for DNA (no for-loop). test performance and remove if not needed
-template <typename TConfig, typename TWord, typename TPosInWord>
-inline typename Size<RankDictionary<bool, Levels<char, TConfig> > const>::Type
-_getWordRank(RankDictionary<bool, Levels<char, TConfig> > const & /* dict */,
-             TWord const & values,
-             TPosInWord posInWord,
-             bool c)
-{
-    typedef RankDictionary<bool, Levels<char, TConfig> >                TRankDictionary;
-
-    TWord mask = values ^ TRankDictionary::_BITMASKS[c];
-    return popCount(TRankDictionary::_NEWBITMASKS[posInWord] & mask);
-}
-
 // ----------------------------------------------------------------------------
 // Function _getWordRank()
 // ----------------------------------------------------------------------------
@@ -807,7 +793,7 @@ getRank(RankDictionary<TValue, Levels<int, TConfig> > const & dict, TPos pos, Dn
 
     // c == Dna('A')
     return _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c))
-         + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c)); // TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+         + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
 }
 
 // TODO: nicht möglich. auch bei kumulativer version wollen wir bei ordValue(c) == 0
