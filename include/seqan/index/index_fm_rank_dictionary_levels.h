@@ -106,7 +106,7 @@ struct Levels {};
 // Metafunction RankDictionaryBitMask_
 // ----------------------------------------------------------------------------
 
-// TODO: merge into one method. clean-up! constBlocks
+// TODO: simplify
 template <typename TWord>
 constexpr TWord _bitmask2(unsigned const bitsTotal, unsigned blocks, unsigned const constBlocks, unsigned const blocksize, TWord const value)
 {
@@ -554,56 +554,6 @@ _getWordRank(RankDictionary<Dna, Levels<int, TConfig> > const &,
     smaller += _smaller - rest;
 
     return popCount(masks[ordValue(c)]) - _smaller;
-}
-
-// TODO: original implementation by esirgusa (just for reference and performance comparison)
-template <typename TConfig, typename TWord, typename TPosInWord>
-inline typename Size<RankDictionary<Dna, Levels<bool, TConfig> > const>::Type
-_getWordRank(RankDictionary<Dna, Levels<bool, TConfig> > const & /* dict */,
-             TWord const & values,
-             TPosInWord posInWord,
-             Dna c)
-{
-    typedef RankDictionary<Dna, Levels<bool, TConfig> >                TRankDictionary;
-    typedef typename Size<TRankDictionary>::Type                        TSize;
-
-    // Clear the last positions.
-    TWord word = hiBits(values, TRankDictionary::_BITS_PER_VALUE * (posInWord + 1));
-
-    // And matches when c == G|T.
-    TWord odd  = ((ordValue(c) & ordValue(Dna('G'))) ? word : ~word) >> 1;
-
-    // And matches when c == C|T.
-    TWord even = ((ordValue(c) & ordValue(Dna('C'))) ? word : ~word);
-
-    // Apply the interleaved mask.
-    TWord mask = odd & even & RankDictionaryBitMask_<TWord>::VALUE;
-
-    // The rank is the sum of the bits on.
-    TSize valueRank = popCount(mask);
-
-    // If c == A then masked character positions must be subtracted from the count.
-    if (c == Dna('A')) valueRank -= TRankDictionary::_VALUES_PER_WORD - (posInWord + 1);
-
-    return valueRank;
-}
-
-// TODO: original implementation by esirgusa (just for reference and performance comparison)
-template <typename TConfig, typename TWord, typename TPosInWord>
-inline typename Size<RankDictionary<bool, Levels<bool, TConfig> > const>::Type
-_getWordRank(RankDictionary<bool, Levels<bool, TConfig> > const & /* dict */,
-             TWord const & values,
-             TPosInWord posInWord,
-             bool c)
-{
-    // Negate the values to compute the rank of zero.
-    TWord word = c ? values : ~values;
-
-    // Clear the last positions.
-    TWord mask = hiBits(word, posInWord + 1);
-
-    // Get the sum of the bits on.
-    return popCount(mask);
 }
 
 // ----------------------------------------------------------------------------
