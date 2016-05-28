@@ -38,6 +38,7 @@
 // #define __ORG_OMP_
 #define __TBB_TASKS_
 
+#include <mutex>
 #ifdef __TBB_TASKS_
 #include "tbb/task.h"
 #include "tbb/enumerable_thread_specific.h"
@@ -921,59 +922,133 @@ implParallelAlign(TTarget & target,
       DagTask* successor[2];
 
     private:
-      const int i, j;
-      TDpContext& dpContext;
-      String<TTraceTile>& tracebackBlock;
-      const TSeqH& seqH;
-      const TSeqV& seqV;
-      TTileBuffer& tileBuffer;
-      const Score<TScoreValue, TScoreSpec>& score;
+        const int i, j;
+        bool isExecuted;
+        TDpContext& dpContext;
+        String<TTraceTile>& tracebackBlock;
+        const TSeqH& seqH;
+        const TSeqV& seqV;
+        TTileBuffer& tileBuffer;
+        const Score<TScoreValue, TScoreSpec>& score;
+        unsigned simdVectorLength = 4;
+        ConcurrentQueue<DagTask*> & queue;
+        std::mutex& lock;
 
     public:
-      DagTask(const int i, const int j,
-	      TDpContext& dpContext,
-	      String<TTraceTile>& tracebackBlock,
-	      const TSeqH& seqH, const TSeqV& seqV,
-	      TTileBuffer& tileBuffer,
-	      const Score<TScoreValue, TScoreSpec>& score) :
-        i(i), j(j),
+        DagTask(const int i, const int j,
+                TDpContext& dpContext,
+                String<TTraceTile>& tracebackBlock,
+                const TSeqH& seqH, const TSeqV& seqV,
+                TTileBuffer& tileBuffer,
+                const Score<TScoreValue, TScoreSpec>& score,
+                ConcurrentQueue<DagTask*> & pQueue,
+                std::mutex & pLock) :
+        i(i), j(j), isExecuted(false),
         dpContext(dpContext),
-	tracebackBlock(tracebackBlock),
-	seqH(seqH), seqV(seqV),
-	tileBuffer(tileBuffer),
-	score(score)
-      {}
+        tracebackBlock(tracebackBlock),
+        seqH(seqH), seqV(seqV),
+        tileBuffer(tileBuffer),
+        score(score),
+        queue(pQueue),
+        lock(pLock)
+        {}
 
-      task* execute() {
-	auto& localDpContext = dpContext.local();
-	getDpTraceMatrix(localDpContext) = tracebackBlock[(i * length(seqV)) + j];
-	TDPScoutState scoutState(tileBuffer.horizontalBuffer[i], tileBuffer.verticalBuffer[j]);
-	String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments. Only needed for the old interface. They are not filled.
-	_computeAlignment(localDpContext, traceSegments, scoutState, seqH[i], seqV[j], score, DPBandConfig<BandOff>(), TDPProfile());
+        task* execute()
+        {
+            String<DagTask*> tasks;
 
-	// spawning right and downward neighbors
-	for (int k=0; k<2; ++k)
-	  if (DagTask* t = successor[k])
-	    if (t->decrement_ref_count() == 0) spawn(*t);
+            {
+                std::lock_guard<std::mutex> scopedLock(lock);
 
-	return nullptr;
-      }
+                if (empty(queue))  // Make sure task wasn't executed by another task.
+                    return nullptr;
+
+                if (length(queue) < simdVectorLength)
+                    appendValue(tasks, popFront(queue));
+                else
+                    for (auto i = 0; i < simdVectorLength; ++i)
+                        appendValue(tasks, popFront(queue));
+
+                for (auto& task : tasks)
+                    task->isExecuted = true;
+            }   // Release scoped lock.
+
+            SEQAN_ASSERT_GT(length(tasks), 0u);
+
+            if (length(tasks) == 1)
+            {
+                auto t = tasks[0];
+//                printf("%i %i\n", t->i, t->j);
+                auto& localDpContext = dpContext.local();
+                getDpTraceMatrix(localDpContext) = t->tracebackBlock[(t->i * length(seqV)) + t->j];
+                TDPScoutState scoutState(tileBuffer.horizontalBuffer[t->i], tileBuffer.verticalBuffer[t->j]);
+                String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments. Only needed for the old interface. They are not filled.
+                _computeAlignment(localDpContext, traceSegments, scoutState, seqH[t->i], seqV[t->j], score, DPBandConfig<BandOff>(), TDPProfile());
+            }
+            else
+            {
+                // Make to simd version!
+                for (auto& task : tasks)
+                {
+//                    printf("%i %i\n", task->i, task->j);
+                    auto& localDpContext = dpContext.local();
+                    getDpTraceMatrix(localDpContext) = task->tracebackBlock[(task->i * length(seqV)) + task->j];
+                    TDPScoutState scoutState(tileBuffer.horizontalBuffer[task->i], tileBuffer.verticalBuffer[task->j]);
+                    String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments. Only needed for the old interface. They are not filled.
+                    _computeAlignment(localDpContext, traceSegments, scoutState, seqH[task->i], seqV[task->j], score, DPBandConfig<BandOff>(), TDPProfile());
+                }
+            }
+            // spawning right and downward neighbors
+            for (auto& task : tasks)
+                for (int k = 0; k < 2; ++k)
+                    if (DagTask* t = task->successor[k])
+                        if (t->decrement_ref_count() == 0)
+                        {
+                            SEQAN_ASSERT(t->i == 130 && t->j == 129);
+                            appendValue(task->queue, t);
+                            spawn(*t);
+                        }
+            return nullptr;
+        }
     };
 
-    DagTask* graph[length(seqH)][length(seqV)];
-    for (int i=length(seqH); --i>=0;) {
-      for (int j=length(seqV); --j>=0;) {
-	graph[i][j] = new (tbb::task::allocate_root() ) DagTask(i, j, dpContext, tracebackBlock, seqH, seqV, tileBuffer, score);
-	graph[i][j]->successor[0] = i+1<length(seqH) ? graph[i+1][j] : nullptr;
-	graph[i][j]->successor[1] = j+1<length(seqV) ? graph[i][j+1] : nullptr;
-	graph[i][j]->set_ref_count((i>0?1:0)+(j>0?1:0));
-      }
+    // The concurrent queue to be used for sceduling jobs.
+    ConcurrentQueue<DagTask*> todoQueue;
+//    tbb::mutex lock;
+    std::mutex lock;
+
+    std::vector<std::vector<DagTask*> > graph(length(seqH), std::vector<DagTask*>(length(seqV)));
+    for (int i = length(seqH); --i >= 0;)
+    {
+        for (int j = length(seqV); --j >= 0;)
+        {
+            graph[i][j] = new (tbb::task::allocate_root() ) DagTask(i, j, dpContext, tracebackBlock, seqH, seqV, tileBuffer, score, todoQueue, lock);
+            graph[i][j]->successor[0] = i+1<length(seqH) ? graph[i+1][j] : nullptr;
+            graph[i][j]->successor[1] = j+1<length(seqV) ? graph[i][j+1] : nullptr;
+            graph[i][j]->set_ref_count((i > 0 ? 1 : 0) + (j > 0 ? 1 : 0));
+        }
     }
+
     auto lastTask = graph[length(seqH)-1][length(seqV)-1];
     lastTask->increment_ref_count();
+
+    lockWriting(todoQueue);
+    waitForWriters(todoQueue, 1);
+    appendValue(todoQueue, graph[0][0]);
+    waitForFirstValue(todoQueue);
+
     lastTask->spawn_and_wait_for_all(*graph[0][0]);
+
+    SEQAN_ASSERT(empty(todoQueue));
+    appendValue(todoQueue, lastTask);
+    waitForFirstValue(todoQueue);
+
     lastTask->execute();
+    SEQAN_ASSERT(empty(todoQueue));
+
     tbb::task::destroy(*lastTask);
+
+    unlockWriting(todoQueue);
 
     // TODO(rrahn): Fix to also support local and semi-global alignment!
     implParallelTrace(target, length(back(tracebackBlock)) - 1, length(seqH) - 1, length(seqV) - 1, tracebackBlock,
@@ -1045,6 +1120,7 @@ parallelAlign(TTargetH & targetH,
 
     // The main blockwise wrapper for the dp algorithm.
     TScoreValue res = implParallelAlign(trace, traceMatrix, seqHBlocks, seqVBlocks, score);
+    std::cout << "Finish 5" <<std::endl;
     _adaptTraceSegmentsTo(targetH, targetV, trace);  // Convert to corresponding alignment representation.
     return res;
 }
