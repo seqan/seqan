@@ -558,8 +558,8 @@ inline SEQAN_FUNC_DISABLE_IF(Is<ContainerConcept<TSeqHSize> >, void)
 _computeTraceback(TTarget & target,
                   TDPTraceMatrixNavigator & matrixNavigator,
                   unsigned  maxHostPosition,
-                  TSeqHSize const & seqH,
-                  TSeqVSize const & seqV,
+                  TSeqHSize const & seqHSize,
+                  TSeqVSize const & seqVSize,
                   DPBandConfig<TBandFlag> const & band,
                   DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec, TExecPolicy> const & dpProfile)
 {
@@ -569,7 +569,7 @@ _computeTraceback(TTarget & target,
 
     SEQAN_ASSERT_LEQ(coordinate(matrixNavigator, +DPMatrixDimension_::HORIZONTAL), seqHSize);
     SEQAN_ASSERT_LEQ(coordinate(matrixNavigator, +DPMatrixDimension_::VERTICAL), seqVSize);
-    typename TraceBitMap_::TTraceValue traceValue = value(matrixNavigator);
+    typename TraceBitMap_::TTraceValue traceValue = scalarValue(matrixNavigator);
     typename TraceBitMap_::TTraceValue lastTraceValue = _retrieveInitialTraceDirection(traceValue, dpProfile);
     _computeTraceback(target, traceValue, lastTraceValue, matrixNavigator, seqHSize, seqVSize, band, dpProfile,
                       TraceHead_<TAlgorithm>(), TraceTail_<TAlgorithm>());

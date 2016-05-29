@@ -273,7 +273,7 @@ _computeCell(TDPScout & scout,
     // Copy values into horizontal buffer for the tile below this tile in vertical direction.
     auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::HORIZONTAL) - 1;
     (*scout.state.ptrHorBuffer)[pos].i1 = activeCell;
-    (*scout.state.ptrHorBuffer)[pos].i2 = TraceBitMap_::NONE;
+    (*scout.state.ptrHorBuffer)[pos].i2 = TraceBitMap_<TScoreValue>::NONE;
 
     if (TrackingEnabled_<TMetaColumn, LastCell>::VALUE)
     {
@@ -314,7 +314,7 @@ _computeCell(TDPScout & scout,
 
     activeCell = front(*scout.state.ptrVerBuffer).i1 = back(*scout.state.ptrHorBuffer).i1;  // Copy horizontal buffer value in active cell and in
     assignValue(traceMatrixNavigator, back(*scout.state.ptrHorBuffer).i2);
-    front(*scout.state.ptrVerBuffer).i2 = TraceBitMap_::NONE;   // Store trace value in vertical buffer.
+    front(*scout.state.ptrVerBuffer).i2 = TraceBitMap_<>::NONE;   // Store trace value in vertical buffer.
 
     if (TrackingEnabled_<TMetaColumn, FirstCell>::VALUE)
     {
@@ -358,7 +358,7 @@ _computeCell(TDPScout & scout,
     // Store values in vertical buffer.
     auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::VERTICAL);
     (*scout.state.ptrVerBuffer)[pos].i1 = activeCell;
-    (*scout.state.ptrVerBuffer)[pos].i2 = TraceBitMap_::NONE;
+    (*scout.state.ptrVerBuffer)[pos].i2 = TraceBitMap_<>::NONE;
 
     if (TrackingEnabled_<TMetaColumn, InnerCell>::VALUE)
     {
@@ -402,7 +402,7 @@ _computeCell(TDPScout & scout,
                               TDPProfile()));
     // Store values in vertical and horizontal buffer.
     back(*scout.state.ptrHorBuffer).i1 = back(*scout.state.ptrVerBuffer).i1 = activeCell;
-    back(*scout.state.ptrHorBuffer).i2 = back(*scout.state.ptrVerBuffer).i2 = TraceBitMap_::NONE;
+    back(*scout.state.ptrHorBuffer).i2 = back(*scout.state.ptrVerBuffer).i2 = TraceBitMap_<>::NONE;
 
     if (TrackingEnabled_<TMetaColumn, LastCell>::VALUE)
     {
@@ -526,7 +526,7 @@ void implParallelTrace(TTarget & target,
                        TSequenceH const & seqH,
                        TSequenceV const & seqV,
                        DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec, Parallel> const & /*dpProfile*/,
-                       typename TraceBitMap_::TTraceValue lastTraceValue = TraceBitMap_::NONE)
+                       typename TraceBitMap_<>::Type lastTraceValue = TraceBitMap_<>::NONE)
 {
     typedef DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec, Parallel> DPProfile;
 
@@ -912,8 +912,9 @@ implParallelAlign(TTarget & target,
 
     // TODO(rrahn): Check if dpContex should be copied to each thread or if we make an array of dpContext of the size of numThreads.
     // TODO(pcostanz): this tbb construct creates a copy per thread; check ETS_key_usage_type for potential additional performance improvements
-    typedef tbb::enumerable_thread_specific<DPContext<DPCell_<TScoreValue, AffineGaps>, typename TraceBitMap_::TTraceValue,
-      String<DPCell_<TScoreValue, AffineGaps> >, TTraceTile> > TDpContext;
+    typedef tbb::enumerable_thread_specific<DPContext<DPCell_<TScoreValue, AffineGaps>, typename TraceBitMap_<>::Type,
+    String<DPCell_<TScoreValue, AffineGaps> >, TTraceTile> > TDpContext;
+
     TDpContext dpContext;
 
 
@@ -956,7 +957,6 @@ implParallelAlign(TTarget & target,
         task* execute()
         {
             String<DagTask*> tasks;
-
             {
                 std::lock_guard<std::mutex> scopedLock(lock);
 
@@ -968,9 +968,6 @@ implParallelAlign(TTarget & target,
                 else
                     for (auto i = 0; i < simdVectorLength; ++i)
                         appendValue(tasks, popFront(queue));
-
-                for (auto& task : tasks)
-                    task->isExecuted = true;
             }   // Release scoped lock.
 
             SEQAN_ASSERT_GT(length(tasks), 0u);
@@ -1014,7 +1011,6 @@ implParallelAlign(TTarget & target,
 
     // The concurrent queue to be used for sceduling jobs.
     ConcurrentQueue<DagTask*> todoQueue;
-//    tbb::mutex lock;
     std::mutex lock;
 
     std::vector<std::vector<DagTask*> > graph(length(seqH), std::vector<DagTask*>(length(seqV)));
@@ -1109,7 +1105,7 @@ parallelAlign(TTargetH & targetH,
 
     // The original trace back martix is allocated here.
     // The future interface should pass a context from outside so this memory block can be reused for many calls.
-    typedef String<typename TraceBitMap_::TTraceValue> TTraceMatrix;
+    typedef String<typename TraceBitMap_<>::Type> TTraceMatrix;
 
     // Partition traceback into blocks
     TTraceMatrix traceMatrix;
@@ -1120,7 +1116,6 @@ parallelAlign(TTargetH & targetH,
 
     // The main blockwise wrapper for the dp algorithm.
     TScoreValue res = implParallelAlign(trace, traceMatrix, seqHBlocks, seqVBlocks, score);
-    std::cout << "Finish 5" <<std::endl;
     _adaptTraceSegmentsTo(targetH, targetV, trace);  // Convert to corresponding alignment representation.
     return res;
 }

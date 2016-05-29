@@ -101,6 +101,7 @@ public:
     typedef typename Size<Matrix>::Type TSize;
     typedef String<TSize> TSizeArr;
 
+
     TSizeArr data_lengths;        //Length of every dimension
     TSizeArr data_factors;        //used for positions of dimensions in host ("size of jumps" to get to next entry of specified dimension)
 

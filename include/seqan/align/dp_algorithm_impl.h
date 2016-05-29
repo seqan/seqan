@@ -1461,7 +1461,7 @@ template <typename TTraceTarget,
           typename TSeqH,
           typename TSeqV,
           typename TBandSwitch,
-          typename TAlignmentAlgorithm, typename TGapScheme, typename TTraceFlag>
+          typename TAlignmentAlgorithm, typename TGapScheme, typename TTraceFlag, typename TExecPolicy>
 inline SEQAN_FUNC_ENABLE_IF(Not<IsTracebackEnabled_<TTraceFlag> >, TScoreValue)
 _finishAlignment(TTraceTarget & /*traceSegments*/,
                  TTraceMatNavigator & /*dpTraceMatrixNavigator*/,
@@ -1469,7 +1469,7 @@ _finishAlignment(TTraceTarget & /*traceSegments*/,
                  TSeqH const & /*seqH*/,
                  TSeqV const & /*seqV*/,
                  DPBandConfig<TBandSwitch> const & /*band*/,
-                 DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & /*dpProfile*/)
+                 DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag, TExecPolicy> const & /*dpProfile*/)
 {
     return maxScore(dpScout);
 }
@@ -1480,7 +1480,7 @@ template <typename TTraceTarget,
           typename TSeqH,
           typename TSeqV,
           typename TBandSwitch,
-          typename TAlignmentAlgorithm, typename TGapScheme, typename TTraceFlag>
+          typename TAlignmentAlgorithm, typename TGapScheme, typename TTraceFlag, typename TExecPolicy>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<SimdVectorConcept<TScoreValue> >, IsTracebackEnabled_<TTraceFlag> >, TScoreValue)
 _finishAlignment(TTraceTarget & traceSegments,
                  TTraceMatNavigator & dpTraceMatrixNavigator,
@@ -1488,7 +1488,7 @@ _finishAlignment(TTraceTarget & traceSegments,
                  TSeqH const & seqH,
                  TSeqV const & seqV,
                  DPBandConfig<TBandSwitch> const & band,
-                 DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & dpProfile)
+                 DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag, TExecPolicy> const & dpProfile)
 {
     typedef typename Size<TTraceTarget>::Type TSize;
 
@@ -1513,7 +1513,7 @@ template <typename TTraceTarget,
           typename TSeqH,
           typename TSeqV,
           typename TBandSwitch,
-          typename TAlignmentAlgorithm, typename TGapScheme, typename TTraceFlag>
+          typename TAlignmentAlgorithm, typename TGapScheme, typename TTraceFlag, typename TExecPolicy>
 inline SEQAN_FUNC_ENABLE_IF(And<Not<Is<SimdVectorConcept<TScoreValue> > >, IsTracebackEnabled_<TTraceFlag> >, TScoreValue)
 _finishAlignment(TTraceTarget & traceSegments,
                  TTraceMatNavigator & dpTraceMatrixNavigator,
@@ -1521,7 +1521,7 @@ _finishAlignment(TTraceTarget & traceSegments,
                  TSeqH const & seqH,
                  TSeqV const & seqV,
                  DPBandConfig<TBandSwitch> const & band,
-                 DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & dpProfile)
+                 DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag, TExecPolicy> const & dpProfile)
 {
     if (IsSingleTrace_<TTraceFlag>::VALUE)
         _correctTraceValue(dpTraceMatrixNavigator, dpScout);
