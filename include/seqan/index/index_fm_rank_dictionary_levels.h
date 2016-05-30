@@ -261,9 +261,17 @@ struct RankDictionaryEntry_<TValue, Levels<TSpec, TConfig> >
  */
 
 template <typename TValue, typename TConfig>
-struct BitsPerValue2<TValue, TConfig>
+struct MyBitsPerValue<TValue, TConfig>
 {
-    static const uint8_t VALUE = BitsPerValue<TValue>::VALUE;
+    //static const uint8_t VALUE = 0;
+    static const typename BitsPerValue<TValue>::Type VALUE = BitsPerValue<TValue>::VALUE;
+};
+
+template <typename TValue, typename TSize, typename TFibre, unsigned LEVELS_>
+struct MyBitsPerValue<TValue, LevelsPrefixRDConfig<TSize, TFibre, LEVELS_> >
+{
+    //static const uint8_t VALUE = 0+1;
+    static const typename BitsPerValue<TValue>::Type VALUE = BitsPerValue<TValue>::VALUE + 1;
 };
 
 template <typename TValue, typename TSpec, typename TConfig>
@@ -273,7 +281,7 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
     // Constants
     // ------------------------------------------------------------------------
 
-    static const unsigned _BITS_PER_VALUE   = BitsPerValue2<TValue, TConfig>::VALUE+1;
+    static const unsigned _BITS_PER_VALUE   = MyBitsPerValue<TValue, TConfig>::VALUE;
     static const unsigned _BITS_PER_BLOCK   = RankDictionaryBitsPerBlock_<TValue, Levels<TSpec, TConfig> >::VALUE;
     static const unsigned _BITS_PER_WORD    = Min<RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> >::VALUE, _BITS_PER_BLOCK>::VALUE;
     static const unsigned _VALUES_PER_WORD  = _BITS_PER_WORD  / _BITS_PER_VALUE;
