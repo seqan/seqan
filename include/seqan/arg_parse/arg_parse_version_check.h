@@ -55,7 +55,6 @@ struct VersionCheck
     // ----------------------------------------------------------------------------
 
     std::string _url = "http://openms-update.informatik.uni-tuebingen.de/check/OpenMS_KNIME_";
-    std::string _path = std::string(getenv("HOME")) + "/.config/seqan";
     std::string _name;
     std::string _version = "0.0.0";
     std::string _program;
@@ -63,15 +62,21 @@ struct VersionCheck
     std::string _website = "www.seqan.de/applications";
     std::future<bool> & _fut;
 
+#if defined(PLATFORM_WINDOWS)
+    std::string _path = std::string(getenv("UserProfile")) + "/.config/seqan";
+#else
+    std::string _path = std::string(getenv("HOME")) + "/.config/seqan";
+#endif
+    
     //get system information
 #ifdef __linux
     std::string _os = "Linux";
 #elif __APPLE__
-    _std::string os = "MacOS"
-#elif __WINDOWS__
-    _std::string os = "Windows"
+	_std::string _os = "MacOS";
+#elif defined(PLATFORM_WINDOWS)
+	std::string _os = "Windows";
 #elif __FreeBSD__
-    _std::string os = "FreeBSD";
+    _std::string _os = "FreeBSD";
 #elif __OpenBSD__
     std::string _os = "OpenBSD";
 #else
@@ -96,6 +101,7 @@ struct VersionCheck
             _website = website;
         _getProgram();
         _updateCommand();
+	std::cout << _command << std::endl;
     }
 
     VersionCheck(VersionCheck const & rhs):
@@ -151,9 +157,9 @@ struct VersionCheck
             _program.clear();
     }
 #else // windows
-    void _getProgramm()
+    void _getProgram()
     {
-        _program.clear();
+        _program = "Invoke-WebRequest -OutFile";
     }
 #endif
 
@@ -184,6 +190,7 @@ inline void setURL(VersionCheck & me, std::string url)
 // ----------------------------------------------------------------------------
 // Function _checkWritability()
 // ----------------------------------------------------------------------------
+#ifdef __unix
 inline bool _checkWritability(std::string path)
 {
     struct stat d_stat;
@@ -203,10 +210,11 @@ inline bool _checkWritability(std::string path)
 
     return true;
 }
-
+#endif
 // ----------------------------------------------------------------------------
 // Function _getFileTimeDiff()
 // ----------------------------------------------------------------------------
+#ifdef __unix
 inline double _getFileTimeDiff(std::string version_file)
 {
     time_t curr;
@@ -218,7 +226,34 @@ inline double _getFileTimeDiff(std::string version_file)
     else
         return (difftime(curr, t_stat.st_mtime)); // returns time in seconds
 }
+#else // windows
+inline double _getFileTimeDiff(std::string version_file)
+{
+    FILETIME curr;
+    GetSystemTimeAsFileTime(&curr);
 
+    HANDLE hFile;
+    FILETIME hFileTime;
+    hFile = CreateFile(version_file.c_str(), GENERIC_READ, FILE_SHARE_READ,  NULL,  OPEN_EXISTING,  FILE_ATTRIBUTE_NORMAL, NULL);
+
+    if(hFile == INVALID_HANDLE_VALUE)
+        return -1;
+    
+    if(!GetFileTime(hFile, NULL, NULL, &hFileTime))
+        return -1;
+    
+    ULARGE_INTEGER ul_curr;
+    ULARGE_INTEGER ul_file;
+    ul_curr.LowPart  = curr.dwLowDateTime;
+    ul_curr.HighPart = curr.dwHighDateTime;
+    ul_file.LowPart  = hFileTime.dwLowDateTime;
+    ul_file.HighPart = hFileTime.dwHighDateTime;
+
+    ULONGLONG diffInTicks = ul_curr.QuadPart - ul_file.QuadPart; // get time difference
+    LONGLONG diffInS = diffInTicks / 10000000;
+    return((double)diffInS);
+}
+#endif
 // ----------------------------------------------------------------------------
 // Function _getNumbersFromString()
 // ----------------------------------------------------------------------------
@@ -314,10 +349,12 @@ inline bool _callServer(VersionCheck me)
 // ----------------------------------------------------------------------------
 inline bool checkForNewerVersion(VersionCheck & me)
 {
-    std::string version_file = me._path + "/" + me._name + "_version";
+    std::string version_file = me._path + "/" + me._name + "_version.txt";
     double min_time_diff = 86400;                           // one day = 86400 seonds
     double file_time_diff = _getFileTimeDiff(version_file); // check for time the version file was last updated
-
+    std::cout << "min: " << min_time_diff << "\n";
+    std::cout << "file: " << file_time_diff << "\n";
+/*
     if (file_time_diff > -1) // file exists. TODO:: ask if there should be a time limit here too
     {
         seqan::String<int> new_ver;
@@ -363,6 +400,7 @@ inline bool checkForNewerVersion(VersionCheck & me)
 
     // launch a seperate thread to not defer runtime
     me._fut = std::async(std::launch::async, _callServer, me);
+*/
     return true;
 }
 
