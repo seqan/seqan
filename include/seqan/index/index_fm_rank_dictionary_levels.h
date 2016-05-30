@@ -91,6 +91,12 @@ struct LevelsRDConfig : RDConfig<TSize, TFibre>
     static const unsigned LEVELS =  LEVELS_;
 };
 
+template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS_ = 1>
+struct LevelsPrefixRDConfig : RDConfig<TSize, TFibre>
+{
+    static const unsigned LEVELS =  LEVELS_;
+};
+
 // ----------------------------------------------------------------------------
 // Tag Levels
 // ----------------------------------------------------------------------------
@@ -254,6 +260,12 @@ struct RankDictionaryEntry_<TValue, Levels<TSpec, TConfig> >
  * leads to constant rank dictionary look ups.
  */
 
+template <typename TValue, typename TConfig>
+struct BitsPerValue2<TValue, TConfig>
+{
+    static const uint8_t VALUE = BitsPerValue<TValue>::VALUE;
+};
+
 template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionary<TValue, Levels<TSpec, TConfig> >
 {
@@ -261,7 +273,7 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
     // Constants
     // ------------------------------------------------------------------------
 
-    static const unsigned _BITS_PER_VALUE   = BitsPerValue<TValue>::VALUE;
+    static const unsigned _BITS_PER_VALUE   = BitsPerValue2<TValue, TConfig>::VALUE+1;
     static const unsigned _BITS_PER_BLOCK   = RankDictionaryBitsPerBlock_<TValue, Levels<TSpec, TConfig> >::VALUE;
     static const unsigned _BITS_PER_WORD    = Min<RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> >::VALUE, _BITS_PER_BLOCK>::VALUE;
     static const unsigned _VALUES_PER_WORD  = _BITS_PER_WORD  / _BITS_PER_VALUE;
@@ -805,7 +817,9 @@ inline void setValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPo
     TSize wordPos    = _toWordPos(dict, posInBlock);
     TSize posInWord  = _toPosInWord(dict, posInBlock);
 
-    assignValue(_valuesAt(dict, blockPos, wordPos), posInWord, static_cast<TValue>(c));
+    //std::cout << static_cast<TValue>(c) << std::endl;
+
+    assignValue2(_valuesAt(dict, blockPos, wordPos), posInWord, static_cast<TValue>(c));
 }
 
 // ----------------------------------------------------------------------------

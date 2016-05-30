@@ -67,7 +67,7 @@ using namespace seqan;
 
 typedef
     TagList<RankDictionary<bool,            Naive<> >,
-    TagList<RankDictionary<bool,            Levels<> >,
+    TagList<RankDictionary<Rna5,            Levels<> >,
     //TagList<RankDictionary<Dna,             Levels<int> >
     TagList<RankDictionary<Dna,             Levels<> >,
     TagList<RankDictionary<Rna,             Levels<> >,
@@ -117,7 +117,7 @@ public:
     void setUp()
     {
         //createText(text, TValue());
-        generateText(text, 50000);
+        generateText(text, 5000);
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
     }
