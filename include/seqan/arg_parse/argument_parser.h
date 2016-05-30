@@ -225,7 +225,7 @@ public:
         hideOption(*this, "export-help", true);
         setValidValues(*this, "export-help", "html man txt");
 
-#if _SEQAN_VERSION_CHECK == 1
+//#if _SEQAN_VERSION_CHECK == 1
         addOption(*this, ArgParseOption("",
                                         "version-check",
                                         "Choose 'OFF' if you don't want any notifications. "
@@ -234,7 +234,7 @@ public:
                                         ArgParseArgument::STRING,
                                         "OPTION"));
         setValidValues(*this, "version-check", "DEV APP_ONLY OFF");
-#endif
+//#endif
     }
 
     // ----------------------------------------------------------------------------

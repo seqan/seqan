@@ -314,7 +314,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
     // #pragma message "Is Disabled"
 // #endif
 
-#if _SEQAN_VERSION_CHECK == 1
+//#if _SEQAN_VERSION_CHECK == 1
     // do version check if not turned off by the user
     std::string check = "DEV"; // default
     if(isSet(me, "version-check"))
@@ -337,7 +337,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
             checkForNewerVersion(seqan_version);
         }
     }
-#endif
+//#endif
 
     // Handle the special options.
     if (hasOption(me, "version") && isSet(me, "version"))

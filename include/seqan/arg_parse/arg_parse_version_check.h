@@ -101,7 +101,6 @@ struct VersionCheck
             _website = website;
         _getProgram();
         _updateCommand();
-	std::cout << _command << std::endl;
     }
 
     VersionCheck(VersionCheck const & rhs):
@@ -166,7 +165,7 @@ struct VersionCheck
     void _updateCommand()
     {
         if (!_program.empty())
-            _command = _program + " " + _path + "/" + _name + "_version " + _url + _os + "_64_"+ _name + "_" + _version;
+            _command = _program + " " + _path + "/" + _name + "_version.txt " + _url + _os + "_64_"+ _name + "_" + _version;
     }
 };
 
@@ -210,7 +209,29 @@ inline bool _checkWritability(std::string path)
 
     return true;
 }
+#else // windows
+inline bool _checkWritability(std::string path)
+{
+    DWORD ftyp = GetFileAttributesA(path.c_str());
+    if (ftyp == INVALID_FILE_ATTRIBUTES || !(ftyp & FILE_ATTRIBUTE_DIRECTORY))
+    {
+        if (!CreateDirectory(path.c_str(), NULL))
+            return false;
+    }
+
+    HANDLE dummyFile; // check writablity by trying to create a file in GENERIC_WRITE mode
+    std::string fileName = path + "/dummy.txt";
+    dummyFile = CreateFile(fileName.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    if (dummyFile == INVALID_HANDLE_VALUE)
+        return false;
+    
+    CloseHandle(dummyFile);
+    DeleteFile(fileName.c_str());
+    return true;
+}
 #endif
+
 // ----------------------------------------------------------------------------
 // Function _getFileTimeDiff()
 // ----------------------------------------------------------------------------
@@ -254,6 +275,7 @@ inline double _getFileTimeDiff(std::string version_file)
     return((double)diffInS);
 }
 #endif
+
 // ----------------------------------------------------------------------------
 // Function _getNumbersFromString()
 // ----------------------------------------------------------------------------
@@ -333,7 +355,7 @@ inline bool _callServer(VersionCheck me)
     //std::cout << "I will perform the following command:\n" << me._command << std::endl;
     if (system(seqan::toCString(me._command)))
     {
-        std::ofstream version_file (seqan::toCString(me._path + "/" + me._name + "_version"));
+        std::ofstream version_file (seqan::toCString(me._path + "/" + me._name + "_version.txt"));
         if (version_file.is_open())
         {
             version_file << "UNABLE TO CALL HOME.\n";
@@ -349,12 +371,24 @@ inline bool _callServer(VersionCheck me)
 // ----------------------------------------------------------------------------
 inline bool checkForNewerVersion(VersionCheck & me)
 {
+    if (!_checkWritability(me._path))
+    {
+#ifdef __unix
+        me._path = "/tmp";
+# else // windows
+        TCHAR tmp_path [MAX_PATH];
+        if (GetTempPath (MAX_PATH, tmp_path) != 0)
+            me._path = tmp_path;
+        else //GetTempPath returns 0 on failure
+            return false;
+#endif
+        me._updateCommand();
+    }
+    
     std::string version_file = me._path + "/" + me._name + "_version.txt";
     double min_time_diff = 86400;                           // one day = 86400 seonds
     double file_time_diff = _getFileTimeDiff(version_file); // check for time the version file was last updated
-    std::cout << "min: " << min_time_diff << "\n";
-    std::cout << "file: " << file_time_diff << "\n";
-/*
+
     if (file_time_diff > -1) // file exists. TODO:: ask if there should be a time limit here too
     {
         seqan::String<int> new_ver;
@@ -392,15 +426,13 @@ inline bool checkForNewerVersion(VersionCheck & me)
     if (me._program.empty())
         return false;
 
-    if (file_time_diff < min_time_diff && file_time_diff > -1)
-        return false;
-
-    if (!_checkWritability(me._path))
-        me._path = "/tmp";
+//    if (file_time_diff < min_time_diff && file_time_diff > -1)
+//        return false;
 
     // launch a seperate thread to not defer runtime
+    std::cout << me._command << std::endl;
     me._fut = std::async(std::launch::async, _callServer, me);
-*/
+
     return true;
 }
 
