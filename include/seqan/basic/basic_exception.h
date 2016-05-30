@@ -45,7 +45,7 @@
 #include <exception>
 #include <stdexcept>
 
-#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#if !defined(STDLIB_VS)
 #include <cxxabi.h>
 #endif
 
