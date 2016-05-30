@@ -183,7 +183,7 @@ namespace seqan {
 template <typename T>
 struct Demangler
 {
-#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#if !defined(STDLIB_VS)
     char *data_begin;
 #else
     const char *data_begin;
@@ -202,7 +202,7 @@ struct Demangler
 
     ~Demangler()
     {
-#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#if !defined(STDLIB_VS)
         free(data_begin);
 #endif
     }
@@ -219,7 +219,7 @@ struct Demangler
 template <typename T>
 inline void _demangle(Demangler<T> & me, T const & t)
 {
-#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#if !defined(STDLIB_VS)
     int status;
     me.data_begin = abi::__cxa_demangle(typeid(t).name(), NULL, NULL, &status);
 #else
