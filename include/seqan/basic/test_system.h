@@ -53,9 +53,9 @@
 #include <memory>
 #include <string>
 
-#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#if !defined(STDLIB_VS)
 #include <cxxabi.h>
-#endif  // #if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#endif  // #if !defined(STDLIB_VS)
 
 namespace seqan {
 
@@ -225,15 +225,15 @@ public:
     static std::string getTypeName()
     {
         const char* const name = typeid(T).name();
-#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#if !defined(STDLIB_VS)
         int status = 0;
         char* const readableName = abi::__cxa_demangle(name, 0, 0, &status);
         std::string nameString(status == 0 ? readableName : name);
         free(readableName);
         return nameString;
-#else  // #if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#else  // #if !defined(STDLIB_VS)
         return name;
-#endif  // #if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#endif  // #if !defined(STDLIB_VS)
     }
 
     static bool make(char const * testCaseName, char const * testName)
