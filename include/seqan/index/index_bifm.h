@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,28 +29,51 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+// Author: Christopher Pockrandt <christopher.pockrandt@fu-berlin.de>
 // ==========================================================================
 
-#ifndef TEST_CUDA_COMMON_H_
-#define TEST_CUDA_COMMON_H_
+//SEQAN_NO_DDDOC:do not generate documentation for this file
+
+#ifndef INDEX_BIFM_H_
+#define INDEX_BIFM_H_
 
 namespace seqan {
 
+template <typename TText, typename TSpec, typename TConfig>
+SEQAN_CONCEPT_IMPL((Index<TText, BidirectionalIndex<FMIndex<TSpec, TConfig> > >), (StringTrieConcept));
+
+template <typename TText, typename TSpec, typename TConfig>
+SEQAN_CONCEPT_IMPL((Index<TText, BidirectionalIndex<FMIndex<TSpec, TConfig> > > const), (StringTrieConcept));
+
 // ============================================================================
-// Kernels
+// Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Kernel testGetValue()
+// Function indexCreate()
 // ----------------------------------------------------------------------------
 
-template <typename TString, typename TPos, typename TValue>
-SEQAN_GLOBAL void testGetValue(TString str, TPos pos, TValue value)
+template <typename TText, typename TSpec, typename TConfig>
+inline bool indexCreate(Index<TText, BidirectionalIndex<FMIndex<TSpec, TConfig> > > & index)
 {
-    SEQAN_ASSERT_EQ(str[pos], value);
+    return indexCreate(index.fwd, FibreSALF()) && indexCreate(index.rev, FibreSALF());
+}
+
+// ----------------------------------------------------------------------------
+// Function indexSupplied()
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TIndexSpec>
+inline bool indexSupplied(Index<TText, BidirectionalIndex<TIndexSpec> > & index, FibreSALF const)
+{
+    return indexSupplied(index.fwd, FibreSALF()) && indexSupplied(index.rev, FibreSALF());
+}
+
+template <typename TText, typename TIndexSpec>
+inline bool indexSupplied(Index<TText, BidirectionalIndex<TIndexSpec> > const & index, FibreSALF const)
+{
+    return indexSupplied(index.fwd, FibreSALF()) && indexSupplied(index.rev, FibreSALF());
 }
 
 }
-
-#endif // TEST_CUDA_COMMON_H_
+#endif /* INDEX_BIFM_H_ */

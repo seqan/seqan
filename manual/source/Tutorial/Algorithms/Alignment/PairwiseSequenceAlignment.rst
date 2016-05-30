@@ -182,7 +182,7 @@ Assignment 2
    Hint
      .. container:: foldable
 
-        A semi-global alignment is a special form of an overlap alignment often used when aligning short sequences again a long sequence.
+        A semi-global alignment is a special form of an overlap alignment often used when aligning short sequences against a long sequence.
         Here we only allow free end-gaps at the beginning and the end of the shorter sequence.
 
    Solution
@@ -447,15 +447,15 @@ Assignment 5
     * Use the :dox:`SegmentableConcept#infix` function to return a subsequence of a string.
     * A CIGAR string is a different representation of an alignment.
       It consists of a number followed by an operation.
-      The number indicates how many consecutive operations of the same type are executed.
-      Operations can be <tt>M</tt> for match, <tt>S</tt> for mismatch, <tt>I</tt> for insertion and <tt>D</tt> for deletion.
+      The number indicates how many operations are executed.
+      Operations can be **M** for match or mismatch, **I** for insertion and **D** for deletion.
       Here is an example:
 
       ::
 
           ref: AC--GTCATTT
           r01: ACGTCTCA---
-          Cigar of r01: 2M2I1X3M3D
+          Cigar of r01: 2M2I4M3D
 
     Solution (Step 1)
       .. container:: foldable
@@ -501,7 +501,7 @@ Assignment 5
          .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
             :fragment: main
 
-         In the first part of the algorithm we implement am alignment based verification process to identify positions in the `subject sequence` at which we can find our pattern with at most `2` errors.
+         In the first part of the algorithm we implement an alignment based verification process to identify positions in the `subject sequence` at which we can find our pattern with at most `2` errors.
          We slide the `5*5` alignment matrix position by position over the `subject sequence` and use the `MeyersBitVector` to verify the hits.
          If the score is greater or equal than `-2`, then we have found a hit.
          We store the begin position of the hit in `locations`.
@@ -534,16 +534,11 @@ Assignment 5
          .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
             :fragment: cigarDeletion
 
-         If there is neither an insertion nor a deletion, then there must be a match or a mismatch. As long as we encounter matches we move forward in the Gaps structures and count the number of consecutive matches. When we are done we report the match count.
-
-         .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
-            :fragment: cigarMatch
-
-         In a similar procedure we determine the consecutive substitutions.
+         If there is neither an insertion nor a deletion, then there must be a match or a mismatch. As long as we encounter matches and mismatches we move forward in the Gaps structures.
          Finally we print out the position of the hit, its total number of edits and the corresponding cigar string.
 
          .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
-            :fragment: cigarMismatch
+            :fragment: cigarMatchAndMismatch
 
          Here is the output of this program.
 

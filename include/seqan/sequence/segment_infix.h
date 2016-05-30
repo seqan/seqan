@@ -76,11 +76,11 @@ public:
 public:
     // Check member variables with assertions.  This is called in the
     // constructors.
-    SEQAN_HOST_DEVICE inline void _checkMemberVariables() const {
+    inline void _checkMemberVariables() const {
         SEQAN_ASSERT_LEQ(data_begin_position, data_end_position);
     }
 
-    SEQAN_HOST_DEVICE
+   
     Segment():
         data_host(),
         data_begin_position(0),
@@ -89,7 +89,7 @@ public:
         _checkMemberVariables();
     }
 
-    SEQAN_HOST_DEVICE
+   
     Segment(typename Parameter_<THost>::Type _host):
         data_host(_toPointer(_host)),
         data_begin_position(0),
@@ -98,7 +98,7 @@ public:
         _checkMemberVariables();
     }
 
-    SEQAN_HOST_DEVICE
+   
     Segment(typename Parameter_<THost>::Type _host, typename Position<THost>::Type _begin_index, typename Position<THost>::Type _end_index):
         data_host(_toPointer(_host)),
         data_begin_position(_begin_index),
@@ -115,7 +115,7 @@ public:
     }
 */
 
-    SEQAN_HOST_DEVICE
+   
     Segment(typename Parameter_<THost>::Type _host, typename Iterator<THost, Standard>::Type _begin, typename Iterator<THost, Standard>::Type _end):
         data_host(_toPointer(_host)),
         data_begin_position(position(_begin, _host)),
@@ -125,7 +125,7 @@ public:
     }
 
     template <typename THost2, typename TSpec2>
-    SEQAN_HOST_DEVICE
+   
     Segment(Segment<THost2, TSpec2> const & _other):
         data_host(_toPointer(host(_other))),
         data_begin_position(beginPosition(_other)),
@@ -134,12 +134,12 @@ public:
         _checkMemberVariables();
     }
 
-    SEQAN_HOST_DEVICE
+   
     ~ Segment()
     {
     }
 
-    SEQAN_HOST_DEVICE inline Segment &
+    inline Segment &
     operator = (Segment const & source)
     {
         assign(*this, source);
@@ -189,14 +189,14 @@ public:
 ///Function.host.param.object.type:Class.Segment
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Parameter_<THost_>::Type
+inline typename Parameter_<THost_>::Type
 host(Segment<THost_, InfixSegment> & me)
 {
     return _toParameter<THost_>(me.data_host);
 }
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Parameter_<THost_>::Type
+inline typename Parameter_<THost_>::Type
 host(Segment<THost_, InfixSegment> const & me)
 {
     return _toParameter<THost_>(me.data_host);
@@ -206,14 +206,14 @@ host(Segment<THost_, InfixSegment> const & me)
 //____________________________________________________________________________
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Iterator<Segment<THost_, InfixSegment>, Standard>::Type
+inline typename Iterator<Segment<THost_, InfixSegment>, Standard>::Type
 begin(Segment<THost_, InfixSegment> & me,
     Standard)
 {
     return begin(host(me), Standard()) + me.data_begin_position;
 }
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Iterator<Segment<THost_, InfixSegment> const, Standard>::Type
+inline typename Iterator<Segment<THost_, InfixSegment> const, Standard>::Type
 begin(Segment<THost_, InfixSegment> const & me,
     Standard)
 {
@@ -223,13 +223,13 @@ begin(Segment<THost_, InfixSegment> const & me,
 //____________________________________________________________________________
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Position<Segment<THost_, InfixSegment> >::Type
+inline typename Position<Segment<THost_, InfixSegment> >::Type
 beginPosition(Segment<THost_, InfixSegment> & me)
 {
     return me.data_begin_position;
 }
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Position<Segment<THost_, InfixSegment> const>::Type
+inline typename Position<Segment<THost_, InfixSegment> const>::Type
 beginPosition(Segment<THost_, InfixSegment> const & me)
 {
     return me.data_begin_position;
@@ -257,14 +257,14 @@ setBeginPosition(Segment<THost_, InfixSegment> & me, TPosition new_begin)
 //____________________________________________________________________________
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Iterator<Segment<THost_, InfixSegment>, Standard>::Type
+inline typename Iterator<Segment<THost_, InfixSegment>, Standard>::Type
 end(Segment<THost_, InfixSegment> & me,
     Standard)
 {
     return begin(host(me), Standard()) + me.data_end_position;
 }
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Iterator<Segment<THost_, InfixSegment> const, Standard>::Type
+inline typename Iterator<Segment<THost_, InfixSegment> const, Standard>::Type
 end(Segment<THost_, InfixSegment> const & me,
     Standard)
 {
@@ -274,13 +274,13 @@ end(Segment<THost_, InfixSegment> const & me,
 //____________________________________________________________________________
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Position<Segment<THost_, InfixSegment> >::Type
+inline typename Position<Segment<THost_, InfixSegment> >::Type
 endPosition(Segment<THost_, InfixSegment> & me)
 {
     return me.data_end_position;
 }
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Position<Segment<THost_, InfixSegment> >::Type
+inline typename Position<Segment<THost_, InfixSegment> >::Type
 endPosition(Segment<THost_, InfixSegment> const & me)
 {
     return me.data_end_position;
@@ -355,6 +355,15 @@ struct Infix< Segment<THost, TSpec> const >:
 template <typename THost>
 struct Infix<THost &>:
     Infix<THost> {};
+
+// ----------------------------------------------------------------------------
+// Metafunction InfixOnValue
+// ----------------------------------------------------------------------------
+
+// The default implementation returns Infix<T>::Type.
+template <typename T>
+struct InfixOnValue :
+    Infix<T> {};
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -552,7 +561,7 @@ operator --(Segment<THost, InfixSegment> & segment)
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename THost, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline typename Reference< Segment<THost, TSpec> >::Type
+inline typename Reference< Segment<THost, TSpec> >::Type
 value(Segment<THost, TSpec> & me,
       TPos pos)
 {
@@ -561,7 +570,7 @@ value(Segment<THost, TSpec> & me,
 }
 
 template <typename THost, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline typename Reference< Segment<THost, TSpec> const >::Type
+inline typename Reference< Segment<THost, TSpec> const >::Type
 value(Segment<THost, TSpec> const & me,
       TPos pos)
 {
@@ -572,7 +581,7 @@ value(Segment<THost, TSpec> const & me,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename T, typename TPosBegin, typename TPosEnd>
-SEQAN_HOST_DEVICE inline typename Infix<T>::Type
+inline typename Infix<T>::Type
 infix(T & t, TPosBegin pos_begin, TPosEnd pos_end)
 {
     return typename Infix<T>::Type(t, pos_begin, pos_end);
@@ -634,28 +643,28 @@ infix(Segment<T, TSpec> const & t,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename T, typename TPosBegin, typename TSize>
-SEQAN_HOST_DEVICE inline typename Infix<T>::Type
+inline typename Infix<T>::Type
 infixWithLength(T && t, TPosBegin pos_begin, TSize length)
 {
     return infix(t, pos_begin, pos_begin + length);
 }
 
 template <typename T, typename TPosBegin, typename TSize>
-SEQAN_HOST_DEVICE inline typename Infix<T *>::Type
+inline typename Infix<T *>::Type
 infixWithLength(T * t, TPosBegin pos_begin, TSize length)
 {
     return infix(*t, pos_begin, pos_begin + length);
 }
 
 template <typename T, typename TSpec, typename TPosBegin, typename TSize>
-SEQAN_HOST_DEVICE inline typename Infix<Segment<T, TSpec> >::Type
+inline typename Infix<Segment<T, TSpec> >::Type
 infixWithLength(Segment<T, TSpec> & t, TPosBegin pos_begin, TSize length)
 {
     return infix(host(t), beginPosition(t) + pos_begin, beginPosition(t) + pos_begin + length);
 }
 
 template <typename T, typename TSpec, typename TPosBegin, typename TSize>
-SEQAN_HOST_DEVICE inline typename Infix<Segment<T, TSpec> const>::Type
+inline typename Infix<Segment<T, TSpec> const>::Type
 infixWithLength(Segment<T, TSpec> const & t, TPosBegin pos_begin, TSize length)
 {
     return infix(host(t), beginPosition(t) + pos_begin, beginPosition(t) + pos_begin + length);

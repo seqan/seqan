@@ -76,7 +76,7 @@ public:
 
 public:
 
-    SEQAN_HOST_DEVICE
+   
     Segment():
         data_host(),
         data_begin_position(0)
@@ -120,7 +120,7 @@ public:
     {
     }
 
-    SEQAN_HOST_DEVICE
+   
     ~ Segment()
     {
     }
@@ -173,14 +173,14 @@ public:
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Parameter_<THost_>::Type
+inline typename Parameter_<THost_>::Type
 host(Segment<THost_, SuffixSegment> & me)
 {
     return _toParameter<THost_>(me.data_host);
 }
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Parameter_<THost_>::Type
+inline typename Parameter_<THost_>::Type
 host(Segment<THost_, SuffixSegment> const & me)
 {
     return _toParameter<THost_>(me.data_host);
@@ -205,14 +205,14 @@ setHost(Segment<THost_ const, SuffixSegment> & me, typename Parameter_<THost_>::
 //____________________________________________________________________________
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Iterator<Segment<THost_, SuffixSegment>, Standard>::Type
+inline typename Iterator<Segment<THost_, SuffixSegment>, Standard>::Type
 begin(Segment<THost_, SuffixSegment> & me,
     Standard)
 {
     return begin(host(me), Standard()) + me.data_begin_position;
 }
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Iterator<Segment<THost_, SuffixSegment> const, Standard>::Type
+inline typename Iterator<Segment<THost_, SuffixSegment> const, Standard>::Type
 begin(Segment<THost_, SuffixSegment> const & me,
     Standard)
 {
@@ -340,6 +340,14 @@ struct Suffix< Segment<THost, TSpec> const >:
 template <typename THost>
 struct Suffix<THost &>:
     Suffix<THost> {};
+
+// ----------------------------------------------------------------------------
+// Metafunction SuffixOnValue
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct SuffixOnValue :
+    Suffix<T>{};
 
 //////////////////////////////////////////////////////////////////////////////
 

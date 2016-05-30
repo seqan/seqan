@@ -156,14 +156,14 @@ struct Score_
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
-SEQAN_HOST_DEVICE inline typename TextIterator_<TText, TPattern, TSpec>::Type &
+inline typename TextIterator_<TText, TPattern, TSpec>::Type &
 _textIterator(Finder_<TText, TPattern, TSpec> & finder)
 {
     return finder._textIt;
 }
 
 template <typename TText, typename TPattern, typename TSpec>
-SEQAN_HOST_DEVICE inline typename TextIterator_<TText, TPattern, TSpec>::Type const &
+inline typename TextIterator_<TText, TPattern, TSpec>::Type const &
 _textIterator(Finder_<TText, TPattern, TSpec> const & finder)
 {
     return finder._textIt;
@@ -174,14 +174,14 @@ _textIterator(Finder_<TText, TPattern, TSpec> const & finder)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
-SEQAN_HOST_DEVICE inline typename PatternIterator_<TText, TPattern, TSpec>::Type &
+inline typename PatternIterator_<TText, TPattern, TSpec>::Type &
 _patternIterator(Finder_<TText, TPattern, TSpec> & finder)
 {
     return finder._patternIt;
 }
 
 template <typename TText, typename TPattern, typename TSpec>
-SEQAN_HOST_DEVICE inline typename PatternIterator_<TText, TPattern, TSpec>::Type const &
+inline typename PatternIterator_<TText, TPattern, TSpec>::Type const &
 _patternIterator(Finder_<TText, TPattern, TSpec> const & finder)
 {
     return finder._patternIt;
@@ -192,7 +192,7 @@ _patternIterator(Finder_<TText, TPattern, TSpec> const & finder)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Score_<TSpec>::Type
+inline typename Score_<TSpec>::Type
 _getScore(Finder_<TText, TPattern, TSpec> const & finder)
 {
     return finder._score;
@@ -203,7 +203,7 @@ _getScore(Finder_<TText, TPattern, TSpec> const & finder)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Score_<TSpec>::Type
+inline typename Score_<TSpec>::Type
 _getScoreThreshold(Finder_<TText, TPattern, TSpec> const & finder)
 {
     return finder._scoreThreshold;
@@ -214,7 +214,7 @@ _getScoreThreshold(Finder_<TText, TPattern, TSpec> const & finder)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec, typename TScore>
-SEQAN_HOST_DEVICE inline void
+inline void
 _setScoreThreshold(Finder_<TText, TPattern, TSpec> & finder, TScore score)
 {
     finder._scoreThreshold = score;
@@ -225,7 +225,7 @@ _setScoreThreshold(Finder_<TText, TPattern, TSpec> & finder, TScore score)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec, typename TPattern, typename TSpec>
-SEQAN_HOST_DEVICE inline void
+inline void
 clear(Finder_<TText, TPattern, TSpec> & finder)
 {
     // NOTE(esiragusa): if find wasn't called yet, _textIterator is uninitialized.

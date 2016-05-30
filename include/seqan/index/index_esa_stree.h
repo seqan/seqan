@@ -144,7 +144,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     template < typename TIndex, typename TSpec >
     struct EdgeLabel< Iter< TIndex, VSTree<TSpec> > > {
-        typedef typename Infix< typename Fibre<TIndex, FibreText>::Type const >::Type Type;
+        typedef typename InfixOnValue< typename Fibre<TIndex, FibreText>::Type const >::Type Type;
     };
 
 /*!
@@ -201,10 +201,10 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 //____________________________________________________________________________
 
-        SEQAN_HOST_DEVICE
+       
         Iter() : index() {}
 
-        SEQAN_HOST_DEVICE
+       
         Iter(TIndex &_index):
             index(&_index)
         {
@@ -212,14 +212,14 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
             goRoot(*this);
         }
 
-        SEQAN_HOST_DEVICE
+       
         Iter(TIndex &_index, MinimalCtor):
             index(&_index),
             vDesc(MinimalCtor()),
             _parentDesc(MinimalCtor()) {}
 
         // NOTE(esiragusa): _parentDesc is unitialized
-        SEQAN_HOST_DEVICE
+       
         Iter(TIndex &_index, TVertexDesc const &_vDesc):
             index(&_index),
             vDesc(_vDesc)
@@ -228,7 +228,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
         }
 
         template <typename TSpec2>
-        SEQAN_HOST_DEVICE
+       
         Iter(Iter<TIndex, VSTree<TopDown<TSpec2> > > const &_origin):
             index(&container(_origin)),
             vDesc(value(_origin)),
@@ -237,7 +237,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 //____________________________________________________________________________
 
         template <typename TSpec2>
-        SEQAN_HOST_DEVICE inline Iter const &
+        inline Iter const &
         operator = (Iter<TIndex, VSTree<TopDown<TSpec2> > > const &_origin)
         {
             index = &container(_origin);
@@ -299,11 +299,11 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     {
         Pair<TSize> range;        // current SA interval of hits
 
-        SEQAN_HOST_DEVICE inline
+        inline
         HistoryStackEsa_() {}
 
         template <typename TSize_>
-        SEQAN_HOST_DEVICE inline
+        inline
         HistoryStackEsa_(Pair<TSize_> const &_range): range(_range) {}
     };
 
@@ -339,27 +339,27 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 //____________________________________________________________________________
 
-        SEQAN_HOST_DEVICE
+       
         Iter() :
             TBase()
         {}
 
-        SEQAN_HOST_DEVICE
+       
         Iter(TIndex &_index):
             TBase(_index) {}
 
-        SEQAN_HOST_DEVICE
+       
         Iter(TIndex &_index, MinimalCtor):
             TBase(_index, MinimalCtor()) {}
 
-        SEQAN_HOST_DEVICE
+       
         Iter(Iter const &_origin):
             TBase((TBase const &)_origin),
             history(_origin.history) {}
 
 //____________________________________________________________________________
 
-        SEQAN_HOST_DEVICE inline
+        inline
         Iter const &
         operator = (Iter const &_origin)
         {
@@ -658,7 +658,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 
     template < typename TIndex, typename TSize >
-    SEQAN_HOST_DEVICE inline typename Size<TIndex>::Type
+    inline typename Size<TIndex>::Type
     repLength(TIndex const &index, VertexEsa<TSize> const &vDesc)
     {
         if (_isLeaf(vDesc)) return suffixLength(saAt(vDesc.range.i1, index), index);
@@ -674,7 +674,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     }
 
     template < typename TIndex, typename TSpec >
-    SEQAN_HOST_DEVICE inline typename Size<TIndex>::Type
+    inline typename Size<TIndex>::Type
     repLength(Iter< TIndex, VSTree<TopDown<TSpec> > > const &it)
     {
         return repLength(container(it), value(it));
@@ -720,7 +720,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  */
 
     template < typename TIndex, typename TSpec >
-    SEQAN_HOST_DEVICE inline typename Size<TIndex>::Type
+    inline typename Size<TIndex>::Type
     parentRepLength(Iter< TIndex, VSTree<TopDown<TSpec> > > const &it)
     {
         return repLength(container(it), nodeUp(it));
@@ -742,7 +742,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  */
 
     template < typename TIndex, typename TSpec >
-    SEQAN_HOST_DEVICE inline bool
+    inline bool
     emptyParentEdge(Iter< TIndex, VSTree<TopDown<TSpec> > > const &it)
     {
         // the following is more efficient than
@@ -871,13 +871,13 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 //////////////////////////////////////////////////////////////////////////////
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline TIndex const &
+    inline TIndex const &
     container(Iter< TIndex, VSTree<TSpec> > const &it) {
         return *it.index;
     }
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline TIndex &
+    inline TIndex &
     container(Iter< TIndex, VSTree<TSpec> > &it) {
         return *const_cast<TIndex*>(it.index);
     }
@@ -926,13 +926,13 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  */
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline typename VertexDescriptor<TIndex>::Type &
+    inline typename VertexDescriptor<TIndex>::Type &
     value(Iter< TIndex, VSTree<TSpec> > &it) {
         return it.vDesc;
     }
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline typename VertexDescriptor<TIndex>::Type const &
+    inline typename VertexDescriptor<TIndex>::Type const &
     value(Iter< TIndex, VSTree<TSpec> > const &it) {
         return it.vDesc;
     }
@@ -1007,7 +1007,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  */
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline typename SAValue<TIndex>::Type
+    inline typename SAValue<TIndex>::Type
     getOccurrence(Iter< TIndex, VSTree<TSpec> > const &it)
     {
         return saAt(value(it).range.i1, container(it));
@@ -1041,7 +1041,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  */
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline typename Size<TIndex>::Type
+    inline typename Size<TIndex>::Type
     countOccurrences(Iter< TIndex, VSTree<TSpec> > const &it)
     {
         if (_isSizeInval(value(it).range.i2))
@@ -1069,7 +1069,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  * The necessary index tables are built on-demand via @link Index#indexRequire @endlink if index is not <tt>const</tt>.
  */
     template < typename TText, typename TSpec, typename TDesc >
-    SEQAN_HOST_DEVICE inline Pair<typename Size<Index<TText, TSpec> >::Type>
+    inline Pair<typename Size<Index<TText, TSpec> >::Type>
     range(Index<TText, TSpec> const &index, TDesc const &desc)
     {
         if (_isSizeInval(desc.range.i2))
@@ -1079,7 +1079,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     }
 
     template < typename TIndex, typename TSpec >
-    SEQAN_HOST_DEVICE inline Pair<typename Size<TIndex>::Type>
+    inline Pair<typename Size<TIndex>::Type>
     range(Iter<TIndex, VSTree<TSpec> > const &it)
     {
         if (_isSizeInval(value(it).range.i2))
@@ -1117,7 +1117,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  */
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline typename Infix< typename Fibre<TIndex, FibreSA>::Type const >::Type
+    inline typename Infix< typename Fibre<TIndex, FibreSA>::Type const >::Type
     getOccurrences(Iter< TIndex, VSTree<TSpec> > const &it)
     {
         if (_isSizeInval(value(it).range.i2))
@@ -1260,7 +1260,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  */
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline typename Infix< typename Fibre<TIndex, FibreText>::Type const >::Type
+    inline typename InfixOnValue< typename Fibre<TIndex, FibreText>::Type const >::Type
     representative(Iter< TIndex, VSTree<TSpec> > const &it)
     {
         return infixWithLength(indexText(container(it)), getOccurrence(it), repLength(it));
@@ -1374,7 +1374,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     // get the interval of SA of the subtree under the edge beginning with character c
     template < typename TText, class TIndexSpec, class TSpec, typename TValue >
-    SEQAN_HOST_DEVICE inline bool
+    inline bool
     _getNodeByChar(
         Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree<TSpec> > const &it,
         TValue c,
@@ -1467,7 +1467,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  */
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline bool
+    inline bool
     nodeHullPredicate(Iter<TIndex, TSpec> &)
     {
         return true;
@@ -1486,7 +1486,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  */
 
     template < typename TText, typename TIndexSpec, class TSpec >
-    SEQAN_HOST_DEVICE inline void goRoot(Iter<Index<TText, TIndexSpec>, VSTree<TSpec> > &it)
+    inline void goRoot(Iter<Index<TText, TIndexSpec>, VSTree<TSpec> > &it)
     {
         _historyClear(it);
         clear(it);                            // start in root node with range (0,infty)
@@ -1720,19 +1720,19 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     // unified history stack access for goDown(..)
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline void
+    inline void
     _historyClear(Iter< TIndex, VSTree<TSpec> > &) {}
 
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline void
+    inline void
     _historyClear(Iter< TIndex, VSTree< TopDown<TSpec> > > &it)
     {
         it._parentDesc = value(it);
     }
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline void
+    inline void
     _historyClear(Iter< TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > &it)
     {
         clear(it.history);
@@ -1745,14 +1745,14 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
         value(it).parentRight = value(it).range.i2;
     }
 */    template < typename TText, class TIndexSpec, class TSpec >
-    SEQAN_HOST_DEVICE inline void
+    inline void
     _historyPush(Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it)
     {
         it._parentDesc = value(it);
         value(it).parentRight = value(it).range.i2;
     }
     template < typename TText, class TIndexSpec, class TSpec >
-    SEQAN_HOST_DEVICE inline void
+    inline void
     _historyPush(Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree< TopDown< ParentLinks<TSpec> > > > &it)
     {
         typedef Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree< TopDown< ParentLinks<TSpec> > > > TIter;
@@ -1766,13 +1766,13 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     // standard down/right/up handlers of top-down-traversal
     template < typename TIndex, typename TSpec >
-    SEQAN_HOST_DEVICE inline void _onGoDown(Iter<TIndex, VSTree< TopDown<TSpec> > > &) {}
+    inline void _onGoDown(Iter<TIndex, VSTree< TopDown<TSpec> > > &) {}
 
     template < typename TIndex, typename TSpec >
-    SEQAN_HOST_DEVICE inline void _onGoRight(Iter<TIndex, VSTree< TopDown<TSpec> > > &) {}
+    inline void _onGoRight(Iter<TIndex, VSTree< TopDown<TSpec> > > &) {}
 
     template < typename TIndex, typename TSpec >
-    SEQAN_HOST_DEVICE inline void _onGoUp(Iter<TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > &) {}
+    inline void _onGoUp(Iter<TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > &) {}
 
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1780,7 +1780,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     // go down the leftmost edge (including empty $-edges)
     template < typename TText, class TIndexSpec, class TSpec, typename TDfsOrder >
-    SEQAN_HOST_DEVICE inline bool _goDown(
+    inline bool _goDown(
         Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it,
         VSTreeIteratorTraits<TDfsOrder, False> const)
     {
@@ -1806,7 +1806,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 
     template <typename TIndex, typename TSpec, typename TVertexDesc>
-    SEQAN_HOST_DEVICE inline void
+    inline void
     _setParentNodeDescriptor(Iter<TIndex, VSTree< TopDown<TSpec> > > &it,
                              TVertexDesc const &desc)
     {
@@ -1822,7 +1822,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     // go down the leftmost edge (skip empty $-edges)
     template < typename TText, class TIndexSpec, class TSpec, typename TDfsOrder >
-    SEQAN_HOST_DEVICE inline bool _goDown(
+    inline bool _goDown(
         Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it,
         VSTreeIteratorTraits<TDfsOrder, True> const)
     {
@@ -1876,7 +1876,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     // go down the leftmost edge
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline bool goDown(Iter< TIndex, VSTree< TopDown<TSpec> > > &it) {
+    inline bool goDown(Iter< TIndex, VSTree< TopDown<TSpec> > > &it) {
         if (_goDown(it, typename GetVSTreeIteratorTraits< Iter<TIndex, VSTree< TopDown<TSpec> > > >::Type())) {
             _onGoDown(it);
             return true;
@@ -1890,7 +1890,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     // go down the edge beginning with c (returns false iff this edge doesn't exists)
     template < typename TIndex, class TSpec, typename TValue >
-    SEQAN_HOST_DEVICE inline bool _goDownChar(Iter< TIndex, VSTree< TopDown<TSpec> > > &it, TValue c)
+    inline bool _goDownChar(Iter< TIndex, VSTree< TopDown<TSpec> > > &it, TValue c)
     {
         typename VertexDescriptor<TIndex>::Type nodeDesc;
         if (_getNodeByChar(it, c, nodeDesc)) {
@@ -1904,14 +1904,14 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     // go down the path corresponding to pattern
     // lcp is the longest prefix of pattern and path
     template < typename TIndex, typename TSpec, typename TString, typename TSize >
-    SEQAN_HOST_DEVICE inline bool
+    inline bool
     _goDownString(
         Iter< TIndex, VSTree< TopDown<TSpec> > > &node,
         TString const &pattern,
         TSize &lcp)
     {
         typedef typename Fibre<TIndex, FibreText>::Type const        TText;
-        typedef typename Infix<TText>::Type                            TInfix;
+        typedef typename InfixOnValue<TText>::Type                   TInfix;
         typedef typename Iterator<TInfix, Standard>::Type            IText;
         typedef typename Iterator<TString const, Standard>::Type    IPattern;
 
@@ -1954,7 +1954,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     }
 
     template < typename TIndex, typename TSpec, typename TObject >
-    SEQAN_HOST_DEVICE inline bool
+    inline bool
     _goDownObject(
         Iter< TIndex, VSTree< TopDown<TSpec> > > &it,
         TObject const &obj,
@@ -1964,7 +1964,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     }
 
     template < typename TIndex, typename TSpec, typename TObject >
-    SEQAN_HOST_DEVICE inline bool
+    inline bool
     _goDownObject(
         Iter< TIndex, VSTree< TopDown<TSpec> > > &it,
         TObject const &obj,
@@ -1977,7 +1977,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     // public interface for goDown(it, ...)
     template < typename TIndex, typename TSpec, typename TObject >
-    SEQAN_HOST_DEVICE inline bool
+    inline bool
     goDown(
         Iter< TIndex, VSTree< TopDown<TSpec> > > &it,
         TObject const &obj)
@@ -1986,7 +1986,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     }
 
     template < typename TIndex, typename TSpec, typename TString, typename TSize >
-    SEQAN_HOST_DEVICE inline bool
+    inline bool
     goDown(
         Iter< TIndex, VSTree< TopDown<TSpec> > > &it,
         TString const &pattern,
@@ -2035,7 +2035,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     // go up one edge (returns false if in root node)
     // can be used at most once, as no history stack is available
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline bool
+    inline bool
     _goUp(Iter< TIndex, VSTree< TopDown<TSpec> > > &it)
     {
         if (!isRoot(it)) {
@@ -2047,7 +2047,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     // go up one edge (returns false if in root node)
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline bool
+    inline bool
     _goUp(Iter< TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > &it)
     {
         if (!empty(it.history)) {
@@ -2062,7 +2062,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     // go up one edge
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline bool goUp(Iter< TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > &it) {
+    inline bool goUp(Iter< TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > &it) {
         if (_goUp(it)) {
             _onGoUp(it);
             return true;
@@ -2085,7 +2085,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     // return vertex descriptor of parent's node
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline typename VertexDescriptor<TIndex>::Type
+    inline typename VertexDescriptor<TIndex>::Type
     nodeUp(Iter< TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > const &it)
     {
         if (!empty(it.history))
@@ -2101,7 +2101,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     // nodeUp adaption for non-history iterators
     // ATTENTION: Do not call nodeUp after a goDown that returned false (or after _goUp)!
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline typename VertexDescriptor<TIndex>::Type const &
+    inline typename VertexDescriptor<TIndex>::Type const &
     nodeUp(Iter< TIndex, VSTree< TopDown<TSpec> > > const &it)
     {
         return it._parentDesc;
@@ -2120,7 +2120,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  */
     // go right to the lexic. next sibling
     template < typename TText, class TIndexSpec, class TSpec, typename TDfsOrder, typename THideEmptyEdges >
-    SEQAN_HOST_DEVICE inline bool _goRight(
+    inline bool _goRight(
         Iter< Index<TText, IndexEsa<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it,
         VSTreeIteratorTraits<TDfsOrder, THideEmptyEdges> const)
     {
@@ -2150,7 +2150,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     // go down the leftmost edge
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline bool goRight(Iter< TIndex, VSTree< TopDown<TSpec> > > &it) {
+    inline bool goRight(Iter< TIndex, VSTree< TopDown<TSpec> > > &it) {
         if (_goRight(it, typename GetVSTreeIteratorTraits< Iter<TIndex, VSTree< TopDown<TSpec> > > >::Type())) {
             _onGoRight(it);
             return true;
@@ -2171,7 +2171,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  *               the metafunction @link Size @endlink of the underlying index.
  */
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline typename Size< TIndex >::Type
+    inline typename Size< TIndex >::Type
     parentEdgeLength(Iter< TIndex, VSTree< TopDown<TSpec> > > const &it)
     {
         return repLength(it) - parentRepLength(it);
@@ -2191,7 +2191,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  */
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline typename EdgeLabel< Iter< TIndex, VSTree<TSpec> > >::Type
+    inline typename EdgeLabel< Iter< TIndex, VSTree<TSpec> > >::Type
     parentEdgeLabel(Iter< TIndex, VSTree< TopDown<TSpec> > > const &it)
     {
         return infixWithLength(
@@ -2225,13 +2225,13 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     }
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline void _clear(Iter<TIndex, VSTree<TSpec> > &it)
+    inline void _clear(Iter<TIndex, VSTree<TSpec> > &it)
     {
         value(it) = typename VertexDescriptor<TIndex>::Type(MinimalCtor());
     }
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline void clear(Iter<TIndex, VSTree<TSpec> > &it)
+    inline void clear(Iter<TIndex, VSTree<TSpec> > &it)
     {
         _clear(it);
     }
@@ -2450,19 +2450,19 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  * @endcode
  */
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline bool isRoot(Iter<TIndex, VSTree< BottomUp<TSpec> > > const &it)
+    inline bool isRoot(Iter<TIndex, VSTree< BottomUp<TSpec> > > const &it)
     {
         return empty(it.history);
     }
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline bool isRoot(Iter<TIndex, VSTree<TSpec> > const &it)
+    inline bool isRoot(Iter<TIndex, VSTree<TSpec> > const &it)
     {
         return _isRoot(value(it));
     }
 
     template < typename TSize >
-    SEQAN_HOST_DEVICE inline bool _isRoot(VertexEsa<TSize> const &value)
+    inline bool _isRoot(VertexEsa<TSize> const &value)
     {
 //IOREV _notio_
         return _isSizeInval(value.range.i2);
@@ -2755,7 +2755,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  * @link DemoIndexCountChildren @endlink
  */
     template < typename TSize >
-    SEQAN_HOST_DEVICE inline bool _isLeaf(VertexEsa<TSize> const &vDesc)
+    inline bool _isLeaf(VertexEsa<TSize> const &vDesc)
     {
 //IOREV _notio_
         // is this a leaf?
@@ -2764,7 +2764,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     // is this a leaf? (including empty $-edges)
     template < typename TIndex, class TSpec, typename TDfsOrder >
-    SEQAN_HOST_DEVICE inline bool _isLeaf(
+    inline bool _isLeaf(
         Iter<TIndex, VSTree<TSpec> > const &it,
         VSTreeIteratorTraits<TDfsOrder, False> const)
     {
@@ -2773,14 +2773,14 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 
     template <typename TIndex, typename TSpec>
-    SEQAN_HOST_DEVICE inline typename SAValue<TIndex>::Type
+    inline typename SAValue<TIndex>::Type
     _lastOccurrence(Iter<TIndex, VSTree<TSpec> > const &it)
     {
         return back(getOccurrences(it));
     }
 
     template <typename TText, typename TIndexSpec, typename TSpec>
-    SEQAN_HOST_DEVICE inline typename SAValue<Index<TText, IndexEsa<TIndexSpec> > >::Type
+    inline typename SAValue<Index<TText, IndexEsa<TIndexSpec> > >::Type
     _lastOccurrence(Iter<Index<TText, IndexEsa<TIndexSpec> >, VSTree<TSpec> > const &it)
     {
         if (_isSizeInval(value(it).range.i2))
@@ -2791,7 +2791,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
     // is this a leaf? (hide empty $-edges)
     template < typename TIndex, class TSpec, typename TDfsOrder >
-    SEQAN_HOST_DEVICE inline bool _isLeaf(Iter<TIndex, VSTree<TSpec> > const &it, VSTreeIteratorTraits<TDfsOrder, True> const)
+    inline bool _isLeaf(Iter<TIndex, VSTree<TSpec> > const &it, VSTreeIteratorTraits<TDfsOrder, True> const)
     {
         typedef typename SAValue<TIndex>::Type  TOcc;
 
@@ -2809,7 +2809,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     }
 
     template < typename TIndex, class TSpec >
-    SEQAN_HOST_DEVICE inline bool isLeaf(Iter<TIndex, VSTree<TSpec> > const &it)
+    inline bool isLeaf(Iter<TIndex, VSTree<TSpec> > const &it)
     {
         return _isLeaf(it, typename GetVSTreeIteratorTraits< Iter<TIndex, VSTree<TSpec> > >::Type());
     }
@@ -2818,7 +2818,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     // (more or less) internal functions for accessing the childtab
 
     template < typename TSize, typename TIndex >
-    SEQAN_HOST_DEVICE inline bool _isNextl(TSize i, TIndex const &index)
+    inline bool _isNextl(TSize i, TIndex const &index)
     {
 //IOREV _notio_
         if (i >= length(index)) return false;
@@ -2827,7 +2827,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     }
 
     template < typename TSize, typename TIndex >
-    SEQAN_HOST_DEVICE inline bool _isUp(TSize i, TIndex const &index)
+    inline bool _isUp(TSize i, TIndex const &index)
     {
 //IOREV _notio_
         if (i >= length(index)) return false;
@@ -2836,13 +2836,13 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     }
 
     template < typename TSize, typename TIndex >
-    SEQAN_HOST_DEVICE inline TSize _getNextl(TSize i, TIndex const &index)
+    inline TSize _getNextl(TSize i, TIndex const &index)
     {
         return childAt(i, index);
     }
 
     template < typename TSize, typename TIndex >
-    SEQAN_HOST_DEVICE inline TSize _getUp(TSize i, TIndex const &index)
+    inline TSize _getUp(TSize i, TIndex const &index)
     {
         if (!_isSizeInval(i))
             return childAt(i - 1, index);
@@ -2851,7 +2851,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
     }
 
     template < typename TSize, typename TIndex >
-    SEQAN_HOST_DEVICE inline TSize _getDown(TSize i, TIndex const &index)
+    inline TSize _getDown(TSize i, TIndex const &index)
     {
         return childAt(i, index);
     }
