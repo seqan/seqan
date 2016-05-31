@@ -129,8 +129,7 @@ public:
     void setUp()
     {
         //createText(text, TValue());
-        generateText(text, 50000);
-        //text = "ATAGACTCTCGCAATTGGAAGCCTAATAATGCCGGCACTCCGTGGATCAAGTACACTCAGGGCATGTCCTTAAGGGCAGCCGCCTGAACTATATCTCGCC"; // ATAGACTCTCGCAATTGGAAGCCTAATAATGCCGGCACTCCGTGGATCAAGTACACTCAGGGCATGTCCTTAAGGGCAGCCGCCTGAACTATATCTCGCC
+        generateText(text, 5000);
         //std::cout << text << std::endl;
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
