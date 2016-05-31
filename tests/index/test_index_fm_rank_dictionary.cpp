@@ -130,7 +130,6 @@ public:
     {
         //createText(text, TValue());
         generateText(text, 5000);
-        //std::cout << text << std::endl;
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
     }

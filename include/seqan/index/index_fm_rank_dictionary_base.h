@@ -236,7 +236,6 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
     // Assign the text value by value.
     TTextIterator textBegin = begin(text, Standard());
     TTextIterator textEnd = end(text, Standard());
-
     for (TTextIterator textIt = textBegin; textIt != textEnd; ++textIt)
         setValue(dict, textIt - textBegin, value(textIt));
 
