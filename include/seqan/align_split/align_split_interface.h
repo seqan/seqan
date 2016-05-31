@@ -349,9 +349,6 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     }
     _adaptTraceSegmentsTo(gapsContigL, gapsReadL, traceL);
 
-//    std::cout << gapsContigL << std::endl;
-//    std::cout << gapsReadL << std::endl;
-
     // Get reversed versions of the right contig and read sequence.
     ModifiedString<TContigSeqR, ModReverse> revContigR(source(gapsContigR));
     ModifiedString<TReadSeqR, ModReverse> revReadR(source(gapsReadR));
@@ -379,9 +376,6 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     reverse(scoutStateR.splitScore);
     _adaptTraceSegmentsTo(gapsContigR, gapsReadR, traceR);
 
-//    std::cout << gapsContigR << std::endl;
-//    std::cout << gapsReadR << std::endl;
-
     SEQAN_ASSERT_EQ(length(scoutStateL.splitScore), length(scoutStateR.splitScore));
 
     // We will split the left and right alignments into two parts such that the alignment score is optimal.  We compute
@@ -403,16 +397,16 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
         }
     }
 
-//     std::cerr << "bestPrefixLength = " << bestPrefixLength << "\n";
-//
-//     std::cerr << "split store left ";
-//     for (unsigned i = 0; i < length(scoutStateL.splitScore); ++i)
-//         fprintf(stderr, " %3d", scoutStateL.splitScore[i]);
-//     std::cerr << "\n";
-//     std::cerr << "split store right";
-//     for (unsigned i = 0; i < length(scoutStateR.splitScore); ++i)
-//         fprintf(stderr, " %3d", scoutStateR.splitScore[i]);
-//     std::cerr << "\n";
+    // std::cerr << "bestPrefixLength = " << bestPrefixLength << "\n";
+
+    // std::cerr << "split store left ";
+    // for (unsigned i = 0; i < length(scoutStateL.splitScore); ++i)
+    //     fprintf(stderr, " %3d", scoutStateL.splitScore[i]);
+    // std::cerr << "\n";
+    // std::cerr << "split store right";
+    // for (unsigned i = 0; i < length(scoutStateR.splitScore); ++i)
+    //     fprintf(stderr, " %3d", scoutStateR.splitScore[i]);
+    // std::cerr << "\n";
 
     // Set the clipping positions.
     TPosition cePosR = toViewPosition(gapsContigR, bestPrefixLength);
@@ -586,7 +580,6 @@ int splitAlignment(Gaps<TSeqHL, TGapSpecHL> & gapsHL,
 }
 
 // Variant: banded, with Align objects.
-
 template <typename TSequenceL, typename TAlignSpecL, typename TSequenceR, typename TAlignSpecR,
           typename TScoreVal, typename TScoreSpec,
           bool TTop, bool TRight, bool TLeft, bool TBottom, typename TConfigSpec>
@@ -594,8 +587,8 @@ int splitAlignment(Align<TSequenceL, TAlignSpecL> & alignL,
                    Align<TSequenceR, TAlignSpecR> & alignR,
                    Score<TScoreVal, TScoreSpec> const & scoringScheme,
                    AlignConfig<TTop, TRight, TLeft, TBottom, TConfigSpec> const & config,
-                   int lowerDiagonal,
-                   int upperDiagonal)
+                   int const lowerDiagonal,
+                   int const upperDiagonal)
 {
     SEQAN_ASSERT_EQ_MSG(source(row(alignL, 0)), source(row(alignR, 0)),
                         "Contig must be the same for left and right split alignment.");
@@ -609,15 +602,14 @@ typename TScoreVal, typename TScoreSpec>
 int splitAlignment(Align<TSequenceL, TAlignSpecL> & alignL,
                    Align<TSequenceR, TAlignSpecR> & alignR,
                    Score<TScoreVal, TScoreSpec> const & scoringScheme,
-                   int lowerDiagonal,
-                   int upperDiagonal)
+                   int const lowerDiagonal,
+                   int const upperDiagonal)
 {
     return splitAlignment(alignL, alignR, scoringScheme, AlignConfig<false, false, true, true>(),
                           lowerDiagonal, upperDiagonal);
 }
 
 // Variant: banded, with Gaps objects.
-
 template <typename TSeqHL, typename TGapSpecHL, typename TSeqVL, typename TGapSpecVL,
           typename TSeqHR, typename TGapSpecHR, typename TSeqVR, typename TGapSpecVR,
           typename TScoreVal, typename TScoreSpec,
@@ -628,8 +620,8 @@ int splitAlignment(Gaps<TSeqHL, TGapSpecHL> & gapsHL,
                    Gaps<TSeqVR, TGapSpecVR> & gapsVR,
                    Score<TScoreVal, TScoreSpec> const & scoringScheme,
                    AlignConfig<TTop, TRight, TLeft, TBottom, TConfigSpec> const & config,
-                   int lowerDiagonal,
-                   int upperDiagonal)
+                   int const lowerDiagonal,
+                   int const upperDiagonal)
 {
     SEQAN_ASSERT_EQ_MSG(source(gapsHL), source(gapsHR),
                         "Contig must be the same for left and right split alignment.");
@@ -646,8 +638,8 @@ int splitAlignment(Gaps<TSeqHL, TGapSpecHL> & gapsHL,
                    Gaps<TSeqHR, TGapSpecHR> & gapsHR,
                    Gaps<TSeqVR, TGapSpecVR> & gapsVR,
                    Score<TScoreVal, TScoreSpec> const & scoringScheme,
-                   int lowerDiagonal,
-                   int upperDiagonal)
+                   int const lowerDiagonal,
+                   int const upperDiagonal)
 {
     return splitAlignment(gapsHL, gapsVL, gapsHR, gapsVR, scoringScheme, AlignConfig<false, false, true, true>(),
                           lowerDiagonal, upperDiagonal);

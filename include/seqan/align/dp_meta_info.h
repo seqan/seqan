@@ -456,7 +456,8 @@ struct LastColumnEnabled_
 
 template <typename TAlgo, typename TGapSpec, typename TTraceSpec, typename TColumnDescriptor>
 struct LastColumnEnabled_<DPProfile_<TAlgo, TGapSpec, TTraceSpec>, TColumnDescriptor> :
-    LastColumnEnabled_<TAlgo, TColumnDescriptor>{};
+    LastColumnEnabled_<TAlgo, TColumnDescriptor>
+{};
 
 // ----------------------------------------------------------------------------
 // Metafunction LastRowEnabled_
@@ -472,7 +473,8 @@ struct LastRowEnabled_
 
 template <typename TAlgo, typename TGapSpec, typename TTraceSpec, typename TCellDescriptor, typename TColumnDescriptor>
 struct LastRowEnabled_<DPProfile_<TAlgo, TGapSpec, TTraceSpec>, TCellDescriptor, TColumnDescriptor> :
-    LastRowEnabled_<TAlgo, TCellDescriptor, TColumnDescriptor>{};
+    LastRowEnabled_<TAlgo, TCellDescriptor, TColumnDescriptor>
+{};
 
 // ============================================================================
 // Functions
