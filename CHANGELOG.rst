@@ -305,7 +305,7 @@ Infrastructure Updates
 
 - The repository has been migrated to GitHub (https://github.com/seqan/seqan).
 - Continuous integration builds happen on TravisCI.
-- The manual has been migrated to sphinx (http://seqan.readthedocs.org).
+- The manual has been migrated to sphinx (http://seqan.readthedocs.io).
 - The ``core`` and ``extras`` subfolders have been removed.
 
 New Apps

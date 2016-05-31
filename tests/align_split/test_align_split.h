@@ -586,4 +586,35 @@ SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_gaps_banded)
     SEQAN_ASSERT_EQ(clippedEndPosition(gapsVR), 56);
 }
 
+SEQAN_DEFINE_TEST(test_align_split_issue_1679)
+{
+    using namespace seqan;
+
+    DnaString refLeft  = "TTTTTTTTTTTTGAGCCGATTTTTTTT";
+    DnaString refRight = "TTTTTTTTTTTTTTTTGGACCGTTTTTTTTTTTTTTTTTTTTTTT";
+    DnaString read     = "GAGCCGA" "GGACCG";
+
+    Gaps<DnaString> refGapsLeft;
+    Gaps<DnaString> refGapsRight;
+    Gaps<DnaString> readGapsLeft;
+    Gaps<DnaString> readGapsRight;
+
+    setSource(refGapsLeft, refLeft);
+    setSource(refGapsRight, refRight);
+    setSource(readGapsLeft, read);
+    setSource(readGapsRight, read);
+
+    Score<int> scoring(1, -3, -4, -5);
+
+    int splitScore = splitAlignment(readGapsLeft, refGapsLeft, readGapsRight, refGapsRight, scoring,
+                                    AlignConfig<false, true, true, false>());
+
+    SEQAN_ASSERT_EQ(splitScore, 13);
+    SEQAN_ASSERT(refGapsLeft == "TTTTTTTTTTTTGAGCCGA");
+    SEQAN_ASSERT(readGapsLeft == "------------GAGCCGA");
+
+    SEQAN_ASSERT(refGapsRight == "GGACCGTTTTTTTTTTTTTTTTTTTTTTT");
+    SEQAN_ASSERT(readGapsRight == "GGACCG-----------------------");
+}
+
 #endif  // SEQAN_TESTS_ALIGN_SPLIT_TEST_ALIGN_SPLIT_H_

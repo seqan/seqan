@@ -113,7 +113,7 @@ typedef Tag<BlastReport_> BlastReport;
  * </ul>
  *
  * For a detailed example have a look at the
- * <a href="http://seqan.readthedocs.org/en/develop/Tutorial/BlastIO.html">Blast IO tutorial</a>.
+ * <a href="http://seqan.readthedocs.io/en/develop/Tutorial/BlastIO.html">Blast IO tutorial</a>.
  *
  * @see BlastRecord
  */
