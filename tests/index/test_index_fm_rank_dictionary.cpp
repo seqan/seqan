@@ -189,12 +189,6 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
     typedef typename TestFixture::TTextIterator         TTextIterator;
 
     typename TestFixture::TRankDict dict(this->text);
-    /*std::cout << "TEXT:    " << this->text << std::endl;
-
-    std::cout << std::bitset<64>(dict.ranks[0].values[0].i) << std::endl;
-    std::cout << std::bitset<64>(dict.ranks[0].values[1].i) << std::endl;
-    std::cout << std::bitset<64>(dict.ranks[0].values[2].i) << std::endl;
-    std::cout << std::bitset<64>(dict.ranks[0].values[3].i) << std::endl;*/
 
     for (TTextIterator textIt = this->textBegin; textIt != this->textEnd; ++textIt)
         SEQAN_ASSERT_EQ(getValue(dict, (unsigned long)(textIt - this->textBegin)), value(textIt));
@@ -260,8 +254,6 @@ SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank) {
         for (TValueSize c = 0; c < this->alphabetSize; ++c) {
             unsigned long smaller;
             unsigned long pos = textIt - this->textBegin;
-            //if (pos == 84 && c == 1)
-            //    std::cout << "blubb" << std::endl;
             unsigned long rank = getRank(dict, pos, TValue((uint16_t) c), smaller); // TODO: getRank!!! uint16_t cast???
             SEQAN_ASSERT_EQ(smaller, smallerNaive);
             SEQAN_ASSERT_EQ(rank, prefixSum[c]);
@@ -269,49 +261,6 @@ SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank) {
         }
     }
 }
-
-/*SEQAN_TYPED_TEST(RankDictionaryTest, GetRankWithPrefix)
-{
-    typedef typename TestFixture::TValueSize            TValueSize;
-    typedef typename TestFixture::TText                 TText;
-    typedef typename TestFixture::TTextIterator         TTextIterator;
-    typedef typename Size<TText>::Type                  TTextSize;
-    typedef String<TTextSize>                           TPrefixSum;
-
-    typename TestFixture::TRankDict dict(this->text);
-
-    // The prefix sum is built while scanning the text.
-    TPrefixSum prefixSum;
-
-    resize(prefixSum, this->alphabetSize, 0);
-
-    // Scan the text.
-    for (TTextIterator textIt = this->textBegin; textIt != this->textEnd; ++textIt)
-    {
-        // Update the prefix sum.
-        prefixSum[ordValue(value(textIt))]++;
-
-        // Check the rank for all alphabet symbols.
-        unsigned long smallerNaive = 0;
-        for (TValueSize c = 0; c < this->alphabetSize; ++c)
-        {
-            //std::cout << "prefixSum: " << prefixSum[c] << std::endl;
-            //std::cout << "unsigned long: " << (unsigned long)(textIt - this->textBegin) << std::endl;
-            unsigned long pos = textIt - this->textBegin;
-            //if (pos == 128)
-            //    std::cout << "xxx" << std::endl;
-            unsigned long smaller = 0;
-            //std::cout << prefixSum[c] << std::endl;
-            //unsigned long rank = getRank(dict, pos, c);
-
-            unsigned long rank = getRank(dict, pos, c, smaller);
-            SEQAN_ASSERT_EQ(rank, prefixSum[c]);
-            SEQAN_ASSERT_EQ(smaller, smallerNaive);
-            smallerNaive += prefixSum[c];
-        }
-        //std::cout << prefixSum[0] << " " << prefixSum[1] << " " << prefixSum[2] << " " << prefixSum[3] << std::endl;
-    }
-}*/
 
 // ----------------------------------------------------------------------------
 // Test setValue()

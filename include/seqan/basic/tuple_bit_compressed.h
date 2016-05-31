@@ -36,7 +36,7 @@
 
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_TUPLE_BIT_PACKED_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_TUPLE_BIT_PACKED_H_
-#include<bitset>
+
 namespace seqan {
 
 // ============================================================================
@@ -259,7 +259,7 @@ assignValue(Tuple<TValue, SIZE, BitPacked<> > & me,
     SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
     SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
 
-    unsigned shift = ((SIZE - 1 - k) * (BitsPerValue<TValue>::VALUE));
+    unsigned shift = ((SIZE - 1 - k) * BitsPerValue<TValue>::VALUE);
     me.i = (me.i & ~(me.BIT_MASK << shift)) | (TBitVector)ordValue(source) << shift;
     return source;
 }
@@ -276,8 +276,6 @@ assignValue2(Tuple<TValue, SIZE, BitPacked<> > & me,
     SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
 
     unsigned shift = ((SIZE - 1 - k) * (BitsPerValue<TValue>::VALUE+1));
-    //std::cout << std::bitset<64>(me.i) << " (before)" << std::endl;
-    //std::cout << std::bitset<64>(shift) << " (shift)" << std::endl;
 
     // TODO: BIT_MASK2 is ugly :D
     me.i = (me.i & ~(me.BIT_MASK2 << shift)) | (TBitVector)ordValue(source) << shift;
