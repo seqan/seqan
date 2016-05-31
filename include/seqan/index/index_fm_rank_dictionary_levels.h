@@ -320,15 +320,15 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
         for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
         {
             _BITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, _VALUES_PER_WORD, _VALUES_PER_WORD, _BITS_PER_VALUE, maxValue-i, i + (1 << (_BITS_PER_VALUE-1)));
-            //std::cout << std::bitset<64>(_BITMASKS[i]) << std::endl;
+            std::cout << std::bitset<64>(_BITMASKS[i]) << std::endl;
         }
-        //std::cout << "-----------------------------------------" << std::endl;
+        std::cout << "-----------------------------------------" << std::endl;
         for (unsigned i = 0; i < _VALUES_PER_WORD; ++i)
         {
             _NEWBITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, i+1, i+1, _BITS_PER_VALUE, 1, 1 << (_BITS_PER_VALUE-1)); // 1
-            //std::cout << std::bitset<64>(_NEWBITMASKS[i]) << std::endl;
+            std::cout << std::bitset<64>(_NEWBITMASKS[i]) << std::endl;
         }
-        //std::cout << "-----------------------------------------" << std::endl;
+        std::cout << "-----------------------------------------" << std::endl;
 
         createRankDictionary(*this, text);
     }

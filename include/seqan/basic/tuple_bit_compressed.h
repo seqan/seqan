@@ -102,6 +102,7 @@ struct Tuple<TValue, SIZE, BitPacked<> >
     typedef typename BitVector_<SIZE * BitsPerValue<TValue>::VALUE>::Type TBitVector;
 
     static const uint64_t BIT_MASK = ((1ull << (BitsPerValue<TValue>::VALUE - 1)       ) - 1ull) << 1 | 1ull;
+    static const uint64_t BIT_MASK2 = ((1ull << (BitsPerValue<TValue>::VALUE)       ) - 1ull) << 1 | 1ull;
     static const uint64_t MASK     = ((1ull << (SIZE * BitsPerValue<TValue>::VALUE - 1)) - 1ull) << 1 | 1ull;
 
     // -----------------------------------------------------------------------
@@ -275,8 +276,11 @@ assignValue2(Tuple<TValue, SIZE, BitPacked<> > & me,
     SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
 
     unsigned shift = ((SIZE - 1 - k) * (BitsPerValue<TValue>::VALUE+1));
+    //std::cout << std::bitset<64>(me.i) << " (before)" << std::endl;
+    //std::cout << std::bitset<64>(shift) << " (shift)" << std::endl;
 
-    me.i = (me.i & ~(me.BIT_MASK << shift)) | (TBitVector)ordValue(source) << shift;
+    // TODO: BIT_MASK2 is ugly :D
+    me.i = (me.i & ~(me.BIT_MASK2 << shift)) | (TBitVector)ordValue(source) << shift;
 
     return source;
 }

@@ -130,7 +130,7 @@ public:
     {
         //createText(text, TValue());
         generateText(text, 50000);
-        //text = "ACUCUCGCAAUUGGAAU"; // AUAGACUCUCGCAAUUGGAAUG
+        //text = "ATAGACTCTCGCAATTGGAAGCCTAATAAT"; // AUAGACUCUCGCAAUUGGAAUG
         // AUAGACUCUCGCAAUUGGAAGCCUAAUAAUG CCGG CACUCCGUGGAUCAA
         //std::cout << text << std::endl;
         textBegin = begin(text, Standard());
@@ -138,11 +138,11 @@ public:
     }
 };
 
-template <typename TRankDictionary>
-class RankDictionaryPrefixTest : public RankDictionaryTest<TRankDictionary> {};
+/*template <typename TRankDictionary>
+class RankDictionaryPrefixTest : public RankDictionaryTest<TRankDictionary> {};*/
 
 SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryTypes);
-SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixTypes);
+//SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixTypes);
 
 // ==========================================================================
 // Tests
@@ -236,7 +236,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
     }
 }*/
 
-SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank)
+/*SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank)
 {
     typedef typename TestFixture::TValueSize            TValueSize;
     typedef typename TestFixture::TText                 TText;
@@ -265,12 +265,12 @@ SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank)
         {
             unsigned long smaller;
             unsigned long rank = getRank(dict, (unsigned long)(textIt - this->textBegin), TValue((uint16_t) c), smaller); // TODO: getRank!!! uint16_t cast???
-            SEQAN_ASSERT_EQ(smaller, smallerNaive);
+            //SEQAN_ASSERT_EQ(smaller, smallerNaive);
             SEQAN_ASSERT_EQ(rank, prefixSum[c]);
             smallerNaive += prefixSum[c];
         }
     }
-}
+}*/
 
 /*SEQAN_TYPED_TEST(RankDictionaryTest, GetRankWithPrefix)
 {
