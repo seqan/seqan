@@ -401,7 +401,7 @@ _scalarValue(TValue & val,
     return val;
 }
 
-//
+// Wrapper to get the scalar value.
 template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec>
 inline auto
 scalarValue(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const & dpNavigator)

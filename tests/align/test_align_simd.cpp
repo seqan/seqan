@@ -40,7 +40,7 @@
 SEQAN_BEGIN_TESTSUITE(test_align_simd)
 {
 
-#if defined(__SSE3__) || defined(__AVX2__)
+#if SEQAN_SIMD_ENABLED
     // Global alignment.
     SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_global_linear);
     SEQAN_CALL_TEST(test_alignment_algorithms_score_global_linear);
@@ -74,7 +74,7 @@ SEQAN_BEGIN_TESTSUITE(test_align_simd)
 
     SEQAN_CALL_TEST(test_alignment_algorithms_align_local_linear_banded);
     SEQAN_CALL_TEST(test_alignment_algorithms_align_local_affine_banded);
-#endif  // defined(__SSE3__) || defined(__AVX2__)
+#endif  // SEQAN_SIMD_ENABLED
 
 }
 SEQAN_END_TESTSUITE

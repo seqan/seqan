@@ -835,9 +835,6 @@ globalAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
     String<TScoreValue> results;
     resize(results, numAlignments);
 
-    StringSet<String<TTraceSegment> > trace;
-    resize(trace, sizeBatch, Exact());
-
     // Create a SIMD scoring scheme.
     Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);
 
@@ -861,6 +858,9 @@ globalAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
 
         auto val = infSetH[0];
         TSimdAlign resultsBatch;
+
+        StringSet<String<TTraceSegment> > trace;
+        resize(trace, sizeBatch, Exact());
 
         _prepareAndRunSimdAlignment(resultsBatch, trace, infSetH, infSetV, simdScoringScheme, TAlignConfig2(), TGapModel());
 

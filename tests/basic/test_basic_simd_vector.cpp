@@ -35,9 +35,7 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
-#if SEQAN_SIMD_ENABLED
 #include "test_basic_simd_vector.h"
-#endif  // SEQAN_SIMD_ENABLED
 
 SEQAN_BEGIN_TESTSUITE(test_basic_simd_vector)
 {

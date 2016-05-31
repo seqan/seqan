@@ -35,17 +35,191 @@
 #ifndef TESTS_ALIGN_TEST_ALIGN_SIMD_H_
 #define TESTS_ALIGN_TEST_ALIGN_SIMD_H_
 
+#if SEQAN_SIMD_ENABLED
+
 #include <seqan/basic.h>
 #include <seqan/align.h>
 
+template <typename TAlphabet>
+struct TestSequences_;
+
+template <>
+struct TestSequences_<seqan::Dna>
+{
+    using TSeq = seqan::String<seqan::Dna>
+
+    static std::tuple<seqan::StringSet<TSeq>, seqan::StringSet<TSeq> >
+    getSequencesEqualLength()
+    {
+        seqan::StringSet<TSeq> set;
+        appendValue(set, "AGCGACTGCAAACATCAGATCAGAG");
+        appendValue(set, "TAATACTAGCATGCGATAAGTCCCT");
+        appendValue(set, "GGCACGTGGATGGTTTAGAGGAATC");
+        appendValue(set, "AGATTCAAGTCTGGTTAACCATCAA");
+        appendValue(set, "ACAGGTCTTGAGTCTAAAATTGTCG");
+        appendValue(set, "TCTCCTGCGTACGAGATGGAAATAC");
+        appendValue(set, "TAGGTAACTACAGGGACTCCGACGT");
+        appendValue(set, "TATGTACGTTGCTCCGTCAGAGGCG");
+
+        appendValue(set, "CCATTCAGGATCACGTTACCGCGAA");
+        appendValue(set, "AAAAAGGGACCAGGAGCTCTTCTCC");
+        appendValue(set, "CCTGCGGTCACGTCTATAGAAATTA");
+        appendValue(set, "CACCATTAACCCTCCTGAGAACCGG");
+        appendValue(set, "GAGGCGGGAATCCGTCACGTATGAG");
+        appendValue(set, "AAGGTATTTGCCCGATAATCAATAC");
+        appendValue(set, "CCCAGGCTTCTAACTTTTTCCACTC");
+        appendValue(set, "GCTTGAGCCGGCTAGGCCTTTCTGC");
+
+        appendValue(set, "ATCTCGGGTCCTGCCCAACCGGTCT");
+        appendValue(set, "AAAAAGGGACCAGGAGCTCTTCTCC");
+        appendValue(set, "ACACGCTAATATAGCGAATCACCGA");
+        appendValue(set, "GAACCCGGCGCCACGCAATGGAACG");
+        appendValue(set, "TCCTTAACTCCGGCAGGCAATTAAA");
+        appendValue(set, "ACAGAAAAATAGGCGAATGAATCTT");
+        appendValue(set, "GGGAACGTATGTATAACGCAAAAAA");
+        appendValue(set, "TTCTCTGTGTATCGAAGAATGGCCT");
+
+        appendValue(set, "CCGAAGTTTCGATGGACTGGTGCCA");
+        appendValue(set, "ACGCGCAGGCATAGTTTTAGGAGAA");
+        appendValue(set, "TTATTCGGGGGCAGTGACAACCAAC");
+
+        decltype(set) set2(set);
+        std::next_permutation(seqan::begin(set, seqan::Standard()), seqan::end(set, seqan::Standard()),
+                              [](auto& strA, auto& strB){ return seqan::isLess(strA, strB); });
+        return std::make_tuple(set, set2);
+    }
+
+    static std::tuple<seqan::StringSet<TSeq>, seqan::StringSet<TSeq> >
+    getSequencesVariableLength()
+    {
+        seqan::StringSet<TSeq> set;
+        appendValue(set, "AGCGACTGCAAACATCAGATCAGAGGTAGAG");
+        appendValue(set, "TAATACTAGCATGCGATAAGTCCCT");
+        appendValue(set, "GGCACGTGTGGTTTAGAGGAATC");
+        appendValue(set, "AGATTCAAGTCTGGTTAACCATCAA");
+        appendValue(set, "ACAGGTCTTGAGTCTAAAATTGTCGAA");
+        appendValue(set, "TCTCCTGCGTACGAGATGGAAATAC");
+        appendValue(set, "TAGGTAACTACAGGGACACGT");
+        appendValue(set, "TATGTACGTCTCCGTCAGAGGCG");
+
+        appendValue(set, "CCATTCAGGATCACGTTACCGCGAAGTACCC");
+        appendValue(set, "AAGGGACCAGGAGCTCTTCTCC");
+        appendValue(set, "CCTGCGGTCACGTCTATAGAAATT");
+        appendValue(set, "CACCATTAACCCTCCTGAGAACCGAGTAGG");
+        appendValue(set, "GAGGCGGGAATCCGTCACGTATGAG");
+        appendValue(set, "AAGGTATTTGCCCGATAATCAATACGATGAGATAGAGAGATAGAATAGAGAAGGGACCGCGCATGACTACGATCGACTGACTACGA");
+        appendValue(set, "CGAGTATATCGAGAGAGGTCACG");
+        appendValue(set, "GCTTGAGCCGGCTAGGCTCTGC");
+
+        appendValue(set, "ATCTCGGGTCCTGCCAACCGGTCT");
+        appendValue(set, "AAAAAGGGACCAGGAGCTCTTCTCC");
+        appendValue(set, "ACACGCTAATATAGCGAATCACCGA");
+        appendValue(set, "AATGGAACG");
+        appendValue(set, "TCCTTAACTCCGGCAGGCAATTATACCGGACTGACACTTAAA");
+        appendValue(set, "ACAGAAAAATAGGCGAATGAAACACTCTT");
+        appendValue(set, "GGGAACGTATGTATAACGCAAAAA");
+        appendValue(set, "TTCTCTGTGTATCGAAGAATGCT");
+
+        appendValue(set, "CCGAAGTTTCGATGGATGGATTCCACACACCTGGTGCCA");
+        appendValue(set, "ACGCGCAGGCATAGTTGGAGAA");
+        appendValue(set, "TTATTCGGGGGCAGTGACAACACTTAGCGACTAC");
+
+        auto set2(set);
+        std::next_permutation(seqan::begin(set, seqan::Standard()), seqan::end(set, seqan::Standard()),
+                              [](auto& strA, auto& strB){ return seqan::isLess(strA, strB); });
+        return std::make_tuple(set, set2);
+    }
+};
+
+template <>
+struct TestSequences_<seqan::AminoAcid>
+{
+    using TSeq = seqan::String<seqan::AminoAcid>
+
+    static std::tuple<seqan::StringSet<TSeq>, seqan::StringSet<TSeq> >
+    getSequencesEqualLength()
+    {
+        seqan::StringSet<TSeq> set;
+        appendValue(set, "FNQSAEYPDISLHCGVLKWRATLGT");
+        appendValue(set, "EIKSDVLLHRPGNIGMQVAESYFAT");
+        appendValue(set, "PIIMWSMKNRTIERLPTGVLMISHT");
+        appendValue(set, "FMATNEKVHCACGADYQMIIDCNEA");
+        appendValue(set, "MFHQTSNANWMFVSNKFHIKFGTLD");
+        appendValue(set, "SNEMGQCFPHEPACFFDKDFRLFIN");
+        appendValue(set, "FPWAHYVVHTLREHRKDANHRSTSY");
+        appendValue(set, "QYRNTESMGCEMRCFTETIMIAGVA");
+
+        appendValue(set, "VVRMDGKEVLKQHVPTYADKHPTGQ");
+        appendValue(set, "TMLKWCEWCFAEFPPFASEPKFPPN");
+        appendValue(set, "GTWGWVDGVHHTMGEQCGPGRACWG");
+        appendValue(set, "ECDFQTWYFYCVNQEIFELFICCMG");
+        appendValue(set, "KRRELNGQERGGWWTVDGPGVSMGT");
+        appendValue(set, "CWAAHYVCWRTKQKQLVAFQRLNCI");
+        appendValue(set, "NRLVGFQIHCFLIRCVEPGQTHTID");
+        appendValue(set, "AYYVRGFMMGQMYGRPVILMTFTKP");
+
+        appendValue(set, "SFTQPVELHIPHYWWHLAYFMIMFY");
+        appendValue(set, "PMNKMFDFNNHQDLLTFTKRFPTPW");
+        appendValue(set, "VIPMIYHDWSIISALMMQKDIYYIA");
+        appendValue(set, "TPGMWGMATLTGNFNSIFVSKYVKN");
+        appendValue(set, "GKELWGMVIARAGMAVQNMYSRDTF");
+        appendValue(set, "VHASDLYAKCYSNCVYQENIDIAEV");
+        appendValue(set, "KQSGTLSGPQYWENVHRVLEDYPKE");
+        appendValue(set, "DPHGYCFYEGTFAWDVEVHEFNNKD");
+
+        appendValue(set, "NMQDVIGGKSLAQHSSVTYKAQQEH");
+        appendValue(set, "CQTPRWECSLNFDEKEAADLMIDVS");
+        appendValue(set, "PMMDLDHCMLIECLRPHNRDNCARH");
+
+        decltype(set) set2(set);
+        std::next_permutation(seqan::begin(set, seqan::Standard()), seqan::end(set, seqan::Standard()),
+                              [](auto& strA, auto& strB){ return seqan::isLess(strA, strB); });
+        return std::make_tuple(set, set2);
+    }
+
+    static std::tuple<seqan::StringSet<TSeq>, seqan::StringSet<TSeq> >
+    getSequencesVariableLength()
+    {
+        seqan::StringSet<TSeq> set;
+        appendValue(set, "FNQSAEYPDISHCGVMQLKWRATLGT");
+        appendValue(set, "EIKSDVLLHRWSMKNPGNILMIDVGMQVAESYFAT");
+        appendValue(set, "PIIMWSMKNRTIEPTGLMISHT");
+        appendValue(set, "FMATNEKVHCACGWSMKNADLMIDVYQMIIDCNEA");
+        appendValue(set, "MWSMKNFHQTSNANWMFVSNMQKFHIKFGTLD");
+        appendValue(set, "SNEGQCFPHEPACFWSMKFDKDFRLFIN");
+        appendValue(set, "FPWAHYVVHTLREHMQRKDANHRSTSY");
+        appendValue(set, "QYRNTWSMKNESMGCEMRFLMIVTETIMIAGVA");
+
+        appendValue(set, "VVRMDGKEVLWSMKNKQHVPTYADKHPTGQ");
+        appendValue(set, "TMLKWCEWCFALMIDVEFPPFASEPKFPPN");
+        appendValue(set, "GTWGVDGVHHWSMWSMKNLMIDVTMGEQCGPGRACWG");
+        appendValue(set, "ECDFQTWYFYCVNQMQEIFELFICCMG");
+        appendValue(set, "KRREWSMKNLNGQERGGWWTVDGPGVSMGT");
+        appendValue(set, "CWAAHYCWRWWSMKNSMKNTKLMIDVQMQKQLVAFQRLNCI");
+        appendValue(set, "NRLVGFQIHCFIRCVEPGQTHTID");
+        appendValue(set, "AYYVRGFMMGQMMQYGRPVILMTFTKP");
+
+        appendValue(set, "SFTQPVELHIPHYWLMIDVWHLAYFMIMFY");
+        appendValue(set, "PMNKMFDFNHQMQDLLTFTKPTPW");
+        appendValue(set, "VIPMIYHDWSIISALMMLMIDVQKDIYYIA");
+        appendValue(set, "TPGMWGMATLTGMQNFNSFVSKYVKN");
+        appendValue(set, "GKELWGMVIARAGMAVQNLMIDVMYSRDTF");
+        appendValue(set, "VHASDLWSNYAKCYSNCVYQEIDIAEV");
+        appendValue(set, "KQSGTLSMQGPYWENVHRVLLMIDVEDYPKE");
+        appendValue(set, "DPHGYCFMQYEGTFAWDVEVHEFNNKD");
+
+        appendValue(set, "NMQDVIGGKSLAQHSSVTYAQQEH");
+        appendValue(set, "CQTPRWECMQSLNFDEKEAADLMIDVS");
+        appendValue(set, "PMMDLDWSMKNMLIECLRPHNRMQDNLMIDVCARH");
+        
+        auto set2(set);
+        std::next_permutation(seqan::begin(set, seqan::Standard()), seqan::end(set, seqan::Standard()),
+                              [](auto& strA, auto& strB){ return seqan::isLess(strA, strB); });
+        return std::make_tuple(set, set2);
+    }
+};
+
 // These are interface tests.
-
-// How can we reduce redundant test instances?
-
-// Global, Overlap, Semi-Global
-// Local, affine
-// Align, Graph, Gaps, Fragments, Score
-
 struct LocalAlignTester_
 {
     template <typename TAlign, typename TScoreValue, typename TScoreSpec, typename TConfig>
@@ -139,9 +313,8 @@ struct GlobalAlignScoreTester_
     }
 };
 
-template <typename TScoreValue, typename TScoreSpec, typename TAlignConfig, typename TFunctor>
+template <typename TAlphabet, typename TScoreValue, typename TScoreSpec, typename TAlignConfig, typename TFunctor>
 void testAlignSimd(TFunctor const &,
-                   seqan::DnaString const & seqH, seqan::DnaString const & seqV,
                    seqan::Score<TScoreValue, TScoreSpec> const & score,
                    TAlignConfig const & config,
                    int const lDiag = seqan::MinValue<int>::VALUE,
@@ -149,38 +322,43 @@ void testAlignSimd(TFunctor const &,
 {
     using namespace seqan;
 
-    StringSet<Align<DnaString> > alignments;
-    for(unsigned i = 0; i < 34; ++i)
+    for (unsigned i = 0; i < 2; ++i)
     {
-        Align<DnaString> align;
-        resize(rows(align), 2);
-        assignSource(row(align, 0), seqH);
-        assignSource(row(align, 1), seqV);
-        appendValue(alignments, align);
-    }
+        typedef typename
+        StringSet<Align<String<TAlphabet> > > alignments;
+        for(unsigned i = 0; i < 34; ++i)
+        {
+            Align<DnaString> align;
+            resize(rows(align), 2);
+            assignSource(row(align, 0), seqH);
+            assignSource(row(align, 1), seqV);
+            appendValue(alignments, align);
+        }
 
-    String<TScoreValue> scores = TFunctor::run(alignments, score, config, lDiag, uDiag);
+        String<TScoreValue> scores = TFunctor::run(alignments, score, config, lDiag, uDiag);
 
-    SEQAN_ASSERT_EQ(length(scores), static_cast<decltype(length(scores))>(34));
+        SEQAN_ASSERT_EQ(length(scores), static_cast<decltype(length(scores))>(34));
 
-    Align<DnaString> goldAlign;
-    resize(rows(goldAlign), 2);
-    assignSource(row(goldAlign, 0), seqH);
-    assignSource(row(goldAlign, 1), seqV);
+        Align<DnaString> goldAlign;
+        resize(rows(goldAlign), 2);
+        assignSource(row(goldAlign, 0), seqH);
+        assignSource(row(goldAlign, 1), seqV);
 
-    TScoreValue goldScore = TFunctor::gold(goldAlign, score, config, lDiag, uDiag);
+        TScoreValue goldScore = TFunctor::gold(goldAlign, score, config, lDiag, uDiag);
 
-    for(size_t i = 0; i < 34; ++i)
-    {
-        SEQAN_ASSERT_EQ(scores[i], goldScore);
-        SEQAN_ASSERT(row(alignments[i], 0) == row(goldAlign, 0));
-        SEQAN_ASSERT(row(alignments[i], 1) == row(goldAlign, 1));
+        for(size_t i = 0; i < 34; ++i)
+        {
+            SEQAN_ASSERT_EQ(scores[i], goldScore);
+            SEQAN_ASSERT(row(alignments[i], 0) == row(goldAlign, 0));
+            SEQAN_ASSERT(row(alignments[i], 1) == row(goldAlign, 1));
+        }
     }
 }
 
-template <typename TScoreValue, typename TScoreSpec, typename TAlignConfig, typename TTester>
+template <typename TSeq, typename TScoreValue, typename TScoreSpec, typename TAlignConfig, typename TTester>
 void testAlignSimdScore(TTester const &,
-                        seqan::DnaString const & seqH, seqan::DnaString const & seqV,
+                        TSeq const & seqH,
+                        TSeq const & seqV,
                         seqan::Score<TScoreValue, TScoreSpec> const & score,
                         TAlignConfig const & config,
                         int const lDiag = seqan::MinValue<int>::VALUE,
@@ -213,13 +391,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_global_linear)
     using namespace seqan;
 
     AlignConfig<> alignConfig;
-
-    // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1), alignConfig);
-    // Alignment with both leading gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1), alignConfig);
-    // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimd<Dna>(GlobalAlignTester_(), Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimd<AminoAcid>(GlobalAlignTester_(), Score<int, Simple>(2, -1, -1), alignConfig);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_score_global_linear)
@@ -227,12 +400,16 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_global_linear)
     using namespace seqan;
 
     AlignConfig<> alignConfig;
-    // Simple alignment without any leading or trailing gaps.
-    testAlignSimdScore(GlobalAlignScoreTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1), alignConfig);
-    // Alignment with both leading and trailing gaps in one row.
-    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1), alignConfig);
-    // Alignment with both leading and trailing gaps in different rows.
-    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Blosum30(-1), alignConfig);
+    auto sets = getDnaSequencesEqualLength();
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), std::get<0>(sets), std::get<1>(sets), Score<int, Simple>(2, -1, -1), alignConfig);
+    sets = getDnaSequencesVariableLength();
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), std::get<0>(sets), std::get<1>(sets), Score<int, Simple>(2, -1, -1), alignConfig);
+
+    auto setsAA = getAninoAcidSequencesEqualLength();
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), std::get<0>(setsAA), std::get<1>(setsAA), Score<int, Simple>(2, -1, -1), alignConfig);
+    setsAA = getAninoAcidSequencesVariableLength();
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), std::get<0>(setsAA), std::get<1>(setsAA), Score<int, Simple>(2, -1, -1), alignConfig);
+
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_global_affine)
@@ -241,11 +418,11 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_global_affine)
 
     AlignConfig<> alignConfig;
     // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
     // Alignment with both leading gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1, -3), alignConfig);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_score_global_affine)
@@ -254,11 +431,11 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_global_affine)
 
     AlignConfig<> alignConfig;
     // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
     // Alignment with both leading gaps - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1, -3), alignConfig);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_overlap_linear)
@@ -268,13 +445,13 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_overlap_linear)
     AlignConfig<true, true, true, true> alignConfig;
 
     // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1), alignConfig);
     // Alignment with both leading gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1), alignConfig);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1), alignConfig);
     // Alignment with no overlap - Simd version
-    testAlignSimd(GlobalAlignTester_(), "GGGGGGGGG", "CCCCCCCCC", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "GGGGGGGGG", "CCCCCCCCC", Score<int, Simple>(2, -1, -1), alignConfig);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_score_overlap_linear)
@@ -283,13 +460,13 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_overlap_linear)
 
     AlignConfig<true, true, true, true> alignConfig;
     // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1), alignConfig);
     // Alignment with both leading gaps - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1), alignConfig);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1), alignConfig);
     // Alignment with no overlap - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "GGGGGGGGG", "CCCCCCCCC", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "GGGGGGGGG", "CCCCCCCCC", Score<int, Simple>(2, -1, -1), alignConfig);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_overlap_affine)
@@ -298,11 +475,11 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_overlap_affine)
 
     AlignConfig<true, true, true, true> alignConfig;
     // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
     // Alignment with both leading gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1, -3), alignConfig);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_score_overlap_affine)
@@ -311,11 +488,11 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_overlap_affine)
 
     AlignConfig<true, true, true, true> alignConfig;
     // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
     // Alignment with both leading gaps - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1, -3), alignConfig);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_semi_global_linear)
@@ -325,11 +502,11 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_semi_global_linear)
     AlignConfig<true, false, false, true> alignConfig;
 
     // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1), alignConfig);
     // Alignment with both leading gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1), alignConfig);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1), alignConfig);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_score_semi_global_linear)
@@ -339,11 +516,11 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_semi_global_linear)
     AlignConfig<true, false, false, true> alignConfig;
 
     // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1), alignConfig);
     // Alignment with both leading gaps - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1), alignConfig);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1), alignConfig);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_semi_global_affine)
@@ -353,11 +530,11 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_semi_global_affine)
     AlignConfig<true, false, false, true> alignConfig;
 
     // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
     // Alignment with both leading gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1, -3), alignConfig);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_score_semi_global_affine)
@@ -366,11 +543,11 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_semi_global_affine)
 
     AlignConfig<true, false, false, true> alignConfig;
     // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "ATGT", "ATAGAT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
     // Alignment with both leading gaps - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "AAAAAGGGGTTTT", "AAAGTT", Score<int, Simple>(2, -1, -1, -3), alignConfig);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimdScore(GlobalAlignScoreTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1, -3), alignConfig);
+    testAlignSimdScore<DnaString>(GlobalAlignScoreTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", Score<int, Simple>(2, -1, -1, -3), alignConfig);
 }
 
 // ----------------------------------------------------------------------------
@@ -384,11 +561,11 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_linear_banded)
     AlignConfig<> alignConfig;
     Score<int, Simple> score(2, -1, -1);
     // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "ATGT", "ATAGAT", score, alignConfig, -3, 2);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "ATGT", "ATAGAT", score, alignConfig, -3, 2);
     // Alignment with both leading and trailing gaps in one row - Simd Version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAGGGGTTTT", "GGGGG", score, alignConfig, -2, 8);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAGGGGTTTT", "GGGGG", score, alignConfig, -2, 8);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAATTTTTTTT", "TTTTTTTTGGGGGGGG", score, alignConfig, -4, 4);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAATTTTTTTT", "TTTTTTTTGGGGGGGG", score, alignConfig, -4, 4);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_affine_banded)
@@ -398,11 +575,11 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_affine_banded)
     AlignConfig<> alignConfig;
     Score<int, Simple> scoringScheme(2, -1, -1, -3);
     // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "ATGT", "ATAGAT", scoringScheme, alignConfig, -3, 2);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "ATGT", "ATAGAT", scoringScheme, alignConfig, -3, 2);
     // Alignment with both leading and trailing gaps in one row - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAGGGGTTTT", "GGGGG", scoringScheme, alignConfig, -2, 8);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAGGGGTTTT", "GGGGG", scoringScheme, alignConfig, -2, 8);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAATTTTTTTT", "TTTTTTTTGGGGGGGG", scoringScheme, alignConfig, -4, 4);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAATTTTTTTT", "TTTTTTTTGGGGGGGG", scoringScheme, alignConfig, -4, 4);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_linear_banded)
@@ -412,19 +589,19 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_linear_banded)
     AlignConfig<true, true, true, true> alignConfig;
     Score<int, Simple> scoringScheme(2, -1, -1);
     // Simple alignment without any leading or trailing gaps.
-    testAlignSimd(GlobalAlignTester_(), "ATGT", "ATAGAT", scoringScheme, alignConfig, -2, 2);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "ATGT", "ATAGAT", scoringScheme, alignConfig, -2, 2);
     // Alignment with both leading and trailing gaps in one row - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAGGGGTTTT", "GGGGG", scoringScheme, alignConfig, -2, 2);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAGGGGTTTT", "GGGGG", scoringScheme, alignConfig, -2, 2);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAATTTTTTTT", "TTTTTTTTGGGGGGGG", scoringScheme, alignConfig, -2, 2);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAATTTTTTTT", "TTTTTTTTGGGGGGGG", scoringScheme, alignConfig, -2, 2);
     // Alignment that starts at first position where the band crosses the bottom of the matrix - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AACGCATTTTT", "TTTACGCA", scoringScheme, alignConfig, -2, 2);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AACGCATTTTT", "TTTACGCA", scoringScheme, alignConfig, -2, 2);
     // Alignment that starts at first position where the band crosses the bottom of the matrix - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AACGCA", "TTTACGCA", scoringScheme, alignConfig, -2, 4);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AACGCA", "TTTACGCA", scoringScheme, alignConfig, -2, 4);
     // Alignment that starts at first position where the band crosses the bottom of the matrix - Simd version
-    testAlignSimd(GlobalAlignTester_(), "ACGAGTGTTTGCC", "TTTTTACGA", scoringScheme, alignConfig, -5, 7);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "ACGAGTGTTTGCC", "TTTTTACGA", scoringScheme, alignConfig, -5, 7);
     // Alignment that starts at first position where the band crosses the bottom of the matrix - Simd version
-    testAlignSimd(GlobalAlignTester_(), "ACGA", "TTTTTACGA", scoringScheme, alignConfig, -5, 4);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "ACGA", "TTTTTACGA", scoringScheme, alignConfig, -5, 4);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_affine_banded)
@@ -435,11 +612,11 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_affine_banded)
     Score<int, Simple> scoringScheme(2, -1, -1, -3);
 
     // Simple alignment without any leading or trailing gaps - Simd version
-    testAlignSimd(GlobalAlignTester_(), "ATGT", "ATAGAT", scoringScheme, alignConfig, -2, 2);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "ATGT", "ATAGAT", scoringScheme, alignConfig, -2, 2);
     // Alignment with both leading and trailing gaps in one row - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAGGGGTTTT", "AAAGTT", scoringScheme, alignConfig, -2, 2);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAGGGGTTTT", "AAAGTT", scoringScheme, alignConfig, -2, 2);
     // Alignment with both leading and trailing gaps in different rows - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", scoringScheme, alignConfig, -2, 2);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAATTTTTGGG", "TTTTTTTTGGGGGGGG", scoringScheme, alignConfig, -2, 2);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_semi_global_linear_banded)
@@ -449,7 +626,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_semi_global_linear_banded)
     AlignConfig<false, true, false, true> alignConfig;
     Score<int, Simple> scoringScheme(2, -1, -1);
     // More or less simple alignment - Simd version
-    testAlignSimd(GlobalAlignTester_(), "AAAAAATTTTTTTTG", "AATTTTTTTTTTGGGGG", scoringScheme, alignConfig, -2, 2);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAATTTTTTTTG", "AATTTTTTTTTTGGGGG", scoringScheme, alignConfig, -2, 2);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_semi_global_affine_banded)
@@ -458,7 +635,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_semi_global_affine_banded)
 
     AlignConfig<false, true, false, true> alignConfig;
     Score<int, Simple> scoringScheme(2, -1, -1, -4);
-    testAlignSimd(GlobalAlignTester_(), "AAAAAATTTTTTTTG", "AATTTTTTTTTTGGGGG", scoringScheme, alignConfig, -2, 2);
+    testAlignSimd<DnaString>(GlobalAlignTester_(), "AAAAAATTTTTTTTG", "AATTTTTTTTTTGGGGG", scoringScheme, alignConfig, -2, 2);
 }
 
 // ----------------------------------------------------------------------------
@@ -467,13 +644,13 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_semi_global_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_local_linear)
 {
-    testAlignSimd(LocalAlignTester_(), "GGGGCTTAAGCTTGGGG", "AAAACTTAGCTCTAAAA", seqan::SimpleScore(2, -1, -2), seqan::Nothing());
-    testAlignSimd(LocalAlignTester_(), "GGGGGGGGG", "CCCCCCCCC", seqan::SimpleScore(2, -1, -2), seqan::Nothing());
+    testAlignSimd<seqan::DnaString>(LocalAlignTester_(), "GGGGCTTAAGCTTGGGG", "AAAACTTAGCTCTAAAA", seqan::SimpleScore(2, -1, -2), seqan::Nothing());
+    testAlignSimd<seqan::DnaString>(LocalAlignTester_(), "GGGGGGGGG", "CCCCCCCCC", seqan::SimpleScore(2, -1, -2), seqan::Nothing());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_local_affine)
 {
-    testAlignSimd(LocalAlignTester_(), "CACACTTAACTTCACAA", "GGGGCTTGAGAGCTTGGGG", seqan::SimpleScore(2, -1, -1, -3), seqan::Nothing());
+    testAlignSimd<seqan::DnaString>(LocalAlignTester_(), "CACACTTAACTTCACAA", "GGGGCTTGAGAGCTTGGGG", seqan::SimpleScore(2, -1, -1, -3), seqan::Nothing());
 }
 
 // ----------------------------------------------------------------------------
@@ -484,14 +661,15 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_local_linear_banded)
 {
     using namespace seqan;
 
-    testAlignSimd(LocalAlignTester_(), "GGGGCTTAAGCTTGGGG", "AAAACTTAGCTCTAAAA", SimpleScore(2, -1, -2, -2), Nothing(), -2, 2);
+    testAlignSimd<seqan::DnaString>(LocalAlignTester_(), "GGGGCTTAAGCTTGGGG", "AAAACTTAGCTCTAAAA", SimpleScore(2, -1, -2, -2), Nothing(), -2, 2);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_local_affine_banded)
 {
     using namespace seqan;
 
-        testAlignSimd(LocalAlignTester_(), "GGGGCTTAAGCTTGGGG", "AAAACTTAGCTCTAAAA", SimpleScore(2, -1, -2, -4), Nothing(), -2, 2);
+    testAlignSimd<seqan::DnaString>(LocalAlignTester_(), "GGGGCTTAAGCTTGGGG", "AAAACTTAGCTCTAAAA", SimpleScore(2, -1, -2, -4), Nothing(), -2, 2);
 }
+#endif  // SEQAN_SIMD_ENABLED
 
 #endif  // #ifndef TESTS_ALIGN_TEST_ALIGN_SIMD_H_

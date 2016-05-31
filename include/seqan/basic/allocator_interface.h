@@ -193,13 +193,13 @@ allocate(T const &,
 #ifdef PLATFORM_WINDOWS_VS
     data = (TValue *) _aligned_malloc(count * sizeof(TValue), __alignof(TValue));
 #else
-  /*#if _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600
+/*#if _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600
     const size_t align = (__alignof__(TValue) < sizeof(void*)) ? sizeof(void*): __alignof__(TValue);
     if (posix_memalign(&(void* &)data, align, count * sizeof(TValue)))
-      data = NULL;
-  #else
+        data = NULL;
+#else
     data = (TValue *) malloc(count * sizeof(TValue));
-  #endif*/
+#endif*/
   data = (TValue *) operator new(count * sizeof(TValue));
 #endif
 
@@ -220,13 +220,13 @@ allocate(T &,
 #ifdef PLATFORM_WINDOWS_VS
   data = (TValue *) _aligned_malloc(count * sizeof(TValue), __alignof(TValue));
 #else
-  /*#if _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600
+/*#if _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600
     const size_t align = (__alignof__(TValue) < sizeof(void*)) ? sizeof(void*) : __alignof__(TValue);
     if (posix_memalign(&(void* &)data, align, count * sizeof(TValue)))
       data = NULL;
-  #else
+#else
     data = (TValue *) malloc(count * sizeof(TValue));
-  #endif*/
+#endif*/
   data = (TValue *) operator new(count * sizeof(TValue));
 #endif
 
@@ -347,7 +347,7 @@ deallocate(
 #ifdef PLATFORM_WINDOWS_VS
     _aligned_free((void *) data);
 #else
-    //free((void *) data);
+//  free((void *) data);
     operator delete ((void *) data);
 #endif
 }
@@ -372,7 +372,7 @@ deallocate(
 #ifdef PLATFORM_WINDOWS_VS
     _aligned_free((void *) data);
 #else
-    //free((void *) data);
+//  free((void *) data);
     operator delete ((void *) data);
 #endif
 }

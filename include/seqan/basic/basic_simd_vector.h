@@ -39,6 +39,10 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
 
+#include <utility>
+#include <tuple>
+//#include <seqan/basic/iterator_zip.h>
+
 #if defined(PLATFORM_WINDOWS_VS)
   /* Microsoft C/C++-compatible compiler */
   #include <intrin.h>
@@ -60,13 +64,24 @@ namespace seqan {
 #define SEQAN_VECTOR_CAST_LVALUE_(T, v) reinterpret_cast<T>(v)
 #endif
 
+
+// ============================================================================
+// Forwards
+// ============================================================================
+
+template <unsigned... >
+struct IndexSequence;
+
+template<unsigned ID, unsigned... Indices>
+struct MakeIndexSequence;
+
 // ============================================================================
 // Useful Macros
 // ============================================================================
 
 #define SEQAN_DEFINE_SIMD_VECTOR_GETVALUE_(TSimdVector)                                                 \
 template <typename TPosition>                                                                           \
-inline typename Value<TSimdVector>::Type                                                           \
+inline typename Value<TSimdVector>::Type                                                                \
 getValue(TSimdVector &vector, TPosition pos)                                                            \
 {                                                                                                       \
 /*                                                                                                      \
@@ -79,7 +94,7 @@ getValue(TSimdVector &vector, TPosition pos)                                    
 
 #define SEQAN_DEFINE_SIMD_VECTOR_VALUE_(TSimdVector)                                                    \
 template <typename TPosition>                                                                           \
-inline typename Value<TSimdVector>::Type                                                           \
+inline typename Value<TSimdVector>::Type                                                                \
 value(TSimdVector &vector, TPosition pos)                                                               \
 {                                                                                                       \
     return getValue(vector, pos);                                                                       \
@@ -106,7 +121,7 @@ assignValue(TSimdVector &vector, TPosition pos, TValue2 value)                  
 #elif defined(__SSE3__)
     #define SEQAN_SIZEOF_MAX_VECTOR 16
 #else
-    #undef SEQAN_SIMD_ENABLED  // Disable simd instructions.
+    #define SEQAN_SIMD_ENABLED 0  // Disable simd instructions.
 #endif
 
 // define a concept and its models
@@ -206,40 +221,40 @@ SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Double,    double,         16)
 // _fillVector (256bit)
 // --------------------------------------------------------------------------
 
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<32, 32>) { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi8(x); }
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<32, 16>) { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi16(x); }
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<32, 8>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi32(x); }
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<32, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi64x(x); }
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, float x,  SimdParams_<32, 8>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_ps(x); }
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, double x, SimdParams_<32, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_pd(x); }
+template <typename TSimdVector, typename ...TValue>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue> const & x, std::index_sequence<0> const &, SimdParams_<32, 32>) { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi8(std::get<0>(x)); }
+template <typename TSimdVector, typename ...TValue>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue> const & x, std::index_sequence<0> const &, SimdParams_<32, 16>) { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi16(std::get<0>(x)); }
+template <typename TSimdVector, typename ...TValue>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue> const & x, std::index_sequence<0> const &, SimdParams_<32, 8>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi32(std::get<0>(x)); }
+template <typename TSimdVector, typename ...TValue>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue> const & x, std::index_sequence<0> const &, SimdParams_<32, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi64x(std::get<0>(x)); }
+template <typename TSimdVector>
+    inline void _fillVector(TSimdVector &vector, std::tuple<float> const & x,  std::index_sequence<0> const &, SimdParams_<32, 8>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_ps(std::get<0>(x)); }
+template <typename TSimdVector>
+inline void _fillVector(TSimdVector &vector, std::tuple<double> const & const x, std::index_sequence<0> const &, SimdParams_<32, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_pd(std::get<0>(x)); }
 
-// TODO(rrahn): Check convenience functions by Budach.
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x1, TValue x2, TValue x3, TValue x4, TValue x5,
-                        TValue x6, TValue x7, TValue x8, TValue x9, TValue x10, TValue x11, TValue x12,
-                        TValue x13, TValue x14, TValue x15, TValue x16, SimdParams_<32, 16>)
+template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & values, std::index_sequence<INDICES...> const &, SimdParams_<32, 32>)
 {
-    reinterpret_cast<__m256i&>(vector) = _mm256_set_epi16(x16,x15,x14,x13,x12,x11,x10,x9,x8,x7,x6,x5,x4,x3,x2,x1);
-}
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x1, TValue x2, TValue x3, TValue x4,
-                        TValue x5, TValue x6, TValue x7, TValue x8, SimdParams_<32, 8>)
-{
-    reinterpret_cast<__m256i&>(vector) = _mm256_set_epi32(x8,x7,x6,x5,x4,x3,x2,x1);
+    SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm256_set_epi8(std::get<INDICES>(values)...);
 }
 
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x1, TValue x2, TValue x3, TValue x4,
-                        TValue x5, TValue x6, TValue x7, TValue x8, SimdParams_<32, 16>)
+template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & values, std::index_sequence<INDICES...> const &, SimdParams_<32, 16>)
 {
-    //no-op, but we get unused parameter compiler warnings without this line
-    reinterpret_cast<__m256i&>(vector) = _mm256_set_epi32(x8,x7,x6,x5,x4,x3,x2,x1);
+    SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm256_set_epi16(std::get<INDICES>(values)...);
+}
+template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & values, std::index_sequence<INDICES...> const &, SimdParams_<32, 8>)
+{
+    SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm256_set_epi32(std::get<INDICES>(values)...);
+}
+
+template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & values, std::index_sequence<INDICES...> const &, SimdParams_<32, 4>)
+{
+    SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm256_set_epi64x(std::get<INDICES>(values)...);
 }
 
 // --------------------------------------------------------------------------
@@ -338,7 +353,6 @@ inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4>)
 // _bitwiseOr (256bit)
 // --------------------------------------------------------------------------
 
-// TODO(rrahn): Change semantics of function?
 template <typename TSimdVector, int L>
 inline TSimdVector _bitwiseOr(TSimdVector &a, TSimdVector &b, SimdParams_<32, L>)
 {
@@ -466,23 +480,6 @@ inline TSimdVector _add(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4>)
                                                SEQAN_VECTOR_CAST_(const __m256i&, b)));
 }
 
-// TODO(rrahn): Do we really need this?
-//template <typename TSimdVector>
-//inline TSimdVector _add(TSimdVector &a, TSimdVector &b, SimdParams_<float, 32>)
-//{
-//    return reinterpret_cast<TSimdVector>(_mm256_add_ps(
-//        reinterpret_cast<const __m256&>(a),
-//        reinterpret_cast<const __m256&>(b)));
-//}
-//
-//template <typename TSimdVector>
-//inline TSimdVector _add(TSimdVector &a, TSimdVector &b, SimdParams_<double, 32>)
-//{
-//    return reinterpret_cast<TSimdVector>(_mm256_add_pd(
-//        reinterpret_cast<const __m256d&>(a),
-//        reinterpret_cast<const __m256d&>(b)));
-//}
-
 // --------------------------------------------------------------------------
 // _sub (256bit)
 // --------------------------------------------------------------------------
@@ -526,7 +523,7 @@ inline TSimdVector _sub(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4>)
 template <typename TSimdVector>
 inline TSimdVector _mult(TSimdVector &a, TSimdVector &b, SimdParams_<32, 32>)
 {
-    SEQAN_ASSERT_FAIL("Write me!");
+    SEQAN_ASSERT_FAIL("AVX2 intrinsics for multiplying 8 bit values not implemented!");
     return a;
 }
 
@@ -549,7 +546,7 @@ inline TSimdVector _mult(TSimdVector &a, TSimdVector &b, SimdParams_<32, 8>)
 template <typename TSimdVector>
 inline TSimdVector _mult(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4>)
 {
-    SEQAN_ASSERT_FAIL("Write me!");
+    SEQAN_ASSERT_FAIL("AVX2 intrinsics for multiplying 64 bit values not implemented!");
     return a;
 }
 
@@ -584,7 +581,7 @@ inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 8>)
 template <typename TSimdVector>
 inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4>)
 {
-    SEQAN_ASSERT_FAIL("Write me!");
+    SEQAN_ASSERT_FAIL("AVX2 intrinsics for max on 64 bit values not implemented!");
     return a;
 }
 
@@ -638,10 +635,9 @@ _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdPara
 {
     // copy 2nd 64bit word to 3rd, compute 2*idx
     __m256i idx = _mm256_slli_epi16(_mm256_permute4x64_epi64(_mm256_castsi128_si256(SEQAN_VECTOR_CAST_(const __m128i &, indices)), 0x50), 1);
-    
+
     // interleave with 2*idx+1 and call shuffle
-    return SEQAN_VECTOR_CAST_(TSimdVector1, _mm256_shuffle_epi8(
-                                                                SEQAN_VECTOR_CAST_(const __m256i &, vector),
+    return SEQAN_VECTOR_CAST_(TSimdVector1, _mm256_shuffle_epi8(SEQAN_VECTOR_CAST_(const __m256i &, vector),
                                                                 _mm256_unpacklo_epi8(idx, _mm256_add_epi8(idx, _mm256_set1_epi8(1)))));
 }
 
@@ -674,15 +670,17 @@ inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, 
 // _gather (256bit)
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TSimdVector, int SCALE>
-inline TSimdVector _gather(TValue const * memAddr, TSimdVector const & idx, ScaleParam_<SCALE> const & /*scale*/, SimdParams_<32, 16>)
+template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
+inline TSimdVector _gather(TValue const * memAddr,
+                           TSimdVector const & idx,
+                           std::integral_constant<TSize, SCALE> const & /*scale*/,
+                           SimdParams_<32, 16>)
 {
-    // Unpack low idx values and interleave with 0 and gather from memAddr.
-    auto tmpLo = _mm256_i32gather_epi32(static_cast<int32_t const *>(memAddr), _mm256_unpacklo_epi16(SEQAN_VECTOR_CAST_(__m256i const &, idx), _mm256_set1_epi16(0)), SCALE);
-    // Unpack high idx values and interleave with 0, than gather from memAddr.
-    auto tmpHi = _mm256_i32gather_epi32(static_cast<int32_t const *>(memAddr), _mm256_unpackhi_epi16(SEQAN_VECTOR_CAST_(__m256i const &, idx), _mm256_set1_epi16(0)), SCALE);
-    // Merge 2 8x32 vectors into 1x16 vector by signed saturation. This operation reverts the interleave by the unpack operations above.
-    return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_packs_epi32(tmpLo, tmpHi));
+    // 1. Unpack low idx values and interleave with 0 and gather from memAddr.
+    // 2. Unpack high idx values and interleave with 0, than gather from memAddr.
+    // 3. Merge 2 8x32 vectors into 1x16 vector by signed saturation. This operation reverts the interleave by the unpack operations above.
+    return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_packs_epi32(_mm256_i32gather_epi32(static_cast<int32_t const *>(memAddr), _mm256_unpacklo_epi16(SEQAN_VECTOR_CAST_(__m256i const &, idx), _mm256_set1_epi16(0)), SCALE),
+                                                              _mm256_i32gather_epi32(static_cast<int32_t const *>(memAddr), _mm256_unpackhi_epi16(SEQAN_VECTOR_CAST_(__m256i const &, idx), _mm256_set1_epi16(0)), SCALE)));
 }
 
 // --------------------------------------------------------------------------
@@ -776,49 +774,41 @@ inline int _testAllOnes(TSimdVector const &vector, SimdParams_<32>)
 // _fillVector (128bit)
 // --------------------------------------------------------------------------
 
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<16, 16>) { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_epi8(x); }
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<16, 8>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_epi16(x); }
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<16, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_epi32(x); }
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x, SimdParams_<16, 2>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_epi64x(x); }
+template <typename TSimdVector, typename... TValue>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & x, std::index_sequence<0> const &, SimdParams_<16, 16>) { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_epi8(std::get<0>(x)); }
+template <typename TSimdVector, typename... TValue>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & x, std::index_sequence<0> const &, SimdParams_<16, 8>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_epi16(std::get<0>(x)); }
+template <typename TSimdVector, typename... TValue>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & x, std::index_sequence<0> const &, SimdParams_<16, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_epi32(std::get<0>(x)); }
+template <typename TSimdVector, typename... TValue>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & x, std::index_sequence<0> const &, SimdParams_<16, 2>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_epi64x(std::get<0>(x)); }
 template <typename TSimdVector>
-inline void _fillVector(TSimdVector &vector, float x,  SimdParams_<16, 4>)   { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_ps(x); }
+inline void _fillVector(TSimdVector &vector, std::tuple<float> const & x,  std::index_sequence<0> const &, SimdParams_<16, 4>)   { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_ps(std::get<0>(x)); }
 template <typename TSimdVector>
-inline void _fillVector(TSimdVector &vector, double x, SimdParams_<16, 2>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_pd(x); }
+inline void _fillVector(TSimdVector &vector, std::tuple<double> const & x, std::index_sequence<0> const &, SimdParams_<16, 2>)  { SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set1_pd(std::get<0>(x)); }
 
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x1, TValue x2, TValue x3, TValue x4,
-                        TValue x5, TValue x6, TValue x7, TValue x8, TValue x9, TValue x10,
-                        TValue x11, TValue x12, TValue x13, TValue x14, TValue x15, TValue x16, SimdParams_<16, 16>)
+template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<16, 16>)
 {
-    reinterpret_cast<__m128i&>(vector) = _mm_set_epi8(x16,x15,x14,x13,x12,x11,x10,x9,x8,x7,x6,x5,x4,x3,x2,x1);
+    SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set_epi8(std::get<INDICES>(args)...);
 }
 
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x1, TValue x2, TValue x3, TValue x4,
-                        TValue x5, TValue x6, TValue x7, TValue x8, SimdParams_<16, 8>)
+template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<16, 8>)
 {
-    reinterpret_cast<__m128i&>(vector) = _mm_set_epi16(x8,x7,x6,x5,x4,x3,x2,x1);
+    SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set_epi16(std::get<INDICES>(args)...);
 }
 
-// TODO(rrahn): Check why we have this?
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x1, TValue x2, TValue x3, TValue x4,
-                        TValue x5, TValue x6, TValue x7, TValue x8, SimdParams_<16, 16>)
+template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<16, 4>)
 {
-    //no-op, but we get unused parameter compiler warnings without this line
-    reinterpret_cast<__m128i&>(vector) = _mm_set_epi16(x8,x7,x6,x5,x4,x3,x2,x1);
+    SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set_epi32(std::get<INDICES>(args)...);
 }
-template <typename TSimdVector, typename TValue>
-inline void _fillVector(TSimdVector &vector, TValue x1, TValue x2, TValue x3, TValue x4,
-                        TValue x5, TValue x6, TValue x7, TValue x8, TValue x9, TValue x10,
-                        TValue x11, TValue x12, TValue x13, TValue x14, TValue x15, TValue x16, SimdParams_<16, 8>)
+
+template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<16, 2>)
 {
-    //no-op, but we get unused parameter compiler warnings without this line
-    reinterpret_cast<__m128i&>(vector) = _mm_set_epi8(x16,x15,x14,x13,x12,x11,x10,x9,x8,x7,x6,x5,x4,x3,x2,x1);
+    SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm_set_epi64x(std::get<INDICES>(args)...);
 }
 
 // --------------------------------------------------------------------------
@@ -949,23 +939,6 @@ inline TSimdVector _bitwiseAnd(TSimdVector &a, TSimdVector &b, SimdParams_<16, L
                                             SEQAN_VECTOR_CAST_(const __m128i&, b)));
 }
 
-// TODO(rrahn): Do we really need the float/double wrappers?
-//template <typename TSimdVector>
-//inline TSimdVector _bitwiseAnd(TSimdVector &a, TSimdVector &b, SimdParams_<double, 16>)
-//{
-//    return reinterpret_cast<TSimdVector>(_mm_and_pd(
-//        reinterpret_cast<const __m128d&>(a),
-//        reinterpret_cast<const __m128d&>(b)));
-//}
-//
-//template <typename TSimdVector>
-//inline TSimdVector _bitwiseAnd(TSimdVector &a, TSimdVector &b, SimdParams_<float, 16>)
-//{
-//    return reinterpret_cast<TSimdVector>(_mm_and_ps(
-//        reinterpret_cast<const __m128&>(a),
-//        reinterpret_cast<const __m128&>(b)));
-//}
-
 // --------------------------------------------------------------------------
 // _bitwiseAndNot (128bit)
 // --------------------------------------------------------------------------
@@ -1068,23 +1041,6 @@ inline TSimdVector _add(TSimdVector &a, TSimdVector &b, SimdParams_<16, 2>)
                                             SEQAN_VECTOR_CAST_(const __m128i&, b)));
 }
 
-// TODO(rrahn):  Check if really need this?
-//template <typename TSimdVector>
-//inline TSimdVector _add(TSimdVector &a, TSimdVector &b, SimdParams_<float, 16>)
-//{
-//    return reinterpret_cast<TSimdVector>(_mm_add_ps(
-//        reinterpret_cast<const __m128&>(a),
-//        reinterpret_cast<const __m128&>(b)));
-//}
-//
-//template <typename TSimdVector>
-//inline TSimdVector _add(TSimdVector &a, TSimdVector &b, SimdParams_<double, 16>)
-//{
-//    return reinterpret_cast<TSimdVector>(_mm_add_pd(
-//        reinterpret_cast<const __m128d&>(a),
-//        reinterpret_cast<const __m128d&>(b)));
-//}
-
 // --------------------------------------------------------------------------
 // _sub (128bit)
 // --------------------------------------------------------------------------
@@ -1125,11 +1081,10 @@ inline TSimdVector _sub(TSimdVector &a, TSimdVector &b, SimdParams_<16, 2>)
 // _mult (128bit)
 // --------------------------------------------------------------------------
 
-// TODO(rrahn): Where do we need this?
 template <typename TSimdVector>
 inline TSimdVector _mult(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<16, 16>)
 {
-    SEQAN_ASSERT_FAIL("Write me!");
+    SEQAN_ASSERT_FAIL("SSE intrinsics for multiplying 8 bit values not implemented!");
     return a;
 }
 
@@ -1153,7 +1108,7 @@ inline TSimdVector _mult(TSimdVector &a, TSimdVector &b, SimdParams_<16, 4>)
 template <typename TSimdVector>
 inline TSimdVector _mult(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<16, 4>)
 {
-    SEQAN_ASSERT_FAIL("Write me!");
+    SEQAN_ASSERT_FAIL("SSE intrinsics for multiplying 32 bit values not implemented!");
     return a;
 }
 #endif  // defined(__SSE4_1__)
@@ -1161,7 +1116,7 @@ inline TSimdVector _mult(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<16, 4>)
 template <typename TSimdVector>
 inline TSimdVector _mult(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<16, 2>)
 {
-    SEQAN_ASSERT_FAIL("Write me!");
+    SEQAN_ASSERT_FAIL("SSE intrinsics for multiplying 64 bit values not implemented!");
     return a;
 }
 
@@ -1455,33 +1410,13 @@ createVector(TValue x)
 // Function fillVector()
 // --------------------------------------------------------------------------
 
-template <typename TSimdVector, typename TValue>
+template <typename TSimdVector, typename ...TValue>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
-fillVector(TSimdVector &vector, TValue x)
+fillVector(TSimdVector &vector, TValue const... args)
 {
     typedef typename Value<TSimdVector>::Type TIVal;
-    _fillVector(vector, x, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TIVal)>());
-}
-
-// TODO(rrahn): Make this workable with variable number of values.
-template <typename TSimdVector, typename TValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
-fillVector(TSimdVector &vector, TValue x1, TValue x2, TValue x3, TValue x4,
-                                TValue x5, TValue x6, TValue x7, TValue x8)
-{
-    typedef typename Value<TSimdVector>::Type TIVal;
-    _fillVector(vector, x1, x2, x3, x4, x5, x6, x7, x8, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TIVal)>());
-}
-
-template <typename TSimdVector, typename TValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
-fillVector(TSimdVector &vector, TValue x1, TValue x2, TValue x3, TValue x4,
-                                       TValue x5, TValue x6, TValue x7, TValue x8,
-                                       TValue x9, TValue x10, TValue x11, TValue x12,
-                                       TValue x13, TValue x14, TValue x15, TValue x16)
-{
-    typedef typename Value<TSimdVector>::Type TIVal;
-    _fillVector(vector, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16,
+    _fillVector(vector, std::make_tuple(args...),
+                std::make_index_sequence<sizeof...(args)>{},
                 SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TIVal)>());
 }
 
@@ -1489,7 +1424,6 @@ fillVector(TSimdVector &vector, TValue x1, TValue x2, TValue x3, TValue x4,
 // Function cmpEq()
 // --------------------------------------------------------------------------
 
-// TODO(rrahn): Do we need this?
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 cmpEq (TSimdVector const &a, TSimdVector const &b)
@@ -1513,7 +1447,7 @@ operator == (TSimdVector const &a, TSimdVector const &b)
 // --------------------------------------------------------------------------
 // Function operatorGt()
 // --------------------------------------------------------------------------
-// TODO(rrahn): Do we need this?
+
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 cmpGt (TSimdVector const &a, TSimdVector const &b)
@@ -1740,7 +1674,7 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 gather(TValue const * memAddr, TSimdVector const & idx)
 {
     typedef typename Value<TSimdVector>::Type TInnerValue;
-    return _gather(memAddr, idx, ScaleParam_<sizeof(TValue)>(), SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TInnerValue)>());
+    return _gather(memAddr, idx, std::integral_constant<size_t, sizeof(TValue)>(), SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TInnerValue)>());
 }
 
 #endif  // SEQAN_SIMD_ENABLED

@@ -59,9 +59,9 @@ template <typename TScoreValue>
 class DPCell_<TScoreValue, AffineGaps>
 {
 public:
-    TScoreValue _score = DPCellDefaultInfinity<DPCell_>::VALUE;
-    TScoreValue _horizontalScore = DPCellDefaultInfinity<DPCell_>::VALUE;
-    TScoreValue _verticalScore = DPCellDefaultInfinity<DPCell_>::VALUE;
+    TScoreValue _score              = DPCellDefaultInfinity<DPCell_>::VALUE;
+    TScoreValue _horizontalScore    = DPCellDefaultInfinity<DPCell_>::VALUE;
+    TScoreValue _verticalScore      = DPCellDefaultInfinity<DPCell_>::VALUE;
 
     // Assign score to cell.
     DPCell_ &

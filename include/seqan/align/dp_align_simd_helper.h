@@ -42,6 +42,9 @@ namespace seqan
 // Forwards
 // ============================================================================
 
+template <unsigned LENGTH>
+struct VectorLength_;
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -59,60 +62,47 @@ namespace seqan
 // ----------------------------------------------------------------------------
 
 template<typename TStringSetH, typename TStringSetV, typename TSimdString>
-void _checkAndCreateSimdRepresentation(TStringSetH const & stringsH,
-                                       TStringSetV const & stringsV,
-                                       TSimdString & simdH,
-                                       TSimdString & simdV,
-                                       TSimdString & masksH,
-                                       TSimdString & masksV,
-                                       TSimdString & masks,
-                                       std::vector<size_t> & endsH,
-                                       std::vector<size_t> & endsV)
+void inline
+_createSimdRepresentation(TStringSetH const & stringsH,
+                          TStringSetV const & stringsV,
+                          TSimdString & simdH,
+                          TSimdString & simdV,
+                          SimdAlignEqualLength const & /*tag*/)
+{
+    resize(simdH, length(stringsH[0]));
+    resize(simdV, length(stringsV[0]));
+    _createSimdRepImpl(simdH, stringsH);
+    _createSimdRepImpl(simdV, stringsV);
+}
+
+template<typename TStringSetH,
+         typename TStringSetV,
+         typename TSimdString,
+         typename TPosString,
+         typename TSimdVector>
+void inline
+_createSimdRepresentation(TStringSetH const & stringsH,
+                          TStringSetV const & stringsV,
+                          TSimdString & simdH,
+                          TSimdString & simdV,
+                          TSimdString & masksH,
+                          TSimdString & masksV,
+                          TSimdString & masks,
+                          TPosString & endsH,
+                          TPosString & endsV,
+                          SimdAlignVariableLength<TSimdVector> const & /*tag*/)
 {
     using TStringH = typename std::decay<typename Value<TStringSetH>::Type>::type;
     using TStringV = typename std::decay<typename Value<TStringSetV>::Type>::type;
-    using TSimdVector = typename Value<TSimdString>::Type;
     // check if all sequences have the same length
     unsigned int numAlignments = LENGTH<TSimdVector>::VALUE;
-    bool allEqualH = true;
-    bool allEqualV = true;
-    std::vector<size_t> seqLengthsH(numAlignments);
-    std::vector<size_t> seqLengthsV(numAlignments);
-    seqLengthsH[0] = length(stringsH[0]);
-    seqLengthsV[0] = length(stringsV[0]);
-
-    for(unsigned i = 1; i < numAlignments; ++i)
-    {
-        seqLengthsH[i] = length(stringsH[i]);
-        seqLengthsV[i] = length(stringsV[i]);
-        allEqualH &= (seqLengthsH[i] == seqLengthsH[i-1]);
-        allEqualV &= (seqLengthsV[i] == seqLengthsV[i-1]);
-    }
-
-    auto seqLength = length(stringsH[0]);
-    auto zipView = makeZipView(stringsH, stringsV);
-    bool allSameLength = std::all_of(begin(zipView, Standard()), end(zipView, Standard()),
-                                     [seqLength](auto param)
-                                     {
-                                         return (length(std::get<0>(param)) == seqLength) &&
-                                                (length(std::get<1>(param)) == seqLength);
-                                     });
-
-    // if yes, create SIMD representation without doing anything else
-    if(allSameLength)
-    {
-        resize(simdH, seqLengthsH[0]);
-        resize(simdV, seqLengthsV[0]);
-        _createSimdRepresentation(simdH, stringsH, seqLengthsH[0]);
-        _createSimdRepresentation(simdV, stringsV, seqLengthsV[0]);
-        return;
-    }
 
     // otherwise we have to copy the sequences to be able to add a
     // padding character before calling _createSimdRepresentation,
     // because all sequences must have the same length
-    size_t maxH = *std::max_element(seqLengthsH.begin(), seqLengthsH.end());
-    size_t maxV = *std::max_element(seqLengthsV.begin(), seqLengthsV.end());
+    auto maxLengthLambda = [](auto& seqLhs, auto& seqRhs) { return length(seqLhs) < length(seqRhs); };
+    size_t maxH = length(*std::max_element(begin(stringsH, Standard()), end(stringsH, Standard()), maxLengthLambda));
+    size_t maxV = length(*std::max_element(begin(stringsV, Standard()), end(stringsV, Standard()), maxLengthLambda));
 
     // and we have to prepare the bit masks of the DPScoutState
     resize(masks, maxV, createVector<TSimdVector>(0));
@@ -135,10 +125,10 @@ void _checkAndCreateSimdRepresentation(TStringSetH const & stringsH,
         resize(paddedV[i], maxV, 'A');
 
         // mark the original end position of the alignment in the masks (with -1, all bits set)
-        assignValue(masksH[seqLengthsH[i]-1], i, -1);
-        assignValue(masksV[seqLengthsV[i]-1], i, -1);
-        endsH.push_back(seqLengthsH[i]-1);
-        endsV.push_back(seqLengthsV[i]-1);
+        assignValue(masksH[length(stringsH[i]) - 1], i, -1);
+        assignValue(masksV[length(stringsV[i]) - 1], i, -1);
+        endsH.push_back(length(stringsH[i]) - 1);
+        endsV.push_back(length(stringsV[i]) - 1);
     }
 
     // sort the end positions, remove duplicates
@@ -150,36 +140,78 @@ void _checkAndCreateSimdRepresentation(TStringSetH const & stringsH,
     // now create SIMD representation
     resize(simdH, maxH);
     resize(simdV, maxV);
-    _createSimdRepresentation(simdH, paddedH, maxH);
-    _createSimdRepresentation(simdV, paddedV, maxV);
+    _createSimdRepImpl(simdH, paddedH);
+    _createSimdRepImpl(simdV, paddedV);
+}
+
+template<typename TStringSetH, typename TStringSetV, typename TSimdString>
+void inline
+_checkAndCreateSimdRepresentation(TStringSetH const & stringsH,
+                                  TStringSetV const & stringsV,
+                                  TSimdString & simdH,
+                                  TSimdString & simdV,
+                                  TSimdString & masksH,
+                                  TSimdString & masksV,
+                                  TSimdString & masks,
+                                  std::vector<size_t> & endsH,
+                                  std::vector<size_t> & endsV)
+{
+    using TSimdVector = typename Value<TSimdString>::Type;
+
+    auto seqLengthH = length(stringsH[0]);
+    auto seqLengthV = length(stringsV[0]);
+    auto zipView = makeZipView(stringsH, stringsV);
+    bool allSameLength = std::all_of(begin(zipView, Standard()), end(zipView, Standard()),
+                                     [seqLengthH, seqLengthV](auto param)
+                                     {
+                                         return (length(std::get<0>(param)) == seqLengthH) &&
+                                                (length(std::get<1>(param)) == seqLengthV);
+                                     });
+
+    // if yes, create SIMD representation without doing anything else
+    if(!allSameLength)
+        _createSimdRepresentation(stringsH, stringsV, simdH, simdV, masksH, masksV, masks, endsH, endsV,
+                                  SimdAlignVariableLength<TSimdVector>());
+    else
+        _createSimdRepresentation(stringsH, stringsV, simdH, simdV, SimdAlignEqualLength());
 }
 
 // ----------------------------------------------------------------------------
-// Function _createSimdRepresentation()
+// Function _createSimdRepImpl()
 // ----------------------------------------------------------------------------
 
-template<typename TSimdVector, typename TSpec, typename TContainer>
-inline void
-_createSimdRepresentation(String<TSimdVector, TSpec> & simdRepr,
-                          TContainer const & strings,
-                          size_t stringLength)
+#define SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos)    data[strPos][chrPos], data[strPos + 1][chrPos]
+#define SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos + 2, chrPos)
+#define SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos + 4, chrPos)
+#define SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos, chrPos)   SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos + 8, chrPos)
+#define SEQAN_CREATE_SIMD_REP_IMPL_32(data, strPos, chrPos)   SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos, chrPos), SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos + 16, chrPos)
+
+#define SEQAN_CREATE_SIMD_REP_FILL_IMPL_2(MACRO, data, chrPos) MACRO(data, 0, chrPos)
+#define SEQAN_CREATE_SIMD_REP_FILL_IMPL(data, chrPos, SIZE) SEQAN_CREATE_SIMD_REP_FILL_IMPL_2(SEQAN_CREATE_SIMD_REP_IMPL_##SIZE, data, chrPos)
+
+#define SEQAN_CREATE_SIMD_REP_IMPL(SIZE)                                                \
+template <typename TSimdVecs, typename TStrings>                                        \
+inline void _createSimdRepImpl(TSimdVecs & simdStr,                                     \
+                               TStrings const & strings,                                \
+                               VectorLength_<SIZE> const & /*size*/)                    \
+{                                                                                       \
+    auto itB = begin(simdStr, Standard());                                              \
+    auto itE = end(simdStr, Standard());                                                \
+    for (auto it = itB; it != itE; ++it)                                                \
+        fillVector(*it, SEQAN_CREATE_SIMD_REP_FILL_IMPL(strings, it - itB, SIZE));      \
+}
+
+SEQAN_CREATE_SIMD_REP_IMPL(2)
+SEQAN_CREATE_SIMD_REP_IMPL(4)
+SEQAN_CREATE_SIMD_REP_IMPL(8)
+SEQAN_CREATE_SIMD_REP_IMPL(16)
+SEQAN_CREATE_SIMD_REP_IMPL(32)
+
+template <typename TSimdVecs, typename TStrings>
+inline void _createSimdRepImpl(TSimdVecs & simdStr,
+                               TStrings const & strings)
 {
-    // TODO(rrahn): Make code generic!
-    switch((int)LENGTH<TSimdVector>::VALUE)
-    {
-        case 8:
-            for(size_t x = 0; x < stringLength; ++x)
-                fillVector(simdRepr[x], strings[0][x], strings[1][x], strings[2][x], strings[3][x],
-                           strings[4][x], strings[5][x], strings[6][x], strings[7][x]);
-                break;
-        case 16:
-            for(size_t x = 0; x < stringLength; ++x)
-                fillVector(simdRepr[x], strings[0][x], strings[1][x], strings[2][x], strings[3][x],
-                           strings[4][x], strings[5][x], strings[6][x], strings[7][x],
-                           strings[8][x], strings[9][x], strings[10][x], strings[11][x],
-                           strings[12][x], strings[13][x], strings[14][x], strings[15][x]);
-                break;
-    }
+    _createSimdRepImpl(simdStr, strings, VectorLength_<LENGTH<typename Value<TSimdVecs>::Type>::VALUE>());
 }
 
 // Actually precompute value if scoring scheme is score matrix and simd version.

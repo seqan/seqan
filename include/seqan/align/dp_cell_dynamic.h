@@ -91,8 +91,8 @@ class DPCell_<TScoreValue, DynamicGaps>
 public:
     using TFlagMaskType = typename impl::dp_cell::FlagMaskType<TScoreValue>::Type;
 
-    TScoreValue     _score = DPCellDefaultInfinity<DPCell_>::VALUE;
-    TFlagMaskType   _flagMask = TFlagMaskType();
+    TScoreValue     _score      = DPCellDefaultInfinity<DPCell_>::VALUE;
+    TFlagMaskType   _flagMask   = TFlagMaskType();
 
     // Assignment of score.
     DPCell_ &

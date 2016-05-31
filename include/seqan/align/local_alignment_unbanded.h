@@ -343,9 +343,6 @@ localAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
     String<TScoreValue> results;
     resize(results, numAlignments);
 
-    StringSet<String<TTraceSegment> > trace;
-    resize(trace, sizeBatch);
-
     // Create a SIMD scoring scheme.
     Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);
 
@@ -365,6 +362,9 @@ localAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
     {
         auto infSetH = infixWithLength(depSetH, pos * sizeBatch, sizeBatch);
         auto infSetV = infixWithLength(depSetV, pos * sizeBatch, sizeBatch);
+
+        StringSet<String<TTraceSegment> > trace;
+        resize(trace, sizeBatch);
 
         TSimdAlign resultsBatch;
         _prepareAndRunSimdAlignment(resultsBatch, trace, infSetH, infSetV, simdScoringScheme,

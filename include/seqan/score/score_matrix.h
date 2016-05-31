@@ -142,36 +142,9 @@ template <typename TValue, typename  TSpec>
 struct IsScoreMatrix_<Score<TValue, TSpec> > : IsScoreMatrix_<TSpec>
 {};
 
-// TODO(rrahn): This copy and paste code works for now, but should be refactored.
-// Some how, we should use a SimdScoreWrapper class to add functionality to existing score classes.
-// But we need to also think about the simple score which might be refactored as well, since it could
-// be represented as a scoring matrix, replacing the overhead to compare each character by an array look up.
-//#if SEQAN_SIMD_ENABLED
-//template <typename TSequenceValue, typename TSpec>
-//class Score<TSimdAlign, ScoreMatrix<TSequenceValue, TSpec> > {
-//public:
-//    // Static computation of the required array size.
-//    enum {
-//        VALUE_SIZE = ValueSize<TSequenceValue>::VALUE,
-//        TAB_SIZE = VALUE_SIZE * VALUE_SIZE
-//    };
-//
-//    // The data table.
-//    int data_tab[TAB_SIZE];
-//
-//    // The gap extension score.
-//    TSimdAlign data_gap_extend;
-//
-//    // The gap open score.
-//    TSimdAlign data_gap_open;
-//
-//    Score(TSimdAlign _gap_extend, TSimdAlign _gap_open) :
-//        data_gap_extend(_gap_extend), data_gap_open(_gap_open)
-//    {
-//        setDefaultScoreMatrix(*this, TSpec());
-//    }
-//};
-//#endif  // SEQAN_SIMD_ENABLED
+// ----------------------------------------------------------------------------
+// Function score()
+// ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Does it make sense to document each Score specialization?  Should dddoc show a list of all specializations of a class?
 template <typename TValue, typename TSequenceValue, typename TSpec, typename TVal1, typename TVal2>

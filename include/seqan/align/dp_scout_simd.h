@@ -51,7 +51,8 @@ struct SimdAlignEqualLength_;
 typedef Tag<SimdAlignEqualLength_> SimdAlignEqualLength;
 
 template <typename TSimdVec>
-struct SimdAlignVariableLength;
+struct SimdAlignVariableLength
+{};
 
 template <typename TSpec = SimdAlignEqualLength>
 struct SimdAlignmentScout {};
@@ -150,7 +151,7 @@ public:
     SimdVector<int32_t>::Type _maxHostLow; //first half of alignments
     SimdVector<int32_t>::Type _maxHostHigh; //other half
     TScoutState * state = nullptr;
-    unsigned _simdLane = 0;
+    unsigned _simdLane  = 0;
 
     DPScout_(TScoutState & pState) : TBase(), state(&pState)
     {}

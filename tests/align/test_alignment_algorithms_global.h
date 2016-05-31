@@ -391,7 +391,6 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_global_linear)
         appendValue(strings, strH);
         appendValue(strings, strV);
 
-
         Score<int, Simple> scoringScheme(2, -1, -1);
         int score1 = globalAlignmentScore(strings, scoringScheme, alignConfig, NeedlemanWunsch());
         int score2 = globalAlignmentScore(strH, strV, scoringScheme, alignConfig, NeedlemanWunsch());
@@ -1207,7 +1206,6 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_overlap_linear)
         TStringSet strings;
         appendValue(strings, strH);
         appendValue(strings, strV);
-
 
         Score<int, Simple> scoringScheme(2, -1, -1);
         int score1 = globalAlignmentScore(strings, scoringScheme, alignConfig, NeedlemanWunsch());
