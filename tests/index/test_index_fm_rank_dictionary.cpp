@@ -261,10 +261,10 @@ SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank) {
         for (TValueSize c = 0; c < this->alphabetSize; ++c) {
             unsigned long smaller;
             unsigned long pos = textIt - this->textBegin;
-            //if (pos == 84 && c == 0)
+            //if (pos == 84 && c == 1)
             //    std::cout << "blubb" << std::endl;
             unsigned long rank = getRank(dict, pos, TValue((uint16_t) c), smaller); // TODO: getRank!!! uint16_t cast???
-            //SEQAN_ASSERT_EQ(smaller, smallerNaive);
+            SEQAN_ASSERT_EQ(smaller, smallerNaive);
             SEQAN_ASSERT_EQ(rank, prefixSum[c]);
             smallerNaive += prefixSum[c];
         }

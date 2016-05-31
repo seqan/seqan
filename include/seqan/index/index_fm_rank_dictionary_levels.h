@@ -505,7 +505,7 @@ _getBlockRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */
 // TODO: prototype
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TBlock, typename TPos, typename TChar, typename TSmaller>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const>::Type
-_getBlockRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & /* dict */, TBlock const & block, TPos /* pos */, TChar c, TSmaller smaller)
+_getBlockRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & /* dict */, TBlock const & block, TPos /* pos */, TChar c, TSmaller & smaller)
 {
     // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
     TSmaller _smaller = block[ordValue(c)-1];
@@ -767,12 +767,17 @@ getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre>
 
     smaller = 0;
     if (ordValue(c) > 0)
+    {
+        /*TPos smaller1 = 0;
+        TPos smaller2 = 0;
+        std::cout << _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c), smaller1) << std::endl;
+        std::cout << _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c), smaller2) << std::endl;
+        std::cout << "smaller: " << smaller1 << " . " << smaller2 << std::endl;*/
         return _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c), smaller)
              + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c), smaller);
+    }
 
     // c == Dna('A')
-    //std::cout << _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c)) << std::endl;
-    //std::cout << _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c)) << std::endl;
     return _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c))
          + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
 }
