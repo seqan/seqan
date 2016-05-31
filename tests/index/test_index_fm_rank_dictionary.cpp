@@ -130,19 +130,18 @@ public:
     {
         //createText(text, TValue());
         generateText(text, 50000);
-        //text = "ATAGACTCTCGCAATTGGAAGCCTAATAAT"; // AUAGACUCUCGCAAUUGGAAUG
-        // AUAGACUCUCGCAAUUGGAAGCCUAAUAAUG CCGG CACUCCGUGGAUCAA
+        //text = "ATAGACTCTCGCAATTGGAAGCCTAATAATGCCGGCACTCCGTGGATCAAGTACACTCAGGGCATGTCCTTAAGGGCAGCCGCCTGAACTATATCTCGCC"; // ATAGACTCTCGCAATTGGAAGCCTAATAATGCCGGCACTCCGTGGATCAAGTACACTCAGGGCATGTCCTTAAGGGCAGCCGCCTGAACTATATCTCGCC
         //std::cout << text << std::endl;
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
     }
 };
 
-/*template <typename TRankDictionary>
-class RankDictionaryPrefixTest : public RankDictionaryTest<TRankDictionary> {};*/
+template <typename TRankDictionary>
+class RankDictionaryPrefixTest : public RankDictionaryTest<TRankDictionary> {};
 
 SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryTypes);
-//SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixTypes);
+SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixTypes);
 
 // ==========================================================================
 // Tests
@@ -236,13 +235,12 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
     }
 }*/
 
-/*SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank)
-{
-    typedef typename TestFixture::TValueSize            TValueSize;
-    typedef typename TestFixture::TText                 TText;
-    typedef typename TestFixture::TTextIterator         TTextIterator;
-    typedef typename Size<TText>::Type                  TTextSize;
-    typedef String<TTextSize>                           TPrefixSum;
+SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank) {
+    typedef typename TestFixture::TValueSize TValueSize;
+    typedef typename TestFixture::TText TText;
+    typedef typename TestFixture::TTextIterator TTextIterator;
+    typedef typename Size<TText>::Type TTextSize;
+    typedef String<TTextSize> TPrefixSum;
 
     typename TestFixture::TRankDict dict(this->text);
 
@@ -254,23 +252,24 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
     resize(prefixSum, this->alphabetSize, 0);
 
     // Scan the text.
-    for (TTextIterator textIt = this->textBegin; textIt != this->textEnd; ++textIt)
-    {
+    for (TTextIterator textIt = this->textBegin; textIt != this->textEnd; ++textIt) {
         // Update the prefix sum.
         prefixSum[ordValue(value(textIt))]++;
 
         // Check the rank for all alphabet symbols.
         unsigned long smallerNaive = 0;
-        for (TValueSize c = 0; c < this->alphabetSize; ++c)
-        {
+        for (TValueSize c = 0; c < this->alphabetSize; ++c) {
             unsigned long smaller;
-            unsigned long rank = getRank(dict, (unsigned long)(textIt - this->textBegin), TValue((uint16_t) c), smaller); // TODO: getRank!!! uint16_t cast???
+            unsigned long pos = textIt - this->textBegin;
+            //if (pos == 84 && c == 0)
+            //    std::cout << "blubb" << std::endl;
+            unsigned long rank = getRank(dict, pos, TValue((uint16_t) c), smaller); // TODO: getRank!!! uint16_t cast???
             //SEQAN_ASSERT_EQ(smaller, smallerNaive);
             SEQAN_ASSERT_EQ(rank, prefixSum[c]);
             smallerNaive += prefixSum[c];
         }
     }
-}*/
+}
 
 /*SEQAN_TYPED_TEST(RankDictionaryTest, GetRankWithPrefix)
 {

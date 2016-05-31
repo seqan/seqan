@@ -320,15 +320,15 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
         for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
         {
             _BITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, _VALUES_PER_WORD, _VALUES_PER_WORD, _BITS_PER_VALUE, maxValue-i, i + (1 << (_BITS_PER_VALUE-1)));
-            std::cout << std::bitset<64>(_BITMASKS[i]) << std::endl;
+            //std::cout << std::bitset<64>(_BITMASKS[i]) << std::endl;
         }
-        std::cout << "-----------------------------------------" << std::endl;
+        //std::cout << "-----------------------------------------" << std::endl;
         for (unsigned i = 0; i < _VALUES_PER_WORD; ++i)
         {
             _NEWBITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, i+1, i+1, _BITS_PER_VALUE, 1, 1 << (_BITS_PER_VALUE-1)); // 1
-            std::cout << std::bitset<64>(_NEWBITMASKS[i]) << std::endl;
+            //std::cout << std::bitset<64>(_NEWBITMASKS[i]) << std::endl;
         }
-        std::cout << "-----------------------------------------" << std::endl;
+        //std::cout << "-----------------------------------------" << std::endl;
 
         createRankDictionary(*this, text);
     }
@@ -558,6 +558,11 @@ _getWordRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TF
     typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > >                TRankDictionary;
 
     // TODO: ausrechnen checken
+    /*std::cout << std::bitset<64>(values) << std::endl;
+    std::cout << std::bitset<64>(TRankDictionary::_BITMASKS[ordValue(c)]) << " (" << ordValue(c) << ")" << std::endl;
+    std::cout << std::bitset<64>(TRankDictionary::_BITMASKS[ordValue(c)] - values) << std::endl;
+    std::cout << std::bitset<64>(TRankDictionary::_NEWBITMASKS[posInWord]) << std::endl;
+    std::cout << std::bitset<64>((TRankDictionary::_BITMASKS[ordValue(c)] - values) & TRankDictionary::_NEWBITMASKS[posInWord]) << std::endl;*/
     return popCount((TRankDictionary::_BITMASKS[ordValue(c)] - values) & TRankDictionary::_NEWBITMASKS[posInWord]);
 }
 
@@ -573,10 +578,9 @@ _getWordRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TF
     // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
     typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > >                TRankDictionary;
 
-    // TODO: ausrechnen checken
-    auto x = popCount((TRankDictionary::_BITMASKS[ordValue(c)] - values) & TRankDictionary::_NEWBITMASKS[posInWord]);
-    smaller += x - popCount((TRankDictionary::_BITMASKS[ordValue(c)-1] - values) & TRankDictionary::_NEWBITMASKS[posInWord]); // TODO: plus raus?
-    return x;
+    auto _smaller = popCount((TRankDictionary::_BITMASKS[ordValue(c)-1] - values) & TRankDictionary::_NEWBITMASKS[posInWord]);
+    smaller += _smaller;
+    return popCount((TRankDictionary::_BITMASKS[ordValue(c)] - values) & TRankDictionary::_NEWBITMASKS[posInWord]) - _smaller;
 }
 
 // ----------------------------------------------------------------------------
@@ -645,7 +649,7 @@ _getValueRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, T
     for (TSize wordPrevPos = 0; wordPrevPos < TRankDictionary::_WORDS_PER_BLOCK; ++wordPrevPos)
         if (wordPrevPos < wordPos) valueRank += _getWordRank(dict, values[wordPrevPos].i, TRankDictionary::_VALUES_PER_WORD - 1, c, smaller);
 
-    valueRank += _getWordRank(dict, values[wordPos].i, posInWord, c);
+    valueRank += _getWordRank(dict, values[wordPos].i, posInWord, c, smaller);
 
     return valueRank;
 }
@@ -692,7 +696,10 @@ _getValuesRanks(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize,
 
     TBlock blockRank;
 
-    for (TValueSize c = 0; c < ValueSize<TValue>::VALUE; ++c)
+    TPos rank0 = _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), TValue(0));
+    assignValue(blockRank, 0, rank0);
+
+    for (TValueSize c = 1; c < ValueSize<TValue>::VALUE; ++c)
     {
         // TODO: only temporary workaround with (uint16_t) cast
         TPos smaller = 0;
@@ -764,6 +771,8 @@ getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre>
              + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c), smaller);
 
     // c == Dna('A')
+    //std::cout << _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c)) << std::endl;
+    //std::cout << _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c)) << std::endl;
     return _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c))
          + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
 }
@@ -976,6 +985,7 @@ std::cout << std::bitset<64>(dict.ranks[0].values[3].i) << std::endl;*/
         TSize next = _toPos(dict, blockPos + 1);
 
         _blockAt(dict, next) = _blockAt(dict, curr) + _getValuesRanks(dict, next - 1);
+        //std::cout << "XXX: " << _blockAt(dict, next) << std::endl;
     }
 }
 

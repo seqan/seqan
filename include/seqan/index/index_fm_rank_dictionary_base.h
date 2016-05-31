@@ -245,8 +245,6 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
 
     for (TTextIterator textIt = textBegin; textIt != textEnd; ++textIt)
     {
-        if (textIt - textBegin == 6)
-            std::cout << "blubb" << std::endl;
         setValue(dict, textIt - textBegin, value(textIt));
     }
 
