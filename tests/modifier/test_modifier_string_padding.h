@@ -133,7 +133,7 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_difference)
         SEQAN_ASSERT(it - itB == pos);
 }
 
-SEQAN_DEFINE_TEST(test_modified_string_padding_iterate)
+SEQAN_DEFINE_TEST(test_modified_string_padding_iterator)
 {
     using namespace seqan;
 
@@ -142,6 +142,7 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_iterate)
 
     expand(modString, 5, static_cast<Dna>('T'));
 
+    // Test begin, end, increment, decrement and dereference
     auto itSeq = begin(seq, Standard());
     auto it = begin(modString, Standard());
     for (; it != end(modString, Standard()); ++it)
@@ -160,6 +161,24 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_iterate)
         else
             SEQAN_ASSERT_EQ(*it, static_cast<Dna>('T'));
     }
+
+    // Test advance.
+    SEQAN_ASSERT(it == begin(modString, Standard()));
+    it += 4;
+    SEQAN_ASSERT_EQ(*it, seq[4]);
+    it -= 2;
+    SEQAN_ASSERT_EQ(*it, seq[2]);
+    it += 13;
+    SEQAN_ASSERT_EQ(*it, static_cast<Dna>('T'));
+    it -= 15;
+    SEQAN_ASSERT_EQ(*it, seq[0]);
+    it = it + 17;
+    SEQAN_ASSERT_EQ(*it, static_cast<Dna>('T'));
+    it += 3;
+    SEQAN_ASSERT(it == end(modString, Standard()));
+    it -= 5;
+    SEQAN_ASSERT_EQ(*it, static_cast<Dna>('T'));
+    SEQAN_ASSERT_EQ(*(it - 3), seq[12]);
 }
 
 #endif  // #ifndef TESTS_MODIFIER_MODIFIER_STRING_PADDING_H_

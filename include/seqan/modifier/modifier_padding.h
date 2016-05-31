@@ -204,7 +204,7 @@ template <typename THost>
 inline auto
 length(ModifiedString<THost, ModPadding> const & me)
 {
-    return length(host(me)) + me._cargo._expandedSize;
+    return length(host(me)) + cargo(me)._expandedSize;
 }
 
 // ----------------------------------------------------------------------------
@@ -216,7 +216,7 @@ inline typename Reference<ModifiedString<THost, ModPadding> >::Type
 value(ModifiedString<THost, ModPadding> & me, TPosition const pos)
 {
     SEQAN_ASSERT_LT(pos, length(me));
-    return (pos < length(host(me))) ? host(me)[pos] : cargo(me)._paddedValue;
+    return (SEQAN_LIKELY(pos < length(host(me)))) ? host(me)[pos] : cargo(me)._paddedValue;
 }
 
 template <typename THost, typename TPosition>
@@ -224,7 +224,7 @@ inline typename Reference<ModifiedString<THost, ModPadding> const>::Type
 value(ModifiedString<THost, ModPadding> const & me, TPosition const pos)
 {
     SEQAN_ASSERT_LT(pos, length(me));
-    return (pos < length(host(me))) ? value(host(me), pos) : cargo(me)._paddedValue;
+    return (SEQAN_LIKELY(pos < length(host(me)))) ? value(host(me), pos) : cargo(me)._paddedValue;
 }
 
 // --------------------------------------------------------------------------
@@ -284,14 +284,14 @@ template <typename THost>
 inline auto
 operator*(ModifiedIterator<THost, ModPadding> & me)
 {
-    return (atEnd(host(me))) ? cargo(me)._paddedValue : *host(me);
+    return (SEQAN_UNLIKELY(atEnd(host(me)))) ? cargo(me)._paddedValue : *host(me);
 }
 
 template <typename THost>
 inline auto
 operator*(ModifiedIterator<THost, ModPadding> const & me)
 {
-    return (atEnd(host(me))) ? (cargo(me)._paddedValue) : (*host(me));
+    return (SEQAN_UNLIKELY(atEnd(host(me)))) ? (cargo(me)._paddedValue) : (*host(me));
 }
 
 // ----------------------------------------------------------------------------
@@ -302,7 +302,7 @@ template <typename THost>
 inline ModifiedIterator<THost, ModPadding> &
 operator++(ModifiedIterator<THost, ModPadding> & me)
 {
-    if (atEnd(host(me)))
+    if (SEQAN_UNLIKELY(atEnd(host(me))))
         --cargo(me)._remainingSteps;
     else
         ++host(me);
@@ -317,18 +317,18 @@ template <typename THost, typename TSize>
 inline ModifiedIterator<THost, ModPadding> &
 operator+=(ModifiedIterator<THost, ModPadding> & me, TSize const steps)
 {
-    if (atEnd(host(me)))
+    if (SEQAN_UNLIKELY(atEnd(host(me))))
     {
-        cargo(me)._remainingSteps -= steps;   // Remove steps from remaining size.
+        cargo(me)._remainingSteps -= steps;   // Remove 'steps' from remaining steps.
     }
     else
     {
         auto rem = (end(container(host(me)), Rooted()) - host(me));
-        if (static_cast<decltype(rem)>(steps) <= rem)  // Move host steps forward.
+        if (SEQAN_LIKELY(static_cast<decltype(rem)>(steps) <= rem))  // Move host by 'steps' forward.
         {
             std::advance(host(me), steps);
         }
-        else  // Move host rem forward and remove diff from cargo.
+        else  // Move host by 'rem' forward and remove diff from cargo.
         {
             std::advance(host(me), rem);
             cargo(me)._remainingSteps -= (steps - rem);
@@ -345,7 +345,7 @@ template <typename THost>
 inline ModifiedIterator<THost, ModPadding> &
 operator--(ModifiedIterator<THost, ModPadding> & me)
 {
-    if (cargo(me)._remainingSteps == cargo(me)._expandedSize)
+    if (SEQAN_LIKELY(cargo(me)._remainingSteps == cargo(me)._expandedSize))
         --host(me);
     else
         ++cargo(me)._remainingSteps;
@@ -360,17 +360,17 @@ template <typename THost, typename TSize>
 inline ModifiedIterator<THost, ModPadding> &
 operator-=(ModifiedIterator<THost, ModPadding> & me, TSize const steps)
 {
-    if (atEnd(host(me)))
+    if (SEQAN_UNLIKELY(atEnd(host(me))))
     {
         auto rem = cargo(me)._expandedSize - cargo(me)._remainingSteps;
-        if (steps <= rem)
+        if (static_cast<decltype(rem)>(steps) <= rem)
         {
             cargo(me)._remainingSteps += steps;
         }
         else
         {
             cargo(me)._remainingSteps = cargo(me)._expandedSize;
-            std::advance(host(me), -rem);
+            std::advance(host(me), -(steps - rem));
         }
     }
     else

@@ -129,6 +129,6 @@ SEQAN_BEGIN_TESTSUITE(test_modifier)
     SEQAN_CALL_TEST(test_modified_string_padding_begin);
     SEQAN_CALL_TEST(test_modified_string_padding_end);
     SEQAN_CALL_TEST(test_modified_string_padding_difference);
-    SEQAN_CALL_TEST(test_modified_string_padding_iterate);
+    SEQAN_CALL_TEST(test_modified_string_padding_iterator);
 }
 SEQAN_END_TESTSUITE
