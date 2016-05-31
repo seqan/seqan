@@ -236,8 +236,19 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
     // Assign the text value by value.
     TTextIterator textBegin = begin(text, Standard());
     TTextIterator textEnd = end(text, Standard());
+
+    /*std::cout << "VORHER: " << std::endl;
+    std::cout << std::bitset<64>(dict.ranks[0].values[0].i) << std::endl;
+    std::cout << std::bitset<64>(dict.ranks[0].values[1].i) << std::endl;
+    std::cout << std::bitset<64>(dict.ranks[0].values[2].i) << std::endl;
+    std::cout << std::bitset<64>(dict.ranks[0].values[3].i) << std::endl;*/
+
     for (TTextIterator textIt = textBegin; textIt != textEnd; ++textIt)
+    {
+        //if (textIt - textBegin == 16)
+        //    std::cout << "blubb" << std::endl;
         setValue(dict, textIt - textBegin, value(textIt));
+    }
 
     // Update all ranks.
     updateRanks(dict);

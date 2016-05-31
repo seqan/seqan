@@ -66,24 +66,36 @@ using namespace seqan;
 // --------------------------------------------------------------------------
 
 typedef
-    TagList<RankDictionary<bool,            Naive<> >,
-    TagList<RankDictionary<Rna5,            Levels<> >,
-    //TagList<RankDictionary<Dna,             Levels<int> >
-    TagList<RankDictionary<Dna,             Levels<> >,
-    TagList<RankDictionary<Rna,             Levels<> >,
-    TagList<RankDictionary<Dna5,            Levels<> >,
-    TagList<RankDictionary<Rna5,            Levels<> >,
-    TagList<RankDictionary<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >,            Levels<> >,
-    TagList<RankDictionary<AminoAcid,       Levels<> >,
-    TagList<RankDictionary<char,            Levels<> >,
-    TagList<RankDictionary<Dna,             WaveletTree<> >,
-    TagList<RankDictionary<Dna5,            WaveletTree<> >,
-    TagList<RankDictionary<DnaQ,            WaveletTree<> >,
-    TagList<RankDictionary<Dna5Q,           WaveletTree<> >,
-    TagList<RankDictionary<AminoAcid,       WaveletTree<> >,
-    TagList<RankDictionary<char,            WaveletTree<> >,
-    TagList<RankDictionary<unsigned char,   WaveletTree<> >
-    > > > > > > > > > > > > > > > >
+        //TagList<RankDictionary<bool,             Levels<void, LevelsPrefixRDConfig<> > >,
+        TagList<RankDictionary<Dna,             Levels<void, LevelsPrefixRDConfig<> > >,
+        TagList<RankDictionary<Rna,             Levels<void, LevelsPrefixRDConfig<> > >,
+        TagList<RankDictionary<Dna5,             Levels<void, LevelsPrefixRDConfig<> > >,
+        TagList<RankDictionary<Rna5,             Levels<void, LevelsPrefixRDConfig<> > >,
+        TagList<RankDictionary<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >,             Levels<void, LevelsPrefixRDConfig<> > >,
+        TagList<RankDictionary<AminoAcid,             Levels<void, LevelsPrefixRDConfig<> > >,
+        TagList<RankDictionary<char,             Levels<void, LevelsPrefixRDConfig<> > >
+    > > > > > > >// >
+    RankDictionaryPrefixTypes;
+
+typedef
+/*TagList<RankDictionary<bool,            Naive<> >,,
+TagList<RankDictionary<Rna5,            Levels<> >,
+TagList<RankDictionary<Dna,             Levels<> >,
+TagList<RankDictionary<Rna,             Levels<> >,
+TagList<RankDictionary<Dna5,            Levels<> >,
+TagList<RankDictionary<Rna5,            Levels<> >,
+TagList<RankDictionary<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >,            Levels<> >,
+TagList<RankDictionary<AminoAcid,       Levels<> >,
+TagList<RankDictionary<char,            Levels<> >,
+TagList<RankDictionary<Dna,             WaveletTree<> >,
+TagList<RankDictionary<Dna5,            WaveletTree<> >,
+TagList<RankDictionary<DnaQ,            WaveletTree<> >,
+TagList<RankDictionary<Dna5Q,           WaveletTree<> >,
+TagList<RankDictionary<AminoAcid,       WaveletTree<> >,
+TagList<RankDictionary<char,            WaveletTree<> >,
+TagList<RankDictionary<unsigned char,   WaveletTree<> >,*/
+    RankDictionaryPrefixTypes
+    //> > > > > > > > > > > > > > > >
     RankDictionaryTypes;
 
 // ==========================================================================
@@ -117,13 +129,20 @@ public:
     void setUp()
     {
         //createText(text, TValue());
-        generateText(text, 5000);
+        generateText(text, 50000);
+        //text = "ACUCUCGCAAUUGGAAU"; // AUAGACUCUCGCAAUUGGAAUG
+        // AUAGACUCUCGCAAUUGGAAGCCUAAUAAUG CCGG CACUCCGUGGAUCAA
+        //std::cout << text << std::endl;
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
     }
 };
 
+template <typename TRankDictionary>
+class RankDictionaryPrefixTest : public RankDictionaryTest<TRankDictionary> {};
+
 SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryTypes);
+SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixTypes);
 
 // ==========================================================================
 // Tests
@@ -133,26 +152,26 @@ SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryTypes);
 // Test RankDictionary()
 // ----------------------------------------------------------------------------
 
-SEQAN_TYPED_TEST(RankDictionaryTest, Constructor)
+/*SEQAN_TYPED_TEST(RankDictionaryTest, Constructor)
 {
     typename TestFixture::TRankDict dict(this->text);
-}
+}*/
 
 // ----------------------------------------------------------------------------
 // Test createRankDictionary()
 // ----------------------------------------------------------------------------
 
-SEQAN_TYPED_TEST(RankDictionaryTest, CreateRankDictionary)
+/*SEQAN_TYPED_TEST(RankDictionaryTest, CreateRankDictionary)
 {
     typename TestFixture::TRankDict dict;
     createRankDictionary(dict, this->text);
-}
+}*/
 
 // ----------------------------------------------------------------------------
 // Test clear() and empty()
 // ----------------------------------------------------------------------------
 
-SEQAN_TYPED_TEST(RankDictionaryTest, ClearEmpty)
+/*SEQAN_TYPED_TEST(RankDictionaryTest, ClearEmpty)
 {
     typename TestFixture::TRankDict dict;
 
@@ -161,7 +180,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, ClearEmpty)
     SEQAN_ASSERT_NOT(empty(dict));
     clear(dict);
     SEQAN_ASSERT(empty(dict));
-}
+}*/
 
 // ----------------------------------------------------------------------------
 // Test getValue()
@@ -172,6 +191,12 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
     typedef typename TestFixture::TTextIterator         TTextIterator;
 
     typename TestFixture::TRankDict dict(this->text);
+    /*std::cout << "TEXT:    " << this->text << std::endl;
+
+    std::cout << std::bitset<64>(dict.ranks[0].values[0].i) << std::endl;
+    std::cout << std::bitset<64>(dict.ranks[0].values[1].i) << std::endl;
+    std::cout << std::bitset<64>(dict.ranks[0].values[2].i) << std::endl;
+    std::cout << std::bitset<64>(dict.ranks[0].values[3].i) << std::endl;*/
 
     for (TTextIterator textIt = this->textBegin; textIt != this->textEnd; ++textIt)
         SEQAN_ASSERT_EQ(getValue(dict, (unsigned long)(textIt - this->textBegin)), value(textIt));
@@ -181,7 +206,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
 // Test getRank()
 // ----------------------------------------------------------------------------
 
-SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
+/*SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
 {
     typedef typename TestFixture::TValueSize            TValueSize;
     typedef typename TestFixture::TText                 TText;
@@ -204,7 +229,46 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
 
         // Check the rank for all alphabet symbols.
         for (TValueSize c = 0; c < this->alphabetSize; ++c)
-            SEQAN_ASSERT_EQ(getRank(dict, (unsigned long)(textIt - this->textBegin), c), prefixSum[c]);
+        {
+            unsigned long pos = textIt - this->textBegin;
+            SEQAN_ASSERT_EQ(getRank(dict, pos, c), prefixSum[c]);
+        }
+    }
+}*/
+
+SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank)
+{
+    typedef typename TestFixture::TValueSize            TValueSize;
+    typedef typename TestFixture::TText                 TText;
+    typedef typename TestFixture::TTextIterator         TTextIterator;
+    typedef typename Size<TText>::Type                  TTextSize;
+    typedef String<TTextSize>                           TPrefixSum;
+
+    typename TestFixture::TRankDict dict(this->text);
+
+    // The prefix sum is built while scanning the text.
+    TPrefixSum prefixSum;
+
+    typedef typename Value<TText>::Type TValue;
+
+    resize(prefixSum, this->alphabetSize, 0);
+
+    // Scan the text.
+    for (TTextIterator textIt = this->textBegin; textIt != this->textEnd; ++textIt)
+    {
+        // Update the prefix sum.
+        prefixSum[ordValue(value(textIt))]++;
+
+        // Check the rank for all alphabet symbols.
+        unsigned long smallerNaive = 0;
+        for (TValueSize c = 0; c < this->alphabetSize; ++c)
+        {
+            unsigned long smaller;
+            unsigned long rank = getRank(dict, (unsigned long)(textIt - this->textBegin), TValue((uint16_t) c), smaller); // TODO: getRank!!! uint16_t cast???
+            SEQAN_ASSERT_EQ(smaller, smallerNaive);
+            SEQAN_ASSERT_EQ(rank, prefixSum[c]);
+            smallerNaive += prefixSum[c];
+        }
     }
 }
 

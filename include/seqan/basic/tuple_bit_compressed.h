@@ -84,6 +84,12 @@ template <> struct BitVector_<32> { typedef unsigned int Type; };
 template <> struct BitVector_<64> { typedef uint64_t Type; };
 template <> struct BitVector_<255>;
 
+template <typename TValue, unsigned SIZE>
+struct Size<Tuple<TValue, SIZE, BitPacked<> > >
+{
+    static const unsigned VALUE = SIZE;
+};
+
 // TODO(holtgrew): There is a lot of stuff defined within the class itself. A lot of it could be moved into global functions.
 
 // bit-packed storage (space efficient)
@@ -269,11 +275,9 @@ assignValue2(Tuple<TValue, SIZE, BitPacked<> > & me,
     SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
 
     unsigned shift = ((SIZE - 1 - k) * (BitsPerValue<TValue>::VALUE+1));
-    //std::cout << std::bitset<64>((TBitVector) ordValue(source) << shift) << std::endl;
 
-    //std::cout << source << std::endl;
+    me.i = (me.i & ~(me.BIT_MASK << shift)) | (TBitVector)ordValue(source) << shift;
 
-    me.i |= (TBitVector)ordValue(source) << shift;
     return source;
 }
 

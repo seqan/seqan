@@ -306,10 +306,10 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
         // TODO: no code duplication. make it a const-expr?
         auto maxValue = (1 << _BITS_PER_VALUE) - 1;
         for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
-            _BITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, _VALUES_PER_WORD, _VALUES_PER_WORD, _BITS_PER_VALUE, maxValue-i, maxValue-i);
+            _BITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, _VALUES_PER_WORD, _VALUES_PER_WORD, _BITS_PER_VALUE, maxValue-i, i + (1 << (_BITS_PER_VALUE-1)));
 
         for (unsigned i = 0; i < _VALUES_PER_WORD; ++i)
-            _NEWBITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, i+1, i+1, _BITS_PER_VALUE, 1, 1);
+            _NEWBITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, i+1, i+1, _BITS_PER_VALUE, 1, 1 << (_BITS_PER_VALUE-1)); // 1
     }
 
     template <typename TText>
@@ -319,16 +319,16 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
         auto maxValue = (1 << _BITS_PER_VALUE) - 1;
         for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
         {
-_BITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, _VALUES_PER_WORD, _VALUES_PER_WORD, _BITS_PER_VALUE, maxValue-i, maxValue-i);
+            _BITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, _VALUES_PER_WORD, _VALUES_PER_WORD, _BITS_PER_VALUE, maxValue-i, i + (1 << (_BITS_PER_VALUE-1)));
             //std::cout << std::bitset<64>(_BITMASKS[i]) << std::endl;
         }
-        std::cout << "-----------------------------------------" << std::endl;
+        //std::cout << "-----------------------------------------" << std::endl;
         for (unsigned i = 0; i < _VALUES_PER_WORD; ++i)
         {
-_NEWBITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, i+1, i+1, _BITS_PER_VALUE, 1, 1);
+            _NEWBITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, i+1, i+1, _BITS_PER_VALUE, 1, 1 << (_BITS_PER_VALUE-1)); // 1
             //std::cout << std::bitset<64>(_NEWBITMASKS[i]) << std::endl;
         }
-        std::cout << "-----------------------------------------" << std::endl;
+        //std::cout << "-----------------------------------------" << std::endl;
 
         createRankDictionary(*this, text);
     }
@@ -714,6 +714,14 @@ _getValuesRanks(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TPos
     return _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), true);
 }
 
+// TODO: needed because otherwise it template specialization would be ambiguous. maybe try to remove all bool-specializations?
+template <typename TSpec, typename TSize, typename TFibre, typename TPos>
+inline typename RankDictionaryBlock_<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > >::Type
+        _getValuesRanks(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos)
+{
+return _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), true);
+}
+
 // ----------------------------------------------------------------------------
 // Function getRank()
 // ----------------------------------------------------------------------------
@@ -814,6 +822,72 @@ getValue(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos)
     return _valuesAt(dict, blockPos, wordPos)[posInWord];
 }
 
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TPos>
+inline typename Value<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > >::Type
+getValue(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > & dict, TPos pos)
+{
+    typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > TRankDictionary;
+    TSize blockPos   = _toBlockPos(dict, pos);
+    TSize posInBlock = _toPosInBlock(dict, pos);
+    TSize wordPos    = _toWordPos(dict, posInBlock);
+    TSize posInWord  = _toPosInWord(dict, posInBlock);
+
+    typedef typename TRankDictionary::TWordType TWord;
+
+    // (i >> (SIZE - 1 - k) * BitsPerValue<TValue>::VALUE) & BIT_MASK;
+    auto SIZE = Size<typename RankDictionaryValues_<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > >::TValues>::VALUE;
+    //std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << posInWord << " size: " << SIZE << std::endl;
+    TWord x = _valuesAt(dict, blockPos, wordPos).i;
+    //std::cout << std::bitset<64>(x) << std::endl;
+    TWord x2 = ((1 << (BitsPerValue<TValue>::VALUE+1))-1);
+    TWord x3 = x2 << ((SIZE - posInWord - 1) * (BitsPerValue<TValue>::VALUE+1));
+    //std::cout << std::bitset<64>(x3) << std::endl;
+    TWord x4 = x & x3;
+    //std::cout << std::bitset<64>(x4) << std::endl;
+    TWord x5 = x4 >> ((SIZE - posInWord - 1) * (BitsPerValue<TValue>::VALUE+1));
+    //std::cout << std::bitset<64>(x5) << std::endl;
+    return x5;
+    //auto y = x & (((1 << (BitsPerValue<TValue>::VALUE+2))-1) << ((SIZE - posInWord) * (BitsPerValue<TValue>::VALUE+1))      posInWord * (BitsPerValue<TValue>::VALUE+1));
+    //std::cout << std::bitset<64>(y) << std::endl;
+    //auto z = y >> ((SIZE - 1) * (BitsPerValue<TValue>::VALUE+1));
+    //std::cout << std::bitset<64>(z) << std::endl;
+
+    //return (_valuesAt(dict, blockPos, wordPos).i << (posInWord * (BitsPerValue<TValue>::VALUE+1))) >> ((SIZE - 1) * (BitsPerValue<TValue>::VALUE+1));
+}
+
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TPos>
+inline typename Value<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const>::Type
+getValue(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos)
+{
+    typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > TRankDictionary;
+    TSize blockPos   = _toBlockPos(dict, pos);
+    TSize posInBlock = _toPosInBlock(dict, pos);
+    TSize wordPos    = _toWordPos(dict, posInBlock);
+    TSize posInWord  = _toPosInWord(dict, posInBlock);
+
+    typedef typename TRankDictionary::TWordType TWord;
+
+    // (i >> (SIZE - 1 - k) * BitsPerValue<TValue>::VALUE) & BIT_MASK;
+    auto SIZE = Size<typename RankDictionaryValues_<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > >::TValues>::VALUE;
+    //std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << posInWord << " size: " << SIZE << std::endl;
+    TWord x = _valuesAt(dict, blockPos, wordPos).i;
+    //std::cout << std::bitset<64>(x) << std::endl;
+    TWord x2 = ((1 << (BitsPerValue<TValue>::VALUE+1))-1);
+    TWord x3 = x2 << ((SIZE - posInWord - 1) * (BitsPerValue<TValue>::VALUE+1));
+    //std::cout << std::bitset<64>(x3) << std::endl;
+    TWord x4 = x & x3;
+    //std::cout << std::bitset<64>(x4) << std::endl;
+    TWord x5 = x4 >> ((SIZE - posInWord - 1) * (BitsPerValue<TValue>::VALUE+1));
+    //std::cout << std::bitset<64>(x5) << std::endl;
+    return x5;
+    //auto y = x & (((1 << (BitsPerValue<TValue>::VALUE+2))-1) << ((SIZE - posInWord) * (BitsPerValue<TValue>::VALUE+1))      posInWord * (BitsPerValue<TValue>::VALUE+1));
+    //std::cout << std::bitset<64>(y) << std::endl;
+    //auto z = y >> ((SIZE - 1) * (BitsPerValue<TValue>::VALUE+1));
+    //std::cout << std::bitset<64>(z) << std::endl;
+
+    //return (_valuesAt(dict, blockPos, wordPos).i << (posInWord * (BitsPerValue<TValue>::VALUE+1))) >> ((SIZE - 1) * (BitsPerValue<TValue>::VALUE+1));
+}
+
 // ----------------------------------------------------------------------------
 // Function setValue()
 // ----------------------------------------------------------------------------
@@ -823,6 +897,22 @@ inline void setValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPo
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >             TRankDictionary;
     typedef typename Size<TRankDictionary>::Type                        TSize;
+
+    TSize blockPos   = _toBlockPos(dict, pos);
+    TSize posInBlock = _toPosInBlock(dict, pos);
+    TSize wordPos    = _toWordPos(dict, posInBlock);
+    TSize posInWord  = _toPosInWord(dict, posInBlock);
+
+    //std::cout << static_cast<TValue>(c) << std::endl;
+
+    assignValue(_valuesAt(dict, blockPos, wordPos), posInWord, static_cast<TValue>(c));
+}
+
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TPos, typename TChar>
+inline void setValue(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > & dict, TPos pos, TChar c)
+{
+    //typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > >             TRankDictionary;
+    //typedef typename Size<TRankDictionary>::Type                        TSize;
 
     TSize blockPos   = _toBlockPos(dict, pos);
     TSize posInBlock = _toPosInBlock(dict, pos);
@@ -868,6 +958,15 @@ inline void updateRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
 
     // Clear the uninitialized values.
     _padValues(dict);
+
+
+
+/*std::cout << ".........................." << std::endl;
+
+std::cout << std::bitset<64>(dict.ranks[0].values[0].i) << std::endl;
+std::cout << std::bitset<64>(dict.ranks[0].values[1].i) << std::endl;
+std::cout << std::bitset<64>(dict.ranks[0].values[2].i) << std::endl;
+std::cout << std::bitset<64>(dict.ranks[0].values[3].i) << std::endl;*/
 
     // Iterate through the blocks.
     for (TFibreRanksIter ranksIt = ranksBegin; ranksIt != ranksEnd - 1; ++ranksIt)
