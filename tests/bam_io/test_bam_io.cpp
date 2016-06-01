@@ -162,16 +162,12 @@ SEQAN_BEGIN_TESTSUITE(test_bam_io)
     SEQAN_CALL_TEST(test_bam_io_bam_file_sam_file_size);
     SEQAN_CALL_TEST(test_bam_io_bam_file_sam_read_header);
     SEQAN_CALL_TEST(test_bam_io_bam_file_sam_read_records);
-    SEQAN_CALL_TEST(test_bam_io_bam_file_sam_read_sequences);
-    SEQAN_CALL_TEST(test_bam_io_bam_file_sam_read_sequences_and_qualities);
     SEQAN_CALL_TEST(test_bam_io_bam_file_sam_write_header);
     SEQAN_CALL_TEST(test_bam_io_bam_file_sam_write_records);
 
     SEQAN_CALL_TEST(test_bam_io_bam_file_bam_file_size);
     SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_header);
     SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_records);
-    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_sequences);
-    SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_sequences_and_qualities);
     SEQAN_CALL_TEST(test_bam_io_bam_file_bam_read_ex1);
     SEQAN_CALL_TEST(test_bam_io_bam_file_bam_write_header);
     SEQAN_CALL_TEST(test_bam_io_bam_file_bam_write_records);

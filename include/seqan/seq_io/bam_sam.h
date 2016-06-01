@@ -35,6 +35,8 @@
 // Input on BAM and SAM files.
 // ==========================================================================
 
+#include <seqan/bam_io.h>
+
 #ifndef SEQAN_SEQ_IO_BAM_SAM_H_
 #define SEQAN_SEQ_IO_BAM_SAM_H_
 
