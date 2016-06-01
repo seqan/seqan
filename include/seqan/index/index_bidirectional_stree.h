@@ -54,7 +54,7 @@ typedef Tag<BidirectionalRev_> const         Rev;
 // Class BidirectionalIndex-Iter
 // ----------------------------------------------------------------------------
 
-// TopDown-Iterator for bidirectional FM index
+// TopDown-Iterator for bidirectional indices
 template <typename TText, typename TIndexSpec, typename TSpec>
 class Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > >
 {
@@ -90,7 +90,7 @@ public:
     {}
 };
 
-// TopDown-Iterator with history stack for bidirectional FM index
+// TopDown-Iterator with history stack for bidirectional indices
 template <typename TText, typename TIndexSpec, typename TSpec>
 class Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec> > > >
 {

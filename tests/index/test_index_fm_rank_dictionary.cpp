@@ -65,38 +65,39 @@ using namespace seqan;
 // RankDictionary Types
 // --------------------------------------------------------------------------
 
+typedef SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >         ReducedMurpy10;
+
 typedef
-        //TagList<RankDictionary<bool,             Levels<void, LevelsPrefixRDConfig<> > >,
-        TagList<RankDictionary<Dna,             Levels<void, LevelsPrefixRDConfig<> > >,
-        TagList<RankDictionary<Rna,             Levels<void, LevelsPrefixRDConfig<> > >,
-        TagList<RankDictionary<Dna5,             Levels<void, LevelsPrefixRDConfig<> > >,
-        TagList<RankDictionary<Rna5,             Levels<void, LevelsPrefixRDConfig<> > >,
-        TagList<RankDictionary<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >,             Levels<void, LevelsPrefixRDConfig<> > >,
-        TagList<RankDictionary<AminoAcid,             Levels<void, LevelsPrefixRDConfig<> > >,
-        TagList<RankDictionary<char,             Levels<void, LevelsPrefixRDConfig<> > >
-    > > > > > > >// >
+    //TagList<RankDictionary<bool,           Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<Dna,            Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<Rna,            Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<Dna5,           Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<Rna5,           Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<ReducedMurpy10, Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<AminoAcid,      Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<char,           Levels<void, LevelsPrefixRDConfig<> > >
+    > > > > > > >
     RankDictionaryPrefixTypes;
 
 typedef
-/*TagList<RankDictionary<bool,            Naive<> >,,
-TagList<RankDictionary<Rna5,            Levels<> >,
-TagList<RankDictionary<Dna,             Levels<> >,
-TagList<RankDictionary<Rna,             Levels<> >,
-TagList<RankDictionary<Dna5,            Levels<> >,
-TagList<RankDictionary<Rna5,            Levels<> >,
-TagList<RankDictionary<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >,            Levels<> >,
-TagList<RankDictionary<AminoAcid,       Levels<> >,
-TagList<RankDictionary<char,            Levels<> >,
-TagList<RankDictionary<Dna,             WaveletTree<> >,
-TagList<RankDictionary<Dna5,            WaveletTree<> >,
-TagList<RankDictionary<DnaQ,            WaveletTree<> >,
-TagList<RankDictionary<Dna5Q,           WaveletTree<> >,
-TagList<RankDictionary<AminoAcid,       WaveletTree<> >,
-TagList<RankDictionary<char,            WaveletTree<> >,
-TagList<RankDictionary<unsigned char,   WaveletTree<> >,*/
-    RankDictionaryPrefixTypes
-    //> > > > > > > > > > > > > > > >
-    RankDictionaryTypes;
+    TagList<RankDictionary<bool,           Naive<> >,
+    TagList<RankDictionary<Dna,            Levels<> >,
+    TagList<RankDictionary<Rna,            Levels<> >,
+    TagList<RankDictionary<Dna5,           Levels<> >,
+    TagList<RankDictionary<Rna5,           Levels<> >,
+    TagList<RankDictionary<ReducedMurpy10, Levels<> >,
+    TagList<RankDictionary<AminoAcid,      Levels<> >,
+    TagList<RankDictionary<char,           Levels<> >,
+            // TODO: bool WT
+    TagList<RankDictionary<Dna,            WaveletTree<> >,
+    TagList<RankDictionary<Dna5,           WaveletTree<> >,
+    TagList<RankDictionary<DnaQ,           WaveletTree<> >,
+    TagList<RankDictionary<Dna5Q,          WaveletTree<> >,
+    TagList<RankDictionary<AminoAcid,      WaveletTree<> >,
+    TagList<RankDictionary<char,           WaveletTree<> >,
+    TagList<RankDictionary<unsigned char,  WaveletTree<> >
+    > > > > > > > > > > > > > > >
+    RankDictionaryNonPrefixTypes;
 
 // ==========================================================================
 // Test Classes
@@ -105,7 +106,6 @@ TagList<RankDictionary<unsigned char,   WaveletTree<> >,*/
 // --------------------------------------------------------------------------
 // Class RankDictionaryTest
 // --------------------------------------------------------------------------
-
 
 template <typename TRankDictionary>
 class RankDictionaryTest : public Test
@@ -137,9 +137,14 @@ public:
 
 template <typename TRankDictionary>
 class RankDictionaryPrefixTest : public RankDictionaryTest<TRankDictionary> {};
+template <typename TRankDictionary>
+class RankDictionaryNonPrefixTest : public RankDictionaryTest<TRankDictionary> {};
 
-SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryTypes);
+SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryNonPrefixTypes);
+SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryPrefixTypes);
+
 SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixTypes);
+SEQAN_TYPED_TEST_CASE(RankDictionaryNonPrefixTest, RankDictionaryNonPrefixTypes);
 
 // ==========================================================================
 // Tests
@@ -149,26 +154,26 @@ SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixTypes);
 // Test RankDictionary()
 // ----------------------------------------------------------------------------
 
-/*SEQAN_TYPED_TEST(RankDictionaryTest, Constructor)
+SEQAN_TYPED_TEST(RankDictionaryTest, Constructor)
 {
     typename TestFixture::TRankDict dict(this->text);
-}*/
+}
 
 // ----------------------------------------------------------------------------
 // Test createRankDictionary()
 // ----------------------------------------------------------------------------
 
-/*SEQAN_TYPED_TEST(RankDictionaryTest, CreateRankDictionary)
+SEQAN_TYPED_TEST(RankDictionaryTest, CreateRankDictionary)
 {
     typename TestFixture::TRankDict dict;
     createRankDictionary(dict, this->text);
-}*/
+}
 
 // ----------------------------------------------------------------------------
 // Test clear() and empty()
 // ----------------------------------------------------------------------------
 
-/*SEQAN_TYPED_TEST(RankDictionaryTest, ClearEmpty)
+SEQAN_TYPED_TEST(RankDictionaryTest, ClearEmpty)
 {
     typename TestFixture::TRankDict dict;
 
@@ -177,7 +182,7 @@ SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixTypes);
     SEQAN_ASSERT_NOT(empty(dict));
     clear(dict);
     SEQAN_ASSERT(empty(dict));
-}*/
+}
 
 // ----------------------------------------------------------------------------
 // Test getValue()
@@ -197,7 +202,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
 // Test getRank()
 // ----------------------------------------------------------------------------
 
-/*SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
+SEQAN_TYPED_TEST(RankDictionaryNonPrefixTest, GetRank)
 {
     typedef typename TestFixture::TValueSize            TValueSize;
     typedef typename TestFixture::TText                 TText;
@@ -225,7 +230,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
             SEQAN_ASSERT_EQ(getRank(dict, pos, c), prefixSum[c]);
         }
     }
-}*/
+}
 
 SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank) {
     typedef typename TestFixture::TValueSize TValueSize;
