@@ -50,7 +50,7 @@ namespace seqan {
 struct SimdAlignEqualLength_;
 typedef Tag<SimdAlignEqualLength_> SimdAlignEqualLength;
 
-template <typename TSimdVec>
+template <typename TTraits>
 struct SimdAlignVariableLength
 {};
 
@@ -65,19 +65,24 @@ template <>
 class DPScoutState_<SimdAlignEqualLength>
 {};
 
-template <typename TSimdVector>
-class DPScoutState_<SimdAlignVariableLength<TSimdVector> >
+template <typename TTraits>
+class DPScoutState_<SimdAlignVariableLength<TTraits> >
 {
 public:
-    String<TSimdVector, Alloc<OverAligned> > masksH;
-    String<TSimdVector, Alloc<OverAligned> > masksV;
-    String<TSimdVector, Alloc<OverAligned> > masks;
+    using TSizeH = typename Size<typename TTraits::TSeqH>::Type;
+    using TSizeV = typename Size<typename TTraits::TSeqV>::Type;
 
-    std::vector<size_t> endsH;
-    std::vector<size_t> endsV;
+    String<typename TTraits::TSimdVector, Alloc<OverAligned> > masksH;
+    String<typename TTraits::TSimdVector, Alloc<OverAligned> > masksV;
+    String<typename TTraits::TSimdVector, Alloc<OverAligned> > masks;
 
-    decltype(endsH.begin()) nextEndsH;
-    decltype(endsH.begin()) nextEndsV;
+    String<TSizeH> endsH;
+    String<TSizeV> endsV;
+    ModifiedString<typename TTraits::TSeqH, ModPos<String<TSizeH> > > sortedEndsH;
+    ModifiedString<typename TTraits::TSeqV, ModPos<String<TSizeV> > > sortedEndsV;
+
+    decltype(begin(sortedEndsH, Standard())) nextEndsH;
+    decltype(begin(sortedEndsV, Standard())) nextEndsV;
 
     size_t dimV;
     size_t posH;
@@ -102,9 +107,11 @@ public:
 
     inline void updateMasksBottom()
     {
-        for(auto pos : endsV)
-            for(auto it = nextEndsH; it != endsH.end(); ++it)
-                masks[pos] |= (masksH[*it] & masksV[pos]);
+        for (auto& seq : sortedEndsV)
+            for (auto it = nextEndsH; it != end(sortedEndsH, Standard()); ++it)
+            {
+                masks[length(seq) - 1] |= (masksH[length(*it) - 1] & masksV[length(seq) - 1]);
+            }
     }
 
     // ----------------------------------------------------------------------------
@@ -123,7 +130,7 @@ public:
         }
         else
         {
-            if(right && posH == *nextEndsH)
+            if(right && posH == length(*nextEndsH) - 1)
                 updateMasksRight();
             if(bottom)
                 updateMasksBottom();
@@ -171,10 +178,10 @@ struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, DPScoutState_<SimdAl
     typedef SimdAlignmentScout<SimdAlignEqualLength> Type;
 };
 
-template<typename TAlignmentAlgorithm, typename TSpec>
-struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, DPScoutState_<SimdAlignVariableLength<TSpec> > >
+template<typename TAlignmentAlgorithm, typename TTraits>
+struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, DPScoutState_<SimdAlignVariableLength<TTraits> > >
 {
-    typedef SimdAlignmentScout<SimdAlignVariableLength<TSpec> > Type;
+    typedef SimdAlignmentScout<SimdAlignVariableLength<TTraits> > Type;
 };
 
 // ============================================================================
@@ -256,12 +263,12 @@ _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > & d
     _updateHostPositions(dpScout, cmp, createVector<SimdVector<int32_t>::Type>(position(navigator)));
 }
 
-template <typename TDPCell, typename TSimdVec,
+template <typename TDPCell, typename TTraits,
           typename TTraceMatrixNavigator,
           typename TIsLastColumn,
           typename TIsLastRow>
 inline void
-_scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TSimdVec> > > & dpScout,
+_scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & dpScout,
                 TDPCell const & activeCell,
                 TTraceMatrixNavigator const & navigator,
                 TIsLastColumn const & /**/,
@@ -302,11 +309,11 @@ _setSimdLane(DPScout_<TDPCell, TScoutSpec> & dpScout, TPosition const pos)
 // Function _preInitScoutHorizontal()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TSimdVec>
+template <typename TDPCell, typename TTraits>
 inline void
-_preInitScoutHorizontal(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TSimdVec> > > & scout)
+_preInitScoutHorizontal(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout)
 {
-    scout.state->nextEndsH = scout.state->endsH.begin();
+    scout.state->nextEndsH = begin(scout.state->sortedEndsH, Standard());
     scout.state->posH = 0;
 }
 
@@ -314,12 +321,12 @@ _preInitScoutHorizontal(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLe
 // Function _preInitScoutVertical()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TSimdVec>
+template <typename TDPCell, typename TTraits>
 inline void
-_preInitScoutVertical(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TSimdVec> > > & scout)
+_preInitScoutVertical(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout)
 {
     scout.state->updateMasks();
-    scout.state->nextEndsV = scout.state->endsV.begin();
+    scout.state->nextEndsV = begin(scout.state->sortedEndsV, Standard());
     scout.state->posV = 0;
 }
 
@@ -327,55 +334,65 @@ _preInitScoutVertical(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLeng
 // Function _reachedHorizontalEndPoint()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TSimdVec, typename TIter>
+template <typename TDPCell, typename TTraits, typename TIter>
 inline bool
-_reachedHorizontalEndPoint(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TSimdVec> > > & scout,
+_reachedHorizontalEndPoint(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout,
                            TIter const & hIt)
 {
-    return *(scout.state->nextEndsH) == position(hIt);
+    return length(*(scout.state->nextEndsH)) - 1 == position(hIt);
 }
 
 // ----------------------------------------------------------------------------
 // Function _reachedVerticalEndPoint()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TSimdVec, typename TIter>
+template <typename TDPCell, typename TTraits, typename TIter>
 inline bool
-_reachedVerticalEndPoint(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TSimdVec> > > & scout,
+_reachedVerticalEndPoint(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout,
                          TIter const & vIt)
 {
-    return *(scout.state->nextEndsV) == position(vIt);
+    return length(*(scout.state->nextEndsV)) - 1 == position(vIt);
 }
 
 // ----------------------------------------------------------------------------
 // Function _nextHorizontalEndPos()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TSimdVec>
+template <typename TDPCell, typename TTraits>
 inline void
-_nextHorizontalEndPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TSimdVec> > > & scout)
+_nextHorizontalEndPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout)
 {
-    ++scout.state->nextEndsH;
+    auto oldLength = length(*scout.state->nextEndsH);
+    while (scout.state->nextEndsH != end(scout.state->sortedEndsH, Standard()) &&
+           length(*scout.state->nextEndsH) == oldLength)
+    {
+        ++scout.state->nextEndsH;
+    }
 }
 
 // ----------------------------------------------------------------------------
 // Function _nextVerticalEndPos()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TSimdVec>
+template <typename TDPCell, typename TTraits>
 inline void
-_nextVerticalEndPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TSimdVec> > > & scout)
+_nextVerticalEndPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout)
 {
-    ++scout.state->nextEndsV;
+    auto oldLength = length(*scout.state->nextEndsV);
+    while (scout.state->nextEndsV != end(scout.state->sortedEndsV, Standard()) &&
+           length(*scout.state->nextEndsV) == oldLength)
+    {
+        ++scout.state->nextEndsV;
+    }
 }
 
 // ----------------------------------------------------------------------------
 // Function _incHorizontalPos()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TSimdVec>
+template <typename TDPCell, typename TTraits>
 inline void
-_incHorizontalPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TSimdVec> > > & scout)
+_incHorizontalPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout)
 {
     ++scout.state->posH;
 }
@@ -384,11 +401,51 @@ _incHorizontalPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<T
 // Function _incVerticalPos()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TSimdVec>
+template <typename TDPCell, typename TTraits>
 inline void
-_incVerticalPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TSimdVec> > > & scout)
+_incVerticalPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout)
 {
     ++scout.state->posV;
+}
+
+// ----------------------------------------------------------------------------
+// Function _hostLengthH()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSeqH>
+inline auto
+_hostLengthH(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > const & /*scout*/,
+             TSeqH const & seqH)
+{
+    return length(seqH);
+}
+
+template <typename TDPCell, typename TTraits, typename TSeqH>
+inline auto
+_hostLengthH(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & scout,
+             TSeqH const & /*seqH*/)
+{
+    return length(host(scout.state->sortedEndsH)[scout._simdLane]);
+}
+
+// ----------------------------------------------------------------------------
+// Function _hostLengthV()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSeqV>
+inline auto
+_hostLengthV(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > const & /*scout*/,
+             TSeqV const & seqV)
+{
+    return length(seqV);
+}
+
+template <typename TDPCell, typename TTraits, typename TSeqV>
+inline auto
+_hostLengthV(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & scout,
+             TSeqV const & /*seqV*/)
+{
+    return length(host(scout.state->sortedEndsV)[scout._simdLane]);
 }
 
 }  // namespace seqan

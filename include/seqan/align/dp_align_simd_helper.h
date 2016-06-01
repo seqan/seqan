@@ -49,6 +49,14 @@ struct VectorLength_;
 // Tags, Classes, Enums
 // ============================================================================
 
+template <typename TSimdVector_, typename TSeqH_, typename TSeqV_>
+struct SimdAlignVariableLengthTraits
+{
+    using TSimdVector   = TSimdVector_;
+    using TSeqH         = TSeqH_;
+    using TSeqV         = TSeqV_;
+};
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -58,133 +66,14 @@ struct VectorLength_;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function _checkAndCreateSimdRepresentation()
-// ----------------------------------------------------------------------------
-
-template<typename TStringSetH, typename TStringSetV, typename TSimdString>
-void inline
-_createSimdRepresentation(TStringSetH const & stringsH,
-                          TStringSetV const & stringsV,
-                          TSimdString & simdH,
-                          TSimdString & simdV,
-                          SimdAlignEqualLength const & /*tag*/)
-{
-    resize(simdH, length(stringsH[0]));
-    resize(simdV, length(stringsV[0]));
-    _createSimdRepImpl(simdH, stringsH);
-    _createSimdRepImpl(simdV, stringsV);
-}
-
-template<typename TStringSetH,
-         typename TStringSetV,
-         typename TSimdString,
-         typename TPosString,
-         typename TSimdVector>
-void inline
-_createSimdRepresentation(TStringSetH const & stringsH,
-                          TStringSetV const & stringsV,
-                          TSimdString & simdH,
-                          TSimdString & simdV,
-                          TSimdString & masksH,
-                          TSimdString & masksV,
-                          TSimdString & masks,
-                          TPosString & endsH,
-                          TPosString & endsV,
-                          SimdAlignVariableLength<TSimdVector> const & /*tag*/)
-{
-    using TStringH = typename std::decay<typename Value<TStringSetH>::Type>::type;
-    using TStringV = typename std::decay<typename Value<TStringSetV>::Type>::type;
-    // check if all sequences have the same length
-    unsigned int numAlignments = LENGTH<TSimdVector>::VALUE;
-
-    // otherwise we have to copy the sequences to be able to add a
-    // padding character before calling _createSimdRepresentation,
-    // because all sequences must have the same length
-    auto maxLengthLambda = [](auto& seqLhs, auto& seqRhs) { return length(seqLhs) < length(seqRhs); };
-    size_t maxH = length(*std::max_element(begin(stringsH, Standard()), end(stringsH, Standard()), maxLengthLambda));
-    size_t maxV = length(*std::max_element(begin(stringsV, Standard()), end(stringsV, Standard()), maxLengthLambda));
-
-    // and we have to prepare the bit masks of the DPScoutState
-    resize(masks, maxV, createVector<TSimdVector>(0));
-    resize(masksV, maxV, createVector<TSimdVector>(0));
-    resize(masksH, maxH, createVector<TSimdVector>(0));
-
-    // copy strings and add padding chars
-    StringSet<TStringH> paddedH;
-    StringSet<TStringV> paddedV;
-    resize(paddedH, numAlignments);
-    resize(paddedV, numAlignments);
-
-    for(unsigned i = 0; i < numAlignments; ++i)
-    {
-        // add padding: the padding character should be part of the amino acid alphabet
-        // otherwise a possible score matrix look-up fails, we use 'A' therefor
-        paddedH[i] = stringsH[i];
-        paddedV[i] = stringsV[i];
-        resize(paddedH[i], maxH, 'A');
-        resize(paddedV[i], maxV, 'A');
-
-        // mark the original end position of the alignment in the masks (with -1, all bits set)
-        assignValue(masksH[length(stringsH[i]) - 1], i, -1);
-        assignValue(masksV[length(stringsV[i]) - 1], i, -1);
-        endsH.push_back(length(stringsH[i]) - 1);
-        endsV.push_back(length(stringsV[i]) - 1);
-    }
-
-    // sort the end positions, remove duplicates
-    std::sort(endsH.begin(), endsH.end());
-    std::unique(endsH.begin(), endsH.end());
-    std::sort(endsV.begin(), endsV.end());
-    std::unique(endsV.begin(), endsV.end());
-
-    // now create SIMD representation
-    resize(simdH, maxH);
-    resize(simdV, maxV);
-    _createSimdRepImpl(simdH, paddedH);
-    _createSimdRepImpl(simdV, paddedV);
-}
-
-template<typename TStringSetH, typename TStringSetV, typename TSimdString>
-void inline
-_checkAndCreateSimdRepresentation(TStringSetH const & stringsH,
-                                  TStringSetV const & stringsV,
-                                  TSimdString & simdH,
-                                  TSimdString & simdV,
-                                  TSimdString & masksH,
-                                  TSimdString & masksV,
-                                  TSimdString & masks,
-                                  std::vector<size_t> & endsH,
-                                  std::vector<size_t> & endsV)
-{
-    using TSimdVector = typename Value<TSimdString>::Type;
-
-    auto seqLengthH = length(stringsH[0]);
-    auto seqLengthV = length(stringsV[0]);
-    auto zipView = makeZipView(stringsH, stringsV);
-    bool allSameLength = std::all_of(begin(zipView, Standard()), end(zipView, Standard()),
-                                     [seqLengthH, seqLengthV](auto param)
-                                     {
-                                         return (length(std::get<0>(param)) == seqLengthH) &&
-                                                (length(std::get<1>(param)) == seqLengthV);
-                                     });
-
-    // if yes, create SIMD representation without doing anything else
-    if(!allSameLength)
-        _createSimdRepresentation(stringsH, stringsV, simdH, simdV, masksH, masksV, masks, endsH, endsV,
-                                  SimdAlignVariableLength<TSimdVector>());
-    else
-        _createSimdRepresentation(stringsH, stringsV, simdH, simdV, SimdAlignEqualLength());
-}
-
-// ----------------------------------------------------------------------------
 // Function _createSimdRepImpl()
 // ----------------------------------------------------------------------------
 
-#define SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos)    data[strPos][chrPos], data[strPos + 1][chrPos]
-#define SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos + 2, chrPos)
-#define SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos + 4, chrPos)
-#define SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos, chrPos)   SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos + 8, chrPos)
-#define SEQAN_CREATE_SIMD_REP_IMPL_32(data, strPos, chrPos)   SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos, chrPos), SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos + 16, chrPos)
+#define SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos)    data[strPos + 1][chrPos], data[strPos][chrPos]
+#define SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos + 2, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos)
+#define SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos + 4, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos)
+#define SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos, chrPos)   SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos + 8, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos)
+#define SEQAN_CREATE_SIMD_REP_IMPL_32(data, strPos, chrPos)   SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos + 16, chrPos), SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos, chrPos)
 
 #define SEQAN_CREATE_SIMD_REP_FILL_IMPL_2(MACRO, data, chrPos) MACRO(data, 0, chrPos)
 #define SEQAN_CREATE_SIMD_REP_FILL_IMPL(data, chrPos, SIZE) SEQAN_CREATE_SIMD_REP_FILL_IMPL_2(SEQAN_CREATE_SIMD_REP_IMPL_##SIZE, data, chrPos)
@@ -242,43 +131,140 @@ _prepareAndRunSimdAlignment(TResult & results,
                             TSequencesV const & seqV,
                             TScore const & scoringScheme,
                             AlignConfig2<TAlgo, TBand, TFreeEndGaps, TTraceback> const & alignConfig,
-                            TGapModel const & /*gapModel*/)
+                            TGapModel const & /*gapModel*/,
+                            SimdAlignEqualLength const & /*tag*/)
 {
     String<TResult, Alloc<OverAligned> > stringSimdH;
     String<TResult, Alloc<OverAligned> > stringSimdV;
-    String<TResult, Alloc<OverAligned> > masksH;
-    String<TResult, Alloc<OverAligned> > masksV;
-    String<TResult, Alloc<OverAligned> > masks;
 
-    std::vector<decltype(length(seqH))> endsH;
-    std::vector<decltype(length(seqV))> endsV;
+    resize(stringSimdH, length(seqH[0]));
+    resize(stringSimdV, length(seqV[0]));
+    _createSimdRepImpl(stringSimdH, seqH);
+    _createSimdRepImpl(stringSimdV, seqV);
 
-    // create the SIMD representation of the alignments
-    // in case of a variable length alignment the variables masks, endsH, endsV will be filled
-    _checkAndCreateSimdRepresentation(seqH, seqV, stringSimdH, stringSimdV, masksH, masksV, masks, endsH, endsV);
+    DPScoutState_<SimdAlignEqualLength> state;
+    results = _setUpAndRunAlignment(traces, state, stringSimdH, stringSimdV, scoringScheme, alignConfig, TGapModel());
+}
 
-    // if alignments have equal dimensions do nothing
-    if(endsH.size() == 0)
+template <typename TResult,
+          typename TTraces,
+          typename TSequencesH,
+          typename TSequencesV,
+          typename TScore,
+          typename TAlgo, typename TBand, typename TFreeEndGaps, typename TTraceback,
+          typename TGapModel,
+          typename TTraits>
+inline void
+_prepareAndRunSimdAlignment(TResult & results,
+                            TTraces & traces,
+                            TSequencesH const & seqH,
+                            TSequencesV const & seqV,
+                            TScore const & scoringScheme,
+                            AlignConfig2<TAlgo, TBand, TFreeEndGaps, TTraceback> const & alignConfig,
+                            TGapModel const & /*gapModel*/,
+                            SimdAlignVariableLength<TTraits> const /*tag*/)
+{
+    SEQAN_ASSERT_EQ(length(seqH), length(seqV));
+    SEQAN_ASSERT_EQ(static_cast<decltype(length(seqH))>(LENGTH<TResult>::VALUE), length(seqH));
+
+    using TStringH = typename std::decay<typename Value<TSequencesH>::Type>::type;
+    using TStringV = typename std::decay<typename Value<TSequencesV>::Type>::type;
+
+    String<TResult, Alloc<OverAligned> > stringSimdH;
+    String<TResult, Alloc<OverAligned> > stringSimdV;
+
+    DPScoutState_<SimdAlignVariableLength<SimdAlignVariableLengthTraits<TResult, TSequencesH, TSequencesV> > > state;
+
+    resize(state.endsH, length(seqH));
+    resize(state.endsV, length(seqV));
+
+    auto idx = 0;
+    std::generate(begin(state.endsH, Standard()), end(state.endsH, Standard()), [&idx](){ return idx++; });
+    idx = 0;
+    std::generate(begin(state.endsV, Standard()), end(state.endsV, Standard()), [&idx](){ return idx++; });
+
+    setHost(state.sortedEndsH, seqH);
+    setHost(state.sortedEndsV, seqV);
+    setCargo(state.sortedEndsH, state.endsH);
+    setCargo(state.sortedEndsV, state.endsV);
+
+    auto maxLengthLambda = [](auto& seqLhs, auto& seqRhs) { return length(seqLhs) < length(seqRhs); };
+    sort(state.sortedEndsH, maxLengthLambda, Serial());
+    sort(state.sortedEndsV, maxLengthLambda, Serial());
+
+    size_t maxH = length(back(state.sortedEndsH));
+    size_t maxV = length(back(state.sortedEndsV));
+
+    // and we have to prepare the bit masks of the DPScoutState
+    resize(state.masks,  maxV, createVector<TResult>(0));
+    resize(state.masksV, maxV, createVector<TResult>(0));
+    resize(state.masksH, maxH, createVector<TResult>(0));
+
+    // copy strings and add padding chars
+    // TODO(rrahn): Remove and replace with padded modifiers.
+    StringSet<TStringH> paddedH;
+    StringSet<TStringV> paddedV;
+    resize(paddedH, length(seqH));
+    resize(paddedV, length(seqV));
+
+    for(unsigned i = 0; i < length(seqH); ++i)
     {
-        DPScoutState_<SimdAlignEqualLength> dpScoutState;
-        results = _setUpAndRunAlignment(traces, dpScoutState, stringSimdH, stringSimdV,
-                                        scoringScheme, alignConfig, TGapModel());
+        // add padding: the padding character should be part of the amino acid alphabet
+        // otherwise a possible score matrix look-up fails, we use 'A' therefor
+        paddedH[i] = seqH[i];
+        paddedV[i] = seqV[i];
+        resize(paddedH[i], maxH, 'A');
+        resize(paddedV[i], maxV, 'A');
+
+        // mark the original end position of the alignment in the masks (with -1, all bits set)
+        assignValue(state.masksH[length(seqH[i]) - 1], i, -1);
+        assignValue(state.masksV[length(seqV[i]) - 1], i, -1);
     }
-    else  // otherwise prepare the special DPScoutState
-    {
-        DPScoutState_<SimdAlignVariableLength<TResult> > dpScoutState;
-        dpScoutState.dimV = length(stringSimdV);
-        dpScoutState.isLocalAlignment = IsLocalAlignment_<TAlgo>::VALUE;
-        dpScoutState.right = IsFreeEndGap_<TFreeEndGaps, DPLastColumn>::VALUE;
-        dpScoutState.bottom = IsFreeEndGap_<TFreeEndGaps, DPLastRow>::VALUE;
-        swap(dpScoutState.masksH, masksH);
-        swap(dpScoutState.masksV, masksV);
-        swap(dpScoutState.masks, masks);
-        std::swap(dpScoutState.endsH, endsH);
-        std::swap(dpScoutState.endsV, endsV);
-        results = _setUpAndRunAlignment(traces, dpScoutState, stringSimdH, stringSimdV,
-                                        scoringScheme, alignConfig, TGapModel());
-    }
+
+    // now create SIMD representation
+    resize(stringSimdH, maxH);
+    resize(stringSimdV, maxV);
+    _createSimdRepImpl(stringSimdH, paddedH);
+    _createSimdRepImpl(stringSimdV, paddedV);
+
+    state.dimV = length(stringSimdV);
+    state.isLocalAlignment = IsLocalAlignment_<TAlgo>::VALUE;
+    state.right = IsFreeEndGap_<TFreeEndGaps, DPLastColumn>::VALUE;
+    state.bottom = IsFreeEndGap_<TFreeEndGaps, DPLastRow>::VALUE;
+
+    results = _setUpAndRunAlignment(traces, state, stringSimdH, stringSimdV, scoringScheme, alignConfig, TGapModel());
+}
+
+template <typename TResult,
+          typename TTraces,
+          typename TSequencesH,
+          typename TSequencesV,
+          typename TScore,
+          typename TAlgo, typename TBand, typename TFreeEndGaps, typename TTraceback,
+          typename TGapModel>
+inline void
+_prepareAndRunSimdAlignment(TResult & results,
+                            TTraces & traces,
+                            TSequencesH const & seqH,
+                            TSequencesV const & seqV,
+                            TScore const & scoringScheme,
+                            AlignConfig2<TAlgo, TBand, TFreeEndGaps, TTraceback> const & alignConfig,
+                            TGapModel const & /*gapModel*/)
+{
+    auto seqLengthH = length(seqH[0]);
+    auto seqLengthV = length(seqV[0]);
+    auto zipView = makeZipView(seqH, seqV);
+    bool allSameLength = std::all_of(begin(zipView, Standard()), end(zipView, Standard()),
+                                     [seqLengthH, seqLengthV](auto param)
+                                     {
+                                         return (length(std::get<0>(param)) == seqLengthH) &&
+                                         (length(std::get<1>(param)) == seqLengthV);
+                                     });
+    if(allSameLength)
+        _prepareAndRunSimdAlignment(results, traces, seqH, seqV, scoringScheme, alignConfig, TGapModel(), SimdAlignEqualLength());
+    else
+        _prepareAndRunSimdAlignment(results, traces, seqH, seqV, scoringScheme, alignConfig, TGapModel(),
+                                    SimdAlignVariableLength<Nothing>());
 }
 
 }  // namespace seqan

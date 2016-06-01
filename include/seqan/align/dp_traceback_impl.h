@@ -486,13 +486,17 @@ _retrieveInitialTraceDirection(TTraceValue & traceValue, TDPProfile const & /*dp
 // Function _computeTraceback()
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TDPTraceMatrixNavigator, typename TSequenceH, typename TSequenceV,
-          typename TBandFlag, typename TAlgorithm, typename TGapCosts, typename TTracebackSpec>
+template <typename TTarget,
+          typename TDPTraceMatrixNavigator,
+          typename TSizeH,
+          typename TSizeV,
+          typename TBandFlag,
+          typename TAlgorithm, typename TGapCosts, typename TTracebackSpec>
 void _computeTraceback(TTarget & target,
                        TDPTraceMatrixNavigator & matrixNavigator,
                        unsigned  maxHostPosition,
-                       TSequenceH const & seqH,
-                       TSequenceV const & seqV,
+                       TSizeH const & seqHSize,
+                       TSizeV const & seqVSize,
                        DPBandConfig<TBandFlag> const & band,
                        DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const & dpProfile)
 {
@@ -500,17 +504,12 @@ void _computeTraceback(TTarget & target,
     typedef typename Size<TContainer>::Type TSize;
     typedef typename Position<TContainer>::Type TPosition;
     typedef typename TraceBitMap_<>::Type TTraceValue;
-    typedef typename Size<TSequenceH>::Type TSizeH;
-    typedef typename Size<TSequenceV>::Type TSizeV;
 
     if (IsSameType<TTracebackSpec, TracebackOff>::VALUE)
         return;
 
     // Determine whether or not we place gaps to the left.
     typedef typename IsGapsLeft_<TTracebackSpec>::Type TIsGapsLeft;
-
-    TSizeH seqHSize = length(seqH);
-    TSizeV seqVSize = length(seqV);
 
     // Set the navigator to the position where the maximum was found.
     _setToPosition(matrixNavigator, maxHostPosition);
@@ -552,10 +551,49 @@ void _computeTraceback(TTarget & target,
 }
 
 //// Needed as a delegation method to allow invocation of both methods with host position and dpScout.
+template <typename TTarget,
+          typename TDPTraceMatrixNavigator,
+          typename TSequenceH,
+          typename TSequenceV,
+          typename TBandFlag,
+          typename TAlgorithm, typename TGapCosts, typename TTracebackSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TSequenceH> >, void)
+_computeTraceback(TTarget & target,
+                  TDPTraceMatrixNavigator & matrixNavigator,
+                  unsigned  maxHostPosition,
+                  TSequenceH const & seqH,
+                  TSequenceV const & seqV,
+                  DPBandConfig<TBandFlag> const & band,
+                  DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const & dpProfile)
+{
+    _computeTraceback(target, matrixNavigator, maxHostPosition, length(seqH), length(seqV), band, dpProfile);
+}
+
+template <typename TTarget,
+          typename TDPTraceMatrixNavigator,
+          typename TDPCell, typename TScoutSpec,
+          typename TSizeH,
+          typename TSizeV,
+          typename TBandFlag,
+          typename TAlgorithm,
+          typename TGapCosts,
+          typename TTracebackSpec>
+inline SEQAN_FUNC_DISABLE_IF(Is<ContainerConcept<TSizeH> >, void)
+_computeTraceback(TTarget & target,
+                  TDPTraceMatrixNavigator & matrixNavigator,
+                  DPScout_<TDPCell, TScoutSpec> const & dpScout,
+                  TSizeH const & seqHSize,
+                  TSizeV const & seqVSize,
+                  DPBandConfig<TBandFlag> const & band,
+                  DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const & dpProfile)
+{
+    _computeTraceback(target, matrixNavigator, maxHostPosition(dpScout), seqHSize, seqVSize, band, dpProfile);
+}
+
 template <typename TTarget, typename TDPTraceMatrixNavigator, typename TDPCell, typename TScoutSpec,
           typename TSequenceH, typename TSequenceV, typename TBandFlag, typename TAlgorithm, typename TGapCosts,
           typename TTracebackSpec>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Is<ContainerConcept<TSequenceH> >, void)
 _computeTraceback(TTarget & target,
                   TDPTraceMatrixNavigator & matrixNavigator,
                   DPScout_<TDPCell, TScoutSpec> const & dpScout,
@@ -564,7 +602,7 @@ _computeTraceback(TTarget & target,
                   DPBandConfig<TBandFlag> const & band,
                   DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const & dpProfile)
 {
-    _computeTraceback(target, matrixNavigator, maxHostPosition(dpScout), seqH, seqV, band, dpProfile);
+    _computeTraceback(target, matrixNavigator, maxHostPosition(dpScout), length(seqH), length(seqV), band, dpProfile);
 }
 
 }  // namespace seqan

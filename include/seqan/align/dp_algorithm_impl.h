@@ -1318,6 +1318,22 @@ void _printTracebackMatrix(TTraceMatrix & dpTraceMatrix)
     std::cout << std::endl;
 }
 
+template <typename TTraceMatrix, typename TPosition>
+void _printTracebackMatrix(TTraceMatrix & dpTraceMatrix, TPosition const simdLane)
+{
+    typedef typename Size<TTraceMatrix>::Type TSize;
+    TSize dimH = length(dpTraceMatrix, +DPMatrixDimension_::HORIZONTAL);
+    TSize dimV = length(dpTraceMatrix, +DPMatrixDimension_::VERTICAL);
+
+    for (unsigned row = 0; row < dimV; ++row)
+    {
+        for (unsigned column = 0; column < dimH; ++column)
+            std::cout << _translateTraceValue(value(dpTraceMatrix, row + column * dimV)[simdLane]) << "\t";
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 // ----------------------------------------------------------------------------
 // Function _correctTraceValue()
 // ----------------------------------------------------------------------------
@@ -1446,7 +1462,7 @@ template <typename TTraceTarget,
 inline SEQAN_FUNC_ENABLE_IF(And<Is<SimdVectorConcept<TScoreValue> >, IsTracebackEnabled_<TTraceFlag> >, TScoreValue)
 _finishAlignment(TTraceTarget & traceSegments,
                  TTraceMatNavigator & dpTraceMatrixNavigator,
-                 DPScout_<DPCell_<TScoreValue, TGapsModel>, TDPScoutSpec> & dpScout,
+                 DPScout_<DPCell_<TScoreValue, TGapsModel>, TDPScoutSpec> & scout,
                  TSeqH const & seqH,
                  TSeqV const & seqV,
                  DPBandConfig<TBandSwitch> const & band,
@@ -1457,14 +1473,16 @@ _finishAlignment(TTraceTarget & traceSegments,
     for(TSize i = 0; i < length(traceSegments); ++i)
     {
         _setSimdLane(dpTraceMatrixNavigator, i);
-        _setSimdLane(dpScout, i);
+        _setSimdLane(scout, i);
 
         if (IsSingleTrace_<TTraceFlag>::VALUE)
-            _correctTraceValue(dpTraceMatrixNavigator, dpScout);
-
-        _computeTraceback(traceSegments[i], dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile);
+        {
+            _correctTraceValue(dpTraceMatrixNavigator, scout);
+        }
+        _computeTraceback(traceSegments[i], dpTraceMatrixNavigator, scout, _hostLengthH(scout, seqH),
+                          _hostLengthV(scout, seqV), band, dpProfile);
     }
-    return maxScore(dpScout);
+    return maxScore(scout);
 }
 
 template <typename TTraceTarget,
@@ -1483,11 +1501,10 @@ _finishAlignment(TTraceTarget & traceSegments,
                  DPBandConfig<TBandSwitch> const & band,
                  DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & dpProfile)
 {
-
     if (IsSingleTrace_<TTraceFlag>::VALUE)
         _correctTraceValue(dpTraceMatrixNavigator, dpScout);
 
-    _computeTraceback(traceSegments, dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile);
+    _computeTraceback(traceSegments, dpTraceMatrixNavigator, dpScout, length(seqH), length(seqV), band, dpProfile);
     return maxScore(dpScout);
 }
 

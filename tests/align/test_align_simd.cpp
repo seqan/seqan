@@ -37,44 +37,7 @@
 
 #include "test_align_simd.h"
 
-SEQAN_BEGIN_TESTSUITE(test_align_simd)
-{
-
-#if SEQAN_SIMD_ENABLED
-    // Global alignment.
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_global_linear);
-    SEQAN_CALL_TEST(test_alignment_algorithms_score_global_linear);
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_global_affine);
-    SEQAN_CALL_TEST(test_alignment_algorithms_score_global_affine);
-
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_global_linear_banded);
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_global_affine_banded);
-
-    // Overlap alignment.
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_overlap_linear);
-    SEQAN_CALL_TEST(test_alignment_algorithms_score_overlap_linear);
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_overlap_affine);
-    SEQAN_CALL_TEST(test_alignment_algorithms_score_overlap_affine);
-
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_overlap_linear_banded);
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_overlap_affine_banded);
-
-    // Semi-global alignment.
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_semi_global_linear);
-    SEQAN_CALL_TEST(test_alignment_algorithms_score_semi_global_linear);
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_semi_global_affine);
-    SEQAN_CALL_TEST(test_alignment_algorithms_score_semi_global_affine);
-
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_semi_global_linear_banded);
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_semi_global_affine_banded);
-
-    // Local alignment.
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_local_linear);
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_local_affine);
-
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_local_linear_banded);
-    SEQAN_CALL_TEST(test_alignment_algorithms_align_local_affine_banded);
-#endif  // SEQAN_SIMD_ENABLED
-
+int main(int argc, char const ** argv) {
+    seqan::TestSystem::init(argc, argv);
+    return seqan::TestSystem::runAll();
 }
-SEQAN_END_TESTSUITE
