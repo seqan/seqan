@@ -76,10 +76,10 @@ public:
     String<typename TTraits::TSimdVector, Alloc<OverAligned> > masksV;
     String<typename TTraits::TSimdVector, Alloc<OverAligned> > masks;
 
-    String<TSizeH> endsH;
-    String<TSizeV> endsV;
-    ModifiedString<typename TTraits::TSeqH, ModPos<String<TSizeH> > > sortedEndsH;
-    ModifiedString<typename TTraits::TSeqV, ModPos<String<TSizeV> > > sortedEndsV;
+    String<size_t> endsH;
+    String<size_t> endsV;
+    ModifiedString<String<size_t>, ModPos<String<size_t> > > sortedEndsH;
+    ModifiedString<String<size_t>, ModPos<String<size_t> > > sortedEndsV;
 
     decltype(begin(sortedEndsH, Standard())) nextEndsH;
     decltype(begin(sortedEndsV, Standard())) nextEndsV;
@@ -107,10 +107,10 @@ public:
 
     inline void updateMasksBottom()
     {
-        for (auto& seq : sortedEndsV)
+        for (auto pos : sortedEndsV)
             for (auto it = nextEndsH; it != end(sortedEndsH, Standard()); ++it)
             {
-                masks[length(seq) - 1] |= (masksH[length(*it) - 1] & masksV[length(seq) - 1]);
+                masks[pos] |= (masksH[*it] & masksV[pos]);
             }
     }
 
@@ -130,7 +130,7 @@ public:
         }
         else
         {
-            if(right && posH == length(*nextEndsH) - 1)
+            if(right && posH == *nextEndsH)
                 updateMasksRight();
             if(bottom)
                 updateMasksBottom();
@@ -339,7 +339,7 @@ inline bool
 _reachedHorizontalEndPoint(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout,
                            TIter const & hIt)
 {
-    return length(*(scout.state->nextEndsH)) - 1 == position(hIt);
+    return *(scout.state->nextEndsH) == position(hIt);
 }
 
 // ----------------------------------------------------------------------------
@@ -351,7 +351,7 @@ inline bool
 _reachedVerticalEndPoint(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout,
                          TIter const & vIt)
 {
-    return length(*(scout.state->nextEndsV)) - 1 == position(vIt);
+    return *(scout.state->nextEndsV) == position(vIt);
 }
 
 // ----------------------------------------------------------------------------
@@ -362,9 +362,9 @@ template <typename TDPCell, typename TTraits>
 inline void
 _nextHorizontalEndPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout)
 {
-    auto oldLength = length(*scout.state->nextEndsH);
+    auto oldLength = *scout.state->nextEndsH;
     while (scout.state->nextEndsH != end(scout.state->sortedEndsH, Standard()) &&
-           length(*scout.state->nextEndsH) == oldLength)
+           *scout.state->nextEndsH == oldLength)
     {
         ++scout.state->nextEndsH;
     }
@@ -378,9 +378,9 @@ template <typename TDPCell, typename TTraits>
 inline void
 _nextVerticalEndPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout)
 {
-    auto oldLength = length(*scout.state->nextEndsV);
+    auto oldLength = *scout.state->nextEndsV;
     while (scout.state->nextEndsV != end(scout.state->sortedEndsV, Standard()) &&
-           length(*scout.state->nextEndsV) == oldLength)
+           *scout.state->nextEndsV == oldLength)
     {
         ++scout.state->nextEndsV;
     }
@@ -425,7 +425,7 @@ inline auto
 _hostLengthH(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & scout,
              TSeqH const & /*seqH*/)
 {
-    return length(host(scout.state->sortedEndsH)[scout._simdLane]);
+    return host(scout.state->sortedEndsH)[scout._simdLane] + 1;
 }
 
 // ----------------------------------------------------------------------------
@@ -445,9 +445,10 @@ inline auto
 _hostLengthV(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & scout,
              TSeqV const & /*seqV*/)
 {
-    return length(host(scout.state->sortedEndsV)[scout._simdLane]);
+    return host(scout.state->sortedEndsV)[scout._simdLane] + 1;
 }
 
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_SIMD_DP_SCOUT_SIMD_H_
+

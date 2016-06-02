@@ -38,6 +38,26 @@
 namespace seqan
 {
 
+#if SEQAN_ALIGN_SIMD_PROFILE
+struct AlignSimdProfile_
+{
+    double preprTimer = 0.0;
+    double alignTimer = 0.0;
+    double traceTimer = 0.0;
+
+    void clear()
+    {
+        preprTimer = 0.0;
+        alignTimer = 0.0;
+        traceTimer = 0.0;
+    }
+};
+
+    double timer = 0.0;
+
+AlignSimdProfile_ profile;
+#endif
+
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -175,25 +195,53 @@ _prepareAndRunSimdAlignment(TResult & results,
 
     DPScoutState_<SimdAlignVariableLength<SimdAlignVariableLengthTraits<TResult, TSequencesH, TSequencesV> > > state;
 
+    String<size_t> lengthsH;
+    String<size_t> lengthsV;
+
+    resize(lengthsH, length(seqH));
+    resize(lengthsV, length(seqV));
     resize(state.endsH, length(seqH));
     resize(state.endsV, length(seqV));
 
-    auto idx = 0;
-    std::generate(begin(state.endsH, Standard()), end(state.endsH, Standard()), [&idx](){ return idx++; });
-    idx = 0;
-    std::generate(begin(state.endsV, Standard()), end(state.endsV, Standard()), [&idx](){ return idx++; });
+    for (unsigned i = 0; i < length(seqH); ++i)
+    {
+        lengthsH[i] = length(seqH[i]) - 1;
+        lengthsV[i] = length(seqV[i]) - 1;
+        state.endsH[i] = i;
+        state.endsV[i] = i;
+    }
 
-    setHost(state.sortedEndsH, seqH);
-    setHost(state.sortedEndsV, seqV);
+//    std::cout << "lengthsH: " <<std::endl;
+//    for (auto p : lengthsH)
+//        std::cout << p << " ";
+//    std::cout << std::endl;
+//
+//    std::cout << "lengthsV: " <<std::endl;
+//    for (auto p : lengthsV)
+//        std::cout << p << " ";
+//    std::cout << std::endl;
+
+    setHost(state.sortedEndsH, lengthsH);
+    setHost(state.sortedEndsV, lengthsV);
     setCargo(state.sortedEndsH, state.endsH);
     setCargo(state.sortedEndsV, state.endsV);
 
-    auto maxLengthLambda = [](auto& seqLhs, auto& seqRhs) { return length(seqLhs) < length(seqRhs); };
+    auto maxLengthLambda = [](auto& lengthLhs, auto& lengthRhs) { return lengthLhs < lengthRhs; };
     sort(state.sortedEndsH, maxLengthLambda, Serial());
     sort(state.sortedEndsV, maxLengthLambda, Serial());
 
-    size_t maxH = length(back(state.sortedEndsH));
-    size_t maxV = length(back(state.sortedEndsV));
+//    std::cout << "state.sortedEndsH: " <<std::endl;
+//    for (auto p : state.sortedEndsH)
+//        std::cout << p << " ";
+//    std::cout << std::endl;
+//
+//    std::cout << "state.sortedEndsV: " <<std::endl;
+//    for (auto p : state.sortedEndsV)
+//        std::cout << p << " ";
+//    std::cout << std::endl;
+
+    size_t maxH = back(state.sortedEndsH) + 1;
+    size_t maxV = back(state.sortedEndsV) + 1;
 
     // and we have to prepare the bit masks of the DPScoutState
     resize(state.masks,  maxV, createVector<TResult>(0));
@@ -214,8 +262,8 @@ _prepareAndRunSimdAlignment(TResult & results,
         expand(paddedV[i], maxV);
 
         // mark the original end position of the alignment in the masks (with -1, all bits set)
-        assignValue(state.masksH[length(seqH[i]) - 1], i, -1);
-        assignValue(state.masksV[length(seqV[i]) - 1], i, -1);
+        assignValue(state.masksH[lengthsH[i]], i, -1);
+        assignValue(state.masksV[lengthsV[i]], i, -1);
     }
 
     // now create SIMD representation
@@ -266,3 +314,4 @@ _prepareAndRunSimdAlignment(TResult & results,
 
 }  // namespace seqan
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_DP_ALIGN_SIMD_HELPER_H_
+
