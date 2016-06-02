@@ -733,6 +733,8 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     std::vector<BamAlignmentRecord> records(length(options.readFNames));
 
     /////////////////////////////////////////////////////////////////////
+    std::time_t t = std::time(nullptr);                                                 //Get time and date
+    std::tm now = *std::localtime(&t);                                                  //Used for vcf header
     // open out file streams and store open file pointers
     ::std::ofstream snpFileStream;
     if (options.outputSNP != "")
@@ -756,8 +758,6 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
 
         //Prepare header of vcf output
         snpFileStream << "##fileformat=VCFv4.2\n";
-        std::time_t t = std::time(nullptr);                                                 //Get time and date
-        std::tm now = *std::localtime(&t);
         snpFileStream << "##fileDate=" << std::put_time(&now, "%Y%m%d") << "\n";
         snpFileStream << "##source=Seqan-SnpStoreV" << SEQAN_APP_VERSION << "\n";
         snpFileStream << "##reference=" << genomeFileNameList[0];
@@ -811,10 +811,24 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     ::std::ofstream indelFileStream;
     if (options.outputIndel != "")
     {
-        indelFileStream.open(toCString(options.outputIndel),::std::ios_base::out);
+        indelFileStream.open(toCString(options.outputIndel), ::std::ios_base::out);
         if (!indelFileStream.is_open())
             return CALLSNPS_OUT_FAILED;
     }
+    //prepare header for indel vcf. TODO(serosko): Merge indel and snp file.
+    indelFileStream << "##fileformat=VCFv4.2\n";
+    indelFileStream << "##fileDate=" << std::put_time(&now, "%Y%m%d") << "\n";
+    indelFileStream << "##source=Seqan-SnpStoreV" << SEQAN_APP_VERSION << "\n";
+    indelFileStream << "##reference=" << genomeFileNameList[0];
+    for (unsigned i = 1; i < length(genomeFileNameList); ++i)
+    {
+        indelFileStream << ", "<< genomeFileNameList[i];
+    }
+    indelFileStream << '\n';
+    indelFileStream << "##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">\n";
+    indelFileStream << "##INFO=<ID=FR,Number=1,Type=Float,Description=\"Fraction of reads supporting ALT\">\n";
+    indelFileStream << "##INFO=<ID=ZYG,Number=1,Type=String,Description=\"Estimated zygosity of indel\">\n";
+    indelFileStream << "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\n";
     //  ::std::ofstream cnvFileStream;
     //  if (*options.outputCNV != 0)
     //  {
@@ -822,7 +836,6 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     //      if (!cnvFileStream.is_open())
     //          return CALLSNPS_OUT_FAILED;
     //  }
-
     ::std::ofstream posFileStream;
     if (options.inputPositionFile != "")
     {

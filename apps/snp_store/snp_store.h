@@ -3062,11 +3062,11 @@ inline bool _writeSnp(TFile & file,
     file << candPos + options.positionFormat<< '\t';    //position
     file << dbsnp << '\t';                              //dbsnp id (only '.' at the moment
     file << (Dna5)refAllele <<'\t';                     //Reference Base
-    if (options.method == 1)                    //MAQ
+    if (options.method == 1)                            //MAQ
     {
-        if (snp.called)                         //genotypeCalled != genotypeRef)
-            file << getGenotypeList(snp.genotype) << '\t' << snp.snpQuality << '\t';
-        else
+        if (snp.called)                                 //genotypeCalled != genotypeRef)
+            file << getGenotypeList(snp.genotype) << '\t' << snp.snpQuality << '\t'; //Alt genotype and quality
+        else                                    //TODO(serosko): Support for two different substitutions
             file << ".\t0\t";                   //TODO(serosko): Insert correct quality for no snp-call instead of 0.
     }
     else                                        //threshold method
@@ -4037,6 +4037,7 @@ inline void writeIndel(TFile& indelfile,
 
         indelfile << genomeID << '\t'                                  //chromosome
                   << pos  << '\t'                                      //position
+                  << ".\t"                                             //(unknown) ID
                   << upstreamSeq << '\t';                              //reference
         if (het)                                                       //Unchanged allele in case of het
             indelfile << upstreamSeq << ',';              //TODO(serosko): Case for two different indels on two alleles.
@@ -4051,8 +4052,13 @@ inline void writeIndel(TFile& indelfile,
         else
             indelfile << indelQ << '\t';                               //quality
         indelfile << ".\t"                                             //filter \\TODO(serosko):Add actual filter.
-                  << "DP="  << depth
-                  << ";FR=" << percentage;
+                  << "DP="  << depth                                   //depth
+                  << ";FR=" << percentage                              //fraction supporting ALT
+                  << ";ZYG=";                                          //zygosity
+        if (het)
+            indelfile << "het";
+        else
+            indelfile << "hom";
         indelfile << std::endl;
     }
 }
@@ -5277,7 +5283,6 @@ void dumpShortIndelPolymorphismsBatch(
     TFile                   & indelfile,
     TOptions                & options)
 {
-
     typedef typename TFragmentStore::TAlignedReadStore      TMatches;
     typedef typename TFragmentStore::TAlignQualityStore         TMatchQualities;
     typedef typename Value<TMatches>::Type              TMatch;
@@ -5291,13 +5296,11 @@ void dumpShortIndelPolymorphismsBatch(
     TMatches &matches = fragmentStore.alignedReadStore;
     TMatchQualities &matchQualities = fragmentStore.alignQualityStore;
     ::std::sort(begin(matches, Standard()), end(matches, Standard()), LessGPos<TMatch>());
-
     if (!indelfile.is_open())
     {
         ::std::cerr << "Failed to open indel output file" << ::std::endl;
         return;
     }
-
     TMatchIterator matchIt = begin(matches, Standard());
     TMatchIterator matchItEnd = end(matches, Standard());
 
