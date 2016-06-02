@@ -1575,7 +1575,10 @@ _computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
     _init(dpTraceMatrixNavigator, dpTraceMatrix, band);
 
     TDPScout dpScout(scoutState);
-
+#if SEQAN_ALIGN_SIMD_PROFILE
+    profile.preprTimer += sysTime() - timer;
+    timer = sysTime();
+#endif
     // Execute the alignment.
     if (!_isBandEnabled(band))
         _computeUnbandedAlignment(dpScout, dpScoreMatrixNavigator, dpTraceMatrixNavigator, seqH, seqV, scoreScheme, dpProfile);
@@ -1584,7 +1587,10 @@ _computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
     else
         _computeBandedAlignment(dpScout, dpScoreMatrixNavigator, dpTraceMatrixNavigator, seqH, seqV, scoreScheme,
                                 band, dpProfile);
-
+#if SEQAN_ALIGN_SIMD_PROFILE
+    profile.alignTimer += sysTime() - timer;
+    timer = sysTime();
+#endif
     return _finishAlignment(traceSegments, dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile);
 }
 
