@@ -147,15 +147,6 @@ struct DefaultIteratorSpec< ModifiedString<THost, ModPadding> >
     typedef Rooted Type;
 };
 
-// --------------------------------------------------------------------------
-// Metafunction AllowsFastRandomAccess
-// --------------------------------------------------------------------------
-
-template <typename THost>
-struct AllowsFastRandomAccess<ModifiedString<THost, ModPadding> > :
-    AllowsFastRandomAccess<THost>
-{};
-
 // ============================================================================
 // Functions
 // ============================================================================
@@ -173,7 +164,7 @@ struct AllowsFastRandomAccess<ModifiedString<THost, ModPadding> > :
  *
  * @param [in,out] str  The modified string to be padded.
  * @param [in]     size The number of padded characters.
- * @param [in]     pad  The character to pad the seequence with.
+ * @param [in]     pad  The character to pad the sequence with.
  * 
  * @datarace Not thread-safe.
  */
@@ -232,48 +223,51 @@ value(ModifiedString<THost, ModPadding> const & me, TPosition const pos)
 // --------------------------------------------------------------------------
 
 template < typename THost, typename TTagSpec>
-inline typename Iterator< ModifiedString<THost, ModPadding> const >::Type
+inline typename Iterator< ModifiedString<THost, ModPadding> const>::Type
 begin(ModifiedString<THost, ModPadding> const & me, Tag<TTagSpec> const & /*tag*/)
 {
-    typename Iterator<ModifiedString<THost, ModPadding> const, Standard>::Type temp_(begin(host(me), Rooted()));
-    _copyCargo(temp_, me);
-    cargo(temp_)._remainingSteps = cargo(me)._expandedSize;
-    return temp_;
+    typename Iterator<ModifiedString<THost, ModPadding> const, Standard>::Type temp(begin(host(me), Rooted()));
+
+    _copyCargo(temp, me);
+    cargo(temp)._remainingSteps = cargo(me)._expandedSize;
+    return temp;
 }
 
 template < typename THost, typename TTagSpec>
 inline typename Iterator< ModifiedString<THost, ModPadding> >::Type
 begin(ModifiedString<THost, ModPadding> & me, Tag<TTagSpec> const & /*tag*/)
 {
-    typename Iterator<ModifiedString<THost, ModPadding>, Standard>::Type temp_(begin(host(me), Rooted()));
+    typename Iterator<ModifiedString<THost, ModPadding>, Standard>::Type temp(begin(host(me), Rooted()));
 
-    _copyCargo(temp_, me);
-    cargo(temp_)._remainingSteps = cargo(me)._expandedSize;
-    return temp_;
+    _copyCargo(temp, me);
+    cargo(temp)._remainingSteps = cargo(me)._expandedSize;
+    return temp;
 }
 
 // --------------------------------------------------------------------------
 // Function end()                                 [ModReverse ModifiedString]
 // --------------------------------------------------------------------------
 
-template <typename THost, typename TTagSpec >
+template <typename THost, typename TTagSpec>
 inline auto
 end(ModifiedString<THost, ModPadding> const & me, Tag<TTagSpec> const)
 {
-    typename Iterator<ModifiedString<THost, ModPadding> const, Standard>::Type temp_(end(host(me), Rooted()));
-    _copyCargo(temp_, me);
-    cargo(temp_)._remainingSteps = 0;
-    return temp_;
+    typename Iterator<ModifiedString<THost, ModPadding> const, Standard>::Type temp(end(host(me), Rooted()));
+
+    _copyCargo(temp, me);
+    cargo(temp)._remainingSteps = 0;
+    return temp;
 }
 
-template <typename THost, typename TTagSpec >
+template <typename THost, typename TTagSpec>
 inline auto
 end(ModifiedString<THost, ModPadding> & me, Tag<TTagSpec> const)
 {
-    typename Iterator<ModifiedString<THost, ModPadding>, Standard>::Type temp_(end(host(me), Rooted()));
-    _copyCargo(temp_, me);
-    cargo(temp_)._remainingSteps = 0;
-    return temp_;
+    typename Iterator<ModifiedString<THost, ModPadding>, Standard>::Type temp(end(host(me), Rooted()));
+
+    _copyCargo(temp, me);
+    cargo(temp)._remainingSteps = 0;
+    return temp;
 }
 
 // ----------------------------------------------------------------------------
@@ -326,11 +320,11 @@ operator+=(ModifiedIterator<THost, ModPadding> & me, TSize const steps)
         auto rem = (end(container(host(me)), Rooted()) - host(me));
         if (SEQAN_LIKELY(static_cast<decltype(rem)>(steps) <= rem))  // Move host by 'steps' forward.
         {
-            std::advance(host(me), steps);
+            host(me) += steps;
         }
         else  // Move host by 'rem' forward and remove diff from cargo.
         {
-            std::advance(host(me), rem);
+            host(me) += rem;
             cargo(me)._remainingSteps -= (steps - rem);
         }
     }
@@ -370,12 +364,12 @@ operator-=(ModifiedIterator<THost, ModPadding> & me, TSize const steps)
         else
         {
             cargo(me)._remainingSteps = cargo(me)._expandedSize;
-            std::advance(host(me), -(steps - rem));
+            host(me) -= steps - rem;
         }
     }
     else
     {
-        std::advance(host(me), -steps);
+        host(me) -= steps;
     }
     return me;
 }
