@@ -222,39 +222,39 @@ SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Double,    double,         16)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector, typename ...TValue>
-inline void _fillVector(TSimdVector &vector, std::tuple<TValue> const & x, std::index_sequence<0> const &, SimdParams_<32, 32>) { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi8(std::get<0>(x)); }
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & x, std::index_sequence<0> const &, SimdParams_<32, 32>) { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi8(std::get<0>(x)); }
 template <typename TSimdVector, typename ...TValue>
-inline void _fillVector(TSimdVector &vector, std::tuple<TValue> const & x, std::index_sequence<0> const &, SimdParams_<32, 16>) { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi16(std::get<0>(x)); }
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & x, std::index_sequence<0> const &, SimdParams_<32, 16>) { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi16(std::get<0>(x)); }
 template <typename TSimdVector, typename ...TValue>
-inline void _fillVector(TSimdVector &vector, std::tuple<TValue> const & x, std::index_sequence<0> const &, SimdParams_<32, 8>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi32(std::get<0>(x)); }
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & x, std::index_sequence<0> const &, SimdParams_<32, 8>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi32(std::get<0>(x)); }
 template <typename TSimdVector, typename ...TValue>
-inline void _fillVector(TSimdVector &vector, std::tuple<TValue> const & x, std::index_sequence<0> const &, SimdParams_<32, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi64x(std::get<0>(x)); }
+inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & x, std::index_sequence<0> const &, SimdParams_<32, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_epi64x(std::get<0>(x)); }
 template <typename TSimdVector>
     inline void _fillVector(TSimdVector &vector, std::tuple<float> const & x,  std::index_sequence<0> const &, SimdParams_<32, 8>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_ps(std::get<0>(x)); }
 template <typename TSimdVector>
-inline void _fillVector(TSimdVector &vector, std::tuple<double> const & const x, std::index_sequence<0> const &, SimdParams_<32, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_pd(std::get<0>(x)); }
+inline void _fillVector(TSimdVector &vector, std::tuple<double> const & x, std::index_sequence<0> const &, SimdParams_<32, 4>)  { SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set1_pd(std::get<0>(x)); }
 
 template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
 inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & values, std::index_sequence<INDICES...> const &, SimdParams_<32, 32>)
 {
-    SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm256_set_epi8(std::get<INDICES>(values)...);
+    SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set_epi8(std::get<INDICES>(values)...);
 }
 
 template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
 inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & values, std::index_sequence<INDICES...> const &, SimdParams_<32, 16>)
 {
-    SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm256_set_epi16(std::get<INDICES>(values)...);
+    SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set_epi16(std::get<INDICES>(values)...);
 }
 template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
 inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & values, std::index_sequence<INDICES...> const &, SimdParams_<32, 8>)
 {
-    SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm256_set_epi32(std::get<INDICES>(values)...);
+    SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set_epi32(std::get<INDICES>(values)...);
 }
 
 template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
 inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & values, std::index_sequence<INDICES...> const &, SimdParams_<32, 4>)
 {
-    SEQAN_VECTOR_CAST_LVALUE_(__m128i&, vector) = _mm256_set_epi64x(std::get<INDICES>(values)...);
+    SEQAN_VECTOR_CAST_LVALUE_(__m256i&, vector) = _mm256_set_epi64x(std::get<INDICES>(values)...);
 }
 
 // --------------------------------------------------------------------------
