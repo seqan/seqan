@@ -424,7 +424,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                     // Note: old match scores are already distances, new score is a negative score bc. we use scoring sceme (0, -1, -1, -1)
                     score = _splitAlignmentImpl(row(match1, 0), row(match1, 1), row(match2, 0), row(match2, 1),
                                                 minValue<int>(), maxValue<int>(),
-                                                scoreType);
+                                                scoreType, AlignConfig<false, false, true, true>());
 
                     SEQAN_ASSERT_NEQ(score, maxValue<int>());
                     score += (static_cast<int>(matchDistanceScores[m1]) + static_cast<int>(matchDistanceScores[m2]));
@@ -642,7 +642,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                         // score = splitAlignment(match1, match2, scoreType);
                         score = _splitAlignmentImpl(row(match1, 0), row(match1, 1), row(match2, 0), row(match2, 1),
                                                     minValue<int>(), maxValue<int>(),
-                                                    scoreType);
+                                                    scoreType, AlignConfig<false, false, true, true>());
                         SEQAN_ASSERT_EQ(endPosition(row(match1, 0)), beginPosition(row(match2, 0)));
 
                         // Compute cargo, reduce distance by score

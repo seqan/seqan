@@ -139,6 +139,31 @@ struct IsGlobalAlignment_<SplitAlignment_<TSpec> const> :
 {};
 
 // ----------------------------------------------------------------------------
+// Metafunction LastColumnEnabled_
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TColumnDescriptor>
+struct LastColumnEnabled_<SplitAlignment_<TSpec>, TColumnDescriptor>
+{
+    typedef typename If<IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>,
+                        typename IsFreeEndGap_<SplitAlignment_<TSpec>, DPLastColumn>::Type,
+                        False>::Type Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction LastRowEnabled_
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TColumnDescriptor>
+struct LastRowEnabled_<SplitAlignment_<TSpec>, LastCell, TColumnDescriptor>
+{
+    typedef typename  If<Or<IsSameType<typename TColumnDescriptor::TLocation, PartialColumnBottom>,
+                            IsSameType<typename TColumnDescriptor::TLocation, FullColumn> >,
+                         typename IsFreeEndGap_<SplitAlignment_<TSpec>, DPLastRow>::Type,
+                         False>::Type Type;
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction DPMetaColumn_
 // ----------------------------------------------------------------------------
 
@@ -283,21 +308,23 @@ void _reverseTrace(String<TraceSegment_<TPosition, TSize>, TSpec> & trace)
 
 // We call the long sequence contig and the shorter one read but could be changed roles.
 template <typename TContigSeqL, typename TReadSeqL, typename TContigSeqR, typename TReadSeqR,
-          typename TScoreValue, typename TScoreSpec>
+          typename TScoreValue, typename TScoreSpec,
+          bool TTop, bool TRight, bool TLeft, bool TBottom, typename TConfigSpec>
 int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
                         Gaps<TReadSeqL> & gapsReadL,
                         Gaps<TContigSeqR> & gapsContigR,
                         Gaps<TReadSeqR> & gapsReadR,
                         int lowerDiagonal,
                         int upperDiagonal,
-                        Score<TScoreValue, TScoreSpec> const & scoringScheme)
+                        Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                        AlignConfig<TTop, TRight, TLeft, TBottom, TConfigSpec> const & /*config*/)
 {
     typedef Gaps<TContigSeqL> TGaps;
     typedef typename Size<TGaps>::Type TSize;
     typedef typename Position<TGaps>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
 
-    typedef FreeEndGaps_<False, False, True, True> TFreeEndGaps;
+    typedef typename SubstituteAlignConfig_<AlignConfig<TTop, TRight, TLeft, TBottom> >::Type TFreeEndGaps;
     //alignConfig;
 
     // Check whether we need to run the banded versions.
@@ -405,8 +432,8 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  * @headerfile <seqan/align_split.h>
  * @brief Compute split alignments.
  *
- * @signature TScoreValue splitAlignment(alignL,         alignR,         scoringScheme[, lowerDiag, upperDiag]);
- * @signature TScoreValue splitAlignment(gapsHL, gapsVL, gapsHR, gapsVR, scoringScheme[, lowerDiag, upperDiag]);
+ * @signature TScoreValue splitAlignment(alignL,         alignR,         scoringScheme[, config][, lowerDiag, upperDiag]);
+ * @signature TScoreValue splitAlignment(gapsHL, gapsVL, gapsHR, gapsVR, scoringScheme[, config][, lowerDiag, upperDiag]);
  *
  * @param[in,out] alignL @link Align @endlink object with two rows for the left alignment.
  * @param[in,out] alignR @link Align @endlink object with two rows for the right alignment.
@@ -415,6 +442,7 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  * @param[in,out] gapsHR @link Gaps @endlink object with the horizontal/contig row for the right alignment.
  * @param[in,out] gapsVR @link Gaps @endlink object with the vertical/read row for the right alignment.
  * @param[in]     scoringScheme The scoring scheme to use for the alignment.
+ * @param[in]     config A configuration object of type @link AlignConfig @endlink, to specify free-end-gaps.
  * @param[in]     lowerDiag The lower diagonal.You have to specify the upper and lower diagonals for the left
  *                          alignment.  For the right alignment, the corresponding diagonals are chosen for the
  *                          lower right part of the DP matrix, <tt>int</tt>.
@@ -495,55 +523,112 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
 // Variant: unbanded, with Align objects.
 
 template <typename TSequenceL, typename TAlignSpecL, typename TSequenceR, typename TAlignSpecR,
-          typename TScoreVal, typename TScoreSpec>
+          typename TScoreVal, typename TScoreSpec,
+          bool TTop, bool TRight, bool TLeft, bool TBottom, typename TConfigSpec>
 int splitAlignment(Align<TSequenceL, TAlignSpecL> & alignL,
                    Align<TSequenceR, TAlignSpecR> & alignR,
-                   Score<TScoreVal, TScoreSpec> const & scoringScheme)
+                   Score<TScoreVal, TScoreSpec> const & scoringScheme,
+                   AlignConfig<TTop, TRight, TLeft, TBottom, TConfigSpec> const & config)
 {
     SEQAN_ASSERT_EQ_MSG(source(row(alignL, 0)), source(row(alignR, 0)),
                         "Contig must be the same for left and right split alignment.");
 
     return _splitAlignmentImpl(row(alignL, 0), row(alignL, 1), row(alignR, 0), row(alignR, 1),
                                minValue<int>(), maxValue<int>(),
-                               scoringScheme);
+                               scoringScheme, config);
+}
+
+template <typename TSequenceL, typename TAlignSpecL, typename TSequenceR, typename TAlignSpecR,
+          typename TScoreVal, typename TScoreSpec>
+int splitAlignment(Align<TSequenceL, TAlignSpecL> & alignL,
+                   Align<TSequenceR, TAlignSpecR> & alignR,
+                   Score<TScoreVal, TScoreSpec> const & scoringScheme)
+{
+    return splitAlignment(alignL, alignR, scoringScheme, AlignConfig<false, false, true, true>());
 }
 
 // Variant: unbanded, with Gaps objects.
 
 template <typename TSeqHL, typename TGapSpecHL, typename TSeqVL, typename TGapSpecVL,
           typename TSeqHR, typename TGapSpecHR, typename TSeqVR, typename TGapSpecVR,
-          typename TScoreVal, typename TScoreSpec>
+          typename TScoreVal, typename TScoreSpec,
+          bool TTop, bool TRight, bool TLeft, bool TBottom, typename TConfigSpec>
+int splitAlignment(Gaps<TSeqHL, TGapSpecHL> & gapsHL,
+                   Gaps<TSeqVL, TGapSpecVL> & gapsVL,
+                   Gaps<TSeqHR, TGapSpecHR> & gapsHR,
+                   Gaps<TSeqVR, TGapSpecVR> & gapsVR,
+                   Score<TScoreVal, TScoreSpec> const & scoringScheme,
+                   AlignConfig<TTop, TRight, TLeft, TBottom, TConfigSpec> const & config)
+{
+    SEQAN_ASSERT_EQ_MSG(source(gapsHL), source(gapsHR),
+                        "Contig must be the same for left and right split alignment.");
+
+    return _splitAlignmentImpl(gapsHL, gapsVL, gapsHR, gapsVR, minValue<int>(), maxValue<int>(),
+                               scoringScheme, config);
+}
+
+template <typename TSeqHL, typename TGapSpecHL, typename TSeqVL, typename TGapSpecVL,
+typename TSeqHR, typename TGapSpecHR, typename TSeqVR, typename TGapSpecVR,
+typename TScoreVal, typename TScoreSpec>
 int splitAlignment(Gaps<TSeqHL, TGapSpecHL> & gapsHL,
                    Gaps<TSeqVL, TGapSpecVL> & gapsVL,
                    Gaps<TSeqHR, TGapSpecHR> & gapsHR,
                    Gaps<TSeqVR, TGapSpecVR> & gapsVR,
                    Score<TScoreVal, TScoreSpec> const & scoringScheme)
 {
-    SEQAN_ASSERT_EQ_MSG(source(gapsHL), source(gapsHR),
-                        "Contig must be the same for left and right split alignment.");
-
-    return _splitAlignmentImpl(gapsHL, gapsVL, gapsHR, gapsVR, minValue<int>(), maxValue<int>(),
-                               scoringScheme);
+    return splitAlignment(gapsHL, gapsVL, gapsHR, gapsVR, scoringScheme, AlignConfig<false, false, true, true>());
 }
 
 // Variant: banded, with Align objects.
-
 template <typename TSequenceL, typename TAlignSpecL, typename TSequenceR, typename TAlignSpecR,
-          typename TScoreVal, typename TScoreSpec>
+          typename TScoreVal, typename TScoreSpec,
+          bool TTop, bool TRight, bool TLeft, bool TBottom, typename TConfigSpec>
 int splitAlignment(Align<TSequenceL, TAlignSpecL> & alignL,
                    Align<TSequenceR, TAlignSpecR> & alignR,
                    Score<TScoreVal, TScoreSpec> const & scoringScheme,
-                   int lowerDiagonal,
-                   int upperDiagonal)
+                   AlignConfig<TTop, TRight, TLeft, TBottom, TConfigSpec> const & config,
+                   int const lowerDiagonal,
+                   int const upperDiagonal)
 {
     SEQAN_ASSERT_EQ_MSG(source(row(alignL, 0)), source(row(alignR, 0)),
                         "Contig must be the same for left and right split alignment.");
 
     return _splitAlignmentImpl(row(alignL, 0), row(alignL, 1), row(alignR, 0), row(alignR, 1),
-                               lowerDiagonal, upperDiagonal, scoringScheme);
+                               lowerDiagonal, upperDiagonal, scoringScheme, config);
+}
+
+template <typename TSequenceL, typename TAlignSpecL, typename TSequenceR, typename TAlignSpecR,
+typename TScoreVal, typename TScoreSpec>
+int splitAlignment(Align<TSequenceL, TAlignSpecL> & alignL,
+                   Align<TSequenceR, TAlignSpecR> & alignR,
+                   Score<TScoreVal, TScoreSpec> const & scoringScheme,
+                   int const lowerDiagonal,
+                   int const upperDiagonal)
+{
+    return splitAlignment(alignL, alignR, scoringScheme, AlignConfig<false, false, true, true>(),
+                          lowerDiagonal, upperDiagonal);
 }
 
 // Variant: banded, with Gaps objects.
+template <typename TSeqHL, typename TGapSpecHL, typename TSeqVL, typename TGapSpecVL,
+          typename TSeqHR, typename TGapSpecHR, typename TSeqVR, typename TGapSpecVR,
+          typename TScoreVal, typename TScoreSpec,
+          bool TTop, bool TRight, bool TLeft, bool TBottom, typename TConfigSpec>
+int splitAlignment(Gaps<TSeqHL, TGapSpecHL> & gapsHL,
+                   Gaps<TSeqVL, TGapSpecVL> & gapsVL,
+                   Gaps<TSeqHR, TGapSpecHR> & gapsHR,
+                   Gaps<TSeqVR, TGapSpecVR> & gapsVR,
+                   Score<TScoreVal, TScoreSpec> const & scoringScheme,
+                   AlignConfig<TTop, TRight, TLeft, TBottom, TConfigSpec> const & config,
+                   int const lowerDiagonal,
+                   int const upperDiagonal)
+{
+    SEQAN_ASSERT_EQ_MSG(source(gapsHL), source(gapsHR),
+                        "Contig must be the same for left and right split alignment.");
+
+    return _splitAlignmentImpl(gapsHL, gapsVL, gapsHR, gapsVR, lowerDiagonal, upperDiagonal,
+                               scoringScheme, config);
+}
 
 template <typename TSeqHL, typename TGapSpecHL, typename TSeqVL, typename TGapSpecVL,
           typename TSeqHR, typename TGapSpecHR, typename TSeqVR, typename TGapSpecVR,
@@ -553,14 +638,11 @@ int splitAlignment(Gaps<TSeqHL, TGapSpecHL> & gapsHL,
                    Gaps<TSeqHR, TGapSpecHR> & gapsHR,
                    Gaps<TSeqVR, TGapSpecVR> & gapsVR,
                    Score<TScoreVal, TScoreSpec> const & scoringScheme,
-                   int lowerDiagonal,
-                   int upperDiagonal)
+                   int const lowerDiagonal,
+                   int const upperDiagonal)
 {
-    SEQAN_ASSERT_EQ_MSG(source(gapsHL), source(gapsHR),
-                        "Contig must be the same for left and right split alignment.");
-
-    return _splitAlignmentImpl(gapsHL, gapsVL, gapsHR, gapsVR, lowerDiagonal, upperDiagonal,
-                               scoringScheme);
+    return splitAlignment(gapsHL, gapsVL, gapsHR, gapsVR, scoringScheme, AlignConfig<false, false, true, true>(),
+                          lowerDiagonal, upperDiagonal);
 }
 
 }  // namespace seqan
