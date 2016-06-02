@@ -206,16 +206,16 @@ template <typename THost, typename TPosition>
 inline typename Reference<ModifiedString<THost, ModPadding> >::Type
 value(ModifiedString<THost, ModPadding> & me, TPosition const pos)
 {
-    SEQAN_ASSERT_LT(pos, length(me));
-    return (SEQAN_LIKELY(pos < length(host(me)))) ? host(me)[pos] : cargo(me)._paddedValue;
+    SEQAN_ASSERT_LT(pos, static_cast<TPosition>(length(me)));
+    return (SEQAN_LIKELY(pos < static_cast<TPosition>(length(host(me))))) ? host(me)[pos] : cargo(me)._paddedValue;
 }
 
 template <typename THost, typename TPosition>
 inline typename Reference<ModifiedString<THost, ModPadding> const>::Type
 value(ModifiedString<THost, ModPadding> const & me, TPosition const pos)
 {
-    SEQAN_ASSERT_LT(pos, length(me));
-    return (SEQAN_LIKELY(pos < length(host(me)))) ? value(host(me), pos) : cargo(me)._paddedValue;
+    SEQAN_ASSERT_LT(pos, static_cast<TPosition>(length(me)));
+    return (SEQAN_LIKELY(pos < static_cast<TPosition>(length(host(me))))) ? value(host(me), pos) : cargo(me)._paddedValue;
 }
 
 // --------------------------------------------------------------------------

@@ -167,8 +167,8 @@ _prepareAndRunSimdAlignment(TResult & results,
     SEQAN_ASSERT_EQ(length(seqH), length(seqV));
     SEQAN_ASSERT_EQ(static_cast<decltype(length(seqH))>(LENGTH<TResult>::VALUE), length(seqH));
 
-    using TStringH = typename std::decay<typename Value<TSequencesH>::Type>::type;
-    using TStringV = typename std::decay<typename Value<TSequencesV>::Type>::type;
+    using TPadStringH = ModifiedString<typename Value<TSequencesH>::Type, ModPadding>;
+    using TPadStringV = ModifiedString<typename Value<TSequencesV>::Type, ModPadding>;
 
     String<TResult, Alloc<OverAligned> > stringSimdH;
     String<TResult, Alloc<OverAligned> > stringSimdV;
@@ -200,21 +200,18 @@ _prepareAndRunSimdAlignment(TResult & results,
     resize(state.masksV, maxV, createVector<TResult>(0));
     resize(state.masksH, maxH, createVector<TResult>(0));
 
-    // copy strings and add padding chars
-    // TODO(rrahn): Remove and replace with padded modifiers.
-    StringSet<TStringH> paddedH;
-    StringSet<TStringV> paddedV;
+    // Create Stringset with padded strings.
+    StringSet<TPadStringH> paddedH;
+    StringSet<TPadStringV> paddedV;
     resize(paddedH, length(seqH));
     resize(paddedV, length(seqV));
 
     for(unsigned i = 0; i < length(seqH); ++i)
     {
-        // add padding: the padding character should be part of the amino acid alphabet
-        // otherwise a possible score matrix look-up fails, we use 'A' therefor
-        paddedH[i] = seqH[i];
-        paddedV[i] = seqV[i];
-        resize(paddedH[i], maxH, 'A');
-        resize(paddedV[i], maxV, 'A');
+        setHost(paddedH[i], seqH[i]);
+        setHost(paddedV[i], seqV[i]);
+        expand(paddedH[i], maxH);
+        expand(paddedV[i], maxV);
 
         // mark the original end position of the alignment in the masks (with -1, all bits set)
         assignValue(state.masksH[length(seqH[i]) - 1], i, -1);
