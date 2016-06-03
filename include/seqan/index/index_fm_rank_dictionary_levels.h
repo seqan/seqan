@@ -1044,7 +1044,6 @@ inline void updateRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
     for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
         superBlockSum[i] = 0;
     // Iterate through the blocks.
-    std::cout << length(dict.superblocks) << std::endl;
     TSuperBlockIter superBlocksIt = superBlocksBegin;
     for (; superBlocksIt != superBlocksEnd/* - 1*/; ++superBlocksIt) // TODO ?
     {
@@ -1161,7 +1160,10 @@ resize(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TSize newLength, 
         resize(dict.superblocks[i].blocks, TRankDict_::_VALUES_PER_SUPERBLOCK / TRankDict_::_VALUES_PER_BLOCK, tag);
     }
     // last superblock might have fewer blocks
-    resize(dict.superblocks[superblocks-1].blocks, ((newLength % TRankDict_::_VALUES_PER_SUPERBLOCK) + TRankDict_::_VALUES_PER_BLOCK - 1) / TRankDict_::_VALUES_PER_BLOCK, tag);
+    auto nbrOfBlocksOfLastSuperBlock = ((newLength % TRankDict_::_VALUES_PER_SUPERBLOCK) + TRankDict_::_VALUES_PER_BLOCK - 1) / TRankDict_::_VALUES_PER_BLOCK;
+    if (newLength % TRankDict_::_VALUES_PER_SUPERBLOCK == 0)
+        nbrOfBlocksOfLastSuperBlock = TRankDict_::_VALUES_PER_SUPERBLOCK / TRankDict_::_VALUES_PER_BLOCK;
+    resize(dict.superblocks[superblocks-1].blocks, nbrOfBlocksOfLastSuperBlock, tag);
     // eq. to ceil((newLength % TRankDict_::_VALUES_PER_SUPERBLOCK) / VALUES_PER_BLOCK)
 
     return ret1;
