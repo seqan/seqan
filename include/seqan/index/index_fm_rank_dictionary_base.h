@@ -57,9 +57,12 @@ namespace seqan {
  */
 
 struct FibreRanks_;
-
 typedef Tag<FibreRanks_>
 const FibreRanks;
+
+struct FibreSuperRanks_;
+typedef Tag<FibreSuperRanks_>
+const FibreSuperRanks;
 
 // ----------------------------------------------------------------------------
 // Tag RDConfig
@@ -168,6 +171,9 @@ getFibre(RankDictionary<TValue, TSpec> const & dict, FibreRanks)
     return dict.ranks;
 }
 
+
+
+
 // ----------------------------------------------------------------------------
 // Function clear()
 // ----------------------------------------------------------------------------
@@ -207,7 +213,7 @@ inline void clear(RankDictionary<TValue, TSpec> & dict)
 template <typename TValue, typename TSpec>
 inline bool empty(RankDictionary<TValue, TSpec> const & dict)
 {
-    return empty(getFibre(dict, FibreRanks()));
+    return empty(getFibre(dict, FibreSuperRanks()));
 }
 
 // ----------------------------------------------------------------------------

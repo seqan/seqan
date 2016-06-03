@@ -80,7 +80,7 @@ typedef
     > > > > > > > >
     RankDictionaryPrefixTypes;
 
-typedef
+/*typedef
     TagList<RankDictionary<bool,           Naive<> >,
     TagList<RankDictionary<Dna,            Levels<> >,
     TagList<RankDictionary<Rna,            Levels<> >,
@@ -98,7 +98,7 @@ typedef
     TagList<RankDictionary<char,           WaveletTree<> >,
     TagList<RankDictionary<unsigned char,  WaveletTree<> >
     > > > > > > > > > > > > > > >
-    RankDictionaryNonPrefixTypes;
+    RankDictionaryNonPrefixTypes;*/
 
 // ==========================================================================
 // Test Classes
@@ -130,22 +130,23 @@ public:
     void setUp()
     {
         //createText(text, TValue());
-        generateText(text, 5000);
+        generateText(text, 50); // 5000
+        std::cout << text << std::endl;
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
     }
 };
 
-//template <typename TRankDictionary>
-//class RankDictionaryPrefixTest : public RankDictionaryTest<TRankDictionary> {};
 template <typename TRankDictionary>
-class RankDictionaryNonPrefixTest : public RankDictionaryTest<TRankDictionary> {};
+class RankDictionaryPrefixTest : public RankDictionaryTest<TRankDictionary> {};
+//template <typename TRankDictionary>
+//class RankDictionaryNonPrefixTest : public RankDictionaryTest<TRankDictionary> {};
 
-SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryNonPrefixTypes);
-//SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryPrefixTypes);
+//SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryNonPrefixTypes);
+SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryPrefixTypes);
 
-//SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixTypes);
-SEQAN_TYPED_TEST_CASE(RankDictionaryNonPrefixTest, RankDictionaryNonPrefixTypes);
+SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixTypes);
+//SEQAN_TYPED_TEST_CASE(RankDictionaryNonPrefixTest, RankDictionaryNonPrefixTypes);
 
 // ==========================================================================
 // Tests
@@ -203,7 +204,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
 // Test getRank()
 // ----------------------------------------------------------------------------
 
-SEQAN_TYPED_TEST(RankDictionaryNonPrefixTest, GetRank)
+/*SEQAN_TYPED_TEST(RankDictionaryNonPrefixTest, GetRank)
 {
     typedef typename TestFixture::TValueSize            TValueSize;
     typedef typename TestFixture::TText                 TText;
@@ -231,7 +232,7 @@ SEQAN_TYPED_TEST(RankDictionaryNonPrefixTest, GetRank)
             SEQAN_ASSERT_EQ(getRank(dict, pos, c), prefixSum[c]);
         }
     }
-}
+}*/
 
 /*SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank) {
     typedef typename TestFixture::TValueSize TValueSize;
@@ -259,6 +260,10 @@ SEQAN_TYPED_TEST(RankDictionaryNonPrefixTest, GetRank)
         for (TValueSize c = 0; c < this->alphabetSize; ++c) {
             unsigned long smaller;
             unsigned long pos = textIt - this->textBegin;
+
+            if (pos == 42 && c == 0)
+                std::cout << "STOP" << std::endl;
+
             unsigned long rank = getRank(dict, pos, TValue((uint16_t) c), smaller); // TODO: getRank!!! uint16_t cast???
             SEQAN_ASSERT_EQ(smaller, smallerNaive);
             SEQAN_ASSERT_EQ(rank, prefixSum[c]);
