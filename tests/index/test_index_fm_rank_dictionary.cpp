@@ -129,8 +129,9 @@ public:
 
     void setUp()
     {
+        // TODO: test-case for textlength % values_per_superblock == 0
         //createText(text, TValue());
-        generateText(text, 50000); // 5000
+        generateText(text, 50000);
         //std::cout << text << std::endl;
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
@@ -260,9 +261,6 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
         for (TValueSize c = 0; c < this->alphabetSize; ++c) {
             unsigned long smaller;
             unsigned long pos = textIt - this->textBegin;
-
-            if (pos == 42 && c == 1)
-                std::cout << "STOP" << std::endl;
 
             unsigned long rank = getRank(dict, pos, TValue((uint16_t) c), smaller); // TODO: getRank!!! uint16_t cast???
             SEQAN_ASSERT_EQ(smaller, smallerNaive);
