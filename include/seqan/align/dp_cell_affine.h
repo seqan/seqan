@@ -62,6 +62,42 @@ public:
     TScoreValue _score              = DPCellDefaultInfinity<DPCell_>::VALUE;
     TScoreValue _horizontalScore    = DPCellDefaultInfinity<DPCell_>::VALUE;
     TScoreValue _verticalScore      = DPCellDefaultInfinity<DPCell_>::VALUE;
+    
+    DPCell_() = default;
+    // Copy c'tor.
+    DPCell_(DPCell_<TScoreValue, AffineGaps> const & other) :
+        _score(other._score),
+        _horizontalScore(other._horizontalScore),
+        _verticalScore(other._verticalScore)
+    {}
+    
+    // Move c-tor
+    DPCell_(DPCell_ && other) : DPCell_()
+    {
+        swap(*this, other);
+    }
+
+    // The assignment operator.
+    DPCell_ &
+    operator=(DPCell_ other)
+    {
+        swap(*this, other);
+        return *this;
+       // if (this != &other)
+       // {
+       //     _score = other._score;
+       //     _horizontalScore = other._horizontalScore;
+       //     _verticalScore = other._verticalScore;
+       // }
+       // return *this;
+    }
+
+   // DPCell_ &
+   // operator=(DPCell_ && other)
+   // {
+   //     swap(*this, other);
+   //     return *this;
+   // }
 
     // Assign score to cell.
     DPCell_ &
@@ -70,6 +106,9 @@ public:
         _score = score;
         return *this;
     }
+
+    ~DPCell_()
+    {}
 };
 
 // ============================================================================
@@ -167,6 +206,16 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,void)
 _setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newHorizontalScore, TScoreValue const & mask)
 {
     dpCell._horizontalScore = blend(dpCell._horizontalScore, newHorizontalScore, mask);
+}
+
+template <typename TScoreValue>
+inline void 
+swap(DPCell_<TScoreValue, AffineGaps> & lhs, 
+     DPCell_<TScoreValue, AffineGaps> & rhs)
+{
+    std::swap(lhs._score, rhs._score);
+    std::swap(lhs._horizontalScore, rhs._horizontalScore);
+    std::swap(lhs._horizontalScore, rhs._horizontalScore);      
 }
 
 }  // namespace seqan

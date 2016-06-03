@@ -94,6 +94,24 @@ public:
     TScoreValue     _score      = DPCellDefaultInfinity<DPCell_>::VALUE;
     TFlagMaskType   _flagMask   = TFlagMaskType();
 
+    DPCell_() = default;
+    
+    // Copy c'tor.
+    DPCell_(DPCell_ const & other) : _score(other._score), _flagMask(other._flagMask)
+    {}
+
+    // Move c'tor.
+    DPCell_(DPCell_ && other) : DPCell_()
+    {
+        swap(*this, other);
+    }
+    
+    // Assignment and move operator.
+    DPCell_& operator=(DPCell_ other)
+    {
+        swap(*this, other);
+    }
+
     // Assignment of score.
     DPCell_ &
     operator=(TScoreValue const & score)
@@ -101,6 +119,9 @@ public:
         _score = score;
         return *this;
     }
+    
+    ~DPCell_()
+    {}
 };
 
 // ============================================================================
@@ -208,6 +229,15 @@ inline bool operator<(DPCell_<TScoreValueLeft, DynamicGaps> const & left,
                       DPCell_<TScoreValueRight, DynamicGaps> const & right)
 {
     return left._score < right._score;
+}
+
+template <typename TScoreValue>
+inline void
+swap(DPCell_<TScoreValue, DynamicGaps> & lhs,
+     DPCell_<TScoreValue, DynamicGaps> & rhs)
+{
+    std::swap(lhs._score, rhs._score);
+    std::swap(lhs._flags, rhs._flags);
 }
 
 }  // namespace seqan

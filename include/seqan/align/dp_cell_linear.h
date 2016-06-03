@@ -60,8 +60,25 @@ template <typename TScoreValue>
 class DPCell_<TScoreValue, LinearGaps>
 {
 public:
-
     TScoreValue _score = DPCellDefaultInfinity<DPCell_>::VALUE;
+
+    DPCell_() = default;
+    
+    // Copy c'tor.
+    DPCell_(DPCell_ const & other) : _score(other._score)
+    {}
+    
+    // Move c'tor.
+    DPCell_(DPCell_ && other) : DPCell_()
+    {
+        swap(*this, other);
+    }
+    
+    // Assignment & move operator
+    DPCell_& operator=(DPCell_ other)
+    {
+        swap(*this, other);
+    }
 
     // Assignment of score.
     DPCell_ &
@@ -70,6 +87,9 @@ public:
         _score = score;
         return *this;
     }
+
+    ~DPCell_()
+    {}
 };
 
 // ============================================================================
@@ -90,6 +110,14 @@ inline bool operator<(DPCell_<TScoreValueLeft, LinearGaps> const & left,
                       DPCell_<TScoreValueRight, LinearGaps> const & right)
 {
     return left._score < right._score;
+}
+
+template <typename TScoreValue>
+inline void 
+swap(DPCell_<TScoreValue, LinearGaps> & lhs, 
+     DPCell_<TScoreValue, LinearGaps> & rhs)
+{
+    std::swap(lhs._score, rhs._score);
 }
 
 }  // namespace seqan
