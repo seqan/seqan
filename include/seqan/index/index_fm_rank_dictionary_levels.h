@@ -1036,53 +1036,45 @@ inline void updateRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
     // Clear the uninitialized values.
     _padValues(dict);
 
-    TSuperBlock superBlockSum;// = t0;
-    for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
-        superBlockSum[i] = 0;
+    TSuperBlock superBlockSum;
+
+    /*if (std::is_same<TValue, bool>::value)
+        superBlockSum = 0;
+    else*/
+        for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
+            superBlockSum[i] = 0;
     // Iterate through the blocks.
     TSuperBlockIter superBlocksIt = superBlocksBegin;
-    for (; superBlocksIt != superBlocksEnd/* - 1*/; ++superBlocksIt) // TODO ?
+    for (; superBlocksIt != superBlocksEnd; ++superBlocksIt)
     {
-        //TSize superBlockPos = superBlockIt - superBlocksBegin;
         auto & superBlock = dict.superblocks[superBlocksIt - superBlocksBegin];
         TBlockIter blocksBegin = begin(superBlock.blocks, Standard());
         TBlockIter blocksEnd = end(superBlock.blocks, Standard());
 
         superBlock.superBlockValues = superBlockSum;
 
-        // TODO: wirklich (un)nötig?
-        if (blocksBegin != blocksEnd)
-        {
-            //Tuple<TSize, ValueSize<TValue>::VALUE> _t0;
-            unsigned blocks_per_superblock = TRankDictionary::_VALUES_PER_SUPERBLOCK / TRankDictionary::_VALUES_PER_BLOCK;
-            for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
-                _blockAt(dict, _toPos(dict, blocks_per_superblock * (superBlocksIt - superBlocksBegin)))[i] = 0; // TRankDictionary::_VALUES_PER_SUPERBLOCK * (superBlocksIt - superBlocksBegin)
-            // NOTE: necessary!
-        }
-        else
-            SEQAN_ASSERT(false);
+        unsigned blocks_per_superblock = TRankDictionary::_VALUES_PER_SUPERBLOCK / TRankDictionary::_VALUES_PER_BLOCK;
+        for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
+            _blockAt(dict, _toPos(dict, blocks_per_superblock * (superBlocksIt - superBlocksBegin)))[i] = 0;
 
         TSize next, curr;
         TBlockIter blocksIt;
-        for (blocksIt = blocksBegin; blocksIt != blocksEnd/* - 1*/; ++blocksIt) // TODO ?
+        for (blocksIt = blocksBegin; blocksIt != blocksEnd; ++blocksIt)
         {
             unsigned blocks_per_superblock = TRankDictionary::_VALUES_PER_SUPERBLOCK / TRankDictionary::_VALUES_PER_BLOCK;
-            TSize blockPos = blocksIt - blocksBegin + (blocks_per_superblock * (superBlocksIt - superBlocksBegin)); //  + TRankDictionary::_VALUES_PER_SUPERBLOCK * (superBlocksIt - superBlocksBegin)
+            TSize blockPos = blocksIt - blocksBegin + (blocks_per_superblock * (superBlocksIt - superBlocksBegin));
             curr = _toPos(dict, blockPos);
             next = _toPos(dict, blockPos + 1);
 
-            if (!(superBlocksIt == superBlocksEnd - 1 && blocksIt == blocksEnd - 1))
+            if (superBlocksIt != superBlocksEnd - 1 || blocksIt != blocksEnd - 1)
                 _blockAt(dict, next) = _blockAt(dict, curr) + _getValuesRanks(dict, next - 1);
         }
-        // TODO kann _blockAt(dict, next) hier undef. sein, wenn er nicht in die schleife reingeht?
-        if (!(superBlocksIt == superBlocksEnd - 1 && blocksIt == blocksEnd))
+
+        if (superBlocksIt != superBlocksEnd - 1 || blocksIt != blocksEnd)
             superBlockSum = superBlockSum + _blockAt(dict, next);
-        //else
-        //    SEQAN_ASSERT(false);
     }
 }
 
-// TODO: prototype for prefix sums for DNA (used by bidirectional FM index)
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TPos>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > >::Type
 getCumulativeRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos, TValue c, TPos & smaller)
@@ -1093,7 +1085,6 @@ getCumulativeRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSiz
     return getRank(dict, pos, c, smaller);
 }
 
-// TODO: prototype for prefix sums for DNA (used by bidirectional FM index)
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TPos>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > >::Type
 getCumulativeRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos, TValue c)
@@ -1147,26 +1138,31 @@ resize(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TSize newLength, 
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> > TRankDict_;
 
     dict._length = newLength;
-    //auto values = newLength + TRankDict_::_VALUES_PER_BLOCK - 1;
-    auto superblocks = (newLength + TRankDict_::_VALUES_PER_SUPERBLOCK - 1) / TRankDict_::_VALUES_PER_SUPERBLOCK; // eq. to ceil(newLength / VALUES_PER_BLOCK)
-    auto ret1 = resize(dict.superblocks, superblocks, tag);
+    unsigned nbrSuperBlocks = (newLength + TRankDict_::_VALUES_PER_SUPERBLOCK - 1) / TRankDict_::_VALUES_PER_SUPERBLOCK;
+    auto ret1 = resize(dict.superblocks, nbrSuperBlocks, tag);
 
-    for (unsigned i = 0; i < superblocks-1; ++i)
-    {
+    for (unsigned i = 0; i < nbrSuperBlocks - 1; ++i)
         resize(dict.superblocks[i].blocks, TRankDict_::_VALUES_PER_SUPERBLOCK / TRankDict_::_VALUES_PER_BLOCK, tag);
-    }
+
     // last superblock might have fewer blocks
-    auto nbrOfBlocksOfLastSuperBlock = ((newLength % TRankDict_::_VALUES_PER_SUPERBLOCK) + TRankDict_::_VALUES_PER_BLOCK - 1) / TRankDict_::_VALUES_PER_BLOCK;
-    if (newLength % TRankDict_::_VALUES_PER_SUPERBLOCK == 0)
-        nbrOfBlocksOfLastSuperBlock = TRankDict_::_VALUES_PER_SUPERBLOCK / TRankDict_::_VALUES_PER_BLOCK;
-    resize(dict.superblocks[superblocks-1].blocks, nbrOfBlocksOfLastSuperBlock, tag);
-    // eq. to ceil((newLength % TRankDict_::_VALUES_PER_SUPERBLOCK) / VALUES_PER_BLOCK)
+    unsigned remainingBlocks = ((newLength - ((nbrSuperBlocks-1) * TRankDict_::_VALUES_PER_SUPERBLOCK)) + TRankDict_::_VALUES_PER_BLOCK - 1) / TRankDict_::_VALUES_PER_BLOCK;
+    resize(dict.superblocks[nbrSuperBlocks-1].blocks, remainingBlocks, tag);
 
     return ret1;
-    // old
-    //return resize(dict.ranks, (newLength + RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_BLOCK - 1) /
-    //                          RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_BLOCK, tag);
 }
+
+template <typename TValue, typename TSpec, typename TConfig>
+inline bool save(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, const char * fileName, int openMode)
+{
+    return save(getFibre(dict, FibreSuperRanks()), fileName, openMode);
+}
+
+template <typename TValue, typename TSpec, typename TConfig>
+inline bool open(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, const char * fileName, int openMode)
+{
+    return open(getFibre(dict, FibreSuperRanks()), fileName, openMode);
+}
+
 
 }
 
