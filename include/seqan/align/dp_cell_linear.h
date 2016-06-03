@@ -78,6 +78,7 @@ public:
     DPCell_& operator=(DPCell_ other)
     {
         swap(*this, other);
+        return *this;
     }
 
     // Assignment of score.

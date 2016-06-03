@@ -93,9 +93,10 @@ template <typename TDPCell, typename TSpec>
 class DPScout_
 {
 public:
+    using TScoreValue = typename Value<TDPCell>::Type;
 
-    TDPCell _maxScore;
-    uint32_t _maxHostPosition; // The corresponding host position within the underlying dp-matrix.
+    TDPCell _maxScore         = TDPCell();
+    uint32_t _maxHostPosition = DPCellDefaultInfinity<TScoreValue>::VALUE; // The corresponding host position within the underlying dp-matrix.
 
     DPScout_() = default;
     
