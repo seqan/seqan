@@ -613,7 +613,7 @@ inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<T
  _getSuperBlockRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & /* dict */, TSuperBlock const & superblock, TPos /* pos */, TChar c, TSmaller & smaller)
 {
     // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
-    TSmaller _smaller = superblock[ordValue(c)-1];
+    TSmaller _smaller = superblock.superBlockValues[ordValue(c)-1];
     smaller += _smaller; // TODO: _smaller cannot be removed. order of evaluation is not defined!
     return superblock.superBlockValues[ordValue(c)] - _smaller;
 }
@@ -870,7 +870,7 @@ getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre>
 
     smaller = 0;
     if (ordValue(c) > 0)
-        return _getSuperBlockRank(dict, superblock, pos, static_cast<TValue>(c))
+        return _getSuperBlockRank(dict, superblock, pos, static_cast<TValue>(c), smaller)
              + _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c), smaller)
              + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c), smaller);
 
@@ -1062,23 +1062,26 @@ inline void updateRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
             unsigned blocks_per_superblock = TRankDictionary::_VALUES_PER_SUPERBLOCK / TRankDictionary::_VALUES_PER_BLOCK;
             for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
                 _blockAt(dict, _toPos(dict, blocks_per_superblock * (superBlocksIt - superBlocksBegin)))[i] = 0; // TRankDictionary::_VALUES_PER_SUPERBLOCK * (superBlocksIt - superBlocksBegin)
+            // NOTE: necessary!
         }
         else
             SEQAN_ASSERT(false);
 
         TSize next, curr;
-        for (TBlockIter blocksIt = blocksBegin; blocksIt != blocksEnd - 1; ++blocksIt) // TODO ?
+        TBlockIter blocksIt;
+        for (blocksIt = blocksBegin; blocksIt != blocksEnd/* - 1*/; ++blocksIt) // TODO ?
         {
             unsigned blocks_per_superblock = TRankDictionary::_VALUES_PER_SUPERBLOCK / TRankDictionary::_VALUES_PER_BLOCK;
             TSize blockPos = blocksIt - blocksBegin + (blocks_per_superblock * (superBlocksIt - superBlocksBegin)); //  + TRankDictionary::_VALUES_PER_SUPERBLOCK * (superBlocksIt - superBlocksBegin)
             curr = _toPos(dict, blockPos);
             next = _toPos(dict, blockPos + 1);
 
-            _blockAt(dict, next) = _blockAt(dict, curr) + _getValuesRanks(dict, next - 1);
+            if (!(superBlocksIt == superBlocksEnd - 1 && blocksIt == blocksEnd - 1))
+                _blockAt(dict, next) = _blockAt(dict, curr) + _getValuesRanks(dict, next - 1);
         }
         // TODO kann _blockAt(dict, next) hier undef. sein, wenn er nicht in die schleife reingeht?
-        if (blocksBegin != blocksEnd - 1)
-            superBlockSum = superBlockSum + (_blockAt(dict, curr) + _getValuesRanks(dict, next - 1));
+        if (!(superBlocksIt == superBlocksEnd - 1 && blocksIt == blocksEnd))
+            superBlockSum = superBlockSum + _blockAt(dict, next);
         //else
         //    SEQAN_ASSERT(false);
     }

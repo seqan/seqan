@@ -129,8 +129,8 @@ public:
     void setUp()
     {
         //createText(text, TValue());
-        generateText(text, 50); // 5000
-        std::cout << text << std::endl;
+        generateText(text, 50000); // 5000
+        //std::cout << text << std::endl;
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
     }
@@ -260,7 +260,7 @@ SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank) {
             unsigned long smaller;
             unsigned long pos = textIt - this->textBegin;
 
-            if (pos == 42 && c == 0)
+            if (pos == 42 && c == 1)
                 std::cout << "STOP" << std::endl;
 
             unsigned long rank = getRank(dict, pos, TValue((uint16_t) c), smaller); // TODO: getRank!!! uint16_t cast???
