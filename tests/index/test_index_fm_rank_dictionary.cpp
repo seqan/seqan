@@ -242,6 +242,9 @@ SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank) {
     typedef String<TTextSize> TPrefixSum;
 
     typename TestFixture::TRankDict dict(this->text);
+    //save(dict, "/home/chris/testFM/rank");
+    //clear(dict);
+    //open(dict, "/home/chris/testFM/rank");
 
     // The prefix sum is built while scanning the text.
     TPrefixSum prefixSum;
