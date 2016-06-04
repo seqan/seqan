@@ -68,6 +68,7 @@ using namespace seqan;
 typedef SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >         ReducedMurpy10;
 
 typedef
+    // TODO: not working. but not crucial. we should fore using non-prefix levels anyway, otherwise we waste 4x the memory (add. bit and 2 bitvectors, only need 1)
     //TagList<RankDictionary<bool,           Levels<void, LevelsPrefixRDConfig<> > >,
     TagList<RankDictionary<Dna,            Levels<void, LevelsPrefixRDConfig<> > >,
     TagList<RankDictionary<Rna,            Levels<void, LevelsPrefixRDConfig<> > >,
@@ -76,20 +77,8 @@ typedef
     TagList<RankDictionary<ReducedMurpy10, Levels<void, LevelsPrefixRDConfig<> > >,
     TagList<RankDictionary<AminoAcid,      Levels<void, LevelsPrefixRDConfig<> > >,
     TagList<RankDictionary<char,           Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<unsigned char,  Levels<void, LevelsPrefixRDConfig<> > >
-    > > > > > > > >
-    RankDictionaryPrefixTypes;
-
-/*typedef
-    TagList<RankDictionary<bool,           Naive<> >,
-    TagList<RankDictionary<Dna,            Levels<> >,
-    TagList<RankDictionary<Rna,            Levels<> >,
-    TagList<RankDictionary<Dna5,           Levels<> >,
-    TagList<RankDictionary<Rna5,           Levels<> >,
-    TagList<RankDictionary<ReducedMurpy10, Levels<> >,
-    TagList<RankDictionary<AminoAcid,      Levels<> >,
-    TagList<RankDictionary<char,           Levels<> >,
-            // TODO: bool WT
+    TagList<RankDictionary<unsigned char,  Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<bool,           WaveletTree<> >,
     TagList<RankDictionary<Dna,            WaveletTree<> >,
     TagList<RankDictionary<Dna5,           WaveletTree<> >,
     TagList<RankDictionary<DnaQ,           WaveletTree<> >,
@@ -97,8 +86,23 @@ typedef
     TagList<RankDictionary<AminoAcid,      WaveletTree<> >,
     TagList<RankDictionary<char,           WaveletTree<> >,
     TagList<RankDictionary<unsigned char,  WaveletTree<> >
-    > > > > > > > > > > > > > > >
-    RankDictionaryNonPrefixTypes;*/
+    > > > > > > > > > > > > > > > > //>
+    RankDictionaryPrefixSumTypes;
+
+    // TODO: remove naive dict. all dict are compared to naive impl. in test-suite anyway!
+    //TagList<RankDictionary<bool,           Naive<> >,
+    TagList<RankDictionary<bool,           Levels<> >,
+    TagList<RankDictionary<Dna,            Levels<> >,
+    TagList<RankDictionary<Rna,            Levels<> >,
+    TagList<RankDictionary<Dna5,           Levels<> >,
+    TagList<RankDictionary<Rna5,           Levels<> >,
+    TagList<RankDictionary<ReducedMurpy10, Levels<> >,
+    TagList<RankDictionary<AminoAcid,      Levels<> >,
+    TagList<RankDictionary<char,           Levels<> >,
+    TagList<RankDictionary<unsigned char,  Levels<> >,
+    RankDictionaryPrefixSumTypes
+    > > > > > > > > > //>
+    RankDictionaryAllTypes;
 
 // ==========================================================================
 // Test Classes
@@ -140,14 +144,9 @@ public:
 
 template <typename TRankDictionary>
 class RankDictionaryPrefixTest : public RankDictionaryTest<TRankDictionary> {};
-//template <typename TRankDictionary>
-//class RankDictionaryNonPrefixTest : public RankDictionaryTest<TRankDictionary> {};
 
-//SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryNonPrefixTypes);
-SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryPrefixTypes);
-
-SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixTypes);
-//SEQAN_TYPED_TEST_CASE(RankDictionaryNonPrefixTest, RankDictionaryNonPrefixTypes);
+SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryAllTypes);
+SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixSumTypes);
 
 // ==========================================================================
 // Tests
@@ -205,7 +204,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
 // Test getRank()
 // ----------------------------------------------------------------------------
 
-/*SEQAN_TYPED_TEST(RankDictionaryNonPrefixTest, GetRank)
+SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
 {
     typedef typename TestFixture::TValueSize            TValueSize;
     typedef typename TestFixture::TText                 TText;
@@ -228,14 +227,12 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
 
         // Check the rank for all alphabet symbols.
         for (TValueSize c = 0; c < this->alphabetSize; ++c)
-        {
-            unsigned long pos = textIt - this->textBegin;
-            SEQAN_ASSERT_EQ(getRank(dict, pos, c), prefixSum[c]);
-        }
+            SEQAN_ASSERT_EQ(getRank(dict, (unsigned long)(textIt - this->textBegin), c), prefixSum[c]);
     }
-}*/
+}
 
-/*SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank) {
+SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank)
+{
     typedef typename TestFixture::TValueSize TValueSize;
     typedef typename TestFixture::TText TText;
     typedef typename TestFixture::TTextIterator TTextIterator;
@@ -263,15 +260,13 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetValue)
         unsigned long smallerNaive = 0;
         for (TValueSize c = 0; c < this->alphabetSize; ++c) {
             unsigned long smaller;
-            unsigned long pos = textIt - this->textBegin;
-
-            unsigned long rank = getRank(dict, pos, TValue((uint16_t) c), smaller); // TODO: getRank!!! uint16_t cast???
+            unsigned long rank = getRank(dict, (unsigned long)(textIt - this->textBegin), TValue((uint16_t) c), smaller); // TODO: remove uint16_t cast
             SEQAN_ASSERT_EQ(smaller, smallerNaive);
             SEQAN_ASSERT_EQ(rank, prefixSum[c]);
             smallerNaive += prefixSum[c];
         }
     }
-}*/
+}
 
 // ----------------------------------------------------------------------------
 // Test setValue()
