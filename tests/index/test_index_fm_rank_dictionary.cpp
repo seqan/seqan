@@ -75,8 +75,9 @@ typedef
     TagList<RankDictionary<Rna5,           Levels<void, LevelsPrefixRDConfig<> > >,
     TagList<RankDictionary<ReducedMurpy10, Levels<void, LevelsPrefixRDConfig<> > >,
     TagList<RankDictionary<AminoAcid,      Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<char,           Levels<void, LevelsPrefixRDConfig<> > >
-    > > > > > > >
+    TagList<RankDictionary<char,           Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<unsigned char,  Levels<void, LevelsPrefixRDConfig<> > >
+    > > > > > > > >
     RankDictionaryPrefixTypes;
 
 typedef
@@ -135,15 +136,15 @@ public:
     }
 };
 
-template <typename TRankDictionary>
-class RankDictionaryPrefixTest : public RankDictionaryTest<TRankDictionary> {};
+//template <typename TRankDictionary>
+//class RankDictionaryPrefixTest : public RankDictionaryTest<TRankDictionary> {};
 template <typename TRankDictionary>
 class RankDictionaryNonPrefixTest : public RankDictionaryTest<TRankDictionary> {};
 
 SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryNonPrefixTypes);
-SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryPrefixTypes);
+//SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryPrefixTypes);
 
-SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixTypes);
+//SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixTypes);
 SEQAN_TYPED_TEST_CASE(RankDictionaryNonPrefixTest, RankDictionaryNonPrefixTypes);
 
 // ==========================================================================
@@ -232,7 +233,7 @@ SEQAN_TYPED_TEST(RankDictionaryNonPrefixTest, GetRank)
     }
 }
 
-SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank) {
+/*SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank) {
     typedef typename TestFixture::TValueSize TValueSize;
     typedef typename TestFixture::TText TText;
     typedef typename TestFixture::TTextIterator TTextIterator;
@@ -264,7 +265,7 @@ SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank) {
             smallerNaive += prefixSum[c];
         }
     }
-}
+}*/
 
 // ----------------------------------------------------------------------------
 // Test setValue()

@@ -285,6 +285,7 @@ template <typename TValue, typename TSpec, typename TConfig, typename TPos, type
 inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type
 getCumulativeRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character, TPos & smaller)
 {
+    // smaller has to be initiliazed by the caller!
     typedef typename Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreTreeStructure>::Type  TWaveletTreeStructure;
     typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type                         TWaveletTreeStructureString;
     typedef typename Value<TWaveletTreeStructureString>::Type                                               TWaveletTreeStructureEntry;

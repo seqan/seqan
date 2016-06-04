@@ -709,9 +709,9 @@ _getValuesRanks(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TPos
 // TODO: needed because otherwise it template specialization would be ambiguous. maybe try to remove all bool-specializations?
 template <typename TSpec, typename TSize, typename TFibre, typename TPos>
 inline typename RankDictionaryBlock_<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > >::Type
-        _getValuesRanks(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos)
+_getValuesRanks(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos)
 {
-return _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), true);
+    return _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), true);
 }
 
 // ----------------------------------------------------------------------------
@@ -743,7 +743,6 @@ getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre>
     typedef RankDictionary<TValue, Levels<TSpec , LevelsPrefixRDConfig<TSize, TFibre> > > const           TRankDictionary;
     typedef typename Fibre<TRankDictionary, FibreRanks>::Type               TFibreRanks;
     typedef typename Value<TFibreRanks>::Type                               TRankEntry;
-    //typedef typename Size<TRankDictionary>::Type                            TSize;
 
     TSize blockPos   = _toBlockPos(dict, pos);
     TSize posInBlock = _toPosInBlock(dict, pos);
@@ -762,13 +761,13 @@ getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre>
 
 // TODO: nicht möglich. auch bei kumulativer version wollen wir bei ordValue(c) == 0
 // TODO: die nicht-kumulative version aufrufen, weil andernfalls beim kumulativen wrapper ...[ordValue(c)-1] aufgerufen werden würde
-/*template <typename TValue, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<TValue, Levels<void, TConfig> > const>::Type
-getRank(RankDictionary<TValue, Levels<int, TConfig> > const & dict, TPos pos, Dna c)
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TPos>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const>::Type
+getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos, TValue c)
 {
     TPos smaller;
     return getRank(dict, pos, c, smaller);
-}*/
+}
 
 // ----------------------------------------------------------------------------
 // Function getRank(bool)
