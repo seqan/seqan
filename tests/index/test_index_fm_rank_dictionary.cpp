@@ -65,42 +65,42 @@ using namespace seqan;
 // RankDictionary Types
 // --------------------------------------------------------------------------
 
-typedef SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >         ReducedMurpy10;
+typedef SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >         ReducedMurphy10;
 
 typedef
     // TODO: not working. but not crucial. we should fore using non-prefix levels anyway, otherwise we waste 4x the memory (add. bit and 2 bitvectors, only need 1)
-    //TagList<RankDictionary<bool,           Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<Dna,            Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<Rna,            Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<Dna5,           Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<Rna5,           Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<ReducedMurpy10, Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<AminoAcid,      Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<char,           Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<unsigned char,  Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<bool,           WaveletTree<> >,
-    TagList<RankDictionary<Dna,            WaveletTree<> >,
-    TagList<RankDictionary<Dna5,           WaveletTree<> >,
-    TagList<RankDictionary<DnaQ,           WaveletTree<> >,
-    TagList<RankDictionary<Dna5Q,          WaveletTree<> >,
-    TagList<RankDictionary<AminoAcid,      WaveletTree<> >,
-    TagList<RankDictionary<char,           WaveletTree<> >,
-    TagList<RankDictionary<unsigned char,  WaveletTree<> >
+    //TagList<RankDictionary<bool,            Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<Dna,             Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<Rna,             Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<Dna5,            Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<Rna5,            Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<ReducedMurphy10, Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<AminoAcid,       Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<char,            Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<unsigned char,   Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<bool,            WaveletTree<> >,
+    TagList<RankDictionary<Dna,             WaveletTree<> >,
+    TagList<RankDictionary<Dna5,            WaveletTree<> >,
+    TagList<RankDictionary<DnaQ,            WaveletTree<> >,
+    TagList<RankDictionary<Dna5Q,           WaveletTree<> >,
+    TagList<RankDictionary<AminoAcid,       WaveletTree<> >,
+    TagList<RankDictionary<char,            WaveletTree<> >,
+    TagList<RankDictionary<unsigned char,   WaveletTree<> >
     > > > > > > > > > > > > > > > > //>
     RankDictionaryPrefixSumTypes;
 
 typedef
-    // TODO: remove naive dict. all dict are compared to naive impl. in test-suite anyway!
-    //TagList<RankDictionary<bool,           Naive<> >,
-    TagList<RankDictionary<bool,           Levels<> >,
-    TagList<RankDictionary<Dna,            Levels<> >,
-    TagList<RankDictionary<Rna,            Levels<> >,
-    TagList<RankDictionary<Dna5,           Levels<> >,
-    TagList<RankDictionary<Rna5,           Levels<> >,
-    TagList<RankDictionary<ReducedMurpy10, Levels<> >,
-    TagList<RankDictionary<AminoAcid,      Levels<> >,
-    TagList<RankDictionary<char,           Levels<> >,
-    TagList<RankDictionary<unsigned char,  Levels<> >,
+    // TODO: remove naive dict. all dict are compared to a separate naive impl. in test-suite anyway!
+    //TagList<RankDictionary<bool,            Naive<> >,
+    TagList<RankDictionary<bool,            Levels<> >,
+    TagList<RankDictionary<Dna,             Levels<> >,
+    TagList<RankDictionary<Rna,             Levels<> >,
+    TagList<RankDictionary<Dna5,            Levels<> >,
+    TagList<RankDictionary<Rna5,            Levels<> >,
+    TagList<RankDictionary<ReducedMurphy10, Levels<> >,
+    TagList<RankDictionary<AminoAcid,       Levels<> >,
+    TagList<RankDictionary<char,            Levels<> >,
+    TagList<RankDictionary<unsigned char,   Levels<> >,
     RankDictionaryPrefixSumTypes
     > > > > > > > > > //>
     RankDictionaryAllTypes;
@@ -240,9 +240,6 @@ SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank)
     typedef String<TTextSize> TPrefixSum;
 
     typename TestFixture::TRankDict dict(this->text);
-    //save(dict, "/home/chris/testFM/rank");
-    //clear(dict);
-    //open(dict, "/home/chris/testFM/rank");
 
     // The prefix sum is built while scanning the text.
     TPrefixSum prefixSum;

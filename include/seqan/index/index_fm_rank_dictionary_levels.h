@@ -437,6 +437,13 @@ _toPosInBlock(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */
     return pos % RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_BLOCK;
 }
 
+template <typename TValue, typename TSpec, typename TConfig, typename TPos>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
+_toPosInSuperBlock(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TPos pos)
+{
+return pos % RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_SUPERBLOCK;
+}
+
 // ----------------------------------------------------------------------------
 // Function _toSuperBlockPos()
 // ----------------------------------------------------------------------------
@@ -618,7 +625,7 @@ inline typename Size<RankDictionary<bool, Levels<TSpec, TConfig> > const>::Type
 _getBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TBlock const & block, TPos pos, bool c)
 {
     // If c == false then return the complementary rank.
-    return c ? block : pos - _toPosInBlock(dict, pos) - block;
+    return c ? block : _toPosInSuperBlock(dict, pos) - _toPosInBlock(dict, pos) - block;
 }
 
 // ----------------------------------------------------------------------------
@@ -632,7 +639,6 @@ _getSuperBlockRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* di
     return superblock.superBlockValues[ordValue(c)];
 }
 
-// TODO: prototype
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TSuperBlock, typename TPos, typename TChar, typename TSmaller>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const>::Type
  _getSuperBlockRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & /* dict */, TSuperBlock const & superblock, TPos /* pos */, TChar c, TSmaller & smaller)
@@ -648,8 +654,7 @@ inline typename Size<RankDictionary<bool, Levels<TSpec, TConfig> > const>::Type
 _getSuperBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TSuperBlock const & superblock, TPos pos, bool c)
 {
     // If c == false then return the complementary rank.
-    // TODO: richtig?
-    return c ? superblock.superBlockValues : pos - _toPosInBlock(dict, pos) - superblock.superBlockValues;
+    return c ? superblock.superBlockValues : pos - _toPosInSuperBlock(dict, pos) - superblock.superBlockValues;
 }
 
 // ----------------------------------------------------------------------------
@@ -1047,7 +1052,7 @@ inline void updateRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
     TSuperBlockIter superBlocksBegin = begin(dict.superblocks, Standard());
     TSuperBlockIter superBlocksEnd = end(dict.superblocks, Standard());
 
-    // Insures the first block ranks start from zero.
+    // Insures the first block/superblock ranks start from zero.
     _clearBlockAt(dict, 0u);
     _clearSuperBlockAt(dict, 0u);
 
@@ -1067,14 +1072,12 @@ inline void updateRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
         TBlockIter blocksBegin = begin(dict.superblocks[superBlockPos].blocks, Standard());
         TBlockIter blocksEnd = end(dict.superblocks[superBlockPos].blocks, Standard());
 
-        // TODO: use currSB
-        _clearBlockAt(dict, _toPos(dict, blocks_per_superblock * (superBlocksIt - superBlocksBegin)));
+        _clearBlockAt(dict, currSB);
 
         TSize next, curr;
         TBlockIter blocksIt;
         for (blocksIt = blocksBegin; blocksIt != blocksEnd; ++blocksIt)
         {
-            // TODO: use currSB
             TSize blockPos = blocksIt - blocksBegin + (blocks_per_superblock * superBlockPos);
             curr = _toPos(dict, blockPos);
             next = _toPos(dict, blockPos + 1);
@@ -1122,15 +1125,19 @@ resize(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TSize newLength, 
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> > TRankDict_;
 
     dict._length = newLength;
-    unsigned nbrSuperBlocks = (newLength + TRankDict_::_VALUES_PER_SUPERBLOCK - 1) / TRankDict_::_VALUES_PER_SUPERBLOCK;
+    signed nbrSuperBlocks = (newLength + TRankDict_::_VALUES_PER_SUPERBLOCK - 1) / TRankDict_::_VALUES_PER_SUPERBLOCK;
     auto ret1 = resize(dict.superblocks, nbrSuperBlocks, tag);
 
-    for (unsigned i = 0; i < nbrSuperBlocks - 1; ++i)
+    // NOTE: nbrSuperBlocks and i have to be signed. WT calls with newLength=0 which will result in 0 superblocks!
+    for (signed i = 0; i < nbrSuperBlocks - 1; ++i)
         resize(dict.superblocks[i].blocks, TRankDict_::_VALUES_PER_SUPERBLOCK / TRankDict_::_VALUES_PER_BLOCK, tag);
 
-    // last superblock might have fewer blocks
-    unsigned remainingBlocks = ((newLength - ((nbrSuperBlocks-1) * TRankDict_::_VALUES_PER_SUPERBLOCK)) + TRankDict_::_VALUES_PER_BLOCK - 1) / TRankDict_::_VALUES_PER_BLOCK;
-    resize(dict.superblocks[nbrSuperBlocks-1].blocks, remainingBlocks, tag);
+    if (nbrSuperBlocks > 0)
+    {
+        // last superblock might have fewer blocks
+        unsigned remainingBlocks = ((newLength - ((nbrSuperBlocks-1) * TRankDict_::_VALUES_PER_SUPERBLOCK)) + TRankDict_::_VALUES_PER_BLOCK - 1) / TRankDict_::_VALUES_PER_BLOCK;
+        resize(dict.superblocks[nbrSuperBlocks-1].blocks, remainingBlocks, tag);
+    }
 
     return ret1;
 }
