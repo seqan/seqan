@@ -913,37 +913,6 @@ inline void updateRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
     }
 }
 
-// TODO: prototype for prefix sums for DNA (used by bidirectional FM index)
-template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TPos>
-inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > >::Type
-getCumulativeRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos, TValue c, TPos & smaller)
-{
-    smaller = 0;
-    if (ordValue(c) == 0)
-        return getRank(dict, pos, c);
-    return getRank(dict, pos, c, smaller);
-}
-
-// TODO: prototype for prefix sums for DNA (used by bidirectional FM index)
-template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TPos>
-inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > >::Type
-getCumulativeRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos, TValue c)
-{
-    TPos smaller;
-    if (ordValue(c) == 0)
-        return getRank(dict, pos, c);
-    return getRank(dict, pos, c, smaller);
-}
-
-// TODO: what is this for? wrapper?
-template <typename TValue, typename TSpec, typename TConfig, typename TPos>
-inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
-getCumulativeRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos, TValue c, TPos & /*smaller*/)
-{
-    // not cumulative!!!!
-    return getRank(dict, pos, c);
-}
-
 // ----------------------------------------------------------------------------
 // Function length()
 // ----------------------------------------------------------------------------
