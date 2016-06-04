@@ -89,6 +89,7 @@ typedef
     > > > > > > > > > > > > > > > > //>
     RankDictionaryPrefixSumTypes;
 
+typedef
     // TODO: remove naive dict. all dict are compared to naive impl. in test-suite anyway!
     //TagList<RankDictionary<bool,           Naive<> >,
     TagList<RankDictionary<bool,           Levels<> >,
@@ -135,8 +136,7 @@ public:
     {
         // TODO: test-case for textlength % values_per_superblock == 0
         //createText(text, TValue());
-        generateText(text, 50000);
-        //std::cout << text << std::endl;
+        generateText(text, 5000);
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
     }
