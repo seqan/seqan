@@ -494,7 +494,6 @@ _getBlockRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */
     return block[ordValue(c)];
 }
 
-// TODO: prototype
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TBlock, typename TPos, typename TChar, typename TSmaller>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const>::Type
 _getBlockRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & /* dict */, TBlock const & block, TPos /* pos */, TChar c, TSmaller & smaller)
@@ -539,7 +538,6 @@ _getWordRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */,
     return popCount(TRankDictionary::_NEWBITMASKS[posInWord] & mask);
 }
 
-// TODO: prototype for prefix sums for DNA (used by bidirectional FM index)
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TWord, typename TPosInWord>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const>::Type
 _getWordRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const &,
@@ -552,7 +550,6 @@ _getWordRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TF
     return popCount((TRankDictionary::_BITMASKS[ordValue(c)] - values) & TRankDictionary::_NEWBITMASKS[posInWord]);
 }
 
-// TODO: prototype for prefix sums for DNA (used by bidirectional FM index)
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TWord, typename TPosInWord, typename TPos>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const>::Type
 _getWordRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const &,
@@ -611,7 +608,6 @@ _getValueRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict,
     return valueRank;
 }
 
-// TODO: prototype for prefix sums for DNA (used by bidirectional FM index)
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TValues, typename TPosInBlock, typename TSmaller>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const>::Type
 _getValueRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict,
@@ -735,7 +731,14 @@ getRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos, 
            _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
 }
 
-// TODO: prototype for prefix sums for DNA (used by bidirectional FM index)
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TPos, typename TChar>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const>::Type
+getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos, TChar c)
+{
+    TPos smaller;
+    return getRank(dict, pos, static_cast<TValue>(c), smaller);
+}
+
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TPos>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const>::Type
 getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos, TValue c, TPos & smaller)
@@ -757,16 +760,6 @@ getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre>
     // c == Dna('A')
     return _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c))
          + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
-}
-
-// TODO: nicht möglich. auch bei kumulativer version wollen wir bei ordValue(c) == 0
-// TODO: die nicht-kumulative version aufrufen, weil andernfalls beim kumulativen wrapper ...[ordValue(c)-1] aufgerufen werden würde
-template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TPos>
-inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const>::Type
-getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos, TValue c)
-{
-    TPos smaller;
-    return getRank(dict, pos, c, smaller);
 }
 
 // ----------------------------------------------------------------------------

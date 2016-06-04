@@ -278,12 +278,12 @@ inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Typ
 getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character)
 {
     TPos smaller;
-    return getCumulativeRank(dict, pos, character, smaller);
+    return getRank(dict, pos, character, smaller);
 }
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
 inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type
-getCumulativeRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character, TPos & smaller)
+getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character, TPos & smaller)
 {
     // smaller has to be initiliazed by the caller!
     typedef typename Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreTreeStructure>::Type  TWaveletTreeStructure;
