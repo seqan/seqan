@@ -1,9 +1,18 @@
+html {
+    height: 100%;
+}
+
 body {
   margin: 0;
   font-family: "Open Sans", "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
   font-size: 13px;
-  height: 101%;
+  height: 100%;
   overflow-x: hidden;
+}
+
+#content {
+    height: calc(100% - 40px);
+    overflow: auto;
 }
 
 h1 { padding: 12px 10px; padding-bottom: 0; margin: 0; font-size: 1.4em; }
@@ -20,3 +29,5 @@ h1 { padding: 12px 10px; padding-bottom: 0; margin: 0; font-size: 1.4em; }
 .frames li small:after { content: ""; }
 .frames li small.search_info { display: none; }
 .frames #nav { display: block; }
+
+

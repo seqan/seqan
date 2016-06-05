@@ -17,6 +17,14 @@
  * limitations under the License.
  * ========================================================= */
 
+.treeview {
+    font-size: 12px;
+}
+
+.treeview .badge {
+    font-size: 12px;
+}
+
 .treeview .list-group {
 	margin-left: 10px;
 	margin-right: 10px;
@@ -24,6 +32,7 @@
 
 .treeview .list-group-item {
 	cursor: pointer;
+    line-height: 10px;
 }
 
 .treeview li {

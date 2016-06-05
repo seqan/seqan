@@ -73,15 +73,11 @@ for(var i=0; i < window.searchData.length; ++i) {
 
 function hideMT() {
    document.getElementById("module_tree").style.display = "none";
-   document.getElementById("module_tree_toggle").style.display = "block";
 }
 
 
 function showMT() {
-    $("#search").find("input[type=text],input[type=search]").val("");
-    $("#search").find("input[type=text],input[type=search]").trigger("change");
     document.getElementById("module_tree").style.display = "block";
-    document.getElementById("module_tree_toggle").style.display = "none";
 }
 
 // sorting
@@ -97,16 +93,26 @@ updateTags(treeData);
 // add HTML 
 var mt_toggle_div = document.createElement("div");
 mt_toggle_div.setAttribute("id", "module_tree_toggle");
-mt_toggle_div.setAttribute("style", "text-align:center;display:none");
+mt_toggle_div.setAttribute("style", "text-align:center;display:block");
+mt_toggle_div.innerHTML = "Module list : ";
+
+var showlink = document.createElement('a');
+showlink.setAttribute("href","javascript:showMT()");
+showlink.appendChild(document.createTextNode("[show]"));
+mt_toggle_div.appendChild(showlink);
+mt_toggle_div.innerHTML += "&nbsp;";
 var hidelink = document.createElement('a');
-hidelink.setAttribute("href","javascript:showMT()");
-hidelink.appendChild(document.createTextNode("← back to Module list"));
+hidelink.setAttribute("href","javascript:hideMT()");
+hidelink.appendChild(document.createTextNode("[hide]"));
 mt_toggle_div.appendChild(hidelink);
-document.body.insertBefore(mt_toggle_div, document.getElementById("Results"));
 
 var mt_div = document.createElement("div");
 mt_div.setAttribute("id", "module_tree");
-document.body.insertBefore(mt_div, document.getElementById("Results"));
+mt_div.setAttribute("style", "display:none");
+
+var content_div = document.getElementById("content");
+content_div.appendChild(mt_toggle_div);
+content_div.appendChild(mt_div);
 
 // add tree
 $('#module_tree').treeview({
