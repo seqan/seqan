@@ -364,7 +364,6 @@ and based on the Tipue Search, http://www.tipue.com
                     var cleanedWords = stemmedWords;
                     var query = cleanedWords;
 
-
                     if (query[0].indexOf("module:") == 0) {
                         module = true;
                         query[0] = query[0].substr(7, query[0].length);
