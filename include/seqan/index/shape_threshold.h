@@ -227,7 +227,7 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
 #endif
     ;
 
-#if defined(PLATFORM_WINDOWS) | defined(PLATFORM_CUDA)
+#if defined(PLATFORM_WINDOWS)
 
     template<typename TValue>
     inline bool isNan(TValue value)

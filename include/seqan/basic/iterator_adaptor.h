@@ -96,7 +96,7 @@ public:
     // Constructors
     // ------------------------------------------------------------------------
 
-    SEQAN_HOST_DEVICE
+   
     Iter() : data_container()
     {
         data_iterator = TIterator();
@@ -112,14 +112,14 @@ public:
     }
     */
 
-    SEQAN_HOST_DEVICE
+   
     Iter(typename Parameter_<TContainer>::Type container_, TIterator it_)
             : data_container(_toPointer(container_)),
               data_iterator(it_)
     {
     }
 
-    SEQAN_HOST_DEVICE
+   
     Iter(Iter const & other_)
             : data_container(other_.data_container),
               data_iterator(other_.data_iterator)
@@ -128,7 +128,7 @@ public:
 
     // TODO(holtgrew): Use this technique to the other Iter specializations.
     template <typename TContainer_, typename TIterator2>
-    SEQAN_HOST_DEVICE
+   
     Iter(Iter<TContainer_, AdaptorIterator<TIterator2, TSpec> > const & other,
          SEQAN_CTOR_ENABLE_IF(IsSameType<TContainer, TContainer_ const>)) :
             data_container(other.data_container), data_iterator(other.data_iterator)
@@ -140,7 +140,7 @@ public:
     // Assignment Operators;  Have to be defined in class.
     // ------------------------------------------------------------------------
 
-    SEQAN_HOST_DEVICE
+   
     Iter &
     operator=(Iter const & other_)
     {
@@ -151,7 +151,7 @@ public:
 
     template <typename TContainer_>
     SEQAN_FUNC_ENABLE_IF(IsSameType<TContainer, TContainer_ const>, Iter &)
-    SEQAN_HOST_DEVICE
+   
     operator=(Iter<TContainer_, AdaptorIterator<TIterator, TSpec> > const & other_)
     {
         data_container = other_.data_container;
@@ -165,14 +165,14 @@ public:
 
     // For chaining behaviour of operator->(), see http://stackoverflow.com/a/8782794/84349
 
-    SEQAN_HOST_DEVICE
+   
     TIterator &
     operator->()
     {
         return data_iterator;
     }
 
-    SEQAN_HOST_DEVICE
+   
     TIterator const &
     operator->() const
     {
@@ -183,7 +183,7 @@ public:
     // Conversion Operators;  Have to be defined in class.
     // ------------------------------------------------------------------------
 
-    SEQAN_HOST_DEVICE
+   
     operator TIterator() const
     {
         return data_iterator;
@@ -249,28 +249,28 @@ struct Chunk<Iter<TContainer, AdaptorIterator<TValue*, TSpec> > >
 // ----------------------------------------------------------------------------
 
 //template <typename TContainer, typename TIterator, typename TSpec>
-//inline SEQAN_HOST_DEVICE typename Parameter_<TContainer>::Type
+//inline typename Parameter_<TContainer>::Type
 //container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 //{
 //    return _toParameter<TContainer>(me.data_container);
 //}
 //
 //template <typename TContainer, typename TIterator, typename TSpec>
-//inline SEQAN_HOST_DEVICE typename Parameter_<TContainer>::Type
+//inline typename Parameter_<TContainer>::Type
 //container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 //{
 //    return _toParameter<TContainer>(me.data_container);
 //}
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE TContainer &
+inline TContainer &
 container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
     return _referenceCast<TContainer &>(me.data_container);
 }
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE TContainer &
+inline TContainer &
 container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
     return container(const_cast<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > &>(me));
@@ -292,7 +292,7 @@ container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 
 // TODO(holtgrew): Also defined in index module, change documentation?
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE void
+inline void
 setContainer(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
              typename Parameter_<TContainer>::Type container_)
 {
@@ -316,14 +316,14 @@ setContainer(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
  */
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE TIterator &
+inline TIterator &
 hostIterator(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
     return me.data_iterator;
 }
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE TIterator const &
+inline TIterator const &
 hostIterator(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
     return me.data_iterator;
@@ -334,14 +334,14 @@ hostIterator(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE typename Position<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
+inline typename Position<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
 position(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
     return hostIterator(me) - begin(container(me), Standard());
 }
 
 template <typename TContainer, typename TIterator, typename TSpec, typename TContainer2>
-inline SEQAN_HOST_DEVICE typename Position<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
+inline typename Position<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
 position(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me,
          TContainer2 const &)
 {
@@ -363,7 +363,7 @@ position(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me,
  */
 
 template <typename TContainer, typename TIterator, typename TSpec, typename TPosition>
-inline SEQAN_HOST_DEVICE void
+inline void
 setPosition(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
             TPosition pos_)
 {
@@ -375,14 +375,14 @@ setPosition(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE typename Reference<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > >::Type
+inline typename Reference<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > >::Type
 value(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
     return value(hostIterator(me));
 }
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE typename Reference<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
+inline typename Reference<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
 value(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
     return value(hostIterator(me));
@@ -393,14 +393,14 @@ value(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > >::Type
+inline typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > >::Type
 getValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
     return getValue(hostIterator(me));
 }
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
+inline typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
 getValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
     return getValue(hostIterator(me));
@@ -411,7 +411,7 @@ getValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIterator, typename TSpec, typename TValue>
-inline SEQAN_HOST_DEVICE void
+inline void
 assignValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
             TValue const & _value)
 {
@@ -419,7 +419,7 @@ assignValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
 }
 
 template <typename TContainer, typename TIterator, typename TSpec, typename TValue>
-inline SEQAN_HOST_DEVICE void
+inline void
 assignValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me,
             TValue const & _value)
 {
@@ -431,14 +431,14 @@ assignValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIterator, typename TSpec, typename TValue>
-inline SEQAN_HOST_DEVICE void
+inline void
 moveValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
           TValue const & _value)
 {
     moveValue(hostIterator(me), _value);
 }
 template <typename TContainer, typename TIterator, typename TSpec, typename TValue>
-inline SEQAN_HOST_DEVICE void
+inline void
 moveValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me,
           TValue const & _value)
 {
@@ -450,7 +450,7 @@ moveValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE bool
+inline bool
 operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
            Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 {
@@ -460,7 +460,7 @@ operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 // TODO(weese:) Why would we need IterComplementConst here? Disabled it.
 
 //template <typename TContainer, typename TIterator, typename TSpec>
-//inline SEQAN_HOST_DEVICE bool
+//inline bool
 //operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 //           typename IterComplementConst<TIterator>::Type const & right)
 //{
@@ -468,7 +468,7 @@ operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 //}
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE bool
+inline bool
 operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
            TIterator const & right)
 {
@@ -478,7 +478,7 @@ operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 // TODO(weese:) Why would we need IterComplementConst here? Disabled it.
 
 //template <typename TContainer, typename TIterator, typename TSpec>
-//inline SEQAN_HOST_DEVICE bool
+//inline bool
 //operator==(typename IterComplementConst<TIterator>::Type const & left,
 //             Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 //{
@@ -486,7 +486,7 @@ operator==(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 //}
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE bool
+inline bool
 operator==(TIterator const & left,
            Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 {
@@ -498,7 +498,7 @@ operator==(TIterator const & left,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE bool
+inline bool
 operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
            Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 {
@@ -508,7 +508,7 @@ operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 // TODO(weese:) Why would we need IterComplementConst here? Disabled it.
 
 //template <typename TContainer, typename TIterator, typename TSpec>
-//inline SEQAN_HOST_DEVICE bool
+//inline bool
 //operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 //           typename IterComplementConst<TIterator>::Type const & right)
 //{
@@ -516,7 +516,7 @@ operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 //}
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE bool
+inline bool
 operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
            TIterator const & right)
 {
@@ -526,7 +526,7 @@ operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 // TODO(weese:) Why would we need IterComplementConst here? Disabled it.
 
 //template <typename TContainer, typename TIterator, typename TSpec>
-//inline SEQAN_HOST_DEVICE bool
+//inline bool
 //operator!=(typename IterComplementConst<TIterator>::Type const & left,
 //           Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 //{
@@ -534,7 +534,7 @@ operator!=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & left,
 //}
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE bool
+inline bool
 operator!=(TIterator const & left,
            Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & right)
 {
@@ -546,7 +546,7 @@ operator!=(TIterator const & left,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE void
+inline void
 goNext(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
     goNext(hostIterator(me));
@@ -557,7 +557,7 @@ goNext(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE void
+inline void
 goPrevious(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
     goPrevious(hostIterator(me));
@@ -684,7 +684,7 @@ operator-=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & left,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE bool
+inline bool
 atEnd(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
     return atEnd(hostIterator(me), container(me));
@@ -698,7 +698,7 @@ atEnd(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 
 // Conversion assignment.
 template <typename TTargetContainer, typename TIterator, typename TSpec, typename TSource>
-inline SEQAN_HOST_DEVICE void
+inline void
 assign(Iter<TTargetContainer, AdaptorIterator<TIterator, TSpec> > & target,
        TSource const & source)
 {

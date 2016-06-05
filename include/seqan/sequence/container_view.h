@@ -100,27 +100,27 @@ public:
      * @param end An iterator pointing to the end of the view.
      */
 
-    SEQAN_HOST_DEVICE inline
+    inline
     ContainerView() :
         _begin(),
         _end()
     {}
 
     template <typename TOtherContainer>
-    SEQAN_HOST_DEVICE inline
+    inline
     ContainerView(TOtherContainer & cont):
         _begin(begin(cont, Standard())),
         _end(end(cont, Standard()))
     {}
 
     template <typename TOtherContainer>
-    SEQAN_HOST_DEVICE inline
+    inline
     ContainerView(TOtherContainer const & cont):
         _begin(begin(cont, Standard())),
         _end(end(cont, Standard()))
     {}
 
-    SEQAN_HOST_DEVICE inline
+    inline
     ContainerView(TIterator const & begin, TIterator const & end):
         _begin(begin),
         _end(end)
@@ -131,7 +131,7 @@ public:
     // ------------------------------------------------------------------------
 
     template <typename TOtherContainer>
-    SEQAN_HOST_DEVICE inline
+    inline
     ContainerView &
     operator= (TOtherContainer & other)
     {
@@ -144,7 +144,7 @@ public:
     // ------------------------------------------------------------------------
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline
+    inline
     typename Reference<ContainerView>::Type
     operator[] (TPos pos)
     {
@@ -152,7 +152,7 @@ public:
     }
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline
+    inline
     typename GetValue<ContainerView>::Type
     operator[] (TPos pos) const
     {
@@ -193,27 +193,27 @@ public:
     // ContainerView Constructors
     // ------------------------------------------------------------------------
 
-    SEQAN_HOST_DEVICE inline
+    inline
     ContainerView() :
         TBase(),
         _capacity(0)
     {}
 
     template <typename TOtherContainer>
-    SEQAN_HOST_DEVICE inline
+    inline
     ContainerView(TOtherContainer & cont) :
         TBase(cont),
         _capacity(capacity(cont))
     {}
 
     template <typename TOtherContainer>
-    SEQAN_HOST_DEVICE inline
+    inline
     ContainerView(TOtherContainer const & cont) :
         TBase(cont),
         _capacity(capacity(cont))
     {}
 
-    SEQAN_HOST_DEVICE inline
+    inline
     ContainerView(TIterator const & begin, TIterator const & end) :
         TBase(begin, end),
         _capacity(end - begin)
@@ -306,22 +306,6 @@ struct Iterator<ContainerView<TContainer, TSpec>, Standard>:
 template <typename TContainer, typename TSpec>
 struct Iterator<ContainerView<TContainer, TSpec> const, Standard>:
     public Iterator<TContainer const, Standard> {};
-
-#ifdef PLATFORM_CUDA
-template <typename TContainer, typename TAlloc, typename TSpec>
-struct Iterator<ContainerView<thrust::device_vector<TContainer, TAlloc>, TSpec>, Standard>
-{
-    typedef typename thrust::device_vector<TContainer, TAlloc>::pointer         TIterator_;
-    typedef typename thrust::detail::pointer_traits<TIterator_>::raw_pointer    Type;
-};
-
-template <typename TContainer, typename TAlloc, typename TSpec>
-struct Iterator<ContainerView<thrust::device_vector<TContainer, TAlloc>, TSpec> const, Standard>
-{
-    typedef typename thrust::device_vector<TContainer const, TAlloc>::pointer   TIterator_;
-    typedef typename thrust::detail::pointer_traits<TIterator_>::raw_pointer    Type;
-};
-#endif
 
 // ----------------------------------------------------------------------------
 // Metafunction Difference
@@ -422,7 +406,7 @@ struct View<Segment<THost, TSpec> >
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec>
-SEQAN_HOST_DEVICE inline
+inline
 typename Iterator<ContainerView<TContainer, TSpec>, Standard>::Type
 begin(ContainerView<TContainer, TSpec> & view, Standard)
 {
@@ -430,7 +414,7 @@ begin(ContainerView<TContainer, TSpec> & view, Standard)
 }
 
 template <typename TContainer, typename TSpec>
-SEQAN_HOST_DEVICE inline
+inline
 typename Iterator<ContainerView<TContainer, TSpec> const, Standard>::Type
 begin(ContainerView<TContainer, TSpec> const & view, Standard)
 {
@@ -442,7 +426,7 @@ begin(ContainerView<TContainer, TSpec> const & view, Standard)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec>
-SEQAN_HOST_DEVICE inline
+inline
 typename Iterator<ContainerView<TContainer, TSpec>, Standard>::Type
 end(ContainerView<TContainer, TSpec> & view, Standard)
 {
@@ -450,7 +434,7 @@ end(ContainerView<TContainer, TSpec> & view, Standard)
 }
 
 template <typename TContainer, typename TSpec>
-SEQAN_HOST_DEVICE inline
+inline
 typename Iterator<ContainerView<TContainer, TSpec> const, Standard>::Type
 end(ContainerView<TContainer, TSpec> const & view, Standard)
 {
@@ -462,7 +446,7 @@ end(ContainerView<TContainer, TSpec> const & view, Standard)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline
+inline
 typename Reference<ContainerView<TContainer, TSpec> >::Type
 value(ContainerView<TContainer, TSpec> & view, TPos pos)
 {
@@ -471,7 +455,7 @@ value(ContainerView<TContainer, TSpec> & view, TPos pos)
 }
 
 template <typename TContainer, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline
+inline
 typename Reference<ContainerView<TContainer, TSpec> const>::Type
 value(ContainerView<TContainer, TSpec> const & view, TPos pos)
 {
@@ -484,7 +468,7 @@ value(ContainerView<TContainer, TSpec> const & view, TPos pos)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline
+inline
 typename GetValue<ContainerView<TContainer, TSpec> >::Type
 getValue(ContainerView<TContainer, TSpec> & view, TPos pos)
 {
@@ -493,7 +477,7 @@ getValue(ContainerView<TContainer, TSpec> & view, TPos pos)
 }
 
 template <typename TContainer, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline
+inline
 typename GetValue<ContainerView<TContainer, TSpec> const>::Type
 getValue(ContainerView<TContainer, TSpec> const & view, TPos pos)
 {
@@ -506,7 +490,7 @@ getValue(ContainerView<TContainer, TSpec> const & view, TPos pos)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec>
-SEQAN_HOST_DEVICE inline
+inline
 typename Size<ContainerView<TContainer, TSpec> >::Type
 length(ContainerView<TContainer, TSpec> const & view)
 {
@@ -522,7 +506,7 @@ length(ContainerView<TContainer, TSpec> const & view)
 // and need to make sure that it has a certain length
 
 template <typename TContainer, typename TSpec, typename TSize, typename TValue, typename TExpand>
-SEQAN_HOST_DEVICE inline typename Size< ContainerView<TContainer, TSpec> >::Type
+inline typename Size< ContainerView<TContainer, TSpec> >::Type
 resize(ContainerView<TContainer, TSpec> & me, TSize new_length, TValue /* val */, Tag<TExpand>)
 {
     ignoreUnusedVariableWarning(new_length);
@@ -532,7 +516,7 @@ resize(ContainerView<TContainer, TSpec> & me, TSize new_length, TValue /* val */
 }
 
 template <typename TContainer, typename TSpec, typename TSize, typename TExpand>
-SEQAN_HOST_DEVICE inline typename Size< ContainerView<TContainer, TSpec> >::Type
+inline typename Size< ContainerView<TContainer, TSpec> >::Type
 resize(ContainerView<TContainer, TSpec> & me, TSize new_length, Tag<TExpand> tag)
 {
     return resize(me, new_length, Nothing(), tag);
@@ -543,7 +527,7 @@ resize(ContainerView<TContainer, TSpec> & me, TSize new_length, Tag<TExpand> tag
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec, typename TSize, typename TValue, typename TExpand>
-SEQAN_HOST_DEVICE inline typename Size< ContainerView<TContainer, Resizable<TSpec> > >::Type
+inline typename Size< ContainerView<TContainer, Resizable<TSpec> > >::Type
 resize(ContainerView<TContainer, Resizable<TSpec> > & me, TSize new_length, TValue /* val */, Tag<TExpand>)
 {
     SEQAN_ASSERT_LEQ(new_length, (TSize)capacity(me));
@@ -554,7 +538,7 @@ resize(ContainerView<TContainer, Resizable<TSpec> > & me, TSize new_length, TVal
 }
 
 template <typename TContainer, typename TSpec, typename TSize, typename TExpand>
-SEQAN_HOST_DEVICE inline typename Size< ContainerView<TContainer, Resizable<TSpec> > >::Type
+inline typename Size< ContainerView<TContainer, Resizable<TSpec> > >::Type
 resize(ContainerView<TContainer, Resizable<TSpec> > & me, TSize new_length, Tag<TExpand> tag)
 {
     return resize(me, new_length, Nothing(), tag);
@@ -562,7 +546,7 @@ resize(ContainerView<TContainer, Resizable<TSpec> > & me, TSize new_length, Tag<
 
 // NOTE(esiragusa): It is not necessary to overload it, but otherwise I had to qualify the generic one :(
 template <typename TContainer, typename TSpec, typename TSize>
-SEQAN_HOST_DEVICE inline typename Size< ContainerView<TContainer, Resizable<TSpec> > >::Type
+inline typename Size< ContainerView<TContainer, Resizable<TSpec> > >::Type
 resize(ContainerView<TContainer, Resizable<TSpec> > & me, TSize new_length)
 {
     typedef ContainerView<TContainer, Resizable<TSpec> >    TView;
@@ -575,14 +559,14 @@ resize(ContainerView<TContainer, Resizable<TSpec> > & me, TSize new_length)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec, typename TPosEnd>
-SEQAN_HOST_DEVICE inline typename Prefix<ContainerView<TContainer, TSpec> const>::Type
+inline typename Prefix<ContainerView<TContainer, TSpec> const>::Type
 prefix(ContainerView<TContainer, TSpec> const & view, TPosEnd pos_end)
 {
     return typename Prefix<ContainerView<TContainer, TSpec> const>::Type(view._begin, view._begin + pos_end);
 }
 
 template <typename TContainer, typename TSpec, typename TPosEnd>
-SEQAN_HOST_DEVICE inline typename Prefix<ContainerView<TContainer, TSpec> >::Type
+inline typename Prefix<ContainerView<TContainer, TSpec> >::Type
 prefix(ContainerView<TContainer, TSpec> & view, TPosEnd pos_end)
 {
     return prefix(reinterpret_cast<ContainerView<TContainer, TSpec> const &>(view), pos_end);
@@ -593,14 +577,14 @@ prefix(ContainerView<TContainer, TSpec> & view, TPosEnd pos_end)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec, typename TPosBegin>
-SEQAN_HOST_DEVICE inline typename Suffix<ContainerView<TContainer, TSpec> const>::Type
+inline typename Suffix<ContainerView<TContainer, TSpec> const>::Type
 suffix(ContainerView<TContainer, TSpec> const & view, TPosBegin pos_begin)
 {
     return typename Suffix<ContainerView<TContainer, TSpec> const>::Type(view._begin + pos_begin, view._end);
 }
 
 template <typename TContainer, typename TSpec, typename TPosBegin>
-SEQAN_HOST_DEVICE inline typename Suffix<ContainerView<TContainer, TSpec> >::Type
+inline typename Suffix<ContainerView<TContainer, TSpec> >::Type
 suffix(ContainerView<TContainer, TSpec> & view, TPosBegin pos_begin)
 {
     return suffix(reinterpret_cast<ContainerView<TContainer, TSpec> const &>(view), pos_begin);
@@ -611,14 +595,14 @@ suffix(ContainerView<TContainer, TSpec> & view, TPosBegin pos_begin)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec, typename TPosBegin, typename TPosEnd>
-SEQAN_HOST_DEVICE inline typename Infix<ContainerView<TContainer, TSpec> const>::Type
+inline typename Infix<ContainerView<TContainer, TSpec> const>::Type
 infix(ContainerView<TContainer, TSpec> const & view, TPosBegin pos_begin, TPosEnd pos_end)
 {
     return typename Infix<ContainerView<TContainer, TSpec> >::Type(view._begin + pos_begin, view._begin + pos_end);
 }
 
 template <typename TContainer, typename TSpec, typename TPosBegin, typename TPosEnd>
-SEQAN_HOST_DEVICE inline typename Infix<ContainerView<TContainer, TSpec> >::Type
+inline typename Infix<ContainerView<TContainer, TSpec> >::Type
 infix(ContainerView<TContainer, TSpec> & view, TPosBegin pos_begin, TPosEnd pos_end)
 {
     return infix(reinterpret_cast<ContainerView<TContainer, TSpec> const &>(view), pos_begin, pos_end);
@@ -656,7 +640,7 @@ inline void assign(ContainerView<TContainer, Resizable<TSpec> > & view, TOtherCo
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Size<ContainerView<TContainer, Resizable<TSpec> > >::Type
+inline typename Size<ContainerView<TContainer, Resizable<TSpec> > >::Type
 capacity(ContainerView<TContainer, Resizable<TSpec> > const & view)
 {
     return view._capacity;
@@ -667,7 +651,7 @@ capacity(ContainerView<TContainer, Resizable<TSpec> > const & view)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec, typename TValue, typename TExpand>
-SEQAN_HOST_DEVICE inline void
+inline void
 appendValue(ContainerView<TContainer, Resizable<TSpec> > & view, TValue const & _value, Tag<TExpand> tag)
 {
     resize(view, length(view) + 1, tag);
@@ -676,7 +660,7 @@ appendValue(ContainerView<TContainer, Resizable<TSpec> > & view, TValue const & 
 
 // NOTE(esiragusa): It is not necessary to overload it, but otherwise I had to qualify the generic one :(
 template <typename TContainer, typename TSpec, typename TValue>
-SEQAN_HOST_DEVICE inline void
+inline void
 appendValue(ContainerView<TContainer, Resizable<TSpec> > & view, TValue const & _value)
 {
     typedef ContainerView<TContainer, Resizable<TSpec> >    TView;
@@ -689,7 +673,7 @@ appendValue(ContainerView<TContainer, Resizable<TSpec> > & view, TValue const & 
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec>
-SEQAN_HOST_DEVICE inline void
+inline void
 clear(ContainerView<TContainer, Resizable<TSpec> > & view)
 {
     resize(view, 0, Exact());

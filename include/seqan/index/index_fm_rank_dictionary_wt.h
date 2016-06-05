@@ -277,16 +277,26 @@ template <typename TValue, typename TSpec, typename TConfig, typename TPos, type
 inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type
 getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character)
 {
+    TPos smaller;
+    return getCumulativeRank(dict, pos, character, smaller);
+}
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
+inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type
+getCumulativeRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character, TPos & smaller)
+{
     typedef typename Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreTreeStructure>::Type  TWaveletTreeStructure;
-    typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type         TWaveletTreeStructureString;
-    typedef typename Value<TWaveletTreeStructureString>::Type                               TWaveletTreeStructureEntry;
-    typedef typename Value<TWaveletTreeStructureEntry, 1>::Type                             TChar_;
+    typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type                         TWaveletTreeStructureString;
+    typedef typename Value<TWaveletTreeStructureString>::Type                                               TWaveletTreeStructureEntry;
+    typedef typename Value<TWaveletTreeStructureEntry, 1>::Type                                             TChar_;
 
     TPos sum = pos;
     TPos treePos = 0;
+    smaller = 0;
 
     // determine the leaf containing the character
     // count the number of 1 or 0 up to the computed position
+    // count the number of characters smaller to the specified position
     typename Iterator<TWaveletTreeStructure const, TopDown<> >::Type it(dict.waveletTreeStructure, treePos);
     TChar_ charInTree = dict.waveletTreeStructure.minCharValue;
 
@@ -303,6 +313,7 @@ getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos 
         }
         else
         {
+            smaller += sum - addValue + 1;
             if (addValue == 0) return 0;
 
             charInTree = getCharacter(it);

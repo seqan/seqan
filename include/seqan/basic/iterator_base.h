@@ -363,7 +363,7 @@ operator -= (Iter<TContainer, TSpec> & me, TSize size)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec, typename TContainer2>
-inline SEQAN_HOST_DEVICE typename Position<Iter<TContainer, TSpec> const>::Type
+inline typename Position<Iter<TContainer, TSpec> const>::Type
 position(Iter<TContainer, TSpec> const & me,
          TContainer2 const &)
 {

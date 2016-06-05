@@ -113,7 +113,7 @@ typedef Tag<BlastReport_> BlastReport;
  * </ul>
  *
  * For a detailed example have a look at the
- * <a href="http://seqan.readthedocs.org/en/develop/Tutorial/BlastIO.html">Blast IO tutorial</a>.
+ * <a href="http://seqan.readthedocs.io/en/develop/Tutorial/BlastIO.html">Blast IO tutorial</a>.
  *
  * @see BlastRecord
  */
@@ -245,6 +245,36 @@ constexpr const char *
 _matrixName(Pam250 const & /**/)
 {
     return "PAM250";
+}
+
+template <typename TCurTag>
+constexpr const char *
+_matrixNameTagDispatch(TagList<TCurTag, void> const &,
+                       AminoAcidScoreMatrixID const m)
+{
+    using TUndType = std::underlying_type_t<AminoAcidScoreMatrixID>;
+    return (Find<impl::score::MatrixTags, TCurTag>::VALUE == static_cast<TUndType>(m))
+            ? _matrixName(Score<int, ScoreMatrix<AminoAcid, TCurTag>>())
+            : "ERROR: Matrix name deduction failed, report this as a bug!";
+}
+
+template <typename TCurTag,
+          typename TRestList>
+constexpr const char *
+_matrixNameTagDispatch(TagList<TCurTag, TRestList> const &,
+                       AminoAcidScoreMatrixID const m)
+{
+    using TUndType = std::underlying_type_t<AminoAcidScoreMatrixID>;
+    return (Find<impl::score::MatrixTags, TCurTag>::VALUE == static_cast<TUndType>(m))
+            ? _matrixName(Score<int, ScoreMatrix<AminoAcid, TCurTag>>())
+            : _matrixNameTagDispatch(TRestList(), m);
+}
+
+template <typename TValue>
+constexpr const char *
+_matrixName(Score<TValue, ScoreMatrix<AminoAcid, ScoreSpecSelectable> > const & sc)
+{
+    return _matrixNameTagDispatch(impl::score::MatrixTags(), getScoreMatrixId(sc));
 }
 
 // ----------------------------------------------------------------------------
@@ -790,10 +820,10 @@ writeMatrixName(TStream & stream, SimpleScore const & scheme)
 
 template <typename TStream, typename TScheme>
 inline void
-writeMatrixName(TStream & stream, TScheme const &)
+writeMatrixName(TStream & stream, TScheme const & scheme)
 {
     // see top of file
-    write(stream, _matrixName(TScheme()));
+    write(stream, _matrixName(scheme));
 }
 
 template <typename TStream,

@@ -158,14 +158,14 @@ public:
 // }
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Parameter_<THost_>::Type
+inline typename Parameter_<THost_>::Type
 host(Segment<THost_, PrefixSegment> & me)
 {
     return _toParameter<THost_>(me.data_host);
 }
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Parameter_<THost_>::Type
+inline typename Parameter_<THost_>::Type
 host(Segment<THost_, PrefixSegment> const & me)
 {
     return _toParameter<THost_>(me.data_host);
@@ -190,7 +190,7 @@ setHost(Segment<THost_ const, PrefixSegment> & me, typename Parameter_<THost_>::
 //____________________________________________________________________________
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Iterator<Segment<THost_, PrefixSegment>, Standard>::Type
+inline typename Iterator<Segment<THost_, PrefixSegment>, Standard>::Type
 begin(Segment<THost_, PrefixSegment> & me,
     Standard)
 {
@@ -199,7 +199,7 @@ begin(Segment<THost_, PrefixSegment> & me,
     return begin(tmpHost, Standard());
 }
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Iterator<Segment<THost_, PrefixSegment> const, Standard>::Type
+inline typename Iterator<Segment<THost_, PrefixSegment> const, Standard>::Type
 begin(Segment<THost_, PrefixSegment> const & me,
     Standard)
 {
@@ -210,13 +210,13 @@ begin(Segment<THost_, PrefixSegment> const & me,
 //____________________________________________________________________________
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Position<Segment<THost_, PrefixSegment> const>::Type
+inline typename Position<Segment<THost_, PrefixSegment> const>::Type
 beginPosition(Segment<THost_, PrefixSegment> const & /*me*/)
 {
     return 0;
 }
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Position<Segment<THost_, PrefixSegment> >::Type
+inline typename Position<Segment<THost_, PrefixSegment> >::Type
 beginPosition(Segment<THost_, PrefixSegment> & /*me*/)
 {
     return 0;
@@ -233,14 +233,14 @@ setBegin(Segment<THost_, PrefixSegment> &, TIterator)
 //____________________________________________________________________________
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Iterator<Segment<THost_, PrefixSegment>, Standard>::Type
+inline typename Iterator<Segment<THost_, PrefixSegment>, Standard>::Type
 end(Segment<THost_, PrefixSegment> & me,
     Standard)
 {
     return begin(host(me), Standard()) + me.data_end_position;
 }
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Iterator<Segment<THost_, PrefixSegment> const, Standard>::Type
+inline typename Iterator<Segment<THost_, PrefixSegment> const, Standard>::Type
 end(Segment<THost_, PrefixSegment> const & me,
     Standard)
 {
@@ -286,13 +286,13 @@ _setLength(
 //____________________________________________________________________________
 
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Position<Segment<THost_, PrefixSegment> >::Type
+inline typename Position<Segment<THost_, PrefixSegment> >::Type
 endPosition(Segment<THost_, PrefixSegment> & me)
 {
     return me.data_end_position;
 }
 template <typename THost_>
-SEQAN_HOST_DEVICE inline typename Position<Segment<THost_, PrefixSegment> const>::Type
+inline typename Position<Segment<THost_, PrefixSegment> const>::Type
 endPosition(Segment<THost_, PrefixSegment> const & me)
 {
     return me.data_end_position;
@@ -332,6 +332,14 @@ struct Prefix< Segment<THost, TSpec> const >:
 template <typename THost>
 struct Prefix<THost &>:
     Prefix<THost> {};
+
+// ----------------------------------------------------------------------------
+// Metafunction PrefixOnValue
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct PrefixOnValue :
+    Prefix<T>{};
 
 //////////////////////////////////////////////////////////////////////////////
 
