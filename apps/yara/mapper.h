@@ -1136,6 +1136,13 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
             setPaired(me.ctx, mateId);
             setPaired(me.ctx, anchorId);
 
+            // Set primary matches probabilities.
+            double errorRate = getErrorRate(me.primaryMatches[anchorId], me.reads.seqs);
+            auto bestCount = countMatchesInBestStratum(me.optimalMatchesSet[anchorId]);
+            auto subCount = length(me.suboptimalMatchesSet[anchorId]) - bestCount;
+            me.primaryMatchesProbs[anchorId] = getMatchProb(errorRate, errorRate, bestCount, subCount);
+            me.primaryMatchesProbs[mateId] = me.primaryMatchesProbs[anchorId];
+
             SEQAN_ASSERT(isMapped(me.ctx, mateId));
             SEQAN_ASSERT(isPaired(me.ctx, anchorId));
             SEQAN_ASSERT(isValid(me.primaryMatches[mateId]));

@@ -95,8 +95,8 @@ void generateText(CharString & text, unsigned textLength = 100000)
 // Function generateText(StringSet)
 // --------------------------------------------------------------------------
 
-template <typename TText>
-void generateText(StringSet<TText> & text, unsigned numSeq = 1000, unsigned seqLength = 2000)
+template <typename TText, typename TConfig>
+void generateText(StringSet<TText, TConfig> & text, unsigned numSeq = 1000, unsigned seqLength = 2000)
 {
     typedef typename Value<TText>::Type TChar;
 
@@ -618,7 +618,20 @@ typedef
     TagList<Index<StringSet<DnaString>, FMIndex<> >,
     TagList<Index<StringSet<CharString>, FMIndex<> >
     > > > > > >
+    UnidirectionalFMIndexTypes;
+
+typedef
+    TagList<Index<DnaString, BidirectionalIndex<FMIndex<> > >,
+    UnidirectionalFMIndexTypes
+    >
     FMIndexTypes;
+
+typedef
+    TagList<Index<CharString, IndexSa<> >,
+    TagList<Index<CharString, IndexEsa<> >,
+    UnidirectionalFMIndexTypes
+    > >
+    UnidirectionalIndexTypes;
 
 typedef
     TagList<Index<CharString, IndexSa<> >,

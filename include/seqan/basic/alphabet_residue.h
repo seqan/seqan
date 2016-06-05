@@ -668,11 +668,7 @@ struct CompareTypeImpl<Dna, char>
 
 inline void assign(Dna & target, char c_source)
 {
-#ifdef __CUDA_ARCH__
-    target.value = _translateCharToDna<void>((unsigned char)c_source);
-#else
     target.value = TranslateTableCharToDna_<>::VALUE[(unsigned char) c_source];
-#endif
 }
 
 template <>
@@ -720,11 +716,7 @@ struct CompareTypeImpl<Dna5, char>
 
 inline void assign(Dna5 & target, char c_source)
 {
-#ifdef __CUDA_ARCH__
-    target.value = _translateCharToDna5<void>((unsigned char)c_source);
-#else
     target.value = TranslateTableCharToDna5_<>::VALUE[(unsigned char) c_source];
-#endif
 }
 
 template <>

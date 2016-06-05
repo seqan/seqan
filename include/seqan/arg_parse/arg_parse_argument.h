@@ -135,6 +135,8 @@ public:
         INPUT_FILE,   // .. an inputfile (implicitly also a string)
         OUTPUT_FILE,  // .. an outputfile (implicitly also a string)
         INPUT_PREFIX, // .. an inputprefix (implicitly also a string)
+        ///@deprecated use INPUT_PREFIX instead
+        INPUTPREFIX = INPUT_PREFIX,
         OUTPUT_PREFIX // .. an outoutprefix (implicitly also a string)
     };
 

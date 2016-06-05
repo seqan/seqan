@@ -16,8 +16,8 @@ int main(int argc, char const ** argv)
     std::cout << "shape: " << out << std::endl;
 
     // determine weight and span
-    std::cout << "weight: " << weight(shape);
-    std::cout << ", span: " << shape.span << std::endl;
+    std::cout << "weight: " << (int)weight(shape);
+    std::cout << ", span: " << (int)shape.span << std::endl;
 
     // modify a text to leave out characters
     CharString str = "this is an original string";

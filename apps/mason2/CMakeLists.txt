@@ -10,18 +10,16 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_mason2 CXX)
 message (STATUS "Configuring apps/mason2")
 
-set (SEQAN_APP_VERSION "2.0.3")
+set (SEQAN_APP_VERSION "2.0.4")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (OpenMP)
-    find_package (ZLIB)
-    find_package (SeqAn REQUIRED)
-endif ()
+find_package (OpenMP)
+find_package (ZLIB)
+find_package (SeqAn REQUIRED)
 
 if (NOT ZLIB_FOUND)
   message (STATUS "  ZLIB not found: MASON2 will not be built.")

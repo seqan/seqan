@@ -511,7 +511,7 @@ namespace seqan
         typename Difference<TText>::Type parentRepLen = 0)
     {    // find first element not before query, using operator<
         //typedef typename Difference<TText>::Type            TDiff;
-        typedef typename Suffix<TText>::Type                TSuffix;
+        typedef typename SuffixOnValue<TText>::Type         TSuffix;
         typedef typename Iterator<TSuffix, Standard>::Type    TTextIter;
         typedef typename Iterator<TQuery, Standard>::Type    TQueryIter;
         typedef typename Value<TSuffix>::Type               TTextAlphabet;
@@ -557,7 +557,7 @@ namespace seqan
         typename Difference<TText>::Type parentRepLen = 0)
     {    // find first element not before query, using operator<
         typedef typename Difference<TText>::Type            TDiff;
-        typedef typename Suffix<TText>::Type                TSuffix;
+        typedef typename SuffixOnValue<TText>::Type         TSuffix;
         typedef typename Iterator<TSuffix, Standard>::Type    TTextIter;
         typedef typename Iterator<TQuery, Standard>::Type    TQueryIter;
         typedef typename Value<TSuffix>::Type               TTextAlphabet;
@@ -613,7 +613,7 @@ namespace seqan
         typename Difference<TText>::Type parentRepLen = 0)
     {    // find first element that query is before, using operator<
         //typedef typename Difference<TText>::Type            TDiff;
-        typedef typename Suffix<TText>::Type                TSuffix;
+        typedef typename SuffixOnValue<TText>::Type         TSuffix;
         typedef typename Iterator<TSuffix, Standard>::Type    TTextIter;
         typedef typename Iterator<TQuery, Standard>::Type    TQueryIter;
         typedef typename Value<TSuffix>::Type               TTextAlphabet;
@@ -659,9 +659,9 @@ namespace seqan
         typename Difference<TText>::Type parentRepLen = 0)
     {    // find first element that query is before, using operator<
         typedef typename Difference<TText>::Type            TDiff;
-        typedef typename Suffix<TText>::Type                TSuffix;
-        typedef typename Iterator<TSuffix, Standard>::Type    TTextIter;
-        typedef typename Iterator<TQuery, Standard>::Type    TQueryIter;
+        typedef typename SuffixOnValue<TText>::Type         TSuffix;
+        typedef typename Iterator<TSuffix, Standard>::Type  TTextIter;
+        typedef typename Iterator<TQuery, Standard>::Type   TQueryIter;
         typedef typename Value<TSuffix>::Type               TTextAlphabet;
 
         TDiff lcpLower = 0;
@@ -715,7 +715,7 @@ namespace seqan
         typename Difference<TText>::Type parentRepLen = 0)
     {    // find range equivalent to query, using operator<
         //typedef typename Difference<TText>::Type            TDiff;
-        typedef typename Suffix<TText>::Type                TSuffix;
+        typedef typename SuffixOnValue<TText>::Type           TSuffix;
         typedef typename Iterator<TSuffix, Standard>::Type    TTextIter;
         typedef typename Iterator<TQuery, Standard>::Type    TQueryIter;
         typedef typename Iterator<TSA, Standard>::Type        TSAIter;
@@ -775,7 +775,7 @@ namespace seqan
         typename Difference<TText>::Type parentRepLen = 0)
     {    // find range equivalent to query, using operator<
         typedef typename Difference<TText>::Type            TDiff;
-        typedef typename Suffix<TText>::Type                TSuffix;
+        typedef typename SuffixOnValue<TText>::Type           TSuffix;
         typedef typename Iterator<TSuffix, Standard>::Type    TTextIter;
         typedef typename Iterator<TQuery, Standard>::Type    TQueryIter;
         typedef typename Iterator<TSA, Standard>::Type        TSAIter;
@@ -1163,7 +1163,7 @@ namespace seqan
         TDiff_ lcpUpper)
     {    // find first element not before query, using operator<
         typedef typename Difference<TText>::Type            TDiff;
-        typedef typename Suffix<TText>::Type                TSuffix;
+        typedef typename SuffixOnValue<TText>::Type         TSuffix;
         typedef typename Iterator<TSuffix, Standard>::Type    TTextIter;
         typedef typename Iterator<TSA, Standard>::Type        TSAIter;
         typedef SearchTreeIterator< TLCP, TSpec >            TLCPTreeIt;
@@ -1364,7 +1364,7 @@ namespace seqan
         TDiff_ lcpUpper)
     {    // find first element not before query, using operator<
         typedef typename Difference<TText>::Type            TDiff;
-        typedef typename Suffix<TText>::Type                TSuffix;
+        typedef typename SuffixOnValue<TText>::Type         TSuffix;
         typedef typename Iterator<TSuffix, Standard>::Type    TTextIter;
         typedef typename Iterator<TSA, Standard>::Type        TSAIter;
         typedef SearchTreeIterator< TLCP, TSpec >            TLCPTreeIt;
@@ -1535,7 +1535,7 @@ namespace seqan
         TQuery &query)
     {    // find first element not before query, using operator<
         typedef typename Difference<TText>::Type            TDiff;
-        typedef typename Suffix<TText>::Type                TSuffix;
+        typedef typename SuffixOnValue<TText>::Type         TSuffix;
         typedef typename Iterator<TSuffix, Standard>::Type    TTextIter;
         typedef typename Iterator<TSA, Standard>::Type        TSAIter;
         typedef SearchTreeIterator< TLCP, TSpec >            TLCPTreeIt;

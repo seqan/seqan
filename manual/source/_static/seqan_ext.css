@@ -48,3 +48,23 @@ p.sidebar-title { margin-bottom: 7px !important; }
 .rubric > .rubric-heading1 { font-weight:bolder; font-size: 1.4em; }
 .rubric > .rubric-heading2 { font-weight:bolder; font-size: 1.1em; }
 
+/* Display the sidebar ToC with padding and as a bullet list*/
+#contents > ul > li ul, #contents > ul > li li {
+  margin: .5em 0 .5em 1em !important;
+}
+
+#contents > ul > li li {
+  list-style-type: square;
+}
+
+#contents > ul > li li li {
+  list-style-type: disc;
+}
+
+div[class^='highlight'] pre {
+    color: #AAA
+}
+
+.gp {
+    color: #AAA
+}

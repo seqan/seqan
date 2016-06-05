@@ -10,17 +10,15 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_rabema CXX)
 message (STATUS "Configuring apps/rabema")
 
-set (SEQAN_APP_VERSION "1.2.4")
+set (SEQAN_APP_VERSION "1.2.5")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (ZLIB)
-    find_package (SeqAn REQUIRED)
-endif ()
+find_package (ZLIB)
+find_package (SeqAn REQUIRED)
 
 if (NOT ZLIB_FOUND)
   message (STATUS "  ZLIB not found: RABEMA will not be built.")

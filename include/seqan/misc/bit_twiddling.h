@@ -232,7 +232,7 @@ isBitSet(TWord word, TIndex index)
 // ----------------------------------------------------------------------------
 
 template <typename TWord, typename TPos>
-SEQAN_HOST_DEVICE inline TWord
+inline TWord
 hiBits(TWord word, TPos index)
 {
     return word & ~((TWord(1) << (BitsPerValue<TWord>::VALUE - index)) - TWord(1));
@@ -256,7 +256,6 @@ hiBits(TWord word, TPos index)
  */
 
 template <typename TWord>
-SEQAN_HOST_DEVICE
 inline unsigned
 popCount(TWord word)
 {
@@ -272,36 +271,8 @@ popCount(TWord word)
 // the types unsigned, unsigned long, and unsigned long long.  Starting with version 2008, Visual C++ provides the
 // intrinsics __popcnt16, __popcnt, and __popcnt64 for 16, 32, and 64 bit words.
 
-#if defined(__CUDA_ARCH__)
-
-// ----------------------------------------------------------------------------
-// Function _popCountImpl()
-// ----------------------------------------------------------------------------
-// CUDA implementations.
-
-template <typename TWord>
-SEQAN_DEVICE
-inline unsigned _popCountImpl(TWord word, WordSize_<32> const & /*tag*/)
-{
-    return __popc(static_cast<uint32_t>(word));
-}
-
-template <typename TWord>
-SEQAN_DEVICE
-inline unsigned _popCountImpl(TWord word, WordSize_<16> const & /*tag*/)
-{
-    return __popc(static_cast<uint32_t>(word));
-}
-
-template <typename TWord>
-SEQAN_DEVICE
-inline unsigned _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
-{
-    return __popc(static_cast<uint32_t>(word));
-}
-
 // MSVC >= 2008, has intrinsic
-#elif defined(_MSC_VER)   // #if !defined(__CUDA_ARCH__) && defined(_MSC_VER)
+#if defined(_MSC_VER)
 
 // ----------------------------------------------------------------------------
 // Function _popCountImpl()
@@ -357,7 +328,7 @@ _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
 }
 
 // GCC or CLANG
-#elif !defined(_MSC_VER)  // #if !defined(__CUDA_ARCH__) && !defined(_MSC_VER)
+#elif !defined(_MSC_VER)
 
 // ----------------------------------------------------------------------------
 // Function _popCountImpl()
@@ -393,7 +364,7 @@ _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
     return _popCountImpl(static_cast<uint32_t>(word), WordSize_<32>());
 }
 
-#endif // #if !defined(__CUDA_ARCH__) && !defined(_MSC_VER)
+#endif // #if !defined(_MSC_VER)
 
 // ----------------------------------------------------------------------------
 // Function printBits()
@@ -514,7 +485,7 @@ _bitScanReverse(TWord word, WordSize_<NUM_BITS>)
 // Function _bitScanForwardGeneric()                     [Platform independent]
 // ----------------------------------------------------------------------------
 
-// bitScanForward implementations for 64 and 32 bit values using DeBruijn sequence by Martin LŠuter, Charles E. Leiserson,
+// bitScanForward implementations for 64 and 32 bit values using DeBruijn sequence by Martin Lï¿½uter, Charles E. Leiserson,
 // Harald Prokop and Keith H. Randall; "Using de Bruijn Sequences to Index a 1 in a Computer Word"; (1997)
 
 // Note, the cast of word to a signed integer is necessary to fix compiler warning C4146 on Windows platforms.

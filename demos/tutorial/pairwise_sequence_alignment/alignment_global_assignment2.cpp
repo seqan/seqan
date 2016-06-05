@@ -6,10 +6,10 @@ using namespace seqan;
 
 int main()
 {
-    typedef String<Dna> TSequence;                 // sequence type
-    typedef StringSet<TSequence> TStringSet;       // container for strings
+    typedef String<Dna> TSequence;                              // sequence type
+    typedef StringSet<TSequence> TStringSet;                    // container for strings
     typedef StringSet<TSequence, Dependent<> > TDepStringSet;   // dependent string set
-    typedef Graph<Alignment<TDepStringSet> > TAlignGraph;   // alignment graph
+    typedef Graph<Alignment<TDepStringSet> > TAlignGraph;       // alignment graph
 //![main]
 
 //![init]

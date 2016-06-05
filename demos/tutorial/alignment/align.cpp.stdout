@@ -1,0 +1,74 @@
+//![output_init]
+      0     .  
+        CDFGDC
+        ||    
+        CDEFGA
+
+
+//![output_init]
+//![output_manipulation]
+      0     .   
+        CD-FGDC
+        || ||  
+        CDEFGAH
+
+
+      0     .     
+        CD-FG--DC
+        || ||   |
+        CDEFGAHGC
+
+
+//![output_manipulation]
+//![output_source_positions]
+
+ViewToSource1: 
+C D - F G - - D C 
+0 1 2 2 3 4 4 4 5 
+
+ViewToSource2: 
+C D E F G A H G C 
+0 1 2 3 4 5 6 7 8 
+//![output_source_positions]
+//![output_view_positions]
+
+SourceToView1: 
+C D F G D C 
+0 1 3 4 7 8 
+
+SourceToView2: 
+C D E F G A H G C 
+0 1 2 3 4 5 6 7 8 
+//![output_view_positions]
+//![output_clipping]
+
+Before clipping:
+      0     .     
+        CD-FG--DC
+        || ||   |
+        CDEFGAHGC
+
+
+
+After clipping:
+      0     .  
+        D-FG--
+        | ||  
+        DEFGAH
+
+
+//![output_clipping]
+//![output_clipping_positions]
+
+ViewToSource1: 1 2 2 3 4 4 
+ViewToSource2: 1 2 3 4 5 6 
+
+SourceToView1: -1 0 2 3 6 7 
+SourceToView2: -1 0 1 2 3 4 5 6 7 
+//![output_clipping_positions]
+//![output_iteratingRowClipped]
+D - F G - - 
+//![output_iteratingRowClipped]
+//![output_iteratingRowClipped2]
+C D - F G - - D C 
+//![output_iteratingRowClipped2]

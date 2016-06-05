@@ -58,10 +58,10 @@ struct Extender
 template <typename THaystack, typename TNeedle, typename TSpec>
 struct Extender<THaystack, TNeedle, HammingDistance, TSpec>
 {
-    typedef typename Infix<THaystack const>::Type       THaystackInfix;
-    typedef ModifiedString<THaystackInfix, ModReverse>  THaystackInfixRev;
-    typedef typename Infix<TNeedle const>::Type         TNeedleInfix;
-    typedef ModifiedString<TNeedleInfix, ModReverse>    TNeedleInfixRev;
+    typedef typename InfixOnValue<THaystack const>::Type THaystackInfix;
+    typedef ModifiedString<THaystackInfix, ModReverse>   THaystackInfixRev;
+    typedef typename InfixOnValue<TNeedle const>::Type   TNeedleInfix;
+    typedef ModifiedString<TNeedleInfix, ModReverse>     TNeedleInfixRev;
 
     THaystack const &   haystack;
 
@@ -77,20 +77,20 @@ struct Extender<THaystack, TNeedle, HammingDistance, TSpec>
 template <typename THaystack, typename TNeedle, typename TSpec>
 struct Extender<THaystack, TNeedle, EditDistance, TSpec>
 {
-    typedef typename Infix<THaystack const>::Type       THaystackInfix;
-    typedef ModifiedString<THaystackInfix, ModReverse>  THaystackInfixRev;
-    typedef typename Infix<TNeedle const>::Type         TNeedleInfix;
-    typedef ModifiedString<TNeedleInfix, ModReverse>    TNeedleInfixRev;
+    typedef typename InfixOnValue<THaystack const>::Type THaystackInfix;
+    typedef ModifiedString<THaystackInfix, ModReverse>   THaystackInfixRev;
+    typedef typename InfixOnValue<TNeedle const>::Type   TNeedleInfix;
+    typedef ModifiedString<TNeedleInfix, ModReverse>     TNeedleInfixRev;
 
     typedef AlignTextBanded<FindPrefix,
                             NMatchesNone_,
-                            NMatchesNone_>              TMyersSpec;
-    typedef Myers<TMyersSpec, True, void>               TAlgorithm;
+                            NMatchesNone_>               TMyersSpec;
+    typedef Myers<TMyersSpec, True, void>                TAlgorithm;
 
-    typedef Finder<THaystackInfix>                      TFinderRight;
-    typedef Finder<THaystackInfixRev>                   TFinderLeft;
-    typedef PatternState_<TNeedleInfix, TAlgorithm>     TPatternRight;
-    typedef PatternState_<TNeedleInfixRev, TAlgorithm>  TPatternLeft;
+    typedef Finder<THaystackInfix>                       TFinderRight;
+    typedef Finder<THaystackInfixRev>                    TFinderLeft;
+    typedef PatternState_<TNeedleInfix, TAlgorithm>      TPatternRight;
+    typedef PatternState_<TNeedleInfixRev, TAlgorithm>   TPatternLeft;
 
     THaystack const &   haystack;
 //    TFinderRight        finderRight;
@@ -388,6 +388,13 @@ extend(Extender<THaystack, TNeedle, TDistance, TSpec> & extender,
     THaystackId haystackId = getSeqNo(haystackBegin);
     THaystackSize haystackLength = length(extender.haystack[haystackId]);
     TNeedlePos needleLength = length(needle);
+
+    // Check seed due to Ns randomization in the index.
+    TErrors needleErrorsCheck = 0;
+    THaystackInfix haystackSeed = infix(extender.haystack, haystackBegin, haystackEnd);
+    TNeedleInfix needleSeed = infix(needle, needleBegin, needleEnd);
+    if (!checkHammingDistance(haystackSeed, needleSeed, needleErrorsCheck, needleErrors)) return;
+    SEQAN_ASSERT_EQ(needleErrors, needleErrorsCheck);
 
     // Extend left.
     THaystackPos matchBegin = haystackBegin;

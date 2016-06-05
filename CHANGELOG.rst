@@ -4,6 +4,56 @@ SeqAn Changelog
 This file summarizes the changes to the SeqAn library and apps.
 
 
+Release 2.1.1
+~~~~~~~~~~~~~
+
+Minor release including major improvements of the manual, several library bug-fixes and changes in the build system. All library modules are backward compatible
+with 2.1.0. For a complete list of changes visit `GitHub <https://github.com/seqan/seqan/pulls?q=is%3Apr+is%3Amerged++milestone%3A%22Release+2.1.1%22+>`_.
+
+Selected Bug Fixes
+^^^^^^^^^^^^^^^^^^
+
+- Tests:
+    - delete automatically created temp directories in unit and app tests
+    - demo tests: ``std::cout`` was not considered in tests
+
+App Updates
+^^^^^^^^^^^
+
+- Yara:
+    - fall back to single-end mapping when paired-end library length distribution is neither given nor estimable
+    - fixed handling of reference metagenomes (references larger than 16k sequences)
+    - enabled support for reference metagenomes by default (``-DYARA_LARGE_CONTIGS=ON``)
+    - added option ``--sensitivity`` (low, high, full)
+    - replaced option --output-secondary with ``--secondary-alignments`` (tag, record, omit)
+    - renamed several options
+
+Documentation Updates
+^^^^^^^^^^^^^^^^^^^^^
+
+- Manual:
+    - major reworking of the manual
+    - repaired links to API dox
+    - hourly update of API dox for nightly builds
+
+Infrastructure Updates
+^^^^^^^^^^^^^^^^^^^^^^
+
+- Build System:
+    - more sensible execinfo detection
+    - don't ship apps and the manual on library releases
+    - introduce cmake ``-DSEQAN_OFFICIAL_PKGS=1`` to build upstream releases with static binaries
+    - cache dependency detection on ``DEVELOP``
+    - make it possible to do ``RELEASE_LIBRARY`` without dox
+
+- Platforms:
+    - basic BSD support
+    - fixed warnings on Windows
+
+- KNIME:
+    - packaging - more flexibility when generating KNIME plugins of external apps
+
+
 Release 2.1.0
 ~~~~~~~~~~~~~
 
@@ -255,7 +305,7 @@ Infrastructure Updates
 
 - The repository has been migrated to GitHub (https://github.com/seqan/seqan).
 - Continuous integration builds happen on TravisCI.
-- The manual has been migrated to sphinx (http://seqan.readthedocs.org).
+- The manual has been migrated to sphinx (http://seqan.readthedocs.io).
 - The ``core`` and ``extras`` subfolders have been removed.
 
 New Apps

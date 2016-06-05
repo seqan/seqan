@@ -15,9 +15,7 @@ message (STATUS "Configuring tests/test_ucsc_io")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (SeqAn REQUIRED)
-endif ()
+find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------
 # Build Setup

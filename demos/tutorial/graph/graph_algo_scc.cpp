@@ -62,7 +62,7 @@ int main()
     }
 //![output-connected-components]
     std::cout << "//![output-connected-components]" << std::endl;
-//![output-connected-components]
+//![return]
     return 0;
 }
-//![output-connected-components]
+//![return]

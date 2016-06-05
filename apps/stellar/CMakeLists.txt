@@ -10,16 +10,14 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_stellar CXX)
 message (STATUS "Configuring apps/stellar")
 
-set (SEQAN_APP_VERSION "1.4.5")
+set (SEQAN_APP_VERSION "1.4.6")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (SeqAn REQUIRED)
-endif ()
+find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------
 # Build Setup

@@ -10,16 +10,14 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_splazers CXX)
 message (STATUS "Configuring apps/splazers")
 
-set (SEQAN_APP_VERSION "1.3.2")
+set (SEQAN_APP_VERSION "1.3.3")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (SeqAn REQUIRED)
-endif ()
+find_package (SeqAn REQUIRED)
 
 if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
     message (STATUS "  Not building splazers on 32bit architectures.")

@@ -10,16 +10,14 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_dfi CXX)
 message (STATUS "Configuring apps/dfi")
 
-set (SEQAN_APP_VERSION "2.1.4")
+set (SEQAN_APP_VERSION "2.1.5")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (SeqAn REQUIRED)
-endif ()
+find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------
 # Build Setup

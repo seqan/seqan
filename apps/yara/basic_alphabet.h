@@ -155,7 +155,7 @@ inline bool ordGreater(Dna5 const & left_, Dna5 const & right_)
 // This function is overloaded to avoid casting TValue2 to Dna.
 
 template <typename TValue2>
-SEQAN_HOST_DEVICE inline bool ordEqual(Dna const & left, TValue2 const & right)
+inline bool ordEqual(Dna const & left, TValue2 const & right)
 {
     return ordValue(left) == ordValue(right);
 }

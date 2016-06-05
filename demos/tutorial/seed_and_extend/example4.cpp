@@ -1,9 +1,7 @@
 //![header]
-#include <seqan/align.h>
-#include <seqan/stream.h>
-#include <seqan/score.h>
-#include <seqan/seeds.h>
 #include <seqan/sequence.h>
+#include <seqan/stream.h>
+#include <seqan/seeds.h>
 
 using namespace seqan;
 
@@ -11,28 +9,22 @@ int main()
 {
 //![header]
 //![example]
-    // The horizontal and vertical sequence (database and query).
-    CharString seqH = "The quick BROWN fox jumped again!";
-    CharString seqV =     "thick BROWN boxes of brownies!";
-    //  ^^^
-    // Create seed and print the seeed sequence.
-    Seed<Simple> seed(11, 7, 14, 10);
+    typedef Seed<Simple>    TSeed;
+    typedef SeedSet<TSeed> TSeedSet;
 
-    // Perform match extension.
-    Score<int, Simple> scoringScheme(1, -1, -1);
-    extendSeed(seed, seqH, seqV, EXTEND_BOTH, scoringScheme, 3,
-               UnGappedXDrop());
+    TSeedSet seedSet;
+    addSeed(seedSet, TSeed(0, 0, 2), Single());
+    addSeed(seedSet, TSeed(3, 5, 2), Single());
+    addSeed(seedSet, TSeed(4, 2, 3), Single());
+    addSeed(seedSet, TSeed(9, 9, 2), Single());
 
-    // Perform a banded alignment.
-    Align<CharString> align;
-    resize(rows(align), 2);
-    assignSource(row(align, 0), infix(seqH, beginPositionH(seed),
-                                      endPositionH(seed)));
-    assignSource(row(align, 1), infix(seqV, beginPositionV(seed),
-                                      endPositionV(seed)));
-
-    globalAlignment(align, scoringScheme);
-    std::cout << "Resulting alignment\n" << align << "\n";
+    std::cout << "Resulting seeds.\n";
+    typedef Iterator<TSeedSet>::Type TIter;
+    for (TIter it = begin(seedSet, Standard()); it != end(seedSet, Standard()); ++it)
+        std::cout << "(" << beginPositionH(*it) << ", " << endPositionH(*it)
+                  << ", " << beginPositionV(*it) << ", " << endPositionV(*it)
+                  << ", " << lowerDiagonal(*it) << ", " << upperDiagonal(*it)
+                  << ")\n";
 //![example]
 
 //![footer]

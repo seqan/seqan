@@ -134,7 +134,7 @@ public:
      * @brief Default constructor.
      * @signature MsaOptions::MsaOptions();
      */
-    MsaOptions() : rescore(true), outputFormat(0), build(0), pairwiseAlignmentMethod(0)
+    MsaOptions() : rescore(true), outputFormat(0), build(0), isDefaultPairwiseAlignment(true), pairwiseAlignmentMethod(0)
     {}
 };
 
