@@ -169,7 +169,7 @@ struct VersionCheck
         {
             _command = _program + " " + _path + "/" + _name + "_version.txt " + _url + _os + "_64_"+ _name + "_" + _version;
 #if defined(PLATFORM_WINDOWS)
-            _command = _command + "; exit  [int] -not $?}\" >$null 2>&1";
+            _command = _command + "; exit  [int] -not $?}\" > nul 2>&1";
 #endif
         }
     }
@@ -355,17 +355,39 @@ inline bool _isSmaller(seqan::String<int> & left, seqan::String<int> & right)
 // ----------------------------------------------------------------------------
 // Function _callServer()
 // ----------------------------------------------------------------------------
-inline bool _callServer(VersionCheck me)
+inline bool _callServer(VersionCheck me, bool version_file_exists)
 {
     // system call
     // http response is stored in a file '.config/seqan/{app_name}_version'
     if (system(me._command.c_str()))
     {
-        std::ofstream version_file (seqan::toCString(me._path + "/" + me._name + "_version.txt"));
-        if (version_file.is_open())
+        std::string version_file = me._path + "/" + me._name + "_version.txt";
+        if (!version_file_exists)
         {
-            version_file << "UNABLE TO CALL HOME.\n";
-            version_file.close();
+            std::ofstream version_file_out (version_file.c_str());
+            if (version_file_out.is_open())
+            {
+                version_file_out << "UNABLE TO CALL HOME.\n";
+                version_file_out.close();
+            }
+        }
+        else // just set last modified time to current
+        {
+#ifdef __unix
+            // TODO:: Attention: this was not tested yet and might crash on unix systems
+            time_t curr;
+            time(&curr); // get current time
+            struct stat t_stat;
+            stat(version_file.c_str(), &t_stat);
+            t_stat.st_mtime = curr;
+#else // windows
+            FILETIME curr;
+            GetSystemTimeAsFileTime(&curr);
+            HANDLE hFile;
+            hFile = CreateFile(version_file.c_str(), GENERIC_WRITE, FILE_SHARE_READ,  NULL,  OPEN_EXISTING,  FILE_ATTRIBUTE_NORMAL, NULL);
+            SetFileTime(hFile, NULL, NULL, &curr);
+            CloseHandle(hFile);
+#endif
         }
         return false;
     }
@@ -394,8 +416,9 @@ inline bool checkForNewerVersion(VersionCheck & me)
     std::string version_file = me._path + "/" + me._name + "_version.txt";
     double min_time_diff = 86400;                           // one day = 86400 seonds
     double file_time_diff = _getFileTimeDiff(version_file); // check for time the version file was last updated
-
-    if (file_time_diff > -1) // file exists. TODO:: ask if there should be a time limit here too
+    bool version_file_exists = (file_time_diff > -1) ? true : false;
+    
+    if (version_file_exists) // file exists. TODO:: ask if there should be a time limit here too
     {
         seqan::String<int> new_ver;
         if (_readVersionNumbers(new_ver, version_file))
@@ -432,12 +455,12 @@ inline bool checkForNewerVersion(VersionCheck & me)
     if (me._program.empty())
         return false;
 
-//    if (file_time_diff < min_time_diff && file_time_diff > -1)
+//    if (file_time_diff < min_time_diff && version_file_exists)
 //        return false;
 
     // launch a seperate thread to not defer runtime
     // std::cout << me._command << std::endl;
-    me._fut = std::async(std::launch::async, _callServer, me);
+    me._fut = std::async(std::launch::async, _callServer, me, version_file_exists);
 
     return true;
 }
