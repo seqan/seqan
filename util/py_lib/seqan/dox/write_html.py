@@ -503,6 +503,7 @@ class HtmlWriter(object):
     def generateSearchIndex(self, doc):
         """Generate the search index."""
         js = ['window.searchData = [']
+        js_module = ['window.searchDataModule = [']
         for entry in doc.top_level_entries.itervalues():
             akas, subentries, headerfile = '', '', ''
             if hasattr(entry, 'akas'):
@@ -525,13 +526,17 @@ class HtmlWriter(object):
             else :
                 srcfile = ""
 
-            js.append('  {title:%s,name:%s,text:%s,akas:%s,subentries:%s,loc:%s,langEntity:%s, definedIn:%s, srcfile:%s},' %
+            js.append('  {title:%s,name:%s,text:%s,akas:%s,subentries:%s,loc:%s,langEntity:%s},' %
                       (repr(entry.title), repr(entry.name), repr(""), repr(akas), repr(subentries),
-                       repr(self.path_converter.convert(entry.name)[0]),
-                       repr(entry.kind),repr(headerfile),repr(srcfile)))
+                       repr(self.path_converter.convert(entry.name)[0]), repr(entry.kind)))
+            js_module.append('  {definedIn:%s,srcfile:%s},' % (repr(headerfile), repr(srcfile)))
         js.append('];')
+        js_module.append('];')
+
         with open(os.path.join(self.out_dirs['js'], 'search.data.js'), 'wb') as f:
             f.write('\n'.join(js))
+        with open(os.path.join(self.out_dirs['js'], 'search.data.module.js'), 'wb') as f:
+            f.write('\n'.join(js_module))
 
     def generateLinkData(self, doc):
         """Generate the Data for top level entry links."""
