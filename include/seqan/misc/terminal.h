@@ -123,21 +123,21 @@ inline bool isTerminal()
  * @see getTerminalSize
  */
 
-#if defined(STDLIB_VS) || defined(PLATFORM_GCC_MINGW)
+#if defined(STDLIB_VS)
 
 inline bool isAnsiColorTerminal()
 {
     return false;
 }
 
-#else  // #if defined(STDLIB_VS) || defined(PLATFORM_GCC_MINGW)
+#else  // #if defined(STDLIB_VS)
 
 inline bool isAnsiColorTerminal()
 {
     return isTerminal();
 }
 
-#endif  // #if defined(STDLIB_VS) || defined(PLATFORM_GCC_MINGW)
+#endif  // #if defined(STDLIB_VS)
 
 // ----------------------------------------------------------------------------
 // Function getTerminalSize()
