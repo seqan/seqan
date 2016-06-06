@@ -43,7 +43,6 @@
 #include <stdio.h>
 #include <regex>
 #include <future>
-
 // ==========================================================================
 // Tags, Classes, Enums
 // ==========================================================================
@@ -95,8 +94,9 @@ struct VersionCheck
     {
         //_fut = &fut;
         _name = name;
-        if (!version.empty())
-            _version = version;
+        if (!version.empty() &&
+            std::regex_match(version, std::regex("^[[:digit:]]\\.[[:digit:]]\\.[[:digit:]].*")))
+            _version = version.substr(0,5); // in case the git revision number is given take only version number
         if(!website.empty())
             _website = website;
         _getProgram();
@@ -158,14 +158,20 @@ struct VersionCheck
 #else // windows
     void _getProgram()
     {
-        _program = "Invoke-WebRequest -OutFile";
+        //  -erroraction 'silentlycontinue'
+        _program = "powershell.exe -NoLogo -NonInteractive -Command \"& {Invoke-WebRequest -erroraction 'silentlycontinue' -OutFile";
     }
 #endif
 
     void _updateCommand()
     {
         if (!_program.empty())
+        {
             _command = _program + " " + _path + "/" + _name + "_version.txt " + _url + _os + "_64_"+ _name + "_" + _version;
+#if defined(PLATFORM_WINDOWS)
+            _command = _command + "; exit  [int] -not $?}\" >$null 2>&1";
+#endif
+        }
     }
 };
 
@@ -272,6 +278,7 @@ inline double _getFileTimeDiff(std::string version_file)
 
     ULONGLONG diffInTicks = ul_curr.QuadPart - ul_file.QuadPart; // get time difference
     LONGLONG diffInS = diffInTicks / 10000000;
+    CloseHandle(hFile);
     return((double)diffInS);
 }
 #endif
@@ -352,8 +359,7 @@ inline bool _callServer(VersionCheck me)
 {
     // system call
     // http response is stored in a file '.config/seqan/{app_name}_version'
-    //std::cout << "I will perform the following command:\n" << me._command << std::endl;
-    if (system(seqan::toCString(me._command)))
+    if (system(me._command.c_str()))
     {
         std::ofstream version_file (seqan::toCString(me._path + "/" + me._name + "_version.txt"));
         if (version_file.is_open())
@@ -384,7 +390,7 @@ inline bool checkForNewerVersion(VersionCheck & me)
 #endif
         me._updateCommand();
     }
-    
+
     std::string version_file = me._path + "/" + me._name + "_version.txt";
     double min_time_diff = 86400;                           // one day = 86400 seonds
     double file_time_diff = _getFileTimeDiff(version_file); // check for time the version file was last updated
@@ -430,7 +436,7 @@ inline bool checkForNewerVersion(VersionCheck & me)
 //        return false;
 
     // launch a seperate thread to not defer runtime
-    std::cout << me._command << std::endl;
+    // std::cout << me._command << std::endl;
     me._fut = std::async(std::launch::async, _callServer, me);
 
     return true;
