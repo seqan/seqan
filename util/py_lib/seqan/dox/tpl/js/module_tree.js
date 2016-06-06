@@ -44,6 +44,7 @@ function updateByKeys(tree, keys) {
         }
     }
 }
+
 function updateTags(tree) {
     for(var i=0; i < tree.length; ++i) {
         if(tree[i].nodes)
@@ -60,7 +61,6 @@ function compare(a,b) {
 
     return 1;
 }
-
 
 // load data 
 var srcfileList = []

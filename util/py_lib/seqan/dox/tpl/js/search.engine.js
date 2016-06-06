@@ -4,6 +4,13 @@ Copyright 2013 Björn Kahlert, Manuel Holtgrewe, Freie Universität Berlin
 JSON Search is released under the MIT License
 and based on the Tipue Search, http://www.tipue.com
 */
+
+for(i=0; i < window.searchData.length; ++i)
+{
+    window.searchData[i].definedIn = window.searchDataModule[i].definedIn;
+    window.searchData[i].srcfile = window.searchDataModule[i].srcfile;
+}
+
 (function($) {
 
     /**
