@@ -46,14 +46,14 @@ namespace seqan
 
 #else  // #ifdef SEQAN_ENABLE_DEBUG
 
-#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#if !defined(COMPILER_MSVC)
 // GCC warns below that the "value computed is not used".  However,
 // MSVC does not like casting void values to void. Thus, this
 // distinction.
 #define SEQAN_DO_SYS(_cond) do { (void) _cond; } while (false)
-#else   // #if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#else   // #if !defined(COMPILER_MSVC)
 #define SEQAN_DO_SYS(_cond) do { _cond; } while (false)
-#endif  // #if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#endif  // #if !defined(COMPILER_MSVC)
 
 #define SEQAN_DO_SYS1(_cond) SEQAN_DO_SYS(_cond)
 #define SEQAN_DO_SYS2(_cond, _comment) SEQAN_DO_SYS(_cond)
