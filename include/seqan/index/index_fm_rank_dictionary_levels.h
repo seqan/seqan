@@ -141,18 +141,18 @@ template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >         TRankDictionary_;
-    //typedef typename Size<TRankDictionary_>::Type                   TSize_;
+    typedef uint16_t                   TSize_;
 
-    typedef /*typename Size<TRankDictionary_>::Type*/uint16_t                 Type;
+    typedef Tuple<TSize_, ValueSize<TValue>::VALUE> Type;
 };
 
 template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionarySuperBlock_<TValue, Levels<TSpec, TConfig> >
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >         TRankDictionary_;
-    //typedef typename Size<TRankDictionary_>::Type                   TSize_;
+    typedef uint32_t                   TSize_;
 
-    typedef /*typename Size<TRankDictionary_>::Type*/uint32_t                 Type;
+    typedef Tuple<TSize_, ValueSize<TValue>::VALUE> Type;
 };
 
 template <typename TSpec, typename TConfig>
@@ -307,11 +307,11 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
 
     static const unsigned _BITS_PER_VALUE   = MyBitsPerValue<TValue, TConfig>::VALUE;
     static const unsigned _BITS_PER_BLOCK   = 64;//RankDictionaryBitsPerBlock_<TValue, Levels<TSpec, TConfig> >::VALUE;
-    static const unsigned _BITS_PER_WORD    = Min<RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> >::VALUE, _BITS_PER_BLOCK>::VALUE;
+    static const unsigned _BITS_PER_WORD    = 64;//Min<RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> >::VALUE, _BITS_PER_BLOCK>::VALUE;
     static const unsigned _VALUES_PER_WORD  = _BITS_PER_WORD  / _BITS_PER_VALUE;
     static const unsigned _WORDS_PER_BLOCK  = _BITS_PER_BLOCK / _BITS_PER_WORD;
     static const unsigned _VALUES_PER_BLOCK = _VALUES_PER_WORD * _WORDS_PER_BLOCK;
-    static const unsigned _VALUES_PER_SUPERBLOCK = _VALUES_PER_BLOCK * 2;
+    static const unsigned _VALUES_PER_SUPERBLOCK = (((1 << 16) - 1) / _VALUES_PER_BLOCK) * _VALUES_PER_BLOCK; // 2^16 - 1;
 
     typedef typename std::conditional<_BITS_PER_WORD == 64, uint64_t, uint32_t>::type TWordType;
 
@@ -584,12 +584,16 @@ inline void _padValues(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
 inline void _clearBlockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos pos)
 {
+    //for (unsigned i = 0; i < length(_blockAt(dict, pos)); ++i)
+    //    _blockAt(dict, pos)[i] = 0u;
     clear(_blockAt(dict, pos));
 }
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
 inline void _clearSuperBlockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos pos)
 {
+    //for (unsigned i = 0; i < length(_superBlockAt(dict, pos)); ++i)
+    //    _superBlockAt(dict, pos)[i] = 0u;
     clear(_superBlockAt(dict, pos));
 }
 
