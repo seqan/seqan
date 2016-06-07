@@ -136,7 +136,9 @@ public:
     {
         // TODO: test-case for textlength % values_per_superblock == 0
         //createText(text, TValue());
-        generateText(text, 5000);
+        generateText(text, 500000);
+        //text = "AAGTAGAGCCGTTGCTTTGAAGTTGACTGCTATCTGTCGTCGCCCCCATCGCAGGAACATTCGCTTTTTGTCTAGTCTTCGATTCGCATCAAAGGATGCG";
+        //std::cout << text << std::endl;
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
     }
@@ -227,7 +229,14 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
 
         // Check the rank for all alphabet symbols.
         for (TValueSize c = 0; c < this->alphabetSize; ++c)
-            SEQAN_ASSERT_EQ(getRank(dict, (unsigned long)(textIt - this->textBegin), c), prefixSum[c]);
+        {
+            unsigned long pos = textIt - this->textBegin;
+            /*if (pos == 84 && c == 0)
+            {
+                std::cout << "STOP" << std::endl;
+            }*/
+            SEQAN_ASSERT_EQ(getRank(dict, pos, c), prefixSum[c]);
+        }
     }
 }
 
@@ -257,7 +266,8 @@ SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank)
         unsigned long smallerNaive = 0;
         for (TValueSize c = 0; c < this->alphabetSize; ++c) {
             unsigned long smaller;
-            unsigned long rank = getRank(dict, (unsigned long)(textIt - this->textBegin), TValue((uint16_t) c), smaller); // TODO: remove uint16_t cast
+            unsigned long pos = textIt - this->textBegin;
+            unsigned long rank = getRank(dict, pos, TValue((uint16_t) c), smaller); // TODO: remove uint16_t cast
             SEQAN_ASSERT_EQ(smaller, smallerNaive);
             SEQAN_ASSERT_EQ(rank, prefixSum[c]);
             smallerNaive += prefixSum[c];

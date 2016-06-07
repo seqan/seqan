@@ -146,7 +146,7 @@ SEQAN_TYPED_TEST(BidirectionalFMIndexTest, SearchInString)
     std::mt19937 rng(time(nullptr));
 
     TText text;
-    generateText(rng, text, 50);
+    generateText(rng, text, 2000);
     TText revText(text);
     reverse(revText);
 

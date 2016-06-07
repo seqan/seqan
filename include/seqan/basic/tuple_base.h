@@ -615,6 +615,19 @@ operator+(Tuple<TValue, SIZE, TSpecL> const & left,
     return tuple;
 }
 
+template <typename TValue1, unsigned SIZE, typename TSpecL, typename TValue2, typename TSpecR>
+inline Tuple<TValue1, SIZE, TSpecL>
+operator+(Tuple<TValue1, SIZE, TSpecL> const & left,
+          Tuple<TValue2, SIZE, TSpecR> const & right)
+{
+    Tuple<TValue1, SIZE, TSpecL>  tuple;
+
+    for (unsigned j = 0; j < SIZE; ++j)
+        tuple[j] = left[j] + right[j];
+
+    return tuple;
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_TUPLE_BASE_H_

@@ -63,7 +63,7 @@ void generateText(TText & text, unsigned textLength = 100000)
     int minChar = MinValue<TChar>::VALUE;
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
 
-    std::mt19937 rng(SEED);
+    std::mt19937 rng(time(nullptr));
 
     resize(text, textLength);
 
