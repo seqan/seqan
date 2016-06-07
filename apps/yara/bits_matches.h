@@ -113,10 +113,7 @@ typedef ReadSize        ContigEnd;
 // Class Match
 // ----------------------------------------------------------------------------
 
-#ifdef STDLIB_VS
-    #pragma pack(push,1)
-#endif
-
+#pragma pack(push,1)
 template <typename TSpec = void>
 struct Match
 {
@@ -126,15 +123,8 @@ struct Match
     typename Member<Match, ContigBegin>::Type   contigBegin  : MemberBits<Match, ContigSize>::VALUE;
     typename Member<Match, ContigEnd>::Type     contigEnd    : MemberBits<Match, ReadSize>::VALUE;
     typename Member<Match, Errors>::Type        errors       : MemberBits<Match, Errors>::VALUE;
-}
-#ifndef STDLIB_VS
-    __attribute__((packed))
-#endif
-;
-
-#ifdef STDLIB_VS
-      #pragma pack(pop)
-#endif
+};
+#pragma pack(pop)
 
 // ============================================================================
 // Match Types

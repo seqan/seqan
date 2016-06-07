@@ -130,9 +130,7 @@ struct Tuple
 };
 
 
-#ifdef STDLIB_VS
-    #pragma pack(push,1)
-#endif
+#pragma pack(push,1)
 template <typename TValue, unsigned SIZE>
 struct Tuple<TValue, SIZE, Pack>
 {
@@ -174,14 +172,8 @@ struct Tuple<TValue, SIZE, Pack>
     {
         return i[k] = source;
     }
-}
-#ifndef STDLIB_VS
-    __attribute__((packed))
-#endif
-    ;
-#ifdef STDLIB_VS
-      #pragma pack(pop)
-#endif
+};
+#pragma pack(pop)
 
 //template <typename TValue, unsigned SIZE>
 //const unsigned Tuple<TValue, SIZE, Pack>::SIZE = SIZE;

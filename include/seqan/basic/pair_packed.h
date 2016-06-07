@@ -71,9 +71,7 @@ namespace seqan {
  * <tt>getValue()</tt>, <tt>assignValue()</tt>, <tt>moveValue()</tt>, <tt>setValue()</tt> instead.
  */
 
-#ifdef STDLIB_VS
-    #pragma pack(push,1)
-#endif
+#pragma pack(push,1)
 template <typename T1, typename T2>
 struct Pair<T1, T2, Pack>
 {
@@ -98,14 +96,8 @@ struct Pair<T1, T2, Pack>
     // TODO(holtgrew): explicit?
     Pair(Pair<T1_, T2_, TSpec__> const &_p)
             : i1(getValueI1(_p)), i2(getValueI2(_p)) {}
-}
-#ifndef STDLIB_VS
-    __attribute__((packed))
-#endif
-    ;
-#ifdef STDLIB_VS
-      #pragma pack(pop)
-#endif
+};
+#pragma pack(pop)
 
 // ============================================================================
 // Metafunctions

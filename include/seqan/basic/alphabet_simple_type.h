@@ -126,9 +126,7 @@ namespace seqan {
  * @snippet demos/dox/basic/simple_type_construction.cpp simple type construction and assignment
  */
 
-#ifdef STDLIB_VS
-    #pragma pack(push,1)
-#endif
+#pragma pack(push,1)
 template <typename TValue, typename TSpec>
 class SimpleType
 {
@@ -256,21 +254,15 @@ public:
         return c;
     }
 
-   
+
     operator unsigned char() const
     {
         unsigned char c;
         assign(c, *this);
         return c;
     }
-}
-#ifndef STDLIB_VS
-    __attribute__((packed))
-#endif
-    ;
-#ifdef STDLIB_VS
-      #pragma pack(pop)
-#endif
+};
+#pragma pack(pop)
 
 // ============================================================================
 // Metafunctions
