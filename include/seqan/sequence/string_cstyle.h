@@ -112,14 +112,6 @@ clear(String<TValue, CStyle> & me);
 struct CStyle_;
 typedef Tag<CStyle_> CStyle;
 
-#ifdef STDLIB_VS
-#pragma warning( push )
-// Disable warning C4521 locally (multiple copy constructors).
-#pragma warning( disable: 4521 )
-// Disable warning C4522 locally (multiple assignment operators).
-#pragma warning( disable: 4522 )
-#endif  // STDLIB_VS
-
 template <typename TValue>
 class String <TValue, CStyle >
 {
@@ -219,11 +211,6 @@ public:
 // Define the static member
 template <typename TValue>
 TValue String<TValue, CStyle >::EMPTY_STRING = TValue();
-
-#ifdef STDLIB_VS
-// Reset warning state to previous one for C4521, C4522.
-#pragma warning( pop )
-#endif  // STDLIB_VS
 
 // ============================================================================
 // Metafunctions

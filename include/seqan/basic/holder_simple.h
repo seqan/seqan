@@ -47,12 +47,6 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-#ifdef STDLIB_VS
-// Disable warning C4521 locally (multiple copy constructors).
-#pragma warning( push )
-#pragma warning( disable: 4521 )
-#endif  // STDLIB_VS
-
 /*!
  * @class SimpleHolder
  * @extends Holder
@@ -134,11 +128,6 @@ struct Holder<TValue, Simple>
         return *data_value;
     }
 };
-
-#ifdef STDLIB_VS
-// Set old warning C4521 state again (multiple copy constructors).
-#pragma warning( pop )
-#endif  // STDLIB_VS
 
 // ============================================================================
 // Metafunctions
