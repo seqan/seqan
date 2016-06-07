@@ -136,7 +136,8 @@ public:
     {
         // TODO: test-case for textlength % values_per_superblock == 0
         //createText(text, TValue());
-        generateText(text, 500000);
+        generateText(text, 5000);
+        //text = "111001110101111101110101100001011001110000000010101011011101000001111111010100011110011011101010011110100100011101110000110110110";
         //text = "AAGTAGAGCCGTTGCTTTGAAGTTGACTGCTATCTGTCGTCGCCCCCATCGCAGGAACATTCGCTTTTTGTCTAGTCTTCGATTCGCATCAAAGGATGCG";
         //std::cout << text << std::endl;
         textBegin = begin(text, Standard());
@@ -215,9 +216,9 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
     typedef String<TTextSize>                           TPrefixSum;
 
     typename TestFixture::TRankDict dict(this->text);
-    save(dict, "/home/chris/testFM/x");
+    /*save(dict, "/home/chris/testFM/x");
     clear(dict);
-    open(dict, "/home/chris/testFM/x");
+    open(dict, "/home/chris/testFM/x");*/
 
     // The prefix sum is built while scanning the text.
     TPrefixSum prefixSum;
@@ -234,7 +235,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
         for (TValueSize c = 0; c < this->alphabetSize; ++c)
         {
             unsigned long pos = textIt - this->textBegin;
-            /*if (pos == 84 && c == 0)
+            /*if (pos == 128)
             {
                 std::cout << "STOP" << std::endl;
             }*/

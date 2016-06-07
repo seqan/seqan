@@ -67,8 +67,13 @@ void generateText(TText & text, unsigned textLength = 100000)
 
     resize(text, textLength);
 
+    //std::cout << std::endl;
     for (unsigned i = 0; i < textLength; ++i)
+    {
         text[i] = rng() % alphabetSize - minChar;
+        //std::cout << text[i];
+    }
+    //std::cout << std::endl;
 }
 
 // --------------------------------------------------------------------------

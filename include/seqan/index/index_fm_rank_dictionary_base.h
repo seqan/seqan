@@ -60,9 +60,13 @@ struct FibreRanks_;
 typedef Tag<FibreRanks_>
 const FibreRanks;
 
-struct FibreSuperRanks_;
-typedef Tag<FibreSuperRanks_>
-const FibreSuperRanks;
+struct FibreSuperBlocks_;
+typedef Tag<FibreSuperBlocks_>
+const FibreSuperBlocks;
+
+struct FibreUltraBlocks_;
+typedef Tag<FibreUltraBlocks_>
+const FibreUltraBlocks;
 
 // ----------------------------------------------------------------------------
 // Tag RDConfig
@@ -213,7 +217,7 @@ inline void clear(RankDictionary<TValue, TSpec> & dict)
 template <typename TValue, typename TSpec>
 inline bool empty(RankDictionary<TValue, TSpec> const & dict)
 {
-    return empty(getFibre(dict, FibreSuperRanks()));
+    return empty(getFibre(dict, FibreRanks()));
 }
 
 // ----------------------------------------------------------------------------
