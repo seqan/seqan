@@ -222,8 +222,13 @@ typedef int8_t __int8;     // nolint
 
 // The symbols SEQAN_IS_64_BIT and SEQAN_IS_32_BIT can be used to check
 // whether we are on a 32 bit or on a 64 bit machine.
-#define SEQAN_IS_64_BIT defined(__amd64__) || defined(__x86_64__) || defined(__aarch64__) || defined(__ia64__) || defined(__ppc64__) || defined(_WIN64)
-#define SEQAN_IS_32_BIT !SEQAN_IS_64_BIT
+#if defined(__amd64__) || defined(__x86_64__) || defined(__aarch64__) || defined(__ia64__) || defined(__ppc64__) || defined(_WIN64)
+#define SEQAN_IS_64_BIT 1
+#define SEQAN_IS_32_BIT 0
+#else
+#define SEQAN_IS_64_BIT 0
+#define SEQAN_IS_32_BIT 1
+#endif
 
 /**
  * SEQAN_AUTO_PTR_NAME .... alias for the auto_ptr class template deprecated in C++11.
