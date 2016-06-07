@@ -895,6 +895,31 @@ getRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos, 
          + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
 }
 
+template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar, typename TSmaller>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
+getRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos, TChar c, TSmaller /**/)
+{
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> > const           TRankDictionary;
+    //typedef typename Fibre<TRankDictionary, FibreSuperRanks>::Type          TFibreSuperRanks;
+    //typedef typename Value<FibreSuperRanks>::Type                           TFibreRank;
+
+
+    //typedef typename Fibre<TRankDictionary, FibreSuperRanks>::Type          TFibreRank;
+    //typedef typename Value<TFibreRanks>::Type                               TRankEntry;
+    typedef typename Size<TRankDictionary>::Type                            TSize;
+
+    TSize superBlockPos = _toSuperBlockPos(dict, pos);
+    TSize blockPos      = _toBlockPos(dict, pos);
+    TSize posInBlock    = _toPosInBlock(dict, pos);
+
+    auto const & superblock = dict.superblocks[superBlockPos];
+    auto const & entry = dict.blocks[blockPos];
+
+    return _getSuperBlockRank(dict, superblock, pos, static_cast<TValue>(c))
+        + _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c))
+        + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
+}
+
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TPos, typename TChar>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const>::Type
 getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos, TChar c)
@@ -1165,8 +1190,9 @@ inline bool save(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, c
     //return save(getFibre(dict, FibreSuperRanks()), fileName, openMode);
 
     String<char> name;
-    name = fileName;    append(name, ".bl");    save(getFibre(dict, FibreRanks()), toCString(name), openMode);
-    name = fileName;    append(name, ".sbl");   save(getFibre(dict, FibreSuperRanks()), toCString(name), openMode);
+    // TODO: use getFibre!
+    name = fileName;    append(name, ".bl");    save(dict.blocks, toCString(name), openMode);
+    name = fileName;    append(name, ".sbl");   save(dict.superblocks, toCString(name), openMode);
     return true;
 }
 
@@ -1175,9 +1201,11 @@ inline bool open(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, const c
 {
     //return open(getFibre(dict, FibreSuperRanks()), fileName, openMode);
 
+// TODO: use getFibre!
     String<char> name;
-    name = fileName;    append(name, ".bl");    save(getFibre(dict, FibreRanks()), toCString(name), openMode);
-    name = fileName;    append(name, ".sbl");   save(getFibre(dict, FibreSuperRanks()), toCString(name), openMode);
+    name = fileName;    append(name, ".bl");    open(dict.blocks, toCString(name), openMode);
+    name = fileName;    append(name, ".sbl");   open(dict.superblocks, toCString(name), openMode);
+    return true;
 }
 
 }
