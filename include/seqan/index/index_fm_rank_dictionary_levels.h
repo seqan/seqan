@@ -779,7 +779,7 @@ inline typename Size<RankDictionary<bool, Levels<TSpec, TConfig> > const>::Type
 _getSuperBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TSuperBlock const & superblock, TPos pos, bool c)
 {
     // If c == false then return the complementary rank.
-    return c ? superblock : _toPosInUltraBlock(dict, pos) - _toPosInSuperBlock(dict, pos) - superblock;
+    return c ? superblock : /*_toPosInUltraBlock(dict, pos)*/ pos - _toPosInSuperBlock(dict, pos) - superblock;
 }
 
 // ----------------------------------------------------------------------------
@@ -1022,17 +1022,17 @@ getRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos, 
     //typedef typename Value<TFibreRanks>::Type                               TRankEntry;
     typedef typename Size<TRankDictionary>::Type                            TSize;
 
-    TSize ultraBlockPos = _toUltraBlockPos(dict, pos);
+    //TSize ultraBlockPos = _toUltraBlockPos(dict, pos);
     TSize superBlockPos = _toSuperBlockPos(dict, pos);
     TSize blockPos      = _toBlockPos(dict, pos);
     TSize posInBlock    = _toPosInBlock(dict, pos);
 
-    auto const & ultraBlock = dict.ultrablocks[ultraBlockPos];
+    //auto const & ultraBlock = dict.ultrablocks[ultraBlockPos];
     auto const & superBlock = dict.superblocks[superBlockPos];
     auto const & entry = dict.blocks[blockPos];
 
-    return _getUltraBlockRank(dict, ultraBlock, pos, static_cast<TValue>(c))
-         + _getSuperBlockRank(dict, superBlock, pos, static_cast<TValue>(c))
+    return /*_getUltraBlockRank(dict, ultraBlock, pos, static_cast<TValue>(c))
+         + */_getSuperBlockRank(dict, superBlock, pos, static_cast<TValue>(c))
          + _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c))
          + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
 }
@@ -1057,25 +1057,25 @@ template <typename TValue, typename TSpec, typename TSize, typename TFibre, type
 inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const>::Type
 getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre> > > const & dict, TPos pos, TValue c, TPos & smaller)
 {
-    TSize ultraBlockPos = _toUltraBlockPos(dict, pos);
+    //TSize ultraBlockPos = _toUltraBlockPos(dict, pos);
     TSize superBlockPos = _toSuperBlockPos(dict, pos);
     TSize blockPos   = _toBlockPos(dict, pos);
     TSize posInBlock = _toPosInBlock(dict, pos);
 
-    auto const & ultrablock = dict.ultrablocks[ultraBlockPos];
+    //auto const & ultrablock = dict.ultrablocks[ultraBlockPos];
     auto const & superblock = dict.superblocks[superBlockPos];
     auto const & entry = dict.blocks[blockPos];
 
     smaller = 0;
     if (ordValue(c) > 0)
-        return _getUltraBlockRank(dict, ultrablock, pos, static_cast<TValue>(c), smaller)
-             + _getSuperBlockRank(dict, superblock, pos, static_cast<TValue>(c), smaller)
+        return /*_getUltraBlockRank(dict, ultrablock, pos, static_cast<TValue>(c), smaller)
+             + */_getSuperBlockRank(dict, superblock, pos, static_cast<TValue>(c), smaller)
              + _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c), smaller)
              + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c), smaller);
 
     // c == Dna('A')
-    return _getUltraBlockRank(dict, ultrablock, pos, static_cast<TValue>(c))
-         + _getSuperBlockRank(dict, superblock, pos, static_cast<TValue>(c))
+    return /*_getUltraBlockRank(dict, ultrablock, pos, static_cast<TValue>(c))
+         + */_getSuperBlockRank(dict, superblock, pos, static_cast<TValue>(c))
          + _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c))
          + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
 }
