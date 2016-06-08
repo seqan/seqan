@@ -101,7 +101,7 @@ enum FileMappingMode {
  * @brief The address range in the advise will not be needed any more.
  */
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 
 enum FileMappingAdvise {
     MAP_NORMAL = 0,
@@ -136,7 +136,7 @@ enum FileMappingAdvise {
  * This structure represents both a file and its memory mapping.
  */
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 static SECURITY_ATTRIBUTES FileMappingDefaultAttributes =
 {
     sizeof(SECURITY_ATTRIBUTES),
@@ -159,7 +159,7 @@ struct FileMapping
     // Members
     // -----------------------------------------------------------------------
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     HANDLE      handle;
 #endif
 
@@ -241,7 +241,7 @@ template <typename TSpec>
 inline void
 _initialize(FileMapping<TSpec> &mapping)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     mapping.handle = NULL;
 #endif
     mapping.fileSize = 0;
@@ -262,7 +262,7 @@ _mapFile(FileMapping<TSpec> &mapping, TSize mappingSize)
     ignoreUnusedVariableWarning(mappingSize);
 
     bool result = true;
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     if (mappingSize == 0)
     {
         mapping.handle = NULL;
@@ -313,7 +313,7 @@ _unmapFile(FileMapping<TSpec> &mapping)
     ignoreUnusedVariableWarning(mapping);
 
     bool result = true;
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     if (mapping.handle != NULL)
     {
         result &= (CloseHandle(mapping.handle) != 0);
@@ -543,7 +543,7 @@ template <typename TSpec, typename TPos, typename TSize>
 inline bool
 flushFileSegment(FileMapping<TSpec> &, void *addr, TPos beginPos, TSize size)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     ignoreUnusedVariableWarning(addr);
     ignoreUnusedVariableWarning(beginPos);
     ignoreUnusedVariableWarning(size);
@@ -572,7 +572,7 @@ template <typename TSpec, typename TPos, typename TSize>
 inline bool
 cancelFileSegment(FileMapping<TSpec> &, void *addr, TPos fileOfs, TSize size)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     ignoreUnusedVariableWarning(addr);
     ignoreUnusedVariableWarning(fileOfs);
     ignoreUnusedVariableWarning(size);
@@ -606,7 +606,7 @@ template <typename TSpec, typename TPos, typename TSize>
 inline bool
 adviseFileSegment(FileMapping<TSpec> &, FileMappingAdvise advise, void *addr, TPos fileOfs, TSize size)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     ignoreUnusedVariableWarning(advise);
     ignoreUnusedVariableWarning(addr);
     ignoreUnusedVariableWarning(fileOfs);
@@ -646,7 +646,7 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, TFileMappi
         return NULL;
     mode = (FileMappingMode)(mode & (mapping.openMode & OPEN_MASK));
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 
     DWORD access = ((mode & OPEN_MASK) == OPEN_RDONLY) ? FILE_MAP_READ : FILE_MAP_ALL_ACCESS;
     LARGE_INTEGER largeOfs;
@@ -721,7 +721,7 @@ inline bool
 unmapFileSegment(FileMapping<TSpec> &, void *addr, TSize size)
 {
     bool result;
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     ignoreUnusedVariableWarning(size);
     result = (UnmapViewOfFile(addr) != 0);
 #else
@@ -755,7 +755,7 @@ inline void *
 remapFileSegment(FileMapping<TSpec> &mapping, void *oldAddr, TPos oldFileOfs, TSize oldSize, TSize newSize)
 {
     void *addr;
-#if !defined(PLATFORM_WINDOWS) && defined(MREMAP_MAYMOVE)
+#if !defined(STDLIB_VS) && defined(MREMAP_MAYMOVE)
     ignoreUnusedVariableWarning(mapping);
     ignoreUnusedVariableWarning(oldFileOfs);
     addr = mremap(oldAddr, oldSize, newSize, MREMAP_MAYMOVE);

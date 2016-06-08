@@ -150,12 +150,12 @@
 #
 // # if SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MWCC()
 // #    define SEQAN_PP_TUPLE_ELEM_I(s, i, t) SEQAN_PP_TUPLE_ELEM_ ## s ## _ ## i ## t
-#ifdef PLATFORM_WINDOWS_VS  // # elif SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
+#ifdef STDLIB_VS  // # elif SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
 #    define SEQAN_PP_TUPLE_ELEM_I(s, i, t) SEQAN_PP_TUPLE_ELEM_II(SEQAN_PP_TUPLE_ELEM_ ## s ## _ ## i t)
 #    define SEQAN_PP_TUPLE_ELEM_II(res) res
-#else  // #ifdef PLATFORM_WINDOWS_VS
+#else  // #ifdef STDLIB_VS
 #    define SEQAN_PP_TUPLE_ELEM_I(s, i, t) SEQAN_PP_TUPLE_ELEM_ ## s ## _ ## i t
-#endif  // #ifdef PLATFORM_WINDOWS_VS
+#endif  // #ifdef STDLIB_VS
 #
 # define SEQAN_PP_TUPLE_ELEM_1_0(a) a
 #
@@ -533,15 +533,15 @@
 // #    define SEQAN_PP_SEQ_SIZE_I(par) SEQAN_PP_SEQ_SIZE_II ## par
 // #    define SEQAN_PP_SEQ_SIZE_II(seq) SEQAN_PP_CAT(SEQAN_PP_SEQ_SIZE_, SEQAN_PP_SEQ_SIZE_0 ## seq)
 // # elif SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_EDG() || SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
 #    define SEQAN_PP_SEQ_SIZE(seq) SEQAN_PP_SEQ_SIZE_I(seq)
 #    define SEQAN_PP_SEQ_SIZE_I(seq) SEQAN_PP_CAT(SEQAN_PP_SEQ_SIZE_, SEQAN_PP_SEQ_SIZE_0 seq)
-#else  // #ifdef PLATFORM_WINDOWS_VS
+#else  // #ifdef STDLIB_VS
 // # elif defined(__IBMC__) || defined(__IBMCPP__)
 // #    define SEQAN_PP_SEQ_SIZE(seq) SEQAN_PP_CAT(SEQAN_PP_SEQ_SIZE_, SEQAN_PP_CAT(SEQAN_PP_SEQ_SIZE_0, seq))
 // # else
 #    define SEQAN_PP_SEQ_SIZE(seq) SEQAN_PP_CAT(SEQAN_PP_SEQ_SIZE_, SEQAN_PP_SEQ_SIZE_0 seq)
-#endif  // #ifdef PLATFORM_WINDOWS_VS
+#endif  // #ifdef STDLIB_VS
 
 # define SEQAN_PP_SEQ_SIZE_0(_) SEQAN_PP_SEQ_SIZE_1
 # define SEQAN_PP_SEQ_SIZE_1(_) SEQAN_PP_SEQ_SIZE_2
@@ -1091,12 +1091,12 @@
 // # endif
 #
 // # if ~SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
-#ifndef PLATFORM_WINDOWS_VS
+#ifndef STDLIB_VS
 #    define SEQAN_PP_CAT_I(a, b) a ## b
-#else  // #ifndef PLATFORM_WINDOWS_VS
+#else  // #ifndef STDLIB_VS
 #    define SEQAN_PP_CAT_I(a, b) SEQAN_PP_CAT_II(a ## b)
 #    define SEQAN_PP_CAT_II(res) res
-#endif  // #ifndef PLATFORM_WINDOWS_VS
+#endif  // #ifndef STDLIB_VS
 #
 // # endif
 
@@ -1454,292 +1454,6 @@
 # define SEQAN_PP_TUPLE_EAT_25(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y)
 #
 // # endif
-
-#ifdef SEQAN_PLATFORM_WINDOWS_VS
-
-// --------------------------------------------------------------------------
-// ==> boost/preprocessor/repetition/detail/msvc/for.hpp <==
-// --------------------------------------------------------------------------
-
-# /* Copyright (C) 2001
-#  * Housemarque Oy
-#  * http://www.housemarque.com
-#  *
-#  * Distributed under the Boost Software License, Version 1.0. (See
-#  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
-#  */
-#
-# /* Revised by Paul Mensonides (2002) */
-#
-# /* See http://www.boost.org for most recent version. */
-#
-// # ifndef SEQAN_PREPROCESSOR_REPETITION_DETAIL_MSVC_FOR_HPP
-// # define SEQAN_PREPROCESSOR_REPETITION_DETAIL_MSVC_FOR_HPP
-#
-// # include <boost/preprocessor/control/if.hpp>
-// # include <boost/preprocessor/tuple/eat.hpp>
-#
-# define SEQAN_PP_FOR_1(s, p, o, m) SEQAN_PP_IF(p(2, s), m, SEQAN_PP_TUPLE_EAT_2)(2, s) SEQAN_PP_IF(p(2, s), SEQAN_PP_FOR_2, SEQAN_PP_TUPLE_EAT_4)(o(2, s), p, o, m)
-# define SEQAN_PP_FOR_2(s, p, o, m) SEQAN_PP_IF(p(3, s), m, SEQAN_PP_TUPLE_EAT_2)(3, s) SEQAN_PP_IF(p(3, s), SEQAN_PP_FOR_3, SEQAN_PP_TUPLE_EAT_4)(o(3, s), p, o, m)
-# define SEQAN_PP_FOR_3(s, p, o, m) SEQAN_PP_IF(p(4, s), m, SEQAN_PP_TUPLE_EAT_2)(4, s) SEQAN_PP_IF(p(4, s), SEQAN_PP_FOR_4, SEQAN_PP_TUPLE_EAT_4)(o(4, s), p, o, m)
-# define SEQAN_PP_FOR_4(s, p, o, m) SEQAN_PP_IF(p(5, s), m, SEQAN_PP_TUPLE_EAT_2)(5, s) SEQAN_PP_IF(p(5, s), SEQAN_PP_FOR_5, SEQAN_PP_TUPLE_EAT_4)(o(5, s), p, o, m)
-# define SEQAN_PP_FOR_5(s, p, o, m) SEQAN_PP_IF(p(6, s), m, SEQAN_PP_TUPLE_EAT_2)(6, s) SEQAN_PP_IF(p(6, s), SEQAN_PP_FOR_6, SEQAN_PP_TUPLE_EAT_4)(o(6, s), p, o, m)
-# define SEQAN_PP_FOR_6(s, p, o, m) SEQAN_PP_IF(p(7, s), m, SEQAN_PP_TUPLE_EAT_2)(7, s) SEQAN_PP_IF(p(7, s), SEQAN_PP_FOR_7, SEQAN_PP_TUPLE_EAT_4)(o(7, s), p, o, m)
-# define SEQAN_PP_FOR_7(s, p, o, m) SEQAN_PP_IF(p(8, s), m, SEQAN_PP_TUPLE_EAT_2)(8, s) SEQAN_PP_IF(p(8, s), SEQAN_PP_FOR_8, SEQAN_PP_TUPLE_EAT_4)(o(8, s), p, o, m)
-# define SEQAN_PP_FOR_8(s, p, o, m) SEQAN_PP_IF(p(9, s), m, SEQAN_PP_TUPLE_EAT_2)(9, s) SEQAN_PP_IF(p(9, s), SEQAN_PP_FOR_9, SEQAN_PP_TUPLE_EAT_4)(o(9, s), p, o, m)
-# define SEQAN_PP_FOR_9(s, p, o, m) SEQAN_PP_IF(p(10, s), m, SEQAN_PP_TUPLE_EAT_2)(10, s) SEQAN_PP_IF(p(10, s), SEQAN_PP_FOR_10, SEQAN_PP_TUPLE_EAT_4)(o(10, s), p, o, m)
-# define SEQAN_PP_FOR_10(s, p, o, m) SEQAN_PP_IF(p(11, s), m, SEQAN_PP_TUPLE_EAT_2)(11, s) SEQAN_PP_IF(p(11, s), SEQAN_PP_FOR_11, SEQAN_PP_TUPLE_EAT_4)(o(11, s), p, o, m)
-# define SEQAN_PP_FOR_11(s, p, o, m) SEQAN_PP_IF(p(12, s), m, SEQAN_PP_TUPLE_EAT_2)(12, s) SEQAN_PP_IF(p(12, s), SEQAN_PP_FOR_12, SEQAN_PP_TUPLE_EAT_4)(o(12, s), p, o, m)
-# define SEQAN_PP_FOR_12(s, p, o, m) SEQAN_PP_IF(p(13, s), m, SEQAN_PP_TUPLE_EAT_2)(13, s) SEQAN_PP_IF(p(13, s), SEQAN_PP_FOR_13, SEQAN_PP_TUPLE_EAT_4)(o(13, s), p, o, m)
-# define SEQAN_PP_FOR_13(s, p, o, m) SEQAN_PP_IF(p(14, s), m, SEQAN_PP_TUPLE_EAT_2)(14, s) SEQAN_PP_IF(p(14, s), SEQAN_PP_FOR_14, SEQAN_PP_TUPLE_EAT_4)(o(14, s), p, o, m)
-# define SEQAN_PP_FOR_14(s, p, o, m) SEQAN_PP_IF(p(15, s), m, SEQAN_PP_TUPLE_EAT_2)(15, s) SEQAN_PP_IF(p(15, s), SEQAN_PP_FOR_15, SEQAN_PP_TUPLE_EAT_4)(o(15, s), p, o, m)
-# define SEQAN_PP_FOR_15(s, p, o, m) SEQAN_PP_IF(p(16, s), m, SEQAN_PP_TUPLE_EAT_2)(16, s) SEQAN_PP_IF(p(16, s), SEQAN_PP_FOR_16, SEQAN_PP_TUPLE_EAT_4)(o(16, s), p, o, m)
-# define SEQAN_PP_FOR_16(s, p, o, m) SEQAN_PP_IF(p(17, s), m, SEQAN_PP_TUPLE_EAT_2)(17, s) SEQAN_PP_IF(p(17, s), SEQAN_PP_FOR_17, SEQAN_PP_TUPLE_EAT_4)(o(17, s), p, o, m)
-# define SEQAN_PP_FOR_17(s, p, o, m) SEQAN_PP_IF(p(18, s), m, SEQAN_PP_TUPLE_EAT_2)(18, s) SEQAN_PP_IF(p(18, s), SEQAN_PP_FOR_18, SEQAN_PP_TUPLE_EAT_4)(o(18, s), p, o, m)
-# define SEQAN_PP_FOR_18(s, p, o, m) SEQAN_PP_IF(p(19, s), m, SEQAN_PP_TUPLE_EAT_2)(19, s) SEQAN_PP_IF(p(19, s), SEQAN_PP_FOR_19, SEQAN_PP_TUPLE_EAT_4)(o(19, s), p, o, m)
-# define SEQAN_PP_FOR_19(s, p, o, m) SEQAN_PP_IF(p(20, s), m, SEQAN_PP_TUPLE_EAT_2)(20, s) SEQAN_PP_IF(p(20, s), SEQAN_PP_FOR_20, SEQAN_PP_TUPLE_EAT_4)(o(20, s), p, o, m)
-# define SEQAN_PP_FOR_20(s, p, o, m) SEQAN_PP_IF(p(21, s), m, SEQAN_PP_TUPLE_EAT_2)(21, s) SEQAN_PP_IF(p(21, s), SEQAN_PP_FOR_21, SEQAN_PP_TUPLE_EAT_4)(o(21, s), p, o, m)
-# define SEQAN_PP_FOR_21(s, p, o, m) SEQAN_PP_IF(p(22, s), m, SEQAN_PP_TUPLE_EAT_2)(22, s) SEQAN_PP_IF(p(22, s), SEQAN_PP_FOR_22, SEQAN_PP_TUPLE_EAT_4)(o(22, s), p, o, m)
-# define SEQAN_PP_FOR_22(s, p, o, m) SEQAN_PP_IF(p(23, s), m, SEQAN_PP_TUPLE_EAT_2)(23, s) SEQAN_PP_IF(p(23, s), SEQAN_PP_FOR_23, SEQAN_PP_TUPLE_EAT_4)(o(23, s), p, o, m)
-# define SEQAN_PP_FOR_23(s, p, o, m) SEQAN_PP_IF(p(24, s), m, SEQAN_PP_TUPLE_EAT_2)(24, s) SEQAN_PP_IF(p(24, s), SEQAN_PP_FOR_24, SEQAN_PP_TUPLE_EAT_4)(o(24, s), p, o, m)
-# define SEQAN_PP_FOR_24(s, p, o, m) SEQAN_PP_IF(p(25, s), m, SEQAN_PP_TUPLE_EAT_2)(25, s) SEQAN_PP_IF(p(25, s), SEQAN_PP_FOR_25, SEQAN_PP_TUPLE_EAT_4)(o(25, s), p, o, m)
-# define SEQAN_PP_FOR_25(s, p, o, m) SEQAN_PP_IF(p(26, s), m, SEQAN_PP_TUPLE_EAT_2)(26, s) SEQAN_PP_IF(p(26, s), SEQAN_PP_FOR_26, SEQAN_PP_TUPLE_EAT_4)(o(26, s), p, o, m)
-# define SEQAN_PP_FOR_26(s, p, o, m) SEQAN_PP_IF(p(27, s), m, SEQAN_PP_TUPLE_EAT_2)(27, s) SEQAN_PP_IF(p(27, s), SEQAN_PP_FOR_27, SEQAN_PP_TUPLE_EAT_4)(o(27, s), p, o, m)
-# define SEQAN_PP_FOR_27(s, p, o, m) SEQAN_PP_IF(p(28, s), m, SEQAN_PP_TUPLE_EAT_2)(28, s) SEQAN_PP_IF(p(28, s), SEQAN_PP_FOR_28, SEQAN_PP_TUPLE_EAT_4)(o(28, s), p, o, m)
-# define SEQAN_PP_FOR_28(s, p, o, m) SEQAN_PP_IF(p(29, s), m, SEQAN_PP_TUPLE_EAT_2)(29, s) SEQAN_PP_IF(p(29, s), SEQAN_PP_FOR_29, SEQAN_PP_TUPLE_EAT_4)(o(29, s), p, o, m)
-# define SEQAN_PP_FOR_29(s, p, o, m) SEQAN_PP_IF(p(30, s), m, SEQAN_PP_TUPLE_EAT_2)(30, s) SEQAN_PP_IF(p(30, s), SEQAN_PP_FOR_30, SEQAN_PP_TUPLE_EAT_4)(o(30, s), p, o, m)
-# define SEQAN_PP_FOR_30(s, p, o, m) SEQAN_PP_IF(p(31, s), m, SEQAN_PP_TUPLE_EAT_2)(31, s) SEQAN_PP_IF(p(31, s), SEQAN_PP_FOR_31, SEQAN_PP_TUPLE_EAT_4)(o(31, s), p, o, m)
-# define SEQAN_PP_FOR_31(s, p, o, m) SEQAN_PP_IF(p(32, s), m, SEQAN_PP_TUPLE_EAT_2)(32, s) SEQAN_PP_IF(p(32, s), SEQAN_PP_FOR_32, SEQAN_PP_TUPLE_EAT_4)(o(32, s), p, o, m)
-# define SEQAN_PP_FOR_32(s, p, o, m) SEQAN_PP_IF(p(33, s), m, SEQAN_PP_TUPLE_EAT_2)(33, s) SEQAN_PP_IF(p(33, s), SEQAN_PP_FOR_33, SEQAN_PP_TUPLE_EAT_4)(o(33, s), p, o, m)
-# define SEQAN_PP_FOR_33(s, p, o, m) SEQAN_PP_IF(p(34, s), m, SEQAN_PP_TUPLE_EAT_2)(34, s) SEQAN_PP_IF(p(34, s), SEQAN_PP_FOR_34, SEQAN_PP_TUPLE_EAT_4)(o(34, s), p, o, m)
-# define SEQAN_PP_FOR_34(s, p, o, m) SEQAN_PP_IF(p(35, s), m, SEQAN_PP_TUPLE_EAT_2)(35, s) SEQAN_PP_IF(p(35, s), SEQAN_PP_FOR_35, SEQAN_PP_TUPLE_EAT_4)(o(35, s), p, o, m)
-# define SEQAN_PP_FOR_35(s, p, o, m) SEQAN_PP_IF(p(36, s), m, SEQAN_PP_TUPLE_EAT_2)(36, s) SEQAN_PP_IF(p(36, s), SEQAN_PP_FOR_36, SEQAN_PP_TUPLE_EAT_4)(o(36, s), p, o, m)
-# define SEQAN_PP_FOR_36(s, p, o, m) SEQAN_PP_IF(p(37, s), m, SEQAN_PP_TUPLE_EAT_2)(37, s) SEQAN_PP_IF(p(37, s), SEQAN_PP_FOR_37, SEQAN_PP_TUPLE_EAT_4)(o(37, s), p, o, m)
-# define SEQAN_PP_FOR_37(s, p, o, m) SEQAN_PP_IF(p(38, s), m, SEQAN_PP_TUPLE_EAT_2)(38, s) SEQAN_PP_IF(p(38, s), SEQAN_PP_FOR_38, SEQAN_PP_TUPLE_EAT_4)(o(38, s), p, o, m)
-# define SEQAN_PP_FOR_38(s, p, o, m) SEQAN_PP_IF(p(39, s), m, SEQAN_PP_TUPLE_EAT_2)(39, s) SEQAN_PP_IF(p(39, s), SEQAN_PP_FOR_39, SEQAN_PP_TUPLE_EAT_4)(o(39, s), p, o, m)
-# define SEQAN_PP_FOR_39(s, p, o, m) SEQAN_PP_IF(p(40, s), m, SEQAN_PP_TUPLE_EAT_2)(40, s) SEQAN_PP_IF(p(40, s), SEQAN_PP_FOR_40, SEQAN_PP_TUPLE_EAT_4)(o(40, s), p, o, m)
-# define SEQAN_PP_FOR_40(s, p, o, m) SEQAN_PP_IF(p(41, s), m, SEQAN_PP_TUPLE_EAT_2)(41, s) SEQAN_PP_IF(p(41, s), SEQAN_PP_FOR_41, SEQAN_PP_TUPLE_EAT_4)(o(41, s), p, o, m)
-# define SEQAN_PP_FOR_41(s, p, o, m) SEQAN_PP_IF(p(42, s), m, SEQAN_PP_TUPLE_EAT_2)(42, s) SEQAN_PP_IF(p(42, s), SEQAN_PP_FOR_42, SEQAN_PP_TUPLE_EAT_4)(o(42, s), p, o, m)
-# define SEQAN_PP_FOR_42(s, p, o, m) SEQAN_PP_IF(p(43, s), m, SEQAN_PP_TUPLE_EAT_2)(43, s) SEQAN_PP_IF(p(43, s), SEQAN_PP_FOR_43, SEQAN_PP_TUPLE_EAT_4)(o(43, s), p, o, m)
-# define SEQAN_PP_FOR_43(s, p, o, m) SEQAN_PP_IF(p(44, s), m, SEQAN_PP_TUPLE_EAT_2)(44, s) SEQAN_PP_IF(p(44, s), SEQAN_PP_FOR_44, SEQAN_PP_TUPLE_EAT_4)(o(44, s), p, o, m)
-# define SEQAN_PP_FOR_44(s, p, o, m) SEQAN_PP_IF(p(45, s), m, SEQAN_PP_TUPLE_EAT_2)(45, s) SEQAN_PP_IF(p(45, s), SEQAN_PP_FOR_45, SEQAN_PP_TUPLE_EAT_4)(o(45, s), p, o, m)
-# define SEQAN_PP_FOR_45(s, p, o, m) SEQAN_PP_IF(p(46, s), m, SEQAN_PP_TUPLE_EAT_2)(46, s) SEQAN_PP_IF(p(46, s), SEQAN_PP_FOR_46, SEQAN_PP_TUPLE_EAT_4)(o(46, s), p, o, m)
-# define SEQAN_PP_FOR_46(s, p, o, m) SEQAN_PP_IF(p(47, s), m, SEQAN_PP_TUPLE_EAT_2)(47, s) SEQAN_PP_IF(p(47, s), SEQAN_PP_FOR_47, SEQAN_PP_TUPLE_EAT_4)(o(47, s), p, o, m)
-# define SEQAN_PP_FOR_47(s, p, o, m) SEQAN_PP_IF(p(48, s), m, SEQAN_PP_TUPLE_EAT_2)(48, s) SEQAN_PP_IF(p(48, s), SEQAN_PP_FOR_48, SEQAN_PP_TUPLE_EAT_4)(o(48, s), p, o, m)
-# define SEQAN_PP_FOR_48(s, p, o, m) SEQAN_PP_IF(p(49, s), m, SEQAN_PP_TUPLE_EAT_2)(49, s) SEQAN_PP_IF(p(49, s), SEQAN_PP_FOR_49, SEQAN_PP_TUPLE_EAT_4)(o(49, s), p, o, m)
-# define SEQAN_PP_FOR_49(s, p, o, m) SEQAN_PP_IF(p(50, s), m, SEQAN_PP_TUPLE_EAT_2)(50, s) SEQAN_PP_IF(p(50, s), SEQAN_PP_FOR_50, SEQAN_PP_TUPLE_EAT_4)(o(50, s), p, o, m)
-# define SEQAN_PP_FOR_50(s, p, o, m) SEQAN_PP_IF(p(51, s), m, SEQAN_PP_TUPLE_EAT_2)(51, s) SEQAN_PP_IF(p(51, s), SEQAN_PP_FOR_51, SEQAN_PP_TUPLE_EAT_4)(o(51, s), p, o, m)
-# define SEQAN_PP_FOR_51(s, p, o, m) SEQAN_PP_IF(p(52, s), m, SEQAN_PP_TUPLE_EAT_2)(52, s) SEQAN_PP_IF(p(52, s), SEQAN_PP_FOR_52, SEQAN_PP_TUPLE_EAT_4)(o(52, s), p, o, m)
-# define SEQAN_PP_FOR_52(s, p, o, m) SEQAN_PP_IF(p(53, s), m, SEQAN_PP_TUPLE_EAT_2)(53, s) SEQAN_PP_IF(p(53, s), SEQAN_PP_FOR_53, SEQAN_PP_TUPLE_EAT_4)(o(53, s), p, o, m)
-# define SEQAN_PP_FOR_53(s, p, o, m) SEQAN_PP_IF(p(54, s), m, SEQAN_PP_TUPLE_EAT_2)(54, s) SEQAN_PP_IF(p(54, s), SEQAN_PP_FOR_54, SEQAN_PP_TUPLE_EAT_4)(o(54, s), p, o, m)
-# define SEQAN_PP_FOR_54(s, p, o, m) SEQAN_PP_IF(p(55, s), m, SEQAN_PP_TUPLE_EAT_2)(55, s) SEQAN_PP_IF(p(55, s), SEQAN_PP_FOR_55, SEQAN_PP_TUPLE_EAT_4)(o(55, s), p, o, m)
-# define SEQAN_PP_FOR_55(s, p, o, m) SEQAN_PP_IF(p(56, s), m, SEQAN_PP_TUPLE_EAT_2)(56, s) SEQAN_PP_IF(p(56, s), SEQAN_PP_FOR_56, SEQAN_PP_TUPLE_EAT_4)(o(56, s), p, o, m)
-# define SEQAN_PP_FOR_56(s, p, o, m) SEQAN_PP_IF(p(57, s), m, SEQAN_PP_TUPLE_EAT_2)(57, s) SEQAN_PP_IF(p(57, s), SEQAN_PP_FOR_57, SEQAN_PP_TUPLE_EAT_4)(o(57, s), p, o, m)
-# define SEQAN_PP_FOR_57(s, p, o, m) SEQAN_PP_IF(p(58, s), m, SEQAN_PP_TUPLE_EAT_2)(58, s) SEQAN_PP_IF(p(58, s), SEQAN_PP_FOR_58, SEQAN_PP_TUPLE_EAT_4)(o(58, s), p, o, m)
-# define SEQAN_PP_FOR_58(s, p, o, m) SEQAN_PP_IF(p(59, s), m, SEQAN_PP_TUPLE_EAT_2)(59, s) SEQAN_PP_IF(p(59, s), SEQAN_PP_FOR_59, SEQAN_PP_TUPLE_EAT_4)(o(59, s), p, o, m)
-# define SEQAN_PP_FOR_59(s, p, o, m) SEQAN_PP_IF(p(60, s), m, SEQAN_PP_TUPLE_EAT_2)(60, s) SEQAN_PP_IF(p(60, s), SEQAN_PP_FOR_60, SEQAN_PP_TUPLE_EAT_4)(o(60, s), p, o, m)
-# define SEQAN_PP_FOR_60(s, p, o, m) SEQAN_PP_IF(p(61, s), m, SEQAN_PP_TUPLE_EAT_2)(61, s) SEQAN_PP_IF(p(61, s), SEQAN_PP_FOR_61, SEQAN_PP_TUPLE_EAT_4)(o(61, s), p, o, m)
-# define SEQAN_PP_FOR_61(s, p, o, m) SEQAN_PP_IF(p(62, s), m, SEQAN_PP_TUPLE_EAT_2)(62, s) SEQAN_PP_IF(p(62, s), SEQAN_PP_FOR_62, SEQAN_PP_TUPLE_EAT_4)(o(62, s), p, o, m)
-# define SEQAN_PP_FOR_62(s, p, o, m) SEQAN_PP_IF(p(63, s), m, SEQAN_PP_TUPLE_EAT_2)(63, s) SEQAN_PP_IF(p(63, s), SEQAN_PP_FOR_63, SEQAN_PP_TUPLE_EAT_4)(o(63, s), p, o, m)
-# define SEQAN_PP_FOR_63(s, p, o, m) SEQAN_PP_IF(p(64, s), m, SEQAN_PP_TUPLE_EAT_2)(64, s) SEQAN_PP_IF(p(64, s), SEQAN_PP_FOR_64, SEQAN_PP_TUPLE_EAT_4)(o(64, s), p, o, m)
-# define SEQAN_PP_FOR_64(s, p, o, m) SEQAN_PP_IF(p(65, s), m, SEQAN_PP_TUPLE_EAT_2)(65, s) SEQAN_PP_IF(p(65, s), SEQAN_PP_FOR_65, SEQAN_PP_TUPLE_EAT_4)(o(65, s), p, o, m)
-# define SEQAN_PP_FOR_65(s, p, o, m) SEQAN_PP_IF(p(66, s), m, SEQAN_PP_TUPLE_EAT_2)(66, s) SEQAN_PP_IF(p(66, s), SEQAN_PP_FOR_66, SEQAN_PP_TUPLE_EAT_4)(o(66, s), p, o, m)
-# define SEQAN_PP_FOR_66(s, p, o, m) SEQAN_PP_IF(p(67, s), m, SEQAN_PP_TUPLE_EAT_2)(67, s) SEQAN_PP_IF(p(67, s), SEQAN_PP_FOR_67, SEQAN_PP_TUPLE_EAT_4)(o(67, s), p, o, m)
-# define SEQAN_PP_FOR_67(s, p, o, m) SEQAN_PP_IF(p(68, s), m, SEQAN_PP_TUPLE_EAT_2)(68, s) SEQAN_PP_IF(p(68, s), SEQAN_PP_FOR_68, SEQAN_PP_TUPLE_EAT_4)(o(68, s), p, o, m)
-# define SEQAN_PP_FOR_68(s, p, o, m) SEQAN_PP_IF(p(69, s), m, SEQAN_PP_TUPLE_EAT_2)(69, s) SEQAN_PP_IF(p(69, s), SEQAN_PP_FOR_69, SEQAN_PP_TUPLE_EAT_4)(o(69, s), p, o, m)
-# define SEQAN_PP_FOR_69(s, p, o, m) SEQAN_PP_IF(p(70, s), m, SEQAN_PP_TUPLE_EAT_2)(70, s) SEQAN_PP_IF(p(70, s), SEQAN_PP_FOR_70, SEQAN_PP_TUPLE_EAT_4)(o(70, s), p, o, m)
-# define SEQAN_PP_FOR_70(s, p, o, m) SEQAN_PP_IF(p(71, s), m, SEQAN_PP_TUPLE_EAT_2)(71, s) SEQAN_PP_IF(p(71, s), SEQAN_PP_FOR_71, SEQAN_PP_TUPLE_EAT_4)(o(71, s), p, o, m)
-# define SEQAN_PP_FOR_71(s, p, o, m) SEQAN_PP_IF(p(72, s), m, SEQAN_PP_TUPLE_EAT_2)(72, s) SEQAN_PP_IF(p(72, s), SEQAN_PP_FOR_72, SEQAN_PP_TUPLE_EAT_4)(o(72, s), p, o, m)
-# define SEQAN_PP_FOR_72(s, p, o, m) SEQAN_PP_IF(p(73, s), m, SEQAN_PP_TUPLE_EAT_2)(73, s) SEQAN_PP_IF(p(73, s), SEQAN_PP_FOR_73, SEQAN_PP_TUPLE_EAT_4)(o(73, s), p, o, m)
-# define SEQAN_PP_FOR_73(s, p, o, m) SEQAN_PP_IF(p(74, s), m, SEQAN_PP_TUPLE_EAT_2)(74, s) SEQAN_PP_IF(p(74, s), SEQAN_PP_FOR_74, SEQAN_PP_TUPLE_EAT_4)(o(74, s), p, o, m)
-# define SEQAN_PP_FOR_74(s, p, o, m) SEQAN_PP_IF(p(75, s), m, SEQAN_PP_TUPLE_EAT_2)(75, s) SEQAN_PP_IF(p(75, s), SEQAN_PP_FOR_75, SEQAN_PP_TUPLE_EAT_4)(o(75, s), p, o, m)
-# define SEQAN_PP_FOR_75(s, p, o, m) SEQAN_PP_IF(p(76, s), m, SEQAN_PP_TUPLE_EAT_2)(76, s) SEQAN_PP_IF(p(76, s), SEQAN_PP_FOR_76, SEQAN_PP_TUPLE_EAT_4)(o(76, s), p, o, m)
-# define SEQAN_PP_FOR_76(s, p, o, m) SEQAN_PP_IF(p(77, s), m, SEQAN_PP_TUPLE_EAT_2)(77, s) SEQAN_PP_IF(p(77, s), SEQAN_PP_FOR_77, SEQAN_PP_TUPLE_EAT_4)(o(77, s), p, o, m)
-# define SEQAN_PP_FOR_77(s, p, o, m) SEQAN_PP_IF(p(78, s), m, SEQAN_PP_TUPLE_EAT_2)(78, s) SEQAN_PP_IF(p(78, s), SEQAN_PP_FOR_78, SEQAN_PP_TUPLE_EAT_4)(o(78, s), p, o, m)
-# define SEQAN_PP_FOR_78(s, p, o, m) SEQAN_PP_IF(p(79, s), m, SEQAN_PP_TUPLE_EAT_2)(79, s) SEQAN_PP_IF(p(79, s), SEQAN_PP_FOR_79, SEQAN_PP_TUPLE_EAT_4)(o(79, s), p, o, m)
-# define SEQAN_PP_FOR_79(s, p, o, m) SEQAN_PP_IF(p(80, s), m, SEQAN_PP_TUPLE_EAT_2)(80, s) SEQAN_PP_IF(p(80, s), SEQAN_PP_FOR_80, SEQAN_PP_TUPLE_EAT_4)(o(80, s), p, o, m)
-# define SEQAN_PP_FOR_80(s, p, o, m) SEQAN_PP_IF(p(81, s), m, SEQAN_PP_TUPLE_EAT_2)(81, s) SEQAN_PP_IF(p(81, s), SEQAN_PP_FOR_81, SEQAN_PP_TUPLE_EAT_4)(o(81, s), p, o, m)
-# define SEQAN_PP_FOR_81(s, p, o, m) SEQAN_PP_IF(p(82, s), m, SEQAN_PP_TUPLE_EAT_2)(82, s) SEQAN_PP_IF(p(82, s), SEQAN_PP_FOR_82, SEQAN_PP_TUPLE_EAT_4)(o(82, s), p, o, m)
-# define SEQAN_PP_FOR_82(s, p, o, m) SEQAN_PP_IF(p(83, s), m, SEQAN_PP_TUPLE_EAT_2)(83, s) SEQAN_PP_IF(p(83, s), SEQAN_PP_FOR_83, SEQAN_PP_TUPLE_EAT_4)(o(83, s), p, o, m)
-# define SEQAN_PP_FOR_83(s, p, o, m) SEQAN_PP_IF(p(84, s), m, SEQAN_PP_TUPLE_EAT_2)(84, s) SEQAN_PP_IF(p(84, s), SEQAN_PP_FOR_84, SEQAN_PP_TUPLE_EAT_4)(o(84, s), p, o, m)
-# define SEQAN_PP_FOR_84(s, p, o, m) SEQAN_PP_IF(p(85, s), m, SEQAN_PP_TUPLE_EAT_2)(85, s) SEQAN_PP_IF(p(85, s), SEQAN_PP_FOR_85, SEQAN_PP_TUPLE_EAT_4)(o(85, s), p, o, m)
-# define SEQAN_PP_FOR_85(s, p, o, m) SEQAN_PP_IF(p(86, s), m, SEQAN_PP_TUPLE_EAT_2)(86, s) SEQAN_PP_IF(p(86, s), SEQAN_PP_FOR_86, SEQAN_PP_TUPLE_EAT_4)(o(86, s), p, o, m)
-# define SEQAN_PP_FOR_86(s, p, o, m) SEQAN_PP_IF(p(87, s), m, SEQAN_PP_TUPLE_EAT_2)(87, s) SEQAN_PP_IF(p(87, s), SEQAN_PP_FOR_87, SEQAN_PP_TUPLE_EAT_4)(o(87, s), p, o, m)
-# define SEQAN_PP_FOR_87(s, p, o, m) SEQAN_PP_IF(p(88, s), m, SEQAN_PP_TUPLE_EAT_2)(88, s) SEQAN_PP_IF(p(88, s), SEQAN_PP_FOR_88, SEQAN_PP_TUPLE_EAT_4)(o(88, s), p, o, m)
-# define SEQAN_PP_FOR_88(s, p, o, m) SEQAN_PP_IF(p(89, s), m, SEQAN_PP_TUPLE_EAT_2)(89, s) SEQAN_PP_IF(p(89, s), SEQAN_PP_FOR_89, SEQAN_PP_TUPLE_EAT_4)(o(89, s), p, o, m)
-# define SEQAN_PP_FOR_89(s, p, o, m) SEQAN_PP_IF(p(90, s), m, SEQAN_PP_TUPLE_EAT_2)(90, s) SEQAN_PP_IF(p(90, s), SEQAN_PP_FOR_90, SEQAN_PP_TUPLE_EAT_4)(o(90, s), p, o, m)
-# define SEQAN_PP_FOR_90(s, p, o, m) SEQAN_PP_IF(p(91, s), m, SEQAN_PP_TUPLE_EAT_2)(91, s) SEQAN_PP_IF(p(91, s), SEQAN_PP_FOR_91, SEQAN_PP_TUPLE_EAT_4)(o(91, s), p, o, m)
-# define SEQAN_PP_FOR_91(s, p, o, m) SEQAN_PP_IF(p(92, s), m, SEQAN_PP_TUPLE_EAT_2)(92, s) SEQAN_PP_IF(p(92, s), SEQAN_PP_FOR_92, SEQAN_PP_TUPLE_EAT_4)(o(92, s), p, o, m)
-# define SEQAN_PP_FOR_92(s, p, o, m) SEQAN_PP_IF(p(93, s), m, SEQAN_PP_TUPLE_EAT_2)(93, s) SEQAN_PP_IF(p(93, s), SEQAN_PP_FOR_93, SEQAN_PP_TUPLE_EAT_4)(o(93, s), p, o, m)
-# define SEQAN_PP_FOR_93(s, p, o, m) SEQAN_PP_IF(p(94, s), m, SEQAN_PP_TUPLE_EAT_2)(94, s) SEQAN_PP_IF(p(94, s), SEQAN_PP_FOR_94, SEQAN_PP_TUPLE_EAT_4)(o(94, s), p, o, m)
-# define SEQAN_PP_FOR_94(s, p, o, m) SEQAN_PP_IF(p(95, s), m, SEQAN_PP_TUPLE_EAT_2)(95, s) SEQAN_PP_IF(p(95, s), SEQAN_PP_FOR_95, SEQAN_PP_TUPLE_EAT_4)(o(95, s), p, o, m)
-# define SEQAN_PP_FOR_95(s, p, o, m) SEQAN_PP_IF(p(96, s), m, SEQAN_PP_TUPLE_EAT_2)(96, s) SEQAN_PP_IF(p(96, s), SEQAN_PP_FOR_96, SEQAN_PP_TUPLE_EAT_4)(o(96, s), p, o, m)
-# define SEQAN_PP_FOR_96(s, p, o, m) SEQAN_PP_IF(p(97, s), m, SEQAN_PP_TUPLE_EAT_2)(97, s) SEQAN_PP_IF(p(97, s), SEQAN_PP_FOR_97, SEQAN_PP_TUPLE_EAT_4)(o(97, s), p, o, m)
-# define SEQAN_PP_FOR_97(s, p, o, m) SEQAN_PP_IF(p(98, s), m, SEQAN_PP_TUPLE_EAT_2)(98, s) SEQAN_PP_IF(p(98, s), SEQAN_PP_FOR_98, SEQAN_PP_TUPLE_EAT_4)(o(98, s), p, o, m)
-# define SEQAN_PP_FOR_98(s, p, o, m) SEQAN_PP_IF(p(99, s), m, SEQAN_PP_TUPLE_EAT_2)(99, s) SEQAN_PP_IF(p(99, s), SEQAN_PP_FOR_99, SEQAN_PP_TUPLE_EAT_4)(o(99, s), p, o, m)
-# define SEQAN_PP_FOR_99(s, p, o, m) SEQAN_PP_IF(p(100, s), m, SEQAN_PP_TUPLE_EAT_2)(100, s) SEQAN_PP_IF(p(100, s), SEQAN_PP_FOR_100, SEQAN_PP_TUPLE_EAT_4)(o(100, s), p, o, m)
-# define SEQAN_PP_FOR_100(s, p, o, m) SEQAN_PP_IF(p(101, s), m, SEQAN_PP_TUPLE_EAT_2)(101, s) SEQAN_PP_IF(p(101, s), SEQAN_PP_FOR_101, SEQAN_PP_TUPLE_EAT_4)(o(101, s), p, o, m)
-# define SEQAN_PP_FOR_101(s, p, o, m) SEQAN_PP_IF(p(102, s), m, SEQAN_PP_TUPLE_EAT_2)(102, s) SEQAN_PP_IF(p(102, s), SEQAN_PP_FOR_102, SEQAN_PP_TUPLE_EAT_4)(o(102, s), p, o, m)
-# define SEQAN_PP_FOR_102(s, p, o, m) SEQAN_PP_IF(p(103, s), m, SEQAN_PP_TUPLE_EAT_2)(103, s) SEQAN_PP_IF(p(103, s), SEQAN_PP_FOR_103, SEQAN_PP_TUPLE_EAT_4)(o(103, s), p, o, m)
-# define SEQAN_PP_FOR_103(s, p, o, m) SEQAN_PP_IF(p(104, s), m, SEQAN_PP_TUPLE_EAT_2)(104, s) SEQAN_PP_IF(p(104, s), SEQAN_PP_FOR_104, SEQAN_PP_TUPLE_EAT_4)(o(104, s), p, o, m)
-# define SEQAN_PP_FOR_104(s, p, o, m) SEQAN_PP_IF(p(105, s), m, SEQAN_PP_TUPLE_EAT_2)(105, s) SEQAN_PP_IF(p(105, s), SEQAN_PP_FOR_105, SEQAN_PP_TUPLE_EAT_4)(o(105, s), p, o, m)
-# define SEQAN_PP_FOR_105(s, p, o, m) SEQAN_PP_IF(p(106, s), m, SEQAN_PP_TUPLE_EAT_2)(106, s) SEQAN_PP_IF(p(106, s), SEQAN_PP_FOR_106, SEQAN_PP_TUPLE_EAT_4)(o(106, s), p, o, m)
-# define SEQAN_PP_FOR_106(s, p, o, m) SEQAN_PP_IF(p(107, s), m, SEQAN_PP_TUPLE_EAT_2)(107, s) SEQAN_PP_IF(p(107, s), SEQAN_PP_FOR_107, SEQAN_PP_TUPLE_EAT_4)(o(107, s), p, o, m)
-# define SEQAN_PP_FOR_107(s, p, o, m) SEQAN_PP_IF(p(108, s), m, SEQAN_PP_TUPLE_EAT_2)(108, s) SEQAN_PP_IF(p(108, s), SEQAN_PP_FOR_108, SEQAN_PP_TUPLE_EAT_4)(o(108, s), p, o, m)
-# define SEQAN_PP_FOR_108(s, p, o, m) SEQAN_PP_IF(p(109, s), m, SEQAN_PP_TUPLE_EAT_2)(109, s) SEQAN_PP_IF(p(109, s), SEQAN_PP_FOR_109, SEQAN_PP_TUPLE_EAT_4)(o(109, s), p, o, m)
-# define SEQAN_PP_FOR_109(s, p, o, m) SEQAN_PP_IF(p(110, s), m, SEQAN_PP_TUPLE_EAT_2)(110, s) SEQAN_PP_IF(p(110, s), SEQAN_PP_FOR_110, SEQAN_PP_TUPLE_EAT_4)(o(110, s), p, o, m)
-# define SEQAN_PP_FOR_110(s, p, o, m) SEQAN_PP_IF(p(111, s), m, SEQAN_PP_TUPLE_EAT_2)(111, s) SEQAN_PP_IF(p(111, s), SEQAN_PP_FOR_111, SEQAN_PP_TUPLE_EAT_4)(o(111, s), p, o, m)
-# define SEQAN_PP_FOR_111(s, p, o, m) SEQAN_PP_IF(p(112, s), m, SEQAN_PP_TUPLE_EAT_2)(112, s) SEQAN_PP_IF(p(112, s), SEQAN_PP_FOR_112, SEQAN_PP_TUPLE_EAT_4)(o(112, s), p, o, m)
-# define SEQAN_PP_FOR_112(s, p, o, m) SEQAN_PP_IF(p(113, s), m, SEQAN_PP_TUPLE_EAT_2)(113, s) SEQAN_PP_IF(p(113, s), SEQAN_PP_FOR_113, SEQAN_PP_TUPLE_EAT_4)(o(113, s), p, o, m)
-# define SEQAN_PP_FOR_113(s, p, o, m) SEQAN_PP_IF(p(114, s), m, SEQAN_PP_TUPLE_EAT_2)(114, s) SEQAN_PP_IF(p(114, s), SEQAN_PP_FOR_114, SEQAN_PP_TUPLE_EAT_4)(o(114, s), p, o, m)
-# define SEQAN_PP_FOR_114(s, p, o, m) SEQAN_PP_IF(p(115, s), m, SEQAN_PP_TUPLE_EAT_2)(115, s) SEQAN_PP_IF(p(115, s), SEQAN_PP_FOR_115, SEQAN_PP_TUPLE_EAT_4)(o(115, s), p, o, m)
-# define SEQAN_PP_FOR_115(s, p, o, m) SEQAN_PP_IF(p(116, s), m, SEQAN_PP_TUPLE_EAT_2)(116, s) SEQAN_PP_IF(p(116, s), SEQAN_PP_FOR_116, SEQAN_PP_TUPLE_EAT_4)(o(116, s), p, o, m)
-# define SEQAN_PP_FOR_116(s, p, o, m) SEQAN_PP_IF(p(117, s), m, SEQAN_PP_TUPLE_EAT_2)(117, s) SEQAN_PP_IF(p(117, s), SEQAN_PP_FOR_117, SEQAN_PP_TUPLE_EAT_4)(o(117, s), p, o, m)
-# define SEQAN_PP_FOR_117(s, p, o, m) SEQAN_PP_IF(p(118, s), m, SEQAN_PP_TUPLE_EAT_2)(118, s) SEQAN_PP_IF(p(118, s), SEQAN_PP_FOR_118, SEQAN_PP_TUPLE_EAT_4)(o(118, s), p, o, m)
-# define SEQAN_PP_FOR_118(s, p, o, m) SEQAN_PP_IF(p(119, s), m, SEQAN_PP_TUPLE_EAT_2)(119, s) SEQAN_PP_IF(p(119, s), SEQAN_PP_FOR_119, SEQAN_PP_TUPLE_EAT_4)(o(119, s), p, o, m)
-# define SEQAN_PP_FOR_119(s, p, o, m) SEQAN_PP_IF(p(120, s), m, SEQAN_PP_TUPLE_EAT_2)(120, s) SEQAN_PP_IF(p(120, s), SEQAN_PP_FOR_120, SEQAN_PP_TUPLE_EAT_4)(o(120, s), p, o, m)
-# define SEQAN_PP_FOR_120(s, p, o, m) SEQAN_PP_IF(p(121, s), m, SEQAN_PP_TUPLE_EAT_2)(121, s) SEQAN_PP_IF(p(121, s), SEQAN_PP_FOR_121, SEQAN_PP_TUPLE_EAT_4)(o(121, s), p, o, m)
-# define SEQAN_PP_FOR_121(s, p, o, m) SEQAN_PP_IF(p(122, s), m, SEQAN_PP_TUPLE_EAT_2)(122, s) SEQAN_PP_IF(p(122, s), SEQAN_PP_FOR_122, SEQAN_PP_TUPLE_EAT_4)(o(122, s), p, o, m)
-# define SEQAN_PP_FOR_122(s, p, o, m) SEQAN_PP_IF(p(123, s), m, SEQAN_PP_TUPLE_EAT_2)(123, s) SEQAN_PP_IF(p(123, s), SEQAN_PP_FOR_123, SEQAN_PP_TUPLE_EAT_4)(o(123, s), p, o, m)
-# define SEQAN_PP_FOR_123(s, p, o, m) SEQAN_PP_IF(p(124, s), m, SEQAN_PP_TUPLE_EAT_2)(124, s) SEQAN_PP_IF(p(124, s), SEQAN_PP_FOR_124, SEQAN_PP_TUPLE_EAT_4)(o(124, s), p, o, m)
-# define SEQAN_PP_FOR_124(s, p, o, m) SEQAN_PP_IF(p(125, s), m, SEQAN_PP_TUPLE_EAT_2)(125, s) SEQAN_PP_IF(p(125, s), SEQAN_PP_FOR_125, SEQAN_PP_TUPLE_EAT_4)(o(125, s), p, o, m)
-# define SEQAN_PP_FOR_125(s, p, o, m) SEQAN_PP_IF(p(126, s), m, SEQAN_PP_TUPLE_EAT_2)(126, s) SEQAN_PP_IF(p(126, s), SEQAN_PP_FOR_126, SEQAN_PP_TUPLE_EAT_4)(o(126, s), p, o, m)
-# define SEQAN_PP_FOR_126(s, p, o, m) SEQAN_PP_IF(p(127, s), m, SEQAN_PP_TUPLE_EAT_2)(127, s) SEQAN_PP_IF(p(127, s), SEQAN_PP_FOR_127, SEQAN_PP_TUPLE_EAT_4)(o(127, s), p, o, m)
-# define SEQAN_PP_FOR_127(s, p, o, m) SEQAN_PP_IF(p(128, s), m, SEQAN_PP_TUPLE_EAT_2)(128, s) SEQAN_PP_IF(p(128, s), SEQAN_PP_FOR_128, SEQAN_PP_TUPLE_EAT_4)(o(128, s), p, o, m)
-# define SEQAN_PP_FOR_128(s, p, o, m) SEQAN_PP_IF(p(129, s), m, SEQAN_PP_TUPLE_EAT_2)(129, s) SEQAN_PP_IF(p(129, s), SEQAN_PP_FOR_129, SEQAN_PP_TUPLE_EAT_4)(o(129, s), p, o, m)
-# define SEQAN_PP_FOR_129(s, p, o, m) SEQAN_PP_IF(p(130, s), m, SEQAN_PP_TUPLE_EAT_2)(130, s) SEQAN_PP_IF(p(130, s), SEQAN_PP_FOR_130, SEQAN_PP_TUPLE_EAT_4)(o(130, s), p, o, m)
-# define SEQAN_PP_FOR_130(s, p, o, m) SEQAN_PP_IF(p(131, s), m, SEQAN_PP_TUPLE_EAT_2)(131, s) SEQAN_PP_IF(p(131, s), SEQAN_PP_FOR_131, SEQAN_PP_TUPLE_EAT_4)(o(131, s), p, o, m)
-# define SEQAN_PP_FOR_131(s, p, o, m) SEQAN_PP_IF(p(132, s), m, SEQAN_PP_TUPLE_EAT_2)(132, s) SEQAN_PP_IF(p(132, s), SEQAN_PP_FOR_132, SEQAN_PP_TUPLE_EAT_4)(o(132, s), p, o, m)
-# define SEQAN_PP_FOR_132(s, p, o, m) SEQAN_PP_IF(p(133, s), m, SEQAN_PP_TUPLE_EAT_2)(133, s) SEQAN_PP_IF(p(133, s), SEQAN_PP_FOR_133, SEQAN_PP_TUPLE_EAT_4)(o(133, s), p, o, m)
-# define SEQAN_PP_FOR_133(s, p, o, m) SEQAN_PP_IF(p(134, s), m, SEQAN_PP_TUPLE_EAT_2)(134, s) SEQAN_PP_IF(p(134, s), SEQAN_PP_FOR_134, SEQAN_PP_TUPLE_EAT_4)(o(134, s), p, o, m)
-# define SEQAN_PP_FOR_134(s, p, o, m) SEQAN_PP_IF(p(135, s), m, SEQAN_PP_TUPLE_EAT_2)(135, s) SEQAN_PP_IF(p(135, s), SEQAN_PP_FOR_135, SEQAN_PP_TUPLE_EAT_4)(o(135, s), p, o, m)
-# define SEQAN_PP_FOR_135(s, p, o, m) SEQAN_PP_IF(p(136, s), m, SEQAN_PP_TUPLE_EAT_2)(136, s) SEQAN_PP_IF(p(136, s), SEQAN_PP_FOR_136, SEQAN_PP_TUPLE_EAT_4)(o(136, s), p, o, m)
-# define SEQAN_PP_FOR_136(s, p, o, m) SEQAN_PP_IF(p(137, s), m, SEQAN_PP_TUPLE_EAT_2)(137, s) SEQAN_PP_IF(p(137, s), SEQAN_PP_FOR_137, SEQAN_PP_TUPLE_EAT_4)(o(137, s), p, o, m)
-# define SEQAN_PP_FOR_137(s, p, o, m) SEQAN_PP_IF(p(138, s), m, SEQAN_PP_TUPLE_EAT_2)(138, s) SEQAN_PP_IF(p(138, s), SEQAN_PP_FOR_138, SEQAN_PP_TUPLE_EAT_4)(o(138, s), p, o, m)
-# define SEQAN_PP_FOR_138(s, p, o, m) SEQAN_PP_IF(p(139, s), m, SEQAN_PP_TUPLE_EAT_2)(139, s) SEQAN_PP_IF(p(139, s), SEQAN_PP_FOR_139, SEQAN_PP_TUPLE_EAT_4)(o(139, s), p, o, m)
-# define SEQAN_PP_FOR_139(s, p, o, m) SEQAN_PP_IF(p(140, s), m, SEQAN_PP_TUPLE_EAT_2)(140, s) SEQAN_PP_IF(p(140, s), SEQAN_PP_FOR_140, SEQAN_PP_TUPLE_EAT_4)(o(140, s), p, o, m)
-# define SEQAN_PP_FOR_140(s, p, o, m) SEQAN_PP_IF(p(141, s), m, SEQAN_PP_TUPLE_EAT_2)(141, s) SEQAN_PP_IF(p(141, s), SEQAN_PP_FOR_141, SEQAN_PP_TUPLE_EAT_4)(o(141, s), p, o, m)
-# define SEQAN_PP_FOR_141(s, p, o, m) SEQAN_PP_IF(p(142, s), m, SEQAN_PP_TUPLE_EAT_2)(142, s) SEQAN_PP_IF(p(142, s), SEQAN_PP_FOR_142, SEQAN_PP_TUPLE_EAT_4)(o(142, s), p, o, m)
-# define SEQAN_PP_FOR_142(s, p, o, m) SEQAN_PP_IF(p(143, s), m, SEQAN_PP_TUPLE_EAT_2)(143, s) SEQAN_PP_IF(p(143, s), SEQAN_PP_FOR_143, SEQAN_PP_TUPLE_EAT_4)(o(143, s), p, o, m)
-# define SEQAN_PP_FOR_143(s, p, o, m) SEQAN_PP_IF(p(144, s), m, SEQAN_PP_TUPLE_EAT_2)(144, s) SEQAN_PP_IF(p(144, s), SEQAN_PP_FOR_144, SEQAN_PP_TUPLE_EAT_4)(o(144, s), p, o, m)
-# define SEQAN_PP_FOR_144(s, p, o, m) SEQAN_PP_IF(p(145, s), m, SEQAN_PP_TUPLE_EAT_2)(145, s) SEQAN_PP_IF(p(145, s), SEQAN_PP_FOR_145, SEQAN_PP_TUPLE_EAT_4)(o(145, s), p, o, m)
-# define SEQAN_PP_FOR_145(s, p, o, m) SEQAN_PP_IF(p(146, s), m, SEQAN_PP_TUPLE_EAT_2)(146, s) SEQAN_PP_IF(p(146, s), SEQAN_PP_FOR_146, SEQAN_PP_TUPLE_EAT_4)(o(146, s), p, o, m)
-# define SEQAN_PP_FOR_146(s, p, o, m) SEQAN_PP_IF(p(147, s), m, SEQAN_PP_TUPLE_EAT_2)(147, s) SEQAN_PP_IF(p(147, s), SEQAN_PP_FOR_147, SEQAN_PP_TUPLE_EAT_4)(o(147, s), p, o, m)
-# define SEQAN_PP_FOR_147(s, p, o, m) SEQAN_PP_IF(p(148, s), m, SEQAN_PP_TUPLE_EAT_2)(148, s) SEQAN_PP_IF(p(148, s), SEQAN_PP_FOR_148, SEQAN_PP_TUPLE_EAT_4)(o(148, s), p, o, m)
-# define SEQAN_PP_FOR_148(s, p, o, m) SEQAN_PP_IF(p(149, s), m, SEQAN_PP_TUPLE_EAT_2)(149, s) SEQAN_PP_IF(p(149, s), SEQAN_PP_FOR_149, SEQAN_PP_TUPLE_EAT_4)(o(149, s), p, o, m)
-# define SEQAN_PP_FOR_149(s, p, o, m) SEQAN_PP_IF(p(150, s), m, SEQAN_PP_TUPLE_EAT_2)(150, s) SEQAN_PP_IF(p(150, s), SEQAN_PP_FOR_150, SEQAN_PP_TUPLE_EAT_4)(o(150, s), p, o, m)
-# define SEQAN_PP_FOR_150(s, p, o, m) SEQAN_PP_IF(p(151, s), m, SEQAN_PP_TUPLE_EAT_2)(151, s) SEQAN_PP_IF(p(151, s), SEQAN_PP_FOR_151, SEQAN_PP_TUPLE_EAT_4)(o(151, s), p, o, m)
-# define SEQAN_PP_FOR_151(s, p, o, m) SEQAN_PP_IF(p(152, s), m, SEQAN_PP_TUPLE_EAT_2)(152, s) SEQAN_PP_IF(p(152, s), SEQAN_PP_FOR_152, SEQAN_PP_TUPLE_EAT_4)(o(152, s), p, o, m)
-# define SEQAN_PP_FOR_152(s, p, o, m) SEQAN_PP_IF(p(153, s), m, SEQAN_PP_TUPLE_EAT_2)(153, s) SEQAN_PP_IF(p(153, s), SEQAN_PP_FOR_153, SEQAN_PP_TUPLE_EAT_4)(o(153, s), p, o, m)
-# define SEQAN_PP_FOR_153(s, p, o, m) SEQAN_PP_IF(p(154, s), m, SEQAN_PP_TUPLE_EAT_2)(154, s) SEQAN_PP_IF(p(154, s), SEQAN_PP_FOR_154, SEQAN_PP_TUPLE_EAT_4)(o(154, s), p, o, m)
-# define SEQAN_PP_FOR_154(s, p, o, m) SEQAN_PP_IF(p(155, s), m, SEQAN_PP_TUPLE_EAT_2)(155, s) SEQAN_PP_IF(p(155, s), SEQAN_PP_FOR_155, SEQAN_PP_TUPLE_EAT_4)(o(155, s), p, o, m)
-# define SEQAN_PP_FOR_155(s, p, o, m) SEQAN_PP_IF(p(156, s), m, SEQAN_PP_TUPLE_EAT_2)(156, s) SEQAN_PP_IF(p(156, s), SEQAN_PP_FOR_156, SEQAN_PP_TUPLE_EAT_4)(o(156, s), p, o, m)
-# define SEQAN_PP_FOR_156(s, p, o, m) SEQAN_PP_IF(p(157, s), m, SEQAN_PP_TUPLE_EAT_2)(157, s) SEQAN_PP_IF(p(157, s), SEQAN_PP_FOR_157, SEQAN_PP_TUPLE_EAT_4)(o(157, s), p, o, m)
-# define SEQAN_PP_FOR_157(s, p, o, m) SEQAN_PP_IF(p(158, s), m, SEQAN_PP_TUPLE_EAT_2)(158, s) SEQAN_PP_IF(p(158, s), SEQAN_PP_FOR_158, SEQAN_PP_TUPLE_EAT_4)(o(158, s), p, o, m)
-# define SEQAN_PP_FOR_158(s, p, o, m) SEQAN_PP_IF(p(159, s), m, SEQAN_PP_TUPLE_EAT_2)(159, s) SEQAN_PP_IF(p(159, s), SEQAN_PP_FOR_159, SEQAN_PP_TUPLE_EAT_4)(o(159, s), p, o, m)
-# define SEQAN_PP_FOR_159(s, p, o, m) SEQAN_PP_IF(p(160, s), m, SEQAN_PP_TUPLE_EAT_2)(160, s) SEQAN_PP_IF(p(160, s), SEQAN_PP_FOR_160, SEQAN_PP_TUPLE_EAT_4)(o(160, s), p, o, m)
-# define SEQAN_PP_FOR_160(s, p, o, m) SEQAN_PP_IF(p(161, s), m, SEQAN_PP_TUPLE_EAT_2)(161, s) SEQAN_PP_IF(p(161, s), SEQAN_PP_FOR_161, SEQAN_PP_TUPLE_EAT_4)(o(161, s), p, o, m)
-# define SEQAN_PP_FOR_161(s, p, o, m) SEQAN_PP_IF(p(162, s), m, SEQAN_PP_TUPLE_EAT_2)(162, s) SEQAN_PP_IF(p(162, s), SEQAN_PP_FOR_162, SEQAN_PP_TUPLE_EAT_4)(o(162, s), p, o, m)
-# define SEQAN_PP_FOR_162(s, p, o, m) SEQAN_PP_IF(p(163, s), m, SEQAN_PP_TUPLE_EAT_2)(163, s) SEQAN_PP_IF(p(163, s), SEQAN_PP_FOR_163, SEQAN_PP_TUPLE_EAT_4)(o(163, s), p, o, m)
-# define SEQAN_PP_FOR_163(s, p, o, m) SEQAN_PP_IF(p(164, s), m, SEQAN_PP_TUPLE_EAT_2)(164, s) SEQAN_PP_IF(p(164, s), SEQAN_PP_FOR_164, SEQAN_PP_TUPLE_EAT_4)(o(164, s), p, o, m)
-# define SEQAN_PP_FOR_164(s, p, o, m) SEQAN_PP_IF(p(165, s), m, SEQAN_PP_TUPLE_EAT_2)(165, s) SEQAN_PP_IF(p(165, s), SEQAN_PP_FOR_165, SEQAN_PP_TUPLE_EAT_4)(o(165, s), p, o, m)
-# define SEQAN_PP_FOR_165(s, p, o, m) SEQAN_PP_IF(p(166, s), m, SEQAN_PP_TUPLE_EAT_2)(166, s) SEQAN_PP_IF(p(166, s), SEQAN_PP_FOR_166, SEQAN_PP_TUPLE_EAT_4)(o(166, s), p, o, m)
-# define SEQAN_PP_FOR_166(s, p, o, m) SEQAN_PP_IF(p(167, s), m, SEQAN_PP_TUPLE_EAT_2)(167, s) SEQAN_PP_IF(p(167, s), SEQAN_PP_FOR_167, SEQAN_PP_TUPLE_EAT_4)(o(167, s), p, o, m)
-# define SEQAN_PP_FOR_167(s, p, o, m) SEQAN_PP_IF(p(168, s), m, SEQAN_PP_TUPLE_EAT_2)(168, s) SEQAN_PP_IF(p(168, s), SEQAN_PP_FOR_168, SEQAN_PP_TUPLE_EAT_4)(o(168, s), p, o, m)
-# define SEQAN_PP_FOR_168(s, p, o, m) SEQAN_PP_IF(p(169, s), m, SEQAN_PP_TUPLE_EAT_2)(169, s) SEQAN_PP_IF(p(169, s), SEQAN_PP_FOR_169, SEQAN_PP_TUPLE_EAT_4)(o(169, s), p, o, m)
-# define SEQAN_PP_FOR_169(s, p, o, m) SEQAN_PP_IF(p(170, s), m, SEQAN_PP_TUPLE_EAT_2)(170, s) SEQAN_PP_IF(p(170, s), SEQAN_PP_FOR_170, SEQAN_PP_TUPLE_EAT_4)(o(170, s), p, o, m)
-# define SEQAN_PP_FOR_170(s, p, o, m) SEQAN_PP_IF(p(171, s), m, SEQAN_PP_TUPLE_EAT_2)(171, s) SEQAN_PP_IF(p(171, s), SEQAN_PP_FOR_171, SEQAN_PP_TUPLE_EAT_4)(o(171, s), p, o, m)
-# define SEQAN_PP_FOR_171(s, p, o, m) SEQAN_PP_IF(p(172, s), m, SEQAN_PP_TUPLE_EAT_2)(172, s) SEQAN_PP_IF(p(172, s), SEQAN_PP_FOR_172, SEQAN_PP_TUPLE_EAT_4)(o(172, s), p, o, m)
-# define SEQAN_PP_FOR_172(s, p, o, m) SEQAN_PP_IF(p(173, s), m, SEQAN_PP_TUPLE_EAT_2)(173, s) SEQAN_PP_IF(p(173, s), SEQAN_PP_FOR_173, SEQAN_PP_TUPLE_EAT_4)(o(173, s), p, o, m)
-# define SEQAN_PP_FOR_173(s, p, o, m) SEQAN_PP_IF(p(174, s), m, SEQAN_PP_TUPLE_EAT_2)(174, s) SEQAN_PP_IF(p(174, s), SEQAN_PP_FOR_174, SEQAN_PP_TUPLE_EAT_4)(o(174, s), p, o, m)
-# define SEQAN_PP_FOR_174(s, p, o, m) SEQAN_PP_IF(p(175, s), m, SEQAN_PP_TUPLE_EAT_2)(175, s) SEQAN_PP_IF(p(175, s), SEQAN_PP_FOR_175, SEQAN_PP_TUPLE_EAT_4)(o(175, s), p, o, m)
-# define SEQAN_PP_FOR_175(s, p, o, m) SEQAN_PP_IF(p(176, s), m, SEQAN_PP_TUPLE_EAT_2)(176, s) SEQAN_PP_IF(p(176, s), SEQAN_PP_FOR_176, SEQAN_PP_TUPLE_EAT_4)(o(176, s), p, o, m)
-# define SEQAN_PP_FOR_176(s, p, o, m) SEQAN_PP_IF(p(177, s), m, SEQAN_PP_TUPLE_EAT_2)(177, s) SEQAN_PP_IF(p(177, s), SEQAN_PP_FOR_177, SEQAN_PP_TUPLE_EAT_4)(o(177, s), p, o, m)
-# define SEQAN_PP_FOR_177(s, p, o, m) SEQAN_PP_IF(p(178, s), m, SEQAN_PP_TUPLE_EAT_2)(178, s) SEQAN_PP_IF(p(178, s), SEQAN_PP_FOR_178, SEQAN_PP_TUPLE_EAT_4)(o(178, s), p, o, m)
-# define SEQAN_PP_FOR_178(s, p, o, m) SEQAN_PP_IF(p(179, s), m, SEQAN_PP_TUPLE_EAT_2)(179, s) SEQAN_PP_IF(p(179, s), SEQAN_PP_FOR_179, SEQAN_PP_TUPLE_EAT_4)(o(179, s), p, o, m)
-# define SEQAN_PP_FOR_179(s, p, o, m) SEQAN_PP_IF(p(180, s), m, SEQAN_PP_TUPLE_EAT_2)(180, s) SEQAN_PP_IF(p(180, s), SEQAN_PP_FOR_180, SEQAN_PP_TUPLE_EAT_4)(o(180, s), p, o, m)
-# define SEQAN_PP_FOR_180(s, p, o, m) SEQAN_PP_IF(p(181, s), m, SEQAN_PP_TUPLE_EAT_2)(181, s) SEQAN_PP_IF(p(181, s), SEQAN_PP_FOR_181, SEQAN_PP_TUPLE_EAT_4)(o(181, s), p, o, m)
-# define SEQAN_PP_FOR_181(s, p, o, m) SEQAN_PP_IF(p(182, s), m, SEQAN_PP_TUPLE_EAT_2)(182, s) SEQAN_PP_IF(p(182, s), SEQAN_PP_FOR_182, SEQAN_PP_TUPLE_EAT_4)(o(182, s), p, o, m)
-# define SEQAN_PP_FOR_182(s, p, o, m) SEQAN_PP_IF(p(183, s), m, SEQAN_PP_TUPLE_EAT_2)(183, s) SEQAN_PP_IF(p(183, s), SEQAN_PP_FOR_183, SEQAN_PP_TUPLE_EAT_4)(o(183, s), p, o, m)
-# define SEQAN_PP_FOR_183(s, p, o, m) SEQAN_PP_IF(p(184, s), m, SEQAN_PP_TUPLE_EAT_2)(184, s) SEQAN_PP_IF(p(184, s), SEQAN_PP_FOR_184, SEQAN_PP_TUPLE_EAT_4)(o(184, s), p, o, m)
-# define SEQAN_PP_FOR_184(s, p, o, m) SEQAN_PP_IF(p(185, s), m, SEQAN_PP_TUPLE_EAT_2)(185, s) SEQAN_PP_IF(p(185, s), SEQAN_PP_FOR_185, SEQAN_PP_TUPLE_EAT_4)(o(185, s), p, o, m)
-# define SEQAN_PP_FOR_185(s, p, o, m) SEQAN_PP_IF(p(186, s), m, SEQAN_PP_TUPLE_EAT_2)(186, s) SEQAN_PP_IF(p(186, s), SEQAN_PP_FOR_186, SEQAN_PP_TUPLE_EAT_4)(o(186, s), p, o, m)
-# define SEQAN_PP_FOR_186(s, p, o, m) SEQAN_PP_IF(p(187, s), m, SEQAN_PP_TUPLE_EAT_2)(187, s) SEQAN_PP_IF(p(187, s), SEQAN_PP_FOR_187, SEQAN_PP_TUPLE_EAT_4)(o(187, s), p, o, m)
-# define SEQAN_PP_FOR_187(s, p, o, m) SEQAN_PP_IF(p(188, s), m, SEQAN_PP_TUPLE_EAT_2)(188, s) SEQAN_PP_IF(p(188, s), SEQAN_PP_FOR_188, SEQAN_PP_TUPLE_EAT_4)(o(188, s), p, o, m)
-# define SEQAN_PP_FOR_188(s, p, o, m) SEQAN_PP_IF(p(189, s), m, SEQAN_PP_TUPLE_EAT_2)(189, s) SEQAN_PP_IF(p(189, s), SEQAN_PP_FOR_189, SEQAN_PP_TUPLE_EAT_4)(o(189, s), p, o, m)
-# define SEQAN_PP_FOR_189(s, p, o, m) SEQAN_PP_IF(p(190, s), m, SEQAN_PP_TUPLE_EAT_2)(190, s) SEQAN_PP_IF(p(190, s), SEQAN_PP_FOR_190, SEQAN_PP_TUPLE_EAT_4)(o(190, s), p, o, m)
-# define SEQAN_PP_FOR_190(s, p, o, m) SEQAN_PP_IF(p(191, s), m, SEQAN_PP_TUPLE_EAT_2)(191, s) SEQAN_PP_IF(p(191, s), SEQAN_PP_FOR_191, SEQAN_PP_TUPLE_EAT_4)(o(191, s), p, o, m)
-# define SEQAN_PP_FOR_191(s, p, o, m) SEQAN_PP_IF(p(192, s), m, SEQAN_PP_TUPLE_EAT_2)(192, s) SEQAN_PP_IF(p(192, s), SEQAN_PP_FOR_192, SEQAN_PP_TUPLE_EAT_4)(o(192, s), p, o, m)
-# define SEQAN_PP_FOR_192(s, p, o, m) SEQAN_PP_IF(p(193, s), m, SEQAN_PP_TUPLE_EAT_2)(193, s) SEQAN_PP_IF(p(193, s), SEQAN_PP_FOR_193, SEQAN_PP_TUPLE_EAT_4)(o(193, s), p, o, m)
-# define SEQAN_PP_FOR_193(s, p, o, m) SEQAN_PP_IF(p(194, s), m, SEQAN_PP_TUPLE_EAT_2)(194, s) SEQAN_PP_IF(p(194, s), SEQAN_PP_FOR_194, SEQAN_PP_TUPLE_EAT_4)(o(194, s), p, o, m)
-# define SEQAN_PP_FOR_194(s, p, o, m) SEQAN_PP_IF(p(195, s), m, SEQAN_PP_TUPLE_EAT_2)(195, s) SEQAN_PP_IF(p(195, s), SEQAN_PP_FOR_195, SEQAN_PP_TUPLE_EAT_4)(o(195, s), p, o, m)
-# define SEQAN_PP_FOR_195(s, p, o, m) SEQAN_PP_IF(p(196, s), m, SEQAN_PP_TUPLE_EAT_2)(196, s) SEQAN_PP_IF(p(196, s), SEQAN_PP_FOR_196, SEQAN_PP_TUPLE_EAT_4)(o(196, s), p, o, m)
-# define SEQAN_PP_FOR_196(s, p, o, m) SEQAN_PP_IF(p(197, s), m, SEQAN_PP_TUPLE_EAT_2)(197, s) SEQAN_PP_IF(p(197, s), SEQAN_PP_FOR_197, SEQAN_PP_TUPLE_EAT_4)(o(197, s), p, o, m)
-# define SEQAN_PP_FOR_197(s, p, o, m) SEQAN_PP_IF(p(198, s), m, SEQAN_PP_TUPLE_EAT_2)(198, s) SEQAN_PP_IF(p(198, s), SEQAN_PP_FOR_198, SEQAN_PP_TUPLE_EAT_4)(o(198, s), p, o, m)
-# define SEQAN_PP_FOR_198(s, p, o, m) SEQAN_PP_IF(p(199, s), m, SEQAN_PP_TUPLE_EAT_2)(199, s) SEQAN_PP_IF(p(199, s), SEQAN_PP_FOR_199, SEQAN_PP_TUPLE_EAT_4)(o(199, s), p, o, m)
-# define SEQAN_PP_FOR_199(s, p, o, m) SEQAN_PP_IF(p(200, s), m, SEQAN_PP_TUPLE_EAT_2)(200, s) SEQAN_PP_IF(p(200, s), SEQAN_PP_FOR_200, SEQAN_PP_TUPLE_EAT_4)(o(200, s), p, o, m)
-# define SEQAN_PP_FOR_200(s, p, o, m) SEQAN_PP_IF(p(201, s), m, SEQAN_PP_TUPLE_EAT_2)(201, s) SEQAN_PP_IF(p(201, s), SEQAN_PP_FOR_201, SEQAN_PP_TUPLE_EAT_4)(o(201, s), p, o, m)
-# define SEQAN_PP_FOR_201(s, p, o, m) SEQAN_PP_IF(p(202, s), m, SEQAN_PP_TUPLE_EAT_2)(202, s) SEQAN_PP_IF(p(202, s), SEQAN_PP_FOR_202, SEQAN_PP_TUPLE_EAT_4)(o(202, s), p, o, m)
-# define SEQAN_PP_FOR_202(s, p, o, m) SEQAN_PP_IF(p(203, s), m, SEQAN_PP_TUPLE_EAT_2)(203, s) SEQAN_PP_IF(p(203, s), SEQAN_PP_FOR_203, SEQAN_PP_TUPLE_EAT_4)(o(203, s), p, o, m)
-# define SEQAN_PP_FOR_203(s, p, o, m) SEQAN_PP_IF(p(204, s), m, SEQAN_PP_TUPLE_EAT_2)(204, s) SEQAN_PP_IF(p(204, s), SEQAN_PP_FOR_204, SEQAN_PP_TUPLE_EAT_4)(o(204, s), p, o, m)
-# define SEQAN_PP_FOR_204(s, p, o, m) SEQAN_PP_IF(p(205, s), m, SEQAN_PP_TUPLE_EAT_2)(205, s) SEQAN_PP_IF(p(205, s), SEQAN_PP_FOR_205, SEQAN_PP_TUPLE_EAT_4)(o(205, s), p, o, m)
-# define SEQAN_PP_FOR_205(s, p, o, m) SEQAN_PP_IF(p(206, s), m, SEQAN_PP_TUPLE_EAT_2)(206, s) SEQAN_PP_IF(p(206, s), SEQAN_PP_FOR_206, SEQAN_PP_TUPLE_EAT_4)(o(206, s), p, o, m)
-# define SEQAN_PP_FOR_206(s, p, o, m) SEQAN_PP_IF(p(207, s), m, SEQAN_PP_TUPLE_EAT_2)(207, s) SEQAN_PP_IF(p(207, s), SEQAN_PP_FOR_207, SEQAN_PP_TUPLE_EAT_4)(o(207, s), p, o, m)
-# define SEQAN_PP_FOR_207(s, p, o, m) SEQAN_PP_IF(p(208, s), m, SEQAN_PP_TUPLE_EAT_2)(208, s) SEQAN_PP_IF(p(208, s), SEQAN_PP_FOR_208, SEQAN_PP_TUPLE_EAT_4)(o(208, s), p, o, m)
-# define SEQAN_PP_FOR_208(s, p, o, m) SEQAN_PP_IF(p(209, s), m, SEQAN_PP_TUPLE_EAT_2)(209, s) SEQAN_PP_IF(p(209, s), SEQAN_PP_FOR_209, SEQAN_PP_TUPLE_EAT_4)(o(209, s), p, o, m)
-# define SEQAN_PP_FOR_209(s, p, o, m) SEQAN_PP_IF(p(210, s), m, SEQAN_PP_TUPLE_EAT_2)(210, s) SEQAN_PP_IF(p(210, s), SEQAN_PP_FOR_210, SEQAN_PP_TUPLE_EAT_4)(o(210, s), p, o, m)
-# define SEQAN_PP_FOR_210(s, p, o, m) SEQAN_PP_IF(p(211, s), m, SEQAN_PP_TUPLE_EAT_2)(211, s) SEQAN_PP_IF(p(211, s), SEQAN_PP_FOR_211, SEQAN_PP_TUPLE_EAT_4)(o(211, s), p, o, m)
-# define SEQAN_PP_FOR_211(s, p, o, m) SEQAN_PP_IF(p(212, s), m, SEQAN_PP_TUPLE_EAT_2)(212, s) SEQAN_PP_IF(p(212, s), SEQAN_PP_FOR_212, SEQAN_PP_TUPLE_EAT_4)(o(212, s), p, o, m)
-# define SEQAN_PP_FOR_212(s, p, o, m) SEQAN_PP_IF(p(213, s), m, SEQAN_PP_TUPLE_EAT_2)(213, s) SEQAN_PP_IF(p(213, s), SEQAN_PP_FOR_213, SEQAN_PP_TUPLE_EAT_4)(o(213, s), p, o, m)
-# define SEQAN_PP_FOR_213(s, p, o, m) SEQAN_PP_IF(p(214, s), m, SEQAN_PP_TUPLE_EAT_2)(214, s) SEQAN_PP_IF(p(214, s), SEQAN_PP_FOR_214, SEQAN_PP_TUPLE_EAT_4)(o(214, s), p, o, m)
-# define SEQAN_PP_FOR_214(s, p, o, m) SEQAN_PP_IF(p(215, s), m, SEQAN_PP_TUPLE_EAT_2)(215, s) SEQAN_PP_IF(p(215, s), SEQAN_PP_FOR_215, SEQAN_PP_TUPLE_EAT_4)(o(215, s), p, o, m)
-# define SEQAN_PP_FOR_215(s, p, o, m) SEQAN_PP_IF(p(216, s), m, SEQAN_PP_TUPLE_EAT_2)(216, s) SEQAN_PP_IF(p(216, s), SEQAN_PP_FOR_216, SEQAN_PP_TUPLE_EAT_4)(o(216, s), p, o, m)
-# define SEQAN_PP_FOR_216(s, p, o, m) SEQAN_PP_IF(p(217, s), m, SEQAN_PP_TUPLE_EAT_2)(217, s) SEQAN_PP_IF(p(217, s), SEQAN_PP_FOR_217, SEQAN_PP_TUPLE_EAT_4)(o(217, s), p, o, m)
-# define SEQAN_PP_FOR_217(s, p, o, m) SEQAN_PP_IF(p(218, s), m, SEQAN_PP_TUPLE_EAT_2)(218, s) SEQAN_PP_IF(p(218, s), SEQAN_PP_FOR_218, SEQAN_PP_TUPLE_EAT_4)(o(218, s), p, o, m)
-# define SEQAN_PP_FOR_218(s, p, o, m) SEQAN_PP_IF(p(219, s), m, SEQAN_PP_TUPLE_EAT_2)(219, s) SEQAN_PP_IF(p(219, s), SEQAN_PP_FOR_219, SEQAN_PP_TUPLE_EAT_4)(o(219, s), p, o, m)
-# define SEQAN_PP_FOR_219(s, p, o, m) SEQAN_PP_IF(p(220, s), m, SEQAN_PP_TUPLE_EAT_2)(220, s) SEQAN_PP_IF(p(220, s), SEQAN_PP_FOR_220, SEQAN_PP_TUPLE_EAT_4)(o(220, s), p, o, m)
-# define SEQAN_PP_FOR_220(s, p, o, m) SEQAN_PP_IF(p(221, s), m, SEQAN_PP_TUPLE_EAT_2)(221, s) SEQAN_PP_IF(p(221, s), SEQAN_PP_FOR_221, SEQAN_PP_TUPLE_EAT_4)(o(221, s), p, o, m)
-# define SEQAN_PP_FOR_221(s, p, o, m) SEQAN_PP_IF(p(222, s), m, SEQAN_PP_TUPLE_EAT_2)(222, s) SEQAN_PP_IF(p(222, s), SEQAN_PP_FOR_222, SEQAN_PP_TUPLE_EAT_4)(o(222, s), p, o, m)
-# define SEQAN_PP_FOR_222(s, p, o, m) SEQAN_PP_IF(p(223, s), m, SEQAN_PP_TUPLE_EAT_2)(223, s) SEQAN_PP_IF(p(223, s), SEQAN_PP_FOR_223, SEQAN_PP_TUPLE_EAT_4)(o(223, s), p, o, m)
-# define SEQAN_PP_FOR_223(s, p, o, m) SEQAN_PP_IF(p(224, s), m, SEQAN_PP_TUPLE_EAT_2)(224, s) SEQAN_PP_IF(p(224, s), SEQAN_PP_FOR_224, SEQAN_PP_TUPLE_EAT_4)(o(224, s), p, o, m)
-# define SEQAN_PP_FOR_224(s, p, o, m) SEQAN_PP_IF(p(225, s), m, SEQAN_PP_TUPLE_EAT_2)(225, s) SEQAN_PP_IF(p(225, s), SEQAN_PP_FOR_225, SEQAN_PP_TUPLE_EAT_4)(o(225, s), p, o, m)
-# define SEQAN_PP_FOR_225(s, p, o, m) SEQAN_PP_IF(p(226, s), m, SEQAN_PP_TUPLE_EAT_2)(226, s) SEQAN_PP_IF(p(226, s), SEQAN_PP_FOR_226, SEQAN_PP_TUPLE_EAT_4)(o(226, s), p, o, m)
-# define SEQAN_PP_FOR_226(s, p, o, m) SEQAN_PP_IF(p(227, s), m, SEQAN_PP_TUPLE_EAT_2)(227, s) SEQAN_PP_IF(p(227, s), SEQAN_PP_FOR_227, SEQAN_PP_TUPLE_EAT_4)(o(227, s), p, o, m)
-# define SEQAN_PP_FOR_227(s, p, o, m) SEQAN_PP_IF(p(228, s), m, SEQAN_PP_TUPLE_EAT_2)(228, s) SEQAN_PP_IF(p(228, s), SEQAN_PP_FOR_228, SEQAN_PP_TUPLE_EAT_4)(o(228, s), p, o, m)
-# define SEQAN_PP_FOR_228(s, p, o, m) SEQAN_PP_IF(p(229, s), m, SEQAN_PP_TUPLE_EAT_2)(229, s) SEQAN_PP_IF(p(229, s), SEQAN_PP_FOR_229, SEQAN_PP_TUPLE_EAT_4)(o(229, s), p, o, m)
-# define SEQAN_PP_FOR_229(s, p, o, m) SEQAN_PP_IF(p(230, s), m, SEQAN_PP_TUPLE_EAT_2)(230, s) SEQAN_PP_IF(p(230, s), SEQAN_PP_FOR_230, SEQAN_PP_TUPLE_EAT_4)(o(230, s), p, o, m)
-# define SEQAN_PP_FOR_230(s, p, o, m) SEQAN_PP_IF(p(231, s), m, SEQAN_PP_TUPLE_EAT_2)(231, s) SEQAN_PP_IF(p(231, s), SEQAN_PP_FOR_231, SEQAN_PP_TUPLE_EAT_4)(o(231, s), p, o, m)
-# define SEQAN_PP_FOR_231(s, p, o, m) SEQAN_PP_IF(p(232, s), m, SEQAN_PP_TUPLE_EAT_2)(232, s) SEQAN_PP_IF(p(232, s), SEQAN_PP_FOR_232, SEQAN_PP_TUPLE_EAT_4)(o(232, s), p, o, m)
-# define SEQAN_PP_FOR_232(s, p, o, m) SEQAN_PP_IF(p(233, s), m, SEQAN_PP_TUPLE_EAT_2)(233, s) SEQAN_PP_IF(p(233, s), SEQAN_PP_FOR_233, SEQAN_PP_TUPLE_EAT_4)(o(233, s), p, o, m)
-# define SEQAN_PP_FOR_233(s, p, o, m) SEQAN_PP_IF(p(234, s), m, SEQAN_PP_TUPLE_EAT_2)(234, s) SEQAN_PP_IF(p(234, s), SEQAN_PP_FOR_234, SEQAN_PP_TUPLE_EAT_4)(o(234, s), p, o, m)
-# define SEQAN_PP_FOR_234(s, p, o, m) SEQAN_PP_IF(p(235, s), m, SEQAN_PP_TUPLE_EAT_2)(235, s) SEQAN_PP_IF(p(235, s), SEQAN_PP_FOR_235, SEQAN_PP_TUPLE_EAT_4)(o(235, s), p, o, m)
-# define SEQAN_PP_FOR_235(s, p, o, m) SEQAN_PP_IF(p(236, s), m, SEQAN_PP_TUPLE_EAT_2)(236, s) SEQAN_PP_IF(p(236, s), SEQAN_PP_FOR_236, SEQAN_PP_TUPLE_EAT_4)(o(236, s), p, o, m)
-# define SEQAN_PP_FOR_236(s, p, o, m) SEQAN_PP_IF(p(237, s), m, SEQAN_PP_TUPLE_EAT_2)(237, s) SEQAN_PP_IF(p(237, s), SEQAN_PP_FOR_237, SEQAN_PP_TUPLE_EAT_4)(o(237, s), p, o, m)
-# define SEQAN_PP_FOR_237(s, p, o, m) SEQAN_PP_IF(p(238, s), m, SEQAN_PP_TUPLE_EAT_2)(238, s) SEQAN_PP_IF(p(238, s), SEQAN_PP_FOR_238, SEQAN_PP_TUPLE_EAT_4)(o(238, s), p, o, m)
-# define SEQAN_PP_FOR_238(s, p, o, m) SEQAN_PP_IF(p(239, s), m, SEQAN_PP_TUPLE_EAT_2)(239, s) SEQAN_PP_IF(p(239, s), SEQAN_PP_FOR_239, SEQAN_PP_TUPLE_EAT_4)(o(239, s), p, o, m)
-# define SEQAN_PP_FOR_239(s, p, o, m) SEQAN_PP_IF(p(240, s), m, SEQAN_PP_TUPLE_EAT_2)(240, s) SEQAN_PP_IF(p(240, s), SEQAN_PP_FOR_240, SEQAN_PP_TUPLE_EAT_4)(o(240, s), p, o, m)
-# define SEQAN_PP_FOR_240(s, p, o, m) SEQAN_PP_IF(p(241, s), m, SEQAN_PP_TUPLE_EAT_2)(241, s) SEQAN_PP_IF(p(241, s), SEQAN_PP_FOR_241, SEQAN_PP_TUPLE_EAT_4)(o(241, s), p, o, m)
-# define SEQAN_PP_FOR_241(s, p, o, m) SEQAN_PP_IF(p(242, s), m, SEQAN_PP_TUPLE_EAT_2)(242, s) SEQAN_PP_IF(p(242, s), SEQAN_PP_FOR_242, SEQAN_PP_TUPLE_EAT_4)(o(242, s), p, o, m)
-# define SEQAN_PP_FOR_242(s, p, o, m) SEQAN_PP_IF(p(243, s), m, SEQAN_PP_TUPLE_EAT_2)(243, s) SEQAN_PP_IF(p(243, s), SEQAN_PP_FOR_243, SEQAN_PP_TUPLE_EAT_4)(o(243, s), p, o, m)
-# define SEQAN_PP_FOR_243(s, p, o, m) SEQAN_PP_IF(p(244, s), m, SEQAN_PP_TUPLE_EAT_2)(244, s) SEQAN_PP_IF(p(244, s), SEQAN_PP_FOR_244, SEQAN_PP_TUPLE_EAT_4)(o(244, s), p, o, m)
-# define SEQAN_PP_FOR_244(s, p, o, m) SEQAN_PP_IF(p(245, s), m, SEQAN_PP_TUPLE_EAT_2)(245, s) SEQAN_PP_IF(p(245, s), SEQAN_PP_FOR_245, SEQAN_PP_TUPLE_EAT_4)(o(245, s), p, o, m)
-# define SEQAN_PP_FOR_245(s, p, o, m) SEQAN_PP_IF(p(246, s), m, SEQAN_PP_TUPLE_EAT_2)(246, s) SEQAN_PP_IF(p(246, s), SEQAN_PP_FOR_246, SEQAN_PP_TUPLE_EAT_4)(o(246, s), p, o, m)
-# define SEQAN_PP_FOR_246(s, p, o, m) SEQAN_PP_IF(p(247, s), m, SEQAN_PP_TUPLE_EAT_2)(247, s) SEQAN_PP_IF(p(247, s), SEQAN_PP_FOR_247, SEQAN_PP_TUPLE_EAT_4)(o(247, s), p, o, m)
-# define SEQAN_PP_FOR_247(s, p, o, m) SEQAN_PP_IF(p(248, s), m, SEQAN_PP_TUPLE_EAT_2)(248, s) SEQAN_PP_IF(p(248, s), SEQAN_PP_FOR_248, SEQAN_PP_TUPLE_EAT_4)(o(248, s), p, o, m)
-# define SEQAN_PP_FOR_248(s, p, o, m) SEQAN_PP_IF(p(249, s), m, SEQAN_PP_TUPLE_EAT_2)(249, s) SEQAN_PP_IF(p(249, s), SEQAN_PP_FOR_249, SEQAN_PP_TUPLE_EAT_4)(o(249, s), p, o, m)
-# define SEQAN_PP_FOR_249(s, p, o, m) SEQAN_PP_IF(p(250, s), m, SEQAN_PP_TUPLE_EAT_2)(250, s) SEQAN_PP_IF(p(250, s), SEQAN_PP_FOR_250, SEQAN_PP_TUPLE_EAT_4)(o(250, s), p, o, m)
-# define SEQAN_PP_FOR_250(s, p, o, m) SEQAN_PP_IF(p(251, s), m, SEQAN_PP_TUPLE_EAT_2)(251, s) SEQAN_PP_IF(p(251, s), SEQAN_PP_FOR_251, SEQAN_PP_TUPLE_EAT_4)(o(251, s), p, o, m)
-# define SEQAN_PP_FOR_251(s, p, o, m) SEQAN_PP_IF(p(252, s), m, SEQAN_PP_TUPLE_EAT_2)(252, s) SEQAN_PP_IF(p(252, s), SEQAN_PP_FOR_252, SEQAN_PP_TUPLE_EAT_4)(o(252, s), p, o, m)
-# define SEQAN_PP_FOR_252(s, p, o, m) SEQAN_PP_IF(p(253, s), m, SEQAN_PP_TUPLE_EAT_2)(253, s) SEQAN_PP_IF(p(253, s), SEQAN_PP_FOR_253, SEQAN_PP_TUPLE_EAT_4)(o(253, s), p, o, m)
-# define SEQAN_PP_FOR_253(s, p, o, m) SEQAN_PP_IF(p(254, s), m, SEQAN_PP_TUPLE_EAT_2)(254, s) SEQAN_PP_IF(p(254, s), SEQAN_PP_FOR_254, SEQAN_PP_TUPLE_EAT_4)(o(254, s), p, o, m)
-# define SEQAN_PP_FOR_254(s, p, o, m) SEQAN_PP_IF(p(255, s), m, SEQAN_PP_TUPLE_EAT_2)(255, s) SEQAN_PP_IF(p(255, s), SEQAN_PP_FOR_255, SEQAN_PP_TUPLE_EAT_4)(o(255, s), p, o, m)
-# define SEQAN_PP_FOR_255(s, p, o, m) SEQAN_PP_IF(p(256, s), m, SEQAN_PP_TUPLE_EAT_2)(256, s) SEQAN_PP_IF(p(256, s), SEQAN_PP_FOR_256, SEQAN_PP_TUPLE_EAT_4)(o(256, s), p, o, m)
-# define SEQAN_PP_FOR_256(s, p, o, m) SEQAN_PP_IF(p(257, s), m, SEQAN_PP_TUPLE_EAT_2)(257, s) SEQAN_PP_IF(p(257, s), SEQAN_PP_FOR_257, SEQAN_PP_TUPLE_EAT_4)(o(257, s), p, o, m)
-#
-// # endif
-
-#else  // #ifdef SEQAN_PLATFORM_WINDOWS_VS
 
 // --------------------------------------------------------------------------
 // ==> boost/preprocessor/repetition/detail/for.hpp <==
@@ -2279,8 +1993,6 @@
 # define SEQAN_PP_FOR_254_C(c, s, p, o, m) SEQAN_PP_IIF(c, m, SEQAN_PP_TUPLE_EAT_2)(255, s) SEQAN_PP_IIF(c, SEQAN_PP_FOR_255, SEQAN_PP_TUPLE_EAT_4)(SEQAN_PP_EXPR_IIF(c, o)(255, s), p, o, m)
 # define SEQAN_PP_FOR_255_C(c, s, p, o, m) SEQAN_PP_IIF(c, m, SEQAN_PP_TUPLE_EAT_2)(256, s) SEQAN_PP_IIF(c, SEQAN_PP_FOR_256, SEQAN_PP_TUPLE_EAT_4)(SEQAN_PP_EXPR_IIF(c, o)(256, s), p, o, m)
 # define SEQAN_PP_FOR_256_C(c, s, p, o, m) SEQAN_PP_IIF(c, m, SEQAN_PP_TUPLE_EAT_2)(257, s) SEQAN_PP_IIF(c, SEQAN_PP_FOR_257, SEQAN_PP_TUPLE_EAT_4)(SEQAN_PP_EXPR_IIF(c, o)(257, s), p, o, m)
-
-#endif  // #ifdef SEQAN_PLATFORM_WINDOWS_VS
 
 // --------------------------------------------------------------------------
 // ==> boost/preprocessor/detail/auto_rec.hpp <==
@@ -2932,12 +2644,12 @@
 // # endif
 #
 // # if ~SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
-#ifndef PLATFORM_WINDOWS_VS
+#ifndef STDLIB_VS
 #    define SEQAN_PP_IIF_I(bit, t, f) SEQAN_PP_IIF_ ## bit(t, f)
-# else // #ifndef PLATFORM_WINDOWS_VS
+# else // #ifndef STDLIB_VS
 #    define SEQAN_PP_IIF_I(bit, t, f) SEQAN_PP_IIF_II(SEQAN_PP_IIF_ ## bit(t, f))
 #    define SEQAN_PP_IIF_II(id) id
-# endif // #ifndef PLATFORM_WINDOWS_VS
+# endif // #ifndef STDLIB_VS
 #
 # define SEQAN_PP_IIF_0(t, f) f
 # define SEQAN_PP_IIF_1(t, f) t
@@ -4263,7 +3975,7 @@
 // # endif
 #
 // # if SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
 #    define SEQAN_PP_SEQ_ELEM_I(i, seq) SEQAN_PP_SEQ_ELEM_II((SEQAN_PP_SEQ_ELEM_ ## i seq))
 #    define SEQAN_PP_SEQ_ELEM_II(res) SEQAN_PP_SEQ_ELEM_IV(SEQAN_PP_SEQ_ELEM_III res)
 #    define SEQAN_PP_SEQ_ELEM_III(x, _) x SEQAN_PP_EMPTY()
@@ -4273,7 +3985,7 @@
 // #    define SEQAN_PP_SEQ_ELEM_II(i, seq) SEQAN_PP_SEQ_ELEM_III(SEQAN_PP_SEQ_ELEM_ ## i ## seq)
 // #    define SEQAN_PP_SEQ_ELEM_III(im) SEQAN_PP_SEQ_ELEM_IV(im)
 // #    define SEQAN_PP_SEQ_ELEM_IV(x, _) x
-# else  // #ifdef PLATFORM_WINDOWS_VS
+# else  // #ifdef STDLIB_VS
 // #    if defined(__IBMC__) || defined(__IBMCPP__)
 // #        define SEQAN_PP_SEQ_ELEM_I(i, seq) SEQAN_PP_SEQ_ELEM_II(SEQAN_PP_CAT(SEQAN_PP_SEQ_ELEM_ ## i, seq))
 // #    else
@@ -4281,7 +3993,7 @@
 // #    endif
 #    define SEQAN_PP_SEQ_ELEM_II(im) SEQAN_PP_SEQ_ELEM_III(im)
 #    define SEQAN_PP_SEQ_ELEM_III(x, _) x
-# endif  // #ifdef PLATFORM_WINDOWS_VS
+# endif  // #ifdef STDLIB_VS
 #
 # define SEQAN_PP_SEQ_ELEM_0(x) x, SEQAN_PP_NIL
 # define SEQAN_PP_SEQ_ELEM_1(_) SEQAN_PP_SEQ_ELEM_0
@@ -4370,15 +4082,15 @@
 // #    define SEQAN_PP_SEQ_TAIL_1(par) SEQAN_PP_SEQ_TAIL_2 ## par
 // #    define SEQAN_PP_SEQ_TAIL_2(seq) SEQAN_PP_SEQ_TAIL_I ## seq
 // # elif SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_MSVC()
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
 #    define SEQAN_PP_SEQ_TAIL(seq) SEQAN_PP_SEQ_TAIL_ID(SEQAN_PP_SEQ_TAIL_I seq)
 #    define SEQAN_PP_SEQ_TAIL_ID(id) id
 // # elif SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_EDG()
 // #    define SEQAN_PP_SEQ_TAIL(seq) SEQAN_PP_SEQ_TAIL_D(seq)
 // #    define SEQAN_PP_SEQ_TAIL_D(seq) SEQAN_PP_SEQ_TAIL_I seq
-# else  // #ifdef PLATFORM_WINDOWS_VS
+# else  // #ifdef STDLIB_VS
 #    define SEQAN_PP_SEQ_TAIL(seq) SEQAN_PP_SEQ_TAIL_I seq
-# endif  // #ifdef PLATFORM_WINDOWS_VS
+# endif  // #ifdef STDLIB_VS
 #
 # define SEQAN_PP_SEQ_TAIL_I(x)
 #
@@ -5010,21 +4722,21 @@
 # define SEQAN_PP_SEQ_FOR_EACH_P(r, x) SEQAN_PP_DEC(SEQAN_PP_SEQ_SIZE(SEQAN_PP_TUPLE_ELEM(3, 2, x)))
 #
 // # if SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_STRICT()
-#ifndef PLATFORM_WINDOWS_VS
+#ifndef STDLIB_VS
 #    define SEQAN_PP_SEQ_FOR_EACH_O(r, x) SEQAN_PP_SEQ_FOR_EACH_O_I x
-# else  // #ifndef PLATFORM_WINDOWS_VS
+# else  // #ifndef STDLIB_VS
 #    define SEQAN_PP_SEQ_FOR_EACH_O(r, x) SEQAN_PP_SEQ_FOR_EACH_O_I(SEQAN_PP_TUPLE_ELEM(3, 0, x), SEQAN_PP_TUPLE_ELEM(3, 1, x), SEQAN_PP_TUPLE_ELEM(3, 2, x))
-# endif  // #ifndef PLATFORM_WINDOWS_VS
+# endif  // #ifndef STDLIB_VS
 #
 # define SEQAN_PP_SEQ_FOR_EACH_O_I(macro, data, seq) (macro, data, SEQAN_PP_SEQ_TAIL(seq))
 #
 // # if SEQAN_PP_CONFIG_FLAGS() & SEQAN_PP_CONFIG_STRICT()
-#ifndef PLATFORM_WINDOWS_VS
+#ifndef STDLIB_VS
 #    define SEQAN_PP_SEQ_FOR_EACH_M(r, x) SEQAN_PP_SEQ_FOR_EACH_M_IM(r, SEQAN_PP_TUPLE_REM_3 x)
 #    define SEQAN_PP_SEQ_FOR_EACH_M_IM(r, im) SEQAN_PP_SEQ_FOR_EACH_M_I(r, im)
-# else  // #ifndef PLATFORM_WINDOWS_VS
+# else  // #ifndef STDLIB_VS
 #    define SEQAN_PP_SEQ_FOR_EACH_M(r, x) SEQAN_PP_SEQ_FOR_EACH_M_I(r, SEQAN_PP_TUPLE_ELEM(3, 0, x), SEQAN_PP_TUPLE_ELEM(3, 1, x), SEQAN_PP_TUPLE_ELEM(3, 2, x))
-# endif  // #ifndef PLATFORM_WINDOWS_VS
+# endif  // #ifndef STDLIB_VS
 #
 # define SEQAN_PP_SEQ_FOR_EACH_M_I(r, macro, data, seq) macro(r, data, SEQAN_PP_SEQ_HEAD(seq))
 #

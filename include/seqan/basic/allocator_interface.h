@@ -187,7 +187,7 @@ allocate(T const &,
          Tag<TUsage> const &)
 {
 //  data = (TValue *) operator new(count * sizeof(TValue));
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
     data = (TValue *) _aligned_malloc(count * sizeof(TValue), __alignof(TValue));
 #else
 /*#if _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600
@@ -214,7 +214,7 @@ allocate(T &,
          Tag<TUsage> const &)
 {
 //  data = (TValue *) operator new(count * sizeof(TValue));
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
     data = (TValue *) _aligned_malloc(count * sizeof(TValue), __alignof(TValue));
 #else
 /*#if _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600
@@ -298,7 +298,7 @@ deallocate(
         SEQAN_PROSUB(SEQAN_PROMEMORY, count * sizeof(TValue));
 #endif
 //  operator delete ((void *) data);
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
     _aligned_free((void *) data);
 #else
 //  free((void *) data);
@@ -323,7 +323,7 @@ deallocate(
         SEQAN_PROSUB(SEQAN_PROMEMORY, count * sizeof(TValue));
 #endif
 //  operator delete ((void *) data);
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef STDLIB_VS
     _aligned_free((void *) data);
 #else
 //  free((void *) data);

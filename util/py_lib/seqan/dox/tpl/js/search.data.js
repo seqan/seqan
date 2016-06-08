@@ -555,7 +555,7 @@ window.searchData = [
   {title:'MutableRootedIteratorConcept',text:'',akas:'',subentries:'',loc:'concept_MutableRootedIteratorConcept.html',langEntity:'concept'},
   {title:'arrayConstructMove',text:'',akas:'',subentries:'',loc:'global_function_arrayConstructMove.html',langEntity:'global_function'},
   {title:'StoreIntervalsIntervalTreeNode',text:'',akas:'',subentries:'',loc:'class_StoreIntervalsIntervalTreeNode.html',langEntity:'class'},
-  {title:'PLATFORM_WINDOWS',text:'',akas:'',subentries:'',loc:'macro_PLATFORM_95WINDOWS.html',langEntity:'macro'},
+  {title:'STDLIB_VS',text:'',akas:'',subentries:'',loc:'macro_PLATFORM_95WINDOWS.html',langEntity:'macro'},
   {title:'HierarchicalPexPattern',text:'',akas:'',subentries:'',loc:'class_HierarchicalPexPattern.html',langEntity:'class'},
   {title:'alignmentFreeComparison',text:'',akas:'',subentries:'',loc:'global_function_alignmentFreeComparison.html',langEntity:'global_function'},
   {title:'countKmers',text:'',akas:'',subentries:'',loc:'global_function_countKmers.html',langEntity:'global_function'},

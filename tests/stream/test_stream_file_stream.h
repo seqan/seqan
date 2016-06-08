@@ -60,7 +60,7 @@ public:
 // FileStream Specs
 // --------------------------------------------------------------------------
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 typedef TagList<Async<> > FileStreamSpecs;
 #else
 typedef

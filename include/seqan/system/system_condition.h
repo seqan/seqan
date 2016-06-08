@@ -41,7 +41,7 @@
 
 namespace seqan {
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 
 struct Condition
 {
@@ -94,7 +94,7 @@ struct Condition
 inline void
 waitFor(Condition &cond)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     BOOL success = SleepConditionVariableCS(&cond.data_cond, &cond.csPtr->data_cs, INFINITE);
     ignoreUnusedVariableWarning(success);
     SEQAN_ASSERT(success);
@@ -108,7 +108,7 @@ waitFor(Condition &cond)
 inline void
 waitFor(Condition &cond, long timeoutMilliSec, bool & inProgress)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     inProgress = (SleepConditionVariableCS(&cond.data_cond, &cond.csPtr->data_cs, timeoutMilliSec) == 0);
     if (inProgress)
         SEQAN_ASSERT_EQ(GetLastError(), ERROR_TIMEOUT);
@@ -133,7 +133,7 @@ waitFor(Condition &cond, long timeoutMilliSec, bool & inProgress)
 inline void
 signal(Condition &cond)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     WakeAllConditionVariable(&cond.data_cond);
 #else
     int result = pthread_cond_broadcast(&cond.data_cond);
