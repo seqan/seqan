@@ -43,14 +43,32 @@
 #include <cstddef> // makes __GLIBCXX__ available
 #include <ciso646> // makes _LIBCPP_VERSION available
 
+/*!
+ * @macro STDLIB_VS
+ * @headerfile <seqan/platform.h>
+ * @brief The standard library implemented by Visual C++, if defined
+ * @signature #define STDLIB_VS
+ */
 #ifdef _MSC_VER
 #define STDLIB_VS
 #endif
 
+/*!
+ * @macro STDLIB_GNU
+ * @headerfile <seqan/platform.h>
+ * @brief The standard library implemented by GNU/GCC, if defined
+ * @signature #define STDLIB_GNU
+ */
 #ifdef __GLIBCXX__
 #define STDLIB_GNU
 #endif
 
+/*!
+ * @macro STDLIB_LLVM
+ * @headerfile <seqan/platform.h>
+ * @brief The standard library implemented by clang/llvm, if defined
+ * @signature #define STDLIB_LLVM
+ */
 #ifdef _LIBCPP_VERSION
 #define STDLIB_LLVM
 #endif
@@ -59,18 +77,42 @@
 // Define Compilers
 // ==========================================================================
 
+/*!
+ * @macro COMPILER_MSVC
+ * @headerfile <seqan/platform.h>
+ * @brief The compiler is the microsoft visual studio compiler (msvc), if defined
+ * @signature #define COMPILER_MSVC
+ */
 #if defined(_MSC_VER) && !defined(__ICC) && !defined(__clang__)
 #define COMPILER_MSVC
 #endif
 
+/*!
+ * @macro COMPILER_GCC
+ * @headerfile <seqan/platform.h>
+ * @brief The compiler is the gnu compiler (gcc), if defined
+ * @signature #define COMPILER_GCC
+ */
 #if defined(__GNUC__) && !defined(__ICC) && !defined(__clang__)
 #define COMPILER_GCC
 #endif
 
+/*!
+ * @macro COMPILER_INTEL
+ * @headerfile <seqan/platform.h>
+ * @brief The compiler is the intel compiler (icc), if defined
+ * @signature #define COMPILER_INTEL
+ */
 #if defined(__ICC)
 #define COMPILER_INTEL
 #endif
 
+/*!
+ * @macro COMPILER_CLANG
+ * @headerfile <seqan/platform.h>
+ * @brief The compiler is the llvm compiler (clang), if defined
+ * @signature #define COMPILER_CLANG
+ */
 #if defined(__clang__)
 #define COMPILER_CLANG
 #endif
