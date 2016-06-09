@@ -350,14 +350,15 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
     // Constants
     // ------------------------------------------------------------------------
 
+    // TODO: generalize for 32bit OS
     static const unsigned _BITS_PER_VALUE   = MyBitsPerValue<TValue, TConfig>::VALUE;
-    static const unsigned _BITS_PER_BLOCK   = 64;//RankDictionaryBitsPerBlock_<TValue, Levels<TSpec, TConfig> >::VALUE;
+    static const unsigned _BITS_PER_BLOCK   = 8*64;//RankDictionaryBitsPerBlock_<TValue, Levels<TSpec, TConfig> >::VALUE;
     static const unsigned _BITS_PER_WORD    = 64;//Min<RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> >::VALUE, _BITS_PER_BLOCK>::VALUE;
     static const unsigned _VALUES_PER_WORD  = _BITS_PER_WORD  / _BITS_PER_VALUE;
     static const unsigned _WORDS_PER_BLOCK  = _BITS_PER_BLOCK / _BITS_PER_WORD;
     static const unsigned _VALUES_PER_BLOCK = _VALUES_PER_WORD * _WORDS_PER_BLOCK;
-    static const uint32_t _VALUES_PER_SUPERBLOCK = (((1ul << 16) - 1) / _VALUES_PER_BLOCK) * _VALUES_PER_BLOCK; // 2^16 - 1;
-    static const uint64_t _VALUES_PER_ULTRABLOCK = (((1ull << 32) - 1) / _VALUES_PER_SUPERBLOCK) * _VALUES_PER_SUPERBLOCK; // 2^32 - 1; TODO: not sure whether this is 100% correct!
+    static const uint32_t _VALUES_PER_SUPERBLOCK = 2 * _VALUES_PER_BLOCK;//(((1ul << 16) - 1) / _VALUES_PER_BLOCK) * _VALUES_PER_BLOCK; // 2^16 - 1;
+    static const uint64_t _VALUES_PER_ULTRABLOCK = 2000000 * _VALUES_PER_SUPERBLOCK;//(((1ull << 32) - 1) / _VALUES_PER_SUPERBLOCK) * _VALUES_PER_SUPERBLOCK; // 2^32 - 1; TODO: not sure whether this is 100% correct!
 
     typedef /*typename std::conditional<_BITS_PER_WORD == 64, uint64_t, uint32_t>::type*/ uint64_t TWordType; // TODO: should be optimal anyway, right?
 
@@ -415,7 +416,7 @@ typename RankDictionary<TValue, Levels<TSpec, TConfig> >::TWordType RankDictiona
 
 template <typename TValue, typename TSpec, typename TConfig>
 inline typename Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreRanks>::Type &
-getFibre(RankDictionary<TValue, Levels<TSpec, Levels<TSpec, TConfig> > > & dict, FibreRanks)
+getFibre(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, FibreRanks)
 {
     return dict.blocks;
 }
@@ -429,7 +430,7 @@ getFibre(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, FibreRank
 
 template <typename TValue, typename TSpec, typename TConfig>
 inline typename Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreSuperBlocks>::Type &
-getFibre(RankDictionary<TValue, Levels<TSpec, Levels<TSpec, TConfig> > > & dict, FibreSuperBlocks)
+getFibre(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, FibreSuperBlocks)
 {
     return dict.superblocks;
 }
@@ -443,9 +444,9 @@ getFibre(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, FibreSupe
 
 template <typename TValue, typename TSpec, typename TConfig>
 inline typename Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreUltraBlocks>::Type &
-getFibre(RankDictionary<TValue, Levels<TSpec, Levels<TSpec, TConfig> > > & dict, FibreUltraBlocks)
+getFibre(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, FibreUltraBlocks)
 {
-    return dict.superblocks;
+    return dict.ultrablocks;
 }
 
 template <typename TValue, typename TSpec, typename TConfig>
@@ -454,6 +455,15 @@ getFibre(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, FibreUltr
 {
     return dict.ultrablocks;
 }
+
+
+template <typename TValue, typename TSpec, typename TConfig>
+inline bool empty(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict)
+{
+    return empty(getFibre(dict, FibreRanks())) && empty(getFibre(dict, FibreSuperBlocks())) && empty(getFibre(dict, FibreUltraBlocks()));
+}
+
+
 
 template <typename TValue, typename TSpec, typename TConfig>
 inline void clear(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
@@ -1299,10 +1309,11 @@ inline bool save(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, c
 {
     // TODO: use getFibre! getFibre(dict, FibreSuperRanks())
     String<char> name;
-    name = fileName;    append(name, ".bl");    save(dict.blocks, toCString(name), openMode);
-    name = fileName;    append(name, ".sbl");   save(dict.superblocks, toCString(name), openMode);
-    name = fileName;    append(name, ".ubl");   save(dict.ultrablocks, toCString(name), openMode);
-    return true;
+    bool result = true;
+    name = fileName;    append(name, ".bl");    result &= save(getFibre(dict, FibreRanks()), toCString(name), openMode);
+    name = fileName;    append(name, ".sbl");   result &= save(getFibre(dict, FibreSuperBlocks()), toCString(name), openMode);
+    name = fileName;    append(name, ".ubl");   result &= save(getFibre(dict, FibreUltraBlocks()), toCString(name), openMode);
+    return result;
 }
 
 template <typename TValue, typename TSpec, typename TConfig>
@@ -1310,10 +1321,11 @@ inline bool open(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, const c
 {
     // TODO: use getFibre!
     String<char> name;
-    name = fileName;    append(name, ".bl");    open(dict.blocks, toCString(name), openMode);
-    name = fileName;    append(name, ".sbl");   open(dict.superblocks, toCString(name), openMode);
-    name = fileName;    append(name, ".ubl");   open(dict.ultrablocks, toCString(name), openMode);
-    return true;
+    bool result = true;
+    name = fileName;    append(name, ".bl");    result &= open(getFibre(dict, FibreRanks()), toCString(name), openMode);
+    name = fileName;    append(name, ".sbl");   result &= open(getFibre(dict, FibreSuperBlocks()), toCString(name), openMode);
+    name = fileName;    append(name, ".ubl");   result &= open(getFibre(dict, FibreUltraBlocks()), toCString(name), openMode);
+    return result;
 }
 
 }
