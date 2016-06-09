@@ -152,6 +152,22 @@
 #endif
 
 // ==========================================================================
+// Disable Warnings
+// ==========================================================================
+
+// Disable warning for identifer name truncation.  There is not much we can
+// do about this.  Boost also has this problem and they chose to suppress
+// it globally.  So did we.
+//
+// Documentation of C4503 from Microsoft:
+//   https://msdn.microsoft.com/en-us/library/074af4b6%28v=vs.140%29.aspx
+// Boost Warnings Guidelines:
+//   https://svn.boost.org/trac/boost/wiki/Guidelines/WarningsGuidelines
+#ifdef COMPILER_MSVC
+#pragma warning( disable : 4503 )
+#endif
+
+// ==========================================================================
 // Define Integers
 // ==========================================================================
 
