@@ -357,8 +357,8 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
     static const unsigned _VALUES_PER_WORD  = _BITS_PER_WORD  / _BITS_PER_VALUE;
     static const unsigned _WORDS_PER_BLOCK  = _BITS_PER_BLOCK / _BITS_PER_WORD;
     static const unsigned _VALUES_PER_BLOCK = _VALUES_PER_WORD * _WORDS_PER_BLOCK;
-    static const uint32_t _VALUES_PER_SUPERBLOCK = 2 * _VALUES_PER_BLOCK;//(((1ul << 16) - 1) / _VALUES_PER_BLOCK) * _VALUES_PER_BLOCK; // 2^16 - 1;
-    static const uint64_t _VALUES_PER_ULTRABLOCK = 2000000 * _VALUES_PER_SUPERBLOCK;//(((1ull << 32) - 1) / _VALUES_PER_SUPERBLOCK) * _VALUES_PER_SUPERBLOCK; // 2^32 - 1; TODO: not sure whether this is 100% correct!
+    static const uint32_t _VALUES_PER_SUPERBLOCK = (((1ul << 16) - 1) / _VALUES_PER_BLOCK) * _VALUES_PER_BLOCK; // 2^16 - 1;
+    static const uint64_t _VALUES_PER_ULTRABLOCK = (((1ull << 32) - 1) / _VALUES_PER_SUPERBLOCK) * _VALUES_PER_SUPERBLOCK; // 2^32 - 1; TODO: not sure whether this is 100% correct!
 
     typedef /*typename std::conditional<_BITS_PER_WORD == 64, uint64_t, uint32_t>::type*/ uint64_t TWordType; // TODO: should be optimal anyway, right?
 
