@@ -27,6 +27,14 @@
 //#define SNPSTORE_DEBUG
 //#define SNPSTORE_DEBUG_CANDPOS
 
+#ifdef _OPENMP
+#include <omp.h>
+#else
+#if !defined(SEQAN_IGNORE_MISSING_OPENMP) || (SEQAN_IGNORE_MISSING_OPENMP == 0)
+#pragma message("OpenMP not found! Shared-memory parallelization will be disabled in SNP-Store.")
+#endif
+#endif
+
 #include <iomanip>
 #include <ctime>
 
@@ -38,6 +46,7 @@
 #include <seqan/consensus.h>
 #include <seqan/stream.h>
 #include <seqan/bam_io.h>
+#include <seqan/parallel.h>
 
 
 #ifdef STDLIB_VS
@@ -733,8 +742,9 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     std::vector<BamAlignmentRecord> records(length(options.readFNames));
 
     /////////////////////////////////////////////////////////////////////
-    std::time_t t = std::time(nullptr);                                                 //Get time and date
-    std::tm now = *std::localtime(&t);                                                  //Used for vcf header
+    std::time_t t = std::time(nullptr);                                         //Get time and date for vcf header
+    char now[24];
+    strftime(now, sizeof(now), "%Y%m%d", std::localtime(&t));
     // open out file streams and store open file pointers
     ::std::ofstream snpFileStream;
     if (options.outputSNP != "")
@@ -758,7 +768,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
 
         //Prepare header of vcf output
         snpFileStream << "##fileformat=VCFv4.2\n";
-        snpFileStream << "##fileDate=" << std::put_time(&now, "%Y%m%d") << "\n";
+        snpFileStream << "##fileDate=" << now << "\n";
         snpFileStream << "##source=Seqan-SnpStoreV" << SEQAN_APP_VERSION << "\n";
         snpFileStream << "##reference=" << genomeFileNameList[0];
         for (unsigned i = 1; i < length(genomeFileNameList); ++i)
@@ -817,7 +827,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     }
     //prepare header for indel vcf. TODO(serosko): Merge indel and snp file.
     indelFileStream << "##fileformat=VCFv4.2\n";
-    indelFileStream << "##fileDate=" << std::put_time(&now, "%Y%m%d") << "\n";
+    indelFileStream << "##fileDate=" << now << "\n";
     indelFileStream << "##source=Seqan-SnpStoreV" << SEQAN_APP_VERSION << "\n";
     indelFileStream << "##reference=" << genomeFileNameList[0];
     for (unsigned i = 1; i < length(genomeFileNameList); ++i)
@@ -840,7 +850,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     if (options.inputPositionFile != "")
     {
         resize(positions,length(genomeNames));
-        result = loadPositions(positions,gIdStringToIdNumMap, toCString(options.inputPositionFile),options);
+        result = loadPositions(positions, gIdStringToIdNumMap, toCString(options.inputPositionFile), options);
         if (result != 0)
         {
             ::std::cerr << "Failed to read position file " << options.inputPositionFile << ::std::endl;
@@ -889,366 +899,382 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
         if (options._debugLevel > 0)
             ::std::cout << "Scanning genome #" << i << " ..." << ::std::endl;
 
-        // containers for those matches that overlap two windows
-        TAlignedReadStore tmpMatches;
-        TAlignQualityStore tmpQualities;
-        TReadStore tmpRs;
-        TReadSeqStore tmpReads;
-        TReadCounts tmpReadCounts;
-        TReadClips tmpReadClips;
-        TReadCigars tmpReadCigars;
         options.minCoord = MaxValue<unsigned>::VALUE;
         options.maxCoord = 0;
 
         // snp calling is done for all positions between windowBegin and windowEnd
-        while (currentWindowBegin < (TContigPos)length(genomes[i]))
-        {
-            TContigPos currentWindowEnd = currentWindowBegin + options.windowSize;
-            if (currentWindowEnd > (TContigPos)length(genomes[i]))
-                currentWindowEnd = (TContigPos)length(genomes[i]);
-            if (positionStatsOnly && !(currentWindowBegin <= *inspectPosIt && *inspectPosIt< currentWindowEnd))
+        //TODO(serosko): Start here for parallelisation
+
+            // containers for those matches that overlap two windows   //May cause problems in parallel code
+            TAlignedReadStore tmpMatches;
+            TAlignQualityStore tmpQualities;
+            TReadStore tmpRs;
+            TReadSeqStore tmpReads;
+            TReadCounts tmpReadCounts;
+            TReadClips tmpReadClips;
+            TReadCigars tmpReadCigars;
+//            int chunk = 1;
+//            SEQAN_OMP_PRAGMA(parallel for
+//                             default(none)
+//                             lastprivate(tmpMatches,
+//                                     tmpQualities,
+//                                     tmpRs,
+//                                     tmpReads,
+//                                     tmpReadCounts,
+//                                     tmpReadCounts,
+//                                     tmpReadClips,
+//                                     tmpReadCigars)
+//                             firstprivate()
+//                             shared(options, sumWindows, i)
+//                             reduction(+:sumwindows)
+//                             schedule(dynamic, chunk)
+//                             ordered)
+            for (currentWindowBegin = 0;
+                 currentWindowBegin < (TContigPos)length(genomes[i]);
+                 currentWindowBegin += options.windowSize)
             {
-                SEQAN_ASSERT_LEQ(currentWindowBegin,*inspectPosIt);
-                clear(tmpReads); clear(tmpRs); clear(tmpMatches); clear(tmpQualities);
-                clear(tmpReadClips); clear(tmpReadCounts); clear(tmpReadCigars);
-                currentWindowBegin = currentWindowEnd;
-                ++sumwindows;
-                continue;
-            }
-            if (options._debugLevel > 0)
-                ::std::cout << "Sequence number " << i << " window "
-                            << currentWindowBegin << ".." << currentWindowEnd << "\n";
+                TContigPos currentWindowEnd = currentWindowBegin + options.windowSize;
+                if (currentWindowEnd > (TContigPos)length(genomes[i]))
+                    currentWindowEnd = (TContigPos)length(genomes[i]);
+                if (positionStatsOnly && !(currentWindowBegin <= *inspectPosIt && *inspectPosIt < currentWindowEnd))
+                {
+                    SEQAN_ASSERT_LEQ(currentWindowBegin, *inspectPosIt);
+                    clear(tmpReads); clear(tmpRs); clear(tmpMatches); clear(tmpQualities);
+                    clear(tmpReadClips); clear(tmpReadCounts); clear(tmpReadCigars);
+                    ++sumwindows;
+                    continue;
+                }
+                if (options._debugLevel > 0)
+                    SEQAN_OMP_PRAGMA(critical (stdout))//not necessary since this debuglvl should not be used with t>1
+                            ::std::cout << "Sequence number " << i << " window "
+                                        << currentWindowBegin << ".." << currentWindowEnd << "\n";
 
-            TFragmentStore fragmentStore;
-            // Count number of reads that are identical to the given one.
-            // Useful for micro RNA data where there were millions of identical reads.
-            // Must be in GFF input, not supported for SAM input.
-            TReadCounts readCounts;
-            // Soft clipping information and/or clipping information from GFF/SAM tag.
-            // Clipping is postponed after pileup correction.
-            TReadClips readClips;
-            // Currently only stored for split-mapped reads.
-            //Split-mapped reads need special handling, especially for realignment.
-            TReadCigars readCigars;
+                TFragmentStore fragmentStore;
+                // Count number of reads that are identical to the given one.
+                // Useful for micro RNA data where there were millions of identical reads.
+                // Must be in GFF input, not supported for SAM input.
+                TReadCounts readCounts;
+                // Soft clipping information and/or clipping information from GFF/SAM tag.
+                // Clipping is postponed after pileup correction.
+                TReadClips readClips;
+                // Currently only stored for split-mapped reads.
+                //Split-mapped reads need special handling, especially for realignment.
+                TReadCigars readCigars;
 
-            // add the matches that were overlapping with this and the last window.
-            //(copied in order to avoid 2 x makeGlobal)
-            if (!empty(tmpMatches))
-            {
-                sumreads -=  length(tmpReads);  // count these reads only once
-                resize(fragmentStore.alignQualityStore,length(tmpMatches));
-                resize(fragmentStore.alignedReadStore,length(tmpMatches));
-                resize(fragmentStore.readSeqStore,length(tmpMatches));
-                resize(fragmentStore.readStore,length(tmpMatches));
-                if (!empty(tmpReadClips))
-                    resize(readClips,length(tmpMatches));
-                if (!empty(tmpReadCounts))
-                    resize(readCounts,length(tmpMatches));
-                if (!empty(tmpReadCigars))
-                    resize(readCigars,length(tmpMatches));
-
-                arrayMoveForward(begin(tmpQualities,Standard()),
-                                 end(tmpQualities,Standard()),
-                                 begin(fragmentStore.alignQualityStore,Standard()));
-                arrayMoveForward(begin(tmpMatches,Standard()),
-                                 end(tmpMatches,Standard()),
-                                 begin(fragmentStore.alignedReadStore,Standard()));
-                arrayMoveForward(begin(tmpReads,Standard()),
-                                 end(tmpReads,Standard()),
-                                 begin(fragmentStore.readSeqStore,Standard()));
-                arrayMoveForward(begin(tmpRs,Standard()),
-                                 end(tmpRs,Standard()),
-                                 begin(fragmentStore.readStore,Standard()));
-
-                if (!empty(tmpReadCounts))
-                    arrayMoveForward(begin(tmpReadCounts,Standard()),
-                                     end(tmpReadCounts,Standard()),
-                                     begin(readCounts,Standard()));
-                if (!empty(tmpReadCigars))
-                    arrayMoveForward(begin(tmpReadCigars,Standard()),
-                                     end(tmpReadCigars,Standard()),
-                                     begin(readCigars,Standard()));
-                if (!empty(tmpReadClips))
-                    arrayMoveForward(begin(tmpReadClips,Standard()),
-                                     end(tmpReadClips,Standard()),
-                                     begin(readClips,Standard()));
+                // add the matches that were overlapping with this and the last window.
+                //(copied in order to avoid 2 x makeGlobal)
+                if (!empty(tmpMatches))
+                {
+                    sumreads -=  length(tmpReads);  // count these reads only once
+                    resize(fragmentStore.alignQualityStore,length(tmpMatches));
+                    resize(fragmentStore.alignedReadStore,length(tmpMatches));
+                    resize(fragmentStore.readSeqStore,length(tmpMatches));
+                    resize(fragmentStore.readStore,length(tmpMatches));
+                    if (!empty(tmpReadClips))
+                        resize(readClips,length(tmpMatches));
+                    if (!empty(tmpReadCounts))
+                        resize(readCounts,length(tmpMatches));
+                    if (!empty(tmpReadCigars))
+                        resize(readCigars,length(tmpMatches));
+                    //moving temp matches into fragmentStore
+                    arrayMoveForward(begin(tmpQualities,Standard()),
+                                     end(tmpQualities,Standard()),
+                                     begin(fragmentStore.alignQualityStore,Standard()));
+                    arrayMoveForward(begin(tmpMatches,Standard()),
+                                     end(tmpMatches,Standard()),
+                                     begin(fragmentStore.alignedReadStore,Standard()));
+                    arrayMoveForward(begin(tmpReads,Standard()),
+                                     end(tmpReads,Standard()),
+                                     begin(fragmentStore.readSeqStore,Standard()));
+                    arrayMoveForward(begin(tmpRs,Standard()),
+                                     end(tmpRs,Standard()),
+                                     begin(fragmentStore.readStore,Standard()));
+                    if (!empty(tmpReadCounts))
+                        arrayMoveForward(begin(tmpReadCounts,Standard()),
+                                         end(tmpReadCounts,Standard()),
+                                         begin(readCounts,Standard()));
+                    if (!empty(tmpReadCigars))
+                        arrayMoveForward(begin(tmpReadCigars,Standard()),
+                                         end(tmpReadCigars,Standard()),
+                                         begin(readCigars,Standard()));
+                    if (!empty(tmpReadClips))
+                        arrayMoveForward(begin(tmpReadClips,Standard()),
+                                         end(tmpReadClips,Standard()),
+                                         begin(readClips,Standard()));
 #ifdef SNPSTORE_DEBUG
-                CharString strstr = "afterCopyInFrag";
-                _dumpMatches(fragmentStore,strstr);
+                    CharString strstr = "afterCopyInFrag";
+                    _dumpMatches(fragmentStore,strstr);
 #endif
 
-            }
-
-            // parse matches for current window
-            if (options._debugLevel > 0)
-                ::std::cout << "Parsing reads up to position " << currentWindowEnd << "...\n";
-            for (unsigned j = 0; j < length(options.readFNames); ++j)
-            {
-                unsigned sizeBefore = length(fragmentStore.alignedReadStore);
-
-                // currently only gff supported // TODO(serosko): Check if this still holds.
-                if (options.inputFormat == 0) // GFF
-                    result = readMatchesFromGFF_Batch(readFileStreams[j],
-                                                      fragmentStore,
-                                                      readCounts,
-                                                      readClips,
-                                                      readCigars,
-                                                      genomes[i],
-                                                      gIdStringToIdNumMap,
-                                                      i,
-                                                      currentWindowBegin,
-                                                      currentWindowEnd,
-                                                      highestChrId[j],
-                                                      options);
-                if (options.inputFormat >= 1) // SAM
-                    result = readMatchesFromSamBam_Batch(*bamFileIns[j],
-                                                         records[j],
-                                                         fragmentStore,
-                                                         readCounts,
-                                                         readClips,
-                                                         readCigars,
-                                                         genomes[i],
-                                                         gIdStringToIdNumMap,
-                                                         i,
-                                                         currentWindowBegin,
-                                                         currentWindowEnd,
-                                                         highestChrId[j],
-                                                         options,
-                                                         firstCall);
-                firstCall = false;
-
-                if (result == CALLSNPS_GFF_FAILED)
-                {
-                    std::cerr << "Failed to open read file " << options.readFNames[j] << ::std::endl;
-                    std::cerr << "or reads are not sorted correctly. " << ::std::endl;
-                    return result;
-                }
-                if (result > 0)
-                {
-                    return result;
                 }
 
+                // parse matches for current window
                 if (options._debugLevel > 0)
-                    std::cout << "parsed reads of file " << j << "\n";
+                    ::std::cout << "Parsing reads up to position " << currentWindowEnd << "...\n";
+                for (unsigned j = 0; j < length(options.readFNames); ++j)
+                {
+                    unsigned sizeBefore = length(fragmentStore.alignedReadStore);
 
-                // store average quality of each read
-                addReadQualityToMatches(fragmentStore,sizeBefore,
-                                        (unsigned)length(fragmentStore.alignedReadStore),
-                                        options);
+                    // currently only gff supported // TODO(serosko): Check if this still holds.
+                    if (options.inputFormat == 0) // GFF
+                        result = readMatchesFromGFF_Batch(readFileStreams[j],
+                                                          fragmentStore,
+                                                          readCounts,
+                                                          readClips,
+                                                          readCigars,
+                                                          genomes[i],
+                                                          gIdStringToIdNumMap,
+                                                          i,
+                                                          currentWindowBegin,
+                                                          currentWindowEnd,
+                                                          highestChrId[j],
+                                                          options);
+                    else if (options.inputFormat >= 1) // SAM
+                        result = readMatchesFromSamBam_Batch(*bamFileIns[j],
+                                                             records[j],
+                                                             fragmentStore,
+                                                             readCounts,
+                                                             readClips,
+                                                             readCigars,
+                                                             genomes[i],
+                                                             gIdStringToIdNumMap,
+                                                             i,
+                                                             currentWindowBegin,
+                                                             currentWindowEnd,
+                                                             highestChrId[j],
+                                                             options,
+                                                             firstCall);
+                    firstCall = false;
 
-                // do pile up correction if lane-based. lane-specific pileup correction not really used
-                if (options.maxPile != 0 && options.laneSpecificMaxPile)
+                    if (result == CALLSNPS_GFF_FAILED)
+                    {
+                        std::cerr << "Failed to open read file " << options.readFNames[j] << ::std::endl;
+                        std::cerr << "or reads are not sorted correctly. " << ::std::endl;
+                        return result;
+                    }
+                    if (result > 0)
+                    {
+                        return result;
+                    }
+
+                    if (options._debugLevel > 0)
+                        std::cout << "parsed reads of file " << j << "\n";
+
+                    // store average quality of each read
+                    addReadQualityToMatches(fragmentStore,
+                                            sizeBefore,
+                                            (unsigned)length(fragmentStore.alignedReadStore),
+                                            options);
+
+                    // do pile up correction if lane-based. lane-specific pileup correction not really used
+                    if (options.maxPile != 0 && options.laneSpecificMaxPile)
+                        applyPileupCorrection(fragmentStore,
+                                              sizeBefore,
+                                              (unsigned)length(fragmentStore.alignedReadStore),
+                                              options);
+
+                }
+
+                if (options._debugLevel > 1)  // number of reads currently in memory
+                    ::std::cerr << lengthSum(fragmentStore.readSeqStore) << " bps of "
+                                << length(fragmentStore.readSeqStore) << " reads in memory." << ::std::endl;
+                sumreads +=  length(fragmentStore.readSeqStore);  // total count of reads
+
+                // do merged pile up correction
+                if (options.maxPile != 0 && !options.laneSpecificMaxPile)
                     applyPileupCorrection(fragmentStore,
-                                          sizeBefore,
+                                          (unsigned)0,
                                           (unsigned)length(fragmentStore.alignedReadStore),
                                           options);
 
-            }
+                // these were set while parsing matches, first and last position of parsed matches
+                //          TContigPos startCoord = options.minCoord;// can be < currentWindowBegin
+                //          TContigPos endCoord = options.maxCoord; // can be > currentWindoEnd
 
-            if (options._debugLevel > 1)  // number of reads currently in memory
-                ::std::cerr << lengthSum(fragmentStore.readSeqStore) << " bps of "
-                            << length(fragmentStore.readSeqStore) << " reads in memory." << ::std::endl;
-            sumreads +=  length(fragmentStore.readSeqStore);  // total count of reads
-
-            // do merged pile up correction
-            if (options.maxPile != 0 && !options.laneSpecificMaxPile)
-                applyPileupCorrection(fragmentStore,
-                                      (unsigned)0,
-                                      (unsigned)length(fragmentStore.alignedReadStore),
-                                      options);
-
-            // these were set while parsing matches, first and last position of parsed matches
-            //          TContigPos startCoord = options.minCoord;// can be < currentWindowBegin
-            //          TContigPos endCoord = options.maxCoord; // can be > currentWindoEnd
-
-            // check
-            // can be < currentWindowBegin
-            TContigPos startCoord = _max((int)options.minCoord-options.realignAddBorder,0);
-            // can be > currentWindoEnd
-            TContigPos endCoord = _min(options.maxCoord+options.realignAddBorder,length(genomes[i]));
+                // check
+                // can be < currentWindowBegin
+                TContigPos startCoord = _max((int)options.minCoord-options.realignAddBorder,0);
+                // can be > currentWindoEnd
+                TContigPos endCoord = _min(options.maxCoord+options.realignAddBorder,length(genomes[i]));
 
 
-            if (!empty(fragmentStore.alignedReadStore))
-            {
-                //initial values of min and max coords for next round are set here
-                if (currentWindowEnd != (TContigPos)length(genomes[i]))
+                if (!empty(fragmentStore.alignedReadStore))
                 {
-                    clear(tmpMatches);
-                    clear(tmpQualities);
-                    clear(tmpRs);
-                    clear(tmpReads);
-                    clear(tmpReadCounts);
-                    clear(tmpReadClips);
-                    clear(tmpReadCigars);
-                    copyNextWindowMatchesAndReads(fragmentStore,
-                                                  readCounts,
-                                                  readCigars,
-                                                  readClips,
-                                                  tmpReadCounts,
-                                                  tmpReads,tmpRs,
-                                                  tmpMatches,
-                                                  tmpQualities,
-                                                  tmpReadClips,
-                                                  tmpReadCigars,
-                                                  i,
-                                                  currentWindowEnd,
-                                                  options);
+                    //initial values of min and max coords for next round are set here
+                    if (currentWindowEnd != (TContigPos)length(genomes[i]))
+                    {
+                        clear(tmpMatches);
+                        clear(tmpQualities);
+                        clear(tmpRs);
+                        clear(tmpReads);
+                        clear(tmpReadCounts);
+                        clear(tmpReadClips);
+                        clear(tmpReadCigars);
+                        copyNextWindowMatchesAndReads(fragmentStore,
+                                                      readCounts,
+                                                      readCigars,
+                                                      readClips,
+                                                      tmpReadCounts,
+                                                      tmpReads,tmpRs,
+                                                      tmpMatches,
+                                                      tmpQualities,
+                                                      tmpReadClips,
+                                                      tmpReadCigars,
+                                                      i,
+                                                      currentWindowEnd,
+                                                      options);
 #ifdef SNPSTORE_DEBUG
-                    CharString strstr = "afterCopyInTmp";
-                    _dumpMatches(tmpReads,tmpMatches,tmpQualities,strstr);
+                        CharString strstr = "afterCopyInTmp";
+                        _dumpMatches(tmpReads,tmpMatches,tmpQualities,strstr);
 #endif
-                }
+                    }
 
-                //  ::std::cout << "Min = " << options.minCoord << " Max = " << options.maxCoord << std::endl;
-                //  ::std::cout << "Min = " << startCoord << " Max = " << endCoord << std::endl;
+                    //  ::std::cout << "Min = " << options.minCoord << " Max = " << options.maxCoord << std::endl;
+                    //  ::std::cout << "Min = " << startCoord << " Max = " << endCoord << std::endl;
 
-                // coordinates are relative to current chromosomal window (segment)
-                transformCoordinates(fragmentStore,startCoord,options);
+                    // coordinates are relative to current chromosomal window (segment)
+                    transformCoordinates(fragmentStore, startCoord,options);
 
-                // set the current chromosomal segment as contig sequence
-                TContig conti;
-                conti.seq = infix(genomes[i],startCoord,endCoord);
-                appendValue(fragmentStore.contigStore, conti, Generous() );
-                appendValue(fragmentStore.contigNameStore, genomeNames[i], Generous() );// internal id is always 0
+                    // set the current chromosomal segment as contig sequence
+                    TContig conti;
+                    conti.seq = infix(genomes[i],startCoord,endCoord);
+                    appendValue(fragmentStore.contigStore, conti, Generous() );
+                    appendValue(fragmentStore.contigNameStore, genomeNames[i], Generous() );// internal id is always 0
 
-                // clip Reads if clipping is switched on and there were clip tags in the gff file
-                if ((!options.dontClip && options.clipTagsInFile) || options.softClipTagsInFile)
-                {
-                    // activate "average read quality"-mode for snp calling, low quality bases should be clipped anyway
-                    options.useBaseQuality = false;
-                    clipReads(fragmentStore,
-                              readClips,
-                              (unsigned)0,
-                              (unsigned)length(fragmentStore.alignedReadStore),
-                              options);
-                }
+                    // clip Reads if clipping is switched on and there were clip tags in the gff file
+                    if ((!options.dontClip && options.clipTagsInFile) || options.softClipTagsInFile)
+                    {
+                        // activate "average read quality"-mode for snp calling, low quality bases should be clipped anyway
+                        options.useBaseQuality = false;
+                        clipReads(fragmentStore,
+                                  readClips,
+                                  (unsigned)0,
+                                  (unsigned)length(fragmentStore.alignedReadStore),
+                                  options);
+                    }
 
-                // check for indels
-                if (options.outputIndel != "")
-                {
-                    if (options._debugLevel > 1)
-                        ::std::cout << "Check for indels..." << std::endl;
-                    if (!options.realign)
-                        dumpShortIndelPolymorphismsBatch(fragmentStore,
+                    // check for indels
+                    if (options.outputIndel != "")
+                    {
+                        if (options._debugLevel > 1)
+                            ::std::cout << "Check for indels..." << std::endl;
+                        if (!options.realign)
+                            dumpShortIndelPolymorphismsBatch(fragmentStore,
+                                                             readCigars,
+                                                             fragmentStore.contigStore[0].seq,
+                                    genomeNames[i],
+                                    startCoord,
+                                    currentWindowBegin,
+                                    currentWindowEnd,
+                                    indelFileStream,
+                                    options);
+                    }
+
+                    //                // check for CNVs
+                    //                if (*options.outputCNV != 0)
+                    //                {
+                    //                    dumpCopyNumberPolymorphismsBatch(fragmentStore,
+                    //                                                     genomeNames[i],
+                    //                                                     startCoord,
+                    //                                                     currentWindowBegin,
+                    //                                                     currentWindowEnd,
+                    //                                                     cnvFileStream,
+                    //                                                     options);
+                    //                }
+
+#ifdef SNPSTORE_DEBUG
+                    CharString strstr = "test";
+                    //              _dumpMatches(fragmentStore, strstr );
+#endif
+                    if (options.outputSNP != "")
+                    {
+                        if (options._debugLevel > 1)
+                            ::std::cout << "Check for SNPs..." << std::endl;
+                        if (options.realign)
+                            dumpVariantsRealignBatchWrap(fragmentStore,
                                                          readCigars,
-                                                         fragmentStore.contigStore[0].seq,
+                                                         readCounts,
                                                          genomeNames[i],
                                                          startCoord,
                                                          currentWindowBegin,
                                                          currentWindowEnd,
+                                                         snpFileStream,
                                                          indelFileStream,
                                                          options);
+                        else
+                            dumpSNPsBatch(fragmentStore,
+                                          readCigars,
+                                          readCounts,
+                                          genomeNames[i],
+                                          startCoord,
+                                          currentWindowBegin,
+                                          currentWindowEnd,
+                                          snpFileStream,
+                                          options);
+                    }
+                    if (positionStatsOnly)
+                    {
+                        if (options._debugLevel > 1)
+                            ::std::cout << "Dumping info for query positions..." << std::endl;
+                        if (options.realign)
+                            dumpPositionsRealignBatchWrap(fragmentStore,
+                                                          inspectPosIt,
+                                                          inspectPosItEnd,
+                                                          readCigars,
+                                                          readCounts,
+                                                          genomeNames[i],
+                                                          startCoord,
+                                                          currentWindowBegin,
+                                                          currentWindowEnd,
+                                                          posFileStream,
+                                                          options);
+                        else
+                            dumpPosBatch(fragmentStore,
+                                         inspectPosIt,
+                                         inspectPosItEnd,
+                                         readCigars,
+                                         readCounts,
+                                         genomeNames[i],
+                                         startCoord,
+                                         currentWindowBegin,
+                                         currentWindowEnd,
+                                         posFileStream,
+                                         options);
+                    }
                 }
-
-//                // check for CNVs
-//                if (*options.outputCNV != 0)
-//                {
-//                    dumpCopyNumberPolymorphismsBatch(fragmentStore,
-//                                                     genomeNames[i],
-//                                                     startCoord,
-//                                                     currentWindowBegin,
-//                                                     currentWindowEnd,
-//                                                     cnvFileStream,
-//                                                     options);
-//                }
-
-#ifdef SNPSTORE_DEBUG
-                CharString strstr = "test";
-                //              _dumpMatches(fragmentStore, strstr );
-#endif
-                if (options.outputSNP != "")
-                {
-                    if (options._debugLevel > 1)
-                        ::std::cout << "Check for SNPs..." << std::endl;
-                    if (options.realign)
-                        dumpVariantsRealignBatchWrap(fragmentStore,
-                                                     readCigars,
-                                                     readCounts,
-                                                     genomeNames[i],
-                                                     startCoord,
-                                                     currentWindowBegin,
-                                                     currentWindowEnd,
-                                                     snpFileStream,
-                                                     indelFileStream,
-                                                     options);
-                    else
-                        dumpSNPsBatch(fragmentStore,
-                                      readCigars,
-                                      readCounts,
-                                      genomeNames[i],
-                                      startCoord,
-                                      currentWindowBegin,
-                                      currentWindowEnd,
-                                      snpFileStream,
-                                      options);
-                }
-                if (positionStatsOnly)
-                {
-                    if (options._debugLevel > 1)
-                        ::std::cout << "Dumping info for query positions..." << std::endl;
-                    if (options.realign)
-                        dumpPositionsRealignBatchWrap(fragmentStore,
-                                                      inspectPosIt,
-                                                      inspectPosItEnd,
-                                                      readCigars,
-                                                      readCounts,
-                                                      genomeNames[i],
-                                                      startCoord,
-                                                      currentWindowBegin,
-                                                      currentWindowEnd,
-                                                      posFileStream,
-                                                      options);
-                    else
-                        dumpPosBatch(fragmentStore,
-                                     inspectPosIt,
-                                     inspectPosItEnd,
-                                     readCigars,
-                                     readCounts,
-                                     genomeNames[i],
-                                     startCoord,
-                                     currentWindowBegin,
-                                     currentWindowEnd,
-                                     posFileStream,
-                                     options);
-                }
-            }
-//            else
-//            {
+                //            else
+                //            {
                 if (positionStatsOnly && !empty(positions))
                 {
                     while (inspectPosIt != inspectPosItEnd && *inspectPosIt < currentWindowEnd)
                     {
                         if (options.orientationAware)
                         {
-                            posFileStream << genomeNames[i] << '\t' << *inspectPosIt + options.positionFormat
-                                          << "\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0" << std::endl;
+                            SEQAN_OMP_PRAGMA(critical (writePosition))
+                                    posFileStream << genomeNames[i] << '\t' << *inspectPosIt + options.positionFormat
+                                                  << "\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0" << std::endl;
                         }
                         else
                         {
-                            posFileStream << genomeNames[i] << '\t' << *inspectPosIt + options.positionFormat
-                                          << "\t0\t0\t0\t0\t0\t0" << std::endl;
+                            SEQAN_OMP_PRAGMA(critical (writePosition))
+                                    posFileStream << genomeNames[i] << '\t' << *inspectPosIt + options.positionFormat
+                                                  << "\t0\t0\t0\t0\t0\t0" << std::endl;
                         }
                         ++inspectPosIt;
                     }
                 }
-//            }
-            currentWindowBegin = currentWindowEnd;
-            ++sumwindows;
-        }
-
+                //            }
+                ++sumwindows;
+            }
     }
     if (options.outputSNP != "")
         snpFileStream.close();
-
     if (options.outputIndel != "")
         indelFileStream.close();
-
     if (options.outputPosition != "")
         posFileStream.close();
-
     //  if (options.outputCNV != "")
     //      cnvFileStream.close();
-
     return 0;
 }
 
@@ -1422,6 +1448,12 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     setMinValue(parser, "corrected-quality", "0");
     setDefaultValue(parser, "corrected-quality", options.newQualityCalibrationFactor);
     hideOption(parser, "cq");
+    addOption(parser, ArgParseOption("t",
+                                     "threads",
+                                     "Number of threads.",
+                                     ArgParseArgument::INTEGER, "NUM"));
+    setMinValue(parser, "threads", "1");
+    setDefaultValue(parser, "threads", "1");
     addOption(parser, ArgParseOption("pws",
                                      "parse-window-size",
                                      "Genomic window size for parsing reads"
@@ -1601,6 +1633,9 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     options.realign = isSet(parser, "realign");
     getOptionValue(options.newQualityCalibrationFactor, parser, "corrected-quality");
     getOptionValue(options.windowSize, parser, "parse-window-size");
+    //get number of threads to use
+    getOptionValue(options.threads, parser, "threads");
+    omp_set_num_threads (options.threads);
     getOptionValue(options.realignAddBorder, parser, "realign-border");
     // SNP Calling Options:
     getOptionValue(options.minMutT, parser, "min-mutations");
@@ -1692,7 +1727,6 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
             ++lastPos;
         options.runID = tempStr.substr(lastPos);
     }
-
     return ArgumentParser::PARSE_OK;
 }
 
@@ -1700,7 +1734,6 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
 
 int main(int argc, const char *argv[])
 {
-
     ArgumentParser parser;
     SNPCallingOptions<>     options;
     ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
