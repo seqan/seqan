@@ -666,7 +666,7 @@ getAdjacencyMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TVector, typename TStringSet, typename TCargo, typename TSpec, typename TVertex, typename TVertex>
+template<typename TVector, typename TStringSet, typename TCargo, typename TSpec, typename TVertex>
 inline void
 getVertexAdjacencyVector(TVector & vectIn,
                          TVector & vectOut,
