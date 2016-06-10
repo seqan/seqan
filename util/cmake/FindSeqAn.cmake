@@ -112,54 +112,48 @@ endif ()
 
 # Recognize Clang compiler.
 
-set (COMPILER_IS_CLANG FALSE)
+set (COMPILER_CLANG FALSE)
+set (COMPILER_GNU FALSE)
+set (COMPILER_INTEL FALSE)
+set (COMPILER_MSVC FALSE)
+set (STDLIB_VS ${MSVC})
+
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set (COMPILER_IS_CLANG TRUE)
-endif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-
-set (CMAKE_COMPILER_IS_GNUCXX FALSE)
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  set (CMAKE_COMPILER_IS_GNUCXX TRUE)
-endif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-
-# Intel
-set (COMPILER_IS_INTEL FALSE)
-if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-  set (COMPILER_IS_INTEL TRUE)
-endif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-
-# Visual Studio
-set (COMPILER_IS_MSVC FALSE)
-if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  set (COMPILER_IS_MSVC TRUE)
-endif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  set (COMPILER_CLANG TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  set (COMPILER_INTEL TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  set (COMPILER_GNU TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  set (COMPILER_MSVC TRUE)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Check required compiler versions.
 # ----------------------------------------------------------------------------
 
-if (CMAKE_COMPILER_IS_GNUCXX)
+if (COMPILER_GNU)
 
     # require at least gcc 4.9
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
         message(AUTHOR_WARNING "GCC version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 4.9! Anything below is untested.")
     endif ()
 
-elseif (COMPILER_IS_CLANG)
+elseif (COMPILER_CLANG)
 
     # require at least clang 3.5
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.5)
         message(AUTHOR_WARNING "Clang version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 3.5! Anything below is untested.")
     endif ()
 
-elseif (COMPILER_IS_INTEL)
+elseif (COMPILER_INTEL)
 
     # require at least icpc 16.0.2
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16.0.2)
         message(AUTHOR_WARNING "Intel Compiler version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 16.0.2! Anything below is untested.")
     endif ()
 
-elseif (COMPILER_IS_MSVC)
+elseif (COMPILER_MSVC)
 
     # require at least MSVC 19.0
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0")
@@ -196,7 +190,7 @@ endif ()
 # ----------------------------------------------------------------------------
 
 # GCC/CLANG/ICC
-if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
+if (COMPILER_GNU OR COMPILER_CLANG OR COMPILER_INTEL)
   # Tune warnings for GCC.
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
 
@@ -226,14 +220,16 @@ endif ()
 if (WIN32)
   # Always set NOMINMAX such that <Windows.h> does not define min/max as
   # macros.
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -DNOMINMAX")
+  set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DNOMINMAX)
 endif (WIN32)
 
 # Visual Studio Setup
-if (MSVC)
+if (STDLIB_VS AND (COMPILER_MSVC OR COMPILER_INTEL))
   # Enable intrinics (e.g. _interlockedIncrease)
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /EHsc /Oi")
-endif (MSVC)
+  # /EHsc will be set automatically for COMPILER_MSVC and COMPILER_INTEL, but
+  # COMPILER_CLANG (clang/c2 3.7) can not handle the /EHsc and /Oi flag
+  set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} /Oi)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Search for directory seqan.
@@ -354,7 +350,7 @@ if (NOT _SEQAN_FIND_OPENMP EQUAL -1)
 endif ()
 
 if (OPENMP_FOUND)
-    if (COMPILER_IS_CLANG AND (_GCC_VERSION MATCHES "^37[0-9]$"))
+    if (COMPILER_CLANG AND (_GCC_VERSION MATCHES "^37[0-9]$"))
         message (STATUS "Because of a bug in clang-3.7.x OpenMP cannot be used (even if available). Please update your clang!")
         set (OPENMP_FOUND FALSE)
     else ()
