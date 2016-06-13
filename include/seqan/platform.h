@@ -265,7 +265,7 @@ typedef uint32_t __uint32; // nolint
 typedef uint16_t __uint16; // nolint
 typedef uint8_t __uint8;   // nolint
 
-#if !(defined(COMPILER_INTEL) || defined(COMPILER_MSVC))
+#if !(defined(COMPILER_INTEL) || defined(STDLIB_VS))
 typedef int64_t __int64;   // nolint
 typedef int32_t __int32;   // nolint
 typedef int16_t __int16;   // nolint
