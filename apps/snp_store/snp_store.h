@@ -31,6 +31,7 @@
 
 #include <seqan/misc/svg.h>
 #include <seqan/stream.h>
+#include <seqan/parallel.h>
 #include <boost/math/special_functions/fpclassify.hpp>
 
 #ifdef CORRECTED_HET
@@ -203,6 +204,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         unsigned    minCoord;                   // current min. read mapping coordinate observed
         unsigned    maxCoord;                   // current max. read mapping coordinate observed
 
+        int         threads;                    // max. number of threads to be uses.
         unsigned    windowSize;                 // genomic window size for read parsing
         unsigned    windowBuff;                 // reads within windowBuff base pairs of current window are also kept
                                                 //     (-> overlapping windows)
@@ -3098,7 +3100,7 @@ inline bool _writeSnp(TFile & file,
         file << ";A-=" << length(qualityStringR[0]);
         file << ";C-=" << length(qualityStringR[1]);
         file << ";G-=" << length(qualityStringR[2]);
-        file << ";T-=" << length(qualityStringR[3]) <<"\t";
+        file << ";T-=" << length(qualityStringR[3]);
     }
     file << std::endl;
     return true;
@@ -3546,7 +3548,7 @@ void realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore, T
         matchIt->beginPos -= minPos;
         matchIt->endPos -= minPos;
         it = begin(multiReadProfile, Standard());
-        it += _min(matchIt->beginPos,matchIt->endPos);
+        it += _min(matchIt->beginPos, matchIt->endPos);
 
         if (matchIt->beginPos > matchIt->endPos)
             reverseComplement(fragmentStore.readSeqStore[matchIt->readId]);
@@ -3558,8 +3560,8 @@ void realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore, T
         TReadGapsIter gitRead = begin(matchIt->gaps, Standard());
         TReadGapsIter gitReadEnd = end(matchIt->gaps, Standard());
 
-        TReadPos old = 0;
-        int diff = 0;
+        TReadPos old = 0;               //old position of the gap
+        int diff = 0;                   //difference between old and new position of a gap
         bool clippedEnd = false;
         if ((gitRead != gitReadEnd) && (gitRead->gapPos == 0))
         {
@@ -3569,7 +3571,7 @@ void realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore, T
             diff -= old;
             ++gitRead;
         }
-        for(;gitRead != gitReadEnd; ++gitRead)
+        for(;gitRead != gitReadEnd; ++gitRead)      //for all gaps of the current read...
         {
             TReadPos limit = gitRead->seqPos;
             int newDiff = (gitRead->gapPos - limit);
@@ -3601,11 +3603,11 @@ void realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore, T
     SEQAN_ASSERT(refFound);
 
     // put reference sequence into ProfileString
-    TReadIter refSeqIt = begin(fragmentStore.readSeqStore[refReadId],Standard());
+    TReadIter refSeqIt = begin(fragmentStore.readSeqStore[refReadId], Standard());
     TProfileString refProfile;
     resize(refProfile, length(fragmentStore.readSeqStore[refReadId]), TProfile());
-    TProfIter refIt = begin(refProfile,Standard());
-    for(; refIt != end(refProfile,Standard()); ++refIt, ++refSeqIt)
+    TProfIter refIt = begin(refProfile, Standard());
+    for(; refIt != end(refProfile, Standard()); ++refIt, ++refSeqIt)
         (*refIt).count[0] = ordValue(*refSeqIt);
 
 
@@ -3617,12 +3619,12 @@ void realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore, T
 
     // make diploid consensus profile
     TProfileString diploidConsensus;
-    resize(diploidConsensus,length(multiReadProfile),TProfile());
+    resize(diploidConsensus, length(multiReadProfile), TProfile());
     TProfIter dipIt = begin(diploidConsensus, Standard() );
 
     // record which columns are removed from multiReadProfile to obtain diploidConsensus
     String<TReadPos> removeState;
-    resize(removeState,length(multiReadProfile));
+    resize(removeState, length(multiReadProfile));
     typedef typename Iterator<String<TReadPos>, Standard >::Type TStateIterator;
     TStateIterator sit = begin(removeState,Standard());
 
@@ -4195,7 +4197,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
 //  {
     // TODO: check out if a different scoring scheme makes more sense
     Score<int, WeightedConsensusScore<Score<int, FractionalScore>, Score<int, ConsensusScore> > > consScore;
-    int bandWidth = 10; // ad hoc
+    int bandWidth = 10; // ad hoc //TODO(serosko): Check which bandwith is good for different cases.
 
     if (options._debugLevel > 1)
     {
@@ -4637,6 +4639,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                                    ThresholdMethod());
             // write SNP to file
             if (isSnp && (snp.called || options.outputFormat == 0))
+                SEQAN_OMP_PRAGMA(critical (writeSNP))
                 _writeSnp(file,
                           snp,
                           qualityStringF,
@@ -4797,6 +4800,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
             }
             if (indelSize > 0) //Deletion
             {
+                SEQAN_OMP_PRAGMA(critical (writeIndel))
                 writeIndel(indelfile,
                            reference,
                            options,
@@ -4839,6 +4843,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                 ++candidateViewPos;
             }
             if (indelSize < 0)
+                SEQAN_OMP_PRAGMA(critical (writeIndel))
                 writeIndel(indelfile,
                                reference,
                                options,
@@ -5190,6 +5195,7 @@ void dumpSNPsBatch(
                                ThresholdMethod());
         // write SNP to file
         if (isSnp && (snp.called || options.outputFormat == 0))
+            SEQAN_OMP_PRAGMA(critical (writeSNP))
             _writeSnp(file,
                       snp,
                       qualityStringF,
@@ -5783,6 +5789,7 @@ void dumpShortIndelPolymorphismsBatch(
             int indelSize = indelIt -> first.i2;
             TReadInf insertionSeq = indelIt -> second.i2;
             int quality = -1;                       //quality TODO(serosko): Add real value.
+            SEQAN_OMP_PRAGMA(critical (writeIndel))
             writeIndel(indelfile,
                        genome,
                        options,
@@ -6116,12 +6123,12 @@ void dumpPositionsRealignBatch(
     unsigned refId = length(matchQualities);
 
 #ifndef  READS_454
-    reAlign(fragmentStore,consScore,0,1,/*bandWidth*/5,false);
+    reAlign(fragmentStore, consScore, 0, 1,/*bandWidth*/5,false);
     //realignReferenceToReadProfile(fragmentStore,refId,options);
     //realignReferenceToDiploidConsensusProfile(fragmentStore,refId,options);
 #else
 //  reAlign(fragmentStore,consScore,0,1,/*bandWidth*/5,false);
-    realignReferenceToDiploidConsensusProfile(fragmentStore,refId,options);
+    realignReferenceToDiploidConsensusProfile(fragmentStore, refId,  options);
 //    realignReferenceToDiploidConsensusProfileDeleteSeqErrors(fragmentStore,refId,options);
 #endif
 
