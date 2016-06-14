@@ -45,7 +45,7 @@ namespace seqan {
 
 struct Condition
 {
-    enum { Infinite = INFINITE };
+    enum : unsigned { Infinite = INFINITE };
 
     CONDITION_VARIABLE  data_cond;
     CriticalSection     *csPtr;
