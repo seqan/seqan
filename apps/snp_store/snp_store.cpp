@@ -816,7 +816,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
             snpFileStream << "##INFO=<ID=T-,Number=1,Type=Integer,Description=\"Number of base 'T' observations"
                              " on reverse strand\">\n";
         }
-        snpFileStream << "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\n";
+        snpFileStream << "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n";
     }
     ::std::ofstream indelFileStream;
     if (options.outputIndel != "")
@@ -838,7 +838,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     indelFileStream << "##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">\n";
     indelFileStream << "##INFO=<ID=FR,Number=1,Type=Float,Description=\"Fraction of reads supporting ALT\">\n";
     indelFileStream << "##INFO=<ID=ZYG,Number=1,Type=String,Description=\"Estimated zygosity of indel\">\n";
-    indelFileStream << "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\n";
+    indelFileStream << "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n";
     //  ::std::ofstream cnvFileStream;
     //  if (*options.outputCNV != 0)
     //  {
