@@ -111,7 +111,7 @@ waitFor(Condition &cond, long timeoutMilliSec, bool & inProgress)
 #ifdef STDLIB_VS
     inProgress = (SleepConditionVariableCS(&cond.data_cond, &cond.csPtr->data_cs, timeoutMilliSec) == 0);
     if (inProgress)
-        SEQAN_ASSERT_EQ(GetLastError(), ERROR_TIMEOUT);
+        SEQAN_ASSERT_EQ(GetLastError(), static_cast<DWORD>(ERROR_TIMEOUT));
 #else
     if (timeoutMilliSec != Condition::Infinite)
     {
