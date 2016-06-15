@@ -7,11 +7,11 @@ class GffRecord
 {
 public:
     CharString ref;      // reference name
-    __int32 rID;         // index in sequenceNames of GffFile
+    int32_t rID;         // index in sequenceNames of GffFile
     CharString source;   // source free text descriptor
     CharString type;     // type of the feature
-    __int32 beginPos;    // begin position of the interval
-    __int32 endPos;      // end position of the interval
+    int32_t beginPos;    // begin position of the interval
+    int32_t endPos;      // end position of the interval
     float score;         // score of the annotation
     char strand;         // the strand
     char phase;          // one of '0', '1', '2', and '.'
@@ -24,8 +24,8 @@ public:
     static float INVALID_SCORE();
 
     // Constants for marking reference id and position as invalid.
-    static const __int32 INVALID_IDX = -1;
-    static const __int32 INVALID_POS = -1;
+    static const int32_t INVALID_IDX = -1;
+    static const int32_t INVALID_POS = -1;
 };
 //![GffRecord]
 

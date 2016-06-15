@@ -11,22 +11,22 @@ class myBamAlignmentRecord
 public:
     CharString qName;               // QNAME
     __uint16 flag;                  // FLAG
-    __int32 rID;                    // REF
-    __int32 beginPos;               // POS
+    int32_t rID;                    // REF
+    int32_t beginPos;               // POS
     __uint8 mapQ;                   // MAPQ mapping quality, 255 for */invalid
     __uint16 bin;                   // bin for indexing
     String<CigarElement<> > cigar;  // CIGAR string
-    __int32 rNextId;                // RNEXT (0-based)
-    __int32 pNext;                  // PNEXT (0-based)
-    __int32 tLen;                   // TLEN
+    int32_t rNextId;                // RNEXT (0-based)
+    int32_t pNext;                  // PNEXT (0-based)
+    int32_t tLen;                   // TLEN
     CharString seq;                 // SEQ, as in SAM/BAM file.
     CharString qual;                // Quality string as in SAM (Phred).
     CharString tags;                // Tags, raw as in BAM.
 
     // Constants for marking pos, reference id and length members invalid (== 0/*).
-    static __int32 const INVALID_POS = -1;
-    static __int32 const INVALID_REFID = -1;
-    static __int32 const INVALID_LEN = 0;
+    static int32_t const INVALID_POS = -1;
+    static int32_t const INVALID_REFID = -1;
+    static int32_t const INVALID_LEN = 0;
 };
 //![bamRecord]
 
