@@ -486,7 +486,7 @@ namespace seqan
 
         bool result = true;
 
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
         // Windows doesn't allow to resize the file while having a mapped file segment
         // Thus, the following part is only supported on Linux/BSD/Mac OS
         TSize old_capacity = capacity(me);

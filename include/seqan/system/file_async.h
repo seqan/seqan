@@ -64,7 +64,7 @@ namespace seqan
     struct Async {};
 
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 
     template <typename TSpec>
     class File<Async<TSpec> >

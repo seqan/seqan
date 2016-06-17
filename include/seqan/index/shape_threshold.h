@@ -203,7 +203,7 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
         bool intermediate:1;        // this is an intermediate result (beginning with INSERT)
         bool qgramHit:1;            // is this a q-gram hit? (result of the former delta function)
     }
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
     __attribute__((packed))
 #endif
     ;
@@ -222,12 +222,12 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
         bool intermediate:1;        // this is an intermediate result (beginning with INSERT)
         bool qgramHit:1;            // is this a q-gram hit? (result of the former delta function)
     }
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
     __attribute__((packed))
 #endif
     ;
 
-#if defined(PLATFORM_WINDOWS)
+#if defined(STDLIB_VS)
 
     template<typename TValue>
     inline bool isNan(TValue value)

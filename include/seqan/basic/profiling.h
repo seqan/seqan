@@ -86,7 +86,7 @@ namespace seqan
 
 #endif
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     typedef int64_t   ProfileInt_; //IOREV _notio_
 #else
     typedef int64_t ProfileInt_; //IOREV _notio_
@@ -241,7 +241,7 @@ namespace seqan
  * @see cpuTime
  */
 
-    #ifdef PLATFORM_WINDOWS
+    #ifdef STDLIB_VS
 //        inline _proFloat sysTime() { return GetTickCount() * 1e-3; }
         inline _proFloat sysTime() { return ( (_proFloat) clock() ) / CLOCKS_PER_SEC; }
     #else

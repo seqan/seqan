@@ -47,12 +47,6 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-#ifdef PLATFORM_WINDOWS_VS
-// Disable warning C4521 locally (multiple copy constructors).
-#pragma warning( push )
-#pragma warning( disable: 4521 )
-#endif  // PLATFORM_WINDOWS_VS
-
 /*!
  * @class SimpleHolder
  * @extends Holder
@@ -134,11 +128,6 @@ struct Holder<TValue, Simple>
         return *data_value;
     }
 };
-
-#ifdef PLATFORM_WINDOWS_VS
-// Set old warning C4521 state again (multiple copy constructors).
-#pragma warning( pop )
-#endif  // PLATFORM_WINDOWS_VS
 
 // ============================================================================
 // Metafunctions

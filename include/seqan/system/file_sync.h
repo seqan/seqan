@@ -41,7 +41,7 @@
 #include <sys/stat.h>       //
 #include <cstdio>           // tmpnam(..)
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 # include <io.h>            // read(..) ..
 #else
 # include <cstdlib>
@@ -77,7 +77,7 @@ namespace seqan
     struct Sync {};
 
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 
     //////////////////////////////////////////////////////////////////////////////
     // Windows rtl file access

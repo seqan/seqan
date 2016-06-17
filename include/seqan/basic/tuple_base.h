@@ -130,9 +130,7 @@ struct Tuple
 };
 
 
-#ifdef PLATFORM_WINDOWS
-    #pragma pack(push,1)
-#endif
+#pragma pack(push,1)
 template <typename TValue, unsigned SIZE>
 struct Tuple<TValue, SIZE, Pack>
 {
@@ -174,14 +172,8 @@ struct Tuple<TValue, SIZE, Pack>
     {
         return i[k] = source;
     }
-}
-#ifndef PLATFORM_WINDOWS
-    __attribute__((packed))
-#endif
-    ;
-#ifdef PLATFORM_WINDOWS
-      #pragma pack(pop)
-#endif
+};
+#pragma pack(pop)
 
 //template <typename TValue, unsigned SIZE>
 //const unsigned Tuple<TValue, SIZE, Pack>::SIZE = SIZE;

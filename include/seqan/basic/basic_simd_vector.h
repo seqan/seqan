@@ -55,7 +55,7 @@
 
 namespace seqan {
 
-#ifdef PLATFORM_INTEL
+#ifdef COMPILER_INTEL
 #include <type_traits>
 #define SEQAN_VECTOR_CAST_(T, v) static_cast<typename std::decay<T>::type>(v)
 #define SEQAN_VECTOR_CAST_LVALUE_(T, v) static_cast<T>(v)
