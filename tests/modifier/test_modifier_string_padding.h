@@ -44,7 +44,7 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_construction)
 
     SEQAN_ASSERT(modString._host == &seq);
     SEQAN_ASSERT(modString._cargo._paddedValue == 'A');
-    SEQAN_ASSERT(modString._cargo._expandedSize == 0u);
+    SEQAN_ASSERT(modString._cargo._numPaddedChar == 0u);
     SEQAN_ASSERT(modString._cargo._remainingSteps == 0u);
 }
 
@@ -88,13 +88,13 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_begin)
     auto it = begin(modString, Standard());
     SEQAN_ASSERT(host(it) == begin(seq, Rooted()));
     SEQAN_ASSERT_EQ(cargo(it)._remainingSteps, 0u);
-    SEQAN_ASSERT_EQ(cargo(it)._expandedSize, 0u);
+    SEQAN_ASSERT_EQ(cargo(it)._numPaddedChar, 0u);
 
     expand(modString, 5);
     it = begin(modString, Standard());
     SEQAN_ASSERT(host(it) == begin(seq, Rooted()));
     SEQAN_ASSERT_EQ(cargo(it)._remainingSteps, 5u);
-    SEQAN_ASSERT_EQ(cargo(it)._expandedSize, 5u);
+    SEQAN_ASSERT_EQ(cargo(it)._numPaddedChar, 5u);
 }
 
 SEQAN_DEFINE_TEST(test_modified_string_padding_end)
@@ -107,13 +107,13 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_end)
     auto itEnd = end(modString, Standard());
     SEQAN_ASSERT(host(itEnd) == end(seq, Rooted()));
     SEQAN_ASSERT_EQ(cargo(itEnd)._remainingSteps, 0u);
-    SEQAN_ASSERT_EQ(cargo(itEnd)._expandedSize, 0u);
+    SEQAN_ASSERT_EQ(cargo(itEnd)._numPaddedChar, 0u);
 
     expand(modString, 5);
     itEnd = end(modString, Standard());
     SEQAN_ASSERT(host(itEnd) == end(seq, Rooted()));
     SEQAN_ASSERT_EQ(cargo(itEnd)._remainingSteps, 0u);
-    SEQAN_ASSERT_EQ(cargo(itEnd)._expandedSize, 5u);
+    SEQAN_ASSERT_EQ(cargo(itEnd)._numPaddedChar, 5u);
 }
 
 SEQAN_DEFINE_TEST(test_modified_string_padding_difference)
