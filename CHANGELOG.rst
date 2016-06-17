@@ -9,6 +9,9 @@ Release 2.2.0
 Library Features
 ^^^^^^^^^^^^^^^^
 
+- Alignment:
+    - Vectorized DP-Alignment algorithms using SSE3/AVX2. Allows for inter-parallel alignment computation in a many-vs-many or one-vs-many mode.
+
 - Modifier:
     - ModifiedString ModPadding: Expand a string with padding symbols, without changing the source.
 
