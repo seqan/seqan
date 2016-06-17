@@ -310,14 +310,14 @@ void _reverseTrace(String<TraceSegment_<TPosition, TSize>, TSpec> & trace)
 template <typename TContigSeqL, typename TReadSeqL, typename TContigSeqR, typename TReadSeqR,
           typename TScoreValue, typename TScoreSpec,
           bool TTop, bool TRight, bool TLeft, bool TBottom, typename TConfigSpec>
-int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
-                        Gaps<TReadSeqL> & gapsReadL,
-                        Gaps<TContigSeqR> & gapsContigR,
-                        Gaps<TReadSeqR> & gapsReadR,
-                        int lowerDiagonal,
-                        int upperDiagonal,
-                        Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                        AlignConfig<TTop, TRight, TLeft, TBottom, TConfigSpec> const & /*config*/)
+auto _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
+                         Gaps<TReadSeqL> & gapsReadL,
+                         Gaps<TContigSeqR> & gapsContigR,
+                         Gaps<TReadSeqR> & gapsReadR,
+                         int lowerDiagonal,
+                         int upperDiagonal,
+                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                         AlignConfig<TTop, TRight, TLeft, TBottom, TConfigSpec> const & /*config*/)
 {
     typedef Gaps<TContigSeqL> TGaps;
     typedef typename Size<TGaps>::Type TSize;
@@ -385,17 +385,13 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
 
     // TODO(holtgrew): Make selecting the left/right split position from interface possible? Maybe not necessary.
 
-    int bestScore = minValue<TScoreValue>() / 2;
-    unsigned bestPrefixLength = 0;
-    for (unsigned i = 0; i < length(scoutStateL.splitScore); ++i)
-    {
-        int s = scoutStateL.splitScore[i] + scoutStateR.splitScore[i];
-        if (s > bestScore)
-        {
-            bestScore = s;
-            bestPrefixLength = i;
-        }
-    }
+    auto itBegin = makeZipIterator(begin(scoutStateL.splitScore), begin(scoutStateR.splitScore));
+    auto res = std::max_element(itBegin, makeZipIterator(end(scoutStateL.splitScore), end(scoutStateR.splitScore)),
+                                [](auto lhs, auto rhs)
+                                {
+                                    return std::get<0>(lhs) + std::get<1>(lhs) < std::get<0>(rhs) + std::get<1>(rhs);
+                                });
+    auto bestPrefixLength = res - itBegin;
 
     // std::cerr << "bestPrefixLength = " << bestPrefixLength << "\n";
 
@@ -420,7 +416,7 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     setClippedEndPosition(gapsContigL, cePosL);
     setClippedEndPosition(gapsReadL, cePosL);
 
-    return bestScore;
+    return *res;
 }
 
 // ----------------------------------------------------------------------------
@@ -451,7 +447,7 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  * @return TScoreValue The sum of the alignment scores of both alignments (Metafunction: @link Score#Value @endlink
  *                     of the type of <tt>scoringScheme</tt>).
  *
- * There are two variants of the split alignment problem.  In the first variant, we wan to align two sequences where the
+ * There are two variants of the split alignment problem.  In the first variant, we want to align two sequences where the
  * first (say the reference) one is shorter than the second (say a read) and the read contains an insertion with respect
  * to the reference.  We now want to align the read agains the reference such that the left part of the read aligns well
  * against the left part of the reference and the right part of the read aligns well against the right part of the
@@ -533,9 +529,10 @@ int splitAlignment(Align<TSequenceL, TAlignSpecL> & alignL,
     SEQAN_ASSERT_EQ_MSG(source(row(alignL, 0)), source(row(alignR, 0)),
                         "Contig must be the same for left and right split alignment.");
 
-    return _splitAlignmentImpl(row(alignL, 0), row(alignL, 1), row(alignR, 0), row(alignR, 1),
+    auto tmp = _splitAlignmentImpl(row(alignL, 0), row(alignL, 1), row(alignR, 0), row(alignR, 1),
                                minValue<int>(), maxValue<int>(),
                                scoringScheme, config);
+    return std::get<0>(tmp) + std::get<1>(tmp);
 }
 
 template <typename TSequenceL, typename TAlignSpecL, typename TSequenceR, typename TAlignSpecR,
@@ -563,8 +560,9 @@ int splitAlignment(Gaps<TSeqHL, TGapSpecHL> & gapsHL,
     SEQAN_ASSERT_EQ_MSG(source(gapsHL), source(gapsHR),
                         "Contig must be the same for left and right split alignment.");
 
-    return _splitAlignmentImpl(gapsHL, gapsVL, gapsHR, gapsVR, minValue<int>(), maxValue<int>(),
-                               scoringScheme, config);
+    auto tmp = _splitAlignmentImpl(gapsHL, gapsVL, gapsHR, gapsVR, minValue<int>(), maxValue<int>(),
+                                   scoringScheme, config);
+    return std::get<0>(tmp) + std::get<1>(tmp);
 }
 
 template <typename TSeqHL, typename TGapSpecHL, typename TSeqVL, typename TGapSpecVL,
@@ -593,8 +591,9 @@ int splitAlignment(Align<TSequenceL, TAlignSpecL> & alignL,
     SEQAN_ASSERT_EQ_MSG(source(row(alignL, 0)), source(row(alignR, 0)),
                         "Contig must be the same for left and right split alignment.");
 
-    return _splitAlignmentImpl(row(alignL, 0), row(alignL, 1), row(alignR, 0), row(alignR, 1),
-                               lowerDiagonal, upperDiagonal, scoringScheme, config);
+    auto tmp = _splitAlignmentImpl(row(alignL, 0), row(alignL, 1), row(alignR, 0), row(alignR, 1),
+                                   lowerDiagonal, upperDiagonal, scoringScheme, config);
+    return std::get<0>(tmp) + std::get<1>(tmp);
 }
 
 template <typename TSequenceL, typename TAlignSpecL, typename TSequenceR, typename TAlignSpecR,
@@ -626,8 +625,9 @@ int splitAlignment(Gaps<TSeqHL, TGapSpecHL> & gapsHL,
     SEQAN_ASSERT_EQ_MSG(source(gapsHL), source(gapsHR),
                         "Contig must be the same for left and right split alignment.");
 
-    return _splitAlignmentImpl(gapsHL, gapsVL, gapsHR, gapsVR, lowerDiagonal, upperDiagonal,
-                               scoringScheme, config);
+    auto tmp = _splitAlignmentImpl(gapsHL, gapsVL, gapsHR, gapsVR, lowerDiagonal, upperDiagonal,
+                                   scoringScheme, config);
+    return std::get<0>(tmp) + std::get<1>(tmp);
 }
 
 template <typename TSeqHL, typename TGapSpecHL, typename TSeqVL, typename TGapSpecVL,
