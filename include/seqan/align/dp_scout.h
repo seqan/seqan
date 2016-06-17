@@ -99,7 +99,7 @@ public:
     uint32_t _maxHostPosition = DPCellDefaultInfinity<TScoreValue>::VALUE; // The corresponding host position within the underlying dp-matrix.
 
     DPScout_() = default;
-    
+
     DPScout_(DPScoutState_<Default> const & /*state*/) {}
 };
 
@@ -113,6 +113,13 @@ public:
 
     DPScoutState_<Terminator_<TSpec> > * state = nullptr;
     bool terminationCriteriumMet = false;
+
+    DPScout_() = default;
+
+    DPScout_(DPScoutState_<Terminator_<TSpec> > pState) :
+        DPScout_<TDPCell, Default>(),
+        state(&pState)
+    {}
 };
 
 // ============================================================================

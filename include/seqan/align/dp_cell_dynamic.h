@@ -105,11 +105,16 @@ public:
     {
         swap(*this, other);
     }
+
+    // Construct with score.
+    DPCell_(TScoreValue const & pScore) : _score(pScore)
+    {}
     
     // Assignment and move operator.
     DPCell_& operator=(DPCell_ other)
     {
         swap(*this, other);
+        return *this;
     }
 
     // Assignment of score.
@@ -120,8 +125,7 @@ public:
         return *this;
     }
     
-    ~DPCell_()
-    {}
+    ~DPCell_() = default;
 };
 
 // ============================================================================
@@ -237,7 +241,7 @@ swap(DPCell_<TScoreValue, DynamicGaps> & lhs,
      DPCell_<TScoreValue, DynamicGaps> & rhs)
 {
     std::swap(lhs._score, rhs._score);
-    std::swap(lhs._flags, rhs._flags);
+    std::swap(lhs._flagMask, rhs._flagMask);
 }
 
 }  // namespace seqan

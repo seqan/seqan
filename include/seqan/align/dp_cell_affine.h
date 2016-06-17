@@ -83,21 +83,7 @@ public:
     {
         swap(*this, other);
         return *this;
-       // if (this != &other)
-       // {
-       //     _score = other._score;
-       //     _horizontalScore = other._horizontalScore;
-       //     _verticalScore = other._verticalScore;
-       // }
-       // return *this;
     }
-
-   // DPCell_ &
-   // operator=(DPCell_ && other)
-   // {
-   //     swap(*this, other);
-   //     return *this;
-   // }
 
     // Assign score to cell.
     DPCell_ &
@@ -107,8 +93,7 @@ public:
         return *this;
     }
 
-    ~DPCell_()
-    {}
+    ~DPCell_() = default;
 };
 
 // ============================================================================
@@ -215,7 +200,7 @@ swap(DPCell_<TScoreValue, AffineGaps> & lhs,
 {
     std::swap(lhs._score, rhs._score);
     std::swap(lhs._horizontalScore, rhs._horizontalScore);
-    std::swap(lhs._horizontalScore, rhs._horizontalScore);      
+    std::swap(lhs._verticalScore, rhs._verticalScore);
 }
 
 }  // namespace seqan

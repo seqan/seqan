@@ -69,12 +69,6 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-template <unsigned... >
-struct IndexSequence;
-
-template<unsigned ID, unsigned... Indices>
-struct MakeIndexSequence;
-
 // ============================================================================
 // Useful Macros
 // ============================================================================
@@ -121,6 +115,7 @@ assignValue(TSimdVector &vector, TPosition pos, TValue2 value)                  
 #elif defined(__SSE3__)
     #define SEQAN_SIZEOF_MAX_VECTOR 16
 #else
+    #undef SEQAN_SIMD_ENABLED
     #define SEQAN_SIMD_ENABLED 0  // Disable simd instructions.
 #endif
 

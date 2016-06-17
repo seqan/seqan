@@ -433,8 +433,7 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     typedef typename std::decay<decltype(activeCell)>::type TCell;
 
     // Compute best alignment from either horizontal open or extension.
-    TCell tmpScore = {_scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal),
-                      typename TCell::TFlagMaskType()};
+    TCell tmpScore(_scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal));
     TTraceValue tvGap = _internalComputeScore(tmpScore, previousHorizontal, seqHVal, seqVVal, scoringScheme,
                                               TTracebackConfig(), RecursionDirectionHorizontal());
 
