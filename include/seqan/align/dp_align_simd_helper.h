@@ -211,16 +211,6 @@ _prepareAndRunSimdAlignment(TResult & results,
         state.endsV[i] = i;
     }
 
-//    std::cout << "lengthsH: " <<std::endl;
-//    for (auto p : lengthsH)
-//        std::cout << p << " ";
-//    std::cout << std::endl;
-//
-//    std::cout << "lengthsV: " <<std::endl;
-//    for (auto p : lengthsV)
-//        std::cout << p << " ";
-//    std::cout << std::endl;
-
     setHost(state.sortedEndsH, lengthsH);
     setHost(state.sortedEndsV, lengthsV);
     setCargo(state.sortedEndsH, state.endsH);
@@ -229,16 +219,6 @@ _prepareAndRunSimdAlignment(TResult & results,
     auto maxLengthLambda = [](auto& lengthLhs, auto& lengthRhs) { return lengthLhs < lengthRhs; };
     sort(state.sortedEndsH, maxLengthLambda, Serial());
     sort(state.sortedEndsV, maxLengthLambda, Serial());
-
-//    std::cout << "state.sortedEndsH: " <<std::endl;
-//    for (auto p : state.sortedEndsH)
-//        std::cout << p << " ";
-//    std::cout << std::endl;
-//
-//    std::cout << "state.sortedEndsV: " <<std::endl;
-//    for (auto p : state.sortedEndsV)
-//        std::cout << p << " ";
-//    std::cout << std::endl;
 
     size_t maxH = back(state.sortedEndsH) + 1;
     size_t maxV = back(state.sortedEndsV) + 1;
