@@ -56,7 +56,7 @@ using ModPadding = Tag<ModPadding_>;
  * @class ModPaddingIterator
  * @extends ModifiedIterator
  * @headerfile <seqan/modifier.h>
- * @brief Pad characters beyond the end of a string with default value.
+ * @brief Adds padding characters beyond the end of a string, without modifing the original string.
  *
  * @signature template <typename THost>
  *            class ModifiedIterator<THost, ModPadding>;
@@ -82,7 +82,7 @@ struct ModPaddingCargo
     using TSize  = typename Size<THost>::Type;
     using TValue = typename Value<THost>::Type;
 
-    TSize   _expandedSize   = 0;
+    TSize   _numPaddedChar  = 0;
     TSize   _remainingSteps = 0;
     TValue  _paddedValue    = TValue();
 };
@@ -176,7 +176,7 @@ inline void expand(ModifiedString<THost, ModPadding> & me,
 {
     SEQAN_ASSERT(me._host != nullptr);
 
-    cargo(me)._expandedSize = newSize;
+    cargo(me)._numPaddedChar = newSize;
     cargo(me)._paddedValue = _padding;
 }
 
@@ -195,7 +195,7 @@ template <typename THost>
 inline auto
 length(ModifiedString<THost, ModPadding> const & me)
 {
-    return length(host(me)) + cargo(me)._expandedSize;
+    return length(host(me)) + cargo(me)._numPaddedChar;
 }
 
 // ----------------------------------------------------------------------------
@@ -229,7 +229,7 @@ begin(ModifiedString<THost, ModPadding> const & me, Tag<TTagSpec> const & /*tag*
     typename Iterator<ModifiedString<THost, ModPadding> const, Standard>::Type temp(begin(host(me), Rooted()));
 
     _copyCargo(temp, me);
-    cargo(temp)._remainingSteps = cargo(me)._expandedSize;
+    cargo(temp)._remainingSteps = cargo(me)._numPaddedChar;
     return temp;
 }
 
@@ -240,7 +240,7 @@ begin(ModifiedString<THost, ModPadding> & me, Tag<TTagSpec> const & /*tag*/)
     typename Iterator<ModifiedString<THost, ModPadding>, Standard>::Type temp(begin(host(me), Rooted()));
 
     _copyCargo(temp, me);
-    cargo(temp)._remainingSteps = cargo(me)._expandedSize;
+    cargo(temp)._remainingSteps = cargo(me)._numPaddedChar;
     return temp;
 }
 
@@ -339,7 +339,7 @@ template <typename THost>
 inline ModifiedIterator<THost, ModPadding> &
 operator--(ModifiedIterator<THost, ModPadding> & me)
 {
-    if (SEQAN_LIKELY(cargo(me)._remainingSteps == cargo(me)._expandedSize))
+    if (SEQAN_LIKELY(cargo(me)._remainingSteps == cargo(me)._numPaddedChar))
         --host(me);
     else
         ++cargo(me)._remainingSteps;
@@ -356,14 +356,14 @@ operator-=(ModifiedIterator<THost, ModPadding> & me, TSize const steps)
 {
     if (SEQAN_UNLIKELY(atEnd(host(me))))
     {
-        auto rem = cargo(me)._expandedSize - cargo(me)._remainingSteps;
+        auto rem = cargo(me)._numPaddedChar - cargo(me)._remainingSteps;
         if (static_cast<decltype(rem)>(steps) <= rem)
         {
             cargo(me)._remainingSteps += steps;
         }
         else
         {
-            cargo(me)._remainingSteps = cargo(me)._expandedSize;
+            cargo(me)._remainingSteps = cargo(me)._numPaddedChar;
             host(me) -= steps - rem;
         }
     }
