@@ -6,6 +6,12 @@ This file summarizes the changes to the SeqAn library and apps.
 Release 2.2.0
 ~~~~~~~~~~~~~
 
+Library Features
+^^^^^^^^^^^^^^^^
+
+- Modifier:
+    - ModifiedString ModPadding: Expand a string with padding symbols, without changing the source.
+
 Selected Bug Fixes
 ^^^^^^^^^^^^^^^^^^
 
@@ -66,7 +72,7 @@ Infrastructure Updates
 Release 2.1.0
 ~~~~~~~~~~~~~
 
-Major release with many new features and applications. 
+Major release with many new features and applications.
 Except where noted below, this release is compatible to previous 2.x releases.
 For a complete list of changes visit `GitHub <https://github.com/seqan/seqan/pulls?q=is%3Apr+is%3Amerged++milestone%3A%22Release+2.1.0%22+>`_.
 
@@ -287,7 +293,7 @@ Infrastructure Updates
 Release 2.0.0
 ~~~~~~~~~~~~~
 
-Major release with many new features and applications. 
+Major release with many new features and applications.
 Note, the majority of the modules are backward compatible to the previous version.
 Some modules, e.g. I/O-modules, have some adapted easier-to-use or unified interfaces.
 
