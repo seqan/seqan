@@ -183,11 +183,11 @@ elseif (NOT MSVC) # this implies all compilers within visual studio
     #error NOCXX14
     #endif
     int main() {}")
-    check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX14_DETECTED)
-    if (NOT CXX14_DETECTED)
+    check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX14_BUILTIN)
+    if (NOT CXX14_BUILTIN)
         set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-        check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX14_DETECTED)
-        if (NOT CXX14_DETECTED)
+        check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX14_FLAG)
+        if (NOT CXX14_FLAG)
             message (FATAL_ERROR "SeqAn requires C++14 since v2.2.0, but your compiler does not support it.")
             return ()
         endif ()
