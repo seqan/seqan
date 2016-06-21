@@ -355,6 +355,11 @@ if (OPENMP_FOUND)
     if (COMPILER_CLANG AND (_GCC_VERSION MATCHES "^37[0-9]$"))
         message (STATUS "Because of a bug in clang-3.7.x OpenMP cannot be used (even if available). Please update your clang!")
         set (OPENMP_FOUND FALSE)
+    elseif (COMPILER_CLANG AND STDLIB_VS AND (_GCC_VERSION MATCHES "^38[0-9]$"))
+        # The compiler also issues a warning
+        # clang.exe : warning : '-fopenmp=libomp': OpenMP is not supported
+        message (STATUS "The clang/c2 compiler on windows (version 3.7 and 3.8) doesn't support OpenMP!")
+        set (OPENMP_FOUND FALSE)
     else ()
         set (SEQAN_HAS_OPENMP TRUE) # deprecated: use OPENMP_FOUND instead
         set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${OpenMP_LIBRARIES})
