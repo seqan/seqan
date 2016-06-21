@@ -3,6 +3,15 @@ SeqAn Changelog
 
 This file summarizes the changes to the SeqAn library and apps.
 
+Release 2.2.0
+~~~~~~~~~~~~~
+
+Selected Bug Fixes
+^^^^^^^^^^^^^^^^^^
+
+- Split Alignment:
+    - compute correct trace from split position.
+    - allows flexible free-end gaps configuration.
 
 Release 2.1.1
 ~~~~~~~~~~~~~
