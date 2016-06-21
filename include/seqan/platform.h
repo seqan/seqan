@@ -52,7 +52,7 @@
 #ifdef _MSC_VER
 #define STDLIB_VS
 #if _MSC_VER < 1900
-#error Visual Studio versions older than version 14 / "2015" are not supported. Please upgrade.
+#error Visual Studio versions older than version 14 / "2015" are not supported.
 #endif
 #endif
 
@@ -100,7 +100,7 @@
 #define COMPILER_GCC
 #define COMPILER_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
 #if COMPILER_VERSION < 40901
-    #warning GCC versions older than 4.9.1 are not supported, many modules will not work.
+    #warning GCC versions older than 4.9.1 are not supported.
 #endif
 #undef COMPILER_VERSION
 #endif
@@ -114,7 +114,7 @@
 #if defined(__ICC)
 #define COMPILER_INTEL
 #if _ICC < 1600
-    #warning ICC versions older than 16 are not supported, many modules will not work.
+    #warning ICC versions older than 16 are not supported.
 #endif
 #endif
 
@@ -128,7 +128,7 @@
 #define COMPILER_CLANG
 #define COMPILER_VERSION (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__)
 #if COMPILER_VERSION < 30500
-    #warning Clang versions older than 3.5.0 are not supported, many modules will not work.
+    #warning Clang versions older than 3.5.0 are not supported.
 #endif
 #undef COMPILER_VERSION
 #endif

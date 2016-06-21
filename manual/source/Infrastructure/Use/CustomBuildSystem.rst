@@ -17,7 +17,6 @@ You should be able to adapt the descriptions to configure your build system and/
 
    Simply adding its include folder to your include path or installing it globally makes it available to your program.
 
-
 C++14 Standard
 --------------
 
@@ -27,7 +26,6 @@ For XCode on macOS you need to set this option in the project settings.
 
 As of Visual Studio 2015 our subset of C++14 is already available in all supported compilers.
 
-
 OpenMP
 ------
 
@@ -36,7 +34,6 @@ On GNU/Linux, BSD and macOS, add ``-fopenmp`` unless you are using Clang version
 For XCode on macOS OpenMP is not yet available.
 
 With Visual Studio OpenMP is switched on by default.
-
 
 Operating System specifics
 --------------------------
