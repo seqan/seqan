@@ -327,7 +327,6 @@ void _computeSplitTrace(TTarget & target,
                         TDPContext const & dpContext,
                         TMatPos const matPos,
                         AlignConfig2<TDPType, DPBandConfig<TBandSwitch>, TFreeEndGaps, TTraceConfig> const & config)
-
 {
     typedef typename SetupAlignmentProfile_<TDPType, TFreeEndGaps, LinearGaps, TTraceConfig>::Type TDPProfile;
 
@@ -338,7 +337,8 @@ void _computeSplitTrace(TTarget & target,
     typedef DPMatrixNavigator_<TDPTraceMatrix, DPTraceMatrix<TTraceConfig>, NavigateColumnWise> TDPTraceMatrixNavigator;
 
     TDPTraceMatrix matrix;
-        setLength(matrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1 - std::max(0, lowerDiagonal(config._band)));
+    setLength(matrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1 - std::max(0, lowerDiagonal(config._band)));
+
     if (IsSameType<TBandSwitch, BandOff>::VALUE)
     {
         setLength(matrix, +DPMatrixDimension_::VERTICAL, length(seqV) + 1);
@@ -363,8 +363,10 @@ void _computeSplitTrace(TTarget & target,
 // ----------------------------------------------------------------------------
 
 // We call the long sequence contig and the shorter one read but could be changed roles.
-template <typename TContigSeqL, typename TReadSeqL,
-          typename TContigSeqR, typename TReadSeqR,
+template <typename TContigSeqL,
+          typename TReadSeqL,
+          typename TContigSeqR,
+          typename TReadSeqR,
           typename TScoreValue, typename TScoreSpec,
           typename TAlignConfigL,
           typename TAlignConfigR,
@@ -422,7 +424,7 @@ auto _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
 
     auto itBegin = makeZipIterator(begin(scoutStateL.splitScore), begin(scoutStateR.splitScore));
     auto res = std::max_element(itBegin, makeZipIterator(end(scoutStateL.splitScore), end(scoutStateR.splitScore)),
-                                [](auto lhs, auto rhs)
+                                [] (auto const & lhs, auto const & rhs)
                                 {
                                     return std::get<0>(lhs) + std::get<1>(lhs) < std::get<0>(rhs) + std::get<1>(rhs);
                                 });
@@ -725,8 +727,7 @@ int splitAlignment(Gaps<TSeqHL, TGapSpecHL> & gapsHL,
     SEQAN_ASSERT_EQ_MSG(source(gapsHL), source(gapsHR),
                         "Contig must be the same for left and right split alignment.");
 
-    auto tmp = _splitAlignmentImpl(gapsHL, gapsVL, gapsHR, gapsVR,
-                                   scoringScheme, config, lowerDiagonal, upperDiagonal);
+    auto tmp = _splitAlignmentImpl(gapsHL, gapsVL, gapsHR, gapsVR, scoringScheme, config, lowerDiagonal, upperDiagonal);
     return std::get<0>(tmp) + std::get<1>(tmp);
 }
 
