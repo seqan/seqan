@@ -82,7 +82,7 @@ struct ModPaddingCargo
     using TSize  = typename Size<THost>::Type;
     using TValue = typename Value<THost>::Type;
 
-    TSize   _numPaddedChar   = 0;
+    TSize   _numPaddedChar  = 0;
     TSize   _remainingSteps = 0;
     TValue  _paddedValue    = TValue();
 };
