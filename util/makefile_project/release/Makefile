@@ -1,3 +1,3 @@
 include ../Makefile.rules
 
-CXXFLAGS+=-O3
+CXXFLAGS+=-O3 -DNDEBUG

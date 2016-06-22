@@ -260,21 +260,6 @@ macro (seqan_build_system_init)
     # TODO(h-2): for icc on windows, replace the " -" in SEQAN_CXX_FLAGS with " /"
     #            find out whether clang/c2 takes - or / options
 
-    # automatic c++ standard detection/selection
-    if (NOT MSVC)
-        # find the highest c++ standard and select it
-        check_cxx_compiler_flag("-std=c++11" CXX11_DETECTED)
-        check_cxx_compiler_flag("-std=c++14" CXX14_DETECTED)
-    endif ()
-
-    set (CXX11_FOUND ${CXX11_DETECTED} CACHE INTERNAL "Availability of c++11")
-    set (CXX14_FOUND ${CXX14_DETECTED} CACHE INTERNAL "Availability of c++14")
-
-    if (CXX14_FOUND)
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-    elseif (CXX11_FOUND)
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    endif ()
 endmacro (seqan_build_system_init)
 
 # ---------------------------------------------------------------------------
