@@ -65,6 +65,14 @@ struct SmallLVFMIndexConfig : FMIndexConfig<TSpec, TLengthSum>
     typedef Naive<TSpec, RDConfig<LengthSum> >          Sentinels;
 };
 
+template <typename TSpec = void, typename TLengthSum = size_t>
+struct PrefixLVFMIndexConfig : FMIndexConfig<TSpec, TLengthSum>
+{
+    typedef TLengthSum                                  LengthSum;
+    typedef Levels<TSpec, LevelsPrefixRDConfig<LengthSum> >   Bwt;
+    typedef Naive<TSpec, RDConfig<LengthSum> >          Sentinels;
+};
+
 // --------------------------------------------------------------------------
 // FMIndex Specs
 // --------------------------------------------------------------------------
@@ -72,6 +80,7 @@ struct SmallLVFMIndexConfig : FMIndexConfig<TSpec, TLengthSum>
 typedef FMIndex<void, WTFMIndexConfig<> >       WTFMIndex;
 typedef FMIndex<void, SmallWTFMIndexConfig<> >  SmallWTFMIndex;
 typedef FMIndex<void, SmallLVFMIndexConfig<> >  SmallLVFMIndex;
+typedef FMIndex<void, PrefixLVFMIndexConfig<> > PrefixLVFMIndex;
 
 // --------------------------------------------------------------------------
 // FMIndex Types
@@ -82,8 +91,11 @@ typedef
     TagList<Index<CharString, WTFMIndex>,
     TagList<Index<StringSet<CharString>, WTFMIndex>,
     TagList<Index<StringSet<CharString>, SmallWTFMIndex>,
-    TagList<Index<StringSet<DnaString>, SmallLVFMIndex>
-    > > > > >
+    TagList<Index<StringSet<DnaString>, SmallLVFMIndex>,
+    TagList<Index<DnaString, PrefixLVFMIndex>,
+    TagList<Index<CharString, PrefixLVFMIndex>,
+    TagList<Index<StringSet<DnaString>, PrefixLVFMIndex>
+    > > > > > > > >
     FMIndexTypes2;
 
 // ========================================================================== 

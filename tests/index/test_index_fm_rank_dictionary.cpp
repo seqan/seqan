@@ -67,42 +67,79 @@ using namespace seqan;
 
 typedef SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >         ReducedMurphy10;
 
+typedef Levels<void, LevelsPrefixRDConfig<size_t, Alloc<>, 1> > Prefix1Level;
+typedef Levels<void, LevelsPrefixRDConfig<size_t, Alloc<>, 2> > Prefix2Level;
+typedef Levels<void, LevelsPrefixRDConfig<size_t, Alloc<>, 3> > Prefix3Level;
+
+typedef Levels<void, LevelsRDConfig<size_t, Alloc<>, 1> > Default1Level;
+typedef Levels<void, LevelsRDConfig<size_t, Alloc<>, 2> > Default2Level;
+typedef Levels<void, LevelsRDConfig<size_t, Alloc<>, 3> > Default3Level;
+
 typedef
-    // TODO: not working. but not crucial. we should fore using non-prefix levels anyway, otherwise we waste 4x the memory (add. bit and 2 bitvectors, only need 1)
-    //TagList<RankDictionary<bool,            Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<Dna,             Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<Rna,             Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<Dna5,            Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<Rna5,            Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<ReducedMurphy10, Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<AminoAcid,       Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<char,            Levels<void, LevelsPrefixRDConfig<> > >,
-    TagList<RankDictionary<unsigned char,   Levels<void, LevelsPrefixRDConfig<> > >,
+    TagList<RankDictionary<Dna,             Prefix1Level>,
+    TagList<RankDictionary<Rna5,            Prefix1Level>,
+    TagList<RankDictionary<Dna5Q,           Prefix1Level>,
+    TagList<RankDictionary<ReducedMurphy10, Prefix1Level>,
+    TagList<RankDictionary<AminoAcid,       Prefix1Level>,
+    TagList<RankDictionary<char,            Prefix1Level>,
+    //TagList<RankDictionary<unsigned char,   Prefix1Level>,
+
+    TagList<RankDictionary<Dna,             Prefix2Level>,
+    TagList<RankDictionary<Rna5,            Prefix2Level>,
+    TagList<RankDictionary<Dna5Q,           Prefix2Level>,
+    TagList<RankDictionary<ReducedMurphy10, Prefix2Level>,
+    TagList<RankDictionary<AminoAcid,       Prefix2Level>,
+    //TagList<RankDictionary<char,            Prefix2Level>,
+            //TagList<RankDictionary<unsigned char,   Prefix2Level>,
+
+    TagList<RankDictionary<Dna,             Prefix3Level>,
+    TagList<RankDictionary<Rna5,            Prefix3Level>,
+    TagList<RankDictionary<Dna5Q,           Prefix3Level>,
+    TagList<RankDictionary<ReducedMurphy10, Prefix3Level>,
+    TagList<RankDictionary<AminoAcid,       Prefix3Level>,
+    //TagList<RankDictionary<char,            Prefix3Level>,
+            //TagList<RankDictionary<unsigned char,   Prefix3Level>,
+
     TagList<RankDictionary<bool,            WaveletTree<> >,
     TagList<RankDictionary<Dna,             WaveletTree<> >,
-    TagList<RankDictionary<Dna5,            WaveletTree<> >,
-    TagList<RankDictionary<DnaQ,            WaveletTree<> >,
+    TagList<RankDictionary<Rna5,            WaveletTree<> >,
     TagList<RankDictionary<Dna5Q,           WaveletTree<> >,
     TagList<RankDictionary<AminoAcid,       WaveletTree<> >,
-    TagList<RankDictionary<char,            WaveletTree<> >,
-    TagList<RankDictionary<unsigned char,   WaveletTree<> >
-    > > > > > > > > > > > > > > > > //>
+    TagList<RankDictionary<char,            WaveletTree<> >//,
+            //TagList<RankDictionary<unsigned char,   WaveletTree<> >
+    > > > > > > > > > > > > > > > > > > > > > > //> > //> > > >
     RankDictionaryPrefixSumTypes;
 
 typedef
-    // TODO: remove naive dict. all dict are compared to a separate naive impl. in test-suite anyway!
-    //TagList<RankDictionary<bool,            Naive<> >,
-    TagList<RankDictionary<bool,            Levels<> >,
-    TagList<RankDictionary<Dna,             Levels<> >,
-    TagList<RankDictionary<Rna,             Levels<> >,
-    TagList<RankDictionary<Dna5,            Levels<> >,
-    TagList<RankDictionary<Rna5,            Levels<> >,
-    TagList<RankDictionary<ReducedMurphy10, Levels<> >,
-    TagList<RankDictionary<AminoAcid,       Levels<> >,
-    TagList<RankDictionary<char,            Levels<> >,
-    TagList<RankDictionary<unsigned char,   Levels<> >,
+    TagList<RankDictionary<bool,            Naive<> >,
+    TagList<RankDictionary<bool,            Default1Level>,
+    TagList<RankDictionary<Dna,             Default1Level>,
+    TagList<RankDictionary<Rna5,            Default1Level>,
+    TagList<RankDictionary<Dna5Q,           Default1Level>,
+    TagList<RankDictionary<ReducedMurphy10, Default1Level>,
+    TagList<RankDictionary<AminoAcid,       Default1Level>,
+    TagList<RankDictionary<char,            Default1Level>,
+            //TagList<RankDictionary<unsigned char,   Default1Level>,
+
+    TagList<RankDictionary<bool,            Default2Level>,
+    TagList<RankDictionary<Dna,             Default2Level>,
+    TagList<RankDictionary<Rna5,            Default2Level>,
+    TagList<RankDictionary<Dna5Q,           Default2Level>,
+    TagList<RankDictionary<ReducedMurphy10, Default2Level>,
+    TagList<RankDictionary<AminoAcid,       Default2Level>,
+    TagList<RankDictionary<char,            Default2Level>,
+            //TagList<RankDictionary<unsigned char,   Default2Level>,
+
+    TagList<RankDictionary<bool,            Default3Level>,
+    TagList<RankDictionary<Dna,             Default3Level>,
+    TagList<RankDictionary<Rna5,            Default3Level>,
+    TagList<RankDictionary<Dna5Q,           Default3Level>,
+    TagList<RankDictionary<ReducedMurphy10, Default3Level>,
+    TagList<RankDictionary<AminoAcid,       Default3Level>,
+    TagList<RankDictionary<char,            Default3Level>,
+            //TagList<RankDictionary<unsigned char,   Default3Level>,
     RankDictionaryPrefixSumTypes
-    > > > > > > > > > //>
+    > > > > > > > > > > > > > > > > > > > > > > // > > >
     RankDictionaryAllTypes;
 
 // ==========================================================================
@@ -134,12 +171,8 @@ public:
 
     void setUp()
     {
-        // TODO: test-case for textlength % values_per_superblock == 0
         //createText(text, TValue());
-        generateText(text, 5000);
-        //text = "111001110101111101110101100001011001110000000010101011011101000001111111010100011110011011101010011110100100011101110000110110110";
-        //text = "AAGTAGAGCCGTTGCTTTGAAGTTGACTGCTATCTGTCGTCGCCCCCATCGCAGGAACATTCGCTTTTTGTCTAGTCTTCGATTCGCATCAAAGGATGCG";
-        //std::cout << text << std::endl;
+        generateText(text, 3947); // 3947 is prime and thus ensures that it does not end exactly with any block/superblock/ultrablock
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
     }
@@ -216,7 +249,8 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
     typedef String<TTextSize>                           TPrefixSum;
 
     typename TestFixture::TRankDict dict(this->text);
-    /*save(dict, "/home/chris/testFM/x");
+    /*unlink("/home/chris/testFM/x");
+    save(dict, "/home/chris/testFM/x");
     clear(dict);
     open(dict, "/home/chris/testFM/x");*/
 
