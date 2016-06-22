@@ -65,26 +65,12 @@ typedef String<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> > > Murphy1
 
 typedef
     TagList<Index<DnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 1> > > >,
-    TagList<Index<RnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 1> > > >,
-    TagList<Index<Dna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 1> > > >,
+    TagList<Index<RnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 2> > > >,
+    TagList<Index<Dna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 3> > > >,
     TagList<Index<Rna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 1> > > >,
-    TagList<Index<Murphy10String, BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 1> > > >,
-    TagList<Index<Peptide,        BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 1> > > >,
-    TagList<Index<String<char>,   BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 1> > > >,
-            TagList<Index<DnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 2> > > >,
-                    TagList<Index<RnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 2> > > >,
-                            TagList<Index<Dna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 2> > > >,
-                                    TagList<Index<Rna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 2> > > >,
-                                            TagList<Index<Murphy10String, BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 2> > > >,
-                                                    TagList<Index<Peptide,        BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 2> > > >,
-                                                            TagList<Index<String<char>,   BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 2> > > >,
-                                                                    TagList<Index<DnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 3> > > >,
-                                                                            TagList<Index<RnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 3> > > >,
-                                                                                    TagList<Index<Dna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 3> > > >,
-                                                                                            TagList<Index<Rna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 3> > > >,
-                                                                                                    TagList<Index<Murphy10String, BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 3> > > >,
-                                                                                                            TagList<Index<Peptide,        BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 3> > > >,
-                                                                                                                    TagList<Index<String<char>,   BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 3> > > >,
+    TagList<Index<Murphy10String, BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 2> > > >,
+    TagList<Index<Peptide,        BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 3> > > >,
+    TagList<Index<String<char>,   BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 2> > > >,
     TagList<Index<DnaString,      BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
     TagList<Index<RnaString,      BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
     TagList<Index<Dna5String,     BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
@@ -92,7 +78,7 @@ typedef
     TagList<Index<Murphy10String, BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
     TagList<Index<Peptide,        BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
     TagList<Index<String<char>,   BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >
-    > > > > > > > > > > > > > > > > > > > > > > > > > > > >
+    > > > > > > > > > > > > > >
     FMIndices;
 
 // ==========================================================================
@@ -189,7 +175,6 @@ SEQAN_TYPED_TEST(BidirectionalFMIndexTest, SearchInStringSet)
     for (unsigned stringSetSize = 1; stringSetSize <= 3; ++stringSetSize)
     {
         TText text;
-        // TODO: @h-2: texts and patterns generated for index tests should omit characters like * or X in aminoacid-alph. What do u think?
         generateText(rng, text, 2000);
         appendValue(stringSet, text);
 

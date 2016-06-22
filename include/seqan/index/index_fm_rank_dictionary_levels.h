@@ -1016,10 +1016,8 @@ _getValuesRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TP
     typedef typename ValueSize<TValue>::Type                                        TValueSize;
 
     TBlock blockRank;
-
-    // TODO: only temporary workaround with (uint16_t) cast
     for (TValueSize c = 0; c < ValueSize<TValue>::VALUE; ++c)
-        assignValue(blockRank, c, _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), TValue((uint16_t) c)));
+        assignValue(blockRank, c, _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), TValue(c)));
 
     return blockRank;
 }
@@ -1032,15 +1030,13 @@ _getValuesRanks(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize,
     typedef typename ValueSize<TValue>::Type                                        TValueSize;
 
     TBlock blockRank;
-
-    TPos rank0 = _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), TValue(0));
-    assignValue(blockRank, 0, rank0);
+    TPos rank = _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), TValue(0));
+    assignValue(blockRank, 0, rank);
 
     for (TValueSize c = 1; c < ValueSize<TValue>::VALUE; ++c)
     {
-        // TODO: only temporary workaround with (uint16_t) cast
         TPos smaller = 0;
-        TPos rank = _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), TValue((uint16_t) c), smaller);
+        rank = _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), TValue(c), smaller);
         assignValue(blockRank, c, rank + smaller);
     }
 
