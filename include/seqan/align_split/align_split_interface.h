@@ -462,7 +462,7 @@ auto _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     setClippedEndPosition(gapsContigL, cePosL);
     setClippedEndPosition(gapsReadL, cePosL);
 
-    return *res;
+    return std::make_pair(std::get<0>(*res), std::get<1>(*res));
 }
 
 template <typename TContigSeqL, typename TReadSeqL,
