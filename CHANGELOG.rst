@@ -12,6 +12,13 @@ Library Features
 - Modifier:
     - ModifiedString ModPadding: Expand a string with padding symbols, without changing the source.
 
+Selected Bug Fixes
+^^^^^^^^^^^^^^^^^^
+
+- Split Alignment:
+    - compute correct trace from split position.
+    - allows flexible free-end gaps configuration.
+
 Release 2.1.1
 ~~~~~~~~~~~~~
 
