@@ -174,10 +174,7 @@ endif ()
 # Require C++11
 # ----------------------------------------------------------------------------
 
-if (NOT (CMAKE_VERSION VERSION_LESS "3.1"))
-    set(CMAKE_CXX_STANDARD 14)
-    set(CMAKE_CXX_STANDARD_REQUIRED on)
-elseif (NOT MSVC) # this implies all compilers within visual studio
+if (NOT MSVC) # this implies all compilers within visual studio
     set(CXXSTD_TEST_SOURCE
     "#if !defined(__cplusplus) || (__cplusplus < 201300L)
     #error NOCXX14
