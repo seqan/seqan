@@ -86,6 +86,10 @@ namespace seqan
         File(void *): // to be compatible with the FILE*(NULL) constructor
             handle(INVALID_HANDLE_VALUE) {}
 
+        virtual ~File() {
+            close();
+        }
+
         bool open(char const *fileName, int openMode = DefaultOpenMode<File>::VALUE) {
             SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
             noBuffering = (getExtraFlags(openMode | OPEN_ASYNC) & (FILE_FLAG_NO_BUFFERING | FILE_FLAG_OVERLAPPED)) != 0;
@@ -689,7 +693,9 @@ namespace seqan
         File(void * = NULL):     // to be compatible with the FILE*(NULL) constructor
             handleAsync(-1) {}
 
-        virtual ~File() {}
+        virtual ~File() {
+            // this->close(); will already be called in the base class
+        }
 
         bool open(char const *fileName, int openMode = DefaultOpenMode<File>::VALUE) {
             handle = ::open(fileName, Base::_getOFlag(openMode & ~OPEN_ASYNC), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);

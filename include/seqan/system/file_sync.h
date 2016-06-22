@@ -97,6 +97,10 @@ namespace seqan
         File(void * /*dummy*/ = NULL): // to be compatible with the FILE*(NULL) constructor
             handle(-1) {}
 
+        virtual ~File() {
+            close();
+        }
+
     //File(int posixHandle) : handle(posixHandle) {}
 
         inline int _getOFlag(int openMode) const
@@ -237,7 +241,9 @@ namespace seqan
 
     ///File(int posixHandle) : handle(posixHandle) {}
 
-        virtual ~File() {}
+        virtual ~File() {
+            this->close();
+        }
 
         inline int _getOFlag(int openMode) const {
             int result = O_LARGEFILE;
