@@ -85,10 +85,10 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_align_unbanded
 
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 0));
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), row(alignR, 1));
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 0)), 24);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 1)), 24);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 0)), 46);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 1)), 46);
+    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 0)), 23);
+    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 1)), 1);
+    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 0)), 45);
+    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 1)), 23);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_align_unbanded)
@@ -127,17 +127,8 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_align_unband
 
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), row(alignL, 0));
     SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), row(alignL, 1));
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignL, 0)), 0);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignL, 1)), 0);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignL, 0)), 23);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignL, 1)), 23);
-
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 0));
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), row(alignR, 1));
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 0)), 68);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 1)), 68);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 0)), 90);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 1)), 90);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_align_unbanded)
@@ -175,17 +166,8 @@ SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_align_unbanded)
 
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATTTTAGATAAGATAG"), row(alignL, 0));
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAG"), row(alignL, 1));
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignL, 0)), 0);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignL, 1)), 0);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignL, 0)), 19);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignL, 1)), 19);
-
     SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCTT"), row(alignR, 0));
     SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 1));
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 0)), 30);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 1)), 30);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 0)), 56);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 1)), 56);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_gaps_unbanded)
@@ -213,17 +195,8 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_gaps_unbanded)
 
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), gapsHL);
     SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), gapsVL);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsHL), 0);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsVL), 0);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsHL), 23);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsVL), 23);
-
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), gapsHR);
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), gapsVR);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsHR), 24);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsVR), 24);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsHR), 46);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsVR), 46);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_gaps_unbanded)
@@ -251,17 +224,8 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_gaps_unbande
 
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), gapsHL);
     SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), gapsVL);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsHL), 0);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsVL), 0);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsHL), 23);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsVL), 23);
-
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), gapsHR);
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), gapsVR);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsHR), 68);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsVR), 68);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsHR), 90);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsVR), 90);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_gaps_unbanded)
@@ -300,17 +264,8 @@ SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_gaps_unbanded)
 
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATTTTAGATAAGATAG"), gapsHL);
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAG"), gapsVL);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsHL), 0);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsVL), 0);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsHL), 19);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsVL), 19);
-
     SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCTT"), gapsHR);
     SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCAT"), gapsVR);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsHR), 30);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsVR), 30);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsHR), 56);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsVR), 56);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_align_banded)
@@ -351,17 +306,8 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_align_banded)
 
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), row(alignL, 0));
     SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), row(alignL, 1));
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignL, 0)), 0);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignL, 1)), 0);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignL, 0)), 23);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignL, 1)), 23);
-
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 0));
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), row(alignR, 1));
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 0)), 24);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 1)), 24);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 0)), 46);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 1)), 46);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_align_banded)
@@ -400,17 +346,8 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_align_banded
 
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), row(alignL, 0));
     SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), row(alignL, 1));
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignL, 0)), 0);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignL, 1)), 0);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignL, 0)), 23);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignL, 1)), 23);
-
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 0));
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), row(alignR, 1));
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 0)), 68);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 1)), 68);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 0)), 90);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 1)), 90);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_align_banded)
@@ -448,17 +385,8 @@ SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_align_banded)
 
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATTTTAGATAAGATAG"), row(alignL, 0));
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAG"), row(alignL, 1));
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignL, 0)), 0);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignL, 1)), 0);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignL, 0)), 19);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignL, 1)), 19);
-
     SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCTT"), row(alignR, 0));
     SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 1));
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 0)), 30);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 1)), 30);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 0)), 56);
-    SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 1)), 56);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_gaps_banded)
@@ -486,17 +414,8 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_gaps_banded)
 
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), gapsHL);
     SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), gapsVL);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsHL), 0);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsVL), 0);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsHL), 23);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsVL), 23);
-
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), gapsHR);
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), gapsVR);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsHR), 24);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsVR), 24);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsHR), 46);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsVR), 46);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_gaps_banded)
@@ -524,17 +443,8 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_gaps_banded)
 
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), gapsHL);
     SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), gapsVL);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsHL), 0);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsVL), 0);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsHL), 23);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsVL), 23);
-
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), gapsHR);
     SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), gapsVR);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsHR), 68);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsVR), 68);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsHR), 90);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsVR), 90);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_gaps_banded)
@@ -573,25 +483,17 @@ SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_gaps_banded)
 
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATTTTAGATAAGATAG"), gapsHL);
     SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAG"), gapsVL);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsHL), 0);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsVL), 0);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsHL), 19);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsVL), 19);
-
     SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCTT"), gapsHR);
     SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCAT"), gapsVR);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsHR), 30);
-    SEQAN_ASSERT_EQ(clippedBeginPosition(gapsVR), 30);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsHR), 56);
-    SEQAN_ASSERT_EQ(clippedEndPosition(gapsVR), 56);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_issue_1679)
 {
     using namespace seqan;
 
+    // Scenario 1:
     DnaString refLeft  = "TTTTTTTTTTTTGAGCCGATTTTTTTT";
-    DnaString refRight = "TTTTTTTTTTTTTTTTGGACCGTTTTTTTTTTTTTTTTTTTTTTT";
+    DnaString refRight = "CCCCCCCCCCCCCCCCGGACCGTTTTTTTTTTTTTTTTTTTTTTT";
     DnaString read     = "GAGCCGA" "GGACCG";
 
     Gaps<DnaString> refGapsLeft;
@@ -607,14 +509,53 @@ SEQAN_DEFINE_TEST(test_align_split_issue_1679)
     Score<int> scoring(1, -3, -4, -5);
 
     int splitScore = splitAlignment(readGapsLeft, refGapsLeft, readGapsRight, refGapsRight, scoring,
-                                    AlignConfig<false, true, true, false>());
+                                    AlignConfig<false, true, true, true>());
 
     SEQAN_ASSERT_EQ(splitScore, 13);
-    SEQAN_ASSERT(refGapsLeft == "TTTTTTTTTTTTGAGCCGA");
-    SEQAN_ASSERT(readGapsLeft == "------------GAGCCGA");
+    SEQAN_ASSERT_EQ(readGapsLeft, "------------GAGCCGA");
+    SEQAN_ASSERT_EQ(refGapsLeft,  "TTTTTTTTTTTTGAGCCGA");
+    SEQAN_ASSERT_EQ(readGapsRight, "GGACCG-----------------------");
+    SEQAN_ASSERT_EQ(refGapsRight,  "GGACCGTTTTTTTTTTTTTTTTTTTTTTT");
 
-    SEQAN_ASSERT(refGapsRight == "GGACCGTTTTTTTTTTTTTTTTTTTTTTT");
-    SEQAN_ASSERT(readGapsRight == "GGACCG-----------------------");
+    // Scenario 2:
+    refLeft  = "AGGCGCACGCCACCACCAAGCCCGGCTAAAGTTTTGTGTTTTTAGTATAGATGGGGTTTCGCCATGTTGGCCTGGCTGGTCTCGAATTCCTGACCTCAGGTGATCCACCCGCCCTGGCCTCCCAAAG";
+    read     = "AGGGGTTTCGCCATGTTGGCCTGGCTGGTCTCGAATTCCTGACCTCAGGTGATCCACCCGCCCTGGCCTCCCAAAGTGCTGGGATTACAGGCCTGAGCCGCTGCACCCGGCCCAGAGGCATTTATTTAAAATGTGCAATAAAAGTGTTCTG";
+    refRight = "AGAGACAGGGTTTTACCATGTTGGCCAGGCTGGTCTTGAGCTCCTGACCTCAGGTGATCCACCCGCCCTGGCCTCCCAAAGTGCTGGGATTACAGGCCTGAGCCGCTGCACCCGGCCCAGAGGCATTTATTTAAAATGTGCAATAAAAGTGTTCTGAGCTTCCCTTACGTACA";
+
+    setSource(refGapsLeft, refLeft);
+    setSource(refGapsRight, refRight);
+    setSource(readGapsLeft, read);
+    setSource(readGapsRight, read);
+
+    splitScore = splitAlignment(readGapsLeft, refGapsLeft, readGapsRight, refGapsRight, scoring,
+                                AlignConfig<false, true, true, true>());
+
+    SEQAN_ASSERT_EQ(splitScore, 147);
+    SEQAN_ASSERT_EQ(refGapsLeft, "AGGCGCACGCCACCACCAAGCCCGGCTAAAGTTTTGTGTTTTTAGTATAGATGGGGTTTCGCCATGTTGGCCTGGCTGGTCTCGAAT");
+    SEQAN_ASSERT_EQ(readGapsLeft, "---------------------------------------------------AGGGGTTTCGCCATGTTGGCCTGGCTGGTCTCGAAT");
+
+    SEQAN_ASSERT_EQ(refGapsRight,  "TCCTGACCTCAGGTGATCCACCCGCCCTGGCCTCCCAAAGTGCTGGGATTACAGGCCTGAGCCGCTGCACCCGGCCCAGAGGCATTTATTTAAAATGTGCAATAAAAGTGTTCTGAGCTTCCCTTACGTACA");
+    SEQAN_ASSERT_EQ(readGapsRight, "TCCTGACCTCAGGTGATCCACCCGCCCTGGCCTCCCAAAGTGCTGGGATTACAGGCCTGAGCCGCTGCACCCGGCCCAGAGGCATTTATTTAAAATGTGCAATAAAAGTGTTCTG-----------------");
+
+    // Scenario 3:
+    read     =           "ATTTTTTTTTTTTTAAATTCTAATATTATGAAGAA";
+    refLeft  = "ACACCCGGCTATTTTTTTTTTTTTTTTTT";
+    refRight =       "TTCTTCTTCATTTATCTGAAATTCTAATATGATGAAGAATCCTGCTT";
+
+    setSource(refGapsLeft, refLeft);
+    setSource(refGapsRight, refRight);
+    setSource(readGapsLeft, read);
+    setSource(readGapsRight, read);
+
+    splitScore = splitAlignment(readGapsLeft, refGapsLeft, readGapsRight, refGapsRight, scoring,
+                                AlignConfig<false, true, true, true>());
+
+    SEQAN_ASSERT_EQ(splitScore, 31);
+    SEQAN_ASSERT_EQ(readGapsLeft, "----------ATTTTTTTTTTTTT");
+    SEQAN_ASSERT_EQ(refGapsLeft,  "ACACCCGGCTATTTTTTTTTTTTT");
+
+    SEQAN_ASSERT_EQ(readGapsRight, "AAATTCTAATATTATGAAGAA--------");
+    SEQAN_ASSERT_EQ(refGapsRight,  "AAATTCTAATATGATGAAGAATCCTGCTT");
 }
 
 #endif  // SEQAN_TESTS_ALIGN_SPLIT_TEST_ALIGN_SPLIT_H_
