@@ -81,7 +81,6 @@ matrix:
         - mkdir $HOME/clang+llvm
         - tar xf $LLVM_ARCHIVE_PATH -C $HOME/clang+llvm --strip-components 1
         - ln -s clang++ $HOME/clang+llvm/bin/clang++-3.7
-        - ln -s clang $HOME/clang+llvm/bin/clang-3.7
         - export PATH=$HOME/clang+llvm/bin:$PATH
       install: export CXX="clang++-3.7" CC="clang-3.7" LD_LIBRARY_PATH=$HOME/clang+llvm/lib:$LD_LIBRARY_PATH
 
