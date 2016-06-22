@@ -164,8 +164,6 @@ elseif (COMPILER_IS_MSVC)
     # require at least MSVC 19.0
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0")
         message(FATAL_ERROR "MSVC version (${CMAKE_CXX_COMPILER_VERSION}) must be at least 19.0 (Visual Studio 2015)!")
-    else ()
-        set (CXX11_FOUND TRUE CACHE INTERNAL "Availability of c++11") # always active
     endif ()
 
 else ()
@@ -176,22 +174,25 @@ endif ()
 # Require C++11
 # ----------------------------------------------------------------------------
 
-if (NOT CXX11_FOUND)
+if (NOT (CMAKE_VERSION VERSION_LESS "3.1"))
+    set(CMAKE_CXX_STANDARD 14)
+    set(CMAKE_CXX_STANDARD_REQUIRED on)
+elseif (NOT MSVC) # this implies all compilers within visual studio
     set(CXXSTD_TEST_SOURCE
-    "#if !defined(__cplusplus) || (__cplusplus < 201103L)
-    #error NOCXX11
+    "#if !defined(__cplusplus) || (__cplusplus < 201300L)
+    #error NOCXX14
     #endif
     int main() {}")
-    check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX11_DETECTED)
-    set (CXX11_FOUND ${CXX11_DETECTED} CACHE INTERNAL "Availability of c++11")
-    if (NOT CXX11_FOUND)
-        message (FATAL_ERROR "SeqAn requires C++11 since v2.1.0, but your compiler does "
-                "not support it. Make sure that you specify -std=c++11 in your CMAKE_CXX_FLAGS. "
-                "If you absolutely know what you are doing, you can overwrite this check "
-                " by defining CXX11_FOUND.")
-        return ()
-    endif (NOT CXX11_FOUND)
-endif (NOT CXX11_FOUND)
+    check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX14_BUILTIN)
+    if (NOT CXX14_BUILTIN)
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+        check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX14_FLAG)
+        if (NOT CXX14_FLAG)
+            message (FATAL_ERROR "SeqAn requires C++14 since v2.2.0, but your compiler does not support it.")
+            return ()
+        endif ()
+    endif ()
+endif ()
 
 # ----------------------------------------------------------------------------
 # Compile-specific settings and workarounds around missing CMake features.
