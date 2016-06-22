@@ -120,10 +120,6 @@
 
 // The DP Scout
 #include <seqan/align/dp_scout.h>
-#if SEQAN_SIMD_ENABLED
-#include <seqan/align/dp_scout_simd.h>
-#include <seqan/align/dp_align_simd_helper.h>
-#endif  // SEQAN_SIMD_ENABLED
 
 // Stores the actual trace segment that was detected during traceback.
 // The trace segments can be adapted into any alignment representation
@@ -159,6 +155,11 @@
 #include <seqan/align/dp_context.h>
 #include <seqan/align/dp_setup.h>
 
+#if SEQAN_SIMD_ENABLED
+#include <seqan/align/dp_scout_simd.h>
+#include <seqan/align/dp_align_simd_helper.h>
+#endif  // SEQAN_SIMD_ENABLED
+
 // The actual implementations of the traceback and the dynamic programming that
 // is used by all different alignment algorithms.
 #include <seqan/align/dp_traceback_impl.h>
@@ -193,6 +194,8 @@
 // ============================================================================
 // Alignment Algorithm Interfaces
 // ============================================================================
+
+#include <seqan/align/align_interface_wrapper.h>
 
 // The front-end functions for global alignments.
 #include <seqan/align/global_alignment_unbanded.h>

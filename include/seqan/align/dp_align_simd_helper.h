@@ -292,6 +292,218 @@ _prepareAndRunSimdAlignment(TResult & results,
                                     SimdAlignVariableLength<Nothing>());
 }
 
+// ----------------------------------------------------------------------------
+// Function _alignWrapperSimd(); Score; StringSet vs. StringSet
+// ----------------------------------------------------------------------------
+
+template <typename TString1, typename TSpec1,
+          typename TString2, typename TSpec2,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlignConfig,
+          typename TGapModel>
+inline auto
+_alignWrapperSimd(StringSet<TString1, TSpec1> const & stringsH,
+                  StringSet<TString2, TSpec2> const & stringsV,
+                  Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                  TAlignConfig const & config,
+                  TGapModel const & /*gaps*/)
+{
+    typedef typename SimdVector<int16_t>::Type TSimdAlign;
+
+    unsigned const numAlignments = length(stringsV);
+    unsigned const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+    unsigned const fullSize = sizeBatch * ((numAlignments + sizeBatch - 1) / sizeBatch);
+
+    String<TScoreValue> results;
+    resize(results, numAlignments);
+
+    StringSet<String<Nothing> > trace;  // We need to declare it, but it will not be used.
+
+    StringSet<TString1, Dependent<> > depSetH;
+    StringSet<TString2, Dependent<> > depSetV;
+    reserve(depSetH, fullSize, Exact());
+    reserve(depSetV, fullSize, Exact());
+
+    for (unsigned i = 0; i < fullSize; ++i)
+    {
+        if (i >= numAlignments)
+        {
+            appendValue(depSetH, back(stringsH));
+            appendValue(depSetV, back(stringsV));
+        }
+        else
+        {
+            appendValue(depSetH, stringsH[i]);
+            appendValue(depSetV, stringsV[i]);
+        }
+    }
+
+    SEQAN_ASSERT_EQ(length(depSetH) % sizeBatch, 0u);
+
+    // Create a SIMD scoring scheme.
+    Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);
+
+    for (auto pos = 0u; pos < length(depSetH); pos += sizeBatch)
+    {
+        auto infSetH = infixWithLength(depSetH, pos, sizeBatch);
+        auto infSetV = infixWithLength(depSetV, pos, sizeBatch);
+
+        TSimdAlign resultsBatch;
+        _prepareAndRunSimdAlignment(resultsBatch, trace, infSetH, infSetV, simdScoringScheme, config, TGapModel());
+
+        // TODO(rrahn): Could be parallelized!
+        for(auto x = pos; x < pos + sizeBatch && x < numAlignments; ++x)
+            results[x] = resultsBatch[x - pos];
+        }
+    return results;
+}
+
+// ----------------------------------------------------------------------------
+// Function _alignWrapperSimd(); Score; String vs. StringSet
+// ----------------------------------------------------------------------------
+
+template <typename TString1,
+          typename TString2, typename TSpec,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlignConfig,
+          typename TGapModel>
+inline auto
+_alignWrapperSimd(TString1 const & stringH,
+                  StringSet<TString2, TSpec> const & stringsV,
+                  Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                  TAlignConfig const & config,
+                  TGapModel const & /*gaps*/)
+{
+    typedef typename SimdVector<int16_t>::Type TSimdAlign;
+
+    unsigned const numAlignments = length(stringsV);
+    unsigned const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+    unsigned const fullSize = sizeBatch * ((numAlignments + sizeBatch - 1) / sizeBatch);
+
+    String<TScoreValue> results;
+    resize(results, numAlignments);
+
+    // Prepare strings.
+    StringSet<TString1, Dependent<> > setH;
+    for (auto i = 0u; i < sizeBatch; ++i)
+        appendValue(setH, stringH);
+
+    StringSet<TString2, Dependent<> > depSetV;
+    reserve(depSetV, fullSize, Exact());
+
+    for (unsigned i = 0; i < fullSize; ++i)
+    {
+        if (i >= numAlignments)
+            appendValue(depSetV, back(stringsV));
+        else
+            appendValue(depSetV, stringsV[i]);
+    }
+
+    StringSet<String<Nothing> > trace;  // We need to declare it, but it will not be used.
+
+    // Create a SIMD scoring scheme.
+    Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);
+
+    for (auto pos = 0u; pos < length(depSetV); pos += sizeBatch)
+    {
+        auto infSetV = infixWithLength(depSetV, pos, sizeBatch);
+
+        TSimdAlign resultsBatch;
+        _prepareAndRunSimdAlignment(resultsBatch, trace, setH, infSetV, simdScoringScheme, config, TGapModel());
+
+        // TODO(rrahn): Could be parallelized!
+        for(auto x = pos; x < pos + sizeBatch && x < numAlignments; ++x)
+            results[x] = resultsBatch[x - pos];
+    }
+    return results;
+}
+
+// ----------------------------------------------------------------------------
+// Function _alignWrapperSimd(); Gaps
+// ----------------------------------------------------------------------------
+
+template <typename TSequenceH, typename TGapsSpecH, typename TSetSpecH,
+          typename TSequenceV, typename TGapsSpecV, typename TSetSpecV,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlignConfig,
+          typename TGapModel>
+inline auto
+_alignWrapperSimd(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSetH,
+                  StringSet<Gaps<TSequenceV, TGapsSpecV>, TSetSpecV> & gapSeqSetV,
+                  Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                  TAlignConfig const & config,
+                  TGapModel const & /*gaps*/)
+{
+    typedef Gaps<TSequenceH, TGapsSpecH>                                TGapSequenceH;
+    typedef Gaps<TSequenceV, TGapsSpecV>                                TGapSequenceV;
+    typedef typename Size<TGapSequenceH>::Type                          TSize;
+    typedef typename Position<TGapSequenceH>::Type                      TPosition;
+    typedef TraceSegment_<TPosition, TSize>                             TTraceSegment;
+
+    typedef typename SimdVector<int16_t>::Type                          TSimdAlign;
+
+#if SEQAN_ALIGN_SIMD_PROFILE
+    timer = sysTime();
+#endif
+
+    unsigned const numAlignments = length(gapSeqSetH);
+    unsigned const sizeBatch = LENGTH<TSimdAlign>::VALUE;
+    unsigned const fullSize = sizeBatch * ((numAlignments + sizeBatch - 1) / sizeBatch);
+
+    String<TScoreValue> results;
+    resize(results, numAlignments);
+
+    // Create a SIMD scoring scheme.
+    Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);
+
+    // Prepare string sets with sequences.
+    StringSet<typename Source<TGapSequenceH>::Type, Dependent<> > depSetH;
+    StringSet<typename Source<TGapSequenceV>::Type, Dependent<> > depSetV;
+    reserve(depSetH, fullSize);
+    reserve(depSetV, fullSize);
+    for (unsigned i = 0; i < fullSize; ++i)
+    {
+        if (i >= numAlignments)
+        {
+            appendValue(depSetH, source(back(gapSeqSetH)));
+            appendValue(depSetV, source(back(gapSeqSetV)));
+        }
+        else
+        {
+            appendValue(depSetH, source(gapSeqSetH[i]));
+            appendValue(depSetV, source(gapSeqSetV[i]));
+        }
+    }
+
+    // Run alignments in batches.
+    for (auto pos = 0u; pos < fullSize; pos += sizeBatch)
+    {
+        auto infSetH = infixWithLength(depSetH, pos, sizeBatch);
+        auto infSetV = infixWithLength(depSetV, pos, sizeBatch);
+
+        TSimdAlign resultsBatch;
+
+        StringSet<String<TTraceSegment> > trace;
+        resize(trace, sizeBatch, Exact());
+
+        _prepareAndRunSimdAlignment(resultsBatch, trace, infSetH, infSetV, simdScoringScheme, config, TGapModel());
+
+        // copy results and finish traceback
+        // TODO(rrahn): Could be parallelized!
+        // to for_each call
+        for(auto x = pos; x < pos + sizeBatch && x < numAlignments; ++x)
+        {
+            results[x] = resultsBatch[x - pos];
+            _adaptTraceSegmentsTo(gapSeqSetH[x], gapSeqSetV[x], trace[x - pos]);
+        }
+#if SEQAN_ALIGN_SIMD_PROFILE
+        profile.traceTimer += sysTime() - timer;
+        timer = sysTime();
+#endif
+    }
+    return results;
+}
+
 }  // namespace seqan
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_DP_ALIGN_SIMD_HELPER_H_
 

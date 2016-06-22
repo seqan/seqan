@@ -35,8 +35,6 @@
 #ifndef TESTS_ALIGN_TEST_ALIGN_SIMD_H_
 #define TESTS_ALIGN_TEST_ALIGN_SIMD_H_
 
-#if SEQAN_SIMD_ENABLED
-
 #include <tuple>
 
 #include <seqan/basic.h>
@@ -557,7 +555,5 @@ SEQAN_TYPED_TEST(SimdAlignLocalTestCommon, Affine_Align)
     testAlignSimd<seqan::AminoAcid>(impl::test_align_simd::LocalAlignTester_(), seqan::Blosum62(-2, -4),
                                     TAlignConf(), TLengthParam(), TBandSwitch());
 }
-
-#endif  // SEQAN_SIMD_ENABLED
 
 #endif  // #ifndef TESTS_ALIGN_TEST_ALIGN_SIMD_H_
