@@ -292,7 +292,7 @@ void _computeTraceback(TTarget & target,
             _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, seqHSize -
                            tracebackCoordinator._currColumn, +TraceBitMap_<>::HORIZONTAL);
 
-        _computeTraceback(target, matrixNavigator, position(matrixNavigator), seqH, seqV, band, dpProfile);
+        _computeTraceback(target, matrixNavigator, position(matrixNavigator), seqHSize, seqVSize, band, dpProfile);
         return;
     }
 
@@ -329,7 +329,7 @@ void _computeTraceback(TTarget & target,
         else if (horizontalInitPos < 0)  // Here we are in a horizontal gap.
             _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, -horizontalInitPos,
                            lastTraceValue);
-        _computeTraceback(target, matrixNavigator, position(matrixNavigator), seqH, seqV, band, dpProfile);
+        _computeTraceback(target, matrixNavigator, position(matrixNavigator), seqHSize, seqVSize, band, dpProfile);
     }
 
     if (IsSameType<TDPMatrixLocation, BandedChainInitialDPMatrix>::VALUE)

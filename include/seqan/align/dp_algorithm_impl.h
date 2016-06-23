@@ -1499,7 +1499,7 @@ _finishAlignment(TTraceTarget & traceSegments,
     if (IsSingleTrace_<TTraceFlag>::VALUE)
         _correctTraceValue(dpTraceMatrixNavigator, dpScout);
 
-    _computeTraceback(traceSegments, dpTraceMatrixNavigator, dpScout, length(seqH), length(seqV), band, dpProfile);
+    _computeTraceback(traceSegments, dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile);
     return maxScore(dpScout);
 }
 
