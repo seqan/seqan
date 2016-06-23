@@ -187,8 +187,8 @@ _prepareAndRunSimdAlignment(TResult & results,
     SEQAN_ASSERT_EQ(length(seqH), length(seqV));
     SEQAN_ASSERT_EQ(static_cast<decltype(length(seqH))>(LENGTH<TResult>::VALUE), length(seqH));
 
-    using TPadStringH = ModifiedString<typename Value<TSequencesH>::Type, ModPadding>;
-    using TPadStringV = ModifiedString<typename Value<TSequencesV>::Type, ModPadding>;
+    using TPadStringH = ModifiedString<typename Value<TSequencesH const>::Type, ModPadding>;
+    using TPadStringV = ModifiedString<typename Value<TSequencesV const>::Type, ModPadding>;
 
     String<TResult, Alloc<OverAligned> > stringSimdH;
     String<TResult, Alloc<OverAligned> > stringSimdV;
@@ -319,42 +319,46 @@ _alignWrapperSimd(StringSet<TString1, TSpec1> const & stringsH,
 
     StringSet<String<Nothing> > trace;  // We need to declare it, but it will not be used.
 
-    StringSet<TString1, Dependent<> > depSetH;
-    StringSet<TString2, Dependent<> > depSetV;
-    reserve(depSetH, fullSize, Exact());
-    reserve(depSetV, fullSize, Exact());
-
-    for (unsigned i = 0; i < fullSize; ++i)
-    {
-        if (i >= numAlignments)
-        {
-            appendValue(depSetH, back(stringsH));
-            appendValue(depSetV, back(stringsV));
-        }
-        else
-        {
-            appendValue(depSetH, stringsH[i]);
-            appendValue(depSetV, stringsV[i]);
-        }
-    }
-
-    SEQAN_ASSERT_EQ(length(depSetH) % sizeBatch, 0u);
-
     // Create a SIMD scoring scheme.
     Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);
 
-    for (auto pos = 0u; pos < length(depSetH); pos += sizeBatch)
+    for (auto pos = 0u; pos < fullSize; pos += sizeBatch)
     {
-        auto infSetH = infixWithLength(depSetH, pos, sizeBatch);
-        auto infSetV = infixWithLength(depSetV, pos, sizeBatch);
-
         TSimdAlign resultsBatch;
-        _prepareAndRunSimdAlignment(resultsBatch, trace, infSetH, infSetV, simdScoringScheme, config, TGapModel());
+        if (SEQAN_UNLIKELY(numAlignments < pos + sizeBatch))
+        {
+            StringSet<TString1, Dependent<> > depSetH;
+            StringSet<TString2, Dependent<> > depSetV;
+            for (unsigned i = pos; i < fullSize; ++i)
+            {
+                if (i >= numAlignments)
+                {
+                    appendValue(depSetH, back(stringsH));
+                    appendValue(depSetV, back(stringsV));
+                }
+                else
+                {
+                    appendValue(depSetH, stringsH[i]);
+                    appendValue(depSetV, stringsV[i]);
+                }
+            }
+            SEQAN_ASSERT_EQ(length(depSetH), sizeBatch);
+            SEQAN_ASSERT_EQ(length(depSetV), sizeBatch);
+
+            _prepareAndRunSimdAlignment(resultsBatch, trace, depSetH, depSetV, simdScoringScheme, config, TGapModel());
+        }
+        else
+        {
+            auto infSetH = infixWithLength(stringsH, pos, sizeBatch);
+            auto infSetV = infixWithLength(stringsV, pos, sizeBatch);
+
+            _prepareAndRunSimdAlignment(resultsBatch, trace, infSetH, infSetV, simdScoringScheme, config, TGapModel());
+        }
 
         // TODO(rrahn): Could be parallelized!
         for(auto x = pos; x < pos + sizeBatch && x < numAlignments; ++x)
             results[x] = resultsBatch[x - pos];
-        }
+    }
     return results;
 }
 
@@ -388,29 +392,33 @@ _alignWrapperSimd(TString1 const & stringH,
     for (auto i = 0u; i < sizeBatch; ++i)
         appendValue(setH, stringH);
 
-    StringSet<TString2, Dependent<> > depSetV;
-    reserve(depSetV, fullSize, Exact());
-
-    for (unsigned i = 0; i < fullSize; ++i)
-    {
-        if (i >= numAlignments)
-            appendValue(depSetV, back(stringsV));
-        else
-            appendValue(depSetV, stringsV[i]);
-    }
-
     StringSet<String<Nothing> > trace;  // We need to declare it, but it will not be used.
 
     // Create a SIMD scoring scheme.
     Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);
 
-    for (auto pos = 0u; pos < length(depSetV); pos += sizeBatch)
+    for (auto pos = 0u; pos < fullSize; pos += sizeBatch)
     {
-        auto infSetV = infixWithLength(depSetV, pos, sizeBatch);
-
         TSimdAlign resultsBatch;
-        _prepareAndRunSimdAlignment(resultsBatch, trace, setH, infSetV, simdScoringScheme, config, TGapModel());
+        if (SEQAN_UNLIKELY(numAlignments < pos + sizeBatch))
+        {
+            StringSet<TString2, Dependent<> > depSetV;
+            for (unsigned i = pos; i < fullSize; ++i)
+            {
+                if (i >= numAlignments)
+                    appendValue(depSetV, back(stringsV));
+                else
+                    appendValue(depSetV, stringsV[i]);
+            }
+            SEQAN_ASSERT_EQ(length(depSetV), sizeBatch);
 
+            _prepareAndRunSimdAlignment(resultsBatch, trace, setH, depSetV, simdScoringScheme, config, TGapModel());
+        }
+        else
+        {
+            auto infSetV = infixWithLength(stringsV, pos, sizeBatch);
+            _prepareAndRunSimdAlignment(resultsBatch, trace, setH, infSetV, simdScoringScheme, config, TGapModel());
+        }
         // TODO(rrahn): Could be parallelized!
         for(auto x = pos; x < pos + sizeBatch && x < numAlignments; ++x)
             results[x] = resultsBatch[x - pos];

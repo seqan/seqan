@@ -492,13 +492,14 @@ template <typename TTarget,
           typename TSizeV,
           typename TBandFlag,
           typename TAlgorithm, typename TGapCosts, typename TTracebackSpec>
-void _computeTraceback(TTarget & target,
-                       TDPTraceMatrixNavigator & matrixNavigator,
-                       unsigned  maxHostPosition,
-                       TSizeH const & seqHSize,
-                       TSizeV const & seqVSize,
-                       DPBandConfig<TBandFlag> const & band,
-                       DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const & dpProfile)
+inline SEQAN_FUNC_DISABLE_IF(Is<ContainerConcept<TSizeH> >, void)
+_computeTraceback(TTarget & target,
+                  TDPTraceMatrixNavigator & matrixNavigator,
+                  unsigned  maxHostPosition,
+                  TSizeH const & seqHSize,
+                  TSizeV const & seqVSize,
+                  DPBandConfig<TBandFlag> const & band,
+                  DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const & dpProfile)
 {
     typedef typename Container<TDPTraceMatrixNavigator>::Type TContainer;
     typedef typename Size<TContainer>::Type TSize;

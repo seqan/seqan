@@ -542,6 +542,11 @@ TScoreValue globalAlignmentScore(StringSet<TString, TSpec> const & strings,
     return globalAlignmentScore(strings[0], strings[1], scoringScheme, alignConfig, lowerDiag, upperDiag);
 }
 
+
+// ============================================================================
+// Many-vs-Many align interfaces.
+// ============================================================================
+
 // ----------------------------------------------------------------------------
 // Function globalAlignmentScore()         [banded, SIMD version, 2x StringSet]
 // ----------------------------------------------------------------------------

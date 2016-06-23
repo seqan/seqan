@@ -744,6 +744,10 @@ String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
     return globalAlignmentScore(stringH, stringsV, scoringScheme, alignConfig);
 }
 
+// ============================================================================
+// Many-vs-Many align interfaces.
+// ============================================================================
+
 // ----------------------------------------------------------------------------
 // Function globalAlignment()            [unbanded, SIMD version, GapsH, GapsV]
 // ----------------------------------------------------------------------------
@@ -764,7 +768,6 @@ globalAlignment(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSetH,
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type         TFreeEndGaps;
     typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
     typedef typename SubstituteAlgoTag_<TAlgoTag>::Type                 TGapModel;
-
 
     return _alignWrapper(gapSeqSetH, gapSeqSetV, scoringScheme, TAlignConfig2(), TGapModel());
 }

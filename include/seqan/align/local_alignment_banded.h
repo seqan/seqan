@@ -224,6 +224,10 @@ TScoreValue localAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> &
         return localAlignment(fragmentString, strings, scoringScheme, lowerDiag, upperDiag, LinearGaps());
 }
 
+// ============================================================================
+// Many-vs-Many align interfaces.
+// ============================================================================
+
 // ----------------------------------------------------------------------------
 // Function localAlignment()               [banded, SIMD version, GapsH, GapsV]
 // ----------------------------------------------------------------------------
