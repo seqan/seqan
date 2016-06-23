@@ -159,6 +159,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         unsigned    minDifferentReadPos;        // number of different read positions that need to support the call
         unsigned    excludeBorderPos;           // exclude this many read positions at read borders
                                                 //     when looking at minDifferentReadPos
+        unsigned    minQual;                    // minimum quality for snp-call
 
 
         // threshold method related
@@ -204,7 +205,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         unsigned    minCoord;                   // current min. read mapping coordinate observed
         unsigned    maxCoord;                   // current max. read mapping coordinate observed
 
-        int         threads;                    // max. number of threads to be uses.
+        int         threads;                    // max. number of threads to be used.
         unsigned    windowSize;                 // genomic window size for read parsing
         unsigned    windowBuff;                 // reads within windowBuff base pairs of current window are also kept
                                                 //     (-> overlapping windows)
@@ -245,12 +246,11 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
             asciiQualOffset = 33;
             storeReadNames = false;
 
-            maxPile = 1;
+            maxPile = 0;
             laneSpecificMaxPile = true;
             orientationAware = false;
             realign = false;
             realignAddBorder = 0;
-
 
             for (unsigned i = 0; i < 5; ++i)
                 compMask[i] = 1 << i;
@@ -264,18 +264,18 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
             // SNP calling related
             method = 1;                 // Maq-method is default
             forceCallCount = 10;
-            minCoverage = 5;
+            minCoverage = 2;
             minDifferentReadPos = 0;
             excludeBorderPos = 0;
-            minExplainedColumn = 0.8;   //
-
+            minExplainedColumn = 0.5;
+            minQual = 10;
 
             // threshold-method related
             avgQualT = 10;
             percentageT = (float)0.25;
             minMutT = 3;
             snpHetMax = (float)0.8;
-            useBaseQuality = true;      //
+            useBaseQuality = true;
 
             // Maq-method related
             hetRate = 0.001;            // Maq default values
@@ -314,8 +314,6 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
             expectedReadsPerBin = 125;  // unused anyway..
             expectedReadsSD = 25;
             cnvWindowSize = 1000;
-
-
        }
     };
 
@@ -1892,9 +1890,44 @@ int readMatchesFromSamBam_Batch(
     return 0;
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////7
+//Function for translating the bit-string snp.filter into list of filters that were not passed
+//quick overview of indices: 0:minExplainedColumn, 1:minDifferentReadPos, 2:Quality
+template<typename TOptions>
+String<char> getFilterPasses(int filter, TOptions const & options)
+{
+    String<char> failed = "";
+    bool empty = true;
+    if (isBitSet(filter, 0))
+    {
+        append(failed, "mec");
+        std::stringstream stream; //necessary for getting output without unnecessary 0's
+        stream << options.minExplainedColumn;
+        std::string s = stream.str();
+        append(failed, s);
+        empty = false;
+    }
+    if (isBitSet(filter, 1))
+    {
+        if (!empty)
+            append(failed, ";");
+        else
+            empty = false;
+        append(failed, "dp");
+        append(failed, std::to_string(options.minDifferentReadPos));
+    }
+    if (isBitSet(filter, 2))
+    {
+        if (!empty)
+            append(failed, ";");
+        else
+            empty = false;
+        append(failed, "q");
+        append(failed, std::to_string(options.minQual));
+    }
+    return failed;
+}
+
 // simple position stats analysis
 template <typename TPositions, typename TGenomeSetSize, typename TOptions>
 bool loadPositions(TPositions & positions,
@@ -1916,7 +1949,6 @@ bool loadPositions(TPositions & positions,
     while (!atEnd(fileIter))
     {
         skipUntil(fileIter, NotFunctor<IsWhitespace>());
-
         // Skip whitespaces just in case (actually there shouldnt be a whitespace at the beginning of a line)
         // and read entry in column 1  --> genomeID
         clear(chrId);
@@ -2470,6 +2502,8 @@ struct SingleBaseVariant{
     int quality;    // a quality value associated with the genotype call
     int snpQuality; // a quality value associated with the SNP call
     int coverage;   // totalCoverage at position
+    int filter;     // BitString indicating the filter(s) the variant did NOT pass. (see function getFilterPasses)
+    Dna5 second;    // second best base
 };
 
 
@@ -2727,7 +2761,7 @@ inline bool _doSnpCall(TCounts & countF,
                     );
         if (secondBest == -1)
         {
-            if (best==refAllele) // shouldnt happen
+            if (best == refAllele) // shouldnt happen
                 return false;
             secondBest = refAllele;
         }
@@ -2906,17 +2940,24 @@ inline bool _doSnpCall(TCounts & countF,
                            + countR[0] + countR[1] +countR[2] +countR[3] +countR[4];
 
     snp.genotype        = genotypeCalled;
+    snp.second          = Dna5(secondBest);
     snp.count           = countF[best] + countR[best];
     snp.quality         = qCall1;
     snp.snpQuality      = qSnp;
     snp.coverage        = totalCoverage;
-    int consideredCount = countF[secondBest] + countR[secondBest] + countF[best] + countR[best];
+    //int consideredCount = countF[secondBest] + countR[secondBest] + countF[best] + countR[best];
+    int consideredCount = snp.count;
+    if (het == 0) //heterzygous genotype call
+        consideredCount += countF[secondBest] + countR[secondBest];
     if(genotypeCalled == genotypeRef)
         snp.called = false;
     else
         snp.called = true;
     if ((double)consideredCount / totalCoverage < options.minExplainedColumn)
+    {
+        setBit(snp.filter, 0);                  //set bit indicating the filter which has not been passed
         snp.called = false;
+    }
     return true;
 }
 
@@ -2954,14 +2995,6 @@ _doSnpCall(TCounts & countF,
             maxCount = countF[k] + countR[k];
             allele2 = k;
         }
-    }
-
-    // No evidence of non-ref bases left... (used to happen with onthefly-pileupcorrection
-    // cannot happen anymore as these positions would never be inspected)
-    if (allele1 == refAllele && allele2 == refAllele)
-    {
-        ::std::cout << "No non-ref base observed. Correct??\n";
-        return false;
     }
 
     // get the mutational allele
@@ -3054,31 +3087,60 @@ inline bool _writeSnp(TFile & file,
                       unsigned realCoverage,
                       TOptions & options)
 {
+    Pair<unsigned short, unsigned short> gt;        //variable for holding genotype information
     if (!file.is_open())
     {
         ::std::cerr << "SNP output file is not open" << ::std::endl;
         return false;
     }
+    CharString genotype = "";
+    if (snp.called)
+    {
+        genotype = getGenotypeList(snp.genotype);   //Get bases of called genotype
+        if ((Dna5)refAllele == Dna5(genotype[0]))   //Translate called alleles to 0/0, 1/0, 1/1, 1/1 representation
+        {
+            gt.i1 = 0;
+            gt.i2 = 0;
+        }
+            else
+        {
+            gt.i1 = 1;
+            gt.i2 = 1;
+        }
+        if (length(genotype) == 3)
+        {
+            if (genotype[2] == genotype[0])
+                gt.i2 = gt.i1;
+            else if ((Dna5)genotype[2] == (Dna5)refAllele)
+                gt.i2 = 0;
+            else
+                gt.i2 = 2;
+        }
+    }
     CharString dbsnp = ".";                           //TODO(serosko): should later contain the dbsnp id (if known)
     file << genomeID << '\t';                           //chromosome
     file << candPos + options.positionFormat<< '\t';    //position
-    file << dbsnp << '\t';                              //dbsnp id (only '.' at the moment
+    file << dbsnp << '\t';                              //dbsnp id (only '.' at the moment)
     file << (Dna5)refAllele <<'\t';                     //Reference Base
     if (options.method == 1)                            //MAQ
     {
         if (snp.called)                                 //genotypeCalled != genotypeRef)
-            file << getGenotypeList(snp.genotype) << '\t' << snp.snpQuality << '\t'; //Alt genotype and quality
+            file << genotype << '\t' << snp.snpQuality << '\t'; //Alt genotype and quality
         else                                    //TODO(serosko): Support for two different substitutions
-            file << ".\t0\t";                   //TODO(serosko): Insert correct quality for no snp-call instead of 0.
+            file << snp.second << "\t1\t";                   //TODO(serosko): Insert correct quality for no snp-call instead of 1.
+        if (snp.filter == 0)
+            file << "PASS\t";
+        else
+            file << getFilterPasses(snp.filter, options) << '\t';
     }
     else                                        //threshold method
     {
         if (snp.called)
             file  << getGenotypeList(snp.genotype) << '\t' << snp.quality;
         else
-            file << "\t.\t0\t";                 //TODO(serosko): Insert correct quality for no snp-call instead of 0.
+            file << "\t.\t1\t";                 //TODO(serosko): Insert correct quality for no snp-call instead of 1.
+        file << ".\t";                       //Soft Filters not applied in threshold model
     }
-    file << ".\t";                              //TODO(serosko): Insert Filter field here.
     file << "DP=" << realCoverage;              //Info field: Coverage
     if (options.showQualityStrings)             //Info field: Quality strings for each observed base.
     {
@@ -3100,8 +3162,10 @@ inline bool _writeSnp(TFile & file,
         file << ";A-=" << length(qualityStringR[0]);
         file << ";C-=" << length(qualityStringR[1]);
         file << ";G-=" << length(qualityStringR[2]);
-        file << ";T-=" << length(qualityStringR[3]);
+        file << ";T-=" << length(qualityStringR[3]) << '\t';
     }
+    file << "GT:DP\t";                      //FORMAT field
+    file << gt.i1 << "/" << gt.i2 << ":" << realCoverage;
     file << std::endl;
     return true;
 }
@@ -4009,60 +4073,63 @@ inline void writeIndel(TFile& indelfile,
                TCoord startCoord,
                TGenoID genomeID)
 {
+    bool noQual = false;
+    bool het = true;
+    bool insertion = false;
+    int delSize = 0;
+    if (quality < 0)
+        noQual = true;
+    bool homorun = false;
     int homoLength = checkSequenceContext(reference, candidatePos, indelSize);
-    if (homoLength <= options.maxPolymerRun)                       //TODO(serosko): put filter option in vcf output.
-    {
-        bool noQual = false;
-        bool het = true;
-        bool insertion = false;
-        int delSize = 0;
-        if (quality < 0)
-            noQual = true;
-        unsigned absIndelSize = abs(indelSize);
-        unsigned pos = candidatePos + startCoord + options.positionFormat - 1;
-        if (indelSize < 0)                                         //insertion
-            insertion = true;
-        else
-            delSize = indelSize;
-        percentage /= depth;                                       // low coverage positions get a lower weight
-        depth = (depth + (absIndelSize >> 1)) / absIndelSize;      // coverage is spread over all positions
-        if (!noQual)
-            quality = (quality + (absIndelSize >> 1)) / absIndelSize;  // quality is spread over all positions
-        int indelQ = (int)(quality * percentage);
-        if (!bsi)
-            indelQ /= 2;
-        if (percentage > options.indelHetMax)                      //determine zygocity
-            het = false;
-        auto upstreamSeq = infix(reference,                            //reference seq
-                                  _max((int)0, (int)candidatePos - 1),
-                                  _min((int)(candidatePos + delSize), (int)length(reference)));
+    if (homoLength <= options.maxPolymerRun)
+        homorun = true;
+    unsigned absIndelSize = abs(indelSize);
+    unsigned pos = candidatePos + startCoord + options.positionFormat - 1;
+    if (indelSize < 0)                                         //insertion
+        insertion = true;
+    else
+        delSize = indelSize;
+    percentage /= depth;                                       // low coverage positions get a lower weight
+    depth = (depth + (absIndelSize >> 1)) / absIndelSize;      // coverage is spread over all positions
+    if (!noQual)
+        quality = (quality + (absIndelSize >> 1)) / absIndelSize;  // quality is spread over all positions
+    int indelQ = (int)(quality * percentage);
+    if (!bsi)
+        indelQ /= 2;
+    if (percentage > options.indelHetMax)                      //determine zygocity
+        het = false;
+    auto upstreamSeq = infix(reference,                            //reference seq
+                             _max((int)0, (int)candidatePos - 1),
+                             _min((int)(candidatePos + delSize), (int)length(reference)));
 
-        indelfile << genomeID << '\t'                                  //chromosome
-                  << pos  << '\t'                                      //position
-                  << ".\t"                                             //(unknown) ID
-                  << upstreamSeq << '\t';                              //reference
-        if (het)                                                       //Unchanged allele in case of het
-            indelfile << upstreamSeq << ',';              //TODO(serosko): Case for two different indels on two alleles.
-        if (insertion)
-            indelfile << upstreamSeq << insertionSeq << '\t';          //Alternative (ref+insertion)
-        else
-            indelfile << infix(reference,                              //Alternative (deletion)
-                               _max((int)0,(int)candidatePos - 1),     //TODO(serosko): remove _min().
-                               _min((int)(candidatePos), (int)length(reference))) << '\t';
-        if (noQual)
-            indelfile << ".\t";
-        else
-            indelfile << indelQ << '\t';                               //quality
-        indelfile << ".\t"                                             //filter \\TODO(serosko):Add actual filter.
-                  << "DP="  << depth                                   //depth
-                  << ";FR=" << percentage                              //fraction supporting ALT
-                  << ";ZYG=";                                          //zygosity
-        if (het)
-            indelfile << "het";
-        else
-            indelfile << "hom";
-        indelfile << std::endl;
-    }
+    indelfile << genomeID << '\t'                                  //chromosome
+              << pos  << '\t'                                      //position
+              << ".\t"                                             //(unknown) ID
+              << upstreamSeq << '\t';                              //reference
+    if (het)                                                       //Unchanged allele in case of het
+        indelfile << upstreamSeq << ',';              //TODO(serosko): Case for two different indels on two alleles.
+    if (insertion)
+        indelfile << upstreamSeq << insertionSeq << '\t';          //Alternative (ref+insertion)
+    else
+        indelfile << infix(reference,                              //Alternative (deletion)
+                           _max((int)0,(int)candidatePos - 1),     //TODO(serosko): remove _min().
+                           _min((int)(candidatePos), (int)length(reference))) << '\t';
+    if (noQual)
+        indelfile << ".\t";
+    else
+        indelfile << indelQ << '\t';                               //quality
+    if (homorun)
+        indelfile << "mpr\t";
+    else
+        indelfile << "PASS\t";                                         //filter \\TODO(serosko):Add actual filter.
+    indelfile << "DP="  << depth                                   //depth
+              << ";FR=" << percentage                              //fraction supporting ALT
+              << ";ZYG=";                                          //zygosity
+    if (het)
+        indelfile << "het";
+    else
+        indelfile << "hom";
+    indelfile << std::endl;
 }
 
 // Output SNPs/Indels
@@ -4346,7 +4413,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
     TReadGaps   referenceGaps(reference, fragmentStore.alignedReadStore[numReads].gaps);
     TContigPos      refStart = (TContigPos)fragmentStore.alignedReadStore[numReads].beginPos;
     TContigGaps contigGaps(fragmentStore.contigStore[0].seq, fragmentStore.contigStore[0].gaps);
-    SingleBaseVariant snp = {0,0,0,0,0,0};
+    SingleBaseVariant snp = {0,0,0,0,0,0,0,'N'};
 
 #ifdef SNPSTORE_DEBUG
     if (extraV)
@@ -4619,11 +4686,14 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
 
             // is the min. number of different read positions supporting the mutation met?
             if (isSnp && options.minDifferentReadPos > 0 && readPosMap.size() < options.minDifferentReadPos)
-                isSnp = false;
+            {
+                //isSnp = false;
+                setBit(snp.filter, 1);
+            }
 
             // do genotype calling
             if (isSnp && options.method == 1)
-                isSnp = _doSnpCall(countF,countR,qualityStringF,qualityStringR,refAllele,options,snp,MaqMethod()
+                isSnp = _doSnpCall(countF, countR, qualityStringF, qualityStringR,refAllele, options, snp, MaqMethod()
 #ifdef SNPSTORE_DEBUG_CANDPOS
                 ,(int) candidatePos + startCoord
 #endif
@@ -4638,7 +4708,9 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                                    snp,
                                    ThresholdMethod());
             // write SNP to file
-            if (isSnp && (snp.called || options.outputFormat == 0))
+            if ((unsigned)snp.snpQuality < options.minQual)
+                setBit(snp.filter,2);
+            if (isSnp && (snp.called || options.outputFormat == 0 || snp.filter == 0))
                 SEQAN_OMP_PRAGMA(critical (writeSNP))
                 _writeSnp(file,
                           snp,
@@ -4952,7 +5024,7 @@ void dumpSNPsBatch(
 #ifdef SNPSTORE_DEBUG
     bool extraV = false;
 #endif
-    SingleBaseVariant snp = {0,0,0,0,0,0};
+    SingleBaseVariant snp = {0,0,0,0,0,0,0,'N'};
 
     for(TContigPos candidatePos = 0; candidatePos < (TContigPos)length(genome); ++candidatePos)
     {
@@ -5165,13 +5237,16 @@ void dumpSNPsBatch(
         unsigned realCoverageR = countR[0] + countR[1] +countR[2] +countR[3] +countR[4];
         unsigned realCoverage  = realCoverageF + realCoverageR;
         // Coverage too low after discarding Ns and gaps from alignment column
-        if (realCoverage<options.minCoverage)
+        if (realCoverage < options.minCoverage)
             isSnp = false;
         // is the min. number of different read positions supporting the mutation met?
         if (isSnp && options.minDifferentReadPos > 0 && readPosMap.size() < options.minDifferentReadPos)
-            isSnp = false;
+        {
+            //isSnp = false;
+            setBit(snp.filter, 1);
+        }
         // do genotype calling
-        if (isSnp && options.method == 1)
+        if (isSnp && options.method == 1)           //MAQ
             isSnp = _doSnpCall(countF,
                                countR,
                                qualityStringF,
@@ -5184,7 +5259,7 @@ void dumpSNPsBatch(
                 , (int) candidatePos + startCoord
 #endif
             );
-        else if (isSnp && options.method == 0)
+        else if (isSnp && options.method == 0)      //Threshold-method
             isSnp = _doSnpCall(countF,
                                countR,
                                columnQualityF,
@@ -5194,6 +5269,8 @@ void dumpSNPsBatch(
                                snp,
                                ThresholdMethod());
         // write SNP to file
+        if ((unsigned)snp.snpQuality < options.minQual)
+            setBit(snp.filter,2);
         if (isSnp && (snp.called || options.outputFormat == 0))
             SEQAN_OMP_PRAGMA(critical (writeSNP))
             _writeSnp(file,
@@ -5744,7 +5821,7 @@ void dumpShortIndelPolymorphismsBatch(
                 }
             }
             int coverage = matchRangeEnd-matchRangeBegin;
-            if (coverage<(int)options.minCoverage)
+            if (coverage < (int)options.minCoverage)
             {
                 matchIt = matchRangeBegin;
                 continue;

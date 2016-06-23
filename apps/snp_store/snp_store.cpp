@@ -816,7 +816,26 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
             snpFileStream << "##INFO=<ID=T-,Number=1,Type=Integer,Description=\"Number of base 'T' observations"
                              " on reverse strand\">\n";
         }
-        snpFileStream << "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n";
+        snpFileStream << "##FILTER=<ID=q" << options.minQual
+                      << ",Description=\"Variant-quality below " << options.minQual << "\">";
+        snpFileStream << "\n##FILTER=<ID=mec" << options.minExplainedColumn
+                      << ",Description=\"Fraction of bases explaining called genotyope below "
+                      << options.minExplainedColumn << "\">";
+        snpFileStream << "\n##FILTER=<ID=dp" << options.minDifferentReadPos
+                      << ",Description=\"Number of different read positions supporting variant below "
+                      << options.minDifferentReadPos << "\">";
+        snpFileStream << "\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT";
+        for (unsigned i = 0; i < length(options.readFNames); ++i)
+        {
+            std::string readFNameNoExt = "";
+            resize(readFNameNoExt, length(options.readFNames[i]));
+            for (unsigned j = 0; j < length(options.readFNames[i]); ++j) //Convert seqan::string to std::string
+            {
+                readFNameNoExt[j] = (char)options.readFNames[i][j];
+            }
+            snpFileStream << "\t" << readFNameNoExt.substr(0, readFNameNoExt.rfind('.')); //get Name without file-ext.
+        }
+        snpFileStream << std::endl;
     }
     ::std::ofstream indelFileStream;
     if (options.outputIndel != "")
@@ -1388,9 +1407,10 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     setDefaultValue(parser, "method", "maq");
     addOption(parser, ArgParseOption("mp",
                                      "max-pile",
-                                     "Maximal number of matches allowed to pile up at the same genome position.",
+                                     "Maximal number of matches allowed to pile up at the same genome position."
+                                     "Select 0 for disabled.",
                                      ArgParseArgument::INTEGER));
-    setMinValue(parser, "max-pile", "1");
+    setMinValue(parser, "max-pile", "0");
     setDefaultValue(parser, "max-pile", options.maxPile);
     addOption(parser, ArgParseOption("mmp", "merged-max-pile", "Do pile up correction on merged lanes. Default: off."));
     addOption(parser, ArgParseOption("mc",
@@ -1481,13 +1501,16 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
                                      ArgParseArgument::DOUBLE));
     setMinValue(parser, "perc-threshold", "0");
     setDefaultValue(parser, "perc-threshold", options.percentageT);
-    addOption(parser, ArgParseOption("mq",
-                                     "min-quality",
+    addOption(parser, ArgParseOption("aq",
+                                     "min-avg-quality",
                                      "Minimal average quality of mutational base for mutation to be called.",
                                      ArgParseArgument::DOUBLE));
-    setMinValue(parser, "min-quality", "0");
-    setDefaultValue(parser, "min-quality", options.avgQualT);
+    setMinValue(parser, "min-avg-quality", "0");
+    setDefaultValue(parser, "min-avg-quality", options.avgQualT);
     addSection(parser, " Maq method related");
+    addOption(parser, ArgParseOption("snpq", "snp-quality", "Minimum SNP quality", ArgParseArgument::INTEGER));
+    setMinValue(parser, "snp-quality", "0");
+    setDefaultValue(parser, "snp-quality", options.minQual);
     addOption(parser, ArgParseOption("th", "theta", "Dependency coefficient.", ArgParseArgument::DOUBLE));
     setMinValue(parser, "theta", "0");
     setDefaultValue(parser, "theta", options.theta);
@@ -1640,11 +1663,12 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     // SNP Calling Options:
     getOptionValue(options.minMutT, parser, "min-mutations");
     getOptionValue(options.percentageT, parser, "perc-threshold");
-    getOptionValue(options.avgQualT, parser, "min-quality");
+    getOptionValue(options.avgQualT, parser, "min-avg-quality");
     getOptionValue(options.theta, parser, "theta");
     getOptionValue(options.hetRate, parser, "hetero-rate");
     getOptionValue(options.minMapQual, parser, "min-map-quality");
     options.correctedHetTable = isSet(parser, "corrected-het");
+    getOptionValue(options.minQual, parser, "snp-quality");
     getOptionValue(options.meanAlleleFrequency, parser, "mean-alleleFreq");
     getOptionValue(options.amplificationCycles, parser, "amp-cycles");
     getOptionValue(options.amplificationEfficiency, parser, "amp-efficiency");
