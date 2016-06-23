@@ -175,7 +175,7 @@ SEQAN_TYPED_TEST(BidirectionalFMIndexTest, SearchInStringSet)
     for (unsigned stringSetSize = 1; stringSetSize <= 3; ++stringSetSize)
     {
         TText text;
-        generateText(rng, text, 2000);
+        generateText(rng, text, 3947);
         appendValue(stringSet, text);
 
         TStringSet revStringSet;
@@ -187,7 +187,7 @@ SEQAN_TYPED_TEST(BidirectionalFMIndexTest, SearchInStringSet)
         }
 
         TStringSetIndex index(stringSet);
-        for (unsigned int patternLength = 1; patternLength <= 20; ++patternLength)
+        for (unsigned int patternLength = 1; patternLength <= 10; ++patternLength)
         {
             TText pattern;
             generateText(rng, pattern, patternLength);

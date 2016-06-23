@@ -171,8 +171,7 @@ public:
 
     void setUp()
     {
-        //createText(text, TValue());
-        generateText(text, 3947); // 3947 is prime and thus ensures that it does not end exactly with any block/superblock/ultrablock
+        generateText(text, 3947);
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
     }

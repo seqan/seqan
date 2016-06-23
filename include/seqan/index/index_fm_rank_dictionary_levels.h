@@ -1207,10 +1207,10 @@ getValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos pos)
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >             TRankDictionary;
     typedef typename Size<TRankDictionary>::Type                        TSize;
 
-    TSize blockPos      = _toBlockPos(dict, pos);
-    TSize posInBlock    = _toPosInBlock(dict, pos);
-    TSize wordPos       = _toWordPos(dict, posInBlock);
-    TSize posInWord     = _toPosInWord(dict, posInBlock);
+    TSize blockPos   = _toBlockPos(dict, pos);
+    TSize posInBlock = _toPosInBlock(dict, pos);
+    TSize wordPos    = _toWordPos(dict, posInBlock);
+    TSize posInWord  = _toPosInWord(dict, posInBlock);
 
     return _valuesAt(dict, blockPos, wordPos)[posInWord];
 }
