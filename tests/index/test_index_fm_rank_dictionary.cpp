@@ -256,7 +256,6 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
 
     // The prefix sum is built while scanning the text.
     TPrefixSum prefixSum;
-
     resize(prefixSum, this->alphabetSize, 0);
 
     // Scan the text.
@@ -267,14 +266,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
 
         // Check the rank for all alphabet symbols.
         for (TValueSize c = 0; c < this->alphabetSize; ++c)
-        {
-            unsigned long pos = textIt - this->textBegin;
-            /*if (pos == 128)
-            {
-                std::cout << "STOP" << std::endl;
-            }*/
-            SEQAN_ASSERT_EQ(getRank(dict, pos, c), prefixSum[c]);
-        }
+            SEQAN_ASSERT_EQ(getRank(dict, (unsigned long)(textIt - this->textBegin), c), prefixSum[c]);
     }
 }
 
@@ -290,24 +282,21 @@ SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank)
 
     // The prefix sum is built while scanning the text.
     TPrefixSum prefixSum;
-
-    typedef typename Value<TText>::Type TValue;
-
     resize(prefixSum, this->alphabetSize, 0);
 
     // Scan the text.
-    for (TTextIterator textIt = this->textBegin; textIt != this->textEnd; ++textIt) {
+    for (TTextIterator textIt = this->textBegin; textIt != this->textEnd; ++textIt)
+    {
         // Update the prefix sum.
         prefixSum[ordValue(value(textIt))]++;
 
         // Check the rank for all alphabet symbols.
         unsigned long smallerNaive = 0;
-        for (TValueSize c = 0; c < this->alphabetSize; ++c) {
+        for (TValueSize c = 0; c < this->alphabetSize; ++c)
+        {
             unsigned long smaller;
-            unsigned long pos = textIt - this->textBegin;
-            unsigned long rank = getRank(dict, pos, TValue((uint16_t) c), smaller); // TODO: remove uint16_t cast
+            SEQAN_ASSERT_EQ(getRank(dict, (unsigned long)(textIt - this->textBegin), c, smaller), prefixSum[c]);
             SEQAN_ASSERT_EQ(smaller, smallerNaive);
-            SEQAN_ASSERT_EQ(rank, prefixSum[c]);
             smallerNaive += prefixSum[c];
         }
     }

@@ -71,22 +71,6 @@ void generateText(TText & text, unsigned textLength = 100000)
         text[i] = rng() % alphabetSize - minChar;
 }
 
-// TODO: @h-2: texts and patterns generated for index tests should omit characters like * in aminoacid-alph. What do u think?
-void generateText(Peptide & text, unsigned textLength = 100000)
-{
-    typedef typename Value<Peptide>::Type TChar;
-
-    int minChar = MinValue<TChar>::VALUE;
-    unsigned alphabetSize = ValueSize<TChar>::VALUE - 1;
-
-    std::mt19937 rng(time(nullptr));
-
-    resize(text, textLength);
-
-    for (unsigned i = 0; i < textLength; ++i)
-        text[i] = rng() % alphabetSize - minChar;
-}
-
 // --------------------------------------------------------------------------
 // Function generateText(CharString)
 // --------------------------------------------------------------------------
@@ -114,19 +98,6 @@ void generateText(std::mt19937 & rng, TText & text, unsigned textLength = 100000
 
     int minChar = MinValue<TChar>::VALUE;
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
-
-    resize(text, textLength);
-
-    for (unsigned i = 0; i < textLength; ++i)
-        text[i] = rng() % alphabetSize - minChar;
-}
-
-void generateText(std::mt19937 & rng, Peptide & text, unsigned textLength = 100000)
-{
-    typedef typename Value<Peptide>::Type TChar;
-
-    int minChar = MinValue<TChar>::VALUE;
-    unsigned alphabetSize = ValueSize<TChar>::VALUE - 1; // exclude "*" character
 
     resize(text, textLength);
 
