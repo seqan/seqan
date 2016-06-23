@@ -164,7 +164,7 @@ readRecord(BamHeaderRecord & record,
     {
         skipOne(iter, IsTab());
 
-        appendValue(record.tags, Pair<CharString>());
+        appendValue(record.tags, Pair<CharString>(), Exact());
 
         clear(buffer);
         readLine(buffer, iter);
@@ -177,7 +177,7 @@ readRecord(BamHeaderRecord & record,
         {
             skipOne(iter, IsTab());
 
-            appendValue(record.tags, Pair<CharString>());
+            appendValue(record.tags, Pair<CharString>(), Exact());
 
             clear(buffer);
             readUntil(buffer, iter, EqualsChar<':'>());
