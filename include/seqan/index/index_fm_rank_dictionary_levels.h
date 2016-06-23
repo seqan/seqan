@@ -387,8 +387,8 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
     static const unsigned _VALUES_PER_WORD  = _BITS_PER_WORD  / _BITS_PER_VALUE;
     static const unsigned _WORDS_PER_BLOCK  = _BITS_PER_BLOCK / _BITS_PER_WORD;
     static const unsigned _VALUES_PER_BLOCK = _VALUES_PER_WORD * _WORDS_PER_BLOCK;
-    static const uint64_t _VALUES_PER_SUPERBLOCK = _VALUES_PER_BLOCK * 2; //(((1ull << ((TConfig::LEVELS == 3) ? 16 : 32)) - 1) / _VALUES_PER_BLOCK) * _VALUES_PER_BLOCK; // 2^16 - 1 (3lvl), 2^32 - 1 (2lvl)
-    static const uint64_t _VALUES_PER_ULTRABLOCK = _VALUES_PER_BLOCK * 4; //(((1ull << 32) - 1) / _VALUES_PER_SUPERBLOCK) * _VALUES_PER_SUPERBLOCK; // 2^32 - 1
+    static const uint64_t _VALUES_PER_SUPERBLOCK = (((1ull << ((TConfig::LEVELS == 3) ? 16 : 32)) - 1) / _VALUES_PER_BLOCK) * _VALUES_PER_BLOCK; // 2^16 - 1 (3lvl), 2^32 - 1 (2lvl)
+    static const uint64_t _VALUES_PER_ULTRABLOCK = (((1ull << 32) - 1) / _VALUES_PER_SUPERBLOCK) * _VALUES_PER_SUPERBLOCK; // 2^32 - 1
 
     typedef uint64_t  TWordType; // TODO: how to get underlying data type of RankDictionaryWordSize_?
 
