@@ -44,21 +44,21 @@ using namespace seqan;
 template <typename TSpec = void, typename TLengthSum = size_t>
 struct FMIndexConfigLevelsPrefix
 {
-    typedef TLengthSum                                  LengthSum;
-    typedef Levels<TSpec, LevelsPrefixRDConfig<size_t, Alloc<> > >      Bwt;
-    typedef Levels<TSpec, LevelsRDConfig<LengthSum, Alloc<> > >   Sentinels;
+    typedef TLengthSum                                                              LengthSum;
+    typedef Levels<TSpec, LevelsPrefixRDConfig<Alloc<>, LevelConfig<LengthSum> > >  Bwt;
+    typedef Levels<TSpec, LevelsRDConfig<Alloc<>, LevelConfig<LengthSum> > >        Sentinels;
 
-    static const unsigned SAMPLING =                    10;
+    static const unsigned SAMPLING =                                                10;
 };
 
 template <typename TSpec = void, typename TLengthSum = size_t>
 struct FMIndexWTConfig
 {
-    typedef TLengthSum                                  LengthSum;
-    typedef WaveletTree<TSpec, WTRDConfig<LengthSum> >  Bwt;
-    typedef Levels<TSpec, LevelsRDConfig<LengthSum> >   Sentinels;
+    typedef TLengthSum                                                          LengthSum;
+    typedef WaveletTree<TSpec, WTRDConfig<Alloc<>, LevelConfig<LengthSum> > >   Bwt;
+    typedef Levels<TSpec, LevelsRDConfig<Alloc<>, LevelConfig<LengthSum> > >    Sentinels;
 
-    static const unsigned SAMPLING =                    10;
+    static const unsigned SAMPLING =                                            10;
 };
 
 typedef String<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> > > Murphy10String;

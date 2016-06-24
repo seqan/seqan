@@ -53,24 +53,24 @@ struct WTFMIndexConfig : FMIndexConfig<TSpec, TLengthSum> {};
 template <typename TSpec = void, typename TLengthSum = size_t>
 struct SmallWTFMIndexConfig : FMIndexConfig<TSpec, TLengthSum>
 {
-    typedef TLengthSum                              LengthSum;
-    typedef Naive<TSpec, RDConfig<TLengthSum> >     Sentinels;
+    typedef TLengthSum                                                  LengthSum;
+    typedef Naive<TSpec, RDConfig<Alloc<>, LevelConfig<LengthSum> > >   Sentinels;
 };
 
 template <typename TSpec = void, typename TLengthSum = size_t>
 struct SmallLVFMIndexConfig : FMIndexConfig<TSpec, TLengthSum>
 {
     typedef TLengthSum                                  LengthSum;
-    typedef Levels<TSpec, LevelsRDConfig<LengthSum> >   Bwt;
-    typedef Naive<TSpec, RDConfig<LengthSum> >          Sentinels;
+    typedef Levels<TSpec, LevelsRDConfig<Alloc<>, LevelConfig<LengthSum> > >    Bwt;
+    typedef Naive<TSpec, RDConfig<Alloc<>, LevelConfig<LengthSum> > >           Sentinels;
 };
 
 template <typename TSpec = void, typename TLengthSum = size_t>
 struct PrefixLVFMIndexConfig : FMIndexConfig<TSpec, TLengthSum>
 {
     typedef TLengthSum                                  LengthSum;
-    typedef Levels<TSpec, LevelsPrefixRDConfig<LengthSum> >   Bwt;
-    typedef Naive<TSpec, RDConfig<LengthSum> >          Sentinels;
+    typedef Levels<TSpec, LevelsPrefixRDConfig<Alloc<>, LevelConfig<LengthSum> > >  Bwt;
+    typedef Naive<TSpec, RDConfig<Alloc<>, LevelConfig<LengthSum> > >               Sentinels;
 };
 
 // --------------------------------------------------------------------------

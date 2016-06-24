@@ -48,10 +48,10 @@ namespace seqan {
 // Tag WaveletTreeConfig
 // --------------------------------------------------------------------------
 
-template <typename TSize = size_t, typename TFibre = Alloc<>, typename TLevelConfig = LevelConfig<>, typename WORDS_PER_BLOCK_MODE_ = DynamicWPB, unsigned WORDS_PER_BLOCK_ = 1, unsigned ARITY_ = 2>
-struct WTRDConfig : LevelsRDConfig<TSize, TFibre, TLevelConfig, WORDS_PER_BLOCK_MODE_, WORDS_PER_BLOCK_>
+template <typename TFibre = Alloc<>, typename TLevelConfig = LevelConfig<>, typename WORDS_PER_BLOCK_MODE_ = DynamicWPB, unsigned WORDS_PER_BLOCK_ = 1/*, unsigned ARITY_ = 2*/>
+struct WTRDConfig : LevelsRDConfig<TFibre, TLevelConfig, WORDS_PER_BLOCK_MODE_, WORDS_PER_BLOCK_>
 {
-    static const unsigned ARITY = ARITY_;
+    //static const unsigned ARITY = ARITY_;
 };
 
 // --------------------------------------------------------------------------
