@@ -112,11 +112,11 @@ public:
     typedef DPScout_<TDPCell, Default>  TParent;
 
     DPScoutState_<Terminator_<TSpec> > * state = nullptr;
-    bool terminationCriteriumMet = false;
+    bool terminationCriteriumMet               = false;
 
     DPScout_() = default;
 
-    DPScout_(DPScoutState_<Terminator_<TSpec> > pState) :
+    DPScout_(DPScoutState_<Terminator_<TSpec> > & pState) :
         DPScout_<TDPCell, Default>(),
         state(&pState)
     {}
