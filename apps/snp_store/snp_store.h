@@ -286,7 +286,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
 
             // amplification bias distribution
             printHetTable = false;
-            correctedHetTable = false;
+            correctedHetTable = true;
             amplificationCycles = 18;           // realistic values (pers. communication Krawitz)
             amplificationEfficiency = 0.3;
             initialN = 10;

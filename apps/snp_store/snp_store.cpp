@@ -1527,9 +1527,10 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
                                      ArgParseArgument::INTEGER));
     setMinValue(parser, "min-map-quality", "0");
     setDefaultValue(parser, "min-map-quality", options.minMapQual);
-    addOption(parser, ArgParseOption("ch",
-                                     "corrected-het",
-                                     "Use amplification bias corrected distribution for heterozygotes. Default: off."));
+    addOption(parser, ArgParseOption("nch",
+                                     "no-corrected-het",
+                                     "Don't use amplification bias corrected distribution for heterozygotes."
+                                     " Requires Boost libarary. Default: on if Boost is available"));
     addOption(parser, ArgParseOption("maf",
                                      "mean-alleleFreq",
                                      "Mean ref allele frequency in heterozygotes.",
@@ -1670,7 +1671,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     getOptionValue(options.theta, parser, "theta");
     getOptionValue(options.hetRate, parser, "hetero-rate");
     getOptionValue(options.minMapQual, parser, "min-map-quality");
-    options.correctedHetTable = isSet(parser, "corrected-het");
+    options.correctedHetTable = !(isSet(parser, "no-corrected-het"));
     getOptionValue(options.minQual, parser, "snp-quality");
     getOptionValue(options.meanAlleleFrequency, parser, "mean-alleleFreq");
     getOptionValue(options.amplificationCycles, parser, "amp-cycles");
