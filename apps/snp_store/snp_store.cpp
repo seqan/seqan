@@ -816,14 +816,17 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
             snpFileStream << "##INFO=<ID=T-,Number=1,Type=Integer,Description=\"Number of base 'T' observations"
                              " on reverse strand\">\n";
         }
-        snpFileStream << "##FILTER=<ID=q" << options.minQual
-                      << ",Description=\"Variant-quality below " << options.minQual << "\">";
-        snpFileStream << "\n##FILTER=<ID=mec" << options.minExplainedColumn
-                      << ",Description=\"Fraction of bases explaining called genotyope below "
+        if (options.minQual > 0)
+            snpFileStream << "##FILTER=<ID=q" << options.minQual
+                          << ",Description=\"Variant-quality below " << options.minQual << "\">";
+        if (options.minExplainedColumn > 0)
+            snpFileStream << "\n##FILTER=<ID=mec" << options.minExplainedColumn
+                          << ",Description=\"Fraction of bases explaining called genotyope below "
                       << options.minExplainedColumn << "\">";
-        snpFileStream << "\n##FILTER=<ID=dp" << options.minDifferentReadPos
-                      << ",Description=\"Number of different read positions supporting variant below "
-                      << options.minDifferentReadPos << "\">";
+        if (options.minDifferentReadPos > 0)
+            snpFileStream << "\n##FILTER=<ID=dp" << options.minDifferentReadPos
+                          << ",Description=\"Number of different read positions supporting variant below "
+                          << options.minDifferentReadPos << "\">";
         snpFileStream << "\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT";
         for (unsigned i = 0; i < length(options.readFNames); ++i)
         {
