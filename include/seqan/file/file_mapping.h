@@ -318,7 +318,20 @@ _unmapFile(FileMapping<TSpec> &mapping)
     {
         result &= (CloseHandle(mapping.handle) != 0);
         if (!result)
-            SEQAN_FAIL("CloseHandle failed in unmap: \"%s\"", strerror(errno));
+        {
+            LPVOID lpMsgBuf;
+            FormatMessage(
+                FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+                NULL,
+                GetLastError(),
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+                (LPTSTR) &lpMsgBuf,
+                0,
+                NULL);
+
+            SEQAN_FAIL("CloseHandle failed in unmap: \"%s\"", lpMsgBuf /*strerror(GetLastError())*/);
+            LocalFree(lpMsgBuf);
+        }
         mapping.handle = NULL;
     }
 #endif

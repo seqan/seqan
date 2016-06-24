@@ -81,10 +81,12 @@ namespace seqan
         bool                noBuffering;
 
         File():
-            handle(INVALID_HANDLE_VALUE) {}
+            handle(INVALID_HANDLE_VALUE),
+            handleAsync(INVALID_HANDLE_VALUE) {}
 
         File(void *): // to be compatible with the FILE*(NULL) constructor
-            handle(INVALID_HANDLE_VALUE) {}
+            handle(INVALID_HANDLE_VALUE),
+            handleAsync(INVALID_HANDLE_VALUE) {}
 
         virtual ~File() {
             close();
