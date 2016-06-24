@@ -182,7 +182,7 @@ struct ReducedFMIndexConfig_
 {
     typedef size_t                                                 LengthSum;
     typedef WaveletTree<void, WTRDConfig<LengthSum> >              Bwt;
-    typedef Levels<void, LevelsRDConfig<LengthSum, Alloc<>, 2> >   Sentinels;
+    typedef Levels<void, LevelsRDConfig<LengthSum, Alloc<> > >     Sentinels;
 
     static const unsigned SAMPLING = 10;
 };

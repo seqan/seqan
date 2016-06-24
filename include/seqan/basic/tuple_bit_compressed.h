@@ -88,6 +88,7 @@ template <typename TValue, unsigned SIZE, unsigned BITSIZE1, unsigned BITSIZE2, 
 struct Size<Tuple<TValue, SIZE, BitPacked<BITSIZE1, BITSIZE2, TSpec> > >
 {
     static const unsigned VALUE = SIZE;
+    typedef unsigned Type;
 };
 
 // TODO(holtgrew): There is a lot of stuff defined within the class itself. A lot of it could be moved into global functions.
