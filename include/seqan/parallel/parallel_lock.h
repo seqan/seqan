@@ -41,7 +41,7 @@
 #include <xmmintrin.h>  // _mm_pause()
 #endif
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #include <Windows.h>
 #else
 #include <sched.h>
@@ -88,7 +88,7 @@ waitFor(SpinDelay & me)
     }
     else
     {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #if _WIN32_WINNT >= 0x0400
         SwitchToThread();
 #endif
@@ -253,7 +253,7 @@ struct ScopedWriteLock<TLock, Serial>
 inline void
 yieldProcessor()
 {
-#if defined(PLATFORM_WINDOWS_VS)
+#if defined(STDLIB_VS)
     YieldProcessor();
 #elif defined(__SSE2__)
     _mm_pause();

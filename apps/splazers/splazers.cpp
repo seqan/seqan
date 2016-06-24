@@ -40,7 +40,7 @@
 #endif
 
 #include <seqan/platform.h>
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 	#define SEQAN_DEFAULT_TMPDIR "C:\\TEMP\\"
 #else
 	#define SEQAN_DEFAULT_TMPDIR "./"

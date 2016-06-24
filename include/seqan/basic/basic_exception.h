@@ -45,7 +45,7 @@
 #include <exception>
 #include <stdexcept>
 
-#ifdef PLATFORM_GCC
+#if !defined(STDLIB_VS)
 #include <cxxabi.h>
 #endif
 

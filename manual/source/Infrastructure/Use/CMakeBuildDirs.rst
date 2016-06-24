@@ -70,12 +70,6 @@ Debug and release builds:
 
 Of course the above can also be combined to have ``debug_clang37`` et cetera.
 
-.. caution::
-
-    **SeqAn requires C++11**
-
-    Depending on your setup you might get an error related to C++11 support. In this case you need to tell the compiler explicitly to use modern C++ standards by adding ``-DCMAKE_CXX_FLAGS=-std=c++11`` or ``-DCMAKE_CXX_FLAGS=-std=c++14``.
-
 Visual Studio
 ^^^^^^^^^^^^^
 

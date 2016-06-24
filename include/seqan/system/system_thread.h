@@ -40,7 +40,7 @@
 namespace seqan
 {
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 
     static SECURITY_ATTRIBUTES ThreadDefaultAttributes = {
         sizeof(SECURITY_ATTRIBUTES),

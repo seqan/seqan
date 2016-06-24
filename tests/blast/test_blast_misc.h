@@ -77,7 +77,7 @@ SEQAN_DEFINE_TEST(test_blast_program)
     /*** TEST string functions ***/
     // gcc can do the following, because it provides a constexpr strcmp implementation (not required by the standard)
     // it is not really important, though, just for demonstration purposes:
-#if defined(PLATFORM_GNU)
+#if defined(COMPILER_GCC) || defined(COMPILER_INTEL)
     static_assert(strcmp(_programTagToString(n), "BLASTN") == 0,       "static assertion failed!");
 #endif
     SEQAN_ASSERT_EQ(_programTagToString(n2), "BLASTN");

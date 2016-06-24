@@ -45,7 +45,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #include <windows.h>
 #else
 #include <pthread.h>
@@ -60,13 +60,13 @@
 // ----------------------------------------------------------------------------
 // Use MCSTL which is part of the GCC since version 4.3
 
-#if defined(_OPENMP) && defined(PLATFORM_GNU)
+#if defined(_OPENMP) && defined(STDLIB_GNU)
 #include <parallel/algorithm>
 #include <parallel/numeric>
 #else
 #include <algorithm>
 #include <numeric>
-#endif // PLATFORM_GCC
+#endif // COMPILER_GCC
 
 #include <atomic>
 #include <thread>

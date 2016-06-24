@@ -43,11 +43,11 @@
 #include <string>
 #include <iostream>
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 
 #include <windows.h>
 
-#else //#ifdef PLATFORM_WINDOWS
+#else //#ifdef STDLIB_VS
 
 #include <cstdlib>
 #include <climits>
@@ -67,12 +67,12 @@
 #define O_DIRECT 0
 #endif
 
-#endif //#ifdef PLATFORM_WINDOWS
+#endif //#ifdef STDLIB_VS
 
 #include <seqan/system/system_forwards.h>
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
 #include <seqan/system/file_forwards.h>
-#endif  // #ifndef PLATFORM_WINDOWS
+#endif  // #ifndef STDLIB_VS
 
 //____________________________________________________________________________
 // multi-threading

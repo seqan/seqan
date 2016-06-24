@@ -94,9 +94,7 @@ struct Size<Tuple<TValue, SIZE, BitPacked<BITSIZE1, BITSIZE2, TSpec> > >
 // TODO(holtgrew): There is a lot of stuff defined within the class itself. A lot of it could be moved into global functions.
 
 // bit-packed storage (space efficient)
-#ifdef PLATFORM_WINDOWS
-    #pragma pack(push,1)
-#endif
+#pragma pack(push,1)
 template <typename TValue, unsigned SIZE, unsigned BITSIZE1, unsigned BITSIZE2, typename TSpec>
 struct Tuple<TValue, SIZE, BitPacked<BITSIZE1, BITSIZE2, TSpec> >
 {
@@ -204,14 +202,8 @@ struct Tuple<TValue, SIZE, BitPacked<BITSIZE1, BITSIZE2, TSpec> >
         i = (i & ~(BIT_MASK << shift)) | (TBitVector)ordValue(source) << shift;
         return source;
     }
-}
-#ifndef PLATFORM_WINDOWS
-    __attribute__((packed))
-#endif
-    ;
-#ifdef PLATFORM_WINDOWS
-    #pragma pack(pop)
-#endif
+};
+#pragma pack(pop)
 
 // ============================================================================
 // Metafunctions
