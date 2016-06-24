@@ -67,79 +67,60 @@ using namespace seqan;
 
 typedef SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >         ReducedMurphy10;
 
-typedef Levels<void, LevelsPrefixRDConfig<size_t, Alloc<>, 1> > Prefix1Level;
-typedef Levels<void, LevelsPrefixRDConfig<size_t, Alloc<>, 2> > Prefix2Level;
-typedef Levels<void, LevelsPrefixRDConfig<size_t, Alloc<>, 3> > Prefix3Level;
+typedef Levels<void, LevelsPrefixRDConfig<size_t, Alloc<>, LevelConfig<uint32_t, Nothing, Nothing>, FixedWPB, 1> > Prefix1Level;
+typedef Levels<void, LevelsPrefixRDConfig<size_t, Alloc<>, LevelConfig<uint16_t, uint32_t, Nothing>, DynamicWPB, 2> > Prefix2Level;
+typedef Levels<void, LevelsPrefixRDConfig<size_t, Alloc<>, LevelConfig<uint8_t, uint16_t, uint32_t>, FixedWPB, 3> > Prefix3Level;
 
-typedef Levels<void, LevelsRDConfig<size_t, Alloc<>, 1> > Default1Level;
-typedef Levels<void, LevelsRDConfig<size_t, Alloc<>, 2> > Default2Level;
-typedef Levels<void, LevelsRDConfig<size_t, Alloc<>, 3> > Default3Level;
+typedef Levels<void, LevelsRDConfig<size_t, Alloc<>, LevelConfig<uint32_t, Nothing, Nothing>, FixedWPB, 2> > Default1Level;
+typedef Levels<void, LevelsRDConfig<size_t, Alloc<>, LevelConfig<uint16_t, uint32_t, Nothing>, DynamicWPB> > Default2Level;
+typedef Levels<void, LevelsRDConfig<size_t, Alloc<>, LevelConfig<uint8_t, uint16_t, uint32_t>, FixedWPB, 3> > Default3Level;
 
 typedef
     TagList<RankDictionary<Dna,             Prefix1Level>,
-    TagList<RankDictionary<Rna5,            Prefix1Level>,
     TagList<RankDictionary<Dna5Q,           Prefix1Level>,
     TagList<RankDictionary<ReducedMurphy10, Prefix1Level>,
     TagList<RankDictionary<AminoAcid,       Prefix1Level>,
     TagList<RankDictionary<char,            Prefix1Level>,
-    //TagList<RankDictionary<unsigned char,   Prefix1Level>,
-
     TagList<RankDictionary<Dna,             Prefix2Level>,
-    TagList<RankDictionary<Rna5,            Prefix2Level>,
     TagList<RankDictionary<Dna5Q,           Prefix2Level>,
     TagList<RankDictionary<ReducedMurphy10, Prefix2Level>,
     TagList<RankDictionary<AminoAcid,       Prefix2Level>,
-    //TagList<RankDictionary<char,            Prefix2Level>,
-            //TagList<RankDictionary<unsigned char,   Prefix2Level>,
-
+    TagList<RankDictionary<char,            Prefix2Level>,
     TagList<RankDictionary<Dna,             Prefix3Level>,
-    TagList<RankDictionary<Rna5,            Prefix3Level>,
     TagList<RankDictionary<Dna5Q,           Prefix3Level>,
     TagList<RankDictionary<ReducedMurphy10, Prefix3Level>,
     TagList<RankDictionary<AminoAcid,       Prefix3Level>,
-    //TagList<RankDictionary<char,            Prefix3Level>,
-            //TagList<RankDictionary<unsigned char,   Prefix3Level>,
-
+    TagList<RankDictionary<char,            Prefix3Level>,
     TagList<RankDictionary<bool,            WaveletTree<> >,
     TagList<RankDictionary<Dna,             WaveletTree<> >,
-    TagList<RankDictionary<Rna5,            WaveletTree<> >,
     TagList<RankDictionary<Dna5Q,           WaveletTree<> >,
     TagList<RankDictionary<AminoAcid,       WaveletTree<> >,
-    TagList<RankDictionary<char,            WaveletTree<> >//,
-            //TagList<RankDictionary<unsigned char,   WaveletTree<> >
-    > > > > > > > > > > > > > > > > > > > > > > //> > //> > > >
+    TagList<RankDictionary<char,            WaveletTree<> >
+    > > > > > > > > > > > > > > > > > > > >
     RankDictionaryPrefixSumTypes;
 
 typedef
     TagList<RankDictionary<bool,            Naive<> >,
     TagList<RankDictionary<bool,            Default1Level>,
     TagList<RankDictionary<Dna,             Default1Level>,
-    TagList<RankDictionary<Rna5,            Default1Level>,
     TagList<RankDictionary<Dna5Q,           Default1Level>,
     TagList<RankDictionary<ReducedMurphy10, Default1Level>,
     TagList<RankDictionary<AminoAcid,       Default1Level>,
     TagList<RankDictionary<char,            Default1Level>,
-            //TagList<RankDictionary<unsigned char,   Default1Level>,
-
     TagList<RankDictionary<bool,            Default2Level>,
     TagList<RankDictionary<Dna,             Default2Level>,
-    TagList<RankDictionary<Rna5,            Default2Level>,
     TagList<RankDictionary<Dna5Q,           Default2Level>,
     TagList<RankDictionary<ReducedMurphy10, Default2Level>,
     TagList<RankDictionary<AminoAcid,       Default2Level>,
     TagList<RankDictionary<char,            Default2Level>,
-            //TagList<RankDictionary<unsigned char,   Default2Level>,
-
     TagList<RankDictionary<bool,            Default3Level>,
     TagList<RankDictionary<Dna,             Default3Level>,
-    TagList<RankDictionary<Rna5,            Default3Level>,
     TagList<RankDictionary<Dna5Q,           Default3Level>,
     TagList<RankDictionary<ReducedMurphy10, Default3Level>,
     TagList<RankDictionary<AminoAcid,       Default3Level>,
     TagList<RankDictionary<char,            Default3Level>,
-            //TagList<RankDictionary<unsigned char,   Default3Level>,
     RankDictionaryPrefixSumTypes
-    > > > > > > > > > > > > > > > > > > > > > > // > > >
+    > > > > > > > > > > > > > > > > > > >
     RankDictionaryAllTypes;
 
 // ==========================================================================
@@ -269,7 +250,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
     }
 }
 
-SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetCumulativeRank)
+SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetPrefixRank)
 {
     typedef typename TestFixture::TValueSize TValueSize;
     typedef typename TestFixture::TText TText;
