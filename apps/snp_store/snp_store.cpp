@@ -814,10 +814,10 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
             snpFileStream << "##INFO=<ID=G-,Number=1,Type=Integer,Description=\"Number of base 'G' observations"
                              " on reverse strand\">\n";
             snpFileStream << "##INFO=<ID=T-,Number=1,Type=Integer,Description=\"Number of base 'T' observations"
-                             " on reverse strand\">\n";
+                             " on reverse strand\">";
         }
         if (options.minQual > 0)
-            snpFileStream << "##FILTER=<ID=q" << options.minQual
+            snpFileStream << "\n##FILTER=<ID=q" << options.minQual
                           << ",Description=\"Variant-quality below " << options.minQual << "\">";
         if (options.minExplainedColumn > 0)
             snpFileStream << "\n##FILTER=<ID=mec" << options.minExplainedColumn
