@@ -401,10 +401,10 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
     static const unsigned _VALUES_PER_WORD  = _BITS_PER_WORD / _BITS_PER_VALUE;
     static const unsigned _WORDS_PER_BLOCK  = _BITS_PER_BLOCK / _BITS_PER_WORD;
     static const unsigned _VALUES_PER_BLOCK = _VALUES_PER_WORD * _WORDS_PER_BLOCK;
-    static const uint64_t _VALUES_PER_SUPERBLOCK = (((1ull << (BitsPerValue<typename TConfig::Level2Type>::VALUE/2)) - 1) / _VALUES_PER_BLOCK) * _VALUES_PER_BLOCK; // 2^16 - 1 (3lvl), 2^32 - 1 (2lvl)
-    static const uint64_t _VALUES_PER_ULTRABLOCK = (((1ull << (BitsPerValue<typename TConfig::Level3Type>::VALUE/2)) - 1) / _VALUES_PER_SUPERBLOCK) * _VALUES_PER_SUPERBLOCK; // 2^32 - 1
+    static const uint64_t _VALUES_PER_SUPERBLOCK = (((1ull << (BitsPerValue<typename TConfig::Level2Type>::VALUE/2)) - 1) / _VALUES_PER_BLOCK) * _VALUES_PER_BLOCK; // 2^x - 1 values
+    static const uint64_t _VALUES_PER_ULTRABLOCK = (((1ull << (BitsPerValue<typename TConfig::Level3Type>::VALUE/2)) - 1) / Max<_VALUES_PER_SUPERBLOCK, 1>::VALUE) * _VALUES_PER_SUPERBLOCK; // MAX: workaround for clang: division is not constexpr since divisor could be 0
 
-    static_assert(pow (2.0, BitsPerValue<typename TConfig::Level1Type>::VALUE) - 1 >= _VALUES_PER_BLOCK, "The datatype of the lowest level has to be larger or the number of words per block smaller. See the online documentation for moe information.");
+    static_assert(BitsPerValue<typename TConfig::Level1Type>::VALUE >= LogN<_VALUES_PER_BLOCK + 1, 2>::VALUE, "The datatype of the lowest level has to be larger or the number of words per block smaller. See the online documentation for moe information.");
 
     typedef typename RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> >::Type TWordType;
 
