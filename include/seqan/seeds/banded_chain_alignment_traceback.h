@@ -218,12 +218,12 @@ inline void
 _correctDPCellForAffineGaps(DPCell_<TScoreValue, AffineGaps> & dpCell, TTraceValue lastTraceValue)
 {
     typedef DPCell_<TScoreValue, AffineGaps> TDPCell;
-    if (lastTraceValue & TraceBitMap_::DIAGONAL)
+    if (lastTraceValue & TraceBitMap_<>::DIAGONAL)
     {
         dpCell._verticalScore = DPCellDefaultInfinity<TDPCell>::VALUE;
         dpCell._horizontalScore = DPCellDefaultInfinity<TDPCell>::VALUE;
     }
-    else if (lastTraceValue & TraceBitMap_::VERTICAL)
+    else if (lastTraceValue & TraceBitMap_<>::VERTICAL)
         dpCell._horizontalScore = DPCellDefaultInfinity<TDPCell>::VALUE;
     else
         dpCell._verticalScore = DPCellDefaultInfinity<TDPCell>::VALUE;
@@ -255,7 +255,7 @@ void _computeTraceback(TTarget & target,
     typedef typename MakeSigned<TPosition>::Type TSignedPosition;
     typedef typename Size<TSequenceH>::Type TSizeSeqH;
     typedef typename Size<TSequenceV>::Type TSizeSeqV;
-    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
 
     if (IsSameType<TTracebackSpec, TracebackOff>::VALUE)
         return;
@@ -287,18 +287,18 @@ void _computeTraceback(TTarget & target,
     {
         if (tracebackCoordinator._currRow != seqVSize)
             _recordSegment(target, seqHSize, tracebackCoordinator._currRow, seqVSize - tracebackCoordinator._currRow,
-                           +TraceBitMap_::VERTICAL);
+                           +TraceBitMap_<>::VERTICAL);
         if (tracebackCoordinator._currColumn != seqHSize)
             _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, seqHSize -
-                           tracebackCoordinator._currColumn, +TraceBitMap_::HORIZONTAL);
+                           tracebackCoordinator._currColumn, +TraceBitMap_<>::HORIZONTAL);
 
-        _computeTraceback(target, matrixNavigator, position(matrixNavigator), seqH, seqV, band, dpProfile);
+        _computeTraceback(target, matrixNavigator, position(matrixNavigator), seqHSize, seqVSize, band, dpProfile);
         return;
     }
 
     TSize fragmentLength = 0;
     TTarget tmp;
-    while(!_hasReachedEnd(tracebackCoordinator) && traceValue != +TraceBitMap_::NONE)
+    while(!_hasReachedEnd(tracebackCoordinator) && traceValue != +TraceBitMap_<>::NONE)
         _doTraceback(tmp, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, TGapCosts(), TIsGapsLeft());
 
     TSignedPosition horizontalInitPos = static_cast<TSignedPosition>(tracebackCoordinator._currColumn) -
@@ -329,7 +329,7 @@ void _computeTraceback(TTarget & target,
         else if (horizontalInitPos < 0)  // Here we are in a horizontal gap.
             _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, -horizontalInitPos,
                            lastTraceValue);
-        _computeTraceback(target, matrixNavigator, position(matrixNavigator), seqH, seqV, band, dpProfile);
+        _computeTraceback(target, matrixNavigator, position(matrixNavigator), seqHSize, seqVSize, band, dpProfile);
     }
 
     if (IsSameType<TDPMatrixLocation, BandedChainInitialDPMatrix>::VALUE)
@@ -345,9 +345,9 @@ void _computeTraceback(TTarget & target,
                         currRow -= length(container(matrixNavigator), +DPMatrixDimension_::VERTICAL) - 1 + lowerDiagonal(band) - currCol;
         // Record leading gaps if any.
         if (currRow != 0u)
-            _recordSegment(target, 0, 0, currRow, +TraceBitMap_::VERTICAL);
+            _recordSegment(target, 0, 0, currRow, +TraceBitMap_<>::VERTICAL);
         if (currCol != 0u)
-            _recordSegment(target, 0, 0, currCol, +TraceBitMap_::HORIZONTAL);
+            _recordSegment(target, 0, 0, currCol, +TraceBitMap_<>::HORIZONTAL);
     }
 }
 
@@ -355,16 +355,21 @@ void _computeTraceback(TTarget & target,
 // Function _computeTraceback()        [BandedChainAlignment, global interface]
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TDPTraceMatrixNavigator, typename TDPScout, typename TSequenceH, typename TSequenceV,
-typename TBandFlag, typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackSpec>
+template <typename TTarget,
+          typename TDPTraceMatrixNavigator,
+          typename TDPCell, typename TScoutSpec,
+          typename TSequenceH, typename TSequenceV,
+          typename TBandFlag,
+          typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackSpec>
 void _computeTraceback(StringSet<TTarget> & targetSet,
                        TDPTraceMatrixNavigator & matrixNavigator,
-                       TDPScout & dpScout,
+                       DPScout_<TDPCell, TScoutSpec> & dpScout,
                        TSequenceH const & seqH,
                        TSequenceV const & seqV,
                        DPBandConfig<TBandFlag> const & band,
                        DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTracebackSpec> const & dpProfile)
 {
+    typedef DPScout_<TDPCell, TScoutSpec> TDPScout;
     typedef typename TDPScout::TMaxHostPositionString TMaxHostPositions;
     typedef typename Iterator<TMaxHostPositions, Standard>::Type TMaxHostPositionsIterator;
 

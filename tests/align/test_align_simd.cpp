@@ -29,28 +29,15 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
+// Author: René Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-// This is the facade header for the score module.
-// ==========================================================================
-
-#ifndef SEQAN_SH_
-#define SEQAN_SH_
 
 #include <seqan/basic.h>
-
 #include <seqan/stream.h>
 
-#include <seqan/score/score_base.h>
-#include <seqan/score/score_edit.h>
-#include <seqan/score/score_matrix.h>
-#include <seqan/score/score_matrix_io.h>
-#include <seqan/score/score_matrix_data.h>
-#include <seqan/score/score_matrix_dyn.h>
-#include <seqan/score/score_simple.h>
+#include "test_align_simd.h"
 
-#if SEQAN_SIMD_ENABLED
-#include <seqan/score/score_simd_wrapper.h>
-#endif  // SEQAN_SIMD_ENABLED
-
-#endif  // SEQAN_SH_
+int main(int argc, char const ** argv) {
+    seqan::TestSystem::init(argc, argv);
+    return seqan::TestSystem::runAll();
+}

@@ -220,8 +220,14 @@ public:
     // Array Subscript Operator
     // -----------------------------------------------------------------------
 
-    inline TValue_
-    operator[](TPosition_ clippedViewPos) const
+    inline typename Reference<Gaps>::Type
+    operator[](TPosition_ const clippedViewPos)
+    {
+        return value(*this, clippedViewPos);
+    }
+
+    inline typename Reference<Gaps const>::Type
+    operator[](TPosition_ const clippedViewPos) const
     {
         return value(*this, clippedViewPos);
     }
@@ -459,24 +465,6 @@ insertGaps(Gaps<TSequence, AnchorGaps<TGapAnchors> > & gaps, TPosition clippedVi
 
     TIter it = iter(gaps, clippedViewPos);
     insertGaps(it, count);
-}
-
-// ----------------------------------------------------------------------------
-// Function value()
-// ----------------------------------------------------------------------------
-
-template <typename TSequence, typename TGapAnchors, typename TPosition>
-inline typename Value<Gaps<TSequence, AnchorGaps<TGapAnchors> > >::Type
-value(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps, TPosition clippedViewPos)
-{
-    // TODO(holtgrew): Implement without iterator?
-    typedef Gaps<TSequence, AnchorGaps<TGapAnchors> > TGaps;
-    typedef typename Iterator<TGaps const>::Type TIter;
-
-    TIter it = iter(gaps, clippedViewPos);
-    if (isGap(it))
-        return '-';
-    return *it;
 }
 
 // ----------------------------------------------------------------------------

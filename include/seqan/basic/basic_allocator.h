@@ -44,6 +44,7 @@
 #include <seqan/platform.h>
 #include <seqan/basic/basic_fundamental.h>
 #include <seqan/basic/basic_smart_pointer.h>
+#include <seqan/basic/basic_simd_vector.h>
 
 // --------------------------------------------------------------------------
 // Sub Module Headers

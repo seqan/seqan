@@ -59,43 +59,41 @@ template <typename TScoreValue>
 class DPCell_<TScoreValue, AffineGaps>
 {
 public:
-    TScoreValue _score;
-    TScoreValue _horizontalScore;
-    TScoreValue _verticalScore;
-
-    // The default c'tor.
-    DPCell_() :
-        _score(DPCellDefaultInfinity<DPCell_>::VALUE),
-        _horizontalScore(DPCellDefaultInfinity<DPCell_>::VALUE),
-        _verticalScore(DPCellDefaultInfinity<DPCell_>::VALUE)
-    {}
-
-    // The copy c'tor.
+    TScoreValue _score              = DPCellDefaultInfinity<DPCell_>::VALUE;
+    TScoreValue _horizontalScore    = DPCellDefaultInfinity<DPCell_>::VALUE;
+    TScoreValue _verticalScore      = DPCellDefaultInfinity<DPCell_>::VALUE;
+    
+    DPCell_() = default;
+    // Copy c'tor.
     DPCell_(DPCell_<TScoreValue, AffineGaps> const & other) :
         _score(other._score),
         _horizontalScore(other._horizontalScore),
         _verticalScore(other._verticalScore)
     {}
+    
+    // Move c-tor
+    DPCell_(DPCell_ && other) : DPCell_()
+    {
+        swap(*this, other);
+    }
 
     // The assignment operator.
     DPCell_ &
-    operator=(DPCell_ const & other)
+    operator=(DPCell_ other)
     {
-        if (this != &other)
-        {
-            _score = other._score;
-            _horizontalScore = other._horizontalScore;
-            _verticalScore = other._verticalScore;
-        }
+        swap(*this, other);
         return *this;
     }
 
+    // Assign score to cell.
     DPCell_ &
     operator=(TScoreValue const & score)
     {
         _score = score;
         return *this;
     }
+
+    ~DPCell_() = default;
 };
 
 // ============================================================================
@@ -144,10 +142,17 @@ _verticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> const & dpCell)
 
 // Returns the score of the matrix for vertical-gaps of the given cell.
 template <typename TScoreValue>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,void)
 _setVerticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newVerticalScore)
 {
     dpCell._verticalScore = newVerticalScore;
+}
+
+template <typename TScoreValue>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,void)
+_setVerticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newVerticalScore, TScoreValue const & mask)
+{
+    dpCell._verticalScore = blend(dpCell._verticalScore, newVerticalScore, mask);
 }
 
 // ----------------------------------------------------------------------------
@@ -175,10 +180,27 @@ _horizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> const & dpCell)
 
 // Returns the score of the matrix for vertical-gaps of the given cell.
 template <typename TScoreValue>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,void)
 _setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newHorizontalScore)
 {
     dpCell._horizontalScore = newHorizontalScore;
+}
+
+template <typename TScoreValue>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,void)
+_setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newHorizontalScore, TScoreValue const & mask)
+{
+    dpCell._horizontalScore = blend(dpCell._horizontalScore, newHorizontalScore, mask);
+}
+
+template <typename TScoreValue>
+inline void 
+swap(DPCell_<TScoreValue, AffineGaps> & lhs, 
+     DPCell_<TScoreValue, AffineGaps> & rhs)
+{
+    std::swap(lhs._score, rhs._score);
+    std::swap(lhs._horizontalScore, rhs._horizontalScore);
+    std::swap(lhs._verticalScore, rhs._verticalScore);
 }
 
 }  // namespace seqan

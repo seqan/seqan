@@ -70,13 +70,13 @@ typedef Tag<SplitAlignmentAlgo_> SplitAlignmentAlgo;
 // For the split alignment, we will use our SplitAlignmentScout specialization of DPScout.
 
 template <typename TSpec>
-struct ScoutSpecForAlignmentAlgorithm_<SplitAlignment_<TSpec> >
+struct ScoutSpecForAlignmentAlgorithm_<SplitAlignment_<TSpec>, DPScoutState_<SplitAlignmentScout> >
 {
     typedef SplitAlignmentScout Type;
 };
 
 template <typename TSpec>
-struct ScoutSpecForAlignmentAlgorithm_<SplitAlignment_<TSpec> const>
+struct ScoutSpecForAlignmentAlgorithm_<SplitAlignment_<TSpec> const, DPScoutState_<SplitAlignmentScout> >
 {
     typedef SplitAlignmentScout Type;
 };

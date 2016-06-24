@@ -487,7 +487,7 @@ _writeAlignmentBlock(TStream & stream,
         {
             if (!isGap(m.alignRow0, i))
                 qPos += qStep;
-            write(stream, value(m.alignRow0, i));
+            write(stream, getValue(m.alignRow0, i));
         }
         snprintf(buffer, 40, "  %-*d", numberWidth, (qPos + effQStart) - qStepOne);
         write(stream, buffer);
@@ -498,7 +498,7 @@ _writeAlignmentBlock(TStream & stream,
             write(stream, ' ');
 
         for (TPos i = aPos; i < end; ++i)
-            _writeAlignmentBlockIntermediateChar(stream, context, value(m.alignRow0,i), value(m.alignRow1,i), BlastReport());
+            _writeAlignmentBlockIntermediateChar(stream, context, getValue(m.alignRow0,i), getValue(m.alignRow1,i), BlastReport());
 
         // Subject line
         snprintf(buffer, 40, "\nSbjct  %-*d  ", numberWidth, sPos + effSStart);
@@ -508,7 +508,7 @@ _writeAlignmentBlock(TStream & stream,
         {
             if (!isGap(m.alignRow1, i))
                 sPos += sStep;
-            write(stream, value(m.alignRow1, i));
+            write(stream, getValue(m.alignRow1, i));
         }
         snprintf(buffer, 40, "  %-*d\n\n", numberWidth, (sPos + effSStart) - sStepOne);
         write(stream, buffer);

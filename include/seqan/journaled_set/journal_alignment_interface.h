@@ -85,7 +85,7 @@ TScoreValue globalAlignment(String<TValue, Journaled<THostSpec, TJournalSpec, TB
     DPScoutState_<Default> dpScoutState;
     // We need to do that in order to build journal strings from two simple sequences.
     TScoreValue res = _setUpAndRunAlignment(traceSegments, dpScoutState, reference, source, scoringScheme, TDPConfig(),
-                                            IsSameType<TAlgoTag, NeedlemanWunsch>());
+                                            typename SubstituteAlgoTag_<TAlgoTag>::Type());
     _adaptTraceSegmentsTo(journaledString, reference, source, traceSegments);
     return res;
 }
@@ -179,7 +179,7 @@ TScoreValue globalAlignment(String<TValue, Journaled<THostSpec, TJournalSpec, TB
     // We need to do that in order to build journal strings from two simple sequences.
     TScoreValue res = _setUpAndRunAlignment(traceSegments, dpScoutState, reference, source, scoringScheme,
                                             TDPConfig(lowerDiag, upperDiag),
-                                            IsSameType<TAlgoTag, NeedlemanWunsch>());
+                                            typename SubstituteAlgoTag_<TAlgoTag>::Type());
     _adaptTraceSegmentsTo(journaledString, reference, source, traceSegments);
     return res;
 }

@@ -293,7 +293,7 @@ struct Value<Segment<THost, TSpec> > :
 
 template <typename THost, typename TSpec>
 struct Value<Segment<THost, TSpec> const > :
-    Value<THost const> {};
+    Value<THost> {};
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -303,7 +303,7 @@ struct GetValue<Segment<THost, TSpec> > :
 
 template <typename THost, typename TSpec>
 struct GetValue<Segment<THost, TSpec> const > :
-    GetValue<THost const> {};
+    GetValue<THost> {};
 
 //////////////////////////////////////////////////////////////////////////////
 

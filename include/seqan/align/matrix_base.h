@@ -64,13 +64,15 @@ struct SizeArr_<Matrix<TValue, DIMENSION> >
 template <typename TValue, unsigned DIMENSION>
 struct Host<Matrix<TValue, DIMENSION> >
 {
-    typedef String<TValue> Type;
+    typedef typename StringSpecForValue_<TValue>::Type TSpec_;
+    typedef String<TValue, TSpec_> Type;
 };
 
 template <typename TValue, unsigned DIMENSION>
 struct Host<Matrix<TValue, DIMENSION> const>
 {
-    typedef String<TValue> const Type;
+    typedef typename StringSpecForValue_<TValue>::Type TSpec_;
+    typedef String<TValue, TSpec_> Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -100,7 +102,7 @@ class Matrix<TValue, 0>
 public:
     typedef typename Size<Matrix>::Type TSize;
     typedef String<TSize> TSizeArr;
-    typedef String<TValue> THost;
+    typedef typename Host<Matrix>::Type THost;
 
     TSizeArr data_lengths;        //Length of every dimension
     TSizeArr data_factors;        //used for positions of dimensions in host ("size of jumps" to get to next entry of specified dimension)
@@ -164,7 +166,7 @@ class Matrix<TValue, 2>
 public:
     typedef typename Size<Matrix>::Type TSize;
     typedef String<TSize> TSizeArr;
-    typedef String<TValue> THost;
+    typedef typename Host<Matrix>::Type THost;
 
     TSizeArr data_lengths;
     TSizeArr data_factors;
@@ -224,8 +226,8 @@ class Matrix<TValue, 3>
 
 public:
     typedef typename Size<Matrix>::Type TSize;
-    typedef String<TSize> TSizeArr;
-    typedef String<TValue> THost;
+    typedef String<TSize> TSizeArr; 
+    typedef typename Host<Matrix>::Type THost;
 
     TSizeArr data_lengths;
     TSizeArr data_factors;

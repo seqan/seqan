@@ -126,6 +126,26 @@ public:
 };
 
 
+// ----------------------------------------------------------------------------
+// Metafunction IsScoreMatrix_
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+struct IsScoreMatrix_ : False
+{};
+
+template <typename TAlphabet, typename TSpec>
+struct IsScoreMatrix_<ScoreMatrix<TAlphabet, TSpec> > : True
+{};
+
+template <typename TValue, typename  TSpec>
+struct IsScoreMatrix_<Score<TValue, TSpec> > : IsScoreMatrix_<TSpec>
+{};
+
+// ----------------------------------------------------------------------------
+// Function score()
+// ----------------------------------------------------------------------------
+
 // TODO(holtgrew): Does it make sense to document each Score specialization?  Should dddoc show a list of all specializations of a class?
 template <typename TValue, typename TSequenceValue, typename TSpec, typename TVal1, typename TVal2>
 inline TValue
@@ -136,7 +156,6 @@ score(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc, TVal1 val1,
     unsigned int j = (TSequenceValue) val2;  // conversion TVal2 => TSequenceValue => integral
     return sc.data_tab[i * TScore::VALUE_SIZE + j];
 }
-
 
 /*!
  * @fn MatrixScore#setScore
@@ -185,7 +204,6 @@ setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, T
     TValue const * tab = ScoringMatrixData_<TValue, TSequenceValue, TTag>::getData();
     arrayCopy(tab, tab + TScore::TAB_SIZE, sc.data_tab);
 }
-
 
 template <typename TValue, typename TSequenceValue, typename TSpec>
 inline void

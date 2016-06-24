@@ -276,6 +276,28 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function value()
+// ----------------------------------------------------------------------------
+
+template <typename TSequence, typename TSpec,
+          typename TPosition>
+inline typename Reference<Gaps<TSequence, TSpec> >::Type
+value(Gaps<TSequence, TSpec> & gaps,
+      TPosition const clippedViewPos)
+{
+    return typename Reference<Gaps<TSequence, TSpec> >::Type(begin(gaps, Standard()) + clippedViewPos);
+}
+
+template <typename TSequence, typename TSpec,
+          typename TPosition>
+inline typename Reference<Gaps<TSequence, TSpec> const>::Type
+value(Gaps<TSequence, TSpec> const & gaps,
+      TPosition const clippedViewPos)
+{
+    return typename Reference<Gaps<TSequence, TSpec> const>::Type(begin(gaps, Standard()) + clippedViewPos);
+}
+
+// ----------------------------------------------------------------------------
 // Function iter()
 // ----------------------------------------------------------------------------
 

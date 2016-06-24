@@ -54,6 +54,14 @@ add_executable (test_align
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_align ${SEQAN_LIBRARIES})
 
+# Add executable for simd tests.
+add_executable(test_align_simd
+               test_align_simd.cpp
+               test_align_simd.h)
+
+# Add dependencies found by find_package (SeqAn).
+target_link_libraries (test_align_simd ${SEQAN_LIBRARIES})
+
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
@@ -62,3 +70,4 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # ----------------------------------------------------------------------------
 
 add_test (NAME test_test_align COMMAND $<TARGET_FILE:test_align>)
+add_test (NAME test_test_align_simd COMMAND $<TARGET_FILE:test_align_simd>)
