@@ -375,13 +375,13 @@ constexpr TWord _bitmaskWrapper(RankDictionary<TValue, Levels<TSpec, LevelsPrefi
  */
 
 template <typename TValue, typename TConfig>
-struct MyBitsPerValue
+struct BitsPerValue_
 {
     static const typename BitsPerValue<TValue>::Type VALUE = BitsPerValue<TValue>::VALUE;
 };
 
 template <typename TValue, typename TSize, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB>
-struct MyBitsPerValue<TValue, LevelsPrefixRDConfig<TSize, TFibre, TLevelConfig, TWPBMode, WPB> >
+struct BitsPerValue_<TValue, LevelsPrefixRDConfig<TSize, TFibre, TLevelConfig, TWPBMode, WPB> >
 {
     static const typename BitsPerValue<TValue>::Type VALUE = BitsPerValue<TValue>::VALUE + 1;
 };
@@ -395,7 +395,7 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
     // Constants
     // ------------------------------------------------------------------------
 
-    static const unsigned _BITS_PER_VALUE   = MyBitsPerValue<TValue, TConfig>::VALUE;
+    static const unsigned _BITS_PER_VALUE   = BitsPerValue_<TValue, TConfig>::VALUE;
     static const unsigned _BITS_PER_BLOCK   = (TConfig::WORDS_PER_BLOCK_MODE_DYNAMIC ? BitsPerValue<typename RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >::Type>::VALUE : RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> >::VALUE * TConfig::WORDS_PER_BLOCK);
     static const unsigned _BITS_PER_WORD    = Min<RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> >::VALUE, _BITS_PER_BLOCK>::VALUE;
     static const unsigned _VALUES_PER_WORD  = _BITS_PER_WORD / _BITS_PER_VALUE;

@@ -96,13 +96,16 @@ struct Size<Tuple<TValue, SIZE, BitPacked<BITSIZE1, BITSIZE2, TSpec> > >
 #ifdef PLATFORM_WINDOWS
     #pragma pack(push,1)
 #endif
-template <typename TValue, unsigned SIZE>
-struct Tuple<TValue, SIZE, BitPacked<> >
+template <typename TValue, unsigned SIZE, unsigned BITSIZE1, unsigned BITSIZE2, typename TSpec>
+struct Tuple<TValue, SIZE, BitPacked<BITSIZE1, BITSIZE2, TSpec> >
 {
-    typedef typename BitVector_<SIZE * BitsPerValue<TValue>::VALUE>::Type TBitVector;
+    static const unsigned BITS_PER_VALUE = BitsPerValue<TValue>::VALUE + (std::is_same<TSpec, PlusOne>::value ? 1 : 0);
 
-    static const uint64_t BIT_MASK = ((1ull << (BitsPerValue<TValue>::VALUE - 1)       ) - 1ull) << 1 | 1ull;
-    static const uint64_t MASK     = ((1ull << (SIZE * BitsPerValue<TValue>::VALUE - 1)) - 1ull) << 1 | 1ull;
+    // TODO: do we really want to have BitsPerValue+1 here for prefixsum bitvectors?
+    typedef typename BitVector_<SIZE * BITS_PER_VALUE>::Type TBitVector;
+
+    static const uint64_t BIT_MASK = ((1ull << (BITS_PER_VALUE - 1)       ) - 1ull) << 1 | 1ull;
+    static const uint64_t MASK     = ((1ull << (SIZE * BITS_PER_VALUE - 1)) - 1ull) << 1 | 1ull;
 
     // -----------------------------------------------------------------------
     // Members
@@ -118,7 +121,7 @@ struct Tuple<TValue, SIZE, BitPacked<> >
     // TODO(weese): Use static a assertion outside of the constructor here, see SEQAN_CONCEPT_ASSERT
 //    Tuple() : i(0)
 //    {
-//        SEQAN_ASSERT_LEQ(static_cast<uint64_t>(BitsPerValue<TValue>::VALUE * SIZE), static_cast<uint64_t>(sizeof(TBitVector) * 8));
+//        SEQAN_ASSERT_LEQ(static_cast<uint64_t>(BITS_PER_VALUE * SIZE), static_cast<uint64_t>(sizeof(TBitVector) * 8));
 //    }
 
     // -----------------------------------------------------------------------
@@ -131,7 +134,7 @@ struct Tuple<TValue, SIZE, BitPacked<> >
     {
         SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
         SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
-        return (i >> (SIZE - 1 - k) * BitsPerValue<TValue>::VALUE) & BIT_MASK;
+        return (i >> (SIZE - 1 - k) * BITS_PER_VALUE) & BIT_MASK;
     }
 
     // -----------------------------------------------------------------------
@@ -150,25 +153,25 @@ struct Tuple<TValue, SIZE, BitPacked<> >
     template <typename TShiftSize>
     inline TBitVector operator<<=(TShiftSize shift)
     {
-        return i = (i << (shift * BitsPerValue<TValue>::VALUE)) & MASK;
+        return i = (i << (shift * BITS_PER_VALUE)) & MASK;
     }
 
     template <typename TShiftSize>
     inline TBitVector operator<<(TShiftSize shift) const
     {
-        return (i << (shift * BitsPerValue<TValue>::VALUE)) & MASK;
+        return (i << (shift * BITS_PER_VALUE)) & MASK;
     }
 
     template <typename TShiftSize>
     inline TBitVector operator>>=(TShiftSize shift)
     {
-        return i = (i >> (shift * BitsPerValue<TValue>::VALUE));
+        return i = (i >> (shift * BITS_PER_VALUE));
     }
 
     template <typename TShiftSize>
     inline TBitVector operator>>(TShiftSize shift) const
     {
-        return i >> (shift * BitsPerValue<TValue>::VALUE);
+        return i >> (shift * BITS_PER_VALUE);
     }
 
     template <typename T>
@@ -196,7 +199,7 @@ struct Tuple<TValue, SIZE, BitPacked<> >
         SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
         SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
 
-        unsigned shift = ((SIZE - 1 - k) * BitsPerValue<TValue>::VALUE);
+        unsigned shift = ((SIZE - 1 - k) * BITS_PER_VALUE);
         i = (i & ~(BIT_MASK << shift)) | (TBitVector)ordValue(source) << shift;
         return source;
     }
@@ -207,123 +210,6 @@ struct Tuple<TValue, SIZE, BitPacked<> >
     ;
 #ifdef PLATFORM_WINDOWS
     #pragma pack(pop)
-#endif
-
-// bit-packed storage (space efficient)
-#ifdef PLATFORM_WINDOWS
-#pragma pack(push,1)
-#endif
-template <typename TValue, unsigned SIZE, unsigned BITSIZE1, unsigned BITSIZE2>
-struct Tuple<TValue, SIZE, BitPacked<BITSIZE1, BITSIZE2, PlusOne> >
-{
-    typedef typename BitVector_<SIZE * BitsPerValue<TValue>::VALUE>::Type TBitVector;
-
-    static const uint64_t BIT_MASK = ((1ull << (BitsPerValue<TValue>::VALUE    )       ) - 1ull) << 1 | 1ull;
-    static const uint64_t MASK     = ((1ull << (SIZE * BitsPerValue<TValue>::VALUE - 1)) - 1ull) << 1 | 1ull;
-
-    // -----------------------------------------------------------------------
-    // Members
-    // -----------------------------------------------------------------------
-
-    TBitVector i;
-
-    // -----------------------------------------------------------------------
-    // Constructors
-    // -----------------------------------------------------------------------
-
-    // TODO(holtgrew): There is the unresolved issue whether the initialize costs critical performance. Since Tuples are PODs, it should be able to initialize Strings/arrays of them with memset().
-    // TODO(weese): Use static a assertion outside of the constructor here, see SEQAN_CONCEPT_ASSERT
-//    Tuple() : i(0)
-//    {
-//        SEQAN_ASSERT_LEQ(static_cast<uint64_t>(BitsPerValue<TValue>::VALUE * SIZE), static_cast<uint64_t>(sizeof(TBitVector) * 8));
-//    }
-
-    // -----------------------------------------------------------------------
-    // Subscription Operators;  Have to be declared in class.
-    // -----------------------------------------------------------------------
-
-    template <typename TPos>
-    inline const TValue
-    operator[](TPos k) const
-    {
-        SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
-        SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
-        return (i >> (SIZE - 1 - k) * (BitsPerValue<TValue>::VALUE + 1)) & BIT_MASK;
-    }
-
-    // -----------------------------------------------------------------------
-    // Assignment Operators;  Have to be declared in class.
-    // -----------------------------------------------------------------------
-
-    template <unsigned size__>
-    inline Tuple & operator=(Tuple<TValue, size__, BitPacked<> > const & right)
-    {
-        i = right.i;
-        return *this;
-    }
-
-    // TODO(holtgrew): Move the following to global functions?
-
-    template <typename TShiftSize>
-    inline TBitVector operator<<=(TShiftSize shift)
-    {
-        return i = (i << (shift * BitsPerValue<TValue>::VALUE)) & MASK;
-    }
-
-    template <typename TShiftSize>
-    inline TBitVector operator<<(TShiftSize shift) const
-    {
-        return (i << (shift * BitsPerValue<TValue>::VALUE)) & MASK;
-    }
-
-    template <typename TShiftSize>
-    inline TBitVector operator>>=(TShiftSize shift)
-    {
-        return i = (i >> (shift * BitsPerValue<TValue>::VALUE));
-    }
-
-    template <typename TShiftSize>
-    inline TBitVector operator>>(TShiftSize shift) const
-    {
-        return i >> (shift * BitsPerValue<TValue>::VALUE);
-    }
-
-    template <typename T>
-    inline void operator|=(T const & t)
-    {
-        i |= ordValue(t);
-    }
-
-    inline TBitVector* operator&()
-    {
-        return &i;
-    }
-
-    inline const TBitVector* operator&() const
-    {
-        return &i;
-    }
-
-    // This to be inline because elements (like this tuple) of packed structs
-    // can't be arguments.
-    template <typename TPos, typename TValue2>
-    inline TValue2
-    assignValue(TPos k, TValue2 const source)
-    {
-        SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
-        SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
-
-        unsigned shift = ((SIZE - 1 - k) * BitsPerValue<TValue>::VALUE);
-        i = (i & ~(BIT_MASK << shift)) | (TBitVector)ordValue(source) << shift;
-        return source;
-    }
-}
-#ifndef PLATFORM_WINDOWS
-    __attribute__((packed))
-#endif
-;
-#ifdef PLATFORM_WINDOWS
-#pragma pack(pop)
 #endif
 
 // ============================================================================
@@ -346,7 +232,7 @@ getValue(Tuple<TValue, SIZE, BitPacked<> > const & me,
     SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
     SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
 
-    return (me.i >> (SIZE - 1 - k) * BitsPerValue<TValue>::VALUE) & me.BIT_MASK;
+    return (me.i >> (SIZE - 1 - k) * Tuple<TValue, SIZE, BitPacked<> >::BITS_PER_VALUE) & me.BIT_MASK;
 }
 
 template <typename TValue, unsigned SIZE, typename TPos>
@@ -357,41 +243,25 @@ getValue(Tuple<TValue, SIZE, BitPacked<> > & me,
     SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
     SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
 
-    return (me.i >> (SIZE - 1 - k) * BitsPerValue<TValue>::VALUE) & me.BIT_MASK;
+    return (me.i >> (SIZE - 1 - k) * Tuple<TValue, SIZE, BitPacked<> >::BITS_PER_VALUE) & me.BIT_MASK;
 }
 
 // -----------------------------------------------------------------------
 // Function assignValue()
 // -----------------------------------------------------------------------
 
-template <typename TValue, unsigned SIZE, typename TValue2, typename TPos>
+template <typename TValue, unsigned SIZE, unsigned BITSIZE1, unsigned BITSIZE2, typename TSpec, typename TValue2, typename TPos>
 inline TValue2
-assignValue(Tuple<TValue, SIZE, BitPacked<> > & me,
+assignValue(Tuple<TValue, SIZE, BitPacked<BITSIZE1, BITSIZE2, TSpec> > & me,
             TPos k,
             TValue2 const source)
 {
-    typedef typename Tuple<TValue, SIZE, BitPacked<> >::TBitVector TBitVector;
+    typedef typename Tuple<TValue, SIZE, BitPacked<BITSIZE1, BITSIZE2, TSpec> >::TBitVector TBitVector;
 
     SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
     SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
 
-    unsigned shift = ((SIZE - 1 - k) * BitsPerValue<TValue>::VALUE);
-    me.i = (me.i & ~(me.BIT_MASK << shift)) | (TBitVector)ordValue(source) << shift;
-    return source;
-}
-
-template <typename TValue, unsigned SIZE, unsigned BITSIZE1, unsigned BITSIZE2, typename TValue2, typename TPos>
-inline TValue2
-assignValue(Tuple<TValue, SIZE, BitPacked<BITSIZE1, BITSIZE2, PlusOne> > & me,
-            TPos k,
-            TValue2 const source)
-{
-    typedef typename Tuple<TValue, SIZE, BitPacked<> >::TBitVector TBitVector;
-
-    SEQAN_ASSERT_GEQ(static_cast<int64_t>(k), 0);
-    SEQAN_ASSERT_LT(static_cast<int64_t>(k), static_cast<int64_t>(SIZE));
-
-    unsigned shift = ((SIZE - 1 - k) * (BitsPerValue<TValue>::VALUE + 1));
+    unsigned shift = ((SIZE - 1 - k) * Tuple<TValue, SIZE, BitPacked<BITSIZE1, BITSIZE2, TSpec> >::BITS_PER_VALUE);
     me.i = (me.i & ~(me.BIT_MASK << shift)) | (TBitVector)ordValue(source) << shift;
     return source;
 }

@@ -83,18 +83,6 @@ namespace seqan {
 struct Pack_;
 typedef Tag<Pack_> Pack;
 
-// TODO: syntax correct?
-/*!
- * @tag AggregateTags#BitPacked#PlusOne
- * @headerfile <seqan/basic.h>
- * @brief Introduce an additional leftmost bit set to 0 for every character (used for constant-time rank dictionaries)
- *
- * @signature typedef Tag<PlusOne_> PlusOne;
- */
-
-struct PlusOne_;
-typedef Tag<PlusOne_> PlusOne;
-
 // TODO(holtgrew): We need @tparam for tag in the Dox system.
 
 /*!
