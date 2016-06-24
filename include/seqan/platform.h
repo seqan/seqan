@@ -51,9 +51,6 @@
  */
 #ifdef _MSC_VER
 #define STDLIB_VS
-#if _MSC_VER < 1900
-#error Visual Studio versions older than version 14 / "2015" are not supported.
-#endif
 #endif
 
 /*!
@@ -81,40 +78,15 @@
 // ==========================================================================
 
 /*!
- * @macro COMPILER_MSVC
- * @headerfile <seqan/platform.h>
- * @brief The compiler is the microsoft visual studio compiler (msvc), if defined
- * @signature #define COMPILER_MSVC
- */
-#if defined(_MSC_VER) && !defined(__ICC) && !defined(__clang__)
-#define COMPILER_MSVC
-#endif
-
-/*!
- * @macro COMPILER_GCC
- * @headerfile <seqan/platform.h>
- * @brief The compiler is the gnu compiler (gcc), if defined
- * @signature #define COMPILER_GCC
- */
-#if defined(__GNUC__) && !defined(__ICC) && !defined(__clang__)
-#define COMPILER_GCC
-#define COMPILER_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
-#if COMPILER_VERSION < 40901
-    #warning GCC versions older than 4.9.1 are not supported.
-#endif
-#undef COMPILER_VERSION
-#endif
-
-/*!
  * @macro COMPILER_INTEL
  * @headerfile <seqan/platform.h>
  * @brief The compiler is the intel compiler (icc), if defined
  * @signature #define COMPILER_INTEL
  */
-#if defined(__ICC)
+#if defined(__INTEL_COMPILER)
 #define COMPILER_INTEL
-#if __ICC < 1600
-    #warning ICC versions older than 16 are not supported.
+#if __INTEL_COMPILER < 1600
+     #warning ICC versions older than 16 are not supported.
 #endif
 #endif
 
@@ -129,6 +101,34 @@
 #define COMPILER_VERSION (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__)
 #if COMPILER_VERSION < 30500
     #warning Clang versions older than 3.5.0 are not supported.
+#endif
+#undef COMPILER_VERSION
+#endif
+
+/*!
+ * @macro COMPILER_MSVC
+ * @headerfile <seqan/platform.h>
+ * @brief The compiler is the microsoft visual studio compiler (msvc), if defined
+ * @signature #define COMPILER_MSVC
+ */
+#if defined(_MSC_VER) && !defined(COMPILER_INTEL) && !defined(COMPILER_CLANG)
+#define COMPILER_MSVC
+#if _MSC_VER < 1900
+#error Visual Studio versions older than version 14 / "2015" are not supported.
+#endif
+#endif
+
+/*!
+ * @macro COMPILER_GCC
+ * @headerfile <seqan/platform.h>
+ * @brief The compiler is the gnu compiler (gcc), if defined
+ * @signature #define COMPILER_GCC
+ */
+#if defined(__GNUC__) && !defined(COMPILER_INTEL) && !defined(COMPILER_CLANG)
+#define COMPILER_GCC
+#define COMPILER_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+#if COMPILER_VERSION < 40901
+    #warning GCC versions older than 4.9.1 are not supported.
 #endif
 #undef COMPILER_VERSION
 #endif
