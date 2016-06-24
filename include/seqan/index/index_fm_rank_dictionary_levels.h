@@ -1296,6 +1296,7 @@ inline void appendValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, 
 // Function updateRanks()
 // ----------------------------------------------------------------------------
 
+// TODO: merge those 3 updateRanks into one function. Current problem: Adding superblocks/ultrablocks when not existing (i.e. set to "Nothing") does not work
 template <typename TValue, typename TSpec, typename TConfig>
 inline typename std::enable_if<TConfig::LEVELS == 3, void>::type
 updateRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
