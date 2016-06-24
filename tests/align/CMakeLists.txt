@@ -62,25 +62,6 @@ add_executable(test_align_simd
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_align_simd ${SEQAN_LIBRARIES})
 
-#TODO(rrahn) Enable for windows platforms.
-if (MSVC)
-  # Disable vectorization support on windows for now.
-  # SET (_FLAGS "/arch:AVX")
-else (MSVC)
-  SET (_FLAGS "-march=native")
-# Check why we would check for the abi version?
-#if (CMAKE_COMPILER_IS_GNUCXX)
-#    SET (_FLAGS "${_FLAGS} -fabi-version=6")
-#    if (APPLE)
-      #exec_program("/usr/sbin/sysctl -n hw.optional.avx2_0" OUTPUT_VARIABLE _HAS_AVX2)
-      #if (NOT "${_HAS_AVX2}" EQUAL "1")
-#      SET (_FLAGS "${_FLAGS} -mno-avx")
-      #endif ()
-#    endif (APPLE)
-#  endif (CMAKE_COMPILER_IS_GNUCXX)
-  SET_TARGET_PROPERTIES(test_align_simd PROPERTIES COMPILE_FLAGS ${_FLAGS})
-endif (MSVC)
-
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
