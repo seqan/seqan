@@ -272,10 +272,10 @@ typedef int16_t __int16;   // nolint
 typedef int8_t __int8;     // nolint
 #endif
 
-#if !defined(COMPILER_MSVC)
-#define finline __inline__
-#else // !defined(COMPILER_MSVC)
+#if defined(STDLIB_VS) && (defined(COMPILER_MSVC) || defined(COMPILER_INTEL))
 #define finline __forceinline
+#else
+#define finline __inline__
 #endif
 
 // TODO(marehr): always define _FILE_OFFSET_BITS and _LARGEFILE_SOURCE
@@ -378,7 +378,7 @@ typedef int8_t __int8;     // nolint
 #endif
 
 // A macro to eliminate warnings on GCC and Clang
-#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL) && !defined(STDLIB_VS)
 #define SEQAN_UNUSED __attribute__((unused))
 #else
 #define SEQAN_UNUSED
@@ -393,7 +393,11 @@ typedef int8_t __int8;     // nolint
     #ifdef STDLIB_VS
     #define SEQAN_HAS_EXECINFO 0
     #elif defined(__has_include)
-    #define SEQAN_HAS_EXECINFO !!__has_include(<execinfo.h>)
+        #if __has_include(<execinfo.h>)
+        #define SEQAN_HAS_EXECINFO 1
+        #else
+        #define SEQAN_HAS_EXECINFO 0
+        #endif
     #else // assume that it is there
     #define SEQAN_HAS_EXECINFO 1
     #endif
