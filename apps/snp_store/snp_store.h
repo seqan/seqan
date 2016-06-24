@@ -2956,7 +2956,7 @@ inline bool _doSnpCall(TCounts & countF,
     if ((double)consideredCount / totalCoverage < options.minExplainedColumn)
     {
         setBit(snp.filter, 0);                  //set first bit, indicating that mec filter has not been passed
-        snp.called = false;
+        //snp.called = false;
     }
     return true;
 }
@@ -3030,7 +3030,6 @@ _doSnpCall(TCounts & countF,
         snp.called = false;
     else
         snp.called = true;
-
     return true;
 }
 
@@ -4693,11 +4692,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
 
             // do genotype calling
             if (isSnp && options.method == 1)
-                isSnp = _doSnpCall(countF, countR, qualityStringF, qualityStringR,refAllele, options, snp, MaqMethod()
-#ifdef SNPSTORE_DEBUG_CANDPOS
-                ,(int) candidatePos + startCoord
-#endif
-                );
+                isSnp = _doSnpCall(countF, countR, qualityStringF, qualityStringR,refAllele, options, snp, MaqMethod());
             else if (isSnp && options.method == 0)
                 isSnp = _doSnpCall(countF,
                                    countR,
@@ -4708,8 +4703,8 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                                    snp,
                                    ThresholdMethod());
             // write SNP to file
-            if ((unsigned)snp.snpQuality < options.minQual)
-                setBit(snp.filter,2);
+            if (snp.snpQuality < (int)options.minQual)
+                setBit(snp.filter, 2);
             if (isSnp && (snp.called || options.outputFormat == 0 || snp.filter == 0))
                 SEQAN_OMP_PRAGMA(critical (writeSNP))
                 _writeSnp(file,
@@ -5025,20 +5020,17 @@ void dumpSNPsBatch(
     bool extraV = false;
 #endif
     SingleBaseVariant snp = {0,0,0,0,0,0,0,'N'};
-
     for(TContigPos candidatePos = 0; candidatePos < (TContigPos)length(genome); ++candidatePos)
     {
-//      if (options._debugLevel > 1) ::std::cout << "Next pos\n";
-
-        if (candidatePos + startCoord < currStart) continue;
-
+        clearBits(snp.filter);                          //reset filters
+        if (candidatePos + startCoord < currStart)
+            continue;
         // not in the current window anymore
         if (candidatePos + startCoord >= currEnd)
             break;
-
         Dna5 refBase = genome[candidatePos];
-        if (refBase=='N') continue;
-
+        if (refBase=='N')
+            continue;
 #ifdef SNPSTORE_DEBUG
         ::std::cout << "candPos=" << candidatePos + startCoord << ::std::endl;
         if (candidatePos + startCoord == 861196)
@@ -5047,8 +5039,6 @@ void dumpSNPsBatch(
 
         Dna5 candidateBase;
         int quality;
-
-//      if (options._debugLevel > 1)std::cout << candidatePos+startCoord << "<-candidatePos\n";
         for(unsigned t=0;t<5;++t)
         {
             countF[t] = 0;
@@ -5269,8 +5259,8 @@ void dumpSNPsBatch(
                                snp,
                                ThresholdMethod());
         // write SNP to file
-        if ((unsigned)snp.snpQuality < options.minQual)
-            setBit(snp.filter,2);
+        if (snp.snpQuality < (int)options.minQual)
+            setBit(snp.filter, 2);
         if (isSnp && (snp.called || options.outputFormat == 0 || snp.filter == 0))
             SEQAN_OMP_PRAGMA(critical (writeSNP))
             _writeSnp(file,
