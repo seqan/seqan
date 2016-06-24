@@ -387,7 +387,7 @@ addEdge(Graph<Undirected<TCargo, TSpec> >& g,
 
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
-    typedef typename Id<TGraph>::Type TId;
+    typedef typename Value<typename TGraph::TEdgeIdManager_>::Type TId;
 
     // Source must be the smaller vertex id
     if (source > target) {TVertexDescriptor tmp = target; target = source; source = tmp; }

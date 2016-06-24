@@ -62,7 +62,7 @@ _getTupelString(TString const& str,
         for(TWord j=0;j<i;++j) prod[ktup-i-1] *= alphabet_size;
     }
 
-    TWord len = length(str);
+    size_t len = length(str);
     clear(tupelString);
     if(len < ktup) return;
     resize(tupelString, len-(ktup - 1));
@@ -97,7 +97,7 @@ getKmerSimilarityMatrix(StringSet<TString, TSpec> const& strSet,
     typedef typename Value<THitMatrix>::Type TValue;
 
     // Number of sequences
-    TSize nseq = length(strSet);
+    TSize nseq = static_cast<TSize>(length(strSet));
     TSize alphabet_size = ValueSize<TAlphabet>::VALUE;
     TWord qIndexSize = (TWord) std::pow((double)alphabet_size, (double)ktup);
 

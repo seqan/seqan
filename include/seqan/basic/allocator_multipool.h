@@ -178,7 +178,7 @@ _allocatorBlockNumber(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > &,
 
     if (size_ < BLOCKING_LIMIT)
     {//blocks
-        return size_ >> TAllocator::GRANULARITY_BITS;
+        return static_cast<unsigned int>(size_ >> TAllocator::GRANULARITY_BITS);
     }
     else
     {//no blocking

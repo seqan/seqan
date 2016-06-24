@@ -63,7 +63,7 @@ struct StreamIterator {};
  * @headerfile <seqan/stream.h>
  * @brief Buffer to use in stream.
  *
- * @signature template <typename TValue[, typenam TTraits]>
+ * @signature template <typename TValue[, typename TTraits]>
  *            class StreamBuffer : public std::basic_streambuf<TValue, TTraits>;
  *
  * @tparam TValue  The value type of the stream buffer.
@@ -102,13 +102,13 @@ public:
     template <typename TOffset>
     void advanceChunk(TOffset ofs, Input)
     {
-        this->gbump(ofs);
+        this->gbump(static_cast<int>(ofs));
     }
 
     template <typename TOffset>
     void advanceChunk(TOffset ofs, Output)
     {
-        this->pbump(ofs);
+        this->pbump(static_cast<int>(ofs));
     }
 
     void reserveChunk(Input)

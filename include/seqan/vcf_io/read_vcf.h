@@ -162,7 +162,7 @@ readRecord(VcfRecord & record,
     readUntil(buffer, iter, NextEntry());
     if (empty(buffer))
         SEQAN_THROW(EmptyFieldError("CHROM"));
-    record.rID = nameToId(contigNamesCache(context), buffer);
+    record.rID = static_cast<decltype(record.rID)>(nameToId(contigNamesCache(context), buffer));
     skipOne(iter);
 
     // POS
@@ -230,7 +230,7 @@ readRecord(VcfRecord & record,
     skipOne(iter);
 
     // The samples.
-    unsigned numSamples = length(sampleNames(context));
+    size_t numSamples = length(sampleNames(context));
     for (unsigned i = 0; i < numSamples; ++i)
     {
         clear(buffer);

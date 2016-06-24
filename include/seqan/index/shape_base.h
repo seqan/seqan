@@ -876,18 +876,18 @@ namespace seqan
  *
  * @param[out] result @link String @endlink to write the result to. Types: @link String @endlink.
  * @param[in]  hash   The hash value previously computed with @link Shape#hash @endlink.
- * @param[in]  q      The <tt>q</tt>-gram length. Types: <tt>unsigned</tt>
+ * @param[in]  q      The <tt>q</tt>-gram length.
  *
  * @see Shape#hash
  * @see Shape#hash2
  */
-    template <typename TString, typename THash>
-    inline void unhash(TString &result, THash hash, unsigned q)
+    template <typename TString, typename THash, typename TQGram>
+    inline void unhash(TString &result, THash hash, TQGram q)
     {
         typedef typename Value<TString>::Type    TValue;
 
         resize(result, q);
-        for (unsigned i = q; i > 0; )
+        for (TQGram i = q; i > 0; )
         {
             result[--i] = (TValue)(hash % ValueSize<TValue>::VALUE);
             hash /= ValueSize<TValue>::VALUE;

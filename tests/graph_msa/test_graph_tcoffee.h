@@ -92,7 +92,7 @@ testquickAlign__(Graph<Alignment<StringSet<String<AminoAcid>, Dependent<> >, uns
     //std::cout << gOut << std::endl;
     String<char> alignMat;
     convertAlignment(gOut,alignMat);
-    unsigned int len = length(alignMat) / 4;
+    size_t len = length(alignMat) / 4;
     SEQAN_ASSERT(String<char>(infix(alignMat, 0, 8)) == "GARFIELD");
     SEQAN_ASSERT(String<char>(infix(alignMat, 1*len + 0, 1*len+8)) == "GARFIELD");
     SEQAN_ASSERT(String<char>(infix(alignMat, 2*len + 0, 2*len+8)) == "GARFIELD");
@@ -105,6 +105,8 @@ void Test_Libraries() {
     typedef String<AminoAcid> TString;
     typedef StringSet<TString, Dependent<> > TStringSet;
     typedef Graph<Alignment<TStringSet, unsigned int> > TGraph;
+    typedef Fragment<> TFragment;
+    typedef typename Size<TFragment>::Type TSize;
 
     TString str1 = "GARFIELDTHELASTFATCAT";
     TString str2 = "GARFIELDTHEFASTCAT";
@@ -119,8 +121,8 @@ void Test_Libraries() {
     selectPairs(strSet, pList);
     TGraph g(strSet);
     Blosum62 score_type(-1,-11);
-    String<Fragment<> > matches;
-    String<int> scores;
+    String<TFragment> matches;
+    String<TSize> scores;
     appendSegmentMatches(strSet, pList, matches, scores, LcsLibrary() );
     buildAlignmentGraph(matches, scores, g, FrequencyCounting() );
     testquickAlign__(g);

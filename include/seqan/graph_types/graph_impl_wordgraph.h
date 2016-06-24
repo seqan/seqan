@@ -186,7 +186,7 @@ write(TFile & target,
     typedef typename Iterator<String<AutomatonEdgeArray<TEdge, TAlphabet> > const, Rooted>::Type TIterConst;
     for(TIterConst it = begin(g.data_vertex);!atEnd(it);goNext(it)) {
         if (!idInUse(g.data_id_managerV, position(it))) continue;
-        TVertexDescriptor sourceVertex = position(it);
+        auto sourceVertex = position(it);
         for(TSize i=0;i<table_length;++i) {
             TEdge const* ed = &g.data_vertex[sourceVertex].data_edge[i];
             if (getTarget(ed) ==  nilVal) continue;

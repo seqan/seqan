@@ -99,7 +99,7 @@ viterbiAlgorithm(TPath & path,
 
     // Initialization
     String<TProbability> vMat;
-    String<TSize> traceback;
+    String<TVertexDescriptor> traceback;
     TSize numCols = length(seq) + 2;
     TSize numRows = getIdUpperBound(_getVertexIdManager(hmm));
     resize(vMat, numCols * numRows, 0.0);

@@ -57,13 +57,13 @@ namespace seqan
  * @tparam IS_LIST      A bool value that indicates whether it is a list or not.  Default: <tt>true</tt>.
  * @tparam STORE_SOURCE A bool value that indicates whether the source is stored in the EdgeStump or not.
  *                      Default: <tt>false</tt>.
- * @tparam STORE_ID     A bool value that indictes whether the id is tored in the EdgeStump or not.  Note: Without edge
+ * @tparam STORE_ID     A bool value that indictes whether the id is stored in the EdgeStump or not.  Note: Without edge
  *                      ids, external property maps do not work for edges!  Default: <tt>true</tt>.
  * @tparam TSpec        The specializing type.  Default: <tt>Default</tt>.
  *
  * @section Remarks
  *
- * The default EdgeStump in all graph types does not consider a cargo.  However, ni default usage every graph does store
+ * The default EdgeStump in all graph types does not consider a cargo.  However, in default usage every graph does store
  * an edge id.  Edge ids are used to append additional properties to edges with the help of external property maps.
  */
 

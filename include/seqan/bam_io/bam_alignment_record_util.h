@@ -104,7 +104,7 @@ inline bool
 getClippedPos(unsigned & posBegin, unsigned & posEnd, BamAlignmentRecord const & record)
 {
     posBegin = 0;
-    posEnd = length(record.seq);
+    posEnd = static_cast<unsigned>(length(record.seq));
 
     for (unsigned j = 0; j < length(record.cigar); ++j)
     {

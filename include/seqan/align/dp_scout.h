@@ -96,7 +96,7 @@ public:
     typedef typename Value<TDPCell>::Type TScoreValue;
 //    TScoreValue _maxScore;          // The maximal score.
     TDPCell _maxScore;
-    unsigned int _maxHostPosition;  // The corresponding host position within the underlying dp-matrix.
+    size_t _maxHostPosition;  // The corresponding host position within the underlying dp-matrix.
 
     DPScout_() : _maxScore(), _maxHostPosition(0) {}
 
@@ -255,7 +255,7 @@ maxScore(DPScout_<TDPCell, TScoutSpec> const & dpScout)
 
 // Returns the host position that holds the current maximum score.
 template <typename TDPCell, typename TScoutSpec>
-inline unsigned int
+inline size_t
 maxHostPosition(DPScout_<TDPCell, TScoutSpec> const & dpScout)
 {
     return dpScout._maxHostPosition;

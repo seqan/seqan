@@ -121,13 +121,13 @@ inline uint32_t
 updateLengths(BamAlignmentRecord const & record)
 {
     // update internal lengths.
-    record._l_qname = length(record.qName) + 1;
-    record._n_cigar = length(record.cigar);
-    record._l_qseq = length(record.seq);
+    record._l_qname = static_cast<decltype(record._l_qname)>(length(record.qName) + 1);
+    record._n_cigar = static_cast<decltype(record._n_cigar)>(length(record.cigar));
+    record._l_qseq = static_cast<decltype(record._l_qseq)>(length(record.seq));
 
     return sizeof(BamAlignmentRecordCore) + record._l_qname +
            record._n_cigar * 4 + (record._l_qseq + 1) / 2 + record._l_qseq +
-           length(record.tags);
+           static_cast<uint32_t>(length(record.tags));
 }
 
 

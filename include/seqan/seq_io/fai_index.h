@@ -324,7 +324,7 @@ inline void readRegion(String<TValue, TSpec> & str,
     beginPos = std::min((TEndPos)beginPos, seqLen);
     endPos = std::min(std::max((TEndPos)beginPos, endPos), seqLen);
     TEndPos toRead = endPos - beginPos;
-    
+
     clear(str);
     if (toRead == 0)
         return;
@@ -391,7 +391,7 @@ inline bool readRegion(String<TValue, TSpec> & str,
             return false;  // Sequence with this name could not be found.
 
     int beginPos = (region.beginPos != GenomicRegion::INVALID_POS)? region.beginPos : 0;
-    int endPos = (region.endPos != GenomicRegion::INVALID_POS)? region.endPos : sequenceLength(index, rID);
+    int endPos = (region.endPos != GenomicRegion::INVALID_POS)? region.endPos : static_cast<int>(sequenceLength(index, rID));
     readRegion(str, index, rID, beginPos, endPos);
     return true;
 }
@@ -597,7 +597,7 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
                             CountFunctor<True>,                             // 1st count functor counts bytes
                             CountFunctor<NotFunctor<IsWhitespace> >         // 2nd count functor counts non-whitespaces
                          > > countCharsPerLine;
-    
+
     while (!atEnd(iter) && !TFastaBegin()(value(iter)))
     {
         // check for consistency
@@ -615,8 +615,8 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
         entry.sequenceLength += value(countCharsPerLine.func2.func2);
 
         // determine line length in bases and bytes
-        entryPtr->lineLength = value(countCharsPerLine.func2.func2);
-        entryPtr->overallLineLength = value(countCharsPerLine.func2.func1);
+        entryPtr->lineLength = static_cast<decltype(entryPtr->lineLength)>(value(countCharsPerLine.func2.func2));
+        entryPtr->overallLineLength = static_cast<decltype(entryPtr->overallLineLength)>(value(countCharsPerLine.func2.func1));
 
         // skip linebreak and count consumed bytes
         if (!atEnd(iter) && *iter == '\r')

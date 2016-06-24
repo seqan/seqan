@@ -142,8 +142,8 @@ inline void _printMask(String <unsigned> const &  mask,unsigned line,String <cha
 inline bool _isUnsigned(String<char> const & number)
 {
 //IOREV move to future is-module, maybe just use: return (strtol(number) >= 0) [if I understand this correctly)
-    unsigned int len = length(number);
-    for(unsigned int i = 0;i < len;++i){
+    size_t len = length(number);
+    for(size_t i = 0;i < len;++i){
         if(!(convert<unsigned int>(getValue(number,i)) <= 57 && convert<unsigned int>(getValue(number,i)) >= 47))
             return false;
     }
@@ -345,7 +345,7 @@ void _reinitPattern(Pattern<TNeedle, WildShiftAnd> & me,
     TWord j=0;
     while(j < me.needleLength){
         if (convert<char>(getValue(ndl,j)) == '+'){
-            TWord len = length(last_char);
+            size_t len = length(last_char);
             for (unsigned int k = 0; k < len; ++k)
                 me.s_table[me.blockCount*last_char[k] + i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
         }
@@ -353,7 +353,7 @@ void _reinitPattern(Pattern<TNeedle, WildShiftAnd> & me,
             me.a_table[i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
         }
         else if (convert<char>(getValue(ndl,j)) == '*'){
-            TWord len = length(last_char);
+            size_t len = length(last_char);
             for (unsigned int k = 0; k < len; ++k)
                 me.s_table[me.blockCount*last_char[k] + i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
             me.a_table[i / BitsPerValue<TWord>::VALUE] |= (1<<(i%BitsPerValue<TWord>::VALUE));
@@ -364,7 +364,7 @@ void _reinitPattern(Pattern<TNeedle, WildShiftAnd> & me,
             while(convert<char>(getValue(ndl,e)) != ']') ++e;
             /* get character codes of class */
             last_char = _getCharacterClass<TValue>(ndl,j+1,e);
-            TWord len = length(last_char);
+            size_t len = length(last_char);
 
             /* add class to the mask */
             ++i;
@@ -392,7 +392,7 @@ void _reinitPattern(Pattern<TNeedle, WildShiftAnd> & me,
         else if(convert<char>(getValue(ndl,j)) == '{'){ // handle bounded character repeats
             String <char> number;
             TWord n,m,r;
-            TWord len = length(last_char);
+            size_t len = length(last_char);
             n = m = 0;
             ++j;
             while(convert<char>(getValue(ndl,j)) != '}' && convert<char>(getValue(ndl,j)) != ',') {

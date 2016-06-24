@@ -441,20 +441,23 @@ SEQAN_DEFINE_TEST(test_alignment_free_count_kmers)
 SEQAN_DEFINE_TEST(test_alignment_free_calculate_periodicity)
 {
     using namespace seqan;
+
+    typedef Size<DnaString>::Type TSize;
+
     DnaString word1 = "ATATA";
     DnaString word2 = "TATAT";
-    String<int> periodicity;
+    String<TSize> periodicity;
     calculatePeriodicity(periodicity, word1, word2);
     // periodocity[0] = 1:
     // 01234
     // ATATA
     // -TATAT
-    SEQAN_ASSERT_EQ(periodicity[0], 1);
+    SEQAN_ASSERT_EQ(periodicity[0], 1u);
     // periodocity[1] = 3:
     // 01234
     // ATATA
     // ---TATAT
-    SEQAN_ASSERT_EQ(periodicity[1], 3);
+    SEQAN_ASSERT_EQ(periodicity[1], 3u);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_free_calculate_overlap_indicator)

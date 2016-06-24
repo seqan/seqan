@@ -135,6 +135,8 @@ void countKmers(String<unsigned> & kmerCounts, TString const & sequence, unsigne
     typedef typename Iterator<TString const>::Type      TIterator;
     typedef typename Position<TIterator>::Type          TPosition;
     typedef Shape<TUnmaskedAlphabet, SimpleShape>       TShape;
+    typedef typename Value<TShape>::Type                THashValue;
+
     // Declare variables
     TShape myShape;  // Shape, length can be changed (kmer_length)
     resize(myShape, k);
@@ -143,7 +145,7 @@ void countKmers(String<unsigned> & kmerCounts, TString const & sequence, unsigne
     clear(kmerCounts);
     resize(kmerCounts, kmerNumber, 0);
     TIterator itSequence = begin(sequence);
-    int counterN = 0;
+    TPosition counterN = 0;
 
     // Check for any N that destroys the first kmers
     unsigned j = k - 1;
@@ -163,7 +165,7 @@ void countKmers(String<unsigned> & kmerCounts, TString const & sequence, unsigne
         // If there is no "N" overlapping with the current kmer, count it
         if (counterN <= 0)
         {
-            unsigned hashValue = hash(myShape, itSequence);
+            THashValue hashValue = hash(myShape, itSequence);
             ++kmerCounts[hashValue];
         }
         counterN--;
@@ -183,6 +185,7 @@ void countKmers(String<unsigned> & kmerCounts, String<TValueBG> & backgroundFreq
     typedef typename Iterator<String<TValueBG> >::Type       TIteratorTStringBG;
     typedef typename Position<TIterator>::Type               TPosition;
     typedef Shape<TUnmaskedAlphabet, SimpleShape>            TShape;
+    typedef typename Value<TShape>::Type                     THashValue;
     unsigned alphabetSize = ValueSize<TUnmaskedAlphabet>::VALUE;
 
     // Declare variables
@@ -199,8 +202,8 @@ void countKmers(String<unsigned> & kmerCounts, String<TValueBG> & backgroundFreq
     resize(backgroundFrequencies, kmerNumberBG, (TValueBG) 0);
     TIterator itSequence = begin(sequence);
 
-    int counterN = 0;  // Counter that counts how many kmers are effected by a N
-    int counterNbg = 0;   // Counter for background model (different shape size)
+    TPosition counterN = 0;  // Counter that counts how many kmers are effected by a N
+    TPosition counterNbg = 0;   // Counter for background model (different shape size)
 
     // Check for any N that destroys the first kmers
     unsigned j = k - 1;
@@ -221,7 +224,7 @@ void countKmers(String<unsigned> & kmerCounts, String<TValueBG> & backgroundFreq
         // If there is no "N" overlapping with the current kmer, count it.
         if (counterN <= 0)
         {
-            unsigned hashValue = hash(myShape, itSequence);
+            THashValue hashValue = hash(myShape, itSequence);
             ++kmerCounts[hashValue];
         }
         // Check if there is a "N" at the end of the new background word, here single letters only.
@@ -231,7 +234,7 @@ void countKmers(String<unsigned> & kmerCounts, String<TValueBG> & backgroundFreq
         }
         if (counterNbg <= 0)
         {
-            unsigned hashValueBG = hash(myShapeBG, itSequence);
+            THashValue hashValueBG = hash(myShapeBG, itSequence);
             backgroundFrequencies[hashValueBG] += 1.0;
             ++sumBG;
         }
@@ -247,7 +250,7 @@ void countKmers(String<unsigned> & kmerCounts, String<TValueBG> & backgroundFreq
         }
         if (counterNbg <= 0)
         {
-            unsigned hashValueBG = hash(myShapeBG, itSequence);
+            THashValue hashValueBG = hash(myShapeBG, itSequence);
             ++backgroundFrequencies[hashValueBG];
             ++sumBG;
         }
@@ -272,6 +275,7 @@ void countKmers(String<unsigned> & kmerCounts, MarkovModel<TAlphabetBG, TValue> 
     //typedef typename Iterator<String<int>, Rooted>::Type    TIteratorInt;
     typedef typename Position<TIterator>::Type              TPosition;
     typedef Shape<TAlphabetBG, SimpleShape>                 TShape;
+    typedef typename Value<TShape>::Type                    THashValue;
 
     // Declare variables
     TShape myShape;  // Shape, length can be changed (kmer_length)
@@ -287,7 +291,7 @@ void countKmers(String<unsigned> & kmerCounts, MarkovModel<TAlphabetBG, TValue> 
     TIterator itSeq = begin(sequence);
 
     // Check for any N that destroys the first kmers
-    unsigned j = (k - 1);
+    TPosition j = (k - 1);
     for (TPosition i = position(itSeq); i <= j; ++i)
     {
         if (_repeatMaskValue(sequence[i]))
@@ -317,7 +321,7 @@ void countKmers(String<unsigned> & kmerCounts, MarkovModel<TAlphabetBG, TValue> 
         }
         if (counterN <= 0)
         {
-            unsigned hashValue = hash(myShape, itSeq);
+            THashValue hashValue = hash(myShape, itSeq);
             ++kmerCounts[hashValue];
         }
 
@@ -452,13 +456,14 @@ void calculateVariance(TValue & variance, TString const & word, TStringBG const 
 {
     typedef typename Value<TString>::Type                       TAlphabet;
     typedef typename Value<TStringBG>::Type                     TValueBG;
-    typedef typename Iterator<String<int>, Rooted>::Type        TIteratorInt;
+    typedef typename Size<TString>::Type                        TSize;
+    typedef typename Iterator<String<TSize>, Rooted>::Type      TIteratorInt;
 
-    int l = length(word);
+    size_t l = length(word);
     TValueBG p_w;
     calculateProbability(p_w, word, backgroundFrequencies);
 
-    String<int> periodicity;
+    String<TSize> periodicity;
     calculatePeriodicity(periodicity, word, word);
     variance = (TValue) (n - l + 1) * p_w;
     for (TIteratorInt i = begin(periodicity); i < end(periodicity); ++i)
@@ -478,12 +483,14 @@ void calculateVariance(TValue & variance, TString const & word, TStringBG const 
 template <typename TValue, typename TSpec, typename TAlphabet>
 void calculateVariance(TValue & variance, String<TAlphabet, TSpec> const & word, MarkovModel<TAlphabet, TValue> /*const*/ & bgModel, int const n)
 {
-    typedef typename Iterator<String<int>, Rooted>::Type        TIteratorInt;
+    typedef String<TAlphabet, TSpec>                            TString;
+    typedef typename Size<TString>::Type                        TSize;
+    typedef typename Iterator<String<TSize>, Rooted>::Type      TIteratorInt;
 
-    int l = length(word);
+    size_t l = length(word);
     TValue p_w;
     p_w = emittedProbability(bgModel, word);
-    String<int> periodicity;
+    String<TSize> periodicity;
     calculatePeriodicity(periodicity, word, word);
     variance = (TValue) (n - l + 1) * p_w;
     for (TIteratorInt i = begin(periodicity); i < end(periodicity); ++i)
@@ -583,13 +590,14 @@ void calculateCovariance(TValue & covariance, TString const & word1, TString con
     }
     typedef typename Value<TString>::Type                   TAlphabet;
     typedef typename Value<TStringBG>::Type                 TValueBG;
-    typedef typename Iterator<String<int>, Rooted>::Type    TIteratorInt;
+    typedef typename Size<TString>::Type                    TSize;
+    typedef typename Iterator<String<TSize>, Rooted>::Type  TIteratorInt;
 
     covariance = 0;
-    int l1 = length(word1);
+    size_t l1 = length(word1);
     TValueBG p_w1;
     calculateProbability(p_w1, word1, backgroundFrequencies);
-    String<int> periodicity1;
+    String<TSize> periodicity1;
     calculatePeriodicity(periodicity1, word1, word2);
     for (TIteratorInt i = begin(periodicity1); i < end(periodicity1); ++i)
     {
@@ -602,10 +610,10 @@ void calculateCovariance(TValue & covariance, TString const & word1, TString con
         covariance += (TValue) (n - l1 + 1 - value(i)) * p_clump;
     }
 
-    int l2 = length(word2);
+    size_t l2 = length(word2);
     TValueBG p_w2;
     calculateProbability(p_w2, word2, backgroundFrequencies);
-    String<int> periodicity2;
+    String<TSize> periodicity2;
     calculatePeriodicity(periodicity2, word2, word1);
     for (TIteratorInt i = begin(periodicity2); i < end(periodicity2); ++i)
     {
@@ -628,13 +636,15 @@ void calculateCovariance(TValue & covariance, String<TAlphabet, TSpec> const & w
         calculateVariance(covariance, word1, bgModel, n);
         return;
     }
-    typedef typename Iterator<String<int>, Rooted>::Type TIteratorInt;
+    typedef String<TAlphabet, TSpec>                            TString;
+    typedef typename Size<TString>::Type                        TSize;
+    typedef typename Iterator<String<TSize>, Rooted>::Type      TIteratorInt;
 
     covariance = 0;
-    int l1 = length(word1);
+    size_t l1 = length(word1);
     TValue p_w1;
     p_w1 = emittedProbability(bgModel, word1);
-    String<int> periodicity1;
+    String<TSize> periodicity1;
     calculatePeriodicity(periodicity1, word1, word2);  // word2 is right
     for (TIteratorInt i = begin(periodicity1); i < end(periodicity1); ++i)
     {
@@ -648,7 +658,7 @@ void calculateCovariance(TValue & covariance, String<TAlphabet, TSpec> const & w
     }
     TValue p_w2;
     p_w2 = emittedProbability(bgModel, word2);
-    String<int> periodicity2;
+    String<TSize> periodicity2;
     calculatePeriodicity(periodicity2, word2, word1);
     for (TIteratorInt i = begin(periodicity2); i < end(periodicity2); ++i)
     {
@@ -708,7 +718,7 @@ void calculateCovariance(TValue & covariance, String<TAlphabet, TSpec> const & w
  */
 
 template <typename TString>
-void calculatePeriodicity(String<int> & periodicity, TString const & word1, TString const & word2)
+void calculatePeriodicity(String<typename Size<TString>::Type> & periodicity, TString const & word1, TString const & word2)
 {
     typedef typename Value<TString>::Type                   TAlphabet;
     //typedef typename Iterator<TString const, Rooted>::Type  TIterator;
@@ -850,7 +860,7 @@ stringToStringSet(StringSet<String<Dna> > & dnaStringSet, String<Dna5> const & s
 
     TIterator itSeq = begin(sequence);
     // Check for any N that destroys the first kmers
-    unsigned j = 0;
+    TPosition j = 0;
     for (TPosition i = position(itSeq); i <= j; ++i)
     {
         if (sequence[i] == 'N')
@@ -929,7 +939,7 @@ cutNs(String<Dna5> & sequenceCut, String<Dna5> const & sequence)
     TIterator itSeq = begin(sequence);
 
     // Check for any N that destroys the first kmers
-    unsigned j = 0;
+    TPosition j = 0;
     for (TPosition i = position(itSeq); i <= j; ++i)
     {
         if (sequence[i] == 'N')

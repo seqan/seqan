@@ -176,7 +176,7 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
                   TMatrix& distanceMatrix,
                   KmerDistance)
 {
-    getDistanceMatrix(g, distanceMatrix, 3, KmerDistance() );
+    getDistanceMatrix(g, distanceMatrix, 3u, KmerDistance() );
 }
 
 

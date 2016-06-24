@@ -194,7 +194,7 @@ inline void _glueTracebacks(TTraceSet & globalTraces, TTraceSet & localTraces)
         }
     }
 
-    for (unsigned i = length(elementsToErase); i > 0; --i)
+    for (size_t i = length(elementsToErase); i > 0; --i)
     {
         erase(globalTraces, elementsToErase[i-1]); // erase from behind to avoid accessing an element beyond the scope
     }

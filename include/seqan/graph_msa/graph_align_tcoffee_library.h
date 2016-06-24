@@ -493,13 +493,14 @@ selectPairs(StringSet<TString, TSpec> const& str,
 {
     typedef StringSet<TString, TSpec> TStringSet;
     typedef typename Size<TStringSet>::Type TSize;
+    typedef typename Value<String<TSize2, TSpec2> >::Type TValue;
     typedef typename Iterator<String<TSize2, TSpec2>, Standard>::Type TPairIter;
 
     TSize nseq = length(str);
     resize(pList, nseq * (nseq - 1));
     TPairIter itPair = begin(pList, Standard());
-    for(TSize i=0; i<nseq-1; ++i) {
-        for(TSize j=i+1; j<nseq; ++j) {
+    for(TValue i=0; i<nseq-1; ++i) {
+        for(TValue j=i+1; j<nseq; ++j) {
             *itPair = i; ++itPair;
             *itPair = j; ++itPair;
         }
@@ -637,16 +638,17 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TString, typename TSpec, typename TSegmentMatches, typename TScores, typename TAlphabet, typename TSize>
+template<typename TString, typename TSpec, typename TSegmentMatches, typename TScores, typename TAlphabet, typename TKtup>
 inline void
 appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TSegmentMatches& matches,
                      TScores& scores,
-                     TSize ktup,
+                     TKtup ktup,
                      TAlphabet,
                      KmerLibrary)
 {
-    //typedef StringSet<TString, Dependent<TSpec> > TStringSet;
+    typedef StringSet<TString, Dependent<TSpec> > TStringSet;
+    typedef typename Size<TStringSet>::Type TSize;
     typedef typename Value<TScores>::Type TScoreValue;
     typedef typename Value<TSegmentMatches>::Type TFragment;
     //typedef typename Id<TStringSet>::Type TId;
@@ -716,7 +718,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TScores& scores,
                      KmerLibrary)
 {
-    appendSegmentMatches(str, matches, scores, 3, KmerLibrary());
+    appendSegmentMatches(str, matches, scores, 3u, KmerLibrary());
 }
 
 //////////////////////////////////////////////////////////////////////////////

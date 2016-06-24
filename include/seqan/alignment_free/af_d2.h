@@ -56,7 +56,7 @@ void _alignmentFreeComparison(Matrix<TValue, 2> & scoreMatrix,
     typedef typename Iterator<StringSet<String<unsigned> > >::Type  TIteratorSetInt;
     //typedef Matrix<TValue, 2>                                       TMatrix;
 
-    unsigned seqNumber = length(sequenceSet);
+    size_t seqNumber = length(sequenceSet);
 
     // Resize the scoreMatrix
     setLength(scoreMatrix, 0, seqNumber);

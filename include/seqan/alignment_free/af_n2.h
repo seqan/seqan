@@ -48,18 +48,21 @@ namespace seqan {
  * This function returns a string with indices indicating which k-mer is the
  * reverse complement k-mer: i=revComIndex[revComIndex[i]]
  */
-inline void _initialiseRevComIndex(String<unsigned> & revComIndex, unsigned const k)
+template <typename THashValue>
+inline void _initialiseRevComIndex(String<THashValue> & revComIndex, unsigned const k)
 {
+    typedef Shape<Dna, SimpleShape> TShape;
+
     unsigned myLength = (unsigned)pow(4.0, (int)k);
     resize(revComIndex, myLength, 0);
-    Shape<Dna, SimpleShape> myShape;
+    TShape myShape;
     resize(myShape, k);
     for (unsigned i = 0; i < myLength; ++i)
     {
         String<Dna> w;
         unhash(w, i, k);
         DnaStringReverseComplement wRC(w);
-        unsigned hashValue = hash(myShape, begin(wRC));
+        THashValue hashValue = hash(myShape, begin(wRC));
         revComIndex[i] = hashValue;
     }
 
@@ -70,12 +73,15 @@ inline void _initialiseRevComIndex(String<unsigned> & revComIndex, unsigned cons
  * k-mers belong to the word neighbourhood for every k-mer (all k-mers with
  * one mismatch)
  */
-inline void _initialiseKmerNeighbourhood(StringSet<String<unsigned> > & kmerNeighbourhood,
+template <typename THashValue>
+inline void _initialiseKmerNeighbourhood(StringSet<String<THashValue> > & kmerNeighbourhood,
                                   unsigned const k, bool const revCom,
-                                  String<unsigned> const & revComIndex)
+                                  String<THashValue> const & revComIndex)
 {
+    typedef Shape<Dna, SimpleShape> TShape;
+
     unsigned myLength = (unsigned)pow(4.0, (int)k);
-    Shape<Dna, SimpleShape> myShape;
+    TShape myShape;
     resize(myShape, k);
     resize(kmerNeighbourhood, myLength);
     for (unsigned i = 0; i < myLength; ++i)
@@ -97,7 +103,7 @@ inline void _initialiseKmerNeighbourhood(StringSet<String<unsigned> > & kmerNeig
                 if (wTMP[j] != l)
                 {
                     wTMP[j] = l;
-                    unsigned hashValue = hash(myShape, begin(wTMP));
+                    THashValue hashValue = hash(myShape, begin(wTMP));
                     // Check for double word occurrences
                     bool duplicate = false;
                     if (revCom == true)
@@ -147,11 +153,13 @@ void _alignmentFreeComparison(Matrix<TValue, 2> & scoreMatrix,
     typedef typename UnmaskedAlphabet_<TAlphabet>::Type                 TUnmaskedAlphabet;
     typedef typename Iterator<TStringSet const>::Type                   TIteratorSet;
     typedef typename Iterator<StringSet<String<double> > >::Type        TIteratorSetDouble;
+    typedef Shape<Dna, SimpleShape>                                     TShape;
+    typedef typename Value<TShape>::Type                                THashValue;
 
 
     // Initialise the reverse complement hash table
-    String<unsigned> revComIndex;
-    StringSet<String<unsigned> > kmerNeighbourhood;
+    String<THashValue> revComIndex;
+    StringSet<String<THashValue> > kmerNeighbourhood;
     _initialiseRevComIndex(revComIndex, score.kmerSize);
     if (score.revCom == "both_strands")
     {
@@ -162,7 +170,7 @@ void _alignmentFreeComparison(Matrix<TValue, 2> & scoreMatrix,
         _initialiseKmerNeighbourhood(kmerNeighbourhood, score.kmerSize, false, revComIndex);
     }
 
-    unsigned seqNumber = length(sequenceSet);
+    size_t seqNumber = length(sequenceSet);
 
     setLength(scoreMatrix, 0, seqNumber);
     setLength(scoreMatrix, 1, seqNumber);
@@ -248,10 +256,10 @@ void _alignmentFreeComparison(Matrix<TValue, 2> & scoreMatrix,
 /*
  * Calculate pairwise score given the counts of all kmers
  */
-template <typename TValue, typename TString>
+template <typename TValue, typename TString, typename THashValue>
 void
 _alignmentFreeCompareCounts(TValue & result,
-                            String<unsigned> const revComIndex,
+                            String<THashValue> const revComIndex,
                             TString const & kmerCounts1,
                             TString const & kmerCounts2,
                             AFScore<N2> const & score)
@@ -268,7 +276,7 @@ _alignmentFreeCompareCounts(TValue & result,
         // Computation of the reverse complement strand score
         if ((score.revCom != "") && (score.revCom != "both_strands"))
         {
-            unsigned hashValue = revComIndex[position(it1)];
+            THashValue hashValue = revComIndex[position(it1)];
             resultRC += (TValue)(value(it1) * kmerCounts2[hashValue]);
         }
         ++it2;
@@ -291,10 +299,10 @@ _alignmentFreeCompareCounts(TValue & result,
 /*
  * count kmers and standardise count vectors for Dna5 and markov model background
  */
-template <typename TString, typename TSequence>
+template <typename TString, typename TSequence, typename THashValue>
 void _standardiseCounts(TString & standardisedCounts,
-                        String<unsigned> const & revComIndex,
-                        StringSet<String<unsigned> > const & kmerNeighbourhood,
+                        String<THashValue> const & revComIndex,
+                        StringSet<String<THashValue> > const & kmerNeighbourhood,
                         TSequence const & sequence,
                         AFScore<N2> const & score)
 {
@@ -329,9 +337,9 @@ void _standardiseCounts(TString & standardisedCounts,
         String<unsigned> kmerCounts;
         String<double> backgroundFrequencies;
         countKmers(kmerCounts, backgroundFrequencies, sequence, score.kmerSize);
-        int nvals = length(kmerCounts);  // Number of kmers
-        int len1 = 0;
-        for (int l = 0; l < nvals; l++)
+        size_t nvals = length(kmerCounts);  // Number of kmers
+        unsigned len1 = 0;
+        for (unsigned l = 0; l < nvals; l++)
         {
             len1 += kmerCounts[l];
         }
@@ -354,7 +362,7 @@ void _standardiseCounts(TString & standardisedCounts,
             TValue p_w = 1;  // Probability of kmer
 
             String<TUnmaskedAlphabet> w;
-            unhash(w, (unsigned)position(itCounts), score.kmerSize);
+            unhash(w, position(itCounts), score.kmerSize);
             calculateProbability(p_w, w, backgroundFrequencies);
             TValue variance = 0;
             if ((score.mismatches == 1))  // Mismatch  score calculation
@@ -362,12 +370,12 @@ void _standardiseCounts(TString & standardisedCounts,
                 p_w = 0;
                 // The first word in the kmerNeighbourhood is the kmer itself, it is weighted normally
                 // Sum of all entries in the covariance matrix. only once computed
-                unsigned wordHash = position(itCounts);
-                unsigned wordRCHash = revComIndex[wordHash];
+                auto wordHash = position(itCounts);
+                THashValue wordRCHash = revComIndex[wordHash];
 
                 for (unsigned row = 0; row < length(kmerNeighbourhood[wordHash]); ++row)
                 {
-                    unsigned wordRowHash = kmerNeighbourhood[wordHash][row];
+                    THashValue wordRowHash = kmerNeighbourhood[wordHash][row];
                     // The kmer itself is weighted normally
                     if (wordRowHash == wordHash)  // The first word in the kmerNeighbourhood is the kmer itself, it is weighted normally
                     {
@@ -386,7 +394,7 @@ void _standardiseCounts(TString & standardisedCounts,
 
                     for (unsigned col = row; col < length(kmerNeighbourhood[wordHash]); ++col)
                     {
-                        unsigned wordColHash = kmerNeighbourhood[wordHash][col];
+                        THashValue wordColHash = kmerNeighbourhood[wordHash][col];
                         if (value(covarianceMatrix, wordColHash, wordRowHash) == missing)
                         {
                             String<Dna> wMM2;
@@ -445,7 +453,7 @@ void _standardiseCounts(TString & standardisedCounts,
                 TValue variance2;
                 TValue covariance;
                 String<Dna> wRC;
-                unhash(wRC, (unsigned)  revComIndex[(unsigned)position(itCounts)], score.kmerSize);
+                unhash(wRC, revComIndex[position(itCounts)], score.kmerSize);
                 calculateVariance(variance1, w, backgroundFrequencies, (len1 + score.kmerSize - 1));
                 calculateVariance(variance2, wRC, backgroundFrequencies, (len1 + score.kmerSize - 1));
                 calculateCovariance(covariance, w, wRC, backgroundFrequencies, (len1 + score.kmerSize - 1));
@@ -469,7 +477,7 @@ void _standardiseCounts(TString & standardisedCounts,
                     }
                     else if (score.revCom == "both_strands")
                     {
-                         value(itStandardisedCounts) = ((TValue) ((TValue) value(itCounts) + kmerCounts[revComIndex[(unsigned)position(itCounts)]]) - p_w * ((TValue)len1)) / variance;
+                         value(itStandardisedCounts) = ((TValue) ((TValue) value(itCounts) + kmerCounts[revComIndex[position(itCounts)]]) - p_w * ((TValue)len1)) / variance;
                     }
                     else
                     {
@@ -490,9 +498,9 @@ void _standardiseCounts(TString & standardisedCounts,
         MarkovModel<TUnmaskedAlphabet, TValue> backgroundModel(score.bgModelOrder);
         countKmers(kmerCounts, backgroundModel, sequence, score.kmerSize);
 
-        int nvals = length(kmerCounts);  // Number of kmers
-        int len1 = 0;
-        for (int l = 0; l < nvals; l++)
+        size_t nvals = length(kmerCounts);  // Number of kmers
+        unsigned len1 = 0;
+        for (unsigned l = 0; l < nvals; l++)
         {
             len1 += kmerCounts[l];
         }
@@ -509,7 +517,7 @@ void _standardiseCounts(TString & standardisedCounts,
             TValue p_w = 1;  // Probability of kmer
             TValue variance = 0;
             String<TUnmaskedAlphabet> w;
-            unhash(w, (unsigned)position(itCounts), score.kmerSize);
+            unhash(w, position(itCounts), score.kmerSize);
             p_w = emittedProbability(backgroundModel, w);
 
             TValue counterTMP = 0.0;
@@ -518,12 +526,12 @@ void _standardiseCounts(TString & standardisedCounts,
                 p_w = 0;
                 // The first word in the kmerNeighbourhood is the kmer itself, it is weighted normally
                 // Sum of all entries in the covariance matrix, computed and stored dynamically
-                unsigned wordHash = position(itCounts);
-                unsigned wordRCHash = revComIndex[wordHash];
+                auto wordHash = position(itCounts);
+                THashValue wordRCHash = revComIndex[wordHash];
 
                 for (unsigned row = 0; row < length(kmerNeighbourhood[wordHash]); ++row)
                 {
-                    unsigned wordRowHash = kmerNeighbourhood[wordHash][row];
+                    THashValue wordRowHash = kmerNeighbourhood[wordHash][row];
                     // The kmer itself is weighted normally
                     if (wordRowHash == wordHash)  // The first word in the kmerNeighbourhood is the kmer itself, it is weighted normally
                     {
@@ -541,7 +549,7 @@ void _standardiseCounts(TString & standardisedCounts,
                     unhash(wMM1, wordRowHash, score.kmerSize);
                     for (unsigned col = row; col < length(kmerNeighbourhood[wordHash]); ++col)
                     {
-                        unsigned wordColHash = kmerNeighbourhood[wordHash][col];
+                        THashValue wordColHash = kmerNeighbourhood[wordHash][col];
                         if (value(covarianceMatrix, wordColHash, wordRowHash) == missing)
                         {
                             String<Dna> wMM2;
@@ -599,7 +607,7 @@ void _standardiseCounts(TString & standardisedCounts,
                 TValue variance2;
                 TValue covariance;
                 String<Dna> wRC;
-                unhash(wRC, (unsigned)revComIndex[(unsigned)position(itCounts)], score.kmerSize);
+                unhash(wRC, revComIndex[position(itCounts)], score.kmerSize);
                 calculateVariance(variance1, w, backgroundModel, (len1 + score.kmerSize - 1));
                 calculateVariance(variance2, wRC, backgroundModel, (len1 + score.kmerSize - 1));
                 calculateCovariance(covariance, w, wRC, backgroundModel, (len1 + score.kmerSize - 1));
@@ -623,7 +631,7 @@ void _standardiseCounts(TString & standardisedCounts,
                     }
                     else if (score.revCom == "both_strands")
                     {
-                        value(itStandardisedCounts) = ((TValue) ((TValue) value(itCounts) + kmerCounts[revComIndex[(unsigned)position(itCounts)]]) - p_w * ((TValue)len1)) / variance;
+                        value(itStandardisedCounts) = ((TValue) ((TValue) value(itCounts) + kmerCounts[revComIndex[position(itCounts)]]) - p_w * ((TValue)len1)) / variance;
                     }
                     else
                     {

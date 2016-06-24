@@ -109,7 +109,7 @@ class Graph<Directed<TCargo, WithSourceId> >
         typedef Allocator<SinglePool<sizeof(TEdgeStump_)> > TAllocator_;
 
         String<TEdgeStump_*> data_vertex;            // Pointers to EdgeStump lists
-        String<TEdgeStump_*> data_vertex_in;         
+        String<TEdgeStump_*> data_vertex_in;
         TVertexIdManager_ data_id_managerV;
         TEdgeIdManager_ data_id_managerE;
         TAllocator_ data_allocator;
@@ -594,7 +594,7 @@ addEdge(Graph<Directed<TCargo, TSpec> > & g,
 
     typedef Graph<Directed<TCargo, TSpec> > TGraph;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
-    typedef typename Id<TGraph>::Type TId;
+    typedef typename Value<typename TGraph::TEdgeIdManager_>::Type TId;
 
     TEdgeStump* edge_ptr;
     allocate(g.data_allocator, edge_ptr, 1);
@@ -666,7 +666,7 @@ removeEdge(Graph<Directed<TCargo, WithSourceId> > & g,
     {
         g.data_vertex[source] = getNextT(current);
         g.data_vertex_in[target] = getNextT(current);
-    } 
+    }
 
     // Deallocate
     releaseId(g.data_id_managerE, _getId(current));

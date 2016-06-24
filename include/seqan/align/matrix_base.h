@@ -387,7 +387,7 @@ dimension(Matrix<TValue, DIMENSION> const & me)
 template <typename TValue, unsigned DIMENSION>
 inline void
 setDimension(Matrix<TValue, DIMENSION> & me,
-             unsigned int dim_)
+             typename Size<Matrix<TValue, DIMENSION>>::Type dim_)
 {
 
     SEQAN_ASSERT_GT(dim_, 0u);
@@ -458,7 +458,7 @@ resize(Matrix<TValue, DIMENSION> & me)
     typedef Matrix<TValue, DIMENSION> TMatrix;
     typedef typename Size<TMatrix>::Type TSize;
 
-    unsigned int dimension_ = dimension(me);
+    TSize dimension_ = dimension(me);
 
     SEQAN_ASSERT_GT(dimension_, 0u);
 
@@ -484,7 +484,7 @@ resize(Matrix<TValue, DIMENSION> & me, TFillValue myValue)    //resize the matri
     typedef Matrix<TValue, DIMENSION> TMatrix;
     typedef typename Size<TMatrix>::Type TSize;
 
-    unsigned int dimension_ = dimension(me);
+    TSize dimension_ = dimension(me);
 
     SEQAN_ASSERT_GT(dimension_, 0u);
 
@@ -845,8 +845,8 @@ operator * (Matrix<TValue, 2> const & matrix1, Matrix<TValue, 2> const & matrix2
 {
     SEQAN_ASSERT_EQ(length(matrix1,1), length(matrix2,0));
 
-    unsigned int nrow1=length(matrix1,0);
-    unsigned int ncol2=length(matrix2,1);
+    size_t nrow1=length(matrix1,0);
+    size_t ncol2=length(matrix2,1);
     Matrix<TValue, 2> result;
     //resize the matrix
     setLength(result, 0, nrow1);

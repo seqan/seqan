@@ -97,15 +97,14 @@ _buildResidualGraph(Graph<TSpec> const& g,
 }
 
 template <typename TSpec, typename TPredecessorMap, typename TVertexDescriptor>
-inline typename Size<Graph<TSpec> >::Type
+inline typename Cargo<Graph<TSpec> >::Type
 _getMinimumAug(Graph<TSpec> const & rG,
                  TPredecessorMap & predecessor,
                  TVertexDescriptor const source,
                  TVertexDescriptor sink)
 {
     typedef Graph<TSpec> TGraph;
-    typedef typename Size<TGraph>::Type TSize;
-    typedef TSize TFlow;
+    typedef typename Cargo<TGraph>::Type TFlow;
     typedef typename Iterator<String<TVertexDescriptor>, Rooted>::Type TIterator;
 
     // Build secondary predecessor map just containing the path

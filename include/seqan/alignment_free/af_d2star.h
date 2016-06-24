@@ -58,7 +58,7 @@ void _alignmentFreeComparison(Matrix<TValue, 2> & scoreMatrix,
 
     //typedef Matrix<TValue, 2> TMatrix;
 
-    unsigned seqNumber = length(sequenceSet);
+    size_t seqNumber = length(sequenceSet);
 
     // Resize the scoreMatrix
     setLength(scoreMatrix, 0, seqNumber);
@@ -127,7 +127,7 @@ void _d2star(TValue & result,
         {
             backgroundFrequencies[i] = backgroundCounts[i] / ((double)sumBG);
         }
-        unsigned nvals = length(kmerCounts1);  // Number of kmers
+        size_t nvals = length(kmerCounts1);  // Number of kmers
         int len1 = 0;
         int len2 = 0;
 
@@ -180,7 +180,7 @@ void _d2star(TValue & result,
         countKmers(kmerCounts1, sequence1, score.kmerSize);
         countKmers(kmerCounts2, sequence2, score.kmerSize);
 
-        unsigned nvals = length(kmerCounts1);  // Number of kmers
+        size_t nvals = length(kmerCounts1);  // Number of kmers
         int len1 = 0;
         int len2 = 0;
 

@@ -248,14 +248,17 @@ class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> >
 
         template <typename TDefault>
         Graph(StringSet<TString, Owner<TDefault> > const& sSet) {
+            typedef StringSet<TString, Owner<TDefault> > TStringSet;
+            typedef typename Position<TStringSet>::Type TPosition;
+
             StringSet<TString, Dependent<> > depStr(sSet);
             data_sequence = depStr;
 
             // Cover all sequences with nil vertices
             TVertexDescriptor_ nilVertex = getNil<TVertexDescriptor_>();
             TSize_ lenSet = length(sSet);
-            for(TSize_ k=0; k<lenSet;++k)
-                data_pvMap.insert(std::make_pair(TKey_(positionToId(const_cast<StringSet<TString, Owner<TDefault> >&>(sSet),k), length(sSet[k])), nilVertex));
+            for(TPosition k=0; k<lenSet;++k)
+                data_pvMap.insert(std::make_pair(TKey_(positionToId(sSet,k), length(sSet[k])), nilVertex));
         }
 
 
@@ -1556,7 +1559,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
     // Walk through all sequences and check the component order
     unsigned int compIndex = 0;
-    unsigned int compIndexLen = length(order);
+    size_t compIndexLen = length(order);
     typename TPosToVertexMap::const_iterator it = g.data_pvMap.begin();
     TIdType currentSeq = it->first.first;
     for(; it != g.data_pvMap.end(); ++it) {
@@ -1591,6 +1594,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     typedef typename Size<TGraph>::Type TSize;
     typedef typename Id<TGraph>::Type TIdType;
     typedef typename TGraph::TPosToVertexMap_ TPosToVertexMap;
+    typedef typename Position<String<unsigned int> >::Type TOrderLength;
     typedef std::map<unsigned int, unsigned int> TComponentLength;
 
     // Strongly Connected Components, topological sort, and length of each component
@@ -1612,7 +1616,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     TSize col = 0;
     typename TPosToVertexMap::const_iterator it = g.data_pvMap.begin();
     unsigned int compIndex = 0;
-    unsigned int compIndexLen = length(order);
+    TOrderLength compIndexLen = length(order);
     TIdType currentSeq = it->first.first;
     for(; it != g.data_pvMap.end(); ++it) {
         if (it->first.first != currentSeq) {
@@ -1819,7 +1823,7 @@ _heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g
     TSize posStr1 = 0;
     TSize posStr2 = 0;
     TStringIter pointerStr2 = begin(str2, Standard());
-    int p = length(positions) - 1;
+    int p = static_cast<int>(length(positions)) - 1;
     while(pointerAlign != pointerAlignEnd) {
         TSize i = m;
         TSize j = n;

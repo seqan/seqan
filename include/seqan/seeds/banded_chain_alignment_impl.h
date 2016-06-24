@@ -745,22 +745,24 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
     TSeedSize horizontalBandShift = _horizontalBandShiftBeginPoint(seed);
     TSeedSize verticalBandShift = _verticalBandShiftBeginPoint(seed);
 
-    TSeedSize horizontalNextGridOrigin = _max(0, static_cast<TSignedPosition>(beginPositionH(seed)) + 1 -
+    TSeedSize horizontalNextGridOrigin = _max((TSignedPosition)0, static_cast<TSignedPosition>(beginPositionH(seed)) + 1 -
                                               static_cast<TSignedPosition>(bandExtension));
-    TSeedSize verticalNextGridOrigin = _max(0, static_cast<TSignedPosition>(beginPositionV(seed)) + 1 -
+    TSeedSize verticalNextGridOrigin = _max((TSignedPosition)0, static_cast<TSignedPosition>(beginPositionV(seed)) + 1 -
                                             static_cast<TSignedPosition>(bandExtension));
 
     DPBandConfig<BandOn> band;
-    // Determine coordinates of lower right corner of gap-area.
-    setUpperDiagonal(band, static_cast<TSignedPosition>(_min(static_cast<TSignedSize>(length(seqH)),
-        static_cast<TSignedPosition>(horizontalNextGridOrigin +  (bandExtension << 1) + horizontalBandShift +
-        _max(0,static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(beginPositionV(seed)) -1)) +
-        _min(0, static_cast<TSignedPosition>(beginPositionH(seed)) + 1 - static_cast<TSignedPosition>(bandExtension)))));
+    typedef typename Position<decltype(band)>::Type TBandPosition;
 
-    setLowerDiagonal(band, -static_cast<TSignedPosition>(_min(static_cast<TSignedSize>(length(seqV)),
+    // Determine coordinates of lower right corner of gap-area.
+    setUpperDiagonal(band, static_cast<TBandPosition>(_min(static_cast<TSignedSize>(length(seqH)),
+        static_cast<TSignedPosition>(horizontalNextGridOrigin +  (bandExtension << 1) + horizontalBandShift +
+        _max((TSignedPosition) 0,static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(beginPositionV(seed)) -1)) +
+        _min((TSignedPosition) 0, static_cast<TSignedPosition>(beginPositionH(seed)) + 1 - static_cast<TSignedPosition>(bandExtension)))));
+
+    setLowerDiagonal(band, -static_cast<TBandPosition>(_min(static_cast<TSignedSize>(length(seqV)),
         static_cast<TSignedPosition>(verticalNextGridOrigin + (bandExtension << 1) + verticalBandShift +
-        _max(0,static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(beginPositionH(seed)) -1)) +
-        _min(0, static_cast<TSignedPosition>(beginPositionV(seed)) + 1 - static_cast<TSignedPosition>(bandExtension)))));
+        _max((TSignedPosition) 0,static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(beginPositionH(seed)) -1)) +
+        _min((TSignedPosition) 0, static_cast<TSignedPosition>(beginPositionV(seed)) + 1 - static_cast<TSignedPosition>(bandExtension)))));
 
     TScore score = 0;
     TInfixH infixH;
@@ -819,8 +821,8 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
         _max(0, static_cast<TSignedPosition>(endPositionH(seed) + bandExtension) -
         static_cast<TSignedSize>(length(seqH))) - static_cast<TSignedPosition>(gridBegin.i2));
 
-    setUpperDiagonal(band, upperDiagonal(band) - static_cast<TSignedPosition>(gridBegin.i1));
-    setLowerDiagonal(band, lowerDiagonal(band) + static_cast<TSignedPosition>(gridBegin.i2));
+    setUpperDiagonal(band, upperDiagonal(band) - static_cast<TBandPosition>(gridBegin.i1));
+    setLowerDiagonal(band, lowerDiagonal(band) + static_cast<TBandPosition>(gridBegin.i2));
 
     // Calibrate the next vertical origin to the correct position within the band, only if it is a small band.
     if (static_cast<TSignedPosition>(length(infixV)) + lowerDiagonal(band) > upperDiagonal(band))
