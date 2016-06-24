@@ -62,11 +62,11 @@ typedef Tag<Hirschberg_> Hirschberg;
 class HirschbergSet_
 {
 public:
-    unsigned x1 = 0;
-    unsigned x2 = 0;
-    unsigned y1 = 0;
-    unsigned y2 = 0;
-    int score   = 0;
+    unsigned x1;
+    unsigned x2;
+    unsigned y1;
+    unsigned y2;
+    int score;
 };
 
 // ============================================================================
