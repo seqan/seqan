@@ -192,6 +192,16 @@ struct Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >
 // Metafunction RankDictionaryValues_
 // ----------------------------------------------------------------------------
 
+template <typename TValue, typename TSpec, typename TSize,  typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB>
+struct RankDictionaryValues_<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, TLevelConfig, TWPBMode, WPB> > >
+{
+    typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, TLevelConfig, TWPBMode, WPB> > >                 TRankDictionary_;
+
+    typedef Tuple<TValue, TRankDictionary_::_VALUES_PER_WORD, BitPacked<16, 16, PlusOne> > TValues;
+    typedef typename TValues::TBitVector                                    TWord;
+    typedef Tuple<TValues, TRankDictionary_::_WORDS_PER_BLOCK>              Type;
+};
+
 template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >
 {
@@ -1219,38 +1229,6 @@ getValue(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos)
     return _valuesAt(dict, blockPos, wordPos)[posInWord];
 }
 
-template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TPos>
-inline typename Value<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, TLevelConfig, TWPBMode, WPB> > > >::Type
-getValue(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, TLevelConfig, TWPBMode, WPB> > > & dict, TPos pos)
-{
-    TSize blockPos   = _toBlockPos(dict, pos);
-    TSize posInBlock = _toPosInBlock(dict, pos);
-    TSize wordPos    = _toWordPos(dict, posInBlock);
-    TSize posInWord  = _toPosInWord(dict, posInBlock);
-
-    auto SIZE = Size<typename RankDictionaryValues_<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, TLevelConfig, TWPBMode, WPB> > >::TValues>::VALUE;
-    unsigned shift = (SIZE - posInWord - 1) * (BitsPerValue<TValue>::VALUE + 1);
-    auto value = _valuesAt(dict, blockPos, wordPos);
-
-    return (value.i >> shift) & value.BIT_MASK2;
-}
-
-template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TPos>
-inline typename Value<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, TLevelConfig, TWPBMode, WPB> > > const>::Type
-getValue(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, TLevelConfig, TWPBMode, WPB> > > const & dict, TPos pos)
-{
-    TSize blockPos   = _toBlockPos(dict, pos);
-    TSize posInBlock = _toPosInBlock(dict, pos);
-    TSize wordPos    = _toWordPos(dict, posInBlock);
-    TSize posInWord  = _toPosInWord(dict, posInBlock);
-
-    auto SIZE = Size<typename RankDictionaryValues_<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, TLevelConfig, TWPBMode, WPB> > >::TValues>::VALUE;
-    unsigned shift = (SIZE - posInWord - 1) * (BitsPerValue<TValue>::VALUE + 1);
-    auto value = _valuesAt(dict, blockPos, wordPos);
-
-    return (value.i >> shift) & value.BIT_MASK2;
-}
-
 // ----------------------------------------------------------------------------
 // Function setValue()
 // ----------------------------------------------------------------------------
@@ -1269,7 +1247,7 @@ inline void setValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPo
     assignValue(_valuesAt(dict, blockPos, wordPos), posInWord, static_cast<TValue>(c));
 }
 
-template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TPos, typename TChar>
+/*template <typename TValue, typename TSpec, typename TSize, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TPos, typename TChar>
 inline void setValue(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, TLevelConfig, TWPBMode, WPB> > > & dict, TPos pos, TChar c)
 {
     TSize blockPos   = _toBlockPos(dict, pos);
@@ -1278,7 +1256,7 @@ inline void setValue(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<T
     TSize posInWord  = _toPosInWord(dict, posInBlock);
 
     assignValue2(_valuesAt(dict, blockPos, wordPos), posInWord, static_cast<TValue>(c));
-}
+}*/
 
 // ----------------------------------------------------------------------------
 // Function appendValue()
