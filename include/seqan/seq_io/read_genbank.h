@@ -195,6 +195,7 @@ readRecord(TSeqString & seq, TFwdIterator & iter, GenBankSequence)
 
         readUntil(seq, iter, isNewline, asserter);
     }
+    skipUntil(iter, NotFunctor<IsWhitespace>());
 }
 
 // readRecord() for GenBank id/seq pairs.
