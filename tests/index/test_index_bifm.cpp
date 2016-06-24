@@ -41,12 +41,12 @@
 
 using namespace seqan;
 
-template <typename TSpec = void, typename TLengthSum = size_t, unsigned LEVELS = 1>
+template <typename TSpec = void, typename TLengthSum = size_t>
 struct FMIndexConfigLevelsPrefix
 {
     typedef TLengthSum                                  LengthSum;
-    typedef Levels<TSpec, LevelsPrefixRDConfig<size_t, Alloc<>, LEVELS> >      Bwt;
-    typedef Levels<TSpec, LevelsRDConfig<LengthSum, Alloc<>, LEVELS> >   Sentinels;
+    typedef Levels<TSpec, LevelsPrefixRDConfig<size_t, Alloc<> > >      Bwt;
+    typedef Levels<TSpec, LevelsRDConfig<LengthSum, Alloc<> > >   Sentinels;
 
     static const unsigned SAMPLING =                    10;
 };
@@ -64,13 +64,13 @@ struct FMIndexWTConfig
 typedef String<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> > > Murphy10String;
 
 typedef
-    TagList<Index<DnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 1> > > >,
-    TagList<Index<RnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 2> > > >,
-    TagList<Index<Dna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 3> > > >,
-    TagList<Index<Rna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 1> > > >,
-    TagList<Index<Murphy10String, BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 2> > > >,
-    TagList<Index<Peptide,        BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 3> > > >,
-    TagList<Index<String<char>,   BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<void, size_t, 2> > > >,
+    TagList<Index<DnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
+    TagList<Index<RnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
+    TagList<Index<Dna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
+    TagList<Index<Rna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
+    TagList<Index<Murphy10String, BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
+    TagList<Index<Peptide,        BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
+    TagList<Index<String<char>,   BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
     TagList<Index<DnaString,      BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
     TagList<Index<RnaString,      BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
     TagList<Index<Dna5String,     BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
