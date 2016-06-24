@@ -2698,10 +2698,7 @@ void dumpVariantsRealignBatchWrap(
                         fileSNPs,options);
             }
         }
-
     }
-
-
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -2725,7 +2722,6 @@ inline bool _doSnpCall(TCounts & countF,
         int genotypeCalled = genotypeRef, qCall1 = 0;   // genotype call quality
         int qSnp = 0;                                   // SNP call quality
                                                         // int genotypeCalled2 = genotypeRef, qCall2 = 0;
-
 
 #ifdef SNPSTORE_DEBUG_CANDPOS
         bool extraV = false;
@@ -2950,12 +2946,16 @@ inline bool _doSnpCall(TCounts & countF,
     if (het == 0) //heterzygous genotype call
         consideredCount += countF[secondBest] + countR[secondBest];
     if(genotypeCalled == genotypeRef)
+    {
         snp.called = false;
+    }
     else
+    {
         snp.called = true;
+    }
     if ((double)consideredCount / totalCoverage < options.minExplainedColumn)
     {
-        setBit(snp.filter, 0);                  //set bit indicating the filter which has not been passed
+        setBit(snp.filter, 0);                  //set first bit, indicating that mec filter has not been passed
         snp.called = false;
     }
     return true;
@@ -3117,32 +3117,32 @@ inline bool _writeSnp(TFile & file,
                 gt.i2 = 2;
         }
     }
-    CharString dbsnp = ".";                           //TODO(serosko): should later contain the dbsnp id (if known)
-    file << genomeID << '\t';                           //chromosome
-    file << candPos + options.positionFormat<< '\t';    //position
-    file << dbsnp << '\t';                              //dbsnp id (only '.' at the moment)
-    file << (Dna5)refAllele <<'\t';                     //Reference Base
-    if (options.method == 1)                            //MAQ
+    CharString dbsnp = ".";                                 //TODO(serosko): should later contain the dbsnp id(if known)
+    file << genomeID << '\t';                               //chromosome
+    file << candPos + options.positionFormat<< '\t';        //position
+    file << dbsnp << '\t';                                  //dbsnp id (only '.' at the moment)
+    file << (Dna5)refAllele <<'\t';                         //Reference Base
+    if (options.method == 1)                                //MAQ
     {
-        if (snp.called)                                 //genotypeCalled != genotypeRef)
+        if (snp.called)                                     //genotypeCalled != genotypeRef)
             file << genotype << '\t' << snp.snpQuality << '\t'; //Alt genotype and quality
-        else                                    //TODO(serosko): Support for two different substitutions
-            file << snp.second << "\t1\t";                   //TODO(serosko): Insert correct quality for no snp-call instead of 1.
+        else                                                    //TODO(serosko): Support for two different substitutions
+            file << snp.second << "\t"<< snp.snpQuality << "\t";
         if (snp.filter == 0)
             file << "PASS\t";
         else
             file << getFilterPasses(snp.filter, options) << '\t';
     }
-    else                                        //threshold method
+    else                                                    //threshold method
     {
         if (snp.called)
             file  << getGenotypeList(snp.genotype) << '\t' << snp.quality;
         else
-            file << "\t.\t1\t";                 //TODO(serosko): Insert correct quality for no snp-call instead of 1.
-        file << ".\t";                       //Soft Filters not applied in threshold model
+            file << "\t.\t1\t";                    //TODO(serosko): Insert correct quality for no snp-call instead of 1.
+        file << ".\t";                              //Soft Filters not applied in threshold model
     }
-    file << "DP=" << realCoverage;              //Info field: Coverage
-    if (options.showQualityStrings)             //Info field: Quality strings for each observed base.
+    file << "DP=" << realCoverage;                  //Info field: Coverage
+    if (options.showQualityStrings)                 //Info field: Quality strings for each observed base.
     {
         file << ";A+=" << qualityStringF[0];
         file << ";C+=" << qualityStringF[1];
@@ -3153,7 +3153,7 @@ inline bool _writeSnp(TFile & file,
         file << ";G-=" << qualityStringR[2];
         file << ";T-=" << qualityStringR[3] <<"]\t";
     }
-    else                                        //Info field: Count of each observed base.
+    else                                            //Info field: Count of each observed base.
     {
         file << ";A+=" << length(qualityStringF[0]);
         file << ";C+=" << length(qualityStringF[1]);
