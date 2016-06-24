@@ -3124,7 +3124,7 @@ inline bool _writeSnp(TFile & file,
     file << (Dna5)refAllele <<'\t';                         //Reference Base
     if (options.method == 1)                                //MAQ
     {
-        if (snp.called)                                     //genotypeCalled != genotypeRef)
+        if (snp.called)                                         //genotypeCalled != genotypeRef)
             file << genotype << '\t' << snp.snpQuality << '\t'; //Alt genotype and quality
         else                                                    //TODO(serosko): Support for two different substitutions
             file << snp.second << "\t"<< snp.snpQuality << "\t";
@@ -5271,7 +5271,7 @@ void dumpSNPsBatch(
         // write SNP to file
         if ((unsigned)snp.snpQuality < options.minQual)
             setBit(snp.filter,2);
-        if (isSnp && (snp.called || options.outputFormat == 0))
+        if (isSnp && (snp.called || options.outputFormat == 0 || snp.filter == 0))
             SEQAN_OMP_PRAGMA(critical (writeSNP))
             _writeSnp(file,
                       snp,
