@@ -852,13 +852,13 @@ _getSuperBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, T
     return c ? superblock : _toPosInUltraBlock(dict, pos) - _toPosInSuperBlock(dict, pos) - superblock;
 }
 
-template <typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TBlock, typename TPos, typename TSmaller>
+template <typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TSuperBlock, typename TPos, typename TSmaller>
 inline typename Size<RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const>::Type
-_getSuperBlockRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const & dict, TBlock const & block, TPos pos, bool /*c*/, TSmaller & smaller)
+_getSuperBlockRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const & dict, TSuperBlock const & superblock, TPos pos, bool /*c*/, TSmaller & smaller)
 {
     // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
-    smaller += _getSuperBlockRank(dict, block, pos, false);
-    return _getSuperBlockRank(dict, block, pos, true);
+    smaller += _getSuperBlockRank(dict, superblock, pos, false);
+    return _getSuperBlockRank(dict, superblock, pos, true);
 }
 
 // ----------------------------------------------------------------------------
@@ -890,13 +890,13 @@ _getUltraBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, T
     return c ? ultrablock : pos - _toPosInUltraBlock(dict, pos) - ultrablock;
 }
 
-template <typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TBlock, typename TPos, typename TSmaller>
+template <typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TUltraBlock, typename TPos, typename TSmaller>
 inline typename Size<RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const>::Type
-_getUltraBlockRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const & dict, TBlock const & block, TPos pos, bool /*c*/, TSmaller & smaller)
+_getUltraBlockRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const & dict, TUltraBlock const & ultrablock, TPos pos, bool /*c*/, TSmaller & smaller)
 {
     // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
-    smaller += _getUltraBlockRank(dict, block, pos, false);
-    return _getUltraBlockRank(dict, block, pos, true);
+    smaller += _getUltraBlockRank(dict, ultrablock, pos, false);
+    return _getUltraBlockRank(dict, ultrablock, pos, true);
 }
 
 // ----------------------------------------------------------------------------
