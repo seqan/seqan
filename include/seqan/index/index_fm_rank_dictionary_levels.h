@@ -177,14 +177,14 @@ struct RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >
 template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >
 {
-    typedef typename TConfig::LevelConfig::Level1Type   TSize_;
+    typedef typename TConfig::LvlConfig::Level1Type   TSize_;
     typedef Tuple<TSize_, ValueSize<TValue>::VALUE>     Type;
 };
 
 template <typename TSpec, typename TConfig>
 struct RankDictionaryBlock_<bool, Levels<TSpec, TConfig> >
 {
-    typedef typename TConfig::LevelConfig::Level1Type   Type;
+    typedef typename TConfig::LvlConfig::Level1Type   Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -194,14 +194,14 @@ struct RankDictionaryBlock_<bool, Levels<TSpec, TConfig> >
 template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionarySuperBlock_<TValue, Levels<TSpec, TConfig> >
 {
-    typedef typename TConfig::LevelConfig::Level2Type   TSize_;
+    typedef typename TConfig::LvlConfig::Level2Type   TSize_;
     typedef Tuple<TSize_, ValueSize<TValue>::VALUE>     Type;
 };
 
 template <typename TSpec, typename TConfig>
 struct RankDictionarySuperBlock_<bool, Levels<TSpec, TConfig> >
 {
-    typedef typename TConfig::LevelConfig::Level2Type   Type;
+    typedef typename TConfig::LvlConfig::Level2Type   Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -211,14 +211,14 @@ struct RankDictionarySuperBlock_<bool, Levels<TSpec, TConfig> >
 template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionaryUltraBlock_<TValue, Levels<TSpec, TConfig> >
 {
-    typedef typename TConfig::LevelConfig::Level3Type   TSize_;
+    typedef typename TConfig::LvlConfig::Level3Type   TSize_;
     typedef Tuple<TSize_, ValueSize<TValue>::VALUE>     Type;
 };
 
 template <typename TSpec, typename TConfig>
 struct RankDictionaryUltraBlock_<bool, Levels<TSpec, TConfig> >
 {
-    typedef typename TConfig::LevelConfig::Level3Type   Type;
+    typedef typename TConfig::LvlConfig::Level3Type   Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -359,10 +359,10 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
     static const unsigned _VALUES_PER_WORD  = _BITS_PER_WORD / _BITS_PER_VALUE;
     static const unsigned _WORDS_PER_BLOCK  = _BITS_PER_BLOCK / _BITS_PER_WORD;
     static const unsigned _VALUES_PER_BLOCK = _VALUES_PER_WORD * _WORDS_PER_BLOCK;
-    static const uint64_t _VALUES_PER_SUPERBLOCK = (((1ull << (BitsPerValue<typename TConfig::LevelConfig::Level2Type>::VALUE/2)) - 1) / _VALUES_PER_BLOCK) * _VALUES_PER_BLOCK; // 2^x - 1 values
-    static const uint64_t _VALUES_PER_ULTRABLOCK = (((1ull << (BitsPerValue<typename TConfig::LevelConfig::Level3Type>::VALUE/2)) - 1) / Max<_VALUES_PER_SUPERBLOCK, 1>::VALUE) * _VALUES_PER_SUPERBLOCK; // MAX: workaround for clang: division is not constexpr since divisor could be 0
+    static const uint64_t _VALUES_PER_SUPERBLOCK = (((1ull << (BitsPerValue<typename TConfig::LvlConfig::Level2Type>::VALUE/2)) - 1) / _VALUES_PER_BLOCK) * _VALUES_PER_BLOCK; // 2^x - 1 values
+    static const uint64_t _VALUES_PER_ULTRABLOCK = (((1ull << (BitsPerValue<typename TConfig::LvlConfig::Level3Type>::VALUE/2)) - 1) / Max<_VALUES_PER_SUPERBLOCK, 1>::VALUE) * _VALUES_PER_SUPERBLOCK; // MAX: workaround for clang: division is not constexpr since divisor could be 0
 
-    static_assert(BitsPerValue<typename TConfig::LevelConfig::Level1Type>::VALUE >= LogN<_VALUES_PER_BLOCK + 1, 2>::VALUE,
+    static_assert(BitsPerValue<typename TConfig::LvlConfig::Level1Type>::VALUE >= LogN<_VALUES_PER_BLOCK + 1, 2>::VALUE,
         "The datatype of the lowest level has to be larger or the number of words per block smaller. See the online documentation for moe information.");
 
     typedef typename RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> >::Type TWordType;

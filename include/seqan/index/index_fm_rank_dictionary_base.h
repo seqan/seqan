@@ -109,7 +109,7 @@ template <
 struct RDConfig
 {
     typedef TFibre                                      Fibre;
-    typedef TLevelConfig                                LevelConfig;
+    typedef TLevelConfig                                LvlConfig;
     typedef typename Size<TLevelConfig>::Type           Size;
 
     static const bool WORDS_PER_BLOCK_DYNAMIC_MODE =    std::is_same<WORDS_PER_BLOCK_DYNAMIC_MODE_, DynamicWPB>::value;
