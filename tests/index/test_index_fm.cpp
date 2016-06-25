@@ -92,10 +92,11 @@ typedef
     TagList<Index<StringSet<CharString>, WTFMIndex>,
     TagList<Index<StringSet<CharString>, SmallWTFMIndex>,
     TagList<Index<StringSet<DnaString>, SmallLVFMIndex>,
+    TagList<Index<String<bool>, PrefixLVFMIndex>,
     TagList<Index<DnaString, PrefixLVFMIndex>,
     TagList<Index<CharString, PrefixLVFMIndex>,
     TagList<Index<StringSet<DnaString>, PrefixLVFMIndex>
-    > > > > > > > >
+    > > > > > > > > >
     FMIndexTypes2;
 
 // ========================================================================== 

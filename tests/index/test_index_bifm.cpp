@@ -64,21 +64,23 @@ struct FMIndexWTConfig
 typedef String<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> > > Murphy10String;
 
 typedef
+    TagList<Index<String<bool>,   BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
     TagList<Index<DnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
     TagList<Index<RnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
     TagList<Index<Dna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
     TagList<Index<Rna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
     TagList<Index<Murphy10String, BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
     TagList<Index<Peptide,        BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
-    TagList<Index<String<char>,   BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
+    TagList<Index<CharString,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
+    TagList<Index<String<bool>,   BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
     TagList<Index<DnaString,      BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
     TagList<Index<RnaString,      BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
     TagList<Index<Dna5String,     BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
     TagList<Index<Rna5String,     BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
     TagList<Index<Murphy10String, BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
     TagList<Index<Peptide,        BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
-    TagList<Index<String<char>,   BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >
-    > > > > > > > > > > > > > >
+    TagList<Index<CharString,     BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >
+    > > > > > > > > > > > > > > > >
     FMIndices;
 
 // ==========================================================================

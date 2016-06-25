@@ -78,6 +78,13 @@ template <typename TValue, typename TSpec>
 struct RankDictionaryUltraBlock_;
 
 // ----------------------------------------------------------------------------
+// Metafunction RankDictionaryBitString_
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+struct RankDictionaryBitString_;
+
+// ----------------------------------------------------------------------------
 // Metafunction RankDictionaryValues_
 // ----------------------------------------------------------------------------
 
@@ -94,8 +101,6 @@ struct RankDictionaryEntry_;
 // ============================================================================
 // Tags
 // ============================================================================
-
-
 
 // ----------------------------------------------------------------------------
 // Tag LevelsRDConfig
@@ -147,27 +152,40 @@ struct Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction RankDictionaryValues_
+// Metafunction RankDictionaryBitString_
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB>
-struct RankDictionaryValues_<TValue, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > >
+template <typename TValue, typename TSpec, typename TConfig>
+struct RankDictionaryBitString_<TValue, Levels<TSpec, TConfig> >
 {
-    typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > >  TRankDictionary_;
-
-    typedef Tuple<TValue, TRankDictionary_::_VALUES_PER_WORD, BitPacked<16, 16, PlusOne> >  TValues;
-    typedef typename TValues::TBitVector                                                    TWord;
-    typedef Tuple<TValues, TRankDictionary_::_WORDS_PER_BLOCK>                              Type;
+    typedef BitPacked<> Type;
 };
+
+template <typename TValue, typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB>
+struct RankDictionaryBitString_<TValue, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > >
+{
+    typedef BitPacked<16, 16, PlusOne> Type;
+};
+
+template <typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB>
+struct RankDictionaryBitString_<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > >
+{
+    typedef BitPacked<> Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction RankDictionaryValues_
+// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >
 {
-    typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                 TRankDictionary_;
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                             TRankDictionary_;
+    typedef typename RankDictionaryBitString_<TValue, Levels<TSpec, TConfig> >::Type    TBitString_;
 
-    typedef Tuple<TValue, TRankDictionary_::_VALUES_PER_WORD, BitPacked<> > TValues;
-    typedef typename TValues::TBitVector                                    TWord;
-    typedef Tuple<TValues, TRankDictionary_::_WORDS_PER_BLOCK>              Type;
+    typedef Tuple<TValue, TRankDictionary_::_VALUES_PER_WORD, TBitString_>              TValues;
+    typedef typename TValues::TBitVector                                                TWord;
+    typedef Tuple<TValues, TRankDictionary_::_WORDS_PER_BLOCK>                          Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -304,9 +322,15 @@ constexpr TWord _bitmaskWrapper(RankDictionary<TValue, Levels<TSpec, TConfig> > 
 }
 
 template <typename TWord, typename TValue, typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB>
-constexpr TWord _bitmaskWrapper(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > & /*dict*/, unsigned const bitsTotal, unsigned blocks, unsigned const blocksize, TWord const /*vDefault*/, TWord const vPrefix)
+constexpr TWord _bitmaskWrapper(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > &, unsigned const bitsTotal, unsigned blocks, unsigned const blocksize, TWord const /*vDefault*/, TWord const vPrefix)
 {
     return _bitmask2<TWord>(bitsTotal, blocks, blocks, blocksize, vPrefix);
+}
+
+template <typename TWord, typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB>
+constexpr TWord _bitmaskWrapper(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > &, unsigned const bitsTotal, unsigned blocks, unsigned const blocksize, TWord const vDefault, TWord const /*vPrefix*/)
+{
+    return _bitmask2<TWord>(bitsTotal, blocks, blocks, blocksize, vDefault);
 }
 
 // ----------------------------------------------------------------------------
@@ -344,7 +368,11 @@ struct BitsPerValue_<TValue, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode
     static const typename BitsPerValue<TValue>::Type VALUE = BitsPerValue<TValue>::VALUE + 1;
 };
 
-// TODO: map prefixsum rank-dict for bools to default rank-dict
+template <typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB>
+struct BitsPerValue_<bool, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> >
+{
+    static const typename BitsPerValue<bool>::Type VALUE = BitsPerValue<bool>::VALUE;
+};
 
 template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionary<TValue, Levels<TSpec, TConfig> >
@@ -778,6 +806,15 @@ _getBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TBlock
     return c ? block : _toPosInSuperBlock(dict, pos) - _toPosInBlock(dict, pos) - block;
 }
 
+template <typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TBlock, typename TPos, typename TSmaller>
+inline typename Size<RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const>::Type
+_getBlockRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const & dict, TBlock const & block, TPos pos, bool /*c*/, TSmaller & smaller)
+{
+    // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
+    smaller += _getBlockRank(dict, block, pos, false);
+    return _getBlockRank(dict, block, pos, true);
+}
+
 // ----------------------------------------------------------------------------
 // Function _getSuperBlockRank()
 // ----------------------------------------------------------------------------
@@ -815,6 +852,15 @@ _getSuperBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, T
     return c ? superblock : _toPosInUltraBlock(dict, pos) - _toPosInSuperBlock(dict, pos) - superblock;
 }
 
+template <typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TBlock, typename TPos, typename TSmaller>
+inline typename Size<RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const>::Type
+_getSuperBlockRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const & dict, TBlock const & block, TPos pos, bool /*c*/, TSmaller & smaller)
+{
+    // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
+    smaller += _getSuperBlockRank(dict, block, pos, false);
+    return _getSuperBlockRank(dict, block, pos, true);
+}
+
 // ----------------------------------------------------------------------------
 // Function _getUltraBlockRank()
 // ----------------------------------------------------------------------------
@@ -844,6 +890,15 @@ _getUltraBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, T
     return c ? ultrablock : pos - _toPosInUltraBlock(dict, pos) - ultrablock;
 }
 
+template <typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TBlock, typename TPos, typename TSmaller>
+inline typename Size<RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const>::Type
+_getUltraBlockRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const & dict, TBlock const & block, TPos pos, bool /*c*/, TSmaller & smaller)
+{
+    // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
+    smaller += _getUltraBlockRank(dict, block, pos, false);
+    return _getUltraBlockRank(dict, block, pos, true);
+}
+
 // ----------------------------------------------------------------------------
 // Function _getWordRank()
 // ----------------------------------------------------------------------------
@@ -855,44 +910,57 @@ _getWordRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */,
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                TRankDictionary;
 
     TWord mask = word ^ TRankDictionary::_CHAR_BITMASKS[ordValue(c)];
-
     // NOTE: actually it should be: mask & (mask >> 1) & (mask >> 2) & ... but this is shorter and equivalent
     for (TWord i = 1; i < TRankDictionary::_BITS_PER_VALUE; ++i)
         mask &= mask >> 1;
-
     return popCount(TRankDictionary::_TRUNC_BITMASKS[posInWord] & mask);
 }
 
 template <typename TValue, typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TWord, typename TPosInWord>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const>::Type
-_getWordRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const &, TWord const & values, TPosInWord posInWord, TValue c)
+_getWordRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const &, TWord const & word, TPosInWord posInWord, TValue c)
 {
     typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > >    TRankDictionary;
 
-    return popCount((TRankDictionary::_CHAR_BITMASKS[ordValue(c)] - values) & TRankDictionary::_TRUNC_BITMASKS[posInWord]);
+    return popCount((TRankDictionary::_CHAR_BITMASKS[ordValue(c)] - word) & TRankDictionary::_TRUNC_BITMASKS[posInWord]);
 }
 
 template <typename TValue, typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TWord, typename TPosInWord, typename TPos>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const>::Type
-_getWordRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const &, TWord const & values, TPosInWord posInWord, TValue c, TPos & smaller)
+_getWordRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const &, TWord const & word, TPosInWord posInWord, TValue c, TPos & smaller)
 {
     // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
     typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > >            TRankDictionary;
 
-    TPos _smaller = popCount((TRankDictionary::_CHAR_BITMASKS[ordValue(c)-1] - values) & TRankDictionary::_TRUNC_BITMASKS[posInWord]);
+    TPos _smaller = popCount((TRankDictionary::_CHAR_BITMASKS[ordValue(c)-1] - word) & TRankDictionary::_TRUNC_BITMASKS[posInWord]); // _getWordRank(dict, word, posInWord, Value(c) - 1);
     smaller += _smaller;
-    return popCount((TRankDictionary::_CHAR_BITMASKS[ordValue(c)] - values) & TRankDictionary::_TRUNC_BITMASKS[posInWord]) - _smaller;
+    return popCount((TRankDictionary::_CHAR_BITMASKS[ordValue(c)] - word) & TRankDictionary::_TRUNC_BITMASKS[posInWord]) - _smaller;
 }
-
-// ----------------------------------------------------------------------------
-// Function _getWordRank()
-// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig, typename TWord>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
-_getWordRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TWord const & values, TValue c)
+_getWordRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TWord const & word, TValue c)
 {
-    return _getWordRank(dict, values, RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_WORD - 1, c);
+    return _getWordRank(dict, word, RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_WORD - 1, c);
+}
+
+template <typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TWord, typename TPosInWord>
+inline typename Size<RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const>::Type
+_getWordRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const &, TWord const & word, TPosInWord posInWord, bool c)
+{
+    typedef RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > >    TRankDictionary;
+
+    return popCount(TRankDictionary::_TRUNC_BITMASKS[posInWord] & (word ^ TRankDictionary::_CHAR_BITMASKS[ordValue(c)]));
+}
+
+template <typename TSpec, typename TFibre, typename TLevelConfig, typename TWPBMode, unsigned WPB, typename TWord, typename TPosInWord, typename TPos>
+inline typename Size<RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const>::Type
+_getWordRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > > const & dict, TWord const & word, TPosInWord posInWord, bool /*c*/, TPos & smaller)
+{
+    typedef RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TFibre, TLevelConfig, TWPBMode, WPB> > >    TRankDictionary;
+
+    smaller += _getWordRank(dict, word, posInWord, false);
+    return popCount(TRankDictionary::_TRUNC_BITMASKS[posInWord] & (word ^ TRankDictionary::_CHAR_BITMASKS[1]));
 }
 
 // ----------------------------------------------------------------------------

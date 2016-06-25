@@ -80,16 +80,19 @@ typedef Levels<void, LevelsRDConfig<Alloc<>, LevelConfig2, DynamicWPB> >        
 typedef Levels<void, LevelsRDConfig<Alloc<>, LevelConfig3, FixedWPB, 3> >           Default3Level;
 
 typedef
+    TagList<RankDictionary<bool,            Prefix1Level>,
     TagList<RankDictionary<Dna,             Prefix1Level>,
     TagList<RankDictionary<Dna5Q,           Prefix1Level>,
     TagList<RankDictionary<ReducedMurphy10, Prefix1Level>,
     TagList<RankDictionary<AminoAcid,       Prefix1Level>,
     TagList<RankDictionary<char,            Prefix1Level>,
+    TagList<RankDictionary<bool,            Prefix2Level>,
     TagList<RankDictionary<Dna,             Prefix2Level>,
     TagList<RankDictionary<Dna5Q,           Prefix2Level>,
     TagList<RankDictionary<ReducedMurphy10, Prefix2Level>,
     TagList<RankDictionary<AminoAcid,       Prefix2Level>,
     TagList<RankDictionary<char,            Prefix2Level>,
+    TagList<RankDictionary<bool,            Prefix3Level>,
     TagList<RankDictionary<Dna,             Prefix3Level>,
     TagList<RankDictionary<Dna5Q,           Prefix3Level>,
     TagList<RankDictionary<ReducedMurphy10, Prefix3Level>,
@@ -100,7 +103,7 @@ typedef
     TagList<RankDictionary<Dna5Q,           WaveletTree<> >,
     TagList<RankDictionary<AminoAcid,       WaveletTree<> >,
     TagList<RankDictionary<char,            WaveletTree<> >
-    > > > > > > > > > > > > > > > > > > > >
+    > > > > > > > > > > > > > > > > > > > > > > >
     RankDictionaryPrefixSumTypes;
 
 typedef
