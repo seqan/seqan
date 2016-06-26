@@ -1473,11 +1473,15 @@ inline bool save(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, c
 {
     String<char> name;
     bool result = true;
-    name = fileName;    append(name, ".bl");    result &= save(getFibre(dict, FibreRanks()), toCString(name), openMode);
+    name = fileName;        append(name, "");       result &= save(getFibre(dict, FibreRanks()), toCString(name), openMode);
     if (TConfig::LEVELS > 1)
+    {
         name = fileName;    append(name, ".sbl");   result &= save(getFibre(dict, FibreSuperBlocks()), toCString(name), openMode);
+    }
     if (TConfig::LEVELS > 2)
+    {
         name = fileName;    append(name, ".ubl");   result &= save(getFibre(dict, FibreUltraBlocks()), toCString(name), openMode);
+    }
     return result;
 }
 
@@ -1486,11 +1490,15 @@ inline bool open(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, const c
 {
     String<char> name;
     bool result = true;
-    name = fileName;    append(name, ".bl");    result &= open(getFibre(dict, FibreRanks()), toCString(name), openMode);
+    name = fileName;        append(name, "");       result &= open(getFibre(dict, FibreRanks()), toCString(name), openMode);
     if (TConfig::LEVELS > 1)
+    {
         name = fileName;    append(name, ".sbl");   result &= open(getFibre(dict, FibreSuperBlocks()), toCString(name), openMode);
+    }
     if (TConfig::LEVELS > 2)
+    {
         name = fileName;    append(name, ".ubl");   result &= open(getFibre(dict, FibreUltraBlocks()), toCString(name), openMode);
+    }
     return result;
 }
 
