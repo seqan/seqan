@@ -189,7 +189,10 @@
 //   https://msdn.microsoft.com/en-us/library/074af4b6%28v=vs.140%29.aspx
 // Boost Warnings Guidelines:
 //   https://svn.boost.org/trac/boost/wiki/Guidelines/WarningsGuidelines
-#ifdef COMPILER_MSVC
+// Intel compiler for windows also triggers this error:
+//   seqan/pipe/pipe_base.h(263): warning #2586: 'bundle5' : decorated name
+//   length exceeded, name was truncated
+#if defined(STDLIB_VS) && (defined(COMPILER_MSVC) || defined(COMPILER_INTEL))
 #pragma warning( disable : 4503 )
 #endif
 
