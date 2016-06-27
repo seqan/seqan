@@ -43,6 +43,8 @@
 #include <stdio.h>
 #include <regex>
 #include <future>
+#include <sys/types.h> 
+#include <utime.h>
 // ==========================================================================
 // Tags, Classes, Enums
 // ==========================================================================
@@ -57,7 +59,7 @@ struct VersionCheck
     std::string _version = "0.0.0";
     std::string _program;
     std::string _command;
-    std::string _website = "www.seqan.de/applications";
+    std::string _website = "https://github.com/seqan/seqan/tree/master/apps";
     std::future<bool> & _fut;
 
 #if defined(PLATFORM_WINDOWS)
@@ -90,7 +92,6 @@ struct VersionCheck
                  std::string const & website):
     _fut(fut)
     {
-        //_fut = &fut;
         _name = name;
         if (!version.empty() &&
             std::regex_match(version, std::regex("^[[:digit:]]\\.[[:digit:]]\\.[[:digit:]].*")))
@@ -155,7 +156,6 @@ struct VersionCheck
 #else // windows
     void _getProgram()
     {
-        //  -erroraction 'silentlycontinue'
         _program = "powershell.exe -NoLogo -NonInteractive -Command \"& {Invoke-WebRequest -erroraction 'silentlycontinue' -OutFile";
     }
 #endif
@@ -368,7 +368,7 @@ inline bool _callServer(VersionCheck me, bool version_file_exists)
                 version_file_out.close();
             }
         }
-        else // just set last modified time to current
+        else // just set last modified date to current and do not override possible version information
         {
 #if defined(PLATFORM_WINDOWS)
             FILETIME curr;
@@ -378,12 +378,12 @@ inline bool _callServer(VersionCheck me, bool version_file_exists)
             SetFileTime(hFile, NULL, NULL, &curr);
             CloseHandle(hFile);
 #else
-            // TODO:: Attention: this was not tested yet and might crash on unix systems
             time_t curr;
             time(&curr); // get current time
-            struct stat t_stat;
-            stat(version_file.c_str(), &t_stat);
-            t_stat.st_mtime = curr;
+            struct utimbuf puttime;
+            puttime.modtime = curr;
+            puttime.actime = curr;
+            utime(version_file.c_str(), &puttime);
 #endif
         }
         return false;
@@ -402,9 +402,9 @@ inline bool checkForNewerVersion(VersionCheck & me)
         TCHAR tmp_path [MAX_PATH];
         if (GetTempPath (MAX_PATH, tmp_path) != 0)
             me._path = tmp_path;
-        else //GetTempPath returns 0 on failure
+        else //GetTempPath() returns 0 on failure
             return false;
-# else // windows
+# else // unix
         me._path = "/tmp";
 #endif
         me._updateCommand();
@@ -412,8 +412,11 @@ inline bool checkForNewerVersion(VersionCheck & me)
 
     std::string version_file = me._path + "/" + me._name + "_version.txt";
     double min_time_diff = 86400;                           // one day = 86400 seonds
-    double file_time_diff = _getFileTimeDiff(version_file); // check for time the version file was last updated
+    double file_time_diff = _getFileTimeDiff(version_file); // time difference: last modified date until now in seconds
     bool version_file_exists = (file_time_diff > -1) ? true : false;
+
+//    if (file_time_diff < min_time_diff && version_file_exists)
+//        return false; // only check for newer version once a day
     
     if (version_file_exists) // file exists. TODO:: ask if there should be a time limit here too
     {
@@ -440,20 +443,18 @@ inline bool checkForNewerVersion(VersionCheck & me)
                               << "[APP INFO] :: If you don't want to recieve this message again set --version_check OFF" << "\n\n";
                 }
             }
-            else if (_isSmaller(new_ver, old_ver)) // can only happen for registered app that is developed further
+            else if (_isSmaller(new_ver, old_ver))
             {
-                std::cerr << "[APP INFO] :: Thank you for registering " << me._name << ".\n" 
-                          << "[APP INFO] :: We noticed you developed a newer version of your app (" << me._version << ")\n"
-                          << "[APP INFO] :: Please send us an email to update your version info (seqan@team.fu-berlin.de)" << "\n\n";
+                std::cerr << "[APP INFO] :: We noticed your app version (" << me._version << ") is newer than the one registered.\n"
+                          << "[APP INFO] :: If you are the developer of this app, please send us an email to update your version info (support@seqan.de)" 
+                          << "[APP INFO] :: If not, you might want to contact the developer."
+                          << "\n\n";
             }
         }
     }
 
     if (me._program.empty())
         return false;
-
-//    if (file_time_diff < min_time_diff && version_file_exists)
-//        return false;
 
     // launch a seperate thread to not defer runtime
     // std::cout << me._command << std::endl;
