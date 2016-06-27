@@ -72,11 +72,11 @@ struct VersionCheck
 #ifdef __linux
     std::string _os = "Linux";
 #elif __APPLE__
-	_std::string _os = "MacOS";
+	std::string _os = "MacOS";
 #elif defined(PLATFORM_WINDOWS)
 	std::string _os = "Windows";
 #elif __FreeBSD__
-    _std::string _os = "FreeBSD";
+    std::string _os = "FreeBSD";
 #elif __OpenBSD__
     std::string _os = "OpenBSD";
 #else
