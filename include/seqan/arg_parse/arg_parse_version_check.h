@@ -52,8 +52,7 @@ struct VersionCheck
     // ----------------------------------------------------------------------------
     // Member Variables
     // ----------------------------------------------------------------------------
-
-    std::string _url = "http://openms-update.informatik.uni-tuebingen.de/check/OpenMS_KNIME_";
+    std::string _url = "http://www.seqan.de/version_check/SeqAn_";
     std::string _name;
     std::string _version = "0.0.0";
     std::string _program;
@@ -85,7 +84,6 @@ struct VersionCheck
     // ----------------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------------
-
     VersionCheck(std::future<bool> & fut,
                  std::string const & name,
                  std::string const & version,
@@ -128,7 +126,6 @@ struct VersionCheck
     // ----------------------------------------------------------------------------
     // Member Functions
     // ----------------------------------------------------------------------------
-
     inline void swap(VersionCheck & rhs)
     {
         std::swap(_name,    rhs._name);
@@ -195,27 +192,7 @@ inline void setURL(VersionCheck & me, std::string url)
 // ----------------------------------------------------------------------------
 // Function _checkWritability()
 // ----------------------------------------------------------------------------
-#ifdef __unix
-inline bool _checkWritability(std::string path)
-{
-    struct stat d_stat;
-    if (stat(path.c_str(), &d_stat) < 0)
-    {
-        // try to make dir
-        std::string makeDir = "mkdir -p " + path;
-        if (system(makeDir.c_str()))
-            return false; // could not create home dir
-
-        if (stat(path.c_str(), &d_stat) < 0) // repeat stat
-            return false;
-    }
-
-    if (!(d_stat.st_mode & S_IWUSR))
-        return false; // dir not writable
-
-    return true;
-}
-#else // windows
+#if defined(PLATFORM_WINDOWS)
 inline bool _checkWritability(std::string path)
 {
     DWORD ftyp = GetFileAttributesA(path.c_str());
@@ -236,24 +213,32 @@ inline bool _checkWritability(std::string path)
     DeleteFile(fileName.c_str());
     return true;
 }
+#else
+inline bool _checkWritability(std::string path)
+{
+    struct stat d_stat;
+    if (stat(path.c_str(), &d_stat) < 0)
+    {
+        // try to make dir
+        std::string makeDir = "mkdir -p " + path;
+        if (system(makeDir.c_str()))
+            return false; // could not create home dir
+
+        if (stat(path.c_str(), &d_stat) < 0) // repeat stat
+            return false;
+    }
+
+    if (!(d_stat.st_mode & S_IWUSR))
+        return false; // dir not writable
+
+    return true;
+}
 #endif
 
 // ----------------------------------------------------------------------------
 // Function _getFileTimeDiff()
 // ----------------------------------------------------------------------------
-#ifdef __unix
-inline double _getFileTimeDiff(std::string version_file)
-{
-    time_t curr;
-    time(&curr); // get current time
-
-    struct stat t_stat;
-    if (stat(version_file.c_str(), &t_stat) < 0)  // file does not exist
-        return -1;
-    else
-        return (difftime(curr, t_stat.st_mtime)); // returns time in seconds
-}
-#else // windows
+#if defined(PLATFORM_WINDOWS)
 inline double _getFileTimeDiff(std::string version_file)
 {
     FILETIME curr;
@@ -280,6 +265,18 @@ inline double _getFileTimeDiff(std::string version_file)
     LONGLONG diffInS = diffInTicks / 10000000;
     CloseHandle(hFile);
     return((double)diffInS);
+}
+#else
+inline double _getFileTimeDiff(std::string version_file)
+{
+    time_t curr;
+    time(&curr); // get current time
+
+    struct stat t_stat;
+    if (stat(version_file.c_str(), &t_stat) < 0)  // file does not exist
+        return -1;
+    else
+        return (difftime(curr, t_stat.st_mtime)); // returns time in seconds
 }
 #endif
 
@@ -373,20 +370,20 @@ inline bool _callServer(VersionCheck me, bool version_file_exists)
         }
         else // just set last modified time to current
         {
-#ifdef __unix
-            // TODO:: Attention: this was not tested yet and might crash on unix systems
-            time_t curr;
-            time(&curr); // get current time
-            struct stat t_stat;
-            stat(version_file.c_str(), &t_stat);
-            t_stat.st_mtime = curr;
-#else // windows
+#if defined(PLATFORM_WINDOWS)
             FILETIME curr;
             GetSystemTimeAsFileTime(&curr);
             HANDLE hFile;
             hFile = CreateFile(version_file.c_str(), GENERIC_WRITE, FILE_SHARE_READ,  NULL,  OPEN_EXISTING,  FILE_ATTRIBUTE_NORMAL, NULL);
             SetFileTime(hFile, NULL, NULL, &curr);
             CloseHandle(hFile);
+#else
+            // TODO:: Attention: this was not tested yet and might crash on unix systems
+            time_t curr;
+            time(&curr); // get current time
+            struct stat t_stat;
+            stat(version_file.c_str(), &t_stat);
+            t_stat.st_mtime = curr;
 #endif
         }
         return false;
@@ -401,14 +398,14 @@ inline bool checkForNewerVersion(VersionCheck & me)
 {
     if (!_checkWritability(me._path))
     {
-#ifdef __unix
-        me._path = "/tmp";
-# else // windows
+#if defined(PLATFORM_WINDOWS)
         TCHAR tmp_path [MAX_PATH];
         if (GetTempPath (MAX_PATH, tmp_path) != 0)
             me._path = tmp_path;
         else //GetTempPath returns 0 on failure
             return false;
+# else // windows
+        me._path = "/tmp";
 #endif
         me._updateCommand();
     }
