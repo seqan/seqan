@@ -81,13 +81,13 @@ public:
 // Function _begin1()
 // ----------------------------------------------------------------------------
 
-inline unsigned&
+inline unsigned &
 _begin1(HirschbergSet_ & me) {
     return me.x1;
 }
 
 
-inline unsigned const&
+inline unsigned const &
 _begin1(HirschbergSet_ const & me) {
     return me.x1;
 }
@@ -105,12 +105,12 @@ _setBegin1(HirschbergSet_ & me, unsigned const & new_begin) {
 // Function _end1()
 // ----------------------------------------------------------------------------
 
-inline unsigned&
+inline unsigned &
 _end1(HirschbergSet_ & me) {
     return me.x2;
 }
 
-inline unsigned const&
+inline unsigned const &
 _end1(HirschbergSet_ const & me) {
     return me.x2;
 }
@@ -128,12 +128,12 @@ _setEnd1(HirschbergSet_ & me, unsigned const & new_end) {
 // Function _begin2()
 // ----------------------------------------------------------------------------
 
-inline unsigned&
+inline unsigned &
 _begin2(HirschbergSet_ & me) {
     return me.y1;
 }
 
-inline unsigned const&
+inline unsigned const &
 _begin2(HirschbergSet_ const & me) {
     return me.y1;
 }
@@ -151,12 +151,12 @@ _setBegin2(HirschbergSet_ & me, unsigned const & new_begin) {
 // Function _end2()
 // ----------------------------------------------------------------------------
 
-inline unsigned&
+inline unsigned &
 _end2(HirschbergSet_ & me) {
     return me.y2;
 }
 
-inline unsigned const&
+inline unsigned const &
 _end2(HirschbergSet_ const & me) {
     return me.y2;
 }
@@ -174,7 +174,7 @@ _setEnd2(HirschbergSet_ & me, unsigned const & new_end) {
 // Function _score()
 // ----------------------------------------------------------------------------
 
-inline int&
+inline int &
 _score(HirschbergSet_ & me)    {
     return me.score;
 }
@@ -183,7 +183,7 @@ _score(HirschbergSet_ & me)    {
 // Function _score()
 // ----------------------------------------------------------------------------
 
-inline int const&
+inline int const &
 _score(HirschbergSet_ const & me)
 {
     return me.score;
@@ -681,8 +681,8 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             std::cout << "requested position in c_score and pointer is " << _end2(target) << std::endl;
             std::cout << "alignment score is " << c_score[_end2(target)] << std::endl << std::endl;
 #endif
-            to_process.push(HirschbergSet_ { mid, _end1(target), pointer[_end2(target)], _end2(target), 0});
-            to_process.push(HirschbergSet_ { _begin1(target), mid, _begin2(target), pointer[_end2(target)], 0});
+            to_process.push(HirschbergSet_ {mid, _end1(target), pointer[_end2(target)], _end2(target), 0});
+            to_process.push(HirschbergSet_ {_begin1(target), mid, _begin2(target), pointer[_end2(target)], 0});
         }
         /* END CUT */
     }
