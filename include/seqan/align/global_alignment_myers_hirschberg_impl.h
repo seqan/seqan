@@ -35,6 +35,8 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_MYERS_HIRSCHBERG_IMPL_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_MYERS_HIRSCHBERG_IMPL_H_
 
+#include <bitset>
+
 namespace seqan {
 
 // ============================================================================
@@ -164,23 +166,22 @@ namespace seqan {
 #endif
 
 // ----------------------------------------------------------------------------
-// Function globalAlignment()
+// Function _printBinary()
 // ----------------------------------------------------------------------------
 
+// Debug integer types in binary format.
 template <typename TStream, typename T>
 inline void
 _printBinary(TStream & stream, T const n)
 {
-    auto bits = BitsPerValue<T>::VALUE;
-    while (bits--)
-    {
-        if ((n >> bits) & 1)
-            stream << '1';
-        else
-            stream << '0';
-    }
+    std::bitset<BitsPerValue<T>::VALUE> bits(n);
+    stream << bits;
     stream << '\n';
 }
+
+// ----------------------------------------------------------------------------
+// Function globalAlignment()
+// ----------------------------------------------------------------------------
 
 // When using different alphabets, we will internally use the pattern alphabet
 // for the comparison.  This means that the text character is converted to the
@@ -596,6 +597,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                          VP[currentBlock] = temp | ~(X | D0);
                     }
 
+                    _printBinary(std::cout, HP);
                     /* update score */
                     if (HP & fScoreMask)
                         score--;
