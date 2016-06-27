@@ -113,7 +113,7 @@
  */
 #if defined(__ICC)
 #define COMPILER_INTEL
-#if _ICC < 1600
+#if __ICC < 1600
     #warning ICC versions older than 16 are not supported.
 #endif
 #endif
