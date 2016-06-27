@@ -84,13 +84,6 @@ template <> struct BitVector_<32> { typedef unsigned int Type; };
 template <> struct BitVector_<64> { typedef uint64_t Type; };
 template <> struct BitVector_<255>;
 
-template <typename TValue, unsigned SIZE, unsigned BITSIZE1, unsigned BITSIZE2, typename TSpec>
-struct Size<Tuple<TValue, SIZE, BitPacked<BITSIZE1, BITSIZE2, TSpec> > >
-{
-    static const unsigned VALUE = SIZE;
-    typedef unsigned Type;
-};
-
 // TODO(holtgrew): There is a lot of stuff defined within the class itself. A lot of it could be moved into global functions.
 
 // bit-packed storage (space efficient)
@@ -100,7 +93,6 @@ struct Tuple<TValue, SIZE, BitPacked<BITSIZE1, BITSIZE2, TSpec> >
 {
     static const unsigned BITS_PER_VALUE = BitsPerValue<TValue>::VALUE + (std::is_same<TSpec, PlusOne>::value ? 1 : 0);
 
-    // TODO: do we really want to have BitsPerValue+1 here for prefixsum bitvectors?
     typedef typename BitVector_<SIZE * BITS_PER_VALUE>::Type TBitVector;
 
     static const uint64_t BIT_MASK = ((1ull << (BITS_PER_VALUE - 1)       ) - 1ull) << 1 | 1ull;
