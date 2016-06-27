@@ -399,7 +399,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 
     unsigned i,j;
 
-    HirschbergSet_ hs_complete {0, static_cast<unsigned>(len1), 0, static_cast<unsigned>(len2), 0};
+    HirschbergSet_ hs_complete{0, static_cast<unsigned>(len1), 0, static_cast<unsigned>(len2), 0};
     to_process.push(hs_complete);
 
     while(!to_process.empty())
@@ -681,8 +681,8 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             std::cout << "requested position in c_score and pointer is " << _end2(target) << std::endl;
             std::cout << "alignment score is " << c_score[_end2(target)] << std::endl << std::endl;
 #endif
-            to_process.push(HirschbergSet_ {mid, _end1(target), pointer[_end2(target)], _end2(target), 0});
-            to_process.push(HirschbergSet_ {_begin1(target), mid, _begin2(target), pointer[_end2(target)], 0});
+            to_process.push(HirschbergSet_{mid, _end1(target), pointer[_end2(target)], _end2(target), 0});
+            to_process.push(HirschbergSet_{_begin1(target), mid, _begin2(target), pointer[_end2(target)], 0});
         }
         /* END CUT */
     }

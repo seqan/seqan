@@ -269,7 +269,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
         reverseBitMask[blockCount * ordValue(getValue(y,len_y - j - 1)) + j/BLOCK_SIZE] = reverseBitMask[blockCount * ordValue(getValue(y,len_y - j - 1)) + j/BLOCK_SIZE] | 1 << (j%BLOCK_SIZE);
     }
 
-    HirschbergSet_ hs_complete {0, static_cast<unsigned>(len_x), 0, static_cast<unsigned>(len_y), 1};
+    HirschbergSet_ hs_complete{0, static_cast<unsigned>(len_x), 0, static_cast<unsigned>(len_y), 1};
     to_process.push(hs_complete);
 
     while(!to_process.empty())
@@ -746,8 +746,8 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             printf("Optimal cut is at %i and %i with forward score %i and reverse score %i\n\n",mid,pos_max,(max - rmax),rmax);
 #endif
             /* push the two computed parts of the dp-matrix on process stack */
-            to_process.push(HirschbergSet_ {pos_max, _end1(target), mid, _end2(target), rmax});
-            to_process.push(HirschbergSet_ {_begin1(target), pos_max, _begin2(target), mid, max - rmax});
+            to_process.push(HirschbergSet_{pos_max, _end1(target), mid, _end2(target), rmax});
+            to_process.push(HirschbergSet_{_begin1(target), pos_max, _begin2(target), mid, max - rmax});
 
         }
         /* END CUT */
