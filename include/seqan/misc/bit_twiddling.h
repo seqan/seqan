@@ -272,7 +272,7 @@ popCount(TWord word)
 // intrinsics __popcnt16, __popcnt, and __popcnt64 for 16, 32, and 64 bit words.
 
 // MSVC >= 2008, has intrinsic
-#if defined(_MSC_VER)
+#if defined(STDLIB_VS)
 
 // ----------------------------------------------------------------------------
 // Function _popCountImpl()
@@ -285,7 +285,7 @@ _popCountImpl(TWord word, WordSize_<64> const & /*tag*/)
 {
 #if defined(_WIN64)
 
-#if defined(__SSE4_2__)
+#if defined(__SSE4_2__) || defined(COMPILER_INTEL)
     // 64-bit Windows, SSE4.2 bit intrinsic available
     return _mm_popcnt_u64(static_cast<uint64_t>(word));
 #else
@@ -305,7 +305,7 @@ template <typename TWord>
 inline unsigned
 _popCountImpl(TWord word, WordSize_<32> const & /*tag*/)
 {
-#if defined(__SSE4_2__)
+#if defined(__SSE4_2__) || defined(COMPILER_INTEL)
     // SSE4.2 bit intrinsic available
     return _mm_popcnt_u32(static_cast<uint32_t>(word));
 #else
@@ -328,7 +328,7 @@ _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
 }
 
 // GCC or CLANG
-#elif !defined(_MSC_VER)
+#elif !defined(STDLIB_VS)
 
 // ----------------------------------------------------------------------------
 // Function _popCountImpl()
@@ -340,14 +340,14 @@ template <typename TWord>
 inline unsigned
 _popCountImpl(TWord word, WordSize_<64> const & /*tag*/)
 {
-    return __builtin_popcountll(static_cast<unsigned long long>(word));
+    return __builtin_popcountll(static_cast<uint64_t>(word));
 }
 
 template <typename TWord>
 inline unsigned
 _popCountImpl(TWord word, WordSize_<32> const & /*tag*/)
 {
-    return __builtin_popcount(static_cast<unsigned int>(word));
+    return __builtin_popcount(static_cast<uint32_t>(word));
 }
 
 template <typename TWord>
@@ -364,7 +364,7 @@ _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
     return _popCountImpl(static_cast<uint32_t>(word), WordSize_<32>());
 }
 
-#endif // #if !defined(_MSC_VER)
+#endif // #if !defined(STDLIB_VS)
 
 // ----------------------------------------------------------------------------
 // Function printBits()
