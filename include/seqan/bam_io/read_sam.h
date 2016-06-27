@@ -316,7 +316,7 @@ readRecord(BamAlignmentRecord & record,
         do
         {
             clear(buffer);
-            readUntil(buffer, iter, OrFunctor<IsAlpha, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
+            readUntil(buffer, iter, OrFunctor<NotFunctor<IsDigit>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> >());
             element.count = lexicalCast<uint32_t>(buffer);
             element.operation = value(iter);
             skipOne(iter);
@@ -397,4 +397,3 @@ readRecord(BamAlignmentRecord & record,
 }  // namespace seqan
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_READ_SAM_H_
-
