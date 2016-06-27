@@ -173,6 +173,11 @@ public:
             }
             seqan::ClassTest::endTest();
         }
+
+        // explicitly delete heap allocated resources
+        for (auto test: instance.testDescriptions)
+            delete test;
+
         return seqan::ClassTest::endTestSuite();
     }
 };
