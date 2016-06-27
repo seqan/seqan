@@ -437,9 +437,8 @@ endif (NOT DEFINED SEQAN_VERSION_STRING)
 # ----------------------------------------------------------------------------
 
 option (SEQAN_VERSION_CHECK "SeqAn version check." ON)
-option (SEQAN_VERSION_CHECK_INTERNAL_ "Internal SeqAn version check option." ON)
 
-if (SEQAN_VERSION_CHECK_INTERNAL_)
+if (SEQAN_VERSION_CHECK)
   set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS};-D_SEQAN_VERSION_CHECK=1")
 else ()
   set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS};-D_SEQAN_VERSION_CHECK=0")
