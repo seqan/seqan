@@ -218,9 +218,9 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int)
     {
         int b = 0, c = 42;
 
-        SEQAN_ASSERT_EQ(minValue(int()), -(int)2147483648u);
-        SEQAN_ASSERT_EQ(minValue<int>(), -(int)2147483648u);
-        SEQAN_ASSERT_EQ(+(MinValue<int>::VALUE), -(int)2147483648u);
+        SEQAN_ASSERT_EQ(minValue(int()), -2147483648);
+        SEQAN_ASSERT_EQ(minValue<int>(), -2147483648);
+        SEQAN_ASSERT_EQ(+(MinValue<int>::VALUE), -2147483648);
         SEQAN_ASSERT_EQ(maxValue(int()), 2147483647);
         SEQAN_ASSERT_EQ(maxValue<int>(), 2147483647);
         SEQAN_ASSERT_EQ(+(MaxValue<int>::VALUE), 2147483647);
@@ -501,9 +501,9 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int32)
     {
         int32_t b = 0, c = 42;
 
-        SEQAN_ASSERT_EQ(minValue(int32_t()), -(int)2147483648u);
-        SEQAN_ASSERT_EQ(minValue<int32_t>(), -(int)2147483648u);
-        SEQAN_ASSERT_EQ(+(MinValue<int32_t>::VALUE), -(int)2147483648u);
+        SEQAN_ASSERT_EQ(minValue(int32_t()), -2147483648);
+        SEQAN_ASSERT_EQ(minValue<int32_t>(), -2147483648);
+        SEQAN_ASSERT_EQ(+(MinValue<int32_t>::VALUE), -2147483648);
         SEQAN_ASSERT_EQ(maxValue(int32_t()), 2147483647);
         SEQAN_ASSERT_EQ(maxValue<int32_t>(), 2147483647);
         SEQAN_ASSERT_EQ(+(MaxValue<int32_t>::VALUE), 2147483647);
