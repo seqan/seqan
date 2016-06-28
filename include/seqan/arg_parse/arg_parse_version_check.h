@@ -415,8 +415,8 @@ inline bool checkForNewerVersion(VersionCheck & me)
     double file_time_diff = _getFileTimeDiff(version_file); // time difference: last modified date until now in seconds
     bool version_file_exists = (file_time_diff > -1) ? true : false;
 
-//    if (file_time_diff < min_time_diff && version_file_exists)
-//        return false; // only check for newer version once a day
+    if (file_time_diff < min_time_diff && version_file_exists)
+        return false; // only check for newer version once a day
     
     if (version_file_exists) // file exists. TODO:: ask if there should be a time limit here too
     {
