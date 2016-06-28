@@ -115,11 +115,14 @@ endif ()
 set (COMPILER_CLANG FALSE)
 set (COMPILER_GNU FALSE)
 set (COMPILER_INTEL FALSE)
+set (COMPILER_WINTEL FALSE)
 set (COMPILER_MSVC FALSE)
 set (STDLIB_VS ${MSVC})
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set (COMPILER_CLANG TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel" AND STDLIB_VS)
+  set (COMPILER_WINTEL TRUE)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
   set (COMPILER_INTEL TRUE)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -146,7 +149,7 @@ elseif (COMPILER_CLANG)
         message(AUTHOR_WARNING "Clang version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 3.5! Anything below is untested.")
     endif ()
 
-elseif (COMPILER_INTEL)
+elseif (COMPILER_INTEL OR COMPILER_WINTEL)
 
     # require at least icpc 16.0.2
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16.0.2)
@@ -226,9 +229,9 @@ if (WIN32)
 endif (WIN32)
 
 # Visual Studio Setup
-if (STDLIB_VS AND (COMPILER_MSVC OR COMPILER_INTEL))
+if (COMPILER_MSVC OR COMPILER_WINTEL)
   # Enable intrinics (e.g. _interlockedIncrease)
-  # /EHsc will be set automatically for COMPILER_MSVC and COMPILER_INTEL, but
+  # /EHsc will be set automatically for COMPILER_MSVC and COMPILER_WINTEL, but
   # COMPILER_CLANG (clang/c2 3.7) can not handle the /EHsc and /Oi flag
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} /Oi)
 endif ()

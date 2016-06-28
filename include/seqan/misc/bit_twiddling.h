@@ -285,7 +285,7 @@ _popCountImpl(TWord word, WordSize_<64> const & /*tag*/)
 {
 #if defined(_WIN64)
 
-#if defined(__SSE4_2__) || defined(COMPILER_INTEL)
+#if defined(__SSE4_2__) || defined(COMPILER_WINTEL)
     // 64-bit Windows, SSE4.2 bit intrinsic available
     return _mm_popcnt_u64(static_cast<uint64_t>(word));
 #else
@@ -305,7 +305,7 @@ template <typename TWord>
 inline unsigned
 _popCountImpl(TWord word, WordSize_<32> const & /*tag*/)
 {
-#if defined(__SSE4_2__) || defined(COMPILER_INTEL)
+#if defined(__SSE4_2__) || defined(COMPILER_WINTEL)
     // SSE4.2 bit intrinsic available
     return _mm_popcnt_u32(static_cast<uint32_t>(word));
 #else
@@ -517,7 +517,7 @@ _bitScanForward(TWord word, WordSize_<NUM_BITS>)
 // NOTE(marehr): The Intel compiler on windows behaves the same as the visual
 // studio compiler and on *nix the same as gcc. Thus, the __builtin_clz is only
 // available on *nix.
-#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || (defined(COMPILER_INTEL) && !defined(STDLIB_VS) )
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
 
 template <typename TWord>
 inline TWord
@@ -548,7 +548,7 @@ _bitScanForward(TWord word, WordSize_<32>)
     return __builtin_ctz(static_cast<unsigned int>(word));
 }
 
-#elif defined(STDLIB_VS) // #if !(defined(COMPILER_GCC) || defined(COMPILER_CLANG) || (defined(COMPILER_INTEL) && !defined(STDLIB_VS) )) && defined(STDLIB_VS)
+#elif defined(STDLIB_VS) // #if !(defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)) && defined(STDLIB_VS)
 
 #if (SEQAN_IS_64_BIT)
 
@@ -619,7 +619,7 @@ _bitScanForward(TWord word, WordSize_<32>)
     _BitScanForward(&index, static_cast<unsigned long>(word));
     return index;
 }
-#endif  // #if !(defined(COMPILER_GCC) || defined(COMPILER_CLANG) || (defined(COMPILER_INTEL) && !defined(STDLIB_VS) )) && defined(STDLIB_VS)
+#endif  // #if !(defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)) && defined(STDLIB_VS)
 
 // ----------------------------------------------------------------------------
 // Function bitScanReverse()

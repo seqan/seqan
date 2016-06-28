@@ -83,10 +83,23 @@
  * @brief The compiler is the intel compiler (icc), if defined
  * @signature #define COMPILER_INTEL
  */
-#if defined(__INTEL_COMPILER)
+#if defined(__ICC)
 #define COMPILER_INTEL
-#if __INTEL_COMPILER < 1600
+#if __ICC < 1600
      #warning ICC versions older than 16 are not supported.
+#endif
+#endif
+
+/*!
+ * @macro COMPILER_WINTEL
+ * @headerfile <seqan/platform.h>
+ * @brief The compiler is the intel compiler for windows, if defined
+ * @signature #define COMPILER_WINTEL
+ */
+#if defined(__ICL)
+#define COMPILER_WINTEL
+#if __ICL < 1600
+     #warning Intel compiler (windows) versions older than 16 are not supported.
 #endif
 #endif
 
@@ -111,7 +124,7 @@
  * @brief The compiler is the microsoft visual studio compiler (msvc), if defined
  * @signature #define COMPILER_MSVC
  */
-#if defined(_MSC_VER) && !defined(COMPILER_INTEL) && !defined(COMPILER_CLANG)
+#if defined(_MSC_VER) && !defined(COMPILER_WINTEL) && !defined(COMPILER_CLANG)
 #define COMPILER_MSVC
 #if _MSC_VER < 1900
 #error Visual Studio versions older than version 14 / "2015" are not supported.
@@ -152,8 +165,8 @@
  * @brief Defined if the compiler is GCC (or compatible).
  * @deprecated Use STDLIB_VS, STDLIB_GNU or STDLIB_LLVM to know which
  *     standard lib is currently used. Or use COMPILER_MSVC, COMPILER_GCC,
- *     COMPILER_INTEL or COMPILER_CLANG to know which compiler is currently
- *     used.
+ *     COMPILER_INTEL, COMPILER_WINTEL or COMPILER_CLANG to know which compiler
+ *     is currently used.
  *
  * @signature #define PLATFORM_GCC
  */
@@ -192,7 +205,7 @@
 // Intel compiler for windows also triggers this error:
 //   seqan/pipe/pipe_base.h(263): warning #2586: 'bundle5' : decorated name
 //   length exceeded, name was truncated
-#if defined(STDLIB_VS) && (defined(COMPILER_MSVC) || defined(COMPILER_INTEL))
+#if defined(COMPILER_MSVC) || defined(COMPILER_WINTEL)
 #pragma warning( disable : 4503 )
 #endif
 
@@ -275,7 +288,7 @@ typedef int16_t __int16;   // nolint
 typedef int8_t __int8;     // nolint
 #endif
 
-#if defined(STDLIB_VS) && (defined(COMPILER_MSVC) || defined(COMPILER_INTEL))
+#if defined(COMPILER_MSVC) || defined(COMPILER_WINTEL)
 #define finline __forceinline
 #else
 #define finline __inline__
@@ -381,7 +394,7 @@ typedef int8_t __int8;     // nolint
 #endif
 
 // A macro to eliminate warnings on GCC and Clang
-#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL) && !defined(STDLIB_VS)
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
 #define SEQAN_UNUSED __attribute__((unused))
 #else
 #define SEQAN_UNUSED

@@ -50,17 +50,20 @@ include (CheckCXXCompilerFlag)
 set (COMPILER_CLANG FALSE)
 set (COMPILER_GNU FALSE)
 set (COMPILER_INTEL FALSE)
+set (COMPILER_WINTEL FALSE)
 set (COMPILER_MSVC FALSE)
 set (STDLIB_VS ${MSVC})
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set (COMPILER_CLANG TRUE)
+  set (COMPILER_CLANG TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel" AND STDLIB_VS)
+  set (COMPILER_WINTEL TRUE)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-    set (COMPILER_INTEL TRUE)
+  set (COMPILER_INTEL TRUE)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    set (COMPILER_GNU TRUE)
+  set (COMPILER_GNU TRUE)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    set (COMPILER_MSVC TRUE)
+  set (COMPILER_MSVC TRUE)
 endif ()
 
 # ---------------------------------------------------------------------------
@@ -69,9 +72,9 @@ endif ()
 
 # We need the /bigobj switch on windows (for 64 bit builds only actually).
 # Set target system to be Windows Vista and later.
-if (STDLIB_VS AND (COMPILER_MSVC OR COMPILER_INTEL))
-    # Set /bigobj for COMPILER_MSVC and COMPILER_INTEL, but COMPILER_CLANG
-    # (clang/c2 3.7) can not handle it.
+if (COMPILER_MSVC OR COMPILER_WINTEL)
+    # Set /bigobj for COMPILER_MSVC and COMPILER_WINTEL, but COMPILER_CLANG on
+    # windows (clang/c2 3.7) can not handle it.
     add_definitions (/bigobj)
 endif()
 
@@ -216,11 +219,11 @@ macro (seqan_build_system_init)
 
     # Set Warnings
     # NOTE(marehr): COMPILER_CLANG on windows uses the same flags as on linux,
-    # whereas COMPILER_INTEL uses on windows the same flags as COMPILER_MSVC.
-    if (STDLIB_VS AND COMPILER_MSVC)
+    # whereas COMPILER_WINTEL uses on windows the same flags as COMPILER_MSVC.
+    if (COMPILER_MSVC)
         # TODO(h-2): raise this to W4
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W2")
-    elseif (STDLIB_VS AND COMPILER_INTEL)
+    elseif (COMPILER_WINTEL)
         # TODO(h-2): raise this to W4
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W3")
     else()

@@ -79,7 +79,7 @@
 
 #include <omp.h>
 
-#if defined(STDLIB_VS) && (defined(COMPILER_MSVC) || defined(COMPILER_INTEL))
+#if defined(COMPILER_MSVC) || defined(COMPILER_WINTEL)
   // MSVC __pragma-operator
   #define SEQAN_OMP_PRAGMA(x) __pragma(omp x)
 #else
