@@ -171,9 +171,9 @@ endif ()
 # Require C++14
 # ----------------------------------------------------------------------------
 
-# The standard library of visual studio defines __cplusplus still as
-# 199711L, thus the check below would fail.
-if (NOT MSVC) # this implies all compilers within visual studio
+# The visual studio compiler and intel compiler on windows defines __cplusplus
+# still as 199711L, thus the check below would fail.
+if (NOT (COMPILER_MSVC OR COMPILER_WINTEL))
     set(CXXSTD_TEST_SOURCE
     "#if !defined(__cplusplus) || (__cplusplus < 201300L)
     #error NOCXX14
