@@ -372,6 +372,16 @@ if (OPENMP_FOUND)
     endif ()
 endif ()
 
+if (Boost_FOUND)
+  # Example warning:
+  # C:\seqan-deps\boost_1_53_0\boost/mpl/if.hpp(131,1): error : pasting formed
+  # 'BOOST_PP_TUPLE_ELEM_E_2(', an invalid preprocessing token
+  if (COMPILER_CLANG AND STDLIB_VS)
+    message (STATUS "The boost library (at least until 1.53) doesn't support the clang/c2 compiler on windows (version 3.7 and 3.8), yet!")
+    set (Boost_FOUND FALSE)
+  endif()
+endif()
+
 # Build SEQAN_INCLUDE_DIRS from SEQAN_INCLUDE_DIRS_MAIN and SEQAN_INCLUDE_DIRS_DEPS
 
 set (SEQAN_INCLUDE_DIRS ${SEQAN_INCLUDE_DIRS_MAIN} ${SEQAN_INCLUDE_DIRS_DEPS})
