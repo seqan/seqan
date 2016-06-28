@@ -381,13 +381,13 @@ typedef int8_t __int8;     // nolint
 // ==========================================================================
 // C++ branch hints
 // ==========================================================================
-#if !defined(STDLIB_VS)
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
 #define SEQAN_LIKELY(expr) __builtin_expect(!!(expr), 1)
 #else
 #define SEQAN_LIKELY(x)    (x)
 #endif
 
-#if !defined(STDLIB_VS)
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
 #define SEQAN_UNLIKELY(expr) __builtin_expect(!!(expr), 0)
 #else
 #define SEQAN_UNLIKELY(x)    (x)
