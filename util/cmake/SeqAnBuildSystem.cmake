@@ -48,7 +48,7 @@ include (SeqAnUsabilityAnalyzer)
 include (CheckCXXCompilerFlag)
 
 set (COMPILER_CLANG FALSE)
-set (COMPILER_GNU FALSE)
+set (COMPILER_GCC FALSE)
 set (COMPILER_INTEL FALSE)
 set (COMPILER_WINTEL FALSE)
 set (COMPILER_MSVC FALSE)
@@ -61,7 +61,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel" AND STDLIB_VS)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
   set (COMPILER_INTEL TRUE)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  set (COMPILER_GNU TRUE)
+  set (COMPILER_GCC TRUE)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   set (COMPILER_MSVC TRUE)
 endif ()
@@ -143,9 +143,9 @@ macro (seqan_register_apps)
         set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
         if (APPLE)
             # static build not supported on apple, but at least we can include gcc libs
-            if (COMPILER_GNU)
+            if (COMPILER_GCC)
                 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
-            endif (COMPILER_GNU)
+            endif (COMPILER_GCC)
         else (APPLE)
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
 
@@ -623,9 +623,9 @@ function (seqan_register_demos PREFIX)
     find_package (SeqAn REQUIRED)
 
     # Supress unused parameter warnings for demos.
-    if (COMPILER_GNU OR COMPILER_CLANG)
+    if (COMPILER_GCC OR COMPILER_CLANG)
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-unused-parameter")
-    endif (COMPILER_GNU OR COMPILER_CLANG)
+    endif (COMPILER_GCC OR COMPILER_CLANG)
 
     # Add SeqAn flags to CXX and NVCC flags.
     # Set to PARENT_SCOPE since this macro is executed from within a function which declares it's own scope.
@@ -692,16 +692,16 @@ macro (seqan_register_tests)
 
     # Conditionally enable coverage mode by setting the appropriate flags.
     if (MODEL STREQUAL "NightlyCoverage")
-        if (COMPILER_GNU OR COMPILER_CLANG)
+        if (COMPILER_GCC OR COMPILER_CLANG)
             set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
             set (LDFLAGS "${LDFLAGS} -fprofile-arcs -ftest-coverage")
-        endif (COMPILER_GNU OR COMPILER_CLANG)
+        endif (COMPILER_GCC OR COMPILER_CLANG)
     endif (MODEL STREQUAL "NightlyCoverage")
     if (MODEL STREQUAL "ExperimentalCoverage")
-        if (COMPILER_GNU OR COMPILER_CLANG)
+        if (COMPILER_GCC OR COMPILER_CLANG)
             set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
             set (LDFLAGS "${LDFLAGS} -fprofile-arcs -ftest-coverage")
-        endif (COMPILER_GNU OR COMPILER_CLANG)
+        endif (COMPILER_GCC OR COMPILER_CLANG)
     endif (MODEL STREQUAL "ExperimentalCoverage")
 
     # Add all subdirectories that have a CMakeLists.txt inside them.

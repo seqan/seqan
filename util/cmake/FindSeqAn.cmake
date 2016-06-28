@@ -113,7 +113,7 @@ endif ()
 # Recognize Clang compiler.
 
 set (COMPILER_CLANG FALSE)
-set (COMPILER_GNU FALSE)
+set (COMPILER_GCC FALSE)
 set (COMPILER_INTEL FALSE)
 set (COMPILER_WINTEL FALSE)
 set (COMPILER_MSVC FALSE)
@@ -126,7 +126,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel" AND STDLIB_VS)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
   set (COMPILER_INTEL TRUE)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  set (COMPILER_GNU TRUE)
+  set (COMPILER_GCC TRUE)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   set (COMPILER_MSVC TRUE)
 endif ()
@@ -135,7 +135,7 @@ endif ()
 # Check required compiler versions.
 # ----------------------------------------------------------------------------
 
-if (COMPILER_GNU)
+if (COMPILER_GCC)
 
     # require at least gcc 4.9
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
@@ -195,7 +195,7 @@ endif ()
 # ----------------------------------------------------------------------------
 
 # GCC/CLANG/ICC
-if (COMPILER_GNU OR COMPILER_CLANG OR COMPILER_INTEL)
+if (COMPILER_GCC OR COMPILER_CLANG OR COMPILER_INTEL)
   # Tune warnings for GCC.
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
 
