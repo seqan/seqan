@@ -272,7 +272,7 @@ popCount(TWord word)
 // intrinsics __popcnt16, __popcnt, and __popcnt64 for 16, 32, and 64 bit words.
 
 // MSVC >= 2008, has intrinsic
-#if defined(STDLIB_VS)
+#if defined(COMPILER_MSVC) || defined(COMPILER_WINTEL)
 
 // ----------------------------------------------------------------------------
 // Function _popCountImpl()
@@ -328,7 +328,7 @@ _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
 }
 
 // GCC or CLANG
-#elif !defined(STDLIB_VS)
+#elif !(defined(COMPILER_MSVC) || defined(COMPILER_WINTEL))
 
 // ----------------------------------------------------------------------------
 // Function _popCountImpl()
@@ -364,7 +364,7 @@ _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
     return _popCountImpl(static_cast<uint32_t>(word), WordSize_<32>());
 }
 
-#endif // #if !defined(STDLIB_VS)
+#endif // #if !(defined(COMPILER_MSVC) || defined(COMPILER_WINTEL))
 
 // ----------------------------------------------------------------------------
 // Function printBits()
