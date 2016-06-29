@@ -170,12 +170,9 @@ struct YaraFMConfig
     typedef TAlloc                                      Fibre;
     typedef TSum                                        Size;
 
-    typedef LevelConfig<Size>                           LvlConfig;
-
     // Sparse SA sampling rate.
     static const unsigned SAMPLING =                    10;
-    static const bool WORDS_PER_BLOCK_DYNAMIC_MODE =    1;
-    static const unsigned WORDS_PER_BLOCK =             4; // not used since WORDS_PER_BLOCK_DYNAMIC_MODE = 1
+    static const unsigned WORDS_PER_BLOCK =             0;
     static const unsigned LEVELS =                      1;
 };
 

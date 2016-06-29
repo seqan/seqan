@@ -180,9 +180,9 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10_moditerators)
 
 struct ReducedFMIndexConfig_
 {
-    typedef size_t                                                              LengthSum;
-    typedef WaveletTree<void, WTRDConfig<Alloc<>, LevelConfig<LengthSum> > >    Bwt;
-    typedef Levels<void, LevelsRDConfig<Alloc<>, LevelConfig<LengthSum> > >     Sentinels;
+    typedef size_t                                                          LengthSum;
+    typedef WaveletTree<void, WTRDConfig<LengthSum, Alloc<>, 1> >           Bwt;
+    typedef Levels<void, LevelsRDConfig<LengthSum, Alloc<>, 1> >            Sentinels;
 
     static const unsigned SAMPLING = 10;
 };
