@@ -78,11 +78,11 @@ namespace seqan {
 template <typename TSpec = void, typename TLengthSum = size_t>
 struct FMIndexConfig
 {
-    typedef TLengthSum                                                          LengthSum;
-    typedef WaveletTree<TSpec, WTRDConfig<Alloc<>, LevelConfig<LengthSum> > >   Bwt;
-    typedef Levels<TSpec, LevelsRDConfig<Alloc<>, LevelConfig<LengthSum> > >    Sentinels;
+    typedef TLengthSum                                                  LengthSum;
+    typedef WaveletTree<TSpec, WTRDConfig<LengthSum, Alloc<>, 1, 0> >   Bwt;
+    typedef Levels<TSpec, LevelsRDConfig<LengthSum, Alloc<>, 1, 0> >    Sentinels;
 
-    static const unsigned SAMPLING =                                            10;
+    static const unsigned SAMPLING =                                    10;
 };
 
 // ============================================================================

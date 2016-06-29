@@ -66,55 +66,22 @@ struct FibreUltraBlocks_;
 typedef Tag<FibreUltraBlocks_> const FibreUltraBlocks;
 
 // ----------------------------------------------------------------------------
-// Tag LevelConfig
-// ----------------------------------------------------------------------------
-
-template <typename TLevel1Type = size_t, typename TLevel2Type = Nothing, typename TLevel3Type = Nothing>
-struct LevelConfig
-{
-    typedef TLevel1Type Level1Type;
-    typedef TLevel2Type Level2Type;
-    typedef TLevel3Type Level3Type;
-
-    static const unsigned LEVELS = std::is_same<Level2Type, Nothing>::value ? 1 : (std::is_same<Level3Type, Nothing>::value ? 2 : 3);
-};
-
-template <typename TLevel1Type, typename TLevel2Type, typename TLevel3Type>
-struct Size<LevelConfig<TLevel1Type, TLevel2Type, TLevel3Type> >
-{
-    typedef LevelConfig<TLevel1Type, TLevel2Type, TLevel3Type> TLevelConfig;
-    // biggest datatype, i.e. of topmost level
-    typedef std::conditional_t<TLevelConfig::LEVELS == 3, TLevel3Type, std::conditional_t<TLevelConfig::LEVELS == 2, TLevel2Type, TLevel1Type> > Type;
-};
-
-// ----------------------------------------------------------------------------
-// Tag FixedWPB, DynamicWPB
-// ----------------------------------------------------------------------------
-
-struct FixedWPB_;
-typedef Tag<FixedWPB_> FixedWPB;
-struct DynamicWPB_;
-typedef Tag<DynamicWPB_> DynamicWPB;
-
-// ----------------------------------------------------------------------------
 // Tag RDConfig
 // ----------------------------------------------------------------------------
 
 template <
+    typename TSize = size_t,
     typename TFibre = Alloc<>,
-    typename TLevelConfig = LevelConfig<>,
-    typename WORDS_PER_BLOCK_DYNAMIC_MODE_ = DynamicWPB,
+    unsigned LEVELS_ = 1,
     unsigned WORDS_PER_BLOCK_ = 1
 >
 struct RDConfig
 {
-    typedef TFibre                                      Fibre;
-    typedef TLevelConfig                                LvlConfig;
-    typedef typename Size<TLevelConfig>::Type           Size;
+    typedef TSize   Size;
+    typedef TFibre  Fibre;
 
-    static const bool WORDS_PER_BLOCK_DYNAMIC_MODE =    std::is_same<WORDS_PER_BLOCK_DYNAMIC_MODE_, DynamicWPB>::value;
-    static const unsigned WORDS_PER_BLOCK =             WORDS_PER_BLOCK_;
-    static const unsigned LEVELS =                      TLevelConfig::LEVELS;
+    static const unsigned WORDS_PER_BLOCK = WORDS_PER_BLOCK_;
+    static const unsigned LEVELS          = LEVELS_;
 };
 
 // ============================================================================

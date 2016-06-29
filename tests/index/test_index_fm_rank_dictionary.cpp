@@ -67,17 +67,13 @@ using namespace seqan;
 
 typedef SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >         ReducedMurphy10;
 
-typedef LevelConfig<uint32_t, Nothing, Nothing>  LevelConfig1;
-typedef LevelConfig<uint16_t, uint32_t, Nothing> LevelConfig2;
-typedef LevelConfig<uint8_t, uint16_t, uint32_t> LevelConfig3;
+typedef Levels<void, LevelsPrefixRDConfig<uint32_t, Alloc<>, 1, 1> > Prefix1Level;
+typedef Levels<void, LevelsPrefixRDConfig<uint32_t, Alloc<>, 2, 2> > Prefix2Level;
+typedef Levels<void, LevelsPrefixRDConfig<uint32_t, Alloc<>, 3, 3> > Prefix3Level;
 
-typedef Levels<void, LevelsPrefixRDConfig<Alloc<>, LevelConfig1, FixedWPB, 1> >     Prefix1Level;
-typedef Levels<void, LevelsPrefixRDConfig<Alloc<>, LevelConfig2, DynamicWPB, 2> >   Prefix2Level;
-typedef Levels<void, LevelsPrefixRDConfig<Alloc<>, LevelConfig3, FixedWPB, 3> >     Prefix3Level;
-
-typedef Levels<void, LevelsRDConfig<Alloc<>, LevelConfig1, FixedWPB, 2> >           Default1Level;
-typedef Levels<void, LevelsRDConfig<Alloc<>, LevelConfig2, DynamicWPB> >            Default2Level;
-typedef Levels<void, LevelsRDConfig<Alloc<>, LevelConfig3, FixedWPB, 3> >           Default3Level;
+typedef Levels<void, LevelsRDConfig<uint32_t, Alloc<>, 1, 1> >       Default1Level;
+typedef Levels<void, LevelsRDConfig<uint32_t, Alloc<>, 2, 2> >       Default2Level;
+typedef Levels<void, LevelsRDConfig<uint32_t, Alloc<>, 3, 3> >       Default3Level;
 
 typedef
     TagList<RankDictionary<bool,            Prefix1Level>,
