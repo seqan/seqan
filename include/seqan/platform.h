@@ -78,13 +78,13 @@
 // ==========================================================================
 
 /*!
- * @macro COMPILER_INTEL
+ * @macro COMPILER_LINTEL
  * @headerfile <seqan/platform.h>
  * @brief The compiler is the intel compiler (icc), if defined
- * @signature #define COMPILER_INTEL
+ * @signature #define COMPILER_LINTEL
  */
 #if defined(__ICC)
-#define COMPILER_INTEL
+#define COMPILER_LINTEL
 #if __ICC < 1600
      #warning ICC versions older than 16 are not supported.
 #endif
@@ -137,7 +137,7 @@
  * @brief The compiler is the gnu compiler (gcc), if defined
  * @signature #define COMPILER_GCC
  */
-#if defined(__GNUC__) && !defined(COMPILER_INTEL) && !defined(COMPILER_CLANG)
+#if defined(__GNUC__) && !defined(COMPILER_LINTEL) && !defined(COMPILER_CLANG)
 #define COMPILER_GCC
 #define COMPILER_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
 #if COMPILER_VERSION < 40901
@@ -165,7 +165,7 @@
  * @brief Defined if the compiler is GCC (or compatible).
  * @deprecated Use STDLIB_VS, STDLIB_GNU or STDLIB_LLVM to know which
  *     standard lib is currently used. Or use COMPILER_MSVC, COMPILER_GCC,
- *     COMPILER_INTEL, COMPILER_WINTEL or COMPILER_CLANG to know which compiler
+ *     COMPILER_LINTEL, COMPILER_WINTEL or COMPILER_CLANG to know which compiler
  *     is currently used.
  *
  * @signature #define PLATFORM_GCC
@@ -182,7 +182,7 @@
 #define PLATFORM_CLANG
 #endif
 
-#if defined(PLATFORM_GCC) && defined(COMPILER_INTEL)
+#if defined(PLATFORM_GCC) && defined(COMPILER_LINTEL)
 #define PLATFORM_INTEL
 #endif
 
@@ -281,7 +281,7 @@ typedef uint32_t __uint32; // nolint
 typedef uint16_t __uint16; // nolint
 typedef uint8_t __uint8;   // nolint
 
-#if !(defined(COMPILER_INTEL) || defined(STDLIB_VS))
+#if !(defined(COMPILER_LINTEL) || defined(STDLIB_VS))
 typedef int64_t __int64;   // nolint
 typedef int32_t __int32;   // nolint
 typedef int16_t __int16;   // nolint
@@ -381,20 +381,20 @@ typedef int8_t __int8;     // nolint
 // ==========================================================================
 // C++ branch hints
 // ==========================================================================
-#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
 #define SEQAN_LIKELY(expr) __builtin_expect(!!(expr), 1)
 #else
 #define SEQAN_LIKELY(x)    (x)
 #endif
 
-#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
 #define SEQAN_UNLIKELY(expr) __builtin_expect(!!(expr), 0)
 #else
 #define SEQAN_UNLIKELY(x)    (x)
 #endif
 
 // A macro to eliminate warnings on GCC and Clang
-#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
 #define SEQAN_UNUSED __attribute__((unused))
 #else
 #define SEQAN_UNUSED
