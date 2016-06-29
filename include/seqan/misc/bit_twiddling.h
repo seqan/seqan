@@ -285,9 +285,11 @@ _popCountImpl(TWord word, WordSize_<64> const & /*tag*/)
 {
 #if defined(_WIN64)
 
-#if defined(__SSE4_2__) || defined(COMPILER_WINTEL)
+#if defined(__SSE4_2__)
     // 64-bit Windows, SSE4.2 bit intrinsic available
     return _mm_popcnt_u64(static_cast<uint64_t>(word));
+#elif defined(COMPILER_WINTEL)
+    return _popcnt64(static_cast<uint64_t>(word));
 #else
     // 64-bit Windows, 64 bit intrinsic available
     return __popcnt64(static_cast<uint64_t>(word));
@@ -296,7 +298,8 @@ _popCountImpl(TWord word, WordSize_<64> const & /*tag*/)
 #else // #if defined(_WIN64)
 
     // 32-bit Windows, 64 bit intrinsic not available
-    return __popcnt(static_cast<uint32_t>(word)) + __popcnt(static_cast<uint32_t>(word >> 32));
+    return  _popCountImpl(static_cast<const uint32_t>(word), WordSize_<32>())
+          + _popCountImpl(static_cast<const uint32_t>(word >> 32), WordSize_<32>());
 
 #endif // #if defined(_WIN64)
 }
@@ -305,9 +308,11 @@ template <typename TWord>
 inline unsigned
 _popCountImpl(TWord word, WordSize_<32> const & /*tag*/)
 {
-#if defined(__SSE4_2__) || defined(COMPILER_WINTEL)
+#if defined(__SSE4_2__)
     // SSE4.2 bit intrinsic available
     return _mm_popcnt_u32(static_cast<uint32_t>(word));
+#elif defined(COMPILER_WINTEL)
+    return _popcnt32(static_cast<uint32_t>(word));
 #else
     return __popcnt(static_cast<uint32_t>(word));
 #endif
