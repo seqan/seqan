@@ -308,7 +308,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
         return ArgumentParser::PARSE_ERROR;
     }
 
-#if _SEQAN_VERSION_CHECK == 1
+#if _SEQAN_VERSION_CHECK
     // do version check if not turned off by the user
     std::string check = "DEV"; // default
     if(isSet(me, "version-check"))
