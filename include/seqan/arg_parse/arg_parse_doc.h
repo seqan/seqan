@@ -259,10 +259,10 @@ inline CharString getShortDescription(ArgumentParser const & me)
  * @signature void setUrl(parser, url);
  *
  * @param[in,out] parser  The ArgumentParser to set the url of.
- * @param[in]     url The url string to set, <tt>std::string</tt>.
+ * @param[in]     url     The url string to set, @link CharString @endlink.
  */
 
-inline void setUrl(ArgumentParser & me, std::string const & urlString)
+inline void setUrl(ArgumentParser & me, CharString const & urlString)
 {
     setUrl(me._toolDoc, urlString);
 }
