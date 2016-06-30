@@ -215,6 +215,22 @@ namespace seqan
         TPredHull        predHull;
         TPred            pred;
 
+        /*!
+         * @fn IndexDfi::Index
+         * @brief Constructor
+         *
+         * @signature Index::Index();
+         * @signature Index::Index(index);
+         * @signature Index::Index(text);
+         * @signature Index::Index(text, predHull);
+         * @signature Index::Index(text, predHull, pred);
+         *
+         * @param[in] index    Other Index object to copy from.
+         * @param[in] text     The text to be indexed.
+         * @param[in] predHull (TPredHull) A monotonic hull of TPred.
+         * @param[in] pred     (TPred) An arbitrary frequeny predicate.
+         */
+
         Index() {}
 
         Index(Index &other):

@@ -257,6 +257,20 @@ public:
     TBucketMap        bucketMap;    // bucketMap table (used by open-addressing index)
     TSize            stepSize;    // store every <stepSize>'th q-gram in the index
 
+    /*!
+     * @fn IndexQGram::Index
+     * @brief Constructor
+     *
+     * @signature Index::Index();
+     * @signature Index::Index(index);
+     * @signature Index::Index(text);
+     * @signature Index::Index(text, shape);
+     *
+     * @param[in] index Other Index object to copy from.
+     * @param[in] text  The text to be indexed.
+     * @param[in] shape The q gram @link Shape @endlink to be applied.
+     */
+
     Index():
     stepSize(1) {}
 
