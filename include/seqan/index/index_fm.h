@@ -206,7 +206,7 @@ public:
     typename Fibre<Index, FibreSA>::Type            sa;
 
     /*!
-     * @fn IndexFM::Index
+     * @fn FMIndex::Index
      * @brief Constructor
      *
      * @signature Index::Index();
