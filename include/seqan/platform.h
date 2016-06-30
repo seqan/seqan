@@ -51,9 +51,6 @@
  */
 #ifdef _MSC_VER
 #define STDLIB_VS
-#if _MSC_VER < 1900
-#error Visual Studio versions older than version 14 / "2015" are not supported.
-#endif
 #endif
 
 /*!
@@ -81,40 +78,28 @@
 // ==========================================================================
 
 /*!
- * @macro COMPILER_MSVC
- * @headerfile <seqan/platform.h>
- * @brief The compiler is the microsoft visual studio compiler (msvc), if defined
- * @signature #define COMPILER_MSVC
- */
-#if defined(_MSC_VER) && !defined(__ICC) && !defined(__clang__)
-#define COMPILER_MSVC
-#endif
-
-/*!
- * @macro COMPILER_GCC
- * @headerfile <seqan/platform.h>
- * @brief The compiler is the gnu compiler (gcc), if defined
- * @signature #define COMPILER_GCC
- */
-#if defined(__GNUC__) && !defined(__ICC) && !defined(__clang__)
-#define COMPILER_GCC
-#define COMPILER_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
-#if COMPILER_VERSION < 40901
-    #warning GCC versions older than 4.9.1 are not supported.
-#endif
-#undef COMPILER_VERSION
-#endif
-
-/*!
- * @macro COMPILER_INTEL
+ * @macro COMPILER_LINTEL
  * @headerfile <seqan/platform.h>
  * @brief The compiler is the intel compiler (icc), if defined
- * @signature #define COMPILER_INTEL
+ * @signature #define COMPILER_LINTEL
  */
 #if defined(__ICC)
-#define COMPILER_INTEL
+#define COMPILER_LINTEL
 #if __ICC < 1600
-    #warning ICC versions older than 16 are not supported.
+     #warning ICC versions older than 16 are not supported.
+#endif
+#endif
+
+/*!
+ * @macro COMPILER_WINTEL
+ * @headerfile <seqan/platform.h>
+ * @brief The compiler is the intel compiler for windows, if defined
+ * @signature #define COMPILER_WINTEL
+ */
+#if defined(__ICL)
+#define COMPILER_WINTEL
+#if __ICL < 1600
+     #warning Intel compiler (windows) versions older than 16 are not supported.
 #endif
 #endif
 
@@ -129,6 +114,34 @@
 #define COMPILER_VERSION (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__)
 #if COMPILER_VERSION < 30500
     #warning Clang versions older than 3.5.0 are not supported.
+#endif
+#undef COMPILER_VERSION
+#endif
+
+/*!
+ * @macro COMPILER_MSVC
+ * @headerfile <seqan/platform.h>
+ * @brief The compiler is the microsoft visual studio compiler (msvc), if defined
+ * @signature #define COMPILER_MSVC
+ */
+#if defined(_MSC_VER) && !defined(COMPILER_WINTEL) && !defined(COMPILER_CLANG)
+#define COMPILER_MSVC
+#if _MSC_VER < 1900
+#error Visual Studio versions older than version 14 / "2015" are not supported.
+#endif
+#endif
+
+/*!
+ * @macro COMPILER_GCC
+ * @headerfile <seqan/platform.h>
+ * @brief The compiler is the gnu compiler (gcc), if defined
+ * @signature #define COMPILER_GCC
+ */
+#if defined(__GNUC__) && !defined(COMPILER_LINTEL) && !defined(COMPILER_CLANG)
+#define COMPILER_GCC
+#define COMPILER_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+#if COMPILER_VERSION < 40901
+    #warning GCC versions older than 4.9.1 are not supported.
 #endif
 #undef COMPILER_VERSION
 #endif
@@ -152,8 +165,8 @@
  * @brief Defined if the compiler is GCC (or compatible).
  * @deprecated Use STDLIB_VS, STDLIB_GNU or STDLIB_LLVM to know which
  *     standard lib is currently used. Or use COMPILER_MSVC, COMPILER_GCC,
- *     COMPILER_INTEL or COMPILER_CLANG to know which compiler is currently
- *     used.
+ *     COMPILER_LINTEL, COMPILER_WINTEL or COMPILER_CLANG to know which compiler
+ *     is currently used.
  *
  * @signature #define PLATFORM_GCC
  */
@@ -169,7 +182,7 @@
 #define PLATFORM_CLANG
 #endif
 
-#if defined(PLATFORM_GCC) && defined(COMPILER_INTEL)
+#if defined(PLATFORM_GCC) && defined(COMPILER_LINTEL)
 #define PLATFORM_INTEL
 #endif
 
@@ -189,7 +202,10 @@
 //   https://msdn.microsoft.com/en-us/library/074af4b6%28v=vs.140%29.aspx
 // Boost Warnings Guidelines:
 //   https://svn.boost.org/trac/boost/wiki/Guidelines/WarningsGuidelines
-#ifdef COMPILER_MSVC
+// Intel compiler for windows also triggers this error:
+//   seqan/pipe/pipe_base.h(263): warning #2586: 'bundle5' : decorated name
+//   length exceeded, name was truncated
+#if defined(COMPILER_MSVC) || defined(COMPILER_WINTEL)
 #pragma warning( disable : 4503 )
 #endif
 
@@ -265,17 +281,17 @@ typedef uint32_t __uint32; // nolint
 typedef uint16_t __uint16; // nolint
 typedef uint8_t __uint8;   // nolint
 
-#if !(defined(COMPILER_INTEL) || defined(COMPILER_MSVC))
+#if !(defined(COMPILER_LINTEL) || defined(STDLIB_VS))
 typedef int64_t __int64;   // nolint
 typedef int32_t __int32;   // nolint
 typedef int16_t __int16;   // nolint
 typedef int8_t __int8;     // nolint
 #endif
 
-#if !defined(COMPILER_MSVC)
-#define finline __inline__
-#else // !defined(COMPILER_MSVC)
+#if defined(COMPILER_MSVC) || defined(COMPILER_WINTEL)
 #define finline __forceinline
+#else
+#define finline __inline__
 #endif
 
 // TODO(marehr): always define _FILE_OFFSET_BITS and _LARGEFILE_SOURCE
@@ -365,20 +381,16 @@ typedef int8_t __int8;     // nolint
 // ==========================================================================
 // C++ branch hints
 // ==========================================================================
-#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) && !defined(STDLIB_VS) || defined(COMPILER_LINTEL)
 #define SEQAN_LIKELY(expr) __builtin_expect(!!(expr), 1)
+#define SEQAN_UNLIKELY(expr) __builtin_expect(!!(expr), 0)
 #else
 #define SEQAN_LIKELY(x)    (x)
-#endif
-
-#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
-#define SEQAN_UNLIKELY(expr) __builtin_expect(!!(expr), 1)
-#else
 #define SEQAN_UNLIKELY(x)    (x)
 #endif
 
 // A macro to eliminate warnings on GCC and Clang
-#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_INTEL)
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
 #define SEQAN_UNUSED __attribute__((unused))
 #else
 #define SEQAN_UNUSED
@@ -393,7 +405,11 @@ typedef int8_t __int8;     // nolint
     #ifdef STDLIB_VS
     #define SEQAN_HAS_EXECINFO 0
     #elif defined(__has_include)
-    #define SEQAN_HAS_EXECINFO !!__has_include(<execinfo.h>)
+        #if __has_include(<execinfo.h>)
+        #define SEQAN_HAS_EXECINFO 1
+        #else
+        #define SEQAN_HAS_EXECINFO 0
+        #endif
     #else // assume that it is there
     #define SEQAN_HAS_EXECINFO 1
     #endif

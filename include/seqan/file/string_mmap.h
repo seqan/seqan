@@ -481,8 +481,8 @@ namespace seqan
     inline bool
     _remap(String<TValue, MMap<TConfig> > &me, TCapSize new_capacity)
     {
-        typedef typename Size<String<TValue, MMap<TConfig> > >::Type    TSize;
-        typedef typename Size<typename TConfig::TFile>::Type            TFileSize;
+        typedef typename Size<String<TValue, MMap<TConfig> > >::Type    TSize SEQAN_UNUSED_TYPEDEF;
+        typedef typename Size<typename TConfig::TFile>::Type            TFileSize SEQAN_UNUSED_TYPEDEF;
 
         bool result = true;
 

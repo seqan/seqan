@@ -36,7 +36,7 @@
 
 #include <seqan/basic.h>
 
-#ifndef STDLIB_VS
+#ifndef COMPILER_MSVC
 
 #include <seqan/file.h>
 #include <seqan/sequence.h>
