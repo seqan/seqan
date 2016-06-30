@@ -200,56 +200,40 @@ struct RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >
 // Metafunction RankDictionaryBlockType_
 // ----------------------------------------------------------------------------
 
+template <unsigned BITS>
+struct ValueWithBits_ {};
+
+template <>
+struct ValueWithBits_<64>
+{
+    typedef uint64_t Type;
+};
+
+template <>
+struct ValueWithBits_<32>
+{
+    typedef uint32_t Type;
+};
+
+template <>
+struct ValueWithBits_<16>
+{
+    typedef uint16_t Type;
+};
+
+template <>
+struct ValueWithBits_<8>
+{
+    typedef uint8_t Type;
+};
+
+// ----------------------------------------------------------------------------
+
 template <typename TSize, unsigned LEVELS, unsigned LEVEL>
 struct RankDictionaryBlockType_
 {
-    typedef TSize Type;
-};
-
-// ----------------------------------------------------------------------------
-
-template <>
-struct RankDictionaryBlockType_<uint64_t, 2, 1>
-{
-    typedef uint32_t Type;
-};
-
-template <>
-struct RankDictionaryBlockType_<uint32_t, 2, 1>
-{
-    typedef uint16_t Type;
-};
-
-template <>
-struct RankDictionaryBlockType_<uint16_t, 2, 1>
-{
-    typedef uint8_t Type;
-};
-
-// ----------------------------------------------------------------------------
-
-template <>
-struct RankDictionaryBlockType_<uint64_t, 3, 2>
-{
-    typedef uint32_t Type;
-};
-
-template <>
-struct RankDictionaryBlockType_<uint32_t, 3, 2>
-{
-    typedef uint16_t Type;
-};
-
-template <>
-struct RankDictionaryBlockType_<uint32_t, 3, 1>
-{
-    typedef uint16_t Type;
-};
-
-template <>
-struct RankDictionaryBlockType_<uint16_t, 3, 1>
-{
-    typedef uint8_t Type;
+    static const unsigned shift = Max<LEVEL, LEVELS>::VALUE - Min<LEVEL, LEVELS>::VALUE;
+    typedef typename ValueWithBits_<BitsPerValue<TSize>::VALUE/(1 << shift)>::Type Type;
 };
 
 // ----------------------------------------------------------------------------
