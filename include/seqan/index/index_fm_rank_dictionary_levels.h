@@ -197,43 +197,45 @@ struct RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction RankDictionaryBlockType_
+// Metafunction RankDictionaryValueWithBits_
 // ----------------------------------------------------------------------------
 
 template <unsigned BITS>
-struct ValueWithBits_ {};
+struct RankDictionaryValueWithBits_ {};
 
 template <>
-struct ValueWithBits_<64>
+struct RankDictionaryValueWithBits_<64>
 {
     typedef uint64_t Type;
 };
 
 template <>
-struct ValueWithBits_<32>
+struct RankDictionaryValueWithBits_<32>
 {
     typedef uint32_t Type;
 };
 
 template <>
-struct ValueWithBits_<16>
+struct RankDictionaryValueWithBits_<16>
 {
     typedef uint16_t Type;
 };
 
 template <>
-struct ValueWithBits_<8>
+struct RankDictionaryValueWithBits_<8>
 {
     typedef uint8_t Type;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction RankDictionaryBlockType_
 // ----------------------------------------------------------------------------
 
 template <typename TSize, unsigned LEVELS, unsigned LEVEL>
 struct RankDictionaryBlockType_
 {
     static const unsigned shift = Max<LEVEL, LEVELS>::VALUE - Min<LEVEL, LEVELS>::VALUE;
-    typedef typename ValueWithBits_<BitsPerValue<TSize>::VALUE/(1 << shift)>::Type Type;
+    typedef typename RankDictionaryValueWithBits_<BitsPerValue<TSize>::VALUE/(1 << shift)>::Type Type;
 };
 
 // ----------------------------------------------------------------------------

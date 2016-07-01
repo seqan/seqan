@@ -63,15 +63,15 @@ namespace seqan {
  * @brief The sampling rate determines how many suffix array entries are represented with one entry in the
  *        @link CompressedSA @endlink.
  *
- * @typedef FMIndexConfig::TValuesSpec
- * @signature typedef WaveletTree<TSpec, TConfig> TValuesSpec;
- * @brief The <tt>TValuesSpec</tt> determines the type of the occurrence table. In the default @link FMIndexConfig
- *        @endlink object the type of <tt>TValuesSpec</tt> is a wavelet tree (@link WaveletTree @endlink).
+ * @typedef FMIndexConfig::Bwt
+ * @signature typedef WaveletTree<TSpec, TConfig> Bwt;
+ * @brief The <tt>Bwt</tt> determines the type of the occurrence table. In the default @link FMIndexConfig
+ *        @endlink object the type of <tt>Bwt</tt> is a wavelet tree (@link WaveletTree @endlink).
  *
- * @typedef FMIndexConfig::TSentinelsSpec
- * @signature typedef Levels<TSpec, TConfig> TSentinelsSpec;
- * @brief The <tt>TSentinelsSpec</tt> determines the type of the sentinels in the @link FMIndex @endlink.  In the
- *        default @link FMIndexConfig @endlink object the type of <tt>TSentinelsSpec</tt> is a two level
+ * @typedef FMIndexConfig::Sentinels
+ * @signature typedef Levels<TSpec, TConfig> Sentinels;
+ * @brief The <tt>Sentinels</tt> determines the type of the sentinels in the @link FMIndex @endlink. In the
+ *        default @link FMIndexConfig @endlink object the type of <tt>Sentinels</tt> is a two level
  *        @link RankDictionary @endlink.
  */
 
