@@ -112,7 +112,8 @@ assignValue(TSimdVector &vector, TPosition pos, TValue2 value)                  
 // Define maximal size of vector in byte.
 #if defined(__AVX2__)
     #define SEQAN_SIZEOF_MAX_VECTOR 32
-#elif defined(__SSE3__)
+#elif defined(__SSE4_1__) && defined(__SSE4_2__)
+    #define SEQAN_SSE4
     #define SEQAN_SIZEOF_MAX_VECTOR 16
 #else
     #undef SEQAN_SIMD_ENABLED
@@ -177,9 +178,9 @@ SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Int64,     int64_t,        32)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4UInt64,    uint64_t,       32)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Float,     float,          32)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Double,    double,         32)
-#endif  // _AVX2__
+#endif  // __AVX2__
 
-#ifdef __SSE3__
+#ifdef SEQAN_SSE4
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Char,      char,           8)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8SChar,     signed char,    8)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8UChar,     unsigned char,  8)
@@ -200,7 +201,7 @@ SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Int64,     int64_t,        16)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2UInt64,    uint64_t,       16)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Float,     float,          16)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Double,    double,         16)
-#endif
+#endif  // SEQAN_SSE4
 
 // ============================================================================
 // Functions
@@ -763,7 +764,7 @@ inline int _testAllOnes(TSimdVector const &vector, SimdParams_<32>)
 // SSE3 wrappers (128bit vectors)
 // ============================================================================
 
-#ifdef __SSE3__
+#ifdef SEQAN_SSE4
 
 // --------------------------------------------------------------------------
 // _fillVector (128bit)
@@ -862,7 +863,6 @@ inline TSimdVector _cmpEq(TSimdVector &a, TSimdVector &b, SimdParams_<16, 4>)
                                               SEQAN_VECTOR_CAST_(const __m128i&, b)));
 }
 
-#ifdef __SSE4_1__
 template <typename TSimdVector>
 inline TSimdVector _cmpEq(TSimdVector &a, TSimdVector &b, SimdParams_<16, 2>)
 {
@@ -870,7 +870,6 @@ inline TSimdVector _cmpEq(TSimdVector &a, TSimdVector &b, SimdParams_<16, 2>)
                               _mm_cmpeq_epi64(SEQAN_VECTOR_CAST_(const __m128i&, a),
                                               SEQAN_VECTOR_CAST_(const __m128i&, b)));
 }
-#endif  // __SSE4_1__
 
 // --------------------------------------------------------------------------
 // _cmpGt (128bit)
@@ -900,7 +899,6 @@ inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<16, 4>)
                                               SEQAN_VECTOR_CAST_(const __m128i&, b)));
 }
 
-#ifdef __SSE4_2__
 template <typename TSimdVector>
 inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<16, 2>)
 {
@@ -908,7 +906,6 @@ inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<16, 2>)
                               _mm_cmpgt_epi64(SEQAN_VECTOR_CAST_(const __m128i&, a),
                                               SEQAN_VECTOR_CAST_(const __m128i&, b)));
 }
-#endif  // __SSE4_2__
 
 // --------------------------------------------------------------------------
 // _bitwiseOr (128bit)
@@ -974,7 +971,6 @@ inline TSimdVector _bitwiseNot(TSimdVector &a, SimdParams_<16, 4>)
                                               _mm_setzero_si128()));
 }
 
-#ifdef __SSE4_1__
 template <typename TSimdVector>
 inline TSimdVector _bitwiseNot(TSimdVector &a, SimdParams_<16, 2>)
 {
@@ -982,7 +978,6 @@ inline TSimdVector _bitwiseNot(TSimdVector &a, SimdParams_<16, 2>)
                               _mm_cmpeq_epi64(SEQAN_VECTOR_CAST_(const __m128i&, a),
                                               _mm_setzero_si128()));
 }
-#endif  // __SSE4_1__
 
 // --------------------------------------------------------------------------
 // _divide (128bit)
@@ -1091,7 +1086,6 @@ inline TSimdVector _mult(TSimdVector &a, TSimdVector &b, SimdParams_<16, 8>)
                                               SEQAN_VECTOR_CAST_(const __m128i&, b)));
 }
 
-#if defined(__SSE4_1__)
 template <typename TSimdVector>
 inline TSimdVector _mult(TSimdVector &a, TSimdVector &b, SimdParams_<16, 4>)
 {
@@ -1099,14 +1093,6 @@ inline TSimdVector _mult(TSimdVector &a, TSimdVector &b, SimdParams_<16, 4>)
                               _mm_mullo_epi32(SEQAN_VECTOR_CAST_(const __m128i&, a),
                                               SEQAN_VECTOR_CAST_(const __m128i&, b)));
 }
-#else
-template <typename TSimdVector>
-inline TSimdVector _mult(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<16, 4>)
-{
-    SEQAN_ASSERT_FAIL("SSE intrinsics for multiplying 32 bit values not implemented!");
-    return a;
-}
-#endif  // defined(__SSE4_1__)
 
 template <typename TSimdVector>
 inline TSimdVector _mult(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<16, 2>)
@@ -1127,7 +1113,6 @@ inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<16, 8>)
                                             SEQAN_VECTOR_CAST_(const __m128i&, b)));
 }
 
-#ifdef __SSE4_1__
 template <typename TSimdVector>
 inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<16, 16>)
 {
@@ -1143,7 +1128,6 @@ inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<16, 4>)
                               _mm_max_epi32(SEQAN_VECTOR_CAST_(const __m128i&, a),
                                             SEQAN_VECTOR_CAST_(const __m128i&, b)));
 }
-#endif  // __SSE4_1__
 
 // --------------------------------------------------------------------------
 // _blend (128bit)
@@ -1152,17 +1136,10 @@ inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<16, 4>)
 template <typename TSimdVector, typename TSimdVectorMask, int L>
 inline TSimdVector _blend(TSimdVector const &a, TSimdVector const &b, TSimdVectorMask const &mask, SimdParams_<16, L>)
 {
-#ifdef __SSE4_1__
     return SEQAN_VECTOR_CAST_(TSimdVector,
                               _mm_blendv_epi8(SEQAN_VECTOR_CAST_(const __m128i&, a),
                                               SEQAN_VECTOR_CAST_(const __m128i&, b),
                                               SEQAN_VECTOR_CAST_(const __m128i&, mask)));
-#else
-    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_or_si128(_mm_and_si128(SEQAN_VECTOR_CAST_(const __m128i&, mask),
-                                                                      SEQAN_VECTOR_CAST_(const __m128i&,b)),
-                                                        _mm_andnot_si128(SEQAN_VECTOR_CAST_(const __m128i&, mask),
-                                                                         SEQAN_VECTOR_CAST_(const __m128i&, a))));
-#endif  // __SSE4_1__
 }
 
 // --------------------------------------------------------------------------
@@ -1335,7 +1312,6 @@ _transposeMatrix(TSimdVector matrix[], SimdMatrixParams_<16, 16, 8>)
 // Function _testAllZeros (128bit)
 // --------------------------------------------------------------------------
 
-#ifdef __SSE4_1__
 template <typename TSimdVector>
 SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, int)
 inline _testAllZeros(TSimdVector const &vector, TSimdVector const &mask, SimdParams_<16>)
@@ -1354,8 +1330,7 @@ _testAllOnes(TSimdVector const &vector, SimdParams_<16>)
 {
     return _mm_test_all_ones(SEQAN_VECTOR_CAST_(const __m128i &, vector));
 }
-#endif  // #ifdef __SSE4_1__
-#endif  // #ifdef __SSE3__
+#endif  // #ifdef SEQAN_SSE4
 
 // ============================================================================
 //
