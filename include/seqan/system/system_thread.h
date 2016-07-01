@@ -220,6 +220,13 @@ namespace seqan
         return m.wait();
     }
 
+// TODO(rrahn): Thread creation with worker -> must be a callable.
+// TODO(rrahn): thread::join is wait() -> waitFor()
+// TODO(rrahn): no close or open? -> created/deleted on construction/destrucion
+// TODO(rrahn): We need detach
+// TODO(rrahn): Cancel aka close aka kill?
+
+
 }
 
 #endif

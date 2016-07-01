@@ -37,6 +37,8 @@
 #ifndef SEQAN_HEADER_SYSTEM_MUTEX_H
 #define SEQAN_HEADER_SYSTEM_MUTEX_H
 
+#include <mutex>
+
 namespace seqan
 {
 
@@ -209,6 +211,16 @@ namespace seqan
     inline bool unlock(Mutex &m) {
         return m.unlock();
     }
+
+inline void lock(std::mutex &m)
+{
+    m.lock();
+}
+
+inline void unlock(std::mutex &m)
+{
+    m.unlock();
+}
 
 }
 

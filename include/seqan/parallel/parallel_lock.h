@@ -88,13 +88,14 @@ waitFor(SpinDelay & me)
     }
     else
     {
-#ifdef STDLIB_VS
-#if _WIN32_WINNT >= 0x0400
-        SwitchToThread();
-#endif
-#else
-        sched_yield();
-#endif
+        std::this_thread::yield();
+//#ifdef STDLIB_VS
+//#if _WIN32_WINNT >= 0x0400
+//        SwitchToThread();
+//#endif
+//#else
+//        sched_yield();
+//#endif
     }
 }
 
@@ -146,37 +147,6 @@ public:
     ReadWriteLock() :
         readers(0),
         writers(0)
-    {}
-};
-
-// ----------------------------------------------------------------------------
-// Class ScopedLock
-// ----------------------------------------------------------------------------
-
-template <typename TMutex = Mutex, typename TParallel = Parallel>
-struct ScopedLock
-{
-    TMutex & mutex;
-
-    explicit
-    ScopedLock(TMutex & mutex) :
-        mutex(mutex)
-    {
-        lock(mutex);
-    }
-
-    ~ScopedLock()
-    {
-        unlock(mutex);
-    }
-
-};
-
-template <typename TLock>
-struct ScopedLock<TLock, Serial>
-{
-    explicit
-    ScopedLock(TLock &)
     {}
 };
 

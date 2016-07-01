@@ -51,7 +51,6 @@
 
 #include <cstdlib>
 #include <climits>
-#include <pthread.h>
 #include <errno.h>
 #include <semaphore.h>
 #if SEQAN_ASYNC_IO
@@ -78,11 +77,7 @@
 // multi-threading
 
 #include <seqan/system/system_base.h>
-#include <seqan/system/system_mutex.h>
-#include <seqan/system/system_event.h>
-#include <seqan/system/system_critical_section.h>
-#include <seqan/system/system_condition.h>
-#include <seqan/system/system_thread.h>
+#include <seqan/system/system_event.h>              // TODO(rrahn): Rename?
 
 //____________________________________________________________________________
 // synchronous and asynchronous files
