@@ -84,7 +84,7 @@ struct SakOptions
 
     SakOptions() :
         verbosity(1),
-        seqInfixBegin(seqan::maxValue<uint64_t>()),
+        seqInfixBegin(0),
         seqInfixEnd(seqan::maxValue<uint64_t>()),
         reverseComplement(false),
         maxLength(seqan::maxValue<uint64_t>())
@@ -369,12 +369,18 @@ int main(int argc, char ** argv)
     // -----------------------------------------------------------------------
     startTime = seqan::sysTime();
 
-    unsigned idx = 0;
+
     uint64_t charsWritten = 0;
     seqan::CharString id;
     seqan::CharString seq;
     seqan::CharString quals;
-    while (!atEnd(inFile) && charsWritten < options.maxLength && idx < endIdx)
+
+    auto seqIndicesBeg = begin(options.seqIndices, seqan::Standard());
+    auto seqIndicesEnd = end(options.seqIndices, seqan::Standard());
+    auto seqIndexRangesBeg = begin(options.seqIndexRanges, seqan::Standard());
+    auto seqIndexRangesEnd = end(options.seqIndexRanges, seqan::Standard());
+
+    for (unsigned idx = 0; !atEnd(inFile) && charsWritten < options.maxLength && idx < endIdx; ++idx)
     {
         try
         {
@@ -386,78 +392,39 @@ int main(int argc, char ** argv)
             return 1;
         }
 
-        // Check whether to write out sequence.
-        bool writeOut = false;
-        if (empty(options.seqIndices) && empty(options.seqIndexRanges))
-            writeOut = true;
         // One of options.seqIndices.
-        if (!writeOut)
-        {
-            for (unsigned i = 0; i < length(options.seqIndices); ++i)
-            {
-                if (options.seqIndices[i] == idx)
-                {
-                    writeOut = true;
-                    break;
-                }
-            }
-        }
+        if (!empty(options.seqIndices) && std::find(seqIndicesBeg, seqIndicesEnd, idx) == seqIndicesEnd)
+            continue;
+
         // One of options.seqIndexRanges.
-        if (!writeOut)
-        {
-            for (unsigned i = 0; i < length(options.seqIndexRanges); ++i)
-            {
-                if (idx >= options.seqIndexRanges[i].i1 && idx < options.seqIndexRanges[i].i2)
-                {
-                    writeOut = true;
-                    break;
-                }
-            }
-        }
+        if (!empty(options.seqIndexRanges) && std::none_of(seqIndexRangesBeg, seqIndexRangesEnd,
+                        [idx](seqan::Pair<uint64_t> rng) { return idx >= rng.i1 && idx < rng.i2; } ))
+            continue;
+
         // Name pattern matches.
-        if (!writeOut && !empty(options.readPattern))
+        if (!startsWith(id, options.readPattern))
+            continue;
+
+        // Get begin and end index of infix to write out.
+        uint64_t infixBegin = seqan::_min(options.seqInfixBegin, length(seq));
+        uint64_t infixEnd = seqan::_max(seqan::_min(options.seqInfixEnd, length(seq)), infixBegin);
+
+        if (options.verbosity >= 3)
+            std::cerr << "INFIX\tbegin:" << infixBegin << "\tend:" << infixEnd << "\n";
+
+        if (options.reverseComplement)
         {
-            unsigned l = length(options.readPattern);
-            if (l > length(id))
-                l = length(id);
-            if (prefix(id, l) == prefix(options.readPattern, l))
-                writeOut = true;
+            seqan::Dna5String seqCopy = seq;
+            reverseComplement(seqCopy);
+            reverse(quals);
+            infixEnd = length(seq) - infixEnd;
+            infixBegin = length(seq) - infixBegin;
+            std::swap(infixEnd, infixBegin);
+
+            writeRecord(outFile, id, infix(seqCopy, infixBegin, infixEnd), infix(quals, infixBegin, infixEnd));
         }
-
-        // Write out if we want this.
-        if (writeOut)
-        {
-            // Get begin and end index of infix to write out.
-            uint64_t infixBegin = 0;
-            if (options.seqInfixBegin != seqan::maxValue<uint64_t>())
-                infixBegin = options.seqInfixBegin;
-            if (infixBegin > length(seq))
-                infixBegin = length(seq);
-            uint64_t infixEnd = length(seq);
-            if (options.seqInfixEnd < length(seq))
-                infixEnd = options.seqInfixEnd;
-            if (infixEnd < infixBegin)
-                infixEnd = infixBegin;
-            if (options.verbosity >= 3)
-                std::cerr << "INFIX\tbegin:" << infixBegin << "\tend:" << infixEnd << "\n";
-
-            if (options.reverseComplement)
-            {
-                seqan::Dna5String seqCopy = seq;
-                reverseComplement(seqCopy);
-                reverse(quals);
-                infixEnd = length(seq) - infixEnd;
-                infixBegin = length(seq) - infixBegin;
-                std::swap(infixEnd, infixBegin);
-
-                writeRecord(outFile, id, infix(seqCopy, infixBegin, infixEnd), infix(quals, infixBegin, infixEnd));
-            }
-            else
-                writeRecord(outFile, id, infix(seq, infixBegin, infixEnd), infix(quals, infixBegin, infixEnd));
-        }
-
-        // Advance counter idx.
-        idx += 1;
+        else
+            writeRecord(outFile, id, infix(seq, infixBegin, infixEnd), infix(quals, infixBegin, infixEnd));
     }
 
     if (options.verbosity >= 2)
