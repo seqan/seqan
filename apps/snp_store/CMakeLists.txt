@@ -18,10 +18,8 @@ set (SEQAN_APP_VERSION "1.3.3")
 
 # Search SeqAn and select dependencies.
 find_package (ZLIB)
+find_package (Boost)
 find_package (SeqAn REQUIRED)
-
-# Search BOOST, snp_store is not built if Boost is not found.
-find_package (Boost)	
 
 if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
     message (STATUS "  Boost or zlib not found: Not building snp_store.")

@@ -231,9 +231,13 @@ struct Atomic
 // Implementation in MSVC
 // ----------------------------------------------------------------------------
 
+// NOTE(marehr): clang/c2 v3.7 doesn't know #pragma intrinsic.
+#if !defined(COMPILER_CLANG)
+#pragma intrinsic(_InterlockedOr, _InterlockedXor, _InterlockedCompareExchange)
+#endif
+
 // We break the standard code layout here since we only wrap compiler
 // intrinsics and it's easier to see things with one glance this way.
-#pragma intrinsic(_InterlockedOr, _InterlockedXor, _InterlockedCompareExchange)
 
 template <typename T, typename S>
 inline T _atomicOr(T volatile &x, ConstInt<sizeof(char)>, S y) { return _InterlockedOr8(reinterpret_cast<char volatile *>(&x), y); }

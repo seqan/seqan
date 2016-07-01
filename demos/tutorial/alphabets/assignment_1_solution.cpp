@@ -16,7 +16,7 @@ void showAllLettersOfMyAlphabet(TAlphabet const &)
     // We iterate over all characters of the alphabet
     // and output them
     for (TSize i = 0; i < alphSize; ++i)
-        std::cout << i << ',' << TAlphabet(i) << "  ";
+        std::cout << static_cast<unsigned>(i) << ',' << TAlphabet(i) << "  ";
     std::cout << std::endl;
 
 }

@@ -19,8 +19,8 @@ set (SEQAN_APP_VERSION "0.2.5")
 # Search SeqAn and select dependencies.
 find_package (OpenMP)
 find_package (ZLIB)
-find_package (SeqAn REQUIRED)
 find_package (Boost)
+find_package (SeqAn REQUIRED)
 
 # Stop here if we cannot find Boost or OpenMP.
 if (NOT Boost_FOUND OR NOT OPENMP_FOUND)
@@ -115,4 +115,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:fiona")
 
   seqan_configure_cpack_app (fiona "fiona")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:fiona")
-

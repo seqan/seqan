@@ -49,7 +49,7 @@ static SECURITY_ATTRIBUTES EventDefaultAttributes =
 struct Event        // this class mustn't exceed the size of HANDLE (needed by waitForAll/Any)
 {
     typedef HANDLE Handle;
-    enum {Infinite = INFINITE};
+    enum : unsigned {Infinite = INFINITE};
     Handle hEvent;
 
     Event() :
