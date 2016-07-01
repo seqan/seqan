@@ -221,14 +221,12 @@ namespace seqan
          *
          * @signature Index::Index();
          * @signature Index::Index(index);
-         * @signature Index::Index(text);
-         * @signature Index::Index(text, predHull);
-         * @signature Index::Index(text, predHull, pred);
+         * @signature Index::Index(text[, predHull][, pred]);
          *
          * @param[in] index    Other Index object to copy from.
          * @param[in] text     The text to be indexed.
-         * @param[in] predHull (TPredHull) A monotonic hull of TPred.
-         * @param[in] pred     (TPred) An arbitrary frequeny predicate.
+         * @param[in] predHull (TPredHull) A monotonic hull of TPred. (optional)
+         * @param[in] pred     (TPred) An arbitrary frequeny predicate. (optional)
          */
 
         Index() {}

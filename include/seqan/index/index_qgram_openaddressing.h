@@ -122,13 +122,11 @@ namespace seqan
          *
          * @signature Index::Index();
          * @signature Index::Index(index);
-         * @signature Index::Index(text);
-         * @signature Index::Index(text, predHull);
-         * @signature Index::Index(text, predHull, pred);
+         * @signature Index::Index(text[, shape]);
          *
          * @param[in] index Other Index object to copy from.
          * @param[in] text  The text to be indexed.
-         * @param[in] shape The q gram @link Shape @endlink to be applied.
+         * @param[in] shape The qgram @link Shape @endlink to be applied.
          */
 
         Index():
