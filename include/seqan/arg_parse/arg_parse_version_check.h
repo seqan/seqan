@@ -87,7 +87,6 @@ struct VersionCheck
     // ----------------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------------
-
     VersionCheck(std::string const & name,
                  std::string const & version,
                  std::string const & website)
@@ -96,7 +95,7 @@ struct VersionCheck
         if (!version.empty() &&
             std::regex_match(version, std::regex("^[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+.*")))
             _version = version.substr(0,5); // in case the git revision number is given take only version number
-        if(!website.empty())
+        if (!website.empty())
             _website = website;
         _url = "http://www.seqan.de/version_check/SeqAn_" + _getOS() + _getBitSys() + _name + "_" + _version;
         _getProgram();
@@ -106,7 +105,6 @@ struct VersionCheck
     // ----------------------------------------------------------------------------
     // Member Functions
     // ----------------------------------------------------------------------------
-
 #if defined(PLATFORM_WINDOWS)
     void _getProgram()
     {
@@ -234,7 +232,7 @@ inline bool _checkWritability(std::string const & path)
 
     if (dummyFile == INVALID_HANDLE_VALUE)
         return false;
-    
+
     CloseHandle(dummyFile);
     DeleteFile(fileName.c_str());
     return true;
@@ -264,7 +262,7 @@ inline bool _checkWritability(std::string const & path)
 // ----------------------------------------------------------------------------
 // Function _getFileTimeDiff()
 // ----------------------------------------------------------------------------
-inline  double _getFileTimeDiff(std::string const & timestamp_filename)
+inline double _getFileTimeDiff(std::string const & timestamp_filename)
 {
     double curr = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     std::ifstream timestamp_file;
@@ -355,7 +353,6 @@ inline bool _isSmaller(String<int> & left, String<int> & right)
 // ----------------------------------------------------------------------------
 // Function _callServer()
 // ----------------------------------------------------------------------------
-
 inline bool _callServer(VersionCheck const & me)
 {
     // update timestamp
@@ -378,14 +375,13 @@ inline bool _callServer(VersionCheck const & me)
 // ----------------------------------------------------------------------------
 // Function checkForNewerVersion()
 // ----------------------------------------------------------------------------
-
 inline bool _checkForNewerVersion(VersionCheck & me)
 {
     if (!_checkWritability(me._path))
     {
 #if defined(PLATFORM_WINDOWS)
         TCHAR tmp_path [MAX_PATH];
-        if (GetTempPath (MAX_PATH, tmp_path) != 0)
+        if (GetTempPath(MAX_PATH, tmp_path) != 0)
             me._path = tmp_path;
         else //GetTempPath() returns 0 on failure
             return false;
@@ -411,7 +407,7 @@ inline bool _checkForNewerVersion(VersionCheck & me)
 
         if (_isSmaller(old_ver, new_ver))
         {
-            if(me._name == VersionControlTags::SEQAN_NAME)
+            if (me._name == VersionControlTags::SEQAN_NAME)
             {
                 std::cerr << "[SEQAN INFO] :: There is a newer SeqAn version available : SeqAn "
                           << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << " Go to "
