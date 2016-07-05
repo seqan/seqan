@@ -394,12 +394,20 @@ macro (seqan_configure_cpack_app APP_NAME APP_DIR)
   # The following include automates the MS Redistributable installer.
   include (InstallRequiredSystemLibraries)
 
+  SET(CPACK_GENERATOR "ZIP")
   if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set (CPACK_GENERATOR "ZIP;NSIS")
-  elseif (CMAKE_VERSION VERSION_LESS "3.1") # TXZ support since 3.1
-    set (CPACK_GENERATOR "ZIP;TBZ2;DEB;RPM")
+    SET(CPACK_GENERATOR "${CPACK_GENERATOR};NSIS")
   else ()
-    set (CPACK_GENERATOR "ZIP;TXZ;DEB;RPM")
+    if (CMAKE_VERSION VERSION_LESS "3.1") # TXZ support since 3.1
+      SET(CPACK_GENERATOR "${CPACK_GENERATOR};TBZ2")
+    else()
+      SET(CPACK_GENERATOR "${CPACK_GENERATOR};TXZ")
+    endif ()
+    if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+      SET(CPACK_GENERATOR "${CPACK_GENERATOR};DragNDrop")
+    else () 
+      SET(CPACK_GENERATOR "${CPACK_GENERATOR};DEB;RPM")
+    endif ()
   endif ()
 
   # Set defaults for CPACK_PACKAGE_DESCRIPTION_FILE and CPACK_RESOURCE_FILE_LICENSE
