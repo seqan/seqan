@@ -889,9 +889,9 @@ inline CharString const & getShortDescription(ToolDoc const & doc)
  * @param[in]     str     The url string of the tool (@link CharString @endlink).
  */
 
-inline void setUrl(ToolDoc & doc, CharString const & url)
+inline void setUrl(ToolDoc & doc, CharString url)
 {
-    doc._url = url;
+    std::swap(doc._url, url);
 }
 
 // --------------------------------------------------------------------------
