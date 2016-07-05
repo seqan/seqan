@@ -282,25 +282,9 @@ inline double _getFileTimeDiff(std::string const & timestamp_filename)
 }
 
 // ----------------------------------------------------------------------------
-// Function _getNumbersFromString()
+// Function _readVersionString()
 // ----------------------------------------------------------------------------
-inline void _getNumbersFromString(String<int> & numbers, std::string const & str)
-{
-    std::string number;
-    std::istringstream iss(str);
-    while (std::getline(iss, number, '.'))
-    {
-        if (!number.empty())
-        {
-            appendValue(numbers, atoi(toCString(number)));
-        }
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function _getVersionNumbers()
-// ----------------------------------------------------------------------------
-inline bool _readVersionNumbers(String<int> & version_numbers, std::string const & version_file)
+inline std::string _readVersionString(std::string const & version_file)
 {
     std::ifstream myfile;
     myfile.open(version_file.c_str());
@@ -308,46 +292,22 @@ inline bool _readVersionNumbers(String<int> & version_numbers, std::string const
     if (myfile.is_open())
     {
         std::getline(myfile,line); // get first line which should only contain the version number
-        if (std::regex_match(line, std::regex("^[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+$")))
+        if (!(std::regex_match(line, std::regex("^[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+$"))))
         {
-            _getNumbersFromString(version_numbers, line);
-            myfile.close();
+            line.clear();
         }
-        else if (line == VersionControlTags::UNREGISTERED_APP)
+        if (line == VersionControlTags::UNREGISTERED_APP)
         {
             std::cerr << "[SEQAN INFO] :: Thank you for using SeqAn!\n"
                       << "[SEQAN INFO] :: You might want to regsiter you app for support and version check features?!\n"
                       << "[SEQAN INFO] :: Just send us an email to seqan@team.fu-berlin.de with your app name and version number.\n"
                       << "[SEQAN INFO] :: If you don't want to recieve this message anymore set --version_check OFF\n\n";
-            myfile.close();
-            return false;
+            line.clear();
         }
-        else
-        {
-            myfile.close();
-            return false;
-        }
+        myfile.close();
     }
-    else
-    {
-        return false;
-    }
-    return true;
-}
 
-// ----------------------------------------------------------------------------
-// Function _isSmaller()
-// ----------------------------------------------------------------------------
-inline bool _isSmaller(String<int> & left, String<int> & right)
-{
-    for (unsigned i = 0; i < length(left); ++i)
-    {
-        if (left[i] < right[i])
-        {
-            return true;
-        }
-    }
-    return false;
+    return line; // line is an empty string on failure
 }
 
 // ----------------------------------------------------------------------------
@@ -399,30 +359,26 @@ inline bool _checkForNewerVersion(VersionCheck & me)
     if (file_time_diff < min_time_diff)
         return false; // only check for newer version once a day
 
-    String<int> new_ver;
-    if (_readVersionNumbers(new_ver, version_filename))
+    std::string server_version = _readVersionString(version_filename);
+    if (!server_version.empty())
     {
-        String<int> old_ver;
-        _getNumbersFromString(old_ver, me._version);
-
-        if (_isSmaller(old_ver, new_ver))
+        if (isLess(me._version, server_version))
         {
             if (me._name == VersionControlTags::SEQAN_NAME)
             {
-                std::cerr << "[SEQAN INFO] :: There is a newer SeqAn version available : SeqAn "
-                          << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << " Go to "
-                          << me._website << "\n"
-                          << "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check APP_ONLY" << "\n\n";
+                std::cerr << "[SEQAN INFO] :: There is a newer SeqAn version available : SeqAn " << server_version << " Go to " << me._website << "\n"
+                          << "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check APP_ONLY"
+                          << "\n\n";
             }
             else
             {
-                std::cerr << "[APP INFO] :: There is a newer version available: " << me._name << " " 
-                          << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << "\n"
+                std::cerr << "[APP INFO] :: There is a newer version available: " << me._name << " " << server_version << "\n"
                           << "[APP INFO] :: Check out " << me._website << "\n"
-                          << "[APP INFO] :: If you don't want to recieve this message again set --version_check OFF" << "\n\n";
+                          << "[APP INFO] :: If you don't want to recieve this message again set --version_check OFF"
+                          << "\n\n";
             }
         }
-        else if (_isSmaller(new_ver, old_ver))
+        else if (isGreater(me._version, server_version))
         {
             std::cerr << "[APP INFO] :: We noticed your app version (" << me._version << ") is newer than the one registered.\n"
                       << "[APP INFO] :: If you are the developer of this app, please send us an email to update your version info (support@seqan.de)" 
