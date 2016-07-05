@@ -358,10 +358,6 @@ inline bool _isSmaller(String<int> & left, String<int> & right)
 
 inline bool _callServer(VersionCheck const & me)
 {
-    // system call
-    // http response is stored in a file '.config/seqan/{app_name}_version'
-    int res = system(me._command.c_str());
-
     // update timestamp
     std::string timestamp_filename = me._path + "/" + me._name + ".timestamp";
     std::ofstream timestamp_file(timestamp_filename.c_str());
@@ -371,10 +367,12 @@ inline bool _callServer(VersionCheck const & me)
         timestamp_file.close();
     }
 
-    if (res == 0)
-        return true;
-    else
+    // system call
+    // http response is stored in a file '.config/seqan/{app_name}_version'
+    if (system(me._command.c_str()))
         return false;
+
+    return true;
 }
 
 // ----------------------------------------------------------------------------
