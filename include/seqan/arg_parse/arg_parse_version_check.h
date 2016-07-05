@@ -107,7 +107,7 @@ struct VersionCheck
     {
         _name = name;
         if (!version.empty() &&
-            std::regex_match(version, std::regex("^[[:digit:]]\\.[[:digit:]]\\.[[:digit:]].*")))
+            std::regex_match(version, std::regex("^[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+.*")))
             _version = version.substr(0,5); // in case the git revision number is given take only version number
         if(!website.empty())
             _website = website;
@@ -270,7 +270,7 @@ inline bool _readVersionNumbers(String<int> & version_numbers, std::string const
     if (myfile.is_open())
     {
         std::getline(myfile,line); // get first line which should only contain the version number
-        if (std::regex_match(line, std::regex("^[[:digit:]]\\.[[:digit:]]\\.[[:digit:]]$")))
+        if (std::regex_match(line, std::regex("^[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+$")))
         {
             _getNumbersFromString(version_numbers, line);
             myfile.close();
