@@ -249,7 +249,7 @@ macro (seqan_build_system_init)
         endif ()
     elseif (SEQAN_ARCH_SSE4)
         message (STATUS "Building optimized binaries up to SSE4 and POPCNT.")
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3 -msse4")
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -mpopcnt")
         if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
             set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mpopcnt")
         endif ()
@@ -395,11 +395,11 @@ macro (seqan_configure_cpack_app APP_NAME APP_DIR)
   include (InstallRequiredSystemLibraries)
 
   if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set (CPACK_GENERATOR "ZIP")
+    set (CPACK_GENERATOR "ZIP;NSIS")
   elseif (CMAKE_VERSION VERSION_LESS "3.1") # TXZ support since 3.1
-    set (CPACK_GENERATOR "ZIP;TBZ2")
+    set (CPACK_GENERATOR "ZIP;TBZ2;DEB;RPM")
   else ()
-    set (CPACK_GENERATOR "ZIP;TXZ")
+    set (CPACK_GENERATOR "ZIP;TXZ;DEB;RPM")
   endif ()
 
   # Set defaults for CPACK_PACKAGE_DESCRIPTION_FILE and CPACK_RESOURCE_FILE_LICENSE

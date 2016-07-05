@@ -49,14 +49,24 @@ if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
     # ===========================================================================
     # Archive Packages (.tar & .tar.bz2)
     # ===========================================================================
+    SET(CPACK_GENERATOR "ZIP")
 
     if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-        set (CPACK_GENERATOR "ZIP")
-    elseif (CMAKE_VERSION VERSION_LESS "3.1") # TXZ support since 3.1
-        set (CPACK_GENERATOR "ZIP;TBZ2")
-    else ()
-        set (CPACK_GENERATOR "ZIP;TXZ")
-    endif ()
+        SET(CPACK_GENERATOR "${CPACK_GENERATOR};NSIS")
+    else()
+        if (CMAKE_VERSION VERSION_LESS "3.1") # TXZ support since 3.1
+            SET(CPACK_GENERATOR "${CPACK_GENERATOR};TBZ2")
+        else()
+            SET(CPACK_GENERATOR "${CPACK_GENERATOR};TXZ")
+        endif()
+
+        if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+            SET(CPACK_GENERATOR "${CPACK_GENERATOR};DragNDrop")
+        else () 
+            SET(CPACK_GENERATOR "${CPACK_GENERATOR};DEB;RPM")
+        endif()
+    endif()
+
     if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE")
       SET(CPACK_PACKAGE_NAME "seqan")
     elseif ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY")
